@@ -2,9 +2,36 @@
 
 English | [한국어](README_ko.md)
 
+> **All you need is a message channel. The rest is done by agents.**
+
 xsm lets running Claude Code and Codex sessions find each other and exchange messages.
 
 ![How XSM connects agent sessions through native runtime paths and explicit communication scopes](docs/assets/xsm-overview.svg)
+
+## Philosophy
+
+Multi-agent tools such as Orca, herdr and OpenRig make coordination their product: a dispatcher, a task
+graph, a team defined in YAML, terminals the tool owns. xsm builds none of that. It gives the sessions you
+already run a way to reach each other, and leaves the rest to them. Agents read and write plain language;
+given a channel, they split the work, hand it off, review each other and report back, the way people do in a
+chat channel. The better the models get, the less a fixed structure helps and the more it gets in the way.
+
+What xsm does not have:
+
+- no orchestrator, team spec or task graph: who does what is decided in the conversation
+- no runtime of its own and no wrapper around `claude` or `codex`: you start your sessions as you always do
+- no daemon: hooks, files and one-shot commands
+
+Because everything else is left to the agents, the channel itself has to be dependable. That is where xsm puts
+its effort:
+
+- **A message wakes the session.** It goes in through each runtime's own path (the Claude inbox socket,
+  `codex queue`), not by typing into a terminal, so an idle session picks it up, and the message arrives marked
+  with its sender instead of looking like something you typed.
+- **The sender knows what happened.** Every message ends as `delivered`, `sent-unconfirmed` or `held`, and
+  the sender sees which.
+- **People keep the boundaries.** Which sessions can talk is a scope you set, and widening it takes your
+  approval.
 
 ## TL;DR
 
