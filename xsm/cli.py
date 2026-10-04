@@ -869,16 +869,20 @@ def cmd_held(args) -> int:
     entries = sorted(glob.glob(paths.path(paths.HELD, "*.json")))
     if args.action == "deliver":
         return _held_deliver(args)
+    # An id names a file in held/ and nothing else: `../config` would otherwise be
+    # ~/.xsm/config.json, and drop would delete every scope, link and block.
+    name = os.path.basename(getattr(args, "id", None) or "")
     if args.action == "show":
-        entry = paths.read_json(paths.path(paths.HELD, "%s.json" % args.id))
+        entry = paths.read_json(paths.path(paths.HELD, "%s.json" % name)) if name else None
         if not entry:
             print("no such held message", file=sys.stderr)
             return REFUSED
         print(json.dumps(entry, ensure_ascii=False, indent=1))
         return OK
     if args.action == "drop":
-        target = paths.path(paths.HELD, "%s.json" % args.id)
-        if not os.path.exists(target):
+        target = paths.path(paths.HELD, "%s.json" % name)
+        if not name or not os.path.exists(target):
+            print("no such held message", file=sys.stderr)
             return REFUSED
         os.unlink(target)
         return OK

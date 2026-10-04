@@ -505,6 +505,21 @@ class HeldDeliverTest(AskHelpers, TempState):
         self.assertIn("from the old days", text)
         self.assertIn("send@claude-3", text)
 
+    def test_show_and_drop_take_a_held_id_not_a_path(self):
+        """`../config` named ~/.xsm/config.json, and drop deleted every scope with it."""
+        from xsm import paths
+        config = paths.path("config.json")
+        paths.write_json(config, {"scopes": [{"name": "demo", "members": [{"root": "/x"}]}]})
+        for action in ("show", "drop"):
+            code, text = self._cli(["held", action, "../config"])
+            self.assertNotEqual(code, 0, text)
+            self.assertIn("no such held message", text)
+        self.assertEqual(paths.read_json(config)["scopes"][0]["name"], "demo")
+        name = self._hold()
+        code, _ = self._cli(["held", "drop", name])
+        self.assertEqual(code, 0)
+        self.assertFalse(os.path.exists(paths.path(paths.HELD, "%s.json" % name)))
+
 
 class PastedHeaderTest(_Gate):
     """2026-10-02: a person's own prompt that starts with a pasted xsm header parses as a
