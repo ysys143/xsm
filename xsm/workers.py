@@ -615,6 +615,34 @@ def spawn(runtime: str, *, name: str | None = None, model: str | None = None,
     return worker
 
 
+def _codex_mcp_overrides(home: str) -> list:
+    """The -c overrides that let a background Codex worker use the xsm MCP server
+    without asking: its tools need no approval, since under `-a never` a tool
+    that asks is refused outright, and the server gets this XSM_HOME, since
+    Codex starts MCP servers with an environment of its own (without it the
+    server looked in ~/.xsm and told the worker "this session is not
+    registered": measured, S10 run 2 under a run-local XSM_HOME).
+
+    A home on the plugin has no [mcp_servers.xsm] table: the server comes
+    from the plugin. Overriding two keys of a table that is not there leaves
+    one with no command, and Codex exits at once with "invalid transport in
+    mcp_servers.xsm" (#12, Codex 0.160). So the table is given whole there:
+    the plugin's own command and folder, which Codex then lists as the one xsm
+    server (measured with `codex mcp list`, 2026-10-05)."""
+    name = install.MCP_NAME
+    whole = []
+    if not install.codex_direct_mcp(home):
+        plugin = install.codex_plugin(home)
+        if not plugin:
+            return []
+        whole = ["-c", "mcp_servers.%s.command=%s" % (
+                     name, json.dumps(os.path.join(plugin["root"], "hooks", "xsm-mcp"))),
+                 "-c", "mcp_servers.%s.cwd=%s" % (name, json.dumps(plugin["root"]))]
+    return whole + [
+        "-c", 'mcp_servers.%s.default_tools_approval_mode="approve"' % name,
+        "-c", 'mcp_servers.%s.env={XSM_HOME=%s}' % (name, json.dumps(paths.HOME))]
+
+
 def _start_in_tmux(worker: dict, pane: str | None) -> None:
     """Start the worker's TUI: in a pane split off the caller's, or, with no
     pane to split, in a new window of the detached xsm-workers session."""
@@ -640,13 +668,8 @@ def _start_in_tmux(worker: dict, pane: str | None) -> None:
         # since under `-a never` a tool that asks is refused outright. The
         # shell still needs XSM_HOME writable for the ledger it keeps.
         reach = [] if worker.get("full_access") or worker["mode"] == "pane" else [
-            "-c", "sandbox_workspace_write.writable_roots=[%s]" % json.dumps(paths.HOME),
-            "-c", 'mcp_servers.%s.default_tools_approval_mode="approve"' % install.MCP_NAME,
-            # Codex starts MCP servers with an environment of its own, not the
-            # worker's: without this the xsm server looked in ~/.xsm and told
-            # the worker "this session is not registered" (measured, S10 run 2
-            # under a run-local XSM_HOME).
-            "-c", 'mcp_servers.%s.env={XSM_HOME=%s}' % (install.MCP_NAME, json.dumps(paths.HOME))]
+            "-c", "sandbox_workspace_write.writable_roots=[%s]" % json.dumps(paths.HOME)] + \
+            _codex_mcp_overrides(worker["home"])
         # The codex that runs, not whichever is first on PATH: a broken npm
         # install shadowed the working one (2026-09-23), and a worker started
         # from it would die in its pane with nobody watching.
