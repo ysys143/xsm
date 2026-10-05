@@ -197,6 +197,18 @@ class CodexPluginTest(unittest.TestCase):
             home, _ = self._codex_home(tmp, enabled=False)
             self.assertIsNone(install.codex_plugin(str(home)))
 
+    def test_a_worker_can_start_in_a_codex_home_that_is_on_the_plugin(self):
+        """#12: spawn read only hooks.json and refused, while install refused the plugin."""
+        from xsm import workers
+        with tempfile.TemporaryDirectory() as tmp:
+            home, _ = self._codex_home(tmp)
+            self.assertFalse((home / "hooks.json").exists())
+            workers._check_installed(str(home), "codex")
+        with tempfile.TemporaryDirectory() as tmp:
+            home, _ = self._codex_home(tmp, enabled=False)
+            with self.assertRaises(workers.WorkerError):
+                workers._check_installed(str(home), "codex")
+
     def test_trust_is_read_for_the_plugin_hooks(self):
         from xsm import install
         with tempfile.TemporaryDirectory() as tmp:
