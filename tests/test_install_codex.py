@@ -209,6 +209,24 @@ class CodexPluginTest(unittest.TestCase):
             with self.assertRaises(workers.WorkerError):
                 workers._check_installed(str(home), "codex")
 
+    def test_a_background_codex_worker_gets_a_whole_mcp_table_on_the_plugin(self):
+        """#12 follow-up: two keys of a table the plugin home lacks made Codex exit
+        with "invalid transport in mcp_servers.xsm" before the worker registered."""
+        from xsm import workers
+        with tempfile.TemporaryDirectory() as tmp:
+            home, root = self._codex_home(tmp)
+            args = workers._codex_mcp_overrides(str(home))
+            joined = " ".join(args)
+            self.assertIn('mcp_servers.xsm.command=%s' % json.dumps(str(root / "hooks" / "xsm-mcp")),
+                          joined)
+            self.assertIn('mcp_servers.xsm.cwd=%s' % json.dumps(str(root)), joined)
+            self.assertIn("default_tools_approval_mode", joined)
+            # A home with the direct install keeps its own table: only the two keys.
+            (home / "config.toml").write_text('[mcp_servers.xsm]\ncommand = "/x/xsm-mcp"\n')
+            joined = " ".join(workers._codex_mcp_overrides(str(home)))
+            self.assertNotIn("mcp_servers.xsm.command", joined)
+            self.assertIn("default_tools_approval_mode", joined)
+
     def test_trust_is_read_for_the_plugin_hooks(self):
         from xsm import install
         with tempfile.TemporaryDirectory() as tmp:

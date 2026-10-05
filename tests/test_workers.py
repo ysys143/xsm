@@ -775,6 +775,10 @@ class DangerousFlagsTest(TempState):
         import shlex
         from unittest import mock
         from xsm import install, workers
+        # The direct install's table; a home on the plugin is covered in
+        # test_install_codex (#12), and a home with no xsm server gets no keys.
+        with open(os.path.join(self.tmp, "config.toml"), "w") as f:
+            f.write('[mcp_servers.%s]\ncommand = "/x/xsm-mcp"\n' % install.MCP_NAME)
         for mode, expect in (("background", True), ("pane", False)):
             seen = []
             def run(argv, **kw):
