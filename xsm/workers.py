@@ -293,6 +293,14 @@ def _default_home(runtime: str, caller: dict | None) -> str:
 
 
 def _check_installed(home: str, runtime: str) -> None:
+    # A home on the plugin gets its hooks from the plugin, not from its own
+    # settings, so the settings plan would always read them as missing (#12).
+    # `xsm install` refuses such a home for the same reason, so this is the
+    # only check that can say yes to it.
+    core = {"SessionStart", "UserPromptSubmit"}
+    if install.plugin_installed(home) and not install.plugin_disabled(home) \
+            and not core & set(install.plugin_missing_hooks(home)):
+        return
     plan = install.plan(home, runtime)
     missing = [a["event"] for a in plan.get("actions", []) if a["action"] == "add"]
     core = {"SessionStart", "UserPromptSubmit"}
