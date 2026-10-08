@@ -40,6 +40,12 @@ PROTOCOL = "2025-06-18"
 # the person's own SSH pairing, which is theirs, not an open world.
 READ_ONLY = {"readOnlyHint": True, "openWorldHint": False}
 MESSAGING = {"readOnlyHint": False, "destructiveHint": False, "openWorldHint": False}
+MESSAGE_TEXT_DESCRIPTION = (
+    "The receiver and your user will read this message. Use ordinary "
+    "sentences with normal word spacing in the language of the conversation. "
+    "Keep it concise without removing spaces or joining words and identifiers "
+    "into compressed strings. For longer updates, use short sentences or bullets."
+)
 
 TOOLS = [
     {"name": "xsm_post",
@@ -47,7 +53,7 @@ TOOLS = [
                      "Tags: note, question, proposal, result, hypothesis. A decision cannot be "
                      "posted: ask your user with xsm_decide."),
      "inputSchema": {"type": "object", "properties": {
-         "text": {"type": "string"},
+         "text": {"type": "string", "description": MESSAGE_TEXT_DESCRIPTION},
          "tag": {"type": "string", "enum": [t for t in channel.TAGS if t != "decision"]},
          "reply_to": {"type": "string", "description": "id of the post this answers"},
          "channel": {"type": "string", "description": "a named project; default: this project"}},
@@ -82,7 +88,8 @@ TOOLS = [
                      "process table, and a remote needs the network). Targets: name, "
                      "name@home, ref:xxxxxx, and …@<paired machine>."),
      "inputSchema": {"type": "object", "properties": {
-         "target": {"type": "string"}, "text": {"type": "string"},
+         "target": {"type": "string"},
+         "text": {"type": "string", "description": MESSAGE_TEXT_DESCRIPTION},
          "kind": {"type": "string", "enum": ["note", "task", "reply"], "default": "note"},
          "reply_to": {"type": "string"},
          "outcome": {"type": "string", "enum": ["succeeded", "failed"],

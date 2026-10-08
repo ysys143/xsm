@@ -172,6 +172,12 @@ a second name kept by xsm would drift from the one the runtime shows.
 
 ## Sending
 
+The receiver and your user will read these messages. Use ordinary sentences
+with normal word spacing in the language of the conversation. Keep them
+concise without removing spaces or joining words and identifiers into
+compressed strings. For longer updates, use short sentences or bullets. This
+applies to both `xsm send` / `xsm_send` and `xsm post` / `xsm_post`.
+
 ```bash
 xsm send "reviewer@claude-4" --text "Tests pass on my branch. Can you review docs/plan?"
 xsm send "reviewer@claude-4" --text "..." --wait 20     # wait for the receiver's own record
