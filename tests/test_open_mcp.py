@@ -110,6 +110,15 @@ class ToolAnnotationsTest(TempState):
                              {"readOnlyHint": False, "destructiveHint": False,
                               "openWorldHint": False}, name)
 
+    def test_message_text_descriptions_ask_for_readable_sentences(self):
+        tools = self._tools()
+        descriptions = [tools[name]["inputSchema"]["properties"]["text"]["description"]
+                        for name in ("xsm_send", "xsm_post")]
+        self.assertEqual(descriptions[0], descriptions[1])
+        for phrase in ("receiver and your user", "normal word spacing",
+                       "language of the conversation", "short sentences or bullets"):
+            self.assertIn(phrase, descriptions[0])
+
     def test_the_form_tools_are_left_to_their_own_forms(self):
         tools = self._tools()
         for name in ("xsm_link", "xsm_reach", "xsm_join", "xsm_approve", "xsm_grant",
