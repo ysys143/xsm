@@ -27,7 +27,7 @@ import subprocess
 import sys
 import time
 
-from . import config, paths, policy
+from . import config, paths, policy, probe
 
 MARKER = "#xsm-hook"
 FILE_MARKER = "<!-- xsm-managed -->"        # command files earlier versions wrote
@@ -1774,8 +1774,9 @@ def codex_versions() -> list:
     return out
 
 
-def stuck(now: float | None = None) -> dict:
+def stuck(now: float | None = None, sessions: list | None = None) -> dict:
     """What is waiting on someone right now, from the records themselves.
+    `sessions` are the registry's records when the caller has them already.
 
     Everything here cost a person an investigation once: a worker waiting ten
     minutes on a permission nobody saw, messages queued to a Codex thread its
@@ -1801,7 +1802,8 @@ def stuck(now: float | None = None) -> dict:
         if r.get("status") == "error":
             failures[(r.get("error") or "unknown").split(":")[0]] = \
                 failures.get((r.get("error") or "unknown").split(":")[0], 0) + 1
-    replaced = [r for r in registry.records() if r.get("end_reason") == "thread_replaced"]
+    replaced = [r for r in (registry.records() if sessions is None else sessions)
+                if r.get("end_reason") == "thread_replaced"]
     return {"approvals": waiting, "undelivered": undelivered, "uncertain": uncertain,
             "send_failures": failures,
             "threads_replaced": [{"name": r.get("name"), "ref": r.get("ref")} for r in replaced]}
@@ -1809,7 +1811,15 @@ def stuck(now: float | None = None) -> dict:
 
 def doctor() -> dict:
     """Facts a person can act on, not a verdict."""
-    from . import adapters, registry            # imported here to keep hook startup lean
+    from . import adapters, housekeeping, registry   # imported here to keep hook startup lean
+
+    # Enriched once and shared, under one budget: every session was enriched three
+    # times, and the process table rescanned per Codex home with a five-second lsof
+    # each: 15.5 s where lsof does not answer (measured 2026-10-12, #17).
+    with probe.quick(budget=10):
+        rows = registry.records()
+        unregistered = registry.unregistered()
+    missed = probe.unanswered()
 
     version = sys.version_info
     decisions = paths.read_jsonl("decisions.jsonl", limit=200)
@@ -1840,9 +1850,13 @@ def doctor() -> dict:
         "installs": [plan(h["path"], h["runtime"]) for h in homes],
         "codex_trust": {h["path"]: codex_trust(h["path"], approvals=True) for h in homes
                         if h.get("runtime") == "codex"},
-        "sessions": {"registered": len(registry.records()),
-                     "live": len([r for r in registry.records() if r["state"] == "live"]),
-                     "unregistered": len(registry.unregistered())},
+        "sessions": {"registered": len(rows),
+                     "live": len([r for r in rows if r["state"] == "live"]),
+                     "unregistered": len(unregistered),
+                     "stopped": len([r for r in rows if r["state"] in ("ended", "stale")]),
+                     "retention_days": housekeeping._setting("retention_days"),
+                     "last_prune": housekeeping.last_prune()},
+        "probes": missed,
         "decisions_seen": len(decisions),
         "hook_errors_recent": len(errors),
         "held": len(os.listdir(paths.path(paths.HELD))) if os.path.isdir(paths.path(paths.HELD)) else 0,
@@ -1867,7 +1881,7 @@ def doctor() -> dict:
         "xsm_on_path": shutil.which("xsm"),
         "orphaned_servers": orphaned_servers(),
         "strict_peers": bool(config.load().get("strict_peers")),
-        "stuck": stuck(),
+        "stuck": stuck(sessions=rows),
         "limits": [
             "A peer message without the xsm envelope cannot be told apart from your own typing "
             "inside a hook, so it passes the gate (S8-g2). Set crossSessionInbound to \"hold\" "

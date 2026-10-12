@@ -14,8 +14,8 @@ import shlex
 import sys
 import time
 
-from . import config, consent, envelope, housekeeping, inbox, install, ledger, paths, policy, probe, \
-    receive, registry, resolve, send, workers
+from . import config, consent, envelope, housekeeping, identity, inbox, install, ledger, paths, \
+    policy, probe, receive, registry, resolve, send, workers
 
 OK, REFUSED, UNCONFIRMED, USAGE = 0, 2, 3, 4
 
@@ -48,22 +48,46 @@ def _width(text: str) -> int:
     return sum(2 if unicodedata.east_asian_width(c) in ("W", "F") else 1 for c in text)
 
 
-def _rows(args, me=None) -> list:
-    rows = registry.records()
-    if getattr(args, "all", False):
-        rows += registry.unregistered()
+def _matches_row(args, row: dict, here: str, me) -> bool:
+    """Apply the requested scope to a pointer before probing its runtime."""
     if getattr(args, "runtime", None):
-        rows = [r for r in rows if r.get("runtime") == args.runtime]
+        if row.get("runtime") != args.runtime:
+            return False
     if getattr(args, "home", None):
-        rows = [r for r in rows if args.home in (r.get("alias"), r.get("home"))]
+        if args.home not in (row.get("alias"), row.get("home")):
+            return False
+    return bool(getattr(args, "all", False) or
+                (me and row.get("ref") == me.get("ref")) or _in_this_project(row, here, me))
+
+
+def _provably_gone(row: dict, me) -> bool:
+    """Whether a pointer's process is certainly not running, by kill(2) alone. The
+    default listing hides stopped sessions, so asking git for the folder of each of
+    the hundreds a machine accumulates only to hide them took seconds (#17). Not
+    for a pointer with no pid, nor a Codex thread hosted by the home's daemon: its
+    pid is the daemon's, replaced when the daemon updates while the thread stays
+    loaded, so the daemon decides (identity._state_of). Nor for the caller's own."""
+    pid = row.get("pid")
+    if not pid or (me and row.get("ref") == me.get("ref")):
+        return False
+    if row.get("runtime") == "codex" and row.get("app_server"):
+        return False
+    return not identity.pid_alive(pid)
+
+
+def _rows(args, me=None) -> list:
+    here = _here(args, me)
+    rows = [registry._enrich(r) for r in registry.raw_records()
+            if (getattr(args, "all", False) or not _provably_gone(r, me))
+            and _matches_row(args, r, here, me)]
+    if getattr(args, "all", False):
+        rows += [r for r in registry.unregistered() if _matches_row(args, r, here, me)]
     if not getattr(args, "all", False):
         # A thread a Codex TUI just opened is what a caller is usually
         # looking for when a name resolves to nothing; -a already has it.
-        rows += [r for r in registry.fresh_codex_threads() if not r.get("session_id")]
+        rows += [r for r in registry.fresh_codex_threads() if not r.get("session_id")
+                 and _matches_row(args, r, here, me)]
         rows = [r for r in rows if r.get("state") not in ("stale", "ended")]
-        here = _here(args, me)
-        rows = [r for r in rows if (me and r.get("ref") == me.get("ref"))
-                or _in_this_project(r, here, me)]
     return rows
 
 
@@ -72,9 +96,9 @@ def cmd_list_clear(args, me) -> int:
     Live ones and ones whose state cannot be confirmed stay; a cleared session
     that is resumed registers again under the same ref."""
     here = _here(args, me)
-    rows = [r for r in registry.records() if r.get("state") in ("ended", "stale")]
-    if not args.all:
-        rows = [r for r in rows if _in_this_project(r, here, me)]
+    selected = [registry._enrich(r) for r in registry.raw_records()
+                if _matches_row(args, r, here, me)]
+    rows = [r for r in selected if r.get("state") in ("ended", "stale")]
     for r in rows:
         try:
             os.unlink(registry._record_path(r["runtime"], r["session_id"]))
@@ -170,14 +194,25 @@ def cmd_list(args) -> int:
     probe that does not answer in a second is unknown, and each folder is asked about
     once (probe.quick; a stalled folder under ~/Documents froze it, 2026-10-02)."""
     with probe.quick():
-        return _cmd_list(args)
+        code = _cmd_list(args)
+    missed = probe.unanswered()
+    if missed:
+        print("xsm: %s did not answer in time, so this list may be incomplete; `xsm doctor` "
+              "shows more" % _missed_text(missed), file=sys.stderr)
+    return code
+
+
+def _missed_text(missed: dict) -> str:
+    """Which kinds of probe did not answer, and how many of each."""
+    return ", ".join("%s x%d" % (kind, missed[kind]) for kind in sorted(missed))
 
 
 def _cmd_list(args) -> int:
-    registry.adopt_open_codex()
     me = registry.me()
     if getattr(args, "action", None) == "clear":
         return cmd_list_clear(args, me)
+    here = _here(args, me)
+    registry.adopt_open_codex(accept=lambda row: _matches_row(args, row, here, me))
     rows = _rows(args, me)
     for row in rows:
         row["inbound"] = registry.inbound_setting(row.get("home", ""), row.get("cwd")) if \
@@ -193,8 +228,10 @@ def _cmd_list(args) -> int:
         # Informational: a queued message waits in such a thread unless the
         # daemon starts it (ADR-0002 appendix, 2026-09-28).
         row["interrupted"] = bool(row.get("runtime") == "codex" and row.get("state") == "live"
-                                  and registry.codex_interrupted(row.get("home") or "",
-                                                                 str(row.get("session_id") or "")))
+                                  and probe.bounded(registry.codex_interrupted,
+                                                    row.get("home") or "",
+                                                    str(row.get("session_id") or ""),
+                                                    folder=row.get("home") or "", default=False))
     if args.json:
         print(json.dumps(rows, ensure_ascii=False, indent=1))
         return OK
@@ -202,10 +239,10 @@ def _cmd_list(args) -> int:
         if args.all:
             print("no sessions registered. Install the hooks first: xsm install --help")
         else:
-            others = len([r for r in registry.records() if r.get("state") == "live"])
+            others = len(registry.raw_records())
             print("no live sessions in this project (%s)%s" % (
                 config.default_project(_here(args, me))[0],
-                "; xsm list -a shows %d elsewhere" % others if others else ""))
+                "; xsm list -a shows registered sessions elsewhere" if others else ""))
         return OK
     if getattr(args, "table", False):
         print("\n".join(_table(rows, me, _here(args, me))))
@@ -259,10 +296,8 @@ def _md_table(headers: list, rows: list) -> list:
 
 
 def cmd_who(args) -> int:
-    # The same adoption `list` runs first. Without it `who` said "not
-    # registered", then `list` adopted the thread and marked its row `you`,
-    # then `who` found it: two answers to one question (review, 2026-09-28).
-    registry.adopt_open_codex()
+    # me() adopts this session itself when needed. A registered session must
+    # not wait for every other Codex window to be discovered (issue #17).
     me = registry.me()
     if not me:
         print(registry.unregistered_reason(), file=sys.stderr)
@@ -1238,8 +1273,9 @@ def cmd_doctor(args) -> int:
         broken = note.startswith("does not run")
         print("codex      %-45s %s%s" % (_home_tilde(path), note,
                                          "  <- xsm skips this one" if broken else ""))
-    print("sessions   %(registered)d registered, %(live)d live, %(unregistered)d unregistered"
-          % report["sessions"])
+    print("sessions   %s" % _sessions_note(report["sessions"]))
+    if report.get("probes"):
+        print("probes     %s" % _probes_note(report["probes"]))
     print("hooks      %d decision(s) recorded, %d internal error(s)"
           % (report["decisions_seen"], report["hook_errors_recent"]))
     print("held       %d message(s)" % report["held"])
@@ -1310,6 +1346,21 @@ def cmd_doctor(args) -> int:
     for note in report["limits"]:
         print("limit      %s" % note)
     return OK
+
+
+def _sessions_note(sessions: dict) -> str:
+    """The counts first, as they have always read; then what is stopped, how long
+    pointers are kept, and when the last prune finished."""
+    last = sessions.get("last_prune")
+    return ("%(registered)d registered, %(live)d live, %(unregistered)d unregistered; "
+            "%(stopped)d stopped, pointers kept %(retention_days)g days, last pruned "
+            % sessions) + ("never" if last is None else
+                           time.strftime("%Y-%m-%d %H:%M", time.localtime(last)))
+
+
+def _probes_note(missed: dict) -> str:
+    return ("%s did not answer (a timeout, a spent budget or a stalled folder), so the "
+            "session counts above may be incomplete" % _missed_text(missed))
 
 
 def _stuck_lines(stuck: dict) -> list:
@@ -1474,12 +1525,13 @@ def _doctor_rows(report: dict) -> list:
     rows = [("state", _home_tilde(report["xsm_home"])),
             ("python", report["interpreter"] + ("" if report["interpreter_ok"] else " **TOO OLD**")),
             ("codex", report["codex_binary"] or "not found on PATH"),
-            ("sessions", "%(registered)d registered, %(live)d live, %(unregistered)d unregistered"
-             % report["sessions"]),
-            ("hooks", "%d decision(s) recorded, %d internal error(s)"
-             % (report["decisions_seen"], report["hook_errors_recent"])),
-            ("held", "%d message(s)" % report["held"]),
-            ("native", _native_note(report))]
+            ("sessions", _sessions_note(report["sessions"]))]
+    if report.get("probes"):
+        rows.append(("probes", _probes_note(report["probes"])))
+    rows += [("hooks", "%d decision(s) recorded, %d internal error(s)"
+              % (report["decisions_seen"], report["hook_errors_recent"])),
+             ("held", "%d message(s)" % report["held"]),
+             ("native", _native_note(report))]
     if report.get("cli"):
         rows.insert(0, ("cli", install.cli_text(report["cli"])))
     for line in _runtime_lines(report.get("runtime") or {}):
@@ -2402,7 +2454,8 @@ def main(argv=None) -> int:
         else:
             print("xsm: --reply is switched off here (reply_flag), so it is ignored",
                   file=sys.stderr)
-    if args.command not in ("hook", "statusline", "prune", "reap", "mcp", "worker-finish"):
+    if args.command not in ("hook", "statusline", "prune", "reap", "mcp", "worker-finish",
+                            "list", "who", "send"):
         housekeeping.maybe_prune()
     try:
         from . import telemetry

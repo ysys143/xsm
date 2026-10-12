@@ -15,10 +15,17 @@ the inbox socket and the queue database are both outside it.
 
 ```bash
 xsm list                 # live sessions this folder can talk to (its project)
+xsm list --dir <folder>  # the same for another folder's project
 xsm list -a              # every project, plus stopped and unregistered ones
 xsm list clear [-a]      # forget stopped sessions now (this project, or all)
 xsm who                  # how other sessions see this session
 ```
+
+If `xsm list` prints a line on stderr such as `xsm: lsof x1 did not answer in
+time, so this list may be incomplete`, a check on this machine did not answer
+and the command went on without it: a session may be missing from that list.
+A `ref:` you already have still works for sending. `xsm doctor` shows which
+checks did not answer.
 
 Each row reads `name@home [ref] runtime state mode cwd`. A session marked
 `unregistered` has no hook and cannot be addressed. If xsm says *this*
@@ -215,6 +222,12 @@ Read the result as it is written:
 | `held` / `blocked` | the receiver's gate stopped it (a session your user blocked, out of scope, strict_peers); the body is kept in `xsm held list` there, and you get a note ("NOT delivered") in your next prompt or command. The receiver's agent can deliver it on its user's yes |
 | `error` | the delivery path failed; the message says why. To try again, `--resend <id>` keeps the id |
 | `unknown` | a remote send lost its answer: it may or may not have arrived on the other machine; `xsm status <id>`, then `--resend <id>` |
+
+A message that went out ends its result line with its id, for example
+`sent-unconfirmed: queued; ... (id 9f2c1d0a4b7e4c11)`. That is the `<id>` that
+`xsm status <id>` and `--resend <id>` take. `sent-unconfirmed` after `--wait`
+means the message was handed over and no receipt came in that time: it is not a
+failure, so do not send the text again as a new message.
 
 After `unknown`, run `xsm status <id>` before anything else: it asks the other
 machine and settles the status. Do not send the same text again as a new

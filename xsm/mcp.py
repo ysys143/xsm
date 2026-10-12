@@ -26,7 +26,7 @@ import signal
 import sys
 import time
 
-from . import channel, consent, identity, paths, registry
+from . import channel, consent, identity, paths, probe, registry
 
 PROTOCOL = "2025-06-18"
 
@@ -305,7 +305,11 @@ class Server:
         pid = identity.ancestor_pid({"claude", "codex"})
         if not pid:
             return None
-        rows = [r for r in registry.records() if r.get("pid") == pid and r.get("state") == "live"]
+        # Runs on every tool call: only the pointers that carry the caller's pid are
+        # enriched. Every pointer was (ps, socket and sqlite each) and a registry of
+        # hundreds cost seconds before the tool began (#17).
+        mine = [registry._enrich(r) for r in registry.raw_records() if r.get("pid") == pid]
+        rows = [r for r in mine if r.get("state") == "live"]
         codex = [r for r in rows if r.get("runtime") == "codex"]
         if self.call_thread and (codex or not rows):
             # Codex 0.158 names the calling thread in every tools/call
@@ -348,7 +352,11 @@ class Server:
 
     # -- tools --------------------------------------------------------------------
     def call(self, name: str, args: dict) -> str:
-        me = self.session()
+        # The caller lookup shares one bounded budget. The channel below stays out of
+        # it: a spent budget must not starve the git lookup that says which channel
+        # or scope a message belongs to.
+        with probe.quick():
+            me = self.session()
         if not me:
             raise channel.ChannelError(registry.unregistered_reason())
         where = channel.resolve(me.get("cwd") or os.getcwd(), args.get("channel"))

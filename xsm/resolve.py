@@ -11,7 +11,7 @@ from __future__ import annotations
 
 import re
 
-from . import config, identity, registry
+from . import config, identity, probe, registry
 
 QUALIFIED_RE = re.compile(r"^(?P<name>.+?)(?:@(?P<alias>[^@\s]+))?(?:\s*\[(?P<ref>[0-9a-f]{6})\])?$")
 
@@ -28,15 +28,24 @@ class Resolution:
         return self.status == "resolved"
 
 
+def _records() -> list:
+    """Every pointer enriched, once per `quick` block. A name looked up there cost
+    three passes (the known homes, the pool, the suggestions), each a ps, a socket
+    and a sqlite read per pointer, and the later passes met a spent budget and
+    returned degraded names: "no session named ..." for a session that was there
+    (#17). Stopped sessions stay in: their names are the offline-only answer."""
+    return probe.remember(("resolve_records",), registry.records)
+
+
 def _pool(include_offline: bool) -> list:
-    rows = registry.records()
+    rows = _records()
     return rows if include_offline else [r for r in rows if r.get("state") != "stale"]
 
 
 def _live_addresses(limit: int = 8) -> list:
     """Addresses worth suggesting when a name did not match: a caller working
     from a list it fetched minutes ago should not have to fetch it again."""
-    rows = registry.records()
+    rows = _records()
     live = [r for r in rows if r.get("state") == "live"]
     ordered = sorted(live or rows, key=lambda r: r.get("updated", 0), reverse=True)
     return ordered[:limit]
@@ -51,10 +60,11 @@ def resolve(target: str, include_offline: bool = False) -> Resolution:
         if target.startswith(prefix):
             key, value = prefix[:-1], target[len(prefix):]
             if key == "ref":
-                hits = [rec for rec in _pool(True) if rec.get("ref") == value]
+                hits = [rec for rec in registry.raw_records() if rec.get("ref") == value]
             else:
-                hits = [rec for rec in _pool(True) if rec.get("runtime") == key
+                hits = [rec for rec in registry.raw_records() if rec.get("runtime") == key
                         and rec.get("session_id") == value]
+            hits = [registry._enrich(rec) for rec in hits]
             if len(hits) > 1:
                 # A ref is 24 bits: two sessions can share one (collisions within
                 # ~11k synthetic tries, 2026-09-28). Picking the first would send

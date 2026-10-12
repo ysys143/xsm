@@ -11,7 +11,7 @@
 
 ```bash
 cd ~/Documents/GitHub/cross-session-messaging
-python3 -m unittest discover -s tests          # 53 tests, OK
+python3 -m unittest discover -s tests          # 전부 OK (2026-10-12: 1034개, 2분쯤)
 python3 -V                                      # 3.9 이상
 ```
 
@@ -553,9 +553,9 @@ refused: cx-reviewer@codex is open but has not registered with xsm: the xsm hook
 
 | # | 항목 | 지시 | 기대 |
 |---|---|---|---|
-| 6-1 | Claude → Codex | A에서 `/xsm send cx-reviewer@codex 핑, 받으면 ACK만 답해` | A: `sent-unconfirmed: queued; a Codex session picks the queue up within about 10 seconds …`. 10초쯤 뒤 X가 턴을 시작하고, 프롬프트 위에 `[xsm] This message came from another agent session (builder@claude-4 …)` 문맥이 붙는다 |
+| 6-1 | Claude → Codex | A에서 `/xsm send cx-reviewer@codex 핑, 받으면 ACK만 답해` | A: `sent-unconfirmed: queued; a Codex session picks the queue up within about 10 seconds … (id <id>)`. 10초쯤 뒤 X가 턴을 시작하고, 프롬프트 위에 `[xsm] This message came from another agent session (builder@claude-4 …)` 문맥이 붙는다 |
 | 6-2 | 전달 기록 | 관찰 터미널에서 `xsm ledger` | 6-1의 메시지가 `delivered`. Codex 쪽 훅이 영수증을 썼다는 뜻이다 |
-| 6-3 | Codex → Claude | X에게: `셸에서 xsm send builder@claude-4 --text "ACK from codex" --wait 20 을 실행하고 출력만 보여줘` | `delivered: receiver recorded it`. A 화면에 발신 표시와 함께 도착 |
+| 6-3 | Codex → Claude | X에게: `셸에서 xsm send builder@claude-4 --text "ACK from codex" --wait 20 을 실행하고 출력만 보여줘` | `delivered: receiver recorded it (id <id>)`. A 화면에 발신 표시와 함께 도착 |
 | 6-4 | 턴 경계 | X에게 긴 작업을 준다(예: `1부터 40까지 한 줄씩 세면서 각 줄에 짧은 설명을 붙여줘`). 도는 동안 A에서 `/xsm send cx-reviewer@codex 중간 개입 시험` | X의 지금 턴은 끝까지 간다. 끝난 뒤 다음 턴으로 메시지가 들어온다. 이것이 설계다(ADR-0002, G3는 턴 경계 전달로 충족) |
 | 6-5 | 멈춘 Codex | X를 종료한다(`/quit`, 또는 Ctrl-C 두 번). A에서 `/xsm send cx-reviewer@codex 정지 확인` | `refused: only stopped sessions match …`와 `resume it with: CODEX_HOME=… codex resume <id>`. 상태는 `stale`(Codex에는 종료 인사가 없다) |
 | 6-6 | 재개 | 안내된 명령으로 재개하고 프롬프트를 한 번 넣는다(재개 뒤 SessionStart가 다시 오는지는 확인되지 않았다. 프롬프트 때 훅이 다시 등록한다). A에서 다시 보낸다 | 다시 `live`. **ref가 그대로**다. 메시지가 도착한다 |

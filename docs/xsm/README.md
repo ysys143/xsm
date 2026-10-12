@@ -376,7 +376,8 @@ xsm approvals | approve <id> | deny <id>
 - 한 Claude 프로세스에서 `/clear`나 재개로 세션 id가 바뀌면, 옛 id는 그 프로세스가 살아 있어도 `ended`(대체됨)로 본다. Claude의 네이티브 기록에 적힌 현재 세션 id와 비교해 판정한다.
 - 멈춘 세션으로 보내면 거부되고, 재개 명령이 함께 나온다. `claude --resume <id>`로 재개하면 **같은 주소와 ref**로 돌아온다.
 - 원장에 `queued`로 남았는데 대상이 멈췄으면 `undelivered`로 보인다.
-- 정리는 자동이다. 멈춘 세션 포인터는 7일, 원장과 보류 본문은 30일 뒤 지워진다. 기간은 `config.json`의 `retention_days`, `ledger_retention_days`로 바꾼다. `xsm prune --dry-run`으로 미리 볼 수 있다.
+- 정리는 자동이다. 멈춘 세션 포인터는 7일, 원장과 보류 본문은 30일 뒤 지워진다. 기간은 `config.json`의 `retention_days`, `ledger_retention_days`로 바꾼다. `xsm prune --dry-run`으로 미리 볼 수 있다. `xsm doctor`의 `sessions` 줄이 멈춘 세션 수, 보관 일수, 마지막 정리 시각을 보여 준다.
+- 멈춘 세션의 포인터가 수백 개 남아 있어도 `list`, `who`, `send`는 느려지지 않는다. 범위를 먼저 거르고 남은 세션만 조회한다(PROTOCOL 4.3, 2026-10-12).
 
 ## 알려진 한계
 

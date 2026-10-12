@@ -218,9 +218,10 @@ class ListTest(TempState):
 
     def _list(self, *argv):
         from xsm import cli
-        out = io.StringIO()
-        with contextlib.redirect_stdout(out):
+        out, err = io.StringIO(), io.StringIO()
+        with contextlib.redirect_stdout(out), contextlib.redirect_stderr(err):
             code = cli.main(["list"] + list(argv))
+        self.err = err.getvalue()
         return code, out.getvalue()
 
     def test_it_asks_git_once_per_folder(self):
@@ -254,9 +255,139 @@ class ListTest(TempState):
                 took = time.monotonic() - began
                 self.assertEqual(code, 0, text)
                 self.assertLess(took, 3.0, "a folder that does not answer must not hold it")
+                self.assertIn("git x", self.err, "and the list says it may be incomplete (OBS-1)")
                 if argv:
                     self.assertIn("n2@", text, "the session in it is still listed")
                     self.assertEqual(len([l for l in text.splitlines() if "@claude" in l]), 4, text)
+
+
+def _answers(out="ok\n", code=0):
+    return mock.Mock(communicate=mock.Mock(return_value=(out, None)), returncode=code)
+
+
+class UnansweredTest(TempState):
+    """OBS-1: what did not answer is counted by kind, so a list that skipped a probe
+    does not pass for complete."""
+
+    def test_a_timeout_is_counted_under_the_commands_name(self):
+        """OBS-1: `ps`, whatever path it was started by; the child is not waited for."""
+        from xsm import probe
+        child = mock.Mock(stdout=io.StringIO())
+        child.communicate.side_effect = subprocess.TimeoutExpired("ps", 1)
+        with mock.patch.object(probe.subprocess, "Popen", return_value=child):
+            with probe.quick():
+                self.assertIsNone(probe.command(["/bin/ps", "-x"]))
+        self.assertEqual(probe.unanswered(), {"ps": 1})
+
+    def test_a_spent_budget_and_a_stalled_folder_are_counted_as_skipped(self):
+        """OBS-1: a probe never started is a probe that did not answer."""
+        from xsm import probe
+        with mock.patch.object(probe.subprocess, "Popen") as popen:
+            with probe.quick(budget=0):
+                probe.command(["lsof"])
+                probe.command(["lsof"])
+                probe.bounded(lambda: 1, folder="/x")
+            self.assertEqual(probe.unanswered(), {"lsof": 2, "read": 1})
+            with probe.quick():
+                probe._gave_up("/stalled")
+                probe.command(["git"], folder="/stalled")
+                probe.bounded(lambda: 1, folder="/stalled")
+            self.assertEqual(probe.unanswered(), {"git": 1, "read": 1})
+        popen.assert_not_called()
+
+    def test_a_read_that_runs_out_of_time_is_a_read_timeout(self):
+        """OBS-1: kind `read`."""
+        from xsm import probe
+        with probe.quick(0.1):
+            self.assertIsNone(probe.bounded(time.sleep, 30))
+        self.assertEqual(probe.unanswered(), {"read": 1})
+
+    def test_a_probe_that_answered_is_not_counted(self):
+        """OBS-1: not an answer of no, not an exit code, not a read that raised."""
+        from xsm import probe
+        with mock.patch.object(probe.subprocess, "Popen", return_value=_answers("", 1)):
+            with probe.quick():
+                self.assertIsNone(probe.command(["git"]))
+                self.assertEqual(probe.bounded(lambda: 1), 1)
+                self.assertIsNone(probe.bounded(lambda: {}["nope"]))
+        self.assertEqual(probe.unanswered(), {})
+
+    def test_the_counts_are_reset_by_the_outermost_quick_and_readable_after_it(self):
+        """OBS-1: a nested block adds to the same command's counts."""
+        from xsm import probe
+        with probe.quick(budget=0):
+            probe.command(["ps"])
+            with probe.quick():
+                probe.command(["ps"])
+                self.assertEqual(probe.unanswered(), {"ps": 2})
+        self.assertEqual(probe.unanswered(), {"ps": 2})
+        with probe.quick():
+            self.assertEqual(probe.unanswered(), {})
+
+    def test_each_count_goes_on_the_commands_span(self):
+        """OBS-1: xsm.probe.<kind>.timeout / .skipped, the way xsm.state.* are."""
+        from xsm import probe, telemetry
+        if telemetry.DISABLED:
+            self.skipTest("XSM_NO_TELEMETRY is set; there is no span to count on")
+        child = mock.Mock(stdout=io.StringIO())
+        child.communicate.side_effect = subprocess.TimeoutExpired("lsof", 1)
+        with telemetry.span("xsm.cli.list") as span, mock.patch.object(
+                probe.subprocess, "Popen", return_value=child):
+            with probe.quick(1, 5):
+                probe.command(["lsof"])
+            with probe.quick(1, 0):
+                probe.command(["lsof"])
+                probe.command(["lsof"])
+        self.assertEqual(span.attributes["xsm.probe.lsof.timeout"], 1)
+        self.assertEqual(span.attributes["xsm.probe.lsof.skipped"], 2)
+
+    def test_the_socket_and_the_daemon_count_what_the_budget_skipped(self):
+        """OBS-1: kinds `socket` and `daemon`; a socket that does not answer in time is
+        a timeout, and is still not alive."""
+        import socket
+        from xsm import codex_daemon, identity, probe
+        os.makedirs(os.path.dirname(codex_daemon.socket_path(self.tmp)), exist_ok=True)
+        with open(codex_daemon.socket_path(self.tmp), "w"):
+            pass
+        with probe.quick(budget=0):
+            self.assertIsNone(identity.socket_live("/tmp/no-socket"))
+            self.assertIsNone(codex_daemon.loaded_threads(self.tmp))
+        self.assertEqual(probe.unanswered(), {"socket": 1, "daemon": 1})
+        slow = mock.MagicMock()
+        slow.__enter__.return_value.connect.side_effect = socket.timeout("timed out")
+        with mock.patch.object(identity.socket, "socket", return_value=slow), probe.quick():
+            self.assertIs(identity.socket_live("/tmp/no-answer"), False)
+        self.assertEqual(probe.unanswered(), {"socket": 1})
+
+    def _list_that_missed(self, *argv, missed=True):
+        from xsm import cli, probe
+        out, err = io.StringIO(), io.StringIO()
+
+        def listing(args):
+            if missed:
+                probe.missed("lsof", "timeout")
+                probe.missed("lsof", "skipped")
+                probe.missed("git", "timeout")
+            return 0
+
+        with mock.patch.object(cli, "_cmd_list", listing), \
+                contextlib.redirect_stdout(out), contextlib.redirect_stderr(err):
+            self.assertEqual(cli.main(["list"] + list(argv)), 0)
+        return err.getvalue()
+
+    def test_list_says_once_on_stderr_which_probes_did_not_answer(self):
+        """OBS-1: one line, with the kinds and how often, in every format."""
+        for argv in ([], ["--json"], ["--table"]):
+            err = self._list_that_missed(*argv)
+            lines = [l for l in err.splitlines() if "did not answer" in l]
+            self.assertEqual(len(lines), 1, (argv, err))
+            self.assertIn("git x1, lsof x2", lines[0])
+            self.assertIn("incomplete", lines[0])
+            self.assertIn("xsm doctor", lines[0])
+
+    def test_list_prints_nothing_when_every_probe_answered(self):
+        """OBS-1: no notice, and no empty line."""
+        self.assertEqual(self._list_that_missed(missed=False), "")
 
 
 if __name__ == "__main__":

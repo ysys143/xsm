@@ -1976,8 +1976,7 @@ class CodexThreadLivenessTest(TempState):
                            ("/Applications/Codex.app/bin/codex app-server --listen stdio://\n", False),
                            ("/usr/bin/codex app-server\n", False),
                            ("python3 app-server\n", False), ("", False)):
-            with mock.patch.object(identity.subprocess, "run",
-                                   lambda *a, **k: mock.Mock(stdout=args)):
+            with mock.patch.object(identity.probe, "command", lambda *a, **k: args):
                 self.assertEqual(identity.is_app_server(4242), want, args)
 
     def test_a_thread_registered_under_the_daemon_is_marked_hosted(self):
