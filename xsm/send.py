@@ -42,7 +42,13 @@ class SendResult:
         """What the CLI prints and the MCP tool returns: the notes of a one-yes
         send, the status and reason, and the candidates when naming them helps
         the caller find the right one."""
-        out = list(self.notes) + ["%s: %s" % (self.status, self.reason or self.msg_id or "")]
+        head = "%s: %s" % (self.status, self.reason or self.msg_id or "")
+        if self.reason and self.msg_id and self.status != "refused":
+            # `--resend <id>` needs the id, and a send that went out printed only its
+            # reason ("queued; ..."). A refusal's text says what to do, and some name
+            # the id of the message they kept themselves.
+            head += " (id %s)" % self.msg_id
+        out = list(self.notes) + [head]
         if self.candidates and "resume it with" not in (self.reason or "") \
                 and "has not registered" not in (self.reason or ""):
             out.append("registered sessions right now:" if "no session" in (self.reason or "")
@@ -109,8 +115,7 @@ def _send(target_spec: str, body: str, *, sender: dict | None = None, kind: str 
           reply_to: str | None = None, priority: str = "next", wait: float = 0.0,
           msg_id: str | None = None, outcome: str | None = None, resend: bool = False,
           span=None, held: str | None = None, ctx: dict | None = None) -> SendResult:
-    with probe.quick():
-        sender = sender or registry.me()
+    sender = sender or registry.me()        # opens its own `quick` (#17)
     ctx = ctx if ctx is not None else {"notes": [], "held": None}
     if not sender:
         return SendResult("refused", "this session is not registered; run `xsm doctor`")
@@ -143,6 +148,9 @@ def _send(target_spec: str, body: str, *, sender: dict | None = None, kind: str 
         return SendResult(status, reply.get("error") or ("on %s" % peer), reply.get("id"),
                           reply.get("target"))
 
+    # Discovery alone runs under the shared budget. Scope, the forecast, the
+    # delivery and the wait come after it: a spent budget must never turn into
+    # an "out of scope" refusal (#17).
     with probe.quick():
         # Stable addresses already in the registry need only the target's
         # probes. Keep discovery for names and threads that have not registered.
@@ -215,6 +223,9 @@ def _send(target_spec: str, body: str, *, sender: dict | None = None, kind: str 
     try:
         if target.get("runtime") == "claude":
             if not target.get("socket"):
+                # The row is already `queued`; left so, doctor reported it as a
+                # message nobody had received (#18).
+                ledger.failed(msg_id, "no-inbox: target has no inbox socket")
                 return SendResult("refused", "target has no inbox socket", msg_id, target)
             adapters.to_claude(target["socket"], content, msg_id, priority=priority,
                                reply_address=("uds:%s" % sender["socket"]) if sender.get("socket")

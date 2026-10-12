@@ -1,4 +1,5 @@
 """Issue #17/#18: unrelated sessions and stalled discovery cannot hold a lookup."""
+import collections
 import contextlib
 import io
 import json
@@ -627,6 +628,250 @@ class DoctorSessionsTest(test_xsm.TempState):
         self.assertIn("lsof x1 did not answer", line[0])
         self.assertIn("| probes | lsof x1 did not answer", table)
         self.assertEqual(data["probes"], {"lsof": 1})
+
+
+class SendResultLinesTest(unittest.TestCase):
+    """OUT-1: the id of a message that went out is on its status line."""
+
+    def lines(self, *args, **kwargs):
+        from xsm import send
+        return send.SendResult(*args, **kwargs).lines()
+
+    def test_a_send_with_a_reason_ends_its_status_line_with_the_id(self):
+        """OUT-1: the line still starts with `<status>: <reason>`."""
+        for status, reason in (
+                ("sent-unconfirmed", "queued; a Codex session picks the queue up within about 10 "
+                                     "seconds when the thread is loaded and idle"),
+                ("delivered", "receiver recorded it"),
+                ("held", "the receiver's gate held it"),
+                ("error", "timeout: queue stalled")):
+            with self.subTest(status):
+                self.assertEqual(self.lines(status, reason, "m1"),
+                                 ["%s: %s (id m1)" % (status, reason)])
+
+    def test_a_refusal_a_result_without_a_reason_and_one_without_an_id_are_unchanged(self):
+        """OUT-1: a refusal says what to do and may name a kept message itself."""
+        self.assertEqual(self.lines("refused", "out of scope: x", "m1"), ["refused: out of scope: x"])
+        self.assertEqual(self.lines("held", "", "m1"), ["held: m1"])
+        self.assertEqual(self.lines("sent-unconfirmed", "on peer"), ["sent-unconfirmed: on peer"])
+
+    def test_notes_come_first_and_candidates_after_the_status_line(self):
+        """OUT-1: nothing else about the lines changes."""
+        from xsm import send
+        result = send.SendResult("sent-unconfirmed", "queued", "m1", candidates=[
+            {"name": "a", "alias": "h", "ref": "bbbbbb", "runtime": "codex", "state": "live",
+             "cwd": "/q"}])
+        result.notes = ["linked: x"]
+        lines = result.lines()
+        self.assertEqual(lines[:3], ["linked: x", "sent-unconfirmed: queued (id m1)", "candidates:"])
+        self.assertEqual(len(lines), 4)
+
+
+class Crowd(test_xsm.TempState):
+    """Two live Codex threads in one folder and 350 pointers of sessions that ended
+    elsewhere: their process is gone, so enriching one is cheap and every enrichment
+    can be counted."""
+
+    CROWD = 350
+
+    def setUp(self):
+        super().setUp()
+        from xsm import registry
+        self.home = os.path.join(self.tmp, "codex")
+        self.here = os.path.join(self.tmp, "here")
+        self.there = os.path.join(self.tmp, "there")
+        os.makedirs(self.home)
+        os.makedirs(self.here)
+        self.mine = registry.upsert("codex", self.home, "mine", os.getpid(), self.here, name="mine")
+        self.peer = registry.upsert("codex", self.home, "peer", os.getpid(), self.here, name="peer")
+        child = subprocess.Popen(["true"])
+        child.wait()
+        self.gone = child.pid
+        for n in range(self.CROWD):
+            self.stopped("elsewhere-%d" % n)
+        os.environ["CODEX_THREAD_ID"] = "mine"
+        self.addCleanup(os.environ.pop, "CODEX_THREAD_ID", None)
+
+    def stopped(self, sid):
+        """A pointer whose process is gone, named `sid`."""
+        from xsm import identity, paths, registry
+        paths.write_json(registry._record_path("codex", sid), dict(
+            self.peer, session_id=sid, pid=self.gone, lstart=None, cwd=self.there, name=sid,
+            ref=identity.ref_of("codex", self.home, sid), app_server=False))
+
+
+class NameResolutionTest(Crowd):
+    """NAME-1: a name looked up inside `quick` enriches each pointer once."""
+
+    def lookup(self, name):
+        """(the resolution, {session id: times it was enriched}) for `name` in one quick block."""
+        from xsm import probe, registry, resolve
+        with mock.patch.object(registry, "_enrich", wraps=registry._enrich) as enriched:
+            with probe.quick():
+                found = resolve.resolve(name)
+        return found, collections.Counter(c.args[0]["session_id"] for c in enriched.call_args_list)
+
+    def assert_once_each(self, counts):
+        from xsm import registry
+        self.assertEqual(len(counts), len(registry.raw_records()))
+        self.assertEqual(set(counts.values()), {1}, counts.most_common(3))
+
+    def test_a_name_that_matches_a_live_session(self):
+        """NAME-1: it was twice (the known homes, then the pool)."""
+        found, counts = self.lookup("peer")
+        self.assertTrue(found.ok, found.reason)
+        self.assertEqual(found.record["session_id"], "peer")
+        self.assert_once_each(counts)
+
+    def test_a_name_that_matches_only_a_stopped_session_keeps_its_answer(self):
+        """NAME-1: stopped sessions stay in the pool, so `offline-only` and the resume
+        hint do not change."""
+        self.stopped("sleeper")
+        found, counts = self.lookup("sleeper")
+        self.assertEqual(found.status, "offline-only")
+        self.assertIn("only stopped sessions match 'sleeper'", found.reason)
+        self.assertIn("resume it with: CODEX_HOME=%s codex resume sleeper" % os.path.realpath(self.home),
+                      found.reason)
+        self.assert_once_each(counts)
+
+    def test_a_name_that_matches_nothing_suggests_the_live_sessions(self):
+        """NAME-1: it was three times, the last for the suggestions."""
+        found, counts = self.lookup("nobody")
+        self.assertEqual(found.status, "not-found")
+        self.assertEqual(sorted(c["session_id"] for c in found.candidates), ["mine", "peer"])
+        self.assert_once_each(counts)
+
+    def test_nothing_is_kept_after_the_block(self):
+        """NAME-1: the answers are reused inside one `quick` block and not beyond it."""
+        from xsm import probe, registry, resolve
+        with probe.quick():
+            self.assertEqual(resolve.resolve("late").status, "not-found")
+        registry.upsert("codex", self.home, "late-sid", os.getpid(), self.here, name="late")
+        self.assertTrue(resolve.resolve("late").ok)
+
+
+class McpCallerLookupTest(Crowd):
+    """MCP-1: who is calling is found without enriching every pointer, inside one budget."""
+
+    def call(self, name="xsm_inbox", args=None):
+        """`Server.call` as the thread `mine`, whose process is this one."""
+        from xsm import mcp
+        server = mcp.Server(io.StringIO(), io.StringIO())
+        server.call_thread = "mine"
+        with mock.patch.object(mcp.identity, "ancestor_pid", return_value=os.getpid()):
+            return server.call(name, args or {})
+
+    def test_a_tool_call_enriches_only_the_pointers_of_the_callers_pid(self):
+        """MCP-1: 350 other pointers cost the call nothing."""
+        from xsm import mcp, registry
+        self.assertEqual(len(registry.raw_records()), self.CROWD + 2)
+        with mock.patch.object(mcp.Server, "_call", return_value="ok"), \
+                mock.patch.object(registry, "_enrich", wraps=registry._enrich) as enriched:
+            self.assertEqual(self.call(), "ok")
+        self.assertEqual(sorted(c.args[0]["session_id"] for c in enriched.call_args_list),
+                         ["mine", "peer"])
+
+    def test_the_lookup_has_the_quick_budget_and_the_channel_lookup_does_not(self):
+        """MCP-1: the walk, the pointers and the tool run in turn, but the git lookup that
+        decides the channel is not under a budget the lookup may have spent."""
+        from xsm import channel, identity, mcp, probe, registry
+        seen = []
+
+        def watch(label, real):
+            def inner(*args, **kwargs):
+                seen.append((label, probe._quick))
+                return real(*args, **kwargs)
+            return inner
+
+        server = mcp.Server(io.StringIO(), io.StringIO())
+        server.call_thread = "mine"
+        with mock.patch.object(identity, "ancestor_pid", watch("walk", lambda names: os.getpid())), \
+                mock.patch.object(registry, "raw_records", watch("pointers", registry.raw_records)), \
+                mock.patch.object(channel, "resolve", watch("channel", channel.resolve)), \
+                mock.patch.object(mcp.Server, "_call", watch("tool", lambda *a, **k: "ok")):
+            server.call("xsm_inbox", {})
+        self.assertEqual([label for label, _ in seen], ["walk", "pointers", "channel", "tool"])
+        for label, quick in seen[:2]:
+            self.assertEqual(quick, probe.QUICK_TIMEOUT, label)
+        for label, quick in seen[2:]:
+            self.assertIsNone(quick, label)
+
+    def test_send_to_a_registered_ref_does_not_look_for_open_threads_and_prints_the_id(self):
+        """MCP-1, OUT-1: `xsm_send` to a ref the registry holds needs no discovery, and its
+        result line carries the id."""
+        from xsm import adapters, ledger, registry
+        with mock.patch.object(registry, "adopt_open_codex") as adopt, \
+                mock.patch.object(adapters, "to_codex", return_value="queued"):
+            text = self.call("xsm_send", {"target": "ref:" + self.peer["ref"], "text": "hello",
+                                          "wait": 0})
+        adopt.assert_not_called()
+        (entry,) = ledger.recent(5)
+        first = text.splitlines()[0]
+        self.assertTrue(first.startswith("sent-unconfirmed: queued"), text)
+        self.assertTrue(first.endswith(" (id %s)" % entry["id"]), text)
+
+
+class SendBudgetTest(Crowd):
+    """SEND-1, OUT-1, OUT-2: what a send does after it found its target."""
+
+    def send(self, spec, **kwargs):
+        from xsm import registry, send
+        return send.send(spec, "hello", sender=registry.by_session("codex", "mine"), **kwargs)
+
+    def test_scope_and_delivery_never_run_under_the_discovery_budget(self):
+        """SEND-1: a spent budget must not turn into an `out of scope` refusal, and the wait
+        and the delivery have their own deadlines. resolve is the control: it is in the block."""
+        from xsm import adapters, config, ledger, probe, resolve
+        seen = {}
+
+        def watch(label, real):
+            def inner(*args, **kwargs):
+                seen.setdefault(label, []).append(probe._quick)
+                return real(*args, **kwargs)
+            return inner
+
+        with mock.patch.object(resolve, "resolve", watch("resolve", resolve.resolve)), \
+                mock.patch.object(config, "scope_for", watch("scope", config.scope_for)), \
+                mock.patch.object(adapters, "to_codex", watch("delivery", lambda *a, **k: "queued")), \
+                mock.patch.object(ledger, "wait_for",
+                                  watch("wait", lambda *a, **k: {"status": "queued"})):
+            result = self.send("ref:" + self.peer["ref"], wait=5)
+        self.assertEqual(result.status, "sent-unconfirmed", result.reason)
+        self.assertEqual(seen["resolve"], [probe.QUICK_TIMEOUT])
+        self.assertEqual({k: v for k, v in seen.items() if k != "resolve"},
+                         {"scope": [None], "delivery": [None], "wait": [None]})
+
+    def test_the_cli_prints_the_id_of_a_send_that_went_out(self):
+        """OUT-1: the line `--resend <id>` needs the id from."""
+        from xsm import adapters, cli, ledger
+        out = io.StringIO()
+        with mock.patch.object(adapters, "to_codex", return_value="queued"), \
+                contextlib.redirect_stdout(out):
+            code = cli.main(["send", "ref:" + self.peer["ref"], "--text", "hello", "--wait", "0"])
+        self.assertEqual(code, 3, out.getvalue())
+        (entry,) = ledger.recent(5)
+        (line,) = out.getvalue().splitlines()
+        self.assertTrue(line.startswith("sent-unconfirmed: queued; a Codex session picks"), line)
+        self.assertTrue(line.endswith(" (id %s)" % entry["id"]), line)
+
+    def test_a_claude_target_without_a_socket_is_refused_and_its_ledger_row_says_so(self):
+        """OUT-2: the row was written `queued` before the socket was looked for, and stayed so
+        for ever; doctor reported it as a message nobody had received."""
+        from xsm import identity, ledger, registry
+        claude_home = os.path.join(self.tmp, "claude")
+        os.makedirs(os.path.join(claude_home, "sessions"))
+        target = registry.upsert("claude", claude_home, "claude-sid", os.getpid(), self.here,
+                                 name="no-socket")
+        # A budget that could not ask reads as `live` (socket_blocked); with no socket named
+        # the session would be stale, and refused before the ledger was touched.
+        with mock.patch.object(identity, "socket_live", return_value=None):
+            result = self.send("ref:" + target["ref"])
+        self.assertEqual(result.status, "refused")
+        self.assertEqual(result.reason, "target has no inbox socket")
+        self.assertEqual(result.lines(), ["refused: target has no inbox socket"])
+        state = ledger.status(result.msg_id)
+        self.assertEqual(state["status"], "error")
+        self.assertTrue(state["error"].startswith("no-inbox"), state)
 
 
 if __name__ == "__main__":

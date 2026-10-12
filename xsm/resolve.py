@@ -11,7 +11,7 @@ from __future__ import annotations
 
 import re
 
-from . import config, identity, registry
+from . import config, identity, probe, registry
 
 QUALIFIED_RE = re.compile(r"^(?P<name>.+?)(?:@(?P<alias>[^@\s]+))?(?:\s*\[(?P<ref>[0-9a-f]{6})\])?$")
 
@@ -28,15 +28,24 @@ class Resolution:
         return self.status == "resolved"
 
 
+def _records() -> list:
+    """Every pointer enriched, once per `quick` block. A name looked up there cost
+    three passes (the known homes, the pool, the suggestions), each a ps, a socket
+    and a sqlite read per pointer, and the later passes met a spent budget and
+    returned degraded names: "no session named ..." for a session that was there
+    (#17). Stopped sessions stay in: their names are the offline-only answer."""
+    return probe.remember(("resolve_records",), registry.records)
+
+
 def _pool(include_offline: bool) -> list:
-    rows = registry.records()
+    rows = _records()
     return rows if include_offline else [r for r in rows if r.get("state") != "stale"]
 
 
 def _live_addresses(limit: int = 8) -> list:
     """Addresses worth suggesting when a name did not match: a caller working
     from a list it fetched minutes ago should not have to fetch it again."""
-    rows = registry.records()
+    rows = _records()
     live = [r for r in rows if r.get("state") == "live"]
     ordered = sorted(live or rows, key=lambda r: r.get("updated", 0), reverse=True)
     return ordered[:limit]
