@@ -27,6 +27,8 @@ import socket
 import struct
 import time
 
+from . import probe
+
 CONTROL_SOCKET = os.path.join("app-server-control", "app-server-control.sock")
 
 STARTED, BUSY, NOT_LOADED, UNAVAILABLE = "started", "busy", "not-loaded", "unavailable"
@@ -156,7 +158,10 @@ def loaded_threads(codex_home: str, timeout: float | None = None):
     path = socket_path(key)
     if not key or not os.path.exists(path):
         return None                             # nothing to ask, nothing to wait for
-    result = _ask_loaded(key, timeout if timeout is not None else DEFAULT_TIMEOUT)
+    wait = probe.limit(timeout if timeout is not None else DEFAULT_TIMEOUT)
+    if wait <= 0:
+        return None
+    result = _ask_loaded(key, wait)
     _LOADED_CACHE[key] = (time.monotonic(), result)
     return result
 

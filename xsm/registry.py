@@ -191,7 +191,11 @@ def codex_interrupted(home: str, thread_id: str) -> bool:
 def _enrich(record: dict) -> dict:
     out = dict(record)
     if record.get("runtime") == "claude":
-        native = _claude_native(record.get("home", ""), record.get("pid"))
+        home, pid = record.get("home", ""), record.get("pid")
+        native = probe.remember(("claude_native", home, pid), lambda:
+            probe.bounded(_claude_native, home, pid, folder=home, default={}))
+        native = {key: native.get(key) for key in
+                  ("name", "socket", "name_source", "native_session_id")}
         out["name"] = native["name"] or record.get("name") or "claude-%s" % record.get("pid")
         out["socket"] = record.get("socket") or native["socket"]
         out["name_source"] = native["name_source"]
@@ -199,7 +203,9 @@ def _enrich(record: dict) -> dict:
     else:
         from . import workers           # lazy: workers imports this module
         worker = workers.for_session(record.get("session_id"))
-        out["name"] = (_codex_thread_name(record.get("home", ""), str(record.get("session_id") or ""))
+        out["name"] = (probe.bounded(_codex_thread_name, record.get("home", ""),
+                                    str(record.get("session_id") or ""),
+                                    folder=record.get("home", ""))
                        or (worker or {}).get("name") or record.get("name")
                        or default_codex_name(str(record.get("session_id") or "")))
     out["state"], why = identity.state_reason(out)
@@ -220,14 +226,19 @@ def _enrich(record: dict) -> dict:
     return out
 
 
-def records() -> list:
-    """Every registered session, newest first."""
+def raw_records() -> list:
+    """Pointers, newest first, without process, socket or runtime database probes."""
     out = []
     for p in glob.glob(paths.path(paths.SESSIONS, "*.json")):
         rec = paths.read_json(p)
         if rec and rec.get("session_id"):
-            out.append(_enrich(rec))
+            out.append(rec)
     return sorted(out, key=lambda r: r.get("updated", 0), reverse=True)
+
+
+def records() -> list:
+    """Every registered session with its current details, newest first."""
+    return [_enrich(rec) for rec in raw_records()]
 
 
 def _codex_recent_threads(home: str, within: float = 86400.0) -> list:
@@ -235,6 +246,10 @@ def _codex_recent_threads(home: str, within: float = 86400.0) -> list:
     hook at the first prompt, so a thread that exists but never prompted — say,
     only /rename'd — is invisible to the registry. Listing it lets the sender be
     told why instead of "no such session"."""
+    return probe.bounded(_read_codex_recent_threads, home, within, folder=home, default=[])
+
+
+def _read_codex_recent_threads(home: str, within: float) -> list:
     db = os.path.join(home, "state_5.sqlite")
     if not os.path.exists(db):
         return []
@@ -254,18 +269,19 @@ def _codex_recent_threads(home: str, within: float = 86400.0) -> list:
 
 
 def _running_codex() -> list:
+    return probe.remember(("running_codex",), _scan_codex)
+
+
+def _scan_codex() -> list:
     """Codex TUIs running right now: (cwd, start_epoch, resumed_thread_id).
 
     Without a hook there is no pid in any record, so the process table is the
     only way to tell a thread someone has open from one touched earlier today.
     """
-    import subprocess
-    try:
-        out = subprocess.run(["ps", "-axo", "pid=,args="], capture_output=True, text=True,
-                             timeout=5).stdout
-    except (OSError, subprocess.SubprocessError):
+    out = probe.command(["ps", "-axo", "pid=,args="])
+    if out is None:
         return []
-    found = []
+    candidates = {}
     for line in out.splitlines():
         parts = line.strip().split(None, 1)
         if len(parts) != 2:
@@ -276,21 +292,25 @@ def _running_codex() -> list:
             continue
         if len(argv) > 1 and argv[1] in ("app-server", "mcp", "mcp-server", "exec", "queue"):
             continue
-        resumed = _resumed_thread(argv)
-        try:
-            res = subprocess.run(["lsof", "-a", "-p", pid, "-d", "cwd", "-Fn"],
-                                 capture_output=True, text=True, timeout=5).stdout
-        except (OSError, subprocess.SubprocessError):
+        candidates[pid] = _resumed_thread(argv)
+    if not candidates:
+        return []
+    # One lsof for the process table, once per command, rather than one per
+    # TUI per Codex home (issue #17/#18: dozens of serial five-second waits).
+    res = probe.command(["lsof", "-a", "-p", ",".join(candidates), "-d", "cwd", "-Fpn"])
+    found, pid = [], None
+    for row in (res or "").splitlines():
+        if row.startswith("p"):
+            pid = row[1:]
+        if not row.startswith("n") or pid not in candidates:
             continue
-        cwd = next((row[1:] for row in res.splitlines() if row.startswith("n")), None)
-        if not cwd:
-            continue
+        cwd = row[1:]
         started = identity.lstart(int(pid))
         try:
             epoch = time.mktime(time.strptime(started, "%a %b %d %H:%M:%S %Y")) if started else 0
         except ValueError:
             epoch = 0
-        found.append((os.path.realpath(cwd), epoch, resumed, int(pid)))
+        found.append((os.path.realpath(cwd), epoch, candidates[pid], int(pid)))
     return found
 
 
@@ -336,7 +356,7 @@ def _hooks_will_register(home: str) -> bool:
     never take a message (adversarial review, 2026-09-28). workers.spawn
     requires the same two."""
     from . import install                          # lazy: keeps hook imports small
-    trust = install.codex_trust(home)
+    trust = probe.bounded(install.codex_trust, home, folder=home, default={})
     return all(trust.get(k) for k in ("SessionStart", "UserPromptSubmit"))
 
 
@@ -392,10 +412,8 @@ def adopt_codex_thread(thread_id: str, pid: int, homes: list, mcp_pid: int | Non
             return None
         name, cwd, parent = found
         if parent:
-            live = next((r for r in records() if r.get("session_id") == parent
-                         and r.get("runtime") == "codex" and r.get("state") == "live"
-                         and r.get("pid") == pid), None)
-            if live:
+            live = by_session("codex", parent)
+            if live and live.get("state") == "live" and live.get("pid") == pid:
                 return live
         rec = upsert("codex", home, thread_id, pid, cwd or "", name=name, mcp_pid=mcp_pid)
         rec["adopted"] = True
@@ -404,7 +422,7 @@ def adopt_codex_thread(thread_id: str, pid: int, homes: list, mcp_pid: int | Non
     return None
 
 
-def adopt_open_codex() -> list:
+def adopt_open_codex(accept=None) -> list:
     """Register open Codex threads that have not run their hook yet.
 
     Codex runs hooks only from a thread's first prompt, so a freshly started
@@ -420,7 +438,7 @@ def adopt_open_codex() -> list:
     Not called from hooks: reading the process table costs a few hundred ms.
     """
     adopted = []
-    known = {r.get("session_id") for r in records()}
+    known = {r.get("session_id") for r in raw_records()}
     trusted = {h["path"] for h in config.homes()
                if h.get("runtime") == "codex" and _hooks_will_register(h["path"])}
     for home in config.homes():
@@ -430,6 +448,9 @@ def adopt_open_codex() -> list:
         for row in _open_codex_threads(home["path"]):
             thread_id, name, cwd, _rollout, _created, _updated, pid = row
             if thread_id in known:
+                continue
+            if accept and not accept({"runtime": "codex", "home": home["path"],
+                                      "alias": home.get("alias"), "cwd": cwd}):
                 continue
             loaded = codex_daemon.loaded_threads(home["path"])     # cached per home
             if loaded is not None and thread_id not in loaded:
@@ -449,6 +470,8 @@ def adopt_open_codex() -> list:
     # log name it. Its MCP server's pid keeps its liveness honest.
     for row in fresh_codex_threads():
         if not row.get("session_id") or row["session_id"] in known or row["home"] not in trusted:
+            continue
+        if accept and not accept(row):
             continue
         rec = upsert("codex", row["home"], row["session_id"], row["pid"], row.get("cwd") or "",
                      mcp_pid=row["mcp_pid"])
@@ -635,7 +658,7 @@ def fresh_codex_threads() -> list:
     session_id can be adopted; one without is shown as waiting.
     Read once per command, not in hooks: it runs `ps` and reads Codex's logs."""
     from . import adapters
-    recs = records()
+    recs = raw_records()
     served = {r.get("mcp_pid") for r in recs if r.get("runtime") == "codex"}
     claude_pids = {r.get("pid") for r in recs if r.get("runtime") == "claude"}
     codex_homes = [h["path"] for h in config.homes() if h.get("runtime") == "codex"]
@@ -648,7 +671,8 @@ def fresh_codex_threads() -> list:
             continue
         thread, home = None, None
         for h in codex_homes:
-            thread = adapters.thread_of_process(h, ppid, b.get("started") or time.time())
+            thread = probe.bounded(adapters.thread_of_process, h, ppid,
+                                   b.get("started") or time.time(), folder=h)
             if thread:
                 home = h
                 break
@@ -680,8 +704,9 @@ def unregistered() -> list:
     """Sessions visible in a Claude or Codex home that never ran the hook. Shown
     for diagnosis only — they have no pointer, so they are not addressable until
     the session registers itself."""
-    known = {(r["runtime"], str(r.get("session_id"))) for r in records()}
-    known_pids = {(r["runtime"], str(r.get("pid"))) for r in records()}
+    pointers = raw_records()
+    known = {(r["runtime"], str(r.get("session_id"))) for r in pointers}
+    known_pids = {(r["runtime"], str(r.get("pid"))) for r in pointers}
     out = []
     declared = config.homes()
     # A Claude home no hook has reported yet (the plugin was enabled after its
@@ -818,7 +843,7 @@ def _runtime_here(rows: list | None = None) -> str | None:
     thread = os.environ.get("CODEX_THREAD_ID")
     if not (own_session and thread):
         return "claude" if own_session else "codex" if thread else None
-    rows = rows if rows is not None else records()
+    rows = rows if rows is not None else raw_records()
     own = identity.ancestor_pid({"claude", "codex"})
     if not own:
         return _nested_runtime(rows, own_session, thread)
@@ -888,11 +913,11 @@ def _me(session_id: str | None, cwd: str | None) -> tuple:
     yet took whichever live session shared its folder (via=cwd), and a Codex
     carrying an inherited Claude id took that Claude session (adversarial
     review, 2026-09-28) — and `xsm send` then signed as them."""
-    rows = records()
+    rows = raw_records()
     if session_id:
         # A hook names its session outright; that is not an inherited guess.
         rec = next((r for r in rows if r.get("session_id") == session_id), None)
-        return (rec, "session_id") if rec else (None, "none:unregistered-session")
+        return (_enrich(rec), "session_id") if rec else (None, "none:unregistered-session")
     runtime = _runtime_here(rows)
     if runtime == "ambiguous":
         return None, "none:ambiguous-runtime"
@@ -904,7 +929,7 @@ def _me(session_id: str | None, cwd: str | None) -> tuple:
         thread = os.environ.get("CODEX_THREAD_ID")
         for rec in rows:
             if rec.get("runtime") == "codex" and rec.get("session_id") == thread:
-                return rec, "codex_thread_id"
+                return _enrich(rec), "codex_thread_id"
         # Its hook has not run (a thread started before xsm was trusted, or not
         # prompted yet): where xsm is installed with its hooks trusted, that is
         # consent enough to register it now (user decision, 2026-09-30: prefer
@@ -917,7 +942,7 @@ def _me(session_id: str | None, cwd: str | None) -> tuple:
     if runtime == "claude":
         for rec in rows:
             if rec.get("session_id") == own_session:
-                return rec, "session_id"
+                return _enrich(rec), "session_id"
     # /clear and --resume give the same Claude process a new session id before
     # its hook records it, so the rules that name the process still hold.
     same_runtime = (lambda rec: rec.get("runtime") == "claude") if runtime else (lambda rec: True)
@@ -926,21 +951,22 @@ def _me(session_id: str | None, cwd: str | None) -> tuple:
         pid = identity.pid_from_socket(sock)
         for rec in rows:
             if rec.get("pid") == pid and same_runtime(rec):
-                return rec, "socket"
+                return _enrich(rec), "socket"
     # The CLI runs as a descendant of the session process, so walking up to the
     # agent gives an exact answer even when two sessions share a directory.
     own = identity.ancestor_pid({"claude", "codex"})
     if own:
         for rec in rows:
             if rec.get("pid") == own and same_runtime(rec):
-                return rec, "ancestor"
+                return _enrich(rec), "ancestor"
     if runtime == "claude":
         adopted = adopt_self()
         return adopted, "adopted" if adopted else "none:unregistered-session"
     # cwd only for a shell that carries neither id — never for one that knows
     # its session id, where a cwd match would be some other session's identity.
     cwd = os.path.realpath(cwd or os.getcwd())
-    live = [r for r in rows if r.get("cwd") == cwd and r.get("state") == "live"]
+    candidates = [_enrich(r) for r in rows if r.get("cwd") == cwd]
+    live = [r for r in candidates if r.get("state") == "live"]
     if len(live) == 1:
         return live[0], "cwd"
     return None, "none:cwd-%d-live" % len(live)

@@ -55,11 +55,11 @@ def prune(now: float | None = None, dry_run: bool = False) -> dict:
         rec = paths.read_json(p)
         if not rec:
             continue
-        if identity.state_of(rec) == "live":
-            continue
         # A goodbye is the moment it stopped; otherwise the last sign of life.
         last_seen = rec.get("ended_at") or rec.get("updated") or 0
-        if last_seen < pointer_cutoff:
+        if last_seen >= pointer_cutoff:
+            continue
+        if identity.state_of(rec) in ("ended", "stale"):
             removed["sessions"].append(rec.get("name") or os.path.basename(p))
             if not dry_run:
                 _unlink(p)
@@ -104,8 +104,10 @@ def prune(now: float | None = None, dry_run: bool = False) -> dict:
     # a resume under a new pid. Matched on identity and run, not ref: another
     # session sharing the ref keeps nothing alive (2026-09-28).
     from . import config, registry
-    running = [r for r in registry.records() if r.get("state") in ("live", "unknown")]
-    removed["reaches"] = [x for x in config.reaches()
+    reaches = config.reaches()
+    running = [r for r in registry.records() if r.get("state") in ("live", "unknown")] \
+        if reaches else []
+    removed["reaches"] = [x for x in reaches
                           if not any(config.reach_holds(x, r) for r in running)]
     if not dry_run and removed["reaches"]:
         config.drop_reaches(removed["reaches"])

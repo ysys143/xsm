@@ -14,7 +14,7 @@ from __future__ import annotations
 import os
 from contextlib import nullcontext
 
-from . import adapters, config, envelope, inbox, ledger, outbox, paths, registry, resolve
+from . import adapters, config, envelope, inbox, ledger, outbox, paths, probe, registry, resolve
 
 
 class SendResult:
@@ -109,7 +109,8 @@ def _send(target_spec: str, body: str, *, sender: dict | None = None, kind: str 
           reply_to: str | None = None, priority: str = "next", wait: float = 0.0,
           msg_id: str | None = None, outcome: str | None = None, resend: bool = False,
           span=None, held: str | None = None, ctx: dict | None = None) -> SendResult:
-    sender = sender or registry.me()
+    with probe.quick():
+        sender = sender or registry.me()
     ctx = ctx if ctx is not None else {"notes": [], "held": None}
     if not sender:
         return SendResult("refused", "this session is not registered; run `xsm doctor`")
@@ -142,8 +143,17 @@ def _send(target_spec: str, body: str, *, sender: dict | None = None, kind: str 
         return SendResult(status, reply.get("error") or ("on %s" % peer), reply.get("id"),
                           reply.get("target"))
 
-    registry.adopt_open_codex()             # an unprompted Codex thread can still be addressed
-    found = resolve.resolve(target_spec)
+    with probe.quick():
+        # Stable addresses already in the registry need only the target's
+        # probes. Keep discovery for names and threads that have not registered.
+        prefix, _, value = target_spec.strip().partition(":")
+        known = prefix in ("ref", "claude", "codex") and any(
+            r.get("ref") == value if prefix == "ref" else
+            r.get("runtime") == prefix and r.get("session_id") == value
+            for r in registry.raw_records())
+        if not known:
+            registry.adopt_open_codex()
+        found = resolve.resolve(target_spec)
     if not found.ok:
         return SendResult("refused", found.reason, candidates=found.candidates)
     target = found.record or {}

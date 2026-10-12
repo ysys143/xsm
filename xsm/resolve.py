@@ -51,10 +51,11 @@ def resolve(target: str, include_offline: bool = False) -> Resolution:
         if target.startswith(prefix):
             key, value = prefix[:-1], target[len(prefix):]
             if key == "ref":
-                hits = [rec for rec in _pool(True) if rec.get("ref") == value]
+                hits = [rec for rec in registry.raw_records() if rec.get("ref") == value]
             else:
-                hits = [rec for rec in _pool(True) if rec.get("runtime") == key
+                hits = [rec for rec in registry.raw_records() if rec.get("runtime") == key
                         and rec.get("session_id") == value]
+            hits = [registry._enrich(rec) for rec in hits]
             if len(hits) > 1:
                 # A ref is 24 bits: two sessions can share one (collisions within
                 # ~11k synthetic tries, 2026-09-28). Picking the first would send

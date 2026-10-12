@@ -48,22 +48,30 @@ def _width(text: str) -> int:
     return sum(2 if unicodedata.east_asian_width(c) in ("W", "F") else 1 for c in text)
 
 
-def _rows(args, me=None) -> list:
-    rows = registry.records()
-    if getattr(args, "all", False):
-        rows += registry.unregistered()
+def _matches_row(args, row: dict, here: str, me) -> bool:
+    """Apply the requested scope to a pointer before probing its runtime."""
     if getattr(args, "runtime", None):
-        rows = [r for r in rows if r.get("runtime") == args.runtime]
+        if row.get("runtime") != args.runtime:
+            return False
     if getattr(args, "home", None):
-        rows = [r for r in rows if args.home in (r.get("alias"), r.get("home"))]
+        if args.home not in (row.get("alias"), row.get("home")):
+            return False
+    return bool(getattr(args, "all", False) or
+                (me and row.get("ref") == me.get("ref")) or _in_this_project(row, here, me))
+
+
+def _rows(args, me=None) -> list:
+    here = _here(args, me)
+    rows = [registry._enrich(r) for r in registry.raw_records()
+            if _matches_row(args, r, here, me)]
+    if getattr(args, "all", False):
+        rows += [r for r in registry.unregistered() if _matches_row(args, r, here, me)]
     if not getattr(args, "all", False):
         # A thread a Codex TUI just opened is what a caller is usually
         # looking for when a name resolves to nothing; -a already has it.
-        rows += [r for r in registry.fresh_codex_threads() if not r.get("session_id")]
+        rows += [r for r in registry.fresh_codex_threads() if not r.get("session_id")
+                 and _matches_row(args, r, here, me)]
         rows = [r for r in rows if r.get("state") not in ("stale", "ended")]
-        here = _here(args, me)
-        rows = [r for r in rows if (me and r.get("ref") == me.get("ref"))
-                or _in_this_project(r, here, me)]
     return rows
 
 
@@ -72,9 +80,9 @@ def cmd_list_clear(args, me) -> int:
     Live ones and ones whose state cannot be confirmed stay; a cleared session
     that is resumed registers again under the same ref."""
     here = _here(args, me)
-    rows = [r for r in registry.records() if r.get("state") in ("ended", "stale")]
-    if not args.all:
-        rows = [r for r in rows if _in_this_project(r, here, me)]
+    selected = [registry._enrich(r) for r in registry.raw_records()
+                if _matches_row(args, r, here, me)]
+    rows = [r for r in selected if r.get("state") in ("ended", "stale")]
     for r in rows:
         try:
             os.unlink(registry._record_path(r["runtime"], r["session_id"]))
@@ -174,10 +182,11 @@ def cmd_list(args) -> int:
 
 
 def _cmd_list(args) -> int:
-    registry.adopt_open_codex()
     me = registry.me()
     if getattr(args, "action", None) == "clear":
         return cmd_list_clear(args, me)
+    here = _here(args, me)
+    registry.adopt_open_codex(accept=lambda row: _matches_row(args, row, here, me))
     rows = _rows(args, me)
     for row in rows:
         row["inbound"] = registry.inbound_setting(row.get("home", ""), row.get("cwd")) if \
@@ -193,8 +202,10 @@ def _cmd_list(args) -> int:
         # Informational: a queued message waits in such a thread unless the
         # daemon starts it (ADR-0002 appendix, 2026-09-28).
         row["interrupted"] = bool(row.get("runtime") == "codex" and row.get("state") == "live"
-                                  and registry.codex_interrupted(row.get("home") or "",
-                                                                 str(row.get("session_id") or "")))
+                                  and probe.bounded(registry.codex_interrupted,
+                                                    row.get("home") or "",
+                                                    str(row.get("session_id") or ""),
+                                                    folder=row.get("home") or "", default=False))
     if args.json:
         print(json.dumps(rows, ensure_ascii=False, indent=1))
         return OK
@@ -202,10 +213,10 @@ def _cmd_list(args) -> int:
         if args.all:
             print("no sessions registered. Install the hooks first: xsm install --help")
         else:
-            others = len([r for r in registry.records() if r.get("state") == "live"])
+            others = len(registry.raw_records())
             print("no live sessions in this project (%s)%s" % (
                 config.default_project(_here(args, me))[0],
-                "; xsm list -a shows %d elsewhere" % others if others else ""))
+                "; xsm list -a shows registered sessions elsewhere" if others else ""))
         return OK
     if getattr(args, "table", False):
         print("\n".join(_table(rows, me, _here(args, me))))
@@ -259,11 +270,10 @@ def _md_table(headers: list, rows: list) -> list:
 
 
 def cmd_who(args) -> int:
-    # The same adoption `list` runs first. Without it `who` said "not
-    # registered", then `list` adopted the thread and marked its row `you`,
-    # then `who` found it: two answers to one question (review, 2026-09-28).
-    registry.adopt_open_codex()
-    me = registry.me()
+    # me() adopts this session itself when needed. A registered session must
+    # not wait for every other Codex window to be discovered (issue #17).
+    with probe.quick():
+        me = registry.me()
     if not me:
         print(registry.unregistered_reason(), file=sys.stderr)
         return REFUSED
@@ -2402,7 +2412,8 @@ def main(argv=None) -> int:
         else:
             print("xsm: --reply is switched off here (reply_flag), so it is ignored",
                   file=sys.stderr)
-    if args.command not in ("hook", "statusline", "prune", "reap", "mcp", "worker-finish"):
+    if args.command not in ("hook", "statusline", "prune", "reap", "mcp", "worker-finish",
+                            "list", "who", "send"):
         housekeeping.maybe_prune()
     try:
         from . import telemetry

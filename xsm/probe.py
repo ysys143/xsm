@@ -12,9 +12,9 @@ a person is waiting on must not wait for a folder.
   a timeout is "unknown", never an error.
 - `git` is `git -C <folder>` with the same deadline, and a child that does not answer
   is killed and let go, not waited for.
-- `quick` is for the commands that must not wait (xsm list): within it every probe
-  gets at most a second, an answer for a folder is asked once (`remember`), and a
-  folder that did not answer is not asked again.
+- `quick` gives interactive lookups a shared three-second probe budget. Every
+  probe gets at most a second, answers are reused (`remember`), and a folder
+  that did not answer is not asked again.
 
 Outside `quick` nothing is remembered (the MCP server runs for days, and a folder
 that stalled once may answer later), and the deadlines are the ordinary ones.
@@ -24,38 +24,45 @@ from __future__ import annotations
 import contextlib
 import subprocess
 import threading
+import time
 
 GIT_TIMEOUT = 5.0           # what a git call has always been allowed
 READ_TIMEOUT = 2.0          # a file read is microseconds when the folder answers
 QUICK_TIMEOUT = 1.0
+QUICK_BUDGET = 3.0          # shared by every probe in one interactive lookup
 
 _quick = None               # the deadline in force inside `quick`, else None
+_deadline = None
 _memo: dict = {}
 _stalled: set = set()
 
 
 @contextlib.contextmanager
-def quick(timeout: float | None = None):
-    """Within the block: at most `timeout` seconds (QUICK_TIMEOUT) for any probe, one
-    answer per question (`remember`), and no second question to a folder that did not
-    answer."""
-    global _quick
+def quick(timeout: float | None = None, budget: float | None = None):
+    """Per-probe timeout and one total budget, with answers reused until exit.
+
+    Nested lookups share the outer budget instead of starting another deadline.
+    """
+    global _quick, _deadline
     if _quick is not None:
         yield
         return
     _quick = QUICK_TIMEOUT if timeout is None else timeout
+    _deadline = time.monotonic() + (QUICK_BUDGET if budget is None else budget)
     _memo.clear()
     _stalled.clear()
     try:
         yield
     finally:
         _quick = None
+        _deadline = None
         _memo.clear()
         _stalled.clear()
 
 
 def limit(timeout: float) -> float:
-    return timeout if _quick is None else min(timeout, _quick)
+    return timeout if _quick is None else min(timeout, _quick,
+                                             max(0.0, _deadline - time.monotonic()))
 
 
 def remember(key, compute):
@@ -79,6 +86,9 @@ def bounded(fn, *args, folder: str | None = None, timeout: float | None = None, 
     inside `quick` is not asked again."""
     if folder is not None and folder in _stalled:
         return default
+    wait = limit(READ_TIMEOUT if timeout is None else timeout)
+    if wait <= 0:
+        return default
     box: list = []
 
     def work():
@@ -89,25 +99,30 @@ def bounded(fn, *args, folder: str | None = None, timeout: float | None = None, 
 
     thread = threading.Thread(target=work, daemon=True)
     thread.start()
-    thread.join(limit(READ_TIMEOUT if timeout is None else timeout))
+    thread.join(wait)
     if thread.is_alive() or not box:
         _gave_up(folder)
         return default
     return box[0]
 
 
-def git(folder: str, *args: str, timeout: float | None = None) -> str | None:
-    """stdout of `git -C <folder> <args>`, or None when git failed, is missing, or did
-    not answer in time (the folder is then not asked again inside `quick`)."""
+def command(argv: list, timeout: float = GIT_TIMEOUT, folder: str | None = None) -> str | None:
+    """Read-only subprocess output, bounded by the shared lookup budget.
+
+    Never wait for a killed child: lsof can be stuck in a filesystem read too.
+    """
     if folder in _stalled:
         return None
+    wait = limit(timeout)
+    if wait <= 0:
+        return None
     try:
-        proc = subprocess.Popen(["git", "-C", folder] + list(args), stdout=subprocess.PIPE,
+        proc = subprocess.Popen(argv, stdout=subprocess.PIPE,
                                 stderr=subprocess.DEVNULL, text=True)
     except OSError:
         return None
     try:
-        out, _ = proc.communicate(timeout=limit(GIT_TIMEOUT if timeout is None else timeout))
+        out, _ = proc.communicate(timeout=wait)
     except subprocess.TimeoutExpired:
         proc.kill()                     # and not waited for: it may never leave the folder
         proc.stdout.close()
@@ -116,3 +131,9 @@ def git(folder: str, *args: str, timeout: float | None = None) -> str | None:
     except (OSError, subprocess.SubprocessError):
         return None
     return out if proc.returncode == 0 else None
+
+
+def git(folder: str, *args: str, timeout: float | None = None) -> str | None:
+    """stdout of git, or None when the folder cannot answer in time."""
+    return command(["git", "-C", folder] + list(args),
+                   GIT_TIMEOUT if timeout is None else timeout, folder=folder)

@@ -137,7 +137,10 @@ class AdoptUnknownThreadTest(unittest.TestCase):
         with mock.patch.object(mcp.identity, "ancestor_pid", return_value=DAEMON), \
                 mock.patch.object(registry, "_hooks_will_register", return_value=trusted), \
                 mock.patch.object(registry.identity, "is_app_server", return_value=True), \
-                mock.patch.object(registry, "records", return_value=records):
+                mock.patch.object(registry, "records", return_value=records), \
+                mock.patch.object(registry, "by_session", side_effect=lambda runtime, sid:
+                    next((r for r in records if r.get("runtime") == runtime
+                          and r.get("session_id") == sid), None)):
             server.serve()
         return seen[0]
 

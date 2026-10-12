@@ -192,8 +192,17 @@ lookup, and it follows when you rename the session itself.
 
 # then, from another session
 xsm list                                       # sessions you can talk to in this project
+xsm list --dir ~/src/other-repo                 # inspect another project's sessions
+xsm list --all                                 # every project, including stopped sessions
+xsm list clear                                 # remove this project's stopped registrations
 xsm who                                        # how this session appears
 ```
+
+Project and profile filters apply before runtime probes. Discovery probes share a three-second budget;
+slow probes fall back to available registration details. `who` checks this session alone. Sending to a
+registered `ref:` address checks that target without discovering every open Codex window. `--wait` on
+`send` controls receipt waiting after submission; an unconfirmed submission returns `sent-unconfirmed`
+(exit 3), while a transport error returns `error` (exit 4) and is recorded in the ledger.
 
 ### 2. Connecting to a session in another repository
 

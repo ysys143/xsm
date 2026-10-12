@@ -14,25 +14,20 @@ import re
 import socket
 import subprocess
 
+from . import probe
+
 
 def lstart(pid: int) -> str | None:
-    try:
-        out = subprocess.run(["ps", "-o", "lstart=", "-p", str(pid)],
-                             capture_output=True, text=True, timeout=5)
-    except (OSError, subprocess.SubprocessError):
-        return None
-    value = out.stdout.strip()
-    return value or None
+    def ask():
+        out = probe.command(["ps", "-o", "lstart=", "-p", str(pid)])
+        return (out or "").strip() or None
+    return probe.remember(("lstart", pid), ask)
 
 
 def comm(pid) -> str | None:
     """The process's command name, or None if `ps` cannot say."""
-    try:
-        out = subprocess.run(["ps", "-o", "comm=", "-p", str(pid)],
-                             capture_output=True, text=True, timeout=5)
-    except (OSError, subprocess.SubprocessError):
-        return None
-    return os.path.basename(out.stdout.strip()) or None
+    out = probe.command(["ps", "-o", "comm=", "-p", str(pid)])
+    return os.path.basename((out or "").strip()) or None
 
 
 def pid_alive(pid) -> bool:
@@ -70,7 +65,10 @@ def socket_live(sock_path: str, timeout: float = 0.3) -> bool | None:
         return False
     try:
         with socket.socket(socket.AF_UNIX, socket.SOCK_STREAM) as s:
-            s.settimeout(timeout)
+            wait = probe.limit(timeout)
+            if wait <= 0:
+                return None
+            s.settimeout(wait)
             s.connect(sock_path)
         return True
     except PermissionError:
@@ -141,7 +139,10 @@ def _state_of(record: dict) -> tuple:
         # itself while the TUIs reconnect. Only the daemon knows which of its
         # threads are still open. No answer falls through to the pid.
         from . import codex_daemon
-        loaded = codex_daemon.loaded_threads(record.get("home") or "")
+        home = record.get("home") or ""
+        loaded = probe.remember(("loaded_threads", home), lambda:
+            codex_daemon.loaded_threads(home)
+            if probe.limit(codex_daemon.DEFAULT_TIMEOUT) > 0 else None)
         if loaded is not None:
             if str(record.get("session_id")) in loaded:
                 return "live", "thread_loaded"
@@ -193,11 +194,11 @@ def ancestor_pid(names, max_hops: int = 10) -> int | None:
     drain.sh walks the same way)."""
     pid = os.getppid()
     for _ in range(max_hops):
-        if pid <= 1:
+        if pid <= 1 or probe.limit(5) <= 0:
             return None
         try:
             out = subprocess.run(["ps", "-o", "ppid=,comm=", "-p", str(pid)],
-                                 capture_output=True, text=True, timeout=5)
+                                 capture_output=True, text=True, timeout=probe.limit(5))
         except (OSError, subprocess.SubprocessError):
             return None
         parts = out.stdout.strip().split(None, 1)
@@ -220,9 +221,11 @@ def is_app_server(pid) -> bool:
     ancestor_pid finds it instead of the TUI. A per-app stdio server (desktop
     app, IDE) is also `codex app-server` but is not the daemon whose loaded
     list we ask, so `--managed-daemon` is required (review, 2026-09-29)."""
+    if probe.limit(5) <= 0:
+        return False
     try:
         out = subprocess.run(["ps", "-o", "args=", "-p", str(pid)],
-                             capture_output=True, text=True, timeout=5)
+                             capture_output=True, text=True, timeout=probe.limit(5))
     except (OSError, subprocess.SubprocessError):
         return False
     argv = out.stdout.split()
