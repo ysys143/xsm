@@ -198,11 +198,17 @@ xsm list clear                                 # remove this project's stopped r
 xsm who                                        # how this session appears
 ```
 
-Project and profile filters apply before runtime probes. Discovery probes share a three-second budget;
-slow probes fall back to available registration details. `who` checks this session alone. Sending to a
-registered `ref:` address checks that target without discovering every open Codex window. `--wait` on
-`send` controls receipt waiting after submission; an unconfirmed submission returns `sent-unconfirmed`
-(exit 3), while a transport error returns `error` (exit 4) and is recorded in the ledger.
+`list` reads the registrations first and probes only the sessions that match the project, runtime and
+home you asked for, so stopped sessions that are still registered (they are kept for seven days) do not
+slow it down. The probes of one lookup share a three-second budget. If one does not answer, the command
+goes on without it and says so in one line on stderr; `xsm doctor` shows which kind. `who` looks only at
+its own session once that session is registered. Sending to a registered `ref:`, `claude:` or `codex:`
+address checks that one target and does not search for open Codex windows.
+
+`--wait` on `send` is how long to wait for the receiver's receipt after the message was handed over. With
+no receipt in that time the result is `sent-unconfirmed` (exit 3); a delivery that failed is `error`
+(exit 4) and is recorded in the ledger. The result line ends with the message id, which `xsm status <id>`
+and `--resend <id>` take.
 
 ### 2. Connecting to a session in another repository
 
