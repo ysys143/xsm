@@ -192,10 +192,11 @@ def _enrich(record: dict) -> dict:
     out = dict(record)
     if record.get("runtime") == "claude":
         home, pid = record.get("home", ""), record.get("pid")
-        native = probe.remember(("claude_native", home, pid), lambda:
-            probe.bounded(_claude_native, home, pid, folder=home, default={}))
-        native = {key: native.get(key) for key in
-                  ("name", "socket", "name_source", "native_session_id")}
+        # Not bounded: a file in the Claude home, not in a project folder. Skipped
+        # when the budget is spent, a live session lost its socket and read as
+        # `stale`, so `list` hid it and `list clear` deleted its pointer (#17).
+        native = probe.remember(("claude_native", home, pid),
+                                lambda: _claude_native(home, pid))
         out["name"] = native["name"] or record.get("name") or "claude-%s" % record.get("pid")
         out["socket"] = record.get("socket") or native["socket"]
         out["name_source"] = native["name_source"]
@@ -297,7 +298,11 @@ def _scan_codex() -> list:
         return []
     # One lsof for the process table, once per command, rather than one per
     # TUI per Codex home (issue #17/#18: dozens of serial five-second waits).
-    res = probe.command(["lsof", "-a", "-p", ",".join(candidates), "-d", "cwd", "-Fpn"])
+    # -b -w: no kernel calls that can block, same output. With one pid of the batch
+    # gone lsof prints the others and exits 1 (measured 2026-10-12), so any exit
+    # code is read, or one closed window emptied the whole scan.
+    res = probe.command(["lsof", "-b", "-w", "-a", "-p", ",".join(candidates),
+                         "-d", "cwd", "-Fpn"], any_exit=True)
     found, pid = [], None
     for row in (res or "").splitlines():
         if row.startswith("p"):
@@ -334,6 +339,11 @@ def _open_codex_threads(home: str) -> list:
     for cwd, epoch, resumed, pid in _running_codex():
         if resumed and resumed != "?":
             chosen += [t + (pid,) for t in threads if t[0] == resumed]
+            continue
+        if not epoch and resumed is None:
+            # `ps` gave no start time (a tight probe budget), and an epoch of 0
+            # makes every thread of the folder "newer than the window": the newest
+            # was adopted on a guess and written as a pointer (#17, 2026-10-12).
             continue
         here = [t for t in threads if os.path.realpath(t[2] or "") == cwd]
         # A fresh TUI has open only a thread created after it started. Falling
@@ -817,7 +827,11 @@ def me(session_id: str | None = None, cwd: str | None = None):
     a shell that inherited neither — never for one that knows its session id,
     where a cwd match would be some other session's identity.
     """
-    rec, how = _me(session_id, cwd)
+    # Bounded here, not by each caller: a Codex thread with no pointer reaches the
+    # process scan from inbox, join, ledger --mine ... (#17). Inside another
+    # `quick` this is the same block.
+    with probe.quick():
+        rec, how = _me(session_id, cwd)
     try:
         from . import telemetry
         telemetry.annotate("xsm.identity.via", how)

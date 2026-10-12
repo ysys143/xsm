@@ -520,6 +520,23 @@ class DeadHomesLatencyTest(Base):
         self.assertGreaterEqual(stamped, time.monotonic() - 0.5,
                                 "stamped when the query ended, not when it began")
 
+    def test_an_answer_cut_short_by_the_probe_budget_is_not_remembered(self):
+        """CACHE-1: a daemon that was given less time than asked has not been heard
+        from, so its home is asked again; one that had the full time and stayed
+        silent is remembered for _LOADED_FAIL_TTL as before."""
+        from xsm import codex_daemon, probe
+        (home,) = self.dead_homes()[:1]
+        key = os.path.realpath(home)
+        began = time.monotonic()
+        with probe.quick(timeout=1.0, budget=0.3):
+            self.assertIsNone(codex_daemon.loaded_threads(home, timeout=1.0))
+        self.assertLess(time.monotonic() - began, 0.9, "the wait was the budget's")
+        self.assertNotIn(key, codex_daemon._LOADED_CACHE)
+        with probe.quick(timeout=1.0, budget=5.0):
+            self.assertIsNone(codex_daemon.loaded_threads(home, timeout=0.2))
+        stamped, value = codex_daemon._LOADED_CACHE[key]
+        self.assertIsNone(value)
+
     def test_the_receive_hook_takes_the_short_budget(self):
         from xsm import codex_daemon, receive
         self.assertEqual(codex_daemon.DEFAULT_TIMEOUT, 1.0)

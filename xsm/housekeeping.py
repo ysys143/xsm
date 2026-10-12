@@ -43,6 +43,14 @@ def due(now: float | None = None) -> bool:
         return True
 
 
+def last_prune() -> float | None:
+    """When the last prune finished (the stamp's mtime), or None if there was none."""
+    try:
+        return os.path.getmtime(paths.path(STAMP))
+    except OSError:
+        return None
+
+
 def prune(now: float | None = None, dry_run: bool = False) -> dict:
     """Remove what has outlived its window. Returns what was (or would be) removed."""
     now = time.time() if now is None else now
@@ -58,8 +66,10 @@ def prune(now: float | None = None, dry_run: bool = False) -> dict:
         # A goodbye is the moment it stopped; otherwise the last sign of life.
         last_seen = rec.get("ended_at") or rec.get("updated") or 0
         if last_seen >= pointer_cutoff:
-            continue
-        if identity.state_of(rec) in ("ended", "stale"):
+            continue                    # young enough to need no liveness probe
+        # Past the window, whatever is not live goes, `unknown` (no pid) included:
+        # nothing would ever turn such a pointer into `ended`, so it stayed for good.
+        if identity.state_of(rec) != "live":
             removed["sessions"].append(rec.get("name") or os.path.basename(p))
             if not dry_run:
                 _unlink(p)

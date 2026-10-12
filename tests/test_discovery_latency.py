@@ -5,10 +5,11 @@ import json
 import os
 import sqlite3
 import subprocess
+import time
 import unittest
 from unittest import mock
 
-from tests import test_xsm
+from tests import test_codex_wake, test_xsm
 
 
 class DiscoveryTest(test_xsm.TempState):
@@ -240,7 +241,7 @@ class ProbeBudgetTest(test_xsm.TempState):
         commands = []
 
         def output(argv, **kwargs):
-            commands.append(argv)
+            commands.append((argv, kwargs))
             if argv[0] == "ps":
                 return "101 /bin/codex resume thread-a\n102 /bin/codex\n103 /bin/codex exec task\n"
             return "p101\nn%s\np102\nn%s\n" % (self.tmp, self.tmp)
@@ -253,7 +254,379 @@ class ProbeBudgetTest(test_xsm.TempState):
         self.assertEqual([r[3] for r in rows], [101, 102])
         self.assertEqual(rows[0][2], "thread-a")
         self.assertEqual(len(commands), 2)
-        self.assertEqual(commands[1], ["lsof", "-a", "-p", "101,102", "-d", "cwd", "-Fpn"])
+        # SCAN-1: -b -w, and the output is read whatever lsof exits with.
+        self.assertEqual(commands[1], (["lsof", "-b", "-w", "-a", "-p", "101,102", "-d", "cwd",
+                                        "-Fpn"], {"any_exit": True}))
+
+
+def _finished(out, code):
+    """A Popen whose child has finished: `communicate` gives `out`, the exit code is `code`."""
+    return mock.Mock(communicate=mock.Mock(return_value=(out, None)), returncode=code)
+
+
+def _timed_out():
+    """A Popen whose child never answers."""
+    child = mock.Mock(stdout=io.StringIO())
+    child.communicate.side_effect = subprocess.TimeoutExpired("lsof", 1)
+    return child
+
+
+class ProcessScanTest(test_xsm.TempState):
+    """SCAN-1: lsof prints what it found and exits 1 when one pid of the batch is gone."""
+
+    def scan(self, lsof):
+        """_scan_codex over a process table of two Codex windows, 101 and 102, where
+        `lsof` is the process it starts (or the error it raises)."""
+        from xsm import probe, registry
+
+        def popen(argv, **kwargs):
+            if argv[0] == "ps":
+                return _finished("101 /bin/codex\n102 /bin/codex\n", 0)
+            if isinstance(lsof, Exception):
+                raise lsof
+            return lsof
+
+        with mock.patch.object(probe.subprocess, "Popen", side_effect=popen), \
+                mock.patch.object(registry.identity, "lstart", return_value=None):
+            return registry._scan_codex()
+
+    def test_a_closed_window_does_not_empty_the_scan(self):
+        """SCAN-1: lsof exits 1 for the pid that is gone and still prints the other."""
+        rows = self.scan(_finished("p101\nfcwd\nn%s\n" % self.tmp, 1))
+        self.assertEqual([(r[0], r[3]) for r in rows], [(os.path.realpath(self.tmp), 101)])
+
+    def test_only_the_scan_reads_an_exit_code_it_does_not_trust(self):
+        """SCAN-1: every other command still gives nothing when it exits non-zero, and a
+        timeout or a command that does not start gives nothing either way."""
+        from xsm import probe
+        with mock.patch.object(probe.subprocess, "Popen", return_value=_finished("partial\n", 1)):
+            self.assertIsNone(probe.command(["lsof"]))
+            self.assertEqual(probe.command(["lsof"], any_exit=True), "partial\n")
+        with mock.patch.object(probe.subprocess, "Popen", return_value=_timed_out()):
+            self.assertIsNone(probe.command(["lsof"], any_exit=True))
+        with mock.patch.object(probe.subprocess, "Popen", side_effect=FileNotFoundError("lsof")):
+            self.assertIsNone(probe.command(["lsof"], any_exit=True))
+
+    def test_an_lsof_that_hangs_or_is_missing_gives_an_empty_scan(self):
+        """SCAN-1: no answer is no windows, not a traceback."""
+        self.assertEqual(self.scan(_timed_out()), [])
+        self.assertEqual(self.scan(FileNotFoundError("lsof")), [])
+
+
+class UnnamedWindowTest(test_xsm.TempState):
+    """GUESS-1: a window whose start time is unknown is not matched to a thread by it."""
+
+    def setUp(self):
+        super().setUp()
+        from xsm import config
+        self.home = os.path.join(self.tmp, "codex")
+        self.folder = os.path.realpath(os.path.join(self.tmp, "work"))
+        os.makedirs(self.home)
+        os.makedirs(self.folder)
+        config.add_home(self.home, "codex")
+        # (id, name, cwd, rollout, created_at, updated_at): the newest thread of the folder.
+        self.thread = ("T-newest", "newest", self.folder, None, 1000, 2000)
+
+    def open_threads(self, window):
+        from xsm import registry
+        registry._running_codex = lambda: [window]
+        with mock.patch.object(registry, "_codex_recent_threads", return_value=[self.thread]):
+            return [t[0] for t in registry._open_codex_threads(self.home)]
+
+    def test_no_start_time_and_no_thread_id_chooses_no_thread(self):
+        """GUESS-1: epoch 0 made `created >= epoch - 5` true for every thread of the
+        folder; the window is skipped, and the cases that never used the epoch stay."""
+        self.assertEqual(self.open_threads((self.folder, 0, None, 4242)), [])
+        self.assertEqual(self.open_threads((self.folder, 500, None, 4242)), ["T-newest"])
+        self.assertEqual(self.open_threads((self.folder, 0, "?", 4242)), ["T-newest"],
+                         "the picker never used the epoch")
+        self.assertEqual(self.open_threads((self.folder, 0, "T-newest", 4242)), ["T-newest"],
+                         "a window that named its thread keeps it")
+
+    def test_such_a_window_is_not_adopted_on_a_guess(self):
+        """GUESS-1: no pointer is written for the folder's newest thread."""
+        from xsm import registry
+        registry._running_codex = lambda: [(self.folder, 0, None, 4242)]
+        with mock.patch.object(registry, "_codex_recent_threads", return_value=[self.thread]), \
+                mock.patch.object(registry, "_hooks_will_register", return_value=True):
+            self.assertEqual(registry.adopt_open_codex(), [])
+        self.assertEqual(registry.raw_records(), [])
+
+
+class ClaudeNativeTest(test_xsm.TempState):
+    def test_a_live_session_keeps_the_socket_claude_recorded_when_the_budget_is_spent(self):
+        """NATIVE-1: the native file is small and in the Claude home, so it is read
+        whatever is left of the budget; skipped, a pointer without `socket` read as
+        stale and `list clear` deleted it."""
+        from xsm import paths, probe, registry
+        home = os.path.join(self.tmp, "claude")
+        os.makedirs(os.path.join(home, "sessions"))
+        sock = os.path.join(self.tmp, "inbox.sock")
+        paths.write_json(os.path.join(home, "sessions", "%d.json" % os.getpid()),
+                         {"pid": os.getpid(), "sessionId": "sid", "name": "native-name",
+                          "nameSource": "user", "messagingSocketPath": sock})
+        pointer = {"runtime": "claude", "home": home, "session_id": "sid", "pid": os.getpid(),
+                   "cwd": self.tmp, "name": "pointer-name", "ref": "abc123"}
+        with probe.quick(budget=0):
+            row = registry._enrich(pointer)
+        self.assertEqual(row["socket"], sock)
+        self.assertEqual(row["name"], "native-name")
+        self.assertNotIn(row["state"], ("stale", "ended"))
+
+
+class IdentityProbeTest(test_xsm.TempState):
+    """KILL-1: the walk up the process tree and the daemon check do not wait for a child
+    they killed, as subprocess.run(timeout=) does."""
+
+    def test_the_walk_up_asks_through_probe_command_not_subprocess_run(self):
+        """KILL-1: a ps that answers is the answer; one that does not is None."""
+        from xsm import identity
+        table = {"100": "200 -zsh\n", "200": "300 /usr/local/bin/codex\n"}
+        asked = []
+
+        def ps(argv, *args, **kwargs):
+            asked.append(argv)
+            return table.get(argv[-1])
+
+        with mock.patch.object(identity.os, "getppid", return_value=100), \
+                mock.patch.object(identity.probe, "command", side_effect=ps), \
+                mock.patch("subprocess.run", side_effect=AssertionError("waits for its child")):
+            self.assertEqual(identity.ancestor_pid({"codex"}), 200)
+            self.assertEqual(asked[0], ["ps", "-o", "ppid=,comm=", "-p", "100"])
+            table.clear()
+            self.assertIsNone(identity.ancestor_pid({"codex"}))
+
+    def test_a_ps_that_never_answers_is_killed_and_not_waited_for(self):
+        """KILL-1: no answer is None / False, the child is killed, and wait() is never called."""
+        from xsm import identity
+        child = _timed_out()
+        with mock.patch.object(identity.os, "getppid", return_value=100), \
+                mock.patch.object(identity.probe.subprocess, "Popen", return_value=child):
+            self.assertIsNone(identity.ancestor_pid({"codex"}))
+            self.assertFalse(identity.is_app_server(4242))
+        self.assertEqual(child.kill.call_count, 2)
+        child.wait.assert_not_called()
+
+    def test_a_spent_budget_starts_no_ps(self):
+        """KILL-1: both share the lookup budget."""
+        from xsm import identity, probe
+        with mock.patch.object(identity.os, "getppid", return_value=100), \
+                mock.patch.object(probe.subprocess, "Popen") as popen:
+            with probe.quick(budget=0):
+                self.assertIsNone(identity.ancestor_pid({"codex"}))
+                self.assertFalse(identity.is_app_server(4242))
+        popen.assert_not_called()
+
+
+class MeBudgetTest(test_xsm.TempState):
+    def test_me_bounds_its_own_lookup_for_a_thread_with_no_pointer(self):
+        """ME-1: inbox, join, ledger --mine ... reach the process scan through me();
+        it runs inside the quick budget although the caller opened none."""
+        from xsm import probe, registry
+        seen = []
+        os.environ["CODEX_THREAD_ID"] = "thread-with-no-pointer"
+        with mock.patch.object(registry.identity, "ancestor_pid", return_value=None), \
+                mock.patch.object(registry, "adopt_open_codex",
+                                  side_effect=lambda *a, **k: seen.append(probe.limit(60)) or []):
+            self.assertIsNone(registry.me())
+        self.assertEqual(len(seen), 1)
+        self.assertLessEqual(seen[0], probe.QUICK_TIMEOUT)
+        self.assertEqual(probe.limit(60), 60, "and it is not left in force")
+
+
+class ListOrderTest(test_xsm.TempState):
+    """ORDER-1: a default list drops the pointers whose process is gone before it asks
+    git where they are."""
+
+    DEAD = 40
+
+    def pointer(self, sid, cwd, pid, **extra):
+        from xsm import identity, paths, registry
+        row = {"runtime": "codex", "home": self.home, "alias": "codex", "session_id": sid,
+               "pid": pid, "lstart": None, "cwd": cwd, "name": sid, "updated": time.time(),
+               "ref": identity.ref_of("codex", self.home, sid), "app_server": False}
+        row.update(extra)
+        if pid is None:
+            del row["pid"]
+        paths.write_json(registry._record_path("codex", sid), row)
+
+    def setUp(self):
+        super().setUp()
+        root = os.path.realpath(self.tmp)
+        self.home = os.path.join(root, "codex")
+        self.here = os.path.join(root, "here")
+        self.far = os.path.join(root, "far")
+        self.other = os.path.join(root, "other")
+        for folder in (self.home, self.here, self.far, self.other):
+            os.makedirs(folder)
+        child = subprocess.Popen(["true"])
+        child.wait()
+        with self.assertRaises(ProcessLookupError):
+            os.kill(child.pid, 0)
+        dead = self.dead = child.pid
+        # The daemon of the home lists "hosted" as loaded, though the pid on its pointer is gone.
+        daemon = test_codex_wake.FakeDaemon(self.home, "started")
+        daemon.loaded = [["hosted"]]
+        self.addCleanup(daemon.close)
+        self.pointer("mine", self.here, os.getpid())
+        self.pointer("peer", self.here, os.getpid())
+        self.pointer("hosted", self.here, dead, app_server=True)
+        self.pointer("far-live", self.far, os.getpid())
+        self.pointer("far-no-pid", self.other, None)
+        for n in range(self.DEAD):
+            self.pointer("dead-%d" % n, os.path.join(root, "dead", "d%02d" % n), dead)
+        os.environ["CODEX_THREAD_ID"] = "mine"
+
+    def list_json(self):
+        from xsm import cli, probe
+        asked = []
+        out = io.StringIO()
+        with mock.patch.object(probe, "git", side_effect=lambda folder, *a, **k: asked.append(folder)), \
+                contextlib.redirect_stdout(out):
+            code = cli.main(["list", "--dir", self.here, "--json"])
+        self.assertEqual(code, 0)
+        return {r["session_id"]: r for r in json.loads(out.getvalue())}, asked
+
+    def test_git_is_asked_only_about_rows_that_can_still_be_live(self):
+        """ORDER-1: 40 dead pointers in 40 folders cost no git call; the listing is the
+        live peer, the caller, and the daemon-hosted thread whose recorded pid is dead."""
+        rows, asked = self.list_json()
+        self.assertEqual(sorted(rows), ["hosted", "mine", "peer"])
+        self.assertEqual(rows["hosted"]["state"], "live")
+        self.assertEqual(rows["mine"]["state"], "live")
+        self.assertEqual(sorted(asked), sorted([self.here, self.far, self.other]))
+
+    def test_what_is_never_dropped_before_the_project_check(self):
+        """ORDER-1: no pid, a daemon-hosted Codex thread, and the caller's own pointer."""
+        from xsm import cli
+        me = {"ref": "r1"}
+        gone = {"runtime": "claude", "pid": self.dead, "ref": "r2"}
+        self.assertTrue(cli._provably_gone(gone, me))
+        self.assertTrue(cli._provably_gone(dict(gone, runtime="codex", app_server=False), me))
+        self.assertFalse(cli._provably_gone(dict(gone, pid=None), me))
+        self.assertFalse(cli._provably_gone(dict(gone, runtime="codex", app_server=True), me))
+        self.assertFalse(cli._provably_gone(dict(gone, ref="r1"), me))
+
+    def test_all_and_clear_still_see_the_stopped_sessions(self):
+        """ORDER-1: only the default listing skips them."""
+        from xsm import cli
+        out = io.StringIO()
+        with contextlib.redirect_stdout(out):
+            self.assertEqual(cli.main(["list", "-a", "--json"]), 0)
+        names = {r["session_id"] for r in json.loads(out.getvalue())}
+        self.assertEqual(len([n for n in names if n.startswith("dead-")]), self.DEAD)
+        out = io.StringIO()
+        with contextlib.redirect_stdout(out):
+            self.assertEqual(cli.main(["list", "clear", "-a"]), 0)
+        self.assertIn("cleared %d stopped session(s)" % self.DEAD, out.getvalue())
+
+
+class PruneUnknownTest(test_xsm.TempState):
+    def test_a_pointer_past_the_window_goes_unless_it_is_live(self):
+        """PRUNE-1: `unknown` (no pid) goes with `ended` and `stale`; an old live one stays."""
+        from xsm import housekeeping, paths, registry
+        old = time.time() - 30 * 86400
+        child = subprocess.Popen(["true"])
+        child.wait()
+        base = {"runtime": "codex", "home": self.tmp, "updated": old, "app_server": False}
+        for sid, extra in (("no-pid", {}), ("gone", {"pid": child.pid}),
+                           ("running", {"pid": os.getpid()})):
+            paths.write_json(registry._record_path("codex", sid),
+                             dict(base, session_id=sid, name=sid, **extra))
+        self.assertEqual(sorted(housekeeping.prune(dry_run=True)["sessions"]), ["gone", "no-pid"])
+        housekeeping.prune()
+        self.assertEqual([r["session_id"] for r in registry.raw_records()], ["running"])
+
+
+class DoctorSessionsTest(test_xsm.TempState):
+    """DOCTOR-1: the session lookups run once, under their own budget, and the report
+    says what is stopped, how long pointers are kept and when the last prune finished."""
+
+    def setUp(self):
+        super().setUp()
+        from xsm import paths, registry
+        child = subprocess.Popen(["true"])
+        child.wait()
+        for sid, pid in (("running", os.getpid()), ("gone-1", child.pid), ("gone-2", child.pid)):
+            paths.write_json(registry._record_path("codex", sid), {
+                "runtime": "codex", "home": self.tmp, "session_id": sid, "pid": pid,
+                "app_server": False, "name": sid, "cwd": self.tmp, "updated": time.time()})
+
+    def doctor_output(self, *flags):
+        from xsm import cli, housekeeping
+        out = io.StringIO()
+        with mock.patch.object(housekeeping, "maybe_prune"), contextlib.redirect_stdout(out):
+            self.assertEqual(cli.main(["doctor"] + list(flags)), 0)
+        return out.getvalue()
+
+    def test_each_pointer_is_enriched_once(self):
+        """DOCTOR-1: it was three times (stuck() once, the two counts)."""
+        from xsm import install, registry
+        with mock.patch.object(registry, "_enrich", wraps=registry._enrich) as enriched:
+            report = install.doctor()
+        self.assertEqual(enriched.call_count, 3)
+        self.assertEqual((report["sessions"]["registered"], report["sessions"]["live"]), (3, 1))
+
+    def test_the_lookups_run_inside_their_own_ten_second_budget(self):
+        """DOCTOR-1: nobody opens a quick block around doctor, so it opens its own."""
+        from xsm import install, probe, registry
+        seen = []
+
+        def records():
+            seen.append((probe.limit(60), probe._deadline - time.monotonic()))
+            return []
+
+        with mock.patch.object(registry, "records", records), \
+                mock.patch.object(registry, "unregistered", return_value=[]):
+            install.doctor()
+        ((each, budget),) = seen
+        self.assertEqual(each, probe.QUICK_TIMEOUT)
+        self.assertAlmostEqual(budget, 10, delta=1)
+        self.assertEqual(probe.limit(60), 60, "and it ends with doctor's lookups")
+
+    def test_the_report_counts_stopped_sessions_retention_and_the_last_prune(self):
+        """DOCTOR-1: the sessions line keeps its old text as its prefix; the stamp's mtime
+        is the last prune, and "never" when there is no stamp."""
+        from xsm import cli, housekeeping, install, paths
+        report = install.doctor()
+        self.assertEqual(report["sessions"], {
+            "registered": 3, "live": 1, "unregistered": 0, "stopped": 2,
+            "retention_days": 7.0, "last_prune": None})
+        self.assertEqual(dict(cli._doctor_rows(report))["sessions"],
+                         "3 registered, 1 live, 0 unregistered; 2 stopped, pointers kept "
+                         "7 days, last pruned never")
+        stamp = paths.path(housekeeping.STAMP)
+        housekeeping._touch(stamp)
+        os.utime(stamp, (1_700_000_000, 1_700_000_000))
+        report = install.doctor()
+        self.assertEqual(report["sessions"]["last_prune"], 1_700_000_000)
+        when = time.strftime("%Y-%m-%d %H:%M", time.localtime(1_700_000_000))
+        text = self.doctor_output()
+        self.assertIn("sessions   3 registered, 1 live, 0 unregistered; 2 stopped, pointers "
+                      "kept 7 days, last pruned %s\n" % when, text)
+        self.assertIn("| sessions | 3 registered, 1 live, 0 unregistered; 2 stopped, pointers "
+                      "kept 7 days, last pruned %s |" % when, self.doctor_output("--table"))
+        self.assertEqual(json.loads(self.doctor_output("--json"))["sessions"]["stopped"], 2)
+
+    def test_a_probe_that_did_not_answer_has_a_probes_line_a_row_and_a_key(self):
+        """OBS-1: named once in each form; no line, no row and an empty key otherwise."""
+        from xsm import install, probe, registry
+        quiet = self.doctor_output()
+        self.assertNotIn("\nprobes ", quiet)
+        self.assertNotIn("| probes |", self.doctor_output("--table"))
+        self.assertEqual(json.loads(self.doctor_output("--json"))["probes"], {})
+        with mock.patch.object(registry, "unregistered",
+                               side_effect=lambda: probe.missed("lsof", "timeout") or []):
+            report = install.doctor()
+        self.assertEqual(report["probes"], {"lsof": 1})
+        with mock.patch.object(install, "doctor", return_value=report):
+            text, table, data = (self.doctor_output(), self.doctor_output("--table"),
+                                 json.loads(self.doctor_output("--json")))
+        line = [l for l in text.splitlines() if l.startswith("probes ")]
+        self.assertEqual(len(line), 1, text)
+        self.assertIn("lsof x1 did not answer", line[0])
+        self.assertIn("| probes | lsof x1 did not answer", table)
+        self.assertEqual(data["probes"], {"lsof": 1})
 
 
 if __name__ == "__main__":

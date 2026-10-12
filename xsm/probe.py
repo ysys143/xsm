@@ -15,6 +15,9 @@ a person is waiting on must not wait for a folder.
 - `quick` gives interactive lookups a shared three-second probe budget. Every
   probe gets at most a second, answers are reused (`remember`), and a folder
   that did not answer is not asked again.
+- A probe that timed out, or was not started because the budget was spent or its
+  folder had stalled, is counted by kind (`missed`, `unanswered`): a list that
+  skipped a probe says so instead of passing for complete (#17).
 
 Outside `quick` nothing is remembered (the MCP server runs for days, and a folder
 that stalled once may answer later), and the deadlines are the ordinary ones.
@@ -22,6 +25,7 @@ that stalled once may answer later), and the deadlines are the ordinary ones.
 from __future__ import annotations
 
 import contextlib
+import os
 import subprocess
 import threading
 import time
@@ -35,6 +39,7 @@ _quick = None               # the deadline in force inside `quick`, else None
 _deadline = None
 _memo: dict = {}
 _stalled: set = set()
+_unanswered: dict = {}      # kind of probe -> how many did not answer in this command
 
 
 @contextlib.contextmanager
@@ -51,6 +56,7 @@ def quick(timeout: float | None = None, budget: float | None = None):
     _deadline = time.monotonic() + (QUICK_BUDGET if budget is None else budget)
     _memo.clear()
     _stalled.clear()
+    _unanswered.clear()                 # and kept after exit: the caller reads it then
     try:
         yield
     finally:
@@ -74,6 +80,23 @@ def remember(key, compute):
     return _memo[key]
 
 
+def missed(kind: str, how: str) -> None:
+    """Count one probe of this `kind` that did not answer; `how` is "timeout" or
+    "skipped", and goes on the command's span as xsm.probe.<kind>.<how>."""
+    _unanswered[kind] = _unanswered.get(kind, 0) + 1
+    try:
+        from . import telemetry
+        telemetry.bump("xsm.probe.%s.%s" % (kind, how))
+    except ImportError:
+        pass
+
+
+def unanswered() -> dict:
+    """{kind: count} of the probes of the current command that did not answer. Reset
+    when the outermost `quick` is entered, so it can be read after that block exits."""
+    return dict(_unanswered)
+
+
 def _gave_up(folder) -> None:
     if _quick is not None and folder is not None:
         _stalled.add(folder)
@@ -85,9 +108,11 @@ def bounded(fn, *args, folder: str | None = None, timeout: float | None = None, 
     is left behind. `folder` names what is being asked about: one that did not answer
     inside `quick` is not asked again."""
     if folder is not None and folder in _stalled:
+        missed("read", "skipped")
         return default
     wait = limit(READ_TIMEOUT if timeout is None else timeout)
     if wait <= 0:
+        missed("read", "skipped")
         return default
     box: list = []
 
@@ -101,20 +126,28 @@ def bounded(fn, *args, folder: str | None = None, timeout: float | None = None, 
     thread.start()
     thread.join(wait)
     if thread.is_alive() or not box:
+        missed("read", "timeout")
         _gave_up(folder)
         return default
     return box[0]
 
 
-def command(argv: list, timeout: float = GIT_TIMEOUT, folder: str | None = None) -> str | None:
+def command(argv: list, timeout: float = GIT_TIMEOUT, folder: str | None = None,
+            any_exit: bool = False) -> str | None:
     """Read-only subprocess output, bounded by the shared lookup budget.
 
     Never wait for a killed child: lsof can be stuck in a filesystem read too.
+    `any_exit` returns stdout whatever the exit code, for a tool that prints what it
+    found and still exits 1 (lsof, when one of the pids it was given is gone); a
+    timeout or a command that does not start is None either way.
     """
+    kind = os.path.basename(argv[0])
     if folder in _stalled:
+        missed(kind, "skipped")
         return None
     wait = limit(timeout)
     if wait <= 0:
+        missed(kind, "skipped")
         return None
     try:
         proc = subprocess.Popen(argv, stdout=subprocess.PIPE,
@@ -126,11 +159,12 @@ def command(argv: list, timeout: float = GIT_TIMEOUT, folder: str | None = None)
     except subprocess.TimeoutExpired:
         proc.kill()                     # and not waited for: it may never leave the folder
         proc.stdout.close()
+        missed(kind, "timeout")
         _gave_up(folder)
         return None
     except (OSError, subprocess.SubprocessError):
         return None
-    return out if proc.returncode == 0 else None
+    return out if any_exit or proc.returncode == 0 else None
 
 
 def git(folder: str, *args: str, timeout: float | None = None) -> str | None:
