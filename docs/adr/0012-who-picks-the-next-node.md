@@ -185,8 +185,10 @@ agora의 중복 대응 자체가 `wip`이고 `doc.py`에 태그는 이미 있다
   `docs/references/agora.md`는 v2 대조 정정본을 기준으로 한다.
 - 다른 후보: `docs/references/orca.md`(코디네이터 push, `deps`, 순환 검사, 상주), `moai-adk.md`
   (claim 10분 재전달, TTL 24h), `buzz.md`, `herdr.md` — 조사 노트 기준, 원문 미확인.
-- 스파이크: **S10**(`docs/spikes/S10-swarm-duplication.md`, 미실행). Appendix C를 xsm 규모로 옮긴
-  사전 등록 실험. 결과가 이 ADR의 Round 2 근거가 된다.
+- 스파이크: **S10**(설계 `docs/spikes/S10-swarm-duplication.md`, 실측 `docs/spikes/S10-results.md`).
+  Appendix C를 xsm 규모로 옮긴 사전 등록 실험. 2026-09-22~23에 공동 편집 조건 5·6만 각 6런 돌렸고,
+  사전 등록 기준으로 결론이 나지 않았다(토론 기록 Round 3). 본 실험 조건 1~4와 세션 5개·60분 재실행이
+  남았다.
 - 코드: `xsm/doc.py`(DAG·태그·뷰), `xsm/workers.py`(트리·게이트), `xsm/channel.py`(스레드형 로그),
   `xsm/telemetry.py`(0011, S10 측정 도구).
 
