@@ -1,0 +1,36 @@
+{
+  "observed_epoch": 1793287326.774344,
+  "processes": [
+    {
+      "pid": 23031,
+      "lstart": "Fri Oct 30 00:15:00 2026",
+      "kind": "native",
+      "after_ps": ""
+    },
+    {
+      "pid": 23245,
+      "lstart": "Fri Oct 30 00:15:03 2026",
+      "kind": "MCP",
+      "after_ps": ""
+    },
+    {
+      "pid": 7761,
+      "lstart": "Fri Oct 30 00:11:46 2026",
+      "kind": "network-service",
+      "after_ps": ""
+    },
+    {
+      "pid": 7767,
+      "kind": "engine",
+      "lstart": null,
+      "after_ps": ""
+    },
+    {
+      "pid": 23030,
+      "lstart": "Fri Oct 30 00:15:00 2026",
+      "kind": "FIFO-controller",
+      "after_ps": ""
+    }
+  ],
+  "all_absent": true
+}

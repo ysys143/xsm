@@ -1,0 +1,44 @@
+{
+  "prior_artifacts": [
+    {
+      "path": "deliverables/p13-live/doctor-native-v3-result.json",
+      "sha256": "3d56b6672bdf3b41f85813fdaaebcf2b5162bda9b852f577a9af2a31fe0c08a9"
+    },
+    {
+      "path": "deliverables/p13-live/doctor-native-v3-result.md",
+      "sha256": "982c0b9353f9eb171dbeea876de450ebab2dab06be82a424875912fdd6b75292"
+    },
+    {
+      "path": "deliverables/p13-live/doctor-native-v3-criterion-verdict.md",
+      "sha256": "ff935d074a6086fa8726b3ebde6ca3417cd1b777c44dbd3a4f9c85d1dd61087a"
+    }
+  ],
+  "old_private_raw_verified": [
+    {
+      "role": "stdout",
+      "sha256": "cd130304263cf05c1110cb4aae2bfb50cd9660bf2ea8199b5a8b315b754d1107",
+      "matches_old_record": true
+    },
+    {
+      "role": "stderr",
+      "sha256": "c4454a21207a19811cec58a4624f0a3fc8336d2494da5e424d37deca76e6ad27",
+      "matches_old_record": true
+    },
+    {
+      "role": "metadata",
+      "sha256": "53abf95287f32ba83f8daaae21079af035a888eeb27880425f02535212630b77",
+      "matches_old_record": true
+    },
+    {
+      "role": "observer_script",
+      "sha256": "1426493280081bb07bebbfc43b1389f9dc60b31bb7f573d56a5a12af5398791d",
+      "matches_old_record": true
+    },
+    {
+      "role": "sandbox_policy",
+      "sha256": "3a86464d0d4a2ee14a076749de7ebd81fb144dfed1a1c10dc4c8ef91d2a10b21",
+      "matches_old_record": true
+    }
+  ],
+  "prior_modified": false
+}

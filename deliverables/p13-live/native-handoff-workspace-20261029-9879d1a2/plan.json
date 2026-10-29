@@ -1,0 +1,21 @@
+{
+  "public_root": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/deliverables/p13-live/native-handoff-workspace-20261029-9879d1a2",
+  "private_root": "/private/tmp/native-handoff-workspace-adude01_",
+  "baseline_private_root": "/private/tmp/native-handoff-evidence-zz3nvwnv",
+  "source": "/private/tmp/xsm-p13-local-frozen-dn7tom1y",
+  "CLI": "/opt/homebrew/bin/codex",
+  "version": "0.163.0",
+  "same_profile": "/Users/jaesolshin/.codex-3",
+  "one_changed_CLI_argument": {
+    "name": "--sandbox",
+    "before": "read-only",
+    "after": "workspace-write"
+  },
+  "duplicate_config_argument": "sandbox_mode=read-only retained verbatim; native effective policy must be read back",
+  "proxy_byte_identical": true,
+  "product_instructions_byte_identical": true,
+  "isolated_work_git": "/private/tmp/native-handoff-workspace-adude01_/work",
+  "deadline_utc": "2026-10-28T20:22:15+00:00",
+  "additional_tool_host_failure_retry": false,
+  "additional_human_inputs": 0
+}

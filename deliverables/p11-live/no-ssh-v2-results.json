@@ -1,0 +1,539 @@
+{
+  "scope": "P11 C 0.12.10 one new fixture variant, post-bootstrap owned-process TCP22-denied data-plane; not SSH-free installation/global network isolation/all backends/D12 selection",
+  "passed": true,
+  "checks": {
+    "roundtrip_passed": true,
+    "same_profile_local_peer_native": true,
+    "libproc_ps_baselines": true,
+    "local_generation_unchanged": true,
+    "peer_generation_unchanged": true,
+    "kernel_deny_both": true,
+    "real_ssh_deny_both": true,
+    "native_pid_kernel_deny": true,
+    "native_pid_generation_matches": true,
+    "who_prepared_both_before_ssh_close": true,
+    "team_private_two_nodes": true,
+    "team_endpoints_exact": true,
+    "bootstrap_ssh_closed_before_window": true,
+    "no_window_ssh_spawns": true,
+    "post_window_readback_only": true,
+    "request_sha_received": true,
+    "reply_sha_native_same": true,
+    "reply_to_original": true,
+    "engine_ids_bound": true,
+    "one_native_started_turn": true,
+    "one_native_completed_turn": true,
+    "one_model_attempt": true,
+    "actual_CID_bound": true,
+    "native_success": true,
+    "no_model_tool_events": true,
+    "cleanup_local_peer": true,
+    "native_profile_metadata_unchanged": true
+  },
+  "checks_passed": 27,
+  "old_failure_files_unchanged": {
+    "deliverables/p11-live/no-ssh-native-lib.py": true,
+    "deliverables/p11-live/no-ssh-native-run.py": true,
+    "deliverables/p11-live/no-ssh-native-recover.py": true,
+    "deliverables/p11-live/no-ssh-native-peer.py": true,
+    "deliverables/p11-live/no-ssh-native-summary.md": true,
+    "deliverables/p11-live/no-ssh-native-results.json": true
+  },
+  "product_source_modified": false,
+  "private_roots": {
+    "local": "/private/tmp/p11-C-no-ssh-v2-local-51bqm_cj",
+    "peer": "/private/tmp/p11-C-no-ssh-v2-peer-iorbhq2p"
+  },
+  "engine_sha256": "6ac4bb4837469867edc2dba3cbbd6e4dd9fb18ad0389db69ff6ef21683317a44",
+  "profile": "(version 1) (allow default) (deny network-outbound (remote tcp \"*:22\"))",
+  "capability_handling": {
+    "sha256": "4127cdfcf491a87d26c63df0cd249b2ed40d47f67036bad7dc15125196be8222",
+    "channel": "memory -> SSH stdin -> detached helper stdin -> engine private IPC",
+    "raw_file_log_argv": false
+  },
+  "phase_times": {
+    "bootstrap_ssh_closed": 1793230067.315,
+    "measurement_start": 1793230087.2457652,
+    "peer_received_request": 1793230087.370055,
+    "peer_reply_finished": 1793230094.160466,
+    "measurement_end": 1793230094.230329,
+    "post_window_ssh_start": 1793230147.552742
+  },
+  "measurement_seconds": 6.984564,
+  "SSH": {
+    "local_pre_window_spawns": [
+      {
+        "pid": 33061,
+        "parent": 32952,
+        "at": 1793230050.021081,
+        "exe": "ssh"
+      },
+      {
+        "pid": 33255,
+        "parent": 32952,
+        "at": 1793230067.340636,
+        "exe": "ssh"
+      }
+    ],
+    "peer_pre_window_spawns": [
+      {
+        "pid": 75446,
+        "parent": 74936,
+        "at": 1793230087.15776,
+        "exe": "ssh"
+      }
+    ],
+    "data_window_spawns": [],
+    "data_window_count": 0,
+    "post_window_readback_handle": {
+      "pid": 34509,
+      "ppid": 34507,
+      "uid": 501,
+      "ruid": 501,
+      "status": 2,
+      "pgid": 34507,
+      "start_sec": 1793230147,
+      "start_usec": 553128,
+      "generation": "unix:1793230147.553128",
+      "bytes": 136,
+      "errno": 0
+    },
+    "proof_local": {
+      "peer_ip": "100.77.24.16",
+      "port": 22,
+      "kernel": {
+        "connected": false,
+        "errno": 1,
+        "error_type": "PermissionError"
+      },
+      "ssh_exit": 255,
+      "ssh_errno_denial": true,
+      "ssh_stderr_sha256": "8137a23f506984c42026fe72e2ffec7d5a4bf8c88a0f6a4227249e969e0803c0",
+      "multiplex_disabled": true,
+      "phase": "restricted preflight BEFORE measurement",
+      "ssh_probe_calls": 1
+    },
+    "proof_peer": {
+      "peer_ip": "100.123.30.11",
+      "port": 22,
+      "kernel": {
+        "connected": false,
+        "errno": 1,
+        "error_type": "PermissionError"
+      },
+      "ssh_exit": 255,
+      "ssh_errno_denial": true,
+      "ssh_stderr_sha256": "a7dbbd6a439a103b0d27093f3131919cf707de107ec5eef6219d20bb9688719c",
+      "multiplex_disabled": true,
+      "phase": "restricted preflight BEFORE measurement",
+      "ssh_probe_calls": 1
+    },
+    "multiplex_reuse": false,
+    "global_firewall_changed": false,
+    "existing_user_connections_closed": false
+  },
+  "who": {
+    "local_before_ssh_close": {
+      "session_count": 2,
+      "sessions": [
+        {
+          "person": "p11-c-local",
+          "name": "qa-local",
+          "is_me": true
+        },
+        {
+          "person": "p11-c-peer",
+          "name": "qa-peer",
+          "is_me": false
+        }
+      ]
+    },
+    "peer_before_ssh_close": {
+      "session_count": 2,
+      "sessions": [
+        {
+          "person": "p11-c-peer",
+          "name": "qa-peer",
+          "is_me": true
+        },
+        {
+          "person": "p11-c-local",
+          "name": "qa-local",
+          "is_me": false
+        }
+      ]
+    },
+    "local_after": {
+      "session_count": 2,
+      "sessions": [
+        {
+          "person": "p11-c-local",
+          "name": "qa-local",
+          "is_me": true
+        },
+        {
+          "person": "p11-c-peer",
+          "name": "qa-peer",
+          "is_me": false
+        }
+      ]
+    },
+    "peer_after": {
+      "session_count": 2,
+      "sessions": [
+        {
+          "person": "p11-c-peer",
+          "name": "qa-peer",
+          "is_me": true
+        },
+        {
+          "person": "p11-c-local",
+          "name": "qa-local",
+          "is_me": false
+        }
+      ]
+    }
+  },
+  "team": {
+    "local_before": {
+      "team_id_sha256": "c1ff98a7ad58d511b1bd1df2769898260e57c797d521c8e924dc62be0fadbf11",
+      "member_count": 2,
+      "relay_connected": true,
+      "relay_url_sha256": null,
+      "machines": [
+        {
+          "endpoint_sha256": "2de3bea9593c691d4af860ecb3a76e58b645855e9fd9431030257f8e9f241da2",
+          "is_me": true,
+          "online": true,
+          "link": null,
+          "rtt_ms": null,
+          "verified": false,
+          "has_proof": false
+        },
+        {
+          "endpoint_sha256": "2fc4ef48662516474299bd6ff6834534f1c2d8f2e64ed13b35fc8a858a58bb34",
+          "is_me": false,
+          "online": true,
+          "link": "direct",
+          "rtt_ms": 35,
+          "verified": false,
+          "has_proof": false
+        }
+      ]
+    },
+    "peer_before": {
+      "team_id_sha256": "c1ff98a7ad58d511b1bd1df2769898260e57c797d521c8e924dc62be0fadbf11",
+      "member_count": 2,
+      "relay_connected": true,
+      "relay_url_sha256": null,
+      "machines": [
+        {
+          "endpoint_sha256": "2fc4ef48662516474299bd6ff6834534f1c2d8f2e64ed13b35fc8a858a58bb34",
+          "is_me": true,
+          "online": true,
+          "link": null,
+          "rtt_ms": null,
+          "verified": false,
+          "has_proof": false
+        },
+        {
+          "endpoint_sha256": "2de3bea9593c691d4af860ecb3a76e58b645855e9fd9431030257f8e9f241da2",
+          "is_me": false,
+          "online": true,
+          "link": "direct",
+          "rtt_ms": 85,
+          "verified": false,
+          "has_proof": false
+        }
+      ]
+    },
+    "local_after": {
+      "team_id_sha256": "c1ff98a7ad58d511b1bd1df2769898260e57c797d521c8e924dc62be0fadbf11",
+      "member_count": 2,
+      "relay_connected": true,
+      "relay_url_sha256": null,
+      "machines": [
+        {
+          "endpoint_sha256": "2de3bea9593c691d4af860ecb3a76e58b645855e9fd9431030257f8e9f241da2",
+          "is_me": true,
+          "online": true,
+          "link": null,
+          "rtt_ms": null,
+          "verified": false,
+          "has_proof": false
+        },
+        {
+          "endpoint_sha256": "2fc4ef48662516474299bd6ff6834534f1c2d8f2e64ed13b35fc8a858a58bb34",
+          "is_me": false,
+          "online": true,
+          "link": "direct",
+          "rtt_ms": 30,
+          "verified": false,
+          "has_proof": false
+        }
+      ]
+    },
+    "peer_after": {
+      "team_id_sha256": "c1ff98a7ad58d511b1bd1df2769898260e57c797d521c8e924dc62be0fadbf11",
+      "member_count": 2,
+      "relay_connected": true,
+      "relay_url_sha256": null,
+      "machines": [
+        {
+          "endpoint_sha256": "2fc4ef48662516474299bd6ff6834534f1c2d8f2e64ed13b35fc8a858a58bb34",
+          "is_me": true,
+          "online": true,
+          "link": null,
+          "rtt_ms": null,
+          "verified": false,
+          "has_proof": false
+        },
+        {
+          "endpoint_sha256": "2de3bea9593c691d4af860ecb3a76e58b645855e9fd9431030257f8e9f241da2",
+          "is_me": false,
+          "online": true,
+          "link": "direct",
+          "rtt_ms": 77,
+          "verified": false,
+          "has_proof": false
+        }
+      ]
+    }
+  },
+  "request_id": "01M62DF92GP7M1JVGZTE4MBK5F",
+  "reply_id": "01M62DFFT3A3R88YEZRVJE6N5M",
+  "reply_to": "01M62DF92GP7M1JVGZTE4MBK5F",
+  "request_sha256": "837ccd0b9c717c72343451a35cb3aea070e1fcab5e473b4144e17e4e1656dc0e",
+  "reply_sha256": "de7656614b12b147340977a7c541a9c35bf20a0b0b76ad2b3a0f335cb5d8df92",
+  "answer": {
+    "request_id": "P11-QA-40c1afc34bbd43c4",
+    "phase": "first",
+    "claim_valid": false,
+    "corrected_sum": 4,
+    "counterexample": "사과 2개에 2개를 더하면 5개가 아니라 4개입니다."
+  },
+  "native": {
+    "model_count": 1,
+    "model_attempts": 1,
+    "automatic_retry_count": 0,
+    "CID": "01a184d7-a6ab-7f72-a5e2-10412eff57ab",
+    "handle": {
+      "pid": 75449,
+      "lstart": "unix:1793230087.392092",
+      "alive_after_start": true
+    },
+    "cli_version": "codex-cli 0.163.0",
+    "returncode": 0,
+    "native_elapsed_ms": 6711.396,
+    "tool_events": 0,
+    "turn_started_events": 1,
+    "turn_completed_events": 1,
+    "permissions": "existing C read-only, text-only native fixture; no new grants/allowedTools/auth changes"
+  },
+  "RootMetadata": {
+    "local": {
+      "controller": {
+        "pid": 32952,
+        "ppid": 9102,
+        "uid": 501,
+        "ruid": 501,
+        "status": 2,
+        "pgid": 32952,
+        "start_sec": 1793230046,
+        "start_usec": 925707,
+        "generation": "unix:1793230046.925707",
+        "bytes": 136,
+        "errno": 0
+      },
+      "engine": {
+        "pid": 32986,
+        "ppid": 32952,
+        "uid": 501,
+        "ruid": 501,
+        "status": 2,
+        "pgid": 32986,
+        "start_sec": 1793230048,
+        "start_usec": 169236,
+        "generation": "unix:1793230048.169236",
+        "bytes": 136,
+        "errno": 0
+      },
+      "profile": "(version 1) (allow default) (deny network-outbound (remote tcp \"*:22\"))",
+      "baseline_same_generation": true
+    },
+    "peer_before_native": {
+      "profile": "(version 1) (allow default) (deny network-outbound (remote tcp \"*:22\"))",
+      "helper": {
+        "pid": 74936,
+        "ppid": 1,
+        "uid": 501,
+        "ruid": 501,
+        "status": 2,
+        "pgid": 74936,
+        "start_sec": 1793230063,
+        "start_usec": 847418,
+        "generation": "unix:1793230063.847418",
+        "bytes": 136,
+        "errno": 0
+      },
+      "engine": {
+        "pid": 74993,
+        "ppid": 74936,
+        "uid": 501,
+        "ruid": 501,
+        "status": 2,
+        "pgid": 74993,
+        "start_sec": 1793230066,
+        "start_usec": 399695,
+        "generation": "unix:1793230066.399695",
+        "bytes": 136,
+        "errno": 0
+      },
+      "kernel_ssh_preflight": {
+        "peer_ip": "100.123.30.11",
+        "port": 22,
+        "kernel": {
+          "connected": false,
+          "errno": 1,
+          "error_type": "PermissionError"
+        },
+        "ssh_exit": 255,
+        "ssh_errno_denial": true,
+        "ssh_stderr_sha256": "a7dbbd6a439a103b0d27093f3131919cf707de107ec5eef6219d20bb9688719c",
+        "multiplex_disabled": true,
+        "phase": "restricted preflight BEFORE measurement",
+        "ssh_probe_calls": 1
+      }
+    },
+    "native_pre_exec": {
+      "observed_at": 1793230087.4720798,
+      "own_process": {
+        "pid": 75449,
+        "ppid": 74936,
+        "uid": 501,
+        "ruid": 501,
+        "status": 2,
+        "pgid": 75449,
+        "start_sec": 1793230087,
+        "start_usec": 392092,
+        "generation": "unix:1793230087.392092",
+        "bytes": 136,
+        "errno": 0
+      },
+      "cwd": "/private/tmp/p11-C-no-ssh-v2-peer-iorbhq2p/native/first",
+      "kernel_peer_tcp22": {
+        "connected": false,
+        "errno": 1,
+        "type": "PermissionError"
+      },
+      "inherited_profile": "(version 1) (allow default) (deny network-outbound (remote tcp \"*:22\"))",
+      "source": "nonprivileged native pre-exec probe; exec preserves PID/start; not model-generated metadata",
+      "requested_native_executable": "/opt/homebrew/bin/codex"
+    },
+    "baseline_local": {
+      "own": {
+        "pid": 32952,
+        "ppid": 9102,
+        "uid": 501,
+        "ruid": 501,
+        "status": 2,
+        "pgid": 32952,
+        "start_sec": 1793230046,
+        "start_usec": 925707,
+        "generation": "unix:1793230046.925707",
+        "bytes": 136,
+        "errno": 0
+      },
+      "unrestricted_ps_exit": 0,
+      "unrestricted_ps_lstart": "Thu Oct 29 08:27:26 2026",
+      "match_to_second": true,
+      "baseline_before_restriction": true,
+      "SDK_layout": {
+        "size": 136,
+        "pid": 12,
+        "uid": 20,
+        "start_sec": 120,
+        "start_usec": 128
+      }
+    },
+    "baseline_peer": {
+      "own": {
+        "pid": 74936,
+        "ppid": 74567,
+        "uid": 501,
+        "ruid": 501,
+        "status": 2,
+        "pgid": 74936,
+        "start_sec": 1793230063,
+        "start_usec": 847418,
+        "generation": "unix:1793230063.847418",
+        "bytes": 136,
+        "errno": 0
+      },
+      "unrestricted_ps_exit": 0,
+      "unrestricted_ps_lstart": "Thu Oct 29 08:27:43 2026",
+      "match_to_second": true,
+      "baseline_before_restriction": true,
+      "SDK_layout": {
+        "size": 136,
+        "pid": 12,
+        "uid": 20,
+        "start_sec": 120,
+        "start_usec": 128
+      }
+    },
+    "provenance": "SDK-layout actual libproc observations and actual kernel denial; evaluation metadata, not a native protocol RootMetadata event"
+  },
+  "cleanup": {
+    "local": [
+      {
+        "pid": 32956,
+        "expected_generation": "unix:1793230047.040260",
+        "observed": null,
+        "remaining_matching_generation": false
+      },
+      {
+        "pid": 32986,
+        "expected_generation": "unix:1793230048.169236",
+        "observed": null,
+        "remaining_matching_generation": false
+      },
+      {
+        "pid": 32952,
+        "expected_generation": "unix:1793230046.925707",
+        "observed": null,
+        "remaining_matching_generation": false
+      }
+    ],
+    "peer": [
+      {
+        "pid": 74938,
+        "expected_generation": "unix:1793230063.938033",
+        "observed": null,
+        "remaining_matching_generation": false
+      },
+      {
+        "pid": 74993,
+        "expected_generation": "unix:1793230066.399695",
+        "observed": null,
+        "remaining_matching_generation": false
+      },
+      {
+        "pid": 74936,
+        "expected_generation": "unix:1793230063.847418",
+        "observed": null,
+        "remaining_matching_generation": false
+      },
+      {
+        "pid": 75449,
+        "expected_generation": "unix:1793230087.392092",
+        "observed": null,
+        "remaining_matching_generation": false
+      }
+    ],
+    "local_remaining": 0,
+    "peer_remaining": 0,
+    "peer_ipc_connect_after_stop": 2,
+    "local_ipc_connect_after_stop": 61
+  }
+}

@@ -1,0 +1,322 @@
+{
+  "label": "A23-03 actual native subagent observation; required shared-process cell missing",
+  "result": "native subagents use separate xsm MCP processes in this factory harness; no simulated shared success",
+  "CLI": "codex-cli 0.164.0",
+  "source": "/private/tmp/xsm-p13-postqa-frozen-bukwksw6",
+  "source_unchanged": true,
+  "native_CLI_evaluation_launches": 1,
+  "native_automatic_evaluation_retries": 0,
+  "provider_or_toolhost_failures": 0,
+  "native_conversations": 3,
+  "actual_native_subagents": 2,
+  "native_turn_started_events": 5,
+  "native_turn_complete_events": 3,
+  "turn_completion_limit": "remaining started turns have no task_complete in bounded copied evidence; do not infer backend request counts",
+  "actual_initial_registration_setup_count": 3,
+  "registration_note": "actual native DB source/parent chain and real MCP Codex ancestor only; early first calls may precede setup and are not claimed as post-setup identity proof",
+  "instances": [
+    {
+      "proxy_pid": 42229,
+      "server_pid": 42449,
+      "server_lstart": "Thu Oct 29 05:46:46 2026",
+      "tools_calls": 0,
+      "actual_metadata_CIDs_sha256": [],
+      "labels": [],
+      "native_ancestors": [
+        {
+          "pid": 42107,
+          "lstart": "Thu Oct 29 05:46:46 2026"
+        }
+      ]
+    },
+    {
+      "proxy_pid": 44000,
+      "server_pid": 44002,
+      "server_lstart": "Thu Oct 29 05:47:13 2026",
+      "tools_calls": 14,
+      "actual_metadata_CIDs_sha256": [
+        "4b1f2b3bb7d602c9a82cfffc75349a25974df535f801d0e3393e2e4f456a3587"
+      ],
+      "labels": [
+        "A"
+      ],
+      "native_ancestors": [
+        {
+          "pid": 42107,
+          "lstart": "Thu Oct 29 05:46:46 2026"
+        }
+      ]
+    },
+    {
+      "proxy_pid": 44220,
+      "server_pid": 44222,
+      "server_lstart": "Thu Oct 29 05:47:17 2026",
+      "tools_calls": 15,
+      "actual_metadata_CIDs_sha256": [
+        "4aaf5ecec309efd6d38c850c653f530acd38fbeb90abc128e23d7bb61fc6f44c"
+      ],
+      "labels": [
+        "B"
+      ],
+      "native_ancestors": [
+        {
+          "pid": 42107,
+          "lstart": "Thu Oct 29 05:46:46 2026"
+        }
+      ]
+    }
+  ],
+  "shared_process_with_multiple_actual_CIDs": [],
+  "shared_MCP_ABAB": "not obtained; no process has calls from both actual child CIDs",
+  "cross_process_alternating_subsequence": [
+    {
+      "at": 1793220433.674287,
+      "server_pid": 44002,
+      "CID_sha256": "4b1f2b3bb7d602c9a82cfffc75349a25974df535f801d0e3393e2e4f456a3587",
+      "label": "A",
+      "tool": "xsm_discover"
+    },
+    {
+      "at": 1793220438.063811,
+      "server_pid": 44222,
+      "CID_sha256": "4aaf5ecec309efd6d38c850c653f530acd38fbeb90abc128e23d7bb61fc6f44c",
+      "label": "B",
+      "tool": "xsm_discover"
+    },
+    {
+      "at": 1793220447.625365,
+      "server_pid": 44002,
+      "CID_sha256": "4b1f2b3bb7d602c9a82cfffc75349a25974df535f801d0e3393e2e4f456a3587",
+      "label": "A",
+      "tool": "xsm_discover"
+    },
+    {
+      "at": 1793220452.77682,
+      "server_pid": 44222,
+      "CID_sha256": "4aaf5ecec309efd6d38c850c653f530acd38fbeb90abc128e23d7bb61fc6f44c",
+      "label": "B",
+      "tool": "xsm_ask"
+    }
+  ],
+  "cross_process_sequence_is_not_shared_evidence": true,
+  "actual_tools_calls": 29,
+  "tools_by_name": {
+    "xsm_discover": 5,
+    "xsm_question_status": 4,
+    "xsm_ask": 4,
+    "xsm_inbox": 9,
+    "xsm_files": 4,
+    "xsm_send": 2,
+    "xsm_ack": 1
+  },
+  "request_sender_target_checks": [
+    {
+      "request_id_sha256": "8f6156961ae14486861085f4b3b4b44d2f51ddff81ed96177b1ff673046612c0",
+      "metadata_CID_sha256": "4b1f2b3bb7d602c9a82cfffc75349a25974df535f801d0e3393e2e4f456a3587",
+      "stored_sender_CID_sha256": "4b1f2b3bb7d602c9a82cfffc75349a25974df535f801d0e3393e2e4f456a3587",
+      "stored_target_CID_sha256": "4aaf5ecec309efd6d38c850c653f530acd38fbeb90abc128e23d7bb61fc6f44c",
+      "sender_matches_actual_meta": true,
+      "target_is_other_real_child": true,
+      "home_matches_runtime_and_native_DB": true,
+      "native_replies": 0
+    },
+    {
+      "request_id_sha256": "6f39dc333de2ac34358285f0b4e9c21ad36584f225f16daf814569dd7d3c4151",
+      "metadata_CID_sha256": "4aaf5ecec309efd6d38c850c653f530acd38fbeb90abc128e23d7bb61fc6f44c",
+      "stored_sender_CID_sha256": "4aaf5ecec309efd6d38c850c653f530acd38fbeb90abc128e23d7bb61fc6f44c",
+      "stored_target_CID_sha256": "4b1f2b3bb7d602c9a82cfffc75349a25974df535f801d0e3393e2e4f456a3587",
+      "sender_matches_actual_meta": true,
+      "target_is_other_real_child": true,
+      "home_matches_runtime_and_native_DB": true,
+      "native_replies": 0
+    },
+    {
+      "request_id_sha256": "6f39dc333de2ac34358285f0b4e9c21ad36584f225f16daf814569dd7d3c4151",
+      "metadata_CID_sha256": "4aaf5ecec309efd6d38c850c653f530acd38fbeb90abc128e23d7bb61fc6f44c",
+      "stored_sender_CID_sha256": "4aaf5ecec309efd6d38c850c653f530acd38fbeb90abc128e23d7bb61fc6f44c",
+      "stored_target_CID_sha256": "4b1f2b3bb7d602c9a82cfffc75349a25974df535f801d0e3393e2e4f456a3587",
+      "sender_matches_actual_meta": true,
+      "target_is_other_real_child": true,
+      "home_matches_runtime_and_native_DB": true,
+      "native_replies": 0
+    },
+    {
+      "request_id_sha256": "45fd0ee61b04c2ce7f9f0e9bfa1589703652ce18e9d227389cceef520dd6e629",
+      "metadata_CID_sha256": "4aaf5ecec309efd6d38c850c653f530acd38fbeb90abc128e23d7bb61fc6f44c",
+      "stored_sender_CID_sha256": "4aaf5ecec309efd6d38c850c653f530acd38fbeb90abc128e23d7bb61fc6f44c",
+      "stored_target_CID_sha256": "4b1f2b3bb7d602c9a82cfffc75349a25974df535f801d0e3393e2e4f456a3587",
+      "sender_matches_actual_meta": true,
+      "target_is_other_real_child": true,
+      "home_matches_runtime_and_native_DB": true,
+      "native_replies": 0
+    }
+  ],
+  "actual_file_read_checks": [
+    {
+      "metadata_CID_sha256": "4b1f2b3bb7d602c9a82cfffc75349a25974df535f801d0e3393e2e4f456a3587",
+      "kind": "outgoing",
+      "storage_id_sha256": "1cb8edb412e3b1ac96f3f381d2e9c966f80365c6f949373659f4b7b4d70c5aad",
+      "record_owner_CID_sha256": "4b1f2b3bb7d602c9a82cfffc75349a25974df535f801d0e3393e2e4f456a3587",
+      "owner_matches_actual_meta": true,
+      "isError": false
+    },
+    {
+      "metadata_CID_sha256": "4b1f2b3bb7d602c9a82cfffc75349a25974df535f801d0e3393e2e4f456a3587",
+      "kind": "outgoing",
+      "storage_id_sha256": "1cb8edb412e3b1ac96f3f381d2e9c966f80365c6f949373659f4b7b4d70c5aad",
+      "record_owner_CID_sha256": "4b1f2b3bb7d602c9a82cfffc75349a25974df535f801d0e3393e2e4f456a3587",
+      "owner_matches_actual_meta": true,
+      "isError": false
+    },
+    {
+      "metadata_CID_sha256": "4aaf5ecec309efd6d38c850c653f530acd38fbeb90abc128e23d7bb61fc6f44c",
+      "kind": "outgoing",
+      "storage_id_sha256": "2ad0c6711de052d20f33417b2ba0a4628282cf3b78aa6ff1b83bd9618b44c291",
+      "record_owner_CID_sha256": "4aaf5ecec309efd6d38c850c653f530acd38fbeb90abc128e23d7bb61fc6f44c",
+      "owner_matches_actual_meta": true,
+      "isError": false
+    },
+    {
+      "metadata_CID_sha256": "4aaf5ecec309efd6d38c850c653f530acd38fbeb90abc128e23d7bb61fc6f44c",
+      "kind": "outgoing",
+      "storage_id_sha256": "2ad0c6711de052d20f33417b2ba0a4628282cf3b78aa6ff1b83bd9618b44c291",
+      "record_owner_CID_sha256": "4aaf5ecec309efd6d38c850c653f530acd38fbeb90abc128e23d7bb61fc6f44c",
+      "owner_matches_actual_meta": true,
+      "isError": false
+    }
+  ],
+  "copy_owner_and_body_checks": [
+    {
+      "kind": "outgoing",
+      "storage_id_sha256": "06abea9a0002a374bcdb03d27a0443238cdab3248030fa028dc64b5e40d652a7",
+      "request_id_sha256": "45fd0ee61b04c2ce7f9f0e9bfa1589703652ce18e9d227389cceef520dd6e629",
+      "owner_CID_sha256": "4aaf5ecec309efd6d38c850c653f530acd38fbeb90abc128e23d7bb61fc6f44c",
+      "expected_owner_CID_sha256": "4aaf5ecec309efd6d38c850c653f530acd38fbeb90abc128e23d7bb61fc6f44c",
+      "owner_matches_request_endpoint": true,
+      "home_hash_matches_actual_profile": true,
+      "request_body_SHA_matches": true
+    },
+    {
+      "kind": "outgoing",
+      "storage_id_sha256": "2ad0c6711de052d20f33417b2ba0a4628282cf3b78aa6ff1b83bd9618b44c291",
+      "request_id_sha256": "6f39dc333de2ac34358285f0b4e9c21ad36584f225f16daf814569dd7d3c4151",
+      "owner_CID_sha256": "4aaf5ecec309efd6d38c850c653f530acd38fbeb90abc128e23d7bb61fc6f44c",
+      "expected_owner_CID_sha256": "4aaf5ecec309efd6d38c850c653f530acd38fbeb90abc128e23d7bb61fc6f44c",
+      "owner_matches_request_endpoint": true,
+      "home_hash_matches_actual_profile": true,
+      "request_body_SHA_matches": true
+    },
+    {
+      "kind": "outgoing",
+      "storage_id_sha256": "1cb8edb412e3b1ac96f3f381d2e9c966f80365c6f949373659f4b7b4d70c5aad",
+      "request_id_sha256": "8f6156961ae14486861085f4b3b4b44d2f51ddff81ed96177b1ff673046612c0",
+      "owner_CID_sha256": "4b1f2b3bb7d602c9a82cfffc75349a25974df535f801d0e3393e2e4f456a3587",
+      "expected_owner_CID_sha256": "4b1f2b3bb7d602c9a82cfffc75349a25974df535f801d0e3393e2e4f456a3587",
+      "owner_matches_request_endpoint": true,
+      "home_hash_matches_actual_profile": true,
+      "request_body_SHA_matches": true
+    },
+    {
+      "kind": "incoming",
+      "storage_id_sha256": "ffa7c198691f8be1995931e401b3cec9254cd3347f13b0458227e9da872c2bbe",
+      "request_id_sha256": "6f39dc333de2ac34358285f0b4e9c21ad36584f225f16daf814569dd7d3c4151",
+      "owner_CID_sha256": "4b1f2b3bb7d602c9a82cfffc75349a25974df535f801d0e3393e2e4f456a3587",
+      "expected_owner_CID_sha256": "4b1f2b3bb7d602c9a82cfffc75349a25974df535f801d0e3393e2e4f456a3587",
+      "owner_matches_request_endpoint": true,
+      "home_hash_matches_actual_profile": true,
+      "request_body_SHA_matches": true
+    },
+    {
+      "kind": "incoming",
+      "storage_id_sha256": "a8780f2ec626be717189cd42d6d754a93dece0ccac3ba11e638404c1ffc83b4e",
+      "request_id_sha256": "45fd0ee61b04c2ce7f9f0e9bfa1589703652ce18e9d227389cceef520dd6e629",
+      "owner_CID_sha256": "4b1f2b3bb7d602c9a82cfffc75349a25974df535f801d0e3393e2e4f456a3587",
+      "expected_owner_CID_sha256": "4b1f2b3bb7d602c9a82cfffc75349a25974df535f801d0e3393e2e4f456a3587",
+      "owner_matches_request_endpoint": true,
+      "home_hash_matches_actual_profile": true,
+      "request_body_SHA_matches": true
+    },
+    {
+      "kind": "incoming",
+      "storage_id_sha256": "ebb1da90c3dddd3137d428231af4373cd0042b53216e3bf32ef3f6458d08898d",
+      "request_id_sha256": "8f6156961ae14486861085f4b3b4b44d2f51ddff81ed96177b1ff673046612c0",
+      "owner_CID_sha256": "4aaf5ecec309efd6d38c850c653f530acd38fbeb90abc128e23d7bb61fc6f44c",
+      "expected_owner_CID_sha256": "4aaf5ecec309efd6d38c850c653f530acd38fbeb90abc128e23d7bb61fc6f44c",
+      "owner_matches_request_endpoint": true,
+      "home_hash_matches_actual_profile": true,
+      "request_body_SHA_matches": true
+    }
+  ],
+  "ownership_mismatch_observed": false,
+  "natural_QA_completion": "parent explicitly reports peer reply/memo cross-confirmation incomplete; requests or file storage are not successful business completion",
+  "other_home_same_ID": "not executed: actual shared-process prerequisite not obtained; no copied or fabricated native identity",
+  "inherited_foreign_harness_env": "not injected as separate condition after absent shared prerequisite",
+  "home_evidence": "actual CLI/MCP runtime profile plus exact CID in native state DB; no process/global HOME string used as sole signature basis",
+  "proxy": "per-process exact-byte recording only; no fan-in/metadata/result/body/ACK rewrite",
+  "profile_unchanged": false,
+  "profile_drift_changed_names": [
+    "config.toml"
+  ],
+  "profile_drift_writer": "unknown; no evaluator profile edit; not a profile-unchanged claim",
+  "known_process_final_audit": [
+    {
+      "pid": 42105,
+      "recorded_lstart": "Thu Oct 29 05:46:46 2026",
+      "current_lstart": null,
+      "same_owned_process_alive": false
+    },
+    {
+      "pid": 42229,
+      "recorded_lstart": "Thu Oct 29 05:46:46 2026",
+      "current_lstart": null,
+      "same_owned_process_alive": false
+    },
+    {
+      "pid": 42449,
+      "recorded_lstart": "Thu Oct 29 05:46:46 2026",
+      "current_lstart": null,
+      "same_owned_process_alive": false
+    },
+    {
+      "pid": 42107,
+      "recorded_lstart": "Thu Oct 29 05:46:46 2026",
+      "current_lstart": null,
+      "same_owned_process_alive": false
+    },
+    {
+      "pid": 44000,
+      "recorded_lstart": "Thu Oct 29 05:47:13 2026",
+      "current_lstart": null,
+      "same_owned_process_alive": false
+    },
+    {
+      "pid": 44002,
+      "recorded_lstart": "Thu Oct 29 05:47:13 2026",
+      "current_lstart": null,
+      "same_owned_process_alive": false
+    },
+    {
+      "pid": 44220,
+      "recorded_lstart": "Thu Oct 29 05:47:17 2026",
+      "current_lstart": null,
+      "same_owned_process_alive": false
+    },
+    {
+      "pid": 44222,
+      "recorded_lstart": "Thu Oct 29 05:47:17 2026",
+      "current_lstart": null,
+      "same_owned_process_alive": false
+    }
+  ],
+  "private_raw_root": "/private/tmp/shared-mcp-native-yjfl3mjl",
+  "started_utc": "2026-10-28T20:46:46.243532+00:00",
+  "finished_utc": "2026-10-28T20:50:23.174967+00:00",
+  "A23_03_overall_pass_claimed": false,
+  "product_changes": false,
+  "prior_handoff_UDP_results_overwritten": false,
+  "calls_before_initial_registration_setup_by_CID_sha256": {
+    "4b1f2b3bb7d602c9a82cfffc75349a25974df535f801d0e3393e2e4f456a3587": 1,
+    "4aaf5ecec309efd6d38c850c653f530acd38fbeb90abc128e23d7bb61fc6f44c": 1
+  },
+  "native_commands_with_sensitive_reference": []
+}

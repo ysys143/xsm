@@ -1,0 +1,1625 @@
+{
+  "condition": "udp-blocked-https-proxy-final",
+  "kind": "two-product-services-same-host",
+  "profile": "(version 1)(allow default)(deny network-outbound(remote tcp \"*:*\"))(deny network-outbound(remote udp \"*:*\"))(allow network-outbound(remote tcp \"localhost:64431\"))",
+  "started_at": 1793254338.949193,
+  "udp_policy": "deny-all",
+  "network_egress_allowed_hosts": [
+    "use1-1.relay.n0.iroh.link",
+    "usw1-1.relay.n0.iroh.link",
+    "euc1-1.relay.n0.iroh.link",
+    "aps1-1.relay.n0.iroh.link",
+    "1.1.1.1",
+    "8.8.8.8",
+    "9.9.9.9"
+  ],
+  "preflight": {
+    "exit": 0,
+    "udp_child": [
+      {
+        "family": 2,
+        "sent": false,
+        "errno": 1
+      },
+      {
+        "family": 30,
+        "sent": false,
+        "errno": 1
+      },
+      {
+        "family": 2,
+        "sent": false,
+        "errno": 1
+      }
+    ],
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "attempts": 1,
+  "nodes": [
+    {
+      "service_pid": 12645,
+      "engine_pid": 12648,
+      "endpoint_id": "3529d2d6d0bc7fb3cdff9bd343263e0608d1969e44f1eb9538cef23105997a4e",
+      "relay_mode": "public",
+      "ready_relay_online": false,
+      "bound_addresses": [
+        "0.0.0.0:64626",
+        "[::]:62337"
+      ],
+      "address": {
+        "addrs": [
+          {
+            "Relay": "https://aps1-1.relay.n0.iroh.link./"
+          },
+          {
+            "Ip": "100.123.30.11:64626"
+          },
+          {
+            "Ip": "127.0.0.1:64626"
+          },
+          {
+            "Ip": "192.168.0.11:64626"
+          },
+          {
+            "Ip": "[::1]:62337"
+          }
+        ],
+        "id": "3529d2d6d0bc7fb3cdff9bd343263e0608d1969e44f1eb9538cef23105997a4e"
+      }
+    },
+    {
+      "service_pid": 12646,
+      "engine_pid": 12647,
+      "endpoint_id": "ae1157d3c799e3a242ec77cada1d39407d98f2f98bd22149b029aa4226e59ec5",
+      "relay_mode": "public",
+      "ready_relay_online": false,
+      "bound_addresses": [
+        "0.0.0.0:61096",
+        "[::]:52834"
+      ],
+      "address": {
+        "addrs": [
+          {
+            "Relay": "https://aps1-1.relay.n0.iroh.link./"
+          },
+          {
+            "Ip": "100.123.30.11:61096"
+          },
+          {
+            "Ip": "127.0.0.1:61096"
+          },
+          {
+            "Ip": "192.168.0.11:61096"
+          },
+          {
+            "Ip": "[::1]:52834"
+          }
+        ],
+        "id": "ae1157d3c799e3a242ec77cada1d39407d98f2f98bd22149b029aa4226e59ec5"
+      }
+    }
+  ],
+  "joined_both_active": true,
+  "roundtrips": [
+    {
+      "started_at": 1793254343.5979462,
+      "duration_seconds": 0.853,
+      "response_network_matches": true,
+      "sender": "3529d2d6d0bc7fb3cdff9bd343263e0608d1969e44f1eb9538cef23105997a4e",
+      "receiver": "ae1157d3c799e3a242ec77cada1d39407d98f2f98bd22149b029aa4226e59ec5",
+      "tls_origin": "ae1157d3c799e3a242ec77cada1d39407d98f2f98bd22149b029aa4226e59ec5",
+      "tls_origin_matches": true,
+      "request_sha256": "6f7a56c57de0bbcf328175e883ddec0fe43f3ec8f3ac47e127de368a12b80a81",
+      "response_sha256": "02c749ba798ac32a23ea5926ef56fb597989e7f606a6f3487f385f19412d4892",
+      "request_digest_matches": true,
+      "response_digest_matches": true,
+      "native_event_id": "py-79",
+      "path_source": "this-native-response-event",
+      "path": "relay",
+      "transport": {
+        "fallback_reason": "direct_path_not_selected",
+        "path": "relay",
+        "paths": [
+          {
+            "kind": "relay",
+            "remote": "relay:https://aps1-1.relay.n0.iroh.link./",
+            "selected": true
+          }
+        ],
+        "relay_url": "https://aps1-1.relay.n0.iroh.link./",
+        "selected": "relay",
+        "selection_reason": "iroh_path_selection"
+      }
+    },
+    {
+      "started_at": 1793254344.4512231,
+      "duration_seconds": 0.7,
+      "response_network_matches": true,
+      "sender": "ae1157d3c799e3a242ec77cada1d39407d98f2f98bd22149b029aa4226e59ec5",
+      "receiver": "3529d2d6d0bc7fb3cdff9bd343263e0608d1969e44f1eb9538cef23105997a4e",
+      "tls_origin": "3529d2d6d0bc7fb3cdff9bd343263e0608d1969e44f1eb9538cef23105997a4e",
+      "tls_origin_matches": true,
+      "request_sha256": "fbebcdcf3c6a590c91838168dabc47e4d832a96e6d7ee7a038cdd7eed29182dd",
+      "response_sha256": "9f3043d61f497d9132b2d04c125669c901eb3784e078bb206ee2c6bc656b9e8e",
+      "request_digest_matches": true,
+      "response_digest_matches": true,
+      "native_event_id": "py-135",
+      "path_source": "this-native-response-event",
+      "path": "relay",
+      "transport": {
+        "fallback_reason": "direct_path_not_selected",
+        "path": "relay",
+        "paths": [
+          {
+            "kind": "relay",
+            "remote": "relay:https://aps1-1.relay.n0.iroh.link./",
+            "selected": true
+          }
+        ],
+        "relay_url": "https://aps1-1.relay.n0.iroh.link./",
+        "selected": "relay",
+        "selection_reason": "iroh_path_selection"
+      }
+    }
+  ],
+  "product_relay_pass": true,
+  "owned_engine_tcp_observations": [
+    {
+      "engine_pid": 12648,
+      "exit": 0,
+      "connections": [
+        "xsm-net 12648 jaesolshin   13u  IPv4 0x70a302bc67cef44f      0t0  TCP 127.0.0.1:64434->127.0.0.1:64431 (ESTABLISHED)",
+        "xsm-net 12648 jaesolshin   14u  IPv4 0x41712c3304b9d8e0      0t0  TCP 127.0.0.1:64435->127.0.0.1:64431 (ESTABLISHED)",
+        "xsm-net 12648 jaesolshin   15u  IPv4 0xa0fc2b6bcbe4598d      0t0  TCP 127.0.0.1:64436->127.0.0.1:64431 (ESTABLISHED)",
+        "xsm-net 12648 jaesolshin   16u  IPv4 0x906e79ba145f93c7      0t0  TCP 127.0.0.1:64432->127.0.0.1:64431 (ESTABLISHED)",
+        "xsm-net 12648 jaesolshin   17u  IPv4 0xf90d1d325d28fd58      0t0  TCP 127.0.0.1:64437->127.0.0.1:64431 (ESTABLISHED)",
+        "xsm-net 12648 jaesolshin   18u  IPv4 0xb044da77f14d1145      0t0  TCP 127.0.0.1:64439->127.0.0.1:64431 (ESTABLISHED)",
+        "xsm-net 12648 jaesolshin   19u  IPv4 0x5809f4b0aa44a849      0t0  TCP 127.0.0.1:64438->127.0.0.1:64431 (ESTABLISHED)",
+        "xsm-net 12648 jaesolshin   20u  IPv4 0x18625ca2d0d6b29a      0t0  TCP 127.0.0.1:64440->127.0.0.1:64431 (ESTABLISHED)",
+        "xsm-net 12648 jaesolshin   21u  IPv4 0xa62d7e707c6d91d5      0t0  TCP 127.0.0.1:64542->127.0.0.1:64431 (ESTABLISHED)"
+      ]
+    },
+    {
+      "engine_pid": 12647,
+      "exit": 0,
+      "connections": [
+        "xsm-net 12647 jaesolshin   13u  IPv4 0x62ab08d31ea58b6a      0t0  TCP 127.0.0.1:64447->127.0.0.1:64431 (ESTABLISHED)",
+        "xsm-net 12647 jaesolshin   14u  IPv4 0xa2249a7892ce7758      0t0  TCP 127.0.0.1:64446->127.0.0.1:64431 (ESTABLISHED)",
+        "xsm-net 12647 jaesolshin   15u  IPv4 0xe148cd8c42845daa      0t0  TCP 127.0.0.1:64449->127.0.0.1:64431 (ESTABLISHED)",
+        "xsm-net 12647 jaesolshin   16u  IPv4 0xb2617976aafdbb18      0t0  TCP 127.0.0.1:64448->127.0.0.1:64431 (ESTABLISHED)",
+        "xsm-net 12647 jaesolshin   17u  IPv4  0xd3e93eee0386ed2      0t0  TCP 127.0.0.1:64451->127.0.0.1:64431 (ESTABLISHED)",
+        "xsm-net 12647 jaesolshin   18u  IPv4 0x890c927bd32db708      0t0  TCP 127.0.0.1:64450->127.0.0.1:64431 (ESTABLISHED)",
+        "xsm-net 12647 jaesolshin   19u  IPv4 0x4be55a4fcb085632      0t0  TCP 127.0.0.1:64452->127.0.0.1:64431 (ESTABLISHED)",
+        "xsm-net 12647 jaesolshin   20u  IPv4 0x2a4fac6b7335e3d5      0t0  TCP 127.0.0.1:64453->127.0.0.1:64431 (ESTABLISHED)",
+        "xsm-net 12647 jaesolshin   21u  IPv4 0xe31fc49d95bab6c7      0t0  TCP 127.0.0.1:64544->127.0.0.1:64431 (ESTABLISHED)"
+      ]
+    }
+  ],
+  "result": "pass",
+  "final_bound_addresses": [
+    {
+      "engine_pid": 12648,
+      "addresses": [
+        "0.0.0.0:64626",
+        "[::]:62337"
+      ]
+    },
+    {
+      "engine_pid": 12647,
+      "addresses": [
+        "0.0.0.0:61096",
+        "[::]:52834"
+      ]
+    }
+  ],
+  "cleanup": [
+    {
+      "service_pid": 12645,
+      "engine_pid": 12648,
+      "service_exit": 0,
+      "engine_alive": false,
+      "control_socket_exists": false,
+      "stdout_bytes": 0,
+      "stderr_bytes": 0,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "service_pid": 12646,
+      "engine_pid": 12647,
+      "service_exit": 0,
+      "engine_alive": false,
+      "control_socket_exists": false,
+      "stdout_bytes": 0,
+      "stderr_bytes": 0,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "udp_rebind_after_cleanup": [
+    {
+      "address": "0.0.0.0:64626",
+      "free": true
+    },
+    {
+      "address": "[::]:62337",
+      "free": true
+    },
+    {
+      "address": "0.0.0.0:61096",
+      "free": true
+    },
+    {
+      "address": "[::]:52834",
+      "free": true
+    }
+  ],
+  "observations": [
+    {
+      "role": 0,
+      "records": [
+        {
+          "event": "ping-outbound",
+          "body_sha256": "6f7a56c57de0bbcf328175e883ddec0fe43f3ec8f3ac47e127de368a12b80a81",
+          "peer": "ae1157d3c799e3a242ec77cada1d39407d98f2f98bd22149b029aa4226e59ec5",
+          "engine_pid": 12648,
+          "at": 1793254343.603868,
+          "observer_pid": 12645
+        },
+        {
+          "event": "ping-response",
+          "request_sha256": "6f7a56c57de0bbcf328175e883ddec0fe43f3ec8f3ac47e127de368a12b80a81",
+          "body_sha256": "02c749ba798ac32a23ea5926ef56fb597989e7f606a6f3487f385f19412d4892",
+          "tls_origin": "ae1157d3c799e3a242ec77cada1d39407d98f2f98bd22149b029aa4226e59ec5",
+          "expected_peer": "ae1157d3c799e3a242ec77cada1d39407d98f2f98bd22149b029aa4226e59ec5",
+          "transport": {
+            "fallback_reason": "direct_path_not_selected",
+            "path": "relay",
+            "paths": [
+              {
+                "kind": "relay",
+                "remote": "relay:https://aps1-1.relay.n0.iroh.link./",
+                "selected": true
+              }
+            ],
+            "relay_url": "https://aps1-1.relay.n0.iroh.link./",
+            "selected": "relay",
+            "selection_reason": "iroh_path_selection"
+          },
+          "native_event_id": "py-79",
+          "path_source": "this-native-response-event",
+          "engine_pid": 12648,
+          "at": 1793254344.445235,
+          "observer_pid": 12645
+        },
+        {
+          "event": "ping-inbound",
+          "body_sha256": "fbebcdcf3c6a590c91838168dabc47e4d832a96e6d7ee7a038cdd7eed29182dd",
+          "tls_origin": "ae1157d3c799e3a242ec77cada1d39407d98f2f98bd22149b029aa4226e59ec5",
+          "engine_pid": 12648,
+          "at": 1793254344.9668689,
+          "observer_pid": 12645
+        },
+        {
+          "event": "ping-replied",
+          "request_sha256": "fbebcdcf3c6a590c91838168dabc47e4d832a96e6d7ee7a038cdd7eed29182dd",
+          "body_sha256": "9f3043d61f497d9132b2d04c125669c901eb3784e078bb206ee2c6bc656b9e8e",
+          "tls_origin": "ae1157d3c799e3a242ec77cada1d39407d98f2f98bd22149b029aa4226e59ec5",
+          "engine_pid": 12648,
+          "at": 1793254344.983077,
+          "observer_pid": 12645
+        }
+      ]
+    },
+    {
+      "role": 1,
+      "records": [
+        {
+          "event": "ping-inbound",
+          "body_sha256": "6f7a56c57de0bbcf328175e883ddec0fe43f3ec8f3ac47e127de368a12b80a81",
+          "tls_origin": "3529d2d6d0bc7fb3cdff9bd343263e0608d1969e44f1eb9538cef23105997a4e",
+          "engine_pid": 12647,
+          "at": 1793254344.186677,
+          "observer_pid": 12646
+        },
+        {
+          "event": "ping-replied",
+          "request_sha256": "6f7a56c57de0bbcf328175e883ddec0fe43f3ec8f3ac47e127de368a12b80a81",
+          "body_sha256": "02c749ba798ac32a23ea5926ef56fb597989e7f606a6f3487f385f19412d4892",
+          "tls_origin": "3529d2d6d0bc7fb3cdff9bd343263e0608d1969e44f1eb9538cef23105997a4e",
+          "engine_pid": 12647,
+          "at": 1793254344.199502,
+          "observer_pid": 12646
+        },
+        {
+          "event": "ping-outbound",
+          "body_sha256": "fbebcdcf3c6a590c91838168dabc47e4d832a96e6d7ee7a038cdd7eed29182dd",
+          "peer": "3529d2d6d0bc7fb3cdff9bd343263e0608d1969e44f1eb9538cef23105997a4e",
+          "engine_pid": 12647,
+          "at": 1793254344.456876,
+          "observer_pid": 12646
+        },
+        {
+          "event": "ping-response",
+          "request_sha256": "fbebcdcf3c6a590c91838168dabc47e4d832a96e6d7ee7a038cdd7eed29182dd",
+          "body_sha256": "9f3043d61f497d9132b2d04c125669c901eb3784e078bb206ee2c6bc656b9e8e",
+          "tls_origin": "3529d2d6d0bc7fb3cdff9bd343263e0608d1969e44f1eb9538cef23105997a4e",
+          "expected_peer": "3529d2d6d0bc7fb3cdff9bd343263e0608d1969e44f1eb9538cef23105997a4e",
+          "transport": {
+            "fallback_reason": "direct_path_not_selected",
+            "path": "relay",
+            "paths": [
+              {
+                "kind": "relay",
+                "remote": "relay:https://aps1-1.relay.n0.iroh.link./",
+                "selected": true
+              }
+            ],
+            "relay_url": "https://aps1-1.relay.n0.iroh.link./",
+            "selected": "relay",
+            "selection_reason": "iroh_path_selection"
+          },
+          "native_event_id": "py-135",
+          "path_source": "this-native-response-event",
+          "engine_pid": 12647,
+          "at": 1793254345.145012,
+          "observer_pid": 12646
+        }
+      ]
+    }
+  ],
+  "proxy": {
+    "port": 64431,
+    "records": [
+      {
+        "started_at": 1793254339.1239848,
+        "source": [
+          "127.0.0.1",
+          64432
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 509,
+        "relay_to_client": 3498,
+        "host": "1.1.1.1",
+        "port": 443,
+        "upstream": [
+          "1.1.1.1",
+          443
+        ],
+        "connected_at": 1793254339.2049332,
+        "client_to_relay_first_record_hex": "16030100d5",
+        "client_to_relay_sha256": "88fc2248b17ab6b269dc790cfad05c58c58fefc23844224337d939051d096422",
+        "relay_to_client_first_record_hex": "160303007a",
+        "relay_to_client_sha256": "5269f92b65cfd08ad62261b882c2dd2f4a6a9ff174b43fb660dd2d47bc0a14c1",
+        "status": "closed",
+        "ended_at": 1793254345.341107
+      },
+      {
+        "started_at": 1793254339.125935,
+        "source": [
+          "127.0.0.1",
+          64434
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 509,
+        "relay_to_client": 3510,
+        "host": "1.1.1.1",
+        "port": 443,
+        "upstream": [
+          "1.1.1.1",
+          443
+        ],
+        "connected_at": 1793254339.2050402,
+        "client_to_relay_first_record_hex": "16030100d5",
+        "client_to_relay_sha256": "2dc325e13e8c9d994cc63130255e0f2e32784a879c23b59d1b6d4cd65a76f28a",
+        "relay_to_client_first_record_hex": "160303007a",
+        "relay_to_client_sha256": "6fa18a4d87f24a86d161580452a95d7aef04b1eada083e80568bd8df9e6e80b6",
+        "status": "closed",
+        "ended_at": 1793254345.340585
+      },
+      {
+        "started_at": 1793254339.1260648,
+        "source": [
+          "127.0.0.1",
+          64435
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 533,
+        "relay_to_client": 3498,
+        "host": "1.1.1.1",
+        "port": 443,
+        "upstream": [
+          "1.1.1.1",
+          443
+        ],
+        "connected_at": 1793254339.204979,
+        "client_to_relay_first_record_hex": "16030100d5",
+        "client_to_relay_sha256": "7689c3ffbfaee4a8764549771756830cfed8aef1f02d6b6fdd4418896262bec9",
+        "relay_to_client_first_record_hex": "160303007a",
+        "relay_to_client_sha256": "2cffc5d12251d14db13447e5efe5940a6a86420432077b73eed3a5a078baa5e5",
+        "status": "closed",
+        "ended_at": 1793254345.341402
+      },
+      {
+        "started_at": 1793254339.126154,
+        "source": [
+          "127.0.0.1",
+          64436
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 509,
+        "relay_to_client": 3511,
+        "host": "1.1.1.1",
+        "port": 443,
+        "upstream": [
+          "1.1.1.1",
+          443
+        ],
+        "connected_at": 1793254339.205007,
+        "client_to_relay_first_record_hex": "16030100d5",
+        "client_to_relay_sha256": "f04052268b88766b64a8af7880f1a72a978bcda81c16f33ab7e49d5b7561ddc0",
+        "relay_to_client_first_record_hex": "160303007a",
+        "relay_to_client_sha256": "15a308c477529d9e0e5717d06ccf604334305e85ee91c59fdee44cf00dfb6dbf",
+        "status": "closed",
+        "ended_at": 1793254345.340794
+      },
+      {
+        "started_at": 1793254339.126299,
+        "source": [
+          "127.0.0.1",
+          64437
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 509,
+        "relay_to_client": 3498,
+        "host": "1.1.1.1",
+        "port": 443,
+        "upstream": [
+          "1.1.1.1",
+          443
+        ],
+        "connected_at": 1793254339.20483,
+        "client_to_relay_first_record_hex": "16030100d5",
+        "client_to_relay_sha256": "c990bf171a67fcab103fbc5b783b475d4b08fa7891a63761107ca1d2f6baee9f",
+        "relay_to_client_first_record_hex": "160303007a",
+        "relay_to_client_sha256": "3f3eec4ac8055a6376a9377e2e2f6bf2e4cc315ae31badff5ef5e6197c013af4",
+        "status": "closed",
+        "ended_at": 1793254345.340961
+      },
+      {
+        "started_at": 1793254339.12641,
+        "source": [
+          "127.0.0.1",
+          64438
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 509,
+        "relay_to_client": 3511,
+        "host": "1.1.1.1",
+        "port": 443,
+        "upstream": [
+          "1.1.1.1",
+          443
+        ],
+        "connected_at": 1793254339.205075,
+        "client_to_relay_first_record_hex": "16030100d5",
+        "client_to_relay_sha256": "858447ca3733758872ac4d41100268719d215cda77e94db5fa67badb6741d01b",
+        "relay_to_client_first_record_hex": "160303007a",
+        "relay_to_client_sha256": "6889cc28bac401df346db116e69a8329b221a2b9cc30b315f63152373de0afde",
+        "status": "closed",
+        "ended_at": 1793254345.341019
+      },
+      {
+        "started_at": 1793254339.131244,
+        "source": [
+          "127.0.0.1",
+          64446
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 509,
+        "relay_to_client": 3512,
+        "host": "1.1.1.1",
+        "port": 443,
+        "upstream": [
+          "1.1.1.1",
+          443
+        ],
+        "connected_at": 1793254339.20551,
+        "client_to_relay_first_record_hex": "16030100d5",
+        "client_to_relay_sha256": "95cd3508acbaa0f84629f1470ece062de0b13553cee5cab83ecc672a3c4be09f",
+        "relay_to_client_first_record_hex": "160303007a",
+        "relay_to_client_sha256": "b5e7764319bfc7ced8975242104e5f0e48525b7a5dcfa9cef7948af7e4fca903",
+        "status": "closed",
+        "ended_at": 1793254345.576921
+      },
+      {
+        "started_at": 1793254339.131357,
+        "source": [
+          "127.0.0.1",
+          64447
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 509,
+        "relay_to_client": 3499,
+        "host": "1.1.1.1",
+        "port": 443,
+        "upstream": [
+          "1.1.1.1",
+          443
+        ],
+        "connected_at": 1793254339.205516,
+        "client_to_relay_first_record_hex": "16030100d5",
+        "client_to_relay_sha256": "4b1248dd49c3479aeab7e1a2978bd48a70e6131fce8efdd912bdec38879ee958",
+        "relay_to_client_first_record_hex": "160303007a",
+        "relay_to_client_sha256": "90a316f1c4e2e2195681b60ace560018cb2936222cf5ad6d1bf226b6ab625936",
+        "status": "closed",
+        "ended_at": 1793254345.577277
+      },
+      {
+        "started_at": 1793254339.131419,
+        "source": [
+          "127.0.0.1",
+          64448
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 509,
+        "relay_to_client": 3510,
+        "host": "1.1.1.1",
+        "port": 443,
+        "upstream": [
+          "1.1.1.1",
+          443
+        ],
+        "connected_at": 1793254339.205149,
+        "client_to_relay_first_record_hex": "16030100d5",
+        "client_to_relay_sha256": "fe8fd184f61746de2017bbd5091a27af8fa9acff04af9b9514071b0af14f1d1a",
+        "relay_to_client_first_record_hex": "160303007a",
+        "relay_to_client_sha256": "02db79fc0fb0efaa95f9936db77a5076df96fbd369730349ea826e6f910deead",
+        "status": "closed",
+        "ended_at": 1793254345.5770502
+      },
+      {
+        "started_at": 1793254339.131555,
+        "source": [
+          "127.0.0.1",
+          64449
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 509,
+        "relay_to_client": 3499,
+        "host": "1.1.1.1",
+        "port": 443,
+        "upstream": [
+          "1.1.1.1",
+          443
+        ],
+        "connected_at": 1793254339.205301,
+        "client_to_relay_first_record_hex": "16030100d5",
+        "client_to_relay_sha256": "27001777fa1340e26a45a38054baa49cf49cfb6b3f5cbc8bbf60b4a5ab3a9145",
+        "relay_to_client_first_record_hex": "160303007a",
+        "relay_to_client_sha256": "2cc1a7d2423513535b5cf38e2b98e9add414e7bee965e84544e731c3dcc54c85",
+        "status": "closed",
+        "ended_at": 1793254345.577151
+      },
+      {
+        "started_at": 1793254339.1316102,
+        "source": [
+          "127.0.0.1",
+          64450
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 509,
+        "relay_to_client": 3499,
+        "host": "1.1.1.1",
+        "port": 443,
+        "upstream": [
+          "1.1.1.1",
+          443
+        ],
+        "connected_at": 1793254339.2064588,
+        "client_to_relay_first_record_hex": "16030100d5",
+        "client_to_relay_sha256": "f79e62f7b7b585aee00947217dcdd35c55351a37c589512f545e1442a2869b57",
+        "relay_to_client_first_record_hex": "160303007a",
+        "relay_to_client_sha256": "18428c47b5fa37e6586e28a5e571421e1cea4f1ac3fe32356f957ec839fe26bd",
+        "status": "closed",
+        "ended_at": 1793254345.576972
+      },
+      {
+        "started_at": 1793254339.186625,
+        "source": [
+          "127.0.0.1",
+          64453
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 509,
+        "relay_to_client": 3510,
+        "host": "1.1.1.1",
+        "port": 443,
+        "upstream": [
+          "1.1.1.1",
+          443
+        ],
+        "connected_at": 1793254339.2067552,
+        "client_to_relay_first_record_hex": "16030100d5",
+        "client_to_relay_sha256": "30b56c0ed8076701b60a6e0ac959a0886195c230d08f74bc8c92029940461dae",
+        "relay_to_client_first_record_hex": "160303007a",
+        "relay_to_client_sha256": "8c6f9d9402629397e2cf788d1c30d5b307d4364df04f5a37c2842202f2268e9c",
+        "status": "closed",
+        "ended_at": 1793254345.577008
+      },
+      {
+        "started_at": 1793254339.186709,
+        "source": [
+          "127.0.0.1",
+          64452
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 533,
+        "relay_to_client": 3511,
+        "host": "1.1.1.1",
+        "port": 443,
+        "upstream": [
+          "1.1.1.1",
+          443
+        ],
+        "connected_at": 1793254339.205635,
+        "client_to_relay_first_record_hex": "16030100d5",
+        "client_to_relay_sha256": "00466fc76405895c7451cade0ec3949776e335794adb38e26487479a847395a8",
+        "relay_to_client_first_record_hex": "160303007a",
+        "relay_to_client_sha256": "38e46d3bd89fb96da460c8e2d3169316e89989262288455b42a31939513c7151",
+        "status": "closed",
+        "ended_at": 1793254345.577397
+      },
+      {
+        "started_at": 1793254339.186878,
+        "source": [
+          "127.0.0.1",
+          64451
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 533,
+        "relay_to_client": 3499,
+        "host": "1.1.1.1",
+        "port": 443,
+        "upstream": [
+          "1.1.1.1",
+          443
+        ],
+        "connected_at": 1793254339.206731,
+        "client_to_relay_first_record_hex": "16030100d5",
+        "client_to_relay_sha256": "50d508882385c7b0c1b3c30acefd2cb02f38f50ceda4237a3f98b069b0775899",
+        "relay_to_client_first_record_hex": "160303007a",
+        "relay_to_client_sha256": "1b96218ff490612ee74ba9d6aeb6055c488a7306ad1527f95b93eb7b3ae5afc2",
+        "status": "closed",
+        "ended_at": 1793254345.5772521
+      },
+      {
+        "started_at": 1793254339.186955,
+        "source": [
+          "127.0.0.1",
+          64440
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 509,
+        "relay_to_client": 3500,
+        "host": "1.1.1.1",
+        "port": 443,
+        "upstream": [
+          "1.1.1.1",
+          443
+        ],
+        "connected_at": 1793254339.206506,
+        "client_to_relay_first_record_hex": "16030100d5",
+        "client_to_relay_sha256": "04bb360985bff0ec74abae8ca8035b3980992360b85a9bc08d737676f9d47df6",
+        "relay_to_client_first_record_hex": "160303007a",
+        "relay_to_client_sha256": "4400a1bb42985ecad8ea1ffa106abc7e8b57b3a36d8b734a0b52fb5d1fbb7666",
+        "status": "closed",
+        "ended_at": 1793254345.340642
+      },
+      {
+        "started_at": 1793254339.187079,
+        "source": [
+          "127.0.0.1",
+          64439
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 533,
+        "relay_to_client": 3511,
+        "host": "1.1.1.1",
+        "port": 443,
+        "upstream": [
+          "1.1.1.1",
+          443
+        ],
+        "connected_at": 1793254339.205665,
+        "client_to_relay_first_record_hex": "16030100d5",
+        "client_to_relay_sha256": "90a5fdef2baa4bdf6dfc347e3f987154014c66c909702954b9e7c20c5e7d17c6",
+        "relay_to_client_first_record_hex": "160303007a",
+        "relay_to_client_sha256": "13e81a6aaef721745a06c4c73ce183bff7b1ef5dc2540eb5f97ccd026c5ed565",
+        "status": "closed",
+        "ended_at": 1793254345.341277
+      },
+      {
+        "started_at": 1793254339.225049,
+        "source": [
+          "127.0.0.1",
+          64464
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 218,
+        "relay_to_client": 0,
+        "host": "8.8.8.8",
+        "port": 443,
+        "upstream": [
+          "8.8.8.8",
+          443
+        ],
+        "connected_at": 1793254339.2591228,
+        "client_to_relay_first_record_hex": "16030100d5",
+        "client_to_relay_sha256": "3386f57475c2854b5603907e22cb4fedd690386d182c79228a6685db0a418140",
+        "status": "closed",
+        "ended_at": 1793254339.2804968
+      },
+      {
+        "started_at": 1793254339.227802,
+        "source": [
+          "127.0.0.1",
+          64466
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 218,
+        "relay_to_client": 0,
+        "host": "8.8.8.8",
+        "port": 443,
+        "upstream": [
+          "8.8.8.8",
+          443
+        ],
+        "connected_at": 1793254339.268558,
+        "client_to_relay_first_record_hex": "16030100d5",
+        "client_to_relay_sha256": "c0dc38bed9f32f1fc132099d558d4b0bb991bd2d0c8ca63780c03ad632bb4cfe",
+        "status": "closed",
+        "ended_at": 1793254339.285405
+      },
+      {
+        "started_at": 1793254339.227944,
+        "source": [
+          "127.0.0.1",
+          64467
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "8.8.8.8",
+        "port": 443,
+        "upstream": [
+          "8.8.8.8",
+          443
+        ],
+        "connected_at": 1793254339.26894,
+        "status": "closed",
+        "ended_at": 1793254339.2690072
+      },
+      {
+        "started_at": 1793254339.2280252,
+        "source": [
+          "127.0.0.1",
+          64468
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 218,
+        "relay_to_client": 0,
+        "host": "8.8.8.8",
+        "port": 443,
+        "upstream": [
+          "8.8.8.8",
+          443
+        ],
+        "connected_at": 1793254339.2684228,
+        "client_to_relay_first_record_hex": "16030100d5",
+        "client_to_relay_sha256": "a80b42dda2ff406088247bec44e2a5d6618dabc4976224fc1e2b6cd12029a3b2",
+        "status": "closed",
+        "ended_at": 1793254339.285232
+      },
+      {
+        "started_at": 1793254339.2282019,
+        "source": [
+          "127.0.0.1",
+          64469
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 218,
+        "relay_to_client": 0,
+        "host": "8.8.8.8",
+        "port": 443,
+        "upstream": [
+          "8.8.8.8",
+          443
+        ],
+        "connected_at": 1793254339.268621,
+        "client_to_relay_first_record_hex": "16030100d5",
+        "client_to_relay_sha256": "6a57847df56a848f99c3209797a8a50e318a28bcba2e1d1cd9ef132723a9fec4",
+        "status": "closed",
+        "ended_at": 1793254339.280333
+      },
+      {
+        "started_at": 1793254339.2282848,
+        "source": [
+          "127.0.0.1",
+          64470
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 218,
+        "relay_to_client": 0,
+        "host": "8.8.8.8",
+        "port": 443,
+        "upstream": [
+          "8.8.8.8",
+          443
+        ],
+        "connected_at": 1793254339.268832,
+        "client_to_relay_first_record_hex": "16030100d5",
+        "client_to_relay_sha256": "f5383836b4f9d810bf7c46e650d40028c4ed997736bd5684c8d59017b32393d9",
+        "status": "closed",
+        "ended_at": 1793254339.285355
+      },
+      {
+        "started_at": 1793254339.23203,
+        "source": [
+          "127.0.0.1",
+          64478
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "8.8.8.8",
+        "port": 443,
+        "upstream": [
+          "8.8.8.8",
+          443
+        ],
+        "connected_at": 1793254339.2686741,
+        "status": "closed",
+        "ended_at": 1793254339.268712
+      },
+      {
+        "started_at": 1793254339.232098,
+        "source": [
+          "127.0.0.1",
+          64479
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "8.8.8.8",
+        "port": 443,
+        "upstream": [
+          "8.8.8.8",
+          443
+        ],
+        "connected_at": 1793254339.269156,
+        "status": "ConnectionResetError",
+        "ended_at": 1793254339.269266
+      },
+      {
+        "started_at": 1793254339.2325602,
+        "source": [
+          "127.0.0.1",
+          64480
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "8.8.8.8",
+        "port": 443,
+        "upstream": [
+          "8.8.8.8",
+          443
+        ],
+        "connected_at": 1793254339.26893,
+        "status": "ConnectionResetError",
+        "ended_at": 1793254339.26914
+      },
+      {
+        "started_at": 1793254339.232687,
+        "source": [
+          "127.0.0.1",
+          64481
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 218,
+        "relay_to_client": 0,
+        "host": "8.8.8.8",
+        "port": 443,
+        "upstream": [
+          "8.8.8.8",
+          443
+        ],
+        "connected_at": 1793254339.271942,
+        "client_to_relay_first_record_hex": "16030100d5",
+        "client_to_relay_sha256": "268a10996c0f8e75900d974212be3b2cf989b30fdec64e2dcc8debb63148ae37",
+        "status": "closed",
+        "ended_at": 1793254339.280396
+      },
+      {
+        "started_at": 1793254339.2327838,
+        "source": [
+          "127.0.0.1",
+          64482
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "8.8.8.8",
+        "port": 443,
+        "upstream": [
+          "8.8.8.8",
+          443
+        ],
+        "connected_at": 1793254339.273652,
+        "status": "closed",
+        "ended_at": 1793254339.273684
+      },
+      {
+        "started_at": 1793254339.232901,
+        "source": [
+          "127.0.0.1",
+          64483
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "8.8.8.8",
+        "port": 443,
+        "upstream": [
+          "8.8.8.8",
+          443
+        ],
+        "connected_at": 1793254339.2718022,
+        "status": "closed",
+        "ended_at": 1793254339.271839
+      },
+      {
+        "started_at": 1793254339.233005,
+        "source": [
+          "127.0.0.1",
+          64484
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "8.8.8.8",
+        "port": 443,
+        "upstream": [
+          "8.8.8.8",
+          443
+        ],
+        "connected_at": 1793254339.271884,
+        "status": "ConnectionResetError",
+        "ended_at": 1793254339.2719722
+      },
+      {
+        "started_at": 1793254339.318392,
+        "source": [
+          "127.0.0.1",
+          64492
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 447,
+        "relay_to_client": 4263,
+        "host": "usw1-1.relay.n0.iroh.link",
+        "port": 443,
+        "upstream": [
+          "5.78.69.43",
+          443
+        ],
+        "connected_at": 1793254339.463287,
+        "client_to_relay_first_record_hex": "16030100f7",
+        "client_to_relay_sha256": "bf464a40babcd7b929568bb26870f4001bb8a0d698542e7958286d901bc7b2de",
+        "relay_to_client_first_record_hex": "160303007a",
+        "relay_to_client_sha256": "9c4429211900715c7230331a23c1852f0d1667186c16c4ecc3646e72240a5533",
+        "status": "closed",
+        "ended_at": 1793254340.0288792
+      },
+      {
+        "started_at": 1793254339.318966,
+        "source": [
+          "127.0.0.1",
+          64493
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 447,
+        "relay_to_client": 4266,
+        "host": "aps1-1.relay.n0.iroh.link",
+        "port": 443,
+        "upstream": [
+          "5.223.65.62",
+          443
+        ],
+        "connected_at": 1793254339.412491,
+        "client_to_relay_first_record_hex": "16030100f7",
+        "client_to_relay_sha256": "b01d8711724dbb5fda43fe0877865e001d258e3b152d9cd6beb9f27b9170948b",
+        "relay_to_client_first_record_hex": "160303007a",
+        "relay_to_client_sha256": "5a288e0137ed7a366c1566d915365fd45c601088765e83f5071afe37894bf3ee",
+        "status": "closed",
+        "ended_at": 1793254339.833353
+      },
+      {
+        "started_at": 1793254339.319318,
+        "source": [
+          "127.0.0.1",
+          64494
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 447,
+        "relay_to_client": 4264,
+        "host": "euc1-1.relay.n0.iroh.link",
+        "port": 443,
+        "upstream": [
+          "91.99.237.97",
+          443
+        ],
+        "connected_at": 1793254339.734339,
+        "client_to_relay_first_record_hex": "16030100f7",
+        "client_to_relay_sha256": "424b33a8860f849dfd6a502e5f9d95bb7eebfa40b29df6130bc71a34cc781070",
+        "relay_to_client_first_record_hex": "160303007a",
+        "relay_to_client_sha256": "55ac553206bf914c10dec097fb0b342e099296f6051db312bc1aea4bab544a1b",
+        "status": "closed",
+        "ended_at": 1793254340.776215
+      },
+      {
+        "started_at": 1793254339.319937,
+        "source": [
+          "127.0.0.1",
+          64495
+        ],
+        "method": null,
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "status": "not-connect",
+        "ended_at": 1793254339.320101
+      },
+      {
+        "started_at": 1793254339.320531,
+        "source": [
+          "127.0.0.1",
+          64496
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 447,
+        "relay_to_client": 4264,
+        "host": "use1-1.relay.n0.iroh.link",
+        "port": 443,
+        "upstream": [
+          "87.99.151.110",
+          443
+        ],
+        "connected_at": 1793254339.514585,
+        "client_to_relay_first_record_hex": "16030100f7",
+        "client_to_relay_sha256": "71e7fda00ae66881333e738aef363e347d362d0bf0f58b3986e5c49fabbbfed0",
+        "relay_to_client_first_record_hex": "160303007a",
+        "relay_to_client_sha256": "9278221589f96577c548f7517b7c87bfa267ca1bc3fe85edfdac458a8fd36a35",
+        "status": "closed",
+        "ended_at": 1793254340.254271
+      },
+      {
+        "started_at": 1793254339.3225129,
+        "source": [
+          "127.0.0.1",
+          64501
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 447,
+        "relay_to_client": 4264,
+        "host": "aps1-1.relay.n0.iroh.link",
+        "port": 443,
+        "upstream": [
+          "5.223.65.62",
+          443
+        ],
+        "connected_at": 1793254339.409918,
+        "client_to_relay_first_record_hex": "16030100f7",
+        "client_to_relay_sha256": "68891136183495fa6f3a6da05d4f06e9b2e95892dc3ec354f770fe34c96b0179",
+        "relay_to_client_first_record_hex": "160303007a",
+        "relay_to_client_sha256": "4d410cf8136e7c133fdc1e4b49357eebe81773c72cd0cb8adc5a696f6ebc135f",
+        "status": "closed",
+        "ended_at": 1793254339.816121
+      },
+      {
+        "started_at": 1793254339.322853,
+        "source": [
+          "127.0.0.1",
+          64502
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 447,
+        "relay_to_client": 4264,
+        "host": "usw1-1.relay.n0.iroh.link",
+        "port": 443,
+        "upstream": [
+          "5.78.69.43",
+          443
+        ],
+        "connected_at": 1793254339.476665,
+        "client_to_relay_first_record_hex": "16030100f7",
+        "client_to_relay_sha256": "06eb4d7750ae94f27009e482687bc9ff5b71124308718e89e834e15adaf08268",
+        "relay_to_client_first_record_hex": "160303007a",
+        "relay_to_client_sha256": "530a124553daccea2772ad75b6dc03b6f12ad19b9c1a4a3be9af28f032e562a8",
+        "status": "closed",
+        "ended_at": 1793254340.0470479
+      },
+      {
+        "started_at": 1793254339.32319,
+        "source": [
+          "127.0.0.1",
+          64503
+        ],
+        "method": null,
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "status": "not-connect",
+        "ended_at": 1793254339.3232481
+      },
+      {
+        "started_at": 1793254339.323477,
+        "source": [
+          "127.0.0.1",
+          64504
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 447,
+        "relay_to_client": 4263,
+        "host": "euc1-1.relay.n0.iroh.link",
+        "port": 443,
+        "upstream": [
+          "91.99.237.97",
+          443
+        ],
+        "connected_at": 1793254339.734132,
+        "client_to_relay_first_record_hex": "16030100f7",
+        "client_to_relay_sha256": "b80d8677057219a76d3d67fac39d2aca1c1b2558a2a8cb5662ecb8f17cc84ec2",
+        "relay_to_client_first_record_hex": "160303007a",
+        "relay_to_client_sha256": "87bc6d55e5d033dde6c621c470d5f6f31b9a5f8000981af36e80dc44b8b1e19a",
+        "status": "closed",
+        "ended_at": 1793254340.621048
+      },
+      {
+        "started_at": 1793254339.323869,
+        "source": [
+          "127.0.0.1",
+          64505
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 447,
+        "relay_to_client": 4264,
+        "host": "use1-1.relay.n0.iroh.link",
+        "port": 443,
+        "upstream": [
+          "87.99.151.110",
+          443
+        ],
+        "connected_at": 1793254339.531976,
+        "client_to_relay_first_record_hex": "16030100f7",
+        "client_to_relay_sha256": "f3ade78d297e8ef1484a14ff4d9df4bb4b575c2f784d8376f3da81c2977385ba",
+        "relay_to_client_first_record_hex": "160303007a",
+        "relay_to_client_sha256": "e7cd853987b3a7f170d137283e9be5a3ff3684c5afde4f3a597ff4e11055bb86",
+        "status": "closed",
+        "ended_at": 1793254340.2549388
+      },
+      {
+        "started_at": 1793254339.417448,
+        "source": [
+          "127.0.0.1",
+          64511
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 447,
+        "relay_to_client": 4262,
+        "host": "euc1-1.relay.n0.iroh.link",
+        "port": 443,
+        "upstream": [
+          "91.99.237.97",
+          443
+        ],
+        "connected_at": 1793254339.73373,
+        "client_to_relay_first_record_hex": "16030100f7",
+        "client_to_relay_sha256": "7006f6c25c88687a1c5da7abbb8f0c11b030f78ac452cd828a365cb309cee106",
+        "relay_to_client_first_record_hex": "160303007a",
+        "relay_to_client_sha256": "6a07045921177445c9b9671ad5901c33aabe2190f9e747c52d38e79d01fe1e2f",
+        "status": "closed",
+        "ended_at": 1793254340.776225
+      },
+      {
+        "started_at": 1793254339.417769,
+        "source": [
+          "127.0.0.1",
+          64510
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 447,
+        "relay_to_client": 4263,
+        "host": "usw1-1.relay.n0.iroh.link",
+        "port": 443,
+        "upstream": [
+          "5.78.69.43",
+          443
+        ],
+        "connected_at": 1793254339.565836,
+        "client_to_relay_first_record_hex": "16030100f7",
+        "client_to_relay_sha256": "790e4e5c2c91fb2ffe8e802cfc7ea6b4ae214883ce58c4c51e45ec9c73ce969c",
+        "relay_to_client_first_record_hex": "160303007a",
+        "relay_to_client_sha256": "9f3833b9cf9c908d97071199bb74548beb0a7c3b06a744d9c530cb57a86e0599",
+        "status": "closed",
+        "ended_at": 1793254340.0436978
+      },
+      {
+        "started_at": 1793254339.4184399,
+        "source": [
+          "127.0.0.1",
+          64512
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 447,
+        "relay_to_client": 4266,
+        "host": "aps1-1.relay.n0.iroh.link",
+        "port": 443,
+        "upstream": [
+          "5.223.65.62",
+          443
+        ],
+        "connected_at": 1793254339.5113149,
+        "client_to_relay_first_record_hex": "16030100f7",
+        "client_to_relay_sha256": "4a3cef025ffa57627c691c203127f67ba3c081f04b96a8f72d4049abf5b12e17",
+        "relay_to_client_first_record_hex": "160303007a",
+        "relay_to_client_sha256": "2b160d1c47c2242839ad0e4c0f960c89ba89fae1f4ff047a07faeae538ea9034",
+        "status": "closed",
+        "ended_at": 1793254339.937137
+      },
+      {
+        "started_at": 1793254339.418668,
+        "source": [
+          "127.0.0.1",
+          64513
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 447,
+        "relay_to_client": 4265,
+        "host": "use1-1.relay.n0.iroh.link",
+        "port": 443,
+        "upstream": [
+          "87.99.151.110",
+          443
+        ],
+        "connected_at": 1793254339.7315571,
+        "client_to_relay_first_record_hex": "16030100f7",
+        "client_to_relay_sha256": "99813b54f7231dab558aa1b4a2d27bef0a75f007d909d7b47b13176a8ecaaaed",
+        "relay_to_client_first_record_hex": "160303007a",
+        "relay_to_client_sha256": "56eedef89fe333d2e1fb5466fa8eaa09146e67606f05722a9b912ecbf804d947",
+        "status": "closed",
+        "ended_at": 1793254340.471735
+      },
+      {
+        "started_at": 1793254339.421744,
+        "source": [
+          "127.0.0.1",
+          64518
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 447,
+        "relay_to_client": 4263,
+        "host": "euc1-1.relay.n0.iroh.link",
+        "port": 443,
+        "upstream": [
+          "91.99.237.97",
+          443
+        ],
+        "connected_at": 1793254339.7329679,
+        "client_to_relay_first_record_hex": "16030100f7",
+        "client_to_relay_sha256": "0d1194d250626b280c71ba94be5a1ad5f9cb8309f75f6abe05a7a133ff5245ff",
+        "relay_to_client_first_record_hex": "160303007a",
+        "relay_to_client_sha256": "53b2765189e4339831357627710266c88793debf864ac478ae4cf30d958314d1",
+        "status": "closed",
+        "ended_at": 1793254340.61664
+      },
+      {
+        "started_at": 1793254339.422101,
+        "source": [
+          "127.0.0.1",
+          64519
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 447,
+        "relay_to_client": 4263,
+        "host": "usw1-1.relay.n0.iroh.link",
+        "port": 443,
+        "upstream": [
+          "5.78.69.43",
+          443
+        ],
+        "connected_at": 1793254339.728044,
+        "client_to_relay_first_record_hex": "16030100f7",
+        "client_to_relay_sha256": "186be75bfe5b6259ebe9650d396c430f6c6f93179be295aaba9d3741e436c0dd",
+        "relay_to_client_first_record_hex": "160303007a",
+        "relay_to_client_sha256": "6d9d74b1573d59838752c7073f3e1a66d1eb88667c9ad1fc43f2a0b55e8c020d",
+        "status": "closed",
+        "ended_at": 1793254340.255391
+      },
+      {
+        "started_at": 1793254339.422533,
+        "source": [
+          "127.0.0.1",
+          64520
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 447,
+        "relay_to_client": 4265,
+        "host": "aps1-1.relay.n0.iroh.link",
+        "port": 443,
+        "upstream": [
+          "5.223.65.62",
+          443
+        ],
+        "connected_at": 1793254339.511156,
+        "client_to_relay_first_record_hex": "16030100f7",
+        "client_to_relay_sha256": "5b45d45bf6db8aca1e14aff9340efc7d1e5ed3f04877fd1b052b7cf0a2845d1a",
+        "relay_to_client_first_record_hex": "160303007a",
+        "relay_to_client_sha256": "2150d21d28e643cc89b9a406cb511a06511fa07bfa56e5f70d5c1a30d3ed9dd3",
+        "status": "closed",
+        "ended_at": 1793254339.9171112
+      },
+      {
+        "started_at": 1793254339.4227269,
+        "source": [
+          "127.0.0.1",
+          64521
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 447,
+        "relay_to_client": 4265,
+        "host": "use1-1.relay.n0.iroh.link",
+        "port": 443,
+        "upstream": [
+          "87.99.151.110",
+          443
+        ],
+        "connected_at": 1793254339.731536,
+        "client_to_relay_first_record_hex": "16030100f7",
+        "client_to_relay_sha256": "1356d153495310ef632fc63bfd7094030c85393c76c1669c8ce48511f74b834e",
+        "relay_to_client_first_record_hex": "160303007a",
+        "relay_to_client_sha256": "299c55f9a42b2482c49898efcbcdedab4aceffba96b9cd190cf69cd048715003",
+        "status": "closed",
+        "ended_at": 1793254340.465651
+      },
+      {
+        "started_at": 1793254339.516535,
+        "source": [
+          "127.0.0.1",
+          64526
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 447,
+        "relay_to_client": 4263,
+        "host": "usw1-1.relay.n0.iroh.link",
+        "port": 443,
+        "upstream": [
+          "5.78.69.43",
+          443
+        ],
+        "connected_at": 1793254339.731369,
+        "client_to_relay_first_record_hex": "16030100f7",
+        "client_to_relay_sha256": "1a188e6e818bb33b2abed0ae8aac094e99e82d4b6888c9c0265f2004ad1f4853",
+        "relay_to_client_first_record_hex": "160303007a",
+        "relay_to_client_sha256": "63bdaecb6e38c20255ed152ef277016ccdc8c8e221c80f8493d3b2716d8eca35",
+        "status": "closed",
+        "ended_at": 1793254340.255441
+      },
+      {
+        "started_at": 1793254339.517277,
+        "source": [
+          "127.0.0.1",
+          64527
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 447,
+        "relay_to_client": 4264,
+        "host": "aps1-1.relay.n0.iroh.link",
+        "port": 443,
+        "upstream": [
+          "5.223.65.62",
+          443
+        ],
+        "connected_at": 1793254339.7289321,
+        "client_to_relay_first_record_hex": "16030100f7",
+        "client_to_relay_sha256": "36b04561e875ddd6422230c9e73b33e33ece47ed8a43f722375856a4bfaa7764",
+        "relay_to_client_first_record_hex": "160303007a",
+        "relay_to_client_sha256": "f1797874cd75eb1ff654e6a3ec904a33e54f81dd3952144c0cd66e09464b9b68",
+        "status": "closed",
+        "ended_at": 1793254340.009006
+      },
+      {
+        "started_at": 1793254339.517426,
+        "source": [
+          "127.0.0.1",
+          64528
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 447,
+        "relay_to_client": 4264,
+        "host": "euc1-1.relay.n0.iroh.link",
+        "port": 443,
+        "upstream": [
+          "91.99.237.97",
+          443
+        ],
+        "connected_at": 1793254339.8227782,
+        "client_to_relay_first_record_hex": "16030100f7",
+        "client_to_relay_sha256": "bc103cb186b3a14465e5ccee1e5b76b1445b449d571ab33709e75de4dae999cd",
+        "relay_to_client_first_record_hex": "160303007a",
+        "relay_to_client_sha256": "263b808bd26187aa5e96dfe68aa68e6b157ce98cca8c7419073f4e4f1c9b7a11",
+        "status": "closed",
+        "ended_at": 1793254340.872916
+      },
+      {
+        "started_at": 1793254339.5176268,
+        "source": [
+          "127.0.0.1",
+          64529
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 447,
+        "relay_to_client": 4264,
+        "host": "use1-1.relay.n0.iroh.link",
+        "port": 443,
+        "upstream": [
+          "87.99.151.110",
+          443
+        ],
+        "connected_at": 1793254339.7438452,
+        "client_to_relay_first_record_hex": "16030100f7",
+        "client_to_relay_sha256": "6c8a03d4265227b1d8bad26db6535c0788c652ac02f947b8c8f8bf6556c45c81",
+        "relay_to_client_first_record_hex": "160303007a",
+        "relay_to_client_sha256": "e306c8542ebaafe50603b01279500fd1bc1fe7ebbb171f69b01045f33f3129ce",
+        "status": "closed",
+        "ended_at": 1793254340.475956
+      },
+      {
+        "started_at": 1793254339.5221481,
+        "source": [
+          "127.0.0.1",
+          64535
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 447,
+        "relay_to_client": 4263,
+        "host": "usw1-1.relay.n0.iroh.link",
+        "port": 443,
+        "upstream": [
+          "5.78.69.43",
+          443
+        ],
+        "connected_at": 1793254339.731788,
+        "client_to_relay_first_record_hex": "16030100f7",
+        "client_to_relay_sha256": "e7c0fbaf20a9f51a351991ba161dace1fb30579ddcc1894f8bbd4b83dd2e26f0",
+        "relay_to_client_first_record_hex": "160303007a",
+        "relay_to_client_sha256": "2e011914ff96fff3783915f8bf1dc9b2c608555ea1a065857c162b810ec5bdde",
+        "status": "closed",
+        "ended_at": 1793254340.255796
+      },
+      {
+        "started_at": 1793254339.5223098,
+        "source": [
+          "127.0.0.1",
+          64534
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 447,
+        "relay_to_client": 4263,
+        "host": "euc1-1.relay.n0.iroh.link",
+        "port": 443,
+        "upstream": [
+          "91.99.237.97",
+          443
+        ],
+        "connected_at": 1793254339.8143392,
+        "client_to_relay_first_record_hex": "16030100f7",
+        "client_to_relay_sha256": "c41bb786cfb09b7dc0dd26f15304933b8c8e15793d910c6daee8bd9e7a6f51a7",
+        "relay_to_client_first_record_hex": "160303007a",
+        "relay_to_client_sha256": "29db056c0fd7fce50d59f76d214e8515c5f147e55d4299c0fe00e99dcc31909f",
+        "status": "closed",
+        "ended_at": 1793254340.8455832
+      },
+      {
+        "started_at": 1793254339.5226712,
+        "source": [
+          "127.0.0.1",
+          64536
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 538,
+        "relay_to_client": 748,
+        "host": "aps1-1.relay.n0.iroh.link",
+        "port": 443,
+        "upstream": [
+          "5.223.65.62",
+          443
+        ],
+        "connected_at": 1793254339.730191,
+        "client_to_relay_first_record_hex": "1603010152",
+        "client_to_relay_sha256": "3998f7b730d05a4e540c178ca813e0251877572481cbe51d4bcef3eb4e3d81d5",
+        "relay_to_client_first_record_hex": "1603030080",
+        "relay_to_client_sha256": "ac4120eed834b3b28a07bf1322fdf85cfd44aeafc60acf1f70d6f9803531d8bb",
+        "status": "closed",
+        "ended_at": 1793254340.0014741
+      },
+      {
+        "started_at": 1793254339.522878,
+        "source": [
+          "127.0.0.1",
+          64537
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 447,
+        "relay_to_client": 4265,
+        "host": "use1-1.relay.n0.iroh.link",
+        "port": 443,
+        "upstream": [
+          "87.99.151.110",
+          443
+        ],
+        "connected_at": 1793254339.733902,
+        "client_to_relay_first_record_hex": "16030100f7",
+        "client_to_relay_sha256": "ca3d09551191a9db685177f637d93c9180d3c5269e8c463bfe0f859ade3d6f29",
+        "relay_to_client_first_record_hex": "160303007a",
+        "relay_to_client_sha256": "e9c8ee75fd5bbc7900e228617cc125b14bb488bfeda6f80953033a01f8004643",
+        "status": "closed",
+        "ended_at": 1793254340.4502778
+      },
+      {
+        "started_at": 1793254342.116565,
+        "source": [
+          "127.0.0.1",
+          64542
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 49442,
+        "relay_to_client": 51832,
+        "host": "aps1-1.relay.n0.iroh.link",
+        "port": 443,
+        "upstream": [
+          "5.223.65.62",
+          443
+        ],
+        "connected_at": 1793254342.347069,
+        "client_to_relay_first_record_hex": "16030100f7",
+        "client_to_relay_sha256": "a1ee251b41ecce8b89d4ce76e112e8f6d048bff4094e99e0f83b9b901af17f3a",
+        "relay_to_client_first_record_hex": "160303007a",
+        "relay_to_client_sha256": "7a91339e39cbcbf583b6dbe3e88d212324c938fc0c2f450b66240cab11d3f37b",
+        "status": "closed",
+        "ended_at": 1793254345.340553
+      },
+      {
+        "started_at": 1793254342.121973,
+        "source": [
+          "127.0.0.1",
+          64544
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 46800,
+        "relay_to_client": 54708,
+        "host": "aps1-1.relay.n0.iroh.link",
+        "port": 443,
+        "upstream": [
+          "5.223.65.62",
+          443
+        ],
+        "connected_at": 1793254342.347203,
+        "client_to_relay_first_record_hex": "16030100f7",
+        "client_to_relay_sha256": "d2934fddfb77fc0802097d2ed806312acad4610e88871965db31b897cec0fb88",
+        "relay_to_client_first_record_hex": "160303007a",
+        "relay_to_client_sha256": "13f9a8473f4ad29fe0ca77f2b0c52238b77d1e9ee12963dc35d5041319f9373c",
+        "status": "closed",
+        "ended_at": 1793254345.576894
+      }
+    ],
+    "stopped": true
+  },
+  "finished_at": 1793254346.1298711
+}

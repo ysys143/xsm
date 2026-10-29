@@ -1,0 +1,747 @@
+{
+  "scope": "C isolated native fixture evidence; hashes are integrity links, not independent attestations",
+  "local_root": "/private/tmp/p11-C-av3sz_4j",
+  "peer_nonsecret_files_copied_and_hash_verified": 58,
+  "raw_capabilities_or_private_keys_published": false,
+  "run1_executed_source_manifest": {
+    "C-fixture-lib.py": "0631b6171ecee76bf1f42615d2405aba60d8b876db151d8cc6d0cb1796544938",
+    "C-peer-agent.py": "4e0b93edeb0cb2dba0ec29ad8c1646966def2ea0d8720a7aa6a611db3cbd67a7",
+    "C-run-private.py": "7fcbf141253b1c56cc5df9f1fff30980aa4eb67a102deac84207e0f857c101d1"
+  },
+  "run2_published_sources_match_execution": true,
+  "files": [
+    {
+      "local_path": "/private/tmp/p11-C-a33f52rq/C-result.json",
+      "bytes": 20038,
+      "sha256": "f624c0aeaca9f1aa5eed246ca7e464d128aca23838d3e3152f911cc6c539d5f1",
+      "role": "evidence"
+    },
+    {
+      "local_path": "/private/tmp/p11-C-a33f52rq/cleanup.json",
+      "bytes": 1074,
+      "sha256": "e43073bdacd049ef789f16d352445f8260545a9ad88734e094dabb2f9b83d635",
+      "role": "evidence"
+    },
+    {
+      "local_path": "/private/tmp/p11-C-a33f52rq/engine-handles.json",
+      "bytes": 886,
+      "sha256": "eac3b4db763dce5856ea31edbeebd133eb1361f5e3c4a4fc65565cf456874ec0",
+      "role": "evidence"
+    },
+    {
+      "local_path": "/private/tmp/p11-C-a33f52rq/fixture-ownership.json",
+      "bytes": 82,
+      "sha256": "5b9d9b0d7c9b83b4476054815649fa3c906593c808dd216cec39cc0aa4799656",
+      "role": "evidence"
+    },
+    {
+      "local_path": "/private/tmp/p11-C-a33f52rq/plan-sha256.json",
+      "bytes": 138,
+      "sha256": "4afacbea4c187c97138851ff313478159166a6a6c4b72e36f3fde76b8fd6fa5e",
+      "role": "evidence"
+    },
+    {
+      "local_path": "/private/tmp/p11-C-a33f52rq/engine-68131-log-hashes.jsonl",
+      "bytes": 127,
+      "sha256": "76e25006f7a97fbec9fa5205a17372b49114bca4cf6d42f5eee85e89da586f26",
+      "role": "evidence"
+    },
+    {
+      "local_path": "/private/tmp/p11-C-a33f52rq/engine-68194-log-hashes.jsonl",
+      "bytes": 1135,
+      "sha256": "94418f992596f62d6463d5ee5910e23cf61f3745a607793ec377b1d94a9bd5e5",
+      "role": "evidence"
+    },
+    {
+      "local_path": "/private/tmp/p11-C-a33f52rq/engine-68460-log-hashes.jsonl",
+      "bytes": 757,
+      "sha256": "5f94ca0278ae43d11a6d79ba8acd889fb1eaf46a89009ae24ff2e310ffb5a176",
+      "role": "evidence"
+    },
+    {
+      "local_path": "/private/tmp/p11-C-a33f52rq/code/C-fixture-lib.py",
+      "bytes": 14361,
+      "sha256": "0631b6171ecee76bf1f42615d2405aba60d8b876db151d8cc6d0cb1796544938",
+      "role": "staged source; run1 executed snapshot separately retained"
+    },
+    {
+      "local_path": "/private/tmp/p11-C-a33f52rq/code/C-native-base.py",
+      "bytes": 5840,
+      "sha256": "08c808318e1636ca71a4ce547e44fcf71ca5ffe1a8dbfe03bd23b77069118591",
+      "role": "staged source; run1 executed snapshot separately retained"
+    },
+    {
+      "local_path": "/private/tmp/p11-C-a33f52rq/code/C-peer-agent.py",
+      "bytes": 1901,
+      "sha256": "4e0b93edeb0cb2dba0ec29ad8c1646966def2ea0d8720a7aa6a611db3cbd67a7",
+      "role": "staged source; run1 executed snapshot separately retained"
+    },
+    {
+      "local_path": "/private/tmp/p11-C-a33f52rq/code/C-run-private.py",
+      "bytes": 12318,
+      "sha256": "7fcbf141253b1c56cc5df9f1fff30980aa4eb67a102deac84207e0f857c101d1",
+      "role": "staged source; run1 executed snapshot separately retained"
+    },
+    {
+      "local_path": "/private/tmp/p11-C-av3sz_4j/C-result.json",
+      "bytes": 20043,
+      "sha256": "e0759f599c6d0ef6048c4ecb9c9224efc2051402b2b2df41ed647ba100f57b90",
+      "role": "evidence"
+    },
+    {
+      "local_path": "/private/tmp/p11-C-av3sz_4j/cleanup.json",
+      "bytes": 1074,
+      "sha256": "74448c4600a587ae9893520e16b038b6c9697fd4956ee40a4c130dab2366272d",
+      "role": "evidence"
+    },
+    {
+      "local_path": "/private/tmp/p11-C-av3sz_4j/engine-handles.json",
+      "bytes": 886,
+      "sha256": "da6413b7573b8a8d1a18dc94b717e4ed9d6b91f4a38280c00471c531baaeee26",
+      "role": "evidence"
+    },
+    {
+      "local_path": "/private/tmp/p11-C-av3sz_4j/fixture-ownership.json",
+      "bytes": 82,
+      "sha256": "5b9d9b0d7c9b83b4476054815649fa3c906593c808dd216cec39cc0aa4799656",
+      "role": "evidence"
+    },
+    {
+      "local_path": "/private/tmp/p11-C-av3sz_4j/plan-sha256.json",
+      "bytes": 152,
+      "sha256": "6f4c39a41cdd9955ea6fa29b05e0f355397b83e023121ab207a9d76471fd3eb7",
+      "role": "evidence"
+    },
+    {
+      "local_path": "/private/tmp/p11-C-av3sz_4j/engine-78817-log-hashes.jsonl",
+      "bytes": 127,
+      "sha256": "a2827f2a27977c8826f45042649453f725ba2c1a336646beca5b2af255e1cc26",
+      "role": "evidence"
+    },
+    {
+      "local_path": "/private/tmp/p11-C-av3sz_4j/engine-78939-log-hashes.jsonl",
+      "bytes": 1135,
+      "sha256": "c19618e73121224d0697bee15c6a8f247173669434c160757b62e7e00bc7fafc",
+      "role": "evidence"
+    },
+    {
+      "local_path": "/private/tmp/p11-C-av3sz_4j/engine-79193-log-hashes.jsonl",
+      "bytes": 757,
+      "sha256": "4130043ca1732e522a36be7ff2181f02271b6c6a827c59eeaa6a52afaa5afc02",
+      "role": "evidence"
+    },
+    {
+      "local_path": "/private/tmp/p11-C-av3sz_4j/code/C-fixture-lib.py",
+      "bytes": 14559,
+      "sha256": "9073360fd422877987ca2ebdea55a31186fe82d47308de4973ce95b9bf80e9a3",
+      "role": "staged source; run1 executed snapshot separately retained"
+    },
+    {
+      "local_path": "/private/tmp/p11-C-av3sz_4j/code/C-native-base.py",
+      "bytes": 5840,
+      "sha256": "08c808318e1636ca71a4ce547e44fcf71ca5ffe1a8dbfe03bd23b77069118591",
+      "role": "staged source; run1 executed snapshot separately retained"
+    },
+    {
+      "local_path": "/private/tmp/p11-C-av3sz_4j/code/C-peer-agent.py",
+      "bytes": 1949,
+      "sha256": "c92388750a857d300b47ce48ce6f83071ddc18c666a7b4aa672004a16df65be3",
+      "role": "staged source; run1 executed snapshot separately retained"
+    },
+    {
+      "local_path": "/private/tmp/p11-C-av3sz_4j/code/C-run-private.py",
+      "bytes": 12390,
+      "sha256": "f910a3456795c7869a4f180f1b2378d2d8f61c5a1481383df667e7c947fde69f",
+      "role": "staged source; run1 executed snapshot separately retained"
+    },
+    {
+      "local_path": "/private/tmp/p11-C-a33f52rq/executed-code/C-fixture-lib.py",
+      "bytes": 14361,
+      "sha256": "0631b6171ecee76bf1f42615d2405aba60d8b876db151d8cc6d0cb1796544938",
+      "role": "exact run1 executed source"
+    },
+    {
+      "local_path": "/private/tmp/p11-C-a33f52rq/executed-code/C-peer-agent.py",
+      "bytes": 1901,
+      "sha256": "4e0b93edeb0cb2dba0ec29ad8c1646966def2ea0d8720a7aa6a611db3cbd67a7",
+      "role": "exact run1 executed source"
+    },
+    {
+      "local_path": "/private/tmp/p11-C-a33f52rq/executed-code/C-run-private.py",
+      "bytes": 12318,
+      "sha256": "7fcbf141253b1c56cc5df9f1fff30980aa4eb67a102deac84207e0f857c101d1",
+      "role": "exact run1 executed source"
+    },
+    {
+      "local_path": "/private/tmp/p11-C-a33f52rq/executed-code-sha256.json",
+      "bytes": 271,
+      "sha256": "b86549d4a14a800a59c1eaf8e105a27d461b90dba026ab6116cb876789398db6",
+      "role": "evidence"
+    },
+    {
+      "local_path": "/private/tmp/p11-C-av3sz_4j/peer-evidence/p11-C-q27ngmzj/cleanup.json",
+      "bytes": 759,
+      "sha256": "0803f5fdb419b2e5e212f382b5ff8468adbedcbbdfe3025a346fb6cad66a16dc",
+      "role": "peer nonsecret evidence verified after SSH retrieval",
+      "peer_original_path": "/private/tmp/p11-C-q27ngmzj/cleanup.json"
+    },
+    {
+      "local_path": "/private/tmp/p11-C-av3sz_4j/peer-evidence/p11-C-q27ngmzj/code/C-fixture-lib.py",
+      "bytes": 14361,
+      "sha256": "0631b6171ecee76bf1f42615d2405aba60d8b876db151d8cc6d0cb1796544938",
+      "role": "peer nonsecret evidence verified after SSH retrieval",
+      "peer_original_path": "/private/tmp/p11-C-q27ngmzj/code/C-fixture-lib.py"
+    },
+    {
+      "local_path": "/private/tmp/p11-C-av3sz_4j/peer-evidence/p11-C-q27ngmzj/code/C-native-base.py",
+      "bytes": 5840,
+      "sha256": "08c808318e1636ca71a4ce547e44fcf71ca5ffe1a8dbfe03bd23b77069118591",
+      "role": "peer nonsecret evidence verified after SSH retrieval",
+      "peer_original_path": "/private/tmp/p11-C-q27ngmzj/code/C-native-base.py"
+    },
+    {
+      "local_path": "/private/tmp/p11-C-av3sz_4j/peer-evidence/p11-C-q27ngmzj/code/C-peer-agent.py",
+      "bytes": 1901,
+      "sha256": "4e0b93edeb0cb2dba0ec29ad8c1646966def2ea0d8720a7aa6a611db3cbd67a7",
+      "role": "peer nonsecret evidence verified after SSH retrieval",
+      "peer_original_path": "/private/tmp/p11-C-q27ngmzj/code/C-peer-agent.py"
+    },
+    {
+      "local_path": "/private/tmp/p11-C-av3sz_4j/peer-evidence/p11-C-q27ngmzj/engine-94782-log-hashes.jsonl",
+      "bytes": 254,
+      "sha256": "73db0ffa92713c911ebe048ba59f580240483c41ac93ebf821b5b9b4e9e313f5",
+      "role": "peer nonsecret evidence verified after SSH retrieval",
+      "peer_original_path": "/private/tmp/p11-C-q27ngmzj/engine-94782-log-hashes.jsonl"
+    },
+    {
+      "local_path": "/private/tmp/p11-C-av3sz_4j/peer-evidence/p11-C-q27ngmzj/engine-94836-log-hashes.jsonl",
+      "bytes": 1261,
+      "sha256": "666187c1dff40467457b301743268572dd4e8c6f68e209d5b9d0e2867e03270f",
+      "role": "peer nonsecret evidence verified after SSH retrieval",
+      "peer_original_path": "/private/tmp/p11-C-q27ngmzj/engine-94836-log-hashes.jsonl"
+    },
+    {
+      "local_path": "/private/tmp/p11-C-av3sz_4j/peer-evidence/p11-C-q27ngmzj/engine-handles.json",
+      "bytes": 589,
+      "sha256": "73ea06275c36de36fd1c1a4c2cba2c6f8a4f552226639da444d0afa0aa243753",
+      "role": "peer nonsecret evidence verified after SSH retrieval",
+      "peer_original_path": "/private/tmp/p11-C-q27ngmzj/engine-handles.json"
+    },
+    {
+      "local_path": "/private/tmp/p11-C-av3sz_4j/peer-evidence/p11-C-q27ngmzj/fixture-ownership.json",
+      "bytes": 81,
+      "sha256": "66cd02bdf14356c9aa18f4f8402bd558d55392ec1605afad514f85c2529e3e7d",
+      "role": "peer nonsecret evidence verified after SSH retrieval",
+      "peer_original_path": "/private/tmp/p11-C-q27ngmzj/fixture-ownership.json"
+    },
+    {
+      "local_path": "/private/tmp/p11-C-av3sz_4j/peer-evidence/p11-C-q27ngmzj/native/after-reconnect/handle.json",
+      "bytes": 1028,
+      "sha256": "960abc8d7faf14635fdcb91280d7242e4fa8260a8d79c12a299793c84d913436",
+      "role": "peer nonsecret evidence verified after SSH retrieval",
+      "peer_original_path": "/private/tmp/p11-C-q27ngmzj/native/after-reconnect/handle.json"
+    },
+    {
+      "local_path": "/private/tmp/p11-C-av3sz_4j/peer-evidence/p11-C-q27ngmzj/native/after-reconnect/last-message.json",
+      "bytes": 183,
+      "sha256": "02994e2050c8a6ebdebaf77bc0cde34b749be90f0e9ff20e94172641b4449429",
+      "role": "peer nonsecret evidence verified after SSH retrieval",
+      "peer_original_path": "/private/tmp/p11-C-q27ngmzj/native/after-reconnect/last-message.json"
+    },
+    {
+      "local_path": "/private/tmp/p11-C-av3sz_4j/peer-evidence/p11-C-q27ngmzj/native/after-reconnect/request.txt",
+      "bytes": 330,
+      "sha256": "d0ec0bbe2f6a8b2243b003aeabdaffca491b8dacf6f229d8872cb3c929ea03be",
+      "role": "peer nonsecret evidence verified after SSH retrieval",
+      "peer_original_path": "/private/tmp/p11-C-q27ngmzj/native/after-reconnect/request.txt"
+    },
+    {
+      "local_path": "/private/tmp/p11-C-av3sz_4j/peer-evidence/p11-C-q27ngmzj/native/after-reconnect/result.json",
+      "bytes": 2325,
+      "sha256": "19a8cc850d65f64b9a1476f64ac9fb9f2c5d461bc67f640a0b567764b5492c4c",
+      "role": "peer nonsecret evidence verified after SSH retrieval",
+      "peer_original_path": "/private/tmp/p11-C-q27ngmzj/native/after-reconnect/result.json"
+    },
+    {
+      "local_path": "/private/tmp/p11-C-av3sz_4j/peer-evidence/p11-C-q27ngmzj/native/after-reconnect/schema.json",
+      "bytes": 446,
+      "sha256": "a94564bc95f2f76019e173127309de49be30d6ba25f4a8ef8b06a431fbad1585",
+      "role": "peer nonsecret evidence verified after SSH retrieval",
+      "peer_original_path": "/private/tmp/p11-C-q27ngmzj/native/after-reconnect/schema.json"
+    },
+    {
+      "local_path": "/private/tmp/p11-C-av3sz_4j/peer-evidence/p11-C-q27ngmzj/native/after-reconnect/stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "role": "peer nonsecret evidence verified after SSH retrieval",
+      "peer_original_path": "/private/tmp/p11-C-q27ngmzj/native/after-reconnect/stderr.txt"
+    },
+    {
+      "local_path": "/private/tmp/p11-C-av3sz_4j/peer-evidence/p11-C-q27ngmzj/native/after-reconnect/stdout.jsonl",
+      "bytes": 540,
+      "sha256": "fca4bf92882dfcc4f64f61c943324715affda6f82a23d76af7da53e7846db6e3",
+      "role": "peer nonsecret evidence verified after SSH retrieval",
+      "peer_original_path": "/private/tmp/p11-C-q27ngmzj/native/after-reconnect/stdout.jsonl"
+    },
+    {
+      "local_path": "/private/tmp/p11-C-av3sz_4j/peer-evidence/p11-C-q27ngmzj/native/first/handle.json",
+      "bytes": 988,
+      "sha256": "c4d3d04a75492f4aae613738d73b395978cd5d179f427c2988353db305c3d288",
+      "role": "peer nonsecret evidence verified after SSH retrieval",
+      "peer_original_path": "/private/tmp/p11-C-q27ngmzj/native/first/handle.json"
+    },
+    {
+      "local_path": "/private/tmp/p11-C-av3sz_4j/peer-evidence/p11-C-q27ngmzj/native/first/last-message.json",
+      "bytes": 173,
+      "sha256": "e0bc24529e469aa4f6c39d9911be38e6916237c9c331e4b01ba8ef1111021121",
+      "role": "peer nonsecret evidence verified after SSH retrieval",
+      "peer_original_path": "/private/tmp/p11-C-q27ngmzj/native/first/last-message.json"
+    },
+    {
+      "local_path": "/private/tmp/p11-C-av3sz_4j/peer-evidence/p11-C-q27ngmzj/native/first/request.txt",
+      "bytes": 226,
+      "sha256": "837ccd0b9c717c72343451a35cb3aea070e1fcab5e473b4144e17e4e1656dc0e",
+      "role": "peer nonsecret evidence verified after SSH retrieval",
+      "peer_original_path": "/private/tmp/p11-C-q27ngmzj/native/first/request.txt"
+    },
+    {
+      "local_path": "/private/tmp/p11-C-av3sz_4j/peer-evidence/p11-C-q27ngmzj/native/first/result.json",
+      "bytes": 2245,
+      "sha256": "2524546fe2994d60361e49d073044813d1a16aa3cf7e7a0caf4863c7d27b7dae",
+      "role": "peer nonsecret evidence verified after SSH retrieval",
+      "peer_original_path": "/private/tmp/p11-C-q27ngmzj/native/first/result.json"
+    },
+    {
+      "local_path": "/private/tmp/p11-C-av3sz_4j/peer-evidence/p11-C-q27ngmzj/native/first/schema.json",
+      "bytes": 446,
+      "sha256": "a94564bc95f2f76019e173127309de49be30d6ba25f4a8ef8b06a431fbad1585",
+      "role": "peer nonsecret evidence verified after SSH retrieval",
+      "peer_original_path": "/private/tmp/p11-C-q27ngmzj/native/first/schema.json"
+    },
+    {
+      "local_path": "/private/tmp/p11-C-av3sz_4j/peer-evidence/p11-C-q27ngmzj/native/first/stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "role": "peer nonsecret evidence verified after SSH retrieval",
+      "peer_original_path": "/private/tmp/p11-C-q27ngmzj/native/first/stderr.txt"
+    },
+    {
+      "local_path": "/private/tmp/p11-C-av3sz_4j/peer-evidence/p11-C-q27ngmzj/native/first/stdout.jsonl",
+      "bytes": 529,
+      "sha256": "abc548ff0f01c3339e2d8640c531f04ba4fd8506d2fb4b17852138d4cfca10e4",
+      "role": "peer nonsecret evidence verified after SSH retrieval",
+      "peer_original_path": "/private/tmp/p11-C-q27ngmzj/native/first/stdout.jsonl"
+    },
+    {
+      "local_path": "/private/tmp/p11-C-av3sz_4j/peer-evidence/p11-C-q27ngmzj/native/followup/handle.json",
+      "bytes": 1000,
+      "sha256": "fb02b2190b5eae092a0c69cf4b393e4a598b24206c35a7aae8581b31389a348e",
+      "role": "peer nonsecret evidence verified after SSH retrieval",
+      "peer_original_path": "/private/tmp/p11-C-q27ngmzj/native/followup/handle.json"
+    },
+    {
+      "local_path": "/private/tmp/p11-C-av3sz_4j/peer-evidence/p11-C-q27ngmzj/native/followup/last-message.json",
+      "bytes": 176,
+      "sha256": "f6c598a5be099612a7bd7deecbe9359e525884218c6dfb7825dad2231fc49be4",
+      "role": "peer nonsecret evidence verified after SSH retrieval",
+      "peer_original_path": "/private/tmp/p11-C-q27ngmzj/native/followup/last-message.json"
+    },
+    {
+      "local_path": "/private/tmp/p11-C-av3sz_4j/peer-evidence/p11-C-q27ngmzj/native/followup/request.txt",
+      "bytes": 323,
+      "sha256": "5e53031fdd69a93f12de9b4963d6af66ca6b9b70d5a2a2227a8b8f2d722c40d9",
+      "role": "peer nonsecret evidence verified after SSH retrieval",
+      "peer_original_path": "/private/tmp/p11-C-q27ngmzj/native/followup/request.txt"
+    },
+    {
+      "local_path": "/private/tmp/p11-C-av3sz_4j/peer-evidence/p11-C-q27ngmzj/native/followup/result.json",
+      "bytes": 2269,
+      "sha256": "b832496ae3b6732eed14530d04dd5447b30bfc52b5539c8a6afd3db8425e8c72",
+      "role": "peer nonsecret evidence verified after SSH retrieval",
+      "peer_original_path": "/private/tmp/p11-C-q27ngmzj/native/followup/result.json"
+    },
+    {
+      "local_path": "/private/tmp/p11-C-av3sz_4j/peer-evidence/p11-C-q27ngmzj/native/followup/schema.json",
+      "bytes": 446,
+      "sha256": "a94564bc95f2f76019e173127309de49be30d6ba25f4a8ef8b06a431fbad1585",
+      "role": "peer nonsecret evidence verified after SSH retrieval",
+      "peer_original_path": "/private/tmp/p11-C-q27ngmzj/native/followup/schema.json"
+    },
+    {
+      "local_path": "/private/tmp/p11-C-av3sz_4j/peer-evidence/p11-C-q27ngmzj/native/followup/stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "role": "peer nonsecret evidence verified after SSH retrieval",
+      "peer_original_path": "/private/tmp/p11-C-q27ngmzj/native/followup/stderr.txt"
+    },
+    {
+      "local_path": "/private/tmp/p11-C-av3sz_4j/peer-evidence/p11-C-q27ngmzj/native/followup/stdout.jsonl",
+      "bytes": 532,
+      "sha256": "d3d0a2f3990c2b4d42abcede9fc5e1d4d7ba6c2b2230563b0740c0434973eda8",
+      "role": "peer nonsecret evidence verified after SSH retrieval",
+      "peer_original_path": "/private/tmp/p11-C-q27ngmzj/native/followup/stdout.jsonl"
+    },
+    {
+      "local_path": "/private/tmp/p11-C-av3sz_4j/peer-evidence/p11-C-_n_rujrd/cleanup.json",
+      "bytes": 759,
+      "sha256": "dd0326824607cbd4809401b5f0afd5f09c2ceb7636bee4fe59c01e48c3473640",
+      "role": "peer nonsecret evidence verified after SSH retrieval",
+      "peer_original_path": "/private/tmp/p11-C-_n_rujrd/cleanup.json"
+    },
+    {
+      "local_path": "/private/tmp/p11-C-av3sz_4j/peer-evidence/p11-C-_n_rujrd/code/C-fixture-lib.py",
+      "bytes": 14559,
+      "sha256": "9073360fd422877987ca2ebdea55a31186fe82d47308de4973ce95b9bf80e9a3",
+      "role": "peer nonsecret evidence verified after SSH retrieval",
+      "peer_original_path": "/private/tmp/p11-C-_n_rujrd/code/C-fixture-lib.py"
+    },
+    {
+      "local_path": "/private/tmp/p11-C-av3sz_4j/peer-evidence/p11-C-_n_rujrd/code/C-native-base.py",
+      "bytes": 5840,
+      "sha256": "08c808318e1636ca71a4ce547e44fcf71ca5ffe1a8dbfe03bd23b77069118591",
+      "role": "peer nonsecret evidence verified after SSH retrieval",
+      "peer_original_path": "/private/tmp/p11-C-_n_rujrd/code/C-native-base.py"
+    },
+    {
+      "local_path": "/private/tmp/p11-C-av3sz_4j/peer-evidence/p11-C-_n_rujrd/code/C-peer-agent.py",
+      "bytes": 1949,
+      "sha256": "c92388750a857d300b47ce48ce6f83071ddc18c666a7b4aa672004a16df65be3",
+      "role": "peer nonsecret evidence verified after SSH retrieval",
+      "peer_original_path": "/private/tmp/p11-C-_n_rujrd/code/C-peer-agent.py"
+    },
+    {
+      "local_path": "/private/tmp/p11-C-av3sz_4j/peer-evidence/p11-C-_n_rujrd/engine-14952-log-hashes.jsonl",
+      "bytes": 254,
+      "sha256": "7fc1e258846cfbf634e323f9351da9ff6bb066823d15a2962231a8f3eed81f48",
+      "role": "peer nonsecret evidence verified after SSH retrieval",
+      "peer_original_path": "/private/tmp/p11-C-_n_rujrd/engine-14952-log-hashes.jsonl"
+    },
+    {
+      "local_path": "/private/tmp/p11-C-av3sz_4j/peer-evidence/p11-C-_n_rujrd/engine-15026-log-hashes.jsonl",
+      "bytes": 1261,
+      "sha256": "4f397396e831eb53053fecaa1586a87018e72be508d3aee4db21f8b455a859ce",
+      "role": "peer nonsecret evidence verified after SSH retrieval",
+      "peer_original_path": "/private/tmp/p11-C-_n_rujrd/engine-15026-log-hashes.jsonl"
+    },
+    {
+      "local_path": "/private/tmp/p11-C-av3sz_4j/peer-evidence/p11-C-_n_rujrd/engine-handles.json",
+      "bytes": 589,
+      "sha256": "7d48c1b00befcc471d8496d8a5cade33a21ded1e5c04f326ba3cff7b06f43d4f",
+      "role": "peer nonsecret evidence verified after SSH retrieval",
+      "peer_original_path": "/private/tmp/p11-C-_n_rujrd/engine-handles.json"
+    },
+    {
+      "local_path": "/private/tmp/p11-C-av3sz_4j/peer-evidence/p11-C-_n_rujrd/fixture-ownership.json",
+      "bytes": 81,
+      "sha256": "66cd02bdf14356c9aa18f4f8402bd558d55392ec1605afad514f85c2529e3e7d",
+      "role": "peer nonsecret evidence verified after SSH retrieval",
+      "peer_original_path": "/private/tmp/p11-C-_n_rujrd/fixture-ownership.json"
+    },
+    {
+      "local_path": "/private/tmp/p11-C-av3sz_4j/peer-evidence/p11-C-_n_rujrd/native/after-reconnect/handle.json",
+      "bytes": 1028,
+      "sha256": "bfad82151c45b2ef8659fd91cb40491e3d938a27ecb83accd5baf0f6464cc94f",
+      "role": "peer nonsecret evidence verified after SSH retrieval",
+      "peer_original_path": "/private/tmp/p11-C-_n_rujrd/native/after-reconnect/handle.json"
+    },
+    {
+      "local_path": "/private/tmp/p11-C-av3sz_4j/peer-evidence/p11-C-_n_rujrd/native/after-reconnect/last-message.json",
+      "bytes": 183,
+      "sha256": "02994e2050c8a6ebdebaf77bc0cde34b749be90f0e9ff20e94172641b4449429",
+      "role": "peer nonsecret evidence verified after SSH retrieval",
+      "peer_original_path": "/private/tmp/p11-C-_n_rujrd/native/after-reconnect/last-message.json"
+    },
+    {
+      "local_path": "/private/tmp/p11-C-av3sz_4j/peer-evidence/p11-C-_n_rujrd/native/after-reconnect/request.txt",
+      "bytes": 330,
+      "sha256": "d0ec0bbe2f6a8b2243b003aeabdaffca491b8dacf6f229d8872cb3c929ea03be",
+      "role": "peer nonsecret evidence verified after SSH retrieval",
+      "peer_original_path": "/private/tmp/p11-C-_n_rujrd/native/after-reconnect/request.txt"
+    },
+    {
+      "local_path": "/private/tmp/p11-C-av3sz_4j/peer-evidence/p11-C-_n_rujrd/native/after-reconnect/result.json",
+      "bytes": 2325,
+      "sha256": "ba5e5db7a257f33f1fa24dacb5946bcfdbd127271e14b7f650f6cfe65b50db70",
+      "role": "peer nonsecret evidence verified after SSH retrieval",
+      "peer_original_path": "/private/tmp/p11-C-_n_rujrd/native/after-reconnect/result.json"
+    },
+    {
+      "local_path": "/private/tmp/p11-C-av3sz_4j/peer-evidence/p11-C-_n_rujrd/native/after-reconnect/schema.json",
+      "bytes": 446,
+      "sha256": "a94564bc95f2f76019e173127309de49be30d6ba25f4a8ef8b06a431fbad1585",
+      "role": "peer nonsecret evidence verified after SSH retrieval",
+      "peer_original_path": "/private/tmp/p11-C-_n_rujrd/native/after-reconnect/schema.json"
+    },
+    {
+      "local_path": "/private/tmp/p11-C-av3sz_4j/peer-evidence/p11-C-_n_rujrd/native/after-reconnect/stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "role": "peer nonsecret evidence verified after SSH retrieval",
+      "peer_original_path": "/private/tmp/p11-C-_n_rujrd/native/after-reconnect/stderr.txt"
+    },
+    {
+      "local_path": "/private/tmp/p11-C-av3sz_4j/peer-evidence/p11-C-_n_rujrd/native/after-reconnect/stdout.jsonl",
+      "bytes": 540,
+      "sha256": "f181996ae0bc07e36fc029412c2f79962296b4a9d729f060e4b9275ba267c6c0",
+      "role": "peer nonsecret evidence verified after SSH retrieval",
+      "peer_original_path": "/private/tmp/p11-C-_n_rujrd/native/after-reconnect/stdout.jsonl"
+    },
+    {
+      "local_path": "/private/tmp/p11-C-av3sz_4j/peer-evidence/p11-C-_n_rujrd/native/first/handle.json",
+      "bytes": 988,
+      "sha256": "89a9f978004a1fea86a938c663ddc0da0b128f224facfefca23e308305f9913d",
+      "role": "peer nonsecret evidence verified after SSH retrieval",
+      "peer_original_path": "/private/tmp/p11-C-_n_rujrd/native/first/handle.json"
+    },
+    {
+      "local_path": "/private/tmp/p11-C-av3sz_4j/peer-evidence/p11-C-_n_rujrd/native/first/last-message.json",
+      "bytes": 173,
+      "sha256": "e0bc24529e469aa4f6c39d9911be38e6916237c9c331e4b01ba8ef1111021121",
+      "role": "peer nonsecret evidence verified after SSH retrieval",
+      "peer_original_path": "/private/tmp/p11-C-_n_rujrd/native/first/last-message.json"
+    },
+    {
+      "local_path": "/private/tmp/p11-C-av3sz_4j/peer-evidence/p11-C-_n_rujrd/native/first/request.txt",
+      "bytes": 226,
+      "sha256": "837ccd0b9c717c72343451a35cb3aea070e1fcab5e473b4144e17e4e1656dc0e",
+      "role": "peer nonsecret evidence verified after SSH retrieval",
+      "peer_original_path": "/private/tmp/p11-C-_n_rujrd/native/first/request.txt"
+    },
+    {
+      "local_path": "/private/tmp/p11-C-av3sz_4j/peer-evidence/p11-C-_n_rujrd/native/first/result.json",
+      "bytes": 2245,
+      "sha256": "f7095114ff0b7db53966317c91bedbad8941d7c1ff543bc8cbccce172254dc34",
+      "role": "peer nonsecret evidence verified after SSH retrieval",
+      "peer_original_path": "/private/tmp/p11-C-_n_rujrd/native/first/result.json"
+    },
+    {
+      "local_path": "/private/tmp/p11-C-av3sz_4j/peer-evidence/p11-C-_n_rujrd/native/first/schema.json",
+      "bytes": 446,
+      "sha256": "a94564bc95f2f76019e173127309de49be30d6ba25f4a8ef8b06a431fbad1585",
+      "role": "peer nonsecret evidence verified after SSH retrieval",
+      "peer_original_path": "/private/tmp/p11-C-_n_rujrd/native/first/schema.json"
+    },
+    {
+      "local_path": "/private/tmp/p11-C-av3sz_4j/peer-evidence/p11-C-_n_rujrd/native/first/stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "role": "peer nonsecret evidence verified after SSH retrieval",
+      "peer_original_path": "/private/tmp/p11-C-_n_rujrd/native/first/stderr.txt"
+    },
+    {
+      "local_path": "/private/tmp/p11-C-av3sz_4j/peer-evidence/p11-C-_n_rujrd/native/first/stdout.jsonl",
+      "bytes": 529,
+      "sha256": "4251b3f7bc4044981225216c86d0501c4e07bc97e82b2a5ee1d5dd8cc6917fde",
+      "role": "peer nonsecret evidence verified after SSH retrieval",
+      "peer_original_path": "/private/tmp/p11-C-_n_rujrd/native/first/stdout.jsonl"
+    },
+    {
+      "local_path": "/private/tmp/p11-C-av3sz_4j/peer-evidence/p11-C-_n_rujrd/native/followup/handle.json",
+      "bytes": 1000,
+      "sha256": "73d00a01029799e9bb997c67306fd523af2fa02cc541f5ab42c884fb47b71d5e",
+      "role": "peer nonsecret evidence verified after SSH retrieval",
+      "peer_original_path": "/private/tmp/p11-C-_n_rujrd/native/followup/handle.json"
+    },
+    {
+      "local_path": "/private/tmp/p11-C-av3sz_4j/peer-evidence/p11-C-_n_rujrd/native/followup/last-message.json",
+      "bytes": 182,
+      "sha256": "f77f40c7d0d81e3910fb85168166cfe352af4f4d7f25230f49216b31691730cc",
+      "role": "peer nonsecret evidence verified after SSH retrieval",
+      "peer_original_path": "/private/tmp/p11-C-_n_rujrd/native/followup/last-message.json"
+    },
+    {
+      "local_path": "/private/tmp/p11-C-av3sz_4j/peer-evidence/p11-C-_n_rujrd/native/followup/request.txt",
+      "bytes": 323,
+      "sha256": "5e53031fdd69a93f12de9b4963d6af66ca6b9b70d5a2a2227a8b8f2d722c40d9",
+      "role": "peer nonsecret evidence verified after SSH retrieval",
+      "peer_original_path": "/private/tmp/p11-C-_n_rujrd/native/followup/request.txt"
+    },
+    {
+      "local_path": "/private/tmp/p11-C-av3sz_4j/peer-evidence/p11-C-_n_rujrd/native/followup/result.json",
+      "bytes": 2275,
+      "sha256": "48eb5e6480a674fdc5b0800abca677357549e25b4d0677034631883fe94f87e1",
+      "role": "peer nonsecret evidence verified after SSH retrieval",
+      "peer_original_path": "/private/tmp/p11-C-_n_rujrd/native/followup/result.json"
+    },
+    {
+      "local_path": "/private/tmp/p11-C-av3sz_4j/peer-evidence/p11-C-_n_rujrd/native/followup/schema.json",
+      "bytes": 446,
+      "sha256": "a94564bc95f2f76019e173127309de49be30d6ba25f4a8ef8b06a431fbad1585",
+      "role": "peer nonsecret evidence verified after SSH retrieval",
+      "peer_original_path": "/private/tmp/p11-C-_n_rujrd/native/followup/schema.json"
+    },
+    {
+      "local_path": "/private/tmp/p11-C-av3sz_4j/peer-evidence/p11-C-_n_rujrd/native/followup/stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "role": "peer nonsecret evidence verified after SSH retrieval",
+      "peer_original_path": "/private/tmp/p11-C-_n_rujrd/native/followup/stderr.txt"
+    },
+    {
+      "local_path": "/private/tmp/p11-C-av3sz_4j/peer-evidence/p11-C-_n_rujrd/native/followup/stdout.jsonl",
+      "bytes": 539,
+      "sha256": "3a4b8ef6f13b8349d03cb3fa96f96dd3f3355aeeb7c481cae9d9689ab05d94e7",
+      "role": "peer nonsecret evidence verified after SSH retrieval",
+      "peer_original_path": "/private/tmp/p11-C-_n_rujrd/native/followup/stdout.jsonl"
+    },
+    {
+      "local_path": "/private/tmp/p11-C-a33f52rq/source/config.rs",
+      "bytes": 13964,
+      "sha256": "49abd7efc72e33c4fa50b28ac40cdb83d22733e035b3deb7498b2de397fcda1b",
+      "role": "fixed upstream protocol source"
+    },
+    {
+      "local_path": "/private/tmp/p11-C-a33f52rq/source/daemon/directory.rs",
+      "bytes": 30729,
+      "sha256": "7e4c03cc6a174ca8857d756a176cc5700332e4dcb19c7b810da8dd87574ee53d",
+      "role": "fixed upstream protocol source"
+    },
+    {
+      "local_path": "/private/tmp/p11-C-a33f52rq/source/daemon/mod.rs",
+      "bytes": 18006,
+      "sha256": "cc490ece01e4c55987ee56fd120199fc047ca80fb7777394d4ae81bf3adeb901",
+      "role": "fixed upstream protocol source"
+    },
+    {
+      "local_path": "/private/tmp/p11-C-a33f52rq/source/daemon/teamops.rs",
+      "bytes": 30917,
+      "sha256": "fd4d4b16ff041d9c8106ff317e719066a0ec728a10a80518be3373509cb65ea6",
+      "role": "fixed upstream protocol source"
+    },
+    {
+      "local_path": "/private/tmp/p11-C-a33f52rq/source/main.rs",
+      "bytes": 38937,
+      "sha256": "f817274c5d418c8b42e981d4af28276b9ce1350439882b9cd39b86c5913f4125",
+      "role": "fixed upstream protocol source"
+    },
+    {
+      "local_path": "/private/tmp/p11-C-a33f52rq/source/migrate.rs",
+      "bytes": 4851,
+      "sha256": "c3c407cf0442937634ad055fd5ac14fdf2e0b29b6961723a824e2e557286f8d8",
+      "role": "fixed upstream protocol source"
+    },
+    {
+      "local_path": "/private/tmp/p11-C-a33f52rq/source/net.rs",
+      "bytes": 61224,
+      "sha256": "272bc11a2f3520eecd937f0ff438402f36cc094f8274c0ea8a1d6f4ae63235a3",
+      "role": "fixed upstream protocol source"
+    },
+    {
+      "local_path": "/private/tmp/p11-C-a33f52rq/source/paths.rs",
+      "bytes": 10155,
+      "sha256": "e9b54b62fcc77646b98d600fce84b1c0f4141a8ccfe9fbc6eb210f0496a3062f",
+      "role": "fixed upstream protocol source"
+    },
+    {
+      "local_path": "/private/tmp/p11-C-a33f52rq/source/proto.rs",
+      "bytes": 18676,
+      "sha256": "7a94147dcf8bcee365207b89c4fafcdcb84237833ab1c7ef8ad3fae098cff7c6",
+      "role": "fixed upstream protocol source"
+    },
+    {
+      "local_path": "/private/tmp/p11-C-a33f52rq/source/relays.rs",
+      "bytes": 20347,
+      "sha256": "f530bc4d574b2b1fcb8772bce99b89cddba9b6c577167ab8353127da0de6776a",
+      "role": "fixed upstream protocol source"
+    },
+    {
+      "local_path": "/private/tmp/p11-C-a33f52rq/source/util.rs",
+      "bytes": 15197,
+      "sha256": "05539e909f50ba00209378fe1e45bc3ed0c37265833441ea39f9230211bc9784",
+      "role": "fixed upstream protocol source"
+    },
+    {
+      "local_path": "/private/tmp/p11-C-av3sz_4j/local-final-audit.json",
+      "bytes": 599,
+      "sha256": "654721d77e01af990517cc7db7b7bfbb2acc0b013cba0a4ceb63b19b57a54d21",
+      "role": "evidence"
+    },
+    {
+      "local_path": "/private/tmp/p11-C-av3sz_4j/peer-final-process-verification.json",
+      "bytes": 468,
+      "sha256": "59618b4fcbde69264e358bd1f5f45bec59e94c29b1791883b2636d67010c6161",
+      "role": "evidence"
+    },
+    {
+      "local_path": "/private/tmp/p11-C-av3sz_4j/peer-evidence-manifest.json",
+      "bytes": 15247,
+      "sha256": "76d257c3d7bd64b6533ac8d63faed2ecdef99622295005b2c2151de693d03668",
+      "role": "evidence"
+    },
+    {
+      "local_path": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/deliverables/p11-live/C-check-evidence.py",
+      "bytes": 5735,
+      "sha256": "c9a4c859608ef1217fcec368aaa19f46f45f1333df89e175630b5e2fce15f5b7",
+      "role": "published fixture or offline check source"
+    },
+    {
+      "local_path": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/deliverables/p11-live/C-control-guard-test.py",
+      "bytes": 1909,
+      "sha256": "6ed057f03d2bd483dd667a9594aa073ac850ef75c0e3cee5be76f7b20bf29ab9",
+      "role": "published fixture or offline check source"
+    },
+    {
+      "local_path": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/deliverables/p11-live/C-fixture-lib.py",
+      "bytes": 14559,
+      "sha256": "9073360fd422877987ca2ebdea55a31186fe82d47308de4973ce95b9bf80e9a3",
+      "role": "published fixture or offline check source"
+    },
+    {
+      "local_path": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/deliverables/p11-live/C-native-base.py",
+      "bytes": 5840,
+      "sha256": "08c808318e1636ca71a4ce547e44fcf71ca5ffe1a8dbfe03bd23b77069118591",
+      "role": "published fixture or offline check source"
+    },
+    {
+      "local_path": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/deliverables/p11-live/C-peer-agent.py",
+      "bytes": 1949,
+      "sha256": "c92388750a857d300b47ce48ce6f83071ddc18c666a7b4aa672004a16df65be3",
+      "role": "published fixture or offline check source"
+    },
+    {
+      "local_path": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/deliverables/p11-live/C-run-private.py",
+      "bytes": 12390,
+      "sha256": "f910a3456795c7869a4f180f1b2378d2d8f61c5a1481383df667e7c947fde69f",
+      "role": "published fixture or offline check source"
+    },
+    {
+      "local_path": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/deliverables/p11-live/C-private-plan-20261029.md",
+      "bytes": 4835,
+      "sha256": "e1bfe0400b276eda9d455ab7d3e15a75830c3df7b5919fbd3d9843747834e4f5",
+      "role": "plan fixed before respective run"
+    },
+    {
+      "local_path": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/deliverables/p11-live/C-private-guard-recheck-plan-20261029.md",
+      "bytes": 1186,
+      "sha256": "0d18da92490e2cf76a1d7e8a3fad743c08eb70da05c7f09da53c7c42058b8e95",
+      "role": "plan fixed before respective run"
+    },
+    {
+      "local_path": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/deliverables/p11-live/C-control-guard-test.json",
+      "bytes": 563,
+      "sha256": "4b46d069bcc952eea2b36d8e35088458b0db0cd66cb1642bf5a623d4edb3c67f",
+      "role": "evidence"
+    },
+    {
+      "local_path": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/deliverables/p11-live/C-native-roundtrip-20261029.json",
+      "bytes": 63048,
+      "sha256": "2d1dae0c6bb804d95d051cc06a886f696812dafbe4b5d471b37d31b12d0db92a",
+      "role": "public combined result"
+    },
+    {
+      "local_path": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/deliverables/p11-live/C-native-roundtrip-20261029.md",
+      "bytes": 11028,
+      "sha256": "ffba319b8f643327d6115b01fc6fb38f9275fd9e47763225dae16655a3113f04",
+      "role": "public C fixture report",
+      "sha256_before_authorization_wording_correction": "3d40552a247d3395f07eb538a2d24e4cf01223594754665965a063be447d8e1a",
+      "correction_scope": "report wording: coordinator interpretation, no separate explicit C team approval event; measurements unchanged",
+      "amendments": [
+        {
+          "previous_sha256": "e04492d1b3946561a5040ce65d532f8239aa5120316b929226043dad614434ed",
+          "new_sha256": "ffba319b8f643327d6115b01fc6fb38f9275fd9e47763225dae16655a3113f04",
+          "scope": "G11 review wording: existing subscription/binary reuse is not a separate explicit approval event; no native measurements changed"
+        }
+      ]
+    }
+  ]
+}

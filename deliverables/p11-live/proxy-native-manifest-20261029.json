@@ -1,0 +1,208 @@
+{
+  "scope": "failed process-scoped HTTPS-CONNECT restriction preparation, not native/proxy acceptance",
+  "private_roots": {
+    "local": "/private/tmp/p11-C-proxy2-fu7ax6tg",
+    "peer": "/private/tmp/p11-C-proxy2-wmxd355_",
+    "peer_hostname": "Jaesolui-Macmini.local",
+    "preparation_failed_local": "/private/tmp/p11-C-proxy-rxp7xnqr",
+    "preparation_failed_peer": "/private/tmp/p11-C-proxy-5y3nciws"
+  },
+  "model_attempts": 0,
+  "engine_attempts": 0,
+  "CONNECT_count": 0,
+  "raw_values_published": false,
+  "files": [
+    {
+      "path": "/private/tmp/p11-C-proxy-rxp7xnqr/code/C-native-base.py",
+      "bytes": 5840,
+      "sha256": "08c808318e1636ca71a4ce547e44fcf71ca5ffe1a8dbfe03bd23b77069118591",
+      "storage": "private preparation failure"
+    },
+    {
+      "path": "/private/tmp/p11-C-proxy-rxp7xnqr/code/proxy-native-lib.py",
+      "bytes": 16139,
+      "sha256": "1d60fc88042f077f366554077a8d4d475af49a332b61483d78bae57c6162cd85",
+      "storage": "private preparation failure"
+    },
+    {
+      "path": "/private/tmp/p11-C-proxy-rxp7xnqr/code/proxy-native-peer.py",
+      "bytes": 2228,
+      "sha256": "eb4a0a54115949ae7852344482021639a6f204c1421697be276bae2c3e8df361",
+      "storage": "private preparation failure"
+    },
+    {
+      "path": "/private/tmp/p11-C-proxy-rxp7xnqr/code/proxy-native-run.py",
+      "bytes": 12646,
+      "sha256": "7c837f2ee92a17715339823be160ee6b8956ae0142ce96f559da292f4eb5be39",
+      "storage": "private preparation failure"
+    },
+    {
+      "path": "/private/tmp/p11-C-proxy-rxp7xnqr/code/proxy-native-support.py",
+      "bytes": 8625,
+      "sha256": "1bd735f6fca49d38a808750201e200f988c35a757124a5b59a1650a1c08681e9",
+      "storage": "private preparation failure"
+    },
+    {
+      "path": "/private/tmp/p11-C-proxy-rxp7xnqr/plan.md",
+      "bytes": 2244,
+      "sha256": "f821e0f41b3e5589ac1dbaa006d98b4a62e85784a48eb5e14d19b2ee5a834cde",
+      "storage": "private preparation failure"
+    },
+    {
+      "path": "/private/tmp/p11-C-proxy-rxp7xnqr/preflight-TLS.stderr",
+      "bytes": 129,
+      "sha256": "6cb5f9187cea1a3595a533423f6b173c5cffe9a21745d0665ebb94b3bf01c14c",
+      "storage": "private preparation failure"
+    },
+    {
+      "path": "/private/tmp/p11-C-proxy-rxp7xnqr/preflight-TLS.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storage": "private preparation failure"
+    },
+    {
+      "path": "/private/tmp/p11-C-proxy-rxp7xnqr/preflight.json",
+      "bytes": 903,
+      "sha256": "11df42bc2db554c4cfce167265a6893c331fd54c3a48a25dc32bef96b1a906a4",
+      "storage": "private preparation failure"
+    },
+    {
+      "path": "/private/tmp/p11-C-proxy-rxp7xnqr/proxy-final.json",
+      "bytes": 383,
+      "sha256": "ad3695e74c6c32ad184ecf7c38a3981e5fc3f101538461ee72fbd4834c5635a0",
+      "storage": "private preparation failure"
+    },
+    {
+      "path": "/private/tmp/p11-C-proxy-rxp7xnqr/proxy-native-result.json",
+      "bytes": 2691,
+      "sha256": "8ad67c7e2e103c6e1df8b3715ec2a06f2558f19c9ccb99eb417ea5b586091cab",
+      "storage": "private preparation failure"
+    },
+    {
+      "path": "/private/tmp/p11-C-proxy2-fu7ax6tg/code/C-native-base.py",
+      "bytes": 5840,
+      "sha256": "08c808318e1636ca71a4ce547e44fcf71ca5ffe1a8dbfe03bd23b77069118591",
+      "storage": "private final preparation"
+    },
+    {
+      "path": "/private/tmp/p11-C-proxy2-fu7ax6tg/code/proxy-native-lib.py",
+      "bytes": 16139,
+      "sha256": "1d60fc88042f077f366554077a8d4d475af49a332b61483d78bae57c6162cd85",
+      "storage": "private final preparation"
+    },
+    {
+      "path": "/private/tmp/p11-C-proxy2-fu7ax6tg/code/proxy-native-peer.py",
+      "bytes": 2228,
+      "sha256": "eb4a0a54115949ae7852344482021639a6f204c1421697be276bae2c3e8df361",
+      "storage": "private final preparation"
+    },
+    {
+      "path": "/private/tmp/p11-C-proxy2-fu7ax6tg/code/proxy-native-run.py",
+      "bytes": 12649,
+      "sha256": "42388804b7b4d7f9f3abc7fc1a882d477ec4254d94ecd86830eb279b7063ecea",
+      "storage": "private final preparation"
+    },
+    {
+      "path": "/private/tmp/p11-C-proxy2-fu7ax6tg/code/proxy-native-support.py",
+      "bytes": 8625,
+      "sha256": "923285aa2fc6e1313804899535db7d73584eabd737d66ce6502c386a942a7a98",
+      "storage": "private final preparation"
+    },
+    {
+      "path": "/private/tmp/p11-C-proxy2-fu7ax6tg/final-audit.json",
+      "bytes": 5100,
+      "sha256": "2ed3a850bf16f85c3a8b25af993ed4c4e2cc4e751a737897c6416e4880de8097",
+      "storage": "private final preparation"
+    },
+    {
+      "path": "/private/tmp/p11-C-proxy2-fu7ax6tg/plan.md",
+      "bytes": 2726,
+      "sha256": "f37d3531888f4ac4f3daa2cc2d80ee5e3ea861e6d4f4339ed378ba1c005d4747",
+      "storage": "private final preparation"
+    },
+    {
+      "path": "/private/tmp/p11-C-proxy2-fu7ax6tg/preflight-TLS.stderr",
+      "bytes": 91,
+      "sha256": "a8a54657a5c555fe2f9757be819e452b58a891818347ee44ddbf8ce647fa66a6",
+      "storage": "private final preparation"
+    },
+    {
+      "path": "/private/tmp/p11-C-proxy2-fu7ax6tg/preflight-TLS.stdout",
+      "bytes": 47,
+      "sha256": "5d6be2ce689bb53b6554da3743020d4d0bbc8b8defb7f5efbba7b29415e43172",
+      "storage": "private final preparation"
+    },
+    {
+      "path": "/private/tmp/p11-C-proxy2-fu7ax6tg/preflight.json",
+      "bytes": 1168,
+      "sha256": "d1b8f42bc81b6cec2a6d4f0dd24ec89de7442b166bd7aa4f9204bd0f542b96e8",
+      "storage": "private final preparation"
+    },
+    {
+      "path": "/private/tmp/p11-C-proxy2-fu7ax6tg/proxy-final.json",
+      "bytes": 383,
+      "sha256": "5e751e1b08efc4e52a7e5b69322975946ba5a712e017ba50af831d17cae435f8",
+      "storage": "private final preparation"
+    },
+    {
+      "path": "/private/tmp/p11-C-proxy2-fu7ax6tg/proxy-native-result.json",
+      "bytes": 2984,
+      "sha256": "04c570db63b4dc9d636e39416e3ad7da02d58e69ac9e071dde18ed8843985df6",
+      "storage": "private final preparation"
+    },
+    {
+      "path": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/deliverables/p11-live/proxy-native-lib.py",
+      "bytes": 16139,
+      "sha256": "1d60fc88042f077f366554077a8d4d475af49a332b61483d78bae57c6162cd85",
+      "storage": "public code/sanitized summary"
+    },
+    {
+      "path": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/deliverables/p11-live/proxy-native-location-20261029.json",
+      "bytes": 278,
+      "sha256": "f8b473d12d70c305685bb1e4ad8fa1f5317dbbbe1470d5cf0a3126cdf6969901",
+      "storage": "public code/sanitized summary"
+    },
+    {
+      "path": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/deliverables/p11-live/proxy-native-peer.py",
+      "bytes": 2228,
+      "sha256": "eb4a0a54115949ae7852344482021639a6f204c1421697be276bae2c3e8df361",
+      "storage": "public code/sanitized summary"
+    },
+    {
+      "path": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/deliverables/p11-live/proxy-native-plan-20261029.md",
+      "bytes": 2726,
+      "sha256": "f37d3531888f4ac4f3daa2cc2d80ee5e3ea861e6d4f4339ed378ba1c005d4747",
+      "storage": "public code/sanitized summary"
+    },
+    {
+      "path": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/deliverables/p11-live/proxy-native-preparation-failure-20261029.json",
+      "bytes": 3136,
+      "sha256": "470b3bad16f1dfe4ac0c88c03b9d53421c5266aafac18fb0ac6e79cb152926cd",
+      "storage": "public code/sanitized summary"
+    },
+    {
+      "path": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/deliverables/p11-live/proxy-native-report-20261029.md",
+      "bytes": 6551,
+      "sha256": "76248b1b3b8be46b1069f11f54e26ed129dcde40fbaf4e5fc222a41a5873117c",
+      "storage": "public code/sanitized summary"
+    },
+    {
+      "path": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/deliverables/p11-live/proxy-native-run.py",
+      "bytes": 12649,
+      "sha256": "42388804b7b4d7f9f3abc7fc1a882d477ec4254d94ecd86830eb279b7063ecea",
+      "storage": "public code/sanitized summary"
+    },
+    {
+      "path": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/deliverables/p11-live/proxy-native-summary-20261029.json",
+      "bytes": 5311,
+      "sha256": "952bca6c1597aa3e870d598580ca7d42e095424af6a137bee2eb56b53476f307",
+      "storage": "public code/sanitized summary"
+    },
+    {
+      "path": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/deliverables/p11-live/proxy-native-support.py",
+      "bytes": 8625,
+      "sha256": "923285aa2fc6e1313804899535db7d73584eabd737d66ce6502c386a942a7a98",
+      "storage": "public code/sanitized summary"
+    }
+  ]
+}

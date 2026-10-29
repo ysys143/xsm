@@ -1,0 +1,19 @@
+{
+  "official_crate_version": "1.4.1",
+  "official_archive_sha256": "7e5589e7c1475700686603a970275687f760df853bc6525c7eb1347aa31d7230",
+  "upstream_git": "d6c6963b9602d1b8dd2ba53b6519e7eb19cc7940",
+  "official_source_main_sha256": "28fa6ef23f8c1a9151f7a02e6977ef2d85c8538f700d9b2d7d724b5e0f92e1ae",
+  "official_source_server_sha256": "4a30762a874a6f0ba078ba484e6e91dd991bea9448fca087556bd5bf4ec33232",
+  "official_source_lock_sha256": "64ba644ea735f907e99f17ef4626ede2eaf5be0486ac5fcedfcd6de063c0f2e5",
+  "probe_source_sha256": "5a187e77c196297a4d3a03805136ba9387990ebc528c3facbab848aedc070e71",
+  "probe_lock_sha256": "351bdfa0a7ffc00fce67944980b85fd58cff92131e67ba2d11e4ce686fd12ea3",
+  "root_mode": "0o700",
+  "raw_mode": "0o700",
+  "global_cache_configuration_written": false,
+  "build_seconds": 49.71,
+  "probe_build_seconds": 34.98,
+  "public_custom_relay_used": false,
+  "paid_server_created": false,
+  "certificate_trust_store_changed": false,
+  "product_sources_modified": false
+}

@@ -1,0 +1,89 @@
+{
+  "read_existing_evidence_only": true,
+  "new_experiments": 0,
+  "carrier_results": [
+    {
+      "condition": "public-relay-final",
+      "result": "pass",
+      "roundtrip_count": 2,
+      "seconds": [
+        0.68,
+        0.875
+      ],
+      "all_paths_relay": true,
+      "all_tls_and_body_digests_match": true,
+      "proxy_engine_socket_matches": [
+        {
+          "engine_pid": 12396,
+          "proxy_port": 64298,
+          "matched_relay_tunnels": 1,
+          "bidirectional_tls_bytes": true
+        },
+        {
+          "engine_pid": 12395,
+          "proxy_port": 64298,
+          "matched_relay_tunnels": 2,
+          "bidirectional_tls_bytes": true
+        }
+      ],
+      "services_stopped": true,
+      "proxy_stopped": true,
+      "udp_ports_rebindable": true
+    },
+    {
+      "condition": "udp-blocked-https-proxy-final",
+      "result": "pass",
+      "roundtrip_count": 2,
+      "seconds": [
+        0.853,
+        0.7
+      ],
+      "all_paths_relay": true,
+      "all_tls_and_body_digests_match": true,
+      "proxy_engine_socket_matches": [
+        {
+          "engine_pid": 12648,
+          "proxy_port": 64431,
+          "matched_relay_tunnels": 1,
+          "bidirectional_tls_bytes": true
+        },
+        {
+          "engine_pid": 12647,
+          "proxy_port": 64431,
+          "matched_relay_tunnels": 1,
+          "bidirectional_tls_bytes": true
+        }
+      ],
+      "services_stopped": true,
+      "proxy_stopped": true,
+      "udp_ports_rebindable": true
+    }
+  ],
+  "limited_source_comparison": [
+    {
+      "file": "xsm/network.py",
+      "success_sha256": "9366ca66ad294233537cf43cd33b4142e1432dde0290283a3ca7e601d985d034",
+      "current_sha256": "9366ca66ad294233537cf43cd33b4142e1432dde0290283a3ca7e601d985d034",
+      "same": true,
+      "frozen_matches_manifest": true
+    },
+    {
+      "file": "xsm/network_transport.py",
+      "success_sha256": "1827fc7b4ac9a4f90680a14b46112490a0e54d7263557233dc3e693fe0d389c3",
+      "current_sha256": "1827fc7b4ac9a4f90680a14b46112490a0e54d7263557233dc3e693fe0d389c3",
+      "same": true,
+      "frozen_matches_manifest": true
+    },
+    {
+      "file": "xsm/receive.py",
+      "success_sha256": "e3cbe2ece4d70bafbb8d8d4ae3be05a7aeaf64035f564cdc93832fbe78512dcb",
+      "current_sha256": "e3cbe2ece4d70bafbb8d8d4ae3be05a7aeaf64035f564cdc93832fbe78512dcb",
+      "same": true,
+      "frozen_matches_manifest": true
+    }
+  ],
+  "supplied_binary_sha256": "c963e9d4e4ffda47dead354d7d66e2f71fea037932b51846422bdbacb5b39a7d",
+  "success_binary_sha256": "c963e9d4e4ffda47dead354d7d66e2f71fea037932b51846422bdbacb5b39a7d",
+  "cleanup_evidence": "cleanup-paused.json",
+  "scope": "같은 호스트의 두 제품 서비스이며 실제 모델 세션이나 서로 다른 NAT 성공이 아님"
+}

@@ -1,0 +1,87 @@
+{
+  "same_frozen_binary_sha256": "f17f03fafcdf3a31e374d6cbc0ccbbbd8000ba6a7eba5d9b44605e742c409aed",
+  "frozen_python_files": 52,
+  "frozen_python_unchanged": true,
+  "original_failed_source_sha256": "fa86b6e12871ae1e5e7ce0b13d41af56988ff106dcc3fc5d57f9ca2d90a19095",
+  "original_failed_library_sha256": "cdb7ce8a579ed4e576c42ffe13df2e8288821ba4e1f8ccc69b9e02a5295c4289",
+  "original_failed_artifacts_preserved": true,
+  "reused_existing_helpers_unchanged": true,
+  "native_import_socket": true,
+  "native_import_socket_nocancel": false,
+  "direct_original_diagnostic": {
+    "private_root": "/private/tmp/c21-v6diag-r1p10hzv",
+    "diagnostic_condition": "same frozen binary and same interposer, direct native stdout/stderr split, fresh 0700 state, relay off, port 0",
+    "pid": 14435,
+    "exit": -6,
+    "ready": false,
+    "native_codes": [],
+    "stdout_bytes": 0,
+    "stderr_bytes": 97,
+    "events": [
+      {
+        "event": "interpose-loaded",
+        "pid": 14435,
+        "family": 0,
+        "type": 0,
+        "errno": 0
+      }
+    ],
+    "binary_sha256": "f17f03fafcdf3a31e374d6cbc0ccbbbd8000ba6a7eba5d9b44605e742c409aed",
+    "library_sha256": "cdb7ce8a579ed4e576c42ffe13df2e8288821ba4e1f8ccc69b9e02a5295c4289",
+    "reaped": true,
+    "elapsed_seconds": 0.0822598934173584
+  },
+  "original_constructor_pointer_check": {
+    "private_root": "/private/tmp/c21-v6ptr-wvihocsw",
+    "constructor_only": true,
+    "native_main_not_run": true,
+    "exit": 0,
+    "resolver_null": 0,
+    "resolver_self": 1,
+    "dlerror_present": 0,
+    "raw_pointer_file": "/private/tmp/c21-v6ptr-wvihocsw/raw/resolver.jsonl"
+  },
+  "syscall_comparison": {
+    "private_root": "/private/tmp/c21-v6sys-mv0pn9dt",
+    "binary": "/private/tmp/c21-v6-in2yqi7_/xsm-net",
+    "pid": 20023,
+    "exit": 0,
+    "ready": true,
+    "resolver_self_values": [
+      1
+    ],
+    "ipv6_denied": 23,
+    "ipv4_succeeded": 79,
+    "native_stdout": "/private/tmp/c21-v6sys-mv0pn9dt/raw/native.stdout.jsonl",
+    "native_stderr": "/private/tmp/c21-v6sys-mv0pn9dt/raw/native.stderr",
+    "stderr_bytes": 0,
+    "reaped": true,
+    "library_sha256": "6b9be6e3c360494baf172b6423ec1ad1bb38a0dadeb2567fbe5b1857e392cede"
+  },
+  "direct_socket_comparison": {
+    "forwarding": "direct socket reference from interposer image",
+    "pid": 33577,
+    "exit": 0,
+    "ready": true,
+    "ipv6_denied": 23,
+    "ipv4_succeeded": 79,
+    "direct_reentry_count": 0,
+    "resolver_self_values": [
+      1
+    ],
+    "reaped": true
+  },
+  "final_interposer_sha256": "07441495166f6d9d4fe5d98016032ec7eab6d9566d486e404f90ec176d2e7f45",
+  "final_interposer_source_sha256": "fdad053986d12fd867931b0a4a6640cba09595adc317658f54b6f0e89a6fd8fe",
+  "host_ipv6_supported_before": true,
+  "host_ipv6_supported_after": true,
+  "fault_applied_only_to_observed_native_pids": [
+    37768,
+    37791
+  ],
+  "product_source_modified": false,
+  "global_ipv6_firewall_profile_modified": false,
+  "user_session_signals": 0,
+  "raw_private_root": "/private/tmp/c21-v6sys-mv0pn9dt",
+  "scope": "own-process controlled AF_INET6 EAFNOSUPPORT, not host-wide IPv6 absence"
+}

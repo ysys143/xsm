@@ -1,0 +1,455 @@
+{
+  "status": "passed",
+  "scope": "self vs remote same display name only",
+  "checks": {
+    "exactly_two_candidates_both_named_a1": true,
+    "self_actual_CID": true,
+    "remote_actual_CID": true,
+    "remote_discovered_from_publication": true,
+    "remote_handle_generation_equal_delivery": true,
+    "remote_candidate_selected": true,
+    "native_user_selection_observed": true,
+    "handshake_completed_with_real_correlated_reply": true,
+    "request_original_packet_equal": true,
+    "reply_original_packet_equal": true,
+    "request_body_equal_canonical": true,
+    "reply_body_equal_canonical": true,
+    "reply_reverse_full_handle": true,
+    "request_receiver_MCP_read": true,
+    "request_ACK_actual_MCP": true,
+    "reply_receiver_MCP_read": true,
+    "reply_ACK_actual_MCP": true,
+    "both_canonical_ACK": true,
+    "no_self_request_misdelivery": true,
+    "one_request_and_one_reply": true,
+    "both_payloads_manifest_match": true,
+    "no_runtime_disable_or_dangerous_flags": true,
+    "tools_advertised_and_actually_called": true,
+    "workspace_write_never_actual_provider": true,
+    "no_generic_continuation_or_body_relay": true,
+    "previous_original_pending": true,
+    "owned_processes_stopped": true
+  },
+  "check_count": 27,
+  "actors": {
+    "book": {
+      "name": "a1",
+      "CID": "30e9cd91-c5b8-4016-ae18-e57d883115b2",
+      "PID": 23031,
+      "lstart": "Fri Oct 30 00:15:00 2026",
+      "home": "/Users/jaesolshin/.claude-3",
+      "mcp_pid": 23245,
+      "mcp_lstart": "Fri Oct 30 00:15:03 2026",
+      "public_handle": {
+        "generation": "9fe7930e4d25821a863bced432e60e4795e24afa8f597aebc90f987a4e652105",
+        "home_id": "1f3efe9ffb9cf15ba352aa22f67362777ae05495d0bb84b9b5b8268090817da7",
+        "machine": "445313bf4701a59ef4cdce35db5acdad0a2cde861d28655316dfcccee9f4d2b1",
+        "runtime": "claude",
+        "session_id": "30e9cd91-c5b8-4016-ae18-e57d883115b2"
+      }
+    },
+    "mini": {
+      "name": "a1",
+      "CID": "01a1883b-14d9-7e01-a89c-5c988b20489d",
+      "PID": 62457,
+      "lstart": "Fri Oct 30 00:15:35 2026",
+      "home": "/private/tmp/native-journey-samename-fifo-mini-xd79l1tx/codex-home",
+      "mcp_pid": 62715,
+      "mcp_lstart": "Fri Oct 30 00:15:38 2026",
+      "public_handle": {
+        "generation": "c6e9595173dbc3ec37f262f299d3d1db8ed56a0fe03365fe23eee0dbae47e724",
+        "home_id": "bb12de996187d4a7e6c69612ff112eb3017183986028a055dde80e13f0829a90",
+        "machine": "b42dc1a4b8a099113a904bdb23f8b2a76bc80eeb94731f738e26e8f09ce083f7",
+        "runtime": "codex",
+        "session_id": "01a1883b-14d9-7e01-a89c-5c988b20489d"
+      }
+    }
+  },
+  "request_id": "3ccb7bfcd0344f72",
+  "reply_id": "66daee02cedb4ec0",
+  "actual_reply_body": "역할은 검토 담당 a1입니다. 협업 준비가 되었습니다. 이 세션은 xsm에 공개되어 있고, 작업 요청(task)과 질문(ask)을 받을 수 있습니다. 수신은 Claude 세션 인박스로 이루어지며, 결과는 reply와 outcome으로 회신합니다. 권한, 설정, 승인 요청은 처리하지 않고 사용자에게 넘깁니다.",
+  "request_body_sha256": "b268004cb9e0a4f2b2c5442a8a59992556d9feb2beba033a93c3c0caafdb865f",
+  "reply_body_sha256": "d734106e260c9bb30fedaff23156b08932fa78af2eec2738ba32f4dc49c40e53",
+  "selected_remote_target": "net:445313bf4701a59ef4cdce35db5acdad0a2cde861d28655316dfcccee9f4d2b1:claude:1f3efe9ffb9cf15ba352aa22f67362777ae05495d0bb84b9b5b8268090817da7:30e9cd91-c5b8-4016-ae18-e57d883115b2",
+  "discovery": [
+    {
+      "id": "443d2bcb57cfd7148080f098569c3904196d7d835c334cfb533cc7a093226a2c",
+      "target": "candidate:443d2bcb57cfd7148080f098569c3904196d7d835c334cfb533cc7a093226a2c",
+      "is_self": true,
+      "handle": {
+        "runtime": "codex",
+        "session_id": "01a1883b-14d9-7e01-a89c-5c988b20489d",
+        "home_id": "bb12de996187d4a7e6c69612ff112eb3017183986028a055dde80e13f0829a90",
+        "machine": "local"
+      },
+      "ref": "0bc86b",
+      "machine": "local",
+      "runtime": "codex",
+      "name": "a1",
+      "title": {
+        "value": "a1",
+        "status": "known",
+        "source": "registry:hook.name",
+        "timestamp": 1793286941.677275,
+        "observed_at": 1793286950.477293,
+        "freshness": "unknown"
+      },
+      "name_source": "registry:hook.name",
+      "name_freshness": "unknown",
+      "discovery_basis": [
+        "same_repo"
+      ],
+      "repository": "work",
+      "branch": {
+        "value": "main",
+        "status": "known",
+        "source": "git:symbolic-ref",
+        "timestamp": 1793286950.4750872,
+        "observed_at": 1793286950.475088,
+        "freshness": "fresh"
+      },
+      "summary": {
+        "value": null,
+        "status": "unknown",
+        "source": null,
+        "timestamp": null,
+        "observed_at": 1793286950.4772952,
+        "freshness": "unknown"
+      },
+      "todo": {
+        "value": null,
+        "status": "unknown",
+        "source": null,
+        "timestamp": null,
+        "observed_at": 1793286950.508845,
+        "freshness": "unknown"
+      },
+      "activity": {
+        "value": "busy",
+        "status": "known",
+        "source": "codex:event_msg:task_started",
+        "timestamp": "2026-10-29T15:15:38.107Z",
+        "observed_at": 1793286950.476821,
+        "freshness": "fresh"
+      },
+      "state": {
+        "value": "live",
+        "status": "known",
+        "source": "registry:liveness:live",
+        "timestamp": 1793286950.508857,
+        "observed_at": 1793286950.508857,
+        "freshness": "fresh"
+      },
+      "receive": {
+        "value": "available",
+        "status": "known",
+        "source": "registry:receive_capability",
+        "timestamp": 1793286950.508863,
+        "observed_at": 1793286950.508863,
+        "freshness": "fresh"
+      }
+    },
+    {
+      "activity": {
+        "freshness": "unknown",
+        "observed_at": 1793286950.725442,
+        "source": null,
+        "status": "unknown",
+        "timestamp": null,
+        "value": null
+      },
+      "branch": {
+        "freshness": "fresh",
+        "observed_at": 1793286950.72002,
+        "source": "git:symbolic-ref",
+        "status": "known",
+        "timestamp": 1793286950.720017,
+        "value": "main"
+      },
+      "discovery_basis": [
+        "published"
+      ],
+      "doing": {
+        "freshness": "unknown",
+        "observed_at": 1793286950.7203891,
+        "source": null,
+        "status": "unknown",
+        "timestamp": null,
+        "value": null
+      },
+      "handle": {
+        "generation": "9fe7930e4d25821a863bced432e60e4795e24afa8f597aebc90f987a4e652105",
+        "home_id": "1f3efe9ffb9cf15ba352aa22f67362777ae05495d0bb84b9b5b8268090817da7",
+        "machine": "445313bf4701a59ef4cdce35db5acdad0a2cde861d28655316dfcccee9f4d2b1",
+        "runtime": "claude",
+        "session_id": "30e9cd91-c5b8-4016-ae18-e57d883115b2"
+      },
+      "id": "475a60d9d74c78c7eed5f18df7b8697d8be632e50cb41fb694bcb15a76ffd181",
+      "is_self": false,
+      "machine": "445313bf4701a59ef4cdce35db5acdad0a2cde861d28655316dfcccee9f4d2b1",
+      "name": "a1",
+      "name_freshness": "unknown",
+      "name_source": "registry:hook.name",
+      "receive": {
+        "freshness": "fresh",
+        "observed_at": 1793286950.725445,
+        "source": "registry:receive_capability",
+        "status": "known",
+        "timestamp": 1793286950.725445,
+        "value": "available"
+      },
+      "ref": "b8d1f3",
+      "repository": null,
+      "repository_id": null,
+      "repository_status": "unknown",
+      "runtime": "claude",
+      "same_repository": null,
+      "state": {
+        "freshness": "fresh",
+        "observed_at": 1793286950.7254431,
+        "source": "registry:liveness:live",
+        "status": "known",
+        "timestamp": 1793286950.7254431,
+        "value": "live"
+      },
+      "summary": {
+        "freshness": "unknown",
+        "observed_at": 1793286950.7203891,
+        "source": null,
+        "status": "unknown",
+        "timestamp": null,
+        "value": null
+      },
+      "target": "net:445313bf4701a59ef4cdce35db5acdad0a2cde861d28655316dfcccee9f4d2b1:claude:1f3efe9ffb9cf15ba352aa22f67362777ae05495d0bb84b9b5b8268090817da7:30e9cd91-c5b8-4016-ae18-e57d883115b2",
+      "title": {
+        "freshness": "unknown",
+        "observed_at": 1793286950.720387,
+        "source": "registry:hook.name",
+        "status": "known",
+        "timestamp": 1793286905.397599,
+        "value": "a1"
+      },
+      "todo": {
+        "freshness": "unknown",
+        "observed_at": 1793286950.725441,
+        "source": null,
+        "status": "unknown",
+        "timestamp": null,
+        "value": null
+      },
+      "machine_name": "same-name-live-reviewer-book",
+      "origin_assurance": "authenticated-member"
+    }
+  ],
+  "connect": [
+    {
+      "arguments": {
+        "target": "candidate:475a60d9d74c78c7eed5f18df7b8697d8be632e50cb41fb694bcb15a76ffd181",
+        "wait": 45
+      },
+      "result": {
+        "status": "selection-required",
+        "reason": "your user replied: \"내가 아닌 다른 머신의 검토자 a1이랑 붙어서 실제 협업 준비가 되어 있는지 직접 회신을 확인하고 보고하세요. 같은 표시 이름인 본인에게 보내지 마세요. 최신 안내는 /private/tmp/native-journey-samename-fifo-mini-xd79l1tx/payload/skills/xsm/SKILL.md입니다. 새 동료 생성이나 소스·프로필·권한 변경, 본문·ACK·동의 답변의 상태파일 보정은 하지 마세요.\". If that is a yes to collaborating with a1, run this same command again to go ahead; if it is a no or a question, do not: answer them, and their next message replaces it.",
+        "target": "net:445313bf4701a59ef4cdce35db5acdad0a2cde861d28655316dfcccee9f4d2b1:claude:1f3efe9ffb9cf15ba352aa22f67362777ae05495d0bb84b9b5b8268090817da7:30e9cd91-c5b8-4016-ae18-e57d883115b2",
+        "handshake": "not-started",
+        "claims": [],
+        "inbox_pending": 0
+      }
+    },
+    {
+      "arguments": {
+        "target": "candidate:475a60d9d74c78c7eed5f18df7b8697d8be632e50cb41fb694bcb15a76ffd181",
+        "wait": 45
+      },
+      "result": {
+        "status": "final",
+        "id": "3ccb7bfcd0344f72",
+        "purpose": "handshake",
+        "created_at": 1793286958.851584,
+        "replies": [
+          {
+            "id": "66daee02cedb4ec0",
+            "body": "역할은 검토 담당 a1입니다. 협업 준비가 되었습니다. 이 세션은 xsm에 공개되어 있고, 작업 요청(task)과 질문(ask)을 받을 수 있습니다. 수신은 Claude 세션 인박스로 이루어지며, 결과는 reply와 outcome으로 회신합니다. 권한, 설정, 승인 요청은 처리하지 않고 사용자에게 넘깁니다.",
+            "outcome": "succeeded",
+            "sender": {
+              "machine": "445313bf4701a59ef4cdce35db5acdad0a2cde861d28655316dfcccee9f4d2b1",
+              "runtime": "claude",
+              "home_id": "1f3efe9ffb9cf15ba352aa22f67362777ae05495d0bb84b9b5b8268090817da7",
+              "session_id": "30e9cd91-c5b8-4016-ae18-e57d883115b2",
+              "ref": null,
+              "name": null,
+              "alias": null
+            },
+            "receiver": {
+              "runtime": "codex",
+              "session_id": "01a1883b-14d9-7e01-a89c-5c988b20489d",
+              "ref": "0bc86b",
+              "name": "a1",
+              "alias": "codex-home",
+              "home_id": "bb12de996187d4a7e6c69612ff112eb3017183986028a055dde80e13f0829a90"
+            },
+            "received_at": 1793286966.8610518
+          }
+        ],
+        "final": true,
+        "final_outcome": "succeeded",
+        "recover_at": {
+          "cli": [
+            "xsm",
+            "question-status",
+            "3ccb7bfcd0344f72"
+          ],
+          "mcp": {
+            "tool": "xsm_question_status",
+            "arguments": {
+              "id": "3ccb7bfcd0344f72"
+            }
+          }
+        },
+        "wait_end_reason": "reply",
+        "capabilities": {
+          "attachments": true,
+          "wake_control": true,
+          "priority": {
+            "claude": [
+              "next",
+              "now"
+            ],
+            "codex": [
+              "next"
+            ]
+          }
+        },
+        "wake": "transport_policy",
+        "send_evidence": {
+          "status": "sent-unconfirmed",
+          "reason": "stored remotely; native consumption is reported separately",
+          "id": "3ccb7bfcd0344f72",
+          "to": "a1@None",
+          "runtime_reached": false,
+          "evidence": {
+            "remote_stored": true
+          }
+        },
+        "delivery_evidence": {
+          "steps": {
+            "remote_stored": {
+              "ok": true,
+              "t": 1793286959.5729
+            }
+          },
+          "runtime_reached": false,
+          "digest": "01334a0a47263861c37e5877b4e6d62e240e36a45025f7e9d21e04293989e5c4",
+          "req_version": 1,
+          "legacy": false,
+          "verified": true,
+          "upgraded_from_legacy": false,
+          "acknowledged": false
+        },
+        "handshake": "completed",
+        "wait_budget": {
+          "requested": 45.0,
+          "effective": 45.0,
+          "cap": 60
+        },
+        "claims": [],
+        "claim_diagnostics": [
+          {
+            "id": "66daee02cedb4ec0",
+            "status": "canonical-unavailable-or-mismatch"
+          }
+        ],
+        "inbox_pending": 1,
+        "inbox_notice": "[xsm] 1 message from other sessions waiting for you; read with `xsm inbox` (or the xsm_inbox MCP tool) before waiting again."
+      }
+    }
+  ],
+  "P2P_transport": [
+    {
+      "sender": "mini",
+      "receiver": "book",
+      "body_sha256": "bc1f785eee4890cb4d3e7f131f8f6b9d3391cdf5839c02d719be91e13d39582b",
+      "authenticated_origin": "b42dc1a4b8a099113a904bdb23f8b2a76bc80eeb94731f738e26e8f09ce083f7",
+      "observed_transport": {
+        "path": "direct",
+        "selected": "direct",
+        "selection_reason": "iroh_path_selection",
+        "fallback_reason": null,
+        "remote_address": "210.113.21.16:52733",
+        "paths": [
+          {
+            "kind": "direct",
+            "remote": "ip:210.113.21.16:52733",
+            "selected": true
+          }
+        ]
+      },
+      "sent_at": 1793286959.4718342,
+      "received_at": 1793286959.528244
+    },
+    {
+      "sender": "book",
+      "receiver": "mini",
+      "body_sha256": "bfd4cb76faa746197e27f35d24569cdb9f294a4b92d437ef61d66e405e60f1ce",
+      "authenticated_origin": "445313bf4701a59ef4cdce35db5acdad0a2cde861d28655316dfcccee9f4d2b1",
+      "observed_transport": {
+        "path": "direct",
+        "selected": "direct",
+        "selection_reason": "iroh_path_selection",
+        "fallback_reason": null,
+        "remote_address": "119.208.251.16:61749",
+        "paths": [
+          {
+            "kind": "direct",
+            "remote": "ip:119.208.251.16:61749",
+            "selected": true
+          }
+        ]
+      },
+      "sent_at": 1793286966.739414,
+      "received_at": 1793286966.7295942
+    }
+  ],
+  "source_manifest_sha256": "f4172fc9f4c49433eb90fe44a54dad5631ede60249b60a5905e3524d794c62a4",
+  "native_models": {
+    "book": {
+      "path": "/private/tmp/native-journey-samename-fifo-book-ll80hkw2/actor/native.jsonl",
+      "CID": "30e9cd91-c5b8-4016-ae18-e57d883115b2",
+      "model": "claude-sonnet-5-5",
+      "permissionMode": "auto",
+      "apiKeySource": "none",
+      "mcp_servers": [
+        {
+          "name": "xsm",
+          "status": "connected",
+          "source": "dynamic"
+        },
+        {
+          "name": "context-harness",
+          "status": "connected",
+          "source": "plugin"
+        }
+      ]
+    },
+    "mini": {
+      "CID": "01a1883b-14d9-7e01-a89c-5c988b20489d",
+      "model": "gpt-6.1-sol",
+      "approval_policy": "never",
+      "sandbox_policy": {
+        "type": "workspace-write",
+        "network_access": false,
+        "exclude_tmpdir_env_var": false,
+        "exclude_slash_tmp": false
+      }
+    }
+  },
+  "ACK_times": {
+    "book": 1793286974.9088588,
+    "mini": 1793286971.159123
+  },
+  "automatic_wake_proven": false,
+  "new_sample_held_count": 0,
+  "generic_continuation_sent": false,
+  "previous_wake_hold_and_pending_preserved": true,
+  "reported_UTC": "2026-10-29T15:23:50.490520+00:00"
+}

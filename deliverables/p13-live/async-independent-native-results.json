@@ -1,0 +1,310 @@
+{
+  "scope": "A16-02 single actual-native async independent-work continuity cell",
+  "root": "/private/tmp/p13-async-independent-6qwbi2sn",
+  "workspace": "/private/tmp/p13-async-independent-6qwbi2sn/project",
+  "state": "/private/tmp/p13-async-independent-6qwbi2sn/state",
+  "frozen_source": "/private/tmp/xsm-final-receipt-frozen-i3u9pms3",
+  "frozen_manifest": "deliverables/p13-live/final-source-manifest.json",
+  "source_before": {
+    "file_count": 315,
+    "manifest_sha256": "57d088eee167e573d3a534e2d53db230703963516ece02ee1b6fce294ae9068f",
+    "matches": true,
+    "changed_paths": []
+  },
+  "goals": {
+    "reviewer": "이 private 저장소의 산술 검토 담당 a1입니다. xsm으로 동료의 검토 질문 하나를 받아 원문을 읽고 독립적으로 검산한 결과를 원래 동료에게 회신하세요. 동료의 질문을 처리할 때까지 대기하고, 회신과 읽은 메시지의 확인을 마친 뒤 결과를 보고하세요. 다른 세션·폴더·권한·설정은 바꾸지 마세요.",
+    "sender": "xsm의 동료 검토 담당 a1에게 1부터 200000까지 정수 중 7 또는 11의 배수인 수를 중복 없이 더한 합을 독립 검토해 달라고 질문하세요. 그 답을 기다리는 동안 별도의 작업으로 1부터 8192까지의 정수와 제곱을 n,square 헤더의 data/squares.csv에 저장하고, 데이터 행수·제곱합·그 CSV 파일의 SHA-256을 data/squares-summary.json에 보관하세요. 별도 파일 작업을 끝낸 뒤 처음 질문의 실제 최종 회신을 회수해 답과 파일 검증 결과를 함께 보고하세요. 같은 검토를 새 질문으로 중복시키지 말고 읽은 메시지는 확인을 마치세요. 다른 폴더·권한·설정은 바꾸지 마세요."
+  },
+  "setup_registry_calls": 2,
+  "actor_native_invocations": 2,
+  "controller_body_relays": 0,
+  "controller_ACKs": 0,
+  "controller_index_writes": 0,
+  "additional_user_prompts": 0,
+  "automatic_actor_retries": 0,
+  "condition_runs": 1,
+  "status": "captured-original-sample",
+  "factory_ignore_user_config": true,
+  "profile": "/Users/jaesolshin/.codex-3",
+  "skill_source": "frozen product copied verbatim to private repository .agents/skills/xsm",
+  "started_at": 1793232271.340856,
+  "reviewer_invocation": {
+    "role": "reviewer",
+    "profile": "/Users/jaesolshin/.codex-3",
+    "goal": "이 private 저장소의 산술 검토 담당 a1입니다. xsm으로 동료의 검토 질문 하나를 받아 원문을 읽고 독립적으로 검산한 결과를 원래 동료에게 회신하세요. 동료의 질문을 처리할 때까지 대기하고, 회신과 읽은 메시지의 확인을 마친 뒤 결과를 보고하세요. 다른 세션·폴더·권한·설정은 바꾸지 마세요.",
+    "pid": 66849,
+    "lstart": "Thu Oct 29 09:04:31 2026",
+    "invocation_without_goal": [
+      "codex",
+      "exec",
+      "--ignore-user-config",
+      "--json",
+      "--sandbox",
+      "workspace-write",
+      "-c",
+      "approval_policy=\"never\"",
+      "-c",
+      "mcp_servers.xsm.command=\"/usr/bin/python3\"",
+      "-c",
+      "mcp_servers.xsm.args=[\"-m\",\"xsm\",\"mcp\"]",
+      "-c",
+      "mcp_servers.xsm.cwd=\"/private/tmp/xsm-final-receipt-frozen-i3u9pms3\"",
+      "-c",
+      "mcp_servers.xsm.env.XSM_HOME=\"/private/tmp/p13-async-independent-6qwbi2sn/state\"",
+      "-c",
+      "mcp_servers.xsm.env.CODEX_HOME=\"/Users/jaesolshin/.codex-3\"",
+      "-c",
+      "mcp_servers.xsm.env.PYTHONPATH=\"/private/tmp/xsm-final-receipt-frozen-i3u9pms3\"",
+      "-c",
+      "mcp_servers.xsm.env.PYTHONDONTWRITEBYTECODE=\"1\""
+    ],
+    "goal_sha256": "8bcce9b8a0742d97ece17659741d56e9ee4d31c4e78d6716e548d34428a67631"
+  },
+  "sender_invocation": {
+    "role": "initiator",
+    "profile": "/Users/jaesolshin/.codex-3",
+    "goal": "xsm의 동료 검토 담당 a1에게 1부터 200000까지 정수 중 7 또는 11의 배수인 수를 중복 없이 더한 합을 독립 검토해 달라고 질문하세요. 그 답을 기다리는 동안 별도의 작업으로 1부터 8192까지의 정수와 제곱을 n,square 헤더의 data/squares.csv에 저장하고, 데이터 행수·제곱합·그 CSV 파일의 SHA-256을 data/squares-summary.json에 보관하세요. 별도 파일 작업을 끝낸 뒤 처음 질문의 실제 최종 회신을 회수해 답과 파일 검증 결과를 함께 보고하세요. 같은 검토를 새 질문으로 중복시키지 말고 읽은 메시지는 확인을 마치세요. 다른 폴더·권한·설정은 바꾸지 마세요.",
+    "pid": 67201,
+    "lstart": "Thu Oct 29 09:04:32 2026",
+    "invocation_without_goal": [
+      "codex",
+      "exec",
+      "--ignore-user-config",
+      "--json",
+      "--sandbox",
+      "workspace-write",
+      "-c",
+      "approval_policy=\"never\"",
+      "-c",
+      "mcp_servers.xsm.command=\"/usr/bin/python3\"",
+      "-c",
+      "mcp_servers.xsm.args=[\"-m\",\"xsm\",\"mcp\"]",
+      "-c",
+      "mcp_servers.xsm.cwd=\"/private/tmp/xsm-final-receipt-frozen-i3u9pms3\"",
+      "-c",
+      "mcp_servers.xsm.env.XSM_HOME=\"/private/tmp/p13-async-independent-6qwbi2sn/state\"",
+      "-c",
+      "mcp_servers.xsm.env.CODEX_HOME=\"/Users/jaesolshin/.codex-3\"",
+      "-c",
+      "mcp_servers.xsm.env.PYTHONPATH=\"/private/tmp/xsm-final-receipt-frozen-i3u9pms3\"",
+      "-c",
+      "mcp_servers.xsm.env.PYTHONDONTWRITEBYTECODE=\"1\""
+    ],
+    "goal_sha256": "276b05571bef4522d678b7c36f0e91fdbdb3a90072c626ef022f355a9523ab9e"
+  },
+  "actors": [
+    {
+      "role": "reviewer",
+      "native_session_id": "01a184f8-f8af-7483-9bc9-6c8da826cda9",
+      "registered_name": "a1",
+      "mcp_pid": 66966,
+      "setup_registration_seconds": 1.342,
+      "registration_preceded_first_agent_call": true,
+      "calls": [
+        {
+          "kind": "command_execution",
+          "complete": true,
+          "seconds_from_actor_start": 5.22,
+          "command_sha256": "4a4b5697b5641c3201f59fa0d16d356ea5b64152bd55aa6883242acdd0605c47",
+          "exit_code": 0,
+          "sandbox_shell_send_attempt": false,
+          "skill_read": true,
+          "sandbox_failure": false
+        },
+        {
+          "kind": "command_execution",
+          "complete": true,
+          "seconds_from_actor_start": 8.431,
+          "command_sha256": "829092d1330d5e1178f5e996891ce2ac44c508fc65e3cd979e3264aca86d903c",
+          "exit_code": 0,
+          "sandbox_shell_send_attempt": false,
+          "skill_read": false,
+          "sandbox_failure": false
+        },
+        {
+          "kind": "mcp_tool_call",
+          "complete": true,
+          "seconds_from_actor_start": 10.883,
+          "server": "xsm",
+          "tool": "xsm_inbox",
+          "error": null,
+          "argument_keys": [
+            "wait"
+          ],
+          "arguments_sha256": "5ce894079e806eb601f73f1a7714e226bcef2fefbe7c19babeb0974081cbad48"
+        },
+        {
+          "kind": "command_execution",
+          "complete": true,
+          "seconds_from_actor_start": 16.22,
+          "command_sha256": "27ff3b95bcb81188d6ad1801ef1fa99f4821489fd84f0a6df0bdd42575689670",
+          "exit_code": 0,
+          "sandbox_shell_send_attempt": false,
+          "skill_read": false,
+          "sandbox_failure": false
+        },
+        {
+          "kind": "mcp_tool_call",
+          "complete": true,
+          "seconds_from_actor_start": 21.998,
+          "server": "xsm",
+          "tool": "xsm_send",
+          "error": null,
+          "argument_keys": [
+            "kind",
+            "outcome",
+            "reply_to",
+            "target",
+            "text",
+            "wait"
+          ],
+          "arguments_sha256": "283d456f467dc5e2b0cb7013f93ac51a5d4ecd7b500f35c73f9ae33ef3e22e6c"
+        },
+        {
+          "kind": "mcp_tool_call",
+          "complete": true,
+          "seconds_from_actor_start": 22.762,
+          "server": "xsm",
+          "tool": "xsm_ack",
+          "error": null,
+          "argument_keys": [
+            "tokens"
+          ],
+          "arguments_sha256": "d199a43dce0e0448d7f88b45126699413ffef11b2287f9713fb9c590e7ee218c"
+        }
+      ],
+      "item_type_counts": {
+        "command_execution": 3,
+        "mcp_tool_call": 3
+      },
+      "agent_mcp_call_count": 3,
+      "agent_shell_call_count": 3,
+      "tool_error_count": 0,
+      "first_wrong_choice": null,
+      "exit_code": 0,
+      "events_path": "/private/tmp/p13-async-independent-6qwbi2sn/reviewer.jsonl",
+      "stderr_path": "/private/tmp/p13-async-independent-6qwbi2sn/reviewer.stderr",
+      "events_sha256": "9398d8ab64b817eb4f4ef662c73c5061a30f28ec815e2541506f91cab1975bd9"
+    },
+    {
+      "role": "initiator",
+      "native_session_id": "01a184f8-fdd2-7f40-ace6-afe75bab00fb",
+      "registered_name": null,
+      "mcp_pid": 67329,
+      "setup_registration_seconds": 0.451,
+      "registration_preceded_first_agent_call": true,
+      "calls": [
+        {
+          "kind": "command_execution",
+          "complete": true,
+          "seconds_from_actor_start": 4.685,
+          "command_sha256": "4a4b5697b5641c3201f59fa0d16d356ea5b64152bd55aa6883242acdd0605c47",
+          "exit_code": 0,
+          "sandbox_shell_send_attempt": false,
+          "skill_read": true,
+          "sandbox_failure": false
+        },
+        {
+          "kind": "command_execution",
+          "complete": true,
+          "seconds_from_actor_start": 8.471,
+          "command_sha256": "829092d1330d5e1178f5e996891ce2ac44c508fc65e3cd979e3264aca86d903c",
+          "exit_code": 0,
+          "sandbox_shell_send_attempt": false,
+          "skill_read": false,
+          "sandbox_failure": false
+        },
+        {
+          "kind": "mcp_tool_call",
+          "complete": true,
+          "seconds_from_actor_start": 11.386,
+          "server": "xsm",
+          "tool": "xsm_ask",
+          "error": null,
+          "argument_keys": [
+            "target",
+            "text",
+            "wait"
+          ],
+          "arguments_sha256": "f7c3aaeb10973ca89e510921a1c12ce96548caeb9a1b7406f7b7cb4d78b0f71d"
+        },
+        {
+          "kind": "command_execution",
+          "complete": true,
+          "seconds_from_actor_start": 16.365,
+          "command_sha256": "c11fb38e116e4e33c6471548accb83f2918e8a83c54bb70188b2e74e3a46c1ad",
+          "exit_code": 0,
+          "sandbox_shell_send_attempt": false,
+          "skill_read": false,
+          "sandbox_failure": false
+        },
+        {
+          "kind": "mcp_tool_call",
+          "complete": true,
+          "seconds_from_actor_start": 19.381,
+          "server": "xsm",
+          "tool": "xsm_question_status",
+          "error": null,
+          "argument_keys": [
+            "id",
+            "wait"
+          ],
+          "arguments_sha256": "0509293c865282e4a46d6f961ede0c549d016245246a17f5dc10758a15a664a5"
+        },
+        {
+          "kind": "mcp_tool_call",
+          "complete": true,
+          "seconds_from_actor_start": 23.347,
+          "server": "xsm",
+          "tool": "xsm_ack",
+          "error": null,
+          "argument_keys": [
+            "tokens"
+          ],
+          "arguments_sha256": "e68b72b33ac8a78c19ec180dd473ac2b0adbb6dd9cab69f2da6303030011dd6a"
+        }
+      ],
+      "item_type_counts": {
+        "command_execution": 3,
+        "mcp_tool_call": 3
+      },
+      "agent_mcp_call_count": 3,
+      "agent_shell_call_count": 3,
+      "tool_error_count": 0,
+      "first_wrong_choice": null,
+      "exit_code": 0,
+      "events_path": "/private/tmp/p13-async-independent-6qwbi2sn/initiator.jsonl",
+      "stderr_path": "/private/tmp/p13-async-independent-6qwbi2sn/initiator.stderr",
+      "events_sha256": "8c8adcb79c8aabdb627796c1af2a3196821f6b45c28f68d5aceeaa737a6c18a5"
+    }
+  ],
+  "ended_at": 1793232303.000246,
+  "cleanup": [],
+  "owned_processes_after": [
+    {
+      "role": "reviewer",
+      "pid": 66849,
+      "lstart": "Thu Oct 29 09:04:31 2026",
+      "native_alive": false,
+      "mcp_pid": 66966,
+      "mcp_same_generation_alive": false
+    },
+    {
+      "role": "initiator",
+      "pid": 67201,
+      "lstart": "Thu Oct 29 09:04:32 2026",
+      "native_alive": false,
+      "mcp_pid": 67329,
+      "mcp_same_generation_alive": false
+    }
+  ],
+  "source_after": {
+    "file_count": 315,
+    "manifest_sha256": "57d088eee167e573d3a534e2d53db230703963516ece02ee1b6fce294ae9068f",
+    "matches": true,
+    "changed_paths": []
+  },
+  "source_unchanged": true,
+  "profile_settings_and_auth_metadata_unchanged": false,
+  "observations_path": "/private/tmp/p13-async-independent-6qwbi2sn/controller-observations.json"
+}

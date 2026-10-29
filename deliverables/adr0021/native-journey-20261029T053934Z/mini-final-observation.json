@@ -1,0 +1,239 @@
+{
+  "at": 1793253101.543809,
+  "all_attempt_owned_processes": [
+    {
+      "pid": 19576,
+      "ppid": 1,
+      "lstart": "Thu Oct 29 14:48:04 2026",
+      "comm": "/private/tmp/xnj-mini-gl2ut38t/native-runtime/codex",
+      "path": "/private/tmp/xnj-mini-gl2ut38t/actor/proxies/19658-0f60120c/handles.json",
+      "same_generation_alive": false
+    },
+    {
+      "pid": 91917,
+      "ppid": 1,
+      "lstart": "Thu Oct 29 14:41:47 2026",
+      "comm": "/opt/homebrew/bin/codex",
+      "path": "/private/tmp/xnj-mini-gl2ut38t/code-host-first-attempt/actor/proxies/92005-1a03cd62/handles.json",
+      "same_generation_alive": false
+    },
+    {
+      "pid": 11207,
+      "ppid": 1,
+      "lstart": "Thu Oct 29 14:46:07 2026",
+      "comm": "/opt/homebrew/bin/codex",
+      "path": "/private/tmp/xnj-mini-gl2ut38t/disabled-host-resume/actor/proxies/11225-b40addd5/handles.json",
+      "same_generation_alive": false
+    },
+    {
+      "pid": 92005,
+      "ppid": 91917,
+      "lstart": "Thu Oct 29 14:41:48 2026",
+      "comm": "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/Resources/Python.app/Contents/MacOS/Python",
+      "path": "/private/tmp/xnj-mini-gl2ut38t/code-host-first-attempt/actor/proxies/92005-1a03cd62/handles.json",
+      "same_generation_alive": false
+    },
+    {
+      "pid": 92067,
+      "ppid": 92005,
+      "lstart": "Thu Oct 29 14:41:48 2026",
+      "comm": "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/Resources/Python.app/Contents/MacOS/Python",
+      "path": "/private/tmp/xnj-mini-gl2ut38t/code-host-first-attempt/actor/proxies/92005-1a03cd62/handles.json",
+      "same_generation_alive": false
+    },
+    {
+      "pid": 11225,
+      "ppid": 11207,
+      "lstart": "Thu Oct 29 14:46:08 2026",
+      "comm": "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/Resources/Python.app/Contents/MacOS/Python",
+      "path": "/private/tmp/xnj-mini-gl2ut38t/disabled-host-resume/actor/proxies/11225-b40addd5/handles.json",
+      "same_generation_alive": false
+    },
+    {
+      "pid": 11251,
+      "ppid": 11225,
+      "lstart": "Thu Oct 29 14:46:08 2026",
+      "comm": "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/Resources/Python.app/Contents/MacOS/Python",
+      "path": "/private/tmp/xnj-mini-gl2ut38t/disabled-host-resume/actor/proxies/11225-b40addd5/handles.json",
+      "same_generation_alive": false
+    },
+    {
+      "pid": 19658,
+      "ppid": 19576,
+      "lstart": "Thu Oct 29 14:48:05 2026",
+      "comm": "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/Resources/Python.app/Contents/MacOS/Python",
+      "path": "/private/tmp/xnj-mini-gl2ut38t/actor/proxies/19658-0f60120c/handles.json",
+      "same_generation_alive": false
+    },
+    {
+      "pid": 19709,
+      "ppid": 19658,
+      "lstart": "Thu Oct 29 14:48:05 2026",
+      "comm": "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/Resources/Python.app/Contents/MacOS/Python",
+      "path": "/private/tmp/xnj-mini-gl2ut38t/actor/proxies/19658-0f60120c/handles.json",
+      "same_generation_alive": false
+    }
+  ],
+  "network_status": {
+    "status": "running",
+    "endpoint_id": "ff029a474518305ce7c0b47221d455d479975a10dabe33b0f80e9d791908ecb0",
+    "address": {
+      "addrs": [
+        {
+          "Ip": "100.77.24.16:60431"
+        },
+        {
+          "Ip": "127.0.0.1:60431"
+        },
+        {
+          "Ip": "192.168.0.64:60431"
+        },
+        {
+          "Ip": "[::1]:53563"
+        }
+      ],
+      "id": "ff029a474518305ce7c0b47221d455d479975a10dabe33b0f80e9d791908ecb0"
+    },
+    "active": true,
+    "network": {
+      "version": 1,
+      "network_id": "babe4555c025a1f5a72e0232358729c06357a45f948f238f387f5075595a1f17:d39277fbd4a47a8b291ad097279390776e97075c3d93d445f8fcfb314fb73c3d",
+      "name": "native-journey-20261029",
+      "members": [
+        {
+          "endpoint_id": "babe4555c025a1f5a72e0232358729c06357a45f948f238f387f5075595a1f17",
+          "machine_name": "native-journey-book",
+          "status": "active"
+        },
+        {
+          "endpoint_id": "ff029a474518305ce7c0b47221d455d479975a10dabe33b0f80e9d791908ecb0",
+          "machine_name": "native-journey-mini",
+          "status": "active"
+        }
+      ],
+      "invites": [
+        {
+          "invite_hash": "101c9161d14332b67f194a0e1024c9bf515bda23da8f1613059455774c22ed9f",
+          "issuer": "babe4555c025a1f5a72e0232358729c06357a45f948f238f387f5075595a1f17",
+          "reusable": true,
+          "expires_at": null,
+          "revoked": false,
+          "consumed_by": [
+            "ff029a474518305ce7c0b47221d455d479975a10dabe33b0f80e9d791908ecb0"
+          ]
+        }
+      ]
+    },
+    "transport": {
+      "address": {
+        "addrs": [
+          {
+            "Ip": "100.77.24.16:60431"
+          },
+          {
+            "Ip": "127.0.0.1:60431"
+          },
+          {
+            "Ip": "192.168.0.64:60431"
+          },
+          {
+            "Ip": "[::1]:53563"
+          }
+        ],
+        "id": "ff029a474518305ce7c0b47221d455d479975a10dabe33b0f80e9d791908ecb0"
+      },
+      "bound_addresses": [
+        "0.0.0.0:60431",
+        "[::]:53563"
+      ],
+      "endpoint_id": "ff029a474518305ce7c0b47221d455d479975a10dabe33b0f80e9d791908ecb0",
+      "event": "ready",
+      "port_fallback": false,
+      "relay_mode": "off",
+      "relay_online": false,
+      "requested_port": 0
+    },
+    "last_transport": {
+      "path": "direct",
+      "selected": "direct",
+      "selection_reason": "iroh_path_selection",
+      "fallback_reason": null,
+      "remote_address": "192.168.0.11:52889",
+      "paths": [
+        {
+          "kind": "direct",
+          "remote": "ip:192.168.0.11:52889",
+          "selected": true
+        }
+      ]
+    },
+    "service_pid": 94209,
+    "engine_pid": 94211
+  },
+  "key_metadata": [
+    {
+      "path": "/private/tmp/xnj-mini-gl2ut38t/state/network/transport/node.secret",
+      "mode": "0o600",
+      "size": 32,
+      "inode": 333603691,
+      "root_mode": "0o700",
+      "key_value_read": false
+    }
+  ],
+  "payload_verification": {
+    "xsm/__init__.py": true,
+    "xsm/__main__.py": true,
+    "xsm/abuse.py": true,
+    "xsm/adapters.py": true,
+    "xsm/attempts.py": true,
+    "xsm/attention.py": true,
+    "xsm/bounce.py": true,
+    "xsm/channel.py": true,
+    "xsm/cli.py": true,
+    "xsm/codex_daemon.py": true,
+    "xsm/collaboration.py": true,
+    "xsm/config.py": true,
+    "xsm/connect.py": true,
+    "xsm/consent.py": true,
+    "xsm/context.py": true,
+    "xsm/decisions.py": true,
+    "xsm/directory.py": true,
+    "xsm/doc.py": true,
+    "xsm/envelope.py": true,
+    "xsm/files.py": true,
+    "xsm/handoff.py": true,
+    "xsm/housekeeping.py": true,
+    "xsm/identity.py": true,
+    "xsm/inbox.py": true,
+    "xsm/install.py": true,
+    "xsm/instructions.py": true,
+    "xsm/ledger.py": true,
+    "xsm/materials.py": true,
+    "xsm/mcp.py": true,
+    "xsm/network.py": true,
+    "xsm/network_directory.py": true,
+    "xsm/network_identity.py": true,
+    "xsm/network_membership.py": true,
+    "xsm/network_messages.py": true,
+    "xsm/network_transport.py": true,
+    "xsm/otlp_export.py": true,
+    "xsm/outbox.py": true,
+    "xsm/owned_requests.py": true,
+    "xsm/paths.py": true,
+    "xsm/policy.py": true,
+    "xsm/probe.py": true,
+    "xsm/provenance.py": true,
+    "xsm/questions.py": true,
+    "xsm/receive.py": true,
+    "xsm/registry.py": true,
+    "xsm/remote.py": true,
+    "xsm/resolve.py": true,
+    "xsm/send.py": true,
+    "xsm/setup_flow.py": true,
+    "xsm/telemetry.py": true,
+    "xsm/user_answers.py": true,
+    "xsm/workers.py": true
+  },
+  "service_pid_lstart": "Thu Oct 29 14:42:18 2026",
+  "engine_pid_lstart": "Thu Oct 29 14:42:18 2026"
+}

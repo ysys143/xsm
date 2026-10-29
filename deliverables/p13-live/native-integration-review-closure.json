@@ -1,0 +1,21 @@
+{
+  "model": "claude-opus-5-5",
+  "original_verdict": "Medium1 fix required; no security violation found",
+  "review": "deliverables/p13-live/native-integration-opus-review.md",
+  "raw_review": "/tmp/p13-native-opus.json",
+  "reviewed_snapshot": "/private/tmp/xsm-native-integration-frozen-tsucjdu0",
+  "reviewed_delta": "/private/tmp/xsm-native-integration-frozen-tsucjdu0/review/delta.patch",
+  "second_model_review": false,
+  "coordinator_closure": {
+    "M1": "real normal-send→native_gate held/blocked→readonly count0 and empty inbox, originals retained; red2→green; guard-removal detected2",
+    "evidence": "deliverables/p13-live/pending-receipt-review-fix.json",
+    "final_regression": "deliverables/p13-live/final-regression.json",
+    "final_native_different_parent": "deliverables/p13-live/different-parent-native-20261029-5564a814/report.md"
+  },
+  "low_findings": {
+    "L1": "notice requires exact known caller; no additional identity lookup added. Limited notification for unresolved callers retained as limitation.",
+    "L2": "unbound old export yields unknown/null, not empty; no new ownership or approval inferred."
+  },
+  "scope": "local delta only; D12/UI/P12/unavailable physical cells remain incomplete",
+  "product_complete": false
+}

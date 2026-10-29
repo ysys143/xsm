@@ -1,0 +1,60 @@
+{
+  "status": "preparation blocked by native TUI folder trust; native cancellation unobserved",
+  "blocker_phase": "before native CID/model/tool-host, not a product cancellation failure or runtime unsupported verdict",
+  "condition_difference": "prior PTY harness used already trusted repository cwd; this one condition used a new private Git cwd",
+  "CLI": "codex-cli 0.164.0",
+  "source": "/private/tmp/xsm-final-receipt-frozen-i3u9pms3",
+  "source_files_SHA_verified": 315,
+  "TUI_launches": 1,
+  "initial_goal_queued_to_TUI": 1,
+  "actual_native_CIDs": 0,
+  "actual_native_model_turns": 0,
+  "followup_turns": 0,
+  "model_retries": 0,
+  "actual_MCP_servers": 0,
+  "actual_tools_calls": 0,
+  "pending_MCP_calls": 0,
+  "standard_pending_call_Esc": 0,
+  "notifications_cancelled": 0,
+  "MCP_EOF": "unobserved; no MCP stream opened",
+  "cancelled_request_correlation": "unobserved; no pending RPC existed",
+  "canonical_originals": 0,
+  "original_preservation_and_followup_recovery": "unobserved, no original was seeded or received",
+  "claim_ACK_results_injected": 0,
+  "raw_wire": [],
+  "private_raw_root": "/private/tmp/native-cancel-yk9ht9a9",
+  "PTY_sha256": "45b2e4e1b798d3363320d9546dd8b28b7c19244bd52de4cd219dba5701776529",
+  "PTY_bytes": 1882,
+  "trust_choice_saved_by_evaluator": false,
+  "profile_configuration_unchanged": true,
+  "profile_hashes": {
+    "before": {
+      "config.toml": "1f94ac2b02b6f8a13f8246586ecf9ed27df850cb28f07a3bbd8138400134ea12",
+      "hooks.json": "5d48305d304f29b21abc7bb214e378819f76ba437a9e442d04a3ace1f89d04d7",
+      "settings.json": null
+    },
+    "after": {
+      "config.toml": "1f94ac2b02b6f8a13f8246586ecf9ed27df850cb28f07a3bbd8138400134ea12",
+      "hooks.json": "5d48305d304f29b21abc7bb214e378819f76ba437a9e442d04a3ace1f89d04d7",
+      "settings.json": null
+    }
+  },
+  "cleanup": {
+    "owned_controller_SIGINT": "preparation stop only, not MCP cancellation",
+    "idle_CtrlD": "cleanup at trust screen, not pending-tool cancel",
+    "TUI_exit_code": 0,
+    "owned_cleanup_signals": [],
+    "known_process_final_audit": [
+      {
+        "pid": 28298,
+        "lstart": "Thu Oct 29 09:33:21 2026",
+        "same_owned_process_alive": false,
+        "current_lstart": null
+      }
+    ],
+    "remaining_owned_native_candidates": []
+  },
+  "all_A16_07_A18_02_proven": false,
+  "owner": "coordinator; no second condition executed",
+  "resume_precondition": "a separately authorized evaluation with its TUI folder-trust precondition satisfied; current task does not authorize saving a trust choice"
+}

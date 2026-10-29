@@ -1,0 +1,43 @@
+{
+  "at": 1793206986.542052,
+  "trials": [
+    {
+      "label": "old",
+      "root_same_generation_alive_after": false,
+      "mcp_same_generation_alive_after": {
+        "18595": false
+      },
+      "completed_shell_commands": 0,
+      "mcp_servers_actually_used": [
+        "xsm_eval"
+      ],
+      "native_terminal_events": [
+        "turn.completed"
+      ],
+      "events_sha256": "aff4228b80711fc587693d3980598996bd0531b15cf073d6493fafb7a02a0952"
+    },
+    {
+      "label": "new",
+      "root_same_generation_alive_after": false,
+      "mcp_same_generation_alive_after": {
+        "20676": false
+      },
+      "completed_shell_commands": 0,
+      "mcp_servers_actually_used": [
+        "xsm_eval"
+      ],
+      "native_terminal_events": [],
+      "events_sha256": "3e87eb7a00aa3384ef9e30a9c008fab6fe55586db3b21e515d6fb0bcdfcdc29e"
+    }
+  ],
+  "actual_controller_still_live": true,
+  "actual_controller_same_generation": true,
+  "eval_source_sha256": "3c0e29d06c5810153e30ab34c13d35e8ffa9301db85841dc0bd33091007aa784",
+  "external_kernel_cwd_probe": {
+    "status": "not-observed",
+    "reason": "optional lsof sample ran after owned CLI exits and MCP beacon removal; no kernel cwd result claimed",
+    "required_runtime_readback": "native-upgrade.json records old MCP beacon cwd and kernel PID/lstart before upgrade, after prune, and at second correlated reply"
+  },
+  "raw_native_logs": "private /tmp fixture only; no raw native body copied beyond P10-QA arithmetic",
+  "cleanup_observation": "post-run PID/generation checks confirm owned native/MCP processes are gone; no inference about unrecorded signal history"
+}

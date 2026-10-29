@@ -1,0 +1,12 @@
+{
+  "id": "c6700f67cbb44d90e72847b955e8f486f7d1fec6822db17e5900851c28e54605",
+  "requested_at": 1793196783.461211,
+  "human_saw": null,
+  "title": "xsm P07 알림 검증",
+  "body_digest": "c8fe40b32d9c5b65bcaaf5e7526286759e38fc6f4a068f07d0822670f787660f",
+  "requested_chars": 26,
+  "observed_display_range": null,
+  "status": "os-call-succeeded",
+  "os_called_at": 1793196783.461211,
+  "exit_code": 0
+}

@@ -1,0 +1,411 @@
+{
+  "scope": "A17-06 unread lifecycle native subset; no selected-pair grant; A17-04 partial metadata observation only",
+  "private_raw_root": "/private/tmp/session-lifetime-native-oj91jnav",
+  "status": "one condition executed; classify raw evidence",
+  "original_failure": null,
+  "CLI": "codex-cli 0.164.0",
+  "source": "/private/tmp/xsm-final-receipt-frozen-i3u9pms3",
+  "source_frozen_files_hash_verified": 315,
+  "native_CLI_invocations": 4,
+  "unique_native_CIDs": 3,
+  "same_CID_resume_invocations": 1,
+  "initial_actual_registration_setups": 4,
+  "model_condition_retries": 0,
+  "native_turn_counts": [
+    {
+      "role": "old",
+      "started": 1,
+      "completed": 1,
+      "exit_code": 0
+    },
+    {
+      "role": "sender",
+      "started": 1,
+      "completed": 1,
+      "exit_code": 0
+    },
+    {
+      "role": "new",
+      "started": 1,
+      "completed": 1,
+      "exit_code": 0
+    },
+    {
+      "role": "resume",
+      "started": 1,
+      "completed": 1,
+      "exit_code": 0
+    }
+  ],
+  "checks": {
+    "old_normal_wrapper_exit": true,
+    "same_display_name_setup": true,
+    "old_new_real_CID_different": true,
+    "old_resume_real_CID_same": true,
+    "resume_new_actual_PID_generation": true,
+    "new_native_inbox_called": true,
+    "new_native_inbox_empty": true,
+    "all_actual_metadata_matches_real_registration": true,
+    "old_pending_at_offline": true,
+    "old_unchanged_through_new": true,
+    "resumed_real_claim_original": true,
+    "actual_ACK_original": false,
+    "correlated_reply_original": true,
+    "question_final_succeeded": true,
+    "resume_ACK_then_actual_inbox_empty": false,
+    "original_digest_body_receiver_preserved_after_resume": true
+  },
+  "request_ID_sha256": "49f6a009df4bfd7a70acd5d693c9d4e4f807d3cec0e0671a1302a295e9ef8f76",
+  "original_digest": "37b1f6ee32e63d433f1c5f1bdbabd867556ee77e970978bda55aa37aae60c971",
+  "actual_ACK_ID_count": 0,
+  "tools_by_role": {
+    "old": {},
+    "sender": {
+      "xsm_discover": 1,
+      "xsm_ask": 1,
+      "xsm_question_status": 3
+    },
+    "new": {
+      "xsm_inbox": 1
+    },
+    "resume": {
+      "xsm_inbox": 2,
+      "xsm_send": 1
+    }
+  },
+  "actual_calls": [
+    {
+      "role": "sender",
+      "tool": "xsm_discover",
+      "real_CID_sha256": "396b352745905e061b32dfa3290a37aa396fcc2c9de2edb0465f763d358ef516",
+      "matches_registration": true
+    },
+    {
+      "role": "sender",
+      "tool": "xsm_ask",
+      "real_CID_sha256": "396b352745905e061b32dfa3290a37aa396fcc2c9de2edb0465f763d358ef516",
+      "matches_registration": true
+    },
+    {
+      "role": "sender",
+      "tool": "xsm_question_status",
+      "real_CID_sha256": "396b352745905e061b32dfa3290a37aa396fcc2c9de2edb0465f763d358ef516",
+      "matches_registration": true
+    },
+    {
+      "role": "sender",
+      "tool": "xsm_question_status",
+      "real_CID_sha256": "396b352745905e061b32dfa3290a37aa396fcc2c9de2edb0465f763d358ef516",
+      "matches_registration": true
+    },
+    {
+      "role": "sender",
+      "tool": "xsm_question_status",
+      "real_CID_sha256": "396b352745905e061b32dfa3290a37aa396fcc2c9de2edb0465f763d358ef516",
+      "matches_registration": true
+    },
+    {
+      "role": "new",
+      "tool": "xsm_inbox",
+      "real_CID_sha256": "636208de64dbc50a55df6e037539ea1af8563ef584d6d44558f1b681aa007335",
+      "matches_registration": true
+    },
+    {
+      "role": "resume",
+      "tool": "xsm_inbox",
+      "real_CID_sha256": "93f3f06f11353372032eea96fa71802469103bd085b9ff86f7c862bd6bdd3244",
+      "matches_registration": true
+    },
+    {
+      "role": "resume",
+      "tool": "xsm_send",
+      "real_CID_sha256": "93f3f06f11353372032eea96fa71802469103bd085b9ff86f7c862bd6bdd3244",
+      "matches_registration": true
+    },
+    {
+      "role": "resume",
+      "tool": "xsm_inbox",
+      "real_CID_sha256": "93f3f06f11353372032eea96fa71802469103bd085b9ff86f7c862bd6bdd3244",
+      "matches_registration": true
+    }
+  ],
+  "responses": [
+    {
+      "role": "sender",
+      "tool": "xsm_discover",
+      "request_id": 2,
+      "response_sha256": "4b10e62e63518078a1d05251b2e46f967ab258c1a4edc5ff1000a450bda5a6d9"
+    },
+    {
+      "role": "sender",
+      "tool": "xsm_ask",
+      "request_id": 3,
+      "response_sha256": "8195eada6c007586aaf66fbfdaa7fdd8553955c93139b62b8b008ca409c777c8"
+    },
+    {
+      "role": "sender",
+      "tool": "xsm_question_status",
+      "request_id": 4,
+      "response_sha256": "19f72178b25d2acade125cef74211d1692fbb6463f112aef1dfb5d071e14305c"
+    },
+    {
+      "role": "sender",
+      "tool": "xsm_question_status",
+      "request_id": 5,
+      "response_sha256": "19f72178b25d2acade125cef74211d1692fbb6463f112aef1dfb5d071e14305c"
+    },
+    {
+      "role": "sender",
+      "tool": "xsm_question_status",
+      "request_id": 6,
+      "response_sha256": "7888a137eda39851308c1e0813e002be223140d49135b7c4fdbec6da43a957ef"
+    },
+    {
+      "role": "new",
+      "tool": "xsm_inbox",
+      "request_id": 2,
+      "response_sha256": "cf0a8207fa5f9287e17b1d4bcea9fd138e27054715300397886ac56853ff52f0"
+    },
+    {
+      "role": "resume",
+      "tool": "xsm_inbox",
+      "request_id": 2,
+      "response_sha256": "b990fe38ea25c54155fbe5999bf4e17ec2fcdaf2403fae521a1ccd159dba1e9e"
+    },
+    {
+      "role": "resume",
+      "tool": "xsm_inbox",
+      "request_id": 4,
+      "response_sha256": "cf0a8207fa5f9287e17b1d4bcea9fd138e27054715300397886ac56853ff52f0"
+    }
+  ],
+  "RPC_errors": [],
+  "directory_observations": [
+    {
+      "role": "sender",
+      "CID_sha256": "396b352745905e061b32dfa3290a37aa396fcc2c9de2edb0465f763d358ef516",
+      "name": "initiator",
+      "name_source": "registry:hook.name",
+      "name_freshness": "unknown",
+      "summary": {
+        "value": null,
+        "status": "unknown",
+        "source": null,
+        "timestamp": null,
+        "observed_at": 1793233371.234884,
+        "freshness": "unknown"
+      },
+      "todo": {
+        "value": null,
+        "status": "unknown",
+        "source": null,
+        "timestamp": null,
+        "observed_at": 1793233371.246432,
+        "freshness": "unknown"
+      },
+      "activity": {
+        "value": "busy",
+        "status": "known",
+        "source": "codex:event_msg:task_started",
+        "timestamp": "2026-10-29T00:22:41.623Z",
+        "observed_at": 1793233371.234331,
+        "freshness": "fresh"
+      },
+      "state": {
+        "value": "live",
+        "status": "known",
+        "source": "registry:liveness:live",
+        "timestamp": 1793233371.24644,
+        "observed_at": 1793233371.24644,
+        "freshness": "fresh"
+      }
+    },
+    {
+      "role": "sender",
+      "CID_sha256": "93f3f06f11353372032eea96fa71802469103bd085b9ff86f7c862bd6bdd3244",
+      "name": "archivist",
+      "name_source": "registry:hook.name",
+      "name_freshness": "unknown",
+      "summary": {
+        "value": null,
+        "status": "unknown",
+        "source": null,
+        "timestamp": null,
+        "observed_at": 1793233371.2580328,
+        "freshness": "unknown"
+      },
+      "todo": {
+        "value": null,
+        "status": "unknown",
+        "source": null,
+        "timestamp": null,
+        "observed_at": 1793233371.269398,
+        "freshness": "unknown"
+      },
+      "activity": {
+        "value": "busy",
+        "status": "known",
+        "source": "codex:event_msg:task_started",
+        "timestamp": "2026-10-29T00:22:40.496Z",
+        "observed_at": 1793233371.257483,
+        "freshness": "fresh"
+      },
+      "state": {
+        "value": "live",
+        "status": "known",
+        "source": "registry:liveness:live",
+        "timestamp": 1793233371.269404,
+        "observed_at": 1793233371.269404,
+        "freshness": "fresh"
+      }
+    }
+  ],
+  "canonical_final_states": [
+    {
+      "ID_sha256": "49f6a009df4bfd7a70acd5d693c9d4e4f807d3cec0e0671a1302a295e9ef8f76",
+      "state": "handoff-recorded",
+      "claimed": true,
+      "claim_token_sha256": "0dc5f40913d0be1991137ac9ae8627660975bdbb1abcfe036c90940cb53fcc0c"
+    },
+    {
+      "ID_sha256": "fbff46e73babfbdf8109599698abad3d5944bcc05a3bd481ec585003c037a7c7",
+      "state": "handoff-recorded",
+      "claimed": true,
+      "claim_token_sha256": "4b177d3418d2994e5b23bb0087d80a4f584e0bd1199e4c6ee521968a6d1add6f"
+    }
+  ],
+  "ACK_limit": "model claimed completion, but no xsm_ack call; both canonical records remain handoff-recorded; empty inbox while claimed is not ACK dedup proof",
+  "selected_pair_permission_lifecycle": {
+    "status": "unfulfilled",
+    "reason": "no existing approved exact pair in new private fixture; create requires real affirmative consent; no consent fabricated and no grant created",
+    "native_permission_denial_tested": false
+  },
+  "A17_04": {
+    "status": "partial/unproven complete criterion",
+    "condition": "actual native missing title/plan metadata, not extractor-disabled harness",
+    "extractor_removed": false,
+    "native_title_plan_update_partial_record_TTL_matrix": "not newly executed"
+  },
+  "profile_unchanged": false,
+  "profile_changed_names": [
+    "config.toml"
+  ],
+  "profile_drift_writer": "unknown",
+  "known_process_final_audit": [
+    {
+      "pid": 96344,
+      "lstart": "Thu Oct 29 09:22:39 2026",
+      "same_owned_process_alive": false,
+      "current_lstart": null,
+      "same_owned_process_alive_now": false
+    },
+    {
+      "pid": 96770,
+      "lstart": "Thu Oct 29 09:22:40 2026",
+      "same_owned_process_alive": false,
+      "current_lstart": null,
+      "same_owned_process_alive_now": false
+    },
+    {
+      "pid": 2516,
+      "lstart": "Thu Oct 29 09:24:34 2026",
+      "same_owned_process_alive": false,
+      "current_lstart": null,
+      "same_owned_process_alive_now": false
+    },
+    {
+      "pid": 3948,
+      "lstart": "Thu Oct 29 09:24:49 2026",
+      "same_owned_process_alive": false,
+      "current_lstart": null,
+      "same_owned_process_alive_now": false
+    },
+    {
+      "pid": 96466,
+      "lstart": "Thu Oct 29 09:22:39 2026",
+      "same_owned_process_alive": false,
+      "current_lstart": null,
+      "same_owned_process_alive_now": false
+    },
+    {
+      "pid": 96476,
+      "lstart": "Thu Oct 29 09:22:39 2026",
+      "same_owned_process_alive": false,
+      "current_lstart": null,
+      "same_owned_process_alive_now": false
+    },
+    {
+      "pid": 96351,
+      "lstart": "Thu Oct 29 09:22:39 2026",
+      "same_owned_process_alive": false,
+      "current_lstart": null,
+      "same_owned_process_alive_now": false
+    },
+    {
+      "pid": 96886,
+      "lstart": "Thu Oct 29 09:22:40 2026",
+      "same_owned_process_alive": false,
+      "current_lstart": null,
+      "same_owned_process_alive_now": false
+    },
+    {
+      "pid": 96896,
+      "lstart": "Thu Oct 29 09:22:40 2026",
+      "same_owned_process_alive": false,
+      "current_lstart": null,
+      "same_owned_process_alive_now": false
+    },
+    {
+      "pid": 96773,
+      "lstart": "Thu Oct 29 09:22:40 2026",
+      "same_owned_process_alive": false,
+      "current_lstart": null,
+      "same_owned_process_alive_now": false
+    },
+    {
+      "pid": 2631,
+      "lstart": "Thu Oct 29 09:24:34 2026",
+      "same_owned_process_alive": false,
+      "current_lstart": null,
+      "same_owned_process_alive_now": false
+    },
+    {
+      "pid": 2644,
+      "lstart": "Thu Oct 29 09:24:35 2026",
+      "same_owned_process_alive": false,
+      "current_lstart": null,
+      "same_owned_process_alive_now": false
+    },
+    {
+      "pid": 2519,
+      "lstart": "Thu Oct 29 09:24:34 2026",
+      "same_owned_process_alive": false,
+      "current_lstart": null,
+      "same_owned_process_alive_now": false
+    },
+    {
+      "pid": 4173,
+      "lstart": "Thu Oct 29 09:24:50 2026",
+      "same_owned_process_alive": false,
+      "current_lstart": null,
+      "same_owned_process_alive_now": false
+    },
+    {
+      "pid": 4289,
+      "lstart": "Thu Oct 29 09:24:50 2026",
+      "same_owned_process_alive": false,
+      "current_lstart": null,
+      "same_owned_process_alive_now": false
+    },
+    {
+      "pid": 3953,
+      "lstart": "Thu Oct 29 09:24:49 2026",
+      "same_owned_process_alive": false,
+      "current_lstart": null,
+      "same_owned_process_alive_now": false
+    }
+  ],
+  "controller_body_relay_manual_ACK_index_repair": 0,
+  "whole_A17_06_proven": false,
+  "whole_A17_04_proven": false
+}

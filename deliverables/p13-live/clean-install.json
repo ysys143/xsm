@@ -1,0 +1,144 @@
+{
+  "root": "/private/tmp/p13-clean-install-uzxti1jg",
+  "fixture_state": "/private/tmp/p13-clean-install-uzxti1jg/state",
+  "source": "/private/tmp/xsm-b05-final-cuya9ah7",
+  "source_manifest_files": 312,
+  "deadline_utc": "2026-10-28T19:56:43+00:00",
+  "credential_files_opened_or_copied": false,
+  "auth_login_commands": 0,
+  "permission_overrides": 0,
+  "hook_trust_grants": 0,
+  "factory_mcp_injection": false,
+  "ignore_user_config": false,
+  "agent_goals": {
+    "initiator": "xsm을 설치하고 동료 a1에게 2+2=4 산술 검토를 받아 결과를 보고하세요.",
+    "reviewer": "이 저장소 검토 담당 a1입니다. 동료의 산술 질문 한 건을 검토하고 결과를 알려 주세요."
+  },
+  "setup_and_agent_calls_separated": true,
+  "cells": [
+    {
+      "runtime": "claude",
+      "clean_settings_home": "/private/tmp/p13-clean-install-uzxti1jg/claude-settings",
+      "auth_probe": {
+        "argv": [
+          "claude",
+          "auth",
+          "status",
+          "--json"
+        ],
+        "pid": 98318,
+        "exit_code": 1,
+        "timed_out": false,
+        "seconds": 0.143,
+        "stdout_sha256": "2f1573b6826f38943ca3cf77e3d643a47216a12d2a43e6eb9a3c58b1e5c31c45",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "auth": {
+        "logged_in": false,
+        "auth_method": "none",
+        "subscription_type": null,
+        "normal_subscription_reuse": false
+      },
+      "native_config_readback": {
+        "argv": [
+          "claude",
+          "mcp",
+          "get",
+          "xsm"
+        ],
+        "pid": 98321,
+        "exit_code": 1,
+        "timed_out": false,
+        "seconds": 0.362,
+        "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stderr_sha256": "8da1355a30fad14ede1a3b3f81866eb76a4e46c295321886ff1297218fc3d319"
+      },
+      "native_config_invocation_has_no_factory_flags": true,
+      "installed_config_contains_runtime_prefix": false,
+      "native_config_loaded": false,
+      "agent_calls": 0,
+      "first_discovery_question_reply": "not-run",
+      "hook_trust": "not-modified",
+      "status": "prerequisite-unmet",
+      "boundary": "clean home has no normal existing subscription auth; login/copy/billing bypass forbidden"
+    },
+    {
+      "runtime": "codex",
+      "clean_settings_home": "/private/tmp/p13-clean-install-uzxti1jg/codex-settings",
+      "auth_probe": {
+        "argv": [
+          "codex",
+          "login",
+          "status"
+        ],
+        "pid": 98324,
+        "exit_code": 1,
+        "timed_out": false,
+        "seconds": 0.06,
+        "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stderr_sha256": "a06d5ca8261150a5175e866fc3dc401070fb4ea30e849a1b9394b7e252fa1677"
+      },
+      "auth": {
+        "logged_in": false,
+        "native_reports_chatgpt": false,
+        "normal_subscription_reuse": false,
+        "native_reports_api_key": false
+      },
+      "native_config_readback": {
+        "argv": [
+          "codex",
+          "mcp",
+          "get",
+          "xsm",
+          "--json"
+        ],
+        "pid": 98326,
+        "exit_code": 1,
+        "timed_out": false,
+        "seconds": 0.065,
+        "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stderr_sha256": "c5d05bbdc8d8cd8040cb4e88fe8208f19728f0e2d3311121f9a3b3bc4b252b34"
+      },
+      "native_config_invocation_has_no_factory_flags": true,
+      "installed_config_contains_runtime_prefix": false,
+      "native_config_loaded": false,
+      "agent_calls": 0,
+      "first_discovery_question_reply": "not-run",
+      "hook_trust": "not-modified",
+      "status": "prerequisite-unmet",
+      "hook_trust_observed": {},
+      "boundary": "clean home has no normal existing subscription auth; login/copy/billing bypass forbidden"
+    }
+  ],
+  "agent_model_processes_started": 0,
+  "installer": {
+    "argv": [
+      "/private/tmp/xsm-b05-final-cuya9ah7/bin/xsm",
+      "install",
+      "--claude-home",
+      "/private/tmp/p13-clean-install-uzxti1jg/claude-settings",
+      "--codex-home",
+      "/private/tmp/p13-clean-install-uzxti1jg/codex-settings",
+      "--python",
+      "/usr/bin/python3"
+    ],
+    "pid": 98252,
+    "exit_code": 4,
+    "timed_out": false,
+    "seconds": 2.023,
+    "stdout_sha256": "dbff56c39fd3e426a5c60a91e246767b47312b887fa7a7e87ca6666ace60cfd5",
+    "stderr_sha256": "f7f4fd2068e41cb1904532f36cee70b03c9fd556085175a2025ea3e7bc1c5987",
+    "stdout": "/private/tmp/p13-clean-install-uzxti1jg/install.stdout",
+    "stderr": "/private/tmp/p13-clean-install-uzxti1jg/install.stderr",
+    "HOME_for_global_launcher": "/private/tmp/p13-clean-install-uzxti1jg/installer-home",
+    "native_real_HOME_preserved_for_auth": "/Users/jaesolshin"
+  },
+  "installed_runtime": {
+    "id": "48d805638557",
+    "prefix": "/private/tmp/p13-clean-install-uzxti1jg/state/runtime/48d805638557",
+    "exists": true
+  },
+  "existing_profiles_unchanged": true,
+  "status": "prerequisite-unmet",
+  "scope": "two local clean-home cells only; not full J01 and no factory success substitution"
+}

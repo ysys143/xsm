@@ -1,0 +1,49 @@
+{
+  "argv": [
+    "/opt/homebrew/bin/python3.14",
+    "scripts/audit-reason-plan.py",
+    "--structure-only"
+  ],
+  "exit_code": 1,
+  "historical_stale_acceptance": [
+    "A15-01",
+    "A15-05",
+    "A16-01",
+    "A16-02",
+    "A16-04",
+    "A16-05",
+    "A16-06",
+    "A16-07",
+    "A16-08",
+    "A17-04",
+    "A17-05",
+    "A18-01",
+    "A18-02",
+    "A18-03",
+    "A18-05",
+    "A18-06",
+    "A18-07",
+    "A18-08",
+    "A19-01",
+    "A19-03",
+    "A19-04",
+    "A19-06",
+    "A22-02",
+    "A22-03",
+    "A22-06",
+    "A23-02",
+    "A23-05",
+    "A23-07",
+    "A23-08"
+  ],
+  "historical_stale_count": 29,
+  "other_integrity_errors": [
+    "evidence-or-gate-integrity: evidence_catalog",
+    "evidence-or-gate-integrity: decisions",
+    "evidence-or-gate-integrity: status_counts",
+    "evidence-or-gate-integrity: evidence_kind_counts",
+    "evidence-or-gate-integrity: current_integration"
+  ],
+  "scope": "old global 1700/1697 completion ledger is a historical snapshot, not current-source evidence; ADR21 final1933 regression is separate",
+  "current_global_product_complete": false
+}

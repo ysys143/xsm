@@ -1,0 +1,47 @@
+{
+  "scope": "ADR21 final integrated source; global G13 remains incomplete",
+  "source_manifest_sha256": "ccc3f22a1d65a33ddc76b0ad1abc4966a65664a6e41777d52b70230cd4fd4011",
+  "input_files": 178,
+  "product_python_modules": 53,
+  "frozen_inputs_match_current_working_tree": true,
+  "checks": [
+    {
+      "label": "py39",
+      "argv": [
+        "/usr/bin/python3",
+        "-B",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests",
+        "-q"
+      ],
+      "tests_run": 1936,
+      "test_seconds": 831.018,
+      "exit_code": 0,
+      "skipped": 0,
+      "stderr_sha256": "fff54b0ea0eb0e701e3360e847c8ebb527cd23e3425ce061677cc40759a069d8"
+    },
+    {
+      "label": "py314",
+      "argv": [
+        "/opt/homebrew/bin/python3.14",
+        "-B",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests",
+        "-q"
+      ],
+      "tests_run": 1936,
+      "test_seconds": 534.329,
+      "exit_code": 0,
+      "skipped": 0,
+      "stderr_sha256": "52efb4ffbe8a9182d7b42287c69f0d94544f4a0984d02b40a722350e9c6bb8ff"
+    }
+  ],
+  "mutations_detected": 4,
+  "review": "../final-surface-review/review-parsed.json"
+}

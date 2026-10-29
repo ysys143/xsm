@@ -1,0 +1,42 @@
+{
+  "owner": {
+    "pid": 74412,
+    "lstart": "Thu Oct 29 23:26:39 2026",
+    "runtime": "claude",
+    "role": "reviewer",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/private/tmp/native-journey-samename-book-7thlq5pg/write-ssh-guard.sb",
+      "/private/tmp/native-journey-samename-book-7thlq5pg/runtime/claude",
+      "--print",
+      "--input-format",
+      "stream-json",
+      "--output-format",
+      "stream-json",
+      "--verbose",
+      "--no-session-persistence",
+      "--include-hook-events",
+      "--permission-prompts",
+      "none",
+      "--mcp-config",
+      "/private/tmp/native-journey-samename-book-7thlq5pg/claude-mcp-observe.json",
+      "--strict-mcp-config",
+      "--settings",
+      "/private/tmp/native-journey-samename-book-7thlq5pg/claude-invocation-settings.json"
+    ],
+    "goal": "이 세션을 xsm에서 찾을 수 있게 공개해 두세요. 다른 머신 동료의 검토 담당 a1입니다. 최신 안내는 /private/tmp/native-journey-samename-book-7thlq5pg/payload/skills/xsm/SKILL.md입니다. 실제로 받은 협업 준비 확인 한 건에 역할과 준비 상태를 직접 회신하고 처리 확인을 마칠 때까지 대기하세요. 소스·프로필·권한·본문·ACK·동의 답변을 상태파일에서 보정하지 마세요.",
+    "stdin_user_messages_sent": 1,
+    "streaming_controller_PID": 74409,
+    "streaming_controller_start": "Thu Oct 29 23:26:39 2026",
+    "no_added_allow_rules": true,
+    "model_override": false
+  },
+  "registration_CID": "b22ba192-8608-4edb-9d0d-58739e13ee7e",
+  "current_ps": "",
+  "exit": {
+    "native_exit": 143,
+    "user_message_count": 1,
+    "body_relays": 0
+  }
+}

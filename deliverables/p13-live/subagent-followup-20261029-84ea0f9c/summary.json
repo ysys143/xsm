@@ -1,0 +1,248 @@
+{
+  "result": "actual default-auto exact unsupported -> MCP inbox -> claim/ACK -> correlated final math replies observed",
+  "source": "/private/tmp/xsm-native-integration-frozen-tsucjdu0",
+  "source_files_verified": 315,
+  "primary_paths": 135,
+  "CLI": "codex-cli 0.164.0",
+  "daemon": [
+    {
+      "pid": 6456,
+      "executable": "/Users/jaesolshin/.codex-3/packages/app-server-daemon/releases/0.165.0-aarch64-apple-darwin/bin/codex-code-mode-host",
+      "observed_version": ""
+    },
+    {
+      "pid": 9102,
+      "executable": "/Users/jaesolshin/.codex-3/packages/app-server-daemon/releases/0.165.0-aarch64-apple-darwin/bin/codex",
+      "observed_version": "codex-cli 0.165.0"
+    },
+    {
+      "pid": 77641,
+      "executable": "/Users/jaesolshin/.codex-3/packages/app-server-daemon/releases/0.165.0-aarch64-apple-darwin/bin/codex",
+      "observed_version": "codex-cli 0.165.0"
+    }
+  ],
+  "native_evaluation_CLI_launches": 1,
+  "automatic_model_condition_retries": 0,
+  "actual_native_subagents": 2,
+  "registration_setup_count": 3,
+  "goal_and_factory_args_env_unchanged_except_source_roots": true,
+  "MCP_instances": [
+    {
+      "server_pid": 90283,
+      "calls": 18,
+      "actual_CID_hashes": [
+        "00f045e8b9cd245a1d9fecdcdb23628c1a8ce21d80f86ddd81a55ed1fa9e8e48"
+      ]
+    },
+    {
+      "server_pid": 85522,
+      "calls": 0,
+      "actual_CID_hashes": []
+    },
+    {
+      "server_pid": 89108,
+      "calls": 21,
+      "actual_CID_hashes": [
+        "57c25a2d17e5611dadbdc0cf74f9e2380911780af59da05de1f3b9f5be8b5975"
+      ]
+    }
+  ],
+  "shared_MCP_obtained": false,
+  "shared_and_positive_messaging_are_separate_axes": true,
+  "tools_calls": 39,
+  "tools": {
+    "xsm_discover": 6,
+    "xsm_question_status": 7,
+    "xsm_inbox": 5,
+    "xsm_ack": 7,
+    "xsm_send": 5,
+    "xsm_ask": 3,
+    "xsm_files": 6
+  },
+  "RPC_error_results": [
+    {
+      "tool": "xsm_files",
+      "argument_keys": [
+        "storage_id",
+        "outgoing"
+      ],
+      "outgoing": true,
+      "detail": "[{'type': 'text', 'text': \"xsm failed: FileNotFoundError: [Errno 2] No such file or directory: '2016261ea6c94d43859882791c79b9ab'\"}]"
+    }
+  ],
+  "fallback_originals": [
+    {
+      "ID_hash": "f2af7834061aef49076235e2a6bae9593b2d6b84fb117161a760ad667c899110",
+      "kind": "note",
+      "logical_wake": true,
+      "route": "mcp-inbox",
+      "native_queued": false,
+      "native_wake": false,
+      "actual_claim_ACK": true,
+      "immutable_digest_valid": true
+    },
+    {
+      "ID_hash": "2ec496fce8ac6967e83c1dcee3569e88b12e24fa2815d011b81c0af3194fb71b",
+      "kind": "reply",
+      "logical_wake": true,
+      "route": "mcp-inbox",
+      "native_queued": false,
+      "native_wake": false,
+      "actual_claim_ACK": true,
+      "immutable_digest_valid": true
+    },
+    {
+      "ID_hash": "8bd743ad48b6f3684e01c37ec19b63ad859f7b6080ee1a91e5ea906b06a4efce",
+      "kind": "task",
+      "logical_wake": true,
+      "route": "mcp-inbox",
+      "native_queued": false,
+      "native_wake": false,
+      "actual_claim_ACK": true,
+      "immutable_digest_valid": true
+    },
+    {
+      "ID_hash": "c2ccf7f43cbaf594126eeff4d20f8e8910cbf8dcb02b67bafaddc76a6716314e",
+      "kind": "reply",
+      "logical_wake": true,
+      "route": "mcp-inbox",
+      "native_queued": false,
+      "native_wake": false,
+      "actual_claim_ACK": true,
+      "immutable_digest_valid": true
+    },
+    {
+      "ID_hash": "22883d1e593893db2f0a8455e83a1ddcf28e48c1d97909d78ece7ad2fd9158f4",
+      "kind": "task",
+      "logical_wake": true,
+      "route": "mcp-inbox",
+      "native_queued": false,
+      "native_wake": false,
+      "actual_claim_ACK": true,
+      "immutable_digest_valid": true
+    },
+    {
+      "ID_hash": "816038dcc391c20778b48fdc251481e8cc5350f5428b3a0ab46aae1d4dc9a137",
+      "kind": "reply",
+      "logical_wake": true,
+      "route": "mcp-inbox",
+      "native_queued": false,
+      "native_wake": false,
+      "actual_claim_ACK": true,
+      "immutable_digest_valid": true
+    },
+    {
+      "ID_hash": "8b6b0e3452c2eea5ff27c81291b2b089908d786226741b6a29e1a8554e4d3e78",
+      "kind": "reply",
+      "logical_wake": true,
+      "route": "mcp-inbox",
+      "native_queued": false,
+      "native_wake": false,
+      "actual_claim_ACK": true,
+      "immutable_digest_valid": true
+    },
+    {
+      "ID_hash": "b6a4c3964524c9c084abebbefb52d2634505a79d69f074837c722f3128ce7884",
+      "kind": "task",
+      "logical_wake": true,
+      "route": "mcp-inbox",
+      "native_queued": false,
+      "native_wake": false,
+      "actual_claim_ACK": true,
+      "immutable_digest_valid": true
+    }
+  ],
+  "question_roundtrips": [
+    {
+      "ID_hash": "22883d1e593893db2f0a8455e83a1ddcf28e48c1d97909d78ece7ad2fd9158f4",
+      "send_status": "stored",
+      "original_wake": "auto",
+      "reply_ID_hash": "c2ccf7f43cbaf594126eeff4d20f8e8910cbf8dcb02b67bafaddc76a6716314e",
+      "original_reply_to_matches": true,
+      "final_outcome": "succeeded",
+      "math_reply_excerpt": "xsm_files로 review_zero.md 사본을 직접 읽었습니다. 항등원 0에 근거한 0+0=0, 0을 포함하는 자연수, 빈 집합의 원소 수 설명을 확인했습니다. 문자열 연결·사용자 정의 연산·부호 있는 0의 표시 경계를 구분한 내용에도 동의합니다. 제 메모는 이미 메시지 4727f64b409b4ff8 / manifest 9e3192"
+    },
+    {
+      "ID_hash": "8bd743ad48b6f3684e01c37ec19b63ad859f7b6080ee1a91e5ea906b06a4efce",
+      "send_status": "stored",
+      "original_wake": "auto",
+      "reply_ID_hash": "8b6b0e3452c2eea5ff27c81291b2b089908d786226741b6a29e1a8554e4d3e78",
+      "original_reply_to_matches": true,
+      "final_outcome": "succeeded",
+      "math_reply_excerpt": "저는 0+0=0 경계 독립 검토자입니다. 표준 덧셈의 항등원 0에 a=0을 대입하면 0+0=0입니다. 표준 자연수에서 2+2=4이므로 2+2=5가 거짓이라는 판정에 동의합니다. 문자열 연결이나 사용자 정의 연산에는 표준 산술 규칙을 그대로 적용할 수 없다는 경계를 확인했습니다."
+    },
+    {
+      "ID_hash": "b6a4c3964524c9c084abebbefb52d2634505a79d69f074837c722f3128ce7884",
+      "send_status": "stored",
+      "original_wake": "auto",
+      "reply_ID_hash": "2ec496fce8ac6967e83c1dcee3569e88b12e24fa2815d011b81c0af3194fb71b",
+      "original_reply_to_matches": true,
+      "final_outcome": "succeeded",
+      "math_reply_excerpt": "동의합니다. 표준 정수·실수 덧셈에서 0은 항등원이므로 0+0=0입니다. 문자열의 '+'가 연결로 정의되면 '0'+'0'='00'일 수 있으며 서로 다른 연산입니다. 표준 덧셈의 2+2=5가 거짓이라는 판정과 모순되지 않습니다."
+    }
+  ],
+  "incoming_file_entry_reads": [
+    {
+      "kind": "incoming",
+      "owner_matches_actual_caller": true,
+      "content_SHA_matches_manifest": true,
+      "request_ID_hash": "f2af7834061aef49076235e2a6bae9593b2d6b84fb117161a760ad667c899110"
+    },
+    {
+      "kind": "incoming",
+      "owner_matches_actual_caller": true,
+      "content_SHA_matches_manifest": true,
+      "request_ID_hash": "f2af7834061aef49076235e2a6bae9593b2d6b84fb117161a760ad667c899110"
+    },
+    {
+      "kind": "incoming",
+      "owner_matches_actual_caller": true,
+      "content_SHA_matches_manifest": true,
+      "request_ID_hash": "22883d1e593893db2f0a8455e83a1ddcf28e48c1d97909d78ece7ad2fd9158f4"
+    },
+    {
+      "kind": "incoming",
+      "owner_matches_actual_caller": true,
+      "content_SHA_matches_manifest": true,
+      "request_ID_hash": "22883d1e593893db2f0a8455e83a1ddcf28e48c1d97909d78ece7ad2fd9158f4"
+    }
+  ],
+  "actual_claim_ACK_IDs": 8,
+  "no_wake_ID_body_digest_rewrite": true,
+  "no_native_queue_wake_success_fabrication": true,
+  "no_proxy_metadata_result_ACK_injection": true,
+  "parent_xsm_calls": 0,
+  "parent_body_relay": false,
+  "profile_unchanged": false,
+  "profile_drift_changed_names": [
+    "config.toml"
+  ],
+  "profile_drift_writer": "unknown; no evaluator profile edit",
+  "source_unchanged": true,
+  "known_processes_alive": 0,
+  "private_raw_root": "/private/tmp/subagent-followup-p41ahv_v",
+  "started_utc": "2026-10-28T22:08:24.570679+00:00",
+  "finished_utc": "2026-10-28T22:10:55.966878+00:00",
+  "old_failure_artifacts_unchanged": true,
+  "whole_plan_complete": false,
+  "native_turn_events": [
+    {
+      "CID_hash": "7d816e0673bdc87668996e93f8dc06c112368c56e85c3deb61675717f0741ed7",
+      "task_started": 1,
+      "task_complete": 1,
+      "raw_sha256": "baf77e0161ac2134c7285548627195743434bcc856ba59f315ce2ac7b50e036a"
+    },
+    {
+      "CID_hash": "57c25a2d17e5611dadbdc0cf74f9e2380911780af59da05de1f3b9f5be8b5975",
+      "task_started": 2,
+      "task_complete": 1,
+      "raw_sha256": "baa0fcc45c10a18010c5eded840ebd3064d0e8bc344ca8df03ddcbe101cdfe37"
+    },
+    {
+      "CID_hash": "00f045e8b9cd245a1d9fecdcdb23628c1a8ce21d80f86ddd81a55ed1fa9e8e48",
+      "task_started": 2,
+      "task_complete": 1,
+      "raw_sha256": "ab139b8f5dfe8dfb77060f1750e3f31df17ea4071611338fb94bc992ce2a2415"
+    }
+  ]
+}

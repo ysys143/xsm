@@ -1,0 +1,363 @@
+{
+  "scope": "A16-02 single continuous native pair, independent work while actual answer pending",
+  "original_result_path": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/deliverables/p13-live/async-independent-native-results.json",
+  "original_result_sha256": "e78f37f65bf88cff98fe399f78fbb3c2c4f31208e221c718191d96224f01136e",
+  "original_result_preserved": true,
+  "functional_continuity_passed": true,
+  "checks": {
+    "actors_exactly_two": true,
+    "setup_registrations_exactly_two": true,
+    "single_question_send": true,
+    "initial_pending": true,
+    "independent_work_after_pending_return": true,
+    "file_tool_success": true,
+    "rows_match_all_squares": true,
+    "summary_metrics_match": true,
+    "work_completed_before_actual_reply": true,
+    "work_completed_before_peer_send_call": true,
+    "late_query_after_work": true,
+    "late_query_same_request_id": true,
+    "final_actual_body_matches": true,
+    "reply_to_original": true,
+    "explicit_final_outcome": true,
+    "reviewer_sent_once": true,
+    "request_ACK_by_reviewer": true,
+    "reply_ACK_by_sender": true,
+    "canonical_both_acknowledged": true,
+    "no_controller_relay_ACK_index": true,
+    "no_extra_prompts_or_retries": true,
+    "source_unchanged": true,
+    "owned_processes_stopped": true,
+    "single_canonical_business_task": true
+  },
+  "checks_passed": 24,
+  "clean_protected_inputs_passed": false,
+  "status": "functional-continuity-proven; aggregate profile/settings/auth guard false, cause unclassified",
+  "profile_guard_diagnostic": {
+    "aggregate_comparison": false,
+    "before_after_per_path_values_saved": false,
+    "cannot_identify_changed_file_from_captured_guard": true,
+    "actor_commands_edit_profile": false,
+    "note": "No claim that profile/settings/auth inputs were unchanged. Post-observation metadata is not the missing before/after pair; no rerun or repair."
+  },
+  "transport": {
+    "initial_send_evidence": {
+      "status": "sent-unconfirmed",
+      "reason": "queued; a Codex session picks the queue up within about 10 seconds when the thread is loaded and idle, or mid-turn with `xsm inbox`",
+      "id": "64c5307e235d4032",
+      "to": "a1@codex-3",
+      "runtime_reached": true,
+      "evidence": {
+        "accepted": true,
+        "queued": true,
+        "wake": false,
+        "hook_taken": true,
+        "stored": true,
+        "claimed": true,
+        "handoff": true
+      }
+    },
+    "request_route": "native",
+    "reply_route": "native",
+    "final_request_state": "acknowledged",
+    "final_reply_state": "acknowledged"
+  },
+  "request_id": "64c5307e235d4032",
+  "reply_id": "a0d6a4549fb1427f",
+  "reply_to": "64c5307e235d4032",
+  "original_body_sha256": "db3cec0aa005ed019664fa6961c4b24e21be3704d8280bf4177b23be539013f8",
+  "reply_body_sha256": "6c045def876b6e054d74edbd15bf3d9e26c36ae33fad65e18a2898b5c1881998",
+  "request_sender": {
+    "runtime": "codex",
+    "home": "/Users/jaesolshin/.codex-3",
+    "session_id": "01a184f8-fdd2-7f40-ace6-afe75bab00fb"
+  },
+  "request_receiver": {
+    "runtime": "codex",
+    "home": "/Users/jaesolshin/.codex-3",
+    "session_id": "01a184f8-f8af-7483-9bc9-6c8da826cda9"
+  },
+  "reply_sender": {
+    "runtime": "codex",
+    "home": "/Users/jaesolshin/.codex-3",
+    "session_id": "01a184f8-f8af-7483-9bc9-6c8da826cda9"
+  },
+  "reply_receiver": {
+    "runtime": "codex",
+    "home": "/Users/jaesolshin/.codex-3",
+    "session_id": "01a184f8-fdd2-7f40-ace6-afe75bab00fb"
+  },
+  "timeline": {
+    "request_stored": 1793232284.166371,
+    "ask_return_pending_observed": 1793232284.345035,
+    "independent_work_started_observed": 1793232289.1099432,
+    "files_mtime": {
+      "data/squares.csv": 1793232289.0040355,
+      "data/squares-summary.json": 1793232289.0127766
+    },
+    "work_command_complete_observed": 1793232289.109945,
+    "work_confirmed_complete": 1793232289.109945,
+    "same_ID_status_query_started_observed": 1793232292.1258419,
+    "peer_send_started_observed": 1793232293.3388019,
+    "actual_reply_stored": 1793232293.4380522,
+    "reply_received_at": 1793232293.655426,
+    "same_ID_final_query_completed_observed": 1793232293.885358
+  },
+  "work_completed_before_reply_seconds": 4.328107,
+  "question_send_count": 1,
+  "ledger_resends": 1,
+  "reviewer_reply_send_count": 1,
+  "later_query_count": 1,
+  "ACKs": {
+    "reviewer": [
+      "64c5307e235d4032"
+    ],
+    "sender": [
+      "a0d6a4549fb1427f"
+    ]
+  },
+  "independent_work": {
+    "data_rows": 8192,
+    "sum_squares": 183285493760,
+    "CSV_sha256": "92d49c5b02ac6f0375aac1a9828660aa26ba063413501fd30d1bde86fec0d2a7",
+    "CSV_bytes": 108971,
+    "summary_sha256": "5ce0ae848c3f68622f1864f9f8d9f8b0bfcf366a9d343744103fba9ba781556c",
+    "all_rows_verified": true
+  },
+  "independent_review": {
+    "expected_sum": 4415515592,
+    "actual_body": "독립 검산 결과, 1부터 200000까지 양 끝을 포함해 7 또는 11의 배수인 정수를 중복 없이 더한 합은 4,415,515,592입니다. 포함배제 원리로 계산했습니다. 7의 배수는 floor(200000/7)=28571개이고 합은 7×28571×28572/2=2,857,157,142입니다. 11의 배수는 18181개이고 합은 11×18181×18182/2=1,818,118,181입니다. 중복인 77의 배수는 2597개이고 합은 77×2597×2598/2=259,759,731입니다. 따라서 2,857,157,142+1,818,118,181−259,759,731=4,415,515,592입니다. 별도로 Python에서 범위 내 정수 전체를 순회하며 i%7==0 or i%11==0인 44,155개를 직접 합산해 같은 결과를 확인했습니다.",
+    "outcome": "succeeded"
+  },
+  "actors": [
+    {
+      "role": "reviewer",
+      "native_session_id": "01a184f8-f8af-7483-9bc9-6c8da826cda9",
+      "registered_name": "a1",
+      "mcp_pid": 66966,
+      "setup_registration_seconds": 1.342,
+      "registration_preceded_first_agent_call": true,
+      "calls": [
+        {
+          "kind": "command_execution",
+          "complete": true,
+          "seconds_from_actor_start": 5.22,
+          "command_sha256": "4a4b5697b5641c3201f59fa0d16d356ea5b64152bd55aa6883242acdd0605c47",
+          "exit_code": 0,
+          "sandbox_shell_send_attempt": false,
+          "skill_read": true,
+          "sandbox_failure": false
+        },
+        {
+          "kind": "command_execution",
+          "complete": true,
+          "seconds_from_actor_start": 8.431,
+          "command_sha256": "829092d1330d5e1178f5e996891ce2ac44c508fc65e3cd979e3264aca86d903c",
+          "exit_code": 0,
+          "sandbox_shell_send_attempt": false,
+          "skill_read": false,
+          "sandbox_failure": false
+        },
+        {
+          "kind": "mcp_tool_call",
+          "complete": true,
+          "seconds_from_actor_start": 10.883,
+          "server": "xsm",
+          "tool": "xsm_inbox",
+          "error": null,
+          "argument_keys": [
+            "wait"
+          ],
+          "arguments_sha256": "5ce894079e806eb601f73f1a7714e226bcef2fefbe7c19babeb0974081cbad48"
+        },
+        {
+          "kind": "command_execution",
+          "complete": true,
+          "seconds_from_actor_start": 16.22,
+          "command_sha256": "27ff3b95bcb81188d6ad1801ef1fa99f4821489fd84f0a6df0bdd42575689670",
+          "exit_code": 0,
+          "sandbox_shell_send_attempt": false,
+          "skill_read": false,
+          "sandbox_failure": false
+        },
+        {
+          "kind": "mcp_tool_call",
+          "complete": true,
+          "seconds_from_actor_start": 21.998,
+          "server": "xsm",
+          "tool": "xsm_send",
+          "error": null,
+          "argument_keys": [
+            "kind",
+            "outcome",
+            "reply_to",
+            "target",
+            "text",
+            "wait"
+          ],
+          "arguments_sha256": "283d456f467dc5e2b0cb7013f93ac51a5d4ecd7b500f35c73f9ae33ef3e22e6c"
+        },
+        {
+          "kind": "mcp_tool_call",
+          "complete": true,
+          "seconds_from_actor_start": 22.762,
+          "server": "xsm",
+          "tool": "xsm_ack",
+          "error": null,
+          "argument_keys": [
+            "tokens"
+          ],
+          "arguments_sha256": "d199a43dce0e0448d7f88b45126699413ffef11b2287f9713fb9c590e7ee218c"
+        }
+      ],
+      "item_type_counts": {
+        "command_execution": 3,
+        "mcp_tool_call": 3
+      },
+      "agent_mcp_call_count": 3,
+      "agent_shell_call_count": 3,
+      "tool_error_count": 0,
+      "first_wrong_choice": null,
+      "exit_code": 0,
+      "events_path": "/private/tmp/p13-async-independent-6qwbi2sn/reviewer.jsonl",
+      "stderr_path": "/private/tmp/p13-async-independent-6qwbi2sn/reviewer.stderr",
+      "events_sha256": "9398d8ab64b817eb4f4ef662c73c5061a30f28ec815e2541506f91cab1975bd9"
+    },
+    {
+      "role": "initiator",
+      "native_session_id": "01a184f8-fdd2-7f40-ace6-afe75bab00fb",
+      "registered_name": null,
+      "mcp_pid": 67329,
+      "setup_registration_seconds": 0.451,
+      "registration_preceded_first_agent_call": true,
+      "calls": [
+        {
+          "kind": "command_execution",
+          "complete": true,
+          "seconds_from_actor_start": 4.685,
+          "command_sha256": "4a4b5697b5641c3201f59fa0d16d356ea5b64152bd55aa6883242acdd0605c47",
+          "exit_code": 0,
+          "sandbox_shell_send_attempt": false,
+          "skill_read": true,
+          "sandbox_failure": false
+        },
+        {
+          "kind": "command_execution",
+          "complete": true,
+          "seconds_from_actor_start": 8.471,
+          "command_sha256": "829092d1330d5e1178f5e996891ce2ac44c508fc65e3cd979e3264aca86d903c",
+          "exit_code": 0,
+          "sandbox_shell_send_attempt": false,
+          "skill_read": false,
+          "sandbox_failure": false
+        },
+        {
+          "kind": "mcp_tool_call",
+          "complete": true,
+          "seconds_from_actor_start": 11.386,
+          "server": "xsm",
+          "tool": "xsm_ask",
+          "error": null,
+          "argument_keys": [
+            "target",
+            "text",
+            "wait"
+          ],
+          "arguments_sha256": "f7c3aaeb10973ca89e510921a1c12ce96548caeb9a1b7406f7b7cb4d78b0f71d"
+        },
+        {
+          "kind": "command_execution",
+          "complete": true,
+          "seconds_from_actor_start": 16.365,
+          "command_sha256": "c11fb38e116e4e33c6471548accb83f2918e8a83c54bb70188b2e74e3a46c1ad",
+          "exit_code": 0,
+          "sandbox_shell_send_attempt": false,
+          "skill_read": false,
+          "sandbox_failure": false
+        },
+        {
+          "kind": "mcp_tool_call",
+          "complete": true,
+          "seconds_from_actor_start": 19.381,
+          "server": "xsm",
+          "tool": "xsm_question_status",
+          "error": null,
+          "argument_keys": [
+            "id",
+            "wait"
+          ],
+          "arguments_sha256": "0509293c865282e4a46d6f961ede0c549d016245246a17f5dc10758a15a664a5"
+        },
+        {
+          "kind": "mcp_tool_call",
+          "complete": true,
+          "seconds_from_actor_start": 23.347,
+          "server": "xsm",
+          "tool": "xsm_ack",
+          "error": null,
+          "argument_keys": [
+            "tokens"
+          ],
+          "arguments_sha256": "e68b72b33ac8a78c19ec180dd473ac2b0adbb6dd9cab69f2da6303030011dd6a"
+        }
+      ],
+      "item_type_counts": {
+        "command_execution": 3,
+        "mcp_tool_call": 3
+      },
+      "agent_mcp_call_count": 3,
+      "agent_shell_call_count": 3,
+      "tool_error_count": 0,
+      "first_wrong_choice": null,
+      "exit_code": 0,
+      "events_path": "/private/tmp/p13-async-independent-6qwbi2sn/initiator.jsonl",
+      "stderr_path": "/private/tmp/p13-async-independent-6qwbi2sn/initiator.stderr",
+      "events_sha256": "8c8adcb79c8aabdb627796c1af2a3196821f6b45c28f68d5aceeaa737a6c18a5"
+    }
+  ],
+  "cleanup": [
+    {
+      "role": "reviewer",
+      "pid": 66849,
+      "lstart": "Thu Oct 29 09:04:31 2026",
+      "native_alive": false,
+      "mcp_pid": 66966,
+      "mcp_same_generation_alive": false
+    },
+    {
+      "role": "initiator",
+      "pid": 67201,
+      "lstart": "Thu Oct 29 09:04:32 2026",
+      "native_alive": false,
+      "mcp_pid": 67329,
+      "mcp_same_generation_alive": false
+    }
+  ],
+  "goals": {
+    "reviewer": "이 private 저장소의 산술 검토 담당 a1입니다. xsm으로 동료의 검토 질문 하나를 받아 원문을 읽고 독립적으로 검산한 결과를 원래 동료에게 회신하세요. 동료의 질문을 처리할 때까지 대기하고, 회신과 읽은 메시지의 확인을 마친 뒤 결과를 보고하세요. 다른 세션·폴더·권한·설정은 바꾸지 마세요.",
+    "sender": "xsm의 동료 검토 담당 a1에게 1부터 200000까지 정수 중 7 또는 11의 배수인 수를 중복 없이 더한 합을 독립 검토해 달라고 질문하세요. 그 답을 기다리는 동안 별도의 작업으로 1부터 8192까지의 정수와 제곱을 n,square 헤더의 data/squares.csv에 저장하고, 데이터 행수·제곱합·그 CSV 파일의 SHA-256을 data/squares-summary.json에 보관하세요. 별도 파일 작업을 끝낸 뒤 처음 질문의 실제 최종 회신을 회수해 답과 파일 검증 결과를 함께 보고하세요. 같은 검토를 새 질문으로 중복시키지 말고 읽은 메시지는 확인을 마치세요. 다른 폴더·권한·설정은 바꾸지 마세요."
+  },
+  "controller_operations": {
+    "setup_registry_calls": 2,
+    "actor_native_invocations": 2,
+    "controller_body_relays": 0,
+    "controller_ACKs": 0,
+    "controller_index_writes": 0,
+    "additional_user_prompts": 0,
+    "automatic_actor_retries": 0,
+    "condition_runs": 1
+  },
+  "frozen_source": "/private/tmp/xsm-final-receipt-frozen-i3u9pms3",
+  "source_before": {
+    "file_count": 315,
+    "manifest_sha256": "57d088eee167e573d3a534e2d53db230703963516ece02ee1b6fce294ae9068f",
+    "matches": true,
+    "changed_paths": []
+  },
+  "source_after": {
+    "file_count": 315,
+    "manifest_sha256": "57d088eee167e573d3a534e2d53db230703963516ece02ee1b6fce294ae9068f",
+    "matches": true,
+    "changed_paths": []
+  }
+}

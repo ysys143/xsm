@@ -1,0 +1,18 @@
+{
+  "book_original_baseline": "book-global-before.json",
+  "book_after": "book-global-after.json",
+  "book_changed_opaque_hash_paths": [
+    "/Users/jaesolshin/.claude-3/settings.json",
+    "/Users/jaesolshin/.claude-3/.claude.json"
+  ],
+  "actor_controller_global_profile_writes_performed": false,
+  "writer_of_observed_global_changes": "unverified",
+  "auth_values_read_or_copied": false,
+  "restore_attempted": false,
+  "codex_baseline_false_paths": {
+    "book": [
+      "/Users/jaesolshin/.codex/config.toml"
+    ],
+    "mini": []
+  }
+}

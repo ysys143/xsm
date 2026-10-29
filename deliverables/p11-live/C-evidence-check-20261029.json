@@ -1,0 +1,65 @@
+{
+  "scope": "offline C evidence verification after G11 wording amendments; no new native calls",
+  "passed": true,
+  "manifest_sha256": "7fd7cd87cc9609b58cd7a7b9fd9d942fc65cd18ae228dfe661201ebd034e427c",
+  "result_sha256": "2d1dae0c6bb804d95d051cc06a886f696812dafbe4b5d471b37d31b12d0db92a",
+  "checker_sha256": "c9a4c859608ef1217fcec368aaa19f46f45f1333df89e175630b5e2fce15f5b7",
+  "python_results": [
+    {
+      "python": "Python 3.9.6",
+      "executable": "/usr/bin/python3",
+      "started_at_utc": "2026-10-28T19:42:32.156544+00:00",
+      "finished_at_utc": "2026-10-28T19:42:32.238842+00:00",
+      "exit_code": 0,
+      "result": {
+        "passed": true,
+        "scope": "offline recorded C fixture evidence only",
+        "hashed_files": 111,
+        "native_result_files": 6,
+        "native_model_calls_this_check": 0,
+        "mutations": [
+          {
+            "case": "synthetic-native",
+            "rejected": true
+          },
+          {
+            "case": "deleted-phase",
+            "rejected": true
+          },
+          {
+            "case": "model-reran-cache",
+            "rejected": true
+          }
+        ]
+      }
+    },
+    {
+      "python": "Python 3.14.6",
+      "executable": "/opt/homebrew/opt/python@3.14/bin/python3.14",
+      "started_at_utc": "2026-10-28T19:42:32.238922+00:00",
+      "finished_at_utc": "2026-10-28T19:42:32.298035+00:00",
+      "exit_code": 0,
+      "result": {
+        "passed": true,
+        "scope": "offline recorded C fixture evidence only",
+        "hashed_files": 111,
+        "native_result_files": 6,
+        "native_model_calls_this_check": 0,
+        "mutations": [
+          {
+            "case": "synthetic-native",
+            "rejected": true
+          },
+          {
+            "case": "deleted-phase",
+            "rejected": true
+          },
+          {
+            "case": "model-reran-cache",
+            "rejected": true
+          }
+        ]
+      }
+    }
+  ]
+}

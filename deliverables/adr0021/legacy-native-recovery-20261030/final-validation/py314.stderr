@@ -1,0 +1,77 @@
+install/setup failed: JSONDecodeError
+setup flow 6f08312247a945b2b95bc87358876355 generation=3 status=failed error=JSONDecodeError
+/opt/homebrew/Cellar/python@3.14/3.14.6/Frameworks/Python.framework/Versions/3.14/lib/python3.14/tempfile.py:484: ResourceWarning: Implicitly cleaning up <HTTPError 500: 'Internal Server Error'>
+  _warnings.warn(self.warn_message, ResourceWarning)
+/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/adr21-closure-final-1cnnq81i/tests/test_workers.py:842: ResourceWarning: unclosed file <_io.TextIOWrapper name='/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-test-vsiajipg/workers/c/settings.json' mode='r' encoding='UTF-8'>
+  settings = json.load(open(os.path.join(self.tmp, "workers", "c", "settings.json")))
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/adr21-closure-final-1cnnq81i/tests/test_workers.py:457: ResourceWarning: unclosed file <_io.TextIOWrapper name='/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-test-t9ti8__b/workers/sb/settings.json' mode='r' encoding='UTF-8'>
+  settings = json.load(open(workers._claude_worker_settings(w)))
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/adr21-closure-final-1cnnq81i/tests/test_workers.py:480: ResourceWarning: unclosed file <_io.TextIOWrapper name='/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-test-t9ti8__b/workers/sb/settings.json' mode='r' encoding='UTF-8'>
+  again = json.load(open(workers._claude_worker_settings(w)))
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/adr21-closure-final-1cnnq81i/tests/test_workers.py:493: ResourceWarning: unclosed file <_io.TextIOWrapper name='/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-test-t9ti8__b/workers/pn/settings.json' mode='r' encoding='UTF-8'>
+  self.assertNotIn("sandbox", json.load(open(workers._claude_worker_settings(pane))))
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+/opt/homebrew/Cellar/python@3.14/3.14.6/Frameworks/Python.framework/Versions/3.14/lib/python3.14/subprocess.py:1139: ResourceWarning: subprocess 77902 is still running
+  _warn("subprocess %s is still running" % self.pid,
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/adr21-closure-final-1cnnq81i/tests/test_xsm.py:3721: ResourceWarning: unclosed file <_io.TextIOWrapper name='/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-test-w81hp9m7/codex-adopt/config.toml' mode='w' encoding='UTF-8'>
+  open(os.path.join(home, "config.toml"), "w").write(body)
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/adr21-closure-final-1cnnq81i/tests/test_xsm.py:3721: ResourceWarning: unclosed file <_io.TextIOWrapper name='/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-test-yo5ac9oz/codex-adopt/config.toml' mode='w' encoding='UTF-8'>
+  open(os.path.join(home, "config.toml"), "w").write(body)
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/adr21-closure-final-1cnnq81i/tests/test_xsm.py:3721: ResourceWarning: unclosed file <_io.TextIOWrapper name='/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-test-qfl5e6nh/codex-adopt/config.toml' mode='w' encoding='UTF-8'>
+  open(os.path.join(home, "config.toml"), "w").write(body)
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/adr21-closure-final-1cnnq81i/tests/test_xsm.py:3721: ResourceWarning: unclosed file <_io.TextIOWrapper name='/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-test-zweqyrzs/codex-adopt/config.toml' mode='w' encoding='UTF-8'>
+  open(os.path.join(home, "config.toml"), "w").write(body)
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/adr21-closure-final-1cnnq81i/tests/test_xsm.py:3721: ResourceWarning: unclosed file <_io.TextIOWrapper name='/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-test-x9ndj04m/codex-adopt/config.toml' mode='w' encoding='UTF-8'>
+  open(os.path.join(home, "config.toml"), "w").write(body)
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/adr21-closure-final-1cnnq81i/tests/test_xsm.py:3721: ResourceWarning: unclosed file <_io.TextIOWrapper name='/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-test-htolbaq9/codex-adopt/config.toml' mode='w' encoding='UTF-8'>
+  open(os.path.join(home, "config.toml"), "w").write(body)
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/adr21-closure-final-1cnnq81i/tests/test_xsm.py:3678: ResourceWarning: unclosed file <_io.TextIOWrapper name='/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-test-vi116dy7/codex-home/config.toml' mode='w' encoding='UTF-8'>
+  open(os.path.join(home, "config.toml"), "w").write(body)
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/adr21-closure-final-1cnnq81i/tests/test_xsm.py:3678: ResourceWarning: unclosed file <_io.TextIOWrapper name='/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-test-4_77gzyj/codex-home/config.toml' mode='w' encoding='UTF-8'>
+  open(os.path.join(home, "config.toml"), "w").write(body)
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/adr21-closure-final-1cnnq81i/tests/test_xsm.py:3678: ResourceWarning: unclosed file <_io.TextIOWrapper name='/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-test-uti0j852/codex-home/config.toml' mode='w' encoding='UTF-8'>
+  open(os.path.join(home, "config.toml"), "w").write(body)
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/adr21-closure-final-1cnnq81i/tests/test_xsm.py:3066: ResourceWarning: unclosed file <_io.TextIOWrapper name='/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-test-0n8vp9s9/claude-cmd/skills/xsm/references/guide.md' mode='a' encoding='UTF-8'>
+  open(guide, "a").write("\nstale line\n")
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/adr21-closure-final-1cnnq81i/tests/test_xsm.py:3216: ResourceWarning: unclosed file <_io.TextIOWrapper name='/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/adr21-closure-final-1cnnq81i/skills/xsm/SKILL.md' mode='r' encoding='UTF-8'>
+  skill = open(os.path.join(REPO, "skills", "xsm", "SKILL.md")).read()
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/adr21-closure-final-1cnnq81i/tests/test_xsm.py:786: ResourceWarning: unclosed file <_io.TextIOWrapper name='/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-test-fi8z_oii/claude-fmt/settings.json' mode='w' encoding='UTF-8'>
+  open(target, "w").write(original)
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/adr21-closure-final-1cnnq81i/tests/test_xsm.py:789: ResourceWarning: unclosed file <_io.TextIOWrapper name='/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-test-fi8z_oii/claude-fmt/settings.json' mode='r' encoding='UTF-8'>
+  self.assertEqual(open(target).read(), original)
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/adr21-closure-final-1cnnq81i/tests/test_xsm.py:1693: ResourceWarning: unclosed file <_io.TextIOWrapper name='/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/adr21-closure-final-1cnnq81i/.gitattributes' mode='r' encoding='UTF-8'>
+  rules = open(os.path.join(REPO, ".gitattributes")).read()
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/adr21-closure-final-1cnnq81i/tests/test_xsm.py:4258: ResourceWarning: unclosed file <_io.TextIOWrapper name='/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/adr21-closure-final-1cnnq81i/skills/xsm/SKILL.md' mode='r' encoding='utf-8'>
+  self.skill = open(os.path.join(self.dir, "SKILL.md"), encoding="utf-8").read()
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/adr21-closure-final-1cnnq81i/tests/test_xsm.py:4300: ResourceWarning: unclosed file <_io.TextIOWrapper name='/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/adr21-closure-final-1cnnq81i/skills/xsm/references/guide.md' mode='r' encoding='utf-8'>
+  self.assertNotIn("/xsm-", open(guide, encoding="utf-8").read())
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/adr21-closure-final-1cnnq81i/tests/test_xsm.py:3337: ResourceWarning: unclosed file <_io.TextIOWrapper name='/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/adr21-closure-final-1cnnq81i/skills/xsm/SKILL.md' mode='r' encoding='UTF-8'>
+  skill = open(os.path.join(REPO, "skills", "xsm", "SKILL.md")).read()
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/adr21-closure-final-1cnnq81i/tests/test_xsm.py:1665: ResourceWarning: unclosed file <_io.TextIOWrapper name='/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-test-3tj5iz6o/workers/w/settings.json' mode='r' encoding='UTF-8'>
+  settings = _json.load(open(workers._claude_worker_settings(
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+----------------------------------------------------------------------
+Ran 1936 tests in 534.329s
+
+OK

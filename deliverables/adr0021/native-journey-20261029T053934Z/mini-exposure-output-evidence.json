@@ -1,0 +1,178 @@
+{
+  "sqlite_tool_metadata_tables": [
+    {
+      "table": "thread_dynamic_tools",
+      "columns": [
+        "thread_id",
+        "position",
+        "name",
+        "description",
+        "input_schema",
+        "defer_loading",
+        "namespace"
+      ],
+      "total_rows": 0
+    },
+    {
+      "table": "external_agent_config_imports",
+      "columns": [
+        "import_id",
+        "completed_at_ms",
+        "successes",
+        "failures",
+        "provider_id"
+      ],
+      "total_rows": 0
+    }
+  ],
+  "tool_outputs": [
+    {
+      "line": 16,
+      "timestamp": "2026-10-29T05:42:24.491Z",
+      "type": "custom_tool_call_output",
+      "call_id": "call_c8aad0b9f59b4926a6450f18889a8955",
+      "output_type": "str",
+      "output_preview": "\"timed out negotiating with the code-mode host\"",
+      "output_sha256": "9dee2dc46355edf2132e7e1567da60e9d349e97d3d10c877dfaba43cfa82d2f7"
+    },
+    {
+      "line": 20,
+      "timestamp": "2026-10-29T05:42:57.059Z",
+      "type": "custom_tool_call_output",
+      "call_id": "call_8a9af67b2e7943979db1b49b1ecc6ff1",
+      "output_type": "str",
+      "output_preview": "\"timed out negotiating with the code-mode host\"",
+      "output_sha256": "9dee2dc46355edf2132e7e1567da60e9d349e97d3d10c877dfaba43cfa82d2f7"
+    },
+    {
+      "line": 26,
+      "timestamp": "2026-10-29T05:43:29.502Z",
+      "type": "custom_tool_call_output",
+      "call_id": "call_57f9537591db432a8fbf78c04a153a5a",
+      "output_type": "str",
+      "output_preview": "\"timed out negotiating with the code-mode host\"",
+      "output_sha256": "9dee2dc46355edf2132e7e1567da60e9d349e97d3d10c877dfaba43cfa82d2f7"
+    },
+    {
+      "line": 34,
+      "timestamp": "2026-10-29T05:44:04.170Z",
+      "type": "custom_tool_call_output",
+      "call_id": "call_03fff1b937304c51b5e746bd30b94839",
+      "output_type": "str",
+      "output_preview": "\"timed out negotiating with the code-mode host\"",
+      "output_sha256": "9dee2dc46355edf2132e7e1567da60e9d349e97d3d10c877dfaba43cfa82d2f7"
+    },
+    {
+      "line": 41,
+      "timestamp": "2026-10-29T05:44:26.876Z",
+      "type": "function_call_output",
+      "call_id": "call_17bd2b45eeb143d88a7a7dea3399f514",
+      "output_type": "str",
+      "output_preview": "\"Wall time: 20.0087 seconds\\nSleep completed.\"",
+      "output_sha256": "9d50c0d038a14c77ca6a071d1d2744e1fa726eb5d717cbaa024d1c723223b67b"
+    },
+    {
+      "line": 45,
+      "timestamp": "2026-10-29T05:44:59.643Z",
+      "type": "custom_tool_call_output",
+      "call_id": "call_1be2f37143334865adedc6c1a9da1eea",
+      "output_type": "str",
+      "output_preview": "\"timed out negotiating with the code-mode host\"",
+      "output_sha256": "9dee2dc46355edf2132e7e1567da60e9d349e97d3d10c877dfaba43cfa82d2f7"
+    },
+    {
+      "line": 59,
+      "timestamp": "2026-10-29T05:46:12.956Z",
+      "type": "custom_tool_call_output",
+      "call_id": "call_66cfe5a2d92f4c4eb4face3493b1b9f2",
+      "output_type": "str",
+      "output_preview": "\"code-mode host is disabled\"",
+      "output_sha256": "c1b84711df1bb56362b729e4179481d4ac6824f144c05288dc4de508f20bd4e2"
+    },
+    {
+      "line": 75,
+      "timestamp": "2026-10-29T05:48:11.639Z",
+      "type": "custom_tool_call_output",
+      "call_id": "call_31661fbd763e445387a64d72ae9fba4e",
+      "output_type": "list",
+      "output_preview": "[{\"type\": \"input_text\", \"text\": \"Script completed\\nWall time 0.0 seconds\\nOutput:\\n\"}, {\"type\": \"input_text\", \"text\": \"Warning: truncated output (original token count: 137162)\\nTotal output lines: 1\\n\\n[{\\\"name\\\":\\\"clock__curr_time\\\",\\\"description\\\":\\\"Tools for reading and waiting on time.\\\\n\\\\nReturn the current time in UTC.\\\\n\\\\nexec tool declaration:\\\\n```ts\\\\ndeclare const tools: { clock__curr_time(args: {}): Promise<{\\\\n  // Current UTC time formatted as YYYY-MM-DD HH:MM:SS UTC.\\\\n  current_time: string;\\\\n}>; };\\\\n```\\\"},{\\\"name\\\":\\\"exec_command\\\",\\\"description\\\":\\\"Runs a command in a PTY, returning output or a session ID for ongoing interaction.\\\\n\\\\nexec tool declaration:\\\\n```ts\\\\ndeclare const tools: { exec_command(args: {\\\\n  // Shell command to execute.\\\\n  cmd: string;\\\\n  // User-facing approval question for `require_escalated`; omit otherwise.\\\\n  justification?: string;\\\\n  // True runs the shell with -l/-i semantics; false disables them. Defaults to true.\\\\n  login?: boolean;\\\\n  // Output token budget. Defaults to 10000 tokens; larger requests may be capped by policy.\\\\n  max_output_tokens?: number;\\\\n  // Reusable approval prefix for `cmd`, only with `sandbox_permissions: \\\\\\\"require_escalated\\\\\\\"`; for example [\\\\\\\"git\\\\\\\", \\\\\\\"pull\\\\\\\"].\\\\n  prefix_rule?: Array<string>;\\\\n  // Per-command sandbox override. Defaults to `use_default`; use `require_escalated` for unsandboxed execution.\\\\n  sandbox_permissions?: \\\\\\\"use_default\\\\\\\" | \\\\\\\"require_escalated\\\\\\\";\\\\n  // Shell binary to launch. Defaults to the user's default shell.\\\\n  shell?: string;\\\\n  // True allocates a PTY for the command; false or omitted uses plain pipes.\\\\n  tty?: boolean;\\\\n  // Working directory for the command. Defaults to the turn cwd.\\\\n  workdir?: string;\\\\n  // Wait before yielding output. Defaults to 10000 ms; effective range is 250-30000 ms.\\\\n  yield_time_ms?: number;\\\\n}): Promise<{\\\\n  // Chunk identifier included when the response reports one.\\\\n  chunk_id?: string;\\\\n  // Process exit code when the command finished during this call.\\\\n  exit_code?: number;\\\\n  // Approximate token count before output truncation.\\\\n  original_token_count?: number;\\\\n  // Command output text, possibly truncated.\\\\n  output: string;\\\\n  // Session identifier to pass to write_stdin when the process is still running.\\\\n  session_id?: number;\\\\n  // Elapsed wall time spent waiting for output in seconds.\\\\n  wall_time_seconds: number;\\\\n}>; };\\\\n```\\\"},{\\\"name\\\":\\\"get_goal\\\",\\\"description\\\":\\\"Get the current goal for this thread, including status, budgets, token and elapsed-time usage, and remaining token budget.\\\\n\\\\nexec tool declaration:\\\\n```ts\\\\ndeclare const tools: { get_goal(args: {}): Promise<unknown>; };\\\\n```\\\"},{\\\"name\\\":\\\"image_gen__imagegen\\\",\\\"description\\\":\\\"Tools in the image_gen namespace.\\\\n\\\\nThe `image_gen.imagegen` tool enables image generation from descriptions and editing of existing images based on specific instructions. Use it when:\\\\n\\\\n- The user requests an image based on a scene description, such as a diagram, portrait, comic, meme, or any other visual.\\\\n- The user wants to modify an attached or previously generated image with specific changes, including adding or removing elements, altering colors, improving quality/resolution, or transforming the style (e.g., cartoon, oil painting).\\\\n\\\\nGuidelines:\\\\n- imagegen needs a few minutes to finish. In code-mode, use the first-line @exec directive to give the initial call 120 seconds and the same yield for any waits that follow. Once it finishes, return the image with generatedImage(result).\\\\n- Avoid printing the full result or its base64 image data with `text()` or `notify()`; print only small metadata when needed.\\\\n- Set `transparent_background` to true when the request calls for a transparent background, including background removal or a cutout; set it to false otherwise. For edits, preserve existing transparency unless the user asks to change it.\\\\n- Omit both `referenced_image_paths` and `num_last_images_to_include` when generating a brand new image.\\\\n- For edits, use `referenced_image_paths` when every target image has a local file path.\\\\n- If you have not seen a local image yet, use `view_image` to inspect it before editing.\\\\n- Use `num_last_images_to_include` only when at least one target image has no local file path.\\\\n- Set `num_last_images_to_include` to the smallest number of recent conversation images that includes every target image, up to 5.\\\\n- Never provide both `referenced_image_paths` and `num_last_images_to_include`.\\\\n- If neither mechanism can include every target image, ask the user to attach the missing images again.\\\\n- Directly generate the image without reconfirmation or clarification unless required images must be attached again.\\\\n- Always use this tool for image editing unless the user explicitly requests otherwise. Do not use the `python` tool for image editing unless specifically instructed.\\\\n\\\\n\\\\nexec tool declaration:\\\\n```ts\\\\ndeclare const tools: { image_gen__imagegen(args: {\\\\n  num_last_images_to_include?: number | null;\\\\n  prompt: string;\\\\n  referenced_image_paths?: Array<string> | null;\\\\n  // Whether the output should have a transparent background. Defaults to false.\\\\n  transparent_background?: boolean;\\\\n}): Promise<unknown>; };\\\\n```\\\"},{\\\"name\\\":\\\"mcp__codex_apps__canva_create_design\\\",\\\"description\\\":\\\"Create, review, edit designs\\\\n\\\\nGenerate a new Canva design from a written brief, with any supplied content folded in.\\\\n\\\\nUse to turn a brief, presentation outline, or draft copy into a presentation, doc, sheet,\\\\nwebsite, poster, flyer, social post, resume, or another text-and-image layout; or to make a\\\\nfirst design for a new project.\\\\n\\\\nDo not use this tool for an on-brand request: it cannot apply a brand kit or base a design on\\\\na brand template. When the user asks for their brand kit, their brand colours, fonts or logo,\\\\nor a brand template to base the design on, use t",
+      "output_sha256": "90c991e1ef7d44a541a605f9d850576ad5c2d058aa47db0b983de7c7421ef764"
+    },
+    {
+      "line": 79,
+      "timestamp": "2026-10-29T05:48:14.157Z",
+      "type": "custom_tool_call_output",
+      "call_id": "call_a8226a87642b46c29cb1e95b0c66b602",
+      "output_type": "list",
+      "output_preview": "[{\"type\": \"input_text\", \"text\": \"Script completed\\nWall time 0.0 seconds\\nOutput:\\n\"}, {\"type\": \"input_text\", \"text\": \"[{\\\"name\\\":\\\"mcp__codex_apps__canva_generate_design\\\",\\\"description\\\":\\\"Create, review, edit designs\\\\n\\\\nLEGACY-ONLY — DO NOT CALL WHEN create-design IS AVAILABLE.\\\\nIf create-design is in the tool list, you MUST NOT call this tool. Call create-design instead.\\\\nBRAND EXCEPTION: create-design cannot apply a brand kit or base a design on a brand template. When the user asks for\\\"},{\\\"name\\\":\\\"mcp__codex_apps__canva_get_design\\\",\\\"description\\\":\\\"Create, review, edit designs\\\\n\\\\nLook up the record for one existing Canva design, including what type of design it is (such as doc, presentation, whiteboard, sheet), its title, owner, edit and view links, thumbnail, created and updated times, and page count.\\\\n\\\\nUse to open a specific design, find out wh\\\"},{\\\"name\\\":\\\"mcp__codex_apps__canva_get_design_content\\\",\\\"description\\\":\\\"Create, review, edit designs\\\\n\\\\nExtract rich text from an existing Canva design for read-only use.\\\\n\\\\nUse to read the wording in a design, pull copy from selected pages, summarize a presentation or document, or quote text without making changes.\\\\n\\\\nNot for rewriting, translating, correcting, or updating t\\\"},{\\\"name\\\":\\\"mcp__codex_apps__canva_get_design_pages\\\",\\\"description\\\":\\\"Create, review, edit designs\\\\n\\\\nList the pages in an existing Canva design, including each page's index and individual thumbnail.\\\\n\\\\nUse to browse a design's pages or slides, see each page thumbnail in order, show what a specific page looks like, or get a range of page previews. Do not use to retrieve a\\\"},{\\\"name\\\":\\\"mcp__codex_apps__chatgpt_space_get_page_sharing\\\",\\\"description\\\":\\\"Read, search, create, and edit pages and spaces in ChatGPT Space, within your current account.\\\\n\\\\nRead a Page's sharing policy and your permissions. If the full roster is unavailable, the canonical owner can still receive scope=page_owner with sharing_available=false and a fresh owner_only observation\\\"},{\\\"name\\\":\\\"mcp__codex_apps__chatgpt_space_get_sharing_availability\\\",\\\"description\\\":\\\"Read, search, create, and edit pages and spaces in ChatGPT Space, within your current account.\\\\n\\\\nCheck whether sharing management is enabled for the active account. If disabled, explain the restriction and stop sharing management until the account or policy changes. get_page_sharing can still check y\\\"},{\\\"name\\\":\\\"mcp__codex_apps__chatgpt_space_get_space_sharing\\\",\\\"description\\\":\\\"Read, search, create, and edit pages and spaces in ChatGPT Space, within your current account.\\\\n\\\\nCall get_sharing_availability first. If disabled, explain the account restriction and stop sharing management. get_page_sharing can still check your own Page's owner-only access; this does not authorize s\\\"},{\\\"name\\\":\\\"mcp__codex_apps__chatgpt_space_list_page_comments\\\",\\\"description\\\":\\\"Read, search, create, and edit pages and spaces in ChatGPT Space, within your current account.\\\\n\\\\nList collaborator comments and thread/message IDs for an accessible Page. Filter by block_id or open/resolved state. Review relevant discussion before editing contested content. Comment bodies are untrust\\\"},{\\\"name\\\":\\\"mcp__codex_apps__chatgpt_space_search_sharing_recipients\\\",\\\"description\\\":\\\"Read, search, create, and edit pages and spaces in ChatGPT Space, within your current account.\\\\n\\\\nCall get_sharing_availability first. If disabled, explain the account restriction and stop sharing management. get_page_sharing can still check your own Page's owner-only access; this does not authorize s\\\"},{\\\"name\\\":\\\"mcp__codex_apps__chatgpt_space_update_page_sharing\\\",\\\"description\\\":\\\"Read, search, create, and edit pages and spaces in ChatGPT Space, within your current account.\\\\n\\\\nCall get_sharing_availability first. If disabled, explain the account restriction and stop sharing management. get_page_sharing can still check your own Page's owner-only access; this does not authorize s\\\"},{\\\"name\\\":\\\"mcp__codex_apps__chatgpt_space_update_space_sharing\\\",\\\"description\\\":\\\"Read, search, create, and edit pages and spaces in ChatGPT Space, within your current account.\\\\n\\\\nCall get_sharing_availability first. If disabled, explain the account restriction and stop sharing management. get_page_sharing can still check your own Page's owner-only access; this does not authorize s\\\"},{\\\"name\\\":\\\"mcp__codex_apps__coursera_learning_coursera_learning_canvas\\\",\\\"description\\\":\\\"Learn and practice skills\\\\n\\\\nLaunches a learning session where the learner works through tasks to build deeper mastery of a specific skill. Depending on the nature of the gap, this runs as either a dialogue (a collaborative study-mate session for technical or conceptual mastery) or a roleplay (a sessi\\\"},{\\\"name\\\":\\\"mcp__codex_apps__figma_generate_deck\\\",\\\"description\\\":\\\"Create designs, ship to code\\\\n\\\\nMCP server instructions: The official Figma MCP server. Use this server whenever the user wants to create, generate, edit, implement, or sync any design, UI, screen, component, mockup, or visual — in Figma, FigJam, Figma Make, or Figma Slides — and whenever the user men\\\"},{\\\"name\\\":\\\"mcp__codex_apps__github_get_repo_collaborator_permission\\\",\\\"description\\\":\\\"Access repositories, issues, and pull requests. Required for some features such as Codex\\\\n\\\\nReturn the collaborator permission level for a user on a repository. This tool is part of plugin `GitHub`.\\\\n\\\\nexec tool declaration:\\\\n```ts\\\\ndeclare const tools: { mcp__codex_apps__github_get_repo_collaborator_perm\\\"},{\\\"name\\\":\\\"mcp__codex_apps__github_list_repositories_by_affiliation\\\",\\\"description\\\":\\\"Access repositories, issues, and pull requests. Required for some features such as Codex\\\\n\\\\nList repositories accessible to the authenticated user filtered by affiliation. This tool is part of plugin `GitHub`.\\\\n\\\\nexec tool declaration:\\\\n```ts\\\\ndeclare const tools: { mcp__codex_apps__github_list_repositori\\\"},{\\\"name\\\":\\\"mcp",
+      "output_sha256": "af2262b0b1db7547fc9d0c295a3d578b6529662f91d850bc0f0d5322a1608cdf"
+    },
+    {
+      "line": 83,
+      "timestamp": "2026-10-29T05:48:16.638Z",
+      "type": "custom_tool_call_output",
+      "call_id": "call_c8281f43d75e457e8d9174c2aa6ed4e6",
+      "output_type": "list",
+      "output_preview": "[{\"type\": \"input_text\", \"text\": \"Script completed\\nWall time 0.0 seconds\\nOutput:\\n\"}, {\"type\": \"input_text\", \"text\": \"[{\\\"name\\\":\\\"apply_patch\\\",\\\"description\\\":\\\"The `apply_patch` tool can be used to edit files. This is a FREEFORM tool, so do not wrap the patch in JSON.\\\\n\\\\nexec tool declaration:\\\\n```ts\\\\ndeclare const tools: { apply_patch(input:\\\"},{\\\"name\\\":\\\"clock__curr_time\\\",\\\"description\\\":\\\"Tools for reading and waiting on time.\\\\n\\\\nReturn the current time in UTC.\\\\n\\\\nexec tool declaration:\\\\n```ts\\\\ndeclare const tools: { clock__curr_time(args: {}): Promise<{\\\\n  // Current UTC \\\"},{\\\"name\\\":\\\"create_goal\\\",\\\"description\\\":\\\"Create a goal only when explicitly requested by the user or system/developer instructions; do not infer goals from ordinary tasks.\\\\nSet token_budget only when an explicit token budg\\\"},{\\\"name\\\":\\\"exec_command\\\",\\\"description\\\":\\\"Runs a command in a PTY, returning output or a session ID for ongoing interaction.\\\\n\\\\nexec tool declaration:\\\\n```ts\\\\ndeclare const tools: { exec_command(args: {\\\\n  // Shell command to e\\\"},{\\\"name\\\":\\\"get_goal\\\",\\\"description\\\":\\\"Get the current goal for this thread, including status, budgets, token and elapsed-time usage, and remaining token budget.\\\\n\\\\nexec tool declaration:\\\\n```ts\\\\ndeclare const tools: { get_\\\"},{\\\"name\\\":\\\"image_gen__imagegen\\\",\\\"description\\\":\\\"Tools in the image_gen namespace.\\\\n\\\\nThe `image_gen.imagegen` tool enables image generation from descriptions and editing of existing images based on specific instructions. Use it wh\\\"},{\\\"name\\\":\\\"list_mcp_resource_templates\\\",\\\"description\\\":\\\"Lists resource templates provided by MCP servers. Parameterized resource templates allow servers to share data that takes parameters and provides context to language models, such a\\\"},{\\\"name\\\":\\\"list_mcp_resources\\\",\\\"description\\\":\\\"Lists resources provided by MCP servers. Resources allow servers to share data that provides context to language models, such as files, database schemas, or application-specific in\\\"},{\\\"name\\\":\\\"read_mcp_resource\\\",\\\"description\\\":\\\"Read a specific resource from an MCP server given the server name and resource URI.\\\\n\\\\nexec tool declaration:\\\\n```ts\\\\ndeclare const tools: { read_mcp_resource(args: {\\\\n  // MCP server n\\\"},{\\\"name\\\":\\\"request_plugin_install\\\",\\\"description\\\":\\\"# Suggest a recommended plugin installation\\\\n\\\\nUse this tool only when all of the following are true:\\\\n- The user explicitly asks to use a specific plugin that is not already availabl\\\"},{\\\"name\\\":\\\"update_goal\\\",\\\"description\\\":\\\"Update the existing goal.\\\\nSet status to `paused` only at the user's explicit request to pause this goal, never on your own initiative. Ask if unclear; a later resume revokes that r\\\"},{\\\"name\\\":\\\"view_image\\\",\\\"description\\\":\\\"View a local image file from the filesystem when visual inspection is needed. Use this for images already available on disk.\\\\n\\\\nexec tool declaration:\\\\n```ts\\\\ndeclare const tools: { vi\\\"},{\\\"name\\\":\\\"web__run\\\",\\\"description\\\":\\\"Tools in the web namespace.\\\\n\\\\nTool for accessing the internet.\\\\n\\\\n\\\\n---\\\\n\\\\n## Examples of different commands available in this tool\\\\n\\\\nExamples of different commands available in this tool\\\"},{\\\"name\\\":\\\"write_stdin\\\",\\\"description\\\":\\\"Writes characters to an existing unified exec session and returns recent output.\\\\n\\\\nexec tool declaration:\\\\n```ts\\\\ndeclare const tools: { write_stdin(args: {\\\\n  // Bytes to write to std\\\"}]\"}, {\"type\": \"input_text\", \"text\": \"{\\\"current_time\\\":\\\"2026-10-29 05:48:16 UTC\\\"}\"}]",
+      "output_sha256": "cda995c0564ddfdf1598de1d9d45677e2394485ed01a10d97af4f6e27d97454d"
+    },
+    {
+      "line": 91,
+      "timestamp": "2026-10-29T05:48:21.562Z",
+      "type": "custom_tool_call_output",
+      "call_id": "call_193ee6e139c34eb6ba3de28c6c38ec6b",
+      "output_type": "list",
+      "output_preview": "[{\"type\": \"input_text\", \"text\": \"Script completed\\nWall time 0.5 seconds\\nOutput:\\n\"}, {\"type\": \"input_text\", \"text\": \"Warning: truncated output (original token count: 12709)\\nTotal output lines: 3\\n\\n[{\\\"name\\\":\\\"mcp__codex_apps__github_convert_pull_request_to_draft\\\",\\\"description\\\":\\\"Access repositories, issues, and pull requests. Required for some features such as Codex\\\\n\\\\nConvert an open pull request b\\\"},{\\\"name\\\":\\\"mcp__codex_apps__github_create_pull_request\\\",\\\"description\\\":\\\"Access repositories, issues, and pull requests. Required for some features such as Codex\\\\n\\\\nOpen a pull request in the rep\\\"},{\\\"name\\\":\\\"mcp__codex_apps__github_dismiss_pull_request_review\\\",\\\"description\\\":\\\"Access repositories, issues, and pull requests. Required for some features such as Codex\\\\n\\\\nDismiss a submitted pull reque\\\"},{\\\"name\\\":\\\"mcp__codex_apps__github_list_pull_request_review_threads\\\",\\\"description\\\":\\\"Access repositories, issues, and pull requests. Required for some features such as Codex\\\\n\\\\nList inline review threads on \\\"},{\\\"name\\\":\\\"mcp__codex_apps__github_list_pull_request_reviews\\\",\\\"description\\\":\\\"Access repositories, issues, and pull requests. Required for some features such as Codex\\\\n\\\\nList review submissions on a p\\\"},{\\\"name\\\":\\\"mcp__codex_apps__github_mark_pull_request_ready_for_review\\\",\\\"description\\\":\\\"Access repositories, issues, and pull requests. Required for some features such as Codex\\\\n\\\\nMark a draft pull request as r\\\"},{\\\"name\\\":\\\"mcp__codex_apps__github_merge_pull_request\\\",\\\"description\\\":\\\"Access repositories, issues, and pull requests. Required for some features such as Codex\\\\n\\\\nMerge a pull request immediate\\\"},{\\\"name\\\":\\\"mcp__codex_apps__github_remove_pull_request_reviewers\\\",\\\"description\\\":\\\"Access repositories, issues, and pull requests. Required for some features such as Codex\\\\n\\\\nRemove individual or team revi\\\"},{\\\"name\\\":\\\"mcp__codex_apps__github_request_pull_request_reviewers\\\",\\\"description\\\":\\\"Access repositories, issues, and pull requests. Required for some features such as Codex\\\\n\\\\nRequest individual or team rev\\\"},{\\\"name\\\":\\\"mcp__codex_apps__github_update_pull_request\\\",\\\"description\\\":\\\"Access repositories, issues, and pull requests. Required for some features such as Codex\\\\n\\\\nUpdate PR metadata, base branc\\\"},{\\\"name\\\":\\\"mcp__codex_apps__higgsfield_list_workspaces\\\",\\\"description\\\":\\\"Every image and video model\\\\n\\\\nMCP server instructions: After verifying a completed Katana video, call show_result with ac\\\"},{\\\"name\\\":\\\"mcp__codex_apps__higgsfield_workspace_clear_selection\\\",\\\"description\\\":\\\"Every image and video model\\\\n\\\\nMCP server instructions: After verifying a completed Katana video, call show_result with ac\\\"},{\\\"name\\\":\\\"mcp__codex_apps__higgsfield_workspace_select\\\",\\\"description\\\":\\\"Every image and video model\\\\n\\\\nMCP server instructions: After verifying a completed Katana video, call show_result with ac\\\"},{\\\"name\\\":\\\"request_plugin_install\\\",\\\"description\\\":\\\"# Suggest a recommended plugin installation\\\\n\\\\nUse this tool only when all of the following are true:\\\\n- The user explicitl\\\"}]\\n{\\\"resources\\\":[{\\\"server\\\":\\\"codex_apps\\\",\\\"uri\\\":\\\"plugin://plugin_asdk_app_6938a94a61d881918ef32cb999ff937c\\\",\\\"name\\\":\\\"plugin_asdk_app_6938a94a61d881918ef32cb999ff937c\\\",\\\"title\\\":\\\"Apple Music\\\",\\\"description\\\":\\\"Build playlists and find music\\\",\\\"mimeType\\\":\\\"mcp/plugin\\\",\\\"_meta\\\":{\\\"plugin_id\\\":\\\"plugin_asdk_app_6938a94a61d881918ef32cb999ff937c\\\",\\\"plugin_name\\\":\\\"app-6938a94a61d881918ef32cb999ff937c\\\",\\\"plugin_release_id\\\":\\\"pluginrel_df9f539ef3608191b47257765ef78efe\\\",\\\"plugin_release_version\\\":\\\"1.0.0\\\",\\\"apps\\\":[\\\"app://asdk_app_6938a94a61d881918ef32cb999ff937c\\\"],\\\"skills\\\":[],\\\"requires_executor\\\":false,\\\"mcp_servers\\\":[],\\\"contents\\\":[\\\"bundle\\\"],\\\"bundle\\\":\\\"plugin://plugin_asdk_app_6938a94a61d881918ef32cb999ff937c/bundle\\\"}},{\\\"server\\\":\\\"codex_apps\\\",\\\"uri\\\":\\\"plugin://plugin_connector_1p_51c1ba70f47481919149861084681943\\\",\\\"name\\\":\\\"plugin_connector_1p_51c1ba70f47481919149861084681943\\\",\\\"title\\\":\\\"Browser\\\",\\\"description\\\":\\\"Connect your browser to ChatGPT to read pages, navigate, and take actions.\\\",\\\"mimeType\\\":\\\"mcp/plugin\\\",\\\"_meta\\\":{\\\"plugin_id\\\":\\\"plugin_connector_1p_51c1ba70f47481919149861084681943\\\",\\\"plugin_name\\\":\\\"browser\\\",\\\"plugin_release_id\\\":\\\"pluginrel_6ac67ce9f02c8191889e35c1cb601dbb\\\",\\\"plugin_release_version\\\":\\\"0.1.6\\\",\\\"apps\\\":[\\\"app://connector_openai_browser\\\"],\\\"skills\\\":[\\\"skill://plugin_connector_1p_51c1ba70f47481919149861084681943/control-browser\\\"],\\\"requires_executor\\\":false,\\\"mcp_servers\\\":[],\\\"contents\\\":[\\\"bundle\\\"],\\\"bundle\\\":\\\"plugin://plugin_connector_1p_51c1ba70f47481919149861084681943/bundle\\\"}},{\\\"server\\\":\\\"codex_apps\\\",\\\"uri\\\":\\\"plugin://plugin_connector_68df33b1a2d081918778431a9cfca8ba\\\",\\\"name\\\":\\\"plugin_connector_68df33b1a2d081918778431a9cfca8ba\\\",\\\"title\\\":\\\"Canva\\\",\\\"description\\\":\\\"Bring your Canva design workflow into Codex and create, refine, and review designs through natural conversation.\\\\n\\\\nWhat Canva can do: \\\\nCreate designs: Turn a brief, outline, or draft copy into a presentation, doc, poster, flyer, social post, resume, and more. \\\\nGenerate images: Create photos, illustrations, icons, and graphics from a prompt, or restyle an image you already have. \\\\nRemove backgrounds: Lift the subject out of an image onto a transparent background. Upload files: Bring attachments and files from your chat into Canva to use in your designs. \\\\nResize for social media: Adapt a design for Facebook, Instagram, and LinkedIn in one step. \\\\nBulk create: Generate multiple designs from spreadsheet data using a brand template. \\\\nEdit designs: Update text, media, and formatting, or reposition and resize elements. \\\\nGet design feedback: Receive structured feedback on visual hierarchy, layout, readability, consistency, and accessibility. \\\\nImplement feedback: Review comment threads and apply clear, actionable changes. Brand check: Check colors, fonts, logo usage, and c",
+      "output_sha256": "8aa3c7cd762a7a97b0bec9f04b7f825d37fa0511f2f600c6f81e49ac6bd90e27"
+    },
+    {
+      "line": 98,
+      "timestamp": "2026-10-29T05:48:24.784Z",
+      "type": "custom_tool_call_output",
+      "call_id": "call_34db83db5f5347538b04b21cbe272cf0",
+      "output_type": "list",
+      "output_preview": "[{\"type\": \"input_text\", \"text\": \"Script completed\\nWall time 0.1 seconds\\nOutput:\\n\"}, {\"type\": \"input_text\", \"text\": \"{\\\"chunk_id\\\":\\\"b3f9b6\\\",\\\"wall_time_seconds\\\":0.000013,\\\"exit_code\\\":1,\\\"original_token_count\\\":9,\\\"output\\\":\\\"/private/tmp/xnj-mini-gl2ut38t/work\\\\n\\\"}\"}]",
+      "output_sha256": "7847348a29b85e5754af7c50f3303f32b6cfa4e63b486f6946f7cced2809ba2f"
+    }
+  ],
+  "current_feature_defaults": [
+    {
+      "exe": "/opt/homebrew/bin/codex",
+      "exit": 0,
+      "values": [
+        "code_mode                                under development  false",
+        "code_mode_buffered_exec                  removed            false",
+        "code_mode_host                           stable             true",
+        "code_mode_host_grpc                      under development  false",
+        "code_mode_interrupt                      stable             true",
+        "code_mode_only                           under development  false",
+        "code_mode_only_strict_3p_tools           under development  false",
+        "code_mode_prewarm                        under development  false",
+        "code_mode_tool_description_first         under development  false",
+        "code_mode_tool_search                    under development  false",
+        "deferred_tool_world_state                under development  false",
+        "tool_search_always_defer_mcp_tools       removed            true"
+      ]
+    },
+    {
+      "exe": "/private/tmp/xnj-mini-gl2ut38t/native-runtime/codex",
+      "exit": 0,
+      "values": [
+        "code_mode                                under development  false",
+        "code_mode_buffered_exec                  removed            false",
+        "code_mode_host                           stable             true",
+        "code_mode_host_grpc                      under development  false",
+        "code_mode_interrupt                      stable             true",
+        "code_mode_only                           under development  false",
+        "code_mode_only_strict_3p_tools           under development  false",
+        "code_mode_prewarm                        under development  false",
+        "code_mode_tool_description_first         under development  false",
+        "code_mode_tool_search                    under development  false",
+        "deferred_tool_world_state                under development  false",
+        "tool_search_always_defer_mcp_tools       removed            true"
+      ]
+    }
+  ],
+  "temporary_config_exists": true,
+  "temporary_auth_is_symlink": true
+}

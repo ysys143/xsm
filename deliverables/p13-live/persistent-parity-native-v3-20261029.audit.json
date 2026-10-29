@@ -1,0 +1,307 @@
+{
+  "status": "four-question-interface-parity-observed-with-collector-exit-race-preserved",
+  "condition_number": 6,
+  "seconds": 279.146,
+  "new_native_launches": 2,
+  "previous_conditions": 5,
+  "previous_launches": 9,
+  "total_conditions": 6,
+  "total_launches": 11,
+  "automatic_model_retries": 0,
+  "host": {
+    "root": "/private/tmp/persistent-parity-v3-host-9xxw5alo",
+    "markers_absent": true,
+    "actual_CID": "01a181b4-9f34-74c0-8d0f-6c1d69a6a10f",
+    "actual_home": "/Users/jaesolshin/.codex-3",
+    "native_DB": [
+      "01a181b4-9f34-74c0-8d0f-6c1d69a6a10f",
+      "/Users/jaesolshin/Documents/GitHub/cross-session-messaging"
+    ],
+    "who_exit": 0,
+    "who": {
+      "runtime": "codex",
+      "home": "/Users/jaesolshin/.codex-3",
+      "alias": "codex-3",
+      "session_id": "01a181b4-9f34-74c0-8d0f-6c1d69a6a10f",
+      "pid": 9102,
+      "lstart": "Wed Oct 28 05:55:24 2026",
+      "cwd": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging",
+      "ref": "f56c14",
+      "updated": 1793239251.0896618,
+      "app_server": true,
+      "adopted": true,
+      "name": "codex-a6a10f",
+      "state": "live",
+      "registered": true
+    },
+    "stderr": "",
+    "source315_verified": true
+  },
+  "receiver_CID": "01a18564-4f25-7193-a08e-c73910fa3336",
+  "child_CID": "01a18566-e00d-77c2-98df-9bc7db2b6559",
+  "child_native_PID": 68679,
+  "child_MCP_PID": 68888,
+  "stages": {
+    "actual_wait0": true,
+    "files_capability": {
+      "status": "observed",
+      "version": 1,
+      "source": "mcp-reader",
+      "observed_at": 1793239333.083425,
+      "reader_pid": 55439
+    },
+    "CLI_replies_read_and_explicitly_acked": 2,
+    "MCP_replies_read_and_explicitly_acked": 2,
+    "actual_receiver_entry_reads": 2,
+    "canonical_request_and_reply_ACK_states": 8
+  },
+  "pairs": {
+    "CLI plain": {
+      "request_id": "5c5aa35175e2447e",
+      "reply_id": "60e6fcc7e0434456",
+      "reply_to": "5c5aa35175e2447e",
+      "sender_CID": "01a181b4-9f34-74c0-8d0f-6c1d69a6a10f",
+      "receiver_CID": "01a18564-4f25-7193-a08e-c73910fa3336",
+      "request_digest": "3bcc110b44a1d4274b6e4fb39e7a33746b7155a95d00e94f688e30ad252f9400",
+      "reply_digest": "1cf45d9f37e859d6e2768a5eb425b86d98d046f143edeb342e415d726bcf5099",
+      "request_and_reply_acknowledged": true,
+      "materials": null,
+      "priority": "next",
+      "logical_wake": true,
+      "delivery_wake_step": {
+        "ok": false,
+        "t": 1793239351.535979,
+        "detail": "not-loaded"
+      },
+      "file_storage": null
+    },
+    "CLI file": {
+      "request_id": "375e2c9752304b98",
+      "reply_id": "7ba364ad883d4c23",
+      "reply_to": "375e2c9752304b98",
+      "sender_CID": "01a181b4-9f34-74c0-8d0f-6c1d69a6a10f",
+      "receiver_CID": "01a18564-4f25-7193-a08e-c73910fa3336",
+      "request_digest": "24380620ccc896bb08b36c836a4c3485e9cd41d3635ff9758e292993adcba06d",
+      "reply_digest": "53e97c63bb80fe8cfa89cb7c80669c3a1f2118c8692d082276c812ba0d6f7be1",
+      "request_and_reply_acknowledged": true,
+      "materials": {
+        "manifest_id": "fc4ef5383ec84293bd8df0b73fc2cec0",
+        "mode": "files",
+        "references": [
+          {
+            "path": "manifest:fc4ef5383ec84293bd8df0b73fc2cec0",
+            "id": "fc4ef5383ec84293bd8df0b73fc2cec0",
+            "version": 1,
+            "sha256": "c28eb8f1f6839963c287d1d57ce08eb5fd502e1829279bfe1d4bae0f2024e460",
+            "size": 122
+          }
+        ]
+      },
+      "priority": "next",
+      "logical_wake": true,
+      "delivery_wake_step": {
+        "ok": false,
+        "t": 1793239402.658765,
+        "detail": "not-loaded"
+      },
+      "file_storage": "0946b54d8d9545478748dc3ddd83434b"
+    },
+    "MCP plain": {
+      "request_id": "2d8c6753148b4eba",
+      "reply_id": "dd47307b81c44eb9",
+      "reply_to": "2d8c6753148b4eba",
+      "sender_CID": "01a18566-e00d-77c2-98df-9bc7db2b6559",
+      "receiver_CID": "01a18564-4f25-7193-a08e-c73910fa3336",
+      "request_digest": "f79bf1e99db7febf9d6e39f915872c9f47c62b15d27612b2facf04ab069deb8d",
+      "reply_digest": "e374c3b38d8beca3e2ba684c4ca3608dfb4b0cc3205f61993c013dd3f31a60f4",
+      "request_and_reply_acknowledged": true,
+      "materials": null,
+      "priority": "next",
+      "logical_wake": true,
+      "delivery_wake_step": {
+        "ok": false,
+        "t": 1793239491.873858,
+        "detail": "not-loaded"
+      },
+      "file_storage": null
+    },
+    "MCP file": {
+      "request_id": "aa1c99bcd11e4018",
+      "reply_id": "a9f12c77eb524f65",
+      "reply_to": "aa1c99bcd11e4018",
+      "sender_CID": "01a18566-e00d-77c2-98df-9bc7db2b6559",
+      "receiver_CID": "01a18564-4f25-7193-a08e-c73910fa3336",
+      "request_digest": "5f8c7026ad76df4925754fbc0103923e9016cee229e5960f049b1082dc137c56",
+      "reply_digest": "3b3e88cc0206e52c0b399457503417e5e43fe6c9881592bd4883d62b6d9d4051",
+      "request_and_reply_acknowledged": true,
+      "materials": {
+        "manifest_id": "71741b7f284844faac4691b3e82b378d",
+        "mode": "files",
+        "references": [
+          {
+            "path": "manifest:71741b7f284844faac4691b3e82b378d",
+            "id": "71741b7f284844faac4691b3e82b378d",
+            "version": 1,
+            "sha256": "4ba9002f09bf4477a5b785a8e6c8049df5f47effa15b56920ff37c6a341e6840",
+            "size": 122
+          }
+        ]
+      },
+      "priority": "next",
+      "logical_wake": true,
+      "delivery_wake_step": {
+        "ok": false,
+        "t": 1793239515.7479382,
+        "detail": "not-loaded"
+      },
+      "file_storage": "2646159076654cf58057bdf5e29b4d62"
+    }
+  },
+  "input_body_raw_SHA": "7d9f276cad9750b57b5d11b75b2b3fc8e2d1c1567b01ddb14f869c36b55688e8",
+  "input_body_semantic_SHA": "7d9f276cad9750b57b5d11b75b2b3fc8e2d1c1567b01ddb14f869c36b55688e8",
+  "input_file_SHA": "d339583fadf151657b5ed3f0606508d3ed52cdcafb98dc3740f23ab28acbd22b",
+  "plain_answers_equal": true,
+  "file_answers_equal": true,
+  "canonical_digests_all_valid": true,
+  "canonical_digests_equal_across_requests": false,
+  "digest_context": "existing request digest includes id, sender endpoint and manifest binding; different full hashes expected. Body/content SHA and parsed answers equal, not a change to local semantic contract.",
+  "received_copies": [
+    {
+      "storage_id": "0946b54d8d9545478748dc3ddd83434b",
+      "owner": {
+        "home_id": "8f68eb952a346564ce4e74fa28f6be1313901a8164edfe6761ea0f8bc4a71fe4",
+        "runtime": "codex",
+        "session_id": "01a18564-4f25-7193-a08e-c73910fa3336"
+      },
+      "manifest_owner": {
+        "home_id": "8f68eb952a346564ce4e74fa28f6be1313901a8164edfe6761ea0f8bc4a71fe4",
+        "runtime": "codex",
+        "session_id": "01a181b4-9f34-74c0-8d0f-6c1d69a6a10f"
+      },
+      "manifest_id": "fc4ef5383ec84293bd8df0b73fc2cec0",
+      "manifest_digest": "c28eb8f1f6839963c287d1d57ce08eb5fd502e1829279bfe1d4bae0f2024e460",
+      "version": 1,
+      "previous": null,
+      "request_id": "375e2c9752304b98",
+      "body_binding_SHA": "7d9f276cad9750b57b5d11b75b2b3fc8e2d1c1567b01ddb14f869c36b55688e8",
+      "files": [
+        {
+          "copy": true,
+          "id": "a0c5a91c1e71440f8249460debafdefe",
+          "input_source": "cli-os-read",
+          "name": "material.md",
+          "original_name": "material.md",
+          "sha256": "d339583fadf151657b5ed3f0606508d3ed52cdcafb98dc3740f23ab28acbd22b",
+          "size": 122,
+          "source_version": null,
+          "version": 1
+        }
+      ]
+    },
+    {
+      "storage_id": "2646159076654cf58057bdf5e29b4d62",
+      "owner": {
+        "home_id": "8f68eb952a346564ce4e74fa28f6be1313901a8164edfe6761ea0f8bc4a71fe4",
+        "runtime": "codex",
+        "session_id": "01a18564-4f25-7193-a08e-c73910fa3336"
+      },
+      "manifest_owner": {
+        "home_id": "8f68eb952a346564ce4e74fa28f6be1313901a8164edfe6761ea0f8bc4a71fe4",
+        "runtime": "codex",
+        "session_id": "01a18566-e00d-77c2-98df-9bc7db2b6559"
+      },
+      "manifest_id": "71741b7f284844faac4691b3e82b378d",
+      "manifest_digest": "4ba9002f09bf4477a5b785a8e6c8049df5f47effa15b56920ff37c6a341e6840",
+      "version": 1,
+      "previous": null,
+      "request_id": "aa1c99bcd11e4018",
+      "body_binding_SHA": "7d9f276cad9750b57b5d11b75b2b3fc8e2d1c1567b01ddb14f869c36b55688e8",
+      "files": [
+        {
+          "copy": true,
+          "id": "518159078e2c49228d51b79994878e5a",
+          "input_source": "caller-inline",
+          "name": "material.md",
+          "original_name": "material.md",
+          "sha256": "d339583fadf151657b5ed3f0606508d3ed52cdcafb98dc3740f23ab28acbd22b",
+          "size": 122,
+          "source_version": null,
+          "version": 1
+        }
+      ]
+    }
+  ],
+  "actual_file_reads": [
+    {
+      "storage_id": "0946b54d8d9545478748dc3ddd83434b",
+      "entry_id": "a0c5a91c1e71440f8249460debafdefe",
+      "actual_content_SHA": "d339583fadf151657b5ed3f0606508d3ed52cdcafb98dc3740f23ab28acbd22b"
+    },
+    {
+      "storage_id": "2646159076654cf58057bdf5e29b4d62",
+      "entry_id": "518159078e2c49228d51b79994878e5a",
+      "actual_content_SHA": "d339583fadf151657b5ed3f0606508d3ed52cdcafb98dc3740f23ab28acbd22b"
+    }
+  ],
+  "receiver_MCP_calls": 17,
+  "child_MCP_calls": 4,
+  "child_shell_calls": 4,
+  "receiver_turns": [
+    5,
+    5
+  ],
+  "child_turns": [
+    2,
+    1
+  ],
+  "model_tool_errors": 0,
+  "collector_original_status": "original-failure-preserved-no-retry",
+  "collector_failure": {
+    "type": "AssertionError",
+    "message": "sender native ancestor mismatch"
+  },
+  "collector_failure_assessment": "BoundActor.refresh rechecked an already-completed child PID and asserted after exit. Child exit0/turn.completed and four canonical replies+ACK remain preserved. No rerun or raw correction.",
+  "cleanup": [
+    {
+      "pid": 55125,
+      "same_generation_alive": false
+    },
+    {
+      "pid": 55344,
+      "same_generation_alive": false
+    },
+    {
+      "pid": 55439,
+      "same_generation_alive": false
+    },
+    {
+      "pid": 55127,
+      "same_generation_alive": false
+    },
+    {
+      "pid": 68656,
+      "same_generation_alive": false
+    },
+    {
+      "pid": 68679,
+      "same_generation_alive": false
+    },
+    {
+      "pid": 68888,
+      "same_generation_alive": false
+    }
+  ],
+  "host_session_preserved": true,
+  "source315_verified": true,
+  "product_hash_unchanged": true,
+  "profile_guard_unchanged": true,
+  "limitations": [
+    "Surface-directed evaluation, not natural cold join",
+    "Only priority next and wake auto; wake step not-loaded false is preserved, actual idle queue receipt/reply is observed",
+    "Formal handshake not-started",
+    "No whole-user-repo inventory hash; recorded product paths unchanged, observed actor commands have no user-repo file writes",
+    "Existing five conditions/nine launches unchanged",
+    "No new global setting, permission, marker removal or certainty override",
+    "Full request hashes differ by identity/id/manifest; no claim of equality"
+  ]
+}

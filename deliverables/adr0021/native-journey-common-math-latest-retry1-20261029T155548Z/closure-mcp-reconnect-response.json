@@ -1,0 +1,22 @@
+{
+  "at": 1793292153.0232341,
+  "responses": [
+    {
+      "type": "control_response",
+      "response": {
+        "subtype": "success",
+        "request_id": "adr21-closure-reconnect-37d3aca7b93a48f897f4167891b2b1b3"
+      }
+    }
+  ],
+  "MCP_beacon": {
+    "pid": 47061,
+    "ppid": 33226,
+    "lstart": "Fri Oct 30 01:41:48 2026",
+    "started": 1793292108.9800692,
+    "cwd": "/private/tmp/mq-b-hd9g8g9k/work"
+  },
+  "same_native_PID": 33226,
+  "same_CID": "d6ad76ce-8cd2-4f66-adcd-66d6c3805cc7",
+  "old_MCP_ps": ""
+}

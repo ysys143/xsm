@@ -1,0 +1,370 @@
+{
+  "before": {
+    "book": {
+      "at": 1793290922.134454,
+      "questions": [],
+      "ACK_count": 3,
+      "native_PID": 33226,
+      "native_lstart": "Fri Oct 30 00:56:31 2026",
+      "native_current_ps": "Fri Oct 30 00:56:31 2026",
+      "canonical_SHA": {
+        "handoffs/73cd7605dd279d1c62affc6a88e35f2e0638c877604a72a225c4ef6448e8bfd8/c18d0295024549c8.json": "24eb87b687375471ca3a846d41bdf5745c21b5f665d65646e9589f949ad3dd76",
+        "handoffs/73cd7605dd279d1c62affc6a88e35f2e0638c877604a72a225c4ef6448e8bfd8/958971a5c24e4fe4.json": "5347b379b12bc8aa096ee0dc83ecade06202c116cd0420fb890d038a82ae5225",
+        "handoffs/73cd7605dd279d1c62affc6a88e35f2e0638c877604a72a225c4ef6448e8bfd8/9f11884127764cad.json": "73fc4dce19bc495d7ea1136559bed789a87320b72a878985ea9c37401a6e20af",
+        "network/messages/inbound/c18d0295024549c8.json": "9634ac07742907a34310a6c8e5796d2f12d24f41b86df9e38dc7aa0f98eb0c7d",
+        "network/messages/inbound/958971a5c24e4fe4.json": "c9fbe9dfd643c2ae91695eb7d5728702288f4705de102d4f9af56ba66366303f",
+        "network/messages/inbound/9f11884127764cad.json": "c1479d54ec298594a50bfed041fda0101c33c0e3dbc2773c1526c75d9e26bd31",
+        "network/messages/outbound/e51fbbb4ce884a99.json": "bd26afbaaec81247878f5a1d06197bebf6ee979a0d746975c218f3268d1bc177",
+        "network/messages/outbound/18ea96f2ea894fa5.json": "bf992acc5411a2c7ed9b94767b51f83987232adb025b56b915e026be050fb21b",
+        "network/messages/outbound/78247e05ee7546eb.json": "36f1bda09cac0847b3d559882e1f05cb51ac860977a9d2c36cb213a0544363cc"
+      },
+      "service_owner": {
+        "pid": 30652,
+        "lstart": "Fri Oct 30 00:55:51 2026"
+      }
+    },
+    "mini": {
+      "at": 1793290918.041875,
+      "questions": [
+        {
+          "id": "958971a5c24e4fe4",
+          "reply_ids": [
+            "18ea96f2ea894fa5"
+          ],
+          "final": true
+        },
+        {
+          "id": "9f11884127764cad",
+          "reply_ids": [
+            "e51fbbb4ce884a99"
+          ],
+          "final": true
+        }
+      ],
+      "ACK_count": 3,
+      "native_PID": 73985,
+      "native_lstart": "Fri Oct 30 01:19:49 2026",
+      "native_current_ps": "Fri Oct 30 01:19:49 2026",
+      "canonical_SHA": {
+        "handoffs/82383c651f8444375c6ff58c034d032a038d8e04db1113f784aa8baabf004f68/e51fbbb4ce884a99.json": "cefaeb68272414fe1306841d77b1fac8a7508a800e71ff08a55a27513743a3fe",
+        "handoffs/82383c651f8444375c6ff58c034d032a038d8e04db1113f784aa8baabf004f68/18ea96f2ea894fa5.json": "a7c99aa5a9a7c57be907ee95ff5a878ea234cd9030f83325a7864ac3e701fdb7",
+        "handoffs/82383c651f8444375c6ff58c034d032a038d8e04db1113f784aa8baabf004f68/78247e05ee7546eb.json": "2d1da291100f4908c6c440762298f8a5dea63e19a8ff5306c5c45847ab279c06",
+        "questions/c18d0295024549c8.json": "9f511be2206da2a006f4fab3712b6e177a0c1084f4b72382a73e32d03a4838da",
+        "questions/958971a5c24e4fe4.json": "e534f4874428decc622c5daf55a8453a78447b8fdf1c42120e38a0136f40f965",
+        "questions/9f11884127764cad.json": "b04347dc256dbdf29f4989d79848e041a1a3c00c73ece71c214dbba85821fe67",
+        "network/messages/inbound/e51fbbb4ce884a99.json": "69d0e7abbbbe44c24cd03eff4ccbbddc4761d50a59f833d527b7ecd249eae9ed",
+        "network/messages/inbound/18ea96f2ea894fa5.json": "8b41e13c962c68251f6b518236c1a12f8ad49090e079293a45896e8647b14a02",
+        "network/messages/inbound/78247e05ee7546eb.json": "c83ac05f5fa5e19e55a11300d54d52122270af09d40cc1627430f3df1eed577b",
+        "network/messages/outbound/c18d0295024549c8.json": "8f82f33f7a5aaad2f6db84ff354783f69d684ede041897f6513fdf56c4025c5c",
+        "network/messages/outbound/958971a5c24e4fe4.json": "f730d04115618a0da7799cadc5b179b44398654f20b40686b7507d6a02ccac5a",
+        "network/messages/outbound/9f11884127764cad.json": "233b6a728251f5e7a91bd49fbd21a403482c388b2fd05dac4303dba8d8b49eaa"
+      },
+      "service_owner": {
+        "pid": 59326,
+        "lstart": "Fri Oct 30 00:55:53 2026"
+      }
+    }
+  },
+  "stop": {
+    "book": {
+      "started_at": 1793290922.146951,
+      "ended_at": 1793290922.4354858,
+      "result": {
+        "exit": 0,
+        "result": {
+          "status": "stopping"
+        },
+        "stderr_bytes": 0
+      }
+    },
+    "mini": {
+      "started_at": 1793290922.4355452,
+      "ended_at": 1793290922.912191,
+      "result": {
+        "exit": 0,
+        "result": {
+          "status": "stopping"
+        },
+        "stderr_bytes": 0
+      }
+    }
+  },
+  "start": {
+    "book": {
+      "started_at": 1793290923.231744,
+      "ended_at": 1793290923.805312,
+      "result": {
+        "status": "running",
+        "endpoint_id": "7df9fff6a5113e7ad7f05ebfc7477ca0c54308aa0d661bdec5461688bfc6c11d",
+        "address": {
+          "addrs": [
+            {
+              "Ip": "100.123.30.11:60039"
+            },
+            {
+              "Ip": "127.0.0.1:60039"
+            },
+            {
+              "Ip": "172.30.1.32:60039"
+            },
+            {
+              "Ip": "[::1]:50424"
+            }
+          ],
+          "id": "7df9fff6a5113e7ad7f05ebfc7477ca0c54308aa0d661bdec5461688bfc6c11d"
+        },
+        "active": true,
+        "network": {
+          "version": 1,
+          "network_id": "7df9fff6a5113e7ad7f05ebfc7477ca0c54308aa0d661bdec5461688bfc6c11d:aaf8d8afb96234bd472094abc2773795dcf192b91706a63cce61fd82f06a4695",
+          "name": "common-math-retry1-20261030",
+          "members": [
+            {
+              "endpoint_id": "75c1181ce5e57de097475aba33df1b34bf1a18fbc8b0363514dd8c07c9e294fe",
+              "machine_name": "native-journey-mini",
+              "status": "active"
+            },
+            {
+              "endpoint_id": "7df9fff6a5113e7ad7f05ebfc7477ca0c54308aa0d661bdec5461688bfc6c11d",
+              "machine_name": "same-name-live-reviewer-book",
+              "status": "active"
+            }
+          ],
+          "invites": [
+            {
+              "invite_hash": "039bd22b9576662bb45bb30bd91c930d357c9ce80bf5d42a65cb0d94ec661540",
+              "issuer": "7df9fff6a5113e7ad7f05ebfc7477ca0c54308aa0d661bdec5461688bfc6c11d",
+              "reusable": true,
+              "expires_at": null,
+              "revoked": false,
+              "consumed_by": [
+                "75c1181ce5e57de097475aba33df1b34bf1a18fbc8b0363514dd8c07c9e294fe"
+              ]
+            }
+          ]
+        },
+        "transport": {
+          "address": {
+            "addrs": [
+              {
+                "Ip": "100.123.30.11:60039"
+              },
+              {
+                "Ip": "127.0.0.1:60039"
+              },
+              {
+                "Ip": "172.30.1.32:60039"
+              },
+              {
+                "Ip": "[::1]:50424"
+              }
+            ],
+            "id": "7df9fff6a5113e7ad7f05ebfc7477ca0c54308aa0d661bdec5461688bfc6c11d"
+          },
+          "bound_addresses": [
+            "0.0.0.0:60039",
+            "[::]:50424"
+          ],
+          "endpoint_id": "7df9fff6a5113e7ad7f05ebfc7477ca0c54308aa0d661bdec5461688bfc6c11d",
+          "event": "ready",
+          "port_fallback": false,
+          "relay_mode": "off",
+          "relay_online": false,
+          "requested_port": 0
+        },
+        "last_transport": null,
+        "service_pid": 30631,
+        "engine_pid": 30642,
+        "known_peers": [
+          "75c1181ce5e57de097475aba33df1b34bf1a18fbc8b0363514dd8c07c9e294fe"
+        ]
+      }
+    },
+    "mini": {
+      "started_at": 1793290923.805405,
+      "ended_at": 1793290924.532674,
+      "result": {
+        "status": "running",
+        "endpoint_id": "75c1181ce5e57de097475aba33df1b34bf1a18fbc8b0363514dd8c07c9e294fe",
+        "address": {
+          "addrs": [
+            {
+              "Ip": "100.77.24.16:51783"
+            },
+            {
+              "Ip": "127.0.0.1:51783"
+            },
+            {
+              "Ip": "192.168.0.64:51783"
+            },
+            {
+              "Ip": "[::1]:55934"
+            }
+          ],
+          "id": "75c1181ce5e57de097475aba33df1b34bf1a18fbc8b0363514dd8c07c9e294fe"
+        },
+        "active": true,
+        "network": {
+          "version": 1,
+          "network_id": "7df9fff6a5113e7ad7f05ebfc7477ca0c54308aa0d661bdec5461688bfc6c11d:aaf8d8afb96234bd472094abc2773795dcf192b91706a63cce61fd82f06a4695",
+          "name": "common-math-retry1-20261030",
+          "members": [
+            {
+              "endpoint_id": "75c1181ce5e57de097475aba33df1b34bf1a18fbc8b0363514dd8c07c9e294fe",
+              "machine_name": "native-journey-mini",
+              "status": "active"
+            },
+            {
+              "endpoint_id": "7df9fff6a5113e7ad7f05ebfc7477ca0c54308aa0d661bdec5461688bfc6c11d",
+              "machine_name": "same-name-live-reviewer-book",
+              "status": "active"
+            }
+          ],
+          "invites": [
+            {
+              "invite_hash": "039bd22b9576662bb45bb30bd91c930d357c9ce80bf5d42a65cb0d94ec661540",
+              "issuer": "7df9fff6a5113e7ad7f05ebfc7477ca0c54308aa0d661bdec5461688bfc6c11d",
+              "reusable": true,
+              "expires_at": null,
+              "revoked": false,
+              "consumed_by": [
+                "75c1181ce5e57de097475aba33df1b34bf1a18fbc8b0363514dd8c07c9e294fe"
+              ]
+            }
+          ]
+        },
+        "transport": {
+          "address": {
+            "addrs": [
+              {
+                "Ip": "100.77.24.16:51783"
+              },
+              {
+                "Ip": "127.0.0.1:51783"
+              },
+              {
+                "Ip": "192.168.0.64:51783"
+              },
+              {
+                "Ip": "[::1]:55934"
+              }
+            ],
+            "id": "75c1181ce5e57de097475aba33df1b34bf1a18fbc8b0363514dd8c07c9e294fe"
+          },
+          "bound_addresses": [
+            "0.0.0.0:51783",
+            "[::]:55934"
+          ],
+          "endpoint_id": "75c1181ce5e57de097475aba33df1b34bf1a18fbc8b0363514dd8c07c9e294fe",
+          "event": "ready",
+          "port_fallback": false,
+          "relay_mode": "off",
+          "relay_online": false,
+          "requested_port": 0
+        },
+        "last_transport": null,
+        "service_pid": 84582,
+        "engine_pid": 84584,
+        "known_peers": [
+          "7df9fff6a5113e7ad7f05ebfc7477ca0c54308aa0d661bdec5461688bfc6c11d"
+        ]
+      }
+    }
+  },
+  "body_or_ID_relay": false,
+  "new_models": 0,
+  "stopped_identity": {
+    "book": {
+      "started_at": 1793290922.912266,
+      "ended_at": 1793290922.959671,
+      "result": {
+        "old_PID": 30652,
+        "old_identity_gone": true
+      }
+    },
+    "mini": {
+      "started_at": 1793290922.959737,
+      "ended_at": 1793290923.2316859,
+      "result": {
+        "old_PID": 59326,
+        "old_identity_gone": true
+      }
+    }
+  },
+  "after": {
+    "book": {
+      "at": 1793290925.585691,
+      "questions": [],
+      "ACK_count": 3,
+      "native_PID": 33226,
+      "native_lstart": "Fri Oct 30 00:56:31 2026",
+      "native_current_ps": "Fri Oct 30 00:56:31 2026",
+      "canonical_SHA": {
+        "handoffs/73cd7605dd279d1c62affc6a88e35f2e0638c877604a72a225c4ef6448e8bfd8/c18d0295024549c8.json": "24eb87b687375471ca3a846d41bdf5745c21b5f665d65646e9589f949ad3dd76",
+        "handoffs/73cd7605dd279d1c62affc6a88e35f2e0638c877604a72a225c4ef6448e8bfd8/958971a5c24e4fe4.json": "5347b379b12bc8aa096ee0dc83ecade06202c116cd0420fb890d038a82ae5225",
+        "handoffs/73cd7605dd279d1c62affc6a88e35f2e0638c877604a72a225c4ef6448e8bfd8/9f11884127764cad.json": "73fc4dce19bc495d7ea1136559bed789a87320b72a878985ea9c37401a6e20af",
+        "network/messages/inbound/c18d0295024549c8.json": "9634ac07742907a34310a6c8e5796d2f12d24f41b86df9e38dc7aa0f98eb0c7d",
+        "network/messages/inbound/958971a5c24e4fe4.json": "c9fbe9dfd643c2ae91695eb7d5728702288f4705de102d4f9af56ba66366303f",
+        "network/messages/inbound/9f11884127764cad.json": "c1479d54ec298594a50bfed041fda0101c33c0e3dbc2773c1526c75d9e26bd31",
+        "network/messages/outbound/e51fbbb4ce884a99.json": "bd26afbaaec81247878f5a1d06197bebf6ee979a0d746975c218f3268d1bc177",
+        "network/messages/outbound/18ea96f2ea894fa5.json": "bf992acc5411a2c7ed9b94767b51f83987232adb025b56b915e026be050fb21b",
+        "network/messages/outbound/78247e05ee7546eb.json": "36f1bda09cac0847b3d559882e1f05cb51ac860977a9d2c36cb213a0544363cc"
+      },
+      "service_owner": {
+        "pid": 30631,
+        "lstart": "Fri Oct 30 01:22:03 2026"
+      }
+    },
+    "mini": {
+      "at": 1793290921.92594,
+      "questions": [
+        {
+          "id": "958971a5c24e4fe4",
+          "reply_ids": [
+            "18ea96f2ea894fa5"
+          ],
+          "final": true
+        },
+        {
+          "id": "9f11884127764cad",
+          "reply_ids": [
+            "e51fbbb4ce884a99"
+          ],
+          "final": true
+        }
+      ],
+      "ACK_count": 3,
+      "native_PID": 73985,
+      "native_lstart": "Fri Oct 30 01:19:49 2026",
+      "native_current_ps": "Fri Oct 30 01:19:49 2026",
+      "canonical_SHA": {
+        "handoffs/82383c651f8444375c6ff58c034d032a038d8e04db1113f784aa8baabf004f68/e51fbbb4ce884a99.json": "cefaeb68272414fe1306841d77b1fac8a7508a800e71ff08a55a27513743a3fe",
+        "handoffs/82383c651f8444375c6ff58c034d032a038d8e04db1113f784aa8baabf004f68/18ea96f2ea894fa5.json": "a7c99aa5a9a7c57be907ee95ff5a878ea234cd9030f83325a7864ac3e701fdb7",
+        "handoffs/82383c651f8444375c6ff58c034d032a038d8e04db1113f784aa8baabf004f68/78247e05ee7546eb.json": "2d1da291100f4908c6c440762298f8a5dea63e19a8ff5306c5c45847ab279c06",
+        "questions/c18d0295024549c8.json": "9f511be2206da2a006f4fab3712b6e177a0c1084f4b72382a73e32d03a4838da",
+        "questions/958971a5c24e4fe4.json": "e534f4874428decc622c5daf55a8453a78447b8fdf1c42120e38a0136f40f965",
+        "questions/9f11884127764cad.json": "b04347dc256dbdf29f4989d79848e041a1a3c00c73ece71c214dbba85821fe67",
+        "network/messages/inbound/e51fbbb4ce884a99.json": "69d0e7abbbbe44c24cd03eff4ccbbddc4761d50a59f833d527b7ecd249eae9ed",
+        "network/messages/inbound/18ea96f2ea894fa5.json": "8b41e13c962c68251f6b518236c1a12f8ad49090e079293a45896e8647b14a02",
+        "network/messages/inbound/78247e05ee7546eb.json": "c83ac05f5fa5e19e55a11300d54d52122270af09d40cc1627430f3df1eed577b",
+        "network/messages/outbound/c18d0295024549c8.json": "8f82f33f7a5aaad2f6db84ff354783f69d684ede041897f6513fdf56c4025c5c",
+        "network/messages/outbound/958971a5c24e4fe4.json": "f730d04115618a0da7799cadc5b179b44398654f20b40686b7507d6a02ccac5a",
+        "network/messages/outbound/9f11884127764cad.json": "233b6a728251f5e7a91bd49fbd21a403482c388b2fd05dac4303dba8d8b49eaa"
+      },
+      "service_owner": {
+        "pid": 84582,
+        "lstart": "Fri Oct 30 01:22:00 2026"
+      }
+    }
+  },
+  "gate": {
+    "started_at": 1793290925.966149,
+    "ended_at": 1793290926.312632,
+    "result": {
+      "at": 1793290922.276354,
+      "path": "/private/tmp/mq-m-tn48g8wb/work/service-restarted",
+      "bytes": 0,
+      "body_or_ID": false
+    }
+  }
+}

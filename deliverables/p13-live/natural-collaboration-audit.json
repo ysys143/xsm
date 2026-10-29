@@ -1,0 +1,352 @@
+{
+  "original_result_sha256": "177331e3704153bab2023d6f32e2b8a50ab2ba74d57c7300c9b979b3f08c715d",
+  "raw_result_preserved": true,
+  "native_reruns": 0,
+  "message_ack_index_corrections": 0,
+  "common_cwd": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging",
+  "common_documents": "development-tree skills/xsm, selected by agents themselves",
+  "old_condition": "old MCP 0.4.20 + common new skill/guide; not unchanged old-product baseline",
+  "collector_corrections": [
+    "v2 may quote revoked false proposal",
+    "old ledger has no reply_to; bind actual completed MCP args plus matching ledger body/actor",
+    "documentation mentioning sandbox is not a command failure",
+    "check MCP liveness again after finalizer exit race"
+  ],
+  "conditions": [
+    {
+      "condition": "B05-final",
+      "original_automatic_status": "not-completed-original-sample",
+      "audited_business_goal": "passed",
+      "reviews": [
+        {
+          "request_sha256": "39828196a8094163d4c7812e12b163ba09b3fcedad7d391e97853f0d3a444277",
+          "reply_sha256": "71aeeb4c3bf0b2e057a6727fda274aba3bee6d640a910cec99c2342f1a972bb2",
+          "category": "proposal",
+          "outcome": "succeeded",
+          "received_actual_body": true,
+          "request_body_sha256": "26dd655c0a0313d98d128211e0935db0dbcabee87dcedb5658421c1c4b92a274",
+          "reply_body_sha256": "817c44cc8b6bcdbf496026e5f44cd66dd2b783a4ba38e44ce3570f4526b816f6",
+          "quotes_retracted_5": true,
+          "states_correct_4": false
+        },
+        {
+          "request_sha256": "6644d93821ecfeba5220f0eb122ca5252302931332cad4d00529c72efc549407",
+          "reply_sha256": "644a9d678be936f7e31a30617c0468cb0eede4cd43419bb8d796fc9a61afe719",
+          "category": "correction",
+          "outcome": "succeeded",
+          "received_actual_body": true,
+          "request_body_sha256": "5b14cec56b88c2d0ef66e916016237bd5f2910587c393935decf2857b26fa70e",
+          "reply_body_sha256": "40f619ed618ff291a76a940d8770f0c62f1e82bf433f022ea01b33f197977afb",
+          "quotes_retracted_5": true,
+          "states_correct_4": true
+        },
+        {
+          "request_sha256": "4622e1d8c0ac853ba101d7ca3ff69dde15e561d3d9314750a9b86eaa38131d19",
+          "reply_sha256": "23e005ad279e956038038af24daa236226017992441d65b62bba29f68b4636af",
+          "category": "handshake",
+          "outcome": "succeeded",
+          "received_actual_body": true,
+          "request_body_sha256": "b268004cb9e0a4f2b2c5442a8a59992556d9feb2beba033a93c3c0caafdb865f",
+          "reply_body_sha256": "0dfa3913998ab8673a602c9779c608215c9e2e4f46a352c26f4ee93b8f3face8",
+          "quotes_retracted_5": false,
+          "states_correct_4": false
+        },
+        {
+          "request_sha256": "05d28b0002eeb71d9cbe214c4e06d6d694b7115bbd1c68638ebfcc0b5a818ef7",
+          "reply_sha256": "2b999eaf7cc65d32bb041bd0f8303a80a0224f5d89eb4edcece7182d306545b3",
+          "category": "boundary",
+          "outcome": "succeeded",
+          "received_actual_body": true,
+          "request_body_sha256": "de23c3d9cffc7b3e41e7c09311b5f4672337a02cec7e4f27a826448244c86a59",
+          "reply_body_sha256": "8c3f64393fc40dec6dde4ef47cadb7f4ff5388b51960f1b0f7b7ebb9802c874c",
+          "quotes_retracted_5": false,
+          "states_correct_4": false
+        }
+      ],
+      "actors": [
+        {
+          "role": "reviewer",
+          "mcp_calls_started": 13,
+          "mcp_by_tool": {
+            "xsm_inbox": 5,
+            "xsm_ack": 4,
+            "xsm_send": 4
+          },
+          "mcp_errors": [],
+          "shell_calls": [
+            {
+              "purpose": "workspace-or-skill-discovery",
+              "exit_code": 0,
+              "complete": true,
+              "command_sha256": "93ccf4ff2fbfa6bb16ff01eeeafe5638976b74dd5d9526a79d0d5f1b799465cf",
+              "shell_send_attempt": false
+            },
+            {
+              "purpose": "skill-read",
+              "exit_code": 0,
+              "complete": true,
+              "command_sha256": "b43d3ab8fd84f92dbd33d13020a229e5f433134189752855403e929a6b59330b",
+              "shell_send_attempt": false
+            },
+            {
+              "purpose": "guide-read",
+              "exit_code": 0,
+              "complete": true,
+              "command_sha256": "c2b5a9159c90c9fd0e6ba09bd11d51ba664beb04fd4c38882346cf4c37acaebd",
+              "shell_send_attempt": false
+            },
+            {
+              "purpose": "independent-arithmetic-check",
+              "exit_code": 0,
+              "complete": true,
+              "command_sha256": "a4069616f99cd23a9692e43083210c7e6671f6d532166eb3dcbde7c585fbda6e",
+              "shell_send_attempt": false
+            },
+            {
+              "purpose": "independent-arithmetic-check",
+              "exit_code": 0,
+              "complete": true,
+              "command_sha256": "03f5e3a50fa8f4d2e88c7adb8883819cd81febe0dcab41484a06ab137cc9ac44",
+              "shell_send_attempt": false
+            },
+            {
+              "purpose": "independent-arithmetic-check",
+              "exit_code": 0,
+              "complete": true,
+              "command_sha256": "3c3abe7c17bd19bd1da1f90ba2272b7b9c18d8175852631d55ddea56c72ed5dd",
+              "shell_send_attempt": false
+            }
+          ],
+          "shell_errors": 0,
+          "sandbox_shell_send_attempts": 0,
+          "native_terminal_events": [
+            "turn.completed"
+          ],
+          "native_same_generation_alive_after": false,
+          "mcp_execution_alive_after": false,
+          "registration_preceded_agent_call": true,
+          "events_sha256": "e3d7378ddfff59f34b62a3df5e6e9b60a77ddc9d1d91be9a331340a28ef86a59"
+        },
+        {
+          "role": "initiator",
+          "mcp_calls_started": 13,
+          "mcp_by_tool": {
+            "xsm_discover": 1,
+            "xsm_connect": 1,
+            "xsm_inbox": 4,
+            "xsm_ask": 3,
+            "xsm_ack": 4
+          },
+          "mcp_errors": [],
+          "shell_calls": [
+            {
+              "purpose": "workspace-or-skill-discovery",
+              "exit_code": 0,
+              "complete": true,
+              "command_sha256": "d2b967f10faa8b533b86377b3024334a53947c1a0596f22ea4bf4e40b035a6af",
+              "shell_send_attempt": false
+            }
+          ],
+          "shell_errors": 0,
+          "sandbox_shell_send_attempts": 0,
+          "native_terminal_events": [
+            "turn.completed"
+          ],
+          "native_same_generation_alive_after": false,
+          "mcp_execution_alive_after": false,
+          "registration_preceded_agent_call": true,
+          "events_sha256": "6a41ef59957054e7c6c4e1c22222fbb88bd1371186c2f00c1234d4c89fe4de37"
+        }
+      ],
+      "actual_math_review_count": 3,
+      "actual_handshake_count": 1,
+      "original_first_actual_reply_seconds": 19.926,
+      "first_reply_scope": "includes readiness handshake",
+      "cleanup_after_exit_race_verified": true,
+      "profile_unchanged": true,
+      "runtime_source_unchanged": true,
+      "controller_interventions": {
+        "initial_registry": 2,
+        "message": 0,
+        "ack": 0,
+        "index": 0,
+        "user_clicks": 0,
+        "user_commands": 0,
+        "user_approvals": 0
+      }
+    },
+    {
+      "condition": "old-0.4.20",
+      "original_automatic_status": "cleanup-not-verified",
+      "audited_business_goal": "passed",
+      "reviews": [
+        {
+          "request_sha256": "ca335809443e8aa9e25bedd0c418821defa021a45571ef49722fe49a22d9ebe8",
+          "reply_sha256": "f60cf7ac9eca7ab118359d594303523460862cac3a989a9b53d37097e159c18a",
+          "category": "proposal",
+          "outcome": "succeeded",
+          "received_actual_body": true,
+          "request_body_sha256": "4f6aa27f629aebefe24d4ff5e71941a093efa6a0251a38f8d23440d4e6d4fff0",
+          "reply_body_sha256": "c3a3f46b4084a729d689478f0551b2a97ce526996dbadb50cb0367495dc48cb3",
+          "quotes_retracted_5": true,
+          "states_correct_4": false
+        },
+        {
+          "request_sha256": "86fa42592e9c7252efcfefed2e731f5b9118664fa87a478e20a94b8fe10771c6",
+          "reply_sha256": "a1da428aeb1fcc2d2c997f89634a2d7636ba004edb249bf80e44145fe3b3c01b",
+          "category": "boundary",
+          "outcome": "succeeded",
+          "received_actual_body": true,
+          "request_body_sha256": "928e733291eecd58d5fa1e094cc5e30995bfbba8c495bdb6a0edfd20eda9d2f5",
+          "reply_body_sha256": "8741502b6914eb098bc9b5d77ad29cc81bed9933f30fba87544d2aaca4ed55fb",
+          "quotes_retracted_5": false,
+          "states_correct_4": false
+        },
+        {
+          "request_sha256": "7ea7243026c57239a9137eadf158c60c325ca318e7111204b60f07b6f50d16e5",
+          "reply_sha256": "757b4af43c56a81587e0aa26320889c2d7743eb409ac1055bba6c4655f6a99e7",
+          "category": "correction",
+          "outcome": "succeeded",
+          "received_actual_body": true,
+          "request_body_sha256": "4a360e9c23e235365c4863f698f44317f94300e0e38e3528c4009f11790b5187",
+          "reply_body_sha256": "0ddd17a48a5d1ed54695ccb5faac85078dba5ac8103b8107533a927c29def171",
+          "quotes_retracted_5": true,
+          "states_correct_4": true
+        }
+      ],
+      "actors": [
+        {
+          "role": "reviewer",
+          "mcp_calls_started": 8,
+          "mcp_by_tool": {
+            "xsm_inbox": 5,
+            "xsm_send": 3
+          },
+          "mcp_errors": [],
+          "shell_calls": [
+            {
+              "purpose": "workspace-or-skill-discovery",
+              "exit_code": 0,
+              "complete": true,
+              "command_sha256": "2503d29f98f95c3e84989b7dda88933ae58879d444a15c72a6cd9aed53acd3c0",
+              "shell_send_attempt": false
+            },
+            {
+              "purpose": "skill-read",
+              "exit_code": 2,
+              "complete": true,
+              "command_sha256": "ea515e5055301e7d95d6c1488a444f8a0425e7c5d41369addb2337cf47e0c22d",
+              "shell_send_attempt": false
+            },
+            {
+              "purpose": "skill-read",
+              "exit_code": 0,
+              "complete": true,
+              "command_sha256": "4bcc07532e71c8075d561c2bc23b8ed5808aa34604448534259d36c2288d6579",
+              "shell_send_attempt": false
+            },
+            {
+              "purpose": "guide-read",
+              "exit_code": 0,
+              "complete": true,
+              "command_sha256": "1110b388bbdeb6513fb0a33a03f5c6614009329f34244eb5b232c2c720f6bbd6",
+              "shell_send_attempt": false
+            }
+          ],
+          "shell_errors": 1,
+          "sandbox_shell_send_attempts": 0,
+          "native_terminal_events": [],
+          "native_same_generation_alive_after": false,
+          "mcp_execution_alive_after": false,
+          "registration_preceded_agent_call": true,
+          "events_sha256": "ec692dbe4db19fdc3a68032e308c3e3235c28d2363ba1887d34b6026ebd322db"
+        },
+        {
+          "role": "initiator",
+          "mcp_calls_started": 6,
+          "mcp_by_tool": {
+            "xsm_send": 3,
+            "xsm_inbox": 3
+          },
+          "mcp_errors": [],
+          "shell_calls": [
+            {
+              "purpose": "workspace-or-skill-discovery",
+              "exit_code": 0,
+              "complete": true,
+              "command_sha256": "9c34aed711ac4a6880f451d08db2d25f4b0205f013c21009af5e9b19ec064778",
+              "shell_send_attempt": false
+            },
+            {
+              "purpose": "workspace-or-skill-discovery",
+              "exit_code": 0,
+              "complete": true,
+              "command_sha256": "4f482ea5a8fff0280aa2d58a88a9a406594d4881ac12d3e73fe4d5486494ded2",
+              "shell_send_attempt": false
+            },
+            {
+              "purpose": "skill-read",
+              "exit_code": 0,
+              "complete": true,
+              "command_sha256": "521c300cf717a5b388a29a8ff97cb27a3b0b061e676689edf3f45404e4c5624d",
+              "shell_send_attempt": false
+            },
+            {
+              "purpose": "current-checkout-cli-discovery",
+              "exit_code": 0,
+              "complete": true,
+              "command_sha256": "4349f2795a7c00214d2b9e1f90ca65ea9436563c75e5a2aa8771d28cc3b9accd",
+              "shell_send_attempt": false
+            },
+            {
+              "purpose": "guide-read",
+              "exit_code": 0,
+              "complete": true,
+              "command_sha256": "2c22f610509c1ec8d5aa987ccb89edb24a3f1646e5b22cdd12e816d5ee3fa757",
+              "shell_send_attempt": false
+            }
+          ],
+          "shell_errors": 0,
+          "sandbox_shell_send_attempts": 0,
+          "native_terminal_events": [
+            "turn.completed"
+          ],
+          "native_same_generation_alive_after": false,
+          "mcp_execution_alive_after": false,
+          "registration_preceded_agent_call": true,
+          "events_sha256": "d264eea65203dbb66091755d5edd503c99ac12d276612a6a15be409bbefd9020"
+        }
+      ],
+      "actual_math_review_count": 3,
+      "actual_handshake_count": 0,
+      "original_first_actual_reply_seconds": null,
+      "first_reply_scope": "original exact latency unavailable because legacy collector mismatched",
+      "cleanup_after_exit_race_verified": true,
+      "profile_unchanged": true,
+      "runtime_source_unchanged": true,
+      "controller_interventions": {
+        "initial_registry": 2,
+        "message": 0,
+        "ack": 0,
+        "index": 0,
+        "user_clicks": 0,
+        "user_commands": 0,
+        "user_approvals": 0
+      }
+    }
+  ],
+  "workspace_documents_at_audit": {
+    "skills/xsm/SKILL.md": {
+      "sha256": "3e583bcd294862775c6590766b96cea2260c879329a32ffbe5306f128da55896",
+      "equals_B05_frozen": true
+    },
+    "skills/xsm/references/messaging.md": {
+      "sha256": "a5337aa81bf4bd23d9f050d7cbdf9e68f7354f3550c42301a211393c2f673814",
+      "equals_B05_frozen": true
+    },
+    "skills/xsm/references/guide.md": {
+      "sha256": "6bffc41da7cce01cc6080c8afb62e54efc910fd67b59d9d11b0c119130c43981",
+      "equals_B05_frozen": true
+    }
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "started_utc": "2026-10-29T15:15:28.829145+00:00",
+  "source_manifest_sha256": "5e203237d953a8b656ff4083503fd8b9b5c02c744a3f4939b1ce3236bda461ec",
+  "kind": "same-host real public CLI and Rust QUIC; no model sessions",
+  "completed": true,
+  "network_id": "0415ebb62e62d1d08638525587bd31cb09b8493b6b464b2deb9760a9f7f2bcf4:b5949221da1d4f7a39960abb9f13f0dfacfe4b0b64da8f58b3ce1d8a4fd72315",
+  "old_public_key": "6ca68000960703c1069ed268de5f6e9e228e3091c38e11a625a1d8098e90292e",
+  "replacement_public_key": "85c21b51c5af35a3cfcd3ea92acaa32ddba671c628f50d3f66343e0d1d3811a5",
+  "old_removed": true,
+  "new_active": true,
+  "old_transport_rejection": "peer-refused",
+  "new_bidirectional_ping": true,
+  "old_identity_not_overwritten": true,
+  "owned_pids": [
+    25856,
+    25946,
+    26023,
+    25863,
+    25955,
+    26024
+  ],
+  "owned_pids_remaining": [],
+  "finished_utc": "2026-10-29T15:15:32.025994+00:00"
+}

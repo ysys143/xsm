@@ -1,0 +1,1886 @@
+{
+  "status": "actual-product-local-selfhost-verified",
+  "official_version": "iroh-relay 1.4.1",
+  "sdk_only_result_is_separate": true,
+  "profiles": {
+    "debug": {
+      "scope": "actual-product-local-selfhost",
+      "native_sha256": "74a4b6825f27aff929b12b8a7819a3eb07e52798066eca4acd8c376782ccbc20",
+      "native_source_binary": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/native/xsm-net/target/debug/xsm-net",
+      "native_transport_source_sha256": "50335a024f7c2f2fe89735569639ab7d33d61b3e3ae51b3d07497e67ff5563d0",
+      "official_relay_sha256": "bbb28ec37e34287ca8b6bef55c7ed9cc6dcdc0cf64abf5313716151d1b9059d6",
+      "relay_url": "http://127.0.0.1:63255",
+      "udp_profile": "(version 1)(allow default)(deny network-outbound (remote udp \"*:*\"))",
+      "udp_egress_controls": {
+        "unrestricted_delivered": true,
+        "same_profile_denied": true
+      },
+      "product_starts": [
+        {
+          "name": "a",
+          "service_pid": 79996,
+          "engine_pid": 79998,
+          "ready": {
+            "status": "running",
+            "endpoint_id": "1dc6e966e8c93ca198a0abb6f9c5059be75ce4724cd0f5ae90f73e98f13afd74",
+            "address": {
+              "addrs": [
+                {
+                  "Relay": "http://127.0.0.1:63255/"
+                },
+                {
+                  "Ip": "100.123.30.11:65322"
+                },
+                {
+                  "Ip": "127.0.0.1:65322"
+                },
+                {
+                  "Ip": "192.168.0.11:65322"
+                },
+                {
+                  "Ip": "[::1]:50532"
+                }
+              ],
+              "id": "1dc6e966e8c93ca198a0abb6f9c5059be75ce4724cd0f5ae90f73e98f13afd74"
+            },
+            "active": false,
+            "network": null,
+            "transport": {
+              "address": {
+                "addrs": [
+                  {
+                    "Relay": "http://127.0.0.1:63255/"
+                  },
+                  {
+                    "Ip": "100.123.30.11:65322"
+                  },
+                  {
+                    "Ip": "127.0.0.1:65322"
+                  },
+                  {
+                    "Ip": "192.168.0.11:65322"
+                  },
+                  {
+                    "Ip": "[::1]:50532"
+                  }
+                ],
+                "id": "1dc6e966e8c93ca198a0abb6f9c5059be75ce4724cd0f5ae90f73e98f13afd74"
+              },
+              "bound_addresses": [
+                "0.0.0.0:65322",
+                "[::]:50532"
+              ],
+              "endpoint_id": "1dc6e966e8c93ca198a0abb6f9c5059be75ce4724cd0f5ae90f73e98f13afd74",
+              "event": "ready",
+              "port_fallback": false,
+              "relay_mode": "custom",
+              "relay_online": false,
+              "requested_port": 0
+            },
+            "last_transport": null,
+            "service_pid": 79996,
+            "engine_pid": 79998,
+            "known_peers": []
+          }
+        },
+        {
+          "name": "b",
+          "service_pid": 80230,
+          "engine_pid": 80231,
+          "ready": {
+            "status": "running",
+            "endpoint_id": "2de5ff13bed2c22d13b1521c0d65bfd9cba5fcc74d563a2e50804a405a394ab1",
+            "address": {
+              "addrs": [
+                {
+                  "Relay": "http://127.0.0.1:63255/"
+                },
+                {
+                  "Ip": "100.123.30.11:62652"
+                },
+                {
+                  "Ip": "127.0.0.1:62652"
+                },
+                {
+                  "Ip": "192.168.0.11:62652"
+                },
+                {
+                  "Ip": "[::1]:59160"
+                }
+              ],
+              "id": "2de5ff13bed2c22d13b1521c0d65bfd9cba5fcc74d563a2e50804a405a394ab1"
+            },
+            "active": false,
+            "network": null,
+            "transport": {
+              "address": {
+                "addrs": [
+                  {
+                    "Relay": "http://127.0.0.1:63255/"
+                  },
+                  {
+                    "Ip": "100.123.30.11:62652"
+                  },
+                  {
+                    "Ip": "127.0.0.1:62652"
+                  },
+                  {
+                    "Ip": "192.168.0.11:62652"
+                  },
+                  {
+                    "Ip": "[::1]:59160"
+                  }
+                ],
+                "id": "2de5ff13bed2c22d13b1521c0d65bfd9cba5fcc74d563a2e50804a405a394ab1"
+              },
+              "bound_addresses": [
+                "0.0.0.0:62652",
+                "[::]:59160"
+              ],
+              "endpoint_id": "2de5ff13bed2c22d13b1521c0d65bfd9cba5fcc74d563a2e50804a405a394ab1",
+              "event": "ready",
+              "port_fallback": false,
+              "relay_mode": "custom",
+              "relay_online": false,
+              "requested_port": 0
+            },
+            "last_transport": null,
+            "service_pid": 80230,
+            "engine_pid": 80231,
+            "known_peers": []
+          }
+        },
+        {
+          "name": "b",
+          "service_pid": 80426,
+          "engine_pid": 80427,
+          "ready": {
+            "status": "running",
+            "endpoint_id": "2de5ff13bed2c22d13b1521c0d65bfd9cba5fcc74d563a2e50804a405a394ab1",
+            "address": {
+              "addrs": [
+                {
+                  "Relay": "http://127.0.0.1:63255/"
+                },
+                {
+                  "Ip": "100.123.30.11:51630"
+                },
+                {
+                  "Ip": "127.0.0.1:51630"
+                },
+                {
+                  "Ip": "192.168.0.11:51630"
+                },
+                {
+                  "Ip": "[::1]:50897"
+                }
+              ],
+              "id": "2de5ff13bed2c22d13b1521c0d65bfd9cba5fcc74d563a2e50804a405a394ab1"
+            },
+            "active": true,
+            "network": {
+              "version": 1,
+              "network_id": "1dc6e966e8c93ca198a0abb6f9c5059be75ce4724cd0f5ae90f73e98f13afd74:80fb882dd17392071db0e284e88c3a64eb856fd8ed94ddbee0eb810f3374fe6f",
+              "name": "bounded-product-selfhost",
+              "members": [
+                {
+                  "endpoint_id": "1dc6e966e8c93ca198a0abb6f9c5059be75ce4724cd0f5ae90f73e98f13afd74",
+                  "machine_name": "a",
+                  "status": "active"
+                },
+                {
+                  "endpoint_id": "2de5ff13bed2c22d13b1521c0d65bfd9cba5fcc74d563a2e50804a405a394ab1",
+                  "machine_name": "b",
+                  "status": "active"
+                }
+              ],
+              "invites": [
+                {
+                  "invite_hash": "ef6caa829bf10dabb0e076be3ddf73a3135e9bcd7392ff22d81a9e683c5c48d1",
+                  "issuer": "1dc6e966e8c93ca198a0abb6f9c5059be75ce4724cd0f5ae90f73e98f13afd74",
+                  "reusable": true,
+                  "expires_at": null,
+                  "revoked": false,
+                  "consumed_by": [
+                    "2de5ff13bed2c22d13b1521c0d65bfd9cba5fcc74d563a2e50804a405a394ab1"
+                  ]
+                }
+              ]
+            },
+            "transport": {
+              "address": {
+                "addrs": [
+                  {
+                    "Relay": "http://127.0.0.1:63255/"
+                  },
+                  {
+                    "Ip": "100.123.30.11:51630"
+                  },
+                  {
+                    "Ip": "127.0.0.1:51630"
+                  },
+                  {
+                    "Ip": "192.168.0.11:51630"
+                  },
+                  {
+                    "Ip": "[::1]:50897"
+                  }
+                ],
+                "id": "2de5ff13bed2c22d13b1521c0d65bfd9cba5fcc74d563a2e50804a405a394ab1"
+              },
+              "bound_addresses": [
+                "0.0.0.0:51630",
+                "[::]:50897"
+              ],
+              "endpoint_id": "2de5ff13bed2c22d13b1521c0d65bfd9cba5fcc74d563a2e50804a405a394ab1",
+              "event": "ready",
+              "port_fallback": false,
+              "relay_mode": "custom",
+              "relay_online": false,
+              "requested_port": 0
+            },
+            "last_transport": null,
+            "service_pid": 80426,
+            "engine_pid": 80427,
+            "known_peers": [
+              "1dc6e966e8c93ca198a0abb6f9c5059be75ce4724cd0f5ae90f73e98f13afd74"
+            ]
+          }
+        }
+      ],
+      "path_snapshots": [
+        {
+          "name": "a",
+          "status": {
+            "status": "running",
+            "endpoint_id": "1dc6e966e8c93ca198a0abb6f9c5059be75ce4724cd0f5ae90f73e98f13afd74",
+            "address": {
+              "addrs": [
+                {
+                  "Relay": "http://127.0.0.1:63255/"
+                },
+                {
+                  "Ip": "100.123.30.11:65322"
+                },
+                {
+                  "Ip": "127.0.0.1:65322"
+                },
+                {
+                  "Ip": "192.168.0.11:65322"
+                },
+                {
+                  "Ip": "[::1]:50532"
+                }
+              ],
+              "id": "1dc6e966e8c93ca198a0abb6f9c5059be75ce4724cd0f5ae90f73e98f13afd74"
+            },
+            "active": true,
+            "network": {
+              "version": 1,
+              "network_id": "1dc6e966e8c93ca198a0abb6f9c5059be75ce4724cd0f5ae90f73e98f13afd74:80fb882dd17392071db0e284e88c3a64eb856fd8ed94ddbee0eb810f3374fe6f",
+              "name": "bounded-product-selfhost",
+              "members": [
+                {
+                  "endpoint_id": "1dc6e966e8c93ca198a0abb6f9c5059be75ce4724cd0f5ae90f73e98f13afd74",
+                  "machine_name": "a",
+                  "status": "active"
+                },
+                {
+                  "endpoint_id": "2de5ff13bed2c22d13b1521c0d65bfd9cba5fcc74d563a2e50804a405a394ab1",
+                  "machine_name": "b",
+                  "status": "active"
+                }
+              ],
+              "invites": [
+                {
+                  "invite_hash": "ef6caa829bf10dabb0e076be3ddf73a3135e9bcd7392ff22d81a9e683c5c48d1",
+                  "issuer": "1dc6e966e8c93ca198a0abb6f9c5059be75ce4724cd0f5ae90f73e98f13afd74",
+                  "reusable": true,
+                  "expires_at": null,
+                  "revoked": false,
+                  "consumed_by": [
+                    "2de5ff13bed2c22d13b1521c0d65bfd9cba5fcc74d563a2e50804a405a394ab1"
+                  ]
+                }
+              ]
+            },
+            "transport": {
+              "address": {
+                "addrs": [
+                  {
+                    "Relay": "http://127.0.0.1:63255/"
+                  },
+                  {
+                    "Ip": "100.123.30.11:65322"
+                  },
+                  {
+                    "Ip": "127.0.0.1:65322"
+                  },
+                  {
+                    "Ip": "192.168.0.11:65322"
+                  },
+                  {
+                    "Ip": "[::1]:50532"
+                  }
+                ],
+                "id": "1dc6e966e8c93ca198a0abb6f9c5059be75ce4724cd0f5ae90f73e98f13afd74"
+              },
+              "bound_addresses": [
+                "0.0.0.0:65322",
+                "[::]:50532"
+              ],
+              "endpoint_id": "1dc6e966e8c93ca198a0abb6f9c5059be75ce4724cd0f5ae90f73e98f13afd74",
+              "event": "ready",
+              "port_fallback": false,
+              "relay_mode": "custom",
+              "relay_online": false,
+              "requested_port": 0
+            },
+            "last_transport": {
+              "path": "relay",
+              "selected": "relay",
+              "selection_reason": "iroh_path_selection",
+              "fallback_reason": "direct_path_not_selected",
+              "relay_url": "http://127.0.0.1:63255/",
+              "paths": [
+                {
+                  "kind": "relay",
+                  "remote": "relay:http://127.0.0.1:63255/",
+                  "selected": true
+                }
+              ]
+            },
+            "service_pid": 79996,
+            "engine_pid": 79998,
+            "known_peers": [
+              "2de5ff13bed2c22d13b1521c0d65bfd9cba5fcc74d563a2e50804a405a394ab1"
+            ]
+          }
+        },
+        {
+          "name": "b",
+          "status": {
+            "status": "running",
+            "endpoint_id": "2de5ff13bed2c22d13b1521c0d65bfd9cba5fcc74d563a2e50804a405a394ab1",
+            "address": {
+              "addrs": [
+                {
+                  "Relay": "http://127.0.0.1:63255/"
+                },
+                {
+                  "Ip": "100.123.30.11:62652"
+                },
+                {
+                  "Ip": "127.0.0.1:62652"
+                },
+                {
+                  "Ip": "192.168.0.11:62652"
+                },
+                {
+                  "Ip": "[::1]:59160"
+                }
+              ],
+              "id": "2de5ff13bed2c22d13b1521c0d65bfd9cba5fcc74d563a2e50804a405a394ab1"
+            },
+            "active": true,
+            "network": {
+              "version": 1,
+              "network_id": "1dc6e966e8c93ca198a0abb6f9c5059be75ce4724cd0f5ae90f73e98f13afd74:80fb882dd17392071db0e284e88c3a64eb856fd8ed94ddbee0eb810f3374fe6f",
+              "name": "bounded-product-selfhost",
+              "members": [
+                {
+                  "endpoint_id": "1dc6e966e8c93ca198a0abb6f9c5059be75ce4724cd0f5ae90f73e98f13afd74",
+                  "machine_name": "a",
+                  "status": "active"
+                },
+                {
+                  "endpoint_id": "2de5ff13bed2c22d13b1521c0d65bfd9cba5fcc74d563a2e50804a405a394ab1",
+                  "machine_name": "b",
+                  "status": "active"
+                }
+              ],
+              "invites": [
+                {
+                  "invite_hash": "ef6caa829bf10dabb0e076be3ddf73a3135e9bcd7392ff22d81a9e683c5c48d1",
+                  "issuer": "1dc6e966e8c93ca198a0abb6f9c5059be75ce4724cd0f5ae90f73e98f13afd74",
+                  "reusable": true,
+                  "expires_at": null,
+                  "revoked": false,
+                  "consumed_by": [
+                    "2de5ff13bed2c22d13b1521c0d65bfd9cba5fcc74d563a2e50804a405a394ab1"
+                  ]
+                }
+              ]
+            },
+            "transport": {
+              "address": {
+                "addrs": [
+                  {
+                    "Relay": "http://127.0.0.1:63255/"
+                  },
+                  {
+                    "Ip": "100.123.30.11:62652"
+                  },
+                  {
+                    "Ip": "127.0.0.1:62652"
+                  },
+                  {
+                    "Ip": "192.168.0.11:62652"
+                  },
+                  {
+                    "Ip": "[::1]:59160"
+                  }
+                ],
+                "id": "2de5ff13bed2c22d13b1521c0d65bfd9cba5fcc74d563a2e50804a405a394ab1"
+              },
+              "bound_addresses": [
+                "0.0.0.0:62652",
+                "[::]:59160"
+              ],
+              "endpoint_id": "2de5ff13bed2c22d13b1521c0d65bfd9cba5fcc74d563a2e50804a405a394ab1",
+              "event": "ready",
+              "port_fallback": false,
+              "relay_mode": "custom",
+              "relay_online": false,
+              "requested_port": 0
+            },
+            "last_transport": {
+              "path": "relay",
+              "selected": "relay",
+              "selection_reason": "iroh_path_selection",
+              "fallback_reason": "direct_path_not_selected",
+              "relay_url": "http://127.0.0.1:63255/",
+              "paths": [
+                {
+                  "kind": "relay",
+                  "remote": "relay:http://127.0.0.1:63255/",
+                  "selected": true
+                }
+              ]
+            },
+            "service_pid": 80230,
+            "engine_pid": 80231,
+            "known_peers": [
+              "1dc6e966e8c93ca198a0abb6f9c5059be75ce4724cd0f5ae90f73e98f13afd74"
+            ]
+          }
+        },
+        {
+          "name": "b",
+          "status": {
+            "status": "running",
+            "endpoint_id": "2de5ff13bed2c22d13b1521c0d65bfd9cba5fcc74d563a2e50804a405a394ab1",
+            "address": {
+              "addrs": [
+                {
+                  "Relay": "http://127.0.0.1:63255/"
+                },
+                {
+                  "Ip": "100.123.30.11:62652"
+                },
+                {
+                  "Ip": "127.0.0.1:62652"
+                },
+                {
+                  "Ip": "192.168.0.11:62652"
+                },
+                {
+                  "Ip": "[::1]:59160"
+                }
+              ],
+              "id": "2de5ff13bed2c22d13b1521c0d65bfd9cba5fcc74d563a2e50804a405a394ab1"
+            },
+            "active": true,
+            "network": {
+              "version": 1,
+              "network_id": "1dc6e966e8c93ca198a0abb6f9c5059be75ce4724cd0f5ae90f73e98f13afd74:80fb882dd17392071db0e284e88c3a64eb856fd8ed94ddbee0eb810f3374fe6f",
+              "name": "bounded-product-selfhost",
+              "members": [
+                {
+                  "endpoint_id": "1dc6e966e8c93ca198a0abb6f9c5059be75ce4724cd0f5ae90f73e98f13afd74",
+                  "machine_name": "a",
+                  "status": "active"
+                },
+                {
+                  "endpoint_id": "2de5ff13bed2c22d13b1521c0d65bfd9cba5fcc74d563a2e50804a405a394ab1",
+                  "machine_name": "b",
+                  "status": "active"
+                }
+              ],
+              "invites": [
+                {
+                  "invite_hash": "ef6caa829bf10dabb0e076be3ddf73a3135e9bcd7392ff22d81a9e683c5c48d1",
+                  "issuer": "1dc6e966e8c93ca198a0abb6f9c5059be75ce4724cd0f5ae90f73e98f13afd74",
+                  "reusable": true,
+                  "expires_at": null,
+                  "revoked": false,
+                  "consumed_by": [
+                    "2de5ff13bed2c22d13b1521c0d65bfd9cba5fcc74d563a2e50804a405a394ab1"
+                  ]
+                }
+              ]
+            },
+            "transport": {
+              "address": {
+                "addrs": [
+                  {
+                    "Relay": "http://127.0.0.1:63255/"
+                  },
+                  {
+                    "Ip": "100.123.30.11:62652"
+                  },
+                  {
+                    "Ip": "127.0.0.1:62652"
+                  },
+                  {
+                    "Ip": "192.168.0.11:62652"
+                  },
+                  {
+                    "Ip": "[::1]:59160"
+                  }
+                ],
+                "id": "2de5ff13bed2c22d13b1521c0d65bfd9cba5fcc74d563a2e50804a405a394ab1"
+              },
+              "bound_addresses": [
+                "0.0.0.0:62652",
+                "[::]:59160"
+              ],
+              "endpoint_id": "2de5ff13bed2c22d13b1521c0d65bfd9cba5fcc74d563a2e50804a405a394ab1",
+              "event": "ready",
+              "port_fallback": false,
+              "relay_mode": "custom",
+              "relay_online": false,
+              "requested_port": 0
+            },
+            "last_transport": {
+              "path": "relay",
+              "selected": "relay",
+              "selection_reason": "iroh_path_selection",
+              "fallback_reason": "direct_path_not_selected",
+              "relay_url": "http://127.0.0.1:63255/",
+              "paths": [
+                {
+                  "kind": "relay",
+                  "remote": "relay:http://127.0.0.1:63255/",
+                  "selected": true
+                }
+              ]
+            },
+            "service_pid": 80230,
+            "engine_pid": 80231,
+            "known_peers": [
+              "1dc6e966e8c93ca198a0abb6f9c5059be75ce4724cd0f5ae90f73e98f13afd74"
+            ]
+          }
+        },
+        {
+          "name": "a",
+          "status": {
+            "status": "running",
+            "endpoint_id": "1dc6e966e8c93ca198a0abb6f9c5059be75ce4724cd0f5ae90f73e98f13afd74",
+            "address": {
+              "addrs": [
+                {
+                  "Relay": "http://127.0.0.1:63255/"
+                },
+                {
+                  "Ip": "100.123.30.11:65322"
+                },
+                {
+                  "Ip": "127.0.0.1:65322"
+                },
+                {
+                  "Ip": "192.168.0.11:65322"
+                },
+                {
+                  "Ip": "[::1]:50532"
+                }
+              ],
+              "id": "1dc6e966e8c93ca198a0abb6f9c5059be75ce4724cd0f5ae90f73e98f13afd74"
+            },
+            "active": true,
+            "network": {
+              "version": 1,
+              "network_id": "1dc6e966e8c93ca198a0abb6f9c5059be75ce4724cd0f5ae90f73e98f13afd74:80fb882dd17392071db0e284e88c3a64eb856fd8ed94ddbee0eb810f3374fe6f",
+              "name": "bounded-product-selfhost",
+              "members": [
+                {
+                  "endpoint_id": "1dc6e966e8c93ca198a0abb6f9c5059be75ce4724cd0f5ae90f73e98f13afd74",
+                  "machine_name": "a",
+                  "status": "active"
+                },
+                {
+                  "endpoint_id": "2de5ff13bed2c22d13b1521c0d65bfd9cba5fcc74d563a2e50804a405a394ab1",
+                  "machine_name": "b",
+                  "status": "active"
+                }
+              ],
+              "invites": [
+                {
+                  "invite_hash": "ef6caa829bf10dabb0e076be3ddf73a3135e9bcd7392ff22d81a9e683c5c48d1",
+                  "issuer": "1dc6e966e8c93ca198a0abb6f9c5059be75ce4724cd0f5ae90f73e98f13afd74",
+                  "reusable": true,
+                  "expires_at": null,
+                  "revoked": false,
+                  "consumed_by": [
+                    "2de5ff13bed2c22d13b1521c0d65bfd9cba5fcc74d563a2e50804a405a394ab1"
+                  ]
+                }
+              ]
+            },
+            "transport": {
+              "address": {
+                "addrs": [
+                  {
+                    "Relay": "http://127.0.0.1:63255/"
+                  },
+                  {
+                    "Ip": "100.123.30.11:65322"
+                  },
+                  {
+                    "Ip": "127.0.0.1:65322"
+                  },
+                  {
+                    "Ip": "192.168.0.11:65322"
+                  },
+                  {
+                    "Ip": "[::1]:50532"
+                  }
+                ],
+                "id": "1dc6e966e8c93ca198a0abb6f9c5059be75ce4724cd0f5ae90f73e98f13afd74"
+              },
+              "bound_addresses": [
+                "0.0.0.0:65322",
+                "[::]:50532"
+              ],
+              "endpoint_id": "1dc6e966e8c93ca198a0abb6f9c5059be75ce4724cd0f5ae90f73e98f13afd74",
+              "event": "ready",
+              "port_fallback": false,
+              "relay_mode": "custom",
+              "relay_online": false,
+              "requested_port": 0
+            },
+            "last_transport": {
+              "path": "relay",
+              "selected": "relay",
+              "selection_reason": "iroh_path_selection",
+              "fallback_reason": "direct_path_not_selected",
+              "relay_url": "http://127.0.0.1:63255/",
+              "paths": [
+                {
+                  "kind": "relay",
+                  "remote": "relay:http://127.0.0.1:63255/",
+                  "selected": true
+                }
+              ]
+            },
+            "service_pid": 79996,
+            "engine_pid": 79998,
+            "known_peers": [
+              "2de5ff13bed2c22d13b1521c0d65bfd9cba5fcc74d563a2e50804a405a394ab1"
+            ]
+          }
+        },
+        {
+          "name": "b",
+          "status": {
+            "status": "running",
+            "endpoint_id": "2de5ff13bed2c22d13b1521c0d65bfd9cba5fcc74d563a2e50804a405a394ab1",
+            "address": {
+              "addrs": [
+                {
+                  "Relay": "http://127.0.0.1:63255/"
+                },
+                {
+                  "Ip": "100.123.30.11:51630"
+                },
+                {
+                  "Ip": "127.0.0.1:51630"
+                },
+                {
+                  "Ip": "192.168.0.11:51630"
+                },
+                {
+                  "Ip": "[::1]:50897"
+                }
+              ],
+              "id": "2de5ff13bed2c22d13b1521c0d65bfd9cba5fcc74d563a2e50804a405a394ab1"
+            },
+            "active": true,
+            "network": {
+              "version": 1,
+              "network_id": "1dc6e966e8c93ca198a0abb6f9c5059be75ce4724cd0f5ae90f73e98f13afd74:80fb882dd17392071db0e284e88c3a64eb856fd8ed94ddbee0eb810f3374fe6f",
+              "name": "bounded-product-selfhost",
+              "members": [
+                {
+                  "endpoint_id": "1dc6e966e8c93ca198a0abb6f9c5059be75ce4724cd0f5ae90f73e98f13afd74",
+                  "machine_name": "a",
+                  "status": "active"
+                },
+                {
+                  "endpoint_id": "2de5ff13bed2c22d13b1521c0d65bfd9cba5fcc74d563a2e50804a405a394ab1",
+                  "machine_name": "b",
+                  "status": "active"
+                }
+              ],
+              "invites": [
+                {
+                  "invite_hash": "ef6caa829bf10dabb0e076be3ddf73a3135e9bcd7392ff22d81a9e683c5c48d1",
+                  "issuer": "1dc6e966e8c93ca198a0abb6f9c5059be75ce4724cd0f5ae90f73e98f13afd74",
+                  "reusable": true,
+                  "expires_at": null,
+                  "revoked": false,
+                  "consumed_by": [
+                    "2de5ff13bed2c22d13b1521c0d65bfd9cba5fcc74d563a2e50804a405a394ab1"
+                  ]
+                }
+              ]
+            },
+            "transport": {
+              "address": {
+                "addrs": [
+                  {
+                    "Relay": "http://127.0.0.1:63255/"
+                  },
+                  {
+                    "Ip": "100.123.30.11:51630"
+                  },
+                  {
+                    "Ip": "127.0.0.1:51630"
+                  },
+                  {
+                    "Ip": "192.168.0.11:51630"
+                  },
+                  {
+                    "Ip": "[::1]:50897"
+                  }
+                ],
+                "id": "2de5ff13bed2c22d13b1521c0d65bfd9cba5fcc74d563a2e50804a405a394ab1"
+              },
+              "bound_addresses": [
+                "0.0.0.0:51630",
+                "[::]:50897"
+              ],
+              "endpoint_id": "2de5ff13bed2c22d13b1521c0d65bfd9cba5fcc74d563a2e50804a405a394ab1",
+              "event": "ready",
+              "port_fallback": false,
+              "relay_mode": "custom",
+              "relay_online": false,
+              "requested_port": 0
+            },
+            "last_transport": {
+              "path": "relay",
+              "selected": "relay",
+              "selection_reason": "iroh_path_selection",
+              "fallback_reason": "direct_path_not_selected",
+              "relay_url": "http://127.0.0.1:63255/",
+              "paths": [
+                {
+                  "kind": "relay",
+                  "remote": "relay:http://127.0.0.1:63255/",
+                  "selected": true
+                }
+              ]
+            },
+            "service_pid": 80426,
+            "engine_pid": 80427,
+            "known_peers": [
+              "1dc6e966e8c93ca198a0abb6f9c5059be75ce4724cd0f5ae90f73e98f13afd74"
+            ]
+          }
+        },
+        {
+          "name": "a",
+          "status": {
+            "status": "running",
+            "endpoint_id": "1dc6e966e8c93ca198a0abb6f9c5059be75ce4724cd0f5ae90f73e98f13afd74",
+            "address": {
+              "addrs": [
+                {
+                  "Relay": "http://127.0.0.1:63255/"
+                },
+                {
+                  "Ip": "100.123.30.11:65322"
+                },
+                {
+                  "Ip": "127.0.0.1:65322"
+                },
+                {
+                  "Ip": "192.168.0.11:65322"
+                },
+                {
+                  "Ip": "[::1]:50532"
+                }
+              ],
+              "id": "1dc6e966e8c93ca198a0abb6f9c5059be75ce4724cd0f5ae90f73e98f13afd74"
+            },
+            "active": true,
+            "network": {
+              "version": 1,
+              "network_id": "1dc6e966e8c93ca198a0abb6f9c5059be75ce4724cd0f5ae90f73e98f13afd74:80fb882dd17392071db0e284e88c3a64eb856fd8ed94ddbee0eb810f3374fe6f",
+              "name": "bounded-product-selfhost",
+              "members": [
+                {
+                  "endpoint_id": "1dc6e966e8c93ca198a0abb6f9c5059be75ce4724cd0f5ae90f73e98f13afd74",
+                  "machine_name": "a",
+                  "status": "active"
+                },
+                {
+                  "endpoint_id": "2de5ff13bed2c22d13b1521c0d65bfd9cba5fcc74d563a2e50804a405a394ab1",
+                  "machine_name": "b",
+                  "status": "active"
+                }
+              ],
+              "invites": [
+                {
+                  "invite_hash": "ef6caa829bf10dabb0e076be3ddf73a3135e9bcd7392ff22d81a9e683c5c48d1",
+                  "issuer": "1dc6e966e8c93ca198a0abb6f9c5059be75ce4724cd0f5ae90f73e98f13afd74",
+                  "reusable": true,
+                  "expires_at": null,
+                  "revoked": false,
+                  "consumed_by": [
+                    "2de5ff13bed2c22d13b1521c0d65bfd9cba5fcc74d563a2e50804a405a394ab1"
+                  ]
+                }
+              ]
+            },
+            "transport": {
+              "address": {
+                "addrs": [
+                  {
+                    "Relay": "http://127.0.0.1:63255/"
+                  },
+                  {
+                    "Ip": "100.123.30.11:65322"
+                  },
+                  {
+                    "Ip": "127.0.0.1:65322"
+                  },
+                  {
+                    "Ip": "192.168.0.11:65322"
+                  },
+                  {
+                    "Ip": "[::1]:50532"
+                  }
+                ],
+                "id": "1dc6e966e8c93ca198a0abb6f9c5059be75ce4724cd0f5ae90f73e98f13afd74"
+              },
+              "bound_addresses": [
+                "0.0.0.0:65322",
+                "[::]:50532"
+              ],
+              "endpoint_id": "1dc6e966e8c93ca198a0abb6f9c5059be75ce4724cd0f5ae90f73e98f13afd74",
+              "event": "ready",
+              "port_fallback": false,
+              "relay_mode": "custom",
+              "relay_online": false,
+              "requested_port": 0
+            },
+            "last_transport": {
+              "path": "relay",
+              "selected": "relay",
+              "selection_reason": "iroh_path_selection",
+              "fallback_reason": "direct_path_not_selected",
+              "relay_url": "http://127.0.0.1:63255/",
+              "paths": [
+                {
+                  "kind": "relay",
+                  "remote": "relay:http://127.0.0.1:63255/",
+                  "selected": true
+                }
+              ]
+            },
+            "service_pid": 79996,
+            "engine_pid": 79998,
+            "known_peers": [
+              "2de5ff13bed2c22d13b1521c0d65bfd9cba5fcc74d563a2e50804a405a394ab1"
+            ]
+          }
+        }
+      ],
+      "product_selfhost_passed": true,
+      "product_ip_transports_removed": false,
+      "product_udp_egress_denied": true,
+      "certificate_verification_override": false,
+      "sources_unchanged_during_run": true,
+      "source_before": {
+        "network.py": "aacc34a4c74abe9d58fd0bd26ea6667917fab70b89734783136ccd40d971e59e",
+        "network_transport.py": "1827fc7b4ac9a4f90680a14b46112490a0e54d7263557233dc3e693fe0d389c3",
+        "network_membership.py": "f3496c84b86be111a120baf4d7b74f8fdfdeea415ac89cfb2fff4eb841ddb54a",
+        "cli.py": "021c45acc1182a76c5e81d20b0a7a00e5f81aae0a1325ee09e8f9938a2fbafc0"
+      },
+      "source_after": {
+        "network.py": "aacc34a4c74abe9d58fd0bd26ea6667917fab70b89734783136ccd40d971e59e",
+        "network_transport.py": "1827fc7b4ac9a4f90680a14b46112490a0e54d7263557233dc3e693fe0d389c3",
+        "network_membership.py": "f3496c84b86be111a120baf4d7b74f8fdfdeea415ac89cfb2fff4eb841ddb54a",
+        "cli.py": "021c45acc1182a76c5e81d20b0a7a00e5f81aae0a1325ee09e8f9938a2fbafc0"
+      },
+      "cleanup": {
+        "remaining_owned_pids": [],
+        "relay_listener_closed": true
+      },
+      "user_session_signals": 0,
+      "private_evidence": "/private/tmp/xsm-selfrelay-4qh_rrfo/raw/product-selfhost-final-debug.json",
+      "private_unittest_log": "/private/tmp/xsm-selfrelay-4qh_rrfo/raw/product-selfhost-final-debug.log"
+    },
+    "release": {
+      "scope": "actual-product-local-selfhost",
+      "native_sha256": "f17f03fafcdf3a31e374d6cbc0ccbbbd8000ba6a7eba5d9b44605e742c409aed",
+      "native_source_binary": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/native/xsm-net/target/release/xsm-net",
+      "native_transport_source_sha256": "50335a024f7c2f2fe89735569639ab7d33d61b3e3ae51b3d07497e67ff5563d0",
+      "official_relay_sha256": "bbb28ec37e34287ca8b6bef55c7ed9cc6dcdc0cf64abf5313716151d1b9059d6",
+      "relay_url": "http://127.0.0.1:63432",
+      "udp_profile": "(version 1)(allow default)(deny network-outbound (remote udp \"*:*\"))",
+      "udp_egress_controls": {
+        "unrestricted_delivered": true,
+        "same_profile_denied": true
+      },
+      "product_starts": [
+        {
+          "name": "a",
+          "service_pid": 80680,
+          "engine_pid": 80683,
+          "ready": {
+            "status": "running",
+            "endpoint_id": "a59b48c069d279bc7fcb3791726e1f55d579d251c8459fcc94c1a6682dc81238",
+            "address": {
+              "addrs": [
+                {
+                  "Relay": "http://127.0.0.1:63432/"
+                },
+                {
+                  "Ip": "100.123.30.11:51108"
+                },
+                {
+                  "Ip": "127.0.0.1:51108"
+                },
+                {
+                  "Ip": "192.168.0.11:51108"
+                },
+                {
+                  "Ip": "[::1]:55114"
+                }
+              ],
+              "id": "a59b48c069d279bc7fcb3791726e1f55d579d251c8459fcc94c1a6682dc81238"
+            },
+            "active": false,
+            "network": null,
+            "transport": {
+              "address": {
+                "addrs": [
+                  {
+                    "Relay": "http://127.0.0.1:63432/"
+                  },
+                  {
+                    "Ip": "100.123.30.11:51108"
+                  },
+                  {
+                    "Ip": "127.0.0.1:51108"
+                  },
+                  {
+                    "Ip": "192.168.0.11:51108"
+                  },
+                  {
+                    "Ip": "[::1]:55114"
+                  }
+                ],
+                "id": "a59b48c069d279bc7fcb3791726e1f55d579d251c8459fcc94c1a6682dc81238"
+              },
+              "bound_addresses": [
+                "0.0.0.0:51108",
+                "[::]:55114"
+              ],
+              "endpoint_id": "a59b48c069d279bc7fcb3791726e1f55d579d251c8459fcc94c1a6682dc81238",
+              "event": "ready",
+              "port_fallback": false,
+              "relay_mode": "custom",
+              "relay_online": false,
+              "requested_port": 0
+            },
+            "last_transport": null,
+            "service_pid": 80680,
+            "engine_pid": 80683,
+            "known_peers": []
+          }
+        },
+        {
+          "name": "b",
+          "service_pid": 80940,
+          "engine_pid": 80941,
+          "ready": {
+            "status": "running",
+            "endpoint_id": "1476166bea0ea32bf3460184342960e3829ee8fe2fe70592fb635cee53cd3732",
+            "address": {
+              "addrs": [
+                {
+                  "Relay": "http://127.0.0.1:63432/"
+                },
+                {
+                  "Ip": "100.123.30.11:51466"
+                },
+                {
+                  "Ip": "127.0.0.1:51466"
+                },
+                {
+                  "Ip": "192.168.0.11:51466"
+                },
+                {
+                  "Ip": "[::1]:49986"
+                }
+              ],
+              "id": "1476166bea0ea32bf3460184342960e3829ee8fe2fe70592fb635cee53cd3732"
+            },
+            "active": false,
+            "network": null,
+            "transport": {
+              "address": {
+                "addrs": [
+                  {
+                    "Relay": "http://127.0.0.1:63432/"
+                  },
+                  {
+                    "Ip": "100.123.30.11:51466"
+                  },
+                  {
+                    "Ip": "127.0.0.1:51466"
+                  },
+                  {
+                    "Ip": "192.168.0.11:51466"
+                  },
+                  {
+                    "Ip": "[::1]:49986"
+                  }
+                ],
+                "id": "1476166bea0ea32bf3460184342960e3829ee8fe2fe70592fb635cee53cd3732"
+              },
+              "bound_addresses": [
+                "0.0.0.0:51466",
+                "[::]:49986"
+              ],
+              "endpoint_id": "1476166bea0ea32bf3460184342960e3829ee8fe2fe70592fb635cee53cd3732",
+              "event": "ready",
+              "port_fallback": false,
+              "relay_mode": "custom",
+              "relay_online": false,
+              "requested_port": 0
+            },
+            "last_transport": null,
+            "service_pid": 80940,
+            "engine_pid": 80941,
+            "known_peers": []
+          }
+        },
+        {
+          "name": "b",
+          "service_pid": 81118,
+          "engine_pid": 81119,
+          "ready": {
+            "status": "running",
+            "endpoint_id": "1476166bea0ea32bf3460184342960e3829ee8fe2fe70592fb635cee53cd3732",
+            "address": {
+              "addrs": [
+                {
+                  "Relay": "http://127.0.0.1:63432/"
+                },
+                {
+                  "Ip": "100.123.30.11:51325"
+                },
+                {
+                  "Ip": "127.0.0.1:51325"
+                },
+                {
+                  "Ip": "192.168.0.11:51325"
+                },
+                {
+                  "Ip": "[::1]:54916"
+                }
+              ],
+              "id": "1476166bea0ea32bf3460184342960e3829ee8fe2fe70592fb635cee53cd3732"
+            },
+            "active": true,
+            "network": {
+              "version": 1,
+              "network_id": "a59b48c069d279bc7fcb3791726e1f55d579d251c8459fcc94c1a6682dc81238:5a86037194afbbfff0d6fecca8e6f1f3dab5170379a9f48ab296537f9fc95d73",
+              "name": "bounded-product-selfhost",
+              "members": [
+                {
+                  "endpoint_id": "1476166bea0ea32bf3460184342960e3829ee8fe2fe70592fb635cee53cd3732",
+                  "machine_name": "b",
+                  "status": "active"
+                },
+                {
+                  "endpoint_id": "a59b48c069d279bc7fcb3791726e1f55d579d251c8459fcc94c1a6682dc81238",
+                  "machine_name": "a",
+                  "status": "active"
+                }
+              ],
+              "invites": [
+                {
+                  "invite_hash": "956124406aa02b42e30814b63f3a1b0aaf490df4d3fa7dccca3d433ca2f0b150",
+                  "issuer": "a59b48c069d279bc7fcb3791726e1f55d579d251c8459fcc94c1a6682dc81238",
+                  "reusable": true,
+                  "expires_at": null,
+                  "revoked": false,
+                  "consumed_by": [
+                    "1476166bea0ea32bf3460184342960e3829ee8fe2fe70592fb635cee53cd3732"
+                  ]
+                }
+              ]
+            },
+            "transport": {
+              "address": {
+                "addrs": [
+                  {
+                    "Relay": "http://127.0.0.1:63432/"
+                  },
+                  {
+                    "Ip": "100.123.30.11:51325"
+                  },
+                  {
+                    "Ip": "127.0.0.1:51325"
+                  },
+                  {
+                    "Ip": "192.168.0.11:51325"
+                  },
+                  {
+                    "Ip": "[::1]:54916"
+                  }
+                ],
+                "id": "1476166bea0ea32bf3460184342960e3829ee8fe2fe70592fb635cee53cd3732"
+              },
+              "bound_addresses": [
+                "0.0.0.0:51325",
+                "[::]:54916"
+              ],
+              "endpoint_id": "1476166bea0ea32bf3460184342960e3829ee8fe2fe70592fb635cee53cd3732",
+              "event": "ready",
+              "port_fallback": false,
+              "relay_mode": "custom",
+              "relay_online": false,
+              "requested_port": 0
+            },
+            "last_transport": null,
+            "service_pid": 81118,
+            "engine_pid": 81119,
+            "known_peers": [
+              "a59b48c069d279bc7fcb3791726e1f55d579d251c8459fcc94c1a6682dc81238"
+            ]
+          }
+        }
+      ],
+      "path_snapshots": [
+        {
+          "name": "a",
+          "status": {
+            "status": "running",
+            "endpoint_id": "a59b48c069d279bc7fcb3791726e1f55d579d251c8459fcc94c1a6682dc81238",
+            "address": {
+              "addrs": [
+                {
+                  "Relay": "http://127.0.0.1:63432/"
+                },
+                {
+                  "Ip": "100.123.30.11:51108"
+                },
+                {
+                  "Ip": "127.0.0.1:51108"
+                },
+                {
+                  "Ip": "192.168.0.11:51108"
+                },
+                {
+                  "Ip": "[::1]:55114"
+                }
+              ],
+              "id": "a59b48c069d279bc7fcb3791726e1f55d579d251c8459fcc94c1a6682dc81238"
+            },
+            "active": true,
+            "network": {
+              "version": 1,
+              "network_id": "a59b48c069d279bc7fcb3791726e1f55d579d251c8459fcc94c1a6682dc81238:5a86037194afbbfff0d6fecca8e6f1f3dab5170379a9f48ab296537f9fc95d73",
+              "name": "bounded-product-selfhost",
+              "members": [
+                {
+                  "endpoint_id": "1476166bea0ea32bf3460184342960e3829ee8fe2fe70592fb635cee53cd3732",
+                  "machine_name": "b",
+                  "status": "active"
+                },
+                {
+                  "endpoint_id": "a59b48c069d279bc7fcb3791726e1f55d579d251c8459fcc94c1a6682dc81238",
+                  "machine_name": "a",
+                  "status": "active"
+                }
+              ],
+              "invites": [
+                {
+                  "invite_hash": "956124406aa02b42e30814b63f3a1b0aaf490df4d3fa7dccca3d433ca2f0b150",
+                  "issuer": "a59b48c069d279bc7fcb3791726e1f55d579d251c8459fcc94c1a6682dc81238",
+                  "reusable": true,
+                  "expires_at": null,
+                  "revoked": false,
+                  "consumed_by": [
+                    "1476166bea0ea32bf3460184342960e3829ee8fe2fe70592fb635cee53cd3732"
+                  ]
+                }
+              ]
+            },
+            "transport": {
+              "address": {
+                "addrs": [
+                  {
+                    "Relay": "http://127.0.0.1:63432/"
+                  },
+                  {
+                    "Ip": "100.123.30.11:51108"
+                  },
+                  {
+                    "Ip": "127.0.0.1:51108"
+                  },
+                  {
+                    "Ip": "192.168.0.11:51108"
+                  },
+                  {
+                    "Ip": "[::1]:55114"
+                  }
+                ],
+                "id": "a59b48c069d279bc7fcb3791726e1f55d579d251c8459fcc94c1a6682dc81238"
+              },
+              "bound_addresses": [
+                "0.0.0.0:51108",
+                "[::]:55114"
+              ],
+              "endpoint_id": "a59b48c069d279bc7fcb3791726e1f55d579d251c8459fcc94c1a6682dc81238",
+              "event": "ready",
+              "port_fallback": false,
+              "relay_mode": "custom",
+              "relay_online": false,
+              "requested_port": 0
+            },
+            "last_transport": {
+              "path": "relay",
+              "selected": "relay",
+              "selection_reason": "iroh_path_selection",
+              "fallback_reason": "direct_path_not_selected",
+              "relay_url": "http://127.0.0.1:63432/",
+              "paths": [
+                {
+                  "kind": "relay",
+                  "remote": "relay:http://127.0.0.1:63432/",
+                  "selected": true
+                }
+              ]
+            },
+            "service_pid": 80680,
+            "engine_pid": 80683,
+            "known_peers": [
+              "1476166bea0ea32bf3460184342960e3829ee8fe2fe70592fb635cee53cd3732"
+            ]
+          }
+        },
+        {
+          "name": "b",
+          "status": {
+            "status": "running",
+            "endpoint_id": "1476166bea0ea32bf3460184342960e3829ee8fe2fe70592fb635cee53cd3732",
+            "address": {
+              "addrs": [
+                {
+                  "Relay": "http://127.0.0.1:63432/"
+                },
+                {
+                  "Ip": "100.123.30.11:51466"
+                },
+                {
+                  "Ip": "127.0.0.1:51466"
+                },
+                {
+                  "Ip": "192.168.0.11:51466"
+                },
+                {
+                  "Ip": "[::1]:49986"
+                }
+              ],
+              "id": "1476166bea0ea32bf3460184342960e3829ee8fe2fe70592fb635cee53cd3732"
+            },
+            "active": true,
+            "network": {
+              "version": 1,
+              "network_id": "a59b48c069d279bc7fcb3791726e1f55d579d251c8459fcc94c1a6682dc81238:5a86037194afbbfff0d6fecca8e6f1f3dab5170379a9f48ab296537f9fc95d73",
+              "name": "bounded-product-selfhost",
+              "members": [
+                {
+                  "endpoint_id": "1476166bea0ea32bf3460184342960e3829ee8fe2fe70592fb635cee53cd3732",
+                  "machine_name": "b",
+                  "status": "active"
+                },
+                {
+                  "endpoint_id": "a59b48c069d279bc7fcb3791726e1f55d579d251c8459fcc94c1a6682dc81238",
+                  "machine_name": "a",
+                  "status": "active"
+                }
+              ],
+              "invites": [
+                {
+                  "invite_hash": "956124406aa02b42e30814b63f3a1b0aaf490df4d3fa7dccca3d433ca2f0b150",
+                  "issuer": "a59b48c069d279bc7fcb3791726e1f55d579d251c8459fcc94c1a6682dc81238",
+                  "reusable": true,
+                  "expires_at": null,
+                  "revoked": false,
+                  "consumed_by": [
+                    "1476166bea0ea32bf3460184342960e3829ee8fe2fe70592fb635cee53cd3732"
+                  ]
+                }
+              ]
+            },
+            "transport": {
+              "address": {
+                "addrs": [
+                  {
+                    "Relay": "http://127.0.0.1:63432/"
+                  },
+                  {
+                    "Ip": "100.123.30.11:51466"
+                  },
+                  {
+                    "Ip": "127.0.0.1:51466"
+                  },
+                  {
+                    "Ip": "192.168.0.11:51466"
+                  },
+                  {
+                    "Ip": "[::1]:49986"
+                  }
+                ],
+                "id": "1476166bea0ea32bf3460184342960e3829ee8fe2fe70592fb635cee53cd3732"
+              },
+              "bound_addresses": [
+                "0.0.0.0:51466",
+                "[::]:49986"
+              ],
+              "endpoint_id": "1476166bea0ea32bf3460184342960e3829ee8fe2fe70592fb635cee53cd3732",
+              "event": "ready",
+              "port_fallback": false,
+              "relay_mode": "custom",
+              "relay_online": false,
+              "requested_port": 0
+            },
+            "last_transport": {
+              "path": "relay",
+              "selected": "relay",
+              "selection_reason": "iroh_path_selection",
+              "fallback_reason": "direct_path_not_selected",
+              "relay_url": "http://127.0.0.1:63432/",
+              "paths": [
+                {
+                  "kind": "relay",
+                  "remote": "relay:http://127.0.0.1:63432/",
+                  "selected": true
+                }
+              ]
+            },
+            "service_pid": 80940,
+            "engine_pid": 80941,
+            "known_peers": [
+              "a59b48c069d279bc7fcb3791726e1f55d579d251c8459fcc94c1a6682dc81238"
+            ]
+          }
+        },
+        {
+          "name": "b",
+          "status": {
+            "status": "running",
+            "endpoint_id": "1476166bea0ea32bf3460184342960e3829ee8fe2fe70592fb635cee53cd3732",
+            "address": {
+              "addrs": [
+                {
+                  "Relay": "http://127.0.0.1:63432/"
+                },
+                {
+                  "Ip": "100.123.30.11:51466"
+                },
+                {
+                  "Ip": "127.0.0.1:51466"
+                },
+                {
+                  "Ip": "192.168.0.11:51466"
+                },
+                {
+                  "Ip": "[::1]:49986"
+                }
+              ],
+              "id": "1476166bea0ea32bf3460184342960e3829ee8fe2fe70592fb635cee53cd3732"
+            },
+            "active": true,
+            "network": {
+              "version": 1,
+              "network_id": "a59b48c069d279bc7fcb3791726e1f55d579d251c8459fcc94c1a6682dc81238:5a86037194afbbfff0d6fecca8e6f1f3dab5170379a9f48ab296537f9fc95d73",
+              "name": "bounded-product-selfhost",
+              "members": [
+                {
+                  "endpoint_id": "1476166bea0ea32bf3460184342960e3829ee8fe2fe70592fb635cee53cd3732",
+                  "machine_name": "b",
+                  "status": "active"
+                },
+                {
+                  "endpoint_id": "a59b48c069d279bc7fcb3791726e1f55d579d251c8459fcc94c1a6682dc81238",
+                  "machine_name": "a",
+                  "status": "active"
+                }
+              ],
+              "invites": [
+                {
+                  "invite_hash": "956124406aa02b42e30814b63f3a1b0aaf490df4d3fa7dccca3d433ca2f0b150",
+                  "issuer": "a59b48c069d279bc7fcb3791726e1f55d579d251c8459fcc94c1a6682dc81238",
+                  "reusable": true,
+                  "expires_at": null,
+                  "revoked": false,
+                  "consumed_by": [
+                    "1476166bea0ea32bf3460184342960e3829ee8fe2fe70592fb635cee53cd3732"
+                  ]
+                }
+              ]
+            },
+            "transport": {
+              "address": {
+                "addrs": [
+                  {
+                    "Relay": "http://127.0.0.1:63432/"
+                  },
+                  {
+                    "Ip": "100.123.30.11:51466"
+                  },
+                  {
+                    "Ip": "127.0.0.1:51466"
+                  },
+                  {
+                    "Ip": "192.168.0.11:51466"
+                  },
+                  {
+                    "Ip": "[::1]:49986"
+                  }
+                ],
+                "id": "1476166bea0ea32bf3460184342960e3829ee8fe2fe70592fb635cee53cd3732"
+              },
+              "bound_addresses": [
+                "0.0.0.0:51466",
+                "[::]:49986"
+              ],
+              "endpoint_id": "1476166bea0ea32bf3460184342960e3829ee8fe2fe70592fb635cee53cd3732",
+              "event": "ready",
+              "port_fallback": false,
+              "relay_mode": "custom",
+              "relay_online": false,
+              "requested_port": 0
+            },
+            "last_transport": {
+              "path": "relay",
+              "selected": "relay",
+              "selection_reason": "iroh_path_selection",
+              "fallback_reason": "direct_path_not_selected",
+              "relay_url": "http://127.0.0.1:63432/",
+              "paths": [
+                {
+                  "kind": "relay",
+                  "remote": "relay:http://127.0.0.1:63432/",
+                  "selected": true
+                }
+              ]
+            },
+            "service_pid": 80940,
+            "engine_pid": 80941,
+            "known_peers": [
+              "a59b48c069d279bc7fcb3791726e1f55d579d251c8459fcc94c1a6682dc81238"
+            ]
+          }
+        },
+        {
+          "name": "a",
+          "status": {
+            "status": "running",
+            "endpoint_id": "a59b48c069d279bc7fcb3791726e1f55d579d251c8459fcc94c1a6682dc81238",
+            "address": {
+              "addrs": [
+                {
+                  "Relay": "http://127.0.0.1:63432/"
+                },
+                {
+                  "Ip": "100.123.30.11:51108"
+                },
+                {
+                  "Ip": "127.0.0.1:51108"
+                },
+                {
+                  "Ip": "192.168.0.11:51108"
+                },
+                {
+                  "Ip": "[::1]:55114"
+                }
+              ],
+              "id": "a59b48c069d279bc7fcb3791726e1f55d579d251c8459fcc94c1a6682dc81238"
+            },
+            "active": true,
+            "network": {
+              "version": 1,
+              "network_id": "a59b48c069d279bc7fcb3791726e1f55d579d251c8459fcc94c1a6682dc81238:5a86037194afbbfff0d6fecca8e6f1f3dab5170379a9f48ab296537f9fc95d73",
+              "name": "bounded-product-selfhost",
+              "members": [
+                {
+                  "endpoint_id": "1476166bea0ea32bf3460184342960e3829ee8fe2fe70592fb635cee53cd3732",
+                  "machine_name": "b",
+                  "status": "active"
+                },
+                {
+                  "endpoint_id": "a59b48c069d279bc7fcb3791726e1f55d579d251c8459fcc94c1a6682dc81238",
+                  "machine_name": "a",
+                  "status": "active"
+                }
+              ],
+              "invites": [
+                {
+                  "invite_hash": "956124406aa02b42e30814b63f3a1b0aaf490df4d3fa7dccca3d433ca2f0b150",
+                  "issuer": "a59b48c069d279bc7fcb3791726e1f55d579d251c8459fcc94c1a6682dc81238",
+                  "reusable": true,
+                  "expires_at": null,
+                  "revoked": false,
+                  "consumed_by": [
+                    "1476166bea0ea32bf3460184342960e3829ee8fe2fe70592fb635cee53cd3732"
+                  ]
+                }
+              ]
+            },
+            "transport": {
+              "address": {
+                "addrs": [
+                  {
+                    "Relay": "http://127.0.0.1:63432/"
+                  },
+                  {
+                    "Ip": "100.123.30.11:51108"
+                  },
+                  {
+                    "Ip": "127.0.0.1:51108"
+                  },
+                  {
+                    "Ip": "192.168.0.11:51108"
+                  },
+                  {
+                    "Ip": "[::1]:55114"
+                  }
+                ],
+                "id": "a59b48c069d279bc7fcb3791726e1f55d579d251c8459fcc94c1a6682dc81238"
+              },
+              "bound_addresses": [
+                "0.0.0.0:51108",
+                "[::]:55114"
+              ],
+              "endpoint_id": "a59b48c069d279bc7fcb3791726e1f55d579d251c8459fcc94c1a6682dc81238",
+              "event": "ready",
+              "port_fallback": false,
+              "relay_mode": "custom",
+              "relay_online": false,
+              "requested_port": 0
+            },
+            "last_transport": {
+              "path": "relay",
+              "selected": "relay",
+              "selection_reason": "iroh_path_selection",
+              "fallback_reason": "direct_path_not_selected",
+              "relay_url": "http://127.0.0.1:63432/",
+              "paths": [
+                {
+                  "kind": "relay",
+                  "remote": "relay:http://127.0.0.1:63432/",
+                  "selected": true
+                }
+              ]
+            },
+            "service_pid": 80680,
+            "engine_pid": 80683,
+            "known_peers": [
+              "1476166bea0ea32bf3460184342960e3829ee8fe2fe70592fb635cee53cd3732"
+            ]
+          }
+        },
+        {
+          "name": "b",
+          "status": {
+            "status": "running",
+            "endpoint_id": "1476166bea0ea32bf3460184342960e3829ee8fe2fe70592fb635cee53cd3732",
+            "address": {
+              "addrs": [
+                {
+                  "Relay": "http://127.0.0.1:63432/"
+                },
+                {
+                  "Ip": "100.123.30.11:51325"
+                },
+                {
+                  "Ip": "127.0.0.1:51325"
+                },
+                {
+                  "Ip": "192.168.0.11:51325"
+                },
+                {
+                  "Ip": "[::1]:54916"
+                }
+              ],
+              "id": "1476166bea0ea32bf3460184342960e3829ee8fe2fe70592fb635cee53cd3732"
+            },
+            "active": true,
+            "network": {
+              "version": 1,
+              "network_id": "a59b48c069d279bc7fcb3791726e1f55d579d251c8459fcc94c1a6682dc81238:5a86037194afbbfff0d6fecca8e6f1f3dab5170379a9f48ab296537f9fc95d73",
+              "name": "bounded-product-selfhost",
+              "members": [
+                {
+                  "endpoint_id": "1476166bea0ea32bf3460184342960e3829ee8fe2fe70592fb635cee53cd3732",
+                  "machine_name": "b",
+                  "status": "active"
+                },
+                {
+                  "endpoint_id": "a59b48c069d279bc7fcb3791726e1f55d579d251c8459fcc94c1a6682dc81238",
+                  "machine_name": "a",
+                  "status": "active"
+                }
+              ],
+              "invites": [
+                {
+                  "invite_hash": "956124406aa02b42e30814b63f3a1b0aaf490df4d3fa7dccca3d433ca2f0b150",
+                  "issuer": "a59b48c069d279bc7fcb3791726e1f55d579d251c8459fcc94c1a6682dc81238",
+                  "reusable": true,
+                  "expires_at": null,
+                  "revoked": false,
+                  "consumed_by": [
+                    "1476166bea0ea32bf3460184342960e3829ee8fe2fe70592fb635cee53cd3732"
+                  ]
+                }
+              ]
+            },
+            "transport": {
+              "address": {
+                "addrs": [
+                  {
+                    "Relay": "http://127.0.0.1:63432/"
+                  },
+                  {
+                    "Ip": "100.123.30.11:51325"
+                  },
+                  {
+                    "Ip": "127.0.0.1:51325"
+                  },
+                  {
+                    "Ip": "192.168.0.11:51325"
+                  },
+                  {
+                    "Ip": "[::1]:54916"
+                  }
+                ],
+                "id": "1476166bea0ea32bf3460184342960e3829ee8fe2fe70592fb635cee53cd3732"
+              },
+              "bound_addresses": [
+                "0.0.0.0:51325",
+                "[::]:54916"
+              ],
+              "endpoint_id": "1476166bea0ea32bf3460184342960e3829ee8fe2fe70592fb635cee53cd3732",
+              "event": "ready",
+              "port_fallback": false,
+              "relay_mode": "custom",
+              "relay_online": false,
+              "requested_port": 0
+            },
+            "last_transport": {
+              "path": "relay",
+              "selected": "relay",
+              "selection_reason": "iroh_path_selection",
+              "fallback_reason": "direct_path_not_selected",
+              "relay_url": "http://127.0.0.1:63432/",
+              "paths": [
+                {
+                  "kind": "relay",
+                  "remote": "relay:http://127.0.0.1:63432/",
+                  "selected": true
+                }
+              ]
+            },
+            "service_pid": 81118,
+            "engine_pid": 81119,
+            "known_peers": [
+              "a59b48c069d279bc7fcb3791726e1f55d579d251c8459fcc94c1a6682dc81238"
+            ]
+          }
+        },
+        {
+          "name": "a",
+          "status": {
+            "status": "running",
+            "endpoint_id": "a59b48c069d279bc7fcb3791726e1f55d579d251c8459fcc94c1a6682dc81238",
+            "address": {
+              "addrs": [
+                {
+                  "Relay": "http://127.0.0.1:63432/"
+                },
+                {
+                  "Ip": "100.123.30.11:51108"
+                },
+                {
+                  "Ip": "127.0.0.1:51108"
+                },
+                {
+                  "Ip": "192.168.0.11:51108"
+                },
+                {
+                  "Ip": "[::1]:55114"
+                }
+              ],
+              "id": "a59b48c069d279bc7fcb3791726e1f55d579d251c8459fcc94c1a6682dc81238"
+            },
+            "active": true,
+            "network": {
+              "version": 1,
+              "network_id": "a59b48c069d279bc7fcb3791726e1f55d579d251c8459fcc94c1a6682dc81238:5a86037194afbbfff0d6fecca8e6f1f3dab5170379a9f48ab296537f9fc95d73",
+              "name": "bounded-product-selfhost",
+              "members": [
+                {
+                  "endpoint_id": "1476166bea0ea32bf3460184342960e3829ee8fe2fe70592fb635cee53cd3732",
+                  "machine_name": "b",
+                  "status": "active"
+                },
+                {
+                  "endpoint_id": "a59b48c069d279bc7fcb3791726e1f55d579d251c8459fcc94c1a6682dc81238",
+                  "machine_name": "a",
+                  "status": "active"
+                }
+              ],
+              "invites": [
+                {
+                  "invite_hash": "956124406aa02b42e30814b63f3a1b0aaf490df4d3fa7dccca3d433ca2f0b150",
+                  "issuer": "a59b48c069d279bc7fcb3791726e1f55d579d251c8459fcc94c1a6682dc81238",
+                  "reusable": true,
+                  "expires_at": null,
+                  "revoked": false,
+                  "consumed_by": [
+                    "1476166bea0ea32bf3460184342960e3829ee8fe2fe70592fb635cee53cd3732"
+                  ]
+                }
+              ]
+            },
+            "transport": {
+              "address": {
+                "addrs": [
+                  {
+                    "Relay": "http://127.0.0.1:63432/"
+                  },
+                  {
+                    "Ip": "100.123.30.11:51108"
+                  },
+                  {
+                    "Ip": "127.0.0.1:51108"
+                  },
+                  {
+                    "Ip": "192.168.0.11:51108"
+                  },
+                  {
+                    "Ip": "[::1]:55114"
+                  }
+                ],
+                "id": "a59b48c069d279bc7fcb3791726e1f55d579d251c8459fcc94c1a6682dc81238"
+              },
+              "bound_addresses": [
+                "0.0.0.0:51108",
+                "[::]:55114"
+              ],
+              "endpoint_id": "a59b48c069d279bc7fcb3791726e1f55d579d251c8459fcc94c1a6682dc81238",
+              "event": "ready",
+              "port_fallback": false,
+              "relay_mode": "custom",
+              "relay_online": false,
+              "requested_port": 0
+            },
+            "last_transport": {
+              "path": "relay",
+              "selected": "relay",
+              "selection_reason": "iroh_path_selection",
+              "fallback_reason": "direct_path_not_selected",
+              "relay_url": "http://127.0.0.1:63432/",
+              "paths": [
+                {
+                  "kind": "relay",
+                  "remote": "relay:http://127.0.0.1:63432/",
+                  "selected": true
+                }
+              ]
+            },
+            "service_pid": 80680,
+            "engine_pid": 80683,
+            "known_peers": [
+              "1476166bea0ea32bf3460184342960e3829ee8fe2fe70592fb635cee53cd3732"
+            ]
+          }
+        }
+      ],
+      "product_selfhost_passed": true,
+      "product_ip_transports_removed": false,
+      "product_udp_egress_denied": true,
+      "certificate_verification_override": false,
+      "sources_unchanged_during_run": true,
+      "source_before": {
+        "network.py": "aacc34a4c74abe9d58fd0bd26ea6667917fab70b89734783136ccd40d971e59e",
+        "network_transport.py": "1827fc7b4ac9a4f90680a14b46112490a0e54d7263557233dc3e693fe0d389c3",
+        "network_membership.py": "f3496c84b86be111a120baf4d7b74f8fdfdeea415ac89cfb2fff4eb841ddb54a",
+        "cli.py": "021c45acc1182a76c5e81d20b0a7a00e5f81aae0a1325ee09e8f9938a2fbafc0"
+      },
+      "source_after": {
+        "network.py": "aacc34a4c74abe9d58fd0bd26ea6667917fab70b89734783136ccd40d971e59e",
+        "network_transport.py": "1827fc7b4ac9a4f90680a14b46112490a0e54d7263557233dc3e693fe0d389c3",
+        "network_membership.py": "f3496c84b86be111a120baf4d7b74f8fdfdeea415ac89cfb2fff4eb841ddb54a",
+        "cli.py": "021c45acc1182a76c5e81d20b0a7a00e5f81aae0a1325ee09e8f9938a2fbafc0"
+      },
+      "cleanup": {
+        "remaining_owned_pids": [],
+        "relay_listener_closed": true
+      },
+      "user_session_signals": 0,
+      "private_evidence": "/private/tmp/xsm-selfrelay-4qh_rrfo/raw/product-selfhost-final-release.json",
+      "private_unittest_log": "/private/tmp/xsm-selfrelay-4qh_rrfo/raw/product-selfhost-final-release.log"
+    }
+  },
+  "source_and_binary_before": {
+    "native/xsm-net/target/debug/xsm-net": "35a4af3f5b298fa7ecb65bdc2eba7511af77c3350056f0d27ee24a4d4363242a",
+    "native/xsm-net/target/release/xsm-net": "c963e9d4e4ffda47dead354d7d66e2f71fea037932b51846422bdbacb5b39a7d",
+    "native/xsm-net/Cargo.toml": "8f1e735b375130f64a5301f4a79fd3bb7edfe6330e796aabf7c667c79f9e4484",
+    "native/xsm-net/Cargo.lock": "1fe66764b9500ebb4bcacaf08e1380b7b76ffb61234ae8aa5982fd30ff79d210",
+    "native/xsm-net/tests/numeric.rs": "4ec5d15cfd7a60080baa8041405c87ee24652a34e1f8a79a4597b332af98a4ab"
+  },
+  "source_and_binary_after": {
+    "native/xsm-net/target/debug/xsm-net": "74a4b6825f27aff929b12b8a7819a3eb07e52798066eca4acd8c376782ccbc20",
+    "native/xsm-net/target/release/xsm-net": "f17f03fafcdf3a31e374d6cbc0ccbbbd8000ba6a7eba5d9b44605e742c409aed",
+    "native/xsm-net/Cargo.toml": "8f1e735b375130f64a5301f4a79fd3bb7edfe6330e796aabf7c667c79f9e4484",
+    "native/xsm-net/Cargo.lock": "1fe66764b9500ebb4bcacaf08e1380b7b76ffb61234ae8aa5982fd30ff79d210",
+    "native/xsm-net/tests/numeric.rs": "4ec5d15cfd7a60080baa8041405c87ee24652a34e1f8a79a4597b332af98a4ab"
+  },
+  "preserved": {
+    "native/xsm-net/Cargo.toml": true,
+    "native/xsm-net/Cargo.lock": true,
+    "native/xsm-net/tests/numeric.rs": true
+  },
+  "fresh_private_xsm_default_discovery": {
+    "binary": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/native/xsm-net/target/release/xsm-net",
+    "sha256": "f17f03fafcdf3a31e374d6cbc0ccbbbd8000ba6a7eba5d9b44605e742c409aed"
+  },
+  "native_regressions_per_profile": {
+    "relay_url_policy": 5,
+    "numeric": 1
+  },
+  "private_raw": "/private/tmp/xsm-selfrelay-4qh_rrfo/raw",
+  "coverage_limits": [
+    "same-host-localhost-HTTP-only",
+    "not-two-physical-machine-relay",
+    "not-public-HTTPS-deployment",
+    "not-entire-ADR21-completion"
+  ],
+  "source_changes": [
+    "native/xsm-net/src/transport.rs",
+    "native/xsm-net/tests/relay_url_policy.rs",
+    "tests/test_network_selfhost.py"
+  ]
+}

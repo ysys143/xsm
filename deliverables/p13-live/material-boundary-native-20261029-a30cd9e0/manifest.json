@@ -1,0 +1,637 @@
+{
+  "scope": "A19-03 actual MCP subset and OS-negative; full condition remains partial",
+  "private_raw_root": "/private/tmp/material-boundary-native-e36_3_p2",
+  "negative_originals_not_reopened": true,
+  "files": [
+    {
+      "path": "/private/tmp/material-boundary-native-e36_3_p2/allowed-outside/external-note.txt",
+      "bytes": 91,
+      "sha256": "d8edd7ca59beb6855d66a617d895e278e8e7f305a9c610733a75946f25cc25aa",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/material-boundary-native-e36_3_p2/expected-markers.private.json",
+      "bytes": 2768,
+      "sha256": "22dfcd75ee001bd0dcda888f7a38519e6a5b7b694f948cbf09ef35c2e5d1a0fa",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/material-boundary-native-e36_3_p2/goals.json",
+      "bytes": 2327,
+      "sha256": "c451386358115375f59792c2d91c99fe64d46c34ef251be806a57a36bd4d76cb",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/material-boundary-native-e36_3_p2/material-audit-summary.json",
+      "bytes": 9128,
+      "sha256": "35dd2ae555d76e52ea330800767cb35db5ce5054bffd46468f5c57c549ecb858",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/material-boundary-native-e36_3_p2/native-rollouts/35777f2be61a62cc32716c01d4c69945b21516b3970cc3b7bc260fc6f8dd05b6.jsonl",
+      "bytes": 365858,
+      "sha256": "35c48734adb06f73ef2c43a2f0d4ae2b42991e386b586d762797246049ee28e3",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/material-boundary-native-e36_3_p2/native-rollouts/ecd18ac879ee5a67dc131a9c5dad72edcc6d839138a66dcfcbd767da2a29dbb7.jsonl",
+      "bytes": 341800,
+      "sha256": "12e470de2da4fe7acf68f042a2e93d56700df7a0504807190cd57c56190da375",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/material-boundary-native-e36_3_p2/plan.json",
+      "bytes": 3630,
+      "sha256": "bb61072139924764cf115094ef1260f96c2b47d5acb9ee465718f298978b416b",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/material-boundary-native-e36_3_p2/preparation-error.json",
+      "bytes": 268,
+      "sha256": "d8189e928fdfc02931febc6e3bb53787077f8037f21ae3ae02bc9dd242520b6a",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/material-boundary-native-e36_3_p2/proxy.py",
+      "bytes": 2805,
+      "sha256": "927e6f5df075be6c4d40ca2748fd2b8214613db0a9408776b529d41351a3af53",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/material-boundary-native-e36_3_p2/result.json",
+      "bytes": 9368,
+      "sha256": "bc98fbc0bd269db93c404c9f0520f7b21ebde35a25f2592d97dd99d0d76f90ed",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/material-boundary-native-e36_3_p2/reviewer/native.jsonl",
+      "bytes": 68192,
+      "sha256": "6843deef4a2e19e651e036e31c0be8e74a69c2213579b293a6d705aef0c420dd",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/material-boundary-native-e36_3_p2/reviewer/native.stderr",
+      "bytes": 39,
+      "sha256": "1aa26269eb1cc57f86b235a03cda53c004edb5b1e9fc99d4da4f00843293d721",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/material-boundary-native-e36_3_p2/reviewer/proxies/74411-6acae9ce/client-wire.jsonl",
+      "bytes": 9539,
+      "sha256": "5566ca2d4856e7cfff4b4c94eac5db053fddde501dbeab7ef8e9926993f74374",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/material-boundary-native-e36_3_p2/reviewer/proxies/74411-6acae9ce/events.jsonl",
+      "bytes": 12081,
+      "sha256": "139cc120f438422cf8e5790608edc6898cd61c1429cb47efb3132b2df5fa1619",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/material-boundary-native-e36_3_p2/reviewer/proxies/74411-6acae9ce/handles.json",
+      "bytes": 1050,
+      "sha256": "f57811b68bd659527000d0d29f557c082ab21a24e7c04a6a9fbb944d9d7a6b46",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/material-boundary-native-e36_3_p2/reviewer/proxies/74411-6acae9ce/server-wire.jsonl",
+      "bytes": 31973,
+      "sha256": "9e4a011220fb585e62bbd84641f7263fafca91e4a7f08146cb2bcc179028f244",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/material-boundary-native-e36_3_p2/reviewer/proxies/74411-6acae9ce/server.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/material-boundary-native-e36_3_p2/run.py",
+      "bytes": 12060,
+      "sha256": "6124faf5e389ab2aa27280cc52c604c543d4f941f9a84975faee56bb2b385440",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/material-boundary-native-e36_3_p2/sender/native.jsonl",
+      "bytes": 68972,
+      "sha256": "570b878449848fa0bb06f5d59b346a505a5a6e0395eed65e1e1483746312487e",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/material-boundary-native-e36_3_p2/sender/native.stderr",
+      "bytes": 39,
+      "sha256": "1aa26269eb1cc57f86b235a03cda53c004edb5b1e9fc99d4da4f00843293d721",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/material-boundary-native-e36_3_p2/sender/proxies/74410-a21a6fcc/client-wire.jsonl",
+      "bytes": 5053,
+      "sha256": "e5012f078d915d959185345d58d571715a1a366ea1b64de76589d08d8dbfcf3e",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/material-boundary-native-e36_3_p2/sender/proxies/74410-a21a6fcc/events.jsonl",
+      "bytes": 6637,
+      "sha256": "5c7cd2d1263c300d8eb8437460c3508282bb08d9bee43cefa0d4dc40b4e386a1",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/material-boundary-native-e36_3_p2/sender/proxies/74410-a21a6fcc/handles.json",
+      "bytes": 1050,
+      "sha256": "53a75840aeea3693cfb7c93cfa1d7ca4b8e90227e5f159fdb5c240c98a37c97d",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/material-boundary-native-e36_3_p2/sender/proxies/74410-a21a6fcc/server-wire.jsonl",
+      "bytes": 33435,
+      "sha256": "17e46599d10b539df13e38e045aa830f033b37499e2dbef00651895927970ef1",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/material-boundary-native-e36_3_p2/sender/proxies/74410-a21a6fcc/server.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/material-boundary-native-e36_3_p2/source-manifest.json",
+      "bytes": 5116,
+      "sha256": "af1078b3479c0707c87088ce6aa76deb17e2896e08425629bd0b85ff7926bade",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/material-boundary-native-e36_3_p2/state/.config-policy.lock",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/material-boundary-native-e36_3_p2/state/capability-observations/451b26039cf3365bc932f991b05f0c728f8bb47f4177fc6a1abb31cba958d58a.json",
+      "bytes": 380,
+      "sha256": "533cf9a0d14b2befd936d85902b653ca2a707b8304b4e7e0f5208048402ca0ec",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/material-boundary-native-e36_3_p2/state/capability-observations/5c8503bbdae04b633d072cba60af55e3e6cb1bcf731de576eec91c25e6c52372.json",
+      "bytes": 379,
+      "sha256": "6aef08ce961c0ac23ed93a77ef1f3c66237c26538ff34548687e33a8f08472ed",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/material-boundary-native-e36_3_p2/state/config.json",
+      "bytes": 105,
+      "sha256": "2fe8884bf41a29a9c680769139537a3cb439ab451131f7d8a35dcab4d5ef9b14",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/material-boundary-native-e36_3_p2/state/config.last-valid.json",
+      "bytes": 414,
+      "sha256": "0e765626092167cd6703b4e0abe3b860105e613d59843bb97baa63f54b510080",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/material-boundary-native-e36_3_p2/state/decisions.jsonl",
+      "bytes": 3141,
+      "sha256": "1f9d55f0c438e5eee27b16cb8857f7c74549887e1fdba190026e174231f0e0f9",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/material-boundary-native-e36_3_p2/state/file-copies/.lock",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/material-boundary-native-e36_3_p2/state/file-copies/incoming/6bccfb9b5ead4dd981fea7d6040eec83/40b7bb9f87114ba6a27eebfa72e111fc.blob",
+      "bytes": 91,
+      "sha256": "d8edd7ca59beb6855d66a617d895e278e8e7f305a9c610733a75946f25cc25aa",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/material-boundary-native-e36_3_p2/state/file-copies/incoming/6bccfb9b5ead4dd981fea7d6040eec83/53fd338c65334998bee9421d7f9dda0e.blob",
+      "bytes": 90,
+      "sha256": "f2d3bda7ae80fc4b2f1ebe62562da611b1eb34ea17b651c4775f44cf4e501bd7",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/material-boundary-native-e36_3_p2/state/file-copies/incoming/6bccfb9b5ead4dd981fea7d6040eec83/cc14c4d8f280484ea42c5fa211d72e17.blob",
+      "bytes": 90,
+      "sha256": "92fbf8b0b4eff34d63a8484fb9e977469567c26f6737e8ed693e5ab5e4e98186",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/material-boundary-native-e36_3_p2/state/file-copies/incoming/6bccfb9b5ead4dd981fea7d6040eec83/record.json",
+      "bytes": 1937,
+      "sha256": "dd997bf5c4b6d32884daecfc74f0b17d0c85ceb3c45ebfb660c4d7ecfc22346e",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/material-boundary-native-e36_3_p2/state/file-copies/outgoing/ab6f81780991472b9d72537dfe9322ee/80ed59886bf6477c8835f8b43cf1f694.blob",
+      "bytes": 91,
+      "sha256": "d8edd7ca59beb6855d66a617d895e278e8e7f305a9c610733a75946f25cc25aa",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/material-boundary-native-e36_3_p2/state/file-copies/outgoing/ab6f81780991472b9d72537dfe9322ee/ee6a26a015094f9eaffc7e7ddd6d79aa.blob",
+      "bytes": 90,
+      "sha256": "f2d3bda7ae80fc4b2f1ebe62562da611b1eb34ea17b651c4775f44cf4e501bd7",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/material-boundary-native-e36_3_p2/state/file-copies/outgoing/ab6f81780991472b9d72537dfe9322ee/fe8b9c3a5da14cc68a53bd256df47291.blob",
+      "bytes": 90,
+      "sha256": "92fbf8b0b4eff34d63a8484fb9e977469567c26f6737e8ed693e5ab5e4e98186",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/material-boundary-native-e36_3_p2/state/file-copies/outgoing/ab6f81780991472b9d72537dfe9322ee/record.json",
+      "bytes": 1919,
+      "sha256": "b7ec52c1da80b44d4f252d4dee9d910b046d434514760f202e70b0f3397af062",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/material-boundary-native-e36_3_p2/state/handoffs/1fd995312a87107c433f5d7d85890254834fe31dd7d0e20f8f7a9442daf7b4d0/.lock",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/material-boundary-native-e36_3_p2/state/handoffs/1fd995312a87107c433f5d7d85890254834fe31dd7d0e20f8f7a9442daf7b4d0/ad7820af6dcd4c93.json",
+      "bytes": 6598,
+      "sha256": "69542967eea552362f01589c53ca1a4fb275b75d42da868cf6b619b3316106f2",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/material-boundary-native-e36_3_p2/state/handoffs/95c55a3fd6270648dc29f2369043668444b49cd8d65f53ce738e473fea5956d0/.lock",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/material-boundary-native-e36_3_p2/state/handoffs/95c55a3fd6270648dc29f2369043668444b49cd8d65f53ce738e473fea5956d0/29e8a788d8e3418b.json",
+      "bytes": 5311,
+      "sha256": "3fa7ab27bdcaa932188a2e39ed7dc3e2e1e0fb7aaa1d2e44cb84c9c25774a259",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/material-boundary-native-e36_3_p2/state/homes.json",
+      "bytes": 93,
+      "sha256": "ae0e4b94dbd9c01ab3e00f35be7d29861071efc42346224844114ffe233b2481",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/material-boundary-native-e36_3_p2/state/install-locks/8f28bd186cd507a3b71011cc6bcc3802b7a3b799ea566515ffa444abe8830ea3.lock",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/material-boundary-native-e36_3_p2/state/ledger/29e8a788d8e3418b.handoff.json",
+      "bytes": 421,
+      "sha256": "aea828d9f93221e96215650e5cae2f90bb27ab4cf9734d344fa7947ba1beb6a8",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/material-boundary-native-e36_3_p2/state/ledger/29e8a788d8e3418b.handoff.json.lock",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/material-boundary-native-e36_3_p2/state/ledger/29e8a788d8e3418b.json",
+      "bytes": 1465,
+      "sha256": "a04e76eef14bcb7681408a2edf950cbdcdcee5db877fc1235c3c9250ce68fca4",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/material-boundary-native-e36_3_p2/state/ledger/29e8a788d8e3418b.recv.json",
+      "bytes": 376,
+      "sha256": "3e6d3ca163a9b22b71797cb419eeec57533fb2555b3032797fb8d2689f693a1a",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/material-boundary-native-e36_3_p2/state/ledger/ad7820af6dcd4c93.handoff.json",
+      "bytes": 421,
+      "sha256": "3ced0cb53fbaf2d43394ef92c2ff14232b411de8741867e948ce4bccf58cec52",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/material-boundary-native-e36_3_p2/state/ledger/ad7820af6dcd4c93.handoff.json.lock",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/material-boundary-native-e36_3_p2/state/ledger/ad7820af6dcd4c93.json",
+      "bytes": 1138,
+      "sha256": "55471fb950afdb7ff1982558da69325a41842d01243dd7346fcc32866909827f",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/material-boundary-native-e36_3_p2/state/ledger/ad7820af6dcd4c93.recv.json",
+      "bytes": 399,
+      "sha256": "a4d65d92353240beae1f3b1fe5d7ad67116dffc9275b72e6d00d221e515e44c5",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/material-boundary-native-e36_3_p2/state/legacy-inbox-originals/35777f2be61a62cc32716c01d4c69945b21516b3970cc3b7bc260fc6f8dd05b6/1c83bb31065d398063c30cac7985d0a6f7212c88d18a240c0adccc0d13b76042.json",
+      "bytes": 1616,
+      "sha256": "c96fd278b0721f179d2d9b0d51c4e38eb045279eb6191a887453b93011a260ca",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/material-boundary-native-e36_3_p2/state/legacy-inbox-originals/35777f2be61a62cc32716c01d4c69945b21516b3970cc3b7bc260fc6f8dd05b6/ef29b6f4c57657b395c4e972752e63955bf008ee8b27bc788567cd02e5aecb89.json",
+      "bytes": 1752,
+      "sha256": "3e616e5e4871b48efd0a85ad09f1062890b0a05ec11c3ab24b3ef11db272290e",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/material-boundary-native-e36_3_p2/state/legacy-inbox-originals/ecd18ac879ee5a67dc131a9c5dad72edcc6d839138a66dcfcbd767da2a29dbb7/da5ac5772120f88edce56cb3b443e387b87182da315d2ff4d4f70d0169fb9473.json",
+      "bytes": 1197,
+      "sha256": "05bd0b201c2dcee1d7c4e76cf056f2132ee1eb54e681e1994ec27df6ef7d4012",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/material-boundary-native-e36_3_p2/state/legacy-inbox-originals/ecd18ac879ee5a67dc131a9c5dad72edcc6d839138a66dcfcbd767da2a29dbb7/e4803930ad76ed2a694ab009c91d02691d21f33ab143021447be88b973769bf3.json",
+      "bytes": 1335,
+      "sha256": "3d6576f9c1aeb58ff6278223d985d9d979e78a254ea4679dc58f23818dd9f06a",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/material-boundary-native-e36_3_p2/state/material-intents/1d9e833e2d080bd1f87fb0c3c76bfc024547e5864bd3238d68b0fb2e2a058d73.json",
+      "bytes": 392,
+      "sha256": "323a7269ab4eb6e9dd2a82d71b778f1ed3a744e33f9537fd24118db1897f3df8",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/material-boundary-native-e36_3_p2/state/material-intents/1d9e833e2d080bd1f87fb0c3c76bfc024547e5864bd3238d68b0fb2e2a058d73.lock",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/material-boundary-native-e36_3_p2/state/otel-metrics.jsonl",
+      "bytes": 641,
+      "sha256": "0ce7963e5257a52b25b074e406b2d9ecbc1865c21fce4b58df612bac7ec82756",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/material-boundary-native-e36_3_p2/state/otel-spans.jsonl",
+      "bytes": 1541,
+      "sha256": "f506aa996810e5776c70072af80faa046507c9821c63f5ce3f9dc42210774f78",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/material-boundary-native-e36_3_p2/state/questions/29e8a788d8e3418b.json",
+      "bytes": 2974,
+      "sha256": "3d9fdb2e3e960674bd3f84bce3b3a47e64d285f7b7aa451c890eabf4ddd59da3",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/material-boundary-native-e36_3_p2/state/questions/29e8a788d8e3418b.json.lock",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/material-boundary-native-e36_3_p2/state/sessions/codex-01a184fd-7a76-7852-b461-eeec3327584b.json",
+      "bytes": 408,
+      "sha256": "5f66b65aa88a79e09223f056c4c6af4a1ac1be9a5848c130f1e5a9a0925bf896",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/material-boundary-native-e36_3_p2/state/sessions/codex-01a184fd-7a76-7eb2-92ca-16a84130b8f3.json",
+      "bytes": 410,
+      "sha256": "92caf35be278e90e56596631d09fb22fcc1f36d75a8ee07b57e97bb06d843905",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/material-boundary-native-e36_3_p2/state/traffic/11a31b843a355b984dbad52f4e3b17446d10ef3581a7b9ff5f22fa54a2ca430f.json",
+      "bytes": 685,
+      "sha256": "bc191ec57b71bac5780ef7038c0613788438c6c1a78d33e8b5fafe6c05685bf4",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/material-boundary-native-e36_3_p2/state/traffic/11a31b843a355b984dbad52f4e3b17446d10ef3581a7b9ff5f22fa54a2ca430f.lock",
+      "bytes": 15,
+      "sha256": "8e7c4b55b2043ae615c74d4c7f957d9a3bfa44eca0169855cfb8a87c924ac7de",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/material-boundary-native-e36_3_p2/state/traffic/703594a031819cac839f07bc9e4aa4160d43b795b229e718bf6f675e38d9d8ad.json",
+      "bytes": 686,
+      "sha256": "923c953881f8e8723d0d5559c35b069b8d3e10304f0fba0b7614e117f5fa25d8",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/material-boundary-native-e36_3_p2/state/traffic/703594a031819cac839f07bc9e4aa4160d43b795b229e718bf6f675e38d9d8ad.lock",
+      "bytes": 15,
+      "sha256": "8e7c4b55b2043ae615c74d4c7f957d9a3bfa44eca0169855cfb8a87c924ac7de",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/material-boundary-native-e36_3_p2/work/.agents/skills/xsm/SKILL.md",
+      "bytes": 5448,
+      "sha256": "3e583bcd294862775c6590766b96cea2260c879329a32ffbe5306f128da55896",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/material-boundary-native-e36_3_p2/work/.agents/skills/xsm/references/guide.md",
+      "bytes": 37275,
+      "sha256": "6bffc41da7cce01cc6080c8afb62e54efc910fd67b59d9d11b0c119130c43981",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/material-boundary-native-e36_3_p2/work/.agents/skills/xsm/references/messaging.md",
+      "bytes": 7221,
+      "sha256": "b76f2de35f0579bb74bca8f32ebe1f07f4a2bc83e5ed776284f738df88de3eef",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/material-boundary-native-e36_3_p2/work/.git/HEAD",
+      "bytes": 21,
+      "sha256": "28d25bf82af4c0e2b72f50959b2beb859e3e60b9630a5e8c603dad4ddb2b6e80",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/material-boundary-native-e36_3_p2/work/.git/config",
+      "bytes": 137,
+      "sha256": "cae33efdb02cf774435c1ff9cb16bcc1014606908530c6e1dc727615fe3e8cda",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/material-boundary-native-e36_3_p2/work/.git/description",
+      "bytes": 73,
+      "sha256": "85ab6c163d43a17ea9cf7788308bca1466f1b0a8d1cc92e26e9bf63da4062aee",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/material-boundary-native-e36_3_p2/work/.git/hooks/applypatch-msg.sample",
+      "bytes": 478,
+      "sha256": "0223497a0b8b033aa58a3a521b8629869386cf7ab0e2f101963d328aa62193f7",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/material-boundary-native-e36_3_p2/work/.git/hooks/commit-msg.sample",
+      "bytes": 896,
+      "sha256": "1f74d5e9292979b573ebd59741d46cb93ff391acdd083d340b94370753d92437",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/material-boundary-native-e36_3_p2/work/.git/hooks/fsmonitor-watchman.sample",
+      "bytes": 4726,
+      "sha256": "e0549964e93897b519bd8e333c037e51fff0f88ba13e086a331592bf801fa1d0",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/material-boundary-native-e36_3_p2/work/.git/hooks/post-update.sample",
+      "bytes": 189,
+      "sha256": "81765af2daef323061dcbc5e61fc16481cb74b3bac9ad8a174b186523586f6c5",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/material-boundary-native-e36_3_p2/work/.git/hooks/pre-applypatch.sample",
+      "bytes": 424,
+      "sha256": "e15c5b469ea3e0a695bea6f2c82bcf8e62821074939ddd85b77e0007ff165475",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/material-boundary-native-e36_3_p2/work/.git/hooks/pre-commit.sample",
+      "bytes": 1649,
+      "sha256": "57185b7b9f05239d7ab52db045f5b89eb31348d7b2177eab214f5eb872e1971b",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/material-boundary-native-e36_3_p2/work/.git/hooks/pre-merge-commit.sample",
+      "bytes": 416,
+      "sha256": "d3825a70337940ebbd0a5c072984e13245920cdf8898bd225c8d27a6dfc9cb53",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/material-boundary-native-e36_3_p2/work/.git/hooks/pre-push.sample",
+      "bytes": 1374,
+      "sha256": "ecce9c7e04d3f5dd9d8ada81753dd1d549a9634b26770042b58dda00217d086a",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/material-boundary-native-e36_3_p2/work/.git/hooks/pre-rebase.sample",
+      "bytes": 4898,
+      "sha256": "4febce867790052338076f4e66cc47efb14879d18097d1d61c8261859eaaa7b3",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/material-boundary-native-e36_3_p2/work/.git/hooks/pre-receive.sample",
+      "bytes": 544,
+      "sha256": "a4c3d2b9c7bb3fd8d1441c31bd4ee71a595d66b44fcf49ddb310252320169989",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/material-boundary-native-e36_3_p2/work/.git/hooks/prepare-commit-msg.sample",
+      "bytes": 1492,
+      "sha256": "e9ddcaa4189fddd25ed97fc8c789eca7b6ca16390b2392ae3276f0c8e1aa4619",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/material-boundary-native-e36_3_p2/work/.git/hooks/push-to-checkout.sample",
+      "bytes": 2783,
+      "sha256": "a53d0741798b287c6dd7afa64aee473f305e65d3f49463bb9d7408ec3b12bf5f",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/material-boundary-native-e36_3_p2/work/.git/hooks/sendemail-validate.sample",
+      "bytes": 2308,
+      "sha256": "44ebfc923dc5466bc009602f0ecf067b9c65459abfe8868ddc49b78e6ced7a92",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/material-boundary-native-e36_3_p2/work/.git/hooks/update.sample",
+      "bytes": 3650,
+      "sha256": "8d5f2fa83e103cf08b57eaa67521df9194f45cbdbcb37da52ad586097a14d106",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/material-boundary-native-e36_3_p2/work/.git/info/exclude",
+      "bytes": 240,
+      "sha256": "6671fe83b7a07c8932ee89164d1f2793b2318058eb8b98dc5c06ee0a5a3b0ec1",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/material-boundary-native-e36_3_p2/work/explicitly-excluded/private-note.txt",
+      "storage": "private negative source fixture, not reopened",
+      "bytes_stat": 97,
+      "mode_stat": "0o600",
+      "expected_sha256_from_setup": "48a03bb8c58825795745b863d8f68a0edc18f36cc555375ddb4ed42e5270a7ae",
+      "post_run_hash": "not read after denial/exclusion"
+    },
+    {
+      "path": "/private/tmp/material-boundary-native-e36_3_p2/work/materials/.hidden-note.txt",
+      "bytes": 90,
+      "sha256": "92fbf8b0b4eff34d63a8484fb9e977469567c26f6737e8ed693e5ab5e4e98186",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/material-boundary-native-e36_3_p2/work/materials/apikey.env",
+      "storage": "private negative source fixture, not reopened",
+      "bytes_stat": 97,
+      "mode_stat": "0o600",
+      "expected_sha256_from_setup": "82bc223c0b6d5182acd6d8a0ea0d484f864635ed0eccb1e1922c2d99b5a05b4a",
+      "post_run_hash": "not read after denial/exclusion"
+    },
+    {
+      "path": "/private/tmp/material-boundary-native-e36_3_p2/work/materials/catalog.md",
+      "bytes": 885,
+      "sha256": "1b0ca48f270ea718d5003d771dfb4b1b4cf294f5fd1fd222ff14990bb14d9872",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/material-boundary-native-e36_3_p2/work/materials/normal.txt",
+      "bytes": 90,
+      "sha256": "f2d3bda7ae80fc4b2f1ebe62562da611b1eb34ea17b651c4775f44cf4e501bd7",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/material-boundary-native-e36_3_p2/work/materials/unreadable.txt",
+      "storage": "private negative source fixture, not reopened",
+      "bytes_stat": 91,
+      "mode_stat": "0o0",
+      "expected_sha256_from_setup": "547124f9a5811e0a59ce32da01e1cb1410bc07fd42e058a07262761c767dc201",
+      "post_run_hash": "not read after denial/exclusion"
+    },
+    {
+      "path": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/deliverables/p13-live/material-boundary-native-20261029-a30cd9e0/audit.py",
+      "bytes": 10660,
+      "sha256": "c8e3ea5fbcc6dcdacfc097c95e7134308e6c0a4fabae97400ecd2da11f0ad740",
+      "storage": "public code/sanitized report"
+    },
+    {
+      "path": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/deliverables/p13-live/material-boundary-native-20261029-a30cd9e0/plan.json",
+      "bytes": 3630,
+      "sha256": "bb61072139924764cf115094ef1260f96c2b47d5acb9ee465718f298978b416b",
+      "storage": "public code/sanitized report"
+    },
+    {
+      "path": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/deliverables/p13-live/material-boundary-native-20261029-a30cd9e0/proxy.py",
+      "bytes": 2805,
+      "sha256": "927e6f5df075be6c4d40ca2748fd2b8214613db0a9408776b529d41351a3af53",
+      "storage": "public code/sanitized report"
+    },
+    {
+      "path": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/deliverables/p13-live/material-boundary-native-20261029-a30cd9e0/report.md",
+      "bytes": 7219,
+      "sha256": "2620f326b62fb449757728bb6dab2ffb2ac8268943f01e672624eb8b120fbd3e",
+      "storage": "public code/sanitized report"
+    },
+    {
+      "path": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/deliverables/p13-live/material-boundary-native-20261029-a30cd9e0/run.py",
+      "bytes": 12060,
+      "sha256": "6124faf5e389ab2aa27280cc52c604c543d4f941f9a84975faee56bb2b385440",
+      "storage": "public code/sanitized report"
+    },
+    {
+      "path": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/deliverables/p13-live/material-boundary-native-20261029-a30cd9e0/summary.json",
+      "bytes": 10018,
+      "sha256": "fd900820f579645d72764dcdbf39b05506d87d8720602167a0a3dc95a7c2672b",
+      "storage": "public code/sanitized report"
+    }
+  ]
+}

@@ -1,0 +1,637 @@
+{
+  "status": "closed_with_recorded_limits",
+  "scope": "A21-03 보강: 기존 인증과 제공 source/binary 조건의 공통 비교",
+  "new_model_calls": 0,
+  "new_transport_experiments": 2,
+  "global_service_or_permission_changes": false,
+  "evidence_sha256": {
+    "deliverables/p11-live/native-carrier-roundtrip-20261029.json": "925e2e20fe46646496342fbf316adad5f80467146f54315a3162c2ea7f485829",
+    "deliverables/p11-live/C-native-roundtrip-20261029.json": "2d1dae0c6bb804d95d051cc06a886f696812dafbe4b5d471b37d31b12d0db92a",
+    "deliverables/p11-live/C-run-private.py": "f910a3456795c7869a4f180f1b2378d2d8f61c5a1481383df667e7c947fde69f",
+    "deliverables/p11-live/C-fixture-lib.py": "9073360fd422877987ca2ebdea55a31186fe82d47308de4973ce95b9bf80e9a3",
+    "deliverables/adr0021/ssh-only-20261029T132950Z/results.json": "261fcb7bad472c7a92a069d3968a23657f22ad5f6baf57d1f15554e1e6f27b91",
+    "deliverables/adr0021/installation-check.json": "e6c47d97023a9383bb18baedf14e66008b0c73b72b8c586f9d7f5daed4bffd6b",
+    "deliverables/adr0021/uninstall-20261030/results.json": "ce33624652d6edaa5ca3651796de20c14f61bd6136034cb5c3fc0e1849f94aeb",
+    "deliverables/adr0021/comparison-20261030/ssh-deny-results.json": "be7a9ed7542afcd12af810a705b3f37ee795f5a227f42d6db5acc8398161080d",
+    "deliverables/adr0021/legacy-native-recovery-20261030/final-surface-review/review-parsed.json": "67840345c6b98add747cb0ec1447af3ce5b9bac0eff05e2577377fff6b8765db",
+    "deliverables/adr0021/legacy-native-recovery-20261030/final-surface-review/execution.json": "c8bc4d0649167f813cf6a8221093b4c82484f9775d4c5c20d42a14735d7a5b83",
+    "deliverables/adr0021/native-journey-common-math-latest-retry1-20261029T155548Z/mini-resume-launch.json": "42525c70e5e1afb06cbc46af083c7bec3dc90f76a812500e2ce7f9f7f7227d9b",
+    "deliverables/adr0021/native-journey-common-math-latest-retry1-20261029T155548Z/mini-resume-2-launch.json": "1d0a1b1fb3a1b73eb3d3c5f78a75e1d8e25caf3b5667181466b783da2b6acc8a",
+    "deliverables/adr0021/native-journey-common-math-latest-retry1-20261029T155548Z/mini-resume-3-launch.json": "ba5b3acf0a1ca6ec74578edce10d0d269d20b9acd1914fff19d8908ecedf7599",
+    "deliverables/adr0021/native-journey-common-math-latest-retry1-20261029T155548Z/mini-closure-resume-launch.json": "fd79a7ce8613cf157359c47da14a504f2a444886f340e623091d94195734adb5",
+    "deliverables/adr0021/native-journey-common-math-latest-retry1-20261029T155548Z/results.json": "9d2b59649afac1e0a2b89fa8fef906e94fba47333e1bfb1924a358077bfbff7e",
+    "deliverables/adr0021/legacy-native-recovery-20261030/final-validation/summary.json": "203e617d60d7ff64e6f0a1b986871d3107bf93868275e47471231a6f26609fc1"
+  },
+  "historical_baseline": {
+    "native_calls": 15,
+    "cached_readbacks": 5,
+    "rows": [
+      {
+        "candidate": "A-LAN-SSH",
+        "driver_starts": 2,
+        "driver_closures": 2,
+        "native_calls": 3,
+        "cached_readbacks": 1,
+        "additional_user_interventions_during_fixture": 0,
+        "phases": [
+          {
+            "phase": "first",
+            "roundtrip_ms": 6137.471
+          },
+          {
+            "phase": "followup",
+            "roundtrip_ms": 6712.996
+          },
+          {
+            "phase": "reconnect-recovery",
+            "roundtrip_ms": 10.001
+          },
+          {
+            "phase": "after-reconnect-new-native-turn",
+            "roundtrip_ms": 5409.321
+          }
+        ]
+      },
+      {
+        "candidate": "D-Tailscale-SSH",
+        "driver_starts": 2,
+        "driver_closures": 2,
+        "native_calls": 3,
+        "cached_readbacks": 1,
+        "additional_user_interventions_during_fixture": 0,
+        "phases": [
+          {
+            "phase": "first",
+            "roundtrip_ms": 4971.326
+          },
+          {
+            "phase": "followup",
+            "roundtrip_ms": 6304.035
+          },
+          {
+            "phase": "reconnect-recovery",
+            "roundtrip_ms": 12.623
+          },
+          {
+            "phase": "after-reconnect-new-native-turn",
+            "roundtrip_ms": 6277.135
+          }
+        ]
+      },
+      {
+        "candidate": "B-private-TCP",
+        "driver_starts": 2,
+        "driver_closures": 2,
+        "native_calls": 3,
+        "cached_readbacks": 1,
+        "additional_user_interventions_during_fixture": 0,
+        "phases": [
+          {
+            "phase": "first",
+            "roundtrip_ms": 5816.222
+          },
+          {
+            "phase": "followup",
+            "roundtrip_ms": 7377.91
+          },
+          {
+            "phase": "reconnect-recovery",
+            "roundtrip_ms": 19.796
+          },
+          {
+            "phase": "after-reconnect-new-native-turn",
+            "roundtrip_ms": 5657.27
+          }
+        ]
+      },
+      {
+        "candidate": "C",
+        "run": 1,
+        "passed": true,
+        "native_calls": 3,
+        "cached_readbacks": 1,
+        "daemon_starts": {
+          "peer": 2,
+          "local": 3
+        },
+        "create_result": true,
+        "initial_clients": {
+          "local": true,
+          "peer": true
+        },
+        "additional_user_interventions_during_fixture": 0,
+        "reconstructed_operations_from_executed_code_and_success_records": {
+          "initial_daemon_starts": 2,
+          "post_create_restart": 1,
+          "post_join_restart": 1,
+          "cached_readback_restart": 1,
+          "team_create": 1,
+          "link": 1,
+          "join": 1,
+          "initial_register": 2,
+          "cached_readback_register": 1,
+          "configured_roots": 2,
+          "configuration_file_write_count": null
+        },
+        "phases": [
+          {
+            "phase": "first",
+            "roundtrip_ms": 5766.252
+          },
+          {
+            "phase": "followup",
+            "roundtrip_ms": 5028.281
+          },
+          {
+            "phase": "reconnect-cached-readback",
+            "roundtrip_ms": 175.142
+          },
+          {
+            "phase": "after-reconnect",
+            "roundtrip_ms": 6871.45
+          }
+        ]
+      },
+      {
+        "candidate": "C",
+        "run": 2,
+        "passed": true,
+        "native_calls": 3,
+        "cached_readbacks": 1,
+        "daemon_starts": {
+          "peer": 2,
+          "local": 3
+        },
+        "create_result": true,
+        "initial_clients": {
+          "local": true,
+          "peer": true
+        },
+        "additional_user_interventions_during_fixture": 0,
+        "reconstructed_operations_from_executed_code_and_success_records": {
+          "initial_daemon_starts": 2,
+          "post_create_restart": 1,
+          "post_join_restart": 1,
+          "cached_readback_restart": 1,
+          "team_create": 1,
+          "link": 1,
+          "join": 1,
+          "initial_register": 2,
+          "cached_readback_register": 1,
+          "configured_roots": 2,
+          "configuration_file_write_count": null
+        },
+        "phases": [
+          {
+            "phase": "first",
+            "roundtrip_ms": 6375.519
+          },
+          {
+            "phase": "followup",
+            "roundtrip_ms": 5166.103
+          },
+          {
+            "phase": "reconnect-cached-readback",
+            "roundtrip_ms": 136.423
+          },
+          {
+            "phase": "after-reconnect",
+            "roundtrip_ms": 6877.705
+          }
+        ]
+      }
+    ],
+    "B_scope": "private TCP/HMAC spike, not iroh product",
+    "runtime": "Codex 0.163; fresh ephemeral conversations"
+  },
+  "product_B_existing_preparation": {
+    "evidence": "deliverables/adr0021/ssh-only-20261029T132950Z/results.json",
+    "observations": {
+      "prebuilt_source_and_binary_copies": 2,
+      "private_pairing_rows": 2,
+      "private_P2P_settings_files": 2,
+      "initial_service_starts": 2,
+      "network_initialize_calls": 1,
+      "invite_calls": 1,
+      "join_calls": 1,
+      "initial_service_start_and_membership_API_calls": 5,
+      "interactive_user_prompts_this_run": 0,
+      "existing_SSH_and_Tailscale_authentication_are_preconditions": true,
+      "clean_install_build_or_first_login_measured": false
+    },
+    "scope": "기존 두 Mac 준비·protocol ping; 새 native 측정 아님"
+  },
+  "product_B_latest_native": {
+    "status": "passed",
+    "evidence": "deliverables/adr0021/native-journey-common-math-latest-retry1-20261029T155548Z/results.json",
+    "check_count": 17,
+    "checks": {
+      "three_fixture_bodies_exact": true,
+      "three_same_ID_JSON_answers_and_reverse_endpoints": true,
+      "eight_actual_MCP_ACKs_and_canonical_ACKs": true,
+      "original_9f_request_ID_preserved": true,
+      "third_retry_same_ID_and_body": true,
+      "two_original_answers_recovered_by_actual_MCP_after_restart": true,
+      "closure_MCP_reads_exact_three_retained_answers": true,
+      "closure_read_only_no_new_asks": true,
+      "both_final_execution_source_bindings_match": true,
+      "two_policy_preflights_healthy_before_models": true,
+      "old_held_bytes_unchanged": true,
+      "same_actual_Codex_CID_all_five_starts": true,
+      "same_actual_Claude_CID_all_turns": true,
+      "normal_address_exchange_count_two": true,
+      "two_standard_MCP_reconnect_success": true,
+      "eight_P2P_deliver_hashes_with_authenticated_origin_and_direct_path": true,
+      "both_cleanup_remaining_owned_zero": true
+    },
+    "math_logical_requests": 3,
+    "actual_MCP_ask_invocations": 4,
+    "canonical_ACK_count": 8,
+    "counts": {
+      "successful_fixture_new_conversations": 2,
+      "Claude_CLI_starts": 1,
+      "Codex_CLI_starts": 5,
+      "Codex_same_CID_resumes": 4,
+      "general_FIFO_continue_Goals": 6,
+      "standard_Claude_MCP_reconnects": 2,
+      "initial_network_service_starts": 2,
+      "planned_service_restart_starts": 2,
+      "stable_port_recovery_service_starts": 2,
+      "normal_address_hint_exchanges": 2,
+      "initial_invites": 1,
+      "initial_joins": 1,
+      "runtime_human_yes_or_permission_answers": 0,
+      "controller_message_body_or_answer_relays": 0
+    },
+    "requests": [
+      {
+        "request_id": "9f11884127764cad",
+        "reply_id": "e51fbbb4ce884a99",
+        "input_file": "initial-task.txt",
+        "actual_model_JSON": {
+          "claim_valid": false,
+          "corrected_sum": 4,
+          "request_id": "9f11884127764cad"
+        },
+        "observed_same_host_seconds": 1298.9484422206879,
+        "request_body_sha256": "605d2c2176a03aca4f0a7d135d9a7a1c3750b36ad4598fa5e829f53e24ecebdf",
+        "reply_body_sha256": "b0d8fb895463d756c69edd56d41136363be3eef5296aaf3b0781aebd36046887"
+      },
+      {
+        "request_id": "958971a5c24e4fe4",
+        "reply_id": "18ea96f2ea894fa5",
+        "input_file": "revised-task.txt",
+        "actual_model_JSON": {
+          "claim_valid": true,
+          "corrected_sum": 4,
+          "request_id": "958971a5c24e4fe4"
+        },
+        "observed_same_host_seconds": 110.46094274520874,
+        "request_body_sha256": "8409436d428c1eaba9d2b5a65697b1b295b0887fec083b0e4960256f561e400d",
+        "reply_body_sha256": "45b4a0c693387106348546f454b4b21dc310f5dd6a013dd6fd635f0f3fa954d6"
+      },
+      {
+        "request_id": "e1ce6790c1734665",
+        "reply_id": "ac9c995fc5a842df",
+        "input_file": "final-task.txt",
+        "actual_model_JSON": {
+          "claim_valid": true,
+          "corrected_sum": 2,
+          "request_id": "e1ce6790c1734665"
+        },
+        "observed_same_host_seconds": 81.29840421676636,
+        "request_body_sha256": "f8dbf976d005da28731950d327e63850368a4fff4ee6bab886914bc628a19215",
+        "reply_body_sha256": "af3e8a131a1ece3673785fb6cc8635bceb6b0b9794d1661bb2549807edb38331"
+      }
+    ],
+    "source_execution_manifest_sha256": "942a5deca7ccb0ec89cfc92e71fa52495fa6ff92cdb16251125db99728bdf03f",
+    "source_closure_manifest_sha256": "ccc3f22a1d65a33ddc76b0ad1abc4966a65664a6e41777d52b70230cd4fd4011",
+    "only_initial_math_matches_historical_task": true,
+    "cached_original_recovery": "원래 답 2개 동일 ID·본문 회수, 최종 코드로 3답 재조회",
+    "cached_readback_standalone_seconds": null,
+    "unmeasured": [
+      "pure network latency",
+      "first bootstrap subsecond start",
+      "human decision latency",
+      "unobserved provider internal scheduling"
+    ],
+    "performance_ranking": false,
+    "elapsed_scope": "Mini의 생성→회신 수신 같은 호스트 시계. 두 물리 Mac P2P 경로이며 소스 수정·대기·Goal·resume·주소 교환 포함"
+  },
+  "missing_cells": [],
+  "comparison_rules": [
+    "native 15와 cached 5는 분리",
+    "기존 B spike와 새 B product는 별도",
+    "제품 API 단계와 사용자 개입·프로세스 시작은 다른 단위",
+    "설정과 기능 지원은 실행 성공이 아님",
+    "업무 준비의 SSH와 data plane의 SSH 의존은 구별",
+    "운영 제거는 소유 구성요소에 한정하며 전역 SSH/VPN 삭제를 요구하지 않음",
+    "cached 경계와 runtime 차이 때문에 성능 순위 없음"
+  ],
+  "A21_03_complete": true,
+  "G11_ADR21_scope": "comparison_record_closed; global gate verdict unchanged",
+  "global_G12_G13_promoted": false,
+  "new_transport_experiment_scope": "기존 C와 같은 own-process profile의 A/D 최초 SSH 음성검사 각 1회; 새 P2P 업무 0회",
+  "SSH_negative_control": {
+    "evidence": "ssh-deny-results.json",
+    "expected_failures_verified": true,
+    "profile_sha256": "f0ab59f5498e4b1a0a29582836bc03716dacc71f5d5878a33223fea65f55f2ee",
+    "owned_pids_remaining": [],
+    "SSH_file_metadata_unchanged": true,
+    "scope": "기록된 LAN/tailnet 주소에 소유 프로세스 TCP22 deny 아래 최초 SSH 연결만 각 1회 거절"
+  },
+  "product_B_private_uninstall": {
+    "evidence": "deliverables/adr0021/uninstall-20261030/results.json",
+    "completed": true,
+    "frozen_manifest_sha256": "5e203237d953a8b656ff4083503fd8b9b5c02c744a3f4939b1ce3236bda461ec",
+    "CLI_commands": 16,
+    "subprocess_seconds_sum": 5.647,
+    "new_model_calls": 0,
+    "interactive_prompts": 0,
+    "checks": {
+      "single_home_removal": {
+        "xsm_MCP_absent": true,
+        "xsm_skill_absent": true,
+        "custom_hook_exact": true,
+        "custom_MCP_and_settings_preserved": true,
+        "custom_skill_marker_preserved": true,
+        "shared_service_same_live_PID": true,
+        "other_home_exactly_unchanged": true,
+        "CLI_link_preserved": true
+      },
+      "after_explicit_stop": {
+        "control_socket_remaining": false,
+        "recorded_pids_remaining": false,
+        "UDP_rebind_success_count": 2,
+        "all_bound_UDP_addresses_rebound": true
+      },
+      "last_home_removal": {
+        "xsm_MCP_absent": true,
+        "xsm_skill_absent": true,
+        "custom_hook_exact": true,
+        "custom_MCP_and_settings_preserved": true,
+        "custom_skill_marker_preserved": true,
+        "CLI_link_removed": true
+      },
+      "preservation": {
+        "key_metadata_unchanged": true,
+        "key_values_read": false,
+        "custom_XSM_configuration_bytes_unchanged": true,
+        "original_bytes_unchanged": true,
+        "runtime_copies_retained_unchanged": true,
+        "private_auth_files_absent": true
+      },
+      "canonical_original_preservation_supplement": {
+        "actual_handoff_API_fixture": true,
+        "actual_LLM_session": false,
+        "before_after_canonical_record_bytes_equal": true,
+        "body_digest": "662a832373e45307e0523044139713c091ef64bf8aaba57fa48d4079732d5730",
+        "canonical_records_checked": 1,
+        "request_status_preserved": "pending",
+        "node_key_metadata_unchanged": true,
+        "user_custom_config_values_preserved": true
+      }
+    },
+    "cleanup": {
+      "peer": {
+        "control_socket_remaining": false,
+        "recorded_pids_remaining": false,
+        "UDP_rebind_success_count": 2,
+        "all_bound_UDP_addresses_rebound": true
+      }
+    },
+    "whole_install_elapsed_measured": false
+  },
+  "separate_unmeasured_scope": [
+    {
+      "cell": "후보별 실제 버전 업데이트·실패 롤백 전수",
+      "status": "not-executed",
+      "A21_03_new_mandatory_gate": false,
+      "required_comparison": "P11.5의 업데이트·운영·키 회수·라이선스 비용 비교는 유지"
+    },
+    {
+      "cell": "새 OS/계정의 최초 인증 전수·clean 프로필 전체 행렬",
+      "status": "not-executed",
+      "A21_03_new_mandatory_gate": false,
+      "scope": "A23/P10과 구별"
+    },
+    {
+      "cell": "동일 경계의 총 설치 시간·전체 자동 도구 호출 수",
+      "status": "not-measured",
+      "note": "기록된 단계 수와 별도. 없는 수치를 추정하지 않음"
+    }
+  ],
+  "acceptance_scope_correction": "A21-03/P11은 공통 설치·개입·실제 왕복·운영/제거 및 업데이트/키 회수/라이선스 비용 비교를 요구한다. 모든 후보 실제 업데이트/롤백과 신규 OS 인증 전수를 새 A21 의무로 추가하지 않는다.",
+  "current_product_revalidation": {
+    "status": "complete_for_recorded_scope",
+    "source_root": "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/adr21-closure-final-1cnnq81i",
+    "manifest_sha256": "ccc3f22a1d65a33ddc76b0ad1abc4966a65664a6e41777d52b70230cd4fd4011",
+    "affected_receive_paths": [
+      "take_inbox_claims",
+      "handoff.pending_ids",
+      "poll_replies"
+    ],
+    "shared_strict_classification": true,
+    "legacy_held_copy_unchanged": true,
+    "current_check_and_full_admission_required": true,
+    "path_counterexamples_reported_by_user": {
+      "before_fix": [
+        "pending empty",
+        "poll 0"
+      ],
+      "NetworkReceive_tests_per_python": 10,
+      "both_python_passed": true
+    },
+    "full_regression": {
+      "status": "passed",
+      "source_manifest_sha256": "ccc3f22a1d65a33ddc76b0ad1abc4966a65664a6e41777d52b70230cd4fd4011",
+      "actual_tests_per_python": 1936,
+      "checks": [
+        {
+          "label": "py39",
+          "argv": [
+            "/usr/bin/python3",
+            "-B",
+            "-m",
+            "unittest",
+            "discover",
+            "-s",
+            "tests",
+            "-q"
+          ],
+          "tests_run": 1936,
+          "test_seconds": 831.018,
+          "exit_code": 0,
+          "skipped": 0,
+          "stderr_sha256": "fff54b0ea0eb0e701e3360e847c8ebb527cd23e3425ce061677cc40759a069d8"
+        },
+        {
+          "label": "py314",
+          "argv": [
+            "/opt/homebrew/bin/python3.14",
+            "-B",
+            "-m",
+            "unittest",
+            "discover",
+            "-s",
+            "tests",
+            "-q"
+          ],
+          "tests_run": 1936,
+          "test_seconds": 534.329,
+          "exit_code": 0,
+          "skipped": 0,
+          "stderr_sha256": "52efb4ffbe8a9182d7b42287c69f0d94544f4a0984d02b40a722350e9c6bb8ff"
+        }
+      ],
+      "evidence": "deliverables/adr0021/legacy-native-recovery-20261030/final-validation/summary.json",
+      "input_files": 178,
+      "product_python_modules": 53,
+      "frozen_inputs_match_current_working_tree": true
+    },
+    "focused_delta_Opus_review": {
+      "status": "approved",
+      "findings": 0,
+      "source_manifest_sha256": "ccc3f22a1d65a33ddc76b0ad1abc4966a65664a6e41777d52b70230cd4fd4011",
+      "exit_code": 0,
+      "evidence": "deliverables/adr0021/legacy-native-recovery-20261030/final-surface-review/review-parsed.json",
+      "execution": "deliverables/adr0021/legacy-native-recovery-20261030/final-surface-review/execution.json",
+      "raw": "deliverables/adr0021/legacy-native-recovery-20261030/final-surface-review/review-raw.json",
+      "scope": "handoff.old_p2p_copy_receipt shared classification; pending_ids read-only notice; take_inbox_claims/poll_replies current check preserved",
+      "static_delta_only": true,
+      "whole_regression_or_native_approval": false
+    },
+    "original_CID_MCP_recovery": {
+      "status": "passed",
+      "request_id": "9f11884127764cad",
+      "body_and_claim_returned": true,
+      "business_pairs": 3,
+      "ACK_count": 8,
+      "service_restart_performed": true,
+      "handshake_pairs": 1
+    },
+    "post_restart_math_recovery": {
+      "status": "passed",
+      "same_original_ID_and_body_preserved": true,
+      "two_cached_original_answers_recovered": true,
+      "final_code_readback_answers": 3,
+      "old_held_bytes_unchanged": true,
+      "both_owned_cleanup_remaining": 0,
+      "new_permission_or_held_deliver": false,
+      "manual_peer_file_patch": false,
+      "evidence": "deliverables/adr0021/native-journey-common-math-latest-retry1-20261029T155548Z/results.json"
+    }
+  },
+  "prior_1933_Opus_approved_is_historical": true,
+  "product_failure_history": [
+    {
+      "stage": "preparation",
+      "count": 1,
+      "scope": "기존 새 B 준비 실패의 정책 경로 이력",
+      "preserved": true
+    },
+    {
+      "stage": "current_native_receive",
+      "scope": "구 hook unsupported-P2P held 사본 영수증이 현재 admitted/pending canonical을 MCP 선검사에서 숨김",
+      "preserved": true,
+      "recovery_complete": true,
+      "partial_native_recovery_observed": true,
+      "full_post_restart_recovery_complete": true
+    },
+    {
+      "stage": "post_restart_address_hint",
+      "scope": "relay off/port 0; new port hint not learned; third resolve refused",
+      "preserved": true,
+      "recovery_complete": true,
+      "assigned_normal_status_and_authenticated_ping": true
+    }
+  ],
+  "prior_predicate_validation": {
+    "source_root": "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/adr21-legacy-final-20261030-3ykbtain",
+    "manifest_sha256": "62bb612595c09a535ab0866852c25164aa55ccf9b1c7ac580b364cdb86fda32f",
+    "full_regression_reported_by_user": {
+      "tests_per_python": 1935,
+      "py39_seconds": 799.788,
+      "py314_seconds": 522.792,
+      "both_OK": true
+    },
+    "focused_Opus_review": {
+      "verdict": "approved",
+      "findings": 0
+    },
+    "superseded_by_three_path_delta": true,
+    "earlier_targeted_tests": {
+      "new_tests_per_python": 2,
+      "py314_seconds": 5.926,
+      "py39_seconds": 12.507,
+      "pre_fix_failure": "claims 0"
+    }
+  },
+  "product_B_comparison_friction": {
+    "preparation_policy_failure_count": 1,
+    "preparation_failed_sample_initial_actors": {
+      "reviewer": 1,
+      "requester": 0
+    },
+    "native_receive_failure_preserved": true,
+    "strict_current_permission_recovery_observed": {
+      "original_request_id": "9f11884127764cad",
+      "body_claim_returned": true,
+      "pairs": 3,
+      "ACK": 6
+    },
+    "requester_resume_launch_records_observed": 4,
+    "requester_resume_launches": [
+      {
+        "evidence": "deliverables/adr0021/native-journey-common-math-latest-retry1-20261029T155548Z/mini-resume-launch.json",
+        "pid": 57613,
+        "lstart": "Fri Oct 30 01:16:26 2026",
+        "resume_argv_observed": true
+      },
+      {
+        "evidence": "deliverables/adr0021/native-journey-common-math-latest-retry1-20261029T155548Z/mini-resume-2-launch.json",
+        "pid": 73985,
+        "lstart": "Fri Oct 30 01:19:49 2026",
+        "resume_argv_observed": true
+      },
+      {
+        "evidence": "deliverables/adr0021/native-journey-common-math-latest-retry1-20261029T155548Z/mini-resume-3-launch.json",
+        "pid": 43005,
+        "lstart": "Fri Oct 30 01:34:24 2026",
+        "resume_argv_observed": true
+      },
+      {
+        "evidence": "deliverables/adr0021/native-journey-common-math-latest-retry1-20261029T155548Z/mini-closure-resume-launch.json",
+        "pid": 76740,
+        "lstart": "Fri Oct 30 01:41:43 2026",
+        "resume_argv_observed": true
+      }
+    ],
+    "requester_final_total_resumes": 4,
+    "requester_initial_launch_records": 1,
+    "reviewer_general_continuation_goal_recorded": 6,
+    "reviewer_same_native_MCP_reconnection_records": 2,
+    "post_restart_address_exchange": "completed; normal exchanges 2",
+    "post_restart_math_original_recovery": "passed",
+    "scope": "최종 성공 retry1 표본의 실측 집계. 앞선 정책 준비 실패와 각 중간 관측은 별도 이력",
+    "pure_protocol_latency_ranking": false,
+    "final_counts": {
+      "successful_fixture_new_conversations": 2,
+      "Claude_CLI_starts": 1,
+      "Codex_CLI_starts": 5,
+      "Codex_same_CID_resumes": 4,
+      "general_FIFO_continue_Goals": 6,
+      "standard_Claude_MCP_reconnects": 2,
+      "initial_network_service_starts": 2,
+      "planned_service_restart_starts": 2,
+      "stable_port_recovery_service_starts": 2,
+      "normal_address_hint_exchanges": 2,
+      "initial_invites": 1,
+      "initial_joins": 1,
+      "runtime_human_yes_or_permission_answers": 0,
+      "controller_message_body_or_answer_relays": 0
+    }
+  },
+  "A21_03_completion_scope": "기존 인증·제공 source/binary·기록된 환경의 비교 정리 종결. 과제/하네스/복구 경계 차이·미실행·미계측 유지",
+  "global_G11_G12_G13_promoted": false
+}

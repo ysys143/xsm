@@ -1,0 +1,4297 @@
+{
+  "schema": "xsm.remaining-execution-frontier.v1",
+  "mode": "read-only classification, not execution authorization",
+  "started_at_utc": "2026-10-29T01:42:32+00:00",
+  "finished_at_utc": "2026-10-29T01:55:46.975457+00:00",
+  "requested_timebox_seconds": 600,
+  "elapsed_seconds": 794.975457,
+  "timebox_met": false,
+  "timebox_note": "10분 초과를 인정. 추가 조사를 중단하고 이미 확인한 결과를 작성; 첫 산출물 작성의 시간 경계 assertion으로 파일 저장이 중단되어 최종 문서 재작성.",
+  "baseline": {
+    "acceptance_total": 70,
+    "acceptance_proven": 18,
+    "acceptance_partial": 49,
+    "acceptance_missing": 3,
+    "unfinished": 52,
+    "all_ledger_status_counts": {
+      "contradicted": 0,
+      "missing": 3,
+      "partial": 78,
+      "proven": 18
+    },
+    "all_ledger_rows": 99,
+    "denominator": "전체partial78에는 residual20/journey9 포함; acceptance partial은49",
+    "G10": {
+      "declared_status": "passed",
+      "passed": true,
+      "scope": "해당 단계 구현 경로의 기술 판정. 수용 조건 전체 통과와 구분",
+      "progress_note": "passed local technical contract: actual native CLI MCP6 cells/combined install/uninstall; fresh-profile first model roundtrip still unknown",
+      "entry_gates": [
+        "G01",
+        "G02",
+        "G04"
+      ],
+      "local_evidence": {
+        "refs": [
+          "gate-G10",
+          "clean-install-final",
+          "postqa-regression"
+        ],
+        "recorded_pass": true,
+        "scope": "기록된 로컬 gate만; 원 plan 선언 상태 및 전체 완료는 변경하지 않음"
+      }
+    },
+    "current_full_regression": [
+      {
+        "python": "Python 3.9.6",
+        "tests": 1700,
+        "summary": "OK",
+        "log": "/tmp/p13-doctor-privacy-v2-39.log",
+        "log_sha256": "f5f7bdb1cbb417f288aa9e0b2321fd07ac3e94f0490ce67c4e34fc6318eae06f"
+      },
+      {
+        "python": "Python 3.14.6",
+        "tests": 1700,
+        "summary": "OK",
+        "log": "/tmp/p13-doctor-privacy-v2-314.log",
+        "log_sha256": "d95520c6e04b7ac943ce82a9f4e0a18369fbfb70da4c4a9470fefe4873ee7d8a"
+      }
+    ],
+    "primary135_matches_frozen": true,
+    "manifest": "deliverables/p13-live/doctor-privacy-v2-source-manifest.json"
+  },
+  "exclusive_primary_counts": {
+    "1": 16,
+    "2": 13,
+    "3": 5,
+    "4": 10,
+    "5": 8
+  },
+  "primary_categories": {
+    "1": "D12/P12 의존",
+    "2": "실제 사람 UI·새 인증/신뢰 필요",
+    "3": "현재 runtime 미제공 기능·미확보 물리 환경",
+    "4": "사용자 입력 없이 가능한 구체 local 구현/검증",
+    "5": "기존 근거 재결속 가능 후보"
+  },
+  "unfinished_conditions": [
+    {
+      "id": "A15-02",
+      "status_unchanged": "partial",
+      "criterion": "새 저장소 연결의 비동기 사용자 승인 원문이 요청에 연결되고, 정상 API로 승인 반영·연결·원 요청 전송까지 끝난다. 이전 S5 실패를 먼저 재현하고 같은 경로로 검증한다.",
+      "required_levels": [
+        "fixture",
+        "subprocess",
+        "harness"
+      ],
+      "primary_category": 2,
+      "category": "실제 사람 UI·새 인증/신뢰 필요",
+      "recorded_gap_not_automatically_adopted": "G02 실제 trace는 질문 선결속 hardening 전 표본. hardening 뒤 동일 S5 채널 전체 복구/동시 CLI 재평가가 남음.",
+      "formal_blocked_gates": [],
+      "evidence_preserved": {
+        "fixture": {
+          "status": "partial",
+          "refs": [
+            "gate-G02"
+          ],
+          "full_scope_refs": [],
+          "context_only_refs": [],
+          "scope": "기록된 한정 표본만 재사용; 조건 전수/현재 통합 증거로 자동 승격하지 않음"
+        },
+        "native": {
+          "status": "partial",
+          "refs": [
+            "g02-native"
+          ],
+          "full_scope_refs": [],
+          "context_only_refs": [],
+          "scope": "기록된 한정 표본만 재사용; 조건 전수/현재 통합 증거로 자동 승격하지 않음"
+        },
+        "process": {
+          "status": "partial",
+          "refs": [
+            "gate-G02"
+          ],
+          "full_scope_refs": [],
+          "context_only_refs": [],
+          "scope": "기록된 한정 표본만 재사용; 조건 전수/현재 통합 증거로 자동 승격하지 않음"
+        }
+      },
+      "test_sources": [
+        "tests/test_connection_binding.py",
+        "tests/test_native_consent.py",
+        "tests/test_one_yes.py",
+        "tests/test_peer_roundtrip.py",
+        "tests/test_selected_connection.py"
+      ],
+      "source_paths": [
+        "xsm/cli.py",
+        "xsm/config.py",
+        "xsm/connect.py",
+        "xsm/consent.py",
+        "xsm/mcp.py",
+        "xsm/outbox.py",
+        "xsm/receive.py"
+      ],
+      "secondary_dependencies": [],
+      "reason": "hardening 후 같은 실제 사용자 승인 채널 원문→적용→연결→원 ID 전송. 기존 승인 성공은 보존하나 새 실제 응답이 필요한 부분을 자동 승격하지 않음."
+    },
+    {
+      "id": "A15-03",
+      "status_unchanged": "partial",
+      "criterion": "승인 수집 어댑터를 끊으면 승인 여부는 unknown으로 남고 원문·복구 위치가 보인다. 기록 파일이 없다는 이유로 임의 문장을 승인하지 않는다.",
+      "required_levels": [
+        "fixture",
+        "harness"
+      ],
+      "primary_category": 4,
+      "category": "사용자 입력 없이 가능한 구체 local 구현/검증",
+      "recorded_gap_not_automatically_adopted": "현재 native 수집 단절→unknown→동일 요청 회수 전체 표본이 없음.",
+      "formal_blocked_gates": [],
+      "evidence_preserved": {
+        "fixture": {
+          "status": "partial",
+          "refs": [
+            "gate-G02"
+          ],
+          "full_scope_refs": [],
+          "context_only_refs": [],
+          "scope": "기록된 한정 표본만 재사용; 조건 전수/현재 통합 증거로 자동 승격하지 않음"
+        },
+        "native": {
+          "status": "missing",
+          "refs": [],
+          "full_scope_refs": [],
+          "context_only_refs": [
+            "g02-native"
+          ],
+          "scope": "해당 종류의 실행 증거 없음. source/intent/다른 환경으로 대체하지 않음"
+        }
+      },
+      "test_sources": [
+        "tests/test_connection_binding.py",
+        "tests/test_native_consent.py",
+        "tests/test_one_yes.py",
+        "tests/test_peer_roundtrip.py",
+        "tests/test_selected_connection.py"
+      ],
+      "source_paths": [
+        "xsm/cli.py",
+        "xsm/config.py",
+        "xsm/connect.py",
+        "xsm/consent.py",
+        "xsm/mcp.py",
+        "xsm/outbox.py",
+        "xsm/receive.py"
+      ],
+      "secondary_dependencies": [],
+      "flow_rank": 2,
+      "flow": "연결→수집 단절",
+      "next_one_execution": "own pending 한 요청의 collector 수집을 끊는 경계를 consent.take_or_request의 기존 unknown/회수 경로로 캡처한다. 허용은 만들지 않는다.",
+      "completion_criterion": "unknown·원문/복구 위치 보존·같은 요청 회수. 수집 부재를 허용으로 승격하지 않는다.",
+      "actual_current_blocker": "native 단절→unknown→같은 요청 회수 trace가 없음. 실제 새 affirmative 응답이 필요한 A15-02 성공 경로와 구분한다.",
+      "new_user_decision_required": false,
+      "known_product_defect_asserted": false,
+      "local_slice_not_automatic_whole_criterion": true
+    },
+    {
+      "id": "A15-04",
+      "status_unchanged": "partial",
+      "criterion": "거부·취소·추가 질문은 연결을 만들지 않는다. 늦은 유효 응답과 중복 응답은 0020 계약을 따른다.",
+      "required_levels": [
+        "fixture",
+        "harness"
+      ],
+      "primary_category": 2,
+      "category": "실제 사람 UI·새 인증/신뢰 필요",
+      "recorded_gap_not_automatically_adopted": "G07 실제 거부·취소·늦은 답·철회 경쟁의 사람 관측이 없음.",
+      "formal_blocked_gates": [
+        "G07"
+      ],
+      "evidence_preserved": {
+        "fixture": {
+          "status": "partial",
+          "refs": [
+            "gate-G02"
+          ],
+          "full_scope_refs": [],
+          "context_only_refs": [],
+          "scope": "기록된 한정 표본만 재사용; 조건 전수/현재 통합 증거로 자동 승격하지 않음"
+        },
+        "native": {
+          "status": "missing",
+          "refs": [],
+          "full_scope_refs": [],
+          "context_only_refs": [
+            "g02-native"
+          ],
+          "scope": "해당 종류의 실행 증거 없음. source/intent/다른 환경으로 대체하지 않음"
+        }
+      },
+      "test_sources": [
+        "tests/test_attention.py",
+        "tests/test_connection_binding.py",
+        "tests/test_decisions.py",
+        "tests/test_native_consent.py",
+        "tests/test_one_yes.py",
+        "tests/test_peer_roundtrip.py",
+        "tests/test_person_decisions.py",
+        "tests/test_selected_connection.py",
+        "tests/test_user_answers.py"
+      ],
+      "source_paths": [
+        "xsm/attention.py",
+        "xsm/cli.py",
+        "xsm/config.py",
+        "xsm/connect.py",
+        "xsm/consent.py",
+        "xsm/decisions.py",
+        "xsm/mcp.py",
+        "xsm/outbox.py",
+        "xsm/receive.py"
+      ],
+      "secondary_dependencies": [],
+      "reason": "거부/취소/추가질문·늦은 답/철회 실제 사람 표본과 G07 미충족."
+    },
+    {
+      "id": "A15-06",
+      "status_unchanged": "partial",
+      "criterion": "요청 하나에 대한 동의로 다른 세션·폴더·업무 권한이 추가되지 않는다. 철회·재개 시 수명 계약을 적용한다.",
+      "required_levels": [
+        "fixture",
+        "subprocess",
+        "harness"
+      ],
+      "primary_category": 2,
+      "category": "실제 사람 UI·새 인증/신뢰 필요",
+      "recorded_gap_not_automatically_adopted": "다른 업무·세대·철회·resume의 실제 승인 범위 전수 readback이 남음.",
+      "formal_blocked_gates": [
+        "G07"
+      ],
+      "evidence_preserved": {
+        "fixture": {
+          "status": "partial",
+          "refs": [
+            "gate-G02"
+          ],
+          "full_scope_refs": [],
+          "context_only_refs": [],
+          "scope": "기록된 한정 표본만 재사용; 조건 전수/현재 통합 증거로 자동 승격하지 않음"
+        },
+        "native": {
+          "status": "partial",
+          "refs": [
+            "g02-native"
+          ],
+          "full_scope_refs": [],
+          "context_only_refs": [],
+          "scope": "기록된 한정 표본만 재사용; 조건 전수/현재 통합 증거로 자동 승격하지 않음"
+        },
+        "process": {
+          "status": "partial",
+          "refs": [
+            "gate-G02"
+          ],
+          "full_scope_refs": [],
+          "context_only_refs": [],
+          "scope": "기록된 한정 표본만 재사용; 조건 전수/현재 통합 증거로 자동 승격하지 않음"
+        }
+      },
+      "test_sources": [
+        "tests/test_attention.py",
+        "tests/test_connection_binding.py",
+        "tests/test_decisions.py",
+        "tests/test_directory.py",
+        "tests/test_directory_contract.py",
+        "tests/test_directory_interfaces.py",
+        "tests/test_discovery_latency.py",
+        "tests/test_native_consent.py",
+        "tests/test_one_yes.py",
+        "tests/test_peer_roundtrip.py",
+        "tests/test_person_decisions.py",
+        "tests/test_selected_connection.py",
+        "tests/test_user_answers.py"
+      ],
+      "source_paths": [
+        "xsm/attention.py",
+        "xsm/cli.py",
+        "xsm/config.py",
+        "xsm/connect.py",
+        "xsm/consent.py",
+        "xsm/decisions.py",
+        "xsm/mcp.py",
+        "xsm/outbox.py",
+        "xsm/receive.py"
+      ],
+      "secondary_dependencies": [],
+      "reason": "실제 승인된 업무/세대 범위와 철회/resume 원천 필요. 임의 consent 생성 금지."
+    },
+    {
+      "id": "A16-01",
+      "status_unchanged": "partial",
+      "criterion": "같은 입력의 CLI/MCP 질문이 동일한 실제 답과 원 요청 ID를 반환한다. 영수증만 있는 반례는 성공 답변이 아니다.",
+      "required_levels": [
+        "fixture",
+        "harness"
+      ],
+      "primary_category": 4,
+      "category": "사용자 입력 없이 가능한 구체 local 구현/검증",
+      "recorded_gap_not_automatically_adopted": "B03 실제 질문/회신은 로컬 표본. 같은 입력의 CLI/MCP 및 현재 통합 revision 전체 의미 일치를 닫지 않음.",
+      "formal_blocked_gates": [],
+      "evidence_preserved": {
+        "fixture": {
+          "status": "partial",
+          "refs": [
+            "b03-regression",
+            "gate-G03"
+          ],
+          "full_scope_refs": [],
+          "context_only_refs": [],
+          "scope": "기록된 한정 표본만 재사용; 조건 전수/현재 통합 증거로 자동 승격하지 않음"
+        },
+        "native": {
+          "status": "partial",
+          "refs": [
+            "b03-mcp",
+            "b03-question"
+          ],
+          "full_scope_refs": [],
+          "context_only_refs": [],
+          "scope": "기록된 한정 표본만 재사용; 조건 전수/현재 통합 증거로 자동 승격하지 않음"
+        }
+      },
+      "test_sources": [
+        "tests/test_mcp_dispatch.py",
+        "tests/test_mcp_wait_process.py",
+        "tests/test_question_interfaces.py",
+        "tests/test_questions.py"
+      ],
+      "source_paths": [
+        "skills/xsm",
+        "xsm/cli.py",
+        "xsm/inbox.py",
+        "xsm/ledger.py",
+        "xsm/mcp.py",
+        "xsm/receive.py",
+        "xsm/send.py"
+      ],
+      "secondary_dependencies": [],
+      "flow_rank": 3,
+      "flow": "질문→답 회수",
+      "next_one_execution": "한 실제 local 질문 Q의 같은 owner에서 CLI question-status와 MCP xsm_question_status readback을 비교한다.",
+      "completion_criterion": "원 ID/reply_to/본문 SHA/outcome 일치, 기존 receipt-only 음성 결속, 추가송신0.",
+      "actual_current_blocker": "각 CLI/MCP 실제 답은 있지만 같은 입력/원요청의 비교가 미결속. D12/새 계정 선택은 필요 없다.",
+      "new_user_decision_required": false,
+      "known_product_defect_asserted": false,
+      "local_slice_not_automatic_whole_criterion": true
+    },
+    {
+      "id": "A16-03",
+      "status_unchanged": "partial",
+      "criterion": "같은 기능 표에서 priority·wake·첨부·회신·결과 입력의 CLI/MCP 차이를 전수 확인한다. 미지원은 명시한다.",
+      "required_levels": [
+        "fixture",
+        "harness"
+      ],
+      "primary_category": 4,
+      "category": "사용자 입력 없이 가능한 구체 local 구현/검증",
+      "recorded_gap_not_automatically_adopted": "priority/wake/files/outcome/owned 전체 기능 표의 실제 양 인터페이스 전수 효과가 남음.",
+      "formal_blocked_gates": [],
+      "evidence_preserved": {
+        "fixture": {
+          "status": "partial",
+          "refs": [
+            "b03-regression",
+            "gate-G03"
+          ],
+          "full_scope_refs": [],
+          "context_only_refs": [],
+          "scope": "기록된 한정 표본만 재사용; 조건 전수/현재 통합 증거로 자동 승격하지 않음"
+        },
+        "native": {
+          "status": "partial",
+          "refs": [
+            "b03-mcp",
+            "b03-question"
+          ],
+          "full_scope_refs": [],
+          "context_only_refs": [],
+          "scope": "기록된 한정 표본만 재사용; 조건 전수/현재 통합 증거로 자동 승격하지 않음"
+        }
+      },
+      "test_sources": [
+        "tests/test_b04_interfaces.py",
+        "tests/test_crash_boundaries.py",
+        "tests/test_file_interfaces.py",
+        "tests/test_files.py",
+        "tests/test_handoff.py",
+        "tests/test_handoff_consumer.py",
+        "tests/test_handoff_crash.py",
+        "tests/test_materials.py",
+        "tests/test_mcp_dispatch.py",
+        "tests/test_mcp_wait_process.py",
+        "tests/test_owned_crash.py",
+        "tests/test_owned_interfaces.py",
+        "tests/test_owned_native.py",
+        "tests/test_owned_native_events.py",
+        "tests/test_owned_requests.py",
+        "tests/test_owned_workers.py",
+        "tests/test_question_interfaces.py",
+        "tests/test_questions.py"
+      ],
+      "source_paths": [
+        "skills/xsm",
+        "xsm/cli.py",
+        "xsm/files.py",
+        "xsm/inbox.py",
+        "xsm/ledger.py",
+        "xsm/materials.py",
+        "xsm/mcp.py",
+        "xsm/receive.py",
+        "xsm/send.py",
+        "xsm/workers.py"
+      ],
+      "secondary_dependencies": [],
+      "flow_rank": 4,
+      "flow": "옵션→동일 의미",
+      "next_one_execution": "priority/wake/attachments/reply_to/outcome 5축 공통표를 실제 CLI parser/MCP schema→service→adapter 효과 capture로 완성한다.",
+      "completion_criterion": "5축의 지원/명시미지원/실제 효과와 selector가 모두 대응. 기존 native 효과 재사용, owned 등 원문 밖 필수 축 추가 금지.",
+      "actual_current_blocker": "부분 fixture/native는 존재. 같은 기능표의 양 인터페이스 대조가 미완이며 모든 하네스 재실행은 요구하지 않는다.",
+      "new_user_decision_required": false,
+      "known_product_defect_asserted": false,
+      "local_slice_not_automatic_whole_criterion": true
+    },
+    {
+      "id": "A16-07",
+      "status_unchanged": "partial",
+      "criterion": "수신 대기 중 취소·시간 초과·동시 답변·여러 부분 회신을 검사한다. 대기 종료가 상대 과제를 중복 실행하지 않는다.",
+      "required_levels": [
+        "fixture",
+        "subprocess",
+        "harness"
+      ],
+      "primary_category": 5,
+      "category": "기존 근거 재결속 가능 후보",
+      "recorded_gap_not_automatically_adopted": "OS stdio 경쟁 fixture와 native reply는 별개. 실제 UI/하네스 취소·동시 부분/final 전 조합이 남음.",
+      "formal_blocked_gates": [
+        "G07"
+      ],
+      "evidence_preserved": {
+        "fixture": {
+          "status": "partial",
+          "refs": [
+            "b03-regression",
+            "gate-G03"
+          ],
+          "full_scope_refs": [],
+          "context_only_refs": [],
+          "scope": "기록된 한정 표본만 재사용; 조건 전수/현재 통합 증거로 자동 승격하지 않음"
+        },
+        "native": {
+          "status": "missing",
+          "refs": [],
+          "full_scope_refs": [],
+          "context_only_refs": [
+            "b03-mcp",
+            "b03-question"
+          ],
+          "scope": "해당 종류의 실행 증거 없음. source/intent/다른 환경으로 대체하지 않음"
+        },
+        "process": {
+          "status": "partial",
+          "refs": [
+            "b03-regression",
+            "gate-G03"
+          ],
+          "full_scope_refs": [],
+          "context_only_refs": [],
+          "scope": "기록된 한정 표본만 재사용; 조건 전수/현재 통합 증거로 자동 승격하지 않음"
+        }
+      },
+      "test_sources": [
+        "tests/test_attention.py",
+        "tests/test_b04_interfaces.py",
+        "tests/test_crash_boundaries.py",
+        "tests/test_decisions.py",
+        "tests/test_handoff.py",
+        "tests/test_handoff_consumer.py",
+        "tests/test_handoff_crash.py",
+        "tests/test_mcp_dispatch.py",
+        "tests/test_mcp_wait_process.py",
+        "tests/test_person_decisions.py",
+        "tests/test_question_interfaces.py",
+        "tests/test_questions.py",
+        "tests/test_user_answers.py"
+      ],
+      "source_paths": [
+        "skills/xsm",
+        "xsm/attention.py",
+        "xsm/cli.py",
+        "xsm/decisions.py",
+        "xsm/inbox.py",
+        "xsm/ledger.py",
+        "xsm/mcp.py",
+        "xsm/receive.py",
+        "xsm/send.py"
+      ],
+      "secondary_dependencies": [
+        2
+      ],
+      "next_readonly_binding": "stdio timeout/cancel/부분·final 경쟁 fixture/process와 실제 late reply를 원 수준대로 결속. native 모든 조합/UI취소 notification을 새 필수로 추가하지 않는다. G07 공식 gate는 유지.",
+      "promotion_guaranteed": false,
+      "formal_gates_waived": false
+    },
+    {
+      "id": "A17-01",
+      "status_unchanged": "partial",
+      "criterion": "여러 홈·런타임의 동명 세션에서 업무·branch로 후보를 찾고, 최종 대상은 실제 핸들과 일치한다.",
+      "required_levels": [
+        "fixture",
+        "harness",
+        "physical"
+      ],
+      "primary_category": 1,
+      "category": "D12/P12 의존",
+      "recorded_gap_not_automatically_adopted": "로컬 후보/동명 fixture 및 native discover 표본. 실제 다른 머신 동일 이름·업무/branch는 없음.",
+      "formal_blocked_gates": [
+        "G12"
+      ],
+      "evidence_preserved": {
+        "fixture": {
+          "status": "partial",
+          "refs": [
+            "b03-regression",
+            "gate-G05"
+          ],
+          "full_scope_refs": [],
+          "context_only_refs": [],
+          "scope": "기록된 한정 표본만 재사용; 조건 전수/현재 통합 증거로 자동 승격하지 않음"
+        },
+        "native": {
+          "status": "partial",
+          "refs": [
+            "b03-mcp"
+          ],
+          "full_scope_refs": [],
+          "context_only_refs": [],
+          "scope": "기록된 한정 표본만 재사용; 조건 전수/현재 통합 증거로 자동 승격하지 않음"
+        },
+        "physical": {
+          "status": "missing",
+          "refs": [],
+          "full_scope_refs": [],
+          "context_only_refs": [],
+          "scope": "해당 종류의 실행 증거 없음. source/intent/다른 환경으로 대체하지 않음"
+        }
+      },
+      "test_sources": [
+        "tests/test_directory.py",
+        "tests/test_directory_contract.py",
+        "tests/test_directory_interfaces.py",
+        "tests/test_discovery_latency.py",
+        "tests/test_remote.py"
+      ],
+      "source_paths": [
+        "xsm/cli.py",
+        "xsm/config.py",
+        "xsm/identity.py",
+        "xsm/mcp.py",
+        "xsm/probe.py",
+        "xsm/registry.py",
+        "xsm/resolve.py"
+      ],
+      "secondary_dependencies": [],
+      "reason": "로컬 multi-home/native 후보 성공 유지. required physical과 원격 후보는 P12 discovery 미구현."
+    },
+    {
+      "id": "A17-02",
+      "status_unchanged": "partial",
+      "criterion": "공유 MCP 하나에서 서로 다른 두 대화·폴더를 번갈아 호출해 발신자·자료 루트·권한이 섞이지 않는다.",
+      "required_levels": [
+        "fixture",
+        "harness"
+      ],
+      "primary_category": 3,
+      "category": "현재 runtime 미제공 기능·미확보 물리 환경",
+      "recorded_gap_not_automatically_adopted": "서로 다른 native 프로필 표본은 실제 공유 MCP 하나의 A/B 호출·자료 루트 격리를 대신하지 않음.",
+      "formal_blocked_gates": [],
+      "evidence_preserved": {
+        "fixture": {
+          "status": "partial",
+          "refs": [
+            "b03-regression",
+            "gate-G01",
+            "gate-G05"
+          ],
+          "full_scope_refs": [],
+          "context_only_refs": [],
+          "scope": "기록된 한정 표본만 재사용; 조건 전수/현재 통합 증거로 자동 승격하지 않음"
+        },
+        "native": {
+          "status": "missing",
+          "refs": [],
+          "full_scope_refs": [],
+          "context_only_refs": [
+            "b03-mcp"
+          ],
+          "scope": "해당 종류의 실행 증거 없음. source/intent/다른 환경으로 대체하지 않음"
+        }
+      },
+      "test_sources": [
+        "tests/test_file_interfaces.py",
+        "tests/test_files.py",
+        "tests/test_materials.py",
+        "tests/test_mcp_identity.py",
+        "tests/test_remote.py",
+        "tests/test_xsm.py"
+      ],
+      "source_paths": [
+        "xsm/adapters.py",
+        "xsm/envelope.py",
+        "xsm/files.py",
+        "xsm/identity.py",
+        "xsm/ledger.py",
+        "xsm/materials.py",
+        "xsm/mcp.py",
+        "xsm/receive.py",
+        "xsm/registry.py",
+        "xsm/send.py"
+      ],
+      "secondary_dependencies": [],
+      "reason": "factory runtime이 thread별 다른 MCP PID를 생성. 한 server의 실제 A/B 호출을 제공하지 않음. 분리 server 귀속 성공은 유지."
+    },
+    {
+      "id": "A17-03",
+      "status_unchanged": "partial",
+      "criterion": "resume·새 대화·이름 변경·pid 재사용·다른 머신의 동명을 각각 검사한다.",
+      "required_levels": [
+        "fixture",
+        "harness"
+      ],
+      "primary_category": 1,
+      "category": "D12/P12 의존",
+      "recorded_gap_not_automatically_adopted": "로컬 resume/rename/pid fixture와 원격 동명·다른 머신 native 세대 행렬은 별개.",
+      "formal_blocked_gates": [
+        "G12"
+      ],
+      "evidence_preserved": {
+        "fixture": {
+          "status": "partial",
+          "refs": [
+            "b03-regression",
+            "gate-G05"
+          ],
+          "full_scope_refs": [],
+          "context_only_refs": [],
+          "scope": "기록된 한정 표본만 재사용; 조건 전수/현재 통합 증거로 자동 승격하지 않음"
+        },
+        "native": {
+          "status": "missing",
+          "refs": [],
+          "full_scope_refs": [],
+          "context_only_refs": [
+            "b03-mcp"
+          ],
+          "scope": "해당 종류의 실행 증거 없음. source/intent/다른 환경으로 대체하지 않음"
+        }
+      },
+      "test_sources": [
+        "tests/test_directory.py",
+        "tests/test_directory_contract.py",
+        "tests/test_directory_interfaces.py",
+        "tests/test_discovery_latency.py",
+        "tests/test_remote.py"
+      ],
+      "source_paths": [
+        "xsm/cli.py",
+        "xsm/config.py",
+        "xsm/identity.py",
+        "xsm/mcp.py",
+        "xsm/probe.py",
+        "xsm/registry.py",
+        "xsm/resolve.py"
+      ],
+      "secondary_dependencies": [],
+      "reason": "local 수명 fixture/native 성공 유지. 다른 머신 동명은 P12 원격식별 필요."
+    },
+    {
+      "id": "A17-05",
+      "status_unchanged": "partial",
+      "criterion": "제외 폴더의 문자열 경로와 실제 경로가 달라도 등록·목록·첨부 정책이 일치한다.",
+      "required_levels": [
+        "fixture",
+        "harness"
+      ],
+      "primary_category": 4,
+      "category": "사용자 입력 없이 가능한 구체 local 구현/검증",
+      "recorded_gap_not_automatically_adopted": "등록/목록 제외 fixture에 실제 공유 MCP 첨부 소비의 제외/권한 행렬을 합쳐야 함.",
+      "formal_blocked_gates": [],
+      "evidence_preserved": {
+        "fixture": {
+          "status": "partial",
+          "refs": [
+            "b03-regression",
+            "gate-G05"
+          ],
+          "full_scope_refs": [],
+          "context_only_refs": [],
+          "scope": "기록된 한정 표본만 재사용; 조건 전수/현재 통합 증거로 자동 승격하지 않음"
+        },
+        "native": {
+          "status": "missing",
+          "refs": [],
+          "full_scope_refs": [],
+          "context_only_refs": [
+            "b03-mcp"
+          ],
+          "scope": "해당 종류의 실행 증거 없음. source/intent/다른 환경으로 대체하지 않음"
+        }
+      },
+      "test_sources": [
+        "tests/test_abuse.py",
+        "tests/test_directory.py",
+        "tests/test_directory_contract.py",
+        "tests/test_directory_interfaces.py",
+        "tests/test_discovery_latency.py",
+        "tests/test_file_interfaces.py",
+        "tests/test_files.py",
+        "tests/test_materials.py",
+        "tests/test_policy_recovery.py",
+        "tests/test_provenance.py",
+        "tests/test_traffic_policy.py"
+      ],
+      "source_paths": [
+        "xsm/abuse.py",
+        "xsm/cli.py",
+        "xsm/config.py",
+        "xsm/files.py",
+        "xsm/identity.py",
+        "xsm/materials.py",
+        "xsm/mcp.py",
+        "xsm/probe.py",
+        "xsm/provenance.py",
+        "xsm/registry.py",
+        "xsm/resolve.py"
+      ],
+      "secondary_dependencies": [],
+      "flow_rank": 1,
+      "flow": "발견→제외 자료",
+      "next_one_execution": "선택한 실제 local caller의 disposable excluded/symlink 경로 한 개를 registry.upsert→directory.discover→CLI files.prepare_cli까지 한 trace로 검증한다.",
+      "completion_criterion": "동일 realpath에서 등록/목록 제외와 CLI 반출 거절, copy/원본변경0. MCP inline에 없는 원경로 검증을 가정하지 않는다.",
+      "actual_current_blocker": "기존 fixture 정책은 성공. native CLI 원경로 시도0이며 shared server는 이 criterion의 전제가 아니다.",
+      "new_user_decision_required": false,
+      "known_product_defect_asserted": false,
+      "local_slice_not_automatic_whole_criterion": true
+    },
+    {
+      "id": "A17-06",
+      "status_unchanged": "partial",
+      "criterion": "과거 대화가 오프라인인 상태에서 동명 새 세션으로 미독이나 승인 권한이 넘어가지 않는지 선택한 수명 계약으로 검증한다.",
+      "required_levels": [
+        "fixture",
+        "subprocess",
+        "harness"
+      ],
+      "primary_category": 2,
+      "category": "실제 사람 UI·새 인증/신뢰 필요",
+      "recorded_gap_not_automatically_adopted": "B04 원문 회수는 있음. 동명 새 대화/동일 resume과 승인 수명 전 조합 native 추적이 남음.",
+      "formal_blocked_gates": [],
+      "evidence_preserved": {
+        "fixture": {
+          "status": "partial",
+          "refs": [
+            "b03-regression",
+            "gate-G05"
+          ],
+          "full_scope_refs": [],
+          "context_only_refs": [],
+          "scope": "기록된 한정 표본만 재사용; 조건 전수/현재 통합 증거로 자동 승격하지 않음"
+        },
+        "native": {
+          "status": "partial",
+          "refs": [
+            "session-lifetime-native-partial"
+          ],
+          "full_scope_refs": [],
+          "context_only_refs": [
+            "b03-mcp"
+          ],
+          "scope": "기록된 한정 표본만 재사용; 조건 전수/현재 통합 증거로 자동 승격하지 않음"
+        },
+        "process": {
+          "status": "partial",
+          "refs": [
+            "b03-regression",
+            "gate-G05"
+          ],
+          "full_scope_refs": [],
+          "context_only_refs": [],
+          "scope": "기록된 한정 표본만 재사용; 조건 전수/현재 통합 증거로 자동 승격하지 않음"
+        }
+      },
+      "test_sources": [
+        "tests/test_b04_interfaces.py",
+        "tests/test_crash_boundaries.py",
+        "tests/test_directory.py",
+        "tests/test_directory_contract.py",
+        "tests/test_directory_interfaces.py",
+        "tests/test_discovery_latency.py",
+        "tests/test_handoff.py",
+        "tests/test_handoff_consumer.py",
+        "tests/test_handoff_crash.py"
+      ],
+      "source_paths": [
+        "xsm/cli.py",
+        "xsm/config.py",
+        "xsm/identity.py",
+        "xsm/mcp.py",
+        "xsm/probe.py",
+        "xsm/registry.py",
+        "xsm/resolve.py"
+      ],
+      "secondary_dependencies": [],
+      "reason": "새CID 미독 비상속/원CID resume 실제 성공은 있음. 해당 fixture에 승인 exact pair가 없어 권한 비상속에는 실제 affirmative 원천이 필요."
+    },
+    {
+      "id": "A18-01",
+      "status_unchanged": "partial",
+      "criterion": "queue 실행 실패·소켓 쓰기 성공 뒤 수신 실패를 주입하면 런타임 도달 성공으로 보고하지 않는다.",
+      "required_levels": [
+        "fixture",
+        "subprocess",
+        "harness"
+      ],
+      "primary_category": 5,
+      "category": "기존 근거 재결속 가능 후보",
+      "recorded_gap_not_automatically_adopted": "G01 로컬 실패 주입 기록을 현재 실제 queue/socket 실패 하네스 전체와 혼합하지 않음.",
+      "formal_blocked_gates": [],
+      "evidence_preserved": {
+        "fixture": {
+          "status": "partial",
+          "refs": [
+            "b04-regression",
+            "b05-local-integration",
+            "gate-G01"
+          ],
+          "full_scope_refs": [],
+          "context_only_refs": [],
+          "scope": "기록된 한정 표본만 재사용; 조건 전수/현재 통합 증거로 자동 승격하지 않음"
+        },
+        "native": {
+          "status": "missing",
+          "refs": [],
+          "full_scope_refs": [],
+          "context_only_refs": [
+            "b04-native"
+          ],
+          "scope": "해당 종류의 실행 증거 없음. source/intent/다른 환경으로 대체하지 않음"
+        },
+        "process": {
+          "status": "partial",
+          "refs": [
+            "b04-legacy",
+            "b04-regression",
+            "b05-local-integration",
+            "gate-G01"
+          ],
+          "full_scope_refs": [],
+          "context_only_refs": [],
+          "scope": "기록된 한정 표본만 재사용; 조건 전수/현재 통합 증거로 자동 승격하지 않음"
+        }
+      },
+      "test_sources": [
+        "tests/test_mcp_identity.py",
+        "tests/test_remote.py",
+        "tests/test_xsm.py"
+      ],
+      "source_paths": [
+        "xsm/adapters.py",
+        "xsm/envelope.py",
+        "xsm/identity.py",
+        "xsm/ledger.py",
+        "xsm/mcp.py",
+        "xsm/receive.py",
+        "xsm/registry.py",
+        "xsm/send.py"
+      ],
+      "secondary_dependencies": [],
+      "next_readonly_binding": "기존 queue/socket 실패 fixture/process와 실제 typed native fallback·수신 evidence를 현재 SHA로 재대조. 전체 하네스 실패 행렬은 새 요구가 아니다.",
+      "promotion_guaranteed": false,
+      "formal_gates_waived": false
+    },
+    {
+      "id": "A18-02",
+      "status_unchanged": "partial",
+      "criterion": "확인 직전 수신 클라이언트 종료와 대기 취소를 재현해 미독을 회수한다. 정상 확인 뒤 같은 메시지가 반복 실행되지 않는지도 별도로 확인한다.",
+      "required_levels": [
+        "fixture",
+        "subprocess",
+        "harness"
+      ],
+      "primary_category": 5,
+      "category": "기존 근거 재결속 가능 후보",
+      "recorded_gap_not_automatically_adopted": "factory native claim0byte/실제client종료/같은CID 새세대 owner-dead회수/ACK·상관reply/ACK후빈inbox 관측. fixture/process취소는충족했으나 native cancel notification은0으로 native취소셀은missing; 전체partial. 첫resume거부/tail race/drift writer unknown 보존.",
+      "formal_blocked_gates": [],
+      "evidence_preserved": {
+        "fixture": {
+          "status": "proven",
+          "refs": [
+            "b04-regression",
+            "b05-local-integration",
+            "final-bound-A18-02",
+            "postqa-bound-A18-02-local"
+          ],
+          "full_scope_refs": [
+            "final-bound-A18-02"
+          ],
+          "context_only_refs": [],
+          "scope": "지정 criterion/level의 구체 경로·실행·hash 결속으로 종결; 다른 조건/환경으로 전이 금지"
+        },
+        "native": {
+          "status": "partial",
+          "refs": [
+            "b04-native",
+            "factory-handoff-native"
+          ],
+          "full_scope_refs": [],
+          "context_only_refs": [],
+          "scope": "기록된 한정 표본만 재사용; 조건 전수/현재 통합 증거로 자동 승격하지 않음"
+        },
+        "process": {
+          "status": "proven",
+          "refs": [
+            "b04-legacy",
+            "b04-regression",
+            "b05-local-integration",
+            "final-bound-A18-02",
+            "postqa-bound-A18-02-local"
+          ],
+          "full_scope_refs": [
+            "final-bound-A18-02"
+          ],
+          "context_only_refs": [],
+          "scope": "지정 criterion/level의 구체 경로·실행·hash 결속으로 종결; 다른 조건/환경으로 전이 금지"
+        }
+      },
+      "test_sources": [
+        "tests/test_b04_interfaces.py",
+        "tests/test_crash_boundaries.py",
+        "tests/test_handoff.py",
+        "tests/test_handoff_consumer.py",
+        "tests/test_handoff_crash.py"
+      ],
+      "source_paths": [
+        "xsm/adapters.py",
+        "xsm/codex_daemon.py",
+        "xsm/housekeeping.py",
+        "xsm/inbox.py",
+        "xsm/ledger.py",
+        "xsm/receive.py",
+        "xsm/remote.py",
+        "xsm/send.py"
+      ],
+      "secondary_dependencies": [],
+      "next_readonly_binding": "이미 proven인 fixture/process 취소와 factory native client종료/동일CID 회수/ACK후빈inbox를 결속. native cancel=0 한계는 남기되 세부 전부를 native로 반복해야 한다는 가산은 하지 않는다.",
+      "promotion_guaranteed": false,
+      "formal_gates_waived": false
+    },
+    {
+      "id": "A18-04",
+      "status_unchanged": "partial",
+      "criterion": "데몬 또는 클라이언트 재시작 뒤 원 ID와 대화 이름이 유지된다. 저장 중 강제 종료·확인 유실을 검사한다. 변경 요청 직전·직후 연결을 끊어 조회만의 자동 재시도와 대상 상태 readback을 대조한다.",
+      "required_levels": [
+        "fixture",
+        "subprocess",
+        "harness"
+      ],
+      "primary_category": 4,
+      "category": "사용자 입력 없이 가능한 구체 local 구현/검증",
+      "recorded_gap_not_automatically_adopted": "로컬 claim/legacy/설치 실패 보존과 원격 변경 직전·직후 단절/readback은 별개. G12 없음.",
+      "formal_blocked_gates": [
+        "G12"
+      ],
+      "evidence_preserved": {
+        "fixture": {
+          "status": "partial",
+          "refs": [
+            "b04-regression",
+            "b05-local-integration"
+          ],
+          "full_scope_refs": [],
+          "context_only_refs": [],
+          "scope": "기록된 한정 표본만 재사용; 조건 전수/현재 통합 증거로 자동 승격하지 않음"
+        },
+        "native": {
+          "status": "partial",
+          "refs": [
+            "p10-upgrade-native"
+          ],
+          "full_scope_refs": [],
+          "context_only_refs": [
+            "b04-native"
+          ],
+          "scope": "기록된 한정 표본만 재사용; 조건 전수/현재 통합 증거로 자동 승격하지 않음"
+        },
+        "process": {
+          "status": "partial",
+          "refs": [
+            "b04-legacy",
+            "b04-regression",
+            "b05-local-integration",
+            "p10-upgrade-native"
+          ],
+          "full_scope_refs": [],
+          "context_only_refs": [],
+          "scope": "기록된 한정 표본만 재사용; 조건 전수/현재 통합 증거로 자동 승격하지 않음"
+        }
+      },
+      "test_sources": [
+        "tests/test_b04_interfaces.py",
+        "tests/test_crash_boundaries.py",
+        "tests/test_handoff.py",
+        "tests/test_handoff_consumer.py",
+        "tests/test_handoff_crash.py",
+        "tests/test_hook_status.py",
+        "tests/test_install_cli_flow.py",
+        "tests/test_install_codex.py",
+        "tests/test_install_runtime.py",
+        "tests/test_install_safety.py",
+        "tests/test_launcher.py",
+        "tests/test_remote.py",
+        "tests/test_setup_flow.py",
+        "tests/test_version_mix.py"
+      ],
+      "source_paths": [
+        "xsm/adapters.py",
+        "xsm/codex_daemon.py",
+        "xsm/housekeeping.py",
+        "xsm/inbox.py",
+        "xsm/ledger.py",
+        "xsm/receive.py",
+        "xsm/remote.py",
+        "xsm/send.py",
+        "xsm/setup_flow.py"
+      ],
+      "secondary_dependencies": [
+        1
+      ],
+      "flow_rank": 5,
+      "flow": "단절→동일 ID readback",
+      "next_one_execution": "own local service 변경 요청 하나의 응답 직전/직후 client 연결 단절을 한 쌍으로 검증한다. 조회만 자동 retry한다.",
+      "completion_criterion": "원 ID/대화 유지, mutation 추가실행0, 실제 상태 readback. local 완료와 공식 G12 종결은 분리한다.",
+      "actual_current_blocker": "local kill/복구 근거는 있음. 직전/직후와 조회 retry/readback 짝이 미결속. 원격 통합 G12는 D12/P12 대기지만 local 셀 전체가 막힌 것은 아니다.",
+      "new_user_decision_required": false,
+      "known_product_defect_asserted": false,
+      "local_slice_not_automatic_whole_criterion": true
+    },
+    {
+      "id": "A19-01",
+      "status_unchanged": "partial",
+      "criterion": "CLI/MCP로 같은 텍스트·첨부를 보내 본문과 수신 사본의 다이제스트를 대조한다.",
+      "required_levels": [
+        "fixture",
+        "harness"
+      ],
+      "primary_category": 4,
+      "category": "사용자 입력 없이 가능한 구체 local 구현/검증",
+      "recorded_gap_not_automatically_adopted": "Codex 두 홈 및 Claude의 실제 사본 token 읽기/ACK/reply 있음. 동일 입력 CLI/MCP 원문·사본 digest 전수 대조는 남음.",
+      "formal_blocked_gates": [],
+      "evidence_preserved": {
+        "fixture": {
+          "status": "partial",
+          "refs": [
+            "b05-local-integration",
+            "gate-G06"
+          ],
+          "full_scope_refs": [],
+          "context_only_refs": [],
+          "scope": "기록된 한정 표본만 재사용; 조건 전수/현재 통합 증거로 자동 승격하지 않음"
+        },
+        "native": {
+          "status": "partial",
+          "refs": [
+            "p06-claude-native",
+            "p06-native"
+          ],
+          "full_scope_refs": [],
+          "context_only_refs": [],
+          "scope": "기록된 한정 표본만 재사용; 조건 전수/현재 통합 증거로 자동 승격하지 않음"
+        }
+      },
+      "test_sources": [
+        "tests/test_file_interfaces.py",
+        "tests/test_files.py",
+        "tests/test_materials.py"
+      ],
+      "source_paths": [
+        "xsm/cli.py",
+        "xsm/doc.py",
+        "xsm/envelope.py",
+        "xsm/files.py",
+        "xsm/housekeeping.py",
+        "xsm/materials.py",
+        "xsm/mcp.py",
+        "xsm/paths.py",
+        "xsm/remote.py",
+        "xsm/send.py"
+      ],
+      "secondary_dependencies": [],
+      "flow_rank": 6,
+      "flow": "자료→사본",
+      "next_one_execution": "같은 synthetic 본문/파일 bytes의 실제 CLI 원경로 송신과 caller-inline MCP 송신을 한 쌍으로 결속한다.",
+      "completion_criterion": "본문·원문/수신 copy SHA와 receiver readback 일치. 기존 MCP 양성은 재사용하고 필요한 CLI 짝만 보완한다.",
+      "actual_current_blocker": "material 표본 CLI_attempts=0. CLI 불가/거부가 실측된 것은 아니고 MCP 실제 읽기는 성공했다.",
+      "new_user_decision_required": false,
+      "known_product_defect_asserted": false,
+      "local_slice_not_automatic_whole_criterion": true
+    },
+    {
+      "id": "A19-02",
+      "status_unchanged": "partial",
+      "criterion": "하나의 MCP가 서로 다른 폴더의 두 세션을 처리할 때 각자의 정상 파일을 읽고 타 세션 파일은 접근하지 않는다.",
+      "required_levels": [
+        "fixture",
+        "harness"
+      ],
+      "primary_category": 3,
+      "category": "현재 runtime 미제공 기능·미확보 물리 환경",
+      "recorded_gap_not_automatically_adopted": "두 프로필 xsm_files 읽기는 실제 공유 MCP 하나의 동시 A/B 루트 격리 검사가 아님.",
+      "formal_blocked_gates": [],
+      "evidence_preserved": {
+        "fixture": {
+          "status": "partial",
+          "refs": [
+            "b05-local-integration",
+            "gate-G06"
+          ],
+          "full_scope_refs": [],
+          "context_only_refs": [],
+          "scope": "기록된 한정 표본만 재사용; 조건 전수/현재 통합 증거로 자동 승격하지 않음"
+        },
+        "native": {
+          "status": "missing",
+          "refs": [],
+          "full_scope_refs": [],
+          "context_only_refs": [
+            "p06-claude-native",
+            "p06-native"
+          ],
+          "scope": "해당 종류의 실행 증거 없음. source/intent/다른 환경으로 대체하지 않음"
+        }
+      },
+      "test_sources": [
+        "tests/test_file_interfaces.py",
+        "tests/test_files.py",
+        "tests/test_materials.py"
+      ],
+      "source_paths": [
+        "xsm/cli.py",
+        "xsm/doc.py",
+        "xsm/envelope.py",
+        "xsm/files.py",
+        "xsm/housekeeping.py",
+        "xsm/materials.py",
+        "xsm/mcp.py",
+        "xsm/paths.py",
+        "xsm/remote.py",
+        "xsm/send.py"
+      ],
+      "secondary_dependencies": [],
+      "reason": "실제 분리서버 파일 owner 성공은 있음. 단일 MCP process의 두 caller 루트 격리는 제공되지 않음."
+    },
+    {
+      "id": "A19-03",
+      "status_unchanged": "partial",
+      "criterion": "외부 경로·숨김 파일·심볼릭 링크·상위 경로·제외 폴더·동명 파일·유니코드 충돌을 검사한다. 허가된 저장소 밖 임시 산출물·숨김 일반 문서는 전달되고, 호출자 권한 밖 파일·제외 자료는 전달되지 않는지 양쪽 표본을 둔다.",
+      "required_levels": [
+        "fixture",
+        "harness"
+      ],
+      "primary_category": 4,
+      "category": "사용자 입력 없이 가능한 구체 local 구현/검증",
+      "recorded_gap_not_automatically_adopted": "실제 정상 첨부 표본 두 건. 허가된 외부/숨김 성공 및 권한 밖/제외/symlink/충돌 전수는 남음.",
+      "formal_blocked_gates": [],
+      "evidence_preserved": {
+        "fixture": {
+          "status": "partial",
+          "refs": [
+            "b05-local-integration",
+            "gate-G06"
+          ],
+          "full_scope_refs": [],
+          "context_only_refs": [],
+          "scope": "기록된 한정 표본만 재사용; 조건 전수/현재 통합 증거로 자동 승격하지 않음"
+        },
+        "native": {
+          "status": "partial",
+          "refs": [
+            "material-boundary-native-partial",
+            "p06-claude-native",
+            "p06-native"
+          ],
+          "full_scope_refs": [],
+          "context_only_refs": [],
+          "scope": "기록된 한정 표본만 재사용; 조건 전수/현재 통합 증거로 자동 승격하지 않음"
+        }
+      },
+      "test_sources": [
+        "tests/test_file_interfaces.py",
+        "tests/test_files.py",
+        "tests/test_materials.py"
+      ],
+      "source_paths": [
+        "xsm/cli.py",
+        "xsm/doc.py",
+        "xsm/envelope.py",
+        "xsm/files.py",
+        "xsm/housekeeping.py",
+        "xsm/materials.py",
+        "xsm/mcp.py",
+        "xsm/paths.py",
+        "xsm/remote.py",
+        "xsm/send.py"
+      ],
+      "secondary_dependencies": [],
+      "flow_rank": 7,
+      "flow": "자료 권한→양성/음성",
+      "next_one_execution": "기존 MCP hidden/outside 양성과 OS mode000 음성을 재사용하고 disposable 명시제외/민감이름 원경로 두 건을 실제 CLI API에 제출하는 음성 묶음을 보완한다.",
+      "completion_criterion": "실제 거절·copy/body 반출0·원본보존. symlink/Unicode는 기존 fixture 결속, inline 서버의 원경로 권한 보장 발명 금지.",
+      "actual_current_blocker": "기존 제외 음성은 모델 미반출 선택으로 API 집행이 아니다. 실제 CLI 시도0이며 MCP에 provenance path가 없다.",
+      "new_user_decision_required": false,
+      "known_product_defect_asserted": false,
+      "local_slice_not_automatic_whole_criterion": true
+    },
+    {
+      "id": "A19-04",
+      "status_unchanged": "partial",
+      "criterion": "구버전·기능 미지원·본문 크기 초과에서 명시적 대체 또는 거절이 발생한다. 조용한 파일 누락을 실패로 잡는다.",
+      "required_levels": [
+        "fixture",
+        "harness"
+      ],
+      "primary_category": 5,
+      "category": "기존 근거 재결속 가능 후보",
+      "recorded_gap_not_automatically_adopted": "legacy·fallback·본문 한도 fixture와 원격 구버전 기능 협상 실제 행렬은 별개.",
+      "formal_blocked_gates": [
+        "G12"
+      ],
+      "evidence_preserved": {
+        "fixture": {
+          "status": "partial",
+          "refs": [
+            "b05-local-integration",
+            "gate-G06"
+          ],
+          "full_scope_refs": [],
+          "context_only_refs": [],
+          "scope": "기록된 한정 표본만 재사용; 조건 전수/현재 통합 증거로 자동 승격하지 않음"
+        },
+        "native": {
+          "status": "missing",
+          "refs": [],
+          "full_scope_refs": [],
+          "context_only_refs": [
+            "p06-claude-native",
+            "p06-native"
+          ],
+          "scope": "해당 종류의 실행 증거 없음. source/intent/다른 환경으로 대체하지 않음"
+        }
+      },
+      "test_sources": [
+        "tests/test_file_interfaces.py",
+        "tests/test_files.py",
+        "tests/test_materials.py",
+        "tests/test_remote.py"
+      ],
+      "source_paths": [
+        "xsm/cli.py",
+        "xsm/doc.py",
+        "xsm/envelope.py",
+        "xsm/files.py",
+        "xsm/housekeeping.py",
+        "xsm/materials.py",
+        "xsm/mcp.py",
+        "xsm/paths.py",
+        "xsm/remote.py",
+        "xsm/send.py"
+      ],
+      "secondary_dependencies": [
+        1
+      ],
+      "next_readonly_binding": "legacy/기능미광고/본문한도 거절 fixture와 old-MCP·첨부 native의 역할을 대조. 원격 구버전 협상 전수를 원문 밖 필수로 만들지 않으며 공식G12는 별도.",
+      "promotion_guaranteed": false,
+      "formal_gates_waived": false
+    },
+    {
+      "id": "A19-05",
+      "status_unchanged": "partial",
+      "criterion": "저장 실패·할당량 초과·승인 보류·재시작·만료 후 정리를 검사하고 원본 파일은 유지한다.",
+      "required_levels": [
+        "fixture",
+        "subprocess"
+      ],
+      "primary_category": 2,
+      "category": "실제 사람 UI·새 인증/신뢰 필요",
+      "recorded_gap_not_automatically_adopted": "저장·quota·승인 보류·재시작·만료·M3 cleanup 근거와 새1667 source 결속 있음. closure G07 미통과로 전체 partial; complete_for는 지정 5개에 한정.",
+      "formal_blocked_gates": [
+        "G07"
+      ],
+      "evidence_preserved": {
+        "fixture": {
+          "status": "partial",
+          "refs": [
+            "b05-local-integration",
+            "gate-G06",
+            "p13-local-regression",
+            "postqa-regression"
+          ],
+          "full_scope_refs": [],
+          "context_only_refs": [],
+          "scope": "기록된 한정 표본만 재사용; 조건 전수/현재 통합 증거로 자동 승격하지 않음"
+        },
+        "process": {
+          "status": "partial",
+          "refs": [
+            "b05-local-integration",
+            "gate-G06",
+            "p13-local-regression",
+            "postqa-regression"
+          ],
+          "full_scope_refs": [],
+          "context_only_refs": [],
+          "scope": "기록된 한정 표본만 재사용; 조건 전수/현재 통합 증거로 자동 승격하지 않음"
+        }
+      },
+      "test_sources": [
+        "tests/test_attention.py",
+        "tests/test_decisions.py",
+        "tests/test_file_interfaces.py",
+        "tests/test_files.py",
+        "tests/test_materials.py",
+        "tests/test_person_decisions.py",
+        "tests/test_user_answers.py"
+      ],
+      "source_paths": [
+        "xsm/attention.py",
+        "xsm/cli.py",
+        "xsm/decisions.py",
+        "xsm/doc.py",
+        "xsm/envelope.py",
+        "xsm/files.py",
+        "xsm/housekeeping.py",
+        "xsm/materials.py",
+        "xsm/mcp.py",
+        "xsm/paths.py",
+        "xsm/remote.py",
+        "xsm/send.py"
+      ],
+      "secondary_dependencies": [],
+      "reason": "fixture/process는 이미 재결속됨. 원 plan closure G07 미통과가 남음. native 전수를 추가할 조건이 아님."
+    },
+    {
+      "id": "A20-01",
+      "status_unchanged": "partial",
+      "criterion": "사람에게 보인 원문·질문·잘린 범위를 기록과 대조한다. 원 요청 본문을 바꿔 재사용하면 적용되지 않는다.",
+      "required_levels": [
+        "fixture",
+        "ui",
+        "review"
+      ],
+      "primary_category": 2,
+      "category": "실제 사람 UI·새 인증/신뢰 필요",
+      "recorded_gap_not_automatically_adopted": "UI intent 두 파일 모두 prepared-not-displayed. 실제 원문/잘림 표시와 사람 대조 증거 없음.",
+      "formal_blocked_gates": [
+        "G07"
+      ],
+      "evidence_preserved": {
+        "UI": {
+          "status": "missing",
+          "refs": [
+            "ui-intent-1",
+            "ui-intent-2"
+          ],
+          "full_scope_refs": [],
+          "context_only_refs": [],
+          "scope": "해당 종류의 실행 증거 없음. source/intent/다른 환경으로 대체하지 않음"
+        },
+        "fixture": {
+          "status": "partial",
+          "refs": [
+            "b04-regression"
+          ],
+          "full_scope_refs": [],
+          "context_only_refs": [],
+          "scope": "기록된 한정 표본만 재사용; 조건 전수/현재 통합 증거로 자동 승격하지 않음"
+        },
+        "review": {
+          "status": "missing",
+          "refs": [],
+          "full_scope_refs": [],
+          "context_only_refs": [],
+          "scope": "해당 종류의 실행 증거 없음. source/intent/다른 환경으로 대체하지 않음"
+        }
+      },
+      "test_sources": [
+        "tests/test_attention.py",
+        "tests/test_decisions.py",
+        "tests/test_person_decisions.py",
+        "tests/test_user_answers.py"
+      ],
+      "source_paths": [
+        "xsm/attention.py",
+        "xsm/channel.py",
+        "xsm/consent.py",
+        "xsm/decisions.py",
+        "xsm/doc.py",
+        "xsm/mcp.py",
+        "xsm/workers.py"
+      ],
+      "secondary_dependencies": [],
+      "reason": "UI intent prepared-not-displayed. 실제 원문/잘림 표시와 사람 대조 없음."
+    },
+    {
+      "id": "A20-02",
+      "status_unchanged": "partial",
+      "criterion": "같은 질문을 두 번 호출해 승인창은 하나이고 원래 요청에 한 번만 적용된다.",
+      "required_levels": [
+        "fixture",
+        "ui"
+      ],
+      "primary_category": 2,
+      "category": "실제 사람 UI·새 인증/신뢰 필요",
+      "recorded_gap_not_automatically_adopted": "중복 질문 fixture는 실제 창 1개·적용 1회의 사람 관측을 대신하지 않음.",
+      "formal_blocked_gates": [
+        "G07"
+      ],
+      "evidence_preserved": {
+        "UI": {
+          "status": "missing",
+          "refs": [
+            "ui-intent-1",
+            "ui-intent-2"
+          ],
+          "full_scope_refs": [],
+          "context_only_refs": [],
+          "scope": "해당 종류의 실행 증거 없음. source/intent/다른 환경으로 대체하지 않음"
+        },
+        "fixture": {
+          "status": "partial",
+          "refs": [
+            "b04-regression"
+          ],
+          "full_scope_refs": [],
+          "context_only_refs": [],
+          "scope": "기록된 한정 표본만 재사용; 조건 전수/현재 통합 증거로 자동 승격하지 않음"
+        }
+      },
+      "test_sources": [
+        "tests/test_attention.py",
+        "tests/test_decisions.py",
+        "tests/test_person_decisions.py",
+        "tests/test_user_answers.py"
+      ],
+      "source_paths": [
+        "xsm/attention.py",
+        "xsm/channel.py",
+        "xsm/consent.py",
+        "xsm/decisions.py",
+        "xsm/doc.py",
+        "xsm/mcp.py",
+        "xsm/workers.py"
+      ],
+      "secondary_dependencies": [],
+      "reason": "중복 억제 fixture 성공. 실제 승인창1/적용1 UI 관측 부족."
+    },
+    {
+      "id": "A20-03",
+      "status_unchanged": "partial",
+      "criterion": "대기 타임아웃 후 실제 답, 질문 취소 후 답, 승인과 철회 동시 발생을 검사한다.",
+      "required_levels": [
+        "fixture",
+        "subprocess",
+        "ui"
+      ],
+      "primary_category": 2,
+      "category": "실제 사람 UI·새 인증/신뢰 필요",
+      "recorded_gap_not_automatically_adopted": "waiter/decision process 검사는 있음. 실제 UI 늦은 답·철회·취소 경쟁이 없음.",
+      "formal_blocked_gates": [
+        "G07"
+      ],
+      "evidence_preserved": {
+        "UI": {
+          "status": "missing",
+          "refs": [
+            "ui-intent-1",
+            "ui-intent-2"
+          ],
+          "full_scope_refs": [],
+          "context_only_refs": [],
+          "scope": "해당 종류의 실행 증거 없음. source/intent/다른 환경으로 대체하지 않음"
+        },
+        "fixture": {
+          "status": "partial",
+          "refs": [
+            "b04-regression"
+          ],
+          "full_scope_refs": [],
+          "context_only_refs": [],
+          "scope": "기록된 한정 표본만 재사용; 조건 전수/현재 통합 증거로 자동 승격하지 않음"
+        },
+        "process": {
+          "status": "partial",
+          "refs": [
+            "b04-regression"
+          ],
+          "full_scope_refs": [],
+          "context_only_refs": [],
+          "scope": "기록된 한정 표본만 재사용; 조건 전수/현재 통합 증거로 자동 승격하지 않음"
+        }
+      },
+      "test_sources": [
+        "tests/test_attention.py",
+        "tests/test_decisions.py",
+        "tests/test_person_decisions.py",
+        "tests/test_user_answers.py"
+      ],
+      "source_paths": [
+        "xsm/attention.py",
+        "xsm/channel.py",
+        "xsm/consent.py",
+        "xsm/decisions.py",
+        "xsm/doc.py",
+        "xsm/mcp.py",
+        "xsm/workers.py"
+      ],
+      "secondary_dependencies": [],
+      "reason": "process 경합 fixture 성공. 실제 UI 늦은 답/취소 후 답/철회 경쟁 부족."
+    },
+    {
+      "id": "A20-04",
+      "status_unchanged": "partial",
+      "criterion": "사람의 거부·창 닫기·하네스 자동 거절·데스크톱 부재를 구별한다. 사용자 거부를 장애로 보고 재촉하지 않는다.",
+      "required_levels": [
+        "fixture",
+        "ui"
+      ],
+      "primary_category": 2,
+      "category": "실제 사람 UI·새 인증/신뢰 필요",
+      "recorded_gap_not_automatically_adopted": "실제 거부/닫힘/하네스 자동 거절/desktop 부재를 구분한 사람 UI 관측이 없음.",
+      "formal_blocked_gates": [
+        "G07"
+      ],
+      "evidence_preserved": {
+        "UI": {
+          "status": "missing",
+          "refs": [
+            "ui-intent-1",
+            "ui-intent-2"
+          ],
+          "full_scope_refs": [],
+          "context_only_refs": [],
+          "scope": "해당 종류의 실행 증거 없음. source/intent/다른 환경으로 대체하지 않음"
+        },
+        "fixture": {
+          "status": "partial",
+          "refs": [
+            "b04-regression"
+          ],
+          "full_scope_refs": [],
+          "context_only_refs": [],
+          "scope": "기록된 한정 표본만 재사용; 조건 전수/현재 통합 증거로 자동 승격하지 않음"
+        }
+      },
+      "test_sources": [
+        "tests/test_attention.py",
+        "tests/test_decisions.py",
+        "tests/test_person_decisions.py",
+        "tests/test_user_answers.py"
+      ],
+      "source_paths": [
+        "xsm/attention.py",
+        "xsm/channel.py",
+        "xsm/consent.py",
+        "xsm/decisions.py",
+        "xsm/doc.py",
+        "xsm/mcp.py",
+        "xsm/workers.py"
+      ],
+      "secondary_dependencies": [],
+      "reason": "실제 거부/닫힘/자동거절/desktop 부재 구분 UI 표본 없음."
+    },
+    {
+      "id": "A20-05",
+      "status_unchanged": "partial",
+      "criterion": "동료가 본문에 승인 태그를 넣거나 다른 요청의 실제 승인을 재사용해도 권한이 생기지 않는다.",
+      "required_levels": [
+        "fixture",
+        "harness"
+      ],
+      "primary_category": 2,
+      "category": "실제 사람 UI·새 인증/신뢰 필요",
+      "recorded_gap_not_automatically_adopted": "가짜 태그/다른 요청 승인 source 검사는 있음. 실제 native 승인 재사용 반례가 남음.",
+      "formal_blocked_gates": [
+        "G07"
+      ],
+      "evidence_preserved": {
+        "fixture": {
+          "status": "partial",
+          "refs": [
+            "b04-regression"
+          ],
+          "full_scope_refs": [],
+          "context_only_refs": [],
+          "scope": "기록된 한정 표본만 재사용; 조건 전수/현재 통합 증거로 자동 승격하지 않음"
+        },
+        "native": {
+          "status": "missing",
+          "refs": [],
+          "full_scope_refs": [],
+          "context_only_refs": [],
+          "scope": "해당 종류의 실행 증거 없음. source/intent/다른 환경으로 대체하지 않음"
+        }
+      },
+      "test_sources": [
+        "tests/test_abuse.py",
+        "tests/test_attention.py",
+        "tests/test_decisions.py",
+        "tests/test_person_decisions.py",
+        "tests/test_policy_recovery.py",
+        "tests/test_provenance.py",
+        "tests/test_traffic_policy.py",
+        "tests/test_user_answers.py"
+      ],
+      "source_paths": [
+        "xsm/abuse.py",
+        "xsm/attention.py",
+        "xsm/channel.py",
+        "xsm/consent.py",
+        "xsm/decisions.py",
+        "xsm/doc.py",
+        "xsm/mcp.py",
+        "xsm/provenance.py",
+        "xsm/workers.py"
+      ],
+      "secondary_dependencies": [],
+      "reason": "가짜태그/타요청 fixture 성공. 실제 승인 원천 재사용 음성과 G07 결속 필요."
+    },
+    {
+      "id": "A20-06",
+      "status_unchanged": "partial",
+      "criterion": "알림 미지원·OS 실패·알림 억제·오래된 요청을 검사한다. OS 명령을 장벽에서 지연·실패시켜 접수와 호출 성공의 표시를 대조하고, 실패 후 빈도 제한·재시도를 확인한다. 사용자에게 알렸다고 추정해 작업을 진행하지 않는다.",
+      "required_levels": [
+        "fixture",
+        "subprocess",
+        "ui"
+      ],
+      "primary_category": 2,
+      "category": "실제 사람 UI·새 인증/신뢰 필요",
+      "recorded_gap_not_automatically_adopted": "OS 호출 exit 0만 관측. human_saw/observed_display_range가 null이며 UI 억제·접근성 행렬은 없음.",
+      "formal_blocked_gates": [
+        "G07"
+      ],
+      "evidence_preserved": {
+        "UI": {
+          "status": "missing",
+          "refs": [
+            "ui-intent-1",
+            "ui-intent-2"
+          ],
+          "full_scope_refs": [],
+          "context_only_refs": [],
+          "scope": "해당 종류의 실행 증거 없음. source/intent/다른 환경으로 대체하지 않음"
+        },
+        "fixture": {
+          "status": "partial",
+          "refs": [
+            "b04-regression"
+          ],
+          "full_scope_refs": [],
+          "context_only_refs": [],
+          "scope": "기록된 한정 표본만 재사용; 조건 전수/현재 통합 증거로 자동 승격하지 않음"
+        },
+        "process": {
+          "status": "partial",
+          "refs": [
+            "b04-regression",
+            "p07-os"
+          ],
+          "full_scope_refs": [],
+          "context_only_refs": [],
+          "scope": "기록된 한정 표본만 재사용; 조건 전수/현재 통합 증거로 자동 승격하지 않음"
+        }
+      },
+      "test_sources": [
+        "tests/test_attention.py",
+        "tests/test_decisions.py",
+        "tests/test_person_decisions.py",
+        "tests/test_user_answers.py"
+      ],
+      "source_paths": [
+        "xsm/attention.py",
+        "xsm/channel.py",
+        "xsm/consent.py",
+        "xsm/decisions.py",
+        "xsm/doc.py",
+        "xsm/mcp.py",
+        "xsm/workers.py"
+      ],
+      "secondary_dependencies": [],
+      "reason": "OS exit0/장벽 fixture는 있음. human_saw/display_range=null, 표시/억제 사람 대조 없음."
+    },
+    {
+      "id": "A20-07",
+      "status_unchanged": "partial",
+      "criterion": "앞선 xsm 비동기 승인 수집 실패를 같은 입력 채널로 재현하고 복구 경로를 실제 실행한다.",
+      "required_levels": [
+        "fixture",
+        "harness"
+      ],
+      "primary_category": 2,
+      "category": "실제 사람 UI·새 인증/신뢰 필요",
+      "recorded_gap_not_automatically_adopted": "G02 원 trace와 native-channel 진단은 scope가 다름. 최신 hardening 동일 채널 전체 재실행이 남음.",
+      "formal_blocked_gates": [],
+      "evidence_preserved": {
+        "fixture": {
+          "status": "partial",
+          "refs": [
+            "b04-regression"
+          ],
+          "full_scope_refs": [],
+          "context_only_refs": [],
+          "scope": "기록된 한정 표본만 재사용; 조건 전수/현재 통합 증거로 자동 승격하지 않음"
+        },
+        "native": {
+          "status": "missing",
+          "refs": [],
+          "full_scope_refs": [],
+          "context_only_refs": [],
+          "scope": "해당 종류의 실행 증거 없음. source/intent/다른 환경으로 대체하지 않음"
+        }
+      },
+      "test_sources": [
+        "tests/test_connection_binding.py",
+        "tests/test_native_consent.py",
+        "tests/test_one_yes.py",
+        "tests/test_peer_roundtrip.py",
+        "tests/test_selected_connection.py"
+      ],
+      "source_paths": [
+        "xsm/cli.py",
+        "xsm/config.py",
+        "xsm/connect.py",
+        "xsm/consent.py",
+        "xsm/mcp.py",
+        "xsm/outbox.py",
+        "xsm/receive.py"
+      ],
+      "secondary_dependencies": [],
+      "reason": "동일 실제 승인 수집 채널의 hardening 후 S5 전체 복구는 표식 응답만으로 대체 불가."
+    },
+    {
+      "id": "A21-01",
+      "status_unchanged": "partial",
+      "criterion": "LAN·같은 NAT·서로 다른 NAT·UDP 차단·HTTPS 프록시·자체 릴레이·SSH 전용 환경에서 실제 경로와 왕복을 기록한다.",
+      "required_levels": [
+        "physical"
+      ],
+      "primary_category": 3,
+      "category": "현재 runtime 미제공 기능·미확보 물리 환경",
+      "recorded_gap_not_automatically_adopted": "기본native15/cached5와 별도 C UDP/native1·post-bootstrap noSSH/native1·loopback CONNECT/native1 부분표본 있음. A/B/D·global network·신규설치무SSH·기업인증proxy·다른NAT·자가relay·P12는 미확보.",
+      "formal_blocked_gates": [
+        "G12"
+      ],
+      "evidence_preserved": {
+        "physical": {
+          "status": "partial",
+          "refs": [
+            "C-noSSH-v2",
+            "C-proxy-variant",
+            "p11-abd-native",
+            "p11-c-native",
+            "remote-comparison",
+            "udp-native"
+          ],
+          "full_scope_refs": [],
+          "context_only_refs": [],
+          "scope": "기록된 한정 표본만 재사용; 조건 전수/현재 통합 증거로 자동 승격하지 않음"
+        }
+      },
+      "test_sources": [
+        "tests/test_remote.py"
+      ],
+      "source_paths": [
+        "xsm/config.py",
+        "xsm/consent.py",
+        "xsm/install.py",
+        "xsm/probe.py",
+        "xsm/registry.py",
+        "xsm/remote.py",
+        "xsm/resolve.py",
+        "xsm/send.py"
+      ],
+      "secondary_dependencies": [
+        1
+      ],
+      "reason": "기본 native15/cached5와 C UDP/noSSH/CONNECT 부분 성공 유지. 다른NAT/기업proxy/자가relay/신규설치무SSH 환경 미확보."
+    },
+    {
+      "id": "A21-02",
+      "status_unchanged": "partial",
+      "criterion": "제3자·제명 머신·위조 이름·유효 계정 증명이지만 잘못된 팀·만료/회수 초대·오프라인 재접속을 검사한다. 이전 팀이 남아 있는 상태의 가입 응답 유실과 전환 실패·복귀 실패도 구별한다.",
+      "required_levels": [
+        "fixture",
+        "physical"
+      ],
+      "primary_category": 1,
+      "category": "D12/P12 의존",
+      "recorded_gap_not_automatically_adopted": "합성 임시 인증은 선택 backend의 계정/팀/제명/초대/전환 실패 의미를 입증하지 않음. D12 없음.",
+      "formal_blocked_gates": [
+        "G12"
+      ],
+      "evidence_preserved": {
+        "fixture": {
+          "status": "partial",
+          "refs": [
+            "p12-prep-contract"
+          ],
+          "full_scope_refs": [],
+          "context_only_refs": [
+            "p11-c-evidence-check"
+          ],
+          "scope": "기록된 한정 표본만 재사용; 조건 전수/현재 통합 증거로 자동 승격하지 않음"
+        },
+        "physical": {
+          "status": "missing",
+          "refs": [],
+          "full_scope_refs": [],
+          "context_only_refs": [
+            "p11-abd-native",
+            "p11-c-native",
+            "remote-comparison"
+          ],
+          "scope": "해당 종류의 실행 증거 없음. source/intent/다른 환경으로 대체하지 않음"
+        }
+      },
+      "test_sources": [
+        "tests/test_remote.py"
+      ],
+      "source_paths": [
+        "xsm/config.py",
+        "xsm/consent.py",
+        "xsm/install.py",
+        "xsm/probe.py",
+        "xsm/registry.py",
+        "xsm/remote.py",
+        "xsm/resolve.py",
+        "xsm/send.py"
+      ],
+      "secondary_dependencies": [],
+      "reason": "선택 backend의 계정/팀·제명·초대·가입 전환 의미는 D12 미정."
+    },
+    {
+      "id": "A21-03",
+      "status_unchanged": "partial",
+      "criterion": "양방향 SSH가 불가능한 환경을 포함해 A/B/C/D의 설치 단계와 사용자 개입을 비교한다. 자동 설정했다는 로그만으로 연결 성공을 판정하지 않는다.",
+      "required_levels": [
+        "physical",
+        "review"
+      ],
+      "primary_category": 3,
+      "category": "현재 runtime 미제공 기능·미확보 물리 환경",
+      "recorded_gap_not_automatically_adopted": "기본 A/B/D9+C6의 G11 독립검토와 문서후속 있음. C UDP/noSSH/proxy의 추가native각1은 별도 offline 근거로 원 모델 재검토 범위 밖. 무SSH 신규설치·설치/개입비용·미확보 환경은 남으며 D12 선택 자체를 비교 완료 전제로 만들지 않음.",
+      "formal_blocked_gates": [
+        "G11"
+      ],
+      "evidence_preserved": {
+        "physical": {
+          "status": "partial",
+          "refs": [
+            "C-noSSH-v2",
+            "C-proxy-variant",
+            "p11-abd-native",
+            "p11-c-native",
+            "remote-comparison",
+            "udp-native"
+          ],
+          "full_scope_refs": [],
+          "context_only_refs": [],
+          "scope": "기록된 한정 표본만 재사용; 조건 전수/현재 통합 증거로 자동 승격하지 않음"
+        },
+        "review": {
+          "status": "partial",
+          "refs": [
+            "p11-opus-review",
+            "p11-review-closure"
+          ],
+          "full_scope_refs": [],
+          "context_only_refs": [],
+          "scope": "기록된 한정 표본만 재사용; 조건 전수/현재 통합 증거로 자동 승격하지 않음"
+        }
+      },
+      "test_sources": [
+        "tests/test_remote.py"
+      ],
+      "source_paths": [
+        "docs/spikes",
+        "tests/fixtures",
+        "xsm/remote.py"
+      ],
+      "secondary_dependencies": [],
+      "reason": "A/B/C/D 기본 비교/G11 검토 있음. SSH불가 신규설치·미확보 환경의 설치/개입비용이 부족. D12 응답이 비교 자체 선행은 아님."
+    },
+    {
+      "id": "A21-04",
+      "status_unchanged": "missing",
+      "criterion": "두 물리 머신의 다른 홈·런타임에서 실제 세션을 찾아 질문·후속·직접 회신을 수행한다. 같은 호스트의 두 프로세스 검사는 별도 표기한다.",
+      "required_levels": [
+        "harness",
+        "physical"
+      ],
+      "primary_category": 1,
+      "category": "D12/P12 의존",
+      "recorded_gap_not_automatically_adopted": "두 머신 native carrier 왕복은 있으나 제품 peer discovery→approval→handshake→직접 reply 전체 여정은 없음.",
+      "formal_blocked_gates": [
+        "G12"
+      ],
+      "evidence_preserved": {
+        "native": {
+          "status": "missing",
+          "refs": [],
+          "full_scope_refs": [],
+          "context_only_refs": [
+            "p11-abd-native",
+            "p11-c-native"
+          ],
+          "scope": "해당 종류의 실행 증거 없음. source/intent/다른 환경으로 대체하지 않음"
+        },
+        "physical": {
+          "status": "missing",
+          "refs": [],
+          "full_scope_refs": [],
+          "context_only_refs": [
+            "p11-abd-native",
+            "p11-c-native",
+            "remote-comparison"
+          ],
+          "scope": "해당 종류의 실행 증거 없음. source/intent/다른 환경으로 대체하지 않음"
+        }
+      },
+      "test_sources": [
+        "tests/test_remote.py"
+      ],
+      "source_paths": [
+        "xsm/config.py",
+        "xsm/consent.py",
+        "xsm/install.py",
+        "xsm/probe.py",
+        "xsm/registry.py",
+        "xsm/remote.py",
+        "xsm/resolve.py",
+        "xsm/send.py"
+      ],
+      "secondary_dependencies": [],
+      "reason": "두 머신 carrier native 답은 있음. 제품 peer 발견/승인/후속은 P12 미구현."
+    },
+    {
+      "id": "A21-05",
+      "status_unchanged": "partial",
+      "criterion": "원격 서비스·릴레이를 끊어도 로컬 질문·응답은 유지된다. 중지·제거 뒤 리스너와 소유 서비스 상태를 확인한다.",
+      "required_levels": [
+        "subprocess",
+        "harness",
+        "physical"
+      ],
+      "primary_category": 1,
+      "category": "D12/P12 의존",
+      "recorded_gap_not_automatically_adopted": "임시 responder 정리는 있음. 선택 remote/relay 중단 중 실제 로컬 유지·소유 서비스 제거는 없음.",
+      "formal_blocked_gates": [
+        "G12"
+      ],
+      "evidence_preserved": {
+        "native": {
+          "status": "partial",
+          "refs": [
+            "p11-abd-native",
+            "p11-c-native"
+          ],
+          "full_scope_refs": [],
+          "context_only_refs": [],
+          "scope": "기록된 한정 표본만 재사용; 조건 전수/현재 통합 증거로 자동 승격하지 않음"
+        },
+        "physical": {
+          "status": "partial",
+          "refs": [
+            "p11-abd-native",
+            "p11-c-native",
+            "remote-comparison"
+          ],
+          "full_scope_refs": [],
+          "context_only_refs": [],
+          "scope": "기록된 한정 표본만 재사용; 조건 전수/현재 통합 증거로 자동 승격하지 않음"
+        },
+        "process": {
+          "status": "missing",
+          "refs": [],
+          "full_scope_refs": [],
+          "context_only_refs": [
+            "p11-c-evidence-check"
+          ],
+          "scope": "해당 종류의 실행 증거 없음. source/intent/다른 환경으로 대체하지 않음"
+        }
+      },
+      "test_sources": [
+        "tests/test_remote.py"
+      ],
+      "source_paths": [
+        "xsm/config.py",
+        "xsm/consent.py",
+        "xsm/install.py",
+        "xsm/probe.py",
+        "xsm/registry.py",
+        "xsm/remote.py",
+        "xsm/resolve.py",
+        "xsm/send.py"
+      ],
+      "secondary_dependencies": [],
+      "reason": "local 질문/carrier 정리 성공 유지. 선택 remote/relay 중단·제품 소유 제거는 P12 후."
+    },
+    {
+      "id": "A21-06",
+      "status_unchanged": "missing",
+      "criterion": "네트워크 가입 전후 메타데이터 공개와 폴더 제외를 대조한다. 비공개 CLI·호스팅 MCP는 관찰 가능한 범위와 미검증을 표시한다.",
+      "required_levels": [
+        "fixture",
+        "physical",
+        "review"
+      ],
+      "primary_category": 1,
+      "category": "D12/P12 의존",
+      "recorded_gap_not_automatically_adopted": "선택 backend 가입/공개/제외·비공개 서비스 경계의 현재 두 머신 관측이 없음.",
+      "formal_blocked_gates": [
+        "G12"
+      ],
+      "evidence_preserved": {
+        "fixture": {
+          "status": "missing",
+          "refs": [],
+          "full_scope_refs": [],
+          "context_only_refs": [
+            "p11-c-evidence-check"
+          ],
+          "scope": "해당 종류의 실행 증거 없음. source/intent/다른 환경으로 대체하지 않음"
+        },
+        "physical": {
+          "status": "missing",
+          "refs": [],
+          "full_scope_refs": [],
+          "context_only_refs": [
+            "p11-abd-native",
+            "p11-c-native",
+            "remote-comparison"
+          ],
+          "scope": "해당 종류의 실행 증거 없음. source/intent/다른 환경으로 대체하지 않음"
+        },
+        "review": {
+          "status": "missing",
+          "refs": [],
+          "full_scope_refs": [],
+          "context_only_refs": [],
+          "scope": "해당 종류의 실행 증거 없음. source/intent/다른 환경으로 대체하지 않음"
+        }
+      },
+      "test_sources": [
+        "tests/test_remote.py"
+      ],
+      "source_paths": [
+        "xsm/config.py",
+        "xsm/consent.py",
+        "xsm/install.py",
+        "xsm/probe.py",
+        "xsm/registry.py",
+        "xsm/remote.py",
+        "xsm/resolve.py",
+        "xsm/send.py"
+      ],
+      "secondary_dependencies": [],
+      "reason": "local 공개/제외 성공 유지. network 가입 전후 실제 공개집합/비공개 서비스는 P12 필요."
+    },
+    {
+      "id": "A21-07",
+      "status_unchanged": "missing",
+      "criterion": "고정 UDP 포트 점유·IPv6 부재·주소 변경에서 대체 결과와 실제 바인딩을 대조한다.",
+      "required_levels": [
+        "fixture",
+        "physical"
+      ],
+      "primary_category": 1,
+      "category": "D12/P12 의존",
+      "recorded_gap_not_automatically_adopted": "정적 옵션과 임시 TCP bind는 고정 UDP 점유·IPv6 부재·주소 변경 실제 fallback 검사가 아님.",
+      "formal_blocked_gates": [
+        "G12"
+      ],
+      "evidence_preserved": {
+        "fixture": {
+          "status": "missing",
+          "refs": [],
+          "full_scope_refs": [],
+          "context_only_refs": [
+            "p11-c-evidence-check"
+          ],
+          "scope": "해당 종류의 실행 증거 없음. source/intent/다른 환경으로 대체하지 않음"
+        },
+        "physical": {
+          "status": "missing",
+          "refs": [],
+          "full_scope_refs": [],
+          "context_only_refs": [
+            "p11-abd-native",
+            "p11-c-native",
+            "remote-comparison"
+          ],
+          "scope": "해당 종류의 실행 증거 없음. source/intent/다른 환경으로 대체하지 않음"
+        }
+      },
+      "test_sources": [
+        "tests/test_remote.py"
+      ],
+      "source_paths": [
+        "xsm/config.py",
+        "xsm/consent.py",
+        "xsm/install.py",
+        "xsm/probe.py",
+        "xsm/registry.py",
+        "xsm/remote.py",
+        "xsm/resolve.py",
+        "xsm/send.py"
+      ],
+      "secondary_dependencies": [],
+      "reason": "실제 UDP bind/fallback·IPv6/주소변화는 선택 engine 계약과 환경 필요. TCP 표본 대체 금지."
+    },
+    {
+      "id": "A22-01",
+      "status_unchanged": "partial",
+      "criterion": "본문·세션 이름·repo/branch·오류에 가짜 승인·프레임 종료·ANSI·양방향 문자·유사 문자를 넣어 출처 표시가 바뀌지 않는지 확인한다.",
+      "required_levels": [
+        "fixture",
+        "harness"
+      ],
+      "primary_category": 4,
+      "category": "사용자 입력 없이 가능한 구체 local 구현/검증",
+      "recorded_gap_not_automatically_adopted": "renderer/attachment source 반례가 있음. 실제 native 공격 행렬과 G06/G07/G09 통합 종결은 없음.",
+      "formal_blocked_gates": [
+        "G07"
+      ],
+      "evidence_preserved": {
+        "fixture": {
+          "status": "partial",
+          "refs": [
+            "b04-regression",
+            "b05-local-integration",
+            "gate-G09",
+            "p12-prep-contract"
+          ],
+          "full_scope_refs": [],
+          "context_only_refs": [],
+          "scope": "기록된 한정 표본만 재사용; 조건 전수/현재 통합 증거로 자동 승격하지 않음"
+        },
+        "native": {
+          "status": "missing",
+          "refs": [],
+          "full_scope_refs": [],
+          "context_only_refs": [
+            "p09-native"
+          ],
+          "scope": "해당 종류의 실행 증거 없음. source/intent/다른 환경으로 대체하지 않음"
+        }
+      },
+      "test_sources": [
+        "tests/test_abuse.py",
+        "tests/test_attention.py",
+        "tests/test_decisions.py",
+        "tests/test_file_interfaces.py",
+        "tests/test_files.py",
+        "tests/test_materials.py",
+        "tests/test_person_decisions.py",
+        "tests/test_policy_recovery.py",
+        "tests/test_provenance.py",
+        "tests/test_traffic_policy.py",
+        "tests/test_user_answers.py"
+      ],
+      "source_paths": [
+        "xsm/abuse.py",
+        "xsm/attempts.py",
+        "xsm/attention.py",
+        "xsm/cli.py",
+        "xsm/config.py",
+        "xsm/decisions.py",
+        "xsm/envelope.py",
+        "xsm/files.py",
+        "xsm/materials.py",
+        "xsm/mcp.py",
+        "xsm/policy.py",
+        "xsm/provenance.py",
+        "xsm/receive.py"
+      ],
+      "secondary_dependencies": [
+        2
+      ],
+      "flow_rank": 8,
+      "flow": "수신→출처 표시",
+      "next_one_execution": "own native 수신 한 표본에 body/name/repo·branch/error의 합성 승인·프레임종료·ANSI·bidi·유사문자 corpus를 넣어 표시와 원문 digest를 대조한다.",
+      "completion_criterion": "출처 프레임 불변·가짜승인 무효·digest 보존. 사람 창 적절성/G07은 별도로 유지한다.",
+      "actual_current_blocker": "renderer/codec fixture는 성공. 실제 수신 경계의 표면 대조가 미결속이며 새 권한 정책 결정은 아니다.",
+      "new_user_decision_required": false,
+      "known_product_defect_asserted": false,
+      "local_slice_not_automatic_whole_criterion": true
+    },
+    {
+      "id": "A22-02",
+      "status_unchanged": "partial",
+      "criterion": "다른 요청의 실제 승인과 동료의 승인 주장을 구분한다. 같은 uid 프로그램을 막는다고 주장하지 않는다.",
+      "required_levels": [
+        "fixture",
+        "review"
+      ],
+      "primary_category": 5,
+      "category": "기존 근거 재결속 가능 후보",
+      "recorded_gap_not_automatically_adopted": "UID 경계/승인 재사용 source 검사는 있음. 실제 승인 요청·범위/수명 독립 검토 결속이 남음.",
+      "formal_blocked_gates": [
+        "G07"
+      ],
+      "evidence_preserved": {
+        "fixture": {
+          "status": "partial",
+          "refs": [
+            "b04-regression",
+            "b05-local-integration",
+            "gate-G09",
+            "p12-prep-contract"
+          ],
+          "full_scope_refs": [],
+          "context_only_refs": [],
+          "scope": "기록된 한정 표본만 재사용; 조건 전수/현재 통합 증거로 자동 승격하지 않음"
+        },
+        "review": {
+          "status": "missing",
+          "refs": [],
+          "full_scope_refs": [],
+          "context_only_refs": [],
+          "scope": "해당 종류의 실행 증거 없음. source/intent/다른 환경으로 대체하지 않음"
+        }
+      },
+      "test_sources": [
+        "tests/test_abuse.py",
+        "tests/test_attention.py",
+        "tests/test_decisions.py",
+        "tests/test_person_decisions.py",
+        "tests/test_policy_recovery.py",
+        "tests/test_provenance.py",
+        "tests/test_traffic_policy.py",
+        "tests/test_user_answers.py"
+      ],
+      "source_paths": [
+        "xsm/abuse.py",
+        "xsm/attempts.py",
+        "xsm/attention.py",
+        "xsm/cli.py",
+        "xsm/config.py",
+        "xsm/decisions.py",
+        "xsm/envelope.py",
+        "xsm/mcp.py",
+        "xsm/policy.py",
+        "xsm/provenance.py",
+        "xsm/receive.py"
+      ],
+      "secondary_dependencies": [
+        2
+      ],
+      "next_readonly_binding": "원 evidence는 fixture+review. 승인 원천/타요청 재사용 거절·실제 채널 replay_blocked·same-uid 비보장 문구를 독립 검토로 결속. native 전수는 필수 아님. G07 gate 별도.",
+      "promotion_guaranteed": false,
+      "formal_gates_waived": false
+    },
+    {
+      "id": "A22-04",
+      "status_unchanged": "partial",
+      "criterion": "부모 없는 일반 세션, 형제 워커, 다른 저장소 동료가 승인 범위 안에서 직접 소통한다.",
+      "required_levels": [
+        "harness"
+      ],
+      "primary_category": 5,
+      "category": "기존 근거 재결속 가능 후보",
+      "recorded_gap_not_automatically_adopted": "일반 Codex 두 홈의 native 표본은 있음. 형제·다른 부모·다른 repo의 직접 native 협업 전수는 없음.",
+      "formal_blocked_gates": [],
+      "evidence_preserved": {
+        "native": {
+          "status": "partial",
+          "refs": [
+            "b04-native",
+            "p09-native"
+          ],
+          "full_scope_refs": [],
+          "context_only_refs": [],
+          "scope": "기록된 한정 표본만 재사용; 조건 전수/현재 통합 증거로 자동 승격하지 않음"
+        }
+      },
+      "test_sources": [
+        "tests/test_abuse.py",
+        "tests/test_policy_recovery.py",
+        "tests/test_provenance.py",
+        "tests/test_traffic_policy.py"
+      ],
+      "source_paths": [
+        "xsm/abuse.py",
+        "xsm/attempts.py",
+        "xsm/cli.py",
+        "xsm/config.py",
+        "xsm/envelope.py",
+        "xsm/mcp.py",
+        "xsm/policy.py",
+        "xsm/provenance.py",
+        "xsm/receive.py"
+      ],
+      "secondary_dependencies": [],
+      "next_readonly_binding": "일반 N:N·실제 형제 subagent direct calls/사본 owner·다른 부모/연결repo trace를 기존 raw로 토폴로지별 대조. 특정 쌍이 없으면 그 쌍만 남기고 기존 성공은 유지.",
+      "promotion_guaranteed": false,
+      "formal_gates_waived": false
+    },
+    {
+      "id": "A22-05",
+      "status_unchanged": "partial",
+      "criterion": "네이티브 메시지와 xsm 봉투 메시지의 기존 허용·차단·주석 정책에 회귀가 없는지 검사한다.",
+      "required_levels": [
+        "fixture",
+        "harness"
+      ],
+      "primary_category": 4,
+      "category": "사용자 입력 없이 가능한 구체 local 구현/검증",
+      "recorded_gap_not_automatically_adopted": "B04 native 로컬 수신과 정책 fixture가 있음. 최신 traffic/files 통합의 native/strict/deny 전수가 남음.",
+      "formal_blocked_gates": [],
+      "evidence_preserved": {
+        "fixture": {
+          "status": "partial",
+          "refs": [
+            "b04-regression",
+            "b05-local-integration",
+            "gate-G09"
+          ],
+          "full_scope_refs": [],
+          "context_only_refs": [],
+          "scope": "기록된 한정 표본만 재사용; 조건 전수/현재 통합 증거로 자동 승격하지 않음"
+        },
+        "native": {
+          "status": "partial",
+          "refs": [
+            "b04-native",
+            "p09-native"
+          ],
+          "full_scope_refs": [],
+          "context_only_refs": [],
+          "scope": "기록된 한정 표본만 재사용; 조건 전수/현재 통합 증거로 자동 승격하지 않음"
+        }
+      },
+      "test_sources": [
+        "tests/test_abuse.py",
+        "tests/test_policy_recovery.py",
+        "tests/test_provenance.py",
+        "tests/test_traffic_policy.py"
+      ],
+      "source_paths": [
+        "xsm/abuse.py",
+        "xsm/attempts.py",
+        "xsm/cli.py",
+        "xsm/config.py",
+        "xsm/envelope.py",
+        "xsm/mcp.py",
+        "xsm/policy.py",
+        "xsm/provenance.py",
+        "xsm/receive.py"
+      ],
+      "secondary_dependencies": [],
+      "flow_rank": 9,
+      "flow": "정책→수신 호환",
+      "next_one_execution": "같은 disposable local receiver에서 native 메시지와 xsm 봉투의 명시 deny/주석 한 묶음만 비교한다. 기존 허용 trace는 재사용한다.",
+      "completion_criterion": "기존 허용/차단/주석 의미와 원문 보존. 모든 하네스 재실행을 추가하지 않는다.",
+      "actual_current_blocker": "정상 native/봉투와 통합 fixture는 있음. 실제 음성 두 경로 비교만 미결속이다.",
+      "new_user_decision_required": false,
+      "known_product_defect_asserted": false,
+      "local_slice_not_automatic_whole_criterion": true
+    },
+    {
+      "id": "A23-01",
+      "status_unchanged": "partial",
+      "criterion": "clean 설치·이미 설치·다른 홈·여러 홈·기존 세션·새 세션을 각각 검사하고 실제 첫 왕복까지 기록한다.",
+      "required_levels": [
+        "fixture",
+        "harness"
+      ],
+      "primary_category": 2,
+      "category": "실제 사람 UI·새 인증/신뢰 필요",
+      "recorded_gap_not_automatically_adopted": "실제 clean/stale/current native CLI 등록6셀·combined설치/제거 및 local G10passed 복구. 새clean 프로필 로그인/첫모델왕복은 여전히 미실행; 기존133primary1667을 대신 쓰지 않음.",
+      "formal_blocked_gates": [],
+      "evidence_preserved": {
+        "fixture": {
+          "status": "partial",
+          "refs": [
+            "b05-local-integration",
+            "clean-install-final",
+            "gate-G10",
+            "p10-cli"
+          ],
+          "full_scope_refs": [],
+          "context_only_refs": [],
+          "scope": "기록된 한정 표본만 재사용; 조건 전수/현재 통합 증거로 자동 승격하지 않음"
+        },
+        "native": {
+          "status": "partial",
+          "refs": [
+            "b03-sandbox"
+          ],
+          "full_scope_refs": [],
+          "context_only_refs": [
+            "p10-upgrade-native"
+          ],
+          "scope": "기록된 한정 표본만 재사용; 조건 전수/현재 통합 증거로 자동 승격하지 않음"
+        }
+      },
+      "test_sources": [
+        "tests/test_hook_status.py",
+        "tests/test_install_cli_flow.py",
+        "tests/test_install_codex.py",
+        "tests/test_install_runtime.py",
+        "tests/test_install_safety.py",
+        "tests/test_launcher.py",
+        "tests/test_setup_flow.py",
+        "tests/test_version_mix.py"
+      ],
+      "source_paths": [
+        "README.md",
+        "README_ko.md",
+        "hooks",
+        "skills/xsm",
+        "xsm/cli.py",
+        "xsm/install.py",
+        "xsm/mcp.py",
+        "xsm/paths.py",
+        "xsm/probe.py",
+        "xsm/registry.py",
+        "xsm/setup_flow.py"
+      ],
+      "secondary_dependencies": [],
+      "reason": "실제 CLI등록6셀/설치제거/old·new-prefix reply 성공. 해당 clean 프로필의 정상 인증·필요 trust·첫 모델왕복 미실행. 기존 profile 성공은 유지."
+    },
+    {
+      "id": "A23-03",
+      "status_unchanged": "partial",
+      "criterion": "공유 MCP의 두 스레드, 다른 홈의 같은 ID, 상속된 타 하네스 환경에서 실제 발신자·첨부 루트·전달 홈을 확인한다.",
+      "required_levels": [
+        "fixture",
+        "harness"
+      ],
+      "primary_category": 3,
+      "category": "현재 runtime 미제공 기능·미확보 물리 환경",
+      "recorded_gap_not_automatically_adopted": "native 두 홈 읽기는 shared MCP A/B·상속 env·같은 ID 전달 루트 실제 전수를 대신하지 않음.",
+      "formal_blocked_gates": [],
+      "evidence_preserved": {
+        "fixture": {
+          "status": "partial",
+          "refs": [
+            "b05-local-integration",
+            "gate-G01",
+            "gate-G10",
+            "p10-cli"
+          ],
+          "full_scope_refs": [],
+          "context_only_refs": [],
+          "scope": "기록된 한정 표본만 재사용; 조건 전수/현재 통합 증거로 자동 승격하지 않음"
+        },
+        "native": {
+          "status": "missing",
+          "refs": [],
+          "full_scope_refs": [],
+          "context_only_refs": [
+            "b04-native",
+            "p10-upgrade-native"
+          ],
+          "scope": "해당 종류의 실행 증거 없음. source/intent/다른 환경으로 대체하지 않음"
+        }
+      },
+      "test_sources": [
+        "tests/test_file_interfaces.py",
+        "tests/test_files.py",
+        "tests/test_materials.py",
+        "tests/test_mcp_identity.py",
+        "tests/test_remote.py",
+        "tests/test_xsm.py"
+      ],
+      "source_paths": [
+        "xsm/adapters.py",
+        "xsm/envelope.py",
+        "xsm/files.py",
+        "xsm/identity.py",
+        "xsm/ledger.py",
+        "xsm/materials.py",
+        "xsm/mcp.py",
+        "xsm/receive.py",
+        "xsm/registry.py",
+        "xsm/send.py"
+      ],
+      "secondary_dependencies": [],
+      "reason": "같은 native daemon 아래 MCP3개/server당 CID1종. 실제 shared 및 그 전제하 다른home 동일ID/상속env 미확보."
+    },
+    {
+      "id": "A23-04",
+      "status_unchanged": "partial",
+      "criterion": "서비스 중단·MCP 재접속·훅 신뢰 없음·소켓 없음·오래된 API·하네스 버전 변화에서 실제 능력과 진단 표시가 일치한다. 로그인 완료 뒤 가입/설정 실패, 원 대기 종료 뒤 finisher 완료, 이전 로그인과 새 로그인 응답 경쟁, 선택적 계정 등록 실패를 각각 검사한다. 응답 대기 중·성공 응답 후 저장 직전 pending의 flow ID를 교체해 이전 결과가 새 흐름에 적용되지 않는지 검사한다.",
+      "required_levels": [
+        "fixture",
+        "subprocess",
+        "harness",
+        "ui"
+      ],
+      "primary_category": 1,
+      "category": "D12/P12 의존",
+      "recorded_gap_not_automatically_adopted": "flow 교체·설정/CAS fixture는 있음. 실제 UI 로그인·가입·reconnect/old API 전수 및 G12는 없음.",
+      "formal_blocked_gates": [
+        "G07",
+        "G12"
+      ],
+      "evidence_preserved": {
+        "UI": {
+          "status": "missing",
+          "refs": [
+            "ui-intent-1",
+            "ui-intent-2"
+          ],
+          "full_scope_refs": [],
+          "context_only_refs": [],
+          "scope": "해당 종류의 실행 증거 없음. source/intent/다른 환경으로 대체하지 않음"
+        },
+        "fixture": {
+          "status": "partial",
+          "refs": [
+            "b05-local-integration",
+            "clean-install-final",
+            "gate-G10",
+            "p10-cli"
+          ],
+          "full_scope_refs": [],
+          "context_only_refs": [],
+          "scope": "기록된 한정 표본만 재사용; 조건 전수/현재 통합 증거로 자동 승격하지 않음"
+        },
+        "native": {
+          "status": "missing",
+          "refs": [],
+          "full_scope_refs": [],
+          "context_only_refs": [
+            "p10-upgrade-native"
+          ],
+          "scope": "해당 종류의 실행 증거 없음. source/intent/다른 환경으로 대체하지 않음"
+        },
+        "process": {
+          "status": "partial",
+          "refs": [
+            "b05-local-integration",
+            "clean-install-final",
+            "gate-G10",
+            "p10-cli"
+          ],
+          "full_scope_refs": [],
+          "context_only_refs": [
+            "p10-upgrade-native"
+          ],
+          "scope": "기록된 한정 표본만 재사용; 조건 전수/현재 통합 증거로 자동 승격하지 않음"
+        }
+      },
+      "test_sources": [
+        "tests/test_attention.py",
+        "tests/test_decisions.py",
+        "tests/test_hook_status.py",
+        "tests/test_install_cli_flow.py",
+        "tests/test_install_codex.py",
+        "tests/test_install_runtime.py",
+        "tests/test_install_safety.py",
+        "tests/test_launcher.py",
+        "tests/test_person_decisions.py",
+        "tests/test_remote.py",
+        "tests/test_setup_flow.py",
+        "tests/test_user_answers.py",
+        "tests/test_version_mix.py"
+      ],
+      "source_paths": [
+        "README.md",
+        "README_ko.md",
+        "hooks",
+        "skills/xsm",
+        "xsm/attention.py",
+        "xsm/cli.py",
+        "xsm/decisions.py",
+        "xsm/install.py",
+        "xsm/mcp.py",
+        "xsm/paths.py",
+        "xsm/probe.py",
+        "xsm/registry.py",
+        "xsm/setup_flow.py"
+      ],
+      "secondary_dependencies": [
+        2
+      ],
+      "reason": "local CAS/flow/finisher/old API 성공 유지. 선택 backend 로그인/가입 경쟁은 D12/P12와 실제 UI 필요."
+    },
+    {
+      "id": "A23-05",
+      "status_unchanged": "partial",
+      "criterion": "잘못된 체크섬·개발자 팀 서명 불일치·중단된 업데이트·설정 병합 실패에서 기존 동작과 복구 자료를 보존한다.",
+      "required_levels": [
+        "fixture",
+        "subprocess",
+        "review"
+      ],
+      "primary_category": 5,
+      "category": "기존 근거 재결속 가능 후보",
+      "recorded_gap_not_automatically_adopted": "명시 checksum/서명팀 기대 불일치·copy/CAS 실패 fixture. 서명 증거는 caller-provided이며 P12 공급물은 미선택.",
+      "formal_blocked_gates": [
+        "G12"
+      ],
+      "evidence_preserved": {
+        "fixture": {
+          "status": "partial",
+          "refs": [
+            "b05-local-integration",
+            "clean-install-final",
+            "gate-G10",
+            "p10-cli"
+          ],
+          "full_scope_refs": [],
+          "context_only_refs": [],
+          "scope": "기록된 한정 표본만 재사용; 조건 전수/현재 통합 증거로 자동 승격하지 않음"
+        },
+        "process": {
+          "status": "partial",
+          "refs": [
+            "b05-local-integration",
+            "clean-install-final",
+            "gate-G10",
+            "p10-cli"
+          ],
+          "full_scope_refs": [],
+          "context_only_refs": [
+            "p10-upgrade-native"
+          ],
+          "scope": "기록된 한정 표본만 재사용; 조건 전수/현재 통합 증거로 자동 승격하지 않음"
+        },
+        "review": {
+          "status": "missing",
+          "refs": [],
+          "full_scope_refs": [],
+          "context_only_refs": [],
+          "scope": "해당 종류의 실행 증거 없음. source/intent/다른 환경으로 대체하지 않음"
+        }
+      },
+      "test_sources": [
+        "tests/test_hook_status.py",
+        "tests/test_install_cli_flow.py",
+        "tests/test_install_codex.py",
+        "tests/test_install_runtime.py",
+        "tests/test_install_safety.py",
+        "tests/test_launcher.py",
+        "tests/test_remote.py",
+        "tests/test_setup_flow.py",
+        "tests/test_version_mix.py"
+      ],
+      "source_paths": [
+        "README.md",
+        "README_ko.md",
+        "hooks",
+        "skills/xsm",
+        "xsm/cli.py",
+        "xsm/install.py",
+        "xsm/mcp.py",
+        "xsm/paths.py",
+        "xsm/probe.py",
+        "xsm/registry.py",
+        "xsm/setup_flow.py"
+      ],
+      "secondary_dependencies": [
+        1
+      ],
+      "next_readonly_binding": "checksum/team mismatch·copy/CAS 실패·old reader/설정 보존 fixture/process를 review로 결속. 실제 xsm 서명/모든 공급물 검증을 새 요구로 만들지 않음. P12 공급/G12는 별도.",
+      "promotion_guaranteed": false,
+      "formal_gates_waived": false
+    },
+    {
+      "id": "A23-06",
+      "status_unchanged": "partial",
+      "criterion": "기본 CLI serve의 MCP·회신·후속 문맥·권한 경계를 따로 시험한다. 보정 조건 성공을 기본 조건 성공으로 보고하지 않는다.",
+      "required_levels": [
+        "fixture",
+        "harness"
+      ],
+      "primary_category": 4,
+      "category": "사용자 입력 없이 가능한 구체 local 구현/검증",
+      "recorded_gap_not_automatically_adopted": "owned native 기억/MCP 관측은 있음. 기본 공개 owned 경로의 후속·권한·실제 reply 전체 행렬은 남음.",
+      "formal_blocked_gates": [],
+      "evidence_preserved": {
+        "fixture": {
+          "status": "partial",
+          "refs": [
+            "b05-local-integration",
+            "gate-G08",
+            "gate-G10"
+          ],
+          "full_scope_refs": [],
+          "context_only_refs": [],
+          "scope": "기록된 한정 표본만 재사용; 조건 전수/현재 통합 증거로 자동 승격하지 않음"
+        },
+        "native": {
+          "status": "partial",
+          "refs": [
+            "owned-capacity-native-partial",
+            "p08-capacity",
+            "p08-capacity-readback",
+            "p08-native",
+            "p08-owned-mcp-native"
+          ],
+          "full_scope_refs": [],
+          "context_only_refs": [
+            "p10-upgrade-native"
+          ],
+          "scope": "기록된 한정 표본만 재사용; 조건 전수/현재 통합 증거로 자동 승격하지 않음"
+        }
+      },
+      "test_sources": [
+        "tests/test_owned_crash.py",
+        "tests/test_owned_interfaces.py",
+        "tests/test_owned_native.py",
+        "tests/test_owned_native_events.py",
+        "tests/test_owned_requests.py",
+        "tests/test_owned_workers.py"
+      ],
+      "source_paths": [
+        "xsm/adapters.py",
+        "xsm/attempts.py",
+        "xsm/codex_daemon.py",
+        "xsm/ledger.py",
+        "xsm/outbox.py",
+        "xsm/workers.py"
+      ],
+      "secondary_dependencies": [],
+      "flow_rank": 10,
+      "flow": "위임→기본 owned 후속",
+      "next_one_execution": "이미 인증·설치된 local 기본 설정의 공개 CLI cmd_owned create/run 후속 한 표본에서 실제 wiring/reply/native ID/기억·권한을 캡처한다. eval MCP/quiet callback 주입은 하지 않는다.",
+      "completion_criterion": "기본 경로의 실제 reply·후속 기억·추가 권한0 확인. 기존 공개 MCP/executor 성공을 보존하고 serve 철자 부재를 결함이라 하지 않는다.",
+      "actual_current_blocker": "공개 MCP 기본 child executor/reply/기억은 있음. 설치 default wiring와 shell 표본만 부족하며 clean 인증을 새로 요구할 이유는 없다.",
+      "new_user_decision_required": false,
+      "known_product_defect_asserted": false,
+      "local_slice_not_automatic_whole_criterion": true
+    },
+    {
+      "id": "A23-08",
+      "status_unchanged": "partial",
+      "criterion": "이전 버전의 MCP·소켓을 사용하는 세션을 유지한 채 상태 위치와 어댑터를 업그레이드한다. 마이그레이션 중 실패하면 이전 경로가 계속 읽히고 사용자 설정이 보존되는지 확인한다.",
+      "required_levels": [
+        "fixture",
+        "subprocess",
+        "harness"
+      ],
+      "primary_category": 5,
+      "category": "기존 근거 재결속 가능 후보",
+      "recorded_gap_not_automatically_adopted": "실제 old native/MCP 유지 중 업그레이드/두 reply와 new-prefix reply 있음. 전체 구 native/socket·마이그레이션 행렬은 남음.",
+      "formal_blocked_gates": [],
+      "evidence_preserved": {
+        "fixture": {
+          "status": "partial",
+          "refs": [
+            "b05-local-integration",
+            "clean-install-final",
+            "gate-G10",
+            "p10-cli"
+          ],
+          "full_scope_refs": [],
+          "context_only_refs": [],
+          "scope": "기록된 한정 표본만 재사용; 조건 전수/현재 통합 증거로 자동 승격하지 않음"
+        },
+        "native": {
+          "status": "partial",
+          "refs": [
+            "p10-upgrade-native"
+          ],
+          "full_scope_refs": [],
+          "context_only_refs": [
+            "b04-native"
+          ],
+          "scope": "기록된 한정 표본만 재사용; 조건 전수/현재 통합 증거로 자동 승격하지 않음"
+        },
+        "process": {
+          "status": "partial",
+          "refs": [
+            "b04-legacy",
+            "b05-local-integration",
+            "clean-install-final",
+            "gate-G10",
+            "p10-cli",
+            "p10-upgrade-native"
+          ],
+          "full_scope_refs": [],
+          "context_only_refs": [],
+          "scope": "기록된 한정 표본만 재사용; 조건 전수/현재 통합 증거로 자동 승격하지 않음"
+        }
+      },
+      "test_sources": [
+        "tests/test_hook_status.py",
+        "tests/test_install_cli_flow.py",
+        "tests/test_install_codex.py",
+        "tests/test_install_runtime.py",
+        "tests/test_install_safety.py",
+        "tests/test_launcher.py",
+        "tests/test_setup_flow.py",
+        "tests/test_version_mix.py"
+      ],
+      "source_paths": [
+        "README.md",
+        "README_ko.md",
+        "hooks",
+        "skills/xsm",
+        "xsm/cli.py",
+        "xsm/install.py",
+        "xsm/mcp.py",
+        "xsm/paths.py",
+        "xsm/probe.py",
+        "xsm/registry.py",
+        "xsm/setup_flow.py"
+      ],
+      "secondary_dependencies": [],
+      "next_readonly_binding": "실제 old native/MCP 동일세대 upgrade·두 reply와 local update-failure/old-reader 보존을 수준별 결속. 전체 구native/socket 마이그레이션 행렬은 원문 요구가 아니다.",
+      "promotion_guaranteed": false,
+      "formal_gates_waived": false
+    },
+    {
+      "id": "A24-01",
+      "status_unchanged": "partial",
+      "criterion": "후보가 명시 공개 집합과 같은 repository 집합의 합집합이며, 양쪽에 속하는 세션은 중복 없이 표시된다. 무관한 비공개 세션은 제외된다.",
+      "required_levels": [
+        "fixture",
+        "actual-harness",
+        "physical-machines"
+      ],
+      "primary_category": 1,
+      "category": "D12/P12 의존",
+      "recorded_gap_not_automatically_adopted": "로컬 공개/repo 합집합 및 native discover 표본. 원격 후보 공개 집합/중복/비공개 전수는 없음.",
+      "formal_blocked_gates": [
+        "G12"
+      ],
+      "evidence_preserved": {
+        "fixture": {
+          "status": "partial",
+          "refs": [
+            "b03-regression",
+            "gate-G02",
+            "gate-G03",
+            "gate-G05"
+          ],
+          "full_scope_refs": [],
+          "context_only_refs": [],
+          "scope": "기록된 한정 표본만 재사용; 조건 전수/현재 통합 증거로 자동 승격하지 않음"
+        },
+        "native": {
+          "status": "missing",
+          "refs": [],
+          "full_scope_refs": [],
+          "context_only_refs": [
+            "b03-handshake"
+          ],
+          "scope": "해당 종류의 실행 증거 없음. source/intent/다른 환경으로 대체하지 않음"
+        },
+        "physical": {
+          "status": "missing",
+          "refs": [],
+          "full_scope_refs": [],
+          "context_only_refs": [],
+          "scope": "해당 종류의 실행 증거 없음. source/intent/다른 환경으로 대체하지 않음"
+        }
+      },
+      "test_sources": [
+        "tests/test_directory.py",
+        "tests/test_directory_contract.py",
+        "tests/test_directory_interfaces.py",
+        "tests/test_discovery_latency.py",
+        "tests/test_remote.py"
+      ],
+      "source_paths": [
+        "xsm/connect.py",
+        "xsm/mcp.py",
+        "xsm/registry.py",
+        "xsm/remote.py"
+      ],
+      "secondary_dependencies": [],
+      "reason": "원격 discovery→선택→handshake/후속·수명의 해당 제품 P12 consumer 미착수. 기존 local/fixture/carrier 성공은 보존하며 원격 전체로 승격하지 않음."
+    },
+    {
+      "id": "A24-02",
+      "status_unchanged": "partial",
+      "criterion": "같은 repository의 다른 폴더·linked worktree를 별도 공개 명령 없이 발견한다. 별도 clone·원격 repository 동일성은 이름/URL만으로 확정하지 않고 검증된 매핑을 사용한다.",
+      "required_levels": [
+        "fixture",
+        "actual-harness",
+        "physical-machines"
+      ],
+      "primary_category": 1,
+      "category": "D12/P12 의존",
+      "recorded_gap_not_automatically_adopted": "로컬 common-dir/clone fixture. 실제 원격 repository 매핑은 없음.",
+      "formal_blocked_gates": [
+        "G12"
+      ],
+      "evidence_preserved": {
+        "fixture": {
+          "status": "partial",
+          "refs": [
+            "b03-regression",
+            "gate-G02",
+            "gate-G03",
+            "gate-G05",
+            "p12-prep-contract"
+          ],
+          "full_scope_refs": [],
+          "context_only_refs": [],
+          "scope": "기록된 한정 표본만 재사용; 조건 전수/현재 통합 증거로 자동 승격하지 않음"
+        },
+        "native": {
+          "status": "missing",
+          "refs": [],
+          "full_scope_refs": [],
+          "context_only_refs": [
+            "b03-handshake"
+          ],
+          "scope": "해당 종류의 실행 증거 없음. source/intent/다른 환경으로 대체하지 않음"
+        },
+        "physical": {
+          "status": "missing",
+          "refs": [],
+          "full_scope_refs": [],
+          "context_only_refs": [],
+          "scope": "해당 종류의 실행 증거 없음. source/intent/다른 환경으로 대체하지 않음"
+        }
+      },
+      "test_sources": [
+        "tests/test_directory.py",
+        "tests/test_directory_contract.py",
+        "tests/test_directory_interfaces.py",
+        "tests/test_discovery_latency.py",
+        "tests/test_remote.py"
+      ],
+      "source_paths": [
+        "xsm/connect.py",
+        "xsm/mcp.py",
+        "xsm/registry.py",
+        "xsm/remote.py"
+      ],
+      "secondary_dependencies": [],
+      "reason": "원격 discovery→선택→handshake/후속·수명의 해당 제품 P12 consumer 미착수. 기존 local/fixture/carrier 성공은 보존하며 원격 전체로 승격하지 않음."
+    },
+    {
+      "id": "A24-03",
+      "status_unchanged": "partial",
+      "criterion": "“macmini에서 이 작업”을 검색하면 허용된 원격 후보의 머신·업무·branch·최신성·실제 핸들이 맞는다. 검색만으로 새 협업이나 업무 송신을 시작하지 않는다.",
+      "required_levels": [
+        "fixture",
+        "actual-harness",
+        "physical-machines"
+      ],
+      "primary_category": 1,
+      "category": "D12/P12 의존",
+      "recorded_gap_not_automatically_adopted": "원격 machine 필터는 unknown. Macmini의 해당 작업 후보 actual handle trace가 없음.",
+      "formal_blocked_gates": [
+        "G12"
+      ],
+      "evidence_preserved": {
+        "fixture": {
+          "status": "partial",
+          "refs": [
+            "b03-regression",
+            "gate-G02",
+            "gate-G03",
+            "gate-G05"
+          ],
+          "full_scope_refs": [],
+          "context_only_refs": [],
+          "scope": "기록된 한정 표본만 재사용; 조건 전수/현재 통합 증거로 자동 승격하지 않음"
+        },
+        "native": {
+          "status": "missing",
+          "refs": [],
+          "full_scope_refs": [],
+          "context_only_refs": [
+            "b03-handshake"
+          ],
+          "scope": "해당 종류의 실행 증거 없음. source/intent/다른 환경으로 대체하지 않음"
+        },
+        "physical": {
+          "status": "missing",
+          "refs": [],
+          "full_scope_refs": [],
+          "context_only_refs": [],
+          "scope": "해당 종류의 실행 증거 없음. source/intent/다른 환경으로 대체하지 않음"
+        }
+      },
+      "test_sources": [
+        "tests/test_directory.py",
+        "tests/test_directory_contract.py",
+        "tests/test_directory_interfaces.py",
+        "tests/test_discovery_latency.py",
+        "tests/test_remote.py"
+      ],
+      "source_paths": [
+        "xsm/connect.py",
+        "xsm/mcp.py",
+        "xsm/registry.py",
+        "xsm/remote.py"
+      ],
+      "secondary_dependencies": [],
+      "reason": "원격 discovery→선택→handshake/후속·수명의 해당 제품 P12 consumer 미착수. 기존 local/fixture/carrier 성공은 보존하며 원격 전체로 승격하지 않음."
+    },
+    {
+      "id": "A24-04",
+      "status_unchanged": "partial",
+      "criterion": "후보를 확인한 사용자의 “a1과 협업” 한 지시로 내부 project 설정이나 중복 승인 없이 그 상대와 연결한다. a2·b1·b3 및 그 폴더의 권한은 새로 열리지 않는다.",
+      "required_levels": [
+        "fixture",
+        "actual-harness",
+        "physical-machines"
+      ],
+      "primary_category": 1,
+      "category": "D12/P12 의존",
+      "recorded_gap_not_automatically_adopted": "로컬 선택 계약은 있음. 두 머신 실제 한 지시·다른 후보 권한 불변/승인 수명 전수는 없음.",
+      "formal_blocked_gates": [
+        "G07",
+        "G12"
+      ],
+      "evidence_preserved": {
+        "fixture": {
+          "status": "partial",
+          "refs": [
+            "b03-regression",
+            "gate-G02",
+            "gate-G03",
+            "gate-G05"
+          ],
+          "full_scope_refs": [],
+          "context_only_refs": [],
+          "scope": "기록된 한정 표본만 재사용; 조건 전수/현재 통합 증거로 자동 승격하지 않음"
+        },
+        "native": {
+          "status": "partial",
+          "refs": [
+            "b03-handshake"
+          ],
+          "full_scope_refs": [],
+          "context_only_refs": [],
+          "scope": "기록된 한정 표본만 재사용; 조건 전수/현재 통합 증거로 자동 승격하지 않음"
+        },
+        "physical": {
+          "status": "missing",
+          "refs": [],
+          "full_scope_refs": [],
+          "context_only_refs": [],
+          "scope": "해당 종류의 실행 증거 없음. source/intent/다른 환경으로 대체하지 않음"
+        }
+      },
+      "test_sources": [
+        "tests/test_attention.py",
+        "tests/test_connection_binding.py",
+        "tests/test_decisions.py",
+        "tests/test_directory.py",
+        "tests/test_directory_contract.py",
+        "tests/test_directory_interfaces.py",
+        "tests/test_discovery_latency.py",
+        "tests/test_native_consent.py",
+        "tests/test_one_yes.py",
+        "tests/test_peer_roundtrip.py",
+        "tests/test_person_decisions.py",
+        "tests/test_remote.py",
+        "tests/test_selected_connection.py",
+        "tests/test_user_answers.py"
+      ],
+      "source_paths": [
+        "xsm/attention.py",
+        "xsm/connect.py",
+        "xsm/decisions.py",
+        "xsm/mcp.py",
+        "xsm/registry.py",
+        "xsm/remote.py"
+      ],
+      "secondary_dependencies": [
+        2
+      ],
+      "reason": "원격 discovery→선택→handshake/후속·수명의 해당 제품 P12 consumer 미착수. 기존 local/fixture/carrier 성공은 보존하며 원격 전체로 승격하지 않음."
+    },
+    {
+      "id": "A24-05",
+      "status_unchanged": "partial",
+      "criterion": "선택한 핸들과 실제 상대의 상관된 응답을 확인한 뒤 핸드셰이크 완료를 표시한다. 영수증만 있거나 동명/세대가 바뀌면 완료가 아니다.",
+      "required_levels": [
+        "fixture",
+        "actual-harness",
+        "physical-machines"
+      ],
+      "primary_category": 1,
+      "category": "D12/P12 의존",
+      "recorded_gap_not_automatically_adopted": "로컬 실제 candidate handshake 있음. 다른 머신·동명/세대 교체 실제 상대 trace는 없음.",
+      "formal_blocked_gates": [
+        "G12"
+      ],
+      "evidence_preserved": {
+        "fixture": {
+          "status": "partial",
+          "refs": [
+            "b03-regression",
+            "gate-G02",
+            "gate-G03",
+            "gate-G05"
+          ],
+          "full_scope_refs": [],
+          "context_only_refs": [],
+          "scope": "기록된 한정 표본만 재사용; 조건 전수/현재 통합 증거로 자동 승격하지 않음"
+        },
+        "native": {
+          "status": "partial",
+          "refs": [
+            "b03-handshake",
+            "p13-natural-audit",
+            "postclaims-native"
+          ],
+          "full_scope_refs": [],
+          "context_only_refs": [],
+          "scope": "기록된 한정 표본만 재사용; 조건 전수/현재 통합 증거로 자동 승격하지 않음"
+        },
+        "physical": {
+          "status": "missing",
+          "refs": [],
+          "full_scope_refs": [],
+          "context_only_refs": [],
+          "scope": "해당 종류의 실행 증거 없음. source/intent/다른 환경으로 대체하지 않음"
+        }
+      },
+      "test_sources": [
+        "tests/test_mcp_dispatch.py",
+        "tests/test_mcp_wait_process.py",
+        "tests/test_question_interfaces.py",
+        "tests/test_questions.py",
+        "tests/test_remote.py"
+      ],
+      "source_paths": [
+        "xsm/connect.py",
+        "xsm/mcp.py",
+        "xsm/registry.py",
+        "xsm/remote.py"
+      ],
+      "secondary_dependencies": [],
+      "reason": "원격 discovery→선택→handshake/후속·수명의 해당 제품 P12 consumer 미착수. 기존 local/fixture/carrier 성공은 보존하며 원격 전체로 승격하지 않음."
+    },
+    {
+      "id": "A24-06",
+      "status_unchanged": "partial",
+      "criterion": "timeout·busy·전송 결과 유실 뒤 같은 요청에서 답을 회수하고 중복 협업/업무를 만들지 않는다. 부모 계보와 무관하게 양방향 후속 협업이 된다.",
+      "required_levels": [
+        "fixture",
+        "actual-harness",
+        "physical-machines"
+      ],
+      "primary_category": 1,
+      "category": "D12/P12 의존",
+      "recorded_gap_not_automatically_adopted": "로컬 timeout/회수는 있음. 원격 busy/lost result·부모 없는 양방향 실제 업무 전수는 없음.",
+      "formal_blocked_gates": [
+        "G12"
+      ],
+      "evidence_preserved": {
+        "fixture": {
+          "status": "partial",
+          "refs": [
+            "b03-regression",
+            "gate-G02",
+            "gate-G03",
+            "gate-G05"
+          ],
+          "full_scope_refs": [],
+          "context_only_refs": [],
+          "scope": "기록된 한정 표본만 재사용; 조건 전수/현재 통합 증거로 자동 승격하지 않음"
+        },
+        "native": {
+          "status": "missing",
+          "refs": [],
+          "full_scope_refs": [],
+          "context_only_refs": [
+            "b03-handshake"
+          ],
+          "scope": "해당 종류의 실행 증거 없음. source/intent/다른 환경으로 대체하지 않음"
+        },
+        "physical": {
+          "status": "missing",
+          "refs": [],
+          "full_scope_refs": [],
+          "context_only_refs": [],
+          "scope": "해당 종류의 실행 증거 없음. source/intent/다른 환경으로 대체하지 않음"
+        }
+      },
+      "test_sources": [
+        "tests/test_abuse.py",
+        "tests/test_b04_interfaces.py",
+        "tests/test_crash_boundaries.py",
+        "tests/test_handoff.py",
+        "tests/test_handoff_consumer.py",
+        "tests/test_handoff_crash.py",
+        "tests/test_mcp_dispatch.py",
+        "tests/test_mcp_wait_process.py",
+        "tests/test_policy_recovery.py",
+        "tests/test_provenance.py",
+        "tests/test_question_interfaces.py",
+        "tests/test_questions.py",
+        "tests/test_remote.py",
+        "tests/test_traffic_policy.py"
+      ],
+      "source_paths": [
+        "xsm/abuse.py",
+        "xsm/connect.py",
+        "xsm/mcp.py",
+        "xsm/provenance.py",
+        "xsm/registry.py",
+        "xsm/remote.py"
+      ],
+      "secondary_dependencies": [],
+      "reason": "원격 discovery→선택→handshake/후속·수명의 해당 제품 P12 consumer 미착수. 기존 local/fixture/carrier 성공은 보존하며 원격 전체로 승격하지 않음."
+    },
+    {
+      "id": "A24-07",
+      "status_unchanged": "partial",
+      "criterion": "공개 철회·협업 해제·세션 종료·새 대화·동명 교체·같은 대화 resume을 구분한다. 미독·승인 오상속과 전체 경로/원문 추가 공개가 없다.",
+      "required_levels": [
+        "fixture",
+        "actual-harness",
+        "physical-machines"
+      ],
+      "primary_category": 1,
+      "category": "D12/P12 의존",
+      "recorded_gap_not_automatically_adopted": "로컬 withdraw/resume fixture. 원격 공개·승인·미독 세대 수명과 경로 비공개 실제 전수는 없음.",
+      "formal_blocked_gates": [
+        "G07",
+        "G12"
+      ],
+      "evidence_preserved": {
+        "fixture": {
+          "status": "partial",
+          "refs": [
+            "b03-regression",
+            "gate-G02",
+            "gate-G03",
+            "gate-G05"
+          ],
+          "full_scope_refs": [],
+          "context_only_refs": [],
+          "scope": "기록된 한정 표본만 재사용; 조건 전수/현재 통합 증거로 자동 승격하지 않음"
+        },
+        "native": {
+          "status": "missing",
+          "refs": [],
+          "full_scope_refs": [],
+          "context_only_refs": [
+            "b03-handshake"
+          ],
+          "scope": "해당 종류의 실행 증거 없음. source/intent/다른 환경으로 대체하지 않음"
+        },
+        "physical": {
+          "status": "missing",
+          "refs": [],
+          "full_scope_refs": [],
+          "context_only_refs": [],
+          "scope": "해당 종류의 실행 증거 없음. source/intent/다른 환경으로 대체하지 않음"
+        }
+      },
+      "test_sources": [
+        "tests/test_attention.py",
+        "tests/test_connection_binding.py",
+        "tests/test_decisions.py",
+        "tests/test_directory.py",
+        "tests/test_directory_contract.py",
+        "tests/test_directory_interfaces.py",
+        "tests/test_discovery_latency.py",
+        "tests/test_native_consent.py",
+        "tests/test_one_yes.py",
+        "tests/test_peer_roundtrip.py",
+        "tests/test_person_decisions.py",
+        "tests/test_remote.py",
+        "tests/test_selected_connection.py",
+        "tests/test_user_answers.py"
+      ],
+      "source_paths": [
+        "xsm/attention.py",
+        "xsm/connect.py",
+        "xsm/decisions.py",
+        "xsm/mcp.py",
+        "xsm/registry.py",
+        "xsm/remote.py"
+      ],
+      "secondary_dependencies": [
+        2
+      ],
+      "reason": "원격 discovery→선택→handshake/후속·수명의 해당 제품 P12 consumer 미착수. 기존 local/fixture/carrier 성공은 보존하며 원격 전체로 승격하지 않음."
+    },
+    {
+      "id": "A24-08",
+      "status_unchanged": "partial",
+      "criterion": "맥북과 맥미니의 서로 다른 폴더에서 후보 탐색→사용자 선택→핸드셰이크→실제 작업 요청/회신을 한 trace로 검증한다. 기존 같은 repository 및 명시적 link/join/reach도 유지한다.",
+      "required_levels": [
+        "fixture",
+        "actual-harness",
+        "physical-machines"
+      ],
+      "primary_category": 1,
+      "category": "D12/P12 의존",
+      "recorded_gap_not_automatically_adopted": "MacBook→Macmini 후보 검색→선택→handshake→실제 작업 reply 전체 trace가 없음. transport 합성으로 대체 금지.",
+      "formal_blocked_gates": [
+        "G12"
+      ],
+      "evidence_preserved": {
+        "fixture": {
+          "status": "partial",
+          "refs": [
+            "b03-regression",
+            "gate-G02",
+            "gate-G03",
+            "gate-G05"
+          ],
+          "full_scope_refs": [],
+          "context_only_refs": [],
+          "scope": "기록된 한정 표본만 재사용; 조건 전수/현재 통합 증거로 자동 승격하지 않음"
+        },
+        "native": {
+          "status": "partial",
+          "refs": [
+            "b03-handshake"
+          ],
+          "full_scope_refs": [],
+          "context_only_refs": [],
+          "scope": "기록된 한정 표본만 재사용; 조건 전수/현재 통합 증거로 자동 승격하지 않음"
+        },
+        "physical": {
+          "status": "missing",
+          "refs": [],
+          "full_scope_refs": [],
+          "context_only_refs": [],
+          "scope": "해당 종류의 실행 증거 없음. source/intent/다른 환경으로 대체하지 않음"
+        }
+      },
+      "test_sources": [
+        "tests/test_connection_binding.py",
+        "tests/test_directory.py",
+        "tests/test_directory_contract.py",
+        "tests/test_directory_interfaces.py",
+        "tests/test_discovery_latency.py",
+        "tests/test_mcp_dispatch.py",
+        "tests/test_mcp_wait_process.py",
+        "tests/test_native_consent.py",
+        "tests/test_one_yes.py",
+        "tests/test_peer_roundtrip.py",
+        "tests/test_question_interfaces.py",
+        "tests/test_questions.py",
+        "tests/test_remote.py",
+        "tests/test_selected_connection.py"
+      ],
+      "source_paths": [
+        "xsm/connect.py",
+        "xsm/mcp.py",
+        "xsm/registry.py",
+        "xsm/remote.py"
+      ],
+      "secondary_dependencies": [],
+      "reason": "원격 discovery→선택→handshake/후속·수명의 해당 제품 P12 consumer 미착수. 기존 local/fixture/carrier 성공은 보존하며 원격 전체로 승격하지 않음."
+    }
+  ],
+  "category4_execution_order": [
+    {
+      "id": "A17-05",
+      "status_unchanged": "partial",
+      "criterion": "제외 폴더의 문자열 경로와 실제 경로가 달라도 등록·목록·첨부 정책이 일치한다.",
+      "required_levels": [
+        "fixture",
+        "harness"
+      ],
+      "primary_category": 4,
+      "category": "사용자 입력 없이 가능한 구체 local 구현/검증",
+      "recorded_gap_not_automatically_adopted": "등록/목록 제외 fixture에 실제 공유 MCP 첨부 소비의 제외/권한 행렬을 합쳐야 함.",
+      "formal_blocked_gates": [],
+      "evidence_preserved": {
+        "fixture": {
+          "status": "partial",
+          "refs": [
+            "b03-regression",
+            "gate-G05"
+          ],
+          "full_scope_refs": [],
+          "context_only_refs": [],
+          "scope": "기록된 한정 표본만 재사용; 조건 전수/현재 통합 증거로 자동 승격하지 않음"
+        },
+        "native": {
+          "status": "missing",
+          "refs": [],
+          "full_scope_refs": [],
+          "context_only_refs": [
+            "b03-mcp"
+          ],
+          "scope": "해당 종류의 실행 증거 없음. source/intent/다른 환경으로 대체하지 않음"
+        }
+      },
+      "test_sources": [
+        "tests/test_abuse.py",
+        "tests/test_directory.py",
+        "tests/test_directory_contract.py",
+        "tests/test_directory_interfaces.py",
+        "tests/test_discovery_latency.py",
+        "tests/test_file_interfaces.py",
+        "tests/test_files.py",
+        "tests/test_materials.py",
+        "tests/test_policy_recovery.py",
+        "tests/test_provenance.py",
+        "tests/test_traffic_policy.py"
+      ],
+      "source_paths": [
+        "xsm/abuse.py",
+        "xsm/cli.py",
+        "xsm/config.py",
+        "xsm/files.py",
+        "xsm/identity.py",
+        "xsm/materials.py",
+        "xsm/mcp.py",
+        "xsm/probe.py",
+        "xsm/provenance.py",
+        "xsm/registry.py",
+        "xsm/resolve.py"
+      ],
+      "secondary_dependencies": [],
+      "flow_rank": 1,
+      "flow": "발견→제외 자료",
+      "next_one_execution": "선택한 실제 local caller의 disposable excluded/symlink 경로 한 개를 registry.upsert→directory.discover→CLI files.prepare_cli까지 한 trace로 검증한다.",
+      "completion_criterion": "동일 realpath에서 등록/목록 제외와 CLI 반출 거절, copy/원본변경0. MCP inline에 없는 원경로 검증을 가정하지 않는다.",
+      "actual_current_blocker": "기존 fixture 정책은 성공. native CLI 원경로 시도0이며 shared server는 이 criterion의 전제가 아니다.",
+      "new_user_decision_required": false,
+      "known_product_defect_asserted": false,
+      "local_slice_not_automatic_whole_criterion": true
+    },
+    {
+      "id": "A15-03",
+      "status_unchanged": "partial",
+      "criterion": "승인 수집 어댑터를 끊으면 승인 여부는 unknown으로 남고 원문·복구 위치가 보인다. 기록 파일이 없다는 이유로 임의 문장을 승인하지 않는다.",
+      "required_levels": [
+        "fixture",
+        "harness"
+      ],
+      "primary_category": 4,
+      "category": "사용자 입력 없이 가능한 구체 local 구현/검증",
+      "recorded_gap_not_automatically_adopted": "현재 native 수집 단절→unknown→동일 요청 회수 전체 표본이 없음.",
+      "formal_blocked_gates": [],
+      "evidence_preserved": {
+        "fixture": {
+          "status": "partial",
+          "refs": [
+            "gate-G02"
+          ],
+          "full_scope_refs": [],
+          "context_only_refs": [],
+          "scope": "기록된 한정 표본만 재사용; 조건 전수/현재 통합 증거로 자동 승격하지 않음"
+        },
+        "native": {
+          "status": "missing",
+          "refs": [],
+          "full_scope_refs": [],
+          "context_only_refs": [
+            "g02-native"
+          ],
+          "scope": "해당 종류의 실행 증거 없음. source/intent/다른 환경으로 대체하지 않음"
+        }
+      },
+      "test_sources": [
+        "tests/test_connection_binding.py",
+        "tests/test_native_consent.py",
+        "tests/test_one_yes.py",
+        "tests/test_peer_roundtrip.py",
+        "tests/test_selected_connection.py"
+      ],
+      "source_paths": [
+        "xsm/cli.py",
+        "xsm/config.py",
+        "xsm/connect.py",
+        "xsm/consent.py",
+        "xsm/mcp.py",
+        "xsm/outbox.py",
+        "xsm/receive.py"
+      ],
+      "secondary_dependencies": [],
+      "flow_rank": 2,
+      "flow": "연결→수집 단절",
+      "next_one_execution": "own pending 한 요청의 collector 수집을 끊는 경계를 consent.take_or_request의 기존 unknown/회수 경로로 캡처한다. 허용은 만들지 않는다.",
+      "completion_criterion": "unknown·원문/복구 위치 보존·같은 요청 회수. 수집 부재를 허용으로 승격하지 않는다.",
+      "actual_current_blocker": "native 단절→unknown→같은 요청 회수 trace가 없음. 실제 새 affirmative 응답이 필요한 A15-02 성공 경로와 구분한다.",
+      "new_user_decision_required": false,
+      "known_product_defect_asserted": false,
+      "local_slice_not_automatic_whole_criterion": true
+    },
+    {
+      "id": "A16-01",
+      "status_unchanged": "partial",
+      "criterion": "같은 입력의 CLI/MCP 질문이 동일한 실제 답과 원 요청 ID를 반환한다. 영수증만 있는 반례는 성공 답변이 아니다.",
+      "required_levels": [
+        "fixture",
+        "harness"
+      ],
+      "primary_category": 4,
+      "category": "사용자 입력 없이 가능한 구체 local 구현/검증",
+      "recorded_gap_not_automatically_adopted": "B03 실제 질문/회신은 로컬 표본. 같은 입력의 CLI/MCP 및 현재 통합 revision 전체 의미 일치를 닫지 않음.",
+      "formal_blocked_gates": [],
+      "evidence_preserved": {
+        "fixture": {
+          "status": "partial",
+          "refs": [
+            "b03-regression",
+            "gate-G03"
+          ],
+          "full_scope_refs": [],
+          "context_only_refs": [],
+          "scope": "기록된 한정 표본만 재사용; 조건 전수/현재 통합 증거로 자동 승격하지 않음"
+        },
+        "native": {
+          "status": "partial",
+          "refs": [
+            "b03-mcp",
+            "b03-question"
+          ],
+          "full_scope_refs": [],
+          "context_only_refs": [],
+          "scope": "기록된 한정 표본만 재사용; 조건 전수/현재 통합 증거로 자동 승격하지 않음"
+        }
+      },
+      "test_sources": [
+        "tests/test_mcp_dispatch.py",
+        "tests/test_mcp_wait_process.py",
+        "tests/test_question_interfaces.py",
+        "tests/test_questions.py"
+      ],
+      "source_paths": [
+        "skills/xsm",
+        "xsm/cli.py",
+        "xsm/inbox.py",
+        "xsm/ledger.py",
+        "xsm/mcp.py",
+        "xsm/receive.py",
+        "xsm/send.py"
+      ],
+      "secondary_dependencies": [],
+      "flow_rank": 3,
+      "flow": "질문→답 회수",
+      "next_one_execution": "한 실제 local 질문 Q의 같은 owner에서 CLI question-status와 MCP xsm_question_status readback을 비교한다.",
+      "completion_criterion": "원 ID/reply_to/본문 SHA/outcome 일치, 기존 receipt-only 음성 결속, 추가송신0.",
+      "actual_current_blocker": "각 CLI/MCP 실제 답은 있지만 같은 입력/원요청의 비교가 미결속. D12/새 계정 선택은 필요 없다.",
+      "new_user_decision_required": false,
+      "known_product_defect_asserted": false,
+      "local_slice_not_automatic_whole_criterion": true
+    },
+    {
+      "id": "A16-03",
+      "status_unchanged": "partial",
+      "criterion": "같은 기능 표에서 priority·wake·첨부·회신·결과 입력의 CLI/MCP 차이를 전수 확인한다. 미지원은 명시한다.",
+      "required_levels": [
+        "fixture",
+        "harness"
+      ],
+      "primary_category": 4,
+      "category": "사용자 입력 없이 가능한 구체 local 구현/검증",
+      "recorded_gap_not_automatically_adopted": "priority/wake/files/outcome/owned 전체 기능 표의 실제 양 인터페이스 전수 효과가 남음.",
+      "formal_blocked_gates": [],
+      "evidence_preserved": {
+        "fixture": {
+          "status": "partial",
+          "refs": [
+            "b03-regression",
+            "gate-G03"
+          ],
+          "full_scope_refs": [],
+          "context_only_refs": [],
+          "scope": "기록된 한정 표본만 재사용; 조건 전수/현재 통합 증거로 자동 승격하지 않음"
+        },
+        "native": {
+          "status": "partial",
+          "refs": [
+            "b03-mcp",
+            "b03-question"
+          ],
+          "full_scope_refs": [],
+          "context_only_refs": [],
+          "scope": "기록된 한정 표본만 재사용; 조건 전수/현재 통합 증거로 자동 승격하지 않음"
+        }
+      },
+      "test_sources": [
+        "tests/test_b04_interfaces.py",
+        "tests/test_crash_boundaries.py",
+        "tests/test_file_interfaces.py",
+        "tests/test_files.py",
+        "tests/test_handoff.py",
+        "tests/test_handoff_consumer.py",
+        "tests/test_handoff_crash.py",
+        "tests/test_materials.py",
+        "tests/test_mcp_dispatch.py",
+        "tests/test_mcp_wait_process.py",
+        "tests/test_owned_crash.py",
+        "tests/test_owned_interfaces.py",
+        "tests/test_owned_native.py",
+        "tests/test_owned_native_events.py",
+        "tests/test_owned_requests.py",
+        "tests/test_owned_workers.py",
+        "tests/test_question_interfaces.py",
+        "tests/test_questions.py"
+      ],
+      "source_paths": [
+        "skills/xsm",
+        "xsm/cli.py",
+        "xsm/files.py",
+        "xsm/inbox.py",
+        "xsm/ledger.py",
+        "xsm/materials.py",
+        "xsm/mcp.py",
+        "xsm/receive.py",
+        "xsm/send.py",
+        "xsm/workers.py"
+      ],
+      "secondary_dependencies": [],
+      "flow_rank": 4,
+      "flow": "옵션→동일 의미",
+      "next_one_execution": "priority/wake/attachments/reply_to/outcome 5축 공통표를 실제 CLI parser/MCP schema→service→adapter 효과 capture로 완성한다.",
+      "completion_criterion": "5축의 지원/명시미지원/실제 효과와 selector가 모두 대응. 기존 native 효과 재사용, owned 등 원문 밖 필수 축 추가 금지.",
+      "actual_current_blocker": "부분 fixture/native는 존재. 같은 기능표의 양 인터페이스 대조가 미완이며 모든 하네스 재실행은 요구하지 않는다.",
+      "new_user_decision_required": false,
+      "known_product_defect_asserted": false,
+      "local_slice_not_automatic_whole_criterion": true
+    },
+    {
+      "id": "A18-04",
+      "status_unchanged": "partial",
+      "criterion": "데몬 또는 클라이언트 재시작 뒤 원 ID와 대화 이름이 유지된다. 저장 중 강제 종료·확인 유실을 검사한다. 변경 요청 직전·직후 연결을 끊어 조회만의 자동 재시도와 대상 상태 readback을 대조한다.",
+      "required_levels": [
+        "fixture",
+        "subprocess",
+        "harness"
+      ],
+      "primary_category": 4,
+      "category": "사용자 입력 없이 가능한 구체 local 구현/검증",
+      "recorded_gap_not_automatically_adopted": "로컬 claim/legacy/설치 실패 보존과 원격 변경 직전·직후 단절/readback은 별개. G12 없음.",
+      "formal_blocked_gates": [
+        "G12"
+      ],
+      "evidence_preserved": {
+        "fixture": {
+          "status": "partial",
+          "refs": [
+            "b04-regression",
+            "b05-local-integration"
+          ],
+          "full_scope_refs": [],
+          "context_only_refs": [],
+          "scope": "기록된 한정 표본만 재사용; 조건 전수/현재 통합 증거로 자동 승격하지 않음"
+        },
+        "native": {
+          "status": "partial",
+          "refs": [
+            "p10-upgrade-native"
+          ],
+          "full_scope_refs": [],
+          "context_only_refs": [
+            "b04-native"
+          ],
+          "scope": "기록된 한정 표본만 재사용; 조건 전수/현재 통합 증거로 자동 승격하지 않음"
+        },
+        "process": {
+          "status": "partial",
+          "refs": [
+            "b04-legacy",
+            "b04-regression",
+            "b05-local-integration",
+            "p10-upgrade-native"
+          ],
+          "full_scope_refs": [],
+          "context_only_refs": [],
+          "scope": "기록된 한정 표본만 재사용; 조건 전수/현재 통합 증거로 자동 승격하지 않음"
+        }
+      },
+      "test_sources": [
+        "tests/test_b04_interfaces.py",
+        "tests/test_crash_boundaries.py",
+        "tests/test_handoff.py",
+        "tests/test_handoff_consumer.py",
+        "tests/test_handoff_crash.py",
+        "tests/test_hook_status.py",
+        "tests/test_install_cli_flow.py",
+        "tests/test_install_codex.py",
+        "tests/test_install_runtime.py",
+        "tests/test_install_safety.py",
+        "tests/test_launcher.py",
+        "tests/test_remote.py",
+        "tests/test_setup_flow.py",
+        "tests/test_version_mix.py"
+      ],
+      "source_paths": [
+        "xsm/adapters.py",
+        "xsm/codex_daemon.py",
+        "xsm/housekeeping.py",
+        "xsm/inbox.py",
+        "xsm/ledger.py",
+        "xsm/receive.py",
+        "xsm/remote.py",
+        "xsm/send.py",
+        "xsm/setup_flow.py"
+      ],
+      "secondary_dependencies": [
+        1
+      ],
+      "flow_rank": 5,
+      "flow": "단절→동일 ID readback",
+      "next_one_execution": "own local service 변경 요청 하나의 응답 직전/직후 client 연결 단절을 한 쌍으로 검증한다. 조회만 자동 retry한다.",
+      "completion_criterion": "원 ID/대화 유지, mutation 추가실행0, 실제 상태 readback. local 완료와 공식 G12 종결은 분리한다.",
+      "actual_current_blocker": "local kill/복구 근거는 있음. 직전/직후와 조회 retry/readback 짝이 미결속. 원격 통합 G12는 D12/P12 대기지만 local 셀 전체가 막힌 것은 아니다.",
+      "new_user_decision_required": false,
+      "known_product_defect_asserted": false,
+      "local_slice_not_automatic_whole_criterion": true
+    },
+    {
+      "id": "A19-01",
+      "status_unchanged": "partial",
+      "criterion": "CLI/MCP로 같은 텍스트·첨부를 보내 본문과 수신 사본의 다이제스트를 대조한다.",
+      "required_levels": [
+        "fixture",
+        "harness"
+      ],
+      "primary_category": 4,
+      "category": "사용자 입력 없이 가능한 구체 local 구현/검증",
+      "recorded_gap_not_automatically_adopted": "Codex 두 홈 및 Claude의 실제 사본 token 읽기/ACK/reply 있음. 동일 입력 CLI/MCP 원문·사본 digest 전수 대조는 남음.",
+      "formal_blocked_gates": [],
+      "evidence_preserved": {
+        "fixture": {
+          "status": "partial",
+          "refs": [
+            "b05-local-integration",
+            "gate-G06"
+          ],
+          "full_scope_refs": [],
+          "context_only_refs": [],
+          "scope": "기록된 한정 표본만 재사용; 조건 전수/현재 통합 증거로 자동 승격하지 않음"
+        },
+        "native": {
+          "status": "partial",
+          "refs": [
+            "p06-claude-native",
+            "p06-native"
+          ],
+          "full_scope_refs": [],
+          "context_only_refs": [],
+          "scope": "기록된 한정 표본만 재사용; 조건 전수/현재 통합 증거로 자동 승격하지 않음"
+        }
+      },
+      "test_sources": [
+        "tests/test_file_interfaces.py",
+        "tests/test_files.py",
+        "tests/test_materials.py"
+      ],
+      "source_paths": [
+        "xsm/cli.py",
+        "xsm/doc.py",
+        "xsm/envelope.py",
+        "xsm/files.py",
+        "xsm/housekeeping.py",
+        "xsm/materials.py",
+        "xsm/mcp.py",
+        "xsm/paths.py",
+        "xsm/remote.py",
+        "xsm/send.py"
+      ],
+      "secondary_dependencies": [],
+      "flow_rank": 6,
+      "flow": "자료→사본",
+      "next_one_execution": "같은 synthetic 본문/파일 bytes의 실제 CLI 원경로 송신과 caller-inline MCP 송신을 한 쌍으로 결속한다.",
+      "completion_criterion": "본문·원문/수신 copy SHA와 receiver readback 일치. 기존 MCP 양성은 재사용하고 필요한 CLI 짝만 보완한다.",
+      "actual_current_blocker": "material 표본 CLI_attempts=0. CLI 불가/거부가 실측된 것은 아니고 MCP 실제 읽기는 성공했다.",
+      "new_user_decision_required": false,
+      "known_product_defect_asserted": false,
+      "local_slice_not_automatic_whole_criterion": true
+    },
+    {
+      "id": "A19-03",
+      "status_unchanged": "partial",
+      "criterion": "외부 경로·숨김 파일·심볼릭 링크·상위 경로·제외 폴더·동명 파일·유니코드 충돌을 검사한다. 허가된 저장소 밖 임시 산출물·숨김 일반 문서는 전달되고, 호출자 권한 밖 파일·제외 자료는 전달되지 않는지 양쪽 표본을 둔다.",
+      "required_levels": [
+        "fixture",
+        "harness"
+      ],
+      "primary_category": 4,
+      "category": "사용자 입력 없이 가능한 구체 local 구현/검증",
+      "recorded_gap_not_automatically_adopted": "실제 정상 첨부 표본 두 건. 허가된 외부/숨김 성공 및 권한 밖/제외/symlink/충돌 전수는 남음.",
+      "formal_blocked_gates": [],
+      "evidence_preserved": {
+        "fixture": {
+          "status": "partial",
+          "refs": [
+            "b05-local-integration",
+            "gate-G06"
+          ],
+          "full_scope_refs": [],
+          "context_only_refs": [],
+          "scope": "기록된 한정 표본만 재사용; 조건 전수/현재 통합 증거로 자동 승격하지 않음"
+        },
+        "native": {
+          "status": "partial",
+          "refs": [
+            "material-boundary-native-partial",
+            "p06-claude-native",
+            "p06-native"
+          ],
+          "full_scope_refs": [],
+          "context_only_refs": [],
+          "scope": "기록된 한정 표본만 재사용; 조건 전수/현재 통합 증거로 자동 승격하지 않음"
+        }
+      },
+      "test_sources": [
+        "tests/test_file_interfaces.py",
+        "tests/test_files.py",
+        "tests/test_materials.py"
+      ],
+      "source_paths": [
+        "xsm/cli.py",
+        "xsm/doc.py",
+        "xsm/envelope.py",
+        "xsm/files.py",
+        "xsm/housekeeping.py",
+        "xsm/materials.py",
+        "xsm/mcp.py",
+        "xsm/paths.py",
+        "xsm/remote.py",
+        "xsm/send.py"
+      ],
+      "secondary_dependencies": [],
+      "flow_rank": 7,
+      "flow": "자료 권한→양성/음성",
+      "next_one_execution": "기존 MCP hidden/outside 양성과 OS mode000 음성을 재사용하고 disposable 명시제외/민감이름 원경로 두 건을 실제 CLI API에 제출하는 음성 묶음을 보완한다.",
+      "completion_criterion": "실제 거절·copy/body 반출0·원본보존. symlink/Unicode는 기존 fixture 결속, inline 서버의 원경로 권한 보장 발명 금지.",
+      "actual_current_blocker": "기존 제외 음성은 모델 미반출 선택으로 API 집행이 아니다. 실제 CLI 시도0이며 MCP에 provenance path가 없다.",
+      "new_user_decision_required": false,
+      "known_product_defect_asserted": false,
+      "local_slice_not_automatic_whole_criterion": true
+    },
+    {
+      "id": "A22-01",
+      "status_unchanged": "partial",
+      "criterion": "본문·세션 이름·repo/branch·오류에 가짜 승인·프레임 종료·ANSI·양방향 문자·유사 문자를 넣어 출처 표시가 바뀌지 않는지 확인한다.",
+      "required_levels": [
+        "fixture",
+        "harness"
+      ],
+      "primary_category": 4,
+      "category": "사용자 입력 없이 가능한 구체 local 구현/검증",
+      "recorded_gap_not_automatically_adopted": "renderer/attachment source 반례가 있음. 실제 native 공격 행렬과 G06/G07/G09 통합 종결은 없음.",
+      "formal_blocked_gates": [
+        "G07"
+      ],
+      "evidence_preserved": {
+        "fixture": {
+          "status": "partial",
+          "refs": [
+            "b04-regression",
+            "b05-local-integration",
+            "gate-G09",
+            "p12-prep-contract"
+          ],
+          "full_scope_refs": [],
+          "context_only_refs": [],
+          "scope": "기록된 한정 표본만 재사용; 조건 전수/현재 통합 증거로 자동 승격하지 않음"
+        },
+        "native": {
+          "status": "missing",
+          "refs": [],
+          "full_scope_refs": [],
+          "context_only_refs": [
+            "p09-native"
+          ],
+          "scope": "해당 종류의 실행 증거 없음. source/intent/다른 환경으로 대체하지 않음"
+        }
+      },
+      "test_sources": [
+        "tests/test_abuse.py",
+        "tests/test_attention.py",
+        "tests/test_decisions.py",
+        "tests/test_file_interfaces.py",
+        "tests/test_files.py",
+        "tests/test_materials.py",
+        "tests/test_person_decisions.py",
+        "tests/test_policy_recovery.py",
+        "tests/test_provenance.py",
+        "tests/test_traffic_policy.py",
+        "tests/test_user_answers.py"
+      ],
+      "source_paths": [
+        "xsm/abuse.py",
+        "xsm/attempts.py",
+        "xsm/attention.py",
+        "xsm/cli.py",
+        "xsm/config.py",
+        "xsm/decisions.py",
+        "xsm/envelope.py",
+        "xsm/files.py",
+        "xsm/materials.py",
+        "xsm/mcp.py",
+        "xsm/policy.py",
+        "xsm/provenance.py",
+        "xsm/receive.py"
+      ],
+      "secondary_dependencies": [
+        2
+      ],
+      "flow_rank": 8,
+      "flow": "수신→출처 표시",
+      "next_one_execution": "own native 수신 한 표본에 body/name/repo·branch/error의 합성 승인·프레임종료·ANSI·bidi·유사문자 corpus를 넣어 표시와 원문 digest를 대조한다.",
+      "completion_criterion": "출처 프레임 불변·가짜승인 무효·digest 보존. 사람 창 적절성/G07은 별도로 유지한다.",
+      "actual_current_blocker": "renderer/codec fixture는 성공. 실제 수신 경계의 표면 대조가 미결속이며 새 권한 정책 결정은 아니다.",
+      "new_user_decision_required": false,
+      "known_product_defect_asserted": false,
+      "local_slice_not_automatic_whole_criterion": true
+    },
+    {
+      "id": "A22-05",
+      "status_unchanged": "partial",
+      "criterion": "네이티브 메시지와 xsm 봉투 메시지의 기존 허용·차단·주석 정책에 회귀가 없는지 검사한다.",
+      "required_levels": [
+        "fixture",
+        "harness"
+      ],
+      "primary_category": 4,
+      "category": "사용자 입력 없이 가능한 구체 local 구현/검증",
+      "recorded_gap_not_automatically_adopted": "B04 native 로컬 수신과 정책 fixture가 있음. 최신 traffic/files 통합의 native/strict/deny 전수가 남음.",
+      "formal_blocked_gates": [],
+      "evidence_preserved": {
+        "fixture": {
+          "status": "partial",
+          "refs": [
+            "b04-regression",
+            "b05-local-integration",
+            "gate-G09"
+          ],
+          "full_scope_refs": [],
+          "context_only_refs": [],
+          "scope": "기록된 한정 표본만 재사용; 조건 전수/현재 통합 증거로 자동 승격하지 않음"
+        },
+        "native": {
+          "status": "partial",
+          "refs": [
+            "b04-native",
+            "p09-native"
+          ],
+          "full_scope_refs": [],
+          "context_only_refs": [],
+          "scope": "기록된 한정 표본만 재사용; 조건 전수/현재 통합 증거로 자동 승격하지 않음"
+        }
+      },
+      "test_sources": [
+        "tests/test_abuse.py",
+        "tests/test_policy_recovery.py",
+        "tests/test_provenance.py",
+        "tests/test_traffic_policy.py"
+      ],
+      "source_paths": [
+        "xsm/abuse.py",
+        "xsm/attempts.py",
+        "xsm/cli.py",
+        "xsm/config.py",
+        "xsm/envelope.py",
+        "xsm/mcp.py",
+        "xsm/policy.py",
+        "xsm/provenance.py",
+        "xsm/receive.py"
+      ],
+      "secondary_dependencies": [],
+      "flow_rank": 9,
+      "flow": "정책→수신 호환",
+      "next_one_execution": "같은 disposable local receiver에서 native 메시지와 xsm 봉투의 명시 deny/주석 한 묶음만 비교한다. 기존 허용 trace는 재사용한다.",
+      "completion_criterion": "기존 허용/차단/주석 의미와 원문 보존. 모든 하네스 재실행을 추가하지 않는다.",
+      "actual_current_blocker": "정상 native/봉투와 통합 fixture는 있음. 실제 음성 두 경로 비교만 미결속이다.",
+      "new_user_decision_required": false,
+      "known_product_defect_asserted": false,
+      "local_slice_not_automatic_whole_criterion": true
+    },
+    {
+      "id": "A23-06",
+      "status_unchanged": "partial",
+      "criterion": "기본 CLI serve의 MCP·회신·후속 문맥·권한 경계를 따로 시험한다. 보정 조건 성공을 기본 조건 성공으로 보고하지 않는다.",
+      "required_levels": [
+        "fixture",
+        "harness"
+      ],
+      "primary_category": 4,
+      "category": "사용자 입력 없이 가능한 구체 local 구현/검증",
+      "recorded_gap_not_automatically_adopted": "owned native 기억/MCP 관측은 있음. 기본 공개 owned 경로의 후속·권한·실제 reply 전체 행렬은 남음.",
+      "formal_blocked_gates": [],
+      "evidence_preserved": {
+        "fixture": {
+          "status": "partial",
+          "refs": [
+            "b05-local-integration",
+            "gate-G08",
+            "gate-G10"
+          ],
+          "full_scope_refs": [],
+          "context_only_refs": [],
+          "scope": "기록된 한정 표본만 재사용; 조건 전수/현재 통합 증거로 자동 승격하지 않음"
+        },
+        "native": {
+          "status": "partial",
+          "refs": [
+            "owned-capacity-native-partial",
+            "p08-capacity",
+            "p08-capacity-readback",
+            "p08-native",
+            "p08-owned-mcp-native"
+          ],
+          "full_scope_refs": [],
+          "context_only_refs": [
+            "p10-upgrade-native"
+          ],
+          "scope": "기록된 한정 표본만 재사용; 조건 전수/현재 통합 증거로 자동 승격하지 않음"
+        }
+      },
+      "test_sources": [
+        "tests/test_owned_crash.py",
+        "tests/test_owned_interfaces.py",
+        "tests/test_owned_native.py",
+        "tests/test_owned_native_events.py",
+        "tests/test_owned_requests.py",
+        "tests/test_owned_workers.py"
+      ],
+      "source_paths": [
+        "xsm/adapters.py",
+        "xsm/attempts.py",
+        "xsm/codex_daemon.py",
+        "xsm/ledger.py",
+        "xsm/outbox.py",
+        "xsm/workers.py"
+      ],
+      "secondary_dependencies": [],
+      "flow_rank": 10,
+      "flow": "위임→기본 owned 후속",
+      "next_one_execution": "이미 인증·설치된 local 기본 설정의 공개 CLI cmd_owned create/run 후속 한 표본에서 실제 wiring/reply/native ID/기억·권한을 캡처한다. eval MCP/quiet callback 주입은 하지 않는다.",
+      "completion_criterion": "기본 경로의 실제 reply·후속 기억·추가 권한0 확인. 기존 공개 MCP/executor 성공을 보존하고 serve 철자 부재를 결함이라 하지 않는다.",
+      "actual_current_blocker": "공개 MCP 기본 child executor/reply/기억은 있음. 설치 default wiring와 shell 표본만 부족하며 clean 인증을 새로 요구할 이유는 없다.",
+      "new_user_decision_required": false,
+      "known_product_defect_asserted": false,
+      "local_slice_not_automatic_whole_criterion": true
+    }
+  ],
+  "category5_rebinding_candidates": [
+    "A16-07",
+    "A18-01",
+    "A18-02",
+    "A19-04",
+    "A22-02",
+    "A22-04",
+    "A23-05",
+    "A23-08"
+  ],
+  "classification_rules": [
+    "primary 중복 없이52개, formal G07/G12는 secondary로 보존",
+    "5번은 재결속 후보이며 자동proven/종결 보장이 아님",
+    "clause마다 모든level/native전수 행렬을 원문 밖에 추가하지 않음",
+    "closure-map의 옛1697/14proven 및 broad gap은 current ledger/criterion보다 우선하지 않음",
+    "동결/조사전용 지시는 미래 실행 허가가 아니며 local work와 전체 gate종결은 구별"
+  ],
+  "goal_blocked_assessment": {
+    "all_work_blocked": false,
+    "independent_local_validation_candidates": 10,
+    "independent_readonly_binding_candidates": 8,
+    "D12_blocks_everything": false,
+    "reason": "D12/P12와 무관한 local 검증 및 읽기 전용 감사가 남는다. 전체 goal status를 바꾸지 않으며 반복된 전역 blocking을 입증하지 못함.",
+    "execution_boundary": "이번 요청은 읽기 전용. category4는 현재freeze/추가 실행 지시를 따른다. 이 문서가 모델/실험/코드 실행을 허가하지 않음."
+  },
+  "preserved_successes": [
+    "1700 두Python OK/G10 localpassed",
+    "ordinary/owned 후속 기억·공개 MCP executor/reply",
+    "실제 다른부모/일반 N:N/worktree 협업",
+    "MCP normal/hidden/outside 사본3reads와 mode000 OS 음성",
+    "old native/MCP 동일세대 upgrade/두 reply",
+    "carrier native15/cached5 및 C UDP/noSSH/CONNECT 부분양성",
+    "factory client종료/원ID회수/ACK후빈inbox",
+    "A17-04 fixture/nativeunknown/review 종결"
+  ],
+  "unadded_requirements": [
+    "모든하네스전수",
+    "장시간부하",
+    "모든native갱신/승인조합",
+    "nativecancel notification 모든client필수",
+    "global home 익명화/cleanstderr",
+    "cleanprofile로실제credential복사",
+    "D12선택이비교자체선행이라는주장"
+  ],
+  "evidence_sha256": {
+    "docs/plan/reason-inspired-adrs/plan.json": "a19715aa4b2ba0bc7acb92cc7e96b9503297d8c892881f5f0996db734e7142d9",
+    "docs/plan/reason-inspired-adrs/completion-ledger.json": "197c345c77fadd86a5c91e2efb27611e90b13ac660e774970816602231cee870",
+    "docs/plan/reason-inspired-adrs/completion-ledger.md": "145273d818fd982d5d6bdd005bbec02b260615ea724d844c4823cac94e566f60",
+    "deliverables/p13-live/acceptance-closure-map.md": "6d9048701f455c26366b14b6e287e04a8d2201134d7ea049427391ba6108899d",
+    "deliverables/p13-live/doctor-privacy-v2-regression.json": "847f818f6b20a6ca32d85cc83844bd0035ec360008c970ad17b8d60cff5239bb",
+    "deliverables/p13-live/doctor-privacy-v2-source-manifest.json": "215cbfe165819fa9358d71d57ba069e0dbd8e48090701e81081da0e000871b64",
+    "deliverables/p13-live/shared-mcp-native-20261029-e41b1fd4/report.md": "2d0c439dc7bb471b006d979afb632511cbdd67037e7a8d10ac8a80cf7c0b2662",
+    "deliverables/p13-live/material-boundary-native-20261029-a30cd9e0/report.md": "2620f326b62fb449757728bb6dab2ffb2ac8268943f01e672624eb8b120fbd3e",
+    "deliverables/p13-live/session-lifetime-native-20261029-37d06cbd/report.md": "121bf0b544682cc65648ccf89c567e8437b6ec0a8df6f6d80e654e5b0c3fd791",
+    "deliverables/p13-live/owned-default-closure-audit.md": "34531b16a48c210b39f2f94387de0e8aa5f952b1d1f707a361f710682e3b6927",
+    "deliverables/p13-live/coordinator-material-audit-note.json": "3f49ab4f56cc7f40b6e0577ccbcdf88cd1666f8fe1b512aa2bbad177ac7f2b4e",
+    "deliverables/p13-live/doctor-native-v3-result.json": "3d56b6672bdf3b41f85813fdaaebcf2b5162bda9b852f577a9af2a31fe0c08a9",
+    "deliverables/p13-live/doctor-native-v3-result.md": "982c0b9353f9eb171dbeea876de450ebab2dab06be82a424875912fdd6b75292"
+  },
+  "current_primary_sha256": {
+    ".claude-plugin/marketplace.json": "8a100d8d72b4a995362dce3454965a561e6553830804a597917038af7f51b4d7",
+    ".claude-plugin/plugin.json": "2a9ce315d97eeea658a303911b15f2f0a0495738a308da9ddbcb10ab9263877e",
+    ".codex-plugin/plugin.json": "ac671b412f00f2728317f14faa3234154810b73921635e1cc3b1dd2773851fc4",
+    "bin/xsm": "3c80672e2f062a8792bc89eb1b74b229db7e55c64e93a20910fa88f8ca33ec88",
+    "hooks/codex-hooks.json": "b972a24035252a9a56c1bc315549dd37b3b066c4865335625e4246cbf90a550b",
+    "hooks/codex-mcp.json": "b1d2a3f79ecf47ddc2fc3f03dda113b5b9bf1685e223baf801479b35112e4815",
+    "hooks/hooks.json": "ade596e312dfa1d97bd6e4f5ab024bfcd6d7ce2e50649ee1ecdc53b0d2cd7cfe",
+    "hooks/xsm-hook": "b5d01706b7b2d0b0dc1ad0094c8a7211c730b4c5d34fb8dd1be6beea571f547c",
+    "hooks/xsm-hook.py": "c94bf31c8e282e8745c3666e6de6186098bd5737bc4ad87676837c8f7328df92",
+    "hooks/xsm-mcp": "01fcc6d51a3ee6fa0aa15b2293ab1c02bc8c8fc733f67bb3d1d3e7b96e1a56bf",
+    "hooks/xsm-mcp.py": "fb04f9e18fc9c1ff620c1825c8451b84980496631ed23e20d8a9097f5e0f6edf",
+    "hooks/xsm-remote.py": "9096a2710256944c5225174563f3b50f53031efde369d296994e8b73950f3616",
+    "skills/xsm/SKILL.md": "3e583bcd294862775c6590766b96cea2260c879329a32ffbe5306f128da55896",
+    "skills/xsm/references/guide.md": "6bffc41da7cce01cc6080c8afb62e54efc910fd67b59d9d11b0c119130c43981",
+    "skills/xsm/references/messaging.md": "b76f2de35f0579bb74bca8f32ebe1f07f4a2bc83e5ed776284f738df88de3eef",
+    "tests/fixtures/fakessh.py": "e1eed0633b2b1183d41773eb80bbf71d375807d9446f9b5fc74a15f661b9c263",
+    "tests/test_abuse.py": "ec1dbe5f6538a24f7441f9d90cd1efd76fa7f518977f43a518e2566bfa08c683",
+    "tests/test_attention.py": "13c2719c2407feabd84789db4c525966ab00b619de4f7d936613dac36804a4c4",
+    "tests/test_b04_interfaces.py": "9e90d53ed1c326a5379631aa6aa5e095cc301f080c05d6bbf724fac24dee8a27",
+    "tests/test_channel.py": "f632a25071963b4a6c10bfe42374b1e9fdc3dd39b08c21d267dd52c7a34bf958",
+    "tests/test_codex_wake.py": "c7ef9b52daa97cda3a1250959cbc41cad7244d812c0a8d67eccb82b69c585751",
+    "tests/test_collaboration.py": "7f4b7eb57eefdeabce3d8e724a56c36e8610b005458a053d8d0d6c44c3443c4d",
+    "tests/test_connection_binding.py": "024273d0e98de1b078ad16e2a8ada284cfbe11341eaa8b273e4be4ae06e82a5e",
+    "tests/test_crash_boundaries.py": "7faed6976e4a6c90b689fb60b7e5a4f0abe34a61933fc11798f309085321bbe0",
+    "tests/test_decisions.py": "3837476814ccec2ee29a4bf7cb6621eba6ee672d903fbe45d360f8ff604bbc80",
+    "tests/test_directory.py": "a2be2425abea44bb493e496259ba17f5a2e0917edb82e7efa55fa7175ac89b53",
+    "tests/test_directory_contract.py": "e316249e5fec1b150110dc50210ac38d3e41f72edc621617e1e3654c741b40ee",
+    "tests/test_directory_interfaces.py": "12d91d6663d891af57390e8dde3dc1ef9355c6f9bb63a4f21490509eb97392b4",
+    "tests/test_discovery_latency.py": "d4fdae0a491fb3855fc59445e068be7ee643ce6d2ba274c69eeb990122afc966",
+    "tests/test_doc.py": "08ff26efda18af2b16efaca5d029b8e04cebd08659e5feebdcb8a961e0ed7751",
+    "tests/test_envelope_nested.py": "639f85870b6b26bc7c8763f837677031c1c9a098057d3f101d0eb2e22a4e5810",
+    "tests/test_file_interfaces.py": "f93c4b91f05cfe274ac13c9f1cb80e3f5944a04f8e677bf194baeb75dd93d595",
+    "tests/test_files.py": "d1678a5d1a68e426df53c92d7f631f317342a8cab8a9514d520231b38103afe9",
+    "tests/test_handoff.py": "a3d7ff9ba9440923e1119465e1a49e0162b22a1fc477777709114a838a69ceac",
+    "tests/test_handoff_consumer.py": "31f5d017861e402dc9a4c70314b395821b98f2f1daf3071b9adf1f5b06a37771",
+    "tests/test_handoff_crash.py": "ad29ac98711e8ad235e3918335f6d58ac4ae1909c3ec268285ba7aec33f35dd9",
+    "tests/test_handoff_pending_ids.py": "7b993ca948cbd97dc71bb9dbda65b6159936e8b9a174b65e0f6b1169489466d2",
+    "tests/test_hook_status.py": "597c4b8d71fb2e16c076d3e3420d75ca1b8145b817be261ac55b7c73e5dc7c31",
+    "tests/test_install_cli_flow.py": "2726d9a8ddb1b1acb93c9a6d82b7fae5ed811d79e13ba642083c67b08f9444b4",
+    "tests/test_install_codex.py": "34c0695c6b8b195cd890502f90df64ee78f9eddebcae31974d17bc30c21455ef",
+    "tests/test_install_native_mcp.py": "a21fb6b5d8cb9f618c60b45af3a5eb02c6d49e2cd0492366b58e71e1382811b2",
+    "tests/test_install_runtime.py": "285740c197166264eb5d85bd07fdfc15988261526cafb38ac1fa5fe871d126a3",
+    "tests/test_install_safety.py": "0a5ae8020ca9042b20354adaddc02bff9cd1923ca3e813fda8575a011c1896b7",
+    "tests/test_launcher.py": "2719801f12b48bce08e8b9f19b6d735397a94ab722d35709a6937f60fafc0d6f",
+    "tests/test_link.py": "d3774f109c5403d307684556110b21fe8d83d54573be22dea93f5168f1853bda",
+    "tests/test_materials.py": "8768e8f43d9c5903ccf7696f97d9436b12ec65b16fa69f5de438fba46447d3df",
+    "tests/test_mcp_dispatch.py": "739d56142447b037847f43261807006d16246bfd94fe294d361dd873b43c6809",
+    "tests/test_mcp_identity.py": "6676e755b48054949c8729db834186163ec48269932e7ace69b711e1ed3b06f3",
+    "tests/test_mcp_preload.py": "001ff9d537b949efd21db606660b27759d8d7e765ec885d61e4731952c3c7bed",
+    "tests/test_mcp_wait_process.py": "92725ad677f5f0e964a1e20cf52ecdaab7b28b4f14a4060aa49ee0a09ad24385",
+    "tests/test_messaging_instructions.py": "ef4e3c617510d1cb10c76cfe0369176992d0a67c5461e4259c739aae7e9bec33",
+    "tests/test_native_consent.py": "faf4aede753bf1eb0b5b278df3f377a3f2bf09dc4353b27b307b74f38ad6a458",
+    "tests/test_one_yes.py": "bd255d955f9717b3f892699af7175629ba8b64304d84967c2fe029639a48cca2",
+    "tests/test_open_consent.py": "12a9fbf4321ce58c535d8db2d26eeb01b6cf9e4c0c46649f3d9da143fa064d70",
+    "tests/test_open_mcp.py": "16710736bcec2cd3d157d26a940ecf7c384fcc9c152c8ddfbe1a735570de7dd8",
+    "tests/test_open_messaging.py": "0a83862e1dd548613df92b107b6ebbc10d674f33e362caf32ba29354c6e84233",
+    "tests/test_open_receive.py": "507c5adfc7139656c11f996ac3be65a56aac52293e9999e32fa413cde9ebd4a9",
+    "tests/test_otlp_export.py": "9346a0b849526b491446030c206910673dfa127efcd6098463d723e5014522b1",
+    "tests/test_owned_crash.py": "fbae99eff1f22daf9774e275dda6c57e606ce1b501863d7d5d3ec7b303e8c30d",
+    "tests/test_owned_interfaces.py": "3ee3d73a17dfdf88b9ed68eae30eef3bb51f8924f806786743ff70655d9e7f07",
+    "tests/test_owned_native.py": "66d3512d42d86ccbebb430b11870409ebc16631d9bc8618ff81cdb275d0ec0f4",
+    "tests/test_owned_native_events.py": "554b0e9e8f034b1a523ee8c0582160ead73cde46a003d550970ca8782412092c",
+    "tests/test_owned_requests.py": "b6cfe308963d65706a82fe2665135cb5451791b8c7fa1250488a8fec55d43d44",
+    "tests/test_owned_review_fixes.py": "a7a09eb6595bc397d3a8a3160bb14bf276bb2e6bb2533ca1c63f6bb3319ff4b4",
+    "tests/test_owned_workers.py": "390ac86d17fda89b239b55824a5473f1f4cf841c5f16a6336330cdd09bda8ba2",
+    "tests/test_peer_roundtrip.py": "724b1df64c5c56ba52f5a7c67ff614a1d06eb133b360efbe91e16c84da10818f",
+    "tests/test_person_decisions.py": "329caa1043923e3ce91523aef1797b39cd75ef84097e788d181b592a16be61b1",
+    "tests/test_policy_recovery.py": "0b75293566ef3f08937d236e3cc430fa701fc1a197d171076c1ddb8deee1597b",
+    "tests/test_probe.py": "d36aa76fa1b73b88ef4a252343c96bb48209d98d44d155580d61d13564592d18",
+    "tests/test_provenance.py": "1f91b697922a4a170cd166b563f25ebdf1ee15803cbafa1d5beb1ce982e55056",
+    "tests/test_question_interfaces.py": "66e5791078f5b38bba20c08a278cbdc2efe7d82aebc95da81ca666c883ac94d5",
+    "tests/test_questions.py": "cb5d55f5bc841a884c856ef09d1e4869d26094daaa2a396af8acf0d04cd35c94",
+    "tests/test_questions_contract.py": "9bb9f3cd7de95d53c31762616afd805538409dd23cd278c9358f861b60f4f421",
+    "tests/test_remote.py": "470a35476c53ea75689a642a76a33dbf60f5a6f699094e5a766337cbad61a20d",
+    "tests/test_selected_connection.py": "4adf666b3a424c3c96b88e226bd3189d7f28b21f83cf9e57aa99a3fa9c811221",
+    "tests/test_self_registration.py": "f0414be059d400b762ba12bb06bbfee2c3e72b571c2d518696bcd6dfe3fa886d",
+    "tests/test_setup_flow.py": "df5f4f522705f575185c9e739986169ce98bcc266f574033374d50dcfa84db9b",
+    "tests/test_stalled_probes.py": "5aaab481c0711be674e363b9b957b6f1703a8e681e3b80418949d75196ca8fd8",
+    "tests/test_subagent_transport.py": "8c07bfed94e8d7185e30c88d73bb39d9198bcc437021df8207758d9b708db658",
+    "tests/test_telemetry.py": "26ca5e97d3cf22002d845897129525f13b024a0a20e2bba507be3aef8c3b3e0a",
+    "tests/test_traffic_interfaces.py": "0ddbb68e3aae63163eba78e99231eed2807dcc94c95cd0bb02334f828d686eb2",
+    "tests/test_traffic_policy.py": "d33b23c1ada1a08d4e0dd65980c06198445a7d4f87968d70b5083ebacac55693",
+    "tests/test_user_answers.py": "84cd820c71e3e9b4db44132a29fd5420de862cc6a2d25b339bf8606a99332f22",
+    "tests/test_vectors.py": "f3e7b2fcaf07a6317690cc5e58408f2d19fc7c35bdeda14e0a88477d7f4948ea",
+    "tests/test_version_mix.py": "ee4ee69b9cf5c513aaca438b2bc8a3dd21f197a0eeea4eeea4b77058c7145ba1",
+    "tests/test_worker_directory_registration.py": "30679bf1bc10c0adb78753e07ec7851b1d615d698e494534581019fc7c087a0c",
+    "tests/test_workers.py": "edd42948d03acc04e020ef9bf54e76632ac586b001f07ead6800194a694e9619",
+    "tests/test_xsm.py": "e20e700777e1304506957f3d4dd806d5b8315f7b137139a5f403e691a56eb417",
+    "tests/vectors.json": "fb9c68dc359183bfe69bd31f19f504d733b5018e13cd197856516f1f98888006",
+    "xsm/__init__.py": "6f3c027b81d76181e6d7ead368d3206768d662f437f097cd194d27e9cf7735ba",
+    "xsm/__main__.py": "13a1a5b340cdcfc1902b62be90e508c7c71886000d5bf087e7854aadf09fb35e",
+    "xsm/abuse.py": "a15303d88acded3e03110b125da91e11ffd5de96d266a9485a0f476d991d8e66",
+    "xsm/adapters.py": "0b0d77d724130b2671d2fdc8eb0da64bc80d178b4be54b766c0b9a8629e950dd",
+    "xsm/attempts.py": "224b86ae077fc6e285716e73850317e9e6efcdba244eac16a3f9edef6dad320a",
+    "xsm/attention.py": "8cd167c01cc560f92580646c2e081ca2604c8548184ce493ef1e8bf875a9e866",
+    "xsm/bounce.py": "4a3ede5b15d85dea65388e26fa21f62dd2e9ab7da06c94ef3b9d788085aeaecc",
+    "xsm/channel.py": "459f8125b03eddbd2d8be23474b5f50b740aa7f777d2ea436f0aaa55db235382",
+    "xsm/cli.py": "76f29a9ef05d070dc61d68008ae87db2e5935dc76d0e333bd30c3db29d54cb1c",
+    "xsm/codex_daemon.py": "d7423388a943868a06411ca33725b17a128bd9c6c641232da0844a59ff9a1f3d",
+    "xsm/collaboration.py": "4955c37de5aa9dd85a7f083db95cc6e39b7120681dddf63f7f8a871346e7d290",
+    "xsm/config.py": "92255fcee9cd2fe3b013851b056533a78d5090b225123f0d460de9c425feb5ca",
+    "xsm/connect.py": "61aa314f64c122955a929406778f940cf96cdc7a90ec0425cbe958dcb486c292",
+    "xsm/consent.py": "26adb2e00e2466594a6dee3fe4850cc6ee8ee20c7187c0e1f490d51d603b95e0",
+    "xsm/context.py": "3a8355156f5d5497a0e945fe1a2c05791439cfe172f8fa5ae0eed936830ecb03",
+    "xsm/decisions.py": "ee9964969497d3726dad7cdb27913bf2df382615abf6ae9ab6fc66b59a72fb2b",
+    "xsm/directory.py": "f185dbc0b59907988e7f3f26cddf40d6696d9e477e568c86f8c8e48c6aee3d17",
+    "xsm/doc.py": "465d44d8ed5c3c2c458d67a0071c3dc56ef483794f34858b26eae82258a68011",
+    "xsm/envelope.py": "12cd108b9c25e00ee510177c191bac546ed36b835a4456d49fb89d60f095f6cf",
+    "xsm/files.py": "01425c645b7047590c452aaa7ea4f348a17aa5e25481e8ae4597dee5ab1d1ca3",
+    "xsm/handoff.py": "48f8b6c1c4ab29ede46141e6eeb431bd08501407dbf42c75948c477bdd767d00",
+    "xsm/housekeeping.py": "5d1a0f1c1f3cf2ef820344935db26aeda5bed5b27e66ba99b1868e8c1d53cf3a",
+    "xsm/identity.py": "ecfddb64f394455bf68117076127f1c0a07888c0df4cd734f219771bce3004a5",
+    "xsm/inbox.py": "299b972ff4fadd91148e495357be10a97ac2640d23d79c317e0b675699541695",
+    "xsm/install.py": "a8e712de6e8b2b9f368946333a6c8793168c6734484be45a60dbe967d0aa1960",
+    "xsm/instructions.py": "8767e07bef46cd0859fdef2b7a41d7838fa5faf62fc0cb54baf59a0f1c2c1190",
+    "xsm/ledger.py": "f291d11b736608bb3d2d07bdccdcc15348af2cbdfa73e1fb9d4c5628063e459f",
+    "xsm/materials.py": "ddedb680dfb98691a9b83f9ac1ce88119b6c308858b3f89f786e19bed0d771bd",
+    "xsm/mcp.py": "8f8a234180fd3be42dca7ebebadfe16ac399f755cbcfb7c5b8453a6406a6ca05",
+    "xsm/otlp_export.py": "8ce0b354b4c3f5687c5b0cdd49825f5248ac4725dfbca6b96f5f3750dc32cc2a",
+    "xsm/outbox.py": "1ab6e31b52feae97e06f326c9d4f7658a2e02549b5085e0e864ea1e002bbe211",
+    "xsm/owned_requests.py": "6e55c26db5709189619196f5ed373004fa0fa468246dc99b899dd14cce4e2a69",
+    "xsm/paths.py": "242b8e64b5d564e503d5e0bbef1d7e8d160690e8bd5199bc160523969835bb39",
+    "xsm/policy.py": "9f912493ca4a26e22af110edead346e58924022de4d2c99c56c566279c1c7cc7",
+    "xsm/probe.py": "5727d930fafd3793da7f24f2179fb15dbc3ea07f58d53cd193ea6c1a093c828c",
+    "xsm/provenance.py": "7639e2b111f964a6eaa8031408fda9fc094eaa9c714653085b0f5ea5fbf755d6",
+    "xsm/questions.py": "c039aea75a9a3e1aebcedcbc3a9ddaedf5bff4ca3b2f1153f3c7ab6a3e498270",
+    "xsm/receive.py": "f0844cf0dde52979fb2361a7501fa9be8dd554b8052cac2acd56e3347a7add94",
+    "xsm/registry.py": "edce2c6e75ec4d1803f402db565900080be337b2727a40ff663376c355890360",
+    "xsm/remote.py": "d79acd373ea13490ae7ac34a86f7d376520d51293a4cad68728db35eaa44e3cf",
+    "xsm/resolve.py": "024de94e03a72e24f0d966386dd73090220d45a88c45bcc7c839e60b666c9fcb",
+    "xsm/send.py": "05390ef61f53860c84311bc3f2f3aaa428508e615f989f21398dcd427f601fbe",
+    "xsm/setup_flow.py": "1dfbfb19e1bb8ce267c3bd3ad9519420017af01c78a63ce187c3a709d27247cd",
+    "xsm/telemetry.py": "bf0411d546c02a2f3e6aaea7d6f8f2549eeeeb57a7aedcc1cb968b5c87c1e2ea",
+    "xsm/user_answers.py": "5ad5b73ec365217a28285a4e3deb709331feb570593b588119460d9b51abf24f",
+    "xsm/workers.py": "518cb28f77c3ee222d1adf7e49068e671fc38dbc43fb5e1ac0ed6ef139299fa5"
+  },
+  "safety": {
+    "new_models": 0,
+    "new_experiments": 0,
+    "network": 0,
+    "source_edits": 0,
+    "plan_ledger_edits": 0,
+    "new_tests": 0,
+    "doctor_v3_partial_unknown_unchanged": true
+  },
+  "outputs": [
+    "deliverables/p13-live/remaining-execution-frontier.json",
+    "deliverables/p13-live/remaining-execution-frontier.md"
+  ]
+}

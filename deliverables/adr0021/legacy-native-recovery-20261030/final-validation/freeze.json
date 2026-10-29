@@ -1,0 +1,17 @@
+{
+  "root": "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/adr21-closure-final-1cnnq81i",
+  "started_utc": "2026-10-29T16:37:06.399680+00:00",
+  "manifest_sha256": "ccc3f22a1d65a33ddc76b0ad1abc4966a65664a6e41777d52b70230cd4fd4011",
+  "files": 178,
+  "python_modules": 53,
+  "test_modules": 86,
+  "binary_sha256": "f17f03fafcdf3a31e374d6cbc0ccbbbd8000ba6a7eba5d9b44605e742c409aed",
+  "prior1918_manifest": "/private/tmp/adr21-regression-final-3fo9wqnw/manifest.json",
+  "prior1933_manifest": "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/adr21-final-20261030-fx0yt4x3/manifest.json",
+  "changed_from1933": [
+    "xsm/receive.py",
+    "xsm/handoff.py",
+    "tests/test_network_receive.py"
+  ],
+  "previous1935_manifest": "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/adr21-legacy-final-20261030-3ykbtain/manifest.json"
+}

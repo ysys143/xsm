@@ -1,0 +1,281 @@
+{
+  "scope": "one current post-claims natural sample only; not whole J03/J04 or old-product speed superiority",
+  "business_goal": "passed-this-sample",
+  "raw_result_sha256": "97a0947771689d0f30661251ba79ba68598d0c02794c9782e14006a228c15f01",
+  "raw_result_preserved": true,
+  "original_two_condition_artifacts_preserved": true,
+  "original_artifact_hashes": {
+    "deliverables/p13-live/natural-collaboration.py": "8befe03ed33f44517339b5c436e964420becd26b1a3b9f3307e13c3f3aef1434",
+    "deliverables/p13-live/natural-collaboration.json": "177331e3704153bab2023d6f32e2b8a50ab2ba74d57c7300c9b979b3f08c715d",
+    "deliverables/p13-live/natural-collaboration-audit.json": "17b7d96770dd2a65dc26f539e9496db7c4887e9b008ec1d41a71d99a07d02984"
+  },
+  "native_processes_started": 2,
+  "original_launch_and_registration_code_unchanged": true,
+  "native_reruns": 0,
+  "baseline_executed": false,
+  "goals_unchanged": true,
+  "invocation_conditions": "original workspace-write/approval_policy=never/factory ignore-user-config retained; no added permission/model/tool override",
+  "source_manifest": "deliverables/p13-live/post-qa-source-manifest.json",
+  "source_manifest_sha256": "a4906d6af6f3e755e4cb36808a813e5c707476271e9e9e3ec3b0a0c492943f4d",
+  "runner_sha256": "3dd9b9d9f1320f88980acadc77c54df5a67a81e19c4b409027a71b2e037d37b0",
+  "snapshot_source_readback": {
+    "file_count": 313,
+    "manifest_sha256": "0a6e191922cc4633867416b8927503a8d634ce542e37abf7957b90eb2f58e06e",
+    "matches": true,
+    "changed_paths": []
+  },
+  "primary_paths": 133,
+  "profile_unchanged": true,
+  "runtime_source_unchanged": true,
+  "actors": [
+    {
+      "role": "reviewer",
+      "native_session_id": "01a1842d-433a-7542-80e8-973d15d34f39",
+      "profile": "/Users/jaesolshin/.codex",
+      "mcp_calls_started": 13,
+      "mcp_calls_completed": 13,
+      "mcp_by_tool": {
+        "xsm_inbox": 5,
+        "xsm_ack": 4,
+        "xsm_send": 4
+      },
+      "mcp_errors": [],
+      "shell_calls": 3,
+      "tool_error_count": 0,
+      "inbox_calls": 5,
+      "unnecessary_inbox_calls": [],
+      "direct_answer_ACKs": [],
+      "native_host_failure_before_xsm_tools_call": false,
+      "native_errors": [],
+      "native_terminal_events": [
+        "turn.completed"
+      ],
+      "exit_code": 0,
+      "received_reply_bodies": {},
+      "registration_preceded_agent_call": true
+    },
+    {
+      "role": "initiator",
+      "native_session_id": "01a1842d-46c7-7821-8dd7-2146035ebc10",
+      "profile": "/Users/jaesolshin/.codex-3",
+      "mcp_calls_started": 9,
+      "mcp_calls_completed": 9,
+      "mcp_by_tool": {
+        "xsm_discover": 1,
+        "xsm_connect": 1,
+        "xsm_ack": 4,
+        "xsm_ask": 3
+      },
+      "mcp_errors": [],
+      "shell_calls": 3,
+      "tool_error_count": 0,
+      "inbox_calls": 0,
+      "unnecessary_inbox_calls": [],
+      "direct_answer_ACKs": [
+        {
+          "reply_id_sha256": "408e0bf0671a382b229244f957a410d057d293575d59cb1b682a82b60a827bee",
+          "token_sha256": "5beec25c4602bd8fac3b875baa38fa8176e4ec477ac7307cbbddfa32ee1d4bf5",
+          "answer_surface": "xsm_connect",
+          "answer_event": 13,
+          "ack_event": 15,
+          "intervening_inbox_calls": 0,
+          "actual_ack_result": true
+        },
+        {
+          "reply_id_sha256": "d6a54834cc98f36a980663cd99ae4cc4005759f115fd12b171feeedabdcdf622",
+          "token_sha256": "459a13dddf309b974c1e7a69e86c1a65648142a2045b2d99a075febc748698dc",
+          "answer_surface": "xsm_ask",
+          "answer_event": 17,
+          "ack_event": 19,
+          "intervening_inbox_calls": 0,
+          "actual_ack_result": true
+        },
+        {
+          "reply_id_sha256": "383fca37acd66462d9a12baf60a8317a4da380b2a6ca9aca79823d1f37b6e4cb",
+          "token_sha256": "0b08435bbb3e5c77079d0c1c859a1b13fe3b2bf8e0e0cac808674efeb2fbf4a4",
+          "answer_surface": "xsm_ask",
+          "answer_event": 21,
+          "ack_event": 23,
+          "intervening_inbox_calls": 0,
+          "actual_ack_result": true
+        },
+        {
+          "reply_id_sha256": "839d9f1f3734d995b4b08b8465aa058fd476cf92f49cce6a839c3a1d90d3eec7",
+          "token_sha256": "674f8af05d14da580a6a13e717892002d659edd1fdee586c3adba067fe05b3b7",
+          "answer_surface": "xsm_ask",
+          "answer_event": 25,
+          "ack_event": 27,
+          "intervening_inbox_calls": 0,
+          "actual_ack_result": true
+        }
+      ],
+      "native_host_failure_before_xsm_tools_call": false,
+      "native_errors": [],
+      "native_terminal_events": [
+        "turn.completed"
+      ],
+      "exit_code": 0,
+      "received_reply_bodies": {
+        "f7a84ad5dbe34088": {
+          "event": 13,
+          "surface": "xsm_connect",
+          "body_sha256": "c91153c5c2492fa77fd91257620c260a1efea88ce7949c7a1900492e5fdebe1d"
+        },
+        "d83c39ead27c4c20": {
+          "event": 17,
+          "surface": "xsm_ask",
+          "body_sha256": "15d790429041d75eceb6ec8707d36d023aace02b9e27bcc6bcbd4716fc70c5f9"
+        },
+        "a541e97c206245ee": {
+          "event": 21,
+          "surface": "xsm_ask",
+          "body_sha256": "7c4629c075ff79d01a853109cf44d016a8572977e3591eaaad0b83b3ec335166"
+        },
+        "c89fb36d35bb48cb": {
+          "event": 25,
+          "surface": "xsm_ask",
+          "body_sha256": "86556d36e2d372d35638bbb02641594cd704e33b76dc7e8c7ef32aac84ebd997"
+        }
+      },
+      "registration_preceded_agent_call": true
+    }
+  ],
+  "reviews": [
+    {
+      "category": "boundary",
+      "request_id": "c32f86e8f48641c1",
+      "reply_id": "c89fb36d35bb48cb",
+      "request_body": "실질 검토 3/3입니다. 별도 경계 사례 '통상적인 정수 덧셈에서 0+0=0'을 독립 검토해 주세요. 앞선 2+2 수정안의 채택에서 추론하거나 양수 후속자 단계에 기대지 말고, 덧셈의 기저 정의와 항등원 성질로 직접 계산해 참/거짓 및 근거를 제시해 주세요. 이 검토는 별도 요청으로 판정하고 현재 요청 ID에 최종 응답을 연결해 주세요.",
+      "reply_body": "검토 3/3 완료。명제 '통상적인 정수 덧셈에서 0+0=0'은 참이며 채택합니다. 덧셈의 기저 정의 a+0=a에 a=0을 대입하면 바로 0+0=0입니다. 이는 덧셈 항등원 0의 성질과 일치하며, 양수 후속자 단계나 앞선 2+2 결과를 사용하지 않습니다. 준비 확인을 제외한 독립 검토 3차례를 모두 마쳤습니다.",
+      "request_body_sha256": "e8676442179d4c161a1065d1ca35e4ca687f8a907e35fa467e51eed077ad30bd",
+      "reply_body_sha256": "86556d36e2d372d35638bbb02641594cd704e33b76dc7e8c7ef32aac84ebd997",
+      "request_digest": "af004fc647301babf73821e52a84457ebb0e91e9373cac088a2e3217dbed1671",
+      "reply_digest": "a69901b39d4623195e0ed9ea3e7ba6db6c8d1150bf64a49c3273e873c40627eb",
+      "reply_to_matches": true,
+      "actual_native_endpoint_pair_matches": true,
+      "received_actual_body": true,
+      "explicit_outcome": "succeeded",
+      "canonical_state_after": "acknowledged"
+    },
+    {
+      "category": "handshake",
+      "request_id": "c16592b70f1a4f7e",
+      "reply_id": "f7a84ad5dbe34088",
+      "request_body": "협업을 시작하려고 합니다. 이 원 요청에 reply_to를 붙여 준비 여부와 수신 가능한 작업 방식을 짧게 회신해 주세요. 준비됐으면 outcome=succeeded, 협업할 수 없으면 outcome=failed를 붙여 주세요. 이 메시지는 협업 확인 요청입니다.",
+      "reply_body": "a1 검토 담당입니다. 준비됐습니다. xsm 질문에 검토 대상 파일과 판단 기준을 보내 주시면 읽기 전용 조사 후 원 요청에 연결하여 답변합니다. 실질 검토 3차례가 끝날 때까지 대기합니다. 이번 준비 확인은 검토 횟수에 포함하지 않습니다.",
+      "request_body_sha256": "b268004cb9e0a4f2b2c5442a8a59992556d9feb2beba033a93c3c0caafdb865f",
+      "reply_body_sha256": "c91153c5c2492fa77fd91257620c260a1efea88ce7949c7a1900492e5fdebe1d",
+      "request_digest": "003535b4e71f1447d81c2ff1df3b5e3e74dff4c0baefea884d819994b1bb80b1",
+      "reply_digest": "db7e439eddf799d8cc7b4bac158a5098cf9bfc60d3bbae3c1569f3f2464a4a4e",
+      "reply_to_matches": true,
+      "actual_native_endpoint_pair_matches": true,
+      "received_actual_body": true,
+      "explicit_outcome": "succeeded",
+      "canonical_state_after": "acknowledged"
+    },
+    {
+      "category": "correction",
+      "request_id": "30a4df827cce4f9f",
+      "reply_id": "a541e97c206245ee",
+      "request_body": "실질 검토 2/3, 수정안 재검토입니다. 최초 요청 196e4e68b090423e의 지적을 반영해 제안 v2를 '통상적인 정수 덧셈에서 2+2=4이다'로 수정합니다. 근거: 2+0=2, 2+1=3, 2+2=4. 기존의 결과 5를 폐기했고 연산 정의는 바꾸지 않았습니다. 직접 다시 계산해 반례가 해소됐는지, 수정안이 참인지 판정해 주세요. 완료 응답은 현재 요청 ID에 연결해 주세요.",
+      "reply_body": "검토 2/3 완료. 수정안 v2를 채택합니다. 동일한 표준 덧셈 정의로 다시 계산하면 2+0=2, 2+1=(2+0)+1=3, 2+2=(2+1)+1=4입니다. 따라서 수정안은 참이며, 1차에서 지적한 결과 5와의 불일치는 해소됐습니다. 연산 정의를 바꾸지 않아도 수정안이 성립합니다.",
+      "request_body_sha256": "f2fb31370dee59270047d6f081e39465b582f61f110a5fe5bf16795669061774",
+      "reply_body_sha256": "7c4629c075ff79d01a853109cf44d016a8572977e3591eaaad0b83b3ec335166",
+      "request_digest": "1d7ca3741bb827eb43147cfca2420ebef6430d19d70ff6a2903ebfce5d6460b7",
+      "reply_digest": "c988318922da5251c794dc119bc334f068b0342cbf62b148a912b4be784ef080",
+      "reply_to_matches": true,
+      "actual_native_endpoint_pair_matches": true,
+      "received_actual_body": true,
+      "explicit_outcome": "succeeded",
+      "canonical_state_after": "acknowledged"
+    },
+    {
+      "category": "proposal",
+      "request_id": "196e4e68b090423e",
+      "reply_id": "d83c39ead27c4c20",
+      "request_body": "실질 검토 1/3입니다. 검토 대상은 이 메시지의 제안 v1: '통상적인 정수 덧셈에서 2+2=5이다.' 이를 독립적으로 계산하고 구체적인 반례 또는 오류 근거를 제시하여 채택/기각을 판정해 주세요. 참으로 가정하거나 동조하지 말고 표준 덧셈 정의로 검증해 주세요. 파일은 없고 본문이 검토 원문입니다. 이 요청 ID에 연결하여 최종 outcome과 함께 답해 주세요.",
+      "reply_body": "검토 1/3 완료. 제안 v1은 기각합니다. 표준 정수 덧셈은 a+0=a, a+(b+1)=(a+b)+1을 만족합니다. 따라서 2+1=3이고 2+2=(2+1)+1=4입니다. 4≠5이므로 '통상적인 정수 덧셈에서 2+2=5'는 거짓입니다. outcome=succeeded는 검토 수행 완료를 뜻하며 제안 채택을 뜻하지 않습니다.",
+      "request_body_sha256": "27839f493c284ba70780856929df3927d9a3d267ea2a373dbccee54f29d73328",
+      "reply_body_sha256": "15d790429041d75eceb6ec8707d36d023aace02b9e27bcc6bcbd4716fc70c5f9",
+      "request_digest": "ba3bc2d6aa79e14deb7dc8bf3c030948082337ce5d0acb4dc54209e65262f4cf",
+      "reply_digest": "ba8965b250d4a0ba988475b7eadf07c3f8eb652b7f2e4e3975bef2af4a4835bc",
+      "reply_to_matches": true,
+      "actual_native_endpoint_pair_matches": true,
+      "received_actual_body": true,
+      "explicit_outcome": "succeeded",
+      "canonical_state_after": "acknowledged"
+    }
+  ],
+  "actual_math_reviews": 3,
+  "actual_handshakes": 1,
+  "first_actual_reply_seconds": 19.616,
+  "first_reply_scope": "initiator start to first observed actual returned body, includes handshake; controller polling granularity, not wire latency",
+  "condition_seconds": 67.817,
+  "setup_initial_actual_native_registrations": 2,
+  "bootstrap_protocol_calls": "not exposed in native event stream",
+  "controller_message_calls": 0,
+  "controller_ACK_calls": 0,
+  "controller_index_repairs": 0,
+  "additional_human_prompts_clicks_commands_approvals": 0,
+  "agent_mcp_calls": 22,
+  "agent_shell_calls": 6,
+  "total_agent_tool_calls": 28,
+  "initiator_direct_answer_ACKs": 4,
+  "initiator_unnecessary_inbox_calls": 0,
+  "prior_new_condition_reference": {
+    "path": "deliverables/p13-live/natural-collaboration-audit.json",
+    "sha256": "17b7d96770dd2a65dc26f539e9496db7c4887e9b008ec1d41a71d99a07d02984",
+    "initiator_mcp_calls": 13,
+    "initiator_inbox_calls": 4,
+    "all_actor_mcp_calls": 26,
+    "scope": "same business goals, previous new condition; observational call counts, not a matched speed benchmark"
+  },
+  "private_raw_evidence": [
+    {
+      "path": "/private/tmp/p13-post-claims-uwu7xsx2/post-claims-current/reviewer.jsonl",
+      "sha256": "e95d8d929f7d39b219b532c1681877a0f847538c06d2664a56d31e3d9b8cb49a",
+      "bytes": 71858
+    },
+    {
+      "path": "/private/tmp/p13-post-claims-uwu7xsx2/post-claims-current/reviewer.stderr",
+      "sha256": "1aa26269eb1cc57f86b235a03cda53c004edb5b1e9fc99d4da4f00843293d721",
+      "bytes": 39
+    },
+    {
+      "path": "/private/tmp/p13-post-claims-uwu7xsx2/post-claims-current/initiator.jsonl",
+      "sha256": "c9dbc5a916d31ff1a66ab61b7f9741f20d2e39ad8b4179564e397716f465a742",
+      "bytes": 76012
+    },
+    {
+      "path": "/private/tmp/p13-post-claims-uwu7xsx2/post-claims-current/initiator.stderr",
+      "sha256": "1aa26269eb1cc57f86b235a03cda53c004edb5b1e9fc99d4da4f00843293d721",
+      "bytes": 39
+    }
+  ],
+  "cleanup_readback": [
+    {
+      "role": "reviewer",
+      "kind": "native",
+      "pid": 87490,
+      "live_non_zombie_at_audit": false
+    },
+    {
+      "role": "reviewer",
+      "kind": "mcp",
+      "pid": 87705,
+      "live_non_zombie_at_audit": false
+    },
+    {
+      "role": "initiator",
+      "kind": "native",
+      "pid": 88006,
+      "live_non_zombie_at_audit": false
+    },
+    {
+      "role": "initiator",
+      "kind": "mcp",
+      "pid": 88226,
+      "live_non_zombie_at_audit": false
+    }
+  ]
+}

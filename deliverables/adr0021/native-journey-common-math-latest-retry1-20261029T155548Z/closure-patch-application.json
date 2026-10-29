@@ -1,0 +1,45 @@
+{
+  "parent_root": "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/adr21-closure-final-1cnnq81i",
+  "parent_manifest_sha256": "ccc3f22a1d65a33ddc76b0ad1abc4966a65664a6e41777d52b70230cd4fd4011",
+  "book": {
+    "receive.py": {
+      "before": "e2c3fa86a3fecd35d735965c458ff833dcc562aa6b2a4d52b5a34fe33360320e",
+      "after": "edc2b652dfd334bff67d56557ba512069697bd647e9551e8f642793a25fa54b6",
+      "applied_at": 1793292023.391617,
+      "path": "/private/tmp/mq-b-hd9g8g9k/payload/xsm/receive.py",
+      "parent_source": "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/adr21-closure-final-1cnnq81i/xsm/receive.py"
+    },
+    "handoff.py": {
+      "before": "e73aec7afa15bf507465ec293061c5ff3b288a33ecf339c9dc3009f1f69e6ee7",
+      "after": "12564c8c370e4cf6bfe51af249ba382539759b3168a8aa99eb9a0f7a5055691c",
+      "applied_at": 1793292023.392351,
+      "path": "/private/tmp/mq-b-hd9g8g9k/payload/xsm/handoff.py",
+      "parent_source": "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/adr21-closure-final-1cnnq81i/xsm/handoff.py"
+    }
+  },
+  "mini": {
+    "receive.py": {
+      "before": "e2c3fa86a3fecd35d735965c458ff833dcc562aa6b2a4d52b5a34fe33360320e",
+      "after": "edc2b652dfd334bff67d56557ba512069697bd647e9551e8f642793a25fa54b6",
+      "applied_at": 1793292019.669976,
+      "path": "/private/tmp/mq-m-tn48g8wb/payload/xsm/receive.py"
+    },
+    "handoff.py": {
+      "before": "e73aec7afa15bf507465ec293061c5ff3b288a33ecf339c9dc3009f1f69e6ee7",
+      "after": "12564c8c370e4cf6bfe51af249ba382539759b3168a8aa99eb9a0f7a5055691c",
+      "applied_at": 1793292019.670584,
+      "path": "/private/tmp/mq-m-tn48g8wb/payload/xsm/handoff.py"
+    }
+  },
+  "protected_before": {
+    "/private/tmp/mq-b-hd9g8g9k/state/held/1793289496678.json": "6edd32f59c1c6cc585b1cddd2aa59fb867b73f998a1fa5ea483f50c31c84fdd2",
+    "/private/tmp/mq-b-hd9g8g9k/state/held/1793290806415.json": "f45028e67ab3f75bfb964d1ae24bfd717e3ab45a6f75f10f54454d6c39870620",
+    "/private/tmp/mq-b-hd9g8g9k/state/held/1793291676557.json": "b1a555071082b3cf73e8508cc5316a5f47ccd68f9c770c38689a5823faf797a0",
+    "/private/tmp/mq-b-hd9g8g9k/state/handoffs/73cd7605dd279d1c62affc6a88e35f2e0638c877604a72a225c4ef6448e8bfd8/e1ce6790c1734665.json": "07d4cda58ac9c152244eb480222fde9b1fb33a3631c0130645f660d8783fb1c5",
+    "/private/tmp/mq-b-hd9g8g9k/state/handoffs/73cd7605dd279d1c62affc6a88e35f2e0638c877604a72a225c4ef6448e8bfd8/c18d0295024549c8.json": "24eb87b687375471ca3a846d41bdf5745c21b5f665d65646e9589f949ad3dd76",
+    "/private/tmp/mq-b-hd9g8g9k/state/handoffs/73cd7605dd279d1c62affc6a88e35f2e0638c877604a72a225c4ef6448e8bfd8/958971a5c24e4fe4.json": "5347b379b12bc8aa096ee0dc83ecade06202c116cd0420fb890d038a82ae5225",
+    "/private/tmp/mq-b-hd9g8g9k/state/handoffs/73cd7605dd279d1c62affc6a88e35f2e0638c877604a72a225c4ef6448e8bfd8/9f11884127764cad.json": "73fc4dce19bc495d7ea1136559bed789a87320b72a878985ea9c37401a6e20af"
+  },
+  "protected_unchanged_after_copy": true,
+  "original_frozen_unchanged": true
+}

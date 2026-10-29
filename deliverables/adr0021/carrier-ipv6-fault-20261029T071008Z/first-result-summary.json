@@ -1,0 +1,55 @@
+{
+  "read_existing_attempt_only": true,
+  "host_ipv6_socket_supported": true,
+  "first_attempt_passed": false,
+  "failure_code": "service-exit-4",
+  "observations": [
+    {
+      "role": "a",
+      "loaded_pids": [
+        46085
+      ],
+      "loaded_count": 1,
+      "socket_events": 0,
+      "ipv6_denied_count": 0,
+      "cleanup_pid_checks": [
+        {
+          "pid": 46085,
+          "exists": false
+        }
+      ]
+    },
+    {
+      "role": "b",
+      "loaded_pids": [
+        46172
+      ],
+      "loaded_count": 1,
+      "socket_events": 0,
+      "ipv6_denied_count": 0,
+      "cleanup_pid_checks": [
+        {
+          "pid": 46172,
+          "exists": false
+        }
+      ]
+    }
+  ],
+  "injection_effect_proven": false,
+  "not_executed": [
+    "actual IPv4 ready/bind observation",
+    "init",
+    "join",
+    "ping",
+    "engine port fallback"
+  ],
+  "compile": {
+    "exit": 0,
+    "stderr": ""
+  },
+  "source_sha256": "fa86b6e12871ae1e5e7ce0b13d41af56988ff106dcc3fc5d57f9ca2d90a19095",
+  "library_sha256": "cdb7ce8a579ed4e576c42ffe13df2e8288821ba4e1f8ccc69b9e02a5295c4289",
+  "state_keys_and_existing_evidence_preserved": true,
+  "global_changes": false,
+  "repeat_attempts": 0
+}
