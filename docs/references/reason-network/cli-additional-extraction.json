@@ -1,0 +1,18 @@
+[
+  {
+    "role": "ReasonApi implementation",
+    "offset": 61684095,
+    "end": 61709397,
+    "bytes": 25302,
+    "sha256": "dbd2be3fb981f63c431f0d3a6a456372d0c6d8a87b1959f53a90fa043f7b25e1",
+    "syntax_checked": true
+  },
+  {
+    "role": "device sign-in and finisher implementation",
+    "offset": 61711343,
+    "end": 61725526,
+    "bytes": 14183,
+    "sha256": "59a1b3882f8f949ca54291cd61a99b34833a97d8f6e28a0e92368f77738d835c",
+    "syntax_checked": true
+  }
+]

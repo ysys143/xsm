@@ -1,0 +1,55 @@
+{
+  "fixture_root": "/private/tmp/rn-notify-l9opi17x",
+  "engine": "/private/tmp/reason-ghidra-20261024-3vsixnjl/targets/reason-network-0.12.10",
+  "results": [
+    {
+      "name": "receipt-precedes-system-command-completion",
+      "passed": true,
+      "detail": {
+        "id": 2,
+        "ok": true,
+        "result": {
+          "ids": [],
+          "recipients": [
+            {
+              "address": "fixture@jaesolui-macbookpro",
+              "state": "notified",
+              "note": "popped up for fixture (jaesolui-macbookpro)"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "fake-notification-command-is-still-waiting",
+      "passed": true,
+      "detail": "실제 OS 알림 대신 파일 장벽에서 대기하는 fixture"
+    },
+    {
+      "name": "later-command-failure-only-appears-in-daemon-log",
+      "passed": true,
+      "detail": "notification failed: fixture notification rejected"
+    },
+    {
+      "name": "failed-command-still-occupies-person-rate-limit",
+      "passed": true,
+      "detail": {
+        "id": 3,
+        "ok": true,
+        "result": {
+          "ids": [],
+          "recipients": [
+            {
+              "address": "fixture@jaesolui-macbookpro",
+              "state": "not notified",
+              "note": "not popped up: jaesolui-macbookpro had one from fixture a moment ago"
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "passed": true,
+  "real_os_notifications": 0,
+  "process_stopped": true
+}

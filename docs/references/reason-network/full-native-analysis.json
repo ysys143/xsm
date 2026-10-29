@@ -1,0 +1,45 @@
+{
+  "date": "2026-10-24",
+  "programs": [
+    {
+      "program": "reason-cli-0.2.557",
+      "language": "AARCH64:LE:64:AppleSilicon",
+      "analysis_timed_out": false,
+      "function_manager_count": 67229,
+      "inventory_rows": 66226,
+      "source_sha256": "00a94cc9c119a3ab40e7d8454cbf896f99f4cc59e53df721c3de8b8ab98dd7c9",
+      "exit": 0,
+      "elapsed": 1846.8639552593231,
+      "inventory_verified_rows": 66226,
+      "inventory_sha256": "095b66a1a5ee80af2a0e375c5df6d7dd989e462facd4fecb90a2a46659aa0553",
+      "summary_sha256": "8e83ee8f7ea2aa172d4155c97d285e020da1380e027cb1026bd266005a49f06d",
+      "stdout_sha256": "62a4b5d0bc7361e1e28751ddc6daaa5a93fa18d57d6de4ff7fec1f4e60d05e21",
+      "analysis_success_line": true,
+      "post_analysis_success_line": true,
+      "save_success_line": true,
+      "analysis_timeout_argument_present": false,
+      "exporter_sha256": "e7f0f2a049d792deac3b1564ebc6c7b7df21c85d8097ede6fee8a29e7834ff65"
+    },
+    {
+      "program": "reason-network-0.12.10",
+      "language": "AARCH64:LE:64:AppleSilicon",
+      "analysis_timed_out": false,
+      "function_manager_count": 17997,
+      "inventory_rows": 17727,
+      "source_sha256": "6ac4bb4837469867edc2dba3cbbd6e4dd9fb18ad0389db69ff6ef21683317a44",
+      "exit": 0,
+      "elapsed": 685.914547920227,
+      "inventory_verified_rows": 17727,
+      "inventory_sha256": "f51e6b80c536f0082d3b9b0e3bcca7a4d644fee4047718c97a24be2eda0407ce",
+      "summary_sha256": "321739608021a7681e408acc887e99ad7782e144fec51c144b7a9a5943c22e7a",
+      "stdout_sha256": "54bd6fdd6ff7655d7fdf6be4d06213cfdf870460bf14418cbb74a9f5ba5a8e33",
+      "analysis_success_line": true,
+      "post_analysis_success_line": true,
+      "save_success_line": true,
+      "analysis_timeout_argument_present": false,
+      "exporter_sha256": "e7f0f2a049d792deac3b1564ebc6c7b7df21c85d8097ede6fee8a29e7834ff65"
+    }
+  ],
+  "scope": "Ghidra default automatic analysis completed without per-file timeout; full function inventory exported. Semantic equivalence is not proven.",
+  "raw_root": "/private/tmp/reason-ghidra-20261024-3vsixnjl/evidence"
+}

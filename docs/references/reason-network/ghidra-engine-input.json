@@ -1,0 +1,221 @@
+{
+  "name": "reason-network-0.12.10",
+  "format": "Mach-O 64-bit little endian",
+  "cpu_type": 16777228,
+  "entry_file_offset": 3507756,
+  "entry_address": "0x10035862c",
+  "segments": [
+    {
+      "name": "__PAGEZERO",
+      "vmaddr": 0,
+      "vmsize": 4294967296,
+      "fileoff": 0,
+      "filesize": 0,
+      "initprot": 0
+    },
+    {
+      "name": "__TEXT",
+      "vmaddr": 4294967296,
+      "vmsize": 14827520,
+      "fileoff": 0,
+      "filesize": 14827520,
+      "initprot": 5
+    },
+    {
+      "name": "__DATA_CONST",
+      "vmaddr": 4309794816,
+      "vmsize": 294912,
+      "fileoff": 14827520,
+      "filesize": 294912,
+      "initprot": 3
+    },
+    {
+      "name": "__DATA",
+      "vmaddr": 4310089728,
+      "vmsize": 49152,
+      "fileoff": 15122432,
+      "filesize": 32768,
+      "initprot": 3
+    },
+    {
+      "name": "__LINKEDIT",
+      "vmaddr": 4310138880,
+      "vmsize": 114688,
+      "fileoff": 15155200,
+      "filesize": 111456,
+      "initprot": 1
+    }
+  ],
+  "sections": [
+    {
+      "name": "__text",
+      "segment": "__TEXT",
+      "vmaddr": 4294981184,
+      "size": 11637120,
+      "fileoff": 13888,
+      "flags": 2147484672
+    },
+    {
+      "name": "__stubs",
+      "segment": "__TEXT",
+      "vmaddr": 4306618304,
+      "size": 3240,
+      "fileoff": 11651008,
+      "flags": 2147484680
+    },
+    {
+      "name": "__stub_helper",
+      "segment": "__TEXT",
+      "vmaddr": 4306621544,
+      "size": 3264,
+      "fileoff": 11654248,
+      "flags": 2147484672
+    },
+    {
+      "name": "__gcc_except_tab",
+      "segment": "__TEXT",
+      "vmaddr": 4306624808,
+      "size": 564916,
+      "fileoff": 11657512,
+      "flags": 0
+    },
+    {
+      "name": "__const",
+      "segment": "__TEXT",
+      "vmaddr": 4307189760,
+      "size": 1268040,
+      "fileoff": 12222464,
+      "flags": 0
+    },
+    {
+      "name": "__cstring",
+      "segment": "__TEXT",
+      "vmaddr": 4308457800,
+      "size": 158130,
+      "fileoff": 13490504,
+      "flags": 2
+    },
+    {
+      "name": "__unwind_info",
+      "segment": "__TEXT",
+      "vmaddr": 4308615932,
+      "size": 178448,
+      "fileoff": 13648636,
+      "flags": 0
+    },
+    {
+      "name": "__eh_frame",
+      "segment": "__TEXT",
+      "vmaddr": 4308794384,
+      "size": 999176,
+      "fileoff": 13827088,
+      "flags": 1744830475
+    },
+    {
+      "name": "__got",
+      "segment": "__DATA_CONST",
+      "vmaddr": 4309794816,
+      "size": 136,
+      "fileoff": 14827520,
+      "flags": 6
+    },
+    {
+      "name": "__const",
+      "segment": "__DATA_CONST",
+      "vmaddr": 4309794952,
+      "size": 290000,
+      "fileoff": 14827656,
+      "flags": 0
+    },
+    {
+      "name": "__la_symbol_ptr",
+      "segment": "__DATA",
+      "vmaddr": 4310089728,
+      "size": 2160,
+      "fileoff": 15122432,
+      "flags": 7
+    },
+    {
+      "name": "__data",
+      "segment": "__DATA",
+      "vmaddr": 4310091888,
+      "size": 21768,
+      "fileoff": 15124592,
+      "flags": 0
+    },
+    {
+      "name": "__thread_vars",
+      "segment": "__DATA",
+      "vmaddr": 4310113656,
+      "size": 576,
+      "fileoff": 15146360,
+      "flags": 19
+    },
+    {
+      "name": "__thread_data",
+      "segment": "__DATA",
+      "vmaddr": 4310114232,
+      "size": 185,
+      "fileoff": 15146936,
+      "flags": 17
+    },
+    {
+      "name": "__thread_bss",
+      "segment": "__DATA",
+      "vmaddr": 4310114424,
+      "size": 760,
+      "fileoff": 0,
+      "flags": 18
+    },
+    {
+      "name": "__bss",
+      "segment": "__DATA",
+      "vmaddr": 4310115200,
+      "size": 11096,
+      "fileoff": 0,
+      "flags": 1
+    },
+    {
+      "name": "__common",
+      "segment": "__DATA",
+      "vmaddr": 4310126296,
+      "size": 72,
+      "fileoff": 0,
+      "flags": 1
+    }
+  ],
+  "javascript_regions": [],
+  "needles": [
+    "falling back to hooks",
+    "--thread",
+    "queue",
+    "not a member of this team",
+    "outside this session",
+    "reason-network-proof",
+    "CODEX_HOME",
+    "PostToolUse"
+  ],
+  "recover_linker_functions": [
+    {
+      "needle": "not a member of this team",
+      "start": "0x100248d0c",
+      "evidence_address": "0x100249204",
+      "next_start": "0x100249738",
+      "linker_table_file_offset": 15177272
+    },
+    {
+      "needle": "PostToolUse",
+      "start": "0x100225c70",
+      "evidence_address": "0x100226c1c",
+      "next_start": "0x1002281b4",
+      "linker_table_file_offset": 15177272
+    },
+    {
+      "needle": "PostToolUse",
+      "start": "0x1002cce94",
+      "evidence_address": "0x1002ce078",
+      "next_start": "0x1002cf21c",
+      "linker_table_file_offset": 15177272
+    }
+  ]
+}
