@@ -275,10 +275,13 @@ class PersonDecisionTest(AskHelpers, TempState):
         import re
         repo = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
         readmes = ["README.md", "README_ko.md"]
+        # Every reference file: the guide is split by purpose, and a file left out
+        # is a file this check stops reading.
+        references = os.path.join("skills", "xsm", "references")
         files = [os.path.join("xsm", n) for n in sorted(os.listdir(os.path.join(repo, "xsm")))
-                 if n.endswith(".py")] + [
-            os.path.join("skills", "xsm", "SKILL.md"),
-            os.path.join("skills", "xsm", "references", "guide.md")] + readmes
+                 if n.endswith(".py")] + [os.path.join("skills", "xsm", "SKILL.md")] + [
+            os.path.join(references, n) for n in sorted(os.listdir(os.path.join(repo, references)))
+            if n.endswith(".md")] + readmes
         phrases = ("in a terminal", "needs a terminal", "only a person can", "a person clears",
                    "(a person only)", "a person only", "needs a person", "a person can lift",
                    "they can type", "you can type", "ask them to type", "run /xsm",
@@ -293,7 +296,7 @@ class PersonDecisionTest(AskHelpers, TempState):
         genuine = (("xsm/otlp_export.py", "A person runs this in a terminal"),
                    ("README.md", "The same commands work in a terminal as"),
                    ("xsm/install.py", "told the person to type /xsm link instead"),   # history
-                   ("skills/xsm/references/guide.md", "Never ask them to type shell commands"),
+                   ("skills/xsm/references/workers.md", "Never ask them to type shell commands"),
                    # `--dir` speaks for another folder: only a person at a terminal, and
                    # the refusal says so (the agent runs from its own folder).
                    ("xsm/cli.py", "only a person at a terminal may use it with"),
