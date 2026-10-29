@@ -1,0 +1,36 @@
+{
+  "evidence": [
+    {
+      "path": "deliverables/p13-live/material-boundary-native-20261029-a30cd9e0/report.md",
+      "sha256": "2620f326b62fb449757728bb6dab2ffb2ac8268943f01e672624eb8b120fbd3e",
+      "reexecuted": false
+    },
+    {
+      "path": "deliverables/p13-live/material-boundary-native-20261029-a30cd9e0/summary.json",
+      "sha256": "fd900820f579645d72764dcdbf39b05506d87d8720602167a0a3dc95a7c2672b",
+      "reexecuted": false
+    },
+    {
+      "path": "deliverables/p13-live/material-boundary-native-20261029-a30cd9e0/manifest.json",
+      "sha256": "6cb098fe11760b7d1fdcc9735c860427aafe68f6be98d53168c849ba45c3783c",
+      "reexecuted": false
+    },
+    {
+      "path": "deliverables/p13-live/final-regression.json",
+      "sha256": "faa7f9497bfc481a52b80e2f4e35e643b6981be4ed7d514ac4ebd1d3f2691926",
+      "reexecuted": false
+    },
+    {
+      "path": "tests/test_files.py",
+      "sha256": "d1678a5d1a68e426df53c92d7f631f317342a8cab8a9514d520231b38103afe9",
+      "reexecuted": false
+    },
+    {
+      "path": "docs/plan/reason-inspired-adrs/gates/G06-material-copies.md",
+      "sha256": "914fd7d7a82ef99201a7f8ddd70ff0c82f7cd874f35e1d38da63021e86046a93",
+      "reexecuted": false
+    }
+  ],
+  "scope": "prior native hidden/outside/mode000 and unchanged file-source symlink/Unicode collision fixture/full regression; no rerun",
+  "file_fixture_source_unchanged_across_freezes": true
+}

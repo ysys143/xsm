@@ -1,0 +1,166 @@
+{
+  "scope": "기록된 LAN/tailnet 주소에 소유 프로세스 TCP22 deny 아래 최초 SSH 연결만 각 1회 거절",
+  "hostname": "Jaesolui-MacBookPro.local",
+  "same_host_two_outbound_targets": true,
+  "physical_bidirectional_outage_not_injected": true,
+  "C_profile_source": "deliverables/p11-live/no-ssh-native-lib.py:PROFILE",
+  "profile": "(version 1) (allow default) (deny network-outbound (remote tcp \"*:22\"))",
+  "profile_sha256": "f0ab59f5498e4b1a0a29582836bc03716dacc71f5d5878a33223fea65f55f2ee",
+  "private_profile_path": "/private/tmp/a213-ssh-negative-47t66ep2/tcp22-deny.sb",
+  "rows": [
+    {
+      "candidate": "A-LAN-SSH",
+      "target": "192.168.0.18",
+      "port": 22,
+      "started_utc": "2026-10-29T15:45:08.393803+00:00",
+      "argv": [
+        "/usr/bin/sandbox-exec",
+        "-f",
+        "/private/tmp/a213-ssh-negative-47t66ep2/tcp22-deny.sb",
+        "/usr/bin/ssh",
+        "-F",
+        "/dev/null",
+        "-S",
+        "none",
+        "-oControlMaster=no",
+        "-oControlPath=none",
+        "-oControlPersist=no",
+        "-oProxyCommand=none",
+        "-oProxyJump=none",
+        "-oBatchMode=yes",
+        "-oStrictHostKeyChecking=yes",
+        "-oUpdateHostKeys=no",
+        "-oCanonicalizeHostname=no",
+        "-oConnectTimeout=4",
+        "-oConnectionAttempts=1",
+        "-p",
+        "22",
+        "-T",
+        "192.168.0.18",
+        "true"
+      ],
+      "owned_pid": 6652,
+      "exit_code": 255,
+      "elapsed_seconds": 0.013323,
+      "timed_out": false,
+      "stdout_bytes": 0,
+      "stderr": "ssh: connect to host 192.168.0.18 port 22: Operation not permitted\n",
+      "stderr_file": "ssh-deny-a.stderr",
+      "EPERM_observed": true,
+      "fresh_connection_reuse_disabled": true,
+      "same_C_guard_profile": true,
+      "owned_pid_remaining": false,
+      "model_calls": 0,
+      "expected_failure_verified": true
+    },
+    {
+      "candidate": "D-Tailscale-SSH",
+      "target": "100.77.24.16",
+      "port": 22,
+      "started_utc": "2026-10-29T15:45:08.407631+00:00",
+      "argv": [
+        "/usr/bin/sandbox-exec",
+        "-f",
+        "/private/tmp/a213-ssh-negative-47t66ep2/tcp22-deny.sb",
+        "/usr/bin/ssh",
+        "-F",
+        "/dev/null",
+        "-S",
+        "none",
+        "-oControlMaster=no",
+        "-oControlPath=none",
+        "-oControlPersist=no",
+        "-oProxyCommand=none",
+        "-oProxyJump=none",
+        "-oBatchMode=yes",
+        "-oStrictHostKeyChecking=yes",
+        "-oUpdateHostKeys=no",
+        "-oCanonicalizeHostname=no",
+        "-oConnectTimeout=4",
+        "-oConnectionAttempts=1",
+        "-p",
+        "22",
+        "-T",
+        "100.77.24.16",
+        "true"
+      ],
+      "owned_pid": 6653,
+      "exit_code": 255,
+      "elapsed_seconds": 0.011098,
+      "timed_out": false,
+      "stdout_bytes": 0,
+      "stderr": "ssh: connect to host 100.77.24.16 port 22: Operation not permitted\n",
+      "stderr_file": "ssh-deny-d.stderr",
+      "EPERM_observed": true,
+      "fresh_connection_reuse_disabled": true,
+      "same_C_guard_profile": true,
+      "owned_pid_remaining": false,
+      "model_calls": 0,
+      "expected_failure_verified": true
+    }
+  ],
+  "expected_failures_verified": true,
+  "owned_pids_remaining": [],
+  "SSH_file_metadata_unchanged": true,
+  "SSH_file_metadata_before": {
+    ".ssh/config": {
+      "inode": 400332341,
+      "size": 2224,
+      "mtime_ns": 1788942177849839127,
+      "mode": "0o600"
+    },
+    ".ssh/known_hosts": {
+      "inode": 399888160,
+      "size": 44653,
+      "mtime_ns": 1789707731831354217,
+      "mode": "0o600"
+    },
+    ".ssh/authorized_keys": {
+      "inode": 926501990,
+      "size": 592,
+      "mtime_ns": 1791057131470946076,
+      "mode": "0o600"
+    },
+    ".ssh/id_ed25519": {
+      "inode": 13157590,
+      "size": 464,
+      "mtime_ns": 1726034637138291732,
+      "mode": "0o600"
+    }
+  },
+  "SSH_file_metadata_after": {
+    ".ssh/config": {
+      "inode": 400332341,
+      "size": 2224,
+      "mtime_ns": 1788942177849839127,
+      "mode": "0o600"
+    },
+    ".ssh/known_hosts": {
+      "inode": 399888160,
+      "size": 44653,
+      "mtime_ns": 1789707731831354217,
+      "mode": "0o600"
+    },
+    ".ssh/authorized_keys": {
+      "inode": 926501990,
+      "size": 592,
+      "mtime_ns": 1791057131470946076,
+      "mode": "0o600"
+    },
+    ".ssh/id_ed25519": {
+      "inode": 13157590,
+      "size": 464,
+      "mtime_ns": 1726034637138291732,
+      "mode": "0o600"
+    }
+  },
+  "key_or_auth_values_read": false,
+  "new_model_calls": 0,
+  "new_global_settings_or_services": false,
+  "remote_command_reached": false,
+  "limitations": [
+    "Book에서 A와 D 목적지로 나가는 최초 연결을 제한했다. Mini에서 역방향을 새로 실행하거나 물리 두 호스트의 SSH를 전역 차단하지 않았다.",
+    "대상 IP는 과거 비교에 기록된 값이다. 차단 전 현재 도달성·로그인·host trust 성공을 이번 검사에서 재측정하지 않았다.",
+    "일반 carrier의 첫 SSH가 실패한 음성 표본이며 실제 모델 업무는 시작하지 않았다."
+  ]
+}

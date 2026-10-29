@@ -1,0 +1,14 @@
+{
+  "environment": "actual Claude CLI MCP client; checkout stdio server; same repository",
+  "session_id": "f4047fb0-34a4-47e3-a976-0aa851abd362",
+  "report": "B03 평가에서 ask와 status가 같은 회신을 반환했고, 권한 거절은 없었습니다.\n\n- **호출한 도구**\n  - `mcp__xsm__xsm_discover`\n  - `mcp__xsm__xsm_ask`\n  - `mcp__xsm__xsm_question_status`\n- **discover(work=reviewer):** 후보가 1건이었고, 이름은 reviewer, ref는 `7c9c18`, 상태는 live, 수신은 available입니다. 발견 근거는 same_repo입니다. 최상위 `status`는 `unknown`, reason은 `native_filter_unknown`으로 나왔습니다.\n- **ask(target=ref:7c9c18, wait=20):**\n  - **반환 id:** `38899b81072f407d`\n  - **status:** `final` (wait_end_reason=reply, 대기 20초 중 실제 대기 시간은 확인하지 않았습니다)\n  - **reply 본문:** `P03-MCP-V2-ANSWER` (outcome=succeeded, 회신 id `bcc9892412fb4355`)\n- **question_status(id=38899b81072f407d):**\n  - **status:** `final`\n  - **reply 본문:** `P03-MCP-V2-ANSWER` (outcome=succeeded, 회신 id `bcc9892412fb4355`)\n  - **일치 여부:** 회신 id와 본문이 ask 결과와 같습니다.\n- **참고:** `send_evidence`는 `sent-unconfirmed`(queued)로 남았지만, `delivery_evidence`에서는 `hook_taken`이 delivered였고 runtime_reached가 true였습니다. `handshake`는 `not-started`입니다.\n\n파일, 설정, 권한은 바꾸지 않았습니다. 우회 시도도 없었습니다.",
+  "is_error": false,
+  "permission_denials": [],
+  "tool_calls": [
+    "ToolSearch",
+    "mcp__xsm__xsm_discover",
+    "mcp__xsm__xsm_ask",
+    "mcp__xsm__xsm_question_status"
+  ],
+  "source_file": "/tmp/b03-native-mcp-v2.json"
+}

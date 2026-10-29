@@ -1,0 +1,71 @@
+{
+  "status": "final",
+  "id": "dd65874b71964a87",
+  "replies": [
+    {
+      "id": "0d2910255121449b",
+      "body": "P03-LIVE-ANSWER",
+      "outcome": "succeeded",
+      "sender": {
+        "runtime": "claude",
+        "home_id": "1f3efe9ffb9cf15ba352aa22f67362777ae05495d0bb84b9b5b8268090817da7",
+        "session_id": "fe03b7fc-164c-4464-99f7-11ee22f69f02",
+        "ref": "7c9c18",
+        "name": "reviewer",
+        "alias": "claude-3"
+      },
+      "receiver": {
+        "runtime": "codex",
+        "home_id": "8f68eb952a346564ce4e74fa28f6be1313901a8164edfe6761ea0f8bc4a71fe4",
+        "session_id": "01a166ab-647c-7a11-8cc0-ff5daf0cff01",
+        "ref": "e885bc",
+        "name": "Reason Network 조사",
+        "alias": "codex-3"
+      },
+      "received_at": 1793181418.824456
+    }
+  ],
+  "final": true,
+  "wait_end_reason": "reply",
+  "capabilities": {
+    "attachments": false,
+    "wake_control": false
+  },
+  "wake": "transport_policy",
+  "send_evidence": {
+    "status": "sent-unconfirmed",
+    "reason": "queued",
+    "id": "dd65874b71964a87",
+    "to": "reviewer@claude-3",
+    "runtime_reached": false,
+    "evidence": {
+      "accepted": true,
+      "queued": true
+    }
+  },
+  "delivery_evidence": {
+    "steps": {
+      "accepted": {
+        "ok": true,
+        "t": 1793181216.147501
+      },
+      "queued": {
+        "ok": true,
+        "t": 1793181216.148823,
+        "detail": "uds:/tmp/cc-socks/61251.sock"
+      },
+      "hook_taken": {
+        "ok": true,
+        "t": 1793181216.396822,
+        "detail": "delivered"
+      }
+    },
+    "runtime_reached": true,
+    "digest": "6a6e280fe8fdc88bd8b59a7482a8dd1d1e6b02f49116f5e4831b8eb49fd061b1",
+    "req_version": 1,
+    "legacy": false,
+    "verified": true,
+    "upgraded_from_legacy": false
+  },
+  "handshake": "not-started"
+}

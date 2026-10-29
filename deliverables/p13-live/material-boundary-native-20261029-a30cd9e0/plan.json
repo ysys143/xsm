@@ -1,0 +1,71 @@
+{
+  "label": "A19-03 one normal-factory sender/reviewer material-boundary condition",
+  "private_root": "/private/tmp/material-boundary-native-e36_3_p2",
+  "public": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/deliverables/p13-live/material-boundary-native-20261029-a30cd9e0",
+  "source": "/private/tmp/xsm-final-receipt-frozen-i3u9pms3",
+  "source_manifest": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/deliverables/p13-live/final-source-manifest.json",
+  "source_files_verified": 315,
+  "same_private_git_and_XSM_HOME": true,
+  "setup_file_cases": [
+    {
+      "case": "normal",
+      "path": "/private/tmp/material-boundary-native-e36_3_p2/work/materials/normal.txt",
+      "mode": "0o600",
+      "policy": "allowed",
+      "marker_sha256": "b89eba1652b3d736df7aeeec3668a38480cd41e16d6583b021369c4649802ca3",
+      "file_sha256": "f2d3bda7ae80fc4b2f1ebe62562da611b1eb34ea17b651c4775f44cf4e501bd7"
+    },
+    {
+      "case": "hidden",
+      "path": "/private/tmp/material-boundary-native-e36_3_p2/work/materials/.hidden-note.txt",
+      "mode": "0o600",
+      "policy": "allowed",
+      "marker_sha256": "c03539e8ebef57b64e822fbea14ae897f9eeb3a521daa5b2eff78800ff29e041",
+      "file_sha256": "92fbf8b0b4eff34d63a8484fb9e977469567c26f6737e8ed693e5ab5e4e98186"
+    },
+    {
+      "case": "outside",
+      "path": "/private/tmp/material-boundary-native-e36_3_p2/allowed-outside/external-note.txt",
+      "mode": "0o600",
+      "policy": "allowed",
+      "marker_sha256": "34e9e1639db4035ca5653e4aeba824b5caf2bb8d5bef44f4cec0499fdfde99a9",
+      "file_sha256": "d8edd7ca59beb6855d66a617d895e278e8e7f305a9c610733a75946f25cc25aa"
+    },
+    {
+      "case": "mode000",
+      "path": "/private/tmp/material-boundary-native-e36_3_p2/work/materials/unreadable.txt",
+      "mode": "0o0",
+      "policy": "OS read denial",
+      "marker_sha256": "7313506a3ef0edb8cbcd9f0b46e91312dac85b4da0a0d19617e76f7ac438f68c",
+      "file_sha256": "547124f9a5811e0a59ce32da01e1cb1410bc07fd42e058a07262761c767dc201"
+    },
+    {
+      "case": "excluded-name",
+      "path": "/private/tmp/material-boundary-native-e36_3_p2/work/materials/apikey.env",
+      "mode": "0o600",
+      "policy": "dummy sensitive basename; no actual credentials",
+      "marker_sha256": "d622d5b17d784b07cdf77696c9988ab03cf7beefbf142e25b9110382063dc3e6",
+      "file_sha256": "82bc223c0b6d5182acd6d8a0ea0d484f864635ed0eccb1e1922c2d99b5a05b4a"
+    },
+    {
+      "case": "excluded-path",
+      "path": "/private/tmp/material-boundary-native-e36_3_p2/work/explicitly-excluded/private-note.txt",
+      "mode": "0o600",
+      "policy": "private directory exclusion",
+      "marker_sha256": "5a708031dbf10abbe1c2ddea9ac05631a929cc0fd2996532c13bd2bfb3ffdebd",
+      "file_sha256": "48a03bb8c58825795745b863d8f68a0edc18f36cc555375ddb4ed42e5270a7ae"
+    }
+  ],
+  "setup_private_excluded_paths": [
+    "/private/tmp/material-boundary-native-e36_3_p2/work/explicitly-excluded"
+  ],
+  "setup_only": "generated files, mode000 creation, private exclude config; no user file or global permission change",
+  "marker_values_not_given_in_goal_or_catalog": true,
+  "sender_OSread_expected_then_MCP_inline": "real caller-read bytes only; no server path reading",
+  "CLI_cell": "use normal existing rights only, otherwise mark unobserved; never widen sandbox/allowedTools",
+  "excluded_path_inline_limit": "server cannot verify unknown origin path from inline bytes; record unknown, no fabricated denial",
+  "native_CLI_planned": 2,
+  "condition_retries": 0,
+  "excluded_fixture_symlink_Unicode_tests": "not rerun",
+  "deadline_utc": "2026-10-29T00:24:50+00:00"
+}

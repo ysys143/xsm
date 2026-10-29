@@ -1,0 +1,468 @@
+{
+  "scope": "A21-01 own-process SSH-only and bounded A21-03 comparison inputs; not whole ADR completion",
+  "new_model_calls": 0,
+  "physical_hosts": {
+    "book": "Jaesolui-MacBookPro.local",
+    "mini": "Jaesolui-Macmini.local"
+  },
+  "python_versions": {
+    "book": "3.9.6",
+    "mini": "3.9.6"
+  },
+  "SSH_server_protocol": "current frozen xsm.remote.serve(peer_literal,{op:ping}) over existing administrator SSH",
+  "forced_command_key_installation_executed": false,
+  "dedicated_xsm_SSH_client_call_executed": false,
+  "pairing_metadata": "one private remotes row per physical host; literal peer supplied by trusted administrator command, not a forced authorized_keys binding",
+  "SSH_profile": "(version 1)(allow default)(deny network-outbound(remote udp \"*:*\"))(deny network-outbound(remote tcp \"*:443\"))\n",
+  "kernel_control_rows": {
+    "book-unrestricted": {
+      "pid": 40854,
+      "role": "book",
+      "label": "book-unrestricted",
+      "checks": [
+        {
+          "kind": "udp4",
+          "allowed": true,
+          "received": true
+        },
+        {
+          "kind": "udp6",
+          "allowed": true,
+          "received": true
+        },
+        {
+          "kind": "ssh22",
+          "target": "100.77.24.16",
+          "port": 22,
+          "allowed": true
+        },
+        {
+          "kind": "relay443",
+          "target": "5.223.65.62",
+          "port": 443,
+          "allowed": true
+        }
+      ],
+      "at": 1793280922.1282718
+    },
+    "mini-unrestricted": {
+      "pid": 83714,
+      "role": "mini",
+      "label": "mini-unrestricted",
+      "checks": [
+        {
+          "kind": "udp4",
+          "allowed": true,
+          "received": true
+        },
+        {
+          "kind": "udp6",
+          "allowed": true,
+          "received": true
+        },
+        {
+          "kind": "ssh22",
+          "target": "100.123.30.11",
+          "port": 22,
+          "allowed": true
+        },
+        {
+          "kind": "relay443",
+          "target": "5.223.65.62",
+          "port": 443,
+          "allowed": true
+        }
+      ],
+      "at": 1793280923.013629
+    }
+  },
+  "SSH_measurements": {
+    "book-restricted": {
+      "exit_code": 0,
+      "controller_child_pid": 40855,
+      "duration_seconds": 0.401,
+      "stderr": "",
+      "reply": {
+        "ok": true,
+        "peer": "Jaesolui-Macmini"
+      },
+      "kernel": {
+        "pid": 40855,
+        "role": "book",
+        "label": "book-restricted",
+        "checks": [
+          {
+            "kind": "udp4",
+            "allowed": false,
+            "errno": 1
+          },
+          {
+            "kind": "udp6",
+            "allowed": false,
+            "errno": 1
+          },
+          {
+            "kind": "ssh22",
+            "target": "100.77.24.16",
+            "port": 22,
+            "allowed": true
+          },
+          {
+            "kind": "relay443",
+            "target": "5.223.65.62",
+            "port": 443,
+            "allowed": false,
+            "errno": 1
+          }
+        ],
+        "at": 1793280922.2126799
+      }
+    },
+    "mini-restricted": {
+      "exit_code": 0,
+      "controller_child_pid": 40875,
+      "duration_seconds": 1.066,
+      "stderr": "",
+      "reply": {
+        "ok": true,
+        "peer": "Jaesolui-MacBookPro"
+      },
+      "kernel": {
+        "pid": 83760,
+        "role": "mini",
+        "label": "mini-restricted",
+        "checks": [
+          {
+            "kind": "udp4",
+            "allowed": false,
+            "errno": 1
+          },
+          {
+            "kind": "udp6",
+            "allowed": false,
+            "errno": 1
+          },
+          {
+            "kind": "ssh22",
+            "target": "100.123.30.11",
+            "port": 22,
+            "allowed": true
+          },
+          {
+            "kind": "relay443",
+            "target": "5.223.65.62",
+            "port": 443,
+            "allowed": false,
+            "errno": 1
+          }
+        ],
+        "at": 1793280923.763927
+      }
+    },
+    "after-p2p-block": {
+      "exit_code": 0,
+      "controller_child_pid": 41713,
+      "duration_seconds": 0.427,
+      "stderr": "",
+      "reply": {
+        "ok": true,
+        "peer": "Jaesolui-Macmini"
+      },
+      "kernel": {
+        "pid": 41713,
+        "role": "book",
+        "label": "book-after-block",
+        "checks": [
+          {
+            "kind": "udp4",
+            "allowed": false,
+            "errno": 1
+          },
+          {
+            "kind": "udp6",
+            "allowed": false,
+            "errno": 1
+          },
+          {
+            "kind": "ssh22",
+            "target": "100.77.24.16",
+            "port": 22,
+            "allowed": true
+          },
+          {
+            "kind": "relay443",
+            "target": "5.223.65.62",
+            "port": 443,
+            "allowed": false,
+            "errno": 1
+          }
+        ],
+        "at": 1793280964.338906
+      }
+    }
+  },
+  "P2P_healthy_first_explicit_ping": {
+    "ok": true,
+    "duration_seconds": 0.177,
+    "native_inference_included": false,
+    "selected_route": "not captured; advertised direct and relay addresses are candidates only"
+  },
+  "P2P_join_seconds": 0.435,
+  "P2P_same_identity_after_restriction": true,
+  "P2P_constraint_result": {
+    "reply": {
+      "ok": false,
+      "code": "operation-failed"
+    },
+    "seconds": 30.092
+  },
+  "P2P_blocked_engine_PID": 41076,
+  "P2P_blocked_engine_kernel_control": {
+    "pid": 41076,
+    "role": "book",
+    "label": "engine-blocked-5727ea88",
+    "checks": [
+      {
+        "kind": "udp4",
+        "allowed": false,
+        "errno": 1
+      },
+      {
+        "kind": "udp6",
+        "allowed": false,
+        "errno": 1
+      },
+      {
+        "kind": "ssh22",
+        "target": "100.77.24.16",
+        "port": 22,
+        "allowed": true
+      },
+      {
+        "kind": "relay443",
+        "target": "5.223.65.62",
+        "port": 443,
+        "allowed": false,
+        "errno": 1
+      }
+    ],
+    "at": 1793280931.1166332
+  },
+  "SSH_after_P2P_block": {
+    "exit_code": 0,
+    "controller_child_pid": 41713,
+    "duration_seconds": 0.427,
+    "stderr": "",
+    "reply": {
+      "ok": true,
+      "peer": "Jaesolui-Macmini"
+    },
+    "kernel": {
+      "pid": 41713,
+      "role": "book",
+      "label": "book-after-block",
+      "checks": [
+        {
+          "kind": "udp4",
+          "allowed": false,
+          "errno": 1
+        },
+        {
+          "kind": "udp6",
+          "allowed": false,
+          "errno": 1
+        },
+        {
+          "kind": "ssh22",
+          "target": "100.77.24.16",
+          "port": 22,
+          "allowed": true
+        },
+        {
+          "kind": "relay443",
+          "target": "5.223.65.62",
+          "port": 443,
+          "allowed": false,
+          "errno": 1
+        }
+      ],
+      "at": 1793280964.338906
+    }
+  },
+  "support_classification": {
+    "SSH_server_ping_under_constraint": "executed success in both directions",
+    "new_B_P2P_ping_under_constraint": "executed once and failed; healthy baseline succeeded",
+    "forced_key_install_and_dedicated_key_auth": "not executed; no unsupported claim inferred",
+    "new_B_join_under_constraint": "not executed; membership prepared before restriction",
+    "native_task_under_constraint": "not executed; no model calls"
+  },
+  "SSH_file_metadata_unchanged": {
+    "book": true,
+    "mini": true
+  },
+  "SSH_values_read_by_evaluator": false,
+  "SSH_metadata_fields": [
+    "inode",
+    "size",
+    "mtime_ns",
+    "mode"
+  ],
+  "SSH_metadata_names": [
+    "authorized_keys",
+    "config",
+    "known_hosts",
+    "id_ed25519",
+    "id_rsa",
+    "id_ecdsa"
+  ],
+  "cleanup": {
+    "book": {
+      "stopped": {
+        "status": "stopping"
+      },
+      "socket_remaining": false,
+      "service_pid": 41075,
+      "engine_pid": 41076,
+      "remaining_process_metadata": ""
+    },
+    "mini": {
+      "stopped": {
+        "status": "stopping"
+      },
+      "socket_remaining": false,
+      "service_pid": 83816,
+      "engine_pid": 83817,
+      "remaining_process_metadata": ""
+    }
+  },
+  "preparation_observations": {
+    "prebuilt_source_and_binary_copies": 2,
+    "private_pairing_rows": 2,
+    "private_P2P_settings_files": 2,
+    "initial_service_starts": 2,
+    "network_initialize_calls": 1,
+    "invite_calls": 1,
+    "join_calls": 1,
+    "initial_service_start_and_membership_API_calls": 5,
+    "interactive_user_prompts_this_run": 0,
+    "existing_SSH_and_Tailscale_authentication_are_preconditions": true,
+    "clean_install_build_or_first_login_measured": false
+  },
+  "comparison_evidence": {
+    "deliverables/p11-live/native-carrier-roundtrip-20261029.md": "604e76ee65d25e6995f6f6da045f42c41f3250c1793fc5d87897491f696cd93f",
+    "deliverables/p11-live/native-carrier-roundtrip-20261029.json": "925e2e20fe46646496342fbf316adad5f80467146f54315a3162c2ea7f485829",
+    "deliverables/p11-live/C-native-roundtrip-20261029.md": "ffba319b8f643327d6115b01fc6fb38f9275fd9e47763225dae16655a3113f04",
+    "deliverables/p11-live/C-native-roundtrip-20261029.json": "2d1dae0c6bb804d95d051cc06a886f696812dafbe4b5d471b37d31b12d0db92a",
+    "deliverables/adr0021/native-journey-20261029T060853Z-fresh164-v2/report.md": "41821782cb082bc762b9fdbb9d204c7fd28db68d93589ddb8311efc598ab2438",
+    "deliverables/adr0021/native-journey-20261029T060853Z-fresh164-v2/source-manifest.json": "5ac5d6338be88f4cc85754c3daa539b52b7778c48062712aa0031be549d7fe68",
+    "deliverables/adr0021/physical-policy-a21-05-native-20261029T090428Z/report.md": "3426e756b3ce9757a69bb1454019c218d1c328184edb8cc41a9c2c247bced3df"
+  },
+  "comparison_rules": [
+    "Old P11 B is a private TCP spike, not the new iroh product B.",
+    "Old P11 A/B/C/D native arithmetic evidence remains separate and unchanged.",
+    "Existing native product sample uses Codex 0.164.0 and same-CID resumes; old P11 uses 0.163.0 fresh ephemeral conversations. No speed ranking.",
+    "This measurement records protocol bootstrap/ping only. Its 0.177-second ping is not a first native model answer.",
+    "Existing native current-sample setup and first-answer timing were not remeasured; missing latency is not inferred.",
+    "Linked native sample has its own older frozen source/Rust binary; this protocol measurement does not re-approve it as the latest entire product."
+  ],
+  "private_roots": {
+    "book": "/private/tmp/ssh-only-gc1ns9ed",
+    "mini": "/private/tmp/ssh-only-gc1ns9ed"
+  },
+  "source_sha256": {
+    "xsm/files.py": "01425c645b7047590c452aaa7ea4f348a17aa5e25481e8ae4597dee5ab1d1ca3",
+    "xsm/attention.py": "8cd167c01cc560f92580646c2e081ca2604c8548184ce493ef1e8bf875a9e866",
+    "xsm/network_messages.py": "c9986c606db5ddbde9d0b30689e83e4da80240a6d8ef0d4e2ecebfe0788af6ea",
+    "xsm/abuse.py": "a15303d88acded3e03110b125da91e11ffd5de96d266a9485a0f476d991d8e66",
+    "xsm/user_answers.py": "5ad5b73ec365217a28285a4e3deb709331feb570593b588119460d9b51abf24f",
+    "xsm/config.py": "92255fcee9cd2fe3b013851b056533a78d5090b225123f0d460de9c425feb5ca",
+    "xsm/resolve.py": "c5701b8af941e86a0839b230459b244fbaa79b0ee6626d66ca9ddf81509a89eb",
+    "xsm/network_transport.py": "1827fc7b4ac9a4f90680a14b46112490a0e54d7263557233dc3e693fe0d389c3",
+    "xsm/receive.py": "e3cbe2ece4d70bafbb8d8d4ae3be05a7aeaf64035f564cdc93832fbe78512dcb",
+    "xsm/paths.py": "242b8e64b5d564e503d5e0bbef1d7e8d160690e8bd5199bc160523969835bb39",
+    "xsm/connect.py": "be25196f7efd16e43ef09718b97e9bd6b3f5bea737bb6e4f673a8b94688131ff",
+    "xsm/handoff.py": "e73aec7afa15bf507465ec293061c5ff3b288a33ecf339c9dc3009f1f69e6ee7",
+    "xsm/remote.py": "d79acd373ea13490ae7ac34a86f7d376520d51293a4cad68728db35eaa44e3cf",
+    "xsm/registry.py": "edce2c6e75ec4d1803f402db565900080be337b2727a40ff663376c355890360",
+    "xsm/network_identity.py": "9820d64951f02899d41e77be737cc706c6d27e164d2c57700d6f8f6a8618142a",
+    "xsm/instructions.py": "4b3208a5b1b6b951bc0a14b468576eb0da7be2352d5fb28dbc0d816a8087feb8",
+    "xsm/send.py": "c63417d6e5d06542f3b092f6d2569b783b68363295caffc8af7149119e4544d9",
+    "xsm/decisions.py": "ee9964969497d3726dad7cdb27913bf2df382615abf6ae9ab6fc66b59a72fb2b",
+    "xsm/channel.py": "459f8125b03eddbd2d8be23474b5f50b740aa7f777d2ea436f0aaa55db235382",
+    "xsm/materials.py": "8ca0986b7e8bfab10f6ba3ffb8301e53974ea7721dcbded2bc7cf0931d43ea9e",
+    "xsm/network_membership.py": "f3496c84b86be111a120baf4d7b74f8fdfdeea415ac89cfb2fff4eb841ddb54a",
+    "xsm/policy.py": "9f912493ca4a26e22af110edead346e58924022de4d2c99c56c566279c1c7cc7",
+    "xsm/ledger.py": "f291d11b736608bb3d2d07bdccdcc15348af2cbdfa73e1fb9d4c5628063e459f",
+    "xsm/questions.py": "1b13a9c4a3db2e9f933ebc97ed00f362bb4f3cac95b7092ca5c302e718296a70",
+    "xsm/__init__.py": "6f3c027b81d76181e6d7ead368d3206768d662f437f097cd194d27e9cf7735ba",
+    "xsm/telemetry.py": "bf0411d546c02a2f3e6aaea7d6f8f2549eeeeb57a7aedcc1cb968b5c87c1e2ea",
+    "xsm/network_recovery.py": "428fcb5aa88d83067d6ecbace8a08e29fb9cd07a4e42461977d70d503f11e234",
+    "xsm/housekeeping.py": "5d1a0f1c1f3cf2ef820344935db26aeda5bed5b27e66ba99b1868e8c1d53cf3a",
+    "xsm/bounce.py": "4a3ede5b15d85dea65388e26fa21f62dd2e9ab7da06c94ef3b9d788085aeaecc",
+    "xsm/context.py": "3a8355156f5d5497a0e945fe1a2c05791439cfe172f8fa5ae0eed936830ecb03",
+    "xsm/cli.py": "021c45acc1182a76c5e81d20b0a7a00e5f81aae0a1325ee09e8f9938a2fbafc0",
+    "xsm/mcp.py": "c13c6cc62149a6728ef7cd936e32428f055c72e038cd460a8fc2ee6124a13b2d",
+    "xsm/doc.py": "465d44d8ed5c3c2c458d67a0071c3dc56ef483794f34858b26eae82258a68011",
+    "xsm/attempts.py": "224b86ae077fc6e285716e73850317e9e6efcdba244eac16a3f9edef6dad320a",
+    "xsm/collaboration.py": "f29c91f0d5f26cd2c4971c619ab5dc7ea6dc3bfa5e32ad0791e17c0f3aff5cb7",
+    "xsm/probe.py": "d6088cdfc961e76dd6f375d9787dbb5a734d58473a3a8705e1da8a122547722b",
+    "xsm/network.py": "79125d7d90a3255bdf1ce6c15edc1abcf759ef0a8ee702c5c8f32444870c6b71",
+    "xsm/inbox.py": "299b972ff4fadd91148e495357be10a97ac2640d23d79c317e0b675699541695",
+    "xsm/install.py": "49a3d65beeec935cb624a3701c85995b09cba4861a17c2b446297d8837d3d2d2",
+    "xsm/otlp_export.py": "8ce0b354b4c3f5687c5b0cdd49825f5248ac4725dfbca6b96f5f3750dc32cc2a",
+    "xsm/directory.py": "22525349cae1190d5e9ef00d97dc17cae52b1ef60180ce2ace5e024bae8c0afb",
+    "xsm/owned_requests.py": "6e55c26db5709189619196f5ed373004fa0fa468246dc99b899dd14cce4e2a69",
+    "xsm/provenance.py": "7639e2b111f964a6eaa8031408fda9fc094eaa9c714653085b0f5ea5fbf755d6",
+    "xsm/workers.py": "518cb28f77c3ee222d1adf7e49068e671fc38dbc43fb5e1ac0ed6ef139299fa5",
+    "xsm/codex_daemon.py": "d7423388a943868a06411ca33725b17a128bd9c6c641232da0844a59ff9a1f3d",
+    "xsm/network_directory.py": "9d92b61556b9f0c8b8ffa1c4a858081872139c6ff9e95d6314339d08b5a6c5ae",
+    "xsm/setup_flow.py": "1dfbfb19e1bb8ce267c3bd3ad9519420017af01c78a63ce187c3a709d27247cd",
+    "xsm/identity.py": "ecfddb64f394455bf68117076127f1c0a07888c0df4cd734f219771bce3004a5",
+    "xsm/consent.py": "26adb2e00e2466594a6dee3fe4850cc6ee8ee20c7187c0e1f490d51d603b95e0",
+    "xsm/__main__.py": "13a1a5b340cdcfc1902b62be90e508c7c71886000d5bf087e7854aadf09fb35e",
+    "xsm/outbox.py": "1ab6e31b52feae97e06f326c9d4f7658a2e02549b5085e0e864ea1e002bbe211",
+    "xsm/envelope.py": "4a6030d3dabddf1697bc3bef6317a491ff94325eb8086ee2f05f35268d761683",
+    "xsm/adapters.py": "0b0d77d724130b2671d2fdc8eb0da64bc80d178b4be54b766c0b9a8629e950dd"
+  },
+  "native_binary_sha256": "f17f03fafcdf3a31e374d6cbc0ccbbbd8000ba6a7eba5d9b44605e742c409aed",
+  "helpers_sha256": {
+    "node.py": "bdc829b6d6ec4e7296023afb76ce890cd78d2659bd1f3e9df0630f8d60310b02",
+    "socket_probe.py": "81d9ca14e14bc9e82b8e8a220ec8199bf3ba36d3fe426f3a526a16dca3501486",
+    "engine_wrapper.py": "9a7dbd56907038182b768eea38abf821fd7b5d9ba0c36fd2900c645b0ddb2676",
+    "measure.py": "7b775e6d93960b1a688e4893927485368e1f932fcfa7a16fc31673dca0365497",
+    "client.sb": "1f66378574c79f71c026ba0a6341f2fd9a5841bc24025c0687a8becdd5ad7e03"
+  },
+  "remote_hashes_verified": true,
+  "live_source_paths_changed_after_freeze": [],
+  "limitations": [
+    "Process-local egress denies all UDP destinations and TCP destination port 443; it does not deny all TCP ports except 22.",
+    "Existing SSH uses Tailscale addresses. Tailscale daemon and underlay are outside the tested client/engine process sandbox. This is not a physical SSH-only network/firewall claim.",
+    "IPv4 and IPv6 UDP loopback controls were executed; relay TCP443 control used one reachable IPv4 relay endpoint.",
+    "Mini-to-Book duration includes an outer SSH control invocation, so directional timing boundaries differ.",
+    "Original state/key and raw evidence are retained only in private new roots. Existing user profiles, SSH configuration and comparison document body were not edited."
+  ],
+  "whole_ADR_complete": false,
+  "final_cleanup": {
+    "book_tracked_pids": [
+      40854,
+      40855,
+      40921,
+      40922,
+      41075,
+      41076,
+      41713
+    ],
+    "mini_tracked_pids": [
+      83714,
+      83760,
+      83816,
+      83817
+    ],
+    "book_remaining": "",
+    "mini_remaining": "",
+    "ssh_control_exit": 1,
+    "note": "ps exit 1 means no listed PID; control SSH itself successfully ran ps",
+    "state_key_evidence_deleted": false,
+    "other_user_processes_signalled": false
+  }
+}

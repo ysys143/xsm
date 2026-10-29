@@ -1,0 +1,14 @@
+{
+  "latest_source_handshake": "passed",
+  "actual_MCP_ACKs": 2,
+  "common_comparison_math_tasks_requested": 2,
+  "common_comparison_math_tasks_executed": 0,
+  "common_comparison_status": "incomplete",
+  "reason": "follow-up instruction observed after both actors were terminated; Claude used no-session-persistence; no new actor pair or old CID reassignment allowed",
+  "initial_cleanup_UTC": "2026-10-29T15:31:42.418705+00:00",
+  "followup_instruction_first_observed_UTC": "2026-10-29T15:33:57+00:00",
+  "new_native_models_after_cleanup": 0,
+  "same_ID_local_stored_reply_after_service_restart": "passed",
+  "remote_RPC_fresh_receipt_after_restart": "unknown",
+  "native_MCP_recovery_after_restart": "not evaluated; actors ended"
+}

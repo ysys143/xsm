@@ -1,0 +1,47 @@
+{
+  "criterion": "A16-04",
+  "scope": "actual sandboxed Codex first reply uses MCP without shell delivery refusal or permission widening; not clean-install/whole J03",
+  "passed": true,
+  "source": "/private/tmp/xsm-final-receipt-frozen-i3u9pms3",
+  "source_unchanged": true,
+  "prior_summary": "deliverables/p13-live/different-parent-native-20261029-5564a814/summary.json",
+  "summary_sha256": "ec014caeb6297462166d583b73649c6b2288fd3e2b2279d85fdabf3c0f91598b",
+  "native_reruns": 0,
+  "models_this_check": 0,
+  "metadata_or_results_modified": false,
+  "same_UID_security_boundary_claimed": false,
+  "proofs": [
+    {
+      "caller_CID_sha256": "478350d5f3a2226b2bde448385ee7dd8f0a1c92aa4db6cbb5236fb6e71ef272c",
+      "first_actual_reply_via": "xsm_send MCP",
+      "reply_ID_sha256": "8d949154229a9080e9a38eb9727d6eed48a45ea915436f8b72b340b7809b3cb1",
+      "original_reply_to_sha256": "98e699b8c87b22690ecb4e0f672f080b72b1d3f080fb5950f2dabb66b4c2ad70",
+      "actual_received_ACK": true,
+      "sandbox": "workspace-write",
+      "approval_policy": "never",
+      "observed_shell_commands": 2,
+      "shell_delivery_attempts": 0,
+      "RPC_error": false,
+      "native_rollout_path": "/private/tmp/different-parent-native-3jr1o8uv/native-rollouts/478350d5f3a2226b2bde448385ee7dd8f0a1c92aa4db6cbb5236fb6e71ef272c.jsonl",
+      "native_rollout_sha256": "1b6347425773b0ad14057a902cb73aa7160f0ef5a981562e7cd547adca6fa745",
+      "client_wire_path": "/private/tmp/different-parent-native-3jr1o8uv/parent-a2/proxies/60506-0e32d727/client-wire.jsonl",
+      "client_wire_sha256": "3add715cc810062a143a8de39b1489fb349d21b7e6dcfc8f6a83d9a98485be49"
+    },
+    {
+      "caller_CID_sha256": "766842235fefdf73f71c5681f085db7fd825a9dc5d7de4b574584d1ece66d6d5",
+      "first_actual_reply_via": "xsm_send MCP",
+      "reply_ID_sha256": "46e8f69581be6799a8ce18004370dad99f3442104d5943a3ab48000f401c32aa",
+      "original_reply_to_sha256": "d558b2f0cc62cbef30b4a53c35451c935b8e540fd423e454c0f706589aa4b685",
+      "actual_received_ACK": true,
+      "sandbox": "workspace-write",
+      "approval_policy": "never",
+      "observed_shell_commands": 3,
+      "shell_delivery_attempts": 0,
+      "RPC_error": false,
+      "native_rollout_path": "/private/tmp/different-parent-native-3jr1o8uv/native-rollouts/766842235fefdf73f71c5681f085db7fd825a9dc5d7de4b574584d1ece66d6d5.jsonl",
+      "native_rollout_sha256": "3c9c2fec4a0f0e89de281539f88b025931cb947852624b0d203e31efa88b3ade",
+      "client_wire_path": "/private/tmp/different-parent-native-3jr1o8uv/parent-a1/proxies/61014-f9df6292/client-wire.jsonl",
+      "client_wire_sha256": "a2f2192ad1316471f6cfe0fa528b40c62824fe359d19b337bf3f9c1d0862185d"
+    }
+  ]
+}

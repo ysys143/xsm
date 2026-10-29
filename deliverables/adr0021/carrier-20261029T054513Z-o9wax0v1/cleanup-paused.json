@@ -1,0 +1,42 @@
+{
+  "status": "paused",
+  "cleanup_only": true,
+  "owned_live_found": [],
+  "terminated_now": [],
+  "owned_proxy_listener_checks": [
+    {
+      "owned_proxy_port": 60844,
+      "currently_listening_pids": []
+    },
+    {
+      "owned_proxy_port": 62209,
+      "currently_listening_pids": []
+    },
+    {
+      "owned_proxy_port": 62643,
+      "currently_listening_pids": []
+    },
+    {
+      "owned_proxy_port": 63270,
+      "currently_listening_pids": []
+    },
+    {
+      "owned_proxy_port": 63670,
+      "currently_listening_pids": []
+    },
+    {
+      "owned_proxy_port": 63798,
+      "currently_listening_pids": []
+    },
+    {
+      "owned_proxy_port": 64298,
+      "currently_listening_pids": []
+    },
+    {
+      "owned_proxy_port": 64431,
+      "currently_listening_pids": []
+    }
+  ],
+  "state_keys_and_existing_evidence_preserved": true,
+  "unrelated_profiles_sessions_processes_modified": false
+}

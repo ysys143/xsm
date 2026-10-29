@@ -1,0 +1,454 @@
+{
+  "scope": "A22-03 one strict repeated-question defer/query/same-ID recovery native pair",
+  "root": "/private/tmp/p13-recovery-passive-7yocp3dz",
+  "workspace": "/private/tmp/p13-recovery-passive-7yocp3dz/project",
+  "state": "/private/tmp/p13-recovery-passive-7yocp3dz/state",
+  "frozen_source": "/private/tmp/xsm-final-receipt-frozen-i3u9pms3",
+  "frozen_manifest": "deliverables/p13-live/final-source-manifest.json",
+  "source_before": {
+    "file_count": 315,
+    "manifest_sha256": "57d088eee167e573d3a534e2d53db230703963516ece02ee1b6fce294ae9068f",
+    "matches": true,
+    "changed_paths": []
+  },
+  "goals": {
+    "reviewer": "이 private 저장소의 산술 검토 담당 a1입니다. 동료의 산술 검토를 독립 계산해 원 요청에 회신하고 읽은 메시지를 확인하세요. 이 격리 시험의 반복 제어 정책은 60초 동안 같은 발신자의 동일 본문을 한 번만 처리합니다. 첫 정상 질문과 뒤의 동일 문장 재요청을 관측하되, 제품이 반복을 보류하면 이를 답한 것으로 처리하지 말고 원문이 재개될 때까지 대기하세요. 동료가 새 질문 ID를 만들지 않고 기존 보류 요청을 회복한 뒤 두 번째 실제 요청도 검산·회신하고 종료하세요. 권한·설정·파일은 바꾸지 마세요.",
+    "sender": "xsm 동료 a1에게 정확히 같은 공개 검토 문장 \"2+2=5 주장이 맞는지 독립 검토해 주세요.\"로 먼저 정상 질문 한 번을 보내 실제 답을 읽고 확인하세요. 그 뒤 바이트까지 같은 문장을 한 번 더 새 질문으로 보내 의미 없는 반복이 제품에 의해 보류되는지 관측하세요. 이번 private fixture에는 60초 동안 같은 발신자의 동일 본문을 한 번만 허용하는 반복 정책이 이미 설정돼 있습니다. 보류된 원 요청 ID로 상태를 조회해 요청과 원문이 보존되고 성공으로 끝나지 않았는지 확인하세요. 제품이 안내한 재시도 시간을 실제로 기다린 뒤, 새 ID로 치환하지 않고 같은 원문·원 요청 ID의 기존 재전송 경로를 단 한 번 사용해 회복하세요. 그 원 ID의 실제 최종 회신을 조회하고 읽은 답을 확인한 뒤 정상 질문·보류·회복 결과를 보고하세요. 추가 질문·반복 재전송·권한 확대·설정 변경·수동 메시지 수정은 하지 마세요."
+  },
+  "setup_registry_calls": 2,
+  "actor_native_invocations": 2,
+  "controller_body_relays": 0,
+  "controller_ACKs": 0,
+  "controller_index_writes": 0,
+  "additional_user_prompts": 0,
+  "automatic_actor_retries": 0,
+  "condition_runs": 1,
+  "status": "captured-original-sample",
+  "factory_ignore_user_config": true,
+  "profile": "/Users/jaesolshin/.codex-3",
+  "skill_source": "frozen product copied verbatim to private repository .agents/skills/xsm",
+  "private_policy": {
+    "traffic_control": {
+      "mode": "strict",
+      "window_seconds": 60,
+      "max_same_body": 1
+    }
+  },
+  "started_at": 1793233334.7981172,
+  "reviewer_invocation": {
+    "role": "reviewer",
+    "profile": "/Users/jaesolshin/.codex-3",
+    "goal": "이 private 저장소의 산술 검토 담당 a1입니다. 동료의 산술 검토를 독립 계산해 원 요청에 회신하고 읽은 메시지를 확인하세요. 이 격리 시험의 반복 제어 정책은 60초 동안 같은 발신자의 동일 본문을 한 번만 처리합니다. 첫 정상 질문과 뒤의 동일 문장 재요청을 관측하되, 제품이 반복을 보류하면 이를 답한 것으로 처리하지 말고 원문이 재개될 때까지 대기하세요. 동료가 새 질문 ID를 만들지 않고 기존 보류 요청을 회복한 뒤 두 번째 실제 요청도 검산·회신하고 종료하세요. 권한·설정·파일은 바꾸지 마세요.",
+    "pid": 94654,
+    "lstart": "Thu Oct 29 09:22:14 2026",
+    "invocation_without_goal": [
+      "codex",
+      "exec",
+      "--ignore-user-config",
+      "--json",
+      "--sandbox",
+      "workspace-write",
+      "-c",
+      "approval_policy=\"never\"",
+      "-c",
+      "mcp_servers.xsm.command=\"/usr/bin/python3\"",
+      "-c",
+      "mcp_servers.xsm.args=[\"-m\",\"xsm\",\"mcp\"]",
+      "-c",
+      "mcp_servers.xsm.cwd=\"/private/tmp/xsm-final-receipt-frozen-i3u9pms3\"",
+      "-c",
+      "mcp_servers.xsm.env.XSM_HOME=\"/private/tmp/p13-recovery-passive-7yocp3dz/state\"",
+      "-c",
+      "mcp_servers.xsm.env.CODEX_HOME=\"/Users/jaesolshin/.codex-3\"",
+      "-c",
+      "mcp_servers.xsm.env.PYTHONPATH=\"/private/tmp/xsm-final-receipt-frozen-i3u9pms3\"",
+      "-c",
+      "mcp_servers.xsm.env.PYTHONDONTWRITEBYTECODE=\"1\""
+    ],
+    "goal_sha256": "08e939927e5d1578252f518dab01d74f4551324ab5f1c1aa033ae434f8e600f0"
+  },
+  "sender_invocation": {
+    "role": "initiator",
+    "profile": "/Users/jaesolshin/.codex-3",
+    "goal": "xsm 동료 a1에게 정확히 같은 공개 검토 문장 \"2+2=5 주장이 맞는지 독립 검토해 주세요.\"로 먼저 정상 질문 한 번을 보내 실제 답을 읽고 확인하세요. 그 뒤 바이트까지 같은 문장을 한 번 더 새 질문으로 보내 의미 없는 반복이 제품에 의해 보류되는지 관측하세요. 이번 private fixture에는 60초 동안 같은 발신자의 동일 본문을 한 번만 허용하는 반복 정책이 이미 설정돼 있습니다. 보류된 원 요청 ID로 상태를 조회해 요청과 원문이 보존되고 성공으로 끝나지 않았는지 확인하세요. 제품이 안내한 재시도 시간을 실제로 기다린 뒤, 새 ID로 치환하지 않고 같은 원문·원 요청 ID의 기존 재전송 경로를 단 한 번 사용해 회복하세요. 그 원 ID의 실제 최종 회신을 조회하고 읽은 답을 확인한 뒤 정상 질문·보류·회복 결과를 보고하세요. 추가 질문·반복 재전송·권한 확대·설정 변경·수동 메시지 수정은 하지 마세요.",
+    "pid": 94829,
+    "lstart": "Thu Oct 29 09:22:15 2026",
+    "invocation_without_goal": [
+      "codex",
+      "exec",
+      "--ignore-user-config",
+      "--json",
+      "--sandbox",
+      "workspace-write",
+      "-c",
+      "approval_policy=\"never\"",
+      "-c",
+      "mcp_servers.xsm.command=\"/usr/bin/python3\"",
+      "-c",
+      "mcp_servers.xsm.args=[\"-m\",\"xsm\",\"mcp\"]",
+      "-c",
+      "mcp_servers.xsm.cwd=\"/private/tmp/xsm-final-receipt-frozen-i3u9pms3\"",
+      "-c",
+      "mcp_servers.xsm.env.XSM_HOME=\"/private/tmp/p13-recovery-passive-7yocp3dz/state\"",
+      "-c",
+      "mcp_servers.xsm.env.CODEX_HOME=\"/Users/jaesolshin/.codex-3\"",
+      "-c",
+      "mcp_servers.xsm.env.PYTHONPATH=\"/private/tmp/xsm-final-receipt-frozen-i3u9pms3\"",
+      "-c",
+      "mcp_servers.xsm.env.PYTHONDONTWRITEBYTECODE=\"1\""
+    ],
+    "goal_sha256": "2af0f1d21e5fe433db5a6762d7b8dd8e072bd96c434d656f8ed073de8612f839"
+  },
+  "actors": [
+    {
+      "role": "reviewer",
+      "native_session_id": "01a18509-32cf-71b0-9ca7-972ec8202a63",
+      "registered_name": "a1",
+      "mcp_pid": 94786,
+      "setup_registration_seconds": 0.532,
+      "registration_preceded_first_agent_call": true,
+      "calls": [
+        {
+          "kind": "command_execution",
+          "complete": true,
+          "seconds_from_actor_start": 5.968,
+          "command_sha256": "4a4b5697b5641c3201f59fa0d16d356ea5b64152bd55aa6883242acdd0605c47",
+          "exit_code": 0,
+          "sandbox_shell_send_attempt": false,
+          "skill_read": true,
+          "sandbox_failure": false
+        },
+        {
+          "kind": "command_execution",
+          "complete": true,
+          "seconds_from_actor_start": 8.366,
+          "command_sha256": "829092d1330d5e1178f5e996891ce2ac44c508fc65e3cd979e3264aca86d903c",
+          "exit_code": 0,
+          "sandbox_shell_send_attempt": false,
+          "skill_read": false,
+          "sandbox_failure": false
+        },
+        {
+          "kind": "mcp_tool_call",
+          "complete": true,
+          "seconds_from_actor_start": 10.454,
+          "server": "xsm",
+          "tool": "xsm_inbox",
+          "error": null,
+          "argument_keys": [
+            "wait"
+          ],
+          "arguments_sha256": "5ce894079e806eb601f73f1a7714e226bcef2fefbe7c19babeb0974081cbad48"
+        },
+        {
+          "kind": "mcp_tool_call",
+          "complete": true,
+          "seconds_from_actor_start": 16.64,
+          "server": "xsm",
+          "tool": "xsm_send",
+          "error": null,
+          "argument_keys": [
+            "kind",
+            "outcome",
+            "reply_to",
+            "target",
+            "text"
+          ],
+          "arguments_sha256": "780f986248ec9eac52df9c1ef4ed3e727cfc05f963d8fa7e560cb8678ede57b8"
+        },
+        {
+          "kind": "mcp_tool_call",
+          "complete": true,
+          "seconds_from_actor_start": 17.3,
+          "server": "xsm",
+          "tool": "xsm_ack",
+          "error": null,
+          "argument_keys": [
+            "tokens"
+          ],
+          "arguments_sha256": "5e5d3c062e62c4a487182a787ae3bc52d53a1917d4ce3625f63b6d12968d67d3"
+        },
+        {
+          "kind": "mcp_tool_call",
+          "complete": true,
+          "seconds_from_actor_start": 19.103,
+          "server": "xsm",
+          "tool": "xsm_inbox",
+          "error": null,
+          "argument_keys": [
+            "wait"
+          ],
+          "arguments_sha256": "5ce894079e806eb601f73f1a7714e226bcef2fefbe7c19babeb0974081cbad48"
+        },
+        {
+          "kind": "mcp_tool_call",
+          "complete": true,
+          "seconds_from_actor_start": 25.747,
+          "server": "xsm",
+          "tool": "xsm_inbox",
+          "error": null,
+          "argument_keys": [
+            "wait"
+          ],
+          "arguments_sha256": "5ce894079e806eb601f73f1a7714e226bcef2fefbe7c19babeb0974081cbad48"
+        },
+        {
+          "kind": "mcp_tool_call",
+          "complete": true,
+          "seconds_from_actor_start": 78.013,
+          "server": "xsm",
+          "tool": "xsm_inbox",
+          "error": null,
+          "argument_keys": [
+            "wait"
+          ],
+          "arguments_sha256": "5ce894079e806eb601f73f1a7714e226bcef2fefbe7c19babeb0974081cbad48"
+        },
+        {
+          "kind": "mcp_tool_call",
+          "complete": true,
+          "seconds_from_actor_start": 95.98,
+          "server": "xsm",
+          "tool": "xsm_send",
+          "error": null,
+          "argument_keys": [
+            "kind",
+            "outcome",
+            "reply_to",
+            "target",
+            "text"
+          ],
+          "arguments_sha256": "8bc69ba007318f651adb0feb04b05aaa17392df7ec23a747d5c20d7759685977"
+        },
+        {
+          "kind": "mcp_tool_call",
+          "complete": true,
+          "seconds_from_actor_start": 96.643,
+          "server": "xsm",
+          "tool": "xsm_ack",
+          "error": null,
+          "argument_keys": [
+            "tokens"
+          ],
+          "arguments_sha256": "12901cffd60e8f678930a067400bd71501995eb1903784f3605182bc3946b3a4"
+        }
+      ],
+      "item_type_counts": {
+        "command_execution": 2,
+        "mcp_tool_call": 8
+      },
+      "agent_mcp_call_count": 8,
+      "agent_shell_call_count": 2,
+      "tool_error_count": 0,
+      "first_wrong_choice": null,
+      "exit_code": 0,
+      "events_path": "/private/tmp/p13-recovery-passive-7yocp3dz/reviewer.jsonl",
+      "stderr_path": "/private/tmp/p13-recovery-passive-7yocp3dz/reviewer.stderr",
+      "events_sha256": "cd2a060722156ab0633fccc5dd1e7ac7b6d8678d6cb58a026479ed48a633c6e9"
+    },
+    {
+      "role": "initiator",
+      "native_session_id": "01a18509-34b9-7b30-9495-f21f495754e2",
+      "registered_name": null,
+      "mcp_pid": 94945,
+      "setup_registration_seconds": 0.462,
+      "registration_preceded_first_agent_call": true,
+      "calls": [
+        {
+          "kind": "command_execution",
+          "complete": true,
+          "seconds_from_actor_start": 5.816,
+          "command_sha256": "4a4b5697b5641c3201f59fa0d16d356ea5b64152bd55aa6883242acdd0605c47",
+          "exit_code": 0,
+          "sandbox_shell_send_attempt": false,
+          "skill_read": true,
+          "sandbox_failure": false
+        },
+        {
+          "kind": "command_execution",
+          "complete": true,
+          "seconds_from_actor_start": 8.537,
+          "command_sha256": "829092d1330d5e1178f5e996891ce2ac44c508fc65e3cd979e3264aca86d903c",
+          "exit_code": 0,
+          "sandbox_shell_send_attempt": false,
+          "skill_read": false,
+          "sandbox_failure": false
+        },
+        {
+          "kind": "mcp_tool_call",
+          "complete": true,
+          "seconds_from_actor_start": 11.406,
+          "server": "xsm",
+          "tool": "xsm_ask",
+          "error": null,
+          "argument_keys": [
+            "target",
+            "text",
+            "wait"
+          ],
+          "arguments_sha256": "a55ee0818599cbd2d61513947af85df25dc528f7ecc30b27a25e63f7c2c53e7d"
+        },
+        {
+          "kind": "mcp_tool_call",
+          "complete": true,
+          "seconds_from_actor_start": 20.294,
+          "server": "xsm",
+          "tool": "xsm_ack",
+          "error": null,
+          "argument_keys": [
+            "tokens"
+          ],
+          "arguments_sha256": "9da2e98ad3afcfe394a19d025f0a4d90ad8fdc22808695598fa8efde9f780880"
+        },
+        {
+          "kind": "mcp_tool_call",
+          "complete": true,
+          "seconds_from_actor_start": 20.294,
+          "server": "xsm",
+          "tool": "xsm_ask",
+          "error": null,
+          "argument_keys": [
+            "target",
+            "text",
+            "wait"
+          ],
+          "arguments_sha256": "a55ee0818599cbd2d61513947af85df25dc528f7ecc30b27a25e63f7c2c53e7d"
+        },
+        {
+          "kind": "mcp_tool_call",
+          "complete": true,
+          "seconds_from_actor_start": 24.161,
+          "server": "xsm",
+          "tool": "xsm_question_status",
+          "error": null,
+          "argument_keys": [
+            "id"
+          ],
+          "arguments_sha256": "a0d4ba9d2b4efcff06700ca571f7757a35ada5b2e5077d57f821b376489ce4c6"
+        },
+        {
+          "kind": "command_execution",
+          "complete": true,
+          "seconds_from_actor_start": 24.273,
+          "command_sha256": "f3663f46ecfc63b40581618a05b91010f6eb68da0db714546fe6fc96b695c35e",
+          "exit_code": 0,
+          "sandbox_shell_send_attempt": false,
+          "skill_read": false,
+          "sandbox_failure": false
+        },
+        {
+          "kind": "command_execution",
+          "complete": true,
+          "seconds_from_actor_start": 28.57,
+          "command_sha256": "cb2f3557c4954353492b7e83eaf08eba1c2d1de8eef8ee3ea126439c5a5b8e19",
+          "exit_code": 3,
+          "sandbox_shell_send_attempt": false,
+          "skill_read": false,
+          "sandbox_failure": false
+        },
+        {
+          "kind": "command_execution",
+          "complete": true,
+          "seconds_from_actor_start": 73.387,
+          "command_sha256": "5c9a724bdfdd5eb7d685f5b24f1e97e6f0b4ad779aa4430fefe648267b16f8bc",
+          "exit_code": 0,
+          "sandbox_shell_send_attempt": false,
+          "skill_read": false,
+          "sandbox_failure": false
+        },
+        {
+          "kind": "command_execution",
+          "complete": true,
+          "seconds_from_actor_start": 86.975,
+          "command_sha256": "8d8924bdac76881cf7bc269b21a60fde3c33b05904adfbda2b964203130b413d",
+          "exit_code": 3,
+          "sandbox_shell_send_attempt": false,
+          "skill_read": false,
+          "sandbox_failure": false
+        },
+        {
+          "kind": "mcp_tool_call",
+          "complete": true,
+          "seconds_from_actor_start": 90.649,
+          "server": "xsm",
+          "tool": "xsm_send",
+          "error": null,
+          "argument_keys": [
+            "kind",
+            "resend",
+            "target",
+            "text",
+            "wait"
+          ],
+          "arguments_sha256": "be2623506249185610e58e0b6fe19ba397336c8968c00b9f8f1a2989438b5d59"
+        },
+        {
+          "kind": "mcp_tool_call",
+          "complete": true,
+          "seconds_from_actor_start": 94.837,
+          "server": "xsm",
+          "tool": "xsm_question_status",
+          "error": null,
+          "argument_keys": [
+            "id",
+            "wait"
+          ],
+          "arguments_sha256": "7d31db22f36bc095aac6dce29e85d649d0bef88a3d5086925fb9ef811a98f3f8"
+        },
+        {
+          "kind": "mcp_tool_call",
+          "complete": true,
+          "seconds_from_actor_start": 98.472,
+          "server": "xsm",
+          "tool": "xsm_ack",
+          "error": null,
+          "argument_keys": [
+            "tokens"
+          ],
+          "arguments_sha256": "81debd5957c91a7c10a1f85d75ecdbdc31ce4098137844b42276e4a1336dda95"
+        }
+      ],
+      "item_type_counts": {
+        "command_execution": 6,
+        "mcp_tool_call": 7
+      },
+      "agent_mcp_call_count": 7,
+      "agent_shell_call_count": 6,
+      "tool_error_count": 0,
+      "first_wrong_choice": null,
+      "exit_code": 0,
+      "events_path": "/private/tmp/p13-recovery-passive-7yocp3dz/initiator.jsonl",
+      "stderr_path": "/private/tmp/p13-recovery-passive-7yocp3dz/initiator.stderr",
+      "events_sha256": "1120926afe8994f908707c557520e88306e53878a254344c7489e0491d72380a"
+    }
+  ],
+  "ended_at": 1793233441.628187,
+  "cleanup": [],
+  "owned_processes_after": [
+    {
+      "role": "reviewer",
+      "pid": 94654,
+      "lstart": "Thu Oct 29 09:22:14 2026",
+      "native_alive": false,
+      "mcp_pid": 94786,
+      "mcp_same_generation_alive": false
+    },
+    {
+      "role": "initiator",
+      "pid": 94829,
+      "lstart": "Thu Oct 29 09:22:15 2026",
+      "native_alive": false,
+      "mcp_pid": 94945,
+      "mcp_same_generation_alive": false
+    }
+  ],
+  "source_after": {
+    "file_count": 315,
+    "manifest_sha256": "57d088eee167e573d3a534e2d53db230703963516ece02ee1b6fce294ae9068f",
+    "matches": true,
+    "changed_paths": []
+  },
+  "source_unchanged": true,
+  "profile_settings_and_auth_metadata_unchanged": false,
+  "observations_path": "/private/tmp/p13-recovery-passive-7yocp3dz/controller-observations.json"
+}

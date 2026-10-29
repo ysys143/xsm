@@ -1,0 +1,10 @@
+{
+  "question_id": "[\"request_user_input_async\",\"call_46579cc639784216a0306d1ac3c66792\",0]",
+  "answer": "충분하고 공개 범위에 맞음",
+  "question": "P05 계획에 명시된 사람의 표본 검토입니다. 격리 표본은 a1/main ‘opencodex 설정 적용’(진행 중), a2/main ‘설정 변경 리뷰’로 표시됩니다. 추출 실패는 unknown이고 절대 경로·대화 원문은 숨깁니다. 이 요약이 작업 확인에 충분하고 공개 범위에 맞나요?",
+  "timestamp": "2026-10-28T10:21:54.517Z",
+  "native_role": "user",
+  "native_type": "response_item",
+  "sample": "directory-samples.json",
+  "publication_permission": false
+}

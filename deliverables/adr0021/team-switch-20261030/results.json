@@ -1,0 +1,30 @@
+{
+  "scope": "one host, three actual services and Rust QUIC; controlled loss of one real issuer response after actual signed admission",
+  "source_manifest_sha256": "5e203237d953a8b656ff4083503fd8b9b5c02c744a3f4939b1ce3236bda461ec",
+  "started_utc": "2026-10-29T15:36:28.954822+00:00",
+  "completed": true,
+  "lost_response_seconds": 30.121,
+  "old_network_id": "344bb2c3aad4fcabe35d16c2c9a3492853a546fb22a5ea7a7e728ea3d2af3530:3de33aeee2a6e8208c71668d7aac037a35c9e1017236123c1e5930f357fc46ca",
+  "requested_network_id": "71b3d743add4e0f6708931e4714490b08b8f33c8ba0dc89a963eb95a9ec1b999:26f202250f69dd8bd56fae7a58fb2fe1d94a842c346109522cc3f7297dbc99c5",
+  "old_active_during_unknown": true,
+  "issuer_admitted_before_response": true,
+  "requested_network_readback": true,
+  "real_join_status_observed": true,
+  "idempotent_retry_unchanged_signed_state": true,
+  "failed_switch_code": "join-refused-or-state-mismatch",
+  "failed_switch_retained_new": true,
+  "return_to_old_succeeded": true,
+  "removed_old_team_return_code": "join-refused-or-state-mismatch",
+  "removed_old_team_return_failed_without_active_rewrite": true,
+  "current_new_team_ping_after_failure": true,
+  "owned_pids": [
+    85899,
+    85904,
+    85913,
+    85900,
+    85905,
+    85914
+  ],
+  "owned_pids_remaining": [],
+  "finished_utc": "2026-10-29T15:37:02.541593+00:00"
+}

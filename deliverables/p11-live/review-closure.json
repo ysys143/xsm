@@ -1,0 +1,72 @@
+{
+  "review_model": "claude-opus-5-5",
+  "review_duration_ms": 198414,
+  "review_original_verdict": "G11 partial; corrections needed",
+  "review_source_manifest": "deliverables/p11-live/review-source-manifest.json",
+  "raw_review": "/tmp/g11-opus-review.json",
+  "review_text": "deliverables/p11-live/opus-review.md",
+  "closed_at_utc": "2026-10-28T19:43:09.681564+00:00",
+  "coordinator_closure_only": true,
+  "second_model_review": false,
+  "findings": [
+    {
+      "id": "R1",
+      "severity": "medium",
+      "closure": "C body/request uses engine while native execution trigger uses SSH phase/body SHA; standalone idle wake remains unverified",
+      "checks": [
+        "decision and gate wording",
+        "published peer process entry and Node.process inbox hash filter"
+      ]
+    },
+    {
+      "id": "R2",
+      "severity": "medium",
+      "closure": "coordinator scope interpretation distinguished from absent explicit C approval event; current report adjectives corrected; original JSON preserved with explanation"
+    },
+    {
+      "id": "R3",
+      "severity": "medium",
+      "closure": "D recommendation is an operational reuse hypothesis; unmeasured costs and unstable/dev track explicit; no A improvement measurement claimed"
+    },
+    {
+      "id": "R4",
+      "severity": "medium-low",
+      "closure": "B control is tailnet SSH; phase-level socket trace missing and remains unverified; no new route success invented"
+    },
+    {
+      "id": "R5",
+      "severity": "low",
+      "closure": "C local-daemon restart/offline inbox cache distinguished from A/B/D remote-carrier recovery"
+    },
+    {
+      "id": "R6",
+      "severity": "low",
+      "closure": "offline checker rerun after report amendment on both Python versions; UTC run times plus manifest/result/checker SHA stored",
+      "evidence": "deliverables/p11-live/C-evidence-check-20261029.json"
+    },
+    {
+      "id": "R7",
+      "severity": "informational",
+      "closure": "source inspection shows two validated previous-answer fields passed dynamically; identical false/4 inputs explain equal digests; no free-text/native memory claim"
+    }
+  ],
+  "amended_files_sha256": {
+    "docs/plan/reason-inspired-adrs/remote-decision.md": "7b95561024c129f84728ad445655339039cc0364763ea2fc044b4c905dbed70b",
+    "docs/plan/reason-inspired-adrs/gates/G11-remote-comparison-draft.md": "92eb0002e7a4b7fe7b8e116da4f8ed85b22dc4c58d7c3aed8d5bfb666ca95cf7",
+    "deliverables/p11-live/C-native-roundtrip-20261029.md": "ffba319b8f643327d6115b01fc6fb38f9275fd9e47763225dae16655a3113f04"
+  },
+  "gate_status": "partial",
+  "D12": "unanswered",
+  "new_native_calls": 0,
+  "product_changed": false,
+  "closed_document_archive": {
+    "docs/plan/reason-inspired-adrs/remote-decision.md": {
+      "path": "/private/tmp/g11-closed-docs-ebv9buxd/remote-decision.md",
+      "sha256": "7b95561024c129f84728ad445655339039cc0364763ea2fc044b4c905dbed70b"
+    },
+    "docs/plan/reason-inspired-adrs/gates/G11-remote-comparison-draft.md": {
+      "path": "/private/tmp/g11-closed-docs-ebv9buxd/G11-remote-comparison-draft.md",
+      "sha256": "92eb0002e7a4b7fe7b8e116da4f8ed85b22dc4c58d7c3aed8d5bfb666ca95cf7"
+    }
+  }
+}

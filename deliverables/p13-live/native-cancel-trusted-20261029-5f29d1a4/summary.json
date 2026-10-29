@@ -1,0 +1,164 @@
+{
+  "scope": "one trusted-cwd native Esc while actual inbox RPC pending; cancellation propagation not observed",
+  "CLI": "codex-cli 0.164.0",
+  "source": "/private/tmp/xsm-final-receipt-frozen-i3u9pms3",
+  "source315_verified": 315,
+  "repository_primary_before_after_verified": 135,
+  "repository_source_unchanged": true,
+  "trust": {
+    "exact_repository_preexisting": true,
+    "preflight_config_sha256": "1f94ac2b02b6f8a13f8246586ecf9ed27df850cb28f07a3bbd8138400134ea12",
+    "postflight_still_trusted": true,
+    "trust_selection_saved_by_evaluator": false,
+    "persisted_trust_override": false
+  },
+  "runtime_binding": "same invocation-only private XSM/frozen MCP proxy parameters; native read-only sandbox/approval-never flags; no persisted profile configuration edits",
+  "native_CID_sha256": "6781d04ee1f7d8f076f3b9869d513ec9462d7fe8d0e9bea20275b983de25b3ee",
+  "native_TUI_launches": 1,
+  "native_task_started": 1,
+  "native_turn_aborted": 1,
+  "native_task_completed": 0,
+  "controller_prompt_texts": 2,
+  "same_CID_followup_turn_started": false,
+  "followup_limit": "follow-up text visible in PTY editor, no second task_started; evaluator 150-second wait ended; submission cause not established",
+  "model_condition_retries": 0,
+  "actual_pending_call": {
+    "request_id": 2,
+    "tool": "xsm_inbox",
+    "requested_wait": 60,
+    "caller_CID_matches_native": true,
+    "sandbox_mode": "read-only",
+    "client_at": 1793234512.040405,
+    "standard_Esc_at": 1793234512.5084631,
+    "server_at": 1793234572.156378,
+    "wire_request_sha256": "2030fc237d6fffebd159622d02fc247797cc6be422aa1db7772a09de97b60ef8",
+    "wire_response_sha256": "4088eb16944954bf86c0a136bec9340ffd6cdfeebc2de38bdc383d8270d7aa29",
+    "RPC_elapsed_seconds": 60.11597299575806,
+    "Esc_to_response_seconds": 59.64791488647461,
+    "standard_Esc_count": 1,
+    "native_abort_recorded": true
+  },
+  "MCP_cancelled_notifications": 0,
+  "MCP_cancelled_notification_correlated": false,
+  "MCP_RPC_response": {
+    "same_request_id": true,
+    "isError": false,
+    "messages": 0,
+    "claims": 0,
+    "inbox_pending": 0
+  },
+  "native_UI_interrupted_error": true,
+  "MCP_isError_count": 0,
+  "EOF_events_before_cleanup": [],
+  "EOF_events_all": [],
+  "EOF_interpretation": "not observed; process cleanup/kill is never counted as EOF or cancelled notification",
+  "actual_claim_ACK_calls": 0,
+  "canonical_messages": 0,
+  "late_original_preservation_recovery": "unobserved: no real original existed or was manually seeded",
+  "client_server_metadata_result_ACK_injection": 0,
+  "native_tool_calls": [
+    {
+      "tool": "exec",
+      "input_sha256": "136119b7bfa669a471d83f52673266a8dbb1e54952bf2f1ab68105728b16960d",
+      "nested_tools": [
+        "exec_command"
+      ]
+    },
+    {
+      "tool": "exec",
+      "input_sha256": "44540ff8f4ef45f3469149d64c2573fcf90478ddae16d3f7d68a9d498339bf3d",
+      "nested_tools": [
+        "exec_command",
+        "exec_command"
+      ]
+    },
+    {
+      "tool": "exec",
+      "input_sha256": "fb812a9d3bfda1e019cdddbd1f2353d5b270f5f7a86a60b1f101d7f4a0365ac6",
+      "nested_tools": [
+        "mcp__xsm__xsm_inbox"
+      ]
+    }
+  ],
+  "nested_tool_names": [
+    "exec_command",
+    "exec_command",
+    "exec_command",
+    "mcp__xsm__xsm_inbox"
+  ],
+  "outgoing_send_or_other_service_tool_calls": 0,
+  "private_registry_records": 1,
+  "private_registry_external_records": 0,
+  "controller_registration_setups": 0,
+  "native_lifecycle": [
+    {
+      "timestamp": "2026-10-29T00:41:28.296Z",
+      "type": "task_started"
+    },
+    {
+      "timestamp": "2026-10-29T00:41:52.513Z",
+      "type": "turn_aborted"
+    }
+  ],
+  "original_failure": {
+    "type": "RuntimeError",
+    "message": "same-CID follow-up did not complete"
+  },
+  "profile_unchanged": false,
+  "profile_changed_names": [
+    "config.toml"
+  ],
+  "profile_drift_writer": "unknown; no evaluator/model profile edit command",
+  "cleanup_signals": [
+    {
+      "pid": 37766,
+      "lstart": "Thu Oct 29 09:41:26 2026",
+      "signal": "SIGTERM",
+      "at": 1793234668.391788,
+      "purpose": "owned cleanup, never counted as cancellation notification"
+    },
+    {
+      "pid": 37941,
+      "lstart": "Thu Oct 29 09:41:28 2026",
+      "signal": "SIGTERM",
+      "at": 1793234668.408036,
+      "purpose": "owned cleanup, never counted as cancellation notification"
+    },
+    {
+      "pid": 37950,
+      "lstart": "Thu Oct 29 09:41:28 2026",
+      "signal": "SIGTERM",
+      "at": 1793234668.418675,
+      "purpose": "owned cleanup, never counted as cancellation notification"
+    }
+  ],
+  "known_process_final_audit": [
+    {
+      "pid": 37766,
+      "lstart": "Thu Oct 29 09:41:26 2026",
+      "same_owned_process_alive": false,
+      "current_lstart": null
+    },
+    {
+      "pid": 37941,
+      "lstart": "Thu Oct 29 09:41:28 2026",
+      "same_owned_process_alive": false,
+      "current_lstart": null
+    },
+    {
+      "pid": 37950,
+      "lstart": "Thu Oct 29 09:41:28 2026",
+      "same_owned_process_alive": false,
+      "current_lstart": null
+    },
+    {
+      "pid": 37769,
+      "lstart": "Thu Oct 29 09:41:26 2026",
+      "same_owned_process_alive": false,
+      "current_lstart": null
+    }
+  ],
+  "remaining_owned_native_processes": [],
+  "private_raw_root": "/private/tmp/native-cancel-trusted-w23wicuo",
+  "all_A16_07_A18_02_proven": false
+}

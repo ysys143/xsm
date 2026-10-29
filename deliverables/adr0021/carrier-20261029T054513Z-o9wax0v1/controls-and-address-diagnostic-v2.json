@@ -1,0 +1,5183 @@
+{
+  "kind": "separate HTTPS control and SDK address diagnostic, not product roundtrip",
+  "proxy_policy": "(version 1)(allow default)(deny network-outbound(remote tcp \"*:*\"))(deny network-outbound(remote udp \"*:*\"))(allow network-outbound(remote tcp \"localhost:62643\"))",
+  "started_at": 1793253509.4170399,
+  "https_control": {
+    "exit": 0,
+    "http_and_cert": "200 0",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "body_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "initial_product_status": [
+    {
+      "engine_pid": 69376,
+      "endpoint_id": "b1a901e76bc1eabbe29933147277516f93286f3fcdc83bf0e32987937c3112da",
+      "address": {
+        "addrs": [
+          {
+            "Ip": "100.123.30.11:50787"
+          },
+          {
+            "Ip": "127.0.0.1:50787"
+          },
+          {
+            "Ip": "192.168.0.11:50787"
+          },
+          {
+            "Ip": "[::1]:59916"
+          }
+        ],
+        "id": "b1a901e76bc1eabbe29933147277516f93286f3fcdc83bf0e32987937c3112da"
+      },
+      "bound_addresses": [
+        "0.0.0.0:50787",
+        "[::]:59916"
+      ],
+      "relay_online": false,
+      "udp_rebind_after_cleanup": [
+        {
+          "address": "0.0.0.0:50787",
+          "free": true
+        },
+        {
+          "address": "[::]:59916",
+          "free": true
+        }
+      ]
+    },
+    {
+      "engine_pid": 69377,
+      "endpoint_id": "1f1b9115ea80cdd14c14e22a44c5734de5965beab351bb16c5468fd8125c47f6",
+      "address": {
+        "addrs": [
+          {
+            "Ip": "100.123.30.11:63279"
+          },
+          {
+            "Ip": "127.0.0.1:63279"
+          },
+          {
+            "Ip": "192.168.0.11:63279"
+          },
+          {
+            "Ip": "[::1]:55185"
+          }
+        ],
+        "id": "1f1b9115ea80cdd14c14e22a44c5734de5965beab351bb16c5468fd8125c47f6"
+      },
+      "bound_addresses": [
+        "0.0.0.0:63279",
+        "[::]:55185"
+      ],
+      "relay_online": false,
+      "udp_rebind_after_cleanup": [
+        {
+          "address": "0.0.0.0:63279",
+          "free": true
+        },
+        {
+          "address": "[::]:55185",
+          "free": true
+        }
+      ]
+    }
+  ],
+  "sdk_address_observations": [
+    [
+      {
+        "event": "SDK-address-diagnostic",
+        "at": 1793253525.067892,
+        "engine_pid": 69376,
+        "cached_address_before_probe": {
+          "addrs": [
+            {
+              "Ip": "100.123.30.11:50787"
+            },
+            {
+              "Ip": "127.0.0.1:50787"
+            },
+            {
+              "Ip": "192.168.0.11:50787"
+            },
+            {
+              "Ip": "[::1]:59916"
+            }
+          ],
+          "id": "b1a901e76bc1eabbe29933147277516f93286f3fcdc83bf0e32987937c3112da"
+        },
+        "native_address": {
+          "addrs": [
+            {
+              "Relay": "https://aps1-1.relay.n0.iroh.link./"
+            },
+            {
+              "Ip": "100.123.30.11:50787"
+            },
+            {
+              "Ip": "127.0.0.1:50787"
+            },
+            {
+              "Ip": "192.168.0.11:50787"
+            },
+            {
+              "Ip": "[::1]:59916"
+            }
+          ],
+          "id": "b1a901e76bc1eabbe29933147277516f93286f3fcdc83bf0e32987937c3112da"
+        },
+        "cached_has_relay": false,
+        "native_has_relay": true,
+        "probe_updates_python_cache": true,
+        "no_join_or_ping_after_probe": true
+      }
+    ],
+    [
+      {
+        "event": "SDK-address-diagnostic",
+        "at": 1793253525.0761821,
+        "engine_pid": 69377,
+        "cached_address_before_probe": {
+          "addrs": [
+            {
+              "Ip": "100.123.30.11:63279"
+            },
+            {
+              "Ip": "127.0.0.1:63279"
+            },
+            {
+              "Ip": "192.168.0.11:63279"
+            },
+            {
+              "Ip": "[::1]:55185"
+            }
+          ],
+          "id": "1f1b9115ea80cdd14c14e22a44c5734de5965beab351bb16c5468fd8125c47f6"
+        },
+        "native_address": {
+          "addrs": [
+            {
+              "Relay": "https://aps1-1.relay.n0.iroh.link./"
+            },
+            {
+              "Ip": "100.123.30.11:63279"
+            },
+            {
+              "Ip": "127.0.0.1:63279"
+            },
+            {
+              "Ip": "192.168.0.11:63279"
+            },
+            {
+              "Ip": "[::1]:55185"
+            }
+          ],
+          "id": "1f1b9115ea80cdd14c14e22a44c5734de5965beab351bb16c5468fd8125c47f6"
+        },
+        "cached_has_relay": false,
+        "native_has_relay": true,
+        "probe_updates_python_cache": true,
+        "no_join_or_ping_after_probe": true
+      }
+    ]
+  ],
+  "cleanup": [
+    {
+      "service_pid": 69374,
+      "engine_pid": 69376,
+      "service_exit": 0,
+      "engine_alive": false,
+      "control_socket_exists": false,
+      "stdout_bytes": 0,
+      "stderr_bytes": 0,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "service_pid": 69375,
+      "engine_pid": 69377,
+      "service_exit": 0,
+      "engine_alive": false,
+      "control_socket_exists": false,
+      "stdout_bytes": 0,
+      "stderr_bytes": 0,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "proxy": {
+    "port": 62643,
+    "records": [
+      {
+        "started_at": 1793253509.4364429,
+        "source": [
+          "127.0.0.1",
+          62644
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 538,
+        "relay_to_client": 4080,
+        "host": "aps1-1.relay.n0.iroh.link",
+        "port": 443,
+        "upstream": [
+          "5.223.65.62",
+          443
+        ],
+        "connected_at": 1793253509.527468,
+        "client_to_relay_first_record_hex": "160301014a",
+        "client_to_relay_sha256": "cae8ea9d640a895d2c578400f086930de640de1d325db22e26b09a1d90c19147",
+        "relay_to_client_first_record_hex": "160303007a",
+        "relay_to_client_sha256": "618682019447110c82e65f037fd80e53f7db747d5fff94af6b1b5d747c6664cc",
+        "status": "closed",
+        "ended_at": 1793253509.91779
+      },
+      {
+        "started_at": 1793253510.064897,
+        "source": [
+          "127.0.0.1",
+          62651
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "1.1.1.1",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.065019
+      },
+      {
+        "started_at": 1793253510.0650399,
+        "source": [
+          "127.0.0.1",
+          62650
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "1.1.1.1",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.065113
+      },
+      {
+        "started_at": 1793253510.065229,
+        "source": [
+          "127.0.0.1",
+          62652
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "1.1.1.1",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.065254
+      },
+      {
+        "started_at": 1793253510.065335,
+        "source": [
+          "127.0.0.1",
+          62653
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "1.1.1.1",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.0653539
+      },
+      {
+        "started_at": 1793253510.065396,
+        "source": [
+          "127.0.0.1",
+          62654
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "1.1.1.1",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.06544
+      },
+      {
+        "started_at": 1793253510.065517,
+        "source": [
+          "127.0.0.1",
+          62658
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "8.8.8.8",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.0655591
+      },
+      {
+        "started_at": 1793253510.0656042,
+        "source": [
+          "127.0.0.1",
+          62659
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "8.8.8.8",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.065618
+      },
+      {
+        "started_at": 1793253510.065713,
+        "source": [
+          "127.0.0.1",
+          62660
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "8.8.8.8",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.0657358
+      },
+      {
+        "started_at": 1793253510.0657952,
+        "source": [
+          "127.0.0.1",
+          62661
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "8.8.8.8",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.065876
+      },
+      {
+        "started_at": 1793253510.065856,
+        "source": [
+          "127.0.0.1",
+          62662
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "8.8.8.8",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.0659
+      },
+      {
+        "started_at": 1793253510.065964,
+        "source": [
+          "127.0.0.1",
+          62663
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "9.9.9.9",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.065994
+      },
+      {
+        "started_at": 1793253510.066027,
+        "source": [
+          "127.0.0.1",
+          62664
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "9.9.9.9",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.066049
+      },
+      {
+        "started_at": 1793253510.0661309,
+        "source": [
+          "127.0.0.1",
+          62665
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "9.9.9.9",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.066159
+      },
+      {
+        "started_at": 1793253510.066219,
+        "source": [
+          "127.0.0.1",
+          62666
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "9.9.9.9",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.066252
+      },
+      {
+        "started_at": 1793253510.066302,
+        "source": [
+          "127.0.0.1",
+          62667
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "9.9.9.9",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.066315
+      },
+      {
+        "started_at": 1793253510.070056,
+        "source": [
+          "127.0.0.1",
+          62668
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "1.1.1.1",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.070076
+      },
+      {
+        "started_at": 1793253510.07014,
+        "source": [
+          "127.0.0.1",
+          62669
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "1.1.1.1",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.070167
+      },
+      {
+        "started_at": 1793253510.0702012,
+        "source": [
+          "127.0.0.1",
+          62670
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "1.1.1.1",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.070267
+      },
+      {
+        "started_at": 1793253510.0703528,
+        "source": [
+          "127.0.0.1",
+          62671
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "1.1.1.1",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.0704699
+      },
+      {
+        "started_at": 1793253510.070435,
+        "source": [
+          "127.0.0.1",
+          62672
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "1.1.1.1",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.0705101
+      },
+      {
+        "started_at": 1793253510.0705678,
+        "source": [
+          "127.0.0.1",
+          62673
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "8.8.8.8",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.07059
+      },
+      {
+        "started_at": 1793253510.070631,
+        "source": [
+          "127.0.0.1",
+          62674
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "8.8.8.8",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.070661
+      },
+      {
+        "started_at": 1793253510.070768,
+        "source": [
+          "127.0.0.1",
+          62675
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "8.8.8.8",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.070855
+      },
+      {
+        "started_at": 1793253510.07082,
+        "source": [
+          "127.0.0.1",
+          62676
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "8.8.8.8",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.070994
+      },
+      {
+        "started_at": 1793253510.070932,
+        "source": [
+          "127.0.0.1",
+          62677
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "8.8.8.8",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.070973
+      },
+      {
+        "started_at": 1793253510.071121,
+        "source": [
+          "127.0.0.1",
+          62678
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "1.1.1.1",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.071146
+      },
+      {
+        "started_at": 1793253510.071202,
+        "source": [
+          "127.0.0.1",
+          62679
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "1.1.1.1",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.071219
+      },
+      {
+        "started_at": 1793253510.071269,
+        "source": [
+          "127.0.0.1",
+          62680
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "9.9.9.9",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.071285
+      },
+      {
+        "started_at": 1793253510.071326,
+        "source": [
+          "127.0.0.1",
+          62681
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "1.1.1.1",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.071363
+      },
+      {
+        "started_at": 1793253510.071394,
+        "source": [
+          "127.0.0.1",
+          62682
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "9.9.9.9",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.0714052
+      },
+      {
+        "started_at": 1793253510.07155,
+        "source": [
+          "127.0.0.1",
+          62683
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "9.9.9.9",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.071595
+      },
+      {
+        "started_at": 1793253510.071608,
+        "source": [
+          "127.0.0.1",
+          62684
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "9.9.9.9",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.07164
+      },
+      {
+        "started_at": 1793253510.071701,
+        "source": [
+          "127.0.0.1",
+          62685
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "9.9.9.9",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.071734
+      },
+      {
+        "started_at": 1793253510.071788,
+        "source": [
+          "127.0.0.1",
+          62686
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "8.8.8.8",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.071797
+      },
+      {
+        "started_at": 1793253510.071852,
+        "source": [
+          "127.0.0.1",
+          62687
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "8.8.8.8",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.071938
+      },
+      {
+        "started_at": 1793253510.0719092,
+        "source": [
+          "127.0.0.1",
+          62688
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "8.8.8.8",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.0719821
+      },
+      {
+        "started_at": 1793253510.0720599,
+        "source": [
+          "127.0.0.1",
+          62689
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "9.9.9.9",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.0720892
+      },
+      {
+        "started_at": 1793253510.0722508,
+        "source": [
+          "127.0.0.1",
+          62690
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "9.9.9.9",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.0723379
+      },
+      {
+        "started_at": 1793253510.072305,
+        "source": [
+          "127.0.0.1",
+          62691
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "9.9.9.9",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.0723698
+      },
+      {
+        "started_at": 1793253510.09641,
+        "source": [
+          "127.0.0.1",
+          62657
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "1.1.1.1",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.0964448
+      },
+      {
+        "started_at": 1793253510.0965161,
+        "source": [
+          "127.0.0.1",
+          62656
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "1.1.1.1",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.096574
+      },
+      {
+        "started_at": 1793253510.096649,
+        "source": [
+          "127.0.0.1",
+          62655
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "1.1.1.1",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.097219
+      },
+      {
+        "started_at": 1793253510.0972009,
+        "source": [
+          "127.0.0.1",
+          62692
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "8.8.8.8",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.097239
+      },
+      {
+        "started_at": 1793253510.097343,
+        "source": [
+          "127.0.0.1",
+          62693
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "8.8.8.8",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.0973508
+      },
+      {
+        "started_at": 1793253510.097515,
+        "source": [
+          "127.0.0.1",
+          62694
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "8.8.8.8",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.0975318
+      },
+      {
+        "started_at": 1793253510.097591,
+        "source": [
+          "127.0.0.1",
+          62695
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "9.9.9.9",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.0976021
+      },
+      {
+        "started_at": 1793253510.097707,
+        "source": [
+          "127.0.0.1",
+          62696
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "9.9.9.9",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.097717
+      },
+      {
+        "started_at": 1793253510.09781,
+        "source": [
+          "127.0.0.1",
+          62697
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "9.9.9.9",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.0978189
+      },
+      {
+        "started_at": 1793253510.228568,
+        "source": [
+          "127.0.0.1",
+          62698
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "1.1.1.1",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.228617
+      },
+      {
+        "started_at": 1793253510.228694,
+        "source": [
+          "127.0.0.1",
+          62699
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "1.1.1.1",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.228765
+      },
+      {
+        "started_at": 1793253510.228941,
+        "source": [
+          "127.0.0.1",
+          62700
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "8.8.8.8",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.22897
+      },
+      {
+        "started_at": 1793253510.229119,
+        "source": [
+          "127.0.0.1",
+          62701
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "8.8.8.8",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.229147
+      },
+      {
+        "started_at": 1793253510.2292302,
+        "source": [
+          "127.0.0.1",
+          62702
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "9.9.9.9",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.229247
+      },
+      {
+        "started_at": 1793253510.229394,
+        "source": [
+          "127.0.0.1",
+          62703
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "9.9.9.9",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.2294211
+      },
+      {
+        "started_at": 1793253510.2478259,
+        "source": [
+          "127.0.0.1",
+          62704
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "1.1.1.1",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.2478561
+      },
+      {
+        "started_at": 1793253510.248277,
+        "source": [
+          "127.0.0.1",
+          62705
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "8.8.8.8",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.248322
+      },
+      {
+        "started_at": 1793253510.248551,
+        "source": [
+          "127.0.0.1",
+          62706
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "9.9.9.9",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.248561
+      },
+      {
+        "started_at": 1793253510.248748,
+        "source": [
+          "127.0.0.1",
+          62707
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "1.1.1.1",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.248812
+      },
+      {
+        "started_at": 1793253510.2491179,
+        "source": [
+          "127.0.0.1",
+          62708
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "8.8.8.8",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.249164
+      },
+      {
+        "started_at": 1793253510.2494981,
+        "source": [
+          "127.0.0.1",
+          62709
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "9.9.9.9",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.249642
+      },
+      {
+        "started_at": 1793253510.2495968,
+        "source": [
+          "127.0.0.1",
+          62710
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "1.1.1.1",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.2496278
+      },
+      {
+        "started_at": 1793253510.24991,
+        "source": [
+          "127.0.0.1",
+          62711
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "8.8.8.8",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.249946
+      },
+      {
+        "started_at": 1793253510.250037,
+        "source": [
+          "127.0.0.1",
+          62712
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "1.1.1.1",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.250068
+      },
+      {
+        "started_at": 1793253510.250195,
+        "source": [
+          "127.0.0.1",
+          62713
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "9.9.9.9",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.2502642
+      },
+      {
+        "started_at": 1793253510.250401,
+        "source": [
+          "127.0.0.1",
+          62714
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "8.8.8.8",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.250464
+      },
+      {
+        "started_at": 1793253510.250738,
+        "source": [
+          "127.0.0.1",
+          62715
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "9.9.9.9",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.250769
+      },
+      {
+        "started_at": 1793253510.253493,
+        "source": [
+          "127.0.0.1",
+          62716
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 447,
+        "relay_to_client": 4264,
+        "host": "use1-1.relay.n0.iroh.link",
+        "port": 443,
+        "upstream": [
+          "87.99.151.110",
+          443
+        ],
+        "connected_at": 1793253510.5550349,
+        "client_to_relay_first_record_hex": "16030100f7",
+        "client_to_relay_sha256": "c2a16bcd5e49572dc8cf42afd4a3379eb82031611467480cfc84b74a6b669570",
+        "relay_to_client_first_record_hex": "160303007a",
+        "relay_to_client_sha256": "c2d3a5e21548400176026e803b799f539966385e3da4d998d483f2729b558a9f",
+        "status": "closed",
+        "ended_at": 1793253511.405637
+      },
+      {
+        "started_at": 1793253510.253589,
+        "source": [
+          "127.0.0.1",
+          62717
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 447,
+        "relay_to_client": 4262,
+        "host": "usw1-1.relay.n0.iroh.link",
+        "port": 443,
+        "upstream": [
+          "5.78.69.43",
+          443
+        ],
+        "connected_at": 1793253510.507073,
+        "client_to_relay_first_record_hex": "16030100f7",
+        "client_to_relay_sha256": "bbfaec1a0e444644f89145ec6972cfba404259dbe7676d5fada48d93d47c0958",
+        "relay_to_client_first_record_hex": "160303007a",
+        "relay_to_client_sha256": "3b3c620f488939ffb1b414ecaae7fc7f597bbf1bcf1cf9e5b84e5aa251f9f858",
+        "status": "closed",
+        "ended_at": 1793253511.0358841
+      },
+      {
+        "started_at": 1793253510.2537029,
+        "source": [
+          "127.0.0.1",
+          62718
+        ],
+        "method": null,
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "status": "not-connect",
+        "ended_at": 1793253510.2537339
+      },
+      {
+        "started_at": 1793253510.253817,
+        "source": [
+          "127.0.0.1",
+          62719
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 447,
+        "relay_to_client": 4265,
+        "host": "aps1-1.relay.n0.iroh.link",
+        "port": 443,
+        "upstream": [
+          "5.223.65.62",
+          443
+        ],
+        "connected_at": 1793253510.437577,
+        "client_to_relay_first_record_hex": "16030100f7",
+        "client_to_relay_sha256": "2b8a5a7aceac71bc01ff2a25f742c5c06b3fbb8e4c8afa6d9aed6a46abd1af4c",
+        "relay_to_client_first_record_hex": "160303007a",
+        "relay_to_client_sha256": "89e3103477fd65c19e2f10d64a1fe3cfa7ac617698e439afbc76a012157ffbe8",
+        "status": "closed",
+        "ended_at": 1793253510.716396
+      },
+      {
+        "started_at": 1793253510.253936,
+        "source": [
+          "127.0.0.1",
+          62720
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 447,
+        "relay_to_client": 4263,
+        "host": "euc1-1.relay.n0.iroh.link",
+        "port": 443,
+        "upstream": [
+          "91.99.237.97",
+          443
+        ],
+        "connected_at": 1793253510.660913,
+        "client_to_relay_first_record_hex": "16030100f7",
+        "client_to_relay_sha256": "001daff1c342a77579ce76a8e9b256c3462a5aba1b6bdfa67299b7a046c58901",
+        "relay_to_client_first_record_hex": "160303007a",
+        "relay_to_client_sha256": "8b4b5de0436de321386ea66060585418708f44305deab98610b33d36bf404954",
+        "status": "closed",
+        "ended_at": 1793253511.719857
+      },
+      {
+        "started_at": 1793253510.254139,
+        "source": [
+          "127.0.0.1",
+          62723
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "9.9.9.9",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.254161
+      },
+      {
+        "started_at": 1793253510.261023,
+        "source": [
+          "127.0.0.1",
+          62726
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 447,
+        "relay_to_client": 4262,
+        "host": "euc1-1.relay.n0.iroh.link",
+        "port": 443,
+        "upstream": [
+          "91.99.237.97",
+          443
+        ],
+        "connected_at": 1793253510.64489,
+        "client_to_relay_first_record_hex": "16030100f7",
+        "client_to_relay_sha256": "6d8016c3d2d0c4fc8d3dd158428bb580d06cb1e770480ed2db02f74ddadadd12",
+        "relay_to_client_first_record_hex": "160303007a",
+        "relay_to_client_sha256": "590946cb8a17b2af3679af98c083f34a4e1306023858707e1989552f9adc9b6a",
+        "status": "closed",
+        "ended_at": 1793253511.5412
+      },
+      {
+        "started_at": 1793253510.2611609,
+        "source": [
+          "127.0.0.1",
+          62727
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 447,
+        "relay_to_client": 4265,
+        "host": "use1-1.relay.n0.iroh.link",
+        "port": 443,
+        "upstream": [
+          "87.99.151.110",
+          443
+        ],
+        "connected_at": 1793253510.544906,
+        "client_to_relay_first_record_hex": "16030100f7",
+        "client_to_relay_sha256": "4375e0f631712dc97dab279b0d58ea0d70abdd8c2d4b7814def743fc7b59b948",
+        "relay_to_client_first_record_hex": "160303007a",
+        "relay_to_client_sha256": "2cfdfc3ecd4c8e6024ce6cf47df025a57171fa228daacfe8f66a129fa7dbaedd",
+        "status": "closed",
+        "ended_at": 1793253511.406579
+      },
+      {
+        "started_at": 1793253510.261239,
+        "source": [
+          "127.0.0.1",
+          62728
+        ],
+        "method": null,
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "status": "not-connect",
+        "ended_at": 1793253510.261305
+      },
+      {
+        "started_at": 1793253510.261374,
+        "source": [
+          "127.0.0.1",
+          62729
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 447,
+        "relay_to_client": 4262,
+        "host": "usw1-1.relay.n0.iroh.link",
+        "port": 443,
+        "upstream": [
+          "5.78.69.43",
+          443
+        ],
+        "connected_at": 1793253510.508836,
+        "client_to_relay_first_record_hex": "16030100f7",
+        "client_to_relay_sha256": "cb1677c78fa1570d3b890768ce9d153fe61c5e952f6625006f4ea48da9d46737",
+        "relay_to_client_first_record_hex": "160303007a",
+        "relay_to_client_sha256": "2e585990c0d9f8d346aa4895acd4d2af9372ed0b40bbee5cd6e680a636cbc284",
+        "status": "closed",
+        "ended_at": 1793253511.039228
+      },
+      {
+        "started_at": 1793253510.261495,
+        "source": [
+          "127.0.0.1",
+          62730
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 447,
+        "relay_to_client": 4266,
+        "host": "aps1-1.relay.n0.iroh.link",
+        "port": 443,
+        "upstream": [
+          "5.223.65.62",
+          443
+        ],
+        "connected_at": 1793253510.437663,
+        "client_to_relay_first_record_hex": "16030100f7",
+        "client_to_relay_sha256": "3bb9c88370547fe9fc4d256432693444667bcf04a85baef6277a42d566a89042",
+        "relay_to_client_first_record_hex": "160303007a",
+        "relay_to_client_sha256": "42a566fca75802bbefcad7cd9e0a419caf2407aac2be42aab4233c86a503d423",
+        "status": "closed",
+        "ended_at": 1793253510.716442
+      },
+      {
+        "started_at": 1793253510.2687318,
+        "source": [
+          "127.0.0.1",
+          62736
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "1.1.1.1",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.2688608
+      },
+      {
+        "started_at": 1793253510.268801,
+        "source": [
+          "127.0.0.1",
+          62735
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "1.1.1.1",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.268825
+      },
+      {
+        "started_at": 1793253510.2691252,
+        "source": [
+          "127.0.0.1",
+          62737
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "8.8.8.8",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.269164
+      },
+      {
+        "started_at": 1793253510.2692502,
+        "source": [
+          "127.0.0.1",
+          62738
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "8.8.8.8",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.269281
+      },
+      {
+        "started_at": 1793253510.2694368,
+        "source": [
+          "127.0.0.1",
+          62739
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "9.9.9.9",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.269464
+      },
+      {
+        "started_at": 1793253510.2695732,
+        "source": [
+          "127.0.0.1",
+          62740
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "9.9.9.9",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.269601
+      },
+      {
+        "started_at": 1793253510.271308,
+        "source": [
+          "127.0.0.1",
+          62742
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "1.1.1.1",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.2713861
+      },
+      {
+        "started_at": 1793253510.271366,
+        "source": [
+          "127.0.0.1",
+          62741
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "1.1.1.1",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.2714
+      },
+      {
+        "started_at": 1793253510.2716632,
+        "source": [
+          "127.0.0.1",
+          62743
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "8.8.8.8",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.27168
+      },
+      {
+        "started_at": 1793253510.271719,
+        "source": [
+          "127.0.0.1",
+          62744
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "8.8.8.8",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.2717519
+      },
+      {
+        "started_at": 1793253510.275092,
+        "source": [
+          "127.0.0.1",
+          62745
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "9.9.9.9",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.275125
+      },
+      {
+        "started_at": 1793253510.291803,
+        "source": [
+          "127.0.0.1",
+          62746
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "1.1.1.1",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.291869
+      },
+      {
+        "started_at": 1793253510.2918909,
+        "source": [
+          "127.0.0.1",
+          62747
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "1.1.1.1",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.291929
+      },
+      {
+        "started_at": 1793253510.291994,
+        "source": [
+          "127.0.0.1",
+          62748
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "1.1.1.1",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.292022
+      },
+      {
+        "started_at": 1793253510.292151,
+        "source": [
+          "127.0.0.1",
+          62749
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "8.8.8.8",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.292175
+      },
+      {
+        "started_at": 1793253510.2922308,
+        "source": [
+          "127.0.0.1",
+          62750
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "8.8.8.8",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.2922509
+      },
+      {
+        "started_at": 1793253510.292319,
+        "source": [
+          "127.0.0.1",
+          62751
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "8.8.8.8",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.292329
+      },
+      {
+        "started_at": 1793253510.292458,
+        "source": [
+          "127.0.0.1",
+          62752
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "9.9.9.9",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.292477
+      },
+      {
+        "started_at": 1793253510.2925382,
+        "source": [
+          "127.0.0.1",
+          62753
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "9.9.9.9",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.292586
+      },
+      {
+        "started_at": 1793253510.292704,
+        "source": [
+          "127.0.0.1",
+          62754
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "9.9.9.9",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.292751
+      },
+      {
+        "started_at": 1793253510.294733,
+        "source": [
+          "127.0.0.1",
+          62755
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "9.9.9.9",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.2947478
+      },
+      {
+        "started_at": 1793253510.294786,
+        "source": [
+          "127.0.0.1",
+          62756
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "9.9.9.9",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.294827
+      },
+      {
+        "started_at": 1793253510.295053,
+        "source": [
+          "127.0.0.1",
+          62757
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "1.1.1.1",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.295072
+      },
+      {
+        "started_at": 1793253510.295118,
+        "source": [
+          "127.0.0.1",
+          62758
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "1.1.1.1",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.2951381
+      },
+      {
+        "started_at": 1793253510.295319,
+        "source": [
+          "127.0.0.1",
+          62759
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "8.8.8.8",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.295392
+      },
+      {
+        "started_at": 1793253510.2953768,
+        "source": [
+          "127.0.0.1",
+          62760
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "8.8.8.8",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.295404
+      },
+      {
+        "started_at": 1793253510.3162088,
+        "source": [
+          "127.0.0.1",
+          62761
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "9.9.9.9",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.316233
+      },
+      {
+        "started_at": 1793253510.316431,
+        "source": [
+          "127.0.0.1",
+          62762
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "1.1.1.1",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.316449
+      },
+      {
+        "started_at": 1793253510.3166468,
+        "source": [
+          "127.0.0.1",
+          62763
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "8.8.8.8",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.316672
+      },
+      {
+        "started_at": 1793253510.320789,
+        "source": [
+          "127.0.0.1",
+          62764
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "1.1.1.1",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.320812
+      },
+      {
+        "started_at": 1793253510.321035,
+        "source": [
+          "127.0.0.1",
+          62765
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "8.8.8.8",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.321054
+      },
+      {
+        "started_at": 1793253510.32129,
+        "source": [
+          "127.0.0.1",
+          62766
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "9.9.9.9",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.3213089
+      },
+      {
+        "started_at": 1793253510.325048,
+        "source": [
+          "127.0.0.1",
+          62767
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "9.9.9.9",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.325073
+      },
+      {
+        "started_at": 1793253510.325326,
+        "source": [
+          "127.0.0.1",
+          62768
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "1.1.1.1",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.325351
+      },
+      {
+        "started_at": 1793253510.327119,
+        "source": [
+          "127.0.0.1",
+          62769
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "8.8.8.8",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.327141
+      },
+      {
+        "started_at": 1793253510.343492,
+        "source": [
+          "127.0.0.1",
+          62770
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "1.1.1.1",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.343647
+      },
+      {
+        "started_at": 1793253510.3435678,
+        "source": [
+          "127.0.0.1",
+          62771
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "1.1.1.1",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.343619
+      },
+      {
+        "started_at": 1793253510.34394,
+        "source": [
+          "127.0.0.1",
+          62772
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "8.8.8.8",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.34395
+      },
+      {
+        "started_at": 1793253510.3440452,
+        "source": [
+          "127.0.0.1",
+          62773
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "8.8.8.8",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.3440828
+      },
+      {
+        "started_at": 1793253510.3442109,
+        "source": [
+          "127.0.0.1",
+          62774
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "9.9.9.9",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.344264
+      },
+      {
+        "started_at": 1793253510.344338,
+        "source": [
+          "127.0.0.1",
+          62775
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "9.9.9.9",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.3443651
+      },
+      {
+        "started_at": 1793253510.35451,
+        "source": [
+          "127.0.0.1",
+          62776
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 447,
+        "relay_to_client": 4263,
+        "host": "euc1-1.relay.n0.iroh.link",
+        "port": 443,
+        "upstream": [
+          "91.99.237.97",
+          443
+        ],
+        "connected_at": 1793253510.644587,
+        "client_to_relay_first_record_hex": "16030100f7",
+        "client_to_relay_sha256": "2f3a6c9a791d6177e428da8dab3a18ea7741dadc09b0016b73517524ed796f03",
+        "relay_to_client_first_record_hex": "160303007a",
+        "relay_to_client_sha256": "00e473770439c07a47a24a49fcaaa61021bd42ec68313bc88bd08635d8b839fb",
+        "status": "closed",
+        "ended_at": 1793253511.520031
+      },
+      {
+        "started_at": 1793253510.354589,
+        "source": [
+          "127.0.0.1",
+          62777
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 447,
+        "relay_to_client": 4263,
+        "host": "usw1-1.relay.n0.iroh.link",
+        "port": 443,
+        "upstream": [
+          "5.78.69.43",
+          443
+        ],
+        "connected_at": 1793253510.506985,
+        "client_to_relay_first_record_hex": "16030100f7",
+        "client_to_relay_sha256": "d214535489c74cd6fd3f2c922764c624234f2c527b018bef1ab75d9f7628785e",
+        "relay_to_client_first_record_hex": "160303007a",
+        "relay_to_client_sha256": "6487c4271987cffb67d610a512b9db50fb16de79ad64a443a79435fdedc49ec0",
+        "status": "closed",
+        "ended_at": 1793253511.030037
+      },
+      {
+        "started_at": 1793253510.3547251,
+        "source": [
+          "127.0.0.1",
+          62778
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 447,
+        "relay_to_client": 4264,
+        "host": "aps1-1.relay.n0.iroh.link",
+        "port": 443,
+        "upstream": [
+          "5.223.65.62",
+          443
+        ],
+        "connected_at": 1793253510.440854,
+        "client_to_relay_first_record_hex": "16030100f7",
+        "client_to_relay_sha256": "d6e788d3ce90a79896521034d46313b65380fd9007e401dfb65a363d8f84fb58",
+        "relay_to_client_first_record_hex": "160303007a",
+        "relay_to_client_sha256": "d709fb65810c1325d784cba24187ed3e92160a440d14f537f06205a781dd18d3",
+        "status": "closed",
+        "ended_at": 1793253510.716367
+      },
+      {
+        "started_at": 1793253510.354811,
+        "source": [
+          "127.0.0.1",
+          62779
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 447,
+        "relay_to_client": 4264,
+        "host": "use1-1.relay.n0.iroh.link",
+        "port": 443,
+        "upstream": [
+          "87.99.151.110",
+          443
+        ],
+        "connected_at": 1793253510.5550022,
+        "client_to_relay_first_record_hex": "16030100f7",
+        "client_to_relay_sha256": "cd69bcc0bfe47d1c6e8c4df5954c89878486dd2a6bcc306ad209a718b6020ca9",
+        "relay_to_client_first_record_hex": "160303007a",
+        "relay_to_client_sha256": "09707ea6c718aca3d011b72802313a2b460557d4349f9f756e918beb3f509c5c",
+        "status": "closed",
+        "ended_at": 1793253511.40594
+      },
+      {
+        "started_at": 1793253510.362456,
+        "source": [
+          "127.0.0.1",
+          62784
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 447,
+        "relay_to_client": 4262,
+        "host": "euc1-1.relay.n0.iroh.link",
+        "port": 443,
+        "upstream": [
+          "91.99.237.97",
+          443
+        ],
+        "connected_at": 1793253510.6645591,
+        "client_to_relay_first_record_hex": "16030100f7",
+        "client_to_relay_sha256": "046224edb9e8607e0975d3a2a42be94b19c3b68c51397227670258ce1fb5d341",
+        "relay_to_client_first_record_hex": "160303007a",
+        "relay_to_client_sha256": "9872e7215214ad5b1db2f504587ee810aa742334047663a583fb41e30c45abd2",
+        "status": "closed",
+        "ended_at": 1793253511.7099211
+      },
+      {
+        "started_at": 1793253510.3625238,
+        "source": [
+          "127.0.0.1",
+          62785
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 447,
+        "relay_to_client": 4264,
+        "host": "usw1-1.relay.n0.iroh.link",
+        "port": 443,
+        "upstream": [
+          "5.78.69.43",
+          443
+        ],
+        "connected_at": 1793253510.507086,
+        "client_to_relay_first_record_hex": "16030100f7",
+        "client_to_relay_sha256": "65510aa1b679e6830bb23ac016ab1b90c05db338b83c250646acd2f78b7157cb",
+        "relay_to_client_first_record_hex": "160303007a",
+        "relay_to_client_sha256": "633dcdb5ee0b62f5b9acd59f7c3f22d179b450bcc990b87fb3264e13055850b5",
+        "status": "closed",
+        "ended_at": 1793253511.022051
+      },
+      {
+        "started_at": 1793253510.3626292,
+        "source": [
+          "127.0.0.1",
+          62786
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 447,
+        "relay_to_client": 4264,
+        "host": "use1-1.relay.n0.iroh.link",
+        "port": 443,
+        "upstream": [
+          "87.99.151.110",
+          443
+        ],
+        "connected_at": 1793253510.568394,
+        "client_to_relay_first_record_hex": "16030100f7",
+        "client_to_relay_sha256": "d9128296495041dc9e176d98a62a552edc88a3ebc5a419520d97f3df9d07f11e",
+        "relay_to_client_first_record_hex": "160303007a",
+        "relay_to_client_sha256": "8884460806a8c64de4ecba8bbcaabfdf5960d62f0f528527e541f25de044f4d1",
+        "status": "closed",
+        "ended_at": 1793253511.4069078
+      },
+      {
+        "started_at": 1793253510.362772,
+        "source": [
+          "127.0.0.1",
+          62787
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 447,
+        "relay_to_client": 4265,
+        "host": "aps1-1.relay.n0.iroh.link",
+        "port": 443,
+        "upstream": [
+          "5.223.65.62",
+          443
+        ],
+        "connected_at": 1793253510.4508789,
+        "client_to_relay_first_record_hex": "16030100f7",
+        "client_to_relay_sha256": "469ab35fd89913cfb9e31259887f63702ae96451a3cf7368b80d688234f1960d",
+        "relay_to_client_first_record_hex": "160303007a",
+        "relay_to_client_sha256": "def3ec5a77fc72051d3f362bdc532f37be30e1e2304453a367c9a1f75ae9dc06",
+        "status": "closed",
+        "ended_at": 1793253510.725651
+      },
+      {
+        "started_at": 1793253510.372828,
+        "source": [
+          "127.0.0.1",
+          62792
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "9.9.9.9",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.372864
+      },
+      {
+        "started_at": 1793253510.373118,
+        "source": [
+          "127.0.0.1",
+          62793
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "1.1.1.1",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.373146
+      },
+      {
+        "started_at": 1793253510.374977,
+        "source": [
+          "127.0.0.1",
+          62794
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "8.8.8.8",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.374999
+      },
+      {
+        "started_at": 1793253510.394018,
+        "source": [
+          "127.0.0.1",
+          62795
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "9.9.9.9",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.394046
+      },
+      {
+        "started_at": 1793253510.394112,
+        "source": [
+          "127.0.0.1",
+          62796
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "9.9.9.9",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.394144
+      },
+      {
+        "started_at": 1793253510.394253,
+        "source": [
+          "127.0.0.1",
+          62797
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "9.9.9.9",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.394263
+      },
+      {
+        "started_at": 1793253510.394387,
+        "source": [
+          "127.0.0.1",
+          62798
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "1.1.1.1",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.394418
+      },
+      {
+        "started_at": 1793253510.394506,
+        "source": [
+          "127.0.0.1",
+          62799
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "1.1.1.1",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.394529
+      },
+      {
+        "started_at": 1793253510.394586,
+        "source": [
+          "127.0.0.1",
+          62800
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "1.1.1.1",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.394612
+      },
+      {
+        "started_at": 1793253510.3949308,
+        "source": [
+          "127.0.0.1",
+          62801
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "1.1.1.1",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.394944
+      },
+      {
+        "started_at": 1793253510.3950021,
+        "source": [
+          "127.0.0.1",
+          62802
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "1.1.1.1",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.395136
+      },
+      {
+        "started_at": 1793253510.395123,
+        "source": [
+          "127.0.0.1",
+          62803
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "1.1.1.1",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.395165
+      },
+      {
+        "started_at": 1793253510.395233,
+        "source": [
+          "127.0.0.1",
+          62804
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "1.1.1.1",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.395266
+      },
+      {
+        "started_at": 1793253510.395329,
+        "source": [
+          "127.0.0.1",
+          62805
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "8.8.8.8",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.3953578
+      },
+      {
+        "started_at": 1793253510.395425,
+        "source": [
+          "127.0.0.1",
+          62806
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "8.8.8.8",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.395474
+      },
+      {
+        "started_at": 1793253510.395466,
+        "source": [
+          "127.0.0.1",
+          62807
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "8.8.8.8",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.395499
+      },
+      {
+        "started_at": 1793253510.395585,
+        "source": [
+          "127.0.0.1",
+          62808
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "8.8.8.8",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.395608
+      },
+      {
+        "started_at": 1793253510.395672,
+        "source": [
+          "127.0.0.1",
+          62809
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "9.9.9.9",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.395734
+      },
+      {
+        "started_at": 1793253510.395894,
+        "source": [
+          "127.0.0.1",
+          62810
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "9.9.9.9",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.395946
+      },
+      {
+        "started_at": 1793253510.395933,
+        "source": [
+          "127.0.0.1",
+          62811
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "9.9.9.9",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.3959548
+      },
+      {
+        "started_at": 1793253510.39602,
+        "source": [
+          "127.0.0.1",
+          62812
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "9.9.9.9",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.3960361
+      },
+      {
+        "started_at": 1793253510.396748,
+        "source": [
+          "127.0.0.1",
+          62813
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "8.8.8.8",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.396766
+      },
+      {
+        "started_at": 1793253510.396894,
+        "source": [
+          "127.0.0.1",
+          62814
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "8.8.8.8",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.396916
+      },
+      {
+        "started_at": 1793253510.39697,
+        "source": [
+          "127.0.0.1",
+          62815
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "8.8.8.8",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.396995
+      },
+      {
+        "started_at": 1793253510.397069,
+        "source": [
+          "127.0.0.1",
+          62816
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "8.8.8.8",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.397082
+      },
+      {
+        "started_at": 1793253510.412215,
+        "source": [
+          "127.0.0.1",
+          62817
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "9.9.9.9",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.412245
+      },
+      {
+        "started_at": 1793253510.412319,
+        "source": [
+          "127.0.0.1",
+          62818
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "9.9.9.9",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.4123368
+      },
+      {
+        "started_at": 1793253510.4124339,
+        "source": [
+          "127.0.0.1",
+          62819
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "1.1.1.1",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.412451
+      },
+      {
+        "started_at": 1793253510.41258,
+        "source": [
+          "127.0.0.1",
+          62820
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "1.1.1.1",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.412606
+      },
+      {
+        "started_at": 1793253510.4127848,
+        "source": [
+          "127.0.0.1",
+          62821
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "9.9.9.9",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.412805
+      },
+      {
+        "started_at": 1793253510.412995,
+        "source": [
+          "127.0.0.1",
+          62822
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "1.1.1.1",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.413005
+      },
+      {
+        "started_at": 1793253510.418366,
+        "source": [
+          "127.0.0.1",
+          62823
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "8.8.8.8",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.4183838
+      },
+      {
+        "started_at": 1793253510.420545,
+        "source": [
+          "127.0.0.1",
+          62824
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "8.8.8.8",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.4205818
+      },
+      {
+        "started_at": 1793253510.4219131,
+        "source": [
+          "127.0.0.1",
+          62825
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "1.1.1.1",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.421952
+      },
+      {
+        "started_at": 1793253510.422189,
+        "source": [
+          "127.0.0.1",
+          62826
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "8.8.8.8",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.422217
+      },
+      {
+        "started_at": 1793253510.4224372,
+        "source": [
+          "127.0.0.1",
+          62827
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "9.9.9.9",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.4224582
+      },
+      {
+        "started_at": 1793253510.455538,
+        "source": [
+          "127.0.0.1",
+          62829
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 447,
+        "relay_to_client": 4262,
+        "host": "euc1-1.relay.n0.iroh.link",
+        "port": 443,
+        "upstream": [
+          "91.99.237.97",
+          443
+        ],
+        "connected_at": 1793253510.87732,
+        "client_to_relay_first_record_hex": "16030100f7",
+        "client_to_relay_sha256": "3c213b0bb79324a6d33391faa363b0c818e476b05e07a0b4784dfd593c575a64",
+        "relay_to_client_first_record_hex": "160303007a",
+        "relay_to_client_sha256": "2501c6fed8b6acff4faf7b815dd2766a05e3c0204cc4c97163e34359f81d2999",
+        "status": "closed",
+        "ended_at": 1793253511.926198
+      },
+      {
+        "started_at": 1793253510.455638,
+        "source": [
+          "127.0.0.1",
+          62828
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 447,
+        "relay_to_client": 4263,
+        "host": "usw1-1.relay.n0.iroh.link",
+        "port": 443,
+        "upstream": [
+          "5.78.69.43",
+          443
+        ],
+        "connected_at": 1793253510.602203,
+        "client_to_relay_first_record_hex": "16030100f7",
+        "client_to_relay_sha256": "14f7801fdce18dec33782c4210b3033c1d95a971ad9ece01e6ff92677f7b801b",
+        "relay_to_client_first_record_hex": "160303007a",
+        "relay_to_client_sha256": "9c64234f9c6c55f64d9dee9d0bd2f16b71c5e5775912b85c6ddc28160d5b5dbb",
+        "status": "closed",
+        "ended_at": 1793253511.172699
+      },
+      {
+        "started_at": 1793253510.455779,
+        "source": [
+          "127.0.0.1",
+          62830
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 447,
+        "relay_to_client": 4264,
+        "host": "use1-1.relay.n0.iroh.link",
+        "port": 443,
+        "upstream": [
+          "87.99.151.110",
+          443
+        ],
+        "connected_at": 1793253510.658279,
+        "client_to_relay_first_record_hex": "16030100f7",
+        "client_to_relay_sha256": "6cd9fc3911c29ddb1e36d2906615f30fccb2018b560b681f39551f15e89f10c0",
+        "relay_to_client_first_record_hex": "160303007a",
+        "relay_to_client_sha256": "04ae66d0678733bb3fb4dc07f6aecf8094d888fe0c6bc8cd7e9f2d7f2498c13b",
+        "status": "closed",
+        "ended_at": 1793253511.4065611
+      },
+      {
+        "started_at": 1793253510.455938,
+        "source": [
+          "127.0.0.1",
+          62831
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 447,
+        "relay_to_client": 4265,
+        "host": "aps1-1.relay.n0.iroh.link",
+        "port": 443,
+        "upstream": [
+          "5.223.65.62",
+          443
+        ],
+        "connected_at": 1793253510.543608,
+        "client_to_relay_first_record_hex": "16030100f7",
+        "client_to_relay_sha256": "8cc97a2a9070a9fcd28e02a701ea9f4280bc52c615254bcdb25d38f08175bf4c",
+        "relay_to_client_first_record_hex": "160303007a",
+        "relay_to_client_sha256": "efc276de19dac6f4d54e3bb95fc491e145b3c9e19e1ac0cb08babfe6e73dcfae",
+        "status": "closed",
+        "ended_at": 1793253510.969122
+      },
+      {
+        "started_at": 1793253510.462605,
+        "source": [
+          "127.0.0.1",
+          62836
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 447,
+        "relay_to_client": 4263,
+        "host": "usw1-1.relay.n0.iroh.link",
+        "port": 443,
+        "upstream": [
+          "5.78.69.43",
+          443
+        ],
+        "connected_at": 1793253510.608234,
+        "client_to_relay_first_record_hex": "16030100f7",
+        "client_to_relay_sha256": "701771bbeb730b6609b94f67385b01f65a70edf11369aee49757bac5d3c6bbf2",
+        "relay_to_client_first_record_hex": "160303007a",
+        "relay_to_client_sha256": "891706e2a02e38a78f8fae77a841885025438842478285443c4c888071c32b1c",
+        "status": "closed",
+        "ended_at": 1793253511.172714
+      },
+      {
+        "started_at": 1793253510.462838,
+        "source": [
+          "127.0.0.1",
+          62837
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 447,
+        "relay_to_client": 4264,
+        "host": "euc1-1.relay.n0.iroh.link",
+        "port": 443,
+        "upstream": [
+          "91.99.237.97",
+          443
+        ],
+        "connected_at": 1793253510.8771589,
+        "client_to_relay_first_record_hex": "16030100f7",
+        "client_to_relay_sha256": "6d17dc26ba546da83aa0acdfcb426ad71a04815bb8f9abb6fe3a875a24a483be",
+        "relay_to_client_first_record_hex": "160303007a",
+        "relay_to_client_sha256": "03ebf59aae1c62b9ab7d90767d6d70dd8099ca0ce1604c9d15732fbc2d555093",
+        "status": "closed",
+        "ended_at": 1793253511.926286
+      },
+      {
+        "started_at": 1793253510.462955,
+        "source": [
+          "127.0.0.1",
+          62839
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 447,
+        "relay_to_client": 4264,
+        "host": "aps1-1.relay.n0.iroh.link",
+        "port": 443,
+        "upstream": [
+          "5.223.65.62",
+          443
+        ],
+        "connected_at": 1793253510.55491,
+        "client_to_relay_first_record_hex": "16030100f7",
+        "client_to_relay_sha256": "f5ac02d5604765e86feb749e9e4b72da03819206732b3bb31948a4d30f42a9f8",
+        "relay_to_client_first_record_hex": "160303007a",
+        "relay_to_client_sha256": "85c81199c6ca7c5b0ad08644e75b006aa1edf21043292b831a74a3c0ccfc270f",
+        "status": "closed",
+        "ended_at": 1793253510.9703062
+      },
+      {
+        "started_at": 1793253510.4630542,
+        "source": [
+          "127.0.0.1",
+          62838
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 447,
+        "relay_to_client": 4264,
+        "host": "use1-1.relay.n0.iroh.link",
+        "port": 443,
+        "upstream": [
+          "87.99.151.110",
+          443
+        ],
+        "connected_at": 1793253510.660972,
+        "client_to_relay_first_record_hex": "16030100f7",
+        "client_to_relay_sha256": "8c8a5bc3edbda111f096ed85d0d926748cf9c077dcce47e59b65235f6efe3575",
+        "relay_to_client_first_record_hex": "160303007a",
+        "relay_to_client_sha256": "ce370194b79500eed26ec1e05197c12085894548ac22c9a19658fec4fa648c67",
+        "status": "closed",
+        "ended_at": 1793253511.405316
+      },
+      {
+        "started_at": 1793253510.545318,
+        "source": [
+          "127.0.0.1",
+          62845
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "9.9.9.9",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.545366
+      },
+      {
+        "started_at": 1793253510.545604,
+        "source": [
+          "127.0.0.1",
+          62846
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "1.1.1.1",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.54564
+      },
+      {
+        "started_at": 1793253510.545803,
+        "source": [
+          "127.0.0.1",
+          62847
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "8.8.8.8",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.54582
+      },
+      {
+        "started_at": 1793253510.58018,
+        "source": [
+          "127.0.0.1",
+          62848
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "9.9.9.9",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.580222
+      },
+      {
+        "started_at": 1793253510.5804312,
+        "source": [
+          "127.0.0.1",
+          62849
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "1.1.1.1",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.580459
+      },
+      {
+        "started_at": 1793253510.580651,
+        "source": [
+          "127.0.0.1",
+          62850
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "8.8.8.8",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.580673
+      },
+      {
+        "started_at": 1793253510.608792,
+        "source": [
+          "127.0.0.1",
+          62851
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "1.1.1.1",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.6088169
+      },
+      {
+        "started_at": 1793253510.609142,
+        "source": [
+          "127.0.0.1",
+          62852
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "8.8.8.8",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.60917
+      },
+      {
+        "started_at": 1793253510.609378,
+        "source": [
+          "127.0.0.1",
+          62853
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "9.9.9.9",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.6094
+      },
+      {
+        "started_at": 1793253510.609952,
+        "source": [
+          "127.0.0.1",
+          62854
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "9.9.9.9",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.6099699
+      },
+      {
+        "started_at": 1793253510.610144,
+        "source": [
+          "127.0.0.1",
+          62855
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "1.1.1.1",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.61016
+      },
+      {
+        "started_at": 1793253510.610372,
+        "source": [
+          "127.0.0.1",
+          62856
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "8.8.8.8",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.610393
+      },
+      {
+        "started_at": 1793253510.6298811,
+        "source": [
+          "127.0.0.1",
+          62857
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "9.9.9.9",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.6299179
+      },
+      {
+        "started_at": 1793253510.629966,
+        "source": [
+          "127.0.0.1",
+          62858
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "9.9.9.9",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.629987
+      },
+      {
+        "started_at": 1793253510.630307,
+        "source": [
+          "127.0.0.1",
+          62859
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "1.1.1.1",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.6303492
+      },
+      {
+        "started_at": 1793253510.630423,
+        "source": [
+          "127.0.0.1",
+          62860
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "1.1.1.1",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.630471
+      },
+      {
+        "started_at": 1793253510.630613,
+        "source": [
+          "127.0.0.1",
+          62861
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "8.8.8.8",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.630634
+      },
+      {
+        "started_at": 1793253510.630691,
+        "source": [
+          "127.0.0.1",
+          62862
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "8.8.8.8",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.6307049
+      },
+      {
+        "started_at": 1793253510.632891,
+        "source": [
+          "127.0.0.1",
+          62863
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "1.1.1.1",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.63292
+      },
+      {
+        "started_at": 1793253510.633204,
+        "source": [
+          "127.0.0.1",
+          62864
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "8.8.8.8",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.633226
+      },
+      {
+        "started_at": 1793253510.6334562,
+        "source": [
+          "127.0.0.1",
+          62865
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "9.9.9.9",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.633478
+      },
+      {
+        "started_at": 1793253510.652359,
+        "source": [
+          "127.0.0.1",
+          62866
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "1.1.1.1",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.652389
+      },
+      {
+        "started_at": 1793253510.652639,
+        "source": [
+          "127.0.0.1",
+          62867
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "8.8.8.8",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.652676
+      },
+      {
+        "started_at": 1793253510.6529589,
+        "source": [
+          "127.0.0.1",
+          62868
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "9.9.9.9",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.652991
+      },
+      {
+        "started_at": 1793253510.673242,
+        "source": [
+          "127.0.0.1",
+          62869
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "1.1.1.1",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.673293
+      },
+      {
+        "started_at": 1793253510.673543,
+        "source": [
+          "127.0.0.1",
+          62870
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "8.8.8.8",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.673573
+      },
+      {
+        "started_at": 1793253510.673789,
+        "source": [
+          "127.0.0.1",
+          62871
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "9.9.9.9",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.67381
+      },
+      {
+        "started_at": 1793253510.693138,
+        "source": [
+          "127.0.0.1",
+          62872
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "1.1.1.1",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.6931689
+      },
+      {
+        "started_at": 1793253510.6933792,
+        "source": [
+          "127.0.0.1",
+          62873
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "8.8.8.8",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.693405
+      },
+      {
+        "started_at": 1793253510.6936698,
+        "source": [
+          "127.0.0.1",
+          62874
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "9.9.9.9",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.693704
+      },
+      {
+        "started_at": 1793253510.696116,
+        "source": [
+          "127.0.0.1",
+          62875
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "9.9.9.9",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.696151
+      },
+      {
+        "started_at": 1793253510.6964202,
+        "source": [
+          "127.0.0.1",
+          62876
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "1.1.1.1",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.696456
+      },
+      {
+        "started_at": 1793253510.6967459,
+        "source": [
+          "127.0.0.1",
+          62877
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "8.8.8.8",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.6967602
+      },
+      {
+        "started_at": 1793253510.710888,
+        "source": [
+          "127.0.0.1",
+          62878
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "1.1.1.1",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.7109299
+      },
+      {
+        "started_at": 1793253510.711187,
+        "source": [
+          "127.0.0.1",
+          62879
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "8.8.8.8",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.7112288
+      },
+      {
+        "started_at": 1793253510.711453,
+        "source": [
+          "127.0.0.1",
+          62880
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "9.9.9.9",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.711491
+      },
+      {
+        "started_at": 1793253510.7165608,
+        "source": [
+          "127.0.0.1",
+          62881
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "9.9.9.9",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.7165911
+      },
+      {
+        "started_at": 1793253510.71681,
+        "source": [
+          "127.0.0.1",
+          62882
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "1.1.1.1",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.7168288
+      },
+      {
+        "started_at": 1793253510.717032,
+        "source": [
+          "127.0.0.1",
+          62883
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "8.8.8.8",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.7170508
+      },
+      {
+        "started_at": 1793253510.7271419,
+        "source": [
+          "127.0.0.1",
+          62884
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "9.9.9.9",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.7271628
+      },
+      {
+        "started_at": 1793253510.727343,
+        "source": [
+          "127.0.0.1",
+          62885
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "1.1.1.1",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.727364
+      },
+      {
+        "started_at": 1793253510.727537,
+        "source": [
+          "127.0.0.1",
+          62886
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "8.8.8.8",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.727565
+      },
+      {
+        "started_at": 1793253510.731206,
+        "source": [
+          "127.0.0.1",
+          62887
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "1.1.1.1",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.731232
+      },
+      {
+        "started_at": 1793253510.731423,
+        "source": [
+          "127.0.0.1",
+          62888
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "8.8.8.8",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.731445
+      },
+      {
+        "started_at": 1793253510.731615,
+        "source": [
+          "127.0.0.1",
+          62889
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "9.9.9.9",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.7316322
+      },
+      {
+        "started_at": 1793253510.751456,
+        "source": [
+          "127.0.0.1",
+          62890
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "1.1.1.1",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.751495
+      },
+      {
+        "started_at": 1793253510.751733,
+        "source": [
+          "127.0.0.1",
+          62891
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "8.8.8.8",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.7517571
+      },
+      {
+        "started_at": 1793253510.751947,
+        "source": [
+          "127.0.0.1",
+          62892
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "9.9.9.9",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.751965
+      },
+      {
+        "started_at": 1793253510.927029,
+        "source": [
+          "127.0.0.1",
+          62893
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "1.1.1.1",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.9270651
+      },
+      {
+        "started_at": 1793253510.927265,
+        "source": [
+          "127.0.0.1",
+          62894
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "8.8.8.8",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.927289
+      },
+      {
+        "started_at": 1793253510.927438,
+        "source": [
+          "127.0.0.1",
+          62895
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "9.9.9.9",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.927459
+      },
+      {
+        "started_at": 1793253510.955434,
+        "source": [
+          "127.0.0.1",
+          62896
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "9.9.9.9",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.955481
+      },
+      {
+        "started_at": 1793253510.9558132,
+        "source": [
+          "127.0.0.1",
+          62897
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "1.1.1.1",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.9558349
+      },
+      {
+        "started_at": 1793253510.956102,
+        "source": [
+          "127.0.0.1",
+          62898
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "8.8.8.8",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.9561229
+      },
+      {
+        "started_at": 1793253510.960026,
+        "source": [
+          "127.0.0.1",
+          62899
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "1.1.1.1",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.960054
+      },
+      {
+        "started_at": 1793253510.9602728,
+        "source": [
+          "127.0.0.1",
+          62900
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "8.8.8.8",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.960325
+      },
+      {
+        "started_at": 1793253510.9605918,
+        "source": [
+          "127.0.0.1",
+          62901
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "9.9.9.9",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.960619
+      },
+      {
+        "started_at": 1793253510.980383,
+        "source": [
+          "127.0.0.1",
+          62902
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "9.9.9.9",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.980421
+      },
+      {
+        "started_at": 1793253510.9806862,
+        "source": [
+          "127.0.0.1",
+          62903
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "1.1.1.1",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.980714
+      },
+      {
+        "started_at": 1793253510.980921,
+        "source": [
+          "127.0.0.1",
+          62904
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "8.8.8.8",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.980944
+      },
+      {
+        "started_at": 1793253510.984778,
+        "source": [
+          "127.0.0.1",
+          62905
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "1.1.1.1",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.984801
+      },
+      {
+        "started_at": 1793253510.985033,
+        "source": [
+          "127.0.0.1",
+          62906
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "8.8.8.8",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.985062
+      },
+      {
+        "started_at": 1793253510.985266,
+        "source": [
+          "127.0.0.1",
+          62907
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "9.9.9.9",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253510.985279
+      },
+      {
+        "started_at": 1793253511.030359,
+        "source": [
+          "127.0.0.1",
+          62908
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "1.1.1.1",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253511.0303848
+      },
+      {
+        "started_at": 1793253511.030664,
+        "source": [
+          "127.0.0.1",
+          62909
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "8.8.8.8",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253511.030682
+      },
+      {
+        "started_at": 1793253511.0307689,
+        "source": [
+          "127.0.0.1",
+          62910
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "8.8.8.8",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253511.0307992
+      },
+      {
+        "started_at": 1793253511.0308638,
+        "source": [
+          "127.0.0.1",
+          62911
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "9.9.9.9",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253511.030883
+      },
+      {
+        "started_at": 1793253511.030933,
+        "source": [
+          "127.0.0.1",
+          62912
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "9.9.9.9",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253511.030956
+      },
+      {
+        "started_at": 1793253511.0503402,
+        "source": [
+          "127.0.0.1",
+          62913
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "1.1.1.1",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253511.05038
+      },
+      {
+        "started_at": 1793253511.051693,
+        "source": [
+          "127.0.0.1",
+          62914
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "8.8.8.8",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253511.051714
+      },
+      {
+        "started_at": 1793253511.051882,
+        "source": [
+          "127.0.0.1",
+          62915
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "9.9.9.9",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253511.051898
+      },
+      {
+        "started_at": 1793253511.066753,
+        "source": [
+          "127.0.0.1",
+          62916
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "9.9.9.9",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253511.066798
+      },
+      {
+        "started_at": 1793253511.066977,
+        "source": [
+          "127.0.0.1",
+          62917
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "1.1.1.1",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253511.066997
+      },
+      {
+        "started_at": 1793253511.067158,
+        "source": [
+          "127.0.0.1",
+          62918
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "8.8.8.8",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253511.067174
+      },
+      {
+        "started_at": 1793253511.0726159,
+        "source": [
+          "127.0.0.1",
+          62919
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "1.1.1.1",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253511.072638
+      },
+      {
+        "started_at": 1793253511.114936,
+        "source": [
+          "127.0.0.1",
+          62920
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "8.8.8.8",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253511.1149719
+      },
+      {
+        "started_at": 1793253511.115211,
+        "source": [
+          "127.0.0.1",
+          62921
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "9.9.9.9",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253511.115241
+      },
+      {
+        "started_at": 1793253511.134443,
+        "source": [
+          "127.0.0.1",
+          62922
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "1.1.1.1",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253511.1344829
+      },
+      {
+        "started_at": 1793253511.151861,
+        "source": [
+          "127.0.0.1",
+          62923
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "9.9.9.9",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253511.151906
+      },
+      {
+        "started_at": 1793253511.152211,
+        "source": [
+          "127.0.0.1",
+          62924
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "1.1.1.1",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253511.152237
+      },
+      {
+        "started_at": 1793253511.1524749,
+        "source": [
+          "127.0.0.1",
+          62925
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "8.8.8.8",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253511.15249
+      },
+      {
+        "started_at": 1793253511.172965,
+        "source": [
+          "127.0.0.1",
+          62926
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "8.8.8.8",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253511.1729972
+      },
+      {
+        "started_at": 1793253511.173283,
+        "source": [
+          "127.0.0.1",
+          62927
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "9.9.9.9",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253511.1732988
+      },
+      {
+        "started_at": 1793253511.193392,
+        "source": [
+          "127.0.0.1",
+          62928
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "1.1.1.1",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253511.193418
+      },
+      {
+        "started_at": 1793253511.215772,
+        "source": [
+          "127.0.0.1",
+          62929
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "9.9.9.9",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253511.215795
+      },
+      {
+        "started_at": 1793253511.2158709,
+        "source": [
+          "127.0.0.1",
+          62930
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "9.9.9.9",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253511.2159
+      },
+      {
+        "started_at": 1793253511.216021,
+        "source": [
+          "127.0.0.1",
+          62931
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "1.1.1.1",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253511.2160451
+      },
+      {
+        "started_at": 1793253511.216149,
+        "source": [
+          "127.0.0.1",
+          62932
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "1.1.1.1",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253511.216162
+      },
+      {
+        "started_at": 1793253511.2162828,
+        "source": [
+          "127.0.0.1",
+          62933
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "8.8.8.8",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253511.216301
+      },
+      {
+        "started_at": 1793253511.216379,
+        "source": [
+          "127.0.0.1",
+          62934
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "8.8.8.8",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253511.216396
+      },
+      {
+        "started_at": 1793253511.249704,
+        "source": [
+          "127.0.0.1",
+          62935
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "9.9.9.9",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253511.249718
+      },
+      {
+        "started_at": 1793253511.2499259,
+        "source": [
+          "127.0.0.1",
+          62936
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "1.1.1.1",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253511.249942
+      },
+      {
+        "started_at": 1793253511.250145,
+        "source": [
+          "127.0.0.1",
+          62937
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "8.8.8.8",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253511.250164
+      },
+      {
+        "started_at": 1793253511.271029,
+        "source": [
+          "127.0.0.1",
+          62938
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "9.9.9.9",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253511.271049
+      },
+      {
+        "started_at": 1793253511.271368,
+        "source": [
+          "127.0.0.1",
+          62939
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "1.1.1.1",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253511.2713852
+      },
+      {
+        "started_at": 1793253511.271668,
+        "source": [
+          "127.0.0.1",
+          62940
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "8.8.8.8",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253511.2716858
+      },
+      {
+        "started_at": 1793253511.808436,
+        "source": [
+          "127.0.0.1",
+          62941
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "9.9.9.9",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253511.8085408
+      },
+      {
+        "started_at": 1793253511.809324,
+        "source": [
+          "127.0.0.1",
+          62942
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "1.1.1.1",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253511.809379
+      },
+      {
+        "started_at": 1793253511.809998,
+        "source": [
+          "127.0.0.1",
+          62943
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "8.8.8.8",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253511.810048
+      },
+      {
+        "started_at": 1793253511.892106,
+        "source": [
+          "127.0.0.1",
+          62944
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "8.8.8.8",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253511.8922439
+      },
+      {
+        "started_at": 1793253511.8931708,
+        "source": [
+          "127.0.0.1",
+          62945
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "9.9.9.9",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253511.893285
+      },
+      {
+        "started_at": 1793253511.922612,
+        "source": [
+          "127.0.0.1",
+          62946
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "1.1.1.1",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253511.922744
+      },
+      {
+        "started_at": 1793253511.9231539,
+        "source": [
+          "127.0.0.1",
+          62947
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "1.1.1.1",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253511.9232152
+      },
+      {
+        "started_at": 1793253511.923721,
+        "source": [
+          "127.0.0.1",
+          62948
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "8.8.8.8",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253511.923769
+      },
+      {
+        "started_at": 1793253511.9240088,
+        "source": [
+          "127.0.0.1",
+          62949
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "1.1.1.1",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253511.924257
+      },
+      {
+        "started_at": 1793253511.924225,
+        "source": [
+          "127.0.0.1",
+          62950
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "9.9.9.9",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253511.9243321
+      },
+      {
+        "started_at": 1793253511.9247,
+        "source": [
+          "127.0.0.1",
+          62951
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "8.8.8.8",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253511.924833
+      },
+      {
+        "started_at": 1793253511.925442,
+        "source": [
+          "127.0.0.1",
+          62952
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "9.9.9.9",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253511.925515
+      },
+      {
+        "started_at": 1793253512.038155,
+        "source": [
+          "127.0.0.1",
+          62953
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "1.1.1.1",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253512.03835
+      },
+      {
+        "started_at": 1793253512.0400372,
+        "source": [
+          "127.0.0.1",
+          62954
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "8.8.8.8",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253512.04022
+      },
+      {
+        "started_at": 1793253512.041492,
+        "source": [
+          "127.0.0.1",
+          62955
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "9.9.9.9",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253512.041645
+      },
+      {
+        "started_at": 1793253512.0620952,
+        "source": [
+          "127.0.0.1",
+          62956
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "9.9.9.9",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253512.062199
+      },
+      {
+        "started_at": 1793253512.0634801,
+        "source": [
+          "127.0.0.1",
+          62957
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "1.1.1.1",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253512.0636039
+      },
+      {
+        "started_at": 1793253512.064676,
+        "source": [
+          "127.0.0.1",
+          62958
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "8.8.8.8",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253512.0647418
+      },
+      {
+        "started_at": 1793253512.173259,
+        "source": [
+          "127.0.0.1",
+          62959
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "1.1.1.1",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253512.173433
+      },
+      {
+        "started_at": 1793253512.1747599,
+        "source": [
+          "127.0.0.1",
+          62960
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "8.8.8.8",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253512.174859
+      },
+      {
+        "started_at": 1793253512.1760871,
+        "source": [
+          "127.0.0.1",
+          62961
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "9.9.9.9",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253512.1762218
+      },
+      {
+        "started_at": 1793253512.209397,
+        "source": [
+          "127.0.0.1",
+          62962
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "1.1.1.1",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253512.209561
+      },
+      {
+        "started_at": 1793253512.210996,
+        "source": [
+          "127.0.0.1",
+          62963
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "8.8.8.8",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253512.211087
+      },
+      {
+        "started_at": 1793253512.2122612,
+        "source": [
+          "127.0.0.1",
+          62964
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "9.9.9.9",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253512.212328
+      },
+      {
+        "started_at": 1793253512.300965,
+        "source": [
+          "127.0.0.1",
+          62965
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "9.9.9.9",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253512.3017
+      },
+      {
+        "started_at": 1793253512.3014421,
+        "source": [
+          "127.0.0.1",
+          62966
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "9.9.9.9",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253512.301557
+      },
+      {
+        "started_at": 1793253512.302637,
+        "source": [
+          "127.0.0.1",
+          62967
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "1.1.1.1",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253512.3026948
+      },
+      {
+        "started_at": 1793253512.3030348,
+        "source": [
+          "127.0.0.1",
+          62968
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "1.1.1.1",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253512.303075
+      },
+      {
+        "started_at": 1793253512.303381,
+        "source": [
+          "127.0.0.1",
+          62969
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "8.8.8.8",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253512.303465
+      },
+      {
+        "started_at": 1793253512.303623,
+        "source": [
+          "127.0.0.1",
+          62970
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "8.8.8.8",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253512.3036768
+      },
+      {
+        "started_at": 1793253512.334531,
+        "source": [
+          "127.0.0.1",
+          62971
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "9.9.9.9",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253512.334636
+      },
+      {
+        "started_at": 1793253512.335265,
+        "source": [
+          "127.0.0.1",
+          62972
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "9.9.9.9",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253512.335337
+      },
+      {
+        "started_at": 1793253512.335768,
+        "source": [
+          "127.0.0.1",
+          62973
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "1.1.1.1",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253512.335828
+      },
+      {
+        "started_at": 1793253512.3361018,
+        "source": [
+          "127.0.0.1",
+          62974
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "1.1.1.1",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253512.3361669
+      },
+      {
+        "started_at": 1793253512.33638,
+        "source": [
+          "127.0.0.1",
+          62975
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "8.8.8.8",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253512.336409
+      },
+      {
+        "started_at": 1793253512.336603,
+        "source": [
+          "127.0.0.1",
+          62976
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "8.8.8.8",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253512.336694
+      },
+      {
+        "started_at": 1793253512.33906,
+        "source": [
+          "127.0.0.1",
+          62977
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "1.1.1.1",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253512.339115
+      },
+      {
+        "started_at": 1793253512.339558,
+        "source": [
+          "127.0.0.1",
+          62978
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "8.8.8.8",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253512.339607
+      },
+      {
+        "started_at": 1793253512.339958,
+        "source": [
+          "127.0.0.1",
+          62979
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "9.9.9.9",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253512.339995
+      },
+      {
+        "started_at": 1793253512.362161,
+        "source": [
+          "127.0.0.1",
+          62980
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "1.1.1.1",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253512.362227
+      },
+      {
+        "started_at": 1793253512.362554,
+        "source": [
+          "127.0.0.1",
+          62981
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "8.8.8.8",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253512.362591
+      },
+      {
+        "started_at": 1793253512.3629482,
+        "source": [
+          "127.0.0.1",
+          62982
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "9.9.9.9",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253512.363004
+      },
+      {
+        "started_at": 1793253512.398987,
+        "source": [
+          "127.0.0.1",
+          62983
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "9.9.9.9",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253512.399022
+      },
+      {
+        "started_at": 1793253512.399311,
+        "source": [
+          "127.0.0.1",
+          62984
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "1.1.1.1",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253512.39934
+      },
+      {
+        "started_at": 1793253512.3996642,
+        "source": [
+          "127.0.0.1",
+          62985
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "8.8.8.8",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253512.3996959
+      },
+      {
+        "started_at": 1793253512.467814,
+        "source": [
+          "127.0.0.1",
+          62986
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "9.9.9.9",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253512.467909
+      },
+      {
+        "started_at": 1793253512.4684532,
+        "source": [
+          "127.0.0.1",
+          62987
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "1.1.1.1",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253512.468529
+      },
+      {
+        "started_at": 1793253512.468956,
+        "source": [
+          "127.0.0.1",
+          62988
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "8.8.8.8",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253512.469003
+      },
+      {
+        "started_at": 1793253512.52081,
+        "source": [
+          "127.0.0.1",
+          62989
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "9.9.9.9",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253512.5209222
+      },
+      {
+        "started_at": 1793253512.522389,
+        "source": [
+          "127.0.0.1",
+          62990
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "1.1.1.1",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253512.522539
+      },
+      {
+        "started_at": 1793253512.5239198,
+        "source": [
+          "127.0.0.1",
+          62991
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "8.8.8.8",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253512.523985
+      },
+      {
+        "started_at": 1793253512.6253388,
+        "source": [
+          "127.0.0.1",
+          62992
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "9.9.9.9",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253512.625439
+      },
+      {
+        "started_at": 1793253512.6258922,
+        "source": [
+          "127.0.0.1",
+          62993
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "1.1.1.1",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253512.6259358
+      },
+      {
+        "started_at": 1793253512.626367,
+        "source": [
+          "127.0.0.1",
+          62994
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "8.8.8.8",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253512.626414
+      },
+      {
+        "started_at": 1793253512.741677,
+        "source": [
+          "127.0.0.1",
+          62995
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "1.1.1.1",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253512.741741
+      },
+      {
+        "started_at": 1793253512.7420359,
+        "source": [
+          "127.0.0.1",
+          62996
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "8.8.8.8",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253512.7420642
+      },
+      {
+        "started_at": 1793253512.742379,
+        "source": [
+          "127.0.0.1",
+          62997
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "9.9.9.9",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253512.74242
+      },
+      {
+        "started_at": 1793253512.8907351,
+        "source": [
+          "127.0.0.1",
+          62998
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "9.9.9.9",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253512.890798
+      },
+      {
+        "started_at": 1793253512.891104,
+        "source": [
+          "127.0.0.1",
+          62999
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "1.1.1.1",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253512.891125
+      },
+      {
+        "started_at": 1793253512.891357,
+        "source": [
+          "127.0.0.1",
+          63000
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "8.8.8.8",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253512.891374
+      },
+      {
+        "started_at": 1793253512.895256,
+        "source": [
+          "127.0.0.1",
+          63001
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "1.1.1.1",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253512.8952699
+      },
+      {
+        "started_at": 1793253512.895555,
+        "source": [
+          "127.0.0.1",
+          63002
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "8.8.8.8",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253512.895565
+      },
+      {
+        "started_at": 1793253512.895829,
+        "source": [
+          "127.0.0.1",
+          63003
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "9.9.9.9",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253512.895843
+      },
+      {
+        "started_at": 1793253513.010774,
+        "source": [
+          "127.0.0.1",
+          63004
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "1.1.1.1",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253513.0108612
+      },
+      {
+        "started_at": 1793253513.010895,
+        "source": [
+          "127.0.0.1",
+          63005
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "1.1.1.1",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253513.0109088
+      },
+      {
+        "started_at": 1793253513.011362,
+        "source": [
+          "127.0.0.1",
+          63006
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "8.8.8.8",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253513.0113852
+      },
+      {
+        "started_at": 1793253513.01146,
+        "source": [
+          "127.0.0.1",
+          63007
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "8.8.8.8",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253513.011473
+      },
+      {
+        "started_at": 1793253513.011853,
+        "source": [
+          "127.0.0.1",
+          63008
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "9.9.9.9",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253513.011862
+      },
+      {
+        "started_at": 1793253513.0119522,
+        "source": [
+          "127.0.0.1",
+          63009
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 0,
+        "relay_to_client": 0,
+        "host": "9.9.9.9",
+        "port": 443,
+        "status": "target-not-public-relay",
+        "ended_at": 1793253513.011961
+      },
+      {
+        "started_at": 1793253513.0555048,
+        "source": [
+          "127.0.0.1",
+          63010
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 827,
+        "relay_to_client": 4465,
+        "host": "aps1-1.relay.n0.iroh.link",
+        "port": 443,
+        "upstream": [
+          "5.223.65.62",
+          443
+        ],
+        "connected_at": 1793253513.14833,
+        "client_to_relay_first_record_hex": "16030100f7",
+        "client_to_relay_sha256": "73fc1146ac0850f6d89a000dead87ad4a63b07ea073c2c26b678da4c7fc08690",
+        "relay_to_client_first_record_hex": "160303007a",
+        "relay_to_client_sha256": "16aed082f1e9d8a64242927856fe099a51a867019603f705866fc324aa299243",
+        "status": "closed",
+        "ended_at": 1793253525.2820852
+      },
+      {
+        "started_at": 1793253513.06286,
+        "source": [
+          "127.0.0.1",
+          63012
+        ],
+        "method": "CONNECT",
+        "client_to_relay": 827,
+        "relay_to_client": 4464,
+        "host": "aps1-1.relay.n0.iroh.link",
+        "port": 443,
+        "upstream": [
+          "5.223.65.62",
+          443
+        ],
+        "connected_at": 1793253513.151647,
+        "client_to_relay_first_record_hex": "16030100f7",
+        "client_to_relay_sha256": "6884c86eec5d076929b562eb86da08f65f5f35c91e8d7cafe7062e1771d3dcf2",
+        "relay_to_client_first_record_hex": "160303007a",
+        "relay_to_client_sha256": "a2eee9e7a0ba1e84467937bcbcdc3180d5a245fd3236c68d98f67ebfbb403894",
+        "status": "closed",
+        "ended_at": 1793253525.5332391
+      }
+    ],
+    "stopped": true
+  },
+  "finished_at": 1793253526.11106
+}

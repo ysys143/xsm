@@ -1,0 +1,17 @@
+{
+  "decision_id": "528d091a170d3824278b04bb8d0300adc667e6d5463307b1a545ab814899450f",
+  "question": "P07 실제 화면 표본 검사입니다. 이 질문이 한 번만 표시되고 마지막 종료 표식까지 보이면 ‘질문 1개·전체 표시 확인’을 선택해 주세요. 잘리거나 중복되면 두 번째 항목을 선택해 주세요. 답은 진단 기록에 한 번만 저장되며 연결·실행 권한은 바뀌지 않습니다. 종료 표식: P07-UI-END.",
+  "args": {
+    "question": "P07 실제 화면 표본 검사입니다. 이 질문이 한 번만 표시되고 마지막 종료 표식까지 보이면 ‘질문 1개·전체 표시 확인’을 선택해 주세요. 잘리거나 중복되면 두 번째 항목을 선택해 주세요. 답은 진단 기록에 한 번만 저장되며 연결·실행 권한은 바뀌지 않습니다. 종료 표식: P07-UI-END.",
+    "options": [
+      "질문 1개·전체 표시 확인",
+      "잘림 또는 중복 있음"
+    ],
+    "summary": "P07 실제 UI 표본",
+    "decision_key": "p07-native-ui-1793201855"
+  },
+  "status": "prepared-not-displayed",
+  "generation": "556f1771d52b",
+  "permission_effect": "diagnostic-channel-record-only",
+  "prior_question": "earlier UI intent had no answer within its lifetime; not reused"
+}

@@ -1,0 +1,1294 @@
+{
+  "behavioral_checks_pass": true,
+  "overall_conditions_status": "partial-profile-config-drift",
+  "checks": {
+    "frozen_source_unchanged": true,
+    "profile_config_unchanged": false,
+    "harness_completed_without_error": true,
+    "actual_actor_A": true,
+    "actual_actor_B": true,
+    "two_distinct_actual_actor_ids": true,
+    "native_one_turn_memory-A-first": true,
+    "default_permission_memory-A-first": true,
+    "native_one_turn_memory-B-first": true,
+    "default_permission_memory-B-first": true,
+    "native_one_turn_memory-A-follow": true,
+    "default_permission_memory-A-follow": true,
+    "native_one_turn_memory-B-follow": true,
+    "default_permission_memory-B-follow": true,
+    "native_one_turn_memory-A-after-retire": true,
+    "default_permission_memory-A-after-retire": true,
+    "native_one_turn_capacity-0": true,
+    "default_permission_capacity-0": true,
+    "native_one_turn_capacity-1": true,
+    "default_permission_capacity-1": true,
+    "native_one_turn_capacity-2": true,
+    "default_permission_capacity-2": true,
+    "native_one_turn_capacity-3": true,
+    "default_permission_capacity-3": true,
+    "native_one_turn_capacity-new-sender-5": true,
+    "default_permission_capacity-new-sender-5": true,
+    "sender_A_remembers_own_secret": true,
+    "sender_A_same_native_followup": true,
+    "sender_A_followup_no_token_reinjection": true,
+    "sender_B_remembers_own_secret": true,
+    "sender_B_same_native_followup": true,
+    "sender_B_followup_no_token_reinjection": true,
+    "same_work_across_actual_senders": true,
+    "sender_contexts_distinct": true,
+    "same_logical_worker": true,
+    "actual_shell_serial_admission": true,
+    "same_id_body_digest_after_serial_queue": true,
+    "same_context_execution_serialized": true,
+    "two_sender_concurrent_children": true,
+    "retired_old_context": true,
+    "fresh_native_after_retirement": true,
+    "native_reports_unknown_after_retirement": true,
+    "retirement_probe_no_tools": true,
+    "retirement_probe_no_secret_reinjection": true,
+    "four_busy_at_admission": true,
+    "new_sender_different_from_all_busy": true,
+    "fifth_queued_not_executed_or_success": true,
+    "same_id_body_sender_context_after_capacity_queue": true,
+    "fifth_eventually_real_reply": true,
+    "native_budget_at_most_12": true,
+    "no_automatic_model_retries": true
+  },
+  "all_pass": false,
+  "failed_checks": [
+    "profile_config_unchanged"
+  ],
+  "details": {
+    "actor_A": {
+      "thread_id": "01a1850e-0d38-79f1-b0d7-2becfe1fa5a9",
+      "native_parent_pid": 9651,
+      "registry_pid": 9651,
+      "native": {
+        "native_ids": [
+          "01a1850e-0d38-79f1-b0d7-2becfe1fa5a9"
+        ],
+        "turn_started": 1,
+        "turn_completed": 1,
+        "answer": "지정한 bridge를 한 번 실행했고, actor A 등록 후 `actor bridge finished` 출력과 종료 코드 0으로 완료됐습니다.",
+        "tools": [
+          {
+            "type": "command_execution",
+            "command": "/bin/zsh -lc '/opt/homebrew/opt/python@3.14/bin/python3.14 /Users/jaesolshin/Documents/GitHub/cross-session-messaging/deliverables/p13-live/owned-capacity-native-20261029-bundle/actor.py /private/tmp/owned-capacity-native-rvvg7uo2 A /private/tmp/xsm-final-receipt-frozen-i3u9pms3'",
+            "exit_code": 0
+          }
+        ],
+        "terminal_type": "turn.completed"
+      }
+    },
+    "actor_B": {
+      "thread_id": "01a1850e-0d38-7092-ad27-419acfe92d10",
+      "native_parent_pid": 9650,
+      "registry_pid": 9650,
+      "native": {
+        "native_ids": [
+          "01a1850e-0d38-7092-ad27-419acfe92d10"
+        ],
+        "turn_started": 1,
+        "turn_completed": 1,
+        "answer": "지정한 bridge를 한 번 실행했고, actor B 등록 후 `actor bridge finished`를 출력하며 종료 코드 0으로 완료됐습니다.",
+        "tools": [
+          {
+            "type": "command_execution",
+            "command": "/bin/zsh -lc '/opt/homebrew/opt/python@3.14/bin/python3.14 /Users/jaesolshin/Documents/GitHub/cross-session-messaging/deliverables/p13-live/owned-capacity-native-20261029-bundle/actor.py /private/tmp/owned-capacity-native-rvvg7uo2 B /private/tmp/xsm-final-receipt-frozen-i3u9pms3'",
+            "exit_code": 0
+          }
+        ],
+        "terminal_type": "turn.completed"
+      }
+    },
+    "requests": {
+      "memory-A-first": {
+        "native": {
+          "native_ids": [
+            "01a1850e-2b4b-7590-9fd8-643aaa25030a"
+          ],
+          "turn_started": 1,
+          "turn_completed": 1,
+          "answer": "{\"body\":\"secret-9aa5e7cbbffd4978a69475399f21fd77\",\"outcome\":\"succeeded\"}",
+          "tools": [
+            {
+              "type": "command_execution",
+              "command": "/bin/zsh -lc 'python3 -c \"import time; time.sleep(12)\"'",
+              "exit_code": 0
+            }
+          ],
+          "terminal_type": "turn.completed"
+        },
+        "sender": "01a1850e-0d38-79f1-b0d7-2becfe1fa5a9",
+        "work_context": "shared-work",
+        "context_id": "e6cd4b987fe1f07f7c21b3f7a7e54a468dc4a6a3ee83018258a7956b0621bc60",
+        "native_id": "01a1850e-2b4b-7590-9fd8-643aaa25030a",
+        "status": "reply-stored",
+        "run_attempts": 1,
+        "body": "secret-9aa5e7cbbffd4978a69475399f21fd77",
+        "outcome": "succeeded",
+        "execution": {
+          "pid": 11091,
+          "lstart": "Thu Oct 29 09:27:40 2026",
+          "argv": [
+            "/Users/jaesolshin/.nvm/versions/node/v24.19.0/bin/codex",
+            "exec",
+            "--json",
+            "-c",
+            "approval_policy=\"never\"",
+            "-c",
+            "sandbox_mode=\"workspace-write\"",
+            "-"
+          ],
+          "stdout": "/private/tmp/owned-capacity-native-rvvg7uo2/state/owned-runs/9ba32202e90446f38bfba8f72794b0a6/memory-A-first.jsonl",
+          "stderr": "/private/tmp/owned-capacity-native-rvvg7uo2/state/owned-runs/9ba32202e90446f38bfba8f72794b0a6/memory-A-first.stderr",
+          "returncode": 0
+        },
+        "events": [
+          {
+            "phase": "queued",
+            "at": 1793233660.620708
+          },
+          {
+            "phase": "reserved",
+            "at": 1793233660.6304588
+          },
+          {
+            "phase": "acknowledged",
+            "at": 1793233660.631982
+          },
+          {
+            "phase": "running",
+            "at": 1793233660.632725
+          },
+          {
+            "phase": "result-ready",
+            "at": 1793233685.803206
+          },
+          {
+            "phase": "sending",
+            "at": 1793233685.815027
+          },
+          {
+            "phase": "reply-stored",
+            "at": 1793233685.884774
+          }
+        ],
+        "reply_id": "fa9154b537e84d96",
+        "result_digest": "1c73b84a4f859f8f764f6f2adb2b598afee7e00a902a8e179d4d5f9e8a5281b6"
+      },
+      "memory-B-first": {
+        "native": {
+          "native_ids": [
+            "01a1850e-2b65-7351-ba76-2b99fd1b6b40"
+          ],
+          "turn_started": 1,
+          "turn_completed": 1,
+          "answer": "{\"body\":\"secret-6316a25c8c7147cf9669b0f3007c8a60\",\"outcome\":\"succeeded\"}",
+          "tools": [
+            {
+              "type": "command_execution",
+              "command": "/bin/zsh -lc 'python3 -c \"import time; time.sleep(12)\"'",
+              "exit_code": 0
+            }
+          ],
+          "terminal_type": "turn.completed"
+        },
+        "sender": "01a1850e-0d38-7092-ad27-419acfe92d10",
+        "work_context": "shared-work",
+        "context_id": "0e1bff12ce00d1a2fb93e2bfb00e4594f759fcb77a2673d7cd76c731e0bec229",
+        "native_id": "01a1850e-2b65-7351-ba76-2b99fd1b6b40",
+        "status": "reply-stored",
+        "run_attempts": 1,
+        "body": "secret-6316a25c8c7147cf9669b0f3007c8a60",
+        "outcome": "succeeded",
+        "execution": {
+          "pid": 11095,
+          "lstart": "Thu Oct 29 09:27:40 2026",
+          "argv": [
+            "/Users/jaesolshin/.nvm/versions/node/v24.19.0/bin/codex",
+            "exec",
+            "--json",
+            "-c",
+            "approval_policy=\"never\"",
+            "-c",
+            "sandbox_mode=\"workspace-write\"",
+            "-"
+          ],
+          "stdout": "/private/tmp/owned-capacity-native-rvvg7uo2/state/owned-runs/9ba32202e90446f38bfba8f72794b0a6/memory-B-first.jsonl",
+          "stderr": "/private/tmp/owned-capacity-native-rvvg7uo2/state/owned-runs/9ba32202e90446f38bfba8f72794b0a6/memory-B-first.stderr",
+          "returncode": 0
+        },
+        "events": [
+          {
+            "phase": "queued",
+            "at": 1793233660.639015
+          },
+          {
+            "phase": "reserved",
+            "at": 1793233660.652642
+          },
+          {
+            "phase": "acknowledged",
+            "at": 1793233660.653701
+          },
+          {
+            "phase": "running",
+            "at": 1793233660.65466
+          },
+          {
+            "phase": "result-ready",
+            "at": 1793233684.384429
+          },
+          {
+            "phase": "sending",
+            "at": 1793233684.391648
+          },
+          {
+            "phase": "reply-stored",
+            "at": 1793233684.4701388
+          }
+        ],
+        "reply_id": "792318c3ca8a47b6",
+        "result_digest": "78d2409f76b5b3ee4522f1902138a39aa3834dfdb9e73d911550c658ebbac34f"
+      },
+      "memory-A-follow": {
+        "native": {
+          "native_ids": [
+            "01a1850e-2b4b-7590-9fd8-643aaa25030a"
+          ],
+          "turn_started": 1,
+          "turn_completed": 1,
+          "answer": "{\"body\":\"secret-9aa5e7cbbffd4978a69475399f21fd77\",\"outcome\":\"succeeded\"}",
+          "tools": [],
+          "terminal_type": "turn.completed"
+        },
+        "sender": "01a1850e-0d38-79f1-b0d7-2becfe1fa5a9",
+        "work_context": "shared-work",
+        "context_id": "e6cd4b987fe1f07f7c21b3f7a7e54a468dc4a6a3ee83018258a7956b0621bc60",
+        "native_id": "01a1850e-2b4b-7590-9fd8-643aaa25030a",
+        "status": "reply-stored",
+        "run_attempts": 1,
+        "body": "secret-9aa5e7cbbffd4978a69475399f21fd77",
+        "outcome": "succeeded",
+        "execution": {
+          "pid": 13340,
+          "lstart": "Thu Oct 29 09:28:05 2026",
+          "argv": [
+            "/Users/jaesolshin/.nvm/versions/node/v24.19.0/bin/codex",
+            "exec",
+            "resume",
+            "--json",
+            "-c",
+            "approval_policy=\"never\"",
+            "-c",
+            "sandbox_mode=\"workspace-write\"",
+            "01a1850e-2b4b-7590-9fd8-643aaa25030a",
+            "-"
+          ],
+          "stdout": "/private/tmp/owned-capacity-native-rvvg7uo2/state/owned-runs/9ba32202e90446f38bfba8f72794b0a6/memory-A-follow.jsonl",
+          "stderr": "/private/tmp/owned-capacity-native-rvvg7uo2/state/owned-runs/9ba32202e90446f38bfba8f72794b0a6/memory-A-follow.stderr",
+          "returncode": 0
+        },
+        "events": [
+          {
+            "phase": "queued",
+            "at": 1793233660.918445
+          },
+          {
+            "phase": "reserved",
+            "at": 1793233685.8976152
+          },
+          {
+            "phase": "acknowledged",
+            "at": 1793233685.8997
+          },
+          {
+            "phase": "running",
+            "at": 1793233685.9008808
+          },
+          {
+            "phase": "result-ready",
+            "at": 1793233692.060294
+          },
+          {
+            "phase": "sending",
+            "at": 1793233692.068195
+          },
+          {
+            "phase": "reply-stored",
+            "at": 1793233692.1475132
+          }
+        ],
+        "reply_id": "feb2cb2fd7444f07",
+        "result_digest": "20e86b078d7fcb9d8db8e05b4a13290b5719b3d888fdaece72ff96b0d5a708c6"
+      },
+      "memory-B-follow": {
+        "native": {
+          "native_ids": [
+            "01a1850e-2b65-7351-ba76-2b99fd1b6b40"
+          ],
+          "turn_started": 1,
+          "turn_completed": 1,
+          "answer": "{\"body\":\"secret-6316a25c8c7147cf9669b0f3007c8a60\",\"outcome\":\"succeeded\"}",
+          "tools": [],
+          "terminal_type": "turn.completed"
+        },
+        "sender": "01a1850e-0d38-7092-ad27-419acfe92d10",
+        "work_context": "shared-work",
+        "context_id": "0e1bff12ce00d1a2fb93e2bfb00e4594f759fcb77a2673d7cd76c731e0bec229",
+        "native_id": "01a1850e-2b65-7351-ba76-2b99fd1b6b40",
+        "status": "reply-stored",
+        "run_attempts": 1,
+        "body": "secret-6316a25c8c7147cf9669b0f3007c8a60",
+        "outcome": "succeeded",
+        "execution": {
+          "pid": 13344,
+          "lstart": "Thu Oct 29 09:28:05 2026",
+          "argv": [
+            "/Users/jaesolshin/.nvm/versions/node/v24.19.0/bin/codex",
+            "exec",
+            "resume",
+            "--json",
+            "-c",
+            "approval_policy=\"never\"",
+            "-c",
+            "sandbox_mode=\"workspace-write\"",
+            "01a1850e-2b65-7351-ba76-2b99fd1b6b40",
+            "-"
+          ],
+          "stdout": "/private/tmp/owned-capacity-native-rvvg7uo2/state/owned-runs/9ba32202e90446f38bfba8f72794b0a6/memory-B-follow.jsonl",
+          "stderr": "/private/tmp/owned-capacity-native-rvvg7uo2/state/owned-runs/9ba32202e90446f38bfba8f72794b0a6/memory-B-follow.stderr",
+          "returncode": 0
+        },
+        "events": [
+          {
+            "phase": "queued",
+            "at": 1793233685.907186
+          },
+          {
+            "phase": "reserved",
+            "at": 1793233685.92162
+          },
+          {
+            "phase": "acknowledged",
+            "at": 1793233685.9231622
+          },
+          {
+            "phase": "running",
+            "at": 1793233685.924441
+          },
+          {
+            "phase": "result-ready",
+            "at": 1793233693.4127371
+          },
+          {
+            "phase": "sending",
+            "at": 1793233693.418955
+          },
+          {
+            "phase": "reply-stored",
+            "at": 1793233693.4862962
+          }
+        ],
+        "reply_id": "ff79faab80f54607",
+        "result_digest": "56fa0237c8183761cd5acb7b313f90af9838c0f31da59dcacf1cdfef6b24c270"
+      },
+      "memory-A-after-retire": {
+        "native": {
+          "native_ids": [
+            "01a1850e-abb9-7b92-ba5a-3e024102761d"
+          ],
+          "turn_started": 1,
+          "turn_completed": 1,
+          "answer": "{\"body\":\"UNKNOWN\",\"outcome\":\"succeeded\"}",
+          "tools": [],
+          "terminal_type": "turn.completed"
+        },
+        "sender": "01a1850e-0d38-79f1-b0d7-2becfe1fa5a9",
+        "work_context": "shared-work",
+        "context_id": "275a109731e6d975354420edbd4ed64138862ca8a72ca482ab1542af3dec3f10",
+        "native_id": "01a1850e-abb9-7b92-ba5a-3e024102761d",
+        "status": "reply-stored",
+        "run_attempts": 1,
+        "body": "UNKNOWN",
+        "outcome": "succeeded",
+        "execution": {
+          "pid": 14682,
+          "lstart": "Thu Oct 29 09:28:13 2026",
+          "argv": [
+            "/Users/jaesolshin/.nvm/versions/node/v24.19.0/bin/codex",
+            "exec",
+            "--json",
+            "-c",
+            "approval_policy=\"never\"",
+            "-c",
+            "sandbox_mode=\"workspace-write\"",
+            "-"
+          ],
+          "stdout": "/private/tmp/owned-capacity-native-rvvg7uo2/state/owned-runs/9ba32202e90446f38bfba8f72794b0a6/memory-A-after-retire.jsonl",
+          "stderr": "/private/tmp/owned-capacity-native-rvvg7uo2/state/owned-runs/9ba32202e90446f38bfba8f72794b0a6/memory-A-after-retire.stderr",
+          "returncode": 0
+        },
+        "events": [
+          {
+            "phase": "queued",
+            "at": 1793233693.4902961
+          },
+          {
+            "phase": "reserved",
+            "at": 1793233693.4988532
+          },
+          {
+            "phase": "acknowledged",
+            "at": 1793233693.500494
+          },
+          {
+            "phase": "running",
+            "at": 1793233693.5020192
+          },
+          {
+            "phase": "result-ready",
+            "at": 1793233699.604393
+          },
+          {
+            "phase": "sending",
+            "at": 1793233699.615007
+          },
+          {
+            "phase": "reply-stored",
+            "at": 1793233699.6827672
+          }
+        ],
+        "reply_id": "e1faedc2efce474f",
+        "result_digest": "0a3f010822d23e80d7faf4f6bd387f5835b379015c1f835b8a9ab82c70460613"
+      },
+      "capacity-0": {
+        "native": {
+          "native_ids": [
+            "01a1850e-c434-7352-ab4f-809e95bb5235"
+          ],
+          "turn_started": 1,
+          "turn_completed": 1,
+          "answer": "{\"body\":\"capacity-done\",\"outcome\":\"succeeded\"}",
+          "tools": [
+            {
+              "type": "command_execution",
+              "command": "/bin/zsh -lc 'python3 -c \"import time; time.sleep(20)\"'",
+              "exit_code": 0
+            }
+          ],
+          "terminal_type": "turn.completed"
+        },
+        "sender": "01a1850e-0d38-79f1-b0d7-2becfe1fa5a9",
+        "work_context": "capacity-work-0",
+        "context_id": "827da94bdb3526a207306e1653095a42aa1ce7583fd3629539bd2b22aa17e81a",
+        "native_id": "01a1850e-c434-7352-ab4f-809e95bb5235",
+        "status": "reply-stored",
+        "run_attempts": 1,
+        "body": "capacity-done",
+        "outcome": "succeeded",
+        "execution": {
+          "pid": 15465,
+          "lstart": "Thu Oct 29 09:28:19 2026",
+          "argv": [
+            "/Users/jaesolshin/.nvm/versions/node/v24.19.0/bin/codex",
+            "exec",
+            "--json",
+            "-c",
+            "approval_policy=\"never\"",
+            "-c",
+            "sandbox_mode=\"workspace-write\"",
+            "-"
+          ],
+          "stdout": "/private/tmp/owned-capacity-native-rvvg7uo2/state/owned-runs/9ba32202e90446f38bfba8f72794b0a6/capacity-0.jsonl",
+          "stderr": "/private/tmp/owned-capacity-native-rvvg7uo2/state/owned-runs/9ba32202e90446f38bfba8f72794b0a6/capacity-0.stderr",
+          "returncode": 0
+        },
+        "events": [
+          {
+            "phase": "queued",
+            "at": 1793233699.686084
+          },
+          {
+            "phase": "reserved",
+            "at": 1793233699.708933
+          },
+          {
+            "phase": "acknowledged",
+            "at": 1793233699.732741
+          },
+          {
+            "phase": "running",
+            "at": 1793233699.741069
+          },
+          {
+            "phase": "result-ready",
+            "at": 1793233732.895345
+          },
+          {
+            "phase": "sending",
+            "at": 1793233732.904491
+          },
+          {
+            "phase": "reply-stored",
+            "at": 1793233733.004915
+          }
+        ],
+        "reply_id": "a6cfcb2716ee46e1",
+        "result_digest": "f241bf93901cfb806e50422da09cc625c256f5893fc96d32c10c6405684bdcd8"
+      },
+      "capacity-1": {
+        "native": {
+          "native_ids": [
+            "01a1850e-c43c-7281-8c90-5a3bf0b34bff"
+          ],
+          "turn_started": 1,
+          "turn_completed": 1,
+          "answer": "{\"body\":\"capacity-done\",\"outcome\":\"succeeded\"}",
+          "tools": [
+            {
+              "type": "command_execution",
+              "command": "/bin/zsh -lc 'python3 -c \"import time; time.sleep(20)\"'",
+              "exit_code": 0
+            }
+          ],
+          "terminal_type": "turn.completed"
+        },
+        "sender": "01a1850e-0d38-79f1-b0d7-2becfe1fa5a9",
+        "work_context": "capacity-work-1",
+        "context_id": "56da5a1ffef0a3397b3893892f9bd92c59a1548f1cb8f8cb3c454fa96f486dd2",
+        "native_id": "01a1850e-c43c-7281-8c90-5a3bf0b34bff",
+        "status": "reply-stored",
+        "run_attempts": 1,
+        "body": "capacity-done",
+        "outcome": "succeeded",
+        "execution": {
+          "pid": 15467,
+          "lstart": "Thu Oct 29 09:28:19 2026",
+          "argv": [
+            "/Users/jaesolshin/.nvm/versions/node/v24.19.0/bin/codex",
+            "exec",
+            "--json",
+            "-c",
+            "approval_policy=\"never\"",
+            "-c",
+            "sandbox_mode=\"workspace-write\"",
+            "-"
+          ],
+          "stdout": "/private/tmp/owned-capacity-native-rvvg7uo2/state/owned-runs/9ba32202e90446f38bfba8f72794b0a6/capacity-1.jsonl",
+          "stderr": "/private/tmp/owned-capacity-native-rvvg7uo2/state/owned-runs/9ba32202e90446f38bfba8f72794b0a6/capacity-1.stderr",
+          "returncode": 0
+        },
+        "events": [
+          {
+            "phase": "queued",
+            "at": 1793233699.6882508
+          },
+          {
+            "phase": "reserved",
+            "at": 1793233699.715926
+          },
+          {
+            "phase": "acknowledged",
+            "at": 1793233699.734561
+          },
+          {
+            "phase": "running",
+            "at": 1793233699.743213
+          },
+          {
+            "phase": "result-ready",
+            "at": 1793233730.816702
+          },
+          {
+            "phase": "sending",
+            "at": 1793233730.824749
+          },
+          {
+            "phase": "reply-stored",
+            "at": 1793233730.92265
+          }
+        ],
+        "reply_id": "f312c952bd66476a",
+        "result_digest": "0dd64c3d8a7696234e8b8f086ab95a94df8fd95d71a926279e67d5d2ca194b47"
+      },
+      "capacity-2": {
+        "native": {
+          "native_ids": [
+            "01a1850e-c468-7842-8e4b-7b8f98e4de6f"
+          ],
+          "turn_started": 1,
+          "turn_completed": 1,
+          "answer": "{\"body\":\"capacity-done\",\"outcome\":\"succeeded\"}",
+          "tools": [
+            {
+              "type": "command_execution",
+              "command": "/bin/zsh -lc 'python3 -c \"import time; time.sleep(20)\"'",
+              "exit_code": 0
+            }
+          ],
+          "terminal_type": "turn.completed"
+        },
+        "sender": "01a1850e-0d38-79f1-b0d7-2becfe1fa5a9",
+        "work_context": "capacity-work-2",
+        "context_id": "433a036fdbd27eb141ed2a0b20a8396224269f370de1256b5fe0e40285115ccd",
+        "native_id": "01a1850e-c468-7842-8e4b-7b8f98e4de6f",
+        "status": "reply-stored",
+        "run_attempts": 1,
+        "body": "capacity-done",
+        "outcome": "succeeded",
+        "execution": {
+          "pid": 15469,
+          "lstart": "Thu Oct 29 09:28:19 2026",
+          "argv": [
+            "/Users/jaesolshin/.nvm/versions/node/v24.19.0/bin/codex",
+            "exec",
+            "--json",
+            "-c",
+            "approval_policy=\"never\"",
+            "-c",
+            "sandbox_mode=\"workspace-write\"",
+            "-"
+          ],
+          "stdout": "/private/tmp/owned-capacity-native-rvvg7uo2/state/owned-runs/9ba32202e90446f38bfba8f72794b0a6/capacity-2.jsonl",
+          "stderr": "/private/tmp/owned-capacity-native-rvvg7uo2/state/owned-runs/9ba32202e90446f38bfba8f72794b0a6/capacity-2.stderr",
+          "returncode": 0
+        },
+        "events": [
+          {
+            "phase": "queued",
+            "at": 1793233699.68985
+          },
+          {
+            "phase": "reserved",
+            "at": 1793233699.723168
+          },
+          {
+            "phase": "acknowledged",
+            "at": 1793233699.7367501
+          },
+          {
+            "phase": "running",
+            "at": 1793233699.7453492
+          },
+          {
+            "phase": "result-ready",
+            "at": 1793233732.637328
+          },
+          {
+            "phase": "sending",
+            "at": 1793233732.644913
+          },
+          {
+            "phase": "reply-stored",
+            "at": 1793233732.7285361
+          }
+        ],
+        "reply_id": "59122e72ea49438b",
+        "result_digest": "9d88b9b5ef2b4c3aa655da5150a2962818d4c701dbcdd337bf10ed8ba15ed835"
+      },
+      "capacity-3": {
+        "native": {
+          "native_ids": [
+            "01a1850e-c463-7f11-9564-c3e1d9432a64"
+          ],
+          "turn_started": 1,
+          "turn_completed": 1,
+          "answer": "{\"body\":\"capacity-done\",\"outcome\":\"succeeded\"}",
+          "tools": [
+            {
+              "type": "command_execution",
+              "command": "/bin/zsh -lc 'python3 -c \"import time; time.sleep(20)\"'",
+              "exit_code": 0
+            }
+          ],
+          "terminal_type": "turn.completed"
+        },
+        "sender": "01a1850e-0d38-79f1-b0d7-2becfe1fa5a9",
+        "work_context": "capacity-work-3",
+        "context_id": "cb9ea1e3d996d0ff0d338ca913aac79b739251e36cd6b145981ada32d6375428",
+        "native_id": "01a1850e-c463-7f11-9564-c3e1d9432a64",
+        "status": "reply-stored",
+        "run_attempts": 1,
+        "body": "capacity-done",
+        "outcome": "succeeded",
+        "execution": {
+          "pid": 15470,
+          "lstart": "Thu Oct 29 09:28:19 2026",
+          "argv": [
+            "/Users/jaesolshin/.nvm/versions/node/v24.19.0/bin/codex",
+            "exec",
+            "--json",
+            "-c",
+            "approval_policy=\"never\"",
+            "-c",
+            "sandbox_mode=\"workspace-write\"",
+            "-"
+          ],
+          "stdout": "/private/tmp/owned-capacity-native-rvvg7uo2/state/owned-runs/9ba32202e90446f38bfba8f72794b0a6/capacity-3.jsonl",
+          "stderr": "/private/tmp/owned-capacity-native-rvvg7uo2/state/owned-runs/9ba32202e90446f38bfba8f72794b0a6/capacity-3.stderr",
+          "returncode": 0
+        },
+        "events": [
+          {
+            "phase": "queued",
+            "at": 1793233699.691593
+          },
+          {
+            "phase": "reserved",
+            "at": 1793233699.730467
+          },
+          {
+            "phase": "acknowledged",
+            "at": 1793233699.739223
+          },
+          {
+            "phase": "running",
+            "at": 1793233699.747623
+          },
+          {
+            "phase": "result-ready",
+            "at": 1793233733.806327
+          },
+          {
+            "phase": "sending",
+            "at": 1793233733.81621
+          },
+          {
+            "phase": "reply-stored",
+            "at": 1793233733.8982809
+          }
+        ],
+        "reply_id": "f15db4b7b81d4cdc",
+        "result_digest": "4bd6270a7ecb9e6a845d6f04da52e3f6b009cd467cf28a529afe4b5d033fad1d"
+      },
+      "capacity-new-sender-5": {
+        "native": {
+          "native_ids": [
+            "01a1850f-49b1-7560-8d6f-c51a5ddd6366"
+          ],
+          "turn_started": 1,
+          "turn_completed": 1,
+          "answer": "{\"body\":\"capacity-done\",\"outcome\":\"succeeded\"}",
+          "tools": [
+            {
+              "type": "command_execution",
+              "command": "/bin/zsh -lc 'python3 -c \"import time; time.sleep(20)\"'",
+              "exit_code": 0
+            }
+          ],
+          "terminal_type": "turn.completed"
+        },
+        "sender": "01a1850e-0d38-7092-ad27-419acfe92d10",
+        "work_context": "capacity-work-5",
+        "context_id": "cbd0a2e94adbd9afc6cc81eafb42699e0d8fe5b8436da1790b79aa7f7cbd659f",
+        "native_id": "01a1850f-49b1-7560-8d6f-c51a5ddd6366",
+        "status": "reply-stored",
+        "run_attempts": 1,
+        "body": "capacity-done",
+        "outcome": "succeeded",
+        "execution": {
+          "pid": 20073,
+          "lstart": "Thu Oct 29 09:28:53 2026",
+          "argv": [
+            "/Users/jaesolshin/.nvm/versions/node/v24.19.0/bin/codex",
+            "exec",
+            "--json",
+            "-c",
+            "approval_policy=\"never\"",
+            "-c",
+            "sandbox_mode=\"workspace-write\"",
+            "-"
+          ],
+          "stdout": "/private/tmp/owned-capacity-native-rvvg7uo2/state/owned-runs/9ba32202e90446f38bfba8f72794b0a6/capacity-new-sender-5.jsonl",
+          "stderr": "/private/tmp/owned-capacity-native-rvvg7uo2/state/owned-runs/9ba32202e90446f38bfba8f72794b0a6/capacity-new-sender-5.stderr",
+          "returncode": 0
+        },
+        "events": [
+          {
+            "phase": "queued",
+            "at": 1793233699.940591
+          },
+          {
+            "phase": "reserved",
+            "at": 1793233733.930398
+          },
+          {
+            "phase": "acknowledged",
+            "at": 1793233733.9334311
+          },
+          {
+            "phase": "running",
+            "at": 1793233733.936098
+          },
+          {
+            "phase": "result-ready",
+            "at": 1793233765.3836002
+          },
+          {
+            "phase": "sending",
+            "at": 1793233765.392908
+          },
+          {
+            "phase": "reply-stored",
+            "at": 1793233765.4709399
+          }
+        ],
+        "reply_id": "4c4ca13d9bad47aa",
+        "result_digest": "d077a048a0c3fd32c8868b1ebb939bd2a89b8e125692fc4567747c90e7565d63"
+      }
+    },
+    "actual_counts": {
+      "owned_native_turns": 10,
+      "actor_native_turns": 2,
+      "total_native_turns": 12,
+      "owned_native_ids": 8
+    }
+  },
+  "files": [
+    {
+      "path": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/deliverables/p13-live/owned-capacity-native-20261029-bundle/run.py",
+      "sha256": "4de4a7c46c48a674b22b01597f2b8071a8dd4fcd11b0b64aeb4d3bef8b38fca0",
+      "bytes": 12580
+    },
+    {
+      "path": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/deliverables/p13-live/owned-capacity-native-20261029-bundle/actor.py",
+      "sha256": "e77e870780beb23f72423c6ad62dfb3b33f1179b0e3842a9542f877df7e160ab",
+      "bytes": 1463
+    },
+    {
+      "path": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/deliverables/p13-live/owned-capacity-native-20261029-bundle/results.json",
+      "sha256": "8e8addf68eb48afe498bc2002ff1de93d28f453e13d9d1df307ba4e7d5314777",
+      "bytes": 22279
+    },
+    {
+      "path": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/deliverables/p13-live/owned-capacity-native-20261029-bundle/check.py",
+      "sha256": "d7ff501b691ef5f9a10984c9c764c185e701972273f18d591a2d801a35bb5eea",
+      "bytes": 12241
+    },
+    {
+      "path": "/private/tmp/owned-capacity-native-rvvg7uo2/actors/A.jsonl",
+      "sha256": "df69d2b88b185307d98ba4d3d1107def8cf3c99490e5043240ee85ce7d8a666f",
+      "bytes": 1864,
+      "artifact_raw": "raw/actors/A.jsonl"
+    },
+    {
+      "path": "/private/tmp/owned-capacity-native-rvvg7uo2/actors/A.stderr",
+      "sha256": "7e5d4dcf3615f48aa3f2f5d92fe4a27a114b9a81208f13de52b19572a0d8662e",
+      "bytes": 220,
+      "artifact_raw": "raw/actors/A.stderr"
+    },
+    {
+      "path": "/private/tmp/owned-capacity-native-rvvg7uo2/A-identity.json",
+      "sha256": "0fddd189874317b7b103261390793a0cc0fe0a86addd16081464a7b99d176d3d",
+      "bytes": 720,
+      "artifact_raw": "raw/A-identity.json"
+    },
+    {
+      "path": "/private/tmp/owned-capacity-native-rvvg7uo2/actors/B.jsonl",
+      "sha256": "963b816baeed2a5d9a85e067bcf84e078ab89763bc6056b1d5713f9106a70781",
+      "bytes": 1875,
+      "artifact_raw": "raw/actors/B.jsonl"
+    },
+    {
+      "path": "/private/tmp/owned-capacity-native-rvvg7uo2/actors/B.stderr",
+      "sha256": "720715c893c30a5b8e53f361956b75d3c2d6e622d3540b3ac9913253de11b0aa",
+      "bytes": 220,
+      "artifact_raw": "raw/actors/B.stderr"
+    },
+    {
+      "path": "/private/tmp/owned-capacity-native-rvvg7uo2/B-identity.json",
+      "sha256": "4e02ee5419facfa3dec632b211f8aecc1a9f7b452266589a32ed62b0a076513b",
+      "bytes": 722,
+      "artifact_raw": "raw/B-identity.json"
+    },
+    {
+      "path": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/deliverables/p13-live/owned-capacity-native-20261029-bundle/profile-drift.json",
+      "sha256": "4431c5c4c255de740b81fb66b2992558da9befe256b08c361a9793e5f560e3cb",
+      "bytes": 701
+    },
+    {
+      "path": "/private/tmp/owned-capacity-native-rvvg7uo2/cli/A-create.done.json",
+      "sha256": "69c4b94fdde23d71b51b6f70231fceb18f131221de07f28ab9f796fd9f156fa2",
+      "bytes": 417,
+      "artifact_raw": "raw/cli/A-create.done.json"
+    },
+    {
+      "path": "/private/tmp/owned-capacity-native-rvvg7uo2/cli/A-serial.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "artifact_raw": "raw/cli/A-serial.stderr"
+    },
+    {
+      "path": "/private/tmp/owned-capacity-native-rvvg7uo2/cli/A-create.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "artifact_raw": "raw/cli/A-create.stderr"
+    },
+    {
+      "path": "/private/tmp/owned-capacity-native-rvvg7uo2/cli/B-overload.stdout",
+      "sha256": "dd4189013f773bf1b8a4339edb0c59ac6aa8366dbbd46adc43127364fd1dd2e4",
+      "bytes": 2964,
+      "artifact_raw": "raw/cli/B-overload.stdout"
+    },
+    {
+      "path": "/private/tmp/owned-capacity-native-rvvg7uo2/cli/A-serial.done.json",
+      "sha256": "04a081c44fc3376f0ea1ed850b49f3f9f1f8f703374310496ae2204a8bf2c559",
+      "bytes": 850,
+      "artifact_raw": "raw/cli/A-serial.done.json"
+    },
+    {
+      "path": "/private/tmp/owned-capacity-native-rvvg7uo2/cli/B-overload.stderr",
+      "sha256": "13e409dda7ef4d9c97bc914fa49df85965ce0a7ff48c2e253db55a63951b836f",
+      "bytes": 126,
+      "artifact_raw": "raw/cli/B-overload.stderr"
+    },
+    {
+      "path": "/private/tmp/owned-capacity-native-rvvg7uo2/cli/A-serial.stdout",
+      "sha256": "6e837218a042a79cbd4f973e6683b5d79b944c3fad93d0c66eba368181e50cf2",
+      "bytes": 2862,
+      "artifact_raw": "raw/cli/A-serial.stdout"
+    },
+    {
+      "path": "/private/tmp/owned-capacity-native-rvvg7uo2/cli/A-create.stdout",
+      "sha256": "cf762b3695129f29b8ac7c61d421b691a8fe0829da427755945cce79b2754d2e",
+      "bytes": 858,
+      "artifact_raw": "raw/cli/A-create.stdout"
+    },
+    {
+      "path": "/private/tmp/owned-capacity-native-rvvg7uo2/cli/B-overload.done.json",
+      "sha256": "b337314938b6f6380f8f77904d38c57ef68f3d575d709f17dd7b5a8a435eb118",
+      "bytes": 786,
+      "artifact_raw": "raw/cli/B-overload.done.json"
+    },
+    {
+      "path": "/private/tmp/owned-capacity-native-rvvg7uo2/state/owned-requests/db471226f6af0464a223087039c0fa701a54fe8c9578572501fed294c66635a5.json",
+      "sha256": "44410d0ba7a1acd4b4541bf8b7429e584d405f284947edd2cd1c776ecdf0544b",
+      "bytes": 58833
+    },
+    {
+      "path": "/private/tmp/owned-capacity-native-rvvg7uo2/state/owned-runs/9ba32202e90446f38bfba8f72794b0a6/memory-A-first.jsonl",
+      "sha256": "d6204ce4e1363c915878424227c974e4b01ffa2f15f91ae948e221b942bbd4db",
+      "bytes": 968,
+      "artifact_raw": "raw/state/owned-runs/9ba32202e90446f38bfba8f72794b0a6/memory-A-first.jsonl"
+    },
+    {
+      "path": "/private/tmp/owned-capacity-native-rvvg7uo2/state/owned-runs/9ba32202e90446f38bfba8f72794b0a6/memory-A-first.stderr",
+      "sha256": "4f5494b8bf56184f383a438baac18dc3257225383d258c68d8f9a75621e0bade",
+      "bytes": 181,
+      "artifact_raw": "raw/state/owned-runs/9ba32202e90446f38bfba8f72794b0a6/memory-A-first.stderr"
+    },
+    {
+      "path": "/private/tmp/owned-capacity-native-rvvg7uo2/state/ledger/fa9154b537e84d96.json",
+      "sha256": "2442ca01c6fd9cef725f5fa42243f96a18412525d5a2936210e06dfd72223353",
+      "bytes": 928
+    },
+    {
+      "path": "/private/tmp/owned-capacity-native-rvvg7uo2/state/ledger/fa9154b537e84d96.handoff.json",
+      "sha256": "7b2603131016cc254890861cbce92617f5587c898bd3a562d967066659194442",
+      "bytes": 241
+    },
+    {
+      "path": "/private/tmp/owned-capacity-native-rvvg7uo2/state/owned-runs/9ba32202e90446f38bfba8f72794b0a6/memory-B-first.jsonl",
+      "sha256": "892eb2a6e93a6e8c2bf2625cd757e114db0ecb0920feed800199288f750ea287",
+      "bytes": 965,
+      "artifact_raw": "raw/state/owned-runs/9ba32202e90446f38bfba8f72794b0a6/memory-B-first.jsonl"
+    },
+    {
+      "path": "/private/tmp/owned-capacity-native-rvvg7uo2/state/owned-runs/9ba32202e90446f38bfba8f72794b0a6/memory-B-first.stderr",
+      "sha256": "8d1293560a4f7e3fcd11203c74309c019d4994061fb66931f98fbfdef229c60e",
+      "bytes": 181,
+      "artifact_raw": "raw/state/owned-runs/9ba32202e90446f38bfba8f72794b0a6/memory-B-first.stderr"
+    },
+    {
+      "path": "/private/tmp/owned-capacity-native-rvvg7uo2/state/ledger/792318c3ca8a47b6.json",
+      "sha256": "9406ce79309ecd667872e81a873c8413df4d562f1c9ac48284585ae0bcbb71a2",
+      "bytes": 930
+    },
+    {
+      "path": "/private/tmp/owned-capacity-native-rvvg7uo2/state/ledger/792318c3ca8a47b6.handoff.json",
+      "sha256": "f8d22ec24e024cadc295a551f191754cac1b2fccb46feaf8e297d0fc2a894e89",
+      "bytes": 241
+    },
+    {
+      "path": "/private/tmp/owned-capacity-native-rvvg7uo2/state/owned-runs/9ba32202e90446f38bfba8f72794b0a6/memory-A-follow.jsonl",
+      "sha256": "cd04525302eafa323ab210cb19717470de607ed9102700612f1136aacee666c9",
+      "bytes": 425,
+      "artifact_raw": "raw/state/owned-runs/9ba32202e90446f38bfba8f72794b0a6/memory-A-follow.jsonl"
+    },
+    {
+      "path": "/private/tmp/owned-capacity-native-rvvg7uo2/state/owned-runs/9ba32202e90446f38bfba8f72794b0a6/memory-A-follow.stderr",
+      "sha256": "1cd070bb6ffebf92313d2a9c97fa42947466a54d104f6c94e6d255e97ab364bf",
+      "bytes": 181,
+      "artifact_raw": "raw/state/owned-runs/9ba32202e90446f38bfba8f72794b0a6/memory-A-follow.stderr"
+    },
+    {
+      "path": "/private/tmp/owned-capacity-native-rvvg7uo2/state/ledger/feb2cb2fd7444f07.json",
+      "sha256": "0bf79a9c03f46812262db8df26b53012ef67a519ddb23a249310650a374b4932",
+      "bytes": 932
+    },
+    {
+      "path": "/private/tmp/owned-capacity-native-rvvg7uo2/state/ledger/feb2cb2fd7444f07.handoff.json",
+      "sha256": "0e6e102fba446d1cbfafa0b6bfaa398255f2ae0abddedb67dbf57dd2f6fba20a",
+      "bytes": 241
+    },
+    {
+      "path": "/private/tmp/owned-capacity-native-rvvg7uo2/state/owned-runs/9ba32202e90446f38bfba8f72794b0a6/memory-B-follow.jsonl",
+      "sha256": "9739d4435f1a876b9dc62a34a9ae13dff98f6a36943e3d242ab5c5399b9fb1e2",
+      "bytes": 426,
+      "artifact_raw": "raw/state/owned-runs/9ba32202e90446f38bfba8f72794b0a6/memory-B-follow.jsonl"
+    },
+    {
+      "path": "/private/tmp/owned-capacity-native-rvvg7uo2/state/owned-runs/9ba32202e90446f38bfba8f72794b0a6/memory-B-follow.stderr",
+      "sha256": "0c86687f265b79b3d52a51d1233303de59240914ba628efd0776f954cd674bfa",
+      "bytes": 181,
+      "artifact_raw": "raw/state/owned-runs/9ba32202e90446f38bfba8f72794b0a6/memory-B-follow.stderr"
+    },
+    {
+      "path": "/private/tmp/owned-capacity-native-rvvg7uo2/state/ledger/ff79faab80f54607.json",
+      "sha256": "3bc53e2a5ee9f229030f6737a8d3ee9c947609b1e5100d67fbd5d960a8676ece",
+      "bytes": 931
+    },
+    {
+      "path": "/private/tmp/owned-capacity-native-rvvg7uo2/state/ledger/ff79faab80f54607.handoff.json",
+      "sha256": "2fb95d0b4677854aaa661cfa49dde3333580c87bef7157b57172a2465d342445",
+      "bytes": 241
+    },
+    {
+      "path": "/private/tmp/owned-capacity-native-rvvg7uo2/state/owned-runs/9ba32202e90446f38bfba8f72794b0a6/memory-A-after-retire.jsonl",
+      "sha256": "0da2850be70f624d0d273fdd21956d488cab772d9642e623357f265e5e9672a9",
+      "bytes": 392,
+      "artifact_raw": "raw/state/owned-runs/9ba32202e90446f38bfba8f72794b0a6/memory-A-after-retire.jsonl"
+    },
+    {
+      "path": "/private/tmp/owned-capacity-native-rvvg7uo2/state/owned-runs/9ba32202e90446f38bfba8f72794b0a6/memory-A-after-retire.stderr",
+      "sha256": "1f891c0101d1828428aa53947cfe82dc821bac00cd24196d5dfd95b400874621",
+      "bytes": 181,
+      "artifact_raw": "raw/state/owned-runs/9ba32202e90446f38bfba8f72794b0a6/memory-A-after-retire.stderr"
+    },
+    {
+      "path": "/private/tmp/owned-capacity-native-rvvg7uo2/state/ledger/e1faedc2efce474f.json",
+      "sha256": "ec78147d066f6187da4a0652bae2332c2c770dc5079d38effc848bcae94ff915",
+      "bytes": 903
+    },
+    {
+      "path": "/private/tmp/owned-capacity-native-rvvg7uo2/state/ledger/e1faedc2efce474f.handoff.json",
+      "sha256": "1bcb277d739457be631e17077a08b0d6cb52fca22b7dbe5c4bce3f1200d6eb54",
+      "bytes": 242
+    },
+    {
+      "path": "/private/tmp/owned-capacity-native-rvvg7uo2/state/owned-runs/9ba32202e90446f38bfba8f72794b0a6/capacity-0.jsonl",
+      "sha256": "44ba0a74c159c692864229b3e22ef0dadc68775719164f83ed9a68ead557f66f",
+      "bytes": 947,
+      "artifact_raw": "raw/state/owned-runs/9ba32202e90446f38bfba8f72794b0a6/capacity-0.jsonl"
+    },
+    {
+      "path": "/private/tmp/owned-capacity-native-rvvg7uo2/state/owned-runs/9ba32202e90446f38bfba8f72794b0a6/capacity-0.stderr",
+      "sha256": "9bdb8537e08dad3b6df745786b3e77ca425ffc32cb6c373a1607f26be42f6769",
+      "bytes": 181,
+      "artifact_raw": "raw/state/owned-runs/9ba32202e90446f38bfba8f72794b0a6/capacity-0.stderr"
+    },
+    {
+      "path": "/private/tmp/owned-capacity-native-rvvg7uo2/state/ledger/a6cfcb2716ee46e1.handoff.json",
+      "sha256": "2847c8549038ffd8bedecb2c7d79364416cdc0e9d7f8c9e5abc1d4b5e87741b9",
+      "bytes": 240
+    },
+    {
+      "path": "/private/tmp/owned-capacity-native-rvvg7uo2/state/ledger/a6cfcb2716ee46e1.json",
+      "sha256": "88f2a0fcb882743777cf5a1b835e6486ae447b540555790374e6bad97ce012fc",
+      "bytes": 899
+    },
+    {
+      "path": "/private/tmp/owned-capacity-native-rvvg7uo2/state/owned-runs/9ba32202e90446f38bfba8f72794b0a6/capacity-1.jsonl",
+      "sha256": "9c97cc95d5619464eb7f5ae57c49c4582fae406cce3626e3a66ddcff3e1119b8",
+      "bytes": 985,
+      "artifact_raw": "raw/state/owned-runs/9ba32202e90446f38bfba8f72794b0a6/capacity-1.jsonl"
+    },
+    {
+      "path": "/private/tmp/owned-capacity-native-rvvg7uo2/state/owned-runs/9ba32202e90446f38bfba8f72794b0a6/capacity-1.stderr",
+      "sha256": "d3f7640dc9001f7e2f0f1c16ccd04d6a11c636895d2ebafffb333ef1357538fd",
+      "bytes": 181,
+      "artifact_raw": "raw/state/owned-runs/9ba32202e90446f38bfba8f72794b0a6/capacity-1.stderr"
+    },
+    {
+      "path": "/private/tmp/owned-capacity-native-rvvg7uo2/state/ledger/f312c952bd66476a.handoff.json",
+      "sha256": "4ebbb25229f796fbd484262feb000c8e3f2e52ad38d4dfd98456f7444efa7ba4",
+      "bytes": 241
+    },
+    {
+      "path": "/private/tmp/owned-capacity-native-rvvg7uo2/state/ledger/f312c952bd66476a.json",
+      "sha256": "c41d0404dc82bbbf9a9ddbc602708ae370cbcc9c09cfd1825e663057b0c27e62",
+      "bytes": 900
+    },
+    {
+      "path": "/private/tmp/owned-capacity-native-rvvg7uo2/state/owned-runs/9ba32202e90446f38bfba8f72794b0a6/capacity-2.jsonl",
+      "sha256": "810830e428a77024573d292eb97725b0ebdc7c93eb4e5ee1ff0f58ce7d473d1d",
+      "bytes": 938,
+      "artifact_raw": "raw/state/owned-runs/9ba32202e90446f38bfba8f72794b0a6/capacity-2.jsonl"
+    },
+    {
+      "path": "/private/tmp/owned-capacity-native-rvvg7uo2/state/owned-runs/9ba32202e90446f38bfba8f72794b0a6/capacity-2.stderr",
+      "sha256": "d5d459c84fc11bd66f3803403412fccc854490db6e3232ccafb427ff259bf441",
+      "bytes": 181,
+      "artifact_raw": "raw/state/owned-runs/9ba32202e90446f38bfba8f72794b0a6/capacity-2.stderr"
+    },
+    {
+      "path": "/private/tmp/owned-capacity-native-rvvg7uo2/state/ledger/59122e72ea49438b.handoff.json",
+      "sha256": "c6a7b28bd484b04b10ca4bbccf41cb04c4de258a4c425587372dff299e2f8b77",
+      "bytes": 241
+    },
+    {
+      "path": "/private/tmp/owned-capacity-native-rvvg7uo2/state/ledger/59122e72ea49438b.json",
+      "sha256": "12f8023def7aea5366436203cc7d48a92dfe5c32c191d52ef90f0a7f3d402ff3",
+      "bytes": 898
+    },
+    {
+      "path": "/private/tmp/owned-capacity-native-rvvg7uo2/state/owned-runs/9ba32202e90446f38bfba8f72794b0a6/capacity-3.jsonl",
+      "sha256": "61e62faf1f679c1c0182c38ba472399d00f5a88409d46c56a9efab56fb683a5f",
+      "bytes": 946,
+      "artifact_raw": "raw/state/owned-runs/9ba32202e90446f38bfba8f72794b0a6/capacity-3.jsonl"
+    },
+    {
+      "path": "/private/tmp/owned-capacity-native-rvvg7uo2/state/owned-runs/9ba32202e90446f38bfba8f72794b0a6/capacity-3.stderr",
+      "sha256": "ac1739d3a56850f503d46d19a1f07895e806b3cc27a943cc65beec785ecde6d2",
+      "bytes": 181,
+      "artifact_raw": "raw/state/owned-runs/9ba32202e90446f38bfba8f72794b0a6/capacity-3.stderr"
+    },
+    {
+      "path": "/private/tmp/owned-capacity-native-rvvg7uo2/state/ledger/f15db4b7b81d4cdc.json",
+      "sha256": "b35596c52f7b66e2d534ef6848b251fe3a96d08f96c309c53731e5468175f925",
+      "bytes": 899
+    },
+    {
+      "path": "/private/tmp/owned-capacity-native-rvvg7uo2/state/ledger/f15db4b7b81d4cdc.handoff.json",
+      "sha256": "223313caeba2b346a01456ed2b2a55a858073ffff321b7f8f8f5588e73664b82",
+      "bytes": 241
+    },
+    {
+      "path": "/private/tmp/owned-capacity-native-rvvg7uo2/state/owned-runs/9ba32202e90446f38bfba8f72794b0a6/capacity-new-sender-5.jsonl",
+      "sha256": "3a411c35261ba70a7c9db993be3ae0867eec41a19e15563cdeb1e304c43b95db",
+      "bytes": 938,
+      "artifact_raw": "raw/state/owned-runs/9ba32202e90446f38bfba8f72794b0a6/capacity-new-sender-5.jsonl"
+    },
+    {
+      "path": "/private/tmp/owned-capacity-native-rvvg7uo2/state/owned-runs/9ba32202e90446f38bfba8f72794b0a6/capacity-new-sender-5.stderr",
+      "sha256": "e57b5ae8b791a5d31da0feda3f32fff845536a96d6309798c8adcb1e3494e901",
+      "bytes": 181,
+      "artifact_raw": "raw/state/owned-runs/9ba32202e90446f38bfba8f72794b0a6/capacity-new-sender-5.stderr"
+    },
+    {
+      "path": "/private/tmp/owned-capacity-native-rvvg7uo2/state/ledger/4c4ca13d9bad47aa.json",
+      "sha256": "1a02b5bc3cf4a72786c9308397e67b6622901d8bf3a9d827807ff214f0add7e4",
+      "bytes": 911
+    },
+    {
+      "path": "/private/tmp/owned-capacity-native-rvvg7uo2/state/ledger/4c4ca13d9bad47aa.handoff.json",
+      "sha256": "161035bf7b94a329ed184de8af0aafc140566e9f34e32bcfd0fbd2e21e85a3af",
+      "bytes": 241
+    },
+    {
+      "path": "/private/tmp/owned-capacity-native-rvvg7uo2/capacity-new-sender-5-result.json",
+      "sha256": "671ff2747ec3abdbd17e27c225f6715ca14c0543b462907dddbb18cf56d852fc",
+      "bytes": 6121
+    },
+    {
+      "path": "/private/tmp/owned-capacity-native-rvvg7uo2/capacity-2-result.json",
+      "sha256": "a973b6e2f61bd1f2a6b4f606029b6ffc4f1459748e8f61bcdaf2496b5277e6cf",
+      "bytes": 6063
+    },
+    {
+      "path": "/private/tmp/owned-capacity-native-rvvg7uo2/memory-A-follow-result.json",
+      "sha256": "bcb4bfbe2991322e0dc39edf77918379f0202748f1ffb1b89091db4dde38e9e1",
+      "bytes": 6115
+    },
+    {
+      "path": "/private/tmp/owned-capacity-native-rvvg7uo2/capacity-1-result.json",
+      "sha256": "a1610a89b7d323395aab565559ff4432fa2dead61e5e091a90a1cefffbe7d632",
+      "bytes": 6061
+    },
+    {
+      "path": "/private/tmp/owned-capacity-native-rvvg7uo2/memory-B-follow-result.json",
+      "sha256": "e80683b581d207b104aaa7b6e1610a35e2d07cc8cad203ab35b8f48d00cc1af7",
+      "bytes": 6217
+    },
+    {
+      "path": "/private/tmp/owned-capacity-native-rvvg7uo2/memory-B-first-result.json",
+      "sha256": "e06e78ced543952b636cfd8e5e3e2010bb4db55ad01944b48acbdfe7748ada9e",
+      "bytes": 6104
+    },
+    {
+      "path": "/private/tmp/owned-capacity-native-rvvg7uo2/capacity-3-result.json",
+      "sha256": "f63c2aaf1147e7c26a46e46125c11a551db21b7f3528312f29b4485eece8ad23",
+      "bytes": 6061
+    },
+    {
+      "path": "/private/tmp/owned-capacity-native-rvvg7uo2/memory-A-first-result.json",
+      "sha256": "9f32564eb827b0b00ed6e1f9d8fe7513a5efc91281e28a331e2125d9a948e0a8",
+      "bytes": 6102
+    },
+    {
+      "path": "/private/tmp/owned-capacity-native-rvvg7uo2/memory-A-after-retire-result.json",
+      "sha256": "7ce3ea65f3208d705144bdb7e7b8babb031587b221615a5bc0122e40a5ae4dce",
+      "bytes": 6086
+    },
+    {
+      "path": "/private/tmp/owned-capacity-native-rvvg7uo2/capacity-0-result.json",
+      "sha256": "1ff12cfcd7bbb36c7eb2a227527ae192018483d09a02ed39a11550eb0d3a64f4",
+      "bytes": 6062
+    },
+    {
+      "path": "/private/tmp/owned-capacity-native-rvvg7uo2/commands/B-overload.json",
+      "sha256": "6dffbb8310e20b467f404ab2b7b2a61549a1ce004a491a1d50109a86f506377d",
+      "bytes": 494,
+      "artifact_raw": "raw/commands/B-overload.json"
+    },
+    {
+      "path": "/private/tmp/owned-capacity-native-rvvg7uo2/commands/A-create.json",
+      "sha256": "281bcddf596da8c80f2a0a25531ae2cd945056d171ac04fcad245111052df22b",
+      "bytes": 129,
+      "artifact_raw": "raw/commands/A-create.json"
+    },
+    {
+      "path": "/private/tmp/owned-capacity-native-rvvg7uo2/commands/A-serial.json",
+      "sha256": "af5eedb22a2356513f475ca9577d451936bf0914f39f4a06abf58369a763634d",
+      "bytes": 562,
+      "artifact_raw": "raw/commands/A-serial.json"
+    },
+    {
+      "path": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/deliverables/p13-live/final-source-manifest.json",
+      "sha256": "cb05d6ecb3ab87d95359de3cc318f5ea217bee23837e72b9fff34f6512fb1463",
+      "bytes": 38515
+    },
+    {
+      "path": "/private/tmp/xsm-final-receipt-frozen-i3u9pms3/xsm/workers.py",
+      "sha256": "518cb28f77c3ee222d1adf7e49068e671fc38dbc43fb5e1ac0ed6ef139299fa5",
+      "bytes": 91042
+    },
+    {
+      "path": "/private/tmp/xsm-final-receipt-frozen-i3u9pms3/xsm/owned_requests.py",
+      "sha256": "6e55c26db5709189619196f5ed373004fa0fa468246dc99b899dd14cce4e2a69",
+      "bytes": 21337
+    },
+    {
+      "path": "/private/tmp/xsm-final-receipt-frozen-i3u9pms3/xsm/cli.py",
+      "sha256": "76f29a9ef05d070dc61d68008ae87db2e5935dc76d0e333bd30c3db29d54cb1c",
+      "bytes": 152851
+    },
+    {
+      "path": "/private/tmp/xsm-final-receipt-frozen-i3u9pms3/xsm/registry.py",
+      "sha256": "edce2c6e75ec4d1803f402db565900080be337b2727a40ff663376c355890360",
+      "bytes": 59773
+    }
+  ],
+  "limits": [
+    "Python controller delegated requests using actual live native actor records; no synthetic actor ID/upsert.",
+    "Actual shell CLI exercised create and run queued/context-busy/overloaded. Native execution after those queues used Python default executor and quiet public publish callback, not a shell-only end-to-end run.",
+    "MCP profile settings were not injected. This private git/state condition does not prove default installation/Claude reply.",
+    "New capacity sender B differs from all four currently busy A requests; B already participated in the memory cell.",
+    "Prior capacity fifth same sender/different work remains a limitation of that prior sample.",
+    "No ACK calls or request/body/outcome corrections; queued original IDs resumed once admission allowed.",
+    "No independent=True native review was added; prior deterministic fixture evidence remains separate.",
+    "Profile config.toml hash changed during execution. Native recorded tools and harness contain no direct profile edit, but writer/changed keys and semantic permission equivalence are unknown. No restore or additional experiment was attempted."
+  ]
+}

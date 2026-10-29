@@ -1,0 +1,337 @@
+{
+  "created_utc": "2026-10-29T07:27:01.624146+00:00",
+  "python_files": 52,
+  "files": {
+    "bin/xsm": {
+      "sha256": "3c80672e2f062a8792bc89eb1b74b229db7e55c64e93a20910fa88f8ca33ec88",
+      "size": 1195,
+      "stable": true
+    },
+    "hooks/codex-hooks.json": {
+      "sha256": "b972a24035252a9a56c1bc315549dd37b3b066c4865335625e4246cbf90a550b",
+      "size": 613,
+      "stable": true
+    },
+    "hooks/codex-mcp.json": {
+      "sha256": "b1d2a3f79ecf47ddc2fc3f03dda113b5b9bf1685e223baf801479b35112e4815",
+      "size": 98,
+      "stable": true
+    },
+    "hooks/hooks.json": {
+      "sha256": "ade596e312dfa1d97bd6e4f5ab024bfcd6d7ce2e50649ee1ecdc53b0d2cd7cfe",
+      "size": 1661,
+      "stable": true
+    },
+    "hooks/xsm-hook": {
+      "sha256": "b5d01706b7b2d0b0dc1ad0094c8a7211c730b4c5d34fb8dd1be6beea571f547c",
+      "size": 4948,
+      "stable": true
+    },
+    "hooks/xsm-hook.py": {
+      "sha256": "c94bf31c8e282e8745c3666e6de6186098bd5737bc4ad87676837c8f7328df92",
+      "size": 2744,
+      "stable": true
+    },
+    "hooks/xsm-mcp": {
+      "sha256": "01fcc6d51a3ee6fa0aa15b2293ab1c02bc8c8fc733f67bb3d1d3e7b96e1a56bf",
+      "size": 1430,
+      "stable": true
+    },
+    "hooks/xsm-mcp.py": {
+      "sha256": "fb04f9e18fc9c1ff620c1825c8451b84980496631ed23e20d8a9097f5e0f6edf",
+      "size": 321,
+      "stable": true
+    },
+    "hooks/xsm-remote.py": {
+      "sha256": "9096a2710256944c5225174563f3b50f53031efde369d296994e8b73950f3616",
+      "size": 340,
+      "stable": true
+    },
+    "skills/xsm/SKILL.md": {
+      "sha256": "3e583bcd294862775c6590766b96cea2260c879329a32ffbe5306f128da55896",
+      "size": 5448,
+      "stable": true
+    },
+    "skills/xsm/references/guide.md": {
+      "sha256": "e54d63926d5f9dd15f515b548d89da19e85b011b55afb3d9ebf37eaf647d3112",
+      "size": 37750,
+      "stable": true
+    },
+    "skills/xsm/references/messaging.md": {
+      "sha256": "9e7ea1705b7a02e66928761c46e49935644053358e4da53a6dae3115f2697677",
+      "size": 7453,
+      "stable": true
+    },
+    "skills/xsm/references/network.md": {
+      "sha256": "37ec6a533016799933598681ec5238bcf76c16d0b00ca0de38f38ed3a4898ee7",
+      "size": 3255,
+      "stable": true
+    },
+    "xsm/__init__.py": {
+      "sha256": "6f3c027b81d76181e6d7ead368d3206768d662f437f097cd194d27e9cf7735ba",
+      "size": 327,
+      "stable": true
+    },
+    "xsm/__main__.py": {
+      "sha256": "13a1a5b340cdcfc1902b62be90e508c7c71886000d5bf087e7854aadf09fb35e",
+      "size": 52,
+      "stable": true
+    },
+    "xsm/abuse.py": {
+      "sha256": "a15303d88acded3e03110b125da91e11ffd5de96d266a9485a0f476d991d8e66",
+      "size": 13290,
+      "stable": true
+    },
+    "xsm/adapters.py": {
+      "sha256": "0b0d77d724130b2671d2fdc8eb0da64bc80d178b4be54b766c0b9a8629e950dd",
+      "size": 13088,
+      "stable": true
+    },
+    "xsm/attempts.py": {
+      "sha256": "224b86ae077fc6e285716e73850317e9e6efcdba244eac16a3f9edef6dad320a",
+      "size": 5206,
+      "stable": true
+    },
+    "xsm/attention.py": {
+      "sha256": "8cd167c01cc560f92580646c2e081ca2604c8548184ce493ef1e8bf875a9e866",
+      "size": 2057,
+      "stable": true
+    },
+    "xsm/bounce.py": {
+      "sha256": "4a3ede5b15d85dea65388e26fa21f62dd2e9ab7da06c94ef3b9d788085aeaecc",
+      "size": 5393,
+      "stable": true
+    },
+    "xsm/channel.py": {
+      "sha256": "459f8125b03eddbd2d8be23474b5f50b740aa7f777d2ea436f0aaa55db235382",
+      "size": 8661,
+      "stable": true
+    },
+    "xsm/cli.py": {
+      "sha256": "021c45acc1182a76c5e81d20b0a7a00e5f81aae0a1325ee09e8f9938a2fbafc0",
+      "size": 153667,
+      "stable": true
+    },
+    "xsm/codex_daemon.py": {
+      "sha256": "d7423388a943868a06411ca33725b17a128bd9c6c641232da0844a59ff9a1f3d",
+      "size": 13152,
+      "stable": true
+    },
+    "xsm/collaboration.py": {
+      "sha256": "f29c91f0d5f26cd2c4971c619ab5dc7ea6dc3bfa5e32ad0791e17c0f3aff5cb7",
+      "size": 5124,
+      "stable": true
+    },
+    "xsm/config.py": {
+      "sha256": "92255fcee9cd2fe3b013851b056533a78d5090b225123f0d460de9c425feb5ca",
+      "size": 52605,
+      "stable": true
+    },
+    "xsm/connect.py": {
+      "sha256": "be25196f7efd16e43ef09718b97e9bd6b3f5bea737bb6e4f673a8b94688131ff",
+      "size": 17032,
+      "stable": true
+    },
+    "xsm/consent.py": {
+      "sha256": "26adb2e00e2466594a6dee3fe4850cc6ee8ee20c7187c0e1f490d51d603b95e0",
+      "size": 65968,
+      "stable": true
+    },
+    "xsm/context.py": {
+      "sha256": "3a8355156f5d5497a0e945fe1a2c05791439cfe172f8fa5ae0eed936830ecb03",
+      "size": 8277,
+      "stable": true
+    },
+    "xsm/decisions.py": {
+      "sha256": "ee9964969497d3726dad7cdb27913bf2df382615abf6ae9ab6fc66b59a72fb2b",
+      "size": 12093,
+      "stable": true
+    },
+    "xsm/directory.py": {
+      "sha256": "22525349cae1190d5e9ef00d97dc17cae52b1ef60180ce2ace5e024bae8c0afb",
+      "size": 32186,
+      "stable": true
+    },
+    "xsm/doc.py": {
+      "sha256": "465d44d8ed5c3c2c458d67a0071c3dc56ef483794f34858b26eae82258a68011",
+      "size": 10262,
+      "stable": true
+    },
+    "xsm/envelope.py": {
+      "sha256": "4a6030d3dabddf1697bc3bef6317a491ff94325eb8086ee2f05f35268d761683",
+      "size": 26087,
+      "stable": true
+    },
+    "xsm/files.py": {
+      "sha256": "01425c645b7047590c452aaa7ea4f348a17aa5e25481e8ae4597dee5ab1d1ca3",
+      "size": 48310,
+      "stable": true
+    },
+    "xsm/handoff.py": {
+      "sha256": "e73aec7afa15bf507465ec293061c5ff3b288a33ecf339c9dc3009f1f69e6ee7",
+      "size": 19277,
+      "stable": true
+    },
+    "xsm/housekeeping.py": {
+      "sha256": "5d1a0f1c1f3cf2ef820344935db26aeda5bed5b27e66ba99b1868e8c1d53cf3a",
+      "size": 9054,
+      "stable": true
+    },
+    "xsm/identity.py": {
+      "sha256": "ecfddb64f394455bf68117076127f1c0a07888c0df4cd734f219771bce3004a5",
+      "size": 9775,
+      "stable": true
+    },
+    "xsm/inbox.py": {
+      "sha256": "299b972ff4fadd91148e495357be10a97ac2640d23d79c317e0b675699541695",
+      "size": 15913,
+      "stable": true
+    },
+    "xsm/install.py": {
+      "sha256": "49a3d65beeec935cb624a3701c85995b09cba4861a17c2b446297d8837d3d2d2",
+      "size": 120540,
+      "stable": true
+    },
+    "xsm/instructions.py": {
+      "sha256": "4b3208a5b1b6b951bc0a14b468576eb0da7be2352d5fb28dbc0d816a8087feb8",
+      "size": 8084,
+      "stable": true
+    },
+    "xsm/ledger.py": {
+      "sha256": "f291d11b736608bb3d2d07bdccdcc15348af2cbdfa73e1fb9d4c5628063e459f",
+      "size": 19243,
+      "stable": true
+    },
+    "xsm/materials.py": {
+      "sha256": "8ca0986b7e8bfab10f6ba3ffb8301e53974ea7721dcbded2bc7cf0931d43ea9e",
+      "size": 6590,
+      "stable": true
+    },
+    "xsm/mcp.py": {
+      "sha256": "c13c6cc62149a6728ef7cd936e32428f055c72e038cd460a8fc2ee6124a13b2d",
+      "size": 96912,
+      "stable": true
+    },
+    "xsm/network.py": {
+      "sha256": "f52485d50b5008a92860d8409df0b722fef0c26034c87938a1967af59d653265",
+      "size": 59379,
+      "stable": true
+    },
+    "xsm/network_directory.py": {
+      "sha256": "0e1ea03d86b3f5c49f4df64b8e86e401743b33368dd32873a16fddab66c35099",
+      "size": 19446,
+      "stable": true
+    },
+    "xsm/network_identity.py": {
+      "sha256": "9820d64951f02899d41e77be737cc706c6d27e164d2c57700d6f8f6a8618142a",
+      "size": 1358,
+      "stable": true
+    },
+    "xsm/network_membership.py": {
+      "sha256": "f3496c84b86be111a120baf4d7b74f8fdfdeea415ac89cfb2fff4eb841ddb54a",
+      "size": 27446,
+      "stable": true
+    },
+    "xsm/network_messages.py": {
+      "sha256": "2b2a238ecf9e7a55265fabc5673de086c97818b78188d9716cceb6fb214c22a2",
+      "size": 37187,
+      "stable": true
+    },
+    "xsm/network_transport.py": {
+      "sha256": "1827fc7b4ac9a4f90680a14b46112490a0e54d7263557233dc3e693fe0d389c3",
+      "size": 23107,
+      "stable": true
+    },
+    "xsm/otlp_export.py": {
+      "sha256": "8ce0b354b4c3f5687c5b0cdd49825f5248ac4725dfbca6b96f5f3750dc32cc2a",
+      "size": 8380,
+      "stable": true
+    },
+    "xsm/outbox.py": {
+      "sha256": "1ab6e31b52feae97e06f326c9d4f7658a2e02549b5085e0e864ea1e002bbe211",
+      "size": 4266,
+      "stable": true
+    },
+    "xsm/owned_requests.py": {
+      "sha256": "6e55c26db5709189619196f5ed373004fa0fa468246dc99b899dd14cce4e2a69",
+      "size": 21337,
+      "stable": true
+    },
+    "xsm/paths.py": {
+      "sha256": "242b8e64b5d564e503d5e0bbef1d7e8d160690e8bd5199bc160523969835bb39",
+      "size": 4251,
+      "stable": true
+    },
+    "xsm/policy.py": {
+      "sha256": "9f912493ca4a26e22af110edead346e58924022de4d2c99c56c566279c1c7cc7",
+      "size": 2714,
+      "stable": true
+    },
+    "xsm/probe.py": {
+      "sha256": "452835fb1ca280eb95094d89cc5775f8d510d4e3941c4469740f071ce27b676d",
+      "size": 7648,
+      "stable": true
+    },
+    "xsm/provenance.py": {
+      "sha256": "7639e2b111f964a6eaa8031408fda9fc094eaa9c714653085b0f5ea5fbf755d6",
+      "size": 6806,
+      "stable": true
+    },
+    "xsm/questions.py": {
+      "sha256": "1b13a9c4a3db2e9f933ebc97ed00f362bb4f3cac95b7092ca5c302e718296a70",
+      "size": 17024,
+      "stable": true
+    },
+    "xsm/receive.py": {
+      "sha256": "e3cbe2ece4d70bafbb8d8d4ae3be05a7aeaf64035f564cdc93832fbe78512dcb",
+      "size": 80305,
+      "stable": true
+    },
+    "xsm/registry.py": {
+      "sha256": "edce2c6e75ec4d1803f402db565900080be337b2727a40ff663376c355890360",
+      "size": 59773,
+      "stable": true
+    },
+    "xsm/remote.py": {
+      "sha256": "d79acd373ea13490ae7ac34a86f7d376520d51293a4cad68728db35eaa44e3cf",
+      "size": 30699,
+      "stable": true
+    },
+    "xsm/resolve.py": {
+      "sha256": "c5701b8af941e86a0839b230459b244fbaa79b0ee6626d66ca9ddf81509a89eb",
+      "size": 11336,
+      "stable": true
+    },
+    "xsm/send.py": {
+      "sha256": "c8ca2a8fa1407153dd394d0b004a57653f98431ed8f4d1543ea8249389dac2f6",
+      "size": 45231,
+      "stable": true
+    },
+    "xsm/setup_flow.py": {
+      "sha256": "1dfbfb19e1bb8ce267c3bd3ad9519420017af01c78a63ce187c3a709d27247cd",
+      "size": 22002,
+      "stable": true
+    },
+    "xsm/telemetry.py": {
+      "sha256": "bf0411d546c02a2f3e6aaea7d6f8f2549eeeeb57a7aedcc1cb968b5c87c1e2ea",
+      "size": 7799,
+      "stable": true
+    },
+    "xsm/user_answers.py": {
+      "sha256": "5ad5b73ec365217a28285a4e3deb709331feb570593b588119460d9b51abf24f",
+      "size": 10694,
+      "stable": true
+    },
+    "xsm/workers.py": {
+      "sha256": "518cb28f77c3ee222d1adf7e49068e671fc38dbc43fb5e1ac0ed6ef139299fa5",
+      "size": 91042,
+      "stable": true
+    }
+  },
+  "engine": {
+    "sha256": "c963e9d4e4ffda47dead354d7d66e2f71fea037932b51846422bdbacb5b39a7d",
+    "source": "/private/tmp/adr21-install-0q83fzpr/state/network/bin/xsm-net",
+    "condition": "pre-loopback-policy release; LAN direct only"
+  },
+  "condition": "new mixed native sample; latest R1 network/probe and instruction source synchronization; no prior state reused"
+}

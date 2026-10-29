@@ -1,0 +1,464 @@
+{
+  "scope": "UDP denied C comparison; integrity links, not independent attestation",
+  "native_model_attempts_total": 1,
+  "peer_files_transferred_SHA_verified": 29,
+  "raw_capability_or_key_values_published": false,
+  "files": [
+    {
+      "path": "/private/tmp/p11-C-udp-s3mrn30l/cleanup.json",
+      "role": "private raw evidence/executed source; never published as raw contents",
+      "bytes": 607,
+      "sha256": "84ce09c31e0bd093d94f3eaa5b7626dc434df6ba9b74153c602095553f469af2"
+    },
+    {
+      "path": "/private/tmp/p11-C-udp-s3mrn30l/code/C-native-base.py",
+      "role": "private raw evidence/executed source; never published as raw contents",
+      "bytes": 5840,
+      "sha256": "08c808318e1636ca71a4ce547e44fcf71ca5ffe1a8dbfe03bd23b77069118591"
+    },
+    {
+      "path": "/private/tmp/p11-C-udp-s3mrn30l/code/udp-blocked-lib.py",
+      "role": "private raw evidence/executed source; never published as raw contents",
+      "bytes": 15388,
+      "sha256": "202ede6c3e36da34b5324ec0e10241f20a5874224680b87b0401db049f530866"
+    },
+    {
+      "path": "/private/tmp/p11-C-udp-s3mrn30l/code/udp-blocked-peer.py",
+      "role": "private raw evidence/executed source; never published as raw contents",
+      "bytes": 1994,
+      "sha256": "76c6b584409fff17e60d851aeb99f90a25252fdbe76252af4dc6c7efad9e937b"
+    },
+    {
+      "path": "/private/tmp/p11-C-udp-s3mrn30l/code/udp-blocked-run.py",
+      "role": "private raw evidence/executed source; never published as raw contents",
+      "bytes": 11948,
+      "sha256": "a92a4039c123a843575bb81cd2e2ff886964810aae09f1f935b7843c80230fbf"
+    },
+    {
+      "path": "/private/tmp/p11-C-udp-s3mrn30l/engine-19685-log-hashes.jsonl",
+      "role": "private raw evidence/executed source; never published as raw contents",
+      "bytes": 162,
+      "sha256": "114b3d5347d5f3d7548c34f948c5ff7b5dd44218aa511092e02c36184d8cbdde"
+    },
+    {
+      "path": "/private/tmp/p11-C-udp-s3mrn30l/engine-handles.json",
+      "role": "private raw evidence/executed source; never published as raw contents",
+      "bytes": 451,
+      "sha256": "df78c7dfb567ceeef0e4cd7d9ef4befa4c9f833da17acffccd2399c90d8075ab"
+    },
+    {
+      "path": "/private/tmp/p11-C-udp-s3mrn30l/fixture-ownership.json",
+      "role": "private raw evidence/executed source; never published as raw contents",
+      "bytes": 82,
+      "sha256": "5b9d9b0d7c9b83b4476054815649fa3c906593c808dd216cec39cc0aa4799656"
+    },
+    {
+      "path": "/private/tmp/p11-C-udp-s3mrn30l/plan.md",
+      "role": "private raw evidence/executed source; never published as raw contents",
+      "bytes": 2504,
+      "sha256": "609a6c9813920f4e97a72d3342c08f5f5e900acadfdde74b4e325c60e564ce64"
+    },
+    {
+      "path": "/private/tmp/p11-C-udp-s3mrn30l/preflight.json",
+      "role": "private raw evidence/executed source; never published as raw contents",
+      "bytes": 1016,
+      "sha256": "5db3730b97295026ab29e03abfa896aa03bd272ec77e275f87b8f5ee699ad969"
+    },
+    {
+      "path": "/private/tmp/p11-C-udp-s3mrn30l/udp-blocked-result.json",
+      "role": "private raw evidence/executed source; never published as raw contents",
+      "bytes": 5023,
+      "sha256": "7d5a6b0e7f7a72b923b46b2e84b6ad8cefe06f23d6f6719aa042999a7a1bf028"
+    },
+    {
+      "path": "/private/tmp/p11-C-udp2-sjkpra10/cleanup.json",
+      "role": "private raw evidence/executed source; never published as raw contents",
+      "bytes": 1077,
+      "sha256": "e1d21d6f4c00b5fbcb05748d4e23648f5d8c36a1addb369e44b3e6e4934dde7d"
+    },
+    {
+      "path": "/private/tmp/p11-C-udp2-sjkpra10/code/C-native-base.py",
+      "role": "private raw evidence/executed source; never published as raw contents",
+      "bytes": 5840,
+      "sha256": "08c808318e1636ca71a4ce547e44fcf71ca5ffe1a8dbfe03bd23b77069118591"
+    },
+    {
+      "path": "/private/tmp/p11-C-udp2-sjkpra10/code/udp-blocked-lib.py",
+      "role": "private raw evidence/executed source; never published as raw contents",
+      "bytes": 15388,
+      "sha256": "202ede6c3e36da34b5324ec0e10241f20a5874224680b87b0401db049f530866"
+    },
+    {
+      "path": "/private/tmp/p11-C-udp2-sjkpra10/code/udp-blocked-peer.py",
+      "role": "private raw evidence/executed source; never published as raw contents",
+      "bytes": 1996,
+      "sha256": "2434f311543cb9867dc31e8b5b7dee16ad95db303c97cb059a3a94d1b112f713"
+    },
+    {
+      "path": "/private/tmp/p11-C-udp2-sjkpra10/code/udp-blocked-run.py",
+      "role": "private raw evidence/executed source; never published as raw contents",
+      "bytes": 11951,
+      "sha256": "60af71a37cbd4bef8292f7186e6c4a3ed64a974bc26b4fd525097abbdeb5fec4"
+    },
+    {
+      "path": "/private/tmp/p11-C-udp2-sjkpra10/engine-23523-log-hashes.jsonl",
+      "role": "private raw evidence/executed source; never published as raw contents",
+      "bytes": 162,
+      "sha256": "7daa1667439e623d1400578dc1834e0670ea2343a5bffc54e8435fd4a4999343"
+    },
+    {
+      "path": "/private/tmp/p11-C-udp2-sjkpra10/engine-23602-log-hashes.jsonl",
+      "role": "private raw evidence/executed source; never published as raw contents",
+      "bytes": 1128,
+      "sha256": "0930a10e9eb1d963e3f3d0a379ca5fdfcf4103d1d5b5869009bd01f2b5a13fa9"
+    },
+    {
+      "path": "/private/tmp/p11-C-udp2-sjkpra10/engine-handles.json",
+      "role": "private raw evidence/executed source; never published as raw contents",
+      "bytes": 899,
+      "sha256": "8ebea7db67f3a7b40472adb648ccdf1c13bb495d49a91c0b01c87980d9c599b3"
+    },
+    {
+      "path": "/private/tmp/p11-C-udp2-sjkpra10/fixture-ownership.json",
+      "role": "private raw evidence/executed source; never published as raw contents",
+      "bytes": 82,
+      "sha256": "5b9d9b0d7c9b83b4476054815649fa3c906593c808dd216cec39cc0aa4799656"
+    },
+    {
+      "path": "/private/tmp/p11-C-udp2-sjkpra10/plan.md",
+      "role": "private raw evidence/executed source; never published as raw contents",
+      "bytes": 3000,
+      "sha256": "e0348da87a7ccaf2cd1746eb9341432aa65095fb8a137a33f530ab5dab764210"
+    },
+    {
+      "path": "/private/tmp/p11-C-udp2-sjkpra10/udp-blocked-result.json",
+      "role": "private raw evidence/executed source; never published as raw contents",
+      "bytes": 12110,
+      "sha256": "2d3b6e15afc21416f34ad3e6e16cebb86e0fd3f34db4898c59ef21bf3205e36e"
+    },
+    {
+      "path": "/private/tmp/p11-C-udp3-mnbiv37u/cleanup.json",
+      "role": "private raw evidence/executed source; never published as raw contents",
+      "bytes": 1077,
+      "sha256": "a21e79c091ee47f3350f94c86cd7dc3dfb13b22a9284e1543382a4ccd48c9dfa"
+    },
+    {
+      "path": "/private/tmp/p11-C-udp3-mnbiv37u/code/C-native-base.py",
+      "role": "private raw evidence/executed source; never published as raw contents",
+      "bytes": 5840,
+      "sha256": "08c808318e1636ca71a4ce547e44fcf71ca5ffe1a8dbfe03bd23b77069118591"
+    },
+    {
+      "path": "/private/tmp/p11-C-udp3-mnbiv37u/code/udp-blocked-lib.py",
+      "role": "private raw evidence/executed source; never published as raw contents",
+      "bytes": 15388,
+      "sha256": "202ede6c3e36da34b5324ec0e10241f20a5874224680b87b0401db049f530866"
+    },
+    {
+      "path": "/private/tmp/p11-C-udp3-mnbiv37u/code/udp-blocked-peer.py",
+      "role": "private raw evidence/executed source; never published as raw contents",
+      "bytes": 1996,
+      "sha256": "2434f311543cb9867dc31e8b5b7dee16ad95db303c97cb059a3a94d1b112f713"
+    },
+    {
+      "path": "/private/tmp/p11-C-udp3-mnbiv37u/code/udp-blocked-run.py",
+      "role": "private raw evidence/executed source; never published as raw contents",
+      "bytes": 12695,
+      "sha256": "b895563a7950f19a8cffcbf21eba058122b58a35aa0ef5e39aecb4151c5d4d2c"
+    },
+    {
+      "path": "/private/tmp/p11-C-udp3-mnbiv37u/engine-33059-log-hashes.jsonl",
+      "role": "private raw evidence/executed source; never published as raw contents",
+      "bytes": 162,
+      "sha256": "e1166eb8aaa43956201af12c89d437a463e79fdf4d6e3ff9bda1aeff8f142928"
+    },
+    {
+      "path": "/private/tmp/p11-C-udp3-mnbiv37u/engine-33271-log-hashes.jsonl",
+      "role": "private raw evidence/executed source; never published as raw contents",
+      "bytes": 1450,
+      "sha256": "dd43007a43cf6b4287476201a86b7d81a3ce682732fc1925f05c6cb630727427"
+    },
+    {
+      "path": "/private/tmp/p11-C-udp3-mnbiv37u/engine-handles.json",
+      "role": "private raw evidence/executed source; never published as raw contents",
+      "bytes": 899,
+      "sha256": "095f19528f74046a4a5f91993858953a11744ea210d6bbdc1787ca41f1fb7d16"
+    },
+    {
+      "path": "/private/tmp/p11-C-udp3-mnbiv37u/fixture-ownership.json",
+      "role": "private raw evidence/executed source; never published as raw contents",
+      "bytes": 82,
+      "sha256": "5b9d9b0d7c9b83b4476054815649fa3c906593c808dd216cec39cc0aa4799656"
+    },
+    {
+      "path": "/private/tmp/p11-C-udp3-mnbiv37u/local-final-audit.json",
+      "role": "private raw evidence/executed source; never published as raw contents",
+      "bytes": 696,
+      "sha256": "d99b9afef2e123674345fbb2e31e15f16ea9ae97419ef52f83ccf05ed4f756fd"
+    },
+    {
+      "path": "/private/tmp/p11-C-udp3-mnbiv37u/peer-evidence/p11-C-udp-tih25w67/code/C-native-base.py",
+      "role": "private raw evidence/executed source; never published as raw contents",
+      "bytes": 5840,
+      "sha256": "08c808318e1636ca71a4ce547e44fcf71ca5ffe1a8dbfe03bd23b77069118591"
+    },
+    {
+      "path": "/private/tmp/p11-C-udp3-mnbiv37u/peer-evidence/p11-C-udp-tih25w67/code/udp-blocked-lib.py",
+      "role": "private raw evidence/executed source; never published as raw contents",
+      "bytes": 15388,
+      "sha256": "202ede6c3e36da34b5324ec0e10241f20a5874224680b87b0401db049f530866"
+    },
+    {
+      "path": "/private/tmp/p11-C-udp3-mnbiv37u/peer-evidence/p11-C-udp-tih25w67/code/udp-blocked-peer.py",
+      "role": "private raw evidence/executed source; never published as raw contents",
+      "bytes": 1994,
+      "sha256": "76c6b584409fff17e60d851aeb99f90a25252fdbe76252af4dc6c7efad9e937b"
+    },
+    {
+      "path": "/private/tmp/p11-C-udp3-mnbiv37u/peer-evidence/p11-C-udp-tih25w67/preflight.json",
+      "role": "private raw evidence/executed source; never published as raw contents",
+      "bytes": 1013,
+      "sha256": "2c4c6ce0028e04bd3e67630beff8ed1f83995901f72c542cce70311ebdd21003"
+    },
+    {
+      "path": "/private/tmp/p11-C-udp3-mnbiv37u/peer-evidence/p11-C-udp2-cysgvtr5/cleanup.json",
+      "role": "private raw evidence/executed source; never published as raw contents",
+      "bytes": 1075,
+      "sha256": "069905d2ca633fb5d58a1cb689d16c6368f7976aa742070e68ae303c81063980"
+    },
+    {
+      "path": "/private/tmp/p11-C-udp3-mnbiv37u/peer-evidence/p11-C-udp2-cysgvtr5/code/C-native-base.py",
+      "role": "private raw evidence/executed source; never published as raw contents",
+      "bytes": 5840,
+      "sha256": "08c808318e1636ca71a4ce547e44fcf71ca5ffe1a8dbfe03bd23b77069118591"
+    },
+    {
+      "path": "/private/tmp/p11-C-udp3-mnbiv37u/peer-evidence/p11-C-udp2-cysgvtr5/code/udp-blocked-lib.py",
+      "role": "private raw evidence/executed source; never published as raw contents",
+      "bytes": 15388,
+      "sha256": "202ede6c3e36da34b5324ec0e10241f20a5874224680b87b0401db049f530866"
+    },
+    {
+      "path": "/private/tmp/p11-C-udp3-mnbiv37u/peer-evidence/p11-C-udp2-cysgvtr5/code/udp-blocked-peer.py",
+      "role": "private raw evidence/executed source; never published as raw contents",
+      "bytes": 1996,
+      "sha256": "2434f311543cb9867dc31e8b5b7dee16ad95db303c97cb059a3a94d1b112f713"
+    },
+    {
+      "path": "/private/tmp/p11-C-udp3-mnbiv37u/peer-evidence/p11-C-udp2-cysgvtr5/engine-29924-log-hashes.jsonl",
+      "role": "private raw evidence/executed source; never published as raw contents",
+      "bytes": 324,
+      "sha256": "0cfc849113bc69ab334d68b66a2be6708fa1881716666e87f4e1cd5ffb6f2f03"
+    },
+    {
+      "path": "/private/tmp/p11-C-udp3-mnbiv37u/peer-evidence/p11-C-udp2-cysgvtr5/engine-30026-log-hashes.jsonl",
+      "role": "private raw evidence/executed source; never published as raw contents",
+      "bytes": 806,
+      "sha256": "0e1573e5671a862cd0155c87f2beecc831061c2c47a3ab3077bb3ee2f49f496e"
+    },
+    {
+      "path": "/private/tmp/p11-C-udp3-mnbiv37u/peer-evidence/p11-C-udp2-cysgvtr5/engine-handles.json",
+      "role": "private raw evidence/executed source; never published as raw contents",
+      "bytes": 897,
+      "sha256": "543d29bfd57916d38ed30bea7d7792078dfbbbf1d4ee75df4a2094ebb7d834bb"
+    },
+    {
+      "path": "/private/tmp/p11-C-udp3-mnbiv37u/peer-evidence/p11-C-udp2-cysgvtr5/fixture-ownership.json",
+      "role": "private raw evidence/executed source; never published as raw contents",
+      "bytes": 81,
+      "sha256": "66cd02bdf14356c9aa18f4f8402bd558d55392ec1605afad514f85c2529e3e7d"
+    },
+    {
+      "path": "/private/tmp/p11-C-udp3-mnbiv37u/peer-evidence/p11-C-udp3-a6yz6nss/cleanup.json",
+      "role": "private raw evidence/executed source; never published as raw contents",
+      "bytes": 1075,
+      "sha256": "72091db372c540cb836454b23607885352246452f6a1bfcaaf01cf8cc4d911c9"
+    },
+    {
+      "path": "/private/tmp/p11-C-udp3-mnbiv37u/peer-evidence/p11-C-udp3-a6yz6nss/code/C-native-base.py",
+      "role": "private raw evidence/executed source; never published as raw contents",
+      "bytes": 5840,
+      "sha256": "08c808318e1636ca71a4ce547e44fcf71ca5ffe1a8dbfe03bd23b77069118591"
+    },
+    {
+      "path": "/private/tmp/p11-C-udp3-mnbiv37u/peer-evidence/p11-C-udp3-a6yz6nss/code/udp-blocked-lib.py",
+      "role": "private raw evidence/executed source; never published as raw contents",
+      "bytes": 15388,
+      "sha256": "202ede6c3e36da34b5324ec0e10241f20a5874224680b87b0401db049f530866"
+    },
+    {
+      "path": "/private/tmp/p11-C-udp3-mnbiv37u/peer-evidence/p11-C-udp3-a6yz6nss/code/udp-blocked-peer.py",
+      "role": "private raw evidence/executed source; never published as raw contents",
+      "bytes": 1996,
+      "sha256": "2434f311543cb9867dc31e8b5b7dee16ad95db303c97cb059a3a94d1b112f713"
+    },
+    {
+      "path": "/private/tmp/p11-C-udp3-mnbiv37u/peer-evidence/p11-C-udp3-a6yz6nss/engine-32631-log-hashes.jsonl",
+      "role": "private raw evidence/executed source; never published as raw contents",
+      "bytes": 324,
+      "sha256": "cda99ea10120b323105f1ffebe55bd170547b948017e42d6fd4b0e36c0b3db96"
+    },
+    {
+      "path": "/private/tmp/p11-C-udp3-mnbiv37u/peer-evidence/p11-C-udp3-a6yz6nss/engine-32817-log-hashes.jsonl",
+      "role": "private raw evidence/executed source; never published as raw contents",
+      "bytes": 1289,
+      "sha256": "1473aad56878b2d9216759f61d6ca5412846f57d742357a01f0ea121e0bd5e53"
+    },
+    {
+      "path": "/private/tmp/p11-C-udp3-mnbiv37u/peer-evidence/p11-C-udp3-a6yz6nss/engine-handles.json",
+      "role": "private raw evidence/executed source; never published as raw contents",
+      "bytes": 897,
+      "sha256": "8280d807858c103f812bc2cf620837796067be7091b9c2a819859e17917701dd"
+    },
+    {
+      "path": "/private/tmp/p11-C-udp3-mnbiv37u/peer-evidence/p11-C-udp3-a6yz6nss/fixture-ownership.json",
+      "role": "private raw evidence/executed source; never published as raw contents",
+      "bytes": 81,
+      "sha256": "66cd02bdf14356c9aa18f4f8402bd558d55392ec1605afad514f85c2529e3e7d"
+    },
+    {
+      "path": "/private/tmp/p11-C-udp3-mnbiv37u/peer-evidence/p11-C-udp3-a6yz6nss/native/first/handle.json",
+      "role": "private raw evidence/executed source; never published as raw contents",
+      "bytes": 1008,
+      "sha256": "34bfcfe6241e709d2067a95d6af58a250683c3977666d12add83aced804ff93f"
+    },
+    {
+      "path": "/private/tmp/p11-C-udp3-mnbiv37u/peer-evidence/p11-C-udp3-a6yz6nss/native/first/instructions.txt",
+      "role": "private raw evidence/executed source; never published as raw contents",
+      "bytes": 174,
+      "sha256": "f78f9c792de17f308a95035581fdce5d710981304267cfa41228d00398cdf4eb"
+    },
+    {
+      "path": "/private/tmp/p11-C-udp3-mnbiv37u/peer-evidence/p11-C-udp3-a6yz6nss/native/first/last-message.json",
+      "role": "private raw evidence/executed source; never published as raw contents",
+      "bytes": 173,
+      "sha256": "e0bc24529e469aa4f6c39d9911be38e6916237c9c331e4b01ba8ef1111021121"
+    },
+    {
+      "path": "/private/tmp/p11-C-udp3-mnbiv37u/peer-evidence/p11-C-udp3-a6yz6nss/native/first/request.txt",
+      "role": "private raw evidence/executed source; never published as raw contents",
+      "bytes": 226,
+      "sha256": "837ccd0b9c717c72343451a35cb3aea070e1fcab5e473b4144e17e4e1656dc0e"
+    },
+    {
+      "path": "/private/tmp/p11-C-udp3-mnbiv37u/peer-evidence/p11-C-udp3-a6yz6nss/native/first/result.json",
+      "role": "private raw evidence/executed source; never published as raw contents",
+      "bytes": 2270,
+      "sha256": "2c0f96268ad95ec76d7e41a617219d058355d5560c3171886e06eff8b9e565e8"
+    },
+    {
+      "path": "/private/tmp/p11-C-udp3-mnbiv37u/peer-evidence/p11-C-udp3-a6yz6nss/native/first/schema.json",
+      "role": "private raw evidence/executed source; never published as raw contents",
+      "bytes": 446,
+      "sha256": "a94564bc95f2f76019e173127309de49be30d6ba25f4a8ef8b06a431fbad1585"
+    },
+    {
+      "path": "/private/tmp/p11-C-udp3-mnbiv37u/peer-evidence/p11-C-udp3-a6yz6nss/native/first/stderr.txt",
+      "role": "private raw evidence/executed source; never published as raw contents",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/private/tmp/p11-C-udp3-mnbiv37u/peer-evidence/p11-C-udp3-a6yz6nss/native/first/stdout.jsonl",
+      "role": "private raw evidence/executed source; never published as raw contents",
+      "bytes": 529,
+      "sha256": "2e5072bcf7ba63f3f3d5b3f4d7d11e41a50439e6d15217c138247678faa1dd7a"
+    },
+    {
+      "path": "/private/tmp/p11-C-udp3-mnbiv37u/peer-evidence/p11-C-udp3-a6yz6nss/native-attempts.json",
+      "role": "private raw evidence/executed source; never published as raw contents",
+      "bytes": 40,
+      "sha256": "25705a8c58ac58b11169533b0446b259ae18f6736d4ebfa13a61259bacb370cc"
+    },
+    {
+      "path": "/private/tmp/p11-C-udp3-mnbiv37u/peer-evidence-manifest.json",
+      "role": "private raw evidence/executed source; never published as raw contents",
+      "bytes": 12542,
+      "sha256": "36354cc11f5ea707b7db55bc4e28f3637fe2ff0c4a5f4d6621e27f0aebfafeee"
+    },
+    {
+      "path": "/private/tmp/p11-C-udp3-mnbiv37u/plan.md",
+      "role": "private raw evidence/executed source; never published as raw contents",
+      "bytes": 3583,
+      "sha256": "27c3a3c98989d11bdf4d8560e351e54a72599f63941cad91acff55927fbb546c"
+    },
+    {
+      "path": "/private/tmp/p11-C-udp3-mnbiv37u/udp-blocked-result.json",
+      "role": "private raw evidence/executed source; never published as raw contents",
+      "bytes": 17248,
+      "sha256": "19253e9c855ed9c55d09ec78314423538622c8f03cb65bb36f447f07e8a5ab91"
+    },
+    {
+      "path": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/deliverables/p11-live/udp-blocked-bootstrap-20261029.json",
+      "role": "public code or sanitized report",
+      "bytes": 5375,
+      "sha256": "f591daf02eec2becaadbe2d575f7a450ee46588bc5b546492da49b223ea3b5b0"
+    },
+    {
+      "path": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/deliverables/p11-live/udp-blocked-first-send-failure-20261029.json",
+      "role": "public code or sanitized report",
+      "bytes": 12563,
+      "sha256": "3e53f7ff7ab13db4b0042a1077ce559d2c2ed580f5ba056b63e6c9a8f60facc8"
+    },
+    {
+      "path": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/deliverables/p11-live/udp-blocked-lib.py",
+      "role": "public code or sanitized report",
+      "bytes": 15388,
+      "sha256": "202ede6c3e36da34b5324ec0e10241f20a5874224680b87b0401db049f530866"
+    },
+    {
+      "path": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/deliverables/p11-live/udp-blocked-location-20261029.json",
+      "role": "public code or sanitized report",
+      "bytes": 359,
+      "sha256": "e3128d0ea00d6cee574c87921e97f8e60e25c33b36d2ea04057c905940e07f09"
+    },
+    {
+      "path": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/deliverables/p11-live/udp-blocked-native-readback-20261029.json",
+      "role": "public code or sanitized report",
+      "bytes": 17248,
+      "sha256": "19253e9c855ed9c55d09ec78314423538622c8f03cb65bb36f447f07e8a5ab91"
+    },
+    {
+      "path": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/deliverables/p11-live/udp-blocked-peer.py",
+      "role": "public code or sanitized report",
+      "bytes": 1996,
+      "sha256": "2434f311543cb9867dc31e8b5b7dee16ad95db303c97cb059a3a94d1b112f713"
+    },
+    {
+      "path": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/deliverables/p11-live/udp-blocked-plan-20261029.md",
+      "role": "public code or sanitized report",
+      "bytes": 3583,
+      "sha256": "27c3a3c98989d11bdf4d8560e351e54a72599f63941cad91acff55927fbb546c"
+    },
+    {
+      "path": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/deliverables/p11-live/udp-blocked-preflight-results-20261029.json",
+      "role": "public code or sanitized report",
+      "bytes": 2307,
+      "sha256": "3e17e3dc5486fec039c7487423e906350f5d3b49ccc2198fbd4eccbab5895ec4"
+    },
+    {
+      "path": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/deliverables/p11-live/udp-blocked-preflight.py",
+      "role": "public code or sanitized report",
+      "bytes": 3472,
+      "sha256": "5f87079bb9d6c270a3d89caf2e11c37191bdb229662cfa15c193f65a6fd7ad8b"
+    },
+    {
+      "path": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/deliverables/p11-live/udp-blocked-results-20261029.json",
+      "role": "public code or sanitized report",
+      "bytes": 15545,
+      "sha256": "da3ce055f228aa69ec577889f0727780abbafdf63f3525b254f0bea7011e7f59"
+    },
+    {
+      "path": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/deliverables/p11-live/udp-blocked-run.py",
+      "role": "public code or sanitized report",
+      "bytes": 12695,
+      "sha256": "b895563a7950f19a8cffcbf21eba058122b58a35aa0ef5e39aecb4151c5d4d2c"
+    },
+    {
+      "path": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/deliverables/p11-live/udp-blocked-report-20261029.md",
+      "role": "public sanitized report",
+      "bytes": 7178,
+      "sha256": "4b52319564d78fd7dc3c405259006cfed6558b1e61e07e3cddbf8e2ca065618c"
+    }
+  ]
+}

@@ -1,0 +1,139 @@
+{
+  "scope": "actual-android-product-engine-artifact-and-native-smoke",
+  "sdk_substitution": false,
+  "phone_binary": "/data/data/com.termux/files/usr/tmp/xsm-net-product-co8sb0zw/target/aarch64-linux-android/release/xsm-net",
+  "sha256": "19c259be759a63cc149db1e846db48a3e35be5712d62c9572085250d0e31247a",
+  "bytes": 13041688,
+  "target": "aarch64-linux-android",
+  "elf": {
+    "elf_type": 3,
+    "elf_machine": 183,
+    "interpreter": "/system/bin/linker64",
+    "dynamic_dependencies": [
+      "libdl.so",
+      "libm.so",
+      "libc.so"
+    ]
+  },
+  "build": {
+    "exit": 0,
+    "elapsed_seconds": 260.38834738731384,
+    "target": "aarch64-linux-android",
+    "source_modified": false,
+    "global_rust_installed": false
+  },
+  "compiler_flags": {
+    "profile": "release",
+    "opt_level": 1,
+    "jobs": 4,
+    "strip": "symbols",
+    "rust_source_modified": false
+  },
+  "toolchain": {
+    "packages": [
+      {
+        "package": "rust_1.96.0_aarch64.deb",
+        "sha256": "a3a9055f4a991487f18ea37a69cb2e883cb1b3026d076556f4f923575e5ad672",
+        "bytes": 121216068
+      },
+      {
+        "package": "rust-std-aarch64-linux-android_1.96.0_aarch64.deb",
+        "sha256": "47b92b85c692337c055455e49e4cd81ff10f32bc909d4b084ab359ed43d6df0d",
+        "bytes": 4913892
+      },
+      {
+        "package": "libandroid-execinfo_0.1-3_aarch64.deb",
+        "sha256": "ff761f3975e5d0fc12b41274804a97ccfe23beac3e7e50c0d306ad84660a4668",
+        "bytes": 14980
+      }
+    ],
+    "prefix": "/data/data/com.termux/files/usr/tmp/xsm-net-product-co8sb0zw/rust-unpacked/data/data/com.termux/files/usr",
+    "versions": {
+      "rustc": {
+        "exit": 0,
+        "version": "rustc 1.96.0 (ac68faa20 2026-05-25) (built from a source tarball)",
+        "stderr_bytes": 0
+      },
+      "cargo": {
+        "exit": 0,
+        "version": "cargo 1.96.0 (30a34c682 2026-05-25) (built from a source tarball)",
+        "stderr_bytes": 0
+      }
+    },
+    "global_package_install": false
+  },
+  "source_sha256": {
+    "Cargo.lock": "1fe66764b9500ebb4bcacaf08e1380b7b76ffb61234ae8aa5982fd30ff79d210",
+    "Cargo.toml": "8f1e735b375130f64a5301f4a79fd3bb7edfe6330e796aabf7c667c79f9e4484",
+    "src/identity.rs": "666323f1a67decfe1c0112f64408122c4677c60ee0d51ae50d50326996964855",
+    "src/ipc.rs": "3b7b5825b615d3f5f32e95b093eb8499e9b833d25d172839f95243f15d51c234",
+    "src/lib.rs": "7875efd6d302586acf720391ed2aa66363db4d8d9e62553d30bbc7ad4224e94a",
+    "src/main.rs": "8d3a88dc59b97025662e6d64478ba77d90e9b946a6b27020a8e7eee3086c46a4",
+    "src/transport.rs": "50335a024f7c2f2fe89735569639ab7d33d61b3e3ae51b3d07497e67ff5563d0"
+  },
+  "source_matches_mac_snapshot": true,
+  "source_matches_current_repo": true,
+  "runtime_environment": {
+    "PATH": "/data/data/com.termux/files/usr/bin:/system/bin",
+    "HOME": "/data/data/com.termux/files/usr/tmp/xsm-net-product-co8sb0zw/run-home",
+    "TMPDIR": "/data/data/com.termux/files/usr/tmp/xsm-net-product-co8sb0zw/tmp",
+    "LD_LIBRARY_PATH": "/data/data/com.termux/files/usr/tmp/xsm-net-product-co8sb0zw/runtime-lib:/data/data/com.termux/files/usr/lib",
+    "SSL_CERT_FILE": "/data/data/com.termux/files/usr/etc/tls/cert.pem",
+    "RUST_BACKTRACE": "0",
+    "LD_PRELOAD": "/data/data/com.termux/files/usr/lib/libtermux-exec.so"
+  },
+  "native_bind_and_crypto_passed": true,
+  "runs": [
+    {
+      "pid": 17352,
+      "ready": true,
+      "bound_addresses": [
+        "0.0.0.0:57006",
+        "[::]:47841"
+      ],
+      "public_endpoint_id": "cef8b632ae44cd578c27e1d9c0d2967420903eb9f3971462b7130bade4184542",
+      "signature_verifies": true,
+      "altered_signature_input_rejected": true,
+      "address_id_matches": true,
+      "public_key_persists": null,
+      "exit": 0,
+      "reaped": true,
+      "stderr_bytes": 0,
+      "jni_error_marker": false
+    },
+    {
+      "pid": 17373,
+      "ready": true,
+      "bound_addresses": [
+        "0.0.0.0:58160",
+        "[::]:33991"
+      ],
+      "public_endpoint_id": "cef8b632ae44cd578c27e1d9c0d2967420903eb9f3971462b7130bade4184542",
+      "signature_verifies": true,
+      "altered_signature_input_rejected": true,
+      "address_id_matches": true,
+      "public_key_persists": true,
+      "exit": 0,
+      "reaped": true,
+      "stderr_bytes": 0,
+      "jni_error_marker": false
+    }
+  ],
+  "key_file_mode": "0o600",
+  "key_root_mode": "0o700",
+  "private_key_read": false,
+  "dns_tested": false,
+  "https_relay_certificate_tested": false,
+  "certificate_verification_disabled": false,
+  "global_rust_package_status": "",
+  "global_rust_query_exit": 1,
+  "private_raw_mac": "/private/tmp/xsm-phone-cross-52bfe12o/raw",
+  "private_raw_phone": "/data/data/com.termux/files/usr/tmp/xsm-net-product-co8sb0zw/raw",
+  "original_mac_cross_target": "aarch64-unknown-linux-musl",
+  "original_static_sha256": "90c3f31c6be974eddfd03156b002c5b8e5d881e975e5ac63175877bc06e1b051",
+  "original_static_runtime_result": "Termux loader rejected ET_EXEC; direct execution denied",
+  "first_execution_15_minute_target_met": false,
+  "phone_main_root_modified": false,
+  "global_profile_ssh_network_modified": false,
+  "rust_product_source_modified": false
+}

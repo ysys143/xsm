@@ -1,0 +1,129 @@
+{
+  "scope": "one explicit CLI/MCP parity attempt; no natural/no-instruction claim",
+  "result": "blocked-before-CLI-MCP-pair; no A16-01/A19-01 native parity credit",
+  "original_status": "not-completed-original-sample",
+  "original_result_preserved": true,
+  "original_result_SHA": "f8c860f9384000876850f74b0297c59c6b41812d51f3a332470933220d5e8eb7",
+  "source": "/private/tmp/xsm-final-receipt-frozen-i3u9pms3",
+  "source_unchanged": true,
+  "actors": [
+    {
+      "role": "reviewer",
+      "native_evidence": {
+        "native_pid": 91081,
+        "native_lstart": "Thu Oct 29 09:20:40 2026",
+        "native_session_id": "01a18507-c1da-70c0-8d2e-228917195c7f",
+        "runtime": "codex",
+        "home": "/Users/jaesolshin/.codex-3",
+        "registered_cwd": "/private/tmp/p13-interface-parity-native-9palncjy/review-worktree",
+        "kernel_process_cwd": "/private/tmp/p13-interface-parity-native-9palncjy/review-worktree",
+        "kernel_probe_exit": 0,
+        "native_generation_alive": true,
+        "MCP_pid": 91229,
+        "MCP_source_cwd": "/private/tmp/xsm-final-receipt-frozen-i3u9pms3"
+      },
+      "native_CLI_version": "codex-cli 0.164.0",
+      "original_exit_before_cleanup": null,
+      "calls": [
+        {
+          "tool": "xsm_inbox",
+          "completed": false
+        }
+      ],
+      "terminal_events": []
+    },
+    {
+      "role": "initiator",
+      "native_evidence": {
+        "native_pid": 91508,
+        "native_lstart": "Thu Oct 29 09:20:43 2026",
+        "native_session_id": "01a18507-cbc7-78e1-bd5a-3e6a51c7acaa",
+        "runtime": "codex",
+        "home": "/Users/jaesolshin/.codex-3",
+        "registered_cwd": "/private/tmp/p13-interface-parity-native-9palncjy/repository",
+        "kernel_process_cwd": "/private/tmp/p13-interface-parity-native-9palncjy/repository",
+        "kernel_probe_exit": 0,
+        "native_generation_alive": true,
+        "MCP_pid": 91623,
+        "MCP_source_cwd": "/private/tmp/xsm-final-receipt-frozen-i3u9pms3"
+      },
+      "native_CLI_version": "codex-cli 0.164.0",
+      "original_exit_before_cleanup": 0,
+      "calls": [],
+      "terminal_events": [
+        "turn.completed"
+      ]
+    }
+  ],
+  "actual_CLI_attempts": [
+    {
+      "native_event": 10,
+      "command": "/bin/zsh -lc \"python3 - <<'PY'\nfrom pathlib import Path\nimport subprocess\nbody=Path('parity-body.txt').read_bytes().decode('utf-8')\nr=subprocess.run(['xsm','ask','a1','--text',body,'--attachment','parity-material.md','--priority','next','--wake','never','--wait','60'],capture_output=True,text=True)\nprint(r.stdout,end='')\nprint(r.stderr,end='')\nprint('CLI_EXIT_CODE='+str(r.returncode))\nPY\"",
+      "outer_command_exit": 0,
+      "actual_nested_CLI_exit": 2,
+      "argument_parser_rejected_ask": true,
+      "output": "usage: xsm [-h] [--version] [--xsm-home XSM_HOME]\n           {list,who,join,leave,spawn,workers,reap,stop,attach,worker-finish,post,channel,doc,remote,mcp,approvals,approve,deny,link,unlink,reach,block,unblock,attempts,frameworks,projects,homes,prune,send,inbox,status,ledger,metrics,otlp-export,held,install,uninstall,doctor,statusline,selftest} ...\nxsm: error: argument command: invalid choice: 'ask' (choose from 'list', 'who', 'join', 'leave', 'spawn', 'workers', 'reap', 'stop', 'attach', 'worker-finish', 'post', 'channel', 'doc', 'remote', 'mcp', 'approvals', 'approve', 'deny', 'link', 'unlink', 'reach', 'block', 'unblock', 'attempts', 'frameworks', 'projects', 'homes', 'prune', 'send', 'inbox', 'status', 'ledger', 'metrics', 'otlp-export', 'held', 'install', 'uninstall', 'doctor', 'statusline', 'selftest')\nCLI_EXIT_CODE=2\n",
+      "output_SHA": "ee5f1c1a32e9915e40730ffec72fa95d12828ce278ec4489997320fa7fdc9705"
+    }
+  ],
+  "MCP_sender_ask_calls": 0,
+  "question_records": 0,
+  "copy_records": 0,
+  "actual_reply_or_ACKs": 0,
+  "prepared_body_SHA": "d5fe3f3ddb735fcbd6801bf008a6d7e68a20a8a1c07cf1f29f12c3c11f5e310b",
+  "prepared_material_SHA": "a493e50c9d640964e48e5a786d024c7b383d5a3bd71dcffe799ea35eac5de655",
+  "body_marker_and_file_marker_distinct": true,
+  "frozen_CLI_source_supports_ask": true,
+  "resolved_native_shell_xsm_path": "not captured; cannot prove frozen CLI was selected",
+  "failure_boundary": "actual CLI parser rejected ask before request/material dispatch; not evidence of sandbox denial or final-source ask implementation failure",
+  "evaluator_preparation_limit": "factory native shell used unqualified xsm; fixed-source CLI executable binding was not verified before the attempt",
+  "automatic_model_retries": 0,
+  "native_launches": 2,
+  "controller_send_ACK_index_repairs": 0,
+  "additional_human_inputs": 0,
+  "seconds": 41.907,
+  "profile_guard_unchanged": false,
+  "profile_guard_attribution": "unknown; no credential/profile inspection or evaluator config edit to diagnose it",
+  "original_immediate_cleanup_flags": [
+    {
+      "role": "reviewer",
+      "native_alive": false,
+      "MCP_same_generation_alive": true
+    },
+    {
+      "role": "initiator",
+      "native_alive": false,
+      "MCP_same_generation_alive": false
+    }
+  ],
+  "post_cleanup_kernel_readback": [
+    {
+      "role": "reviewer",
+      "kind": "native",
+      "pid": 91081,
+      "live_non_zombie_at_audit": false
+    },
+    {
+      "role": "reviewer",
+      "kind": "MCP",
+      "pid": 91229,
+      "live_non_zombie_at_audit": false
+    },
+    {
+      "role": "initiator",
+      "kind": "native",
+      "pid": 91508,
+      "live_non_zombie_at_audit": false
+    },
+    {
+      "role": "initiator",
+      "kind": "MCP",
+      "pid": 91623,
+      "live_non_zombie_at_audit": false
+    }
+  ],
+  "raw_changes_after_initial_manifest": [],
+  "cleanup_limit": "initial reviewer MCP alive flag was true just after TERM; later kernel readback is stored separately, original flag not rewritten",
+  "no_source_ledger_plan_edits": true,
+  "no_native_reruns_for_audit": true
+}

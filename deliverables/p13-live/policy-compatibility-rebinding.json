@@ -1,0 +1,1041 @@
+{
+  "schema": "xsm.policy-compatibility-rebinding.v1",
+  "mode": "read-only investigation; only requested JSON/MD written",
+  "requested_timebox_seconds": 600,
+  "bounded_scope": "지정 네 조건·현재selector/1700verbose logs·보존 native/raw·현 source review까지만 확인. 추가 실험/확장 조사 없음.",
+  "baseline": {
+    "acceptance_total": 70,
+    "acceptance_proven": 18,
+    "acceptance_partial": 49,
+    "acceptance_missing": 3,
+    "unfinished": 52,
+    "all_ledger_status_counts": {
+      "contradicted": 0,
+      "missing": 3,
+      "partial": 78,
+      "proven": 18
+    },
+    "all_ledger_rows": 99,
+    "denominator": "전체partial78에는 residual20/journey9 포함; acceptance partial은49",
+    "G10": {
+      "declared_status": "passed",
+      "passed": true,
+      "scope": "해당 단계 구현 경로의 기술 판정. 수용 조건 전체 통과와 구분",
+      "progress_note": "passed local technical contract: actual native CLI MCP6 cells/combined install/uninstall; fresh-profile first model roundtrip still unknown",
+      "entry_gates": [
+        "G01",
+        "G02",
+        "G04"
+      ],
+      "local_evidence": {
+        "refs": [
+          "gate-G10",
+          "clean-install-final",
+          "postqa-regression"
+        ],
+        "recorded_pass": true,
+        "scope": "기록된 로컬 gate만; 원 plan 선언 상태 및 전체 완료는 변경하지 않음"
+      }
+    },
+    "current_full_regression": [
+      {
+        "python": "Python 3.9.6",
+        "tests": 1700,
+        "summary": "OK",
+        "log": "/tmp/p13-doctor-privacy-v2-39.log",
+        "log_sha256": "f5f7bdb1cbb417f288aa9e0b2321fd07ac3e94f0490ce67c4e34fc6318eae06f"
+      },
+      {
+        "python": "Python 3.14.6",
+        "tests": 1700,
+        "summary": "OK",
+        "log": "/tmp/p13-doctor-privacy-v2-314.log",
+        "log_sha256": "d95520c6e04b7ac943ce82a9f4e0a18369fbfb70da4c4a9470fefe4873ee7d8a"
+      }
+    ],
+    "primary135_matches_frozen": true,
+    "manifest": "deliverables/p13-live/doctor-privacy-v2-source-manifest.json"
+  },
+  "current_source": {
+    "snapshot": "/private/tmp/xsm-doctor-privacy-v2-frozen-i7xbamec",
+    "manifest_path": "deliverables/p13-live/doctor-privacy-v2-source-manifest.json",
+    "manifest_sha256": "215cbfe165819fa9358d71d57ba069e0dbd8e48090701e81081da0e000871b64",
+    "135_primary_current_frozen_equal": true,
+    "full_runs": [
+      {
+        "python": "Python 3.9.6",
+        "tests": 1700,
+        "log": "/tmp/p13-doctor-privacy-v2-39.log",
+        "sha256": "f5f7bdb1cbb417f288aa9e0b2321fd07ac3e94f0490ce67c4e34fc6318eae06f",
+        "passed": true
+      },
+      {
+        "python": "Python 3.14.6",
+        "tests": 1700,
+        "log": "/tmp/p13-doctor-privacy-v2-314.log",
+        "sha256": "d95520c6e04b7ac943ce82a9f4e0a18369fbfb70da4c4a9470fefe4873ee7d8a",
+        "passed": true
+      }
+    ],
+    "regression_sha256": "847f818f6b20a6ca32d85cc83844bd0035ec360008c970ad17b8d60cff5239bb"
+  },
+  "original_frontier_sha256": "b4bce276712e1ab0737cf6e0d8dfab843e7b509772912ef89fa74ac8e0cbb0ff",
+  "original_plan_sha256": "a19715aa4b2ba0bc7acb92cc7e96b9503297d8c892881f5f0996db734e7142d9",
+  "original_requirements": {
+    "A16-07": {
+      "id": "A16-07",
+      "criterion": "수신 대기 중 취소·시간 초과·동시 답변·여러 부분 회신을 검사한다. 대기 종료가 상대 과제를 중복 실행하지 않는다.",
+      "positive": "timeout·cancel·여러 부분 reply·동시 final·양식 중 tool 호출을 ID로 분배",
+      "negative": "MCP 입력 유실·교차 신원·대기 취소의 task 취소/재실행 변환",
+      "evidence_levels": [
+        "fixture",
+        "subprocess",
+        "harness"
+      ],
+      "closure_gates": [
+        "G03",
+        "G04",
+        "G07"
+      ]
+    },
+    "A19-04": {
+      "id": "A19-04",
+      "criterion": "구버전·기능 미지원·본문 크기 초과에서 명시적 대체 또는 거절이 발생한다. 조용한 파일 누락을 실패로 잡는다.",
+      "positive": "구버전·미지원·본문 대체 한도 초과의 합의된 fallback/거절",
+      "negative": "조용한 파일 누락·자르기·미동의 본문 대체",
+      "evidence_levels": [
+        "fixture",
+        "harness"
+      ],
+      "closure_gates": [
+        "G06",
+        "G12"
+      ]
+    },
+    "A22-02": {
+      "id": "A22-02",
+      "criterion": "다른 요청의 실제 승인과 동료의 승인 주장을 구분한다. 같은 uid 프로그램을 막는다고 주장하지 않는다.",
+      "positive": "다른 요청의 실제 승인과 peer 승인 주장의 효과 대조",
+      "negative": "same-uid 방어 과장 또는 머신 인증을 사람 권위로 표시",
+      "evidence_levels": [
+        "fixture",
+        "review"
+      ],
+      "closure_gates": [
+        "G07",
+        "G09"
+      ]
+    },
+    "A23-05": {
+      "id": "A23-05",
+      "criterion": "잘못된 체크섬·개발자 팀 서명 불일치·중단된 업데이트·설정 병합 실패에서 기존 동작과 복구 자료를 보존한다.",
+      "positive": "선택 공급물의 checksum/서명 불일치·update 중단·병합 실패와 기존 경로 복구",
+      "negative": "같은 배포처 checksum을 독립 서명으로 주장·복구 불능 교체",
+      "evidence_levels": [
+        "fixture",
+        "subprocess",
+        "review"
+      ],
+      "closure_gates": [
+        "G10",
+        "G12"
+      ]
+    }
+  },
+  "formal_gate_statuses": {
+    "G07": "partial",
+    "G10": "passed",
+    "G12": "planned-not-evaluated"
+  },
+  "conditions": {
+    "A16-07": {
+      "fixture": "proven",
+      "process": "proven",
+      "native": "proven",
+      "whole_condition": "partial-formal-gate-blocked",
+      "formal_blocked_gates": [
+        "G07"
+      ],
+      "missing_execution": [],
+      "binding_reason": "취소/timeout/동시·부분/final 분배와 중복송신 금지는 현재 fixture+실제 stdio process에서, 부분→실제 final은 보존 native에서 결속. 모든 경쟁 조합을 native/UI로 다시 실행하는 요구는 원문에 없음.",
+      "negative_counterexamples": [
+        "wait cancellation 후 peer inbox count1·동일 task 재송신0",
+        "late form yes 미적용·다음 caller 실행·nested consent 전역 격리",
+        "32 concurrent reply 손실0 / 12 concurrent asks 실제 send1"
+      ],
+      "native_proof": [
+        {
+          "request_id": "11f8150b86184fc2",
+          "question_record": "/private/tmp/different-parent-native-3jr1o8uv/state/questions/11f8150b86184fc2.json",
+          "raw_sha256": "661a500e2035652eaa2e1aed041fab77ce2ed62fb4388acd7d0c9eb802a68a9e",
+          "replies": [
+            {
+              "reply_id": "6ef48ff9cb164b6f",
+              "outcome": null,
+              "body_sha256": "7af967c84175fe5003b20a957610fa6555d5ba2b90ca5395f60f75de1df0d11a",
+              "canonical_path": "/private/tmp/different-parent-native-3jr1o8uv/state/handoffs/a4954d0a7d3fc0a7dbf3f2878cb1e511967f8356f01d83470526b2d5652688b2/6ef48ff9cb164b6f.json",
+              "raw_sha256": "174005a51252a850a3ebf92e40216bfa16c886e5f5e9b8277d5435d02630b482",
+              "acknowledged": true
+            },
+            {
+              "reply_id": "e1b5c4deccb64851",
+              "outcome": "succeeded",
+              "body_sha256": "2564ab00ab60562a37f7947b06805f969d020011d17b4c75b067dd0c3d0736c6",
+              "canonical_path": "/private/tmp/different-parent-native-3jr1o8uv/state/handoffs/a4954d0a7d3fc0a7dbf3f2878cb1e511967f8356f01d83470526b2d5652688b2/e1b5c4deccb64851.json",
+              "raw_sha256": "5ce91fd217bb5d38a608f0991c95a3f6484e7bf1b2dd170398b03f6b56877154",
+              "acknowledged": true
+            }
+          ]
+        }
+      ],
+      "limits": [
+        "Native 실제 cancel notification/UI 표본으로 승격하지 않음. 이 미관측을 원문 밖 추가 mandatory cell로 가산하지 않음.",
+        "G07 formal UI/decision gate는 미통과 그대로.",
+        "historical native profile drift/cache warning은 원 보고 유지."
+      ],
+      "fixture_selectors": [
+        {
+          "path": "tests/test_questions.py",
+          "selector": "test_questions.QuestionsTest.test_timeout_cancel_keep_index_and_inbox_then_late_answer",
+          "line": 134,
+          "end_line": 147,
+          "snapshot_file_sha256": "cb5d55f5bc841a884c856ef09d1e4869d26094daaa2a396af8acf0d04cd35c94",
+          "current_file_matches": true,
+          "function_AST_sha256": "f7a90ae3e2e8a33af3614dae83b6bfa6f0313f986a4fc2dd8796ce1a0cd6eb1b",
+          "source_slice_sha256": "1c947c4d9995273d3c803294107d5131bb44fa20db4f6fee66725c92de811fcf",
+          "actual_1700_verbose_OK_lines": [
+            {
+              "python": "Python 3.9.6",
+              "line": 1238,
+              "line_sha256": "f79062f2c8e57edddb39aef320f030a89f94509586756ded4ca7b99eae00470b",
+              "log_sha256": "f5f7bdb1cbb417f288aa9e0b2321fd07ac3e94f0490ce67c4e34fc6318eae06f"
+            },
+            {
+              "python": "Python 3.14.6",
+              "line": 1240,
+              "line_sha256": "d8aa5c4797be8af48af50736006e7283929745c57a892a7f901b8f5852f2ec9f",
+              "log_sha256": "d95520c6e04b7ac943ce82a9f4e0a18369fbfb70da4c4a9470fefe4873ee7d8a"
+            }
+          ]
+        },
+        {
+          "path": "tests/test_questions.py",
+          "selector": "test_questions.QuestionsTest.test_parts_dedup_conflict_and_explicit_final",
+          "line": 87,
+          "end_line": 100,
+          "snapshot_file_sha256": "cb5d55f5bc841a884c856ef09d1e4869d26094daaa2a396af8acf0d04cd35c94",
+          "current_file_matches": true,
+          "function_AST_sha256": "16dd8a7aece715a8052f1ba9301b5937caf30b356a8991960ffe239b6ead9455",
+          "source_slice_sha256": "cf327b6eeee6ebb9711e531b01c793815b39cd97bc0f887b9b817fc80f010ea2",
+          "actual_1700_verbose_OK_lines": [
+            {
+              "python": "Python 3.9.6",
+              "line": 1228,
+              "line_sha256": "4032b598fcb87764584d71759e6ac7ca3f58bd3134f099a1ac726a693c1c870c",
+              "log_sha256": "f5f7bdb1cbb417f288aa9e0b2321fd07ac3e94f0490ce67c4e34fc6318eae06f"
+            },
+            {
+              "python": "Python 3.14.6",
+              "line": 1230,
+              "line_sha256": "924f322b35680ea10e74381dd2775a5b71e648d6c679b66acbace1a9ceaad25c",
+              "log_sha256": "d95520c6e04b7ac943ce82a9f4e0a18369fbfb70da4c4a9470fefe4873ee7d8a"
+            }
+          ]
+        },
+        {
+          "path": "tests/test_questions.py",
+          "selector": "test_questions.QuestionsTest.test_concurrent_reply_file_updates_no_lost_parts",
+          "line": 162,
+          "end_line": 170,
+          "snapshot_file_sha256": "cb5d55f5bc841a884c856ef09d1e4869d26094daaa2a396af8acf0d04cd35c94",
+          "current_file_matches": true,
+          "function_AST_sha256": "605123ea7d6f6e172ad11715953b73123f4f6426e0bceffe58ac5767c874de94",
+          "source_slice_sha256": "9fe6cad1d51a73a2fc603b0520c485ca5faa3d433d5f380fd354a55cb245b5ac",
+          "actual_1700_verbose_OK_lines": [
+            {
+              "python": "Python 3.9.6",
+              "line": 1214,
+              "line_sha256": "be04251c2026aab103a28b48df3d5e80392de89708f60f71aa48f294c3addd86",
+              "log_sha256": "f5f7bdb1cbb417f288aa9e0b2321fd07ac3e94f0490ce67c4e34fc6318eae06f"
+            },
+            {
+              "python": "Python 3.14.6",
+              "line": 1216,
+              "line_sha256": "cc542726cd48392790ef8ca914721b523ff6a54b5f820cfa33033f53db219bc1",
+              "log_sha256": "d95520c6e04b7ac943ce82a9f4e0a18369fbfb70da4c4a9470fefe4873ee7d8a"
+            }
+          ]
+        },
+        {
+          "path": "tests/test_questions.py",
+          "selector": "test_questions.QuestionsTest.test_concurrent_same_request_has_one_send",
+          "line": 172,
+          "end_line": 178,
+          "snapshot_file_sha256": "cb5d55f5bc841a884c856ef09d1e4869d26094daaa2a396af8acf0d04cd35c94",
+          "current_file_matches": true,
+          "function_AST_sha256": "a9a4090a537acd5aa72c6eb00868e54e89df7b0e1dd7663237d52f79cd58c4a6",
+          "source_slice_sha256": "493fa5b1bca055d2fbc083b689f090fe33fcaf797a4f9b8196ad87e11fd74f34",
+          "actual_1700_verbose_OK_lines": [
+            {
+              "python": "Python 3.9.6",
+              "line": 1215,
+              "line_sha256": "90c218d71cde34176d5a73fef743eecb10379ecb694bbfe03b20f1d8115be34d",
+              "log_sha256": "f5f7bdb1cbb417f288aa9e0b2321fd07ac3e94f0490ce67c4e34fc6318eae06f"
+            },
+            {
+              "python": "Python 3.14.6",
+              "line": 1217,
+              "line_sha256": "046e589ee26081c75de780ce59869e12a04eb5b62acd0d26b0ad3dd23578e2eb",
+              "log_sha256": "d95520c6e04b7ac943ce82a9f4e0a18369fbfb70da4c4a9470fefe4873ee7d8a"
+            }
+          ]
+        },
+        {
+          "path": "tests/test_mcp_wait_process.py",
+          "selector": "test_mcp_wait_process.McpWaitProcessTest.test_ping_cancel_lost_auto_id_and_late_reply_keep_inbox_and_request",
+          "line": 17,
+          "end_line": 103,
+          "snapshot_file_sha256": "92725ad677f5f0e964a1e20cf52ecdaab7b28b4f14a4060aa49ee0a09ad24385",
+          "current_file_matches": true,
+          "function_AST_sha256": "28941743e37d954269ef80c5959ed8bde677b399b60c810f97f645e55f9170cf",
+          "source_slice_sha256": "efe3dccf9f30ed737cd01c4499a640836eaab2190662ba9381cab69b259d0770",
+          "actual_1700_verbose_OK_lines": [
+            {
+              "python": "Python 3.9.6",
+              "line": 704,
+              "line_sha256": "1152e7d85a1c349b8b8d247f0587ddef1756f1cd0a40ebd900ec3dafc62b4b00",
+              "log_sha256": "f5f7bdb1cbb417f288aa9e0b2321fd07ac3e94f0490ce67c4e34fc6318eae06f"
+            },
+            {
+              "python": "Python 3.14.6",
+              "line": 704,
+              "line_sha256": "f851c81bb112d4acc1084897a37fd617c9dc745ca046be4cd59d39d12c612a27",
+              "log_sha256": "d95520c6e04b7ac943ce82a9f4e0a18369fbfb70da4c4a9470fefe4873ee7d8a"
+            }
+          ]
+        },
+        {
+          "path": "tests/test_mcp_dispatch.py",
+          "selector": "test_mcp_dispatch.McpDispatchTest.test_nested_forms_route_out_of_order_replies_to_their_own_caller",
+          "line": 40,
+          "end_line": 54,
+          "snapshot_file_sha256": "739d56142447b037847f43261807006d16246bfd94fe294d361dd873b43c6809",
+          "current_file_matches": true,
+          "function_AST_sha256": "0cb09706b8c6248c51514d400b04e6b71100140569e93e5ff54bb93bf1b38c19",
+          "source_slice_sha256": "8a45e46f5ee2f4c1c020895738e5a03a7ac5707c70501c5e3079d15fc60bd71d",
+          "actual_1700_verbose_OK_lines": [
+            {
+              "python": "Python 3.9.6",
+              "line": 658,
+              "line_sha256": "47d271a7c4e30559f2020f01d7fbbd2dce85df070b5213ae61531984a44dc382",
+              "log_sha256": "f5f7bdb1cbb417f288aa9e0b2321fd07ac3e94f0490ce67c4e34fc6318eae06f"
+            },
+            {
+              "python": "Python 3.14.6",
+              "line": 658,
+              "line_sha256": "fbd178ee57df9410a5ee1c2ce6492d5460675eec0937085afda7f315c36d4508",
+              "log_sha256": "d95520c6e04b7ac943ce82a9f4e0a18369fbfb70da4c4a9470fefe4873ee7d8a"
+            }
+          ]
+        },
+        {
+          "path": "tests/test_mcp_dispatch.py",
+          "selector": "test_mcp_dispatch.McpDispatchTest.test_cancelled_form_does_not_apply_a_late_yes_and_next_tool_still_runs",
+          "line": 56,
+          "end_line": 65,
+          "snapshot_file_sha256": "739d56142447b037847f43261807006d16246bfd94fe294d361dd873b43c6809",
+          "current_file_matches": true,
+          "function_AST_sha256": "48e64d89563afebbc3e65e9332fb62798093a38b5f08cb0a118a5c528e480052",
+          "source_slice_sha256": "0829a9ecdbf48234a63a351a5a279f9beacf011a1a636e2c190d7da76ad81708",
+          "actual_1700_verbose_OK_lines": [
+            {
+              "python": "Python 3.9.6",
+              "line": 656,
+              "line_sha256": "04a689983175dfda943e5a7f715b2086ea0f402e553c8cecf67c2ad5610f7ea8",
+              "log_sha256": "f5f7bdb1cbb417f288aa9e0b2321fd07ac3e94f0490ce67c4e34fc6318eae06f"
+            },
+            {
+              "python": "Python 3.14.6",
+              "line": 656,
+              "line_sha256": "53fdeafb48b9ee0141543396a4096b674a1a234581844986418f8ce10fa22d6b",
+              "log_sha256": "d95520c6e04b7ac943ce82a9f4e0a18369fbfb70da4c4a9470fefe4873ee7d8a"
+            }
+          ]
+        },
+        {
+          "path": "tests/test_mcp_dispatch.py",
+          "selector": "test_mcp_dispatch.McpDispatchTest.test_nested_calls_do_not_inherit_another_callers_consent_globals",
+          "line": 67,
+          "end_line": 85,
+          "snapshot_file_sha256": "739d56142447b037847f43261807006d16246bfd94fe294d361dd873b43c6809",
+          "current_file_matches": true,
+          "function_AST_sha256": "3273541f395af1fdafc09676e74da04fd084a87467a06c0ea1dccd759a36c37c",
+          "source_slice_sha256": "d69e9e1dc42acbb841f0d9beede3d35c9da866a4528cae45bf822a555cb3eda3",
+          "actual_1700_verbose_OK_lines": [
+            {
+              "python": "Python 3.9.6",
+              "line": 657,
+              "line_sha256": "1079e722093c21a014868a4f6b3b9d4e1ccc3cc6085a3b1a7282d4abed805a68",
+              "log_sha256": "f5f7bdb1cbb417f288aa9e0b2321fd07ac3e94f0490ce67c4e34fc6318eae06f"
+            },
+            {
+              "python": "Python 3.14.6",
+              "line": 657,
+              "line_sha256": "1fdad509bd784f642071565e1a35ae7a2b68a47a2e43e436f9b6c049c96d5b50",
+              "log_sha256": "d95520c6e04b7ac943ce82a9f4e0a18369fbfb70da4c4a9470fefe4873ee7d8a"
+            }
+          ]
+        }
+      ],
+      "product_selectors": [
+        {
+          "path": "xsm/questions.py",
+          "name": "wait_for",
+          "line": 174,
+          "end_line": 199,
+          "snapshot_sha256": "c039aea75a9a3e1aebcedcbc3a9ddaedf5bff4ca3b2f1153f3c7ab6a3e498270",
+          "current_same_bytes": true,
+          "AST_sha256": "697f61043246190dd40b3422534af0e39ba1da309a48e12976935cc367064287",
+          "prior_receipt315_file_sha256": "c039aea75a9a3e1aebcedcbc3a9ddaedf5bff4ca3b2f1153f3c7ab6a3e498270",
+          "AST_equal_to_receipt315": true
+        },
+        {
+          "path": "xsm/questions.py",
+          "name": "record_reply",
+          "line": 302,
+          "end_line": 335,
+          "snapshot_sha256": "c039aea75a9a3e1aebcedcbc3a9ddaedf5bff4ca3b2f1153f3c7ab6a3e498270",
+          "current_same_bytes": true,
+          "AST_sha256": "a92140f7bc1438868a7ea25ca3459c102872d2958b7a660d7591246fadfe5d5b",
+          "prior_receipt315_file_sha256": "c039aea75a9a3e1aebcedcbc3a9ddaedf5bff4ca3b2f1153f3c7ab6a3e498270",
+          "AST_equal_to_receipt315": true
+        },
+        {
+          "path": "xsm/mcp.py",
+          "name": "Server",
+          "line": 379,
+          "end_line": 1527,
+          "snapshot_sha256": "8f8a234180fd3be42dca7ebebadfe16ac399f755cbcfb7c5b8453a6406a6ca05",
+          "current_same_bytes": true,
+          "AST_sha256": "1780ea33250c2e6a550b066b9b77525710d378ac873642d096a5287c7b4ecec0",
+          "prior_receipt315_file_sha256": "8f8a234180fd3be42dca7ebebadfe16ac399f755cbcfb7c5b8453a6406a6ca05",
+          "AST_equal_to_receipt315": true
+        }
+      ]
+    },
+    "A19-04": {
+      "fixture": "proven",
+      "native": "partial",
+      "whole_condition": "partial-evidence-and-formal-gate-blocked",
+      "formal_blocked_gates": [
+        "G12"
+      ],
+      "missing_execution": [
+        "원 조건의 capability/구버전/본문 대체 경계 중 하나에 실제 native가 명시 fallback 또는 거절을 관측한 trace는 확인 범위에서 찾지 못함. 모든 음성 조합 native 재실행을 요구하는 것이 아님."
+      ],
+      "binding_reason": "unknown/unsupported/version0와 명시 inline·본문 한도 초과·무동의대체 금지는 정확한 fixture로 확인. 실제 native 자료3종의 완전 사본 열람·SHA/ACK는 정상 transfer의 범위로만 재사용. old-MCP body 왕복은 첨부 구버전 협상 성공이 아님.",
+      "negative_counterexamples": [
+        "capability None/unknown/False/version0 또는boolversion 자동fallback거절",
+        "명시inline시 전체원문·새body digest 결속, inline_bytes10 초과/binary 거절",
+        "count/file/total/quota 한도 실패시 incoming empty·body_sent false"
+      ],
+      "limits": [
+        "정상 caller-inline 첨부와 capability 미지원에 대한 본문 inline fallback은 서로 다른 경로.",
+        "remote 모든 하네스/버전 행렬을 새 요구로 만들지 않음.",
+        "G12/D12 공급·통합 미완은 별도."
+      ],
+      "fixture_selectors": [
+        {
+          "path": "tests/test_files.py",
+          "selector": "test_files.FilesTest.test_unknown_unsupported_and_old_capabilities_never_automatically_fallback",
+          "line": 420,
+          "end_line": 430,
+          "snapshot_file_sha256": "d1678a5d1a68e426df53c92d7f631f317342a8cab8a9514d520231b38103afe9",
+          "current_file_matches": true,
+          "function_AST_sha256": "24ac771b47c74feb95f3133036206648fd2145054fd2a3f631a2d8450d4ac041",
+          "source_slice_sha256": "471e0aa2ca8445ba57d43dc8509d338b260d74617d84f9bfb4c0d1cd145d3864",
+          "actual_1700_verbose_OK_lines": [
+            {
+              "python": "Python 3.9.6",
+              "line": 392,
+              "line_sha256": "ab017e1ec74196176c0afcd1075592d9518d6f6658eb7a95d18aca3d5a7dbf1b",
+              "log_sha256": "f5f7bdb1cbb417f288aa9e0b2321fd07ac3e94f0490ce67c4e34fc6318eae06f"
+            },
+            {
+              "python": "Python 3.14.6",
+              "line": 392,
+              "line_sha256": "11d692c20ac41da2943129a372cccc7261ca8f0d056700ce3b927afef4ffd1e4",
+              "log_sha256": "d95520c6e04b7ac943ce82a9f4e0a18369fbfb70da4c4a9470fefe4873ee7d8a"
+            }
+          ]
+        },
+        {
+          "path": "tests/test_files.py",
+          "selector": "test_files.FilesTest.test_explicit_inline_fallback_is_complete_and_requires_new_body_binding",
+          "line": 432,
+          "end_line": 447,
+          "snapshot_file_sha256": "d1678a5d1a68e426df53c92d7f631f317342a8cab8a9514d520231b38103afe9",
+          "current_file_matches": true,
+          "function_AST_sha256": "829ed12403c2672b14f69eb4d37872f4fffcbea59571b20ef510aeb838440786",
+          "source_slice_sha256": "b3add53417a1803782ca3c581497ad1f7203a28c173ae62ade624b1f6e90f327",
+          "actual_1700_verbose_OK_lines": [
+            {
+              "python": "Python 3.9.6",
+              "line": 360,
+              "line_sha256": "f8a594d40c6cf8004f25ac49e407f1d0cf578b29e3b1f220d883f96e8ff11894",
+              "log_sha256": "f5f7bdb1cbb417f288aa9e0b2321fd07ac3e94f0490ce67c4e34fc6318eae06f"
+            },
+            {
+              "python": "Python 3.14.6",
+              "line": 360,
+              "line_sha256": "366f9cc7c3dd7eed7baa047468ef9425f854b60cfb4f50d5de2dc1ce399045e0",
+              "log_sha256": "d95520c6e04b7ac943ce82a9f4e0a18369fbfb70da4c4a9470fefe4873ee7d8a"
+            }
+          ]
+        },
+        {
+          "path": "tests/test_files.py",
+          "selector": "test_files.FilesTest.test_explicit_count_size_and_quota_limits_fail_without_partial_delivery",
+          "line": 449,
+          "end_line": 461,
+          "snapshot_file_sha256": "d1678a5d1a68e426df53c92d7f631f317342a8cab8a9514d520231b38103afe9",
+          "current_file_matches": true,
+          "function_AST_sha256": "7714fa8e54928f661ca577dd3d93a20a1729b6ae46d390d6e653ff2e1341612c",
+          "source_slice_sha256": "86293adb932b95f0ad03de9dd9779bbc56ad2119c31f414029abec7592011621",
+          "actual_1700_verbose_OK_lines": [
+            {
+              "python": "Python 3.9.6",
+              "line": 358,
+              "line_sha256": "adba05f3e4735bdf0fe118e8ec564c5796d643c5b908e1877c7fba0d84866140",
+              "log_sha256": "f5f7bdb1cbb417f288aa9e0b2321fd07ac3e94f0490ce67c4e34fc6318eae06f"
+            },
+            {
+              "python": "Python 3.14.6",
+              "line": 358,
+              "line_sha256": "f2e2d9af9c8703a31df2a21bd83c276e4312ae8e8388a6b7988e1f47d891520b",
+              "log_sha256": "d95520c6e04b7ac943ce82a9f4e0a18369fbfb70da4c4a9470fefe4873ee7d8a"
+            }
+          ]
+        },
+        {
+          "path": "tests/test_files.py",
+          "selector": "test_files.FilesTest.test_capability_downgrade_keeps_previously_received_copies_readable",
+          "line": 557,
+          "end_line": 566,
+          "snapshot_file_sha256": "d1678a5d1a68e426df53c92d7f631f317342a8cab8a9514d520231b38103afe9",
+          "current_file_matches": true,
+          "function_AST_sha256": "22de1bd8024e74df0195cd8a256ad559e76b17e044276c2ce1b45d9f358b8be1",
+          "source_slice_sha256": "4f80d4e0ceddbc5309aed5d409deb3250c4ffa327f0167488215420e4d36abe2",
+          "actual_1700_verbose_OK_lines": [
+            {
+              "python": "Python 3.9.6",
+              "line": 345,
+              "line_sha256": "61b8c4c83b34f8ca49681314a1cd4a2987008781e3d5b4a9f289c54331ccfa47",
+              "log_sha256": "f5f7bdb1cbb417f288aa9e0b2321fd07ac3e94f0490ce67c4e34fc6318eae06f"
+            },
+            {
+              "python": "Python 3.14.6",
+              "line": 345,
+              "line_sha256": "e1b381d2fdadf75c2e12026512bbe48a08d02ec1bf93f2320b690848a1e61658",
+              "log_sha256": "d95520c6e04b7ac943ce82a9f4e0a18369fbfb70da4c4a9470fefe4873ee7d8a"
+            }
+          ]
+        },
+        {
+          "path": "tests/test_materials.py",
+          "selector": "test_materials.MaterialPreparationTest.test_unknown_peer_requires_explicit_fallback_and_reports_recovery_id",
+          "line": 35,
+          "end_line": 46,
+          "snapshot_file_sha256": "8768e8f43d9c5903ccf7696f97d9436b12ec65b16fa69f5de438fba46447d3df",
+          "current_file_matches": true,
+          "function_AST_sha256": "06f504fdd19fde640e9e0256cbaacc46c6c2dc3932f5e77b710f39d5971313e3",
+          "source_slice_sha256": "fc601e42ab1f21ee7d9dad26353b7f374b50eae456eb8585c0c68a26bd4fc842",
+          "actual_1700_verbose_OK_lines": [
+            {
+              "python": "Python 3.9.6",
+              "line": 655,
+              "line_sha256": "5abc026324b58348df91015639b40ad3426715ee1e77d74e259346cc9f694951",
+              "log_sha256": "f5f7bdb1cbb417f288aa9e0b2321fd07ac3e94f0490ce67c4e34fc6318eae06f"
+            },
+            {
+              "python": "Python 3.14.6",
+              "line": 655,
+              "line_sha256": "0b9f38e2a55d1c70691cf564c345274a45f7edaa0e6f7a8341f1ecc274cb6b7b",
+              "log_sha256": "d95520c6e04b7ac943ce82a9f4e0a18369fbfb70da4c4a9470fefe4873ee7d8a"
+            }
+          ]
+        }
+      ],
+      "product_selectors": [
+        {
+          "path": "xsm/files.py",
+          "name": "negotiate",
+          "line": 867,
+          "end_line": 894,
+          "snapshot_sha256": "01425c645b7047590c452aaa7ea4f348a17aa5e25481e8ae4597dee5ab1d1ca3",
+          "current_same_bytes": true,
+          "AST_sha256": "bba9f959aea8e761732612607cf15993e64630947f8f229249135be6fb87272b",
+          "prior_receipt315_file_sha256": "01425c645b7047590c452aaa7ea4f348a17aa5e25481e8ae4597dee5ab1d1ca3",
+          "AST_equal_to_receipt315": true
+        },
+        {
+          "path": "xsm/files.py",
+          "name": "receive",
+          "line": 759,
+          "end_line": 834,
+          "snapshot_sha256": "01425c645b7047590c452aaa7ea4f348a17aa5e25481e8ae4597dee5ab1d1ca3",
+          "current_same_bytes": true,
+          "AST_sha256": "e8a395ad8bd50bcd63f913c864bb64af4f3f46446747566f32341fc2fe626c9f",
+          "prior_receipt315_file_sha256": "01425c645b7047590c452aaa7ea4f348a17aa5e25481e8ae4597dee5ab1d1ca3",
+          "AST_equal_to_receipt315": true
+        },
+        {
+          "path": "xsm/materials.py",
+          "name": "prepare",
+          "line": 23,
+          "end_line": 105,
+          "snapshot_sha256": "ddedb680dfb98691a9b83f9ac1ce88119b6c308858b3f89f786e19bed0d771bd",
+          "current_same_bytes": true,
+          "AST_sha256": "f2123c5a02a593e61c272f4346d98cf110533ff0167a1fd4e19d34ad5ed29268",
+          "prior_receipt315_file_sha256": "ddedb680dfb98691a9b83f9ac1ce88119b6c308858b3f89f786e19bed0d771bd",
+          "AST_equal_to_receipt315": true
+        }
+      ]
+    },
+    "A22-02": {
+      "fixture": "proven",
+      "review": "proven-local-readonly-review",
+      "whole_condition": "partial-formal-gate-blocked",
+      "formal_blocked_gates": [
+        "G07"
+      ],
+      "missing_execution": [],
+      "binding_reason": "현재 provenance는 로컬 source/checked와 peer 표시데이터를 분리하고 peer키로 user/approval 승격 불가. 실제 다른 대상의 허용 A-C와 peer가 주장한 A-B 승인 효과를 fixture에서 대조. 이번 current source 읽기 검토로 review cell 결속.",
+      "negative_counterexamples": [
+        "A-C 실제 fixture link는 유지하되 fake peer approval로 A-B link 생성0",
+        "checked machine/peer는 permissions=unchanged, user/approval source 승격0",
+        "nested caller는 다른 caller consent globals 상속0"
+      ],
+      "review_authority": "이번 세션의 읽기 전용 source/evidence 검토. 새 독립 모델 호출·사람 승인 UI 검토라고 표시하지 않음.",
+      "context_native_replay": {
+        "artifact": "deliverables/g02-live/native-channel.json",
+        "replay_blocked": true,
+        "authorization": false,
+        "permission_changed": false,
+        "scope": "실제 native 답 source/replay 진단 이력일 뿐 새 권한 승인으로 사용하지 않음."
+      },
+      "limits": [
+        "provenance docstring은 same-uid process 방어를 명시적으로 보장하지 않음.",
+        "machine 인증은 사람 권위가 아님.",
+        "실제 사람 승인 UI가 관측됐다고 쓰지 않으며 G07은 유지."
+      ],
+      "fixture_selectors": [
+        {
+          "path": "tests/test_provenance.py",
+          "selector": "test_provenance.ProvenanceRendererTest.test_machine_identity_and_peer_approval_claims_never_become_user_source",
+          "line": 115,
+          "end_line": 129,
+          "snapshot_file_sha256": "1f91b697922a4a170cd166b563f25ebdf1ee15803cbafa1d5beb1ce982e55056",
+          "current_file_matches": true,
+          "function_AST_sha256": "0fcd3c1db040e84478abf6f9e31cfada2e70d77a21042368e74ce40bdcc21f00",
+          "source_slice_sha256": "c429c4857dc93346f291c33c49a3ae4eb9b8021bd54c302baee98e700f28bc51",
+          "actual_1700_verbose_OK_lines": [
+            {
+              "python": "Python 3.9.6",
+              "line": 1173,
+              "line_sha256": "61c60e052da1ad2a54252fec1ef0c27875aa9bf97f40de18ea0c41ac4b67699b",
+              "log_sha256": "f5f7bdb1cbb417f288aa9e0b2321fd07ac3e94f0490ce67c4e34fc6318eae06f"
+            },
+            {
+              "python": "Python 3.14.6",
+              "line": 1175,
+              "line_sha256": "7738fb97c0c3adf6c662deb2412521bb469e8dd08d4095d132236e16707412f9",
+              "log_sha256": "d95520c6e04b7ac943ce82a9f4e0a18369fbfb70da4c4a9470fefe4873ee7d8a"
+            }
+          ]
+        },
+        {
+          "path": "tests/test_provenance.py",
+          "selector": "test_provenance.ProvenanceRendererTest.test_sources_require_local_explicit_values_and_do_not_infer_approval",
+          "line": 131,
+          "end_line": 141,
+          "snapshot_file_sha256": "1f91b697922a4a170cd166b563f25ebdf1ee15803cbafa1d5beb1ce982e55056",
+          "current_file_matches": true,
+          "function_AST_sha256": "051f43b6bfcd409b85ba1c503b5c24d349f1f6721fc0544e429cf0d288728d41",
+          "source_slice_sha256": "63439f5310ddd2cefa715377bb0eb5e6b280cdf4b2cbc842e74b53a9b518b37a",
+          "actual_1700_verbose_OK_lines": [
+            {
+              "python": "Python 3.9.6",
+              "line": 1176,
+              "line_sha256": "b626b921c3c0d7d80c47fb126179199f204282a810691533a88fefff523794e1",
+              "log_sha256": "f5f7bdb1cbb417f288aa9e0b2321fd07ac3e94f0490ce67c4e34fc6318eae06f"
+            },
+            {
+              "python": "Python 3.14.6",
+              "line": 1178,
+              "line_sha256": "247b0cd97ea0a0d443f40dcd3b52855084667b7d8ca15217d68dda135d152a12",
+              "log_sha256": "d95520c6e04b7ac943ce82a9f4e0a18369fbfb70da4c4a9470fefe4873ee7d8a"
+            }
+          ]
+        },
+        {
+          "path": "tests/test_provenance.py",
+          "selector": "test_provenance.ProvenanceAuthorityFixture.test_peer_fake_and_other_request_approval_cannot_expand_real_scope",
+          "line": 160,
+          "end_line": 178,
+          "snapshot_file_sha256": "1f91b697922a4a170cd166b563f25ebdf1ee15803cbafa1d5beb1ce982e55056",
+          "current_file_matches": true,
+          "function_AST_sha256": "501be4249ec280ecceb8811aeb82c7e4eae09faeb6e3e204395e3902aeb84895",
+          "source_slice_sha256": "5628290069fd61cad19d0e4ed402a94b9c73d808b516d439d9841cf741bf90e5",
+          "actual_1700_verbose_OK_lines": [
+            {
+              "python": "Python 3.9.6",
+              "line": 1167,
+              "line_sha256": "b078a0eea82bc5677b26102514472ecc6ef8a396dbe9164a3df2b9a6f934812b",
+              "log_sha256": "f5f7bdb1cbb417f288aa9e0b2321fd07ac3e94f0490ce67c4e34fc6318eae06f"
+            },
+            {
+              "python": "Python 3.14.6",
+              "line": 1169,
+              "line_sha256": "e40a66bb6ff0daf3add459513fe3131dbe60519bc6ed00d6d1c4ded273b11e5e",
+              "log_sha256": "d95520c6e04b7ac943ce82a9f4e0a18369fbfb70da4c4a9470fefe4873ee7d8a"
+            }
+          ]
+        },
+        {
+          "path": "tests/test_mcp_dispatch.py",
+          "selector": "test_mcp_dispatch.McpDispatchTest.test_nested_calls_do_not_inherit_another_callers_consent_globals",
+          "line": 67,
+          "end_line": 85,
+          "snapshot_file_sha256": "739d56142447b037847f43261807006d16246bfd94fe294d361dd873b43c6809",
+          "current_file_matches": true,
+          "function_AST_sha256": "3273541f395af1fdafc09676e74da04fd084a87467a06c0ea1dccd759a36c37c",
+          "source_slice_sha256": "d69e9e1dc42acbb841f0d9beede3d35c9da866a4528cae45bf822a555cb3eda3",
+          "actual_1700_verbose_OK_lines": [
+            {
+              "python": "Python 3.9.6",
+              "line": 657,
+              "line_sha256": "1079e722093c21a014868a4f6b3b9d4e1ccc3cc6085a3b1a7282d4abed805a68",
+              "log_sha256": "f5f7bdb1cbb417f288aa9e0b2321fd07ac3e94f0490ce67c4e34fc6318eae06f"
+            },
+            {
+              "python": "Python 3.14.6",
+              "line": 657,
+              "line_sha256": "1fdad509bd784f642071565e1a35ae7a2b68a47a2e43e436f9b6c049c96d5b50",
+              "log_sha256": "d95520c6e04b7ac943ce82a9f4e0a18369fbfb70da4c4a9470fefe4873ee7d8a"
+            }
+          ]
+        }
+      ],
+      "product_selectors": [
+        {
+          "path": "xsm/provenance.py",
+          "name": "render_source",
+          "line": 73,
+          "end_line": 88,
+          "snapshot_sha256": "7639e2b111f964a6eaa8031408fda9fc094eaa9c714653085b0f5ea5fbf755d6",
+          "current_same_bytes": true,
+          "AST_sha256": "a3fb473260cb1fc170343f5bab0c2b53693eaef2d4309a8c858d6527d0cee238",
+          "prior_receipt315_file_sha256": "7639e2b111f964a6eaa8031408fda9fc094eaa9c714653085b0f5ea5fbf755d6",
+          "AST_equal_to_receipt315": true
+        },
+        {
+          "path": "xsm/provenance.py",
+          "name": "render_peer",
+          "line": 91,
+          "end_line": 116,
+          "snapshot_sha256": "7639e2b111f964a6eaa8031408fda9fc094eaa9c714653085b0f5ea5fbf755d6",
+          "current_same_bytes": true,
+          "AST_sha256": "da07ed756fb80e556d98648eadbacd64ca0df0af0052685bd562984801f601ac",
+          "prior_receipt315_file_sha256": "7639e2b111f964a6eaa8031408fda9fc094eaa9c714653085b0f5ea5fbf755d6",
+          "AST_equal_to_receipt315": true
+        },
+        {
+          "path": "xsm/consent.py",
+          "name": "_take",
+          "line": 634,
+          "end_line": 684,
+          "snapshot_sha256": "26adb2e00e2466594a6dee3fe4850cc6ee8ee20c7187c0e1f490d51d603b95e0",
+          "current_same_bytes": true,
+          "AST_sha256": "3340948c38778183d4f3388141c3c77b9daeebb00905a0a096d1f3d632d6fbb6",
+          "prior_receipt315_file_sha256": "26adb2e00e2466594a6dee3fe4850cc6ee8ee20c7187c0e1f490d51d603b95e0",
+          "AST_equal_to_receipt315": true
+        },
+        {
+          "path": "xsm/consent.py",
+          "name": "_matches",
+          "line": 591,
+          "end_line": 594,
+          "snapshot_sha256": "26adb2e00e2466594a6dee3fe4850cc6ee8ee20c7187c0e1f490d51d603b95e0",
+          "current_same_bytes": true,
+          "AST_sha256": "14432800b0119bb3e0d05fe71517b00e84324bc1c9c143a4a70f39dcfb58eee6",
+          "prior_receipt315_file_sha256": "26adb2e00e2466594a6dee3fe4850cc6ee8ee20c7187c0e1f490d51d603b95e0",
+          "AST_equal_to_receipt315": true
+        }
+      ]
+    },
+    "A23-05": {
+      "fixture": "proven",
+      "process": "proven",
+      "review": "proven-local-readonly-review",
+      "whole_condition": "partial-formal-gate-blocked",
+      "formal_blocked_gates": [
+        "G12"
+      ],
+      "missing_execution": [],
+      "binding_reason": "checksum/team mismatch·중단 copy·publish/CAS/merge 실패에서 pointer/settings/runtime 보존을 fixture로, 실제 reader subprocess 생존/readback을 process로 결속. 공급 사실 unknown/caller-provided 계약을 현재 source에서 review.",
+      "negative_counterexamples": [
+        "expected_digest mismatch와 verified=True+다른observed_team이면 SupplyError, 기존settings/CURRENT/id 불변",
+        "copy2 OSError 후 이전pointer/link/reader 원본 보존",
+        "metadata CAS 실패 rollback은 자기pointer만 복구, 늦은 사용자 편집은 conflict로 보존"
+      ],
+      "review_authority": "이번 읽기 전용 검토 및 과거 B05 P10 review 중 signature caller-provided/unknown 부분만 보조. 과거 Medium3 전체를 해결 승인으로 재작성하지 않음.",
+      "limits": [
+        "서명 verifier는 여기서 실행하지 않음. signature는 caller-provided facts이며 실제 publisher 서명 인증 증거가 아님.",
+        "checksum_independent_authentication=False, 같은 배포처checksum을 독립서명이라고 하지 않음.",
+        "중단 fault는 fixture OSError, 실제 process는 old reader 생존이다. 모든 실패에 updater/native SIGKILL을 새 필수로 추가하지 않음.",
+        "선택 원격 공급물/P12/G12가 없으므로 formal 전체 종료는 불가."
+      ],
+      "fixture_selectors": [
+        {
+          "path": "tests/test_install_safety.py",
+          "selector": "test_install_safety.InstallerSafetyTest.test_bad_checksum_and_signature_team_leave_existing_runtime_and_settings_unchanged",
+          "line": 214,
+          "end_line": 228,
+          "snapshot_file_sha256": "0a5ae8020ca9042b20354adaddc02bff9cd1923ca3e813fda8575a011c1896b7",
+          "current_file_matches": true,
+          "function_AST_sha256": "dc2ede448a862288df197161c8ecc6dd96c0f963173414a12b29921bede168a8",
+          "source_slice_sha256": "1a0b6fa87e6497f93c157608802bef73738c0ad03b011eb78eee881baeaf6d82",
+          "actual_1700_verbose_OK_lines": [
+            {
+              "python": "Python 3.9.6",
+              "line": 583,
+              "line_sha256": "ac5206b90736fef282c71d38ab15ef7ca23a8576676bef8b43815da53edf1ae8",
+              "log_sha256": "f5f7bdb1cbb417f288aa9e0b2321fd07ac3e94f0490ce67c4e34fc6318eae06f"
+            },
+            {
+              "python": "Python 3.14.6",
+              "line": 583,
+              "line_sha256": "2d7fdb21b63e027b38996fe8d2df8b4d0f13524782b4067cda33ffc7fec1a071",
+              "log_sha256": "d95520c6e04b7ac943ce82a9f4e0a18369fbfb70da4c4a9470fefe4873ee7d8a"
+            }
+          ]
+        },
+        {
+          "path": "tests/test_install_safety.py",
+          "selector": "test_install_safety.InstallerSafetyTest.test_interrupted_copy_preserves_old_reader_pointer_and_metadata",
+          "line": 230,
+          "end_line": 240,
+          "snapshot_file_sha256": "0a5ae8020ca9042b20354adaddc02bff9cd1923ca3e813fda8575a011c1896b7",
+          "current_file_matches": true,
+          "function_AST_sha256": "6219991a850b3ac979cec3a343c1b18da6f776cebf70ff680710372444e1857e",
+          "source_slice_sha256": "e22a358b22ba4c6529a8127e336f8d04adbc052b61641517e3b008dde7868911",
+          "actual_1700_verbose_OK_lines": [
+            {
+              "python": "Python 3.9.6",
+              "line": 588,
+              "line_sha256": "f806be06527e03091b11c5bcb023dca8e59966bd80892e982c1bd41a2186213b",
+              "log_sha256": "f5f7bdb1cbb417f288aa9e0b2321fd07ac3e94f0490ce67c4e34fc6318eae06f"
+            },
+            {
+              "python": "Python 3.14.6",
+              "line": 588,
+              "line_sha256": "dbc5ab8ae0ccde48e38ca4e180b903dd5a54e1aa0c60f1007eb2709e089ed72e",
+              "log_sha256": "d95520c6e04b7ac943ce82a9f4e0a18369fbfb70da4c4a9470fefe4873ee7d8a"
+            }
+          ]
+        },
+        {
+          "path": "tests/test_install_safety.py",
+          "selector": "test_install_safety.InstallerSafetyTest.test_metadata_publish_failure_restores_only_our_pointer_and_retains_old_runtime",
+          "line": 242,
+          "end_line": 257,
+          "snapshot_file_sha256": "0a5ae8020ca9042b20354adaddc02bff9cd1923ca3e813fda8575a011c1896b7",
+          "current_file_matches": true,
+          "function_AST_sha256": "96ed97e323d5b17cf18e6b929a07d93235e48ff3bd4abb0f99766b8ca9cc1e3e",
+          "source_slice_sha256": "b6d838b0eb8ec92152a07cf3d6f66fe73a9fd93656275cf2e9c006a569853ac3",
+          "actual_1700_verbose_OK_lines": [
+            {
+              "python": "Python 3.9.6",
+              "line": 591,
+              "line_sha256": "44a88937e2fb68318009f75799c4effc9a5a5d70dac6f3492a0aa088df278f17",
+              "log_sha256": "f5f7bdb1cbb417f288aa9e0b2321fd07ac3e94f0490ce67c4e34fc6318eae06f"
+            },
+            {
+              "python": "Python 3.14.6",
+              "line": 591,
+              "line_sha256": "0f0867f1bd76f985a2d8c4fefb18ab46bc7ee6e6a8d51dd4ba531c148dffa64a",
+              "log_sha256": "d95520c6e04b7ac943ce82a9f4e0a18369fbfb70da4c4a9470fefe4873ee7d8a"
+            }
+          ]
+        },
+        {
+          "path": "tests/test_install_safety.py",
+          "selector": "test_install_safety.InstallerSafetyTest.test_settings_changed_after_plan_are_preserved_and_not_registered_as_installed",
+          "line": 47,
+          "end_line": 61,
+          "snapshot_file_sha256": "0a5ae8020ca9042b20354adaddc02bff9cd1923ca3e813fda8575a011c1896b7",
+          "current_file_matches": true,
+          "function_AST_sha256": "d36518228a1546e4ffad1b7c0abdd11545466785e720bbebfaa9933772e5116c",
+          "source_slice_sha256": "da759965a55c99d77549734c9f48e902d69e143825bb76fc1376eeb63aa2ef83",
+          "actual_1700_verbose_OK_lines": [
+            {
+              "python": "Python 3.9.6",
+              "line": 592,
+              "line_sha256": "bd4a36b5d0c777b516219b9b3c6523edf525ca645241f330de5f95dec107429a",
+              "log_sha256": "f5f7bdb1cbb417f288aa9e0b2321fd07ac3e94f0490ce67c4e34fc6318eae06f"
+            },
+            {
+              "python": "Python 3.14.6",
+              "line": 592,
+              "line_sha256": "7983a327893aa13606bd6135e90cc2e155e67f59f59cb1d4c0acf1cf137bcddd",
+              "log_sha256": "d95520c6e04b7ac943ce82a9f4e0a18369fbfb70da4c4a9470fefe4873ee7d8a"
+            }
+          ]
+        },
+        {
+          "path": "tests/test_install_safety.py",
+          "selector": "test_install_safety.InstallerSafetyTest.test_settings_changed_during_backup_are_preserved_with_their_mode",
+          "line": 63,
+          "end_line": 76,
+          "snapshot_file_sha256": "0a5ae8020ca9042b20354adaddc02bff9cd1923ca3e813fda8575a011c1896b7",
+          "current_file_matches": true,
+          "function_AST_sha256": "28ceb051785656d070d98d9330c44efcb50bfdc5e94272196e6be67d3e3fb099",
+          "source_slice_sha256": "2851075089fe01771592d23d242b5a1522832709beeaed6268ed943b8a2fa59f",
+          "actual_1700_verbose_OK_lines": [
+            {
+              "python": "Python 3.9.6",
+              "line": 593,
+              "line_sha256": "4a67f3d24be4c59de7b0ad9934e039b1478e1c059bcba6c68c7afa1f3f6b1ffd",
+              "log_sha256": "f5f7bdb1cbb417f288aa9e0b2321fd07ac3e94f0490ce67c4e34fc6318eae06f"
+            },
+            {
+              "python": "Python 3.14.6",
+              "line": 593,
+              "line_sha256": "fc52ab9cdfa72e37d2970d9a8beb2c7a124b83471b630c9bea2fb4aee77c46d1",
+              "log_sha256": "d95520c6e04b7ac943ce82a9f4e0a18369fbfb70da4c4a9470fefe4873ee7d8a"
+            }
+          ]
+        },
+        {
+          "path": "tests/test_install_safety.py",
+          "selector": "test_install_safety.InstallerSafetyTest.test_live_old_reader_survives_upgrade_and_prune_and_can_read_again",
+          "line": 270,
+          "end_line": 293,
+          "snapshot_file_sha256": "0a5ae8020ca9042b20354adaddc02bff9cd1923ca3e813fda8575a011c1896b7",
+          "current_file_matches": true,
+          "function_AST_sha256": "283b5ce94d1d99d8fd1726df65e0b6502807c00f68b40e0921c4aec205431823",
+          "source_slice_sha256": "06be95a52eaa5709420803d98d03a45488ac70de3a665c5d02a4f35c19a5ee01",
+          "actual_1700_verbose_OK_lines": [
+            {
+              "python": "Python 3.9.6",
+              "line": 589,
+              "line_sha256": "35bdb5a8d9cf13c9e71e42c8d6fe9729b0fc3f965522ae2b69e04d3f8c8a9cd7",
+              "log_sha256": "f5f7bdb1cbb417f288aa9e0b2321fd07ac3e94f0490ce67c4e34fc6318eae06f"
+            },
+            {
+              "python": "Python 3.14.6",
+              "line": 589,
+              "line_sha256": "0d3ea58b03581b6e20707d46022b50fee3b3aaa2998a41d08eb3d130734d1d8a",
+              "log_sha256": "d95520c6e04b7ac943ce82a9f4e0a18369fbfb70da4c4a9470fefe4873ee7d8a"
+            }
+          ]
+        },
+        {
+          "path": "tests/test_install_safety.py",
+          "selector": "test_install_safety.InstallerSafetyTest.test_supply_facts_do_not_invent_signature_checksum_or_license",
+          "line": 201,
+          "end_line": 212,
+          "snapshot_file_sha256": "0a5ae8020ca9042b20354adaddc02bff9cd1923ca3e813fda8575a011c1896b7",
+          "current_file_matches": true,
+          "function_AST_sha256": "6c228ef107974479478c2e4a7a2994658ce298dcc29b2e6cd3e05b7085084908",
+          "source_slice_sha256": "155e9c9154385e407bb3242b4bcd7962fb7683051269ac6ff8cc58aa4f50c1ef",
+          "actual_1700_verbose_OK_lines": [
+            {
+              "python": "Python 3.9.6",
+              "line": 595,
+              "line_sha256": "ba3fbd300b934a2d80d960906e1bc0802468a198a3626bdcdad1ef3b3dd33254",
+              "log_sha256": "f5f7bdb1cbb417f288aa9e0b2321fd07ac3e94f0490ce67c4e34fc6318eae06f"
+            },
+            {
+              "python": "Python 3.14.6",
+              "line": 595,
+              "line_sha256": "b47b27df90424625455c177fc2a7df627e26f2052ae408f3177e0199dcf9185d",
+              "log_sha256": "d95520c6e04b7ac943ce82a9f4e0a18369fbfb70da4c4a9470fefe4873ee7d8a"
+            }
+          ]
+        }
+      ],
+      "product_selectors": [
+        {
+          "path": "xsm/install.py",
+          "name": "supply_report",
+          "line": 870,
+          "end_line": 899,
+          "snapshot_sha256": "a8e712de6e8b2b9f368946333a6c8793168c6734484be45a60dbe967d0aa1960",
+          "current_same_bytes": true,
+          "AST_sha256": "184b86514a7e7f2e08a3aaa99d30df0a5e8df7ed6fa260aaa1166a5baaa81df6",
+          "prior_receipt315_file_sha256": "6b6facc89dee67bf27899cbae9e36cfb701b2c497d2a1fc33a43cf8e49daccd2",
+          "AST_equal_to_receipt315": true
+        },
+        {
+          "path": "xsm/install.py",
+          "name": "_make_snapshot",
+          "line": 917,
+          "end_line": 1007,
+          "snapshot_sha256": "a8e712de6e8b2b9f368946333a6c8793168c6734484be45a60dbe967d0aa1960",
+          "current_same_bytes": true,
+          "AST_sha256": "7710e926dd5c6d74f2c7be34cacde2536df5ea398fad0bf19eaabf434ea8fa53",
+          "prior_receipt315_file_sha256": "6b6facc89dee67bf27899cbae9e36cfb701b2c497d2a1fc33a43cf8e49daccd2",
+          "AST_equal_to_receipt315": true
+        },
+        {
+          "path": "xsm/install.py",
+          "name": "_cas_bytes",
+          "line": 174,
+          "end_line": 195,
+          "snapshot_sha256": "a8e712de6e8b2b9f368946333a6c8793168c6734484be45a60dbe967d0aa1960",
+          "current_same_bytes": true,
+          "AST_sha256": "fcd416e22fc9e9ee558879537a0a95246b554d4e826f51902a2b80631dc03766",
+          "prior_receipt315_file_sha256": "6b6facc89dee67bf27899cbae9e36cfb701b2c497d2a1fc33a43cf8e49daccd2",
+          "AST_equal_to_receipt315": true
+        }
+      ]
+    }
+  },
+  "evidence_sha256": {
+    "deliverables/p13-live/different-parent-native-20261029-5564a814/report.md": "9c96d9ccdd5b0bed4bf91047c5f1a8e64b1e2794e6f49093e6fabccb0c60bda4",
+    "deliverables/p13-live/material-boundary-native-20261029-a30cd9e0/report.md": "2620f326b62fb449757728bb6dab2ffb2ac8268943f01e672624eb8b120fbd3e",
+    "deliverables/p13-live/material-boundary-native-20261029-a30cd9e0/summary.json": "fd900820f579645d72764dcdbf39b05506d87d8720602167a0a3dc95a7c2672b",
+    "deliverables/p13-live/material-boundary-native-20261029-a30cd9e0/manifest.json": "6cb098fe11760b7d1fdcc9735c860427aafe68f6be98d53168c849ba45c3783c",
+    "deliverables/p06-live/native-files.json": "5037823eac6d29ae70c13c166da103bd5ee84643ead67a8ad259fb459b4d4ba7",
+    "deliverables/p06-live/native-claude-files.json": "a432385e7fe483c8893eec430401de09e78f6cb467dbeff25e1ff9adbc5e0302",
+    "deliverables/p10-live/native-upgrade.json": "e07dd307d0fa15aa68f6fc504a98ed1281913bc58cc6d9d01dd616db6268972c",
+    "deliverables/p10-live/runtime-readback.json": "3e8ade6b842ba034c176fc451f1b42058033f452dd71b0d27e167c54a4638f7d",
+    "deliverables/g02-live/native-channel.json": "26feff018567bcfc660c501bdcafd3165740cd57cd970ce8c6ceb072ac492806",
+    "deliverables/b05-live/opus-review.md": "fbb99ccf2a30e168171acc145767735d869e3bf1840655711bbdcb65d159b8e4",
+    "docs/adr/0022-peer-authority-and-abuse-controls.md": "57f6a169d262b5a76ca6a0a041f22562b20f774767e63626826e45d29087b25c"
+  },
+  "summary": {
+    "whole_conditions_ready_for_completion": [],
+    "gate_only_blocked": [
+      "A16-07",
+      "A22-02",
+      "A23-05"
+    ],
+    "remaining_semantic_native_evidence_partial": [
+      "A19-04"
+    ],
+    "ledger_proven_count_not_modified": 18
+  },
+  "safety": {
+    "new_models": 0,
+    "new_experiments": 0,
+    "new_test_runs": 0,
+    "product_meta_script_plan_ledger_or_existing_artifact_writes": 0,
+    "formal_gate_waivers": 0,
+    "new_UI_success_claims": 0,
+    "new_shared_MCP_claims": 0,
+    "credential_values_read_or_copied": false
+  }
+}

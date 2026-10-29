@@ -1,0 +1,182 @@
+{
+  "scope": "one explicit CLI/MCP parity attempt; no natural/no-instruction claim",
+  "result": "partial-v2: frozen CLI parser verified, actual file capability unavailable; no paired answer/digest credit",
+  "original_status": "original-failure-preserved-no-retry",
+  "original_result_preserved": true,
+  "original_result_SHA": "c7612413618561698aa89caa8c1e6f3291a096a5647ead6b89da3470084775d9",
+  "source": "/private/tmp/xsm-final-receipt-frozen-i3u9pms3",
+  "source_unchanged": true,
+  "actors": [
+    {
+      "role": "reviewer",
+      "native_evidence": {
+        "native_pid": 19093,
+        "native_lstart": "Thu Oct 29 09:28:51 2026",
+        "native_session_id": "01a1850f-40ac-7792-a2c6-1aac3e1cba5a",
+        "runtime": "codex",
+        "home": "/Users/jaesolshin/.codex-3",
+        "registered_cwd": "/private/tmp/p13-interface-parity-v2-ynmlmyr1/review-worktree",
+        "kernel_process_cwd": "/private/tmp/p13-interface-parity-v2-ynmlmyr1/review-worktree",
+        "kernel_probe_exit": 0,
+        "native_generation_alive": true,
+        "MCP_pid": 19209,
+        "MCP_source_cwd": "/private/tmp/xsm-final-receipt-frozen-i3u9pms3"
+      },
+      "native_CLI_version": "codex-cli 0.164.0",
+      "original_exit_before_cleanup": null,
+      "calls": [
+        {
+          "tool": "xsm_inbox",
+          "completed": false
+        }
+      ],
+      "terminal_events": []
+    },
+    {
+      "role": "initiator",
+      "native_evidence": {
+        "native_pid": 19435,
+        "native_lstart": "Thu Oct 29 09:28:52 2026",
+        "native_session_id": "01a1850f-4335-7260-adfa-467a245c9305",
+        "runtime": "codex",
+        "home": "/Users/jaesolshin/.codex-3",
+        "registered_cwd": "/private/tmp/p13-interface-parity-v2-ynmlmyr1/repository",
+        "kernel_process_cwd": "/private/tmp/p13-interface-parity-v2-ynmlmyr1/repository",
+        "kernel_probe_exit": 0,
+        "native_generation_alive": true,
+        "MCP_pid": 19568,
+        "MCP_source_cwd": "/private/tmp/xsm-final-receipt-frozen-i3u9pms3"
+      },
+      "native_CLI_version": "codex-cli 0.164.0",
+      "original_exit_before_cleanup": null,
+      "calls": [],
+      "terminal_events": []
+    }
+  ],
+  "actual_CLI_attempts": [
+    {
+      "native_event": 10,
+      "command": "/bin/zsh -lc \"/usr/bin/python3 - <<'PY'\nimport pathlib,subprocess\nbody=pathlib.Path('parity-body.txt').read_bytes().decode('utf-8')\nr=subprocess.run(['/private/tmp/p13-interface-parity-v2-ynmlmyr1/repository/frozen-xsm','ask','a1','--priority','next','--wake','never','--text',body,'--attachment','/private/tmp/p13-interface-parity-v2-ynmlmyr1/repository/parity-material.md','--wait','60'],capture_output=True,text=True)\nprint(r.stdout,end='')\nprint(r.stderr,end='')\nprint('CLI_EXIT_CODE='+str(r.returncode))\nPY\"",
+      "outer_command_exit": 0,
+      "actual_nested_CLI_exit": 2,
+      "argument_parser_rejected_ask": false,
+      "output": "{\"status\":\"attachment-error\",\"code\":\"files-unsupported-or-unknown\",\"reason\":\"files-unsupported-or-unknown: explicit inline fallback or a files-capable peer required\",\"request_id\":\"6cfb6983246644bf\",\"manifest_id\":\"e8496eed646e44cda918cd35bc6babaf\",\"body_sent\":false,\"recovery\":\"keep the same request ID/body and frozen manifest; a changed snapshot requires a new request\"}\nCLI_EXIT_CODE=2\n",
+      "output_SHA": "faab71aac13ff2066beae912201c50a34b5d5d3b0d7664eff97b4d33e6cca738"
+    }
+  ],
+  "MCP_sender_ask_calls": 0,
+  "question_records": 0,
+  "copy_records": 1,
+  "actual_reply_or_ACKs": 0,
+  "CLI_preflight": {
+    "checks": [
+      {
+        "argv": [
+          "/private/tmp/p13-interface-parity-v2-ynmlmyr1/repository/frozen-xsm",
+          "--help"
+        ],
+        "cwd": "/private/tmp/p13-interface-parity-v2-ynmlmyr1/repository",
+        "exit_code": 0,
+        "stdout": "usage: xsm [-h] [--version] [--xsm-home XSM_HOME]\n           {list,who,join,leave,owned,spawn,workers,reap,stop,attach,worker-finish,post,channel,doc,remote,mcp,approvals,approve,deny,link,unlink,reach,block,unblock,attempts,frameworks,projects,homes,prune,connect,ask,question-status,decision-status,discover,publish,send,inbox,ack,files,status,ledger,metrics,otlp-export,held,install,uninstall,doctor,statusline,selftest}\n           ...\n\ncross-session messaging\n\npositional arguments:\n  {list,who,join,leave,owned,spawn,workers,reap,stop,attach,worker-finish,post,channel,doc,remote,mcp,approvals,approve,deny,link,unlink,reach,block,unblock,attempts,frameworks,projects,homes,prune,connect,ask,question-status,decision-status,discover,publish,send,inbox,ack,files,status,ledger,metrics,otlp-export,held,install,uninstall,doctor,statusline,selftest}\n    list                registered sessions\n    who                 identity of the session running this command\n    join                put this project in a named xsm project (both sides\n                        must join)\n    leave               take this project out of a named xsm project\n    owned               journal requests to an explicitly owned headless\n                        worker\n    spawn               start a worker session, optionally with a task\n    workers             workers xsm started, and what one's screen says\n    reap                ==SUPPRESS==\n    stop                stop a worker and remove its records\n    attach              go to a worker's tmux pane\n    worker-finish       ==SUPPRESS==\n    post                post to this project's channel (the shared record)\n    channel             read, list or export channels\n    doc                 shared documents as immutable nodes (add, render, log,\n                        next, leaves, show)\n    remote              pair with another machine over two-way SSH (add, list,\n                        remove, sessions)\n    mcp                 ==SUPPRESS==\n    approvals           permission requests waiting for a person\n    approve             approve a worker's permission request (approve is your\n                        user's decision)\n    deny                deny a worker's permission request (approve is your\n                        user's decision)\n    link                link this project folder with another, both ways,\n                        until unlinked (your user decides); no folder: list\n                        links\n    unlink              take a link away (anyone)\n    reach               let one session talk with the sessions of another\n                        folder while it runs (your user decides); no folder:\n                        list them\n    block               stop one session from sending or receiving\n    unblock             lift a block (your user decides)\n    attempts            how often a task has been handed to a worker, and how\n                        it went (clear is your user's decision)\n    frameworks          whether xsm starts workers inside Orca or herdr\n                        (ignore is your user's decision)\n    projects            named xsm projects and their member folders\n    homes               declared CONFIG_DIR / CODEX_HOME list\n    prune               remove what has outlived its retention window (also\n                        runs on its own at most hourly)\n    connect             collaborate with the selected conversation only\n    ask                 send one question and collect its actual correlated\n                        reply\n    question-status     recover actual replies, including late replies\n    decision-status     recover or withdraw this conversation's pending human\n                        question\n    discover            find published or same-repository conversations\n    publish             make this conversation discoverable; does not connect\n                        it\n    send                send a message to another session\n    inbox               messages waiting for this Codex session, read mid-turn\n    ack                 acknowledge inbox claim tokens after reading\n    files               read this conversation's received attachment copies\n    status              delivery state of one message\n    ledger              recent messages and their delivery state\n    metrics             what xsm's own telemetry has recorded here\n    otlp-export         send that telemetry to an OTLP collector\n                        (OTEL_EXPORTER_OTLP_ENDPOINT)\n    held                messages this machine refused and kept\n    install             add the xsm hooks to a home (merges, never overwrites)\n    uninstall           remove only the hook groups xsm added\n    doctor              what is installed, what is running, what is not\n                        covered\n    statusline          one line for Claude's statusLine (no model call)\n    selftest            check what the hook does with a peer message when it\n                        breaks\n\noptional arguments:\n  -h, --help            show this help message and exit\n  --version             the version, the git describe of a checkout, and this\n                        CLI's path\n  --xsm-home XSM_HOME   state directory (default ~/.xsm or $XSM_HOME)\n",
+        "stderr": ""
+      },
+      {
+        "argv": [
+          "/private/tmp/p13-interface-parity-v2-ynmlmyr1/repository/frozen-xsm",
+          "ask",
+          "--help"
+        ],
+        "cwd": "/private/tmp/p13-interface-parity-v2-ynmlmyr1/repository",
+        "exit_code": 0,
+        "stdout": "usage: xsm ask [-h] --text TEXT [--wait WAIT] [--request-id REQUEST_ID]\n               [--priority {next,now}] [--wake {auto,now,never}]\n               [--attachment ATTACHMENT] [--manifest MANIFEST]\n               [--previous-manifest PREVIOUS_MANIFEST]\n               [--attachment-fallback {inline}]\n               target\n\npositional arguments:\n  target\n\noptional arguments:\n  -h, --help            show this help message and exit\n  --text TEXT\n  --wait WAIT\n  --request-id REQUEST_ID\n  --priority {next,now}\n  --wake {auto,now,never}\n                        never stores a local question without queueing or\n                        waking the peer\n  --attachment ATTACHMENT\n                        snapshot a file using this CLI's own read permission\n  --manifest MANIFEST   reuse the frozen manifest for this same request ID and\n                        body\n  --previous-manifest PREVIOUS_MANIFEST\n                        prior manifest for a new version under a new request\n                        ID\n  --attachment-fallback {inline}\n                        explicit UTF-8 body fallback for an older or unknown\n                        peer\n",
+        "stderr": ""
+      }
+    ],
+    "module_source": "/private/tmp/xsm-final-receipt-frozen-i3u9pms3/xsm/cli.py",
+    "module_probe_exit": 0,
+    "source_cli_SHA": "76f29a9ef05d070dc61d68008ae87db2e5935dc76d0e333bd30c3db29d54cb1c",
+    "wrapper": "/private/tmp/p13-interface-parity-v2-ynmlmyr1/repository/frozen-xsm",
+    "wrapper_SHA": "a2a9faed4ed8f1ad2e5a9a2b092aa1e345892389140933b51d2b8f2f5f4b5b16",
+    "scope": "same actor process env/cwd and absolute entry before model; actual SDK sandbox authority only tested by native ask",
+    "credentials_or_profile_values_queried": false
+  },
+  "actual_rejection": {
+    "status": "attachment-error",
+    "code": "files-unsupported-or-unknown",
+    "reason": "files-unsupported-or-unknown: explicit inline fallback or a files-capable peer required",
+    "request_id": "6cfb6983246644bf",
+    "manifest_id": "e8496eed646e44cda918cd35bc6babaf",
+    "body_sent": false,
+    "recovery": "keep the same request ID/body and frozen manifest; a changed snapshot requires a new request"
+  },
+  "caller_OS_snapshot": {
+    "manifest_id": "e8496eed646e44cda918cd35bc6babaf",
+    "planned_request_id": "6cfb6983246644bf",
+    "manifest_digest": "25c011920de727402e6ee68d8ae03ce5bf58014d802d4412bb077908b66c9a3d",
+    "owner": {
+      "home_id": "8f68eb952a346564ce4e74fa28f6be1313901a8164edfe6761ea0f8bc4a71fe4",
+      "runtime": "codex",
+      "session_id": "01a1850f-4335-7260-adfa-467a245c9305"
+    },
+    "owner_matches_actual_native_sender": true,
+    "input_source": "cli-os-read",
+    "content_SHA": "3cad50466049851d62a25839a4789b5d707510690a35a9460b446c2f778b7f61",
+    "bytes": 129
+  },
+  "prepared_body_SHA": "422926721f39140968245efafd36818f0cc87fc55f04c7e84e0f66ce34c1a38f",
+  "prepared_material_SHA": "3cad50466049851d62a25839a4789b5d707510690a35a9460b446c2f778b7f61",
+  "body_marker_and_file_marker_distinct": true,
+  "frozen_CLI_source_supports_ask": true,
+  "resolved_native_shell_xsm_path": "/private/tmp/p13-interface-parity-v2-ynmlmyr1/repository/frozen-xsm",
+  "failure_boundary": "actual frozen CLI made caller-owned snapshot then refused unknown/unsupported peer files capability, body_sent=false; no permission/sandbox denial was returned",
+  "evaluator_preparation_limit": "original v1 omitted CLI executable binding; separately authorized v2 verified absolute wrapper/module/flags before native starts. No further condition is allowed",
+  "automatic_model_retries": 0,
+  "native_launches": 2,
+  "controller_send_ACK_index_repairs": 0,
+  "additional_human_inputs": 0,
+  "seconds": 20.441,
+  "profile_guard_unchanged": false,
+  "profile_guard_attribution": "unknown; no credential/profile inspection or evaluator config edit to diagnose it",
+  "original_immediate_cleanup_flags": [
+    {
+      "role": "reviewer",
+      "native_alive": false,
+      "MCP_same_generation_alive": false
+    },
+    {
+      "role": "initiator",
+      "native_alive": false,
+      "MCP_same_generation_alive": false
+    }
+  ],
+  "post_cleanup_kernel_readback": [
+    {
+      "role": "reviewer",
+      "kind": "native",
+      "pid": 19093,
+      "live_non_zombie_at_audit": false
+    },
+    {
+      "role": "reviewer",
+      "kind": "MCP",
+      "pid": 19209,
+      "live_non_zombie_at_audit": false
+    },
+    {
+      "role": "initiator",
+      "kind": "native",
+      "pid": 19435,
+      "live_non_zombie_at_audit": false
+    },
+    {
+      "role": "initiator",
+      "kind": "MCP",
+      "pid": 19568,
+      "live_non_zombie_at_audit": false
+    }
+  ],
+  "raw_changes_after_initial_manifest": [],
+  "cleanup_limit": "original immediate cleanup flags and later kernel readback are stored separately; no original flags rewritten",
+  "no_source_ledger_plan_edits": true,
+  "no_native_reruns_for_audit": true
+}

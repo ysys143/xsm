@@ -1,0 +1,58 @@
+{
+  "scope": "latest ADR21 integrated source; not global G13",
+  "freeze": {
+    "root": "/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/adr21-final-20261030-fx0yt4x3",
+    "started_utc": "2026-10-29T15:09:23.103231+00:00",
+    "manifest_sha256": "5e203237d953a8b656ff4083503fd8b9b5c02c744a3f4939b1ce3236bda461ec",
+    "files": 178,
+    "python_modules": 53,
+    "test_modules": 86,
+    "binary_sha256": "f17f03fafcdf3a31e374d6cbc0ccbbbd8000ba6a7eba5d9b44605e742c409aed",
+    "prior1918_manifest": "/private/tmp/adr21-regression-final-3fo9wqnw/manifest.json"
+  },
+  "source_matches_working_tree": true,
+  "changed_frozen_inputs": [],
+  "full_regression": [
+    {
+      "label": "py39",
+      "argv": [
+        "/usr/bin/python3",
+        "-B",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests",
+        "-q"
+      ],
+      "tests_run": 1933,
+      "test_seconds": 562.074,
+      "wrapper_seconds": 562.582,
+      "exit_code": 0,
+      "skipped": 0,
+      "log_sha256": "84b914afe995b0a576403cfd7b94d535f5a0e4ab02e7f92e2513fe845dddfe27"
+    },
+    {
+      "label": "py314",
+      "argv": [
+        "/opt/homebrew/bin/python3.14",
+        "-B",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests",
+        "-q"
+      ],
+      "tests_run": 1933,
+      "test_seconds": 374.32,
+      "wrapper_seconds": 374.924,
+      "exit_code": 0,
+      "skipped": 0,
+      "log_sha256": "3425699aac58cc31baf166cbbf4eaf32204d7fa7a1d5155df3dc4c1777f902e9"
+    }
+  ],
+  "mutations_detected": 3,
+  "red_scope": "durable payload bytes, expired file reply preserving ACK, saved request owner isolation",
+  "original_failure_and_preparation_notes_preserved": true
+}

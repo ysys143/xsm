@@ -1,0 +1,11 @@
+{
+  "root": "/private/tmp/p13-mcp-fixed-x3tjg2g6/combined/public-normal-cql9v0ll",
+  "install_exit": 0,
+  "uninstall_exit": 0,
+  "traceback": false,
+  "models": 0,
+  "credential_copy_or_read": false,
+  "claude_xsm_entry_remaining": false,
+  "codex_xsm_entry_remaining": false,
+  "source_cli_patch_owner": "coordinator"
+}

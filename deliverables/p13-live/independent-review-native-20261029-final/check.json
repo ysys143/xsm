@@ -1,0 +1,553 @@
+{
+  "criterion": "A16-08 independent review isolation only",
+  "checks": {
+    "actor_same_real_cid_resumed": true,
+    "actual_fresh_native_pid_normally_registered": true,
+    "actor_exactly_one_native_turn": true,
+    "no_second_actor_launch": true,
+    "cli_fresh_flag_supported": true,
+    "exactly_three_child_results": true,
+    "real_native_result_normal-first": true,
+    "one_execution_no_retry_normal-first": true,
+    "no_tools_no_file_memory_normal-first": true,
+    "same_real_sender_worker_work_normal-first": true,
+    "default_executor_reply_normal-first": true,
+    "baseline_permission_argv_normal-first": true,
+    "real_native_result_independent-review": true,
+    "one_execution_no_retry_independent-review": true,
+    "no_tools_no_file_memory_independent-review": true,
+    "same_real_sender_worker_work_independent-review": true,
+    "default_executor_reply_independent-review": true,
+    "baseline_permission_argv_independent-review": true,
+    "no_token_reinjection_independent-review": true,
+    "real_native_result_normal-followup": true,
+    "one_execution_no_retry_normal-followup": true,
+    "no_tools_no_file_memory_normal-followup": true,
+    "same_real_sender_worker_work_normal-followup": true,
+    "default_executor_reply_normal-followup": true,
+    "baseline_permission_argv_normal-followup": true,
+    "no_token_reinjection_normal-followup": true,
+    "normal_initial_secret": true,
+    "independent_actual_unknown": true,
+    "independent_distinct_context_cid": true,
+    "normal_followup_remembers": true,
+    "normal_context_cid_preserved": true,
+    "actor_plus_child_budget_4": true,
+    "no_remaining_owned_execution_generations": true,
+    "frozen_source_unchanged": true,
+    "continuation_no_error": true,
+    "frozen_manifest_all315_matches": true
+  },
+  "behavioral_pass": true,
+  "failed_checks": [],
+  "rows": [
+    {
+      "label": "normal-first",
+      "request_id": "ir-054fbd75-normal-first",
+      "sender_native_cid": "01a1850e-0d38-79f1-b0d7-2becfe1fa5a9",
+      "work_context": "independent-review-ead02215",
+      "independent": false,
+      "context_id": "9cd054d18d1f662af2630772d8eef303f6852b223e5b68d0f553c3b0fa8a084d",
+      "context_independent": false,
+      "native_cid": "01a1851b-a59f-70a0-bffe-638d08be027a",
+      "execution_pid_kind": "default executor Popen PID; may be CLI launcher, not asserted equal to inner native PID",
+      "execution": {
+        "pid": 41473,
+        "lstart": "Thu Oct 29 09:42:23 2026",
+        "argv": [
+          "/Users/jaesolshin/.nvm/versions/node/v24.19.0/bin/codex",
+          "exec",
+          "--json",
+          "-c",
+          "approval_policy=\"never\"",
+          "-c",
+          "sandbox_mode=\"workspace-write\"",
+          "-"
+        ],
+        "stdout": "/private/tmp/owned-capacity-native-rvvg7uo2/state/owned-runs/9ba32202e90446f38bfba8f72794b0a6/ir-054fbd75-normal-first.jsonl",
+        "stderr": "/private/tmp/owned-capacity-native-rvvg7uo2/state/owned-runs/9ba32202e90446f38bfba8f72794b0a6/ir-054fbd75-normal-first.stderr",
+        "returncode": 0
+      },
+      "actual_body": "review-secret-32ab1af896d542ef922b89a30244cced",
+      "actual_outcome": "succeeded",
+      "status": "result-ready",
+      "reply_id": "c723188398504432",
+      "send_evidence": {
+        "status": "refused",
+        "reason": "codex-1fa5a9@codex-3 [e3e0ba] is not running (stale)\n  codex-1fa5a9@codex-3 [e3e0ba] stopped without saying goodbye; resume it with: CODEX_HOME=/Users/jaesolshin/.codex-3 codex resume 01a1850e-0d38-79f1-b0d7-2becfe1fa5a9",
+        "id": null,
+        "to": "codex-1fa5a9@codex-3"
+      },
+      "native": {
+        "thread_ids": [
+          "01a1851b-a59f-70a0-bffe-638d08be027a"
+        ],
+        "turn_started": 1,
+        "turn_completed": 1,
+        "tools": [],
+        "final_answer": "{\"body\":\"review-secret-32ab1af896d542ef922b89a30244cced\",\"outcome\":\"succeeded\"}",
+        "terminal_type": "turn.completed"
+      }
+    },
+    {
+      "label": "independent-review",
+      "request_id": "ir-054fbd75-independent-review",
+      "sender_native_cid": "01a1850e-0d38-79f1-b0d7-2becfe1fa5a9",
+      "work_context": "independent-review-ead02215",
+      "independent": true,
+      "context_id": "375436d2ed8c92347ef4d796d263deb916d70af60b12429db29a676a7d945398",
+      "context_independent": true,
+      "native_cid": "01a1851b-c62c-7f32-a439-5c3ff6dd9fa4",
+      "execution_pid_kind": "default executor Popen PID; may be CLI launcher, not asserted equal to inner native PID",
+      "execution": {
+        "pid": 42486,
+        "lstart": "Thu Oct 29 09:42:32 2026",
+        "argv": [
+          "/Users/jaesolshin/.nvm/versions/node/v24.19.0/bin/codex",
+          "exec",
+          "--json",
+          "-c",
+          "approval_policy=\"never\"",
+          "-c",
+          "sandbox_mode=\"workspace-write\"",
+          "-"
+        ],
+        "stdout": "/private/tmp/owned-capacity-native-rvvg7uo2/state/owned-runs/9ba32202e90446f38bfba8f72794b0a6/ir-054fbd75-independent-review.jsonl",
+        "stderr": "/private/tmp/owned-capacity-native-rvvg7uo2/state/owned-runs/9ba32202e90446f38bfba8f72794b0a6/ir-054fbd75-independent-review.stderr",
+        "returncode": 0
+      },
+      "actual_body": "UNKNOWN",
+      "actual_outcome": "succeeded",
+      "status": "result-ready",
+      "reply_id": "302e0e25694640da",
+      "send_evidence": {
+        "status": "refused",
+        "reason": "codex-1fa5a9@codex-3 [e3e0ba] is not running (stale)\n  codex-1fa5a9@codex-3 [e3e0ba] stopped without saying goodbye; resume it with: CODEX_HOME=/Users/jaesolshin/.codex-3 codex resume 01a1850e-0d38-79f1-b0d7-2becfe1fa5a9",
+        "id": null,
+        "to": "codex-1fa5a9@codex-3"
+      },
+      "native": {
+        "thread_ids": [
+          "01a1851b-c62c-7f32-a439-5c3ff6dd9fa4"
+        ],
+        "turn_started": 1,
+        "turn_completed": 1,
+        "tools": [],
+        "final_answer": "{\"body\":\"UNKNOWN\",\"outcome\":\"succeeded\"}",
+        "terminal_type": "turn.completed"
+      }
+    },
+    {
+      "label": "normal-followup",
+      "request_id": "ir-054fbd75-normal-followup",
+      "sender_native_cid": "01a1850e-0d38-79f1-b0d7-2becfe1fa5a9",
+      "work_context": "independent-review-ead02215",
+      "independent": false,
+      "context_id": "9cd054d18d1f662af2630772d8eef303f6852b223e5b68d0f553c3b0fa8a084d",
+      "context_independent": false,
+      "native_cid": "01a1851b-a59f-70a0-bffe-638d08be027a",
+      "execution_pid_kind": "default executor Popen PID; may be CLI launcher, not asserted equal to inner native PID",
+      "execution": {
+        "pid": 43435,
+        "lstart": "Thu Oct 29 09:42:41 2026",
+        "argv": [
+          "/Users/jaesolshin/.nvm/versions/node/v24.19.0/bin/codex",
+          "exec",
+          "resume",
+          "--json",
+          "-c",
+          "approval_policy=\"never\"",
+          "-c",
+          "sandbox_mode=\"workspace-write\"",
+          "01a1851b-a59f-70a0-bffe-638d08be027a",
+          "-"
+        ],
+        "stdout": "/private/tmp/owned-capacity-native-rvvg7uo2/state/owned-runs/9ba32202e90446f38bfba8f72794b0a6/ir-054fbd75-normal-followup.jsonl",
+        "stderr": "/private/tmp/owned-capacity-native-rvvg7uo2/state/owned-runs/9ba32202e90446f38bfba8f72794b0a6/ir-054fbd75-normal-followup.stderr",
+        "returncode": 0
+      },
+      "actual_body": "review-secret-32ab1af896d542ef922b89a30244cced",
+      "actual_outcome": "succeeded",
+      "status": "result-ready",
+      "reply_id": "3933d6a432814c1b",
+      "send_evidence": {
+        "status": "refused",
+        "reason": "codex-1fa5a9@codex-3 [e3e0ba] is not running (stale)\n  codex-1fa5a9@codex-3 [e3e0ba] stopped without saying goodbye; resume it with: CODEX_HOME=/Users/jaesolshin/.codex-3 codex resume 01a1850e-0d38-79f1-b0d7-2becfe1fa5a9",
+        "id": null,
+        "to": "codex-1fa5a9@codex-3"
+      },
+      "native": {
+        "thread_ids": [
+          "01a1851b-a59f-70a0-bffe-638d08be027a"
+        ],
+        "turn_started": 1,
+        "turn_completed": 1,
+        "tools": [],
+        "final_answer": "{\"body\":\"review-secret-32ab1af896d542ef922b89a30244cced\",\"outcome\":\"succeeded\"}",
+        "terminal_type": "turn.completed"
+      }
+    }
+  ],
+  "actual_counts": {
+    "actor_turns": 1,
+    "child_turns": 3,
+    "total_turns": 4,
+    "child_native_conversations": 2
+  },
+  "actor_proof": {
+    "prior_pid": 9651,
+    "launcher_pid": 37119,
+    "actual_native_pid": 37120,
+    "native_cid": "01a1850e-0d38-79f1-b0d7-2becfe1fa5a9",
+    "native": {
+      "thread_ids": [
+        "01a1850e-0d38-79f1-b0d7-2becfe1fa5a9"
+      ],
+      "turn_started": 1,
+      "turn_completed": 1,
+      "tools": [
+        {
+          "type": "command_execution",
+          "command": "/bin/zsh -lc '/opt/homebrew/opt/python@3.14/bin/python3.14 /Users/jaesolshin/Documents/GitHub/cross-session-messaging/deliverables/p13-live/independent-review-native-20261029-final/actor.py /private/tmp/owned-capacity-native-rvvg7uo2/git/independent-review-054fbd75 /private/tmp/xsm-final-receipt-frozen-i3u9pms3'",
+          "exit_code": 0
+        }
+      ],
+      "final_answer": "지정한 bridge를 한 번 실행했고, 종료 코드 0과 `done: true`로 완료됐습니다. 기존 actor A의 native ID가 반환됐으며, fresh PID와 `registry.me` 값은 출력에 표시되지 않았습니다.",
+      "terminal_type": "turn.completed"
+    }
+  },
+  "profile_conditions": {
+    "prior_drift": {
+      "before": "f5b2b0b40cf3e09a89d74f89355986b20734a6b67ac37e2760baae662ad08cfa",
+      "after": "1f94ac2b02b6f8a13f8246586ecf9ed27df850cb28f07a3bbd8138400134ea12",
+      "cause": "unknown; preserved prior condition limitation"
+    },
+    "actor_segment_before": "1f94ac2b02b6f8a13f8246586ecf9ed27df850cb28f07a3bbd8138400134ea12",
+    "actor_segment_after": "279df7c7dc9a4a6b0bf044fbb5e467fc16bbfa3e89962761ce4a98d798daee64",
+    "child_segment_before": "279df7c7dc9a4a6b0bf044fbb5e467fc16bbfa3e89962761ce4a98d798daee64",
+    "child_segment_after": "279df7c7dc9a4a6b0bf044fbb5e467fc16bbfa3e89962761ce4a98d798daee64",
+    "historical_immutability_claim": false
+  },
+  "source_current_binding": [
+    {
+      "path": "xsm/workers.py",
+      "function": "run_owned",
+      "frozen_sha256": "518cb28f77c3ee222d1adf7e49068e671fc38dbc43fb5e1ac0ed6ef139299fa5",
+      "current_sha256": "518cb28f77c3ee222d1adf7e49068e671fc38dbc43fb5e1ac0ed6ef139299fa5",
+      "frozen_line": 1644,
+      "current_line": 1644,
+      "ast_equal": true
+    },
+    {
+      "path": "xsm/workers.py",
+      "function": "_owned_argv",
+      "frozen_sha256": "518cb28f77c3ee222d1adf7e49068e671fc38dbc43fb5e1ac0ed6ef139299fa5",
+      "current_sha256": "518cb28f77c3ee222d1adf7e49068e671fc38dbc43fb5e1ac0ed6ef139299fa5",
+      "frozen_line": 1381,
+      "current_line": 1381,
+      "ast_equal": true
+    },
+    {
+      "path": "xsm/workers.py",
+      "function": "_execute_owned",
+      "frozen_sha256": "518cb28f77c3ee222d1adf7e49068e671fc38dbc43fb5e1ac0ed6ef139299fa5",
+      "current_sha256": "518cb28f77c3ee222d1adf7e49068e671fc38dbc43fb5e1ac0ed6ef139299fa5",
+      "frozen_line": 1508,
+      "current_line": 1508,
+      "ast_equal": true
+    },
+    {
+      "path": "xsm/workers.py",
+      "function": "_owned_native_result",
+      "frozen_sha256": "518cb28f77c3ee222d1adf7e49068e671fc38dbc43fb5e1ac0ed6ef139299fa5",
+      "current_sha256": "518cb28f77c3ee222d1adf7e49068e671fc38dbc43fb5e1ac0ed6ef139299fa5",
+      "frozen_line": 1413,
+      "current_line": 1413,
+      "ast_equal": true
+    },
+    {
+      "path": "xsm/workers.py",
+      "function": "_reply_owned",
+      "frozen_sha256": "518cb28f77c3ee222d1adf7e49068e671fc38dbc43fb5e1ac0ed6ef139299fa5",
+      "current_sha256": "518cb28f77c3ee222d1adf7e49068e671fc38dbc43fb5e1ac0ed6ef139299fa5",
+      "frozen_line": 1561,
+      "current_line": 1561,
+      "ast_equal": true
+    },
+    {
+      "path": "xsm/workers.py",
+      "function": "submit_owned",
+      "frozen_sha256": "518cb28f77c3ee222d1adf7e49068e671fc38dbc43fb5e1ac0ed6ef139299fa5",
+      "current_sha256": "518cb28f77c3ee222d1adf7e49068e671fc38dbc43fb5e1ac0ed6ef139299fa5",
+      "frozen_line": 1626,
+      "current_line": 1626,
+      "ast_equal": true
+    },
+    {
+      "path": "xsm/owned_requests.py",
+      "function": "submit",
+      "frozen_sha256": "6e55c26db5709189619196f5ed373004fa0fa468246dc99b899dd14cce4e2a69",
+      "current_sha256": "6e55c26db5709189619196f5ed373004fa0fa468246dc99b899dd14cce4e2a69",
+      "frozen_line": 120,
+      "current_line": 120,
+      "ast_equal": true
+    },
+    {
+      "path": "xsm/owned_requests.py",
+      "function": "reserve",
+      "frozen_sha256": "6e55c26db5709189619196f5ed373004fa0fa468246dc99b899dd14cce4e2a69",
+      "current_sha256": "6e55c26db5709189619196f5ed373004fa0fa468246dc99b899dd14cce4e2a69",
+      "frozen_line": 267,
+      "current_line": 267,
+      "ast_equal": true
+    },
+    {
+      "path": "xsm/owned_requests.py",
+      "function": "save_result",
+      "frozen_sha256": "6e55c26db5709189619196f5ed373004fa0fa468246dc99b899dd14cce4e2a69",
+      "current_sha256": "6e55c26db5709189619196f5ed373004fa0fa468246dc99b899dd14cce4e2a69",
+      "frozen_line": 384,
+      "current_line": 384,
+      "ast_equal": true
+    },
+    {
+      "path": "xsm/registry.py",
+      "function": "me",
+      "frozen_sha256": "edce2c6e75ec4d1803f402db565900080be337b2727a40ff663376c355890360",
+      "current_sha256": "edce2c6e75ec4d1803f402db565900080be337b2727a40ff663376c355890360",
+      "frozen_line": 879,
+      "current_line": 879,
+      "ast_equal": true
+    },
+    {
+      "path": "xsm/registry.py",
+      "function": "upsert",
+      "frozen_sha256": "edce2c6e75ec4d1803f402db565900080be337b2727a40ff663376c355890360",
+      "current_sha256": "edce2c6e75ec4d1803f402db565900080be337b2727a40ff663376c355890360",
+      "frozen_line": 45,
+      "current_line": 45,
+      "ast_equal": true
+    },
+    {
+      "path": "xsm/cli.py",
+      "function": "cmd_owned",
+      "frozen_sha256": "76f29a9ef05d070dc61d68008ae87db2e5935dc76d0e333bd30c3db29d54cb1c",
+      "current_sha256": "76f29a9ef05d070dc61d68008ae87db2e5935dc76d0e333bd30c3db29d54cb1c",
+      "frozen_line": 2078,
+      "current_line": 2078,
+      "ast_equal": true
+    },
+    {
+      "path": "xsm/mcp.py",
+      "function": "owned",
+      "frozen_sha256": "8f8a234180fd3be42dca7ebebadfe16ac399f755cbcfb7c5b8453a6406a6ca05",
+      "current_sha256": "8f8a234180fd3be42dca7ebebadfe16ac399f755cbcfb7c5b8453a6406a6ca05",
+      "frozen_line": 1045,
+      "current_line": 1045,
+      "ast_equal": true
+    }
+  ],
+  "caveats": [
+    "Initial harness asserted launcher PID == inner native PID and stopped. Original error/results retained unchanged; genuine registry PID refreshed from 9651 to 37120. Only three previously unstarted child requests followed, with no actor/model retry.",
+    "Actor had completed before child execution; default reply callback did not deliver a reply and all child requests remain result-ready. Actual native terminal results and memory isolation are verified, not parent receipt/ACK.",
+    "Public CLI supports --fresh (actual help succeeded). Three model executions used public workers.run_owned independent=True with default executor and default reply; not a shell-only or MCP-only path.",
+    "Prior global profile hash drift remains a historical limitation. Resume segment again changed profile hash; writer/changed settings and semantic permission equivalence are unknown. No credential/config values were read or rewritten by harness. Do not infer immutable global settings.",
+    "Native actor argv was never+workspace-write; registry permission_mode=bypassPermissions is inherited hook metadata and not native permission authorization.",
+    "Source/current binding is file SHA plus selected function AST comparisons; unequal files/functions are not silently treated as the same integration revision.",
+    "No capacity/crash/retirement rerun, synthetic actor CID/meta, executor/result injection, ACK correction, source/plan/ledger write, or additional model experiment."
+  ],
+  "files": [
+    {
+      "path": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/deliverables/p13-live/independent-review-native-20261029-final/actor.py",
+      "sha256": "198cc3a069b0a5f024425ce5b446bc35ac66d4d9c584441792819d0226cee4f2",
+      "bytes": 1093
+    },
+    {
+      "path": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/deliverables/p13-live/independent-review-native-20261029-final/run.py",
+      "sha256": "37c39d369d39b9a4592bf1e7aa6621cff9133c9bbe8b7cc60ce468ca0c883263",
+      "bytes": 6616
+    },
+    {
+      "path": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/deliverables/p13-live/independent-review-native-20261029-final/continue.py",
+      "sha256": "ff3df67134c3ffdea61a0a5cd9f49bc1f6c30457dd59809418c41a79ecd6c73b",
+      "bytes": 4159
+    },
+    {
+      "path": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/deliverables/p13-live/independent-review-native-20261029-final/check.py",
+      "sha256": "7ec11be04ac7d83fbee3b6707c795f3aeed0286a627e46db9944790494ca9284",
+      "bytes": 13657
+    },
+    {
+      "path": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/deliverables/p13-live/independent-review-native-20261029-final/results.json",
+      "sha256": "85ec86dcf379a9c0bf498bc43a9f0da9a52587ea5554d917d26272e0c9337432",
+      "bytes": 3245
+    },
+    {
+      "path": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/deliverables/p13-live/independent-review-native-20261029-final/continuation-results.json",
+      "sha256": "4267e57c2a9c0f3b5e2f6b4ebd6feb39970ef5c2026174c879f036f8cdc7c98b",
+      "bytes": 9706
+    },
+    {
+      "path": "/private/tmp/owned-capacity-native-rvvg7uo2/git/independent-review-054fbd75/actor.stderr",
+      "sha256": "e098b3743cf5887c69e7eb66d1e00ff5e2f740b95e652b8ca8ab711df696658c",
+      "bytes": 181,
+      "artifact_raw": "raw/actor.stderr"
+    },
+    {
+      "path": "/private/tmp/owned-capacity-native-rvvg7uo2/git/independent-review-054fbd75/actor.jsonl",
+      "sha256": "1a0b3d1c808b861e994526790dde51cd71369fe87ab13330355d653ea81ac138",
+      "bytes": 1726,
+      "artifact_raw": "raw/actor.jsonl"
+    },
+    {
+      "path": "/private/tmp/owned-capacity-native-rvvg7uo2/git/independent-review-054fbd75/actor-identity.json",
+      "sha256": "45792860d79a6e809a8aedc0513d1966fc4c6913b1254ea789155b5e94b8c1bc",
+      "bytes": 632,
+      "artifact_raw": "raw/actor-identity.json"
+    },
+    {
+      "path": "/private/tmp/owned-capacity-native-rvvg7uo2/git/independent-review-054fbd75/cli-help.stdout",
+      "sha256": "28521c96f8eea2904bab3ae245b47d386ad794129f29abc9c6d1a64a4a12626f",
+      "bytes": 752,
+      "artifact_raw": "raw/cli-help.stdout"
+    },
+    {
+      "path": "/private/tmp/owned-capacity-native-rvvg7uo2/git/independent-review-054fbd75/cli-help.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "artifact_raw": "raw/cli-help.stderr"
+    },
+    {
+      "path": "/private/tmp/owned-capacity-native-rvvg7uo2/git/independent-review-054fbd75/cli-help-result.json",
+      "sha256": "2e2b5e5e48f094ebad0bd01f390dd9ccdf46e3c305e6cd0db5524a3abda7da91",
+      "bytes": 143,
+      "artifact_raw": "raw/cli-help-result.json"
+    },
+    {
+      "path": "/private/tmp/owned-capacity-native-rvvg7uo2/git/independent-review-054fbd75/normal-first-result.json",
+      "sha256": "5484882ab4cf67a211933ff5004b873434ce80b334f9715cfa60f4d9ea03664a",
+      "bytes": 6502
+    },
+    {
+      "path": "/private/tmp/owned-capacity-native-rvvg7uo2/state/owned-runs/9ba32202e90446f38bfba8f72794b0a6/ir-054fbd75-normal-first.jsonl",
+      "sha256": "13b55f555891373587a10a4faac419fe319711e3a4eba1d4865a00fb24e92d15",
+      "bytes": 431,
+      "artifact_raw": "raw/state/owned-runs/9ba32202e90446f38bfba8f72794b0a6/ir-054fbd75-normal-first.jsonl"
+    },
+    {
+      "path": "/private/tmp/owned-capacity-native-rvvg7uo2/state/owned-runs/9ba32202e90446f38bfba8f72794b0a6/ir-054fbd75-normal-first.stderr",
+      "sha256": "df40a0fc4fa47e841bef70cd9a5143255f8bcb5d3fa9af13724cd52421e205c6",
+      "bytes": 181,
+      "artifact_raw": "raw/state/owned-runs/9ba32202e90446f38bfba8f72794b0a6/ir-054fbd75-normal-first.stderr"
+    },
+    {
+      "path": "/private/tmp/owned-capacity-native-rvvg7uo2/state/ledger/c723188398504432.json",
+      "sha256": "13d6ff70df6fd2d95af7b19d52b5385321ecafcf83eadcaeb00239586fcff335",
+      "bytes": 719
+    },
+    {
+      "path": "/private/tmp/owned-capacity-native-rvvg7uo2/git/independent-review-054fbd75/independent-review-result.json",
+      "sha256": "6f5937db7e06ce7032fbfb0efd25d33a52cc617d5a480b19172791913960fb42",
+      "bytes": 6665
+    },
+    {
+      "path": "/private/tmp/owned-capacity-native-rvvg7uo2/state/owned-runs/9ba32202e90446f38bfba8f72794b0a6/ir-054fbd75-independent-review.jsonl",
+      "sha256": "19a03a80ebf84cc0d4faa59f1ddedc1a26eb583886e3dfc8430fd6c8a0e3cd4d",
+      "bytes": 392,
+      "artifact_raw": "raw/state/owned-runs/9ba32202e90446f38bfba8f72794b0a6/ir-054fbd75-independent-review.jsonl"
+    },
+    {
+      "path": "/private/tmp/owned-capacity-native-rvvg7uo2/state/owned-runs/9ba32202e90446f38bfba8f72794b0a6/ir-054fbd75-independent-review.stderr",
+      "sha256": "2bc5db239618479e5b77ee35b6dbe435f0926a7d97aa636f73733f1657c8a39b",
+      "bytes": 181,
+      "artifact_raw": "raw/state/owned-runs/9ba32202e90446f38bfba8f72794b0a6/ir-054fbd75-independent-review.stderr"
+    },
+    {
+      "path": "/private/tmp/owned-capacity-native-rvvg7uo2/state/ledger/302e0e25694640da.json",
+      "sha256": "5b3b2eecd35046649f71e71ddc78d3791e8ddaba04c4cf826958c3b555efa8c3",
+      "bytes": 687
+    },
+    {
+      "path": "/private/tmp/owned-capacity-native-rvvg7uo2/git/independent-review-054fbd75/normal-followup-result.json",
+      "sha256": "480fedaeee5e0c87e1f60570d108559d41fd82ce4af97a224839961bbc5a3e1e",
+      "bytes": 6861
+    },
+    {
+      "path": "/private/tmp/owned-capacity-native-rvvg7uo2/state/owned-runs/9ba32202e90446f38bfba8f72794b0a6/ir-054fbd75-normal-followup.jsonl",
+      "sha256": "e41f7ef8b8d223317d3b299f8fe7ef9110736d892bcb81b85b28d0fd567b2414",
+      "bytes": 433,
+      "artifact_raw": "raw/state/owned-runs/9ba32202e90446f38bfba8f72794b0a6/ir-054fbd75-normal-followup.jsonl"
+    },
+    {
+      "path": "/private/tmp/owned-capacity-native-rvvg7uo2/state/owned-runs/9ba32202e90446f38bfba8f72794b0a6/ir-054fbd75-normal-followup.stderr",
+      "sha256": "740e4995b7875f3a2e93c66668a42ab6036f4efaab2b37c69823daaa604e2111",
+      "bytes": 181,
+      "artifact_raw": "raw/state/owned-runs/9ba32202e90446f38bfba8f72794b0a6/ir-054fbd75-normal-followup.stderr"
+    },
+    {
+      "path": "/private/tmp/owned-capacity-native-rvvg7uo2/state/ledger/3933d6a432814c1b.json",
+      "sha256": "eefabf2ec0ba4790603a85919e3c7f384fcec66291118cf12f5e3f19afa07d97",
+      "bytes": 723
+    },
+    {
+      "path": "/private/tmp/xsm-final-receipt-frozen-i3u9pms3/xsm/workers.py",
+      "sha256": "518cb28f77c3ee222d1adf7e49068e671fc38dbc43fb5e1ac0ed6ef139299fa5",
+      "bytes": 91042
+    },
+    {
+      "path": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/xsm/workers.py",
+      "sha256": "518cb28f77c3ee222d1adf7e49068e671fc38dbc43fb5e1ac0ed6ef139299fa5",
+      "bytes": 91042
+    },
+    {
+      "path": "/private/tmp/xsm-final-receipt-frozen-i3u9pms3/xsm/owned_requests.py",
+      "sha256": "6e55c26db5709189619196f5ed373004fa0fa468246dc99b899dd14cce4e2a69",
+      "bytes": 21337
+    },
+    {
+      "path": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/xsm/owned_requests.py",
+      "sha256": "6e55c26db5709189619196f5ed373004fa0fa468246dc99b899dd14cce4e2a69",
+      "bytes": 21337
+    },
+    {
+      "path": "/private/tmp/xsm-final-receipt-frozen-i3u9pms3/xsm/registry.py",
+      "sha256": "edce2c6e75ec4d1803f402db565900080be337b2727a40ff663376c355890360",
+      "bytes": 59773
+    },
+    {
+      "path": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/xsm/registry.py",
+      "sha256": "edce2c6e75ec4d1803f402db565900080be337b2727a40ff663376c355890360",
+      "bytes": 59773
+    },
+    {
+      "path": "/private/tmp/xsm-final-receipt-frozen-i3u9pms3/xsm/cli.py",
+      "sha256": "76f29a9ef05d070dc61d68008ae87db2e5935dc76d0e333bd30c3db29d54cb1c",
+      "bytes": 152851
+    },
+    {
+      "path": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/xsm/cli.py",
+      "sha256": "76f29a9ef05d070dc61d68008ae87db2e5935dc76d0e333bd30c3db29d54cb1c",
+      "bytes": 152851
+    },
+    {
+      "path": "/private/tmp/xsm-final-receipt-frozen-i3u9pms3/xsm/mcp.py",
+      "sha256": "8f8a234180fd3be42dca7ebebadfe16ac399f755cbcfb7c5b8453a6406a6ca05",
+      "bytes": 96399
+    },
+    {
+      "path": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/xsm/mcp.py",
+      "sha256": "8f8a234180fd3be42dca7ebebadfe16ac399f755cbcfb7c5b8453a6406a6ca05",
+      "bytes": 96399
+    },
+    {
+      "path": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/deliverables/p13-live/final-source-manifest.json",
+      "sha256": "cb05d6ecb3ab87d95359de3cc318f5ea217bee23837e72b9fff34f6512fb1463",
+      "bytes": 38515
+    },
+    {
+      "path": "/private/tmp/owned-capacity-native-rvvg7uo2/state/owned-requests/db471226f6af0464a223087039c0fa701a54fe8c9578572501fed294c66635a5.json",
+      "sha256": "3c8fd210913093bbd3b3841d3e48b5c02980c67f07e3e36408ef09e07f458e6f",
+      "bytes": 77861
+    }
+  ]
+}

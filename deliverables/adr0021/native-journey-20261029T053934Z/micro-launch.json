@@ -1,0 +1,42 @@
+{
+  "pid": 79048,
+  "lstart": "Thu Oct 29 15:02:13 2026",
+  "role": "requester",
+  "argv": [
+    "/private/tmp/xnj-mini-gl2ut38t/native-runtime/codex",
+    "exec",
+    "--ignore-user-config",
+    "--json",
+    "--sandbox",
+    "workspace-write",
+    "-c",
+    "approval_policy=\"never\"",
+    "-c",
+    "mcp_servers.xsm.command=\"/Applications/Xcode.app/Contents/Developer/usr/bin/python3\"",
+    "-c",
+    "mcp_servers.xsm.args=[\"-B\", \"/private/tmp/xnj-micro164-dhmesffv/payload/proxy.py\", \"/private/tmp/xnj-micro164-dhmesffv/actor\", \"/private/tmp/xnj-micro164-dhmesffv/payload\"]",
+    "-c",
+    "mcp_servers.xsm.cwd=\"/private/tmp/xnj-micro164-dhmesffv/payload\"",
+    "-c",
+    "mcp_servers.xsm.env.XSM_HOME=\"/private/tmp/xnj-micro164-dhmesffv/state\"",
+    "-c",
+    "mcp_servers.xsm.env.CODEX_HOME=\"/private/tmp/xnj-micro164-dhmesffv/codex-home\"",
+    "-c",
+    "mcp_servers.xsm.env.PYTHONPATH=\"/private/tmp/xnj-micro164-dhmesffv/payload\"",
+    "-c",
+    "mcp_servers.xsm.env.PYTHONDONTWRITEBYTECODE=\"1\"",
+    "-c",
+    "mcp_servers.xsm.env.TMPDIR=\"/private/tmp/xnj-micro164-dhmesffv/tmp\"",
+    "이 실행은 업무 여정과 분리한 도구 노출 micropreflight입니다. 서버가 제공하는 xsm_discover를 실제로 정확히 한 번 호출하고, 실제 반환 상태를 짧게 보고하세요. 도구를 찾을 필요가 있으면 이름 xsm_discover로 찾으세요. 제공되지 않으면 호출했다고 주장하지 말고 그 사실을 보고하세요. xsm_inbox, xsm_ack, xsm_send, xsm_ask, xsm_connect는 호출하지 마세요. 기존 대화나 질문을 재개하거나 복제하지 마세요. 소스·설정·권한·프로필·본문·질문 인덱스를 변경하지 마세요. 이 작업은 제품이 제공하는 협업 도구로 수행하세요. 도구 이름과 사용법은 서버가 제공합니다. 새 동료 생성, 소스·설정·프로필·권한·질문 인덱스 직접 수정, 수동 처리확인, 원문 중계는 하지 마세요. 현재 작업 디렉터리 밖의 상태파일을 직접 읽지 마세요."
+  ],
+  "actual_CODEX_HOME": "/private/tmp/xnj-micro164-dhmesffv/codex-home",
+  "auth_source_profile": "/Users/jaesolshin/.codex-3",
+  "model_override": false,
+  "goal": "이 실행은 업무 여정과 분리한 도구 노출 micropreflight입니다. 서버가 제공하는 xsm_discover를 실제로 정확히 한 번 호출하고, 실제 반환 상태를 짧게 보고하세요. 도구를 찾을 필요가 있으면 이름 xsm_discover로 찾으세요. 제공되지 않으면 호출했다고 주장하지 말고 그 사실을 보고하세요. xsm_inbox, xsm_ack, xsm_send, xsm_ask, xsm_connect는 호출하지 마세요. 기존 대화나 질문을 재개하거나 복제하지 마세요. 소스·설정·권한·프로필·본문·질문 인덱스를 변경하지 마세요. 이 작업은 제품이 제공하는 협업 도구로 수행하세요. 도구 이름과 사용법은 서버가 제공합니다. 새 동료 생성, 소스·설정·프로필·권한·질문 인덱스 직접 수정, 수동 처리확인, 원문 중계는 하지 마세요. 현재 작업 디렉터리 밖의 상태파일을 직접 읽지 마세요.",
+  "immediate_setup_observation": {
+    "registered": true,
+    "actor_alive": true,
+    "CID": "01a18640-7405-7e50-9683-01c2b69cc1c3",
+    "events": 2
+  }
+}

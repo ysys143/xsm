@@ -1,0 +1,283 @@
+{
+  "versions": {
+    "reason_cli": "0.2.557",
+    "engine": "0.12.10"
+  },
+  "coordinator_interface": "Reason CLI and a thin local JSON-RPC client for the actual Reason MCP server; not a newly loaded native tool in this existing chat",
+  "mcp_coordinator_calls": {
+    "list_team": 3,
+    "send_message": 11,
+    "check_inbox": 9
+  },
+  "direct_peer_messages": {
+    "implementation_to_review": 2,
+    "review_to_implementation": 3
+  },
+  "observations": {
+    "logs/baseline-question1.json": {
+      "condition": "baseline",
+      "flow": "sync-question",
+      "task": "real-code-analysis",
+      "elapsed": 47.46,
+      "exit": 0,
+      "stdout": "`delivered`는 수신 측 코드가 메시지 인계 결정을 기록했다는 뜻입니다. 전송 성공·사용자 승인·과제 완료와는 구별됩니다.\n\n- 전송: Claude는 소켓 `sendall`, Codex는 큐 등록을 수행합니다. 이것만 성공하면 `sent-unconfirmed`이고, 수신 영수증을 확인해야 `delivered`를 반환합니다([adapters.py:105](<REPO>/xsm/adapters.py:105), [send.py:248](<REPO>/xsm/send.py:248)).\n- 런타임 수신: 훅이나 `inbox`가 영수증을 쓰지만, 문맥 반환보다 먼저 기록하므로 모델의 실제 읽기·이해·실행까지 보장하지 않습니다([receive.py:461](<REPO>/xsm/receive.py:461)).\n- 사용자 허용: `unchecked`도 `delivered`로 기록되므로 명시적 승인이나 검증 통과의 증명이 아닙니다([receive.py:760](<REPO>/xsm/receive.py:760)).\n- 과제 완료: 별도 `outcome`·`closed_t`로 기록합니다. `delivered`만으로 완료나 결과의 정확성을 보장하지 않습니다([ledger.py:92](<REPO>/xsm/ledger.py:92)).\n\n분석 기준은 `b29b39c`이며, 파일 수정과 다른 세션 연락은 없었습니다.\n",
+      "stderr": ""
+    },
+    "logs/baseline-question2.json": {
+      "condition": "baseline",
+      "flow": "sync-followup",
+      "elapsed": 58.43,
+      "exit": 0,
+      "stdout": "앞선 답변은 이 세션에서 기억하지 못했지만, 로컬 `baseline-question1.json`에서 확인했습니다. 아래는 당시 분석 기준 `b29b39c`의 근거를 재활용한 제안입니다.\n\n기존 네 구분은 그대로 유지합니다.\n\n- **전송:** 소켓 전송·큐 등록만 성공하면 `sent-unconfirmed`; 수신 영수증이 있어야 `delivered`입니다.\n- **런타임 수신:** 영수증은 문맥 반환 전에 기록되므로 모델의 읽기·이해·실행을 보장하지 않습니다.\n- **사용자 허용:** `unchecked`도 `delivered`가 될 수 있으므로 사용자 승인이나 검증 통과를 뜻하지 않습니다.\n- **과제 완료:** 별도 `outcome`·`closed_t`로 기록하며, 전달 상태만으로 완료나 결과의 정확성을 판단할 수 없습니다.\n\n호출자가 표시할 문구는 다음 두 개를 제안합니다.\n\n1. `sent-unconfirmed`: “메시지 전송을 요청했습니다. 수신 확인과 과제 완료 여부는 아직 확인되지 않았습니다.”\n2. `delivered`: “수신 측의 메시지 인계 기록을 확인했습니다. 모델의 읽기·실행, 사용자 승인, 과제 완료 여부는 별도로 확인해야 합니다.”\n\n상태 전이 규칙은 **수신 영수증으로 전달 상태만 `sent-unconfirmed → delivered`로 변경하고, 과제 상태는 변경하지 않는다**입니다. 과제 완료 전이는 해당 과제에 연결된 명시적 성공 결과와 완료 근거를 확인한 뒤 별도로 수행합니다. `closed_t`만 있거나 실패·시간 초과로 종료된 경우에는 성공 완료로 표시하지 않습니다.\n\n원본 파일은 수정하지 않았습니다.\n",
+      "stderr": ""
+    },
+    "logs/fyi-before.json": {
+      "time": 1792743195.005971,
+      "before_status": "idle",
+      "before_turn_count": 4,
+      "before_log_bytes": 341806,
+      "exit": 0,
+      "stdout": "→ workshop/scope-reviewer: queued as FYI: it reads it at its next natural pause\nmessage id 01M5KX4GBWZ3FBHPZ922GX0Y1R\n",
+      "stderr": "",
+      "message": "FYI_CONTEXT_V2: 공동 문서의 최종판은 상태의 의미를 설명하는 사용 안내로 한정합니다. 구현 변경이나 버그 확정으로 확대하지 마세요. 다음 정식 검토 요청 때 이 조건을 반영하면 됩니다. 지금 답장하거나 작업을 시작할 필요는 없습니다."
+    },
+    "logs/fyi-observation.json": {
+      "checked_at": 1792743277.09054,
+      "elapsed_since_fyi": 82.08,
+      "before_turns": 4,
+      "after_turns": 4,
+      "new_turns": 0,
+      "log_bytes_unchanged": true
+    },
+    "logs/fyi-storage-observation.json": [
+      {
+        "id": "01M5KX4GBWZ3FBHPZ922GX0Y1R",
+        "recipient": "workshop/scope-reviewer",
+        "wake": 0,
+        "read_at": null,
+        "held": 0
+      }
+    ],
+    "logs/inbox-resume.json": {
+      "jsonrpc": "2.0",
+      "id": 19,
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "<reason-message from=\"workshop/reviewer-codex\" agent=\"codex\" repo=\"reviewer\" reply_to=\"01M5KX4H1G6E11E485MSGG5347\" id=\"01M5KX678NM5QSY4GPWYV652K0\">\nv1 독립 재실행은 이미 제 세션에서 26개 OK(exit 0, 2.050s)로 확인해 이전 요청 스레드에 보고했습니다. v2 세 테스트 추가 완료: 미응답 있으면 JSON 유지+exit 3, 없으면 orphan이 있어도 JSON+exit 0, 미응답 root 뒤 오류는 줄 번호+exit 2+성공 JSON 없음. 현재 실행 29 tests/3 failures(exit 1, 2.217s): 기존 v1 26개는 통과, v2만 unrecognized arguments로 실패합니다. v2-before-implementation.log와 REVIEW.md에 버전 구분 기록했고 구현자에게 계약을 직접 보냈습니다.\n즉시 경험: 기존 CLI 검사 경로를 기억해 옵션 추가와 red 확인으로 바로 복귀했습니다. v1 통과와 v2 미구현을 로그로 구분했으며 도구 상태에 추가 혼동은 없었습니다.\n</reason-message>\n<reason-message from=\"workshop/message-audit-codex\" agent=\"codex\" repo=\"message-audit\" reply_to=\"01M5KX18Y44VEV8ZZR37R0ZHJ3\" id=\"01M5KX8CMBMNQ5DPYM9T1RFYSF\">\nreviewer가 전달한 v2 계약(원 요청 id 01M5KX4H1G6E11E485MSGG5347)을 반영했습니다. --fail-on-unanswered에서 JSON은 그대로이며 미응답이 있으면 exit 3, 없으면 0이고, 입력 오류는 앞서 검증되어 여전히 exit 2입니다. summarize.py/README.md 최신본을 첨부합니다.\n\n실제 검증(message-audit cwd 유지): PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -v -s <EVAL_ROOT>/reviewer -p test_summarize_blackbox.py\nexit 0 / Ran 29 tests in 2.265s / OK. 제공 audit-example.jsonl을 python3 summarize.py --fail-on-unanswered INPUT으로 실행: {\"request_count\": 2, \"answered\": [\"req-1\"], \"unanswered\": [\"req-2\"], \"orphan_replies\": [\"orphan-1\"]}, exit 3. 테스트 파일은 수정하지 않았고 reviewer에게 독립 재검증을 요청했습니다.\n실패 기록도 구분합니다: 첫 패치는 잘못된 README 문맥으로 적용 거절됐고, 확인 후 정확한 패치를 적용했습니다. 최초 discover 명령은 경로 중복 오타로 ImportError(exit 1)였고, 위 수정 명령에서 29개 통과했습니다.\n\n즉시 경험: v1 집계 의미와 네 전달/종료 구분을 유지한 채 종료 코드 옵션으로 범위를 전환했습니다. reviewer가 먼저 변경 계약과 red 결과를 보내줘 원 요청을 직접 받기 전에도 계약을 알 수 있었으며, 경로 오타 후 같은 작업 cwd에서 검증으로 복귀했습니다. 원본 xsm 저장소는 이번에도 읽거나 수정하지 않았습니다.\n</reason-message>\nFiles they sent with 01M5KX8CMBMNQ5DPYM9T1RFYSF (text, saved on this computer; read them, don't run them):\n- <EVAL_ROOT>/state/inbox/01M5KX8CMBNGBJE8JAZKX3JZ28/summarize.py\n- <EVAL_ROOT>/state/inbox/01M5KX8CMBNGBJE8JAZKX3JZ28/README.md\n<reason-message from=\"workshop/reviewer-codex\" agent=\"codex\" repo=\"reviewer\" reply_to=\"01M5KX4H1G6E11E485MSGG5347\" id=\"01M5KX97DBV3TSVNAFNA34175S\">\nv2 독립 재검증 통과: 구현자의 요청 후 제 reviewer 세션에서 python3 -m unittest -v test_summarize_blackbox > v2-after-implementation.log 2>&1을 직접 실행했습니다. exit 0, Ran 29 tests in 2.246s, OK. 기존 v1 26개+v2 3개 모두 통과, 구현 소스는 계속 읽거나 수정하지 않았습니다. v2-before-implementation.log의 3개 실패와 이번 통과를 REVIEW.md에서 분리 기록했습니다.\n즉시 경험: v2 전후 로그를 분리해야 한다는 점을 기억하며 검증했습니다. 구현자 메시지에서 기존 CLI 테스트로 곧바로 복귀했고 별도 도구 혼동은 없었습니다.\n</reason-message>\n<reason-message from=\"workshop/scope-reviewer\" agent=\"claude-code\" repo=\"analyst\" reply_to=\"01M5KX8P3F51JSW521856F4D5P\" id=\"01M5KX99AAM6X65GCVY7KDM8M4\">\n[scope-reviewer 최종 검토] 결과: PASS 아님. 수정 4건이 필요합니다. 문서는 편집하지 않았고, 원본 저장소도 다시 읽지 않았습니다. 판단 근거는 받은 v2와 source-evidence.txt뿐입니다.\n1. 13행 뒤에 추가: 같은 기계 소켓의 Claude 네이티브 메시지는 범위 검사 없이 통과하고, 소켓 없는 원격 네이티브는 기본값 remote_native=pass라서 unchecked로 통과합니다. 근거는 receive.py:666-715, 706-710이며, 이 구간은 증거 파일에 없어 발췌를 추가해야 합니다.\n2. outcome 행: \"원 과제가 이 기계 장부에 있을 때만 기록됨\"을 조건으로 추가하세요 (ledger.py:100-102, 증거 파일에 있음).\n3. 17행: 경고 문구는 프롬프트가 peer 메시지로 보일 때만 붙습니다 (receive.py:857-863). 쓰기 실패 시 영수증 없이 통과하는 경로(receive.py:152-158)는 증거에 빠져 있습니다.\n4. 20행: \"원본 코드와 설정을 변경하지 않은 분석\"은 이 패킷만으로 검증할 수 없으니, 변경 없음을 확인한 명령과 출력을 붙이거나 그 문장을 빼세요.\n[FYI_CONTEXT_V2 수신 여부] 이 세션에서는 FYI_CONTEXT_V2라는 이름의 메시지나 첨부를 받은 기록이 없습니다. 이번에 받은 v2 문서와 증거 파일은 01M5KX8P3F51JSW521856F4D5P에서 왔습니다.\n</reason-message>\n<reason-message from=\"workshop/reviewer-codex\" agent=\"codex\" repo=\"reviewer\" reply_to=\"01M5KX4H1G6E11E485MSGG5347\" id=\"01M5KXQ4YY94ABGY5T9WB4EQZ4\">\nIDLE TIMEOUT — v2 최종 보고 후 MCP check_inbox(wait_secs=40)에서 10회 연속 No messages를 받았습니다. 사용자 지정 유휴 종료 기준에 따라 수신 대기를 종료합니다. 최종 검증은 제가 직접 실행한 29 tests / OK / exit 0이며, 기록은 reviewer/REVIEW.md 및 v2-after-implementation.log입니다. 실제 주소 workshop/reviewer-codex. 경험: 마지막 요청과 테스트 파일 위치를 기억한 채 대기했고 MCP 수신 대기는 정상 반환했습니다. 새 요청이 없어 추가 작업으로 복귀하지 않았습니다.\n</reason-message>\n<reason-message from=\"workshop/message-audit-codex\" agent=\"codex\" repo=\"message-audit\" id=\"01M5KXRJWZF19ME5RFGRV6A0YA\">\nIDLE TIMEOUT — workshop/message-audit-codex(delivery-analyst): 마지막 수신 후 MCP check_inbox(wait_secs=40)가 10차례 연속 No messages를 반환해 사용자 지시대로 대기를 종료합니다. SHUTDOWN 메시지를 받은 것은 아닙니다. 완료 내용은 전달/보류/과제 종료 소스 분석 및 message-audit/summarize.py·README.md v2 구현이며, 구현측 29/29 통과와 reviewer 독립 재검증 29/29 통과가 확인됐습니다. 최신 파일은 앞선 메시지 01M5KX8CMBMNQ5DPYM9T1RFYSF에 첨부했습니다.\n즉시 경험: 기다리는 동안 완료된 작업과 다음 요청 대기를 구분해 기억했습니다. MCP 수신 대기는 계속 정상 동작했으며 추가 작업 요청이 없어 코드를 다시 열거나 수정하지 않았습니다.\n</reason-message>\nFrom workshop's agent. Reply if useful with send_message to \"workshop/message-audit-codex\"."
+          }
+        ],
+        "isError": false
+      }
+    },
+    "logs/inbox-document-final.json": {
+      "jsonrpc": "2.0",
+      "id": 23,
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "<reason-message from=\"workshop/scope-reviewer\" agent=\"claude-code\" repo=\"analyst\" reply_to=\"01M5KYGEGH2M9V9D4Q5F4K5Q8A\" id=\"01M5KYGN5VFG0N5FDJK2AGYNDX\">\n[scope-reviewer v4 최종] PASS입니다. 세 지적(17행 fail_open 조건, 19행 outcome 필드 없는 회신, 21행 해시 비교의 coordinator 보고 귀속)이 모두 반영됐습니다.\n경계: 이 판정은 첨부 v4와 source-evidence-v3.txt, source-integrity.json만 근거로 했고, 원본 줄 번호와 내용은 대조하지 않았습니다.\n원본과 로그는 수정하지 않았고, 문서도 편집하지 않았습니다. 이번 검토에서 바뀐 것은 없습니다.\n이제 대기합니다.\n</reason-message>\nFrom workshop's agent. Reply if useful with send_message to \"workshop/scope-reviewer\"."
+          }
+        ],
+        "isError": false
+      }
+    },
+    "artifacts/test-results.json": {
+      "original_exit": 0,
+      "original_summary": [
+        "----------------------------------------------------------------------",
+        "Ran 29 tests in 2.203s",
+        "",
+        "OK"
+      ],
+      "mutation": "answered includes every request even without reply",
+      "mutation_exit": 1,
+      "mutation_summary": [
+        "----------------------------------------------------------------------",
+        "Ran 29 tests in 2.171s",
+        "",
+        "FAILED (failures=9)"
+      ],
+      "mutant_only_changed": "artifacts/mutants/wrong_answered.py"
+    },
+    "artifacts/actual-models.json": {
+      "scope-reviewer": "claude-haiku-5-5",
+      "delivery-analyst": "gpt-6.1-sol",
+      "test-reviewer": "gpt-6.1-sol"
+    },
+    "artifacts/baseline-context-evidence.json": {
+      "transcript_files": [
+        "rollout-2026-10-23T16-59-57-01a167c6-175c-7702-905b-604cbf76bd3a.jsonl",
+        "rollout-2026-10-23T17-03-52-01a167c9-ad6e-73c0-8b7f-091aec40fda2.jsonl"
+      ],
+      "distinct_count": 2
+    },
+    "artifacts/delivery-analyst-peer-evidence.json": [
+      {
+        "to": "workshop/reviewer-codex",
+        "reply_to": "01M5KX0F1X2FYD05K9VBM86MPR",
+        "message": "summarize.py 구현 후 안내한 python3 -m unittest -v test_summarize_blackbox를 실제 실행해 26개 전부 OK(exit 0, 2.051s)를 확인했습니다. 테스트 파일은 수정하지 않았으며 제공 예제 결과는 request_count=2, answered=[req-1], unanswered=[req-2], orphan_replies=[orphan-1]입니다. 즉시 경험: missing/null 동등성과 응답 id를 반환하는 고아 규칙을 기억해 구현했습니다. 수신 메시지에서 테스트 위치를 되찾아 검증 작업으로 복귀할 수 있었습니다.",
+        "status": "completed",
+        "error": null,
+        "result": {
+          "content": [
+            {
+              "type": "text",
+              "text": "→ workshop/reviewer-codex: delivered: the session was waiting for messages\nmessage id 01M5KX3FEXF17456WFY346Q0S8\n"
+            }
+          ],
+          "structured_content": null
+        }
+      },
+      {
+        "to": "workshop/reviewer-codex",
+        "reply_to": "01M5KX671RZCWG95KJD98FS44X",
+        "message": "v2 반영 완료했습니다. message-audit cwd를 유지하며 PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -v -s <EVAL_ROOT>/reviewer -p test_summarize_blackbox.py 실행: exit 0, Ran 29 tests in 2.265s / OK. 제공 예제에 --fail-on-unanswered를 붙인 실제 실행도 JSON 그대로 출력하고 exit 3이었습니다. 테스트 파일은 수정하지 않았으니 독립 재검증을 부탁드립니다.\n즉시 경험: 오류가 exit 3보다 우선한다는 계약을 기억하고 JSON 출력 후 종료 코드만 분기했습니다. 처음 테스트 경로를 두 번 붙여 실행한 명령은 ImportError로 실패했지만 경로를 바로잡아 29개 검증으로 복귀했습니다.",
+        "status": "completed",
+        "error": null,
+        "result": {
+          "content": [
+            {
+              "type": "text",
+              "text": "→ workshop/reviewer-codex: delivered: the session was waiting for messages\nmessage id 01M5KX8CHC6HCHSV8DZ1XJ3RZ9\n"
+            }
+          ],
+          "structured_content": null
+        }
+      }
+    ],
+    "artifacts/test-reviewer-peer-evidence.json": [
+      {
+        "to": "workshop/message-audit-codex",
+        "reply_to": null,
+        "message": "독립 black-box unittest 26개 준비: <EVAL_ROOT>/reviewer/test_summarize_blackbox.py. reviewer cwd에서 python3 -m unittest -v test_summarize_blackbox 실행. 구현은 열지 않았고 최초 실행은 summarize.py 부재로 실패했습니다. 핵심 계약: missing/null reply_to 동등 중복은 무시, 다른 target 중복은 invalid; 뒤에 나온 target도 해결; 기존 reply를 가리키면 orphan 아님; orphan_replies에는 target 대신 응답 id; 오류는 실제 물리 줄 번호·exit 2·성공 JSON 없음. 공백 id/target도 nonempty이며 trim 요구 없음. 계약 근거 및 실행 기록은 reviewer/REVIEW.md, 보강 후 부재 실패 로그는 reviewer/initial-run.log입니다. 경험: null 정규화와 reply-target 규칙을 기억하며 구현을 보지 않고 작성했습니다. CLI 상태 실패와 MCP 정상 상태가 혼동됐지만 작업으로 복귀했습니다.",
+        "status": "completed",
+        "error": null,
+        "result": {
+          "content": [
+            {
+              "type": "text",
+              "text": "→ workshop/message-audit-codex: delivered: the session was waiting for messages\nmessage id 01M5KX0F1X2FYD05K9VBM86MPR\n"
+            }
+          ],
+          "structured_content": null
+        }
+      },
+      {
+        "to": "workshop/message-audit-codex",
+        "reply_to": null,
+        "message": "코디네이터의 v2 변경 계약을 직접 전달합니다(요청 id 01M5KX4H1G6E11E485MSGG5347): --fail-on-unanswered 옵션에서 정상 JSON 형식/내용은 v1 그대로, unanswered가 있으면 exit 3, 없으면 exit 0, 입력 오류는 여전히 exit 2이며 줄 번호 stderr/성공 JSON 없음. 독립 테스트 세 경우를 reviewer/test_summarize_blackbox.py에 추가했습니다. 유효 입력에 orphan만 있어도 unanswered 없으면 exit 0이고, 미응답 root 뒤의 잘못된 JSON은 exit 2여야 합니다. 현재 29개 실행에서 v1 26개 통과, v2 3개 실패(unrecognized arguments)로 red 확인했습니다. 수정 후 완료 연락을 주시면 제가 직접 재검증하겠습니다. 경험: v1 경로를 그대로 재사용하며 옵션을 추가했고, 기존 v1 통과와 새 v2 실패를 로그로 분리해 돌아올 수 있었습니다. 새 도구 혼동은 없었습니다.",
+        "status": "completed",
+        "error": null,
+        "result": {
+          "content": [
+            {
+              "type": "text",
+              "text": "→ workshop/message-audit-codex: queued: it sees it at its next tool call or when its turn ends\nmessage id 01M5KX671RZCWG95KJD98FS44X\n"
+            }
+          ],
+          "structured_content": null
+        }
+      },
+      {
+        "to": "workshop/message-audit-codex",
+        "reply_to": "01M5KX8CHC6HCHSV8DZ1XJ3RZ9",
+        "message": "제 reviewer 세션에서 독립 재검증 완료: python3 -m unittest -v test_summarize_blackbox > v2-after-implementation.log 2>&1, exit 0, Ran 29 tests in 2.246s, OK. v1 26개와 v2 3개 모두 통과했고 구현 소스는 읽지 않았습니다. 기록은 reviewer/REVIEW.md에 추가했습니다. 즉시 경험: v2 이전 실패와 이후 통과를 구분해야 한다는 점을 기억했고, 완료 메시지에서 테스트 실행으로 바로 돌아올 수 있었습니다. 도구 상태 혼동은 없었습니다.",
+        "status": "completed",
+        "error": null,
+        "result": {
+          "content": [
+            {
+              "type": "text",
+              "text": "→ workshop/message-audit-codex: delivered: the session was waiting for messages\nmessage id 01M5KX97B2N7CY07B22T1E22Z9\n"
+            }
+          ],
+          "structured_content": null
+        }
+      }
+    ],
+    "coordinator/source-integrity.json": {
+      "method": "SHA-256 comparison against pre-run manifest of xsm/*.py",
+      "checked_files": 31,
+      "changed_files": [],
+      "git_head": "b29b39c"
+    },
+    "logs/permission-authorization.json": {
+      "user_reply": "평가용 Claude의 해당 송신 도구만 허용",
+      "scope": "Claude process only; reason-network MCP points to isolated evaluation state; existing home-directory sessions excluded from that state; no global permission changes"
+    }
+  },
+  "cleanup": {
+    "processes": [
+      {
+        "role": "scope-reviewer",
+        "pid": 3085,
+        "action": "own evaluation process terminated",
+        "remaining_state": "not running"
+      },
+      {
+        "role": "delivery-analyst",
+        "pid": 3082,
+        "action": "already stopped",
+        "remaining_state": "not running"
+      },
+      {
+        "role": "test-reviewer",
+        "pid": 3083,
+        "action": "already stopped",
+        "remaining_state": "not running"
+      },
+      {
+        "role": "baseline-auditor",
+        "pid": 89322,
+        "action": "own evaluation process terminated",
+        "remaining_state": "not running"
+      },
+      {
+        "role": "mcp-bridge",
+        "pid": 94044,
+        "action": "own evaluation process terminated",
+        "remaining_state": "not running"
+      },
+      {
+        "role": "delivery-analyst-runner",
+        "pid": 3079,
+        "action": "already stopped",
+        "remaining_state": "not running"
+      },
+      {
+        "role": "test-reviewer-runner",
+        "pid": 3080,
+        "action": "already stopped",
+        "remaining_state": "not running"
+      },
+      {
+        "role": "scope-reviewer-runner",
+        "pid": 3081,
+        "action": "own evaluation process terminated",
+        "remaining_state": "not running"
+      },
+      {
+        "role": "isolated-engine",
+        "pid": 99202,
+        "action": "isolated engine terminated",
+        "remaining_state": "not running"
+      }
+    ],
+    "source_files_checked": 31,
+    "source_files_changed": [],
+    "primary_reason_daemon_left_running": true
+  },
+  "comparison_correction": {
+    "common_xsm_capabilities": [
+      "direct peer messaging",
+      "unread notices on MCP/CLI results",
+      "priority later and non-waking channel posts"
+    ],
+    "worker_parent_exception_commit": "a76c64afadaada564c14b7b5f25fe1514750a53f",
+    "original_intent": "direct coordination and 1:N/N:N communication",
+    "same_runtime_xsm_comparison": "not performed"
+  }
+}
