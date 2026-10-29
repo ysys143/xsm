@@ -310,9 +310,11 @@ def head_rebind_regression_checks(root, data):
     """The current-HEAD freeze: every frozen input equals the working tree, every
     product/test/skill file is frozen, and both Pythons ran it in full."""
     manifest_file = local(root, REBIND + 'manifest.json')
-    manifest = load_json(manifest_file)
+    # This audit is not an input of the suite it audits (no test reads scripts/);
+    # its own checks are --self-test and --predicate-self-test.
+    manifest = {p: h for p, h in load_json(manifest_file).items() if p != 'scripts/audit-reason-plan.py'}
     wanted = {str(p.relative_to(root)) for pattern in ('xsm/*.py', 'tests/test_*.py', 'hooks/*', 'skills/xsm/**/*.md', 'scripts/*.py')
-              for p in root.glob(pattern) if p.is_file()}
+              for p in root.glob(pattern) if p.is_file()} - {'scripts/audit-reason-plan.py'}
     runs = data['full_regression']
     logs = []
     for run in runs:
@@ -3084,6 +3086,41 @@ def predicate_self_test(root):
     count+=1;print('변이 검출: doctor-running은현재완료가아님')
     assert all(final_regression_checks(root,real_load(local(root,'deliverables/p13-live/final-regression.json'))).values())
     print('검사 통과: old1697 frozen history 보존, 합성 audit fixture는 실제 full 아님')
+    if local(root, REBIND + 'summary.json').is_file():
+        summary = load_json(local(root, REBIND + 'summary.json'))
+        assert all(head_rebind_regression_checks(root, summary).values()), '원 현재HEAD 회귀 predicate 실패'
+        for label, mutate in (
+            ('rebind-한Python만', lambda d: d['full_regression'].pop()),
+            ('rebind-skip', lambda d: d['full_regression'][0].update(skipped=1)),
+            ('rebind-실패exit', lambda d: d['full_regression'][1].update(exit_code=1)),
+            ('rebind-검사수불일치', lambda d: d['full_regression'][0].update(tests_run=d['full_regression'][0]['tests_run'] - 1)),
+            ('rebind-log-SHA교체', lambda d: d['full_regression'][0].update(log_sha256='0'*64)),
+            ('rebind-manifest-bytes교체', lambda d: d['freeze'].update(manifest_sha256='0'*64)),
+            ('rebind-다른엔진', lambda d: d['freeze'].update(binary_sha256='0'*64)),
+            ('rebind-전체계획완료주장', lambda d: d.update(whole_plan_complete=True))):
+            changed = copy.deepcopy(summary); mutate(changed)
+            try:
+                accepted = all(head_rebind_regression_checks(root, changed).values())
+            except (ValueError, KeyError, IndexError, TypeError):
+                accepted = False
+            assert not accepted, '변이 생존: ' + label
+            count += 1; print('변이 검출: ' + label)
+        # A frozen input that no longer matches the working tree.
+        real_sha = file_sha
+        def drifted(path):
+            return '0'*64 if Path(path) == local(root, 'xsm/send.py') else real_sha(path)
+        with mock.patch.dict(globals(), file_sha=drifted):
+            assert not head_rebind_regression_checks(root, summary)['current_source_exact']
+            assert not head_rebind_criterion_checks(root, 'A18-03', {'head-rebind-regression': {'executed': True},
+                **{k: {'executed': True} for k in CLOSURE_PROOFS['A18-03']['origins']}})['cases_and_product_frozen']
+        count += 2; print('변이 검출: rebind-실행뒤-source변경, rebind-조건의존파일변경')
+        # A counterexample the criterion was closed with is gone from the source.
+        proofs = copy.deepcopy(CLOSURE_PROOFS)
+        proofs['A18-03']['cases']['tests/test_xsm.py'].append('test_that_does_not_exist')
+        with mock.patch.dict(globals(), CLOSURE_PROOFS=proofs):
+            assert not head_rebind_criterion_checks(root, 'A18-03', {'head-rebind-regression': {'executed': True},
+                **{k: {'executed': True} for k in proofs['A18-03']['origins']}})['specific_cases_present']
+        count += 1; print('변이 검출: rebind-구체반례-소실')
     return count
 
 
