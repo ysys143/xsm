@@ -30,6 +30,11 @@ SPEC = 'docs/plan/reason-inspired-adrs/spec.md'
 BASE = 'docs/plan/reason-inspired-adrs/'
 LEDGER = BASE + 'completion-ledger.json'
 REPORT = BASE + 'completion-ledger.md'
+# Current-HEAD full regression after ADR21 (2026-10-30). It rebinds fixture/process
+# cells only: native/UI/physical runs were made on earlier sources.
+REBIND = 'deliverables/ledger-rebind-20261030/'
+ADR21 = 'deliverables/adr0021/'
+ADR21_RELEASE_SHA = 'f17f03fafcdf3a31e374d6cbc0ccbbbd8000ba6a7eba5d9b44605e742c409aed'
 STATES = {'proven', 'partial', 'missing', 'contradicted'}
 LEVELS = {'fixture': 'fixture', 'subprocess': 'process', 'harness': 'native',
           'actual-harness': 'native', 'ui': 'UI', 'physical': 'physical',
@@ -123,21 +128,21 @@ GAPS = {
 'A16-07': 'fixture/process 대기 취소·시간초과·동시 reply/분배와 실제 부분/final native를 수준별 결속. G07 formal gate는 별도 미완이며 모든 음성을 native/UI에서 반복하는 의무는 없음.',
 'A16-08': '실제 capacity10turn·독립검토3turn은 request subset/raw SHA로 재결속. 새 doctor epoch/full 검증 전 현재 credit은 대기하며 전체 journal 역사 SHA 일치를 주장하지 않음.',
 'A17-01': '로컬 후보/동명 fixture 및 native discover 표본. 실제 다른 머신 동일 이름·업무/branch는 없음.',
-'A17-02': '서로 다른 native 프로필 표본은 실제 공유 MCP 하나의 A/B 호출·자료 루트 격리를 대신하지 않음.',
+'A17-02': '공유 MCP 실제 프로세스 하나의 A/B 교대 호출·신원 격리 fixture는 현재 HEAD 회귀로 결속. 실제 Codex daemon 두 스레드의 native 호출은 미관측.',
 'A17-03': '로컬 resume/rename/pid fixture와 원격 동명·다른 머신 native 세대 행렬은 별개.',
 'A17-04': 'directory 추출 fixture·unknown metadata native 통신·기존 사람 표본은 구체 selector/SHA로 결속. 새 epoch/full 검증 대기와 원 표본 한계를 분리.',
 'A17-05': '등록/목록 제외 fixture에 실제 공유 MCP 첨부 소비의 제외/권한 행렬을 합쳐야 함.',
 'A17-06': 'B04 원문 회수는 있음. 동명 새 대화/동일 resume과 승인 수명 전 조합 native 추적이 남음.',
 'A18-01': 'G01 로컬 실패 주입 기록을 현재 실제 queue/socket 실패 하네스 전체와 혼합하지 않음.',
 'A18-02': 'factory native claim0byte/실제client종료/같은CID 새세대 owner-dead회수/ACK·상관reply/ACK후빈inbox 관측. fixture/process취소는충족했으나 native cancel notification은0으로 native취소셀은missing; 전체partial. 첫resume거부/tail race/drift writer unknown 보존.',
-'A18-03': '같은 ID 변조/200자 반례 source와 과거 회귀가 있음. 현재 통합 revision의 조건별 process 결속이 남음.',
+'A18-03': '같은 ID 변조/200자 반례를 현재 HEAD 두 Python 전체 회귀로 재결속. 소스가 바뀌면 재평가.',
 'A18-04': '로컬 claim/legacy/설치 실패 보존과 원격 변경 직전·직후 단절/readback은 별개. G12 없음.',
 'A18-05': '두 실제 Codex 홈의 injected-MCP 수신/회신 있음. 기존/새 설치·idle/busy 전체 경로는 G10 미완.',
 'A18-06': 'wake=False native 소비와 무전송 fixture 있음. 자연 소비 전 상태·현재 모든 하네스 조합이 남음.',
-'A18-07': '로컬 상태/시계/legacy 검사가 있음. 현재 통합 source와 전 상태 반례별 실행 결속이 남음.',
+'A18-07': '상태/시계/legacy 반례를 현재 HEAD 두 Python 전체 회귀로 재결속. 소스가 바뀌면 재평가.',
 'A18-08': 'actual owned controller SIGKILL5경계/child5/turn5/기본도구5/counter각1을현재1667/313source와결속. reply-stored만이며 nativeMCP/UI/ACK/현재caller certainty·mid-tool write종료로확대하지않음.',
 'A19-01': 'Codex 두 홈 및 Claude의 실제 사본 token 읽기/ACK/reply 있음. 동일 입력 CLI/MCP 원문·사본 digest 전수 대조는 남음.',
-'A19-02': '두 프로필 xsm_files 읽기는 실제 공유 MCP 하나의 동시 A/B 루트 격리 검사가 아님.',
+'A19-02': '공유 MCP 실제 프로세스에서 A/B 각자 사본 읽기·상대 사본 거절 fixture는 현재 HEAD 회귀로 결속. 실제 하네스 native 호출은 미관측.',
 'A19-03': '실제 정상 첨부 표본 두 건. 허가된 외부/숨김 성공 및 권한 밖/제외/symlink/충돌 전수는 남음.',
 'A19-04': '기능미광고/구버전/본문한도 fixture는 결속했으나 정상 사본 native를 조건부 fallback native로 승격하지 않음. 해당 native 부분 및 G12를 유지.',
 'A19-05': '저장·quota·승인 보류·재시작·만료·M3 cleanup 근거와 새1667 source 결속 있음. closure G07 미통과로 전체 partial; complete_for는 지정 5개에 한정.',
@@ -152,19 +157,19 @@ GAPS = {
 'A21-01': '기본native15/cached5와 별도 C UDP/native1·post-bootstrap noSSH/native1·loopback CONNECT/native1 부분표본 있음. A/B/D·global network·신규설치무SSH·기업인증proxy·다른NAT·자가relay·P12는 미확보.',
 'A21-02': '합성 임시 인증은 선택 backend의 계정/팀/제명/초대/전환 실패 의미를 입증하지 않음. D12 없음.',
 'A21-03': '기본 A/B/D9+C6의 G11 독립검토와 문서후속 있음. C UDP/noSSH/proxy의 추가native각1은 별도 offline 근거로 원 모델 재검토 범위 밖. 무SSH 신규설치·설치/개입비용·미확보 환경은 남으며 D12 선택 자체를 비교 완료 전제로 만들지 않음.',
-'A21-04': '두 머신 native carrier 왕복은 있으나 제품 peer discovery→approval→handshake→직접 reply 전체 여정은 없음.',
+'A21-04': 'E10/E15 두 Mac 제품 후보 선택·handshake·직접 회신·ACK와 같은 CID 재개는 관측(5e20 이전 소스). 이후 receive/handoff 변경 소스의 재관측과 G12가 남음.',
 'A21-05': '임시 responder 정리는 있음. 선택 remote/relay 중단 중 실제 로컬 유지·소유 서비스 제거는 없음.',
-'A21-06': '선택 backend 가입/공개/제외·비공개 서비스 경계의 현재 두 머신 관측이 없음.',
-'A21-07': '정적 옵션과 임시 TCP bind는 고정 UDP 점유·IPv6 부재·주소 변경 실제 fallback 검사가 아님.',
+'A21-06': 'E6 두 Mac 가입 전후 directory·공개/제외·선택 필요 거절과 지정 범위 Opus 검토는 있음. 모델 0회 FILE actor 표본이며 현재 소스 재관측·hosted 내부·G12가 남음.',
+'A21-07': 'E13 같은 호스트 IPv6 오류·점유 포트 대체 bind와 E4 실행 중 주소 변경 왕복은 관측. 호스트 전체 IPv6 부재·현재 소스 재관측·G12가 남음.',
 'A22-01': 'renderer/attachment source 반례가 있음. 실제 native 공격 행렬과 G06/G07/G09 통합 종결은 없음.',
 'A22-02': '다른 대상의 실제 fixture 승인과 peer 승인 주장은 current source/review로 결속. same-uid 방어 과장은 없으며 실제 UI 미관측과 formal G07은 유지.',
 'A22-03': '동일 strict 정책의 실제 3라운드·반복 held·원 ID 회복 trace가 있음. 새 doctor epoch/full 전 현재 승격은 보류하고 profile drift/정리 한계를 유지.',
 'A22-04': '일반·형제·다른 부모 성공은 원 raw로 재사용. full native endpoint와 distinct historical Gitcommon이 결속된 crossrepo 한 셀만 미확보.',
 'A22-05': 'B04 native 로컬 수신과 정책 fixture가 있음. 최신 traffic/files 통합의 native/strict/deny 전수가 남음.',
-'A22-06': 'last-valid·상태 실패 source/process 검사가 있음. 현재 최종 통합 revision의 조건별 durable 실행 결속이 남음.',
+'A22-06': 'last-valid·상태 실패 반례를 현재 HEAD 두 Python 전체 회귀로 재결속. 소스가 바뀌면 재평가.',
 'A23-01': '실제 clean/stale/current native CLI 등록6셀·combined설치/제거 및 local G10passed 복구. 새clean 프로필 로그인/첫모델왕복은 여전히 미실행; 기존133primary1667을 대신 쓰지 않음.',
 'A23-02': '원 native CLI 설치/제거 실패 보존. 최종 source의11개 새반례·91개씩/변이2·실제 등록6셀·combined/제거와1667을 재결속했으며 관련 hash가 달라지면 종결을 재평가.',
-'A23-03': 'native 두 홈 읽기는 shared MCP A/B·상속 env·같은 ID 전달 루트 실제 전수를 대신하지 않음.',
+'A23-03': '공유 MCP A/B·다른 홈 같은 ID·상속 env fixture는 현재 HEAD 회귀로 결속. 실제 하네스의 같은 조합 native 전수는 미관측.',
 'A23-04': 'flow 교체·설정/CAS fixture는 있음. 실제 UI 로그인·가입·reconnect/old API 전수 및 G12는 없음.',
 'A23-05': 'checksum/team 불일치·update/CAS/merge 실패의 보존은 수준별 결속. caller-provided signature 한계와 formal G12를 유지.',
 'A23-06': 'owned native 기억/MCP 관측은 있음. 기본 공개 owned 경로의 후속·권한·실제 reply 전체 행렬은 남음.',
@@ -294,6 +299,80 @@ def c_native_checks(data):
 
 def file_sha(path):
     return hashlib.sha256(path.read_bytes()).hexdigest() if path.is_file() else None
+
+
+def function_names(root, path):
+    return {n.name for n in ast.walk(ast.parse(local(root, path).read_text()))
+            if isinstance(n, (ast.FunctionDef, ast.AsyncFunctionDef))}
+
+
+def head_rebind_regression_checks(root, data):
+    """The current-HEAD freeze: every frozen input equals the working tree, every
+    product/test/skill file is frozen, and both Pythons ran it in full."""
+    manifest_file = local(root, REBIND + 'manifest.json')
+    manifest = load_json(manifest_file)
+    wanted = {str(p.relative_to(root)) for pattern in ('xsm/*.py', 'tests/test_*.py', 'hooks/*', 'skills/xsm/**/*.md', 'scripts/*.py')
+              for p in root.glob(pattern) if p.is_file()}
+    runs = data['full_regression']
+    logs = []
+    for run in runs:
+        log = local(root, REBIND + run['log'])
+        text = log.read_text(errors='replace') if log.is_file() else ''
+        logs.append(file_sha(log) == run['log_sha256']
+                    and re.search(r'^Ran %d tests in [0-9.]+s$' % run['tests_run'], text, re.M) is not None
+                    and re.search(r'^OK$', text, re.M) is not None and 'skipped' not in text.split('\nRan ')[-1])
+    return {'manifest_bytes_bound': file_sha(manifest_file) == data['freeze']['manifest_sha256'],
+            'current_source_exact': bool(manifest) and all(file_sha(local(root, p)) == h for p, h in manifest.items()),
+            'every_product_test_skill_file_frozen': wanted <= set(manifest),
+            'both_Pythons': sorted(r['label'] for r in runs) == ['py314', 'py39'],
+            'full_pass_skip0_same_count': all(r['exit_code'] == 0 and r['skipped'] == 0 for r in runs)
+                                          and len({r['tests_run'] for r in runs}) == 1 and runs[0]['tests_run'] >= 1936,
+            'exact_logs': len(logs) == 2 and all(logs),
+            'release_engine': data['freeze']['binary_sha256'] == ADR21_RELEASE_SHA,
+            'not_whole_plan': data['whole_plan_complete'] is False}
+
+
+def head_rebind_cases(identifier):
+    """The specific counterexamples a criterion was closed with (as in
+    postqa_criterion_binding), now run by the current-HEAD regression."""
+    if identifier == 'shared-mcp':
+        return {'tests/test_mcp_shared_process.py': [
+                    'test_two_threads_of_one_process_keep_their_own_inbox_and_copies',
+                    'test_a_call_naming_no_thread_among_several_is_not_signed_as_the_newest'],
+                'tests/test_mcp_identity.py': [
+                    'test_abab_calls_keep_their_own_thread_folder_and_home',
+                    'test_a_record_from_another_home_is_not_taken',
+                    'test_an_inherited_codex_home_does_not_change_the_named_thread',
+                    'test_a_named_thread_wins_over_an_inherited_other_thread',
+                    'test_a_guessed_neighbor_cannot_read_a_file']}
+    cases = copy.deepcopy(CLOSURE_PROOFS[identifier]['cases'])
+    if identifier in ('A18-03', 'A18-07', 'A22-06'):
+        cases['tests/test_question_interfaces.py'] = [
+            'test_answer_claims_allow_exact_ack_without_extra_inbox_on_all_public_surfaces',
+            'test_reply_handoff_rechecks_owner_generation_digest_and_receive_policy',
+            'test_reply_claim_failure_preserves_verified_answer_and_recovery']
+    if identifier == 'A23-02':
+        cases['tests/test_install_native_mcp.py'] = [
+            'test_clean_native_get_bootstrap_does_not_collide_with_installer',
+            'test_concurrent_user_edit_rejected_even_for_current_state',
+            'test_public_uninstall_invalid_json_is_exit4_without_traceback_or_partial_removal',
+            'test_public_uninstall_symlink_is_exit4_without_traceback_or_partial_removal',
+            'test_public_uninstall_normal_path_removes_owned_components',
+            'test_public_native_remove_nonzero_exit_preserves_hooks_and_returns_exit4']
+    return cases
+
+
+def head_rebind_criterion_checks(root, identifier, evidence):
+    cases = head_rebind_cases(identifier)
+    product = [] if identifier == 'shared-mcp' else ['xsm/' + p + '.py' for p in CLOSURE_PROOFS[identifier]['product']]
+    manifest = load_json(local(root, REBIND + 'manifest.json')) if local(root, REBIND + 'manifest.json').is_file() else {}
+    checks = {'current_full_regression': evidence['head-rebind-regression']['executed'],
+              'specific_cases_present': all(set(names) <= function_names(root, p) for p, names in cases.items()),
+              'cases_and_product_frozen': all(manifest.get(p) is not None and manifest[p] == file_sha(local(root, p))
+                                              for p in list(cases) + product)}
+    if identifier != 'shared-mcp':
+        checks['prior_scoped_execution_retained'] = all(evidence[k]['executed'] for k in CLOSURE_PROOFS[identifier]['origins'])
+    return checks
 
 
 def arrival_checks(root, data):
@@ -2072,6 +2151,57 @@ def catalog(root):
     # Positive credit is narrower than a same-kind artifact link. In particular,
     # separate-profile native calls are not a shared-MCP A/B proof, and LAN TCP
     # is not a UDP/IPv6/team-membership or selected-backend proof.
+    add('head-rebind-regression', REBIND + 'summary.json', ('fixture', 'process'),
+        scope='현재 HEAD 동결본의 두 Python 전체 회귀만. 이전 native/UI/physical 실행을 현재 소스로 옮기지 않음',
+        predicate=lambda d: head_rebind_regression_checks(root, d))
+    for identifier in ('A18-03', 'A18-07', 'A22-06', 'A23-02', 'shared-mcp'):
+        rebind = head_rebind_criterion_checks(root, identifier, result)
+        valid = all(v is True for v in rebind.values())
+        levels = ('fixture',) if identifier == 'shared-mcp' else tuple(CLOSURE_PROOFS[identifier]['levels'])
+        supports = ['A17-02', 'A19-02', 'A23-03'] if identifier == 'shared-mcp' else [identifier]
+        add('head-rebind-' + identifier, REBIND + 'summary.json', levels,
+            scope=('공유 MCP 실제 프로세스 A/B·다른 홈·상속 env 격리 fixture만. 실제 Codex 하네스(native)는 미관측'
+                   if identifier == 'shared-mcp' else
+                   identifier + ': 원 구체 반례를 현재 HEAD 전체 회귀로 재실행한 fixture/process만'),
+            predicate=lambda d, rebind=rebind: rebind, execution='recorded' if valid else 'binding-pending',
+            complete_for={i: list(levels) for i in supports} if valid else {})
+        result['head-rebind-' + identifier]['supports_acceptance'] = supports
+    # ADR21 records (two Macs, a phone on another NAT, fault injection). They ran on
+    # sources before the later receive/handoff change, so they stay partial here.
+    for key, path, levels, supports, scope, predicate in (
+            ('adr21-samename-latest', 'native-journey-samename-latest-20261029T152847Z/results.json', ('native', 'physical'),
+             ['A21-04', 'A24-03', 'A24-05', 'A24-08'],
+             'E15: 두 Mac 동명 후보의 실제 원격 선택·handshake·직접 회신·양쪽 MCP ACK. 5e20 53모듈 소스; 이후 receive/handoff 변경',
+             lambda d: {'passed': d['status'] == 'passed', 'all_checks': bool(d['checks']) and all(v is True for v in d['checks'].values()),
+                        'source_bound': load_json(local(root, ADR21 + 'native-journey-samename-latest-20261029T152847Z/source-binding.json'))['latest_final_source_differences'] == []}),
+            ('adr21-two-mac-journeys', 'native-journey-20261029T060853Z-fresh164-v2/resume-results.json', ('native', 'physical'),
+             ['A21-04'],
+             'E10: 두 물리 Mac Codex 같은 CID 재개와 혼합 런타임 자료 여정. 당시 소스·profile 관측 제한 유지',
+             lambda d: {'resume_completed': d['completed'] is True,
+                        'mixed_journey_completed': load_json(local(root, ADR21 + 'native-journey-mixed-proc-20261029T084031Z/results-final.json'))['status'].startswith('공개 후보 선택')}),
+            ('adr21-physical-policy', 'physical-policy-20261029T073330Z/results.json', ('physical',),
+             ['A21-02', 'A21-06'],
+             'E6: 두 Mac·3노드 멤버십·공개/제외 정책. FILE actor, 모델 0회',
+             lambda d: {'completed': d['completed'] is True}),
+            ('adr21-ipv6-port-fallback', 'carrier-ipv6-fault-resolved-20261029T085407Z/result.json', ('fixture',),
+             ['A21-07'],
+             'E13: 같은 호스트 엔진별 IPv6 EAFNOSUPPORT·점유 포트 대체 bind. 호스트 전체 IPv6 부재 아님',
+             lambda d: {'passed': d['passed'] is True}),
+            ('adr21-phone-nat', 'phone-nat-20261029T0817Z/results.json', ('physical',),
+             ['A21-01', 'A21-07'],
+             'E4: Mac·Android 다른 공인 IPv4 구간 relay 왕복과 실행 중 주소 변경. 같은 NAT에서 가입한 기존 멤버, 모델 0회',
+             lambda d: {'different_IPv4': d['different_IPv4_before_and_after'] is True, 'not_whole_ADR': d['whole_ADR_complete'] is False}),
+            ('adr21-selfhost-relay', 'physical-core-selfhost-20261029-product-results.json', ('process',),
+             ['A21-01'],
+             'E3: 공식 자체 relay(loopback HTTP 개발 relay)에서 제품 가입·왕복. 외부 HTTPS 자체 서버 운영 아님',
+             lambda d: {'verified': d['status'] == 'actual-product-local-selfhost-verified'}),
+            ('adr21-final-review', 'final-review-20261030/summary.json', ('review',),
+             ['A21-03', 'A21-06'],
+             'Opus 5.5 지정 변경 범위 정적 검토(5e20). 실제 네트워크·ADR 전체 승인 아님',
+             lambda d: {'approved': d['verdict'] == 'approved', 'no_findings': d['findings'] == [],
+                        'actual_model': d['actual_model'] == 'claude-opus-5-5'})):
+        add(key, ADR21 + path, levels, scope=scope, predicate=predicate)
+        result[key]['supports_acceptance'] = supports
     scoped = {
       'g02-native': ['A15-02', 'A15-06', 'A20-07'],
       'b03-question': ['A15-01', 'A16-01', 'A16-02', 'A16-03', 'A24-05'],
@@ -2197,6 +2327,16 @@ def bindings(identifier):
     if identifier in extra_refs:refs.append(extra_refs[identifier])
     if identifier in ('A18-01','A18-02','A23-08'):refs.append('delivery-recovery-rebound-'+identifier)
     if identifier in ('A16-07','A22-02','A23-05'):refs.append('policy-compatibility-'+identifier)
+    if identifier in ('A18-03', 'A18-07', 'A22-06', 'A23-02'):
+        refs.append('head-rebind-' + identifier)
+    if identifier in ('A17-02', 'A19-02', 'A23-03'):
+        refs.append('head-rebind-shared-mcp')
+    adr21 = {'A21-01': ['adr21-phone-nat', 'adr21-selfhost-relay'], 'A21-02': ['adr21-physical-policy'],
+             'A21-03': ['adr21-final-review'], 'A21-04': ['adr21-samename-latest', 'adr21-two-mac-journeys'],
+             'A21-06': ['adr21-physical-policy', 'adr21-final-review'],
+             'A21-07': ['adr21-ipv6-port-fallback', 'adr21-phone-nat'],
+             'A24-03': ['adr21-samename-latest'], 'A24-05': ['adr21-samename-latest'], 'A24-08': ['adr21-samename-latest']}
+    refs += adr21.get(identifier, [])
     return sorted(set(refs))
 
 
@@ -2236,6 +2376,21 @@ def environments(evidence, plan):
                               ('HTTPS-proxy', ('C-proxy-variant', 'C-proxy-variant-manifest'))):
         if all(evidence[k]['executed'] for k in refs):
             result[environment]['status'] = 'partial'
+    # ADR21 observations: each is one bounded sample on a source before the later
+    # receive/handoff change, so none closes its environment.
+    for environment, key, reason in (
+            ('physical-native-peer', 'adr21-samename-latest',
+             'E15 두 Mac 제품 후보 발견→사용자 선택→handshake→직접 회신·양쪽 MCP ACK 관측(5e20 소스). 이후 receive/handoff 변경과 다른 환경·자동 wake는 미검증.'),
+            ('different-NAT', 'adr21-phone-nat',
+             'E4 Mac·Android 다른 공인 IPv4 relay 왕복 관측. 같은 NAT에서 가입한 기존 멤버의 이동이며 모델 협업·다른 NAT 신규 가입은 미검증.'),
+            ('self-hosted-relay', 'adr21-selfhost-relay',
+             'E3 공식 자체 relay(loopback HTTP 개발 relay) 제품 가입·왕복 관측. 외부 HTTPS 자체 서버 운영은 미검증.')):
+        if evidence[key]['executed']:
+            result[environment].update(status='partial', reason=reason,
+                                       context_refs=sorted(set(result[environment]['context_refs']) | {key}))
+    if 'D12' in plan.get('decision_resolutions', {}):
+        result['selected-backend-D12'].update(status='partial', context_refs=[BASE + 'plan.json#/decision_resolutions/D12'],
+            reason='사용자가 ADR-0021로 자체 P2P 기본·선택적 Tailscale·Reason식 멤버십을 결정(2026-10-29). 결정 기록은 backend 통합 성공의 증거가 아님.')
     return result
 
 
@@ -2485,7 +2640,9 @@ def markdown(ledger):
              'python3 scripts/audit-reason-plan.py --self-test       # in-memory 변이 검출',
              'python3 scripts/audit-reason-plan.py --refresh --structure-only', '```', '',
              '현재 행 분류(70+20+9): ' + ', '.join('%s %d' % pair for pair in ledger['status_counts'].items()) + '.', '',
-             '최종315/135 source의 두Python1697 및 실제다른부모N:N 결과를 결속했다. 이전1695(preM1)/1667·원실패·원Opus수정필요는 각source 이력으로 보존한다. 전체계획은 여전히 미완이다.', '',
+             '2026-10-30 재결속: 이전 증명은 doctor-privacy v2(1697) 소스에 묶여 있었고 ADR21 통합으로 제품 모듈 15개가 바뀌었다. '
+             '현재 HEAD 동결본의 두 Python 전체 회귀(`deliverables/ledger-rebind-20261030/`)로 구체 반례가 있는 fixture/process 셀만 다시 묶었다. '
+             '이전 소스의 native/UI/physical 실행은 현재 소스의 증명으로 옮기지 않는다. ADR21 실측(E3/E4/E6/E10/E13/E15)은 범위 한정 partial로 등록했다. 전체계획은 여전히 미완이다.', '',
              '보존된 이전 색인 분류: ' + ', '.join('%s %d' % pair for pair in ledger['historical_completion_snapshot']['status_counts'].items()) + '.',
              '이전 proven 조건: ' + ', '.join(ledger['historical_completion_snapshot']['proven_acceptance']) + '. 원 JSON/hash는 새 고정본 안에 보존했다.', '',
              '`partial` 행 안에서도 없는 UI/native/physical 증거 셀은 `missing`으로 유지한다.', '',
