@@ -1,0 +1,29 @@
+{
+  "root": "/private/tmp/claude-501/-Users-jaesolshin-Documents-GitHub-cross-session-messaging/33bf5e13-fa64-4f22-844c-d0a499ae4150/scratchpad/xsm-ledger-rebind-c6ho3n9e",
+  "head": "5773ca25a900379e2df7d0db330af51d529dee7d",
+  "started_utc": "2026-10-29T18:13:19.343450+00:00",
+  "manifest_sha256": "c05dc0a0ab3f8c5b3b80d914b6f5a1e14b42c1d727506959639dc39263607fc1",
+  "files": 184,
+  "python_modules": 53,
+  "test_modules": 87,
+  "binary_sha256": "f17f03fafcdf3a31e374d6cbc0ccbbbd8000ba6a7eba5d9b44605e742c409aed",
+  "previous1936_manifest_sha256": "ccc3f22a1d65a33ddc76b0ad1abc4966a65664a6e41777d52b70230cd4fd4011",
+  "changed_from1936": [
+    "scripts/audit-reason-plan.py",
+    "skills/xsm/SKILL.md",
+    "skills/xsm/references/guide.md",
+    "skills/xsm/references/network.md",
+    "tests/test_owned_interfaces.py",
+    "tests/test_person_decisions.py",
+    "tests/test_xsm.py"
+  ],
+  "added_since1936": [
+    "skills/xsm/references/channel.md",
+    "skills/xsm/references/permissions.md",
+    "skills/xsm/references/sessions.md",
+    "skills/xsm/references/troubleshooting.md",
+    "skills/xsm/references/workers.md",
+    "tests/test_mcp_shared_process.py"
+  ],
+  "removed_since1936": []
+}
