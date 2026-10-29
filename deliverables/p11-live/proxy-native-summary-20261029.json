@@ -1,0 +1,131 @@
+{
+  "result": "preparation failed: owned egress profile did not permit intended loopback proxy; HTTPS-proxy native cell unverified",
+  "scope": "one private CONNECT restriction evaluation; not backend/team adoption",
+  "local_root": "/private/tmp/p11-C-proxy2-fu7ax6tg",
+  "peer_root": "/private/tmp/p11-C-proxy2-wmxd355_",
+  "old_preparation_roots": {
+    "local": "/private/tmp/p11-C-proxy-rxp7xnqr",
+    "peer": "/private/tmp/p11-C-proxy-5y3nciws"
+  },
+  "profile": "(version 1) (allow default) (deny network-outbound (remote udp \"*:*\")) (deny network-outbound (require-all (remote tcp \"*:*\") (require-not (remote tcp \"localhost:54309\"))))",
+  "proxy_bind": "127.0.0.1",
+  "proxy_port": 54309,
+  "preparation_attempts": [
+    {
+      "phase": "profile grammar",
+      "exit_code": 65,
+      "result": "127.0.0.1 filter host rejected before child execution; original kept",
+      "artifact": "proxy-native-preparation-failure-20261029.json"
+    },
+    {
+      "phase": "native localhost spelling, same intended restriction",
+      "result": "direct UDP/TCP denied as intended, but proxy connection also denied; stop without relaxation"
+    }
+  ],
+  "local_kernel_preflight": {
+    "direct_child": {
+      "exit_code": 0,
+      "output": {
+        "SocketKind.SOCK_DGRAM": {
+          "errno": 1,
+          "error": "PermissionError"
+        },
+        "SocketKind.SOCK_STREAM": {
+          "errno": 1,
+          "error": "PermissionError"
+        }
+      },
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_permission_or_sandbox_apply": false
+    },
+    "direct_UDP_no_datagram": true,
+    "direct_TCP_no_connection": true,
+    "proxy_connection_child": {
+      "exit_code": 1,
+      "output": null,
+      "stderr_sha256": "df982fccf6691fd58a28696e8209da7835d77255d60a749df02d933d97270ce6",
+      "stderr_permission_or_sandbox_apply": true
+    },
+    "TLS_tunnel": {
+      "exit_code": 7,
+      "result": {
+        "connect": "000",
+        "tls_verify": "0",
+        "http": "000"
+      },
+      "stderr_sha256": "a8a54657a5c555fe2f9757be819e452b58a891818347ee44ddbf8ce647fa66a6",
+      "certificate_verification_disabled": false
+    },
+    "profile": "(version 1) (allow default) (deny network-outbound (remote udp \"*:*\")) (deny network-outbound (require-all (remote tcp \"*:*\") (require-not (remote tcp \"localhost:54309\"))))",
+    "passed": false
+  },
+  "local_proxy_snapshot": {
+    "pid": 25005,
+    "bind": "127.0.0.1",
+    "port": 54309,
+    "profile": "(version 1) (allow default) (deny network-outbound (remote udp \"*:*\")) (deny network-outbound (require-all (remote tcp \"*:*\") (require-not (remote tcp \"localhost:54309\"))))",
+    "phase": "preflight",
+    "CONNECT_records": [],
+    "TLS_MITM": false,
+    "raw_payload_logged": false,
+    "connect_after_stop": 61
+  },
+  "peer_preflight": "not executed after local unexpected PermissionError; neither engine started",
+  "engine_processes": 0,
+  "native_model_attempts": 0,
+  "native_PID_CID": "not created",
+  "request_or_reply_ID": "not created",
+  "CONNECT_observations": 0,
+  "proxy_payload_bytes": 0,
+  "TLS_tunnel_verified": false,
+  "correlated_native_reply_SHA_link": "not executed; not inferred from environment or relay status",
+  "loopback_proxy_unexpected_permission_denial": true,
+  "OS_or_network_permission_bypass": false,
+  "TLS_MITM_or_verify_disabled": false,
+  "global_proxy_firewall_or_account_changed": false,
+  "installed_binary_sha256": "6ac4bb4837469867edc2dba3cbbd6e4dd9fb18ad0389db69ff6ef21683317a44",
+  "private_staged_binary_removed": true,
+  "local_final_audit": [
+    {
+      "root": "/private/tmp/p11-C-proxy-rxp7xnqr",
+      "extra_owned_processes": [],
+      "engine_copy_exists": false,
+      "state_exists": false,
+      "HOME_exists": false
+    },
+    {
+      "root": "/private/tmp/p11-C-proxy2-fu7ax6tg",
+      "extra_owned_processes": [],
+      "engine_copy_exists": false,
+      "state_exists": false,
+      "HOME_exists": false
+    }
+  ],
+  "peer_final_audit": [
+    {
+      "root": "/private/tmp/p11-C-proxy-5y3nciws",
+      "extra_owned_processes": [],
+      "files": [],
+      "state_exists": false,
+      "HOME_exists": false,
+      "engine_copy_exists": false
+    },
+    {
+      "root": "/private/tmp/p11-C-proxy2-wmxd355_",
+      "extra_owned_processes": [],
+      "files": [],
+      "state_exists": false,
+      "HOME_exists": false,
+      "engine_copy_exists": false
+    }
+  ],
+  "owned_proxy_connect_after_stop": 61,
+  "actual_failure_owner": "P11 evaluation fixture network-profile preparation; engine HTTP_PROXY capability not evaluated",
+  "revisit_condition": "requires a separately verified owned-process profile that blocks direct egress while allowing the loopback CONNECT proxy, then kernel/TLS preflight on both machines; no new attempt made here",
+  "no_new_paid_service_or_download_or_product_change": true,
+  "D12_UI": "still unresolved, not replaced by this failed fixture",
+  "old_UDP_and_basic_C_results_unchanged": true,
+  "raw_evidence_private": true,
+  "source_1697_fixed_product_modified": false,
+  "proxy_permission_diagnosis_limit": "Python stderr raw text not retained; exit1+permission/sandbox_apply marker and SHA observed. TLS curl raw stderr shows no proxy connection. Exact origin not established."
+}

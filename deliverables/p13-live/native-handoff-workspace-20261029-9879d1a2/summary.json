@@ -1,0 +1,106 @@
+{
+  "scope": "one authorized additional workspace-write condition after UDP task cleanup",
+  "status": "failed-before-xsm-inbox; A18-02/J05 native claim sample remains missing",
+  "private_evidence_root": "/private/tmp/native-handoff-workspace-adude01_",
+  "baseline_private_evidence_root": "/private/tmp/native-handoff-evidence-zz3nvwnv",
+  "source": "/private/tmp/xsm-p13-local-frozen-dn7tom1y",
+  "source_manifest_sha256": "5be6552d6dcb7ce05e48ee8ccefc98bafe79ba95e06532da62f23f2cd54130b5",
+  "same_frozen_source_as_baseline": true,
+  "CLI": "/opt/homebrew/bin/codex",
+  "actual_CLI_version": "codex-cli 0.163.0",
+  "same_existing_profile": "/Users/jaesolshin/.codex-3",
+  "auth_values_read_or_copied": false,
+  "new_private_git_workdir": "/private/tmp/native-handoff-workspace-adude01_/work",
+  "one_changed_argument": [
+    {
+      "index": 6,
+      "baseline": "read-only",
+      "new": "workspace-write"
+    }
+  ],
+  "path_normalization": "only per-run absolute path prefix replaced with <RUN>",
+  "same_natural_goal": true,
+  "proxy_byte_identical": true,
+  "product_skill_and_guide_byte_identical": true,
+  "effective_sandbox_readback": [
+    {
+      "cwd": "/private/tmp/native-handoff-workspace-adude01_/work",
+      "approval_policy": "never",
+      "sandbox_policy": {
+        "type": "workspace-write",
+        "network_access": false,
+        "exclude_tmpdir_env_var": false,
+        "exclude_slash_tmp": false
+      }
+    }
+  ],
+  "unchanged_duplicate_config": "-c sandbox_mode=read-only retained; native turn_context confirms explicit --sandbox workspace-write takes precedence",
+  "native_CLI_invocations_this_run": 1,
+  "authorized_condition_relaunches_after_baseline": 1,
+  "in_run_coordinator_resume_calls": 0,
+  "automatic_native_retries": 0,
+  "additional_human_inputs": 0,
+  "sender_native_calls": 0,
+  "native_thread_started": 1,
+  "native_turn_started": 1,
+  "native_turn_completed": 0,
+  "backend_model_requests": "unknown beyond one native turn.started; no completion/tool call output",
+  "native_conversation_sha256": "82539139c084ff1352b307e158a4522fe24844347667e5d8430356ff8310ef16",
+  "process_handle": {
+    "pid": 56774,
+    "lstart": "Thu Oct 29 05:13:45 2026",
+    "exit_code": -9
+  },
+  "MCP_client_methods": [
+    "initialize",
+    "notifications/initialized",
+    "tools/list"
+  ],
+  "MCP_tools_call_count": 0,
+  "observed_tool_host_timeouts": 2,
+  "registration_observation_budget_seconds": 100,
+  "original_request_ID": null,
+  "xsm_receiver_identity_or_generation": "not established; no manual creation",
+  "claims": 0,
+  "ACKs": 0,
+  "correlated_replies": 0,
+  "normal_ACK_then_no_redelivery": "not executed",
+  "fault_boundary_triggered": false,
+  "condition_conclusion": "workspace-write alone did not resolve the observed native tool-host negotiation failure in this bounded run; xsm handoff logic not exercised",
+  "frozen_source_unchanged": true,
+  "profile_configuration_unchanged": false,
+  "owned_process_final_audit": [
+    {
+      "pid": 56774,
+      "recorded_lstart": "Thu Oct 29 05:13:45 2026",
+      "current_lstart": null,
+      "same_owned_process_alive": false
+    },
+    {
+      "pid": 56880,
+      "recorded_lstart": "Thu Oct 29 05:13:46 2026",
+      "current_lstart": null,
+      "same_owned_process_alive": false
+    },
+    {
+      "pid": 57082,
+      "recorded_lstart": "Thu Oct 29 05:13:46 2026",
+      "current_lstart": null,
+      "same_owned_process_alive": false
+    }
+  ],
+  "additional_tmp_bound_processes": [],
+  "started_utc": "2026-10-28T20:13:45.696959+00:00",
+  "finished_utc": "2026-10-28T20:15:25.802497+00:00",
+  "raw_data_location": "private /private/tmp only; no raw wire/claim/ACK contents published",
+  "baseline_read_only_failure_preserved": true,
+  "product_or_global_permission_changes": "product/source unchanged; no evaluator permission/config edit commanded; profile config content drift observed with unknown writer",
+  "profile_guard_delta": {
+    "config.toml": {
+      "before_sha256": "a3d99f55f2cc29ff55d10d64a12924739f8937603175d0083e85b07bb7b3925e",
+      "after_sha256": "3718e6dcd8c997910ea6be96b2135e1558a82610e28996097fa7a6b349b82ec8"
+    }
+  },
+  "profile_drift_attribution": "unknown; evaluation commands contain no profile edit and only MCP initialize/tools/list occurred; runtime/concurrent writer attribution not established",
+  "single_condition_limit": "normalized native argv differs only --sandbox and --ignore-user-config is unchanged, but observed external profile config hash drift prevents an unconditional profile-unchanged or fully isolated comparison claim"
+}

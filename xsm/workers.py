@@ -18,10 +18,13 @@ Where it runs follows from where the caller is (user decision, 2026-09-21):
   managing workers belongs to the framework, and xsm only carries the
   cross-session messages the framework does not (user decision, 2026-09-21).
 
-A worker is never `claude -p` or `codex exec`. Those run one prompt and are
+The legacy spawn path is never `claude -p` or `codex exec`. Those run one prompt and are
 gone: there is no session to send a message to, so there is nothing for xsm to
 connect (user decision, 2026-09-22; an earlier version ran such "headless"
 workers, and a headless Claude worker could not even be sent a message).
+
+Explicit P08 owned services below have separate, journaled headless contexts;
+they never adopt a registered ordinary session.
 
 Nobody is at a background worker's screen, so what it would ask there comes to
 a person through xsm instead of the person going to the screen: a folder-trust
@@ -46,7 +49,7 @@ import subprocess
 import sys
 import time
 import uuid
-from contextlib import nullcontext
+from contextlib import contextmanager, nullcontext
 
 from . import attempts, config, identity, install, paths, registry
 
@@ -174,10 +177,25 @@ def for_session(session_id: str | None) -> dict | None:
         return None
     if _INDEX["key"] != key:
         _INDEX.update(key=key, rows=all_workers())
-    return next((w for w in _INDEX["rows"] if w.get("session_id") == session_id), None)
+    for worker in _INDEX["rows"]:
+        if worker.get("session_id") == session_id:
+            return worker
+        if worker.get("mode") == "owned" and session_id in worker.get("owned_sessions", []):
+            known = [r for r in registry.raw_records() if r.get("session_id") == session_id]
+            if len(known) == 1 and known[0].get("runtime") == worker.get("runtime") and \
+                    known[0].get("home") == worker.get("home"):
+                return worker
+    return None
 
 
 def state(worker: dict) -> str:
+    if worker.get("mode") == "owned":
+        from . import owned_requests
+        rows = owned_requests.recover(worker["owner"])
+        rows = [r for r in rows if r["worker"].get("id") == worker.get("id")]
+        if any(r["status"] == "unknown" for r in rows):
+            return "unknown"
+        return "busy" if any(r["status"] in owned_requests.ACTIVE for r in rows) else "idle"
     pid = worker.get("pid")
     if not pid or not identity.pid_alive(pid) or identity.lstart(pid) != worker.get("lstart"):
         return "gone"
@@ -201,6 +219,7 @@ DANGEROUS = ("full_access", "trust_hooks", "outside_scope", "remote")
 
 
 def create_grant(asked_by: str, runtime: str, cwd: str, options: list, answer: str) -> dict:
+    config.require_valid_policy()
     grant = {"id": uuid.uuid4().hex[:8], "asked_by": asked_by, "runtime": runtime,
              "cwd": os.path.realpath(cwd), "options": sorted(options), "t": time.time(),
              "expires": time.time() + GRANT_TTL, "answer": answer}
@@ -502,12 +521,18 @@ def check_concurrency(caller: dict | None) -> None:
     per starting session. Orphans are reaped first so they do not count."""
     reap()
     parent = (caller or {}).get("ref")
-    running = [w for w in all_workers() if w.get("parent_ref") == parent and state(w) != "gone"]
+    running = [w for w in all_workers() if w.get("mode") != "owned"
+               and w.get("parent_ref") == parent and state(w) != "gone"]
+    from . import owned_requests
+    owned_busy = 0
+    if caller and all(caller.get(k) for k in ("runtime", "home", "session_id")):
+        owned_busy = owned_requests.active_count(
+            caller, extra_busy=lambda names: _owned_foreign_busy(caller, names)) - len(running)
     limit = _limit("max_workers", "XSM_MAX_WORKERS", 4)
-    if len(running) >= limit:
+    if len(running) + owned_busy >= limit:
         raise WorkerError("%s already has %d running worker(s) and the limit is %d (max_workers): "
                           "%s. Stop one first: xsm stop <name>" % (
-                              "this session" if parent else "this terminal", len(running), limit,
+                              "this session" if parent else "this terminal", len(running) + owned_busy, limit,
                               ", ".join(w["name"] for w in running)))
 
 
@@ -580,39 +605,53 @@ def spawn(runtime: str, *, name: str | None = None, model: str | None = None,
               "pending_task": task, "attempt_key": attempt_key}
     if runtime == "codex" and not worker["model"]:
         worker["model"] = CODEX_MODEL
-    os.makedirs(_dir(name), mode=0o700, exist_ok=True)
+    from . import owned_requests
+    slot = None
+    if caller and all(caller.get(k) for k in ("runtime", "home", "session_id")):
+        worker["parent_native"] = owned_requests._native(caller)
+        try:
+            slot = owned_requests.reserve_worker_slot(
+                caller, name, _limit("max_workers", "XSM_MAX_WORKERS", 4),
+                extra_busy=lambda names: _owned_foreign_busy(caller, names))
+        except owned_requests.OwnedError as exc:
+            raise WorkerError(str(exc)) from exc
     try:
-        from . import telemetry
-    except ImportError:
-        telemetry = None
-    # Only the part that takes time: the checks above either pass at once or
-    # raise, and timing them would say nothing about how long a worker takes
-    # to come up.
-    span_cm = telemetry.span("xsm.worker.spawn",
-                             {"xsm.worker.runtime": runtime, "xsm.worker.name": name,
-                              "xsm.worker.mode": worker["mode"], "xsm.worker.depth": depth}) \
-        if telemetry else nullcontext()
-    try:
-        with span_cm:
-            _start_in_tmux(worker, pane)
-            save(worker)
-            try:
-                _wait_for_registration(worker, wait)
-            except _WaitingForTrust:
-                _ask_trust(worker)
+        os.makedirs(_dir(name), mode=0o700, exist_ok=True)
+        try:
+            from . import telemetry
+        except ImportError:
+            telemetry = None
+        # Only the part that takes time: the checks above either pass at once or
+        # raise, and timing them would say nothing about how long a worker takes
+        # to come up.
+        span_cm = telemetry.span("xsm.worker.spawn",
+                                 {"xsm.worker.runtime": runtime, "xsm.worker.name": name,
+                                  "xsm.worker.mode": worker["mode"], "xsm.worker.depth": depth}) \
+            if telemetry else nullcontext()
+        try:
+            with span_cm:
+                _start_in_tmux(worker, pane)
                 save(worker)
-                _finish_detached(worker)
-                return worker
-    except BaseException:
-        if worker.get("pane"):
-            subprocess.run(["tmux", "kill-pane", "-t", worker["pane"]], capture_output=True,
-                           timeout=5)
-        if worker.get("pid") and worker.get("lstart"):
-            _terminate(worker["pid"], worker["lstart"])
-        _cleanup(worker)
-        raise
-    save(worker)
-    return worker
+                try:
+                    _wait_for_registration(worker, wait)
+                except _WaitingForTrust:
+                    _ask_trust(worker)
+                    save(worker)
+                    _finish_detached(worker)
+                    return worker
+        except BaseException:
+            if worker.get("pane"):
+                subprocess.run(["tmux", "kill-pane", "-t", worker["pane"]], capture_output=True,
+                               timeout=5)
+            if worker.get("pid") and worker.get("lstart"):
+                _terminate(worker["pid"], worker["lstart"])
+            _cleanup(worker)
+            raise
+        save(worker)
+        return worker
+    finally:
+        if slot is not None:
+            owned_requests.release_worker_slot(caller, slot)
 
 
 def _codex_mcp_overrides(home: str) -> list:
@@ -728,6 +767,8 @@ def _register_named_thread(worker: dict) -> None:
         worker["session_id"] = thread
         rec = registry.upsert("codex", worker["home"], thread, worker["pid"], worker["cwd"],
                               name=worker["name"])
+        if not registry._registered_pointer(rec):
+            return  # Keep the owned native thread ID, not a rejected public pointer.
         rec["adopted"] = True
         paths.write_json(registry._record_path("codex", thread), rec)
 
@@ -1021,6 +1062,8 @@ def answer_asked(req_id: str, approve: bool, asked_by: str | None, reason: str |
     """An answer the person gave in an MCP elicitation form (xsm_approve). The
     form is the check that a person answered, so no terminal is needed; only
     the session that started the worker may ask."""
+    if approve:
+        config.require_valid_policy()
     req = paths.read_json(_approval_path(req_id))
     if not req or req.get("status") != "pending":
         raise WorkerError("no pending approval request %s" % req_id)
@@ -1041,6 +1084,8 @@ def answer(req_id: str, approve: bool, reason: str | None = None,
     """Answer a worker's request. Approving is a person's: at a terminal, or
     through `approver`, the person's own reply the agent asked for and the
     CLI checked (user decision, 2026-10-01)."""
+    if approve:
+        config.require_valid_policy()
     req = paths.read_json(_approval_path(req_id))
     if not req:
         raise WorkerError("no approval request %s" % req_id)
@@ -1063,6 +1108,12 @@ def stop(name: str, reason: str = "stopped") -> dict:
     worker = load(name)
     if not worker:
         raise WorkerError("no worker named %s" % name)
+    if worker.get("mode") == "owned":
+        with _owned_record_lock(worker):
+            if state(worker) in ("busy", "unknown"):
+                raise WorkerError("owned work is active or uncertain; recover before removing its service")
+            _cleanup(worker)
+        return dict(worker, stopped=reason)
     try:
         from . import telemetry
     except ImportError:
@@ -1134,6 +1185,8 @@ def orphans() -> list:
     by_ref = {r.get("ref"): r for r in registry.records()}
     out = []
     for w in all_workers():
+        if w.get("mode") == "owned":
+            continue
         parent = by_ref.get(w.get("parent_ref")) if w.get("parent_ref") else None
         if w.get("parent_ref") and (parent is None or parent.get("state") in ("ended", "stale")):
             out.append((w, "its starting session is over"))
@@ -1243,3 +1296,527 @@ def attach(name: str, out=sys.stdout) -> int:
         os.execvp("tmux", ["tmux", verb, "-t", target])
     out.write("%s runs in the background: tmux %s -t %s\n" % (name, verb, target))
     return 0
+
+
+# --- explicitly owned headless requests (P08) ----------------------------------
+# These services are created explicitly. The legacy spawn path above remains a
+# real TUI; no registered/user session is converted into a headless context.
+
+def _owned_parent(worker):
+    from . import owned_requests
+    return owned_requests._native(worker.get("owner"))
+
+
+@contextmanager
+def _owned_record_lock(worker):
+    """Serialize owned session-index merges and explicit service removal."""
+    import fcntl
+    os.makedirs(paths.path(WORKERS), mode=0o700, exist_ok=True)
+    fd = os.open(paths.path(WORKERS, ".owned-" + worker["id"] + ".lock"),
+                 os.O_CREAT | os.O_RDWR, 0o600)
+    try:
+        fcntl.flock(fd, fcntl.LOCK_EX)
+        yield
+    finally:
+        os.close(fd)
+
+
+def _owned_foreign_busy(owner, ticket_names=()):
+    """Live legacy workers occupy the same existing max_workers budget."""
+    from . import owned_requests
+    parent = owned_requests._native(owner)
+    count = 0
+    for worker in all_workers():
+        if worker.get("mode") == "owned" or worker.get("name") in ticket_names:
+            continue
+        same = (worker.get("parent_native") == parent if worker.get("parent_native") else
+                worker.get("parent_ref") == owner.get("ref"))
+        if same and state(worker) != "gone":
+            count += 1
+    return count
+
+
+def create_owned(runtime, *, caller, name=None, cwd=None, home=None, model=None,
+                 effort=None, grant=None):
+    """Create an explicit logical owned service; launch nothing until reservation.
+
+    Default runtime/MCP permissions are preserved. No allowedTools, bypass,
+    trust-hooks or user-session resume is injected. Framework spawn refusal and
+    existing outside-scope grants still apply.
+    """
+    from . import owned_requests
+    config.require_valid_policy()
+    refuse_inside_framework()
+    owned_requests._native(caller)
+    depth, depth_limit = depth_budget(caller)
+    if runtime not in ("claude", "codex"):
+        raise WorkerError("runtime must be claude or codex")
+    name = name or "owned-" + uuid.uuid4().hex[:8]
+    if not NAME_RE.fullmatch(name) or load(name):
+        raise WorkerError("invalid or existing owned worker name")
+    cwd = os.path.realpath(os.path.expanduser(cwd or caller.get("cwd") or os.getcwd()))
+    home = os.path.realpath(os.path.expanduser(home or _default_home(runtime, caller)))
+    _check_installed(home, runtime)
+    if not config.scope_for(caller, {"cwd": cwd})[0] and not human_terminal():
+        use_grant(grant, caller, runtime, cwd, ["outside_scope"])
+    worker = {"id": uuid.uuid4().hex, "name": name, "mode": "owned", "owned": True,
+              "runtime": runtime, "home": home, "cwd": cwd, "model": model, "effort": effort,
+              "owner": dict(caller), "parent_native": owned_requests._native(caller),
+              "parent_ref": caller.get("ref"), "created": time.time(),
+              "depth": depth, "max_depth": depth_limit,
+              "session_id": None, "owned_sessions": []}
+    save(worker)
+    return worker
+
+
+def _owned_worker(name):
+    if not isinstance(name, str) or not NAME_RE.fullmatch(name):
+        raise WorkerError("invalid owned worker name")
+    worker = load(name)
+    if not worker or worker.get("mode") != "owned" or worker.get("owned") is not True:
+        raise WorkerError("only explicitly created owned services may execute headlessly")
+    return worker
+
+
+def _owned_argv(worker, context):
+    """Subscription CLIs only. First turns create a new context; followups resume it."""
+    if context.get("native_session_id"):
+        try:
+            uuid.UUID(context["native_session_id"])
+        except (ValueError, TypeError, AttributeError) as exc:
+            raise WorkerError("stored native CLI conversation is not a UUID") from exc
+    if worker["runtime"] == "claude":
+        argv = [shutil.which("claude") or "claude", "-p", "--output-format", "json",
+                "--permission-mode", "default"]
+        argv += (["--resume", context["native_session_id"]] if context.get("native_session_id") else
+                 ["--session-id", context["session_seed"]])
+        if worker.get("model"):
+            argv += ["--model", worker["model"]]
+        if worker.get("effort"):
+            argv += ["--effort", worker["effort"]]
+        return argv
+    from . import adapters
+    argv = [adapters.codex_bin() or "codex", "exec"]
+    if context.get("native_session_id"):
+        argv.append("resume")
+    argv += ["--json", "-c", 'approval_policy="never"', "-c", 'sandbox_mode="workspace-write"']
+    if worker.get("model"):
+        argv += ["--model", worker["model"]]
+    if worker.get("effort"):
+        argv += ["-c", "model_reasoning_effort=" + json.dumps(worker["effort"])]
+    if context.get("native_session_id"):
+        argv.append(context["native_session_id"])
+    argv.append("-")
+    return argv
+
+
+def _owned_native_result(worker, context, output):
+    """Only actual final CLI results become answers; error strings never do."""
+    native_evidence = {}
+    if worker["runtime"] == "claude":
+        try:
+            payload = json.loads(output)
+        except ValueError as exc:
+            raise WorkerError("Claude returned no valid result JSON") from exc
+        events = payload if isinstance(payload, list) else [payload]
+        if not events or any(not isinstance(event, dict) for event in events):
+            raise WorkerError("Claude returned an invalid native event sequence")
+        finals = [event for event in events if event.get("type") == "result"]
+        if len(finals) != 1 or events[-1] is not finals[0]:
+            raise WorkerError("Claude requires exactly one terminal final result")
+        if any(event.get("type") in ("error", "turn.failed") for event in events):
+            raise WorkerError("Claude reported a terminal native error")
+        result = finals[0]
+        if (result.get("is_error") or result.get("subtype") not in (None, "success")
+                or not isinstance(result.get("result"), str)):
+            raise WorkerError("Claude did not return a successful native result")
+        native_id, body = result.get("session_id"), result["result"]
+        expected = context.get("native_session_id") or context["session_seed"]
+        if native_id != expected or any(event.get("session_id") not in (None, expected) for event in events):
+            raise WorkerError("Claude changed the selected owned conversation")
+        denials = result.get("permission_denials") or []
+        if not isinstance(denials, list):
+            raise WorkerError("Claude returned invalid permission diagnostics")
+        # A denied optional tool is not a terminal model error. Preserve its
+        # count as observed evidence without changing tools/permissions or
+        # claiming task success from subtype=success alone.
+        native_evidence = {"event_count": len(events), "terminal_subtype": result.get("subtype"),
+                           "permission_denial_count": len(denials)}
+    else:
+        native_id, body, completed = None, None, False
+        diagnostic_errors, event_count = 0, 0
+        for line in output.splitlines():
+            try:
+                event = json.loads(line)
+            except ValueError:
+                continue
+            if not isinstance(event, dict):
+                raise WorkerError("Codex returned an invalid native event")
+            event_count += 1
+            if event.get("type") == "thread.started":
+                selected_id = event.get("thread_id")
+                if native_id is not None and selected_id != native_id:
+                    raise WorkerError("Codex changed native conversations within one run")
+                native_id = selected_id
+            elif event.get("type") == "turn.started":
+                body, completed = None, False
+            elif event.get("type") == "item.completed" and (event.get("item") or {}).get("type") == "agent_message":
+                body = event["item"].get("text")
+                completed = False
+            elif event.get("type") == "turn.completed":
+                completed = True
+            elif event.get("type") == "turn.failed":
+                raise WorkerError("Codex reported a native execution error")
+            elif event.get("type") == "error":
+                # Native reconnect diagnostics are not terminal failures. Only
+                # a subsequent actual turn.completed recovers this diagnostic;
+                # an unresolved error after completion remains incomplete.
+                diagnostic_errors += 1
+                completed = False
+            elif event.get("type") in ("item.started", "item.updated", "item.completed"):
+                completed = False
+        if not completed:
+            raise WorkerError("Codex returned no completed turn")
+        if context.get("native_session_id") and native_id != context["native_session_id"]:
+            raise WorkerError("Codex changed the selected owned conversation")
+        native_evidence = {"event_count": event_count, "terminal_event": "turn.completed",
+                           "diagnostic_error_count": diagnostic_errors}
+    if not isinstance(native_id, str) or not native_id or not isinstance(body, str) or not body.strip():
+        raise WorkerError("native result lacks conversation ID or body")
+    try:
+        uuid.UUID(native_id)
+    except ValueError as exc:
+        raise WorkerError("native CLI returned an invalid conversation UUID") from exc
+    # A completed model turn is an answer, not proof of task success. Honor only
+    # an explicit structured outcome; plain prose keeps task outcome unknown.
+    outcome = None
+    try:
+        structured = json.loads(body)
+        if (isinstance(structured, dict) and isinstance(structured.get("body"), str)
+                and structured.get("outcome") in ("succeeded", "failed")):
+            body, outcome = structured["body"], structured["outcome"]
+    except ValueError:
+        pass
+    return {"body": body, "outcome": outcome, "native_session_id": native_id,
+            "native_evidence": native_evidence}
+
+
+class OwnedLaunchError(WorkerError):
+    """No child process was created; no model execution is claimed."""
+
+
+def _execute_owned(worker, context, body, request):
+    """Run one subscribed native turn, keeping stdout for readback after a crash."""
+    from . import owned_requests
+    refuse_inside_framework()
+    folder = paths.path("owned-runs", worker["id"])
+    os.makedirs(folder, mode=0o700, exist_ok=True)
+    output_path = os.path.join(folder, request["id"] + ".jsonl")
+    error_path = os.path.join(folder, request["id"] + ".stderr")
+    env = _env(worker)
+    env["XSM_HOME"] = paths.HOME
+    # Do not silently route subscription work onto API-key billing.
+    for key in ("ANTHROPIC_API_KEY", "OPENAI_API_KEY", "CODEX_API_KEY"):
+        env.pop(key, None)
+    argv = _owned_argv(worker, context)
+    with open(output_path, "w", encoding="utf-8") as output, open(error_path, "w", encoding="utf-8") as errors:
+        os.chmod(output_path, 0o600)
+        os.chmod(error_path, 0o600)
+        try:
+            process = subprocess.Popen(argv, stdin=subprocess.PIPE, stdout=output, stderr=errors,
+                                       cwd=worker["cwd"], env=env, text=True, start_new_session=True)
+        except OSError as exc:
+            raise OwnedLaunchError("owned native process was not started: " + str(exc)) from exc
+        start = identity.lstart(process.pid)
+        try:
+            owned_requests.note_child(worker["owner"], request["id"], request["reservation"]["token"],
+                                      process.pid, start, argv=argv, stdout=output_path, stderr=error_path)
+            process.communicate(body)
+        except BaseException:
+            # Only this newly created owned child is ours to stop. Keep its
+            # partial output and uncertain effects for readback, never rerun.
+            if process.poll() is None:
+                process.terminate()
+                try:
+                    process.wait(timeout=2)
+                except subprocess.TimeoutExpired:
+                    process.kill()
+                    process.wait()
+            if process.stdin is not None and not process.stdin.closed:
+                process.stdin.close()
+            raise
+        output.flush()
+        os.fsync(output.fileno())
+    owned_requests.note_exit(worker["owner"], request["id"], request["reservation"]["token"],
+                             process.returncode)
+    if process.returncode != 0:
+        raise WorkerError("owned native CLI exited %s; inspect retained run evidence" % process.returncode)
+    with open(output_path, encoding="utf-8") as output:
+        result = _owned_native_result(worker, context, output.read())
+    result["execution"] = {"pid": process.pid, "lstart": start, "argv": argv,
+                           "stdout": output_path, "stderr": error_path, "returncode": process.returncode}
+    return result
+
+
+def _reply_owned(worker, request, *, wake=True):
+    """Publish an actual owned context's saved result under its immutable reply ID."""
+    from . import owned_requests
+    from . import ledger, probe, send as send_mod
+    if worker.get("mode") != "owned" or worker.get("owned") is not True:
+        raise WorkerError("only an explicitly owned service may publish a headless result")
+    stored = owned_requests.status(worker["owner"], request["id"])
+    if (stored.get("status") != "sending" or stored.get("send_token") != request.get("send_token")
+            or stored["worker"].get("id") != worker.get("id")
+            or stored.get("reply_id") != request.get("reply_id")
+            or stored.get("result") != request.get("result")
+            or owned_requests._native(stored["sender"]) != owned_requests._native(request["sender"])):
+        raise WorkerError("reply does not match the owned journal's reserved original result")
+    result = request["result"]
+    native_id = result["native_session_id"]
+    execution = result.get("execution") or {}
+    if not execution.get("pid") or not execution.get("lstart"):
+        raise WorkerError("actual native execution provenance required for publishing")
+    # Register the actual ended headless turn, never the caller's live session.
+    sender = registry.upsert(worker["runtime"], worker["home"], native_id,
+                             execution["pid"], worker["cwd"], name=worker["name"])
+    registry.mark_ended(worker["runtime"], native_id, "owned-turn-exited", home=worker["home"])
+    with _owned_record_lock(worker):
+        current = load(worker["name"])
+        if current and current.get("id") == worker["id"]:
+            current["owned_sessions"] = sorted(set(current.get("owned_sessions", [])) | {native_id})
+            save(current)
+    wanted = owned_requests._native(request["sender"])
+    with probe.quick():
+        targets = [r for r in registry.records() if all(
+            r.get(key) == value for key, value in wanted.items())]
+    if len(targets) != 1:
+        return {"id": request["reply_id"], "status": "refused",
+                "reason": "original reply target's full native identity is unavailable or ambiguous"}
+    target = targets[0]
+    previous = ledger.status(request["reply_id"])
+    if previous.get("status") in ("delivered", "held", "blocked"):
+        return {"id": request["reply_id"], "status": previous["status"],
+                "reason": "existing receiver result recovered; no new reply sent"}
+    scope, reason = config.scope_for(sender, target)
+    if (not scope or sender.get("ref") in config.blocked() or target.get("ref") in config.blocked()):
+        return {"id": request["reply_id"], "status": "refused",
+                "reason": "owned reply has no current scope; no connection offered: " + str(reason or "not permitted")}
+    if not previous:
+        # send's explicit resend path never invokes legacy connection/consent
+        # offers, even if scope is revoked after the check above. Prepare only
+        # the immutable intent; this is not queue or delivery evidence.
+        ledger.queued(request["reply_id"], sender, target, scope, "reply", result["body"],
+                      reply_to=request["id"], outcome=result.get("outcome"), priority="next")
+        ledger.step(request["reply_id"], "accepted", True, "owned reply intent; transport not attempted")
+    spec = "%s:%s" % (target["runtime"], target["session_id"])
+    return send_mod.send(spec, result["body"], sender=sender, kind="reply", reply_to=request["id"],
+                         outcome=result.get("outcome"), msg_id=request["reply_id"],
+                         resend=True, wake=wake).as_dict()
+
+
+def publish_owned(worker, request, *, wake=True):
+    """Reply callback using the actual saved owned native identity.
+
+    wake=False uses strict quiet storage and is reported as reply-stored, never
+    as native delivery. No caller/controller identity is forged as the worker.
+    """
+    return _reply_owned(worker, request, wake=wake)
+
+
+def submit_owned(name, sender, body, *, work_context, request_id=None, independent=False):
+    """Synchronously verify/store an immutable request, without reserving or running.
+
+    MCP must use this before consulting its in-flight job cache so a changed
+    body, actor, work unit or worker generation cannot receive an older result.
+    """
+    from . import owned_requests
+    config.require_valid_policy()
+    worker = _owned_worker(name)
+    owner = worker["owner"]
+    owned_requests._native(sender)
+    if (owned_requests._native(sender) != owned_requests._native(owner)
+            and not config.scope_for(sender, {"cwd": worker["cwd"]})[0]):
+        raise WorkerError("sender has no scope for this owned service")
+    return owned_requests.submit(owner, worker, sender, work_context, body,
+                                 request_id=request_id, independent=independent)
+
+
+def run_owned(name, sender, body, *, work_context, request_id=None, independent=False,
+              executor=None, reply_sender=None, checkpoint=None):
+    """Submit/run/reply or return real queued/unknown state without spawning again.
+
+    executor(worker, context, body, request)->{body,outcome,native_session_id,...}.
+    reply_sender(worker, request)->send evidence dict (must preserve reply_id).
+    checkpoint(stage, request) is for deterministic crash tests, never a model.
+    """
+    from . import owned_requests
+    request = submit_owned(name, sender, body, work_context=work_context,
+                           request_id=request_id, independent=independent)
+    worker, owner = request['worker'], request['worker']['owner']
+    executor, reply_sender = executor or _execute_owned, reply_sender or _reply_owned
+    checkpoint = checkpoint or (lambda stage, request: None)
+    request_id = request["id"]
+    checkpoint("request-stored", request)
+    owned_requests.recover(owner)
+    request = owned_requests.status(owner, request_id)
+    if request["status"] == "queued":
+        refuse_inside_framework()
+        request = owned_requests.reserve(owner, request_id,
+                    _limit("max_workers", "XSM_MAX_WORKERS", 4),
+                    extra_busy=lambda names: _owned_foreign_busy(owner, names))
+        if not request.get("reservation_acquired"):
+            return request
+        token = request["reservation"]["token"]
+        try:
+            owned_requests.acknowledge(owner, request_id, token)
+            checkpoint("acknowledged", owned_requests.status(owner, request_id))
+            request = owned_requests.begin(owner, request_id, token)
+            existing_native = {(r.get("runtime"), r.get("session_id")) for r in registry.raw_records()}
+            result = executor(worker, request["context"], request["body"], request)
+            native_id = result.get("native_session_id") if isinstance(result, dict) else None
+            if (worker["runtime"] == "claude" and not request["context"].get("native_session_id")
+                    and native_id != request["context"]["session_seed"]):
+                raise WorkerError("Claude did not use the fresh owned context")
+            if (not request["context"].get("native_session_id") and
+                    (worker["runtime"], native_id) in existing_native):
+                raise WorkerError("native runner selected an existing ordinary conversation")
+            checkpoint("after-execution", request)
+            request = owned_requests.save_result(owner, request_id, token, result)
+            checkpoint("result-stored", request)
+        except OwnedLaunchError as exc:
+            return owned_requests.fail_not_started(owner, request_id, token, str(exc))
+        except Exception as exc:
+            current = owned_requests.status(owner, request_id)
+            if current["status"] in ("reserved", "acknowledged"):
+                return owned_requests.release_reservation(owner, request_id, token)
+            return owned_requests.mark_unknown(owner, request_id, token, str(exc))
+        except BaseException:
+            current = owned_requests.status(owner, request_id)
+            if current["status"] in ("reserved", "acknowledged"):
+                owned_requests.release_reservation(owner, request_id, token)
+            elif current["result"] is None:
+                owned_requests.mark_unknown(owner, request_id, token, "owned execution interrupted")
+            raise
+    if request["status"] not in ("result-ready",):
+        return owned_requests.status(owner, request_id)
+    request = owned_requests.claim_send(owner, request_id)
+    if not request.get("send_acquired"):
+        return request
+    try:
+        evidence = reply_sender(worker, request)
+        checkpoint("reply-sent", request)
+    except Exception as exc:
+        evidence = {"id": request["reply_id"], "status": "error", "reason": str(exc)}
+    except BaseException:
+        owned_requests.finish_send(owner, request_id, request["send_token"],
+            {"id": request["reply_id"], "status": "unknown", "reason": "publisher interrupted"})
+        raise
+    return owned_requests.finish_send(owner, request_id, request["send_token"], evidence)
+
+
+def owned_status(name, sender, request_id):
+    from . import owned_requests
+    worker=load(name)
+    if not worker or worker.get('mode')!='owned' or worker.get('owned') is not True:
+        saved=owned_requests.retained_requests(sender,request_id=request_id,worker_name=name)
+        if len(saved)!=1:
+            raise WorkerError('no unique retained request for this native sender and worker name')
+        return saved[0]
+    return owned_requests.status(worker["owner"], request_id, sender=sender)
+
+
+def owned_history(name,sender):
+    from . import owned_requests
+    worker=load(name)
+    if worker and worker.get('mode')=='owned' and worker.get('owned') is True:
+        return owned_requests.list_requests(worker['owner'],sender)
+    return [{k:r.get(k) for k in ('id','status','created_at','work_context','reply_id','worker_record_present')}
+            for r in owned_requests.retained_requests(sender,worker_name=name)]
+
+
+def list_owned(name, sender):
+    """Read-only discovery of the caller's request IDs; never launches a model."""
+    from . import owned_requests
+    worker = _owned_worker(name)
+    return owned_requests.list_requests(worker["owner"], sender)
+
+
+def reconcile_owned(name, sender, request_id, readback=None, *, reply_sender=None):
+    """Recover a saved native result through explicit readback, never model rerun."""
+    from . import owned_requests
+    config.require_valid_policy()
+    worker = _owned_worker(name)
+    owned_requests.recover(worker["owner"])
+    request = owned_requests.status(worker["owner"], request_id, sender=sender)
+    if request["status"] != "unknown":
+        return request
+    if (request.get("child") or {}).get("returncode") not in (None, 0):
+        return request  # even a custom readback cannot relabel a known failed native exit
+    result = (readback(request) if readback is not None else
+              _readback_owned(request["worker"], request))
+    if result is None:
+        return request
+    owned_requests.save_result(worker["owner"], request_id, request["reservation"]["token"], result)
+    return resend_owned(name, sender, request_id, reply_sender=reply_sender)
+
+
+def _readback_owned(worker, request):
+    """Read a completed owned CLI log after proven child exit; never execute."""
+    from . import owned_requests
+    child = request.get("child") or {}
+    if owned_requests._alive(child) is not False:
+        return None
+    if child.get("returncode") not in (None, 0):
+        return None  # a valid-looking body never overrides a known failed exit
+    expected = paths.path("owned-runs", worker["id"], request["id"] + ".jsonl")
+    if child.get("stdout") != expected:
+        return None
+    try:
+        with open(expected, encoding="utf-8") as output:
+            result = _owned_native_result(worker, request["context"], output.read())
+    except (OSError, WorkerError):
+        return None
+    result["execution"] = dict(child, recovered_from="completed-native-output")
+    result["execution"].setdefault("returncode", None)  # older logs have no observed exit status
+    return result
+
+
+def resend_owned(name, sender, request_id, *, reply_sender=None, checkpoint=None):
+    """Retry a stored answer without regenerating the prompt, plan or native run."""
+    from . import owned_requests
+    config.require_valid_policy()
+    worker = _owned_worker(name)
+    owner = worker["owner"]
+    owned_requests.recover(owner)
+    request = owned_requests.status(owner, request_id, sender=sender)
+    if request["status"] != "result-ready":
+        return request
+    request = owned_requests.claim_send(owner, request_id)
+    if not request.get("send_acquired"):
+        return request
+    try:
+        evidence = (reply_sender or _reply_owned)(request["worker"], request)
+        if checkpoint is not None:
+            checkpoint("reply-sent", request)
+    except Exception as exc:
+        evidence = {"id": request["reply_id"], "status": "error", "reason": str(exc)}
+    except BaseException:
+        owned_requests.finish_send(owner, request_id, request["send_token"],
+            {"id": request["reply_id"], "status": "unknown", "reason": "publisher interrupted"})
+        raise
+    return owned_requests.finish_send(owner, request_id, request["send_token"], evidence)
+
+
+def retire_owned_context(name, sender, context_id):
+    from . import owned_requests
+    config.require_valid_policy()
+    worker = _owned_worker(name)
+    state = owned_requests._load(worker["owner"])
+    context = (state or {}).get("contexts", {}).get(context_id)
+    if not context or context.get("worker_id") != worker["id"]:
+        raise WorkerError("unknown owned context")
+    if (owned_requests._native(sender) != owned_requests._native(worker["owner"]) and
+            owned_requests._native(sender) != context["sender"]):
+        raise WorkerError("context belongs to another native sender")
+    owned_requests.retire_context(worker["owner"], context_id)
+    return {"status": "retired", "context_id": context_id}

@@ -8,6 +8,34 @@ xsm lets running Claude Code and Codex sessions find each other and exchange mes
 
 ![How XSM connects agent sessions through native runtime paths and explicit communication scopes](docs/assets/xsm-overview.svg)
 
+## Collaboration interfaces in development
+
+This worktree adds publication, work discovery, a handshake with the selected conversation, and `ask`
+for actual answers. Local candidates are explicitly published sessions plus sessions in the same Git
+repository or linked worktrees. Discovery grants no communication permission. After the user selects a
+peer, the agent connects and confirms readiness from that peer's actual reply. The new cross-machine
+discovery and membership path is tracked separately in the [implementation plan](docs/plan/reason-inspired-adrs/execution.md).
+The opt-in P2P implementation, device invitations, repository bindings and path
+diagnostics are described in the [network guide](docs/xsm/NETWORK.md); its
+[progress record](docs/plan/reason-inspired-adrs/adr-0021-progress.md) distinguishes tested paths from pending environments.
+
+```text
+Make this session discoverable through xsm.
+Find the agents reviewing the configuration change and show me the candidates.
+Connect to a1 so we can work together.
+```
+
+`xsm ask TARGET --text "question"` returns the original request ID; `question-status ID` retrieves late
+answers too. `--wake never` stores a message until a natural input boundary. Inbox output keeps the
+original, and the agent acknowledges it with `ack` after reading. Transport receipts, acknowledgement
+and task outcomes are separate evidence.
+
+CLI `--attachment PATH` snapshots a file under the caller's read authority. MCP takes already-read
+inline content or a private copy previously created by that same conversation. Copies have storage IDs
+and never overwrite source files. Explicitly owned headless workers use `owned create|run|status|retry|reconcile`,
+with contexts partitioned by sender/work and stored answers for recovery. See the
+[agent interface guide](skills/xsm/references/messaging.md).
+
 ## Philosophy
 
 Multi-agent tools such as Orca, herdr and OpenRig make coordination their product: a dispatcher, a task
@@ -20,7 +48,7 @@ What xsm does not have:
 
 - no orchestrator, team spec or task graph: who does what is decided in the conversation
 - no runtime of its own and no wrapper around `claude` or `codex`: you start your sessions as you always do
-- no daemon: hooks, files and one-shot commands
+- local messaging uses hooks, files and one-shot commands; opt-in cross-machine P2P owns a separate stoppable service
 
 Because everything else is left to the agents, the channel itself has to be dependable. That is where xsm puts
 its effort:
@@ -28,8 +56,8 @@ its effort:
 - **A message wakes the session.** It goes in through each runtime's own path (the Claude inbox socket,
   `codex queue`), not by typing into a terminal, so an idle session picks it up, and the message arrives marked
   with its sender instead of looking like something you typed.
-- **The sender knows what happened.** Every message ends as `delivered`, `sent-unconfirmed` or `held`, and
-  the sender sees which.
+- **The sender knows what happened.** Transport, runtime reach, acknowledgement and the actual task reply
+  are reported separately. Unacknowledged originals remain recoverable; task success needs an explicit peer outcome.
 - **People keep the boundaries.** Which sessions can talk is a scope you set, and widening it takes your
   approval.
 
@@ -61,7 +89,8 @@ To install by hand, read on.
 ### 1. Install manually
 
 xsm runs on macOS and Linux. It needs Unix sockets, `ps`, `/dev/tty` and tmux, so native Windows is not
-supported. Its only dependency is the Python standard library. Installing means making each session run
+supported. Local messaging uses the Python standard library. Optional P2P also needs the Rust network engine.
+Installing means making each session run
 xsm's hooks.
 
 **Claude Code plugin** (recommended). The repository is its own marketplace.
@@ -371,7 +400,8 @@ Principles:
 ├── .codex-plugin/, .agents/plugins/   # the same for Codex
 ├── hooks/codex-hooks.json, codex-mcp.json   # hooks and MCP server of the Codex plugin
 ├── bin/xsm                       # launcher (runs xsm.cli from its own folder, whatever the current directory holds)
-├── xsm/                          # the whole implementation (Python, stdlib only)
+├── xsm/                          # messaging, policy and CLI (Python, stdlib only)
+├── native/xsm-net/               # optional P2P engine (Rust, iroh)
 │   ├── cli.py                   # every subcommand
 │   ├── registry.py              # session registry (written by hooks, enriched from the runtime on lookup)
 │   ├── send.py / receive.py     # sending, and the receive gate the hooks call

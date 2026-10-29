@@ -433,7 +433,8 @@ class SafetyTest(TempState):
         rec = registry.upsert("claude", self.tmp, "s1", os.getpid(), self.tmp)
         workers.save({"name": "b", "parent_ref": rec["ref"], "created": 0})
         started = []
-        with mock.patch.object(workers.subprocess, "Popen",
+        with mock.patch.dict(os.environ, {"CLAUDE_CONFIG_DIR": self.tmp}), \
+                mock.patch.object(workers.subprocess, "Popen",
                                lambda argv, **kw: started.append(argv[4:])):
             receive.handle({"hook_event_name": "SessionEnd", "session_id": "s1",
                             "session_title": "boss", "reason": "exit"})

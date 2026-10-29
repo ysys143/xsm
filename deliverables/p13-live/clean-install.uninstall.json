@@ -1,0 +1,38 @@
+{
+  "fixture": "/private/tmp/p13-mcp-fixed-x3tjg2g6/combined/uninstall-invalid-ckmz_zu7",
+  "cases": [
+    {
+      "case": "invalid-json",
+      "direct_remove_mcp": {
+        "error_type": "JSONDecodeError",
+        "message": "Expecting property name enclosed in double quotes: line 1 column 2 (char 1)"
+      },
+      "public_exit_code": 1,
+      "public_traceback": true,
+      "public_success_reported": false,
+      "other_hook_settings_changed": true,
+      "damaged_mcp_preserved": true,
+      "symlink_preserved": true,
+      "stdout": "/private/tmp/p13-mcp-fixed-x3tjg2g6/combined/uninstall-invalid-ckmz_zu7/invalid-json/uninstall.stdout",
+      "stderr": "/private/tmp/p13-mcp-fixed-x3tjg2g6/combined/uninstall-invalid-ckmz_zu7/invalid-json/uninstall.stderr"
+    },
+    {
+      "case": "symlink",
+      "direct_remove_mcp": {
+        "error_type": "InstallConflictError",
+        "message": "installer-conflict: MCP config symlink preserved"
+      },
+      "public_exit_code": 1,
+      "public_traceback": true,
+      "public_success_reported": false,
+      "other_hook_settings_changed": true,
+      "damaged_mcp_preserved": true,
+      "symlink_preserved": true,
+      "stdout": "/private/tmp/p13-mcp-fixed-x3tjg2g6/combined/uninstall-invalid-ckmz_zu7/symlink/uninstall.stdout",
+      "stderr": "/private/tmp/p13-mcp-fixed-x3tjg2g6/combined/uninstall-invalid-ckmz_zu7/symlink/uninstall.stderr"
+    }
+  ],
+  "models": 0,
+  "auth_or_permissions_changes": false,
+  "source_cli_modified": false
+}

@@ -1,0 +1,38 @@
+{
+  "scope": "local integration after real native MCP clean-install/uninstall fixes and direct reply claims; not whole-plan completion",
+  "snapshot": "/private/tmp/xsm-p13-postqa-frozen-bukwksw6",
+  "snapshot_manifest": "deliverables/p13-live/post-qa-source-manifest.json",
+  "results": [
+    {
+      "python": "Python 3.9.6",
+      "tests": 1667,
+      "seconds": 433.487,
+      "exit_code": 0,
+      "result": "OK",
+      "skips": 0,
+      "log": "/tmp/p13-postqa39.log",
+      "log_sha256": "93ba0e3d857f2230c7441952f2a510ec34bcc9150943f2d6a30a7e769d57558c"
+    },
+    {
+      "python": "Python 3.14.6",
+      "tests": 1667,
+      "seconds": 322.974,
+      "exit_code": 0,
+      "result": "OK",
+      "skips": 0,
+      "log": "/tmp/p13-postqa314.log",
+      "log_sha256": "358debd456710acc664392796ed8cc3e881c7d95d65441642b867437786e0b24"
+    }
+  ],
+  "tested_product_paths": 133,
+  "product_source_unchanged_after_runs": true,
+  "changed_paths": [],
+  "whole_plan_complete": false,
+  "not_verified": [
+    "new clean-profile authentication and first model roundtrip",
+    "human UI",
+    "D12 and P12 product integration",
+    "remaining physical network cells",
+    "complete native interruption matrix"
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "message_id": "6f4cd3ded0814bbb",
+  "request_id": "015e48d807f64a15",
+  "sender_native": "01a18372-28bb-71d3-833f-5c1ed1be7cac",
+  "body": "P10-QA-023db9d76f-R1: 4",
+  "controller_actual_arrival": true,
+  "global_receiver_provenance": "unchecked",
+  "fixture_archive_match": true,
+  "received_turn": "goal continued after prior turn ended",
+  "additional_human_prompt": false,
+  "permission_or_identity_promoted": false,
+  "additional_arrivals": [
+    {
+      "message_id": "3b0b2802f0f44791",
+      "request_id": "5137642a9a114c78",
+      "sender_native": "01a18372-28bb-71d3-833f-5c1ed1be7cac",
+      "body": "P10-QA-023db9d76f-R2: 42",
+      "controller_actual_arrival": true,
+      "global_receiver_provenance": "unchecked",
+      "fixture_archive_match": true,
+      "received_turn": "after main controller final response; no added human prompt",
+      "additional_human_prompt": false,
+      "permission_or_identity_promoted": false,
+      "recorded_at_utc": "2026-10-28T23:12:03.434577+00:00",
+      "archive_pointer": "native-upgrade.json#/trials/0/second_reply",
+      "exact_id_reply_to_body_match": true
+    }
+  ]
+}

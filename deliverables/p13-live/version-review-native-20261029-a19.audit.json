@@ -1,0 +1,255 @@
+{
+  "scope": "A19-06 one actual two-version file-review cell; not all A19/P06",
+  "result": "passed-this-two-version-native-sample",
+  "original_result_preserved": true,
+  "original_result_SHA": "4d9f6868dabd4bb581f82221fbc1aaad13937cd33474f61e1389612b53950615",
+  "source": "/private/tmp/xsm-final-receipt-frozen-i3u9pms3",
+  "source_unchanged": true,
+  "seconds": 100.97,
+  "source_manifest": "deliverables/p13-live/final-source-manifest.json",
+  "native_launches": 2,
+  "automatic_model_retries": 0,
+  "actors": [
+    {
+      "role": "reviewer",
+      "native_evidence": {
+        "native_pid": 69176,
+        "native_lstart": "Thu Oct 29 09:05:46 2026",
+        "native_session_id": "01a184fa-1f69-7562-a5aa-1713cc800fab",
+        "runtime": "codex",
+        "home": "/Users/jaesolshin/.codex-3",
+        "registered_cwd": "/private/tmp/p13-version-review-native-30_zo4ej/review-worktree",
+        "kernel_process_cwd": "/private/tmp/p13-version-review-native-30_zo4ej/review-worktree",
+        "kernel_probe_exit": 0,
+        "native_generation_alive": true,
+        "MCP_pid": 69299,
+        "MCP_source_cwd": "/private/tmp/xsm-final-receipt-frozen-i3u9pms3"
+      },
+      "observed_native_CLI_version": "codex-cli 0.164.0",
+      "exit_code": 0,
+      "MCP_calls": 12,
+      "MCP_by_tool": {
+        "xsm_inbox": 3,
+        "xsm_discover": 1,
+        "xsm_files": 3,
+        "xsm_ack": 2,
+        "xsm_send": 3
+      },
+      "MCP_errors": [],
+      "shell_calls": 6,
+      "shell_nonzero": [
+        {
+          "event": 6,
+          "exit_code": 1
+        }
+      ]
+    },
+    {
+      "role": "initiator",
+      "native_evidence": {
+        "native_pid": 69451,
+        "native_lstart": "Thu Oct 29 09:05:47 2026",
+        "native_session_id": "01a184fa-21c2-7bd3-b7ed-28493eff68cb",
+        "runtime": "codex",
+        "home": "/Users/jaesolshin/.codex-3",
+        "registered_cwd": "/private/tmp/p13-version-review-native-30_zo4ej/repository",
+        "kernel_process_cwd": "/private/tmp/p13-version-review-native-30_zo4ej/repository",
+        "kernel_probe_exit": 0,
+        "native_generation_alive": true,
+        "MCP_pid": 69667,
+        "MCP_source_cwd": "/private/tmp/xsm-final-receipt-frozen-i3u9pms3"
+      },
+      "observed_native_CLI_version": "codex-cli 0.164.0",
+      "exit_code": 0,
+      "MCP_calls": 6,
+      "MCP_by_tool": {
+        "xsm_ask": 2,
+        "xsm_ack": 3,
+        "xsm_inbox": 1
+      },
+      "MCP_errors": [],
+      "shell_calls": 7,
+      "shell_nonzero": []
+    }
+  ],
+  "versions": [
+    {
+      "version": 1,
+      "request_id": "174240915e5f40cb",
+      "manifest_id": "a98b3e4fcab64d9b95c98f3dc256036d",
+      "previous_manifest": null,
+      "manifest_digest": "9505e898db637cea6a54b254a384c5ffb18e0af02768b264e3702b3e52e27dcf",
+      "owner": {
+        "home_id": "8f68eb952a346564ce4e74fa28f6be1313901a8164edfe6761ea0f8bc4a71fe4",
+        "runtime": "codex",
+        "session_id": "01a184fa-21c2-7bd3-b7ed-28493eff68cb"
+      },
+      "source_bytes": 136,
+      "content_SHA": "b7487d51474966007839be93d0f83c4411c82252fac070a906cf835ac12ff1a6",
+      "marker_SHA": "0321ef4f44de8de423df47bef73c9001df4fa151c5a64491cd43796b62430cbd",
+      "caller_inline_actual_source_match": true,
+      "server_source_paths": {},
+      "input_source": "caller-inline",
+      "binding_body_SHA_matches": true,
+      "sender_actual_read_observed": true,
+      "received_storage_ids": [
+        "fa3071ca01894f499b6b6bb897599c45"
+      ],
+      "actual_read_events": [
+        17,
+        32
+      ],
+      "request_native_pair_matches": true,
+      "request_canonical_state": "acknowledged",
+      "request_digest": "d291ef923a37c573f1d9bb79df46a8c50f9c1fd16feb00ec17b25cd9618203d5",
+      "replies": [
+        {
+          "reply_id": "370f715017f6407e",
+          "reply_to": "174240915e5f40cb",
+          "outcome": null,
+          "body": "v1 사본을 실제로 읽었습니다. 표준 정수 덧셈 2+2는 4이므로 5라는 주장은 틀렸습니다. 사본은 136 bytes, SHA-256 b7487d51474966007839be93d0f83c4411c82252fac070a906cf835ac12ff1a6 입니다. 표식 값 SHA-256은 0321ef4f44de8de423df47bef73c9001df4fa151c5a64491cd43796b62430cbd 입니다. storage_id fa3071ca01894f499b6b6bb897599c45, entry_id 74adf656eecb4605a6efd9db53cdf4b1을 보존했습니다. 수정본을 보내 주세요. 수정본 검토 후 이 옛 사본을 다시 읽고 불변 여부를 확인하겠습니다.",
+          "body_SHA": "ea8450dd2d60f45c2e9da3be219ffa8e7ac3beb6583229ec509f94a01892229c",
+          "digest": "81dac7e2fed157bfeb6ed6a55b43bdc983f0a1004cdd63cc6a071385a4652f20",
+          "canonical_state": "acknowledged",
+          "actual_native_pair_matches": true
+        },
+        {
+          "reply_id": "4e6dd8d3dc634ebf",
+          "reply_to": "174240915e5f40cb",
+          "outcome": "succeeded",
+          "body": "후속 요청 76ac365acc184574까지 완료했습니다. v1 오류 확인, v2 수정 정확성 확인, v2 검토 후 기존 v1 사본 재읽기와 bytes·SHA-256·표식 해시 불변 검증을 모두 마쳤습니다. 상세 검증 수치는 후속 요청의 완료 회신에 기록했습니다.",
+          "body_SHA": "8869d28206a3161c1713351c757eaf478e05eef7943a4c1e069dbe4b8c54d172",
+          "digest": "bfef98ce6fea76dbbe09b5e04695023a1df1aa9d393c5805dd0f9b92e83b393a",
+          "canonical_state": "acknowledged",
+          "actual_native_pair_matches": true
+        }
+      ]
+    },
+    {
+      "version": 2,
+      "request_id": "76ac365acc184574",
+      "manifest_id": "04346cf6e1c14e8ab5765ae767a6a9d8",
+      "previous_manifest": "a98b3e4fcab64d9b95c98f3dc256036d",
+      "manifest_digest": "26a25915c166d746dcd5ab6c6b2ee649b6c0b3cf02215b497e3532600c611dc4",
+      "owner": {
+        "home_id": "8f68eb952a346564ce4e74fa28f6be1313901a8164edfe6761ea0f8bc4a71fe4",
+        "runtime": "codex",
+        "session_id": "01a184fa-21c2-7bd3-b7ed-28493eff68cb"
+      },
+      "source_bytes": 346,
+      "content_SHA": "ecbb8a9a001f28e6a567027026493afc969e5e539836c81ea16fb3dfe7fb8d46",
+      "marker_SHA": "0e544ddd367afccad170f828727e4ecf3b7e5e0a73e08ef65efc9895a4406c82",
+      "caller_inline_actual_source_match": true,
+      "server_source_paths": {},
+      "input_source": "caller-inline",
+      "binding_body_SHA_matches": true,
+      "sender_actual_read_observed": true,
+      "received_storage_ids": [
+        "733e1e6843b14ee2bc1be385f368de31"
+      ],
+      "actual_read_events": [
+        28
+      ],
+      "request_native_pair_matches": true,
+      "request_canonical_state": "acknowledged",
+      "request_digest": "453b73cf98643121b906df23fc6e40aa1d30b22c6cff155518f730a6cdbb9bee",
+      "replies": [
+        {
+          "reply_id": "fc3e76d4ff1b4159",
+          "reply_to": "76ac365acc184574",
+          "outcome": "succeeded",
+          "body": "두 버전의 실제 사본 읽기와 독립 산술 검토, v2 검토 후 v1 재읽기를 완료했습니다. v1의 2+2=5는 오류이고 v2의 2+2=4는 정확하므로 지적이 반영됐습니다. v2: 346 bytes, SHA-256 ecbb8a9a001f28e6a567027026493afc969e5e539836c81ea16fb3dfe7fb8d46, 표식 값 SHA-256 0e544ddd367afccad170f828727e4ecf3b7e5e0a73e08ef65efc9895a4406c82. v2의 previous_version=v1, previous_review_request=174240915e5f40cb, previous_manifest=a98b3e4fcab64d9b95c98f3dc256036d, previous_sha256은 최초 v1 기록과 모두 일치합니다. 이어 storage_id fa3071ca01894f499b6b6bb897599c45, entry_id 74adf656eecb4605a6efd9db53cdf4b1을 다시 읽었습니다. 옛 사본은 136 bytes, SHA-256 b7487d51474966007839be93d0f83c4411c82252fac070a906cf835ac12ff1a6, 표식 값 SHA-256 0321ef4f44de8de423df47bef73c9001df4fa151c5a64491cd43796b62430cbd로 최초 검토와 모두 동일하며 전체 내용도 동일합니다. 새 표식과 옛 표식은 서로 다른 해시입니다. 원본 경로는 읽지 않았고 표식 원문은 메시지 본문에 옮기지 않았습니다.",
+          "body_SHA": "21cf759eaa05c4c8186dfba6eb0ab51a9c18b05b3dc963009c5db07a0a763851",
+          "digest": "30c3f382cbf40a5cdafe93879086b76719883d8b303b3023f1277e12310bd432",
+          "canonical_state": "acknowledged",
+          "actual_native_pair_matches": true
+        }
+      ]
+    }
+  ],
+  "actual_incoming_entry_reads": [
+    {
+      "event": 17,
+      "storage_id": "fa3071ca01894f499b6b6bb897599c45",
+      "entry_id": "74adf656eecb4605a6efd9db53cdf4b1",
+      "manifest_id": "a98b3e4fcab64d9b95c98f3dc256036d",
+      "version": 1,
+      "entry_bytes": 136,
+      "entry_SHA": "b7487d51474966007839be93d0f83c4411c82252fac070a906cf835ac12ff1a6",
+      "actual_content_SHA": "b7487d51474966007839be93d0f83c4411c82252fac070a906cf835ac12ff1a6",
+      "returned_content_matches_blob": true,
+      "SHA_matches_entry": true,
+      "actual_reviewer_owner": true,
+      "owner": {
+        "home_id": "8f68eb952a346564ce4e74fa28f6be1313901a8164edfe6761ea0f8bc4a71fe4",
+        "runtime": "codex",
+        "session_id": "01a184fa-1f69-7562-a5aa-1713cc800fab"
+      },
+      "marker_SHA": "0321ef4f44de8de423df47bef73c9001df4fa151c5a64491cd43796b62430cbd"
+    },
+    {
+      "event": 28,
+      "storage_id": "733e1e6843b14ee2bc1be385f368de31",
+      "entry_id": "236693f48f1a404ea2e55ec1e7145ef9",
+      "manifest_id": "04346cf6e1c14e8ab5765ae767a6a9d8",
+      "version": 2,
+      "entry_bytes": 346,
+      "entry_SHA": "ecbb8a9a001f28e6a567027026493afc969e5e539836c81ea16fb3dfe7fb8d46",
+      "actual_content_SHA": "ecbb8a9a001f28e6a567027026493afc969e5e539836c81ea16fb3dfe7fb8d46",
+      "returned_content_matches_blob": true,
+      "SHA_matches_entry": true,
+      "actual_reviewer_owner": true,
+      "owner": {
+        "home_id": "8f68eb952a346564ce4e74fa28f6be1313901a8164edfe6761ea0f8bc4a71fe4",
+        "runtime": "codex",
+        "session_id": "01a184fa-1f69-7562-a5aa-1713cc800fab"
+      },
+      "marker_SHA": "0e544ddd367afccad170f828727e4ecf3b7e5e0a73e08ef65efc9895a4406c82"
+    },
+    {
+      "event": 32,
+      "storage_id": "fa3071ca01894f499b6b6bb897599c45",
+      "entry_id": "74adf656eecb4605a6efd9db53cdf4b1",
+      "manifest_id": "a98b3e4fcab64d9b95c98f3dc256036d",
+      "version": 1,
+      "entry_bytes": 136,
+      "entry_SHA": "b7487d51474966007839be93d0f83c4411c82252fac070a906cf835ac12ff1a6",
+      "actual_content_SHA": "b7487d51474966007839be93d0f83c4411c82252fac070a906cf835ac12ff1a6",
+      "returned_content_matches_blob": true,
+      "SHA_matches_entry": true,
+      "actual_reviewer_owner": true,
+      "owner": {
+        "home_id": "8f68eb952a346564ce4e74fa28f6be1313901a8164edfe6761ea0f8bc4a71fe4",
+        "runtime": "codex",
+        "session_id": "01a184fa-1f69-7562-a5aa-1713cc800fab"
+      },
+      "marker_SHA": "0321ef4f44de8de423df47bef73c9001df4fa151c5a64491cd43796b62430cbd"
+    }
+  ],
+  "v2_read_then_same_v1_reread": true,
+  "v1_bytes_digest_marker_unchanged": true,
+  "raw_marker_in_message_bodies": [],
+  "setup_actual_native_registrations": 2,
+  "controller_send_ACK_index_repairs": 0,
+  "additional_human_inputs": 0,
+  "profile_guard_unchanged": false,
+  "profile_limit": "equality guard differs; config/auth metadata writer and cause not established; no evaluator profile edit commanded",
+  "owned_alive_after": [
+    {
+      "role": "reviewer",
+      "native_alive": false,
+      "MCP_same_generation_alive": false
+    },
+    {
+      "role": "initiator",
+      "native_alive": false,
+      "MCP_same_generation_alive": false
+    }
+  ],
+  "raw_root": "/private/tmp/p13-version-review-native-30_zo4ej",
+  "raw_manifest_hashes_match": true,
+  "native_reruns_for_audit": 0,
+  "agent_MCP_calls": 18,
+  "agent_shell_calls": 13,
+  "total_agent_tool_calls": 31
+}

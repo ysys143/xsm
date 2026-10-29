@@ -682,6 +682,12 @@ class Crowd(test_xsm.TempState):
         self.there = os.path.join(self.tmp, "there")
         os.makedirs(self.home)
         os.makedirs(self.here)
+        # A real Codex server runs in the home of the session above it, and the
+        # pointer it signs as carries that home. Without this the server's home
+        # (the default) and the pointers' home differ, and a call is refused as
+        # coming from another home (G01).
+        os.environ["CODEX_HOME"] = self.home
+        self.addCleanup(os.environ.pop, "CODEX_HOME", None)
         self.mine = registry.upsert("codex", self.home, "mine", os.getpid(), self.here, name="mine")
         self.peer = registry.upsert("codex", self.home, "peer", os.getpid(), self.here, name="peer")
         child = subprocess.Popen(["true"])
@@ -765,9 +771,9 @@ class McpCallerLookupTest(Crowd):
         """MCP-1: 350 other pointers cost the call nothing."""
         from xsm import mcp, registry
         self.assertEqual(len(registry.raw_records()), self.CROWD + 2)
-        with mock.patch.object(mcp.Server, "_call", return_value="ok"), \
+        with mock.patch.object(mcp.Server, "_call", return_value='{"messages":[],"claims":[]}'), \
                 mock.patch.object(registry, "_enrich", wraps=registry._enrich) as enriched:
-            self.assertEqual(self.call(), "ok")
+            self.assertEqual(json.loads(self.call())["messages"], [])
         self.assertEqual(sorted(c.args[0]["session_id"] for c in enriched.call_args_list),
                          ["mine", "peer"])
 
@@ -788,7 +794,7 @@ class McpCallerLookupTest(Crowd):
         with mock.patch.object(identity, "ancestor_pid", watch("walk", lambda names: os.getpid())), \
                 mock.patch.object(registry, "raw_records", watch("pointers", registry.raw_records)), \
                 mock.patch.object(channel, "resolve", watch("channel", channel.resolve)), \
-                mock.patch.object(mcp.Server, "_call", watch("tool", lambda *a, **k: "ok")):
+                mock.patch.object(mcp.Server, "_call", watch("tool", lambda *a, **k: '{"messages":[],"claims":[]}')):
             server.call("xsm_inbox", {})
         self.assertEqual([label for label, _ in seen], ["walk", "pointers", "channel", "tool"])
         for label, quick in seen[:2]:

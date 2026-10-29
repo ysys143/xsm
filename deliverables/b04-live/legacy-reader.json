@@ -1,0 +1,19 @@
+{
+  "legacy_runtime": "/Users/jaesolshin/.xsm/runtime/2389da782089",
+  "legacy_inbox_sha256": "6830e2ac637a594e61a39e9fdf92a6bd74e1f2a0f85955d0a8b522839d963f67",
+  "legacy": {
+    "consumed": 1,
+    "ids": [
+      "b2cf2b1952c44ff0"
+    ]
+  },
+  "id": "b2cf2b1952c44ff0",
+  "before_ack": "handoff-recorded",
+  "after_ack": "acknowledged",
+  "original_retained": true,
+  "new_consumer_recovered_original": true,
+  "duplicate_after_ack": false,
+  "fixture_state": "/private/tmp/b04-legacy-fixed-tgmcfwj5",
+  "native_llm_used": false,
+  "prior_run_invalid": "XSM_HOME was set after paths import; excluded from proof; own synthetic state cleanup recorded separately"
+}

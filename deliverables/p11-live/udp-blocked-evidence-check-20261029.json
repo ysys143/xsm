@@ -1,0 +1,12 @@
+{
+  "scope": "offline UDP-denied native evidence verification, no new engine/model runs",
+  "passed": true,
+  "manifest_records": 76,
+  "peer_files_verified": 29,
+  "native_thread_started_events": 1,
+  "native_turn_completed_events": 1,
+  "hashes_and_reply_correlations_match": true,
+  "relay_connected_only_counterexample_rejected": true,
+  "report_links": 7,
+  "new_model_calls": 0
+}

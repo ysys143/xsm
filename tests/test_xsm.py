@@ -30,6 +30,7 @@ def _run_cli(argv: list) -> str:
 
 
 RUNTIME_IDENTITY = ("CLAUDE_CODE_SESSION_ID", "CLAUDE_CODE_MESSAGING_SOCKET", "CLAUDE_PID",
+                    "CLAUDE_CONFIG_DIR", "CODEX_HOME",
                     "CODEX_THREAD_ID", "CODEX_SANDBOX", "CODEX_SANDBOX_NETWORK_DISABLED",
                     "XSM_SANDBOXED", "XSM_RUNTIME", "XSM_CLAUDE_INBOUND", "XSM_ALLOW_MESSAGING",
                     "XSM_HUMAN_SEND_CONNECTS")
@@ -1352,9 +1353,12 @@ class FormToolPermissionTest(TempState):
         self.assertEqual(paths.read_json(install._state_file(install.ALLOWED, target)),
                          {"file": target, "added": [], "v": install.NOTE_VERSION})
         data = paths.read_json(target)              # what 0.4.14's allow_form_tools wrote
-        data["permissions"] = {"allow": list(install.mcp_tool_names())}
+        legacy_tools = ("xsm_link", "xsm_reach", "xsm_join", "xsm_approve", "xsm_grant",
+                        "xsm_decide", "xsm_doc_endorse")
+        legacy_names = [prefix + tool for prefix in install.FORM_TOOL_PREFIXES for tool in legacy_tools]
+        data["permissions"] = {"allow": legacy_names}
         paths.write_json(target, data)
-        self.assertEqual(len(install.mcp_tool_names()), 14)
+        self.assertEqual(len(legacy_names), 14)
         self.assertEqual(install.allow_form_tools(home), "added")
         self.assertTrue(install.remove_form_tools(home))
         left = paths.read_json(target)
@@ -2172,11 +2176,16 @@ class ResendTest(TempState):
         self.alone = registry.upsert("codex", home, "t-alone", os.getpid(), self.tmp, name="alone")
         self.peer = registry.upsert("codex", home, "t-peer", os.getpid(), self.tmp, name="peer")
         self.other = registry.upsert("codex", home, "t-other", os.getpid(), self.tmp, name="other")
+        self.home = home
         self.handed = []
         from xsm import adapters
         patch = mock.patch.object(adapters, "to_codex", lambda *a: self.handed.append(a[1]))
         patch.start()
         self.addCleanup(patch.stop)
+
+    def peer_rec(self):
+        from xsm import registry
+        return registry.by_session("codex", "t-peer")
 
     def failing(self):
         from xsm import adapters
@@ -2266,6 +2275,494 @@ class ResendTest(TempState):
             code = cli.main(["send", "peer", "--text", "hello", "--resend", first.msg_id, "--json"])
         self.assertEqual(code, cli.UNCONFIRMED, out.getvalue())
         self.assertEqual(json.loads(out.getvalue())["id"], first.msg_id)
+
+    # -- A18-03 counterexamples: the resend contract is the whole request -----
+
+    def test_two_bodies_sharing_the_first_200_chars_are_not_the_same(self):
+        """The old check compared only the ledger's 200-char preview, so a resend
+        could carry a different tail. The digest covers the whole body."""
+        from xsm import ledger, send
+        head = "please run the migration " + "x" * 200
+        with self.failing():
+            first = send.send("peer", head + " on staging", sender=self.me)
+        self.assertEqual(first.status, "error")
+        self.assertEqual(ledger.status(first.msg_id)["preview"][:200], (head + " on staging")[:200])
+        r = send.send("peer", head + " on production", sender=self.me,
+                      msg_id=first.msg_id, resend=True)
+        self.assertEqual(r.status, "refused")
+        self.assertIn("differs", r.reason)
+        self.assertEqual(self.handed, [])
+
+    def test_swapping_reply_to_is_refused(self):
+        from xsm import send
+        with self.failing():
+            first = send.send("peer", "done", sender=self.me, kind="reply", reply_to="task-1",
+                              outcome="succeeded")
+        r = send.send("peer", "done", sender=self.me, kind="reply", reply_to="task-2",
+                      outcome="succeeded", msg_id=first.msg_id, resend=True)
+        self.assertEqual(r.status, "refused", r.reason)
+        self.assertIn("differs", r.reason)
+        self.assertEqual(self.handed, [])
+
+    def test_swapping_outcome_is_refused(self):
+        from xsm import send
+        with self.failing():
+            first = send.send("peer", "done", sender=self.me, kind="reply", reply_to="task-1",
+                              outcome="succeeded")
+        r = send.send("peer", "done", sender=self.me, kind="reply", reply_to="task-1",
+                      outcome="failed", msg_id=first.msg_id, resend=True)
+        self.assertEqual(r.status, "refused", r.reason)
+        self.assertEqual(self.handed, [])
+
+    def test_the_identical_message_still_resends(self):
+        from xsm import send
+        with self.failing():
+            first = send.send("peer", "run the task", sender=self.me, kind="task")
+        again = send.send("peer", "run the task", sender=self.me, kind="task",
+                          msg_id=first.msg_id, resend=True)
+        self.assertEqual((again.status, again.msg_id), ("sent-unconfirmed", first.msg_id),
+                         again.reason)
+
+    def test_the_same_native_id_in_another_home_is_another_session(self):
+        """A copied home can hold the same session id. The ref carries the home,
+        so the same id in another home is not this session and may not resend
+        its message (A23-03)."""
+        from xsm import registry, send
+        other_home = os.path.join(self.tmp, "homes", "codex-2")
+        os.makedirs(other_home, exist_ok=True)
+        twin = registry.upsert("codex", other_home, "t-me", os.getpid(), self.tmp, name="me")
+        self.assertNotEqual(twin["ref"], self.me["ref"])
+        with self.failing():
+            first = send.send("peer", "hello", sender=self.me)
+        r = send.send("peer", "hello", sender=twin, msg_id=first.msg_id, resend=True)
+        self.assertEqual(r.status, "refused")
+        self.assertIn("not sent by this session", r.reason)
+        self.assertEqual(self.handed, [])
+
+    def test_a_legacy_record_without_a_digest_still_resends_on_the_preview(self):
+        """A row written before the digest existed: no digest is invented, and
+        only the fields it kept are compared (P01 item 5)."""
+        from xsm import ledger, paths, send
+        paths.write_json(ledger._entry_path("legacy1"), {
+            "id": "legacy1", "status": "error", "kind": "note", "scope": "dir:x",
+            "from": {"ref": self.me["ref"]},
+            "to": {"name": "peer", "alias": "codex", "ref": self.peer["ref"]},
+            "preview": "hello", "error": "old"})
+        self.assertIsNone(ledger.evidence_of("legacy1")["digest"],
+                          "the old row has no digest to begin with")
+        r = send.send("peer", "hello", sender=self.me, msg_id="legacy1", resend=True)
+        self.assertEqual(r.status, "sent-unconfirmed", r.reason)
+        self.assertEqual(ledger.status("legacy1")["status"], "queued")
+        # The resend itself wrote a digest, but the original body was never
+        # kept, so the row is marked as upgraded rather than verified.
+        self.assertTrue(ledger.status("legacy1").get("upgraded_from_legacy"))
+        # A different tail is still refused, but the message says the record is old.
+        paths.write_json(ledger._entry_path("legacy2"), {
+            "id": "legacy2", "status": "error", "kind": "note", "scope": "dir:x",
+            "from": {"ref": self.me["ref"]},
+            "to": {"name": "peer", "alias": "codex", "ref": self.peer["ref"]},
+            "preview": "hello", "error": "old"})
+        bad = send.send("peer", "goodbye", sender=self.me, msg_id="legacy2", resend=True)
+        self.assertEqual(bad.status, "refused")
+        self.assertIn("before xsm kept a full digest", bad.reason)
+
+
+class RequestDigestTest(TempState):
+    """P01 item 3: one canonical form of a request, and its SHA-256. Everything
+    whose change makes it a different message goes in; a display name or a
+    retry does not."""
+
+    def _ids(self, **kw):
+        from xsm import envelope
+        sender = {"name": "a", "alias": "claude-4", "ref": "aaaaaa", "runtime": "claude",
+                  "home": "/homes/a", "session_id": "s-a"}
+        target = {"name": "b", "alias": "codex", "ref": "bbbbbb", "runtime": "codex",
+                  "home": "/homes/b", "session_id": "t-b"}
+        args = dict(body="hello", kind="task", reply_to=None, outcome=None, scope="repo:x")
+        args.update(kw)
+        return envelope.request_identity("m1", sender, target, **args)
+
+    def test_the_digest_is_stable_and_hex(self):
+        from xsm import envelope
+        d = envelope.request_digest(self._ids())
+        self.assertRegex(d, r"\A[0-9a-f]{64}\Z")
+        self.assertEqual(d, envelope.request_digest(self._ids()))
+
+    def test_a_display_name_change_does_not_move_the_digest(self):
+        from xsm import envelope
+        a = self._ids()
+        b = self._ids()
+        b["from"] = dict(b["from"], display={"name": "renamed", "alias": "elsewhere"})
+        self.assertEqual(envelope.request_digest(a), envelope.request_digest(b))
+
+    def test_a_body_that_shares_its_first_200_chars_is_a_different_request(self):
+        from xsm import envelope
+        head = "x" * 200
+        a = self._ids(body=head + " one")
+        b = self._ids(body=head + " two")
+        self.assertEqual(a["body"][:200], b["body"][:200])
+        self.assertNotEqual(envelope.request_digest(a), envelope.request_digest(b))
+
+    def test_the_meaning_fields_each_move_the_digest(self):
+        from xsm import envelope
+        base = envelope.request_digest(self._ids())
+        for kw in ({"kind": "note"}, {"reply_to": "m0"}, {"outcome": "succeeded"},
+                   {"scope": "repo:y"}):
+            self.assertNotEqual(base, envelope.request_digest(self._ids(**kw)), kw)
+
+    def test_a_different_home_or_conversation_moves_the_digest(self):
+        from xsm import envelope
+        base = self._ids()
+        moved = self._ids()
+        moved["from"] = dict(moved["from"], home="/homes/other")
+        self.assertNotEqual(envelope.request_digest(base), envelope.request_digest(moved))
+        other = self._ids()
+        other["from"] = dict(other["from"], conversation="s-other")
+        self.assertNotEqual(envelope.request_digest(base), envelope.request_digest(other))
+
+    def test_crlf_and_trailing_newlines_normalise(self):
+        from xsm import envelope
+        self.assertEqual(envelope.request_digest(self._ids(body="a\nb")),
+                         envelope.request_digest(self._ids(body="a\r\nb\n")))
+        self.assertEqual(envelope.request_digest(self._ids(reply_to=None)),
+                         envelope.request_digest(self._ids(reply_to="")))
+
+    def test_the_preview_is_only_the_first_200_chars(self):
+        from xsm import envelope
+        self.assertEqual(envelope.preview("y" * 500), "y" * 200)
+
+
+class DeliveryEvidenceTest(TempState):
+    """P01 item 4 / A18-01: the steps of a send are recorded apart. A queue
+    success, a socket write, or the sender's own acceptance is never the runtime
+    reaching the receiver."""
+
+    def setUp(self):
+        super().setUp()
+        from xsm import registry
+        home = os.path.join(self.tmp, "homes", "codex")
+        os.makedirs(home, exist_ok=True)
+        self.me = registry.upsert("codex", home, "t-me", os.getpid(), self.tmp, name="me")
+        self.peer = registry.upsert("codex", home, "t-peer", os.getpid(), self.tmp, name="peer")
+
+    def _failing_codex(self, reason="queue-failed"):
+        from xsm import adapters
+
+        def fail(*a):
+            raise adapters.DeliveryError(reason, "no")
+        return mock.patch.object(adapters, "to_codex", fail)
+
+    def test_a_queue_failure_is_not_a_runtime_reach(self):
+        from xsm import ledger, send
+        with self._failing_codex():
+            r = send.send("peer", "hi", sender=self.me)
+        self.assertEqual(r.status, "error")
+        ev = ledger.evidence_of(r.msg_id)
+        self.assertFalse(ev["runtime_reached"])
+        self.assertTrue(ev["steps"]["accepted"]["ok"])
+        self.assertFalse(ev["steps"]["queued"]["ok"])
+        self.assertNotIn("hook_taken", ev["steps"])
+        # The result says the same: the caller's status is one axis, evidence the other.
+        self.assertEqual(r.evidence["runtime_reached"], False)
+        self.assertEqual(r.as_dict()["evidence"]["queued"], False)
+
+    def test_a_socket_write_alone_is_not_a_runtime_reach(self):
+        from xsm import adapters, ledger, registry, send
+        chome = os.path.join(self.tmp, "homes", "claude")
+        os.makedirs(chome, exist_ok=True)
+        registry.upsert("claude", chome, "s-you", os.getpid(), self.tmp, name="you")
+        you = registry.by_session("claude", "s-you")
+        you["socket"] = "/tmp/does-not-matter.sock"
+        with mock.patch.object(send.resolve, "resolve",
+                               return_value=mock.Mock(ok=True, record=you)), \
+                mock.patch.object(send, "not_running", return_value=None), \
+                mock.patch.object(adapters, "to_claude", lambda *a, **k: None):
+            r = send.send("you", "hi", sender=self.me)
+        self.assertEqual(r.status, "sent-unconfirmed")
+        ev = ledger.evidence_of(r.msg_id)
+        self.assertTrue(ev["steps"]["queued"]["ok"], "the socket write landed")
+        self.assertFalse(ev["runtime_reached"], "but nothing said the receiver took it")
+
+    def test_the_wake_is_recorded_apart_from_the_queue(self):
+        from xsm import adapters, ledger, send
+
+        class Q(str):
+            wake = "started"
+            wake_detail = ""
+        with mock.patch.object(adapters, "to_codex", lambda *a: Q("queued q")):
+            r = send.send("peer", "hi", sender=self.me)
+        ev = ledger.evidence_of(r.msg_id)
+        self.assertTrue(ev["steps"]["queued"]["ok"])
+        self.assertTrue(ev["steps"]["wake"]["ok"])
+        self.assertFalse(ev["runtime_reached"], "a started turn is not a receipt")
+
+    def test_a_receipt_turns_the_reach_on(self):
+        from xsm import adapters, ledger, receive, send
+        with mock.patch.object(adapters, "to_codex", lambda *a: "queued q"):
+            r = send.send("peer", "hi", sender=self.me)
+        self.assertFalse(ledger.evidence_of(r.msg_id)["runtime_reached"])
+        receive.take_inbox(self.peer)
+        ev = ledger.evidence_of(r.msg_id)
+        self.assertTrue(ev["runtime_reached"])
+        self.assertTrue(ledger.status(r.msg_id)["runtime_reached"],
+                        "the top-level flag follows the receiver's receipt")
+        self.assertTrue(ledger.status(r.msg_id)["delivery"]["runtime_reached"])
+
+    def test_a_legacy_entry_reads_as_legacy_and_unverified(self):
+        """A row with no `evidence` key at all is read as legacy/unverified. Its
+        old `status` is the only arrival evidence it has, and that is exactly what
+        `runtime_reached` reports -- a delivered legacy row is reached, a queued
+        one is not (the name says which)."""
+        from xsm import ledger, paths
+        # A row written before P01: no `evidence`, no `digest`, status delivered.
+        paths.write_json(ledger._entry_path("old1"),
+                         {"id": "old1", "status": "delivered", "kind": "note",
+                          "preview": "an old body", "from": {"ref": "aaaaaa"}})
+        ev = ledger.evidence_of("old1")
+        self.assertTrue(ev["legacy"])
+        self.assertFalse(ev["verified"])
+        self.assertIsNone(ev["digest"])
+        self.assertTrue(ev["runtime_reached"], "the old status is the only thing it has")
+        # A legacy row that never delivered stays unreached.
+        paths.write_json(ledger._entry_path("old2"),
+                         {"id": "old2", "status": "queued", "kind": "note", "preview": "x"})
+        self.assertFalse(ledger.evidence_of("old2")["runtime_reached"])
+
+    def test_an_upgraded_legacy_row_stays_unverified(self):
+        """G01 review F5: the resend of a row that had no digest writes a digest
+        for *this* send, not a proof that it equals the original body (which was
+        never kept). The row must not read as verified."""
+        from xsm import ledger, paths
+        paths.write_json(ledger._entry_path("legacy1"), {
+            "id": "legacy1", "status": "error", "kind": "note", "scope": "dir:x",
+            "from": {"ref": "aaaaaa"}, "to": {"name": "p", "alias": "codex"},
+            "preview": "hello", "error": "old"})
+        self.assertTrue(ledger.evidence_of("legacy1")["legacy"])
+        ledger.queued("legacy1", {"name": "me", "alias": "codex", "ref": "aaaaaa"},
+                      {"name": "p", "alias": "codex", "ref": "bbbbbb"}, "dir:x", "note",
+                      "hello")
+        ledger.step("legacy1", "accepted")
+        ev = ledger.evidence_of("legacy1")
+        self.assertFalse(ev["legacy"], "it has evidence steps now")
+        self.assertIsNotNone(ev["digest"], "the resend wrote one")
+        self.assertTrue(ev["upgraded_from_legacy"])
+        self.assertFalse(ev["verified"],
+                         "a digest written over a row that never had one proves nothing")
+
+    def test_status_keeps_the_step_map_and_the_wrapper_apart(self):
+        """G01 review: `status()` used to overwrite `evidence` (the file's step
+        map) with `evidence_of`'s wrapper, so the same key had two shapes. The
+        wrapper is now `delivery`; `evidence` stays the file's own step map."""
+        from xsm import ledger, paths
+        ledger.queued("m1", {"name": "me", "alias": "codex", "ref": "aaaaaa"},
+                      {"name": "p", "alias": "codex", "ref": "bbbbbb"}, "dir:x", "note", "hi")
+        ledger.step("m1", "accepted")
+        state = ledger.status("m1")
+        self.assertEqual(set(state["evidence"]), {"accepted"}, "the file's step map")
+        self.assertTrue(state["evidence"]["accepted"]["ok"])
+        self.assertIn("steps", state["delivery"], "the wrapper")
+        self.assertIn("accepted", state["delivery"]["steps"])
+        self.assertFalse(state["delivery"]["runtime_reached"])
+
+
+class CliIdentityBasisTest(TempState):
+    """P01 item 1/2: the CLI resolves its caller into the same CallContext, and
+    the basis it used reaches the ledger. A shell that names its session is
+    `certain`; a shell that carries no id at all is not signed as a neighbour."""
+
+    def _sessions(self):
+        from xsm import registry
+        home = os.path.join(self.tmp, "homes", "codex")
+        os.makedirs(home, exist_ok=True)
+        proj = os.path.join(self.tmp, "proj")
+        os.makedirs(proj, exist_ok=True)
+        me = registry.upsert("codex", home, "t-me", os.getpid(), proj, name="me")
+        registry.upsert("codex", home, "t-peer", os.getpid(), proj, name="peer")
+        return home, me
+
+    def test_a_shell_naming_its_thread_records_that_basis(self):
+        from xsm import adapters, ledger, send
+        home, _ = self._sessions()
+        with mock.patch.object(adapters, "to_codex", lambda *a: "q"), \
+                mock.patch.dict(os.environ, {"CODEX_HOME": home, "CODEX_THREAD_ID": "t-me"}):
+            r = send.send("peer", "hi")
+        self.assertEqual(r.status, "sent-unconfirmed", r.reason)
+        self.assertEqual(ledger.status(r.msg_id)["from_basis"], "thread_id")
+        self.assertEqual(ledger.status(r.msg_id)["from_certainty"], "certain")
+
+    def test_a_shell_that_cannot_name_its_session_is_not_signed(self):
+        from xsm import registry, send
+        self._sessions()
+        with mock.patch.dict(os.environ, {"XSM_HOME": self.tmp}, clear=False):
+            for key in ("CODEX_THREAD_ID", "CLAUDE_CODE_SESSION_ID",
+                        "CLAUDE_CODE_MESSAGING_SOCKET"):
+                os.environ.pop(key, None)
+            me, ctx = registry.me_context()
+        self.assertIsNone(me, "two sessions in one folder are not a guess to sign as")
+        self.assertFalse(ctx.sure)
+        self.assertEqual(ctx.certainty, "provisional")
+
+    def test_the_cli_result_says_when_the_identity_was_only_a_guess(self):
+        """G01 review F3: the provisional note used to fire only for an MCP call
+        that passed its own context in. A CLI send resolved its caller inside
+        `_send`, so the basis reached the ledger but never the result the agent
+        reads. The note must be on the result too (P01 item 2)."""
+        from xsm import adapters, cli, context, registry
+        home, _ = self._sessions()
+        me = registry.by_session("codex", "t-me")
+        peer = registry.by_session("codex", "t-peer")
+        # The shell carries no session id, so the folder matched one live record:
+        # that is the guess the result has to own up to.
+        weak = context.CallContext(runtime="codex", home=home, conversation="t-me",
+                                   cwd=self.tmp, basis=context.BASIS_CWD, record=me)
+        out = io.StringIO()
+        with mock.patch.object(adapters, "to_codex", lambda *a: "q"), \
+                mock.patch.object(registry, "me", return_value=me), \
+                mock.patch.object(registry, "last_identity", return_value=weak), \
+                contextlib.redirect_stdout(out):
+            code = cli.main(["send", "ref:%s" % peer["ref"], "--text", "hi", "--wait", "0"])
+        self.assertEqual(code, cli.UNCONFIRMED, out.getvalue())
+        self.assertIn("identified this session only as", out.getvalue())
+        self.assertIn("cwd", out.getvalue())
+
+
+class AttachmentsResendTest(TempState):
+    """G01 review O-F5b: the ledger stores the canonical attachment manifest (a
+    list of lists). A resend reads it back and rebuilds the identity from it, so
+    `request_identity` must digest an already-canonical manifest the same way it
+    digests the dicts the sender first passed -- otherwise every resend of a
+    message with attachments would be refused as changed."""
+
+    def test_a_canonical_manifest_digests_the_same_as_the_dicts_it_came_from(self):
+        from xsm import envelope
+        sender = {"name": "a", "alias": "claude", "ref": "aaaaaa", "runtime": "claude"}
+        target = {"name": "b", "alias": "codex", "ref": "bbbbbb", "runtime": "codex"}
+        dicts = [{"path": "/p/report.md", "sha256": "ab" * 32, "version": 2, "size": 40}]
+        first = envelope.request_identity("m1", sender, target, "see the file", kind="note",
+                                          attachments=dicts)
+        again = envelope.request_identity("m1", sender, target, "see the file", kind="note",
+                                          attachments=first["attachments"])
+        self.assertEqual(envelope.request_digest(first), envelope.request_digest(again))
+
+    def test_a_resend_of_a_message_with_attachments_is_not_refused(self):
+        from xsm import envelope, ledger, registry, send
+        home = os.path.join(self.tmp, "homes", "codex")
+        os.makedirs(home, exist_ok=True)
+        me = registry.upsert("codex", home, "t-me", os.getpid(), self.tmp, name="me")
+        peer = registry.upsert("codex", home, "t-peer", os.getpid(), self.tmp, name="peer")
+        manifest = [{"path": "/p/report.md", "sha256": "ab" * 32, "version": 1, "size": 40}]
+        ledger.queued("m1", me, peer, "dir:x", "note", "see the file", attachments=manifest)
+        self.assertEqual(ledger.status("m1")["attachments"],
+                         [["/p/report.md", "ab" * 32, 1, 40]])
+        why = send.resend_refusal("m1", me, "see the file", "note", target=peer)
+        self.assertIsNone(why, why)
+
+
+class OlderWriterTest(TempState):
+    """G01 review O-F3: spec P01's compat rule asks whether an *older* writer
+    erases the new fields. It does. `ledger.queued` on 4fd7c9f (HEAD) rebuilt
+    the entry from scratch, so a resend run by that code over a record this
+    version wrote drops `digest`, `req_version` and `evidence`, and this reader
+    then reads the row as legacy/unverified. The behaviour is recorded here and
+    in the D03 decision list; nothing in this version can stop an old writer.
+    """
+
+    def _older_queued(self, msg_id, sender, target, scope, kind, body):
+        """`ledger.queued` exactly as HEAD wrote it: the entry dict is rebuilt,
+        so only the fields that version knew about survive. Copied from
+        `git show HEAD:xsm/ledger.py`."""
+        from xsm import ledger, paths
+        before = paths.read_json(ledger._entry_path(msg_id), {}) or {}
+        entry = {"id": msg_id, "status": "queued", "t": time.time(), "kind": kind,
+                 "scope": scope,
+                 "from": {k: sender.get(k) for k in ("name", "alias", "ref", "runtime")},
+                 "to": {k: target.get(k) for k in ("name", "alias", "ref", "runtime")},
+                 "preview": body[:200]}
+        if before:
+            entry["t"] = before.get("t", entry["t"])
+            entry["resent_t"] = time.time()
+            entry["resends"] = int(before.get("resends") or 0) + 1
+        paths.write_json(ledger._entry_path(msg_id), entry)
+        return entry
+
+    def test_an_older_writer_drops_the_new_fields_and_the_row_reads_as_legacy(self):
+        from xsm import ledger, paths, registry
+        home = os.path.join(self.tmp, "homes", "codex")
+        os.makedirs(home, exist_ok=True)
+        me = registry.upsert("codex", home, "t-me", os.getpid(), self.tmp, name="me")
+        peer = registry.upsert("codex", home, "t-peer", os.getpid(), self.tmp, name="peer")
+        ledger.queued("m1", me, peer, "dir:x", "note", "hello", basis="thread_id",
+                      certainty="certain")
+        ledger.step("m1", "accepted")
+        written = paths.read_json(ledger._entry_path("m1"), {})
+        self.assertIn("digest", written)
+        self.assertIn("evidence", written)
+        self.assertIn("from_basis", written)
+        # The old writer resends under the same id.
+        self._older_queued("m1", me, peer, "dir:x", "note", "hello")
+        after = paths.read_json(ledger._entry_path("m1"), {})
+        self.assertNotIn("digest", after, "the old writer rebuilt the entry")
+        self.assertNotIn("evidence", after)
+        self.assertNotIn("req_version", after)
+        ev = ledger.evidence_of("m1")
+        self.assertTrue(ev["legacy"])
+        self.assertIsNone(ev["digest"])
+        self.assertFalse(ev["verified"])
+
+    def test_a_new_writer_resend_keeps_the_evidence_axes(self):
+        """This version's own resend must not erase what `step()` merged: the
+        axes describe the id, not the attempt (A18-01)."""
+        from xsm import ledger, registry
+        home = os.path.join(self.tmp, "homes", "codex")
+        os.makedirs(home, exist_ok=True)
+        me = registry.upsert("codex", home, "t-me", os.getpid(), self.tmp, name="me")
+        peer = registry.upsert("codex", home, "t-peer", os.getpid(), self.tmp, name="peer")
+        ledger.queued("m1", me, peer, "dir:x", "note", "hello")
+        ledger.step("m1", "accepted")
+        ledger.step("m1", "queued", True, "q")
+        ledger.queued("m1", me, peer, "dir:x", "note", "hello")     # a resend
+        ev = ledger.evidence_of("m1")
+        self.assertIn("accepted", ev["steps"])
+        self.assertIn("queued", ev["steps"])
+
+
+class OneYesNeedsSureIdentityTest(TempState):
+    """G01 review F2b: the one-yes path consumes a recorded consent and applies
+    a link or reach. A caller xsm only guessed at must not trigger that, or a
+    neighbour could apply another session's yes (P01 item 2)."""
+
+    def _sessions(self):
+        from xsm import registry
+        a = os.path.realpath(os.path.join(self.tmp, "proj-a"))
+        b = os.path.realpath(os.path.join(self.tmp, "proj-b"))
+        for folder in (a, b):
+            os.makedirs(folder, exist_ok=True)
+        me = registry.upsert("claude", os.path.join(self.tmp, "homes", "claude"), "s-me",
+                             os.getpid(), a, name="me")
+        you = registry.upsert("codex", os.path.join(self.tmp, "homes", "codex"), "s-you",
+                              os.getpid(), b, name="you")
+        return me, you
+
+    def test_a_guessed_caller_cannot_consume_a_yes_to_connect(self):
+        from xsm import config, consent, context, send
+        me, you = self._sessions()
+        # A yes is on record for this session, as if the person had answered.
+        consent.record(me, {"hook_event_name": "UserPromptSubmit", "prompt": "\uc751"})
+        weak = context.CallContext(runtime="claude", home=self.tmp, conversation="s-me",
+                                   cwd=me["cwd"], basis=context.BASIS_CWD, record=me)
+        r = send.send("ref:%s" % you["ref"], "hello", sender=me, call=weak)
+        self.assertEqual(r.status, "refused", r.reason)
+        self.assertIn("guess at which session", r.reason)
+        self.assertEqual(config.links(), [], "no connection was applied")
+
+    def test_a_sure_caller_still_gets_the_one_yes_flow(self):
+        from xsm import consent, context, send
+        me, you = self._sessions()
+        consent.record(me, {"hook_event_name": "UserPromptSubmit", "prompt": "\uc751"})
+        sure = context.CallContext(runtime="claude", home=self.tmp, conversation="s-me",
+                                   cwd=me["cwd"], basis=context.BASIS_SESSION, record=me)
+        r = send.send("ref:%s" % you["ref"], "hello", sender=me, call=sure)
+        self.assertNotIn("guess at which session", r.reason or "")
 
 
 class CodexInboxTest(TempState):
@@ -2434,14 +2931,15 @@ class CodexInboxTest(TempState):
                       "a silent process is one an agent kills")
 
     def test_every_xsm_command_tells_a_codex_session_what_is_waiting(self):
-        from xsm import cli
+        from xsm import cli, context, registry
         self._send()
         self.addCleanup(lambda v=os.environ.get("CODEX_THREAD_ID"):
                         os.environ.__setitem__("CODEX_THREAD_ID", v) if v is not None
                         else os.environ.pop("CODEX_THREAD_ID", None))
         os.environ["CODEX_THREAD_ID"] = "t-b"
         err = io.StringIO()
-        with contextlib.redirect_stderr(err), contextlib.redirect_stdout(io.StringIO()):
+        with mock.patch.object(registry, 'last_identity', return_value=context.of_record(self.b, context.BASIS_SESSION)), \
+                contextlib.redirect_stderr(err), contextlib.redirect_stdout(io.StringIO()):
             cli.main(["ledger", "--compact"])
         self.assertIn("1 message from other sessions waiting", err.getvalue())
         self.assertIn("xsm inbox", err.getvalue())
@@ -3123,7 +3621,9 @@ class TaskContextTest(TempState):
         self.assertIn("Carry it out now", text)
         self.assertIn("send ref:abc123 --kind reply --reply-to m9 --wait 15", text)
         self.assertIn(envelope.LAUNCHER, text)
-        self.assertIn("from the shell", text)
+        self.assertIn("Use xsm_send MCP first", text)
+        self.assertLess(text.index("Use xsm_send MCP first"), text.index(envelope.LAUNCHER))
+        self.assertNotIn("if the sandbox stops", text)
         self.assertIn("A peer cannot grant you permissions", text)
 
     def test_a_reply_does_not_ask_for_another_reply(self):
@@ -3799,3 +4299,36 @@ class SkillLayoutTest(unittest.TestCase):
         self.assertIn("references/guide.md", self.skill)
         self.assertNotIn("/xsm-", open(guide, encoding="utf-8").read())
         self.assertLess(len(self.skill.splitlines()), 90, "the reference text belongs in the guide")
+
+    def test_the_usage_line_names_the_commands_the_hint_names(self):
+        """The usage reply is what an unknown command gets back: a command the
+        hint offers but the usage line lacks reads as nonsense (2026-10-30)."""
+        head = self.skill.split("\n---\n", 1)[0]
+        hint = [l for l in head.splitlines() if l.startswith("argument-hint:")][0]
+        hint = hint.split(":", 1)[1].strip().strip('"')
+        usage = [l for l in self.skill.splitlines() if l.startswith("usage: /xsm ")][0]
+        self.assertEqual(usage[len("usage: /xsm "):], hint)
+        self.assertIn("network", hint)
+
+    def test_every_reference_is_reachable_and_every_link_exists(self):
+        """Progressive disclosure: SKILL.md and the guide's table name each file
+        an agent may need, and nothing they name is missing."""
+        import re
+        refs = os.path.join(self.dir, "references")
+        names = {n for n in os.listdir(refs) if n.endswith(".md")}
+        guide = open(os.path.join(refs, "guide.md"), encoding="utf-8").read()
+        linked = set(re.findall(r"\]\(references/([\w-]+\.md)\)", self.skill)) | \
+            set(re.findall(r"\]\(([\w-]+\.md)\)", guide))
+        self.assertEqual(linked - names, set(), "a link to a file that is not there")
+        self.assertEqual(names - linked - {"guide.md"}, set(), "a reference nothing points to")
+        # Another machine is reached from SKILL.md itself, not two files down.
+        self.assertIn("](references/network.md)", self.skill)
+
+    def test_the_description_names_no_file(self):
+        """A path in the description is opened instead of loading the skill
+        (measured 2026-09-27: sandboxed-send-to-codex fell to 0.00)."""
+        head = self.skill.split("\n---\n", 1)[0]
+        description = [l for l in head.splitlines() if l.startswith("description:")][0]
+        self.assertNotIn(".md", description)
+        self.assertNotIn("references/", description)
+        self.assertIn("other machines", description)

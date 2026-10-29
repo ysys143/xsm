@@ -1,0 +1,273 @@
+{
+  "result": "partial-final-condition; no paired actual replies/digests",
+  "original_result_preserved": true,
+  "original_SHA": "9a20ba6815b8dc8eda91f996411037bdedba9b34719dee26fb7cf45311c342fb",
+  "readiness_budget_seconds": 15,
+  "readiness_elapsed": 5.266,
+  "actual_first_reviewer_MCP_call": null,
+  "actual_capability_advertisements": 0,
+  "native_registration_is_not_files_ready": true,
+  "readiness_check_method": "read-only raw MCP event plus exact current endpoint/reader observation; no capability write/injection",
+  "reviewer_harness_output": [
+    "{\"verdict\":\"needs-material\",\"correct_sum\":null,\"body_marker\":null,\"file_sha256\":null,\"file_marker_sha256\":null}"
+  ],
+  "reviewer_output_is_not_peer_reply": "harness final JSON only; no MCP request/reply_to/question/handoff exists",
+  "evaluator_limits": [
+    "reviewer goal with plain missing-material output rules was answered directly instead of listening",
+    "after reviewer exit was observed, driver still started initiator under plain fallback; live reviewer prerequisite was not separately guarded"
+  ],
+  "actual_CLI_attempts": [
+    {
+      "actual_CLI_exit": 2,
+      "outer_command_exit": 0,
+      "command": "/bin/zsh -lc \"/usr/bin/python3 - <<'PY'\nimport pathlib,subprocess\nbody=pathlib.Path('parity-body.txt').read_bytes().decode('utf-8')\np=subprocess.run(['/private/tmp/p13-interface-parity-v3-d4vpjzwz/repository/frozen-xsm','ask','a1','--text',body,'--priority','next','--wake','never','--wait','15'],capture_output=True,text=True)\nprint(p.stdout,end='')\nprint(p.stderr,end='')\nprint('exit_code:',p.returncode)\nPY\"",
+      "actual_result": {
+        "status": "refused",
+        "id": "93912b0bb54d47b6",
+        "purpose": null,
+        "created_at": null,
+        "replies": [],
+        "final": false,
+        "final_outcome": null,
+        "recover_at": null,
+        "wait_end_reason": null,
+        "capabilities": {
+          "attachments": true,
+          "wake_control": true,
+          "priority": {
+            "claude": [
+              "next",
+              "now"
+            ],
+            "codex": [
+              "next"
+            ]
+          }
+        },
+        "wake": "transport_policy",
+        "send_evidence": null,
+        "delivery_evidence": null,
+        "handshake": "not-started",
+        "reason": "only stopped sessions match 'a1'\n  a1@codex-3 [c2a8b7] stopped without saying goodbye; resume it with: CODEX_HOME=/Users/jaesolshin/.codex-3 codex resume 01a1851d-33e7-7852-a991-75db25a3dfc2",
+        "claims": [],
+        "inbox_pending": 0
+      },
+      "output_SHA": "2fface40af172902d5db89fbc66a07f2980f6268ce4e37d949fe733bd06b4fa4"
+    }
+  ],
+  "MCP_calls": {
+    "reviewer": [],
+    "initiator": []
+  },
+  "plain_pair": "incomplete: CLI refused stopped reviewer, MCP ask not attempted",
+  "files_pair": "not attempted: readiness false, no fabricated capability or forced inline fallback",
+  "questions": 0,
+  "handoffs": 0,
+  "copies": 0,
+  "actual_replies_ACKs": 0,
+  "CLI_preflight": {
+    "checks": [
+      {
+        "argv": [
+          "/private/tmp/p13-interface-parity-v3-d4vpjzwz/repository/frozen-xsm",
+          "--help"
+        ],
+        "cwd": "/private/tmp/p13-interface-parity-v3-d4vpjzwz/repository",
+        "exit_code": 0,
+        "stdout": "usage: xsm [-h] [--version] [--xsm-home XSM_HOME]\n           {list,who,join,leave,owned,spawn,workers,reap,stop,attach,worker-finish,post,channel,doc,remote,mcp,approvals,approve,deny,link,unlink,reach,block,unblock,attempts,frameworks,projects,homes,prune,connect,ask,question-status,decision-status,discover,publish,send,inbox,ack,files,status,ledger,metrics,otlp-export,held,install,uninstall,doctor,statusline,selftest}\n           ...\n\ncross-session messaging\n\npositional arguments:\n  {list,who,join,leave,owned,spawn,workers,reap,stop,attach,worker-finish,post,channel,doc,remote,mcp,approvals,approve,deny,link,unlink,reach,block,unblock,attempts,frameworks,projects,homes,prune,connect,ask,question-status,decision-status,discover,publish,send,inbox,ack,files,status,ledger,metrics,otlp-export,held,install,uninstall,doctor,statusline,selftest}\n    list                registered sessions\n    who                 identity of the session running this command\n    join                put this project in a named xsm project (both sides\n                        must join)\n    leave               take this project out of a named xsm project\n    owned               journal requests to an explicitly owned headless\n                        worker\n    spawn               start a worker session, optionally with a task\n    workers             workers xsm started, and what one's screen says\n    reap                ==SUPPRESS==\n    stop                stop a worker and remove its records\n    attach              go to a worker's tmux pane\n    worker-finish       ==SUPPRESS==\n    post                post to this project's channel (the shared record)\n    channel             read, list or export channels\n    doc                 shared documents as immutable nodes (add, render, log,\n                        next, leaves, show)\n    remote              pair with another machine over two-way SSH (add, list,\n                        remove, sessions)\n    mcp                 ==SUPPRESS==\n    approvals           permission requests waiting for a person\n    approve             approve a worker's permission request (approve is your\n                        user's decision)\n    deny                deny a worker's permission request (approve is your\n                        user's decision)\n    link                link this project folder with another, both ways,\n                        until unlinked (your user decides); no folder: list\n                        links\n    unlink              take a link away (anyone)\n    reach               let one session talk with the sessions of another\n                        folder while it runs (your user decides); no folder:\n                        list them\n    block               stop one session from sending or receiving\n    unblock             lift a block (your user decides)\n    attempts            how often a task has been handed to a worker, and how\n                        it went (clear is your user's decision)\n    frameworks          whether xsm starts workers inside Orca or herdr\n                        (ignore is your user's decision)\n    projects            named xsm projects and their member folders\n    homes               declared CONFIG_DIR / CODEX_HOME list\n    prune               remove what has outlived its retention window (also\n                        runs on its own at most hourly)\n    connect             collaborate with the selected conversation only\n    ask                 send one question and collect its actual correlated\n                        reply\n    question-status     recover actual replies, including late replies\n    decision-status     recover or withdraw this conversation's pending human\n                        question\n    discover            find published or same-repository conversations\n    publish             make this conversation discoverable; does not connect\n                        it\n    send                send a message to another session\n    inbox               messages waiting for this Codex session, read mid-turn\n    ack                 acknowledge inbox claim tokens after reading\n    files               read this conversation's received attachment copies\n    status              delivery state of one message\n    ledger              recent messages and their delivery state\n    metrics             what xsm's own telemetry has recorded here\n    otlp-export         send that telemetry to an OTLP collector\n                        (OTEL_EXPORTER_OTLP_ENDPOINT)\n    held                messages this machine refused and kept\n    install             add the xsm hooks to a home (merges, never overwrites)\n    uninstall           remove only the hook groups xsm added\n    doctor              what is installed, what is running, what is not\n                        covered\n    statusline          one line for Claude's statusLine (no model call)\n    selftest            check what the hook does with a peer message when it\n                        breaks\n\noptional arguments:\n  -h, --help            show this help message and exit\n  --version             the version, the git describe of a checkout, and this\n                        CLI's path\n  --xsm-home XSM_HOME   state directory (default ~/.xsm or $XSM_HOME)\n",
+        "stderr": ""
+      },
+      {
+        "argv": [
+          "/private/tmp/p13-interface-parity-v3-d4vpjzwz/repository/frozen-xsm",
+          "ask",
+          "--help"
+        ],
+        "cwd": "/private/tmp/p13-interface-parity-v3-d4vpjzwz/repository",
+        "exit_code": 0,
+        "stdout": "usage: xsm ask [-h] --text TEXT [--wait WAIT] [--request-id REQUEST_ID]\n               [--priority {next,now}] [--wake {auto,now,never}]\n               [--attachment ATTACHMENT] [--manifest MANIFEST]\n               [--previous-manifest PREVIOUS_MANIFEST]\n               [--attachment-fallback {inline}]\n               target\n\npositional arguments:\n  target\n\noptional arguments:\n  -h, --help            show this help message and exit\n  --text TEXT\n  --wait WAIT\n  --request-id REQUEST_ID\n  --priority {next,now}\n  --wake {auto,now,never}\n                        never stores a local question without queueing or\n                        waking the peer\n  --attachment ATTACHMENT\n                        snapshot a file using this CLI's own read permission\n  --manifest MANIFEST   reuse the frozen manifest for this same request ID and\n                        body\n  --previous-manifest PREVIOUS_MANIFEST\n                        prior manifest for a new version under a new request\n                        ID\n  --attachment-fallback {inline}\n                        explicit UTF-8 body fallback for an older or unknown\n                        peer\n",
+        "stderr": ""
+      }
+    ],
+    "module_source": "/private/tmp/xsm-final-receipt-frozen-i3u9pms3/xsm/cli.py",
+    "module_probe_exit": 0,
+    "source_cli_SHA": "76f29a9ef05d070dc61d68008ae87db2e5935dc76d0e333bd30c3db29d54cb1c",
+    "wrapper": "/private/tmp/p13-interface-parity-v3-d4vpjzwz/repository/frozen-xsm",
+    "wrapper_SHA": "4490fe5e3fca17ac1e6d9d73d9b143ea99f33e2a243d4a3ea2aa2fc54e4cca75",
+    "scope": "same actor process env/cwd and absolute entry before model; actual SDK sandbox authority only tested by native ask",
+    "credentials_or_profile_values_queried": false
+  },
+  "same_body_and_material_as_v2": true,
+  "actors": [
+    {
+      "role": "reviewer",
+      "native_session_id": "01a1851d-33e7-7852-a991-75db25a3dfc2",
+      "registered_name": "a1",
+      "mcp_pid": 47292,
+      "setup_registration_seconds": 0.466,
+      "registration_preceded_first_agent_call": true,
+      "calls": [],
+      "item_type_counts": {},
+      "agent_mcp_call_count": 0,
+      "agent_shell_call_count": 0,
+      "tool_error_count": 0,
+      "first_wrong_choice": null,
+      "exit_code": 0,
+      "events_path": "/private/tmp/p13-interface-parity-v3-d4vpjzwz/reviewer.jsonl",
+      "stderr_path": "/private/tmp/p13-interface-parity-v3-d4vpjzwz/reviewer.stderr",
+      "events_sha256": "9dee42f352ccb041c852f897957907f3809efdccf481a025224bfc7dd5328c89",
+      "native_cwd_evidence": {
+        "native_pid": 47176,
+        "native_lstart": "Thu Oct 29 09:44:05 2026",
+        "native_session_id": "01a1851d-33e7-7852-a991-75db25a3dfc2",
+        "runtime": "codex",
+        "home": "/Users/jaesolshin/.codex-3",
+        "registered_cwd": "/private/tmp/p13-interface-parity-v3-d4vpjzwz/review-worktree",
+        "kernel_process_cwd": "/private/tmp/p13-interface-parity-v3-d4vpjzwz/review-worktree",
+        "kernel_probe_exit": 0,
+        "native_generation_alive": true,
+        "MCP_pid": 47292,
+        "MCP_source_cwd": "/private/tmp/xsm-final-receipt-frozen-i3u9pms3"
+      }
+    },
+    {
+      "role": "initiator",
+      "native_session_id": "01a1851d-4ad8-7750-b184-53631e2afe9f",
+      "registered_name": null,
+      "mcp_pid": 47933,
+      "setup_registration_seconds": 0.438,
+      "registration_preceded_first_agent_call": true,
+      "calls": [
+        {
+          "kind": "command_execution",
+          "complete": true,
+          "seconds_from_actor_start": 5.908,
+          "command_sha256": "4a4b5697b5641c3201f59fa0d16d356ea5b64152bd55aa6883242acdd0605c47",
+          "exit_code": 0,
+          "sandbox_shell_send_attempt": false,
+          "skill_read": true,
+          "sandbox_failure": false
+        },
+        {
+          "kind": "command_execution",
+          "complete": true,
+          "seconds_from_actor_start": 6.119,
+          "command_sha256": "449b29e28a493de37605ce116b49edc2d2cbcb30afc7bacdae90bb6e1d02d20e",
+          "exit_code": 0,
+          "sandbox_shell_send_attempt": false,
+          "skill_read": false,
+          "sandbox_failure": false
+        },
+        {
+          "kind": "command_execution",
+          "complete": true,
+          "seconds_from_actor_start": 8.417,
+          "command_sha256": "9395dee2ad0a587ad913332928d7ec4d42f24fe47c0fc8999691a4b5cf9da011",
+          "exit_code": 0,
+          "sandbox_shell_send_attempt": false,
+          "skill_read": false,
+          "sandbox_failure": false
+        },
+        {
+          "kind": "command_execution",
+          "complete": true,
+          "seconds_from_actor_start": 13.396,
+          "command_sha256": "a7045d21225dd01432653d5990fcc3acbb647958f711c833c6f110afc97c6fb5",
+          "exit_code": 0,
+          "sandbox_shell_send_attempt": false,
+          "skill_read": false,
+          "sandbox_failure": false
+        }
+      ],
+      "item_type_counts": {
+        "command_execution": 4
+      },
+      "agent_mcp_call_count": 0,
+      "agent_shell_call_count": 4,
+      "tool_error_count": 0,
+      "first_wrong_choice": null,
+      "exit_code": 0,
+      "events_path": "/private/tmp/p13-interface-parity-v3-d4vpjzwz/initiator.jsonl",
+      "stderr_path": "/private/tmp/p13-interface-parity-v3-d4vpjzwz/initiator.stderr",
+      "events_sha256": "bd51d80c74049fa24a12d0509268b98f88cc2cdc826a9ea85cac4a143240b9cd",
+      "native_cwd_evidence": {
+        "native_pid": 47810,
+        "native_lstart": "Thu Oct 29 09:44:11 2026",
+        "native_session_id": "01a1851d-4ad8-7750-b184-53631e2afe9f",
+        "runtime": "codex",
+        "home": "/Users/jaesolshin/.codex-3",
+        "registered_cwd": "/private/tmp/p13-interface-parity-v3-d4vpjzwz/repository",
+        "kernel_process_cwd": "/private/tmp/p13-interface-parity-v3-d4vpjzwz/repository",
+        "kernel_probe_exit": 0,
+        "native_generation_alive": true,
+        "MCP_pid": 47933,
+        "MCP_source_cwd": "/private/tmp/xsm-final-receipt-frozen-i3u9pms3"
+      }
+    }
+  ],
+  "setup_registrations": 2,
+  "controller_send_ACK_index_or_capability_writes": 0,
+  "additional_human_inputs": 0,
+  "source": "/private/tmp/xsm-final-receipt-frozen-i3u9pms3",
+  "source_unchanged": true,
+  "profile_guard_unchanged": false,
+  "profile_writer_cause": "unknown; not investigated",
+  "conditions": [
+    {
+      "condition": "interface-parity-native-20261029-a16",
+      "result_SHA": "f8c860f9384000876850f74b0297c59c6b41812d51f3a332470933220d5e8eb7",
+      "native_launches": 2,
+      "automatic_native_retries": 0,
+      "original_status": "not-completed-original-sample",
+      "seconds": 41.907
+    },
+    {
+      "condition": "interface-parity-native-v2-20261029-a16",
+      "result_SHA": "c7612413618561698aa89caa8c1e6f3291a096a5647ead6b89da3470084775d9",
+      "native_launches": 2,
+      "automatic_native_retries": 0,
+      "original_status": "original-failure-preserved-no-retry",
+      "seconds": 20.441
+    },
+    {
+      "condition": "interface-parity-native-v3-20261029-a16",
+      "result_SHA": "9a20ba6815b8dc8eda91f996411037bdedba9b34719dee26fb7cf45311c342fb",
+      "native_launches": 2,
+      "automatic_native_retries": 0,
+      "original_status": "collected-needs-parity-readback",
+      "seconds": 27.312
+    }
+  ],
+  "all_authorized_conditions": 3,
+  "all_native_launches": 6,
+  "all_automatic_native_retries": 0,
+  "post_cleanup_processes": [
+    {
+      "role": "reviewer",
+      "kind": "native",
+      "pid": 47176,
+      "live_non_zombie": false
+    },
+    {
+      "role": "reviewer",
+      "kind": "MCP",
+      "pid": 47292,
+      "live_non_zombie": false
+    },
+    {
+      "role": "initiator",
+      "kind": "native",
+      "pid": 47810,
+      "live_non_zombie": false
+    },
+    {
+      "role": "initiator",
+      "kind": "MCP",
+      "pid": 47933,
+      "live_non_zombie": false
+    }
+  ],
+  "seconds": 27.312,
+  "raw_manifest_matches": true,
+  "further_conditions_started": 0
+}

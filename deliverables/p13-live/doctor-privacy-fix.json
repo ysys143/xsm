@@ -1,0 +1,1093 @@
+{
+  "schema": "xsm.P10.doctor-privacy-fix.v1",
+  "status": "local-fix-and-targeted-verification-complete",
+  "started_at_utc": "2026-10-29T00:54:45.890661+00:00",
+  "completed_at_utc": "2026-10-29T01:00:36.458840+00:00",
+  "source_epoch": {
+    "before": "final1697 receipt snapshot",
+    "frozen_before": "/private/tmp/xsm-final-receipt-frozen-i3u9pms3",
+    "frozen_primary_paths": 135,
+    "frozen_mismatches": [],
+    "baseline_install_matches_1697": true,
+    "after": "current mutable workspace with doctor privacy fix; no new coordinator freeze or full regression",
+    "changed_files": [
+      {
+        "path": "xsm/install.py",
+        "before_sha256": "6b6facc89dee67bf27899cbae9e36cfb701b2c497d2a1fc33a43cf8e49daccd2",
+        "after_sha256": "a8e712de6e8b2b9f368946333a6c8793168c6734484be45a60dbe967d0aa1960",
+        "added_lines": 21,
+        "removed_lines": 4
+      },
+      {
+        "path": "tests/test_install_cli_flow.py",
+        "before_sha256": "0105e3f15c80c846556daf707ea5a1353e90deaf25e30b5f1c01ae076efd14c4",
+        "after_sha256": "2726d9a8ddb1b1acb93c9a6d82b7fae5ed811d79e13ba642083c67b08f9444b4",
+        "added_lines": 71,
+        "removed_lines": 0
+      }
+    ],
+    "patch": {
+      "path": "deliverables/p13-live/doctor-privacy-fix.patch",
+      "sha256": "ce8c94e736cc952a958247f5de2a7986fae1c5f18815a21f2cceacd25fb0ca28"
+    }
+  },
+  "impact_before_edits": {
+    "product_functions": [
+      "xsm.install.stuck"
+    ],
+    "diagnostic_collections": [
+      "undelivered",
+      "uncertain",
+      "send_failures"
+    ],
+    "public_formats": [
+      "json",
+      "text",
+      "table"
+    ],
+    "direct_cli_consumers": [
+      "cmd_doctor JSON",
+      "_stuck_lines text"
+    ],
+    "table_behavior": "_doctor_rows does not render stuck; existing nonleak control, not an assumed baseline failure",
+    "existing_selected_test_counts": {
+      "tests/test_install_cli_flow.py:InstallCliFlowTest": 8,
+      "tests/test_xsm.py:StuckReportTest": 2,
+      "tests/test_discovery_latency.py:DoctorSessionsTest": 4,
+      "tests/test_install_runtime.py:DoctorRuntimeTest": 5
+    }
+  },
+  "current_source_selectors": [
+    {
+      "file": "xsm/install.py",
+      "function": "stuck",
+      "line": 2248,
+      "end_line": 2297,
+      "function_sha256": "a657c8a66c57643e236dbd6e3f447c91c4ca3e3862a8cf7dfba1cb8359ca013f"
+    },
+    {
+      "file": "xsm/install.py",
+      "function": "diagnostic_message",
+      "line": 2268,
+      "end_line": 2278,
+      "function_sha256": "72653b3659098374f8a109ab21697c6dfe90077186d19980d42c98eedd54bcd7"
+    },
+    {
+      "file": "tests/test_install_cli_flow.py",
+      "function": "_doctor_private_ledger",
+      "line": 300,
+      "end_line": 342,
+      "function_sha256": "5e3e5e91d557fc079ebd794a24fcd39d915695f2cf0d08644447fed14a184cec"
+    },
+    {
+      "file": "tests/test_install_cli_flow.py",
+      "function": "test_doctor_json_selects_metadata_and_fixed_failure_categories",
+      "line": 344,
+      "end_line": 357,
+      "function_sha256": "e8e6c3053d50aeb063d996ea03295ceda37c08d61a8ad9ed6faaf296d746e16a"
+    },
+    {
+      "file": "tests/test_install_cli_flow.py",
+      "function": "test_doctor_text_never_uses_private_errors_as_failure_labels",
+      "line": 359,
+      "end_line": 364,
+      "function_sha256": "32680907d9bc6d086c76f585c5f3db1e6a35096e170bf86680f60f61e8938c03"
+    },
+    {
+      "file": "tests/test_install_cli_flow.py",
+      "function": "test_doctor_table_does_not_disclose_stored_message_or_error",
+      "line": 366,
+      "end_line": 369,
+      "function_sha256": "15f6e64be5d8bea35ab9dbf6bc33148575a8770bffab9ea6f74d25d31ed33897"
+    }
+  ],
+  "implementation": {
+    "product_files_modified": [
+      "xsm/install.py"
+    ],
+    "existing_product_function_modified": "stuck",
+    "new_local_helper": "stuck.diagnostic_message",
+    "diagnostic_row_fields": [
+      "id",
+      "status",
+      "t",
+      "from",
+      "to"
+    ],
+    "diagnostic_endpoint_fields": [
+      "name",
+      "alias",
+      "ref",
+      "runtime"
+    ],
+    "types": "id/status/endpoint values are strings only; t numeric; arbitrary nested values are not returned",
+    "failure_categories": [
+      "sandbox-blocked",
+      "no-inbox",
+      "socket-error",
+      "no-codex-binary",
+      "codex-failed",
+      "codex-internal-changed",
+      "other"
+    ],
+    "classification": "exact recognized reason prefix maps to that fixed label; every unrecognized/missing/non-string error is other. No raw detail/unknown prefix is emitted.",
+    "ledger_originals": "unchanged: only diagnostic projection. Test seeded ledger files compared byte-for-byte before/after each doctor call.",
+    "format_compatibility": "JSON intentionally loses non-diagnostic fields; text from/to names and IDs retained. Table did not render stuck and remains unchanged; sandbox-blocked category retained."
+  },
+  "test_scenarios": {
+    "entry": "existing tests/test_install_cli_flow.py fixture_cli -> actual cli.main parser -> cmd_doctor -> install.doctor -> stuck",
+    "seeding": "real ledger.queued/unknown/failed APIs + stored synthetic raw/nested fields, five real isolated ledger records, t=now-600 for queued and unknown",
+    "sensitive_fields": [
+      "preview from original body",
+      "body",
+      "arbitrary nested message/invite",
+      "endpoint private nested field",
+      "dict injected under allowlisted endpoint ref",
+      "raw error prefix and known-category detail"
+    ],
+    "discovery_boundaries": "existing isolated discovery/version fixture stubs only; install/ledger/parser/doctor/stuck not mocked",
+    "formats": [
+      "json",
+      "text",
+      "table"
+    ],
+    "metadata_utility": "json IDs/status/time and scalar endpoints preserved; plain queued/uncertain labels and known/other failure counts preserved",
+    "budget": "three bounded fixture tests, no sleeps/network/model. New-three baseline runs 1.817s (3.9) / 1.047s (3.14). Full selected regression 24 tests includes existing installer matrix, not repeated as a full suite."
+  },
+  "verification_summary": {
+    "python_versions": [
+      {
+        "argv": [
+          "/usr/bin/python3",
+          "--version"
+        ],
+        "exit_code": 0,
+        "stdout": "Python 3.9.6\n",
+        "stderr": ""
+      },
+      {
+        "argv": [
+          "/opt/homebrew/bin/python3",
+          "--version"
+        ],
+        "exit_code": 0,
+        "stdout": "Python 3.14.6\n",
+        "stderr": ""
+      }
+    ],
+    "red": {
+      "per_python_tests": 3,
+      "per_python_failures": 2,
+      "json": "FAIL: body/nested/raw output present",
+      "text": "FAIL: raw error used as label",
+      "table": "PASS: original non-leak control"
+    },
+    "green": {
+      "per_python_tests": 24,
+      "3.9_seconds": 43.752,
+      "3.14_seconds": 31.145,
+      "result": "OK both, no skips"
+    },
+    "mutants": [
+      {
+        "mutation": "whole-ledger-row",
+        "per_python": "3 tests, 1 assertion failure (JSON)"
+      },
+      {
+        "mutation": "nested-endpoint",
+        "per_python": "3 tests, 1 assertion failure (JSON)"
+      },
+      {
+        "mutation": "raw-error-bucket",
+        "per_python": "3 tests, 2 assertion failures (JSON/text)"
+      }
+    ],
+    "raw_cli_capture": {
+      "before": "3 tests x 2 Python; 2 failures each",
+      "after": "3 tests x 2 Python; all green",
+      "captured_calls": 12,
+      "reason": "bind exact real CLI argv/environment and individual stdout/stderr SHA; transparent test harness capture does not replace product services"
+    },
+    "full_regression_executed": false,
+    "coordinator_freeze_executed": false,
+    "native_model_executed": false,
+    "process_unknown_behavior_changed": false
+  },
+  "commands": [
+    {
+      "phase": "red",
+      "python": "/usr/bin/python3",
+      "argv": [
+        "/usr/bin/python3",
+        "-B",
+        "-m",
+        "unittest",
+        "tests.test_install_cli_flow.InstallCliFlowTest.test_doctor_json_selects_metadata_and_fixed_failure_categories",
+        "tests.test_install_cli_flow.InstallCliFlowTest.test_doctor_text_never_uses_private_errors_as_failure_labels",
+        "tests.test_install_cli_flow.InstallCliFlowTest.test_doctor_table_does_not_disclose_stored_message_or_error",
+        "-v"
+      ],
+      "cwd": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging",
+      "exit_code": 1,
+      "log": "/private/tmp/doctor-privacy-fix-rvmeysuu/red-39.log",
+      "sha256": "ddda27589becc8e9d8915f0cef98bdc07ff3a8830c0a417abdae26bcf15c90e3",
+      "source_sha256": "6b6facc89dee67bf27899cbae9e36cfb701b2c497d2a1fc33a43cf8e49daccd2",
+      "tests_sha256": "2726d9a8ddb1b1acb93c9a6d82b7fae5ed811d79e13ba642083c67b08f9444b4",
+      "result_lines": [
+        "Ran 3 tests in 1.817s",
+        "FAILED (failures=2)"
+      ],
+      "test_result_lines": [
+        "test_doctor_json_selects_metadata_and_fixed_failure_categories (tests.test_install_cli_flow.InstallCliFlowTest) ... FAIL",
+        "test_doctor_text_never_uses_private_errors_as_failure_labels (tests.test_install_cli_flow.InstallCliFlowTest) ... FAIL",
+        "test_doctor_table_does_not_disclose_stored_message_or_error (tests.test_install_cli_flow.InstallCliFlowTest) ... ok"
+      ]
+    },
+    {
+      "phase": "red",
+      "python": "/opt/homebrew/bin/python3",
+      "argv": [
+        "/opt/homebrew/bin/python3",
+        "-B",
+        "-m",
+        "unittest",
+        "tests.test_install_cli_flow.InstallCliFlowTest.test_doctor_json_selects_metadata_and_fixed_failure_categories",
+        "tests.test_install_cli_flow.InstallCliFlowTest.test_doctor_text_never_uses_private_errors_as_failure_labels",
+        "tests.test_install_cli_flow.InstallCliFlowTest.test_doctor_table_does_not_disclose_stored_message_or_error",
+        "-v"
+      ],
+      "cwd": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging",
+      "exit_code": 1,
+      "log": "/private/tmp/doctor-privacy-fix-rvmeysuu/red-314.log",
+      "sha256": "f844ed6279cedb6c8cbfcf759b12e27c0e1733635ab1a53732a3a6899b8ccb2d",
+      "source_sha256": "6b6facc89dee67bf27899cbae9e36cfb701b2c497d2a1fc33a43cf8e49daccd2",
+      "tests_sha256": "2726d9a8ddb1b1acb93c9a6d82b7fae5ed811d79e13ba642083c67b08f9444b4",
+      "result_lines": [
+        "Ran 3 tests in 1.047s",
+        "FAILED (failures=2)"
+      ],
+      "test_result_lines": [
+        "test_doctor_json_selects_metadata_and_fixed_failure_categories (tests.test_install_cli_flow.InstallCliFlowTest.test_doctor_json_selects_metadata_and_fixed_failure_categories) ... FAIL",
+        "test_doctor_text_never_uses_private_errors_as_failure_labels (tests.test_install_cli_flow.InstallCliFlowTest.test_doctor_text_never_uses_private_errors_as_failure_labels) ... FAIL",
+        "test_doctor_table_does_not_disclose_stored_message_or_error (tests.test_install_cli_flow.InstallCliFlowTest.test_doctor_table_does_not_disclose_stored_message_or_error) ... ok"
+      ]
+    },
+    {
+      "phase": "green",
+      "python": "/usr/bin/python3",
+      "argv": [
+        "/usr/bin/python3",
+        "-B",
+        "-m",
+        "unittest",
+        "tests.test_install_cli_flow",
+        "tests.test_xsm.StuckReportTest",
+        "tests.test_discovery_latency.DoctorSessionsTest",
+        "tests.test_install_runtime.DoctorRuntimeTest",
+        "tests.test_setup_flow.SetupFlowTest.test_report_is_read_only_redacted_and_never_wakes_or_terminates_a_session",
+        "tests.test_setup_flow.SetupFlowTest.test_credentials_invites_and_raw_errors_are_not_evidence_fields",
+        "-v"
+      ],
+      "cwd": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging",
+      "exit_code": 0,
+      "log": "/private/tmp/doctor-privacy-fix-rvmeysuu/green-39.log",
+      "sha256": "3139f685770496b0bc8aa27ec944f40fd479c6b25db903341a051e983337ea6f",
+      "source_sha256": "a8e712de6e8b2b9f368946333a6c8793168c6734484be45a60dbe967d0aa1960",
+      "tests_sha256": "2726d9a8ddb1b1acb93c9a6d82b7fae5ed811d79e13ba642083c67b08f9444b4",
+      "result_lines": [
+        "Ran 24 tests in 43.752s",
+        "OK"
+      ],
+      "test_result_lines": [
+        "test_doctor_json_selects_metadata_and_fixed_failure_categories (tests.test_install_cli_flow.InstallCliFlowTest) ... ok",
+        "test_doctor_table_does_not_disclose_stored_message_or_error (tests.test_install_cli_flow.InstallCliFlowTest) ... ok",
+        "test_doctor_text_never_uses_private_errors_as_failure_labels (tests.test_install_cli_flow.InstallCliFlowTest) ... ok",
+        "test_doctor_names_what_is_waiting_on_someone (tests.test_xsm.StuckReportTest) ... ok"
+      ]
+    },
+    {
+      "phase": "green",
+      "python": "/opt/homebrew/bin/python3",
+      "argv": [
+        "/opt/homebrew/bin/python3",
+        "-B",
+        "-m",
+        "unittest",
+        "tests.test_install_cli_flow",
+        "tests.test_xsm.StuckReportTest",
+        "tests.test_discovery_latency.DoctorSessionsTest",
+        "tests.test_install_runtime.DoctorRuntimeTest",
+        "tests.test_setup_flow.SetupFlowTest.test_report_is_read_only_redacted_and_never_wakes_or_terminates_a_session",
+        "tests.test_setup_flow.SetupFlowTest.test_credentials_invites_and_raw_errors_are_not_evidence_fields",
+        "-v"
+      ],
+      "cwd": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging",
+      "exit_code": 0,
+      "log": "/private/tmp/doctor-privacy-fix-rvmeysuu/green-314.log",
+      "sha256": "fd7b70c3181d182c1cbc372b6daf55a57e48477970c968c3c3dfa51809204fa8",
+      "source_sha256": "a8e712de6e8b2b9f368946333a6c8793168c6734484be45a60dbe967d0aa1960",
+      "tests_sha256": "2726d9a8ddb1b1acb93c9a6d82b7fae5ed811d79e13ba642083c67b08f9444b4",
+      "result_lines": [
+        "Ran 24 tests in 31.145s",
+        "OK"
+      ],
+      "test_result_lines": [
+        "test_doctor_json_selects_metadata_and_fixed_failure_categories (tests.test_install_cli_flow.InstallCliFlowTest.test_doctor_json_selects_metadata_and_fixed_failure_categories) ... ok",
+        "test_doctor_table_does_not_disclose_stored_message_or_error (tests.test_install_cli_flow.InstallCliFlowTest.test_doctor_table_does_not_disclose_stored_message_or_error) ... ok",
+        "test_doctor_text_never_uses_private_errors_as_failure_labels (tests.test_install_cli_flow.InstallCliFlowTest.test_doctor_text_never_uses_private_errors_as_failure_labels) ... ok",
+        "test_doctor_names_what_is_waiting_on_someone (tests.test_xsm.StuckReportTest.test_doctor_names_what_is_waiting_on_someone) ... ok"
+      ]
+    },
+    {
+      "phase": "mutant",
+      "mutation": "whole-ledger-row",
+      "python": "/usr/bin/python3",
+      "argv": [
+        "/usr/bin/python3",
+        "-B",
+        "-m",
+        "unittest",
+        "tests.test_install_cli_flow.InstallCliFlowTest.test_doctor_json_selects_metadata_and_fixed_failure_categories",
+        "tests.test_install_cli_flow.InstallCliFlowTest.test_doctor_text_never_uses_private_errors_as_failure_labels",
+        "tests.test_install_cli_flow.InstallCliFlowTest.test_doctor_table_does_not_disclose_stored_message_or_error",
+        "-v"
+      ],
+      "cwd": "/private/tmp/doctor-privacy-fix-rvmeysuu/mutant-whole-ledger-row",
+      "exit_code": 1,
+      "expected": "test assertion failures; no errors",
+      "summary": "FAILED (failures=1)",
+      "log": "/private/tmp/doctor-privacy-fix-rvmeysuu/mutant-whole-ledger-row-39.log",
+      "sha256": "66a7cd1b5bbb182d361b9f08d0211853540746032f14af9fdf08bf336217dc93",
+      "mutant_install_sha256": "605a1ce144d2ec43e8130930c5b2f0e345e013caf9101e0289a5ad3b5e2dcc1a",
+      "result_lines": [
+        "Ran 3 tests in 1.790s",
+        "FAILED (failures=1)"
+      ],
+      "test_result_lines": [
+        "test_doctor_json_selects_metadata_and_fixed_failure_categories (tests.test_install_cli_flow.InstallCliFlowTest) ... FAIL",
+        "test_doctor_text_never_uses_private_errors_as_failure_labels (tests.test_install_cli_flow.InstallCliFlowTest) ... ok",
+        "test_doctor_table_does_not_disclose_stored_message_or_error (tests.test_install_cli_flow.InstallCliFlowTest) ... ok"
+      ]
+    },
+    {
+      "phase": "mutant",
+      "mutation": "whole-ledger-row",
+      "python": "/opt/homebrew/bin/python3",
+      "argv": [
+        "/opt/homebrew/bin/python3",
+        "-B",
+        "-m",
+        "unittest",
+        "tests.test_install_cli_flow.InstallCliFlowTest.test_doctor_json_selects_metadata_and_fixed_failure_categories",
+        "tests.test_install_cli_flow.InstallCliFlowTest.test_doctor_text_never_uses_private_errors_as_failure_labels",
+        "tests.test_install_cli_flow.InstallCliFlowTest.test_doctor_table_does_not_disclose_stored_message_or_error",
+        "-v"
+      ],
+      "cwd": "/private/tmp/doctor-privacy-fix-rvmeysuu/mutant-whole-ledger-row",
+      "exit_code": 1,
+      "expected": "test assertion failures; no errors",
+      "summary": "FAILED (failures=1)",
+      "log": "/private/tmp/doctor-privacy-fix-rvmeysuu/mutant-whole-ledger-row-314.log",
+      "sha256": "210fb2f3b032a9735df62cb8b83e81aef8863797c8e1ca112e16b6f018aa65c5",
+      "mutant_install_sha256": "605a1ce144d2ec43e8130930c5b2f0e345e013caf9101e0289a5ad3b5e2dcc1a",
+      "result_lines": [
+        "Ran 3 tests in 1.018s",
+        "FAILED (failures=1)"
+      ],
+      "test_result_lines": [
+        "test_doctor_json_selects_metadata_and_fixed_failure_categories (tests.test_install_cli_flow.InstallCliFlowTest.test_doctor_json_selects_metadata_and_fixed_failure_categories) ... FAIL",
+        "test_doctor_text_never_uses_private_errors_as_failure_labels (tests.test_install_cli_flow.InstallCliFlowTest.test_doctor_text_never_uses_private_errors_as_failure_labels) ... ok",
+        "test_doctor_table_does_not_disclose_stored_message_or_error (tests.test_install_cli_flow.InstallCliFlowTest.test_doctor_table_does_not_disclose_stored_message_or_error) ... ok"
+      ]
+    },
+    {
+      "phase": "mutant",
+      "mutation": "nested-endpoint",
+      "python": "/usr/bin/python3",
+      "argv": [
+        "/usr/bin/python3",
+        "-B",
+        "-m",
+        "unittest",
+        "tests.test_install_cli_flow.InstallCliFlowTest.test_doctor_json_selects_metadata_and_fixed_failure_categories",
+        "tests.test_install_cli_flow.InstallCliFlowTest.test_doctor_text_never_uses_private_errors_as_failure_labels",
+        "tests.test_install_cli_flow.InstallCliFlowTest.test_doctor_table_does_not_disclose_stored_message_or_error",
+        "-v"
+      ],
+      "cwd": "/private/tmp/doctor-privacy-fix-rvmeysuu/mutant-nested-endpoint",
+      "exit_code": 1,
+      "expected": "test assertion failures; no errors",
+      "summary": "FAILED (failures=1)",
+      "log": "/private/tmp/doctor-privacy-fix-rvmeysuu/mutant-nested-endpoint-39.log",
+      "sha256": "1bd49d1b1b2d3d69784931594806eb00dba889601ef0c651141c49b9bbdf22cc",
+      "mutant_install_sha256": "6904d1279f4bfadde668f9ad3f8bad8635cd39b2ae9265c03a225c1f95d48641",
+      "result_lines": [
+        "Ran 3 tests in 1.780s",
+        "FAILED (failures=1)"
+      ],
+      "test_result_lines": [
+        "test_doctor_json_selects_metadata_and_fixed_failure_categories (tests.test_install_cli_flow.InstallCliFlowTest) ... FAIL",
+        "test_doctor_text_never_uses_private_errors_as_failure_labels (tests.test_install_cli_flow.InstallCliFlowTest) ... ok",
+        "test_doctor_table_does_not_disclose_stored_message_or_error (tests.test_install_cli_flow.InstallCliFlowTest) ... ok"
+      ]
+    },
+    {
+      "phase": "mutant",
+      "mutation": "nested-endpoint",
+      "python": "/opt/homebrew/bin/python3",
+      "argv": [
+        "/opt/homebrew/bin/python3",
+        "-B",
+        "-m",
+        "unittest",
+        "tests.test_install_cli_flow.InstallCliFlowTest.test_doctor_json_selects_metadata_and_fixed_failure_categories",
+        "tests.test_install_cli_flow.InstallCliFlowTest.test_doctor_text_never_uses_private_errors_as_failure_labels",
+        "tests.test_install_cli_flow.InstallCliFlowTest.test_doctor_table_does_not_disclose_stored_message_or_error",
+        "-v"
+      ],
+      "cwd": "/private/tmp/doctor-privacy-fix-rvmeysuu/mutant-nested-endpoint",
+      "exit_code": 1,
+      "expected": "test assertion failures; no errors",
+      "summary": "FAILED (failures=1)",
+      "log": "/private/tmp/doctor-privacy-fix-rvmeysuu/mutant-nested-endpoint-314.log",
+      "sha256": "a08b24c1d9c2821d266c3b69c6e36dc13d3118b9498eead66e381fdbc527c747",
+      "mutant_install_sha256": "6904d1279f4bfadde668f9ad3f8bad8635cd39b2ae9265c03a225c1f95d48641",
+      "result_lines": [
+        "Ran 3 tests in 1.006s",
+        "FAILED (failures=1)"
+      ],
+      "test_result_lines": [
+        "test_doctor_json_selects_metadata_and_fixed_failure_categories (tests.test_install_cli_flow.InstallCliFlowTest.test_doctor_json_selects_metadata_and_fixed_failure_categories) ... FAIL",
+        "test_doctor_text_never_uses_private_errors_as_failure_labels (tests.test_install_cli_flow.InstallCliFlowTest.test_doctor_text_never_uses_private_errors_as_failure_labels) ... ok",
+        "test_doctor_table_does_not_disclose_stored_message_or_error (tests.test_install_cli_flow.InstallCliFlowTest.test_doctor_table_does_not_disclose_stored_message_or_error) ... ok"
+      ]
+    },
+    {
+      "phase": "mutant",
+      "mutation": "raw-error-bucket",
+      "python": "/usr/bin/python3",
+      "argv": [
+        "/usr/bin/python3",
+        "-B",
+        "-m",
+        "unittest",
+        "tests.test_install_cli_flow.InstallCliFlowTest.test_doctor_json_selects_metadata_and_fixed_failure_categories",
+        "tests.test_install_cli_flow.InstallCliFlowTest.test_doctor_text_never_uses_private_errors_as_failure_labels",
+        "tests.test_install_cli_flow.InstallCliFlowTest.test_doctor_table_does_not_disclose_stored_message_or_error",
+        "-v"
+      ],
+      "cwd": "/private/tmp/doctor-privacy-fix-rvmeysuu/mutant-raw-error-bucket",
+      "exit_code": 1,
+      "expected": "test assertion failures; no errors",
+      "summary": "FAILED (failures=2)",
+      "log": "/private/tmp/doctor-privacy-fix-rvmeysuu/mutant-raw-error-bucket-39.log",
+      "sha256": "d6e634956444b797d1c9bbe42b228ecb6b9aaca97eb243791a8b4b3b6eac44bd",
+      "mutant_install_sha256": "2a00e58734ec1a6ce1dfe0c89b2565435aabec81382542274104034109154c77",
+      "result_lines": [
+        "Ran 3 tests in 1.786s",
+        "FAILED (failures=2)"
+      ],
+      "test_result_lines": [
+        "test_doctor_json_selects_metadata_and_fixed_failure_categories (tests.test_install_cli_flow.InstallCliFlowTest) ... FAIL",
+        "test_doctor_text_never_uses_private_errors_as_failure_labels (tests.test_install_cli_flow.InstallCliFlowTest) ... FAIL",
+        "test_doctor_table_does_not_disclose_stored_message_or_error (tests.test_install_cli_flow.InstallCliFlowTest) ... ok"
+      ]
+    },
+    {
+      "phase": "mutant",
+      "mutation": "raw-error-bucket",
+      "python": "/opt/homebrew/bin/python3",
+      "argv": [
+        "/opt/homebrew/bin/python3",
+        "-B",
+        "-m",
+        "unittest",
+        "tests.test_install_cli_flow.InstallCliFlowTest.test_doctor_json_selects_metadata_and_fixed_failure_categories",
+        "tests.test_install_cli_flow.InstallCliFlowTest.test_doctor_text_never_uses_private_errors_as_failure_labels",
+        "tests.test_install_cli_flow.InstallCliFlowTest.test_doctor_table_does_not_disclose_stored_message_or_error",
+        "-v"
+      ],
+      "cwd": "/private/tmp/doctor-privacy-fix-rvmeysuu/mutant-raw-error-bucket",
+      "exit_code": 1,
+      "expected": "test assertion failures; no errors",
+      "summary": "FAILED (failures=2)",
+      "log": "/private/tmp/doctor-privacy-fix-rvmeysuu/mutant-raw-error-bucket-314.log",
+      "sha256": "c2315e9b8b8004ad1dad12ada27ef7dc07136914197ad651bd97276390c3864c",
+      "mutant_install_sha256": "2a00e58734ec1a6ce1dfe0c89b2565435aabec81382542274104034109154c77",
+      "result_lines": [
+        "Ran 3 tests in 1.033s",
+        "FAILED (failures=2)"
+      ],
+      "test_result_lines": [
+        "test_doctor_json_selects_metadata_and_fixed_failure_categories (tests.test_install_cli_flow.InstallCliFlowTest.test_doctor_json_selects_metadata_and_fixed_failure_categories) ... FAIL",
+        "test_doctor_text_never_uses_private_errors_as_failure_labels (tests.test_install_cli_flow.InstallCliFlowTest.test_doctor_text_never_uses_private_errors_as_failure_labels) ... FAIL",
+        "test_doctor_table_does_not_disclose_stored_message_or_error (tests.test_install_cli_flow.InstallCliFlowTest.test_doctor_table_does_not_disclose_stored_message_or_error) ... ok"
+      ]
+    },
+    {
+      "phase": "cli-raw-capture-before",
+      "python": "/usr/bin/python3",
+      "argv": [
+        "/usr/bin/python3",
+        "-B",
+        "/private/tmp/doctor-privacy-fix-rvmeysuu/capture-cli.py",
+        "/private/tmp/doctor-privacy-fix-rvmeysuu",
+        "before-39"
+      ],
+      "cwd": "/private/tmp/doctor-privacy-fix-rvmeysuu/original-red-source",
+      "exit_code": 1,
+      "log": "/private/tmp/doctor-privacy-fix-rvmeysuu/before-39-cli-capture.log",
+      "sha256": "a513de2f06a26a983f4d35eca8b70643e07eea67796c79e02c973912b06e42ee",
+      "cli_calls_report": "/private/tmp/doctor-privacy-fix-rvmeysuu/before-39-cli-calls.json",
+      "cli_calls_report_sha256": "6e979de0cfac95af099325f9ed6a736a895d2e6bf0569f34b00108058a5c9dc8",
+      "tests": 3,
+      "failures": 2,
+      "result_lines": [
+        "Ran 3 tests in 1.781s",
+        "FAILED (failures=2)"
+      ],
+      "test_result_lines": [
+        "test_doctor_json_selects_metadata_and_fixed_failure_categories (tests.test_install_cli_flow.InstallCliFlowTest) ... FAIL",
+        "test_doctor_text_never_uses_private_errors_as_failure_labels (tests.test_install_cli_flow.InstallCliFlowTest) ... FAIL",
+        "test_doctor_table_does_not_disclose_stored_message_or_error (tests.test_install_cli_flow.InstallCliFlowTest) ... ok"
+      ]
+    },
+    {
+      "phase": "cli-raw-capture-before",
+      "python": "/opt/homebrew/bin/python3",
+      "argv": [
+        "/opt/homebrew/bin/python3",
+        "-B",
+        "/private/tmp/doctor-privacy-fix-rvmeysuu/capture-cli.py",
+        "/private/tmp/doctor-privacy-fix-rvmeysuu",
+        "before-314"
+      ],
+      "cwd": "/private/tmp/doctor-privacy-fix-rvmeysuu/original-red-source",
+      "exit_code": 1,
+      "log": "/private/tmp/doctor-privacy-fix-rvmeysuu/before-314-cli-capture.log",
+      "sha256": "bfede2b4ebe50984b1e6b90b10749d7fa1cd4d68188c0ff85978266bac873ac0",
+      "cli_calls_report": "/private/tmp/doctor-privacy-fix-rvmeysuu/before-314-cli-calls.json",
+      "cli_calls_report_sha256": "a068acafffd7269a1ee91622c0c2c1c90b0dc49107d654aee9092b57f87ec191",
+      "tests": 3,
+      "failures": 2,
+      "result_lines": [
+        "Ran 3 tests in 1.036s",
+        "FAILED (failures=2)"
+      ],
+      "test_result_lines": [
+        "test_doctor_json_selects_metadata_and_fixed_failure_categories (tests.test_install_cli_flow.InstallCliFlowTest.test_doctor_json_selects_metadata_and_fixed_failure_categories) ... FAIL",
+        "test_doctor_text_never_uses_private_errors_as_failure_labels (tests.test_install_cli_flow.InstallCliFlowTest.test_doctor_text_never_uses_private_errors_as_failure_labels) ... FAIL",
+        "test_doctor_table_does_not_disclose_stored_message_or_error (tests.test_install_cli_flow.InstallCliFlowTest.test_doctor_table_does_not_disclose_stored_message_or_error) ... ok"
+      ]
+    },
+    {
+      "phase": "cli-raw-capture-after",
+      "python": "/usr/bin/python3",
+      "argv": [
+        "/usr/bin/python3",
+        "-B",
+        "/private/tmp/doctor-privacy-fix-rvmeysuu/capture-cli.py",
+        "/private/tmp/doctor-privacy-fix-rvmeysuu",
+        "after-39"
+      ],
+      "cwd": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging",
+      "exit_code": 0,
+      "log": "/private/tmp/doctor-privacy-fix-rvmeysuu/after-39-cli-capture.log",
+      "sha256": "906e750e8ee54ebcc6f6303a947ba05796e30928b26c81b719ba1c6dc7ead49e",
+      "cli_calls_report": "/private/tmp/doctor-privacy-fix-rvmeysuu/after-39-cli-calls.json",
+      "cli_calls_report_sha256": "aefd9c745cca874eb6f5667daceb7062e0dfcaa6a278897bae7fd9a73fcf8725",
+      "tests": 3,
+      "failures": 0,
+      "result_lines": [
+        "Ran 3 tests in 1.804s",
+        "OK"
+      ],
+      "test_result_lines": [
+        "test_doctor_json_selects_metadata_and_fixed_failure_categories (tests.test_install_cli_flow.InstallCliFlowTest) ... ok",
+        "test_doctor_text_never_uses_private_errors_as_failure_labels (tests.test_install_cli_flow.InstallCliFlowTest) ... ok",
+        "test_doctor_table_does_not_disclose_stored_message_or_error (tests.test_install_cli_flow.InstallCliFlowTest) ... ok"
+      ]
+    },
+    {
+      "phase": "cli-raw-capture-after",
+      "python": "/opt/homebrew/bin/python3",
+      "argv": [
+        "/opt/homebrew/bin/python3",
+        "-B",
+        "/private/tmp/doctor-privacy-fix-rvmeysuu/capture-cli.py",
+        "/private/tmp/doctor-privacy-fix-rvmeysuu",
+        "after-314"
+      ],
+      "cwd": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging",
+      "exit_code": 0,
+      "log": "/private/tmp/doctor-privacy-fix-rvmeysuu/after-314-cli-capture.log",
+      "sha256": "71fb7c5bf15f1ab7b8072f322c3599ea6c3bb9b7102e5dd0cfaca09812ebf425",
+      "cli_calls_report": "/private/tmp/doctor-privacy-fix-rvmeysuu/after-314-cli-calls.json",
+      "cli_calls_report_sha256": "e9b0ba2a81e21319f0b41df3ec5fe98bf1df00828f822bc5e196e912478529a0",
+      "tests": 3,
+      "failures": 0,
+      "result_lines": [
+        "Ran 3 tests in 1.020s",
+        "OK"
+      ],
+      "test_result_lines": [
+        "test_doctor_json_selects_metadata_and_fixed_failure_categories (tests.test_install_cli_flow.InstallCliFlowTest.test_doctor_json_selects_metadata_and_fixed_failure_categories) ... ok",
+        "test_doctor_text_never_uses_private_errors_as_failure_labels (tests.test_install_cli_flow.InstallCliFlowTest.test_doctor_text_never_uses_private_errors_as_failure_labels) ... ok",
+        "test_doctor_table_does_not_disclose_stored_message_or_error (tests.test_install_cli_flow.InstallCliFlowTest.test_doctor_table_does_not_disclose_stored_message_or_error) ... ok"
+      ]
+    }
+  ],
+  "raw_cli_outputs": [
+    {
+      "phase": "cli-raw-capture-before",
+      "python": "/usr/bin/python3",
+      "report_path": "/private/tmp/doctor-privacy-fix-rvmeysuu/before-39-cli-calls.json",
+      "sha256": "6e979de0cfac95af099325f9ed6a736a895d2e6bf0569f34b00108058a5c9dc8",
+      "tests": 3,
+      "failures": 2,
+      "errors": 0,
+      "calls": [
+        {
+          "argv": [
+            "/Applications/Xcode.app/Contents/Developer/usr/bin/python3",
+            "/private/tmp/doctor-privacy-fix-rvmeysuu/original-red-source/tests/test_install_cli_flow.py",
+            "--fixture-cli",
+            "doctor",
+            "--json"
+          ],
+          "cwd": "/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-p10-doctor-private-_q9h6gvh",
+          "flags": [
+            "doctor",
+            "--json"
+          ],
+          "exit_code": 0,
+          "env_scope": {
+            "HOME": "/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-p10-doctor-private-_q9h6gvh/person",
+            "XSM_HOME": "/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-p10-doctor-private-_q9h6gvh/state",
+            "CODEX_HOME": "/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-p10-doctor-private-_q9h6gvh/person/.codex",
+            "CLAUDE_CONFIG_DIR": "/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-p10-doctor-private-_q9h6gvh/person/.claude",
+            "XSM_P10_SOURCE": "/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-p10-doctor-private-_q9h6gvh/source"
+          },
+          "install_sha256": "6b6facc89dee67bf27899cbae9e36cfb701b2c497d2a1fc33a43cf8e49daccd2",
+          "stdout": {
+            "path": "/private/tmp/doctor-privacy-fix-rvmeysuu/before-39-cli-0.stdout",
+            "sha256": "9fd4ce8108eb4a38d6725797975ce8436fc6c564b315359a95847633a82eb23a"
+          },
+          "stderr": {
+            "path": "/private/tmp/doctor-privacy-fix-rvmeysuu/before-39-cli-0.stderr",
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        },
+        {
+          "argv": [
+            "/Applications/Xcode.app/Contents/Developer/usr/bin/python3",
+            "/private/tmp/doctor-privacy-fix-rvmeysuu/original-red-source/tests/test_install_cli_flow.py",
+            "--fixture-cli",
+            "doctor"
+          ],
+          "cwd": "/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-p10-doctor-private-edff136x",
+          "flags": [
+            "doctor"
+          ],
+          "exit_code": 0,
+          "env_scope": {
+            "HOME": "/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-p10-doctor-private-edff136x/person",
+            "XSM_HOME": "/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-p10-doctor-private-edff136x/state",
+            "CODEX_HOME": "/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-p10-doctor-private-edff136x/person/.codex",
+            "CLAUDE_CONFIG_DIR": "/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-p10-doctor-private-edff136x/person/.claude",
+            "XSM_P10_SOURCE": "/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-p10-doctor-private-edff136x/source"
+          },
+          "install_sha256": "6b6facc89dee67bf27899cbae9e36cfb701b2c497d2a1fc33a43cf8e49daccd2",
+          "stdout": {
+            "path": "/private/tmp/doctor-privacy-fix-rvmeysuu/before-39-cli-1.stdout",
+            "sha256": "34d7015af89f38e584b9380427ccdba75cb50acbac9550e64b22109204b671a7"
+          },
+          "stderr": {
+            "path": "/private/tmp/doctor-privacy-fix-rvmeysuu/before-39-cli-1.stderr",
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        },
+        {
+          "argv": [
+            "/Applications/Xcode.app/Contents/Developer/usr/bin/python3",
+            "/private/tmp/doctor-privacy-fix-rvmeysuu/original-red-source/tests/test_install_cli_flow.py",
+            "--fixture-cli",
+            "doctor",
+            "--table"
+          ],
+          "cwd": "/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-p10-doctor-private-21xgpy5g",
+          "flags": [
+            "doctor",
+            "--table"
+          ],
+          "exit_code": 0,
+          "env_scope": {
+            "HOME": "/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-p10-doctor-private-21xgpy5g/person",
+            "XSM_HOME": "/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-p10-doctor-private-21xgpy5g/state",
+            "CODEX_HOME": "/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-p10-doctor-private-21xgpy5g/person/.codex",
+            "CLAUDE_CONFIG_DIR": "/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-p10-doctor-private-21xgpy5g/person/.claude",
+            "XSM_P10_SOURCE": "/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-p10-doctor-private-21xgpy5g/source"
+          },
+          "install_sha256": "6b6facc89dee67bf27899cbae9e36cfb701b2c497d2a1fc33a43cf8e49daccd2",
+          "stdout": {
+            "path": "/private/tmp/doctor-privacy-fix-rvmeysuu/before-39-cli-2.stdout",
+            "sha256": "53a43fd46d00e9ac7816639dec9ecc267c8c52068259a5120b74fc4cae91a750"
+          },
+          "stderr": {
+            "path": "/private/tmp/doctor-privacy-fix-rvmeysuu/before-39-cli-2.stderr",
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        }
+      ]
+    },
+    {
+      "phase": "cli-raw-capture-before",
+      "python": "/opt/homebrew/bin/python3",
+      "report_path": "/private/tmp/doctor-privacy-fix-rvmeysuu/before-314-cli-calls.json",
+      "sha256": "a068acafffd7269a1ee91622c0c2c1c90b0dc49107d654aee9092b57f87ec191",
+      "tests": 3,
+      "failures": 2,
+      "errors": 0,
+      "calls": [
+        {
+          "argv": [
+            "/opt/homebrew/opt/python@3.14/bin/python3.14",
+            "/private/tmp/doctor-privacy-fix-rvmeysuu/original-red-source/tests/test_install_cli_flow.py",
+            "--fixture-cli",
+            "doctor",
+            "--json"
+          ],
+          "cwd": "/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-p10-doctor-private-jquc9utj",
+          "flags": [
+            "doctor",
+            "--json"
+          ],
+          "exit_code": 0,
+          "env_scope": {
+            "HOME": "/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-p10-doctor-private-jquc9utj/person",
+            "XSM_HOME": "/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-p10-doctor-private-jquc9utj/state",
+            "CODEX_HOME": "/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-p10-doctor-private-jquc9utj/person/.codex",
+            "CLAUDE_CONFIG_DIR": "/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-p10-doctor-private-jquc9utj/person/.claude",
+            "XSM_P10_SOURCE": "/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-p10-doctor-private-jquc9utj/source"
+          },
+          "install_sha256": "6b6facc89dee67bf27899cbae9e36cfb701b2c497d2a1fc33a43cf8e49daccd2",
+          "stdout": {
+            "path": "/private/tmp/doctor-privacy-fix-rvmeysuu/before-314-cli-0.stdout",
+            "sha256": "6fced8f57c99d70c0d648204ff7b487eaead4b024c50aa5223ac8fad5e76d8b1"
+          },
+          "stderr": {
+            "path": "/private/tmp/doctor-privacy-fix-rvmeysuu/before-314-cli-0.stderr",
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        },
+        {
+          "argv": [
+            "/opt/homebrew/opt/python@3.14/bin/python3.14",
+            "/private/tmp/doctor-privacy-fix-rvmeysuu/original-red-source/tests/test_install_cli_flow.py",
+            "--fixture-cli",
+            "doctor"
+          ],
+          "cwd": "/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-p10-doctor-private-n886pahp",
+          "flags": [
+            "doctor"
+          ],
+          "exit_code": 0,
+          "env_scope": {
+            "HOME": "/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-p10-doctor-private-n886pahp/person",
+            "XSM_HOME": "/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-p10-doctor-private-n886pahp/state",
+            "CODEX_HOME": "/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-p10-doctor-private-n886pahp/person/.codex",
+            "CLAUDE_CONFIG_DIR": "/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-p10-doctor-private-n886pahp/person/.claude",
+            "XSM_P10_SOURCE": "/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-p10-doctor-private-n886pahp/source"
+          },
+          "install_sha256": "6b6facc89dee67bf27899cbae9e36cfb701b2c497d2a1fc33a43cf8e49daccd2",
+          "stdout": {
+            "path": "/private/tmp/doctor-privacy-fix-rvmeysuu/before-314-cli-1.stdout",
+            "sha256": "68bb65e236d841740ff824f4d7641f7bddf598d2c6a746ccea70bf5bddb2224b"
+          },
+          "stderr": {
+            "path": "/private/tmp/doctor-privacy-fix-rvmeysuu/before-314-cli-1.stderr",
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        },
+        {
+          "argv": [
+            "/opt/homebrew/opt/python@3.14/bin/python3.14",
+            "/private/tmp/doctor-privacy-fix-rvmeysuu/original-red-source/tests/test_install_cli_flow.py",
+            "--fixture-cli",
+            "doctor",
+            "--table"
+          ],
+          "cwd": "/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-p10-doctor-private-u0ckpgw3",
+          "flags": [
+            "doctor",
+            "--table"
+          ],
+          "exit_code": 0,
+          "env_scope": {
+            "HOME": "/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-p10-doctor-private-u0ckpgw3/person",
+            "XSM_HOME": "/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-p10-doctor-private-u0ckpgw3/state",
+            "CODEX_HOME": "/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-p10-doctor-private-u0ckpgw3/person/.codex",
+            "CLAUDE_CONFIG_DIR": "/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-p10-doctor-private-u0ckpgw3/person/.claude",
+            "XSM_P10_SOURCE": "/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-p10-doctor-private-u0ckpgw3/source"
+          },
+          "install_sha256": "6b6facc89dee67bf27899cbae9e36cfb701b2c497d2a1fc33a43cf8e49daccd2",
+          "stdout": {
+            "path": "/private/tmp/doctor-privacy-fix-rvmeysuu/before-314-cli-2.stdout",
+            "sha256": "4852d158f231e58586c07de0a1350966c3be73503fe03e4efa38fd282c381449"
+          },
+          "stderr": {
+            "path": "/private/tmp/doctor-privacy-fix-rvmeysuu/before-314-cli-2.stderr",
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        }
+      ]
+    },
+    {
+      "phase": "cli-raw-capture-after",
+      "python": "/usr/bin/python3",
+      "report_path": "/private/tmp/doctor-privacy-fix-rvmeysuu/after-39-cli-calls.json",
+      "sha256": "aefd9c745cca874eb6f5667daceb7062e0dfcaa6a278897bae7fd9a73fcf8725",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "calls": [
+        {
+          "argv": [
+            "/Applications/Xcode.app/Contents/Developer/usr/bin/python3",
+            "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/tests/test_install_cli_flow.py",
+            "--fixture-cli",
+            "doctor",
+            "--json"
+          ],
+          "cwd": "/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-p10-doctor-private-fxps5n7g",
+          "flags": [
+            "doctor",
+            "--json"
+          ],
+          "exit_code": 0,
+          "env_scope": {
+            "HOME": "/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-p10-doctor-private-fxps5n7g/person",
+            "XSM_HOME": "/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-p10-doctor-private-fxps5n7g/state",
+            "CODEX_HOME": "/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-p10-doctor-private-fxps5n7g/person/.codex",
+            "CLAUDE_CONFIG_DIR": "/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-p10-doctor-private-fxps5n7g/person/.claude",
+            "XSM_P10_SOURCE": "/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-p10-doctor-private-fxps5n7g/source"
+          },
+          "install_sha256": "a8e712de6e8b2b9f368946333a6c8793168c6734484be45a60dbe967d0aa1960",
+          "stdout": {
+            "path": "/private/tmp/doctor-privacy-fix-rvmeysuu/after-39-cli-0.stdout",
+            "sha256": "5f98e773a8771c8c688011ece21052941f0a75b9dd9da7febea1c1775784e5fb"
+          },
+          "stderr": {
+            "path": "/private/tmp/doctor-privacy-fix-rvmeysuu/after-39-cli-0.stderr",
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        },
+        {
+          "argv": [
+            "/Applications/Xcode.app/Contents/Developer/usr/bin/python3",
+            "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/tests/test_install_cli_flow.py",
+            "--fixture-cli",
+            "doctor"
+          ],
+          "cwd": "/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-p10-doctor-private-63itb1ii",
+          "flags": [
+            "doctor"
+          ],
+          "exit_code": 0,
+          "env_scope": {
+            "HOME": "/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-p10-doctor-private-63itb1ii/person",
+            "XSM_HOME": "/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-p10-doctor-private-63itb1ii/state",
+            "CODEX_HOME": "/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-p10-doctor-private-63itb1ii/person/.codex",
+            "CLAUDE_CONFIG_DIR": "/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-p10-doctor-private-63itb1ii/person/.claude",
+            "XSM_P10_SOURCE": "/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-p10-doctor-private-63itb1ii/source"
+          },
+          "install_sha256": "a8e712de6e8b2b9f368946333a6c8793168c6734484be45a60dbe967d0aa1960",
+          "stdout": {
+            "path": "/private/tmp/doctor-privacy-fix-rvmeysuu/after-39-cli-1.stdout",
+            "sha256": "683ab0b6bfbe1a77b2b0cf2221f071158181f78928930be13914992d77c4530d"
+          },
+          "stderr": {
+            "path": "/private/tmp/doctor-privacy-fix-rvmeysuu/after-39-cli-1.stderr",
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        },
+        {
+          "argv": [
+            "/Applications/Xcode.app/Contents/Developer/usr/bin/python3",
+            "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/tests/test_install_cli_flow.py",
+            "--fixture-cli",
+            "doctor",
+            "--table"
+          ],
+          "cwd": "/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-p10-doctor-private-9uift0ub",
+          "flags": [
+            "doctor",
+            "--table"
+          ],
+          "exit_code": 0,
+          "env_scope": {
+            "HOME": "/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-p10-doctor-private-9uift0ub/person",
+            "XSM_HOME": "/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-p10-doctor-private-9uift0ub/state",
+            "CODEX_HOME": "/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-p10-doctor-private-9uift0ub/person/.codex",
+            "CLAUDE_CONFIG_DIR": "/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-p10-doctor-private-9uift0ub/person/.claude",
+            "XSM_P10_SOURCE": "/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-p10-doctor-private-9uift0ub/source"
+          },
+          "install_sha256": "a8e712de6e8b2b9f368946333a6c8793168c6734484be45a60dbe967d0aa1960",
+          "stdout": {
+            "path": "/private/tmp/doctor-privacy-fix-rvmeysuu/after-39-cli-2.stdout",
+            "sha256": "17f82debe2fbbbef3e1275b4fcaf44d01d24d320770599e895140aac1c371b0c"
+          },
+          "stderr": {
+            "path": "/private/tmp/doctor-privacy-fix-rvmeysuu/after-39-cli-2.stderr",
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        }
+      ]
+    },
+    {
+      "phase": "cli-raw-capture-after",
+      "python": "/opt/homebrew/bin/python3",
+      "report_path": "/private/tmp/doctor-privacy-fix-rvmeysuu/after-314-cli-calls.json",
+      "sha256": "e9b0ba2a81e21319f0b41df3ec5fe98bf1df00828f822bc5e196e912478529a0",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "calls": [
+        {
+          "argv": [
+            "/opt/homebrew/opt/python@3.14/bin/python3.14",
+            "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/tests/test_install_cli_flow.py",
+            "--fixture-cli",
+            "doctor",
+            "--json"
+          ],
+          "cwd": "/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-p10-doctor-private-xmuzvw82",
+          "flags": [
+            "doctor",
+            "--json"
+          ],
+          "exit_code": 0,
+          "env_scope": {
+            "HOME": "/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-p10-doctor-private-xmuzvw82/person",
+            "XSM_HOME": "/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-p10-doctor-private-xmuzvw82/state",
+            "CODEX_HOME": "/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-p10-doctor-private-xmuzvw82/person/.codex",
+            "CLAUDE_CONFIG_DIR": "/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-p10-doctor-private-xmuzvw82/person/.claude",
+            "XSM_P10_SOURCE": "/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-p10-doctor-private-xmuzvw82/source"
+          },
+          "install_sha256": "a8e712de6e8b2b9f368946333a6c8793168c6734484be45a60dbe967d0aa1960",
+          "stdout": {
+            "path": "/private/tmp/doctor-privacy-fix-rvmeysuu/after-314-cli-0.stdout",
+            "sha256": "3c17afbe2c4bd9cd680a1aa541bc7fef4a3ee375c7e4a4d20e6a01c1e06bf1db"
+          },
+          "stderr": {
+            "path": "/private/tmp/doctor-privacy-fix-rvmeysuu/after-314-cli-0.stderr",
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        },
+        {
+          "argv": [
+            "/opt/homebrew/opt/python@3.14/bin/python3.14",
+            "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/tests/test_install_cli_flow.py",
+            "--fixture-cli",
+            "doctor"
+          ],
+          "cwd": "/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-p10-doctor-private-c4fkft1c",
+          "flags": [
+            "doctor"
+          ],
+          "exit_code": 0,
+          "env_scope": {
+            "HOME": "/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-p10-doctor-private-c4fkft1c/person",
+            "XSM_HOME": "/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-p10-doctor-private-c4fkft1c/state",
+            "CODEX_HOME": "/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-p10-doctor-private-c4fkft1c/person/.codex",
+            "CLAUDE_CONFIG_DIR": "/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-p10-doctor-private-c4fkft1c/person/.claude",
+            "XSM_P10_SOURCE": "/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-p10-doctor-private-c4fkft1c/source"
+          },
+          "install_sha256": "a8e712de6e8b2b9f368946333a6c8793168c6734484be45a60dbe967d0aa1960",
+          "stdout": {
+            "path": "/private/tmp/doctor-privacy-fix-rvmeysuu/after-314-cli-1.stdout",
+            "sha256": "5f6f60d1b40fc6984b059bc2be3d656ce03b51ab4fafb3132431941796155a63"
+          },
+          "stderr": {
+            "path": "/private/tmp/doctor-privacy-fix-rvmeysuu/after-314-cli-1.stderr",
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        },
+        {
+          "argv": [
+            "/opt/homebrew/opt/python@3.14/bin/python3.14",
+            "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/tests/test_install_cli_flow.py",
+            "--fixture-cli",
+            "doctor",
+            "--table"
+          ],
+          "cwd": "/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-p10-doctor-private-0eqfgfj3",
+          "flags": [
+            "doctor",
+            "--table"
+          ],
+          "exit_code": 0,
+          "env_scope": {
+            "HOME": "/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-p10-doctor-private-0eqfgfj3/person",
+            "XSM_HOME": "/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-p10-doctor-private-0eqfgfj3/state",
+            "CODEX_HOME": "/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-p10-doctor-private-0eqfgfj3/person/.codex",
+            "CLAUDE_CONFIG_DIR": "/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-p10-doctor-private-0eqfgfj3/person/.claude",
+            "XSM_P10_SOURCE": "/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-p10-doctor-private-0eqfgfj3/source"
+          },
+          "install_sha256": "a8e712de6e8b2b9f368946333a6c8793168c6734484be45a60dbe967d0aa1960",
+          "stdout": {
+            "path": "/private/tmp/doctor-privacy-fix-rvmeysuu/after-314-cli-2.stdout",
+            "sha256": "0a9e0f227c5a8f1264e5c22666ad7456be68705faeca0cd973acb75f303a94cf"
+          },
+          "stderr": {
+            "path": "/private/tmp/doctor-privacy-fix-rvmeysuu/after-314-cli-2.stderr",
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        }
+      ]
+    }
+  ],
+  "private_evidence_root": "/private/tmp/doctor-privacy-fix-rvmeysuu",
+  "preservation": {
+    "other_product_files_changed_since_task_start": [],
+    "workspace_plan_drift_observed": [
+      "docs/plan/reason-inspired-adrs/current-handoff.md",
+      "docs/plan/reason-inspired-adrs/plan.json"
+    ],
+    "drift_note": "User confirmed current-handoff.md/plan.json changes are coordinator G10 reopening records, not permission policy or acceptance criterion changes; this task did not edit them.",
+    "existing_plan_ledger_artifacts_modified_by_this_task": false,
+    "frozen_1697_primary_unchanged": true,
+    "existing_canonical_payloads_modified": false,
+    "commits_pushes": 0,
+    "coordinator_plan_handoff_change_classification": {
+      "purpose": "G10 reopening record",
+      "permission_policy_change": false,
+      "acceptance_criterion_change": false,
+      "source": "explicit user clarification"
+    }
+  },
+  "scope_limits": [
+    "targeted two-Python tests only; full regression/new freeze is coordinator work",
+    "no user-process liveness/privilege/diagnostic capability changes",
+    "allowed diagnostic endpoint name/alias strings are metadata, not universal anonymization",
+    "old1697/native artifacts remain their original source epoch; they are not rewritten as results of this fix"
+  ],
+  "new_artifacts": [
+    "deliverables/p13-live/doctor-privacy-fix.json",
+    "deliverables/p13-live/doctor-privacy-fix.md",
+    "deliverables/p13-live/doctor-privacy-fix.patch"
+  ],
+  "source_freeze_acknowledgement": {
+    "at_utc": "2026-10-29T01:02:31.807265+00:00",
+    "authority": "user instruction: product/test source frozen",
+    "current_file_sha256": {
+      "xsm/install.py": "a8e712de6e8b2b9f368946333a6c8793168c6734484be45a60dbe967d0aa1960",
+      "tests/test_install_cli_flow.py": "2726d9a8ddb1b1acb93c9a6d82b7fae5ed811d79e13ba642083c67b08f9444b4"
+    },
+    "matches_targeted_verification_source": true,
+    "source_or_test_edits_after_freeze": 0,
+    "new_test_runs_after_freeze": 0,
+    "full_regression_and_freezer": "coordinator",
+    "Opus_delta_review": "coordinator initiated; no result claimed"
+  }
+}

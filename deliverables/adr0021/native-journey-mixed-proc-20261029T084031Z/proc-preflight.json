@@ -1,0 +1,48 @@
+{
+  "at": 1793263336.9502132,
+  "SDK_layout": {
+    "PROC_PIDTBSDINFO": 3,
+    "size": 136,
+    "pid_offset": 12,
+    "uid_offset": 20,
+    "start_sec_offset": 120,
+    "start_usec_offset": 128
+  },
+  "unrestricted_own": {
+    "pid": 18284,
+    "ppid": 9102,
+    "uid": 501,
+    "ruid": 501,
+    "start_sec": 1793263335,
+    "start_usec": 490722,
+    "path": "/opt/homebrew/Cellar/python@3.14/3.14.6/Frameworks/Python.framework/Versions/3.14/Resources/Python.app/Contents/MacOS/Python",
+    "kernel_name": "Python",
+    "comm": "/opt/homebrew/Cellar/python@3.14/3.14.6/Frameworks/Python.framework/Versions/3.14/Resources/Python.app/Contents/MacOS/Python",
+    "lstart": "Thu Oct 29 17:42:15 2026",
+    "bytes": 136
+  },
+  "unrestricted_ps": "18284  9102   501 Thu Oct 29 17:42:15 2026     /opt/homebrew/Cellar/python@3.14/3.14.6/Frameworks/Python.framework/Versions/3.14/Resources/Python.app/Contents/MacOS/Python",
+  "unrestricted_match": true,
+  "guarded": {
+    "own": {
+      "pid": 18313,
+      "ppid": 18284,
+      "uid": 501,
+      "ruid": 501,
+      "start_sec": 1793263336,
+      "start_usec": 408372,
+      "path": "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/Resources/Python.app/Contents/MacOS/Python",
+      "kernel_name": "Python",
+      "comm": "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/Resources/Python.app/Contents/MacOS/Python",
+      "lstart": "Thu Oct 29 17:42:16 2026",
+      "bytes": 136
+    },
+    "exit": 0,
+    "output": "18313 18284 501 Thu Oct 29 17:42:16 2026 /Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/Resources/Python.app/Contents/MacOS/Python",
+    "match": true,
+    "stderr": ""
+  },
+  "guard_changed": false,
+  "argv_or_environment_read": false,
+  "source_52_changed": false
+}

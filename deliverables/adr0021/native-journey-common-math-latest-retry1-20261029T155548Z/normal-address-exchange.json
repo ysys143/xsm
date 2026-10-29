@@ -1,0 +1,670 @@
+{
+  "before": {
+    "book": {
+      "controller_started_at": 1793291631.543838,
+      "controller_ended_at": 1793291631.638031,
+      "host_started_at": 1793291631.630306,
+      "host_ended_at": 1793291631.6332932,
+      "result": {
+        "status": "running",
+        "endpoint_id": "7df9fff6a5113e7ad7f05ebfc7477ca0c54308aa0d661bdec5461688bfc6c11d",
+        "address": {
+          "addrs": [
+            {
+              "Ip": "100.123.30.11:51296"
+            },
+            {
+              "Ip": "119.208.251.16:64289"
+            },
+            {
+              "Ip": "127.0.0.1:51296"
+            },
+            {
+              "Ip": "172.30.1.32:51296"
+            },
+            {
+              "Ip": "[::1]:51296"
+            }
+          ],
+          "id": "7df9fff6a5113e7ad7f05ebfc7477ca0c54308aa0d661bdec5461688bfc6c11d"
+        },
+        "active": true,
+        "network": {
+          "version": 1,
+          "network_id": "7df9fff6a5113e7ad7f05ebfc7477ca0c54308aa0d661bdec5461688bfc6c11d:aaf8d8afb96234bd472094abc2773795dcf192b91706a63cce61fd82f06a4695",
+          "name": "common-math-retry1-20261030",
+          "members": [
+            {
+              "endpoint_id": "75c1181ce5e57de097475aba33df1b34bf1a18fbc8b0363514dd8c07c9e294fe",
+              "machine_name": "native-journey-mini",
+              "status": "active"
+            },
+            {
+              "endpoint_id": "7df9fff6a5113e7ad7f05ebfc7477ca0c54308aa0d661bdec5461688bfc6c11d",
+              "machine_name": "same-name-live-reviewer-book",
+              "status": "active"
+            }
+          ],
+          "invites": [
+            {
+              "invite_hash": "039bd22b9576662bb45bb30bd91c930d357c9ce80bf5d42a65cb0d94ec661540",
+              "issuer": "7df9fff6a5113e7ad7f05ebfc7477ca0c54308aa0d661bdec5461688bfc6c11d",
+              "reusable": true,
+              "expires_at": null,
+              "revoked": false,
+              "consumed_by": [
+                "75c1181ce5e57de097475aba33df1b34bf1a18fbc8b0363514dd8c07c9e294fe"
+              ]
+            }
+          ]
+        },
+        "transport": {
+          "address": {
+            "addrs": [
+              {
+                "Ip": "100.123.30.11:51296"
+              },
+              {
+                "Ip": "127.0.0.1:51296"
+              },
+              {
+                "Ip": "172.30.1.32:51296"
+              },
+              {
+                "Ip": "[::1]:51296"
+              }
+            ],
+            "id": "7df9fff6a5113e7ad7f05ebfc7477ca0c54308aa0d661bdec5461688bfc6c11d"
+          },
+          "bound_addresses": [
+            "0.0.0.0:51296",
+            "[::]:51296"
+          ],
+          "endpoint_id": "7df9fff6a5113e7ad7f05ebfc7477ca0c54308aa0d661bdec5461688bfc6c11d",
+          "event": "ready",
+          "port_fallback": false,
+          "relay_mode": "off",
+          "relay_online": false,
+          "requested_port": 51296
+        },
+        "last_transport": {
+          "path": "direct",
+          "selected": "direct",
+          "selection_reason": "iroh_path_selection",
+          "fallback_reason": null,
+          "remote_address": "210.113.21.16:57444",
+          "paths": [
+            {
+              "kind": "direct",
+              "remote": "ip:210.113.21.16:57444",
+              "selected": true
+            }
+          ]
+        },
+        "service_pid": 84634,
+        "engine_pid": 84636,
+        "known_peers": [
+          "75c1181ce5e57de097475aba33df1b34bf1a18fbc8b0363514dd8c07c9e294fe"
+        ]
+      }
+    },
+    "mini": {
+      "controller_started_at": 1793291631.638131,
+      "controller_ended_at": 1793291632.062248,
+      "host_started_at": 1793291628.014959,
+      "host_ended_at": 1793291628.0231948,
+      "result": {
+        "status": "running",
+        "endpoint_id": "75c1181ce5e57de097475aba33df1b34bf1a18fbc8b0363514dd8c07c9e294fe",
+        "address": {
+          "addrs": [
+            {
+              "Ip": "100.77.24.16:57444"
+            },
+            {
+              "Ip": "127.0.0.1:57444"
+            },
+            {
+              "Ip": "192.168.0.64:57444"
+            },
+            {
+              "Ip": "[::1]:57444"
+            }
+          ],
+          "id": "75c1181ce5e57de097475aba33df1b34bf1a18fbc8b0363514dd8c07c9e294fe"
+        },
+        "active": true,
+        "network": {
+          "version": 1,
+          "network_id": "7df9fff6a5113e7ad7f05ebfc7477ca0c54308aa0d661bdec5461688bfc6c11d:aaf8d8afb96234bd472094abc2773795dcf192b91706a63cce61fd82f06a4695",
+          "name": "common-math-retry1-20261030",
+          "members": [
+            {
+              "endpoint_id": "75c1181ce5e57de097475aba33df1b34bf1a18fbc8b0363514dd8c07c9e294fe",
+              "machine_name": "native-journey-mini",
+              "status": "active"
+            },
+            {
+              "endpoint_id": "7df9fff6a5113e7ad7f05ebfc7477ca0c54308aa0d661bdec5461688bfc6c11d",
+              "machine_name": "same-name-live-reviewer-book",
+              "status": "active"
+            }
+          ],
+          "invites": [
+            {
+              "invite_hash": "039bd22b9576662bb45bb30bd91c930d357c9ce80bf5d42a65cb0d94ec661540",
+              "issuer": "7df9fff6a5113e7ad7f05ebfc7477ca0c54308aa0d661bdec5461688bfc6c11d",
+              "reusable": true,
+              "expires_at": null,
+              "revoked": false,
+              "consumed_by": [
+                "75c1181ce5e57de097475aba33df1b34bf1a18fbc8b0363514dd8c07c9e294fe"
+              ]
+            }
+          ]
+        },
+        "transport": {
+          "address": {
+            "addrs": [
+              {
+                "Ip": "100.77.24.16:57444"
+              },
+              {
+                "Ip": "127.0.0.1:57444"
+              },
+              {
+                "Ip": "192.168.0.64:57444"
+              },
+              {
+                "Ip": "[::1]:57444"
+              }
+            ],
+            "id": "75c1181ce5e57de097475aba33df1b34bf1a18fbc8b0363514dd8c07c9e294fe"
+          },
+          "bound_addresses": [
+            "0.0.0.0:57444",
+            "[::]:57444"
+          ],
+          "endpoint_id": "75c1181ce5e57de097475aba33df1b34bf1a18fbc8b0363514dd8c07c9e294fe",
+          "event": "ready",
+          "port_fallback": false,
+          "relay_mode": "off",
+          "relay_online": false,
+          "requested_port": 57444
+        },
+        "last_transport": {
+          "path": "direct",
+          "selected": "direct",
+          "selection_reason": "iroh_path_selection",
+          "fallback_reason": null,
+          "remote_address": "119.208.251.16:64289",
+          "paths": [
+            {
+              "kind": "direct",
+              "remote": "ip:119.208.251.16:64289",
+              "selected": true
+            }
+          ]
+        },
+        "service_pid": 32033,
+        "engine_pid": 32035,
+        "known_peers": [
+          "7df9fff6a5113e7ad7f05ebfc7477ca0c54308aa0d661bdec5461688bfc6c11d"
+        ]
+      }
+    }
+  },
+  "address_exchanges": [
+    {
+      "from": "book",
+      "peer_host": "mini",
+      "address_from_public_status": {
+        "addrs": [
+          {
+            "Ip": "100.77.24.16:57444"
+          },
+          {
+            "Ip": "127.0.0.1:57444"
+          },
+          {
+            "Ip": "192.168.0.64:57444"
+          },
+          {
+            "Ip": "[::1]:57444"
+          }
+        ],
+        "id": "75c1181ce5e57de097475aba33df1b34bf1a18fbc8b0363514dd8c07c9e294fe"
+      },
+      "controller_started_at": 1793291632.062382,
+      "controller_ended_at": 1793291632.284765,
+      "host_started_at": 1793291632.138317,
+      "host_ended_at": 1793291632.2796118,
+      "result": {
+        "address": {
+          "addrs": [
+            {
+              "Ip": "100.77.24.16:57444"
+            },
+            {
+              "Ip": "127.0.0.1:57444"
+            },
+            {
+              "Ip": "192.168.0.64:57444"
+            },
+            {
+              "Ip": "[::1]:57444"
+            }
+          ],
+          "id": "75c1181ce5e57de097475aba33df1b34bf1a18fbc8b0363514dd8c07c9e294fe"
+        },
+        "contacts": {
+          "7df9fff6a5113e7ad7f05ebfc7477ca0c54308aa0d661bdec5461688bfc6c11d": {
+            "addrs": [
+              {
+                "Ip": "100.123.30.11:51296"
+              },
+              {
+                "Ip": "119.208.251.16:64289"
+              },
+              {
+                "Ip": "127.0.0.1:51296"
+              },
+              {
+                "Ip": "172.30.1.32:51296"
+              },
+              {
+                "Ip": "[::1]:51296"
+              }
+            ],
+            "id": "7df9fff6a5113e7ad7f05ebfc7477ca0c54308aa0d661bdec5461688bfc6c11d"
+          }
+        },
+        "endpoint_id": "75c1181ce5e57de097475aba33df1b34bf1a18fbc8b0363514dd8c07c9e294fe",
+        "network_id": "7df9fff6a5113e7ad7f05ebfc7477ca0c54308aa0d661bdec5461688bfc6c11d:aaf8d8afb96234bd472094abc2773795dcf192b91706a63cce61fd82f06a4695",
+        "ok": true,
+        "state": {
+          "network_id": "7df9fff6a5113e7ad7f05ebfc7477ca0c54308aa0d661bdec5461688bfc6c11d:aaf8d8afb96234bd472094abc2773795dcf192b91706a63cce61fd82f06a4695",
+          "records": [
+            {
+              "domain": "xsm/membership/1",
+              "issued_at": 1793289354.6538649,
+              "issuer": "7df9fff6a5113e7ad7f05ebfc7477ca0c54308aa0d661bdec5461688bfc6c11d",
+              "machine_name": "same-name-live-reviewer-book",
+              "name": "common-math-retry1-20261030",
+              "network_id": "7df9fff6a5113e7ad7f05ebfc7477ca0c54308aa0d661bdec5461688bfc6c11d:aaf8d8afb96234bd472094abc2773795dcf192b91706a63cce61fd82f06a4695",
+              "nonce": "362a94f79ba023734e108078086c08d88a905f2c86e5917b58d056aa6e2cf3cf",
+              "op": "initialize",
+              "parents": [],
+              "signature": "cbd88285976ff16459f93c512836d0c10da5950cb0bc839a9d9e2ab418973df77d0589d5de529a2c9335c5a27ec91b5db282ba49749d3c6009b575b07a24af02"
+            },
+            {
+              "domain": "xsm/membership/1",
+              "expires_at": null,
+              "invite_hash": "039bd22b9576662bb45bb30bd91c930d357c9ce80bf5d42a65cb0d94ec661540",
+              "issued_at": 1793289354.834904,
+              "issuer": "7df9fff6a5113e7ad7f05ebfc7477ca0c54308aa0d661bdec5461688bfc6c11d",
+              "network_id": "7df9fff6a5113e7ad7f05ebfc7477ca0c54308aa0d661bdec5461688bfc6c11d:aaf8d8afb96234bd472094abc2773795dcf192b91706a63cce61fd82f06a4695",
+              "op": "invite",
+              "parents": [
+                "6b4c90905bde349a2914ff1b909e7a766c34387058ad5a85739c18f6c437d1e6"
+              ],
+              "reusable": true,
+              "signature": "154edbbeb19a2b6590f5fdb1d925f12cfcd6d6f0d68503cfe7191662fbf76ff526cd78d9eae01fc6e36edeca3bea451830e1030e5852387a52edb956eb521407"
+            },
+            {
+              "domain": "xsm/membership/1",
+              "endpoint_id": "75c1181ce5e57de097475aba33df1b34bf1a18fbc8b0363514dd8c07c9e294fe",
+              "invite_hash": "039bd22b9576662bb45bb30bd91c930d357c9ce80bf5d42a65cb0d94ec661540",
+              "issued_at": 1793289355.323197,
+              "issuer": "7df9fff6a5113e7ad7f05ebfc7477ca0c54308aa0d661bdec5461688bfc6c11d",
+              "machine_name": "native-journey-mini",
+              "network_id": "7df9fff6a5113e7ad7f05ebfc7477ca0c54308aa0d661bdec5461688bfc6c11d:aaf8d8afb96234bd472094abc2773795dcf192b91706a63cce61fd82f06a4695",
+              "op": "admit",
+              "parents": [
+                "673880f90eeae4279fbb7b21ad6378d884f04efcd9fba6744400d7c3b7c7fe90"
+              ],
+              "signature": "fd3a5ea5832e94fe15e9ab1da36d832ad97f770bf995596c36e38dab3c43db55c431b48436d8165634e61eb11cd275a8ff61d60e95c2e0878c7919029f5e9503"
+            }
+          ],
+          "version": 1
+        }
+      }
+    },
+    {
+      "from": "mini",
+      "peer_host": "book",
+      "address_from_public_status": {
+        "addrs": [
+          {
+            "Ip": "100.123.30.11:51296"
+          },
+          {
+            "Ip": "119.208.251.16:64289"
+          },
+          {
+            "Ip": "127.0.0.1:51296"
+          },
+          {
+            "Ip": "172.30.1.32:51296"
+          },
+          {
+            "Ip": "[::1]:51296"
+          }
+        ],
+        "id": "7df9fff6a5113e7ad7f05ebfc7477ca0c54308aa0d661bdec5461688bfc6c11d"
+      },
+      "controller_started_at": 1793291632.2848608,
+      "controller_ended_at": 1793291632.665796,
+      "host_started_at": 1793291628.547511,
+      "host_ended_at": 1793291628.625561,
+      "result": {
+        "address": {
+          "addrs": [
+            {
+              "Ip": "100.123.30.11:51296"
+            },
+            {
+              "Ip": "119.208.251.16:64289"
+            },
+            {
+              "Ip": "127.0.0.1:51296"
+            },
+            {
+              "Ip": "172.30.1.32:51296"
+            },
+            {
+              "Ip": "[::1]:51296"
+            }
+          ],
+          "id": "7df9fff6a5113e7ad7f05ebfc7477ca0c54308aa0d661bdec5461688bfc6c11d"
+        },
+        "contacts": {
+          "75c1181ce5e57de097475aba33df1b34bf1a18fbc8b0363514dd8c07c9e294fe": {
+            "addrs": [
+              {
+                "Ip": "100.77.24.16:57444"
+              },
+              {
+                "Ip": "127.0.0.1:57444"
+              },
+              {
+                "Ip": "192.168.0.64:57444"
+              },
+              {
+                "Ip": "[::1]:57444"
+              }
+            ],
+            "id": "75c1181ce5e57de097475aba33df1b34bf1a18fbc8b0363514dd8c07c9e294fe"
+          }
+        },
+        "endpoint_id": "7df9fff6a5113e7ad7f05ebfc7477ca0c54308aa0d661bdec5461688bfc6c11d",
+        "network_id": "7df9fff6a5113e7ad7f05ebfc7477ca0c54308aa0d661bdec5461688bfc6c11d:aaf8d8afb96234bd472094abc2773795dcf192b91706a63cce61fd82f06a4695",
+        "ok": true,
+        "state": {
+          "network_id": "7df9fff6a5113e7ad7f05ebfc7477ca0c54308aa0d661bdec5461688bfc6c11d:aaf8d8afb96234bd472094abc2773795dcf192b91706a63cce61fd82f06a4695",
+          "records": [
+            {
+              "domain": "xsm/membership/1",
+              "issued_at": 1793289354.6538649,
+              "issuer": "7df9fff6a5113e7ad7f05ebfc7477ca0c54308aa0d661bdec5461688bfc6c11d",
+              "machine_name": "same-name-live-reviewer-book",
+              "name": "common-math-retry1-20261030",
+              "network_id": "7df9fff6a5113e7ad7f05ebfc7477ca0c54308aa0d661bdec5461688bfc6c11d:aaf8d8afb96234bd472094abc2773795dcf192b91706a63cce61fd82f06a4695",
+              "nonce": "362a94f79ba023734e108078086c08d88a905f2c86e5917b58d056aa6e2cf3cf",
+              "op": "initialize",
+              "parents": [],
+              "signature": "cbd88285976ff16459f93c512836d0c10da5950cb0bc839a9d9e2ab418973df77d0589d5de529a2c9335c5a27ec91b5db282ba49749d3c6009b575b07a24af02"
+            },
+            {
+              "domain": "xsm/membership/1",
+              "expires_at": null,
+              "invite_hash": "039bd22b9576662bb45bb30bd91c930d357c9ce80bf5d42a65cb0d94ec661540",
+              "issued_at": 1793289354.834904,
+              "issuer": "7df9fff6a5113e7ad7f05ebfc7477ca0c54308aa0d661bdec5461688bfc6c11d",
+              "network_id": "7df9fff6a5113e7ad7f05ebfc7477ca0c54308aa0d661bdec5461688bfc6c11d:aaf8d8afb96234bd472094abc2773795dcf192b91706a63cce61fd82f06a4695",
+              "op": "invite",
+              "parents": [
+                "6b4c90905bde349a2914ff1b909e7a766c34387058ad5a85739c18f6c437d1e6"
+              ],
+              "reusable": true,
+              "signature": "154edbbeb19a2b6590f5fdb1d925f12cfcd6d6f0d68503cfe7191662fbf76ff526cd78d9eae01fc6e36edeca3bea451830e1030e5852387a52edb956eb521407"
+            },
+            {
+              "domain": "xsm/membership/1",
+              "endpoint_id": "75c1181ce5e57de097475aba33df1b34bf1a18fbc8b0363514dd8c07c9e294fe",
+              "invite_hash": "039bd22b9576662bb45bb30bd91c930d357c9ce80bf5d42a65cb0d94ec661540",
+              "issued_at": 1793289355.323197,
+              "issuer": "7df9fff6a5113e7ad7f05ebfc7477ca0c54308aa0d661bdec5461688bfc6c11d",
+              "machine_name": "native-journey-mini",
+              "network_id": "7df9fff6a5113e7ad7f05ebfc7477ca0c54308aa0d661bdec5461688bfc6c11d:aaf8d8afb96234bd472094abc2773795dcf192b91706a63cce61fd82f06a4695",
+              "op": "admit",
+              "parents": [
+                "673880f90eeae4279fbb7b21ad6378d884f04efcd9fba6744400d7c3b7c7fe90"
+              ],
+              "signature": "fd3a5ea5832e94fe15e9ab1da36d832ad97f770bf995596c36e38dab3c43db55c431b48436d8165634e61eb11cd275a8ff61d60e95c2e0878c7919029f5e9503"
+            }
+          ],
+          "version": 1
+        }
+      }
+    }
+  ],
+  "body_or_invitation_secret_carrier": false,
+  "manual_peer_cache_edit": false,
+  "automatically_rediscovered": false,
+  "after": {
+    "book": {
+      "controller_started_at": 1793291632.6659389,
+      "controller_ended_at": 1793291632.754164,
+      "host_started_at": 1793291632.745623,
+      "host_ended_at": 1793291632.748686,
+      "result": {
+        "status": "running",
+        "endpoint_id": "7df9fff6a5113e7ad7f05ebfc7477ca0c54308aa0d661bdec5461688bfc6c11d",
+        "address": {
+          "addrs": [
+            {
+              "Ip": "100.123.30.11:51296"
+            },
+            {
+              "Ip": "119.208.251.16:64289"
+            },
+            {
+              "Ip": "127.0.0.1:51296"
+            },
+            {
+              "Ip": "172.30.1.32:51296"
+            },
+            {
+              "Ip": "[::1]:51296"
+            }
+          ],
+          "id": "7df9fff6a5113e7ad7f05ebfc7477ca0c54308aa0d661bdec5461688bfc6c11d"
+        },
+        "active": true,
+        "network": {
+          "version": 1,
+          "network_id": "7df9fff6a5113e7ad7f05ebfc7477ca0c54308aa0d661bdec5461688bfc6c11d:aaf8d8afb96234bd472094abc2773795dcf192b91706a63cce61fd82f06a4695",
+          "name": "common-math-retry1-20261030",
+          "members": [
+            {
+              "endpoint_id": "75c1181ce5e57de097475aba33df1b34bf1a18fbc8b0363514dd8c07c9e294fe",
+              "machine_name": "native-journey-mini",
+              "status": "active"
+            },
+            {
+              "endpoint_id": "7df9fff6a5113e7ad7f05ebfc7477ca0c54308aa0d661bdec5461688bfc6c11d",
+              "machine_name": "same-name-live-reviewer-book",
+              "status": "active"
+            }
+          ],
+          "invites": [
+            {
+              "invite_hash": "039bd22b9576662bb45bb30bd91c930d357c9ce80bf5d42a65cb0d94ec661540",
+              "issuer": "7df9fff6a5113e7ad7f05ebfc7477ca0c54308aa0d661bdec5461688bfc6c11d",
+              "reusable": true,
+              "expires_at": null,
+              "revoked": false,
+              "consumed_by": [
+                "75c1181ce5e57de097475aba33df1b34bf1a18fbc8b0363514dd8c07c9e294fe"
+              ]
+            }
+          ]
+        },
+        "transport": {
+          "address": {
+            "addrs": [
+              {
+                "Ip": "100.123.30.11:51296"
+              },
+              {
+                "Ip": "127.0.0.1:51296"
+              },
+              {
+                "Ip": "172.30.1.32:51296"
+              },
+              {
+                "Ip": "[::1]:51296"
+              }
+            ],
+            "id": "7df9fff6a5113e7ad7f05ebfc7477ca0c54308aa0d661bdec5461688bfc6c11d"
+          },
+          "bound_addresses": [
+            "0.0.0.0:51296",
+            "[::]:51296"
+          ],
+          "endpoint_id": "7df9fff6a5113e7ad7f05ebfc7477ca0c54308aa0d661bdec5461688bfc6c11d",
+          "event": "ready",
+          "port_fallback": false,
+          "relay_mode": "off",
+          "relay_online": false,
+          "requested_port": 51296
+        },
+        "last_transport": {
+          "path": "direct",
+          "selected": "direct",
+          "selection_reason": "iroh_path_selection",
+          "fallback_reason": null,
+          "remote_address": "210.113.21.16:57444",
+          "paths": [
+            {
+              "kind": "direct",
+              "remote": "ip:210.113.21.16:57444",
+              "selected": true
+            }
+          ]
+        },
+        "service_pid": 84634,
+        "engine_pid": 84636,
+        "known_peers": [
+          "75c1181ce5e57de097475aba33df1b34bf1a18fbc8b0363514dd8c07c9e294fe"
+        ]
+      }
+    },
+    "mini": {
+      "controller_started_at": 1793291632.7542589,
+      "controller_ended_at": 1793291633.095371,
+      "host_started_at": 1793291629.044381,
+      "host_ended_at": 1793291629.0531142,
+      "result": {
+        "status": "running",
+        "endpoint_id": "75c1181ce5e57de097475aba33df1b34bf1a18fbc8b0363514dd8c07c9e294fe",
+        "address": {
+          "addrs": [
+            {
+              "Ip": "100.77.24.16:57444"
+            },
+            {
+              "Ip": "127.0.0.1:57444"
+            },
+            {
+              "Ip": "192.168.0.64:57444"
+            },
+            {
+              "Ip": "[::1]:57444"
+            }
+          ],
+          "id": "75c1181ce5e57de097475aba33df1b34bf1a18fbc8b0363514dd8c07c9e294fe"
+        },
+        "active": true,
+        "network": {
+          "version": 1,
+          "network_id": "7df9fff6a5113e7ad7f05ebfc7477ca0c54308aa0d661bdec5461688bfc6c11d:aaf8d8afb96234bd472094abc2773795dcf192b91706a63cce61fd82f06a4695",
+          "name": "common-math-retry1-20261030",
+          "members": [
+            {
+              "endpoint_id": "75c1181ce5e57de097475aba33df1b34bf1a18fbc8b0363514dd8c07c9e294fe",
+              "machine_name": "native-journey-mini",
+              "status": "active"
+            },
+            {
+              "endpoint_id": "7df9fff6a5113e7ad7f05ebfc7477ca0c54308aa0d661bdec5461688bfc6c11d",
+              "machine_name": "same-name-live-reviewer-book",
+              "status": "active"
+            }
+          ],
+          "invites": [
+            {
+              "invite_hash": "039bd22b9576662bb45bb30bd91c930d357c9ce80bf5d42a65cb0d94ec661540",
+              "issuer": "7df9fff6a5113e7ad7f05ebfc7477ca0c54308aa0d661bdec5461688bfc6c11d",
+              "reusable": true,
+              "expires_at": null,
+              "revoked": false,
+              "consumed_by": [
+                "75c1181ce5e57de097475aba33df1b34bf1a18fbc8b0363514dd8c07c9e294fe"
+              ]
+            }
+          ]
+        },
+        "transport": {
+          "address": {
+            "addrs": [
+              {
+                "Ip": "100.77.24.16:57444"
+              },
+              {
+                "Ip": "127.0.0.1:57444"
+              },
+              {
+                "Ip": "192.168.0.64:57444"
+              },
+              {
+                "Ip": "[::1]:57444"
+              }
+            ],
+            "id": "75c1181ce5e57de097475aba33df1b34bf1a18fbc8b0363514dd8c07c9e294fe"
+          },
+          "bound_addresses": [
+            "0.0.0.0:57444",
+            "[::]:57444"
+          ],
+          "endpoint_id": "75c1181ce5e57de097475aba33df1b34bf1a18fbc8b0363514dd8c07c9e294fe",
+          "event": "ready",
+          "port_fallback": false,
+          "relay_mode": "off",
+          "relay_online": false,
+          "requested_port": 57444
+        },
+        "last_transport": {
+          "path": "direct",
+          "selected": "direct",
+          "selection_reason": "iroh_path_selection",
+          "fallback_reason": null,
+          "remote_address": "119.208.251.16:64289",
+          "paths": [
+            {
+              "kind": "direct",
+              "remote": "ip:119.208.251.16:64289",
+              "selected": true
+            }
+          ]
+        },
+        "service_pid": 32033,
+        "engine_pid": 32035,
+        "known_peers": [
+          "7df9fff6a5113e7ad7f05ebfc7477ca0c54308aa0d661bdec5461688bfc6c11d"
+        ]
+      }
+    }
+  }
+}

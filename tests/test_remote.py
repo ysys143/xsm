@@ -518,6 +518,60 @@ class LostAnswerTest(unittest.TestCase):
         self.assertEqual(reply["status"], "refused", reply)
         self.assertEqual(self.state("hostA", reply["id"])["status"], "refused")
 
+    def test_the_evidence_separates_the_peer_call_from_the_local_store(self):
+        """A18-01: on the sending machine, `remote_sent` says the peer's xsm
+        answered; `remote_stored` is the peer's own step, on the peer's ledger."""
+        from xsm import ledger
+        reply = self.send("ok")                          # hostB stores it, no receipt yet
+        ev = self.state("hostA", reply["id"])["delivery"]
+        self.assertTrue(ev["steps"]["remote_sent"]["ok"])
+        self.assertFalse(ev["runtime_reached"], "queued there is not reached")
+        self.assertNotIn("remote_stored", ev["steps"], "that is hostB's own ledger")
+        with self.on("hostB"):
+            self.assertTrue(ledger.status(reply["id"])["delivery"]["steps"]["remote_stored"]["ok"])
+
+    def test_the_receiving_machine_does_not_call_a_stored_frame_reached(self):
+        """G01 review F2/O-F2: on hostB, `remote_stored` says the frame went into
+        hostB's own channel. That is a socket write, not the receiver's hook, so
+        hostB must not read its own `runtime_reached` as True (A18-01)."""
+        from xsm import ledger
+        reply = self.send("ok")                          # hostB: queue write, no receipt
+        with self.on("hostB"):
+            st = ledger.status(reply["id"])
+            self.assertEqual(st["status"], "queued", st)
+            self.assertTrue(st["delivery"]["steps"]["remote_stored"]["ok"])
+            self.assertFalse(st["runtime_reached"],
+                             "a stored frame on this machine is not the receiver")
+            self.assertFalse(st["delivery"]["runtime_reached"])
+            self.assertIsNone(ledger.receipt_of(reply["id"]))
+
+    def test_a_lost_answer_is_not_recorded_as_remote_sent(self):
+        from xsm import ledger
+        reply = self.send("lost", then=self.gate_delivers)
+        self.assertEqual(reply["status"], "unknown")
+        ev = self.state("hostA", reply["id"])["delivery"]
+        self.assertNotIn("remote_sent", ev["steps"],
+                         "the answer was lost, so this side cannot say it reached")
+        self.assertFalse(ev["runtime_reached"])
+
+    def test_a_peer_that_stored_it_but_never_handed_it_over_is_not_reached(self):
+        from xsm import ledger
+        reply = self.send("ok")
+        with self.on("hostA"):
+            after = self.reconcile(reply["id"])
+        self.assertEqual(after["status"], "queued", after)
+        self.assertFalse(after["delivery"]["runtime_reached"],
+                         "the peer's queue is not the receiver's own side")
+
+    def test_a_remote_resend_with_a_changed_reply_to_is_refused(self):
+        first = self.send("lost")
+        from xsm import send
+        with self.ssh("ok"), self.on("hostA"):
+            r = send.send("codex:alive@hostB", "hi", sender=self.sender, kind="task",
+                          reply_to="task-9", msg_id=first["id"], resend=True)
+        self.assertEqual(r.status, "refused", r.reason)
+        self.assertIn("differs", r.reason)
+
     def test_status_answers_only_for_the_asking_peers_own_messages(self):
         from xsm import ledger, remote
         sent = self.send("ok", then=self.gate_delivers)

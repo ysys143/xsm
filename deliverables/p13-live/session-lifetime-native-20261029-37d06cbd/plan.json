@@ -1,0 +1,10 @@
+{
+  "condition": "one factory session-lifetime condition, <=3 native CIDs; original old/native sender/new same display name, then same-CID old resume",
+  "private_raw_root": "/private/tmp/session-lifetime-native-oj91jnav",
+  "source": "/private/tmp/xsm-final-receipt-frozen-i3u9pms3",
+  "profile": "existing .codex-3 subscription; no auth inspection/copy",
+  "model_condition_retries": 0,
+  "deadline_utc": "2026-10-29T00:39:53+00:00",
+  "selected_pair": "not created; requires real affirmative user consent; mark native permission lifecycle unfulfilled",
+  "A17_04": "observe actual partial native metadata and communication; no fabricated extractor output; complete extractor-disabled/title/TTL matrix not assumed"
+}

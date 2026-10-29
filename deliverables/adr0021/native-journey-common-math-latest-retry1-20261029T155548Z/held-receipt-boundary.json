@@ -1,0 +1,46 @@
+{
+  "at": 1793289747.498639,
+  "request_id": "9f11884127764cad",
+  "receipt": {
+    "id": "9f11884127764cad",
+    "decision": "held",
+    "reason": "remote message from p2p:75c1181ce5e57de097475aba33df1b34bf1a18fbc8b0363514dd8c07c9e294fe was not received by this machine's xsm",
+    "t": 1793289496.678518,
+    "receiver": {
+      "name": "a1",
+      "alias": "claude-3",
+      "ref": "f5fcb3",
+      "runtime": "claude"
+    }
+  },
+  "receipt_sha256": "72324f3470cc43a98ca8db0f9d647a5c447d70ddc77fce1a7693d7ddd62f8ca7",
+  "held_records": {
+    "1793289496678.json": {
+      "t": 1793289496.678165,
+      "reason": "remote message from p2p:75c1181ce5e57de097475aba33df1b34bf1a18fbc8b0363514dd8c07c9e294fe was not received by this machine's xsm",
+      "runtime": "claude",
+      "receiver": "a1",
+      "id": "9f11884127764cad",
+      "from": "remote 01a18861-947a-7b41-9b53-406af0d83a46@None",
+      "scope": "network:7df9fff6a5113e7ad7f05ebfc7477ca0c54308aa0d661bdec5461688bfc6c11d:aaf8d8afb96234bd472094abc2773795dcf192b91706a63cce61fd82f06a4695",
+      "body": "P11-QA-40c1afc34bbd43c4\n검토안: 2+2=5.\n이 주장을 검토하고 claim_valid, corrected_sum, request_id를 포함한 JSON으로 회신해 주세요. 값은 스스로 판단하고 request_id에는 이 질문의 실제 메시지 ID를 넣어 주세요.\n",
+      "truncated": false,
+      "receiver_ref": "f5fcb3",
+      "header": {
+        "id": "9f11884127764cad",
+        "from": "remote 01a18861-947a-7b41-9b53-406af0d83a46@None",
+        "ref": "net:75c1181ce5e57de097475aba33df1b34bf1a18fbc8b0363514dd8c07c9e294fe:codex:0d5675a9ec964d41173533511bdd42d657bd582d0aff28711546fe715610555b:01a18861-947a-7b41-9b53-406af0d83a46",
+        "scope": "network:7df9fff6a5113e7ad7f05ebfc7477ca0c54308aa0d661bdec5461688bfc6c11d:aaf8d8afb96234bd472094abc2773795dcf192b91706a63cce61fd82f06a4695",
+        "kind": "task",
+        "origin": "p2p:75c1181ce5e57de097475aba33df1b34bf1a18fbc8b0363514dd8c07c9e294fe"
+      },
+      "attrs": {
+        "from-session": "01a18861-947a-7b41-9b53-406af0d83a46",
+        "from-name": "remote 01a18861-947a-7b41-9b53-406af0d83a46@None"
+      }
+    }
+  },
+  "original_preserved": true,
+  "manual_receipt_or_ACK_change": false,
+  "services_restarted": false
+}

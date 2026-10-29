@@ -1,0 +1,9 @@
+{
+  "root": "/private/tmp/doctor-privacy-native-1qw1twk2",
+  "source_manifest": "deliverables/p13-live/doctor-privacy-source-manifest.json",
+  "scope": "one real postfix doctor --json with one actual home/current shared-runtime session and real seeded ledger APIs; no new model/native TUI",
+  "additional_sandbox_or_observer": false,
+  "doctor_invocations": 1,
+  "diagnostic_registration_not_communication_or_caller_certainty": true,
+  "deadline_utc": "2026-10-29T01:13:46+00:00"
+}

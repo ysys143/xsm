@@ -1,0 +1,159 @@
+{
+  "condition": {
+    "root": "/private/tmp/xnj-micro164-dhmesffv",
+    "runtime": "/private/tmp/xnj-mini-gl2ut38t/native-runtime/codex",
+    "condition": "fresh CLI .164.0, no resume and no feature disable; isolated XSM/CODEX/work; old pending question unchanged"
+  },
+  "CID": "01a18640-7405-7e50-9683-01c2b69cc1c3",
+  "actual_calls": [
+    {
+      "jsonrpc": "2.0",
+      "id": 2,
+      "method": "tools/call",
+      "params": {
+        "_meta": {
+          "callId": "exec-6a331d3c-155b-4d42-a9a0-20d655ca4a9d",
+          "x-codex-turn-metadata": {
+            "session_id": "01a18640-7405-7e50-9683-01c2b69cc1c3",
+            "thread_id": "01a18640-7405-7e50-9683-01c2b69cc1c3",
+            "reasoning_effort": "low",
+            "turn_id": "01a18640-7889-7c12-9cab-7838a489633d",
+            "model": "gpt-6.1-sol",
+            "thread_source": "user",
+            "turn_trigger": "exec",
+            "sandbox": "seatbelt",
+            "sandbox_mode": "workspace-write",
+            "auto_review_enabled": false,
+            "node_repl_auto_review_required": true,
+            "node_repl_disabled": false,
+            "workspaces": {
+              "/private/tmp/xnj-micro164-dhmesffv/work": {
+                "has_changes": false
+              }
+            },
+            "turn_started_at_unix_ms": 1793253734540,
+            "codex_version": "0.164.0"
+          },
+          "threadId": "01a18640-7405-7e50-9683-01c2b69cc1c3",
+          "sessionId": "01a18640-7405-7e50-9683-01c2b69cc1c3",
+          "windowId": "01a18640-7405-7e50-9683-01c2b69cc1c3:0",
+          "itemId": "ctc_0dc3cba047cd2ac5016ae2e16dd80081918082b9200215a196",
+          "progressToken": 1
+        },
+        "name": "xsm_discover",
+        "arguments": {}
+      }
+    }
+  ],
+  "actual_responses": [
+    {
+      "id": 2,
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"candidates\":[{\"id\":\"20e3576ce074886ca9171afdf4b0c228fd1b54cbee1416ee12e1e8fa25157815\",\"target\":\"candidate:20e3576ce074886ca9171afdf4b0c228fd1b54cbee1416ee12e1e8fa25157815\",\"is_self\":true,\"handle\":{\"runtime\":\"codex\",\"session_id\":\"01a18640-7405-7e50-9683-01c2b69cc1c3\",\"home_id\":\"071fb8f47df3830492eb460e43068a93e99530160eda1b2f5a2c9519986224a9\",\"machine\":\"local\"},\"ref\":\"7e74c3\",\"machine\":\"local\",\"runtime\":\"codex\",\"name\":\"requester\",\"title\":{\"value\":\"requester\",\"status\":\"known\",\"source\":\"registry:hook.name\",\"timestamp\":1793253734.6548228,\"observed_at\":1793253742.419148,\"freshness\":\"unknown\"},\"name_source\":\"registry:hook.name\",\"name_freshness\":\"unknown\",\"discovery_basis\":[\"same_repo\"],\"repository\":\"work\",\"branch\":{\"value\":\"main\",\"status\":\"known\",\"source\":\"git:symbolic-ref\",\"timestamp\":1793253742.417152,\"observed_at\":1793253742.4171531,\"freshness\":\"fresh\"},\"summary\":{\"value\":null,\"status\":\"unknown\",\"source\":null,\"timestamp\":null,\"observed_at\":1793253742.41915,\"freshness\":\"unknown\"},\"todo\":{\"value\":null,\"status\":\"unknown\",\"source\":null,\"timestamp\":null,\"observed_at\":1793253742.4259908,\"freshness\":\"unknown\"},\"activity\":{\"value\":\"busy\",\"status\":\"known\",\"source\":\"codex:event_msg:task_started\",\"timestamp\":\"2026-10-29T06:02:14.594Z\",\"observed_at\":1793253742.418708,\"freshness\":\"fresh\"},\"state\":{\"value\":\"live\",\"status\":\"known\",\"source\":\"registry:liveness:live\",\"timestamp\":1793253742.425996,\"observed_at\":1793253742.425996,\"freshness\":\"fresh\"},\"receive\":{\"value\":\"available\",\"status\":\"known\",\"source\":\"registry:receive_capability\",\"timestamp\":1793253742.4259999,\"observed_at\":1793253742.4259999,\"freshness\":\"fresh\"}}],\"status\":\"ok\",\"reason\":null,\"unanswered\":{},\"inbox_pending\":0}"
+          }
+        ],
+        "isError": false
+      },
+      "jsonrpc": "2.0"
+    }
+  ],
+  "parsed_results": [
+    {
+      "candidates": [
+        {
+          "id": "20e3576ce074886ca9171afdf4b0c228fd1b54cbee1416ee12e1e8fa25157815",
+          "target": "candidate:20e3576ce074886ca9171afdf4b0c228fd1b54cbee1416ee12e1e8fa25157815",
+          "is_self": true,
+          "handle": {
+            "runtime": "codex",
+            "session_id": "01a18640-7405-7e50-9683-01c2b69cc1c3",
+            "home_id": "071fb8f47df3830492eb460e43068a93e99530160eda1b2f5a2c9519986224a9",
+            "machine": "local"
+          },
+          "ref": "7e74c3",
+          "machine": "local",
+          "runtime": "codex",
+          "name": "requester",
+          "title": {
+            "value": "requester",
+            "status": "known",
+            "source": "registry:hook.name",
+            "timestamp": 1793253734.6548228,
+            "observed_at": 1793253742.419148,
+            "freshness": "unknown"
+          },
+          "name_source": "registry:hook.name",
+          "name_freshness": "unknown",
+          "discovery_basis": [
+            "same_repo"
+          ],
+          "repository": "work",
+          "branch": {
+            "value": "main",
+            "status": "known",
+            "source": "git:symbolic-ref",
+            "timestamp": 1793253742.417152,
+            "observed_at": 1793253742.4171531,
+            "freshness": "fresh"
+          },
+          "summary": {
+            "value": null,
+            "status": "unknown",
+            "source": null,
+            "timestamp": null,
+            "observed_at": 1793253742.41915,
+            "freshness": "unknown"
+          },
+          "todo": {
+            "value": null,
+            "status": "unknown",
+            "source": null,
+            "timestamp": null,
+            "observed_at": 1793253742.4259908,
+            "freshness": "unknown"
+          },
+          "activity": {
+            "value": "busy",
+            "status": "known",
+            "source": "codex:event_msg:task_started",
+            "timestamp": "2026-10-29T06:02:14.594Z",
+            "observed_at": 1793253742.418708,
+            "freshness": "fresh"
+          },
+          "state": {
+            "value": "live",
+            "status": "known",
+            "source": "registry:liveness:live",
+            "timestamp": 1793253742.425996,
+            "observed_at": 1793253742.425996,
+            "freshness": "fresh"
+          },
+          "receive": {
+            "value": "available",
+            "status": "known",
+            "source": "registry:receive_capability",
+            "timestamp": 1793253742.4259999,
+            "observed_at": 1793253742.4259999,
+            "freshness": "fresh"
+          }
+        }
+      ],
+      "status": "ok",
+      "reason": null,
+      "unanswered": {},
+      "inbox_pending": 0
+    }
+  ],
+  "count": 1,
+  "success": true,
+  "profile_unchanged": true,
+  "owned_actor_remaining": [],
+  "model_ids": [
+    "gpt-6.1-sol"
+  ],
+  "old_journey_state_reused": false,
+  "question_or_ACK_calls": 0
+}

@@ -1,0 +1,69 @@
+{
+  "scope": "G10 doctor privacy install.stuck + three CLI tests delta only",
+  "verdict": "no concrete Medium-or-higher residual defect found in this delta",
+  "Medium_plus_findings": [],
+  "model_review_count": 1,
+  "model_retries": 0,
+  "requested_model": "claude-opus-5-5",
+  "actual_init_model": "claude-opus-5-5",
+  "actual_modelUsage_IDs": [
+    "claude-opus-5-5"
+  ],
+  "CLI_version": "2.1.312",
+  "subscription_profile": ".claude-3",
+  "subscription_auth_metadata": "claude.ai/max/firstParty confirmed before run",
+  "apiKeySource": "none",
+  "ANTHROPIC_API_KEY_removed_from_process_env": true,
+  "credential_values_queried": false,
+  "tools": [
+    "Glob",
+    "Grep",
+    "Read"
+  ],
+  "actual_tool_names": [
+    "Glob",
+    "Grep",
+    "Read"
+  ],
+  "actual_tool_use_count": 17,
+  "mcp_servers": [],
+  "out_of_bundle_absolute_reads": [],
+  "permission_denials": [],
+  "process_exit_code": 0,
+  "review_duration_ms": 77183,
+  "raw_private_root": "/private/tmp/g10-doctor-opus-delta-0us8i83t",
+  "raw_result_sha256": "2baf217a99990568edf1d83cc2f51bf639e48badda5ad4e28869b596588797af",
+  "bundle_verified_files": 46,
+  "supplied_evidence_hash_checks": 39,
+  "source_after_review": {
+    "xsm/install.py": {
+      "expected": "a8e712de6e8b2b9f368946333a6c8793168c6734484be45a60dbe967d0aa1960",
+      "actual": "a8e712de6e8b2b9f368946333a6c8793168c6734484be45a60dbe967d0aa1960"
+    },
+    "tests/test_install_cli_flow.py": {
+      "expected": "2726d9a8ddb1b1acb93c9a6d82b7fae5ed811d79e13ba642083c67b08f9444b4",
+      "actual": "2726d9a8ddb1b1acb93c9a6d82b7fae5ed811d79e13ba642083c67b08f9444b4"
+    }
+  },
+  "confirmed_scope": [
+    "queued/unknown rows projected to scalar diagnostic metadata rather than whole originals",
+    "raw error prefixes/details no longer diagnostic labels; fixed categories or other",
+    "projection constructs new dicts, no original-row writes; tests record ledger bytes unchanged",
+    "text identity/ID/status/count utility retained; table did not render stuck before or after"
+  ],
+  "nonblocking_notes": [
+    {
+      "topic": "operational metadata reduction",
+      "detail": "JSON drops delivery.steps/runtime_reached and other non-preview fields; explicit smaller diagnostic contract, no in-bundle consumer dependence found, status-by-ID is shown. External consumers not inspected."
+    }
+  ],
+  "limits": [
+    "read-only source/log/capture review; model did not rerun tests/mutants or recompute hashes",
+    "hash verification and raw12 capture/targeted24/mutant3 records supplied by evaluator are distinct from independent runtime reproduction",
+    "approvals/threads_replaced paths and nonnumeric-t baseline behavior unchanged and outside delta",
+    "scalar names/aliases/ref/runtime intentionally retained; not universal anonymization",
+    "old315/final1697 is history; parallel full1700 is ongoing and excluded",
+    "no whole-product/G10/UI/remote approval; no product/plan/ledger/config/permission edits performed"
+  ],
+  "out_of_bundle_reads": []
+}

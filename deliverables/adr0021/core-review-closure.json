@@ -1,0 +1,722 @@
+{
+  "recorded_at_utc": "2026-10-29T05:10:14.550223+00:00",
+  "scope": "Targeted closure evidence for frozen Opus Medium F1/F2 only; not a new independent model review or full ADR completion",
+  "disposition": "two findings verified in the stated test scope",
+  "fixes": [
+    {
+      "finding_id": "F1",
+      "status": "verified_in_targeted_scope",
+      "original_review": "core-opus-review.json",
+      "fix_owner": "coordinator",
+      "fix_paths": [
+        "Daemon._install calls _load_peers after active network replacement",
+        "Daemon._load_peers clears old _peers and filters destination cache",
+        "Daemon.rpc refuses sync recipients outside current membership before building/sending state"
+      ],
+      "tests": [
+        "PeerTransitionTests.test_switch_loads_only_destination_peers_and_syncs_current_membership",
+        "PeerTransitionTests.test_stale_previous_peer_sync_is_rejected_before_transport"
+      ],
+      "evidence_kind": "server-level RPC fixtures combined with actual Rust sign/verify callbacks and real temporary MembershipStore files; no QUIC transition claim",
+      "observed": {
+        "old_peer_retained": false,
+        "old_peer_requests_with_new_network_state": 0,
+        "stale_address_sync_refused_before_transport": true,
+        "destination_member_sync_sent": true
+      },
+      "guard_removal_mutations": [
+        "F1-install-peer-reset",
+        "F1-sync-recipient-guard"
+      ]
+    },
+    {
+      "finding_id": "F2",
+      "status": "verified_in_targeted_scope",
+      "original_review": "core-opus-review.json",
+      "fix_owner": "coordinator",
+      "fix_paths": [
+        "Sidecar.running/process_id expose native process liveness and PID",
+        "Daemon.watch_engine closes daemon after actual engine EOF",
+        "serve closes Unix listener and service lock",
+        "start tolerates zero-exit competing starter and retries only service spawn after cleanup"
+      ],
+      "tests": [
+        "ActualServiceRecoveryTests.test_owned_engine_exit_releases_listener_lock_and_cli_start_preserves_identity",
+        "StartRaceTests.test_start_retries_only_service_after_zero_exit_and_listener_cleanup",
+        "StartRaceTests.test_nonzero_service_exit_is_not_retried",
+        "SidecarLivenessTests.test_running_and_process_id_track_fake_engine_eof_and_close",
+        "SidecarLivenessTests.test_running_checks_process_poll_before_watch_thread_reports_failure"
+      ],
+      "evidence_kind": "actual private CLI/Python services and Rust engines for crash/identity/membership recovery; process-spawn race and fake-engine liveness branches are unit fixtures",
+      "actual_cli_recoveries": [
+        {
+          "event": "actual_cli_recovery",
+          "python": "3.9.6",
+          "old_service_pid": 70173,
+          "old_engine_pid": 70194,
+          "new_service_pid": 70224,
+          "new_engine_pid": 70246,
+          "endpoint_id": "3cfaeaf0cd8ef9d58a40b9642278926fe89f15833bae85dc6d28f67e75b1ad92",
+          "network_id": "3cfaeaf0cd8ef9d58a40b9642278926fe89f15833bae85dc6d28f67e75b1ad92:7ab01b768fd53e5a56a0fc18319e53fa5f401b923ac9d9e542044884617e568e",
+          "listener_released": true,
+          "service_lock_released": true,
+          "udp_port_released": true,
+          "roster_sha256": "32433037a79c97ba618febc99f99c26f07b6283cae067aec4be460fa37e6c469",
+          "business_operations_replayed": 0,
+          "ticket_count_before": 1,
+          "ticket_count_after": 1
+        },
+        {
+          "event": "actual_cli_recovery",
+          "python": "3.14.6",
+          "old_service_pid": 70169,
+          "old_engine_pid": 70170,
+          "new_service_pid": 70213,
+          "new_engine_pid": 70215,
+          "endpoint_id": "339fe2685ac1f65538ef2822f3edb8c0d2fbfe7223f90d92bfec92ba3c00c1eb",
+          "network_id": "339fe2685ac1f65538ef2822f3edb8c0d2fbfe7223f90d92bfec92ba3c00c1eb:cf98e46af528683dd0bd241f702b077185e5c13b63ed1bf8fec5bd05365abc8f",
+          "listener_released": true,
+          "service_lock_released": true,
+          "udp_port_released": true,
+          "roster_sha256": "c592cedc3f81d2c98fe19620d9a626b591d0c9e9c01364a5145a57d7cb51ea3d",
+          "business_operations_replayed": 0,
+          "ticket_count_before": 1,
+          "ticket_count_after": 1
+        },
+        {
+          "event": "actual_cli_recovery",
+          "python": "3.9.6",
+          "old_service_pid": 74830,
+          "old_engine_pid": 74833,
+          "new_service_pid": 74863,
+          "new_engine_pid": 74874,
+          "endpoint_id": "93308ed174ec0ff5d2bc46b572fccf6e47a6aaf287439c71768893b94d728448",
+          "network_id": "93308ed174ec0ff5d2bc46b572fccf6e47a6aaf287439c71768893b94d728448:bebe85c09ac0cdf74b4fef14ecd40b1d573afbde0ce157314a42df5bb0e85efb",
+          "listener_released": true,
+          "service_lock_released": true,
+          "udp_port_released": true,
+          "roster_sha256": "ba631d11df020d2e8587c7d782a93e24cb7d8948fb2b0e7e3ec4f1da432997c6",
+          "business_operations_replayed": 0,
+          "ticket_count_before": 1,
+          "ticket_count_after": 1
+        },
+        {
+          "event": "actual_cli_recovery",
+          "python": "3.14.6",
+          "old_service_pid": 74821,
+          "old_engine_pid": 74822,
+          "new_service_pid": 74844,
+          "new_engine_pid": 74846,
+          "endpoint_id": "cee48fa6ce47a5b4c63d2eb30e096ad81264403635fec4917f092737fb8b23c6",
+          "network_id": "cee48fa6ce47a5b4c63d2eb30e096ad81264403635fec4917f092737fb8b23c6:3222e56cc731fab1582f644e875ef03c7d25793bab627455aa14fb751f6523fb",
+          "listener_released": true,
+          "service_lock_released": true,
+          "udp_port_released": true,
+          "roster_sha256": "bb1bac3a1471579eaf7b99e9da8672a8655ac9590f33cf6c626565620c1b70b9",
+          "business_operations_replayed": 0,
+          "ticket_count_before": 1,
+          "ticket_count_after": 1
+        }
+      ],
+      "business_operations_replayed": 0,
+      "guard_removal_mutations": [
+        "F2-engine-eof-watch",
+        "F2-zero-exit-restart",
+        "F2-running-process-poll"
+      ]
+    }
+  ],
+  "new_test_file": "tests/test_network_recovery.py",
+  "new_test_cases": 7,
+  "baseline_green": {
+    "python39": {
+      "label": "python39",
+      "interpreter": "/usr/bin/python3",
+      "command": [
+        "/usr/bin/python3",
+        "-B",
+        "-m",
+        "unittest",
+        "tests.test_network_recovery",
+        "-v"
+      ],
+      "cwd": "/private/tmp/adr0021-core-closure-5xtl1vz8/baseline",
+      "exit_code": 0,
+      "wall_time_seconds": 5.678,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "d766b8ca207a4c529d85040e38834f61ddb8e23d24162ff53469ff02e56d597d",
+      "events_path": "/private/tmp/adr0021-core-closure-5xtl1vz8/python39-events.jsonl",
+      "tests_run": 7,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "events": [
+        {
+          "event": "owned_engine_signalled",
+          "python": "3.9.6",
+          "service_pid": 70173,
+          "engine_pid": 70194,
+          "verified_uid": 501,
+          "verified_parent": 70173,
+          "signal": "SIGKILL"
+        },
+        {
+          "event": "actual_cli_recovery",
+          "python": "3.9.6",
+          "old_service_pid": 70173,
+          "old_engine_pid": 70194,
+          "new_service_pid": 70224,
+          "new_engine_pid": 70246,
+          "endpoint_id": "3cfaeaf0cd8ef9d58a40b9642278926fe89f15833bae85dc6d28f67e75b1ad92",
+          "network_id": "3cfaeaf0cd8ef9d58a40b9642278926fe89f15833bae85dc6d28f67e75b1ad92:7ab01b768fd53e5a56a0fc18319e53fa5f401b923ac9d9e542044884617e568e",
+          "listener_released": true,
+          "service_lock_released": true,
+          "udp_port_released": true,
+          "roster_sha256": "32433037a79c97ba618febc99f99c26f07b6283cae067aec4be460fa37e6c469",
+          "business_operations_replayed": 0,
+          "ticket_count_before": 1,
+          "ticket_count_after": 1
+        },
+        {
+          "event": "stale_peer_sync",
+          "python": "3.9.6",
+          "server_rpc_fixture": true,
+          "actual_rust_sign_verify": true,
+          "old_peer_sync_requests": 0,
+          "direct_sync_refused": true
+        },
+        {
+          "event": "peer_switch",
+          "python": "3.9.6",
+          "server_rpc_fixture": true,
+          "actual_rust_sign_verify": true,
+          "old_peer_retained": false,
+          "sync_recipient": "3cce0c30d34e690894dea70f7571c089c802b4ea0525800fe3ebbf6a6d86ea67",
+          "old_peer_sync_requests": 0,
+          "new_network_id": "3cce0c30d34e690894dea70f7571c089c802b4ea0525800fe3ebbf6a6d86ea67:d5286c60fe935812ff5647007daeaa093e8c3513260c014ff74e8d1cc67a881c"
+        },
+        {
+          "event": "start_zero_exit_race",
+          "python": "3.9.6",
+          "fixture": true,
+          "service_spawns": 2,
+          "status_calls": 4,
+          "business_operations_replayed": 0
+        }
+      ]
+    },
+    "python314": {
+      "label": "python314",
+      "interpreter": "/opt/homebrew/bin/python3.14",
+      "command": [
+        "/opt/homebrew/bin/python3.14",
+        "-B",
+        "-m",
+        "unittest",
+        "tests.test_network_recovery",
+        "-v"
+      ],
+      "cwd": "/private/tmp/adr0021-core-closure-5xtl1vz8/baseline",
+      "exit_code": 0,
+      "wall_time_seconds": 4.3,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "d10903cf0b6aaf11efc2a56875e2466268d25063a7fa740d51bf2f90ff162619",
+      "events_path": "/private/tmp/adr0021-core-closure-5xtl1vz8/python314-events.jsonl",
+      "tests_run": 7,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "events": [
+        {
+          "event": "owned_engine_signalled",
+          "python": "3.14.6",
+          "service_pid": 70169,
+          "engine_pid": 70170,
+          "verified_uid": 501,
+          "verified_parent": 70169,
+          "signal": "SIGKILL"
+        },
+        {
+          "event": "actual_cli_recovery",
+          "python": "3.14.6",
+          "old_service_pid": 70169,
+          "old_engine_pid": 70170,
+          "new_service_pid": 70213,
+          "new_engine_pid": 70215,
+          "endpoint_id": "339fe2685ac1f65538ef2822f3edb8c0d2fbfe7223f90d92bfec92ba3c00c1eb",
+          "network_id": "339fe2685ac1f65538ef2822f3edb8c0d2fbfe7223f90d92bfec92ba3c00c1eb:cf98e46af528683dd0bd241f702b077185e5c13b63ed1bf8fec5bd05365abc8f",
+          "listener_released": true,
+          "service_lock_released": true,
+          "udp_port_released": true,
+          "roster_sha256": "c592cedc3f81d2c98fe19620d9a626b591d0c9e9c01364a5145a57d7cb51ea3d",
+          "business_operations_replayed": 0,
+          "ticket_count_before": 1,
+          "ticket_count_after": 1
+        },
+        {
+          "event": "stale_peer_sync",
+          "python": "3.14.6",
+          "server_rpc_fixture": true,
+          "actual_rust_sign_verify": true,
+          "old_peer_sync_requests": 0,
+          "direct_sync_refused": true
+        },
+        {
+          "event": "peer_switch",
+          "python": "3.14.6",
+          "server_rpc_fixture": true,
+          "actual_rust_sign_verify": true,
+          "old_peer_retained": false,
+          "sync_recipient": "4427e24365796f86a12ec6a5ef097adf8c457efb6da4c35a783bb4598788c240",
+          "old_peer_sync_requests": 0,
+          "new_network_id": "4427e24365796f86a12ec6a5ef097adf8c457efb6da4c35a783bb4598788c240:e9dec9c9810e709a9ae386d34f935715612f4520ddd658dc4d3cc0188d0ae060"
+        },
+        {
+          "event": "start_zero_exit_race",
+          "python": "3.14.6",
+          "fixture": true,
+          "service_spawns": 2,
+          "status_calls": 4,
+          "business_operations_replayed": 0
+        }
+      ]
+    }
+  },
+  "post_parallel_serve_edit_live_recheck": {
+    "python39-live": {
+      "label": "python39-live",
+      "command": [
+        "/usr/bin/python3",
+        "-B",
+        "-m",
+        "unittest",
+        "tests.test_network_recovery.ActualServiceRecoveryTests.test_owned_engine_exit_releases_listener_lock_and_cli_start_preserves_identity",
+        "-v"
+      ],
+      "cwd": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging",
+      "exit_code": 0,
+      "wall_time_seconds": 3.548,
+      "source_sha256_before": {
+        "xsm/network.py": "b3d430f44b8c6e4929051abf2ee9a8c675764fa44aa99d09d0217d33f06541c6",
+        "xsm/network_transport.py": "1827fc7b4ac9a4f90680a14b46112490a0e54d7263557233dc3e693fe0d389c3",
+        "xsm/network_membership.py": "f3496c84b86be111a120baf4d7b74f8fdfdeea415ac89cfb2fff4eb841ddb54a",
+        "tests/test_network_recovery.py": "f1b20db31d95d95d265c92a276a38c0a794ca8d9cd9f0d075c642d4b3120b160",
+        "tests/test_network_service.py": "a9bb3108d1b5eaf3fbaf4dfaeaa8ce6bc2ae48e5391837d84b90d1ba854dec68",
+        "tests/test_network_transport.py": "c61ba1d64f1dd15643b86f762a73b95e98a49e10dd16df4f2801ed8283e80747"
+      },
+      "source_sha256_after": {
+        "xsm/network.py": "b3d430f44b8c6e4929051abf2ee9a8c675764fa44aa99d09d0217d33f06541c6",
+        "xsm/network_transport.py": "1827fc7b4ac9a4f90680a14b46112490a0e54d7263557233dc3e693fe0d389c3",
+        "xsm/network_membership.py": "f3496c84b86be111a120baf4d7b74f8fdfdeea415ac89cfb2fff4eb841ddb54a",
+        "tests/test_network_recovery.py": "f1b20db31d95d95d265c92a276a38c0a794ca8d9cd9f0d075c642d4b3120b160",
+        "tests/test_network_service.py": "a9bb3108d1b5eaf3fbaf4dfaeaa8ce6bc2ae48e5391837d84b90d1ba854dec68",
+        "tests/test_network_transport.py": "c61ba1d64f1dd15643b86f762a73b95e98a49e10dd16df4f2801ed8283e80747"
+      },
+      "source_drift_during_recheck": [],
+      "events_path": "/private/tmp/adr0021-core-closure-5xtl1vz8/python39-live-events.jsonl",
+      "stderr_sha256": "d10ffc781f69db26dad2af1b897eb968da709eba88623f7d08fa3c5ed392db05",
+      "tests_run": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "events": [
+        {
+          "event": "owned_engine_signalled",
+          "python": "3.9.6",
+          "service_pid": 74830,
+          "engine_pid": 74833,
+          "verified_uid": 501,
+          "verified_parent": 74830,
+          "signal": "SIGKILL"
+        },
+        {
+          "event": "actual_cli_recovery",
+          "python": "3.9.6",
+          "old_service_pid": 74830,
+          "old_engine_pid": 74833,
+          "new_service_pid": 74863,
+          "new_engine_pid": 74874,
+          "endpoint_id": "93308ed174ec0ff5d2bc46b572fccf6e47a6aaf287439c71768893b94d728448",
+          "network_id": "93308ed174ec0ff5d2bc46b572fccf6e47a6aaf287439c71768893b94d728448:bebe85c09ac0cdf74b4fef14ecd40b1d573afbde0ce157314a42df5bb0e85efb",
+          "listener_released": true,
+          "service_lock_released": true,
+          "udp_port_released": true,
+          "roster_sha256": "ba631d11df020d2e8587c7d782a93e24cb7d8948fb2b0e7e3ec4f1da432997c6",
+          "business_operations_replayed": 0,
+          "ticket_count_before": 1,
+          "ticket_count_after": 1
+        }
+      ]
+    },
+    "python314-live": {
+      "label": "python314-live",
+      "command": [
+        "/opt/homebrew/bin/python3.14",
+        "-B",
+        "-m",
+        "unittest",
+        "tests.test_network_recovery.ActualServiceRecoveryTests.test_owned_engine_exit_releases_listener_lock_and_cli_start_preserves_identity",
+        "-v"
+      ],
+      "cwd": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging",
+      "exit_code": 0,
+      "wall_time_seconds": 1.709,
+      "source_sha256_before": {
+        "xsm/network.py": "b3d430f44b8c6e4929051abf2ee9a8c675764fa44aa99d09d0217d33f06541c6",
+        "xsm/network_transport.py": "1827fc7b4ac9a4f90680a14b46112490a0e54d7263557233dc3e693fe0d389c3",
+        "xsm/network_membership.py": "f3496c84b86be111a120baf4d7b74f8fdfdeea415ac89cfb2fff4eb841ddb54a",
+        "tests/test_network_recovery.py": "f1b20db31d95d95d265c92a276a38c0a794ca8d9cd9f0d075c642d4b3120b160",
+        "tests/test_network_service.py": "a9bb3108d1b5eaf3fbaf4dfaeaa8ce6bc2ae48e5391837d84b90d1ba854dec68",
+        "tests/test_network_transport.py": "c61ba1d64f1dd15643b86f762a73b95e98a49e10dd16df4f2801ed8283e80747"
+      },
+      "source_sha256_after": {
+        "xsm/network.py": "b3d430f44b8c6e4929051abf2ee9a8c675764fa44aa99d09d0217d33f06541c6",
+        "xsm/network_transport.py": "1827fc7b4ac9a4f90680a14b46112490a0e54d7263557233dc3e693fe0d389c3",
+        "xsm/network_membership.py": "f3496c84b86be111a120baf4d7b74f8fdfdeea415ac89cfb2fff4eb841ddb54a",
+        "tests/test_network_recovery.py": "f1b20db31d95d95d265c92a276a38c0a794ca8d9cd9f0d075c642d4b3120b160",
+        "tests/test_network_service.py": "a9bb3108d1b5eaf3fbaf4dfaeaa8ce6bc2ae48e5391837d84b90d1ba854dec68",
+        "tests/test_network_transport.py": "c61ba1d64f1dd15643b86f762a73b95e98a49e10dd16df4f2801ed8283e80747"
+      },
+      "source_drift_during_recheck": [],
+      "events_path": "/private/tmp/adr0021-core-closure-5xtl1vz8/python314-live-events.jsonl",
+      "stderr_sha256": "a473f3ba68677957f386725089ad4a8f31d6098c8c1be00382edeb68f2601137",
+      "tests_run": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "events": [
+        {
+          "event": "owned_engine_signalled",
+          "python": "3.14.6",
+          "service_pid": 74821,
+          "engine_pid": 74822,
+          "verified_uid": 501,
+          "verified_parent": 74821,
+          "signal": "SIGKILL"
+        },
+        {
+          "event": "actual_cli_recovery",
+          "python": "3.14.6",
+          "old_service_pid": 74821,
+          "old_engine_pid": 74822,
+          "new_service_pid": 74844,
+          "new_engine_pid": 74846,
+          "endpoint_id": "cee48fa6ce47a5b4c63d2eb30e096ad81264403635fec4917f092737fb8b23c6",
+          "network_id": "cee48fa6ce47a5b4c63d2eb30e096ad81264403635fec4917f092737fb8b23c6:3222e56cc731fab1582f644e875ef03c7d25793bab627455aa14fb751f6523fb",
+          "listener_released": true,
+          "service_lock_released": true,
+          "udp_port_released": true,
+          "roster_sha256": "bb1bac3a1471579eaf7b99e9da8672a8655ac9590f33cf6c626565620c1b70b9",
+          "business_operations_replayed": 0,
+          "ticket_count_before": 1,
+          "ticket_count_after": 1
+        }
+      ]
+    }
+  },
+  "source_guard_mutations": [
+    {
+      "mutation": "F1-install-peer-reset",
+      "changed_source": "xsm/network.py",
+      "before": "        self._load_peers()\n        return self.store()",
+      "after": "        # mutation: peer reset removed\n        return self.store()",
+      "mutant_source_sha256": "f5eb1f9e679d8249bed303b206deff2c46e86e3bdcd4f34c637f5ebf170a4ee3",
+      "test": "PeerTransitionTests.test_switch_loads_only_destination_peers_and_syncs_current_membership",
+      "command": [
+        "/opt/homebrew/bin/python3.14",
+        "-B",
+        "-m",
+        "unittest",
+        "tests.test_network_recovery.PeerTransitionTests.test_switch_loads_only_destination_peers_and_syncs_current_membership",
+        "-v"
+      ],
+      "cwd": "/private/tmp/adr0021-core-closure-5xtl1vz8/F1-install-peer-reset",
+      "exit_code": 1,
+      "caught_by_assertion_failure": true,
+      "wall_time_seconds": 0.675,
+      "stderr_sha256": "dde2fe85d5d87b08171dd7d9c2b4dee60e64370ade2ce1d1d3fe854153d5e803",
+      "stderr_path": "/private/tmp/adr0021-core-closure-5xtl1vz8/F1-install-peer-reset.stderr"
+    },
+    {
+      "mutation": "F1-sync-recipient-guard",
+      "changed_source": "xsm/network.py",
+      "before": "        if request.get(\"op\") == \"sync\" and not any(m[\"endpoint_id\"] == _address_id(peer) for m in store.members()):\n            raise NetworkError(\"peer-refused\")\n",
+      "after": "        # mutation: cross-network sync guard removed\n",
+      "mutant_source_sha256": "4232db40bb01a97d3c9b29839b7e4ac68ac70d491bab444986d006f61f67cd05",
+      "test": "PeerTransitionTests.test_stale_previous_peer_sync_is_rejected_before_transport",
+      "command": [
+        "/opt/homebrew/bin/python3.14",
+        "-B",
+        "-m",
+        "unittest",
+        "tests.test_network_recovery.PeerTransitionTests.test_stale_previous_peer_sync_is_rejected_before_transport",
+        "-v"
+      ],
+      "cwd": "/private/tmp/adr0021-core-closure-5xtl1vz8/F1-sync-recipient-guard",
+      "exit_code": 1,
+      "caught_by_assertion_failure": true,
+      "wall_time_seconds": 0.676,
+      "stderr_sha256": "c0e0ce9d8bcb916228580c9ad75711e85111f55246c4fbc1b2eaa5ed98ad221d",
+      "stderr_path": "/private/tmp/adr0021-core-closure-5xtl1vz8/F1-sync-recipient-guard.stderr"
+    },
+    {
+      "mutation": "F2-engine-eof-watch",
+      "changed_source": "xsm/network.py",
+      "before": "            if not self.transport.running:",
+      "after": "            if False:  # mutation: ignore engine EOF",
+      "mutant_source_sha256": "42607441593f46e735d2f830bb93f4bf2f04583d54b7adbc29142299dbb4ddeb",
+      "test": "ActualServiceRecoveryTests.test_owned_engine_exit_releases_listener_lock_and_cli_start_preserves_identity",
+      "command": [
+        "/opt/homebrew/bin/python3.14",
+        "-B",
+        "-m",
+        "unittest",
+        "tests.test_network_recovery.ActualServiceRecoveryTests.test_owned_engine_exit_releases_listener_lock_and_cli_start_preserves_identity",
+        "-v"
+      ],
+      "cwd": "/private/tmp/adr0021-core-closure-5xtl1vz8/F2-engine-eof-watch",
+      "exit_code": 1,
+      "caught_by_assertion_failure": true,
+      "wall_time_seconds": 7.223,
+      "stderr_sha256": "c0db747bd1265bf38ab721cd03efeebfa59e0e7f5d229d3dd9b5a7f8620211c1",
+      "stderr_path": "/private/tmp/adr0021-core-closure-5xtl1vz8/F2-engine-eof-watch.stderr"
+    },
+    {
+      "mutation": "F2-zero-exit-restart",
+      "changed_source": "xsm/network.py",
+      "before": "            if child.poll() == 0 and not socket_path().exists():",
+      "after": "            if False:  # mutation: no service retry after zero-exit race",
+      "mutant_source_sha256": "d3b59d0b32b5a8c9db141a4e5639fb206bd669e4915ed9b972f99c42d02f7f2f",
+      "test": "StartRaceTests.test_start_retries_only_service_after_zero_exit_and_listener_cleanup",
+      "command": [
+        "/opt/homebrew/bin/python3.14",
+        "-B",
+        "-m",
+        "unittest",
+        "tests.test_network_recovery.StartRaceTests.test_start_retries_only_service_after_zero_exit_and_listener_cleanup",
+        "-v"
+      ],
+      "cwd": "/private/tmp/adr0021-core-closure-5xtl1vz8/F2-zero-exit-restart",
+      "exit_code": 1,
+      "caught_by_assertion_failure": true,
+      "wall_time_seconds": 0.184,
+      "stderr_sha256": "2be93a4960c181aa5eaea0496195cb0c83e3eb3296169830603d70a350b4d3bc",
+      "stderr_path": "/private/tmp/adr0021-core-closure-5xtl1vz8/F2-zero-exit-restart.stderr"
+    },
+    {
+      "mutation": "F2-running-process-poll",
+      "changed_source": "xsm/network_transport.py",
+      "before": "self._process and self._process.poll() is None and not self._failure",
+      "after": "self._process and not self._failure",
+      "mutant_source_sha256": "d53bd598d8bc54bf38b887856168cdc3bda39352f1e06c397a49894bbd9d129a",
+      "test": "SidecarLivenessTests.test_running_checks_process_poll_before_watch_thread_reports_failure",
+      "command": [
+        "/opt/homebrew/bin/python3.14",
+        "-B",
+        "-m",
+        "unittest",
+        "tests.test_network_recovery.SidecarLivenessTests.test_running_checks_process_poll_before_watch_thread_reports_failure",
+        "-v"
+      ],
+      "cwd": "/private/tmp/adr0021-core-closure-5xtl1vz8/F2-running-process-poll",
+      "exit_code": 1,
+      "caught_by_assertion_failure": true,
+      "wall_time_seconds": 0.561,
+      "stderr_sha256": "ec8e766c5b529b4323040925da922c78c5ec9472a077c03948c830a16b73ae19",
+      "stderr_path": "/private/tmp/adr0021-core-closure-5xtl1vz8/F2-running-process-poll.stderr"
+    }
+  ],
+  "mutations_caught": 5,
+  "mutation_trials": 5,
+  "mutation_interpreter": "Python 3.14.6",
+  "mutations_run_only_on_private_source_copies": true,
+  "product_source_edits_by_this_task": [],
+  "original_review_preserved": {
+    "deliverables/adr0021/core-opus-review.md": {
+      "before_sha256": "005afd51bdb4a5895d308234323681c7c741112021cb623c359b80e5abd5215d",
+      "after_sha256": "005afd51bdb4a5895d308234323681c7c741112021cb623c359b80e5abd5215d",
+      "unchanged": true
+    },
+    "deliverables/adr0021/core-opus-review.json": {
+      "before_sha256": "09224422a9d3fda01250352e65829f142cff7d0d718621ec951a1b26451e116f",
+      "after_sha256": "09224422a9d3fda01250352e65829f142cff7d0d718621ec951a1b26451e116f",
+      "unchanged": true
+    }
+  },
+  "original_review_verdict_unchanged": "changes_required",
+  "new_model_calls": 0,
+  "old_review_model_call_count_unchanged": 1,
+  "baseline_source_sha256": {
+    "xsm/network.py": "ff0ed7a0430a885ef15b65c1d600331b3ce2d1945eabe9b81ea85a40427ca176",
+    "xsm/network_transport.py": "1827fc7b4ac9a4f90680a14b46112490a0e54d7263557233dc3e693fe0d389c3",
+    "xsm/network_membership.py": "f3496c84b86be111a120baf4d7b74f8fdfdeea415ac89cfb2fff4eb841ddb54a",
+    "tests/test_network_recovery.py": "f1b20db31d95d95d265c92a276a38c0a794ca8d9cd9f0d075c642d4b3120b160",
+    "tests/test_network_service.py": "a9bb3108d1b5eaf3fbaf4dfaeaa8ce6bc2ae48e5391837d84b90d1ba854dec68",
+    "tests/test_network_transport.py": "c61ba1d64f1dd15643b86f762a73b95e98a49e10dd16df4f2801ed8283e80747"
+  },
+  "current_source_sha256": {
+    "xsm/network.py": "b3d430f44b8c6e4929051abf2ee9a8c675764fa44aa99d09d0217d33f06541c6",
+    "xsm/network_transport.py": "1827fc7b4ac9a4f90680a14b46112490a0e54d7263557233dc3e693fe0d389c3",
+    "xsm/network_membership.py": "f3496c84b86be111a120baf4d7b74f8fdfdeea415ac89cfb2fff4eb841ddb54a",
+    "tests/test_network_recovery.py": "f1b20db31d95d95d265c92a276a38c0a794ca8d9cd9f0d075c642d4b3120b160",
+    "tests/test_network_service.py": "a9bb3108d1b5eaf3fbaf4dfaeaa8ce6bc2ae48e5391837d84b90d1ba854dec68",
+    "tests/test_network_transport.py": "c61ba1d64f1dd15643b86f762a73b95e98a49e10dd16df4f2801ed8283e80747"
+  },
+  "core_fix_function_ast_hashes": {
+    "start": {
+      "baseline_ast_sha256": "d119dd693627e1178a9ddbc9d2691836a9476cf922bb26132ca9027e6e787b3a",
+      "current_ast_sha256": "d119dd693627e1178a9ddbc9d2691836a9476cf922bb26132ca9027e6e787b3a",
+      "unchanged": true
+    },
+    "Daemon._install": {
+      "baseline_ast_sha256": "c8d3ae0153c23510ce43dd55d769826974501a3cf025d839080109198db3ae98",
+      "current_ast_sha256": "c8d3ae0153c23510ce43dd55d769826974501a3cf025d839080109198db3ae98",
+      "unchanged": true
+    },
+    "Daemon._load_peers": {
+      "baseline_ast_sha256": "d6e34a65d048aa34ceb29d839b52f2d405567c34a57ce7039a96fd247a8c9f38",
+      "current_ast_sha256": "d6e34a65d048aa34ceb29d839b52f2d405567c34a57ce7039a96fd247a8c9f38",
+      "unchanged": true
+    },
+    "Daemon.rpc": {
+      "baseline_ast_sha256": "a9fe24bfd17de942220445aa3394c0caec7fb6b64788004bb65778456ff0c78c",
+      "current_ast_sha256": "a9fe24bfd17de942220445aa3394c0caec7fb6b64788004bb65778456ff0c78c",
+      "unchanged": true
+    },
+    "Daemon.watch_engine": {
+      "baseline_ast_sha256": "76d205bb199d0c07910b746239f57946cb1ee9ee696138c6bb1b4008a9943219",
+      "current_ast_sha256": "76d205bb199d0c07910b746239f57946cb1ee9ee696138c6bb1b4008a9943219",
+      "unchanged": true
+    },
+    "serve": {
+      "baseline_ast_sha256": "67d30df39cf99ef2f2ecd228a12669998b794ea229798f18aba474a45046ec59",
+      "current_ast_sha256": "ccf0b22306c54a0584872cff632e7dbc459d5aa3f722bc90d105b0832f84eba4",
+      "unchanged": false
+    }
+  },
+  "source_drift_note": "After baseline freeze, coordinator added application gateway helpers and startup identity.json writing to network.py. Core guard methods remained identical. Both Python versions reran the actual CLI recovery case on the current repository; six tracked source/test files were unchanged during each recheck. Broader application integration was not retested.",
+  "native_binary": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/native/xsm-net/target/debug/xsm-net",
+  "native_binary_sha256": "35a4af3f5b298fa7ecb65bdc2eba7511af77c3350056f0d27ee24a4d4363242a",
+  "native_binary_unchanged": true,
+  "private_evidence_root": "/private/tmp/adr0021-core-closure-5xtl1vz8",
+  "private_evidence_permissions": {
+    "root_mode_0700": true,
+    "files_mode_0600": true
+  },
+  "private_raw_file_sha256": {
+    "F1-install-peer-reset.stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "run-live.py": "564710bf1ad94bee2f8385379abc84eb87c982d909126449472a60066a12c902",
+    "python314.json": "a38509d15a7ca0b983b9e397677c99bb5ecadad497ccb15e5a0dff9121b5296a",
+    "F2-running-process-poll.stderr": "ec8e766c5b529b4323040925da922c78c5ec9472a077c03948c830a16b73ae19",
+    "python39.json": "9cf23ad36ce96a0882fab8307859ba41d3b089752ed5a390ec696bbfb362a115",
+    "python314-live.stderr": "a473f3ba68677957f386725089ad4a8f31d6098c8c1be00382edeb68f2601137",
+    "python39-events.jsonl": "2710f160b3c30e93adeb10ae2197a723215a4566a40194dcd59072f03ee46caa",
+    "python39.stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "python39.stderr": "d766b8ca207a4c529d85040e38834f61ddb8e23d24162ff53469ff02e56d597d",
+    "F2-running-process-poll.stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "python314-live.stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "run-green.py": "748f18c097476a3a67c588cc7cbeb5aa264b18d76af7ae8ad7d5191daad7a122",
+    "F2-engine-eof-watch-events.jsonl": "af72b7ba98bb1c6c0b3aa13f0c7da90495a977dced7d6ea16e514d208fb6db89",
+    "python314-live.json": "8713cf6702f24e79684521efef2a7ea135a18ab64cafa2fd95917559672fb51f",
+    "F1-install-peer-reset.stderr": "dde2fe85d5d87b08171dd7d9c2b4dee60e64370ade2ce1d1d3fe854153d5e803",
+    "python39-live.stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "F1-sync-recipient-guard.stderr": "c0e0ce9d8bcb916228580c9ad75711e85111f55246c4fbc1b2eaa5ed98ad221d",
+    "python314.stderr": "d10903cf0b6aaf11efc2a56875e2466268d25063a7fa740d51bf2f90ff162619",
+    "mutations.json": "ef66a2296a21523b2709c1dbf09dee40d39a087f5b3cd5fef9a8ca9786150e75",
+    "run-mutations.py": "c018512b811e95742fac44795401b18bc459024c51dd9fda320359d49f872e9b",
+    "F2-zero-exit-restart.stderr": "2be93a4960c181aa5eaea0496195cb0c83e3eb3296169830603d70a350b4d3bc",
+    "F2-engine-eof-watch.stderr": "c0db747bd1265bf38ab721cd03efeebfa59e0e7f5d229d3dd9b5a7f8620211c1",
+    "manifest.json": "7953bc06ecdf2c4638697f5a0a29a30ba6c54105649c58dcf68d793647edf5d6",
+    "python39-live.json": "68b193e7a63f2ff651ed5a379ac16df2799c3eacd9ae55062e3b76a640ac41ad",
+    "python314-events.jsonl": "cf6a6d23fc1e3595d7e6f4c38713832c527f7c1f1a7732c1ad6d7d78f19fa042",
+    "F2-zero-exit-restart.stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "F2-engine-eof-watch.stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "python314-live-events.jsonl": "24be34e5a48cd6f46f9802630cc6e2c946a9f178dd477afaea25285f5831d5f7",
+    "python39-live-events.jsonl": "2854c42f195f32e2c824833d79b2eee8d4234daf449a0c9f1dd5ae1a20ca4f89",
+    "python314.stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "F1-sync-recipient-guard.stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "python39-live.stderr": "d10ffc781f69db26dad2af1b897eb968da709eba88623f7d08fa3c5ed392db05"
+  },
+  "signal_safety": {
+    "test_engine_signal_events": [
+      {
+        "event": "owned_engine_signalled",
+        "python": "3.9.6",
+        "service_pid": 70173,
+        "engine_pid": 70194,
+        "verified_uid": 501,
+        "verified_parent": 70173,
+        "signal": "SIGKILL"
+      },
+      {
+        "event": "owned_engine_signalled",
+        "python": "3.14.6",
+        "service_pid": 71374,
+        "engine_pid": 71375,
+        "verified_uid": 501,
+        "verified_parent": 71374,
+        "signal": "SIGKILL"
+      },
+      {
+        "event": "owned_engine_signalled",
+        "python": "3.14.6",
+        "service_pid": 70169,
+        "engine_pid": 70170,
+        "verified_uid": 501,
+        "verified_parent": 70169,
+        "signal": "SIGKILL"
+      },
+      {
+        "event": "owned_engine_signalled",
+        "python": "3.14.6",
+        "service_pid": 74821,
+        "engine_pid": 74822,
+        "verified_uid": 501,
+        "verified_parent": 74821,
+        "signal": "SIGKILL"
+      },
+      {
+        "event": "owned_engine_signalled",
+        "python": "3.9.6",
+        "service_pid": 74830,
+        "engine_pid": 74833,
+        "verified_uid": 501,
+        "verified_parent": 74830,
+        "signal": "SIGKILL"
+      }
+    ],
+    "explicit_kill_target": "only an engine_pid verified against our live Popen parent, xsm-net executable name and effective UID",
+    "unrelated_user_process_signals": 0,
+    "all_recorded_test_owned_pids_absent_after_cleanup": true,
+    "recorded_owned_pids": [
+      70169,
+      70170,
+      70173,
+      70194,
+      70213,
+      70215,
+      70224,
+      70246,
+      71374,
+      71375,
+      74821,
+      74822,
+      74830,
+      74833,
+      74844,
+      74846,
+      74863,
+      74874
+    ]
+  },
+  "limitations": [
+    "F1 uses server-level RPC fixtures plus real Rust cryptography, not actual QUIC network switching or physical machines.",
+    "The zero-exit/cleanup start race and synchronous process-poll window are deterministic unit fixtures; the actual CLI test waits for the first daemon cleanup before invoking start.",
+    "The actual CLI crash occurs after one init/invite completes; byte equality/count checks show restart does not replay those business operations. In-flight arbitrary business-operation recovery is outside this regression.",
+    "No full suite or further model run was performed. No stronger Byzantine/offline-fork, administrator or login requirement was added.",
+    "The original frozen review is unchanged; these are executor-generated test/negative-check results, not an Opus re-approval.",
+    "Broader application integration, physical machine/NAT/relay/proxy journeys and ADR-0021 completion are outside this closure."
+  ],
+  "whole_ADR_complete": false,
+  "full_regression_run": false
+}

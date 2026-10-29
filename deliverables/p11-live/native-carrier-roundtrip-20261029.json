@@ -1,0 +1,1404 @@
+{
+  "schema_version": 1,
+  "run_id": "p11-native-3d7015f165cb",
+  "recorded_at_utc": "2026-10-28T17:00:31.883106+00:00",
+  "status": "carrier-native-fixture-passed; P11/G11/G12 completion not claimed",
+  "local_hostname": "Jaesolui-MacBookPro.local",
+  "peer_hostname": "Jaesolui-Macmini.local",
+  "peer_alias": "jaesol-macmini",
+  "task_request_id": "P11-QA-40c1afc34bbd43c4",
+  "task": {
+    "claim": "2+2=5",
+    "expected_review": "false; corrected sum 4",
+    "body_disclosure": "task marker and arithmetic only"
+  },
+  "actual_agent_roundtrip": true,
+  "actual_native_calls": 9,
+  "distinct_native_conversations": 9,
+  "native_runtime": {
+    "cli": "/opt/homebrew/bin/codex",
+    "version": "codex-cli 0.163.0",
+    "profile": ".codex-3",
+    "authentication": "existing ChatGPT subscription login, confirmed by native login status",
+    "API_key_values_read_by_agent": false,
+    "paid_API_key_route_used": false,
+    "ephemeral": true,
+    "config_sources": "--ignore-user-config --ignore-rules; invocation-only restrictions",
+    "disabled_features": [
+      "hooks",
+      "plugins",
+      "apps",
+      "shell_tool",
+      "shell_snapshot",
+      "remote_plugin"
+    ],
+    "permissions": "read-only sandbox; approval_policy=never; no tool events",
+    "model": "CLI default, not selected or priced from memory",
+    "session_semantics": "new ephemeral native conversation per model call; task context explicitly supplied; no native resume or memory-continuity claim"
+  },
+  "preflight": {
+    "current_hostname_verified": true,
+    "peer_hostname_verified": true,
+    "bidirectional_SSH_hostname": "Jaesolui-MacBookPro.local",
+    "claude_status_probe": "under explicit profile-dir/empty setting sources, no subscription auth was established; no login attempted",
+    "codex_subscription_profiles": {
+      ".codex": {
+        "returncode": 0,
+        "chatgpt_subscription": true,
+        "api_key_method": false,
+        "logged_in": true
+      },
+      ".codex-3": {
+        "returncode": 0,
+        "chatgpt_subscription": true,
+        "api_key_method": false,
+        "logged_in": true
+      }
+    },
+    "tailscale_peer": {
+      "backend": "Running",
+      "self_ips": [
+        "100.77.24.16",
+        "fd7a:115c:a1e0::2501:18e9"
+      ],
+      "peer_to_current": [
+        {
+          "HostName": "Jaesol의 MacBook Pro",
+          "DNSName": "jaesol-macbookpro.tail13f006.ts.net.",
+          "TailscaleIPs": [
+            "100.123.30.11",
+            "fd7a:115c:a1e0::2d34:1e0c"
+          ],
+          "CurAddr": "192.168.0.11:41641",
+          "Relay": "tok",
+          "Online": true
+        }
+      ]
+    },
+    "hostkey_policy": "StrictHostKeyChecking=yes; UpdateHostKeys=no; existing trust only"
+  },
+  "results": [
+    {
+      "candidate": "A-LAN-SSH",
+      "task_request_id": "P11-QA-40c1afc34bbd43c4",
+      "same_short_task": true,
+      "scope": "carrier fixture; no xsm/product-scope authorization",
+      "passed": true,
+      "handles": [
+        {
+          "local_ssh_pid": 99124,
+          "alive_after_ready": true,
+          "peer_driver": {
+            "ready": true,
+            "hostname": "Jaesolui-Macmini.local",
+            "driver_pid": 68327,
+            "driver_lstart": "Thu Oct 29 01:44:33 2026",
+            "root": "/private/tmp/p11-native-2nemv2of/A-LAN-SSH",
+            "ssh_connection": "192.168.0.11 58281 192.168.0.18 22",
+            "candidate": "A-LAN-SSH"
+          },
+          "startup_ms": 433.711
+        },
+        {
+          "local_ssh_pid": 99365,
+          "alive_after_ready": true,
+          "peer_driver": {
+            "ready": true,
+            "hostname": "Jaesolui-Macmini.local",
+            "driver_pid": 69048,
+            "driver_lstart": "Thu Oct 29 01:44:46 2026",
+            "root": "/private/tmp/p11-native-2nemv2of/A-LAN-SSH",
+            "ssh_connection": "192.168.0.11 58290 192.168.0.18 22",
+            "candidate": "A-LAN-SSH"
+          },
+          "startup_ms": 309.461
+        }
+      ],
+      "closed_handles": [
+        {
+          "ssh_exit_code": 0,
+          "ssh_process_exited": true
+        },
+        {
+          "ssh_exit_code": 0,
+          "ssh_process_exited": true
+        }
+      ],
+      "id_conflict_refused": true,
+      "native_calls": 3,
+      "phases": [
+        {
+          "phase": "first",
+          "roundtrip_ms": 6137.471,
+          "native_cli_ms": 6095.11,
+          "native_call_this_phase": true,
+          "reply_to": "P11-QA-40c1afc34bbd43c4",
+          "input_sha256": "837ccd0b9c717c72343451a35cb3aea070e1fcab5e473b4144e17e4e1656dc0e",
+          "actual_json_answer": {
+            "request_id": "P11-QA-40c1afc34bbd43c4",
+            "phase": "first",
+            "claim_valid": false,
+            "corrected_sum": 4,
+            "counterexample": "사과 2개에 2개를 더하면 5개가 아니라 4개다."
+          },
+          "native_conversation": "01a18366-2ce2-7182-ad93-735b0a10c1cb",
+          "native_cli_version": "codex-cli 0.163.0",
+          "native_handle": {
+            "pid": 68337,
+            "lstart": "Thu Oct 29 01:44:33 2026",
+            "alive_after_start": true,
+            "argv": [
+              "/opt/homebrew/bin/codex",
+              "exec",
+              "--ignore-user-config",
+              "--ignore-rules",
+              "--ephemeral",
+              "--skip-git-repo-check",
+              "--sandbox",
+              "read-only",
+              "--json",
+              "--disable",
+              "hooks",
+              "--disable",
+              "plugins",
+              "--disable",
+              "apps",
+              "--disable",
+              "shell_tool",
+              "--disable",
+              "shell_snapshot",
+              "--disable",
+              "remote_plugin",
+              "-c",
+              "approval_policy=\"never\"",
+              "-c",
+              "project_doc_max_bytes=0",
+              "-c",
+              "log_dir=\"/private/tmp/p11-native-2nemv2of/A-LAN-SSH/native/first/logs\"",
+              "-c",
+              "model_instructions_file=\"/private/tmp/p11-native-2nemv2of/A-LAN-SSH/native/first/instructions.txt\"",
+              "--output-schema",
+              "/private/tmp/p11-native-2nemv2of/A-LAN-SSH/native/first/schema.json",
+              "--output-last-message",
+              "/private/tmp/p11-native-2nemv2of/A-LAN-SSH/native/first/last-message.json",
+              "-"
+            ],
+            "profile": ".codex-3"
+          },
+          "native_process_exited": true,
+          "tool_events": 0,
+          "settings_metadata_unchanged_during_native_turn": true,
+          "native_continuation": "fresh ephemeral exec; prior task context supplied in request, not native resume",
+          "replayed_without_model_rerun": false
+        },
+        {
+          "phase": "followup",
+          "roundtrip_ms": 6712.996,
+          "native_cli_ms": 6602.397,
+          "native_call_this_phase": true,
+          "reply_to": "P11-QA-40c1afc34bbd43c4",
+          "input_sha256": "5e53031fdd69a93f12de9b4963d6af66ca6b9b70d5a2a2227a8b8f2d722c40d9",
+          "actual_json_answer": {
+            "request_id": "P11-QA-40c1afc34bbd43c4",
+            "phase": "followup",
+            "claim_valid": false,
+            "corrected_sum": 4,
+            "counterexample": "사과 2개에 2개를 더하면 5개가 아니라 4개다."
+          },
+          "native_conversation": "01a18366-440f-71a2-9556-43bbdb714ef3",
+          "native_cli_version": "codex-cli 0.163.0",
+          "native_handle": {
+            "pid": 68639,
+            "lstart": "Thu Oct 29 01:44:39 2026",
+            "alive_after_start": true,
+            "argv": [
+              "/opt/homebrew/bin/codex",
+              "exec",
+              "--ignore-user-config",
+              "--ignore-rules",
+              "--ephemeral",
+              "--skip-git-repo-check",
+              "--sandbox",
+              "read-only",
+              "--json",
+              "--disable",
+              "hooks",
+              "--disable",
+              "plugins",
+              "--disable",
+              "apps",
+              "--disable",
+              "shell_tool",
+              "--disable",
+              "shell_snapshot",
+              "--disable",
+              "remote_plugin",
+              "-c",
+              "approval_policy=\"never\"",
+              "-c",
+              "project_doc_max_bytes=0",
+              "-c",
+              "log_dir=\"/private/tmp/p11-native-2nemv2of/A-LAN-SSH/native/followup/logs\"",
+              "-c",
+              "model_instructions_file=\"/private/tmp/p11-native-2nemv2of/A-LAN-SSH/native/followup/instructions.txt\"",
+              "--output-schema",
+              "/private/tmp/p11-native-2nemv2of/A-LAN-SSH/native/followup/schema.json",
+              "--output-last-message",
+              "/private/tmp/p11-native-2nemv2of/A-LAN-SSH/native/followup/last-message.json",
+              "-"
+            ],
+            "profile": ".codex-3"
+          },
+          "native_process_exited": true,
+          "tool_events": 0,
+          "settings_metadata_unchanged_during_native_turn": true,
+          "native_continuation": "fresh ephemeral exec; prior task context supplied in request, not native resume",
+          "replayed_without_model_rerun": false
+        },
+        {
+          "phase": "reconnect-recovery",
+          "roundtrip_ms": 10.001,
+          "native_cli_ms": 6602.397,
+          "native_call_this_phase": false,
+          "reply_to": "P11-QA-40c1afc34bbd43c4",
+          "input_sha256": "5e53031fdd69a93f12de9b4963d6af66ca6b9b70d5a2a2227a8b8f2d722c40d9",
+          "actual_json_answer": {
+            "request_id": "P11-QA-40c1afc34bbd43c4",
+            "phase": "followup",
+            "claim_valid": false,
+            "corrected_sum": 4,
+            "counterexample": "사과 2개에 2개를 더하면 5개가 아니라 4개다."
+          },
+          "native_conversation": "01a18366-440f-71a2-9556-43bbdb714ef3",
+          "native_cli_version": "codex-cli 0.163.0",
+          "native_handle": {
+            "pid": 68639,
+            "lstart": "Thu Oct 29 01:44:39 2026",
+            "alive_after_start": true,
+            "argv": [
+              "/opt/homebrew/bin/codex",
+              "exec",
+              "--ignore-user-config",
+              "--ignore-rules",
+              "--ephemeral",
+              "--skip-git-repo-check",
+              "--sandbox",
+              "read-only",
+              "--json",
+              "--disable",
+              "hooks",
+              "--disable",
+              "plugins",
+              "--disable",
+              "apps",
+              "--disable",
+              "shell_tool",
+              "--disable",
+              "shell_snapshot",
+              "--disable",
+              "remote_plugin",
+              "-c",
+              "approval_policy=\"never\"",
+              "-c",
+              "project_doc_max_bytes=0",
+              "-c",
+              "log_dir=\"/private/tmp/p11-native-2nemv2of/A-LAN-SSH/native/followup/logs\"",
+              "-c",
+              "model_instructions_file=\"/private/tmp/p11-native-2nemv2of/A-LAN-SSH/native/followup/instructions.txt\"",
+              "--output-schema",
+              "/private/tmp/p11-native-2nemv2of/A-LAN-SSH/native/followup/schema.json",
+              "--output-last-message",
+              "/private/tmp/p11-native-2nemv2of/A-LAN-SSH/native/followup/last-message.json",
+              "-"
+            ],
+            "profile": ".codex-3"
+          },
+          "native_process_exited": true,
+          "tool_events": 0,
+          "settings_metadata_unchanged_during_native_turn": true,
+          "native_continuation": "fresh ephemeral exec; prior task context supplied in request, not native resume",
+          "replayed_without_model_rerun": true
+        },
+        {
+          "phase": "after-reconnect-new-native-turn",
+          "roundtrip_ms": 5409.321,
+          "native_cli_ms": 5266.621,
+          "native_call_this_phase": true,
+          "reply_to": "P11-QA-40c1afc34bbd43c4",
+          "input_sha256": "d0ec0bbe2f6a8b2243b003aeabdaffca491b8dacf6f229d8872cb3c929ea03be",
+          "actual_json_answer": {
+            "request_id": "P11-QA-40c1afc34bbd43c4",
+            "phase": "after-reconnect",
+            "claim_valid": false,
+            "corrected_sum": 4,
+            "counterexample": "사과 2개에 2개를 더하면 5개가 아니라 4개다."
+          },
+          "native_conversation": "01a18366-5f95-7ee0-abaf-7e27aaa0d52a",
+          "native_cli_version": "codex-cli 0.163.0",
+          "native_handle": {
+            "pid": 69050,
+            "lstart": "Thu Oct 29 01:44:46 2026",
+            "alive_after_start": true,
+            "argv": [
+              "/opt/homebrew/bin/codex",
+              "exec",
+              "--ignore-user-config",
+              "--ignore-rules",
+              "--ephemeral",
+              "--skip-git-repo-check",
+              "--sandbox",
+              "read-only",
+              "--json",
+              "--disable",
+              "hooks",
+              "--disable",
+              "plugins",
+              "--disable",
+              "apps",
+              "--disable",
+              "shell_tool",
+              "--disable",
+              "shell_snapshot",
+              "--disable",
+              "remote_plugin",
+              "-c",
+              "approval_policy=\"never\"",
+              "-c",
+              "project_doc_max_bytes=0",
+              "-c",
+              "log_dir=\"/private/tmp/p11-native-2nemv2of/A-LAN-SSH/native/after-reconnect/logs\"",
+              "-c",
+              "model_instructions_file=\"/private/tmp/p11-native-2nemv2of/A-LAN-SSH/native/after-reconnect/instructions.txt\"",
+              "--output-schema",
+              "/private/tmp/p11-native-2nemv2of/A-LAN-SSH/native/after-reconnect/schema.json",
+              "--output-last-message",
+              "/private/tmp/p11-native-2nemv2of/A-LAN-SSH/native/after-reconnect/last-message.json",
+              "-"
+            ],
+            "profile": ".codex-3"
+          },
+          "native_process_exited": true,
+          "tool_events": 0,
+          "settings_metadata_unchanged_during_native_turn": true,
+          "native_continuation": "fresh ephemeral exec; prior task context supplied in request, not native resume",
+          "replayed_without_model_rerun": false
+        }
+      ]
+    },
+    {
+      "candidate": "D-Tailscale-SSH",
+      "task_request_id": "P11-QA-40c1afc34bbd43c4",
+      "same_short_task": true,
+      "scope": "carrier fixture; no xsm/product-scope authorization",
+      "passed": true,
+      "handles": [
+        {
+          "local_ssh_pid": 99405,
+          "alive_after_ready": true,
+          "peer_driver": {
+            "ready": true,
+            "hostname": "Jaesolui-Macmini.local",
+            "driver_pid": 69447,
+            "driver_lstart": "Thu Oct 29 01:44:52 2026",
+            "root": "/private/tmp/p11-native-2nemv2of/D-Tailscale-SSH",
+            "ssh_connection": "100.123.30.11 58293 100.77.24.16 22",
+            "candidate": "D-Tailscale-SSH"
+          },
+          "startup_ms": 318.606
+        },
+        {
+          "local_ssh_pid": 99521,
+          "alive_after_ready": true,
+          "peer_driver": {
+            "ready": true,
+            "hostname": "Jaesolui-Macmini.local",
+            "driver_pid": 69959,
+            "driver_lstart": "Thu Oct 29 01:45:03 2026",
+            "root": "/private/tmp/p11-native-2nemv2of/D-Tailscale-SSH",
+            "ssh_connection": "100.123.30.11 58297 100.77.24.16 22",
+            "candidate": "D-Tailscale-SSH"
+          },
+          "startup_ms": 381.497
+        }
+      ],
+      "closed_handles": [
+        {
+          "ssh_exit_code": 0,
+          "ssh_process_exited": true
+        },
+        {
+          "ssh_exit_code": 0,
+          "ssh_process_exited": true
+        }
+      ],
+      "id_conflict_refused": true,
+      "native_calls": 3,
+      "phases": [
+        {
+          "phase": "first",
+          "roundtrip_ms": 4971.326,
+          "native_cli_ms": 4927.632,
+          "native_call_this_phase": true,
+          "reply_to": "P11-QA-40c1afc34bbd43c4",
+          "input_sha256": "837ccd0b9c717c72343451a35cb3aea070e1fcab5e473b4144e17e4e1656dc0e",
+          "actual_json_answer": {
+            "request_id": "P11-QA-40c1afc34bbd43c4",
+            "phase": "first",
+            "claim_valid": false,
+            "corrected_sum": 4,
+            "counterexample": "사과 2개에 2개를 더하면 5개가 아니라 4개다."
+          },
+          "native_conversation": "01a18366-7626-7461-a309-0ebb98e6503c",
+          "native_cli_version": "codex-cli 0.163.0",
+          "native_handle": {
+            "pid": 69449,
+            "lstart": "Thu Oct 29 01:44:52 2026",
+            "alive_after_start": true,
+            "argv": [
+              "/opt/homebrew/bin/codex",
+              "exec",
+              "--ignore-user-config",
+              "--ignore-rules",
+              "--ephemeral",
+              "--skip-git-repo-check",
+              "--sandbox",
+              "read-only",
+              "--json",
+              "--disable",
+              "hooks",
+              "--disable",
+              "plugins",
+              "--disable",
+              "apps",
+              "--disable",
+              "shell_tool",
+              "--disable",
+              "shell_snapshot",
+              "--disable",
+              "remote_plugin",
+              "-c",
+              "approval_policy=\"never\"",
+              "-c",
+              "project_doc_max_bytes=0",
+              "-c",
+              "log_dir=\"/private/tmp/p11-native-2nemv2of/D-Tailscale-SSH/native/first/logs\"",
+              "-c",
+              "model_instructions_file=\"/private/tmp/p11-native-2nemv2of/D-Tailscale-SSH/native/first/instructions.txt\"",
+              "--output-schema",
+              "/private/tmp/p11-native-2nemv2of/D-Tailscale-SSH/native/first/schema.json",
+              "--output-last-message",
+              "/private/tmp/p11-native-2nemv2of/D-Tailscale-SSH/native/first/last-message.json",
+              "-"
+            ],
+            "profile": ".codex-3"
+          },
+          "native_process_exited": true,
+          "tool_events": 0,
+          "settings_metadata_unchanged_during_native_turn": true,
+          "native_continuation": "fresh ephemeral exec; prior task context supplied in request, not native resume",
+          "replayed_without_model_rerun": false
+        },
+        {
+          "phase": "followup",
+          "roundtrip_ms": 6304.035,
+          "native_cli_ms": 6248.82,
+          "native_call_this_phase": true,
+          "reply_to": "P11-QA-40c1afc34bbd43c4",
+          "input_sha256": "5e53031fdd69a93f12de9b4963d6af66ca6b9b70d5a2a2227a8b8f2d722c40d9",
+          "actual_json_answer": {
+            "request_id": "P11-QA-40c1afc34bbd43c4",
+            "phase": "followup",
+            "claim_valid": false,
+            "corrected_sum": 4,
+            "counterexample": "사과 2개에 2개를 더하면 5개가 아니라 4개다."
+          },
+          "native_conversation": "01a18366-8952-7b33-987b-4d013244384a",
+          "native_cli_version": "codex-cli 0.163.0",
+          "native_handle": {
+            "pid": 69605,
+            "lstart": "Thu Oct 29 01:44:57 2026",
+            "alive_after_start": true,
+            "argv": [
+              "/opt/homebrew/bin/codex",
+              "exec",
+              "--ignore-user-config",
+              "--ignore-rules",
+              "--ephemeral",
+              "--skip-git-repo-check",
+              "--sandbox",
+              "read-only",
+              "--json",
+              "--disable",
+              "hooks",
+              "--disable",
+              "plugins",
+              "--disable",
+              "apps",
+              "--disable",
+              "shell_tool",
+              "--disable",
+              "shell_snapshot",
+              "--disable",
+              "remote_plugin",
+              "-c",
+              "approval_policy=\"never\"",
+              "-c",
+              "project_doc_max_bytes=0",
+              "-c",
+              "log_dir=\"/private/tmp/p11-native-2nemv2of/D-Tailscale-SSH/native/followup/logs\"",
+              "-c",
+              "model_instructions_file=\"/private/tmp/p11-native-2nemv2of/D-Tailscale-SSH/native/followup/instructions.txt\"",
+              "--output-schema",
+              "/private/tmp/p11-native-2nemv2of/D-Tailscale-SSH/native/followup/schema.json",
+              "--output-last-message",
+              "/private/tmp/p11-native-2nemv2of/D-Tailscale-SSH/native/followup/last-message.json",
+              "-"
+            ],
+            "profile": ".codex-3"
+          },
+          "native_process_exited": true,
+          "tool_events": 0,
+          "settings_metadata_unchanged_during_native_turn": true,
+          "native_continuation": "fresh ephemeral exec; prior task context supplied in request, not native resume",
+          "replayed_without_model_rerun": false
+        },
+        {
+          "phase": "reconnect-recovery",
+          "roundtrip_ms": 12.623,
+          "native_cli_ms": 6248.82,
+          "native_call_this_phase": false,
+          "reply_to": "P11-QA-40c1afc34bbd43c4",
+          "input_sha256": "5e53031fdd69a93f12de9b4963d6af66ca6b9b70d5a2a2227a8b8f2d722c40d9",
+          "actual_json_answer": {
+            "request_id": "P11-QA-40c1afc34bbd43c4",
+            "phase": "followup",
+            "claim_valid": false,
+            "corrected_sum": 4,
+            "counterexample": "사과 2개에 2개를 더하면 5개가 아니라 4개다."
+          },
+          "native_conversation": "01a18366-8952-7b33-987b-4d013244384a",
+          "native_cli_version": "codex-cli 0.163.0",
+          "native_handle": {
+            "pid": 69605,
+            "lstart": "Thu Oct 29 01:44:57 2026",
+            "alive_after_start": true,
+            "argv": [
+              "/opt/homebrew/bin/codex",
+              "exec",
+              "--ignore-user-config",
+              "--ignore-rules",
+              "--ephemeral",
+              "--skip-git-repo-check",
+              "--sandbox",
+              "read-only",
+              "--json",
+              "--disable",
+              "hooks",
+              "--disable",
+              "plugins",
+              "--disable",
+              "apps",
+              "--disable",
+              "shell_tool",
+              "--disable",
+              "shell_snapshot",
+              "--disable",
+              "remote_plugin",
+              "-c",
+              "approval_policy=\"never\"",
+              "-c",
+              "project_doc_max_bytes=0",
+              "-c",
+              "log_dir=\"/private/tmp/p11-native-2nemv2of/D-Tailscale-SSH/native/followup/logs\"",
+              "-c",
+              "model_instructions_file=\"/private/tmp/p11-native-2nemv2of/D-Tailscale-SSH/native/followup/instructions.txt\"",
+              "--output-schema",
+              "/private/tmp/p11-native-2nemv2of/D-Tailscale-SSH/native/followup/schema.json",
+              "--output-last-message",
+              "/private/tmp/p11-native-2nemv2of/D-Tailscale-SSH/native/followup/last-message.json",
+              "-"
+            ],
+            "profile": ".codex-3"
+          },
+          "native_process_exited": true,
+          "tool_events": 0,
+          "settings_metadata_unchanged_during_native_turn": true,
+          "native_continuation": "fresh ephemeral exec; prior task context supplied in request, not native resume",
+          "replayed_without_model_rerun": true
+        },
+        {
+          "phase": "after-reconnect-new-native-turn",
+          "roundtrip_ms": 6277.135,
+          "native_cli_ms": 6104.864,
+          "native_call_this_phase": true,
+          "reply_to": "P11-QA-40c1afc34bbd43c4",
+          "input_sha256": "d0ec0bbe2f6a8b2243b003aeabdaffca491b8dacf6f229d8872cb3c929ea03be",
+          "actual_json_answer": {
+            "request_id": "P11-QA-40c1afc34bbd43c4",
+            "phase": "after-reconnect",
+            "claim_valid": false,
+            "corrected_sum": 4,
+            "counterexample": "사과 2개에 2개를 더하면 5개가 아니라 4개다."
+          },
+          "native_conversation": "01a18366-a3a0-78d1-b979-32eb9d167024",
+          "native_cli_version": "codex-cli 0.163.0",
+          "native_handle": {
+            "pid": 69961,
+            "lstart": "Thu Oct 29 01:45:04 2026",
+            "alive_after_start": true,
+            "argv": [
+              "/opt/homebrew/bin/codex",
+              "exec",
+              "--ignore-user-config",
+              "--ignore-rules",
+              "--ephemeral",
+              "--skip-git-repo-check",
+              "--sandbox",
+              "read-only",
+              "--json",
+              "--disable",
+              "hooks",
+              "--disable",
+              "plugins",
+              "--disable",
+              "apps",
+              "--disable",
+              "shell_tool",
+              "--disable",
+              "shell_snapshot",
+              "--disable",
+              "remote_plugin",
+              "-c",
+              "approval_policy=\"never\"",
+              "-c",
+              "project_doc_max_bytes=0",
+              "-c",
+              "log_dir=\"/private/tmp/p11-native-2nemv2of/D-Tailscale-SSH/native/after-reconnect/logs\"",
+              "-c",
+              "model_instructions_file=\"/private/tmp/p11-native-2nemv2of/D-Tailscale-SSH/native/after-reconnect/instructions.txt\"",
+              "--output-schema",
+              "/private/tmp/p11-native-2nemv2of/D-Tailscale-SSH/native/after-reconnect/schema.json",
+              "--output-last-message",
+              "/private/tmp/p11-native-2nemv2of/D-Tailscale-SSH/native/after-reconnect/last-message.json",
+              "-"
+            ],
+            "profile": ".codex-3"
+          },
+          "native_process_exited": true,
+          "tool_events": 0,
+          "settings_metadata_unchanged_during_native_turn": true,
+          "native_continuation": "fresh ephemeral exec; prior task context supplied in request, not native resume",
+          "replayed_without_model_rerun": false
+        }
+      ]
+    },
+    {
+      "candidate": "B-private-TCP",
+      "task_request_id": "P11-QA-40c1afc34bbd43c4",
+      "same_short_task": true,
+      "scope": "carrier fixture; no xsm/product-scope authorization",
+      "passed": true,
+      "handles": [
+        {
+          "local_ssh_pid": 99616,
+          "alive_after_ready": true,
+          "peer_driver": {
+            "ready": true,
+            "hostname": "Jaesolui-Macmini.local",
+            "driver_pid": 70244,
+            "driver_lstart": "Thu Oct 29 01:45:10 2026",
+            "root": "/private/tmp/p11-native-2nemv2of/B-private-TCP",
+            "ssh_connection": "100.123.30.11 58303 100.77.24.16 22",
+            "candidate": "B-private-TCP",
+            "port": 49909,
+            "bind": "192.168.0.18",
+            "public_listener": false
+          },
+          "startup_ms": 481.115
+        },
+        {
+          "local_ssh_pid": 99887,
+          "alive_after_ready": true,
+          "peer_driver": {
+            "ready": true,
+            "hostname": "Jaesolui-Macmini.local",
+            "driver_pid": 70899,
+            "driver_lstart": "Thu Oct 29 01:45:24 2026",
+            "root": "/private/tmp/p11-native-2nemv2of/B-private-TCP",
+            "ssh_connection": "100.123.30.11 58311 100.77.24.16 22",
+            "candidate": "B-private-TCP",
+            "port": 49941,
+            "bind": "192.168.0.18",
+            "public_listener": false
+          },
+          "startup_ms": 525.072
+        }
+      ],
+      "closed_handles": [
+        {
+          "ssh_exit_code": 0,
+          "ssh_process_exited": true
+        },
+        {
+          "ssh_exit_code": 0,
+          "ssh_process_exited": true
+        }
+      ],
+      "id_conflict_refused": true,
+      "native_calls": 3,
+      "phases": [
+        {
+          "phase": "first",
+          "roundtrip_ms": 5816.222,
+          "native_cli_ms": 5748.861,
+          "native_call_this_phase": true,
+          "reply_to": "P11-QA-40c1afc34bbd43c4",
+          "input_sha256": "837ccd0b9c717c72343451a35cb3aea070e1fcab5e473b4144e17e4e1656dc0e",
+          "actual_json_answer": {
+            "request_id": "P11-QA-40c1afc34bbd43c4",
+            "phase": "first",
+            "claim_valid": false,
+            "corrected_sum": 4,
+            "counterexample": "사과 2개에 2개를 더하면 5개가 아니라 4개다."
+          },
+          "native_conversation": "01a18366-be65-7783-90df-5df1e2effa96",
+          "native_cli_version": "codex-cli 0.163.0",
+          "native_handle": {
+            "pid": 70289,
+            "lstart": "Thu Oct 29 01:45:10 2026",
+            "alive_after_start": true,
+            "argv": [
+              "/opt/homebrew/bin/codex",
+              "exec",
+              "--ignore-user-config",
+              "--ignore-rules",
+              "--ephemeral",
+              "--skip-git-repo-check",
+              "--sandbox",
+              "read-only",
+              "--json",
+              "--disable",
+              "hooks",
+              "--disable",
+              "plugins",
+              "--disable",
+              "apps",
+              "--disable",
+              "shell_tool",
+              "--disable",
+              "shell_snapshot",
+              "--disable",
+              "remote_plugin",
+              "-c",
+              "approval_policy=\"never\"",
+              "-c",
+              "project_doc_max_bytes=0",
+              "-c",
+              "log_dir=\"/private/tmp/p11-native-2nemv2of/B-private-TCP/native/first/logs\"",
+              "-c",
+              "model_instructions_file=\"/private/tmp/p11-native-2nemv2of/B-private-TCP/native/first/instructions.txt\"",
+              "--output-schema",
+              "/private/tmp/p11-native-2nemv2of/B-private-TCP/native/first/schema.json",
+              "--output-last-message",
+              "/private/tmp/p11-native-2nemv2of/B-private-TCP/native/first/last-message.json",
+              "-"
+            ],
+            "profile": ".codex-3"
+          },
+          "native_process_exited": true,
+          "tool_events": 0,
+          "settings_metadata_unchanged_during_native_turn": true,
+          "native_continuation": "fresh ephemeral exec; prior task context supplied in request, not native resume",
+          "replayed_without_model_rerun": false
+        },
+        {
+          "phase": "followup",
+          "roundtrip_ms": 7377.91,
+          "native_cli_ms": 7317.071,
+          "native_call_this_phase": true,
+          "reply_to": "P11-QA-40c1afc34bbd43c4",
+          "input_sha256": "5e53031fdd69a93f12de9b4963d6af66ca6b9b70d5a2a2227a8b8f2d722c40d9",
+          "actual_json_answer": {
+            "request_id": "P11-QA-40c1afc34bbd43c4",
+            "phase": "followup",
+            "claim_valid": false,
+            "corrected_sum": 4,
+            "counterexample": "사과 2개에 2개를 더하면 5개가 아니라 4개다."
+          },
+          "native_conversation": "01a18366-d502-7d90-833a-f48bae166167",
+          "native_cli_version": "codex-cli 0.163.0",
+          "native_handle": {
+            "pid": 70683,
+            "lstart": "Thu Oct 29 01:45:16 2026",
+            "alive_after_start": true,
+            "argv": [
+              "/opt/homebrew/bin/codex",
+              "exec",
+              "--ignore-user-config",
+              "--ignore-rules",
+              "--ephemeral",
+              "--skip-git-repo-check",
+              "--sandbox",
+              "read-only",
+              "--json",
+              "--disable",
+              "hooks",
+              "--disable",
+              "plugins",
+              "--disable",
+              "apps",
+              "--disable",
+              "shell_tool",
+              "--disable",
+              "shell_snapshot",
+              "--disable",
+              "remote_plugin",
+              "-c",
+              "approval_policy=\"never\"",
+              "-c",
+              "project_doc_max_bytes=0",
+              "-c",
+              "log_dir=\"/private/tmp/p11-native-2nemv2of/B-private-TCP/native/followup/logs\"",
+              "-c",
+              "model_instructions_file=\"/private/tmp/p11-native-2nemv2of/B-private-TCP/native/followup/instructions.txt\"",
+              "--output-schema",
+              "/private/tmp/p11-native-2nemv2of/B-private-TCP/native/followup/schema.json",
+              "--output-last-message",
+              "/private/tmp/p11-native-2nemv2of/B-private-TCP/native/followup/last-message.json",
+              "-"
+            ],
+            "profile": ".codex-3"
+          },
+          "native_process_exited": true,
+          "tool_events": 0,
+          "settings_metadata_unchanged_during_native_turn": true,
+          "native_continuation": "fresh ephemeral exec; prior task context supplied in request, not native resume",
+          "replayed_without_model_rerun": false
+        },
+        {
+          "phase": "reconnect-recovery",
+          "roundtrip_ms": 19.796,
+          "native_cli_ms": 7317.071,
+          "native_call_this_phase": false,
+          "reply_to": "P11-QA-40c1afc34bbd43c4",
+          "input_sha256": "5e53031fdd69a93f12de9b4963d6af66ca6b9b70d5a2a2227a8b8f2d722c40d9",
+          "actual_json_answer": {
+            "request_id": "P11-QA-40c1afc34bbd43c4",
+            "phase": "followup",
+            "claim_valid": false,
+            "corrected_sum": 4,
+            "counterexample": "사과 2개에 2개를 더하면 5개가 아니라 4개다."
+          },
+          "native_conversation": "01a18366-d502-7d90-833a-f48bae166167",
+          "native_cli_version": "codex-cli 0.163.0",
+          "native_handle": {
+            "pid": 70683,
+            "lstart": "Thu Oct 29 01:45:16 2026",
+            "alive_after_start": true,
+            "argv": [
+              "/opt/homebrew/bin/codex",
+              "exec",
+              "--ignore-user-config",
+              "--ignore-rules",
+              "--ephemeral",
+              "--skip-git-repo-check",
+              "--sandbox",
+              "read-only",
+              "--json",
+              "--disable",
+              "hooks",
+              "--disable",
+              "plugins",
+              "--disable",
+              "apps",
+              "--disable",
+              "shell_tool",
+              "--disable",
+              "shell_snapshot",
+              "--disable",
+              "remote_plugin",
+              "-c",
+              "approval_policy=\"never\"",
+              "-c",
+              "project_doc_max_bytes=0",
+              "-c",
+              "log_dir=\"/private/tmp/p11-native-2nemv2of/B-private-TCP/native/followup/logs\"",
+              "-c",
+              "model_instructions_file=\"/private/tmp/p11-native-2nemv2of/B-private-TCP/native/followup/instructions.txt\"",
+              "--output-schema",
+              "/private/tmp/p11-native-2nemv2of/B-private-TCP/native/followup/schema.json",
+              "--output-last-message",
+              "/private/tmp/p11-native-2nemv2of/B-private-TCP/native/followup/last-message.json",
+              "-"
+            ],
+            "profile": ".codex-3"
+          },
+          "native_process_exited": true,
+          "tool_events": 0,
+          "settings_metadata_unchanged_during_native_turn": true,
+          "native_continuation": "fresh ephemeral exec; prior task context supplied in request, not native resume",
+          "replayed_without_model_rerun": true
+        },
+        {
+          "phase": "after-reconnect-new-native-turn",
+          "roundtrip_ms": 5657.27,
+          "native_cli_ms": 5598.248,
+          "native_call_this_phase": true,
+          "reply_to": "P11-QA-40c1afc34bbd43c4",
+          "input_sha256": "d0ec0bbe2f6a8b2243b003aeabdaffca491b8dacf6f229d8872cb3c929ea03be",
+          "actual_json_answer": {
+            "request_id": "P11-QA-40c1afc34bbd43c4",
+            "phase": "after-reconnect",
+            "claim_valid": false,
+            "corrected_sum": 4,
+            "counterexample": "사과 2개에 2개를 더하면 5개가 아니라 4개다."
+          },
+          "native_conversation": "01a18366-f426-70c3-a51f-90fe4b7ec7af",
+          "native_cli_version": "codex-cli 0.163.0",
+          "native_handle": {
+            "pid": 70920,
+            "lstart": "Thu Oct 29 01:45:24 2026",
+            "alive_after_start": true,
+            "argv": [
+              "/opt/homebrew/bin/codex",
+              "exec",
+              "--ignore-user-config",
+              "--ignore-rules",
+              "--ephemeral",
+              "--skip-git-repo-check",
+              "--sandbox",
+              "read-only",
+              "--json",
+              "--disable",
+              "hooks",
+              "--disable",
+              "plugins",
+              "--disable",
+              "apps",
+              "--disable",
+              "shell_tool",
+              "--disable",
+              "shell_snapshot",
+              "--disable",
+              "remote_plugin",
+              "-c",
+              "approval_policy=\"never\"",
+              "-c",
+              "project_doc_max_bytes=0",
+              "-c",
+              "log_dir=\"/private/tmp/p11-native-2nemv2of/B-private-TCP/native/after-reconnect/logs\"",
+              "-c",
+              "model_instructions_file=\"/private/tmp/p11-native-2nemv2of/B-private-TCP/native/after-reconnect/instructions.txt\"",
+              "--output-schema",
+              "/private/tmp/p11-native-2nemv2of/B-private-TCP/native/after-reconnect/schema.json",
+              "--output-last-message",
+              "/private/tmp/p11-native-2nemv2of/B-private-TCP/native/after-reconnect/last-message.json",
+              "-"
+            ],
+            "profile": ".codex-3"
+          },
+          "native_process_exited": true,
+          "tool_events": 0,
+          "settings_metadata_unchanged_during_native_turn": true,
+          "native_continuation": "fresh ephemeral exec; prior task context supplied in request, not native resume",
+          "replayed_without_model_rerun": false
+        }
+      ]
+    }
+  ],
+  "current_user_interventions": 0,
+  "existing_prerequisites": "existing SSH keys/host trust/Tailscale and saved ChatGPT login; initial setup intervention count not measured",
+  "cleanup": {
+    "peer": {
+      "handles": [
+        {
+          "pid": 69447,
+          "recorded_lstart": "Thu Oct 29 01:44:52 2026",
+          "current_lstart": null,
+          "same_process_alive": false,
+          "handle_path": "D-Tailscale-SSH/driver-69447.json"
+        },
+        {
+          "pid": 69959,
+          "recorded_lstart": "Thu Oct 29 01:45:03 2026",
+          "current_lstart": null,
+          "same_process_alive": false,
+          "handle_path": "D-Tailscale-SSH/driver-69959.json"
+        },
+        {
+          "pid": 70244,
+          "recorded_lstart": "Thu Oct 29 01:45:10 2026",
+          "current_lstart": null,
+          "same_process_alive": false,
+          "handle_path": "B-private-TCP/driver-70244.json"
+        },
+        {
+          "pid": 70899,
+          "recorded_lstart": "Thu Oct 29 01:45:24 2026",
+          "current_lstart": null,
+          "same_process_alive": false,
+          "handle_path": "B-private-TCP/driver-70899.json"
+        },
+        {
+          "pid": 68327,
+          "recorded_lstart": "Thu Oct 29 01:44:33 2026",
+          "current_lstart": null,
+          "same_process_alive": false,
+          "handle_path": "A-LAN-SSH/driver-68327.json"
+        },
+        {
+          "pid": 69048,
+          "recorded_lstart": "Thu Oct 29 01:44:46 2026",
+          "current_lstart": null,
+          "same_process_alive": false,
+          "handle_path": "A-LAN-SSH/driver-69048.json"
+        },
+        {
+          "pid": 69605,
+          "recorded_lstart": "Thu Oct 29 01:44:57 2026",
+          "current_lstart": null,
+          "same_process_alive": false,
+          "handle_path": "D-Tailscale-SSH/native/followup/handle.json"
+        },
+        {
+          "pid": 69449,
+          "recorded_lstart": "Thu Oct 29 01:44:52 2026",
+          "current_lstart": null,
+          "same_process_alive": false,
+          "handle_path": "D-Tailscale-SSH/native/first/handle.json"
+        },
+        {
+          "pid": 69961,
+          "recorded_lstart": "Thu Oct 29 01:45:04 2026",
+          "current_lstart": null,
+          "same_process_alive": false,
+          "handle_path": "D-Tailscale-SSH/native/after-reconnect/handle.json"
+        },
+        {
+          "pid": 70683,
+          "recorded_lstart": "Thu Oct 29 01:45:16 2026",
+          "current_lstart": null,
+          "same_process_alive": false,
+          "handle_path": "B-private-TCP/native/followup/handle.json"
+        },
+        {
+          "pid": 70289,
+          "recorded_lstart": "Thu Oct 29 01:45:10 2026",
+          "current_lstart": null,
+          "same_process_alive": false,
+          "handle_path": "B-private-TCP/native/first/handle.json"
+        },
+        {
+          "pid": 70920,
+          "recorded_lstart": "Thu Oct 29 01:45:24 2026",
+          "current_lstart": null,
+          "same_process_alive": false,
+          "handle_path": "B-private-TCP/native/after-reconnect/handle.json"
+        },
+        {
+          "pid": 68639,
+          "recorded_lstart": "Thu Oct 29 01:44:39 2026",
+          "current_lstart": null,
+          "same_process_alive": false,
+          "handle_path": "A-LAN-SSH/native/followup/handle.json"
+        },
+        {
+          "pid": 68337,
+          "recorded_lstart": "Thu Oct 29 01:44:33 2026",
+          "current_lstart": null,
+          "same_process_alive": false,
+          "handle_path": "A-LAN-SSH/native/first/handle.json"
+        },
+        {
+          "pid": 69050,
+          "recorded_lstart": "Thu Oct 29 01:44:46 2026",
+          "current_lstart": null,
+          "same_process_alive": false,
+          "handle_path": "A-LAN-SSH/native/after-reconnect/handle.json"
+        }
+      ],
+      "all_owned_recorded_processes_gone": true,
+      "settings_metadata_after": {
+        ".ssh/known_hosts": {
+          "size": 43132,
+          "mtime_ns": 1792649252419331492,
+          "mode": 384
+        },
+        ".ssh/id_ed25519": {
+          "size": 464,
+          "mtime_ns": 1726034637000000000,
+          "mode": 384
+        },
+        ".claude/settings.json": {
+          "size": 56734,
+          "mtime_ns": 1793183671612339074,
+          "mode": 420
+        },
+        ".claude-3/settings.json": {
+          "size": 10005,
+          "mtime_ns": 1793185633916238651,
+          "mode": 384
+        },
+        ".claude.json": {
+          "size": 456089,
+          "mtime_ns": 1793205404519138625,
+          "mode": 384
+        },
+        ".codex/config.toml": {
+          "size": 20848,
+          "mtime_ns": 1793171297312993851,
+          "mode": 384
+        },
+        ".codex-3/config.toml": {
+          "size": 22108,
+          "mtime_ns": 1793177481381922824,
+          "mode": 384
+        },
+        ".xsm/config.json": {
+          "size": 1812,
+          "mtime_ns": 1793088976027304761,
+          "mode": 420
+        },
+        ".xsm/homes.json": {
+          "size": 1166,
+          "mtime_ns": 1793167848565416641,
+          "mode": 420
+        }
+      },
+      "closed_driver_records": [
+        "D-Tailscale-SSH/driver-69447-closed.json",
+        "D-Tailscale-SSH/driver-69959-closed.json",
+        "B-private-TCP/driver-70899-closed.json",
+        "B-private-TCP/driver-70244-closed.json",
+        "A-LAN-SSH/driver-69048-closed.json",
+        "A-LAN-SSH/driver-68327-closed.json"
+      ],
+      "c_binary_exists": false,
+      "temporary_evidence_retained": true
+    },
+    "local_private_ports": [
+      {
+        "ip": "192.168.0.18",
+        "port": 49909,
+        "connect_ex_after_stop": 61,
+        "closed": true
+      },
+      {
+        "ip": "192.168.0.18",
+        "port": 49941,
+        "connect_ex_after_stop": 61,
+        "closed": true
+      }
+    ],
+    "local_process_check": {
+      "owned_marked_ssh_processes_alive": [],
+      "all_marked_ssh_processes_gone": true,
+      "ssh_client_version": "OpenSSH_10.2p1, LibreSSL 3.3.6"
+    },
+    "peer_process_scan": {
+      "peer_root": "/tmp/p11-native-2nemv2of",
+      "additional_owned_processes_alive": [],
+      "all_tmp_bound_processes_gone": true
+    },
+    "C_staged_binary_removed": true,
+    "evidence_tmp_retained": true
+  },
+  "settings_audit": {
+    "local_monitored_metadata_unchanged": true,
+    "peer_monitored_metadata_unchanged_during_all_native_turns": true,
+    "scope": "listed setting-file metadata comparisons; runtime cache writes by concurrent sessions not assessed",
+    "local_before": {
+      ".ssh/known_hosts": {
+        "size": 44653,
+        "mtime_ns": 1789707731831354217,
+        "mode": 384
+      },
+      ".claude/settings.json": {
+        "size": 55422,
+        "mtime_ns": 1793182044845062442,
+        "mode": 384
+      },
+      ".claude-3/settings.json": {
+        "size": 9880,
+        "mtime_ns": 1793182045102415283,
+        "mode": 384
+      },
+      ".claude.json": {
+        "size": 506444,
+        "mtime_ns": 1793205389543173840,
+        "mode": 420
+      },
+      ".codex/config.toml": {
+        "size": 27877,
+        "mtime_ns": 1793169138854406000,
+        "mode": 384
+      },
+      ".codex-3/config.toml": {
+        "size": 19496,
+        "mtime_ns": 1793189685495505047,
+        "mode": 384
+      },
+      ".xsm/config.json": {
+        "size": 1490,
+        "mtime_ns": 1793178050575296631,
+        "mode": 420
+      },
+      ".xsm/homes.json": {
+        "size": 946,
+        "mtime_ns": 1793197068459216444,
+        "mode": 420
+      }
+    },
+    "local_after": {
+      ".ssh/known_hosts": {
+        "size": 44653,
+        "mtime_ns": 1789707731831354217,
+        "mode": 384
+      },
+      ".claude/settings.json": {
+        "size": 55422,
+        "mtime_ns": 1793182044845062442,
+        "mode": 384
+      },
+      ".claude-3/settings.json": {
+        "size": 9880,
+        "mtime_ns": 1793182045102415283,
+        "mode": 384
+      },
+      ".claude.json": {
+        "size": 506444,
+        "mtime_ns": 1793205389543173840,
+        "mode": 420
+      },
+      ".codex/config.toml": {
+        "size": 27877,
+        "mtime_ns": 1793169138854406000,
+        "mode": 384
+      },
+      ".codex-3/config.toml": {
+        "size": 19496,
+        "mtime_ns": 1793189685495505047,
+        "mode": 384
+      },
+      ".xsm/config.json": {
+        "size": 1490,
+        "mtime_ns": 1793178050575296631,
+        "mode": 420
+      },
+      ".xsm/homes.json": {
+        "size": 946,
+        "mtime_ns": 1793197068459216444,
+        "mode": 420
+      }
+    }
+  },
+  "C_engine_staging": {
+    "hostname": "Jaesolui-Macmini.local",
+    "sha256": "6ac4bb4837469867edc2dba3cbbd6e4dd9fb18ad0389db69ff6ef21683317a44",
+    "bytes": 15266656,
+    "mode": 448,
+    "membership_created": false,
+    "daemon_started": false,
+    "public_listener_started": false,
+    "commands": [
+      {
+        "argv": [
+          "/tmp/p11-native-2nemv2of/C-staging/reason-network",
+          "--version"
+        ],
+        "pid": 71956,
+        "exit_code": 0,
+        "elapsed_ms": 1214.71,
+        "stdout": "reason-network 0.12.10\n",
+        "stderr": ""
+      },
+      {
+        "argv": [
+          "/tmp/p11-native-2nemv2of/C-staging/reason-network",
+          "--help"
+        ],
+        "pid": 71991,
+        "exit_code": 0,
+        "elapsed_ms": 14.779,
+        "stdout": "help captured in owned staging file",
+        "stderr": ""
+      }
+    ],
+    "isolated_state_entries": {
+      "home": [],
+      "config": [],
+      "data": [],
+      "state": []
+    },
+    "staged_binary_removed": true,
+    "local_source_sha256": "6ac4bb4837469867edc2dba3cbbd6e4dd9fb18ad0389db69ff6ef21683317a44",
+    "checksum_matches": true
+  },
+  "missing_environments": {
+    "different_NAT": "missing",
+    "UDP_blocked": "missing",
+    "HTTPS_proxy": "missing",
+    "self_hosted_relay": "missing",
+    "SSH_unavailable": "missing",
+    "remote_C_membership_and_native_work": "missing",
+    "D12_backend_selection": "pending"
+  },
+  "environment_scope": "two physical Macs using the current private LAN/tailnet paths; NAT type and egress were not remeasured",
+  "B_scope": {
+    "private_bind": "192.168.0.18",
+    "public_listener": false,
+    "bootstrap": "existing SSH stdin; ephemeral in-memory HMAC fixture secret",
+    "payload_encrypted": false,
+    "network_or_membership_grants_created": false
+  },
+  "product_boundary": {
+    "legacy_xsm_pairing_used": false,
+    "product_scope_authorization_created": false,
+    "new_xsm_permission_files_created": false,
+    "profile_settings_edits_by_agent": false,
+    "product_source_or_repo_configuration_edits": false,
+    "allowed_deliverable_artifacts_written": true,
+    "keys_or_hostkeys_changed_by_agent": false,
+    "network_policy_changed": false,
+    "backend_selected": false,
+    "existing_matrix_documents_modified": false
+  },
+  "provenance": {
+    "transport_reuse": {
+      "script": "/tmp/p11-transport-comparison-20261028.py",
+      "sha256": "c503e1ef9d6620a6dd39bde27bda9107501182ad50174c2b272e0470da4bdf89",
+      "symbols": [
+        "SSH",
+        "PEER",
+        "LAN",
+        "start"
+      ],
+      "prior_synthetic_results": "/tmp/p11-transport-comparison-20261028.json"
+    },
+    "driver_sha256": "37c7f02d2d717c91683d61de6f44afd43e80aa4eda49673567b43c0e8fe1ab6a",
+    "controller_sha256": "587e6105d70ea0a94286190e1719f873c16155c00eceab064293d57600f232c7",
+    "local_tmp": "/tmp/p11-native-r292609m",
+    "peer_tmp": "/tmp/p11-native-2nemv2of",
+    "copied_peer_files": 80,
+    "all_copied_sha256_verified": true,
+    "raw_peer_evidence_manifest": "/tmp/p11-native-r292609m/peer-evidence-manifest.json"
+  },
+  "startup_failure": {
+    "status": "excluded-startup-fixture-failure",
+    "actual_native_calls": 0,
+    "actual_agent_roundtrip": false,
+    "root_cause": "TypeError in composing a pathlib path before the ready frame; fixed two path expressions",
+    "scope": "all three first launch attempts; no native prompt submitted",
+    "raw_file": "/tmp/p11-native-r292609m/first-start-failure.json",
+    "raw_sha256": "dc078ff3d9016152bad1231f376b19a1d396252607f5be083fab52dd21a5aca6",
+    "raw_initial_intent_flag_is_not_execution_proof": true,
+    "diagnostic": {
+      "returncode": 1,
+      "stdout": "",
+      "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 134, in <module>\n  File \"<string>\", line 108, in main\nTypeError: unsupported operand type(s) for +: 'PosixPath' and 'str'\n",
+      "scope": "ready-only startup; no native request submitted"
+    },
+    "initial_source_sha256": "1c19c4189162420712c96332face54ad7edcb7040d31150dcda6b9a0a2ab12a6"
+  },
+  "interpretation": "single samples include CLI startup and cloud inference; no throughput or transport performance ranking"
+}

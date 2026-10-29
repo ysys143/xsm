@@ -1,0 +1,211 @@
+{
+  "scope": "A15-01 same-repo/linked-worktree automatic native roundtrip only; not A24/J09 handshake proof",
+  "A15_01_functional_sample": "passed",
+  "original_automatic_status": "not-completed-original-sample",
+  "original_result_sha256": "af74a0d912e0110184ea0ee43303e59bf7990d139128694e104b2b630731df43",
+  "original_result_preserved": true,
+  "collector_correction": "all three were classified boundary: first combines proposal+boundary; correction quotes next boundary; actual request/reply bodies distinguish rounds",
+  "native_reexecutions": 0,
+  "controller_product_repairs": 0,
+  "native_CLI_invocations": 2,
+  "native_metadata": {
+    "reviewer": {
+      "bounded_session_meta": {
+        "id": "01a1844f-3bc1-7743-b51a-af2e8ebc7e16",
+        "cwd": "/private/tmp/p13-worktree-native-isksjjba/review-worktree",
+        "cli_version": "0.164.0",
+        "source": "exec",
+        "model_provider": "openai"
+      },
+      "kernel": {
+        "native_pid": 62728,
+        "native_lstart": "Thu Oct 29 05:59:07 2026",
+        "native_session_id": "01a1844f-3bc1-7743-b51a-af2e8ebc7e16",
+        "runtime": "codex",
+        "home": "/Users/jaesolshin/.codex",
+        "registered_cwd": "/private/tmp/p13-worktree-native-isksjjba/review-worktree",
+        "kernel_process_cwd": "/private/tmp/p13-worktree-native-isksjjba/review-worktree",
+        "kernel_probe_exit": 0,
+        "native_generation_alive": true,
+        "MCP_pid": 62913,
+        "MCP_source_cwd": "/private/tmp/xsm-p13-postqa-frozen-bukwksw6"
+      }
+    },
+    "initiator": {
+      "bounded_session_meta": {
+        "id": "01a1844f-4019-7cd1-a82e-fba08b022d3d",
+        "cwd": "/private/tmp/p13-worktree-native-isksjjba/repository",
+        "cli_version": "0.164.0",
+        "source": "exec",
+        "model_provider": "openai"
+      },
+      "kernel": {
+        "native_pid": 63191,
+        "native_lstart": "Thu Oct 29 05:59:08 2026",
+        "native_session_id": "01a1844f-4019-7cd1-a82e-fba08b022d3d",
+        "runtime": "codex",
+        "home": "/Users/jaesolshin/.codex-3",
+        "registered_cwd": "/private/tmp/p13-worktree-native-isksjjba/repository",
+        "kernel_process_cwd": "/private/tmp/p13-worktree-native-isksjjba/repository",
+        "kernel_probe_exit": 0,
+        "native_generation_alive": true,
+        "MCP_pid": 63305,
+        "MCP_source_cwd": "/private/tmp/xsm-p13-postqa-frozen-bukwksw6"
+      }
+    }
+  },
+  "git_evidence": [
+    {
+      "cwd": "/private/tmp/p13-worktree-native-isksjjba/repository",
+      "toplevel": "/private/tmp/p13-worktree-native-isksjjba/repository",
+      "common_dir": "/private/tmp/p13-worktree-native-isksjjba/repository/.git",
+      "branch": "main"
+    },
+    {
+      "cwd": "/private/tmp/p13-worktree-native-isksjjba/review-worktree",
+      "toplevel": "/private/tmp/p13-worktree-native-isksjjba/review-worktree",
+      "common_dir": "/private/tmp/p13-worktree-native-isksjjba/repository/.git",
+      "branch": "reviewer"
+    }
+  ],
+  "same_git_common": true,
+  "different_actual_native_cwd": true,
+  "pairs": [
+    {
+      "phase": "proposal-with-early-boundary",
+      "request_id": "fc871dedd8a04fa1",
+      "reply_id": "3095a682a8f74629",
+      "reply_to": "fc871dedd8a04fa1",
+      "request_body": "사용자가 a1과 독립 검토 협업을 요청했습니다. 1차 제안: 표준 정수 산술에서 2+2=5라고 주장합니다. 이 제안을 독립적으로 검토하여 참/거짓, 구체적인 반례 또는 계산 근거, 필요한 수정을 답해주세요. 아직 수정안은 보내지 않겠습니다. 별도 경계 검토: 표준 정수 산술에서 0+0=0의 성립 여부와 근거를 앞 제안과 분리해 독립 판정해주세요. 두 판정을 모두 명시하고 이 요청에 reply_to 및 outcome으로 회신해주세요.",
+      "reply_body": "1차 독립 검토 완료. 판정 1: 표준 정수 산술에서 2+2=5는 거짓입니다. 2에 1을 두 번 더하면 3, 4이므로 2+2=4이며, 4와 5는 서로 다른 정수입니다. 필요한 수정은 우변을 4로 바꾸는 것입니다. 판정 2(별도 경계 검토): 0+0=0은 참입니다. 덧셈 항등원 법칙 a+0=a에 a=0을 대입하면 성립합니다. Python 정수 계산도 각각 4와 0을 출력했습니다. 경계 검토를 별도 협업 회차로 중복 계산하지 않고 현재 1/3회로 기록합니다. 2차 제안을 보내 주세요.",
+      "request_body_sha256": "e815d61d9e5c6a22b6e87ace67a712ddf2d25607e0ab4793ec130ac2cf9cc1dd",
+      "reply_body_sha256": "e5f884fa9ed359aafa731e72ba522161884fb5bf35a7c5d9c7e3b33e9c91d420",
+      "request_digest": "330cab2d08b7f9c4cdc0e2f01d752744a277097fd78012220341c3f967ce8fbe",
+      "reply_digest": "ad675350aa28aaeb99380dc025fbe8d3bc456865507b03a40f0c492fa9215749",
+      "actual_body_matches_response": true,
+      "exact_native_pair": true,
+      "automatic_scope": "repo:repository",
+      "reply_canonical_state": "acknowledged",
+      "outcome": "succeeded"
+    },
+    {
+      "phase": "correction-with-boundary-preview",
+      "request_id": "473034e666ba4d1d",
+      "reply_id": "d4d1e14aa2954c5b",
+      "reply_to": "473034e666ba4d1d",
+      "request_body": "2차 수정안 재검토 요청입니다. 전제는 표준 정수 산술이며 연산 재정의나 반올림은 없습니다. 1차 반례 2+2=4, 4≠5를 반영해 우변을 수정했습니다. 수정 제안은 2+2=4입니다. 계산 근거: 2+2=2+1+1=3+1=4. 독립적으로 오류와 반례를 확인하고 수용/기각 및 근거를 명시해 회신해주세요. 다음 3차에는 0+0=0 경계를 별도 검토 요청하겠습니다.",
+      "reply_body": "2차 독립 검토 완료: 수정 제안 2+2=4를 수용합니다. 2=1+1과 덧셈의 결합법칙을 적용하면 2+(1+1)=(2+1)+1=3+1=4입니다. 제시한 계산의 각 등식이 성립하며, 표준 정수라는 전제 아래 오류나 반례는 없습니다. 1차의 잘못된 우변 5가 4로 수정되었음을 확인했습니다. 현재 실질 검토 2/3회입니다. 3차 경계 검토 요청을 기다립니다.",
+      "request_body_sha256": "1939df7eb13be7e5cc3ec92e1c04139bc6a972447c6f2c95b42325b9154494cb",
+      "reply_body_sha256": "a131e7a48d73d07051c704f96908f1cd245348f47aae5cb7a0af0adbbe31a59e",
+      "request_digest": "d98f7d8a99ca999f584d5db74533286e748fc7fa0a158a4ecd0503a247015c1d",
+      "reply_digest": "a305997d950ca99c45822e76f2643a77f00cc4fdac2677535d3a96a0e6304cbb",
+      "actual_body_matches_response": true,
+      "exact_native_pair": true,
+      "automatic_scope": "repo:repository",
+      "reply_canonical_state": "acknowledged",
+      "outcome": "succeeded"
+    },
+    {
+      "phase": "independent-boundary",
+      "request_id": "7c4b180ab2824e08",
+      "reply_id": "eac490293b1a45f0",
+      "reply_to": "7c4b180ab2824e08",
+      "request_body": "3차 별도 경계 독립 검토 요청입니다. 표준 정수의 덧셈에서 입력이 둘 다 0인 경계 0+0=0을 검토해주세요. 앞선 2+2 수정안의 판정을 근거로 삼지 말고, 덧셈의 정의 또는 항등원 법칙으로 직접 유도해 참/거짓, 오류·반례 유무를 명시해주세요. 이 회신으로 3차 검토를 마무리해주세요.",
+      "reply_body": "3차 독립 검토 완료: 0+0=0은 참이며 수용합니다. 표준 정수 덧셈의 항등원 법칙은 모든 정수 a에 대해 a+0=a입니다. 0도 정수이므로 a=0을 대입하면 직접 0+0=0을 얻습니다. 이 유도는 앞선 2+2 판정에 의존하지 않습니다. 주어진 전제에서 오류나 반례는 없습니다. 1차 원안 기각(2+2=5), 2차 수정안 수용(2+2=4), 3차 경계 수용(0+0=0)의 실질 검토 세 차례를 모두 마쳤습니다.",
+      "request_body_sha256": "9b380610c781461df9d1b6966de9f1e4677d4dace00162aa4bf1760edf27f156",
+      "reply_body_sha256": "a290ce6aa78e9d3a5e3c52aa1f93acc1247362bcd01a8af2bae5ac9012e77b17",
+      "request_digest": "dfb7e6d0d1878e0d6b23b000e12e34d67344b56c295fbb8eac27170a07569c8b",
+      "reply_digest": "c34e4e8328f2030928775a9c7602f5ddc4fa3f55ccfa873127976155862693e4",
+      "actual_body_matches_response": true,
+      "exact_native_pair": true,
+      "automatic_scope": "repo:repository",
+      "reply_canonical_state": "acknowledged",
+      "outcome": "succeeded"
+    }
+  ],
+  "actual_correlated_math_request_reply_pairs": 3,
+  "formal_handshakes": 0,
+  "MCP_discover_calls": 0,
+  "MCP_connect_calls": 0,
+  "native_CLI_list_calls": 1,
+  "discovery_scope": "initiator natural a1 name resolution; reviewer actual product CLI list. No explicit candidate-discover/connect API trace",
+  "permission_API_calls": [],
+  "permission_shell_calls": [],
+  "scope_state": {
+    "links": {
+      "config": null,
+      "effective": null
+    },
+    "reaches": {
+      "config": null,
+      "effective": null
+    },
+    "projects": {
+      "config": null,
+      "effective": null
+    },
+    "scopes": {
+      "config": null,
+      "effective": null
+    }
+  },
+  "publications": 0,
+  "selected_collaboration_records": 0,
+  "private_config_file_exists": false,
+  "policy_snapshot_source_exists": false,
+  "initial_actual_native_registrations": 2,
+  "additional_human_inputs": 0,
+  "controller_send_ACK_index_corrections": 0,
+  "agent_MCP_counts": {
+    "reviewer": {
+      "xsm_inbox": 4,
+      "xsm_send": 4,
+      "xsm_ack": 3
+    },
+    "initiator": {
+      "xsm_ask": 3,
+      "xsm_ack": 4,
+      "xsm_inbox": 1
+    }
+  },
+  "agent_MCP_calls": 19,
+  "agent_shell_calls": 7,
+  "total_agent_tool_calls": 26,
+  "shell_nonzero": [
+    {
+      "role": "reviewer",
+      "command": "/bin/zsh -lc \"pwd; rg --files -g 'AGENTS.md' -g 'SKILLS.md' -g '*review*' -g '*proposal*' -g '*산술*' -g '*검토*'\"",
+      "exit_code": 1,
+      "output_sha256": "a99bbecd05a66f92e7e4861eed33014b0d08cfbfa2273b766f36f97ee382ae1f"
+    }
+  ],
+  "tool_errors": 0,
+  "profile_guard_unchanged": false,
+  "profile_guard_limit": "guard differs; writer/file/cause not established. Equality guard only, per-file before values not persisted; no evaluator profile-write command observed",
+  "source_unchanged": true,
+  "raw_manifest_hashes_match": true,
+  "old_QA_and_closed_audit_hashes": {
+    "scripts/audit-reason-plan.py": true,
+    "docs/plan/reason-inspired-adrs/completion-ledger.json": true,
+    "docs/plan/reason-inspired-adrs/completion-ledger.md": true,
+    "deliverables/p13-live/acceptance-closure-map.md": true,
+    "deliverables/p13-live/natural-collaboration.json": true,
+    "deliverables/p13-live/natural-collaboration-audit.json": true,
+    "deliverables/p13-live/post-claims-collaboration.json": true,
+    "deliverables/p13-live/post-claims-collaboration.audit.json": true
+  },
+  "seconds": 90.451,
+  "owned_alive_after": [
+    {
+      "role": "reviewer",
+      "native_alive": false,
+      "MCP_same_generation_alive": false
+    },
+    {
+      "role": "initiator",
+      "native_alive": false,
+      "MCP_same_generation_alive": false
+    }
+  ],
+  "separate_clone_native_negative_test": "not run; existing fixture counterexample remains separate"
+}

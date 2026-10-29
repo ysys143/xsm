@@ -1,0 +1,1521 @@
+{
+  "schema_version": 1,
+  "recorded_utc": "2026-10-28T18:49:29.049776+00:00",
+  "scope_status": "passed_controlled_two_machine_fixture",
+  "overall_P11_complete": false,
+  "D12_backend_selection": "unchanged/unselected",
+  "task_marker": "P11-QA-40c1afc34bbd43c4",
+  "claim": "2+2=5",
+  "native_successes": 6,
+  "native_failures": 0,
+  "cached_readbacks": 2,
+  "cached_model_reruns": 0,
+  "physical_machines": {
+    "local_hostname": "Jaesolui-MacBookPro.local",
+    "peer_hostname": "Jaesolui-Macmini.local",
+    "ssh_peer": "jaesol-macmini",
+    "preexisting_authenticated_SSH_Tailscale_path": true,
+    "local_hostname_sha256": "486b9335fc9861ca0b14306b4759c474fc5ba7661e62b36a663d46a1ef0f40bc",
+    "peer_hostname_sha256": "3b69df8ea34315614fb5048a6aa3e7c0243fc9a01f7673b2f47c0529186dbff0"
+  },
+  "private_plans": [
+    {
+      "path": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/deliverables/p11-live/C-private-plan-20261029.md",
+      "sha256": "e1bfe0400b276eda9d455ab7d3e15a75830c3df7b5919fbd3d9843747834e4f5"
+    },
+    {
+      "path": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/deliverables/p11-live/C-private-guard-recheck-plan-20261029.md",
+      "sha256": "0d18da92490e2cf76a1d7e8a3fad743c08eb70da05c7f09da53c7c42058b8e95"
+    }
+  ],
+  "engine": {
+    "version": "0.12.10",
+    "sha256": "6ac4bb4837469867edc2dba3cbbd6e4dd9fb18ad0389db69ff6ef21683317a44",
+    "hash_verified_each_start": true,
+    "signature_verification": "unknown; no signature verification claim"
+  },
+  "runtime": {
+    "native_cli": "/opt/homebrew/bin/codex",
+    "actual_cli_version": "codex-cli 0.163.0",
+    "flags": [
+      "exec",
+      "--ignore-user-config",
+      "--ignore-rules",
+      "--ephemeral",
+      "--skip-git-repo-check",
+      "--sandbox",
+      "read-only",
+      "--json",
+      "--disable",
+      "hooks",
+      "--disable",
+      "plugins",
+      "--disable",
+      "apps",
+      "--disable",
+      "shell_tool",
+      "--disable",
+      "shell_snapshot",
+      "--disable",
+      "remote_plugin",
+      "-c",
+      "approval_policy=\"never\"",
+      "-c",
+      "project_doc_max_bytes=0",
+      "-c",
+      "log_dir=\"/private/tmp/p11-C-q27ngmzj/native/first/logs\"",
+      "-c",
+      "model_instructions_file=\"/private/tmp/p11-C-q27ngmzj/native/first/instructions.txt\"",
+      "--output-schema",
+      "/private/tmp/p11-C-q27ngmzj/native/first/schema.json",
+      "--output-last-message",
+      "/private/tmp/p11-C-q27ngmzj/native/first/last-message.json",
+      "-"
+    ],
+    "path_arguments": "representative first-run private paths; each invocation uses its own native phase directory",
+    "same_correction_flags_as_ABD": true,
+    "provider": "existing subscribed ChatGPT Codex runtime",
+    "model": "CLI default, not overridden; model identity not independently asserted",
+    "auth_source": "previous native login status: ChatGPT; existing CODEX_HOME/.codex-3, no auth contents inspected",
+    "api_key_billing_path_used": false,
+    "native_continuation": "fresh ephemeral exec per native call; minimal prior answer in prompt, not native resume",
+    "schema_does_not_force_math_answer": true
+  },
+  "request_path": [
+    "local current agent private pull adapter",
+    "local Reason engine send",
+    "Reason two-node network",
+    "peer Reason engine inbox",
+    "real peer codex exec stdin",
+    "peer Reason engine reply_to send",
+    "local Reason engine inbox"
+  ],
+  "ssh_control_path": {
+    "trust": "BatchMode=yes, StrictHostKeyChecking=yes, UpdateHostKeys=no",
+    "join_secret_channel": "Python memory -> existing SSH stdin -> explicit private IPC",
+    "post_join_native_trigger": "phase and expected request-body SHA only; no math request/reply bypass",
+    "new_xsm_pairing_or_permissions": false
+  },
+  "membership": {
+    "controlled_physical_nodes": 2,
+    "third_party_nodes": 0,
+    "production_Reason_team_used": false,
+    "private_pull_clients": 2,
+    "actual_Reason_CLI_or_profile_or_MCP_used": false,
+    "Reason_login_proof_used": false,
+    "verified_identity_claim": false
+  },
+  "observed_network": {
+    "native_turn_peer_link_readback": "direct on both nodes after all six native turns",
+    "relay_connection_readback": "relay_connected true on both nodes after all six native turns",
+    "relay_carried_task_evidence": "not observed; relay connection is not task relay evidence",
+    "selected_relay_URL": "unknown: team relay URL absent in readback",
+    "wire_IP_port": "unknown: not captured; direct does not establish physical LAN versus overlay",
+    "endpoint_ids": "hashed native endpoint readback; stable across each local private daemon restart",
+    "cached_readback": "local persisted inbox; restarted local link/relay not yet connected, no network-delivery claim"
+  },
+  "external_endpoints": {
+    "planned_required_native_services": "see fixed private plan; normal engine relay/dns and existing subscribed Codex services",
+    "actual_selected_endpoint_readback": "native endpoint SHA and direct/relay status only",
+    "new_service_or_VM_or_relay_deployment": false
+  },
+  "timing_scope": "from send to validated local inbox reply; includes SSH control trigger and native cloud inference. Cached readback includes local daemon restart/register. Single samples, no cross-carrier performance ranking.",
+  "user_interventions_during_fixture": 0,
+  "preexisting_authentication_required": true,
+  "permission_or_login_bypass": false,
+  "permission_error_log_lines": 0,
+  "runs": [
+    {
+      "scope": "C private two-controlled-node carrier fixture; not D12 product choice",
+      "task_marker": "P11-QA-40c1afc34bbd43c4",
+      "local_root": "/private/tmp/p11-C-a33f52rq",
+      "peer_root": "/private/tmp/p11-C-q27ngmzj",
+      "binary_sha256": "6ac4bb4837469867edc2dba3cbbd6e4dd9fb18ad0389db69ff6ef21683317a44",
+      "network_team_created": true,
+      "production_team_used": false,
+      "native_model_calls": 3,
+      "passed": true,
+      "phases": [
+        {
+          "phase": "first",
+          "roundtrip_ms": 5766.252,
+          "request_engine_id_sha256": "055df1ee9746ebcf6335539d0c0cd5ee98452542b5aed723a2f57df3e605cded",
+          "reply_engine_id_sha256": "1de08309162dd509c49606ce92e1891ad334cf02ce00c8f892953cd579da55ec",
+          "request_body_sha256": "837ccd0b9c717c72343451a35cb3aea070e1fcab5e473b4144e17e4e1656dc0e",
+          "answer_body_sha256": "3ab6fbc40d6ce6f1f74547f4ccc7847bca248c56ac2e76c6bb7f8db5556bf6c9",
+          "actual_json_answer": {
+            "request_id": "P11-QA-40c1afc34bbd43c4",
+            "phase": "first",
+            "claim_valid": false,
+            "corrected_sum": 4,
+            "counterexample": "사과 2개에 2개를 더하면 5개가 아니라 4개다."
+          },
+          "native": {
+            "actual_native_call": true,
+            "native_conversation_sha256": "db406867915662eef178da193a107f8568fc9e992466986666990a752fbedddf",
+            "native_cli_version": "codex-cli 0.163.0",
+            "native_elapsed_ms": 5598.276,
+            "native_handle": {
+              "pid": 94884,
+              "lstart": "Thu Oct 29 03:15:00 2026",
+              "alive_after_start": true
+            },
+            "native_process_exited": true,
+            "tool_events": 0,
+            "request_engine_id_sha256": "055df1ee9746ebcf6335539d0c0cd5ee98452542b5aed723a2f57df3e605cded",
+            "reply_engine_ids_sha256": [
+              "1de08309162dd509c49606ce92e1891ad334cf02ce00c8f892953cd579da55ec"
+            ],
+            "received_body_sha256": "837ccd0b9c717c72343451a35cb3aea070e1fcab5e473b4144e17e4e1656dc0e",
+            "answer_sha256": "3ab6fbc40d6ce6f1f74547f4ccc7847bca248c56ac2e76c6bb7f8db5556bf6c9",
+            "phase": "first",
+            "model_call_count": 1
+          },
+          "readback": {
+            "local": {
+              "team_id_sha256": "7668161f5ff494e9a30a694b8ced9624fdae03bae583fba066ae830aa3a58486",
+              "member_count": 2,
+              "relay_connected": true,
+              "relay_url_sha256": null,
+              "machines": [
+                {
+                  "endpoint_sha256": "492e5551764900cea0eebf2376999aa32a45a8f6fa6523da67e95ba9010565ab",
+                  "is_me": true,
+                  "online": true,
+                  "link": null,
+                  "rtt_ms": null,
+                  "verified": false,
+                  "has_proof": false
+                },
+                {
+                  "endpoint_sha256": "179365bde4cfe2c38248e10243384167a97c4355866c084b1237c1872d149dd4",
+                  "is_me": false,
+                  "online": true,
+                  "link": "direct",
+                  "rtt_ms": 15,
+                  "verified": false,
+                  "has_proof": false
+                }
+              ]
+            },
+            "peer": {
+              "team_id_sha256": "7668161f5ff494e9a30a694b8ced9624fdae03bae583fba066ae830aa3a58486",
+              "member_count": 2,
+              "relay_connected": true,
+              "relay_url_sha256": null,
+              "machines": [
+                {
+                  "endpoint_sha256": "179365bde4cfe2c38248e10243384167a97c4355866c084b1237c1872d149dd4",
+                  "is_me": true,
+                  "online": true,
+                  "link": null,
+                  "rtt_ms": null,
+                  "verified": false,
+                  "has_proof": false
+                },
+                {
+                  "endpoint_sha256": "492e5551764900cea0eebf2376999aa32a45a8f6fa6523da67e95ba9010565ab",
+                  "is_me": false,
+                  "online": true,
+                  "link": "direct",
+                  "rtt_ms": 21,
+                  "verified": false,
+                  "has_proof": false
+                }
+              ]
+            }
+          }
+        },
+        {
+          "phase": "followup",
+          "roundtrip_ms": 5028.281,
+          "request_engine_id_sha256": "172fc545af34dc3131b3c7d2e16bcef2f0cbefa9335a4a08e1b68fad94d678bc",
+          "reply_engine_id_sha256": "4be1ad508d46a0fc3cd6c37b609233eb7e9dfe38e04df54990d58bada9ff67e9",
+          "request_body_sha256": "5e53031fdd69a93f12de9b4963d6af66ca6b9b70d5a2a2227a8b8f2d722c40d9",
+          "answer_body_sha256": "ecbbadd54d23a62e30f801cc4fab19669e5af578dc9cc2d6d3d22d9c91d693ad",
+          "actual_json_answer": {
+            "request_id": "P11-QA-40c1afc34bbd43c4",
+            "phase": "followup",
+            "claim_valid": false,
+            "corrected_sum": 4,
+            "counterexample": "사과 2개에 2개를 더하면 5개가 아니라 4개다."
+          },
+          "native": {
+            "actual_native_call": true,
+            "native_conversation_sha256": "871a06c807bd879d88c2c2e1a53c3d8099ee60830edc0ea1a3c8429fdc275722",
+            "native_cli_version": "codex-cli 0.163.0",
+            "native_elapsed_ms": 4942.652,
+            "native_handle": {
+              "pid": 94972,
+              "lstart": "Thu Oct 29 03:15:05 2026",
+              "alive_after_start": true
+            },
+            "native_process_exited": true,
+            "tool_events": 0,
+            "request_engine_id_sha256": "172fc545af34dc3131b3c7d2e16bcef2f0cbefa9335a4a08e1b68fad94d678bc",
+            "reply_engine_ids_sha256": [
+              "4be1ad508d46a0fc3cd6c37b609233eb7e9dfe38e04df54990d58bada9ff67e9"
+            ],
+            "received_body_sha256": "5e53031fdd69a93f12de9b4963d6af66ca6b9b70d5a2a2227a8b8f2d722c40d9",
+            "answer_sha256": "ecbbadd54d23a62e30f801cc4fab19669e5af578dc9cc2d6d3d22d9c91d693ad",
+            "phase": "followup",
+            "model_call_count": 2
+          },
+          "readback": {
+            "local": {
+              "team_id_sha256": "7668161f5ff494e9a30a694b8ced9624fdae03bae583fba066ae830aa3a58486",
+              "member_count": 2,
+              "relay_connected": true,
+              "relay_url_sha256": null,
+              "machines": [
+                {
+                  "endpoint_sha256": "492e5551764900cea0eebf2376999aa32a45a8f6fa6523da67e95ba9010565ab",
+                  "is_me": true,
+                  "online": true,
+                  "link": null,
+                  "rtt_ms": null,
+                  "verified": false,
+                  "has_proof": false
+                },
+                {
+                  "endpoint_sha256": "179365bde4cfe2c38248e10243384167a97c4355866c084b1237c1872d149dd4",
+                  "is_me": false,
+                  "online": true,
+                  "link": "direct",
+                  "rtt_ms": 13,
+                  "verified": false,
+                  "has_proof": false
+                }
+              ]
+            },
+            "peer": {
+              "team_id_sha256": "7668161f5ff494e9a30a694b8ced9624fdae03bae583fba066ae830aa3a58486",
+              "member_count": 2,
+              "relay_connected": true,
+              "relay_url_sha256": null,
+              "machines": [
+                {
+                  "endpoint_sha256": "179365bde4cfe2c38248e10243384167a97c4355866c084b1237c1872d149dd4",
+                  "is_me": true,
+                  "online": true,
+                  "link": null,
+                  "rtt_ms": null,
+                  "verified": false,
+                  "has_proof": false
+                },
+                {
+                  "endpoint_sha256": "492e5551764900cea0eebf2376999aa32a45a8f6fa6523da67e95ba9010565ab",
+                  "is_me": false,
+                  "online": true,
+                  "link": "direct",
+                  "rtt_ms": 18,
+                  "verified": false,
+                  "has_proof": false
+                }
+              ]
+            }
+          }
+        },
+        {
+          "phase": "reconnect-cached-readback",
+          "roundtrip_ms": 175.142,
+          "reply_engine_id_sha256": "4be1ad508d46a0fc3cd6c37b609233eb7e9dfe38e04df54990d58bada9ff67e9",
+          "answer_body_sha256": "ecbbadd54d23a62e30f801cc4fab19669e5af578dc9cc2d6d3d22d9c91d693ad",
+          "original_reply_id_unchanged": true,
+          "original_body_unchanged": true,
+          "model_rerun": false,
+          "endpoint_unchanged": true,
+          "old_private_handle": {
+            "pid": 68194,
+            "lstart": "Thu Oct 29 03:14:55 2026",
+            "binary_sha256": "6ac4bb4837469867edc2dba3cbbd6e4dd9fb18ad0389db69ff6ef21683317a44",
+            "alive_after_start": true,
+            "role": "local",
+            "socket": "/private/tmp/p11-C-a33f52rq/state/network.sock"
+          },
+          "new_private_handle": {
+            "pid": 68460,
+            "lstart": "Thu Oct 29 03:15:10 2026",
+            "binary_sha256": "6ac4bb4837469867edc2dba3cbbd6e4dd9fb18ad0389db69ff6ef21683317a44",
+            "alive_after_start": true,
+            "role": "local",
+            "socket": "/private/tmp/p11-C-a33f52rq/state/network.sock",
+            "exit_code": -15
+          },
+          "readback": {
+            "local": {
+              "team_id_sha256": "7668161f5ff494e9a30a694b8ced9624fdae03bae583fba066ae830aa3a58486",
+              "member_count": 2,
+              "relay_connected": false,
+              "relay_url_sha256": null,
+              "machines": [
+                {
+                  "endpoint_sha256": "492e5551764900cea0eebf2376999aa32a45a8f6fa6523da67e95ba9010565ab",
+                  "is_me": true,
+                  "online": true,
+                  "link": null,
+                  "rtt_ms": null,
+                  "verified": false,
+                  "has_proof": false
+                },
+                {
+                  "endpoint_sha256": "179365bde4cfe2c38248e10243384167a97c4355866c084b1237c1872d149dd4",
+                  "is_me": false,
+                  "online": false,
+                  "link": null,
+                  "rtt_ms": null,
+                  "verified": false,
+                  "has_proof": false
+                }
+              ]
+            },
+            "peer": {
+              "team_id_sha256": "7668161f5ff494e9a30a694b8ced9624fdae03bae583fba066ae830aa3a58486",
+              "member_count": 2,
+              "relay_connected": true,
+              "relay_url_sha256": null,
+              "machines": [
+                {
+                  "endpoint_sha256": "179365bde4cfe2c38248e10243384167a97c4355866c084b1237c1872d149dd4",
+                  "is_me": true,
+                  "online": true,
+                  "link": null,
+                  "rtt_ms": null,
+                  "verified": false,
+                  "has_proof": false
+                },
+                {
+                  "endpoint_sha256": "492e5551764900cea0eebf2376999aa32a45a8f6fa6523da67e95ba9010565ab",
+                  "is_me": false,
+                  "online": true,
+                  "link": "direct",
+                  "rtt_ms": 18,
+                  "verified": false,
+                  "has_proof": false
+                }
+              ]
+            }
+          }
+        },
+        {
+          "phase": "after-reconnect",
+          "roundtrip_ms": 6871.45,
+          "request_engine_id_sha256": "c49245e6ea1a691ac968f06667223d377f2ab45ca193d0d60bca77d92e9d003e",
+          "reply_engine_id_sha256": "8ddc2a5b4de110ac930ddd41e8c6ed269392a8da1838c51b7ec1c9675a3c2f15",
+          "actual_json_answer": {
+            "request_id": "P11-QA-40c1afc34bbd43c4",
+            "phase": "after-reconnect",
+            "claim_valid": false,
+            "corrected_sum": 4,
+            "counterexample": "사과 2개에 2개를 더하면 5개가 아니라 4개다."
+          },
+          "native": {
+            "actual_native_call": true,
+            "native_conversation_sha256": "6507cb078a5e2d30beced696221d8ec0b450462a9b37004f9d516bb10f4aa4df",
+            "native_cli_version": "codex-cli 0.163.0",
+            "native_elapsed_ms": 6108.005,
+            "native_handle": {
+              "pid": 95147,
+              "lstart": "Thu Oct 29 03:15:11 2026",
+              "alive_after_start": true
+            },
+            "native_process_exited": true,
+            "tool_events": 0,
+            "request_engine_id_sha256": "c49245e6ea1a691ac968f06667223d377f2ab45ca193d0d60bca77d92e9d003e",
+            "reply_engine_ids_sha256": [
+              "8ddc2a5b4de110ac930ddd41e8c6ed269392a8da1838c51b7ec1c9675a3c2f15"
+            ],
+            "received_body_sha256": "d0ec0bbe2f6a8b2243b003aeabdaffca491b8dacf6f229d8872cb3c929ea03be",
+            "answer_sha256": "09160f0ecaf50aa37c38583644b578df176c23e108d6341aac078c90ce4bff61",
+            "phase": "after-reconnect",
+            "model_call_count": 3
+          },
+          "readback": {
+            "local": {
+              "team_id_sha256": "7668161f5ff494e9a30a694b8ced9624fdae03bae583fba066ae830aa3a58486",
+              "member_count": 2,
+              "relay_connected": true,
+              "relay_url_sha256": null,
+              "machines": [
+                {
+                  "endpoint_sha256": "492e5551764900cea0eebf2376999aa32a45a8f6fa6523da67e95ba9010565ab",
+                  "is_me": true,
+                  "online": true,
+                  "link": null,
+                  "rtt_ms": null,
+                  "verified": false,
+                  "has_proof": false
+                },
+                {
+                  "endpoint_sha256": "179365bde4cfe2c38248e10243384167a97c4355866c084b1237c1872d149dd4",
+                  "is_me": false,
+                  "online": true,
+                  "link": "direct",
+                  "rtt_ms": 39,
+                  "verified": false,
+                  "has_proof": false
+                }
+              ]
+            },
+            "peer": {
+              "team_id_sha256": "7668161f5ff494e9a30a694b8ced9624fdae03bae583fba066ae830aa3a58486",
+              "member_count": 2,
+              "relay_connected": true,
+              "relay_url_sha256": null,
+              "machines": [
+                {
+                  "endpoint_sha256": "179365bde4cfe2c38248e10243384167a97c4355866c084b1237c1872d149dd4",
+                  "is_me": true,
+                  "online": true,
+                  "link": null,
+                  "rtt_ms": null,
+                  "verified": false,
+                  "has_proof": false
+                },
+                {
+                  "endpoint_sha256": "492e5551764900cea0eebf2376999aa32a45a8f6fa6523da67e95ba9010565ab",
+                  "is_me": false,
+                  "online": true,
+                  "link": "direct",
+                  "rtt_ms": 31,
+                  "verified": false,
+                  "has_proof": false
+                }
+              ]
+            }
+          }
+        }
+      ],
+      "private_plan_sha256": "e1bfe0400b276eda9d455ab7d3e15a75830c3df7b5919fbd3d9843747834e4f5",
+      "stage_peer": {
+        "staged": true,
+        "binary_sha256": "6ac4bb4837469867edc2dba3cbbd6e4dd9fb18ad0389db69ff6ef21683317a44",
+        "root": "/private/tmp/p11-C-q27ngmzj",
+        "role": "controlled-peer"
+      },
+      "local_initial_handle": {
+        "pid": 68131,
+        "lstart": "Thu Oct 29 03:14:53 2026",
+        "binary_sha256": "6ac4bb4837469867edc2dba3cbbd6e4dd9fb18ad0389db69ff6ef21683317a44",
+        "alive_after_start": true,
+        "role": "local",
+        "socket": "/private/tmp/p11-C-a33f52rq/state/network.sock",
+        "exit_code": 0
+      },
+      "local_endpoint": {
+        "endpoint_sha256": "492e5551764900cea0eebf2376999aa32a45a8f6fa6523da67e95ba9010565ab",
+        "exit_code": 0
+      },
+      "peer_control_handle": {
+        "local_ssh_pid": 68171,
+        "alive_after_ready": true,
+        "peer_control_pid": 94781
+      },
+      "peer_initial_handle": {
+        "pid": 94782,
+        "lstart": "Thu Oct 29 03:14:54 2026",
+        "binary_sha256": "6ac4bb4837469867edc2dba3cbbd6e4dd9fb18ad0389db69ff6ef21683317a44",
+        "alive_after_start": true,
+        "role": "peer",
+        "socket": "/private/tmp/p11-C-q27ngmzj/state/network.sock"
+      },
+      "peer_endpoint": {
+        "endpoint_sha256": "179365bde4cfe2c38248e10243384167a97c4355866c084b1237c1872d149dd4",
+        "exit_code": 0
+      },
+      "private_create": {
+        "created": true,
+        "team_id_sha256": "7668161f5ff494e9a30a694b8ced9624fdae03bae583fba066ae830aa3a58486",
+        "proof_used": false
+      },
+      "private_join": {
+        "joined": true,
+        "team_id_sha256": "7668161f5ff494e9a30a694b8ced9624fdae03bae583fba066ae830aa3a58486",
+        "capability_sha256": "72fdaedb90672700d6dae5b54a4bf246c9c95dd78f46d9621624947ecd642a99",
+        "proof_used": false
+      },
+      "capability_handling": {
+        "sha256": "72fdaedb90672700d6dae5b54a4bf246c9c95dd78f46d9621624947ecd642a99",
+        "channel": "Python memory -> existing SSH stdin -> peer explicit private IPC",
+        "raw_stored_or_logged": false
+      },
+      "membership_before": {
+        "local": {
+          "team_id_sha256": "7668161f5ff494e9a30a694b8ced9624fdae03bae583fba066ae830aa3a58486",
+          "member_count": 2,
+          "relay_connected": true,
+          "relay_url_sha256": null,
+          "machines": [
+            {
+              "endpoint_sha256": "492e5551764900cea0eebf2376999aa32a45a8f6fa6523da67e95ba9010565ab",
+              "is_me": true,
+              "online": true,
+              "link": null,
+              "rtt_ms": null,
+              "verified": false,
+              "has_proof": false
+            },
+            {
+              "endpoint_sha256": "179365bde4cfe2c38248e10243384167a97c4355866c084b1237c1872d149dd4",
+              "is_me": false,
+              "online": true,
+              "link": "direct",
+              "rtt_ms": 11,
+              "verified": false,
+              "has_proof": false
+            }
+          ]
+        },
+        "peer": {
+          "team_id_sha256": "7668161f5ff494e9a30a694b8ced9624fdae03bae583fba066ae830aa3a58486",
+          "member_count": 2,
+          "relay_connected": false,
+          "relay_url_sha256": null,
+          "machines": [
+            {
+              "endpoint_sha256": "179365bde4cfe2c38248e10243384167a97c4355866c084b1237c1872d149dd4",
+              "is_me": true,
+              "online": true,
+              "link": null,
+              "rtt_ms": null,
+              "verified": false,
+              "has_proof": false
+            },
+            {
+              "endpoint_sha256": "492e5551764900cea0eebf2376999aa32a45a8f6fa6523da67e95ba9010565ab",
+              "is_me": false,
+              "online": true,
+              "link": "direct",
+              "rtt_ms": 11,
+              "verified": false,
+              "has_proof": false
+            }
+          ]
+        },
+        "only_controlled_endpoints": true
+      },
+      "private_clients": {
+        "local": {
+          "registered": true,
+          "session_key_sha256": "93fb0ad7fd9d735f9ac4dc38b6962735834ee13eaadd14230ff5969fdfc0df2d",
+          "address_sha256": "3addf457d14470386f49488e479a267c33dc6648e17851fd4fc0792614ce1c81",
+          "tier": "pull"
+        },
+        "peer": {
+          "registered": true,
+          "session_key_sha256": "1ee5df327121481f9ca9aefec1dfcfab1de0e9e646fafc6b8960be6986e5b024",
+          "address_sha256": "879058674c73e665e30d29a36ac3036eb5ed197170fa870da4844cf1bc931502",
+          "tier": "pull"
+        }
+      },
+      "cleanup": {
+        "peer": {
+          "stopped": true,
+          "handles": [
+            {
+              "pid": 94782,
+              "lstart": "Thu Oct 29 03:14:54 2026",
+              "binary_sha256": "6ac4bb4837469867edc2dba3cbbd6e4dd9fb18ad0389db69ff6ef21683317a44",
+              "alive_after_start": true,
+              "role": "peer",
+              "socket": "/private/tmp/p11-C-q27ngmzj/state/network.sock",
+              "exit_code": 0
+            },
+            {
+              "pid": 94836,
+              "lstart": "Thu Oct 29 03:14:58 2026",
+              "binary_sha256": "6ac4bb4837469867edc2dba3cbbd6e4dd9fb18ad0389db69ff6ef21683317a44",
+              "alive_after_start": true,
+              "role": "peer",
+              "socket": "/private/tmp/p11-C-q27ngmzj/state/network.sock",
+              "exit_code": -15
+            }
+          ],
+          "ipc_connect_after_stop": 61,
+          "private_state_removed": true,
+          "engine_copy_removed": true,
+          "ssh_exit_code": 0,
+          "control_handle": {
+            "local_ssh_pid": 68171,
+            "alive_after_ready": true,
+            "peer_control_pid": 94781
+          }
+        },
+        "local": {
+          "stopped": true,
+          "handles": [
+            {
+              "pid": 68131,
+              "lstart": "Thu Oct 29 03:14:53 2026",
+              "binary_sha256": "6ac4bb4837469867edc2dba3cbbd6e4dd9fb18ad0389db69ff6ef21683317a44",
+              "alive_after_start": true,
+              "role": "local",
+              "socket": "/private/tmp/p11-C-a33f52rq/state/network.sock",
+              "exit_code": 0
+            },
+            {
+              "pid": 68194,
+              "lstart": "Thu Oct 29 03:14:55 2026",
+              "binary_sha256": "6ac4bb4837469867edc2dba3cbbd6e4dd9fb18ad0389db69ff6ef21683317a44",
+              "alive_after_start": true,
+              "role": "local",
+              "socket": "/private/tmp/p11-C-a33f52rq/state/network.sock",
+              "exit_code": -15
+            },
+            {
+              "pid": 68460,
+              "lstart": "Thu Oct 29 03:15:10 2026",
+              "binary_sha256": "6ac4bb4837469867edc2dba3cbbd6e4dd9fb18ad0389db69ff6ef21683317a44",
+              "alive_after_start": true,
+              "role": "local",
+              "socket": "/private/tmp/p11-C-a33f52rq/state/network.sock",
+              "exit_code": -15
+            }
+          ],
+          "ipc_connect_after_stop": 61,
+          "private_state_removed": true,
+          "engine_copy_removed": true
+        }
+      }
+    },
+    {
+      "scope": "C private two-controlled-node carrier fixture; not D12 product choice",
+      "task_marker": "P11-QA-40c1afc34bbd43c4",
+      "local_root": "/private/tmp/p11-C-av3sz_4j",
+      "peer_root": "/private/tmp/p11-C-_n_rujrd",
+      "binary_sha256": "6ac4bb4837469867edc2dba3cbbd6e4dd9fb18ad0389db69ff6ef21683317a44",
+      "network_team_created": true,
+      "production_team_used": false,
+      "native_model_calls": 3,
+      "passed": true,
+      "phases": [
+        {
+          "phase": "first",
+          "roundtrip_ms": 6375.519,
+          "request_engine_id_sha256": "093af8d85bd686f803e70999469e4073f777c985a329749175b8822d5fcc0ec9",
+          "reply_engine_id_sha256": "7bd934ecaadad0c370fe0a8f109f2df6dd5610359524355c5ae615cf217735ba",
+          "request_body_sha256": "837ccd0b9c717c72343451a35cb3aea070e1fcab5e473b4144e17e4e1656dc0e",
+          "answer_body_sha256": "3ab6fbc40d6ce6f1f74547f4ccc7847bca248c56ac2e76c6bb7f8db5556bf6c9",
+          "actual_json_answer": {
+            "request_id": "P11-QA-40c1afc34bbd43c4",
+            "phase": "first",
+            "claim_valid": false,
+            "corrected_sum": 4,
+            "counterexample": "사과 2개에 2개를 더하면 5개가 아니라 4개다."
+          },
+          "native": {
+            "actual_native_call": true,
+            "native_conversation_sha256": "6794aa4d133550e5358f4646e91e0a3e530cc04c46646171abeb2fc06849130b",
+            "native_cli_version": "codex-cli 0.163.0",
+            "native_elapsed_ms": 6291.858,
+            "native_handle": {
+              "pid": 15075,
+              "lstart": "Thu Oct 29 03:27:46 2026",
+              "alive_after_start": true
+            },
+            "native_process_exited": true,
+            "tool_events": 0,
+            "request_engine_id_sha256": "093af8d85bd686f803e70999469e4073f777c985a329749175b8822d5fcc0ec9",
+            "reply_engine_ids_sha256": [
+              "7bd934ecaadad0c370fe0a8f109f2df6dd5610359524355c5ae615cf217735ba"
+            ],
+            "received_body_sha256": "837ccd0b9c717c72343451a35cb3aea070e1fcab5e473b4144e17e4e1656dc0e",
+            "answer_sha256": "3ab6fbc40d6ce6f1f74547f4ccc7847bca248c56ac2e76c6bb7f8db5556bf6c9",
+            "phase": "first",
+            "model_call_count": 1
+          },
+          "readback": {
+            "local": {
+              "team_id_sha256": "5e1f6708e31ea4d1395db992f893351bcd67b65c83f4330bf1d13bb23f56f483",
+              "member_count": 2,
+              "relay_connected": true,
+              "relay_url_sha256": null,
+              "machines": [
+                {
+                  "endpoint_sha256": "54c691a7dd907020f683710ad2b49849c393a353651cb7c3a869b195fb9818fe",
+                  "is_me": true,
+                  "online": true,
+                  "link": null,
+                  "rtt_ms": null,
+                  "verified": false,
+                  "has_proof": false
+                },
+                {
+                  "endpoint_sha256": "7963f655c405e8eb433e0ecc010d870f077429b835c470bd7ef6918887164c4b",
+                  "is_me": false,
+                  "online": true,
+                  "link": "direct",
+                  "rtt_ms": 8,
+                  "verified": false,
+                  "has_proof": false
+                }
+              ]
+            },
+            "peer": {
+              "team_id_sha256": "5e1f6708e31ea4d1395db992f893351bcd67b65c83f4330bf1d13bb23f56f483",
+              "member_count": 2,
+              "relay_connected": true,
+              "relay_url_sha256": null,
+              "machines": [
+                {
+                  "endpoint_sha256": "7963f655c405e8eb433e0ecc010d870f077429b835c470bd7ef6918887164c4b",
+                  "is_me": true,
+                  "online": true,
+                  "link": null,
+                  "rtt_ms": null,
+                  "verified": false,
+                  "has_proof": false
+                },
+                {
+                  "endpoint_sha256": "54c691a7dd907020f683710ad2b49849c393a353651cb7c3a869b195fb9818fe",
+                  "is_me": false,
+                  "online": true,
+                  "link": "direct",
+                  "rtt_ms": 20,
+                  "verified": false,
+                  "has_proof": false
+                }
+              ]
+            }
+          }
+        },
+        {
+          "phase": "followup",
+          "roundtrip_ms": 5166.103,
+          "request_engine_id_sha256": "7a6b1683eee99ae7f25728ec5925271cc2dd5ec1f597ce4b739354631ac37bbd",
+          "reply_engine_id_sha256": "ebdaac7d2f8c65ae8e6ffa10dd572837f901f46d009da91983ce5408b60896ff",
+          "request_body_sha256": "5e53031fdd69a93f12de9b4963d6af66ca6b9b70d5a2a2227a8b8f2d722c40d9",
+          "answer_body_sha256": "8f0ed0c7722c566b1b0654730709bd4fb6b12eda95b40d0c85c0dfc537e4f03d",
+          "actual_json_answer": {
+            "request_id": "P11-QA-40c1afc34bbd43c4",
+            "phase": "followup",
+            "claim_valid": false,
+            "corrected_sum": 4,
+            "counterexample": "사과 2개에 2개를 더하면 5개가 아니라 4개입니다."
+          },
+          "native": {
+            "actual_native_call": true,
+            "native_conversation_sha256": "8fccb865117f6848084d32bfdd2cb9f38c00a946642714f277d192433746db29",
+            "native_cli_version": "codex-cli 0.163.0",
+            "native_elapsed_ms": 4952.129,
+            "native_handle": {
+              "pid": 15170,
+              "lstart": "Thu Oct 29 03:27:52 2026",
+              "alive_after_start": true
+            },
+            "native_process_exited": true,
+            "tool_events": 0,
+            "request_engine_id_sha256": "7a6b1683eee99ae7f25728ec5925271cc2dd5ec1f597ce4b739354631ac37bbd",
+            "reply_engine_ids_sha256": [
+              "ebdaac7d2f8c65ae8e6ffa10dd572837f901f46d009da91983ce5408b60896ff"
+            ],
+            "received_body_sha256": "5e53031fdd69a93f12de9b4963d6af66ca6b9b70d5a2a2227a8b8f2d722c40d9",
+            "answer_sha256": "8f0ed0c7722c566b1b0654730709bd4fb6b12eda95b40d0c85c0dfc537e4f03d",
+            "phase": "followup",
+            "model_call_count": 2
+          },
+          "readback": {
+            "local": {
+              "team_id_sha256": "5e1f6708e31ea4d1395db992f893351bcd67b65c83f4330bf1d13bb23f56f483",
+              "member_count": 2,
+              "relay_connected": true,
+              "relay_url_sha256": null,
+              "machines": [
+                {
+                  "endpoint_sha256": "54c691a7dd907020f683710ad2b49849c393a353651cb7c3a869b195fb9818fe",
+                  "is_me": true,
+                  "online": true,
+                  "link": null,
+                  "rtt_ms": null,
+                  "verified": false,
+                  "has_proof": false
+                },
+                {
+                  "endpoint_sha256": "7963f655c405e8eb433e0ecc010d870f077429b835c470bd7ef6918887164c4b",
+                  "is_me": false,
+                  "online": true,
+                  "link": "direct",
+                  "rtt_ms": 10,
+                  "verified": false,
+                  "has_proof": false
+                }
+              ]
+            },
+            "peer": {
+              "team_id_sha256": "5e1f6708e31ea4d1395db992f893351bcd67b65c83f4330bf1d13bb23f56f483",
+              "member_count": 2,
+              "relay_connected": true,
+              "relay_url_sha256": null,
+              "machines": [
+                {
+                  "endpoint_sha256": "7963f655c405e8eb433e0ecc010d870f077429b835c470bd7ef6918887164c4b",
+                  "is_me": true,
+                  "online": true,
+                  "link": null,
+                  "rtt_ms": null,
+                  "verified": false,
+                  "has_proof": false
+                },
+                {
+                  "endpoint_sha256": "54c691a7dd907020f683710ad2b49849c393a353651cb7c3a869b195fb9818fe",
+                  "is_me": false,
+                  "online": true,
+                  "link": "direct",
+                  "rtt_ms": 33,
+                  "verified": false,
+                  "has_proof": false
+                }
+              ]
+            }
+          }
+        },
+        {
+          "phase": "reconnect-cached-readback",
+          "roundtrip_ms": 136.423,
+          "reply_engine_id_sha256": "ebdaac7d2f8c65ae8e6ffa10dd572837f901f46d009da91983ce5408b60896ff",
+          "answer_body_sha256": "8f0ed0c7722c566b1b0654730709bd4fb6b12eda95b40d0c85c0dfc537e4f03d",
+          "original_reply_id_unchanged": true,
+          "original_body_unchanged": true,
+          "model_rerun": false,
+          "endpoint_unchanged": true,
+          "old_private_handle": {
+            "pid": 78939,
+            "lstart": "Thu Oct 29 03:27:42 2026",
+            "binary_sha256": "6ac4bb4837469867edc2dba3cbbd6e4dd9fb18ad0389db69ff6ef21683317a44",
+            "alive_after_start": true,
+            "role": "local",
+            "socket": "/private/tmp/p11-C-av3sz_4j/state/network.sock"
+          },
+          "new_private_handle": {
+            "pid": 79193,
+            "lstart": "Thu Oct 29 03:27:58 2026",
+            "binary_sha256": "6ac4bb4837469867edc2dba3cbbd6e4dd9fb18ad0389db69ff6ef21683317a44",
+            "alive_after_start": true,
+            "role": "local",
+            "socket": "/private/tmp/p11-C-av3sz_4j/state/network.sock",
+            "exit_code": -15
+          },
+          "readback": {
+            "local": {
+              "team_id_sha256": "5e1f6708e31ea4d1395db992f893351bcd67b65c83f4330bf1d13bb23f56f483",
+              "member_count": 2,
+              "relay_connected": false,
+              "relay_url_sha256": null,
+              "machines": [
+                {
+                  "endpoint_sha256": "54c691a7dd907020f683710ad2b49849c393a353651cb7c3a869b195fb9818fe",
+                  "is_me": true,
+                  "online": true,
+                  "link": null,
+                  "rtt_ms": null,
+                  "verified": false,
+                  "has_proof": false
+                },
+                {
+                  "endpoint_sha256": "7963f655c405e8eb433e0ecc010d870f077429b835c470bd7ef6918887164c4b",
+                  "is_me": false,
+                  "online": false,
+                  "link": null,
+                  "rtt_ms": null,
+                  "verified": false,
+                  "has_proof": false
+                }
+              ]
+            },
+            "peer": {
+              "team_id_sha256": "5e1f6708e31ea4d1395db992f893351bcd67b65c83f4330bf1d13bb23f56f483",
+              "member_count": 2,
+              "relay_connected": true,
+              "relay_url_sha256": null,
+              "machines": [
+                {
+                  "endpoint_sha256": "7963f655c405e8eb433e0ecc010d870f077429b835c470bd7ef6918887164c4b",
+                  "is_me": true,
+                  "online": true,
+                  "link": null,
+                  "rtt_ms": null,
+                  "verified": false,
+                  "has_proof": false
+                },
+                {
+                  "endpoint_sha256": "54c691a7dd907020f683710ad2b49849c393a353651cb7c3a869b195fb9818fe",
+                  "is_me": false,
+                  "online": true,
+                  "link": "direct",
+                  "rtt_ms": 33,
+                  "verified": false,
+                  "has_proof": false
+                }
+              ]
+            }
+          }
+        },
+        {
+          "phase": "after-reconnect",
+          "roundtrip_ms": 6877.705,
+          "request_engine_id_sha256": "606c8add0588a37128dd4b4bd6e013b0ea1e1135d198cd6710f7bab02ef83a31",
+          "reply_engine_id_sha256": "1468478958791fb47f4e1a018100d57e5bbbc19c3c24a7dd7b8647bf03f32303",
+          "actual_json_answer": {
+            "request_id": "P11-QA-40c1afc34bbd43c4",
+            "phase": "after-reconnect",
+            "claim_valid": false,
+            "corrected_sum": 4,
+            "counterexample": "사과 2개에 2개를 더하면 5개가 아니라 4개다."
+          },
+          "native": {
+            "actual_native_call": true,
+            "native_conversation_sha256": "7d738bdc30bc1ec229f452c96ec014fdc6e3dff050453bd10fdfee04d9693b6e",
+            "native_cli_version": "codex-cli 0.163.0",
+            "native_elapsed_ms": 6021.879,
+            "native_handle": {
+              "pid": 15294,
+              "lstart": "Thu Oct 29 03:27:59 2026",
+              "alive_after_start": true
+            },
+            "native_process_exited": true,
+            "tool_events": 0,
+            "request_engine_id_sha256": "606c8add0588a37128dd4b4bd6e013b0ea1e1135d198cd6710f7bab02ef83a31",
+            "reply_engine_ids_sha256": [
+              "1468478958791fb47f4e1a018100d57e5bbbc19c3c24a7dd7b8647bf03f32303"
+            ],
+            "received_body_sha256": "d0ec0bbe2f6a8b2243b003aeabdaffca491b8dacf6f229d8872cb3c929ea03be",
+            "answer_sha256": "09160f0ecaf50aa37c38583644b578df176c23e108d6341aac078c90ce4bff61",
+            "phase": "after-reconnect",
+            "model_call_count": 3
+          },
+          "readback": {
+            "local": {
+              "team_id_sha256": "5e1f6708e31ea4d1395db992f893351bcd67b65c83f4330bf1d13bb23f56f483",
+              "member_count": 2,
+              "relay_connected": true,
+              "relay_url_sha256": null,
+              "machines": [
+                {
+                  "endpoint_sha256": "54c691a7dd907020f683710ad2b49849c393a353651cb7c3a869b195fb9818fe",
+                  "is_me": true,
+                  "online": true,
+                  "link": null,
+                  "rtt_ms": null,
+                  "verified": false,
+                  "has_proof": false
+                },
+                {
+                  "endpoint_sha256": "7963f655c405e8eb433e0ecc010d870f077429b835c470bd7ef6918887164c4b",
+                  "is_me": false,
+                  "online": true,
+                  "link": "direct",
+                  "rtt_ms": 47,
+                  "verified": false,
+                  "has_proof": false
+                }
+              ]
+            },
+            "peer": {
+              "team_id_sha256": "5e1f6708e31ea4d1395db992f893351bcd67b65c83f4330bf1d13bb23f56f483",
+              "member_count": 2,
+              "relay_connected": true,
+              "relay_url_sha256": null,
+              "machines": [
+                {
+                  "endpoint_sha256": "7963f655c405e8eb433e0ecc010d870f077429b835c470bd7ef6918887164c4b",
+                  "is_me": true,
+                  "online": true,
+                  "link": null,
+                  "rtt_ms": null,
+                  "verified": false,
+                  "has_proof": false
+                },
+                {
+                  "endpoint_sha256": "54c691a7dd907020f683710ad2b49849c393a353651cb7c3a869b195fb9818fe",
+                  "is_me": false,
+                  "online": true,
+                  "link": "direct",
+                  "rtt_ms": 34,
+                  "verified": false,
+                  "has_proof": false
+                }
+              ]
+            }
+          }
+        }
+      ],
+      "private_plan_sha256": "0d18da92490e2cf76a1d7e8a3fad743c08eb70da05c7f09da53c7c42058b8e95",
+      "stage_peer": {
+        "staged": true,
+        "binary_sha256": "6ac4bb4837469867edc2dba3cbbd6e4dd9fb18ad0389db69ff6ef21683317a44",
+        "root": "/private/tmp/p11-C-_n_rujrd",
+        "role": "controlled-peer"
+      },
+      "local_initial_handle": {
+        "pid": 78817,
+        "lstart": "Thu Oct 29 03:27:39 2026",
+        "binary_sha256": "6ac4bb4837469867edc2dba3cbbd6e4dd9fb18ad0389db69ff6ef21683317a44",
+        "alive_after_start": true,
+        "role": "local",
+        "socket": "/private/tmp/p11-C-av3sz_4j/state/network.sock",
+        "exit_code": 0
+      },
+      "local_endpoint": {
+        "endpoint_sha256": "54c691a7dd907020f683710ad2b49849c393a353651cb7c3a869b195fb9818fe",
+        "exit_code": 0
+      },
+      "peer_control_handle": {
+        "local_ssh_pid": 78875,
+        "alive_after_ready": true,
+        "peer_control_pid": 14951
+      },
+      "peer_initial_handle": {
+        "pid": 14952,
+        "lstart": "Thu Oct 29 03:27:41 2026",
+        "binary_sha256": "6ac4bb4837469867edc2dba3cbbd6e4dd9fb18ad0389db69ff6ef21683317a44",
+        "alive_after_start": true,
+        "role": "peer",
+        "socket": "/private/tmp/p11-C-_n_rujrd/state/network.sock"
+      },
+      "peer_endpoint": {
+        "endpoint_sha256": "7963f655c405e8eb433e0ecc010d870f077429b835c470bd7ef6918887164c4b",
+        "exit_code": 0
+      },
+      "private_create": {
+        "created": true,
+        "team_id_sha256": "5e1f6708e31ea4d1395db992f893351bcd67b65c83f4330bf1d13bb23f56f483",
+        "proof_used": false
+      },
+      "private_join": {
+        "joined": true,
+        "team_id_sha256": "5e1f6708e31ea4d1395db992f893351bcd67b65c83f4330bf1d13bb23f56f483",
+        "capability_sha256": "fec87691de4839dd6cb465f384e23fbf00e10f995362f67bfd3a6585ec5a1bd1",
+        "proof_used": false
+      },
+      "capability_handling": {
+        "sha256": "fec87691de4839dd6cb465f384e23fbf00e10f995362f67bfd3a6585ec5a1bd1",
+        "channel": "Python memory -> existing SSH stdin -> peer explicit private IPC",
+        "raw_stored_or_logged": false
+      },
+      "membership_before": {
+        "local": {
+          "team_id_sha256": "5e1f6708e31ea4d1395db992f893351bcd67b65c83f4330bf1d13bb23f56f483",
+          "member_count": 2,
+          "relay_connected": true,
+          "relay_url_sha256": null,
+          "machines": [
+            {
+              "endpoint_sha256": "54c691a7dd907020f683710ad2b49849c393a353651cb7c3a869b195fb9818fe",
+              "is_me": true,
+              "online": true,
+              "link": null,
+              "rtt_ms": null,
+              "verified": false,
+              "has_proof": false
+            },
+            {
+              "endpoint_sha256": "7963f655c405e8eb433e0ecc010d870f077429b835c470bd7ef6918887164c4b",
+              "is_me": false,
+              "online": true,
+              "link": "direct",
+              "rtt_ms": 12,
+              "verified": false,
+              "has_proof": false
+            }
+          ]
+        },
+        "peer": {
+          "team_id_sha256": "5e1f6708e31ea4d1395db992f893351bcd67b65c83f4330bf1d13bb23f56f483",
+          "member_count": 2,
+          "relay_connected": false,
+          "relay_url_sha256": null,
+          "machines": [
+            {
+              "endpoint_sha256": "7963f655c405e8eb433e0ecc010d870f077429b835c470bd7ef6918887164c4b",
+              "is_me": true,
+              "online": true,
+              "link": null,
+              "rtt_ms": null,
+              "verified": false,
+              "has_proof": false
+            },
+            {
+              "endpoint_sha256": "54c691a7dd907020f683710ad2b49849c393a353651cb7c3a869b195fb9818fe",
+              "is_me": false,
+              "online": true,
+              "link": "direct",
+              "rtt_ms": 9,
+              "verified": false,
+              "has_proof": false
+            }
+          ]
+        },
+        "only_controlled_endpoints": true
+      },
+      "private_clients": {
+        "local": {
+          "registered": true,
+          "session_key_sha256": "93fb0ad7fd9d735f9ac4dc38b6962735834ee13eaadd14230ff5969fdfc0df2d",
+          "address_sha256": "3addf457d14470386f49488e479a267c33dc6648e17851fd4fc0792614ce1c81",
+          "tier": "pull"
+        },
+        "peer": {
+          "registered": true,
+          "session_key_sha256": "1ee5df327121481f9ca9aefec1dfcfab1de0e9e646fafc6b8960be6986e5b024",
+          "address_sha256": "879058674c73e665e30d29a36ac3036eb5ed197170fa870da4844cf1bc931502",
+          "tier": "pull"
+        }
+      },
+      "cleanup": {
+        "peer": {
+          "stopped": true,
+          "handles": [
+            {
+              "pid": 14952,
+              "lstart": "Thu Oct 29 03:27:41 2026",
+              "binary_sha256": "6ac4bb4837469867edc2dba3cbbd6e4dd9fb18ad0389db69ff6ef21683317a44",
+              "alive_after_start": true,
+              "role": "peer",
+              "socket": "/private/tmp/p11-C-_n_rujrd/state/network.sock",
+              "exit_code": 0
+            },
+            {
+              "pid": 15026,
+              "lstart": "Thu Oct 29 03:27:44 2026",
+              "binary_sha256": "6ac4bb4837469867edc2dba3cbbd6e4dd9fb18ad0389db69ff6ef21683317a44",
+              "alive_after_start": true,
+              "role": "peer",
+              "socket": "/private/tmp/p11-C-_n_rujrd/state/network.sock",
+              "exit_code": -15
+            }
+          ],
+          "ipc_connect_after_stop": 61,
+          "private_state_removed": true,
+          "engine_copy_removed": true,
+          "ssh_exit_code": 0,
+          "control_handle": {
+            "local_ssh_pid": 78875,
+            "alive_after_ready": true,
+            "peer_control_pid": 14951
+          }
+        },
+        "local": {
+          "stopped": true,
+          "handles": [
+            {
+              "pid": 78817,
+              "lstart": "Thu Oct 29 03:27:39 2026",
+              "binary_sha256": "6ac4bb4837469867edc2dba3cbbd6e4dd9fb18ad0389db69ff6ef21683317a44",
+              "alive_after_start": true,
+              "role": "local",
+              "socket": "/private/tmp/p11-C-av3sz_4j/state/network.sock",
+              "exit_code": 0
+            },
+            {
+              "pid": 78939,
+              "lstart": "Thu Oct 29 03:27:42 2026",
+              "binary_sha256": "6ac4bb4837469867edc2dba3cbbd6e4dd9fb18ad0389db69ff6ef21683317a44",
+              "alive_after_start": true,
+              "role": "local",
+              "socket": "/private/tmp/p11-C-av3sz_4j/state/network.sock",
+              "exit_code": -15
+            },
+            {
+              "pid": 79193,
+              "lstart": "Thu Oct 29 03:27:58 2026",
+              "binary_sha256": "6ac4bb4837469867edc2dba3cbbd6e4dd9fb18ad0389db69ff6ef21683317a44",
+              "alive_after_start": true,
+              "role": "local",
+              "socket": "/private/tmp/p11-C-av3sz_4j/state/network.sock",
+              "exit_code": -15
+            }
+          ],
+          "ipc_connect_after_stop": 61,
+          "private_state_removed": true,
+          "engine_copy_removed": true
+        }
+      }
+    }
+  ],
+  "native_evidence": [
+    {
+      "run_local_root": "/private/tmp/p11-C-a33f52rq",
+      "peer_root": "/private/tmp/p11-C-q27ngmzj",
+      "phase": "first",
+      "local_result_path": "/private/tmp/p11-C-av3sz_4j/peer-evidence/p11-C-q27ngmzj/native/first/result.json",
+      "peer_result_path": "/private/tmp/p11-C-q27ngmzj/native/first/result.json",
+      "native_conversation_sha256": "db406867915662eef178da193a107f8568fc9e992466986666990a752fbedddf",
+      "received_body_sha256": "837ccd0b9c717c72343451a35cb3aea070e1fcab5e473b4144e17e4e1656dc0e",
+      "pid": 94884,
+      "lstart": "Thu Oct 29 03:15:00 2026",
+      "exit_code": 0,
+      "observed_tool_events": 0,
+      "actual_cli_version": "codex-cli 0.163.0",
+      "saved_subscription_auth": "preflight native login status ChatGPT; auth values not read/copied",
+      "home_scope": "private fixture HOME; existing absolute CODEX_HOME only for approved subscription runtime",
+      "settings_metadata_scope": "HOME-private metadata only; not proof of global profile byte equality"
+    },
+    {
+      "run_local_root": "/private/tmp/p11-C-a33f52rq",
+      "peer_root": "/private/tmp/p11-C-q27ngmzj",
+      "phase": "followup",
+      "local_result_path": "/private/tmp/p11-C-av3sz_4j/peer-evidence/p11-C-q27ngmzj/native/followup/result.json",
+      "peer_result_path": "/private/tmp/p11-C-q27ngmzj/native/followup/result.json",
+      "native_conversation_sha256": "871a06c807bd879d88c2c2e1a53c3d8099ee60830edc0ea1a3c8429fdc275722",
+      "received_body_sha256": "5e53031fdd69a93f12de9b4963d6af66ca6b9b70d5a2a2227a8b8f2d722c40d9",
+      "pid": 94972,
+      "lstart": "Thu Oct 29 03:15:05 2026",
+      "exit_code": 0,
+      "observed_tool_events": 0,
+      "actual_cli_version": "codex-cli 0.163.0",
+      "saved_subscription_auth": "preflight native login status ChatGPT; auth values not read/copied",
+      "home_scope": "private fixture HOME; existing absolute CODEX_HOME only for approved subscription runtime",
+      "settings_metadata_scope": "HOME-private metadata only; not proof of global profile byte equality"
+    },
+    {
+      "run_local_root": "/private/tmp/p11-C-a33f52rq",
+      "peer_root": "/private/tmp/p11-C-q27ngmzj",
+      "phase": "after-reconnect",
+      "local_result_path": "/private/tmp/p11-C-av3sz_4j/peer-evidence/p11-C-q27ngmzj/native/after-reconnect/result.json",
+      "peer_result_path": "/private/tmp/p11-C-q27ngmzj/native/after-reconnect/result.json",
+      "native_conversation_sha256": "6507cb078a5e2d30beced696221d8ec0b450462a9b37004f9d516bb10f4aa4df",
+      "received_body_sha256": "d0ec0bbe2f6a8b2243b003aeabdaffca491b8dacf6f229d8872cb3c929ea03be",
+      "pid": 95147,
+      "lstart": "Thu Oct 29 03:15:11 2026",
+      "exit_code": 0,
+      "observed_tool_events": 0,
+      "actual_cli_version": "codex-cli 0.163.0",
+      "saved_subscription_auth": "preflight native login status ChatGPT; auth values not read/copied",
+      "home_scope": "private fixture HOME; existing absolute CODEX_HOME only for approved subscription runtime",
+      "settings_metadata_scope": "HOME-private metadata only; not proof of global profile byte equality"
+    },
+    {
+      "run_local_root": "/private/tmp/p11-C-av3sz_4j",
+      "peer_root": "/private/tmp/p11-C-_n_rujrd",
+      "phase": "first",
+      "local_result_path": "/private/tmp/p11-C-av3sz_4j/peer-evidence/p11-C-_n_rujrd/native/first/result.json",
+      "peer_result_path": "/private/tmp/p11-C-_n_rujrd/native/first/result.json",
+      "native_conversation_sha256": "6794aa4d133550e5358f4646e91e0a3e530cc04c46646171abeb2fc06849130b",
+      "received_body_sha256": "837ccd0b9c717c72343451a35cb3aea070e1fcab5e473b4144e17e4e1656dc0e",
+      "pid": 15075,
+      "lstart": "Thu Oct 29 03:27:46 2026",
+      "exit_code": 0,
+      "observed_tool_events": 0,
+      "actual_cli_version": "codex-cli 0.163.0",
+      "saved_subscription_auth": "preflight native login status ChatGPT; auth values not read/copied",
+      "home_scope": "private fixture HOME; existing absolute CODEX_HOME only for approved subscription runtime",
+      "settings_metadata_scope": "HOME-private metadata only; not proof of global profile byte equality"
+    },
+    {
+      "run_local_root": "/private/tmp/p11-C-av3sz_4j",
+      "peer_root": "/private/tmp/p11-C-_n_rujrd",
+      "phase": "followup",
+      "local_result_path": "/private/tmp/p11-C-av3sz_4j/peer-evidence/p11-C-_n_rujrd/native/followup/result.json",
+      "peer_result_path": "/private/tmp/p11-C-_n_rujrd/native/followup/result.json",
+      "native_conversation_sha256": "8fccb865117f6848084d32bfdd2cb9f38c00a946642714f277d192433746db29",
+      "received_body_sha256": "5e53031fdd69a93f12de9b4963d6af66ca6b9b70d5a2a2227a8b8f2d722c40d9",
+      "pid": 15170,
+      "lstart": "Thu Oct 29 03:27:52 2026",
+      "exit_code": 0,
+      "observed_tool_events": 0,
+      "actual_cli_version": "codex-cli 0.163.0",
+      "saved_subscription_auth": "preflight native login status ChatGPT; auth values not read/copied",
+      "home_scope": "private fixture HOME; existing absolute CODEX_HOME only for approved subscription runtime",
+      "settings_metadata_scope": "HOME-private metadata only; not proof of global profile byte equality"
+    },
+    {
+      "run_local_root": "/private/tmp/p11-C-av3sz_4j",
+      "peer_root": "/private/tmp/p11-C-_n_rujrd",
+      "phase": "after-reconnect",
+      "local_result_path": "/private/tmp/p11-C-av3sz_4j/peer-evidence/p11-C-_n_rujrd/native/after-reconnect/result.json",
+      "peer_result_path": "/private/tmp/p11-C-_n_rujrd/native/after-reconnect/result.json",
+      "native_conversation_sha256": "7d738bdc30bc1ec229f452c96ec014fdc6e3dff050453bd10fdfee04d9693b6e",
+      "received_body_sha256": "d0ec0bbe2f6a8b2243b003aeabdaffca491b8dacf6f229d8872cb3c929ea03be",
+      "pid": 15294,
+      "lstart": "Thu Oct 29 03:27:59 2026",
+      "exit_code": 0,
+      "observed_tool_events": 0,
+      "actual_cli_version": "codex-cli 0.163.0",
+      "saved_subscription_auth": "preflight native login status ChatGPT; auth values not read/copied",
+      "home_scope": "private fixture HOME; existing absolute CODEX_HOME only for approved subscription runtime",
+      "settings_metadata_scope": "HOME-private metadata only; not proof of global profile byte equality"
+    }
+  ],
+  "source_protocol_evidence": [
+    {
+      "file": "config.rs",
+      "local_path": "/private/tmp/p11-C-a33f52rq/source/config.rs",
+      "url": "https://raw.githubusercontent.com/reason-machines/reason-network/v0.12.10/src/config.rs",
+      "bytes": 13964,
+      "sha256": "49abd7efc72e33c4fa50b28ac40cdb83d22733e035b3deb7498b2de397fcda1b"
+    },
+    {
+      "file": "daemon/directory.rs",
+      "local_path": "/private/tmp/p11-C-a33f52rq/source/daemon/directory.rs",
+      "url": "https://raw.githubusercontent.com/reason-machines/reason-network/v0.12.10/src/daemon/directory.rs",
+      "bytes": 30729,
+      "sha256": "7e4c03cc6a174ca8857d756a176cc5700332e4dcb19c7b810da8dd87574ee53d"
+    },
+    {
+      "file": "daemon/mod.rs",
+      "local_path": "/private/tmp/p11-C-a33f52rq/source/daemon/mod.rs",
+      "url": "https://raw.githubusercontent.com/reason-machines/reason-network/v0.12.10/src/daemon/mod.rs",
+      "bytes": 18006,
+      "sha256": "cc490ece01e4c55987ee56fd120199fc047ca80fb7777394d4ae81bf3adeb901"
+    },
+    {
+      "file": "daemon/teamops.rs",
+      "local_path": "/private/tmp/p11-C-a33f52rq/source/daemon/teamops.rs",
+      "url": "https://raw.githubusercontent.com/reason-machines/reason-network/v0.12.10/src/daemon/teamops.rs",
+      "bytes": 30917,
+      "sha256": "fd4d4b16ff041d9c8106ff317e719066a0ec728a10a80518be3373509cb65ea6"
+    },
+    {
+      "file": "main.rs",
+      "local_path": "/private/tmp/p11-C-a33f52rq/source/main.rs",
+      "url": "https://raw.githubusercontent.com/reason-machines/reason-network/v0.12.10/src/main.rs",
+      "bytes": 38937,
+      "sha256": "f817274c5d418c8b42e981d4af28276b9ce1350439882b9cd39b86c5913f4125"
+    },
+    {
+      "file": "migrate.rs",
+      "local_path": "/private/tmp/p11-C-a33f52rq/source/migrate.rs",
+      "url": "https://raw.githubusercontent.com/reason-machines/reason-network/v0.12.10/src/migrate.rs",
+      "bytes": 4851,
+      "sha256": "c3c407cf0442937634ad055fd5ac14fdf2e0b29b6961723a824e2e557286f8d8"
+    },
+    {
+      "file": "net.rs",
+      "local_path": "/private/tmp/p11-C-a33f52rq/source/net.rs",
+      "url": "https://raw.githubusercontent.com/reason-machines/reason-network/v0.12.10/src/net.rs",
+      "bytes": 61224,
+      "sha256": "272bc11a2f3520eecd937f0ff438402f36cc094f8274c0ea8a1d6f4ae63235a3"
+    },
+    {
+      "file": "paths.rs",
+      "local_path": "/private/tmp/p11-C-a33f52rq/source/paths.rs",
+      "url": "https://raw.githubusercontent.com/reason-machines/reason-network/v0.12.10/src/paths.rs",
+      "bytes": 10155,
+      "sha256": "e9b54b62fcc77646b98d600fce84b1c0f4141a8ccfe9fbc6eb210f0496a3062f"
+    },
+    {
+      "file": "proto.rs",
+      "local_path": "/private/tmp/p11-C-a33f52rq/source/proto.rs",
+      "url": "https://raw.githubusercontent.com/reason-machines/reason-network/v0.12.10/src/proto.rs",
+      "bytes": 18676,
+      "sha256": "7a94147dcf8bcee365207b89c4fafcdcb84237833ab1c7ef8ad3fae098cff7c6"
+    },
+    {
+      "file": "relays.rs",
+      "local_path": "/private/tmp/p11-C-a33f52rq/source/relays.rs",
+      "url": "https://raw.githubusercontent.com/reason-machines/reason-network/v0.12.10/src/relays.rs",
+      "bytes": 20347,
+      "sha256": "f530bc4d574b2b1fcb8772bce99b89cddba9b6c577167ab8353127da0de6776a"
+    },
+    {
+      "file": "util.rs",
+      "local_path": "/private/tmp/p11-C-a33f52rq/source/util.rs",
+      "url": "https://raw.githubusercontent.com/reason-machines/reason-network/v0.12.10/src/util.rs",
+      "bytes": 15197,
+      "sha256": "05539e909f50ba00209378fe1e45bc3ed0c37265833441ea39f9230211bc9784"
+    }
+  ],
+  "control_guard_test": {
+    "scope": "control guard only; not native/transport acceptance evidence",
+    "native_model_calls": 0,
+    "engine_processes": 0,
+    "cases": [
+      {
+        "case": "permission-before-send",
+        "passed": true
+      },
+      {
+        "case": "permission-before-inbox",
+        "passed": true
+      },
+      {
+        "case": "permission-before-register",
+        "passed": true
+      },
+      {
+        "case": "permission-before-process",
+        "passed": true
+      },
+      {
+        "case": "native-error-not-retried",
+        "passed": true,
+        "calls": 1
+      }
+    ],
+    "passed": true
+  },
+  "final_process_verification": {
+    "local": {
+      "hostname_sha256": "486b9335fc9861ca0b14306b4759c474fc5ba7661e62b36a663d46a1ef0f40bc",
+      "roots": [
+        {
+          "root": "/private/tmp/p11-C-a33f52rq",
+          "state_exists": false,
+          "home_exists": false,
+          "engine_exists": false,
+          "extra_processes": [],
+          "capability_pattern_matches": 0,
+          "permission_log_lines": 0
+        },
+        {
+          "root": "/private/tmp/p11-C-av3sz_4j",
+          "state_exists": false,
+          "home_exists": false,
+          "engine_exists": false,
+          "extra_processes": [],
+          "capability_pattern_matches": 0,
+          "permission_log_lines": 0
+        }
+      ]
+    },
+    "peer": {
+      "observer_pid": 39343,
+      "observer_excluded": true,
+      "roots": [
+        {
+          "root": "/private/tmp/p11-C-q27ngmzj",
+          "state_exists": false,
+          "home_exists": false,
+          "engine_exists": false,
+          "extra_owned_processes": []
+        },
+        {
+          "root": "/private/tmp/p11-C-_n_rujrd",
+          "state_exists": false,
+          "home_exists": false,
+          "engine_exists": false,
+          "extra_owned_processes": []
+        }
+      ],
+      "all_owned_processes_gone": true
+    }
+  },
+  "cleanup": {
+    "owned_daemon_handles_exited": 10,
+    "native_calls_exited": 6,
+    "SSH_control_sessions_exited": 2,
+    "private_state_HOME_key_material_removed": true,
+    "copied_engine_binaries_removed": true,
+    "nonsecret_code_math_inputs_outputs_retained_in_owned_tmp": true,
+    "initial_observer_false_positive": "earlier peer collector argv contained both tmp root strings and matched its own PID 34512; final SSH-stdin process scan excludes observer and finds no owned processes",
+    "existing_services_stopped": false
+  },
+  "unexecuted_environments": [
+    "different NAT",
+    "UDP blocked",
+    "proxy",
+    "forced public relay carriage"
+  ],
+  "unclaimed": [
+    "normal Reason plugin/MCP product integration",
+    "production team identity verification",
+    "D12 backend selection/adoption/deployment",
+    "overall P11 or full-plan completion"
+  ],
+  "write_scope": [
+    "deliverables/p11-live/C-*.py/.json/.md",
+    "unique owned local and peer /tmp"
+  ],
+  "product_code_or_global_settings_changed": false,
+  "plan_execution_note": "fixed first plan step 6 loosely names peer/client reconnect; actual recorded reconnect stops/restarts only the owned LOCAL daemon, preserving peer daemon and cached native answer; no peer/global service stopped."
+}

@@ -1,0 +1,659 @@
+{
+  "scope_status": "proven: owned engine CONNECT-proxy restriction only",
+  "private_roots": {
+    "local": "/private/tmp/p11-C-proxyvar-2_vbmwuu",
+    "peer": "/private/tmp/p11-C-proxyvar-2y_s3rzs",
+    "peer_hostname": "Jaesolui-Macmini.local",
+    "old_failure_location": "deliverables/p11-live/proxy-native-location-20261029.json"
+  },
+  "engine_version": "0.12.10",
+  "engine_sha256": "6ac4bb4837469867edc2dba3cbbd6e4dd9fb18ad0389db69ff6ef21683317a44",
+  "profile_kind": "explicit-allow: deny UDP/all TCP, allow exact localhost proxy TCP port",
+  "preflights": {
+    "local": {
+      "direct_child": {
+        "pid": 37675,
+        "lstart": "Thu Oct 29 08:32:05 2026",
+        "exit_code": 0,
+        "output": {
+          "SocketKind.SOCK_DGRAM": {
+            "errno": 1,
+            "error": "PermissionError"
+          },
+          "SocketKind.SOCK_STREAM": {
+            "errno": 1,
+            "error": "PermissionError"
+          }
+        },
+        "stdout_sha256": "3bcfc93fef32ec535862fdbabcab76ceb84e8ad8fc5d8472b804eee1e8c4b172",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stderr_permission_or_sandbox_apply": false
+      },
+      "direct_UDP_no_datagram": true,
+      "direct_TCP_no_connection": true,
+      "proxy_connection_child": {
+        "pid": 37710,
+        "lstart": "Thu Oct 29 08:32:05 2026",
+        "exit_code": 0,
+        "output": {
+          "proxy_connected": true
+        },
+        "stdout_sha256": "2d722787dd93874848ec1b6e052780eb08082a86f1cfb3a3c623a33eec8fd9db",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stderr_permission_or_sandbox_apply": false
+      },
+      "external_TCP_child": {
+        "pid": 37712,
+        "lstart": "Thu Oct 29 08:32:06 2026",
+        "exit_code": 0,
+        "output": {
+          "errno": 1,
+          "error": "PermissionError"
+        },
+        "stdout_sha256": "adb6b3669a72c37c2fe0ca64063d3384617d5e672a91835f5901fc2eb6f3808b",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stderr_permission_or_sandbox_apply": false
+      },
+      "external_address_sha256": "5782d6fc87cda92fb1ad447ca5ea2e08fd64c90b36d68770545708b4ca80e10a",
+      "TLS_tunnel": {
+        "exit_code": 0,
+        "pid": 37716,
+        "lstart": "Thu Oct 29 08:32:06 2026",
+        "result": {
+          "connect": "200",
+          "tls_verify": "0",
+          "http": "200"
+        },
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "certificate_verification_disabled": false
+      },
+      "profile": "(version 1)(allow default)(deny network-outbound(remote tcp \"*:*\") )(deny network-outbound(remote udp \"*:*\") )(allow network-outbound(remote tcp \"localhost:54630\"))",
+      "passed": true
+    },
+    "peer": {
+      "direct_child": {
+        "pid": 80818,
+        "lstart": "Thu Oct 29 08:32:28 2026",
+        "exit_code": 0,
+        "output": {
+          "SocketKind.SOCK_DGRAM": {
+            "errno": 1,
+            "error": "PermissionError"
+          },
+          "SocketKind.SOCK_STREAM": {
+            "errno": 1,
+            "error": "PermissionError"
+          }
+        },
+        "stdout_sha256": "3bcfc93fef32ec535862fdbabcab76ceb84e8ad8fc5d8472b804eee1e8c4b172",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stderr_permission_or_sandbox_apply": false
+      },
+      "direct_UDP_no_datagram": true,
+      "direct_TCP_no_connection": true,
+      "proxy_connection_child": {
+        "pid": 80820,
+        "lstart": "Thu Oct 29 08:32:28 2026",
+        "exit_code": 0,
+        "output": {
+          "proxy_connected": true
+        },
+        "stdout_sha256": "2d722787dd93874848ec1b6e052780eb08082a86f1cfb3a3c623a33eec8fd9db",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stderr_permission_or_sandbox_apply": false
+      },
+      "external_TCP_child": {
+        "pid": 80822,
+        "lstart": "Thu Oct 29 08:32:29 2026",
+        "exit_code": 0,
+        "output": {
+          "errno": 1,
+          "error": "PermissionError"
+        },
+        "stdout_sha256": "adb6b3669a72c37c2fe0ca64063d3384617d5e672a91835f5901fc2eb6f3808b",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stderr_permission_or_sandbox_apply": false
+      },
+      "external_address_sha256": "338a843cb00e968c809d1284720930a00f14ba6d0780ae61321c8c9db4961b49",
+      "TLS_tunnel": {
+        "exit_code": 0,
+        "pid": 80824,
+        "lstart": "Thu Oct 29 08:32:29 2026",
+        "result": {
+          "connect": "200",
+          "tls_verify": "0",
+          "http": "200"
+        },
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "certificate_verification_disabled": false
+      },
+      "profile": "(version 1)(allow default)(deny network-outbound(remote tcp \"*:*\") )(deny network-outbound(remote udp \"*:*\") )(allow network-outbound(remote tcp \"localhost:56868\"))",
+      "passed": true
+    }
+  },
+  "proxy_stats": {
+    "local": {
+      "port": 54630,
+      "snapshot_scope": "immediately after actual native reply, before final cleanup",
+      "CONNECT_requests": 2225,
+      "accepted_engine_tunnels_with_bidirectional_bytes": 45,
+      "policy_rejected_CONNECT": 2179,
+      "unsupported_non_CONNECT_requests": 3,
+      "native_window_relay_bytes_up_down": [
+        7991,
+        49677
+      ],
+      "groups": [
+        {
+          "phase": "preflight",
+          "host": null,
+          "status": "client-closed-before-CONNECT",
+          "count": 1,
+          "up": 0,
+          "down": 0
+        },
+        {
+          "phase": "preflight",
+          "host": "reasonmachines.com",
+          "status": "tunnel-closed",
+          "count": 1,
+          "up": 618,
+          "down": 6180
+        },
+        {
+          "phase": "engine",
+          "host": "reasonmachines.com",
+          "status": "tunnel-closed",
+          "count": 2,
+          "up": 1226,
+          "down": 13240
+        },
+        {
+          "phase": "engine",
+          "host": "dns.iroh.link",
+          "status": "tunnel-closed",
+          "count": 1,
+          "up": 580,
+          "down": 4007
+        },
+        {
+          "phase": "engine",
+          "host": "1.1.1.1",
+          "status": "destination-outside-approved-engine-services",
+          "count": 726,
+          "up": 0,
+          "down": 0
+        },
+        {
+          "phase": "engine",
+          "host": "8.8.8.8",
+          "status": "destination-outside-approved-engine-services",
+          "count": 725,
+          "up": 0,
+          "down": 0
+        },
+        {
+          "phase": "engine",
+          "host": "9.9.9.9",
+          "status": "destination-outside-approved-engine-services",
+          "count": 728,
+          "up": 0,
+          "down": 0
+        },
+        {
+          "phase": "engine",
+          "host": "relay-sfo1.compute.reasonmachines.com",
+          "status": "tunnel-closed",
+          "count": 9,
+          "up": 4503,
+          "down": 38572
+        },
+        {
+          "phase": "engine",
+          "host": null,
+          "status": "not-CONNECT",
+          "count": 3,
+          "up": 0,
+          "down": 0
+        },
+        {
+          "phase": "engine",
+          "host": "relay-iad1.compute.reasonmachines.com",
+          "status": "tunnel-closed",
+          "count": 9,
+          "up": 4503,
+          "down": 38583
+        },
+        {
+          "phase": "engine",
+          "host": "relay-sin1.compute.reasonmachines.com",
+          "status": "tunnel-closed",
+          "count": 10,
+          "up": 5407,
+          "down": 35955
+        },
+        {
+          "phase": "engine",
+          "host": "relay-fra1.compute.reasonmachines.com",
+          "status": "tunnel-closed",
+          "count": 9,
+          "up": 4503,
+          "down": 38576
+        },
+        {
+          "phase": "engine",
+          "host": "dns.iroh.link",
+          "status": "tunnel-open",
+          "count": 1,
+          "up": 916,
+          "down": 4126
+        },
+        {
+          "phase": "engine",
+          "host": "relay-sin1.compute.reasonmachines.com",
+          "status": "tunnel-open",
+          "count": 1,
+          "up": 39176,
+          "down": 37523
+        },
+        {
+          "phase": "engine",
+          "host": "relay-sfo1.compute.reasonmachines.com",
+          "status": "tunnel-open",
+          "count": 1,
+          "up": 3363,
+          "down": 5822
+        },
+        {
+          "phase": "engine",
+          "host": "relay-iad1.compute.reasonmachines.com",
+          "status": "tunnel-open",
+          "count": 1,
+          "up": 3326,
+          "down": 5768
+        },
+        {
+          "phase": "engine",
+          "host": "relay-fra1.compute.reasonmachines.com",
+          "status": "tunnel-open",
+          "count": 1,
+          "up": 3363,
+          "down": 4541
+        }
+      ]
+    },
+    "peer": {
+      "port": 56868,
+      "snapshot_scope": "immediately after actual native reply, before final cleanup",
+      "CONNECT_requests": 2299,
+      "accepted_engine_tunnels_with_bidirectional_bytes": 49,
+      "policy_rejected_CONNECT": 2249,
+      "unsupported_non_CONNECT_requests": 3,
+      "native_window_relay_bytes_up_down": [
+        1592,
+        1348
+      ],
+      "groups": [
+        {
+          "phase": "preflight",
+          "host": null,
+          "status": "client-closed-before-CONNECT",
+          "count": 1,
+          "up": 0,
+          "down": 0
+        },
+        {
+          "phase": "preflight",
+          "host": "reasonmachines.com",
+          "status": "tunnel-closed",
+          "count": 1,
+          "up": 618,
+          "down": 5246
+        },
+        {
+          "phase": "engine",
+          "host": "reasonmachines.com",
+          "status": "tunnel-closed",
+          "count": 2,
+          "up": 1226,
+          "down": 13240
+        },
+        {
+          "phase": "engine",
+          "host": "dns.iroh.link",
+          "status": "tunnel-closed",
+          "count": 3,
+          "up": 1996,
+          "down": 12411
+        },
+        {
+          "phase": "engine",
+          "host": "1.1.1.1",
+          "status": "destination-outside-approved-engine-services",
+          "count": 750,
+          "up": 0,
+          "down": 0
+        },
+        {
+          "phase": "engine",
+          "host": "8.8.8.8",
+          "status": "destination-outside-approved-engine-services",
+          "count": 750,
+          "up": 0,
+          "down": 0
+        },
+        {
+          "phase": "engine",
+          "host": "9.9.9.9",
+          "status": "destination-outside-approved-engine-services",
+          "count": 749,
+          "up": 0,
+          "down": 0
+        },
+        {
+          "phase": "engine",
+          "host": "relay-sfo1.compute.reasonmachines.com",
+          "status": "tunnel-closed",
+          "count": 9,
+          "up": 4230,
+          "down": 37537
+        },
+        {
+          "phase": "engine",
+          "host": null,
+          "status": "not-CONNECT",
+          "count": 3,
+          "up": 0,
+          "down": 0
+        },
+        {
+          "phase": "engine",
+          "host": "relay-iad1.compute.reasonmachines.com",
+          "status": "tunnel-closed",
+          "count": 9,
+          "up": 4230,
+          "down": 37365
+        },
+        {
+          "phase": "engine",
+          "host": "relay-sin1.compute.reasonmachines.com",
+          "status": "tunnel-closed",
+          "count": 11,
+          "up": 16610,
+          "down": 55885
+        },
+        {
+          "phase": "engine",
+          "host": "relay-fra1.compute.reasonmachines.com",
+          "status": "tunnel-closed",
+          "count": 9,
+          "up": 4230,
+          "down": 36298
+        },
+        {
+          "phase": "engine",
+          "host": "dns.iroh.link",
+          "status": "tunnel-open",
+          "count": 2,
+          "up": 1368,
+          "down": 8402
+        },
+        {
+          "phase": "engine",
+          "host": "relay-sfo1.compute.reasonmachines.com",
+          "status": "tunnel-open",
+          "count": 1,
+          "up": 2084,
+          "down": 7050
+        },
+        {
+          "phase": "engine",
+          "host": "relay-fra1.compute.reasonmachines.com",
+          "status": "tunnel-open",
+          "count": 1,
+          "up": 820,
+          "down": 4486
+        },
+        {
+          "phase": "engine",
+          "host": "relay-sin1.compute.reasonmachines.com",
+          "status": "tunnel-open",
+          "count": 1,
+          "up": 21944,
+          "down": 30103
+        },
+        {
+          "phase": "engine",
+          "host": "relay-iad1.compute.reasonmachines.com",
+          "status": "tunnel-open",
+          "count": 1,
+          "up": 2084,
+          "down": 4487
+        }
+      ]
+    }
+  },
+  "roundtrip_ms": 8840.102,
+  "native_CLI_ms": 8005.028,
+  "native_CLI_version": "codex-cli 0.163.0",
+  "native_PID_start": {
+    "pid": 81439,
+    "lstart": "Thu Oct 29 08:32:58 2026",
+    "alive_after_start": true
+  },
+  "native_CID_sha256": "48c9d148e8a0ac338f988c6541c8873d792d800abbf54ff901ca36ec8fd14899",
+  "native_CLI_exit": 0,
+  "native_model_attempts": 1,
+  "native_automatic_retries": 0,
+  "native_tool_events": 0,
+  "task_marker": "P11-QA-40c1afc34bbd43c4",
+  "request_engine_ID_sha256": "9130b2b872169cc917db83e7096cc02c8fb13eeb89b28fafc66d0a8400091405",
+  "reply_engine_ID_sha256": "ea36201d204f01c29593fba13f2f46874b504750b0a468f7a9e7a828e42415f0",
+  "request_body_sha256": "837ccd0b9c717c72343451a35cb3aea070e1fcab5e473b4144e17e4e1656dc0e",
+  "reply_body_sha256": "3ab6fbc40d6ce6f1f74547f4ccc7847bca248c56ac2e76c6bb7f8db5556bf6c9",
+  "reply_to_and_native_SHA_correlation_verified": true,
+  "math_answer": {
+    "claim_valid": false,
+    "corrected_sum": 4
+  },
+  "link_readback": {
+    "local": {
+      "team_id_sha256": "47fc529a063095973caa2512919093503fa9f50317143e459c3c77accae79d25",
+      "member_count": 2,
+      "relay_connected": true,
+      "relay_url_sha256": null,
+      "machines": [
+        {
+          "endpoint_sha256": "219500fc3c6899540607d2ee2bfe0dd9915eb5613252a012b125af0b885a2376",
+          "is_me": true,
+          "online": true,
+          "link": null,
+          "rtt_ms": null,
+          "verified": false,
+          "has_proof": false
+        },
+        {
+          "endpoint_sha256": "742aef2bf354b222d6333e2b19d66c058d4e7f5511b3a8acd68d642d1a5d3f41",
+          "is_me": false,
+          "online": true,
+          "link": "relay",
+          "rtt_ms": 638,
+          "verified": false,
+          "has_proof": false
+        }
+      ]
+    },
+    "peer": {
+      "team_id_sha256": "47fc529a063095973caa2512919093503fa9f50317143e459c3c77accae79d25",
+      "member_count": 2,
+      "relay_connected": true,
+      "relay_url_sha256": null,
+      "machines": [
+        {
+          "endpoint_sha256": "742aef2bf354b222d6333e2b19d66c058d4e7f5511b3a8acd68d642d1a5d3f41",
+          "is_me": true,
+          "online": true,
+          "link": null,
+          "rtt_ms": null,
+          "verified": false,
+          "has_proof": false
+        },
+        {
+          "endpoint_sha256": "219500fc3c6899540607d2ee2bfe0dd9915eb5613252a012b125af0b885a2376",
+          "is_me": false,
+          "online": true,
+          "link": "relay",
+          "rtt_ms": 622,
+          "verified": false,
+          "has_proof": false
+        }
+      ]
+    }
+  },
+  "relay_connected_alone_used_as_proof": false,
+  "encrypted_window_byte_limit": "includes background/control traffic; not a packet-level isolated math-payload measurement",
+  "proxy_DNS_destination_rejections": "CONNECT to 1.1.1.1/8.8.8.8/9.9.9.9:443 refused by fixture host allowlist; no upstream bytes",
+  "CONNECT_headers_or_payload_modified": false,
+  "TLS_MITM_or_verify_disabled": false,
+  "native_and_SSH_outside_engine_network_profile": true,
+  "capability_channel": "Python memory -> existing strict-hostkey SSH stdin -> explicit private IPC; raw not stored",
+  "actual_fixture_members": 2,
+  "production_Reason_team_used": false,
+  "cleanup": {
+    "local": {
+      "stopped": true,
+      "handles": [
+        {
+          "pid": 38136,
+          "lstart": "Thu Oct 29 08:32:29 2026",
+          "binary_sha256": "6ac4bb4837469867edc2dba3cbbd6e4dd9fb18ad0389db69ff6ef21683317a44",
+          "alive_after_start": true,
+          "role": "local",
+          "socket": "/private/tmp/p11-C-proxyvar-2_vbmwuu/state/network.sock",
+          "egress_profile": "(version 1)(allow default)(deny network-outbound(remote tcp \"*:*\") )(deny network-outbound(remote udp \"*:*\") )(allow network-outbound(remote tcp \"localhost:54630\"))",
+          "HTTP_PROXY": "http://127.0.0.1:54630",
+          "HTTPS_PROXY": "http://127.0.0.1:54630",
+          "sandbox_scope": "this owned engine daemon only",
+          "exit_code": 0
+        },
+        {
+          "pid": 38195,
+          "lstart": "Thu Oct 29 08:32:30 2026",
+          "binary_sha256": "6ac4bb4837469867edc2dba3cbbd6e4dd9fb18ad0389db69ff6ef21683317a44",
+          "alive_after_start": true,
+          "role": "local",
+          "socket": "/private/tmp/p11-C-proxyvar-2_vbmwuu/state/network.sock",
+          "egress_profile": "(version 1)(allow default)(deny network-outbound(remote tcp \"*:*\") )(deny network-outbound(remote udp \"*:*\") )(allow network-outbound(remote tcp \"localhost:54630\"))",
+          "HTTP_PROXY": "http://127.0.0.1:54630",
+          "HTTPS_PROXY": "http://127.0.0.1:54630",
+          "sandbox_scope": "this owned engine daemon only",
+          "exit_code": -15
+        }
+      ],
+      "ipc_connect_after_stop": 61,
+      "private_state_removed": true,
+      "engine_copy_removed": true
+    },
+    "peer": {
+      "stopped": true,
+      "handles": [
+        {
+          "pid": 80866,
+          "lstart": "Thu Oct 29 08:32:30 2026",
+          "binary_sha256": "6ac4bb4837469867edc2dba3cbbd6e4dd9fb18ad0389db69ff6ef21683317a44",
+          "alive_after_start": true,
+          "role": "peer",
+          "socket": "/private/tmp/p11-C-proxyvar-2y_s3rzs/state/network.sock",
+          "egress_profile": "(version 1)(allow default)(deny network-outbound(remote tcp \"*:*\") )(deny network-outbound(remote udp \"*:*\") )(allow network-outbound(remote tcp \"localhost:56868\"))",
+          "HTTP_PROXY": "http://127.0.0.1:56868",
+          "HTTPS_PROXY": "http://127.0.0.1:56868",
+          "sandbox_scope": "this owned engine daemon only",
+          "exit_code": 0
+        },
+        {
+          "pid": 81257,
+          "lstart": "Thu Oct 29 08:32:48 2026",
+          "binary_sha256": "6ac4bb4837469867edc2dba3cbbd6e4dd9fb18ad0389db69ff6ef21683317a44",
+          "alive_after_start": true,
+          "role": "peer",
+          "socket": "/private/tmp/p11-C-proxyvar-2y_s3rzs/state/network.sock",
+          "egress_profile": "(version 1)(allow default)(deny network-outbound(remote tcp \"*:*\") )(deny network-outbound(remote udp \"*:*\") )(allow network-outbound(remote tcp \"localhost:56868\"))",
+          "HTTP_PROXY": "http://127.0.0.1:56868",
+          "HTTPS_PROXY": "http://127.0.0.1:56868",
+          "sandbox_scope": "this owned engine daemon only",
+          "exit_code": -15
+        }
+      ],
+      "ipc_connect_after_stop": 61,
+      "private_state_removed": true,
+      "engine_copy_removed": true
+    },
+    "both_proxy_connect_after_stop": 61,
+    "SSH_exit": 0,
+    "known_processes_alive": 0
+  },
+  "peer_nonstate_files_copied_and_SHA_verified": 29,
+  "old_proxy_failure_C_UDP_results_unchanged": true,
+  "product_source_1697_modified": false,
+  "success_not_extended_to": [
+    "global network/firewall",
+    "corporate authenticated proxy",
+    "SSH-free onboarding",
+    "self-hosted relay",
+    "different NAT",
+    "P12 product integration",
+    "D12 selection"
+  ],
+  "audit_native_model_calls": 0,
+  "peer_individual_PID_generation_audit": [
+    {
+      "role": "direct_child",
+      "pid": 80818,
+      "lstart": "Thu Oct 29 08:32:28 2026",
+      "current_lstart": null,
+      "same_owned_process_alive": false
+    },
+    {
+      "role": "proxy_connection_child",
+      "pid": 80820,
+      "lstart": "Thu Oct 29 08:32:28 2026",
+      "current_lstart": null,
+      "same_owned_process_alive": false
+    },
+    {
+      "role": "external_TCP_child",
+      "pid": 80822,
+      "lstart": "Thu Oct 29 08:32:29 2026",
+      "current_lstart": null,
+      "same_owned_process_alive": false
+    },
+    {
+      "role": "TLS_tunnel",
+      "pid": 80824,
+      "lstart": "Thu Oct 29 08:32:29 2026",
+      "current_lstart": null,
+      "same_owned_process_alive": false
+    },
+    {
+      "role": "engine",
+      "pid": 80866,
+      "lstart": "Thu Oct 29 08:32:30 2026",
+      "current_lstart": null,
+      "same_owned_process_alive": false
+    },
+    {
+      "role": "engine",
+      "pid": 81257,
+      "lstart": "Thu Oct 29 08:32:48 2026",
+      "current_lstart": null,
+      "same_owned_process_alive": false
+    },
+    {
+      "role": "native",
+      "pid": 81439,
+      "lstart": "Thu Oct 29 08:32:58 2026",
+      "current_lstart": null,
+      "same_owned_process_alive": false
+    }
+  ]
+}

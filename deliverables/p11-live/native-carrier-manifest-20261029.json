@@ -1,0 +1,444 @@
+{
+  "run_id": "p11-native-3d7015f165cb",
+  "driver_sha256": "37c7f02d2d717c91683d61de6f44afd43e80aa4eda49673567b43c0e8fe1ab6a",
+  "local_code_files": [
+    {
+      "path": "/tmp/p11-native-r292609m/code/build_report.py",
+      "sha256": "90dad555e09c7a63e250fc3496eb18d1007f396734d7808230d6a9a9e016dc2f"
+    },
+    {
+      "path": "/tmp/p11-native-r292609m/code/peer_native-initial.py",
+      "sha256": "1c19c4189162420712c96332face54ad7edcb7040d31150dcda6b9a0a2ab12a6"
+    },
+    {
+      "path": "/tmp/p11-native-r292609m/code/peer_native.py",
+      "sha256": "37c7f02d2d717c91683d61de6f44afd43e80aa4eda49673567b43c0e8fe1ab6a"
+    },
+    {
+      "path": "/tmp/p11-native-r292609m/code/run_comparison.py",
+      "sha256": "587e6105d70ea0a94286190e1719f873c16155c00eceab064293d57600f232c7"
+    }
+  ],
+  "peer_evidence": {
+    "peer_root": "/private/tmp/p11-native-2nemv2of",
+    "files": [
+      {
+        "path": "A-LAN-SSH/driver-68327-closed.json",
+        "sha256": "de82486d19f7bcc40c01e1e83792d04292591c8896718d834b335c054096182d",
+        "bytes": 89
+      },
+      {
+        "path": "A-LAN-SSH/driver-68327.json",
+        "sha256": "87c88abed4cd3e7602d957c2e0490b35b45ab9b565a7973df15564ecc1a616db",
+        "bytes": 272
+      },
+      {
+        "path": "A-LAN-SSH/driver-69048-closed.json",
+        "sha256": "1ede296afb3c795c22e2e3f32337f7cd872e05622c69a4be3191fab7a45185d1",
+        "bytes": 89
+      },
+      {
+        "path": "A-LAN-SSH/driver-69048.json",
+        "sha256": "4a73ec3552b4bfeeebed367da04b822b392fe9f551d68e85bf96cefd3f64ae20",
+        "bytes": 272
+      },
+      {
+        "path": "A-LAN-SSH/native/after-reconnect/handle.json",
+        "sha256": "dbcccadbc92e5047da58b0c2f2d35c4febefee272e91fad219bd229bf3f851d9",
+        "bytes": 1070
+      },
+      {
+        "path": "A-LAN-SSH/native/after-reconnect/last-message.json",
+        "sha256": "02994e2050c8a6ebdebaf77bc0cde34b749be90f0e9ff20e94172641b4449429",
+        "bytes": 183
+      },
+      {
+        "path": "A-LAN-SSH/native/after-reconnect/request.txt",
+        "sha256": "d0ec0bbe2f6a8b2243b003aeabdaffca491b8dacf6f229d8872cb3c929ea03be",
+        "bytes": 330
+      },
+      {
+        "path": "A-LAN-SSH/native/after-reconnect/result.json",
+        "sha256": "2c8466e9bdb51ac8ff41fdea2a95796690b3011b06c09087f1751a38f4a24c63",
+        "bytes": 4186
+      },
+      {
+        "path": "A-LAN-SSH/native/after-reconnect/schema.json",
+        "sha256": "a94564bc95f2f76019e173127309de49be30d6ba25f4a8ef8b06a431fbad1585",
+        "bytes": 446
+      },
+      {
+        "path": "A-LAN-SSH/native/after-reconnect/stderr.txt",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "bytes": 0
+      },
+      {
+        "path": "A-LAN-SSH/native/after-reconnect/stdout.jsonl",
+        "sha256": "a58d38d4ed780c22a67c23d152c060c9b50fec7c2bb3ba11008fd525de3bba66",
+        "bytes": 539
+      },
+      {
+        "path": "A-LAN-SSH/native/first/handle.json",
+        "sha256": "9178d736f5e7498573b028f61213e9eeb2dd8f8c7d6c96539a55a8686be0ee6a",
+        "bytes": 1030
+      },
+      {
+        "path": "A-LAN-SSH/native/first/last-message.json",
+        "sha256": "e0bc24529e469aa4f6c39d9911be38e6916237c9c331e4b01ba8ef1111021121",
+        "bytes": 173
+      },
+      {
+        "path": "A-LAN-SSH/native/first/request.txt",
+        "sha256": "837ccd0b9c717c72343451a35cb3aea070e1fcab5e473b4144e17e4e1656dc0e",
+        "bytes": 226
+      },
+      {
+        "path": "A-LAN-SSH/native/first/result.json",
+        "sha256": "ec270c136427605e6619f9b22ccdc055fded5acff5f27837c8cf41f7361ee42e",
+        "bytes": 4105
+      },
+      {
+        "path": "A-LAN-SSH/native/first/schema.json",
+        "sha256": "a94564bc95f2f76019e173127309de49be30d6ba25f4a8ef8b06a431fbad1585",
+        "bytes": 446
+      },
+      {
+        "path": "A-LAN-SSH/native/first/stderr.txt",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "bytes": 0
+      },
+      {
+        "path": "A-LAN-SSH/native/first/stdout.jsonl",
+        "sha256": "8a7790dc2a73d904fe10b87389ee8ae5afc4dc7173783252904887cc067b99f7",
+        "bytes": 529
+      },
+      {
+        "path": "A-LAN-SSH/native/followup/handle.json",
+        "sha256": "252f9a86ac8bca825b0d701ec9bc2466506effd111a25573120a23be7767604f",
+        "bytes": 1042
+      },
+      {
+        "path": "A-LAN-SSH/native/followup/last-message.json",
+        "sha256": "f6c598a5be099612a7bd7deecbe9359e525884218c6dfb7825dad2231fc49be4",
+        "bytes": 176
+      },
+      {
+        "path": "A-LAN-SSH/native/followup/request.txt",
+        "sha256": "5e53031fdd69a93f12de9b4963d6af66ca6b9b70d5a2a2227a8b8f2d722c40d9",
+        "bytes": 323
+      },
+      {
+        "path": "A-LAN-SSH/native/followup/result.json",
+        "sha256": "2450b7596302641556e0a51230654a85bdbf3981970490bfe1dc3a22b40e6cb5",
+        "bytes": 4130
+      },
+      {
+        "path": "A-LAN-SSH/native/followup/schema.json",
+        "sha256": "a94564bc95f2f76019e173127309de49be30d6ba25f4a8ef8b06a431fbad1585",
+        "bytes": 446
+      },
+      {
+        "path": "A-LAN-SSH/native/followup/stderr.txt",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "bytes": 0
+      },
+      {
+        "path": "A-LAN-SSH/native/followup/stdout.jsonl",
+        "sha256": "dbe24c5fc96c9828a2adb83dd86d5afba6b9644906139326c77137ec5d71e637",
+        "bytes": 533
+      },
+      {
+        "path": "B-private-TCP/driver-70244-closed.json",
+        "sha256": "333c7238bd9c3bef7302b65e9579f8b53b592288c552acc0de6d379680334ea7",
+        "bytes": 89
+      },
+      {
+        "path": "B-private-TCP/driver-70244.json",
+        "sha256": "564d880695549cc12a2583a50c2ea7fd27187193edf918a1cf123d10ff56fb3e",
+        "bytes": 352
+      },
+      {
+        "path": "B-private-TCP/driver-70899-closed.json",
+        "sha256": "08389e4fd1fcc3de9f5656042dd1b2fb51fb90993f6b33ad42000693c7051801",
+        "bytes": 89
+      },
+      {
+        "path": "B-private-TCP/driver-70899.json",
+        "sha256": "62e8ad1dcf0f112cfc83af1a3f5e3a034b9bf9d41e34b53c545a91d4cbdb701d",
+        "bytes": 352
+      },
+      {
+        "path": "B-private-TCP/native/after-reconnect/handle.json",
+        "sha256": "f07dc4cd04675f213ae4f37f3d08c64ac7a42ab4b06450712b249e1556e3152a",
+        "bytes": 1086
+      },
+      {
+        "path": "B-private-TCP/native/after-reconnect/last-message.json",
+        "sha256": "02994e2050c8a6ebdebaf77bc0cde34b749be90f0e9ff20e94172641b4449429",
+        "bytes": 183
+      },
+      {
+        "path": "B-private-TCP/native/after-reconnect/request.txt",
+        "sha256": "d0ec0bbe2f6a8b2243b003aeabdaffca491b8dacf6f229d8872cb3c929ea03be",
+        "bytes": 330
+      },
+      {
+        "path": "B-private-TCP/native/after-reconnect/result.json",
+        "sha256": "341bd0948db03052d85b0e95c0cbd546a90900a88f887165d13100abc92ebd66",
+        "bytes": 4206
+      },
+      {
+        "path": "B-private-TCP/native/after-reconnect/schema.json",
+        "sha256": "a94564bc95f2f76019e173127309de49be30d6ba25f4a8ef8b06a431fbad1585",
+        "bytes": 446
+      },
+      {
+        "path": "B-private-TCP/native/after-reconnect/stderr.txt",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "bytes": 0
+      },
+      {
+        "path": "B-private-TCP/native/after-reconnect/stdout.jsonl",
+        "sha256": "8445718f32edcd0eabd5532c0293fd4359c1eeed77ddf9b31817c95f4840d683",
+        "bytes": 539
+      },
+      {
+        "path": "B-private-TCP/native/first/handle.json",
+        "sha256": "9a4087bb25766ed8c26940110b65dd79fd5563a79a9af72711d08ca7984c8b1c",
+        "bytes": 1046
+      },
+      {
+        "path": "B-private-TCP/native/first/last-message.json",
+        "sha256": "e0bc24529e469aa4f6c39d9911be38e6916237c9c331e4b01ba8ef1111021121",
+        "bytes": 173
+      },
+      {
+        "path": "B-private-TCP/native/first/request.txt",
+        "sha256": "837ccd0b9c717c72343451a35cb3aea070e1fcab5e473b4144e17e4e1656dc0e",
+        "bytes": 226
+      },
+      {
+        "path": "B-private-TCP/native/first/result.json",
+        "sha256": "e04683d83c6a2498c424f51090a5ec6eb0ffdbbdb867bf5886cd30c01ec264fb",
+        "bytes": 4126
+      },
+      {
+        "path": "B-private-TCP/native/first/schema.json",
+        "sha256": "a94564bc95f2f76019e173127309de49be30d6ba25f4a8ef8b06a431fbad1585",
+        "bytes": 446
+      },
+      {
+        "path": "B-private-TCP/native/first/stderr.txt",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "bytes": 0
+      },
+      {
+        "path": "B-private-TCP/native/first/stdout.jsonl",
+        "sha256": "5443389537d85703746cbec826ca42f7eda5a7d621dc7d138f6e5d4f086e08b2",
+        "bytes": 529
+      },
+      {
+        "path": "B-private-TCP/native/followup/handle.json",
+        "sha256": "6f706d992b95b03f30edea402addf70ab45effdd3cd7c14bb8ed277eca9ffe4b",
+        "bytes": 1058
+      },
+      {
+        "path": "B-private-TCP/native/followup/last-message.json",
+        "sha256": "f6c598a5be099612a7bd7deecbe9359e525884218c6dfb7825dad2231fc49be4",
+        "bytes": 176
+      },
+      {
+        "path": "B-private-TCP/native/followup/request.txt",
+        "sha256": "5e53031fdd69a93f12de9b4963d6af66ca6b9b70d5a2a2227a8b8f2d722c40d9",
+        "bytes": 323
+      },
+      {
+        "path": "B-private-TCP/native/followup/result.json",
+        "sha256": "6aeedec83e63e7b564fedd2c8e220523f4bc047f41451940fd57498fbe104186",
+        "bytes": 4150
+      },
+      {
+        "path": "B-private-TCP/native/followup/schema.json",
+        "sha256": "a94564bc95f2f76019e173127309de49be30d6ba25f4a8ef8b06a431fbad1585",
+        "bytes": 446
+      },
+      {
+        "path": "B-private-TCP/native/followup/stderr.txt",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "bytes": 0
+      },
+      {
+        "path": "B-private-TCP/native/followup/stdout.jsonl",
+        "sha256": "b2317d0ef82448796a4ea53d04e68eb09cbed452a33c7bd141c3bb17d5d077c9",
+        "bytes": 533
+      },
+      {
+        "path": "C-staging/staging-result.json",
+        "sha256": "ba21155a9d952c0fd098956f8b5b8b9c8181413f654a34aa65a072e4a72211e7",
+        "bytes": 920
+      },
+      {
+        "path": "D-Tailscale-SSH/driver-69447-closed.json",
+        "sha256": "3eb341fab2cfc58d965744195254f6c274973b907379b277aa5cf3c266cabe1b",
+        "bytes": 89
+      },
+      {
+        "path": "D-Tailscale-SSH/driver-69447.json",
+        "sha256": "60465700730eedd54dd2bf4dc34169a3ddf457db25852b31ad1a16668282a632",
+        "bytes": 285
+      },
+      {
+        "path": "D-Tailscale-SSH/driver-69959-closed.json",
+        "sha256": "feb513834b3368c45117623e185ae887d9b2cd919b341b0b624c2989dfa16a07",
+        "bytes": 89
+      },
+      {
+        "path": "D-Tailscale-SSH/driver-69959.json",
+        "sha256": "4e8324ea68a97b23de1fc29b602727472b03fbaedfbb216f205c051fae7f7550",
+        "bytes": 285
+      },
+      {
+        "path": "D-Tailscale-SSH/native/after-reconnect/handle.json",
+        "sha256": "11a38f24a9ee30a044e155327fdb242b00cef5ed011b5702efc5cf4cee91ea1d",
+        "bytes": 1094
+      },
+      {
+        "path": "D-Tailscale-SSH/native/after-reconnect/last-message.json",
+        "sha256": "02994e2050c8a6ebdebaf77bc0cde34b749be90f0e9ff20e94172641b4449429",
+        "bytes": 183
+      },
+      {
+        "path": "D-Tailscale-SSH/native/after-reconnect/request.txt",
+        "sha256": "d0ec0bbe2f6a8b2243b003aeabdaffca491b8dacf6f229d8872cb3c929ea03be",
+        "bytes": 330
+      },
+      {
+        "path": "D-Tailscale-SSH/native/after-reconnect/result.json",
+        "sha256": "5525bf64513138f6b41471a97925459fcd7e1e3ca024d2dbc78d7624ff82a3dd",
+        "bytes": 4216
+      },
+      {
+        "path": "D-Tailscale-SSH/native/after-reconnect/schema.json",
+        "sha256": "a94564bc95f2f76019e173127309de49be30d6ba25f4a8ef8b06a431fbad1585",
+        "bytes": 446
+      },
+      {
+        "path": "D-Tailscale-SSH/native/after-reconnect/stderr.txt",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "bytes": 0
+      },
+      {
+        "path": "D-Tailscale-SSH/native/after-reconnect/stdout.jsonl",
+        "sha256": "2d54e4d7b1fdcfd8afb6fbe6fe02107a25bff82c5d4a4250a9df0d2b0268bdc5",
+        "bytes": 543
+      },
+      {
+        "path": "D-Tailscale-SSH/native/first/handle.json",
+        "sha256": "3e65b6a22e88fbf980cb476f58cba3b0b07b4006363f72ebb5b29f9df4dad808",
+        "bytes": 1054
+      },
+      {
+        "path": "D-Tailscale-SSH/native/first/last-message.json",
+        "sha256": "e0bc24529e469aa4f6c39d9911be38e6916237c9c331e4b01ba8ef1111021121",
+        "bytes": 173
+      },
+      {
+        "path": "D-Tailscale-SSH/native/first/request.txt",
+        "sha256": "837ccd0b9c717c72343451a35cb3aea070e1fcab5e473b4144e17e4e1656dc0e",
+        "bytes": 226
+      },
+      {
+        "path": "D-Tailscale-SSH/native/first/result.json",
+        "sha256": "756350400d6e8aef930e29f4a0b7a6bb11d5064745b61dcc39a2814a6c88fbb2",
+        "bytes": 4136
+      },
+      {
+        "path": "D-Tailscale-SSH/native/first/schema.json",
+        "sha256": "a94564bc95f2f76019e173127309de49be30d6ba25f4a8ef8b06a431fbad1585",
+        "bytes": 446
+      },
+      {
+        "path": "D-Tailscale-SSH/native/first/stderr.txt",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "bytes": 0
+      },
+      {
+        "path": "D-Tailscale-SSH/native/first/stdout.jsonl",
+        "sha256": "746f5fc6471bcf2f088ef118db32c4e025db1ad92b5dfb6286bbd4f4e31e5f32",
+        "bytes": 529
+      },
+      {
+        "path": "D-Tailscale-SSH/native/followup/handle.json",
+        "sha256": "e8abf766b17267c2a6235063650ea586f86c88e29c20ddb08cc2292c0b9ff843",
+        "bytes": 1066
+      },
+      {
+        "path": "D-Tailscale-SSH/native/followup/last-message.json",
+        "sha256": "f6c598a5be099612a7bd7deecbe9359e525884218c6dfb7825dad2231fc49be4",
+        "bytes": 176
+      },
+      {
+        "path": "D-Tailscale-SSH/native/followup/request.txt",
+        "sha256": "5e53031fdd69a93f12de9b4963d6af66ca6b9b70d5a2a2227a8b8f2d722c40d9",
+        "bytes": 323
+      },
+      {
+        "path": "D-Tailscale-SSH/native/followup/result.json",
+        "sha256": "f458bf6e0e01634019d8b90fe2fd9d8870b804339757e8c84fb9f5e3e255d617",
+        "bytes": 4159
+      },
+      {
+        "path": "D-Tailscale-SSH/native/followup/schema.json",
+        "sha256": "a94564bc95f2f76019e173127309de49be30d6ba25f4a8ef8b06a431fbad1585",
+        "bytes": 446
+      },
+      {
+        "path": "D-Tailscale-SSH/native/followup/stderr.txt",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "bytes": 0
+      },
+      {
+        "path": "D-Tailscale-SSH/native/followup/stdout.jsonl",
+        "sha256": "0ea4789677955fd08722f10f2fc028d06527ee9442be626decbf8f7e15b4db72",
+        "bytes": 532
+      },
+      {
+        "path": "cleanup-check.json",
+        "sha256": "92f075f7acc6e36afee8fae123cf493ff50269b18dd00ae9ad99e0eaed994cd0",
+        "bytes": 4664
+      },
+      {
+        "path": "code/peer_native.py",
+        "sha256": "37c7f02d2d717c91683d61de6f44afd43e80aa4eda49673567b43c0e8fe1ab6a",
+        "bytes": 8908
+      },
+      {
+        "path": "codex-preflight.json",
+        "sha256": "bdc622c1eb2f36431f2b0e350b97e73215768d73db602af436c0bdee32b66aba",
+        "bytes": 5023
+      },
+      {
+        "path": "preflight.json",
+        "sha256": "181855d93b8203a47c6654d5a945fb5c9b0a472988e27fdfea4399741f46e3ec",
+        "bytes": 1465
+      }
+    ]
+  },
+  "startup_failure": {
+    "status": "excluded-startup-fixture-failure",
+    "actual_native_calls": 0,
+    "actual_agent_roundtrip": false,
+    "root_cause": "TypeError in composing a pathlib path before the ready frame; fixed two path expressions",
+    "scope": "all three first launch attempts; no native prompt submitted",
+    "raw_file": "/tmp/p11-native-r292609m/first-start-failure.json",
+    "raw_sha256": "dc078ff3d9016152bad1231f376b19a1d396252607f5be083fab52dd21a5aca6",
+    "raw_initial_intent_flag_is_not_execution_proof": true,
+    "diagnostic": {
+      "returncode": 1,
+      "stdout": "",
+      "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 134, in <module>\n  File \"<string>\", line 108, in main\nTypeError: unsupported operand type(s) for +: 'PosixPath' and 'str'\n",
+      "scope": "ready-only startup; no native request submitted"
+    },
+    "initial_source_sha256": "1c19c4189162420712c96332face54ad7edcb7040d31150dcda6b9a0a2ab12a6"
+  }
+}

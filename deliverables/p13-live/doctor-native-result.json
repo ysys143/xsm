@@ -1,0 +1,332 @@
+{
+  "schema": "xsm.A23-07.doctor-native-result.v1",
+  "criterion": "A23-07",
+  "started_at_utc": "2026-10-29T00:23:36+00:00",
+  "completed_at_utc": "2026-10-29T00:29:21.569688+00:00",
+  "elapsed_seconds": 345.569688,
+  "timebox_minutes": 10,
+  "verdict": "native-cell-filled-for-current-shared-runtime-under-isolated-state",
+  "closure_assessment": {
+    "previous_missing_cell": "A23-07/native-doctor-active-session",
+    "filled": true,
+    "recommendation": "이번 한정 native 표본과 기존 redaction fixture·최종 source/회귀·읽기 전용 검토의 결속으로 해당 누락 셀 충족. plan/ledger 판정은 변경하지 않음.",
+    "scope": "현재 사용자 thread의 실제 shared Codex runtime 진단 전후 동일 세대 생존·같은 thread의 후속 실제 tool 실행. 진단은 profile-neutral isolated-state + sandbox 조건.",
+    "not_claimed": [
+      "전역 home 전체 익명화",
+      "모든 실제 home/프로필 진단",
+      "개별 thread 전용 PID",
+      "doctor의 실제 사용자 process 자체 발견",
+      "모든 동료 session 전수 생존",
+      "다음 독립 모델 turn 완료"
+    ]
+  },
+  "source_binding": {
+    "snapshot": "/private/tmp/xsm-final-receipt-frozen-i3u9pms3",
+    "manifest": {
+      "path": "deliverables/p13-live/final-source-manifest.json",
+      "sha256": "cb05d6ecb3ab87d95359de3cc318f5ea217bee23837e72b9fff34f6512fb1463",
+      "bytes": 38515,
+      "mode": "0o644"
+    },
+    "primary_paths": 135,
+    "mismatches_after": [],
+    "source_hashes": {
+      "xsm/cli.py": "76f29a9ef05d070dc61d68008ae87db2e5935dc76d0e333bd30c3db29d54cb1c",
+      "xsm/install.py": "6b6facc89dee67bf27899cbae9e36cfb701b2c497d2a1fc33a43cf8e49daccd2",
+      "xsm/setup_flow.py": "1dfbfb19e1bb8ce267c3bd3ad9519420017af01c78a63ce187c3a709d27247cd",
+      "xsm/registry.py": "edce2c6e75ec4d1803f402db565900080be337b2727a40ff663376c355890360",
+      "xsm/housekeeping.py": "5d1a0f1c1f3cf2ef820344935db26aeda5bed5b27e66ba99b1868e8c1d53cf3a",
+      "tests/test_setup_flow.py": "df5f4f522705f575185c9e739986169ce98bcc266f574033374d50dcfa84db9b"
+    }
+  },
+  "actual_command": {
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/private/tmp/doctor-native-0lxmhs_8/doctor-v2.sb",
+      "/usr/bin/python3",
+      "-B",
+      "-m",
+      "xsm",
+      "doctor",
+      "--json"
+    ],
+    "cwd": "/private/tmp/xsm-final-receipt-frozen-i3u9pms3",
+    "env_changes": {
+      "XSM_HOME": "/private/tmp/doctor-native-0lxmhs_8/state",
+      "PYTHONPATH": "/private/tmp/xsm-final-receipt-frozen-i3u9pms3",
+      "PYTHONDONTWRITEBYTECODE": "1",
+      "PATH": "/usr/bin:/bin:/usr/sbin:/sbin",
+      "LC_ALL": "C"
+    },
+    "HOME_unchanged": true,
+    "CODEX_HOME_unchanged": true,
+    "cross_harness_env_removed": true,
+    "returncode": 0,
+    "product_entry": "unmodified final python -B -m xsm doctor --json; no mocked service/registry"
+  },
+  "raw_private_only": {
+    "directory": "/private/tmp/doctor-native-0lxmhs_8",
+    "mode": "0o700",
+    "stdout": {
+      "path": "/private/tmp/doctor-native-0lxmhs_8/doctor-v2.stdout",
+      "sha256": "d59f4a06628ea9c3b217e3ecd50c2a52cc2c9e76bb7d969f77b827c79a22ffd8",
+      "bytes": 3212,
+      "mode": "0o600"
+    },
+    "stderr": {
+      "path": "/private/tmp/doctor-native-0lxmhs_8/doctor-v2.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "mode": "0o600"
+    },
+    "metadata": {
+      "path": "/private/tmp/doctor-native-0lxmhs_8/run-v2-meta.json",
+      "sha256": "590f5f88c987733794b5ae1287eff304804e93c8b4e41b7a7fc3d433bfb2824b",
+      "bytes": 6969,
+      "mode": "0o600"
+    },
+    "copied_to_public": false
+  },
+  "output_structure": {
+    "top_level_keys": [
+      "allow_missing",
+      "cli",
+      "codex_binaries",
+      "codex_binary",
+      "codex_trust",
+      "decisions_seen",
+      "gone",
+      "held",
+      "homes",
+      "hook_errors_recent",
+      "inbound",
+      "installs",
+      "interpreter",
+      "interpreter_ok",
+      "interpreter_pinned",
+      "leftovers",
+      "limits",
+      "orphaned_servers",
+      "plugin_missing_hooks",
+      "plugin_older",
+      "plugin_revisions",
+      "plugin_roots",
+      "plugins",
+      "policy",
+      "policy_health",
+      "probes",
+      "retired",
+      "runtime",
+      "sessions",
+      "settings_invalid",
+      "setup",
+      "stale",
+      "strict_peers",
+      "stuck",
+      "tmux",
+      "version",
+      "xsm_home",
+      "xsm_on_path"
+    ],
+    "setup_keys": [
+      "active_probe",
+      "homes",
+      "observed_environment",
+      "status",
+      "supply"
+    ],
+    "setup_home_count": 0,
+    "declared_home_count": 0,
+    "active_probe": "not-run",
+    "registered_count": 0,
+    "doctor_report_actual_runtime_observed": false,
+    "raw_stdout_bytes": 3212,
+    "raw_stderr_bytes": 0
+  },
+  "sensitive_output_check": {
+    "generic_pattern_results": {
+      "email_address": false,
+      "bearer_value": false,
+      "private_key_header": false,
+      "openai_style_key": false,
+      "credential_assignment": false,
+      "invite_url": false
+    },
+    "forbidden_field_count": 0,
+    "synthetic_fixture_marker_present": false,
+    "raw_user_home_path_present": false,
+    "credential_files_opened_by_auditor": false,
+    "actual_credential_values_loaded_or_compared": false,
+    "actual_credential_comparisons": 0,
+    "limitation": "일반 패턴·구조 검사이며 실제 credential 값 전수 대조 아님. 실제 sensitive-input 처리 양성은 기존 합성 redaction fixture에 결속."
+  },
+  "actual_user_runtime_binding": {
+    "method": "current real tool immediate Codex parent via OS ps + native SQLite metadata mode=ro/query_only; no XSM registry/caller certainty used",
+    "runtime_pid": 9102,
+    "runtime_lstart": "Wed Oct 28 05:55:24 2026",
+    "thread_id_sha256": "0a7dc256b44c9bc938cb51ca16f73622278f29efe3f82288fdb988f4a378f6d6",
+    "runtime_executable_path_sha256": "9bf8ceb2dd2e38366ae8566ce03d27d0e187818c4ff336ced711f5e01eed5fdb",
+    "before": {
+      "pid": 9102,
+      "ppid": 77641,
+      "lstart": "Wed Oct 28 05:55:24 2026",
+      "exit_code": 0
+    },
+    "after": {
+      "pid": 9102,
+      "ppid": 77641,
+      "lstart": "Wed Oct 28 05:55:24 2026",
+      "exit_code": 0
+    },
+    "followup_actual_tool": {
+      "pid": 9102,
+      "ppid": 77641,
+      "lstart": "Wed Oct 28 05:55:24 2026"
+    },
+    "native_thread_metadata": {
+      "present": true,
+      "same_thread_id": true,
+      "archived_before": 0,
+      "archived_after": 0,
+      "cwd_matches_workspace": true,
+      "database_mode": "mode=ro + PRAGMA query_only=ON"
+    },
+    "ps_argv_template": [
+      "/bin/ps",
+      "-p",
+      "<actual-runtime-pid>",
+      "-o",
+      "pid=,ppid=,lstart=,comm="
+    ],
+    "shared_runtime_not_session_exclusive": true,
+    "same_generation_before_after_and_followup": true,
+    "actual_tool_as_proof": "ps 동일 PID/lstart는 runtime process 생존 직접 증거. 뒤의 별도 실제 tool 실행은 같은 사용자 thread의 도구 처리가 계속됨의 증거. env/DB 행 존재만을 생존으로 쓰지 않음.",
+    "limits": "공유 process 생존만으로 모든 thread 건강은 증명하지 않음. 현재 thread 후속 actual tool은 별도 관측했으나 독립 다음 모델 turn은 시험하지 않음."
+  },
+  "fixture_vs_native": {
+    "private_XSM_HOME": "/private/tmp/doctor-native-0lxmhs_8/state",
+    "declared_homes": 0,
+    "fabricated_registry_records": 0,
+    "registered_sessions_in_doctor": 0,
+    "doctor_observed_actual_runtime_itself": false,
+    "out_of_band_actual_OS_observation": true,
+    "doctor_active_probe": "not-run",
+    "caller_certainty_override": false
+  },
+  "safety_boundary": {
+    "sandbox_policy": {
+      "path": "/private/tmp/doctor-native-0lxmhs_8/doctor-v2.sb",
+      "sha256": "2bdc49bff8d664c825a5780afd484cf2734b0b8772c1417639dcd3c71b48b659",
+      "bytes": 223,
+      "mode": "0o600"
+    },
+    "real_user_home_reads_denied": true,
+    "writes_outside_private_root_denied": true,
+    "network_denied": true,
+    "signals_denied": true,
+    "guard_private_record": {
+      "path": "/private/tmp/doctor-native-0lxmhs_8/sandbox-checks.json",
+      "sha256": "4920c793facaa5fbc0979bb431e4cdcb680399bfdab437ec2006fd866f99b5be",
+      "bytes": 1028,
+      "mode": "0o600"
+    },
+    "guard_checks": {
+      "real_home_native_metadata_read": "denied",
+      "outside_private_root_write": "denied"
+    },
+    "guard_outside_file_created": false,
+    "signal_or_network_guard_probe_attempts": 0,
+    "models_started": 0,
+    "login_commands": 0,
+    "account_or_permission_changes": 0,
+    "user_session_signals": 0,
+    "peer_wake_requests": 0,
+    "credential_files_opened_by_auditor": false,
+    "HOME_reassigned": false,
+    "CODEX_HOME_reassigned": false,
+    "product_patch_or_mock": false
+  },
+  "preserved_failures": [
+    {
+      "kind": "sandbox-policy-parse",
+      "exit_code": 65,
+      "doctor_started": false,
+      "reason": "unsupported process-signal operation; corrected to signal",
+      "private_metadata": {
+        "path": "/private/tmp/doctor-native-0lxmhs_8/run-meta.json",
+        "sha256": "f6a17c54692ce29ddeba6f6718494a5a9991d92ef4ff099e67a72cab7ab0e3b6",
+        "bytes": 4967,
+        "mode": "0o600"
+      },
+      "stdout": {
+        "path": "/private/tmp/doctor-native-0lxmhs_8/doctor.stdout",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "bytes": 0,
+        "mode": "0o600"
+      },
+      "stderr": {
+        "path": "/private/tmp/doctor-native-0lxmhs_8/doctor.stderr",
+        "sha256": "d872263c34713b5e4c0df7c22c5f4cbc1c72f3bf7a6c0e12c10b62e93cac4d76",
+        "bytes": 195,
+        "mode": "0o600"
+      }
+    },
+    {
+      "kind": "guard-cwd",
+      "reason": "initial guard inherited denied real-home cwd and produced no JSON; private cwd retry passed. cwd-related startup failure is inferred; initial guard stderr was not preserved. Not a second doctor execution."
+    }
+  ],
+  "existing_evidence_binding": {
+    "prior_audit": {
+      "path": "deliverables/p13-live/doctor-closure-audit.json",
+      "sha256": "a2c25044634890cd59fee03656ffc5c02d8dbbd0a8eb7b2da9f554582019e7ed",
+      "bytes": 58629,
+      "mode": "0o644"
+    },
+    "final_regression": {
+      "path": "deliverables/p13-live/final-regression.json",
+      "sha256": "faa7f9497bfc481a52b80e2f4e35e643b6981be4ed7d514ac4ebd1d3f2691926",
+      "bytes": 1296,
+      "mode": "0o644"
+    },
+    "fixture_selectors": [
+      "tests.test_setup_flow.SetupFlowTest.test_credentials_invites_and_raw_errors_are_not_evidence_fields",
+      "tests.test_setup_flow.SetupFlowTest.test_report_is_read_only_redacted_and_never_wakes_or_terminates_a_session"
+    ],
+    "source_review": "cmd_doctor -> install.doctor + setup_flow.doctor_report; passive PID/stat, selected fields, no active probes; CLI main may write own state/telemetry/maybe_prune. Not globally write-free.",
+    "historical_P10_native": "upgrade survival remains separate; not relabelled as this invocation"
+  },
+  "checks": {
+    "doctor_exit_zero": true,
+    "stdout_json_object": true,
+    "stderr_empty": true,
+    "generic_sensitive_hits": 0,
+    "forbidden_field_hits": 0,
+    "same_generation": true,
+    "followup_actual_tool": true,
+    "source135_unchanged": true,
+    "workspace_product_xsm_unchanged_since_prior_audit": true,
+    "public_raw_doctor_content": false
+  },
+  "workspace_observation": {
+    "changed_since_prior_audit": [
+      "docs/plan/reason-inspired-adrs/current-handoff.md",
+      "docs/plan/reason-inspired-adrs/completion-ledger.json",
+      "docs/plan/reason-inspired-adrs/completion-ledger.md"
+    ],
+    "interpretation": "이전 감사 이후 workspace 문서 hash가 바뀌어 73개 전체 불변은 주장하지 않음. 이번 도구는 해당 경로를 쓰지 않았고 변경 주체는 조사하지 않음. 최종 frozen135는 불변."
+  },
+  "limitations": [
+    "private state has no installed homes/session records; runtime proof is out-of-band",
+    "real-home reads/network/signals blocked; unconfined installed-profile doctor not tested",
+    "generic-pattern scan is not comparison to all actual credentials",
+    "sandbox restrictions are an explicit execution condition",
+    "existing fixture proves synthetic sensitive-input handling; live run proves actual safe CLI output in this condition",
+    "first failed guard stderr was not archived; cwd cause is an inference from policy and successful private-cwd retry"
+  ],
+  "only_public_outputs_written": [
+    "deliverables/p13-live/doctor-native-result.json",
+    "deliverables/p13-live/doctor-native-result.md"
+  ]
+}

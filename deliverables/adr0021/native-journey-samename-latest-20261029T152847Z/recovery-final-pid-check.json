@@ -1,0 +1,51 @@
+{
+  "at": 1793288206.048486,
+  "rows": {
+    "book": [
+      {
+        "pid": 84066,
+        "kind": "recovery-service",
+        "after_ps": ""
+      },
+      {
+        "pid": 84087,
+        "kind": "recovery-engine",
+        "after_ps": ""
+      },
+      {
+        "pid": 84133,
+        "kind": "recovery-service",
+        "after_ps": ""
+      },
+      {
+        "pid": 84135,
+        "kind": "recovery-engine",
+        "after_ps": ""
+      }
+    ],
+    "mini": [
+      {
+        "pid": 60777,
+        "kind": "recovery-service",
+        "after_ps": ""
+      },
+      {
+        "pid": 60781,
+        "kind": "recovery-engine",
+        "after_ps": ""
+      },
+      {
+        "pid": 60946,
+        "kind": "recovery-service",
+        "after_ps": ""
+      },
+      {
+        "pid": 60948,
+        "kind": "recovery-engine",
+        "after_ps": ""
+      }
+    ]
+  },
+  "all_absent": true,
+  "additional_native_models": 0
+}

@@ -131,6 +131,22 @@ class PolicyTest(TempState):
 
 
 class SnapshotTest(_Checkout):
+    def test_opt_in_network_locked_build_sources_survive_snapshot_without_build_outputs(self):
+        from pathlib import Path
+        from xsm import install
+        source = Path(self.checkout) / "native" / "xsm-net"
+        (source / "src").mkdir(parents=True)
+        (source / "target").mkdir()
+        expected = {"Cargo.toml": "[package]\nname='xsm-net'\n", "Cargo.lock": "version = 4\n",
+                    "src/main.rs": "fn main() {}\n"}
+        for relative, body in expected.items():
+            (source / relative).write_text(body)
+        (source / "target" / "unused-binary").write_bytes(b"build-output")
+        snapshot = Path(install.make_snapshot()["path"])
+        for relative, body in expected.items():
+            self.assertEqual((snapshot / "native" / "xsm-net" / relative).read_text(), body)
+        self.assertFalse((snapshot / "native" / "xsm-net" / "target").exists())
+
     def test_the_snapshot_is_what_xsm_needs_at_run_time_and_runs_outside_the_checkout(self):
         from xsm import install
         snap = install.make_snapshot()

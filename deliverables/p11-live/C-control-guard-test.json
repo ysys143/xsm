@@ -1,0 +1,29 @@
+{
+  "scope": "control guard only; not native/transport acceptance evidence",
+  "native_model_calls": 0,
+  "engine_processes": 0,
+  "cases": [
+    {
+      "case": "permission-before-send",
+      "passed": true
+    },
+    {
+      "case": "permission-before-inbox",
+      "passed": true
+    },
+    {
+      "case": "permission-before-register",
+      "passed": true
+    },
+    {
+      "case": "permission-before-process",
+      "passed": true
+    },
+    {
+      "case": "native-error-not-retried",
+      "passed": true,
+      "calls": 1
+    }
+  ],
+  "passed": true
+}

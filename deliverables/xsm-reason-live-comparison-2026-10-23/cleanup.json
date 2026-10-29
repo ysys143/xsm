@@ -1,0 +1,43 @@
+{
+  "processes": [
+    {
+      "role": "cmp-alpha",
+      "pid": 60804,
+      "action": "terminated own peer group",
+      "remaining": "not running"
+    },
+    {
+      "role": "cmp-beta",
+      "pid": 60806,
+      "action": "terminated own peer group",
+      "remaining": "not running"
+    },
+    {
+      "role": "cmp-gamma",
+      "pid": 60807,
+      "action": "terminated own peer group",
+      "remaining": "not running"
+    },
+    {
+      "role": "alpha-runner",
+      "pid": 60801,
+      "action": "terminated own runner group",
+      "remaining": "not running"
+    },
+    {
+      "role": "beta-runner",
+      "pid": 60802,
+      "action": "terminated own runner group",
+      "remaining": "not running"
+    },
+    {
+      "role": "gamma-runner",
+      "pid": 60803,
+      "action": "terminated own runner group",
+      "remaining": "not running"
+    }
+  ],
+  "source_files_checked": 31,
+  "changed_source_files": [],
+  "link_cleanup": "xsm_link(drop=true) reported the folders were not linked"
+}

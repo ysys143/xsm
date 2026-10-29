@@ -1,0 +1,3240 @@
+{
+  "label": "physical-core-not-agent-workflow",
+  "roots": {
+    "book": "/private/tmp/xpc-q0b6vtol",
+    "mini": "/private/tmp/xpc-pnoh2tco"
+  },
+  "ssh_role": "provisioning-and-local-control-observation-only",
+  "steps": [
+    {
+      "host": "book",
+      "action": "verify",
+      "args": [],
+      "result": {
+        "sha_match": true,
+        "files": 55,
+        "manifest_sha256": "7f174c8b63081d86ce33eae55eb8e4bdee24de31c64d803837e13054497e5ec7",
+        "binary_sha256": "35a4af3f5b298fa7ecb65bdc2eba7511af77c3350056f0d27ee24a4d4363242a",
+        "python": "3.14.6",
+        "generation": "xpc-q0b6vtol"
+      }
+    },
+    {
+      "host": "mini",
+      "action": "verify",
+      "args": [],
+      "result": {
+        "sha_match": true,
+        "files": 55,
+        "manifest_sha256": "7f174c8b63081d86ce33eae55eb8e4bdee24de31c64d803837e13054497e5ec7",
+        "binary_sha256": "35a4af3f5b298fa7ecb65bdc2eba7511af77c3350056f0d27ee24a4d4363242a",
+        "python": "3.9.6",
+        "generation": "xpc-pnoh2tco"
+      }
+    },
+    {
+      "host": "book",
+      "action": "start",
+      "args": [],
+      "result": {
+        "start": "ready",
+        "service_pid": 54672,
+        "status": {
+          "status": "running",
+          "endpoint_id": "b9faaff3644930d0152a1edcd16d60a15b6ee8dcb2d4f49582e2cf32c334eadd",
+          "address": {
+            "addrs": [
+              {
+                "Ip": "100.123.30.11:53927"
+              },
+              {
+                "Ip": "127.0.0.1:53927"
+              },
+              {
+                "Ip": "192.168.0.11:53927"
+              },
+              {
+                "Ip": "[::1]:64702"
+              }
+            ],
+            "id": "b9faaff3644930d0152a1edcd16d60a15b6ee8dcb2d4f49582e2cf32c334eadd"
+          },
+          "active": false,
+          "network": null,
+          "transport": {
+            "address": {
+              "addrs": [
+                {
+                  "Ip": "100.123.30.11:53927"
+                },
+                {
+                  "Ip": "127.0.0.1:53927"
+                },
+                {
+                  "Ip": "192.168.0.11:53927"
+                },
+                {
+                  "Ip": "[::1]:64702"
+                }
+              ],
+              "id": "b9faaff3644930d0152a1edcd16d60a15b6ee8dcb2d4f49582e2cf32c334eadd"
+            },
+            "bound_addresses": [
+              "0.0.0.0:53927",
+              "[::]:64702"
+            ],
+            "endpoint_id": "b9faaff3644930d0152a1edcd16d60a15b6ee8dcb2d4f49582e2cf32c334eadd",
+            "event": "ready",
+            "port_fallback": false,
+            "relay_mode": "public",
+            "relay_online": false,
+            "requested_port": 0
+          },
+          "last_transport": null
+        }
+      }
+    },
+    {
+      "host": "mini",
+      "action": "start",
+      "args": [],
+      "result": {
+        "start": "ready",
+        "service_pid": 15740,
+        "status": {
+          "status": "running",
+          "endpoint_id": "105667d8db8dc28420ce183d425fee678730928b6310497fcadd483c9afd0b4e",
+          "address": {
+            "addrs": [
+              {
+                "Ip": "100.77.24.16:56886"
+              },
+              {
+                "Ip": "127.0.0.1:56886"
+              },
+              {
+                "Ip": "192.168.0.64:56886"
+              },
+              {
+                "Ip": "[::1]:50745"
+              }
+            ],
+            "id": "105667d8db8dc28420ce183d425fee678730928b6310497fcadd483c9afd0b4e"
+          },
+          "active": false,
+          "network": null,
+          "transport": {
+            "address": {
+              "addrs": [
+                {
+                  "Ip": "100.77.24.16:56886"
+                },
+                {
+                  "Ip": "127.0.0.1:56886"
+                },
+                {
+                  "Ip": "192.168.0.64:56886"
+                },
+                {
+                  "Ip": "[::1]:50745"
+                }
+              ],
+              "id": "105667d8db8dc28420ce183d425fee678730928b6310497fcadd483c9afd0b4e"
+            },
+            "bound_addresses": [
+              "0.0.0.0:56886",
+              "[::]:50745"
+            ],
+            "endpoint_id": "105667d8db8dc28420ce183d425fee678730928b6310497fcadd483c9afd0b4e",
+            "event": "ready",
+            "port_fallback": false,
+            "relay_mode": "public",
+            "relay_online": false,
+            "requested_port": 0
+          },
+          "last_transport": null
+        }
+      }
+    },
+    {
+      "host": "book",
+      "action": "cli",
+      "args": [
+        "init",
+        "physical-core-20261029",
+        "--machine-name",
+        "jaesol-macbookpro"
+      ],
+      "result": {
+        "exit": 0,
+        "stderr_bytes": 0,
+        "result": {
+          "status": "running",
+          "endpoint_id": "b9faaff3644930d0152a1edcd16d60a15b6ee8dcb2d4f49582e2cf32c334eadd",
+          "address": {
+            "addrs": [
+              {
+                "Ip": "100.123.30.11:53927"
+              },
+              {
+                "Ip": "127.0.0.1:53927"
+              },
+              {
+                "Ip": "192.168.0.11:53927"
+              },
+              {
+                "Ip": "[::1]:64702"
+              }
+            ],
+            "id": "b9faaff3644930d0152a1edcd16d60a15b6ee8dcb2d4f49582e2cf32c334eadd"
+          },
+          "active": true,
+          "network": {
+            "version": 1,
+            "network_id": "b9faaff3644930d0152a1edcd16d60a15b6ee8dcb2d4f49582e2cf32c334eadd:5d11af414dc3acefbc2e0b4c1a5dda5c5575ef40cf731b21ed362cf2da89b600",
+            "name": "physical-core-20261029",
+            "members": [
+              {
+                "endpoint_id": "b9faaff3644930d0152a1edcd16d60a15b6ee8dcb2d4f49582e2cf32c334eadd",
+                "machine_name": "jaesol-macbookpro",
+                "status": "active"
+              }
+            ],
+            "invites": []
+          },
+          "transport": {
+            "address": {
+              "addrs": [
+                {
+                  "Ip": "100.123.30.11:53927"
+                },
+                {
+                  "Ip": "127.0.0.1:53927"
+                },
+                {
+                  "Ip": "192.168.0.11:53927"
+                },
+                {
+                  "Ip": "[::1]:64702"
+                }
+              ],
+              "id": "b9faaff3644930d0152a1edcd16d60a15b6ee8dcb2d4f49582e2cf32c334eadd"
+            },
+            "bound_addresses": [
+              "0.0.0.0:53927",
+              "[::]:64702"
+            ],
+            "endpoint_id": "b9faaff3644930d0152a1edcd16d60a15b6ee8dcb2d4f49582e2cf32c334eadd",
+            "event": "ready",
+            "port_fallback": false,
+            "relay_mode": "public",
+            "relay_online": false,
+            "requested_port": 0
+          },
+          "last_transport": null
+        }
+      }
+    },
+    {
+      "host": "book",
+      "action": "cli",
+      "args": [
+        "invite"
+      ],
+      "result": {
+        "exit": 0,
+        "stderr_bytes": 0,
+        "result": {
+          "network_id": "b9faaff3644930d0152a1edcd16d60a15b6ee8dcb2d4f49582e2cf32c334eadd:5d11af414dc3acefbc2e0b4c1a5dda5c5575ef40cf731b21ed362cf2da89b600",
+          "ticket_file": "/private/tmp/xpc-q0b6vtol/state/network/invites/4f1fff6102825fb6ea123e6a0774ca2d.json",
+          "reusable": true
+        }
+      }
+    },
+    {
+      "host": "mini",
+      "action": "join-stdin",
+      "args": [
+        "jaesol-macmini"
+      ],
+      "result": {
+        "exit": 0,
+        "stderr_bytes": 0,
+        "result": {
+          "status": "running",
+          "endpoint_id": "105667d8db8dc28420ce183d425fee678730928b6310497fcadd483c9afd0b4e",
+          "address": {
+            "addrs": [
+              {
+                "Ip": "100.77.24.16:56886"
+              },
+              {
+                "Ip": "127.0.0.1:56886"
+              },
+              {
+                "Ip": "192.168.0.64:56886"
+              },
+              {
+                "Ip": "[::1]:50745"
+              }
+            ],
+            "id": "105667d8db8dc28420ce183d425fee678730928b6310497fcadd483c9afd0b4e"
+          },
+          "active": true,
+          "network": {
+            "version": 1,
+            "network_id": "b9faaff3644930d0152a1edcd16d60a15b6ee8dcb2d4f49582e2cf32c334eadd:5d11af414dc3acefbc2e0b4c1a5dda5c5575ef40cf731b21ed362cf2da89b600",
+            "name": "physical-core-20261029",
+            "members": [
+              {
+                "endpoint_id": "105667d8db8dc28420ce183d425fee678730928b6310497fcadd483c9afd0b4e",
+                "machine_name": "jaesol-macmini",
+                "status": "active"
+              },
+              {
+                "endpoint_id": "b9faaff3644930d0152a1edcd16d60a15b6ee8dcb2d4f49582e2cf32c334eadd",
+                "machine_name": "jaesol-macbookpro",
+                "status": "active"
+              }
+            ],
+            "invites": [
+              {
+                "invite_hash": "14cdee879399cf9fa2ed3589c9ac931a9f9051716216f13a8eecf6a16ee273d4",
+                "issuer": "b9faaff3644930d0152a1edcd16d60a15b6ee8dcb2d4f49582e2cf32c334eadd",
+                "reusable": true,
+                "expires_at": null,
+                "revoked": false,
+                "consumed_by": [
+                  "105667d8db8dc28420ce183d425fee678730928b6310497fcadd483c9afd0b4e"
+                ]
+              }
+            ]
+          },
+          "transport": {
+            "address": {
+              "addrs": [
+                {
+                  "Ip": "100.77.24.16:56886"
+                },
+                {
+                  "Ip": "127.0.0.1:56886"
+                },
+                {
+                  "Ip": "192.168.0.64:56886"
+                },
+                {
+                  "Ip": "[::1]:50745"
+                }
+              ],
+              "id": "105667d8db8dc28420ce183d425fee678730928b6310497fcadd483c9afd0b4e"
+            },
+            "bound_addresses": [
+              "0.0.0.0:56886",
+              "[::]:50745"
+            ],
+            "endpoint_id": "105667d8db8dc28420ce183d425fee678730928b6310497fcadd483c9afd0b4e",
+            "event": "ready",
+            "port_fallback": false,
+            "relay_mode": "public",
+            "relay_online": false,
+            "requested_port": 0
+          },
+          "last_transport": {
+            "path": "direct",
+            "selected": "direct",
+            "selection_reason": "iroh_path_selection",
+            "fallback_reason": null,
+            "remote_address": "192.168.0.11:53927",
+            "paths": [
+              {
+                "kind": "direct",
+                "remote": "ip:192.168.0.11:53927",
+                "selected": true
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "host": "book",
+      "action": "cli",
+      "args": [
+        "members"
+      ],
+      "result": {
+        "exit": 0,
+        "stderr_bytes": 0,
+        "result": {
+          "network_id": "b9faaff3644930d0152a1edcd16d60a15b6ee8dcb2d4f49582e2cf32c334eadd:5d11af414dc3acefbc2e0b4c1a5dda5c5575ef40cf731b21ed362cf2da89b600",
+          "members": [
+            {
+              "endpoint_id": "105667d8db8dc28420ce183d425fee678730928b6310497fcadd483c9afd0b4e",
+              "machine_name": "jaesol-macmini",
+              "status": "active"
+            },
+            {
+              "endpoint_id": "b9faaff3644930d0152a1edcd16d60a15b6ee8dcb2d4f49582e2cf32c334eadd",
+              "machine_name": "jaesol-macbookpro",
+              "status": "active"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "host": "mini",
+      "action": "cli",
+      "args": [
+        "members"
+      ],
+      "result": {
+        "exit": 0,
+        "stderr_bytes": 0,
+        "result": {
+          "network_id": "b9faaff3644930d0152a1edcd16d60a15b6ee8dcb2d4f49582e2cf32c334eadd:5d11af414dc3acefbc2e0b4c1a5dda5c5575ef40cf731b21ed362cf2da89b600",
+          "members": [
+            {
+              "endpoint_id": "105667d8db8dc28420ce183d425fee678730928b6310497fcadd483c9afd0b4e",
+              "machine_name": "jaesol-macmini",
+              "status": "active"
+            },
+            {
+              "endpoint_id": "b9faaff3644930d0152a1edcd16d60a15b6ee8dcb2d4f49582e2cf32c334eadd",
+              "machine_name": "jaesol-macbookpro",
+              "status": "active"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "host": "book",
+      "action": "ping",
+      "args": [],
+      "result": {
+        "ok": true,
+        "endpoint_id": "105667d8db8dc28420ce183d425fee678730928b6310497fcadd483c9afd0b4e",
+        "network_id": "b9faaff3644930d0152a1edcd16d60a15b6ee8dcb2d4f49582e2cf32c334eadd:5d11af414dc3acefbc2e0b4c1a5dda5c5575ef40cf731b21ed362cf2da89b600",
+        "record_count": 3,
+        "signed_body_sha256": "581c57dc0e5bdf1e5fdd129962ee8f17a53b524d6e05434b15fe5f01f1be5e02"
+      }
+    },
+    {
+      "host": "mini",
+      "action": "ping",
+      "args": [],
+      "result": {
+        "ok": true,
+        "endpoint_id": "b9faaff3644930d0152a1edcd16d60a15b6ee8dcb2d4f49582e2cf32c334eadd",
+        "network_id": "b9faaff3644930d0152a1edcd16d60a15b6ee8dcb2d4f49582e2cf32c334eadd:5d11af414dc3acefbc2e0b4c1a5dda5c5575ef40cf731b21ed362cf2da89b600",
+        "record_count": 3,
+        "signed_body_sha256": "fb8b96cb70db833c4f1ba1492978616f658b2cb932d59bb09a05a967394a01a8"
+      }
+    },
+    {
+      "host": "book",
+      "action": "audit",
+      "args": [],
+      "result": [
+        {
+          "event": "ready",
+          "endpoint_id": "b9faaff3644930d0152a1edcd16d60a15b6ee8dcb2d4f49582e2cf32c334eadd",
+          "bound_addresses": [
+            "0.0.0.0:53927",
+            "[::]:64702"
+          ],
+          "requested_port": 0,
+          "port_fallback": false,
+          "relay_mode": "public",
+          "relay_online": false,
+          "native_pid": 54673,
+          "last_transport": null,
+          "observed_at": 1793249618.720788,
+          "observer_pid": 54672
+        },
+        {
+          "event": "request",
+          "request_id": "in-1",
+          "origin": "105667d8db8dc28420ce183d425fee678730928b6310497fcadd483c9afd0b4e",
+          "native_pid": 54673,
+          "body_sha256": "6714a343d45e5964c4b5c13afc0e5456ea3c60419c0c1b585aecf8b341d4966f",
+          "application_op": "join",
+          "last_transport": {
+            "path": "direct",
+            "selected": "direct",
+            "selection_reason": "iroh_path_selection",
+            "fallback_reason": null,
+            "remote_address": "192.168.0.64:56886",
+            "paths": [
+              {
+                "kind": "direct",
+                "remote": "ip:192.168.0.64:56886",
+                "selected": true
+              }
+            ]
+          },
+          "observed_at": 1793249624.15454,
+          "observer_pid": 54672
+        },
+        {
+          "event": "path",
+          "request_id": "in-1",
+          "origin": "105667d8db8dc28420ce183d425fee678730928b6310497fcadd483c9afd0b4e",
+          "native_pid": 54673,
+          "last_transport": {
+            "path": "direct",
+            "selected": "direct",
+            "selection_reason": "iroh_path_selection",
+            "fallback_reason": null,
+            "remote_address": "192.168.0.64:56886",
+            "paths": [
+              {
+                "kind": "direct",
+                "remote": "ip:192.168.0.64:56886",
+                "selected": true
+              }
+            ]
+          },
+          "observed_at": 1793249624.187329,
+          "observer_pid": 54672
+        },
+        {
+          "event": "outbound-body",
+          "target_endpoint_id": "105667d8db8dc28420ce183d425fee678730928b6310497fcadd483c9afd0b4e",
+          "application_op": "sync",
+          "body_sha256": "c8c6b3d68930f4857e9f29a93061b4307c985e802cb705d700bd9eecf495b965",
+          "observed_at": 1793249624.765664,
+          "observer_pid": 54672
+        },
+        {
+          "event": "response",
+          "id": "py-49",
+          "origin": "105667d8db8dc28420ce183d425fee678730928b6310497fcadd483c9afd0b4e",
+          "native_pid": 54673,
+          "body_sha256": "fd47b6142bdb418a6cf332eff14872ad8692c4fb23b44a0eafbc4da713cd69a0",
+          "last_transport": {
+            "path": "direct",
+            "selected": "direct",
+            "selection_reason": "iroh_path_selection",
+            "fallback_reason": null,
+            "remote_address": "192.168.0.64:56886",
+            "paths": [
+              {
+                "kind": "direct",
+                "remote": "ip:192.168.0.64:56886",
+                "selected": true
+              }
+            ]
+          },
+          "observed_at": 1793249624.992511,
+          "observer_pid": 54672
+        },
+        {
+          "event": "request",
+          "request_id": "in-2",
+          "origin": "105667d8db8dc28420ce183d425fee678730928b6310497fcadd483c9afd0b4e",
+          "native_pid": 54673,
+          "body_sha256": "343018214cf2f8af7545e6a02378fbe1fadb153126418bc43d1b45e95fc6d5ed",
+          "application_op": "sync",
+          "last_transport": {
+            "path": "direct",
+            "selected": "direct",
+            "selection_reason": "iroh_path_selection",
+            "fallback_reason": null,
+            "remote_address": "192.168.0.64:56886",
+            "paths": [
+              {
+                "kind": "direct",
+                "remote": "ip:192.168.0.64:56886",
+                "selected": true
+              }
+            ]
+          },
+          "observed_at": 1793249625.0649412,
+          "observer_pid": 54672
+        },
+        {
+          "event": "path",
+          "request_id": "in-2",
+          "origin": "105667d8db8dc28420ce183d425fee678730928b6310497fcadd483c9afd0b4e",
+          "native_pid": 54673,
+          "last_transport": {
+            "path": "direct",
+            "selected": "direct",
+            "selection_reason": "iroh_path_selection",
+            "fallback_reason": null,
+            "remote_address": "192.168.0.64:56886",
+            "paths": [
+              {
+                "kind": "direct",
+                "remote": "ip:192.168.0.64:56886",
+                "selected": true
+              }
+            ]
+          },
+          "observed_at": 1793249625.077861,
+          "observer_pid": 54672
+        },
+        {
+          "event": "outbound-body",
+          "target_endpoint_id": "105667d8db8dc28420ce183d425fee678730928b6310497fcadd483c9afd0b4e",
+          "application_op": "ping",
+          "body_sha256": "7a1fefb79f6850d6f23096805aa76fbcca88f6cbb30dd9e7cd6c3be44efabf4a",
+          "observed_at": 1793249625.130699,
+          "observer_pid": 54672
+        },
+        {
+          "event": "response",
+          "id": "py-80",
+          "origin": "105667d8db8dc28420ce183d425fee678730928b6310497fcadd483c9afd0b4e",
+          "native_pid": 54673,
+          "body_sha256": "581c57dc0e5bdf1e5fdd129962ee8f17a53b524d6e05434b15fe5f01f1be5e02",
+          "last_transport": {
+            "path": "direct",
+            "selected": "direct",
+            "selection_reason": "iroh_path_selection",
+            "fallback_reason": null,
+            "remote_address": "192.168.0.64:56886",
+            "paths": [
+              {
+                "kind": "direct",
+                "remote": "ip:192.168.0.64:56886",
+                "selected": true
+              }
+            ]
+          },
+          "observed_at": 1793249625.2214952,
+          "observer_pid": 54672
+        },
+        {
+          "event": "request",
+          "request_id": "in-3",
+          "origin": "105667d8db8dc28420ce183d425fee678730928b6310497fcadd483c9afd0b4e",
+          "native_pid": 54673,
+          "body_sha256": "c9a241f6bfdc22bb89bfbf154604ec02386fe8b7458e1f999e7eceeb3182e97f",
+          "application_op": "ping",
+          "last_transport": {
+            "path": "direct",
+            "selected": "direct",
+            "selection_reason": "iroh_path_selection",
+            "fallback_reason": null,
+            "remote_address": "192.168.0.64:56886",
+            "paths": [
+              {
+                "kind": "direct",
+                "remote": "ip:192.168.0.64:56886",
+                "selected": true
+              }
+            ]
+          },
+          "observed_at": 1793249625.828287,
+          "observer_pid": 54672
+        },
+        {
+          "event": "path",
+          "request_id": "in-3",
+          "origin": "105667d8db8dc28420ce183d425fee678730928b6310497fcadd483c9afd0b4e",
+          "native_pid": 54673,
+          "last_transport": {
+            "path": "direct",
+            "selected": "direct",
+            "selection_reason": "iroh_path_selection",
+            "fallback_reason": null,
+            "remote_address": "192.168.0.64:56886",
+            "paths": [
+              {
+                "kind": "direct",
+                "remote": "ip:192.168.0.64:56886",
+                "selected": true
+              }
+            ]
+          },
+          "observed_at": 1793249625.852146,
+          "observer_pid": 54672
+        }
+      ]
+    },
+    {
+      "host": "mini",
+      "action": "audit",
+      "args": [],
+      "result": [
+        {
+          "event": "ready",
+          "endpoint_id": "105667d8db8dc28420ce183d425fee678730928b6310497fcadd483c9afd0b4e",
+          "bound_addresses": [
+            "0.0.0.0:56886",
+            "[::]:50745"
+          ],
+          "requested_port": 0,
+          "port_fallback": false,
+          "relay_mode": "public",
+          "relay_online": false,
+          "native_pid": 15741,
+          "last_transport": null,
+          "observed_at": 1793249623.033749,
+          "observer_pid": 15740
+        },
+        {
+          "event": "outbound-body",
+          "target_endpoint_id": "b9faaff3644930d0152a1edcd16d60a15b6ee8dcb2d4f49582e2cf32c334eadd",
+          "application_op": "join",
+          "body_sha256": "6714a343d45e5964c4b5c13afc0e5456ea3c60419c0c1b585aecf8b341d4966f",
+          "observed_at": 1793249624.1399128,
+          "observer_pid": 15740
+        },
+        {
+          "event": "response",
+          "id": "py-1",
+          "origin": "b9faaff3644930d0152a1edcd16d60a15b6ee8dcb2d4f49582e2cf32c334eadd",
+          "native_pid": 15741,
+          "body_sha256": "fb8b96cb70db833c4f1ba1492978616f658b2cb932d59bb09a05a967394a01a8",
+          "last_transport": {
+            "path": "direct",
+            "selected": "direct",
+            "selection_reason": "iroh_path_selection",
+            "fallback_reason": null,
+            "remote_address": "192.168.0.11:53927",
+            "paths": [
+              {
+                "kind": "direct",
+                "remote": "ip:192.168.0.11:53927",
+                "selected": true
+              }
+            ]
+          },
+          "observed_at": 1793249624.226924,
+          "observer_pid": 15740
+        },
+        {
+          "event": "request",
+          "request_id": "in-1",
+          "origin": "b9faaff3644930d0152a1edcd16d60a15b6ee8dcb2d4f49582e2cf32c334eadd",
+          "native_pid": 15741,
+          "body_sha256": "c8c6b3d68930f4857e9f29a93061b4307c985e802cb705d700bd9eecf495b965",
+          "application_op": "sync",
+          "last_transport": {
+            "path": "direct",
+            "selected": "direct",
+            "selection_reason": "iroh_path_selection",
+            "fallback_reason": null,
+            "remote_address": "192.168.0.11:53927",
+            "paths": [
+              {
+                "kind": "direct",
+                "remote": "ip:192.168.0.11:53927",
+                "selected": true
+              }
+            ]
+          },
+          "observed_at": 1793249624.84145,
+          "observer_pid": 15740
+        },
+        {
+          "event": "path",
+          "request_id": "in-1",
+          "origin": "b9faaff3644930d0152a1edcd16d60a15b6ee8dcb2d4f49582e2cf32c334eadd",
+          "native_pid": 15741,
+          "last_transport": {
+            "path": "direct",
+            "selected": "direct",
+            "selection_reason": "iroh_path_selection",
+            "fallback_reason": null,
+            "remote_address": "192.168.0.11:53927",
+            "paths": [
+              {
+                "kind": "direct",
+                "remote": "ip:192.168.0.11:53927",
+                "selected": true
+              }
+            ]
+          },
+          "observed_at": 1793249624.868414,
+          "observer_pid": 15740
+        },
+        {
+          "event": "outbound-body",
+          "target_endpoint_id": "b9faaff3644930d0152a1edcd16d60a15b6ee8dcb2d4f49582e2cf32c334eadd",
+          "application_op": "sync",
+          "body_sha256": "343018214cf2f8af7545e6a02378fbe1fadb153126418bc43d1b45e95fc6d5ed",
+          "observed_at": 1793249625.0667121,
+          "observer_pid": 15740
+        },
+        {
+          "event": "response",
+          "id": "py-57",
+          "origin": "b9faaff3644930d0152a1edcd16d60a15b6ee8dcb2d4f49582e2cf32c334eadd",
+          "native_pid": 15741,
+          "body_sha256": "fd47b6142bdb418a6cf332eff14872ad8692c4fb23b44a0eafbc4da713cd69a0",
+          "last_transport": {
+            "path": "direct",
+            "selected": "direct",
+            "selection_reason": "iroh_path_selection",
+            "fallback_reason": null,
+            "remote_address": "192.168.0.11:53927",
+            "paths": [
+              {
+                "kind": "direct",
+                "remote": "ip:192.168.0.11:53927",
+                "selected": true
+              }
+            ]
+          },
+          "observed_at": 1793249625.1113012,
+          "observer_pid": 15740
+        },
+        {
+          "event": "request",
+          "request_id": "in-2",
+          "origin": "b9faaff3644930d0152a1edcd16d60a15b6ee8dcb2d4f49582e2cf32c334eadd",
+          "native_pid": 15741,
+          "body_sha256": "7a1fefb79f6850d6f23096805aa76fbcca88f6cbb30dd9e7cd6c3be44efabf4a",
+          "application_op": "ping",
+          "last_transport": {
+            "path": "direct",
+            "selected": "direct",
+            "selection_reason": "iroh_path_selection",
+            "fallback_reason": null,
+            "remote_address": "192.168.0.11:53927",
+            "paths": [
+              {
+                "kind": "direct",
+                "remote": "ip:192.168.0.11:53927",
+                "selected": true
+              }
+            ]
+          },
+          "observed_at": 1793249625.1970189,
+          "observer_pid": 15740
+        },
+        {
+          "event": "path",
+          "request_id": "in-2",
+          "origin": "b9faaff3644930d0152a1edcd16d60a15b6ee8dcb2d4f49582e2cf32c334eadd",
+          "native_pid": 15741,
+          "last_transport": {
+            "path": "direct",
+            "selected": "direct",
+            "selection_reason": "iroh_path_selection",
+            "fallback_reason": null,
+            "remote_address": "192.168.0.11:53927",
+            "paths": [
+              {
+                "kind": "direct",
+                "remote": "ip:192.168.0.11:53927",
+                "selected": true
+              }
+            ]
+          },
+          "observed_at": 1793249625.247376,
+          "observer_pid": 15740
+        },
+        {
+          "event": "outbound-body",
+          "target_endpoint_id": "b9faaff3644930d0152a1edcd16d60a15b6ee8dcb2d4f49582e2cf32c334eadd",
+          "application_op": "ping",
+          "body_sha256": "c9a241f6bfdc22bb89bfbf154604ec02386fe8b7458e1f999e7eceeb3182e97f",
+          "observed_at": 1793249625.799094,
+          "observer_pid": 15740
+        },
+        {
+          "event": "response",
+          "id": "py-105",
+          "origin": "b9faaff3644930d0152a1edcd16d60a15b6ee8dcb2d4f49582e2cf32c334eadd",
+          "native_pid": 15741,
+          "body_sha256": "fb8b96cb70db833c4f1ba1492978616f658b2cb932d59bb09a05a967394a01a8",
+          "last_transport": {
+            "path": "direct",
+            "selected": "direct",
+            "selection_reason": "iroh_path_selection",
+            "fallback_reason": null,
+            "remote_address": "192.168.0.11:53927",
+            "paths": [
+              {
+                "kind": "direct",
+                "remote": "ip:192.168.0.11:53927",
+                "selected": true
+              }
+            ]
+          },
+          "observed_at": 1793249625.888453,
+          "observer_pid": 15740
+        }
+      ]
+    },
+    {
+      "host": "book",
+      "action": "stop",
+      "args": [],
+      "result": {
+        "cli": {
+          "exit": 0,
+          "stderr_bytes": 0,
+          "result": {
+            "status": "stopping"
+          }
+        },
+        "remaining_owned_pids": [],
+        "control_socket_exists": false,
+        "generation": "xpc-q0b6vtol",
+        "user_session_signals": 0
+      }
+    },
+    {
+      "host": "mini",
+      "action": "stop",
+      "args": [],
+      "result": {
+        "cli": {
+          "exit": 0,
+          "stderr_bytes": 0,
+          "result": {
+            "status": "stopping"
+          }
+        },
+        "remaining_owned_pids": [],
+        "control_socket_exists": false,
+        "generation": "xpc-pnoh2tco",
+        "user_session_signals": 0
+      }
+    },
+    {
+      "host": "book",
+      "action": "cli",
+      "args": [
+        "configure",
+        "--relay",
+        "off",
+        "--direct-address",
+        "100.123.30.11:0"
+      ],
+      "result": {
+        "exit": 0,
+        "stderr_bytes": 0,
+        "result": {
+          "status": "saved",
+          "effective": "on-next-start",
+          "settings": {
+            "relay": "off",
+            "direct_addresses": [
+              "100.123.30.11:0"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "host": "book",
+      "action": "start",
+      "args": [],
+      "result": {
+        "start": "ready",
+        "service_pid": 55051,
+        "status": {
+          "status": "running",
+          "endpoint_id": "b9faaff3644930d0152a1edcd16d60a15b6ee8dcb2d4f49582e2cf32c334eadd",
+          "address": {
+            "addrs": [
+              {
+                "Ip": "100.123.30.11:58566"
+              },
+              {
+                "Ip": "127.0.0.1:58566"
+              },
+              {
+                "Ip": "192.168.0.11:58566"
+              },
+              {
+                "Ip": "[::1]:50346"
+              }
+            ],
+            "id": "b9faaff3644930d0152a1edcd16d60a15b6ee8dcb2d4f49582e2cf32c334eadd"
+          },
+          "active": true,
+          "network": {
+            "version": 1,
+            "network_id": "b9faaff3644930d0152a1edcd16d60a15b6ee8dcb2d4f49582e2cf32c334eadd:5d11af414dc3acefbc2e0b4c1a5dda5c5575ef40cf731b21ed362cf2da89b600",
+            "name": "physical-core-20261029",
+            "members": [
+              {
+                "endpoint_id": "105667d8db8dc28420ce183d425fee678730928b6310497fcadd483c9afd0b4e",
+                "machine_name": "jaesol-macmini",
+                "status": "active"
+              },
+              {
+                "endpoint_id": "b9faaff3644930d0152a1edcd16d60a15b6ee8dcb2d4f49582e2cf32c334eadd",
+                "machine_name": "jaesol-macbookpro",
+                "status": "active"
+              }
+            ],
+            "invites": [
+              {
+                "invite_hash": "14cdee879399cf9fa2ed3589c9ac931a9f9051716216f13a8eecf6a16ee273d4",
+                "issuer": "b9faaff3644930d0152a1edcd16d60a15b6ee8dcb2d4f49582e2cf32c334eadd",
+                "reusable": true,
+                "expires_at": null,
+                "revoked": false,
+                "consumed_by": [
+                  "105667d8db8dc28420ce183d425fee678730928b6310497fcadd483c9afd0b4e"
+                ]
+              }
+            ]
+          },
+          "transport": {
+            "address": {
+              "addrs": [
+                {
+                  "Ip": "100.123.30.11:58566"
+                },
+                {
+                  "Ip": "127.0.0.1:58566"
+                },
+                {
+                  "Ip": "192.168.0.11:58566"
+                },
+                {
+                  "Ip": "[::1]:50346"
+                }
+              ],
+              "id": "b9faaff3644930d0152a1edcd16d60a15b6ee8dcb2d4f49582e2cf32c334eadd"
+            },
+            "bound_addresses": [
+              "0.0.0.0:58566",
+              "[::]:50346"
+            ],
+            "endpoint_id": "b9faaff3644930d0152a1edcd16d60a15b6ee8dcb2d4f49582e2cf32c334eadd",
+            "event": "ready",
+            "port_fallback": false,
+            "relay_mode": "off",
+            "relay_online": false,
+            "requested_port": 0
+          },
+          "last_transport": null
+        }
+      }
+    },
+    {
+      "host": "book",
+      "action": "key-metadata",
+      "args": [],
+      "result": {
+        "key_mode": "0o600",
+        "key_root_mode": "0o700",
+        "private_key_read": false,
+        "public_status": {
+          "status": "running",
+          "endpoint_id": "b9faaff3644930d0152a1edcd16d60a15b6ee8dcb2d4f49582e2cf32c334eadd",
+          "address": {
+            "addrs": [
+              {
+                "Ip": "100.123.30.11:58566"
+              },
+              {
+                "Ip": "127.0.0.1:58566"
+              },
+              {
+                "Ip": "192.168.0.11:58566"
+              },
+              {
+                "Ip": "[::1]:50346"
+              }
+            ],
+            "id": "b9faaff3644930d0152a1edcd16d60a15b6ee8dcb2d4f49582e2cf32c334eadd"
+          },
+          "active": true,
+          "network": {
+            "version": 1,
+            "network_id": "b9faaff3644930d0152a1edcd16d60a15b6ee8dcb2d4f49582e2cf32c334eadd:5d11af414dc3acefbc2e0b4c1a5dda5c5575ef40cf731b21ed362cf2da89b600",
+            "name": "physical-core-20261029",
+            "members": [
+              {
+                "endpoint_id": "105667d8db8dc28420ce183d425fee678730928b6310497fcadd483c9afd0b4e",
+                "machine_name": "jaesol-macmini",
+                "status": "active"
+              },
+              {
+                "endpoint_id": "b9faaff3644930d0152a1edcd16d60a15b6ee8dcb2d4f49582e2cf32c334eadd",
+                "machine_name": "jaesol-macbookpro",
+                "status": "active"
+              }
+            ],
+            "invites": [
+              {
+                "invite_hash": "14cdee879399cf9fa2ed3589c9ac931a9f9051716216f13a8eecf6a16ee273d4",
+                "issuer": "b9faaff3644930d0152a1edcd16d60a15b6ee8dcb2d4f49582e2cf32c334eadd",
+                "reusable": true,
+                "expires_at": null,
+                "revoked": false,
+                "consumed_by": [
+                  "105667d8db8dc28420ce183d425fee678730928b6310497fcadd483c9afd0b4e"
+                ]
+              }
+            ]
+          },
+          "transport": {
+            "address": {
+              "addrs": [
+                {
+                  "Ip": "100.123.30.11:58566"
+                },
+                {
+                  "Ip": "127.0.0.1:58566"
+                },
+                {
+                  "Ip": "192.168.0.11:58566"
+                },
+                {
+                  "Ip": "[::1]:50346"
+                }
+              ],
+              "id": "b9faaff3644930d0152a1edcd16d60a15b6ee8dcb2d4f49582e2cf32c334eadd"
+            },
+            "bound_addresses": [
+              "0.0.0.0:58566",
+              "[::]:50346"
+            ],
+            "endpoint_id": "b9faaff3644930d0152a1edcd16d60a15b6ee8dcb2d4f49582e2cf32c334eadd",
+            "event": "ready",
+            "port_fallback": false,
+            "relay_mode": "off",
+            "relay_online": false,
+            "requested_port": 0
+          },
+          "last_transport": null
+        }
+      }
+    },
+    {
+      "host": "mini",
+      "action": "cli",
+      "args": [
+        "configure",
+        "--relay",
+        "off",
+        "--direct-address",
+        "100.77.24.16:0"
+      ],
+      "result": {
+        "exit": 0,
+        "stderr_bytes": 0,
+        "result": {
+          "status": "saved",
+          "effective": "on-next-start",
+          "settings": {
+            "relay": "off",
+            "direct_addresses": [
+              "100.77.24.16:0"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "host": "mini",
+      "action": "start",
+      "args": [],
+      "result": {
+        "start": "ready",
+        "service_pid": 16409,
+        "status": {
+          "status": "running",
+          "endpoint_id": "105667d8db8dc28420ce183d425fee678730928b6310497fcadd483c9afd0b4e",
+          "address": {
+            "addrs": [
+              {
+                "Ip": "100.77.24.16:61032"
+              },
+              {
+                "Ip": "127.0.0.1:61032"
+              },
+              {
+                "Ip": "192.168.0.64:61032"
+              },
+              {
+                "Ip": "[::1]:62712"
+              }
+            ],
+            "id": "105667d8db8dc28420ce183d425fee678730928b6310497fcadd483c9afd0b4e"
+          },
+          "active": true,
+          "network": {
+            "version": 1,
+            "network_id": "b9faaff3644930d0152a1edcd16d60a15b6ee8dcb2d4f49582e2cf32c334eadd:5d11af414dc3acefbc2e0b4c1a5dda5c5575ef40cf731b21ed362cf2da89b600",
+            "name": "physical-core-20261029",
+            "members": [
+              {
+                "endpoint_id": "105667d8db8dc28420ce183d425fee678730928b6310497fcadd483c9afd0b4e",
+                "machine_name": "jaesol-macmini",
+                "status": "active"
+              },
+              {
+                "endpoint_id": "b9faaff3644930d0152a1edcd16d60a15b6ee8dcb2d4f49582e2cf32c334eadd",
+                "machine_name": "jaesol-macbookpro",
+                "status": "active"
+              }
+            ],
+            "invites": [
+              {
+                "invite_hash": "14cdee879399cf9fa2ed3589c9ac931a9f9051716216f13a8eecf6a16ee273d4",
+                "issuer": "b9faaff3644930d0152a1edcd16d60a15b6ee8dcb2d4f49582e2cf32c334eadd",
+                "reusable": true,
+                "expires_at": null,
+                "revoked": false,
+                "consumed_by": [
+                  "105667d8db8dc28420ce183d425fee678730928b6310497fcadd483c9afd0b4e"
+                ]
+              }
+            ]
+          },
+          "transport": {
+            "address": {
+              "addrs": [
+                {
+                  "Ip": "100.77.24.16:61032"
+                },
+                {
+                  "Ip": "127.0.0.1:61032"
+                },
+                {
+                  "Ip": "192.168.0.64:61032"
+                },
+                {
+                  "Ip": "[::1]:62712"
+                }
+              ],
+              "id": "105667d8db8dc28420ce183d425fee678730928b6310497fcadd483c9afd0b4e"
+            },
+            "bound_addresses": [
+              "0.0.0.0:61032",
+              "[::]:62712"
+            ],
+            "endpoint_id": "105667d8db8dc28420ce183d425fee678730928b6310497fcadd483c9afd0b4e",
+            "event": "ready",
+            "port_fallback": false,
+            "relay_mode": "off",
+            "relay_online": false,
+            "requested_port": 0
+          },
+          "last_transport": null
+        }
+      }
+    },
+    {
+      "host": "mini",
+      "action": "key-metadata",
+      "args": [],
+      "result": {
+        "key_mode": "0o600",
+        "key_root_mode": "0o700",
+        "private_key_read": false,
+        "public_status": {
+          "status": "running",
+          "endpoint_id": "105667d8db8dc28420ce183d425fee678730928b6310497fcadd483c9afd0b4e",
+          "address": {
+            "addrs": [
+              {
+                "Ip": "100.77.24.16:61032"
+              },
+              {
+                "Ip": "127.0.0.1:61032"
+              },
+              {
+                "Ip": "192.168.0.64:61032"
+              },
+              {
+                "Ip": "[::1]:62712"
+              }
+            ],
+            "id": "105667d8db8dc28420ce183d425fee678730928b6310497fcadd483c9afd0b4e"
+          },
+          "active": true,
+          "network": {
+            "version": 1,
+            "network_id": "b9faaff3644930d0152a1edcd16d60a15b6ee8dcb2d4f49582e2cf32c334eadd:5d11af414dc3acefbc2e0b4c1a5dda5c5575ef40cf731b21ed362cf2da89b600",
+            "name": "physical-core-20261029",
+            "members": [
+              {
+                "endpoint_id": "105667d8db8dc28420ce183d425fee678730928b6310497fcadd483c9afd0b4e",
+                "machine_name": "jaesol-macmini",
+                "status": "active"
+              },
+              {
+                "endpoint_id": "b9faaff3644930d0152a1edcd16d60a15b6ee8dcb2d4f49582e2cf32c334eadd",
+                "machine_name": "jaesol-macbookpro",
+                "status": "active"
+              }
+            ],
+            "invites": [
+              {
+                "invite_hash": "14cdee879399cf9fa2ed3589c9ac931a9f9051716216f13a8eecf6a16ee273d4",
+                "issuer": "b9faaff3644930d0152a1edcd16d60a15b6ee8dcb2d4f49582e2cf32c334eadd",
+                "reusable": true,
+                "expires_at": null,
+                "revoked": false,
+                "consumed_by": [
+                  "105667d8db8dc28420ce183d425fee678730928b6310497fcadd483c9afd0b4e"
+                ]
+              }
+            ]
+          },
+          "transport": {
+            "address": {
+              "addrs": [
+                {
+                  "Ip": "100.77.24.16:61032"
+                },
+                {
+                  "Ip": "127.0.0.1:61032"
+                },
+                {
+                  "Ip": "192.168.0.64:61032"
+                },
+                {
+                  "Ip": "[::1]:62712"
+                }
+              ],
+              "id": "105667d8db8dc28420ce183d425fee678730928b6310497fcadd483c9afd0b4e"
+            },
+            "bound_addresses": [
+              "0.0.0.0:61032",
+              "[::]:62712"
+            ],
+            "endpoint_id": "105667d8db8dc28420ce183d425fee678730928b6310497fcadd483c9afd0b4e",
+            "event": "ready",
+            "port_fallback": false,
+            "relay_mode": "off",
+            "relay_online": false,
+            "requested_port": 0
+          },
+          "last_transport": null
+        }
+      }
+    },
+    {
+      "host": "book",
+      "action": "ping",
+      "args": [],
+      "result": {
+        "ok": true,
+        "endpoint_id": "105667d8db8dc28420ce183d425fee678730928b6310497fcadd483c9afd0b4e",
+        "network_id": "b9faaff3644930d0152a1edcd16d60a15b6ee8dcb2d4f49582e2cf32c334eadd:5d11af414dc3acefbc2e0b4c1a5dda5c5575ef40cf731b21ed362cf2da89b600",
+        "record_count": 3,
+        "signed_body_sha256": "581c57dc0e5bdf1e5fdd129962ee8f17a53b524d6e05434b15fe5f01f1be5e02"
+      }
+    },
+    {
+      "host": "mini",
+      "action": "ping",
+      "args": [],
+      "result": {
+        "ok": true,
+        "endpoint_id": "b9faaff3644930d0152a1edcd16d60a15b6ee8dcb2d4f49582e2cf32c334eadd",
+        "network_id": "b9faaff3644930d0152a1edcd16d60a15b6ee8dcb2d4f49582e2cf32c334eadd:5d11af414dc3acefbc2e0b4c1a5dda5c5575ef40cf731b21ed362cf2da89b600",
+        "record_count": 3,
+        "signed_body_sha256": "fb8b96cb70db833c4f1ba1492978616f658b2cb932d59bb09a05a967394a01a8"
+      }
+    },
+    {
+      "host": "book",
+      "action": "audit",
+      "args": [],
+      "result": [
+        {
+          "event": "ready",
+          "endpoint_id": "b9faaff3644930d0152a1edcd16d60a15b6ee8dcb2d4f49582e2cf32c334eadd",
+          "bound_addresses": [
+            "0.0.0.0:53927",
+            "[::]:64702"
+          ],
+          "requested_port": 0,
+          "port_fallback": false,
+          "relay_mode": "public",
+          "relay_online": false,
+          "native_pid": 54673,
+          "last_transport": null,
+          "observed_at": 1793249618.720788,
+          "observer_pid": 54672
+        },
+        {
+          "event": "request",
+          "request_id": "in-1",
+          "origin": "105667d8db8dc28420ce183d425fee678730928b6310497fcadd483c9afd0b4e",
+          "native_pid": 54673,
+          "body_sha256": "6714a343d45e5964c4b5c13afc0e5456ea3c60419c0c1b585aecf8b341d4966f",
+          "application_op": "join",
+          "last_transport": {
+            "path": "direct",
+            "selected": "direct",
+            "selection_reason": "iroh_path_selection",
+            "fallback_reason": null,
+            "remote_address": "192.168.0.64:56886",
+            "paths": [
+              {
+                "kind": "direct",
+                "remote": "ip:192.168.0.64:56886",
+                "selected": true
+              }
+            ]
+          },
+          "observed_at": 1793249624.15454,
+          "observer_pid": 54672
+        },
+        {
+          "event": "path",
+          "request_id": "in-1",
+          "origin": "105667d8db8dc28420ce183d425fee678730928b6310497fcadd483c9afd0b4e",
+          "native_pid": 54673,
+          "last_transport": {
+            "path": "direct",
+            "selected": "direct",
+            "selection_reason": "iroh_path_selection",
+            "fallback_reason": null,
+            "remote_address": "192.168.0.64:56886",
+            "paths": [
+              {
+                "kind": "direct",
+                "remote": "ip:192.168.0.64:56886",
+                "selected": true
+              }
+            ]
+          },
+          "observed_at": 1793249624.187329,
+          "observer_pid": 54672
+        },
+        {
+          "event": "outbound-body",
+          "target_endpoint_id": "105667d8db8dc28420ce183d425fee678730928b6310497fcadd483c9afd0b4e",
+          "application_op": "sync",
+          "body_sha256": "c8c6b3d68930f4857e9f29a93061b4307c985e802cb705d700bd9eecf495b965",
+          "observed_at": 1793249624.765664,
+          "observer_pid": 54672
+        },
+        {
+          "event": "response",
+          "id": "py-49",
+          "origin": "105667d8db8dc28420ce183d425fee678730928b6310497fcadd483c9afd0b4e",
+          "native_pid": 54673,
+          "body_sha256": "fd47b6142bdb418a6cf332eff14872ad8692c4fb23b44a0eafbc4da713cd69a0",
+          "last_transport": {
+            "path": "direct",
+            "selected": "direct",
+            "selection_reason": "iroh_path_selection",
+            "fallback_reason": null,
+            "remote_address": "192.168.0.64:56886",
+            "paths": [
+              {
+                "kind": "direct",
+                "remote": "ip:192.168.0.64:56886",
+                "selected": true
+              }
+            ]
+          },
+          "observed_at": 1793249624.992511,
+          "observer_pid": 54672
+        },
+        {
+          "event": "request",
+          "request_id": "in-2",
+          "origin": "105667d8db8dc28420ce183d425fee678730928b6310497fcadd483c9afd0b4e",
+          "native_pid": 54673,
+          "body_sha256": "343018214cf2f8af7545e6a02378fbe1fadb153126418bc43d1b45e95fc6d5ed",
+          "application_op": "sync",
+          "last_transport": {
+            "path": "direct",
+            "selected": "direct",
+            "selection_reason": "iroh_path_selection",
+            "fallback_reason": null,
+            "remote_address": "192.168.0.64:56886",
+            "paths": [
+              {
+                "kind": "direct",
+                "remote": "ip:192.168.0.64:56886",
+                "selected": true
+              }
+            ]
+          },
+          "observed_at": 1793249625.0649412,
+          "observer_pid": 54672
+        },
+        {
+          "event": "path",
+          "request_id": "in-2",
+          "origin": "105667d8db8dc28420ce183d425fee678730928b6310497fcadd483c9afd0b4e",
+          "native_pid": 54673,
+          "last_transport": {
+            "path": "direct",
+            "selected": "direct",
+            "selection_reason": "iroh_path_selection",
+            "fallback_reason": null,
+            "remote_address": "192.168.0.64:56886",
+            "paths": [
+              {
+                "kind": "direct",
+                "remote": "ip:192.168.0.64:56886",
+                "selected": true
+              }
+            ]
+          },
+          "observed_at": 1793249625.077861,
+          "observer_pid": 54672
+        },
+        {
+          "event": "outbound-body",
+          "target_endpoint_id": "105667d8db8dc28420ce183d425fee678730928b6310497fcadd483c9afd0b4e",
+          "application_op": "ping",
+          "body_sha256": "7a1fefb79f6850d6f23096805aa76fbcca88f6cbb30dd9e7cd6c3be44efabf4a",
+          "observed_at": 1793249625.130699,
+          "observer_pid": 54672
+        },
+        {
+          "event": "response",
+          "id": "py-80",
+          "origin": "105667d8db8dc28420ce183d425fee678730928b6310497fcadd483c9afd0b4e",
+          "native_pid": 54673,
+          "body_sha256": "581c57dc0e5bdf1e5fdd129962ee8f17a53b524d6e05434b15fe5f01f1be5e02",
+          "last_transport": {
+            "path": "direct",
+            "selected": "direct",
+            "selection_reason": "iroh_path_selection",
+            "fallback_reason": null,
+            "remote_address": "192.168.0.64:56886",
+            "paths": [
+              {
+                "kind": "direct",
+                "remote": "ip:192.168.0.64:56886",
+                "selected": true
+              }
+            ]
+          },
+          "observed_at": 1793249625.2214952,
+          "observer_pid": 54672
+        },
+        {
+          "event": "request",
+          "request_id": "in-3",
+          "origin": "105667d8db8dc28420ce183d425fee678730928b6310497fcadd483c9afd0b4e",
+          "native_pid": 54673,
+          "body_sha256": "c9a241f6bfdc22bb89bfbf154604ec02386fe8b7458e1f999e7eceeb3182e97f",
+          "application_op": "ping",
+          "last_transport": {
+            "path": "direct",
+            "selected": "direct",
+            "selection_reason": "iroh_path_selection",
+            "fallback_reason": null,
+            "remote_address": "192.168.0.64:56886",
+            "paths": [
+              {
+                "kind": "direct",
+                "remote": "ip:192.168.0.64:56886",
+                "selected": true
+              }
+            ]
+          },
+          "observed_at": 1793249625.828287,
+          "observer_pid": 54672
+        },
+        {
+          "event": "path",
+          "request_id": "in-3",
+          "origin": "105667d8db8dc28420ce183d425fee678730928b6310497fcadd483c9afd0b4e",
+          "native_pid": 54673,
+          "last_transport": {
+            "path": "direct",
+            "selected": "direct",
+            "selection_reason": "iroh_path_selection",
+            "fallback_reason": null,
+            "remote_address": "192.168.0.64:56886",
+            "paths": [
+              {
+                "kind": "direct",
+                "remote": "ip:192.168.0.64:56886",
+                "selected": true
+              }
+            ]
+          },
+          "observed_at": 1793249625.852146,
+          "observer_pid": 54672
+        },
+        {
+          "event": "ready",
+          "endpoint_id": "b9faaff3644930d0152a1edcd16d60a15b6ee8dcb2d4f49582e2cf32c334eadd",
+          "bound_addresses": [
+            "0.0.0.0:58566",
+            "[::]:50346"
+          ],
+          "requested_port": 0,
+          "port_fallback": false,
+          "relay_mode": "off",
+          "relay_online": false,
+          "native_pid": 55052,
+          "last_transport": null,
+          "observed_at": 1793249629.034165,
+          "observer_pid": 55051
+        },
+        {
+          "event": "outbound-body",
+          "target_endpoint_id": "105667d8db8dc28420ce183d425fee678730928b6310497fcadd483c9afd0b4e",
+          "application_op": "ping",
+          "body_sha256": "72e754682e4ad7fa71c23bc586230718ba17aa1e4687cd44820a5cb3c6b631cc",
+          "observed_at": 1793249630.83867,
+          "observer_pid": 55051
+        },
+        {
+          "event": "response",
+          "id": "py-31",
+          "origin": "105667d8db8dc28420ce183d425fee678730928b6310497fcadd483c9afd0b4e",
+          "native_pid": 55052,
+          "body_sha256": "581c57dc0e5bdf1e5fdd129962ee8f17a53b524d6e05434b15fe5f01f1be5e02",
+          "last_transport": {
+            "path": "direct",
+            "selected": "direct",
+            "selection_reason": "iroh_path_selection",
+            "fallback_reason": null,
+            "remote_address": "100.77.24.16:61032",
+            "paths": [
+              {
+                "kind": "direct",
+                "remote": "ip:100.77.24.16:61032",
+                "selected": true
+              }
+            ]
+          },
+          "observed_at": 1793249630.934471,
+          "observer_pid": 55051
+        },
+        {
+          "event": "outbound-body",
+          "target_endpoint_id": "105667d8db8dc28420ce183d425fee678730928b6310497fcadd483c9afd0b4e",
+          "application_op": "sync",
+          "body_sha256": "3d5747dee2327b9e2043f668da64bda16339736a887bd24269ba686c5b617be5",
+          "observed_at": 1793249631.0616052,
+          "observer_pid": 55051
+        },
+        {
+          "event": "response",
+          "id": "py-50",
+          "origin": "105667d8db8dc28420ce183d425fee678730928b6310497fcadd483c9afd0b4e",
+          "native_pid": 55052,
+          "body_sha256": "fd47b6142bdb418a6cf332eff14872ad8692c4fb23b44a0eafbc4da713cd69a0",
+          "last_transport": {
+            "path": "direct",
+            "selected": "direct",
+            "selection_reason": "iroh_path_selection",
+            "fallback_reason": null,
+            "remote_address": "192.168.0.64:61032",
+            "paths": [
+              {
+                "kind": "direct",
+                "remote": "ip:192.168.0.64:61032",
+                "selected": true
+              }
+            ]
+          },
+          "observed_at": 1793249631.2801778,
+          "observer_pid": 55051
+        },
+        {
+          "event": "request",
+          "request_id": "in-1",
+          "origin": "105667d8db8dc28420ce183d425fee678730928b6310497fcadd483c9afd0b4e",
+          "native_pid": 55052,
+          "body_sha256": "f984c60cb95af5f1ae4a9eac6d913c17b73eda8b15620c75ace308c52b869c9d",
+          "application_op": "ping",
+          "last_transport": {
+            "path": "direct",
+            "selected": "direct",
+            "selection_reason": "iroh_path_selection",
+            "fallback_reason": null,
+            "remote_address": "192.168.0.64:61032",
+            "paths": [
+              {
+                "kind": "direct",
+                "remote": "ip:192.168.0.64:61032",
+                "selected": true
+              }
+            ]
+          },
+          "observed_at": 1793249631.44767,
+          "observer_pid": 55051
+        },
+        {
+          "event": "path",
+          "request_id": "in-1",
+          "origin": "105667d8db8dc28420ce183d425fee678730928b6310497fcadd483c9afd0b4e",
+          "native_pid": 55052,
+          "last_transport": {
+            "path": "direct",
+            "selected": "direct",
+            "selection_reason": "iroh_path_selection",
+            "fallback_reason": null,
+            "remote_address": "192.168.0.64:61032",
+            "paths": [
+              {
+                "kind": "direct",
+                "remote": "ip:192.168.0.64:61032",
+                "selected": true
+              }
+            ]
+          },
+          "observed_at": 1793249631.470496,
+          "observer_pid": 55051
+        }
+      ]
+    },
+    {
+      "host": "mini",
+      "action": "audit",
+      "args": [],
+      "result": [
+        {
+          "event": "ready",
+          "endpoint_id": "105667d8db8dc28420ce183d425fee678730928b6310497fcadd483c9afd0b4e",
+          "bound_addresses": [
+            "0.0.0.0:56886",
+            "[::]:50745"
+          ],
+          "requested_port": 0,
+          "port_fallback": false,
+          "relay_mode": "public",
+          "relay_online": false,
+          "native_pid": 15741,
+          "last_transport": null,
+          "observed_at": 1793249623.033749,
+          "observer_pid": 15740
+        },
+        {
+          "event": "outbound-body",
+          "target_endpoint_id": "b9faaff3644930d0152a1edcd16d60a15b6ee8dcb2d4f49582e2cf32c334eadd",
+          "application_op": "join",
+          "body_sha256": "6714a343d45e5964c4b5c13afc0e5456ea3c60419c0c1b585aecf8b341d4966f",
+          "observed_at": 1793249624.1399128,
+          "observer_pid": 15740
+        },
+        {
+          "event": "response",
+          "id": "py-1",
+          "origin": "b9faaff3644930d0152a1edcd16d60a15b6ee8dcb2d4f49582e2cf32c334eadd",
+          "native_pid": 15741,
+          "body_sha256": "fb8b96cb70db833c4f1ba1492978616f658b2cb932d59bb09a05a967394a01a8",
+          "last_transport": {
+            "path": "direct",
+            "selected": "direct",
+            "selection_reason": "iroh_path_selection",
+            "fallback_reason": null,
+            "remote_address": "192.168.0.11:53927",
+            "paths": [
+              {
+                "kind": "direct",
+                "remote": "ip:192.168.0.11:53927",
+                "selected": true
+              }
+            ]
+          },
+          "observed_at": 1793249624.226924,
+          "observer_pid": 15740
+        },
+        {
+          "event": "request",
+          "request_id": "in-1",
+          "origin": "b9faaff3644930d0152a1edcd16d60a15b6ee8dcb2d4f49582e2cf32c334eadd",
+          "native_pid": 15741,
+          "body_sha256": "c8c6b3d68930f4857e9f29a93061b4307c985e802cb705d700bd9eecf495b965",
+          "application_op": "sync",
+          "last_transport": {
+            "path": "direct",
+            "selected": "direct",
+            "selection_reason": "iroh_path_selection",
+            "fallback_reason": null,
+            "remote_address": "192.168.0.11:53927",
+            "paths": [
+              {
+                "kind": "direct",
+                "remote": "ip:192.168.0.11:53927",
+                "selected": true
+              }
+            ]
+          },
+          "observed_at": 1793249624.84145,
+          "observer_pid": 15740
+        },
+        {
+          "event": "path",
+          "request_id": "in-1",
+          "origin": "b9faaff3644930d0152a1edcd16d60a15b6ee8dcb2d4f49582e2cf32c334eadd",
+          "native_pid": 15741,
+          "last_transport": {
+            "path": "direct",
+            "selected": "direct",
+            "selection_reason": "iroh_path_selection",
+            "fallback_reason": null,
+            "remote_address": "192.168.0.11:53927",
+            "paths": [
+              {
+                "kind": "direct",
+                "remote": "ip:192.168.0.11:53927",
+                "selected": true
+              }
+            ]
+          },
+          "observed_at": 1793249624.868414,
+          "observer_pid": 15740
+        },
+        {
+          "event": "outbound-body",
+          "target_endpoint_id": "b9faaff3644930d0152a1edcd16d60a15b6ee8dcb2d4f49582e2cf32c334eadd",
+          "application_op": "sync",
+          "body_sha256": "343018214cf2f8af7545e6a02378fbe1fadb153126418bc43d1b45e95fc6d5ed",
+          "observed_at": 1793249625.0667121,
+          "observer_pid": 15740
+        },
+        {
+          "event": "response",
+          "id": "py-57",
+          "origin": "b9faaff3644930d0152a1edcd16d60a15b6ee8dcb2d4f49582e2cf32c334eadd",
+          "native_pid": 15741,
+          "body_sha256": "fd47b6142bdb418a6cf332eff14872ad8692c4fb23b44a0eafbc4da713cd69a0",
+          "last_transport": {
+            "path": "direct",
+            "selected": "direct",
+            "selection_reason": "iroh_path_selection",
+            "fallback_reason": null,
+            "remote_address": "192.168.0.11:53927",
+            "paths": [
+              {
+                "kind": "direct",
+                "remote": "ip:192.168.0.11:53927",
+                "selected": true
+              }
+            ]
+          },
+          "observed_at": 1793249625.1113012,
+          "observer_pid": 15740
+        },
+        {
+          "event": "request",
+          "request_id": "in-2",
+          "origin": "b9faaff3644930d0152a1edcd16d60a15b6ee8dcb2d4f49582e2cf32c334eadd",
+          "native_pid": 15741,
+          "body_sha256": "7a1fefb79f6850d6f23096805aa76fbcca88f6cbb30dd9e7cd6c3be44efabf4a",
+          "application_op": "ping",
+          "last_transport": {
+            "path": "direct",
+            "selected": "direct",
+            "selection_reason": "iroh_path_selection",
+            "fallback_reason": null,
+            "remote_address": "192.168.0.11:53927",
+            "paths": [
+              {
+                "kind": "direct",
+                "remote": "ip:192.168.0.11:53927",
+                "selected": true
+              }
+            ]
+          },
+          "observed_at": 1793249625.1970189,
+          "observer_pid": 15740
+        },
+        {
+          "event": "path",
+          "request_id": "in-2",
+          "origin": "b9faaff3644930d0152a1edcd16d60a15b6ee8dcb2d4f49582e2cf32c334eadd",
+          "native_pid": 15741,
+          "last_transport": {
+            "path": "direct",
+            "selected": "direct",
+            "selection_reason": "iroh_path_selection",
+            "fallback_reason": null,
+            "remote_address": "192.168.0.11:53927",
+            "paths": [
+              {
+                "kind": "direct",
+                "remote": "ip:192.168.0.11:53927",
+                "selected": true
+              }
+            ]
+          },
+          "observed_at": 1793249625.247376,
+          "observer_pid": 15740
+        },
+        {
+          "event": "outbound-body",
+          "target_endpoint_id": "b9faaff3644930d0152a1edcd16d60a15b6ee8dcb2d4f49582e2cf32c334eadd",
+          "application_op": "ping",
+          "body_sha256": "c9a241f6bfdc22bb89bfbf154604ec02386fe8b7458e1f999e7eceeb3182e97f",
+          "observed_at": 1793249625.799094,
+          "observer_pid": 15740
+        },
+        {
+          "event": "response",
+          "id": "py-105",
+          "origin": "b9faaff3644930d0152a1edcd16d60a15b6ee8dcb2d4f49582e2cf32c334eadd",
+          "native_pid": 15741,
+          "body_sha256": "fb8b96cb70db833c4f1ba1492978616f658b2cb932d59bb09a05a967394a01a8",
+          "last_transport": {
+            "path": "direct",
+            "selected": "direct",
+            "selection_reason": "iroh_path_selection",
+            "fallback_reason": null,
+            "remote_address": "192.168.0.11:53927",
+            "paths": [
+              {
+                "kind": "direct",
+                "remote": "ip:192.168.0.11:53927",
+                "selected": true
+              }
+            ]
+          },
+          "observed_at": 1793249625.888453,
+          "observer_pid": 15740
+        },
+        {
+          "event": "outbound-body",
+          "target_endpoint_id": "b9faaff3644930d0152a1edcd16d60a15b6ee8dcb2d4f49582e2cf32c334eadd",
+          "application_op": "sync",
+          "body_sha256": "343018214cf2f8af7545e6a02378fbe1fadb153126418bc43d1b45e95fc6d5ed",
+          "observed_at": 1793249627.1359491,
+          "observer_pid": 15740
+        },
+        {
+          "event": "ready",
+          "endpoint_id": "105667d8db8dc28420ce183d425fee678730928b6310497fcadd483c9afd0b4e",
+          "bound_addresses": [
+            "0.0.0.0:61032",
+            "[::]:62712"
+          ],
+          "requested_port": 0,
+          "port_fallback": false,
+          "relay_mode": "off",
+          "relay_online": false,
+          "native_pid": 16410,
+          "last_transport": null,
+          "observed_at": 1793249630.305641,
+          "observer_pid": 16409
+        },
+        {
+          "event": "request",
+          "request_id": "in-1",
+          "origin": "b9faaff3644930d0152a1edcd16d60a15b6ee8dcb2d4f49582e2cf32c334eadd",
+          "native_pid": 16410,
+          "body_sha256": "72e754682e4ad7fa71c23bc586230718ba17aa1e4687cd44820a5cb3c6b631cc",
+          "application_op": "ping",
+          "last_transport": {
+            "path": "direct",
+            "selected": "direct",
+            "selection_reason": "iroh_path_selection",
+            "fallback_reason": null,
+            "remote_address": "192.168.0.11:58566",
+            "paths": [
+              {
+                "kind": "direct",
+                "remote": "ip:192.168.0.11:58566",
+                "selected": true
+              }
+            ]
+          },
+          "observed_at": 1793249630.906924,
+          "observer_pid": 16409
+        },
+        {
+          "event": "path",
+          "request_id": "in-1",
+          "origin": "b9faaff3644930d0152a1edcd16d60a15b6ee8dcb2d4f49582e2cf32c334eadd",
+          "native_pid": 16410,
+          "last_transport": {
+            "path": "direct",
+            "selected": "direct",
+            "selection_reason": "iroh_path_selection",
+            "fallback_reason": null,
+            "remote_address": "100.123.30.11:58566",
+            "paths": [
+              {
+                "kind": "direct",
+                "remote": "ip:100.123.30.11:58566",
+                "selected": true
+              }
+            ]
+          },
+          "observed_at": 1793249630.9549792,
+          "observer_pid": 16409
+        },
+        {
+          "event": "request",
+          "request_id": "in-2",
+          "origin": "b9faaff3644930d0152a1edcd16d60a15b6ee8dcb2d4f49582e2cf32c334eadd",
+          "native_pid": 16410,
+          "body_sha256": "3d5747dee2327b9e2043f668da64bda16339736a887bd24269ba686c5b617be5",
+          "application_op": "sync",
+          "last_transport": {
+            "path": "direct",
+            "selected": "direct",
+            "selection_reason": "iroh_path_selection",
+            "fallback_reason": null,
+            "remote_address": "192.168.0.11:58566",
+            "paths": [
+              {
+                "kind": "direct",
+                "remote": "ip:192.168.0.11:58566",
+                "selected": true
+              }
+            ]
+          },
+          "observed_at": 1793249631.128736,
+          "observer_pid": 16409
+        },
+        {
+          "event": "path",
+          "request_id": "in-2",
+          "origin": "b9faaff3644930d0152a1edcd16d60a15b6ee8dcb2d4f49582e2cf32c334eadd",
+          "native_pid": 16410,
+          "last_transport": {
+            "path": "direct",
+            "selected": "direct",
+            "selection_reason": "iroh_path_selection",
+            "fallback_reason": null,
+            "remote_address": "192.168.0.11:58566",
+            "paths": [
+              {
+                "kind": "direct",
+                "remote": "ip:192.168.0.11:58566",
+                "selected": true
+              }
+            ]
+          },
+          "observed_at": 1793249631.161958,
+          "observer_pid": 16409
+        },
+        {
+          "event": "outbound-body",
+          "target_endpoint_id": "b9faaff3644930d0152a1edcd16d60a15b6ee8dcb2d4f49582e2cf32c334eadd",
+          "application_op": "ping",
+          "body_sha256": "f984c60cb95af5f1ae4a9eac6d913c17b73eda8b15620c75ace308c52b869c9d",
+          "observed_at": 1793249631.446252,
+          "observer_pid": 16409
+        },
+        {
+          "event": "response",
+          "id": "py-79",
+          "origin": "b9faaff3644930d0152a1edcd16d60a15b6ee8dcb2d4f49582e2cf32c334eadd",
+          "native_pid": 16410,
+          "body_sha256": "fb8b96cb70db833c4f1ba1492978616f658b2cb932d59bb09a05a967394a01a8",
+          "last_transport": {
+            "path": "direct",
+            "selected": "direct",
+            "selection_reason": "iroh_path_selection",
+            "fallback_reason": null,
+            "remote_address": "192.168.0.11:58566",
+            "paths": [
+              {
+                "kind": "direct",
+                "remote": "ip:192.168.0.11:58566",
+                "selected": true
+              },
+              {
+                "kind": "direct",
+                "remote": "ip:100.123.30.11:58566",
+                "selected": false
+              }
+            ]
+          },
+          "observed_at": 1793249631.509978,
+          "observer_pid": 16409
+        }
+      ]
+    },
+    {
+      "host": "mini",
+      "action": "stop",
+      "args": [],
+      "result": {
+        "cli": {
+          "exit": 0,
+          "stderr_bytes": 0,
+          "result": {
+            "status": "stopping"
+          }
+        },
+        "remaining_owned_pids": [],
+        "control_socket_exists": false,
+        "generation": "xpc-pnoh2tco",
+        "user_session_signals": 0
+      }
+    },
+    {
+      "host": "book",
+      "action": "stop",
+      "args": [],
+      "result": {
+        "cli": {
+          "exit": 0,
+          "stderr_bytes": 0,
+          "result": {
+            "status": "stopping"
+          }
+        },
+        "remaining_owned_pids": [],
+        "control_socket_exists": false,
+        "generation": "xpc-q0b6vtol",
+        "user_session_signals": 0
+      }
+    }
+  ],
+  "started": 1793249613.7020721,
+  "tailscale_ipv4_reobserved": {
+    "book": "100.123.30.11",
+    "mini": "100.77.24.16"
+  },
+  "baseline_physical_rpc": true,
+  "baseline_audits": {
+    "book": [
+      {
+        "event": "ready",
+        "endpoint_id": "b9faaff3644930d0152a1edcd16d60a15b6ee8dcb2d4f49582e2cf32c334eadd",
+        "bound_addresses": [
+          "0.0.0.0:53927",
+          "[::]:64702"
+        ],
+        "requested_port": 0,
+        "port_fallback": false,
+        "relay_mode": "public",
+        "relay_online": false,
+        "native_pid": 54673,
+        "last_transport": null,
+        "observed_at": 1793249618.720788,
+        "observer_pid": 54672
+      },
+      {
+        "event": "request",
+        "request_id": "in-1",
+        "origin": "105667d8db8dc28420ce183d425fee678730928b6310497fcadd483c9afd0b4e",
+        "native_pid": 54673,
+        "body_sha256": "6714a343d45e5964c4b5c13afc0e5456ea3c60419c0c1b585aecf8b341d4966f",
+        "application_op": "join",
+        "last_transport": {
+          "path": "direct",
+          "selected": "direct",
+          "selection_reason": "iroh_path_selection",
+          "fallback_reason": null,
+          "remote_address": "192.168.0.64:56886",
+          "paths": [
+            {
+              "kind": "direct",
+              "remote": "ip:192.168.0.64:56886",
+              "selected": true
+            }
+          ]
+        },
+        "observed_at": 1793249624.15454,
+        "observer_pid": 54672
+      },
+      {
+        "event": "path",
+        "request_id": "in-1",
+        "origin": "105667d8db8dc28420ce183d425fee678730928b6310497fcadd483c9afd0b4e",
+        "native_pid": 54673,
+        "last_transport": {
+          "path": "direct",
+          "selected": "direct",
+          "selection_reason": "iroh_path_selection",
+          "fallback_reason": null,
+          "remote_address": "192.168.0.64:56886",
+          "paths": [
+            {
+              "kind": "direct",
+              "remote": "ip:192.168.0.64:56886",
+              "selected": true
+            }
+          ]
+        },
+        "observed_at": 1793249624.187329,
+        "observer_pid": 54672
+      },
+      {
+        "event": "outbound-body",
+        "target_endpoint_id": "105667d8db8dc28420ce183d425fee678730928b6310497fcadd483c9afd0b4e",
+        "application_op": "sync",
+        "body_sha256": "c8c6b3d68930f4857e9f29a93061b4307c985e802cb705d700bd9eecf495b965",
+        "observed_at": 1793249624.765664,
+        "observer_pid": 54672
+      },
+      {
+        "event": "response",
+        "id": "py-49",
+        "origin": "105667d8db8dc28420ce183d425fee678730928b6310497fcadd483c9afd0b4e",
+        "native_pid": 54673,
+        "body_sha256": "fd47b6142bdb418a6cf332eff14872ad8692c4fb23b44a0eafbc4da713cd69a0",
+        "last_transport": {
+          "path": "direct",
+          "selected": "direct",
+          "selection_reason": "iroh_path_selection",
+          "fallback_reason": null,
+          "remote_address": "192.168.0.64:56886",
+          "paths": [
+            {
+              "kind": "direct",
+              "remote": "ip:192.168.0.64:56886",
+              "selected": true
+            }
+          ]
+        },
+        "observed_at": 1793249624.992511,
+        "observer_pid": 54672
+      },
+      {
+        "event": "request",
+        "request_id": "in-2",
+        "origin": "105667d8db8dc28420ce183d425fee678730928b6310497fcadd483c9afd0b4e",
+        "native_pid": 54673,
+        "body_sha256": "343018214cf2f8af7545e6a02378fbe1fadb153126418bc43d1b45e95fc6d5ed",
+        "application_op": "sync",
+        "last_transport": {
+          "path": "direct",
+          "selected": "direct",
+          "selection_reason": "iroh_path_selection",
+          "fallback_reason": null,
+          "remote_address": "192.168.0.64:56886",
+          "paths": [
+            {
+              "kind": "direct",
+              "remote": "ip:192.168.0.64:56886",
+              "selected": true
+            }
+          ]
+        },
+        "observed_at": 1793249625.0649412,
+        "observer_pid": 54672
+      },
+      {
+        "event": "path",
+        "request_id": "in-2",
+        "origin": "105667d8db8dc28420ce183d425fee678730928b6310497fcadd483c9afd0b4e",
+        "native_pid": 54673,
+        "last_transport": {
+          "path": "direct",
+          "selected": "direct",
+          "selection_reason": "iroh_path_selection",
+          "fallback_reason": null,
+          "remote_address": "192.168.0.64:56886",
+          "paths": [
+            {
+              "kind": "direct",
+              "remote": "ip:192.168.0.64:56886",
+              "selected": true
+            }
+          ]
+        },
+        "observed_at": 1793249625.077861,
+        "observer_pid": 54672
+      },
+      {
+        "event": "outbound-body",
+        "target_endpoint_id": "105667d8db8dc28420ce183d425fee678730928b6310497fcadd483c9afd0b4e",
+        "application_op": "ping",
+        "body_sha256": "7a1fefb79f6850d6f23096805aa76fbcca88f6cbb30dd9e7cd6c3be44efabf4a",
+        "observed_at": 1793249625.130699,
+        "observer_pid": 54672
+      },
+      {
+        "event": "response",
+        "id": "py-80",
+        "origin": "105667d8db8dc28420ce183d425fee678730928b6310497fcadd483c9afd0b4e",
+        "native_pid": 54673,
+        "body_sha256": "581c57dc0e5bdf1e5fdd129962ee8f17a53b524d6e05434b15fe5f01f1be5e02",
+        "last_transport": {
+          "path": "direct",
+          "selected": "direct",
+          "selection_reason": "iroh_path_selection",
+          "fallback_reason": null,
+          "remote_address": "192.168.0.64:56886",
+          "paths": [
+            {
+              "kind": "direct",
+              "remote": "ip:192.168.0.64:56886",
+              "selected": true
+            }
+          ]
+        },
+        "observed_at": 1793249625.2214952,
+        "observer_pid": 54672
+      },
+      {
+        "event": "request",
+        "request_id": "in-3",
+        "origin": "105667d8db8dc28420ce183d425fee678730928b6310497fcadd483c9afd0b4e",
+        "native_pid": 54673,
+        "body_sha256": "c9a241f6bfdc22bb89bfbf154604ec02386fe8b7458e1f999e7eceeb3182e97f",
+        "application_op": "ping",
+        "last_transport": {
+          "path": "direct",
+          "selected": "direct",
+          "selection_reason": "iroh_path_selection",
+          "fallback_reason": null,
+          "remote_address": "192.168.0.64:56886",
+          "paths": [
+            {
+              "kind": "direct",
+              "remote": "ip:192.168.0.64:56886",
+              "selected": true
+            }
+          ]
+        },
+        "observed_at": 1793249625.828287,
+        "observer_pid": 54672
+      },
+      {
+        "event": "path",
+        "request_id": "in-3",
+        "origin": "105667d8db8dc28420ce183d425fee678730928b6310497fcadd483c9afd0b4e",
+        "native_pid": 54673,
+        "last_transport": {
+          "path": "direct",
+          "selected": "direct",
+          "selection_reason": "iroh_path_selection",
+          "fallback_reason": null,
+          "remote_address": "192.168.0.64:56886",
+          "paths": [
+            {
+              "kind": "direct",
+              "remote": "ip:192.168.0.64:56886",
+              "selected": true
+            }
+          ]
+        },
+        "observed_at": 1793249625.852146,
+        "observer_pid": 54672
+      }
+    ],
+    "mini": [
+      {
+        "event": "ready",
+        "endpoint_id": "105667d8db8dc28420ce183d425fee678730928b6310497fcadd483c9afd0b4e",
+        "bound_addresses": [
+          "0.0.0.0:56886",
+          "[::]:50745"
+        ],
+        "requested_port": 0,
+        "port_fallback": false,
+        "relay_mode": "public",
+        "relay_online": false,
+        "native_pid": 15741,
+        "last_transport": null,
+        "observed_at": 1793249623.033749,
+        "observer_pid": 15740
+      },
+      {
+        "event": "outbound-body",
+        "target_endpoint_id": "b9faaff3644930d0152a1edcd16d60a15b6ee8dcb2d4f49582e2cf32c334eadd",
+        "application_op": "join",
+        "body_sha256": "6714a343d45e5964c4b5c13afc0e5456ea3c60419c0c1b585aecf8b341d4966f",
+        "observed_at": 1793249624.1399128,
+        "observer_pid": 15740
+      },
+      {
+        "event": "response",
+        "id": "py-1",
+        "origin": "b9faaff3644930d0152a1edcd16d60a15b6ee8dcb2d4f49582e2cf32c334eadd",
+        "native_pid": 15741,
+        "body_sha256": "fb8b96cb70db833c4f1ba1492978616f658b2cb932d59bb09a05a967394a01a8",
+        "last_transport": {
+          "path": "direct",
+          "selected": "direct",
+          "selection_reason": "iroh_path_selection",
+          "fallback_reason": null,
+          "remote_address": "192.168.0.11:53927",
+          "paths": [
+            {
+              "kind": "direct",
+              "remote": "ip:192.168.0.11:53927",
+              "selected": true
+            }
+          ]
+        },
+        "observed_at": 1793249624.226924,
+        "observer_pid": 15740
+      },
+      {
+        "event": "request",
+        "request_id": "in-1",
+        "origin": "b9faaff3644930d0152a1edcd16d60a15b6ee8dcb2d4f49582e2cf32c334eadd",
+        "native_pid": 15741,
+        "body_sha256": "c8c6b3d68930f4857e9f29a93061b4307c985e802cb705d700bd9eecf495b965",
+        "application_op": "sync",
+        "last_transport": {
+          "path": "direct",
+          "selected": "direct",
+          "selection_reason": "iroh_path_selection",
+          "fallback_reason": null,
+          "remote_address": "192.168.0.11:53927",
+          "paths": [
+            {
+              "kind": "direct",
+              "remote": "ip:192.168.0.11:53927",
+              "selected": true
+            }
+          ]
+        },
+        "observed_at": 1793249624.84145,
+        "observer_pid": 15740
+      },
+      {
+        "event": "path",
+        "request_id": "in-1",
+        "origin": "b9faaff3644930d0152a1edcd16d60a15b6ee8dcb2d4f49582e2cf32c334eadd",
+        "native_pid": 15741,
+        "last_transport": {
+          "path": "direct",
+          "selected": "direct",
+          "selection_reason": "iroh_path_selection",
+          "fallback_reason": null,
+          "remote_address": "192.168.0.11:53927",
+          "paths": [
+            {
+              "kind": "direct",
+              "remote": "ip:192.168.0.11:53927",
+              "selected": true
+            }
+          ]
+        },
+        "observed_at": 1793249624.868414,
+        "observer_pid": 15740
+      },
+      {
+        "event": "outbound-body",
+        "target_endpoint_id": "b9faaff3644930d0152a1edcd16d60a15b6ee8dcb2d4f49582e2cf32c334eadd",
+        "application_op": "sync",
+        "body_sha256": "343018214cf2f8af7545e6a02378fbe1fadb153126418bc43d1b45e95fc6d5ed",
+        "observed_at": 1793249625.0667121,
+        "observer_pid": 15740
+      },
+      {
+        "event": "response",
+        "id": "py-57",
+        "origin": "b9faaff3644930d0152a1edcd16d60a15b6ee8dcb2d4f49582e2cf32c334eadd",
+        "native_pid": 15741,
+        "body_sha256": "fd47b6142bdb418a6cf332eff14872ad8692c4fb23b44a0eafbc4da713cd69a0",
+        "last_transport": {
+          "path": "direct",
+          "selected": "direct",
+          "selection_reason": "iroh_path_selection",
+          "fallback_reason": null,
+          "remote_address": "192.168.0.11:53927",
+          "paths": [
+            {
+              "kind": "direct",
+              "remote": "ip:192.168.0.11:53927",
+              "selected": true
+            }
+          ]
+        },
+        "observed_at": 1793249625.1113012,
+        "observer_pid": 15740
+      },
+      {
+        "event": "request",
+        "request_id": "in-2",
+        "origin": "b9faaff3644930d0152a1edcd16d60a15b6ee8dcb2d4f49582e2cf32c334eadd",
+        "native_pid": 15741,
+        "body_sha256": "7a1fefb79f6850d6f23096805aa76fbcca88f6cbb30dd9e7cd6c3be44efabf4a",
+        "application_op": "ping",
+        "last_transport": {
+          "path": "direct",
+          "selected": "direct",
+          "selection_reason": "iroh_path_selection",
+          "fallback_reason": null,
+          "remote_address": "192.168.0.11:53927",
+          "paths": [
+            {
+              "kind": "direct",
+              "remote": "ip:192.168.0.11:53927",
+              "selected": true
+            }
+          ]
+        },
+        "observed_at": 1793249625.1970189,
+        "observer_pid": 15740
+      },
+      {
+        "event": "path",
+        "request_id": "in-2",
+        "origin": "b9faaff3644930d0152a1edcd16d60a15b6ee8dcb2d4f49582e2cf32c334eadd",
+        "native_pid": 15741,
+        "last_transport": {
+          "path": "direct",
+          "selected": "direct",
+          "selection_reason": "iroh_path_selection",
+          "fallback_reason": null,
+          "remote_address": "192.168.0.11:53927",
+          "paths": [
+            {
+              "kind": "direct",
+              "remote": "ip:192.168.0.11:53927",
+              "selected": true
+            }
+          ]
+        },
+        "observed_at": 1793249625.247376,
+        "observer_pid": 15740
+      },
+      {
+        "event": "outbound-body",
+        "target_endpoint_id": "b9faaff3644930d0152a1edcd16d60a15b6ee8dcb2d4f49582e2cf32c334eadd",
+        "application_op": "ping",
+        "body_sha256": "c9a241f6bfdc22bb89bfbf154604ec02386fe8b7458e1f999e7eceeb3182e97f",
+        "observed_at": 1793249625.799094,
+        "observer_pid": 15740
+      },
+      {
+        "event": "response",
+        "id": "py-105",
+        "origin": "b9faaff3644930d0152a1edcd16d60a15b6ee8dcb2d4f49582e2cf32c334eadd",
+        "native_pid": 15741,
+        "body_sha256": "fb8b96cb70db833c4f1ba1492978616f658b2cb932d59bb09a05a967394a01a8",
+        "last_transport": {
+          "path": "direct",
+          "selected": "direct",
+          "selection_reason": "iroh_path_selection",
+          "fallback_reason": null,
+          "remote_address": "192.168.0.11:53927",
+          "paths": [
+            {
+              "kind": "direct",
+              "remote": "ip:192.168.0.11:53927",
+              "selected": true
+            }
+          ]
+        },
+        "observed_at": 1793249625.888453,
+        "observer_pid": 15740
+      }
+    ]
+  },
+  "tailscale_candidate_physical_rpc": true,
+  "final_audits": {
+    "book": [
+      {
+        "event": "ready",
+        "endpoint_id": "b9faaff3644930d0152a1edcd16d60a15b6ee8dcb2d4f49582e2cf32c334eadd",
+        "bound_addresses": [
+          "0.0.0.0:53927",
+          "[::]:64702"
+        ],
+        "requested_port": 0,
+        "port_fallback": false,
+        "relay_mode": "public",
+        "relay_online": false,
+        "native_pid": 54673,
+        "last_transport": null,
+        "observed_at": 1793249618.720788,
+        "observer_pid": 54672
+      },
+      {
+        "event": "request",
+        "request_id": "in-1",
+        "origin": "105667d8db8dc28420ce183d425fee678730928b6310497fcadd483c9afd0b4e",
+        "native_pid": 54673,
+        "body_sha256": "6714a343d45e5964c4b5c13afc0e5456ea3c60419c0c1b585aecf8b341d4966f",
+        "application_op": "join",
+        "last_transport": {
+          "path": "direct",
+          "selected": "direct",
+          "selection_reason": "iroh_path_selection",
+          "fallback_reason": null,
+          "remote_address": "192.168.0.64:56886",
+          "paths": [
+            {
+              "kind": "direct",
+              "remote": "ip:192.168.0.64:56886",
+              "selected": true
+            }
+          ]
+        },
+        "observed_at": 1793249624.15454,
+        "observer_pid": 54672
+      },
+      {
+        "event": "path",
+        "request_id": "in-1",
+        "origin": "105667d8db8dc28420ce183d425fee678730928b6310497fcadd483c9afd0b4e",
+        "native_pid": 54673,
+        "last_transport": {
+          "path": "direct",
+          "selected": "direct",
+          "selection_reason": "iroh_path_selection",
+          "fallback_reason": null,
+          "remote_address": "192.168.0.64:56886",
+          "paths": [
+            {
+              "kind": "direct",
+              "remote": "ip:192.168.0.64:56886",
+              "selected": true
+            }
+          ]
+        },
+        "observed_at": 1793249624.187329,
+        "observer_pid": 54672
+      },
+      {
+        "event": "outbound-body",
+        "target_endpoint_id": "105667d8db8dc28420ce183d425fee678730928b6310497fcadd483c9afd0b4e",
+        "application_op": "sync",
+        "body_sha256": "c8c6b3d68930f4857e9f29a93061b4307c985e802cb705d700bd9eecf495b965",
+        "observed_at": 1793249624.765664,
+        "observer_pid": 54672
+      },
+      {
+        "event": "response",
+        "id": "py-49",
+        "origin": "105667d8db8dc28420ce183d425fee678730928b6310497fcadd483c9afd0b4e",
+        "native_pid": 54673,
+        "body_sha256": "fd47b6142bdb418a6cf332eff14872ad8692c4fb23b44a0eafbc4da713cd69a0",
+        "last_transport": {
+          "path": "direct",
+          "selected": "direct",
+          "selection_reason": "iroh_path_selection",
+          "fallback_reason": null,
+          "remote_address": "192.168.0.64:56886",
+          "paths": [
+            {
+              "kind": "direct",
+              "remote": "ip:192.168.0.64:56886",
+              "selected": true
+            }
+          ]
+        },
+        "observed_at": 1793249624.992511,
+        "observer_pid": 54672
+      },
+      {
+        "event": "request",
+        "request_id": "in-2",
+        "origin": "105667d8db8dc28420ce183d425fee678730928b6310497fcadd483c9afd0b4e",
+        "native_pid": 54673,
+        "body_sha256": "343018214cf2f8af7545e6a02378fbe1fadb153126418bc43d1b45e95fc6d5ed",
+        "application_op": "sync",
+        "last_transport": {
+          "path": "direct",
+          "selected": "direct",
+          "selection_reason": "iroh_path_selection",
+          "fallback_reason": null,
+          "remote_address": "192.168.0.64:56886",
+          "paths": [
+            {
+              "kind": "direct",
+              "remote": "ip:192.168.0.64:56886",
+              "selected": true
+            }
+          ]
+        },
+        "observed_at": 1793249625.0649412,
+        "observer_pid": 54672
+      },
+      {
+        "event": "path",
+        "request_id": "in-2",
+        "origin": "105667d8db8dc28420ce183d425fee678730928b6310497fcadd483c9afd0b4e",
+        "native_pid": 54673,
+        "last_transport": {
+          "path": "direct",
+          "selected": "direct",
+          "selection_reason": "iroh_path_selection",
+          "fallback_reason": null,
+          "remote_address": "192.168.0.64:56886",
+          "paths": [
+            {
+              "kind": "direct",
+              "remote": "ip:192.168.0.64:56886",
+              "selected": true
+            }
+          ]
+        },
+        "observed_at": 1793249625.077861,
+        "observer_pid": 54672
+      },
+      {
+        "event": "outbound-body",
+        "target_endpoint_id": "105667d8db8dc28420ce183d425fee678730928b6310497fcadd483c9afd0b4e",
+        "application_op": "ping",
+        "body_sha256": "7a1fefb79f6850d6f23096805aa76fbcca88f6cbb30dd9e7cd6c3be44efabf4a",
+        "observed_at": 1793249625.130699,
+        "observer_pid": 54672
+      },
+      {
+        "event": "response",
+        "id": "py-80",
+        "origin": "105667d8db8dc28420ce183d425fee678730928b6310497fcadd483c9afd0b4e",
+        "native_pid": 54673,
+        "body_sha256": "581c57dc0e5bdf1e5fdd129962ee8f17a53b524d6e05434b15fe5f01f1be5e02",
+        "last_transport": {
+          "path": "direct",
+          "selected": "direct",
+          "selection_reason": "iroh_path_selection",
+          "fallback_reason": null,
+          "remote_address": "192.168.0.64:56886",
+          "paths": [
+            {
+              "kind": "direct",
+              "remote": "ip:192.168.0.64:56886",
+              "selected": true
+            }
+          ]
+        },
+        "observed_at": 1793249625.2214952,
+        "observer_pid": 54672
+      },
+      {
+        "event": "request",
+        "request_id": "in-3",
+        "origin": "105667d8db8dc28420ce183d425fee678730928b6310497fcadd483c9afd0b4e",
+        "native_pid": 54673,
+        "body_sha256": "c9a241f6bfdc22bb89bfbf154604ec02386fe8b7458e1f999e7eceeb3182e97f",
+        "application_op": "ping",
+        "last_transport": {
+          "path": "direct",
+          "selected": "direct",
+          "selection_reason": "iroh_path_selection",
+          "fallback_reason": null,
+          "remote_address": "192.168.0.64:56886",
+          "paths": [
+            {
+              "kind": "direct",
+              "remote": "ip:192.168.0.64:56886",
+              "selected": true
+            }
+          ]
+        },
+        "observed_at": 1793249625.828287,
+        "observer_pid": 54672
+      },
+      {
+        "event": "path",
+        "request_id": "in-3",
+        "origin": "105667d8db8dc28420ce183d425fee678730928b6310497fcadd483c9afd0b4e",
+        "native_pid": 54673,
+        "last_transport": {
+          "path": "direct",
+          "selected": "direct",
+          "selection_reason": "iroh_path_selection",
+          "fallback_reason": null,
+          "remote_address": "192.168.0.64:56886",
+          "paths": [
+            {
+              "kind": "direct",
+              "remote": "ip:192.168.0.64:56886",
+              "selected": true
+            }
+          ]
+        },
+        "observed_at": 1793249625.852146,
+        "observer_pid": 54672
+      },
+      {
+        "event": "ready",
+        "endpoint_id": "b9faaff3644930d0152a1edcd16d60a15b6ee8dcb2d4f49582e2cf32c334eadd",
+        "bound_addresses": [
+          "0.0.0.0:58566",
+          "[::]:50346"
+        ],
+        "requested_port": 0,
+        "port_fallback": false,
+        "relay_mode": "off",
+        "relay_online": false,
+        "native_pid": 55052,
+        "last_transport": null,
+        "observed_at": 1793249629.034165,
+        "observer_pid": 55051
+      },
+      {
+        "event": "outbound-body",
+        "target_endpoint_id": "105667d8db8dc28420ce183d425fee678730928b6310497fcadd483c9afd0b4e",
+        "application_op": "ping",
+        "body_sha256": "72e754682e4ad7fa71c23bc586230718ba17aa1e4687cd44820a5cb3c6b631cc",
+        "observed_at": 1793249630.83867,
+        "observer_pid": 55051
+      },
+      {
+        "event": "response",
+        "id": "py-31",
+        "origin": "105667d8db8dc28420ce183d425fee678730928b6310497fcadd483c9afd0b4e",
+        "native_pid": 55052,
+        "body_sha256": "581c57dc0e5bdf1e5fdd129962ee8f17a53b524d6e05434b15fe5f01f1be5e02",
+        "last_transport": {
+          "path": "direct",
+          "selected": "direct",
+          "selection_reason": "iroh_path_selection",
+          "fallback_reason": null,
+          "remote_address": "100.77.24.16:61032",
+          "paths": [
+            {
+              "kind": "direct",
+              "remote": "ip:100.77.24.16:61032",
+              "selected": true
+            }
+          ]
+        },
+        "observed_at": 1793249630.934471,
+        "observer_pid": 55051
+      },
+      {
+        "event": "outbound-body",
+        "target_endpoint_id": "105667d8db8dc28420ce183d425fee678730928b6310497fcadd483c9afd0b4e",
+        "application_op": "sync",
+        "body_sha256": "3d5747dee2327b9e2043f668da64bda16339736a887bd24269ba686c5b617be5",
+        "observed_at": 1793249631.0616052,
+        "observer_pid": 55051
+      },
+      {
+        "event": "response",
+        "id": "py-50",
+        "origin": "105667d8db8dc28420ce183d425fee678730928b6310497fcadd483c9afd0b4e",
+        "native_pid": 55052,
+        "body_sha256": "fd47b6142bdb418a6cf332eff14872ad8692c4fb23b44a0eafbc4da713cd69a0",
+        "last_transport": {
+          "path": "direct",
+          "selected": "direct",
+          "selection_reason": "iroh_path_selection",
+          "fallback_reason": null,
+          "remote_address": "192.168.0.64:61032",
+          "paths": [
+            {
+              "kind": "direct",
+              "remote": "ip:192.168.0.64:61032",
+              "selected": true
+            }
+          ]
+        },
+        "observed_at": 1793249631.2801778,
+        "observer_pid": 55051
+      },
+      {
+        "event": "request",
+        "request_id": "in-1",
+        "origin": "105667d8db8dc28420ce183d425fee678730928b6310497fcadd483c9afd0b4e",
+        "native_pid": 55052,
+        "body_sha256": "f984c60cb95af5f1ae4a9eac6d913c17b73eda8b15620c75ace308c52b869c9d",
+        "application_op": "ping",
+        "last_transport": {
+          "path": "direct",
+          "selected": "direct",
+          "selection_reason": "iroh_path_selection",
+          "fallback_reason": null,
+          "remote_address": "192.168.0.64:61032",
+          "paths": [
+            {
+              "kind": "direct",
+              "remote": "ip:192.168.0.64:61032",
+              "selected": true
+            }
+          ]
+        },
+        "observed_at": 1793249631.44767,
+        "observer_pid": 55051
+      },
+      {
+        "event": "path",
+        "request_id": "in-1",
+        "origin": "105667d8db8dc28420ce183d425fee678730928b6310497fcadd483c9afd0b4e",
+        "native_pid": 55052,
+        "last_transport": {
+          "path": "direct",
+          "selected": "direct",
+          "selection_reason": "iroh_path_selection",
+          "fallback_reason": null,
+          "remote_address": "192.168.0.64:61032",
+          "paths": [
+            {
+              "kind": "direct",
+              "remote": "ip:192.168.0.64:61032",
+              "selected": true
+            }
+          ]
+        },
+        "observed_at": 1793249631.470496,
+        "observer_pid": 55051
+      }
+    ],
+    "mini": [
+      {
+        "event": "ready",
+        "endpoint_id": "105667d8db8dc28420ce183d425fee678730928b6310497fcadd483c9afd0b4e",
+        "bound_addresses": [
+          "0.0.0.0:56886",
+          "[::]:50745"
+        ],
+        "requested_port": 0,
+        "port_fallback": false,
+        "relay_mode": "public",
+        "relay_online": false,
+        "native_pid": 15741,
+        "last_transport": null,
+        "observed_at": 1793249623.033749,
+        "observer_pid": 15740
+      },
+      {
+        "event": "outbound-body",
+        "target_endpoint_id": "b9faaff3644930d0152a1edcd16d60a15b6ee8dcb2d4f49582e2cf32c334eadd",
+        "application_op": "join",
+        "body_sha256": "6714a343d45e5964c4b5c13afc0e5456ea3c60419c0c1b585aecf8b341d4966f",
+        "observed_at": 1793249624.1399128,
+        "observer_pid": 15740
+      },
+      {
+        "event": "response",
+        "id": "py-1",
+        "origin": "b9faaff3644930d0152a1edcd16d60a15b6ee8dcb2d4f49582e2cf32c334eadd",
+        "native_pid": 15741,
+        "body_sha256": "fb8b96cb70db833c4f1ba1492978616f658b2cb932d59bb09a05a967394a01a8",
+        "last_transport": {
+          "path": "direct",
+          "selected": "direct",
+          "selection_reason": "iroh_path_selection",
+          "fallback_reason": null,
+          "remote_address": "192.168.0.11:53927",
+          "paths": [
+            {
+              "kind": "direct",
+              "remote": "ip:192.168.0.11:53927",
+              "selected": true
+            }
+          ]
+        },
+        "observed_at": 1793249624.226924,
+        "observer_pid": 15740
+      },
+      {
+        "event": "request",
+        "request_id": "in-1",
+        "origin": "b9faaff3644930d0152a1edcd16d60a15b6ee8dcb2d4f49582e2cf32c334eadd",
+        "native_pid": 15741,
+        "body_sha256": "c8c6b3d68930f4857e9f29a93061b4307c985e802cb705d700bd9eecf495b965",
+        "application_op": "sync",
+        "last_transport": {
+          "path": "direct",
+          "selected": "direct",
+          "selection_reason": "iroh_path_selection",
+          "fallback_reason": null,
+          "remote_address": "192.168.0.11:53927",
+          "paths": [
+            {
+              "kind": "direct",
+              "remote": "ip:192.168.0.11:53927",
+              "selected": true
+            }
+          ]
+        },
+        "observed_at": 1793249624.84145,
+        "observer_pid": 15740
+      },
+      {
+        "event": "path",
+        "request_id": "in-1",
+        "origin": "b9faaff3644930d0152a1edcd16d60a15b6ee8dcb2d4f49582e2cf32c334eadd",
+        "native_pid": 15741,
+        "last_transport": {
+          "path": "direct",
+          "selected": "direct",
+          "selection_reason": "iroh_path_selection",
+          "fallback_reason": null,
+          "remote_address": "192.168.0.11:53927",
+          "paths": [
+            {
+              "kind": "direct",
+              "remote": "ip:192.168.0.11:53927",
+              "selected": true
+            }
+          ]
+        },
+        "observed_at": 1793249624.868414,
+        "observer_pid": 15740
+      },
+      {
+        "event": "outbound-body",
+        "target_endpoint_id": "b9faaff3644930d0152a1edcd16d60a15b6ee8dcb2d4f49582e2cf32c334eadd",
+        "application_op": "sync",
+        "body_sha256": "343018214cf2f8af7545e6a02378fbe1fadb153126418bc43d1b45e95fc6d5ed",
+        "observed_at": 1793249625.0667121,
+        "observer_pid": 15740
+      },
+      {
+        "event": "response",
+        "id": "py-57",
+        "origin": "b9faaff3644930d0152a1edcd16d60a15b6ee8dcb2d4f49582e2cf32c334eadd",
+        "native_pid": 15741,
+        "body_sha256": "fd47b6142bdb418a6cf332eff14872ad8692c4fb23b44a0eafbc4da713cd69a0",
+        "last_transport": {
+          "path": "direct",
+          "selected": "direct",
+          "selection_reason": "iroh_path_selection",
+          "fallback_reason": null,
+          "remote_address": "192.168.0.11:53927",
+          "paths": [
+            {
+              "kind": "direct",
+              "remote": "ip:192.168.0.11:53927",
+              "selected": true
+            }
+          ]
+        },
+        "observed_at": 1793249625.1113012,
+        "observer_pid": 15740
+      },
+      {
+        "event": "request",
+        "request_id": "in-2",
+        "origin": "b9faaff3644930d0152a1edcd16d60a15b6ee8dcb2d4f49582e2cf32c334eadd",
+        "native_pid": 15741,
+        "body_sha256": "7a1fefb79f6850d6f23096805aa76fbcca88f6cbb30dd9e7cd6c3be44efabf4a",
+        "application_op": "ping",
+        "last_transport": {
+          "path": "direct",
+          "selected": "direct",
+          "selection_reason": "iroh_path_selection",
+          "fallback_reason": null,
+          "remote_address": "192.168.0.11:53927",
+          "paths": [
+            {
+              "kind": "direct",
+              "remote": "ip:192.168.0.11:53927",
+              "selected": true
+            }
+          ]
+        },
+        "observed_at": 1793249625.1970189,
+        "observer_pid": 15740
+      },
+      {
+        "event": "path",
+        "request_id": "in-2",
+        "origin": "b9faaff3644930d0152a1edcd16d60a15b6ee8dcb2d4f49582e2cf32c334eadd",
+        "native_pid": 15741,
+        "last_transport": {
+          "path": "direct",
+          "selected": "direct",
+          "selection_reason": "iroh_path_selection",
+          "fallback_reason": null,
+          "remote_address": "192.168.0.11:53927",
+          "paths": [
+            {
+              "kind": "direct",
+              "remote": "ip:192.168.0.11:53927",
+              "selected": true
+            }
+          ]
+        },
+        "observed_at": 1793249625.247376,
+        "observer_pid": 15740
+      },
+      {
+        "event": "outbound-body",
+        "target_endpoint_id": "b9faaff3644930d0152a1edcd16d60a15b6ee8dcb2d4f49582e2cf32c334eadd",
+        "application_op": "ping",
+        "body_sha256": "c9a241f6bfdc22bb89bfbf154604ec02386fe8b7458e1f999e7eceeb3182e97f",
+        "observed_at": 1793249625.799094,
+        "observer_pid": 15740
+      },
+      {
+        "event": "response",
+        "id": "py-105",
+        "origin": "b9faaff3644930d0152a1edcd16d60a15b6ee8dcb2d4f49582e2cf32c334eadd",
+        "native_pid": 15741,
+        "body_sha256": "fb8b96cb70db833c4f1ba1492978616f658b2cb932d59bb09a05a967394a01a8",
+        "last_transport": {
+          "path": "direct",
+          "selected": "direct",
+          "selection_reason": "iroh_path_selection",
+          "fallback_reason": null,
+          "remote_address": "192.168.0.11:53927",
+          "paths": [
+            {
+              "kind": "direct",
+              "remote": "ip:192.168.0.11:53927",
+              "selected": true
+            }
+          ]
+        },
+        "observed_at": 1793249625.888453,
+        "observer_pid": 15740
+      },
+      {
+        "event": "outbound-body",
+        "target_endpoint_id": "b9faaff3644930d0152a1edcd16d60a15b6ee8dcb2d4f49582e2cf32c334eadd",
+        "application_op": "sync",
+        "body_sha256": "343018214cf2f8af7545e6a02378fbe1fadb153126418bc43d1b45e95fc6d5ed",
+        "observed_at": 1793249627.1359491,
+        "observer_pid": 15740
+      },
+      {
+        "event": "ready",
+        "endpoint_id": "105667d8db8dc28420ce183d425fee678730928b6310497fcadd483c9afd0b4e",
+        "bound_addresses": [
+          "0.0.0.0:61032",
+          "[::]:62712"
+        ],
+        "requested_port": 0,
+        "port_fallback": false,
+        "relay_mode": "off",
+        "relay_online": false,
+        "native_pid": 16410,
+        "last_transport": null,
+        "observed_at": 1793249630.305641,
+        "observer_pid": 16409
+      },
+      {
+        "event": "request",
+        "request_id": "in-1",
+        "origin": "b9faaff3644930d0152a1edcd16d60a15b6ee8dcb2d4f49582e2cf32c334eadd",
+        "native_pid": 16410,
+        "body_sha256": "72e754682e4ad7fa71c23bc586230718ba17aa1e4687cd44820a5cb3c6b631cc",
+        "application_op": "ping",
+        "last_transport": {
+          "path": "direct",
+          "selected": "direct",
+          "selection_reason": "iroh_path_selection",
+          "fallback_reason": null,
+          "remote_address": "192.168.0.11:58566",
+          "paths": [
+            {
+              "kind": "direct",
+              "remote": "ip:192.168.0.11:58566",
+              "selected": true
+            }
+          ]
+        },
+        "observed_at": 1793249630.906924,
+        "observer_pid": 16409
+      },
+      {
+        "event": "path",
+        "request_id": "in-1",
+        "origin": "b9faaff3644930d0152a1edcd16d60a15b6ee8dcb2d4f49582e2cf32c334eadd",
+        "native_pid": 16410,
+        "last_transport": {
+          "path": "direct",
+          "selected": "direct",
+          "selection_reason": "iroh_path_selection",
+          "fallback_reason": null,
+          "remote_address": "100.123.30.11:58566",
+          "paths": [
+            {
+              "kind": "direct",
+              "remote": "ip:100.123.30.11:58566",
+              "selected": true
+            }
+          ]
+        },
+        "observed_at": 1793249630.9549792,
+        "observer_pid": 16409
+      },
+      {
+        "event": "request",
+        "request_id": "in-2",
+        "origin": "b9faaff3644930d0152a1edcd16d60a15b6ee8dcb2d4f49582e2cf32c334eadd",
+        "native_pid": 16410,
+        "body_sha256": "3d5747dee2327b9e2043f668da64bda16339736a887bd24269ba686c5b617be5",
+        "application_op": "sync",
+        "last_transport": {
+          "path": "direct",
+          "selected": "direct",
+          "selection_reason": "iroh_path_selection",
+          "fallback_reason": null,
+          "remote_address": "192.168.0.11:58566",
+          "paths": [
+            {
+              "kind": "direct",
+              "remote": "ip:192.168.0.11:58566",
+              "selected": true
+            }
+          ]
+        },
+        "observed_at": 1793249631.128736,
+        "observer_pid": 16409
+      },
+      {
+        "event": "path",
+        "request_id": "in-2",
+        "origin": "b9faaff3644930d0152a1edcd16d60a15b6ee8dcb2d4f49582e2cf32c334eadd",
+        "native_pid": 16410,
+        "last_transport": {
+          "path": "direct",
+          "selected": "direct",
+          "selection_reason": "iroh_path_selection",
+          "fallback_reason": null,
+          "remote_address": "192.168.0.11:58566",
+          "paths": [
+            {
+              "kind": "direct",
+              "remote": "ip:192.168.0.11:58566",
+              "selected": true
+            }
+          ]
+        },
+        "observed_at": 1793249631.161958,
+        "observer_pid": 16409
+      },
+      {
+        "event": "outbound-body",
+        "target_endpoint_id": "b9faaff3644930d0152a1edcd16d60a15b6ee8dcb2d4f49582e2cf32c334eadd",
+        "application_op": "ping",
+        "body_sha256": "f984c60cb95af5f1ae4a9eac6d913c17b73eda8b15620c75ace308c52b869c9d",
+        "observed_at": 1793249631.446252,
+        "observer_pid": 16409
+      },
+      {
+        "event": "response",
+        "id": "py-79",
+        "origin": "b9faaff3644930d0152a1edcd16d60a15b6ee8dcb2d4f49582e2cf32c334eadd",
+        "native_pid": 16410,
+        "body_sha256": "fb8b96cb70db833c4f1ba1492978616f658b2cb932d59bb09a05a967394a01a8",
+        "last_transport": {
+          "path": "direct",
+          "selected": "direct",
+          "selection_reason": "iroh_path_selection",
+          "fallback_reason": null,
+          "remote_address": "192.168.0.11:58566",
+          "paths": [
+            {
+              "kind": "direct",
+              "remote": "ip:192.168.0.11:58566",
+              "selected": true
+            },
+            {
+              "kind": "direct",
+              "remote": "ip:100.123.30.11:58566",
+              "selected": false
+            }
+          ]
+        },
+        "observed_at": 1793249631.509978,
+        "observer_pid": 16409
+      }
+    ]
+  },
+  "cleanup": {
+    "mini": {
+      "cli": {
+        "exit": 0,
+        "stderr_bytes": 0,
+        "result": {
+          "status": "stopping"
+        }
+      },
+      "remaining_owned_pids": [],
+      "control_socket_exists": false,
+      "generation": "xpc-pnoh2tco",
+      "user_session_signals": 0
+    },
+    "book": {
+      "cli": {
+        "exit": 0,
+        "stderr_bytes": 0,
+        "result": {
+          "status": "stopping"
+        }
+      },
+      "remaining_owned_pids": [],
+      "control_socket_exists": false,
+      "generation": "xpc-q0b6vtol",
+      "user_session_signals": 0
+    }
+  },
+  "finished": 1793249633.4474041
+}

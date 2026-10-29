@@ -596,6 +596,104 @@ class PastedHeaderTest(_Gate):
         self.assertIn("could not check this message", self._context(out))
 
 
+class DuplicateContractTest(_Gate):
+    """A18-03: the receiver's duplicate check uses the same canonical contract as
+    the sender's resend check -- the whole body, kind, reply_to, outcome, scope
+    and the sender identity -- so a header that reuses a delivered id with any of
+    them changed is not read as the same message."""
+
+    def _delivered(self, **kw):
+        """Deliver one message through the gate and return its wire."""
+        from xsm import envelope
+        body = kw.pop("body", "the body")
+        wire = envelope.build(body, msg_id=kw.pop("msg_id", "m1"), sender=self.sender,
+                              scope=kw.pop("scope", None) or "dir:ws", kind=kw.pop("kind", "note"),
+                              reply_to=kw.pop("reply_to", None), outcome=kw.pop("outcome", None))
+        out = self._gate(wire)
+        self.assertNotIn("decision", out, out)
+        return wire
+
+    def test_the_very_same_message_is_a_repeat(self):
+        from xsm import envelope
+        wire = self._delivered(body="hello")
+        again = self._gate(wire)
+        self.assertNotIn("decision", again, "the same message twice is a repeat")
+        self.assertIn("another agent session", self._context(again))
+
+    def test_a_body_sharing_the_first_200_chars_is_not_a_repeat(self):
+        head = "please run the migration " + "x" * 200
+        self._delivered(body=head + " on staging")
+        out = self._gate(self._wire(body=head + " on production"))
+        self.assertEqual(out["decision"], "block")
+        self.assertIn("already received", out["reason"])
+
+    def test_a_swapped_reply_to_is_not_a_repeat(self):
+        from xsm import envelope
+        self._delivered(body="done", kind="reply", reply_to="task-1", outcome="succeeded")
+        swapped = envelope.build("done", msg_id="m1", sender=self.sender, scope="dir:ws",
+                                 kind="reply", reply_to="task-2", outcome="succeeded")
+        out = self._gate(swapped)
+        self.assertEqual(out["decision"], "block")
+        self.assertIn("already received", out["reason"])
+
+    def test_a_swapped_outcome_is_not_a_repeat(self):
+        from xsm import envelope
+        self._delivered(body="done", kind="reply", reply_to="task-1", outcome="succeeded")
+        swapped = envelope.build("done", msg_id="m1", sender=self.sender, scope="dir:ws",
+                                 kind="reply", reply_to="task-1", outcome="failed")
+        self.assertEqual(self._gate(swapped)["decision"], "block")
+
+    def test_a_swapped_scope_is_not_a_repeat(self):
+        from xsm import envelope
+        self._delivered(body="hello", scope="dir:ws")
+        swapped = envelope.build("hello", msg_id="m1", sender=self.sender, scope="dir:elsewhere")
+        self.assertEqual(self._gate(swapped)["decision"], "block")
+
+    def test_the_receipt_keeps_the_canonical_digest_not_the_body(self):
+        from xsm import ledger
+        self._delivered(body="a secret body")
+        rec = ledger.receipt_of("m1")
+        self.assertRegex(rec["req_digest"], r"\A[0-9a-f]{64}\Z")
+        self.assertEqual(rec["req_version"], 1)
+        self.assertNotIn("secret", json.dumps(rec))
+
+    def test_a_legacy_receipt_without_a_digest_is_not_treated_as_a_repeat(self):
+        """A receipt written before the digest existed has only ref+body_sha; it
+        is read as-is, never rebuilt into a fuller contract."""
+        from xsm import ledger
+        ledger.receipt("m1", "delivered", self.me, "", from_ref="aaaaaa")
+        out = self._gate(self._wire(body="a header that reuses the id"))
+        self.assertEqual(out["decision"], "block")
+        self.assertIn("already received", out["reason"])
+
+
+class HookCallContextTest(_Gate):
+    """P01 item 1: the hook resolves its caller into the same CallContext the CLI
+    and MCP server build, and records how surely it was identified."""
+
+    def test_the_hook_input_names_the_receiver_exactly(self):
+        from xsm import receive
+        data = {"hook_event_name": "UserPromptSubmit", "session_id": "r1", "cwd": self.here,
+                "prompt": self._wire(), "prompt_id": "p"}
+        ctx = receive.call_context("claude", data, self.me)
+        self.assertEqual(ctx.basis, "hook_input")
+        self.assertEqual(ctx.certainty, "certain")
+        self.assertEqual(ctx.conversation, "r1")
+        self.assertTrue(ctx.sure)
+
+    def test_a_hook_with_no_session_id_has_no_identity_to_claim(self):
+        from xsm import receive
+        ctx = receive.call_context("claude", {"hook_event_name": "UserPromptSubmit"}, None)
+        self.assertEqual(ctx.basis, "none")
+        self.assertEqual(ctx.certainty, "provisional")
+
+    def test_the_decision_log_records_the_receiver_basis(self):
+        self._gate(self._wire())
+        decision = self._last_decision()
+        self.assertEqual(decision["receiver_basis"], "hook_input")
+        self.assertEqual(decision["receiver_certainty"], "certain")
+
+
 class FailOpenOffTest(_Gate):
     """2026-10-02: fail_open = false restores the rules as they were, not only the
     catch-all: a session that cannot be identified and a write that fails block again."""

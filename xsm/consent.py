@@ -105,6 +105,7 @@ from __future__ import annotations
 
 import contextlib
 import fcntl
+import json
 import os
 import re
 import shlex
@@ -155,7 +156,7 @@ AGENT_SUPPLIED = "agent-supplied"
 INTENT_RE = re.compile(
     r"\b(?:connect|link|join|reach|send|unblock|approve|allow|grant|deliver|release|forward|"
     r"relay|message|tell|talk|ask|notify|leave|remove)\w*|"
-    r"연결|가입|합류|참여|보내|보낼|전달|전송|알려|말해|물어|풀어|해제|허용|허락|승인|연락|대화|소통",
+    r"협업|붙어서|일하자|연결|가입|합류|참여|보내|보낼|전달|전송|알려|말해|물어|풀어|해제|허용|허락|승인|연락|대화|소통",
     re.I)
 # A Codex prompt as typed: `$xsm link <folder>`.
 CODEX_RE = re.compile(r"\A\s*\$xsm[ \t]+(%s)(?![^ \t\n])[ \t]*([^\n]*)" % "|".join(VERBS))
@@ -302,14 +303,94 @@ def _write(me: dict | None, verb: str, args: str) -> dict | None:
     return entry
 
 
+# The harness's answer to a question tool arrives as this tag wrapping a JSON
+# array (measured 2026-10-23: Codex request_user_input; the array carries
+# answer, question and questionItemId, the tool call's id). It is the person's
+# own answer, not harness noise -- but it is wrapped the harness way, so the
+# TAG_RE rule below used to drop it and no ask ever got its verdict (G00/S5).
+# Recognise it by name and keep the request id, so a reply can be bound to the
+# question it answers rather than to whatever was open.
+ANSWER_TAG = "send_user_message_question_reply"
+ANSWER_RE = re.compile(r"\A<%s>\s*(.*?)\s*</%s>\s*\Z" % (ANSWER_TAG, ANSWER_TAG), re.S)
+
+
+def answer_reply(text: str) -> tuple:
+    """(verdict text, request id | None) for a harness answer tag, or
+    (None, None) when this is not one. The verdict is what the person chose,
+    readable by the agent; the request id, when the payload carries one, is the
+    tool call the answer belongs to (P02 item 3: a channel that names the
+    request is bound more strongly than one that only sends free text)."""
+    match = ANSWER_RE.match((text or "").strip())
+    if not match:
+        return None, None
+    body = match.group(1)
+    request = None
+    try:
+        payload = json.loads(body)
+    except ValueError:
+        payload = None
+    if isinstance(payload, list) and payload and isinstance(payload[0], dict):
+        ids = {str(item.get("questionItemId")) for item in payload
+               if isinstance(item, dict) and item.get("questionItemId")}
+        if len(ids) > 1:
+            # Distinct questions cannot become one approval for the first id.
+            return None, None
+        parts = []
+        for item in payload:
+            if not isinstance(item, dict):
+                continue
+            answer = str(item.get("answer") or "").strip()
+            if answer:
+                parts.append(answer)
+            if request is None and item.get("questionItemId"):
+                request = str(item["questionItemId"])
+        if parts:
+            return " / ".join(parts), request
+    return None, None
+
+
+def bind_question(me: dict, verb: str, target: str, request: str,
+                  here: str | None = None, question: str | None = None,
+                  binding: dict | None = None) -> bool:
+    """Bind an existing ask to the actual harness question id, not its text."""
+    want, want_here = _wanted(me, verb, target, here)
+    p = _pending_path(me["ref"], digest(verb, want))
+    if binding is not None:
+        bound = _pending_path(me["ref"], digest(verb, want, json.dumps(binding, sort_keys=True)))
+        if os.path.exists(bound):
+            p = bound
+    if not os.path.exists(p):
+        candidates = []
+        for candidate in pending_files(me["ref"]):
+            _, entry = _fresh_pending(me, candidate)
+            if entry and _matches(entry, verb, want, want_here):
+                candidates.append(candidate)
+        if len(candidates) != 1:
+            return False
+        p = candidates[0]
+    with _locked(p):
+        _, entry = _fresh_pending(me, p)
+        if not entry or not request:
+            return False
+        entry["question_request"] = request
+        if question is not None:
+            entry["question_digest"] = digest(question)
+        paths.write_json(p, entry, mode=0o600)
+    return True
+
+
 def not_a_reply(text: str) -> bool:
     """True for a prompt that cannot be the person's answer to a request: xsm's
-    own commands, other slash commands, and text the harness injected."""
+    own commands, other slash commands, and text the harness injected. A
+    question tool's answer tag is *not* such text -- it is the person's choice,
+    wrapped the harness way (G00/S5), and is kept."""
     text = text.strip()
     if text.startswith(("$xsm", "/xsm")) or SLASH_RE.match(text):
         return True
     if text.startswith(HARNESS_PREFIXES):
         return True
+    if ANSWER_RE.match(text):
+        return False
     tag = TAG_RE.match(text)
     return bool(tag) and "</%s>" % tag.group(1) in text
 
@@ -382,6 +463,18 @@ def record(me: dict | None, data: dict) -> dict | None:
         text = data.get("prompt") or ""
         if envelope.parse(text).peer or envelope.looks_like_peer(text):
             return None
+        # A question tool's answer tag: the person's own choice, wrapped the
+        # harness way. Keep the answer as the verdict, and the request id it
+        # names as the tool call it answers (G00/S5, P02 item 3).
+        answered, request = answer_reply(text)
+        if answered:
+            payload = json.loads(ANSWER_RE.match(text.strip()).group(1))
+            questions = " / ".join(str(item.get("question") or "")
+                                   for item in payload if isinstance(item, dict))
+            note_verdict(me, answered, request=request, question=questions)
+            return None
+        if ANSWER_RE.match(text.strip()):
+            return None  # empty, malformed or multi-question payload is not consent
         m = CODEX_RE.match(text) if (me or {}).get("runtime") == "codex" else None
         if not m and not not_a_reply(text):
             note_verdict(me, text)
@@ -409,7 +502,8 @@ def _fresh_pending(me: dict | None, p: str) -> tuple:
     return p, entry
 
 
-def note_verdict(me: dict | None, text: str, wait: float | None = None) -> bool:
+def note_verdict(me: dict | None, text: str, wait: float | None = None,
+                 request: str | None = None, question: str | None = None) -> bool:
     """Keep the person's latest message after a request as its verdict. It
     replaces an earlier one (user decision, 2026-10-01): the first message is
     often a question ("does that delete the other records too?") and the yes
@@ -423,14 +517,32 @@ def note_verdict(me: dict | None, text: str, wait: float | None = None) -> bool:
         return False
     wait = HOOK_LOCK_WAIT if wait is None else wait
     noted = False
-    for p in pending_files(me["ref"]):  # every prompt comes by here: one listdir
+    pending = pending_files(me["ref"])
+    # A structured answer must not fan out to unrelated open asks. A legacy
+    # single ask can still display it, explicitly marked as unbound.
+    for p in pending:  # every prompt comes by here: one listdir
         try:
             with _locked(p, wait):
                 _, entry = _fresh_pending(me, p)
                 if not entry:
                     continue
+                if request:
+                    expected = entry.get("question_request")
+                    if expected != request and (expected or len(pending) != 1):
+                        continue
+                    entry["answer_binding"] = "question-id" if expected else "single-open-unbound"
                 entry.update({"verdict": text.strip()[:VERDICT_MAX], "verdict_t": time.time(),
                               "shown": False})
+                if request:
+                    # The harness answer named the tool call it answers, so the
+                    # agent can check the verdict against the question it asked
+                    # rather than against whatever request happened to be open
+                    # (P02 item 3).
+                    entry["answer_request"] = request
+                    entry["answer_question"] = (question or "")[:VERDICT_MAX]
+                else:
+                    for key in ("answer_request", "answer_question", "answer_binding"):
+                        entry.pop(key, None)
                 entry.pop("old_hook", None)     # this reply came by a hook that marks it
                 paths.write_json(p, entry, mode=0o600)
                 noted = True
@@ -519,7 +631,7 @@ OLD_HOOK = ("Note: this session's xsm hooks are older than this xsm command, so 
             "update, or use the MCP form tool if there is one.")
 
 
-def _take(me: dict, p: str, verb: str, want: str, want_here: str | None) -> tuple:
+def _take(me: dict, p: str, verb: str, want: str, want_here: str | None, apply=None) -> tuple:
     """take_or_request's step on the ask at `p`, with its lock held: (reply, go,
     how it was kept). An OSError from it means the reply could not be marked or
     used: the folder cannot be written."""
@@ -527,20 +639,45 @@ def _take(me: dict, p: str, verb: str, want: str, want_here: str | None) -> tupl
     if not p or entry.get("verdict") is None or not _matches(entry, verb, want, want_here):
         return None, False, True
     now = time.time()
+    channel_note = ("Question answer %s (%s)." %
+                    (entry["answer_request"], entry.get("answer_binding", "unbound"))) \
+        if entry.get("answer_request") else None
+    if channel_note and entry.get("answer_question"):
+        channel_note += " Asked: " + entry["answer_question"]
     if not entry.get("shown"):
         if "shown" not in entry:
             entry["old_hook"] = True
         entry.update({"shown": True, "shown_t": now})
         paths.write_json(p, entry, mode=0o600)
-        return entry["verdict"], False, OLD_HOOK if entry.get("old_hook") else True
-    kept = OLD_HOOK if entry.get("old_hook") else True
+        return entry["verdict"], False, OLD_HOOK if entry.get("old_hook") else (channel_note or True)
+    kept = OLD_HOOK if entry.get("old_hook") else (channel_note or True)
     if now - float(entry.get("shown_t") or 0) < SHOW_DELAY:
         return entry["verdict"], False, kept
+    if entry.get("answer_request") and not entry.get("native_marker"):
+        key = digest(me.get("runtime"), me.get("home"), me.get("session_id"),
+                     entry["answer_request"])
+        entry["native_marker"] = paths.path("native-answers", key + ".json")
+        previous_use = paths.read_json(entry["native_marker"])
+        if previous_use and previous_use.get("consumed"):
+            return None, False, True
+    if apply is not None:
+        # Keep the verified answer if applying its exact plan fails. Retrying
+        # that plan must not ask the person to approve the same thing again.
+        try:
+            apply(entry["verdict"])
+        except OSError as exc:
+            raise ValueError("could not apply the approved plan: %s" % exc) from exc
     try:
         os.unlink(p)
     except FileNotFoundError:
         return None, False, True        # used by another reader first
     _drop(p)                            # the lock too
+    if entry.get("native_marker"):
+        marker = entry["native_marker"]
+        with _locked(marker):
+            record = paths.read_json(marker, {})
+            record["consumed"] = True
+            paths.write_json(marker, record, mode=0o600)
     global used_via
     used_via = entry.get("via")
     _spend(me, entry["verdict"])
@@ -557,7 +694,7 @@ def _record(me: dict, p: str, verb: str, want: str, want_here: str | None) -> No
     paths.write_json(p, {
         "verb": verb, "target": want, "here": want_here, "cwd": me.get("cwd") or "",
         "t": time.time(), "session_id": str(me.get("session_id") or ""),
-        "verdict": None}, mode=0o600)
+        "ask_id": envelope.new_id(), "verdict": None}, mode=0o600)
 
 
 # A reply given on the command line, as `--reply "<their words>"` (set by the CLI
@@ -649,11 +786,11 @@ def _supply(me: dict, p: str, verb: str, want: str, want_here: str | None, text:
                                            "verdict": words[:200], "via": AGENT_SUPPLIED})
 
 
-def _mentions(text: str, name: str) -> bool:
+def _mentions(text: str, name: str, minimum: int = 3) -> bool:
     """Whether `text` names `name` as a word or path of its own: not inside a
     longer one ("repo-b" is in "repo-b?" and "../repo-b", not in "repo-b2"), and
     followed by Korean particles as they are written ("repo-b에")."""
-    return len(name) >= 3 and re.search(
+    return len(name) >= minimum and re.search(
         r"(?<![A-Za-z0-9_])%s(?![A-Za-z0-9_-])" % re.escape(name), text, re.I) is not None
 
 
@@ -661,6 +798,8 @@ def _names_for(verb: str, target: str, want: str) -> set:
     """What a person may call what is being decided: the target as typed and as
     resolved, and for a folder its last name and its `~` form."""
     names = {target, want}
+    if verb == "publish":
+        names |= {"this session", "이 세션", "이세션"}
     if verb in ("link", "reach"):
         names |= {os.path.basename(want.rstrip("/")), os.path.basename(target.rstrip("/"))}
         home = os.path.expanduser("~")
@@ -736,11 +875,14 @@ def _from_request(me: dict, p: str, verb: str, target: str, want: str,
     if not config.policy("reply_from_request") or (verb == "held-deliver" and _forged(want)):
         return None
     last = _latest_request(me)
-    if not last or not INTENT_RE.search(last["text"]):
+    intent = re.compile(r"공개|노출|\bpublish\b|discoverable|make.+visible", re.I) \
+        if verb == "publish" else INTENT_RE
+    if not last or not intent.search(last["text"]):
         return None
     names = _names_for(verb, target, want)
-    if not any(_mentions(last["text"], n) for n in names) and \
-            not any(_mentions(last["text"], n) for n in _session_names(verb, want)):
+    minimum = 1 if verb == "collaborate" else 3
+    if not any(_mentions(last["text"], n, minimum) for n in names) and \
+            not any(_mentions(last["text"], n, minimum) for n in _session_names(verb, want)):
         return None
     now = time.time()
     paths.write_json(p, {
@@ -753,7 +895,71 @@ def _from_request(me: dict, p: str, verb: str, target: str, want: str,
     return last["text"]
 
 
-def take_or_request(me: dict | None, verb: str, target: str, here: str | None = None) -> tuple:
+# Exact harness question to read back when an installed hook missed its answer.
+answer_request: str | None = None
+question_text: str | None = None
+
+
+def native_answer_path(me, request):
+    key = digest(me.get("runtime"), me.get("home"), me.get("session_id"), request)
+    return paths.path("native-answers", key + ".json")
+
+
+def _recover_native_answer(me: dict, p: str, verb: str, want: str, want_here):
+    if not answer_request:
+        return
+    from . import user_answers
+    evidence = user_answers.read_answer(me, request=answer_request,
+                                        since=time.time() - TTL, latest_only=True,
+                                        tail_bytes=user_answers.MAX_TAIL_BYTES)
+    if not evidence:
+        return
+    question = evidence.get("question", "")
+    matches = _mentions(question, want, 2 if verb in ("collaborate", "publish") else 3)
+    if verb == "publish" and not matches:
+        matches = any(_mentions(question, name) for name in ("this session", "이 세션", "이세션"))
+    if not matches and verb in ("link", "reach"):
+        candidates = re.findall(r"(?:~|/)[^\s`\"'<>?;,]+", question)
+        matches = any(os.path.realpath(os.path.expanduser(c.rstrip(".)"))) == want
+                      for c in candidates)
+    if not matches:
+        return
+    _, entry = _fresh_pending(me, p)
+    if (not entry or entry.get("question_request") != answer_request or
+            entry.get("question_digest") != digest(question) or
+            entry.get("verdict") is not None):
+        return
+    # A named answer authorizes its one exact question, not the next question
+    # with the same text. Claim it durably so a different target cannot use it.
+    marker = native_answer_path(me, answer_request)
+    with _locked(marker):
+        prior = paths.read_json(marker)
+        entry.setdefault("ask_id", envelope.new_id())
+        owner = os.path.basename(p) + ":" + entry["ask_id"]
+        if prior and (prior.get("owner") != owner or prior.get("consumed")):
+            return
+        recovered_at = (prior or {}).get("recovered_at", time.time())
+        if time.time() - recovered_at > TTL:
+            return
+        paths.write_json(marker, {"owner": owner, "consumed": False,
+                                  "request": answer_request,
+                                  "recovered_at": recovered_at}, mode=0o600)
+    entry.update(verdict=evidence["answer"], verdict_t=recovered_at, shown=False,
+                 answer_request=answer_request, answer_question=evidence["question"],
+                 answer_binding="native-question-id", native_marker=marker,
+                 native_evidence={k: evidence[k] for k in
+                     ("timestamp", "source_path", "native_type", "native_role",
+                      "runtime", "home", "session_id")})
+    # Native origin time stays in native_evidence. The ordinary application
+    # window starts once at readback, stored in the single-use marker; repeated
+    # imports cannot extend it. Named prior authorization survives a missed
+    # hook without turning it into a new free-text user prompt.
+    entry.pop("old_hook", None)
+    paths.write_json(p, entry, mode=0o600)
+
+
+def take_or_request(me: dict | None, verb: str, target: str, here: str | None = None,
+                    binding: dict | None = None, apply=None) -> tuple:
     """What the person said to the request for exactly this, in two steps
     (user decision, 2026-10-01: xsm does not read the words, so the agent
     reads them before anything is done on them), and when there is nothing to
@@ -785,19 +991,53 @@ def take_or_request(me: dict | None, verb: str, target: str, here: str | None = 
     if not me or not me.get("ref") or os.environ.get("XSM_WORKER") or not target:
         return None, False, False
     want, want_here = _wanted(me, verb, target, here)
-    p = _pending_path(me["ref"], digest(verb, want))
+    base_path = _pending_path(me["ref"], digest(verb, want))
+    p = base_path
+    if binding is not None:
+        p = _pending_path(me["ref"], digest(verb, want, json.dumps(binding, sort_keys=True)))
+        # An explicit folder command asked for this connection independent of
+        # any particular peer. Its answer also covers sending into that folder.
+        _, folder_ask = _fresh_pending(me, base_path)
+        if folder_ask and not folder_ask.get("binding"):
+            p = base_path
+    elif not os.path.exists(base_path):
+        # The explicit folder command can finish a single one-yes send ask.
+        # With multiple asks it must ask for its own unambiguous decision.
+        candidates = []
+        for candidate in pending_files(me["ref"]):
+            _, entry = _fresh_pending(me, candidate)
+            if entry and _matches(entry, verb, want, want_here):
+                candidates.append(candidate)
+        if len(candidates) == 1:
+            p = candidates[0]
+    if answer_request and question_text is not None:
+        with _locked(p):
+            _record(me, p, verb, want, want_here)
+            entry = paths.read_json(p)
+            if binding is not None and isinstance(entry, dict):
+                entry["binding"] = binding
+                paths.write_json(p, entry, mode=0o600)
+        if not bind_question(me, verb, target, answer_request, here,
+                             question=question_text, binding=binding):
+            return None, False, False
     try:
         with _locked(p):
+            _recover_native_answer(me, p, verb, want, want_here)
             if supplied:
                 _supply(me, p, verb, want, want_here, supplied)
-            reply, go, kept = _take(me, p, verb, want, want_here)
-            if reply is None and os.path.exists(_pending_path(me["ref"])):
+            reply, go, kept = _take(me, p, verb, want, want_here, apply)
+            if binding is None and reply is None and os.path.exists(_pending_path(me["ref"])):
                 # The single slot an older version wrote: its reply is still read.
                 with _locked(_pending_path(me["ref"])):
-                    reply, go, kept = _take(me, _pending_path(me["ref"]), verb, want, want_here)
+                    reply, go, kept = _take(me, _pending_path(me["ref"]), verb, want, want_here, apply)
             if reply is None:
                 _record(me, p, verb, want, want_here)
                 reply = _from_request(me, p, verb, target, want, want_here)
+                if binding is not None:
+                    entry = paths.read_json(p)
+                    if isinstance(entry, dict):
+                        entry["binding"] = binding
+                        paths.write_json(p, entry, mode=0o600)
             return reply, go, kept
     except OSError:
         return None, False, False
@@ -972,7 +1212,7 @@ def approved_line(verdict: str, kept=None, via: str | None = None) -> str:
     so, because the hook did not keep it."""
     return 'approved on your user\'s reply: "%s"%s%s' % (
         verdict.replace("\n", " ")[:200],
-        " (old hooks: their first message after the ask)" if isinstance(kept, str) else "",
+        " (old hooks: their first message after the ask)" if kept == OLD_HOOK else "",
         " (given with --reply by the agent, not kept by a hook)" if via == "flag" else "")
 
 

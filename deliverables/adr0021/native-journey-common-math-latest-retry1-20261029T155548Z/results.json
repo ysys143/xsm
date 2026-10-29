@@ -1,0 +1,1234 @@
+{
+  "status": "passed",
+  "scope": "A21-03 common math native workflow; controlled fixture with recorded repairs, no performance ranking",
+  "requests": [
+    {
+      "request_id": "9f11884127764cad",
+      "reply_id": "e51fbbb4ce884a99",
+      "input_file": "initial-task.txt",
+      "request_body_sha256": "605d2c2176a03aca4f0a7d135d9a7a1c3750b36ad4598fa5e829f53e24ecebdf",
+      "reply_body_sha256": "b0d8fb895463d756c69edd56d41136363be3eef5296aaf3b0781aebd36046887",
+      "actual_model_JSON": {
+        "claim_valid": false,
+        "corrected_sum": 4,
+        "request_id": "9f11884127764cad"
+      },
+      "outcome": "succeeded",
+      "created_at_mini": 1793289496.1548429,
+      "reply_received_at_mini": 1793290795.103285,
+      "observed_same_host_seconds": 1298.9484422206879,
+      "receiver_ACK_at_book": 1793290720.18211,
+      "answer_ACK_at_mini": 1793290798.080775,
+      "request_sender_handle": {
+        "generation": "e90403f25119c141c9c5078f2134217bf6f71037d4850891df64b150294f3fe1",
+        "home_id": "0d5675a9ec964d41173533511bdd42d657bd582d0aff28711546fe715610555b",
+        "machine": "75c1181ce5e57de097475aba33df1b34bf1a18fbc8b0363514dd8c07c9e294fe",
+        "runtime": "codex",
+        "session_id": "01a18861-947a-7b41-9b53-406af0d83a46"
+      },
+      "request_receiver_handle": {
+        "generation": "73238b552441f09170083ab369f4decb86697748fb2428d453236c543ca907ae",
+        "home_id": "1f3efe9ffb9cf15ba352aa22f67362777ae05495d0bb84b9b5b8268090817da7",
+        "machine": "7df9fff6a5113e7ad7f05ebfc7477ca0c54308aa0d661bdec5461688bfc6c11d",
+        "runtime": "claude",
+        "session_id": "d6ad76ce-8cd2-4f66-adcd-66d6c3805cc7"
+      },
+      "reply_sender_handle": {
+        "generation": "73238b552441f09170083ab369f4decb86697748fb2428d453236c543ca907ae",
+        "home_id": "1f3efe9ffb9cf15ba352aa22f67362777ae05495d0bb84b9b5b8268090817da7",
+        "machine": "7df9fff6a5113e7ad7f05ebfc7477ca0c54308aa0d661bdec5461688bfc6c11d",
+        "runtime": "claude",
+        "session_id": "d6ad76ce-8cd2-4f66-adcd-66d6c3805cc7"
+      },
+      "reply_receiver_handle": {
+        "generation": "dbb36fe53217a27a6795caedb5cc7835711bf07088873278f9d2013d6165dd03",
+        "home_id": "0d5675a9ec964d41173533511bdd42d657bd582d0aff28711546fe715610555b",
+        "machine": "75c1181ce5e57de097475aba33df1b34bf1a18fbc8b0363514dd8c07c9e294fe",
+        "runtime": "codex",
+        "session_id": "01a18861-947a-7b41-9b53-406af0d83a46"
+      }
+    },
+    {
+      "request_id": "958971a5c24e4fe4",
+      "reply_id": "18ea96f2ea894fa5",
+      "input_file": "revised-task.txt",
+      "request_body_sha256": "8409436d428c1eaba9d2b5a65697b1b295b0887fec083b0e4960256f561e400d",
+      "reply_body_sha256": "45b4a0c693387106348546f454b4b21dc310f5dd6a013dd6fd635f0f3fa954d6",
+      "actual_model_JSON": {
+        "claim_valid": true,
+        "corrected_sum": 4,
+        "request_id": "958971a5c24e4fe4"
+      },
+      "outcome": "succeeded",
+      "created_at_mini": 1793290801.8212821,
+      "reply_received_at_mini": 1793290912.282225,
+      "observed_same_host_seconds": 110.46094274520874,
+      "receiver_ACK_at_book": 1793290921.425251,
+      "answer_ACK_at_mini": 1793290916.6325839,
+      "request_sender_handle": {
+        "generation": "1fd4a6867219d7a8d5246f26750b8f9f3b2950450223b7e9bf3dc4bfd9f58e6e",
+        "home_id": "0d5675a9ec964d41173533511bdd42d657bd582d0aff28711546fe715610555b",
+        "machine": "75c1181ce5e57de097475aba33df1b34bf1a18fbc8b0363514dd8c07c9e294fe",
+        "runtime": "codex",
+        "session_id": "01a18861-947a-7b41-9b53-406af0d83a46"
+      },
+      "request_receiver_handle": {
+        "generation": "73238b552441f09170083ab369f4decb86697748fb2428d453236c543ca907ae",
+        "home_id": "1f3efe9ffb9cf15ba352aa22f67362777ae05495d0bb84b9b5b8268090817da7",
+        "machine": "7df9fff6a5113e7ad7f05ebfc7477ca0c54308aa0d661bdec5461688bfc6c11d",
+        "runtime": "claude",
+        "session_id": "d6ad76ce-8cd2-4f66-adcd-66d6c3805cc7"
+      },
+      "reply_sender_handle": {
+        "generation": "73238b552441f09170083ab369f4decb86697748fb2428d453236c543ca907ae",
+        "home_id": "1f3efe9ffb9cf15ba352aa22f67362777ae05495d0bb84b9b5b8268090817da7",
+        "machine": "7df9fff6a5113e7ad7f05ebfc7477ca0c54308aa0d661bdec5461688bfc6c11d",
+        "runtime": "claude",
+        "session_id": "d6ad76ce-8cd2-4f66-adcd-66d6c3805cc7"
+      },
+      "reply_receiver_handle": {
+        "generation": "1fd4a6867219d7a8d5246f26750b8f9f3b2950450223b7e9bf3dc4bfd9f58e6e",
+        "home_id": "0d5675a9ec964d41173533511bdd42d657bd582d0aff28711546fe715610555b",
+        "machine": "75c1181ce5e57de097475aba33df1b34bf1a18fbc8b0363514dd8c07c9e294fe",
+        "runtime": "codex",
+        "session_id": "01a18861-947a-7b41-9b53-406af0d83a46"
+      }
+    },
+    {
+      "request_id": "e1ce6790c1734665",
+      "reply_id": "ac9c995fc5a842df",
+      "input_file": "final-task.txt",
+      "request_body_sha256": "f8dbf976d005da28731950d327e63850368a4fff4ee6bab886914bc628a19215",
+      "reply_body_sha256": "af3e8a131a1ece3673785fb6cc8635bceb6b0b9794d1661bb2549807edb38331",
+      "actual_model_JSON": {
+        "claim_valid": true,
+        "corrected_sum": 2,
+        "request_id": "e1ce6790c1734665"
+      },
+      "outcome": "succeeded",
+      "created_at_mini": 1793291671.951371,
+      "reply_received_at_mini": 1793291753.2497752,
+      "observed_same_host_seconds": 81.29840421676636,
+      "receiver_ACK_at_book": 1793291762.34371,
+      "answer_ACK_at_mini": 1793291757.441364,
+      "request_sender_handle": {
+        "generation": "b70344295dde274ec8e5ba279f7cb550c03a8ab073bd697ab1264c9000c08354",
+        "home_id": "0d5675a9ec964d41173533511bdd42d657bd582d0aff28711546fe715610555b",
+        "machine": "75c1181ce5e57de097475aba33df1b34bf1a18fbc8b0363514dd8c07c9e294fe",
+        "runtime": "codex",
+        "session_id": "01a18861-947a-7b41-9b53-406af0d83a46"
+      },
+      "request_receiver_handle": {
+        "generation": "73238b552441f09170083ab369f4decb86697748fb2428d453236c543ca907ae",
+        "home_id": "1f3efe9ffb9cf15ba352aa22f67362777ae05495d0bb84b9b5b8268090817da7",
+        "machine": "7df9fff6a5113e7ad7f05ebfc7477ca0c54308aa0d661bdec5461688bfc6c11d",
+        "runtime": "claude",
+        "session_id": "d6ad76ce-8cd2-4f66-adcd-66d6c3805cc7"
+      },
+      "reply_sender_handle": {
+        "generation": "73238b552441f09170083ab369f4decb86697748fb2428d453236c543ca907ae",
+        "home_id": "1f3efe9ffb9cf15ba352aa22f67362777ae05495d0bb84b9b5b8268090817da7",
+        "machine": "7df9fff6a5113e7ad7f05ebfc7477ca0c54308aa0d661bdec5461688bfc6c11d",
+        "runtime": "claude",
+        "session_id": "d6ad76ce-8cd2-4f66-adcd-66d6c3805cc7"
+      },
+      "reply_receiver_handle": {
+        "generation": "b70344295dde274ec8e5ba279f7cb550c03a8ab073bd697ab1264c9000c08354",
+        "home_id": "0d5675a9ec964d41173533511bdd42d657bd582d0aff28711546fe715610555b",
+        "machine": "75c1181ce5e57de097475aba33df1b34bf1a18fbc8b0363514dd8c07c9e294fe",
+        "runtime": "codex",
+        "session_id": "01a18861-947a-7b41-9b53-406af0d83a46"
+      }
+    }
+  ],
+  "math_logical_requests": 3,
+  "actual_MCP_ask_invocations": 4,
+  "third_presend_refusal": {
+    "status": "refused",
+    "id": "e1ce6790c1734665",
+    "purpose": null,
+    "created_at": null,
+    "replies": [],
+    "final": false,
+    "final_outcome": null,
+    "recover_at": null,
+    "wait_end_reason": null,
+    "capabilities": {
+      "attachments": true,
+      "wake_control": true,
+      "priority": {
+        "claude": [
+          "next",
+          "now"
+        ],
+        "codex": [
+          "next"
+        ]
+      }
+    },
+    "wake": "transport_policy",
+    "send_evidence": null,
+    "delivery_evidence": null,
+    "handshake": "not-started",
+    "reason": "service-unavailable-or-response-unknown",
+    "wait_budget": {
+      "requested": 60.0,
+      "effective": 60.0,
+      "cap": 60
+    },
+    "claims": [],
+    "inbox_pending": 0
+  },
+  "canonical_ACK_count": 8,
+  "book_MCP_ACK_ids": [
+    "c18d0295024549c8",
+    "9f11884127764cad",
+    "958971a5c24e4fe4",
+    "e1ce6790c1734665"
+  ],
+  "mini_MCP_ACK_ids": [
+    "78247e05ee7546eb",
+    "e51fbbb4ce884a99",
+    "18ea96f2ea894fa5",
+    "ac9c995fc5a842df"
+  ],
+  "post_restart_original_ID_MCP_reads": {
+    "9f11884127764cad": {
+      "actual_MCP_at_mini": 1793290925.840535,
+      "result": {
+        "status": "final",
+        "id": "9f11884127764cad",
+        "purpose": "question",
+        "created_at": 1793289496.1548429,
+        "replies": [
+          {
+            "id": "e51fbbb4ce884a99",
+            "body": "{\"claim_valid\": false, \"corrected_sum\": 4, \"request_id\": \"9f11884127764cad\"}",
+            "outcome": "succeeded",
+            "sender": {
+              "machine": "7df9fff6a5113e7ad7f05ebfc7477ca0c54308aa0d661bdec5461688bfc6c11d",
+              "runtime": "claude",
+              "home_id": "1f3efe9ffb9cf15ba352aa22f67362777ae05495d0bb84b9b5b8268090817da7",
+              "session_id": "d6ad76ce-8cd2-4f66-adcd-66d6c3805cc7",
+              "ref": null,
+              "name": null,
+              "alias": null
+            },
+            "receiver": {
+              "runtime": "codex",
+              "session_id": "01a18861-947a-7b41-9b53-406af0d83a46",
+              "ref": "4f2261",
+              "name": "a1",
+              "alias": "codex-home",
+              "home_id": "0d5675a9ec964d41173533511bdd42d657bd582d0aff28711546fe715610555b"
+            },
+            "received_at": 1793290795.103285
+          }
+        ],
+        "final": true,
+        "final_outcome": "succeeded",
+        "recover_at": {
+          "cli": [
+            "xsm",
+            "question-status",
+            "9f11884127764cad"
+          ],
+          "mcp": {
+            "tool": "xsm_question_status",
+            "arguments": {
+              "id": "9f11884127764cad"
+            }
+          }
+        },
+        "wait_end_reason": "reply",
+        "capabilities": {
+          "attachments": true,
+          "wake_control": true,
+          "priority": {
+            "claude": [
+              "next",
+              "now"
+            ],
+            "codex": [
+              "next"
+            ]
+          }
+        },
+        "wake": "transport_policy",
+        "send_evidence": {
+          "status": "sent-unconfirmed",
+          "reason": "stored remotely; native consumption is reported separately",
+          "id": "9f11884127764cad",
+          "to": "a1@None",
+          "runtime_reached": false,
+          "evidence": {
+            "remote_stored": true
+          }
+        },
+        "delivery_evidence": {
+          "steps": {
+            "remote_stored": {
+              "ok": true,
+              "t": 1793290595.995123,
+              "early": {
+                "ok": true,
+                "t": 1793289876.452941,
+                "early": {
+                  "ok": true,
+                  "t": 1793289811.5917618,
+                  "early": {
+                    "ok": true,
+                    "t": 1793289746.734451,
+                    "early": {
+                      "ok": true,
+                      "t": 1793289682.745281,
+                      "early": {
+                        "ok": true,
+                        "t": 1793289620.604604,
+                        "early": {
+                          "ok": true,
+                          "t": 1793289558.469643,
+                          "early": {
+                            "ok": true,
+                            "t": 1793289496.475134
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "runtime_reached": false,
+          "digest": "a27a31f14171616ca3ae99b200e28468656b991d1911e600fe0494e983205ae8",
+          "req_version": 1,
+          "legacy": false,
+          "verified": true,
+          "upgraded_from_legacy": false,
+          "acknowledged": false
+        },
+        "handshake": "not-started",
+        "network_status": "unknown",
+        "wait_budget": {
+          "requested": 0.0,
+          "effective": 0.0,
+          "cap": 60
+        },
+        "claims": [],
+        "inbox_pending": 0
+      }
+    },
+    "958971a5c24e4fe4": {
+      "actual_MCP_at_mini": 1793290927.186603,
+      "result": {
+        "status": "final",
+        "id": "958971a5c24e4fe4",
+        "purpose": "question",
+        "created_at": 1793290801.8212821,
+        "replies": [
+          {
+            "id": "18ea96f2ea894fa5",
+            "body": "{\"claim_valid\": true, \"corrected_sum\": 4, \"request_id\": \"958971a5c24e4fe4\"}",
+            "outcome": "succeeded",
+            "sender": {
+              "machine": "7df9fff6a5113e7ad7f05ebfc7477ca0c54308aa0d661bdec5461688bfc6c11d",
+              "runtime": "claude",
+              "home_id": "1f3efe9ffb9cf15ba352aa22f67362777ae05495d0bb84b9b5b8268090817da7",
+              "session_id": "d6ad76ce-8cd2-4f66-adcd-66d6c3805cc7",
+              "ref": null,
+              "name": null,
+              "alias": null
+            },
+            "receiver": {
+              "runtime": "codex",
+              "session_id": "01a18861-947a-7b41-9b53-406af0d83a46",
+              "ref": "4f2261",
+              "name": "a1",
+              "alias": "codex-home",
+              "home_id": "0d5675a9ec964d41173533511bdd42d657bd582d0aff28711546fe715610555b"
+            },
+            "received_at": 1793290912.282225
+          }
+        ],
+        "final": true,
+        "final_outcome": "succeeded",
+        "recover_at": {
+          "cli": [
+            "xsm",
+            "question-status",
+            "958971a5c24e4fe4"
+          ],
+          "mcp": {
+            "tool": "xsm_question_status",
+            "arguments": {
+              "id": "958971a5c24e4fe4"
+            }
+          }
+        },
+        "wait_end_reason": "reply",
+        "capabilities": {
+          "attachments": true,
+          "wake_control": true,
+          "priority": {
+            "claude": [
+              "next",
+              "now"
+            ],
+            "codex": [
+              "next"
+            ]
+          }
+        },
+        "wake": "transport_policy",
+        "send_evidence": {
+          "status": "sent-unconfirmed",
+          "reason": "stored remotely; native consumption is reported separately",
+          "id": "958971a5c24e4fe4",
+          "to": "a1@None",
+          "runtime_reached": false,
+          "evidence": {
+            "remote_stored": true
+          }
+        },
+        "delivery_evidence": {
+          "steps": {
+            "remote_stored": {
+              "ok": true,
+              "t": 1793290864.5036218,
+              "early": {
+                "ok": true,
+                "t": 1793290802.208183
+              }
+            }
+          },
+          "runtime_reached": false,
+          "digest": "a5003964d225509130d1989c5d22af920780ba3a681f9e459f29d009337fb12b",
+          "req_version": 1,
+          "legacy": false,
+          "verified": true,
+          "upgraded_from_legacy": false,
+          "acknowledged": false
+        },
+        "handshake": "not-started",
+        "network_status": "unknown",
+        "wait_budget": {
+          "requested": 0.0,
+          "effective": 0.0,
+          "cap": 60
+        },
+        "claims": [],
+        "inbox_pending": 0
+      }
+    }
+  },
+  "closure_final_code_MCP_reads": {
+    "9f11884127764cad": {
+      "status": "final",
+      "id": "9f11884127764cad",
+      "purpose": "question",
+      "created_at": 1793289496.1548429,
+      "replies": [
+        {
+          "id": "e51fbbb4ce884a99",
+          "body": "{\"claim_valid\": false, \"corrected_sum\": 4, \"request_id\": \"9f11884127764cad\"}",
+          "outcome": "succeeded",
+          "sender": {
+            "machine": "7df9fff6a5113e7ad7f05ebfc7477ca0c54308aa0d661bdec5461688bfc6c11d",
+            "runtime": "claude",
+            "home_id": "1f3efe9ffb9cf15ba352aa22f67362777ae05495d0bb84b9b5b8268090817da7",
+            "session_id": "d6ad76ce-8cd2-4f66-adcd-66d6c3805cc7",
+            "ref": null,
+            "name": null,
+            "alias": null
+          },
+          "receiver": {
+            "runtime": "codex",
+            "session_id": "01a18861-947a-7b41-9b53-406af0d83a46",
+            "ref": "4f2261",
+            "name": "a1",
+            "alias": "codex-home",
+            "home_id": "0d5675a9ec964d41173533511bdd42d657bd582d0aff28711546fe715610555b"
+          },
+          "received_at": 1793290795.103285
+        }
+      ],
+      "final": true,
+      "final_outcome": "succeeded",
+      "recover_at": {
+        "cli": [
+          "xsm",
+          "question-status",
+          "9f11884127764cad"
+        ],
+        "mcp": {
+          "tool": "xsm_question_status",
+          "arguments": {
+            "id": "9f11884127764cad"
+          }
+        }
+      },
+      "wait_end_reason": "reply",
+      "capabilities": {
+        "attachments": true,
+        "wake_control": true,
+        "priority": {
+          "claude": [
+            "next",
+            "now"
+          ],
+          "codex": [
+            "next"
+          ]
+        }
+      },
+      "wake": "transport_policy",
+      "send_evidence": {
+        "status": "sent-unconfirmed",
+        "reason": "stored remotely; native consumption is reported separately",
+        "id": "9f11884127764cad",
+        "to": "a1@None",
+        "runtime_reached": false,
+        "evidence": {
+          "remote_stored": true
+        }
+      },
+      "delivery_evidence": {
+        "steps": {
+          "remote_stored": {
+            "ok": true,
+            "t": 1793292110.681566,
+            "early": {
+              "ok": true,
+              "t": 1793290595.995123,
+              "early": {
+                "ok": true,
+                "t": 1793289876.452941,
+                "early": {
+                  "ok": true,
+                  "t": 1793289811.5917618,
+                  "early": {
+                    "ok": true,
+                    "t": 1793289746.734451,
+                    "early": {
+                      "ok": true,
+                      "t": 1793289682.745281,
+                      "early": {
+                        "ok": true,
+                        "t": 1793289620.604604,
+                        "early": {
+                          "ok": true,
+                          "t": 1793289558.469643,
+                          "early": {
+                            "ok": true,
+                            "t": 1793289496.475134
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "hook_taken": {
+            "ok": true,
+            "t": 1793292110.682274,
+            "detail": "authenticated remote canonical consumer ACK"
+          }
+        },
+        "runtime_reached": true,
+        "digest": "a27a31f14171616ca3ae99b200e28468656b991d1911e600fe0494e983205ae8",
+        "req_version": 1,
+        "legacy": false,
+        "verified": true,
+        "upgraded_from_legacy": false,
+        "acknowledged": false
+      },
+      "handshake": "not-started",
+      "network_delivery": {
+        "acknowledged": true,
+        "delivery_state": "pending",
+        "final_reply": {
+          "fingerprint": "ec24a19cddf2a1cf80122d33fda5a5b0cb2f867b6724f9df675642dd24706525",
+          "id": "e51fbbb4ce884a99",
+          "outcome": "succeeded",
+          "packet": {
+            "attachments": [],
+            "body": "{\"claim_valid\": false, \"corrected_sum\": 4, \"request_id\": \"9f11884127764cad\"}",
+            "file_packet": null,
+            "fingerprint": "ec24a19cddf2a1cf80122d33fda5a5b0cb2f867b6724f9df675642dd24706525",
+            "id": "e51fbbb4ce884a99",
+            "kind": "reply",
+            "network_id": "7df9fff6a5113e7ad7f05ebfc7477ca0c54308aa0d661bdec5461688bfc6c11d:aaf8d8afb96234bd472094abc2773795dcf192b91706a63cce61fd82f06a4695",
+            "outcome": "succeeded",
+            "priority": "next",
+            "receiver": {
+              "generation": "dbb36fe53217a27a6795caedb5cc7835711bf07088873278f9d2013d6165dd03",
+              "home_id": "0d5675a9ec964d41173533511bdd42d657bd582d0aff28711546fe715610555b",
+              "machine": "75c1181ce5e57de097475aba33df1b34bf1a18fbc8b0363514dd8c07c9e294fe",
+              "runtime": "codex",
+              "session_id": "01a18861-947a-7b41-9b53-406af0d83a46"
+            },
+            "reply_binding": {
+              "fingerprint": "cd3118e7116964c1d9a15194555dd9230b5cac24cc0571e73afaf5c555a3d786",
+              "id": "9f11884127764cad"
+            },
+            "reply_to": "9f11884127764cad",
+            "scope": "network:7df9fff6a5113e7ad7f05ebfc7477ca0c54308aa0d661bdec5461688bfc6c11d:aaf8d8afb96234bd472094abc2773795dcf192b91706a63cce61fd82f06a4695",
+            "sender": {
+              "generation": "73238b552441f09170083ab369f4decb86697748fb2428d453236c543ca907ae",
+              "home_id": "1f3efe9ffb9cf15ba352aa22f67362777ae05495d0bb84b9b5b8268090817da7",
+              "machine": "7df9fff6a5113e7ad7f05ebfc7477ca0c54308aa0d661bdec5461688bfc6c11d",
+              "runtime": "claude",
+              "session_id": "d6ad76ce-8cd2-4f66-adcd-66d6c3805cc7"
+            },
+            "version": 1,
+            "wake": true
+          },
+          "reply_to": "9f11884127764cad",
+          "status": "prepared"
+        },
+        "fingerprint": "cd3118e7116964c1d9a15194555dd9230b5cac24cc0571e73afaf5c555a3d786",
+        "handoff_status": "acknowledged",
+        "id": "9f11884127764cad",
+        "replies": [
+          {
+            "fingerprint": "ec24a19cddf2a1cf80122d33fda5a5b0cb2f867b6724f9df675642dd24706525",
+            "id": "e51fbbb4ce884a99",
+            "outcome": "succeeded",
+            "reply_to": "9f11884127764cad",
+            "status": "prepared"
+          }
+        ],
+        "route": "native",
+        "status": "acknowledged",
+        "stored": true
+      },
+      "wait_budget": {
+        "requested": 0.0,
+        "effective": 0.0,
+        "cap": 60
+      },
+      "claims": [],
+      "inbox_pending": 0
+    },
+    "e1ce6790c1734665": {
+      "status": "final",
+      "id": "e1ce6790c1734665",
+      "purpose": "question",
+      "created_at": 1793291671.951371,
+      "replies": [
+        {
+          "id": "ac9c995fc5a842df",
+          "body": "{\"claim_valid\": true, \"corrected_sum\": 2, \"request_id\": \"e1ce6790c1734665\"}",
+          "outcome": "succeeded",
+          "sender": {
+            "machine": "7df9fff6a5113e7ad7f05ebfc7477ca0c54308aa0d661bdec5461688bfc6c11d",
+            "runtime": "claude",
+            "home_id": "1f3efe9ffb9cf15ba352aa22f67362777ae05495d0bb84b9b5b8268090817da7",
+            "session_id": "d6ad76ce-8cd2-4f66-adcd-66d6c3805cc7",
+            "ref": null,
+            "name": null,
+            "alias": null
+          },
+          "receiver": {
+            "runtime": "codex",
+            "session_id": "01a18861-947a-7b41-9b53-406af0d83a46",
+            "ref": "4f2261",
+            "name": "a1",
+            "alias": "codex-home",
+            "home_id": "0d5675a9ec964d41173533511bdd42d657bd582d0aff28711546fe715610555b"
+          },
+          "received_at": 1793291753.2497752
+        }
+      ],
+      "final": true,
+      "final_outcome": "succeeded",
+      "recover_at": {
+        "cli": [
+          "xsm",
+          "question-status",
+          "e1ce6790c1734665"
+        ],
+        "mcp": {
+          "tool": "xsm_question_status",
+          "arguments": {
+            "id": "e1ce6790c1734665"
+          }
+        }
+      },
+      "wait_end_reason": "reply",
+      "capabilities": {
+        "attachments": true,
+        "wake_control": true,
+        "priority": {
+          "claude": [
+            "next",
+            "now"
+          ],
+          "codex": [
+            "next"
+          ]
+        }
+      },
+      "wake": "transport_policy",
+      "send_evidence": {
+        "status": "sent-unconfirmed",
+        "reason": "stored remotely; native consumption is reported separately",
+        "id": "e1ce6790c1734665",
+        "to": "a1@None",
+        "runtime_reached": false,
+        "evidence": {
+          "remote_stored": true
+        }
+      },
+      "delivery_evidence": {
+        "steps": {
+          "remote_stored": {
+            "ok": true,
+            "t": 1793292110.985023,
+            "early": {
+              "ok": true,
+              "t": 1793291734.558908,
+              "early": {
+                "ok": true,
+                "t": 1793291672.3078542
+              }
+            }
+          },
+          "hook_taken": {
+            "ok": true,
+            "t": 1793292110.986398,
+            "detail": "authenticated remote canonical consumer ACK"
+          }
+        },
+        "runtime_reached": true,
+        "digest": "512b1896abdbf97e8c096bf23aad4b1a9a91183fea93179bd550c9ce164b981f",
+        "req_version": 1,
+        "legacy": false,
+        "verified": true,
+        "upgraded_from_legacy": false,
+        "acknowledged": false
+      },
+      "handshake": "not-started",
+      "network_delivery": {
+        "acknowledged": true,
+        "delivery_state": "pending",
+        "final_reply": {
+          "fingerprint": "b1b9d1a33d4e502c29caddd7e7274ab740d3cfd29b4beb86bd0c1127a8d75c1b",
+          "id": "ac9c995fc5a842df",
+          "outcome": "succeeded",
+          "packet": {
+            "attachments": [],
+            "body": "{\"claim_valid\": true, \"corrected_sum\": 2, \"request_id\": \"e1ce6790c1734665\"}",
+            "file_packet": null,
+            "fingerprint": "b1b9d1a33d4e502c29caddd7e7274ab740d3cfd29b4beb86bd0c1127a8d75c1b",
+            "id": "ac9c995fc5a842df",
+            "kind": "reply",
+            "network_id": "7df9fff6a5113e7ad7f05ebfc7477ca0c54308aa0d661bdec5461688bfc6c11d:aaf8d8afb96234bd472094abc2773795dcf192b91706a63cce61fd82f06a4695",
+            "outcome": "succeeded",
+            "priority": "next",
+            "receiver": {
+              "generation": "b70344295dde274ec8e5ba279f7cb550c03a8ab073bd697ab1264c9000c08354",
+              "home_id": "0d5675a9ec964d41173533511bdd42d657bd582d0aff28711546fe715610555b",
+              "machine": "75c1181ce5e57de097475aba33df1b34bf1a18fbc8b0363514dd8c07c9e294fe",
+              "runtime": "codex",
+              "session_id": "01a18861-947a-7b41-9b53-406af0d83a46"
+            },
+            "reply_binding": {
+              "fingerprint": "8c500cd8a21630dc911230e3dfa572709fe95302df382e6da7e0577bdb5469fe",
+              "id": "e1ce6790c1734665"
+            },
+            "reply_to": "e1ce6790c1734665",
+            "scope": "network:7df9fff6a5113e7ad7f05ebfc7477ca0c54308aa0d661bdec5461688bfc6c11d:aaf8d8afb96234bd472094abc2773795dcf192b91706a63cce61fd82f06a4695",
+            "sender": {
+              "generation": "73238b552441f09170083ab369f4decb86697748fb2428d453236c543ca907ae",
+              "home_id": "1f3efe9ffb9cf15ba352aa22f67362777ae05495d0bb84b9b5b8268090817da7",
+              "machine": "7df9fff6a5113e7ad7f05ebfc7477ca0c54308aa0d661bdec5461688bfc6c11d",
+              "runtime": "claude",
+              "session_id": "d6ad76ce-8cd2-4f66-adcd-66d6c3805cc7"
+            },
+            "version": 1,
+            "wake": true
+          },
+          "reply_to": "e1ce6790c1734665",
+          "status": "prepared"
+        },
+        "fingerprint": "8c500cd8a21630dc911230e3dfa572709fe95302df382e6da7e0577bdb5469fe",
+        "handoff_status": "acknowledged",
+        "id": "e1ce6790c1734665",
+        "replies": [
+          {
+            "fingerprint": "b1b9d1a33d4e502c29caddd7e7274ab740d3cfd29b4beb86bd0c1127a8d75c1b",
+            "id": "ac9c995fc5a842df",
+            "outcome": "succeeded",
+            "reply_to": "e1ce6790c1734665",
+            "status": "prepared"
+          }
+        ],
+        "route": "native",
+        "status": "acknowledged",
+        "stored": true
+      },
+      "wait_budget": {
+        "requested": 0.0,
+        "effective": 0.0,
+        "cap": 60
+      },
+      "claims": [],
+      "inbox_pending": 0
+    },
+    "958971a5c24e4fe4": {
+      "status": "final",
+      "id": "958971a5c24e4fe4",
+      "purpose": "question",
+      "created_at": 1793290801.8212821,
+      "replies": [
+        {
+          "id": "18ea96f2ea894fa5",
+          "body": "{\"claim_valid\": true, \"corrected_sum\": 4, \"request_id\": \"958971a5c24e4fe4\"}",
+          "outcome": "succeeded",
+          "sender": {
+            "machine": "7df9fff6a5113e7ad7f05ebfc7477ca0c54308aa0d661bdec5461688bfc6c11d",
+            "runtime": "claude",
+            "home_id": "1f3efe9ffb9cf15ba352aa22f67362777ae05495d0bb84b9b5b8268090817da7",
+            "session_id": "d6ad76ce-8cd2-4f66-adcd-66d6c3805cc7",
+            "ref": null,
+            "name": null,
+            "alias": null
+          },
+          "receiver": {
+            "runtime": "codex",
+            "session_id": "01a18861-947a-7b41-9b53-406af0d83a46",
+            "ref": "4f2261",
+            "name": "a1",
+            "alias": "codex-home",
+            "home_id": "0d5675a9ec964d41173533511bdd42d657bd582d0aff28711546fe715610555b"
+          },
+          "received_at": 1793290912.282225
+        }
+      ],
+      "final": true,
+      "final_outcome": "succeeded",
+      "recover_at": {
+        "cli": [
+          "xsm",
+          "question-status",
+          "958971a5c24e4fe4"
+        ],
+        "mcp": {
+          "tool": "xsm_question_status",
+          "arguments": {
+            "id": "958971a5c24e4fe4"
+          }
+        }
+      },
+      "wait_end_reason": "reply",
+      "capabilities": {
+        "attachments": true,
+        "wake_control": true,
+        "priority": {
+          "claude": [
+            "next",
+            "now"
+          ],
+          "codex": [
+            "next"
+          ]
+        }
+      },
+      "wake": "transport_policy",
+      "send_evidence": {
+        "status": "sent-unconfirmed",
+        "reason": "stored remotely; native consumption is reported separately",
+        "id": "958971a5c24e4fe4",
+        "to": "a1@None",
+        "runtime_reached": false,
+        "evidence": {
+          "remote_stored": true
+        }
+      },
+      "delivery_evidence": {
+        "steps": {
+          "remote_stored": {
+            "ok": true,
+            "t": 1793292111.279097,
+            "early": {
+              "ok": true,
+              "t": 1793290864.5036218,
+              "early": {
+                "ok": true,
+                "t": 1793290802.208183
+              }
+            }
+          },
+          "hook_taken": {
+            "ok": true,
+            "t": 1793292111.279733,
+            "detail": "authenticated remote canonical consumer ACK"
+          }
+        },
+        "runtime_reached": true,
+        "digest": "a5003964d225509130d1989c5d22af920780ba3a681f9e459f29d009337fb12b",
+        "req_version": 1,
+        "legacy": false,
+        "verified": true,
+        "upgraded_from_legacy": false,
+        "acknowledged": false
+      },
+      "handshake": "not-started",
+      "network_delivery": {
+        "acknowledged": true,
+        "delivery_state": "pending",
+        "final_reply": {
+          "fingerprint": "526fc41680e267368281c053a1e48f5a8eac8e5988d5a6dbf686a356550503a2",
+          "id": "18ea96f2ea894fa5",
+          "outcome": "succeeded",
+          "packet": {
+            "attachments": [],
+            "body": "{\"claim_valid\": true, \"corrected_sum\": 4, \"request_id\": \"958971a5c24e4fe4\"}",
+            "file_packet": null,
+            "fingerprint": "526fc41680e267368281c053a1e48f5a8eac8e5988d5a6dbf686a356550503a2",
+            "id": "18ea96f2ea894fa5",
+            "kind": "reply",
+            "network_id": "7df9fff6a5113e7ad7f05ebfc7477ca0c54308aa0d661bdec5461688bfc6c11d:aaf8d8afb96234bd472094abc2773795dcf192b91706a63cce61fd82f06a4695",
+            "outcome": "succeeded",
+            "priority": "next",
+            "receiver": {
+              "generation": "1fd4a6867219d7a8d5246f26750b8f9f3b2950450223b7e9bf3dc4bfd9f58e6e",
+              "home_id": "0d5675a9ec964d41173533511bdd42d657bd582d0aff28711546fe715610555b",
+              "machine": "75c1181ce5e57de097475aba33df1b34bf1a18fbc8b0363514dd8c07c9e294fe",
+              "runtime": "codex",
+              "session_id": "01a18861-947a-7b41-9b53-406af0d83a46"
+            },
+            "reply_binding": {
+              "fingerprint": "cd5fdf9ab9ab1cfb9371ab39cfb696cfd2357028dd058d5aef7b5af93df2b638",
+              "id": "958971a5c24e4fe4"
+            },
+            "reply_to": "958971a5c24e4fe4",
+            "scope": "network:7df9fff6a5113e7ad7f05ebfc7477ca0c54308aa0d661bdec5461688bfc6c11d:aaf8d8afb96234bd472094abc2773795dcf192b91706a63cce61fd82f06a4695",
+            "sender": {
+              "generation": "73238b552441f09170083ab369f4decb86697748fb2428d453236c543ca907ae",
+              "home_id": "1f3efe9ffb9cf15ba352aa22f67362777ae05495d0bb84b9b5b8268090817da7",
+              "machine": "7df9fff6a5113e7ad7f05ebfc7477ca0c54308aa0d661bdec5461688bfc6c11d",
+              "runtime": "claude",
+              "session_id": "d6ad76ce-8cd2-4f66-adcd-66d6c3805cc7"
+            },
+            "version": 1,
+            "wake": true
+          },
+          "reply_to": "958971a5c24e4fe4",
+          "status": "prepared"
+        },
+        "fingerprint": "cd5fdf9ab9ab1cfb9371ab39cfb696cfd2357028dd058d5aef7b5af93df2b638",
+        "handoff_status": "acknowledged",
+        "id": "958971a5c24e4fe4",
+        "replies": [
+          {
+            "fingerprint": "526fc41680e267368281c053a1e48f5a8eac8e5988d5a6dbf686a356550503a2",
+            "id": "18ea96f2ea894fa5",
+            "outcome": "succeeded",
+            "reply_to": "958971a5c24e4fe4",
+            "status": "prepared"
+          }
+        ],
+        "route": "native",
+        "status": "acknowledged",
+        "stored": true
+      },
+      "wait_budget": {
+        "requested": 0.0,
+        "effective": 0.0,
+        "cap": 60
+      },
+      "claims": [],
+      "inbox_pending": 0
+    }
+  },
+  "P2P_body_hash_pairs": [
+    {
+      "sender": "book",
+      "receiver": "mini",
+      "body_sha256": "0538a4df3d177289c441ec16a2c2f9b52a75ff56f7f1466db9e4140610328967",
+      "authenticated_origin": "7df9fff6a5113e7ad7f05ebfc7477ca0c54308aa0d661bdec5461688bfc6c11d",
+      "sender_at": 1793289488.5560992,
+      "receiver_at": 1793289488.531567,
+      "transport": {
+        "path": "direct",
+        "selected": "direct",
+        "selection_reason": "iroh_path_selection",
+        "fallback_reason": null,
+        "remote_address": "119.208.251.16:54175",
+        "paths": [
+          {
+            "kind": "direct",
+            "remote": "ip:119.208.251.16:54175",
+            "selected": true
+          }
+        ]
+      }
+    },
+    {
+      "sender": "book",
+      "receiver": "mini",
+      "body_sha256": "317384893a138f84a7083f7c21bc5fede48fe229e6dd7849e3efefbe66f8b41c",
+      "authenticated_origin": "7df9fff6a5113e7ad7f05ebfc7477ca0c54308aa0d661bdec5461688bfc6c11d",
+      "sender_at": 1793290704.515851,
+      "receiver_at": 1793290700.515739,
+      "transport": {
+        "path": "direct",
+        "selected": "direct",
+        "selection_reason": "iroh_path_selection",
+        "fallback_reason": null,
+        "remote_address": "119.208.251.16:54175",
+        "paths": [
+          {
+            "kind": "direct",
+            "remote": "ip:119.208.251.16:54175",
+            "selected": true
+          }
+        ]
+      }
+    },
+    {
+      "sender": "book",
+      "receiver": "mini",
+      "body_sha256": "87dedd5bd1648cd22448d832ff9f04d2877392b4e108f1300b499a9ab2150f74",
+      "authenticated_origin": "7df9fff6a5113e7ad7f05ebfc7477ca0c54308aa0d661bdec5461688bfc6c11d",
+      "sender_at": 1793290916.129599,
+      "receiver_at": 1793290912.1274061,
+      "transport": {
+        "path": "direct",
+        "selected": "direct",
+        "selection_reason": "iroh_path_selection",
+        "fallback_reason": null,
+        "remote_address": "119.208.251.16:54175",
+        "paths": [
+          {
+            "kind": "direct",
+            "remote": "ip:119.208.251.16:54175",
+            "selected": true
+          }
+        ]
+      }
+    },
+    {
+      "sender": "book",
+      "receiver": "mini",
+      "body_sha256": "017efa156c6e1bc7997571b5f34a890521f45f9752295d7ad339354bba562e43",
+      "authenticated_origin": "7df9fff6a5113e7ad7f05ebfc7477ca0c54308aa0d661bdec5461688bfc6c11d",
+      "sender_at": 1793291757.151041,
+      "receiver_at": 1793291753.14405,
+      "transport": {
+        "path": "direct",
+        "selected": "direct",
+        "selection_reason": "iroh_path_selection",
+        "fallback_reason": null,
+        "remote_address": "119.208.251.16:64289",
+        "paths": [
+          {
+            "kind": "direct",
+            "remote": "ip:119.208.251.16:64289",
+            "selected": true
+          }
+        ]
+      }
+    },
+    {
+      "sender": "mini",
+      "receiver": "book",
+      "body_sha256": "8d063e82f59e862e209cc5611d609dd4aacd5c87575909034a048ee82a6532c0",
+      "authenticated_origin": "75c1181ce5e57de097475aba33df1b34bf1a18fbc8b0363514dd8c07c9e294fe",
+      "sender_at": 1793289483.057688,
+      "receiver_at": 1793289483.127618,
+      "transport": {
+        "path": "direct",
+        "selected": "direct",
+        "selection_reason": "iroh_path_selection",
+        "fallback_reason": null,
+        "remote_address": "210.113.21.16:57444",
+        "paths": [
+          {
+            "kind": "direct",
+            "remote": "ip:210.113.21.16:57444",
+            "selected": true
+          }
+        ]
+      }
+    },
+    {
+      "sender": "mini",
+      "receiver": "book",
+      "body_sha256": "813c69d8dce80b9a9e103c77362fe04369f15fd7aaeafc073d0026f996ba0968",
+      "authenticated_origin": "75c1181ce5e57de097475aba33df1b34bf1a18fbc8b0363514dd8c07c9e294fe",
+      "sender_at": 1793289496.4086242,
+      "receiver_at": 1793289496.479435,
+      "transport": {
+        "path": "direct",
+        "selected": "direct",
+        "selection_reason": "iroh_path_selection",
+        "fallback_reason": null,
+        "remote_address": "210.113.21.16:57444",
+        "paths": [
+          {
+            "kind": "direct",
+            "remote": "ip:210.113.21.16:57444",
+            "selected": true
+          }
+        ]
+      }
+    },
+    {
+      "sender": "mini",
+      "receiver": "book",
+      "body_sha256": "e8db433c98fa903cadfecb5f8d8660ef88378877a2f6838ca24422c646c810d4",
+      "authenticated_origin": "75c1181ce5e57de097475aba33df1b34bf1a18fbc8b0363514dd8c07c9e294fe",
+      "sender_at": 1793290802.1151528,
+      "receiver_at": 1793290806.169249,
+      "transport": {
+        "path": "direct",
+        "selected": "direct",
+        "selection_reason": "iroh_path_selection",
+        "fallback_reason": null,
+        "remote_address": "210.113.21.16:57444",
+        "paths": [
+          {
+            "kind": "direct",
+            "remote": "ip:210.113.21.16:57444",
+            "selected": true
+          }
+        ]
+      }
+    },
+    {
+      "sender": "mini",
+      "receiver": "book",
+      "body_sha256": "4a443c772df1bfe5f9ecb7e97516b980bfe0d281271fd448b2f07e5cb0ade567",
+      "authenticated_origin": "75c1181ce5e57de097475aba33df1b34bf1a18fbc8b0363514dd8c07c9e294fe",
+      "sender_at": 1793291672.1573792,
+      "receiver_at": 1793291676.211303,
+      "transport": {
+        "path": "direct",
+        "selected": "direct",
+        "selection_reason": "iroh_path_selection",
+        "fallback_reason": null,
+        "remote_address": "210.113.21.16:57444",
+        "paths": [
+          {
+            "kind": "direct",
+            "remote": "ip:210.113.21.16:57444",
+            "selected": true
+          }
+        ]
+      }
+    }
+  ],
+  "checks": {
+    "three_fixture_bodies_exact": true,
+    "three_same_ID_JSON_answers_and_reverse_endpoints": true,
+    "eight_actual_MCP_ACKs_and_canonical_ACKs": true,
+    "original_9f_request_ID_preserved": true,
+    "third_retry_same_ID_and_body": true,
+    "two_original_answers_recovered_by_actual_MCP_after_restart": true,
+    "closure_MCP_reads_exact_three_retained_answers": true,
+    "closure_read_only_no_new_asks": true,
+    "both_final_execution_source_bindings_match": true,
+    "two_policy_preflights_healthy_before_models": true,
+    "old_held_bytes_unchanged": true,
+    "same_actual_Codex_CID_all_five_starts": true,
+    "same_actual_Claude_CID_all_turns": true,
+    "normal_address_exchange_count_two": true,
+    "two_standard_MCP_reconnect_success": true,
+    "eight_P2P_deliver_hashes_with_authenticated_origin_and_direct_path": true,
+    "both_cleanup_remaining_owned_zero": true
+  },
+  "check_count": 17,
+  "counts": {
+    "successful_fixture_new_conversations": 2,
+    "Claude_CLI_starts": 1,
+    "Codex_CLI_starts": 5,
+    "Codex_same_CID_resumes": 4,
+    "general_FIFO_continue_Goals": 6,
+    "standard_Claude_MCP_reconnects": 2,
+    "initial_network_service_starts": 2,
+    "planned_service_restart_starts": 2,
+    "stable_port_recovery_service_starts": 2,
+    "normal_address_hint_exchanges": 2,
+    "initial_invites": 1,
+    "initial_joins": 1,
+    "runtime_human_yes_or_permission_answers": 0,
+    "controller_message_body_or_answer_relays": 0
+  },
+  "runtime_human_intervention_scope": "no new human approval answers in native actors; operator setup/patch/continues/resumes/address exchange recorded separately",
+  "continue_Goal_records": {
+    "generic-continuation-sent.json": {
+      "at": 1793289596.663927,
+      "native_PID": 33226,
+      "same_CID": "d6ad76ce-8cd2-4f66-adcd-66d6c3805cc7",
+      "goal": "같은 대화에서 도착한 실제 미처리 업무가 있는지 제품 협업 도구로 확인하고 원래 동료의 업무 한 건을 마무리하세요. 중복 회신이나 상태파일 보정은 하지 마세요.",
+      "peer_body_or_RequestId_relay": false
+    },
+    "post-reconnect-continue.json": {
+      "at": 1793290667.65969,
+      "native_PID": 33226,
+      "same_CID": "d6ad76ce-8cd2-4f66-adcd-66d6c3805cc7",
+      "goal": "제품 협업 도구의 미독 정본만 확인해 원래 업무 진행, held deliver 사용 금지",
+      "body_or_original_ID_relay": false,
+      "type": "actual same SDK FIFO stdin"
+    },
+    "revised-continue.json": {
+      "at": 1793290878.9002051,
+      "native_PID": 33226,
+      "same_CID": "d6ad76ce-8cd2-4f66-adcd-66d6c3805cc7",
+      "goal": "제품 협업 도구의 미독 정본만 확인해 원래 업무 진행, held deliver 사용 금지",
+      "body_or_original_ID_relay": false
+    },
+    "final-task-continue.json": {
+      "at": 1793290977.4905689,
+      "native_PID": 33226,
+      "same_CID": "d6ad76ce-8cd2-4f66-adcd-66d6c3805cc7",
+      "goal": "제품 협업 도구의 미독 정본만 확인해 원래 업무 진행, held deliver 사용 금지",
+      "body_or_original_ID_relay": false
+    },
+    "third-retry-continue.json": {
+      "at": 1793291719.026664,
+      "native_PID": 33226,
+      "same_CID": "d6ad76ce-8cd2-4f66-adcd-66d6c3805cc7",
+      "goal": "제품 협업 도구의 미독 정본만 확인해 원래 업무 진행, held deliver 사용 금지",
+      "body_or_original_ID_relay": false
+    },
+    "closure-continue.json": {
+      "at": 1793292181.168291,
+      "native_PID": 33226,
+      "same_CID": "d6ad76ce-8cd2-4f66-adcd-66d6c3805cc7",
+      "goal": "제품 협업 도구의 미독 정본만 확인해 원래 업무 진행, held deliver 사용 금지",
+      "body_or_original_ID_relay": false,
+      "new_task": false
+    }
+  },
+  "same_CID_Claude": "d6ad76ce-8cd2-4f66-adcd-66d6c3805cc7",
+  "same_CID_Codex": "01a18861-947a-7b41-9b53-406af0d83a46",
+  "native_models": {
+    "book": "claude-sonnet-5-5",
+    "mini": [
+      "gpt-6.1-sol"
+    ]
+  },
+  "source_closure_manifest_sha256": "ccc3f22a1d65a33ddc76b0ad1abc4966a65664a6e41777d52b70230cd4fd4011",
+  "source_execution_manifest_sha256": "942a5deca7ccb0ec89cfc92e71fa52495fa6ff92cdb16251125db99728bdf03f",
+  "reported_UTC": "2026-10-29T16:52:11.040981+00:00",
+  "unmeasured": [
+    "pure network latency",
+    "first bootstrap subsecond start",
+    "human decision latency",
+    "unobserved provider internal scheduling"
+  ],
+  "performance_ranking": false,
+  "final_owned_identity_check_count": 22,
+  "remaining_owned": 0,
+  "profile_metadata_limitations": "profile-metadata-limits.json",
+  "actual_final_code_execution": "closure-runtime-execution.json",
+  "timing": "timing.json",
+  "scope_note": "three replies generated under first approved receive patch; final two-file closure exercised by actual retained-answer reads"
+}

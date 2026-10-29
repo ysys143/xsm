@@ -1,0 +1,689 @@
+{
+  "scope": "A15-01 one linked-worktree native condition, not whole-plan completion",
+  "raw_root": "/private/tmp/p13-worktree-native-isksjjba",
+  "source": "/private/tmp/xsm-p13-postqa-frozen-bukwksw6",
+  "status": "not-completed-original-sample",
+  "goals": {
+    "reviewer": "이곳의 검토 담당 a1입니다. 동료의 산술 제안을 독립 검토하며 실질 검토 세 차례가 끝날 때까지 협업을 유지하세요.",
+    "initiator": "a1과 검토 협업해 2+2=5 제안을 독립 검토받고 반례를 고쳐 재검토받으세요. 0+0=0 경계도 독립 검토받아 결과를 보고하세요."
+  },
+  "setup_registrations": 2,
+  "controller_message_calls": 0,
+  "controller_ACK_calls": 0,
+  "controller_index_repairs": 0,
+  "additional_human_prompts_clicks_commands_approvals": 0,
+  "new_condition_attempts": 1,
+  "automatic_native_retries": 0,
+  "user_repo_git_worktree_staging_used": false,
+  "baseline_executed": false,
+  "private_git_commands": [
+    {
+      "cwd": "/private/tmp/p13-worktree-native-isksjjba/repository",
+      "argv": [
+        "git",
+        "init",
+        "--initial-branch=main"
+      ],
+      "exit_code": 0,
+      "stdout": "Initialized empty Git repository in /private/tmp/p13-worktree-native-isksjjba/repository/.git/\n",
+      "stderr": ""
+    },
+    {
+      "cwd": "/private/tmp/p13-worktree-native-isksjjba/repository",
+      "argv": [
+        "git",
+        "mktree"
+      ],
+      "exit_code": 0,
+      "stdout": "4b825dc642cb6eb9a060e54bf8d69288fbee4904\n",
+      "stderr": ""
+    },
+    {
+      "cwd": "/private/tmp/p13-worktree-native-isksjjba/repository",
+      "argv": [
+        "git",
+        "-c",
+        "commit.gpgsign=false",
+        "commit-tree",
+        "4b825dc642cb6eb9a060e54bf8d69288fbee4904"
+      ],
+      "exit_code": 0,
+      "stdout": "887cda775cb58f31b54d58c009b091c4a0ff1c0f\n",
+      "stderr": ""
+    },
+    {
+      "cwd": "/private/tmp/p13-worktree-native-isksjjba/repository",
+      "argv": [
+        "git",
+        "update-ref",
+        "refs/heads/main",
+        "887cda775cb58f31b54d58c009b091c4a0ff1c0f"
+      ],
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "cwd": "/private/tmp/p13-worktree-native-isksjjba/repository",
+      "argv": [
+        "git",
+        "worktree",
+        "add",
+        "-b",
+        "reviewer",
+        "/private/tmp/p13-worktree-native-isksjjba/review-worktree"
+      ],
+      "exit_code": 0,
+      "stdout": "HEAD is now at 887cda7 Private linked-worktree evaluation fixture\n",
+      "stderr": "Preparing worktree (new branch 'reviewer')\n"
+    },
+    {
+      "cwd": "/private/tmp/p13-worktree-native-isksjjba/repository",
+      "argv": [
+        "git",
+        "rev-parse",
+        "--git-common-dir"
+      ],
+      "exit_code": 0,
+      "stdout": ".git\n",
+      "stderr": ""
+    },
+    {
+      "cwd": "/private/tmp/p13-worktree-native-isksjjba/repository",
+      "argv": [
+        "git",
+        "rev-parse",
+        "--show-toplevel"
+      ],
+      "exit_code": 0,
+      "stdout": "/private/tmp/p13-worktree-native-isksjjba/repository\n",
+      "stderr": ""
+    },
+    {
+      "cwd": "/private/tmp/p13-worktree-native-isksjjba/repository",
+      "argv": [
+        "git",
+        "branch",
+        "--show-current"
+      ],
+      "exit_code": 0,
+      "stdout": "main\n",
+      "stderr": ""
+    },
+    {
+      "cwd": "/private/tmp/p13-worktree-native-isksjjba/review-worktree",
+      "argv": [
+        "git",
+        "rev-parse",
+        "--git-common-dir"
+      ],
+      "exit_code": 0,
+      "stdout": "/private/tmp/p13-worktree-native-isksjjba/repository/.git\n",
+      "stderr": ""
+    },
+    {
+      "cwd": "/private/tmp/p13-worktree-native-isksjjba/review-worktree",
+      "argv": [
+        "git",
+        "rev-parse",
+        "--show-toplevel"
+      ],
+      "exit_code": 0,
+      "stdout": "/private/tmp/p13-worktree-native-isksjjba/review-worktree\n",
+      "stderr": ""
+    },
+    {
+      "cwd": "/private/tmp/p13-worktree-native-isksjjba/review-worktree",
+      "argv": [
+        "git",
+        "branch",
+        "--show-current"
+      ],
+      "exit_code": 0,
+      "stdout": "reviewer\n",
+      "stderr": ""
+    }
+  ],
+  "actors": [
+    {
+      "role": "reviewer",
+      "native_session_id": "01a1844f-3bc1-7743-b51a-af2e8ebc7e16",
+      "registered_name": "a1",
+      "mcp_pid": 62913,
+      "setup_registration_seconds": 0.997,
+      "registration_preceded_first_agent_call": true,
+      "calls": [
+        {
+          "kind": "command_execution",
+          "complete": true,
+          "seconds_from_actor_start": 5.787,
+          "command_sha256": "4a4b5697b5641c3201f59fa0d16d356ea5b64152bd55aa6883242acdd0605c47",
+          "exit_code": 0,
+          "sandbox_shell_send_attempt": false,
+          "skill_read": true,
+          "sandbox_failure": false
+        },
+        {
+          "kind": "command_execution",
+          "complete": true,
+          "seconds_from_actor_start": 5.787,
+          "command_sha256": "76c21934eb65c733ca1d0f522ee52bc4de385d8b5cce871f3b4d873837c1b2c0",
+          "exit_code": 1,
+          "sandbox_shell_send_attempt": false,
+          "skill_read": false,
+          "sandbox_failure": false
+        },
+        {
+          "kind": "command_execution",
+          "complete": true,
+          "seconds_from_actor_start": 8.277,
+          "command_sha256": "829092d1330d5e1178f5e996891ce2ac44c508fc65e3cd979e3264aca86d903c",
+          "exit_code": 0,
+          "sandbox_shell_send_attempt": false,
+          "skill_read": false,
+          "sandbox_failure": false
+        },
+        {
+          "kind": "mcp_tool_call",
+          "complete": true,
+          "seconds_from_actor_start": 12.272,
+          "server": "xsm",
+          "tool": "xsm_inbox",
+          "error": null,
+          "argument_keys": [],
+          "arguments_sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+        },
+        {
+          "kind": "command_execution",
+          "complete": true,
+          "seconds_from_actor_start": 12.483,
+          "command_sha256": "4286649a445a7b90217b1123709cd9401c73ad6fc32ed6341d9044e84f09fbf0",
+          "exit_code": 0,
+          "sandbox_shell_send_attempt": false,
+          "skill_read": false,
+          "sandbox_failure": false
+        },
+        {
+          "kind": "mcp_tool_call",
+          "complete": true,
+          "seconds_from_actor_start": 18.536,
+          "server": "xsm",
+          "tool": "xsm_send",
+          "error": null,
+          "argument_keys": [
+            "target",
+            "text"
+          ],
+          "arguments_sha256": "113e65650de6f43ac2854183656ab50630048eb6747e02b2df14e5b2d615ba15"
+        },
+        {
+          "kind": "mcp_tool_call",
+          "complete": true,
+          "seconds_from_actor_start": 38.554,
+          "server": "xsm",
+          "tool": "xsm_inbox",
+          "error": null,
+          "argument_keys": [
+            "wait"
+          ],
+          "arguments_sha256": "5ce894079e806eb601f73f1a7714e226bcef2fefbe7c19babeb0974081cbad48"
+        },
+        {
+          "kind": "command_execution",
+          "complete": true,
+          "seconds_from_actor_start": 43.555,
+          "command_sha256": "2ed5be9609b69585ce692bd1f8604088bc302ab0a2d9ca87ebc4f34a4716a8e0",
+          "exit_code": 0,
+          "sandbox_shell_send_attempt": false,
+          "skill_read": false,
+          "sandbox_failure": false
+        },
+        {
+          "kind": "mcp_tool_call",
+          "complete": true,
+          "seconds_from_actor_start": 50.424,
+          "server": "xsm",
+          "tool": "xsm_ack",
+          "error": null,
+          "argument_keys": [
+            "tokens"
+          ],
+          "arguments_sha256": "8823b65a030db72880ee01735412bf66921b2d812334e1a8e6e3f564e0866a70"
+        },
+        {
+          "kind": "mcp_tool_call",
+          "complete": true,
+          "seconds_from_actor_start": 50.628,
+          "server": "xsm",
+          "tool": "xsm_send",
+          "error": null,
+          "argument_keys": [
+            "kind",
+            "outcome",
+            "reply_to",
+            "target",
+            "text"
+          ],
+          "arguments_sha256": "f2ec806ea1a3173e6c01c77857a3caef11dfb4381fdf4760d405f530c6329402"
+        },
+        {
+          "kind": "mcp_tool_call",
+          "complete": true,
+          "seconds_from_actor_start": 55.833,
+          "server": "xsm",
+          "tool": "xsm_inbox",
+          "error": null,
+          "argument_keys": [
+            "wait"
+          ],
+          "arguments_sha256": "5ce894079e806eb601f73f1a7714e226bcef2fefbe7c19babeb0974081cbad48"
+        },
+        {
+          "kind": "mcp_tool_call",
+          "complete": true,
+          "seconds_from_actor_start": 68.59,
+          "server": "xsm",
+          "tool": "xsm_ack",
+          "error": null,
+          "argument_keys": [
+            "tokens"
+          ],
+          "arguments_sha256": "fdd713fe7df4fdfae6d7b9bc2aaad9c8f248c4b09b950c428e80b16d61906b50"
+        },
+        {
+          "kind": "mcp_tool_call",
+          "complete": true,
+          "seconds_from_actor_start": 68.59,
+          "server": "xsm",
+          "tool": "xsm_send",
+          "error": null,
+          "argument_keys": [
+            "kind",
+            "outcome",
+            "reply_to",
+            "target",
+            "text"
+          ],
+          "arguments_sha256": "47bdcfc17305d673a678c1dbbee54d808daf01e30bafad054134e2ac412ec9c4"
+        },
+        {
+          "kind": "mcp_tool_call",
+          "complete": true,
+          "seconds_from_actor_start": 69.42,
+          "server": "xsm",
+          "tool": "xsm_inbox",
+          "error": null,
+          "argument_keys": [
+            "wait"
+          ],
+          "arguments_sha256": "5ce894079e806eb601f73f1a7714e226bcef2fefbe7c19babeb0974081cbad48"
+        },
+        {
+          "kind": "mcp_tool_call",
+          "complete": true,
+          "seconds_from_actor_start": 81.559,
+          "server": "xsm",
+          "tool": "xsm_ack",
+          "error": null,
+          "argument_keys": [
+            "tokens"
+          ],
+          "arguments_sha256": "be185a97d8570fa0f0140434a1e2b9585145d9d298168e35b9054d64941a1482"
+        },
+        {
+          "kind": "mcp_tool_call",
+          "complete": true,
+          "seconds_from_actor_start": 81.559,
+          "server": "xsm",
+          "tool": "xsm_send",
+          "error": null,
+          "argument_keys": [
+            "kind",
+            "outcome",
+            "reply_to",
+            "target",
+            "text"
+          ],
+          "arguments_sha256": "2923852b69479e139e1d58bfe346b27993a57698a7b6fe5ec239b710b07e60cd"
+        }
+      ],
+      "item_type_counts": {
+        "command_execution": 5,
+        "mcp_tool_call": 11
+      },
+      "agent_mcp_call_count": 11,
+      "agent_shell_call_count": 5,
+      "tool_error_count": 0,
+      "first_wrong_choice": null,
+      "exit_code": 0,
+      "events_path": "/private/tmp/p13-worktree-native-isksjjba/reviewer.jsonl",
+      "stderr_path": "/private/tmp/p13-worktree-native-isksjjba/reviewer.stderr",
+      "events_sha256": "574ba88534072ffc1690d86ec0977e4951ada8a3f8ce5414eb76a331ec71137c",
+      "native_cwd_evidence": {
+        "native_pid": 62728,
+        "native_lstart": "Thu Oct 29 05:59:07 2026",
+        "native_session_id": "01a1844f-3bc1-7743-b51a-af2e8ebc7e16",
+        "runtime": "codex",
+        "home": "/Users/jaesolshin/.codex",
+        "registered_cwd": "/private/tmp/p13-worktree-native-isksjjba/review-worktree",
+        "kernel_process_cwd": "/private/tmp/p13-worktree-native-isksjjba/review-worktree",
+        "kernel_probe_exit": 0,
+        "native_generation_alive": true,
+        "MCP_pid": 62913,
+        "MCP_source_cwd": "/private/tmp/xsm-p13-postqa-frozen-bukwksw6"
+      }
+    },
+    {
+      "role": "initiator",
+      "native_session_id": "01a1844f-4019-7cd1-a82e-fba08b022d3d",
+      "registered_name": null,
+      "mcp_pid": 63305,
+      "setup_registration_seconds": 0.868,
+      "registration_preceded_first_agent_call": true,
+      "calls": [
+        {
+          "kind": "command_execution",
+          "complete": true,
+          "seconds_from_actor_start": 5.056,
+          "command_sha256": "4a4b5697b5641c3201f59fa0d16d356ea5b64152bd55aa6883242acdd0605c47",
+          "exit_code": 0,
+          "sandbox_shell_send_attempt": false,
+          "skill_read": true,
+          "sandbox_failure": false
+        },
+        {
+          "kind": "command_execution",
+          "complete": true,
+          "seconds_from_actor_start": 8.386,
+          "command_sha256": "829092d1330d5e1178f5e996891ce2ac44c508fc65e3cd979e3264aca86d903c",
+          "exit_code": 0,
+          "sandbox_shell_send_attempt": false,
+          "skill_read": false,
+          "sandbox_failure": false
+        },
+        {
+          "kind": "mcp_tool_call",
+          "complete": true,
+          "seconds_from_actor_start": 16.547,
+          "server": "xsm",
+          "tool": "xsm_ask",
+          "error": null,
+          "argument_keys": [
+            "target",
+            "text",
+            "wait"
+          ],
+          "arguments_sha256": "8ed8e6fa0c4f6ac6ccee7356f0bdce4655a359e228d6994d693ba5b28d3159f0"
+        },
+        {
+          "kind": "mcp_tool_call",
+          "complete": true,
+          "seconds_from_actor_start": 54.681,
+          "server": "xsm",
+          "tool": "xsm_ack",
+          "error": null,
+          "argument_keys": [
+            "tokens"
+          ],
+          "arguments_sha256": "7d948e3a1c380f49f9e63e0f5d471c639717615a419fa9fd20a7cc380ff7e683"
+        },
+        {
+          "kind": "mcp_tool_call",
+          "complete": true,
+          "seconds_from_actor_start": 54.681,
+          "server": "xsm",
+          "tool": "xsm_inbox",
+          "error": null,
+          "argument_keys": [],
+          "arguments_sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+        },
+        {
+          "kind": "mcp_tool_call",
+          "complete": true,
+          "seconds_from_actor_start": 62.002,
+          "server": "xsm",
+          "tool": "xsm_ack",
+          "error": null,
+          "argument_keys": [
+            "tokens"
+          ],
+          "arguments_sha256": "d019054cf4a80c7908f5363e9f145a8b47fa2c513437d55a1c186105eb3c0cb8"
+        },
+        {
+          "kind": "mcp_tool_call",
+          "complete": true,
+          "seconds_from_actor_start": 62.002,
+          "server": "xsm",
+          "tool": "xsm_ask",
+          "error": null,
+          "argument_keys": [
+            "target",
+            "text",
+            "wait"
+          ],
+          "arguments_sha256": "e23eb0bd73a30161fc39a7a0ea88589694d58a7459aa0009dbb8e930ad7db6a8"
+        },
+        {
+          "kind": "mcp_tool_call",
+          "complete": true,
+          "seconds_from_actor_start": 74.341,
+          "server": "xsm",
+          "tool": "xsm_ack",
+          "error": null,
+          "argument_keys": [
+            "tokens"
+          ],
+          "arguments_sha256": "74cfed7d8fd2078d188188d5143a74adbaec5d5afbed83e3b0da7a9f11486234"
+        },
+        {
+          "kind": "mcp_tool_call",
+          "complete": true,
+          "seconds_from_actor_start": 74.341,
+          "server": "xsm",
+          "tool": "xsm_ask",
+          "error": null,
+          "argument_keys": [
+            "target",
+            "text",
+            "wait"
+          ],
+          "arguments_sha256": "3791da6916ed5971a3268200db13b49a0216d42a384c89f7cad65273d206008c"
+        },
+        {
+          "kind": "mcp_tool_call",
+          "complete": true,
+          "seconds_from_actor_start": 83.358,
+          "server": "xsm",
+          "tool": "xsm_ack",
+          "error": null,
+          "argument_keys": [
+            "tokens"
+          ],
+          "arguments_sha256": "603bc19527881d35be98e69c0dc920ef9326ae9c0f2e9a82898ee2ce45ca6234"
+        }
+      ],
+      "item_type_counts": {
+        "command_execution": 2,
+        "mcp_tool_call": 8
+      },
+      "agent_mcp_call_count": 8,
+      "agent_shell_call_count": 2,
+      "tool_error_count": 0,
+      "first_wrong_choice": null,
+      "exit_code": 0,
+      "events_path": "/private/tmp/p13-worktree-native-isksjjba/initiator.jsonl",
+      "stderr_path": "/private/tmp/p13-worktree-native-isksjjba/initiator.stderr",
+      "events_sha256": "6570dbf5633248a8a981c9da3caba468b52755375e0dc76b5e0a2830fff34ae9",
+      "native_cwd_evidence": {
+        "native_pid": 63191,
+        "native_lstart": "Thu Oct 29 05:59:08 2026",
+        "native_session_id": "01a1844f-4019-7cd1-a82e-fba08b022d3d",
+        "runtime": "codex",
+        "home": "/Users/jaesolshin/.codex-3",
+        "registered_cwd": "/private/tmp/p13-worktree-native-isksjjba/repository",
+        "kernel_process_cwd": "/private/tmp/p13-worktree-native-isksjjba/repository",
+        "kernel_probe_exit": 0,
+        "native_generation_alive": true,
+        "MCP_pid": 63305,
+        "MCP_source_cwd": "/private/tmp/xsm-p13-postqa-frozen-bukwksw6"
+      }
+    }
+  ],
+  "reviews": [
+    {
+      "category": "boundary",
+      "request_id": "7c4b180ab2824e08",
+      "reply_id": "eac490293b1a45f0",
+      "reply_to": "7c4b180ab2824e08",
+      "request_body": "3차 별도 경계 독립 검토 요청입니다. 표준 정수의 덧셈에서 입력이 둘 다 0인 경계 0+0=0을 검토해주세요. 앞선 2+2 수정안의 판정을 근거로 삼지 말고, 덧셈의 정의 또는 항등원 법칙으로 직접 유도해 참/거짓, 오류·반례 유무를 명시해주세요. 이 회신으로 3차 검토를 마무리해주세요.",
+      "reply_body": "3차 독립 검토 완료: 0+0=0은 참이며 수용합니다. 표준 정수 덧셈의 항등원 법칙은 모든 정수 a에 대해 a+0=a입니다. 0도 정수이므로 a=0을 대입하면 직접 0+0=0을 얻습니다. 이 유도는 앞선 2+2 판정에 의존하지 않습니다. 주어진 전제에서 오류나 반례는 없습니다. 1차 원안 기각(2+2=5), 2차 수정안 수용(2+2=4), 3차 경계 수용(0+0=0)의 실질 검토 세 차례를 모두 마쳤습니다.",
+      "received_actual_body": true,
+      "outcome": "succeeded",
+      "canonical_state": "acknowledged"
+    },
+    {
+      "category": "boundary",
+      "request_id": "fc871dedd8a04fa1",
+      "reply_id": "3095a682a8f74629",
+      "reply_to": "fc871dedd8a04fa1",
+      "request_body": "사용자가 a1과 독립 검토 협업을 요청했습니다. 1차 제안: 표준 정수 산술에서 2+2=5라고 주장합니다. 이 제안을 독립적으로 검토하여 참/거짓, 구체적인 반례 또는 계산 근거, 필요한 수정을 답해주세요. 아직 수정안은 보내지 않겠습니다. 별도 경계 검토: 표준 정수 산술에서 0+0=0의 성립 여부와 근거를 앞 제안과 분리해 독립 판정해주세요. 두 판정을 모두 명시하고 이 요청에 reply_to 및 outcome으로 회신해주세요.",
+      "reply_body": "1차 독립 검토 완료. 판정 1: 표준 정수 산술에서 2+2=5는 거짓입니다. 2에 1을 두 번 더하면 3, 4이므로 2+2=4이며, 4와 5는 서로 다른 정수입니다. 필요한 수정은 우변을 4로 바꾸는 것입니다. 판정 2(별도 경계 검토): 0+0=0은 참입니다. 덧셈 항등원 법칙 a+0=a에 a=0을 대입하면 성립합니다. Python 정수 계산도 각각 4와 0을 출력했습니다. 경계 검토를 별도 협업 회차로 중복 계산하지 않고 현재 1/3회로 기록합니다. 2차 제안을 보내 주세요.",
+      "received_actual_body": true,
+      "outcome": "succeeded",
+      "canonical_state": "acknowledged"
+    },
+    {
+      "category": "boundary",
+      "request_id": "473034e666ba4d1d",
+      "reply_id": "d4d1e14aa2954c5b",
+      "reply_to": "473034e666ba4d1d",
+      "request_body": "2차 수정안 재검토 요청입니다. 전제는 표준 정수 산술이며 연산 재정의나 반올림은 없습니다. 1차 반례 2+2=4, 4≠5를 반영해 우변을 수정했습니다. 수정 제안은 2+2=4입니다. 계산 근거: 2+2=2+1+1=3+1=4. 독립적으로 오류와 반례를 확인하고 수용/기각 및 근거를 명시해 회신해주세요. 다음 3차에는 0+0=0 경계를 별도 검토 요청하겠습니다.",
+      "reply_body": "2차 독립 검토 완료: 수정 제안 2+2=4를 수용합니다. 2=1+1과 덧셈의 결합법칙을 적용하면 2+(1+1)=(2+1)+1=3+1=4입니다. 제시한 계산의 각 등식이 성립하며, 표준 정수라는 전제 아래 오류나 반례는 없습니다. 1차의 잘못된 우변 5가 4로 수정되었음을 확인했습니다. 현재 실질 검토 2/3회입니다. 3차 경계 검토 요청을 기다립니다.",
+      "received_actual_body": true,
+      "outcome": "succeeded",
+      "canonical_state": "acknowledged"
+    }
+  ],
+  "source_before": {
+    "file_count": 313,
+    "manifest_sha256": "0a6e191922cc4633867416b8927503a8d634ce542e37abf7957b90eb2f58e06e",
+    "matches": true,
+    "changed_paths": []
+  },
+  "actual_cli_version": "codex-cli 0.164.0",
+  "skill_and_guide_hashes": {
+    "/private/tmp/p13-worktree-native-isksjjba/repository": {
+      "SKILL.md": "3e583bcd294862775c6590766b96cea2260c879329a32ffbe5306f128da55896",
+      "references/guide.md": "6bffc41da7cce01cc6080c8afb62e54efc910fd67b59d9d11b0c119130c43981",
+      "references/messaging.md": "324b020e2e8eb899469e8d6478d046bcde18d405dc46667d817581a0ef974cb0"
+    },
+    "/private/tmp/p13-worktree-native-isksjjba/review-worktree": {
+      "SKILL.md": "3e583bcd294862775c6590766b96cea2260c879329a32ffbe5306f128da55896",
+      "references/guide.md": "6bffc41da7cce01cc6080c8afb62e54efc910fd67b59d9d11b0c119130c43981",
+      "references/messaging.md": "324b020e2e8eb899469e8d6478d046bcde18d405dc46667d817581a0ef974cb0"
+    }
+  },
+  "git_evidence": [
+    {
+      "cwd": "/private/tmp/p13-worktree-native-isksjjba/repository",
+      "toplevel": "/private/tmp/p13-worktree-native-isksjjba/repository",
+      "common_dir": "/private/tmp/p13-worktree-native-isksjjba/repository/.git",
+      "branch": "main"
+    },
+    {
+      "cwd": "/private/tmp/p13-worktree-native-isksjjba/review-worktree",
+      "toplevel": "/private/tmp/p13-worktree-native-isksjjba/review-worktree",
+      "common_dir": "/private/tmp/p13-worktree-native-isksjjba/repository/.git",
+      "branch": "reviewer"
+    }
+  ],
+  "reviewer_invocation": {
+    "role": "reviewer",
+    "profile": "/Users/jaesolshin/.codex",
+    "goal": "이곳의 검토 담당 a1입니다. 동료의 산술 제안을 독립 검토하며 실질 검토 세 차례가 끝날 때까지 협업을 유지하세요.",
+    "pid": 62726,
+    "lstart": "Thu Oct 29 05:59:07 2026",
+    "invocation_without_goal": [
+      "codex",
+      "exec",
+      "--ignore-user-config",
+      "--json",
+      "--sandbox",
+      "workspace-write",
+      "-c",
+      "approval_policy=\"never\"",
+      "-c",
+      "mcp_servers.xsm.command=\"/usr/bin/python3\"",
+      "-c",
+      "mcp_servers.xsm.args=[\"-m\",\"xsm\",\"mcp\"]",
+      "-c",
+      "mcp_servers.xsm.cwd=\"/private/tmp/xsm-p13-postqa-frozen-bukwksw6\"",
+      "-c",
+      "mcp_servers.xsm.env.XSM_HOME=\"/private/tmp/p13-worktree-native-isksjjba/state\"",
+      "-c",
+      "mcp_servers.xsm.env.CODEX_HOME=\"/Users/jaesolshin/.codex\"",
+      "-c",
+      "mcp_servers.xsm.env.PYTHONPATH=\"/private/tmp/xsm-p13-postqa-frozen-bukwksw6\"",
+      "-c",
+      "mcp_servers.xsm.env.PYTHONDONTWRITEBYTECODE=\"1\""
+    ],
+    "goal_sha256": "d94650f9165bee255386c24f1bef8ffccf3e459929fdec1985cff07624ec80f4",
+    "actual_launch_cwd": "/private/tmp/p13-worktree-native-isksjjba/review-worktree"
+  },
+  "initiator_invocation": {
+    "role": "initiator",
+    "profile": "/Users/jaesolshin/.codex-3",
+    "goal": "a1과 검토 협업해 2+2=5 제안을 독립 검토받고 반례를 고쳐 재검토받으세요. 0+0=0 경계도 독립 검토받아 결과를 보고하세요.",
+    "pid": 63189,
+    "lstart": "Thu Oct 29 05:59:08 2026",
+    "invocation_without_goal": [
+      "codex",
+      "exec",
+      "--ignore-user-config",
+      "--json",
+      "--sandbox",
+      "workspace-write",
+      "-c",
+      "approval_policy=\"never\"",
+      "-c",
+      "mcp_servers.xsm.command=\"/usr/bin/python3\"",
+      "-c",
+      "mcp_servers.xsm.args=[\"-m\",\"xsm\",\"mcp\"]",
+      "-c",
+      "mcp_servers.xsm.cwd=\"/private/tmp/xsm-p13-postqa-frozen-bukwksw6\"",
+      "-c",
+      "mcp_servers.xsm.env.XSM_HOME=\"/private/tmp/p13-worktree-native-isksjjba/state\"",
+      "-c",
+      "mcp_servers.xsm.env.CODEX_HOME=\"/Users/jaesolshin/.codex-3\"",
+      "-c",
+      "mcp_servers.xsm.env.PYTHONPATH=\"/private/tmp/xsm-p13-postqa-frozen-bukwksw6\"",
+      "-c",
+      "mcp_servers.xsm.env.PYTHONDONTWRITEBYTECODE=\"1\""
+    ],
+    "goal_sha256": "86f3f4292874582b6c3e0ac7a4c49721e71f97da146694864be71d912332d776",
+    "actual_launch_cwd": "/private/tmp/p13-worktree-native-isksjjba/repository"
+  },
+  "cleanup": [],
+  "owned_alive_after": [
+    {
+      "role": "reviewer",
+      "native_alive": false,
+      "MCP_same_generation_alive": false
+    },
+    {
+      "role": "initiator",
+      "native_alive": false,
+      "MCP_same_generation_alive": false
+    }
+  ],
+  "source_after": {
+    "file_count": 313,
+    "manifest_sha256": "0a6e191922cc4633867416b8927503a8d634ce542e37abf7957b90eb2f58e06e",
+    "matches": true,
+    "changed_paths": []
+  },
+  "source_unchanged": true,
+  "profile_guard_unchanged": false,
+  "seconds": 90.451,
+  "native_CLI_invocations": 2
+}

@@ -1,0 +1,1 @@
+{"product_source_modified": false, "model_calls_before_failure": 0, "failed_cli_source_sha256": "834c79dac96e9b5e958645130924c2baf81060ee518819590a1654a37ee09965", "setup_after_failure": "existing private control RPC; no body/index/ACK operations by controller"}

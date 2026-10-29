@@ -1,0 +1,281 @@
+{
+  "label": "A15-05 one actual two-parent/one-child-each condition",
+  "result": "different actual parents, direct child correction/memo/final mutual receipt observed",
+  "source": "/private/tmp/xsm-final-receipt-frozen-i3u9pms3",
+  "source_manifest_files_verified": 315,
+  "primary_paths": 135,
+  "CLI": "codex-cli 0.164.0",
+  "CODEX_HOME": "/Users/jaesolshin/.codex-3",
+  "private_git_common": "/private/tmp/different-parent-native-3jr1o8uv/work/.git",
+  "parent_relations": [
+    {
+      "role": "parent-a1",
+      "child_name": "a1",
+      "parent_CID_hash": "0924883f570f6eccd98d323bf5849b420cc6cb6a7e0c2ec678de8dbe6f2c4ed9",
+      "child_CID_hash": "766842235fefdf73f71c5681f085db7fd825a9dc5d7de4b574584d1ece66d6d5",
+      "actual_parent_thread_id_hash": "0924883f570f6eccd98d323bf5849b420cc6cb6a7e0c2ec678de8dbe6f2c4ed9",
+      "native_PID": 57273,
+      "native_lstart": "Thu Oct 29 07:26:39 2026",
+      "home_hash": "8f68eb952a346564ce4e74fa28f6be1313901a8164edfe6761ea0f8bc4a71fe4",
+      "cwd_hash": "58bd2586270c788daa30dca7f7213c40449163fc58c9057345388c015b66d424"
+    },
+    {
+      "role": "parent-a2",
+      "child_name": "a2",
+      "parent_CID_hash": "f23747694fb78088f399a4d1fef12872f4afdebf470f0783d409ca0bbbfe19ee",
+      "child_CID_hash": "478350d5f3a2226b2bde448385ee7dd8f0a1c92aa4db6cbb5236fb6e71ef272c",
+      "actual_parent_thread_id_hash": "f23747694fb78088f399a4d1fef12872f4afdebf470f0783d409ca0bbbfe19ee",
+      "native_PID": 57275,
+      "native_lstart": "Thu Oct 29 07:26:39 2026",
+      "home_hash": "8f68eb952a346564ce4e74fa28f6be1313901a8164edfe6761ea0f8bc4a71fe4",
+      "cwd_hash": "58bd2586270c788daa30dca7f7213c40449163fc58c9057345388c015b66d424"
+    }
+  ],
+  "distinct_parent_thread_ids_proven": true,
+  "distinct_real_native_PIDs": true,
+  "native_parent_CLI_launches": 2,
+  "actual_native_children": 2,
+  "initial_real_registration_setup_count": 4,
+  "model_condition_retries": 0,
+  "native_turn_events": [
+    {
+      "CID_hash": "0924883f570f6eccd98d323bf5849b420cc6cb6a7e0c2ec678de8dbe6f2c4ed9",
+      "task_started": 1,
+      "task_complete": 1,
+      "raw_SHA": "ae5bd6721911a753278ed0c70a8a1a23396c4d797ea7097e7dfa5d75f08cee9e"
+    },
+    {
+      "CID_hash": "766842235fefdf73f71c5681f085db7fd825a9dc5d7de4b574584d1ece66d6d5",
+      "task_started": 2,
+      "task_complete": 1,
+      "raw_SHA": "3c9c2fec4a0f0e89de281539f88b025931cb947852624b0d203e31efa88b3ade"
+    },
+    {
+      "CID_hash": "f23747694fb78088f399a4d1fef12872f4afdebf470f0783d409ca0bbbfe19ee",
+      "task_started": 1,
+      "task_complete": 1,
+      "raw_SHA": "21660e55ebd4e38df4318859c33ed51e8160ce13217c7357b042f494eabc6ac5"
+    },
+    {
+      "CID_hash": "478350d5f3a2226b2bde448385ee7dd8f0a1c92aa4db6cbb5236fb6e71ef272c",
+      "task_started": 2,
+      "task_complete": 1,
+      "raw_SHA": "1b6347425773b0ad14057a902cb73aa7160f0ef5a981562e7cd547adca6fa745"
+    }
+  ],
+  "actual_tools_calls": 26,
+  "MCP_instances": [
+    {
+      "role": "parent-a1",
+      "MCP_pid": 58049,
+      "calls": 0,
+      "CID_hashes": []
+    },
+    {
+      "role": "parent-a1",
+      "MCP_pid": 61021,
+      "calls": 13,
+      "CID_hashes": [
+        "766842235fefdf73f71c5681f085db7fd825a9dc5d7de4b574584d1ece66d6d5"
+      ]
+    },
+    {
+      "role": "parent-a2",
+      "MCP_pid": 60510,
+      "calls": 13,
+      "CID_hashes": [
+        "478350d5f3a2226b2bde448385ee7dd8f0a1c92aa4db6cbb5236fb6e71ef272c"
+      ]
+    },
+    {
+      "role": "parent-a2",
+      "MCP_pid": 57669,
+      "calls": 0,
+      "CID_hashes": []
+    }
+  ],
+  "shared_MCP_success_claimed": false,
+  "parent_xsm_calls": {
+    "parent-a1": 0,
+    "parent-a2": 0
+  },
+  "parent_body_relay_or_manual_ACK_by_evaluator": false,
+  "proxy_meta_ID_results_ACKs_modified": false,
+  "messages": [
+    {
+      "ID_hash": "8d949154229a9080e9a38eb9727d6eed48a45ea915436f8b72b340b7809b3cb1",
+      "kind": "reply",
+      "logical_requested_wake": true,
+      "delivery_route": "mcp-inbox",
+      "typed_auto_fallback_observed": true,
+      "native_queued": false,
+      "native_wake": false,
+      "actual_claim_ACK": true,
+      "immutable_digest_valid": true
+    },
+    {
+      "ID_hash": "d2956aad592f4f43d5ab48419bcc1f036ecfd698f687fe9041bbd50f86b07fb6",
+      "kind": "reply",
+      "logical_requested_wake": true,
+      "delivery_route": "mcp-inbox",
+      "typed_auto_fallback_observed": true,
+      "native_queued": false,
+      "native_wake": false,
+      "actual_claim_ACK": true,
+      "immutable_digest_valid": true
+    },
+    {
+      "ID_hash": "03fe982c62e7e064129c3a14141d1b7bc35026a8372442fa0866ea56e05245b2",
+      "kind": "reply",
+      "logical_requested_wake": true,
+      "delivery_route": "mcp-inbox",
+      "typed_auto_fallback_observed": true,
+      "native_queued": false,
+      "native_wake": false,
+      "actual_claim_ACK": true,
+      "immutable_digest_valid": true
+    },
+    {
+      "ID_hash": "d558b2f0cc62cbef30b4a53c35451c935b8e540fd423e454c0f706589aa4b685",
+      "kind": "task",
+      "logical_requested_wake": true,
+      "delivery_route": "mcp-inbox",
+      "typed_auto_fallback_observed": true,
+      "native_queued": false,
+      "native_wake": false,
+      "actual_claim_ACK": true,
+      "immutable_digest_valid": true
+    },
+    {
+      "ID_hash": "f960b2aa0dc430827cfc3e072cc84a7c920219a8eef52bddd964f062e2195b2f",
+      "kind": "reply",
+      "logical_requested_wake": true,
+      "delivery_route": "mcp-inbox",
+      "typed_auto_fallback_observed": true,
+      "native_queued": false,
+      "native_wake": false,
+      "actual_claim_ACK": true,
+      "immutable_digest_valid": true
+    },
+    {
+      "ID_hash": "46e8f69581be6799a8ce18004370dad99f3442104d5943a3ab48000f401c32aa",
+      "kind": "reply",
+      "logical_requested_wake": true,
+      "delivery_route": "mcp-inbox",
+      "typed_auto_fallback_observed": true,
+      "native_queued": false,
+      "native_wake": false,
+      "actual_claim_ACK": true,
+      "immutable_digest_valid": true
+    },
+    {
+      "ID_hash": "2e0f4f38a9cfc022922f41b0964f9927beb36768188541803af89d835c43fa7b",
+      "kind": "task",
+      "logical_requested_wake": true,
+      "delivery_route": "mcp-inbox",
+      "typed_auto_fallback_observed": true,
+      "native_queued": false,
+      "native_wake": false,
+      "actual_claim_ACK": true,
+      "immutable_digest_valid": true
+    },
+    {
+      "ID_hash": "98e699b8c87b22690ecb4e0f672f080b72b1d3f080fb5950f2dabb66b4c2ad70",
+      "kind": "task",
+      "logical_requested_wake": true,
+      "delivery_route": "mcp-inbox",
+      "typed_auto_fallback_observed": true,
+      "native_queued": false,
+      "native_wake": false,
+      "actual_claim_ACK": true,
+      "immutable_digest_valid": true
+    }
+  ],
+  "typed_auto_fallbacks": 8,
+  "explicit_quiet_messages": 0,
+  "question_roundtrips": [
+    {
+      "request_ID_hash": "2e0f4f38a9cfc022922f41b0964f9927beb36768188541803af89d835c43fa7b",
+      "sender_CID_hash": "766842235fefdf73f71c5681f085db7fd825a9dc5d7de4b574584d1ece66d6d5",
+      "target_CID_hash": "478350d5f3a2226b2bde448385ee7dd8f0a1c92aa4db6cbb5236fb6e71ef272c",
+      "original_wake": "auto",
+      "body_math_excerpt": "a2의 집합 반례를 읽고 수용했습니다. 수정안은 표준 정수 덧셈에서 2+2=4입니다. 실제 작성하고 읽은 제 메모 사본을 첨부합니다. 수정안과 사본을 읽고 최종 확인해 주세요. 또한 0+0=0 경계 질문과 상대 검토 자료 사본을 직접 보내 주세요. 제가 읽고 내용 확인을 돌려드리겠습니다.",
+      "reply_count": 1,
+      "partial_reply_count": 0,
+      "final_outcome": "succeeded",
+      "final_reply_math_excerpt": "최종 확인 완료입니다. xsm_files로 받은 a1-review-memo.md 사본(381바이트, SHA-256 70ce994e467e0cc86275c21fa85aedf9a6cbfcd46ca214a3c9f8b8c1dd233bd2)을 실제 읽었습니다. 초기 2+2=5, 제 {가, 나}/{다, 라} 반례, 반례 수용 후 2+2=4 수정, 빈",
+      "original_reply_to_preserved": true
+    },
+    {
+      "request_ID_hash": "98e699b8c87b22690ecb4e0f672f080b72b1d3f080fb5950f2dabb66b4c2ad70",
+      "sender_CID_hash": "766842235fefdf73f71c5681f085db7fd825a9dc5d7de4b574584d1ece66d6d5",
+      "target_CID_hash": "478350d5f3a2226b2bde448385ee7dd8f0a1c92aa4db6cbb5236fb6e71ef272c",
+      "original_wake": "auto",
+      "body_math_excerpt": "저는 부모 A의 native 하위 동료 a1입니다. 사용자 지정 검토자 a2에게 직접 묻습니다. 제안: 표준 정수 덧셈에서 2+2=5입니다. 구체적인 반례로 검토해 주세요. 반례를 반영한 수정안과 제 메모 사본을 다시 보내 최종 확인을 받겠습니다. 0+0=0 경계 질문과 검토 자료 사본도 제게 ",
+      "reply_count": 2,
+      "partial_reply_count": 1,
+      "final_outcome": "succeeded",
+      "final_reply_math_excerpt": "초기 검토 요청도 종료합니다. 2+2=5를 독립 반례로 반박했고, 후속 수정안 2+2=4 및 실제 메모 사본을 읽어 확인했습니다. 직접 경계 질문의 답 0+0=0과 상호 자료 내용 확인까지 마쳤습니다. 최종 상세 회신은 수정 요청 7bbf155fed2340ad에 보냈습니다.",
+      "original_reply_to_preserved": true
+    },
+    {
+      "request_ID_hash": "d558b2f0cc62cbef30b4a53c35451c935b8e540fd423e454c0f706589aa4b685",
+      "sender_CID_hash": "478350d5f3a2226b2bde448385ee7dd8f0a1c92aa4db6cbb5236fb6e71ef272c",
+      "target_CID_hash": "766842235fefdf73f71c5681f085db7fd825a9dc5d7de4b574584d1ece66d6d5",
+      "original_wake": "auto",
+      "body_math_excerpt": "경계 질문: 같은 표준 정수 덧셈 규칙에서 0+0=0이 성립합니까? 빈 집합 또는 덧셈 항등원으로 이유를 설명하고, 수정안 및 경계 결론이 담긴 상대 메모 사본도 첨부해 주세요. 제 검토 자료 사본을 첨부합니다.",
+      "reply_count": 1,
+      "partial_reply_count": 0,
+      "final_outcome": "succeeded",
+      "final_reply_math_excerpt": "네. 표준 정수 덧셈에서 0+0=0이 성립합니다. 빈 집합 두 개의 합집합은 빈 집합이며 원소 수는 0입니다. 덧셈 항등원 법칙 a+0=a에 a=0을 대입해도 같습니다. 첨부 a2-review.md를 xsm_files로 실제 읽었습니다. 내용은 초기 2+2=5 반박, 겹치지 않는 두 2원소 집합의 합집합이 4원소라는 반례, 수정안 2+2=",
+      "original_reply_to_preserved": true
+    }
+  ],
+  "incoming_file_content_reads": [
+    {
+      "kind": "incoming",
+      "receiver_CID_hash": "766842235fefdf73f71c5681f085db7fd825a9dc5d7de4b574584d1ece66d6d5",
+      "request_ID_hash": "d558b2f0cc62cbef30b4a53c35451c935b8e540fd423e454c0f706589aa4b685",
+      "content_SHA_matches": true
+    },
+    {
+      "kind": "incoming",
+      "receiver_CID_hash": "478350d5f3a2226b2bde448385ee7dd8f0a1c92aa4db6cbb5236fb6e71ef272c",
+      "request_ID_hash": "2e0f4f38a9cfc022922f41b0964f9927beb36768188541803af89d835c43fa7b",
+      "content_SHA_matches": true
+    }
+  ],
+  "actual_claim_ACK_IDs": 8,
+  "RPC_errors": [],
+  "runtime_warnings": [
+    {
+      "role": "parent-a1",
+      "stderr": "Reading additional input from stdin...\n2026-10-28T22:26:40.163358Z ERROR codex_models_manager::manager: failed to load models cache: EOF while parsing a value at line 1 column 0\n"
+    }
+  ],
+  "source_unchanged": true,
+  "profile_unchanged": false,
+  "profile_drift_changed_names": [
+    "config.toml"
+  ],
+  "profile_drift_writer": "unknown; no evaluator profile edit",
+  "known_processes_alive": 0,
+  "private_raw_root": "/private/tmp/different-parent-native-3jr1o8uv",
+  "started_utc": "2026-10-28T22:26:39.618690+00:00",
+  "finished_utc": "2026-10-28T22:28:03.605278+00:00",
+  "prior_condition_artifacts_unchanged": true,
+  "no_additional_experiments": true,
+  "whole_plan_pass_claimed": false,
+  "existing_daemon_executable_metadata": [
+    {
+      "pid": 9102,
+      "executable": "/Users/jaesolshin/.codex-3/packages/app-server-daemon/releases/0.165.0-aarch64-apple-darwin/bin/codex",
+      "release_directory": "0.165.0-aarch64-apple-darwin"
+    },
+    {
+      "pid": 77641,
+      "executable": "/Users/jaesolshin/.codex-3/packages/app-server-daemon/releases/0.165.0-aarch64-apple-darwin/bin/codex",
+      "release_directory": "0.165.0-aarch64-apple-darwin"
+    }
+  ]
+}

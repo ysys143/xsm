@@ -1,0 +1,170 @@
+{
+  "verdict": "pass for this actual postfix CLI privacy/survival sample; not whole-plan completion",
+  "source": "/private/tmp/xsm-doctor-privacy-frozen-47o6orah",
+  "source_manifest_sha256_at_run": "c94ca1a7826a5f83307173130ce70646e995858984fe94ee9a1fb66e7437b524",
+  "source315_verified": 315,
+  "source135_current_and_frozen_verified": 135,
+  "CLI_invocations": 1,
+  "new_models": 0,
+  "new_native_TUIs": 0,
+  "interpreter": "3.14.6 (main, Jun 10 2026, 10:03:53) [Clang 21.0.0 (clang-2100.0.123.102)]",
+  "argv": [
+    "/opt/homebrew/opt/python@3.14/bin/python3.14",
+    "-B",
+    "-m",
+    "xsm",
+    "doctor",
+    "--json"
+  ],
+  "cwd": "/private/tmp/xsm-doctor-privacy-frozen-47o6orah",
+  "exit_code": 0,
+  "added_sandbox_or_observer": false,
+  "native_registration": {
+    "actual_native_DB_and_rollout_header_verified": true,
+    "actual_OS_native_ancestor_verified": true,
+    "home_count": 1,
+    "session_count": 1,
+    "shared_runtime": true,
+    "PID_sha256": "6dadffb2c7385d7b07cec4aebb1ad09c30c9ca01c5c946b4ca7b23f47641b1dc",
+    "lstart_sha256": "8c5801bd3a4740204fde2367f0183a672027110d3d134b1c1b45ef9da4d0ecf0",
+    "CID_sha256": "07daa0a4f7d38a7319e1e8d3e70e19b7811960e555f396004a3928ef6bf19095",
+    "home_sha256": "8f68eb952a346564ce4e74fa28f6be1313901a8164edfe6761ea0f8bc4a71fe4",
+    "authority_or_caller_certainty_claimed": false
+  },
+  "stuck": {
+    "undelivered": [
+      {
+        "id_sha256": "dd02e9ff569dcba711f5983433302a422466ad8be49d9902a6cc27d54402089e",
+        "status": "queued",
+        "row_keys": [
+          "from",
+          "id",
+          "status",
+          "t",
+          "to"
+        ]
+      }
+    ],
+    "uncertain": [
+      {
+        "id_sha256": "361c267fe94f51b9c40d361c034e3d3a085f8618787f35123a8531080a8e32ea",
+        "status": "unknown",
+        "row_keys": [
+          "from",
+          "id",
+          "status",
+          "t",
+          "to"
+        ]
+      }
+    ],
+    "send_failures": {
+      "sandbox-blocked": 2,
+      "other": 1
+    },
+    "queued_age_seconds_at_capture": [
+      600.4042239189148
+    ],
+    "endpoint_scalar_metadata_preserved": true
+  },
+  "synthetic_nonoutput": {
+    "body": {
+      "marker_sha256": "a0ad578f74b77c399e334dc69cbccee5cc4a6caacc9174b667fe4dc0176c9342",
+      "in_stdout": false,
+      "in_stderr": false
+    },
+    "nested": {
+      "marker_sha256": "032ea3265d13a13104e551826da1e0ee51fb51eaaeba259ffaea8c711bcef7a2",
+      "in_stdout": false,
+      "in_stderr": false
+    },
+    "raw_error": {
+      "marker_sha256": "d2ef046759fa8ba776d21bbe4d71f477a06a80664a555174e16134c9cb415a33",
+      "in_stdout": false,
+      "in_stderr": false
+    },
+    "unknown_error": {
+      "marker_sha256": "e45508cb39cc2fd69df5998bb2b765d29a7b04dc9b5573a8f88514f5e4837636",
+      "in_stdout": false,
+      "in_stderr": false
+    },
+    "known_detail": {
+      "marker_sha256": "b5400412aec2728f51b882a0495203e2801b1446f9b07e0bf1ca8ce18cb82084",
+      "in_stdout": false,
+      "in_stderr": false
+    },
+    "allowed_nested": {
+      "marker_sha256": "5c71b2c27326d38f11f4da3d28d5cdab97dd44b8993adbbe15177f9e68a6fb73",
+      "in_stdout": false,
+      "in_stderr": false
+    },
+    "invite": {
+      "marker_sha256": "75d4f04ae41233edc8099fd99327a3845c2b89c4dd30a71034f2c906ea1da0af",
+      "in_stdout": false,
+      "in_stderr": false
+    }
+  },
+  "leaked_marker_count": 0,
+  "real_credentials_loaded_or_compared": false,
+  "privacy_scope": "seeded body/preview/nested/endpoint/raw-error/synthetic-invite markers; home metadata is not message-body disclosure; no universal unknown-secret claim",
+  "doctor_metadata_observations": {
+    "home_count": 1,
+    "sessions": {
+      "registered": 1,
+      "live": 1,
+      "unregistered": 1,
+      "stopped": 0,
+      "retention_days": 7.0,
+      "last_prune": 1793236058.794156
+    },
+    "selected_home_metadata_present": true,
+    "decisions_seen": 1,
+    "hook_errors_recent": 1,
+    "setup_status": "observational",
+    "setup_rows": [
+      {
+        "runtime": "codex",
+        "settings": "present",
+        "trust": "observed",
+        "process": "observed",
+        "home_match": "observed",
+        "mcp": "unknown",
+        "first_roundtrip": "unknown"
+      }
+    ]
+  },
+  "ledger": {
+    "files": 5,
+    "bytes_before_after_identical": true,
+    "record_set_unchanged": true
+  },
+  "selected_home_metadata_present": true,
+  "runtime_survival": {
+    "same_PID_generation_before_after": true,
+    "subsequent_actual_tool_executed": true,
+    "followup_same_PID_generation": true,
+    "followup_same_native_thread_readonly_DB": true
+  },
+  "profile_stat_metadata_unchanged": true,
+  "streams": {
+    "stdout": {
+      "path": "/private/tmp/doctor-privacy-native-1qw1twk2/doctor.stdout",
+      "bytes": 6605,
+      "sha256": "7a73db7bd2ec2f541f05cf85593af600f1a758dffeb3e4cc3b29484f8b91dd12",
+      "mode": "0o600"
+    },
+    "stderr": {
+      "path": "/private/tmp/doctor-privacy-native-1qw1twk2/doctor.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "mode": "0o600"
+    }
+  },
+  "private_raw_root": "/private/tmp/doctor-privacy-native-1qw1twk2",
+  "private_root_mode": "0o700",
+  "stdout_stderr_mode": "0o600",
+  "signals_login_wake_grants_profile_writes_by_driver": 0,
+  "credential_file_reads_by_driver": 0,
+  "access_trace_observer": "not installed; no universal file-open trace claim",
+  "whole_plan_complete": false
+}

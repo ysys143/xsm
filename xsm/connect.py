@@ -23,6 +23,8 @@ from __future__ import annotations
 import os
 from collections import namedtuple
 
+import hashlib
+
 from . import config, consent, envelope, outbox, paths, policy
 
 # go: connected, so send now (`notes` say what was done); else `text` is the
@@ -40,6 +42,25 @@ def _broad(root: str) -> bool:
     every session the person has."""
     home = os.path.realpath(os.path.expanduser("~"))
     return home == root or home.startswith(root.rstrip("/") + "/")
+
+
+def _plan_digest(plan: dict) -> str:
+    """A stable digest of what the person is being asked to allow: the verb, the
+    target and the two folders. Together with the target handle it selects the
+    immutable consent ask. A changed plan or peer selects a distinct ask, so it
+    cannot consume an earlier answer (P02 item 1 and 4)."""
+    body = "\x1f".join(str(plan.get(k) or "") for k in
+                        ("verb", "target", "here", "cwd")).encode("utf-8")
+    return hashlib.sha256(body).hexdigest()
+
+
+def _target_handle(target: dict) -> dict:
+    """The exact session the plan is about, as the ask must carry it: a short ref
+    alone is not enough to re-check the target before applying (P02 item 1)."""
+    return {"ref": target.get("ref"), "runtime": target.get("runtime"),
+            "session_id": target.get("session_id"), "home": target.get("home"),
+            "alias": target.get("alias"), "pid": target.get("pid"),
+            "lstart": target.get("lstart")}
 
 
 def plan_for(sender: dict, target: dict) -> dict | None:
@@ -60,19 +81,25 @@ def plan_for(sender: dict, target: dict) -> dict | None:
     except ValueError:
         return None
     who = "%s@%s" % (target.get("name"), target.get("alias"))
-    plan = {"here": here, "cwd": sender["cwd"]}
+    plan = {"here": here, "cwd": sender["cwd"], "handle": _target_handle(target)}
     if _broad(here) or _broad(there):
-        return dict(plan, verb="reach", target=there, here=None, what=(
+        out = dict(plan, verb="reach", target=there, here=None, what=(
             "letting this session reach the sessions in %s, only for as long as it runs, "
             "so your message to %s can go" % (_tilde(there), who)))
-    new = sorted(config.joined_projects(target) - config.joined_projects(sender))
-    if len(new) == 1:
-        return dict(plan, verb="join", target=new[0], here=None, what=(
-            "adding %s to project %s, the project of %s (every folder in it can talk, both "
-            "ways), so your message to %s can go" % (_tilde(here), new[0], _tilde(there), who)))
-    return dict(plan, verb="link", target=there, what=(
-        "connecting %s with %s (a link: the sessions of both folders can talk, both ways, "
-        "until `xsm unlink`) so your message to %s can go" % (_tilde(here), _tilde(there), who)))
+    else:
+        new = sorted(config.joined_projects(target) - config.joined_projects(sender))
+        if len(new) == 1:
+            out = dict(plan, verb="join", target=new[0], here=None, what=(
+                "adding %s to project %s, the project of %s (every folder in it can talk, both "
+                "ways), so your message to %s can go"
+                % (_tilde(here), new[0], _tilde(there), who)))
+        else:
+            out = dict(plan, verb="link", target=there, what=(
+                "connecting %s with %s (a link: the sessions of both folders can talk, both ways, "
+                "until `xsm unlink`) so your message to %s can go"
+                % (_tilde(here), _tilde(there), who)))
+    out["digest"] = _plan_digest(out)
+    return out
 
 
 def run(plan: dict, me: dict, verdict: str) -> str:
@@ -128,22 +155,28 @@ def offer(sender: dict, target: dict, spec: str, msg: dict, why: str) -> Step | 
         return None
     if human:
         return _typed(plan, sender)
-    reply, go, kept = consent.take_or_request(sender, plan["verb"], plan["target"], plan["here"])
-    if reply is None and not kept:
-        return None                             # no reply can be kept here: promise nothing
+    already_held = outbox.find(sender, spec, msg)
     held = outbox.put(sender, spec, msg)
-    if held is None and not go:
+    if held is None:
         return None
-    msg_id = held["id"] if held else envelope.new_id()
+    msg_id = held["id"]
+    applied = []
+    try:
+        reply, go, kept = consent.take_or_request(
+            sender, plan["verb"], plan["target"], plan["here"],
+            binding={"digest": plan["digest"], "handle": plan["handle"]},
+            apply=lambda verdict: applied.append(run(plan, sender, verdict)))
+    except ValueError as exc:
+        return Step(False, "your user said yes, but the connection could not be made: %s. "
+                           "Your message is held as %s; retry the same send to resume the "
+                           "same approved plan." % (exc, msg_id), msg_id)
+    if reply is None and not kept:
+        if already_held is None:
+            outbox.drop(msg_id)
+        return None
     if go:
         notes = [consent.approved(plan["verb"], plan["target"], reply, kept, sender.get("name"))]
-        try:
-            notes.append(run(plan, sender, reply))
-        except ValueError as exc:
-            return Step(False, "your user said yes, but the connection could not be made: %s. "
-                               "Your message is held as %s; `xsm send --held %s` asks again."
-                               % (exc, msg_id, msg_id), msg_id)
-        return Step(True, "", msg_id, tuple(notes))
+        return Step(True, "", msg_id, tuple(notes + applied))
     unsent = "Your message is NOT sent: it is held as %s." % msg_id
     if reply is None:
         return Step(False, (
@@ -158,3 +191,150 @@ def offer(sender: dict, target: dict, spec: str, msg: dict, why: str) -> Step | 
                 consent.how(sender.get("runtime")), msg_id)), msg_id)
     return Step(False, consent.shown_refusal(reply, plan["what"], None) + " " + unsent +
                 (" " + kept if isinstance(kept, str) else ""), msg_id)
+
+
+def _select_network(sender: dict, target: dict) -> dict:
+    from . import collaboration, network, network_identity, resolve
+    try:
+        address = network_identity.target(target)
+    except ValueError as exc:
+        return {"status": "refused", "reason": str(exc), "handshake": "not-started"}
+
+    def fresh():
+        found = resolve.resolve(address, caller=sender)
+        if not found.ok:
+            raise ValueError(found.reason)
+        state = found.record.get("state")
+        if isinstance(state, dict):
+            state = state.get("value")
+        if state in ("ended", "stale") or found.record.get("ended_at"):
+            raise ValueError("the selected remote conversation is no longer available")
+        if found.record.get("generation") != target.get("generation"):
+            raise ValueError("the selected remote conversation generation changed; select it again")
+        return found
+
+    def synchronize():
+        try:
+            reply = network.call({"op": "selection", "caller": sender, "target": address})
+        except network.NetworkError as exc:
+            raise ValueError(str(exc)) from None
+        if reply.get("status") != "selected":
+            raise ValueError(reply.get("reason") or "remote selection was not recorded")
+        current = fresh()
+        if not current.scope:
+            raise ValueError("remote selection has no current communication scope")
+        return current.scope
+
+    try:
+        found = fresh()
+        target = found.record
+        if found.scope:
+            return {"status": "permitted", "scope": found.scope,
+                    "target": address, "handshake": "not-started"}
+        record = collaboration.scope_for(sender, target)
+        if record is not None:
+            # Resume a consented selection whose broker response was lost.
+            scope = synchronize()
+            return {"status": "permitted", "scope": scope,
+                    "target": address, "handshake": "not-started"}
+        proposal = collaboration.propose(sender, target)
+        name = target.get("name") or address
+
+        def apply_selection(verdict):
+            current = fresh().record
+            collaboration.create(sender, current, verdict)
+
+        verdict, go, kept = consent.take_or_request(
+            sender, "collaborate", name,
+            binding={"pair": proposal["endpoints"], "generation": target["generation"]},
+            apply=apply_selection)
+        if not go:
+            reason = (consent.shown_refusal(verdict, "collaborating with %s" % name, kept)
+                      if verdict is not None else
+                      "needs your user's selection of %s; ask who to collaborate with, "
+                      "then run the same connect again" % name)
+            return {"status": "selection-required", "reason": reason,
+                    "target": address, "handshake": "not-started"}
+        return {"status": "permitted", "scope": synchronize(),
+                "target": address, "handshake": "not-started"}
+    except ValueError as exc:
+        return {"status": "refused", "reason": str(exc), "handshake": "not-started"}
+
+
+def select(sender: dict, target: dict, call=None) -> dict:
+    """Apply the user's selection to exactly two native conversations.
+
+    This is permission to attempt the handshake, never evidence that the peer
+    has answered. The ordinary folder commands retain their separate scope.
+    """
+    from . import collaboration, context, registry
+    why = context.require_sure(call, "connect the selected session") if call else None
+    if why:
+        return {"status": "refused", "reason": why}
+    if "home_id" in target or target.get("remote"):
+        return _select_network(sender, target)
+    current = [r for r in registry.records() if
+               r.get("runtime") == target.get("runtime") and
+               r.get("home") == target.get("home") and
+               r.get("session_id") == target.get("session_id")]
+    if len(current) != 1 or current[0].get("state") in ("ended", "stale"):
+        return {"status": "refused", "reason": "the selected conversation is no longer available"}
+    target = current[0]
+    existing = config.scope_for(sender, target)[0]
+    if existing:
+        return {"status": "permitted", "scope": existing, "handshake": "not-started"}
+    proposal = collaboration.propose(sender, target)
+    name = target.get("name") or target.get("ref")
+    applied = []
+
+    def apply_selection(verdict):
+        now = [r for r in registry.records() if
+               r.get("runtime") == target.get("runtime") and
+               r.get("home") == target.get("home") and
+               r.get("session_id") == target.get("session_id")]
+        if len(now) != 1 or now[0].get("state") in ("ended", "stale"):
+            raise ValueError("the selected conversation ended before applying")
+        applied.append(collaboration.create(sender, now[0], verdict))
+
+    try:
+        verdict, go, kept = consent.take_or_request(
+            sender, "collaborate", name, binding={"pair": proposal["endpoints"]},
+            apply=apply_selection)
+    except ValueError as exc:
+        return {"status": "refused", "reason": str(exc), "handshake": "not-started"}
+    if not go:
+        reason = (consent.shown_refusal(verdict, "collaborating with %s" % name, kept)
+                  if verdict is not None else
+                  "needs your user's selection of %s; ask who to collaborate with, "
+                  "then run the same connect again" % name)
+        return {"status": "selection-required", "reason": reason,
+                "target": target.get("ref"), "handshake": "not-started"}
+    record = applied[0]
+    return {"status": "permitted", "scope": "collaboration:" + record["id"],
+            "target": target.get("ref"), "handshake": "not-started"}
+
+
+def publication(me: dict, visible=True, call=None) -> dict:
+    """Publish this conversation only, without granting communication scope."""
+    from . import context, directory
+    why = context.require_sure(call, "publish this conversation") if call else None
+    if why:
+        return {"status": "refused", "reason": why}
+    if not visible:
+        directory.publish(me, visible=False, user_source="explicit unpublish request")
+        return {"status": "hidden", "visible": False}
+    if directory.is_published(me):
+        return {"status": "published", "visible": True}
+    applied = []
+    try:
+        verdict, go, kept = consent.take_or_request(
+            me, "publish", me.get("name") or me["ref"],
+            binding={"conversation": {k: me.get(k) for k in ("runtime", "home", "session_id")}},
+            apply=lambda words: applied.append(directory.publish(me, user_source=words)))
+    except ValueError as exc:
+        return {"status": "refused", "reason": str(exc)}
+    if not go:
+        return {"status": "selection-required", "visible": False,
+                "reason": consent.shown_refusal(verdict, "publishing this session for discovery", kept)
+                if verdict else "needs your user's instruction to make this session discoverable"}
+    return {"status": "published", "visible": True}

@@ -437,8 +437,16 @@ def _serve(peer: str, request: dict, span=None) -> dict:
             adapters.to_codex(target.get("home"), str(target.get("session_id")), content)
     except adapters.DeliveryError as err:
         # Recorded, so a later `status` from the sender reads error, not queued.
+        ledger.step(msg_id, "remote_stored", False, "%s: %s" % (err.reason, err.detail))
         ledger.failed(msg_id, "%s: %s" % (err.reason, err.detail))
         return {"ok": False, "status": "error", "error": "%s: %s" % (err.reason, err.detail)}
+    # The runtime's own channel took the frame here; the sender's side reads
+    # this machine's answer as remote_sent. `remote_stored` says only that: the
+    # frame is in this machine's channel. It is neither a turn nor a receipt, so
+    # it must not read as the runtime being reached here either (A18-01, G01
+    # review F2): only this side's own receipt does that.
+    ledger.step(msg_id, "queued", True)
+    ledger.step(msg_id, "remote_stored", True)
     wait = clamp_wait(request.get("wait"), MAX_SEND_WAIT)
     state = ledger.wait_for(msg_id, wait) if wait else {}
     return {"ok": True, "status": state.get("status") or "queued",
@@ -530,21 +538,30 @@ def send(sender: dict, spec: str, peer: str, body: str, kind: str, reply_to: str
                "sender": {k: sender.get(k) for k in ("name", "alias", "ref", "session_id",
                                                      "permission_mode")}}
     ledger.queued(msg_id, sender, {"name": spec, "alias": peer, "ref": None, "runtime": "remote"},
-                  "remote:%s" % peer, kind, body)
+                  "remote:%s" % peer, kind, body, reply_to=reply_to, outcome=outcome)
+    ledger.step(msg_id, "accepted")
     timeout = max(30, wait + 20)
     try:
         reply = call(peer, request, timeout=timeout)
     except RemoteUnreached as exc:
+        ledger.step(msg_id, "remote_sent", False, str(exc))
         ledger.failed(msg_id, str(exc))
         return {"ok": False, "status": "error", "error": str(exc), "id": msg_id}
     except RemoteError as exc:
         # The request may have run over there and only the answer was lost;
         # `queued` would claim it is on its way, `error` that it never left.
+        # `remote_sent` is left unset: this side cannot say it reached, so it
+        # must not read as a success (A18-01) -- only `unknown` says what is
+        # actually known.
         ledger.unknown(msg_id, str(exc), settle_after=time.time() + timeout + UNKNOWN_GRACE)
         return {"ok": False, "status": "unknown", "id": msg_id,
                 "error": "%s; it may or may not have arrived. Check with `xsm status %s` before "
                          "sending it again: a new send is a new message and may run twice"
                          % (exc, msg_id)}
+    # The peer's xsm answered, so the request reached it. Whether it is *stored*
+    # there is the peer's own step, on its own ledger -- this side never claims
+    # the far machine's queue (A18-01).
+    ledger.step(msg_id, "remote_sent", True, reply.get("error"))
     _settle(msg_id, peer, reply)
     reply["id"] = msg_id
     return reply

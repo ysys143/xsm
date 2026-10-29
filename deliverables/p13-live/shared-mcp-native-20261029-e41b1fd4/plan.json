@@ -1,0 +1,14 @@
+{
+  "label": "A23-03 real native subagent MCP process-sharing observation",
+  "root": "/private/tmp/shared-mcp-native-yjfl3mjl",
+  "public": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/deliverables/p13-live/shared-mcp-native-20261029-e41b1fd4",
+  "source": "/private/tmp/xsm-p13-postqa-frozen-bukwksw6",
+  "current_CLI": "codex-cli 0.164.0",
+  "factory_args_and_env": "post-claims-collaboration Actor.start, recording-only per-process stdio proxy",
+  "no_feature_changes": true,
+  "multi_agent_listed": "stable true in local features list; runtime exposure remains to observe",
+  "proxy": "record exact bytes, one actual product server per runtime request; no fan-in, no metadata/result/body/ACK rewrite",
+  "initial_registration": "only actual native CID and verified own Codex ancestor PID/lstart/home; provider source ancestry required for subagent CID",
+  "separate_conditions": "other-home same-ID and inherited foreign-harness env only after real shared observation if feasible; no simulation substitution",
+  "deadline_utc": "2026-10-28T21:01:16+00:00"
+}

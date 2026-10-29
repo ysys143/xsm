@@ -1,0 +1,767 @@
+{
+  "method": "Actual commands, local subscription runtimes, and structured results. Personal paths and endpoint display names redacted. User explicitly reported performing login and signup. No claim of an isolated OS clean-room acceptance test.",
+  "versions": {
+    "reason_cli": "0.2.557",
+    "engine": "0.12.10",
+    "claude_code": "2.1.309",
+    "codex": "0.163.0"
+  },
+  "evidence": {
+    "baseline-comparison.json": [
+      {
+        "path": ".codex-3/config.toml",
+        "before_exists": true,
+        "after_exists": true,
+        "before_sha256": "4d37cdafb79cf35301ea4023bec454eb6268ea255b7d559e1d6e6768645973bf",
+        "after_sha256": "fd1dce253ec8a7cb614625ca09ea478de66c146ca546002c2b1f141342756ad1",
+        "changed": true
+      },
+      {
+        "path": ".codex-3/hooks.json",
+        "before_exists": true,
+        "after_exists": true,
+        "before_sha256": "38de19cea608595b18984471c5aa3084232cac675647ee9a3a97a7d577c32246",
+        "after_sha256": "5d48305d304f29b21abc7bb214e378819f76ba437a9e442d04a3ace1f89d04d7",
+        "changed": true
+      },
+      {
+        "path": ".claude/settings.json",
+        "before_exists": true,
+        "after_exists": true,
+        "before_sha256": "a936c7e99a5475edd60785a8ca2748df4ce6dcf9310b64c85cef01a330364858",
+        "after_sha256": "3ae127b8de7b180358291a7898bc9d534589e585ed02765478ee953c5a558a61",
+        "changed": true
+      },
+      {
+        "path": ".claude.json",
+        "before_exists": true,
+        "after_exists": true,
+        "before_sha256": "1d3a4c41f9da92ec1c761abbab6c28ed67566bb9e0280903ce84849ffc015495",
+        "after_sha256": "2e3a717281fc6be9eb691c1214b3341dce50c607c38e78160870a8966c5e2e90",
+        "changed": true
+      },
+      {
+        "path": ".cursor/mcp.json",
+        "before_exists": false,
+        "after_exists": true,
+        "before_sha256": null,
+        "after_sha256": "a75df240c22126a5ea2e8a8d4d0a3f412a68251b59ad7215edc60ada52320827",
+        "changed": true
+      },
+      {
+        "path": ".cursor/hooks.json",
+        "before_exists": true,
+        "after_exists": true,
+        "before_sha256": "1637469f80660305d029f05c4f57241b0a3be3d6d029186bb294b384e7d2e6d0",
+        "after_sha256": "459a1dd3de6958d25f8fccc1576272e6572710250b81338103cec679535f4340",
+        "changed": true
+      },
+      {
+        "path": ".gemini/settings.json",
+        "before_exists": true,
+        "after_exists": true,
+        "before_sha256": "334763eecac570db4723f6b4e58ae1c45a9e38885af19764d0625e973ef02a9a",
+        "after_sha256": "696c4f6e12afa8f6fcd36608c668f508a2181f3b594d5ed6cc7960172fd2f42a",
+        "changed": true
+      },
+      {
+        "path": ".config/opencode/opencode.json",
+        "before_exists": false,
+        "after_exists": true,
+        "before_sha256": null,
+        "after_sha256": "940c7aa9306ef0ad42404e80ed873e451fe705eb8bd6ba57006e2122369c1f5e",
+        "changed": true
+      },
+      {
+        "path": ".zshrc",
+        "before_exists": true,
+        "after_exists": true,
+        "before_sha256": "990bcb9c836312235d70c39eb063c4d1ebd85ef27cbce3b588111c31288398aa",
+        "after_sha256": "990bcb9c836312235d70c39eb063c4d1ebd85ef27cbce3b588111c31288398aa",
+        "changed": false
+      },
+      {
+        "path": ".zprofile",
+        "before_exists": true,
+        "after_exists": true,
+        "before_sha256": "bef754bd4ccb1167699273caf4695d8d6ed07369395b52f7ed9796b81207743f",
+        "after_sha256": "bef754bd4ccb1167699273caf4695d8d6ed07369395b52f7ed9796b81207743f",
+        "changed": false
+      }
+    ],
+    "changed-paths.json": [
+      {
+        "path": ".codex-3/config.toml",
+        "before_exists": true,
+        "after_exists": true
+      },
+      {
+        "path": ".codex-3/hooks.json",
+        "before_exists": true,
+        "after_exists": true
+      },
+      {
+        "path": ".claude/settings.json",
+        "before_exists": true,
+        "after_exists": true
+      },
+      {
+        "path": ".claude.json",
+        "before_exists": true,
+        "after_exists": true
+      },
+      {
+        "path": ".cursor/mcp.json",
+        "before_exists": false,
+        "after_exists": true
+      },
+      {
+        "path": ".cursor/hooks.json",
+        "before_exists": true,
+        "after_exists": true
+      },
+      {
+        "path": ".gemini/settings.json",
+        "before_exists": true,
+        "after_exists": true
+      },
+      {
+        "path": ".config/opencode/opencode.json",
+        "before_exists": false,
+        "after_exists": true
+      }
+    ],
+    "cleanup-result.json": [
+      {
+        "process_record": "serve-claude-pid",
+        "pid": 66002,
+        "state": "termination sent to own process group",
+        "remaining_state": "not running"
+      },
+      {
+        "process_record": "serve-codex-pid",
+        "pid": 66447,
+        "state": "termination sent to own process group",
+        "remaining_state": "not running"
+      },
+      {
+        "process_record": "native-claude-live-pid",
+        "pid": 98699,
+        "state": "termination sent to own process group",
+        "remaining_state": "not running"
+      },
+      {
+        "isolated_state": "isolated-engine-a",
+        "state": "termination sent to isolated engine",
+        "pid": 80282,
+        "remaining_state": "not running"
+      },
+      {
+        "isolated_state": "isolated-engine-b",
+        "state": "termination sent to isolated engine",
+        "pid": 80621,
+        "remaining_state": "not running"
+      },
+      {
+        "isolated_state": "standalone-state",
+        "state": "termination sent to isolated engine",
+        "pid": 27160,
+        "remaining_state": "not running"
+      }
+    ],
+    "cli-recovery.json": {
+      "case": "claude-cli-recovery-to-codex",
+      "exit_code": 0,
+      "elapsed_seconds": 4.2,
+      "stdout": "EVAL_CLI_RECOVERY_9537 경로는 첫 단계에서 막혀 실행하지 못했습니다.\n\n**사용 경로와 결과**\n- Bash 실행: `<HOME>/.local/bin/reason network who`\n- 결과: `This command requires approval` (권한 승인 필요 오류, 명령이 실행되지 않음)\n\n**수행하지 않은 단계**\n- `<HOME>/.local/bin/reason network user/codex \"...\" --timeout 60` 실행: 보류. 첫 단계가 실패해서 Codex 세션 확인이 안 된 상태이고, 이 명령은 다른 세션에 메시지를 보내는 외부 발신 작업이므로 승인 없이 진행하지 않았습니다.\n- 받은 답장: 없음. `EVAL_CLI_RECOVERY_9537`은 아직 받지 못했습니다.\n\n**그 외**\n- 권한 규칙이나 설정은 바꾸지 않았고, 승인 요구를 우회하지도 않았습니다.\n- 파일은 수정하지 않았습니다.\n- `xsm`은 사용하지 않았습니다.\n- 이 명령을 실행하려면 이 세션에서 `reason network who` 실행을 승인해 주셔야 합니다. 승인되면 같은 두 단계를 이어서 진행하겠습니다.\n",
+      "stderr": ""
+    },
+    "cli-to-claude.json": {
+      "case": "cli-to-claude",
+      "exit_code": 0,
+      "elapsed_seconds": 4.25,
+      "stdout": "EVAL_CLAUDE_ACK\n경로: <EVAL_ROOT>/reason-eval-frontend\n\n실제 작업 디렉터리를 `pwd`와 `git rev-parse --show-toplevel`로 확인했고, 두 값이 같습니다. 저장소 상태는 main 브랜치, 커밋 없음, 미추적 파일 `README.md` 1개입니다.\n\n요청대로 파일은 수정하지 않았고 다른 세션에도 연락하지 않았습니다. 읽기 전용 명령 두 개만 실행했습니다.\n",
+      "stderr": ""
+    },
+    "cli-to-codex.json": {
+      "case": "cli-to-codex",
+      "exit_code": 0,
+      "elapsed_seconds": 11.77,
+      "stdout": "EVAL_CODEX_ACK\n\n확인한 실제 작업 디렉터리: `<EVAL_ROOT>/reason-eval-backend`\n\n파일을 수정하거나 다른 세션에 연락하지 않았습니다.\n",
+      "stderr": ""
+    },
+    "codex-home-route-comparison.json": [
+      {
+        "route": "default-home",
+        "exit_code": 1,
+        "elapsed_seconds": 0.363,
+        "stdout": "",
+        "stderr": "Error: failed to queue session message: thread/queue/add failed: failed to read thread: invalid thread-store request: no rollout found for thread id 01a1675c-8093-7b20-bf66-ee5bbb86d1f2 (code -32603)\n"
+      },
+      {
+        "route": "actual-home",
+        "exit_code": 0,
+        "elapsed_seconds": 0.299,
+        "stdout": "Queued message 01a16773-8a61-7d11-9df9-b4ec42a51088 for thread 01a1675c-8093-7b20-bf66-ee5bbb86d1f2.\n",
+        "stderr": ""
+      }
+    ],
+    "codex-hook-gate.json": {
+      "time": "2026-10-23T06:04:40.186237+00:00",
+      "event": "native-codex-interactive-hook-trust-gate",
+      "cli_version": "0.163.0",
+      "message": "Hooks need review. 5 hooks are new or changed. Hooks can run outside the sandbox after you trust them.",
+      "choices": [
+        "Review hooks",
+        "Trust all and continue",
+        "Continue without trusting (hooks won't run)"
+      ],
+      "user_approval": "Reason 훅 5개 신뢰 허용",
+      "source": "exec PTY session 82565",
+      "approval_source": "user response to asynchronous question",
+      "approval_received_at": "2026-10-23T06:20:58.348114+00:00"
+    },
+    "coexistence-boundary.json": {
+      "preexisting_crossSessionInbound": "accept",
+      "preexisting_default_permission_mode": "auto",
+      "xsm_preserved_during_evaluation": true,
+      "interpretation": "Observed success is coexistence with existing settings; no claim of behavior after xsm uninstall or on a fresh OS."
+    },
+    "cross-agent-1.json": {
+      "case": "codex-discovers-and-messages-claude",
+      "exit_code": 0,
+      "elapsed_seconds": 28.41,
+      "stdout": "Reason Network 왕복 연결을 확인했습니다.\n\n- 실제 사용 MCP 도구: `mcp__reason_network__list_team`, `mcp__reason_network__send_message`, `mcp__reason_network__check_inbox`\n- 수신 대상: `user/claude` — 목록 설명이 `Claude Code · ready for work`인 세션입니다. 목록에 `worker` 필드는 표시되지 않아 `worker=true`는 직접 확인하지 못했습니다.\n- 발송 메시지 ID: `01M5KNBCS7JVTBNWYB5K1EC8YN`\n- 실제 답장: `EVAL_CROSS_ACK_7319`\n- 답장 ID: `01M5KNBF02VQAP756SKHYC95TF`. 발신자는 `user/claude`이며 `reply_to`가 발송 메시지 ID와 일치했습니다.\n\n파일 수정과 xsm 도구 사용은 없었습니다.\n",
+      "stderr": ""
+    },
+    "cross-agent-2.json": {
+      "case": "claude-discovers-and-messages-codex",
+      "exit_code": 0,
+      "elapsed_seconds": 5.81,
+      "stdout": "EVAL_REVERSE_ACK_8426 연결 평가는 실패했습니다. Reason Network MCP 도구가 세션에 없어서 메시지를 보내거나 답장을 받을 수 없었습니다.\n\n**사용 도구와 결과**\n- `ToolSearch` \"list_team\": 일치하는 지연 로드 도구 없음\n- `ToolSearch` \"Reason Network list_team send_message check_inbox\": 일치하는 도구 없음\n- `ToolSearch` \"select:mcp__reason-network__list_team,mcp__reason-network__send_message,mcp__reason-network__check_inbox\": 일치하는 도구 없음\n\n**수행하지 않은 단계**\n- `list_team`으로 Codex 평가 세션(`codex`)을 찾는 단계: 도구가 없어 실행 불가\n- `send_message`로 연결 평가 메시지를 보내는 단계: 실행 불가\n- `check_inbox`로 답장을 기다리는 단계: 실행 불가\n- `xsm`은 사용하지 않았습니다.\n\n**그 외**\n- 파일은 수정하지 않았습니다.\n- MCP 설정은 건드리지 않았고, 우회 경로도 쓰지 않았습니다.\n- 현재 세션의 도구 목록에는 Reason Network 계열 도구가 없습니다. 이 세션에 Reason Network MCP가 연결되어 있지 않은 것으로 보입니다. 연결을 확인한 뒤 다시 시도하면 평가를 이어서 할 수 있습니다.\n",
+      "stderr": ""
+    },
+    "cross-agent-tool-evidence.json": [
+      {
+        "kind": "tool-call",
+        "tool": "exec",
+        "input": "text(await tools.mcp__reason_network__list_team({}));\n"
+      },
+      {
+        "kind": "tool-output",
+        "tool": "exec",
+        "output": "[{'type': 'input_text', 'text': 'Script completed\\nWall time 0.1 seconds\\nOutput:\\n'}, {'type': 'input_text', 'text': '{\"content\":[{\"type\":\"text\",\"text\":\"team <NETWORK> · you are user on <MACHINE>\\\\njaesol (verified) · <MACHINE> · this machine\\\\n  ask-15a0a8                     cli          idle 1m   ysys143/xsm@main      turn\\\\n  ask-16f029                     cli          idle 10s  ysys143/xsm@main      turn\\\\n  ask-fdbd78                     cli          idle 1m   ysys143/xsm@main      turn\\\\n  claude                         cli          idle 1m   ysys143/xsm@main      turn\\\\n                                 doing: Claude Code · ready for work\\\\n  claude-sub-api-claude          claude-code  idle 11h  claude-sub-api        push\\\\n                                 doing: 문서 정리 내용\\\\n  codex                          cli          busy 10s  ysys143/xsm@main      turn\\\\n                                 doing: Codex · for user/ask-16f029: Reason Network의 실제 에이전트 간 연결 평가입니다. 파일은 수정하지 마세요. Reason Network MCP의 list_team을\\\\n  reason-eval-backend-codex      codex        up 0s     reason-eval-backend   pull · ← you\\\\n  reason-eval-frontend-claude    claude-code  idle 1m   reason-eval-frontend  push\\\\n  reason-eval-frontend-claude-2  claude-code  idle 1m   reason-eval-frontend  push\\\\nInvite people with this line: Join the Reason Network: [PRIVATE_INVITE_LINK] = sees messages right away, even when idle · turn = at its next step · pull = when it checks\\\\n\"}],\"isError\":false}'}]"
+      },
+      {
+        "kind": "tool-call",
+        "tool": "exec",
+        "input": "text(await tools.mcp__reason_network__send_message({to:\"user/claude\", message:\"연결 평가입니다. 다른 도구나 파일 수정 없이 EVAL_CROSS_ACK_7319 한 줄을 발신 세션에 답장해 주세요.\"}));\n"
+      },
+      {
+        "kind": "tool-output",
+        "tool": "exec",
+        "output": "[{'type': 'input_text', 'text': 'Script completed\\nWall time 0.1 seconds\\nOutput:\\n'}, {'type': 'input_text', 'text': '{\"content\":[{\"type\":\"text\",\"text\":\"→ user/claude: delivered: the session was waiting for messages\\\\nmessage id 01M5KNBCS7JVTBNWYB5K1EC8YN\\\\n\"}],\"isError\":false}'}]"
+      },
+      {
+        "kind": "tool-call",
+        "tool": "exec",
+        "input": "text(await tools.mcp__reason_network__check_inbox({wait_secs:50}));\n"
+      },
+      {
+        "kind": "tool-output",
+        "tool": "exec",
+        "output": "[{'type': 'input_text', 'text': 'Script completed\\nWall time 0.2 seconds\\nOutput:\\n'}, {'type': 'input_text', 'text': '{\"content\":[{\"type\":\"text\",\"text\":\"<reason-message from=\\\\\"user/claude\\\\\" agent=\\\\\"cli\\\\\" repo=\\\\\"ysys143/xsm\\\\\" reply_to=\\\\\"01M5KNBCS7JVTBNWYB5K1EC8YN\\\\\" id=\\\\\"01M5KNBF02VQAP756SKHYC95TF\\\\\">\\\\nEVAL_CROSS_ACK_7319\\\\n</reason-message>\\\\nFrom user\\'s agent. Reply if useful with send_message to \\\\\"user/claude\\\\\".\"}],\"isError\":false}'}]"
+      }
+    ],
+    "daemon-restart-result.json": {
+      "case": "daemon-restart",
+      "restart_exit": 0,
+      "stdout": "",
+      "stderr": "",
+      "who_exit": 0,
+      "aliases_after_restart": [],
+      "elapsed_seconds": 0.668
+    },
+    "doctor-final.json": {
+      "exit_code": 0,
+      "stdout": "reason-network 0.12.10 at ~/.reason/bin/reason-network\n[UI_SYMBOL] daemon running; team <NETWORK> with 0 other machine(s), 0 connected\n  user (verified)  <MACHINE>  this machine\n[UI_SYMBOL] login service: installed\n[UI_SYMBOL] Claude Code: wired up\n[UI_SYMBOL] Codex: wired up\n[UI_SYMBOL] Cursor: wired up\n[UI_SYMBOL] Gemini CLI: wired up\n[UI_SYMBOL] opencode: wired up\n[UI_SYMBOL] pi: wired up\n[UI_SYMBOL] DeepSeek Harness: wired up\n[UI_SYMBOL] Reason: wired up\n",
+      "stderr": ""
+    },
+    "install-result.json": {
+      "exit_code": 0,
+      "curl_exit_code": 0,
+      "elapsed_seconds": 56.94
+    },
+    "isolated-join-result.json": {
+      "init_exit": 0,
+      "join_exit": 0,
+      "elapsed_seconds": 4.98
+    },
+    "isolated-transport-results.json": [
+      {
+        "direction": "a->b",
+        "send_exit": 0,
+        "listen_exit": 0,
+        "marker_received": true,
+        "elapsed_seconds": 0.039,
+        "send_output": "→ eval-b/receiver: delivered: the session was waiting for messages\nmessage id 01M5KNMV78QZTWRBA471NNQZKC\n",
+        "listen_output": "<reason-message from=\"eval-a/terminal@<MACHINE>\" agent=\"cli\" repo=\"ysys143/xsm\" id=\"01M5KNMV78QZTWRBA471NNQZKC\">\nENGINE_A_TO_B_5197\n</reason-message>\nFrom eval-a, typed in a terminal. Reply if useful: <HOME>/.reason/bin/reason-network send eval-a/terminal@<MACHINE> --from eval-b/receiver \"<reply>\"\n",
+        "stderr": ""
+      },
+      {
+        "direction": "b->a",
+        "send_exit": 0,
+        "listen_exit": 0,
+        "marker_received": true,
+        "elapsed_seconds": 0.033,
+        "send_output": "→ eval-a/receiver: delivered: the session was waiting for messages\nmessage id 01M5KNMVFSWC2CSC1CMZNV6PRH\n",
+        "listen_output": "<reason-message from=\"eval-b/terminal@<MACHINE>\" agent=\"cli\" repo=\"ysys143/xsm\" id=\"01M5KNMVFSWC2CSC1CMZNV6PRH\">\nENGINE_B_TO_A_6298\n</reason-message>\nFrom eval-b, typed in a terminal. Reply if useful: <HOME>/.reason/bin/reason-network send eval-b/terminal@<MACHINE> --from eval-a/receiver \"<reply>\"\n",
+        "stderr": ""
+      }
+    ],
+    "multiple-codex-homes.json": [
+      {
+        "home": ".codex",
+        "exit_code": 1,
+        "configured": false,
+        "stderr": "Error: No MCP server named 'reason-network' found."
+      },
+      {
+        "home": ".codex-2",
+        "exit_code": 1,
+        "configured": false,
+        "stderr": "Error: No MCP server named 'reason-network' found."
+      },
+      {
+        "home": ".codex-3",
+        "exit_code": 0,
+        "configured": true,
+        "stderr": ""
+      }
+    ],
+    "native-claude-idle-wake-evidence-repeat.json": {
+      "case": "native-claude-idle-wake-evidence-repeat",
+      "before_session": {
+        "address": "user/reason-native-claude",
+        "name": "reason-native-claude",
+        "person": "user",
+        "machine": "<MACHINE>",
+        "agent": "claude-code",
+        "cwd": "<EVAL_ROOT>/reason-eval-frontend",
+        "repo": "reason-eval-frontend",
+        "branch": null,
+        "status": "idle",
+        "since": 1792735602305,
+        "doing": null,
+        "isMe": false,
+        "worker": false,
+        "tier": "push"
+      },
+      "exit_code": 1,
+      "elapsed_seconds": 90.14,
+      "stdout": "",
+      "stderr": "No answer from user/reason-native-claude within 90s.\n"
+    },
+    "native-claude-idle-wake.json": {
+      "case": "native-claude-idle-wake",
+      "exit_code": 0,
+      "elapsed_seconds": 4.38,
+      "stdout": "EVAL_NATIVE_WAKE_2759\n",
+      "stderr": ""
+    },
+    "native-claude-live-tool-evidence.json": [
+      {
+        "event_index": 34,
+        "kind": "tool_call",
+        "name": "mcp__reason-network__list_team",
+        "input": {}
+      },
+      {
+        "event_index": 37,
+        "kind": "turn_complete",
+        "is_error": false,
+        "result": "READY_NATIVE_CLAUDE_1648"
+      },
+      {
+        "event_index": 45,
+        "kind": "tool_call",
+        "name": "mcp__reason-network__send_message",
+        "input": {
+          "to": "user/ask-4df8e9",
+          "message": "EVAL_NATIVE_WAKE_2759",
+          "reply_to": "01M5KNWM9K8NFV5N3Q8EW1GPQS"
+        }
+      },
+      {
+        "event_index": 48,
+        "kind": "turn_complete",
+        "is_error": false,
+        "result": "EVAL_NATIVE_WAKE_2759"
+      },
+      {
+        "event_index": 55,
+        "kind": "tool_call",
+        "name": "mcp__reason-network__send_message",
+        "input": {
+          "to": "user/ask-5f2f20",
+          "message": "EVAL_NATIVE_WAKE_6381",
+          "reply_to": "01M5KPM6QZWRHRDWKZWEDS9ESS"
+        }
+      },
+      {
+        "event_index": 56,
+        "kind": "permission_denied",
+        "message": "Permission for this action was denied by the Claude Code auto mode classifier. Reason: [External System Writes]. If you have other tasks that don't depend on this action, continue working on those. IMPORTANT: You *may* attempt to accomplish this action using other tools that might naturally be used to accomplish this goal, e.g. using head instead of cat. But you *should not* attempt to work around this denial in malicious ways, e.g. do not use your ability to run tests to execute non-test actions. You should only try to work around this restriction in reasonable ways that do not attempt to bypass the intent behind this denial. If you believe this capability is essential to complete the user's request, first try a safer method. Get as much of the rest of the task done as you can, then STOP and explain to the user what you were trying to do and why you need this permission. Let the user decide how to proceed. To allow this type of action in the future, the user can add a permission rule for mcp__reason-network__send_message to their settings."
+      },
+      {
+        "event_index": 57,
+        "kind": "tool_result",
+        "is_error": true,
+        "content": "Permission for this action was denied by the Claude Code auto mode classifier. Reason: [External System Writes]. If you have other tasks that don't depend on this action, continue working on those. IMPORTANT: You *may* attempt to accomplish this action using other tools that might naturally be used to accomplish this goal, e.g. using head instead of cat. But you *should not* attempt to work around this denial in malicious ways, e.g. do not use your ability to run tests to execute non-test actions. You should only try to work around this restriction in reasonable ways that do not attempt to bypass the intent behind this denial. If you believe this capability is essential to complete the user's request, first try a safer method. Get as much of the rest of the task done as you can, then STOP and explain to the user what you were trying to do and why you need this permission. Let the user decide how to proceed. To allow this type of action in the future, the user can add a permission rule for mcp__reason-network__send_message to their settings."
+      },
+      {
+        "event_index": 63,
+        "kind": "turn_complete",
+        "is_error": false,
+        "result": "EVAL_NATIVE_WAKE_6381 답장이 전송되지 않았습니다. `mcp__reason-network__send_message` 호출이 자동 모드 분류기에 의해 거부되었습니다(사유: External System Writes). 같은 방법으로 재시도하거나 우회하지 않겠습니다.\n\n- 대상: `user/ask-5f2f20`\n- 보내려던 내용: `EVAL_NATIVE_WAKE_6381` (reply_to `01M5KPM6QZWRHRDWKZWEDS9ESS`)\n- 이 응답은 사용자님이 허용한 범위(평가 메시지 발신 세션에 한 번 ACK)에 해당하는데, 권한 규칙이 이 호출을 막고 있습니다.\n\n이 세션에서 Reason Network 메시지 전송을 허용하려면 사용자님이 설정에 `mcp__reason-network__send_message` 권한 규칙을 추가하셔야 합니다. 허용해 주시면 같은 한 줄 답장을 다시 보내겠습니다. 이전 답장(`01M5KNW...` 요청에 대한 EVAL_NATIVE_WAKE_2759)은 정상 전달되었습니다. 파일이나 설정은 변경하지 않았습니다."
+      }
+    ],
+    "native-claude-probe2-result.json": {
+      "case": "native-claude-probe2",
+      "exit_code": 0,
+      "elapsed_seconds": 7.25,
+      "result": "mcp__reason-network__list_team: 성공. 팀 세션 목록을 정상적으로 받았습니다(호출 1회).",
+      "tool_calls": [
+        "ToolSearch",
+        "mcp__reason-network__list_team"
+      ],
+      "available_reason_tools": [
+        "mcp__reason-network__ask_user",
+        "mcp__reason-network__list_team",
+        "mcp__reason-network__send_message"
+      ],
+      "stderr": ""
+    },
+    "native-claude-tool-evidence.json": [
+      {
+        "kind": "call",
+        "name": "ToolSearch",
+        "input": {
+          "query": "select:mcp__reason-network__list_team",
+          "max_results": 1
+        }
+      },
+      {
+        "kind": "result",
+        "is_error": false,
+        "has_team_directory": false,
+        "preview": "[{'type': 'tool_reference', 'tool_name': 'mcp__reason-network__list_team'}]"
+      },
+      {
+        "kind": "call",
+        "name": "mcp__reason-network__list_team",
+        "input": {}
+      },
+      {
+        "kind": "result",
+        "is_error": false,
+        "has_team_directory": true,
+        "preview": "[{'type': 'text', 'text': 'team <NETWORK> · you are user on <MACHINE>\\njaesol (verified) · jaesolui-m"
+      }
+    ],
+    "native-codex-interactive-tool-evidence.json": [
+      {
+        "kind": "tool_call",
+        "tool": "exec",
+        "input": "const result = await tools.mcp__reason_network__list_team({}); for (const c of result.content ?? []) if (c.type === \"text\") text(c.text);\n"
+      },
+      {
+        "kind": "tool_output",
+        "tool": "exec",
+        "output": [
+          {
+            "type": "input_text",
+            "text": "Script completed\nWall time 0.1 seconds\nOutput:\n"
+          },
+          {
+            "type": "input_text",
+            "text": "team <NETWORK> · you are user on <MACHINE>\nuser (verified) · <MACHINE> · this machine\n  ask-4df8e9                       cli          idle 15m  ysys143/xsm@main      turn\n  ask-5f2f20                       cli          idle 2m   ysys143/xsm@main      turn\n  ask-f4dbf4                       cli          idle 15m  ysys143/xsm@main      turn\n  claude                           cli          idle 15m  ysys143/xsm@main      turn\n                                   doing: Claude Code · ready for work\n  claude-sub-api-claude            claude-code  idle 11h  claude-sub-api        push\n                                   doing: 문서 정리 내용\n  codex                            cli          idle 14m  ysys143/xsm@main      turn\n                                   doing: Codex · ready for work\n  cross-session-messaging-codex    codex        busy 46s  ysys143/xsm@main      push\n  cross-session-messaging-codex-2  codex        busy 10s  ysys143/xsm@main      push · ← you\n  reason-eval-frontend-claude      claude-code  idle 18m  reason-eval-frontend  push\n  reason-eval-frontend-claude-2    claude-code  idle 24m  reason-eval-frontend  push\n  reason-eval-frontend-claude-3    claude-code  idle 24m  reason-eval-frontend  push\n  reason-native-claude             claude-code  idle 2m   reason-eval-frontend  push\nInvite people with this line: Join the Reason Network: [PRIVATE_INVITE_LINK]\npush = sees messages right away, even when idle · turn = at its next step · pull = when it checks\n"
+          }
+        ]
+      }
+    ],
+    "native-codex-interactive-wake.json": {
+      "case": "native-codex-interactive-idle-wake-after-trust",
+      "before_session": {
+        "address": "user/cross-session-messaging-codex-2",
+        "name": "cross-session-messaging-codex-2",
+        "person": "user",
+        "machine": "<MACHINE>",
+        "agent": "codex",
+        "cwd": "~/Documents/GitHub/cross-session-messaging",
+        "repo": "ysys143/xsm",
+        "branch": "main",
+        "status": "idle",
+        "since": 1792736506906,
+        "doing": null,
+        "tier": "push",
+        "unread": 0,
+        "is_me": false
+      },
+      "exit_code": 1,
+      "elapsed_seconds": 90.11,
+      "stdout": "",
+      "stderr": "No answer from user/cross-session-messaging-codex-2 within 90s.\n",
+      "target_identity_evidence": "TUI /status thread matched the engine sessions table read-only; CLI who omitted the same live native session."
+    },
+    "native-codex-result.json": {
+      "case": "native-codex-mcp",
+      "exit_code": 0,
+      "elapsed_seconds": 19.38,
+      "result": [
+        "Reason Network MCP의 `list_team` 도구가 로드되어 있는지 확인하겠습니다.\n",
+        "`mcp__reason_network__list_team`을 정확히 1회 호출했고 성공했습니다(`isError: false`). 팀 세션 목록이 반환됐습니다."
+      ],
+      "stderr": "Reading additional input from stdin...\n2026-10-23T06:00:34.980344Z ERROR codex_api::endpoint::responses_websocket: failed to connect to websocket: HTTP error: 426 Upgrade Required, url: ws://127.0.0.1:10100/v1/responses\n"
+    },
+    "native-codex-terminal-cleanup.json": {
+      "exit_code": 0,
+      "disconnected": true,
+      "diagnostic_marker_seen": true,
+      "source": "actual write_stdin receipt for evaluation PTY 82565; account and terminal display omitted"
+    },
+    "native-codex-tool-evidence.json": [
+      {
+        "type": "item.started",
+        "item": {
+          "id": "item_1",
+          "type": "mcp_tool_call",
+          "server": "reason-network",
+          "tool": "list_team",
+          "arguments": {},
+          "result": null,
+          "error": null,
+          "status": "in_progress"
+        }
+      },
+      {
+        "type": "item.completed",
+        "item": {
+          "id": "item_1",
+          "type": "mcp_tool_call",
+          "server": "reason-network",
+          "tool": "list_team",
+          "arguments": {},
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "team <NETWORK> · you are user on <MACHINE>\nuser (verified) · <MACHINE> · this machine\n  ask-15a0a8                     cli          idle 4m   ysys143/xsm@main      turn\n  ask-16f029                     cli          idle 3m   ysys143/xsm@main      turn\n  ask-60fac2                     cli          idle 1m   ysys143/xsm@main      turn\n  ask-fdbd78                     cli          idle 4m   ysys143/xsm@main      turn\n  claude                         cli          idle 1m   ysys143/xsm@main      turn\n                                 doing: Claude Code · ready for work\n  claude-sub-api-claude          claude-code  idle 11h  claude-sub-api        push\n                                 doing: 문서 정리 내용\n  codex                          cli          idle 3m   ysys143/xsm@main      turn\n                                 doing: Codex · ready for work\n  reason-eval-backend-codex-2    codex        up 0s     reason-eval-backend   pull · ← you\n  reason-eval-frontend-claude    claude-code  idle 1m   reason-eval-frontend  push\n  reason-eval-frontend-claude-2  claude-code  idle 3m   reason-eval-frontend  push\n  reason-eval-frontend-claude-3  claude-code  idle 3m   reason-eval-frontend  push\n  reason-eval-frontend-claude-4  claude-code  busy 10s  reason-eval-frontend  push\nInvite people with this line: Join the Reason Network: [PRIVATE_INVITE_LINK]\npush = sees messages right away, even when idle · turn = at its next step · pull = when it checks\n"
+              }
+            ],
+            "structured_content": null
+          },
+          "error": null,
+          "status": "completed"
+        }
+      }
+    ],
+    "native-codex-wake-diagnosis.json": {
+      "time": "2026-10-23T06:29:20.238196+00:00",
+      "event": "native-codex-idle-delivery-diagnosis",
+      "engine_version": "0.12.10",
+      "reason_cli_version": "0.2.557",
+      "codex_version": "0.163.0",
+      "codex_home": ".codex-3",
+      "delivery_error": "failed to read thread: invalid thread-store request: no rollout found for thread id",
+      "fallback": "falling back to hooks",
+      "service_environment_names": [
+        "PATH",
+        "REASON_NETWORK_REASON_BIN"
+      ],
+      "service_has_CODEX_HOME": false,
+      "cause_status": "nondefault home mismatch suspected; direct underlying route comparison not yet performed",
+      "source": "native-codex-wake-daemon-extract.txt; LaunchAgent plist; TUI /status"
+    },
+    "reconnect-codex.json": {
+      "case": "serve-codex-after-daemon-restart",
+      "exit_code": 0,
+      "elapsed_seconds": 10.31,
+      "stdout": "EVAL_RECONNECT_3861\n",
+      "stderr": ""
+    },
+    "reconnect-log-extract.json": [
+      {
+        "role": "claude",
+        "lines": [
+          "network: Reason Network on this computer closed the connection; reconnecting"
+        ]
+      },
+      {
+        "role": "codex",
+        "lines": [
+          "network: Reason Network on this computer closed the connection; reconnecting"
+        ]
+      }
+    ],
+    "serve-claude-failure-evidence.json": [
+      {
+        "kind": "tool_call",
+        "name": "ToolSearch",
+        "input": {
+          "query": "Reason Network list_team send_message check_inbox",
+          "max_results": 10
+        }
+      },
+      {
+        "kind": "tool_result",
+        "is_error": false,
+        "text": "No matching deferred tools found"
+      },
+      {
+        "kind": "tool_call",
+        "name": "ToolSearch",
+        "input": {
+          "query": "list_team",
+          "max_results": 10
+        }
+      },
+      {
+        "kind": "tool_result",
+        "is_error": false,
+        "text": "No matching deferred tools found"
+      },
+      {
+        "kind": "tool_call",
+        "name": "ToolSearch",
+        "input": {
+          "query": "select:mcp__reason-network__list_team,mcp__reason-network__send_message,mcp__reason-network__check_inbox",
+          "max_results": 5
+        }
+      },
+      {
+        "kind": "tool_result",
+        "is_error": false,
+        "text": "No matching deferred tools found"
+      },
+      {
+        "kind": "tool_call",
+        "name": "ToolSearch",
+        "input": {
+          "query": "list_team",
+          "max_results": 10
+        }
+      },
+      {
+        "kind": "tool_call",
+        "name": "ToolSearch",
+        "input": {
+          "query": "select:mcp__reason-network__list_team,mcp__reason-network__send_message,mcp__reason-network__check_inbox",
+          "max_results": 5
+        }
+      },
+      {
+        "kind": "tool_result",
+        "is_error": false,
+        "text": "No matching deferred tools found"
+      },
+      {
+        "kind": "tool_result",
+        "is_error": false,
+        "text": "No matching deferred tools found"
+      },
+      {
+        "kind": "tool_call",
+        "name": "Bash",
+        "input": {
+          "command": "<HOME>/.local/bin/reason network who",
+          "description": "List Reason Network peers via official CLI"
+        }
+      },
+      {
+        "kind": "tool_result",
+        "is_error": true,
+        "text": "This command requires approval"
+      }
+    ],
+    "standalone-install-result.json": {
+      "case": "standalone-engine-install-and-init",
+      "exit_code": 0,
+      "elapsed_seconds": 4.43,
+      "binary_version": "reason-network 0.12.10",
+      "team_created": true,
+      "user_input": false,
+      "browser_opened_by_this_script": false,
+      "no_setup": true,
+      "stderr": ""
+    },
+    "xsm-preservation.json": [
+      {
+        "file": ".codex-3/config.toml",
+        "before_xsm_items": 4,
+        "after_xsm_items": 4,
+        "unchanged": true
+      },
+      {
+        "file": ".claude/settings.json",
+        "before_xsm_items": 57,
+        "after_xsm_items": 57,
+        "unchanged": true
+      },
+      {
+        "file": ".claude.json",
+        "before_xsm_items": 18,
+        "after_xsm_items": 18,
+        "unchanged": true
+      }
+    ],
+    "directory-native-codex-comparison": {
+      "cli": [],
+      "engine": [
+        {
+          "name": "cross-session-messaging-codex",
+          "address": "user/cross-session-messaging-codex",
+          "agent": "codex",
+          "status": "busy",
+          "tier": "push"
+        },
+        {
+          "name": "cross-session-messaging-codex-2",
+          "address": "user/cross-session-messaging-codex-2",
+          "agent": "codex",
+          "status": "idle",
+          "tier": "push"
+        }
+      ]
+    },
+    "xsm-preservation-final.json": [
+      {
+        "file": ".codex-3/config.toml",
+        "before_xsm_items": 4,
+        "after_xsm_items": 4,
+        "unchanged": true
+      },
+      {
+        "file": ".claude/settings.json",
+        "before_xsm_items": 57,
+        "after_xsm_items": 57,
+        "unchanged": true
+      },
+      {
+        "file": ".claude.json",
+        "before_xsm_items": 18,
+        "after_xsm_items": 18,
+        "unchanged": true
+      }
+    ]
+  },
+  "user_intervention": {
+    "browser_login_and_signup": "performed by user",
+    "native_codex_hook_trust": "User explicitly authorized five Reason hooks in chat; agent operated the TUI trust action.",
+    "human_click_count": "not measured",
+    "manual_or_shell_instruction_handoffs_to_user": 0,
+    "confirmed_human_ui_intervention_stages": 1,
+    "confirmed_chat_authorization_count": 1
+  },
+  "evaluation_status": "execution and evidence complete; known product/runtime failures retained; no product repairs or migration performed"
+}
