@@ -1,7 +1,7 @@
 ---
 name: xsm
 description: Talk to other Claude Code or Codex sessions on this machine — list them, send a message or a task, answer one, start workers, and see what was delivered. Use when the user asks to contact, hand off to, or coordinate with another session or agent. Your user calls it as `/xsm <command>` in Claude Code and `$xsm <command>` in Codex (list, who, log, projects, doctor, send, link, join, leave, reach); you run the `xsm` shell command (`xsm list`, `xsm send <name|ref:xxxxxx> --text "..."`). Load this skill before naming any other xsm command or address, or before acting on an xsm refusal — a made-up address is a message nobody receives. From a sandboxed shell, reach a Codex session with the `xsm_send` MCP tool instead; a row whose ref is `[-]` has no address yet.
-argument-hint: "list | who | log | projects | doctor | send <target> <message> | link <folder> | join <project> | leave <project> | reach <folder>"
+argument-hint: "discover | publish | connect <target> | ask <target> | question-status <id> | list | who | log | projects | doctor | send <target> <message> | link <folder> | join <project> | leave <project> | reach <folder>"
 allowed-tools: Bash(xsm send:*), Bash(xsm list --table), Bash(xsm who --table), Bash(xsm projects --table), Bash(xsm doctor --table), Bash(xsm ledger --table --mine --last 5), Bash(xsm held list --table)
 ---
 
@@ -67,19 +67,18 @@ Never ask your user to type a command.
 request in words, see "Called without one". **Nothing, or nonsense** — reply with exactly:
 usage: /xsm list | who | log | projects | doctor | send <target> <message> | link <folder> | join <project> | leave <project> | reach <folder>
 
+For `discover`, `publish`, `connect`, `ask`, and `question-status`, follow the
+[common messaging guide](references/messaging.md). Use MCP first in a sandboxed
+Codex; existing `send --wait` remains delivery-only.
+
 ## Called without one
 
-When you loaded this skill yourself, or your user asked in words, read
-[references/guide.md](references/guide.md) before you choose a command or write
-an address. It covers sessions, projects, sending and replying, the channel,
-shared documents, other machines, workers, breakage and mixed versions.
+When loaded for a request in words, read [messaging](references/messaging.md)
+and the [full guide](references/guide.md) before choosing a command or address.
+They cover discovery, projects, workers, remote peers and mixed versions.
 
-One refusal is common enough to know before you open it. From a sandboxed
-shell (a background worker, a Codex workspace-write session) `xsm send` to a
-Codex peer refuses at once and says to use the `xsm_send` MCP tool: `codex
-queue` cannot run inside the sandbox, and the MCP server runs outside it. Send
-it with that tool, same target, kind and text. Do not retry the shell command
-and do not widen the sandbox.
+In a sandboxed Codex, choose MCP first. If a shell already refused, use xsm_send
+with the same target, kind and text; do not retry or widen the sandbox.
 
 Others are not breakage. `… is not registered yet` just after installing or trusting the hooks means
 they register this session at its next prompt: have your user send any message, then retry; do not

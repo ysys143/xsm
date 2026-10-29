@@ -16,6 +16,11 @@ falls back to the pythons PATH has, and runs from a copy of the checkout under
 from __future__ import annotations
 
 import datetime
+import contextlib
+import contextvars
+import copy
+import fcntl
+import functools
 import glob
 import hashlib
 import json
@@ -25,6 +30,9 @@ import shlex
 import shutil
 import subprocess
 import sys
+import stat
+import tempfile
+import threading
 import time
 
 from . import config, paths, policy, probe
@@ -47,6 +55,275 @@ MATCHERS = {"PostToolUse": "AskUserQuestion"}
 # own --settings.
 CODEX_EVENTS = ("SessionStart", "UserPromptSubmit")
 TIMEOUTS = {"PermissionRequest": 660}
+_EDIT_MUTEX = threading.RLock()
+_EDIT_ACTIVE = set()
+_SETUP_GUARD = contextvars.ContextVar("xsm_setup_guard", default=None)
+
+
+@contextlib.contextmanager
+def setup_write_guard(check):
+    """Bind installer commits to a caller's current durable setup flow."""
+    token = _SETUP_GUARD.set(check)
+    try:
+        check()
+        yield
+    finally:
+        _SETUP_GUARD.reset(token)
+
+
+def _check_setup_write():
+    check = _SETUP_GUARD.get()
+    if check is not None:
+        check()
+
+
+class InstallConflictError(ValueError):
+    """A target changed after planning; preserve the current user's version."""
+
+
+class SupplyError(ValueError):
+    """Explicit supply expectations did not match the observed artifact."""
+
+
+def file_revision(target: str) -> str:
+    """Compare exact bytes, inode, mode and symlink destination, not a preview."""
+    try:
+        info = os.lstat(target)
+    except FileNotFoundError:
+        return "missing"
+    if stat.S_ISLNK(info.st_mode):
+        data = os.fsencode(os.readlink(target))
+    elif stat.S_ISREG(info.st_mode):
+        with open(target, "rb") as stream:
+            data = stream.read()
+    else:
+        raise InstallConflictError("installer-conflict: target is not a regular file or symlink")
+    metadata = [info.st_dev, info.st_ino, info.st_mtime_ns, info.st_mode, info.st_size]
+    return hashlib.sha256(json.dumps(metadata).encode() + b"\0" + data).hexdigest()
+
+
+@contextlib.contextmanager
+def _target_lock(target):
+    """Stable per-target cross-process lock; reentrant for composed installers."""
+    key = os.path.abspath(target)
+    with _EDIT_MUTEX:
+        if key in _EDIT_ACTIVE:
+            yield
+            return
+        lock = paths.path("install-locks", hashlib.sha256(key.encode()).hexdigest() + ".lock")
+        os.makedirs(os.path.dirname(lock), mode=0o700, exist_ok=True)
+        fd = os.open(lock, os.O_RDWR | os.O_CREAT | getattr(os, "O_NOFOLLOW", 0), 0o600)
+        try:
+            info = os.fstat(fd)
+            if not stat.S_ISREG(info.st_mode) or info.st_uid != os.getuid() or info.st_mode & 0o077:
+                raise PermissionError("installer lock must be UID-private")
+            fcntl.flock(fd, fcntl.LOCK_EX)
+            _EDIT_ACTIVE.add(key)
+            try:
+                yield
+            finally:
+                _EDIT_ACTIVE.remove(key)
+        finally:
+            os.close(fd)
+
+
+def _home_edit(runtime=None):
+    def decorate(fn):
+        @functools.wraps(fn)
+        def locked(home, *args, **kwargs):
+            kind = runtime or kwargs.get("runtime") or args[0]
+            with _target_lock(_settings_file(os.path.realpath(os.path.expanduser(home)), kind)):
+                return fn(home, *args, **kwargs)
+        return locked
+    return decorate
+
+
+def _path_edit(locator):
+    def decorate(fn):
+        @functools.wraps(fn)
+        def locked(*args, **kwargs):
+            with _target_lock(locator(*args, **kwargs)):
+                return fn(*args, **kwargs)
+        return locked
+    return decorate
+
+
+def _read_settings(target):
+    before = file_revision(target)
+    if before == "missing":
+        return {}, before
+    if os.path.islink(target):
+        raise InstallConflictError("installer-conflict: settings symlink preserved")
+    with open(target, encoding="utf-8") as stream:
+        data = json.load(stream)
+    if not isinstance(data, dict):
+        raise ValueError("settings must be a JSON object")
+    hooks = data.get("hooks", {})
+    if not isinstance(hooks, dict) or any(not isinstance(groups, list) for groups in hooks.values()):
+        raise ValueError("settings hooks must contain lists")
+    for groups in hooks.values():
+        for group in groups:
+            if (not isinstance(group, dict) or not isinstance(group.get("hooks"), list) or
+                    any(not isinstance(handler, dict) for handler in group["hooks"])):
+                raise ValueError("invalid settings hook group")
+    if file_revision(target) != before:
+        raise InstallConflictError("installer-conflict: settings changed while reading")
+    return data, before
+
+
+def _cas_bytes(target, data, expected, *, mode=0o600, check=None):
+    """Stage first, then compare immediately before rename. Never restore a
+    whole old backup over a later edit. Noncooperating editors can still race
+    the final rename; cooperative writers use _target_lock.
+    """
+    os.makedirs(os.path.dirname(target), mode=0o700, exist_ok=True)
+    fd, staged = tempfile.mkstemp(prefix=".xsm-install-", dir=os.path.dirname(target))
+    try:
+        with os.fdopen(fd, "wb") as stream:
+            stream.write(data)
+            stream.flush()
+            os.fsync(stream.fileno())
+        os.chmod(staged, mode)
+        if check is not None:
+            check()
+        _check_setup_write()
+        if file_revision(target) != expected:
+            raise InstallConflictError("installer-conflict: target changed before write")
+        os.replace(staged, target)
+    finally:
+        if os.path.exists(staged):
+            os.unlink(staged)
+
+
+def _owned_manifest(target):
+    name = _ownership_file(target)
+    if not os.path.exists(name):
+        return {"v": 1, "file": target, "items": {}}
+    with open(name, encoding="utf-8") as stream:
+        record = json.load(stream)
+    if (not isinstance(record, dict) or type(record.get("v")) is not int or record["v"] != 1 or
+            not isinstance(record.get("items"), dict)):
+        raise InstallConflictError("installer-conflict: ownership manifest is invalid")
+    for entry in record["items"].values():
+        if (not isinstance(entry, dict) or "owned" not in entry or
+                (entry.get("mode") is not None and type(entry["mode"]) is not int) or
+                entry.get("sha256") != hashlib.sha256(json.dumps(entry["owned"], sort_keys=True, ensure_ascii=True).encode()).hexdigest()):
+            raise InstallConflictError("installer-conflict: ownership item is invalid")
+    return record
+
+
+def _ownership_file(target):
+    # Keep a link's slot identity even when its destination changes.
+    slot = os.path.join(os.path.realpath(os.path.dirname(target)), os.path.basename(target))
+    return paths.path("install-owned", hashlib.sha256(slot.encode()).hexdigest()[:16] + ".json")
+
+
+def _record_owned(target, component, owned):
+    record = _owned_manifest(target)
+    info = os.lstat(target) if os.path.lexists(target) else None
+    encoded = json.dumps(owned, sort_keys=True, ensure_ascii=True).encode()
+    record["items"][component] = {"owned": copy.deepcopy(owned),
+                                  "sha256": hashlib.sha256(encoded).hexdigest(),
+                                  "mode": stat.S_IMODE(info.st_mode) if info else None}
+    paths.write_json(_ownership_file(target), record, mode=0o600)
+
+
+def _write_settings(target, data, expected, component, owned):
+    with _target_lock(target):
+        if file_revision(target) != expected:
+            raise InstallConflictError("installer-conflict: settings changed since planning")
+        _owned_manifest(target)  # Reject corrupt ownership before changing settings.
+        mode = stat.S_IMODE(os.stat(target).st_mode) if os.path.exists(target) else 0o644
+        backup = _backup(target) if os.path.exists(target) else None
+        encoded = (json.dumps(data, ensure_ascii=False, allow_nan=False,
+                              indent=paths.indent_of(target)) + "\n").encode("utf-8")
+        _cas_bytes(target, encoded, expected, mode=mode)
+        try:
+            _record_owned(target, component, owned)
+        except (OSError, ValueError) as exc:
+            raise InstallConflictError("installer-write-incomplete: settings committed; ownership save failed") from exc
+        return backup
+
+
+def ownership_manifest(home: str, runtime: str) -> dict:
+    """Read ownership/mode comparisons without returning settings or commands."""
+    target = _settings_file(os.path.realpath(os.path.expanduser(home)), runtime)
+    record = _owned_manifest(target)
+    data, _ = _read_settings(target)
+    result = {"version": 1, "items": {}}
+    mode = stat.S_IMODE(os.stat(target).st_mode) if os.path.exists(target) else None
+    for kind, entry in record["items"].items():
+        if kind == "hooks":
+            actual = {event: [group for group in groups if _is_ours(group)]
+                      for event, groups in data.get("hooks", {}).items()
+                      if isinstance(groups, list) and any(_is_ours(group) for group in groups)}
+        elif kind == "allow":
+            actual = [value for value in _allow_list(data) if value in entry["owned"]]
+        elif kind == "inbound":
+            actual = data.get(INBOUND_KEY)
+        elif kind == "statusline":
+            value = data.get("statusLine")
+            actual = value if MARKER in json.dumps(value) else None
+        else:
+            continue
+        result["items"][kind] = {"owned_sha256": entry["sha256"],
+                                 "recorded_mode": entry["mode"], "current_mode": mode,
+                                 "value_matches": actual == entry["owned"],
+                                 "mode_matches": mode == entry["mode"]}
+    return result
+
+
+def _link_owned(target, kind):
+    _record_owned(target, kind, {"link": os.readlink(target)} if os.path.islink(target) else None)
+
+
+def _replace_link(target, destination, expected):
+    with _target_lock(target):
+        os.makedirs(os.path.dirname(target), exist_ok=True)
+        fd, staged = tempfile.mkstemp(prefix=".xsm-link-", dir=os.path.dirname(target))
+        os.close(fd)
+        os.unlink(staged)
+        try:
+            os.symlink(destination, staged)
+            _check_setup_write()
+            if file_revision(target) != expected:
+                raise InstallConflictError("installer-conflict: link changed before replacement")
+            os.replace(staged, target)
+        finally:
+            if os.path.lexists(staged):
+                os.unlink(staged)
+
+
+def _unlink_owned(target, expected):
+    with _target_lock(target):
+        _check_setup_write()
+        if file_revision(target) != expected:
+            raise InstallConflictError("installer-conflict: owned path changed before removal")
+        os.unlink(target)
+
+
+def component_manifest(home: str, runtime: str) -> dict:
+    """Ownership facts for settings, skill, CLI and native MCP registration.
+
+    Native MCP command equality needs a native observation, so it remains None
+    here rather than running a harness or inferring connectivity from a file.
+    """
+    items = dict(ownership_manifest(home, runtime)["items"])
+    for kind, target in (("skill", os.path.join(home, "skills", "xsm")),
+                         ("cli", os.path.expanduser("~/.local/bin/xsm")),
+                         ("mcp", _mcp_config_file(home, runtime))):
+        entry = _owned_manifest(target)["items"].get(kind)
+        if entry is None:
+            items[kind] = {"recorded": False, "value_matches": None, "mode_matches": None}
+            continue
+        mode = stat.S_IMODE(os.lstat(target).st_mode) if os.path.lexists(target) else None
+        actual = ({"link": os.readlink(target)} if os.path.islink(target) else
+                  {"files": _skill_manifest(target)} if kind == "skill" and os.path.isdir(target) else None)
+        items[kind] = {"recorded": True, "owned_sha256": entry["sha256"],
+                       "recorded_mode": entry["mode"], "current_mode": mode,
+                       "mode_matches": mode == entry["mode"],
+                       "value_matches": actual == entry["owned"] if kind != "mcp" else None}
+    return {"version": 1, "items": items}
 
 
 INTERPRETER = "interpreter"
@@ -108,6 +385,7 @@ def pin_python(path: str) -> dict:
     except (OSError, subprocess.SubprocessError):
         pass
     record = {"path": path, "version": version}
+    _check_setup_write()
     paths.write_json(paths.path(INTERPRETER), record, mode=0o644)
     return record
 
@@ -196,6 +474,27 @@ def _is_ours(group: dict) -> bool:
     return any(MARKER in (h.get("command") or "") for h in group.get("hooks", []))
 
 
+def _known_legacy_group(group, event):
+    """Recognize exact historical forms, rather than arbitrary marker claims."""
+    handlers = group.get("hooks", [])
+    if (set(group) - {"hooks", "matcher"} or len(handlers) != 1 or
+            group.get("matcher") != MATCHERS.get(event)):
+        return False
+    handler = handlers[0]
+    if (set(handler) - {"type", "command", "timeout"} or handler.get("type") != "command" or
+            handler.get("timeout", 10) != TIMEOUTS.get(event, 10)):
+        return False
+    command = handler.get("command")
+    if hook_form(command) not in ("guarded", "unguarded"):
+        return False
+    for root in (REPO, runtime_root()):
+        legacy = hook_command("codex", event, root=root)
+        guarded = legacy[:-len(MARKER)] + "|| exit 1 " + MARKER
+        if _same_command(command, legacy) or _same_command(command, guarded):
+            return True
+    return False
+
+
 def _settings_file(home: str, runtime: str) -> str:
     return os.path.join(home, "settings.json" if runtime == "claude" else "hooks.json")
 
@@ -269,30 +568,38 @@ def _own_link(source: str) -> bool:
     return source in mine or _under_runtime(source) or _xsm_checkout(source, 2, "bin", "xsm")
 
 
+@_path_edit(lambda: os.path.expanduser("~/.local/bin/xsm"))
 def remove_cli() -> bool:
     """Unlink ~/.local/bin/xsm when it is a link into the runtime copies xsm made
     under ~/.xsm/runtime, which uninstall leaves behind otherwise (2026-10-02). A
     link to a checkout or to a plugin copy is not ours to remove."""
     target = os.path.expanduser("~/.local/bin/xsm")
+    if os.path.lexists(target) and not (os.path.islink(target) or os.path.isfile(target)):
+        return False
+    revision = file_revision(target)
     if not os.path.islink(target) or not _under_runtime(os.path.realpath(target)):
         return False
-    os.unlink(target)
+    _unlink_owned(target, revision)
+    _record_owned(target, "cli", None)
     return True
 
 
+@_path_edit(lambda: os.path.expanduser("~/.local/bin/xsm"))
 def install_cli() -> str:
     """Link the launcher on PATH, replacing a link into an older plugin version,
     and (from a checkout) a link into a snapshot or to the checkout itself."""
     target = os.path.expanduser("~/.local/bin/xsm")
+    if os.path.lexists(target) and not (os.path.islink(target) or os.path.isfile(target)):
+        return "foreign"
+    revision = file_revision(target)
     state = "linked"
     if os.path.islink(target):
         source = os.path.realpath(target)
         if source == os.path.realpath(launcher()):
             return "current"
         if _own_link(source):
-            os.unlink(target)
-            os.makedirs(os.path.dirname(target), exist_ok=True)
-            os.symlink(launcher(), target)
+            _replace_link(target, launcher(), revision)
+            _link_owned(target, "cli")
             return "replaced"
         repo = os.path.dirname(os.path.dirname(source))
         if not re.search(PLUGIN_CACHE + "bin/xsm$", source) or (
@@ -305,12 +612,11 @@ def install_cli() -> str:
         if os.path.exists(source) and mine and \
                 version_key(os.path.basename(repo)) > version_key(os.path.basename(os.path.realpath(REPO))):
             return "newer"
-        os.unlink(target)
         state = "replaced"
     elif os.path.lexists(target):
         return "foreign"
-    os.makedirs(os.path.dirname(target), exist_ok=True)
-    os.symlink(launcher(), target)
+    _replace_link(target, launcher(), revision)
+    _link_owned(target, "cli")
     return state
 
 
@@ -405,7 +711,9 @@ def xsm_on_path() -> list:
 
 # What makes xsm run, relative to its folder: the package, the hooks, the skill
 # and the launcher. A copy that cannot name its commit is compared by these.
-RUNTIME_FILES = ("xsm/*.py", "hooks/*", "skills/**", "bin/xsm")
+RUNTIME_FILES = ("xsm/*.py", "hooks/*", "skills/**", "bin/xsm",
+                 "native/xsm-net/Cargo.toml", "native/xsm-net/Cargo.lock",
+                 "native/xsm-net/src/*.rs")
 # A commit id as git prints it. Checked before one goes on a git command line.
 _REV = re.compile(r"[0-9a-f]{7,64}")
 
@@ -517,7 +825,7 @@ SNAPSHOTS = "runtime"           # ~/.xsm/runtime/<id>/, current.json, current ->
 CURRENT = "current.json"        # which snapshot is installed, and the checkout it came from
 LINK = "current"                # a path that stays the same while the snapshot changes
 RETIRED = ".retired"            # in a snapshot a newer one replaced: when it was
-SNAPSHOT_FILES = RUNTIME_FILES + (".claude-plugin/plugin.json", ".codex-plugin/plugin.json")
+SNAPSHOT_FILES = RUNTIME_FILES + (".claude-plugin/plugin.json", ".codex-plugin/plugin.json", "LICENSE")
 _ID = re.compile(r"[0-9a-f]{12}")
 
 
@@ -561,37 +869,112 @@ def runtime_root(planned: bool = False) -> str:
     return current["path"] if current else REPO
 
 
-def make_snapshot() -> dict:
+def supply_report(root: str | None = None, *, expected_digest: str | None = None,
+                  signature: dict | None = None) -> dict:
+    """Local supply facts, not an assertion of independent authentication.
+
+    Signature evidence, when supplied by a verifier, must name this exact
+    artifact digest, expected/observed team, and verified=True. No verifier is
+    run here; absent evidence remains unknown. A local checksum is not a
+    publisher signature. No network or update policy is enabled.
+    """
+    root = root or REPO
+    digest = runtime_digest(root, SNAPSHOT_FILES)
+    license_text = _read_text(os.path.join(root, "LICENSE"))
+    license_id = "MIT" if license_text and license_text.startswith("MIT License\n") else None
+    checksum = "unknown" if expected_digest is None else "match" if digest == expected_digest else "mismatch"
+    signature_status = "unknown"
+    if signature is not None:
+        signature_status = "match" if (digest is not None and isinstance(signature, dict) and
+            signature.get("artifact_digest") == digest and signature.get("verified") is True and
+            isinstance(signature.get("expected_team"), str) and bool(signature["expected_team"]) and
+            signature.get("observed_team") == signature["expected_team"]) else "mismatch"
+    return {"source": "local-runtime-files", "revision": git_head(root),
+            "observed_sha256": digest, "checksum": checksum,
+            "checksum_independent_authentication": False,
+            "signature": signature_status,
+            "signature_evidence": "caller-provided" if signature is not None else "not-observed",
+            "license": license_id or "unknown", "license_sha256": hashlib.sha256(license_text.encode()).hexdigest() if license_text else None,
+            "update_owner": {"runtime_copy": "existing-installer", "plugin_copy": "plugin-manager",
+                             "checkout": "checkout-owner", "network_engine": "unknown"},
+            "automatic_replacement": "unchanged",
+            "backup_retention": "unchanged", "support_matrix": "D11-undecided"}
+
+
+def _runtime_manifest(root):
+    result = []
+    for filename in runtime_files(root, SNAPSHOT_FILES):
+        with open(filename, "rb") as stream:
+            digest = hashlib.sha256(stream.read()).hexdigest()
+        result.append({"path": os.path.relpath(filename, root), "sha256": digest,
+                       "mode": stat.S_IMODE(os.stat(filename).st_mode)})
+    return result
+
+
+def make_snapshot(*, expected_digest: str | None = None, signature: dict | None = None) -> dict:
+    with _target_lock(runtime_dir(CURRENT)):
+        return _make_snapshot(expected_digest=expected_digest, signature=signature)
+
+
+def _make_snapshot(*, expected_digest=None, signature=None) -> dict:
     """Copy this checkout's runtime to ~/.xsm/runtime/<id>/ (the first 12 hex of
     runtime_digest over SNAPSHOT_FILES, so the same code is the same folder and a
     dirty checkout is not mistaken for its commit), make it the installed one,
     and return what current.json now says. The folder is built beside and renamed
     into place, so a session never sees half of it. OSError when it cannot be
     made; the caller then runs from the checkout as before."""
+    _check_setup_write()
     digest = runtime_digest(REPO, SNAPSHOT_FILES)
     if not digest:
         raise OSError("no xsm files to copy under %s" % REPO)
+    supply = supply_report(REPO, expected_digest=expected_digest, signature=signature)
+    if supply["checksum"] == "mismatch" or supply["signature"] == "mismatch":
+        raise SupplyError("runtime supply expectation mismatch; installed runtime preserved")
     sid, previous = digest[:12], runtime_current()
     dest = runtime_dir(sid)
     os.makedirs(runtime_dir(), mode=0o700, exist_ok=True)
-    intact = os.path.isdir(dest) and runtime_digest(dest, SNAPSHOT_FILES) == digest
+    intact = (os.path.isdir(dest) and runtime_digest(dest, SNAPSHOT_FILES) == digest and
+              _runtime_manifest(dest) == _runtime_manifest(REPO))
     if not intact:
-        tmp = dest + ".new"
-        shutil.rmtree(tmp, ignore_errors=True)
-        for name in runtime_files(REPO, SNAPSHOT_FILES):
-            target = os.path.join(tmp, os.path.relpath(name, REPO))
-            os.makedirs(os.path.dirname(target), exist_ok=True)
-            shutil.copy2(name, target)
-        shutil.rmtree(dest, ignore_errors=True)
-        os.replace(tmp, dest)
+        if os.path.lexists(dest) and (sid in (_running_from() | _configured_for()) or _live_session_starts()):
+            raise InstallConflictError("runtime-conflict: existing snapshot may be in use; retained")
+        tmp = tempfile.mkdtemp(prefix=sid + ".new-", dir=runtime_dir())
+        damaged = None
+        try:
+            for name in runtime_files(REPO, SNAPSHOT_FILES):
+                target = os.path.join(tmp, os.path.relpath(name, REPO))
+                os.makedirs(os.path.dirname(target), exist_ok=True)
+                shutil.copy2(name, target)
+            if (runtime_digest(tmp, SNAPSHOT_FILES) != digest or runtime_digest(REPO, SNAPSHOT_FILES) != digest or
+                    _runtime_manifest(tmp) != _runtime_manifest(REPO)):
+                raise SupplyError("runtime changed during copying; installed runtime preserved")
+            if os.path.lexists(dest):
+                _check_setup_write()
+                damaged = tempfile.mkdtemp(prefix=".damaged-" + sid + "-", dir=runtime_dir())
+                os.rmdir(damaged)
+                os.replace(dest, damaged)  # Preserve the old bytes; never rmtree a reader's runtime.
+            try:
+                os.replace(tmp, dest)
+            except OSError:
+                if damaged and not os.path.lexists(dest):
+                    os.replace(damaged, dest)
+                raise
+        finally:
+            if os.path.isdir(tmp):
+                shutil.rmtree(tmp)
     record = {"id": sid, "source": REPO, "rev": git_head(REPO), "describe": git_describe(),
-              "version": plugin_version()}
+              "version": plugin_version(), "manifest": _runtime_manifest(dest), "supply": supply}
     link, tmp_link = runtime_dir(LINK), runtime_dir(LINK + ".new")
     if intact and previous and previous["id"] == sid and \
             all(previous.get(k) == v for k, v in record.items()) and \
             not os.path.exists(os.path.join(dest, RETIRED)) and \
             os.path.islink(link) and os.readlink(link) == sid:
         return previous         # nothing changed: a second refresh rewrites nothing
+    # Publish the pointer and metadata as a recoverable pair. If metadata cannot
+    # be saved, restore only our pointer while preserving all runtime folders.
+    old_link = os.readlink(link) if os.path.islink(link) else None
+    old_link_revision = file_revision(link)
+    current_revision = file_revision(runtime_dir(CURRENT))
     if previous and previous["id"] != sid:
         try:                    # sessions that started before now may still run its hooks
             with open(os.path.join(previous["path"], RETIRED), "w") as fh:
@@ -607,9 +990,22 @@ def make_snapshot() -> dict:
     except OSError:
         pass
     os.symlink(sid, tmp_link)
+    _check_setup_write()
+    if file_revision(link) != old_link_revision:
+        os.unlink(tmp_link)
+        raise InstallConflictError("runtime-conflict: current pointer changed before publish")
     os.replace(tmp_link, link)
     record["made"] = time.time()
-    paths.write_json(runtime_dir(CURRENT), record, mode=0o644)
+    try:
+        _cas_bytes(runtime_dir(CURRENT), (json.dumps(record, ensure_ascii=True) + "\n").encode(), current_revision, mode=0o644)
+    except (OSError, ValueError):
+        if os.path.islink(link) and os.readlink(link) == sid:
+            if old_link is not None:
+                os.symlink(old_link, tmp_link)
+                os.replace(tmp_link, link)
+            else:
+                os.unlink(link)
+        raise
     return dict(record, path=dest)
 
 
@@ -649,8 +1045,11 @@ def _running_from() -> set:
     server or a worker has the folder in its command line. All of them when the
     process table cannot be read."""
     try:
-        out = subprocess.run(["ps", "-axo", "args="], capture_output=True, text=True,
-                             timeout=5).stdout
+        result = subprocess.run(["ps", "-axo", "args="], capture_output=True, text=True,
+                                timeout=5)
+        if result.returncode != 0:
+            raise OSError("process table unavailable")
+        out = result.stdout
     except (OSError, subprocess.SubprocessError):
         try:
             return {n for n in os.listdir(runtime_dir()) if _ID.fullmatch(n)}
@@ -668,7 +1067,14 @@ def _configured_for() -> set:
     for home in config.homes():
         files += [os.path.join(home["path"], name)
                   for name in ("settings.json", "hooks.json", "config.toml", ".claude.json")]
-    texts = [_read_text(f) or "" for f in files]
+    texts = []
+    for filename in files:
+        text = _read_text(filename)
+        if text is None and os.path.exists(filename):
+            # Absence of evidence is not evidence that an older home no longer
+            # references its runtime. Preserve copies when inspection fails.
+            return {name for name in os.listdir(runtime_dir()) if _ID.fullmatch(name)}
+        texts.append(text or "")
     # The links that name a snapshot: `xsm` on PATH, and each home's skill (a
     # plain `install` leaves a skill link where it was, so the snapshot it
     # names must stay; review of PR #10, 2026-10-02).
@@ -982,6 +1388,7 @@ def skill_state(home: str) -> tuple:
     return "foreign", target
 
 
+@_path_edit(lambda home, refresh=False: os.path.join(home, "skills", "xsm"))
 def install_skill(home: str, refresh: bool = False) -> tuple:
     """Link the skill so the session knows the commands exist. A link keeps it in
     step with the repo; anything already there that is not ours is left be.
@@ -990,23 +1397,38 @@ def install_skill(home: str, refresh: bool = False) -> tuple:
     it: it is ours, and telling a person to run `cp` is how two profiles ended
     up eight versions behind (2026-09-23)."""
     state, detail = skill_state(home)
+    target = os.path.join(home, "skills", "xsm")
+    revision = file_revision(target) if not os.path.isdir(target) or os.path.islink(target) else None
     if state == "link-stale" and refresh:
-        os.unlink(detail)
         state = "absent"
     if state == "copy-stale" and refresh:
         for rel, text in _skill_tree().items():
             target = os.path.join(detail, rel)
+            revision = file_revision(target)
             if _read_text(target) != text:
                 os.makedirs(os.path.dirname(target), exist_ok=True)
-                with open(target, "w", encoding="utf-8") as fh:
-                    fh.write(text)
+                mode = stat.S_IMODE(os.stat(target).st_mode) if os.path.exists(target) else 0o644
+                _cas_bytes(target, text.encode(), revision, mode=mode)
+        _record_owned(detail, "skill", {"files": _skill_manifest(detail)})
         return "copy-current", detail
     if state != "absent":
         return state, detail
     target = os.path.join(home, "skills", "xsm")
-    os.makedirs(os.path.dirname(target), exist_ok=True)
-    os.symlink(skill_source(), target)
+    _replace_link(target, skill_source(), revision)
+    _link_owned(target, "skill")
     return "linked", target
+
+
+def _skill_manifest(root):
+    result = []
+    for relative in sorted(_skill_tree()):
+        filename = os.path.join(root, relative)
+        if os.path.isfile(filename):
+            with open(filename, "rb") as stream:
+                digest = hashlib.sha256(stream.read()).hexdigest()
+            result.append({"path": relative, "sha256": digest,
+                           "mode": stat.S_IMODE(os.stat(filename).st_mode)})
+    return result
 
 
 # Codex's label for each event in a hook-state key and in the trust hash
@@ -1206,13 +1628,14 @@ def statusline_base(target: str) -> dict | None:
     return paths.read_json(_base_path(target))
 
 
+@_home_edit("claude")
 def install_statusline(home: str) -> str:
     """Opt-in. Claude has one statusLine per home, and the user's own — a
     dashboard, Orca's, anything — is never replaced: it is kept, run first
     with the same input, and xsm's line goes under it (user decision,
     2026-09-22). Its refresh interval and padding carry over."""
     target = _settings_file(home, "claude")
-    data = paths.read_json(target, {}) or {}
+    data, revision = _read_settings(target)
     current = data.get("statusLine")
     if current and MARKER in json.dumps(current):
         return "already"
@@ -1227,20 +1650,19 @@ def install_statusline(home: str) -> str:
     else:
         want = {"type": "command", "command": statusline_command()}
         outcome = "installed"
-    if os.path.exists(target):
-        _backup(target)
     data["statusLine"] = want
-    paths.write_json(target, data, mode=0o644)
+    _write_settings(target, data, revision, "statusline", want)
     return outcome
 
 
+@_home_edit("claude")
 def refresh_statusline(home: str) -> bool:
     """Point xsm's own statusLine at the launcher of the runtime that is installed
     now. Its command names a path, and the snapshot it named is pruned once
     nothing runs from it: a statusLine left on it would stop drawing, a person's
     own composed under it with it. True when it was rewritten."""
     target = _settings_file(home, "claude")
-    data = paths.read_json(target)
+    data, revision = _read_settings(target)
     current = data.get("statusLine") if isinstance(data, dict) else None
     command = current.get("command") if isinstance(current, dict) else None
     if not isinstance(command, str) or MARKER not in command:
@@ -1248,29 +1670,32 @@ def refresh_statusline(home: str) -> bool:
     want = statusline_command(target if " --base " in command else None)
     if command == want:
         return False
-    _backup(target)
     current["command"] = want
-    paths.write_json(target, data, mode=0o644)
+    _write_settings(target, data, revision, "statusline", current)
     return True
 
 
+@_home_edit("claude")
 def remove_statusline(home: str) -> bool:
     """Take xsm's line out, and give back the statusLine it was composed onto."""
     target = _settings_file(home, "claude")
-    data = paths.read_json(target)
+    data, revision = _read_settings(target)
     if not data or MARKER not in json.dumps(data.get("statusLine") or {}):
         return False
-    _backup(target)
+    previous = _owned_manifest(target)["items"].get("statusline")
+    if previous is not None and data.get("statusLine") != previous["owned"]:
+        return False
     original = statusline_base(target)
     if original:
         data["statusLine"] = original
+    else:
+        del data["statusLine"]
+    _write_settings(target, data, revision, "statusline", None)
+    if original:
         try:
             os.unlink(_base_path(target))
         except OSError:
             pass
-    else:
-        del data["statusLine"]
-    paths.write_json(target, data, mode=0o644)
     return True
 
 
@@ -1280,7 +1705,7 @@ def remove_statusline(home: str) -> bool:
 # so the agent never got to ask and told the person to type /xsm link instead
 # (issue #8, measured with Claude Code 2.1.286, 2026-10-01). Allowing the call
 # lets the form ask; the form is the consent (user decision, 2026-10-01).
-FORM_TOOLS = ("xsm_link", "xsm_reach", "xsm_join", "xsm_approve", "xsm_grant", "xsm_decide",
+FORM_TOOLS = ("xsm_publish", "xsm_link", "xsm_reach", "xsm_join", "xsm_approve", "xsm_grant", "xsm_decide",
               "xsm_doc_endorse")
 # A direct install registers the server as "xsm"; the plugin's is "xsm" in plugin "xsm".
 FORM_TOOL_PREFIXES = ("mcp__xsm__", "mcp__plugin_xsm_xsm__")
@@ -1294,7 +1719,7 @@ FORM_TOOL_PREFIXES = ("mcp__xsm__", "mcp__plugin_xsm_xsm__")
 # post, doc add) are left to the classifier (review, 2026-10-01). The plugin's
 # skill is named `xsm:xsm` when Claude calls it (the skills documentation:
 # plugin skills are namespaced), the directly installed one `xsm`.
-ASKING_COMMANDS = ("link", "reach", "join", "leave", "unblock", "approve", "attempts clear",
+ASKING_COMMANDS = ("publish", "link", "reach", "join", "leave", "unblock", "approve", "attempts clear",
                    "frameworks ignore", "remote add", "held deliver")
 ALLOWED = "allowed"           # one note per settings file: what xsm added to its allow list
 NOTE_VERSION = 2              # a note without it predates counting the rules already there
@@ -1313,9 +1738,9 @@ STALE_RULES = ("Bash(xsm spawn:*)", "Bash(xsm post:*)", "Bash(xsm doc add:*)")
 # reverses the narrowing of 2026-10-01 (review) for messaging only: spawn, `xsm
 # post` and `doc add` stay with the classifier. Policy allow_messaging=false
 # takes them out again on the next refresh.
-MESSAGING_COMMANDS = ("send", "inbox", "list", "who", "held", "ledger", "status", "doctor",
+MESSAGING_COMMANDS = ("connect", "ask", "question-status", "decision-status", "discover", "send", "inbox", "ack", "files", "owned", "list", "who", "held", "ledger", "status", "doctor",
                       "--version")
-MESSAGING_TOOLS = ("xsm_send", "xsm_inbox", "xsm_post", "xsm_channel")
+MESSAGING_TOOLS = ("xsm_connect", "xsm_ask", "xsm_question_status", "xsm_decision_status", "xsm_discover", "xsm_send", "xsm_inbox", "xsm_ack", "xsm_files", "xsm_owned", "xsm_post", "xsm_channel")
 
 
 def mcp_tool_names() -> list:
@@ -1398,6 +1823,7 @@ def _xsm_rules(note, allow: list) -> list:
     return held + [n for n in known if n in allow and n not in held]
 
 
+@_home_edit("claude")
 def allow_form_tools(home: str) -> str:
     """Add the form tools to this Claude home's permissions.allow: added |
     updated (only rules an earlier version added and the list dropped were
@@ -1412,7 +1838,7 @@ def allow_form_tools(home: str) -> str:
     target = _settings_file(home, "claude")
     if settings_invalid(home):
         return "invalid"
-    data = paths.read_json(target, {}) or {}
+    data, revision = _read_settings(target)
     perms = data.get("permissions") if isinstance(data.get("permissions"), dict) else {}
     allow = perms.get("allow") if isinstance(perms.get("allow"), list) else []
     note_path = _state_file(ALLOWED, target)
@@ -1435,12 +1861,10 @@ def allow_form_tools(home: str) -> str:
     elif created is not None:
         created = created + [k for k in made if k not in created]
     if missing or stale:
-        if os.path.exists(target):
-            _backup(target)
         perms["allow"] = [n for n in allow if n not in stale] + missing
         data["permissions"] = perms
-        paths.write_json(target, data, mode=0o644)
         added = [n for n in added if n not in stale] + [n for n in missing if n not in added]
+        _write_settings(target, data, revision, "allow", added)
     if missing or stale or not current:
         record = dict(note) if isinstance(note, dict) else {}
         record.update(file=target, added=added, v=NOTE_VERSION)
@@ -1450,13 +1874,15 @@ def allow_form_tools(home: str) -> str:
     return "added" if missing else "updated" if stale else "already"
 
 
+@_home_edit("claude")
 def remove_form_tools(home: str) -> bool:
     """Take out the entries allow_form_tools put in, and only those (and the
     allow list or permissions it made, if that leaves them empty). A home with
     no note, or an old one, loses the known names as well, and the stale ones."""
     target = _settings_file(home, "claude")
-    data = paths.read_json(target)
-    if not isinstance(data, dict):
+    try:
+        data, revision = _read_settings(target)
+    except (OSError, ValueError):
         return False
     allow = _allow_list(data)
     note_path = _state_file(ALLOWED, target)
@@ -1466,7 +1892,6 @@ def remove_form_tools(home: str) -> bool:
         names |= set(STALE_RULES)
     kept = [n for n in allow if n not in names]
     if len(kept) != len(allow):
-        _backup(target)
         perms = data["permissions"]
         perms["allow"] = kept
         # `created` unknown (a home from before the note says): an allow list
@@ -1479,7 +1904,7 @@ def remove_form_tools(home: str) -> bool:
             del perms["allow"]
         if not perms and "permissions" in (created or []):
             del data["permissions"]
-        paths.write_json(target, data, mode=0o644)
+        _write_settings(target, data, revision, "allow", [])
     if isinstance(note, dict):
         # Emptied, not deleted: with no note a second uninstall would fall back
         # to the known names and take the rules the user had.
@@ -1498,6 +1923,7 @@ def remove_form_tools(home: str) -> bool:
 INBOUND_KEY = "crossSessionInbound"
 
 
+@_home_edit("claude")
 def set_inbound(home: str) -> str:
     """Set crossSessionInbound to "accept" in this Claude home's settings, and note
     that xsm did, so uninstall takes out only that: set | already | off (policy
@@ -1508,14 +1934,12 @@ def set_inbound(home: str) -> str:
     if settings_invalid(home):
         return "invalid"
     target = _settings_file(home, "claude")
-    data = paths.read_json(target, {}) or {}
+    data, revision = _read_settings(target)
     have = data.get(INBOUND_KEY)
     if have is not None:
         return "already" if have == "accept" else "kept:%s" % have
-    if os.path.exists(target):
-        _backup(target)
     data[INBOUND_KEY] = "accept"
-    paths.write_json(target, data, mode=0o644)
+    _write_settings(target, data, revision, "inbound", "accept")
     note_path = _state_file(ALLOWED, target)
     note = paths.read_json(note_path)
     # No `v` in a note made here: allow_form_tools reads one without it as an old
@@ -1526,20 +1950,23 @@ def set_inbound(home: str) -> str:
     return "set"
 
 
+@_home_edit("claude")
 def remove_inbound(home: str) -> bool:
     """Take out the crossSessionInbound xsm set, and only that one: not a value the
     person has since changed, and not one that was there before xsm."""
     target = _settings_file(home, "claude")
-    data = paths.read_json(target)
+    try:
+        data, revision = _read_settings(target)
+    except (OSError, ValueError):
+        return False
     note_path = _state_file(ALLOWED, target)
     note = paths.read_json(note_path)
     if not isinstance(data, dict) or not isinstance(note, dict) or not note.get("inbound"):
         return False
     done = data.get(INBOUND_KEY) == note["inbound"]
     if done:
-        _backup(target)
         del data[INBOUND_KEY]
-        paths.write_json(target, data, mode=0o644)
+        _write_settings(target, data, revision, "inbound", None)
     note.pop("inbound")
     paths.write_json(note_path, note)
     return done
@@ -1588,11 +2015,13 @@ def remove_retired(home: str) -> list:
     return gone
 
 
+@_path_edit(lambda home: os.path.join(home, "skills", "xsm"))
 def remove_skill(home: str) -> bool:
     target = os.path.join(home, "skills", "xsm")
     if os.path.islink(target) and (os.path.realpath(target) == os.path.realpath(skill_source())
                                    or _own_skill_link(os.path.realpath(target))):
-        os.unlink(target)
+        _unlink_owned(target, file_revision(target))
+        _record_owned(target, "skill", None)
         return True
     # A copy of our skill (made by hand where a link would not do; install_skill
     # --refresh keeps it current). Its first line is ours, so it is not someone
@@ -1600,8 +2029,26 @@ def remove_skill(home: str) -> bool:
     state, detail = skill_state(home)
     if state in ("copy-current", "copy-stale") and \
             (_read_text(os.path.join(detail, "SKILL.md")) or "").startswith("---\nname: xsm\n"):
-        shutil.rmtree(target, ignore_errors=True)
-        return True
+        note = _owned_manifest(target)["items"].get("skill")
+        owned = note["owned"].get("files", []) if note and isinstance(note.get("owned"), dict) else _skill_manifest(target)
+        removed = False
+        for item in owned:
+            filename = os.path.join(target, item["path"])
+            if not os.path.isfile(filename) or os.path.islink(filename):
+                continue
+            revision = file_revision(filename)
+            with open(filename, "rb") as stream:
+                digest = hashlib.sha256(stream.read()).hexdigest()
+            if digest == item["sha256"]:
+                _unlink_owned(filename, revision)
+                removed = True
+        for directory, _, _ in os.walk(target, topdown=False):
+            try:
+                os.rmdir(directory)  # Only empty directories; user additions stay.
+            except OSError:
+                pass
+        _record_owned(target, "skill", None)
+        return removed
     return False
 
 
@@ -1624,10 +2071,11 @@ def plan(home: str, runtime: str, root: str | None = None) -> dict:
     the runtime the hooks would run from (default runtime_root())."""
     home = os.path.realpath(os.path.expanduser(home))
     target = _settings_file(home, runtime)
-    data = paths.read_json(target)
-    if os.path.exists(target) and not isinstance(data, dict):
-        return {"home": home, "runtime": runtime, "file": target, "error": "file is not valid JSON"}
-    data = data or {}
+    try:
+        data, revision = _read_settings(target)
+    except (OSError, ValueError) as exc:
+        return {"home": home, "runtime": runtime, "file": target,
+                "error": "file is not valid JSON or changed while reading: " + type(exc).__name__}
     hooks = data.get("hooks", {}) if isinstance(data.get("hooks"), dict) else {}
     events = CLAUDE_EVENTS if runtime == "claude" else CODEX_EVENTS
     actions = []
@@ -1658,9 +2106,11 @@ def plan(home: str, runtime: str, root: str | None = None) -> dict:
             actions.append({"event": event, "others": len([g for g in groups if not _is_ours(g)]),
                             "action": "remove", "command": None})
     return {"home": home, "runtime": runtime, "file": target, "exists": os.path.exists(target),
-            "actions": actions}
+            "actions": actions, "revision": revision,
+            "mode": stat.S_IMODE(os.stat(target).st_mode) if os.path.exists(target) else None}
 
 
+@_home_edit()
 def apply(home: str, runtime: str) -> dict:
     result = plan(home, runtime)
     if result.get("error"):
@@ -1670,9 +2120,14 @@ def apply(home: str, runtime: str) -> dict:
         result["installed"] = True
         result["unchanged"] = True
         return result
-    target, data = result["file"], (paths.read_json(result["file"]) or {})
-    if os.path.exists(target):
-        result["backup"] = _backup(target)
+    target = result["file"]
+    try:
+        data, revision = _read_settings(target)
+        if revision != result["revision"]:
+            raise InstallConflictError("installer-conflict: target changed after plan")
+    except (OSError, ValueError) as exc:
+        result.update(error=str(exc), conflict=True)
+        return result
     hooks = data.setdefault("hooks", {})
     for action in result["actions"]:
         event = action["event"]
@@ -1689,35 +2144,53 @@ def apply(home: str, runtime: str) -> dict:
             group = dict(matcher=MATCHERS[event], **group)
         groups.append(group)
         hooks[event] = groups
-    paths.write_json(target, data, mode=0o644)
-    if paths.read_json(target) is None:                # re-parse or roll back
-        if result.get("backup"):
-            shutil.copy2(result["backup"], target)
-        result["error"] = "wrote invalid JSON; restored the backup"
+    owned = {event: [group for group in groups if _is_ours(group)]
+             for event, groups in hooks.items() if any(_is_ours(group) for group in groups)}
+    try:
+        backup = _write_settings(target, data, result["revision"], "hooks", owned)
+        if backup:
+            result["backup"] = backup
+    except InstallConflictError as exc:
+        result.update(error=str(exc), conflict=True)
         return result
     config.add_home(home, runtime)
     result["installed"] = True
     return result
 
 
+@_home_edit()
 def remove(home: str, runtime: str) -> dict:
     home = os.path.realpath(os.path.expanduser(home))
     target = _settings_file(home, runtime)
-    data = paths.read_json(target)
-    if not isinstance(data, dict):
+    try:
+        data, revision = _read_settings(target)
+    except (OSError, ValueError):
         return {"home": home, "file": target, "error": "nothing to remove or unreadable file"}
-    backup = _backup(target)
     removed = 0
+    retained_modified = 0
+    recorded = _owned_manifest(target)["items"].get("hooks")
     hooks = data.get("hooks", {}) if isinstance(data.get("hooks"), dict) else {}
     for event in list(hooks):
-        kept = [g for g in hooks[event] if not _is_ours(g)]
+        kept = []
+        for group in hooks[event]:
+            ours = _is_ours(group)
+            if (ours and recorded is not None and group not in recorded["owned"].get(event, []) and
+                    not _known_legacy_group(group, event)):
+                ours = False
+                retained_modified += 1
+            if not ours:
+                kept.append(group)
         removed += len(hooks[event]) - len(kept)
         if kept:
             hooks[event] = kept
         else:
             del hooks[event]
-    paths.write_json(target, data, mode=0o644)
-    return {"home": home, "file": target, "backup": backup, "removed": removed}
+    try:
+        backup = _write_settings(target, data, revision, "hooks", {})
+    except InstallConflictError as exc:
+        return {"home": home, "file": target, "error": str(exc), "conflict": True, "removed": 0}
+    return {"home": home, "file": target, "backup": backup, "removed": removed,
+            "retained_modified": retained_modified}
 
 
 def diff(home: str, runtime: str, root: str | None = None) -> str:
@@ -1794,14 +2267,31 @@ def stuck(now: float | None = None, sessions: list | None = None) -> dict:
                             "tool": req.get("tool"), "waiting_s": int(now - (req.get("t") or now)),
                             "parent": bool((workers.load(req.get("worker") or "") or {})
                                            .get("parent_ref"))})
+    def diagnostic_message(row):
+        # Ledger rows contain body previews and arbitrary nested evidence.
+        # Diagnosis needs identities and timing, never a copy of the original.
+        out = {k: row[k] for k in ("id", "status") if isinstance(row.get(k), str)}
+        if type(row.get("t")) in (int, float):
+            out["t"] = row["t"]
+        for side in ("from", "to"):
+            endpoint = row.get(side)
+            out[side] = {k: endpoint[k] for k in ("name", "alias", "ref", "runtime")
+                         if isinstance(endpoint.get(k), str)} if isinstance(endpoint, dict) else {}
+        return out
+
     rows = ledger.recent(200)
-    undelivered = [r for r in rows if r.get("status") == "queued" and now - (r.get("t") or now) > 120]
-    uncertain = [r for r in rows if r.get("status") == "unknown"]
+    undelivered = [diagnostic_message(r) for r in rows
+                   if r.get("status") == "queued" and now - (r.get("t") or now) > 120]
+    uncertain = [diagnostic_message(r) for r in rows if r.get("status") == "unknown"]
+    known_failures = {"sandbox-blocked", "no-inbox", "socket-error", "no-codex-binary",
+                      "codex-failed", "codex-internal-changed"}
     failures = {}
     for r in rows:
         if r.get("status") == "error":
-            failures[(r.get("error") or "unknown").split(":")[0]] = \
-                failures.get((r.get("error") or "unknown").split(":")[0], 0) + 1
+            error = r.get("error")
+            reason = error.partition(":")[0] if isinstance(error, str) else ""
+            category = reason if reason in known_failures else "other"
+            failures[category] = failures.get(category, 0) + 1
     replaced = [r for r in (registry.records() if sessions is None else sessions)
                 if r.get("end_reason") == "thread_replaced"]
     return {"approvals": waiting, "undelivered": undelivered, "uncertain": uncertain,
@@ -1918,6 +2408,12 @@ def mcp_command() -> list:
     return [os.path.join(runtime_root(), "hooks", "xsm-mcp")]
 
 
+def _mcp_config_file(home, runtime):
+    if runtime == "codex":
+        return os.path.join(home, "config.toml")
+    return os.path.expanduser("~/.claude.json") if os.path.realpath(home) == os.path.realpath(os.path.expanduser("~/.claude")) else os.path.join(home, ".claude.json")
+
+
 def _runtime_env(home: str, runtime: str) -> dict:
     """The environment to run the runtime's own CLI in for this home. The
     default Claude home is not named: with CLAUDE_CONFIG_DIR=~/.claude Claude
@@ -1940,8 +2436,36 @@ def _mcp_cli(runtime: str) -> str:
 
 
 def mcp_state(home: str, runtime: str) -> str:
-    """absent | current | stale"""
+    """absent | current | stale registration, not a live connection claim.
+
+    Claude's native `mcp get` initializes its profile JSON even on a missing
+    server. It cannot serve as a read-only inspection inside a CAS edit.
+    Inspect its user-scope registration directly; mutations still use the
+    native add/remove commands, with the original revision fence intact.
+    """
     home = os.path.realpath(os.path.expanduser(home))
+    if runtime == "claude":
+        target = _mcp_config_file(home, runtime)
+        revision = file_revision(target)
+        if revision == "missing":
+            return "absent"
+        if os.path.islink(target):
+            raise InstallConflictError("installer-conflict: MCP config symlink preserved")
+        with open(target, encoding="utf-8") as stream:
+            data = json.load(stream)
+        if not isinstance(data, dict) or not isinstance(data.get("mcpServers", {}), dict):
+            raise InstallConflictError("installer-conflict: invalid native MCP config preserved")
+        entry = data.get("mcpServers", {}).get(MCP_NAME)
+        if file_revision(target) != revision:
+            raise InstallConflictError("installer-conflict: native MCP config changed while reading")
+        if entry is None:
+            return "absent"
+        if (not isinstance(entry, dict) or not isinstance(entry.get("command"), str) or
+                not isinstance(entry.get("args", []), list) or
+                any(not isinstance(arg, str) for arg in entry.get("args", []))):
+            raise InstallConflictError("installer-conflict: invalid MCP server entry preserved")
+        command = [entry["command"]] + entry.get("args", [])
+        return "current" if entry.get("type", "stdio") == "stdio" and command == mcp_command() else "stale"
     try:
         out = subprocess.run([_mcp_cli(runtime), "mcp", "get", MCP_NAME],
                              capture_output=True, text=True, timeout=30,
@@ -1954,12 +2478,20 @@ def mcp_state(home: str, runtime: str) -> str:
     return "current" if all(part in text for part in mcp_command()) else "stale"
 
 
+@_path_edit(lambda home, runtime: _mcp_config_file(os.path.realpath(os.path.expanduser(home)), runtime))
 def install_mcp(home: str, runtime: str) -> str:
     """added | current | replaced | failed:<why>"""
     home = os.path.realpath(os.path.expanduser(home))
+    target = _mcp_config_file(home, runtime)
+    revision = file_revision(target)
     state = mcp_state(home, runtime)
+    if file_revision(target) != revision:
+        raise InstallConflictError("installer-conflict: native MCP config changed during inspection")
     if state == "current":
         return "current"
+    if os.path.isfile(target):
+        _backup(target)
+    _check_setup_write()
     env = _runtime_env(home, runtime)
     if state == "stale":
         subprocess.run([_mcp_cli(runtime), "mcp", "remove", MCP_NAME] +
@@ -1974,12 +2506,16 @@ def install_mcp(home: str, runtime: str) -> str:
     # variable format: xsm"; `claude mcp add --help` shows the name before -e).
     argv = [_mcp_cli(runtime), "mcp", "add"] + (["--scope", "user"] if runtime == "claude" else []) \
         + [MCP_NAME] + extra + ["--"] + mcp_command()
+    _check_setup_write()
     out = subprocess.run(argv, capture_output=True, text=True, timeout=30, env=env)
     if out.returncode != 0:
-        return "failed: %s" % (out.stderr or out.stdout).strip()[:200]
+        return "failed: native MCP registration exited %s" % out.returncode
+    _check_setup_write()
+    _record_owned(target, "mcp", {"runtime": runtime, "command": mcp_command()})
     return "replaced" if state == "stale" else "added"
 
 
+@_path_edit(lambda home, runtime: _mcp_config_file(os.path.realpath(os.path.expanduser(home)), runtime))
 def remove_mcp(home: str, runtime: str) -> bool:
     home = os.path.realpath(os.path.expanduser(home))
     if mcp_state(home, runtime) == "absent":
@@ -1988,4 +2524,7 @@ def remove_mcp(home: str, runtime: str) -> bool:
                          (["--scope", "user"] if runtime == "claude" else []),
                          capture_output=True, text=True, timeout=30,
                          env=_runtime_env(home, runtime))
-    return out.returncode == 0
+    if out.returncode != 0:
+        raise InstallConflictError("installer-conflict: native MCP removal exited %s; uninstall incomplete"
+                                   % out.returncode)
+    return True

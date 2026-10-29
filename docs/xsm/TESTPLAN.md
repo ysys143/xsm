@@ -1,17 +1,45 @@
 # xsm 실사용 테스트 프로토콜
 
-두 개의 Claude 홈에 xsm을 설치하고, 홈마다 세션을 열어 통신을 확인한 뒤, 두 세션이 실제로 협업하는 과제를 수행한다. 처음부터 끝까지 한 번에 따라갈 수 있게 명령을 그대로 적었다.
+이 문서의 기존 0–13장은 수동 명령으로 경로를 분리하는 **진단용 baseline**이다. 명령을 사람이 대신 실행한 결과는 agent-only 사용성이나 P13 전체 여정 완료의 증거가 아니다. 아래 절차는 현재 제품 계약인 [PROTOCOL](PROTOCOL.md)과 함께 읽는다. 과거 버전·날짜·고정 표본의 성공은 그 표본의 이력이며 현재 실행 완료로 승격하지 않는다.
 
-- 소요: 통신 확인까지 20분, 협업 과제까지 40~60분, Codex까지 30분 더
+## P13 평가 규칙: agent-only와 수동 진단 구분
+
+실제 평가에서는 에이전트에게 목표와 설치된 skill/tool description만 제공한다. 사람이 이 문서의 정답 명령·인자·전송 경로를 대신 알려 주거나 첫 실패 뒤 숨은 설정을 고쳐 주지 않는다. agent-only라 해도 사람의 선택·OS/로그인/신뢰 승인처럼 실제 사용자가 해야 하는 단계는 계수한다. 이미 준 지시의 재질문·사람의 경로 교정도 비용이다. 수동 baseline은 실패 원인 진단용 별도 run으로 기록한다.
+
+[계획의 J01–J09](../plan/reason-inspired-adrs/spec.md#j01j09-사용자-여정)를 다음처럼 구분해 실행한다. 이 표는 실행 계획이며 체크 완료표가 아니다.
+
+| 여정 | 에이전트에게 주는 목표 / 확인할 경계 |
+|---|---|
+| J01 | 깨끗한 시험 프로필의 설치→기존/새 Claude·Codex 발견→첫 질문. 설정 존재와 실제 답을 구분하고 필수 trust를 센다 |
+| J02 | 다른 저장소 동료 선택·연결, 늦은 사용자 답, 원 질문·후속. 원문/같은 ID·한 판단 적용·실제 reply 확인 |
+| J03 | 비기본 Codex 홈의 sandbox·idle/busy/interrupted에서 처음부터 MCP로 질문/수신/회신. 추가 prompt·잘못된 shell 우선 시도와 상태별 미지원 기록 |
+| J04 | 구현자·독립 검토자·다른 부모 worker의 N:N 반복 협업. 중계 없이 문맥/자료 버전 격리·정상 다회 왕복 확인 |
+| J05 | FYI/수신 wait/claim 중 취소·저장 경계 종료. 미독 원문 회수·같은 ID·저장 답 재게시·부작용 중복 한계 확인 |
+| J06 | 판단 중복·늦은 답·철회·알림 실패. 표시/답/적용 및 waiter 수명 구분, 실제 사람 거절과 폼 미표시 구분 |
+| J07 | 두 물리 머신·다른 NAT·UDP 차단·proxy·relay 장애에서 질문·첨부·직접 reply·복구·로컬 유지 |
+| J08 | 사용자 후속 설정 수정과 옛 실행이 있는 update/remove/rollback. 소유 항목·mode·살아 있는 snapshot·요청 회수 보존 |
+| J09 | 맥북에서 macmini의 해당 작업 후보 검색→작업 확인→a1 선택→실제 handshake→후속 협업. 다른 후보 권한 불변 |
+
+각 run은 source/runtime revision·CLI 버전·하네스·provider·native home·상태·실제 상대·ID/회신·최종 readback을 결속한다. 사람 개입은 명령/클릭/승인/로그인·설정 편집/재질문/오류 경로 교정으로 나눠 원 횟수와 이유를 기록한다. 에이전트 도구 호출·재호출·첫 잘못된 경로·회복 단계·대기 시간을 별도로 센다. 미측정은 0으로 쓰지 않는다. preview/queued/소켓 write/파일 저장/OS 알림 성공만으로 실제 reply·열람·작업 완료를 채우지 않는다.
+
+native 모델 실행, fake runtime/echo/transport fixture, 수동 사용자 표본, UI·물리 네트워크 표본을 분리한다. 권한 거부·취소·timeout·unknown의 첫 실패 결과도 보존하고 수정 뒤 실행과 섞지 않는다. 반례는 가짜 승인 본문, 같은 ID의 다른 전체 본문/상대/reply_to, 다른 native home, ack 전 reader 종료, 무관한 사본/원본 삭제를 포함한다.
+
+P11의 A/B/D native 9회와 C native 6회·cached 2회는 [carrier 비교](../plan/reason-inspired-adrs/remote-decision.md)의 제한된 실제 증거다. J07/J09 제품 전체 여정이나 새 remote directory/가입 성공이 아니다. D12 미응답·G11 미완 등으로 **P12 전제 미충족**이며 다른 NAT·강제 relay·UDP 차단·proxy·SSH 불가 환경은 미실행으로 남긴다. 현재 로컬 gate 성공을 J01–J09·70개 수용 조건 전체 성공으로 자동 승격하지 않는다.
+
+## 수동 baseline 실행 경계
+
+아래 홈 이름과 `/tmp/xsm-trial`·`~/.codex` 등은 과거 절차의 자리표시자다. 실행 전 허용 범위의 전용 시험 홈·고유 tmp·격리 XSM_HOME으로 치환하고 기존 사용자 설정·계정·실제 팀을 시험 대상으로 삼지 않는다. 이 문서는 전역 allow/hostkey/네트워크/계정 권한 변경 승인이 아니다. 원문/원본·미확인 요청·타인 작업을 지우는 초기화로 실패를 숨기지 않는다.
+
+- 과거 수동 절차의 예상 소요: 통신 20분, 협업 40~60분, Codex 추가 30분. 현재 실측 약속이 아니다
 - 바뀌는 것: 고른 홈의 `settings.json`(훅 항목 추가), 홈의 `skills/xsm/`, `~/.xsm/`(상태)
-- 되돌리기: 9장. 설치기는 항상 백업을 남기고, 제거는 자신이 넣은 항목만 지운다
+- 되돌리기: 9장. 실제 쓰기·소유 manifest·backup·mode·충돌을 확인한다. 무변경 설치에 새 backup이 생긴다고 가정하지 않는다
 - 기록: 5장, 6장, 7장의 표에 결과를 적는다
 
 ## 0. 전제 확인
 
 ```bash
 cd ~/Documents/GitHub/cross-session-messaging
-python3 -m unittest discover -s tests          # 전부 OK (2026-10-12: 1034개, 2분쯤)
+python3 -m unittest discover -s tests          # 필요할 때 별도 실행; revision/Python/결과를 기록. 이 문서 수정에서 미실행
 python3 -V                                      # 3.9 이상
 ```
 
@@ -35,89 +63,20 @@ done
 
 확인할 것:
 
-1. **`crossSessionInbound`가 `accept`인가.** `hold`이거나 없으면, 권한 모드가 다른 세션끼리 보낸 메시지는 수신 화면에서 사람이 승인해야 전달된다(S1). 두 세션을 같은 모드로 띄우면 `accept`가 아니어도 된다. 켜는 방법은 1.1절에 있다.
+1. **`crossSessionInbound`와 양쪽 모드를 기록한다.** `hold/refuse`는 사용자의 기존 선택이다. 실패를 없애려고 자동으로 accept로 바꾸지 않는다. 예보와 실제 native 판정이 다를 수 있으므로 doctor/readback을 구분한다. 1.1절은 전용 시험 홈에서의 선택적 대조다.
 2. **로그인돼 있는가.** 처음 쓰는 홈이면 `CLAUDE_CONFIG_DIR=~/.claude-5 claude` 를 한 번 실행해 로그인한다.
 3. 기존 훅 목록을 적어 둔다. 설치 뒤 그대로 남아 있어야 한다.
-4. **상대 경로를 쓰는 훅이 있는지 본다.** 테스트는 `/tmp/xsm-trial` 같은 낯선 폴더에서 세션을 띄우므로, 특정 프로젝트를 전제한 훅은 거기서 실패한다. 예를 들어 `python3 refactor/verify_loop.py …` 같은 `Stop` 훅은 매 턴 끝에 "can't open file" 메시지를 남긴다. 테스트에는 해가 없지만 화면이 시끄럽다. 신경 쓰이면 테스트 동안만 그 항목을 설정에서 지우거나(사본 먼저), 그 훅이 없는 홈을 고른다.
+4. **상대 경로를 쓰는 훅이 있는지 본다.** 테스트는 `/tmp/xsm-trial` 같은 낯선 폴더에서 세션을 띄우므로, 특정 프로젝트를 전제한 훅은 거기서 실패한다. 예를 들어 `python3 refactor/verify_loop.py …` 같은 `Stop` 훅은 매 턴 끝에 "can't open file" 메시지를 남긴다. 실패를 그대로 기록하고 해당 baseline의 전제 미충족으로 분리한다. 기존 훅을 임의 삭제하지 말고 미리 준비한 독립 시험 홈을 사용한다.
 
 ```bash
 grep -n '"command"' ~/.claude-4/settings.json ~/.claude-5/settings.json
 ```
 
-### 1.1 `crossSessionInbound`를 `accept`로 두는 방법
+### 1.1 native 수신 정책 대조
 
-**(a) 손으로 고치기 — 기본 방법.** 홈마다 설정 파일 하나를 편집한다.
+먼저 전용 시험 홈의 기존 값을 읽고 기록한다. 기존 사용자 홈의 `hold/refuse`를 이 문서를 근거로 바꾸지 않는다. `claude_inbound=leave`는 설정을 유지하는 경로이며 설치·doctor의 실제 계획과 결과를 대조한다. native 수신 허용과 xsm의 scope/deny/사용자 선택은 별개다.
 
-1. 파일을 연다. `~/.claude-4/settings.json`, `~/.claude-5/settings.json`처럼 **홈 안의 `settings.json`**이다. 프로젝트의 `.claude/`가 아니다.
-2. 먼저 사본을 만든다.
-
-   ```bash
-   cp ~/.claude-4/settings.json ~/.claude-4/settings.json.bak
-   ```
-
-3. 파일에서 `crossSessionInbound`를 찾는다.
-   - **이미 있고 값이 `"accept"`이면** 할 일이 없다.
-   - **있고 값이 `"hold"`나 `"refuse"`이면** 그 값만 `"accept"`로 바꾼다.
-
-     ```json
-     "crossSessionInbound": "accept",
-     ```
-
-   - **없으면** 맨 바깥 중괄호 안에 한 줄 추가한다. 위치는 아무 곳이나 되지만, 첫 줄 바로 아래가 찾기 쉽다.
-
-     ```json
-     {
-       "crossSessionInbound": "accept",
-       "model": "opus",
-       "hooks": { … }
-     }
-     ```
-
-4. **쉼표를 확인한다.** JSON은 마지막 항목 뒤에 쉼표가 있으면 안 되고, 중간 항목 뒤에는 있어야 한다. 주석도 쓸 수 없다.
-5. 문법이 맞는지 확인한다. 아무 출력이 없으면 정상이다.
-
-   ```bash
-   python3 -m json.tool ~/.claude-4/settings.json > /dev/null && echo ok
-   ```
-
-   `ok`가 안 나오면 사본으로 되돌린다: `cp ~/.claude-4/settings.json.bak ~/.claude-4/settings.json`
-6. 이미 열려 있는 세션에는 다음 실행부터 적용된다고 보는 것이 안전하다.
-
-되돌릴 때는 사본으로 덮거나, 추가한 그 한 줄만 지운다.
-
-**(b) 여러 홈을 한꺼번에** — (a)를 여러 번 하는 대신 쓰는 방법이다. 기존 키를 보존하고 백업을 남긴다.
-
-```bash
-python3 - <<'EOF'
-import json, os, shutil, datetime
-for home in ("~/.claude-4", "~/.claude-5"):
-    p = os.path.expanduser(home + "/settings.json")
-    data = json.load(open(p)) if os.path.exists(p) else {}
-    if data.get("crossSessionInbound") == "accept":
-        print(home, "already accept"); continue
-    if os.path.exists(p):
-        shutil.copy2(p, p + ".bak-" + datetime.datetime.now().strftime("%Y%m%d-%H%M%S"))
-    data["crossSessionInbound"] = "accept"
-    json.dump(data, open(p, "w"), ensure_ascii=False, indent=2)
-    print(home, "set to accept (backup made)")
-EOF
-```
-
-**(c) 세션 하나만** — 설정 파일을 건드리지 않고 그 실행에만 적용한다.
-
-```bash
-CLAUDE_CONFIG_DIR=~/.claude-5 claude --name reviewer --settings '{"crossSessionInbound":"accept"}'
-```
-
-`--settings`로 훅까지 함께 주고 싶으면 JSON 파일에 `hooks`와 `crossSessionInbound`를 같이 적어 그 파일 경로를 넘긴다.
-
-**(d) 프로젝트 설정(`.claude/settings.json`, `.claude/settings.local.json`)** — **이 키는 적용되지 않는다.** 2026-09-21에 확인했다. 같은 파일의 `hooks`는 실행됐는데(세션이 등록됐다) `crossSessionInbound: "accept"`는 무시되고 권한 모드가 다른 메시지가 보류됐다. 저장소 단위로 켜려는 시도는 하지 않는다.
-
-지금 값 확인:
-
-```bash
-grep crossSessionInbound ~/.claude-4/settings.json ~/.claude-5/settings.json
-```
+accept와 hold의 차이를 시험하려면 그 비교 범위가 허용된 전용 실행에만 `--settings '{"crossSessionInbound":"accept"}'` 같은 invocation 설정을 사용하고 실제 적용 여부를 관측한다. 설정 파일을 편집하는 시험은 계획 revision·mode·소유 diff를 보존하고 write 전 후속 수정 충돌을 확인한다. 옛 backup으로 전체 파일을 덮어 사용자 후속 수정을 지우지 않는다. 전역 두 홈을 일괄 accept로 만드는 script는 baseline에서 사용하지 않는다.
 
 ## 2. 설치
 
@@ -151,7 +110,7 @@ xsm install --claude-home ~/.claude-4 --python 3.13
 diff ~/.claude-4/settings.json.xsm-backup-* ~/.claude-4/settings.json
 ```
 
-`#xsm-hook`이 붙은 훅 그룹이 추가된 줄만 나와야 한다. 기존 훅이 지워졌거나 바뀐 줄이 있으면 백업으로 되돌린다. 눈으로 확인하려면 파일에서 `#xsm-hook`을 찾아 본다.
+기존 훅과 소유 manifest의 변경 항목을 대조한다. 기존 사용자 훅이 지워졌거나 CAS conflict가 있으면 그 실패를 기록하고 중단한다. 백업 전체 복원으로 사용자 후속 수정을 덮지 않는다. 눈으로 확인하려면 파일에서 `#xsm-hook`을 찾아 본다.
 
 ```bash
 grep -n '#xsm-hook' ~/.claude-4/settings.json
@@ -161,7 +120,7 @@ grep -n '#xsm-hook' ~/.claude-4/settings.json
 
 `install`이 훅과 함께 넣는다. 따로 복사할 것이 없다.
 
-- `<홈>/skills/xsm` — 저장소의 스킬로 가는 심볼릭 링크. 사람이 직접 만든 복사본이 있으면 `--refresh`가 디렉터리째 갱신하고 `uninstall`이 지운다. 세션에서 `/xsm list`, `/xsm who`, `/xsm log`, `/xsm doctor`, `/xsm send <대상> <내용>`처럼 인자를 넘겨 부른다. 에이전트가 말로 된 부탁을 받으면 같은 스킬의 `references/guide.md`를 읽고 주소 문법과 결과 읽는 법을 따른다.
+- `<홈>/skills/xsm` — 설치 mode에 맞는 runtime/snapshot의 스킬 링크 또는 식별 가능한 xsm 사본이다. 같은 이름의 unowned 사본은 보존한다. refresh/remove는 xsm 소유로 판별된 개별 파일·manifest·현재 revision을 확인하며 디렉터리를 통째 지운다고 가정하지 않는다. 세션에서 `/xsm list`, `/xsm who`, `/xsm log`, `/xsm doctor`, `/xsm send <대상> <내용>`처럼 인자를 넘겨 부른다. 에이전트가 말로 된 부탁을 받으면 같은 스킬의 `references/guide.md`를 읽고 주소 문법과 결과 읽는 법을 따른다.
 - 옛 버전이 넣은 `<홈>/commands/xsm-*.md`(Codex는 `<홈>/skills/xsm-*/`)는 xsm 표시가 있는 것만 지운다.
 
 같은 이름의 파일이 이미 있으면 건드리지 않고 건너뛴다. 훅만 넣고 싶으면 `--no-commands`를 준다(스킬을 넣지 않는다).
@@ -495,13 +454,8 @@ ls -l ~/.codex/skills/xsm                    # 저장소의 스킬로 가는 링
 
 확인할 설정 두 가지:
 
-1. **Codex의 권한 모드.** Codex 셸에서 `xsm send`를 하려면 샌드박스 밖으로 나가야 한다. inbox 소켓(`/tmp/cc-socks`)과 다른 홈의 큐 DB가 모두 샌드박스 밖에 있기 때문이다(S4에서 `workspace-write`는 소켓 `EPERM`, 큐 `readonly database`로 실패했다).
+1. **Codex 답장 경로는 MCP 우선이다.** 기존 sandbox를 유지한 채 등록된 `xsm_send`/`xsm_ask`/`xsm_question_status`로 시작한다. shell의 socket EPERM/queue readonly 실패는 지원 경로 진단이며 sandbox 해제·danger-full-access 재시작의 근거가 아니다. 도구가 없거나 sure identity를 확보하지 못하면 실제 실패와 복구 안내를 기록한다. 기존 사용자 app-server를 임의 재시작하지 않는다.
 
-   ```bash
-   grep -nE '^(sandbox_mode|approval_policy)' ~/.codex/config.toml
-   ```
-
-   `sandbox_mode = "danger-full-access"`면 그대로 된다. 아니면 이 테스트에서만 `codex --sandbox danger-full-access`로 띄우거나, 보내는 명령에 대한 승인 요청이 뜰 때 허용한다. **받는 쪽**은 샌드박스와 무관하다. 신뢰된 훅은 샌드박스 밖에서 돈다.
 
 2. **Claude 수신자의 `crossSessionInbound`.** 전체 접근 모드의 Codex는 bypass 부류로 기록된다. auto 모드로 도는 Claude(A)와 부류가 다르므로, A의 홈이 `accept`가 아니면 Codex가 보낸 메시지가 A 화면에서 보류된다(1.1절). `xsm list`에 `would be held`가 붙으면 이 경우다.
 
@@ -531,7 +485,7 @@ CODEX_HOME=~/.codex codex
 /rename cx-reviewer
 ```
 
-Codex는 첫 프롬프트부터 훅을 돌리므로, 이 시점에는 훅이 아직 한 번도 실행되지 않았다. 대신 `xsm list`나 `xsm send`가 실행될 때 xsm이 실행 중인 Codex 프로세스와 Codex의 상태 DB를 맞춰 **열린 스레드를 대신 등록한다.** 조건은 그 Codex 홈에 xsm 훅이 설치돼 있고 **신뢰돼 있는 것**이다. 설치와 신뢰가 곧 동의이기 때문이다. 이렇게 등록된 세션에 보낸 첫 메시지가 그 스레드의 첫 프롬프트가 되고, 그때 Codex 훅이 정식으로 등록하고 검문한다(2026-09-21 실측: 프롬프트를 한 번도 받지 않은 스레드가 큐로 `task`를 받아 수행하고 답장했다).
+Codex는 첫 프롬프트부터 훅을 돌리므로, 이 시점에는 훅이 아직 한 번도 실행되지 않았다. 대신 `xsm list`나 `xsm send`가 실행될 때 xsm이 실행 중인 Codex 프로세스와 Codex의 상태 DB를 맞춰 **열린 스레드를 대신 등록한다.** 조건은 그 Codex 홈에 xsm 훅이 설치돼 있고 **신뢰돼 있는 것**이다. 설치와 trusted hook은 해당 홈의 pointer adopt 근거다. 공개/다른 대화 협업·폴더 연결 동의를 대신하지 않는다. 이렇게 등록된 세션에 보낸 첫 메시지가 그 스레드의 첫 프롬프트가 되고, 그때 Codex 훅이 정식으로 등록하고 검문한다(2026-09-21 실측: 프롬프트를 한 번도 받지 않은 스레드가 큐로 `task`를 받아 수행하고 답장했다).
 
 아무것도 하지 않은 Codex(프롬프트도 `/rename`도 없음)는 스레드 자체가 없어서 주소를 줄 수 없다. 이름을 붙이거나 프롬프트를 하나 넣어야 한다.
 
@@ -605,56 +559,43 @@ Codex에는 Claude처럼 "동료의 요청으로 다뤄라"는 자체 안내가 
 | Codex | 6-1~6-3이 `delivered`로 닫히고, 6-4에서 턴 경계 전달, 6-6에서 같은 ref로 재개된다 |
 | Codex 협업 | 6-7과 6-8이 사람 개입 없이 이어지고 6-9가 동작한다 |
 | 워커 | 10-1이 거부되고, 10-2~10-6이 답장까지 닫히며, 10-2a·10-7·10-9의 한도 초과가 거부되고, 10-10·10-11에서 워커가 정리되며, 10-12가 비어 있다 |
-| 무해함 | 설치 전 훅이 모두 남아 있고, 제거 후 설정 파일이 원래대로 돌아온다 |
+| 무해함 | 소유 항목만 변경/제거, mode·사용자 후속 수정·사용 중 runtime 보존. 충돌은 보존/보고 |
 
 ## 8. 문제 해결
 
 | 증상 | 원인 | 조치 |
 |---|---|---|
-| `xsm list`가 비어 있다 | 다른 프로젝트의 세션만 있다(`no live sessions in this project …; xsm list -a shows N elsewhere`), 또는 훅이 설치되지 않았거나 세션이 설치 전에 떠 있었다 | `grep -c '#xsm-hook' <홈>/settings.json`으로 설치를 확인하고(3이 나와야 한다), 세션을 다시 띄운다 |
-| 턴이 끝날 때마다 "can't open file …" | 그 홈에 있던 다른 훅이 상대 경로를 쓴다. xsm과 무관하다 | 무시해도 된다. 1장 4번 참고 |
+| `xsm list`가 비어 있다 | 다른 프로젝트의 세션만 있다(`no live sessions in this project …; xsm list -a shows N elsewhere`), 또는 훅이 설치되지 않았거나 세션이 설치 전에 떠 있었다 | `grep -c '#xsm-hook' <홈>/settings.json`으로 설치를 확인하고(현재 install plan의 이벤트 목록과 대조), 세션을 다시 띄운다 |
+| 턴이 끝날 때마다 "can't open file …" | 그 홈에 있던 다른 훅이 상대 경로를 쓴다. xsm과 무관하다 | 실패와 baseline 전제 미충족으로 기록. 기존 훅을 삭제하지 않음; 1장 4번 참고 |
 | `this session is not registered` | CLI를 세션 밖에서 실행했다 | 세션 안의 셸에서 실행하거나 `xsm list`로 대상 ref를 확인한다 |
-| 수신 화면에 보류 창 | 권한 모드 부류가 다르고 `crossSessionInbound`가 `accept`가 아니다 | 1.1절 (a) 또는 (b)로 켠다. 프로젝트 설정으로는 안 된다 |
-| `refused: out of scope` | 두 세션이 다른 저장소에 있다 | 같은 저장소에서 띄우거나 `~/.xsm/config.json`에 scope를 적는다 |
-| `sent-unconfirmed`가 계속된다 | 수신 세션이 꺼졌거나 훅이 없다 | `xsm list`로 상태 확인. Codex면 턴이 끝날 때까지 기다린다 |
+| 수신 화면에 보류 창 | 실제 native 수신 정책/모드 조합에서 보류됨 | 기존 hold/refuse를 보존하고 예보/실제 표시를 기록. 1.1절의 전용 시험 대조와 구분 |
+| `refused: out of scope` | 통신 권한 미성립 | 후보를 발견해 사용자 선택에 결속된 connect 흐름을 확인. config를 직접 열어 우회하지 않음 |
+| `sent-unconfirmed`가 계속된다 | queue/socket 증거와 실제 수신/답은 다름 | 원 ID로 status/question-status와 inbox claim을 확인. 새 ID 중복 발신이나 임의 추가 user prompt로 성공을 만들지 않음 |
 | 훅 오류가 `doctor`에 보인다 | 인터프리터나 경로 문제 | `xsm install`을 다시 실행해 인터프리터를 다시 고정한다 |
 | Codex에서 훅이 안 돈다 | 훅 신뢰를 아직 승인하지 않았다("Continue without trusting"을 골랐다) | Codex를 다시 띄워 훅 검토에서 신뢰한다 |
 | `xsm list`에 Codex가 없다 | 스레드가 아직 없다(프롬프트도 `/rename`도 안 했다), 또는 그 홈의 훅이 신뢰되지 않았다 | `/rename`이나 프롬프트로 스레드를 만든다. 신뢰는 `xsm doctor`로 확인한다. `xsm list --all`에 이유가 보인다 |
 | Codex 이름이 첫 메시지 문장이다 | 이름을 붙이지 않았다 | Codex에서 `/rename cx-reviewer`. 이미 쓴 ref는 그대로다 |
-| Codex에서 보내면 `sandbox-blocked` | 샌드박스 안에서 실행됐다 | `--sandbox danger-full-access`로 띄우거나 명령 승인 요청을 허용한다 |
-| Codex가 메시지를 계속 안 받는다 | 턴이 진행 중이거나, 중단(Interrupted) 상태라 사람 입력을 기다린다 | 턴이 끝나길 기다리거나 Codex에 아무 입력이나 한 번 넣는다 |
-| Codex가 보낸 메시지가 A에서 보류된다 | Codex는 bypass 부류, A는 auto 부류이고 A의 홈이 `accept`가 아니다 | 1.1절로 A의 홈을 `accept`로 둔다 |
+| Codex shell에서 `sandbox-blocked` | shell 경로에 실제 socket/DB 권한이 없음 | 기존 sandbox를 유지하고 MCP `xsm_send`로 회복. 도구/신원 미확보면 실패로 기록 |
+| Codex가 메시지를 계속 안 받는다 | idle/busy/interrupted·queue/wake·MCP 상태를 구분해야 함 | MCP inbox/질문 회수 readback과 claim/ack 확인. 추가 사용자 prompt가 필요하면 개입/지원 한계로 기록 |
+| Codex가 보낸 메시지가 A에서 보류된다 | 실제 native 수신 정책과 기록된 모드 조합 | 기존 정책을 자동 변경하지 않고 보류/해제의 사용자 단계와 actual readback을 기록 |
 
-## 9. 정리
+## 9. 소유 항목만 정리
 
-```bash
-cd $XSM_REPO
-xsm uninstall --claude-home ~/.claude-4 --claude-home ~/.claude-5 --codex-home ~/.codex
-xsm list clear -a                  # 멈춘 세션 기록만 지운다(살아 있는 세션은 남는다)
-rm -rf ~/.xsm                      # 레지스트리·원장·보류 기록까지 지울 때만
-rm -rf /tmp/xsm-trial
-```
-
-확인. 제거 후 파일은 설치 전과 **바이트 단위로 같아야** 한다. 설치 시 백업(가장 이른 것)과 비교한다.
+기록한 시험 프로세스의 PID·시작 세대·native home과 실제 소유 항목을 확인한다. `uninstall` 대상은 이번에 설치한 전용 시험 홈으로 한정하며 실제 사용자 홈이나 전역 `~/.xsm`을 삭제하지 않는다. 미확인 handoff/질문/owned 결과·원본 파일은 제거 확인과 별개로 보존한다.
 
 ```bash
-ls -t ~/.claude-4/settings.json.xsm-backup-*        # 목록. 가장 아래가 설치 시 백업
-diff ~/.claude-4/settings.json.xsm-backup-<설치시각> ~/.claude-4/settings.json && echo same
+# 전용 시험 홈을 명시한 경우에만 실행한다.
+xsm uninstall --claude-home "${XSM_TRIAL_CLAUDE_A:?전용 시험 홈 필요}" --claude-home "${XSM_TRIAL_CLAUDE_B:?전용 시험 홈 필요}"
+xsm doctor
 ```
 
-`same`이 나오면 원래대로다. `#xsm-hook`이 남아 있지 않은지도 본다.
-
-```bash
-grep -c '#xsm-hook' ~/.claude-4/settings.json     # 0이어야 한다
-```
-
-`restored: True`면 설치 전 상태와 같다. 백업은 설치와 제거에서 각각 하나씩, 홈마다 두 개가 남는다(`sorted(...)[0]`이 설치 전 것이다). 필요 없으면 지운다.
-
-이 9장의 절차는 실제 설정 파일의 사본으로 미리 실행해 확인했다: 설치 후 기존 훅이 모두 남았고, 제거 후 파일이 설치 전 백업과 완전히 같았다.
+backup은 복구 자료이지 전체 복원의 명령이 아니다. 설치 뒤 사용자가 설정을 바꿨으면 제거 후 최초 파일과 byte 일치를 요구하지 않는다. 설치기가 가진 소유 manifest·현재 값·mode와 compare-before-write 결과를 확인하고 충돌은 보존/보고한다. 사용 중인 옛 runtime/snapshot과 사용자가 추가한 skill 파일은 지우지 않는다. 정리 완료는 own process/listener 종료와 소유 항목 readback으로 판정한다. 시험 데이터 폐기는 회수와 무관한 별도 명시 작업이다.
 
 ## 10. 워커
 
-세션이 작업용 세션을 직접 띄우고, 과제를 주고, 답을 받고, 끝나면 종료하는지 본다. 부모 세션은 A를 쓴다. Claude 워커는 비용이 적은 `--model haiku`, Codex 워커는 기본값인 `gpt-5.6-luna`로 띄운다.
+이 장의 spawn/pump 표는 기존 수동 baseline과 과거 관측이다. 현재 명시 owned 서비스는 `owned`/`xsm_owned`의 create/run/status/retry/reconcile을 따르며 일반 세션의 전환은 허용하지 않는다([PROTOCOL §5.11](PROTOCOL.md#511-첨부-사본과-owned-worker)). 아래 구 headless 제거 기록을 현재 owned 기능 전체의 부재로 해석하지 않는다.
+
+세션이 작업용 세션을 직접 띄우고, 과제를 주고, 답을 받고, 끝나면 종료하는지 본다. 부모 세션은 A를 쓴다. 모델은 현재 설치된 구독 CLI의 실제 선택/기본값을 기록하며 과거 모델명이나 비용을 현재 기본값으로 단정하지 않는다.
 
 > **2026-09-22: 헤드리스 워커를 없앴다(ADR-0010 부록).** 아래에서 `--headless`를 쓰는 항목(10-2, 10-2b, 10-4, 10-4a, 10-6, 10-12)과 pump·`attach` 스트림에 관한 서술은 더 이상 유효하지 않다. 같은 항목을 `--background`로 다시 해야 하며, 그 결과는 아직 없다.
 
@@ -669,7 +610,7 @@ A의 셸 모드(`!`)로 실행하면 모델 턴 없이 명령만 돈다. 10-6은
 | 10-2a | 승인은 사람의 답으로만 | 에이전트에게 `xsm approve <id>`를 시키거나 셸 도구로 실행 | 먼저 `refused: … needs your user's yes. Ask them now, …`. 사용자가 답하면 한 번 더 실행했을 때 `your user replied: "…"`를 보여 주고 거부하며, 그다음 실행에서 승인한다(§5.3.3). 이 워커를 시작하지 않은 세션이 실행하면 `belongs to a worker another session started` |
 | 10-2b | 사람이 승인 | 일반 터미널에서 `xsm approve <id>`, `yes` 입력(또는 `xsm attach hw1`에서 y) | 파일이 생기고 A에 답장이 오고, `xsm workers`가 `no workers`(once) |
 | 10-3 | tmux 패널 Claude | `! xsm spawn claude --model haiku --name pw1 --once --task '6*7을 계산해 숫자만 보고해'` | A 옆에 패널이 생기고 TUI 워커가 과제를 받아 42로 답한 뒤 패널이 닫힌다 |
-| 10-4 | 헤드리스 Codex | `! xsm spawn codex --headless --name cw1 --once --task '6*7을 계산해 숫자만 보고해'` | `model gpt-5.6-luna`, 답장 42가 A에 도착(pump가 대신 보낸다), 워커가 사라진다 |
+| 10-4 | 헤드리스 Codex | `! xsm spawn codex --headless --name cw1 --once --task '6*7을 계산해 숫자만 보고해'` | 실제 model/runtime 기록, 답장 42가 A에 도착(pump가 대신 보낸다), 소유 worker 종료 readback |
 | 10-5 | tmux 패널 Codex | `! xsm spawn codex --name pcx --once --task '6*7을 계산해 숫자만 보고해'` | 패널에 Codex TUI, 하단에 이름 `pcx`, 답장 42, 패널이 닫힌다. ref가 앞의 워커와 겹치지 않는다 |
 | 10-6 | 에이전트가 스스로 | A에게: `xsm spawn으로 claude haiku 워커를 --headless --once로 띄워서 "12의 제곱을 계산해 숫자만 보고해"를 맡기고, 답이 오면 결과만 알려줘` | A가 워커를 띄우고 144를 전한다 |
 | 10-7 | 깊이 제한 | 10-3처럼 패널 워커를 띄우고, 그 패널에서 `! xsm spawn claude --model haiku` | `refused: worker … (depth 1) may not start a worker: that would be depth 2 and the limit is 1`. 첫 워커를 `--max-depth 2`로 띄우면 두 번째 단계는 되고 세 번째에서 거부된다. `xsm workers`에 `depth 1/2`, `2/2`로 보인다 |
@@ -745,7 +686,9 @@ ADR-0006의 노드 방식을 확인한다. 같은 저장소의 두 세션 A와 B
 단위 테스트(2026-09-22): 두 브랜치가 각자 노드를 추가한 git 병합이 충돌 없이 끝났고, 두 노드가 모두 남았다.
 
 
-## 13. 다른 기계
+## 13. 기존 양방향 SSH baseline
+
+아래는 legacy SSH pairing 진단 및 과거 표본이다. 새 remote directory/사용자 선택·가입/P12 backend 통합을 구현·통과했다는 뜻이 아니다. 실제 팀·authorized_keys 변경은 별도 실행 범위이며 이 문서 갱신에서 실행하지 않는다.
 
 두 기계 X, Y가 서로 SSH로 들어갈 수 있어야 한다(예: tailnet). 두 기계 모두 xsm이 설치돼 있고, 같은 이름의 프로젝트 `demo`에 가입한 폴더에서 세션이 떠 있다.
 

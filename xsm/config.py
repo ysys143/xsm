@@ -11,17 +11,46 @@ config.json.
 from __future__ import annotations
 
 import fnmatch
+import contextlib
+import copy
+import fcntl
 import hashlib
 import json
+import math
 import os
 import re
 import shlex
+import stat
+import tempfile
+import threading
 import time
 
 from . import paths, probe
 
 CONFIG = "config.json"
 HOMES = "homes.json"
+POLICY_SNAPSHOT = "config.last-valid.json"
+POLICY_LOCK = ".config-policy.lock"
+_POLICY_MEMORY = {}
+_POLICY_PENDING = {}
+_POLICY_MUTEX = threading.RLock()
+
+
+class PolicyError(ValueError):
+    """Policy evidence is unavailable; an operation must not create a grant."""
+
+
+class PolicyConflictError(PolicyError):
+    """The user or another writer changed the source since it was read."""
+
+
+class _PolicyData(dict):
+    """A raw config dictionary with an out-of-band compare-and-swap revision."""
+
+    def __init__(self, value, revision):
+        super().__init__(value)
+        self.revision = revision
+
 
 DEFAULT_CONFIG = {
     # True: every peer message without an xsm header is held. False: Claude's
@@ -40,9 +69,387 @@ DEFAULT_CONFIG = {
 
 
 def load() -> dict:
-    cfg = dict(DEFAULT_CONFIG)
-    cfg.update(paths.read_json(paths.path(CONFIG), {}) or {})
-    return cfg
+    """A plain effective dict, retaining the last valid policy on source errors.
+
+    A never-created file uses normal defaults. A deleted, malformed or invalid
+    existing file is an error, never an empty configuration. Without a validated
+    prior file, config-derived framed scope is unavailable. Native fail_open and
+    unframed switches remain separate. See policy_health before new grants.
+    """
+    return _policy_state()["config"]
+
+
+def policy_health() -> dict:
+    """Fresh health/source/error, separate from load's existing dict contract.
+
+    ``can_grant`` is false during recovery, including snapshot/lock failures.
+    ``source_exists`` describes the current file; ``cached_source_exists``
+    remembers that a file existed, even when only its first invalid version was
+    observed. The private sidecar survives process restarts, not same-uid attacks.
+    """
+    return _policy_state()["health"]
+
+
+def require_valid_policy() -> dict:
+    """Return the current effective dict or raise PolicyError before a new grant.
+
+    MCP/worker/new-pair callers must call this at their own commit boundary too;
+    an earlier successful check does not authorize a later policy revision.
+    """
+    state = _policy_state()
+    _require_policy(state)
+    return state["config"]
+
+
+def _require_policy(state):
+    if not state["health"]["can_grant"]:
+        raise PolicyError("policy-unavailable: " + state["health"]["error"])
+
+
+def _canonical(value):
+    return json.dumps(value, sort_keys=True, ensure_ascii=True,
+                      allow_nan=False, separators=(",", ":")).encode("ascii")
+
+
+def _snapshot_digest(saved):
+    return hashlib.sha256(_canonical({key: value for key, value in saved.items()
+                                     if key != "digest"})).hexdigest()
+
+
+def _bool_switch(value):
+    return isinstance(value, bool) or (isinstance(value, (str, int)) and
+           str(value).strip().lower() in _TRUE + _FALSE)
+
+
+def validate_traffic_control(value) -> dict:
+    """Validate explicit traffic policy without choosing blocking defaults.
+
+    Observe can omit all numeric limits. Strict requires an explicit positive
+    window and at least one positive integer threshold; omitted thresholds do
+    not acquire a default. This controls load only, never communication scope.
+    """
+    def bad(field):
+        raise PolicyError("invalid permission field: traffic_control" + field)
+    if not isinstance(value, dict):
+        bad("")
+    if set(value) - {"mode", "window_seconds", "max_messages", "max_same_body"}:
+        bad(".unknown-key")
+    if value.get("mode") not in ("observe", "strict"):
+        bad(".mode")
+    if "window_seconds" in value:
+        window = value["window_seconds"]
+        try:
+            valid = type(window) in (int, float) and math.isfinite(window) and window > 0
+        except OverflowError:
+            valid = False
+        if not valid:
+            bad(".window_seconds")
+    for key in ("max_messages", "max_same_body"):
+        if key in value and (type(value[key]) is not int or value[key] <= 0):
+            bad("." + key)
+    if value["mode"] == "strict":
+        if "window_seconds" not in value or not any(key in value for key in ("max_messages", "max_same_body")):
+            bad(".strict-limits")
+    return copy.deepcopy(value)
+
+
+def traffic_policy(cfg: dict | None = None) -> dict:
+    """Effective traffic policy plus explicit uncertainty for inbound callers.
+
+    A last-valid strict policy remains usable. An invalid current strict object
+    cannot quietly fall through to a last-valid/default observe policy. cfg is
+    caller-owned local policy, never fields parsed from a message body.
+    """
+    state = _policy_state()
+    effective = state["config"] if cfg is None else cfg
+    source = state["health"]["source"] if cfg is None or cfg == state["config"] else "supplied"
+    raw = state["raw"]
+    value = effective.get("traffic_control") if isinstance(effective, dict) else None
+    present = isinstance(effective, dict) and "traffic_control" in effective
+    policy = {"mode": "observe"}
+    error = None
+    if not isinstance(effective, dict):
+        error = "invalid traffic configuration object"
+    elif present:
+        try:
+            policy = validate_traffic_control(value)
+        except PolicyError as exc:
+            policy = {"mode": "strict" if isinstance(value, dict) and value.get("mode") == "strict" else "observe"}
+            error = str(exc)
+    if error is None and isinstance(raw, dict) and "traffic_control" in raw:
+        current = raw["traffic_control"]
+        try:
+            validate_traffic_control(current)
+        except PolicyError as exc:
+            if policy["mode"] != "strict":
+                policy = {"mode": "strict" if isinstance(current, dict) and current.get("mode") == "strict" else "observe"}
+                error = str(exc)
+                source = "invalid-current"
+    current_traffic = raw.get("traffic_control") if isinstance(raw, dict) else None
+    if (state["health"]["health"] != "healthy" and policy["mode"] != "strict" and
+            isinstance(current_traffic, dict) and current_traffic.get("mode") == "strict"):
+        policy = {"mode": "strict"}
+        error = "explicit current strict traffic policy cannot be validated"
+        source = "invalid-current"
+    if error is None and source == "unavailable" and not present:
+        error = "traffic policy cannot be established from the unavailable configuration"
+    return {"policy": policy, "source": source, "error": error,
+            "health": state["health"]["health"]}
+
+
+def _validate_policy(raw):
+    """Validate permission-bearing fields, preserving unrelated extension keys."""
+    if not isinstance(raw, dict):
+        raise PolicyError("config must be a JSON object")
+    def bad(key):
+        raise PolicyError("invalid permission field: " + key)
+    def text(value):
+        return isinstance(value, str) and bool(value.strip())
+    if "traffic_control" in raw:
+        validate_traffic_control(raw["traffic_control"])
+    for key in ("same_repo_scope", "strict_peers"):
+        if key in raw and type(raw[key]) is not bool:
+            bad(key)
+    for key in ("max_depth", "max_workers"):
+        if key in raw and (type(raw[key]) is not int or raw[key] < 0):
+            bad(key)
+    for key in ("deny", "ignore_frameworks", "directory_excluded_paths"):
+        if key in raw and (not isinstance(raw[key], list) or
+                           not all(text(item) for item in raw[key])):
+            bad(key)
+    for key in tuple(POLICY_DEFAULTS) + ("allow_messaging", "human_send_connects", "codex_wake"):
+        if key not in raw:
+            continue
+        if key in POLICY_CHOICES:
+            if not isinstance(raw[key], str) or raw[key].strip().lower() not in POLICY_CHOICES[key]:
+                bad(key)
+        elif not _bool_switch(raw[key]):
+            bad(key)
+    for key, choices in (("runtime", ("snapshot", "checkout")),
+                         ("claude_inbound", ("accept", "leave"))):
+        if key in raw and (not isinstance(raw[key], str) or raw[key].strip().lower() not in choices):
+            bad(key)
+    for key in ("scopes", "links", "reaches", "remotes"):
+        if key not in raw:
+            continue
+        if not isinstance(raw[key], list) or not all(isinstance(row, dict) for row in raw[key]):
+            bad(key)
+        for row in raw[key]:
+            required = {"scopes": ("members",), "links": ("a", "b"),
+                        "reaches": ("ref", "root"), "remotes": ("peer", "host", "local_project", "remote_project")}[key]
+            for field in required:
+                if field == "members":
+                    if not isinstance(row.get(field), list):
+                        bad(key + ".members")
+                    for member in row[field]:
+                        if not isinstance(member, dict):
+                            bad(key + ".members")
+                        for selector in ("runtime", "home", "root", "cwd"):
+                            if selector in member and not text(member[selector]):
+                                bad(key + ".members." + selector)
+                elif not text(row.get(field)):
+                    bad(key + "." + field)
+            if key == "scopes" and "id" in row and not text(row["id"]):
+                bad("scopes.id")
+            if key == "reaches":
+                for field in ("runtime", "session_id", "home", "lstart"):
+                    if field in row and row[field] is not None and not isinstance(row[field], str):
+                        bad("reaches." + field)
+                if "pid" in row and row["pid"] is not None and type(row["pid"]) is not int:
+                    bad("reaches.pid")
+    return raw
+
+
+def _unique_object(pairs):
+    out = {}
+    for key, value in pairs:
+        if key in out:
+            raise PolicyError("duplicate JSON field")
+        out[key] = value
+    return out
+
+
+def _json_policy(data):
+    def invalid_constant(value):
+        raise PolicyError("non-finite JSON constant")
+    return json.loads(data, object_pairs_hook=_unique_object, parse_constant=invalid_constant)
+
+
+def _source():
+    """Read exact source bytes and a revision; never swallow I/O or JSON errors."""
+    try:
+        with open(paths.path(CONFIG), "rb") as stream:
+            data = stream.read()
+            info = os.fstat(stream.fileno())
+    except FileNotFoundError:
+        # A dangling symlink is an existing unreadable policy, not first setup.
+        if os.path.lexists(paths.path(CONFIG)):
+            return None, "unreadable", True, "policy source is a dangling symlink"
+        return None, "missing", False, None
+    except OSError as exc:
+        return None, "unreadable", True, "policy source read failed: " + type(exc).__name__
+    revision = hashlib.sha256(data + _canonical([info.st_dev, info.st_ino, info.st_mtime_ns])).hexdigest()
+    raw = None
+    try:
+        raw = _json_policy(data.decode("utf-8"))
+        _validate_policy(raw)
+    except (ValueError, UnicodeError, RecursionError) as exc:
+        if raw is None and isinstance(exc, PolicyError):
+            # Recover structure only for diagnostics (e.g. JSON's NaN extension).
+            # Duplicate fields still fail. This data is never stored as valid
+            # policy or used to grant scope; an explicit strict mode can remain
+            # an unknown constraint rather than silently becoming observe.
+            try:
+                diagnostic = json.loads(data.decode("utf-8"), object_pairs_hook=_unique_object)
+                if isinstance(diagnostic, dict):
+                    raw = diagnostic
+            except (ValueError, UnicodeError, RecursionError):
+                pass
+        reason = str(exc) if isinstance(exc, PolicyError) else type(exc).__name__
+        return raw if isinstance(raw, dict) else None, revision, True, "policy source invalid: " + reason
+    return raw, revision, True, None
+
+
+def _private_open(filename, flags):
+    fd = os.open(filename, flags | getattr(os, "O_NOFOLLOW", 0) | os.O_NONBLOCK, 0o600)
+    try:
+        info = os.fstat(fd)
+        if not stat.S_ISREG(info.st_mode) or info.st_uid != os.getuid() or info.st_mode & 0o077:
+            raise PermissionError("policy sidecar must be a UID-private regular file")
+    except BaseException:
+        os.close(fd)
+        raise
+    return fd
+
+
+@contextlib.contextmanager
+def _policy_lock():
+    os.makedirs(paths.HOME, mode=0o700, exist_ok=True)
+    fd = _private_open(paths.path(POLICY_LOCK), os.O_RDWR | os.O_CREAT)
+    try:
+        fcntl.flock(fd, fcntl.LOCK_EX)
+        yield
+    finally:
+        os.close(fd)
+
+
+def _snapshot_read():
+    try:
+        fd = _private_open(paths.path(POLICY_SNAPSHOT), os.O_RDONLY)
+    except FileNotFoundError:
+        return None, None
+    except OSError as exc:
+        return None, "snapshot read failed: " + type(exc).__name__
+    try:
+        with os.fdopen(fd, "r", encoding="utf-8") as stream:
+            saved = _json_policy(stream.read())
+        if (not isinstance(saved, dict) or type(saved.get("version")) is not int or saved["version"] != 1 or
+                type(saved.get("uid")) is not int or saved["uid"] != os.getuid() or
+                saved.get("source_path") != os.path.abspath(paths.path(CONFIG)) or
+                type(saved.get("source_exists")) is not bool or
+                type(saved.get("history_verified")) is not bool or
+                type(saved.get("updated_at_ns")) is not int):
+            raise PolicyError("invalid snapshot identity")
+        raw = saved["config"]
+        if raw is not None:
+            _validate_policy(raw)
+            if not saved["source_exists"]:
+                raise PolicyError("invalid snapshot source existence")
+        if saved.get("digest") != _snapshot_digest(saved):
+            raise PolicyError("invalid snapshot digest")
+        return saved, None
+    except (OSError, ValueError, KeyError, UnicodeError, RecursionError) as exc:
+        return None, "snapshot invalid: " + type(exc).__name__
+
+
+def _read_policy(*, snapshot_writable=True, lock_error=None):
+    key = os.path.abspath(paths.path(CONFIG))
+    saved, snapshot_error = _snapshot_read()
+    disk_saved = copy.deepcopy(saved)
+    # A failed snapshot write can leave newer evidence only in memory. Reuse
+    # it only while the on-disk snapshot is exactly the one that write failed
+    # to replace. A different process's later snapshot wins regardless of wall
+    # clock adjustments, so recovery cannot revive a revoked permission.
+    memory = _POLICY_MEMORY.get(key)
+    if saved is None or (memory is not None and key in _POLICY_PENDING and
+                         saved.get("digest") == _POLICY_PENDING[key]):
+        saved = copy.deepcopy(memory)
+    if saved is None:
+        saved = {"version": 1, "uid": os.getuid(), "source_path": key,
+                 "source_exists": False, "config": None, "updated_at_ns": 0,
+                 "history_verified": not bool(snapshot_error)}
+    raw, revision, exists, source_error = _source()
+    if not exists and saved["source_exists"]:
+        source_error = "policy source was deleted after it previously existed"
+    if not exists and (snapshot_error or not saved["history_verified"]) and not saved["source_exists"]:
+        source_error = "policy source history cannot be verified"
+    previous = copy.deepcopy(saved)
+    saved["source_exists"] = saved["source_exists"] or exists
+    if source_error is None and exists:
+        saved["config"] = copy.deepcopy(raw)
+        saved["history_verified"] = True
+    if saved != previous:
+        saved["updated_at_ns"] = max(time.time_ns(), previous["updated_at_ns"] + 1)
+    saved["digest"] = _snapshot_digest(saved)
+    _POLICY_MEMORY[key] = copy.deepcopy(saved)
+    # Never rewrite config.json during a read or a recovery. Snapshot failures
+    # remain visible and cannot authorize a new grant.
+    write_error = None
+    if snapshot_writable and (saved != disk_saved or snapshot_error or
+                              not os.path.lexists(paths.path(POLICY_SNAPSHOT))):
+        try:
+            # Refuse symlinks/unsafe files rather than replace an unrelated path.
+            if os.path.lexists(paths.path(POLICY_SNAPSHOT)):
+                fd = _private_open(paths.path(POLICY_SNAPSHOT), os.O_RDONLY)
+                os.close(fd)
+            paths.write_json(paths.path(POLICY_SNAPSHOT), saved, mode=0o600)
+            _POLICY_PENDING.pop(key, None)
+            snapshot_error = None
+        except (OSError, ValueError) as exc:
+            _POLICY_PENDING[key] = disk_saved.get("digest") if disk_saved else None
+            write_error = "snapshot write failed: " + type(exc).__name__
+    elif not snapshot_writable and saved != disk_saved:
+        _POLICY_PENDING[key] = disk_saved.get("digest") if disk_saved else None
+    if source_error is None:
+        effective = raw or {}
+        source = "config" if exists else "defaults"
+    elif saved["config"] is not None:
+        effective = saved["config"]
+        source = "last-valid"
+    else:
+        effective = {"same_repo_scope": False, "scopes": [], "links": [], "reaches": [], "remotes": []}
+        # A broken framed policy must not silently change an independently
+        # well-typed native/unframed switch in that same JSON object.
+        if isinstance(raw, dict):
+            for name in tuple(POLICY_DEFAULTS) + ("strict_peers",):
+                if name not in raw:
+                    continue
+                choices = POLICY_CHOICES.get(name)
+                if ((choices and isinstance(raw[name], str) and raw[name].strip().lower() in choices) or
+                        (not choices and (type(raw[name]) is bool if name == "strict_peers" else _bool_switch(raw[name])))):
+                    effective[name] = raw[name]
+            if isinstance(raw.get("deny"), list) and all(isinstance(ref, str) and ref.strip() for ref in raw["deny"]):
+                effective["deny"] = raw["deny"]
+        source = "unavailable"
+    cfg = copy.deepcopy(DEFAULT_CONFIG)
+    cfg.update(copy.deepcopy(effective))
+    errors = [item for item in (source_error, snapshot_error, write_error, lock_error) if item]
+    health = {"health": "degraded" if errors else "healthy", "source": source,
+              "error": "; ".join(errors) if errors else None, "can_grant": not errors,
+              "source_exists": exists, "cached_source_exists": saved["source_exists"],
+              "revision": revision, "snapshot_path": paths.path(POLICY_SNAPSHOT)}
+    return {"config": cfg, "raw": copy.deepcopy(raw), "health": health,
+            "revision": revision, "snapshot": saved}
+
+
+def _policy_state():
+    with _POLICY_MUTEX:
+        try:
+            with _policy_lock():
+                return _read_policy()
+        except OSError as exc:
+            return _read_policy(snapshot_writable=False,
+                                lock_error="policy lock failed: " + type(exc).__name__)
 
 
 # What a hold that was opened (user decision, 2026-10-01: a conversation the
@@ -67,10 +474,11 @@ def policy(name: str, default=None, cfg: dict | None = None, choices: tuple | No
     config.json, then `default` (POLICY_DEFAULTS' when none is given). The default's
     kind says how a value is read: a bool takes 1/true/yes/on and 0/false/no/off, any
     other takes a lowercased string, and one of `choices` when given. A value of the
-    wrong kind is ignored, and then the next source is asked, so a typo in the
-    environment falls through to the file and never past it to the default
-    (2026-10-02: policy.py and this read bad values differently). The one reader for
-    every switch, policy.get included. Never raises: a hook asks."""
+    wrong kind in the environment falls through to the file. load() supplies
+    the current validated file or its last valid snapshot; invalid known file
+    fields are reported by policy_health, not accepted as new grants. Native
+    switches and unknown extension keys retain their existing coercion/defaults.
+    The one reader for every switch, policy.get included. Never raises: a hook asks."""
     if default is None:
         default = POLICY_DEFAULTS.get(name)
     choices = choices or POLICY_CHOICES.get(name)
@@ -109,6 +517,7 @@ def homes() -> list:
 
 
 def add_home(home_path: str, runtime: str, alias: str | None = None) -> dict:
+    require_valid_policy()
     home_path = os.path.realpath(os.path.expanduser(home_path))
     entry = {"path": home_path, "runtime": runtime,
              "alias": alias or alias_of(home_path)}
@@ -212,6 +621,11 @@ def scope_for(a: dict, b: dict, cfg: dict | None = None):
     link = _reach_link(a, b, cfg)
     if link:
         return link, "a reach your user allowed"
+    from . import collaboration
+    selected = collaboration.scope_for(a, b)
+    if selected and not any(r.get("state") in ("ended", "stale") or r.get("ended_at")
+                            for r in (a, b)):
+        return "collaboration:" + selected["id"], "two conversations your user selected"
     return None, reason + _link_hint(a, b) + _half_joined(a, b, cfg) + _reach_hint(a, b)
 
 
@@ -390,11 +804,78 @@ def project_root(cwd: str) -> str:
 
 
 def _raw() -> dict:
-    return paths.read_json(paths.path(CONFIG), {}) or {}
+    state = _policy_state()
+    _require_policy(state)
+    return _PolicyData(state["raw"] or {}, state["revision"])
 
 
-def _save(raw: dict) -> None:
-    paths.write_json(paths.path(CONFIG), raw, mode=0o644)
+def _data() -> dict:
+    """Alias for raw permission writers; never returns recovery data as writable."""
+    return _raw()
+
+
+def _stage_policy(filename, value, mode):
+    fd, name = tempfile.mkstemp(prefix=".xsm-policy-", dir=paths.HOME)
+    try:
+        with os.fdopen(fd, "w", encoding="utf-8") as stream:
+            json.dump(value, stream, ensure_ascii=False, allow_nan=False,
+                      indent=paths.indent_of(filename))
+            stream.write("\n")
+            stream.flush()
+            os.fsync(stream.fileno())
+        os.chmod(name, mode)
+        return name
+    except BaseException:
+        os.unlink(name)
+        raise
+
+
+def _save(raw: dict, *, expected_revision: str | None = None) -> None:
+    """Validate, lock, and CAS a policy update; source errors are never repaired.
+
+    _raw/_data return a dict carrying its revision out of band. Plain dicts are
+    explicit replacements of the policy current at this call; callers with an
+    older plain copy must pass expected_revision. Cooperative writers use the
+    stable lock; the final byte/inode check also catches external editor changes
+    during staging. Editors ignoring this lock can still race the final rename.
+    """
+    _validate_policy(raw)
+    expected = expected_revision if expected_revision is not None else getattr(raw, "revision", None)
+    with _POLICY_MUTEX, _policy_lock():
+        state = _read_policy()
+        _require_policy(state)
+        if expected is not None and expected != state["revision"]:
+            raise PolicyConflictError("policy-conflict: source changed since it was read; read and retry")
+        snapshot = copy.deepcopy(state["snapshot"])
+        snapshot.update(config=copy.deepcopy(dict(raw)), source_exists=True, history_verified=True,
+                        updated_at_ns=max(time.time_ns(), snapshot["updated_at_ns"] + 1))
+        snapshot["digest"] = _snapshot_digest(snapshot)
+        staged = []
+        try:
+            # Stage recovery evidence before touching the actual source.
+            backup = _stage_policy(paths.path(POLICY_SNAPSHOT), snapshot, 0o600)
+            staged.append(backup)
+            mode = stat.S_IMODE(os.stat(paths.path(CONFIG)).st_mode) if state["health"]["source_exists"] else 0o644
+            candidate = _stage_policy(paths.path(CONFIG), raw, mode)
+            staged.append(candidate)
+            _, revision, _, error = _source()
+            if error:
+                raise PolicyError("policy-unavailable: " + error)
+            if revision != state["revision"]:
+                raise PolicyConflictError("policy-conflict: source changed during update; read and retry")
+            os.replace(candidate, paths.path(CONFIG))
+            key = os.path.abspath(paths.path(CONFIG))
+            _POLICY_MEMORY[key] = copy.deepcopy(snapshot)
+            _POLICY_PENDING[key] = state["snapshot"]["digest"]
+            try:
+                os.replace(backup, paths.path(POLICY_SNAPSHOT))
+                _POLICY_PENDING.pop(key, None)
+            except OSError as exc:
+                raise PolicyError("policy-write-incomplete: source committed but snapshot commit failed") from exc
+        finally:
+            for name in staged:
+                if os.path.exists(name):
+                    os.unlink(name)
 
 
 def set_value(name: str, value) -> bool:

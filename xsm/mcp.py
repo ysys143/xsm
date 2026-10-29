@@ -20,13 +20,19 @@ several live threads and no such id, the call is refused (Server.session).
 from __future__ import annotations
 
 import json
+import copy
+import base64
+import math
 import os
+import queue
+import threading
 import shlex
 import signal
 import sys
 import time
 
-from . import channel, consent, identity, paths, probe, registry
+from . import channel, consent, context, identity, paths, probe, registry
+from .instructions import HANDSHAKE_TEXT, MESSAGING_GUIDE
 
 PROTOCOL = "2025-06-18"
 
@@ -40,6 +46,16 @@ PROTOCOL = "2025-06-18"
 # the person's own SSH pairing, which is theirs, not an open world.
 READ_ONLY = {"readOnlyHint": True, "openWorldHint": False}
 MESSAGING = {"readOnlyHint": False, "destructiveHint": False, "openWorldHint": False}
+# Tools that widen a permission or touch another session's files: these require
+# an exact caller identity, never a neighbour guessed from a shared daemon pid
+# (P01 item 2, A17-02, A23-03).
+WIDENING = ("xsm_publish", "xsm_connect", "xsm_grant", "xsm_approve", "xsm_link", "xsm_join", "xsm_reach")
+# Tools that read a file on the caller's behalf. The path is taken relative to
+# the caller's own folder, so a guessed neighbour would have another session's
+# files read for it -- the second thing spec P01 item 2 puts behind an exact
+# identity (IC01). Whether that folder is authority for the file itself is the
+# separate question D07 decides; this only stops the identity from being a guess.
+FILE_READING = ("xsm_doc_endorse", "xsm_ask", "xsm_question_status", "xsm_discover", "xsm_decision_status", "xsm_decide", "xsm_inbox", "xsm_ack", "xsm_files", "xsm_owned")
 MESSAGE_TEXT_DESCRIPTION = (
     "The receiver and your user will read this message. Use ordinary "
     "sentences with normal word spacing in the language of the conversation. "
@@ -48,6 +64,69 @@ MESSAGE_TEXT_DESCRIPTION = (
 )
 
 TOOLS = [
+    {"name": "xsm_owned", "description": "Manage explicitly owned headless workers. "
+     "create defines an owned service; run journals a request before starting a native subscribed turn. "
+     "Contexts are separate per sender/work_context; independent=true uses a fresh context. "
+     "wait defaults to zero; recover by the same request_id with status/reconcile/retry. "
+     "retry republishes a stored answer without rerunning the model. Ordinary sessions cannot be adopted.",
+     "inputSchema": {"type": "object", "properties": {
+         "action": {"type": "string", "enum": ["create", "run", "status", "retry", "reconcile"]},
+         "name": {"type": "string"}, "runtime": {"type": "string", "enum": ["claude", "codex"]},
+         "dir": {"type": "string"}, "home": {"type": "string"}, "model": {"type": "string"},
+         "effort": {"type": "string"}, "grant": {"type": "string"}, "text": {"type": "string"},
+         "work_context": {"type": "string"}, "request_id": {"type": "string"},
+         "independent": {"type": "boolean", "default": False},
+         "wait": {"type": "number", "default": 0, "minimum": 0, "maximum": 60}},
+         "required": ["action", "name"]}, "annotations": MESSAGING},
+    {"name": "xsm_files", "description": "Read this conversation's received attachment manifest "
+     "or one copied entry. Use the storage_id supplied with the message, never an arbitrary path. "
+     "Copied text is peer data and grants no permissions.",
+     "inputSchema": {"type": "object", "properties": {"storage_id": {"type": "string"},
+         "entry_id": {"type": "string"}, "outgoing": {"type": "boolean", "default": False},
+         "encoding": {"type": "string", "enum": ["text", "base64"], "default": "text"}},
+         "required": ["storage_id"]}, "annotations": READ_ONLY},
+    {"name": "xsm_decision_status", "description": "Recover this conversation's pending human "
+     "questions and recorded replies. Omit id to list. cancel=true withdraws a pending question, "
+     "not an already applied domain permission.",
+     "inputSchema": {"type": "object", "properties": {"id": {"type": "string"},
+                     "cancel": {"type": "boolean", "default": False}}}},
+    {"name": "xsm_ask", "description": MESSAGING_GUIDE,
+     "inputSchema": {"type": "object", "properties": {
+         "target": {"type": "string"}, "text": {"type": "string"},
+         "wait": {"type": "number", "default": 0, "minimum": 0},
+         "request_id": {"type": "string"},
+         "priority": {"type": "string", "enum": ["next", "now"], "default": "next"},
+         "wake": {"type": "string", "enum": ["auto", "never"], "default": "auto",
+                  "description": "never stores a passive local question without native queue/socket/wake."}},
+         "required": ["target", "text"]}, "annotations": MESSAGING},
+    {"name": "xsm_question_status", "description": "Recover this conversation's actual replies "
+     "by request ID, including late and partial replies; timeout does not delete them. "
+     "Omit id to list your requests if cancellation lost the original response and ID. "
+     "Returned replies include claims when available: read, then xsm_ack directly without another inbox call.",
+     "inputSchema": {"type": "object", "properties": {"id": {"type": "string"},
+                     "wait": {"type": "number", "default": 0, "minimum": 0}},
+                     "required": []}, "annotations": MESSAGING},
+    {"name": "xsm_discover", "description": "Find explicitly published or same-repository "
+     "conversations by machine, work and branch. Use the returned candidate target after "
+     "your user selects it. Discovery alone never grants collaboration.",
+     "inputSchema": {"type": "object", "properties": {
+         "machine": {"type": "string", "description": "Machine name or label to match."},
+         "work": {"type": "string", "description": "Words in the agent's task summary, such as review; not a working-directory path. Omit to browse visible candidates."},
+         "branch": {"type": "string", "description": "Git branch name to match."}}}, "annotations": READ_ONLY},
+    {"name": "xsm_publish", "description": "Publish only this conversation for discovery after "
+     "your user's instruction. visible=false withdraws publication; neither operation links folders.",
+     "inputSchema": {"type": "object", "properties": {
+         "visible": {"type": "boolean", "default": True},
+         "answer_request": {"type": "string"}, "original_question": {"type": "string"}}}},
+    {"name": "xsm_connect", "description": "Connect only the selected native conversation "
+     "using your user's selection, then request the peer's actual handshake reply. "
+     "Permission or a receipt alone never completes it; recover the returned ID after timeout. "
+     "Read the actual reply, then acknowledge its returned claims with xsm_ack; no extra inbox call is needed.",
+     "inputSchema": {"type": "object", "properties": {"target": {"type": "string"},
+         "wait": {"type": "number", "default": 0, "minimum": 0},
+         "request_id": {"type": "string"}, "answer_request": {"type": "string"},
+         "original_question": {"type": "string"}}, "required": ["target"]},
+     "annotations": MESSAGING},
     {"name": "xsm_post",
      "description": ("Post to this project's xsm channel, the record people and sessions share. "
                      "Tags: note, question, proposal, result, hypothesis. A decision cannot be "
@@ -96,6 +175,9 @@ TOOLS = [
                      "description": "only on a reply that closes a task you were given: how it "
                                     "ended. Say a failure here, not only in the words — the flag "
                                     "is what the sender can act on."},
+         "priority": {"type": "string", "enum": ["next", "now"], "default": "next"},
+         "wake": {"type": "string", "enum": ["auto", "never"], "default": "auto",
+                  "description": "never stores a local FYI without queueing or waking the peer; natural prompt/tool input retrieves it."},
          "resend": {"type": "string",
                     "description": "the id of an earlier send that ended unknown or error: sends "
                                    "that same message again under its id, which the receiver "
@@ -106,13 +188,19 @@ TOOLS = [
                                  "sends it as it was kept, so target and text are not needed."},
          "wait": {"type": "number", "default": 15}}, "required": []},
      "annotations": MESSAGING},
+    {"name": "xsm_ack", "description": "Acknowledge inbox claim tokens only after reading their messages. "
+     "Output delivery alone does not acknowledge them. Unacknowledged originals remain recoverable.",
+     "inputSchema": {"type": "object", "properties": {
+         "tokens": {"type": "array", "items": {"type": "string"}, "minItems": 1}},
+         "required": ["tokens"]}, "annotations": MESSAGING},
     {"name": "xsm_inbox",
      "description": ("Codex sessions: read messages other sessions sent you that are still "
                      "waiting. Codex takes them only between turns; while you are working, call "
                      "this whenever an xsm result says messages are waiting, and before you wait "
                      "on a peer. A Claude session never needs it: its messages arrive on their "
                      "own. `wait` blocks until one arrives instead of sleeping in a loop — a "
-                     "loop that never ends your turn is why six messages once went unread."),
+                     "loop that never ends your turn is why six messages once went unread. "
+                     "Returns messages and claim tokens. After reading, call xsm_ack with their tokens."),
      "inputSchema": {"type": "object", "properties": {
          "wait": {"type": "number", "default": 0,
                   "description": "seconds to block until a message arrives (max 60 here; the "
@@ -181,6 +269,29 @@ ACTIONS = {"accept": "accepted", "decline": "declined", "cancel": "dismissed"}
 # choosing). A client that shows its forms reports a no as a decline, so xsm
 # reads it as the person's no and the agent does not ask again (2026-10-01).
 DECLINED = "declined by your user"
+
+
+for _tool in TOOLS:
+    if _tool["name"] in ("xsm_ask", "xsm_send"):
+        _tool["inputSchema"]["properties"].update({
+            "attachments": {"type": "array", "items": {"type": "object", "properties": {
+                "name": {"type": "string"}, "text": {"type": "string"}, "base64": {"type": "string"}},
+                "required": ["name"], "additionalProperties": False},
+                "description": "Content you actually read: name and exactly one of text/base64. Server-side paths are refused."},
+            "manifest_id": {"type": "string", "description": "Reuse this frozen manifest after interruption or approval; keep the original request ID and body."},
+            "previous_manifest": {"type": "string", "description": "Create a new version under a new request ID, retaining the prior snapshot."},
+            "attachment_fallback": {"type": "string", "enum": ["inline"],
+                "description": "Explicitly carry UTF-8 copies in the body if peer files support is unknown; never automatic."},
+            "request_id": {"type": "string"}})
+    if _tool["name"] in ("xsm_link", "xsm_join", "xsm_reach", "xsm_grant", "xsm_approve", "xsm_decide", "xsm_doc_endorse"):
+        _tool["inputSchema"]["properties"]["answer_request"] = {"type": "string"}
+        _tool["inputSchema"]["properties"]["original_question"] = {"type": "string"}
+        _tool["inputSchema"]["properties"]["decision_key"] = {
+            "type": "string", "description": "Reuse for retries of one human decision; "
+            "use a different label only for a genuinely new user request."}
+        _tool["inputSchema"]["properties"]["notify"] = {
+            "type": "boolean", "default": False,
+            "description": "Opt in to one frequency-limited OS notification. OS success is not proof of human viewing."}
 
 
 def person_answer(reply, allowed=None, client=None) -> tuple:
@@ -271,7 +382,30 @@ class Server:
         self.client_caps = {}
         self.client_name = None         # clientInfo.name from initialize
         self.call_thread = None         # the thread id the current tools/call names, if it does
+        # The context of the call in flight, built once at the top of tools/call
+        # and never let to leak across calls (P01/IC01). Held under a private
+        # name: `call_thread` stays as the raw field it always was, so tests and
+        # readers that set it keep working, but the *identity* a tool acts on is
+        # `self.ctx` -- a frozen object, not a mutable field another call can
+        # overwrite mid-flight.
+        self.ctx = None
+        self.last_context = None  # diagnostics only, never a caller authority
         self.next_id = 0
+        self.active_request = None
+        self.pending_requests = {}
+        self.pending_client = {}
+        self.decision_calls = {}
+        self.decision_routes = {}
+        self.handoff_calls = {}
+        self.owned_jobs = {}
+        self.instance_id = os.urandom(12).hex()
+        self.reader_identity = {"instance": self.instance_id, "pid": os.getpid(),
+                                "generation": context.generation(os.getpid(), identity.lstart(os.getpid()))}
+        self.client_replies = {}
+        self.cancelled = set()
+        self._input = queue.Queue()
+        self._reader = None
+        self._closed = False
 
     # -- transport ----------------------------------------------------------------
     def send(self, obj: dict) -> None:
@@ -279,38 +413,220 @@ class Server:
         self.out.write(json.dumps(obj, ensure_ascii=False) + "\n")
         self.out.flush()
 
-    def read(self) -> dict | None:
-        line = self.inp.readline()
-        return json.loads(line) if line else None
+    def _start_reader(self):
+        if self._reader is not None:
+            return
+
+        def read_lines():
+            # Exactly one reader owns stdin. It only parses/queues input;
+            # service calls and all mutable call context stay on this thread.
+            try:
+                while True:
+                    line = self.inp.readline()
+                    if not line:
+                        break
+                    self._input.put(json.loads(line))
+            except Exception as exc:
+                self._input.put(exc)
+            finally:
+                self._input.put(None)
+
+        self._reader = threading.Thread(target=read_lines, daemon=True,
+                                        name="xsm-mcp-input")
+        self._reader.start()
+
+    def read(self, timeout=None) -> dict | None:
+        self._start_reader()
+        if self._closed:
+            return None
+        msg = self._input.get(timeout=timeout)
+        if msg is None:
+            self._closed = True
+        if isinstance(msg, Exception):
+            raise msg
+        return msg
+
+    def pump(self):
+        """Dispatch pending input during a service wait, without another reader."""
+        try:
+            msg = self.read(timeout=0)
+        except queue.Empty:
+            return True
+        if msg is not None:
+            self.dispatch(msg)
+        return not self._closed
 
     def ask_client(self, method: str, params: dict) -> dict:
-        """A request to the client, answered before anything else continues."""
         self.next_id += 1
         rid = "xsm-%d" % self.next_id
-        self.send({"id": rid, "method": method, "params": params})
-        while True:
-            msg = self.read()
-            if msg is None:
-                raise EOFError("client went away")
-            if msg.get("id") == rid and "method" not in msg:
-                return msg
-            if msg.get("method") == "ping" and "id" in msg:
-                self.send({"id": msg["id"], "result": {}})
+        owner = self.active_request
+        self.pending_client[rid] = owner
+        decision = self.decision_calls.get(owner) if method == "elicitation/create" else None
+        if decision:
+            from . import decisions
+            record = decisions.begin(decision["key"], decision["me"], decision["scope"],
+                                     decision["generation"], params.get("message", ""),
+                                     waiter=owner,
+                                     choices=(((params.get("requestedSchema") or {}).get("properties") or {}).get("answer") or {}).get("enum"))
+            record = decisions.recover_display(record["id"])
+            if decision.get("native_request"):
+                from . import user_answers
+                evidence = user_answers.read_answer(decision["me"], request=decision["native_request"],
+                            since=time.time() - consent.TTL, latest_only=True,
+                            tail_bytes=user_answers.MAX_TAIL_BYTES)
+                original = decision.get("native_question")
+                if not evidence or evidence["question"] != original or original != record["question"]:
+                    self.pending_client.pop(rid, None)
+                    return {"id": rid, "error": {"code": -32000,
+                            "message": "native answer or original displayed question could not be verified"}}
+                decisions.claim_native(decision["me"], evidence["questionItemId"], record["id"])
+                if record["display"]["status"] == "not-requested":
+                    decisions.display(record["id"], owner, evidence["question"], "native-user")
+                reply = {"id": rid, "result": {"action": "accept",
+                         "content": {"answer": evidence["answer"]},
+                         "_meta": {"approvals_reviewer": "user"}}}
+                record = decisions.response(record["id"], reply, "native-user",
+                         source_id=evidence["questionItemId"], displayed=evidence["question"])
+            if record.get("answer"):
+                self.pending_client.pop(rid, None)
+                if record["status"] == "unknown" and self.answer(record["answer"]["reply"], record.get("choices"))[0] is None:
+                    # Preserve the specific malformed/automatic-reviewer reason
+                    # from the existing answer adapter, which cannot apply it.
+                    return record["answer"]["reply"]
+                if record["status"] in ("answered", "denied", "dismissed", "unshown-or-declined"):
+                    if not self._decision_current(decision):
+                        return {"id": rid, "error": {"code": -32000, "message": "decision caller or scope changed"}}
+                    return record["answer"]["reply"]
+                return {"id": rid, "error": {"code": -32000, "message": "decision is not applicable: " + record["status"] +
+                        "; inspect xsm_decision_status; a renewed user request uses a new decision_key"}}
+            if not decisions.display(record["id"], owner, params.get("message", ""), "mcp-elicitation", reader=self.reader_identity):
+                self.pending_client.pop(rid, None)
+                return {"id": rid, "error": {"code": -32000,
+                        "message": "joined pending human question " + record["id"] +
+                        "; inspect xsm_decision_status; cancelled/expired questions require a renewed user request and new decision_key"}}
+            from . import attention
+            try:
+                attention.notify(record["id"], "xsm: 확인 요청", params.get("message", ""),
+                                 enabled=decision.get("notify", False))
+            except OSError:
+                # An optional OS notification cannot orphan the real question.
+                pass
+            self.decision_routes[rid] = record["id"]
+        try:
+            self.send({"id": rid, "method": method, "params": params})
+            while True:
+                if rid in self.client_replies:
+                    reply = self.client_replies.pop(rid)
+                    if decision:
+                        record = decisions.read(decision["key"])
+                        if record["status"] not in ("answered", "denied", "dismissed", "unshown-or-declined"):
+                            if record["status"] == "unknown" and self.answer(reply, record.get("choices"))[0] is None:
+                                return reply
+                            return {"id": rid, "error": {"code": -32000, "message": "decision is " + record["status"]}}
+                        if not self._decision_current(decision):
+                            return {"id": rid, "error": {"code": -32000, "message": "decision caller or scope changed"}}
+                    return reply
+                if owner in self.cancelled:
+                    if decision:
+                        decisions.cancel_waiter(decision["key"], owner)
+                    return {"id": rid, "error": {"code": -32800,
+                            "message": "request cancelled; no decision applied"}}
+                msg = self.read()
+                if msg is None:
+                    raise EOFError("client went away")
+                self.dispatch(msg)
+        except (EOFError, OSError):
+            if decision:
+                decisions.abandon_display(decision["key"], self.instance_id)
+            raise
+        finally:
+            self.pending_client.pop(rid, None)
+
+    def _decision_current(self, decision):
+        from . import decisions
+        record = decisions.read(decision["key"])
+        if (record["status"] == "answered" and
+                (not record["display"].get("complete") or time.time() > record["expires_at"] or
+                 time.time()<record['created_at'])):
+            return False
+        original = decision["me"]
+        if original.get("registered") and original.get("session_id"):
+            current = registry.by_session(original["runtime"], original["session_id"])
+            if (not current or current.get("state") in ("ended", "stale") or
+                    decisions.owner(current) != decisions.owner(original) or
+                    current.get("cwd") != original.get("cwd") or
+                    context.of_record(current, context.BASIS_SESSION).generation != decision["generation"]):
+                decisions.supersede(decision["key"])
+                return False
+        return True
+
+    def _deny_current_decision(self):
+        decision = self.decision_calls.get(self.active_request)
+        if decision:
+            from . import decisions
+            decisions.deny(decision["key"])
 
     def answer(self, reply, allowed) -> tuple:
         return person_answer(reply, allowed, self.client_name)
 
     # -- the session ---------------------------------------------------------------
     def session(self) -> dict | None:
+        """The caller's registry record. `self.ctx` is set alongside with how it
+        was found, so a tool knows whether the identity is exact or a guess
+        (P01 items 1 and 2)."""
+        rec, basis, evidence = self._resolve()
+        self.ctx = context.of_record(rec, basis, evidence=evidence)
+        return rec
+
+    def _resolve(self):
+        """(record | None, basis, evidence) for the caller of this call.
+
+        Each rule says how it found the session, never that it did: `neighbor`
+        (the newest live record under the pid) is a guess and is marked as one
+        even though it still answers, because a shared-daemon neighbour is
+        exactly what must not widen a permission or read another session's file.
+
+        A pointer is keyed on runtime and session id alone, so a thread id that
+        exists in two CODEX_HOMEs (a copied home, another profile) names one
+        record whose `home` may be the *other* one. Signing as it would send a
+        message as a session in a home this server is not running in (A23-03),
+        so a record from a different known home is not taken: the thread is
+        registered for this server's own home instead.
+
+        The home is this *server's own*: the variable of the runtime this server
+        serves, or that runtime's default. Reading whichever home variable is
+        set is what let a default-home server adopt another home's record, and
+        what made a Codex started from a Claude shell (CLAUDE_CONFIG_DIR
+        inherited, spec P01.1) refuse its own home's record.
+
+        When the call names no thread id, one live record under this pid is this
+        server's own session -- Claude is one session per process, and a Codex
+        daemon with a single live thread has that thread calling. Several
+        candidates is the shared-daemon case, and the newest of those is only a
+        guess, which is what `neighbor` says (P01 item 2).
+        """
         pid = identity.ancestor_pid({"claude", "codex"})
         if not pid:
-            return None
+            return None, context.BASIS_NONE, ("no session process above this server",)
         # Runs on every tool call: only the pointers that carry the caller's pid are
         # enriched. Every pointer was (ps, socket and sqlite each) and a registry of
         # hundreds cost seconds before the tool began (#17).
         mine = [registry._enrich(r) for r in registry.raw_records() if r.get("pid") == pid]
         rows = [r for r in mine if r.get("state") == "live"]
         codex = [r for r in rows if r.get("runtime") == "codex"]
+        own_runtime = self.own_runtime(pid, rows)
+        own_home = self.own_home(own_runtime)
+
+        def in_this_home(rec: dict) -> bool:
+            """Whether a record belongs to the home this server runs in. A record
+            with no home, or a server with no home that can be told, cannot be
+            told apart: it is left to the rules below."""
+            rec_home = context.normalize_home(rec.get("home"))
+            return not (own_home and rec_home and rec_home != own_home)
+
+        # The live pointers under this pid that belong to this server's home. A
+        # record from another known home is a different session (A23-03).
+        here = [r for r in rows if in_this_home(r)]
         if self.call_thread and (codex or not rows):
             # Codex 0.158 names the calling thread in every tools/call
             # (`params._meta.threadId`; measured 2026-09-29 with two TUIs on one
@@ -318,7 +634,20 @@ class Server:
             # daemon, so the pid alone names all of them).
             for r in codex:
                 if r.get("session_id") == self.call_thread:
-                    return r
+                    if in_this_home(r):
+                        return r, context.BASIS_THREAD, (
+                            "the call named thread %s" % self.call_thread,)
+                    # Same id, another home: a different session. Do not sign as it.
+                    other = context.normalize_home(r.get("home"))
+                    evidence = ("thread %s lives in %s, not in %s"
+                                % (self.call_thread, other, own_home),)
+                    adopted = registry.adopt_codex_thread(
+                        self.call_thread, pid, self.adoptable_homes(own_home, codex),
+                        mcp_pid=os.getpid())
+                    if adopted:
+                        return adopted, context.BASIS_ADOPTED, evidence + (
+                            "registered it for this home from its own state DB",)
+                    return None, context.BASIS_NONE, evidence
             # No live record: a sub-agent's thread, or one whose hook has not
             # run. Connect it rather than refuse (user decision, 2026-09-30:
             # "prefer easy connection; accidental connection failures must not
@@ -326,21 +655,85 @@ class Server:
             # installed in that home with trusted hooks; without it, fall
             # through to the most recent record below.
             adopted = registry.adopt_codex_thread(
-                self.call_thread, pid, self.codex_homes(codex), mcp_pid=os.getpid())
+                self.call_thread, pid, self.adoptable_homes(own_home, codex),
+                mcp_pid=os.getpid())
             if adopted:
-                return adopted
-        # No thread id (old Codex) or nothing adoptable: the newest live record,
-        # as before 0840ee3 (user decision, 2026-09-30: a possibly wrong
-        # neighbour is better than a refusal).
+                return adopted, context.BASIS_ADOPTED, (
+                    "registered thread %s from its own state DB" % self.call_thread,)
+        # No thread id in the call, and one live record under this pid: that is
+        # the session this server belongs to -- Claude is one session per
+        # process, and a daemon with a single live thread has that thread
+        # calling -- so it is exact, not a guess (G01 review, O-F1: reading it
+        # as a neighbour refused every Claude session its own permission
+        # tools). **Only when the call named no thread**: a call that named a
+        # thread which matched nothing (a sub-agent's thread, a home whose hook
+        # has not run) must not be signed as a *different* session just because
+        # that session is the only one here -- that was G01 review R2-1, a
+        # regression of the O-F1 fix.
+        if not self.call_thread and len(here) == 1 and \
+                (own_runtime is None or here[0].get("runtime") == own_runtime):
+            return here[0], context.BASIS_ANCESTOR, (
+                "the only live record under pid %s is this server's own session" % pid,)
+        # Several records, or a named thread that matched none: the newest live
+        # record is a guess, as before 0840ee3 (user decision, 2026-09-30: a
+        # possibly wrong neighbour is better than a refusal).
+        if here:
+            newest = max(here, key=lambda r: r.get("updated", 0))
+            why = ("thread %s has no record under pid %s; the newest live record is a guess"
+                   % (self.call_thread, pid)) if self.call_thread else \
+                ("no thread id in the call; the newest live record under pid %s" % pid)
+            return newest, context.BASIS_NEIGHBOR, (why,)
         if rows:
-            return max(rows, key=lambda r: r.get("updated", 0))
+            return None, context.BASIS_NONE, (
+                "every live record under pid %s lives in another home, not in %s"
+                % (pid, own_home),)
         # A Claude session whose hooks never ran (started before xsm, or before
         # its plugin was enabled) has no record at all: its own process is this
         # server's parent, and Claude's record of it names the session (audit,
         # 2026-10-01: such a session could not use any xsm tool). By pid, never by
         # an environment variable: a Codex started from a Claude shell inherits
         # that session's id.
-        return registry.adopt_claude_process(pid)
+        adopted = registry.adopt_claude_process(pid)
+        return adopted, (context.BASIS_ADOPTED if adopted else context.BASIS_NONE), (
+            "registered this process's own Claude session" if adopted
+            else "no record carries this pid",)
+
+    @staticmethod
+    def own_runtime(pid, rows: list):
+        """Which runtime this server serves: the session process above it.
+
+        The environment cannot say -- a Codex started from a Claude shell carries
+        CLAUDE_CONFIG_DIR and CLAUDE_CODE_SESSION_ID, a Claude started from Codex
+        carries CODEX_HOME -- so the pointers under the pid decide when they agree
+        (one process serves one runtime), and the process table is asked only when
+        there are none to agree, which is the adoption path. That keeps the common
+        call free of an extra `ps` (#17)."""
+        seen = {r.get("runtime") for r in rows if r.get("runtime")}
+        if len(seen) == 1:
+            return seen.pop()
+        runtime = identity.comm(pid)
+        return runtime if runtime in ("claude", "codex") else None
+
+    @staticmethod
+    def own_home(runtime: str | None) -> str | None:
+        """This server's home, from *its own* runtime's variable only, with that
+        runtime's default when it is unset. Reading the other harness's variable
+        would refuse this server's own records (P01 item 1)."""
+        if runtime == "claude":
+            return context.normalize_home(os.environ.get("CLAUDE_CONFIG_DIR") or "~/.claude")
+        if runtime == "codex":
+            return context.normalize_home(os.environ.get("CODEX_HOME") or "~/.codex")
+        return None
+
+    @staticmethod
+    def adoptable_homes(own_home: str | None, codex_rows: list) -> list:
+        """Candidate CODEX_HOMEs for a thread with no record. A daemon serves the
+        threads of one home, so when this server's home is known that is the only
+        one to look in: a thread found in another home's state DB belongs to
+        another server (A23-03). Without it, the old list is kept."""
+        if own_home:
+            return [own_home]
+        return registry.codex_homes(codex_rows)
 
     @staticmethod
     def codex_homes(codex_rows: list) -> list:
@@ -359,13 +752,103 @@ class Server:
             me = self.session()
         if not me:
             raise channel.ChannelError(registry.unregistered_reason())
+        if self.ctx is None:
+            # A harness or an older entry point set the record without going
+            # through `_resolve`: its identity is the record itself.
+            self.ctx = context.of_record(me, context.BASIS_SESSION,
+                                         evidence=("the caller was provided directly",))
+        # Widening a permission is the one thing a guessed neighbour must never
+        # do (P01 item 2). Plain messaging does not come through here.
+        if name in WIDENING:
+            why = context.require_sure(self.ctx, "widen a permission")
+            if why:
+                paths.append_jsonl("decisions.jsonl", {
+                    "event": "mcp", "decision": "refused", "tool": name,
+                    "reason": "caller not surely identified", "basis": self.ctx.basis,
+                    "certainty": self.ctx.certainty, "ref": me.get("ref")})
+                raise channel.ChannelError(why)
+            from . import config
+            config.require_valid_policy()
+        if name in FILE_READING:
+            why = context.require_sure(self.ctx, "read a file")
+            if why:
+                paths.append_jsonl("decisions.jsonl", {
+                    "event": "mcp", "decision": "refused", "tool": name,
+                    "reason": "caller not surely identified", "basis": self.ctx.basis,
+                    "certainty": self.ctx.certainty, "ref": me.get("ref")})
+                raise channel.ChannelError(why)
+        if self.ctx.sure:
+            registry.note_capabilities(me, {"files": {"version": 1, "status": "observed"}},
+                                       reader_pid=os.getpid())
         where = channel.resolve(me.get("cwd") or os.getcwd(), args.get("channel"))
         author = {"kind": "agent", "name": me.get("name"), "alias": me.get("alias"),
                   "ref": me.get("ref"), "runtime": me.get("runtime")}
-        text = self._call(name, args, me, where, author)
+        if not self.ctx.sure:
+            # Say how the caller was identified on anything it posts, so a
+            # provisional identity is visible where it matters (P01 item 2).
+            author["identity_basis"] = self.ctx.basis
+            author["identity_certainty"] = self.ctx.certainty
+        form_tools = ("xsm_link", "xsm_join", "xsm_reach", "xsm_grant", "xsm_approve",
+                      "xsm_decide", "xsm_doc_endorse")
+        decision_call = None
+        if name in form_tools:
+            from . import decisions
+            generation = self.ctx.generation or {"server": self.instance_id}
+            scope = {"tool": name, "arguments": {k: v for k, v in args.items()
+                     if k not in ("answer_request", "original_question", "notify")}, "cwd": me.get("cwd")}
+            key = decisions.invocation(me, name, args, generation)
+            prior = decisions.read(key)
+            if prior and prior["status"] == "applied":
+                return prior["application"]["result"]
+            decision_call = {"key": key, "me": copy.deepcopy(me), "scope": scope, "generation": generation,
+                             "notify": args.get("notify") is True,
+                             "native_request": args.get("answer_request"),
+                             "native_question": args.get("original_question")}
+            self.decision_calls[self.active_request] = decision_call
+        try:
+            text = self._call(name, args, me, where, author)
+            if decision_call:
+                record = decisions.read(decision_call["key"])
+                if record and record["status"] == "answered":
+                    decisions.applied(record["id"], text, decision_call["generation"], scope)
+        finally:
+            if decision_call:
+                self.decision_calls.pop(self.active_request, None)
+        incoming = None
+        if self.ctx.sure and name not in ("xsm_inbox", "xsm_ack", "xsm_ask", "xsm_question_status", "xsm_connect"):
+            from . import receive
+            try:
+                owner, generation = receive.consumer_for(me)
+            except ValueError:
+                # No runtime generation means no inbox claim, not failure of
+                # the unrelated channel/tool operation already performed.
+                incoming = {"messages": [], "claims": []}
+            else:
+                incoming = receive.take_inbox_claims(me, owner=owner, generation=generation, passive_only=True)
+            if incoming["claims"]:
+                self.handoff_calls.setdefault(self.active_request, []).append((me, incoming, owner, generation))
+        if name in ("xsm_ask", "xsm_question_status", "xsm_connect", "xsm_discover", "xsm_publish", "xsm_decision_status", "xsm_inbox", "xsm_ack", "xsm_files", "xsm_owned"):
+            from . import inbox
+            value = json.loads(text)
+            if name in ("xsm_ask", "xsm_question_status", "xsm_connect"):
+                from . import receive
+                value = receive.claim_question_replies(me, value)
+                if value['claims']:
+                    first = value['claims'][0]
+                    self.handoff_calls.setdefault(self.active_request, []).append(
+                        (me, value, first['owner'], first['generation']))
+            from . import receive
+            value.update(inbox.pending_fields(me, owner_alive=receive._consumer_alive))
+            if incoming and incoming["messages"]:
+                value["incoming"] = incoming
+            from .provenance import readable
+            return readable(value)
+        if incoming and incoming["messages"]:
+            text += "\n\nUnconfirmed incoming messages (read, then xsm_ack):\n" + json.dumps(incoming, ensure_ascii=False)
         if me.get("runtime") == "codex" and name != "xsm_inbox":
             from . import inbox
-            waiting = inbox.notice(me.get("session_id"))
+            from . import receive
+            waiting = inbox.notice(me.get("session_id"), receiver=me, owner_alive=receive._consumer_alive)
             if waiting:
                 text += "\n\n" + waiting
         from . import bounce
@@ -375,6 +858,117 @@ class Server:
         return text
 
     def _call(self, name: str, args: dict, me: dict, where: tuple, author: dict) -> str:
+        if name == "xsm_owned":
+            return json.dumps(self.owned(me,args),ensure_ascii=False)
+        if name == "xsm_files":
+            from . import files
+            storage, entry = args.get("storage_id"), args.get("entry_id")
+            incoming = not args.get("outgoing", False)
+            if not entry:
+                return json.dumps({"storage_id": storage, "manifest": files.manifest(me, storage, incoming=incoming)}, ensure_ascii=False)
+            data = files.read_copy(me, storage, entry, incoming=incoming)
+            encoding = args.get("encoding", "text")
+            if encoding not in ("text", "base64"):
+                raise channel.ChannelError("encoding must be text or base64")
+            try:
+                content = base64.b64encode(data).decode("ascii") if encoding == "base64" else data.decode("utf-8")
+            except UnicodeError as exc:
+                raise channel.ChannelError("binary copy: request encoding=base64") from exc
+            return json.dumps({"storage_id": storage, "entry_id": entry, "encoding": encoding, "content": content}, ensure_ascii=False)
+        if name == "xsm_decision_status":
+            from . import decisions
+            return json.dumps(decisions.public_status(me, args.get("id"), args.get("cancel", False)), ensure_ascii=False)
+        if name in ("xsm_connect", "xsm_publish") and args.get("answer_request"):
+            if not args.get("original_question"):
+                raise channel.ChannelError("answer_request requires original_question")
+            consent.answer_request = args["answer_request"]
+            consent.question_text = args["original_question"]
+        if name == "xsm_publish":
+            from . import connect
+            visible = args.get("visible", True)
+            if not isinstance(visible, bool):
+                raise channel.ChannelError("visible must be a boolean")
+            return json.dumps(connect.publication(me, visible=visible, call=self.ctx), ensure_ascii=False)
+        if name == "xsm_discover":
+            from . import directory
+            return json.dumps(directory.discover(me, machine=args.get("machine"),
+                              work=args.get("work"), branch=args.get("branch")), ensure_ascii=False)
+        if name in ("xsm_ask", "xsm_question_status", "xsm_connect"):
+            from . import envelope, questions, receive
+            requested_wait = float(args.get("wait", 0) or 0)
+            if not math.isfinite(requested_wait) or requested_wait < 0:
+                raise channel.ChannelError("wait must be finite and nonnegative")
+            wait = min(requested_wait, 60.0)
+            if args.get("wake", "auto") not in ("auto", "never"):
+                raise channel.ChannelError("unsupported wake mode; use auto or never")
+            if name == "xsm_question_status" and args.get("id") is None:
+                if requested_wait:
+                    raise channel.ChannelError("an id is required to wait; omit wait to list your requests")
+                return json.dumps({"status": "requests", "requests": questions.list_requests(me)}, ensure_ascii=False)
+            request_id = args.get("id") if name == "xsm_question_status" else \
+                (args.get("request_id") or envelope.new_id())
+            owner = self.active_request
+            last_scan = [float("-inf")]
+
+            def pump():
+                live = self.pump()
+                now = time.monotonic()
+                if now - last_scan[0] >= .2:
+                    last_scan[0] = now
+                    receive.poll_replies(me, request_id)
+                return live
+
+            kwargs = {"wait": wait, "pump": pump,
+                      "cancelled": lambda: owner in self.cancelled}
+            if name == "xsm_question_status":
+                from . import ledger
+                network_state = None
+                if str(ledger.status(request_id).get("scope") or "").startswith("network:"):
+                    from . import network
+                    network_state = network.reconcile(request_id, caller=me)
+                receive.poll_replies(me, request_id)
+                result = questions.wait_for(me, request_id, **kwargs)
+                if network_state is not None:
+                    for key in ("network_status", "network_delivery"):
+                        if key in network_state:
+                            result[key] = network_state[key]
+            else:
+                purpose = "question"
+                body = args.get("text") or ""
+                prepared = None
+                if name == "xsm_ask":
+                    from . import materials
+                    prepared = self.prepare_materials(me,args,body,request_id)
+                    body = prepared["body"]
+                if name == "xsm_connect":
+                    from . import connect, resolve
+                    with probe.quick():
+                        found = resolve.resolve(args.get("target", ""), caller=me)
+                    if not found.ok:
+                        raise channel.ChannelError(found.reason)
+                    if args.get("request_id") and (
+                            not questions.expects_reply(me, found.record, request_id) or
+                            questions.status(me, request_id).get("purpose") != "handshake"):
+                        raise channel.ChannelError("request ID does not belong to this selected handshake")
+                    result = connect.select(me, found.record, call=self.ctx)
+                    if result["status"] != "permitted":
+                        return json.dumps(result, ensure_ascii=False)
+                    if args.get("request_id"):
+                        receive.poll_replies(me, request_id)
+                        result = questions.wait_for(me, request_id, **kwargs)
+                        result["wait_budget"] = {"requested": requested_wait, "effective": wait, "cap": 60}
+                        return json.dumps(result, ensure_ascii=False)
+                    purpose, body = "handshake", HANDSHAKE_TEXT
+                result = questions.ask(me, args.get("target", ""), body,
+                                       request_id=request_id, priority=args.get("priority", "next"),
+                                       purpose=purpose, wake=args.get("wake", "auto"),
+                                       attachments=prepared["attachments"] if prepared else None,
+                                       file_packet=prepared["file_packet"] if prepared else None,
+                                       file_limits=prepared["file_limits"] if prepared else None, **kwargs)
+                if prepared and prepared["manifest_id"]:
+                    result["materials"] = materials.public(prepared)
+            result["wait_budget"] = {"requested": requested_wait, "effective": wait, "cap": 60}
+            return json.dumps(result, ensure_ascii=False)
         if name == "xsm_post":
             rec = channel.post(where, author, args.get("text", ""), args.get("tag") or "note",
                                args.get("reply_to"))
@@ -397,30 +991,153 @@ class Server:
             return self.link(me, args)
         if name == "xsm_send":
             from . import send as send_mod
+            if args.get("outcome") and (args.get("kind") or "note") != "reply":
+                raise channel.ChannelError("outcome belongs only to a reply that closes a task")
+            if args.get("wake", "auto") not in ("auto", "never"):
+                raise channel.ChannelError("unsupported wake mode; use auto or never")
+            from . import envelope, materials
+            request_id = args.get("resend") or args.get("request_id") or envelope.new_id()
+            if args.get("held") and (args.get("attachments") or args.get("manifest_id")):
+                raise channel.ChannelError("held sends reuse their stored material; do not supply new attachments")
+            prepared = self.prepare_materials(me,args,args.get("text") or "",request_id)
             wait = args.get("wait", 15)             # the schema's default
-            r = send_mod.send(args.get("target") or "", args.get("text") or "", sender=me,
+            r = send_mod.send(args.get("target") or "", prepared["body"], sender=me,
                               kind=args.get("kind") or "note", reply_to=args.get("reply_to"),
+                              priority=args.get("priority") or "next",
                               wait=float(15 if wait is None else wait),
                               outcome=args.get("outcome") if args.get("kind") == "reply" else None,
-                              msg_id=args.get("resend") or None,
-                              resend=bool(args.get("resend")), held=args.get("held") or None)
-            return "\n".join(r.lines())
+                              msg_id=request_id if (args.get('resend') or args.get('request_id') or prepared['manifest_id']) else None,
+                              resend=bool(args.get("resend")), held=args.get("held") or None,
+                              call=self.ctx, wake=args.get("wake", "auto") != "never",
+                              attachments=prepared["attachments"], file_packet=prepared["file_packet"],
+                              file_limits=prepared["file_limits"])
+            text = "\n".join(r.lines())
+            if prepared["manifest_id"]:
+                text += "\nMaterials: " + json.dumps(materials.public(prepared), ensure_ascii=False)
+            return text
         if name == "xsm_doc_endorse":
             return self.endorse(me, args)
+        if name == "xsm_ack":
+            from . import receive
+            tokens = args.get("tokens")
+            if not isinstance(tokens, list) or not tokens or not all(isinstance(t, str) for t in tokens):
+                raise channel.ChannelError("tokens must be a nonempty array of claim tokens")
+            owner, generation = receive.consumer_for(me)
+            return json.dumps(receive.ack_inbox(me, tokens, owner=owner, generation=generation))
         if name == "xsm_inbox":
             from . import inbox, receive
             wait = float(args.get("wait") or 0)
+            if not math.isfinite(wait) or wait < 0:
+                raise channel.ChannelError('wait must be finite and nonnegative')
+            call_owner = self.active_request
             if wait > 0:
                 # Shorter than the shell's cap: serve() reads one request at a
                 # time, so a long block looks to the client like a dead server.
-                inbox.wait_for(me.get("session_id"), min(wait, inbox.MCP_MAX_WAIT))
-            return "\n\n----\n\n".join(receive.take_inbox(me)) or "(no messages waiting)"
+                inbox.wait_for(me.get("session_id"), min(wait, inbox.MCP_MAX_WAIT),
+                    counter=lambda: inbox.pending_fields(me, owner_alive=receive._consumer_alive)['inbox_pending'],
+                    pump=self.pump if call_owner is not None else None,
+                    cancelled=lambda: call_owner in self.cancelled)
+                if call_owner in self.cancelled or (call_owner is not None and self._closed):
+                    raise channel.ChannelError('inbox wait cancelled or input closed; original retained')
+            owner, generation = receive.consumer_for(me)
+            pack = receive.take_inbox_claims(me, owner=owner, generation=generation)
+            if pack["claims"]:
+                self.handoff_calls.setdefault(self.active_request, []).append((me, pack, owner, generation))
+            return json.dumps(pack, ensure_ascii=False)
         # A client that loaded its tool list from a newer xsm than this server
         # (the server reads TOOLS once, at its start) names a tool it lacks.
         raise channel.ChannelError(
             "unknown tool %s: this xsm server started before xsm was updated. Reconnect it (Claude "
             "Code: /mcp, then xsm) or start a new session; meanwhile run the same `xsm` command "
             "in the shell" % name)
+
+    def owned(self,me,args):
+        from . import workers,owned_requests,envelope,decisions
+        action,name=args.get("action"),args.get("name")
+        if not isinstance(name,str) or not name:
+            raise channel.ChannelError("owned worker name required")
+        if action=="create":
+            return workers.create_owned(args.get("runtime"),caller=me,name=name,cwd=args.get("dir"),
+                home=args.get("home"),model=args.get("model"),effort=args.get("effort"),grant=args.get("grant"))
+        if action=="status":
+            if args.get("request_id"):
+                return workers.owned_status(name,me,args["request_id"])
+            return {"status":"requests","requests":workers.owned_history(name,me)}
+        if action in ("retry","reconcile"):
+            if not args.get("request_id"):
+                raise channel.ChannelError("request_id required for reply recovery")
+            fn=workers.resend_owned if action=="retry" else workers.reconcile_owned
+            return fn(name,me,args["request_id"])
+        if action!="run":
+            raise channel.ChannelError("unknown owned action")
+        wait=float(args.get("wait",0) or 0)
+        if not math.isfinite(wait) or wait<0:
+            raise channel.ChannelError("wait must be finite and nonnegative")
+        wait=min(wait,60)
+        request_id=args.get("request_id") or envelope.new_id()
+        from . import handoff
+        handoff._id(request_id)
+        arguments={"work_context":args.get("work_context"),"request_id":request_id,
+                   "independent":args.get("independent",False)}
+        try:
+            verified=workers.submit_owned(name,me,args.get('text') or '',**arguments)
+        except (workers.WorkerError,owned_requests.OwnedError) as exc:
+            raise channel.ChannelError(str(exc)) from exc
+        fingerprint=verified['digest']
+        key=(me.get("runtime"),me.get("home"),me.get("session_id"),self.ctx.generation,
+             verified['worker']['id'],request_id)
+        job=self.owned_jobs.get(key)
+        if job is not None and job["fingerprint"]!=fingerprint:
+            raise channel.ChannelError("request_id differs in body, work context or sender")
+        if job is not None and not job['thread'].is_alive():
+            self.owned_jobs.pop(key,None)
+            job=None
+        if job is None:
+            job={"fingerprint":fingerprint,"result":None,"error":None}
+            caller=copy.deepcopy(me)
+            def execute():
+                try:
+                    job["result"]=workers.run_owned(name,caller,args.get("text") or "",**arguments)
+                except Exception as exc:
+                    job["error"]=exc
+            job["thread"]=threading.Thread(target=execute,daemon=True,name="xsm-owned-"+request_id)
+            self.owned_jobs[key]=job
+            job["thread"].start()
+        deadline=time.monotonic()+max(wait,1.0)
+        value=verified
+        owner=self.active_request
+        while True:
+            if job["error"] is not None:
+                raise channel.ChannelError(str(job["error"]))
+            if job["result"] is not None:
+                value=job["result"]
+                break
+            try:
+                value=owned_requests.status(verified['owner'],request_id,sender=me)
+            except ValueError:
+                value=None
+            if value is not None and wait==0:
+                break
+            if owner in self.cancelled or time.monotonic()>=deadline or not self.pump():
+                break
+            time.sleep(.02)
+        value=value or {"id":request_id,"status":"unknown","reason":"request not yet readable; do not use a new ID"}
+        value=dict(value)
+        value["recover_at"]={"tool":"xsm_owned","arguments":{"action":"status","name":name,"request_id":request_id}}
+        value["waiter_cancelled"]=owner in self.cancelled
+        if not job['thread'].is_alive():
+            self.owned_jobs.pop(key,None)
+        return value
+
+    def prepare_materials(self,me,args,body,request_id):
+        from . import materials,files
+        try:
+            return materials.prepare(me,args.get("target") or "",body,request_id,args.get("attachments"),
+                manifest_id=args.get("manifest_id"),previous=args.get("previous_manifest"),
+                fallback=args.get("attachment_fallback"),call=self.ctx)
+        except files.FileError as exc:
+            from .provenance import readable
+            raise channel.ChannelError(readable(materials.failure(exc))) from exc
 
     def decide(self, where: tuple, me: dict, args: dict) -> str:
         if "elicitation" not in (self.client_caps or {}):
@@ -487,6 +1204,8 @@ class Server:
                 "required": ["answer"]}})
         answer, why = self.answer(reply, ["endorse", "not now"])
         if answer != "endorse":
+            if answer is not None:
+                self._deny_current_decision()
             return "your user did not endorse it (%s); nothing was added%s" % (
                 why, ". " + self.in_words(me, command, key) if answer is None and why != DECLINED
                 else "")
@@ -521,6 +1240,7 @@ class Server:
         if answer == "allow":
             return True, None
         if answer == "deny":
+            self._deny_current_decision()
             return False, "your user declined: they chose 'deny'; do not work around it"
         if why == DECLINED:
             return False, unanswered(why)
@@ -718,6 +1438,8 @@ class Server:
             verdict, runtime, "+".join(options), cwd), "decision",
             approved={"question": question, "answer": answer, "options": [deny, allow]})
         if answer != allow:
+            if answer is not None:
+                self._deny_current_decision()
             return "your user declined: they chose 'deny'; do not start that worker"
         g = workers.create_grant(me.get("ref"), runtime, cwd, options, answer)
         use = command if remote else "xsm spawn %s --dir %s %s" % (
@@ -726,55 +1448,92 @@ class Server:
             g["id"], use, g["id"], workers.GRANT_TTL // 60)
 
     # -- loop -------------------------------------------------------------------------
+    def dispatch(self, msg):
+        method, mid = msg.get("method"), msg.get("id")
+        if not method:
+            if mid in self.decision_routes:
+                from . import decisions
+                decisions.response(self.decision_routes[mid], msg, "mcp-elicitation", source_id=str(mid))
+            if mid in self.pending_client:
+                self.client_replies[mid] = msg
+            return
+        params = msg.get("params") or {}
+        if method == "notifications/cancelled":
+            cancelled = params.get("requestId")
+            if cancelled in self.pending_requests:
+                self.cancelled.add(cancelled)
+            return
+        if method == "initialize":
+            self.client_caps = params.get("capabilities") or {}
+            info = params.get("clientInfo")
+            name = info.get("name") if isinstance(info, dict) else None
+            self.client_name = name if isinstance(name, str) else None
+            self.send({"id": mid, "result": {
+                "protocolVersion": params.get("protocolVersion") or PROTOCOL,
+                "capabilities": {"tools": {}},
+                "serverInfo": {"name": "xsm", "version": "1"}}})
+        elif method == "tools/list":
+            self.send({"id": mid, "result": {"tools": TOOLS}})
+        elif method == "tools/call":
+            if mid in self.pending_requests:
+                self.send({"id": mid, "error": {"code": -32600,
+                           "message": "duplicate in-flight request id"}})
+                return
+            saved = self.ctx, self.call_thread, self.active_request
+            # Re-entrant tool dispatch can interrupt a form or a wait. Keep
+            # consent's reporting globals local to that call as well.
+            saved_consent = consent.supplied, consent.used_via, consent.answer_request, consent.question_text
+            consent.supplied = consent.used_via = consent.answer_request = consent.question_text = None
+            meta = params.get("_meta")
+            thread = meta.get("threadId") if isinstance(meta, dict) else None
+            self.call_thread = thread if isinstance(thread, str) and thread else None
+            self.ctx, self.active_request = None, mid
+            self.pending_requests[mid] = params
+            try:
+                try:
+                    text, error = self.call(params.get("name"), params.get("arguments") or {}), False
+                except (channel.ChannelError, EOFError) as exc:
+                    text, error = str(exc), True
+                except OSError as exc:
+                    text, error = (paths.sandbox_blocked(exc) if paths.blocked_write(exc)
+                                   else "xsm failed: %s: %s" % (type(exc).__name__, exc)), True
+                except Exception as exc:
+                    text, error = "xsm failed: %s: %s" % (type(exc).__name__, exc), True
+                    gone = removed_version_note(exc, params.get("name"))
+                    if gone:
+                        text += "\n" + gone
+                try:
+                    if mid in self.cancelled and self.handoff_calls.get(mid):
+                        from . import receive
+                        for me, pack, owner, generation in self.handoff_calls.pop(mid, []):
+                            receive.release_inbox(me, [c["token"] for c in pack["claims"]], owner=owner, generation=generation)
+                        text, error = "request cancelled; unconfirmed inbox claims released", True
+                    self.send({"id": mid, "result": {"content": [{"type": "text", "text": text}],
+                                                     "isError": error}})
+                except BaseException:
+                    from . import receive
+                    for me, pack, owner, generation in self.handoff_calls.get(mid, []):
+                        receive.release_inbox(me, [c["token"] for c in pack["claims"]], owner=owner, generation=generation)
+                    raise
+            finally:
+                self.handoff_calls.pop(mid, None)
+                self.pending_requests.pop(mid, None)
+                self.cancelled.discard(mid)
+                if saved[2] is None:
+                    self.last_context = self.ctx
+                self.ctx, self.call_thread, self.active_request = saved
+                consent.supplied, consent.used_via, consent.answer_request, consent.question_text = saved_consent
+        elif method == "ping" and mid is not None:
+            self.send({"id": mid, "result": {}})
+        elif mid is not None:
+            self.send({"id": mid, "error": {"code": -32601, "message": "not supported"}})
+
     def serve(self) -> int:
         while True:
             msg = self.read()
             if msg is None:
                 return 0
-            method, mid = msg.get("method"), msg.get("id")
-            if method == "initialize":
-                params = msg.get("params") or {}
-                self.client_caps = params.get("capabilities") or {}
-                info = params.get("clientInfo")
-                name = info.get("name") if isinstance(info, dict) else None
-                self.client_name = name if isinstance(name, str) else None
-                self.send({"id": mid, "result": {
-                    "protocolVersion": params.get("protocolVersion") or PROTOCOL,
-                    "capabilities": {"tools": {}},
-                    "serverInfo": {"name": "xsm", "version": "1"}}})
-            elif method == "tools/list":
-                self.send({"id": mid, "result": {"tools": TOOLS}})
-            elif method == "tools/call":
-                params = msg.get("params") or {}
-                meta = params.get("_meta")
-                thread = meta.get("threadId") if isinstance(meta, dict) else None
-                self.call_thread = thread if isinstance(thread, str) and thread else None
-                try:
-                    text, error = self.call(params.get("name"), params.get("arguments") or {}), False
-                except (channel.ChannelError, EOFError) as exc:
-                    # EOFError: the client went away mid-form; the next read
-                    # ends the loop.
-                    text, error = str(exc), True
-                except OSError as exc:
-                    # A write the state folder or a sandbox refused: one line that
-                    # says so, not "xsm failed: PermissionError".
-                    text, error = (paths.sandbox_blocked(exc) if paths.blocked_write(exc)
-                                   else "xsm failed: %s: %s" % (type(exc).__name__, exc)), True
-                except Exception as exc:
-                    # A tool's bug is that call's error, not the end of every
-                    # tool in the session: an exception here once went past
-                    # this loop and the server exited with no reply (second
-                    # review, 2026-09-28).
-                    text, error = "xsm failed: %s: %s" % (type(exc).__name__, exc), True
-                    gone = removed_version_note(exc, params.get("name"))
-                    if gone:
-                        text += "\n" + gone
-                self.send({"id": mid, "result": {"content": [{"type": "text", "text": text}],
-                                                 "isError": error}})
-            elif method == "ping" and mid is not None:
-                self.send({"id": mid, "result": {}})
-            elif mid is not None and method:
-                self.send({"id": mid, "error": {"code": -32601, "message": "not supported"}})
+            self.dispatch(msg)
 
 
 # The shell command each consent-bearing tool stands for, for the note below.

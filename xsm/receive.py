@@ -28,7 +28,8 @@ import sys
 import time
 from contextlib import nullcontext
 
-from . import config, envelope, housekeeping, identity, inbox, ledger, paths, registry, workers
+from . import (config, context, envelope, housekeeping, identity, inbox, ledger, paths, provenance, registry,
+               workers)
 
 CLAUDE_FIELDS = ("scratchpad_dir", "session_title", "prompt_id")
 CODEX_FIELDS = ("turn_id",)
@@ -122,14 +123,19 @@ def register(data: dict, runtime: str) -> dict | None:
                 n for n, v in (("session_id", session_id), ("home", home), ("pid", pid)) if not v)})
         return None
     try:
-        return registry.upsert(runtime, home, session_id, pid, session_folder(runtime, data),
+        current = registry.upsert(runtime, home, session_id, pid, session_folder(runtime, data),
                                permission_mode=data.get("permission_mode"),
                                name=data.get("session_title"),
                                mcp_pid=registry.beacon_for(pid) if runtime == "codex" else None,
                                socket=os.environ.get("CLAUDE_CODE_MESSAGING_SOCKET")
                                if runtime == "claude" else None,
                                inside=os.environ.get("CODEX_THREAD_ID" if runtime == "claude"
-                                                     else "CLAUDE_CODE_SESSION_ID") or None)
+                                                     else "CLAUDE_CODE_SESSION_ID") or None,
+                               **({"transcript_path": data["transcript_path"]}
+                                  if data.get("transcript_path") else {}))
+        from . import network
+        network.note_native_reader(current)
+        return current
     except OSError as err:
         # A state folder that cannot be written must not make a session
         # unknown to the gate, which then could not check anything (2026-10-01).
@@ -137,6 +143,24 @@ def register(data: dict, runtime: str) -> dict | None:
             raise
         _write_failed("registry.upsert", err)
         return registry.by_session(runtime, session_id)
+
+
+def call_context(runtime: str, data: dict, me: dict | None = None) -> context.CallContext:
+    """The receiving hook's own caller identity, in the same shape the CLI and
+    the MCP server build (P01 item 1). Here the runtime named its session id and
+    home in the hook input, so the basis is `hook_input` -- exact. A hook with no
+    session id at all has no identity to speak of, and says `none`.
+
+    `me` is the registry record when there is one, so the context carries the
+    home and generation the record holds; otherwise the home comes from the
+    hook's own fields (home_of), which is what registered it.
+    """
+    session_id = data.get("session_id")
+    home = (me or {}).get("home") or home_of(runtime, data)
+    if me:
+        return context.of_record(me, context.BASIS_HOOK,
+                                 evidence=("the hook input named session %s" % session_id,))
+    return context.for_hook(runtime, session_id, home, session_folder(runtime, data))
 
 
 def _write_failed(what: str, err: OSError) -> None:
@@ -171,12 +195,68 @@ def _outcome(parsed) -> str | None:
     return value if value in envelope.OUTCOMES else None
 
 
-def _close_task(parsed, outcome: str | None) -> None:
+def _index_reply(parsed, me, decision):
+    if decision != "pass" or not me:
+        return False
+    if ledger.status(parsed.header.get("id") or "").get("from_certainty") == "provisional":
+        return False
+    sender, _ = _sender_record(parsed)
+    if sender is None:
+        return False
+    from . import questions
+    accepted = questions.record_reply(me, sender, parsed.header, parsed.body)
+    if accepted:
+        inbox.drop_reply(me, parsed.header.get("id"))
+        try:
+            from . import setup_flow
+            setup_flow.observe_roundtrip(me,sender,parsed.header.get('reply-to'),parsed.header.get('id'))
+        except (OSError,ValueError,KeyError,TypeError) as exc:
+            try:
+                paths.append_jsonl('decisions.jsonl',{'event':'setup-observation-unavailable',
+                    'request_id':parsed.header.get('reply-to'),'error':type(exc).__name__})
+            except OSError:pass
+    return accepted
+
+
+def poll_replies(me: dict, request_id: str) -> int:
+    """Index matching, checked replies without consuming any inbox message."""
+    from . import probe, handoff
+    with probe.quick():
+        matched = 0
+        items = (inbox.peek(str(me.get("session_id"))) + inbox.reply_copies(me, request_id)
+                 + handoff.reply_copies(me,request_id))
+        for item in items:
+            parsed = envelope.parse(item["content"])
+            if parsed.header.get("reply-to") != request_id or parsed.header.get("kind") != "reply":
+                continue
+            receipt = ledger.receipt_of(parsed.header.get("id") or "")
+            if receipt and receipt.get("decision") in ("held", "blocked"):
+                try:
+                    original = handoff.status(me, parsed.header.get("id"))
+                except (OSError, ValueError, KeyError, TypeError):
+                    continue
+                if not handoff.old_p2p_copy_receipt(original, receipt, me):
+                    continue
+            decision, _ = check(parsed, me)
+            if _index_reply(parsed, me, decision):
+                matched += 1
+        return matched
+
+
+def _close_task(parsed, outcome: str | None, me=None) -> None:
     """Record on the task's own ledger entry how it ended. The task was sent
     from here, so its entry is in this machine's ledger; the worker that
     answered may be stopped and forgotten a moment later."""
     task_id = parsed.header.get("reply-to")
     if task_id and outcome:
+        if me is not None:
+            from . import questions
+            request = questions.status(me, task_id)
+            if request["status"] != "not-found":
+                sender, _ = _sender_record(parsed)
+                if (sender is None or not questions.expects_reply(me, sender, task_id)
+                        or ledger.status(parsed.header.get("id") or "").get("from_certainty") == "provisional"):
+                    return
         ledger.close(task_id, outcome, {"name": parsed.header.get("from"),
                                         "ref": parsed.header.get("ref")})
 
@@ -287,6 +367,10 @@ def _handle(data: dict) -> dict | None:
         # thread's name lives in its state DB — so read it back the way every
         # other lookup does, or receipts and decisions record no receiver name.
         me = registry.by_session(runtime, me["session_id"]) or me
+    # The hook's own caller identity, in the shape the CLI and MCP server use
+    # (P01/IC01). Recorded on the decision log so a message carries how surely
+    # the receiver was identified, not only its name.
+    call = call_context(runtime, data, me)
     if data.get("hook_event_name") == "SessionStart":
         housekeeping.maybe_prune()
         if runtime == "codex":
@@ -299,7 +383,17 @@ def _handle(data: dict) -> dict | None:
         # Ordinary human input: say nothing. A Codex `$xsm link <folder>` (and
         # join, leave, reach) is kept as the person's consent (consent.py).
         _record_consent(me, data)
-        return _with_bounces(runtime, me, None)
+        try:
+            passive = take_inbox_claims(me, passive_only=True) if me else {"messages": [], "claims": []}
+        except ValueError:
+            passive = {"messages": [], "claims": []}  # unknown runtime generation is not an owner
+        out = None
+        if passive["messages"]:
+            # Metadata precedes the body; consumers may explicitly acknowledge
+            # these tokens. Merely emitting hook context does not confirm receipt.
+            note = "[xsm] Unconfirmed handoff claims: " + json.dumps(passive["claims"])
+            out = allow_with_context(runtime, note + "\n\n" + "\n\n".join(passive["messages"]))
+        return _with_bounces(runtime, me, out)
     try:
         from . import telemetry
     except ImportError:
@@ -312,6 +406,9 @@ def _handle(data: dict) -> dict | None:
                              traceparent=parsed.header.get("traceparent")) \
         if telemetry else nullcontext()
     with span_cm as span:
+        if span is not None:
+            span.set_attribute("xsm.caller.basis", call.basis)
+            span.set_attribute("xsm.caller.certainty", call.certainty)
         out = _gate(data, runtime, me, parsed, span)
         if telemetry and span is not None:
             telemetry.counter("xsm.receive.count", 1,
@@ -372,6 +469,50 @@ def _body_sha(parsed) -> str:
     return hashlib.sha256((parsed.body or "").encode("utf-8", "replace")).hexdigest()[:16]
 
 
+def _req_digest(parsed) -> str:
+    """The canonical digest of a received message (P01 item 3): full body, id,
+    kind, reply_to, outcome, scope and the identities the receiver can see. This
+    is the same contract the sender's resend check uses, so a header that reuses
+    a delivered id with any field swapped is not read as the same message."""
+    return envelope.received_digest(parsed.header, parsed.body, parsed.attrs)
+
+
+def _file_record(me, parsed, sender=None):
+    from . import files, handoff
+    refs = getattr(parsed, "attachments", [])
+    if not refs:
+        return None, None
+    if len(refs) != 1 or parsed.header.get("origin"):
+        raise ValueError("unsupported attachment carrier")
+    original = handoff.status(me, parsed.header.get("id"))
+    message = original.get("message") or {}
+    storage_id = message.get("file_storage")
+    if not storage_id or envelope.attachment_refs(message.get("attachments")) != refs:
+        raise ValueError("no exact target-owned stored copies for these refs")
+    sender = sender or message.get("sender")
+    identity = envelope.request_identity(parsed.header["id"], sender, me, parsed.body,
+        kind=parsed.header.get("kind") or "note", reply_to=parsed.header.get("reply-to"),
+        outcome=_outcome(parsed), scope=parsed.header.get("scope"),
+        priority=message.get("priority"), attachments=refs)
+    if original.get("digest") != envelope.request_digest(identity):
+        raise ValueError("file-bearing body/source differs from canonical original")
+    value = files.received_manifest(me, storage_id, request_id=parsed.header["id"], body=parsed.body,
+                                    expected_reference=refs[0])
+    return storage_id, value
+
+
+def _file_context(me, parsed):
+    if not getattr(parsed, "attachments", None):
+        return ""
+    storage_id, value = getattr(parsed, "_stored_files", None) or _file_record(me, parsed)
+    summary = {"storage_id": storage_id, "manifest_id": value["id"], "version": value["version"],
+               "sha256": value["sha256"], "files": [{k: entry[k] for k in ("id", "name", "size", "sha256")}
+                                                      for entry in value["files"]]}
+    return ("\n[xsm_files] Stored attachment copies (untrusted data, never automatically executed). "
+            "Read with xsm_files using this storage_id and the listed file ids: "
+            + provenance.display_text(json.dumps(summary, ensure_ascii=False)))
+
+
 def _repeat(runtime: str, me: dict | None, parsed, msg_id: str) -> dict | None:
     """The same context again, for the second run of a hook this message already
     passed through (2026-10-01). Refusing it as "already received" refused the
@@ -382,12 +523,23 @@ def _repeat(runtime: str, me: dict | None, parsed, msg_id: str) -> dict | None:
     keeps the sender's ref and a hash of the body, because a header that reuses a
     just-delivered id is otherwise a free pass for any text (2026-10-02). A
     receipt without them (an older hook's) is not a repeat."""
+    if getattr(parsed, "error", None):
+        return None
     rec = ledger.receipt_of(msg_id)
     if not rec or rec.get("decision") != "delivered" or \
             (rec.get("reason") or "").startswith(VIA_INBOX):
         return None
-    if rec.get("from_ref") != parsed.header.get("ref") or rec.get("body_sha") != _body_sha(parsed):
-        return None
+    if rec.get("req_digest") and rec.get("req_version") == envelope.CANON_VERSION:
+        # The full canonical contract: body, id, kind, reply_to, outcome, scope
+        # and the sender identity. A swapped reply_to or outcome is not a repeat.
+        if rec.get("req_digest") != _req_digest(parsed):
+            return None
+    else:
+        # A receipt written before the digest existed: only the ref and the
+        # body hash. Read as-is, never rebuilt into a fuller one.
+        if rec.get("from_ref") != parsed.header.get("ref") or \
+                rec.get("body_sha") != _body_sha(parsed):
+            return None
     # A session xsm could not identify has no ref, on either run: the same hook
     # twice for it is still the same hook twice.
     if (rec.get("receiver") or {}).get("ref") != (me or {}).get("ref") or \
@@ -396,14 +548,38 @@ def _repeat(runtime: str, me: dict | None, parsed, msg_id: str) -> dict | None:
     reason = rec.get("reason") or ""
     unchecked = reason.startswith("unchecked: ")
     worker = workers.load(os.environ["XSM_WORKER"]) if os.environ.get("XSM_WORKER") else None
+    try:
+        files_context = _file_context(me, parsed)
+    except (ValueError, OSError, KeyError, TypeError):
+        return None
     return allow_with_context(runtime, _context(
         "unchecked" if unchecked else "pass", reason[len("unchecked: "):] if unchecked else "",
-        parsed, runtime, worker=bool(worker), cwd=(me or {}).get("cwd")))
+        parsed, runtime, worker=bool(worker), cwd=(me or {}).get("cwd")) + files_context)
+
+
+def _traffic_retry(me,parsed):
+    from . import handoff
+    try:
+        old=ledger.receipt_of(parsed.header['id']) or {}
+        if not str(old.get('reason') or '').startswith('traffic '):return False
+        original=handoff.status(me,parsed.header['id'])
+        if original.get('delivery_state')!='pending':return False
+        message=original['message']
+        current=envelope.request_identity(parsed.header['id'],message['sender'],me,parsed.body,
+            kind=parsed.header.get('kind') or 'note',reply_to=parsed.header.get('reply-to'),
+            outcome=_outcome(parsed),scope=parsed.header.get('scope'),priority=message.get('priority'),
+            attachments=getattr(parsed,'attachments',None))
+        return envelope.request_digest(current)==original['digest']
+    except (OSError,ValueError,TypeError,KeyError):return False
 
 
 def _gate(data: dict, runtime: str, me: dict | None, parsed, span=None) -> dict | None:
+    from . import network
+    if getattr(parsed, "error", None):
+        return block(runtime, "invalid attachment refs: " + parsed.error)
     msg_id = parsed.header.get("id")
-    if msg_id and ledger.received(msg_id):
+    call = call_context(runtime, data, me)
+    if msg_id and ledger.received(msg_id) and not _traffic_retry(me,parsed):
         # Already handed over, almost always by `xsm inbox` while the Codex
         # turn was still running; this is the queue's own copy arriving late.
         # Not held: the session has it. Refusing is what drops it from Codex.
@@ -428,6 +604,15 @@ def _gate(data: dict, runtime: str, me: dict | None, parsed, span=None) -> dict 
         inbox.drop((me or {}).get("session_id"), msg_id)
 
     if decision == "block":
+        if reason.startswith("P2P admission temporarily unavailable"):
+            from . import handoff
+            handoff.delivery(me, msg_id, "pending", route="mcp-inbox")
+            return block(runtime, reason + "; original retained for revalidation")
+        if reason.startswith('traffic '):
+            from . import handoff
+            handoff.delivery(me,msg_id,'held')
+            _safely(ledger.receipt,msg_id,'held',me,reason)
+            return block(runtime,reason)
         stored = hold(runtime, reason, data, me, parsed)
         if span is not None:
             span.set_attribute("xsm.receive.decision", "held" if stored else "blocked")
@@ -453,21 +638,35 @@ def _gate(data: dict, runtime: str, me: dict | None, parsed, span=None) -> dict 
     paths.append_jsonl("decisions.jsonl", {
         "event": "UserPromptSubmit", "runtime": runtime, "decision": "pass", "reason": reason,
         "unchecked": decision == "unchecked", "id": msg_id, "receiver": me and me.get("name"),
-        "from": _claimed_sender(parsed)})
+        "from": _claimed_sender(parsed), "receiver_basis": call.basis,
+        "receiver_certainty": call.certainty})
     if not parsed.header and decision != "unchecked":
         return None                     # Claude's own framing stands (ADR-0013)
+    try:
+        native_claim = _native_handoff(me, parsed) if decision == "pass" else None
+    except network.AdmissionUnavailable:
+        from . import handoff
+        handoff.delivery(me, msg_id, "pending", route="mcp-inbox")
+        return block(runtime, "P2P admission temporarily unavailable; original retained for revalidation")
+    if native_claim is False:
+        return block(runtime, "message is owned by another consumer or acknowledged; original retained")
     outcome = _outcome(parsed)
     if msg_id:
         _safely(ledger.receipt, msg_id, "delivered", me,
                 "unchecked: %s" % reason if decision == "unchecked" else "", outcome=outcome,
-                from_ref=parsed.header.get("ref"), body_sha=_body_sha(parsed))
+                from_ref=parsed.header.get("ref"), body_sha=_body_sha(parsed),
+                req_digest=_req_digest(parsed))
     if parsed.header.get("kind") == "reply":
-        _safely(_close_task, parsed, outcome)
+        _safely(_index_reply, parsed, me, decision)
+        _safely(_close_task, parsed, outcome, me)
         _safely(workers.on_reply, parsed.header.get("ref"), parsed.header.get("reply-to"), me,
                 outcome)
     worker = workers.load(os.environ.get("XSM_WORKER") or "") if os.environ.get("XSM_WORKER") else None
-    return allow_with_context(runtime, _context(decision, reason, parsed, runtime,
-                                                worker=bool(worker), cwd=(me or {}).get("cwd")))
+    text = _context(decision, reason, parsed, runtime, worker=bool(worker), cwd=(me or {}).get("cwd"))
+    text += _file_context(me, parsed)
+    if isinstance(native_claim, dict):
+        text += "\nUnconfirmed handoff claim; after reading call xsm_ack with this token: " + json.dumps(native_claim)
+    return allow_with_context(runtime, text)
 
 
 def _tell_held(parsed, me: dict | None, reason: str, held: str) -> None:
@@ -489,6 +688,9 @@ def check(parsed, me: dict | None, cfg: dict | None = None) -> tuple:
     in through the hook or was taken with `xsm inbox`. The decision is "pass",
     "block", or "unchecked": passed, but xsm could not tell who it is from or
     whether the scope holds, and the agent is told so (2026-10-01)."""
+    if getattr(parsed, "error", None):
+        return "block", "invalid attachment refs: " + parsed.error
+    sender = None  # native/no-me/origin branches never manufacture a local sender
     cfg = cfg if cfg is not None else config.load()
     decision, reason = "pass", ""
     if not parsed.header:
@@ -500,11 +702,35 @@ def check(parsed, me: dict | None, cfg: dict | None = None) -> tuple:
         # receiver recorded the id for that peer, and only into its project.
         from . import remote
         peer = parsed.header["origin"]
+        if peer.startswith("p2p:"):
+            from . import network
+            try:
+                admitted = network.inbound_record(parsed, me)
+            except network.AdmissionUnavailable:
+                return "block", "P2P admission temporarily unavailable"
+            if admitted is None:
+                return "block", "P2P message has no matching authenticated local admission"
+            if me.get("ref") in config.blocked():
+                return "block", "the target session is blocked here"
+            if parsed.attachments:
+                from . import files, handoff
+                try:
+                    original = handoff.status(me, parsed.header["id"])["message"]
+                    storage = original.get("file_storage")
+                    manifest = files.received_manifest(me, storage, request_id=parsed.header["id"], body=parsed.body,
+                                                       expected_reference=parsed.attachments[0])
+                    parsed._stored_files = (storage, manifest)
+                except (ValueError, OSError, KeyError, TypeError):
+                    return "block", "P2P file copies no longer match their admitted request"
+            observation = _observe_traffic(admitted["sender"], me, parsed, "pass", cfg)
+            if observation and observation.get("allowed") is False:
+                return "block", "traffic %s; original retained; xsm status %s" % (observation["status"], parsed.header.get("id"))
+            return "pass", "authenticated P2P member and exact scoped admission"
         pairing = remote.pairing_for(peer)
         msg = parsed.header.get("id") or ""
         if not pairing or not remote.recorded_inbound(msg, peer):
             decision, reason = "block", "remote message from %s was not received by this " \
-                                        "machine's xsm" % peer
+                                        "machine's xsm" % provenance.display_text(peer)
         elif parsed.header.get("scope") != "remote:%s" % peer:
             decision, reason = "block", "remote message carries the wrong scope"
         elif not remote._project_members(pairing["local_project"], me.get("cwd") or "/"):
@@ -523,7 +749,74 @@ def check(parsed, me: dict | None, cfg: dict | None = None) -> tuple:
             decision, reason, scope = _check_sender(sender, me, cfg, parsed)
             if decision != "block" and scope != parsed.header.get("scope"):
                 decision, reason = "block", "scope changed since the message was sent"
+    if getattr(parsed, "attachments", None) and decision != "block":
+        if decision != "pass" or sender is None or me is None or parsed.header.get("origin"):
+            return "block", "file copies need an exact local sender/receiver; remote files require P12"
+        try:
+            parsed._stored_files = _file_record(me, parsed, sender)
+        except (ValueError, OSError, KeyError, TypeError):
+            return "block", "attachment copies are missing, changed, expired or bound to another request"
+    if decision in ("pass", "unchecked") and sender is not None and me is not None:
+        try:
+            observation=_observe_traffic(sender, me, parsed, decision,cfg)
+            if observation and observation.get('allowed') is False:
+                return 'block', ('traffic %s; retry_after=%s; original retained, sender can resend the same ID; xsm status %s' %
+                     (observation['status'],observation.get('retry_after'),parsed.header.get('id')))
+        except Exception as err:
+            _traffic_diagnostic(parsed.header.get("id"), decision, err)
     return decision, reason
+
+
+def _observe_traffic(sender, me, parsed, decision,cfg):
+    """Observation by default; only the user's explicit strict policy can defer."""
+    from . import abuse, handoff
+    try:
+        sender_id, receiver_id = handoff._identity(sender), handoff._identity(me)
+    except ValueError:
+        return  # no complete local actors, so do not manufacture a pair
+    request_id = parsed.header.get("id")
+    if not request_id:
+        return
+    try:
+        original = handoff.status(me, request_id)
+        if original["status"] == "not-found":
+            _import_handoff(me,{'receiver':receiver_id,'content':envelope.build(parsed.body,msg_id=request_id,
+                sender=sender,scope=parsed.header.get('scope'),kind=parsed.header.get('kind') or 'note',
+                reply_to=parsed.header.get('reply-to'),outcome=_outcome(parsed))})
+            original=handoff.status(me,request_id)
+            if original['status']=='not-found':raise ValueError('traffic original could not be retained')
+        if (original["receiver"] != receiver_id or
+                handoff._identity(original["message"]["sender"]) != sender_id):
+            return
+        if ledger.status(request_id).get("from_certainty") == "provisional":
+            return
+        selected=config.traffic_policy(cfg)
+        policy_key=hashlib.sha256(json.dumps(selected,sort_keys=True).encode()).hexdigest()
+        observation=handoff.traffic_admission(me,request_id,policy_key,
+            lambda:abuse.inbound(sender,me,parsed.body,request_id=request_id,
+                               recovery='xsm status %s' % request_id,cfg=cfg))
+        if observation.get('status')=='unknown':
+            paths.append_jsonl('decisions.jsonl',dict(observation,event='traffic-diagnostic',
+                                                   id=request_id,gate_decision=decision))
+        else:
+            paths.append_jsonl("decisions.jsonl", dict(observation, event="traffic",
+                                                     gate_decision=decision))
+        return observation
+    except Exception as err:
+        _traffic_diagnostic(request_id, decision, err)
+        policy=cfg.get('traffic_control')
+        mode='strict' if isinstance(policy,dict) and policy.get('mode')=='strict' else 'observe'
+        return abuse._unknown(parsed.body,request_id,'xsm status %s' % request_id,mode,
+                              'traffic-admission-unavailable',err)
+
+
+def _traffic_diagnostic(request_id, decision, err):
+    try:
+        paths.append_jsonl("decisions.jsonl", {
+            "event": "traffic-diagnostic", "id": request_id,
+            "error": type(err).__name__, "reason": str(err), "gate_decision": decision})
+    except Exception:
+        pass  # failed diagnostics cannot change the original communication gate
 
 
 def _unidentified(cfg: dict) -> tuple:
@@ -715,7 +1008,365 @@ def _check_native(parsed, me: dict | None, cfg: dict) -> tuple:
         parsed.attrs.get("from-name") or "unnamed", where)
 
 
+
+def consumer_for(me):
+    """Stable consumer ownership across CLI/MCP/hooks of one native runtime.
+
+    The caller supplies the authoritative runtime record. A short-lived reader
+    process is not the runtime owner; its death alone does not release a claim.
+    """
+    from . import handoff
+    handoff._identity(me)
+    pid, start = me.get("pid"), me.get("lstart")
+    if isinstance(pid, bool) or not isinstance(pid, (int, str)):
+        raise ValueError("native runtime pid and lstart required")
+    try:
+        pid = int(pid)
+    except ValueError:
+        raise ValueError("native runtime pid required")
+    if pid <= 0 or not isinstance(start, str) or not start.strip():
+        raise ValueError("native runtime pid and lstart required")
+    return {"type": "native", "id": "process:%s" % pid}, context.generation(pid, start)
+
+
+def _consumer(me, owner=None, generation=None):
+    from . import handoff
+    if owner is None:
+        owner, actual = consumer_for(me)
+        if generation is not None and generation != actual:
+            raise ValueError("consumer generation does not match the native runtime")
+        generation = actual
+    return handoff._owner(owner, generation)
+
+
+def _consumer_alive(owner, generation):
+    if not owner.get("id", "").startswith("process:"):
+        return None
+    try:
+        pid = int(owner["id"].split(":", 1)[1])
+    except ValueError:
+        return None
+    if not identity.pid_alive(pid):
+        return False
+    start = identity.lstart(pid)
+    return context.generation(pid, start) == generation if start else None
+
+
+def _import_handoff(me, item):
+    """Adopt only an unambiguous old export with full authoritative endpoints."""
+    from . import handoff
+    endpoint = handoff._identity(me)
+    if item.get("receiver") is not None:
+        if handoff._identity(item["receiver"]) != endpoint:
+            return None
+    else:
+        # Old inboxes were keyed only by CID. Never assign one to a different
+        # home/runtime just because that consumer reached the shared folder.
+        if not item.get("codex_home") or me.get("runtime") != "codex" or \
+                os.path.realpath(os.path.expanduser(item["codex_home"])) != endpoint["home"]:
+            return None
+        candidates = [r for r in registry.raw_records()
+                      if str(r.get("session_id")) == str(me.get("session_id"))]
+        identities = {json.dumps(handoff._identity(r), sort_keys=True) for r in candidates
+                      if r.get("runtime") and r.get("home") and r.get("session_id")}
+        if identities != {json.dumps(endpoint, sort_keys=True)}:
+            return None
+    parsed = envelope.parse(item.get("content") or "")
+    if getattr(parsed, "error", None):
+        return None
+    sender, _ = _sender_record(parsed)
+    if sender is None or not parsed.header.get("id"):
+        return None
+    try:
+        handoff._identity(sender)
+    except ValueError:
+        return None
+    previous = handoff.status(me, parsed.header["id"])
+    options = previous.get("message", {})
+    if parsed.attachments and not options.get("file_storage"):
+        return None  # A header is not the file packet or proof of a stored copy.
+    message = {
+        "id": parsed.header["id"], "sender": sender, "target": me,
+        "body": parsed.body, "kind": parsed.header.get("kind") or "note",
+        "reply_to": parsed.header.get("reply-to"), "outcome": _outcome(parsed),
+        "scope": parsed.header.get("scope"), "content": item["content"],
+        "priority": item.get("priority") or options.get("priority") or "next",
+        "wake": item.get("wake", options.get("wake", True))}
+    if parsed.attachments:
+        message.update(attachments=parsed.attachments, file_storage=options["file_storage"])
+    record = handoff.store(me, message)
+    ledger.handoff_step(record["id"], "stored", me)
+    return record
+
+
+def _native_handoff(me, parsed):
+    """Claim the authenticated native hook's exact message, never ack on flush."""
+    from . import handoff
+    if not me or not me.get("home") or not parsed.header.get("id"):
+        return None
+    if parsed.header.get("origin", "").startswith("p2p:"):
+        from . import network
+        admitted = network.inbound_record(parsed, me)
+        if admitted is None:
+            return False
+        record = handoff.status(me, parsed.header["id"])
+    else:
+        record = _import_handoff(me, {"receiver": handoff._identity(me),
+                                "content": envelope.build(
+                                    parsed.body, msg_id=parsed.header["id"],
+                                    sender=_sender_record(parsed)[0] or {},
+                                    scope=parsed.header.get("scope"),
+                                    kind=parsed.header.get("kind") or "note",
+                                    reply_to=parsed.header.get("reply-to"),
+                                    outcome=_outcome(parsed), attachments=parsed.attachments)})
+    if record is None:
+        return None
+    handoff.recover(me, owner_alive=_consumer_alive)
+    try:
+        owner, generation = consumer_for(me)
+    except ValueError:
+        return None  # preserve legacy warning flow without inventing ownership
+    claimed = handoff.claim(me, owner, generation, message_id=record["id"])
+    if claimed["status"] == "empty":
+        return False
+    ledger.handoff_step(record["id"], "claimed", me)
+    handoff.handoff(me, claimed["claim"]["token"], owner, generation)
+    ledger.handoff_step(record["id"], "handoff", me)
+    return {"id": record["id"], "token": claimed["claim"]["token"],
+            "owner": owner, "generation": generation, "digest": record["digest"]}
+
+
+def take_inbox_claims(me, *, owner=None, generation=None, lease=120, passive_only=False,
+                      message_ids=None):
+    """Return rendered messages and unconfirmed claim descriptors.
+
+    CLI/MCP pass their actual consumer owner/generation. This API never acks;
+    cancel/output failure calls release_inbox, while a killed reader is recovered
+    from its process generation or the approved lease. Tokens are not consent.
+    """
+    from . import handoff
+    selected = None if message_ids is None else {handoff._id(mid) for mid in message_ids}
+    if selected == set():
+        return {"messages": [], "claims": []}
+    owner, generation = _consumer(me, owner, generation)
+    try:
+        handoff._identity(me)
+    except ValueError:
+        return {"messages": [], "claims": []}
+    exports = {}
+    for item in inbox.legacy_items(str(me.get("session_id"))):
+        if selected is not None and envelope.parse(item.get('content') or '').header.get('id') not in selected:
+            continue
+        if item.get("receiver") is not None and handoff._identity(item["receiver"]) != handoff._identity(me):
+            continue
+        if not passive_only:
+            adopted = _import_handoff(me, item)
+            if adopted is not None:
+                exports[adopted["id"]] = item
+    # A targeted answer handoff must not recover/modify another inbox item's
+    # lease. Normal inbox recovery remains the explicit recovery path.
+    records = (handoff.recover(me, owner_alive=_consumer_alive) if selected is None else
+               [handoff.status(me, mid) for mid in sorted(selected)])
+    messages, claims = [], []
+    acquired = []
+    try:
+        for record in records:
+            if record.get('status') == 'not-found' or (selected is not None and record['id'] not in selected):
+                continue
+            if (passive_only and record["message"].get("wake", True)
+                    and record.get('delivery_route') != 'mcp-inbox'):
+                continue
+            receipt = ledger.receipt_of(record["id"])
+            if (receipt and receipt.get("decision") in ("held", "blocked") and
+                    not (str(receipt.get('reason') or '').startswith('traffic ') and record.get('delivery_state')=='pending')
+                    and not handoff.old_p2p_copy_receipt(record, receipt, me)):
+                continue
+            current = record.get('claim') or {}
+            if (selected is not None and record.get('status') in ('claimed', 'handoff-recorded')
+                    and current.get('owner') == owner and current.get('generation') == generation):
+                claimed = record  # Same consumer may recover its existing token, without renewing its lease.
+            else:
+                claimed = handoff.claim(me, owner, generation, lease, message_id=record["id"])
+            if claimed["status"] == "empty":
+                continue
+            token = claimed["claim"]["token"]
+            acquired.append(token)
+            ledger.handoff_step(record["id"], "claimed", me)
+            parsed = envelope.parse(claimed["message"]["content"])
+            decision, reason = check(parsed, me)
+            if decision == "block":
+                if reason.startswith("P2P admission temporarily unavailable"):
+                    handoff.release(me, token, owner, generation, delivery_state="pending")
+                    handoff.delivery(me, record["id"], "pending", route="mcp-inbox")
+                    messages.append("[xsm] Message %s awaits network revalidation; original retained." % record["id"])
+                    continue
+                if reason.startswith('traffic '):
+                    ledger.receipt(record['id'],'held',me,reason)
+                    handoff.release(me,token,owner,generation,delivery_state='held')
+                    messages.append('[xsm] Deferred message %s: %s' % (record['id'],provenance.display_text(reason)))
+                    continue
+                stored = hold(me.get("runtime") or "codex", reason, {}, me, parsed)
+                ledger.receipt(record["id"], "held" if stored else "blocked", me, reason)
+                handoff.release(me, token, owner, generation,
+                                delivery_state="held" if stored else "refused")
+                messages.append("[xsm] Message %s was refused (%s)%s." % (
+                    record["id"], provenance.display_text(reason), "; kept as %s" % stored if stored else "; original retained"))
+                continue
+            outcome = _outcome(parsed)
+            # Preserve legacy delivery semantics but keep consumption/ack separate.
+            ledger.receipt(record["id"], "delivered", me,
+                           "%s; unchecked: %s" % (VIA_INBOX, reason) if decision == "unchecked"
+                           else VIA_INBOX, outcome=outcome, from_ref=parsed.header.get("ref"),
+                           body_sha=_body_sha(parsed), req_digest=_req_digest(parsed))
+            if parsed.header.get("kind") == "reply":
+                _index_reply(parsed, me, decision)
+                _close_task(parsed, outcome, me)
+                workers.on_reply(parsed.header.get("ref"), parsed.header.get("reply-to"), me, outcome)
+            text = _context(decision, reason, parsed, me.get("runtime") or "codex",
+                            worker=bool(os.environ.get("XSM_WORKER") and
+                                        workers.load(os.environ["XSM_WORKER"])),
+                            cwd=me.get("cwd")) + _file_context(me, parsed) + "\n\n" + provenance.display_body(parsed.body)
+            handoff.handoff(me, token, owner, generation)
+            ledger.handoff_step(record["id"], "handoff", me)
+            claims.append({"id": record["id"], "token": token, "owner": owner,
+                           "generation": generation, "digest": record["digest"]})
+            messages.append(text)
+            # Native duplicates may be removed only with a recoverable canonical
+            # original already committed. unavailable/absent is not a read ack.
+            item = exports.get(record["id"], {})
+            if item.get("queued_id"):
+                from . import codex_daemon
+                codex_daemon.delete_queued(item.get("codex_home") or me["home"],
+                                           str(me["session_id"]), item["queued_id"])
+            inbox.drop(str(me["session_id"]), record["id"])
+    except BaseException:
+        if record.get("status") == "pending":
+            current = handoff.status(me, record["id"])
+            interrupted = current.get("claim") or {}
+            if (interrupted.get("owner") == owner and interrupted.get("generation") == generation
+                    and interrupted.get("token") not in acquired):
+                acquired.append(interrupted["token"])
+        for token in acquired:
+            try:
+                handoff.release(me, token, owner, generation)
+            except ValueError:
+                # A denied item was already released, or a lease expired. Its
+                # original remains; explicit recovery handles the latter.
+                pass
+        raise
+    return {"messages": messages, "claims": claims}
+
+
+def claim_question_replies(me, result, *, owner=None, generation=None):
+    """Offer explicit ACK tokens for only the answers actually being returned.
+
+    The question index is readable even after ACK or loss of a legacy copy.
+    Failure to obtain a canonical claim must never erase that checked answer.
+    This is an output handoff, not an ACK, and does not change poll_replies.
+    """
+    from . import handoff, questions
+    result = dict(result, claims=[])
+    replies = result.get('replies') or []
+    if not replies:
+        return result
+    diagnostics, eligible = [], []
+    try:
+        owner, generation = _consumer(me, owner, generation)
+        for reply in replies:
+            mid = reply['id']
+            record = handoff.status(me, mid)
+            if record.get('status') == 'not-found':
+                # Import only the exact indexed reply, never arbitrary same-CID
+                # inbox text. Cached-only replies stay visible without tokens.
+                for item in inbox.legacy_items(str(me.get('session_id'))):
+                    parsed = envelope.parse(item.get('content') or '')
+                    if (parsed.header.get('id') == mid and parsed.header.get('kind') == 'reply'
+                            and parsed.header.get('reply-to') == result['id'] and parsed.body == reply['body']
+                            and _outcome(parsed) == reply.get('outcome')):
+                        sender, _ = _sender_record(parsed)
+                        if sender is not None and questions.expects_reply(me, sender, result['id']):
+                            _import_handoff(me, item)
+                record = handoff.status(me, mid)
+            message = record.get('message') or {}
+            if record.get('status') == 'acknowledged':
+                continue
+            valid = (message.get('kind') == 'reply' and message.get('reply_to') == result['id']
+                     and message.get('body') == reply['body'] and message.get('outcome') == reply.get('outcome')
+                     and questions.expects_reply(me, message.get('sender'), result['id']))
+            if valid:
+                parsed = envelope.parse(message.get('content') or '')
+                actual_sender, _ = _sender_record(parsed)
+                valid = (parsed.header.get('id') == mid and parsed.header.get('kind') == 'reply'
+                         and parsed.header.get('reply-to') == result['id'] and parsed.body == reply['body']
+                         and _outcome(parsed) == reply.get('outcome')
+                         and actual_sender is not None
+                         and handoff._identity(actual_sender) == handoff._identity(message['sender']))
+            if valid:
+                identity_value = envelope.request_identity(mid, message['sender'], me, message['body'],
+                    kind='reply', reply_to=message['reply_to'], outcome=message.get('outcome'),
+                    scope=message.get('scope'), priority=message.get('priority'), attachments=message.get('attachments'))
+                valid = envelope.request_digest(identity_value) == record.get('digest')
+            if valid:
+                eligible.append(mid)
+            else:
+                diagnostics.append({'id': mid, 'status': 'canonical-unavailable-or-mismatch'})
+        pack = take_inbox_claims(me, owner=owner, generation=generation, message_ids=eligible)
+        result['claims'] = pack['claims']
+        claimed = {c['id'] for c in pack['claims']}
+        for mid in eligible:
+            if mid not in claimed:
+                diagnostics.append({'id': mid, 'status': 'unconfirmed-claim-unavailable'})
+        if pack['messages'] and not pack['claims']:
+            result['claim_messages'] = pack['messages']
+    except Exception as exc:
+        diagnostics.append({'status': 'claim-unavailable', 'error': type(exc).__name__})
+    if diagnostics:
+        result['claim_diagnostics'] = diagnostics
+    return result
+
+
+def ack_inbox(me, tokens, *, owner=None, generation=None):
+    from . import handoff
+    owner, generation = _consumer(me, owner, generation)
+    acked = []
+    for token in tokens:
+        record = handoff.ack(me, token, owner, generation)
+        ledger.handoff_step(record["id"], "ack", me)
+        acked.append(record["id"])
+    return {"acked": acked}
+
+
+def release_inbox(me, tokens, *, owner=None, generation=None):
+    from . import handoff
+    owner, generation = _consumer(me, owner, generation)
+    released = []
+    for token in tokens:
+        record = handoff.release(me, token, owner, generation)
+        released.append(record["id"])
+    return {"released": released}
+
+
 def take_inbox(me: dict) -> list:
+    """Legacy text-only facade. Return/flush is not ack; originals survive."""
+    from . import handoff
+    try:
+        result = take_inbox_claims(me)
+    except ValueError:
+        # Old callers with incomplete runtime records retain their warning
+        # path; these legacy exports never establish a confirmed native ack.
+        return _take_legacy_inbox(me)
+    try:
+        canonical_ids = {record["id"] for record in handoff.recover(me)}
+        endpoint = handoff._identity(me)
+        for item in inbox.legacy_items(str(me.get("session_id"))):
+            if item.get("receiver") is not None and handoff._identity(item["receiver"]) != endpoint:
+                canonical_ids.add(item.get("id"))
+    except ValueError:
+        canonical_ids = set()
+    return result["messages"] + _take_legacy_inbox(me, exclude=canonical_ids)
+
+
+def _take_legacy_inbox(me: dict, exclude=()) -> list:
     """Messages waiting for this Codex session, handed over now instead of at
     the end of its turn. Each goes through check() exactly as the hook would
     run it, gets the same receipt, and comes back as the text the hook would
@@ -727,8 +1378,13 @@ def take_inbox(me: dict) -> list:
         telemetry = None
     runtime = me.get("runtime") or "codex"
     worker = bool(os.environ.get("XSM_WORKER") and workers.load(os.environ["XSM_WORKER"]))
+    # `xsm inbox` / the MCP tool: the session is the record it was called with,
+    # so the identity is exact. Recorded with each handover (P01 item 1).
+    call = context.of_record(me, context.BASIS_SESSION,
+                             evidence=("xsm inbox ran for this session's own record",))
     out = []
-    for item in inbox.take(str(me.get("session_id"))):
+    for item in inbox.take(str(me.get("session_id")), receiver=me if me.get("home") else None,
+                           exclude=exclude):
         if item.get("queued_id"):
             # Handed over here, so its queue copy must not arrive after the
             # turn as a duplicate the gate refuses — Codex shows each refusal
@@ -752,26 +1408,29 @@ def take_inbox(me: dict) -> list:
                 if stored:
                     _tell_held(parsed, me, reason, stored)
                 out.append("[xsm] Message %s from %s was refused (%s)%s." % (
-                    msg_id, parsed.header.get("from") or "unknown", reason,
+                    provenance.display_text(msg_id), provenance.display_text(parsed.header.get("from") or "unknown"), provenance.display_text(reason),
                     "; kept as %s: if your user wants it, ask them, and after they answer run "
                     "`xsm held deliver %s`" % (stored, stored) if stored else ""))
             else:
                 outcome = _outcome(parsed)
                 _safely(ledger.receipt, msg_id, "delivered", me,
                         "%s; unchecked: %s" % (VIA_INBOX, reason) if decision == "unchecked"
-                        else VIA_INBOX, outcome=outcome)
+                        else VIA_INBOX, outcome=outcome, from_ref=parsed.header.get("ref"),
+                        body_sha=_body_sha(parsed), req_digest=_req_digest(parsed))
                 if parsed.header.get("kind") == "reply":
-                    _safely(_close_task, parsed, outcome)
+                    _safely(_index_reply, parsed, me, decision)
+                    _safely(_close_task, parsed, outcome, me)
                     _safely(workers.on_reply, parsed.header.get("ref"),
                             parsed.header.get("reply-to"), me, outcome)
                 out.append(_context(decision, reason, parsed, runtime, worker=worker,
-                                    cwd=me.get("cwd")) + "\n\n" + parsed.body)
+                                    cwd=me.get("cwd")) + "\n\n" + provenance.display_body(parsed.body))
             if span is not None:
                 span.set_attribute("xsm.receive.decision",
                                    decision if decision != "block" else "held")
             paths.append_jsonl("decisions.jsonl", {
                 "event": "inbox", "runtime": runtime, "decision": decision, "reason": reason,
-                "id": msg_id, "receiver": me.get("name"), "from": parsed.header.get("from")})
+                "id": msg_id, "receiver": me.get("name"), "from": parsed.header.get("from"),
+                "receiver_basis": call.basis, "receiver_certainty": call.certainty})
     return out
 
 
@@ -786,6 +1445,10 @@ def _sender_record(parsed) -> tuple:
     exactly one; otherwise there is no sender and the message is refused.
     Both are the sender's own words, like the ref itself: they narrow the
     choice, they never widen it past the ref."""
+    if str(parsed.header.get("origin") or "").startswith("p2p:"):
+        from . import network
+        admitted = network.inbound_record(parsed)
+        return (admitted["sender"], "authenticated P2P sender") if admitted else (None, "P2P admission unavailable")
     ref = parsed.header.get("ref")
     if not ref:
         return None, "sender %r is not registered" % parsed.header.get("from")
@@ -793,6 +1456,9 @@ def _sender_record(parsed) -> tuple:
     if not matches:
         return None, "sender %r is not registered" % parsed.header.get("from")
     if len(matches) == 1:
+        sid = parsed.attrs.get("from-session")
+        if sid and str(matches[0].get("session_id")) != sid:
+            return None, "sender conversation does not match its registered ref"
         return matches[0], ""
     sid = parsed.attrs.get("from-session")
     by_id = [rec for rec in matches if sid and str(rec.get("session_id")) == sid]

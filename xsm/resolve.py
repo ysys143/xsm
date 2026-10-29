@@ -17,11 +17,14 @@ QUALIFIED_RE = re.compile(r"^(?P<name>.+?)(?:@(?P<alias>[^@\s]+))?(?:\s*\[(?P<re
 
 
 class Resolution:
-    def __init__(self, status: str, record=None, candidates=None, reason: str = ""):
+    def __init__(self, status: str, record=None, candidates=None, reason: str = "",
+                 scope=None, scope_basis=None):
         self.status = status              # resolved | ambiguous | not-found | offline-only
         self.record = record
         self.candidates = candidates or []
         self.reason = reason
+        self.scope = scope
+        self.scope_basis = scope_basis
 
     @property
     def ok(self) -> bool:
@@ -51,10 +54,55 @@ def _live_addresses(limit: int = 8) -> list:
     return ordered[:limit]
 
 
-def resolve(target: str, include_offline: bool = False) -> Resolution:
+def _network(target, caller):
+    from . import network, network_identity
+    try:
+        expected = network_identity.parse_target(target)
+        caller = caller if caller is not None else registry.me()
+        if not caller:
+            return Resolution("not-found", reason="this session is not registered; run `xsm doctor`")
+        answer = network.call({"op": "resolve", "caller": caller, "target": target})
+        if not isinstance(answer, dict):
+            raise ValueError("invalid remote resolution response")
+        candidate = answer.get("target")
+        if not isinstance(candidate, dict) or candidate.get("home") is not None:
+            raise ValueError("remote target is unavailable or has a private home")
+        handle = candidate.get("handle")
+        if not isinstance(handle, dict) or network_identity.endpoint(handle) != expected \
+                or network_identity.endpoint(candidate) != expected \
+                or not isinstance(handle.get("generation"), str) \
+                or not re.fullmatch(r"[0-9a-f]{64}", handle["generation"]) \
+                or candidate.get("generation") != handle["generation"]:
+            raise ValueError("remote target identity or generation differs")
+        scope, basis = answer.get("scope"), answer.get("scope_basis")
+        if scope is not None and (not isinstance(scope, str) or not scope.startswith("network:")
+                                  or not scope[len("network:"):]):
+            raise ValueError("invalid remote communication scope")
+        if basis not in (None, "same-repository", "selected"):
+            raise ValueError("invalid remote scope basis")
+        record = dict(candidate, remote=True, registered=True, ref=target, target=target)
+        record.setdefault("alias", record.get("machine_name") or expected["machine"])
+        return Resolution("resolved", record, scope=scope, scope_basis=basis)
+    except (network.NetworkError, ValueError) as exc:
+        return Resolution("not-found", reason=str(exc))
+
+
+def resolve(target: str, include_offline: bool = False, caller=None) -> Resolution:
     target = (target or "").strip()
     if not target:
         return Resolution("not-found", reason="empty target")
+
+    if target.startswith("net:"):
+        return _network(target, caller)
+
+    if target.startswith("candidate:"):
+        from . import directory
+        current = directory.resolve_candidate(caller or registry.me(), target[len("candidate:"):])
+        if current is None:
+            return Resolution("not-found", reason="the selected candidate is no longer visible or available")
+        return Resolution("resolved", current,
+                          scope=current.get("scope") if current.get("remote") else None,
+                          scope_basis=current.get("scope_basis") if current.get("remote") else None)
 
     for prefix in ("claude:", "codex:", "ref:"):
         if target.startswith(prefix):

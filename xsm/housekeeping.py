@@ -16,6 +16,7 @@ The retention windows follow from what we measured:
 from __future__ import annotations
 
 import glob
+import hashlib
 import json
 import os
 import time
@@ -74,7 +75,19 @@ def prune(now: float | None = None, dry_run: bool = False) -> dict:
             if not dry_run:
                 _unlink(p)
 
+    # Canonical originals and their ack/dedup evidence have no auto-deletion
+    # policy. An old ledger retention window must not erase an active claim.
+    from . import handoff
+    protected = set()
+    for original in glob.glob(paths.path(handoff.DIRECTORY, "*", "*.json")):
+        rec = paths.read_json(original)
+        if isinstance(rec, dict) and rec.get("id"):
+            protected.add(rec["id"])
     for p in glob.glob(paths.path(paths.LEDGER, "*.json")):
+        name = os.path.basename(p)
+        if any(name == message_id + suffix for message_id in protected
+               for suffix in (".json", ".recv.json", ".handoff.json")):
+            continue
         entry = paths.read_json(p) or {}
         if (entry.get("t") or os.path.getmtime(p)) < record_cutoff:
             removed["ledger"].append(os.path.basename(p))
@@ -86,6 +99,11 @@ def prune(now: float | None = None, dry_run: bool = False) -> dict:
         if (entry.get("t") or os.path.getmtime(p)) < record_cutoff:
             removed["held"].append(os.path.basename(p))
             if not dry_run:
+                # Preserve old held originals before pruning their legacy index.
+                key = hashlib.sha256(json.dumps(entry, sort_keys=True).encode()).hexdigest()
+                original = paths.path("legacy-held-originals", key + ".json")
+                if not os.path.exists(original):
+                    handoff._write(original, entry)
                 _unlink(p)
 
     removed["telemetry"] = prune_telemetry(now, dry_run)
@@ -99,6 +117,9 @@ def prune(now: float | None = None, dry_run: bool = False) -> dict:
     removed["asked"] = consent.prune(now, dry_run)
     # A refused send kept for its person's yes, which never came (outbox.py).
     removed["outbox"] = outbox.prune(now, dry_run)
+    from . import files
+    removed['files']=(files.cleanup(now=now,dry_run=dry_run) if os.path.lexists(paths.path(files.DIRECTORY))
+                      else {'removed':[],'errors':[],'dry_run':dry_run})
 
     # A copy for a Codex session that never read it: the queue item it
     # duplicates is gone with the session, so it goes with the pointer window.
@@ -107,6 +128,7 @@ def prune(now: float | None = None, dry_run: bool = False) -> dict:
         if (entry.get("t") or os.path.getmtime(p)) < pointer_cutoff:
             removed["inbox"].append(os.path.basename(p))
             if not dry_run:
+                inbox.preserve(entry, os.path.basename(os.path.dirname(p)))
                 _unlink(p)
 
     # A reach lasts as long as the run of the session that was allowed it.

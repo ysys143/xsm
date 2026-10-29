@@ -4,12 +4,11 @@
 a hook in each session records where it is, and the CLI writes to the
 receiving runtime's native path.
 
-Everything below is a shell command: run `xsm` from the shell. Your user can
-ask for the common ones by calling this skill with a word after it —
-`/xsm list`, `/xsm send <target> <message>` in Claude Code, `$xsm list` in
-Codex (SKILL.md lists them). Sending from Codex needs a shell that can
-reach outside the sandbox (full access, or approve the command when asked) —
-the inbox socket and the queue database are both outside it.
+For discovery, selected collaboration and actual replies, follow the generated
+[messaging guide](messaging.md). In a sandboxed Codex, choose MCP first for
+messaging and inbox access. The command examples below describe the same service
+contracts; a shell that cannot reach the runtime is not a reason to widen its
+permissions or ask the user to type them.
 
 ## Finding out who is there
 
@@ -318,6 +317,13 @@ revise, add a node with `--parent`. `endorsed` is your user's: ask with the
 `xsm_doc_endorse` MCP tool.
 
 ## Other machines
+
+An opted-in P2P network merges permitted remote candidates into `xsm discover` /
+`xsm_discover`. Show the machine and work metadata, let the user select one,
+then use its returned target with connect/ask/send. Same-repository visibility
+across machines requires an explicitly verified repository binding. Publication
+or a shared network never supplies collaboration permission. Read the packaged
+[P2P network guide](network.md) for joining, invitations, paths and recovery.
 
 If your user paired this project with another machine (`xsm remote list`),
 `xsm remote sessions <peer>` shows its live sessions and
