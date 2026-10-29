@@ -25,7 +25,10 @@ class OwnedInterfacesTest(TempState):
             return {'body':'actual adapter result','outcome':'succeeded',
                     'native_session_id':str(uuid.uuid4()),
                     'execution':{'pid':os.getpid(),'lstart':identity.lstart(os.getpid())}}
-        for patcher in (mock.patch.object(workers,'_check_installed'),
+        # A suite run from an Orca or herdr terminal inherits its pane markers, and
+        # owned workers are refused there; the siblings clear them the same way.
+        for patcher in (mock.patch.dict(os.environ, {k: '' for _, keys in workers.FRAMEWORKS for k in keys}),
+                        mock.patch.object(workers,'_check_installed'),
                         mock.patch.object(workers,'_execute_owned',side_effect=executor),
                         mock.patch.object(workers,'_reply_owned',side_effect=lambda w,r:{'id':r['reply_id'],'status':'stored'})):
             patcher.start();self.addCleanup(patcher.stop)
