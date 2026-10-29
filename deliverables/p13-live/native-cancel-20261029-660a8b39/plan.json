@@ -1,0 +1,12 @@
+{
+  "root": "/private/tmp/native-cancel-yk9ht9a9",
+  "source": "/private/tmp/xsm-final-receipt-frozen-i3u9pms3",
+  "condition": "one owned normal TUI, real pending xsm_inbox wait, one standard Esc, at most two model turns; record only MCP proxy",
+  "CID_limit": 1,
+  "model_retry": 0,
+  "turn_limit": 2,
+  "no_synthetic_notification_or_result": true,
+  "canonical_setup": "no fabricated sender/claim or manually seeded canonical. If no real message exists, original-preservation/recovery remains unobserved",
+  "trust_or_OS_denial": "stop, do not change profile/permissions or add a second condition",
+  "deadline_utc": "2026-10-29T00:49:15+00:00"
+}

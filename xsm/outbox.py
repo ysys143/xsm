@@ -77,6 +77,21 @@ def get(msg_id: str, sender: dict) -> dict | None:
     return rec if isinstance(rec, dict) and _mine(rec, sender) and _fresh(rec) else None
 
 
+def find(sender: dict, spec: str, msg: dict) -> dict | None:
+    """The message this session already holds for exactly this request, or
+    None. `put` returns it too, but `put` also *creates* one: a caller that has
+    a connection already (so it never reaches `connect.offer`) still has to
+    pick up a copy an earlier run left behind -- a run that died between
+    applying the connection and sending (P02 item 5). Same key as `put`:
+    target spec, kind, reply_to, outcome and body."""
+    key = consent.digest(spec, msg.get("kind"), msg.get("reply_to"), msg.get("outcome"),
+                         msg.get("body"))
+    for rec in _records():
+        if rec.get("digest") == key and _mine(rec, sender) and _fresh(rec):
+            return rec
+    return None
+
+
 def drop(msg_id: str) -> None:
     try:
         os.unlink(_path(msg_id))

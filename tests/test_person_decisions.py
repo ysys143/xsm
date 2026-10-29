@@ -88,6 +88,42 @@ class AskHelpers:
 
 
 class PersonDecisionTest(AskHelpers, TempState):
+    def test_a_harness_answer_tag_is_the_persons_verdict(self):
+        """G00/S5, P02 item 3: Codex answers a question tool with
+        `<send_user_message_question_reply>` wrapping JSON that carries the
+        answer and the tool call id. It is the person's own choice, but it is
+        wrapped the harness way, so the harness-tag rule used to drop it and no
+        ask ever got a verdict. It must be kept, and the request id it names
+        kept with it."""
+        from xsm import consent
+        there = os.path.join(self.tmp, "there")
+        os.makedirs(there, exist_ok=True)
+        self._asks(["link", there])
+        answer = ('<send_user_message_question_reply>[{"answer":"yes, connect it",'
+                  ' "question":"connect?", '
+                  '"questionItemId":"[\\"request_user_input_async\\",\\"call_x\\",0]"}]'
+                  '</send_user_message_question_reply>')
+        consent.record(self.me, {"hook_event_name": "UserPromptSubmit", "prompt": answer})
+        entry = self._pending()
+        self.assertEqual(entry.get("verdict"), "yes, connect it")
+        self.assertEqual(entry.get("answer_request"),
+                         '[\"request_user_input_async\",\"call_x\",0]',
+                         "the request id the answer named is kept with it")
+        self._shows(["link", there], "yes, connect it")
+        code, shown = self._cli(["link", there])
+        self.assertEqual(code, 0, shown)
+        self.assertIn("yes, connect it", shown)
+
+    def test_a_task_notification_is_still_not_a_verdict(self):
+        """The rule the answer tag must not break: harness noise is dropped."""
+        from xsm import consent, paths
+        there = os.path.join(self.tmp, "there")
+        os.makedirs(there, exist_ok=True)
+        self._asks(["link", there])
+        consent.record(self.me, {"hook_event_name": "UserPromptSubmit",
+                                 "prompt": "<task-notification>done</task-notification>"})
+        self.assertIsNone((self._pending() or {}).get("verdict"))
+
     def _answered(self, answers, annotations=None, me=None, tool="AskUserQuestion",
                   event="PostToolUse", response=None):
         """The hook input Claude Code gives for an answered AskUserQuestion. The
@@ -239,10 +275,13 @@ class PersonDecisionTest(AskHelpers, TempState):
         import re
         repo = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
         readmes = ["README.md", "README_ko.md"]
+        # Every reference file: the guide is split by purpose, and a file left out
+        # is a file this check stops reading.
+        references = os.path.join("skills", "xsm", "references")
         files = [os.path.join("xsm", n) for n in sorted(os.listdir(os.path.join(repo, "xsm")))
-                 if n.endswith(".py")] + [
-            os.path.join("skills", "xsm", "SKILL.md"),
-            os.path.join("skills", "xsm", "references", "guide.md")] + readmes
+                 if n.endswith(".py")] + [os.path.join("skills", "xsm", "SKILL.md")] + [
+            os.path.join(references, n) for n in sorted(os.listdir(os.path.join(repo, references)))
+            if n.endswith(".md")] + readmes
         phrases = ("in a terminal", "needs a terminal", "only a person can", "a person clears",
                    "(a person only)", "a person only", "needs a person", "a person can lift",
                    "they can type", "you can type", "ask them to type", "run /xsm",
@@ -257,7 +296,7 @@ class PersonDecisionTest(AskHelpers, TempState):
         genuine = (("xsm/otlp_export.py", "A person runs this in a terminal"),
                    ("README.md", "The same commands work in a terminal as"),
                    ("xsm/install.py", "told the person to type /xsm link instead"),   # history
-                   ("skills/xsm/references/guide.md", "Never ask them to type shell commands"),
+                   ("skills/xsm/references/workers.md", "Never ask them to type shell commands"),
                    # `--dir` speaks for another folder: only a person at a terminal, and
                    # the refusal says so (the agent runs from its own folder).
                    ("xsm/cli.py", "only a person at a terminal may use it with"),

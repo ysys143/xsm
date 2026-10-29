@@ -1,0 +1,38 @@
+{
+  "scope": "local product regression after exact native goal-control filter; not P12/G13 completion",
+  "snapshot": "/private/tmp/xsm-p13-local-frozen-dn7tom1y",
+  "snapshot_manifest": "deliverables/p13-live/local-source-manifest.json",
+  "results": [
+    {
+      "python": "Python 3.9.6",
+      "tests": 1649,
+      "seconds": 425.386,
+      "exit_code": 0,
+      "result": "OK",
+      "skips": 0,
+      "log": "/tmp/p13-local39.log",
+      "log_sha256": "d7ea54544ca7cd97699fe9269cc88a7b65dd7bac96377625036772975a967321"
+    },
+    {
+      "python": "Python 3.14.6",
+      "tests": 1649,
+      "seconds": 314.805,
+      "exit_code": 0,
+      "result": "OK",
+      "skips": 0,
+      "log": "/tmp/p13-local314.log",
+      "log_sha256": "f8fb3fa35e3de942806068169f7c7d19967d3671e5260e316b3ff9b1dffa88fc"
+    }
+  ],
+  "tested_product_paths": 132,
+  "product_source_unchanged_after_runs": true,
+  "changed_paths": [],
+  "whole_plan_complete": false,
+  "unclosed": [
+    "human UI",
+    "D12 product backend choice",
+    "P12 integration",
+    "unavailable physical network conditions",
+    "whole J01-J09 integration"
+  ]
+}

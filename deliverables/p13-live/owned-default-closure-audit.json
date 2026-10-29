@@ -1,0 +1,1094 @@
+{
+  "schema_version": 1,
+  "audited_at": "2026-10-29T00:20:44.985690+00:00",
+  "mode": "offline-read-only-evidence-audit; only requested audit JSON/MD written",
+  "new_models_started": 0,
+  "network_calls": 0,
+  "product_ledger_plan_modified": false,
+  "scope": "명시된 P08 두 summary·producer·retained raw·당시 snapshot·현재 공개 경로 대조. 모든 프로필/전체 deliverables 전수 인증 아님.",
+  "criteria": {
+    "docs/adr/0016-agent-messaging-interface.md": [
+      {
+        "line": 71,
+        "text": "- A16-06: 후속 질문을 일반 세션과 serve 각각에서 실행하고 네이티브 세션 ID·기억 유지 여부를 대조한다. 한 경로의 성공으로 다른 경로를 통과시키지 않는다."
+      },
+      {
+        "line": 73,
+        "text": "- A16-08: 두 발신자가 같은 협력자에게 동시에 요청하고 각자 후속 질문을 보낸다. 문맥 공유 단위·직렬화·퇴출 후 기억 소실·독립 검토 격리를 각각 확인한다. 설정한 용량만큼 모두 작업 중일 때 새 발신자를 추가해 요청 유실·새 워커 즉시 회수·미실행 성공 답변이 없는지 검사한다."
+      }
+    ],
+    "docs/adr/0023-runtime-adapters-and-operability.md": [
+      {
+        "line": 70,
+        "text": "- A23-06: 기본 CLI serve의 MCP·회신·후속 문맥·권한 경계를 따로 시험한다. 보정 조건 성공을 기본 조건 성공으로 보고하지 않는다."
+      }
+    ],
+    "docs/plan/reason-inspired-adrs/acceptance.md": [
+      {
+        "line": 139,
+        "text": "### A16-06 — P08"
+      },
+      {
+        "line": 695,
+        "text": "### A23-06 — P08"
+      }
+    ]
+  },
+  "decisions": {
+    "A16-06": {
+      "can_close_without_new_model_for_observed_pair": true,
+      "verdict": "기존 실제 일반 Codex/owned Codex 대조로 핵심 수용 문구 충족. owned Claude 2턴도 추가 확인. 새 serve 명칭 시험이나 퇴출 시험을 A16-06 필수로 만들 근거 없음.",
+      "scope_limit": "해당 프로필·당시 revision의 관측 범위; 일반 Claude 대조·현재 전체 통합 재인증 아님."
+    },
+    "A23-06": {
+      "can_close_default_public_cli_unconditionally": false,
+      "verdict": "부분 충족. public MCP→기본 owned Codex 실행·회신·기억은 실제 존재한다. 무보정 설치 기본 MCP/실제 shell owned/Claude 기본 회신을 실행했다고 말할 수 없다.",
+      "minimal_actual_gap": "기본 공개 구성 검증의 남은 범위를 명시해야 한다. 기존 증거만으로 그 미실행 셀을 통과 처리할 수 없다. 새 모델은 이번 조사에서 시작하지 않음."
+    }
+  },
+  "rows": [
+    {
+      "criterion": "A16-06",
+      "aspect": "일반/owned 각 2턴·native ID·기억 대조",
+      "status": "satisfied-observed-codex-pair",
+      "evidence": [
+        "ordinary-codex-parent",
+        "owned-codex-public-mcp"
+      ],
+      "reason": "일반 Codex와 owned Codex가 별도 native ID로 각각 2턴을 실행했고 각 경로 안에서 같은 ID·기억을 유지했다. 일반 Claude까지의 전수 행렬은 증명하지 않는다."
+    },
+    {
+      "criterion": "A16-06",
+      "aspect": "owned Claude native memory",
+      "status": "satisfied-with-reply-adjustment",
+      "evidence": [
+        "owned-claude-memory"
+      ],
+      "reason": "기억·native ID·default permission은 raw로 확인. quiet callback의 전송 보정은 이 기억 판정 자체를 무효화하지 않으며 기본 회신 성공으로 확대하지 않는다."
+    },
+    {
+      "criterion": "A23-06",
+      "aspect": "public owned MCP default executor, actual reply, followup",
+      "status": "satisfied-observed-codex-with-fixture-wiring",
+      "evidence": [
+        "owned-codex-public-mcp"
+      ],
+      "reason": "공개 xsm_owned 실제 3회 호출, child 기본 argv, 기본 reply callback, 원 request/reply ID와 실제 반환 본문 확인. native queue delivery runtime_reached=false와 MCP 결과 반환 성공은 별개다."
+    },
+    {
+      "criterion": "A23-06",
+      "aspect": "installed default MCP wiring without eval override",
+      "status": "not-demonstrated",
+      "evidence": [
+        "ordinary-codex-parent"
+      ],
+      "reason": "producer가 xsm_eval command/args/env 및 임시 snapshot/state를 -c로 주입했다. 격리 fixture이지 권한 확대는 아니지만 설치 기본 MCP 선택·연결 검증으로 재분류할 수 없다. 이 보정이 실패를 수리한 것인지는 증거 없음."
+    },
+    {
+      "criterion": "A23-06",
+      "aspect": "actual shell xsm owned create/run default entry",
+      "status": "not-executed-in-reviewed-native-evidence",
+      "evidence": [
+        "source_checks",
+        "tests/test_owned_interfaces.py"
+      ],
+      "reason": "cmd_owned는 같은 함수로 연결되지만 두 producer는 Python 직접 호출/공개 MCP 호출이다. 기존 CLI 시험 소스는 executor/reply mock을 사용한다. shell 실행 공백은 존재하되 serve라는 철자 부재가 공백의 이유는 아니다."
+    },
+    {
+      "criterion": "A23-06",
+      "aspect": "Claude default owned reply without quiet callback",
+      "status": "not-demonstrated",
+      "evidence": [
+        "owned-claude-memory"
+      ],
+      "reason": "native-memory producer는 private _reply_owned(wake=False)를 명시 주입했다. 실제 Claude MCP inbox 성공과 2턴 기억은 존재하지만 기본 reply 경로 표본은 아니다."
+    },
+    {
+      "criterion": "A23-06",
+      "aspect": "permission posture and ownership boundary",
+      "status": "partial",
+      "evidence": [
+        "owned-claude-memory",
+        "owned-codex-public-mcp",
+        "source_checks"
+      ],
+      "reason": "실제 argv에 Claude default/Codex never+workspace-write, Claude denial=[]; owner와 child native ID 분리 확인. profile 설정 전체의 당시 정본·native 금지 동작/타 owner 거절은 이 raw에 없다. hook permission_mode=bypassPermissions를 native 권한 확대나 승인 증거로 쓰지 않는다."
+    },
+    {
+      "criterion": "A16-06/A23-06",
+      "aspect": "eviction-memory and task finality requirements",
+      "status": "not-a-blocker-for-memory-comparison",
+      "evidence": [
+        "docs/adr/0016-agent-messaging-interface.md",
+        "owned-codex-public-mcp"
+      ],
+      "reason": "퇴출 후 기억 소실은 A16-08 별도 기준이다. 두 번째 child outcome=null은 과제 finality unknown이며 기억값·실제 회신을 부정하지 않는다. 별도 기준을 A16-06에 덧붙이지 않는다."
+    }
+  ],
+  "trials": [
+    {
+      "id": "owned-claude-memory",
+      "entry": "Python workers.create_owned/run_owned; callback private _reply_owned(wake=False)",
+      "runtime": "claude",
+      "classification": "real-native-execution-with-quiet-reply-adjustment",
+      "expected_memory": "memory-42e9b346940b47bd8f1533b14c3282c1",
+      "same_native_id": true,
+      "second_input_omits_token": true,
+      "journal": "/private/tmp/p08-native-memory-cn0y8j6u/state/owned-requests/edb213838f65f5acef39cf4c8cdf2716f5dbb029aa4237cf0730f0e1950e178b.json",
+      "turns": [
+        {
+          "request_id": "memory-claude-first",
+          "input_body": "파일·설정·권한을 바꾸지 마세요. 가능하면 설치된 xsm MCP의 수신함 도구를 한 번 조회해 MCP 연결도 확인하세요. 이 대화에서 기억할 값을 memory-42e9b346940b47bd8f1533b14c3282c1 로 저장하세요. 다른 설명 없이 {\"body\":\"기억한 값\",\"outcome\":\"succeeded\"} 형식의 JSON으로 답하세요.",
+          "input_contains_memory_token": true,
+          "native": {
+            "raw": "/private/tmp/p08-native-memory-cn0y8j6u/state/owned-runs/a880c4aade174414a8967f37a2eab43e/memory-claude-first.jsonl",
+            "native_ids": [
+              "12b3ae0a-c541-455c-8c79-b3319c803fc8"
+            ],
+            "answer": "{\"body\":\"memory-42e9b346940b47bd8f1533b14c3282c1\",\"outcome\":\"succeeded\"}",
+            "tools": [
+              {
+                "event": 9,
+                "tool": "mcp__xsm__xsm_inbox",
+                "tool_use_id": "toolu_01LnHbQswTaa9KfHxVXF2cjo"
+              }
+            ],
+            "permission_denials": [],
+            "event_count": 12,
+            "terminal_type": "result"
+          },
+          "execution": {
+            "pid": 30601,
+            "lstart": "Thu Oct 29 00:31:10 2026",
+            "argv": [
+              "/Users/jaesolshin/.local/bin/claude",
+              "-p",
+              "--output-format",
+              "json",
+              "--permission-mode",
+              "default",
+              "--session-id",
+              "12b3ae0a-c541-455c-8c79-b3319c803fc8"
+            ],
+            "stdout": "/private/tmp/p08-native-memory-cn0y8j6u/state/owned-runs/a880c4aade174414a8967f37a2eab43e/memory-claude-first.jsonl",
+            "stderr": "/private/tmp/p08-native-memory-cn0y8j6u/state/owned-runs/a880c4aade174414a8967f37a2eab43e/memory-claude-first.stderr",
+            "returncode": 0
+          },
+          "reply_id": "ecccae886dc5462b",
+          "reply_evidence": {
+            "status": "stored",
+            "reason": "strict FYI stored for the next natural consumer boundary",
+            "id": "ecccae886dc5462b",
+            "to": "Reason Network 조사@codex-3",
+            "runtime_reached": false,
+            "evidence": {
+              "accepted": true,
+              "wake": false,
+              "stored": true
+            }
+          },
+          "journal_pointer": "/requests/memory-claude-first"
+        },
+        {
+          "request_id": "memory-claude-second",
+          "input_body": "앞서 이 대화에서 기억한 값을 알려주세요. 파일·설정·권한을 바꾸지 마세요. 다른 설명 없이 {\"body\":\"기억한 값\",\"outcome\":\"succeeded\"} 형식의 JSON으로만 답하세요.",
+          "input_contains_memory_token": false,
+          "native": {
+            "raw": "/private/tmp/p08-native-memory-cn0y8j6u/state/owned-runs/a880c4aade174414a8967f37a2eab43e/memory-claude-second.jsonl",
+            "native_ids": [
+              "12b3ae0a-c541-455c-8c79-b3319c803fc8"
+            ],
+            "answer": "{\"body\":\"memory-42e9b346940b47bd8f1533b14c3282c1\",\"outcome\":\"succeeded\"}",
+            "tools": [],
+            "permission_denials": [],
+            "event_count": 4,
+            "terminal_type": "result"
+          },
+          "execution": {
+            "pid": 32114,
+            "lstart": "Thu Oct 29 00:31:23 2026",
+            "argv": [
+              "/Users/jaesolshin/.local/bin/claude",
+              "-p",
+              "--output-format",
+              "json",
+              "--permission-mode",
+              "default",
+              "--resume",
+              "12b3ae0a-c541-455c-8c79-b3319c803fc8"
+            ],
+            "stdout": "/private/tmp/p08-native-memory-cn0y8j6u/state/owned-runs/a880c4aade174414a8967f37a2eab43e/memory-claude-second.jsonl",
+            "stderr": "/private/tmp/p08-native-memory-cn0y8j6u/state/owned-runs/a880c4aade174414a8967f37a2eab43e/memory-claude-second.stderr",
+            "returncode": 0
+          },
+          "reply_id": "4ffe1214743c42d3",
+          "reply_evidence": {
+            "status": "stored",
+            "reason": "strict FYI stored for the next natural consumer boundary",
+            "id": "4ffe1214743c42d3",
+            "to": "Reason Network 조사@codex-3",
+            "runtime_reached": false,
+            "evidence": {
+              "accepted": true,
+              "wake": false,
+              "stored": true
+            }
+          },
+          "journal_pointer": "/requests/memory-claude-second"
+        }
+      ],
+      "permissions": "Claude default / Codex never+workspace-write; no widening flags in recorded argv; deny/foreign-owner challenge not in these native turns"
+    },
+    {
+      "id": "owned-codex-memory",
+      "entry": "Python workers.create_owned/run_owned; callback private _reply_owned(wake=False)",
+      "runtime": "codex",
+      "classification": "real-native-execution-with-quiet-reply-adjustment",
+      "expected_memory": "memory-d1e39e22d06c41479fab6eb1b8dbcdd0",
+      "same_native_id": true,
+      "second_input_omits_token": true,
+      "journal": "/private/tmp/p08-native-memory-cn0y8j6u/state/owned-requests/edb213838f65f5acef39cf4c8cdf2716f5dbb029aa4237cf0730f0e1950e178b.json",
+      "turns": [
+        {
+          "request_id": "memory-codex-first",
+          "input_body": "파일·설정·권한을 바꾸지 마세요. 가능하면 설치된 xsm MCP의 수신함 도구를 한 번 조회해 MCP 연결도 확인하세요. 이 대화에서 기억할 값을 memory-d1e39e22d06c41479fab6eb1b8dbcdd0 로 저장하세요. 다른 설명 없이 {\"body\":\"기억한 값\",\"outcome\":\"succeeded\"} 형식의 JSON으로 답하세요.",
+          "input_contains_memory_token": true,
+          "native": {
+            "raw": "/private/tmp/p08-native-memory-cn0y8j6u/state/owned-runs/d97a626982844501a7bdc8ec43befe75/memory-codex-first.jsonl",
+            "native_ids": [
+              "01a18322-fbb5-7fd0-b6db-1bae94e4c3aa"
+            ],
+            "answer": "{\"body\":\"memory-d1e39e22d06c41479fab6eb1b8dbcdd0\",\"outcome\":\"succeeded\"}",
+            "tools": [
+              {
+                "event": 9,
+                "server": "xsm",
+                "tool": "xsm_inbox",
+                "error": null
+              }
+            ],
+            "permission_denials": null,
+            "event_count": 11,
+            "terminal_type": "turn.completed"
+          },
+          "execution": {
+            "pid": 30599,
+            "lstart": "Thu Oct 29 00:31:10 2026",
+            "argv": [
+              "/Users/jaesolshin/.nvm/versions/node/v24.19.0/bin/codex",
+              "exec",
+              "--json",
+              "-c",
+              "approval_policy=\"never\"",
+              "-c",
+              "sandbox_mode=\"workspace-write\"",
+              "-"
+            ],
+            "stdout": "/private/tmp/p08-native-memory-cn0y8j6u/state/owned-runs/d97a626982844501a7bdc8ec43befe75/memory-codex-first.jsonl",
+            "stderr": "/private/tmp/p08-native-memory-cn0y8j6u/state/owned-runs/d97a626982844501a7bdc8ec43befe75/memory-codex-first.stderr",
+            "returncode": 0
+          },
+          "reply_id": "693594f61212470f",
+          "reply_evidence": {
+            "status": "stored",
+            "reason": "strict FYI stored for the next natural consumer boundary",
+            "id": "693594f61212470f",
+            "to": "Reason Network 조사@codex-3",
+            "runtime_reached": false,
+            "evidence": {
+              "accepted": true,
+              "wake": false,
+              "stored": true
+            }
+          },
+          "journal_pointer": "/requests/memory-codex-first"
+        },
+        {
+          "request_id": "memory-codex-second",
+          "input_body": "앞서 이 대화에서 기억한 값을 알려주세요. 파일·설정·권한을 바꾸지 마세요. 다른 설명 없이 {\"body\":\"기억한 값\",\"outcome\":\"succeeded\"} 형식의 JSON으로만 답하세요.",
+          "input_contains_memory_token": false,
+          "native": {
+            "raw": "/private/tmp/p08-native-memory-cn0y8j6u/state/owned-runs/d97a626982844501a7bdc8ec43befe75/memory-codex-second.jsonl",
+            "native_ids": [
+              "01a18322-fbb5-7fd0-b6db-1bae94e4c3aa"
+            ],
+            "answer": "{\"body\":\"memory-d1e39e22d06c41479fab6eb1b8dbcdd0\",\"outcome\":\"succeeded\"}",
+            "tools": [],
+            "permission_denials": null,
+            "event_count": 4,
+            "terminal_type": "turn.completed"
+          },
+          "execution": {
+            "pid": 34199,
+            "lstart": "Thu Oct 29 00:31:32 2026",
+            "argv": [
+              "/Users/jaesolshin/.nvm/versions/node/v24.19.0/bin/codex",
+              "exec",
+              "resume",
+              "--json",
+              "-c",
+              "approval_policy=\"never\"",
+              "-c",
+              "sandbox_mode=\"workspace-write\"",
+              "01a18322-fbb5-7fd0-b6db-1bae94e4c3aa",
+              "-"
+            ],
+            "stdout": "/private/tmp/p08-native-memory-cn0y8j6u/state/owned-runs/d97a626982844501a7bdc8ec43befe75/memory-codex-second.jsonl",
+            "stderr": "/private/tmp/p08-native-memory-cn0y8j6u/state/owned-runs/d97a626982844501a7bdc8ec43befe75/memory-codex-second.stderr",
+            "returncode": 0
+          },
+          "reply_id": "d4fb51cdcf5e411f",
+          "reply_evidence": {
+            "status": "stored",
+            "reason": "strict FYI stored for the next natural consumer boundary",
+            "id": "d4fb51cdcf5e411f",
+            "to": "Reason Network 조사@codex-3",
+            "runtime_reached": false,
+            "evidence": {
+              "accepted": true,
+              "wake": false,
+              "stored": true
+            }
+          },
+          "journal_pointer": "/requests/memory-codex-second"
+        }
+      ],
+      "permissions": "Claude default / Codex never+workspace-write; no widening flags in recorded argv; deny/foreign-owner challenge not in these native turns"
+    },
+    {
+      "id": "ordinary-codex-parent",
+      "entry": "codex exec --json; codex exec resume <id> --json",
+      "classification": "real-ordinary-native-with-isolated-xsm_eval-MCP-injection",
+      "native_id": "01a18369-3994-7161-a478-487332cef06e",
+      "two_turns": true,
+      "memory_matches": true,
+      "followup_token_omitted_in_producer": true,
+      "turns": [
+        {
+          "raw": "/private/tmp/p08-mcp-owned-0q8nu4is/first.jsonl",
+          "native_ids": [
+            "01a18369-3994-7161-a478-487332cef06e"
+          ],
+          "answer": "{\n  \"parent_memory\": \"parent-958ab424bfc64ec4b390034d9afeb2b6\",\n  \"child_first\": {\n    \"body\": \"child-12521288c4cc4b36a3db1190c25244b9\",\n    \"outcome\": \"succeeded\"\n  },\n  \"child_second\": {\n    \"body\": \"{\\\"child_memory\\\":\\\"child-12521288c4cc4b36a3db1190c25244b9\\\"}\",\n    \"outcome\": null\n  },\n  \"worker_name\": \"mcp-owned-1e5fc71fee55\",\n  \"request_ids\": [\n    \"1e5fc71fee55-first\",\n    \"1e5fc71fee55-second\"\n  ]\n}",
+          "tools": [
+            {
+              "event": 10,
+              "server": "xsm_eval",
+              "tool": "xsm_owned",
+              "error": null
+            },
+            {
+              "event": 12,
+              "server": "xsm_eval",
+              "tool": "xsm_owned",
+              "error": null
+            },
+            {
+              "event": 14,
+              "server": "xsm_eval",
+              "tool": "xsm_owned",
+              "error": null
+            }
+          ],
+          "permission_denials": null,
+          "event_count": 16,
+          "terminal_type": "turn.completed"
+        },
+        {
+          "raw": "/private/tmp/p08-mcp-owned-0q8nu4is/followup.jsonl",
+          "native_ids": [
+            "01a18369-3994-7161-a478-487332cef06e"
+          ],
+          "answer": "{\"parent_memory\":\"parent-958ab424bfc64ec4b390034d9afeb2b6\"}",
+          "tools": [],
+          "permission_denials": null,
+          "event_count": 4,
+          "terminal_type": "turn.completed"
+        }
+      ],
+      "permissions": "producer pins approval_policy=never and sandbox_mode=workspace-write; inherited profile not archived; journal permission_mode=bypassPermissions is hook metadata, not proof of actual widened native argv"
+    },
+    {
+      "id": "owned-codex-public-mcp",
+      "entry": "actual model xsm_eval.xsm_owned create/run/run → default workers.run_owned → _execute_owned/_reply_owned",
+      "classification": "public-MCP-real-default-owned-executor-and-reply; parent server wiring injected for fixture",
+      "journal": "/private/tmp/p08-mcp-owned-0q8nu4is/state/owned-requests/d4fccef5c1066794b92a5584dfe7df1452ed4a4d758d78c57c1d8979df77bb9c.json",
+      "two_turns": true,
+      "same_native_id": true,
+      "memory_matches": true,
+      "second_input_omits_token": true,
+      "turns": [
+        {
+          "request_id": "1e5fc71fee55-first",
+          "input_body": "이 대화에서 기억할 child_memory 값은 child-12521288c4cc4b36a3db1190c25244b9 입니다. 파일·설정·권한은 바꾸지 마세요. body에 실제 기억값을 넣고 outcome=succeeded인 JSON 하나로 답하세요.",
+          "input_contains_memory_token": true,
+          "native": {
+            "raw": "/private/tmp/p08-mcp-owned-0q8nu4is/state/owned-runs/fa311c9931cb417698dd21edfeb30cf0/1e5fc71fee55-first.jsonl",
+            "native_ids": [
+              "01a18369-9184-7ea2-874d-561c14ed1869"
+            ],
+            "answer": "{\"body\":\"child-12521288c4cc4b36a3db1190c25244b9\",\"outcome\":\"succeeded\"}",
+            "tools": [],
+            "permission_denials": null,
+            "event_count": 4,
+            "terminal_type": "turn.completed"
+          },
+          "execution": {
+            "pid": 6796,
+            "lstart": "Thu Oct 29 01:48:16 2026",
+            "argv": [
+              "/Users/jaesolshin/.nvm/versions/node/v24.19.0/bin/codex",
+              "exec",
+              "--json",
+              "-c",
+              "approval_policy=\"never\"",
+              "-c",
+              "sandbox_mode=\"workspace-write\"",
+              "-"
+            ],
+            "stdout": "/private/tmp/p08-mcp-owned-0q8nu4is/state/owned-runs/fa311c9931cb417698dd21edfeb30cf0/1e5fc71fee55-first.jsonl",
+            "stderr": "/private/tmp/p08-mcp-owned-0q8nu4is/state/owned-runs/fa311c9931cb417698dd21edfeb30cf0/1e5fc71fee55-first.stderr",
+            "returncode": 0
+          },
+          "reply_id": "2c1747f9f26a4c65",
+          "reply_evidence": {
+            "status": "sent-unconfirmed",
+            "reason": "queued; a Codex session picks the queue up within about 10 seconds when the thread is loaded and idle, or mid-turn with `xsm inbox`",
+            "id": "2c1747f9f26a4c65",
+            "to": "codex-cef06e@codex-3",
+            "runtime_reached": false,
+            "evidence": {
+              "accepted": true,
+              "queued": true,
+              "wake": false,
+              "stored": true
+            }
+          },
+          "outcome": "succeeded",
+          "journal_pointer": "/requests/1e5fc71fee55-first"
+        },
+        {
+          "request_id": "1e5fc71fee55-second",
+          "input_body": "앞서 child_memory가 무엇이었는지 JSON으로 답하세요.",
+          "input_contains_memory_token": false,
+          "native": {
+            "raw": "/private/tmp/p08-mcp-owned-0q8nu4is/state/owned-runs/fa311c9931cb417698dd21edfeb30cf0/1e5fc71fee55-second.jsonl",
+            "native_ids": [
+              "01a18369-9184-7ea2-874d-561c14ed1869"
+            ],
+            "answer": "{\"child_memory\":\"child-12521288c4cc4b36a3db1190c25244b9\"}",
+            "tools": [],
+            "permission_denials": null,
+            "event_count": 4,
+            "terminal_type": "turn.completed"
+          },
+          "execution": {
+            "pid": 7812,
+            "lstart": "Thu Oct 29 01:48:29 2026",
+            "argv": [
+              "/Users/jaesolshin/.nvm/versions/node/v24.19.0/bin/codex",
+              "exec",
+              "resume",
+              "--json",
+              "-c",
+              "approval_policy=\"never\"",
+              "-c",
+              "sandbox_mode=\"workspace-write\"",
+              "01a18369-9184-7ea2-874d-561c14ed1869",
+              "-"
+            ],
+            "stdout": "/private/tmp/p08-mcp-owned-0q8nu4is/state/owned-runs/fa311c9931cb417698dd21edfeb30cf0/1e5fc71fee55-second.jsonl",
+            "stderr": "/private/tmp/p08-mcp-owned-0q8nu4is/state/owned-runs/fa311c9931cb417698dd21edfeb30cf0/1e5fc71fee55-second.stderr",
+            "returncode": 0
+          },
+          "reply_id": "3a2be6b50533480f",
+          "reply_evidence": {
+            "status": "sent-unconfirmed",
+            "reason": "queued; a Codex session picks the queue up within about 10 seconds when the thread is loaded and idle, or mid-turn with `xsm inbox`",
+            "id": "3a2be6b50533480f",
+            "to": "codex-cef06e@codex-3",
+            "runtime_reached": false,
+            "evidence": {
+              "accepted": true,
+              "queued": true,
+              "wake": false,
+              "stored": true
+            }
+          },
+          "outcome": null,
+          "journal_pointer": "/requests/1e5fc71fee55-second"
+        }
+      ],
+      "returned_results": [
+        {
+          "raw": "/private/tmp/p08-mcp-owned-0q8nu4is/first.jsonl",
+          "line": 12,
+          "request_id": "1e5fc71fee55-first",
+          "reply_id": "2c1747f9f26a4c65",
+          "status": "sent",
+          "result_body": "child-12521288c4cc4b36a3db1190c25244b9"
+        },
+        {
+          "raw": "/private/tmp/p08-mcp-owned-0q8nu4is/first.jsonl",
+          "line": 14,
+          "request_id": "1e5fc71fee55-second",
+          "reply_id": "3a2be6b50533480f",
+          "status": "sent",
+          "result_body": "{\"child_memory\":\"child-12521288c4cc4b36a3db1190c25244b9\"}"
+        }
+      ],
+      "default_reply_callback": true,
+      "child_mcp_tool_call_observed": false,
+      "permissions": "never+workspace-write both turns; no widening in child argv; explicit deny/foreign-owner native challenge absent"
+    }
+  ],
+  "source_checks": [
+    {
+      "file": "xsm/workers.py",
+      "function": "create_owned",
+      "snapshot_line": 1339,
+      "current_line": 1339,
+      "ast_equal": true,
+      "snapshot_sha256": "518cb28f77c3ee222d1adf7e49068e671fc38dbc43fb5e1ac0ed6ef139299fa5",
+      "current_sha256": "518cb28f77c3ee222d1adf7e49068e671fc38dbc43fb5e1ac0ed6ef139299fa5",
+      "saved_snapshot_hash_verified": true
+    },
+    {
+      "file": "xsm/workers.py",
+      "function": "_owned_argv",
+      "snapshot_line": 1381,
+      "current_line": 1381,
+      "ast_equal": true,
+      "snapshot_sha256": "518cb28f77c3ee222d1adf7e49068e671fc38dbc43fb5e1ac0ed6ef139299fa5",
+      "current_sha256": "518cb28f77c3ee222d1adf7e49068e671fc38dbc43fb5e1ac0ed6ef139299fa5",
+      "saved_snapshot_hash_verified": true
+    },
+    {
+      "file": "xsm/workers.py",
+      "function": "_execute_owned",
+      "snapshot_line": 1508,
+      "current_line": 1508,
+      "ast_equal": true,
+      "snapshot_sha256": "518cb28f77c3ee222d1adf7e49068e671fc38dbc43fb5e1ac0ed6ef139299fa5",
+      "current_sha256": "518cb28f77c3ee222d1adf7e49068e671fc38dbc43fb5e1ac0ed6ef139299fa5",
+      "saved_snapshot_hash_verified": true
+    },
+    {
+      "file": "xsm/workers.py",
+      "function": "_reply_owned",
+      "snapshot_line": 1561,
+      "current_line": 1561,
+      "ast_equal": true,
+      "snapshot_sha256": "518cb28f77c3ee222d1adf7e49068e671fc38dbc43fb5e1ac0ed6ef139299fa5",
+      "current_sha256": "518cb28f77c3ee222d1adf7e49068e671fc38dbc43fb5e1ac0ed6ef139299fa5",
+      "saved_snapshot_hash_verified": true
+    },
+    {
+      "file": "xsm/workers.py",
+      "function": "run_owned",
+      "snapshot_line": 1644,
+      "current_line": 1644,
+      "ast_equal": true,
+      "snapshot_sha256": "518cb28f77c3ee222d1adf7e49068e671fc38dbc43fb5e1ac0ed6ef139299fa5",
+      "current_sha256": "518cb28f77c3ee222d1adf7e49068e671fc38dbc43fb5e1ac0ed6ef139299fa5",
+      "saved_snapshot_hash_verified": true
+    },
+    {
+      "file": "xsm/mcp.py",
+      "function": "owned",
+      "snapshot_line": 1024,
+      "current_line": 1045,
+      "ast_equal": true,
+      "snapshot_sha256": "6c48d0d1a53b5b97796153d25fb4d1ed4d2901515a337481b102bd6827131064",
+      "current_sha256": "8f8a234180fd3be42dca7ebebadfe16ac399f755cbcfb7c5b8453a6406a6ca05",
+      "saved_snapshot_hash_verified": true
+    },
+    {
+      "file": "xsm/cli.py",
+      "function": "cmd_owned",
+      "snapshot_line": 2050,
+      "current_line": 2078,
+      "ast_equal": true,
+      "snapshot_sha256": "168c1eb54d6f3744af9c80c95b9468afbff1b1f6a9e6b856d52fb810a3e2004d",
+      "current_sha256": "76f29a9ef05d070dc61d68008ae87db2e5935dc76d0e333bd30c3db29d54cb1c",
+      "saved_snapshot_hash_verified": true
+    },
+    {
+      "file": "xsm/owned_requests.py",
+      "function": "submit",
+      "snapshot_line": 120,
+      "current_line": 120,
+      "ast_equal": true,
+      "snapshot_sha256": "6e55c26db5709189619196f5ed373004fa0fa468246dc99b899dd14cce4e2a69",
+      "current_sha256": "6e55c26db5709189619196f5ed373004fa0fa468246dc99b899dd14cce4e2a69",
+      "saved_snapshot_hash_verified": true
+    },
+    {
+      "file": "xsm/owned_requests.py",
+      "function": "reserve",
+      "snapshot_line": 267,
+      "current_line": 267,
+      "ast_equal": true,
+      "snapshot_sha256": "6e55c26db5709189619196f5ed373004fa0fa468246dc99b899dd14cce4e2a69",
+      "current_sha256": "6e55c26db5709189619196f5ed373004fa0fa468246dc99b899dd14cce4e2a69",
+      "saved_snapshot_hash_verified": true
+    }
+  ],
+  "provenance_limits": [
+    "native-memory summary에는 실행 당시 source snapshot/manifest가 없어 current source hash만으로 당시 구현을 확정하지 않는다.",
+    "native-owned-mcp snapshot 파일 4종의 저장된 hash를 실제 파일과 대조했다. workers/owned_requests 파일은 현재와 같고 cli/mcp 파일은 다르다. 선택한 owned 경로 함수 AST 대조는 source_checks 참조. 하위 의존성 전체 동일성을 뜻하지 않는다.",
+    "producer 원문에는 후처리 native_mcp_observations/정규화 기억값 보정이 없다. raw에서 직접 재계산해 해당 필드가 주장하는 실제 결과를 확인했다.",
+    "raw는 /private/tmp에 보존 중이며 저장소 내 durable 복제는 이번 요청 산출물에 포함하지 않았다. 경로·정확한 SHA256·크기를 기록했다.",
+    "native-memory received_replies=3을 4건 모두 수신 증명으로 쓰지 않는다. 두번째 owned Codex task outcome은 null이다."
+  ],
+  "evidence_files": [
+    {
+      "path": "deliverables/p08-live/native-memory.json",
+      "kind": "summary-or-producer",
+      "sha256": "3c78606b7d52baf20564c87cc62cb7bad398c49f1496cc0ade505dd5e90241db",
+      "bytes": 8711,
+      "lines": 265,
+      "location": "repository"
+    },
+    {
+      "path": "deliverables/p08-live/native-owned-mcp.json",
+      "kind": "summary-or-producer",
+      "sha256": "427caa56d8d86a598c5dc1b00cdee6ccc5bc07e8aa80ba255d3f3c0436ad6ff5",
+      "bytes": 15011,
+      "lines": 443,
+      "location": "repository"
+    },
+    {
+      "path": "deliverables/p08-live/eval_native_memory.py",
+      "kind": "summary-or-producer",
+      "sha256": "fe2177e04ddd5a8b42c92485b404c9edb01138db77b2b7b56de1f3b9681458cd",
+      "bytes": 3429,
+      "lines": 44,
+      "location": "repository"
+    },
+    {
+      "path": "deliverables/p08-live/eval_native_owned_mcp.py",
+      "kind": "summary-or-producer",
+      "sha256": "1dcf6adf4dfbe4eb06071c63e487fde736d71d592982482e1c292ad196a375ea",
+      "bytes": 5253,
+      "lines": 64,
+      "location": "repository"
+    },
+    {
+      "path": "docs/adr/0016-agent-messaging-interface.md",
+      "kind": "criterion",
+      "sha256": "b0e85a5b108a861673184814aadd1dc6e88ea7ae34260185a48d5fb454a27ca8",
+      "bytes": 10573,
+      "lines": 96,
+      "location": "repository"
+    },
+    {
+      "path": "docs/adr/0023-runtime-adapters-and-operability.md",
+      "kind": "criterion",
+      "sha256": "5e4837989dd248fb850cce6d84e4a5134b46b7c1ff5d6d3d8f6ee01e116868ce",
+      "bytes": 11496,
+      "lines": 99,
+      "location": "repository"
+    },
+    {
+      "path": "docs/plan/reason-inspired-adrs/acceptance.md",
+      "kind": "criterion",
+      "sha256": "6d6058a48360e82550331d0b67a4b8356e16b4604fcb21e7f5f3cb8ca7876364",
+      "bytes": 56038,
+      "lines": 887,
+      "location": "repository"
+    },
+    {
+      "path": "README_ko.md",
+      "kind": "interface-or-fixture-source-only-not-executed",
+      "sha256": "a37e20ed5e1d70d6ff8bff00c5b65224076a8ae0f9e552052d6b06a34a21df08",
+      "bytes": 27401,
+      "lines": 432,
+      "location": "repository"
+    },
+    {
+      "path": "skills/xsm/references/messaging.md",
+      "kind": "interface-or-fixture-source-only-not-executed",
+      "sha256": "b76f2de35f0579bb74bca8f32ebe1f07f4a2bc83e5ed776284f738df88de3eef",
+      "bytes": 7221,
+      "lines": 101,
+      "location": "repository"
+    },
+    {
+      "path": "tests/test_owned_interfaces.py",
+      "kind": "interface-or-fixture-source-only-not-executed",
+      "sha256": "3ee3d73a17dfdf88b9ed68eae30eef3bb51f8924f806786743ff70655d9e7f07",
+      "bytes": 6972,
+      "lines": 132,
+      "location": "repository"
+    },
+    {
+      "path": "tests/test_owned_native.py",
+      "kind": "interface-or-fixture-source-only-not-executed",
+      "sha256": "66d3512d42d86ccbebb430b11870409ebc16631d9bc8618ff81cdb275d0ec0f4",
+      "bytes": 12880,
+      "lines": 208,
+      "location": "repository"
+    },
+    {
+      "path": "/private/tmp/p08-native-memory-cn0y8j6u/state/owned-requests/edb213838f65f5acef39cf4c8cdf2716f5dbb029aa4237cf0730f0e1950e178b.json",
+      "kind": "mutable-journal-readback",
+      "sha256": "b11678d6beaa44d13726a7252b0385d94e0b41405b79b91f14182bbf61c27ae1",
+      "bytes": 58809,
+      "lines": 1635,
+      "location": "external-temporary-retained-raw"
+    },
+    {
+      "path": "/private/tmp/p08-mcp-owned-0q8nu4is/state/owned-requests/d4fccef5c1066794b92a5584dfe7df1452ed4a4d758d78c57c1d8979df77bb9c.json",
+      "kind": "mutable-journal-readback",
+      "sha256": "abf39495c92a5d8f8d6942bfc0bf9fb908f17fd033bd78731563dcdd61ef7c41",
+      "bytes": 11918,
+      "lines": 393,
+      "location": "external-temporary-retained-raw"
+    },
+    {
+      "path": "/private/tmp/p08-native-memory-cn0y8j6u/state/owned-runs/a880c4aade174414a8967f37a2eab43e/memory-claude-first.jsonl",
+      "kind": "native-stdout",
+      "sha256": "6b96c107279c9748a72b8249a1f9c4276a0135bf0a9da8cbd5debca334fab563",
+      "bytes": 31346,
+      "lines": 1,
+      "location": "external-temporary-retained-raw"
+    },
+    {
+      "path": "/private/tmp/p08-native-memory-cn0y8j6u/state/owned-runs/a880c4aade174414a8967f37a2eab43e/memory-claude-first.stderr",
+      "kind": "native-stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "lines": 0,
+      "location": "external-temporary-retained-raw"
+    },
+    {
+      "path": "/private/tmp/p08-native-memory-cn0y8j6u/state/ledger/ecccae886dc5462b.recv.json",
+      "kind": "reply-ledger",
+      "sha256": "4e460cbc22d9b19d047dabe89e2168e79e9efc9935e323de3f7b649adde28e6c",
+      "bytes": 310,
+      "lines": 12,
+      "location": "external-temporary-retained-raw"
+    },
+    {
+      "path": "/private/tmp/p08-native-memory-cn0y8j6u/state/ledger/ecccae886dc5462b.json",
+      "kind": "reply-ledger",
+      "sha256": "937f6d09fd579ba48ee4505294440c643b0a81a1f2e590e26bc3a2793aa44dbc",
+      "bytes": 793,
+      "lines": 36,
+      "location": "external-temporary-retained-raw"
+    },
+    {
+      "path": "/private/tmp/p08-native-memory-cn0y8j6u/state/ledger/ecccae886dc5462b.handoff.json",
+      "kind": "reply-ledger",
+      "sha256": "e77dee8a143443005cd8bfb1c97a53310494fb2503f9dc6b212330efa986f7c8",
+      "bytes": 302,
+      "lines": 18,
+      "location": "external-temporary-retained-raw"
+    },
+    {
+      "path": "/private/tmp/p08-native-memory-cn0y8j6u/state/owned-runs/a880c4aade174414a8967f37a2eab43e/memory-claude-second.jsonl",
+      "kind": "native-stdout",
+      "sha256": "616c987f3b0ba1944577669c475858e827448a85e01bfc2ec251eb4f6a957b3c",
+      "bytes": 24749,
+      "lines": 1,
+      "location": "external-temporary-retained-raw"
+    },
+    {
+      "path": "/private/tmp/p08-native-memory-cn0y8j6u/state/owned-runs/a880c4aade174414a8967f37a2eab43e/memory-claude-second.stderr",
+      "kind": "native-stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "lines": 0,
+      "location": "external-temporary-retained-raw"
+    },
+    {
+      "path": "/private/tmp/p08-native-memory-cn0y8j6u/state/ledger/4ffe1214743c42d3.json",
+      "kind": "reply-ledger",
+      "sha256": "95cba0ae860d8ed7e83f2a98bf67b3e8cc36a4809f269a6008dff775820c5fe3",
+      "bytes": 795,
+      "lines": 36,
+      "location": "external-temporary-retained-raw"
+    },
+    {
+      "path": "/private/tmp/p08-native-memory-cn0y8j6u/state/ledger/4ffe1214743c42d3.recv.json",
+      "kind": "reply-ledger",
+      "sha256": "d8c20492938cbe7d274c6525219eec17b87b6dc239e28a466c5506d81361a0a8",
+      "bytes": 415,
+      "lines": 17,
+      "location": "external-temporary-retained-raw"
+    },
+    {
+      "path": "/private/tmp/p08-native-memory-cn0y8j6u/state/ledger/4ffe1214743c42d3.handoff.json",
+      "kind": "reply-ledger",
+      "sha256": "41026efb009335d39ed235a881730f8c1a3d9c05d817adf664322a58047f442a",
+      "bytes": 421,
+      "lines": 26,
+      "location": "external-temporary-retained-raw"
+    },
+    {
+      "path": "/private/tmp/p08-native-memory-cn0y8j6u/state/owned-runs/d97a626982844501a7bdc8ec43befe75/memory-codex-first.jsonl",
+      "kind": "native-stdout",
+      "sha256": "c0e66e0823db10bb9dff7204799e1ea39cfa993d490e607721a4ecf7611ce749",
+      "bytes": 45612,
+      "lines": 11,
+      "location": "external-temporary-retained-raw"
+    },
+    {
+      "path": "/private/tmp/p08-native-memory-cn0y8j6u/state/owned-runs/d97a626982844501a7bdc8ec43befe75/memory-codex-first.stderr",
+      "kind": "native-stderr",
+      "sha256": "2a8dbe3a78dd3467d4b1bca2f55727d9b9d4c049e981d7547b586a404bd0e14b",
+      "bytes": 181,
+      "lines": 1,
+      "location": "external-temporary-retained-raw"
+    },
+    {
+      "path": "/private/tmp/p08-native-memory-cn0y8j6u/state/ledger/693594f61212470f.json",
+      "kind": "reply-ledger",
+      "sha256": "b0bbadb320e5f45f95d03ab2ed6449dc9c7d10a662d4ae1866b0d532784eb6aa",
+      "bytes": 789,
+      "lines": 36,
+      "location": "external-temporary-retained-raw"
+    },
+    {
+      "path": "/private/tmp/p08-native-memory-cn0y8j6u/state/ledger/693594f61212470f.recv.json",
+      "kind": "reply-ledger",
+      "sha256": "f3431f37eb7ca632abd6f2389b4bc05364afa6121df78299fc9adbc99f3c3341",
+      "bytes": 415,
+      "lines": 17,
+      "location": "external-temporary-retained-raw"
+    },
+    {
+      "path": "/private/tmp/p08-native-memory-cn0y8j6u/state/ledger/693594f61212470f.handoff.json",
+      "kind": "reply-ledger",
+      "sha256": "501ff622149bd4b2438d3b61ba1498bac068341f7aa84dfe7fa0b83e414824cf",
+      "bytes": 420,
+      "lines": 26,
+      "location": "external-temporary-retained-raw"
+    },
+    {
+      "path": "/private/tmp/p08-native-memory-cn0y8j6u/state/owned-runs/d97a626982844501a7bdc8ec43befe75/memory-codex-second.jsonl",
+      "kind": "native-stdout",
+      "sha256": "e9d49b74e84b6d6a3dff0a1b853c49006cc8b4acff516c6366a13510fa761c61",
+      "bytes": 428,
+      "lines": 4,
+      "location": "external-temporary-retained-raw"
+    },
+    {
+      "path": "/private/tmp/p08-native-memory-cn0y8j6u/state/owned-runs/d97a626982844501a7bdc8ec43befe75/memory-codex-second.stderr",
+      "kind": "native-stderr",
+      "sha256": "5419e5eabd8512ebab4d029fdbd7974823570e640c97171575c3ddc985bb9776",
+      "bytes": 181,
+      "lines": 1,
+      "location": "external-temporary-retained-raw"
+    },
+    {
+      "path": "/private/tmp/p08-native-memory-cn0y8j6u/state/ledger/d4fb51cdcf5e411f.recv.json",
+      "kind": "reply-ledger",
+      "sha256": "125227aa0fb15b98010902bc9ec0ff6dd0855f3a9249014b0666653358fe4e05",
+      "bytes": 414,
+      "lines": 17,
+      "location": "external-temporary-retained-raw"
+    },
+    {
+      "path": "/private/tmp/p08-native-memory-cn0y8j6u/state/ledger/d4fb51cdcf5e411f.handoff.json",
+      "kind": "reply-ledger",
+      "sha256": "6da7de7a7da1bf12c0e6a3497dad83a983fc969f1d9a4dd3c9d957a293eacf20",
+      "bytes": 418,
+      "lines": 26,
+      "location": "external-temporary-retained-raw"
+    },
+    {
+      "path": "/private/tmp/p08-native-memory-cn0y8j6u/state/ledger/d4fb51cdcf5e411f.json",
+      "kind": "reply-ledger",
+      "sha256": "a815c72c23d16eb90bb36d704f35f58ca2cd53fd5defa497096f7c3206d94050",
+      "bytes": 790,
+      "lines": 36,
+      "location": "external-temporary-retained-raw"
+    },
+    {
+      "path": "/private/tmp/p08-mcp-owned-0q8nu4is/first.jsonl",
+      "kind": "native-stdout",
+      "sha256": "72e27105424e2294989a7fac7de369a78194a52c406d17c02ac90c0c75142d13",
+      "bytes": 60961,
+      "lines": 16,
+      "location": "external-temporary-retained-raw"
+    },
+    {
+      "path": "/private/tmp/p08-mcp-owned-0q8nu4is/first.err",
+      "kind": "native-stderr",
+      "sha256": "fd2e320058fed7974e8ce90dc788711826af49e7763d6ce7763873827dc89d8c",
+      "bytes": 220,
+      "lines": 2,
+      "location": "external-temporary-retained-raw"
+    },
+    {
+      "path": "/private/tmp/p08-mcp-owned-0q8nu4is/followup.jsonl",
+      "kind": "native-stdout",
+      "sha256": "79378ddc91bc683a5c9d2e0a264998db69fce06c78e41cc5a6d3cf25e65a4c9f",
+      "bytes": 413,
+      "lines": 4,
+      "location": "external-temporary-retained-raw"
+    },
+    {
+      "path": "/private/tmp/p08-mcp-owned-0q8nu4is/followup.err",
+      "kind": "native-stderr",
+      "sha256": "c5a8c2ff5e4aacaa58768a9d47b6a60aed43e1d73e1e4e63ab380f7ca30b1d8d",
+      "bytes": 181,
+      "lines": 1,
+      "location": "external-temporary-retained-raw"
+    },
+    {
+      "path": "/private/tmp/p08-mcp-owned-0q8nu4is/state/owned-runs/fa311c9931cb417698dd21edfeb30cf0/1e5fc71fee55-first.jsonl",
+      "kind": "native-stdout",
+      "sha256": "c10c3417251ebb79f0863e543693f7761973249d1f3eb7dd5b2443f78936c995",
+      "bytes": 423,
+      "lines": 4,
+      "location": "external-temporary-retained-raw"
+    },
+    {
+      "path": "/private/tmp/p08-mcp-owned-0q8nu4is/state/owned-runs/fa311c9931cb417698dd21edfeb30cf0/1e5fc71fee55-first.stderr",
+      "kind": "native-stderr",
+      "sha256": "ebb2b722c14d95751f4920dd26c1c77c23846bfb2c6fa2e6f2a901007332fa11",
+      "bytes": 181,
+      "lines": 1,
+      "location": "external-temporary-retained-raw"
+    },
+    {
+      "path": "/private/tmp/p08-mcp-owned-0q8nu4is/state/ledger/2c1747f9f26a4c65.handoff.json",
+      "kind": "reply-ledger",
+      "sha256": "49743b15bac542b172997176f2706aa963ae63fb5d24030b7769a69cff1c7a4f",
+      "bytes": 241,
+      "lines": 14,
+      "location": "external-temporary-retained-raw"
+    },
+    {
+      "path": "/private/tmp/p08-mcp-owned-0q8nu4is/state/ledger/2c1747f9f26a4c65.json",
+      "kind": "reply-ledger",
+      "sha256": "1e87cd91a8c26c5cccf6671509ce8d1fca7b189913969c917bc3e7ce1e0b8fe1",
+      "bytes": 1045,
+      "lines": 48,
+      "location": "external-temporary-retained-raw"
+    },
+    {
+      "path": "/private/tmp/p08-mcp-owned-0q8nu4is/state/inbox/01a18369-3994-7161-a478-487332cef06e/2c1747f9f26a4c65.json",
+      "kind": "reply-inbox-original",
+      "sha256": "b2a29173c104be08ebf010222a95c53ffa264a8f7ab363eb1084b1057b5d6e71",
+      "bytes": 841,
+      "lines": 16,
+      "location": "external-temporary-retained-raw"
+    },
+    {
+      "path": "/private/tmp/p08-mcp-owned-0q8nu4is/state/owned-runs/fa311c9931cb417698dd21edfeb30cf0/1e5fc71fee55-second.jsonl",
+      "kind": "native-stdout",
+      "sha256": "dd054ac60d37e046288808ae05334ef64faf1d8b3bebac9b94049650073ebe97",
+      "bytes": 407,
+      "lines": 4,
+      "location": "external-temporary-retained-raw"
+    },
+    {
+      "path": "/private/tmp/p08-mcp-owned-0q8nu4is/state/owned-runs/fa311c9931cb417698dd21edfeb30cf0/1e5fc71fee55-second.stderr",
+      "kind": "native-stderr",
+      "sha256": "4251a1af7244bb807820741c8be3bf78c577d1e7088ff26cd2705d19f123aeb5",
+      "bytes": 181,
+      "lines": 1,
+      "location": "external-temporary-retained-raw"
+    },
+    {
+      "path": "/private/tmp/p08-mcp-owned-0q8nu4is/state/ledger/3a2be6b50533480f.json",
+      "kind": "reply-ledger",
+      "sha256": "9e6db17c12d2696b1e6de91ce76deb97c06da55d187fab3dc98841efb648be96",
+      "bytes": 1039,
+      "lines": 47,
+      "location": "external-temporary-retained-raw"
+    },
+    {
+      "path": "/private/tmp/p08-mcp-owned-0q8nu4is/state/ledger/3a2be6b50533480f.handoff.json",
+      "kind": "reply-ledger",
+      "sha256": "e7d71c4a4d9cfe9b2a0a118a74e6222534b1c2f226510e9ab2e524918699582d",
+      "bytes": 240,
+      "lines": 14,
+      "location": "external-temporary-retained-raw"
+    },
+    {
+      "path": "/private/tmp/p08-mcp-owned-0q8nu4is/state/inbox/01a18369-3994-7161-a478-487332cef06e/3a2be6b50533480f.json",
+      "kind": "reply-inbox-original",
+      "sha256": "533bbe2db49f4ea4a53a1c3d9ec0a9be174d5b5d8d643b5805cda4386bdefad1",
+      "bytes": 847,
+      "lines": 16,
+      "location": "external-temporary-retained-raw"
+    },
+    {
+      "path": "/private/tmp/p08-mcp-owned-0q8nu4is/state/runtime/e2f8b7859e5c/xsm/workers.py",
+      "kind": "retained-executed-snapshot-source",
+      "sha256": "518cb28f77c3ee222d1adf7e49068e671fc38dbc43fb5e1ac0ed6ef139299fa5",
+      "bytes": 91042,
+      "lines": 1822,
+      "location": "external-temporary-retained-raw"
+    },
+    {
+      "path": "xsm/workers.py",
+      "kind": "current-source",
+      "sha256": "518cb28f77c3ee222d1adf7e49068e671fc38dbc43fb5e1ac0ed6ef139299fa5",
+      "bytes": 91042,
+      "lines": 1822,
+      "location": "repository"
+    },
+    {
+      "path": "/private/tmp/p08-mcp-owned-0q8nu4is/state/runtime/e2f8b7859e5c/xsm/mcp.py",
+      "kind": "retained-executed-snapshot-source",
+      "sha256": "6c48d0d1a53b5b97796153d25fb4d1ed4d2901515a337481b102bd6827131064",
+      "bytes": 94647,
+      "lines": 1596,
+      "location": "external-temporary-retained-raw"
+    },
+    {
+      "path": "xsm/mcp.py",
+      "kind": "current-source",
+      "sha256": "8f8a234180fd3be42dca7ebebadfe16ac399f755cbcfb7c5b8453a6406a6ca05",
+      "bytes": 96399,
+      "lines": 1617,
+      "location": "repository"
+    },
+    {
+      "path": "/private/tmp/p08-mcp-owned-0q8nu4is/state/runtime/e2f8b7859e5c/xsm/cli.py",
+      "kind": "retained-executed-snapshot-source",
+      "sha256": "168c1eb54d6f3744af9c80c95b9468afbff1b1f6a9e6b856d52fb810a3e2004d",
+      "bytes": 151418,
+      "lines": 2998,
+      "location": "external-temporary-retained-raw"
+    },
+    {
+      "path": "xsm/cli.py",
+      "kind": "current-source",
+      "sha256": "76f29a9ef05d070dc61d68008ae87db2e5935dc76d0e333bd30c3db29d54cb1c",
+      "bytes": 152851,
+      "lines": 3029,
+      "location": "repository"
+    },
+    {
+      "path": "/private/tmp/p08-mcp-owned-0q8nu4is/state/runtime/e2f8b7859e5c/xsm/owned_requests.py",
+      "kind": "retained-executed-snapshot-source",
+      "sha256": "6e55c26db5709189619196f5ed373004fa0fa468246dc99b899dd14cce4e2a69",
+      "bytes": 21337,
+      "lines": 494,
+      "location": "external-temporary-retained-raw"
+    },
+    {
+      "path": "xsm/owned_requests.py",
+      "kind": "current-source",
+      "sha256": "6e55c26db5709189619196f5ed373004fa0fa468246dc99b899dd14cce4e2a69",
+      "bytes": 21337,
+      "lines": 494,
+      "location": "repository"
+    }
+  ],
+  "validation": {
+    "native_turns_parsed": 8,
+    "owned_requests_checked": 6,
+    "mcp_returned_child_results_checked": 2,
+    "all_memory_assertions_passed": true,
+    "all_snapshot_manifest_assertions_passed": true,
+    "new_runtime_or_tests_executed": false
+  }
+}

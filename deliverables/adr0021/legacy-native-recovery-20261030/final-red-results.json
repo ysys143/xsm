@@ -1,0 +1,78 @@
+{
+  "completed": true,
+  "source": "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/adr21-closure-final-1cnnq81i",
+  "source_manifest_sha256": "ccc3f22a1d65a33ddc76b0ad1abc4966a65664a6e41777d52b70230cd4fd4011",
+  "baseline_tests": 3,
+  "mutations_detected": 4,
+  "rows": [
+    {
+      "case": "baseline",
+      "argv": [
+        "/opt/homebrew/bin/python3.14",
+        "-B",
+        "-m",
+        "unittest",
+        "tests.test_network_receive.NetworkReceiveTests.test_old_hook_unknown_origin_receipt_cannot_hide_an_admitted_pending_original",
+        "tests.test_network_receive.NetworkReceiveTests.test_old_hook_recheck_preserves_real_holds_and_current_membership_refusal",
+        "tests.test_network_receive.NetworkReceiveTests.test_reply_poll_rechecks_old_copy_receipt_without_consuming_or_ignoring_revocation",
+        "-q"
+      ],
+      "exit_code": 0,
+      "stderr_tail": "----------------------------------------------------------------------\nRan 3 tests in 9.445s\n\nOK\n"
+    },
+    {
+      "case": "old-pending-and-reply-poll",
+      "argv": [
+        "/opt/homebrew/bin/python3.14",
+        "-B",
+        "-m",
+        "unittest",
+        "tests.test_network_receive.NetworkReceiveTests.test_old_hook_unknown_origin_receipt_cannot_hide_an_admitted_pending_original",
+        "tests.test_network_receive.NetworkReceiveTests.test_reply_poll_rechecks_old_copy_receipt_without_consuming_or_ignoring_revocation",
+        "-q"
+      ],
+      "exit_code": 1,
+      "stderr_tail": "found in []\n\n======================================================================\nFAIL: test_reply_poll_rechecks_old_copy_receipt_without_consuming_or_ignoring_revocation (tests.test_network_receive.NetworkReceiveTests.test_reply_poll_rechecks_old_copy_receipt_without_consuming_or_ignoring_revocation)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/adr21-closure-red-j_6mqdpg/old-pending-and-reply-poll/tests/test_network_receive.py\", line 113, in test_reply_poll_rechecks_old_copy_receipt_without_consuming_or_ignoring_revocation\n    self.assertEqual(receive.poll_replies(case.actor_a, request_id), 1 if suffix == \"allowed\" else 0)\n    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: 0 != 1\n\n----------------------------------------------------------------------\nRan 2 tests in 9.034s\n\nFAILED (failures=2)\n"
+    },
+    {
+      "case": "ignore-bound-refusal",
+      "argv": [
+        "/opt/homebrew/bin/python3.14",
+        "-B",
+        "-m",
+        "unittest",
+        "tests.test_network_receive.NetworkReceiveTests.test_old_hook_recheck_preserves_real_holds_and_current_membership_refusal",
+        "-q"
+      ],
+      "exit_code": 1,
+      "stderr_tail": "ure-red-j_6mqdpg/ignore-bound-refusal/tests/test_network_receive.py\", line 82, in test_old_hook_recheck_preserves_real_holds_and_current_membership_refusal\n    self.assertEqual(taken[\"claims\"], [])\n    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^\nAssertionError: Lists differ: [{'id': 'bound-refusal', 'token': '594fbf8[183 chars]f0'}] != []\n\nFirst list contains 1 additional elements.\nFirst extra element 0:\n{'id': 'bound-refusal', 'token': '594fbf807eb94df0b1316f61a9c472cc', 'owner': {'type': 'native', 'id': 'process:53175'}, 'generation': '4e5c2d217bff', 'digest': '1583c149126aafb12f2392445975fa6f0b170145a5eaa38f0014868bb116e4f0'}\n\n+ []\n- [{'digest': '1583c149126aafb12f2392445975fa6f0b170145a5eaa38f0014868bb116e4f0',\n-   'generation': '4e5c2d217bff',\n-   'id': 'bound-refusal',\n-   'owner': {'id': 'process:53175', 'type': 'native'},\n-   'token': '594fbf807eb94df0b1316f61a9c472cc'}]\n\n----------------------------------------------------------------------\nRan 1 test in 4.658s\n\nFAILED (failures=1)\n"
+    },
+    {
+      "case": "skip-inbox-current-gate",
+      "argv": [
+        "/opt/homebrew/bin/python3.14",
+        "-B",
+        "-m",
+        "unittest",
+        "tests.test_network_receive.NetworkReceiveTests.test_old_hook_recheck_preserves_real_holds_and_current_membership_refusal",
+        "-q"
+      ],
+      "exit_code": 1,
+      "stderr_tail": "-inbox-current-gate/tests/test_network_receive.py\", line 88, in test_old_hook_recheck_preserves_real_holds_and_current_membership_refusal\n    self.assertEqual(taken[\"claims\"], [])\n    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^\nAssertionError: Lists differ: [{'id': 'revoked-after-old-hook', 'token':[192 chars]ce'}] != []\n\nFirst list contains 1 additional elements.\nFirst extra element 0:\n{'id': 'revoked-after-old-hook', 'token': 'c69c86bc06f540feb1b6bb87caae50a1', 'owner': {'type': 'native', 'id': 'process:53889'}, 'generation': '10b9dc7b2029', 'digest': 'f7d5cd2fface0dd11c00a9aeaed7215dd7e258a916f36a9554e488005ea788ce'}\n\n+ []\n- [{'digest': 'f7d5cd2fface0dd11c00a9aeaed7215dd7e258a916f36a9554e488005ea788ce',\n-   'generation': '10b9dc7b2029',\n-   'id': 'revoked-after-old-hook',\n-   'owner': {'id': 'process:53889', 'type': 'native'},\n-   'token': 'c69c86bc06f540feb1b6bb87caae50a1'}]\n\n----------------------------------------------------------------------\nRan 1 test in 4.792s\n\nFAILED (failures=1)\n"
+    },
+    {
+      "case": "skip-reply-current-gate",
+      "argv": [
+        "/opt/homebrew/bin/python3.14",
+        "-B",
+        "-m",
+        "unittest",
+        "tests.test_network_receive.NetworkReceiveTests.test_reply_poll_rechecks_old_copy_receipt_without_consuming_or_ignoring_revocation",
+        "-q"
+      ],
+      "exit_code": 1,
+      "stderr_tail": "======================================================================\nFAIL: test_reply_poll_rechecks_old_copy_receipt_without_consuming_or_ignoring_revocation (tests.test_network_receive.NetworkReceiveTests.test_reply_poll_rechecks_old_copy_receipt_without_consuming_or_ignoring_revocation)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/adr21-closure-red-j_6mqdpg/skip-reply-current-gate/tests/test_network_receive.py\", line 113, in test_reply_poll_rechecks_old_copy_receipt_without_consuming_or_ignoring_revocation\n    self.assertEqual(receive.poll_replies(case.actor_a, request_id), 1 if suffix == \"allowed\" else 0)\n    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: 1 != 0\n\n----------------------------------------------------------------------\nRan 1 test in 6.053s\n\nFAILED (failures=1)\n"
+    }
+  ],
+  "finished_utc": "2026-10-29T16:43:13.027829+00:00"
+}

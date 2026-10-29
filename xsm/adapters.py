@@ -37,6 +37,25 @@ class DeliveryError(Exception):
         self.detail = detail
 
 
+class UnsupportedCapability(DeliveryError):
+    """The native path explicitly does not support this target capability.
+
+    This is not a general permission/transport failure and must never request a
+    load/resume/steer or rewrite the logical message's wake policy.
+    """
+
+    def __init__(self, capability: str, detail: str):
+        super().__init__("unsupported-capability", detail)
+        self.capability = capability
+
+
+UNLOADED_SUBAGENT_INPUT = "codex-unloaded-subagent-input"
+_UNLOADED_SUBAGENT_ERROR = re.compile(
+    r"\A(?:Error: failed to queue session message: thread/queue/add failed: )?"
+    r"direct app-server input is not allowed for unloaded spawned sub-agents "
+    r"\(code -32600\)\Z")
+
+
 # An install that cannot run says so in its own words; measured 2026-09-23,
 # when an npm @openai/codex without its platform binary sat first on PATH and
 # every delivery to a Codex session would have failed with this.
@@ -185,6 +204,11 @@ def _to_codex(codex_home: str, thread_id: str, content: str) -> str:
         raise DeliveryError("no-codex-binary", "codex is not on PATH")
     if out.returncode != 0:
         text = (out.stderr or out.stdout or "").strip()
+        # Only the exact native capability refusal is eligible for a local
+        # original's MCP-inbox route. Generic -32600/permission/sandbox errors
+        # retain their existing failure classification.
+        if _UNLOADED_SUBAGENT_ERROR.fullmatch(text):
+            raise UnsupportedCapability(UNLOADED_SUBAGENT_INPUT, text)
         if "no rollout found" in text:
             # A thread its TUI has open but that has had no prompt yet: Codex
             # writes no rollout before the first prompt, and `codex queue`

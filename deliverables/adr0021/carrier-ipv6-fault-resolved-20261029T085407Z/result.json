@@ -1,0 +1,194 @@
+{
+  "scope": "same-host controlled AF_INET6 EAFNOSUPPORT; not actual IPv6-absent host",
+  "host_ipv6_socket_supported": true,
+  "held_ipv4_port": 53271,
+  "started_at": 1793264047.8226209,
+  "interposer_forward": "direct original socket from interposer image",
+  "nodes": [
+    {
+      "service_pid": 37765,
+      "engine_pid": 37768,
+      "endpoint_id": "6bf2dbc706b9af8c68248fd2aed9a807d989cdf139901e372156874ce238d9ab",
+      "transport": {
+        "address": {
+          "addrs": [
+            {
+              "Ip": "100.123.30.11:49588"
+            },
+            {
+              "Ip": "127.0.0.1:49588"
+            },
+            {
+              "Ip": "192.168.0.11:49588"
+            }
+          ],
+          "id": "6bf2dbc706b9af8c68248fd2aed9a807d989cdf139901e372156874ce238d9ab"
+        },
+        "bound_addresses": [
+          "0.0.0.0:49588"
+        ],
+        "endpoint_id": "6bf2dbc706b9af8c68248fd2aed9a807d989cdf139901e372156874ce238d9ab",
+        "event": "ready",
+        "port_fallback": true,
+        "relay_mode": "off",
+        "relay_online": false,
+        "requested_port": 53271
+      }
+    },
+    {
+      "service_pid": 37771,
+      "engine_pid": 37791,
+      "endpoint_id": "aa20a9bdf07a89099577e37f891508bc452e59e8c6a95416b4d1ebfd5a93189b",
+      "transport": {
+        "address": {
+          "addrs": [
+            {
+              "Ip": "100.123.30.11:50760"
+            },
+            {
+              "Ip": "127.0.0.1:50760"
+            },
+            {
+              "Ip": "192.168.0.11:50760"
+            }
+          ],
+          "id": "aa20a9bdf07a89099577e37f891508bc452e59e8c6a95416b4d1ebfd5a93189b"
+        },
+        "bound_addresses": [
+          "0.0.0.0:50760"
+        ],
+        "endpoint_id": "aa20a9bdf07a89099577e37f891508bc452e59e8c6a95416b4d1ebfd5a93189b",
+        "event": "ready",
+        "port_fallback": true,
+        "relay_mode": "off",
+        "relay_online": false,
+        "requested_port": 53271
+      }
+    }
+  ],
+  "both_active": true,
+  "roundtrips": [
+    {
+      "started_at": 1793264049.561244,
+      "duration_seconds": 0.024,
+      "response_network_matches": true,
+      "sender": "6bf2dbc706b9af8c68248fd2aed9a807d989cdf139901e372156874ce238d9ab",
+      "receiver": "aa20a9bdf07a89099577e37f891508bc452e59e8c6a95416b4d1ebfd5a93189b",
+      "tls_origin": "aa20a9bdf07a89099577e37f891508bc452e59e8c6a95416b4d1ebfd5a93189b",
+      "tls_origin_matches": true,
+      "request_sha256": "a54c1281b0b97f92dd5a183962788337a0d635fe36809fc6e2c6cf78b87a2706",
+      "response_sha256": "99fd8bda378e8d411ae0ae021534fc83e07aa8dc2236560602813eb31640fadc",
+      "request_digest_matches": true,
+      "response_digest_matches": true,
+      "native_event_id": "py-78",
+      "path_source": "this-native-response-event",
+      "path": "direct",
+      "transport": {
+        "fallback_reason": null,
+        "path": "direct",
+        "paths": [
+          {
+            "kind": "direct",
+            "remote": "ip:192.168.0.11:50760",
+            "selected": true
+          }
+        ],
+        "remote_address": "192.168.0.11:50760",
+        "selected": "direct",
+        "selection_reason": "iroh_path_selection"
+      }
+    },
+    {
+      "started_at": 1793264049.5850291,
+      "duration_seconds": 0.02,
+      "response_network_matches": true,
+      "sender": "aa20a9bdf07a89099577e37f891508bc452e59e8c6a95416b4d1ebfd5a93189b",
+      "receiver": "6bf2dbc706b9af8c68248fd2aed9a807d989cdf139901e372156874ce238d9ab",
+      "tls_origin": "6bf2dbc706b9af8c68248fd2aed9a807d989cdf139901e372156874ce238d9ab",
+      "tls_origin_matches": true,
+      "request_sha256": "5b1408b4eff3d5130db25434d69f8df5bc5a36b28937908e78ccac30837f5268",
+      "response_sha256": "d63f3e13e49153022e10c7f197146c2926f288bc49fc656f8187ef901c76f27d",
+      "request_digest_matches": true,
+      "response_digest_matches": true,
+      "native_event_id": "py-117",
+      "path_source": "this-native-response-event",
+      "path": "direct",
+      "transport": {
+        "fallback_reason": null,
+        "path": "direct",
+        "paths": [
+          {
+            "kind": "direct",
+            "remote": "ip:127.0.0.1:49588",
+            "selected": true
+          }
+        ],
+        "remote_address": "127.0.0.1:49588",
+        "selected": "direct",
+        "selection_reason": "iroh_path_selection"
+      }
+    }
+  ],
+  "fault_observations": [
+    {
+      "engine_pid": 37768,
+      "observed_pids": [
+        37768
+      ],
+      "loaded_in_engine": true,
+      "ipv6_eafnosupport_count": 26,
+      "ipv4_socket_success_count": 80,
+      "direct_reentry_count": 0,
+      "native_stderr_bytes": 0
+    },
+    {
+      "engine_pid": 37791,
+      "observed_pids": [
+        37791
+      ],
+      "loaded_in_engine": true,
+      "ipv6_eafnosupport_count": 26,
+      "ipv4_socket_success_count": 80,
+      "direct_reentry_count": 0,
+      "native_stderr_bytes": 0
+    }
+  ],
+  "passed": true,
+  "cleanup": [
+    {
+      "service_pid": 37765,
+      "engine_pid": 37768,
+      "service_exit": 0,
+      "engine_alive": false,
+      "control_socket_exists": false,
+      "stdout_bytes": 0,
+      "stderr_bytes": 0,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "service_pid": 37771,
+      "engine_pid": 37791,
+      "service_exit": 0,
+      "engine_alive": false,
+      "control_socket_exists": false,
+      "stdout_bytes": 0,
+      "stderr_bytes": 0,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "udp_rebind_after_cleanup": [
+    {
+      "address": "0.0.0.0:49588",
+      "free": true
+    },
+    {
+      "address": "0.0.0.0:50760",
+      "free": true
+    },
+    {
+      "address": "0.0.0.0:53271",
+      "free": true
+    }
+  ],
+  "finished_at": 1793264050.121185
+}

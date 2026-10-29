@@ -1,0 +1,256 @@
+{
+  "completed": true,
+  "workflow": [
+    {
+      "phase": "baseline-local",
+      "request_id": "1e8888b285c445b1",
+      "reply_id": "210d5d010eb04ff5",
+      "request_body_sha256": "bc363d7d69d7a961f0aa4d724045d6e1315abf6e99580b3d19112dbeb232e0ce",
+      "request_raw_preserved": true,
+      "reply_raw_preserved": true,
+      "request_actual_ask_seen": true,
+      "reply_actual_send_seen": true,
+      "request_actual_inbox_seen": true,
+      "request_handoff_state": "acknowledged",
+      "reply_handoff_state": "acknowledged",
+      "requester_CID": "01a186f7-65d6-7262-bb0c-d6026c5b36fc",
+      "reviewer_CID": "01a186f7-65c6-7591-8200-066e7eab9f16"
+    },
+    {
+      "phase": "Mini-service-stopped",
+      "request_id": "f17045ef49904743",
+      "reply_id": "f3fefd835e364dcf",
+      "request_body_sha256": "d4861ff55f587504db7fbe3fd00cd2e1161e8a8ba3e10f5fe5c9fed8edbe1bd5",
+      "request_raw_preserved": true,
+      "reply_raw_preserved": true,
+      "request_actual_ask_seen": true,
+      "reply_actual_send_seen": true,
+      "request_actual_inbox_seen": true,
+      "request_handoff_state": "acknowledged",
+      "reply_handoff_state": "acknowledged",
+      "requester_CID": "01a186f7-65d6-7262-bb0c-d6026c5b36fc",
+      "reviewer_CID": "01a186f7-65c6-7591-8200-066e7eab9f16"
+    },
+    {
+      "phase": "Book-engine-UDP-and-TCP443-blocked",
+      "request_id": "731fac330b77411a",
+      "reply_id": "fa74ba20300a47ef",
+      "request_body_sha256": "db22e286e89a7214c8793424ef11f80ea7378baef0dc57c875ee41db7ff5ca26",
+      "request_raw_preserved": true,
+      "reply_raw_preserved": true,
+      "request_actual_ask_seen": true,
+      "reply_actual_send_seen": true,
+      "request_actual_inbox_seen": true,
+      "request_handoff_state": "acknowledged",
+      "reply_handoff_state": "acknowledged",
+      "requester_CID": "01a186f7-65d6-7262-bb0c-d6026c5b36fc",
+      "reviewer_CID": "01a186f7-65c6-7591-8200-066e7eab9f16"
+    }
+  ],
+  "registrations": [
+    {
+      "role": "reviewer",
+      "phase": "phase0",
+      "CID": "01a186f7-65c6-7591-8200-066e7eab9f16",
+      "native_pid": 89837,
+      "native_start": "Thu Oct 29 18:22:02 2026",
+      "MCP_pid": 90038,
+      "provider_row_matches_CID": true,
+      "provider_cwd": "/private/tmp/a215-book-56zvovcc/work",
+      "current_PID_matches_launch": true
+    },
+    {
+      "role": "requester",
+      "phase": "phase0",
+      "CID": "01a186f7-65d6-7262-bb0c-d6026c5b36fc",
+      "native_pid": 89841,
+      "native_start": "Thu Oct 29 18:22:02 2026",
+      "MCP_pid": 89896,
+      "provider_row_matches_CID": true,
+      "provider_cwd": "/private/tmp/a215-book-56zvovcc/work",
+      "current_PID_matches_launch": true
+    },
+    {
+      "role": "requester",
+      "phase": "phase1",
+      "CID": "01a186f7-65d6-7262-bb0c-d6026c5b36fc",
+      "native_pid": 92543,
+      "native_start": "Thu Oct 29 18:23:10 2026",
+      "MCP_pid": 92576,
+      "provider_row_matches_CID": true,
+      "provider_cwd": "/private/tmp/a215-book-56zvovcc/work",
+      "current_PID_matches_launch": true
+    },
+    {
+      "role": "requester",
+      "phase": "phase2",
+      "CID": "01a186f7-65d6-7262-bb0c-d6026c5b36fc",
+      "native_pid": 93863,
+      "native_start": "Thu Oct 29 18:23:41 2026",
+      "MCP_pid": 93896,
+      "provider_row_matches_CID": true,
+      "provider_cwd": "/private/tmp/a215-book-56zvovcc/work",
+      "current_PID_matches_launch": true
+    }
+  ],
+  "startup_barriers": [
+    {
+      "registered": true,
+      "kind": "controlled initial registration barrier only",
+      "at": 1793265725.276902
+    },
+    {
+      "registered": true,
+      "kind": "controlled initial registration barrier only",
+      "at": 1793265724.228437
+    },
+    {
+      "registered": true,
+      "kind": "controlled initial registration barrier only",
+      "at": 1793265791.11452
+    },
+    {
+      "registered": true,
+      "kind": "controlled initial registration barrier only",
+      "at": 1793265821.43898
+    }
+  ],
+  "observed_model_IDs": {
+    "requester": [
+      "gpt-6.1-sol"
+    ],
+    "reviewer": [
+      "gpt-6.1-sol"
+    ]
+  },
+  "CLI_version": "codex-cli 0.164.0",
+  "actual_conversations": 2,
+  "CLI_native_runs": 4,
+  "same_actual_work_folder": true,
+  "MCP_counts": {
+    "requester": {
+      "xsm_discover": 1,
+      "xsm_connect": 1,
+      "xsm_ack": 4,
+      "xsm_ask": 3
+    },
+    "reviewer": {
+      "xsm_inbox": 5,
+      "xsm_ack": 4,
+      "xsm_send": 4
+    }
+  },
+  "baseline_socket_probe": {
+    "pid": 89664,
+    "at": 1793265716.721306,
+    "blocked": false,
+    "same_pid_before_native_exec": true,
+    "profile": null,
+    "checks": [
+      {
+        "kind": 2,
+        "target_port": 59089,
+        "allowed": true
+      },
+      {
+        "kind": 1,
+        "target_port": 443,
+        "allowed": true
+      },
+      {
+        "kind": 1,
+        "target_port": 56020,
+        "allowed": true
+      }
+    ]
+  },
+  "blocked_socket_probe": {
+    "pid": 93797,
+    "at": 1793265817.963508,
+    "blocked": true,
+    "same_pid_before_native_exec": true,
+    "profile": "(version 1)(allow default)(deny network-outbound(remote udp \"*:*\"))(deny network-outbound(remote tcp \"*:443\"))",
+    "checks": [
+      {
+        "kind": 2,
+        "target_port": 59089,
+        "allowed": false,
+        "errno": 1
+      },
+      {
+        "kind": 1,
+        "target_port": 443,
+        "allowed": false,
+        "errno": 1
+      },
+      {
+        "kind": 1,
+        "target_port": 56020,
+        "allowed": true
+      }
+    ]
+  },
+  "same_probe_and_engine_PID": true,
+  "Book_network_identity_preserved": true,
+  "Mini_service_stop": {
+    "remaining_owned_pids": [],
+    "socket_exists": false,
+    "udp_rebind": [
+      {
+        "address": "0.0.0.0:49379",
+        "free": true
+      },
+      {
+        "address": "[::]:49673",
+        "free": true
+      }
+    ],
+    "stop_exit": 0
+  },
+  "Book_before_restart_stop": {
+    "remaining_owned_pids": [],
+    "socket_exists": false,
+    "udp_rebind": [
+      {
+        "address": "0.0.0.0:55984",
+        "free": true
+      },
+      {
+        "address": "[::]:62354",
+        "free": true
+      }
+    ],
+    "stop_exit": 0
+  },
+  "Book_final_stop": {
+    "remaining_owned_pids": [],
+    "socket_exists": false,
+    "udp_rebind": [
+      {
+        "address": "0.0.0.0:57789",
+        "free": true
+      },
+      {
+        "address": "[::]:50928",
+        "free": true
+      }
+    ],
+    "stop_exit": 0
+  },
+  "final_actor_cleanup": {
+    "known_owned_processes": 12,
+    "additional_signals": [],
+    "remaining_known": [],
+    "remaining_native_in_private_workdir": [],
+    "state_auth_and_evidence_preserved": true
+  },
+  "source_profile_unchanged": true,
+  "source_auth_metadata_unchanged": true,
+  "controller_body_relay_or_ACK_or_index_repair": false,
+  "source_file_count": 53,
+  "source_current_differences": [
+    "xsm/network.py",
+    "xsm/network_messages.py",
+    "xsm/network_recovery.py"
+  ]
+}

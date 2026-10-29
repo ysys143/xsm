@@ -1,0 +1,39 @@
+{
+  "source": "actual retained native stdout; no model rerun",
+  "recovered": [
+    {
+      "request_id": "capacity-3879b3ac-0",
+      "before": "unknown",
+      "after": "reply-stored",
+      "reply_id": "97c1cbd8a1304c85",
+      "native_session_id": "01a18325-90a2-7700-8bf2-3ec8b8e55efc",
+      "original_stdout_sha256": "51e5a5974efbd9728737244319ab67a8fd8384f0b089f95314d7c056c35bd78c",
+      "original_stdout_unchanged": true,
+      "model_rerun": false,
+      "stored_outcome": "succeeded"
+    },
+    {
+      "request_id": "capacity-3879b3ac-1",
+      "before": "unknown",
+      "after": "reply-stored",
+      "reply_id": "ab11111cff3141b0",
+      "native_session_id": "01a18325-90a2-7043-a98f-931518158f12",
+      "original_stdout_sha256": "994a05d62b5b8eda96ce5e38012519308c28c6a9db23fd5d8816c83df73cbcdd",
+      "original_stdout_unchanged": true,
+      "model_rerun": false,
+      "stored_outcome": "succeeded"
+    },
+    {
+      "request_id": "capacity-3879b3ac-3",
+      "before": "unknown",
+      "after": "reply-stored",
+      "reply_id": "ee4b554a3a79437d",
+      "native_session_id": "01a18325-90a3-7831-a3af-ee6fc07b542a",
+      "original_stdout_sha256": "49e39d6f54df8b669e133398aee320ae3c6737ca407ca488c47c9b71f41d3516",
+      "original_stdout_unchanged": true,
+      "model_rerun": false,
+      "stored_outcome": "succeeded"
+    }
+  ],
+  "received_quiet_replies": 3
+}

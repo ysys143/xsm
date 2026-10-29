@@ -1,0 +1,172 @@
+{
+  "approval_question_id": "[\"request_user_input_async\",\"call_7279cdb9975947b29075d6d8934afa5d\",0]",
+  "approval_source": "native Codex response_item/message role=user, read-only readback",
+  "request_id": "bf3cfcd1e4c04154",
+  "reply_id": "29eb4fe1ba8c4d3d",
+  "reply_to_matches": true,
+  "messages": {
+    "bf3cfcd1e4c04154": {
+      "id": "bf3cfcd1e4c04154",
+      "status": "delivered",
+      "t": 1793178009.8583848,
+      "kind": "task",
+      "scope": "link:cross-session-messaging+xsm-g02-live-3ZGPr7",
+      "from": {
+        "name": "Reason Network 조사",
+        "alias": "codex-3",
+        "ref": "e885bc",
+        "runtime": "codex"
+      },
+      "to": {
+        "name": "xsm-g02-live-3zgpr7-f3",
+        "alias": "claude-3",
+        "ref": "60d01a",
+        "runtime": "claude"
+      },
+      "preview": "G02-LIVE: 실제 사용자 승인 질문 call_7279cdb9975947b29075d6d8934afa5d에서 허용된 평가 통신입니다. 이 원 요청 id에 reply_to로 G02-LIVE-ACK를 회신해주세요. 파일이나 설정을 변경하지 마세요.",
+      "req_version": 1,
+      "digest": "5cdec3337d6baf250c54ed68cfe834819008c3a546ce08e369958315b11862b1",
+      "from_basis": "thread_id",
+      "from_certainty": "certain",
+      "evidence": {
+        "accepted": {
+          "ok": true,
+          "t": 1793178009.859488
+        },
+        "queued": {
+          "ok": true,
+          "t": 1793178009.860874,
+          "detail": "uds:/tmp/cc-socks/57299.sock"
+        }
+      },
+      "runtime_reached": true,
+      "receipt": {
+        "id": "bf3cfcd1e4c04154",
+        "decision": "delivered",
+        "reason": "",
+        "t": 1793178016.558856,
+        "receiver": {
+          "name": "xsm-g02-live-3zgpr7-f3",
+          "alias": "claude-3",
+          "ref": "60d01a",
+          "runtime": "claude"
+        },
+        "from_ref": "e885bc",
+        "body_sha": "97468ad874934ba2"
+      },
+      "delivery": {
+        "steps": {
+          "accepted": {
+            "ok": true,
+            "t": 1793178009.859488
+          },
+          "queued": {
+            "ok": true,
+            "t": 1793178009.860874,
+            "detail": "uds:/tmp/cc-socks/57299.sock"
+          },
+          "hook_taken": {
+            "ok": true,
+            "t": 1793178016.558856,
+            "detail": "delivered"
+          }
+        },
+        "runtime_reached": true,
+        "digest": "5cdec3337d6baf250c54ed68cfe834819008c3a546ce08e369958315b11862b1",
+        "req_version": 1,
+        "legacy": false,
+        "verified": true,
+        "upgraded_from_legacy": false
+      }
+    },
+    "29eb4fe1ba8c4d3d": {
+      "id": "29eb4fe1ba8c4d3d",
+      "status": "delivered",
+      "t": 1793178032.2679172,
+      "kind": "reply",
+      "scope": "link:cross-session-messaging+xsm-g02-live-3ZGPr7",
+      "from": {
+        "name": "xsm-g02-live-3zgpr7-f3",
+        "alias": "claude-3",
+        "ref": "60d01a",
+        "runtime": "claude"
+      },
+      "to": {
+        "name": "Reason Network 조사",
+        "alias": "codex-3",
+        "ref": "e885bc",
+        "runtime": "codex"
+      },
+      "preview": "G02-LIVE-ACK",
+      "req_version": 1,
+      "digest": "333cca53b297e526d0bd69ed12f49b3cb7a03cb3682f7c46fc5ad04d69d127fd",
+      "from_basis": "session_id",
+      "from_certainty": "certain",
+      "reply_to": "bf3cfcd1e4c04154",
+      "evidence": {
+        "accepted": {
+          "ok": true,
+          "t": 1793178032.268548
+        },
+        "queued": {
+          "ok": true,
+          "t": 1793178032.475923,
+          "detail": "01a181bd-5952-7e01-b869-c3c9070258a5"
+        },
+        "wake": {
+          "ok": false,
+          "t": 1793178032.476622,
+          "detail": "busy"
+        }
+      },
+      "runtime_reached": true,
+      "receipt": {
+        "id": "29eb4fe1ba8c4d3d",
+        "decision": "delivered",
+        "reason": "read with xsm inbox",
+        "t": 1793178034.732828,
+        "receiver": {
+          "name": "Reason Network 조사",
+          "alias": "codex-3",
+          "ref": "e885bc",
+          "runtime": "codex"
+        },
+        "from_ref": "60d01a",
+        "body_sha": "217a60aacfeadce8",
+        "req_digest": "cd2a5c92155a0325de1c7af7312cc75c7eb403010e274a278815ca54fb16ce19",
+        "req_version": 1
+      },
+      "delivery": {
+        "steps": {
+          "accepted": {
+            "ok": true,
+            "t": 1793178032.268548
+          },
+          "queued": {
+            "ok": true,
+            "t": 1793178032.475923,
+            "detail": "01a181bd-5952-7e01-b869-c3c9070258a5"
+          },
+          "wake": {
+            "ok": false,
+            "t": 1793178032.476622,
+            "detail": "busy"
+          },
+          "hook_taken": {
+            "ok": true,
+            "t": 1793178034.732828,
+            "detail": "delivered"
+          }
+        },
+        "runtime_reached": true,
+        "digest": "333cca53b297e526d0bd69ed12f49b3cb7a03cb3682f7c46fc5ad04d69d127fd",
+        "req_version": 1,
+        "legacy": false,
+        "verified": true,
+        "upgraded_from_legacy": false
+      }
+    }
+  },
+  "evaluation_link_remaining": false,
+  "execution_revision_note": "실제 CLI --answer-request 실행은 --question 선결속 hardening 전이다. 이 trace에서 bind_question을 직접 호출하지 않았다. 이후의 최신 출처/질문 결속/재사용 차단은 native-channel.json의 실제 채널 진단과 tests/test_native_consent의 공개 CLI 경로/반례에서 별도로 확인한다."
+}

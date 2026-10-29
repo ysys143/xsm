@@ -1,0 +1,10 @@
+{
+  "mutation": "remove exact revision guard",
+  "late_editor_mock_exercised": true,
+  "test": "test_concurrent_user_edit_rejected_even_for_current_state",
+  "detected": true,
+  "expected_failure": "InstallConflictError not raised",
+  "failures": 1,
+  "errors": 0,
+  "product_source_mutated": false
+}

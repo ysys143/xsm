@@ -1,0 +1,46 @@
+{
+  "latest_final_input_manifest_sha256": "5e203237d953a8b656ff4083503fd8b9b5c02c744a3f4939b1ce3236bda461ec",
+  "source_manifest_sha256": "5af07457bec29f64c6ba7acf4604d1e926d18eaf47f12fe2945844ea66310d55",
+  "latest_final_source_differences": [],
+  "changes_from_prior_successful_sample": [
+    {
+      "path": "skills/xsm/references/network.md",
+      "old_sha256": "37ec6a533016799933598681ec5238bcf76c16d0b00ca0de38f38ed3a4898ee7",
+      "latest_sha256": "b0ee68f63d0275397009d06a92fadb92ac765bf8eb0f8732ec5548aeacfcbbc2"
+    },
+    {
+      "path": "xsm/network.py",
+      "old_sha256": "f52485d50b5008a92860d8409df0b722fef0c26034c87938a1967af59d653265",
+      "latest_sha256": "79125d7d90a3255bdf1ce6c15edc1abcf759ef0a8ee702c5c8f32444870c6b71"
+    },
+    {
+      "path": "xsm/network_directory.py",
+      "old_sha256": "0e1ea03d86b3f5c49f4df64b8e86e401743b33368dd32873a16fddab66c35099",
+      "latest_sha256": "9d92b61556b9f0c8b8ffa1c4a858081872139c6ff9e95d6314339d08b5a6c5ae"
+    },
+    {
+      "path": "xsm/network_messages.py",
+      "old_sha256": "2b2a238ecf9e7a55265fabc5673de086c97818b78188d9716cceb6fb214c22a2",
+      "latest_sha256": "c9986c606db5ddbde9d0b30689e83e4da80240a6d8ef0d4e2ecebfe0788af6ea"
+    },
+    {
+      "path": "xsm/network_recovery.py",
+      "old_sha256": null,
+      "latest_sha256": "428fcb5aa88d83067d6ecbace8a08e29fb9cd07a4e42461977d70d503f11e234"
+    },
+    {
+      "path": "xsm/probe.py",
+      "old_sha256": "452835fb1ca280eb95094d89cc5775f8d510d4e3941c4469740f071ce27b676d",
+      "latest_sha256": "d6088cdfc961e76dd6f375d9787dbb5a734d58473a3a8705e1da8a122547722b"
+    },
+    {
+      "path": "xsm/send.py",
+      "old_sha256": "c8ca2a8fa1407153dd394d0b004a57653f98431ed8f4d1543ea8249389dac2f6",
+      "latest_sha256": "c63417d6e5d06542f3b092f6d2569b783b68363295caffc8af7149119e4544d9"
+    }
+  ],
+  "input_python_modules": 53,
+  "executed_payload_files": 66,
+  "engine_sha256": "f17f03fafcdf3a31e374d6cbc0ccbbbd8000ba6a7eba5d9b44605e742c409aed",
+  "both_host_payloads_match": true
+}

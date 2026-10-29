@@ -1,0 +1,44 @@
+[
+  {
+    "finding": "M2-exited-capacity",
+    "test": "tests.test_owned_review_fixes.OwnedReviewFixTest.test_max_failed_dead_children_free_slots_but_preserve_unknown_context",
+    "mutation_detected": true,
+    "log": "/tmp/b05-mutation-M2-exited-capacity.log"
+  },
+  {
+    "finding": "M3-poisoned-copy-store",
+    "test": "tests.test_files.FilesTest.test_m3_legacy_partial_dirs_do_not_block_other_owner_and_diagnostics_persist",
+    "mutation_detected": false,
+    "log": "/tmp/b05-mutation-M3-poisoned-copy-store.log"
+  },
+  {
+    "finding": "M1-queue-cache",
+    "test": "tests.test_owned_interfaces.OwnedInterfacesTest.test_mcp_overloaded_request_resumes_with_the_same_id_after_capacity_frees",
+    "mutation_detected": true,
+    "log": "/tmp/b05-mutation-M1-queue-cache.log"
+  },
+  {
+    "finding": "C1-retained-status",
+    "test": "tests.test_owned_interfaces.OwnedInterfacesTest.test_public_status_recovers_a_saved_answer_after_worker_record_removal",
+    "mutation_detected": true,
+    "log": "/tmp/b05-mutation-C1-retained-status.log"
+  },
+  {
+    "finding": "C2-flow-observation",
+    "test": "tests.test_setup_flow.SetupFlowTest.test_actual_receive_path_completes_only_its_active_setup_flow_and_doctor_reads_proof",
+    "mutation_detected": true,
+    "log": "/tmp/b05-mutation-C2-flow-observation.log"
+  },
+  {
+    "finding": "C3-silent-expiry",
+    "test": "tests.test_decisions.DecisionsTest.test_public_status_expires_a_silent_question_and_retry_does_not_display_it_again",
+    "mutation_detected": true,
+    "log": "/tmp/b05-mutation-C3-silent-expiry.log"
+  },
+  {
+    "finding": "C4-source-reread",
+    "test": "tests.test_materials.MaterialPreparationTest.test_mcp_can_export_the_same_cli_frozen_copy_without_reopening_a_changed_original",
+    "mutation_detected": true,
+    "log": "/tmp/b05-mutation-C4-source-reread.log"
+  }
+]

@@ -1,0 +1,399 @@
+{
+  "scope": "owned engine explicit-allow CONNECT proxy native success; no P12/D12/global claim",
+  "private_roots": {
+    "local": "/private/tmp/p11-C-proxyvar-2_vbmwuu",
+    "peer": "/private/tmp/p11-C-proxyvar-2y_s3rzs",
+    "peer_hostname": "Jaesolui-Macmini.local",
+    "old_failure_location": "deliverables/p11-live/proxy-native-location-20261029.json"
+  },
+  "native_model_attempts": 1,
+  "raw_payloads_published": false,
+  "files": [
+    {
+      "path": "/private/tmp/p11-C-proxyvar-2_vbmwuu/cleanup.json",
+      "bytes": 1473,
+      "sha256": "414d7c99d1dcdabde3bb0f60f8652f090f6e74144c86f64d485d396a30989c24",
+      "storage": "private raw evidence/state and peer copies"
+    },
+    {
+      "path": "/private/tmp/p11-C-proxyvar-2_vbmwuu/code/C-native-base.py",
+      "bytes": 5840,
+      "sha256": "08c808318e1636ca71a4ce547e44fcf71ca5ffe1a8dbfe03bd23b77069118591",
+      "storage": "private raw evidence/state and peer copies"
+    },
+    {
+      "path": "/private/tmp/p11-C-proxyvar-2_vbmwuu/code/proxy-variant-lib.py",
+      "bytes": 16139,
+      "sha256": "1d60fc88042f077f366554077a8d4d475af49a332b61483d78bae57c6162cd85",
+      "storage": "private raw evidence/state and peer copies"
+    },
+    {
+      "path": "/private/tmp/p11-C-proxyvar-2_vbmwuu/code/proxy-variant-peer.py",
+      "bytes": 2230,
+      "sha256": "446215ca925b10cfb4445dbfada5bcc8639d8bf635f00f22125834ae5e7574ca",
+      "storage": "private raw evidence/state and peer copies"
+    },
+    {
+      "path": "/private/tmp/p11-C-proxyvar-2_vbmwuu/code/proxy-variant-run.py",
+      "bytes": 12666,
+      "sha256": "858d1e1f7a5e3ffba7d9f95b9711317e9c44b84b3188a3318c5e9b282259ecf6",
+      "storage": "private raw evidence/state and peer copies"
+    },
+    {
+      "path": "/private/tmp/p11-C-proxyvar-2_vbmwuu/code/proxy-variant-support.py",
+      "bytes": 9676,
+      "sha256": "d0e73ffb0c5af95800d36134a3a163b2651b3ee4358f23b56a119174061c63a6",
+      "storage": "private raw evidence/state and peer copies"
+    },
+    {
+      "path": "/private/tmp/p11-C-proxyvar-2_vbmwuu/engine-38136-log-hashes.jsonl",
+      "bytes": 162,
+      "sha256": "1bb05d1ac5f553cbdcab2547a42f3ae49420bc85b6e18f962e30b4b68c40c908",
+      "storage": "private raw evidence/state and peer copies"
+    },
+    {
+      "path": "/private/tmp/p11-C-proxyvar-2_vbmwuu/engine-38195-log-hashes.jsonl",
+      "bytes": 1773,
+      "sha256": "f4bd0c597a65a2174b5418d8eb09a9dc3ed9da2e987158fbb558724b714f05d8",
+      "storage": "private raw evidence/state and peer copies"
+    },
+    {
+      "path": "/private/tmp/p11-C-proxyvar-2_vbmwuu/engine-handles.json",
+      "bytes": 1287,
+      "sha256": "e8638fc077be29eed516a295441d8129b1207aac7bac2b25a3d9d1ef0334b2de",
+      "storage": "private raw evidence/state and peer copies"
+    },
+    {
+      "path": "/private/tmp/p11-C-proxyvar-2_vbmwuu/final-process-audit.json",
+      "bytes": 1905,
+      "sha256": "d4539c144374a23866c220cce8bcf26fdb3189a65c083d8ae89abbc30c29a398",
+      "storage": "private raw evidence/state and peer copies"
+    },
+    {
+      "path": "/private/tmp/p11-C-proxyvar-2_vbmwuu/fixture-ownership.json",
+      "bytes": 82,
+      "sha256": "5b9d9b0d7c9b83b4476054815649fa3c906593c808dd216cec39cc0aa4799656",
+      "storage": "private raw evidence/state and peer copies"
+    },
+    {
+      "path": "/private/tmp/p11-C-proxyvar-2_vbmwuu/peer-evidence/cleanup.json",
+      "bytes": 1471,
+      "sha256": "b6550d7160ea2fb9865b1858fb5558f05a25ea645ccec8592826335b8547ca89",
+      "storage": "private raw evidence/state and peer copies"
+    },
+    {
+      "path": "/private/tmp/p11-C-proxyvar-2_vbmwuu/peer-evidence/code/C-native-base.py",
+      "bytes": 5840,
+      "sha256": "08c808318e1636ca71a4ce547e44fcf71ca5ffe1a8dbfe03bd23b77069118591",
+      "storage": "private raw evidence/state and peer copies"
+    },
+    {
+      "path": "/private/tmp/p11-C-proxyvar-2_vbmwuu/peer-evidence/code/proxy-variant-lib.py",
+      "bytes": 16139,
+      "sha256": "1d60fc88042f077f366554077a8d4d475af49a332b61483d78bae57c6162cd85",
+      "storage": "private raw evidence/state and peer copies"
+    },
+    {
+      "path": "/private/tmp/p11-C-proxyvar-2_vbmwuu/peer-evidence/code/proxy-variant-peer.py",
+      "bytes": 2230,
+      "sha256": "446215ca925b10cfb4445dbfada5bcc8639d8bf635f00f22125834ae5e7574ca",
+      "storage": "private raw evidence/state and peer copies"
+    },
+    {
+      "path": "/private/tmp/p11-C-proxyvar-2_vbmwuu/peer-evidence/code/proxy-variant-support.py",
+      "bytes": 9676,
+      "sha256": "d0e73ffb0c5af95800d36134a3a163b2651b3ee4358f23b56a119174061c63a6",
+      "storage": "private raw evidence/state and peer copies"
+    },
+    {
+      "path": "/private/tmp/p11-C-proxyvar-2_vbmwuu/peer-evidence/engine-80866-log-hashes.jsonl",
+      "bytes": 646,
+      "sha256": "ae15e7c5a445d403221068b57ed1ca54d4202a7d2f29367b71b839f1c5945b5c",
+      "storage": "private raw evidence/state and peer copies"
+    },
+    {
+      "path": "/private/tmp/p11-C-proxyvar-2_vbmwuu/peer-evidence/engine-81257-log-hashes.jsonl",
+      "bytes": 967,
+      "sha256": "209eed2aa1f40eea99dba52a1c09fb08db0fd47fb23e71f80a7e6f031807ad97",
+      "storage": "private raw evidence/state and peer copies"
+    },
+    {
+      "path": "/private/tmp/p11-C-proxyvar-2_vbmwuu/peer-evidence/engine-handles.json",
+      "bytes": 1285,
+      "sha256": "74692a1dd67a8c3603a200b4e2ee314c05403863953dd7697ee3cb3a826c2cc5",
+      "storage": "private raw evidence/state and peer copies"
+    },
+    {
+      "path": "/private/tmp/p11-C-proxyvar-2_vbmwuu/peer-evidence/fixture-ownership.json",
+      "bytes": 81,
+      "sha256": "66cd02bdf14356c9aa18f4f8402bd558d55392ec1605afad514f85c2529e3e7d",
+      "storage": "private raw evidence/state and peer copies"
+    },
+    {
+      "path": "/private/tmp/p11-C-proxyvar-2_vbmwuu/peer-evidence/native/first/handle.json",
+      "bytes": 1024,
+      "sha256": "eb43526fd6ed5b3af93268bed3caed21be0b0d7d4eb03bd50ebdec4e8a5c8df8",
+      "storage": "private raw evidence/state and peer copies"
+    },
+    {
+      "path": "/private/tmp/p11-C-proxyvar-2_vbmwuu/peer-evidence/native/first/instructions.txt",
+      "bytes": 174,
+      "sha256": "f78f9c792de17f308a95035581fdce5d710981304267cfa41228d00398cdf4eb",
+      "storage": "private raw evidence/state and peer copies"
+    },
+    {
+      "path": "/private/tmp/p11-C-proxyvar-2_vbmwuu/peer-evidence/native/first/last-message.json",
+      "bytes": 173,
+      "sha256": "e0bc24529e469aa4f6c39d9911be38e6916237c9c331e4b01ba8ef1111021121",
+      "storage": "private raw evidence/state and peer copies"
+    },
+    {
+      "path": "/private/tmp/p11-C-proxyvar-2_vbmwuu/peer-evidence/native/first/request.txt",
+      "bytes": 226,
+      "sha256": "837ccd0b9c717c72343451a35cb3aea070e1fcab5e473b4144e17e4e1656dc0e",
+      "storage": "private raw evidence/state and peer copies"
+    },
+    {
+      "path": "/private/tmp/p11-C-proxyvar-2_vbmwuu/peer-evidence/native/first/result.json",
+      "bytes": 2290,
+      "sha256": "c6bd106a769c7e7fbf19d81e45a141a4f4ad6bdee91fbcb446240d10af36ef30",
+      "storage": "private raw evidence/state and peer copies"
+    },
+    {
+      "path": "/private/tmp/p11-C-proxyvar-2_vbmwuu/peer-evidence/native/first/schema.json",
+      "bytes": 446,
+      "sha256": "a94564bc95f2f76019e173127309de49be30d6ba25f4a8ef8b06a431fbad1585",
+      "storage": "private raw evidence/state and peer copies"
+    },
+    {
+      "path": "/private/tmp/p11-C-proxyvar-2_vbmwuu/peer-evidence/native/first/stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storage": "private raw evidence/state and peer copies"
+    },
+    {
+      "path": "/private/tmp/p11-C-proxyvar-2_vbmwuu/peer-evidence/native/first/stdout.jsonl",
+      "bytes": 532,
+      "sha256": "4098e0a4b0ae710e34cc92d988c9682738ef7d757fd6e87571d377aebfff5cf9",
+      "storage": "private raw evidence/state and peer copies"
+    },
+    {
+      "path": "/private/tmp/p11-C-proxyvar-2_vbmwuu/peer-evidence/native-attempts.json",
+      "bytes": 40,
+      "sha256": "25705a8c58ac58b11169533b0446b259ae18f6736d4ebfa13a61259bacb370cc",
+      "storage": "private raw evidence/state and peer copies"
+    },
+    {
+      "path": "/private/tmp/p11-C-proxyvar-2_vbmwuu/peer-evidence/preflight-TLS.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storage": "private raw evidence/state and peer copies"
+    },
+    {
+      "path": "/private/tmp/p11-C-proxyvar-2_vbmwuu/peer-evidence/preflight-TLS.stdout",
+      "bytes": 47,
+      "sha256": "e67ddba0e7ea6b11343417f0b9e90877585f1205ac751da3fb86137b71c62571",
+      "storage": "private raw evidence/state and peer copies"
+    },
+    {
+      "path": "/private/tmp/p11-C-proxyvar-2_vbmwuu/peer-evidence/preflight-direct.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storage": "private raw evidence/state and peer copies"
+    },
+    {
+      "path": "/private/tmp/p11-C-proxyvar-2_vbmwuu/peer-evidence/preflight-direct.stdout",
+      "bytes": 136,
+      "sha256": "3bcfc93fef32ec535862fdbabcab76ceb84e8ad8fc5d8472b804eee1e8c4b172",
+      "storage": "private raw evidence/state and peer copies"
+    },
+    {
+      "path": "/private/tmp/p11-C-proxyvar-2_vbmwuu/peer-evidence/preflight-external-tcp.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storage": "private raw evidence/state and peer copies"
+    },
+    {
+      "path": "/private/tmp/p11-C-proxyvar-2_vbmwuu/peer-evidence/preflight-external-tcp.stdout",
+      "bytes": 41,
+      "sha256": "adb6b3669a72c37c2fe0ca64063d3384617d5e672a91835f5901fc2eb6f3808b",
+      "storage": "private raw evidence/state and peer copies"
+    },
+    {
+      "path": "/private/tmp/p11-C-proxyvar-2_vbmwuu/peer-evidence/preflight-proxy-port.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storage": "private raw evidence/state and peer copies"
+    },
+    {
+      "path": "/private/tmp/p11-C-proxyvar-2_vbmwuu/peer-evidence/preflight-proxy-port.stdout",
+      "bytes": 26,
+      "sha256": "2d722787dd93874848ec1b6e052780eb08082a86f1cfb3a3c623a33eec8fd9db",
+      "storage": "private raw evidence/state and peer copies"
+    },
+    {
+      "path": "/private/tmp/p11-C-proxyvar-2_vbmwuu/peer-evidence/preflight.json",
+      "bytes": 2059,
+      "sha256": "541e6992b00038085ec45dfd34a55ebff85854484343dbea807cbd0da69df44f",
+      "storage": "private raw evidence/state and peer copies"
+    },
+    {
+      "path": "/private/tmp/p11-C-proxyvar-2_vbmwuu/peer-evidence/proxy-config.json",
+      "bytes": 218,
+      "sha256": "ef674ec304ef734232913ca24eb8eb750f09e9466217758b9513a39cfba56ff4",
+      "storage": "private raw evidence/state and peer copies"
+    },
+    {
+      "path": "/private/tmp/p11-C-proxyvar-2_vbmwuu/peer-evidence/proxy-final.json",
+      "bytes": 1085733,
+      "sha256": "9b8b9473c44a39cace66aa9919974cc8d958639acd38131d960340687378507a",
+      "storage": "private raw evidence/state and peer copies"
+    },
+    {
+      "path": "/private/tmp/p11-C-proxyvar-2_vbmwuu/peer-evidence-manifest.json",
+      "bytes": 7601,
+      "sha256": "c36112a655a2eacbc672f95a222e4dd9da147a1987f9f78c8a44f479917df15c",
+      "storage": "private raw evidence/state and peer copies"
+    },
+    {
+      "path": "/private/tmp/p11-C-proxyvar-2_vbmwuu/peer-final-PID-audit.json",
+      "bytes": 1140,
+      "sha256": "124ee31e33eaf719196e2ebad84032b7235278a2a62c8947bf5930aae8393934",
+      "storage": "private raw evidence/state and peer copies"
+    },
+    {
+      "path": "/private/tmp/p11-C-proxyvar-2_vbmwuu/plan.md",
+      "bytes": 2238,
+      "sha256": "3a5b73bf0f79a78ea1902d2354002974d8466f584d99a143deed509ed473ec56",
+      "storage": "private raw evidence/state and peer copies"
+    },
+    {
+      "path": "/private/tmp/p11-C-proxyvar-2_vbmwuu/preflight-TLS.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storage": "private raw evidence/state and peer copies"
+    },
+    {
+      "path": "/private/tmp/p11-C-proxyvar-2_vbmwuu/preflight-TLS.stdout",
+      "bytes": 47,
+      "sha256": "e67ddba0e7ea6b11343417f0b9e90877585f1205ac751da3fb86137b71c62571",
+      "storage": "private raw evidence/state and peer copies"
+    },
+    {
+      "path": "/private/tmp/p11-C-proxyvar-2_vbmwuu/preflight-direct.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storage": "private raw evidence/state and peer copies"
+    },
+    {
+      "path": "/private/tmp/p11-C-proxyvar-2_vbmwuu/preflight-direct.stdout",
+      "bytes": 136,
+      "sha256": "3bcfc93fef32ec535862fdbabcab76ceb84e8ad8fc5d8472b804eee1e8c4b172",
+      "storage": "private raw evidence/state and peer copies"
+    },
+    {
+      "path": "/private/tmp/p11-C-proxyvar-2_vbmwuu/preflight-external-tcp.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storage": "private raw evidence/state and peer copies"
+    },
+    {
+      "path": "/private/tmp/p11-C-proxyvar-2_vbmwuu/preflight-external-tcp.stdout",
+      "bytes": 41,
+      "sha256": "adb6b3669a72c37c2fe0ca64063d3384617d5e672a91835f5901fc2eb6f3808b",
+      "storage": "private raw evidence/state and peer copies"
+    },
+    {
+      "path": "/private/tmp/p11-C-proxyvar-2_vbmwuu/preflight-proxy-port.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storage": "private raw evidence/state and peer copies"
+    },
+    {
+      "path": "/private/tmp/p11-C-proxyvar-2_vbmwuu/preflight-proxy-port.stdout",
+      "bytes": 26,
+      "sha256": "2d722787dd93874848ec1b6e052780eb08082a86f1cfb3a3c623a33eec8fd9db",
+      "storage": "private raw evidence/state and peer copies"
+    },
+    {
+      "path": "/private/tmp/p11-C-proxyvar-2_vbmwuu/preflight.json",
+      "bytes": 2059,
+      "sha256": "0e1e3298da766d609b7cdb736c5ed2e134179a6584e6b479e29c44e87cc3946e",
+      "storage": "private raw evidence/state and peer copies"
+    },
+    {
+      "path": "/private/tmp/p11-C-proxyvar-2_vbmwuu/proxy-config.json",
+      "bytes": 218,
+      "sha256": "82a9052d6a73f398f93f99941587fde431902d6b3071b8b265f3ee120545ae87",
+      "storage": "private raw evidence/state and peer copies"
+    },
+    {
+      "path": "/private/tmp/p11-C-proxyvar-2_vbmwuu/proxy-final.json",
+      "bytes": 1050423,
+      "sha256": "a9112b506848d7d32ee902c72390f62614ea0892a339029ed94685785076b7a9",
+      "storage": "private raw evidence/state and peer copies"
+    },
+    {
+      "path": "/private/tmp/p11-C-proxyvar-2_vbmwuu/proxy-variant-result.json",
+      "bytes": 9162156,
+      "sha256": "e693cda1aa3cf505d909881fdd6c2c2c3e40b6d47af4154d8a4a3a7543b3d012",
+      "storage": "private raw evidence/state and peer copies"
+    },
+    {
+      "path": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/deliverables/p11-live/proxy-variant-audit.py",
+      "bytes": 8591,
+      "sha256": "d119ed816312362cd1968c7f9f603f3cdf25ad86d3c084a065d36f27505f23af",
+      "storage": "public variant code/sanitized report"
+    },
+    {
+      "path": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/deliverables/p11-live/proxy-variant-lib.py",
+      "bytes": 16139,
+      "sha256": "1d60fc88042f077f366554077a8d4d475af49a332b61483d78bae57c6162cd85",
+      "storage": "public variant code/sanitized report"
+    },
+    {
+      "path": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/deliverables/p11-live/proxy-variant-location-20261029.json",
+      "bytes": 236,
+      "sha256": "82628b85698aed7f32be336792eb6ecf8b86a9fe58489cb6cd0db9dd89d12e97",
+      "storage": "public variant code/sanitized report"
+    },
+    {
+      "path": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/deliverables/p11-live/proxy-variant-peer.py",
+      "bytes": 2230,
+      "sha256": "446215ca925b10cfb4445dbfada5bcc8639d8bf635f00f22125834ae5e7574ca",
+      "storage": "public variant code/sanitized report"
+    },
+    {
+      "path": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/deliverables/p11-live/proxy-variant-plan-20261029.md",
+      "bytes": 2238,
+      "sha256": "3a5b73bf0f79a78ea1902d2354002974d8466f584d99a143deed509ed473ec56",
+      "storage": "public variant code/sanitized report"
+    },
+    {
+      "path": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/deliverables/p11-live/proxy-variant-report-20261029.md",
+      "bytes": 9453,
+      "sha256": "cc86e677affb57e8daea71d24bed4152be6a1d2e005db3d46d7ac33109abc615",
+      "storage": "public variant code/sanitized report",
+      "sha256_before_CONNECTION_diagnostic": "03ab9c562cd8d0b24f29bf26d5d71580c6a9257990ab4a6055810b8a978f4abe",
+      "documentation_change": "existing raw CONNECT timing/count diagnostic only"
+    },
+    {
+      "path": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/deliverables/p11-live/proxy-variant-run.py",
+      "bytes": 12666,
+      "sha256": "858d1e1f7a5e3ffba7d9f95b9711317e9c44b84b3188a3318c5e9b282259ecf6",
+      "storage": "public variant code/sanitized report"
+    },
+    {
+      "path": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/deliverables/p11-live/proxy-variant-summary-20261029.json",
+      "bytes": 21212,
+      "sha256": "0318ae9422097d6d77929abea07e820cd1a74334829c270496e912271441c0f6",
+      "storage": "public variant code/sanitized report"
+    },
+    {
+      "path": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/deliverables/p11-live/proxy-variant-support.py",
+      "bytes": 9676,
+      "sha256": "d0e73ffb0c5af95800d36134a3a163b2651b3ee4358f23b56a119174061c63a6",
+      "storage": "public variant code/sanitized report"
+    }
+  ]
+}

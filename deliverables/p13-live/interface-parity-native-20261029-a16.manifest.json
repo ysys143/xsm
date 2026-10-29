@@ -1,0 +1,30 @@
+{
+  "scope": "private worktree single-condition evidence; no attestation/permission grant",
+  "script_sha256": "32ad351e3e13ca2411959658093170e28d08026747c4d08f9d73630ae70e65ba",
+  "raw_root": "/private/tmp/p13-interface-parity-native-9palncjy",
+  "files": {
+    "body.txt": "d5fe3f3ddb735fcbd6801bf008a6d7e68a20a8a1c07cf1f29f12c3c11f5e310b",
+    "initiator.jsonl": "4e20f52a9e19823283a65c3ab87bc0654f4b902ef4bc60463ddd81fa2ab5a63e",
+    "initiator.stderr": "1aa26269eb1cc57f86b235a03cda53c004edb5b1e9fc99d4da4f00843293d721",
+    "repository/.agents/skills/xsm/SKILL.md": "3e583bcd294862775c6590766b96cea2260c879329a32ffbe5306f128da55896",
+    "repository/.agents/skills/xsm/references/guide.md": "6bffc41da7cce01cc6080c8afb62e54efc910fd67b59d9d11b0c119130c43981",
+    "repository/.agents/skills/xsm/references/messaging.md": "b76f2de35f0579bb74bca8f32ebe1f07f4a2bc83e5ed776284f738df88de3eef",
+    "repository/README.md": "ae4e96750e86afe023ca4253de8042b369a40abd9060431f7e9877a11a87bc02",
+    "repository/parity-body.txt": "d5fe3f3ddb735fcbd6801bf008a6d7e68a20a8a1c07cf1f29f12c3c11f5e310b",
+    "repository/parity-material.md": "a493e50c9d640964e48e5a786d024c7b383d5a3bd71dcffe799ea35eac5de655",
+    "review-worktree/.agents/skills/xsm/SKILL.md": "3e583bcd294862775c6590766b96cea2260c879329a32ffbe5306f128da55896",
+    "review-worktree/.agents/skills/xsm/references/guide.md": "6bffc41da7cce01cc6080c8afb62e54efc910fd67b59d9d11b0c119130c43981",
+    "review-worktree/.agents/skills/xsm/references/messaging.md": "b76f2de35f0579bb74bca8f32ebe1f07f4a2bc83e5ed776284f738df88de3eef",
+    "review-worktree/README.md": "ae4e96750e86afe023ca4253de8042b369a40abd9060431f7e9877a11a87bc02",
+    "reviewer.jsonl": "956f7a26a79b06899c26e007a1c4be44c8b66e345ebad4ff1f710a6e81193ecd",
+    "reviewer.stderr": "1aa26269eb1cc57f86b235a03cda53c004edb5b1e9fc99d4da4f00843293d721",
+    "source-final.txt": "a493e50c9d640964e48e5a786d024c7b383d5a3bd71dcffe799ea35eac5de655",
+    "source-v1.txt": "a493e50c9d640964e48e5a786d024c7b383d5a3bd71dcffe799ea35eac5de655",
+    "state/.config-policy.lock": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "state/capability-observations/2276e7a8dde43c2680e7addded7b4de747cf2baa10ccec036e3c63aeb9e704ac.json": "97ae1511c0adf8e03a5ae92244910a6e94d17a3ee3eb69a49c00a75535e2f5cf",
+    "state/config.last-valid.json": "daeb20a1dd0d553c2fb3cca6cf21312700592425ff8bed2d79421c0f347d22fb",
+    "state/homes.json": "ae0e4b94dbd9c01ab3e00f35be7d29861071efc42346224844114ffe233b2481",
+    "state/sessions/codex-01a18507-c1da-70c0-8d2e-228917195c7f.json": "13c59b6da013949c42bc4c64d17042ba0f709dc533e0ec23e8d2e86f76d1c578",
+    "state/sessions/codex-01a18507-cbc7-78e1-bd5a-3e6a51c7acaa.json": "51cd4bafa0e792ae990de28549394899f1611dcb6af9fa6cbaa3dd1ab849eb3b"
+  }
+}

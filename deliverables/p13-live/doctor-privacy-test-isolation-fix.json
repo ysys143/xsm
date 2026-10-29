@@ -1,0 +1,383 @@
+{
+  "schema": "xsm.P10.doctor-privacy-test-isolation-fix.v1",
+  "status": "single-test-fixture-fix-verified-two-python",
+  "started_at_utc": "2026-10-29T01:15:57.821707+00:00",
+  "completed_at_utc": "2026-10-29T01:18:01.133874+00:00",
+  "root_cause": {
+    "registration": "SafetyTest registers claude s1 in self.tmp",
+    "ambient_input": "TempState preserves inherited CLAUDE_CONFIG_DIR; SessionEnd lacked an explicit registered home",
+    "correct_product_guard": "receive._handle -> stated_home -> registry.mark_ended compares home; mismatched home is end-ignored and returns None",
+    "failure_chain": [
+      "SessionEnd has external CLAUDE_CONFIG_DIR",
+      "mark_ended correctly returns None",
+      "reap_detached(None) enters orphans()",
+      "registry.records() invokes identity.lstart/probe.command",
+      "workers.subprocess.Popen mock is the shared subprocess.Popen and returns None",
+      "probe.command attempts proc.communicate -> AttributeError"
+    ],
+    "observed_exception": "AttributeError: 'NoneType' object has no attribute 'communicate'",
+    "classification": "test ambient-environment isolation defect, not doctor privacy projection or product home-guard defect"
+  },
+  "impact": {
+    "source_file_modified": "tests/test_workers.py",
+    "method_only": "SafetyTest.test_a_parent_goodbye_reaps_once_its_process_is_gone",
+    "methods_changed": [
+      "SafetyTest.test_a_parent_goodbye_reaps_once_its_process_is_gone"
+    ],
+    "AST_everything_else_identical": true,
+    "test_count_added": 0,
+    "new_product_code": false,
+    "product_files_changed": [],
+    "fix": "mock.patch.dict(os.environ, {CLAUDE_CONFIG_DIR: self.tmp}) only around the existing Popen-mocked SessionEnd call",
+    "assertion_retained": "exactly one reap --after-pid <current pid> launch; existing assertion/mock retained",
+    "other_tests_or_shared_fixtures_modified": false,
+    "home_guard_unchanged": true
+  },
+  "source_binding": {
+    "file": "tests/test_workers.py",
+    "before_sha256": "a2a94029afbd186aa57d8029ceeebd0976ddcc59706c2d24a4d8339c7cd07517",
+    "after_sha256": "edd42948d03acc04e020ef9bf54e76632ac586b001f07ead6800194a694e9619",
+    "method_before": {
+      "line": 430,
+      "end_line": 441,
+      "sha256": "80c4e628bfb2aae5179b76a55ab2acecaa85ae8377ad6733b822ea1c813fc904"
+    },
+    "method_after": {
+      "line": 430,
+      "end_line": 442,
+      "sha256": "bc17fe0bd543c863f2b084f83c9662dd3a82ad55c9d7107ba4eb81ea41a71ec3"
+    },
+    "diff": "--- a/tests/test_workers.py\n+++ b/tests/test_workers.py\n@@ -433,7 +433,8 @@\n         rec = registry.upsert(\"claude\", self.tmp, \"s1\", os.getpid(), self.tmp)\n         workers.save({\"name\": \"b\", \"parent_ref\": rec[\"ref\"], \"created\": 0})\n         started = []\n-        with mock.patch.object(workers.subprocess, \"Popen\",\n+        with mock.patch.dict(os.environ, {\"CLAUDE_CONFIG_DIR\": self.tmp}), \\\n+                mock.patch.object(workers.subprocess, \"Popen\",\n                                lambda argv, **kw: started.append(argv[4:])):\n             receive.handle({\"hook_event_name\": \"SessionEnd\", \"session_id\": \"s1\",\n                             \"session_title\": \"boss\", \"reason\": \"exit\"})\n",
+    "product_hashes_before": {
+      "xsm/files.py": "01425c645b7047590c452aaa7ea4f348a17aa5e25481e8ae4597dee5ab1d1ca3",
+      "xsm/attention.py": "8cd167c01cc560f92580646c2e081ca2604c8548184ce493ef1e8bf875a9e866",
+      "xsm/abuse.py": "a15303d88acded3e03110b125da91e11ffd5de96d266a9485a0f476d991d8e66",
+      "xsm/user_answers.py": "5ad5b73ec365217a28285a4e3deb709331feb570593b588119460d9b51abf24f",
+      "xsm/config.py": "92255fcee9cd2fe3b013851b056533a78d5090b225123f0d460de9c425feb5ca",
+      "xsm/resolve.py": "024de94e03a72e24f0d966386dd73090220d45a88c45bcc7c839e60b666c9fcb",
+      "xsm/receive.py": "f0844cf0dde52979fb2361a7501fa9be8dd554b8052cac2acd56e3347a7add94",
+      "xsm/paths.py": "242b8e64b5d564e503d5e0bbef1d7e8d160690e8bd5199bc160523969835bb39",
+      "xsm/connect.py": "61aa314f64c122955a929406778f940cf96cdc7a90ec0425cbe958dcb486c292",
+      "xsm/handoff.py": "48f8b6c1c4ab29ede46141e6eeb431bd08501407dbf42c75948c477bdd767d00",
+      "xsm/remote.py": "d79acd373ea13490ae7ac34a86f7d376520d51293a4cad68728db35eaa44e3cf",
+      "xsm/registry.py": "edce2c6e75ec4d1803f402db565900080be337b2727a40ff663376c355890360",
+      "xsm/instructions.py": "8767e07bef46cd0859fdef2b7a41d7838fa5faf62fc0cb54baf59a0f1c2c1190",
+      "xsm/send.py": "05390ef61f53860c84311bc3f2f3aaa428508e615f989f21398dcd427f601fbe",
+      "xsm/decisions.py": "ee9964969497d3726dad7cdb27913bf2df382615abf6ae9ab6fc66b59a72fb2b",
+      "xsm/channel.py": "459f8125b03eddbd2d8be23474b5f50b740aa7f777d2ea436f0aaa55db235382",
+      "xsm/materials.py": "ddedb680dfb98691a9b83f9ac1ce88119b6c308858b3f89f786e19bed0d771bd",
+      "xsm/policy.py": "9f912493ca4a26e22af110edead346e58924022de4d2c99c56c566279c1c7cc7",
+      "xsm/ledger.py": "f291d11b736608bb3d2d07bdccdcc15348af2cbdfa73e1fb9d4c5628063e459f",
+      "xsm/questions.py": "c039aea75a9a3e1aebcedcbc3a9ddaedf5bff4ca3b2f1153f3c7ab6a3e498270",
+      "xsm/__init__.py": "6f3c027b81d76181e6d7ead368d3206768d662f437f097cd194d27e9cf7735ba",
+      "xsm/telemetry.py": "bf0411d546c02a2f3e6aaea7d6f8f2549eeeeb57a7aedcc1cb968b5c87c1e2ea",
+      "xsm/housekeeping.py": "5d1a0f1c1f3cf2ef820344935db26aeda5bed5b27e66ba99b1868e8c1d53cf3a",
+      "xsm/bounce.py": "4a3ede5b15d85dea65388e26fa21f62dd2e9ab7da06c94ef3b9d788085aeaecc",
+      "xsm/context.py": "3a8355156f5d5497a0e945fe1a2c05791439cfe172f8fa5ae0eed936830ecb03",
+      "xsm/cli.py": "76f29a9ef05d070dc61d68008ae87db2e5935dc76d0e333bd30c3db29d54cb1c",
+      "xsm/mcp.py": "8f8a234180fd3be42dca7ebebadfe16ac399f755cbcfb7c5b8453a6406a6ca05",
+      "xsm/doc.py": "465d44d8ed5c3c2c458d67a0071c3dc56ef483794f34858b26eae82258a68011",
+      "xsm/attempts.py": "224b86ae077fc6e285716e73850317e9e6efcdba244eac16a3f9edef6dad320a",
+      "xsm/collaboration.py": "4955c37de5aa9dd85a7f083db95cc6e39b7120681dddf63f7f8a871346e7d290",
+      "xsm/probe.py": "5727d930fafd3793da7f24f2179fb15dbc3ea07f58d53cd193ea6c1a093c828c",
+      "xsm/inbox.py": "299b972ff4fadd91148e495357be10a97ac2640d23d79c317e0b675699541695",
+      "xsm/install.py": "a8e712de6e8b2b9f368946333a6c8793168c6734484be45a60dbe967d0aa1960",
+      "xsm/otlp_export.py": "8ce0b354b4c3f5687c5b0cdd49825f5248ac4725dfbca6b96f5f3750dc32cc2a",
+      "xsm/directory.py": "f185dbc0b59907988e7f3f26cddf40d6696d9e477e568c86f8c8e48c6aee3d17",
+      "xsm/owned_requests.py": "6e55c26db5709189619196f5ed373004fa0fa468246dc99b899dd14cce4e2a69",
+      "xsm/provenance.py": "7639e2b111f964a6eaa8031408fda9fc094eaa9c714653085b0f5ea5fbf755d6",
+      "xsm/workers.py": "518cb28f77c3ee222d1adf7e49068e671fc38dbc43fb5e1ac0ed6ef139299fa5",
+      "xsm/codex_daemon.py": "d7423388a943868a06411ca33725b17a128bd9c6c641232da0844a59ff9a1f3d",
+      "xsm/setup_flow.py": "1dfbfb19e1bb8ce267c3bd3ad9519420017af01c78a63ce187c3a709d27247cd",
+      "xsm/identity.py": "ecfddb64f394455bf68117076127f1c0a07888c0df4cd734f219771bce3004a5",
+      "xsm/consent.py": "26adb2e00e2466594a6dee3fe4850cc6ee8ee20c7187c0e1f490d51d603b95e0",
+      "xsm/__main__.py": "13a1a5b340cdcfc1902b62be90e508c7c71886000d5bf087e7854aadf09fb35e",
+      "xsm/outbox.py": "1ab6e31b52feae97e06f326c9d4f7658a2e02549b5085e0e864ea1e002bbe211",
+      "xsm/envelope.py": "12cd108b9c25e00ee510177c191bac546ed36b835a4456d49fb89d60f095f6cf",
+      "xsm/adapters.py": "0b0d77d724130b2671d2fdc8eb0da64bc80d178b4be54b766c0b9a8629e950dd"
+    },
+    "product_hashes_after": {
+      "xsm/files.py": "01425c645b7047590c452aaa7ea4f348a17aa5e25481e8ae4597dee5ab1d1ca3",
+      "xsm/attention.py": "8cd167c01cc560f92580646c2e081ca2604c8548184ce493ef1e8bf875a9e866",
+      "xsm/abuse.py": "a15303d88acded3e03110b125da91e11ffd5de96d266a9485a0f476d991d8e66",
+      "xsm/user_answers.py": "5ad5b73ec365217a28285a4e3deb709331feb570593b588119460d9b51abf24f",
+      "xsm/config.py": "92255fcee9cd2fe3b013851b056533a78d5090b225123f0d460de9c425feb5ca",
+      "xsm/resolve.py": "024de94e03a72e24f0d966386dd73090220d45a88c45bcc7c839e60b666c9fcb",
+      "xsm/receive.py": "f0844cf0dde52979fb2361a7501fa9be8dd554b8052cac2acd56e3347a7add94",
+      "xsm/paths.py": "242b8e64b5d564e503d5e0bbef1d7e8d160690e8bd5199bc160523969835bb39",
+      "xsm/connect.py": "61aa314f64c122955a929406778f940cf96cdc7a90ec0425cbe958dcb486c292",
+      "xsm/handoff.py": "48f8b6c1c4ab29ede46141e6eeb431bd08501407dbf42c75948c477bdd767d00",
+      "xsm/remote.py": "d79acd373ea13490ae7ac34a86f7d376520d51293a4cad68728db35eaa44e3cf",
+      "xsm/registry.py": "edce2c6e75ec4d1803f402db565900080be337b2727a40ff663376c355890360",
+      "xsm/instructions.py": "8767e07bef46cd0859fdef2b7a41d7838fa5faf62fc0cb54baf59a0f1c2c1190",
+      "xsm/send.py": "05390ef61f53860c84311bc3f2f3aaa428508e615f989f21398dcd427f601fbe",
+      "xsm/decisions.py": "ee9964969497d3726dad7cdb27913bf2df382615abf6ae9ab6fc66b59a72fb2b",
+      "xsm/channel.py": "459f8125b03eddbd2d8be23474b5f50b740aa7f777d2ea436f0aaa55db235382",
+      "xsm/materials.py": "ddedb680dfb98691a9b83f9ac1ce88119b6c308858b3f89f786e19bed0d771bd",
+      "xsm/policy.py": "9f912493ca4a26e22af110edead346e58924022de4d2c99c56c566279c1c7cc7",
+      "xsm/ledger.py": "f291d11b736608bb3d2d07bdccdcc15348af2cbdfa73e1fb9d4c5628063e459f",
+      "xsm/questions.py": "c039aea75a9a3e1aebcedcbc3a9ddaedf5bff4ca3b2f1153f3c7ab6a3e498270",
+      "xsm/__init__.py": "6f3c027b81d76181e6d7ead368d3206768d662f437f097cd194d27e9cf7735ba",
+      "xsm/telemetry.py": "bf0411d546c02a2f3e6aaea7d6f8f2549eeeeb57a7aedcc1cb968b5c87c1e2ea",
+      "xsm/housekeeping.py": "5d1a0f1c1f3cf2ef820344935db26aeda5bed5b27e66ba99b1868e8c1d53cf3a",
+      "xsm/bounce.py": "4a3ede5b15d85dea65388e26fa21f62dd2e9ab7da06c94ef3b9d788085aeaecc",
+      "xsm/context.py": "3a8355156f5d5497a0e945fe1a2c05791439cfe172f8fa5ae0eed936830ecb03",
+      "xsm/cli.py": "76f29a9ef05d070dc61d68008ae87db2e5935dc76d0e333bd30c3db29d54cb1c",
+      "xsm/mcp.py": "8f8a234180fd3be42dca7ebebadfe16ac399f755cbcfb7c5b8453a6406a6ca05",
+      "xsm/doc.py": "465d44d8ed5c3c2c458d67a0071c3dc56ef483794f34858b26eae82258a68011",
+      "xsm/attempts.py": "224b86ae077fc6e285716e73850317e9e6efcdba244eac16a3f9edef6dad320a",
+      "xsm/collaboration.py": "4955c37de5aa9dd85a7f083db95cc6e39b7120681dddf63f7f8a871346e7d290",
+      "xsm/probe.py": "5727d930fafd3793da7f24f2179fb15dbc3ea07f58d53cd193ea6c1a093c828c",
+      "xsm/inbox.py": "299b972ff4fadd91148e495357be10a97ac2640d23d79c317e0b675699541695",
+      "xsm/install.py": "a8e712de6e8b2b9f368946333a6c8793168c6734484be45a60dbe967d0aa1960",
+      "xsm/otlp_export.py": "8ce0b354b4c3f5687c5b0cdd49825f5248ac4725dfbca6b96f5f3750dc32cc2a",
+      "xsm/directory.py": "f185dbc0b59907988e7f3f26cddf40d6696d9e477e568c86f8c8e48c6aee3d17",
+      "xsm/owned_requests.py": "6e55c26db5709189619196f5ed373004fa0fa468246dc99b899dd14cce4e2a69",
+      "xsm/provenance.py": "7639e2b111f964a6eaa8031408fda9fc094eaa9c714653085b0f5ea5fbf755d6",
+      "xsm/workers.py": "518cb28f77c3ee222d1adf7e49068e671fc38dbc43fb5e1ac0ed6ef139299fa5",
+      "xsm/codex_daemon.py": "d7423388a943868a06411ca33725b17a128bd9c6c641232da0844a59ff9a1f3d",
+      "xsm/setup_flow.py": "1dfbfb19e1bb8ce267c3bd3ad9519420017af01c78a63ce187c3a709d27247cd",
+      "xsm/identity.py": "ecfddb64f394455bf68117076127f1c0a07888c0df4cd734f219771bce3004a5",
+      "xsm/consent.py": "26adb2e00e2466594a6dee3fe4850cc6ee8ee20c7187c0e1f490d51d603b95e0",
+      "xsm/__main__.py": "13a1a5b340cdcfc1902b62be90e508c7c71886000d5bf087e7854aadf09fb35e",
+      "xsm/outbox.py": "1ab6e31b52feae97e06f326c9d4f7658a2e02549b5085e0e864ea1e002bbe211",
+      "xsm/envelope.py": "12cd108b9c25e00ee510177c191bac546ed36b835a4456d49fb89d60f095f6cf",
+      "xsm/adapters.py": "0b0d77d724130b2671d2fdc8eb0da64bc80d178b4be54b766c0b9a8629e950dd"
+    },
+    "all_product_hashes_equal": true,
+    "prior_full_snapshot": "/private/tmp/xsm-doctor-privacy-frozen-47o6orah",
+    "prior_snapshot_edited": false
+  },
+  "original_failure_preservation": {
+    "artifact": {
+      "path": "deliverables/p13-live/doctor-privacy-regression.json",
+      "sha256": "5bf8924e7a7be99eb4db47f7bcd945330320e72690a7644c2aa90c86548f6ea8"
+    },
+    "logs": [
+      {
+        "python": "Python 3.9.6",
+        "path": "/tmp/p13-doctor-privacy39.log",
+        "sha256": "21ff46126d25b4d243245c10359bb338fd82f52fa419920c9e8ee400e434df9a",
+        "recorded_sha256": "21ff46126d25b4d243245c10359bb338fd82f52fa419920c9e8ee400e434df9a",
+        "full_suite_tests": 1700,
+        "full_suite_result": "FAILED (errors=1)",
+        "failure_method": "SafetyTest.test_a_parent_goodbye_reaps_once_its_process_is_gone",
+        "original_error_present": true
+      },
+      {
+        "python": "Python 3.14.6",
+        "path": "/tmp/p13-doctor-privacy314.log",
+        "sha256": "3dc03f678d148bef2e29ecbbd5323ac64320b697e5fa915d21a4bd925b6f5d6d",
+        "recorded_sha256": "3dc03f678d148bef2e29ecbbd5323ac64320b697e5fa915d21a4bd925b6f5d6d",
+        "full_suite_tests": 1700,
+        "full_suite_result": "FAILED (errors=1)",
+        "failure_method": "SafetyTest.test_a_parent_goodbye_reaps_once_its_process_is_gone",
+        "original_error_present": true
+      }
+    ],
+    "original_full_suite_result_not_reclassified": "1700 tests per interpreter, FAILED(errors=1); no rewrite to passing result",
+    "before_test_copy": {
+      "path": "/private/tmp/doctor-privacy-test-isolation-s_kwm1rr/test_workers.py.before",
+      "sha256": "a2a94029afbd186aa57d8029ceeebd0976ddcc59706c2d24a4d8339c7cd07517"
+    }
+  },
+  "verification": {
+    "target": "tests.test_workers.SafetyTest.test_a_parent_goodbye_reaps_once_its_process_is_gone",
+    "controlled_external_home": "/private/tmp/doctor-privacy-test-isolation-s_kwm1rr/different-claude-home",
+    "interpreter_paths": [
+      "/usr/bin/python3",
+      "/opt/homebrew/bin/python3"
+    ],
+    "red": "one original test with explicitly different home: 1 error each Python, same NoneType.communicate chain",
+    "green": "same external inherited home, test locally binds registered self.tmp: one test OK each Python",
+    "mutant": "remove only the new env binding in isolated source copy; bytes equal original test file; one error each Python",
+    "mutant_is_exact_original_test_bytes": true,
+    "runs": [
+      {
+        "phase": "red",
+        "python": "/usr/bin/python3",
+        "argv": [
+          "/usr/bin/python3",
+          "-B",
+          "-m",
+          "unittest",
+          "tests.test_workers.SafetyTest.test_a_parent_goodbye_reaps_once_its_process_is_gone",
+          "-v"
+        ],
+        "cwd": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging",
+        "env_override": {
+          "CLAUDE_CONFIG_DIR": "/private/tmp/doctor-privacy-test-isolation-s_kwm1rr/different-claude-home",
+          "PYTHONDONTWRITEBYTECODE": "1"
+        },
+        "exit_code": 1,
+        "log": "/private/tmp/doctor-privacy-test-isolation-s_kwm1rr/red-39.log",
+        "sha256": "23ac626fa82e10cb2a436a169fb6d624e3bc2bc335326bb2ddb9c03533360fb8",
+        "test_source_sha256": "a2a94029afbd186aa57d8029ceeebd0976ddcc59706c2d24a4d8339c7cd07517",
+        "result_lines": [
+          "Ran 1 test in 0.048s",
+          "FAILED (errors=1)"
+        ],
+        "exception_lines": [
+          "AttributeError: 'NoneType' object has no attribute 'communicate'"
+        ]
+      },
+      {
+        "phase": "red",
+        "python": "/opt/homebrew/bin/python3",
+        "argv": [
+          "/opt/homebrew/bin/python3",
+          "-B",
+          "-m",
+          "unittest",
+          "tests.test_workers.SafetyTest.test_a_parent_goodbye_reaps_once_its_process_is_gone",
+          "-v"
+        ],
+        "cwd": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging",
+        "env_override": {
+          "CLAUDE_CONFIG_DIR": "/private/tmp/doctor-privacy-test-isolation-s_kwm1rr/different-claude-home",
+          "PYTHONDONTWRITEBYTECODE": "1"
+        },
+        "exit_code": 1,
+        "log": "/private/tmp/doctor-privacy-test-isolation-s_kwm1rr/red-314.log",
+        "sha256": "8a699e987dfb6f2187256a28205787a0f634ed6e48824e60d543acadd874e247",
+        "test_source_sha256": "a2a94029afbd186aa57d8029ceeebd0976ddcc59706c2d24a4d8339c7cd07517",
+        "result_lines": [
+          "Ran 1 test in 0.048s",
+          "FAILED (errors=1)"
+        ],
+        "exception_lines": [
+          "AttributeError: 'NoneType' object has no attribute 'communicate'"
+        ]
+      },
+      {
+        "phase": "green",
+        "python": "/usr/bin/python3",
+        "argv": [
+          "/usr/bin/python3",
+          "-B",
+          "-m",
+          "unittest",
+          "tests.test_workers.SafetyTest.test_a_parent_goodbye_reaps_once_its_process_is_gone",
+          "-v"
+        ],
+        "cwd": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging",
+        "env_override": {
+          "CLAUDE_CONFIG_DIR": "/private/tmp/doctor-privacy-test-isolation-s_kwm1rr/different-claude-home",
+          "PYTHONDONTWRITEBYTECODE": "1"
+        },
+        "exit_code": 0,
+        "log": "/private/tmp/doctor-privacy-test-isolation-s_kwm1rr/green-39.log",
+        "sha256": "d008b147c281c238ecf9ac514f748828419c74959b6e728e3f35fd155318b640",
+        "test_source_sha256": "edd42948d03acc04e020ef9bf54e76632ac586b001f07ead6800194a694e9619",
+        "result_lines": [
+          "Ran 1 test in 0.046s",
+          "OK"
+        ],
+        "exception_lines": []
+      },
+      {
+        "phase": "green",
+        "python": "/opt/homebrew/bin/python3",
+        "argv": [
+          "/opt/homebrew/bin/python3",
+          "-B",
+          "-m",
+          "unittest",
+          "tests.test_workers.SafetyTest.test_a_parent_goodbye_reaps_once_its_process_is_gone",
+          "-v"
+        ],
+        "cwd": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging",
+        "env_override": {
+          "CLAUDE_CONFIG_DIR": "/private/tmp/doctor-privacy-test-isolation-s_kwm1rr/different-claude-home",
+          "PYTHONDONTWRITEBYTECODE": "1"
+        },
+        "exit_code": 0,
+        "log": "/private/tmp/doctor-privacy-test-isolation-s_kwm1rr/green-314.log",
+        "sha256": "580762d567fe931c40f0daba5291ae617ca3b11a84be24d2f11b53b9ce704df7",
+        "test_source_sha256": "edd42948d03acc04e020ef9bf54e76632ac586b001f07ead6800194a694e9619",
+        "result_lines": [
+          "Ran 1 test in 0.046s",
+          "OK"
+        ],
+        "exception_lines": []
+      },
+      {
+        "phase": "mutant-remove-home-binding",
+        "python": "/usr/bin/python3",
+        "argv": [
+          "/usr/bin/python3",
+          "-B",
+          "-m",
+          "unittest",
+          "tests.test_workers.SafetyTest.test_a_parent_goodbye_reaps_once_its_process_is_gone",
+          "-v"
+        ],
+        "cwd": "/private/tmp/doctor-privacy-test-isolation-s_kwm1rr/mutant",
+        "env_override": {
+          "CLAUDE_CONFIG_DIR": "/private/tmp/doctor-privacy-test-isolation-s_kwm1rr/different-claude-home",
+          "PYTHONDONTWRITEBYTECODE": "1"
+        },
+        "exit_code": 1,
+        "log": "/private/tmp/doctor-privacy-test-isolation-s_kwm1rr/mutant-39.log",
+        "sha256": "fb6250591cb7a4f8d3f7e9d468802d21e991640173059b032cb760ce574caf45",
+        "mutant_test_source_sha256": "a2a94029afbd186aa57d8029ceeebd0976ddcc59706c2d24a4d8339c7cd07517",
+        "result_lines": [
+          "Ran 1 test in 0.095s",
+          "FAILED (errors=1)"
+        ],
+        "exception_lines": [
+          "AttributeError: 'NoneType' object has no attribute 'communicate'"
+        ]
+      },
+      {
+        "phase": "mutant-remove-home-binding",
+        "python": "/opt/homebrew/bin/python3",
+        "argv": [
+          "/opt/homebrew/bin/python3",
+          "-B",
+          "-m",
+          "unittest",
+          "tests.test_workers.SafetyTest.test_a_parent_goodbye_reaps_once_its_process_is_gone",
+          "-v"
+        ],
+        "cwd": "/private/tmp/doctor-privacy-test-isolation-s_kwm1rr/mutant",
+        "env_override": {
+          "CLAUDE_CONFIG_DIR": "/private/tmp/doctor-privacy-test-isolation-s_kwm1rr/different-claude-home",
+          "PYTHONDONTWRITEBYTECODE": "1"
+        },
+        "exit_code": 1,
+        "log": "/private/tmp/doctor-privacy-test-isolation-s_kwm1rr/mutant-314.log",
+        "sha256": "c476ca29e50020beb3dc3bbbf44b79a6a99d35305cae6dad335ac67ee3807913",
+        "mutant_test_source_sha256": "a2a94029afbd186aa57d8029ceeebd0976ddcc59706c2d24a4d8339c7cd07517",
+        "result_lines": [
+          "Ran 1 test in 0.106s",
+          "FAILED (errors=1)"
+        ],
+        "exception_lines": [
+          "AttributeError: 'NoneType' object has no attribute 'communicate'"
+        ]
+      }
+    ],
+    "no_other_tests_executed": true,
+    "full_regression_executed": false,
+    "tests_per_command": 1,
+    "total_targeted_commands": 6
+  },
+  "scope_and_safety": {
+    "new_models": 0,
+    "product_writes": 0,
+    "other_test_writes": 0,
+    "existing_evidence_writes": 0,
+    "plan_ledger_writes": 0,
+    "real_user_home_changes": 0,
+    "home_override_scope": "only test process fixture patch; inherited external home is private scratch; no real account/profile change",
+    "real_reaper_spawned": false,
+    "why": "existing Popen mock captures intended command; no actual user session is reaped",
+    "full_rerun": "not performed; awaits separate user instruction"
+  },
+  "private_evidence_root": "/private/tmp/doctor-privacy-test-isolation-s_kwm1rr",
+  "new_public_artifacts": [
+    "deliverables/p13-live/doctor-privacy-test-isolation-fix.json",
+    "deliverables/p13-live/doctor-privacy-test-isolation-fix.md"
+  ]
+}

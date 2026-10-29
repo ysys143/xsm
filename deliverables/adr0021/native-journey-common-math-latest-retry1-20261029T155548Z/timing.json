@@ -1,0 +1,309 @@
+{
+  "rows": [
+    {
+      "stage": "book 설정 완료",
+      "clock": "book",
+      "start": null,
+      "end": 1793290923.513387,
+      "seconds": null,
+      "evidence": "book-evidence/raw/1793290923513387000.cli.stdout"
+    },
+    {
+      "stage": "book 설정 완료",
+      "clock": "book",
+      "start": null,
+      "end": 1793289351.899067,
+      "seconds": null,
+      "evidence": "book-evidence/raw/1793289351899067000.cli.stdout"
+    },
+    {
+      "stage": "book 초기화 완료",
+      "clock": "book",
+      "start": null,
+      "end": 1793291528.67837,
+      "seconds": null,
+      "evidence": "book-evidence/raw/1793291528678370000.cli.stdout"
+    },
+    {
+      "stage": "book 초기화 완료",
+      "clock": "book",
+      "start": null,
+      "end": 1793290922.42961,
+      "seconds": null,
+      "evidence": "book-evidence/raw/1793290922429610000.cli.stdout"
+    },
+    {
+      "stage": "book 초기화 완료",
+      "clock": "book",
+      "start": null,
+      "end": 1793289354.662178,
+      "seconds": null,
+      "evidence": "book-evidence/raw/1793289354662178000.cli.stdout"
+    },
+    {
+      "stage": "book 설정 완료",
+      "clock": "book",
+      "start": null,
+      "end": 1793291529.653544,
+      "seconds": null,
+      "evidence": "book-evidence/raw/1793291529653544000.cli.stdout"
+    },
+    {
+      "stage": "book 초대 생성",
+      "clock": "book",
+      "start": null,
+      "end": 1793289354.84182,
+      "seconds": null,
+      "evidence": "book-evidence/raw/1793289354841820000.cli.stdout"
+    },
+    {
+      "stage": "mini 가입 완료",
+      "clock": "mini",
+      "start": null,
+      "end": 1793291525.2426088,
+      "seconds": null,
+      "evidence": "mini-evidence/raw/1793291525242609000.cli.stdout"
+    },
+    {
+      "stage": "mini 설정 완료",
+      "clock": "mini",
+      "start": null,
+      "end": 1793291526.8098419,
+      "seconds": null,
+      "evidence": "mini-evidence/raw/1793291526809842000.cli.stdout"
+    },
+    {
+      "stage": "mini 설정 완료",
+      "clock": "mini",
+      "start": null,
+      "end": 1793289353.493249,
+      "seconds": null,
+      "evidence": "mini-evidence/raw/1793289353493249000.cli.stdout"
+    },
+    {
+      "stage": "mini 가입 완료",
+      "clock": "mini",
+      "start": null,
+      "end": 1793290918.858343,
+      "seconds": null,
+      "evidence": "mini-evidence/raw/1793290918858343000.cli.stdout"
+    },
+    {
+      "stage": "mini 가입 완료",
+      "clock": "mini",
+      "start": null,
+      "end": 1793289355.360377,
+      "seconds": null,
+      "evidence": "mini-evidence/raw/1793289355360377000.cli.stdout"
+    },
+    {
+      "stage": "mini 설정 완료",
+      "clock": "mini",
+      "start": null,
+      "end": 1793290920.313004,
+      "seconds": null,
+      "evidence": "mini-evidence/raw/1793290920313004000.cli.stdout"
+    },
+    {
+      "stage": "수학 1 질문 생성부터 실제 답 수신",
+      "clock": "mini",
+      "start": 1793289496.1548429,
+      "end": 1793290795.103285,
+      "seconds": 1298.948,
+      "evidence": "9f11884127764cad"
+    },
+    {
+      "stage": "수학 1 요청 ACK",
+      "clock": "book",
+      "start": null,
+      "end": 1793290720.18211,
+      "seconds": null,
+      "evidence": "9f11884127764cad"
+    },
+    {
+      "stage": "수학 1 회신 ACK",
+      "clock": "mini",
+      "start": null,
+      "end": 1793290798.080775,
+      "seconds": null,
+      "evidence": "9f11884127764cad"
+    },
+    {
+      "stage": "수학 2 질문 생성부터 실제 답 수신",
+      "clock": "mini",
+      "start": 1793290801.8212821,
+      "end": 1793290912.282225,
+      "seconds": 110.461,
+      "evidence": "958971a5c24e4fe4"
+    },
+    {
+      "stage": "수학 2 요청 ACK",
+      "clock": "book",
+      "start": null,
+      "end": 1793290921.425251,
+      "seconds": null,
+      "evidence": "958971a5c24e4fe4"
+    },
+    {
+      "stage": "수학 2 회신 ACK",
+      "clock": "mini",
+      "start": null,
+      "end": 1793290916.6325839,
+      "seconds": null,
+      "evidence": "958971a5c24e4fe4"
+    },
+    {
+      "stage": "수학 3 질문 생성부터 실제 답 수신",
+      "clock": "mini",
+      "start": 1793291671.951371,
+      "end": 1793291753.2497752,
+      "seconds": 81.298,
+      "evidence": "e1ce6790c1734665"
+    },
+    {
+      "stage": "수학 3 요청 ACK",
+      "clock": "book",
+      "start": null,
+      "end": 1793291762.34371,
+      "seconds": null,
+      "evidence": "e1ce6790c1734665"
+    },
+    {
+      "stage": "수학 3 회신 ACK",
+      "clock": "mini",
+      "start": null,
+      "end": 1793291757.441364,
+      "seconds": null,
+      "evidence": "e1ce6790c1734665"
+    },
+    {
+      "stage": "계획한 양쪽 서비스 재시작과 준비 신호",
+      "clock": "Book/controller",
+      "start": 1793290922.146951,
+      "end": 1793290926.312632,
+      "seconds": 4.166,
+      "evidence": "restart.json"
+    },
+    {
+      "stage": "재시작 뒤 실제 MCP 기존 ID 조회 9f11884127764cad",
+      "clock": "mini",
+      "start": 1793290925.840535,
+      "end": null,
+      "seconds": null,
+      "evidence": "results.json"
+    },
+    {
+      "stage": "재시작 뒤 실제 MCP 기존 ID 조회 958971a5c24e4fe4",
+      "clock": "mini",
+      "start": 1793290927.186603,
+      "end": null,
+      "seconds": null,
+      "evidence": "results.json"
+    },
+    {
+      "stage": "공개 주소 정상 ping book → mini",
+      "clock": "book",
+      "start": 1793291632.138317,
+      "end": 1793291632.2796118,
+      "seconds": 0.141,
+      "controller_seconds": 0.222,
+      "evidence": "normal-address-exchange.json"
+    },
+    {
+      "stage": "공개 주소 정상 ping mini → book",
+      "clock": "mini",
+      "start": 1793291628.547511,
+      "end": 1793291628.625561,
+      "seconds": 0.078,
+      "controller_seconds": 0.381,
+      "evidence": "normal-address-exchange.json"
+    },
+    {
+      "stage": "표준 MCP 재접속 요청",
+      "clock": "Book",
+      "start": 1793290592.233202,
+      "end": null,
+      "seconds": null,
+      "evidence": "mcp-reconnect-request.json"
+    },
+    {
+      "stage": "표준 MCP 재접속 요청",
+      "clock": "Book",
+      "start": 1793292108.5611808,
+      "end": null,
+      "seconds": null,
+      "evidence": "closure-mcp-reconnect-request.json"
+    },
+    {
+      "stage": "승인 source 반영 receive.py",
+      "clock": "book",
+      "start": null,
+      "end": 1793290529.684535,
+      "seconds": null,
+      "evidence": "receive-patch-application.json"
+    },
+    {
+      "stage": "승인 source 반영 receive.py",
+      "clock": "mini",
+      "start": null,
+      "end": 1793290529.9057522,
+      "seconds": null,
+      "evidence": "receive-patch-application.json"
+    },
+    {
+      "stage": "승인 source 반영 receive.py",
+      "clock": "book",
+      "start": null,
+      "end": 1793292023.391617,
+      "seconds": null,
+      "evidence": "closure-patch-application.json"
+    },
+    {
+      "stage": "승인 source 반영 handoff.py",
+      "clock": "book",
+      "start": null,
+      "end": 1793292023.392351,
+      "seconds": null,
+      "evidence": "closure-patch-application.json"
+    },
+    {
+      "stage": "승인 source 반영 receive.py",
+      "clock": "mini",
+      "start": null,
+      "end": 1793292019.669976,
+      "seconds": null,
+      "evidence": "closure-patch-application.json"
+    },
+    {
+      "stage": "승인 source 반영 handoff.py",
+      "clock": "mini",
+      "start": null,
+      "end": 1793292019.670584,
+      "seconds": null,
+      "evidence": "closure-patch-application.json"
+    },
+    {
+      "stage": "book 정리 완료",
+      "clock": "book",
+      "start": null,
+      "end": 1793292355.902831,
+      "seconds": null,
+      "evidence": "book-cleanup.json"
+    },
+    {
+      "stage": "mini 정리 완료",
+      "clock": "mini",
+      "start": null,
+      "end": 1793292351.837214,
+      "seconds": null,
+      "evidence": "mini-cleanup.json"
+    }
+  ],
+  "cross_host_clock_skew_approx_seconds": 4,
+  "performance_ranking": false,
+  "unmeasured": [
+    "pure network latency",
+    "exact native exit time",
+    "provider internal scheduling"
+  ]
+}

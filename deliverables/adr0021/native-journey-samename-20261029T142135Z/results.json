@@ -1,0 +1,606 @@
+{
+  "status": "미완: 실제 self/remote 동명 발견·정확한 원격 선택·원문 도착 확인, 직접 회신/ACK 없음",
+  "models": {
+    "reviewer": "claude-sonnet-5-5",
+    "requester": [
+      "gpt-6.1-sol"
+    ]
+  },
+  "actual_candidates": [
+    {
+      "id": "547eea9ff6d92f26f36bac5bf13a61ce84f3fe4344aa6fd8c43e032312474c9e",
+      "target": "candidate:547eea9ff6d92f26f36bac5bf13a61ce84f3fe4344aa6fd8c43e032312474c9e",
+      "is_self": true,
+      "handle": {
+        "runtime": "codex",
+        "session_id": "01a18811-2502-77c3-9a6f-f3b671cd0c51",
+        "home_id": "b8a8c431812d3580d5a8a994a3de84a0f28fc9d21d73f57c9d0b571e2ca98e5a",
+        "machine": "local"
+      },
+      "ref": "303a07",
+      "machine": "local",
+      "runtime": "codex",
+      "name": "a1",
+      "title": {
+        "value": "a1",
+        "status": "known",
+        "source": "registry:hook.name",
+        "timestamp": 1793284192.1140249,
+        "observed_at": 1793284203.213293,
+        "freshness": "unknown"
+      },
+      "name_source": "registry:hook.name",
+      "name_freshness": "unknown",
+      "discovery_basis": [
+        "same_repo"
+      ],
+      "repository": "work",
+      "branch": {
+        "value": "main",
+        "status": "known",
+        "source": "git:symbolic-ref",
+        "timestamp": 1793284203.210935,
+        "observed_at": 1793284203.210937,
+        "freshness": "fresh"
+      },
+      "summary": {
+        "value": null,
+        "status": "unknown",
+        "source": null,
+        "timestamp": null,
+        "observed_at": 1793284203.2132952,
+        "freshness": "unknown"
+      },
+      "todo": {
+        "value": null,
+        "status": "unknown",
+        "source": null,
+        "timestamp": null,
+        "observed_at": 1793284203.2443578,
+        "freshness": "unknown"
+      },
+      "activity": {
+        "value": null,
+        "status": "unknown",
+        "source": null,
+        "timestamp": null,
+        "observed_at": 1793284203.24437,
+        "freshness": "unknown"
+      },
+      "state": {
+        "value": "live",
+        "status": "known",
+        "source": "registry:liveness:live",
+        "timestamp": 1793284203.244371,
+        "observed_at": 1793284203.244372,
+        "freshness": "fresh"
+      },
+      "receive": {
+        "value": "available",
+        "status": "known",
+        "source": "registry:receive_capability",
+        "timestamp": 1793284203.2443762,
+        "observed_at": 1793284203.2443762,
+        "freshness": "fresh"
+      }
+    },
+    {
+      "activity": {
+        "freshness": "unknown",
+        "observed_at": 1793284203.302835,
+        "source": null,
+        "status": "unknown",
+        "timestamp": null,
+        "value": null
+      },
+      "branch": {
+        "freshness": "fresh",
+        "observed_at": 1793284203.297454,
+        "source": "git:symbolic-ref",
+        "status": "known",
+        "timestamp": 1793284203.2974532,
+        "value": "main"
+      },
+      "discovery_basis": [
+        "published"
+      ],
+      "doing": {
+        "freshness": "unknown",
+        "observed_at": 1793284203.29778,
+        "source": null,
+        "status": "unknown",
+        "timestamp": null,
+        "value": null
+      },
+      "handle": {
+        "generation": "f3eefe3c454788661ed1ae9eb0e5c41229008a1f2fdc5a6a342d307170ca1b3f",
+        "home_id": "1f3efe9ffb9cf15ba352aa22f67362777ae05495d0bb84b9b5b8268090817da7",
+        "machine": "c4c63394208008021443589822172e02c192ae3a400f9f1e4e98c3fe6f93fe6c",
+        "runtime": "claude",
+        "session_id": "b22ba192-8608-4edb-9d0d-58739e13ee7e"
+      },
+      "id": "04284306f09e84e4124c1e472649dc1c2010d63ce3cf5b476d83005eae2b6c29",
+      "is_self": false,
+      "machine": "c4c63394208008021443589822172e02c192ae3a400f9f1e4e98c3fe6f93fe6c",
+      "name": "a1",
+      "name_freshness": "unknown",
+      "name_source": "registry:hook.name",
+      "receive": {
+        "freshness": "fresh",
+        "observed_at": 1793284203.302837,
+        "source": "registry:receive_capability",
+        "status": "known",
+        "timestamp": 1793284203.302837,
+        "value": "available"
+      },
+      "ref": "3041aa",
+      "repository": null,
+      "repository_id": null,
+      "repository_status": "unknown",
+      "runtime": "claude",
+      "same_repository": null,
+      "state": {
+        "freshness": "fresh",
+        "observed_at": 1793284203.302836,
+        "source": "registry:liveness:live",
+        "status": "known",
+        "timestamp": 1793284203.302836,
+        "value": "live"
+      },
+      "summary": {
+        "freshness": "unknown",
+        "observed_at": 1793284203.29778,
+        "source": null,
+        "status": "unknown",
+        "timestamp": null,
+        "value": null
+      },
+      "target": "net:c4c63394208008021443589822172e02c192ae3a400f9f1e4e98c3fe6f93fe6c:claude:1f3efe9ffb9cf15ba352aa22f67362777ae05495d0bb84b9b5b8268090817da7:b22ba192-8608-4edb-9d0d-58739e13ee7e",
+      "title": {
+        "freshness": "unknown",
+        "observed_at": 1793284203.2977762,
+        "source": "registry:hook.name",
+        "status": "known",
+        "timestamp": 1793284004.037615,
+        "value": "a1"
+      },
+      "todo": {
+        "freshness": "unknown",
+        "observed_at": 1793284203.302834,
+        "source": null,
+        "status": "unknown",
+        "timestamp": null,
+        "value": null
+      },
+      "machine_name": "same-name-reviewer-book",
+      "origin_assurance": "authenticated-member"
+    }
+  ],
+  "actual_selection_arguments": [
+    {
+      "target": "candidate:04284306f09e84e4124c1e472649dc1c2010d63ce3cf5b476d83005eae2b6c29",
+      "wait": 60
+    },
+    {
+      "target": "candidate:04284306f09e84e4124c1e472649dc1c2010d63ce3cf5b476d83005eae2b6c29",
+      "wait": 60
+    }
+  ],
+  "self_remote_same_display_name": true,
+  "only_two_actual_candidates": true,
+  "scope": "self-vs-remote two equal display names, not concurrent third-party selection",
+  "selected_full_target": "net:c4c63394208008021443589822172e02c192ae3a400f9f1e4e98c3fe6f93fe6c:claude:1f3efe9ffb9cf15ba352aa22f67362777ae05495d0bb84b9b5b8268090817da7:b22ba192-8608-4edb-9d0d-58739e13ee7e",
+  "selected_full_handle": {
+    "generation": "f3eefe3c454788661ed1ae9eb0e5c41229008a1f2fdc5a6a342d307170ca1b3f",
+    "home_id": "1f3efe9ffb9cf15ba352aa22f67362777ae05495d0bb84b9b5b8268090817da7",
+    "machine": "c4c63394208008021443589822172e02c192ae3a400f9f1e4e98c3fe6f93fe6c",
+    "runtime": "claude",
+    "session_id": "b22ba192-8608-4edb-9d0d-58739e13ee7e"
+  },
+  "question_id": "b82e615ed4f74a0f",
+  "question_record": {
+    "id": "b82e615ed4f74a0f",
+    "sender": {
+      "runtime": "codex",
+      "home": "/private/tmp/native-journey-samename-mini-sggrp08j/codex-home",
+      "session_id": "01a18811-2502-77c3-9a6f-f3b671cd0c51",
+      "ref": "303a07",
+      "name": "a1",
+      "alias": "codex-home"
+    },
+    "target": {
+      "machine": "c4c63394208008021443589822172e02c192ae3a400f9f1e4e98c3fe6f93fe6c",
+      "runtime": "claude",
+      "home_id": "1f3efe9ffb9cf15ba352aa22f67362777ae05495d0bb84b9b5b8268090817da7",
+      "session_id": "b22ba192-8608-4edb-9d0d-58739e13ee7e",
+      "ref": "net:c4c63394208008021443589822172e02c192ae3a400f9f1e4e98c3fe6f93fe6c:claude:1f3efe9ffb9cf15ba352aa22f67362777ae05495d0bb84b9b5b8268090817da7:b22ba192-8608-4edb-9d0d-58739e13ee7e",
+      "name": "a1",
+      "alias": "c4c63394208008021443589822172e02c192ae3a400f9f1e4e98c3fe6f93fe6c"
+    },
+    "body": "협업을 시작하려고 합니다. 이 원 요청에 reply_to를 붙여 준비 여부와 수신 가능한 작업 방식을 짧게 회신해 주세요. 준비됐으면 outcome=succeeded, 협업할 수 없으면 outcome=failed를 붙여 주세요. 이 메시지는 협업 확인 요청입니다.",
+    "digest": "94ded52f8807f6228352fd9820d2bc6ef67e92e5c0ebeffe5b65d5415ddc325a",
+    "purpose": "handshake",
+    "priority": "next",
+    "attachments": [],
+    "wake": "auto",
+    "created_at": 1793284215.001607,
+    "replies": [],
+    "send_claimed": true,
+    "send_evidence": {
+      "status": "sent-unconfirmed",
+      "reason": "stored remotely; native consumption is reported separately",
+      "id": "b82e615ed4f74a0f",
+      "to": "a1@None",
+      "runtime_reached": false,
+      "evidence": {
+        "remote_stored": true
+      }
+    }
+  },
+  "request_packet": {
+    "attachments": [],
+    "body": "협업을 시작하려고 합니다. 이 원 요청에 reply_to를 붙여 준비 여부와 수신 가능한 작업 방식을 짧게 회신해 주세요. 준비됐으면 outcome=succeeded, 협업할 수 없으면 outcome=failed를 붙여 주세요. 이 메시지는 협업 확인 요청입니다.",
+    "file_packet": null,
+    "fingerprint": "358854617eb4f3437490f638148f4a20a2da852ced305df43fcfbab94661e685",
+    "id": "b82e615ed4f74a0f",
+    "kind": "task",
+    "network_id": "c4c63394208008021443589822172e02c192ae3a400f9f1e4e98c3fe6f93fe6c:a461abbc2a9164b94ed6b315e987bbd35f624d5d1a28324c9a706bfabd1ecaa5",
+    "outcome": null,
+    "priority": "next",
+    "receiver": {
+      "generation": "f3eefe3c454788661ed1ae9eb0e5c41229008a1f2fdc5a6a342d307170ca1b3f",
+      "home_id": "1f3efe9ffb9cf15ba352aa22f67362777ae05495d0bb84b9b5b8268090817da7",
+      "machine": "c4c63394208008021443589822172e02c192ae3a400f9f1e4e98c3fe6f93fe6c",
+      "runtime": "claude",
+      "session_id": "b22ba192-8608-4edb-9d0d-58739e13ee7e"
+    },
+    "reply_binding": null,
+    "reply_to": null,
+    "scope": "network:c4c63394208008021443589822172e02c192ae3a400f9f1e4e98c3fe6f93fe6c:a461abbc2a9164b94ed6b315e987bbd35f624d5d1a28324c9a706bfabd1ecaa5",
+    "sender": {
+      "generation": "c06f3513bd475ad056cd66532476b882900cd41fbc740497b280dfb6394af07a",
+      "home_id": "b8a8c431812d3580d5a8a994a3de84a0f28fc9d21d73f57c9d0b571e2ca98e5a",
+      "machine": "bffec46e0067c5fcff86f99801bb769fdeeba1cd9f153f356c2b0281c8b68d22",
+      "runtime": "codex",
+      "session_id": "01a18811-2502-77c3-9a6f-f3b671cd0c51"
+    },
+    "version": 1,
+    "wake": true
+  },
+  "actual_receiver": {
+    "runtime": "claude",
+    "home": "/Users/jaesolshin/.claude-3",
+    "session_id": "b22ba192-8608-4edb-9d0d-58739e13ee7e"
+  },
+  "original_body_matches": true,
+  "wrong_receiver_count": 0,
+  "actual_receiver_state": "pending",
+  "reply_count": 0,
+  "actual_requester_self_targeted_requests": 0,
+  "labels_changed_after_initial_setup": false,
+  "fresh_native_CIDs": [
+    "01a18811-2502-77c3-9a6f-f3b671cd0c51",
+    "b22ba192-8608-4edb-9d0d-58739e13ee7e"
+  ],
+  "final_CLI_flags": [
+    "/private/tmp/xnj-mini-gl2ut38t/native-runtime/codex",
+    "exec",
+    "--json",
+    "--sandbox",
+    "workspace-write",
+    "-c",
+    "approval_policy=\"never\"",
+    "-c",
+    "mcp_servers.xsm.command=\"/usr/bin/sandbox-exec\"",
+    "-c",
+    "mcp_servers.xsm.args=[\"-f\", \"/private/tmp/native-journey-samename-mini-sggrp08j/write-ssh-guard.sb\", \"/usr/bin/python3\", \"-B\", \"/private/tmp/native-journey-samename-mini-sggrp08j/payload/proxy.py\", \"/private/tmp/native-journey-samename-mini-sggrp08j/actor\", \"/private/tmp/native-journey-samename-mini-sggrp08j/payload\"]",
+    "-c",
+    "mcp_servers.xsm.cwd=\"/private/tmp/native-journey-samename-mini-sggrp08j/payload\"",
+    "-c",
+    "mcp_servers.xsm.env.XSM_HOME=\"/private/tmp/native-journey-samename-mini-sggrp08j/state\"",
+    "-c",
+    "mcp_servers.xsm.env.CODEX_HOME=\"/private/tmp/native-journey-samename-mini-sggrp08j/codex-home\"",
+    "-c",
+    "mcp_servers.xsm.env.PYTHONPATH=\"/private/tmp/native-journey-samename-mini-sggrp08j/payload\"",
+    "-c",
+    "mcp_servers.xsm.env.PYTHONDONTWRITEBYTECODE=\"1\"",
+    "-c",
+    "mcp_servers.xsm.env.TMPDIR=\"/private/tmp/native-journey-samename-mini-sggrp08j/tmp\"",
+    "-c",
+    "mcp_servers.xsm.env.PATH=\"/private/tmp/native-journey-samename-mini-sggrp08j/shim:/private/tmp/native-journey-samename-mini-sggrp08j/payload/bin:/Users/jaesolshin/.railway/bin:/Users/jaesolshin/.pyenv/shims:/Users/jaesolshin/.pyenv/bin:/Users/jaesolshin/.local/bin:/usr/bin:/bin:/usr/sbin:/sbin\"",
+    "내가 아닌 다른 머신의 검토자 a1이랑 붙어서 실제 협업 준비가 되어 있는지 직접 회신을 확인하고 보고하세요. 같은 표시 이름인 본인에게 보내지 마세요. 최신 안내는 /private/tmp/native-journey-samename-mini-sggrp08j/payload/skills/xsm/SKILL.md입니다. 새 동료 생성이나 소스·프로필·권한 변경, 본문·ACK·동의 답변의 상태파일 보정은 하지 마세요."
+  ],
+  "source_52_unchanged": true,
+  "completed": false,
+  "prior_profile_drift_scope_file": "prior-global-profile-drift-scope.json",
+  "fresh_profile_baseline_differences": [
+    "/Users/jaesolshin/.claude-3/.claude.json"
+  ],
+  "cleanup": {
+    "book": {
+      "at": 1793285695.2168698,
+      "root": "/private/tmp/native-journey-samename-book-7thlq5pg",
+      "service_before": {
+        "status": "running",
+        "endpoint_id": "c4c63394208008021443589822172e02c192ae3a400f9f1e4e98c3fe6f93fe6c",
+        "address": {
+          "addrs": [
+            {
+              "Ip": "100.123.30.11:58216"
+            },
+            {
+              "Ip": "119.208.251.16:57958"
+            },
+            {
+              "Ip": "127.0.0.1:58216"
+            },
+            {
+              "Ip": "172.30.1.32:58216"
+            },
+            {
+              "Ip": "[::1]:58471"
+            }
+          ],
+          "id": "c4c63394208008021443589822172e02c192ae3a400f9f1e4e98c3fe6f93fe6c"
+        },
+        "active": true,
+        "network": {
+          "version": 1,
+          "network_id": "c4c63394208008021443589822172e02c192ae3a400f9f1e4e98c3fe6f93fe6c:a461abbc2a9164b94ed6b315e987bbd35f624d5d1a28324c9a706bfabd1ecaa5",
+          "name": "same-name-minimal-20261029",
+          "members": [
+            {
+              "endpoint_id": "bffec46e0067c5fcff86f99801bb769fdeeba1cd9f153f356c2b0281c8b68d22",
+              "machine_name": "native-journey-mini",
+              "status": "active"
+            },
+            {
+              "endpoint_id": "c4c63394208008021443589822172e02c192ae3a400f9f1e4e98c3fe6f93fe6c",
+              "machine_name": "same-name-reviewer-book",
+              "status": "active"
+            }
+          ],
+          "invites": [
+            {
+              "invite_hash": "546d2dcf13145e564fc7d0a882e88f27a92aa65398159151b5bce81fa0f1cf7b",
+              "issuer": "c4c63394208008021443589822172e02c192ae3a400f9f1e4e98c3fe6f93fe6c",
+              "reusable": true,
+              "expires_at": null,
+              "revoked": false,
+              "consumed_by": [
+                "bffec46e0067c5fcff86f99801bb769fdeeba1cd9f153f356c2b0281c8b68d22"
+              ]
+            }
+          ]
+        },
+        "transport": {
+          "address": {
+            "addrs": [
+              {
+                "Ip": "100.123.30.11:58216"
+              },
+              {
+                "Ip": "127.0.0.1:58216"
+              },
+              {
+                "Ip": "172.30.1.32:58216"
+              },
+              {
+                "Ip": "[::1]:58471"
+              }
+            ],
+            "id": "c4c63394208008021443589822172e02c192ae3a400f9f1e4e98c3fe6f93fe6c"
+          },
+          "bound_addresses": [
+            "0.0.0.0:58216",
+            "[::]:58471"
+          ],
+          "endpoint_id": "c4c63394208008021443589822172e02c192ae3a400f9f1e4e98c3fe6f93fe6c",
+          "event": "ready",
+          "port_fallback": false,
+          "relay_mode": "off",
+          "relay_online": false,
+          "requested_port": 0
+        },
+        "last_transport": {
+          "path": "direct",
+          "selected": "direct",
+          "selection_reason": "iroh_path_selection",
+          "fallback_reason": null,
+          "remote_address": "210.113.21.16:56687",
+          "paths": [
+            {
+              "kind": "direct",
+              "remote": "ip:210.113.21.16:56687",
+              "selected": true
+            }
+          ]
+        },
+        "service_pid": 67755,
+        "engine_pid": 67757,
+        "known_peers": [
+          "bffec46e0067c5fcff86f99801bb769fdeeba1cd9f153f356c2b0281c8b68d22"
+        ]
+      },
+      "stop": {
+        "exit": 0,
+        "stdout": "{\"exit\": 0, \"result\": {\"status\": \"stopping\"}, \"stderr_bytes\": 0}\n",
+        "stderr": ""
+      },
+      "signals": [],
+      "known_process_count": 4,
+      "remaining_owned": [],
+      "state_and_keys_deleted": false,
+      "evidence_deleted": false
+    },
+    "mini": {
+      "at": 1793285693.4287732,
+      "root": "/private/tmp/native-journey-samename-mini-sggrp08j",
+      "service_before": {
+        "status": "running",
+        "endpoint_id": "bffec46e0067c5fcff86f99801bb769fdeeba1cd9f153f356c2b0281c8b68d22",
+        "address": {
+          "addrs": [
+            {
+              "Ip": "100.77.24.16:56687"
+            },
+            {
+              "Ip": "127.0.0.1:56687"
+            },
+            {
+              "Ip": "192.168.0.64:56687"
+            },
+            {
+              "Ip": "[::1]:60678"
+            }
+          ],
+          "id": "bffec46e0067c5fcff86f99801bb769fdeeba1cd9f153f356c2b0281c8b68d22"
+        },
+        "active": true,
+        "network": {
+          "version": 1,
+          "network_id": "c4c63394208008021443589822172e02c192ae3a400f9f1e4e98c3fe6f93fe6c:a461abbc2a9164b94ed6b315e987bbd35f624d5d1a28324c9a706bfabd1ecaa5",
+          "name": "same-name-minimal-20261029",
+          "members": [
+            {
+              "endpoint_id": "bffec46e0067c5fcff86f99801bb769fdeeba1cd9f153f356c2b0281c8b68d22",
+              "machine_name": "native-journey-mini",
+              "status": "active"
+            },
+            {
+              "endpoint_id": "c4c63394208008021443589822172e02c192ae3a400f9f1e4e98c3fe6f93fe6c",
+              "machine_name": "same-name-reviewer-book",
+              "status": "active"
+            }
+          ],
+          "invites": [
+            {
+              "invite_hash": "546d2dcf13145e564fc7d0a882e88f27a92aa65398159151b5bce81fa0f1cf7b",
+              "issuer": "c4c63394208008021443589822172e02c192ae3a400f9f1e4e98c3fe6f93fe6c",
+              "reusable": true,
+              "expires_at": null,
+              "revoked": false,
+              "consumed_by": [
+                "bffec46e0067c5fcff86f99801bb769fdeeba1cd9f153f356c2b0281c8b68d22"
+              ]
+            }
+          ]
+        },
+        "transport": {
+          "address": {
+            "addrs": [
+              {
+                "Ip": "100.77.24.16:56687"
+              },
+              {
+                "Ip": "127.0.0.1:56687"
+              },
+              {
+                "Ip": "192.168.0.64:56687"
+              },
+              {
+                "Ip": "[::1]:60678"
+              }
+            ],
+            "id": "bffec46e0067c5fcff86f99801bb769fdeeba1cd9f153f356c2b0281c8b68d22"
+          },
+          "bound_addresses": [
+            "0.0.0.0:56687",
+            "[::]:60678"
+          ],
+          "endpoint_id": "bffec46e0067c5fcff86f99801bb769fdeeba1cd9f153f356c2b0281c8b68d22",
+          "event": "ready",
+          "port_fallback": false,
+          "relay_mode": "off",
+          "relay_online": false,
+          "requested_port": 0
+        },
+        "last_transport": {
+          "path": "direct",
+          "selected": "direct",
+          "selection_reason": "iroh_path_selection",
+          "fallback_reason": null,
+          "remote_address": "119.208.251.16:57958",
+          "paths": [
+            {
+              "kind": "direct",
+              "remote": "ip:119.208.251.16:57958",
+              "selected": true
+            }
+          ]
+        },
+        "service_pid": 15694,
+        "engine_pid": 15696,
+        "known_peers": [
+          "c4c63394208008021443589822172e02c192ae3a400f9f1e4e98c3fe6f93fe6c"
+        ]
+      },
+      "stop": {
+        "exit": 0,
+        "stdout": "{\"exit\": 0, \"result\": {\"status\": \"stopping\"}, \"stderr_bytes\": 0}\n",
+        "stderr": ""
+      },
+      "signals": [],
+      "known_process_count": 4,
+      "remaining_owned": [],
+      "state_and_keys_deleted": false,
+      "evidence_deleted": false
+    }
+  },
+  "prepared_fifo_helper_executed": false,
+  "same_live_generic_goal_sent": false,
+  "no_old_request_redirect": true,
+  "repository_map_created": false,
+  "native_wake_held": [
+    {
+      "file": "/private/tmp/native-journey-samename-book-7thlq5pg/state/held/1793284215960.json",
+      "id": "b82e615ed4f74a0f",
+      "reason": "remote message from p2p:bffec46e0067c5fcff86f99801bb769fdeeba1cd9f153f356c2b0281c8b68d22 was not received by this machine's xsm",
+      "raw_sha256": "c0164b8d3a8b5e69722b7faab9ba5d8ed810d5b6d51140bfab3ec69cb53ca304"
+    }
+  ],
+  "same_SDK_terminal": {
+    "owner": {
+      "pid": 74412,
+      "lstart": "Thu Oct 29 23:26:39 2026",
+      "runtime": "claude",
+      "role": "reviewer",
+      "argv": [
+        "/usr/bin/sandbox-exec",
+        "-f",
+        "/private/tmp/native-journey-samename-book-7thlq5pg/write-ssh-guard.sb",
+        "/private/tmp/native-journey-samename-book-7thlq5pg/runtime/claude",
+        "--print",
+        "--input-format",
+        "stream-json",
+        "--output-format",
+        "stream-json",
+        "--verbose",
+        "--no-session-persistence",
+        "--include-hook-events",
+        "--permission-prompts",
+        "none",
+        "--mcp-config",
+        "/private/tmp/native-journey-samename-book-7thlq5pg/claude-mcp-observe.json",
+        "--strict-mcp-config",
+        "--settings",
+        "/private/tmp/native-journey-samename-book-7thlq5pg/claude-invocation-settings.json"
+      ],
+      "goal": "이 세션을 xsm에서 찾을 수 있게 공개해 두세요. 다른 머신 동료의 검토 담당 a1입니다. 최신 안내는 /private/tmp/native-journey-samename-book-7thlq5pg/payload/skills/xsm/SKILL.md입니다. 실제로 받은 협업 준비 확인 한 건에 역할과 준비 상태를 직접 회신하고 처리 확인을 마칠 때까지 대기하세요. 소스·프로필·권한·본문·ACK·동의 답변을 상태파일에서 보정하지 마세요.",
+      "stdin_user_messages_sent": 1,
+      "streaming_controller_PID": 74409,
+      "streaming_controller_start": "Thu Oct 29 23:26:39 2026",
+      "no_added_allow_rules": true,
+      "model_override": false
+    },
+    "registration_CID": "b22ba192-8608-4edb-9d0d-58739e13ee7e",
+    "current_ps": "",
+    "exit": {
+      "native_exit": 143,
+      "user_message_count": 1,
+      "body_relays": 0
+    }
+  },
+  "prepared_recovery_helper": "prepared-sdk-fifo-client-not-executed.py",
+  "new_models_after_failure": 0
+}

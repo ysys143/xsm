@@ -1,0 +1,102 @@
+{
+  "root": "/private/tmp/p13-mcp-fixed-x3tjg2g6",
+  "source_install_sha256": "86aea56f34ce282f6bdaf2080d08165f763398ce3ca05743657efe01ab33d8be",
+  "native_model_calls": 0,
+  "auth_commands": 0,
+  "hook_trust_grants": 0,
+  "cases": [
+    {
+      "runtime": "claude",
+      "condition": "clean",
+      "result": "added",
+      "exception": null,
+      "native_config_readback_exit": 0,
+      "native_loaded_installed_prefix": true,
+      "config_file": "/private/tmp/p13-mcp-fixed-x3tjg2g6/claude-clean/.claude.json",
+      "inspection_revision_before": "missing",
+      "readback_sha256": "369642038df85aa35720496163cd7028a354791795ede876db5e582b832d06f9"
+    },
+    {
+      "runtime": "claude",
+      "condition": "existing-stale",
+      "result": "replaced",
+      "exception": null,
+      "native_config_readback_exit": 0,
+      "native_loaded_installed_prefix": true,
+      "config_file": "/private/tmp/p13-mcp-fixed-x3tjg2g6/claude-existing-stale/.claude.json",
+      "inspection_revision_before": "bbed7bd2308ee2bc8368a5beb38cf3c53921c422a6a7c4b685779a146eb927e3",
+      "readback_sha256": "369642038df85aa35720496163cd7028a354791795ede876db5e582b832d06f9"
+    },
+    {
+      "runtime": "claude",
+      "condition": "current",
+      "result": "current",
+      "exception": null,
+      "native_config_readback_exit": 0,
+      "native_loaded_installed_prefix": true,
+      "config_file": "/private/tmp/p13-mcp-fixed-x3tjg2g6/claude-current/.claude.json",
+      "inspection_revision_before": "1dd167cb5d2e2234d998791b12a0d17d12d3a22f67f555dbf573abae90b371ee",
+      "readback_sha256": "369642038df85aa35720496163cd7028a354791795ede876db5e582b832d06f9"
+    },
+    {
+      "runtime": "codex",
+      "condition": "clean",
+      "result": "added",
+      "exception": null,
+      "native_config_readback_exit": 0,
+      "native_loaded_installed_prefix": true,
+      "config_file": "/private/tmp/p13-mcp-fixed-x3tjg2g6/codex-clean/config.toml",
+      "inspection_revision_before": "missing",
+      "readback_sha256": "6ef6cf41a5b3460d9900fcfd366d88f3fdf361505e8a435ed15ddf80cd27cc9d"
+    },
+    {
+      "runtime": "codex",
+      "condition": "existing-stale",
+      "result": "replaced",
+      "exception": null,
+      "native_config_readback_exit": 0,
+      "native_loaded_installed_prefix": true,
+      "config_file": "/private/tmp/p13-mcp-fixed-x3tjg2g6/codex-existing-stale/config.toml",
+      "inspection_revision_before": "c6443f94bb3f1f11b95bfff5eca0debe0e1841e536e0f584eab85d39a4fe3073",
+      "readback_sha256": "6ef6cf41a5b3460d9900fcfd366d88f3fdf361505e8a435ed15ddf80cd27cc9d"
+    },
+    {
+      "runtime": "codex",
+      "condition": "current",
+      "result": "current",
+      "exception": null,
+      "native_config_readback_exit": 0,
+      "native_loaded_installed_prefix": true,
+      "config_file": "/private/tmp/p13-mcp-fixed-x3tjg2g6/codex-current/config.toml",
+      "inspection_revision_before": "300ef9a0fe7a716f1a61788eac8f371c65b876cb54e0eb4c0cd401bef21bcf90",
+      "readback_sha256": "6ef6cf41a5b3460d9900fcfd366d88f3fdf361505e8a435ed15ddf80cd27cc9d"
+    }
+  ],
+  "combined_cli": {
+    "argv": [
+      "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/bin/xsm",
+      "install",
+      "--claude-home",
+      "/private/tmp/p13-mcp-fixed-x3tjg2g6/combined/claude",
+      "--codex-home",
+      "/private/tmp/p13-mcp-fixed-x3tjg2g6/combined/codex",
+      "--python",
+      "/usr/bin/python3"
+    ],
+    "exit_code": 0,
+    "stdout": "/private/tmp/p13-mcp-fixed-x3tjg2g6/combined/install.stdout",
+    "stderr": "/private/tmp/p13-mcp-fixed-x3tjg2g6/combined/install.stderr",
+    "native_readbacks": [
+      {
+        "runtime": "claude",
+        "exit_code": 0,
+        "native_loaded_private_installed_runtime": true
+      },
+      {
+        "runtime": "codex",
+        "exit_code": 0,
+        "native_loaded_private_installed_runtime": true
+      }
+    ]
+  }
+}

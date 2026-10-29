@@ -1,0 +1,390 @@
+{
+  "scope": "exact three original criteria, existing evidence audited first; max two new native pairs, no source/ledger/plan edits",
+  "original_criteria": {
+    "A16-05": {
+      "id": "A16-05",
+      "criterion": "자동 수신 능력이 사라지면 미독 안내와 회수 경로가 살아 있다. 도구 숨김 때문에 답을 영원히 못 읽는 경우를 재현한다.",
+      "positive": "자동 수신 능력 하향과 cached tools/list에서 미독 조회·회수",
+      "negative": "도구 숨김 뒤 영구 unread·복구 경로 소실",
+      "evidence_levels": [
+        "fixture",
+        "harness"
+      ],
+      "closure_gates": [
+        "G03",
+        "G04",
+        "G10"
+      ],
+      "original_text_sha256": "19f917e09bda59846551f7ac2fe0f3b66ee00c09a07c4e574c9eccab816ceb10"
+    },
+    "A18-06": {
+      "id": "A18-06",
+      "criterion": "FYI를 보낸 뒤 다음 자연 소비 시점에서 읽히는지 확인한다. unread 저장만 성공한 경우와 분리한다.",
+      "positive": "FYI 후 무기상과 다음 자연 prompt/tool 경계의 실제 소비를 각각 추적",
+      "negative": "unread 저장만 확인하거나 queue 자체 기상 경로를 no-wake로 표시",
+      "evidence_levels": [
+        "fixture",
+        "harness"
+      ],
+      "closure_gates": [
+        "G04"
+      ],
+      "original_text_sha256": "c2c098568028bad29fa3becc6f9ab79f33a1fc8096a5200be300df85f642735b"
+    },
+    "A22-03": {
+      "id": "A22-03",
+      "criterion": "구현자·검토자의 여러 차례 반례·수정·재검증이 정상 완료된다. 의미 없는 반복이 중단돼도 요청은 조회·복구 가능하다.",
+      "positive": "구현/검토 다회 수정과 의미 없는 반복을 같은 조건에서 대조",
+      "negative": "정상 검토 제한·반복 중단 뒤 요청 소실/성공 종료",
+      "evidence_levels": [
+        "fixture",
+        "harness"
+      ],
+      "closure_gates": [
+        "G09"
+      ],
+      "original_text_sha256": "3f9d8dbef2b4ebf184f5e318c1ab3879cf76e5c21e6db2cab964851d859f3c0b"
+    }
+  },
+  "original_plan_sha256": "ccdcb59f0a1cebe61fd805c40a09e486641e801ff3d5f9bc6b30fa9033ceadc9",
+  "acceptance_md_sha256": "6d6058a48360e82550331d0b67a4b8356e16b4604fcb21e7f5f3cb8ca7876364",
+  "A16-05": {
+    "assessment": "covered-in-existing-native-scope-with-drift",
+    "evidence": [
+      {
+        "client_wire": "/private/tmp/different-parent-native-3jr1o8uv/parent-a1/proxies/61014-f9df6292/client-wire.jsonl",
+        "client_sha256": "a2f2192ad1316471f6cfe0fa528b40c62824fe359d19b337bf3f9c1d0862185d",
+        "server_sha256": "ea44b7e409b9af693c63b8ed2453fc79c5d35f1e00c40503da2b4d2b2c431d5c",
+        "server_PID": 61021,
+        "tools_list_count": 1,
+        "inbox_in_initial_list": true,
+        "later_tools_list_refreshes": 0,
+        "positive_unread_notices": [
+          {
+            "request_id": 5,
+            "tool": "xsm_ack",
+            "count": 1
+          },
+          {
+            "request_id": 6,
+            "tool": "xsm_ask",
+            "count": 1
+          },
+          {
+            "request_id": 12,
+            "tool": "xsm_ack",
+            "count": 1
+          }
+        ],
+        "claim_IDs": [
+          "6ef48ff9cb164b6f",
+          "8ebd81df269d48cb",
+          "ccd69e1c380645d3"
+        ],
+        "ACK_IDs": [
+          "6ef48ff9cb164b6f",
+          "8ebd81df269d48cb",
+          "ccd69e1c380645d3",
+          "e1b5c4deccb64851"
+        ],
+        "canonical_recovered": {
+          "8ebd81df269d48cb": {
+            "status": "acknowledged",
+            "wake": true,
+            "route": "mcp-inbox",
+            "body_sha256": "129997cec61951a5456427c55ad9ec00eca92e7ac8adbac8ec63aeef5b77adcd"
+          },
+          "6ef48ff9cb164b6f": {
+            "status": "acknowledged",
+            "wake": true,
+            "route": "mcp-inbox",
+            "body_sha256": "7af967c84175fe5003b20a957610fa6555d5ba2b90ca5395f60f75de1df0d11a"
+          },
+          "ccd69e1c380645d3": {
+            "status": "acknowledged",
+            "wake": true,
+            "route": "mcp-inbox",
+            "body_sha256": "837c0370f521f99b41659647f5fbe3f5cbdce5610a964ac9d10f64f0ed143514"
+          }
+        },
+        "stored_fallback_results": [
+          {
+            "rpc": 3,
+            "tool": "xsm_ask",
+            "result_sha256": "98550e0dbf8499da492502deb1107604aee29526fb72872fb5a2d82a373f39b6"
+          },
+          {
+            "rpc": 6,
+            "tool": "xsm_ask",
+            "result_sha256": "35fd1a64e431becde83eb935dd2a2fd56d5fc18b7349c5289c0c2cfc7314dc15"
+          },
+          {
+            "rpc": 11,
+            "tool": "xsm_question_status",
+            "result_sha256": "35fd1a64e431becde83eb935dd2a2fd56d5fc18b7349c5289c0c2cfc7314dc15"
+          }
+        ]
+      },
+      {
+        "client_wire": "/private/tmp/different-parent-native-3jr1o8uv/parent-a2/proxies/60506-0e32d727/client-wire.jsonl",
+        "client_sha256": "3add715cc810062a143a8de39b1489fb349d21b7e6dcfc8f6a83d9a98485be49",
+        "server_sha256": "306de765d8877397ff6cc791e2306d0c4d086084065331a4bf5a31c4f1ae9269",
+        "server_PID": 60510,
+        "tools_list_count": 1,
+        "inbox_in_initial_list": true,
+        "later_tools_list_refreshes": 0,
+        "positive_unread_notices": [],
+        "claim_IDs": [
+          "11f8150b86184fc2",
+          "7bbf155fed2340ad",
+          "bbefe06b155b449b"
+        ],
+        "ACK_IDs": [
+          "11f8150b86184fc2",
+          "7bbf155fed2340ad",
+          "9c1b91f0211b492f",
+          "bbefe06b155b449b"
+        ],
+        "canonical_recovered": {
+          "11f8150b86184fc2": {
+            "status": "acknowledged",
+            "wake": true,
+            "route": "mcp-inbox",
+            "body_sha256": "5ba1eae84b3b84d895fcec6816004be9b413bd0d3df1b28b92351fb7c67bbc1e"
+          },
+          "7bbf155fed2340ad": {
+            "status": "acknowledged",
+            "wake": true,
+            "route": "mcp-inbox",
+            "body_sha256": "461141c0dd64ec6e42f576d94e812d8f26f675012672acfffb3bfea6bcb52f1c"
+          },
+          "bbefe06b155b449b": {
+            "status": "acknowledged",
+            "wake": true,
+            "route": "mcp-inbox",
+            "body_sha256": "c591cea7564a9b5fb10781082f4545f0f732de5fb9c32cd0f2596ceb79c51953"
+          }
+        },
+        "stored_fallback_results": [
+          {
+            "rpc": 6,
+            "tool": "xsm_ask",
+            "result_sha256": "eb8d34da3d03db8a13936b46e68f19f38ad4b265fc094970094e392e56a5ff80"
+          },
+          {
+            "rpc": 10,
+            "tool": "xsm_question_status",
+            "result_sha256": "eb8d34da3d03db8a13936b46e68f19f38ad4b265fc094970094e392e56a5ff80"
+          }
+        ]
+      }
+    ],
+    "native_downgraded_messages": [
+      {
+        "ID_hash": "8d949154229a9080e9a38eb9727d6eed48a45ea915436f8b72b340b7809b3cb1",
+        "kind": "reply",
+        "logical_requested_wake": true,
+        "delivery_route": "mcp-inbox",
+        "typed_auto_fallback_observed": true,
+        "native_queued": false,
+        "native_wake": false,
+        "actual_claim_ACK": true,
+        "immutable_digest_valid": true
+      },
+      {
+        "ID_hash": "d2956aad592f4f43d5ab48419bcc1f036ecfd698f687fe9041bbd50f86b07fb6",
+        "kind": "reply",
+        "logical_requested_wake": true,
+        "delivery_route": "mcp-inbox",
+        "typed_auto_fallback_observed": true,
+        "native_queued": false,
+        "native_wake": false,
+        "actual_claim_ACK": true,
+        "immutable_digest_valid": true
+      },
+      {
+        "ID_hash": "03fe982c62e7e064129c3a14141d1b7bc35026a8372442fa0866ea56e05245b2",
+        "kind": "reply",
+        "logical_requested_wake": true,
+        "delivery_route": "mcp-inbox",
+        "typed_auto_fallback_observed": true,
+        "native_queued": false,
+        "native_wake": false,
+        "actual_claim_ACK": true,
+        "immutable_digest_valid": true
+      },
+      {
+        "ID_hash": "d558b2f0cc62cbef30b4a53c35451c935b8e540fd423e454c0f706589aa4b685",
+        "kind": "task",
+        "logical_requested_wake": true,
+        "delivery_route": "mcp-inbox",
+        "typed_auto_fallback_observed": true,
+        "native_queued": false,
+        "native_wake": false,
+        "actual_claim_ACK": true,
+        "immutable_digest_valid": true
+      },
+      {
+        "ID_hash": "f960b2aa0dc430827cfc3e072cc84a7c920219a8eef52bddd964f062e2195b2f",
+        "kind": "reply",
+        "logical_requested_wake": true,
+        "delivery_route": "mcp-inbox",
+        "typed_auto_fallback_observed": true,
+        "native_queued": false,
+        "native_wake": false,
+        "actual_claim_ACK": true,
+        "immutable_digest_valid": true
+      },
+      {
+        "ID_hash": "46e8f69581be6799a8ce18004370dad99f3442104d5943a3ab48000f401c32aa",
+        "kind": "reply",
+        "logical_requested_wake": true,
+        "delivery_route": "mcp-inbox",
+        "typed_auto_fallback_observed": true,
+        "native_queued": false,
+        "native_wake": false,
+        "actual_claim_ACK": true,
+        "immutable_digest_valid": true
+      },
+      {
+        "ID_hash": "2e0f4f38a9cfc022922f41b0964f9927beb36768188541803af89d835c43fa7b",
+        "kind": "task",
+        "logical_requested_wake": true,
+        "delivery_route": "mcp-inbox",
+        "typed_auto_fallback_observed": true,
+        "native_queued": false,
+        "native_wake": false,
+        "actual_claim_ACK": true,
+        "immutable_digest_valid": true
+      },
+      {
+        "ID_hash": "98e699b8c87b22690ecb4e0f672f080b72b1d3f080fb5950f2dabb66b4c2ad70",
+        "kind": "task",
+        "logical_requested_wake": true,
+        "delivery_route": "mcp-inbox",
+        "typed_auto_fallback_observed": true,
+        "native_queued": false,
+        "native_wake": false,
+        "actual_claim_ACK": true,
+        "immutable_digest_valid": true
+      }
+    ],
+    "manifest_all_hashes_match": true,
+    "shared_MCP_claimed": false,
+    "limits": [
+      "Different actual parent/child clients have separate MCP processes.",
+      "No tools/list refresh after initial cache; no forced hidden-list/result/metadata edits.",
+      "Historical profile drift writer unknown and native cache warning retained."
+    ]
+  },
+  "A18-06": {
+    "assessment": "covered-for-natural-agent-chosen-tool-consumption-with-drift",
+    "new_native_root": "/private/tmp/p13-passive-fyi-phb8nuwk",
+    "checks": {
+      "one_note": true,
+      "logical_no_wake": true,
+      "no_queue_evidence": true,
+      "wake_false": true,
+      "stored_during_work": true,
+      "natural_list_after_work": true,
+      "natural_inbox_after_list": true,
+      "actual_body_returned": true,
+      "actual_ACK": true,
+      "no_prompt_relay": true,
+      "source_unchanged": true,
+      "stopped": true
+    },
+    "message_id": "d0b6f09d01da4a25",
+    "body_sha256": "31707171e5dc867e7b43b5fac1d2c421a6584e9e30596f779fa685d3b20c5f09",
+    "stored_at": 1793233500.822947,
+    "work_complete_observed": 1793233516.1042502,
+    "list_complete_observed": 1793233523.3773482,
+    "inbox_body_returned_observed": 1793233525.3674161,
+    "actual_surface": "natural agent-chosen xsm list notice then xsm_inbox and ACK after separate work; not unsolicited UI wake or unrelated-MCP implicit body injection",
+    "profile_guard_unchanged": false
+  },
+  "A22-03": {
+    "assessment": "partial-for-exact-same-condition-multi-revision-positive; strict-native-defer-and-recovery-now-covered",
+    "existing_multi_review": "postclaims 3 math rounds + different-parent final snapshot 3 questions; old N:N quiet rounds source drift retained",
+    "new_native_root": "/private/tmp/p13-recovery-passive-7yocp3dz",
+    "checks": {
+      "first_normal_final": true,
+      "same_question_body": true,
+      "actual_second_deferred": true,
+      "status_same_ID_held_not_success": true,
+      "snapshot_original_retained": true,
+      "single_same_ID_resend": true,
+      "resend_original_body": true,
+      "same_ID_final_reply": true,
+      "original_digest_preserved": true,
+      "body_preserved": true,
+      "reply_outcome_real": true,
+      "ACKs_actual": true,
+      "canonical_ACK": true,
+      "source_unchanged": true,
+      "stopped": true
+    },
+    "normal_question_id": "4f82264981f44424",
+    "deferred_question_id": "82b9339d054f4580",
+    "recovered_reply_id": "39931ec134554d5e",
+    "same_ID_resend_count": 1,
+    "body_sha256": "4e739c010176cea554642e1358411daafb8199e0d20d51297ea6712664ccbc75",
+    "private_policy": {
+      "traffic_control": {
+        "mode": "strict",
+        "window_seconds": 60,
+        "max_same_body": 1
+      }
+    },
+    "profile_guard_unchanged": false,
+    "remaining": "Original positive asks multi-revision review versus meaningless repetition in the same condition. New strict pair has one normal review and repeated-body recovery; old multi-rounds are separate policy/source epochs. Do not promote that conjunction to one identical strict-condition multi-revision trace.",
+    "no_extra_requirement": [
+      "No all-harness requirement",
+      "No long-running load requirement",
+      "No actual shared-MCP requirement"
+    ]
+  },
+  "native_budget": {
+    "new_conditions": 2,
+    "new_native_pairs": 2,
+    "actor_invocations": 4,
+    "automatic_actor_retries": 0,
+    "additional_UI_or_permission_steps": 0,
+    "manual_body_ACK_index_corrections": 0
+  },
+  "historical_limits": {
+    "NN_source_stable": false,
+    "different_parent_profile_drift": "writer unknown",
+    "new_strict_profile_guard": false,
+    "new_FYI_profile_guard": false
+  },
+  "fixture_source_evidence": [
+    {
+      "path": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/tests/test_open_mcp.py",
+      "sha256": "16710736bcec2cd3d157d26a940ecf7c384fcc9c152c8ddfbe1a735570de7dd8"
+    },
+    {
+      "path": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/tests/test_question_interfaces.py",
+      "sha256": "66e5791078f5b38bba20c08a278cbdc2efe7d82aebc95da81ca666c883ac94d5"
+    },
+    {
+      "path": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/tests/test_traffic_interfaces.py",
+      "sha256": "0ddbb68e3aae63163eba78e99231eed2807dcc94c95cd0bb02334f828d686eb2"
+    },
+    {
+      "path": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/tests/test_traffic_policy.py",
+      "sha256": "d33b23c1ada1a08d4e0dd65980c06198445a7d4f87968d70b5083ebacac55693"
+    }
+  ],
+  "fixture_execution_reference": {
+    "path": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/deliverables/p13-live/final-regression.json",
+    "sha256": "faa7f9497bfc481a52b80e2f4e35e643b6981be4ed7d514ac4ebd1d3f2691926",
+    "new_fixture_or_full_runs": 0
+  },
+  "old_raw_paths": [
+    "/private/tmp/different-parent-native-3jr1o8uv",
+    "/private/tmp/p09-nn-native-m2bavr8b",
+    "/private/tmp/p13-post-claims-uwu7xsx2/post-claims-current"
+  ],
+  "source_unchanged_new_pairs": true
+}

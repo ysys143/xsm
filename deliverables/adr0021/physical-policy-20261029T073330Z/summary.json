@@ -1,0 +1,56 @@
+{
+  "completed": true,
+  "operator_direct_rpc": true,
+  "file_actor_fixture": true,
+  "actual_llm_calls": 0,
+  "physical_hosts": 2,
+  "third_node_same_host_as_founder": true,
+  "source_manifest_both_match": true,
+  "nonfounder_B_signed_C_admission_and_removal": true,
+  "physical_ping_pairs": [
+    {
+      "source": "b",
+      "target": "c",
+      "matching_successful_ping_count": 1,
+      "evidence": [
+        {
+          "request_sha256": "d15a59e19a789da6c7845253997ee0839a1067b3ff517668b0ce379fafda8385",
+          "response_sha256": "a1413bfd012d73b5bcde6815f71e445408ab52acf0758c459853e880cea3188f",
+          "tls_origin_matches": true,
+          "path": "direct",
+          "remote_address": "192.168.0.11:55185"
+        }
+      ]
+    },
+    {
+      "source": "c",
+      "target": "b",
+      "matching_successful_ping_count": 1,
+      "evidence": [
+        {
+          "request_sha256": "e1a221b4241d0e58d8142024f5902b80479a0e8c23d93c44ae33c6f0e3816e1d",
+          "response_sha256": "b1ef7a2c1a73fa4cda90984c805018643b37af437483e7f0a8e9a035616f68ea",
+          "tls_origin_matches": true,
+          "path": "direct",
+          "remote_address": "100.77.24.16:52048"
+        }
+      ]
+    }
+  ],
+  "cleanup_all_owned_stopped": true,
+  "udp_bindings_released": 8,
+  "source_r1_current_after_run": {
+    "xsm/network.py": {
+      "frozen_sha256": "f52485d50b5008a92860d8409df0b722fef0c26034c87938a1967af59d653265",
+      "current_sha256": "f52485d50b5008a92860d8409df0b722fef0c26034c87938a1967af59d653265"
+    },
+    "xsm/probe.py": {
+      "frozen_sha256": "452835fb1ca280eb95094d89cc5775f8d510d4e3941c4469740f071ce27b676d",
+      "current_sha256": "452835fb1ca280eb95094d89cc5775f8d510d4e3941c4469740f071ce27b676d"
+    }
+  },
+  "not_a_policy_expansion": "A21-02/06 do not require every negative on two physical hosts; this sample adds P12 physical integration evidence",
+  "phone_touched": false,
+  "keys_or_authorized_keys_or_profiles_or_firewall_modified": false,
+  "private_native_key_files_read": false
+}

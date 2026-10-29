@@ -1,0 +1,219 @@
+{
+  "scope": "P11 C single attempted cell: bootstrap-complete controlled-process no-SSH data-plane; not D12 selection",
+  "verdict": "not-verified: unexpected OS PermissionError during in-process sandbox activation bookkeeping; stopped before measurement",
+  "passed": false,
+  "local_root": "/private/tmp/p11-C-no-ssh-local-hd13c8g2",
+  "peer_root": "/private/tmp/p11-C-no-ssh-peer-w3yq1ccr",
+  "engine_version_from_existing_C_baseline": "0.12.10",
+  "engine_sha256": "6ac4bb4837469867edc2dba3cbbd6e4dd9fb18ad0389db69ff6ef21683317a44",
+  "bootstrap": {
+    "ssh_exit": 0,
+    "own_ssh_closed_at": 1793229301.25716,
+    "local_endpoint": {
+      "endpoint_sha256": "44d11008ccec8d02e5c90344ef3fbb0415180df76638639e10858edf4d2a6db3",
+      "exit_code": 0
+    },
+    "peer": {
+      "scope": "owned peer autonomous engine pull",
+      "helper_pid": 59829,
+      "helper_lstart": "Thu Oct 29 08:14:56 2026",
+      "native_attempts": 0,
+      "ssh_calls_in_measurement": 0,
+      "engine": {
+        "pid": 59831,
+        "lstart": "Thu Oct 29 08:14:56 2026",
+        "binary_sha256": "6ac4bb4837469867edc2dba3cbbd6e4dd9fb18ad0389db69ff6ef21683317a44",
+        "alive_after_start": true,
+        "role": "peer",
+        "socket": "/private/tmp/p11-C-no-ssh-peer-w3yq1ccr/state/network.sock",
+        "exit_code": 0
+      },
+      "endpoint": {
+        "endpoint_sha256": "e06be1e472ff00f4c989e74b387063b1d98a98d690d9e46438e47b2aa8bbd91b",
+        "exit_code": 0
+      },
+      "join": {
+        "joined": true,
+        "team_id_sha256": "46727b7157fa1fdb6cd0b1bbe69583fdf53ddf6308ebd0389d88802e36eec09d",
+        "capability_sha256": "f6fdcf20890595a4f501d81a8048028b9bd35b4e92b05f1afa851d8706eac212",
+        "proof_used": false
+      },
+      "registration": {
+        "registered": true,
+        "session_key_sha256": "1ee5df327121481f9ca9aefec1dfcfab1de0e9e646fafc6b8960be6986e5b024",
+        "address_sha256": "879058674c73e665e30d29a36ac3036eb5ed197170fa870da4844cf1bc931502",
+        "tier": "pull"
+      },
+      "team_bootstrap": {
+        "team_id_sha256": "46727b7157fa1fdb6cd0b1bbe69583fdf53ddf6308ebd0389d88802e36eec09d",
+        "member_count": 2,
+        "relay_connected": false,
+        "relay_url_sha256": null,
+        "machines": [
+          {
+            "endpoint_sha256": "e06be1e472ff00f4c989e74b387063b1d98a98d690d9e46438e47b2aa8bbd91b",
+            "is_me": true,
+            "online": true,
+            "link": null,
+            "rtt_ms": null,
+            "verified": false,
+            "has_proof": false
+          },
+          {
+            "endpoint_sha256": "44d11008ccec8d02e5c90344ef3fbb0415180df76638639e10858edf4d2a6db3",
+            "is_me": false,
+            "online": true,
+            "link": "relay",
+            "rtt_ms": 409,
+            "verified": false,
+            "has_proof": false
+          }
+        ]
+      },
+      "who_bootstrap": {
+        "session_count": 1,
+        "sessions": [
+          {
+            "person": "p11-c-peer",
+            "name": "qa-peer",
+            "is_me": true
+          }
+        ]
+      }
+    },
+    "local_registration": {
+      "registered": true,
+      "session_key_sha256": "93fb0ad7fd9d735f9ac4dc38b6962735834ee13eaadd14230ff5969fdfc0df2d",
+      "address_sha256": "3addf457d14470386f49488e479a267c33dc6648e17851fd4fc0792614ce1c81",
+      "tier": "pull"
+    },
+    "private_team": {
+      "created": true,
+      "team_id_sha256": "46727b7157fa1fdb6cd0b1bbe69583fdf53ddf6308ebd0389d88802e36eec09d",
+      "proof_used": false
+    },
+    "capability": {
+      "sha256": "f6fdcf20890595a4f501d81a8048028b9bd35b4e92b05f1afa851d8706eac212",
+      "channel": "memory -> SSH stdin -> detached helper stdin -> engine private IPC",
+      "raw_file_log_argv": false
+    }
+  },
+  "initial_kernel_probe": {
+    "executed_before_cell": true,
+    "scope": "one sandbox-exec child on local host only",
+    "peer_ip": "100.77.24.16",
+    "peer_port": 22,
+    "profile": "(version 1) (allow default) (deny network-outbound (remote tcp \"*:22\"))",
+    "exit_code": 0,
+    "connect_result": {
+      "connected": false,
+      "errno": 1,
+      "error_type": "PermissionError"
+    },
+    "complete_two_sided_ssh_proof": false
+  },
+  "setup_profile_syntax_probe": {
+    "literal_ip_remote_tcp_policy_accepted": false,
+    "exit_code": 65,
+    "diagnostic": "host must be * or localhost in network address",
+    "before_cell_no_model": true
+  },
+  "failure": {
+    "local": {
+      "error_type": "PermissionError",
+      "error_sha256": "42eacbf06c1e66e5a1773f5863fc6325667b177adf9a0d7b6a9a7c88cedd854f",
+      "safe_error_terms": [
+        "operation not permitted"
+      ]
+    },
+    "peer": {
+      "error_type": "PermissionError",
+      "error_sha256": "42eacbf06c1e66e5a1773f5863fc6325667b177adf9a0d7b6a9a7c88cedd854f",
+      "safe_error_terms": [
+        "operation not permitted"
+      ]
+    },
+    "local_restriction_result_saved": false,
+    "peer_restriction_result_saved": false,
+    "raw_traceback_captured": false,
+    "code_inference": "deny_current calls sandbox_init then process_start(ps) while building its return value; PermissionError is consistent with post-application ps/spawn failure; exact failing syscall not captured",
+    "not_a_product_source_failure": true
+  },
+  "measurement": {
+    "started": false,
+    "request_id": null,
+    "reply_id": null,
+    "request_sha256": null,
+    "reply_sha256": null,
+    "actual_native_PID": null,
+    "actual_native_CID": null,
+    "native_model_count": 0,
+    "peer_native_attempts": 0,
+    "peer_native_result_files": 0,
+    "measurement_ssh_calls": 0,
+    "measurement_ssh_zero_is_vacuous": true,
+    "ssh_deny_preflight_completed": false,
+    "who_two_sided_ready": false
+  },
+  "cleanup": {
+    "local": {
+      "cleanup": [
+        {
+          "pid": 20871,
+          "lstart": "Thu Oct 29 08:14:48 2026",
+          "was_live": false,
+          "remaining": false
+        },
+        {
+          "pid": 20990,
+          "lstart": "Thu Oct 29 08:14:49 2026",
+          "was_live": true,
+          "remaining": false
+        }
+      ],
+      "remaining_count": 0,
+      "ipc_connect_after_stop": 61
+    },
+    "peer": {
+      "cleanup": [
+        {
+          "pid": 59831,
+          "lstart": "Thu Oct 29 08:14:56 2026",
+          "was_live": false,
+          "remaining": false
+        },
+        {
+          "pid": 59880,
+          "lstart": "Thu Oct 29 08:14:58 2026",
+          "was_live": true,
+          "remaining": false
+        },
+        {
+          "pid": 59829,
+          "lstart": "Thu Oct 29 08:14:56 2026",
+          "was_live": false,
+          "remaining": false
+        }
+      ],
+      "remaining_count": 0,
+      "ipc_connect_after_stop": 61
+    },
+    "peer_helper_pid": 59829,
+    "peer_helper_lstart": "Thu Oct 29 08:14:56 2026",
+    "post_abort_ssh_for_readback_only": true,
+    "state_preserved": true,
+    "local_controller_pid_lstart_captured": false,
+    "local_controller_exit_observed": 0
+  },
+  "resume": {
+    "owner": "coordinator",
+    "reason": "unexpected OS PermissionError, mandated stop; no sandbox workaround or automatic retry",
+    "condition": "separate authorization to diagnose/revise process sandbox harness and prove both kernel and nonmultiplexed SSH denial before a new data-plane cell"
+  },
+  "product_modified": false,
+  "global_firewall_or_ssh_config_modified": false,
+  "credential_read_or_copied": false,
+  "automatic_model_retries": 0,
+  "D12_response_replaced": false,
+  "reused_C_sources_match_bootstrap_copy": true
+}

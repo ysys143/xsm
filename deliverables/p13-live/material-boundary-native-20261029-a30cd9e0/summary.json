@@ -1,0 +1,248 @@
+{
+  "label": "A19-03 one real normal-factory material bundle; partial overall scope",
+  "source": "/private/tmp/xsm-final-receipt-frozen-i3u9pms3",
+  "CLI": "codex-cli 0.164.0",
+  "source_unchanged": true,
+  "native_actor_CLI_launches": 2,
+  "actual_native_conversations": 2,
+  "initial_actual_registration_setup": 2,
+  "automatic_model_condition_retries": 0,
+  "actors": [
+    {
+      "role": "reviewer",
+      "native_CID_sha256": "ecd18ac879ee5a67dc131a9c5dad72edcc6d839138a66dcfcbd767da2a29dbb7",
+      "PID": 74180,
+      "lstart": "Thu Oct 29 09:09:26 2026",
+      "home_sha256": "8f68eb952a346564ce4e74fa28f6be1313901a8164edfe6761ea0f8bc4a71fe4",
+      "cwd_sha256": "7b35434a4600764e49ec580f2f70dbf6fe50086ba2418c14cdc6e81234db59fa"
+    },
+    {
+      "role": "sender",
+      "native_CID_sha256": "35777f2be61a62cc32716c01d4c69945b21516b3970cc3b7bc260fc6f8dd05b6",
+      "PID": 74181,
+      "lstart": "Thu Oct 29 09:09:26 2026",
+      "home_sha256": "8f68eb952a346564ce4e74fa28f6be1313901a8164edfe6761ea0f8bc4a71fe4",
+      "cwd_sha256": "7b35434a4600764e49ec580f2f70dbf6fe50086ba2418c14cdc6e81234db59fa"
+    }
+  ],
+  "matrix": [
+    {
+      "case": "normal",
+      "source_setup_sha256": "f2d3bda7ae80fc4b2f1ebe62562da611b1eb34ea17b651c4775f44cf4e501bd7",
+      "marker_sha256": "b89eba1652b3d736df7aeeec3668a38480cd41e16d6583b021369c4649802ca3",
+      "mode_after": "0o600",
+      "result": "positive OS read + actual inline copy/receiver entry read",
+      "receiver_read": {
+        "bytes": 90,
+        "sha256": "f2d3bda7ae80fc4b2f1ebe62562da611b1eb34ea17b651c4775f44cf4e501bd7",
+        "marker_sha256": "b89eba1652b3d736df7aeeec3668a38480cd41e16d6583b021369c4649802ca3",
+        "marker_matches_setup": true,
+        "actual_MCP_entry_read": true
+      },
+      "source_original_reopened_by_auditor": true
+    },
+    {
+      "case": "hidden",
+      "source_setup_sha256": "92fbf8b0b4eff34d63a8484fb9e977469567c26f6737e8ed693e5ab5e4e98186",
+      "marker_sha256": "c03539e8ebef57b64e822fbea14ae897f9eeb3a521daa5b2eff78800ff29e041",
+      "mode_after": "0o600",
+      "result": "positive OS read + actual inline copy/receiver entry read",
+      "receiver_read": {
+        "bytes": 90,
+        "sha256": "92fbf8b0b4eff34d63a8484fb9e977469567c26f6737e8ed693e5ab5e4e98186",
+        "marker_sha256": "c03539e8ebef57b64e822fbea14ae897f9eeb3a521daa5b2eff78800ff29e041",
+        "marker_matches_setup": true,
+        "actual_MCP_entry_read": true
+      },
+      "source_original_reopened_by_auditor": true
+    },
+    {
+      "case": "outside",
+      "source_setup_sha256": "d8edd7ca59beb6855d66a617d895e278e8e7f305a9c610733a75946f25cc25aa",
+      "marker_sha256": "34e9e1639db4035ca5653e4aeba824b5caf2bb8d5bef44f4cec0499fdfde99a9",
+      "mode_after": "0o600",
+      "result": "positive OS read + actual inline copy/receiver entry read",
+      "receiver_read": {
+        "bytes": 91,
+        "sha256": "d8edd7ca59beb6855d66a617d895e278e8e7f305a9c610733a75946f25cc25aa",
+        "marker_sha256": "34e9e1639db4035ca5653e4aeba824b5caf2bb8d5bef44f4cec0499fdfde99a9",
+        "marker_matches_setup": true,
+        "actual_MCP_entry_read": true
+      },
+      "source_original_reopened_by_auditor": true
+    },
+    {
+      "case": "mode000",
+      "source_setup_sha256": "547124f9a5811e0a59ce32da01e1cb1410bc07fd42e058a07262761c767dc201",
+      "marker_sha256": "7313506a3ef0edb8cbcd9f0b46e91312dac85b4da0a0d19617e76f7ac438f68c",
+      "mode_after": "0o0",
+      "result": "actual OS read denied, not transmitted",
+      "receiver_read": null,
+      "source_original_reopened_by_auditor": false
+    },
+    {
+      "case": "excluded-name",
+      "source_setup_sha256": "82bc223c0b6d5182acd6d8a0ea0d484f864635ed0eccb1e1922c2d99b5a05b4a",
+      "marker_sha256": "d622d5b17d784b07cdf77696c9988ab03cf7beefbf142e25b9110382063dc3e6",
+      "mode_after": "0o600",
+      "result": "not transmitted by model choice; API exclusion unobserved",
+      "receiver_read": null,
+      "source_original_reopened_by_auditor": false
+    },
+    {
+      "case": "excluded-path",
+      "source_setup_sha256": "48a03bb8c58825795745b863d8f68a0edc18f36cc555375ddb4ed42e5270a7ae",
+      "marker_sha256": "5a708031dbf10abbe1c2ddea9ac05631a929cc0fd2996532c13bd2bfb3ffdebd",
+      "mode_after": "0o600",
+      "result": "not transmitted by model choice; API exclusion unobserved",
+      "receiver_read": null,
+      "source_original_reopened_by_auditor": false
+    }
+  ],
+  "MCP_calls": 12,
+  "MCP_calls_by_tool": {
+    "xsm_discover": 1,
+    "xsm_ask": 1,
+    "xsm_question_status": 1,
+    "xsm_ack": 2,
+    "xsm_inbox": 2,
+    "xsm_files": 4,
+    "xsm_send": 1
+  },
+  "RPC_isError": [],
+  "sender_original_body_marker_count": 0,
+  "sender_OS_read_positive_cases": 3,
+  "OS_mode000_errno13": true,
+  "mode000_changed_after_setup": false,
+  "privileged_or_chmod_model_commands": [],
+  "actual_receiver_entry_reads": 3,
+  "copy_entries_outgoing_incoming": [
+    {
+      "kind": "outgoing",
+      "case": "normal",
+      "copy_sha256": "f2d3bda7ae80fc4b2f1ebe62562da611b1eb34ea17b651c4775f44cf4e501bd7",
+      "owner_matches_actual_CID": true,
+      "source_origin": "caller-inline, no source-path authority proven"
+    },
+    {
+      "kind": "outgoing",
+      "case": "hidden",
+      "copy_sha256": "92fbf8b0b4eff34d63a8484fb9e977469567c26f6737e8ed693e5ab5e4e98186",
+      "owner_matches_actual_CID": true,
+      "source_origin": "caller-inline, no source-path authority proven"
+    },
+    {
+      "kind": "outgoing",
+      "case": "outside",
+      "copy_sha256": "d8edd7ca59beb6855d66a617d895e278e8e7f305a9c610733a75946f25cc25aa",
+      "owner_matches_actual_CID": true,
+      "source_origin": "caller-inline, no source-path authority proven"
+    },
+    {
+      "kind": "incoming",
+      "case": "normal",
+      "copy_sha256": "f2d3bda7ae80fc4b2f1ebe62562da611b1eb34ea17b651c4775f44cf4e501bd7",
+      "owner_matches_actual_CID": true,
+      "source_origin": "caller-inline, no source-path authority proven"
+    },
+    {
+      "kind": "incoming",
+      "case": "hidden",
+      "copy_sha256": "92fbf8b0b4eff34d63a8484fb9e977469567c26f6737e8ed693e5ab5e4e98186",
+      "owner_matches_actual_CID": true,
+      "source_origin": "caller-inline, no source-path authority proven"
+    },
+    {
+      "kind": "incoming",
+      "case": "outside",
+      "copy_sha256": "d8edd7ca59beb6855d66a617d895e278e8e7f305a9c610733a75946f25cc25aa",
+      "owner_matches_actual_CID": true,
+      "source_origin": "caller-inline, no source-path authority proven"
+    }
+  ],
+  "allowed_cases_missing_after_storage": [],
+  "negative_cases_transmitted": [],
+  "frozen_original_metadata_sources_empty": true,
+  "CLI_original_path": "unobserved: model did not invoke CLI send/ask, identity/storage/transport premise not tested; not an observed denial",
+  "CLI_attempts": 0,
+  "inline_path_exclusion": "unknown guarantee: MCP receives no provenance path, server path opening not attempted",
+  "excluded_name_and_path_API_negative": "unobserved; model withheld known excluded fixture files, no fabricated server rejection",
+  "question_ID_sha256": "1eb42a1a05a0234e102a9454b40a1d49734ca836b4490ac5adf186eda7cfaa72",
+  "final_reply_ID_sha256": "3040ef0e3d9dd0f68bea4e5da026b41d4e990d074cc9ba23bc7c3d3b5fbb2299",
+  "correlated_reply_to_preserved": true,
+  "question_final_outcome": "succeeded",
+  "actual_ACK_IDs": 2,
+  "source_symlink_Unicode_fixtures_rerun": false,
+  "controller_body_relay_manual_ACK_index_repair": false,
+  "profile_unchanged": false,
+  "profile_drift_changed_names": [
+    "config.toml"
+  ],
+  "profile_drift_writer": "unknown; evaluator/model commands contain no profile edits",
+  "diagnostic_command_failure": "sender rg exit2: .codex directory absent; local search, not attachment source failure",
+  "preparation_error": "stdin Unicode SyntaxError before native launch; original note retained, no model retry",
+  "known_process_final_audit": [
+    {
+      "pid": 74176,
+      "recorded_lstart": "Thu Oct 29 09:09:26 2026",
+      "same_owned_process_alive": false
+    },
+    {
+      "pid": 74178,
+      "recorded_lstart": "Thu Oct 29 09:09:26 2026",
+      "same_owned_process_alive": false
+    },
+    {
+      "pid": 74410,
+      "recorded_lstart": "Thu Oct 29 09:09:26 2026",
+      "same_owned_process_alive": false
+    },
+    {
+      "pid": 74428,
+      "recorded_lstart": "Thu Oct 29 09:09:27 2026",
+      "same_owned_process_alive": false
+    },
+    {
+      "pid": 74181,
+      "recorded_lstart": "Thu Oct 29 09:09:26 2026",
+      "same_owned_process_alive": false
+    },
+    {
+      "pid": 74411,
+      "recorded_lstart": "Thu Oct 29 09:09:26 2026",
+      "same_owned_process_alive": false
+    },
+    {
+      "pid": 74429,
+      "recorded_lstart": "Thu Oct 29 09:09:27 2026",
+      "same_owned_process_alive": false
+    },
+    {
+      "pid": 74180,
+      "recorded_lstart": "Thu Oct 29 09:09:26 2026",
+      "same_owned_process_alive": false
+    }
+  ],
+  "private_raw_root": "/private/tmp/material-boundary-native-e36_3_p2",
+  "started_utc": "2026-10-29T00:09:26.782409+00:00",
+  "finished_utc": "2026-10-29T00:10:20.875950+00:00",
+  "whole_A19_03_proven": false,
+  "native_turn_events": [
+    {
+      "CID_sha256": "ecd18ac879ee5a67dc131a9c5dad72edcc6d839138a66dcfcbd767da2a29dbb7",
+      "raw_path": "/private/tmp/material-boundary-native-e36_3_p2/native-rollouts/ecd18ac879ee5a67dc131a9c5dad72edcc6d839138a66dcfcbd767da2a29dbb7.jsonl",
+      "raw_sha256": "12e470de2da4fe7acf68f042a2e93d56700df7a0504807190cd57c56190da375",
+      "task_started": 1,
+      "task_complete": 1
+    },
+    {
+      "CID_sha256": "35777f2be61a62cc32716c01d4c69945b21516b3970cc3b7bc260fc6f8dd05b6",
+      "raw_path": "/private/tmp/material-boundary-native-e36_3_p2/native-rollouts/35777f2be61a62cc32716c01d4c69945b21516b3970cc3b7bc260fc6f8dd05b6.jsonl",
+      "raw_sha256": "35c48734adb06f73ef2c43a2f0d4ae2b42991e386b586d762797246049ee28e3",
+      "task_started": 1,
+      "task_complete": 1
+    }
+  ],
+  "source_files_manifest_verified": 315,
+  "tested_primary_paths": 135
+}

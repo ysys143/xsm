@@ -1,0 +1,1076 @@
+{
+  "scope": "P13 local J03/J04 natural-goal sample only, not all J01-J09",
+  "fixture_root": "/private/tmp/p13-natural-42vvcj6t",
+  "b05_final_manifest": {
+    "file_count": 312,
+    "manifest_sha256": "ddba8a9bec25aa372ec1144b8388bb99448506e161cc18d02460f9d823e2c2df",
+    "matches": true,
+    "changed_paths": []
+  },
+  "goals": {
+    "reviewer": "이 저장소 검토 담당 a1입니다. 동료 질문을 받아 3차례 검토가 끝날 때까지 세션을 유지하세요.",
+    "initiator": "xsm으로 동료 a1을 찾아 2+2=5 제안을 검토받고 반례를 고쳐 재검토받으세요. 0+0=0 경계도 독립 검토받아 결과를 보고하세요."
+  },
+  "conditions": [
+    {
+      "condition": "B05-final",
+      "runtime": "/private/tmp/xsm-b05-final-cuya9ah7",
+      "status": "not-completed-original-sample",
+      "fixture_state": "/private/tmp/p13-natural-42vvcj6t/B05-final/state",
+      "source_before": {
+        "file_count": 312,
+        "manifest_sha256": "ddba8a9bec25aa372ec1144b8388bb99448506e161cc18d02460f9d823e2c2df",
+        "matches": true,
+        "changed_paths": []
+      },
+      "setup_registry_calls": 2,
+      "controller_message_calls": 0,
+      "controller_ack_calls": 0,
+      "controller_index_corrections": 0,
+      "factory_only_ignore_user_config": true,
+      "standard_server_name": "xsm",
+      "skills": "native home discovery left unchanged; no injected skill text or per-eval procedure",
+      "model_override": false,
+      "allowed_tools_override": false,
+      "user_clicks": 0,
+      "user_commands": 0,
+      "user_approvals": 0,
+      "os_ui_actions": 0,
+      "bootstrap_protocol_calls": "not exposed in native event stream",
+      "reviewer_invocation": {
+        "role": "reviewer",
+        "profile": "/Users/jaesolshin/.codex",
+        "goal": "이 저장소 검토 담당 a1입니다. 동료 질문을 받아 3차례 검토가 끝날 때까지 세션을 유지하세요.",
+        "pid": 22536,
+        "lstart": "Thu Oct 29 04:15:42 2026",
+        "invocation_without_goal": [
+          "codex",
+          "exec",
+          "--ignore-user-config",
+          "--json",
+          "--sandbox",
+          "workspace-write",
+          "-c",
+          "approval_policy=\"never\"",
+          "-c",
+          "mcp_servers.xsm.command=\"/usr/bin/python3\"",
+          "-c",
+          "mcp_servers.xsm.args=[\"-m\",\"xsm\",\"mcp\"]",
+          "-c",
+          "mcp_servers.xsm.cwd=\"/private/tmp/xsm-b05-final-cuya9ah7\"",
+          "-c",
+          "mcp_servers.xsm.env.XSM_HOME=\"/private/tmp/p13-natural-42vvcj6t/B05-final/state\"",
+          "-c",
+          "mcp_servers.xsm.env.CODEX_HOME=\"/Users/jaesolshin/.codex\"",
+          "-c",
+          "mcp_servers.xsm.env.PYTHONPATH=\"/private/tmp/xsm-b05-final-cuya9ah7\"",
+          "-c",
+          "mcp_servers.xsm.env.PYTHONDONTWRITEBYTECODE=\"1\""
+        ],
+        "goal_sha256": "574336853985913d38312e6dcfe72aa01663eb591e86619805ba38f8191176de"
+      },
+      "initiator_invocation": {
+        "role": "initiator",
+        "profile": "/Users/jaesolshin/.codex-3",
+        "goal": "xsm으로 동료 a1을 찾아 2+2=5 제안을 검토받고 반례를 고쳐 재검토받으세요. 0+0=0 경계도 독립 검토받아 결과를 보고하세요.",
+        "pid": 23072,
+        "lstart": "Thu Oct 29 04:15:44 2026",
+        "invocation_without_goal": [
+          "codex",
+          "exec",
+          "--ignore-user-config",
+          "--json",
+          "--sandbox",
+          "workspace-write",
+          "-c",
+          "approval_policy=\"never\"",
+          "-c",
+          "mcp_servers.xsm.command=\"/usr/bin/python3\"",
+          "-c",
+          "mcp_servers.xsm.args=[\"-m\",\"xsm\",\"mcp\"]",
+          "-c",
+          "mcp_servers.xsm.cwd=\"/private/tmp/xsm-b05-final-cuya9ah7\"",
+          "-c",
+          "mcp_servers.xsm.env.XSM_HOME=\"/private/tmp/p13-natural-42vvcj6t/B05-final/state\"",
+          "-c",
+          "mcp_servers.xsm.env.CODEX_HOME=\"/Users/jaesolshin/.codex-3\"",
+          "-c",
+          "mcp_servers.xsm.env.PYTHONPATH=\"/private/tmp/xsm-b05-final-cuya9ah7\"",
+          "-c",
+          "mcp_servers.xsm.env.PYTHONDONTWRITEBYTECODE=\"1\""
+        ],
+        "goal_sha256": "e594e6ac10f1f2f500181dc00d01fe18eb337b0774f8c7c5556d70cb16ec16ed"
+      },
+      "reviews": [
+        {
+          "request_sha256": "39828196a8094163d4c7812e12b163ba09b3fcedad7d391e97853f0d3a444277",
+          "reply_sha256": "71aeeb4c3bf0b2e057a6727fda274aba3bee6d640a910cec99c2342f1a972bb2",
+          "request_body_sha256": "26dd655c0a0313d98d128211e0935db0dbcabee87dcedb5658421c1c4b92a274",
+          "reply_body_sha256": "817c44cc8b6bcdbf496026e5f44cd66dd2b783a4ba38e44ce3570f4526b816f6",
+          "proposal_kind": "proposal",
+          "outcome": "succeeded",
+          "initiator_received_actual_body": true,
+          "reply_mentions_4": true,
+          "reply_mentions_0": false,
+          "evidence": "canonical native-endpoint-bound body"
+        },
+        {
+          "request_sha256": "6644d93821ecfeba5220f0eb122ca5252302931332cad4d00529c72efc549407",
+          "reply_sha256": "644a9d678be936f7e31a30617c0468cb0eede4cd43419bb8d796fc9a61afe719",
+          "request_body_sha256": "5b14cec56b88c2d0ef66e916016237bd5f2910587c393935decf2857b26fa70e",
+          "reply_body_sha256": "40f619ed618ff291a76a940d8770f0c62f1e82bf433f022ea01b33f197977afb",
+          "proposal_kind": "proposal",
+          "outcome": "succeeded",
+          "initiator_received_actual_body": true,
+          "reply_mentions_4": true,
+          "reply_mentions_0": false,
+          "evidence": "canonical native-endpoint-bound body"
+        },
+        {
+          "request_sha256": "4622e1d8c0ac853ba101d7ca3ff69dde15e561d3d9314750a9b86eaa38131d19",
+          "reply_sha256": "23e005ad279e956038038af24daa236226017992441d65b62bba29f68b4636af",
+          "request_body_sha256": "b268004cb9e0a4f2b2c5442a8a59992556d9feb2beba033a93c3c0caafdb865f",
+          "reply_body_sha256": "0dfa3913998ab8673a602c9779c608215c9e2e4f46a352c26f4ee93b8f3face8",
+          "proposal_kind": "other",
+          "outcome": "succeeded",
+          "initiator_received_actual_body": true,
+          "reply_mentions_4": false,
+          "reply_mentions_0": true,
+          "evidence": "canonical native-endpoint-bound body"
+        },
+        {
+          "request_sha256": "05d28b0002eeb71d9cbe214c4e06d6d694b7115bbd1c68638ebfcc0b5a818ef7",
+          "reply_sha256": "2b999eaf7cc65d32bb041bd0f8303a80a0224f5d89eb4edcece7182d306545b3",
+          "request_body_sha256": "de23c3d9cffc7b3e41e7c09311b5f4672337a02cec7e4f27a826448244c86a59",
+          "reply_body_sha256": "8c3f64393fc40dec6dde4ef47cadb7f4ff5388b51960f1b0f7b7ebb9802c874c",
+          "proposal_kind": "boundary",
+          "outcome": "succeeded",
+          "initiator_received_actual_body": true,
+          "reply_mentions_4": false,
+          "reply_mentions_0": true,
+          "evidence": "canonical native-endpoint-bound body"
+        }
+      ],
+      "received_review_categories": [
+        "boundary",
+        "other",
+        "proposal"
+      ],
+      "first_actual_reply_seconds": 19.926,
+      "duration_seconds": 80.598,
+      "actors": [
+        {
+          "role": "reviewer",
+          "native_session_id": "01a183f0-8f76-7ba1-b17c-d7b1857f69a9",
+          "registered_name": "a1",
+          "mcp_pid": 22759,
+          "setup_registration_seconds": 1.302,
+          "registration_preceded_first_agent_call": true,
+          "calls": [
+            {
+              "kind": "command_execution",
+              "complete": true,
+              "seconds_from_actor_start": 6.45,
+              "command_sha256": "93ccf4ff2fbfa6bb16ff01eeeafe5638976b74dd5d9526a79d0d5f1b799465cf",
+              "exit_code": 0,
+              "sandbox_shell_send_attempt": false,
+              "skill_read": false,
+              "sandbox_failure": false
+            },
+            {
+              "kind": "command_execution",
+              "complete": true,
+              "seconds_from_actor_start": 8.963,
+              "command_sha256": "b43d3ab8fd84f92dbd33d13020a229e5f433134189752855403e929a6b59330b",
+              "exit_code": 0,
+              "sandbox_shell_send_attempt": false,
+              "skill_read": true,
+              "sandbox_failure": true
+            },
+            {
+              "kind": "command_execution",
+              "complete": true,
+              "seconds_from_actor_start": 12.318,
+              "command_sha256": "c2b5a9159c90c9fd0e6ba09bd11d51ba664beb04fd4c38882346cf4c37acaebd",
+              "exit_code": 0,
+              "sandbox_shell_send_attempt": false,
+              "skill_read": false,
+              "sandbox_failure": true
+            },
+            {
+              "kind": "mcp_tool_call",
+              "complete": true,
+              "seconds_from_actor_start": 12.318,
+              "server": "xsm",
+              "tool": "xsm_inbox",
+              "error": null,
+              "argument_keys": [
+                "wait"
+              ],
+              "arguments_sha256": "afbd535fae0ed344ed8c09645dbdce88099016ed0bbe76b9a48d2d07c7a1ca19"
+            },
+            {
+              "kind": "mcp_tool_call",
+              "complete": true,
+              "seconds_from_actor_start": 15.453,
+              "server": "xsm",
+              "tool": "xsm_inbox",
+              "error": null,
+              "argument_keys": [
+                "wait"
+              ],
+              "arguments_sha256": "8fbb77fff24d4078f45adaa64a86bf66d024e2993a681b22ed83957cdd3c043d"
+            },
+            {
+              "kind": "mcp_tool_call",
+              "complete": true,
+              "seconds_from_actor_start": 21.127,
+              "server": "xsm",
+              "tool": "xsm_ack",
+              "error": null,
+              "argument_keys": [
+                "tokens"
+              ],
+              "arguments_sha256": "6f4a010b7ab77120ef98e02aa6fdfeff12c40d538676179bf8e841abf80fd257"
+            },
+            {
+              "kind": "mcp_tool_call",
+              "complete": true,
+              "seconds_from_actor_start": 21.127,
+              "server": "xsm",
+              "tool": "xsm_send",
+              "error": null,
+              "argument_keys": [
+                "kind",
+                "outcome",
+                "reply_to",
+                "target",
+                "text"
+              ],
+              "arguments_sha256": "cf658df21c545a46ec89487ae84c0a3ba7a5847f11c48ce27c14710900332ef0"
+            },
+            {
+              "kind": "mcp_tool_call",
+              "complete": true,
+              "seconds_from_actor_start": 28.894,
+              "server": "xsm",
+              "tool": "xsm_inbox",
+              "error": null,
+              "argument_keys": [
+                "wait"
+              ],
+              "arguments_sha256": "8fbb77fff24d4078f45adaa64a86bf66d024e2993a681b22ed83957cdd3c043d"
+            },
+            {
+              "kind": "mcp_tool_call",
+              "complete": true,
+              "seconds_from_actor_start": 36.067,
+              "server": "xsm",
+              "tool": "xsm_ack",
+              "error": null,
+              "argument_keys": [
+                "tokens"
+              ],
+              "arguments_sha256": "ef0c34c7179e8ac6ddf393d068ed51aed40dcb7f3cc94b1cfd65192fb199d777"
+            },
+            {
+              "kind": "command_execution",
+              "complete": true,
+              "seconds_from_actor_start": 36.276,
+              "command_sha256": "a4069616f99cd23a9692e43083210c7e6671f6d532166eb3dcbde7c585fbda6e",
+              "exit_code": 0,
+              "sandbox_shell_send_attempt": false,
+              "skill_read": false,
+              "sandbox_failure": false
+            },
+            {
+              "kind": "mcp_tool_call",
+              "complete": true,
+              "seconds_from_actor_start": 36.276,
+              "server": "xsm",
+              "tool": "xsm_send",
+              "error": null,
+              "argument_keys": [
+                "kind",
+                "outcome",
+                "reply_to",
+                "target",
+                "text"
+              ],
+              "arguments_sha256": "72f93f182ff044c84d797423762261fe0dfa0bf3796cba8bc5659c73a147a6e7"
+            },
+            {
+              "kind": "mcp_tool_call",
+              "complete": true,
+              "seconds_from_actor_start": 45.437,
+              "server": "xsm",
+              "tool": "xsm_inbox",
+              "error": null,
+              "argument_keys": [
+                "wait"
+              ],
+              "arguments_sha256": "8fbb77fff24d4078f45adaa64a86bf66d024e2993a681b22ed83957cdd3c043d"
+            },
+            {
+              "kind": "mcp_tool_call",
+              "complete": true,
+              "seconds_from_actor_start": 52.338,
+              "server": "xsm",
+              "tool": "xsm_ack",
+              "error": null,
+              "argument_keys": [
+                "tokens"
+              ],
+              "arguments_sha256": "42ee41e559830b99a448a70b8c9f582a8d76ce57dea1e9a3122515974f650750"
+            },
+            {
+              "kind": "command_execution",
+              "complete": true,
+              "seconds_from_actor_start": 52.55,
+              "command_sha256": "03f5e3a50fa8f4d2e88c7adb8883819cd81febe0dcab41484a06ab137cc9ac44",
+              "exit_code": 0,
+              "sandbox_shell_send_attempt": false,
+              "skill_read": false,
+              "sandbox_failure": false
+            },
+            {
+              "kind": "mcp_tool_call",
+              "complete": true,
+              "seconds_from_actor_start": 52.55,
+              "server": "xsm",
+              "tool": "xsm_send",
+              "error": null,
+              "argument_keys": [
+                "kind",
+                "outcome",
+                "reply_to",
+                "target",
+                "text"
+              ],
+              "arguments_sha256": "ca1033e509c0c90901d0344b66488752b08e6df0c9f2883dd6a51b50b9eb2c3a"
+            },
+            {
+              "kind": "mcp_tool_call",
+              "complete": true,
+              "seconds_from_actor_start": 62.099,
+              "server": "xsm",
+              "tool": "xsm_inbox",
+              "error": null,
+              "argument_keys": [
+                "wait"
+              ],
+              "arguments_sha256": "8fbb77fff24d4078f45adaa64a86bf66d024e2993a681b22ed83957cdd3c043d"
+            },
+            {
+              "kind": "mcp_tool_call",
+              "complete": true,
+              "seconds_from_actor_start": 69.7,
+              "server": "xsm",
+              "tool": "xsm_ack",
+              "error": null,
+              "argument_keys": [
+                "tokens"
+              ],
+              "arguments_sha256": "c3a7e08cf530799bf287fddebb6899dc00a0c7e433d78154fc769c312059eb26"
+            },
+            {
+              "kind": "command_execution",
+              "complete": true,
+              "seconds_from_actor_start": 69.7,
+              "command_sha256": "3c3abe7c17bd19bd1da1f90ba2272b7b9c18d8175852631d55ddea56c72ed5dd",
+              "exit_code": 0,
+              "sandbox_shell_send_attempt": false,
+              "skill_read": false,
+              "sandbox_failure": false
+            },
+            {
+              "kind": "mcp_tool_call",
+              "complete": true,
+              "seconds_from_actor_start": 69.7,
+              "server": "xsm",
+              "tool": "xsm_send",
+              "error": null,
+              "argument_keys": [
+                "kind",
+                "outcome",
+                "reply_to",
+                "target",
+                "text"
+              ],
+              "arguments_sha256": "89d076b71a344a6a92500a18b0fbd607921b6102c822096e8544319d0cbecbe7"
+            }
+          ],
+          "item_type_counts": {
+            "command_execution": 6,
+            "mcp_tool_call": 13
+          },
+          "agent_mcp_call_count": 13,
+          "agent_shell_call_count": 6,
+          "tool_error_count": 2,
+          "first_wrong_choice": null,
+          "exit_code": 0,
+          "events_path": "/private/tmp/p13-natural-42vvcj6t/B05-final/reviewer.jsonl",
+          "stderr_path": "/private/tmp/p13-natural-42vvcj6t/B05-final/reviewer.stderr",
+          "events_sha256": "e3d7378ddfff59f34b62a3df5e6e9b60a77ddc9d1d91be9a331340a28ef86a59"
+        },
+        {
+          "role": "initiator",
+          "native_session_id": "01a183f0-9437-7c33-87a5-f1f05096e19d",
+          "registered_name": null,
+          "mcp_pid": 23220,
+          "setup_registration_seconds": 0.862,
+          "registration_preceded_first_agent_call": true,
+          "calls": [
+            {
+              "kind": "command_execution",
+              "complete": true,
+              "seconds_from_actor_start": 6.098,
+              "command_sha256": "d2b967f10faa8b533b86377b3024334a53947c1a0596f22ea4bf4e40b035a6af",
+              "exit_code": 0,
+              "sandbox_shell_send_attempt": false,
+              "skill_read": false,
+              "sandbox_failure": false
+            },
+            {
+              "kind": "mcp_tool_call",
+              "complete": true,
+              "seconds_from_actor_start": 8.389,
+              "server": "xsm",
+              "tool": "xsm_discover",
+              "error": null,
+              "argument_keys": [],
+              "arguments_sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+            },
+            {
+              "kind": "mcp_tool_call",
+              "complete": true,
+              "seconds_from_actor_start": 11.74,
+              "server": "xsm",
+              "tool": "xsm_connect",
+              "error": null,
+              "argument_keys": [
+                "target",
+                "wait"
+              ],
+              "arguments_sha256": "65e4bcc5a55d8069039880e0008939e3bee70654567e2f93512e30e4f6073b43"
+            },
+            {
+              "kind": "mcp_tool_call",
+              "complete": true,
+              "seconds_from_actor_start": 24.757,
+              "server": "xsm",
+              "tool": "xsm_inbox",
+              "error": null,
+              "argument_keys": [],
+              "arguments_sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+            },
+            {
+              "kind": "mcp_tool_call",
+              "complete": true,
+              "seconds_from_actor_start": 24.968,
+              "server": "xsm",
+              "tool": "xsm_ask",
+              "error": null,
+              "argument_keys": [
+                "target",
+                "text",
+                "wait"
+              ],
+              "arguments_sha256": "ccef3c88396db9346ade03ba9a4b910c0ba511996a82eb61132a63561e5e1430"
+            },
+            {
+              "kind": "mcp_tool_call",
+              "complete": true,
+              "seconds_from_actor_start": 41.891,
+              "server": "xsm",
+              "tool": "xsm_ack",
+              "error": null,
+              "argument_keys": [
+                "tokens"
+              ],
+              "arguments_sha256": "fb543fb8086683cecc8cb689ea209860e79a7edc4410830cfbad76b5f52a8f29"
+            },
+            {
+              "kind": "mcp_tool_call",
+              "complete": true,
+              "seconds_from_actor_start": 42.104,
+              "server": "xsm",
+              "tool": "xsm_inbox",
+              "error": null,
+              "argument_keys": [],
+              "arguments_sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+            },
+            {
+              "kind": "mcp_tool_call",
+              "complete": true,
+              "seconds_from_actor_start": 42.306,
+              "server": "xsm",
+              "tool": "xsm_ask",
+              "error": null,
+              "argument_keys": [
+                "target",
+                "text",
+                "wait"
+              ],
+              "arguments_sha256": "18befa1583ba1c56ee919778516d7eb22875d63cbcab44fb61b797318bb49ec5"
+            },
+            {
+              "kind": "mcp_tool_call",
+              "complete": true,
+              "seconds_from_actor_start": 58.532,
+              "server": "xsm",
+              "tool": "xsm_ack",
+              "error": null,
+              "argument_keys": [
+                "tokens"
+              ],
+              "arguments_sha256": "27e69ae13cf61010be0123d9b40135d7987ddd3f5e68d7d9ecfae7dd18e78feb"
+            },
+            {
+              "kind": "mcp_tool_call",
+              "complete": true,
+              "seconds_from_actor_start": 58.532,
+              "server": "xsm",
+              "tool": "xsm_inbox",
+              "error": null,
+              "argument_keys": [],
+              "arguments_sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+            },
+            {
+              "kind": "mcp_tool_call",
+              "complete": true,
+              "seconds_from_actor_start": 58.948,
+              "server": "xsm",
+              "tool": "xsm_ask",
+              "error": null,
+              "argument_keys": [
+                "target",
+                "text",
+                "wait"
+              ],
+              "arguments_sha256": "f1b5c4393740bbb583ac46326c1b7e26626fe695ea4737b048a13b0166c1c365"
+            },
+            {
+              "kind": "mcp_tool_call",
+              "complete": true,
+              "seconds_from_actor_start": 70.49,
+              "server": "xsm",
+              "tool": "xsm_ack",
+              "error": null,
+              "argument_keys": [
+                "tokens"
+              ],
+              "arguments_sha256": "d0240b0fbaf1782a0221a9d5e1a830bcabc2434665852bdfcd0b23e7a2766b36"
+            },
+            {
+              "kind": "mcp_tool_call",
+              "complete": true,
+              "seconds_from_actor_start": 70.695,
+              "server": "xsm",
+              "tool": "xsm_inbox",
+              "error": null,
+              "argument_keys": [],
+              "arguments_sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+            },
+            {
+              "kind": "mcp_tool_call",
+              "complete": true,
+              "seconds_from_actor_start": 72.903,
+              "server": "xsm",
+              "tool": "xsm_ack",
+              "error": null,
+              "argument_keys": [
+                "tokens"
+              ],
+              "arguments_sha256": "a61be761b79e2fe80b508ffd11a840af2ecb1c6883ea7793c4ed05700af40320"
+            }
+          ],
+          "item_type_counts": {
+            "command_execution": 1,
+            "mcp_tool_call": 13
+          },
+          "agent_mcp_call_count": 13,
+          "agent_shell_call_count": 1,
+          "tool_error_count": 0,
+          "first_wrong_choice": null,
+          "exit_code": 0,
+          "events_path": "/private/tmp/p13-natural-42vvcj6t/B05-final/initiator.jsonl",
+          "stderr_path": "/private/tmp/p13-natural-42vvcj6t/B05-final/initiator.stderr",
+          "events_sha256": "6a41ef59957054e7c6c4e1c22222fbb88bd1371186c2f00c1234d4c89fe4de37"
+        }
+      ],
+      "cleanup": [],
+      "owned_processes_after": [
+        {
+          "role": "reviewer",
+          "native_alive": false,
+          "mcp_same_generation_alive": false
+        },
+        {
+          "role": "initiator",
+          "native_alive": false,
+          "mcp_same_generation_alive": false
+        }
+      ],
+      "profile_settings_and_auth_metadata_unchanged": true,
+      "source_after": {
+        "file_count": 312,
+        "manifest_sha256": "ddba8a9bec25aa372ec1144b8388bb99448506e161cc18d02460f9d823e2c2df",
+        "matches": true,
+        "changed_paths": []
+      },
+      "source_unchanged": true
+    },
+    {
+      "condition": "old-0.4.20",
+      "runtime": "/Users/jaesolshin/.xsm/runtime/2389da782089",
+      "status": "cleanup-not-verified",
+      "fixture_state": "/private/tmp/p13-natural-42vvcj6t/old-0.4.20/state",
+      "source_before": {
+        "file_count": 44,
+        "manifest_sha256": "d20f5569b3bdf943b878863b5a27dca858cdd4bc2d522ef1ed342a24c83419e6",
+        "matches": true,
+        "changed_paths": []
+      },
+      "setup_registry_calls": 2,
+      "controller_message_calls": 0,
+      "controller_ack_calls": 0,
+      "controller_index_corrections": 0,
+      "factory_only_ignore_user_config": true,
+      "standard_server_name": "xsm",
+      "skills": "native home discovery left unchanged; no injected skill text or per-eval procedure",
+      "model_override": false,
+      "allowed_tools_override": false,
+      "user_clicks": 0,
+      "user_commands": 0,
+      "user_approvals": 0,
+      "os_ui_actions": 0,
+      "bootstrap_protocol_calls": "not exposed in native event stream",
+      "reviewer_invocation": {
+        "role": "reviewer",
+        "profile": "/Users/jaesolshin/.codex",
+        "goal": "이 저장소 검토 담당 a1입니다. 동료 질문을 받아 3차례 검토가 끝날 때까지 세션을 유지하세요.",
+        "pid": 25138,
+        "lstart": "Thu Oct 29 04:17:03 2026",
+        "invocation_without_goal": [
+          "codex",
+          "exec",
+          "--ignore-user-config",
+          "--json",
+          "--sandbox",
+          "workspace-write",
+          "-c",
+          "approval_policy=\"never\"",
+          "-c",
+          "mcp_servers.xsm.command=\"/usr/bin/python3\"",
+          "-c",
+          "mcp_servers.xsm.args=[\"-m\",\"xsm\",\"mcp\"]",
+          "-c",
+          "mcp_servers.xsm.cwd=\"/Users/jaesolshin/.xsm/runtime/2389da782089\"",
+          "-c",
+          "mcp_servers.xsm.env.XSM_HOME=\"/private/tmp/p13-natural-42vvcj6t/old-0.4.20/state\"",
+          "-c",
+          "mcp_servers.xsm.env.CODEX_HOME=\"/Users/jaesolshin/.codex\"",
+          "-c",
+          "mcp_servers.xsm.env.PYTHONPATH=\"/Users/jaesolshin/.xsm/runtime/2389da782089\"",
+          "-c",
+          "mcp_servers.xsm.env.PYTHONDONTWRITEBYTECODE=\"1\""
+        ],
+        "goal_sha256": "574336853985913d38312e6dcfe72aa01663eb591e86619805ba38f8191176de"
+      },
+      "initiator_invocation": {
+        "role": "initiator",
+        "profile": "/Users/jaesolshin/.codex-3",
+        "goal": "xsm으로 동료 a1을 찾아 2+2=5 제안을 검토받고 반례를 고쳐 재검토받으세요. 0+0=0 경계도 독립 검토받아 결과를 보고하세요.",
+        "pid": 25555,
+        "lstart": "Thu Oct 29 04:17:03 2026",
+        "invocation_without_goal": [
+          "codex",
+          "exec",
+          "--ignore-user-config",
+          "--json",
+          "--sandbox",
+          "workspace-write",
+          "-c",
+          "approval_policy=\"never\"",
+          "-c",
+          "mcp_servers.xsm.command=\"/usr/bin/python3\"",
+          "-c",
+          "mcp_servers.xsm.args=[\"-m\",\"xsm\",\"mcp\"]",
+          "-c",
+          "mcp_servers.xsm.cwd=\"/Users/jaesolshin/.xsm/runtime/2389da782089\"",
+          "-c",
+          "mcp_servers.xsm.env.XSM_HOME=\"/private/tmp/p13-natural-42vvcj6t/old-0.4.20/state\"",
+          "-c",
+          "mcp_servers.xsm.env.CODEX_HOME=\"/Users/jaesolshin/.codex-3\"",
+          "-c",
+          "mcp_servers.xsm.env.PYTHONPATH=\"/Users/jaesolshin/.xsm/runtime/2389da782089\"",
+          "-c",
+          "mcp_servers.xsm.env.PYTHONDONTWRITEBYTECODE=\"1\""
+        ],
+        "goal_sha256": "e594e6ac10f1f2f500181dc00d01fe18eb337b0774f8c7c5556d70cb16ec16ed"
+      },
+      "reviews": [],
+      "received_review_categories": [],
+      "first_actual_reply_seconds": null,
+      "duration_seconds": 88.752,
+      "actors": [
+        {
+          "role": "reviewer",
+          "native_session_id": "01a183f1-c9b2-7890-9a51-31c016aa834d",
+          "registered_name": "a1",
+          "mcp_pid": 25272,
+          "setup_registration_seconds": 0.466,
+          "registration_preceded_first_agent_call": true,
+          "calls": [
+            {
+              "kind": "command_execution",
+              "complete": true,
+              "seconds_from_actor_start": 6.626,
+              "command_sha256": "2503d29f98f95c3e84989b7dda88933ae58879d444a15c72a6cd9aed53acd3c0",
+              "exit_code": 0,
+              "sandbox_shell_send_attempt": false,
+              "skill_read": false,
+              "sandbox_failure": false
+            },
+            {
+              "kind": "command_execution",
+              "complete": true,
+              "seconds_from_actor_start": 10.591,
+              "command_sha256": "ea515e5055301e7d95d6c1488a444f8a0425e7c5d41369addb2337cf47e0c22d",
+              "exit_code": 2,
+              "sandbox_shell_send_attempt": false,
+              "skill_read": true,
+              "sandbox_failure": false
+            },
+            {
+              "kind": "command_execution",
+              "complete": true,
+              "seconds_from_actor_start": 14.75,
+              "command_sha256": "4bcc07532e71c8075d561c2bc23b8ed5808aa34604448534259d36c2288d6579",
+              "exit_code": 0,
+              "sandbox_shell_send_attempt": false,
+              "skill_read": true,
+              "sandbox_failure": true
+            },
+            {
+              "kind": "mcp_tool_call",
+              "complete": true,
+              "seconds_from_actor_start": 14.75,
+              "server": "xsm",
+              "tool": "xsm_inbox",
+              "error": null,
+              "argument_keys": [
+                "wait"
+              ],
+              "arguments_sha256": "afbd535fae0ed344ed8c09645dbdce88099016ed0bbe76b9a48d2d07c7a1ca19"
+            },
+            {
+              "kind": "command_execution",
+              "complete": true,
+              "seconds_from_actor_start": 18.706,
+              "command_sha256": "1110b388bbdeb6513fb0a33a03f5c6614009329f34244eb5b232c2c720f6bbd6",
+              "exit_code": 0,
+              "sandbox_shell_send_attempt": false,
+              "skill_read": false,
+              "sandbox_failure": true
+            },
+            {
+              "kind": "mcp_tool_call",
+              "complete": true,
+              "seconds_from_actor_start": 21.447,
+              "server": "xsm",
+              "tool": "xsm_inbox",
+              "error": null,
+              "argument_keys": [
+                "wait"
+              ],
+              "arguments_sha256": "4aae933418e3a3160aeb03a477b97d841527d0426aabd1d21d0e23529e0d5a83"
+            },
+            {
+              "kind": "mcp_tool_call",
+              "complete": true,
+              "seconds_from_actor_start": 34.599,
+              "server": "xsm",
+              "tool": "xsm_send",
+              "error": null,
+              "argument_keys": [
+                "kind",
+                "outcome",
+                "reply_to",
+                "target",
+                "text",
+                "wait"
+              ],
+              "arguments_sha256": "044c6d0d89dcf33aa6ed7d4e6c85e7b55f5b30910a3644103bfd55b5a47434d6"
+            },
+            {
+              "kind": "mcp_tool_call",
+              "complete": true,
+              "seconds_from_actor_start": 46.815,
+              "server": "xsm",
+              "tool": "xsm_inbox",
+              "error": null,
+              "argument_keys": [
+                "wait"
+              ],
+              "arguments_sha256": "afbd535fae0ed344ed8c09645dbdce88099016ed0bbe76b9a48d2d07c7a1ca19"
+            },
+            {
+              "kind": "mcp_tool_call",
+              "complete": true,
+              "seconds_from_actor_start": 51.062,
+              "server": "xsm",
+              "tool": "xsm_send",
+              "error": null,
+              "argument_keys": [
+                "kind",
+                "outcome",
+                "reply_to",
+                "target",
+                "text",
+                "wait"
+              ],
+              "arguments_sha256": "2dcd8425e56879bdbcb0146d9118528b2eff6c92d163457dd4ac8f903c693cf6"
+            },
+            {
+              "kind": "mcp_tool_call",
+              "complete": true,
+              "seconds_from_actor_start": 55.765,
+              "server": "xsm",
+              "tool": "xsm_inbox",
+              "error": null,
+              "argument_keys": [
+                "wait"
+              ],
+              "arguments_sha256": "4aae933418e3a3160aeb03a477b97d841527d0426aabd1d21d0e23529e0d5a83"
+            },
+            {
+              "kind": "mcp_tool_call",
+              "complete": true,
+              "seconds_from_actor_start": 60.93,
+              "server": "xsm",
+              "tool": "xsm_send",
+              "error": null,
+              "argument_keys": [
+                "kind",
+                "outcome",
+                "reply_to",
+                "target",
+                "text",
+                "wait"
+              ],
+              "arguments_sha256": "4536dca6c1452fc5a10c2b754fe2ce66bed0cda369f42eebc254af5fa3066c3c"
+            },
+            {
+              "kind": "mcp_tool_call",
+              "complete": false,
+              "seconds_from_actor_start": 61.135,
+              "server": "xsm",
+              "tool": "xsm_inbox",
+              "error": null,
+              "argument_keys": [
+                "wait"
+              ],
+              "arguments_sha256": "4aae933418e3a3160aeb03a477b97d841527d0426aabd1d21d0e23529e0d5a83"
+            }
+          ],
+          "item_type_counts": {
+            "command_execution": 4,
+            "mcp_tool_call": 8
+          },
+          "agent_mcp_call_count": 8,
+          "agent_shell_call_count": 4,
+          "tool_error_count": 2,
+          "first_wrong_choice": null,
+          "exit_code": null,
+          "events_path": "/private/tmp/p13-natural-42vvcj6t/old-0.4.20/reviewer.jsonl",
+          "stderr_path": "/private/tmp/p13-natural-42vvcj6t/old-0.4.20/reviewer.stderr",
+          "events_sha256": "ec692dbe4db19fdc3a68032e308c3e3235c28d2363ba1887d34b6026ebd322db"
+        },
+        {
+          "role": "initiator",
+          "native_session_id": "01a183f1-cbb2-7ba1-a9a5-f7bc9bd1cdb3",
+          "registered_name": null,
+          "mcp_pid": 25669,
+          "setup_registration_seconds": 0.438,
+          "registration_preceded_first_agent_call": true,
+          "calls": [
+            {
+              "kind": "command_execution",
+              "complete": true,
+              "seconds_from_actor_start": 8.136,
+              "command_sha256": "9c34aed711ac4a6880f451d08db2d25f4b0205f013c21009af5e9b19ec064778",
+              "exit_code": 0,
+              "sandbox_shell_send_attempt": false,
+              "skill_read": false,
+              "sandbox_failure": false
+            },
+            {
+              "kind": "command_execution",
+              "complete": true,
+              "seconds_from_actor_start": 11.895,
+              "command_sha256": "4f482ea5a8fff0280aa2d58a88a9a406594d4881ac12d3e73fe4d5486494ded2",
+              "exit_code": 0,
+              "sandbox_shell_send_attempt": false,
+              "skill_read": false,
+              "sandbox_failure": false
+            },
+            {
+              "kind": "command_execution",
+              "complete": true,
+              "seconds_from_actor_start": 15.634,
+              "command_sha256": "521c300cf717a5b388a29a8ff97cb27a3b0b061e676689edf3f45404e4c5624d",
+              "exit_code": 0,
+              "sandbox_shell_send_attempt": false,
+              "skill_read": true,
+              "sandbox_failure": true
+            },
+            {
+              "kind": "command_execution",
+              "complete": true,
+              "seconds_from_actor_start": 15.837,
+              "command_sha256": "4349f2795a7c00214d2b9e1f90ca65ea9436563c75e5a2aa8771d28cc3b9accd",
+              "exit_code": 0,
+              "sandbox_shell_send_attempt": false,
+              "skill_read": false,
+              "sandbox_failure": false
+            },
+            {
+              "kind": "command_execution",
+              "complete": true,
+              "seconds_from_actor_start": 19.39,
+              "command_sha256": "2c22f610509c1ec8d5aa987ccb89edb24a3f1646e5b22cdd12e816d5ee3fa757",
+              "exit_code": 0,
+              "sandbox_shell_send_attempt": false,
+              "skill_read": false,
+              "sandbox_failure": false
+            },
+            {
+              "kind": "mcp_tool_call",
+              "complete": true,
+              "seconds_from_actor_start": 27.938,
+              "server": "xsm",
+              "tool": "xsm_send",
+              "error": null,
+              "argument_keys": [
+                "kind",
+                "target",
+                "text"
+              ],
+              "arguments_sha256": "e84cc2604e39937fa16546d920828478653eeb1fb76cab6e4f3ffaf010723e3f"
+            },
+            {
+              "kind": "mcp_tool_call",
+              "complete": true,
+              "seconds_from_actor_start": 29.4,
+              "server": "xsm",
+              "tool": "xsm_send",
+              "error": null,
+              "argument_keys": [
+                "kind",
+                "target",
+                "text"
+              ],
+              "arguments_sha256": "6ace2966aaddedb1a46ce4538588c151f45fbc9de114cbfdac24c7aeac0c8f83"
+            },
+            {
+              "kind": "mcp_tool_call",
+              "complete": true,
+              "seconds_from_actor_start": 49.006,
+              "server": "xsm",
+              "tool": "xsm_inbox",
+              "error": null,
+              "argument_keys": [
+                "wait"
+              ],
+              "arguments_sha256": "5ce894079e806eb601f73f1a7714e226bcef2fefbe7c19babeb0974081cbad48"
+            },
+            {
+              "kind": "mcp_tool_call",
+              "complete": true,
+              "seconds_from_actor_start": 53.906,
+              "server": "xsm",
+              "tool": "xsm_send",
+              "error": null,
+              "argument_keys": [
+                "kind",
+                "target",
+                "text"
+              ],
+              "arguments_sha256": "c0caeb219a87ab4a86074ae4bfc339654ce23c6d7b058eb8f1dd6e2b49d55f36"
+            },
+            {
+              "kind": "mcp_tool_call",
+              "complete": true,
+              "seconds_from_actor_start": 55.392,
+              "server": "xsm",
+              "tool": "xsm_inbox",
+              "error": null,
+              "argument_keys": [
+                "wait"
+              ],
+              "arguments_sha256": "5ce894079e806eb601f73f1a7714e226bcef2fefbe7c19babeb0974081cbad48"
+            },
+            {
+              "kind": "mcp_tool_call",
+              "complete": true,
+              "seconds_from_actor_start": 58.425,
+              "server": "xsm",
+              "tool": "xsm_inbox",
+              "error": null,
+              "argument_keys": [
+                "wait"
+              ],
+              "arguments_sha256": "5ce894079e806eb601f73f1a7714e226bcef2fefbe7c19babeb0974081cbad48"
+            }
+          ],
+          "item_type_counts": {
+            "command_execution": 5,
+            "mcp_tool_call": 6
+          },
+          "agent_mcp_call_count": 6,
+          "agent_shell_call_count": 5,
+          "tool_error_count": 1,
+          "first_wrong_choice": null,
+          "exit_code": 0,
+          "events_path": "/private/tmp/p13-natural-42vvcj6t/old-0.4.20/initiator.jsonl",
+          "stderr_path": "/private/tmp/p13-natural-42vvcj6t/old-0.4.20/initiator.stderr",
+          "events_sha256": "d264eea65203dbb66091755d5edd503c99ac12d276612a6a15be409bbefd9020"
+        }
+      ],
+      "cleanup": [
+        {
+          "pid": 25138,
+          "kind": "owned-native-group",
+          "signal": "TERM"
+        },
+        {
+          "pid": 25272,
+          "kind": "owned-mcp",
+          "signal": "TERM"
+        }
+      ],
+      "owned_processes_after": [
+        {
+          "role": "reviewer",
+          "native_alive": false,
+          "mcp_same_generation_alive": true
+        },
+        {
+          "role": "initiator",
+          "native_alive": false,
+          "mcp_same_generation_alive": false
+        }
+      ],
+      "profile_settings_and_auth_metadata_unchanged": true,
+      "source_after": {
+        "file_count": 44,
+        "manifest_sha256": "d20f5569b3bdf943b878863b5a27dca858cdd4bc2d522ef1ed342a24c83419e6",
+        "matches": true,
+        "changed_paths": []
+      },
+      "source_unchanged": true
+    }
+  ]
+}

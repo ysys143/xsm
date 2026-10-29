@@ -1,0 +1,455 @@
+{
+  "ports": {
+    "book": 51296,
+    "mini": 57444
+  },
+  "purpose": "restore private direct bootstrap after both port=0 services restarted",
+  "peer_cache_manual_edit": false,
+  "policy_or_permissions_changed": false,
+  "stop": {
+    "book": {
+      "started_at": 1793291528.3815029,
+      "ended_at": 1793291528.6851861,
+      "result": {
+        "exit": 0,
+        "result": {
+          "status": "stopping"
+        },
+        "stderr_bytes": 0
+      }
+    },
+    "mini": {
+      "started_at": 1793291528.68524,
+      "ended_at": 1793291529.284102,
+      "result": {
+        "exit": 0,
+        "result": {
+          "status": "stopping"
+        },
+        "stderr_bytes": 0
+      }
+    }
+  },
+  "start": {
+    "book": {
+      "started_at": 1793291529.357557,
+      "ended_at": 1793291529.942167,
+      "result": {
+        "status": "running",
+        "endpoint_id": "7df9fff6a5113e7ad7f05ebfc7477ca0c54308aa0d661bdec5461688bfc6c11d",
+        "address": {
+          "addrs": [
+            {
+              "Ip": "100.123.30.11:51296"
+            },
+            {
+              "Ip": "127.0.0.1:51296"
+            },
+            {
+              "Ip": "172.30.1.32:51296"
+            },
+            {
+              "Ip": "[::1]:51296"
+            }
+          ],
+          "id": "7df9fff6a5113e7ad7f05ebfc7477ca0c54308aa0d661bdec5461688bfc6c11d"
+        },
+        "active": true,
+        "network": {
+          "version": 1,
+          "network_id": "7df9fff6a5113e7ad7f05ebfc7477ca0c54308aa0d661bdec5461688bfc6c11d:aaf8d8afb96234bd472094abc2773795dcf192b91706a63cce61fd82f06a4695",
+          "name": "common-math-retry1-20261030",
+          "members": [
+            {
+              "endpoint_id": "75c1181ce5e57de097475aba33df1b34bf1a18fbc8b0363514dd8c07c9e294fe",
+              "machine_name": "native-journey-mini",
+              "status": "active"
+            },
+            {
+              "endpoint_id": "7df9fff6a5113e7ad7f05ebfc7477ca0c54308aa0d661bdec5461688bfc6c11d",
+              "machine_name": "same-name-live-reviewer-book",
+              "status": "active"
+            }
+          ],
+          "invites": [
+            {
+              "invite_hash": "039bd22b9576662bb45bb30bd91c930d357c9ce80bf5d42a65cb0d94ec661540",
+              "issuer": "7df9fff6a5113e7ad7f05ebfc7477ca0c54308aa0d661bdec5461688bfc6c11d",
+              "reusable": true,
+              "expires_at": null,
+              "revoked": false,
+              "consumed_by": [
+                "75c1181ce5e57de097475aba33df1b34bf1a18fbc8b0363514dd8c07c9e294fe"
+              ]
+            }
+          ]
+        },
+        "transport": {
+          "address": {
+            "addrs": [
+              {
+                "Ip": "100.123.30.11:51296"
+              },
+              {
+                "Ip": "127.0.0.1:51296"
+              },
+              {
+                "Ip": "172.30.1.32:51296"
+              },
+              {
+                "Ip": "[::1]:51296"
+              }
+            ],
+            "id": "7df9fff6a5113e7ad7f05ebfc7477ca0c54308aa0d661bdec5461688bfc6c11d"
+          },
+          "bound_addresses": [
+            "0.0.0.0:51296",
+            "[::]:51296"
+          ],
+          "endpoint_id": "7df9fff6a5113e7ad7f05ebfc7477ca0c54308aa0d661bdec5461688bfc6c11d",
+          "event": "ready",
+          "port_fallback": false,
+          "relay_mode": "off",
+          "relay_online": false,
+          "requested_port": 51296
+        },
+        "last_transport": null,
+        "service_pid": 84634,
+        "engine_pid": 84636,
+        "known_peers": [
+          "75c1181ce5e57de097475aba33df1b34bf1a18fbc8b0363514dd8c07c9e294fe"
+        ]
+      }
+    },
+    "mini": {
+      "started_at": 1793291530.288536,
+      "ended_at": 1793291531.089489,
+      "result": {
+        "status": "running",
+        "endpoint_id": "75c1181ce5e57de097475aba33df1b34bf1a18fbc8b0363514dd8c07c9e294fe",
+        "address": {
+          "addrs": [
+            {
+              "Ip": "100.77.24.16:57444"
+            },
+            {
+              "Ip": "127.0.0.1:57444"
+            },
+            {
+              "Ip": "192.168.0.64:57444"
+            },
+            {
+              "Ip": "[::1]:57444"
+            }
+          ],
+          "id": "75c1181ce5e57de097475aba33df1b34bf1a18fbc8b0363514dd8c07c9e294fe"
+        },
+        "active": true,
+        "network": {
+          "version": 1,
+          "network_id": "7df9fff6a5113e7ad7f05ebfc7477ca0c54308aa0d661bdec5461688bfc6c11d:aaf8d8afb96234bd472094abc2773795dcf192b91706a63cce61fd82f06a4695",
+          "name": "common-math-retry1-20261030",
+          "members": [
+            {
+              "endpoint_id": "75c1181ce5e57de097475aba33df1b34bf1a18fbc8b0363514dd8c07c9e294fe",
+              "machine_name": "native-journey-mini",
+              "status": "active"
+            },
+            {
+              "endpoint_id": "7df9fff6a5113e7ad7f05ebfc7477ca0c54308aa0d661bdec5461688bfc6c11d",
+              "machine_name": "same-name-live-reviewer-book",
+              "status": "active"
+            }
+          ],
+          "invites": [
+            {
+              "invite_hash": "039bd22b9576662bb45bb30bd91c930d357c9ce80bf5d42a65cb0d94ec661540",
+              "issuer": "7df9fff6a5113e7ad7f05ebfc7477ca0c54308aa0d661bdec5461688bfc6c11d",
+              "reusable": true,
+              "expires_at": null,
+              "revoked": false,
+              "consumed_by": [
+                "75c1181ce5e57de097475aba33df1b34bf1a18fbc8b0363514dd8c07c9e294fe"
+              ]
+            }
+          ]
+        },
+        "transport": {
+          "address": {
+            "addrs": [
+              {
+                "Ip": "100.77.24.16:57444"
+              },
+              {
+                "Ip": "127.0.0.1:57444"
+              },
+              {
+                "Ip": "192.168.0.64:57444"
+              },
+              {
+                "Ip": "[::1]:57444"
+              }
+            ],
+            "id": "75c1181ce5e57de097475aba33df1b34bf1a18fbc8b0363514dd8c07c9e294fe"
+          },
+          "bound_addresses": [
+            "0.0.0.0:57444",
+            "[::]:57444"
+          ],
+          "endpoint_id": "75c1181ce5e57de097475aba33df1b34bf1a18fbc8b0363514dd8c07c9e294fe",
+          "event": "ready",
+          "port_fallback": false,
+          "relay_mode": "off",
+          "relay_online": false,
+          "requested_port": 57444
+        },
+        "last_transport": null,
+        "service_pid": 32033,
+        "engine_pid": 32035,
+        "known_peers": [
+          "7df9fff6a5113e7ad7f05ebfc7477ca0c54308aa0d661bdec5461688bfc6c11d"
+        ]
+      }
+    }
+  },
+  "setup": {
+    "book": {
+      "started_at": 1793291529.284341,
+      "ended_at": 1793291529.3574889,
+      "result": {
+        "old_identity_gone": true,
+        "operator_helper_sha256": "84939bb9af3a29f9aa66faddc0594b2208bca443d6af19a2f2cce8e6e0db19ff",
+        "only_helper_change": "existing supported configure --port constant",
+        "settings_before": {
+          "port": 0,
+          "relay": "off"
+        }
+      }
+    },
+    "mini": {
+      "started_at": 1793291529.942264,
+      "ended_at": 1793291530.288447,
+      "result": {
+        "old_identity_gone": true,
+        "operator_helper_sha256": "4f0e08102dfffc88c6319b84947cfb5627f894d95ba22815e66c3a65f2075a3f",
+        "only_helper_change": "existing supported configure --port constant",
+        "settings_before": {
+          "port": 0,
+          "relay": "off"
+        }
+      }
+    }
+  },
+  "after": {
+    "book": {
+      "started_at": 1793291532.117912,
+      "ended_at": 1793291532.2564611,
+      "result": {
+        "status": "running",
+        "endpoint_id": "7df9fff6a5113e7ad7f05ebfc7477ca0c54308aa0d661bdec5461688bfc6c11d",
+        "address": {
+          "addrs": [
+            {
+              "Ip": "100.123.30.11:51296"
+            },
+            {
+              "Ip": "119.208.251.16:64289"
+            },
+            {
+              "Ip": "127.0.0.1:51296"
+            },
+            {
+              "Ip": "172.30.1.32:51296"
+            },
+            {
+              "Ip": "[::1]:51296"
+            }
+          ],
+          "id": "7df9fff6a5113e7ad7f05ebfc7477ca0c54308aa0d661bdec5461688bfc6c11d"
+        },
+        "active": true,
+        "network": {
+          "version": 1,
+          "network_id": "7df9fff6a5113e7ad7f05ebfc7477ca0c54308aa0d661bdec5461688bfc6c11d:aaf8d8afb96234bd472094abc2773795dcf192b91706a63cce61fd82f06a4695",
+          "name": "common-math-retry1-20261030",
+          "members": [
+            {
+              "endpoint_id": "75c1181ce5e57de097475aba33df1b34bf1a18fbc8b0363514dd8c07c9e294fe",
+              "machine_name": "native-journey-mini",
+              "status": "active"
+            },
+            {
+              "endpoint_id": "7df9fff6a5113e7ad7f05ebfc7477ca0c54308aa0d661bdec5461688bfc6c11d",
+              "machine_name": "same-name-live-reviewer-book",
+              "status": "active"
+            }
+          ],
+          "invites": [
+            {
+              "invite_hash": "039bd22b9576662bb45bb30bd91c930d357c9ce80bf5d42a65cb0d94ec661540",
+              "issuer": "7df9fff6a5113e7ad7f05ebfc7477ca0c54308aa0d661bdec5461688bfc6c11d",
+              "reusable": true,
+              "expires_at": null,
+              "revoked": false,
+              "consumed_by": [
+                "75c1181ce5e57de097475aba33df1b34bf1a18fbc8b0363514dd8c07c9e294fe"
+              ]
+            }
+          ]
+        },
+        "transport": {
+          "address": {
+            "addrs": [
+              {
+                "Ip": "100.123.30.11:51296"
+              },
+              {
+                "Ip": "127.0.0.1:51296"
+              },
+              {
+                "Ip": "172.30.1.32:51296"
+              },
+              {
+                "Ip": "[::1]:51296"
+              }
+            ],
+            "id": "7df9fff6a5113e7ad7f05ebfc7477ca0c54308aa0d661bdec5461688bfc6c11d"
+          },
+          "bound_addresses": [
+            "0.0.0.0:51296",
+            "[::]:51296"
+          ],
+          "endpoint_id": "7df9fff6a5113e7ad7f05ebfc7477ca0c54308aa0d661bdec5461688bfc6c11d",
+          "event": "ready",
+          "port_fallback": false,
+          "relay_mode": "off",
+          "relay_online": false,
+          "requested_port": 51296
+        },
+        "last_transport": {
+          "path": "direct",
+          "selected": "direct",
+          "selection_reason": "iroh_path_selection",
+          "fallback_reason": null,
+          "remote_address": "210.113.21.16:57444",
+          "paths": [
+            {
+              "kind": "direct",
+              "remote": "ip:210.113.21.16:57444",
+              "selected": true
+            }
+          ]
+        },
+        "service_pid": 84634,
+        "engine_pid": 84636,
+        "known_peers": [
+          "75c1181ce5e57de097475aba33df1b34bf1a18fbc8b0363514dd8c07c9e294fe"
+        ]
+      }
+    },
+    "mini": {
+      "started_at": 1793291532.256533,
+      "ended_at": 1793291532.664002,
+      "result": {
+        "status": "running",
+        "endpoint_id": "75c1181ce5e57de097475aba33df1b34bf1a18fbc8b0363514dd8c07c9e294fe",
+        "address": {
+          "addrs": [
+            {
+              "Ip": "100.77.24.16:57444"
+            },
+            {
+              "Ip": "127.0.0.1:57444"
+            },
+            {
+              "Ip": "192.168.0.64:57444"
+            },
+            {
+              "Ip": "[::1]:57444"
+            }
+          ],
+          "id": "75c1181ce5e57de097475aba33df1b34bf1a18fbc8b0363514dd8c07c9e294fe"
+        },
+        "active": true,
+        "network": {
+          "version": 1,
+          "network_id": "7df9fff6a5113e7ad7f05ebfc7477ca0c54308aa0d661bdec5461688bfc6c11d:aaf8d8afb96234bd472094abc2773795dcf192b91706a63cce61fd82f06a4695",
+          "name": "common-math-retry1-20261030",
+          "members": [
+            {
+              "endpoint_id": "75c1181ce5e57de097475aba33df1b34bf1a18fbc8b0363514dd8c07c9e294fe",
+              "machine_name": "native-journey-mini",
+              "status": "active"
+            },
+            {
+              "endpoint_id": "7df9fff6a5113e7ad7f05ebfc7477ca0c54308aa0d661bdec5461688bfc6c11d",
+              "machine_name": "same-name-live-reviewer-book",
+              "status": "active"
+            }
+          ],
+          "invites": [
+            {
+              "invite_hash": "039bd22b9576662bb45bb30bd91c930d357c9ce80bf5d42a65cb0d94ec661540",
+              "issuer": "7df9fff6a5113e7ad7f05ebfc7477ca0c54308aa0d661bdec5461688bfc6c11d",
+              "reusable": true,
+              "expires_at": null,
+              "revoked": false,
+              "consumed_by": [
+                "75c1181ce5e57de097475aba33df1b34bf1a18fbc8b0363514dd8c07c9e294fe"
+              ]
+            }
+          ]
+        },
+        "transport": {
+          "address": {
+            "addrs": [
+              {
+                "Ip": "100.77.24.16:57444"
+              },
+              {
+                "Ip": "127.0.0.1:57444"
+              },
+              {
+                "Ip": "192.168.0.64:57444"
+              },
+              {
+                "Ip": "[::1]:57444"
+              }
+            ],
+            "id": "75c1181ce5e57de097475aba33df1b34bf1a18fbc8b0363514dd8c07c9e294fe"
+          },
+          "bound_addresses": [
+            "0.0.0.0:57444",
+            "[::]:57444"
+          ],
+          "endpoint_id": "75c1181ce5e57de097475aba33df1b34bf1a18fbc8b0363514dd8c07c9e294fe",
+          "event": "ready",
+          "port_fallback": false,
+          "relay_mode": "off",
+          "relay_online": false,
+          "requested_port": 57444
+        },
+        "last_transport": {
+          "path": "direct",
+          "selected": "direct",
+          "selection_reason": "iroh_path_selection",
+          "fallback_reason": null,
+          "remote_address": "100.123.30.11:51296",
+          "paths": [
+            {
+              "kind": "direct",
+              "remote": "ip:100.123.30.11:51296",
+              "selected": true
+            }
+          ]
+        },
+        "service_pid": 32033,
+        "engine_pid": 32035,
+        "known_peers": [
+          "7df9fff6a5113e7ad7f05ebfc7477ca0c54308aa0d661bdec5461688bfc6c11d"
+        ]
+      }
+    }
+  },
+  "direct_restored": true
+}

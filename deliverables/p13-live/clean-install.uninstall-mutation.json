@@ -1,0 +1,12 @@
+{
+  "mutant": "old HEAD cmd_uninstall only, current installer retained",
+  "tests": [
+    "test_public_uninstall_invalid_json_is_exit4_without_traceback_or_partial_removal",
+    "test_public_uninstall_symlink_is_exit4_without_traceback_or_partial_removal"
+  ],
+  "detected": true,
+  "failures": 0,
+  "errors": 2,
+  "source_files_mutated": false,
+  "native_models": 0
+}

@@ -1,0 +1,1 @@
+이번 표본은 private root 이동 뒤 정책 이력 검증이 거절된 fixture 실패입니다. 실제 공개 거절 1건, 업무 질문 0건, 회신 0건입니다. Claude 한 개만 실행했고 requester는 시작하지 않았습니다. 원래 정상 snapshot 백업은 없고 source_path는 현재 short root와 일치하지만 history_verified=false입니다. 새 정책, snapshot 보정, unchecked 경로는 사용하지 않았습니다. 기존 통과 표본에는 영향이 없습니다. 정책·state·key·native 원본은 보존했습니다.

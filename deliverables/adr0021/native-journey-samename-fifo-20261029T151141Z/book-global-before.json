@@ -1,0 +1,23 @@
+{
+  "observed_epoch": 1793286709.469656,
+  "files": {
+    "/Users/jaesolshin/.claude-3/settings.json": {
+      "sha256": "56888a2ffb913cf8512c377c5fbda2c6c0ab9c836856c8c2dbf78d2e237f8773",
+      "size": 9880,
+      "inode": 1045052919,
+      "mtime_ns": 1793182045102415283
+    },
+    "/Users/jaesolshin/.claude-3/.claude.json": {
+      "sha256": "fdf0ae466dbefc627f63371e0a2332d26942c39b4aa4af3f6e2f8a576da0fe2d",
+      "size": 347014,
+      "inode": 1051601373,
+      "mtime_ns": 1793286650227007231
+    },
+    "/Users/jaesolshin/.claude-3/CLAUDE.md": {
+      "sha256": "14221e4c341b8f428c0bd52607ddaafd37f733465bef31ed936200aa42c0fdb4",
+      "size": 9273,
+      "inode": 1040837213,
+      "mtime_ns": 1792733633580418821
+    }
+  }
+}

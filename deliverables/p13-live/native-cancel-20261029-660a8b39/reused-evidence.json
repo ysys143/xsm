@@ -1,0 +1,18 @@
+[
+  {
+    "path": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/deliverables/p13-live/codex-state-native-eval.py",
+    "sha256": "2ac898601c0130205db66d862b85d3218f2ff325e1f6a6a4b4b739848668c9fb"
+  },
+  {
+    "path": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/deliverables/p13-live/codex-state-native-results.json",
+    "sha256": "5f96dc3de5188480ad568cda7f70e0ebb9aef316dc43f58426d52e438adfa7f4"
+  },
+  {
+    "path": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/deliverables/p13-live/codex-state-native-summary.md",
+    "sha256": "9884b6cf8d9a2cc72419698efe0831f56219e276c33cfc808abc93f93d14dec7"
+  },
+  {
+    "path": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/deliverables/p13-live/final-source-manifest.json",
+    "sha256": "cb05d6ecb3ab87d95359de3cc318f5ea217bee23837e72b9fff34f6512fb1463"
+  }
+]

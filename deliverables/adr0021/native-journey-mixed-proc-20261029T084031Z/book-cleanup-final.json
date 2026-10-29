@@ -1,0 +1,113 @@
+{
+  "at": 1793281514.056555,
+  "root": "/private/tmp/native-journey-mixed-proc-book-g54im4t2",
+  "service_before": {
+    "status": "running",
+    "endpoint_id": "e4824763e4b2ea2e28e3107f0c8e44d4e9e690eaa387c2f1b7c1de0b3d4ae01d",
+    "address": {
+      "addrs": [
+        {
+          "Ip": "100.123.30.11:52940"
+        },
+        {
+          "Ip": "127.0.0.1:52940"
+        },
+        {
+          "Ip": "172.30.1.32:52940"
+        },
+        {
+          "Ip": "[::1]:50763"
+        }
+      ],
+      "id": "e4824763e4b2ea2e28e3107f0c8e44d4e9e690eaa387c2f1b7c1de0b3d4ae01d"
+    },
+    "active": true,
+    "network": {
+      "version": 1,
+      "network_id": "e4824763e4b2ea2e28e3107f0c8e44d4e9e690eaa387c2f1b7c1de0b3d4ae01d:b06a6e33ece42d3e3cc863ba15f5069c424cb512c832e5b7f8f21c1945430885",
+      "name": "mixed-libproc-20261029",
+      "members": [
+        {
+          "endpoint_id": "c707810aefe751232c0a82ce65df1b40f3129e1582e2f4440b5c3c565cebdde1",
+          "machine_name": "native-journey-mini",
+          "status": "active"
+        },
+        {
+          "endpoint_id": "e4824763e4b2ea2e28e3107f0c8e44d4e9e690eaa387c2f1b7c1de0b3d4ae01d",
+          "machine_name": "mixed-claude-book",
+          "status": "active"
+        }
+      ],
+      "invites": [
+        {
+          "invite_hash": "31b3b6c0aa71c269db00ae37703d9e6b2f55895dfd8b6e55dc27b81e292eea36",
+          "issuer": "e4824763e4b2ea2e28e3107f0c8e44d4e9e690eaa387c2f1b7c1de0b3d4ae01d",
+          "reusable": true,
+          "expires_at": null,
+          "revoked": false,
+          "consumed_by": [
+            "c707810aefe751232c0a82ce65df1b40f3129e1582e2f4440b5c3c565cebdde1"
+          ]
+        }
+      ]
+    },
+    "transport": {
+      "address": {
+        "addrs": [
+          {
+            "Ip": "100.123.30.11:52940"
+          },
+          {
+            "Ip": "127.0.0.1:52940"
+          },
+          {
+            "Ip": "192.168.0.11:52940"
+          },
+          {
+            "Ip": "[::1]:50763"
+          }
+        ],
+        "id": "e4824763e4b2ea2e28e3107f0c8e44d4e9e690eaa387c2f1b7c1de0b3d4ae01d"
+      },
+      "bound_addresses": [
+        "0.0.0.0:52940",
+        "[::]:50763"
+      ],
+      "endpoint_id": "e4824763e4b2ea2e28e3107f0c8e44d4e9e690eaa387c2f1b7c1de0b3d4ae01d",
+      "event": "ready",
+      "port_fallback": false,
+      "relay_mode": "off",
+      "relay_online": false,
+      "requested_port": 0
+    },
+    "last_transport": {
+      "path": "direct",
+      "selected": "direct",
+      "selection_reason": "iroh_path_selection",
+      "fallback_reason": null,
+      "remote_address": "100.77.24.16:62121",
+      "paths": [
+        {
+          "kind": "direct",
+          "remote": "ip:100.77.24.16:62121",
+          "selected": true
+        }
+      ]
+    },
+    "service_pid": 34354,
+    "engine_pid": 34375,
+    "known_peers": [
+      "c707810aefe751232c0a82ce65df1b40f3129e1582e2f4440b5c3c565cebdde1"
+    ]
+  },
+  "stop": {
+    "exit": 0,
+    "stdout": "{\"exit\": 0, \"result\": {\"status\": \"stopping\"}, \"stderr_bytes\": 0}\n",
+    "stderr": ""
+  },
+  "signals": [],
+  "known_process_count": 11,
+  "remaining_owned": [],
+  "state_and_keys_deleted": false,
+  "evidence_deleted": false
+}

@@ -1,0 +1,18 @@
+{
+  "label": "one factory native subagent followup; positive messaging separate from shared-MCP missing",
+  "root": "/private/tmp/subagent-followup-p41ahv_v",
+  "public": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/deliverables/p13-live/subagent-followup-20261029-84ea0f9c",
+  "source": "/private/tmp/xsm-native-integration-frozen-tsucjdu0",
+  "source_manifest": "deliverables/p13-live/native-integration-source-manifest.json",
+  "source_manifest_file_count": 315,
+  "primary_paths": 135,
+  "baseline_raw": "/private/tmp/shared-mcp-native-yjfl3mjl",
+  "goal_sha256": "88d15122ad8166aeeddb69a6c268dd7c205005318be5cf6578435a23bbca8361",
+  "goal_byte_identical": true,
+  "proxy_byte_identical": true,
+  "factory_arguments_and_env_unchanged_except_paths": true,
+  "no_ref_or_tool_sequence_hints_added": true,
+  "automatic_model_condition_retries": 0,
+  "deadline_utc": "2026-10-28T22:15:20+00:00",
+  "source_changes_by_evaluator": false
+}

@@ -1,0 +1,265 @@
+{
+  "fixture_state": "/private/tmp/p08-native-memory-cn0y8j6u/state",
+  "source": "actual subscribed native CLIs through workers.create_owned/run_owned",
+  "results": [
+    {
+      "runtime": "claude",
+      "profile": "/Users/jaesolshin/.claude-3",
+      "worker": "memory-claude",
+      "first_id": "memory-claude-first",
+      "second_id": "memory-claude-second",
+      "first_status": "reply-stored",
+      "second_status": "reply-stored",
+      "first_native": "12b3ae0a-c541-455c-8c79-b3319c803fc8",
+      "second_native": "12b3ae0a-c541-455c-8c79-b3319c803fc8",
+      "first_body": "memory-42e9b346940b47bd8f1533b14c3282c1",
+      "second_body": "memory-42e9b346940b47bd8f1533b14c3282c1",
+      "expected_token": "memory-42e9b346940b47bd8f1533b14c3282c1",
+      "memory_matches": true,
+      "same_native_conversation": true,
+      "first_execution": {
+        "pid": 30601,
+        "lstart": "Thu Oct 29 00:31:10 2026",
+        "argv": [
+          "/Users/jaesolshin/.local/bin/claude",
+          "-p",
+          "--output-format",
+          "json",
+          "--permission-mode",
+          "default",
+          "--session-id",
+          "12b3ae0a-c541-455c-8c79-b3319c803fc8"
+        ],
+        "stdout": "/private/tmp/p08-native-memory-cn0y8j6u/state/owned-runs/a880c4aade174414a8967f37a2eab43e/memory-claude-first.jsonl",
+        "stderr": "/private/tmp/p08-native-memory-cn0y8j6u/state/owned-runs/a880c4aade174414a8967f37a2eab43e/memory-claude-first.stderr",
+        "returncode": 0
+      },
+      "second_execution": {
+        "pid": 32114,
+        "lstart": "Thu Oct 29 00:31:23 2026",
+        "argv": [
+          "/Users/jaesolshin/.local/bin/claude",
+          "-p",
+          "--output-format",
+          "json",
+          "--permission-mode",
+          "default",
+          "--resume",
+          "12b3ae0a-c541-455c-8c79-b3319c803fc8"
+        ],
+        "stdout": "/private/tmp/p08-native-memory-cn0y8j6u/state/owned-runs/a880c4aade174414a8967f37a2eab43e/memory-claude-second.jsonl",
+        "stderr": "/private/tmp/p08-native-memory-cn0y8j6u/state/owned-runs/a880c4aade174414a8967f37a2eab43e/memory-claude-second.stderr",
+        "returncode": 0
+      },
+      "permission_adjustment": false,
+      "reply_mode": "explicit quiet publication; no native queue/wake; normal model permissions unchanged",
+      "native_mcp_observations": [
+        {
+          "turn": "first",
+          "mcp_tools": [
+            {
+              "tool": "mcp__xsm__xsm_inbox"
+            }
+          ],
+          "permission_denials": 0,
+          "connected_servers": [
+            {
+              "name": "plugin:context7:context7",
+              "status": "needs-auth",
+              "source": "plugin"
+            },
+            {
+              "name": "plugin:oh-my-claudecode:t",
+              "status": "connected",
+              "source": "plugin"
+            },
+            {
+              "name": "plugin:telegram:telegram",
+              "status": "connected",
+              "source": "plugin"
+            },
+            {
+              "name": "xsm",
+              "status": "connected",
+              "source": "user"
+            },
+            {
+              "name": "liner",
+              "status": "needs-auth",
+              "source": "user"
+            },
+            {
+              "name": "claude.ai Claude Docs",
+              "status": "connected",
+              "source": "claudeai"
+            },
+            {
+              "name": "claude.ai Slack",
+              "status": "connected",
+              "source": "claudeai"
+            },
+            {
+              "name": "claude.ai Google Drive",
+              "status": "needs-auth",
+              "source": "claudeai"
+            },
+            {
+              "name": "claude.ai Gmail",
+              "status": "connected",
+              "source": "claudeai"
+            },
+            {
+              "name": "claude.ai Google Calendar",
+              "status": "connected",
+              "source": "claudeai"
+            },
+            {
+              "name": "context-harness",
+              "status": "connected",
+              "source": "plugin"
+            }
+          ]
+        },
+        {
+          "turn": "second",
+          "mcp_tools": [],
+          "permission_denials": 0,
+          "connected_servers": [
+            {
+              "name": "plugin:context7:context7",
+              "status": "needs-auth",
+              "source": "plugin"
+            },
+            {
+              "name": "plugin:oh-my-claudecode:t",
+              "status": "connected",
+              "source": "plugin"
+            },
+            {
+              "name": "plugin:telegram:telegram",
+              "status": "connected",
+              "source": "plugin"
+            },
+            {
+              "name": "xsm",
+              "status": "connected",
+              "source": "user"
+            },
+            {
+              "name": "liner",
+              "status": "needs-auth",
+              "source": "user"
+            },
+            {
+              "name": "claude.ai Claude Docs",
+              "status": "connected",
+              "source": "claudeai"
+            },
+            {
+              "name": "claude.ai Slack",
+              "status": "connected",
+              "source": "claudeai"
+            },
+            {
+              "name": "claude.ai Google Drive",
+              "status": "needs-auth",
+              "source": "claudeai"
+            },
+            {
+              "name": "claude.ai Gmail",
+              "status": "connected",
+              "source": "claudeai"
+            },
+            {
+              "name": "claude.ai Google Calendar",
+              "status": "connected",
+              "source": "claudeai"
+            },
+            {
+              "name": "context-harness",
+              "status": "connected",
+              "source": "plugin"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "runtime": "codex",
+      "profile": "/Users/jaesolshin/.codex-3",
+      "worker": "memory-codex",
+      "first_id": "memory-codex-first",
+      "second_id": "memory-codex-second",
+      "first_status": "reply-stored",
+      "second_status": "reply-stored",
+      "first_native": "01a18322-fbb5-7fd0-b6db-1bae94e4c3aa",
+      "second_native": "01a18322-fbb5-7fd0-b6db-1bae94e4c3aa",
+      "first_body": "memory-d1e39e22d06c41479fab6eb1b8dbcdd0",
+      "second_body": "memory-d1e39e22d06c41479fab6eb1b8dbcdd0",
+      "expected_token": "memory-d1e39e22d06c41479fab6eb1b8dbcdd0",
+      "memory_matches": true,
+      "same_native_conversation": true,
+      "first_execution": {
+        "pid": 30599,
+        "lstart": "Thu Oct 29 00:31:10 2026",
+        "argv": [
+          "/Users/jaesolshin/.nvm/versions/node/v24.19.0/bin/codex",
+          "exec",
+          "--json",
+          "-c",
+          "approval_policy=\"never\"",
+          "-c",
+          "sandbox_mode=\"workspace-write\"",
+          "-"
+        ],
+        "stdout": "/private/tmp/p08-native-memory-cn0y8j6u/state/owned-runs/d97a626982844501a7bdc8ec43befe75/memory-codex-first.jsonl",
+        "stderr": "/private/tmp/p08-native-memory-cn0y8j6u/state/owned-runs/d97a626982844501a7bdc8ec43befe75/memory-codex-first.stderr",
+        "returncode": 0
+      },
+      "second_execution": {
+        "pid": 34199,
+        "lstart": "Thu Oct 29 00:31:32 2026",
+        "argv": [
+          "/Users/jaesolshin/.nvm/versions/node/v24.19.0/bin/codex",
+          "exec",
+          "resume",
+          "--json",
+          "-c",
+          "approval_policy=\"never\"",
+          "-c",
+          "sandbox_mode=\"workspace-write\"",
+          "01a18322-fbb5-7fd0-b6db-1bae94e4c3aa",
+          "-"
+        ],
+        "stdout": "/private/tmp/p08-native-memory-cn0y8j6u/state/owned-runs/d97a626982844501a7bdc8ec43befe75/memory-codex-second.jsonl",
+        "stderr": "/private/tmp/p08-native-memory-cn0y8j6u/state/owned-runs/d97a626982844501a7bdc8ec43befe75/memory-codex-second.stderr",
+        "returncode": 0
+      },
+      "permission_adjustment": false,
+      "reply_mode": "explicit quiet publication; no native queue/wake; normal model permissions unchanged",
+      "native_mcp_observations": [
+        {
+          "turn": "first",
+          "mcp_tools": [
+            {
+              "server": "xsm",
+              "tool": "xsm_inbox",
+              "error": null
+            }
+          ],
+          "permission_denials": null,
+          "connected_servers": []
+        },
+        {
+          "turn": "second",
+          "mcp_tools": [],
+          "permission_denials": null,
+          "connected_servers": []
+        }
+      ]
+    }
+  ],
+  "received_replies": 3,
+  "model_permissions_widened": false,
+  "global_settings_changed": false
+}

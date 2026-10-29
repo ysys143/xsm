@@ -1,0 +1,363 @@
+{
+  "root": "/private/tmp/p13-codex-state-native-dv1ahfwm",
+  "source": "/private/tmp/xsm-p13-postqa-frozen-bukwksw6",
+  "profile": "/Users/jaesolshin/.codex-3",
+  "started_at": 1793221195.996298,
+  "status": "controller-stopped",
+  "states": [
+    {
+      "state": "idle",
+      "request_id": "p13-tui-idle-dv1ahfwm",
+      "producer_sid": "01a18450-f045-74c1-8f57-a3d2cd4ead65",
+      "producer_pid": 67275,
+      "producer_lstart": "Thu Oct 29 06:00:59 2026",
+      "producer_returncode": 0,
+      "producer_calls": [
+        {
+          "server": "xsm",
+          "tool": "xsm_ask",
+          "status": "completed",
+          "result_status": [
+            "final"
+          ],
+          "wait_end_reason": [
+            "reply"
+          ],
+          "reply_ids": [
+            "79d18a349e0a448b"
+          ],
+          "final_outcome": [
+            "succeeded"
+          ]
+        },
+        {
+          "server": "xsm",
+          "tool": "xsm_ack",
+          "status": "completed",
+          "result_status": [
+            null
+          ],
+          "wait_end_reason": [
+            null
+          ],
+          "reply_ids": [],
+          "final_outcome": [
+            null
+          ]
+        }
+      ],
+      "producer_mcp_calls": 2,
+      "producer_shell_calls": 2,
+      "queue_id": "01a18451-1d00-70c3-aeb1-3729b84423d2",
+      "queued_at": 1793221270.795192,
+      "wake": {
+        "ok": false,
+        "t": 1793221270.795677,
+        "detail": "not-loaded"
+      },
+      "native_receiver_messages": [
+        {
+          "at": "2026-10-28T21:01:16.725Z",
+          "turn_id": "01a18451-3344-7903-98b2-ff0225a0d0c9"
+        }
+      ],
+      "ledger_replies": [
+        {
+          "id": "79d18a349e0a448b",
+          "reply_to": "p13-tui-idle-dv1ahfwm",
+          "outcome_req": "succeeded",
+          "status": "queued"
+        }
+      ],
+      "receiver_mcp_calls": [
+        {
+          "at": "2026-10-28T21:01:30.914Z",
+          "tool": "xsm_send",
+          "status": "completed",
+          "server": "xsm"
+        }
+      ],
+      "receiver_shell_calls": 1,
+      "receiver_shell_xsm_attempts": 1,
+      "final_received": true,
+      "reply_to_matches": true,
+      "additional_human_prompt_after_question": 0,
+      "controller_inbox_polls": 0,
+      "manual_queue_or_response_injection": 0,
+      "actual_reply_body": [
+        "P13-TUI-IDLE 검토: 2+2=5는 틀립니다. 반례로 사과 2개와 사과 2개를 합치면 사과 4개이며 5개가 되지 않습니다. 올바른 합은 2+2=4입니다."
+      ],
+      "final_outcome": "succeeded",
+      "queue_to_reply_ledger_seconds": 19.592,
+      "queue_to_reply_seconds": 19.736,
+      "state_evidence": {
+        "turn_completed_at": "2026-10-28T21:00:14.620Z",
+        "receiver_input_waiting": true
+      }
+    },
+    {
+      "state": "busy",
+      "request_id": "p13-tui-busy-dv1ahfwm",
+      "producer_sid": "01a18451-ed20-7c92-a879-7efa5420263c",
+      "producer_pid": 70360,
+      "producer_lstart": "Thu Oct 29 06:02:03 2026",
+      "producer_returncode": 0,
+      "producer_calls": [
+        {
+          "server": "xsm",
+          "tool": "xsm_ask",
+          "status": "completed",
+          "result_status": [
+            "final"
+          ],
+          "wait_end_reason": [
+            "reply"
+          ],
+          "reply_ids": [
+            "13b63215016f44c0"
+          ],
+          "final_outcome": [
+            "succeeded"
+          ]
+        },
+        {
+          "server": "xsm",
+          "tool": "xsm_ack",
+          "status": "completed",
+          "result_status": [
+            null
+          ],
+          "wait_end_reason": [
+            null
+          ],
+          "reply_ids": [],
+          "final_outcome": [
+            null
+          ]
+        }
+      ],
+      "producer_mcp_calls": 2,
+      "producer_shell_calls": 2,
+      "queue_id": "01a18452-2913-7ac0-9983-f720de97ed94",
+      "queued_at": 1793221339.4225762,
+      "wake": {
+        "ok": false,
+        "t": 1793221339.423051,
+        "detail": "not-loaded"
+      },
+      "native_receiver_messages": [
+        {
+          "at": "2026-10-28T21:03:01.900Z",
+          "turn_id": "01a18452-ce23-7153-8d77-9180d65df4aa"
+        }
+      ],
+      "ledger_replies": [
+        {
+          "id": "13b63215016f44c0",
+          "reply_to": "p13-tui-busy-dv1ahfwm",
+          "outcome_req": "succeeded",
+          "status": "queued"
+        }
+      ],
+      "receiver_mcp_calls": [
+        {
+          "at": "2026-10-28T21:03:07.869Z",
+          "tool": "xsm_send",
+          "status": "completed",
+          "server": "xsm"
+        }
+      ],
+      "receiver_shell_calls": 1,
+      "receiver_shell_xsm_attempts": 0,
+      "final_received": true,
+      "reply_to_matches": true,
+      "additional_human_prompt_after_question": 0,
+      "controller_inbox_polls": 0,
+      "manual_queue_or_response_injection": 0,
+      "actual_reply_body": [
+        "P13-TUI-BUSY 검토: 2+2=5는 틀립니다. 반례로 사과 2개와 사과 2개를 합치면 사과 4개이며 5개가 되지 않습니다. 올바른 합은 2+2=4입니다."
+      ],
+      "final_outcome": "succeeded",
+      "queue_to_reply_ledger_seconds": 47.907,
+      "queue_to_reply_seconds": 47.997,
+      "state_evidence": {
+        "active_python_sleep_seconds": 55,
+        "queued_before_first_turn_complete": true,
+        "first_turn_complete_after_queue": "2026-10-28T21:03:01.666Z",
+        "first_message_after_prior_turn_complete": true
+      }
+    },
+    {
+      "state": "interrupted",
+      "request_id": "p13-tui-interrupted-dv1ahfwm",
+      "producer_sid": "01a18456-40c0-7083-8c14-30300ac811f7",
+      "producer_pid": 77028,
+      "producer_lstart": "Thu Oct 29 06:06:47 2026",
+      "producer_returncode": 0,
+      "producer_calls": [
+        {
+          "server": "xsm",
+          "tool": "xsm_ask",
+          "status": "completed",
+          "result_status": [
+            "pending"
+          ],
+          "wait_end_reason": [
+            "timeout"
+          ],
+          "reply_ids": [],
+          "final_outcome": [
+            null
+          ]
+        },
+        {
+          "server": "xsm",
+          "tool": "xsm_question_status",
+          "status": "completed",
+          "result_status": [
+            "pending"
+          ],
+          "wait_end_reason": [
+            "timeout"
+          ],
+          "reply_ids": [],
+          "final_outcome": [
+            null
+          ]
+        }
+      ],
+      "producer_mcp_calls": 2,
+      "producer_shell_calls": 2,
+      "queue_id": "01a18456-9542-7293-b29a-6ba2d5e7ef85",
+      "queued_at": 1793221629.261034,
+      "wake": {
+        "ok": false,
+        "t": 1793221629.261499,
+        "detail": "not-loaded"
+      },
+      "native_receiver_messages": [],
+      "ledger_replies": [],
+      "receiver_mcp_calls": [],
+      "receiver_shell_calls": 1,
+      "receiver_shell_xsm_attempts": 0,
+      "final_received": false,
+      "reply_to_matches": false,
+      "additional_human_prompt_after_question": 0,
+      "controller_inbox_polls": 0,
+      "manual_queue_or_response_injection": 0,
+      "state_evidence": {
+        "esc_at": 1793221596.622175,
+        "turn_aborted_at": "2026-10-28T21:06:36.747Z",
+        "receiver_tail_event": "item_completed"
+      },
+      "observed_after_queue_seconds": 103.263,
+      "failed_boundary": "queued but no post-Esc native turn/reply; daemon wake not-loaded",
+      "recovery_owner": "coordinator",
+      "resume_condition": "Retained request/queue and verified owned TUI endpoint; investigate actual TUI hosting versus shared-daemon wake routing without manual prompt counted as automatic success."
+    }
+  ],
+  "configuration": "existing user profile + invocation-only frozen xsm MCP/env; no ignore-user-config/tool disable/instruction replacement",
+  "subscription_probe": "codex login status: Logged in using ChatGPT",
+  "cli_version": "codex-cli 0.164.0",
+  "setup_registrations": [],
+  "controller_tui_prompts": 3,
+  "controller_esc_keys": 1,
+  "controller_receiver_inbox_polls": 0,
+  "manual_queue_or_response_injection": 0,
+  "source_manifest_match": true,
+  "profile_hash_before": {
+    "config.toml": "3866601ebb27776025d6ddf0d0ef13ac43231477c99336b12f62b46ec7e5d66a",
+    "hooks.json": "5d48305d304f29b21abc7bb214e378819f76ba437a9e442d04a3ace1f89d04d7",
+    "settings.json": null
+  },
+  "receiver_tui_pid": 64952,
+  "receiver_tui_lstart": "Thu Oct 29 05:59:56 2026",
+  "receiver_cwd": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging",
+  "tui_exit": 0,
+  "tui_alive_after": false,
+  "receiver_sid": "01a1844f-fe38-7ce2-b466-7bb38e5a4c60",
+  "receiver_native_pid": 64954,
+  "receiver_native_lstart": "Thu Oct 29 05:59:56 2026",
+  "existing_daemon": {
+    "pid": 9102,
+    "lstart": "Wed Oct 28 05:55:24 2026",
+    "version": "codex-cli 0.165.0",
+    "ownership": "preexisting, not terminated"
+  },
+  "receiver_initial_setup_mcp_calls": [
+    {
+      "server": "reason-network",
+      "tool": "check_inbox",
+      "status": "completed"
+    },
+    {
+      "server": "reason-network",
+      "tool": "list_team",
+      "status": "completed"
+    }
+  ],
+  "automatic_model_retries": 0,
+  "source_unchanged": true,
+  "cleanup": {
+    "owned_observed_tree_remaining": [],
+    "producer_leaders_remaining": [],
+    "existing_daemon_9102_alive": true,
+    "private_files_open_lsof_count": 0
+  },
+  "profile_hash_after": {
+    "config.toml": "3866601ebb27776025d6ddf0d0ef13ac43231477c99336b12f62b46ec7e5d66a",
+    "hooks.json": "5d48305d304f29b21abc7bb214e378819f76ba437a9e442d04a3ace1f89d04d7",
+    "settings.json": null
+  },
+  "profile_files_unchanged": true,
+  "elapsed_to_cleanup_seconds": 613.39,
+  "native_queue_readback": [
+    {
+      "request_id": "p13-tui-interrupted-dv1ahfwm",
+      "queue_id": "01a18456-9542-7293-b29a-6ba2d5e7ef85",
+      "rows": [
+        [
+          "01a18456-9542-7293-b29a-6ba2d5e7ef85",
+          "01a1844f-fe38-7ce2-b466-7bb38e5a4c60",
+          0,
+          1793221629250,
+          1793221629250
+        ]
+      ]
+    },
+    {
+      "request_id": "p13-tui-busy-dv1ahfwm",
+      "queue_id": "01a18452-2913-7ac0-9983-f720de97ed94",
+      "rows": []
+    },
+    {
+      "request_id": "p13-tui-idle-dv1ahfwm",
+      "queue_id": "01a18451-1d00-70c3-aeb1-3729b84423d2",
+      "rows": []
+    }
+  ],
+  "producer_native_cli_invocations": 3,
+  "receiver_native_tui_invocations": 1,
+  "controller_initial_endpoint_registrations": 0,
+  "endpoint_registration_source": "actual installed hook/MCP self-registration; controller observed only",
+  "first_failure": "interrupted ask pending/timeout after 60 seconds; status pending; no receiver turn after Esc",
+  "scope_limitation": "one ordinary TUI CLI 0.164.0 on existing .codex-3 profile, preexisting shared daemon 0.165.0; no alternate version/route rerun",
+  "receiver_shell_refusal": {
+    "state": "idle",
+    "exit_code": 2,
+    "reason": "sandboxed shell cannot reach Codex; model switched to xsm_send MCP",
+    "attempts": 1
+  },
+  "receiver_tools_accounting_note": "shell counts use completed CommandExecution events inside each observation window; busy/interrupted each include the prior state-preparation sleep task completing, not an extra receiver request-processing shell",
+  "producer_setup_shell_calls_total": 6,
+  "producer_mcp_calls_total": 6,
+  "receiver_reply_mcp_calls_total": 2,
+  "queue_submissions_total": 5,
+  "daemon_wake_attempts_total": 5,
+  "daemon_wake_results": {
+    "not-loaded": 5
+  },
+  "automatic_queue_drains_receiver": 2,
+  "native_auth": "public codex login status reported Logged in using ChatGPT; native launch removed API key env vars; no auth file read/copied",
+  "report_prepared_at": 1793221855.059903
+}

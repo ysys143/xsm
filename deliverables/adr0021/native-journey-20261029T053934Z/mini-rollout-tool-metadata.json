@@ -1,0 +1,243 @@
+{
+  "CID": "01a1862d-c1f7-73d2-b616-f34d78d81772",
+  "rollout": "/private/tmp/xnj-mini-gl2ut38t/codex-home/sessions/2026/10/29/rollout-2026-10-29T14-41-48-01a1862d-c1f7-73d2-b616-f34d78d81772.jsonl",
+  "world_states": [
+    {
+      "line": 7,
+      "sha256": "11eeed8ebfff7bdf6302b147cbb642f07bc54d4af501e64b3285ef5181b5eb23",
+      "shape": {
+        "full": "bool",
+        "state": {
+          "agents_md": {},
+          "apps_instructions": "bool",
+          "collaboration_mode": {
+            "mode": "str",
+            "model": "str",
+            "instructions": "str"
+          },
+          "context_window_guidance": "str",
+          "environments": {
+            "environments": {
+              "local": "dict"
+            },
+            "current_date": "str",
+            "timezone": "str",
+            "filesystem": "str"
+          },
+          "environments_instructions": "bool",
+          "git_attribution": "bool",
+          "host_skills": {
+            "body": "str",
+            "includeInstructions": "bool"
+          },
+          "managed_developer_instructions": {},
+          "model": "str",
+          "model_catalog": "str",
+          "multi_agent_mode": {
+            "mode": "str",
+            "usage_hint_hash": "str"
+          },
+          "multi_agent_usage_hint": "str",
+          "permissions": {
+            "instructions": "str",
+            "approved_command_prefixes": {
+              "count": 0,
+              "first": null
+            }
+          },
+          "persistent_mode": {},
+          "plugins_instructions": "bool",
+          "realtime": {
+            "active": "bool"
+          },
+          "skills": {
+            "includeInstructions": "bool"
+          }
+        }
+      },
+      "tool_metadata_names": []
+    }
+  ],
+  "additional_tools": [],
+  "tool_calls": [
+    {
+      "line": 14,
+      "timestamp": "2026-10-29T05:41:54.428Z",
+      "type": "custom_tool_call",
+      "name": "exec",
+      "namespace": null,
+      "call_id": "call_c8aad0b9f59b4926a6450f18889a8955",
+      "input": "const ts = ALL_TOOLS.filter(x=>/collab|inbox|peer|message|wait|thread/i.test(x.name+\" \"+x.description)); text(ts);\ntext(await tools.clock__curr_time({}));\n"
+    },
+    {
+      "line": 18,
+      "timestamp": "2026-10-29T05:42:27.010Z",
+      "type": "custom_tool_call",
+      "name": "exec",
+      "namespace": null,
+      "call_id": "call_8a9af67b2e7943979db1b49b1ecc6ff1",
+      "input": "text(ALL_TOOLS.filter(x=>/collab|inbox|peer|message|wait|thread/i.test(x.name+\" \"+x.description)));\n"
+    },
+    {
+      "line": 24,
+      "timestamp": "2026-10-29T05:42:59.492Z",
+      "type": "custom_tool_call",
+      "name": "exec",
+      "namespace": null,
+      "call_id": "call_57f9537591db432a8fbf78c04a153a5a",
+      "input": "text(ALL_TOOLS.map(x=>({name:x.name,description:x.description})));\n"
+    },
+    {
+      "line": 32,
+      "timestamp": "2026-10-29T05:43:34.161Z",
+      "type": "custom_tool_call",
+      "name": "exec",
+      "namespace": null,
+      "call_id": "call_03fff1b937304c51b5e746bd30b94839",
+      "input": "text(ALL_TOOLS.filter(x=> !/exec_command|image|web__|goal|stdin|patch/.test(x.name)));\n"
+    },
+    {
+      "line": 38,
+      "timestamp": "2026-10-29T05:44:06.858Z",
+      "type": "function_call",
+      "name": "sleep",
+      "namespace": "clock",
+      "call_id": "call_17bd2b45eeb143d88a7a7dea3399f514",
+      "input": "{\"duration_ms\":20000}"
+    },
+    {
+      "line": 43,
+      "timestamp": "2026-10-29T05:44:29.631Z",
+      "type": "custom_tool_call",
+      "name": "exec",
+      "namespace": null,
+      "call_id": "call_1be2f37143334865adedc6c1a9da1eea",
+      "input": "text(ALL_TOOLS.filter(x=>/collab|inbox|peer|message|wait|thread|discover|search/i.test(x.name+\" \"+x.description)));\n"
+    },
+    {
+      "line": 49,
+      "timestamp": "2026-10-29T05:45:02.626Z",
+      "type": "function_call",
+      "name": "sleep",
+      "namespace": "clock",
+      "call_id": "call_ace967c021b9432e945e39189cd8c471",
+      "input": "{\"duration_ms\":40000}"
+    },
+    {
+      "line": 57,
+      "timestamp": "2026-10-29T05:46:12.911Z",
+      "type": "custom_tool_call",
+      "name": "exec",
+      "namespace": null,
+      "call_id": "call_66cfe5a2d92f4c4eb4face3493b1b9f2",
+      "input": "text(ALL_TOOLS.filter(x=>/collab|inbox|peer|message|wait|thread/i.test(x.name+\" \"+x.description)));\n"
+    },
+    {
+      "line": 65,
+      "timestamp": "2026-10-29T05:46:20.755Z",
+      "type": "function_call",
+      "name": "sleep",
+      "namespace": "clock",
+      "call_id": "call_8b96587ff6304b029521bd9713dd1aae",
+      "input": "{\"duration_ms\":60000}"
+    },
+    {
+      "line": 73,
+      "timestamp": "2026-10-29T05:48:10.548Z",
+      "type": "custom_tool_call",
+      "name": "exec",
+      "namespace": null,
+      "call_id": "call_31661fbd763e445387a64d72ae9fba4e",
+      "input": "text(ALL_TOOLS.filter(x=>/collab|inbox|peer|message|wait|thread/i.test(x.name+\" \"+x.description)));\n"
+    },
+    {
+      "line": 77,
+      "timestamp": "2026-10-29T05:48:14.109Z",
+      "type": "custom_tool_call",
+      "name": "exec",
+      "namespace": null,
+      "call_id": "call_a8226a87642b46c29cb1e95b0c66b602",
+      "input": "text(ALL_TOOLS.filter(x=>/collab|inbox|peer|colleague/i.test(x.name+\" \"+x.description)).map(x=>({name:x.name,description:x.description.slice(0,300)})));\n"
+    },
+    {
+      "line": 81,
+      "timestamp": "2026-10-29T05:48:16.614Z",
+      "type": "custom_tool_call",
+      "name": "exec",
+      "namespace": null,
+      "call_id": "call_c8281f43d75e457e8d9174c2aa6ed4e6",
+      "input": "text(ALL_TOOLS.filter(x=> !/mcp__codex_apps__/.test(x.name)).map(x=>({name:x.name,description:x.description.slice(0,180)})));\ntext(await tools.clock__curr_time({}));\n"
+    },
+    {
+      "line": 87,
+      "timestamp": "2026-10-29T05:48:21.027Z",
+      "type": "custom_tool_call",
+      "name": "exec",
+      "namespace": null,
+      "call_id": "call_193ee6e139c34eb6ba3de28c6c38ec6b",
+      "input": "text(ALL_TOOLS.filter(x=>/orca|question|cowork|agent|workspace|request/i.test(x.name)).map(x=>({name:x.name,description:x.description.slice(0,120)})));\ntext(await tools.list_mcp_resources({}));\ntext(await tools.list_mcp_resource_templates({}));\n"
+    },
+    {
+      "line": 95,
+      "timestamp": "2026-10-29T05:48:24.663Z",
+      "type": "custom_tool_call",
+      "name": "exec",
+      "namespace": null,
+      "call_id": "call_34db83db5f5347538b04b21cbe272cf0",
+      "input": "text(await tools.exec_command({cmd:\"pwd; rg --files --hidden -g 'AGENTS.md' -g '*README*' -g '*tool*' -g '! .git'\",\"max_output_tokens\":2000}));\n"
+    },
+    {
+      "line": 104,
+      "timestamp": "2026-10-29T05:48:29.439Z",
+      "type": "function_call",
+      "name": "sleep",
+      "namespace": "clock",
+      "call_id": "call_a6f4ab6530934829bc0c9ba935e2cfb9",
+      "input": "{\"duration_ms\":55000}"
+    }
+  ],
+  "turn_contexts": [
+    {
+      "line": 8,
+      "timestamp": "2026-10-29T05:41:50.750Z",
+      "turn_id": "01a1862d-c3a0-7933-bdb2-8cd9dad24ca9",
+      "model": "gpt-6.1-sol",
+      "approval_policy": "never",
+      "sandbox_policy": {
+        "type": "workspace-write",
+        "network_access": false,
+        "exclude_tmpdir_env_var": false,
+        "exclude_slash_tmp": false
+      },
+      "disabled_plugin_ids": []
+    },
+    {
+      "line": 54,
+      "timestamp": "2026-10-29T05:46:10.801Z",
+      "turn_id": "01a18631-bd16-7493-9fd8-41538cfeaea8",
+      "model": "gpt-6.1-sol",
+      "approval_policy": "never",
+      "sandbox_policy": {
+        "type": "workspace-write",
+        "network_access": false,
+        "exclude_tmpdir_env_var": false,
+        "exclude_slash_tmp": false
+      },
+      "disabled_plugin_ids": []
+    },
+    {
+      "line": 70,
+      "timestamp": "2026-10-29T05:48:08.035Z",
+      "turn_id": "01a18633-8537-75f2-8cbf-fe97f241e554",
+      "model": "gpt-6.1-sol",
+      "approval_policy": "never",
+      "sandbox_policy": {
+        "type": "workspace-write",
+        "network_access": false,
+        "exclude_tmpdir_env_var": false,
+        "exclude_slash_tmp": false
+      },
+      "disabled_plugin_ids": []
+    }
+  ]
+}

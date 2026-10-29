@@ -1,0 +1,68 @@
+[
+  {
+    "network_id": "00090c4bcc46f35f81fa70dc07c9cf3f7d1858f86d8fffcf31c26d226155d306:98375042629a3a9f9389047aafce98a8c12352135edc0268d98c90b8ae3ea30e",
+    "file_sha256": "eeb652bc6748740171ec3d69162275086f325a59e94da509c496c197c3371ee9",
+    "operations": [
+      {
+        "op": "invite",
+        "issuer": "00090c4bcc46f35f81fa70dc07c9cf3f7d1858f86d8fffcf31c26d226155d306",
+        "endpoint_id": null
+      },
+      {
+        "op": "admit",
+        "issuer": "00090c4bcc46f35f81fa70dc07c9cf3f7d1858f86d8fffcf31c26d226155d306",
+        "endpoint_id": "574f8f3534633f091fb35e517deb048317ccb6942c15fd990adad99f7ee45f0b"
+      },
+      {
+        "op": "invite",
+        "issuer": "574f8f3534633f091fb35e517deb048317ccb6942c15fd990adad99f7ee45f0b",
+        "endpoint_id": null
+      },
+      {
+        "op": "invite",
+        "issuer": "574f8f3534633f091fb35e517deb048317ccb6942c15fd990adad99f7ee45f0b",
+        "endpoint_id": null
+      },
+      {
+        "op": "invite",
+        "issuer": "574f8f3534633f091fb35e517deb048317ccb6942c15fd990adad99f7ee45f0b",
+        "endpoint_id": null
+      },
+      {
+        "op": "revoke",
+        "issuer": "574f8f3534633f091fb35e517deb048317ccb6942c15fd990adad99f7ee45f0b",
+        "endpoint_id": null
+      },
+      {
+        "op": "invite",
+        "issuer": "574f8f3534633f091fb35e517deb048317ccb6942c15fd990adad99f7ee45f0b",
+        "endpoint_id": null
+      },
+      {
+        "op": "admit",
+        "issuer": "574f8f3534633f091fb35e517deb048317ccb6942c15fd990adad99f7ee45f0b",
+        "endpoint_id": "0c8da9ac499029e76aa5da6951583e84a6c69be96a2c5cb4abf3602a74b0bdc0"
+      },
+      {
+        "op": "revoke",
+        "issuer": "574f8f3534633f091fb35e517deb048317ccb6942c15fd990adad99f7ee45f0b",
+        "endpoint_id": null
+      },
+      {
+        "op": "revoke",
+        "issuer": "574f8f3534633f091fb35e517deb048317ccb6942c15fd990adad99f7ee45f0b",
+        "endpoint_id": null
+      },
+      {
+        "op": "revoke",
+        "issuer": "574f8f3534633f091fb35e517deb048317ccb6942c15fd990adad99f7ee45f0b",
+        "endpoint_id": null
+      },
+      {
+        "op": "remove",
+        "issuer": "574f8f3534633f091fb35e517deb048317ccb6942c15fd990adad99f7ee45f0b",
+        "endpoint_id": "0c8da9ac499029e76aa5da6951583e84a6c69be96a2c5cb4abf3602a74b0bdc0"
+      }
+    ]
+  }
+]

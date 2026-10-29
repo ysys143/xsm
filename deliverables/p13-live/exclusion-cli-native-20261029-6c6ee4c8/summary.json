@@ -1,0 +1,100 @@
+{
+  "verdict": "pass for these local current-caller exclusion cells; no whole-criterion/plan completion claim",
+  "A17_05": {
+    "same_native_cwd_realpath": true,
+    "symlink_alias_only": true,
+    "registry_upsert_both_rejected": true,
+    "preexisting_self_pointer_bytes_preserved": true,
+    "discovery": {
+      "candidates": [],
+      "status": "unknown",
+      "reason": "caller_or_policy_unverified",
+      "unanswered": {}
+    },
+    "CLI_capture_API_rejections": [
+      "excluded-or-unknown",
+      "excluded-or-unknown"
+    ],
+    "in_process_CLI_parser_executed": false
+  },
+  "A19_03": {
+    "direct_files_prepare_cli_codes": [
+      "excluded-or-unknown",
+      "credential-path"
+    ],
+    "real_cli_main_parser": [
+      {
+        "label": "excluded",
+        "exit_code": 2,
+        "code": "excluded-or-unknown",
+        "status": "attachment-error",
+        "body_sent": false,
+        "manifest_id": null,
+        "natural_identity_context": {
+          "basis": "thread_id",
+          "sure": true
+        }
+      },
+      {
+        "label": "sensitive",
+        "exit_code": 2,
+        "code": "credential-path",
+        "status": "attachment-error",
+        "body_sent": false,
+        "manifest_id": null,
+        "natural_identity_context": {
+          "basis": "thread_id",
+          "sure": true
+        }
+      }
+    ],
+    "parser_scope": "real cli.main argv parser/handler/capture path in current Python workers; not an OS python -m CLI subprocess"
+  },
+  "native_identity": "actual current CID/home/cwd verified in native DB and rollout header, actual OS Codex ancestor PID/lstart; no caller certainty assignment",
+  "sandbox_markers_cleared_or_added": false,
+  "direct_API_argument_scope": "factual registered native record; direct API does not independently establish MCP caller certainty",
+  "protected_source_open_events": 0,
+  "protected_original_postread_or_posthash": 0,
+  "originals": {
+    "excluded": {
+      "setup_sha256": "d46c8eb8afb235a50e05e669029235c5c42a5e01098dfd5ad5f6969754f6c8e9",
+      "stat_preserved": true,
+      "post_run_hash": "not read"
+    },
+    "sensitive": {
+      "setup_sha256": "a290a43aad4247a5ef3da4794b64307a1bf4d4d76f739ee119bacf4eec993826",
+      "stat_preserved": true,
+      "post_run_hash": "not read"
+    },
+    "LICENSE": {
+      "setup_sha256": "af6dec946d376711503790a7fc6b9f5f8bb09c5b5909efa6c046c0d98433aa45",
+      "stat_preserved": true,
+      "post_run_hash": "not read"
+    }
+  },
+  "counts_each_state": {
+    "ledger": 0,
+    "canonical": 0,
+    "copy_records": 0,
+    "copy_blobs": 0,
+    "body_sent": 0
+  },
+  "private_registry_self_records_per_state": [
+    1,
+    1
+  ],
+  "new_models": 0,
+  "new_native_TUIs": 0,
+  "source_frozen315_unchanged": true,
+  "preexisting_current_primary_difference": [
+    "tests/test_workers.py"
+  ],
+  "source_used": "/private/tmp/xsm-doctor-privacy-frozen-47o6orah",
+  "private_raw_root": "/private/tmp/exclusion-cli-native-jhehrztq",
+  "limits": [
+    "A17 excluded caller discovery is unknown/hidden, not an ordinary successful listing",
+    "A17 uses direct APIs, A19 also uses actual in-process CLI parser",
+    "known sensitive name and configured exclusion do not prove all unknown secrets or inline source-path policy",
+    "prior native hidden/outside/mode000 and fixture symlink/Unicode cases reused only"
+  ]
+}

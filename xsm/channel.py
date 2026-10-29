@@ -166,12 +166,13 @@ def _stamp(t: float) -> str:
 
 
 def _line(r: dict, indent: str = "") -> str:
-    text = r.get("text", "").replace("\n", "\n" + indent + "    ")
-    out = "%s%s %s %s [%s] %s" % (indent, r["id"], _stamp(r["t"]), label(r["author"]),
-                                  r.get("tag"), text)
+    from .provenance import display_body, display_text
+    text = display_body(r.get("text", "")).replace("\n", "\n" + indent + "    ")
+    out = "%s%s %s %s [%s] %s" % (indent, display_text(r["id"]), _stamp(r["t"]), display_text(label(r["author"])),
+                                  display_text(r.get("tag")), text)
     if r.get("approved"):
         a = r["approved"]
-        out += "\n%s    (asked: %s -> answered: %s)" % (indent, a.get("question"), a.get("answer"))
+        out += "\n%s    (asked: %s -> answered: %s)" % (indent, display_text(a.get("question")), display_text(a.get("answer")))
     return out
 
 

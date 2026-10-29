@@ -17,7 +17,10 @@ sys.path.insert(0, str(REPO))
 class CodexInstallTest(unittest.TestCase):
     def test_cli_link_preserves_foreign_files_and_replaces_xsm_links(self):
         from xsm import install
-        with tempfile.TemporaryDirectory() as tmp, mock.patch.dict(os.environ, HOME=tmp):
+        with tempfile.TemporaryDirectory() as tmp, mock.patch.dict(os.environ, HOME=tmp), \
+                mock.patch.object(install, "runtime_root", return_value=str(REPO)):
+            # This fixture tests checkout links; the user's snapshot policy is
+            # outside its temporary HOME and must not select its runtime.
             link = Path(tmp) / ".local/bin/xsm"
             self.assertEqual(install.install_cli(), "linked")
             self.assertEqual(install.install_cli(), "current")

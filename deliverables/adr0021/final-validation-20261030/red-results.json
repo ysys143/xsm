@@ -1,0 +1,53 @@
+{
+  "completed": true,
+  "source": "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/adr21-final-20261030-fx0yt4x3",
+  "baseline_tests": 3,
+  "baseline_log": "baseline.stderr",
+  "mutations_detected": 3,
+  "rows": [
+    {
+      "case": "unmetered-durable-bytes",
+      "argv": [
+        "/opt/homebrew/bin/python3.14",
+        "-B",
+        "-m",
+        "unittest",
+        "tests.test_network_payload_retention.PayloadRetentionTests.test_wire_bytes_remain_valid_but_both_durable_records_are_metadata_only",
+        "-q"
+      ],
+      "root": "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/adr21-final-red-r3nafhpi/unmetered-durable-bytes",
+      "exit_code": 1,
+      "stderr_tail": "d_retention.PayloadRetentionTests.test_wire_bytes_remain_valid_but_both_durable_records_are_metadata_only)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/adr21-final-red-r3nafhpi/unmetered-durable-bytes/tests/test_network_payload_retention.py\", line 55, in test_wire_bytes_remain_valid_but_both_durable_records_are_metadata_only\n    self.assert_metadata_only(self.ga, \"outbound\", packet, data)\n    ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/adr21-final-red-r3nafhpi/unmetered-durable-bytes/tests/test_network_payload_retention.py\", line 44, in assert_metadata_only\n    self.assertEqual(record[\"packet\"][\"file_packet\"], {\"manifest\": packet[\"file_packet\"][\"manifest\"]})\n    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: {'data': {'315870ab482447158d221e78484d3a70[88211 chars]: 1}} != {'manifest': {'binding': {'body_sha256': '2[777 chars]: 1}}\nDiff is 88842 characters long. Set self.maxDiff to None to see it.\n\n----------------------------------------------------------------------\nRan 1 test in 0.050s\n\nFAILED (failures=1)\n"
+    },
+    {
+      "case": "expired-reply-hides-ack",
+      "argv": [
+        "/opt/homebrew/bin/python3.14",
+        "-B",
+        "-m",
+        "unittest",
+        "tests.test_network_payload_retention.PayloadRetentionTests.test_expired_file_reply_preserves_original_ack_and_reply_metadata_without_dispatch",
+        "-q"
+      ],
+      "root": "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/adr21-final-red-r3nafhpi/expired-reply-hides-ack",
+      "exit_code": 1,
+      "stderr_tail": "adata_without_dispatch)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/adr21-final-red-r3nafhpi/expired-reply-hides-ack/tests/test_network_payload_retention.py\", line 217, in test_expired_file_reply_preserves_original_ack_and_reply_metadata_without_dispatch\n    status = self.gb.status(fixture.A, request[\"id\"], self.fixture.ap)\n  File \"/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/adr21-final-red-r3nafhpi/expired-reply-hides-ack/xsm/network_messages.py\", line 96, in call\n    return function(*args, **kwargs)\n  File \"/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/adr21-final-red-r3nafhpi/expired-reply-hides-ack/xsm/network_messages.py\", line 775, in status\n    final[\"packet\"] = self._wire_packet(reply)\n                      ~~~~~~~~~~~~~~~~~^^^^^^^\n  File \"/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/adr21-final-red-r3nafhpi/expired-reply-hides-ack/xsm/network_messages.py\", line 592, in _wire_packet\n    raise GatewayError(\"file-payload-unavailable\") from None\nxsm.network_messages.GatewayError: file-payload-unavailable\n\n----------------------------------------------------------------------\nRan 1 test in 0.091s\n\nFAILED (errors=1)\n"
+    },
+    {
+      "case": "recovery-owner-isolation",
+      "argv": [
+        "/opt/homebrew/bin/python3.14",
+        "-B",
+        "-m",
+        "unittest",
+        "tests.test_network_saved_requests.SavedNetworkRequestTests.test_export_and_archive_remain_owner_bound_without_a_running_service",
+        "-q"
+      ],
+      "root": "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/adr21-final-red-r3nafhpi/recovery-owner-isolation",
+      "exit_code": 1,
+      "stderr_tail": "~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: Lists differ: [{'id': 'saved-outgoing', 'network_id': '5[425 chars]rue}] != []\n\nFirst list contains 1 additional elements.\nFirst extra element 0:\n{'id': 'saved-outgoing', 'network_id': '595621d7033ead0d5d045efe3f530f7dd3702409d4a01d7f6e151c7feab951fe:d48db5cf61055506176fa8ecf037f3252a796d72c2b801b1b1c936aede9cf578', 'target': 'net:151c134fc9a1f99cb44396903a2506a194a2c4372e5b70f908a8cb626ce0cf4f:codex:0f1b0f4c879e915c7b0770265215d45eb06ec386d25b88bace63bfc423b1e326:fixture-b', 'kind': 'task', 'preview': 'immutable outgoing original\\n', 'stored_at': 1793287069.959789, 'archived_at': None, 'recovery_only': True}\n\n+ []\n- [{'archived_at': None,\n-   'id': 'saved-outgoing',\n-   'kind': 'task',\n-   'network_id': '595621d7033ead0d5d045efe3f530f7dd3702409d4a01d7f6e151c7feab951fe:d48db5cf61055506176fa8ecf037f3252a796d72c2b801b1b1c936aede9cf578',\n-   'preview': 'immutable outgoing original\\n',\n-   'recovery_only': True,\n-   'stored_at': 1793287069.959789,\n-   'target': 'net:151c134fc9a1f99cb44396903a2506a194a2c4372e5b70f908a8cb626ce0cf4f:codex:0f1b0f4c879e915c7b0770265215d45eb06ec386d25b88bace63bfc423b1e326:fixture-b'}]\n\n----------------------------------------------------------------------\nRan 1 test in 2.938s\n\nFAILED (failures=1)\n"
+    }
+  ],
+  "preparation_failure": "The first owner mutation was not applied because a textual guard matched both _original and archive. Scoped it to _original; no source or tests were altered in the repository. Two earlier mutants had already failed as expected.",
+  "finished_utc": "2026-10-29T15:17:51.218481+00:00"
+}

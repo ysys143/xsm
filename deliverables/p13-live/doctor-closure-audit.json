@@ -1,0 +1,1137 @@
+{
+  "schema": "xsm.A23-07.doctor-closure-audit.v1",
+  "generated_at_utc": "2026-10-29T00:21:35.512057+00:00",
+  "timebox_minutes": 15,
+  "started_at_utc": "2026-10-29T00:17:41+00:00",
+  "criterion": "A23-07",
+  "verdict": "partial-native-cell-unclosed",
+  "closure_possible_from_existing_evidence": false,
+  "scope": "기존 fixture/native/review의 증명 범위 대조; 제품·plan·ledger 판정 변경 없음",
+  "original_requirement": "진단을 실행해도 자격 증명·초대·원문 개인정보가 공개 로그에 남지 않고 실제 사용자 세션이 종료되지 않는다.",
+  "plan_record": {
+    "id": "A23-07",
+    "adr": "0023",
+    "source": "docs/adr/0023-runtime-adapters-and-operability.md",
+    "criterion": "진단을 실행해도 자격 증명·초대·원문 개인정보가 공개 로그에 남지 않고 실제 사용자 세션이 종료되지 않는다.",
+    "owner_step": "P10",
+    "integration_step": "P13",
+    "findings": [
+      "R35"
+    ],
+    "implementation_paths": [
+      "xsm/install.py",
+      "xsm/cli.py",
+      "xsm/paths.py",
+      "xsm/probe.py",
+      "xsm/registry.py",
+      "xsm/mcp.py",
+      "hooks",
+      "README_ko.md",
+      "README.md",
+      "skills/xsm"
+    ],
+    "evidence_levels": [
+      "fixture",
+      "harness",
+      "review"
+    ],
+    "positive": "진단 공개 로그의 credential/초대/원문 미포함과 사용자 세션 생존 확인",
+    "negative": "진단용 실제 동료 임의 기상·세션 종료·민감 로그",
+    "status": "planned-not-run",
+    "closure_steps": [
+      "P10"
+    ],
+    "closure_gates": [
+      "G10"
+    ],
+    "integration_gate": "G13"
+  },
+  "requirements_binding": {
+    "workspace_plan": {
+      "path": "docs/plan/reason-inspired-adrs/plan.json",
+      "exists": true,
+      "sha256": "ccdcb59f0a1cebe61fd805c40a09e486641e801ff3d5f9bc6b30fa9033ceadc9",
+      "bytes": 173071
+    },
+    "frozen_plan": {
+      "path": "/private/tmp/xsm-final-receipt-frozen-i3u9pms3/docs/plan/reason-inspired-adrs/plan.json",
+      "exists": true,
+      "sha256": "9f4b9354d82f7d655e6e9d6fa421927476916d834e9da173aeb15778a41488f7",
+      "bytes": 172749
+    },
+    "criterion_unchanged": true,
+    "whole_plan_bytes_equal": false
+  },
+  "source_binding": {
+    "snapshot": "/private/tmp/xsm-final-receipt-frozen-i3u9pms3",
+    "manifest": {
+      "path": "deliverables/p13-live/final-source-manifest.json",
+      "exists": true,
+      "sha256": "cb05d6ecb3ab87d95359de3cc318f5ea217bee23837e72b9fff34f6512fb1463",
+      "bytes": 38515
+    },
+    "primary_count": 135,
+    "matches_recorded_manifest": true,
+    "primary_sha256": {
+      ".claude-plugin/marketplace.json": "8a100d8d72b4a995362dce3454965a561e6553830804a597917038af7f51b4d7",
+      ".claude-plugin/plugin.json": "2a9ce315d97eeea658a303911b15f2f0a0495738a308da9ddbcb10ab9263877e",
+      ".codex-plugin/plugin.json": "ac671b412f00f2728317f14faa3234154810b73921635e1cc3b1dd2773851fc4",
+      "bin/xsm": "3c80672e2f062a8792bc89eb1b74b229db7e55c64e93a20910fa88f8ca33ec88",
+      "hooks/codex-hooks.json": "b972a24035252a9a56c1bc315549dd37b3b066c4865335625e4246cbf90a550b",
+      "hooks/codex-mcp.json": "b1d2a3f79ecf47ddc2fc3f03dda113b5b9bf1685e223baf801479b35112e4815",
+      "hooks/hooks.json": "ade596e312dfa1d97bd6e4f5ab024bfcd6d7ce2e50649ee1ecdc53b0d2cd7cfe",
+      "hooks/xsm-hook": "b5d01706b7b2d0b0dc1ad0094c8a7211c730b4c5d34fb8dd1be6beea571f547c",
+      "hooks/xsm-hook.py": "c94bf31c8e282e8745c3666e6de6186098bd5737bc4ad87676837c8f7328df92",
+      "hooks/xsm-mcp": "01fcc6d51a3ee6fa0aa15b2293ab1c02bc8c8fc733f67bb3d1d3e7b96e1a56bf",
+      "hooks/xsm-mcp.py": "fb04f9e18fc9c1ff620c1825c8451b84980496631ed23e20d8a9097f5e0f6edf",
+      "hooks/xsm-remote.py": "9096a2710256944c5225174563f3b50f53031efde369d296994e8b73950f3616",
+      "skills/xsm/SKILL.md": "3e583bcd294862775c6590766b96cea2260c879329a32ffbe5306f128da55896",
+      "skills/xsm/references/guide.md": "6bffc41da7cce01cc6080c8afb62e54efc910fd67b59d9d11b0c119130c43981",
+      "skills/xsm/references/messaging.md": "b76f2de35f0579bb74bca8f32ebe1f07f4a2bc83e5ed776284f738df88de3eef",
+      "tests/fixtures/fakessh.py": "e1eed0633b2b1183d41773eb80bbf71d375807d9446f9b5fc74a15f661b9c263",
+      "tests/test_abuse.py": "ec1dbe5f6538a24f7441f9d90cd1efd76fa7f518977f43a518e2566bfa08c683",
+      "tests/test_attention.py": "13c2719c2407feabd84789db4c525966ab00b619de4f7d936613dac36804a4c4",
+      "tests/test_b04_interfaces.py": "9e90d53ed1c326a5379631aa6aa5e095cc301f080c05d6bbf724fac24dee8a27",
+      "tests/test_channel.py": "f632a25071963b4a6c10bfe42374b1e9fdc3dd39b08c21d267dd52c7a34bf958",
+      "tests/test_codex_wake.py": "c7ef9b52daa97cda3a1250959cbc41cad7244d812c0a8d67eccb82b69c585751",
+      "tests/test_collaboration.py": "7f4b7eb57eefdeabce3d8e724a56c36e8610b005458a053d8d0d6c44c3443c4d",
+      "tests/test_connection_binding.py": "024273d0e98de1b078ad16e2a8ada284cfbe11341eaa8b273e4be4ae06e82a5e",
+      "tests/test_crash_boundaries.py": "7faed6976e4a6c90b689fb60b7e5a4f0abe34a61933fc11798f309085321bbe0",
+      "tests/test_decisions.py": "3837476814ccec2ee29a4bf7cb6621eba6ee672d903fbe45d360f8ff604bbc80",
+      "tests/test_directory.py": "a2be2425abea44bb493e496259ba17f5a2e0917edb82e7efa55fa7175ac89b53",
+      "tests/test_directory_contract.py": "e316249e5fec1b150110dc50210ac38d3e41f72edc621617e1e3654c741b40ee",
+      "tests/test_directory_interfaces.py": "12d91d6663d891af57390e8dde3dc1ef9355c6f9bb63a4f21490509eb97392b4",
+      "tests/test_discovery_latency.py": "d4fdae0a491fb3855fc59445e068be7ee643ce6d2ba274c69eeb990122afc966",
+      "tests/test_doc.py": "08ff26efda18af2b16efaca5d029b8e04cebd08659e5feebdcb8a961e0ed7751",
+      "tests/test_envelope_nested.py": "639f85870b6b26bc7c8763f837677031c1c9a098057d3f101d0eb2e22a4e5810",
+      "tests/test_file_interfaces.py": "f93c4b91f05cfe274ac13c9f1cb80e3f5944a04f8e677bf194baeb75dd93d595",
+      "tests/test_files.py": "d1678a5d1a68e426df53c92d7f631f317342a8cab8a9514d520231b38103afe9",
+      "tests/test_handoff.py": "a3d7ff9ba9440923e1119465e1a49e0162b22a1fc477777709114a838a69ceac",
+      "tests/test_handoff_consumer.py": "31f5d017861e402dc9a4c70314b395821b98f2f1daf3071b9adf1f5b06a37771",
+      "tests/test_handoff_crash.py": "ad29ac98711e8ad235e3918335f6d58ac4ae1909c3ec268285ba7aec33f35dd9",
+      "tests/test_handoff_pending_ids.py": "7b993ca948cbd97dc71bb9dbda65b6159936e8b9a174b65e0f6b1169489466d2",
+      "tests/test_hook_status.py": "597c4b8d71fb2e16c076d3e3420d75ca1b8145b817be261ac55b7c73e5dc7c31",
+      "tests/test_install_cli_flow.py": "0105e3f15c80c846556daf707ea5a1353e90deaf25e30b5f1c01ae076efd14c4",
+      "tests/test_install_codex.py": "34c0695c6b8b195cd890502f90df64ee78f9eddebcae31974d17bc30c21455ef",
+      "tests/test_install_native_mcp.py": "a21fb6b5d8cb9f618c60b45af3a5eb02c6d49e2cd0492366b58e71e1382811b2",
+      "tests/test_install_runtime.py": "285740c197166264eb5d85bd07fdfc15988261526cafb38ac1fa5fe871d126a3",
+      "tests/test_install_safety.py": "0a5ae8020ca9042b20354adaddc02bff9cd1923ca3e813fda8575a011c1896b7",
+      "tests/test_launcher.py": "2719801f12b48bce08e8b9f19b6d735397a94ab722d35709a6937f60fafc0d6f",
+      "tests/test_link.py": "d3774f109c5403d307684556110b21fe8d83d54573be22dea93f5168f1853bda",
+      "tests/test_materials.py": "8768e8f43d9c5903ccf7696f97d9436b12ec65b16fa69f5de438fba46447d3df",
+      "tests/test_mcp_dispatch.py": "739d56142447b037847f43261807006d16246bfd94fe294d361dd873b43c6809",
+      "tests/test_mcp_identity.py": "6676e755b48054949c8729db834186163ec48269932e7ace69b711e1ed3b06f3",
+      "tests/test_mcp_preload.py": "001ff9d537b949efd21db606660b27759d8d7e765ec885d61e4731952c3c7bed",
+      "tests/test_mcp_wait_process.py": "92725ad677f5f0e964a1e20cf52ecdaab7b28b4f14a4060aa49ee0a09ad24385",
+      "tests/test_messaging_instructions.py": "ef4e3c617510d1cb10c76cfe0369176992d0a67c5461e4259c739aae7e9bec33",
+      "tests/test_native_consent.py": "faf4aede753bf1eb0b5b278df3f377a3f2bf09dc4353b27b307b74f38ad6a458",
+      "tests/test_one_yes.py": "bd255d955f9717b3f892699af7175629ba8b64304d84967c2fe029639a48cca2",
+      "tests/test_open_consent.py": "12a9fbf4321ce58c535d8db2d26eeb01b6cf9e4c0c46649f3d9da143fa064d70",
+      "tests/test_open_mcp.py": "16710736bcec2cd3d157d26a940ecf7c384fcc9c152c8ddfbe1a735570de7dd8",
+      "tests/test_open_messaging.py": "0a83862e1dd548613df92b107b6ebbc10d674f33e362caf32ba29354c6e84233",
+      "tests/test_open_receive.py": "507c5adfc7139656c11f996ac3be65a56aac52293e9999e32fa413cde9ebd4a9",
+      "tests/test_otlp_export.py": "9346a0b849526b491446030c206910673dfa127efcd6098463d723e5014522b1",
+      "tests/test_owned_crash.py": "fbae99eff1f22daf9774e275dda6c57e606ce1b501863d7d5d3ec7b303e8c30d",
+      "tests/test_owned_interfaces.py": "3ee3d73a17dfdf88b9ed68eae30eef3bb51f8924f806786743ff70655d9e7f07",
+      "tests/test_owned_native.py": "66d3512d42d86ccbebb430b11870409ebc16631d9bc8618ff81cdb275d0ec0f4",
+      "tests/test_owned_native_events.py": "554b0e9e8f034b1a523ee8c0582160ead73cde46a003d550970ca8782412092c",
+      "tests/test_owned_requests.py": "b6cfe308963d65706a82fe2665135cb5451791b8c7fa1250488a8fec55d43d44",
+      "tests/test_owned_review_fixes.py": "a7a09eb6595bc397d3a8a3160bb14bf276bb2e6bb2533ca1c63f6bb3319ff4b4",
+      "tests/test_owned_workers.py": "390ac86d17fda89b239b55824a5473f1f4cf841c5f16a6336330cdd09bda8ba2",
+      "tests/test_peer_roundtrip.py": "724b1df64c5c56ba52f5a7c67ff614a1d06eb133b360efbe91e16c84da10818f",
+      "tests/test_person_decisions.py": "329caa1043923e3ce91523aef1797b39cd75ef84097e788d181b592a16be61b1",
+      "tests/test_policy_recovery.py": "0b75293566ef3f08937d236e3cc430fa701fc1a197d171076c1ddb8deee1597b",
+      "tests/test_probe.py": "d36aa76fa1b73b88ef4a252343c96bb48209d98d44d155580d61d13564592d18",
+      "tests/test_provenance.py": "1f91b697922a4a170cd166b563f25ebdf1ee15803cbafa1d5beb1ce982e55056",
+      "tests/test_question_interfaces.py": "66e5791078f5b38bba20c08a278cbdc2efe7d82aebc95da81ca666c883ac94d5",
+      "tests/test_questions.py": "cb5d55f5bc841a884c856ef09d1e4869d26094daaa2a396af8acf0d04cd35c94",
+      "tests/test_questions_contract.py": "9bb9f3cd7de95d53c31762616afd805538409dd23cd278c9358f861b60f4f421",
+      "tests/test_remote.py": "470a35476c53ea75689a642a76a33dbf60f5a6f699094e5a766337cbad61a20d",
+      "tests/test_selected_connection.py": "4adf666b3a424c3c96b88e226bd3189d7f28b21f83cf9e57aa99a3fa9c811221",
+      "tests/test_self_registration.py": "f0414be059d400b762ba12bb06bbfee2c3e72b571c2d518696bcd6dfe3fa886d",
+      "tests/test_setup_flow.py": "df5f4f522705f575185c9e739986169ce98bcc266f574033374d50dcfa84db9b",
+      "tests/test_stalled_probes.py": "5aaab481c0711be674e363b9b957b6f1703a8e681e3b80418949d75196ca8fd8",
+      "tests/test_subagent_transport.py": "8c07bfed94e8d7185e30c88d73bb39d9198bcc437021df8207758d9b708db658",
+      "tests/test_telemetry.py": "26ca5e97d3cf22002d845897129525f13b024a0a20e2bba507be3aef8c3b3e0a",
+      "tests/test_traffic_interfaces.py": "0ddbb68e3aae63163eba78e99231eed2807dcc94c95cd0bb02334f828d686eb2",
+      "tests/test_traffic_policy.py": "d33b23c1ada1a08d4e0dd65980c06198445a7d4f87968d70b5083ebacac55693",
+      "tests/test_user_answers.py": "84cd820c71e3e9b4db44132a29fd5420de862cc6a2d25b339bf8606a99332f22",
+      "tests/test_vectors.py": "f3e7b2fcaf07a6317690cc5e58408f2d19fc7c35bdeda14e0a88477d7f4948ea",
+      "tests/test_version_mix.py": "ee4ee69b9cf5c513aaca438b2bc8a3dd21f197a0eeea4eeea4b77058c7145ba1",
+      "tests/test_worker_directory_registration.py": "30679bf1bc10c0adb78753e07ec7851b1d615d698e494534581019fc7c087a0c",
+      "tests/test_workers.py": "a2a94029afbd186aa57d8029ceeebd0976ddcc59706c2d24a4d8339c7cd07517",
+      "tests/test_xsm.py": "e20e700777e1304506957f3d4dd806d5b8315f7b137139a5f403e691a56eb417",
+      "tests/vectors.json": "fb9c68dc359183bfe69bd31f19f504d733b5018e13cd197856516f1f98888006",
+      "xsm/__init__.py": "6f3c027b81d76181e6d7ead368d3206768d662f437f097cd194d27e9cf7735ba",
+      "xsm/__main__.py": "13a1a5b340cdcfc1902b62be90e508c7c71886000d5bf087e7854aadf09fb35e",
+      "xsm/abuse.py": "a15303d88acded3e03110b125da91e11ffd5de96d266a9485a0f476d991d8e66",
+      "xsm/adapters.py": "0b0d77d724130b2671d2fdc8eb0da64bc80d178b4be54b766c0b9a8629e950dd",
+      "xsm/attempts.py": "224b86ae077fc6e285716e73850317e9e6efcdba244eac16a3f9edef6dad320a",
+      "xsm/attention.py": "8cd167c01cc560f92580646c2e081ca2604c8548184ce493ef1e8bf875a9e866",
+      "xsm/bounce.py": "4a3ede5b15d85dea65388e26fa21f62dd2e9ab7da06c94ef3b9d788085aeaecc",
+      "xsm/channel.py": "459f8125b03eddbd2d8be23474b5f50b740aa7f777d2ea436f0aaa55db235382",
+      "xsm/cli.py": "76f29a9ef05d070dc61d68008ae87db2e5935dc76d0e333bd30c3db29d54cb1c",
+      "xsm/codex_daemon.py": "d7423388a943868a06411ca33725b17a128bd9c6c641232da0844a59ff9a1f3d",
+      "xsm/collaboration.py": "4955c37de5aa9dd85a7f083db95cc6e39b7120681dddf63f7f8a871346e7d290",
+      "xsm/config.py": "92255fcee9cd2fe3b013851b056533a78d5090b225123f0d460de9c425feb5ca",
+      "xsm/connect.py": "61aa314f64c122955a929406778f940cf96cdc7a90ec0425cbe958dcb486c292",
+      "xsm/consent.py": "26adb2e00e2466594a6dee3fe4850cc6ee8ee20c7187c0e1f490d51d603b95e0",
+      "xsm/context.py": "3a8355156f5d5497a0e945fe1a2c05791439cfe172f8fa5ae0eed936830ecb03",
+      "xsm/decisions.py": "ee9964969497d3726dad7cdb27913bf2df382615abf6ae9ab6fc66b59a72fb2b",
+      "xsm/directory.py": "f185dbc0b59907988e7f3f26cddf40d6696d9e477e568c86f8c8e48c6aee3d17",
+      "xsm/doc.py": "465d44d8ed5c3c2c458d67a0071c3dc56ef483794f34858b26eae82258a68011",
+      "xsm/envelope.py": "12cd108b9c25e00ee510177c191bac546ed36b835a4456d49fb89d60f095f6cf",
+      "xsm/files.py": "01425c645b7047590c452aaa7ea4f348a17aa5e25481e8ae4597dee5ab1d1ca3",
+      "xsm/handoff.py": "48f8b6c1c4ab29ede46141e6eeb431bd08501407dbf42c75948c477bdd767d00",
+      "xsm/housekeeping.py": "5d1a0f1c1f3cf2ef820344935db26aeda5bed5b27e66ba99b1868e8c1d53cf3a",
+      "xsm/identity.py": "ecfddb64f394455bf68117076127f1c0a07888c0df4cd734f219771bce3004a5",
+      "xsm/inbox.py": "299b972ff4fadd91148e495357be10a97ac2640d23d79c317e0b675699541695",
+      "xsm/install.py": "6b6facc89dee67bf27899cbae9e36cfb701b2c497d2a1fc33a43cf8e49daccd2",
+      "xsm/instructions.py": "8767e07bef46cd0859fdef2b7a41d7838fa5faf62fc0cb54baf59a0f1c2c1190",
+      "xsm/ledger.py": "f291d11b736608bb3d2d07bdccdcc15348af2cbdfa73e1fb9d4c5628063e459f",
+      "xsm/materials.py": "ddedb680dfb98691a9b83f9ac1ce88119b6c308858b3f89f786e19bed0d771bd",
+      "xsm/mcp.py": "8f8a234180fd3be42dca7ebebadfe16ac399f755cbcfb7c5b8453a6406a6ca05",
+      "xsm/otlp_export.py": "8ce0b354b4c3f5687c5b0cdd49825f5248ac4725dfbca6b96f5f3750dc32cc2a",
+      "xsm/outbox.py": "1ab6e31b52feae97e06f326c9d4f7658a2e02549b5085e0e864ea1e002bbe211",
+      "xsm/owned_requests.py": "6e55c26db5709189619196f5ed373004fa0fa468246dc99b899dd14cce4e2a69",
+      "xsm/paths.py": "242b8e64b5d564e503d5e0bbef1d7e8d160690e8bd5199bc160523969835bb39",
+      "xsm/policy.py": "9f912493ca4a26e22af110edead346e58924022de4d2c99c56c566279c1c7cc7",
+      "xsm/probe.py": "5727d930fafd3793da7f24f2179fb15dbc3ea07f58d53cd193ea6c1a093c828c",
+      "xsm/provenance.py": "7639e2b111f964a6eaa8031408fda9fc094eaa9c714653085b0f5ea5fbf755d6",
+      "xsm/questions.py": "c039aea75a9a3e1aebcedcbc3a9ddaedf5bff4ca3b2f1153f3c7ab6a3e498270",
+      "xsm/receive.py": "f0844cf0dde52979fb2361a7501fa9be8dd554b8052cac2acd56e3347a7add94",
+      "xsm/registry.py": "edce2c6e75ec4d1803f402db565900080be337b2727a40ff663376c355890360",
+      "xsm/remote.py": "d79acd373ea13490ae7ac34a86f7d376520d51293a4cad68728db35eaa44e3cf",
+      "xsm/resolve.py": "024de94e03a72e24f0d966386dd73090220d45a88c45bcc7c839e60b666c9fcb",
+      "xsm/send.py": "05390ef61f53860c84311bc3f2f3aaa428508e615f989f21398dcd427f601fbe",
+      "xsm/setup_flow.py": "1dfbfb19e1bb8ce267c3bd3ad9519420017af01c78a63ce187c3a709d27247cd",
+      "xsm/telemetry.py": "bf0411d546c02a2f3e6aaea7d6f8f2549eeeeb57a7aedcc1cb968b5c87c1e2ea",
+      "xsm/user_answers.py": "5ad5b73ec365217a28285a4e3deb709331feb570593b588119460d9b51abf24f",
+      "xsm/workers.py": "518cb28f77c3ee222d1adf7e49068e671fc38dbc43fb5e1ac0ed6ef139299fa5"
+    },
+    "historical_matrix_deltas": [
+      {
+        "file": "xsm/install.py",
+        "historical_matrix_sha256": "991edfb1aa7a8dbf2bd261dc32c889b75d706673bdfeb0922c200e30ee61f8b3",
+        "final_sha256": "6b6facc89dee67bf27899cbae9e36cfb701b2c497d2a1fc33a43cf8e49daccd2",
+        "same_bytes": false
+      },
+      {
+        "file": "xsm/setup_flow.py",
+        "historical_matrix_sha256": "7808e17fa07cf223ae5d8c7523ea27ff9ef0e959077f4dde796ad64da0efa117",
+        "final_sha256": "1dfbfb19e1bb8ce267c3bd3ad9519420017af01c78a63ce187c3a709d27247cd",
+        "same_bytes": false
+      }
+    ],
+    "source_anchors": [
+      {
+        "file": "/private/tmp/xsm-final-receipt-frozen-i3u9pms3/xsm/cli.py",
+        "function": "cmd_doctor",
+        "line": 1592,
+        "end_line": 1704,
+        "file_sha256": "76f29a9ef05d070dc61d68008ae87db2e5935dc76d0e333bd30c3db29d54cb1c",
+        "function_sha256_utf8_no_trailing_newline": "22625b499ed591dcb8d428f6921233f269a806b79a40e57e9aaf47b326ee4f1d"
+      },
+      {
+        "file": "/private/tmp/xsm-final-receipt-frozen-i3u9pms3/xsm/cli.py",
+        "function": "main",
+        "line": 2924,
+        "end_line": 2972,
+        "file_sha256": "76f29a9ef05d070dc61d68008ae87db2e5935dc76d0e333bd30c3db29d54cb1c",
+        "function_sha256_utf8_no_trailing_newline": "e4a40969f5093c73cc4785ba35e34a8b1638ef10a09b530dc53704d17c788ca9"
+      },
+      {
+        "file": "/private/tmp/xsm-final-receipt-frozen-i3u9pms3/xsm/cli.py",
+        "function": "_inbox_notice",
+        "line": 2975,
+        "end_line": 2991,
+        "file_sha256": "76f29a9ef05d070dc61d68008ae87db2e5935dc76d0e333bd30c3db29d54cb1c",
+        "function_sha256_utf8_no_trailing_newline": "bf7645eba5f6a4fc53155f46bedf8e28ddf1574b3952a7cc71d0b0299199847d"
+      },
+      {
+        "file": "/private/tmp/xsm-final-receipt-frozen-i3u9pms3/xsm/install.py",
+        "function": "plan",
+        "line": 2067,
+        "end_line": 2108,
+        "file_sha256": "6b6facc89dee67bf27899cbae9e36cfb701b2c497d2a1fc33a43cf8e49daccd2",
+        "function_sha256_utf8_no_trailing_newline": "a7317abb35e4061a83c61c6e676d68bace0cca81d132d46a0f188fe1766d4681"
+      },
+      {
+        "file": "/private/tmp/xsm-final-receipt-frozen-i3u9pms3/xsm/install.py",
+        "function": "doctor",
+        "line": 2283,
+        "end_line": 2364,
+        "file_sha256": "6b6facc89dee67bf27899cbae9e36cfb701b2c497d2a1fc33a43cf8e49daccd2",
+        "function_sha256_utf8_no_trailing_newline": "a4d21b7fed564eb907f45a4f898050dd5adff414b9e33bb06788622551cbdf13"
+      },
+      {
+        "file": "/private/tmp/xsm-final-receipt-frozen-i3u9pms3/xsm/setup_flow.py",
+        "function": "doctor_report",
+        "line": 312,
+        "end_line": 380,
+        "file_sha256": "1dfbfb19e1bb8ce267c3bd3ad9519420017af01c78a63ce187c3a709d27247cd",
+        "function_sha256_utf8_no_trailing_newline": "5c31b080d6ab4c697bfa0d9e0c39c678f0f3f882b729e4e0c56c0e0803c971db"
+      },
+      {
+        "file": "/private/tmp/xsm-final-receipt-frozen-i3u9pms3/xsm/setup_flow.py",
+        "function": "report",
+        "line": 395,
+        "end_line": 444,
+        "file_sha256": "1dfbfb19e1bb8ce267c3bd3ad9519420017af01c78a63ce187c3a709d27247cd",
+        "function_sha256_utf8_no_trailing_newline": "e41619cabdade9f97e1a1b2261e46ef00aee5140c96a965b65fb735df565bd4f"
+      },
+      {
+        "file": "/private/tmp/xsm-final-receipt-frozen-i3u9pms3/xsm/housekeeping.py",
+        "function": "prune",
+        "line": 55,
+        "end_line": 150,
+        "file_sha256": "5d1a0f1c1f3cf2ef820344935db26aeda5bed5b27e66ba99b1868e8c1d53cf3a",
+        "function_sha256_utf8_no_trailing_newline": "8d80cd7133da152a5c7af096ec8390a2e29b84ded7fa805cf40114b9ef0556ce"
+      },
+      {
+        "file": "/private/tmp/xsm-final-receipt-frozen-i3u9pms3/xsm/housekeeping.py",
+        "function": "maybe_prune",
+        "line": 153,
+        "end_line": 162,
+        "file_sha256": "5d1a0f1c1f3cf2ef820344935db26aeda5bed5b27e66ba99b1868e8c1d53cf3a",
+        "function_sha256_utf8_no_trailing_newline": "98a95ff56784a3100a1acdf3a46e296ec336ba6ae6430a8df7bdc15b66c5f11e"
+      },
+      {
+        "file": "/private/tmp/xsm-final-receipt-frozen-i3u9pms3/tests/test_setup_flow.py",
+        "function": "test_credentials_invites_and_raw_errors_are_not_evidence_fields",
+        "line": 159,
+        "end_line": 166,
+        "file_sha256": "df5f4f522705f575185c9e739986169ce98bcc266f574033374d50dcfa84db9b",
+        "function_sha256_utf8_no_trailing_newline": "6d666bbce04ac401c7869b4775ab3ab1a11af1e52d765854bc85feaf2a0aa8e2"
+      },
+      {
+        "file": "/private/tmp/xsm-final-receipt-frozen-i3u9pms3/tests/test_setup_flow.py",
+        "function": "test_report_is_read_only_redacted_and_never_wakes_or_terminates_a_session",
+        "line": 168,
+        "end_line": 194,
+        "file_sha256": "df5f4f522705f575185c9e739986169ce98bcc266f574033374d50dcfa84db9b",
+        "function_sha256_utf8_no_trailing_newline": "a8b624629e6208bcda0737737b623b3e817059f97a5c408786c556d40db61139"
+      },
+      {
+        "file": "/private/tmp/xsm-final-receipt-frozen-i3u9pms3/tests/test_install_cli_flow.py",
+        "function": "fixture_cli",
+        "line": 24,
+        "end_line": 63,
+        "file_sha256": "0105e3f15c80c846556daf707ea5a1353e90deaf25e30b5f1c01ae076efd14c4",
+        "function_sha256_utf8_no_trailing_newline": "f6e154e8a3c7019e7bd6702772c6b4e7720443d7f4a6fdd1b2e25694392e70bf"
+      },
+      {
+        "file": "/private/tmp/xsm-final-receipt-frozen-i3u9pms3/tests/test_install_cli_flow.py",
+        "function": "run_cli",
+        "line": 87,
+        "end_line": 93,
+        "file_sha256": "0105e3f15c80c846556daf707ea5a1353e90deaf25e30b5f1c01ae076efd14c4",
+        "function_sha256_utf8_no_trailing_newline": "edd203dfd7e48f25c3384db521b27d05882789b1f2e12e68fd21492ba4f7a6a0"
+      },
+      {
+        "file": "/private/tmp/xsm-final-receipt-frozen-i3u9pms3/tests/test_install_cli_flow.py",
+        "function": "test_mcp_registration_error_has_nonzero_result_failed_flow_and_redacted_output",
+        "line": 279,
+        "end_line": 298,
+        "file_sha256": "0105e3f15c80c846556daf707ea5a1353e90deaf25e30b5f1c01ae076efd14c4",
+        "function_sha256_utf8_no_trailing_newline": "d242e887fd9a879ecc1d1754bf9c73bf6cf277f2ee328e59d4c954c4b3edf60a"
+      },
+      {
+        "file": "/private/tmp/xsm-final-receipt-frozen-i3u9pms3/tests/test_install_cli_flow.py",
+        "function": "test_actual_cli_upgrade_preserves_live_reader_and_reports_only_passive_observations",
+        "line": 300,
+        "end_line": 350,
+        "file_sha256": "0105e3f15c80c846556daf707ea5a1353e90deaf25e30b5f1c01ae076efd14c4",
+        "function_sha256_utf8_no_trailing_newline": "5f1e390059098f98fb015ea221f006c005d27ef1a0461d556d9af9acfbf61f0e"
+      },
+      {
+        "file": "/private/tmp/xsm-final-receipt-frozen-i3u9pms3/tests/test_install_safety.py",
+        "function": "test_component_manifest_records_owned_values_and_modes_without_public_secrets",
+        "line": 95,
+        "end_line": 120,
+        "file_sha256": "0a5ae8020ca9042b20354adaddc02bff9cd1923ca3e813fda8575a011c1896b7",
+        "function_sha256_utf8_no_trailing_newline": "18cb7798a0a4c70cbba24ba1dca88b55ca1de2f5db44fd38d2c1d0c5dd2d01c8"
+      },
+      {
+        "file": "/private/tmp/xsm-final-receipt-frozen-i3u9pms3/tests/test_install_safety.py",
+        "function": "test_live_old_reader_survives_upgrade_and_prune_and_can_read_again",
+        "line": 270,
+        "end_line": 293,
+        "file_sha256": "0a5ae8020ca9042b20354adaddc02bff9cd1923ca3e813fda8575a011c1896b7",
+        "function_sha256_utf8_no_trailing_newline": "cfb751fccfe8e5a498594f616a70a7ab819c9c19ff9afcda594d984f40f5d426"
+      }
+    ]
+  },
+  "evidence_files": [
+    {
+      "path": "docs/adr/0023-runtime-adapters-and-operability.md",
+      "exists": true,
+      "sha256": "5e4837989dd248fb850cce6d84e4a5134b46b7c1ff5d6d3d8f6ee01e116868ce",
+      "bytes": 11496
+    },
+    {
+      "path": "docs/plan/reason-inspired-adrs/spec.md",
+      "exists": true,
+      "sha256": "5cf0b8ea92ee1926baa7507824dc0de1281d38b33c76a0dce1f0e6f92845c923",
+      "bytes": 73317
+    },
+    {
+      "path": "docs/plan/reason-inspired-adrs/acceptance.md",
+      "exists": true,
+      "sha256": "6d6058a48360e82550331d0b67a4b8356e16b4604fcb21e7f5f3cb8ca7876364",
+      "bytes": 56038
+    },
+    {
+      "path": "docs/plan/reason-inspired-adrs/plan.json",
+      "exists": true,
+      "sha256": "ccdcb59f0a1cebe61fd805c40a09e486641e801ff3d5f9bc6b30fa9033ceadc9",
+      "bytes": 173071
+    },
+    {
+      "path": "docs/plan/reason-inspired-adrs/completion-ledger.json",
+      "exists": true,
+      "sha256": "aa3337b962b22d4c7f83d8e795f9bf609858bd78eb71ace274cc7025e32f825e",
+      "bytes": 631855
+    },
+    {
+      "path": "docs/plan/reason-inspired-adrs/completion-ledger.md",
+      "exists": true,
+      "sha256": "3c2f56d8e3cb24076e65eb67319514a87a95f683b8720186c3db04a7b7772c81",
+      "bytes": 145262
+    },
+    {
+      "path": "docs/plan/reason-inspired-adrs/gates/G10-installation-evidence.md",
+      "exists": true,
+      "sha256": "524f4a162addda645e51ad4f51b171e63ba5b071dadb5d255e25beffe3a18ab3",
+      "bytes": 1625
+    },
+    {
+      "path": "deliverables/p13-live/acceptance-closure-map.md",
+      "exists": true,
+      "sha256": "5f7259cc3b1c6e15d10de727a69fd72e10c876f1d0d0702c95590a1e4da4afca",
+      "bytes": 51608
+    },
+    {
+      "path": "deliverables/p13-live/final-source-manifest.json",
+      "exists": true,
+      "sha256": "cb05d6ecb3ab87d95359de3cc318f5ea217bee23837e72b9fff34f6512fb1463",
+      "bytes": 38515
+    },
+    {
+      "path": "deliverables/p13-live/final-regression.json",
+      "exists": true,
+      "sha256": "faa7f9497bfc481a52b80e2f4e35e643b6981be4ed7d514ac4ebd1d3f2691926",
+      "bytes": 1296
+    },
+    {
+      "path": "deliverables/p10-live/matrix.json",
+      "exists": true,
+      "sha256": "271256251d793dfcc287d7c4def67454405e6803710343f2e567144c3d379d89",
+      "bytes": 566201
+    },
+    {
+      "path": "deliverables/p10-live/native-upgrade.json",
+      "exists": true,
+      "sha256": "e07dd307d0fa15aa68f6fc504a98ed1281913bc58cc6d9d01dd616db6268972c",
+      "bytes": 15371
+    },
+    {
+      "path": "deliverables/p10-live/native-upgrade.md",
+      "exists": true,
+      "sha256": "9b681f00e9225b085857e1ce4410a66df9beafb8aee4af7189a764052402583c",
+      "bytes": 4447
+    },
+    {
+      "path": "deliverables/p10-live/runtime-readback.json",
+      "exists": true,
+      "sha256": "3e8ade6b842ba034c176fc451f1b42058033f452dd71b0d27e167c54a4638f7d",
+      "bytes": 1630
+    },
+    {
+      "path": "deliverables/p10-live/eval_upgrade.py",
+      "exists": true,
+      "sha256": "3c0e29d06c5810153e30ab34c13d35e8ffa9301db85841dc0bd33091007aa784",
+      "bytes": 23385
+    },
+    {
+      "path": "deliverables/p13-live/clean-install.json",
+      "exists": true,
+      "sha256": "d5310fb51cf9684912a89a8e64459aa512cdadf31a2adb1c64dc43b38949c168",
+      "bytes": 5183
+    },
+    {
+      "path": "deliverables/p13-live/clean-install.md",
+      "exists": true,
+      "sha256": "d4e5880d30d2525c9137d2a8230bed42936b3e297cba57d1dceb87c07f5cdace",
+      "bytes": 5127
+    },
+    {
+      "path": "deliverables/p13-live/clean-install.final.json",
+      "exists": true,
+      "sha256": "15a4e27e36206e9a9354ff89c9c57decf7e4044fe109fb0e246f67170f83c0e8",
+      "bytes": 2700
+    },
+    {
+      "path": "deliverables/p13-live/clean-install.diagnostic-post.json",
+      "exists": true,
+      "sha256": "895c9047112bc6cfda4ca9bedf4b52d69f514dc1f322ec5050427983174fe3ec",
+      "bytes": 3889
+    },
+    {
+      "path": "deliverables/b05-live/opus-review.md",
+      "exists": true,
+      "sha256": "fbb99ccf2a30e168171acc145767735d869e3bf1840655711bbdcb65d159b8e4",
+      "bytes": 10599
+    },
+    {
+      "path": "deliverables/p13-live/native-integration-opus-review.md",
+      "exists": true,
+      "sha256": "2c4bda79ab8ed53bda766c8631a133db1535ce4da51fa31f76e5c1d1d9c21b18",
+      "bytes": 7387
+    }
+  ],
+  "raw_native_readback": [
+    {
+      "label": "old",
+      "path": "/private/tmp/p10-upgrade-uj5wwj7e/old.jsonl",
+      "exists": true,
+      "sha256": "aff4228b80711fc587693d3980598996bd0531b15cf073d6493fafb7a02a0952",
+      "bytes": 5567,
+      "recorded_sha256": "aff4228b80711fc587693d3980598996bd0531b15cf073d6493fafb7a02a0952",
+      "hash_matches": true,
+      "stderr": {
+        "path": "/private/tmp/p10-upgrade-uj5wwj7e/old.stderr",
+        "exists": true,
+        "sha256": "0b93eb196bdc48686caa6c2e05028028ed1f2ece8dc89995523f30ead5481907",
+        "bytes": 220
+      },
+      "event_type_counts": {
+        "thread.started": 1,
+        "turn.started": 1,
+        "item.completed": 6,
+        "item.started": 4,
+        "turn.completed": 1
+      },
+      "completed_tools": [
+        {
+          "server": "xsm_eval",
+          "tool": "xsm_inbox"
+        },
+        {
+          "server": "xsm_eval",
+          "tool": "xsm_send"
+        },
+        {
+          "server": "xsm_eval",
+          "tool": "xsm_inbox"
+        },
+        {
+          "server": "xsm_eval",
+          "tool": "xsm_send"
+        }
+      ],
+      "command_execution_events": 0,
+      "doctor_invocation_observed": false
+    },
+    {
+      "label": "new",
+      "path": "/private/tmp/p10-upgrade-uj5wwj7e/new.jsonl",
+      "exists": true,
+      "sha256": "3e87eb7a00aa3384ef9e30a9c008fab6fe55586db3b21e515d6fb0bcdfcdc29e",
+      "bytes": 3865,
+      "recorded_sha256": "3e87eb7a00aa3384ef9e30a9c008fab6fe55586db3b21e515d6fb0bcdfcdc29e",
+      "hash_matches": true,
+      "stderr": {
+        "path": "/private/tmp/p10-upgrade-uj5wwj7e/new.stderr",
+        "exists": true,
+        "sha256": "091ff035491d56e04d3594e9a854b1afd3330a639a9f526d36fc6d84269b5d3b",
+        "bytes": 431
+      },
+      "event_type_counts": {
+        "thread.started": 1,
+        "turn.started": 1,
+        "item.completed": 4,
+        "item.started": 3
+      },
+      "completed_tools": [
+        {
+          "server": "xsm_eval",
+          "tool": "xsm_inbox"
+        },
+        {
+          "server": "xsm_eval",
+          "tool": "xsm_ack"
+        },
+        {
+          "server": "xsm_eval",
+          "tool": "xsm_send"
+        }
+      ],
+      "command_execution_events": 0,
+      "doctor_invocation_observed": false
+    }
+  ],
+  "final_regression_logs": [
+    {
+      "path": "/tmp/p13-receipt-final39.log",
+      "exists": true,
+      "sha256": "1f25d348f3366b7432c3773e5456b87e9fbbe7b94b135ed1bf7ff71e237608aa",
+      "bytes": 8252,
+      "recorded_sha256": "1f25d348f3366b7432c3773e5456b87e9fbbe7b94b135ed1bf7ff71e237608aa",
+      "hash_matches": true,
+      "recorded_result": {
+        "python": "Python 3.9.6",
+        "tests": 1697,
+        "seconds": 444.275,
+        "exit_code": 0,
+        "result": "OK",
+        "skips": 0,
+        "log": "/tmp/p13-receipt-final39.log",
+        "log_sha256": "1f25d348f3366b7432c3773e5456b87e9fbbe7b94b135ed1bf7ff71e237608aa"
+      },
+      "summary_lines": [
+        "Ran 1697 tests in 444.275s",
+        "OK"
+      ],
+      "individual_test_names_logged": false,
+      "exact_runner_argv_in_artifact": null
+    },
+    {
+      "path": "/tmp/p13-receipt-final314.log",
+      "exists": true,
+      "sha256": "547316d9748a8eb0aa43a87e51f7a9defdd1f47f7338adeeb051beb3d5d60bf7",
+      "bytes": 8490,
+      "recorded_sha256": "547316d9748a8eb0aa43a87e51f7a9defdd1f47f7338adeeb051beb3d5d60bf7",
+      "hash_matches": true,
+      "recorded_result": {
+        "python": "Python 3.14.6",
+        "tests": 1697,
+        "seconds": 331.419,
+        "exit_code": 0,
+        "result": "OK",
+        "skips": 0,
+        "log": "/tmp/p13-receipt-final314.log",
+        "log_sha256": "547316d9748a8eb0aa43a87e51f7a9defdd1f47f7338adeeb051beb3d5d60bf7"
+      },
+      "summary_lines": [
+        "Ran 1697 tests in 331.419s",
+        "OK"
+      ],
+      "individual_test_names_logged": false,
+      "exact_runner_argv_in_artifact": null
+    }
+  ],
+  "evidence_findings": [
+    {
+      "kind": "fixture-redaction",
+      "proves": "setup_flow.report 출력에서 합성 token/invite/body와 raw home 제외, 허용 key·버전 whitelist 및 쓰기/active subprocess 방지. 실제 자격 증명 미사용.",
+      "does_not_prove": "전체 cmd_doctor 공개 출력·실제 사용자 session 종료 여부. 테스트 이름을 전체 CLI/native 검증으로 확대하지 않음.",
+      "test": "tests.test_setup_flow.SetupFlowTest.test_report_is_read_only_redacted_and_never_wakes_or_terminates_a_session"
+    },
+    {
+      "kind": "fixture-cli",
+      "proves": "실제 parser/doctor/install 서비스 호출. 격리 발견 fixture 및 owned Python reader가 doctor 뒤에도 파일을 읽고 exit 0. 두 Python의 upgrade/live-owned-reader pass.",
+      "does_not_prove": "실제 native 사용자 세션의 진단 전후 생존. matrix doctor 저장값은 report.setup 부분이며 full doctor raw stdout/stderr가 아님.",
+      "upgrade_cells": [
+        {
+          "index": 0,
+          "id": "upgrade/live-owned-reader",
+          "python": "3.9.6",
+          "process_kind": "owned-fixture-reader",
+          "status": "passed",
+          "passive_readback": {
+            "runtime": "claude",
+            "home_id": "2acf794fc7a7b690c0156634e065407f6f922c0d0a6f5f1a5381f6dbaf601214",
+            "settings": "present",
+            "trust": "unknown",
+            "process": "observed",
+            "socket": "observed",
+            "home_match": "observed",
+            "mcp": "unknown",
+            "capabilities": {
+              "identity": "unknown",
+              "idle-wake": "unknown",
+              "during-work": "unknown",
+              "question-reply": "unknown",
+              "fyi": "unknown",
+              "human-decision": "unknown",
+              "attachments": "unknown",
+              "resume": "unknown"
+            },
+            "first_roundtrip": "unknown",
+            "runtime_version": "unknown",
+            "api_version": "unknown",
+            "ownership": {
+              "hooks": {
+                "owned_sha256": "652f9c701970f858e84c0e2a567549ae9159e484b4ad2d2c6522f005097321eb",
+                "recorded_mode": 420,
+                "current_mode": 420,
+                "value_matches": true,
+                "mode_matches": true
+              },
+              "allow": {
+                "owned_sha256": "3307bbc95eb82f3c395f0827f6dccb81a8943319a5b37d726adb3207db7a394b",
+                "recorded_mode": 420,
+                "current_mode": 420,
+                "value_matches": true,
+                "mode_matches": true
+              },
+              "inbound": {
+                "owned_sha256": "2faed1418d56b08b21a2d29fdac2030e7e87272342c23a144a4d52554c23a182",
+                "recorded_mode": 420,
+                "current_mode": 420,
+                "value_matches": true,
+                "mode_matches": true
+              },
+              "skill": {
+                "recorded": true,
+                "owned_sha256": "81499f1332cf328a20fd629d5cbede37ad10fa5bab06d03bb9b1ed302be33831",
+                "recorded_mode": 493,
+                "current_mode": 493,
+                "mode_matches": true,
+                "value_matches": true
+              },
+              "cli": {
+                "recorded": true,
+                "owned_sha256": "29cee7aed6df5ee3b81633541a736ceac0018bfff083a7d8a4d6e4007be6564d",
+                "recorded_mode": 493,
+                "current_mode": 493,
+                "mode_matches": true,
+                "value_matches": true
+              },
+              "mcp": {
+                "recorded": false,
+                "value_matches": null,
+                "mode_matches": null
+              }
+            },
+            "flow": {
+              "flow_id": "b85599c2fd5d4924b334489333f64f6e",
+              "generation": 2,
+              "status": "pending",
+              "local_ready": true,
+              "steps": {
+                "existing-session": "unknown",
+                "first-roundtrip": "unknown",
+                "harness": "succeeded",
+                "runtime": "succeeded"
+              }
+            },
+            "process_evidence": "pid-and-start-time-readback",
+            "socket_evidence": "filesystem-readback"
+          }
+        },
+        {
+          "index": 47,
+          "id": "upgrade/live-owned-reader",
+          "python": "3.14.6",
+          "process_kind": "owned-fixture-reader",
+          "status": "passed",
+          "passive_readback": {
+            "runtime": "claude",
+            "home_id": "a1d7b2d28e759f62b3f8c097881991113c89054d6433dee14a90ddf8a76bf58a",
+            "settings": "present",
+            "trust": "unknown",
+            "process": "observed",
+            "socket": "observed",
+            "home_match": "observed",
+            "mcp": "unknown",
+            "capabilities": {
+              "identity": "unknown",
+              "idle-wake": "unknown",
+              "during-work": "unknown",
+              "question-reply": "unknown",
+              "fyi": "unknown",
+              "human-decision": "unknown",
+              "attachments": "unknown",
+              "resume": "unknown"
+            },
+            "first_roundtrip": "unknown",
+            "runtime_version": "unknown",
+            "api_version": "unknown",
+            "ownership": {
+              "hooks": {
+                "owned_sha256": "6bc848f319e39842d040576e2fb19b07c8b4dcbf72ee0d6666704bbc2acd4a89",
+                "recorded_mode": 420,
+                "current_mode": 420,
+                "value_matches": true,
+                "mode_matches": true
+              },
+              "allow": {
+                "owned_sha256": "dfdc6f59ed9fa898511237ffedad75d864d9a362e49efda3c1676e35eb192790",
+                "recorded_mode": 420,
+                "current_mode": 420,
+                "value_matches": true,
+                "mode_matches": true
+              },
+              "inbound": {
+                "owned_sha256": "2faed1418d56b08b21a2d29fdac2030e7e87272342c23a144a4d52554c23a182",
+                "recorded_mode": 420,
+                "current_mode": 420,
+                "value_matches": true,
+                "mode_matches": true
+              },
+              "skill": {
+                "recorded": true,
+                "owned_sha256": "311962a41b4b1ff6298c3d96dca9cd2b4fc1017ab11f6fc75ca016d6c42a2fe2",
+                "recorded_mode": 493,
+                "current_mode": 493,
+                "mode_matches": true,
+                "value_matches": true
+              },
+              "cli": {
+                "recorded": true,
+                "owned_sha256": "cc64e279cf5b0e7e15f14bccb0d578ac7db585cba32336f9fc3d7bdde108568e",
+                "recorded_mode": 493,
+                "current_mode": 493,
+                "mode_matches": true,
+                "value_matches": true
+              },
+              "mcp": {
+                "recorded": false,
+                "value_matches": null,
+                "mode_matches": null
+              }
+            },
+            "flow": {
+              "flow_id": "bae18a6e2ff84473beba823d0a3dda05",
+              "generation": 2,
+              "status": "pending",
+              "local_ready": true,
+              "steps": {
+                "existing-session": "unknown",
+                "first-roundtrip": "unknown",
+                "harness": "succeeded",
+                "runtime": "succeeded"
+              }
+            },
+            "process_evidence": "pid-and-start-time-readback",
+            "socket_evidence": "filesystem-readback"
+          }
+        }
+      ],
+      "matrix_counts": {
+        "interpreters": 2,
+        "named_matrix_cells_per_interpreter": 40,
+        "edge_cells_per_interpreter": 7,
+        "total_cells": 94,
+        "passed": 94,
+        "failed": 0,
+        "skipped": 0
+      },
+      "doctor_setup_cells": 80
+    },
+    {
+      "kind": "clean-install-native-cli",
+      "proves": "6개 clean/stale/current 실제 native MCP config 조회·등록/제거와 충돌 수정. native model 0.",
+      "does_not_prove": "doctor 진단 또는 실제 활성 모델 session 비종료. diagnostic-post라는 파일명만으로 doctor 실행으로 간주하지 않음.",
+      "artifact": "deliverables/p13-live/clean-install.diagnostic-post.json"
+    },
+    {
+      "kind": "native-old-mcp",
+      "proves": "실제 Codex PID/MCP PID/lstart 유지, private upgrade/prune 전후 같은 대화의 두 상관 회신. main controller도 종료 후 same generation live.",
+      "does_not_prove": "doctor 실행의 영향. evaluator AST/call source 및 raw tool events에 doctor 호출 없음. credential metadata 보존은 공개 doctor 로그 redaction의 증거가 아님.",
+      "before_upgrade": {
+        "native_process_alive": true,
+        "native_root_pid": 18456,
+        "native_thread": "01a18372-28bb-71d3-833f-5c1ed1be7cac",
+        "old_mcp_pid": 18595,
+        "same_mcp_generation_alive": true,
+        "mcp_beacons": [
+          {
+            "pid": 18595,
+            "ppid": 18458,
+            "lstart": "Thu Oct 29 01:57:39 2026",
+            "cwd": "/private/tmp/p10-upgrade-uj5wwj7e/state/runtime/2389da782089"
+          }
+        ],
+        "same_mcp_only": true
+      },
+      "after_prune": {
+        "native_process_alive": true,
+        "native_root_pid": 18456,
+        "native_thread": "01a18372-28bb-71d3-833f-5c1ed1be7cac",
+        "old_mcp_pid": 18595,
+        "same_mcp_generation_alive": true,
+        "mcp_beacons": [
+          {
+            "pid": 18595,
+            "ppid": 18458,
+            "lstart": "Thu Oct 29 01:57:39 2026",
+            "cwd": "/private/tmp/p10-upgrade-uj5wwj7e/state/runtime/2389da782089"
+          }
+        ],
+        "same_mcp_only": true
+      },
+      "second_reply_liveness": {
+        "native_process_alive": true,
+        "native_root_pid": 18456,
+        "native_thread": "01a18372-28bb-71d3-833f-5c1ed1be7cac",
+        "old_mcp_pid": 18595,
+        "same_mcp_generation_alive": true,
+        "mcp_beacons": [
+          {
+            "pid": 18595,
+            "ppid": 18458,
+            "lstart": "Thu Oct 29 01:57:39 2026",
+            "cwd": "/private/tmp/p10-upgrade-uj5wwj7e/state/runtime/2389da782089"
+          }
+        ],
+        "same_mcp_only": true
+      },
+      "reply_pairs": [
+        {
+          "request_id": "015e48d807f64a15",
+          "reply_id": "6f4cd3ded0814bbb",
+          "reply_to": "015e48d807f64a15"
+        },
+        {
+          "request_id": "5137642a9a114c78",
+          "reply_id": "3b0b2802f0f44791",
+          "reply_to": "5137642a9a114c78"
+        }
+      ],
+      "controller_post_run": {
+        "actual_controller_still_live": true,
+        "actual_controller_same_generation": true
+      },
+      "protection": {
+        "settings_unchanged": true,
+        "credential_metadata_unchanged": true,
+        "old_runtime_unchanged": true,
+        "global_current_unchanged": true,
+        "global_link_unchanged": true,
+        "credential_values_opened_by_evaluator": false,
+        "global_xsm_home_changed": false
+      }
+    },
+    {
+      "kind": "review",
+      "proves": "B05 Opus는 P10 setup fence에 Medium 이상 없음과 unavailable 하향 경계를 코드 읽기로 검토. 이번 감사는 원 ADR 기준·final135·기존 raw SHA를 직접 대조.",
+      "does_not_prove": "기존 Opus는 실행/SHA 독립 검증을 하지 않았다고 명시. 최신 native-integration review는 handoff/receipt 중심으로 doctor native 셀 증거가 아님."
+    },
+    {
+      "kind": "source-current",
+      "proves": "현재 cmd_doctor -> install.doctor + setup_flow.doctor_report 실제 연결 확인. setup는 passive PID/lstart 및 socket stat 관측, active_probe=not-run. 원장 본문 대신 집계/필드 선별.",
+      "does_not_prove": "코드상 연결만으로 native 실행을 대체하지 않음. JSON 전체는 home/path/생성 hook command 등 운영 metadata도 출력하므로 setup의 hashed-home 보장을 전체 CLI 익명화로 확대하지 않음. 원 A23-07은 모든 path 익명화·모든 쓰기 금지가 아님.",
+      "main_boundary": "cli.main doctor 경로에 ensure_home, opportunistic maybe_prune, telemetry 및 unread notice가 존재. setup_report read-only fixture를 CLI 전체 무쓰기 증거로 읽지 않음."
+    }
+  ],
+  "exact_historical_commands": [
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. /usr/bin/python3 -u deliverables/p10-live/eval_upgrade.py",
+      "recorded_at": "deliverables/p10-live/native-upgrade.md",
+      "rerun": false,
+      "result": "passed",
+      "raw": "/private/tmp/p10-upgrade-uj5wwj7e/old.jsonl",
+      "is_doctor_command": false
+    },
+    {
+      "argv_template": [
+        "<sys.executable>",
+        "<tests/test_install_cli_flow.py>",
+        "--fixture-cli",
+        "doctor",
+        "--json"
+      ],
+      "source": "tests/test_install_cli_flow.py:93; :334",
+      "classification": "source-derived exact argument template; temporary root/env not preserved in matrix",
+      "rerun": false,
+      "result": "upgrade/live-owned-reader passed in 3.9.6 and 3.14.6; stored passive_readback only",
+      "full_doctor_stdout_archived": false
+    }
+  ],
+  "audit_verification": {
+    "executed": "read-only Python hashlib/json/ast and rg/sed source/artifact inspection only",
+    "primary_hash_output": {
+      "count": 135,
+      "missing": [],
+      "mismatches": []
+    },
+    "native_raw_hash_output": [
+      {
+        "label": "old",
+        "hash_matches": true,
+        "command_execution_events": 0,
+        "completed_tools": [
+          {
+            "server": "xsm_eval",
+            "tool": "xsm_inbox"
+          },
+          {
+            "server": "xsm_eval",
+            "tool": "xsm_send"
+          },
+          {
+            "server": "xsm_eval",
+            "tool": "xsm_inbox"
+          },
+          {
+            "server": "xsm_eval",
+            "tool": "xsm_send"
+          }
+        ]
+      },
+      {
+        "label": "new",
+        "hash_matches": true,
+        "command_execution_events": 0,
+        "completed_tools": [
+          {
+            "server": "xsm_eval",
+            "tool": "xsm_inbox"
+          },
+          {
+            "server": "xsm_eval",
+            "tool": "xsm_ack"
+          },
+          {
+            "server": "xsm_eval",
+            "tool": "xsm_send"
+          }
+        ]
+      }
+    ],
+    "final_regression_hash_output": [
+      {
+        "path": "/tmp/p13-receipt-final39.log",
+        "hash_matches": true,
+        "summary_lines": [
+          "Ran 1697 tests in 444.275s",
+          "OK"
+        ]
+      },
+      {
+        "path": "/tmp/p13-receipt-final314.log",
+        "hash_matches": true,
+        "summary_lines": [
+          "Ran 1697 tests in 331.419s",
+          "OK"
+        ]
+      }
+    ],
+    "test_execution_in_this_audit": false,
+    "fresh_native_execution": false,
+    "exact_readonly_recheck": {
+      "argv": [
+        "/opt/homebrew/opt/python@3.14/bin/python3.14",
+        "-B",
+        "-c",
+        "import hashlib,json\nfrom pathlib import Path\nroot=Path('/private/tmp/xsm-final-receipt-frozen-i3u9pms3')\nm=json.loads(Path('deliverables/p13-live/final-source-manifest.json').read_text())\nbad=[name for name in m['stable_product_paths'] if hashlib.sha256((root/name).read_bytes()).hexdigest()!=m['files'][name]]\nprint(json.dumps({'primary_count':len(m['stable_product_paths']),'mismatches':bad}))\nr=json.loads(Path('deliverables/p10-live/runtime-readback.json').read_text())\nfor t in r['trials']:\n p=Path('/private/tmp/p10-upgrade-uj5wwj7e')/(t['label']+'.jsonl')\n h=hashlib.sha256(p.read_bytes()).hexdigest()\n print(json.dumps({'raw':str(p),'sha256':h,'matches':h==t['events_sha256']}))\nf=json.loads(Path('deliverables/p13-live/final-regression.json').read_text())\nfor t in f['results']:\n p=Path(t['log']);h=hashlib.sha256(p.read_bytes()).hexdigest()\n print(json.dumps({'log':str(p),'sha256':h,'matches':h==t['log_sha256'],'summary':[s for s in p.read_text().splitlines() if s.startswith('Ran ') or s=='OK']}))\n"
+      ],
+      "cwd": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging",
+      "exit_code": 0,
+      "stdout": "{\"primary_count\": 135, \"mismatches\": []}\n{\"raw\": \"/private/tmp/p10-upgrade-uj5wwj7e/old.jsonl\", \"sha256\": \"aff4228b80711fc587693d3980598996bd0531b15cf073d6493fafb7a02a0952\", \"matches\": true}\n{\"raw\": \"/private/tmp/p10-upgrade-uj5wwj7e/new.jsonl\", \"sha256\": \"3e87eb7a00aa3384ef9e30a9c008fab6fe55586db3b21e515d6fb0bcdfcdc29e\", \"matches\": true}\n{\"log\": \"/tmp/p13-receipt-final39.log\", \"sha256\": \"1f25d348f3366b7432c3773e5456b87e9fbbe7b94b135ed1bf7ff71e237608aa\", \"matches\": true, \"summary\": [\"Ran 1697 tests in 444.275s\", \"OK\"]}\n{\"log\": \"/tmp/p13-receipt-final314.log\", \"sha256\": \"547316d9748a8eb0aa43a87e51f7a9defdd1f47f7338adeeb051beb3d5d60bf7\", \"matches\": true, \"summary\": [\"Ran 1697 tests in 331.419s\", \"OK\"]}\n",
+      "stderr": ""
+    }
+  },
+  "remaining_native_cells": [
+    {
+      "id": "A23-07/native-doctor-active-session",
+      "reason": "기존 native old-MCP 생존은 upgrade/prune·실제 reply 구간의 관측이다. doctor 실행 구간과 동일 사용자 세대의 생존 및 공개 진단 출력을 함께 결속한 raw가 없다.",
+      "required_existing_contract_evidence": "승인된 한 실제 활성 사용자 세션에서 doctor 실행 명령·공개 stdout/stderr와 실행 전후 동일 PID/lstart 생존의 결속. credential 원문을 열지 않고 민감 원문 비출력과 임의 기상/종료 없음 대조.",
+      "not_required": [
+        "모든 사용자 프로필 전수",
+        "새 모델 시작",
+        "새 clean-profile 로그인/첫 모델 왕복",
+        "새 권한·hook trust",
+        "진단의 모든 파일 쓰기 금지"
+      ],
+      "action_taken": "미실행; 새 모델이나 실제 사용자 대상 진단을 시작하지 않음"
+    }
+  ],
+  "safety": {
+    "new_model_processes": 0,
+    "product_execution": 0,
+    "credential_values_read": false,
+    "credential_files_opened": false,
+    "new_auth_commands": 0,
+    "permission_changes": 0,
+    "process_signals": 0,
+    "other_sessions_woken": 0,
+    "source_plan_ledger_modified": false,
+    "preparation_files_modified": false
+  },
+  "preservation": {
+    "protected_workspace_file_count": 73,
+    "protected_workspace_sha256": {
+      "xsm/files.py": "01425c645b7047590c452aaa7ea4f348a17aa5e25481e8ae4597dee5ab1d1ca3",
+      "xsm/attention.py": "8cd167c01cc560f92580646c2e081ca2604c8548184ce493ef1e8bf875a9e866",
+      "xsm/abuse.py": "a15303d88acded3e03110b125da91e11ffd5de96d266a9485a0f476d991d8e66",
+      "xsm/user_answers.py": "5ad5b73ec365217a28285a4e3deb709331feb570593b588119460d9b51abf24f",
+      "xsm/config.py": "92255fcee9cd2fe3b013851b056533a78d5090b225123f0d460de9c425feb5ca",
+      "xsm/resolve.py": "024de94e03a72e24f0d966386dd73090220d45a88c45bcc7c839e60b666c9fcb",
+      "xsm/receive.py": "f0844cf0dde52979fb2361a7501fa9be8dd554b8052cac2acd56e3347a7add94",
+      "xsm/paths.py": "242b8e64b5d564e503d5e0bbef1d7e8d160690e8bd5199bc160523969835bb39",
+      "xsm/connect.py": "61aa314f64c122955a929406778f940cf96cdc7a90ec0425cbe958dcb486c292",
+      "xsm/handoff.py": "48f8b6c1c4ab29ede46141e6eeb431bd08501407dbf42c75948c477bdd767d00",
+      "xsm/remote.py": "d79acd373ea13490ae7ac34a86f7d376520d51293a4cad68728db35eaa44e3cf",
+      "xsm/registry.py": "edce2c6e75ec4d1803f402db565900080be337b2727a40ff663376c355890360",
+      "xsm/instructions.py": "8767e07bef46cd0859fdef2b7a41d7838fa5faf62fc0cb54baf59a0f1c2c1190",
+      "xsm/send.py": "05390ef61f53860c84311bc3f2f3aaa428508e615f989f21398dcd427f601fbe",
+      "xsm/decisions.py": "ee9964969497d3726dad7cdb27913bf2df382615abf6ae9ab6fc66b59a72fb2b",
+      "xsm/channel.py": "459f8125b03eddbd2d8be23474b5f50b740aa7f777d2ea436f0aaa55db235382",
+      "xsm/materials.py": "ddedb680dfb98691a9b83f9ac1ce88119b6c308858b3f89f786e19bed0d771bd",
+      "xsm/policy.py": "9f912493ca4a26e22af110edead346e58924022de4d2c99c56c566279c1c7cc7",
+      "xsm/ledger.py": "f291d11b736608bb3d2d07bdccdcc15348af2cbdfa73e1fb9d4c5628063e459f",
+      "xsm/questions.py": "c039aea75a9a3e1aebcedcbc3a9ddaedf5bff4ca3b2f1153f3c7ab6a3e498270",
+      "xsm/__init__.py": "6f3c027b81d76181e6d7ead368d3206768d662f437f097cd194d27e9cf7735ba",
+      "xsm/telemetry.py": "bf0411d546c02a2f3e6aaea7d6f8f2549eeeeb57a7aedcc1cb968b5c87c1e2ea",
+      "xsm/housekeeping.py": "5d1a0f1c1f3cf2ef820344935db26aeda5bed5b27e66ba99b1868e8c1d53cf3a",
+      "xsm/bounce.py": "4a3ede5b15d85dea65388e26fa21f62dd2e9ab7da06c94ef3b9d788085aeaecc",
+      "xsm/context.py": "3a8355156f5d5497a0e945fe1a2c05791439cfe172f8fa5ae0eed936830ecb03",
+      "xsm/cli.py": "76f29a9ef05d070dc61d68008ae87db2e5935dc76d0e333bd30c3db29d54cb1c",
+      "xsm/mcp.py": "8f8a234180fd3be42dca7ebebadfe16ac399f755cbcfb7c5b8453a6406a6ca05",
+      "xsm/doc.py": "465d44d8ed5c3c2c458d67a0071c3dc56ef483794f34858b26eae82258a68011",
+      "xsm/attempts.py": "224b86ae077fc6e285716e73850317e9e6efcdba244eac16a3f9edef6dad320a",
+      "xsm/collaboration.py": "4955c37de5aa9dd85a7f083db95cc6e39b7120681dddf63f7f8a871346e7d290",
+      "xsm/probe.py": "5727d930fafd3793da7f24f2179fb15dbc3ea07f58d53cd193ea6c1a093c828c",
+      "xsm/inbox.py": "299b972ff4fadd91148e495357be10a97ac2640d23d79c317e0b675699541695",
+      "xsm/install.py": "6b6facc89dee67bf27899cbae9e36cfb701b2c497d2a1fc33a43cf8e49daccd2",
+      "xsm/otlp_export.py": "8ce0b354b4c3f5687c5b0cdd49825f5248ac4725dfbca6b96f5f3750dc32cc2a",
+      "xsm/directory.py": "f185dbc0b59907988e7f3f26cddf40d6696d9e477e568c86f8c8e48c6aee3d17",
+      "xsm/owned_requests.py": "6e55c26db5709189619196f5ed373004fa0fa468246dc99b899dd14cce4e2a69",
+      "xsm/provenance.py": "7639e2b111f964a6eaa8031408fda9fc094eaa9c714653085b0f5ea5fbf755d6",
+      "xsm/workers.py": "518cb28f77c3ee222d1adf7e49068e671fc38dbc43fb5e1ac0ed6ef139299fa5",
+      "xsm/codex_daemon.py": "d7423388a943868a06411ca33725b17a128bd9c6c641232da0844a59ff9a1f3d",
+      "xsm/setup_flow.py": "1dfbfb19e1bb8ce267c3bd3ad9519420017af01c78a63ce187c3a709d27247cd",
+      "xsm/identity.py": "ecfddb64f394455bf68117076127f1c0a07888c0df4cd734f219771bce3004a5",
+      "xsm/consent.py": "26adb2e00e2466594a6dee3fe4850cc6ee8ee20c7187c0e1f490d51d603b95e0",
+      "xsm/__main__.py": "13a1a5b340cdcfc1902b62be90e508c7c71886000d5bf087e7854aadf09fb35e",
+      "xsm/outbox.py": "1ab6e31b52feae97e06f326c9d4f7658a2e02549b5085e0e864ea1e002bbe211",
+      "xsm/envelope.py": "12cd108b9c25e00ee510177c191bac546ed36b835a4456d49fb89d60f095f6cf",
+      "xsm/adapters.py": "0b0d77d724130b2671d2fdc8eb0da64bc80d178b4be54b766c0b9a8629e950dd",
+      "docs/plan/reason-inspired-adrs/current-handoff.md": "66774cda16d61326aa09b47fa29a451baaa9b897514e244cec1fe7e0b755334d",
+      "docs/plan/reason-inspired-adrs/plan.json": "ccdcb59f0a1cebe61fd805c40a09e486641e801ff3d5f9bc6b30fa9033ceadc9",
+      "docs/plan/reason-inspired-adrs/completion-ledger.json": "aa3337b962b22d4c7f83d8e795f9bf609858bd78eb71ace274cc7025e32f825e",
+      "docs/plan/reason-inspired-adrs/release-candidate.md": "d29e696470b305bf287bf5ab78de902deb8dc55f1e5a92a0815147c40167428a",
+      "docs/plan/reason-inspired-adrs/execution.md": "bc55fbed1002999b341888203881c73a16f5cb7a723ac26ae53bf8300aa9b7b2",
+      "docs/plan/reason-inspired-adrs/policy-validation.json": "5125f16857244473951063d0dbb2620254b0eb2ad7224ca1f6f295bf05dce5e6",
+      "docs/plan/reason-inspired-adrs/validation.json": "7ba35ef44c4c4a25386ab5348488a30ab5fbab37924ce96c1114c2ed27d27c7a",
+      "docs/plan/reason-inspired-adrs/remote-decision.md": "3619a6440933f8ff1a767b2f2470a6a11fb7b73ced46e96bff8acf4ca44d5f21",
+      "docs/plan/reason-inspired-adrs/spec.md": "5cf0b8ea92ee1926baa7507824dc0de1281d38b33c76a0dce1f0e6f92845c923",
+      "docs/plan/reason-inspired-adrs/collaboration-contract.md": "830ea9afc49ccc332637441528dad1baf2571b837541cbbc2cd8090fe8184a5f",
+      "docs/plan/reason-inspired-adrs/development-policy.md": "32d8a482f6731a02f05b16fb793a6986ad0b37aa6968e5e3c0c337d04d225583",
+      "docs/plan/reason-inspired-adrs/completion-ledger.md": "3c2f56d8e3cb24076e65eb67319514a87a95f683b8720186c3db04a7b7772c81",
+      "docs/plan/reason-inspired-adrs/acceptance.md": "6d6058a48360e82550331d0b67a4b8356e16b4604fcb21e7f5f3cb8ca7876364",
+      "docs/plan/reason-inspired-adrs/gates/G06-material-copies.md": "914fd7d7a82ef99201a7f8ddd70ff0c82f7cd874f35e1d38da63021e86046a93",
+      "docs/plan/reason-inspired-adrs/gates/G00-baseline.md": "6dbd75bdc4c52204b5507307aebf197418b4e1c00d7fc72e7a259e4c776bdccc",
+      "docs/plan/reason-inspired-adrs/gates/G10-installation-evidence.md": "524f4a162addda645e51ad4f51b171e63ba5b071dadb5d255e25beffe3a18ab3",
+      "docs/plan/reason-inspired-adrs/gates/G01-identity-integrity.md": "3afc3cdca1e7b197dc3b3be0b5cbcaa67e99bd125c38601ca2d25cc3b3aa12fd",
+      "docs/plan/reason-inspired-adrs/gates/G08-owned-runtime.md": "cd2362dd14b84663c978c25ead8aa9944939980bd53a613dfc0d92e28383ad76",
+      "docs/plan/reason-inspired-adrs/gates/G09-provenance-traffic.md": "d5cc2d3805384a73f56ea74aa825894b7a8b3515285459121d771da76f629920",
+      "docs/plan/reason-inspired-adrs/gates/G04-recoverable-handoff.md": "2483e104fcaa7d2d6ff8cf45bd57339928abc6280b9e8721d952c9cc3a702275",
+      "docs/plan/reason-inspired-adrs/gates/G11-remote-comparison-draft.md": "ebf8b4b3bc25cb829fc2253dcf8cef452db32ad8b1b84dd83b966159eca3a752",
+      "docs/plan/reason-inspired-adrs/gates/G02-connection-intent.md": "da4643c433c8bdcd65d9a04664372a39ac41ea75fb442e8237033c20653abb40",
+      "docs/plan/reason-inspired-adrs/gates/G05-directory.md": "6530593ce27a7cba95bc10afcf8dbbc639101da3570a3359e6d9c1b0ee18e3e7",
+      "docs/plan/reason-inspired-adrs/gates/B05-local-integration.md": "114abb64dd26462ac397def1c4663fcc7b8f27fce3e927a048851cb37ac040a5",
+      "docs/plan/reason-inspired-adrs/gates/G03-question-interface.md": "e025a88e7a25cabd4ed6e2f101dbf578903582416ced33f9b872ba0e87955e29",
+      "docs/plan/reason-inspired-adrs/.omc/state/sessions/449bd97b-9400-40c8-844a-fcf328a35ef7/pre-tool-advisory-throttle.json": "35a025060d2da0b134d45150c3e2f53094bd8268cfb30c609cf3aed34349afb0",
+      "docs/plan/reason-inspired-adrs/.omc/state/sessions/7f847b7e-74c9-4db8-ba87-4c3e0cf4816d/pre-tool-advisory-throttle.json": "9f4c18dc2d2242e991a9777dcf6db2e29962c95be098eaaa67cd0db3e20767dc"
+    },
+    "frozen_135_unchanged_after_audit": true,
+    "protected_workspace_unchanged_after_audit": true
+  },
+  "completed_at_utc": "2026-10-29T00:21:55.453268+00:00",
+  "elapsed_seconds": 254.453268
+}

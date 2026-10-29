@@ -1,0 +1,9 @@
+{
+  "exact_project_entry": true,
+  "trusted_verified": true,
+  "config_sha256": "5f93490622e2247c60c88679faf6ede9dd98cfce9f634ea39b2548ef73639adf",
+  "profile_changed_names": [
+    "config.toml"
+  ],
+  "profile_drift_writer": "unknown; evaluator/model commands contain no profile edit"
+}

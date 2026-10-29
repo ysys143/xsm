@@ -25,6 +25,7 @@ that stalled once may answer later), and the deadlines are the ordinary ones.
 from __future__ import annotations
 
 import contextlib
+import contextvars
 import os
 import subprocess
 import threading
@@ -40,6 +41,28 @@ _deadline = None
 _memo: dict = {}
 _stalled: set = set()
 _unanswered: dict = {}      # kind of probe -> how many did not answer in this command
+_observers = contextvars.ContextVar("xsm_probe_observers", default=())
+
+
+@contextlib.contextmanager
+def observe_unavailable():
+    """Observe unknown reads in this call without changing probe defaults.
+
+    Admission uses this to distinguish an explicit policy refusal from an
+    evaluation that could not finish. Context-local observers do not borrow
+    another service request's counters or change ordinary discovery behavior.
+    """
+    observed = {"unavailable": False}
+    token = _observers.set(_observers.get() + (observed,))
+    try:
+        yield observed
+    finally:
+        _observers.reset(token)
+
+
+def _note_unavailable():
+    for observed in _observers.get():
+        observed["unavailable"] = True
 
 
 @contextlib.contextmanager
@@ -83,6 +106,7 @@ def remember(key, compute):
 def missed(kind: str, how: str) -> None:
     """Count one probe of this `kind` that did not answer; `how` is "timeout" or
     "skipped", and goes on the command's span as xsm.probe.<kind>.<how>."""
+    _note_unavailable()
     _unanswered[kind] = _unanswered.get(kind, 0) + 1
     try:
         from . import telemetry
@@ -119,10 +143,19 @@ def bounded(fn, *args, folder: str | None = None, timeout: float | None = None, 
     def work():
         try:
             box.append(fn(*args))
+        except FileNotFoundError:
+            # A missing optional record is a known absence, not evidence that
+            # the filesystem could not answer. Callers retain their default.
+            box.append(default)
         except Exception:               # noqa: BLE001 - what cannot be read is unknown
+            _note_unavailable()
             box.append(default)
 
-    thread = threading.Thread(target=work, daemon=True)
+    if _observers.get():
+        context = contextvars.copy_context()
+        thread = threading.Thread(target=context.run, args=(work,), daemon=True)
+    else:
+        thread = threading.Thread(target=work, daemon=True)
     thread.start()
     thread.join(wait)
     if thread.is_alive() or not box:
@@ -153,6 +186,7 @@ def command(argv: list, timeout: float = GIT_TIMEOUT, folder: str | None = None,
         proc = subprocess.Popen(argv, stdout=subprocess.PIPE,
                                 stderr=subprocess.DEVNULL, text=True)
     except OSError:
+        _note_unavailable()
         return None
     try:
         out, _ = proc.communicate(timeout=wait)
@@ -163,6 +197,7 @@ def command(argv: list, timeout: float = GIT_TIMEOUT, folder: str | None = None,
         _gave_up(folder)
         return None
     except (OSError, subprocess.SubprocessError):
+        _note_unavailable()
         return None
     return out if any_exit or proc.returncode == 0 else None
 
