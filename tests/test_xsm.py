@@ -4299,3 +4299,36 @@ class SkillLayoutTest(unittest.TestCase):
         self.assertIn("references/guide.md", self.skill)
         self.assertNotIn("/xsm-", open(guide, encoding="utf-8").read())
         self.assertLess(len(self.skill.splitlines()), 90, "the reference text belongs in the guide")
+
+    def test_the_usage_line_names_the_commands_the_hint_names(self):
+        """The usage reply is what an unknown command gets back: a command the
+        hint offers but the usage line lacks reads as nonsense (2026-10-30)."""
+        head = self.skill.split("\n---\n", 1)[0]
+        hint = [l for l in head.splitlines() if l.startswith("argument-hint:")][0]
+        hint = hint.split(":", 1)[1].strip().strip('"')
+        usage = [l for l in self.skill.splitlines() if l.startswith("usage: /xsm ")][0]
+        self.assertEqual(usage[len("usage: /xsm "):], hint)
+        self.assertIn("network", hint)
+
+    def test_every_reference_is_reachable_and_every_link_exists(self):
+        """Progressive disclosure: SKILL.md and the guide's table name each file
+        an agent may need, and nothing they name is missing."""
+        import re
+        refs = os.path.join(self.dir, "references")
+        names = {n for n in os.listdir(refs) if n.endswith(".md")}
+        guide = open(os.path.join(refs, "guide.md"), encoding="utf-8").read()
+        linked = set(re.findall(r"\]\(references/([\w-]+\.md)\)", self.skill)) | \
+            set(re.findall(r"\]\(([\w-]+\.md)\)", guide))
+        self.assertEqual(linked - names, set(), "a link to a file that is not there")
+        self.assertEqual(names - linked - {"guide.md"}, set(), "a reference nothing points to")
+        # Another machine is reached from SKILL.md itself, not two files down.
+        self.assertIn("](references/network.md)", self.skill)
+
+    def test_the_description_names_no_file(self):
+        """A path in the description is opened instead of loading the skill
+        (measured 2026-09-27: sandboxed-send-to-codex fell to 0.00)."""
+        head = self.skill.split("\n---\n", 1)[0]
+        description = [l for l in head.splitlines() if l.startswith("description:")][0]
+        self.assertNotIn(".md", description)
+        self.assertNotIn("references/", description)
+        self.assertIn("other machines", description)
