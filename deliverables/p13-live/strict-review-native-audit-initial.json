@@ -1,0 +1,207 @@
+{
+  "scope": "A22-03 final same-source same-policy single-trace positive/negative/recovery; previous two pairs not merged",
+  "functional_criterion_passed": false,
+  "checks": {
+    "exactly_one_new_pair": true,
+    "distinct_actual_CIDs": true,
+    "four_distinct_request_IDs": true,
+    "three_normal_initial_finals": true,
+    "first_three_unique_bodies": true,
+    "wrong_proposal_then_correction_then_boundary": true,
+    "normal_round_order_from_actual_replies": true,
+    "repeat_only_after_boundary_reply": true,
+    "repeat_is_exact_third_body": true,
+    "real_same_ID_query_held": true,
+    "held_original_not_success": true,
+    "same_ID_resend_once": true,
+    "original_body_resend": true,
+    "original_message_and_digest_unchanged": true,
+    "late_query_final_same_ID": true,
+    "four_real_explicit_final_replies": true,
+    "all_request_and_reply_ACKs_real": true,
+    "one_sender_receiver_pair_all_rounds": true,
+    "strict_policy_same_whole_trace": true,
+    "source_unchanged": true,
+    "controller_no_relay_ACK_index": true,
+    "no_extra_prompt_or_actor_retry": true,
+    "known_owned_processes_stopped": false,
+    "both_native_exit_zero": false
+  },
+  "checks_passed": 22,
+  "profile_guard_unchanged": false,
+  "profile_guard_changes": {
+    "/Users/jaesolshin/.codex-3/config.toml": {
+      "before": "1f94ac2b02b6f8a13f8246586ecf9ed27df850cb28f07a3bbd8138400134ea12",
+      "after": "5f93490622e2247c60c88679faf6ede9dd98cfce9f634ea39b2548ef73639adf"
+    }
+  },
+  "profile_drift_writer": "not attributed by this observation; no evaluator/actor profile edits performed",
+  "source": "/private/tmp/xsm-final-receipt-frozen-i3u9pms3",
+  "source_manifest": "deliverables/p13-live/final-source-manifest.json",
+  "original_runtime_result_sha256": "13a997de197939a679c993695b4d3b31c26d2700a8a8466d5242891b73653c15",
+  "original_goals": {
+    "reviewer": "이 private 저장소의 독립 검토 담당 a1입니다. 구현자와 아래 전체 묶음을 끝까지 수행하세요. 첫째 잘못된 산술안의 반례, 둘째 그 실제 답을 반영한 수정안 재검토, 셋째 독립 경계조건 검토를 실제 요청마다 원문을 읽고 독립 계산해 회신하세요. 세 라운드만 끝났다고 종료하지 마세요. 이어 구현자가 세 번째 요청과 바이트까지 같은 본문으로 보내는 네 번째 고유 요청이 60초 동일본문 반복 정책에 보류될 수 있습니다. 보류는 검토 완료나 성공 답으로 취급하지 말고 원 요청이 재개될 때까지 대기하세요. 구현자가 시간을 기다려 네 번째 원 ID를 한 번 재전송하면 실제 수신 뒤 다시 독립 검산하여 원 요청에 회신하세요. 최종적으로 서로 다른 요청 ID 4개의 실제 검토와 회신·읽음 확인을 마쳐야 묶음이 끝납니다. 같은 정책을 유지하고 다른 세션·폴더·권한·설정·원문을 바꾸지 마세요.",
+    "sender": "xsm 독립 검토 담당 a1과 이 전체 묶음을 한 대화에서 끝까지 수행하세요. 1라운드로 2+2=5라는 잘못된 안을 보내 반례를 받고, 그 실제 회신을 읽고 확인한 뒤에만 2라운드 수정안을 만들어 재검토받으세요. 2라운드의 실제 답을 읽고 확인한 다음 3라운드로 0+0=0 경계조건을 독립 검토받으세요. 세 답만 받고 종료하지 마세요. 즉시 세 번째 검토 요청의 본문을 바이트까지 그대로 복사해, 의미 없는 반복인 네 번째 질문을 한 번 더 보내세요. 이번 private fixture에는 모든 라운드에 동일하게 strict, window=60초, 동일발신자 동일본문 1회 정책이 이미 설정돼 있습니다. 정상 세 라운드는 서로 다른 본문이어야 하며 정책은 바꾸지 마세요. 네 번째 요청이 held되면 원 ID로 상태를 조회해 보류·미완료와 원문 보존을 확인하세요. 안내된 실제 시간을 충분히 기다린 뒤, 새 ID로 치환하지 말고 같은 원문·원 ID의 기존 재전송 경로를 단 한 번 사용해 회복하세요. 마지막도 그 원 ID로 실제 최종 답을 회수·확인해야 종료입니다. 전체 고유 질문은 4개이며, 회복용 같은 ID 재전송까지 전달 시도는 최대 5회입니다. unknown/held/pending을 성공으로 쓰지 말고 최종 답의 내용·원 ID·상태를 보고하세요. 추가 질문·자동 재시도·반복 재전송·권한 확대·설정 변경·수동 본문/ACK/index 수정은 하지 마세요."
+  },
+  "private_root": "/private/tmp/p13-strict-review-91nhwo1c",
+  "private_policy": {
+    "traffic_control": {
+      "mode": "strict",
+      "window_seconds": 60,
+      "max_same_body": 1
+    }
+  },
+  "private_policy_SHA256": "6849b49ed2bf580cbe375a0e9009681864fabb634942d2f7e18244387eaa00b8",
+  "actual_peers": {
+    "sender": {
+      "CID": "01a1851a-d467-7d62-92cb-4243ffd6a0bb",
+      "profile": "/Users/jaesolshin/.codex-3",
+      "native_wrapper_PID": 38941,
+      "lstart": "Thu Oct 29 09:41:30 2026",
+      "MCP_PID": 39055
+    },
+    "reviewer": {
+      "CID": "01a1851a-ce01-75e3-852e-d4c604ab3818",
+      "profile": "/Users/jaesolshin/.codex-3",
+      "native_wrapper_PID": 38228,
+      "lstart": "Thu Oct 29 09:41:28 2026",
+      "MCP_PID": 38549
+    }
+  },
+  "rounds": [
+    {
+      "round": 1,
+      "request_id": "7ecc3dd773674795",
+      "request_body": "1라운드 독립 검토: 일반 정수 덧셈에서 2+2=5라는 안을 제시합니다. 이 안의 타당성을 검토하고 구체적인 반례와 올바른 결과를 답해 주세요.",
+      "request_sha256": "46931c0a7fc95e1bbd5daba9faa8e2d028c4d10b034b5bf07b43eb903b8fa28d",
+      "canonical_digest": "d9e046f8adc1969982297d20e9b41f9d98743d21a955d516077ec6d72b832452",
+      "reply_id": "e31abcbf96d246bf",
+      "reply_to": "7ecc3dd773674795",
+      "reply_body": "1라운드 원문을 읽고 독립 계산했습니다. 일반 정수 덧셈에서 2+2=4이므로 2+2=5라는 안은 거짓입니다. 구체적인 반례로 원소가 서로 겹치지 않는 집합 {a,b}와 {c,d}를 합치면 {a,b,c,d}로 원소가 4개입니다. 단위 증가로 계산해도 2+1+1=3+1=4입니다. 검토는 완료했으며 제시안은 부적합합니다. 이 회신을 실제로 읽은 뒤 읽음 확인을 남겨 주세요.",
+      "reply_sha256": "207aba7925c08c67aae676be94321cde8f7e7a085151e97f761c288702e74166",
+      "outcome": "succeeded",
+      "final": true,
+      "request_stored_at": 1793234504.4381309,
+      "reply_stored_at": 1793234512.619199,
+      "initial_ask_completed_observed": 1793234513.125281,
+      "reply_received_at": 1793234512.855791,
+      "request_ACK": true,
+      "reply_ACK": true,
+      "request_state": "acknowledged",
+      "reply_state": "acknowledged",
+      "reviewer_send_count": 1,
+      "body_matches_actual_canonical": true
+    },
+    {
+      "round": 2,
+      "request_id": "87ad7c93ada64348",
+      "request_body": "2라운드 수정안 독립 검토: 1라운드 실제 회신의 서로 겹치지 않는 집합 {a,b}와 {c,d}의 합집합이 4개라는 반례와 2+1+1=4 계산을 읽고 확인했습니다. 일반 정수 덧셈의 안을 2+2=4로 수정합니다. 수정안의 정확성을 독립적으로 재검토해 주세요.",
+      "request_sha256": "f4a354a5117646c06bc6ec06beac90417aa3add68c35b220cdee5086f9a16bcb",
+      "canonical_digest": "901e254ab19808d8e37102944ee8f9a8221d0b2f43fc6b9262d58fe8c75613cd",
+      "reply_id": "63bd25063f3e4d87",
+      "reply_to": "87ad7c93ada64348",
+      "reply_body": "2라운드 원문과 1라운드 회신을 읽었다는 확인을 수신했습니다. 수정안 2+2=4를 별도로 재계산했습니다. 정수 2에서 후속값을 두 번 취하면 3, 4가 되므로 합은 4입니다. 또한 2×2=4로도 일치합니다. 일반 정수 덧셈이라는 전제에서 수정안은 정확하며 검토 완료입니다. 이 회신도 실제 읽은 뒤 읽음 확인을 남겨 주세요.",
+      "reply_sha256": "4b4a5cf20cb1f984bc75e5a5a365f6fe134d747bfea94f771be7bfe776c530fb",
+      "outcome": "succeeded",
+      "final": true,
+      "request_stored_at": 1793234518.989527,
+      "reply_stored_at": 1793234524.750051,
+      "initial_ask_completed_observed": 1793234525.2066839,
+      "reply_received_at": 1793234524.976574,
+      "request_ACK": true,
+      "reply_ACK": true,
+      "request_state": "acknowledged",
+      "reply_state": "acknowledged",
+      "reviewer_send_count": 1,
+      "body_matches_actual_canonical": true
+    },
+    {
+      "round": 3,
+      "request_id": "666d5eedda1d4683",
+      "request_body": "3라운드 경계조건 독립 검토: 2라운드 실제 회신의 후속값 3, 4를 통한 재계산과 수정안 2+2=4가 정확하다는 결론을 읽고 확인했습니다. 일반 정수 덧셈에서 0+0=0이라는 경계조건을 독립적으로 검토하고 근거와 최종 판정을 답해 주세요.",
+      "request_sha256": "859f954d9b56786c93c07315dce14ccce4690e51f2f49f5dc3a3bdcabf163f30",
+      "canonical_digest": "8bb554b8ab41477d13a19c927bc63255abbe33d2c2913e1cf74a33b0aafa7698",
+      "reply_id": "66a8b2a81add407f",
+      "reply_to": "666d5eedda1d4683",
+      "reply_body": "3라운드 원문을 읽었으며 2라운드 회신의 읽음 확인도 수신했습니다. 경계조건을 독립 검산하면, 정수 덧셈의 항등원 법칙 a+0=a에 a=0을 대입하여 0+0=0입니다. 별도로 빈 집합 두 개의 합집합은 빈 집합이므로 원소 수도 0입니다. 최종 판정: 일반 정수 덧셈에서 0+0=0은 정확합니다. 이 원 요청 검토는 완료했지만 전체 묶음은 아직 미완입니다. 회신을 읽고 확인해 주시고, 동일본문 네 번째 고유 요청이 보류되면 정책을 유지한 채 기다린 후 원 ID로 재전송해 주세요. 실제 수신 후 다시 검산하겠습니다.",
+      "reply_sha256": "aae63b1f3dcca845d41ced228079f8bd2b33ddc8ead217abc14e74ba8e24b2a4",
+      "outcome": "succeeded",
+      "final": true,
+      "request_stored_at": 1793234531.189504,
+      "reply_stored_at": 1793234538.5988228,
+      "initial_ask_completed_observed": 1793234538.960243,
+      "reply_received_at": 1793234538.74425,
+      "request_ACK": true,
+      "reply_ACK": true,
+      "request_state": "acknowledged",
+      "reply_state": "acknowledged",
+      "reviewer_send_count": 1,
+      "body_matches_actual_canonical": true
+    },
+    {
+      "round": 4,
+      "request_id": "41f347fd38e64239",
+      "request_body": "3라운드 경계조건 독립 검토: 2라운드 실제 회신의 후속값 3, 4를 통한 재계산과 수정안 2+2=4가 정확하다는 결론을 읽고 확인했습니다. 일반 정수 덧셈에서 0+0=0이라는 경계조건을 독립적으로 검토하고 근거와 최종 판정을 답해 주세요.",
+      "request_sha256": "859f954d9b56786c93c07315dce14ccce4690e51f2f49f5dc3a3bdcabf163f30",
+      "canonical_digest": "fae1bdf6c42c37537b91aa670d84e98943445f785e58427580e83102e72add7c",
+      "reply_id": "6d45a56dd5d44be1",
+      "reply_to": "41f347fd38e64239",
+      "reply_body": "네 번째 고유 원 요청 41f347fd38e64239를 보류 통지가 아닌 실제 원문으로 수신하여 읽었습니다. 본문은 세 번째 요청과 동일합니다. 이번 요청을 새로 독립 검산했습니다. 덧셈의 재귀 정의 a+0=a에서 a=0이면 0+0=0이며, 0에서 0회 증가하면 값은 0으로 그대로입니다. 따라서 일반 정수 덧셈의 경계조건 0+0=0은 정확하다는 최종 판정입니다. 이 원 ID의 실제 검토와 회신을 완료했습니다. 전체 묶음 종료를 위해 세 번째 회신 66a8b2a81add407f 및 이번 네 번째 회신을 실제 읽었다는 확인을 남겨 주세요. 첫 두 회신의 읽음 확인은 후속 요청 본문에서 이미 수신했습니다.",
+      "reply_sha256": "f8018fba59658732d9f3b2ae7d361e761c1fee8bf8ab9cd0dac535605b7506b7",
+      "outcome": "succeeded",
+      "final": true,
+      "request_stored_at": 1793234541.935078,
+      "reply_stored_at": 1793234624.385181,
+      "initial_ask_completed_observed": 1793234542.121398,
+      "reply_received_at": 1793234624.498605,
+      "request_ACK": true,
+      "reply_ACK": true,
+      "request_state": "acknowledged",
+      "reply_state": "acknowledged",
+      "reviewer_send_count": 1,
+      "body_matches_actual_canonical": true
+    }
+  ],
+  "held_status_query_count": 1,
+  "held_snapshot_path": "/private/tmp/p13-strict-review-91nhwo1c/held-41f347fd38e64239.json",
+  "same_ID_resend": {
+    "id": "41f347fd38e64239",
+    "count": 1,
+    "started_at_observed": 1793234616.683033,
+    "result_body_sha256": "859f954d9b56786c93c07315dce14ccce4690e51f2f49f5dc3a3bdcabf163f30"
+  },
+  "request_attempts": {
+    "unique_questions": 4,
+    "recovery_resend_same_ID": 1,
+    "total_service_send_attempts": 5
+  },
+  "native_invocations": 2,
+  "automatic_model_actor_retries": 0,
+  "controller_operations": {
+    "setup_registry_calls": 2,
+    "controller_body_relays": 0,
+    "controller_ACKs": 0,
+    "controller_index_writes": 0,
+    "additional_user_prompts": 0
+  },
+  "cleanup": [
+    {
+      "role": "reviewer",
+      "pid": 38228,
+      "lstart": "Thu Oct 29 09:41:28 2026",
+      "native_alive": false,
+      "mcp_pid": 38549,
+      "mcp_same_generation_alive": true
+    },
+    {
+      "role": "initiator",
+      "pid": 38941,
+      "lstart": "Thu Oct 29 09:41:30 2026",
+      "native_alive": false,
+      "mcp_pid": 39055,
+      "mcp_same_generation_alive": false
+    }
+  ],
+  "previous_pairs_reused_for_success": false,
+  "no_further_experiments": true
+}

@@ -1,0 +1,187 @@
+{
+  "scope": "partial native Esc, MCP cancellation propagation/late recovery unobserved",
+  "raw_root": "/private/tmp/native-cancel-trusted-w23wicuo",
+  "raw_values_published": false,
+  "prior_failure_manifest": {
+    "path": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/deliverables/p13-live/native-cancel-20261029-660a8b39/manifest.json",
+    "sha256": "b9b71654a0a6c617385b776b7a0ef2def505799e1001cfa128847d52e4c07ca8",
+    "preserved": "original trust-screen CID0 preparation failure; no native proof inferred"
+  },
+  "wire_lines_verified": 7,
+  "files": [
+    {
+      "path": "/private/tmp/native-cancel-trusted-w23wicuo/after-standard-cancel.json",
+      "bytes": 48,
+      "sha256": "91991717c780a1482f74965a73b2e94bd73a76b77ca82bd031a62f19631ed74c",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/native-cancel-trusted-w23wicuo/before-standard-cancel.json",
+      "bytes": 48,
+      "sha256": "a9c009ebabe2618bcf0e9e050ab64782bf81c3dc1e4cb545de2dccaca355d10c",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/native-cancel-trusted-w23wicuo/native-rollout.jsonl",
+      "bytes": 329963,
+      "sha256": "0ba8b105f2625dddec521b635a335456e2d12411bc16ae7884ff05e92aaf403a",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/native-cancel-trusted-w23wicuo/proxy.py",
+      "bytes": 3078,
+      "sha256": "25d5ba3e2014ab1306a76f96bc453b108e2c794b2634bc3f956a8a02938a51c6",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/native-cancel-trusted-w23wicuo/receiver.pty",
+      "bytes": 43924,
+      "sha256": "c54e9ea355ba0f3ee766d761bd41fe3d0422539c2f20b6ae9637135e8c27bc41",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/native-cancel-trusted-w23wicuo/result.json",
+      "bytes": 33084,
+      "sha256": "8d9c519fabfa07bb7470491fa66f764538239a125f7dc8e4adcbe04d954e763f",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/native-cancel-trusted-w23wicuo/state/.config-policy.lock",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/native-cancel-trusted-w23wicuo/state/asked/a3ce39.recent.json",
+      "bytes": 997,
+      "sha256": "93fdf67c3db5e0713fa2201aecc678fe7e8d956aa392f943118461a98b301d2b",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/native-cancel-trusted-w23wicuo/state/capability-observations/91e3c25a9a975e51ce716fe59a31c808d5a6755b605dffdd793efc0e5acc50ac.json",
+      "bytes": 380,
+      "sha256": "dc0d5d9dcf01699ecaf0cd9025dbd9db832d5c093dda64f24fcf5bc9c74b777a",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/native-cancel-trusted-w23wicuo/state/config.last-valid.json",
+      "bytes": 281,
+      "sha256": "623b21ddfdf021cf5a00b182008c03f8a8f734a7bd2d936b5eff232ae19f8f82",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/native-cancel-trusted-w23wicuo/state/handoffs/d084ed7da97ca7baa16c4b8329843cfa6983b01415c4c926f8474e872e04fc56/.lock",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/native-cancel-trusted-w23wicuo/state/homes.json",
+      "bytes": 93,
+      "sha256": "ae0e4b94dbd9c01ab3e00f35be7d29861071efc42346224844114ffe233b2481",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/native-cancel-trusted-w23wicuo/state/last-prune",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/native-cancel-trusted-w23wicuo/state/otel-spans.jsonl",
+      "bytes": 746,
+      "sha256": "0099a8302c4ea4d5c2195c146a0896a46d38ed6a80e943b03836a46e56413bcd",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/native-cancel-trusted-w23wicuo/state/sessions/codex-01a1851a-cb2c-7032-a153-78b685b7068b.json",
+      "bytes": 375,
+      "sha256": "eebebfae174ede106d4113b786d0d0b7a52e57d51474ec3d0bb9e4d2a405c4bb",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/native-cancel-trusted-w23wicuo/tui/proxies/37941-7182203f/client-wire.jsonl",
+      "bytes": 1552,
+      "sha256": "28b9d1acd9f801ec4665c26b89b9b2fa48ff3fa5e524a6f973dda8067ae7bc66",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/native-cancel-trusted-w23wicuo/tui/proxies/37941-7182203f/events.jsonl",
+      "bytes": 2678,
+      "sha256": "d761b72d794f9cc50f94c715af72a15bfd89b6d0c816dd12caa452ca501150c5",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/native-cancel-trusted-w23wicuo/tui/proxies/37941-7182203f/handles.json",
+      "bytes": 1050,
+      "sha256": "087afa47b6654c89feb05da2b57b6cb98aa1532a7aa6c841193db95c1b72523d",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/native-cancel-trusted-w23wicuo/tui/proxies/37941-7182203f/server-wire.jsonl",
+      "bytes": 25631,
+      "sha256": "3bb65075da3c96c26c9ca66428f57a39346b513e463c920469918bd3031b0c01",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/native-cancel-trusted-w23wicuo/tui/proxies/37941-7182203f/server.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/deliverables/p13-live/native-cancel-trusted-20261029-5f29d1a4/offlinecheck.py",
+      "bytes": 7987,
+      "sha256": "91e77df79d5ce3333e8c89cd4f531c181bbf069555328aa6cd41315aa6b71edf",
+      "storage": "public code/summary"
+    },
+    {
+      "path": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/deliverables/p13-live/native-cancel-trusted-20261029-5f29d1a4/plan.json",
+      "bytes": 768,
+      "sha256": "205ffa64f5cb63203e0463fb979f25074eae1edee953a3aa8480a6d417885707",
+      "storage": "public code/summary"
+    },
+    {
+      "path": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/deliverables/p13-live/native-cancel-trusted-20261029-5f29d1a4/prior-failure.json",
+      "bytes": 314,
+      "sha256": "d53520d201a7ba3d68cec972f747f20eb34cb1e071f62902a7d9bcc27d7adb03",
+      "storage": "public code/summary"
+    },
+    {
+      "path": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/deliverables/p13-live/native-cancel-trusted-20261029-5f29d1a4/proxy.py",
+      "bytes": 3078,
+      "sha256": "25d5ba3e2014ab1306a76f96bc453b108e2c794b2634bc3f956a8a02938a51c6",
+      "storage": "public code/summary"
+    },
+    {
+      "path": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/deliverables/p13-live/native-cancel-trusted-20261029-5f29d1a4/report.md",
+      "bytes": 7013,
+      "sha256": "92184e0767287ca2918fa4b9780e56566a650447db29c23a1daaf7cb92f172c3",
+      "storage": "public code/summary"
+    },
+    {
+      "path": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/deliverables/p13-live/native-cancel-trusted-20261029-5f29d1a4/run.py",
+      "bytes": 11681,
+      "sha256": "cc3f1aee029e6e8ea3fb73a97f43875a128acc47f6a27bad5898f8b461dc3a62",
+      "storage": "public code/summary"
+    },
+    {
+      "path": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/deliverables/p13-live/native-cancel-trusted-20261029-5f29d1a4/summary.json",
+      "bytes": 5354,
+      "sha256": "f18636c525a3b9c25b2a47556d5f92656f21b37ae775eb961538c1bcc8423ce2",
+      "storage": "public code/summary"
+    },
+    {
+      "path": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/deliverables/p13-live/native-cancel-trusted-20261029-5f29d1a4/trust-postflight.json",
+      "bytes": 288,
+      "sha256": "09543e158f62a582d2cfde275485ead69c10e1f3936dc648ba961cca63fa8ea3",
+      "storage": "public code/summary"
+    },
+    {
+      "path": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/deliverables/p13-live/native-cancel-trusted-20261029-5f29d1a4/trust-preflight.json",
+      "bytes": 257,
+      "sha256": "1cfb3085cfc4449a0648e74b4c8541efaa9425a7cbb73d79050fac3445835de2",
+      "storage": "public code/summary"
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "scope": "single aborted no-SSH C cell; no native model or data-plane measurement",
+  "files": {
+    "deliverables/p11-live/no-ssh-native-lib.py": "69cab08bbd5a2e45120da5a056b8ff7e933a269089618a5a86662a08e48d1816",
+    "deliverables/p11-live/no-ssh-native-run.py": "c72db0694dae816169e1967284c19be8199c4de78c83d7b7b11f51b70ee03f35",
+    "deliverables/p11-live/no-ssh-native-recover.py": "71cdb5b5d45cf64bc1962f6a9f6ac3ea875db7ebf28b1b76b65c186ac464778d",
+    "deliverables/p11-live/no-ssh-native-peer.py": "635905618a236897e2a7951dee434a426079c9b57c162aae685da75d66409e43",
+    "deliverables/p11-live/no-ssh-native-summary.md": "7dcedf7f8c2f10f039a801b46a16ac2b108d41ef3879faa36fa719bd7a59894f",
+    "deliverables/p11-live/no-ssh-native-results.json": "f7e6d05b3185f718f2b276603699cd9d993173be51a7adfb45bee57019ec34af"
+  },
+  "private_nonsecret_evidence": {
+    "/private/tmp/p11-C-no-ssh-local-hd13c8g2/result.json": "083d4096ae0efec25f24c26b6c5f9c4bbef2a81bb2057a4a93962b0ace22f1ee",
+    "/private/tmp/p11-C-no-ssh-local-hd13c8g2/local-post-abort.json": "59695c36304db842dd632887b716b7bbadf4815f0a14dda9895ee02825ecde08",
+    "/private/tmp/p11-C-no-ssh-local-hd13c8g2/peer-post-abort.json": "0ca08dd75437458a9f7358d6517861d238aff7dbf0e6fc1eae113609c682c1bd",
+    "/private/tmp/p11-C-no-ssh-local-hd13c8g2/engine-handles.json": "fad881fd1bd589872e863dc057b8a25b725ad83254c7d29801c33cdbdd97c99b",
+    "/private/tmp/p11-C-no-ssh-local-hd13c8g2/post-abort-readback.json": "559f7ca4cb241972ad34e182d05c3b7323e5368b75c51cb659800de9b71e01b8"
+  },
+  "reused_source": {
+    "deliverables/p11-live/C-fixture-lib.py": "9073360fd422877987ca2ebdea55a31186fe82d47308de4973ce95b9bf80e9a3",
+    "deliverables/p11-live/C-native-base.py": "08c808318e1636ca71a4ce547e44fcf71ca5ffe1a8dbfe03bd23b77069118591"
+  },
+  "original_C_artifacts_modified": false,
+  "product_source_modified": false
+}

@@ -1,0 +1,571 @@
+{
+  "kind": "actual Codex local workflow under owned remote/link outages",
+  "manifest": "manifest.json",
+  "phases": [
+    {
+      "phase": "baseline-local",
+      "completed": true,
+      "actors": [
+        {
+          "role": "reviewer",
+          "phase": "phase0",
+          "CID": "01a186f7-65c6-7591-8200-066e7eab9f16",
+          "registered": true,
+          "alive": true,
+          "exit": null,
+          "events": 16,
+          "error": null
+        },
+        {
+          "role": "requester",
+          "phase": "phase0",
+          "CID": "01a186f7-65d6-7262-bb0c-d6026c5b36fc",
+          "registered": true,
+          "alive": false,
+          "exit": 0,
+          "events": 16,
+          "error": null
+        }
+      ],
+      "questions": [
+        {
+          "id": "1e8888b285c445b1",
+          "sender": {
+            "runtime": "codex",
+            "home": "/private/tmp/a215-book-56zvovcc/actors/requester/codex-home",
+            "session_id": "01a186f7-65d6-7262-bb0c-d6026c5b36fc",
+            "ref": "297261",
+            "name": "writer",
+            "alias": "codex-home"
+          },
+          "target": {
+            "runtime": "codex",
+            "home": "/private/tmp/a215-book-56zvovcc/actors/reviewer/codex-home",
+            "session_id": "01a186f7-65c6-7591-8200-066e7eab9f16",
+            "ref": "560673",
+            "name": "a1",
+            "alias": "codex-home"
+          },
+          "body": "최초안 검토 요청입니다. 제안 원문: «2+2=5». 이 턴에서는 이 최초안만 검토하며 수정안이나 후속 검토는 요청하지 않습니다. 통상적인 수와 덧셈, 등호의 의미를 기준으로 제안의 타당성을 독립적으로 판단해 주세요. 본인의 근거 또는 검산, 채택 가능 여부와 결론을 실제 회신으로 보내 주세요. 별도 전제가 필요하다면 명시해 주세요.",
+          "digest": "9b4d5297ebc65a695fc595f334c9bb5f508d52063360951c74b87fb3c3c83530",
+          "purpose": "question",
+          "priority": "next",
+          "attachments": [],
+          "wake": "auto",
+          "created_at": 1793265772.935627,
+          "replies": [
+            {
+              "id": "210d5d010eb04ff5",
+              "body": "최초안 «2+2=5»는 채택할 수 없습니다. 통상적인 자연수와 덧셈, 양변 값의 동일함을 나타내는 등호를 전제하면, 2에 1을 두 번 더하여 2+2=3+1=4입니다. 따라서 좌변은 4, 우변은 5로 서로 다릅니다. 결론: 주어진 전제에서 최초안은 거짓입니다. 별도 전제는 필요하지 않습니다.",
+              "outcome": "succeeded",
+              "sender": {
+                "runtime": "codex",
+                "home": "/private/tmp/a215-book-56zvovcc/actors/reviewer/codex-home",
+                "session_id": "01a186f7-65c6-7591-8200-066e7eab9f16",
+                "ref": "560673",
+                "name": "a1",
+                "alias": "codex-home"
+              },
+              "receiver": {
+                "runtime": "codex",
+                "home": "/private/tmp/a215-book-56zvovcc/actors/requester/codex-home",
+                "session_id": "01a186f7-65d6-7262-bb0c-d6026c5b36fc",
+                "ref": "297261",
+                "name": "writer",
+                "alias": "codex-home"
+              },
+              "received_at": 1793265780.282182
+            }
+          ],
+          "send_claimed": true,
+          "send_evidence": {
+            "status": "sent-unconfirmed",
+            "reason": "queued; a Codex session picks the queue up within about 10 seconds when the thread is loaded and idle, or mid-turn with `xsm inbox`",
+            "id": "1e8888b285c445b1",
+            "to": "a1@codex-home",
+            "runtime_reached": false,
+            "evidence": {
+              "accepted": true,
+              "queued": true,
+              "wake": false,
+              "stored": true
+            }
+          }
+        }
+      ],
+      "at": 1793265790.061713
+    },
+    {
+      "phase": "Mini-service-stopped",
+      "completed": true,
+      "actors": [
+        {
+          "role": "reviewer",
+          "phase": "phase0",
+          "CID": "01a186f7-65c6-7591-8200-066e7eab9f16",
+          "registered": true,
+          "alive": true,
+          "exit": null,
+          "events": 23,
+          "error": null
+        },
+        {
+          "role": "requester",
+          "phase": "phase1",
+          "CID": "01a186f7-65d6-7262-bb0c-d6026c5b36fc",
+          "registered": true,
+          "alive": false,
+          "exit": 0,
+          "events": 9,
+          "error": null
+        }
+      ],
+      "questions": [
+        {
+          "id": "f17045ef49904743",
+          "sender": {
+            "runtime": "codex",
+            "home": "/private/tmp/a215-book-56zvovcc/actors/requester/codex-home",
+            "session_id": "01a186f7-65d6-7262-bb0c-d6026c5b36fc",
+            "ref": "297261",
+            "name": "writer",
+            "alias": "codex-home"
+          },
+          "target": {
+            "runtime": "codex",
+            "home": "/private/tmp/a215-book-56zvovcc/actors/reviewer/codex-home",
+            "session_id": "01a186f7-65c6-7591-8200-066e7eab9f16",
+            "ref": "560673",
+            "name": "a1",
+            "alias": "codex-home"
+          },
+          "body": "앞선 최초안 검토 요청 1e8888b285c445b1의 실제 회신 근거(2에 1을 두 번 더하면 4)를 반영한 수정안 재검토를 요청합니다. 수정안 원문: «2+2=4». 통상적인 자연수와 덧셈, 양변 값의 동일함을 나타내는 등호를 기준으로 독립 검산하여 타당성과 채택 가능 여부, 근거와 결론을 직접 회신해 주세요. 이번 요청은 수정안 재검토만이며, 별도 경계조건 검토는 다음 업무로 남깁니다.",
+          "digest": "70f89516025723efaed27196765b95b6168d9cdfdbce432743f2b5082a3dad8b",
+          "purpose": "question",
+          "priority": "next",
+          "attachments": [],
+          "wake": "auto",
+          "created_at": 1793265800.6701288,
+          "replies": [
+            {
+              "id": "f3fefd835e364dcf",
+              "body": "수정안 «2+2=4»를 독립 검산했습니다. 두 원소를 가진 집합 두 개를 서로 겹치지 않게 합치면 원소가 네 개이므로 2+2의 값은 4입니다. 우변 4와 값이 같으므로 통상적인 자연수, 덧셈, 등호의 의미에서 수정안은 참이며 채택 가능합니다. 결론: 수정안을 승인합니다. 이 판단은 이번에 요청된 수정안에 대한 것입니다.",
+              "outcome": "succeeded",
+              "sender": {
+                "runtime": "codex",
+                "home": "/private/tmp/a215-book-56zvovcc/actors/reviewer/codex-home",
+                "session_id": "01a186f7-65c6-7591-8200-066e7eab9f16",
+                "ref": "560673",
+                "name": "a1",
+                "alias": "codex-home"
+              },
+              "receiver": {
+                "runtime": "codex",
+                "home": "/private/tmp/a215-book-56zvovcc/actors/requester/codex-home",
+                "session_id": "01a186f7-65d6-7262-bb0c-d6026c5b36fc",
+                "ref": "297261",
+                "name": "writer",
+                "alias": "codex-home"
+              },
+              "received_at": 1793265807.990954
+            }
+          ],
+          "send_claimed": true,
+          "send_evidence": {
+            "status": "sent-unconfirmed",
+            "reason": "queued; a Codex session picks the queue up within about 10 seconds when the thread is loaded and idle, or mid-turn with `xsm inbox`",
+            "id": "f17045ef49904743",
+            "to": "a1@codex-home",
+            "runtime_reached": false,
+            "evidence": {
+              "accepted": true,
+              "queued": true,
+              "wake": false,
+              "stored": true
+            }
+          }
+        }
+      ],
+      "at": 1793265816.705317
+    },
+    {
+      "phase": "Book-engine-UDP-and-TCP443-blocked",
+      "completed": true,
+      "actors": [
+        {
+          "role": "reviewer",
+          "phase": "phase0",
+          "CID": "01a186f7-65c6-7591-8200-066e7eab9f16",
+          "registered": true,
+          "alive": true,
+          "exit": null,
+          "events": 30,
+          "error": null
+        },
+        {
+          "role": "requester",
+          "phase": "phase2",
+          "CID": "01a186f7-65d6-7262-bb0c-d6026c5b36fc",
+          "registered": true,
+          "alive": false,
+          "exit": 0,
+          "events": 9,
+          "error": null
+        }
+      ],
+      "questions": [
+        {
+          "id": "731fac330b77411a",
+          "sender": {
+            "runtime": "codex",
+            "home": "/private/tmp/a215-book-56zvovcc/actors/requester/codex-home",
+            "session_id": "01a186f7-65d6-7262-bb0c-d6026c5b36fc",
+            "ref": "297261",
+            "name": "writer",
+            "alias": "codex-home"
+          },
+          "target": {
+            "runtime": "codex",
+            "home": "/private/tmp/a215-book-56zvovcc/actors/reviewer/codex-home",
+            "session_id": "01a186f7-65c6-7591-8200-066e7eab9f16",
+            "ref": "560673",
+            "name": "a1",
+            "alias": "codex-home"
+          },
+          "body": "새 업무로 경계조건 독립 검토를 요청합니다. 검토 대상: «0+0=0». 앞선 최초안 2+2=5 검토 및 수정안 2+2=4 재검토와 구분되는 세 번째 업무입니다. 0을 포함하는 통상적인 비음수 정수와 덧셈, 양변 값이 같음을 뜻하는 등호를 기준으로 독립 검산하여 근거, 타당성, 결론을 직접 회신해 주세요.",
+          "digest": "ebcdea49b29a97fbde1c65ed01ec7d3d8427959f5fb5b23bb3a56a5e9d0d2d01",
+          "purpose": "question",
+          "priority": "next",
+          "attachments": [],
+          "wake": "auto",
+          "created_at": 1793265830.562294,
+          "replies": [
+            {
+              "id": "fa74ba20300a47ef",
+              "body": "세 번째 업무인 경계조건 «0+0=0»를 독립 검산했습니다. 비음수 정수의 덧셈에서 0은 덧셈의 항등원이므로 모든 비음수 정수 a에 대해 a+0=a입니다. 여기에 a=0을 대입하면 0+0=0입니다. 빈 집합 두 개를 합쳐도 원소 수가 0이라는 해석으로도 검산됩니다. 따라서 양변 값이 같으며 제시된 범위와 등호의 의미에서 참입니다. 결론: 이 경계조건은 타당하고 채택 가능합니다.",
+              "outcome": "succeeded",
+              "sender": {
+                "runtime": "codex",
+                "home": "/private/tmp/a215-book-56zvovcc/actors/reviewer/codex-home",
+                "session_id": "01a186f7-65c6-7591-8200-066e7eab9f16",
+                "ref": "560673",
+                "name": "a1",
+                "alias": "codex-home"
+              },
+              "receiver": {
+                "runtime": "codex",
+                "home": "/private/tmp/a215-book-56zvovcc/actors/requester/codex-home",
+                "session_id": "01a186f7-65d6-7262-bb0c-d6026c5b36fc",
+                "ref": "297261",
+                "name": "writer",
+                "alias": "codex-home"
+              },
+              "received_at": 1793265840.7339368
+            }
+          ],
+          "send_claimed": true,
+          "send_evidence": {
+            "status": "sent-unconfirmed",
+            "reason": "queued; a Codex session picks the queue up within about 10 seconds when the thread is loaded and idle, or mid-turn with `xsm inbox`",
+            "id": "731fac330b77411a",
+            "to": "a1@codex-home",
+            "runtime_reached": false,
+            "evidence": {
+              "accepted": true,
+              "queued": true,
+              "wake": false,
+              "stored": true
+            }
+          }
+        }
+      ],
+      "at": 1793265852.2949388
+    }
+  ],
+  "cleanup": {
+    "reviewer": {
+      "signals": [
+        89837,
+        89987,
+        90038,
+        89837
+      ],
+      "remaining_owned": [
+        {
+          "pid": 89837,
+          "lstart": "Thu Oct 29 18:22:02 2026"
+        },
+        {
+          "pid": 89837,
+          "ppid": 89628,
+          "lstart": "Thu Oct 29 18:22:02 2026",
+          "comm": "/Users/jaesolshin/.nvm/versions/node/v24.19.0/lib/node_modules/@openai/codex/node_modules/@openai/codex-darwin-arm64/vendor/aarch64-apple-darwin/bin/codex"
+        }
+      ]
+    },
+    "requester": {
+      "signals": [],
+      "remaining_owned": []
+    },
+    "network-a": {
+      "remaining_owned_pids": [],
+      "socket_exists": false,
+      "udp_rebind": [
+        {
+          "address": "0.0.0.0:57789",
+          "free": true
+        },
+        {
+          "address": "[::]:50928",
+          "free": true
+        }
+      ],
+      "stop_exit": 0
+    }
+  },
+  "controller_body_relay_or_ACK_or_index_repair": false,
+  "model_override": false,
+  "started_at": 1793265716.047179,
+  "initial_physical_p2p_health": [
+    {
+      "source": "a",
+      "target": "b",
+      "endpoint_id": "4f5d18bf0045c37253129dbac2c33deadf6afc8cc56aaa66210d6d30f7e22cd0",
+      "ok": true
+    },
+    {
+      "source": "b",
+      "target": "a",
+      "endpoint_id": "1c95200e8bc2a5f00c29d26fd5605d1dc13410c6e7a7a5ef5dbfec5d223d824d",
+      "ok": true
+    }
+  ],
+  "mini_stop": {
+    "remaining_owned_pids": [],
+    "socket_exists": false,
+    "udp_rebind": [
+      {
+        "address": "0.0.0.0:49379",
+        "free": true
+      },
+      {
+        "address": "[::]:49673",
+        "free": true
+      }
+    ],
+    "stop_exit": 0
+  },
+  "book_stop_for_restart": {
+    "remaining_owned_pids": [],
+    "socket_exists": false,
+    "udp_rebind": [
+      {
+        "address": "0.0.0.0:55984",
+        "free": true
+      },
+      {
+        "address": "[::]:62354",
+        "free": true
+      }
+    ],
+    "stop_exit": 0
+  },
+  "book_blocked_status": {
+    "status": "running",
+    "endpoint_id": "1c95200e8bc2a5f00c29d26fd5605d1dc13410c6e7a7a5ef5dbfec5d223d824d",
+    "address": {
+      "addrs": [
+        {
+          "Ip": "100.123.30.11:57789"
+        },
+        {
+          "Ip": "127.0.0.1:57789"
+        },
+        {
+          "Ip": "192.168.0.11:57789"
+        },
+        {
+          "Ip": "[::1]:50928"
+        }
+      ],
+      "id": "1c95200e8bc2a5f00c29d26fd5605d1dc13410c6e7a7a5ef5dbfec5d223d824d"
+    },
+    "active": true,
+    "network": {
+      "version": 1,
+      "network_id": "1c95200e8bc2a5f00c29d26fd5605d1dc13410c6e7a7a5ef5dbfec5d223d824d:825c38bc3d633e3ab85d04e0750644230fff0c28fdb5e0ddd48754bcb6064ec0",
+      "name": "actual-local-resilience",
+      "members": [
+        {
+          "endpoint_id": "1c95200e8bc2a5f00c29d26fd5605d1dc13410c6e7a7a5ef5dbfec5d223d824d",
+          "machine_name": "a215-book",
+          "status": "active"
+        },
+        {
+          "endpoint_id": "4f5d18bf0045c37253129dbac2c33deadf6afc8cc56aaa66210d6d30f7e22cd0",
+          "machine_name": "a215-b",
+          "status": "active"
+        }
+      ],
+      "invites": [
+        {
+          "invite_hash": "6f53080a6938dfc209c927aa98ec2296f1b400ca7c1501acac4fbe051afe5111",
+          "issuer": "1c95200e8bc2a5f00c29d26fd5605d1dc13410c6e7a7a5ef5dbfec5d223d824d",
+          "reusable": true,
+          "expires_at": null,
+          "revoked": false,
+          "consumed_by": [
+            "4f5d18bf0045c37253129dbac2c33deadf6afc8cc56aaa66210d6d30f7e22cd0"
+          ]
+        }
+      ]
+    },
+    "transport": {
+      "address": {
+        "addrs": [
+          {
+            "Ip": "100.123.30.11:57789"
+          },
+          {
+            "Ip": "127.0.0.1:57789"
+          },
+          {
+            "Ip": "192.168.0.11:57789"
+          },
+          {
+            "Ip": "[::1]:50928"
+          }
+        ],
+        "id": "1c95200e8bc2a5f00c29d26fd5605d1dc13410c6e7a7a5ef5dbfec5d223d824d"
+      },
+      "bound_addresses": [
+        "0.0.0.0:57789",
+        "[::]:50928"
+      ],
+      "endpoint_id": "1c95200e8bc2a5f00c29d26fd5605d1dc13410c6e7a7a5ef5dbfec5d223d824d",
+      "event": "ready",
+      "port_fallback": false,
+      "relay_mode": "public",
+      "relay_online": false,
+      "requested_port": 0
+    },
+    "last_transport": null,
+    "service_pid": 93795,
+    "engine_pid": 93797,
+    "known_peers": [
+      "4f5d18bf0045c37253129dbac2c33deadf6afc8cc56aaa66210d6d30f7e22cd0"
+    ]
+  },
+  "socket_probes": [
+    {
+      "pid": 73545,
+      "at": 1793265355.198635,
+      "blocked": false,
+      "same_pid_before_native_exec": true,
+      "profile": null,
+      "checks": [
+        {
+          "kind": 2,
+          "target_port": 62366,
+          "allowed": true
+        },
+        {
+          "kind": 1,
+          "target_port": 443,
+          "allowed": true
+        },
+        {
+          "kind": 1,
+          "target_port": 55688,
+          "allowed": true
+        }
+      ]
+    },
+    {
+      "pid": 89664,
+      "at": 1793265716.721306,
+      "blocked": false,
+      "same_pid_before_native_exec": true,
+      "profile": null,
+      "checks": [
+        {
+          "kind": 2,
+          "target_port": 59089,
+          "allowed": true
+        },
+        {
+          "kind": 1,
+          "target_port": 443,
+          "allowed": true
+        },
+        {
+          "kind": 1,
+          "target_port": 56020,
+          "allowed": true
+        }
+      ]
+    },
+    {
+      "pid": 93797,
+      "at": 1793265817.963508,
+      "blocked": true,
+      "same_pid_before_native_exec": true,
+      "profile": "(version 1)(allow default)(deny network-outbound(remote udp \"*:*\"))(deny network-outbound(remote tcp \"*:443\"))",
+      "checks": [
+        {
+          "kind": 2,
+          "target_port": 59089,
+          "allowed": false,
+          "errno": 1
+        },
+        {
+          "kind": 1,
+          "target_port": 443,
+          "allowed": false,
+          "errno": 1
+        },
+        {
+          "kind": 1,
+          "target_port": 56020,
+          "allowed": true
+        }
+      ]
+    }
+  ],
+  "udp_control_observations": [
+    {
+      "at": 1793265716.521733,
+      "sha256": "8153af792ec188beacc6c2ea60b11a0ea4e2d2ed92b0f649a8fcf687905a0f91"
+    }
+  ],
+  "completed": true,
+  "actor_final_observations": [
+    {
+      "role": "reviewer",
+      "phase": "phase0",
+      "CID": "01a186f7-65c6-7591-8200-066e7eab9f16",
+      "registered": true,
+      "alive": true,
+      "exit": null,
+      "events": 30,
+      "error": null
+    },
+    {
+      "role": "requester",
+      "phase": "phase2",
+      "CID": "01a186f7-65d6-7262-bb0c-d6026c5b36fc",
+      "registered": false,
+      "alive": false,
+      "exit": 0,
+      "events": 9,
+      "error": null
+    }
+  ],
+  "source_auth_metadata_unchanged": true,
+  "source_profile_unchanged": true,
+  "actual_CIDs": {
+    "reviewer": "01a186f7-65c6-7591-8200-066e7eab9f16",
+    "requester": "01a186f7-65d6-7262-bb0c-d6026c5b36fc"
+  },
+  "finished_at": 1793265853.461314
+}

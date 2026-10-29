@@ -1,0 +1,82 @@
+{
+  "scope": "M1 non-traffic held/blocked receipt excluded from readonly canonical pending count",
+  "frozen": true,
+  "product_files_modified": [
+    "xsm/handoff.py"
+  ],
+  "test_files_modified": [
+    "tests/test_handoff_pending_ids.py",
+    "tests/test_subagent_transport.py"
+  ],
+  "logs": {
+    "red": {
+      "tests": 1,
+      "subtest_failures": 2,
+      "expected_failure": true,
+      "path": "/tmp/p13-pending-gate-red.log",
+      "sha256": "88df2df6ec42f188276031dbd0e370e08aabe9d40d305cd0ba731f8b3bfe430f",
+      "bytes": 1705
+    },
+    "green": {
+      "tests": 19,
+      "passed": true,
+      "path": "/tmp/p13-pending-gate-green.log",
+      "sha256": "3d237055f8464939f6a44cfc38143e4c33dca6bc56aad1325765739eee5cb5d7",
+      "bytes": 98
+    },
+    "guard_removed_mutation": {
+      "tests": 1,
+      "subtest_failures": 2,
+      "mutation_detected": true,
+      "method": "in-memory guard removal; product files not mutated",
+      "path": "/tmp/p13-pending-guard-mutation.log",
+      "sha256": "36feea9e0e120e5980fb167601005602a130797f91dd911bcc4097c5bd64f8c4",
+      "bytes": 1644
+    },
+    "impact_python39": {
+      "python": "3.9",
+      "tests": 162,
+      "passed": true,
+      "path": "/tmp/p13-pending-impact39.log",
+      "sha256": "0e2c60713eb8e33df767506a08964a5813aa12548025d27c3367468387e0b3b6",
+      "bytes": 99
+    },
+    "impact_python314": {
+      "python": "3.14",
+      "tests": 162,
+      "passed": true,
+      "path": "/tmp/p13-pending-impact314.log",
+      "sha256": "ab3b0213bc54e3a55ae1565352171438588164725cfb6b0450cac3db039836c6",
+      "bytes": 99
+    }
+  },
+  "source": {
+    "xsm/handoff.py": {
+      "sha256": "48f8b6c1c4ab29ede46141e6eeb431bd08501407dbf42c75948c477bdd767d00"
+    },
+    "tests/test_handoff_pending_ids.py": {
+      "sha256": "7b993ca948cbd97dc71bb9dbda65b6159936e8b9a174b65e0f6b1169489466d2"
+    },
+    "tests/test_subagent_transport.py": {
+      "sha256": "8c07bfed94e8d7185e30c88d73bb39d9198bcc437021df8207758d9b708db658"
+    }
+  },
+  "regression_path": [
+    "normal auto send with successful transport fixture",
+    "real receive._gate with check=block",
+    "actual held storage or held-storage OSError yields held/blocked receipt",
+    "legacy export removed; canonical original still delivery_state=pending",
+    "pending_ids/status count zero; normal inbox empty",
+    "readonly query preserves bytes/mtime/inode; canonical original unchanged"
+  ],
+  "preserved_contracts": [
+    "pending traffic receipt retry exception",
+    "other delivery errors remain excluded",
+    "no lease/recovery/ACK mutation during pending query",
+    "no product gate changes"
+  ],
+  "impact_command": "-m unittest tests.test_handoff tests.test_handoff_pending_ids tests.test_subagent_transport tests.test_handoff_consumer tests.test_traffic_policy tests.test_open_receive -q",
+  "additional_model_calls": 0,
+  "additional_full_regression_runs": 0,
+  "committed": false
+}

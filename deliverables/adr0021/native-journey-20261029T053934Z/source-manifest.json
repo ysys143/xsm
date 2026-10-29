@@ -1,0 +1,272 @@
+{
+  "created_utc": "2026-10-29T05:39:34.078850+00:00",
+  "scope": "Python xsm/**/*.py bytes at copy time only; repository, native Rust sources, configs, profiles and unlisted paths not frozen",
+  "files": {
+    "xsm/__init__.py": {
+      "sha256": "6f3c027b81d76181e6d7ead368d3206768d662f437f097cd194d27e9cf7735ba",
+      "bytes": 327,
+      "stable_during_copy": true
+    },
+    "xsm/__main__.py": {
+      "sha256": "13a1a5b340cdcfc1902b62be90e508c7c71886000d5bf087e7854aadf09fb35e",
+      "bytes": 52,
+      "stable_during_copy": true
+    },
+    "xsm/abuse.py": {
+      "sha256": "a15303d88acded3e03110b125da91e11ffd5de96d266a9485a0f476d991d8e66",
+      "bytes": 13290,
+      "stable_during_copy": true
+    },
+    "xsm/adapters.py": {
+      "sha256": "0b0d77d724130b2671d2fdc8eb0da64bc80d178b4be54b766c0b9a8629e950dd",
+      "bytes": 13088,
+      "stable_during_copy": true
+    },
+    "xsm/attempts.py": {
+      "sha256": "224b86ae077fc6e285716e73850317e9e6efcdba244eac16a3f9edef6dad320a",
+      "bytes": 5206,
+      "stable_during_copy": true
+    },
+    "xsm/attention.py": {
+      "sha256": "8cd167c01cc560f92580646c2e081ca2604c8548184ce493ef1e8bf875a9e866",
+      "bytes": 2057,
+      "stable_during_copy": true
+    },
+    "xsm/bounce.py": {
+      "sha256": "4a3ede5b15d85dea65388e26fa21f62dd2e9ab7da06c94ef3b9d788085aeaecc",
+      "bytes": 5393,
+      "stable_during_copy": true
+    },
+    "xsm/channel.py": {
+      "sha256": "459f8125b03eddbd2d8be23474b5f50b740aa7f777d2ea436f0aaa55db235382",
+      "bytes": 8661,
+      "stable_during_copy": true
+    },
+    "xsm/cli.py": {
+      "sha256": "021c45acc1182a76c5e81d20b0a7a00e5f81aae0a1325ee09e8f9938a2fbafc0",
+      "bytes": 153667,
+      "stable_during_copy": true
+    },
+    "xsm/codex_daemon.py": {
+      "sha256": "d7423388a943868a06411ca33725b17a128bd9c6c641232da0844a59ff9a1f3d",
+      "bytes": 13152,
+      "stable_during_copy": true
+    },
+    "xsm/collaboration.py": {
+      "sha256": "f29c91f0d5f26cd2c4971c619ab5dc7ea6dc3bfa5e32ad0791e17c0f3aff5cb7",
+      "bytes": 5124,
+      "stable_during_copy": true
+    },
+    "xsm/config.py": {
+      "sha256": "92255fcee9cd2fe3b013851b056533a78d5090b225123f0d460de9c425feb5ca",
+      "bytes": 52605,
+      "stable_during_copy": true
+    },
+    "xsm/connect.py": {
+      "sha256": "be25196f7efd16e43ef09718b97e9bd6b3f5bea737bb6e4f673a8b94688131ff",
+      "bytes": 17032,
+      "stable_during_copy": true
+    },
+    "xsm/consent.py": {
+      "sha256": "26adb2e00e2466594a6dee3fe4850cc6ee8ee20c7187c0e1f490d51d603b95e0",
+      "bytes": 65968,
+      "stable_during_copy": true
+    },
+    "xsm/context.py": {
+      "sha256": "3a8355156f5d5497a0e945fe1a2c05791439cfe172f8fa5ae0eed936830ecb03",
+      "bytes": 8277,
+      "stable_during_copy": true
+    },
+    "xsm/decisions.py": {
+      "sha256": "ee9964969497d3726dad7cdb27913bf2df382615abf6ae9ab6fc66b59a72fb2b",
+      "bytes": 12093,
+      "stable_during_copy": true
+    },
+    "xsm/directory.py": {
+      "sha256": "22525349cae1190d5e9ef00d97dc17cae52b1ef60180ce2ace5e024bae8c0afb",
+      "bytes": 32186,
+      "stable_during_copy": true
+    },
+    "xsm/doc.py": {
+      "sha256": "465d44d8ed5c3c2c458d67a0071c3dc56ef483794f34858b26eae82258a68011",
+      "bytes": 10262,
+      "stable_during_copy": true
+    },
+    "xsm/envelope.py": {
+      "sha256": "4a6030d3dabddf1697bc3bef6317a491ff94325eb8086ee2f05f35268d761683",
+      "bytes": 26087,
+      "stable_during_copy": true
+    },
+    "xsm/files.py": {
+      "sha256": "01425c645b7047590c452aaa7ea4f348a17aa5e25481e8ae4597dee5ab1d1ca3",
+      "bytes": 48310,
+      "stable_during_copy": true
+    },
+    "xsm/handoff.py": {
+      "sha256": "e73aec7afa15bf507465ec293061c5ff3b288a33ecf339c9dc3009f1f69e6ee7",
+      "bytes": 19277,
+      "stable_during_copy": true
+    },
+    "xsm/housekeeping.py": {
+      "sha256": "5d1a0f1c1f3cf2ef820344935db26aeda5bed5b27e66ba99b1868e8c1d53cf3a",
+      "bytes": 9054,
+      "stable_during_copy": true
+    },
+    "xsm/identity.py": {
+      "sha256": "ecfddb64f394455bf68117076127f1c0a07888c0df4cd734f219771bce3004a5",
+      "bytes": 9775,
+      "stable_during_copy": true
+    },
+    "xsm/inbox.py": {
+      "sha256": "299b972ff4fadd91148e495357be10a97ac2640d23d79c317e0b675699541695",
+      "bytes": 15913,
+      "stable_during_copy": true
+    },
+    "xsm/install.py": {
+      "sha256": "49a3d65beeec935cb624a3701c85995b09cba4861a17c2b446297d8837d3d2d2",
+      "bytes": 120540,
+      "stable_during_copy": true
+    },
+    "xsm/instructions.py": {
+      "sha256": "8767e07bef46cd0859fdef2b7a41d7838fa5faf62fc0cb54baf59a0f1c2c1190",
+      "bytes": 7852,
+      "stable_during_copy": true
+    },
+    "xsm/ledger.py": {
+      "sha256": "f291d11b736608bb3d2d07bdccdcc15348af2cbdfa73e1fb9d4c5628063e459f",
+      "bytes": 19243,
+      "stable_during_copy": true
+    },
+    "xsm/materials.py": {
+      "sha256": "8ca0986b7e8bfab10f6ba3ffb8301e53974ea7721dcbded2bc7cf0931d43ea9e",
+      "bytes": 6590,
+      "stable_during_copy": true
+    },
+    "xsm/mcp.py": {
+      "sha256": "c13c6cc62149a6728ef7cd936e32428f055c72e038cd460a8fc2ee6124a13b2d",
+      "bytes": 96912,
+      "stable_during_copy": true
+    },
+    "xsm/network.py": {
+      "sha256": "285f952c626941fb5d8c3ff00eac3d5a35e173f602ee459823dc68ca75148584",
+      "bytes": 55438,
+      "stable_during_copy": true
+    },
+    "xsm/network_directory.py": {
+      "sha256": "0e1ea03d86b3f5c49f4df64b8e86e401743b33368dd32873a16fddab66c35099",
+      "bytes": 19446,
+      "stable_during_copy": true
+    },
+    "xsm/network_identity.py": {
+      "sha256": "9820d64951f02899d41e77be737cc706c6d27e164d2c57700d6f8f6a8618142a",
+      "bytes": 1358,
+      "stable_during_copy": true
+    },
+    "xsm/network_membership.py": {
+      "sha256": "f3496c84b86be111a120baf4d7b74f8fdfdeea415ac89cfb2fff4eb841ddb54a",
+      "bytes": 27446,
+      "stable_during_copy": true
+    },
+    "xsm/network_messages.py": {
+      "sha256": "2b2a238ecf9e7a55265fabc5673de086c97818b78188d9716cceb6fb214c22a2",
+      "bytes": 37187,
+      "stable_during_copy": true
+    },
+    "xsm/network_transport.py": {
+      "sha256": "1827fc7b4ac9a4f90680a14b46112490a0e54d7263557233dc3e693fe0d389c3",
+      "bytes": 23107,
+      "stable_during_copy": true
+    },
+    "xsm/otlp_export.py": {
+      "sha256": "8ce0b354b4c3f5687c5b0cdd49825f5248ac4725dfbca6b96f5f3750dc32cc2a",
+      "bytes": 8380,
+      "stable_during_copy": true
+    },
+    "xsm/outbox.py": {
+      "sha256": "1ab6e31b52feae97e06f326c9d4f7658a2e02549b5085e0e864ea1e002bbe211",
+      "bytes": 4266,
+      "stable_during_copy": true
+    },
+    "xsm/owned_requests.py": {
+      "sha256": "6e55c26db5709189619196f5ed373004fa0fa468246dc99b899dd14cce4e2a69",
+      "bytes": 21337,
+      "stable_during_copy": true
+    },
+    "xsm/paths.py": {
+      "sha256": "242b8e64b5d564e503d5e0bbef1d7e8d160690e8bd5199bc160523969835bb39",
+      "bytes": 4251,
+      "stable_during_copy": true
+    },
+    "xsm/policy.py": {
+      "sha256": "9f912493ca4a26e22af110edead346e58924022de4d2c99c56c566279c1c7cc7",
+      "bytes": 2714,
+      "stable_during_copy": true
+    },
+    "xsm/probe.py": {
+      "sha256": "5727d930fafd3793da7f24f2179fb15dbc3ea07f58d53cd193ea6c1a093c828c",
+      "bytes": 6635,
+      "stable_during_copy": true
+    },
+    "xsm/provenance.py": {
+      "sha256": "7639e2b111f964a6eaa8031408fda9fc094eaa9c714653085b0f5ea5fbf755d6",
+      "bytes": 6806,
+      "stable_during_copy": true
+    },
+    "xsm/questions.py": {
+      "sha256": "1b13a9c4a3db2e9f933ebc97ed00f362bb4f3cac95b7092ca5c302e718296a70",
+      "bytes": 17024,
+      "stable_during_copy": true
+    },
+    "xsm/receive.py": {
+      "sha256": "6a8f2d04dc3d63b3dd52628f3320121f8083a333db77e55774cc7108c9b8dac7",
+      "bytes": 79188,
+      "stable_during_copy": true
+    },
+    "xsm/registry.py": {
+      "sha256": "edce2c6e75ec4d1803f402db565900080be337b2727a40ff663376c355890360",
+      "bytes": 59773,
+      "stable_during_copy": true
+    },
+    "xsm/remote.py": {
+      "sha256": "d79acd373ea13490ae7ac34a86f7d376520d51293a4cad68728db35eaa44e3cf",
+      "bytes": 30699,
+      "stable_during_copy": true
+    },
+    "xsm/resolve.py": {
+      "sha256": "c5701b8af941e86a0839b230459b244fbaa79b0ee6626d66ca9ddf81509a89eb",
+      "bytes": 11336,
+      "stable_during_copy": true
+    },
+    "xsm/send.py": {
+      "sha256": "8605c02c335c5970638c6a26a2ca2ef9df34f72e1cca29fd447829366d14daae",
+      "bytes": 44578,
+      "stable_during_copy": true
+    },
+    "xsm/setup_flow.py": {
+      "sha256": "1dfbfb19e1bb8ce267c3bd3ad9519420017af01c78a63ce187c3a709d27247cd",
+      "bytes": 22002,
+      "stable_during_copy": true
+    },
+    "xsm/telemetry.py": {
+      "sha256": "bf0411d546c02a2f3e6aaea7d6f8f2549eeeeb57a7aedcc1cb968b5c87c1e2ea",
+      "bytes": 7799,
+      "stable_during_copy": true
+    },
+    "xsm/user_answers.py": {
+      "sha256": "5ad5b73ec365217a28285a4e3deb709331feb570593b588119460d9b51abf24f",
+      "bytes": 10694,
+      "stable_during_copy": true
+    },
+    "xsm/workers.py": {
+      "sha256": "518cb28f77c3ee222d1adf7e49068e671fc38dbc43fb5e1ac0ed6ef139299fa5",
+      "bytes": 91042,
+      "stable_during_copy": true
+    }
+  },
+  "engine": {
+    "source": "/private/tmp/adr21-install-0q83fzpr/state/network/bin/xsm-net",
+    "sha256": "c963e9d4e4ffda47dead354d7d66e2f71fea037932b51846422bdbacb5b39a7d",
+    "size": 14996288
+  },
+  "coordinator_note": "network.py includes native observer TypeError handling and wake_safely callback exception output suppression before this copy"
+}

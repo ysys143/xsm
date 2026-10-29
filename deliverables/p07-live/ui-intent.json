@@ -1,0 +1,14 @@
+{
+  "decision_id": "ba375f1526838432b25ac77e5f0f192f21a4d0c1dca42d3c21f539cc83ddd70a",
+  "question": "P07 검증: 같은 질문을 중복 호출해도 한 번의 답과 한 번의 기록으로 처리되는지 확인합니다. 진단 기록만 남기는 데 동의하면 확인을 선택해 주세요.",
+  "args": {
+    "question": "P07 검증: 같은 질문을 중복 호출해도 한 번의 답과 한 번의 기록으로 처리되는지 확인합니다. 진단 기록만 남기는 데 동의하면 확인을 선택해 주세요.",
+    "options": [
+      "확인"
+    ],
+    "summary": "P07 UI QA",
+    "decision_key": "p07-native-ui-20261028"
+  },
+  "status": "prepared-not-displayed",
+  "permission_effect": "diagnostic-channel-record-only"
+}

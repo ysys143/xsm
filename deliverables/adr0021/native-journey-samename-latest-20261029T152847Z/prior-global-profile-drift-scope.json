@@ -1,0 +1,27 @@
+{
+  "scope": "one observed whole-file hash difference, no attribution of writer or permission/auth change",
+  "path": "/Users/jaesolshin/.claude-3/.claude.json",
+  "resolved": "/Users/jaesolshin/.claude-3/.claude.json",
+  "original_before_record_file": "/private/tmp/native-journey-mixed-proc-book-g54im4t2/claude-profile-before.json",
+  "original_before_record_mtime_UTC": "2026-10-29T09:30:34.877214+00:00",
+  "original_before_sha256": "535bf0cacb4f80a20c8ec6a50072fd7dbba89eb1cb2a5bef89f3d7ae735fba1d",
+  "original_before_path_size_inode_mtime_recorded": false,
+  "prior_after_observed_epoch": 1793281133.157367,
+  "prior_after_observed_UTC": "2026-10-29T13:38:53.157367+00:00",
+  "prior_after_sha256": "3556f1213e446281602e78f1a8e9a06864bce313501ddd74de1e9c09c95e7a1d",
+  "current_observed_UTC": "2026-10-29T14:21:35.947820+00:00",
+  "current_metadata": {
+    "mode": "0o644",
+    "UID": 501,
+    "size": 346954,
+    "inode": 1051532466,
+    "mtime_UTC": "2026-10-29T14:21:23.490213+00:00"
+  },
+  "current_sha256": "877d50c7a7cd2dda8ba8622300fce37264870e53e5a7b1b7677f9f39271dac37",
+  "settings_and_auth_prior_comparison": {
+    "/Users/jaesolshin/.claude-3/settings.json": true,
+    "/Users/jaesolshin/.claude-3/CLAUDE.md": true,
+    "/Users/jaesolshin/.claude-3/.credentials.json:metadata-only": true
+  },
+  "restored_or_modified": false
+}

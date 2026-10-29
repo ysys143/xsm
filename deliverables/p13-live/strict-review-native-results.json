@@ -1,0 +1,631 @@
+{
+  "scope": "A22-03 one final same-policy three-review rounds plus repeated-body defer and same-ID recovery trace",
+  "root": "/private/tmp/p13-strict-review-91nhwo1c",
+  "workspace": "/private/tmp/p13-strict-review-91nhwo1c/project",
+  "state": "/private/tmp/p13-strict-review-91nhwo1c/state",
+  "frozen_source": "/private/tmp/xsm-final-receipt-frozen-i3u9pms3",
+  "frozen_manifest": "deliverables/p13-live/final-source-manifest.json",
+  "source_before": {
+    "file_count": 315,
+    "manifest_sha256": "57d088eee167e573d3a534e2d53db230703963516ece02ee1b6fce294ae9068f",
+    "matches": true,
+    "changed_paths": []
+  },
+  "goals": {
+    "reviewer": "이 private 저장소의 독립 검토 담당 a1입니다. 구현자와 아래 전체 묶음을 끝까지 수행하세요. 첫째 잘못된 산술안의 반례, 둘째 그 실제 답을 반영한 수정안 재검토, 셋째 독립 경계조건 검토를 실제 요청마다 원문을 읽고 독립 계산해 회신하세요. 세 라운드만 끝났다고 종료하지 마세요. 이어 구현자가 세 번째 요청과 바이트까지 같은 본문으로 보내는 네 번째 고유 요청이 60초 동일본문 반복 정책에 보류될 수 있습니다. 보류는 검토 완료나 성공 답으로 취급하지 말고 원 요청이 재개될 때까지 대기하세요. 구현자가 시간을 기다려 네 번째 원 ID를 한 번 재전송하면 실제 수신 뒤 다시 독립 검산하여 원 요청에 회신하세요. 최종적으로 서로 다른 요청 ID 4개의 실제 검토와 회신·읽음 확인을 마쳐야 묶음이 끝납니다. 같은 정책을 유지하고 다른 세션·폴더·권한·설정·원문을 바꾸지 마세요.",
+    "sender": "xsm 독립 검토 담당 a1과 이 전체 묶음을 한 대화에서 끝까지 수행하세요. 1라운드로 2+2=5라는 잘못된 안을 보내 반례를 받고, 그 실제 회신을 읽고 확인한 뒤에만 2라운드 수정안을 만들어 재검토받으세요. 2라운드의 실제 답을 읽고 확인한 다음 3라운드로 0+0=0 경계조건을 독립 검토받으세요. 세 답만 받고 종료하지 마세요. 즉시 세 번째 검토 요청의 본문을 바이트까지 그대로 복사해, 의미 없는 반복인 네 번째 질문을 한 번 더 보내세요. 이번 private fixture에는 모든 라운드에 동일하게 strict, window=60초, 동일발신자 동일본문 1회 정책이 이미 설정돼 있습니다. 정상 세 라운드는 서로 다른 본문이어야 하며 정책은 바꾸지 마세요. 네 번째 요청이 held되면 원 ID로 상태를 조회해 보류·미완료와 원문 보존을 확인하세요. 안내된 실제 시간을 충분히 기다린 뒤, 새 ID로 치환하지 말고 같은 원문·원 ID의 기존 재전송 경로를 단 한 번 사용해 회복하세요. 마지막도 그 원 ID로 실제 최종 답을 회수·확인해야 종료입니다. 전체 고유 질문은 4개이며, 회복용 같은 ID 재전송까지 전달 시도는 최대 5회입니다. unknown/held/pending을 성공으로 쓰지 말고 최종 답의 내용·원 ID·상태를 보고하세요. 추가 질문·자동 재시도·반복 재전송·권한 확대·설정 변경·수동 본문/ACK/index 수정은 하지 마세요."
+  },
+  "setup_registry_calls": 2,
+  "actor_native_invocations": 2,
+  "controller_body_relays": 0,
+  "controller_ACKs": 0,
+  "controller_index_writes": 0,
+  "additional_user_prompts": 0,
+  "automatic_actor_retries": 0,
+  "condition_runs": 1,
+  "status": "captured-original-sample",
+  "factory_ignore_user_config": true,
+  "profile": "/Users/jaesolshin/.codex-3",
+  "skill_source": "frozen product copied verbatim to private repository .agents/skills/xsm",
+  "private_policy": {
+    "traffic_control": {
+      "mode": "strict",
+      "window_seconds": 60,
+      "max_same_body": 1
+    }
+  },
+  "started_at": 1793234488.71201,
+  "profile_guard_before": {
+    "/Users/jaesolshin/.codex/config.toml": "21396927ac3a502c9dc4f494d56bb28c306e7308aa764cc4d213c43b45521274",
+    "/Users/jaesolshin/.codex/hooks.json": "49b87a4f565e46de75642f9c75d533fc0f7a768c76c7c6636990cf4ae4dfa50c",
+    "/Users/jaesolshin/.codex/settings.json": null,
+    "/Users/jaesolshin/.codex/auth.json:metadata-only": [
+      3965,
+      1793103143975732856,
+      968012381
+    ],
+    "/Users/jaesolshin/.codex-3/config.toml": "1f94ac2b02b6f8a13f8246586ecf9ed27df850cb28f07a3bbd8138400134ea12",
+    "/Users/jaesolshin/.codex-3/hooks.json": "5d48305d304f29b21abc7bb214e378819f76ba437a9e442d04a3ace1f89d04d7",
+    "/Users/jaesolshin/.codex-3/settings.json": null,
+    "/Users/jaesolshin/.codex-3/auth.json:metadata-only": [
+      4218,
+      1792723939173184551,
+      1040508813
+    ]
+  },
+  "initial_private_policy_sha256": "6849b49ed2bf580cbe375a0e9009681864fabb634942d2f7e18244387eaa00b8",
+  "reviewer_invocation": {
+    "role": "reviewer",
+    "profile": "/Users/jaesolshin/.codex-3",
+    "goal": "이 private 저장소의 독립 검토 담당 a1입니다. 구현자와 아래 전체 묶음을 끝까지 수행하세요. 첫째 잘못된 산술안의 반례, 둘째 그 실제 답을 반영한 수정안 재검토, 셋째 독립 경계조건 검토를 실제 요청마다 원문을 읽고 독립 계산해 회신하세요. 세 라운드만 끝났다고 종료하지 마세요. 이어 구현자가 세 번째 요청과 바이트까지 같은 본문으로 보내는 네 번째 고유 요청이 60초 동일본문 반복 정책에 보류될 수 있습니다. 보류는 검토 완료나 성공 답으로 취급하지 말고 원 요청이 재개될 때까지 대기하세요. 구현자가 시간을 기다려 네 번째 원 ID를 한 번 재전송하면 실제 수신 뒤 다시 독립 검산하여 원 요청에 회신하세요. 최종적으로 서로 다른 요청 ID 4개의 실제 검토와 회신·읽음 확인을 마쳐야 묶음이 끝납니다. 같은 정책을 유지하고 다른 세션·폴더·권한·설정·원문을 바꾸지 마세요.",
+    "pid": 38228,
+    "lstart": "Thu Oct 29 09:41:28 2026",
+    "invocation_without_goal": [
+      "codex",
+      "exec",
+      "--ignore-user-config",
+      "--json",
+      "--sandbox",
+      "workspace-write",
+      "-c",
+      "approval_policy=\"never\"",
+      "-c",
+      "mcp_servers.xsm.command=\"/usr/bin/python3\"",
+      "-c",
+      "mcp_servers.xsm.args=[\"-m\",\"xsm\",\"mcp\"]",
+      "-c",
+      "mcp_servers.xsm.cwd=\"/private/tmp/xsm-final-receipt-frozen-i3u9pms3\"",
+      "-c",
+      "mcp_servers.xsm.env.XSM_HOME=\"/private/tmp/p13-strict-review-91nhwo1c/state\"",
+      "-c",
+      "mcp_servers.xsm.env.CODEX_HOME=\"/Users/jaesolshin/.codex-3\"",
+      "-c",
+      "mcp_servers.xsm.env.PYTHONPATH=\"/private/tmp/xsm-final-receipt-frozen-i3u9pms3\"",
+      "-c",
+      "mcp_servers.xsm.env.PYTHONDONTWRITEBYTECODE=\"1\""
+    ],
+    "goal_sha256": "0189ffd3efebeeb783bfb12b0daa4b65dd75537938be5ea335c3f38877b4a3fb"
+  },
+  "sender_invocation": {
+    "role": "initiator",
+    "profile": "/Users/jaesolshin/.codex-3",
+    "goal": "xsm 독립 검토 담당 a1과 이 전체 묶음을 한 대화에서 끝까지 수행하세요. 1라운드로 2+2=5라는 잘못된 안을 보내 반례를 받고, 그 실제 회신을 읽고 확인한 뒤에만 2라운드 수정안을 만들어 재검토받으세요. 2라운드의 실제 답을 읽고 확인한 다음 3라운드로 0+0=0 경계조건을 독립 검토받으세요. 세 답만 받고 종료하지 마세요. 즉시 세 번째 검토 요청의 본문을 바이트까지 그대로 복사해, 의미 없는 반복인 네 번째 질문을 한 번 더 보내세요. 이번 private fixture에는 모든 라운드에 동일하게 strict, window=60초, 동일발신자 동일본문 1회 정책이 이미 설정돼 있습니다. 정상 세 라운드는 서로 다른 본문이어야 하며 정책은 바꾸지 마세요. 네 번째 요청이 held되면 원 ID로 상태를 조회해 보류·미완료와 원문 보존을 확인하세요. 안내된 실제 시간을 충분히 기다린 뒤, 새 ID로 치환하지 말고 같은 원문·원 ID의 기존 재전송 경로를 단 한 번 사용해 회복하세요. 마지막도 그 원 ID로 실제 최종 답을 회수·확인해야 종료입니다. 전체 고유 질문은 4개이며, 회복용 같은 ID 재전송까지 전달 시도는 최대 5회입니다. unknown/held/pending을 성공으로 쓰지 말고 최종 답의 내용·원 ID·상태를 보고하세요. 추가 질문·자동 재시도·반복 재전송·권한 확대·설정 변경·수동 본문/ACK/index 수정은 하지 마세요.",
+    "pid": 38941,
+    "lstart": "Thu Oct 29 09:41:30 2026",
+    "invocation_without_goal": [
+      "codex",
+      "exec",
+      "--ignore-user-config",
+      "--json",
+      "--sandbox",
+      "workspace-write",
+      "-c",
+      "approval_policy=\"never\"",
+      "-c",
+      "mcp_servers.xsm.command=\"/usr/bin/python3\"",
+      "-c",
+      "mcp_servers.xsm.args=[\"-m\",\"xsm\",\"mcp\"]",
+      "-c",
+      "mcp_servers.xsm.cwd=\"/private/tmp/xsm-final-receipt-frozen-i3u9pms3\"",
+      "-c",
+      "mcp_servers.xsm.env.XSM_HOME=\"/private/tmp/p13-strict-review-91nhwo1c/state\"",
+      "-c",
+      "mcp_servers.xsm.env.CODEX_HOME=\"/Users/jaesolshin/.codex-3\"",
+      "-c",
+      "mcp_servers.xsm.env.PYTHONPATH=\"/private/tmp/xsm-final-receipt-frozen-i3u9pms3\"",
+      "-c",
+      "mcp_servers.xsm.env.PYTHONDONTWRITEBYTECODE=\"1\""
+    ],
+    "goal_sha256": "4e6b609962a6a31ffaad2c8ff66b8e68593d1eae9ff19f54b5bd24521042de82"
+  },
+  "actors": [
+    {
+      "role": "reviewer",
+      "native_session_id": "01a1851a-ce01-75e3-852e-d4c604ab3818",
+      "registered_name": "a1",
+      "mcp_pid": 38549,
+      "setup_registration_seconds": 1.51,
+      "registration_preceded_first_agent_call": true,
+      "calls": [
+        {
+          "kind": "command_execution",
+          "complete": true,
+          "seconds_from_actor_start": 6.837,
+          "command_sha256": "4a4b5697b5641c3201f59fa0d16d356ea5b64152bd55aa6883242acdd0605c47",
+          "exit_code": 0,
+          "sandbox_shell_send_attempt": false,
+          "skill_read": true,
+          "sandbox_failure": false
+        },
+        {
+          "kind": "command_execution",
+          "complete": true,
+          "seconds_from_actor_start": 9.599,
+          "command_sha256": "829092d1330d5e1178f5e996891ce2ac44c508fc65e3cd979e3264aca86d903c",
+          "exit_code": 0,
+          "sandbox_shell_send_attempt": false,
+          "skill_read": false,
+          "sandbox_failure": false
+        },
+        {
+          "kind": "mcp_tool_call",
+          "complete": true,
+          "seconds_from_actor_start": 11.709,
+          "server": "xsm",
+          "tool": "xsm_inbox",
+          "error": null,
+          "argument_keys": [
+            "wait"
+          ],
+          "arguments_sha256": "afbd535fae0ed344ed8c09645dbdce88099016ed0bbe76b9a48d2d07c7a1ca19"
+        },
+        {
+          "kind": "mcp_tool_call",
+          "complete": true,
+          "seconds_from_actor_start": 15.208,
+          "server": "xsm",
+          "tool": "xsm_inbox",
+          "error": null,
+          "argument_keys": [
+            "wait"
+          ],
+          "arguments_sha256": "5ce894079e806eb601f73f1a7714e226bcef2fefbe7c19babeb0974081cbad48"
+        },
+        {
+          "kind": "mcp_tool_call",
+          "complete": true,
+          "seconds_from_actor_start": 23.865,
+          "server": "xsm",
+          "tool": "xsm_ack",
+          "error": null,
+          "argument_keys": [
+            "tokens"
+          ],
+          "arguments_sha256": "271d188823315c8dbc8a41d949ed8b6666226f82d2b1b77880bde23f4415d24d"
+        },
+        {
+          "kind": "mcp_tool_call",
+          "complete": true,
+          "seconds_from_actor_start": 23.865,
+          "server": "xsm",
+          "tool": "xsm_send",
+          "error": null,
+          "argument_keys": [
+            "kind",
+            "outcome",
+            "reply_to",
+            "target",
+            "text"
+          ],
+          "arguments_sha256": "c5d37ce9b751426b66a775cbc200664854a15cfd1112e40a062c0e5d4dacf27c"
+        },
+        {
+          "kind": "mcp_tool_call",
+          "complete": true,
+          "seconds_from_actor_start": 26.393,
+          "server": "xsm",
+          "tool": "xsm_inbox",
+          "error": null,
+          "argument_keys": [
+            "wait"
+          ],
+          "arguments_sha256": "5ce894079e806eb601f73f1a7714e226bcef2fefbe7c19babeb0974081cbad48"
+        },
+        {
+          "kind": "mcp_tool_call",
+          "complete": true,
+          "seconds_from_actor_start": 35.907,
+          "server": "xsm",
+          "tool": "xsm_ack",
+          "error": null,
+          "argument_keys": [
+            "tokens"
+          ],
+          "arguments_sha256": "68d2b2b3f66dad640b08a2f3d6c0752fdbf0da33bfc69ba1a8999f5b6382b755"
+        },
+        {
+          "kind": "mcp_tool_call",
+          "complete": true,
+          "seconds_from_actor_start": 35.907,
+          "server": "xsm",
+          "tool": "xsm_send",
+          "error": null,
+          "argument_keys": [
+            "kind",
+            "outcome",
+            "reply_to",
+            "target",
+            "text"
+          ],
+          "arguments_sha256": "b38bb211d836c5c010520df8ccd40f2137b198adfcd54e2d84cf84bdd854b100"
+        },
+        {
+          "kind": "mcp_tool_call",
+          "complete": true,
+          "seconds_from_actor_start": 39.216,
+          "server": "xsm",
+          "tool": "xsm_inbox",
+          "error": null,
+          "argument_keys": [
+            "wait"
+          ],
+          "arguments_sha256": "5ce894079e806eb601f73f1a7714e226bcef2fefbe7c19babeb0974081cbad48"
+        },
+        {
+          "kind": "mcp_tool_call",
+          "complete": true,
+          "seconds_from_actor_start": 49.753,
+          "server": "xsm",
+          "tool": "xsm_ack",
+          "error": null,
+          "argument_keys": [
+            "tokens"
+          ],
+          "arguments_sha256": "6c170e73eb3b1a36d431c03a7d529f2173611c993fecf487d488b27dc890b262"
+        },
+        {
+          "kind": "mcp_tool_call",
+          "complete": true,
+          "seconds_from_actor_start": 49.753,
+          "server": "xsm",
+          "tool": "xsm_send",
+          "error": null,
+          "argument_keys": [
+            "kind",
+            "outcome",
+            "reply_to",
+            "target",
+            "text"
+          ],
+          "arguments_sha256": "ed5eda19f90874011874d8128305d4315f8e6d969df13d0bf93a2857f8818854"
+        },
+        {
+          "kind": "mcp_tool_call",
+          "complete": true,
+          "seconds_from_actor_start": 53.814,
+          "server": "xsm",
+          "tool": "xsm_inbox",
+          "error": null,
+          "argument_keys": [
+            "wait"
+          ],
+          "arguments_sha256": "5ce894079e806eb601f73f1a7714e226bcef2fefbe7c19babeb0974081cbad48"
+        },
+        {
+          "kind": "mcp_tool_call",
+          "complete": true,
+          "seconds_from_actor_start": 56.83,
+          "server": "xsm",
+          "tool": "xsm_inbox",
+          "error": null,
+          "argument_keys": [
+            "wait"
+          ],
+          "arguments_sha256": "5ce894079e806eb601f73f1a7714e226bcef2fefbe7c19babeb0974081cbad48"
+        },
+        {
+          "kind": "mcp_tool_call",
+          "complete": true,
+          "seconds_from_actor_start": 111.346,
+          "server": "xsm",
+          "tool": "xsm_inbox",
+          "error": null,
+          "argument_keys": [
+            "wait"
+          ],
+          "arguments_sha256": "5ce894079e806eb601f73f1a7714e226bcef2fefbe7c19babeb0974081cbad48"
+        },
+        {
+          "kind": "mcp_tool_call",
+          "complete": true,
+          "seconds_from_actor_start": 135.581,
+          "server": "xsm",
+          "tool": "xsm_ack",
+          "error": null,
+          "argument_keys": [
+            "tokens"
+          ],
+          "arguments_sha256": "a882377a6167f46e693b1b626c46bf11b3b5a8d7a44678de21f1f37317df863c"
+        },
+        {
+          "kind": "mcp_tool_call",
+          "complete": true,
+          "seconds_from_actor_start": 135.581,
+          "server": "xsm",
+          "tool": "xsm_send",
+          "error": null,
+          "argument_keys": [
+            "kind",
+            "outcome",
+            "reply_to",
+            "target",
+            "text"
+          ],
+          "arguments_sha256": "da3f930d14527056c7e481141ea270ddf0cb8d251e74af8d0c09952d96d5072b"
+        },
+        {
+          "kind": "mcp_tool_call",
+          "complete": false,
+          "seconds_from_actor_start": 138.375,
+          "server": "xsm",
+          "tool": "xsm_inbox",
+          "error": null,
+          "argument_keys": [
+            "wait"
+          ],
+          "arguments_sha256": "5ce894079e806eb601f73f1a7714e226bcef2fefbe7c19babeb0974081cbad48"
+        }
+      ],
+      "item_type_counts": {
+        "command_execution": 2,
+        "mcp_tool_call": 16
+      },
+      "agent_mcp_call_count": 16,
+      "agent_shell_call_count": 2,
+      "tool_error_count": 0,
+      "first_wrong_choice": null,
+      "exit_code": null,
+      "events_path": "/private/tmp/p13-strict-review-91nhwo1c/reviewer.jsonl",
+      "stderr_path": "/private/tmp/p13-strict-review-91nhwo1c/reviewer.stderr",
+      "events_sha256": "d44aa56fcd81473ddc1d1fe32972b9d4e4d015e34d8bbd22e61f1731e3e58076"
+    },
+    {
+      "role": "initiator",
+      "native_session_id": "01a1851a-d467-7d62-92cb-4243ffd6a0bb",
+      "registered_name": null,
+      "mcp_pid": 39055,
+      "setup_registration_seconds": 0.574,
+      "registration_preceded_first_agent_call": true,
+      "calls": [
+        {
+          "kind": "command_execution",
+          "complete": true,
+          "seconds_from_actor_start": 5.593,
+          "command_sha256": "4a4b5697b5641c3201f59fa0d16d356ea5b64152bd55aa6883242acdd0605c47",
+          "exit_code": 0,
+          "sandbox_shell_send_attempt": false,
+          "skill_read": true,
+          "sandbox_failure": false
+        },
+        {
+          "kind": "command_execution",
+          "complete": true,
+          "seconds_from_actor_start": 7.687,
+          "command_sha256": "829092d1330d5e1178f5e996891ce2ac44c508fc65e3cd979e3264aca86d903c",
+          "exit_code": 0,
+          "sandbox_shell_send_attempt": false,
+          "skill_read": false,
+          "sandbox_failure": false
+        },
+        {
+          "kind": "mcp_tool_call",
+          "complete": true,
+          "seconds_from_actor_start": 10.576,
+          "server": "xsm",
+          "tool": "xsm_discover",
+          "error": null,
+          "argument_keys": [
+            "work"
+          ],
+          "arguments_sha256": "e8bc1f1734c80b3bef6a2d66b327e374f6a3bd1105a1cb14c9a945263e63b990"
+        },
+        {
+          "kind": "mcp_tool_call",
+          "complete": true,
+          "seconds_from_actor_start": 13.856,
+          "server": "xsm",
+          "tool": "xsm_ask",
+          "error": null,
+          "argument_keys": [
+            "target",
+            "text",
+            "wait"
+          ],
+          "arguments_sha256": "7ad541370baf960ecd4e96c45f6ac2c9610836e200d4a0586cd2247ca31e2bd1"
+        },
+        {
+          "kind": "mcp_tool_call",
+          "complete": true,
+          "seconds_from_actor_start": 24.935,
+          "server": "xsm",
+          "tool": "xsm_ack",
+          "error": null,
+          "argument_keys": [
+            "tokens"
+          ],
+          "arguments_sha256": "b28bc5e95e7afcdf9ac4d702ef9a49f82b2718a479b15b6edf559595fd4f5bb3"
+        },
+        {
+          "kind": "mcp_tool_call",
+          "complete": true,
+          "seconds_from_actor_start": 28.473,
+          "server": "xsm",
+          "tool": "xsm_ask",
+          "error": null,
+          "argument_keys": [
+            "target",
+            "text",
+            "wait"
+          ],
+          "arguments_sha256": "42b506a69c1f35a6eb7b611ab87beb62ed111a0046d4f02a2e7f5227a14b4096"
+        },
+        {
+          "kind": "mcp_tool_call",
+          "complete": true,
+          "seconds_from_actor_start": 37.646,
+          "server": "xsm",
+          "tool": "xsm_ack",
+          "error": null,
+          "argument_keys": [
+            "tokens"
+          ],
+          "arguments_sha256": "c611545ced490b621b1b275c8ec9b2e3843cc89cbb24a5441597821a1ba0bd01"
+        },
+        {
+          "kind": "mcp_tool_call",
+          "complete": true,
+          "seconds_from_actor_start": 40.593,
+          "server": "xsm",
+          "tool": "xsm_ask",
+          "error": null,
+          "argument_keys": [
+            "target",
+            "text",
+            "wait"
+          ],
+          "arguments_sha256": "bd755cc63eb67ef3841f46571712bba019ab2e8a311933a3058bb82500926959"
+        },
+        {
+          "kind": "mcp_tool_call",
+          "complete": true,
+          "seconds_from_actor_start": 51.357,
+          "server": "xsm",
+          "tool": "xsm_ack",
+          "error": null,
+          "argument_keys": [
+            "tokens"
+          ],
+          "arguments_sha256": "988d14d2ab78953dd8619f8a4f3048959017f884243124a4e073e4de404a04f1"
+        },
+        {
+          "kind": "mcp_tool_call",
+          "complete": true,
+          "seconds_from_actor_start": 51.357,
+          "server": "xsm",
+          "tool": "xsm_ask",
+          "error": null,
+          "argument_keys": [
+            "target",
+            "text",
+            "wait"
+          ],
+          "arguments_sha256": "4b64e9aaea230dfc14c5f4820c8c1b5fd9652b55efd2d265c8924be357e3ff6d"
+        },
+        {
+          "kind": "mcp_tool_call",
+          "complete": true,
+          "seconds_from_actor_start": 53.361,
+          "server": "xsm",
+          "tool": "xsm_question_status",
+          "error": null,
+          "argument_keys": [
+            "id"
+          ],
+          "arguments_sha256": "0cb513fc72690cd3b0274ecb4aa8aecbaf3283bae674c70f8bec5d1859138d0f"
+        },
+        {
+          "kind": "mcp_tool_call",
+          "complete": true,
+          "seconds_from_actor_start": 126.349,
+          "server": "xsm",
+          "tool": "xsm_send",
+          "error": null,
+          "argument_keys": [
+            "kind",
+            "resend",
+            "target",
+            "text",
+            "wait"
+          ],
+          "arguments_sha256": "52993b6d787e81aa6bad7cd4835615e1c11c9a2a2f47ad2871fc8f75b076a3fc"
+        },
+        {
+          "kind": "mcp_tool_call",
+          "complete": true,
+          "seconds_from_actor_start": 128.936,
+          "server": "xsm",
+          "tool": "xsm_question_status",
+          "error": null,
+          "argument_keys": [
+            "id",
+            "wait"
+          ],
+          "arguments_sha256": "bd72435b9b4b5a65cd549b0127787b816c8a6e978610eb320ba867a91280ca70"
+        },
+        {
+          "kind": "mcp_tool_call",
+          "complete": true,
+          "seconds_from_actor_start": 136.261,
+          "server": "xsm",
+          "tool": "xsm_ack",
+          "error": null,
+          "argument_keys": [
+            "tokens"
+          ],
+          "arguments_sha256": "89be7799a830bc56cf3da6503c6c17f56331622f2122ea680213020a3b2103cb"
+        }
+      ],
+      "item_type_counts": {
+        "command_execution": 2,
+        "mcp_tool_call": 12
+      },
+      "agent_mcp_call_count": 12,
+      "agent_shell_call_count": 2,
+      "tool_error_count": 0,
+      "first_wrong_choice": null,
+      "exit_code": 0,
+      "events_path": "/private/tmp/p13-strict-review-91nhwo1c/initiator.jsonl",
+      "stderr_path": "/private/tmp/p13-strict-review-91nhwo1c/initiator.stderr",
+      "events_sha256": "fb26056f3cf3ceb7b58d51bd97aefe527730e6148f5fbacb294bc77b95b4bf35"
+    }
+  ],
+  "ended_at": 1793234652.8095748,
+  "cleanup": [
+    {
+      "pid": 38228,
+      "kind": "owned-native-group",
+      "signal": "TERM"
+    },
+    {
+      "pid": 38549,
+      "kind": "owned-mcp",
+      "signal": "TERM"
+    }
+  ],
+  "owned_processes_after": [
+    {
+      "role": "reviewer",
+      "pid": 38228,
+      "lstart": "Thu Oct 29 09:41:28 2026",
+      "native_alive": false,
+      "mcp_pid": 38549,
+      "mcp_same_generation_alive": true
+    },
+    {
+      "role": "initiator",
+      "pid": 38941,
+      "lstart": "Thu Oct 29 09:41:30 2026",
+      "native_alive": false,
+      "mcp_pid": 39055,
+      "mcp_same_generation_alive": false
+    }
+  ],
+  "source_after": {
+    "file_count": 315,
+    "manifest_sha256": "57d088eee167e573d3a534e2d53db230703963516ece02ee1b6fce294ae9068f",
+    "matches": true,
+    "changed_paths": []
+  },
+  "source_unchanged": true,
+  "profile_guard_after": {
+    "/Users/jaesolshin/.codex/config.toml": "21396927ac3a502c9dc4f494d56bb28c306e7308aa764cc4d213c43b45521274",
+    "/Users/jaesolshin/.codex/hooks.json": "49b87a4f565e46de75642f9c75d533fc0f7a768c76c7c6636990cf4ae4dfa50c",
+    "/Users/jaesolshin/.codex/settings.json": null,
+    "/Users/jaesolshin/.codex/auth.json:metadata-only": [
+      3965,
+      1793103143975732856,
+      968012381
+    ],
+    "/Users/jaesolshin/.codex-3/config.toml": "5f93490622e2247c60c88679faf6ede9dd98cfce9f634ea39b2548ef73639adf",
+    "/Users/jaesolshin/.codex-3/hooks.json": "5d48305d304f29b21abc7bb214e378819f76ba437a9e442d04a3ace1f89d04d7",
+    "/Users/jaesolshin/.codex-3/settings.json": null,
+    "/Users/jaesolshin/.codex-3/auth.json:metadata-only": [
+      4218,
+      1792723939173184551,
+      1040508813
+    ]
+  },
+  "profile_settings_and_auth_metadata_unchanged": false,
+  "final_private_policy_sha256": "6849b49ed2bf580cbe375a0e9009681864fabb634942d2f7e18244387eaa00b8",
+  "observations_path": "/private/tmp/p13-strict-review-91nhwo1c/controller-observations.json"
+}

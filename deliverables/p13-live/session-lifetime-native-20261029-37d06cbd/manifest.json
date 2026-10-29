@@ -1,0 +1,595 @@
+{
+  "scope": "partial A17-06 unread and same-CID resume; permission/ACK/full A17-04 not proven",
+  "raw_root": "/private/tmp/session-lifetime-native-oj91jnav",
+  "raw_values_published": false,
+  "files": [
+    {
+      "path": "/private/tmp/session-lifetime-native-oj91jnav/after-new-before-resume.json",
+      "bytes": 7577,
+      "sha256": "a706849b878a9eba52b60f1e79af62f24e8e724b8249cb106d838f47eaef4c4f",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/session-lifetime-native-oj91jnav/after-resume.json",
+      "bytes": 15568,
+      "sha256": "b7d5ca0cfde37dfc572f20b45c3057592497fc94b71dd0720890cdc7a86f1fda",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/session-lifetime-native-oj91jnav/native-rollouts/396b352745905e061b32dfa3290a37aa396fcc2c9de2edb0465f763d358ef516.jsonl",
+      "bytes": 401499,
+      "sha256": "a56c7799e202bc866e448d7cfc3575645f2d6dadfaaa09a141a39259c87d50c2",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/session-lifetime-native-oj91jnav/native-rollouts/636208de64dbc50a55df6e037539ea1af8563ef584d6d44558f1b681aa007335.jsonl",
+      "bytes": 272160,
+      "sha256": "a8c469d7d9a68b17a5be2e715a99fe73b7e0bf91fad2a5f61a56d5c842704b46",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/session-lifetime-native-oj91jnav/native-rollouts/93f3f06f11353372032eea96fa71802469103bd085b9ff86f7c862bd6bdd3244.jsonl",
+      "bytes": 314862,
+      "sha256": "0d4fbe626a8495238556ee75bdb75e3ebb9e3933f7f5f59ba1cd2425985adc22",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/session-lifetime-native-oj91jnav/new/native.jsonl",
+      "bytes": 54206,
+      "sha256": "e5dae4269d1ea80174d37724fe18efa48d8ff14e2dc59e0b7b2f5f49ef0ca43d",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/session-lifetime-native-oj91jnav/new/native.stderr",
+      "bytes": 39,
+      "sha256": "1aa26269eb1cc57f86b235a03cda53c004edb5b1e9fc99d4da4f00843293d721",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/session-lifetime-native-oj91jnav/new/proxies/2631-b013e275/client-wire.jsonl",
+      "bytes": 1363,
+      "sha256": "269f3c100a5c8ea9cedbaa67d9a26202cc1e20913c561b1ca302518f9c92f2c1",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/session-lifetime-native-oj91jnav/new/proxies/2631-b013e275/events.jsonl",
+      "bytes": 2523,
+      "sha256": "fa8e46c5ba83f441d6a29174d0d831fc6dac9615f4b8587abb7471df32e13e97",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/session-lifetime-native-oj91jnav/new/proxies/2631-b013e275/handles.json",
+      "bytes": 1042,
+      "sha256": "d2e8234a2c3ffa6c0a4857c177c6e1e61da4a5fe562c9ac11d82e871e9db14bb",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/session-lifetime-native-oj91jnav/new/proxies/2631-b013e275/server-wire.jsonl",
+      "bytes": 25631,
+      "sha256": "3bb65075da3c96c26c9ca66428f57a39346b513e463c920469918bd3031b0c01",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/session-lifetime-native-oj91jnav/new/proxies/2631-b013e275/server.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/session-lifetime-native-oj91jnav/old/native.jsonl",
+      "bytes": 53329,
+      "sha256": "fc5a3e54c0708a384a9e4a409e0e71daa8084b7da81f397354353db48230c313",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/session-lifetime-native-oj91jnav/old/native.stderr",
+      "bytes": 39,
+      "sha256": "1aa26269eb1cc57f86b235a03cda53c004edb5b1e9fc99d4da4f00843293d721",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/session-lifetime-native-oj91jnav/old/proxies/96466-b8634bf8/client-wire.jsonl",
+      "bytes": 399,
+      "sha256": "e4751006bff94ddd60c368c97e00fcd7b046098a4690c12c8e09f06fb6826cb9",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/session-lifetime-native-oj91jnav/old/proxies/96466-b8634bf8/events.jsonl",
+      "bytes": 1169,
+      "sha256": "28d812012532f78a402b36643c1fd1d3840c22c407e3220117280898d701b7ac",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/session-lifetime-native-oj91jnav/old/proxies/96466-b8634bf8/handles.json",
+      "bytes": 1050,
+      "sha256": "15ea0d651fa0279af5c9190157aaf03501d82ae1a2227d0bc1b5fef70ca1269b",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/session-lifetime-native-oj91jnav/old/proxies/96466-b8634bf8/server-wire.jsonl",
+      "bytes": 25479,
+      "sha256": "2429966ff374044e376c0384105fedc1d71fcbf390b696ce926aaa9e3cb9cf3e",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/session-lifetime-native-oj91jnav/old/proxies/96466-b8634bf8/server.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/session-lifetime-native-oj91jnav/old-offline-before-new.json",
+      "bytes": 7026,
+      "sha256": "485a47ee2d14b93b76ba29cf3ed0c880d4b8117fc383ea9371b938078bfaab4f",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/session-lifetime-native-oj91jnav/proxy.py",
+      "bytes": 2805,
+      "sha256": "927e6f5df075be6c4d40ca2748fd2b8214613db0a9408776b529d41351a3af53",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/session-lifetime-native-oj91jnav/result.json",
+      "bytes": 15563,
+      "sha256": "4543fcaf27b646a9efa992d1d0f1bca7107608b408de90f13f0f0ee5f4131a4e",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/session-lifetime-native-oj91jnav/resume/native.jsonl",
+      "bytes": 5041,
+      "sha256": "e73736b5b8f2f96d6b996d4210827d7416362cef588ee6f2da0c2fa4352543d2",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/session-lifetime-native-oj91jnav/resume/native.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/session-lifetime-native-oj91jnav/resume/proxies/4173-3b208b04/client-wire.jsonl",
+      "bytes": 3617,
+      "sha256": "2d288ebbcf0cb85dd2c059e49941924369ed474d4001a59342c0dadc9be05de4",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/session-lifetime-native-oj91jnav/resume/proxies/4173-3b208b04/events.jsonl",
+      "bytes": 5249,
+      "sha256": "500ee2e6190463abd830f45568ac2c66ddcbe54b80e91e584b53cc369688245e",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/session-lifetime-native-oj91jnav/resume/proxies/4173-3b208b04/handles.json",
+      "bytes": 1042,
+      "sha256": "2299e8ab45f27fddc7b80e0e93d2b703404348ac4d3e79fffaefd6fd199cc90c",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/session-lifetime-native-oj91jnav/resume/proxies/4173-3b208b04/server-wire.jsonl",
+      "bytes": 27911,
+      "sha256": "e9c9d2d2c088c7e5a18a884fc2e5b87abe7d68dd8a8d35a1a8f483f4f27c3591",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/session-lifetime-native-oj91jnav/resume/proxies/4173-3b208b04/server.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/session-lifetime-native-oj91jnav/sender/native.jsonl",
+      "bytes": 105047,
+      "sha256": "f5b4f9902965b3d21814e5dfeb177ec7964b3d28f095bc2004927287ab688044",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/session-lifetime-native-oj91jnav/sender/native.stderr",
+      "bytes": 39,
+      "sha256": "1aa26269eb1cc57f86b235a03cda53c004edb5b1e9fc99d4da4f00843293d721",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/session-lifetime-native-oj91jnav/sender/proxies/96886-a0da9255/client-wire.jsonl",
+      "bytes": 5734,
+      "sha256": "1183a8ce7841f29453e73b6901d8a1d77d17cdf37a4f8c92225bb67099d96a8e",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/session-lifetime-native-oj91jnav/sender/proxies/96886-a0da9255/events.jsonl",
+      "bytes": 8022,
+      "sha256": "c60ecdb121be90044c12294b32b75fccd8bd41e3b9cf4696c9411a8971bafeb5",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/session-lifetime-native-oj91jnav/sender/proxies/96886-a0da9255/handles.json",
+      "bytes": 1050,
+      "sha256": "c6cb9de01e1a66d59660bafc9b2047ab08aeeb6f7b60be566a772e0fd25ab859",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/session-lifetime-native-oj91jnav/sender/proxies/96886-a0da9255/server-wire.jsonl",
+      "bytes": 36462,
+      "sha256": "5adab7977c1d2fcde87f99630dfe0b6f47827d26d5918150c17f74912717c34b",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/session-lifetime-native-oj91jnav/sender/proxies/96886-a0da9255/server.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/session-lifetime-native-oj91jnav/state/.config-policy.lock",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/session-lifetime-native-oj91jnav/state/capability-observations/6fdc213f3ab5ba97fbdfcfa0339931b810dede8ad866c825a3ff98a6f2d58cc1.json",
+      "bytes": 378,
+      "sha256": "e80314ebe95d25e1c661ac86f9165968d05535706d20e94beedc9e87b967563d",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/session-lifetime-native-oj91jnav/state/capability-observations/82a52aa2fdbc84dbdb33428e649518afe66c6490ec06781842bdf30bc4ab9a7b.json",
+      "bytes": 377,
+      "sha256": "d8ac33f81d1be5c0638b360da2b2167538bf4b93ef04698fc7d938b2f9cff2a5",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/session-lifetime-native-oj91jnav/state/capability-observations/9dfe90ab205b4f80426aec5e71b203f462946bd0360839e4e2fdb5c469d76b90.json",
+      "bytes": 379,
+      "sha256": "1734b3399931cfab84314ab3aaf5f18c2c02027e281af1de7a93df11485528b0",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/session-lifetime-native-oj91jnav/state/config.last-valid.json",
+      "bytes": 283,
+      "sha256": "5a75d65e974d8088a7976d20470ec0486489ebb0064abfdd48260544f4de8281",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/session-lifetime-native-oj91jnav/state/decisions.jsonl",
+      "bytes": 3941,
+      "sha256": "e9250e19066d7322a655fed2086f868a14a53e7d433668f8ab5490c04840dc29",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/session-lifetime-native-oj91jnav/state/handoffs/37812123cbba3fb43a3af37872c4b21bf60a1b893ed9a54729225210d3a3ff07/.lock",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/session-lifetime-native-oj91jnav/state/handoffs/37812123cbba3fb43a3af37872c4b21bf60a1b893ed9a54729225210d3a3ff07/1a7ca709a08c4c00.json",
+      "bytes": 4577,
+      "sha256": "d8720aaa2efc7dc0361d3a6b40927a2b2712645430f29fea234af49d05936a7d",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/session-lifetime-native-oj91jnav/state/handoffs/45571d371132e82e0702464202d8e6cebf90bb862b9eec39b7e8b9b40bbef27a/.lock",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/session-lifetime-native-oj91jnav/state/handoffs/ea24891d4ad09821a3c9741283b7e107d4d9aaf02fcb008ad5aa9ff53ba61bf7/.lock",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/session-lifetime-native-oj91jnav/state/handoffs/ea24891d4ad09821a3c9741283b7e107d4d9aaf02fcb008ad5aa9ff53ba61bf7/0bdc2a7b4c6348f2.json",
+      "bytes": 4819,
+      "sha256": "d16b05256106fbfc487d2e03e006882d711c8cfc08448ae01e0dcb9c2fb35e38",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/session-lifetime-native-oj91jnav/state/homes.json",
+      "bytes": 93,
+      "sha256": "ae0e4b94dbd9c01ab3e00f35be7d29861071efc42346224844114ffe233b2481",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/session-lifetime-native-oj91jnav/state/install-locks/10fc091ed8dc2431d9eccbd26214b817bf8edc86f521de3c56cf945773f42059.lock",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/session-lifetime-native-oj91jnav/state/ledger/0bdc2a7b4c6348f2.handoff.json",
+      "bytes": 364,
+      "sha256": "3ebf65565e1570717436b953bb2056b459a00834b24a192a6e195186f840e631",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/session-lifetime-native-oj91jnav/state/ledger/0bdc2a7b4c6348f2.handoff.json.lock",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/session-lifetime-native-oj91jnav/state/ledger/0bdc2a7b4c6348f2.json",
+      "bytes": 1190,
+      "sha256": "be291bd45aef044096f377a43eeb20bffc328d5d7d3ff741e0a81ee08e347998",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/session-lifetime-native-oj91jnav/state/ledger/0bdc2a7b4c6348f2.recv.json",
+      "bytes": 377,
+      "sha256": "2ca6eb421908bc592e0ef18d945181fc96270ad7faca2f6ffedcc2d642e6b014",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/session-lifetime-native-oj91jnav/state/ledger/1a7ca709a08c4c00.handoff.json",
+      "bytes": 363,
+      "sha256": "03762d9d8563b9490797454ab951350135f287e41848dda31f7fbaf33cbd679c",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/session-lifetime-native-oj91jnav/state/ledger/1a7ca709a08c4c00.handoff.json.lock",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/session-lifetime-native-oj91jnav/state/ledger/1a7ca709a08c4c00.json",
+      "bytes": 1074,
+      "sha256": "7db8773d276d7cdccaf2aa8ff04aaa5fe58c03c1276210eaed0993520a02d9a5",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/session-lifetime-native-oj91jnav/state/ledger/1a7ca709a08c4c00.recv.json",
+      "bytes": 401,
+      "sha256": "1cd36c68dcd1ba30e68919d3a8a5bdaba9e92696ea7bd3d3fea452faa9102c72",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/session-lifetime-native-oj91jnav/state/legacy-inbox-originals/396b352745905e061b32dfa3290a37aa396fcc2c9de2edb0465f763d358ef516/45ef4b9383ab58ffb7985ab9351bb4e9429d51ec8ff7e0b2bb3c0d658ac2be9d.json",
+      "bytes": 1092,
+      "sha256": "7618294a60450680560c336b318a3538c4f99ae5f192d5924174bbb696acfb48",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/session-lifetime-native-oj91jnav/state/legacy-inbox-originals/396b352745905e061b32dfa3290a37aa396fcc2c9de2edb0465f763d358ef516/a4ffffd3bf9f99e409e79a4d4d1a13abc968dfa0914363e0c488d62f40aaee0e.json",
+      "bytes": 954,
+      "sha256": "7ea60484c41bbbcf144985a26f720327dbf2291f8cc2dcabeccc0185fdfde58b",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/session-lifetime-native-oj91jnav/state/otel-metrics.jsonl",
+      "bytes": 444,
+      "sha256": "38aa8b6498735aac0603b196dbb7204c70e8eff9e1c7bdabeee327b509add6b0",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/session-lifetime-native-oj91jnav/state/otel-spans.jsonl",
+      "bytes": 2494,
+      "sha256": "6873425925b5e654845157820333a74f15ead8e603a440105f24487eb9eb2e51",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/session-lifetime-native-oj91jnav/state/questions/0bdc2a7b4c6348f2.json",
+      "bytes": 2051,
+      "sha256": "29b67855a3c5e174f2f409acbf1b313fa2dbaa1f30c3446eb508e2de4242f86c",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/session-lifetime-native-oj91jnav/state/questions/0bdc2a7b4c6348f2.json.lock",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/session-lifetime-native-oj91jnav/state/sessions/codex-01a18509-92d8-7000-a0f5-d6bce267ae2e.json",
+      "bytes": 408,
+      "sha256": "b44f17eed99d51c243df197262017babae53f8e97d8aa64b6808e2473db7d93d",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/session-lifetime-native-oj91jnav/state/sessions/codex-01a18509-97cf-73e2-bb71-37531808b3c7.json",
+      "bytes": 410,
+      "sha256": "2599c0700d9428b52d5a226053efdb3fbd40a670909328291aad80d488042756",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/session-lifetime-native-oj91jnav/state/sessions/codex-01a1850b-5542-7281-a7fb-3abb13854678.json",
+      "bytes": 409,
+      "sha256": "a1f8d9c6c551ffc13536a593ba031f4895f635e51ad80d378f1d57021bc2c05a",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/session-lifetime-native-oj91jnav/state/traffic/13ba4c0f4a56d6b5c4544279995a391d52e001bf94ef191051f31ae7de9bf170.json",
+      "bytes": 686,
+      "sha256": "151c2abc00eb318c9b836cfabf3129df92006eb628b6af22e3fe7f9e2227e4ea",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/session-lifetime-native-oj91jnav/state/traffic/13ba4c0f4a56d6b5c4544279995a391d52e001bf94ef191051f31ae7de9bf170.lock",
+      "bytes": 15,
+      "sha256": "8e7c4b55b2043ae615c74d4c7f957d9a3bfa44eca0169855cfb8a87c924ac7de",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/session-lifetime-native-oj91jnav/state/traffic/cdbf8147e13d215e56629e6f06c687cd7f4e64f1bc3dab83dd91aa9e16c0ca83.json",
+      "bytes": 686,
+      "sha256": "df8a20ce9d71f78a08566d7fa9ece48c4638fb2be1af1bdf549df68b57c3b2ca",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/session-lifetime-native-oj91jnav/state/traffic/cdbf8147e13d215e56629e6f06c687cd7f4e64f1bc3dab83dd91aa9e16c0ca83.lock",
+      "bytes": 15,
+      "sha256": "8e7c4b55b2043ae615c74d4c7f957d9a3bfa44eca0169855cfb8a87c924ac7de",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/session-lifetime-native-oj91jnav/work/.agents/skills/xsm/SKILL.md",
+      "bytes": 5448,
+      "sha256": "3e583bcd294862775c6590766b96cea2260c879329a32ffbe5306f128da55896",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/session-lifetime-native-oj91jnav/work/.agents/skills/xsm/references/guide.md",
+      "bytes": 37275,
+      "sha256": "6bffc41da7cce01cc6080c8afb62e54efc910fd67b59d9d11b0c119130c43981",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/session-lifetime-native-oj91jnav/work/.agents/skills/xsm/references/messaging.md",
+      "bytes": 7221,
+      "sha256": "b76f2de35f0579bb74bca8f32ebe1f07f4a2bc83e5ed776284f738df88de3eef",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/session-lifetime-native-oj91jnav/work/.git/HEAD",
+      "bytes": 21,
+      "sha256": "28d25bf82af4c0e2b72f50959b2beb859e3e60b9630a5e8c603dad4ddb2b6e80",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/session-lifetime-native-oj91jnav/work/.git/config",
+      "bytes": 137,
+      "sha256": "cae33efdb02cf774435c1ff9cb16bcc1014606908530c6e1dc727615fe3e8cda",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/session-lifetime-native-oj91jnav/work/.git/description",
+      "bytes": 73,
+      "sha256": "85ab6c163d43a17ea9cf7788308bca1466f1b0a8d1cc92e26e9bf63da4062aee",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/session-lifetime-native-oj91jnav/work/.git/hooks/applypatch-msg.sample",
+      "bytes": 478,
+      "sha256": "0223497a0b8b033aa58a3a521b8629869386cf7ab0e2f101963d328aa62193f7",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/session-lifetime-native-oj91jnav/work/.git/hooks/commit-msg.sample",
+      "bytes": 896,
+      "sha256": "1f74d5e9292979b573ebd59741d46cb93ff391acdd083d340b94370753d92437",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/session-lifetime-native-oj91jnav/work/.git/hooks/fsmonitor-watchman.sample",
+      "bytes": 4726,
+      "sha256": "e0549964e93897b519bd8e333c037e51fff0f88ba13e086a331592bf801fa1d0",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/session-lifetime-native-oj91jnav/work/.git/hooks/post-update.sample",
+      "bytes": 189,
+      "sha256": "81765af2daef323061dcbc5e61fc16481cb74b3bac9ad8a174b186523586f6c5",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/session-lifetime-native-oj91jnav/work/.git/hooks/pre-applypatch.sample",
+      "bytes": 424,
+      "sha256": "e15c5b469ea3e0a695bea6f2c82bcf8e62821074939ddd85b77e0007ff165475",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/session-lifetime-native-oj91jnav/work/.git/hooks/pre-commit.sample",
+      "bytes": 1649,
+      "sha256": "57185b7b9f05239d7ab52db045f5b89eb31348d7b2177eab214f5eb872e1971b",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/session-lifetime-native-oj91jnav/work/.git/hooks/pre-merge-commit.sample",
+      "bytes": 416,
+      "sha256": "d3825a70337940ebbd0a5c072984e13245920cdf8898bd225c8d27a6dfc9cb53",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/session-lifetime-native-oj91jnav/work/.git/hooks/pre-push.sample",
+      "bytes": 1374,
+      "sha256": "ecce9c7e04d3f5dd9d8ada81753dd1d549a9634b26770042b58dda00217d086a",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/session-lifetime-native-oj91jnav/work/.git/hooks/pre-rebase.sample",
+      "bytes": 4898,
+      "sha256": "4febce867790052338076f4e66cc47efb14879d18097d1d61c8261859eaaa7b3",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/session-lifetime-native-oj91jnav/work/.git/hooks/pre-receive.sample",
+      "bytes": 544,
+      "sha256": "a4c3d2b9c7bb3fd8d1441c31bd4ee71a595d66b44fcf49ddb310252320169989",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/session-lifetime-native-oj91jnav/work/.git/hooks/prepare-commit-msg.sample",
+      "bytes": 1492,
+      "sha256": "e9ddcaa4189fddd25ed97fc8c789eca7b6ca16390b2392ae3276f0c8e1aa4619",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/session-lifetime-native-oj91jnav/work/.git/hooks/push-to-checkout.sample",
+      "bytes": 2783,
+      "sha256": "a53d0741798b287c6dd7afa64aee473f305e65d3f49463bb9d7408ec3b12bf5f",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/session-lifetime-native-oj91jnav/work/.git/hooks/sendemail-validate.sample",
+      "bytes": 2308,
+      "sha256": "44ebfc923dc5466bc009602f0ecf067b9c65459abfe8868ddc49b78e6ced7a92",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/session-lifetime-native-oj91jnav/work/.git/hooks/update.sample",
+      "bytes": 3650,
+      "sha256": "8d5f2fa83e103cf08b57eaa67521df9194f45cbdbcb37da52ad586097a14d106",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/private/tmp/session-lifetime-native-oj91jnav/work/.git/info/exclude",
+      "bytes": 240,
+      "sha256": "6671fe83b7a07c8932ee89164d1f2793b2318058eb8b98dc5c06ee0a5a3b0ec1",
+      "storage": "private raw/state"
+    },
+    {
+      "path": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/deliverables/p13-live/session-lifetime-native-20261029-37d06cbd/existing-evidence.json",
+      "bytes": 3665,
+      "sha256": "8e48e63ffe1655e2be150dc5d5671f97edb99f18ba05ff9d50df87b8210d2b8b",
+      "storage": "public summary/code"
+    },
+    {
+      "path": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/deliverables/p13-live/session-lifetime-native-20261029-37d06cbd/offlinecheck.py",
+      "bytes": 9503,
+      "sha256": "d2dc2c265bc0cdd581602f0c99febd0df2a9fff4cbe6be52d515fd0b35fff908",
+      "storage": "public summary/code"
+    },
+    {
+      "path": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/deliverables/p13-live/session-lifetime-native-20261029-37d06cbd/plan.json",
+      "bytes": 719,
+      "sha256": "66692b9ae228abd04452ab3caba1c89acdf33f01a183ab53b3419850f3d210ef",
+      "storage": "public summary/code"
+    },
+    {
+      "path": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/deliverables/p13-live/session-lifetime-native-20261029-37d06cbd/proxy.py",
+      "bytes": 2805,
+      "sha256": "927e6f5df075be6c4d40ca2748fd2b8214613db0a9408776b529d41351a3af53",
+      "storage": "public summary/code"
+    },
+    {
+      "path": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/deliverables/p13-live/session-lifetime-native-20261029-37d06cbd/report.md",
+      "bytes": 7610,
+      "sha256": "121bf0b544682cc65648ccf89c567e8437b6ec0a8df6f6d80e654e5b0c3fd791",
+      "storage": "public summary/code"
+    },
+    {
+      "path": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/deliverables/p13-live/session-lifetime-native-20261029-37d06cbd/run.py",
+      "bytes": 10279,
+      "sha256": "ce2cd62a69e056b1284bb89451eb83298b427173366025d87588e900f23a0c00",
+      "storage": "public summary/code"
+    },
+    {
+      "path": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/deliverables/p13-live/session-lifetime-native-20261029-37d06cbd/summary.json",
+      "bytes": 12298,
+      "sha256": "d13c3659fc08fafd2f826a77fdb1dfbf88eb0568f4a1c9d2a04cc944e911b07d",
+      "storage": "public summary/code"
+    }
+  ]
+}

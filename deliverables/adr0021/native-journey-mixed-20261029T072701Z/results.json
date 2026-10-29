@@ -1,0 +1,463 @@
+{
+  "status": "미완: 실제 혼합 런타임은 기동했지만 평가용 쓰기 보호 조건의 ps 실행 거부로 Claude 등록자 확인이 막힘",
+  "source_manifest_sha256": "f4172fc9f4c49433eb90fe44a54dad5631ede60249b60a5905e3524d794c62a4",
+  "source_match": true,
+  "actual_models": {
+    "claude": [
+      "claude-sonnet-5-5"
+    ],
+    "codex": [
+      "gpt-6.1-sol"
+    ]
+  },
+  "Claude_init": [
+    {
+      "path": "/private/tmp/native-journey-mixed-book-cqzkttta/attempt1/actor/native.jsonl",
+      "CID": "cf45057f-5a23-4100-8585-4a57b3539de2",
+      "model": "claude-sonnet-5-5",
+      "permissionMode": "auto",
+      "apiKeySource": "none",
+      "mcp_servers": [
+        {
+          "name": "xsm",
+          "status": "failed",
+          "source": "dynamic"
+        },
+        {
+          "name": "context-harness",
+          "status": "connected",
+          "source": "plugin"
+        }
+      ]
+    },
+    {
+      "path": "/private/tmp/native-journey-mixed-book-cqzkttta/actor/native.jsonl",
+      "CID": "28e3361e-d092-4c85-bb8f-4f3b1a95cb03",
+      "model": "claude-sonnet-5-5",
+      "permissionMode": "auto",
+      "apiKeySource": "none",
+      "mcp_servers": [
+        {
+          "name": "xsm",
+          "status": "connected",
+          "source": "dynamic"
+        },
+        {
+          "name": "context-harness",
+          "status": "connected",
+          "source": "plugin"
+        }
+      ]
+    }
+  ],
+  "Codex_provider_rows": [
+    [
+      "01a186a0-e033-74a1-a1c5-4e9c4ec88b1a",
+      "/private/tmp/native-journey-mixed-mini-z2hfqmak/work",
+      "/private/tmp/native-journey-mixed-mini-z2hfqmak/codex-home/sessions/2026/10/29/rollout-2026-10-29T16-47-33-01a186a0-e033-74a1-a1c5-4e9c4ec88b1a.jsonl"
+    ]
+  ],
+  "Claude_tool_calls": [
+    {
+      "source": "book-evidence/actor/native.jsonl",
+      "name": "Read",
+      "input": {
+        "file_path": "/private/tmp/native-journey-mixed-book-cqzkttta/payload/skills/xsm/SKILL.md"
+      }
+    },
+    {
+      "source": "book-evidence/actor/native.jsonl",
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__xsm__xsm_publish,mcp__xsm__xsm_inbox,mcp__xsm__xsm_send,mcp__xsm__xsm_ack,mcp__xsm__xsm_discover",
+        "max_results": 5
+      }
+    },
+    {
+      "source": "book-evidence/actor/native.jsonl",
+      "name": "mcp__xsm__xsm_publish",
+      "input": {
+        "visible": true
+      }
+    },
+    {
+      "source": "book-evidence/actor/native.jsonl",
+      "name": "Read",
+      "input": {
+        "file_path": "/private/tmp/native-journey-mixed-book-cqzkttta/payload/skills/xsm/references/messaging.md"
+      }
+    },
+    {
+      "source": "book-evidence/actor/native.jsonl",
+      "name": "Bash",
+      "input": {
+        "command": "xsm doctor --table",
+        "description": "Run xsm diagnostics table"
+      }
+    },
+    {
+      "source": "book-evidence/actor/native.jsonl",
+      "name": "mcp__xsm__xsm_publish",
+      "input": {
+        "visible": true
+      }
+    },
+    {
+      "source": "book-evidence/attempt1/actor/native.jsonl",
+      "name": "Skill",
+      "input": {
+        "skill": "xsm"
+      }
+    },
+    {
+      "source": "book-evidence/attempt1/actor/native.jsonl",
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/jaesolshin/.claude-3/skills/xsm/references/guide.md"
+      }
+    },
+    {
+      "source": "book-evidence/attempt1/actor/native.jsonl",
+      "name": "Bash",
+      "input": {
+        "command": "xsm who --table; xsm inbox --wait 5",
+        "description": "Show session identity and check inbox"
+      }
+    },
+    {
+      "source": "book-evidence/attempt1/actor/native.jsonl",
+      "name": "Bash",
+      "input": {
+        "command": "xsm inbox --wait 180",
+        "description": "Wait for incoming peer message",
+        "timeout": 200000
+      }
+    }
+  ],
+  "Claude_tool_permission_denials": [],
+  "Codex_MCP_calls": [
+    {
+      "_meta": {
+        "callId": "exec-1d824f73-7138-4420-bac3-22f5966d59a5",
+        "x-codex-turn-metadata": {
+          "session_id": "01a186a0-e033-74a1-a1c5-4e9c4ec88b1a",
+          "thread_id": "01a186a0-e033-74a1-a1c5-4e9c4ec88b1a",
+          "reasoning_effort": "low",
+          "turn_id": "01a186a0-e50b-7d73-aeac-baf0abbacda9",
+          "model": "gpt-6.1-sol",
+          "thread_source": "user",
+          "turn_trigger": "exec",
+          "sandbox": "seatbelt",
+          "sandbox_mode": "workspace-write",
+          "auto_review_enabled": false,
+          "node_repl_auto_review_required": true,
+          "node_repl_disabled": false,
+          "workspaces": {
+            "/private/tmp/native-journey-mixed-mini-z2hfqmak/work": {
+              "has_changes": false
+            }
+          },
+          "turn_started_at_unix_ms": 1793260053776,
+          "codex_version": "0.164.0"
+        },
+        "threadId": "01a186a0-e033-74a1-a1c5-4e9c4ec88b1a",
+        "sessionId": "01a186a0-e033-74a1-a1c5-4e9c4ec88b1a",
+        "windowId": "01a186a0-e033-74a1-a1c5-4e9c4ec88b1a:0",
+        "itemId": "ctc_04b3ae6aa35024a7016ae2fa259cc881919534c5cbc3e7dece",
+        "progressToken": 1
+      },
+      "name": "xsm_discover",
+      "arguments": {}
+    },
+    {
+      "_meta": {
+        "callId": "exec-13823a29-d72a-46c0-8724-fa005f8446d6",
+        "x-codex-turn-metadata": {
+          "session_id": "01a186a0-e033-74a1-a1c5-4e9c4ec88b1a",
+          "thread_id": "01a186a0-e033-74a1-a1c5-4e9c4ec88b1a",
+          "reasoning_effort": "low",
+          "turn_id": "01a186a0-e50b-7d73-aeac-baf0abbacda9",
+          "model": "gpt-6.1-sol",
+          "thread_source": "user",
+          "turn_trigger": "exec",
+          "sandbox": "seatbelt",
+          "sandbox_mode": "workspace-write",
+          "auto_review_enabled": false,
+          "node_repl_auto_review_required": true,
+          "node_repl_disabled": false,
+          "workspaces": {
+            "/private/tmp/native-journey-mixed-mini-z2hfqmak/work": {
+              "has_changes": false
+            }
+          },
+          "turn_started_at_unix_ms": 1793260053776,
+          "codex_version": "0.164.0"
+        },
+        "threadId": "01a186a0-e033-74a1-a1c5-4e9c4ec88b1a",
+        "sessionId": "01a186a0-e033-74a1-a1c5-4e9c4ec88b1a",
+        "windowId": "01a186a0-e033-74a1-a1c5-4e9c4ec88b1a:0",
+        "itemId": "ctc_04b3ae6aa35024a7016ae2fa338a2081919881825d8ffa1dbc",
+        "progressToken": 2
+      },
+      "name": "xsm_discover",
+      "arguments": {
+        "work": "a1"
+      }
+    }
+  ],
+  "publications": 0,
+  "repository_maps_created": 0,
+  "questions_created": 0,
+  "correlated_handshake_completed": false,
+  "task_roundtrips": 0,
+  "manual_consent_or_ACK_or_index_repair": false,
+  "added_allowedTools_or_rule_changes": false,
+  "credential_values_read_or_copied": false,
+  "profiles_unchanged": true,
+  "cleanup": {
+    "book": {
+      "at": 1793260503.950132,
+      "root": "/private/tmp/native-journey-mixed-book-cqzkttta",
+      "service_before": {
+        "status": "running",
+        "endpoint_id": "8259b4c768f094704910e111cec4f478729d85d1acbeaaeccd7171039d3c8b17",
+        "address": {
+          "addrs": [
+            {
+              "Ip": "100.123.30.11:51703"
+            },
+            {
+              "Ip": "127.0.0.1:51703"
+            },
+            {
+              "Ip": "192.168.0.11:51703"
+            },
+            {
+              "Ip": "[::1]:50834"
+            }
+          ],
+          "id": "8259b4c768f094704910e111cec4f478729d85d1acbeaaeccd7171039d3c8b17"
+        },
+        "active": true,
+        "network": {
+          "version": 1,
+          "network_id": "8259b4c768f094704910e111cec4f478729d85d1acbeaaeccd7171039d3c8b17:28408368410bf43f75e9080aa31bd8b706417ce1a89db4f67eb152b672a19774",
+          "name": "mixed-native-20261029",
+          "members": [
+            {
+              "endpoint_id": "8259b4c768f094704910e111cec4f478729d85d1acbeaaeccd7171039d3c8b17",
+              "machine_name": "mixed-claude-book",
+              "status": "active"
+            },
+            {
+              "endpoint_id": "caa3af417594c6136542788c61f7b8701c614c505b41fe473f181cc95f92e5a2",
+              "machine_name": "native-journey-mini",
+              "status": "active"
+            }
+          ],
+          "invites": [
+            {
+              "invite_hash": "5936d16d1e3274c84d7547d64741303c6609726286953bd89bacaf8cf5c5184a",
+              "issuer": "8259b4c768f094704910e111cec4f478729d85d1acbeaaeccd7171039d3c8b17",
+              "reusable": true,
+              "expires_at": null,
+              "revoked": false,
+              "consumed_by": []
+            },
+            {
+              "invite_hash": "5ddde175916cbbfe1049ed5049031f057bce006f5c07b690c651578a68e7e2b4",
+              "issuer": "8259b4c768f094704910e111cec4f478729d85d1acbeaaeccd7171039d3c8b17",
+              "reusable": true,
+              "expires_at": null,
+              "revoked": false,
+              "consumed_by": [
+                "caa3af417594c6136542788c61f7b8701c614c505b41fe473f181cc95f92e5a2"
+              ]
+            }
+          ]
+        },
+        "transport": {
+          "address": {
+            "addrs": [
+              {
+                "Ip": "100.123.30.11:51703"
+              },
+              {
+                "Ip": "127.0.0.1:51703"
+              },
+              {
+                "Ip": "192.168.0.11:51703"
+              },
+              {
+                "Ip": "[::1]:50834"
+              }
+            ],
+            "id": "8259b4c768f094704910e111cec4f478729d85d1acbeaaeccd7171039d3c8b17"
+          },
+          "bound_addresses": [
+            "0.0.0.0:51703",
+            "[::]:50834"
+          ],
+          "endpoint_id": "8259b4c768f094704910e111cec4f478729d85d1acbeaaeccd7171039d3c8b17",
+          "event": "ready",
+          "port_fallback": false,
+          "relay_mode": "off",
+          "relay_online": false,
+          "requested_port": 0
+        },
+        "last_transport": {
+          "path": "direct",
+          "selected": "direct",
+          "selection_reason": "iroh_path_selection",
+          "fallback_reason": null,
+          "remote_address": "192.168.0.64:64629",
+          "paths": [
+            {
+              "kind": "direct",
+              "remote": "ip:192.168.0.64:64629",
+              "selected": true
+            }
+          ]
+        },
+        "service_pid": 72671,
+        "engine_pid": 72695,
+        "known_peers": [
+          "caa3af417594c6136542788c61f7b8701c614c505b41fe473f181cc95f92e5a2"
+        ]
+      },
+      "stop": {
+        "exit": 0,
+        "stdout": "{\"exit\": 0, \"result\": {\"status\": \"stopping\"}, \"stderr_bytes\": 0}\n",
+        "stderr": ""
+      },
+      "signals": [],
+      "known_process_count": 4,
+      "remaining_owned": [],
+      "state_and_keys_deleted": false,
+      "evidence_deleted": false
+    },
+    "mini": {
+      "at": 1793260503.6573172,
+      "root": "/private/tmp/native-journey-mixed-mini-z2hfqmak",
+      "service_before": {
+        "status": "running",
+        "endpoint_id": "caa3af417594c6136542788c61f7b8701c614c505b41fe473f181cc95f92e5a2",
+        "address": {
+          "addrs": [
+            {
+              "Ip": "100.77.24.16:64629"
+            },
+            {
+              "Ip": "127.0.0.1:64629"
+            },
+            {
+              "Ip": "192.168.0.64:64629"
+            },
+            {
+              "Ip": "[::1]:55808"
+            }
+          ],
+          "id": "caa3af417594c6136542788c61f7b8701c614c505b41fe473f181cc95f92e5a2"
+        },
+        "active": true,
+        "network": {
+          "version": 1,
+          "network_id": "8259b4c768f094704910e111cec4f478729d85d1acbeaaeccd7171039d3c8b17:28408368410bf43f75e9080aa31bd8b706417ce1a89db4f67eb152b672a19774",
+          "name": "mixed-native-20261029",
+          "members": [
+            {
+              "endpoint_id": "8259b4c768f094704910e111cec4f478729d85d1acbeaaeccd7171039d3c8b17",
+              "machine_name": "mixed-claude-book",
+              "status": "active"
+            },
+            {
+              "endpoint_id": "caa3af417594c6136542788c61f7b8701c614c505b41fe473f181cc95f92e5a2",
+              "machine_name": "native-journey-mini",
+              "status": "active"
+            }
+          ],
+          "invites": [
+            {
+              "invite_hash": "5936d16d1e3274c84d7547d64741303c6609726286953bd89bacaf8cf5c5184a",
+              "issuer": "8259b4c768f094704910e111cec4f478729d85d1acbeaaeccd7171039d3c8b17",
+              "reusable": true,
+              "expires_at": null,
+              "revoked": false,
+              "consumed_by": []
+            },
+            {
+              "invite_hash": "5ddde175916cbbfe1049ed5049031f057bce006f5c07b690c651578a68e7e2b4",
+              "issuer": "8259b4c768f094704910e111cec4f478729d85d1acbeaaeccd7171039d3c8b17",
+              "reusable": true,
+              "expires_at": null,
+              "revoked": false,
+              "consumed_by": [
+                "caa3af417594c6136542788c61f7b8701c614c505b41fe473f181cc95f92e5a2"
+              ]
+            }
+          ]
+        },
+        "transport": {
+          "address": {
+            "addrs": [
+              {
+                "Ip": "100.77.24.16:64629"
+              },
+              {
+                "Ip": "127.0.0.1:64629"
+              },
+              {
+                "Ip": "192.168.0.64:64629"
+              },
+              {
+                "Ip": "[::1]:55808"
+              }
+            ],
+            "id": "caa3af417594c6136542788c61f7b8701c614c505b41fe473f181cc95f92e5a2"
+          },
+          "bound_addresses": [
+            "0.0.0.0:64629",
+            "[::]:55808"
+          ],
+          "endpoint_id": "caa3af417594c6136542788c61f7b8701c614c505b41fe473f181cc95f92e5a2",
+          "event": "ready",
+          "port_fallback": false,
+          "relay_mode": "off",
+          "relay_online": false,
+          "requested_port": 0
+        },
+        "last_transport": {
+          "path": "direct",
+          "selected": "direct",
+          "selection_reason": "iroh_path_selection",
+          "fallback_reason": null,
+          "remote_address": "192.168.0.11:51703",
+          "paths": [
+            {
+              "kind": "direct",
+              "remote": "ip:192.168.0.11:51703",
+              "selected": true
+            }
+          ]
+        },
+        "service_pid": 65114,
+        "engine_pid": 65116,
+        "known_peers": [
+          "8259b4c768f094704910e111cec4f478729d85d1acbeaaeccd7171039d3c8b17"
+        ]
+      },
+      "stop": {
+        "exit": 0,
+        "stdout": "{\"exit\": 0, \"result\": {\"status\": \"stopping\"}, \"stderr_bytes\": 0}\n",
+        "stderr": ""
+      },
+      "signals": [],
+      "known_process_count": 5,
+      "remaining_owned": [],
+      "state_and_keys_deleted": false,
+      "evidence_deleted": false
+    }
+  },
+  "scope_required_before_further_native_attempts": "구독 인증과 전역 profile 쓰기 0을 유지하면서 실제 MCP 호출자의 ps 및 조상 PID 확인이 가능한 실행 배치를 먼저 검증한 뒤, 실제 공개·선택 동의와 업무 왕복을 평가해야 함",
+  "permission_boundary_distinction": "native MCP permission_denials는 0건이며, 평가용 OS 쓰기 보호 조건의 ps exec EPERM 뒤 제품이 등록되지 않은 호출자로 거절한 경계임"
+}

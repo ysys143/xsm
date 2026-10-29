@@ -1,0 +1,143 @@
+{
+  "label": "factory native functional handoff observation; evaluator caveats retained",
+  "basis": "coordinator additional evaluation condition, not a new user approval event",
+  "CLI": "codex-cli 0.164.0",
+  "source": "/private/tmp/xsm-p13-postqa-frozen-bukwksw6",
+  "source_unchanged": true,
+  "profile_configuration_unchanged": false,
+  "profile_drift_writer": "unknown; no evaluator profile-write command",
+  "private_raw_root": "/private/tmp/native-handoff-factory-cytvti8g",
+  "native_default_instructions_preserved": true,
+  "native_features_disabled_by_evaluator": [],
+  "env_builder_matches_successful_Actor_start": true,
+  "removed_env_names": [
+    "CODEX_THREAD_ID",
+    "CLAUDE_CODE_SESSION_ID",
+    "CLAUDE_SESSION_ID",
+    "CLAUDE_CODE_MESSAGING_SOCKET",
+    "CLAUDECODE",
+    "ANTHROPIC_API_KEY",
+    "OPENAI_API_KEY",
+    "CODEX_API_KEY"
+  ],
+  "other_runtime_env": "inherited unchanged; values not queried/printed",
+  "actual_registration_setup_count": 3,
+  "registration_evidence": "actual thread.started + verified Codex ancestor PID/lstart/home; no synthetic identity",
+  "setup_sender_model_calls": 1,
+  "setup_ordinary_send_by_coordinator": 0,
+  "native_CLI_invocations_total": 4,
+  "receiver_initial_calls": 1,
+  "same_CID_resume_calls": 2,
+  "first_resume": "active writer refusal before native turn; preserved",
+  "verified_resume": "same CID, new actual native PID/generation",
+  "observer_tail_failure": "verified resume observer raced child exit and raised no-native-ancestor after completed native ACK/reply; original error retained in tool output; no model retry",
+  "actual_native_turns_started": 3,
+  "actual_native_turns_completed": 3,
+  "additional_human_inputs": 0,
+  "tool_host_failures_this_condition": 0,
+  "withheld_actual_claim_response_bytes_forwarded": 0,
+  "request_ID_sha256": "efd87c62c659409bcf3726723cec0f0d09ea9c80443e16132b098a0cf2c31759",
+  "receiver_native_CID_sha256": "5f3f3970565475d9b2e9cccd0f03f19a9be57a3f6f38d497a712678280b49536",
+  "receiver_home_sha256": "8f68eb952a346564ce4e74fa28f6be1313901a8164edfe6761ea0f8bc4a71fe4",
+  "old_native_pid": 14836,
+  "new_native_pid": 19706,
+  "old_generation": "ea0d9f558ab2",
+  "new_generation": "7734156e7264",
+  "old_claim_token_sha256": "43854a27c06463a17720c99f33b22c256b678938d8bca87e5bbcfea2561528a4",
+  "new_claim_token_sha256": "d8f2c4a94a2707106783bc9696d3844668acb966cb18cf3dd551bd2c07fcd756",
+  "original_digest_unchanged": true,
+  "body_sha256": "a6604550b117d62c6e2857c668c418b4a09f0920b3cb38ff6bf7b2ed5ec12339",
+  "owner_dead_recovery": true,
+  "actual_ACK_observed": true,
+  "correlated_native_reply_observed": true,
+  "sender_question_index_replies": 1,
+  "ACK_then_actual_inbox_empty": true,
+  "canonical_state_after": "acknowledged",
+  "no_synthetic_ACK_reply_or_index_repair": true,
+  "known_process_cleanup": [
+    {
+      "pid": 14833,
+      "recorded_lstart": "Thu Oct 29 05:28:32 2026",
+      "current_lstart": null,
+      "same_owned_process_alive": false,
+      "final_lstart": null
+    },
+    {
+      "pid": 15217,
+      "recorded_lstart": "Thu Oct 29 05:28:33 2026",
+      "current_lstart": null,
+      "same_owned_process_alive": false,
+      "final_lstart": null
+    },
+    {
+      "pid": 17093,
+      "recorded_lstart": "Thu Oct 29 05:28:56 2026",
+      "current_lstart": null,
+      "same_owned_process_alive": false,
+      "final_lstart": null
+    },
+    {
+      "pid": 19704,
+      "recorded_lstart": "Thu Oct 29 05:31:13 2026",
+      "current_lstart": null,
+      "same_owned_process_alive": false,
+      "final_lstart": null
+    },
+    {
+      "pid": 14836,
+      "recorded_lstart": "Thu Oct 29 05:28:32 2026",
+      "current_lstart": null,
+      "same_owned_process_alive": false,
+      "final_lstart": null
+    },
+    {
+      "pid": 15219,
+      "recorded_lstart": "Thu Oct 29 05:28:33 2026",
+      "current_lstart": null,
+      "same_owned_process_alive": false,
+      "final_lstart": null
+    },
+    {
+      "pid": 19706,
+      "recorded_lstart": "Thu Oct 29 05:31:13 2026",
+      "current_lstart": null,
+      "same_owned_process_alive": false,
+      "final_lstart": null
+    }
+  ],
+  "whole_J05_or_release_pass_claimed": false,
+  "limitation": "core recovery/ACK/reply/no-redelivery observed; initial wrapper/native exit race and observer tail race prevent a clean single-pass control claim",
+  "previous_two_failures_and_drift_preserved": true,
+  "MCP_cleanup_audit": [
+    {
+      "role": "receiver-resume-verified/proxy",
+      "pid": 19714,
+      "same_process_alive": false
+    },
+    {
+      "role": "receiver-resume-verified/server",
+      "pid": 19828,
+      "same_process_alive": false
+    },
+    {
+      "role": "receiver-initial/proxy",
+      "pid": 14969,
+      "same_process_alive": false
+    },
+    {
+      "role": "receiver-initial/server",
+      "pid": 15187,
+      "same_process_alive": false
+    },
+    {
+      "role": "sender/proxy",
+      "pid": 15349,
+      "same_process_alive": false
+    },
+    {
+      "role": "sender/server",
+      "pid": 15359,
+      "same_process_alive": false
+    }
+  ]
+}

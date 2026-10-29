@@ -1,0 +1,16 @@
+[
+  {
+    "event": "dropped-real-join-response",
+    "request_id": "in-1",
+    "authenticated_origin": "23fd26a448596417eeeb2c347ec9eecf1781fc14dd156c3fcaff223aa76fd2b7",
+    "ok": true,
+    "at": 1793288190.123882
+  },
+  {
+    "event": "real-join-status-response",
+    "request_id": "in-2",
+    "authenticated_origin": "23fd26a448596417eeeb2c347ec9eecf1781fc14dd156c3fcaff223aa76fd2b7",
+    "ok": true,
+    "at": 1793288220.125864
+  }
+]

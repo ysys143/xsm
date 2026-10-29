@@ -1,0 +1,34 @@
+{
+  "fixture": "/private/tmp/p13-mcp-fixed-x3tjg2g6/combined/uninstall-fixed-7lknifmd",
+  "fresh_replicas_of_original_cases": true,
+  "original_failed_fixtures_untouched": true,
+  "cases": [
+    {
+      "case": "invalid-json",
+      "public_exit_code": 4,
+      "traceback": false,
+      "diagnostic_lines": 1,
+      "success_reported": false,
+      "hooks_unchanged": true,
+      "damaged_mcp_preserved": true,
+      "symlink_preserved": true,
+      "stdout": "/private/tmp/p13-mcp-fixed-x3tjg2g6/combined/uninstall-fixed-7lknifmd/invalid-json/uninstall.stdout",
+      "stderr": "/private/tmp/p13-mcp-fixed-x3tjg2g6/combined/uninstall-fixed-7lknifmd/invalid-json/uninstall.stderr"
+    },
+    {
+      "case": "symlink",
+      "public_exit_code": 4,
+      "traceback": false,
+      "diagnostic_lines": 1,
+      "success_reported": false,
+      "hooks_unchanged": true,
+      "damaged_mcp_preserved": true,
+      "symlink_preserved": true,
+      "stdout": "/private/tmp/p13-mcp-fixed-x3tjg2g6/combined/uninstall-fixed-7lknifmd/symlink/uninstall.stdout",
+      "stderr": "/private/tmp/p13-mcp-fixed-x3tjg2g6/combined/uninstall-fixed-7lknifmd/symlink/uninstall.stderr"
+    }
+  ],
+  "models": 0,
+  "credential_copy_or_read": false,
+  "source_cli_patch_owner": "coordinator"
+}

@@ -1,0 +1,33 @@
+{
+  "source_binary": "/Users/jaesolshin/.local/share/claude/versions/2.1.312",
+  "runtime_binary": "/private/tmp/native-journey-mixed-proc-book-g54im4t2/runtime/claude",
+  "same_binary_sha256": "6b5ec691195e551b02c41df9f7d723f4ea61eaa03c2df90acefe3736f1aeb620",
+  "observed_version": "2.1.312 (Claude Code)",
+  "kernel": {
+    "pid": 51365,
+    "ppid": 51282,
+    "uid": 501,
+    "ruid": 501,
+    "start_sec": 1793264584,
+    "start_usec": 836536,
+    "path": "/private/tmp/native-journey-mixed-proc-book-g54im4t2/runtime/claude",
+    "kernel_name": "claude",
+    "comm": "/private/tmp/native-journey-mixed-proc-book-g54im4t2/runtime/claude",
+    "lstart": "Thu Oct 29 18:03:04 2026",
+    "bytes": 136
+  },
+  "unrestricted_ps": "51365 51282   501 Thu Oct 29 18:03:04 2026     /private/tmp/native-journey-mixed-proc-book-g54im4t2/runtime/claude",
+  "guarded_shim": "51365 51282 501 Thu Oct 29 18:03:04 2026 /private/tmp/native-journey-mixed-proc-book-g54im4t2/runtime/claude",
+  "exact_match": true,
+  "model_prompts_sent": 0,
+  "guard_changed": false,
+  "MCP_actual_caller": {
+    "at": 1793264585.400852,
+    "MCP_PID": 51377,
+    "native_PID": 51365,
+    "native_lstart": "Thu Oct 29 18:03:04 2026",
+    "native_comm": "claude",
+    "PATH_before": "/private/tmp/native-journey-mixed-proc-book-g54im4t2/shim:/usr/bin:/bin:/usr/sbin:/sbin",
+    "PATH_after": "/private/tmp/native-journey-mixed-proc-book-g54im4t2/shim:/private/tmp/native-journey-mixed-proc-book-g54im4t2/shim:/usr/bin:/bin:/usr/sbin:/sbin"
+  }
+}

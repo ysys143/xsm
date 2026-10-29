@@ -1,0 +1,53 @@
+{
+  "logs/baseline-question1.json": {
+    "condition": "baseline",
+    "flow": "sync-question",
+    "task": "real-code-analysis",
+    "elapsed": 47.46,
+    "exit": 0,
+    "stdout": "`delivered`는 수신 측 코드가 메시지 인계 결정을 기록했다는 뜻입니다. 전송 성공·사용자 승인·과제 완료와는 구별됩니다.\n\n- 전송: Claude는 소켓 `sendall`, Codex는 큐 등록을 수행합니다. 이것만 성공하면 `sent-unconfirmed`이고, 수신 영수증을 확인해야 `delivered`를 반환합니다([adapters.py:105](<REPO>/xsm/adapters.py:105), [send.py:248](<REPO>/xsm/send.py:248)).\n- 런타임 수신: 훅이나 `inbox`가 영수증을 쓰지만, 문맥 반환보다 먼저 기록하므로 모델의 실제 읽기·이해·실행까지 보장하지 않습니다([receive.py:461](<REPO>/xsm/receive.py:461)).\n- 사용자 허용: `unchecked`도 `delivered`로 기록되므로 명시적 승인이나 검증 통과의 증명이 아닙니다([receive.py:760](<REPO>/xsm/receive.py:760)).\n- 과제 완료: 별도 `outcome`·`closed_t`로 기록합니다. `delivered`만으로 완료나 결과의 정확성을 보장하지 않습니다([ledger.py:92](<REPO>/xsm/ledger.py:92)).\n\n분석 기준은 `b29b39c`이며, 파일 수정과 다른 세션 연락은 없었습니다.\n",
+    "stderr": ""
+  },
+  "logs/baseline-question2.json": {
+    "condition": "baseline",
+    "flow": "sync-followup",
+    "elapsed": 58.43,
+    "exit": 0,
+    "stdout": "앞선 답변은 이 세션에서 기억하지 못했지만, 로컬 `baseline-question1.json`에서 확인했습니다. 아래는 당시 분석 기준 `b29b39c`의 근거를 재활용한 제안입니다.\n\n기존 네 구분은 그대로 유지합니다.\n\n- **전송:** 소켓 전송·큐 등록만 성공하면 `sent-unconfirmed`; 수신 영수증이 있어야 `delivered`입니다.\n- **런타임 수신:** 영수증은 문맥 반환 전에 기록되므로 모델의 읽기·이해·실행을 보장하지 않습니다.\n- **사용자 허용:** `unchecked`도 `delivered`가 될 수 있으므로 사용자 승인이나 검증 통과를 뜻하지 않습니다.\n- **과제 완료:** 별도 `outcome`·`closed_t`로 기록하며, 전달 상태만으로 완료나 결과의 정확성을 판단할 수 없습니다.\n\n호출자가 표시할 문구는 다음 두 개를 제안합니다.\n\n1. `sent-unconfirmed`: “메시지 전송을 요청했습니다. 수신 확인과 과제 완료 여부는 아직 확인되지 않았습니다.”\n2. `delivered`: “수신 측의 메시지 인계 기록을 확인했습니다. 모델의 읽기·실행, 사용자 승인, 과제 완료 여부는 별도로 확인해야 합니다.”\n\n상태 전이 규칙은 **수신 영수증으로 전달 상태만 `sent-unconfirmed → delivered`로 변경하고, 과제 상태는 변경하지 않는다**입니다. 과제 완료 전이는 해당 과제에 연결된 명시적 성공 결과와 완료 근거를 확인한 뒤 별도로 수행합니다. `closed_t`만 있거나 실패·시간 초과로 종료된 경우에는 성공 완료로 표시하지 않습니다.\n\n원본 파일은 수정하지 않았습니다.\n",
+    "stderr": ""
+  },
+  "artifacts/baseline-context-evidence.json": {
+    "transcript_files": [
+      "rollout-2026-10-23T16-59-57-01a167c6-175c-7702-905b-604cbf76bd3a.jsonl",
+      "rollout-2026-10-23T17-03-52-01a167c9-ad6e-73c0-8b7f-091aec40fda2.jsonl"
+    ],
+    "distinct_count": 2
+  },
+  "logs/fyi-before.json": {
+    "time": 1792743195.005971,
+    "before_status": "idle",
+    "before_turn_count": 4,
+    "before_log_bytes": 341806,
+    "exit": 0,
+    "stdout": "→ workshop/scope-reviewer: queued as FYI: it reads it at its next natural pause\nmessage id 01M5KX4GBWZ3FBHPZ922GX0Y1R\n",
+    "stderr": "",
+    "message": "FYI_CONTEXT_V2: 공동 문서의 최종판은 상태의 의미를 설명하는 사용 안내로 한정합니다. 구현 변경이나 버그 확정으로 확대하지 마세요. 다음 정식 검토 요청 때 이 조건을 반영하면 됩니다. 지금 답장하거나 작업을 시작할 필요는 없습니다."
+  },
+  "logs/fyi-observation.json": {
+    "checked_at": 1792743277.09054,
+    "elapsed_since_fyi": 82.08,
+    "before_turns": 4,
+    "after_turns": 4,
+    "new_turns": 0,
+    "log_bytes_unchanged": true
+  },
+  "logs/fyi-storage-observation.json": [
+    {
+      "id": "01M5KX4GBWZ3FBHPZ922GX0Y1R",
+      "recipient": "workshop/scope-reviewer",
+      "wake": 0,
+      "read_at": null,
+      "held": 0
+    }
+  ]
+}

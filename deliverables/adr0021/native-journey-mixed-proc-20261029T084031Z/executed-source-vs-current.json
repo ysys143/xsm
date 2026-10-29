@@ -1,0 +1,36 @@
+{
+  "manifest_sha256": "f4172fc9f4c49433eb90fe44a54dad5631ede60249b60a5905e3524d794c62a4",
+  "differences": [
+    {
+      "path": "skills/xsm/references/network.md",
+      "executed_frozen_sha256": "37ec6a533016799933598681ec5238bcf76c16d0b00ca0de38f38ed3a4898ee7",
+      "current_repository_sha256": "b0ee68f63d0275397009d06a92fadb92ac765bf8eb0f8732ec5548aeacfcbbc2"
+    },
+    {
+      "path": "xsm/network.py",
+      "executed_frozen_sha256": "f52485d50b5008a92860d8409df0b722fef0c26034c87938a1967af59d653265",
+      "current_repository_sha256": "79125d7d90a3255bdf1ce6c15edc1abcf759ef0a8ee702c5c8f32444870c6b71"
+    },
+    {
+      "path": "xsm/network_directory.py",
+      "executed_frozen_sha256": "0e1ea03d86b3f5c49f4df64b8e86e401743b33368dd32873a16fddab66c35099",
+      "current_repository_sha256": "9d92b61556b9f0c8b8ffa1c4a858081872139c6ff9e95d6314339d08b5a6c5ae"
+    },
+    {
+      "path": "xsm/network_messages.py",
+      "executed_frozen_sha256": "2b2a238ecf9e7a55265fabc5673de086c97818b78188d9716cceb6fb214c22a2",
+      "current_repository_sha256": "c9986c606db5ddbde9d0b30689e83e4da80240a6d8ef0d4e2ecebfe0788af6ea"
+    },
+    {
+      "path": "xsm/probe.py",
+      "executed_frozen_sha256": "452835fb1ca280eb95094d89cc5775f8d510d4e3941c4469740f071ce27b676d",
+      "current_repository_sha256": "d6088cdfc961e76dd6f375d9787dbb5a734d58473a3a8705e1da8a122547722b"
+    },
+    {
+      "path": "xsm/send.py",
+      "executed_frozen_sha256": "c8ca2a8fa1407153dd394d0b004a57653f98431ed8f4d1543ea8249389dac2f6",
+      "current_repository_sha256": "c63417d6e5d06542f3b092f6d2569b783b68363295caffc8af7149119e4544d9"
+    }
+  ],
+  "condition": "execution copy was not reloaded or edited; file phase used hashes in results-final.json"
+}

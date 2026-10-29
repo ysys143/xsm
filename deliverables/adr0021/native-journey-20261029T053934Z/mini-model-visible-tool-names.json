@@ -1,0 +1,168 @@
+[
+  {
+    "line": 16,
+    "call_id": "call_c8aad0b9f59b4926a6450f18889a8955",
+    "parsed_list": false,
+    "tool_names": [],
+    "xsm_names": [],
+    "text_lengths": [
+      45
+    ],
+    "output_truncated": false
+  },
+  {
+    "line": 20,
+    "call_id": "call_8a9af67b2e7943979db1b49b1ecc6ff1",
+    "parsed_list": false,
+    "tool_names": [],
+    "xsm_names": [],
+    "text_lengths": [
+      45
+    ],
+    "output_truncated": false
+  },
+  {
+    "line": 26,
+    "call_id": "call_57f9537591db432a8fbf78c04a153a5a",
+    "parsed_list": false,
+    "tool_names": [],
+    "xsm_names": [],
+    "text_lengths": [
+      45
+    ],
+    "output_truncated": false
+  },
+  {
+    "line": 34,
+    "call_id": "call_03fff1b937304c51b5e746bd30b94839",
+    "parsed_list": false,
+    "tool_names": [],
+    "xsm_names": [],
+    "text_lengths": [
+      45
+    ],
+    "output_truncated": false
+  },
+  {
+    "line": 45,
+    "call_id": "call_1be2f37143334865adedc6c1a9da1eea",
+    "parsed_list": false,
+    "tool_names": [],
+    "xsm_names": [],
+    "text_lengths": [
+      45
+    ],
+    "output_truncated": false
+  },
+  {
+    "line": 59,
+    "call_id": "call_66cfe5a2d92f4c4eb4face3493b1b9f2",
+    "parsed_list": false,
+    "tool_names": [],
+    "xsm_names": [],
+    "text_lengths": [
+      26
+    ],
+    "output_truncated": false
+  },
+  {
+    "line": 75,
+    "call_id": "call_31661fbd763e445387a64d72ae9fba4e",
+    "parsed_list": false,
+    "tool_names": [],
+    "xsm_names": [],
+    "text_lengths": [
+      47,
+      40093
+    ],
+    "output_truncated": true
+  },
+  {
+    "line": 79,
+    "call_id": "call_a8226a87642b46c29cb1e95b0c66b602",
+    "parsed_list": true,
+    "tool_names": [
+      "mcp__codex_apps__canva_generate_design",
+      "mcp__codex_apps__canva_get_design",
+      "mcp__codex_apps__canva_get_design_content",
+      "mcp__codex_apps__canva_get_design_pages",
+      "mcp__codex_apps__chatgpt_space_get_page_sharing",
+      "mcp__codex_apps__chatgpt_space_get_sharing_availability",
+      "mcp__codex_apps__chatgpt_space_get_space_sharing",
+      "mcp__codex_apps__chatgpt_space_list_page_comments",
+      "mcp__codex_apps__chatgpt_space_search_sharing_recipients",
+      "mcp__codex_apps__chatgpt_space_update_page_sharing",
+      "mcp__codex_apps__chatgpt_space_update_space_sharing",
+      "mcp__codex_apps__coursera_learning_coursera_learning_canvas",
+      "mcp__codex_apps__figma_generate_deck",
+      "mcp__codex_apps__github_get_repo_collaborator_permission",
+      "mcp__codex_apps__github_list_repositories_by_affiliation",
+      "mcp__codex_apps__gmail_archive_emails",
+      "mcp__codex_apps__gmail_batch_modify_email",
+      "mcp__codex_apps__gmail_list_labels",
+      "mcp__codex_apps__gmail_search_email_ids",
+      "mcp__codex_apps__gmail_search_emails",
+      "mcp__codex_apps__higgsfield_scene_builder_3d_import_asset",
+      "mcp__codex_apps__higgsfield_scene_builder_3d_show_scene",
+      "mcp__codex_apps__sites_update_site_access"
+    ],
+    "xsm_names": [],
+    "text_lengths": [
+      47,
+      8696
+    ],
+    "output_truncated": false
+  },
+  {
+    "line": 83,
+    "call_id": "call_c8281f43d75e457e8d9174c2aa6ed4e6",
+    "parsed_list": true,
+    "tool_names": [
+      "apply_patch",
+      "clock__curr_time",
+      "create_goal",
+      "exec_command",
+      "get_goal",
+      "image_gen__imagegen",
+      "list_mcp_resource_templates",
+      "list_mcp_resources",
+      "read_mcp_resource",
+      "request_plugin_install",
+      "update_goal",
+      "view_image",
+      "web__run",
+      "write_stdin"
+    ],
+    "xsm_names": [],
+    "text_lengths": [
+      47,
+      3178,
+      42
+    ],
+    "output_truncated": false
+  },
+  {
+    "line": 91,
+    "call_id": "call_193ee6e139c34eb6ba3de28c6c38ec6b",
+    "parsed_list": false,
+    "tool_names": [],
+    "xsm_names": [],
+    "text_lengths": [
+      47,
+      40044
+    ],
+    "output_truncated": true
+  },
+  {
+    "line": 98,
+    "call_id": "call_34db83db5f5347538b04b21cbe272cf0",
+    "parsed_list": false,
+    "tool_names": [],
+    "xsm_names": [],
+    "text_lengths": [
+      47,
+      138
+    ],
+    "output_truncated": false
+  }
+]

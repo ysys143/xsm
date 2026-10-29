@@ -1,0 +1,259 @@
+{
+  "root": "/private/tmp/p13-mcp-diagnostic-cjcj3p8l",
+  "product_install_sha256": "c2f97ecef55e1001e3d66294bccc4cd19e878bb0e78f99145f15b05ea0bc5b16",
+  "source_changed": false,
+  "auth_commands": 0,
+  "model_calls": 0,
+  "cases": [
+    {
+      "runtime": "claude",
+      "condition": "clean",
+      "result": "exception",
+      "exception": {
+        "type": "InstallConflictError",
+        "message": "installer-conflict: native MCP config changed during inspection",
+        "trace": "Traceback (most recent call last):\n  File \"<stdin>\", line 26, in observe\n  File \"/Users/jaesolshin/Documents/GitHub/cross-session-messaging/xsm/install.py\", line 146, in locked\n    return fn(*args, **kwargs)\n  File \"/Users/jaesolshin/Documents/GitHub/cross-session-messaging/xsm/install.py\", line 2444, in install_mcp\n    raise InstallConflictError(\"installer-conflict: native MCP config changed during inspection\")\nxsm.install.InstallConflictError: installer-conflict: native MCP config changed during inspection\n"
+      },
+      "native_calls": [
+        {
+          "command": [
+            "claude",
+            "mcp",
+            "get",
+            "xsm"
+          ],
+          "exit_code": 0,
+          "target": "/private/tmp/p13-mcp-diagnostic-cjcj3p8l/claude-clean/.claude.json",
+          "before": "missing",
+          "after": "0045834b5015ad839aed60b6ef0902e8d29db3549bb3b31840d1516adbce2408",
+          "target_changed": true,
+          "changed_top_level_keys": [
+            "firstStartTime",
+            "firstStartVersion",
+            "hasResetAutoModeOptInForDefaultOffer",
+            "machineID",
+            "migrationVersion",
+            "opusProMigrationComplete",
+            "seenNotifications",
+            "sonnet1m45MigrationComplete",
+            "userID"
+          ]
+        }
+      ]
+    },
+    {
+      "runtime": "claude",
+      "condition": "existing-stale",
+      "result": "replaced",
+      "exception": null,
+      "native_calls": [
+        {
+          "command": [
+            "claude",
+            "mcp",
+            "get",
+            "xsm"
+          ],
+          "exit_code": 0,
+          "target": "/private/tmp/p13-mcp-diagnostic-cjcj3p8l/claude-existing-stale/.claude.json",
+          "before": "de70f83024d59a2c4c609bf6fa787fb46d0aa5a50eb747bd9f74a312febf1844",
+          "after": "de70f83024d59a2c4c609bf6fa787fb46d0aa5a50eb747bd9f74a312febf1844",
+          "target_changed": false,
+          "changed_top_level_keys": []
+        },
+        {
+          "command": [
+            "claude",
+            "mcp",
+            "remove",
+            "xsm"
+          ],
+          "exit_code": 0,
+          "target": "/private/tmp/p13-mcp-diagnostic-cjcj3p8l/claude-existing-stale/.claude.json",
+          "before": "de70f83024d59a2c4c609bf6fa787fb46d0aa5a50eb747bd9f74a312febf1844",
+          "after": "f8005d6f7f5dbd2e5167b6e03c464388f4aa46aea0fb76b95832b1a80d06d554",
+          "target_changed": true,
+          "changed_top_level_keys": [
+            "mcpServers"
+          ]
+        },
+        {
+          "command": [
+            "claude",
+            "mcp",
+            "add",
+            "--scope"
+          ],
+          "exit_code": 0,
+          "target": "/private/tmp/p13-mcp-diagnostic-cjcj3p8l/claude-existing-stale/.claude.json",
+          "before": "f8005d6f7f5dbd2e5167b6e03c464388f4aa46aea0fb76b95832b1a80d06d554",
+          "after": "5e07f24204f5c18e59978bb345fa07b6c5200324601bd945585ef3035d4a2013",
+          "target_changed": true,
+          "changed_top_level_keys": [
+            "mcpServers"
+          ]
+        }
+      ]
+    },
+    {
+      "runtime": "claude",
+      "condition": "existing-after-first-attempt",
+      "result": "replaced",
+      "exception": null,
+      "native_calls": [
+        {
+          "command": [
+            "claude",
+            "mcp",
+            "get",
+            "xsm"
+          ],
+          "exit_code": 0,
+          "target": "/private/tmp/p13-mcp-diagnostic-cjcj3p8l/claude-clean/.claude.json",
+          "before": "0045834b5015ad839aed60b6ef0902e8d29db3549bb3b31840d1516adbce2408",
+          "after": "0045834b5015ad839aed60b6ef0902e8d29db3549bb3b31840d1516adbce2408",
+          "target_changed": false,
+          "changed_top_level_keys": []
+        },
+        {
+          "command": [
+            "claude",
+            "mcp",
+            "remove",
+            "xsm"
+          ],
+          "exit_code": 1,
+          "target": "/private/tmp/p13-mcp-diagnostic-cjcj3p8l/claude-clean/.claude.json",
+          "before": "0045834b5015ad839aed60b6ef0902e8d29db3549bb3b31840d1516adbce2408",
+          "after": "0045834b5015ad839aed60b6ef0902e8d29db3549bb3b31840d1516adbce2408",
+          "target_changed": false,
+          "changed_top_level_keys": []
+        },
+        {
+          "command": [
+            "claude",
+            "mcp",
+            "add",
+            "--scope"
+          ],
+          "exit_code": 0,
+          "target": "/private/tmp/p13-mcp-diagnostic-cjcj3p8l/claude-clean/.claude.json",
+          "before": "0045834b5015ad839aed60b6ef0902e8d29db3549bb3b31840d1516adbce2408",
+          "after": "73296caca9e6e45d531d8721b85d01379c318061d2095506d6bc62eecf5797b3",
+          "target_changed": true,
+          "changed_top_level_keys": [
+            "mcpServers"
+          ]
+        }
+      ]
+    },
+    {
+      "runtime": "codex",
+      "condition": "clean",
+      "result": "added",
+      "exception": null,
+      "native_calls": [
+        {
+          "command": [
+            "/Users/jaesolshin/.nvm/versions/node/v24.19.0/bin/codex",
+            "mcp",
+            "get",
+            "xsm"
+          ],
+          "exit_code": 1,
+          "target": "/private/tmp/p13-mcp-diagnostic-cjcj3p8l/codex-clean/config.toml",
+          "before": "missing",
+          "after": "missing",
+          "target_changed": false,
+          "changed_top_level_keys": []
+        },
+        {
+          "command": [
+            "/Users/jaesolshin/.nvm/versions/node/v24.19.0/bin/codex",
+            "mcp",
+            "add",
+            "xsm"
+          ],
+          "exit_code": 0,
+          "target": "/private/tmp/p13-mcp-diagnostic-cjcj3p8l/codex-clean/config.toml",
+          "before": "missing",
+          "after": "891d86021e9906941ca45c050511910427fc7106750614293432a52ade09c5b2",
+          "target_changed": true,
+          "changed_top_level_keys": []
+        }
+      ]
+    },
+    {
+      "runtime": "codex",
+      "condition": "existing-stale",
+      "result": "replaced",
+      "exception": null,
+      "native_calls": [
+        {
+          "command": [
+            "/Users/jaesolshin/.nvm/versions/node/v24.19.0/bin/codex",
+            "mcp",
+            "get",
+            "xsm"
+          ],
+          "exit_code": 0,
+          "target": "/private/tmp/p13-mcp-diagnostic-cjcj3p8l/codex-existing-stale/config.toml",
+          "before": "0afd1f41310f1f05d8c06853ce02f91cdd6bc0090566d03f57cd0a5b86202704",
+          "after": "0afd1f41310f1f05d8c06853ce02f91cdd6bc0090566d03f57cd0a5b86202704",
+          "target_changed": false,
+          "changed_top_level_keys": []
+        },
+        {
+          "command": [
+            "/Users/jaesolshin/.nvm/versions/node/v24.19.0/bin/codex",
+            "mcp",
+            "remove",
+            "xsm"
+          ],
+          "exit_code": 0,
+          "target": "/private/tmp/p13-mcp-diagnostic-cjcj3p8l/codex-existing-stale/config.toml",
+          "before": "0afd1f41310f1f05d8c06853ce02f91cdd6bc0090566d03f57cd0a5b86202704",
+          "after": "d540ce4d3ce22ff4b069505ba48c50804079dd377791917b6efe00b7cbac7928",
+          "target_changed": true,
+          "changed_top_level_keys": []
+        },
+        {
+          "command": [
+            "/Users/jaesolshin/.nvm/versions/node/v24.19.0/bin/codex",
+            "mcp",
+            "add",
+            "xsm"
+          ],
+          "exit_code": 0,
+          "target": "/private/tmp/p13-mcp-diagnostic-cjcj3p8l/codex-existing-stale/config.toml",
+          "before": "d540ce4d3ce22ff4b069505ba48c50804079dd377791917b6efe00b7cbac7928",
+          "after": "77ea0752717eb3fa973b4cedab6f9371219ca580ee21234c2adf58e451309cf1",
+          "target_changed": true,
+          "changed_top_level_keys": []
+        }
+      ]
+    },
+    {
+      "runtime": "codex",
+      "condition": "existing-after-first-attempt",
+      "result": "current",
+      "exception": null,
+      "native_calls": [
+        {
+          "command": [
+            "/Users/jaesolshin/.nvm/versions/node/v24.19.0/bin/codex",
+            "mcp",
+            "get",
+            "xsm"
+          ],
+          "exit_code": 0,
+          "target": "/private/tmp/p13-mcp-diagnostic-cjcj3p8l/codex-clean/config.toml",
+          "before": "891d86021e9906941ca45c050511910427fc7106750614293432a52ade09c5b2",
+          "after": "891d86021e9906941ca45c050511910427fc7106750614293432a52ade09c5b2",
+          "target_changed": false,
+          "changed_top_level_keys": []
+        }
+      ]
+    }
+  ]
+}

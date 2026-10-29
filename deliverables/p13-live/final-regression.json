@@ -1,0 +1,38 @@
+{
+  "scope": "local integration including native subagent MCP route, canonical wait/notice, and actual native-hook held/blocked receipt exclusion; whole plan incomplete",
+  "snapshot": "/private/tmp/xsm-final-receipt-frozen-i3u9pms3",
+  "snapshot_manifest": "deliverables/p13-live/final-source-manifest.json",
+  "results": [
+    {
+      "python": "Python 3.9.6",
+      "tests": 1697,
+      "seconds": 444.275,
+      "exit_code": 0,
+      "result": "OK",
+      "skips": 0,
+      "log": "/tmp/p13-receipt-final39.log",
+      "log_sha256": "1f25d348f3366b7432c3773e5456b87e9fbbe7b94b135ed1bf7ff71e237608aa"
+    },
+    {
+      "python": "Python 3.14.6",
+      "tests": 1697,
+      "seconds": 331.419,
+      "exit_code": 0,
+      "result": "OK",
+      "skips": 0,
+      "log": "/tmp/p13-receipt-final314.log",
+      "log_sha256": "547316d9748a8eb0aa43a87e51f7a9defdd1f47f7338adeeb051beb3d5d60bf7"
+    }
+  ],
+  "tested_product_paths": 135,
+  "product_source_unchanged_after_runs": true,
+  "changed_paths": [],
+  "whole_plan_complete": false,
+  "not_verified": [
+    "D12/P12 remote product integration",
+    "human UI",
+    "different NAT/proxy/self-hosted relay/SSH-unavailable comparison",
+    "clean-profile auth and first model roundtrip",
+    "actual shared MCP server two-thread condition"
+  ]
+}

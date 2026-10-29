@@ -1,0 +1,256 @@
+{
+  "cleanup": {
+    "book": {
+      "remaining_recorded_pids": [],
+      "control_sockets_remaining": 0,
+      "udp_rebind_checks": [
+        {
+          "address": "0.0.0.0:53927",
+          "can_rebind": true
+        },
+        {
+          "address": "0.0.0.0:58566",
+          "can_rebind": true
+        },
+        {
+          "address": "[::]:50346",
+          "can_rebind": true
+        },
+        {
+          "address": "[::]:64702",
+          "can_rebind": true
+        }
+      ],
+      "user_session_signals": 0
+    },
+    "mini": {
+      "remaining_recorded_pids": [],
+      "control_sockets_remaining": 0,
+      "udp_rebind_checks": [
+        {
+          "address": "0.0.0.0:56886",
+          "can_rebind": true
+        },
+        {
+          "address": "0.0.0.0:61032",
+          "can_rebind": true
+        },
+        {
+          "address": "[::]:50745",
+          "can_rebind": true
+        },
+        {
+          "address": "[::]:62712",
+          "can_rebind": true
+        }
+      ],
+      "user_session_signals": 0
+    }
+  },
+  "body_hashes": {
+    "book-to-mini": {
+      "matched": true,
+      "sent": 1,
+      "received": 1
+    },
+    "mini-to-book": {
+      "matched": true,
+      "sent": 1,
+      "received": 1
+    }
+  },
+  "tls_origin_checks": {
+    "book-to-mini": true,
+    "mini-to-book": true
+  },
+  "baseline_paths": {
+    "book": [
+      {
+        "event": "request",
+        "operation": "join",
+        "path": "direct",
+        "remote_address": "192.168.0.64:56886",
+        "relay_url": null
+      },
+      {
+        "event": "path",
+        "operation": null,
+        "path": "direct",
+        "remote_address": "192.168.0.64:56886",
+        "relay_url": null
+      },
+      {
+        "event": "response",
+        "operation": null,
+        "path": "direct",
+        "remote_address": "192.168.0.64:56886",
+        "relay_url": null
+      },
+      {
+        "event": "request",
+        "operation": "sync",
+        "path": "direct",
+        "remote_address": "192.168.0.64:56886",
+        "relay_url": null
+      },
+      {
+        "event": "path",
+        "operation": null,
+        "path": "direct",
+        "remote_address": "192.168.0.64:56886",
+        "relay_url": null
+      },
+      {
+        "event": "response",
+        "operation": null,
+        "path": "direct",
+        "remote_address": "192.168.0.64:56886",
+        "relay_url": null
+      },
+      {
+        "event": "request",
+        "operation": "ping",
+        "path": "direct",
+        "remote_address": "192.168.0.64:56886",
+        "relay_url": null
+      },
+      {
+        "event": "path",
+        "operation": null,
+        "path": "direct",
+        "remote_address": "192.168.0.64:56886",
+        "relay_url": null
+      }
+    ],
+    "mini": [
+      {
+        "event": "response",
+        "operation": null,
+        "path": "direct",
+        "remote_address": "192.168.0.11:53927",
+        "relay_url": null
+      },
+      {
+        "event": "request",
+        "operation": "sync",
+        "path": "direct",
+        "remote_address": "192.168.0.11:53927",
+        "relay_url": null
+      },
+      {
+        "event": "path",
+        "operation": null,
+        "path": "direct",
+        "remote_address": "192.168.0.11:53927",
+        "relay_url": null
+      },
+      {
+        "event": "response",
+        "operation": null,
+        "path": "direct",
+        "remote_address": "192.168.0.11:53927",
+        "relay_url": null
+      },
+      {
+        "event": "request",
+        "operation": "ping",
+        "path": "direct",
+        "remote_address": "192.168.0.11:53927",
+        "relay_url": null
+      },
+      {
+        "event": "path",
+        "operation": null,
+        "path": "direct",
+        "remote_address": "192.168.0.11:53927",
+        "relay_url": null
+      },
+      {
+        "event": "response",
+        "operation": null,
+        "path": "direct",
+        "remote_address": "192.168.0.11:53927",
+        "relay_url": null
+      }
+    ]
+  },
+  "tail_candidate_paths": {
+    "book": [
+      {
+        "event": "response",
+        "operation": null,
+        "path": "direct",
+        "remote_address": "100.77.24.16:61032",
+        "relay_url": null
+      },
+      {
+        "event": "response",
+        "operation": null,
+        "path": "direct",
+        "remote_address": "192.168.0.64:61032",
+        "relay_url": null
+      },
+      {
+        "event": "request",
+        "operation": "ping",
+        "path": "direct",
+        "remote_address": "192.168.0.64:61032",
+        "relay_url": null
+      },
+      {
+        "event": "path",
+        "operation": null,
+        "path": "direct",
+        "remote_address": "192.168.0.64:61032",
+        "relay_url": null
+      }
+    ],
+    "mini": [
+      {
+        "event": "request",
+        "operation": "ping",
+        "path": "direct",
+        "remote_address": "192.168.0.11:58566",
+        "relay_url": null
+      },
+      {
+        "event": "path",
+        "operation": null,
+        "path": "direct",
+        "remote_address": "100.123.30.11:58566",
+        "relay_url": null
+      },
+      {
+        "event": "request",
+        "operation": "sync",
+        "path": "direct",
+        "remote_address": "192.168.0.11:58566",
+        "relay_url": null
+      },
+      {
+        "event": "path",
+        "operation": null,
+        "path": "direct",
+        "remote_address": "192.168.0.11:58566",
+        "relay_url": null
+      },
+      {
+        "event": "response",
+        "operation": null,
+        "path": "direct",
+        "remote_address": "192.168.0.11:58566",
+        "relay_url": null
+      }
+    ]
+  },
+  "private_raw": {
+    "book": "/private/tmp/xpc-q0b6vtol/raw",
+    "mini": "/private/tmp/xpc-pnoh2tco/raw"
+  },
+  "source_snapshot_note": "52 xsm modules were frozen at provisioning; later network_transport and network_messages edits are not this snapshot.",
+  "forced_tailnet_egress": {
+    "verified": false,
+    "reason": "sandbox profile rejected a literal remote IP; no OS/firewall/permission changes made",
+    "private_raw": "/private/tmp/xpc-q0b6vtol/raw/sandbox-capability.json"
+  }
+}

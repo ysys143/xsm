@@ -1,0 +1,42 @@
+{
+  "kind": "same-host product services with native-process IPv6 socket fault",
+  "profile": "(version 1)(allow default)(deny network-outbound(remote tcp \"*:*\"))(deny network-outbound(remote udp \"*:*\"))(allow network-outbound(remote udp \"localhost:*\"))",
+  "host_baseline": {
+    "host_ipv6_socket_supported": true
+  },
+  "requested_port_held_by_controller": 62599,
+  "started_at": 1793257836.42133,
+  "native_key_or_ticket_values_read": false,
+  "global_ipv6_or_firewall_changed": false,
+  "passed": false,
+  "failure_code": "service-exit-4",
+  "cleanup": [
+    {
+      "service_pid": 46059,
+      "engine_pid": null,
+      "service_exit": 4,
+      "engine_alive": false,
+      "control_socket_exists": false,
+      "stdout_bytes": 0,
+      "stderr_bytes": 34,
+      "stderr_sha256": "aa7a7793c9e372ff0b95f411921bf00dd18ca7cfaf05e577dbaf858b178c1f7e"
+    },
+    {
+      "service_pid": 46142,
+      "engine_pid": null,
+      "service_exit": 4,
+      "engine_alive": false,
+      "control_socket_exists": false,
+      "stdout_bytes": 0,
+      "stderr_bytes": 34,
+      "stderr_sha256": "aa7a7793c9e372ff0b95f411921bf00dd18ca7cfaf05e577dbaf858b178c1f7e"
+    }
+  ],
+  "udp_rebind_after_cleanup": [
+    {
+      "address": "0.0.0.0:62599",
+      "free": true
+    }
+  ],
+  "finished_at": 1793257838.195206
+}

@@ -1,0 +1,249 @@
+{
+  "self": {
+    "id": "9d2aff2dc5df696e7006e3aaefb0932bc85f79d80894dc7dc84026721ceaf215",
+    "target": "candidate:9d2aff2dc5df696e7006e3aaefb0932bc85f79d80894dc7dc84026721ceaf215",
+    "is_self": true,
+    "handle": {
+      "runtime": "codex",
+      "session_id": "01a187cf-5153-7e53-810d-405946f9e666",
+      "home_id": "331957d24d1e9650435f0404f26b709eb43a756ea44df49a40cd88984df53efc",
+      "machine": "local"
+    },
+    "ref": "83d506",
+    "machine": "local",
+    "runtime": "codex",
+    "name": "requester",
+    "title": {
+      "value": "requester",
+      "status": "known",
+      "source": "registry:hook.name",
+      "timestamp": 1793280477.593756,
+      "observed_at": 1793280487.8051782,
+      "freshness": "unknown"
+    },
+    "name_source": "registry:hook.name",
+    "name_freshness": "unknown",
+    "discovery_basis": [
+      "same_repo"
+    ],
+    "repository": "work",
+    "branch": {
+      "value": "main",
+      "status": "known",
+      "source": "git:symbolic-ref",
+      "timestamp": 1793280487.8020911,
+      "observed_at": 1793280487.802092,
+      "freshness": "fresh"
+    },
+    "summary": {
+      "value": null,
+      "status": "unknown",
+      "source": null,
+      "timestamp": null,
+      "observed_at": 1793280487.8051798,
+      "freshness": "unknown"
+    },
+    "todo": {
+      "value": null,
+      "status": "unknown",
+      "source": null,
+      "timestamp": null,
+      "observed_at": 1793280487.8422148,
+      "freshness": "unknown"
+    },
+    "activity": {
+      "value": "busy",
+      "status": "known",
+      "source": "codex:event_msg:task_started",
+      "timestamp": "2026-10-29T13:27:55.352Z",
+      "observed_at": 1793280487.804566,
+      "freshness": "fresh"
+    },
+    "state": {
+      "value": "live",
+      "status": "known",
+      "source": "registry:liveness:live",
+      "timestamp": 1793280487.842228,
+      "observed_at": 1793280487.842228,
+      "freshness": "fresh"
+    },
+    "receive": {
+      "value": "available",
+      "status": "known",
+      "source": "registry:receive_capability",
+      "timestamp": 1793280487.842237,
+      "observed_at": 1793280487.842237,
+      "freshness": "fresh"
+    }
+  },
+  "selected": {
+    "activity": {
+      "freshness": "unknown",
+      "observed_at": 1793280488.077506,
+      "source": null,
+      "status": "unknown",
+      "timestamp": null,
+      "value": null
+    },
+    "branch": {
+      "freshness": "fresh",
+      "observed_at": 1793280488.068053,
+      "source": "git:symbolic-ref",
+      "status": "known",
+      "timestamp": 1793280488.068052,
+      "value": "main"
+    },
+    "discovery_basis": [
+      "published"
+    ],
+    "doing": {
+      "freshness": "unknown",
+      "observed_at": 1793280488.0686889,
+      "source": null,
+      "status": "unknown",
+      "timestamp": null,
+      "value": null
+    },
+    "handle": {
+      "generation": "8f09a980166c4cda142ef876e9ce14c033dd82a5f6b25c58ad1705fc6d4f51a2",
+      "home_id": "1f3efe9ffb9cf15ba352aa22f67362777ae05495d0bb84b9b5b8268090817da7",
+      "machine": "e4824763e4b2ea2e28e3107f0c8e44d4e9e690eaa387c2f1b7c1de0b3d4ae01d",
+      "runtime": "claude",
+      "session_id": "d9736a11-0c50-4196-995d-0f87a4634f07"
+    },
+    "id": "db008923597773737db22bdfdea544d3d9bde5dd89ce994c79afcbaa242a3ee4",
+    "is_self": false,
+    "machine": "e4824763e4b2ea2e28e3107f0c8e44d4e9e690eaa387c2f1b7c1de0b3d4ae01d",
+    "name": "a1",
+    "name_freshness": "unknown",
+    "name_source": "registry:hook.name",
+    "receive": {
+      "freshness": "fresh",
+      "observed_at": 1793280488.0775092,
+      "source": "registry:receive_capability",
+      "status": "known",
+      "timestamp": 1793280488.0775092,
+      "value": "available"
+    },
+    "ref": "54c95f",
+    "repository": null,
+    "repository_id": null,
+    "repository_status": "unknown",
+    "runtime": "claude",
+    "same_repository": null,
+    "state": {
+      "freshness": "fresh",
+      "observed_at": 1793280488.077507,
+      "source": "registry:liveness:live",
+      "status": "known",
+      "timestamp": 1793280488.077507,
+      "value": "live"
+    },
+    "summary": {
+      "freshness": "unknown",
+      "observed_at": 1793280488.0686889,
+      "source": null,
+      "status": "unknown",
+      "timestamp": null,
+      "value": null
+    },
+    "target": "net:e4824763e4b2ea2e28e3107f0c8e44d4e9e690eaa387c2f1b7c1de0b3d4ae01d:claude:1f3efe9ffb9cf15ba352aa22f67362777ae05495d0bb84b9b5b8268090817da7:d9736a11-0c50-4196-995d-0f87a4634f07",
+    "title": {
+      "freshness": "unknown",
+      "observed_at": 1793280488.068684,
+      "source": "registry:hook.name",
+      "status": "known",
+      "timestamp": 1793280460.462941,
+      "value": "a1"
+    },
+    "todo": {
+      "freshness": "unknown",
+      "observed_at": 1793280488.077505,
+      "source": null,
+      "status": "unknown",
+      "timestamp": null,
+      "value": null
+    },
+    "machine_name": "mixed-claude-book",
+    "origin_assurance": "authenticated-member"
+  },
+  "actual_selection_arguments": [
+    {
+      "target": "candidate:db008923597773737db22bdfdea544d3d9bde5dd89ce994c79afcbaa242a3ee4",
+      "wait": 60
+    },
+    {
+      "target": "candidate:db008923597773737db22bdfdea544d3d9bde5dd89ce994c79afcbaa242a3ee4",
+      "wait": 60
+    }
+  ],
+  "same_name_self_remote_covered": false,
+  "scope_of_missing_counter": "self vs remote exact same display name was not present; no labels changed after completion",
+  "actual_duplicate_remote_labels": {
+    "a1": [
+      "d9736a11-0c50-4196-995d-0f87a4634f07",
+      "872ff2f9-1532-4856-a126-942081d12209",
+      "147f1962-b673-45a0-9f19-0201170aab5e"
+    ]
+  },
+  "not_a_concurrent_third_party_same_name_test": true,
+  "delivery_checks": [
+    {
+      "id": "960d055aca004b34",
+      "full_packet_receiver": {
+        "generation": "8f09a980166c4cda142ef876e9ce14c033dd82a5f6b25c58ad1705fc6d4f51a2",
+        "home_id": "1f3efe9ffb9cf15ba352aa22f67362777ae05495d0bb84b9b5b8268090817da7",
+        "machine": "e4824763e4b2ea2e28e3107f0c8e44d4e9e690eaa387c2f1b7c1de0b3d4ae01d",
+        "runtime": "claude",
+        "session_id": "d9736a11-0c50-4196-995d-0f87a4634f07"
+      },
+      "actual_local_receiver": {
+        "runtime": "claude",
+        "home": "/Users/jaesolshin/.claude-3",
+        "session_id": "d9736a11-0c50-4196-995d-0f87a4634f07"
+      },
+      "body_unchanged": true,
+      "matches_discovered_full_handle": true,
+      "correct_receiver_CID": true
+    },
+    {
+      "id": "de6caa36ed204273",
+      "full_packet_receiver": {
+        "generation": "8f09a980166c4cda142ef876e9ce14c033dd82a5f6b25c58ad1705fc6d4f51a2",
+        "home_id": "1f3efe9ffb9cf15ba352aa22f67362777ae05495d0bb84b9b5b8268090817da7",
+        "machine": "e4824763e4b2ea2e28e3107f0c8e44d4e9e690eaa387c2f1b7c1de0b3d4ae01d",
+        "runtime": "claude",
+        "session_id": "d9736a11-0c50-4196-995d-0f87a4634f07"
+      },
+      "actual_local_receiver": {
+        "runtime": "claude",
+        "home": "/Users/jaesolshin/.claude-3",
+        "session_id": "d9736a11-0c50-4196-995d-0f87a4634f07"
+      },
+      "body_unchanged": true,
+      "matches_discovered_full_handle": true,
+      "correct_receiver_CID": true
+    },
+    {
+      "id": "664b736162384904",
+      "full_packet_receiver": {
+        "generation": "8f09a980166c4cda142ef876e9ce14c033dd82a5f6b25c58ad1705fc6d4f51a2",
+        "home_id": "1f3efe9ffb9cf15ba352aa22f67362777ae05495d0bb84b9b5b8268090817da7",
+        "machine": "e4824763e4b2ea2e28e3107f0c8e44d4e9e690eaa387c2f1b7c1de0b3d4ae01d",
+        "runtime": "claude",
+        "session_id": "d9736a11-0c50-4196-995d-0f87a4634f07"
+      },
+      "actual_local_receiver": {
+        "runtime": "claude",
+        "home": "/Users/jaesolshin/.claude-3",
+        "session_id": "d9736a11-0c50-4196-995d-0f87a4634f07"
+      },
+      "body_unchanged": true,
+      "matches_discovered_full_handle": true,
+      "correct_receiver_CID": true
+    }
+  ],
+  "no_original_misdelivery": true,
+  "new_models_started": 0,
+  "display_labels_changed": false
+}

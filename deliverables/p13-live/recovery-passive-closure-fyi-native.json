@@ -1,0 +1,277 @@
+{
+  "scope": "A18-06 one FYI strict no-wake then natural tool-boundary consumption native pair",
+  "root": "/private/tmp/p13-passive-fyi-phb8nuwk",
+  "workspace": "/private/tmp/p13-passive-fyi-phb8nuwk/project",
+  "state": "/private/tmp/p13-passive-fyi-phb8nuwk/state",
+  "frozen_source": "/private/tmp/xsm-final-receipt-frozen-i3u9pms3",
+  "frozen_manifest": "deliverables/p13-live/final-source-manifest.json",
+  "source_before": {
+    "file_count": 315,
+    "manifest_sha256": "57d088eee167e573d3a534e2d53db230703963516ece02ee1b6fce294ae9068f",
+    "matches": true,
+    "changed_paths": []
+  },
+  "goals": {
+    "reviewer": "이 private 저장소의 담당 a1입니다. 먼저 독립 공개 계산으로 20초 동안 1부터 1000000 사이 정수를 난수로 뽑아 3 또는 5의 배수인 비율을 세고 sample_count와 matched_count와 ratio를 fyi-work.json에 저장하세요. 그 별도 계산 작업을 끝낸 다음 xsm으로 이 저장소의 협업 동료가 누구인지 확인하세요. 그때 받은 참고 정보가 있으면 실제 내용을 읽고 확인을 마친 뒤 계산 결과와 받은 참고 내용을 보고하세요. 다른 폴더·권한·설정은 바꾸지 마세요.",
+    "sender": "xsm으로 이 private 저장소 동료 a1에게 \"FYI: 다음 검산에서 3 또는 5의 배수 비율의 기준값은 7/15입니다.\"라는 참고 메모를 단 한 번 남기세요. 동료 작업을 깨우거나 질문·답을 요구하지 않는 FYI로만 저장하고, 저장 결과를 사실대로 보고한 뒤 종료하세요. 동료에게 새 prompt나 재전송으로 읽기를 재촉하지 말고 다른 세션·권한·설정은 바꾸지 마세요."
+  },
+  "setup_registry_calls": 2,
+  "actor_native_invocations": 2,
+  "controller_body_relays": 0,
+  "controller_ACKs": 0,
+  "controller_index_writes": 0,
+  "additional_user_prompts": 0,
+  "automatic_actor_retries": 0,
+  "condition_runs": 1,
+  "status": "captured-original-sample",
+  "factory_ignore_user_config": true,
+  "profile": "/Users/jaesolshin/.codex-3",
+  "skill_source": "frozen product copied verbatim to private repository .agents/skills/xsm",
+  "started_at": 1793233489.027647,
+  "reviewer_invocation": {
+    "role": "reviewer",
+    "profile": "/Users/jaesolshin/.codex-3",
+    "goal": "이 private 저장소의 담당 a1입니다. 먼저 독립 공개 계산으로 20초 동안 1부터 1000000 사이 정수를 난수로 뽑아 3 또는 5의 배수인 비율을 세고 sample_count와 matched_count와 ratio를 fyi-work.json에 저장하세요. 그 별도 계산 작업을 끝낸 다음 xsm으로 이 저장소의 협업 동료가 누구인지 확인하세요. 그때 받은 참고 정보가 있으면 실제 내용을 읽고 확인을 마친 뒤 계산 결과와 받은 참고 내용을 보고하세요. 다른 폴더·권한·설정은 바꾸지 마세요.",
+    "pid": 3544,
+    "lstart": "Thu Oct 29 09:24:49 2026",
+    "invocation_without_goal": [
+      "codex",
+      "exec",
+      "--ignore-user-config",
+      "--json",
+      "--sandbox",
+      "workspace-write",
+      "-c",
+      "approval_policy=\"never\"",
+      "-c",
+      "mcp_servers.xsm.command=\"/usr/bin/python3\"",
+      "-c",
+      "mcp_servers.xsm.args=[\"-m\",\"xsm\",\"mcp\"]",
+      "-c",
+      "mcp_servers.xsm.cwd=\"/private/tmp/xsm-final-receipt-frozen-i3u9pms3\"",
+      "-c",
+      "mcp_servers.xsm.env.XSM_HOME=\"/private/tmp/p13-passive-fyi-phb8nuwk/state\"",
+      "-c",
+      "mcp_servers.xsm.env.CODEX_HOME=\"/Users/jaesolshin/.codex-3\"",
+      "-c",
+      "mcp_servers.xsm.env.PYTHONPATH=\"/private/tmp/xsm-final-receipt-frozen-i3u9pms3\"",
+      "-c",
+      "mcp_servers.xsm.env.PYTHONDONTWRITEBYTECODE=\"1\""
+    ],
+    "goal_sha256": "95009a50b1020bca1f399d51f174e60d53c4537ba1ac98542a3c59628530f729"
+  },
+  "sender_invocation": {
+    "role": "initiator",
+    "profile": "/Users/jaesolshin/.codex-3",
+    "goal": "xsm으로 이 private 저장소 동료 a1에게 \"FYI: 다음 검산에서 3 또는 5의 배수 비율의 기준값은 7/15입니다.\"라는 참고 메모를 단 한 번 남기세요. 동료 작업을 깨우거나 질문·답을 요구하지 않는 FYI로만 저장하고, 저장 결과를 사실대로 보고한 뒤 종료하세요. 동료에게 새 prompt나 재전송으로 읽기를 재촉하지 말고 다른 세션·권한·설정은 바꾸지 마세요.",
+    "pid": 3768,
+    "lstart": "Thu Oct 29 09:24:49 2026",
+    "invocation_without_goal": [
+      "codex",
+      "exec",
+      "--ignore-user-config",
+      "--json",
+      "--sandbox",
+      "workspace-write",
+      "-c",
+      "approval_policy=\"never\"",
+      "-c",
+      "mcp_servers.xsm.command=\"/usr/bin/python3\"",
+      "-c",
+      "mcp_servers.xsm.args=[\"-m\",\"xsm\",\"mcp\"]",
+      "-c",
+      "mcp_servers.xsm.cwd=\"/private/tmp/xsm-final-receipt-frozen-i3u9pms3\"",
+      "-c",
+      "mcp_servers.xsm.env.XSM_HOME=\"/private/tmp/p13-passive-fyi-phb8nuwk/state\"",
+      "-c",
+      "mcp_servers.xsm.env.CODEX_HOME=\"/Users/jaesolshin/.codex-3\"",
+      "-c",
+      "mcp_servers.xsm.env.PYTHONPATH=\"/private/tmp/xsm-final-receipt-frozen-i3u9pms3\"",
+      "-c",
+      "mcp_servers.xsm.env.PYTHONDONTWRITEBYTECODE=\"1\""
+    ],
+    "goal_sha256": "7ea8d9d71ab7e087735a888c17e85715be2acd664eef425b4fcd0de31f4145c0"
+  },
+  "actors": [
+    {
+      "role": "reviewer",
+      "native_session_id": "01a1850b-8cf0-77d1-9247-80dbbdb95356",
+      "registered_name": "a1",
+      "mcp_pid": 3701,
+      "setup_registration_seconds": 0.431,
+      "registration_preceded_first_agent_call": true,
+      "calls": [
+        {
+          "kind": "command_execution",
+          "complete": true,
+          "seconds_from_actor_start": 7.187,
+          "command_sha256": "4c4dd772b809c2b823e0a9d01bb71091a5bc918667d16db295d4cb329409828e",
+          "exit_code": 0,
+          "sandbox_shell_send_attempt": false,
+          "skill_read": false,
+          "sandbox_failure": false
+        },
+        {
+          "kind": "command_execution",
+          "complete": true,
+          "seconds_from_actor_start": 29.497,
+          "command_sha256": "4a4b5697b5641c3201f59fa0d16d356ea5b64152bd55aa6883242acdd0605c47",
+          "exit_code": 0,
+          "sandbox_shell_send_attempt": false,
+          "skill_read": true,
+          "sandbox_failure": false
+        },
+        {
+          "kind": "command_execution",
+          "complete": true,
+          "seconds_from_actor_start": 31.595,
+          "command_sha256": "829092d1330d5e1178f5e996891ce2ac44c508fc65e3cd979e3264aca86d903c",
+          "exit_code": 0,
+          "sandbox_shell_send_attempt": false,
+          "skill_read": false,
+          "sandbox_failure": false
+        },
+        {
+          "kind": "command_execution",
+          "complete": true,
+          "seconds_from_actor_start": 34.348,
+          "command_sha256": "4286649a445a7b90217b1123709cd9401c73ad6fc32ed6341d9044e84f09fbf0",
+          "exit_code": 0,
+          "sandbox_shell_send_attempt": false,
+          "skill_read": false,
+          "sandbox_failure": false
+        },
+        {
+          "kind": "mcp_tool_call",
+          "complete": true,
+          "seconds_from_actor_start": 36.227,
+          "server": "xsm",
+          "tool": "xsm_inbox",
+          "error": null,
+          "argument_keys": [],
+          "arguments_sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+        },
+        {
+          "kind": "mcp_tool_call",
+          "complete": true,
+          "seconds_from_actor_start": 40.406,
+          "server": "xsm",
+          "tool": "xsm_ack",
+          "error": null,
+          "argument_keys": [
+            "tokens"
+          ],
+          "arguments_sha256": "c25ebe001aa1d79970ff1a90832aee58b2eaf6382a7785fc1dee6157d9e8a931"
+        },
+        {
+          "kind": "command_execution",
+          "complete": true,
+          "seconds_from_actor_start": 40.517,
+          "command_sha256": "8ce6a995c1bca7bd255d71e8042d5206d5aae751b29f8e50e0120ce43afe9d55",
+          "exit_code": 0,
+          "sandbox_shell_send_attempt": false,
+          "skill_read": false,
+          "sandbox_failure": false
+        }
+      ],
+      "item_type_counts": {
+        "command_execution": 5,
+        "mcp_tool_call": 2
+      },
+      "agent_mcp_call_count": 2,
+      "agent_shell_call_count": 5,
+      "tool_error_count": 0,
+      "first_wrong_choice": null,
+      "exit_code": 0,
+      "events_path": "/private/tmp/p13-passive-fyi-phb8nuwk/reviewer.jsonl",
+      "stderr_path": "/private/tmp/p13-passive-fyi-phb8nuwk/reviewer.stderr",
+      "events_sha256": "fe160c00c89b636f3e1308ad881cf2fc214be7bd1484684e788e47d2e1f367ab"
+    },
+    {
+      "role": "initiator",
+      "native_session_id": "01a1850b-8ed5-7263-b064-17cc6361805e",
+      "registered_name": null,
+      "mcp_pid": 3905,
+      "setup_registration_seconds": 0.469,
+      "registration_preceded_first_agent_call": true,
+      "calls": [
+        {
+          "kind": "command_execution",
+          "complete": true,
+          "seconds_from_actor_start": 5.936,
+          "command_sha256": "4a4b5697b5641c3201f59fa0d16d356ea5b64152bd55aa6883242acdd0605c47",
+          "exit_code": 0,
+          "sandbox_shell_send_attempt": false,
+          "skill_read": true,
+          "sandbox_failure": false
+        },
+        {
+          "kind": "command_execution",
+          "complete": true,
+          "seconds_from_actor_start": 8.447,
+          "command_sha256": "829092d1330d5e1178f5e996891ce2ac44c508fc65e3cd979e3264aca86d903c",
+          "exit_code": 0,
+          "sandbox_shell_send_attempt": false,
+          "skill_read": false,
+          "sandbox_failure": false
+        },
+        {
+          "kind": "mcp_tool_call",
+          "complete": true,
+          "seconds_from_actor_start": 11.177,
+          "server": "xsm",
+          "tool": "xsm_send",
+          "error": null,
+          "argument_keys": [
+            "kind",
+            "target",
+            "text",
+            "wake"
+          ],
+          "arguments_sha256": "7c9d7a9d33282aa26a241873ddd6aa19d3bb772113f7fe553aa5bc477b659b03"
+        }
+      ],
+      "item_type_counts": {
+        "command_execution": 2,
+        "mcp_tool_call": 1
+      },
+      "agent_mcp_call_count": 1,
+      "agent_shell_call_count": 2,
+      "tool_error_count": 0,
+      "first_wrong_choice": null,
+      "exit_code": 0,
+      "events_path": "/private/tmp/p13-passive-fyi-phb8nuwk/initiator.jsonl",
+      "stderr_path": "/private/tmp/p13-passive-fyi-phb8nuwk/initiator.stderr",
+      "events_sha256": "39404aa97970ff1c9cebd215eb093be414615bbe1af723b56a107ad93958fc20"
+    }
+  ],
+  "ended_at": 1793233535.84165,
+  "cleanup": [],
+  "owned_processes_after": [
+    {
+      "role": "reviewer",
+      "pid": 3544,
+      "lstart": "Thu Oct 29 09:24:49 2026",
+      "native_alive": false,
+      "mcp_pid": 3701,
+      "mcp_same_generation_alive": false
+    },
+    {
+      "role": "initiator",
+      "pid": 3768,
+      "lstart": "Thu Oct 29 09:24:49 2026",
+      "native_alive": false,
+      "mcp_pid": 3905,
+      "mcp_same_generation_alive": false
+    }
+  ],
+  "source_after": {
+    "file_count": 315,
+    "manifest_sha256": "57d088eee167e573d3a534e2d53db230703963516ece02ee1b6fce294ae9068f",
+    "matches": true,
+    "changed_paths": []
+  },
+  "source_unchanged": true,
+  "profile_settings_and_auth_metadata_unchanged": false,
+  "observations_path": "/private/tmp/p13-passive-fyi-phb8nuwk/controller-observations.json"
+}

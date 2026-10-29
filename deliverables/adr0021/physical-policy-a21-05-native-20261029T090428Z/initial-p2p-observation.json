@@ -1,0 +1,29 @@
+{
+  "ssh_used_for_readonly_observation": true,
+  "health": [
+    {
+      "source": "book",
+      "target": "mini",
+      "matches": [
+        {
+          "native_event_id": "py-79",
+          "tls_origin_matches": true,
+          "body_digests_match": true,
+          "path": "direct"
+        }
+      ]
+    },
+    {
+      "source": "mini",
+      "target": "book",
+      "matches": [
+        {
+          "native_event_id": "py-158",
+          "tls_origin_matches": true,
+          "body_digests_match": true,
+          "path": "direct"
+        }
+      ]
+    }
+  ]
+}

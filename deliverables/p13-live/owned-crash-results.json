@@ -1,0 +1,554 @@
+{
+  "private_root": "/private/tmp/p13-owned-crash-jly3ax9r",
+  "frozen": "/private/tmp/xsm-p13-postqa-frozen-bukwksw6",
+  "manifest_checked_files": 313,
+  "manifest_match": true,
+  "owner_identity": "actual registry.me endpoint unchanged; registered only in private state",
+  "owner_recorded_cwd": "/Users/jaesolshin/.codex-3/plugins/cache/xsm/xsm/0.4.20",
+  "fixture_fields": [
+    "worker display name",
+    "request IDs",
+    "work_context",
+    "task bodies",
+    "private effect paths"
+  ],
+  "native_profile": "existing owner Codex home; no config/auth copy or override",
+  "native_mcp": "existing profile default MCP settings, not factory override; tool events counted from native stdout",
+  "publication": "actual publish_owned(wake=False); canonical private storage, not native UI delivery",
+  "model_permissions_adjusted": false,
+  "executor_mocked": false,
+  "readback_injected": false,
+  "automatic_model_retries": 0,
+  "cases": [
+    {
+      "boundary": "request-stored",
+      "id": "p13-crash-jly3ax9r-0",
+      "resume_owner": "coordinator if this cell remains unverified",
+      "resume_condition": "same frozen source, retained private journal/native stdout and existing subscription authorization; no forced rerun of unknown effects",
+      "initial": {
+        "returncode": -9,
+        "controller_pid": 28372
+      },
+      "boundary_reached": true,
+      "before": {
+        "id": "p13-crash-jly3ax9r-0",
+        "status": "queued",
+        "reply_id": null,
+        "digest": "224a8b9a8bbe4c63e4238e6009ab748aba5709b4204acffd6f45a2c00ef93064",
+        "result_digest": null,
+        "execution_state": null,
+        "slot_occupied": false,
+        "result_sha256": null
+      },
+      "native_turns_at_cut": 0,
+      "effect_at_cut": null,
+      "recovered": {
+        "id": "p13-crash-jly3ax9r-0",
+        "status": "queued",
+        "reply_id": null,
+        "digest": "224a8b9a8bbe4c63e4238e6009ab748aba5709b4204acffd6f45a2c00ef93064",
+        "result_digest": null,
+        "execution_state": null,
+        "slot_occupied": false,
+        "result_sha256": null
+      },
+      "recovery_action": "same ID/body/context resume after proven pre-run controller death",
+      "recovery": {
+        "returncode": 0,
+        "controller_pid": 28373,
+        "status": "reply-stored"
+      },
+      "final": {
+        "id": "p13-crash-jly3ax9r-0",
+        "status": "reply-stored",
+        "reply_id": "fc8fdd3b3d5a4950",
+        "digest": "224a8b9a8bbe4c63e4238e6009ab748aba5709b4204acffd6f45a2c00ef93064",
+        "result_digest": "e2d18b70d95afd45b9326c37af32da6f9e9aa74288129f91069953bd2fe6f24b",
+        "execution_state": null,
+        "slot_occupied": false,
+        "result_sha256": "e2d18b70d95afd45b9326c37af32da6f9e9aa74288129f91069953bd2fe6f24b"
+      },
+      "effect_final": "1",
+      "native_child": {
+        "pid": 28375,
+        "lstart": "Thu Oct 29 05:37:38 2026",
+        "returncode": 0
+      },
+      "native_CID": "01a1843b-8fb9-70d1-987b-103b5f2e7a24",
+      "native_evidence": {
+        "event_count": 7,
+        "terminal_event": "turn.completed",
+        "diagnostic_error_count": 0
+      },
+      "native_turns_total": 1,
+      "stored_reply_unchanged": null,
+      "reply_id_unchanged": null,
+      "send_evidence": {
+        "id": "fc8fdd3b3d5a4950",
+        "status": "stored",
+        "wake": null
+      },
+      "stdout_sha256": "fedd86907aa3f4b237b45f394070e8b4307b49c1b33612fcbe24becbe6084c78",
+      "native_tools": [
+        {
+          "type": "command_execution",
+          "exit_code": 0,
+          "status": "completed"
+        }
+      ],
+      "actual_turn_started_events": 1,
+      "terminal_completed_events": 1,
+      "remaining_child_alive": false,
+      "immutable_request_preserved": true,
+      "same_native_execution_after_recovery": null,
+      "final_outcome": "succeeded",
+      "native_mcp_calls": 0,
+      "native_default_tool_calls": 1,
+      "reply_ledger": [
+        {
+          "id": "fc8fdd3b3d5a4950",
+          "status": "queued",
+          "reply_to": "p13-crash-jly3ax9r-0",
+          "resends": 1
+        }
+      ],
+      "canonical_reply_originals": 1,
+      "canonical_reply_body_matches": true,
+      "remaining_native_process_group": [],
+      "controller_still_present": false,
+      "verified": true
+    },
+    {
+      "boundary": "acknowledged",
+      "id": "p13-crash-jly3ax9r-1",
+      "resume_owner": "coordinator if this cell remains unverified",
+      "resume_condition": "same frozen source, retained private journal/native stdout and existing subscription authorization; no forced rerun of unknown effects",
+      "initial": {
+        "returncode": -9,
+        "controller_pid": 29405
+      },
+      "boundary_reached": true,
+      "before": {
+        "id": "p13-crash-jly3ax9r-1",
+        "status": "acknowledged",
+        "reply_id": null,
+        "digest": "f63b30a98e30791dccecfb35b208f1959297cee7484d1c729db4b0dbbbb684fb",
+        "result_digest": null,
+        "execution_state": null,
+        "slot_occupied": true,
+        "result_sha256": null
+      },
+      "native_turns_at_cut": 0,
+      "effect_at_cut": null,
+      "recovered": {
+        "id": "p13-crash-jly3ax9r-1",
+        "status": "queued",
+        "reply_id": null,
+        "digest": "f63b30a98e30791dccecfb35b208f1959297cee7484d1c729db4b0dbbbb684fb",
+        "result_digest": null,
+        "execution_state": null,
+        "slot_occupied": false,
+        "result_sha256": null
+      },
+      "recovery_action": "same ID/body/context resume after proven pre-run controller death",
+      "recovery": {
+        "returncode": 0,
+        "controller_pid": 29426,
+        "status": "reply-stored"
+      },
+      "final": {
+        "id": "p13-crash-jly3ax9r-1",
+        "status": "reply-stored",
+        "reply_id": "9786444bd25f4278",
+        "digest": "f63b30a98e30791dccecfb35b208f1959297cee7484d1c729db4b0dbbbb684fb",
+        "result_digest": "165b7472b9d8b482aae1904bea4631781ec4f3985b13d23e789f3a5ffe7e02dd",
+        "execution_state": null,
+        "slot_occupied": false,
+        "result_sha256": "165b7472b9d8b482aae1904bea4631781ec4f3985b13d23e789f3a5ffe7e02dd"
+      },
+      "effect_final": "1",
+      "native_child": {
+        "pid": 29428,
+        "lstart": "Thu Oct 29 05:37:49 2026",
+        "returncode": 0
+      },
+      "native_CID": "01a1843b-bbe0-78e2-b481-a1c9a28d24c2",
+      "native_evidence": {
+        "event_count": 7,
+        "terminal_event": "turn.completed",
+        "diagnostic_error_count": 0
+      },
+      "native_turns_total": 1,
+      "stored_reply_unchanged": null,
+      "reply_id_unchanged": null,
+      "send_evidence": {
+        "id": "9786444bd25f4278",
+        "status": "stored",
+        "wake": null
+      },
+      "stdout_sha256": "ad6f21c3a39a8b1327fe452dddacf7bbbe75ca2932730715fc37ef433b3a2428",
+      "native_tools": [
+        {
+          "type": "command_execution",
+          "exit_code": 0,
+          "status": "completed"
+        }
+      ],
+      "actual_turn_started_events": 1,
+      "terminal_completed_events": 1,
+      "remaining_child_alive": false,
+      "immutable_request_preserved": true,
+      "same_native_execution_after_recovery": null,
+      "final_outcome": "succeeded",
+      "native_mcp_calls": 0,
+      "native_default_tool_calls": 1,
+      "reply_ledger": [
+        {
+          "id": "9786444bd25f4278",
+          "status": "queued",
+          "reply_to": "p13-crash-jly3ax9r-1",
+          "resends": 1
+        }
+      ],
+      "canonical_reply_originals": 1,
+      "canonical_reply_body_matches": true,
+      "remaining_native_process_group": [],
+      "controller_still_present": false,
+      "verified": true
+    },
+    {
+      "boundary": "after-execution",
+      "id": "p13-crash-jly3ax9r-2",
+      "resume_owner": "coordinator if this cell remains unverified",
+      "resume_condition": "same frozen source, retained private journal/native stdout and existing subscription authorization; no forced rerun of unknown effects",
+      "initial": {
+        "returncode": -9,
+        "controller_pid": 30509
+      },
+      "boundary_reached": true,
+      "before": {
+        "id": "p13-crash-jly3ax9r-2",
+        "status": "running",
+        "reply_id": null,
+        "digest": "44c20d30c587a028d0441f1b91c650ccfbffbe7a070c353a30248867555d1c6d",
+        "result_digest": null,
+        "execution_state": null,
+        "slot_occupied": true,
+        "result_sha256": null
+      },
+      "native_turns_at_cut": 1,
+      "effect_at_cut": "1",
+      "recovered": {
+        "id": "p13-crash-jly3ax9r-2",
+        "status": "unknown",
+        "reply_id": null,
+        "digest": "44c20d30c587a028d0441f1b91c650ccfbffbe7a070c353a30248867555d1c6d",
+        "result_digest": null,
+        "execution_state": "exited",
+        "slot_occupied": false,
+        "result_sha256": null
+      },
+      "fenced_same_id_resume": {
+        "returncode": 0,
+        "controller_pid": 31543,
+        "status": "unknown"
+      },
+      "recovery_action": "reconcile default completed-native stdout readback",
+      "recovery": {
+        "returncode": 0,
+        "controller_pid": 31546,
+        "status": "reply-stored"
+      },
+      "final": {
+        "id": "p13-crash-jly3ax9r-2",
+        "status": "reply-stored",
+        "reply_id": "e4a8a5f207094aac",
+        "digest": "44c20d30c587a028d0441f1b91c650ccfbffbe7a070c353a30248867555d1c6d",
+        "result_digest": "38f2179ad823670baac3e0dc8943ae2884dd29ba36cc18d565c83eecbb8b475b",
+        "execution_state": null,
+        "slot_occupied": false,
+        "result_sha256": "38f2179ad823670baac3e0dc8943ae2884dd29ba36cc18d565c83eecbb8b475b"
+      },
+      "effect_final": "1",
+      "native_child": {
+        "pid": 30511,
+        "lstart": "Thu Oct 29 05:38:00 2026",
+        "returncode": 0
+      },
+      "native_CID": "01a1843b-e7df-7550-b0b3-f6b938085295",
+      "native_evidence": {
+        "event_count": 7,
+        "terminal_event": "turn.completed",
+        "diagnostic_error_count": 0
+      },
+      "native_turns_total": 1,
+      "stored_reply_unchanged": null,
+      "reply_id_unchanged": null,
+      "send_evidence": {
+        "id": "e4a8a5f207094aac",
+        "status": "stored",
+        "wake": null
+      },
+      "stdout_sha256": "d69438a38607497ddb07e662b827e6c711b836bc941cdf4a65883acce6f49fe8",
+      "native_tools": [
+        {
+          "type": "command_execution",
+          "exit_code": 0,
+          "status": "completed"
+        }
+      ],
+      "actual_turn_started_events": 1,
+      "terminal_completed_events": 1,
+      "remaining_child_alive": false,
+      "immutable_request_preserved": true,
+      "same_native_execution_after_recovery": true,
+      "final_outcome": "succeeded",
+      "native_mcp_calls": 0,
+      "native_default_tool_calls": 1,
+      "reply_ledger": [
+        {
+          "id": "e4a8a5f207094aac",
+          "status": "queued",
+          "reply_to": "p13-crash-jly3ax9r-2",
+          "resends": 1
+        }
+      ],
+      "canonical_reply_originals": 1,
+      "canonical_reply_body_matches": true,
+      "remaining_native_process_group": [],
+      "controller_still_present": false,
+      "verified": true
+    },
+    {
+      "boundary": "result-stored",
+      "id": "p13-crash-jly3ax9r-3",
+      "resume_owner": "coordinator if this cell remains unverified",
+      "resume_condition": "same frozen source, retained private journal/native stdout and existing subscription authorization; no forced rerun of unknown effects",
+      "initial": {
+        "returncode": -9,
+        "controller_pid": 31556
+      },
+      "boundary_reached": true,
+      "before": {
+        "id": "p13-crash-jly3ax9r-3",
+        "status": "result-ready",
+        "reply_id": "8b57266a36df441b",
+        "digest": "3fb1047939238ae2e6491335d50b9fb9612eaf42e2fb3477df529655d6c0df29",
+        "result_digest": "c435b55869124d2c5f34e9dcf44d312f6223d492484fa60dfd90b0932a0c628d",
+        "execution_state": null,
+        "slot_occupied": false,
+        "result_sha256": "c435b55869124d2c5f34e9dcf44d312f6223d492484fa60dfd90b0932a0c628d"
+      },
+      "native_turns_at_cut": 1,
+      "effect_at_cut": "1",
+      "recovered": {
+        "id": "p13-crash-jly3ax9r-3",
+        "status": "result-ready",
+        "reply_id": "8b57266a36df441b",
+        "digest": "3fb1047939238ae2e6491335d50b9fb9612eaf42e2fb3477df529655d6c0df29",
+        "result_digest": "c435b55869124d2c5f34e9dcf44d312f6223d492484fa60dfd90b0932a0c628d",
+        "execution_state": null,
+        "slot_occupied": false,
+        "result_sha256": "c435b55869124d2c5f34e9dcf44d312f6223d492484fa60dfd90b0932a0c628d"
+      },
+      "recovery_action": "resend saved result only",
+      "recovery": {
+        "returncode": 0,
+        "controller_pid": 32600,
+        "status": "reply-stored"
+      },
+      "final": {
+        "id": "p13-crash-jly3ax9r-3",
+        "status": "reply-stored",
+        "reply_id": "8b57266a36df441b",
+        "digest": "3fb1047939238ae2e6491335d50b9fb9612eaf42e2fb3477df529655d6c0df29",
+        "result_digest": "c435b55869124d2c5f34e9dcf44d312f6223d492484fa60dfd90b0932a0c628d",
+        "execution_state": null,
+        "slot_occupied": false,
+        "result_sha256": "c435b55869124d2c5f34e9dcf44d312f6223d492484fa60dfd90b0932a0c628d"
+      },
+      "effect_final": "1",
+      "native_child": {
+        "pid": 31558,
+        "lstart": "Thu Oct 29 05:38:12 2026",
+        "returncode": 0
+      },
+      "native_CID": "01a1843c-1727-7621-89c2-dafaa31693ff",
+      "native_evidence": {
+        "event_count": 7,
+        "terminal_event": "turn.completed",
+        "diagnostic_error_count": 0
+      },
+      "native_turns_total": 1,
+      "stored_reply_unchanged": true,
+      "reply_id_unchanged": true,
+      "send_evidence": {
+        "id": "8b57266a36df441b",
+        "status": "stored",
+        "wake": null
+      },
+      "stdout_sha256": "0f9b3457a5fdd6248eaae08f58a30dd032530313665f9512e76c9b5353063767",
+      "native_tools": [
+        {
+          "type": "command_execution",
+          "exit_code": 0,
+          "status": "completed"
+        }
+      ],
+      "actual_turn_started_events": 1,
+      "terminal_completed_events": 1,
+      "remaining_child_alive": false,
+      "immutable_request_preserved": true,
+      "same_native_execution_after_recovery": true,
+      "final_outcome": "succeeded",
+      "native_mcp_calls": 0,
+      "native_default_tool_calls": 1,
+      "reply_ledger": [
+        {
+          "id": "8b57266a36df441b",
+          "status": "queued",
+          "reply_to": "p13-crash-jly3ax9r-3",
+          "resends": 1
+        }
+      ],
+      "canonical_reply_originals": 1,
+      "canonical_reply_body_matches": true,
+      "remaining_native_process_group": [],
+      "controller_still_present": false,
+      "verified": true
+    },
+    {
+      "boundary": "reply-sent",
+      "id": "p13-crash-jly3ax9r-4",
+      "resume_owner": "coordinator if this cell remains unverified",
+      "resume_condition": "same frozen source, retained private journal/native stdout and existing subscription authorization; no forced rerun of unknown effects",
+      "initial": {
+        "returncode": -9,
+        "controller_pid": 32608
+      },
+      "boundary_reached": true,
+      "before": {
+        "id": "p13-crash-jly3ax9r-4",
+        "status": "sending",
+        "reply_id": "1264e84aac5b4af5",
+        "digest": "6cf8e40e1e4b0aee3a490111735758f128e6967dd66e2681238a9cfaec3e38a6",
+        "result_digest": "d5b13b5277e903c14172ed98922f09561ed2aadf4c1a9e9329080ccf35677743",
+        "execution_state": null,
+        "slot_occupied": false,
+        "result_sha256": "d5b13b5277e903c14172ed98922f09561ed2aadf4c1a9e9329080ccf35677743"
+      },
+      "native_turns_at_cut": 1,
+      "effect_at_cut": "1",
+      "recovered": {
+        "id": "p13-crash-jly3ax9r-4",
+        "status": "result-ready",
+        "reply_id": "1264e84aac5b4af5",
+        "digest": "6cf8e40e1e4b0aee3a490111735758f128e6967dd66e2681238a9cfaec3e38a6",
+        "result_digest": "d5b13b5277e903c14172ed98922f09561ed2aadf4c1a9e9329080ccf35677743",
+        "execution_state": null,
+        "slot_occupied": false,
+        "result_sha256": "d5b13b5277e903c14172ed98922f09561ed2aadf4c1a9e9329080ccf35677743"
+      },
+      "recovery_action": "resend saved result only",
+      "recovery": {
+        "returncode": 0,
+        "controller_pid": 33629,
+        "status": "reply-stored"
+      },
+      "final": {
+        "id": "p13-crash-jly3ax9r-4",
+        "status": "reply-stored",
+        "reply_id": "1264e84aac5b4af5",
+        "digest": "6cf8e40e1e4b0aee3a490111735758f128e6967dd66e2681238a9cfaec3e38a6",
+        "result_digest": "d5b13b5277e903c14172ed98922f09561ed2aadf4c1a9e9329080ccf35677743",
+        "execution_state": null,
+        "slot_occupied": false,
+        "result_sha256": "d5b13b5277e903c14172ed98922f09561ed2aadf4c1a9e9329080ccf35677743"
+      },
+      "effect_final": "1",
+      "native_child": {
+        "pid": 32610,
+        "lstart": "Thu Oct 29 05:38:25 2026",
+        "returncode": 0
+      },
+      "native_CID": "01a1843c-4770-7d53-a89a-c114fea0a184",
+      "native_evidence": {
+        "event_count": 7,
+        "terminal_event": "turn.completed",
+        "diagnostic_error_count": 0
+      },
+      "native_turns_total": 1,
+      "stored_reply_unchanged": true,
+      "reply_id_unchanged": true,
+      "send_evidence": {
+        "id": "1264e84aac5b4af5",
+        "status": "stored",
+        "wake": null
+      },
+      "stdout_sha256": "a7411821089daea328a19c9a9b326a331dfa2c416f8b02d0b0326f5521a36fd8",
+      "native_tools": [
+        {
+          "type": "command_execution",
+          "exit_code": 0,
+          "status": "completed"
+        }
+      ],
+      "actual_turn_started_events": 1,
+      "terminal_completed_events": 1,
+      "remaining_child_alive": false,
+      "immutable_request_preserved": true,
+      "same_native_execution_after_recovery": true,
+      "final_outcome": "succeeded",
+      "native_mcp_calls": 0,
+      "native_default_tool_calls": 1,
+      "reply_ledger": [
+        {
+          "id": "1264e84aac5b4af5",
+          "status": "queued",
+          "reply_to": "p13-crash-jly3ax9r-4",
+          "resends": 2
+        }
+      ],
+      "canonical_reply_originals": 1,
+      "canonical_reply_body_matches": true,
+      "remaining_native_process_group": [],
+      "controller_still_present": false,
+      "verified": true
+    }
+  ],
+  "elapsed_seconds": 61.44,
+  "cleanup": [
+    {
+      "boundary": "request-stored",
+      "pid": 28375,
+      "alive": false
+    },
+    {
+      "boundary": "acknowledged",
+      "pid": 29428,
+      "alive": false
+    },
+    {
+      "boundary": "after-execution",
+      "pid": 30511,
+      "alive": false
+    },
+    {
+      "boundary": "result-stored",
+      "pid": 31558,
+      "alive": false
+    },
+    {
+      "boundary": "reply-sent",
+      "pid": 32610,
+      "alive": false
+    }
+  ],
+  "source_unchanged_after": true,
+  "audit_at": 1793220561.509867,
+  "total_native_started_turns": 5,
+  "total_native_children": 5,
+  "total_default_tool_calls": 5,
+  "total_mcp_calls": 0,
+  "boundaries_verified": 5
+}

@@ -1,0 +1,28 @@
+{
+  "status": "final manifest verified; one execution authorized by coordinator assignment",
+  "prepared_utc": "2026-10-28T22:23:30.683172+00:00",
+  "private_root": "/private/tmp/different-parent-native-3jr1o8uv",
+  "public": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/deliverables/p13-live/different-parent-native-20261029-5564a814",
+  "CODEX_HOME": "/Users/jaesolshin/.codex-3",
+  "private_common_workdir": "/private/tmp/different-parent-native-3jr1o8uv/work",
+  "parents": 2,
+  "native_children_each": 1,
+  "required_relation": "two distinct actual child parent_thread_id values, matching each CLI parent thread.started",
+  "native_launches_before_manifest": 0,
+  "setup_names": [
+    "a1",
+    "a2"
+  ],
+  "setup_rule": "actual CID/PID/lstart/home/cwd/provider parent relation only",
+  "model_condition_retries": 0,
+  "parent_body_forwarding_or_manual_ACK": false,
+  "shared_MCP_success_claim": false,
+  "source": "/private/tmp/xsm-final-receipt-frozen-i3u9pms3",
+  "total_limit_minutes": 12,
+  "last_experiment": true,
+  "source_manifest": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/deliverables/p13-live/final-source-manifest.json",
+  "source_files": 315,
+  "primary_paths": 135,
+  "manifest_sha256": "cb05d6ecb3ab87d95359de3cc318f5ea217bee23837e72b9fff34f6512fb1463",
+  "deadline_utc": "2026-10-28T22:35:30+00:00"
+}

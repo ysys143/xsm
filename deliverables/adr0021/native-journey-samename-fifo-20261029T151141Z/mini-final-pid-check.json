@@ -1,0 +1,30 @@
+{
+  "observed_epoch": 1793287327.065054,
+  "processes": [
+    {
+      "pid": 62457,
+      "lstart": "Fri Oct 30 00:15:35 2026",
+      "kind": "native",
+      "after_ps": ""
+    },
+    {
+      "pid": 62715,
+      "lstart": "Fri Oct 30 00:15:38 2026",
+      "kind": "MCP",
+      "after_ps": ""
+    },
+    {
+      "pid": 44277,
+      "lstart": "Fri Oct 30 00:11:45 2026",
+      "kind": "network-service",
+      "after_ps": ""
+    },
+    {
+      "pid": 44279,
+      "kind": "engine",
+      "lstart": null,
+      "after_ps": ""
+    }
+  ],
+  "all_absent": true
+}

@@ -1,0 +1,26 @@
+[
+  {
+    "argv": [
+      "/private/tmp/native-journey-mixed-proc-book-g54im4t2/shim/ps",
+      "-p",
+      "1",
+      "-o",
+      "lstart="
+    ],
+    "exit": 1,
+    "stdout": "",
+    "stderr": "scoped ps refused: requested PID outside own ancestry/verified fixture scope\n"
+  },
+  {
+    "argv": [
+      "/private/tmp/native-journey-mixed-proc-book-g54im4t2/shim/ps",
+      "-p",
+      "70597",
+      "-o",
+      "args="
+    ],
+    "exit": 1,
+    "stdout": "",
+    "stderr": "scoped ps refused: only PID/UID/start/real command metadata supported; argv/environment not read\n"
+  }
+]

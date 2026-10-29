@@ -1,0 +1,248 @@
+{
+  "scope": "ADR-0021 foundation P2P join/membership batch; frozen source only; subsequent application integration excluded",
+  "verdict": "changes_required",
+  "Medium_plus_findings": [
+    {
+      "id": "F1",
+      "severity": "Medium",
+      "title": "네트워크 전환 후 이전 네트워크 피어 목록(_peers)이 남아, 새 네트워크의 서명 멤버십 스냅샷이 비멤버에게 계속 전송됨",
+      "file": "xsm/network.py",
+      "lines": "216-254, 308-311, 313-323, 382-388",
+      "trigger": "기기가 네트워크 A의 활성 멤버로 동작하며 Daemon._peers에 A의 피어 P_A가 있다. 이 상태에서 사용자가 `xsm network join --ticket-file <B 티켓>`을 실행해 네트워크 B로 전환하고 성공한다. ADR-0021 58/79행은 팀 전환을 요구사항으로 명시한다.",
+      "reproduction_path": "local('join')은 store가 있어도 거부하지 않고 _join을 호출한다. _install이 active.json을 B로 바꾸지만 self._peers는 초기화하지 않고 B 피어만 추가한다(251행). 이어 _save_peers가 P_A까지 peers-<B 해시>.json에 기록한다(311행). synchronize(384-386행)는 2초마다 self._peers 전체에 rpc(peer, {'op':'sync'})를 보낸다. rpc의 317행 활성 검사는 op=='sync'이면 건너뛰고, store는 이제 B이므로 322행에서 packet['state']=B.snapshot()이 붙는다. 323행 transport.request가 이 패킷을 P_A로 전송한다. P_A의 incoming은 network_id 불일치로 'network-unavailable'을 반환하지만, 본문은 이미 P_A의 프로세스/핸들러에 도착한 뒤다. 재시작 전까지 반복되며, serve() 418행의 is_active 필터는 재시작할 때만 적용된다. 정적 추론이며 실행하지 않았다.",
+      "impact": "MembershipStore.snapshot 계약('활성 멤버에게만 전송할 내부 상태')을 위반한다. B의 네트워크 이름, 모든 멤버 endpoint ID와 machine_name, 초대 해시·만료 정보, 이 기기의 주소가 B 비멤버인 A 피어들에게 주기적으로 공개된다. 비밀값·개인키는 아니지만 다른 팀의 명단·기기 메타데이터 노출이다.",
+      "test_evidence": "tests/test_network_service.py의 test_failed_wrong_network_and_verified_wrong_state_preserve_active는 전환 실패 시 active.json 보존만 검사한다. 전환 성공 뒤 _peers나 sync 대상을 검사하는 테스트는 확인된 범위에 없다. test_network_membership.py의 adopt 테스트는 store 단위에 그친다."
+    },
+    {
+      "id": "F2",
+      "severity": "Medium",
+      "title": "sidecar가 종료되면 Python 서비스가 감독 없이 남아 lock을 계속 쥐고, `start`가 재기동하지 못한 채 실패함",
+      "file": "xsm/network.py",
+      "lines": "122-147, 208-214, 391-448",
+      "trigger": "서비스 실행 중 Rust xsm-net 프로세스가 종료된다. 예: panic, 외부 kill, ipc_write_timeout 뒤 serve 종료(native/xsm-net/src/ipc.rs 54-66, 97). 이 경로는 코드에 명시적으로 처리된 상황이다.",
+      "reproduction_path": "network_transport.py 304-307행 _watch_process가 _fail('process_exited')와 _dispose만 수행하고, Daemon과 serve()에는 아무 통지가 없다. 그래서 serve_forever(445행)가 계속 돌며 service.lock을 쥔다. 활성 네트워크가 있으면 status()의 store.is_active가 _Graph 검증에서 Sidecar.verify를 호출한다. 이 호출이 SidecarError를 내면 valid=False가 되어 MembershipError('invalid_signature')로 이어지고, Handler는 'operation-failed'를 반환한다. 이때 start()의 125행 status 호출이 실패해 새 child를 spawn하지만, child는 397행 flock LOCK_NB에 실패해 즉시 0으로 종료한다. 그 결과 144-145행에서 'service-start-failed'가 난다. 네트워크가 없을 때는 status가 stale ready_info로 'running'을 보고하므로 start()가 성공처럼 반환된다. 그 뒤 init/join은 서명 또는 요청 단계에서 실패한다(_join에서는 process_exited가 'join-response-unknown'으로 분류됨, 233-244행). 정적 추론이며 실행하지 않았다.",
+      "impact": "sidecar가 한 번 종료되면 P2P 수신·동기화·가입·초대가 영구히 불가능해진다. 자동 복구가 없고, CLI가 안내하는 recover_at(status)도 operation-failed나 오해 소지 있는 running을 돌려준다. 사용자가 `xsm network stop`을 알아야만 복구된다. 수명·crash 처리 요구(검토 범위 7)에 해당한다.",
+      "test_evidence": "tests/test_network_transport.py의 test_process_exit_fails_all_pending_without_payload_or_stderr는 Sidecar 객체 수준의 pending 실패만 확인한다. tests/test_network_service.py는 정상 stop/restart(test_service_restart_retains_keys_membership_and_closes_listeners)만 다루고, 서비스 실행 중 sidecar 종료는 다루지 않는다."
+    }
+  ],
+  "requested_model": "claude-opus-5-5",
+  "actual_init_model": "claude-opus-5-5",
+  "actual_modelUsage_IDs": [
+    "claude-opus-5-5"
+  ],
+  "model_review_count": 1,
+  "model_retries": 0,
+  "additional_model_calls_after_completion": 0,
+  "PID": 44220,
+  "CLI_binary": "/Users/jaesolshin/.local/share/claude/versions/2.1.312",
+  "CLI_version": "2.1.312",
+  "CLI_binary_sha256": "6b5ec691195e551b02c41df9f7d723f4ea61eaa03c2df90acefe3736f1aeb620",
+  "subscription_profile": ".claude-3",
+  "subscription_auth_metadata": {
+    "loggedIn": true,
+    "authMethod": "claude.ai",
+    "apiProvider": "firstParty",
+    "subscriptionType": "max"
+  },
+  "apiKeySource": "none",
+  "ANTHROPIC_API_KEY_removed_from_process_env": true,
+  "credential_values_queried": false,
+  "API_key_used": false,
+  "persistent_model_registration_performed": false,
+  "permission_rules_changed": false,
+  "session_argv_without_prompt": [
+    "/Users/jaesolshin/.local/share/claude/versions/2.1.312",
+    "-p",
+    "--model",
+    "claude-opus-5-5",
+    "--tools",
+    "Read,Glob,Grep",
+    "--allowedTools",
+    "Read",
+    "Glob",
+    "Grep",
+    "--permission-mode",
+    "dontAsk",
+    "--strict-mcp-config",
+    "--mcp-config",
+    "{\"mcpServers\":{}}",
+    "--setting-sources",
+    "",
+    "--safe-mode",
+    "--restricted",
+    "--disable-slash-commands",
+    "--no-session-persistence",
+    "--output-format",
+    "json",
+    "--verbose"
+  ],
+  "available_tools": [
+    "Glob",
+    "Grep",
+    "Read"
+  ],
+  "actual_tool_names": [
+    "Grep",
+    "Read"
+  ],
+  "actual_tool_use_count": 18,
+  "mcp_servers": [],
+  "out_of_bundle_reads": [],
+  "permission_denials": [],
+  "process_exit_code": 0,
+  "is_error": false,
+  "review_duration_ms": 276488,
+  "wall_time_seconds": 276.806,
+  "started_at_utc": "2026-10-29T04:46:42.148101+00:00",
+  "completed_at_utc": "2026-10-29T04:51:18.953075+00:00",
+  "raw_private_root": "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/adr0021-core-opus-xsse80k4",
+  "raw_result_sha256": "213a3c1deb18da71403900760035603d723319ae2452b1731940eb2bbc510da8",
+  "raw_directory_mode": "0700",
+  "raw_file_mode": "0600",
+  "private_directory_modes_verified": true,
+  "private_file_modes_verified": true,
+  "bundle_root": "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/adr0021-core-opus-xsse80k4/bundle",
+  "bundle_manifest_sha256": "b2ea07c03372db80ebe45b512d70e0179dc623a03292970a89d7afda57a00235",
+  "copied_source_files": 18,
+  "copied_source_sha256": {
+    "docs/adr/0021-cross-machine-network-and-membership.md": "ae4923327f2f0581f739046135a89ae000514ebc62d9ca76bb58b3871e1c31f3",
+    "docs/plan/reason-inspired-adrs/adr-0021-implementation.md": "ac18cee2ff48deb4f75044dbee2af45ab2e18896f508d6af0ff5e85aff77d422",
+    "native/xsm-net/Cargo.lock": "1fe66764b9500ebb4bcacaf08e1380b7b76ffb61234ae8aa5982fd30ff79d210",
+    "native/xsm-net/Cargo.toml": "8f1e735b375130f64a5301f4a79fd3bb7edfe6330e796aabf7c667c79f9e4484",
+    "native/xsm-net/src/identity.rs": "666323f1a67decfe1c0112f64408122c4677c60ee0d51ae50d50326996964855",
+    "native/xsm-net/src/ipc.rs": "3b7b5825b615d3f5f32e95b093eb8499e9b833d25d172839f95243f15d51c234",
+    "native/xsm-net/src/lib.rs": "7875efd6d302586acf720391ed2aa66363db4d8d9e62553d30bbc7ad4224e94a",
+    "native/xsm-net/src/main.rs": "8d3a88dc59b97025662e6d64478ba77d90e9b946a6b27020a8e7eee3086c46a4",
+    "native/xsm-net/src/transport.rs": "9c58f905ba7b485e42d8b23678fb2c355a80d68b06df689f7b91acdc4ea35a85",
+    "native/xsm-net/tests/numeric.rs": "4ec5d15cfd7a60080baa8041405c87ee24652a34e1f8a79a4597b332af98a4ab",
+    "native/xsm-net/tests/sidecar.rs": "46c1cf34582b4266b77fda94ab721e5f31c992abc4484486a3d9d695422c72c8",
+    "tests/test_network_membership.py": "154c8baa7ef305f6765fa747ca90e27ccab4c3a1fdaccf96b550aa4f35ed2f53",
+    "tests/test_network_service.py": "a9bb3108d1b5eaf3fbaf4dfaeaa8ce6bc2ae48e5391837d84b90d1ba854dec68",
+    "tests/test_network_transport.py": "c61ba1d64f1dd15643b86f762a73b95e98a49e10dd16df4f2801ed8283e80747",
+    "xsm/network.py": "8e68c3bc48bf3601aed35ecfd0904d06a96cfea48c2bec1477e6f65e69932ec0",
+    "xsm/network_membership.py": "f3496c84b86be111a120baf4d7b74f8fdfdeea415ac89cfb2fff4eb841ddb54a",
+    "xsm/network_transport.py": "b11a904b9d83fc6b835aa189d37c51159dfd2caa3bcb16d08d4f812904224539",
+    "xsm/paths.py": "242b8e64b5d564e503d5e0bbef1d7e8d160690e8bd5199bc160523969835bb39"
+  },
+  "copied_sources_verified_unchanged_after_review": true,
+  "live_source_after_review": {
+    "docs/adr/0021-cross-machine-network-and-membership.md": {
+      "snapshot_sha256": "ae4923327f2f0581f739046135a89ae000514ebc62d9ca76bb58b3871e1c31f3",
+      "live_sha256": "ae4923327f2f0581f739046135a89ae000514ebc62d9ca76bb58b3871e1c31f3",
+      "matches_snapshot": true
+    },
+    "docs/plan/reason-inspired-adrs/adr-0021-implementation.md": {
+      "snapshot_sha256": "ac18cee2ff48deb4f75044dbee2af45ab2e18896f508d6af0ff5e85aff77d422",
+      "live_sha256": "ac18cee2ff48deb4f75044dbee2af45ab2e18896f508d6af0ff5e85aff77d422",
+      "matches_snapshot": true
+    },
+    "native/xsm-net/Cargo.lock": {
+      "snapshot_sha256": "1fe66764b9500ebb4bcacaf08e1380b7b76ffb61234ae8aa5982fd30ff79d210",
+      "live_sha256": "1fe66764b9500ebb4bcacaf08e1380b7b76ffb61234ae8aa5982fd30ff79d210",
+      "matches_snapshot": true
+    },
+    "native/xsm-net/Cargo.toml": {
+      "snapshot_sha256": "8f1e735b375130f64a5301f4a79fd3bb7edfe6330e796aabf7c667c79f9e4484",
+      "live_sha256": "8f1e735b375130f64a5301f4a79fd3bb7edfe6330e796aabf7c667c79f9e4484",
+      "matches_snapshot": true
+    },
+    "native/xsm-net/src/identity.rs": {
+      "snapshot_sha256": "666323f1a67decfe1c0112f64408122c4677c60ee0d51ae50d50326996964855",
+      "live_sha256": "666323f1a67decfe1c0112f64408122c4677c60ee0d51ae50d50326996964855",
+      "matches_snapshot": true
+    },
+    "native/xsm-net/src/ipc.rs": {
+      "snapshot_sha256": "3b7b5825b615d3f5f32e95b093eb8499e9b833d25d172839f95243f15d51c234",
+      "live_sha256": "3b7b5825b615d3f5f32e95b093eb8499e9b833d25d172839f95243f15d51c234",
+      "matches_snapshot": true
+    },
+    "native/xsm-net/src/lib.rs": {
+      "snapshot_sha256": "7875efd6d302586acf720391ed2aa66363db4d8d9e62553d30bbc7ad4224e94a",
+      "live_sha256": "7875efd6d302586acf720391ed2aa66363db4d8d9e62553d30bbc7ad4224e94a",
+      "matches_snapshot": true
+    },
+    "native/xsm-net/src/main.rs": {
+      "snapshot_sha256": "8d3a88dc59b97025662e6d64478ba77d90e9b946a6b27020a8e7eee3086c46a4",
+      "live_sha256": "8d3a88dc59b97025662e6d64478ba77d90e9b946a6b27020a8e7eee3086c46a4",
+      "matches_snapshot": true
+    },
+    "native/xsm-net/src/transport.rs": {
+      "snapshot_sha256": "9c58f905ba7b485e42d8b23678fb2c355a80d68b06df689f7b91acdc4ea35a85",
+      "live_sha256": "9c58f905ba7b485e42d8b23678fb2c355a80d68b06df689f7b91acdc4ea35a85",
+      "matches_snapshot": true
+    },
+    "native/xsm-net/tests/numeric.rs": {
+      "snapshot_sha256": "4ec5d15cfd7a60080baa8041405c87ee24652a34e1f8a79a4597b332af98a4ab",
+      "live_sha256": "4ec5d15cfd7a60080baa8041405c87ee24652a34e1f8a79a4597b332af98a4ab",
+      "matches_snapshot": true
+    },
+    "native/xsm-net/tests/sidecar.rs": {
+      "snapshot_sha256": "46c1cf34582b4266b77fda94ab721e5f31c992abc4484486a3d9d695422c72c8",
+      "live_sha256": "46c1cf34582b4266b77fda94ab721e5f31c992abc4484486a3d9d695422c72c8",
+      "matches_snapshot": true
+    },
+    "tests/test_network_membership.py": {
+      "snapshot_sha256": "154c8baa7ef305f6765fa747ca90e27ccab4c3a1fdaccf96b550aa4f35ed2f53",
+      "live_sha256": "154c8baa7ef305f6765fa747ca90e27ccab4c3a1fdaccf96b550aa4f35ed2f53",
+      "matches_snapshot": true
+    },
+    "tests/test_network_service.py": {
+      "snapshot_sha256": "a9bb3108d1b5eaf3fbaf4dfaeaa8ce6bc2ae48e5391837d84b90d1ba854dec68",
+      "live_sha256": "a9bb3108d1b5eaf3fbaf4dfaeaa8ce6bc2ae48e5391837d84b90d1ba854dec68",
+      "matches_snapshot": true
+    },
+    "tests/test_network_transport.py": {
+      "snapshot_sha256": "c61ba1d64f1dd15643b86f762a73b95e98a49e10dd16df4f2801ed8283e80747",
+      "live_sha256": "c61ba1d64f1dd15643b86f762a73b95e98a49e10dd16df4f2801ed8283e80747",
+      "matches_snapshot": true
+    },
+    "xsm/network.py": {
+      "snapshot_sha256": "8e68c3bc48bf3601aed35ecfd0904d06a96cfea48c2bec1477e6f65e69932ec0",
+      "live_sha256": "995419a863b6fc39b001b7c9db00f232f6072127a294418fdb23406decf7c6ec",
+      "matches_snapshot": false
+    },
+    "xsm/network_membership.py": {
+      "snapshot_sha256": "f3496c84b86be111a120baf4d7b74f8fdfdeea415ac89cfb2fff4eb841ddb54a",
+      "live_sha256": "f3496c84b86be111a120baf4d7b74f8fdfdeea415ac89cfb2fff4eb841ddb54a",
+      "matches_snapshot": true
+    },
+    "xsm/network_transport.py": {
+      "snapshot_sha256": "b11a904b9d83fc6b835aa189d37c51159dfd2caa3bcb16d08d4f812904224539",
+      "live_sha256": "b11a904b9d83fc6b835aa189d37c51159dfd2caa3bcb16d08d4f812904224539",
+      "matches_snapshot": true
+    },
+    "xsm/paths.py": {
+      "snapshot_sha256": "242b8e64b5d564e503d5e0bbef1d7e8d160690e8bd5199bc160523969835bb39",
+      "live_sha256": "242b8e64b5d564e503d5e0bbef1d7e8d160690e8bd5199bc160523969835bb39",
+      "matches_snapshot": true
+    }
+  },
+  "live_source_paths_changed_since_snapshot": [
+    "xsm/network.py"
+  ],
+  "reviewed_surfaces": [
+    "native/xsm-net/src/ipc.rs: origin=conn.remote_id(), 요청/응답 상관관계, pending 정리, 종료 시 endpoint.close",
+    "native/xsm-net/src/transport.rs: 프레임 상한·FIN 검사, relay URL 자격증명 차단, AddrInUse에서만 port fallback",
+    "native/xsm-net/src/identity.rs: 개인키가 IPC를 넘지 않음, 0600/nlink/uid 검사, 프로세스 lock",
+    "native/xsm-net/src/main.rs, lib.rs, Cargo.toml(serde_json float_roundtrip, iroh =1.4.1), tests/numeric.rs; tests/sidecar.rs와 Cargo.lock은 의존성·고정 버전 맥락으로만 확인",
+    "xsm/network_membership.py: domain/op/network_id/issuer/parents 서명 결속, genesis에 결속된 network_id, admission chain, remove-wins, 제명/탈퇴 시 재사용 링크 회수를 같은 commit에서 단계 적용, 응답 유실 후 멱등 재시도, 일회용 초대 fork 이중 사용 거부, adopt/merge 원자 교체",
+    "xsm/network_transport.py: origin을 엔진 이벤트에서만 취함, 오류 코드 화이트리스트, stderr 폐기, 프로세스 그룹 정리",
+    "xsm/network.py: join/join-status 재시도, staging 설치 후 active.json 원자 교체, incoming 권한 검사, CLI 오류 코드 비반사, 소켓/lock 정리",
+    "수치 왕복: Python float repr → serde_json(float_roundtrip) → ryu → Python float 값 보존을 정적으로 확인. 정상 기록에는 u64 범위를 넘는 정수가 생기지 않음",
+    "tests/test_network_membership.py, tests/test_network_transport.py, tests/test_network_service.py 관련 케이스"
+  ],
+  "tests_executed_by_reviewer": false,
+  "tests_rerun_by_evaluator_for_this_review": false,
+  "findings_runtime_reproduced": false,
+  "findings_frozen_source_paths_cross_checked_by_evaluator": true,
+  "limits": [
+    "읽기 전용 소스 검토이며 리뷰어와 이번 검토 evaluator 모두 테스트를 재실행하지 않았다. 두 결함의 재현 경로는 정적 추론이며 실행 재현 기록이 아니다.",
+    "이전 membership targeted11의 양 Python 통과와 두 CLI 서비스 가입 성공은 기존 관측/사용자 보고이며 이번 모델의 독립 실행 증거가 아니다.",
+    "서비스8 재검증은 요청 시 진행 중이었다. 이번 리뷰 결과로 통과나 완료를 선언하지 않는다.",
+    "Cargo.lock 및 native sidecar 테스트 일부는 버전/의존성 맥락으로 확인했으며 전체 의존성 감사나 모든 테스트 행의 완전한 검토를 뜻하지 않는다.",
+    "검토 복사본 이후의 소스/앱 통합 변경은 판정 대상이 아니다. 공개 JSON의 source SHA와 현재 소스 차이를 함께 확인해야 한다.",
+    "물리 머신/NAT/relay/proxy 경로와 전체 ADR-0021 완료를 증명하지 않는다. 친구 신뢰 모델 밖의 Byzantine 보장·관리자·새 로그인·전면 재설계 요구를 추가하지 않았다."
+  ],
+  "whole_ADR_complete": false,
+  "coordinator_followup_application_integration_included": false
+}

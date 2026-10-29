@@ -1,0 +1,3307 @@
+{
+  "schema_version": 1,
+  "started_at_utc": "2026-10-29T02:04:13+00:00",
+  "finished_at_utc": "2026-10-29T02:13:42.828532+00:00",
+  "elapsed_seconds": 569.829,
+  "requested_timebox_seconds": 600,
+  "timebox_met": true,
+  "selected_scope_before_investigation": "frontier three exact criteria → current1700 selectors → two saved native manifests/factory handoff + different-parent typed fallback → p10 old-native upgrade/readback and corresponding source functions. No exhaustive platform/version search.",
+  "new_models": 0,
+  "new_experiments": 0,
+  "new_tests_run": 0,
+  "only_requested_outputs_written": true,
+  "baseline": {
+    "current_frozen_source": "/private/tmp/xsm-doctor-privacy-v2-frozen-i7xbamec",
+    "full_tests_each": 1700,
+    "full_python_results": [
+      {
+        "python": "Python 3.9.6",
+        "tests": 1700,
+        "skips": 0,
+        "exit_code": 0,
+        "log": "/tmp/p13-doctor-privacy-v2-39.log",
+        "log_sha256": "f5f7bdb1cbb417f288aa9e0b2321fd07ac3e94f0490ce67c4e34fc6318eae06f"
+      },
+      {
+        "python": "Python 3.14.6",
+        "tests": 1700,
+        "skips": 0,
+        "exit_code": 0,
+        "log": "/tmp/p13-doctor-privacy-v2-314.log",
+        "log_sha256": "d95520c6e04b7ac943ce82a9f4e0a18369fbfb70da4c4a9470fefe4873ee7d8a"
+      }
+    ],
+    "ledger_proven_before": 18,
+    "ledger_modified": false
+  },
+  "assessments": [
+    {
+      "id": "A18-01",
+      "original_criterion": "queue 실행 실패·소켓 쓰기 성공 뒤 수신 실패를 주입하면 런타임 도달 성공으로 보고하지 않는다.",
+      "positive": "queue 실패·소켓 write 후 수신 실패에서 legacy status와 새 evidence 대조",
+      "negative": "send 접수 또는 static capability만으로 runtime-confirmed 생성",
+      "evidence_levels": [
+        "fixture",
+        "subprocess",
+        "harness"
+      ],
+      "frontier_recorded_gap": "G01 로컬 실패 주입 기록을 현재 실제 queue/socket 실패 하네스 전체와 혼합하지 않음.",
+      "verdict": "criterion-closeable-by-bound-level-combination",
+      "levels": [
+        {
+          "level": "fixture",
+          "status": "satisfied",
+          "proof": "DeliveryEvidenceTest: queue error has queued=false/runtime_reached=false; socket write only remains sent-unconfirmed; wrong error/-32600/permission fallback refusals preserved.",
+          "selectors": [
+            "test_a_queue_failure_is_not_a_runtime_reach",
+            "test_a_socket_write_alone_is_not_a_runtime_reach",
+            "test_no_broad_error_fallback",
+            "test_string_reason_alone_and_non_codex_cannot_select_fallback"
+          ]
+        },
+        {
+          "level": "subprocess",
+          "status": "satisfied-with-scope",
+          "proof": "TwoMachinesTest uses real separate Python receiver/fake SSH and real AF_UNIX frames; forged/unrecorded receiver ID is blocked. LostAnswer receiving-machine no-receipt case is an in-process fault fixture, not relabeled process.",
+          "selectors": [
+            "test_pair_send_gate_and_reply_across_machines",
+            "test_the_receiving_machine_does_not_call_a_stored_frame_reached"
+          ]
+        },
+        {
+          "level": "harness",
+          "status": "satisfied-observed-typed-failure",
+          "proof": "different-parent actual native 8 typed unsupported-capability queue failures retain queued=false/runtime_reached=false and immutable ID; actual MCP fallback claim/ACK is real. This is not an induced physical-Claude-socket failure."
+        }
+      ],
+      "mandatory_missing_cells": [],
+      "limits_not_promoted_to_missing": [
+        "No actual physical-Claude-socket receive failure injection in native run; socket semantics covered by fixture/process and actual native queue failure separately."
+      ]
+    },
+    {
+      "id": "A18-02",
+      "original_criterion": "확인 직전 수신 클라이언트 종료와 대기 취소를 재현해 미독을 회수한다. 정상 확인 뒤 같은 메시지가 반복 실행되지 않는지도 별도로 확인한다.",
+      "positive": "claim 전후·stdout 전후 종료/cancel/ack 유실 후 회수와 정상 중복 억제",
+      "negative": "인계 전 사본 삭제 또는 정상 ack 뒤 동일 작업 반복",
+      "evidence_levels": [
+        "fixture",
+        "subprocess",
+        "harness"
+      ],
+      "frontier_recorded_gap": "factory native claim0byte/실제client종료/같은CID 새세대 owner-dead회수/ACK·상관reply/ACK후빈inbox 관측. fixture/process취소는충족했으나 native cancel notification은0으로 native취소셀은missing; 전체partial. 첫resume거부/tail race/drift writer unknown 보존.",
+      "verdict": "criterion-closeable-by-bound-level-combination",
+      "levels": [
+        {
+          "level": "fixture",
+          "status": "satisfied",
+          "proof": "claim release/cancel returns original body; wrong home/generation/token refuses ACK; ACK suppresses subsequent claim.",
+          "selectors": [
+            "test_actual_send_legacy_export_claim_cancel_recover_and_explicit_ack",
+            "test_batch_output_cancel_releases_all_unreturned_claims"
+          ]
+        },
+        {
+          "level": "subprocess",
+          "status": "satisfied",
+          "proof": "real stdio notifications/cancelled while ask waits; late reply recovered; real SIGKILL after claim/before output and ACK lost-response preserve ID and suppress duplicate.",
+          "selectors": [
+            "test_ping_cancel_lost_auto_id_and_late_reply_keep_inbox_and_request",
+            "test_sigkill_after_actual_consumer_handoff_before_output_recovers_same_id",
+            "test_sigkill_after_ack_commit_lost_response_readback_suppresses_duplicate"
+          ]
+        },
+        {
+          "level": "harness",
+          "status": "satisfied-observed-termination-recovery-ACK",
+          "proof": "factory actual claim response withheld0byte, client killed, sameCID fresh native generation owner-dead recovery, actual ACK/correlated reply and post-ACK empty inbox. Native cancel notifications=0 remains a scope limitation, not a new mandatory every-subcase native requirement."
+        }
+      ],
+      "mandatory_missing_cells": [],
+      "limits_not_promoted_to_missing": [
+        "Native cancel notification count0; fixture and actual stdio cancellation already exercised. Initial active-writer refusal/observer tail race/profile drift remain."
+      ]
+    },
+    {
+      "id": "A23-08",
+      "original_criterion": "이전 버전의 MCP·소켓을 사용하는 세션을 유지한 채 상태 위치와 어댑터를 업그레이드한다. 마이그레이션 중 실패하면 이전 경로가 계속 읽히고 사용자 설정이 보존되는지 확인한다.",
+      "positive": "구 MCP/socket/hook 실행 중 상태/adapter 이동과 중간 실패·old reader 롤백",
+      "negative": "살아 있는 구 snapshot 제거·미완 claim 삭제·설정 후속 수정 유실",
+      "evidence_levels": [
+        "fixture",
+        "subprocess",
+        "harness"
+      ],
+      "frontier_recorded_gap": "실제 old native/MCP 유지 중 업그레이드/두 reply와 new-prefix reply 있음. 전체 구 native/socket·마이그레이션 행렬은 남음.",
+      "verdict": "criterion-closeable-by-bound-level-combination",
+      "levels": [
+        {
+          "level": "fixture",
+          "status": "satisfied",
+          "proof": "interrupted copy and metadata publish failure preserve old CURRENT/LINK/runtime, corrupt active snapshot not overwritten; CAS user followup/replaced flow preserve settings.",
+          "selectors": [
+            "test_interrupted_copy_preserves_old_reader_pointer_and_metadata",
+            "test_metadata_publish_failure_restores_only_our_pointer_and_retains_old_runtime",
+            "test_cli_cas_preserves_user_followup",
+            "test_cli_replaced_flow_cannot_write_old_settings_or_completion"
+          ]
+        },
+        {
+          "level": "subprocess",
+          "status": "satisfied",
+          "proof": "live old separate Python reader survives real CLI upgrade/prune, AF_UNIX listener remains; failed CLI upgrade keeps old snapshot/flow; old inbox reader import retains originals. This is owned fixture process, not native Claude.",
+          "selectors": [
+            "test_actual_cli_upgrade_preserves_live_reader_and_reports_only_passive_observations",
+            "test_live_old_reader_survives_upgrade_and_prune_and_can_read_again",
+            "test_cli_failed_upgrade_keeps_old_snapshot_and_flow_id",
+            "test_old_taking_is_imported_and_legacy_original_is_preserved"
+          ]
+        },
+        {
+          "level": "harness",
+          "status": "satisfied-scoped-old-native-MCP",
+          "proof": "old native CID and MCP PID/generation remain live across private CURRENT switch/prune and two actual correlated replies; old runtime/settings preserved. new-prefix quiet reply is additional only; no native failure migration or all-old-version matrix claimed."
+        }
+      ],
+      "mandatory_missing_cells": [],
+      "limits_not_promoted_to_missing": [
+        "Not every old version/runtime; old MCP native and socket fixture are distinct levels. New-prefix final native turn incomplete; not used for old-runtime completion."
+      ]
+    }
+  ],
+  "selectors": [
+    {
+      "criterion": "A18-01",
+      "selector": "tests.test_xsm.DeliveryEvidenceTest.test_a_queue_failure_is_not_a_runtime_reach",
+      "file": "tests/test_xsm.py",
+      "line": 2454,
+      "source_sha256": "e20e700777e1304506957f3d4dd806d5b8315f7b137139a5f403e691a56eb417",
+      "both_verbose_logs_pass": true,
+      "executions": [
+        {
+          "python": "Python 3.9.6",
+          "log": "/tmp/p13-doctor-privacy-v2-39.log",
+          "passed_line_matches": [
+            {
+              "line": 1733,
+              "text": "test_a_queue_failure_is_not_a_runtime_reach (test_xsm.DeliveryEvidenceTest) ... ok"
+            }
+          ]
+        },
+        {
+          "python": "Python 3.14.6",
+          "log": "/tmp/p13-doctor-privacy-v2-314.log",
+          "passed_line_matches": [
+            {
+              "line": 1735,
+              "text": "test_a_queue_failure_is_not_a_runtime_reach (test_xsm.DeliveryEvidenceTest.test_a_queue_failure_is_not_a_runtime_reach) ... ok"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "criterion": "A18-01",
+      "selector": "tests.test_xsm.DeliveryEvidenceTest.test_a_socket_write_alone_is_not_a_runtime_reach",
+      "file": "tests/test_xsm.py",
+      "line": 2468,
+      "source_sha256": "e20e700777e1304506957f3d4dd806d5b8315f7b137139a5f403e691a56eb417",
+      "both_verbose_logs_pass": true,
+      "executions": [
+        {
+          "python": "Python 3.9.6",
+          "log": "/tmp/p13-doctor-privacy-v2-39.log",
+          "passed_line_matches": [
+            {
+              "line": 1735,
+              "text": "test_a_socket_write_alone_is_not_a_runtime_reach (test_xsm.DeliveryEvidenceTest) ... ok"
+            }
+          ]
+        },
+        {
+          "python": "Python 3.14.6",
+          "log": "/tmp/p13-doctor-privacy-v2-314.log",
+          "passed_line_matches": [
+            {
+              "line": 1737,
+              "text": "test_a_socket_write_alone_is_not_a_runtime_reach (test_xsm.DeliveryEvidenceTest.test_a_socket_write_alone_is_not_a_runtime_reach) ... ok"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "criterion": "A18-01",
+      "selector": "tests.test_remote.LostAnswerTest.test_the_receiving_machine_does_not_call_a_stored_frame_reached",
+      "file": "tests/test_remote.py",
+      "line": 533,
+      "source_sha256": "470a35476c53ea75689a642a76a33dbf60f5a6f699094e5a766337cbad61a20d",
+      "both_verbose_logs_pass": true,
+      "executions": [
+        {
+          "python": "Python 3.9.6",
+          "log": "/tmp/p13-doctor-privacy-v2-39.log",
+          "passed_line_matches": [
+            {
+              "line": 1267,
+              "text": "test_the_receiving_machine_does_not_call_a_stored_frame_reached (test_remote.LostAnswerTest)",
+              "continuation_line": 1268,
+              "continuation_text": "G01 review F2/O-F2: on hostB, `remote_stored` says the frame went into ... ok"
+            }
+          ]
+        },
+        {
+          "python": "Python 3.14.6",
+          "log": "/tmp/p13-doctor-privacy-v2-314.log",
+          "passed_line_matches": [
+            {
+              "line": 1269,
+              "text": "test_the_receiving_machine_does_not_call_a_stored_frame_reached (test_remote.LostAnswerTest.test_the_receiving_machine_does_not_call_a_stored_frame_reached)",
+              "continuation_line": 1270,
+              "continuation_text": "G01 review F2/O-F2: on hostB, `remote_stored` says the frame went into ... ok"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "criterion": "A18-01",
+      "selector": "tests.test_remote.TwoMachinesTest.test_pair_send_gate_and_reply_across_machines",
+      "file": "tests/test_remote.py",
+      "line": 113,
+      "source_sha256": "470a35476c53ea75689a642a76a33dbf60f5a6f699094e5a766337cbad61a20d",
+      "both_verbose_logs_pass": true,
+      "executions": [
+        {
+          "python": "Python 3.9.6",
+          "log": "/tmp/p13-doctor-privacy-v2-39.log",
+          "passed_line_matches": [
+            {
+              "line": 1271,
+              "text": "test_pair_send_gate_and_reply_across_machines (test_remote.TwoMachinesTest) ... ok"
+            }
+          ]
+        },
+        {
+          "python": "Python 3.14.6",
+          "log": "/tmp/p13-doctor-privacy-v2-314.log",
+          "passed_line_matches": [
+            {
+              "line": 1273,
+              "text": "test_pair_send_gate_and_reply_across_machines (test_remote.TwoMachinesTest.test_pair_send_gate_and_reply_across_machines) ... ok"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "criterion": "A18-01",
+      "selector": "tests.test_remote.LostAnswerTest.test_a_peer_that_stored_it_but_never_handed_it_over_is_not_reached",
+      "file": "tests/test_remote.py",
+      "line": 557,
+      "source_sha256": "470a35476c53ea75689a642a76a33dbf60f5a6f699094e5a766337cbad61a20d",
+      "both_verbose_logs_pass": true,
+      "executions": [
+        {
+          "python": "Python 3.9.6",
+          "log": "/tmp/p13-doctor-privacy-v2-39.log",
+          "passed_line_matches": [
+            {
+              "line": 1253,
+              "text": "test_a_peer_that_stored_it_but_never_handed_it_over_is_not_reached (test_remote.LostAnswerTest) ... ok"
+            }
+          ]
+        },
+        {
+          "python": "Python 3.14.6",
+          "log": "/tmp/p13-doctor-privacy-v2-314.log",
+          "passed_line_matches": [
+            {
+              "line": 1255,
+              "text": "test_a_peer_that_stored_it_but_never_handed_it_over_is_not_reached (test_remote.LostAnswerTest.test_a_peer_that_stored_it_but_never_handed_it_over_is_not_reached) ... ok"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "criterion": "A18-01",
+      "selector": "tests.test_subagent_transport.SubagentTransportTest.test_fallback_preserves_full_request_and_honest_evidence",
+      "file": "tests/test_subagent_transport.py",
+      "line": 54,
+      "source_sha256": "8c07bfed94e8d7185e30c88d73bb39d9198bcc437021df8207758d9b708db658",
+      "both_verbose_logs_pass": true,
+      "executions": [
+        {
+          "python": "Python 3.9.6",
+          "log": "/tmp/p13-doctor-privacy-v2-39.log",
+          "passed_line_matches": [
+            {
+              "line": 1337,
+              "text": "test_fallback_preserves_full_request_and_honest_evidence (test_subagent_transport.SubagentTransportTest) ... ok"
+            }
+          ]
+        },
+        {
+          "python": "Python 3.14.6",
+          "log": "/tmp/p13-doctor-privacy-v2-314.log",
+          "passed_line_matches": [
+            {
+              "line": 1339,
+              "text": "test_fallback_preserves_full_request_and_honest_evidence (test_subagent_transport.SubagentTransportTest.test_fallback_preserves_full_request_and_honest_evidence) ... ok"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "criterion": "A18-01",
+      "selector": "tests.test_subagent_transport.SubagentTransportTest.test_no_broad_error_fallback",
+      "file": "tests/test_subagent_transport.py",
+      "line": 151,
+      "source_sha256": "8c07bfed94e8d7185e30c88d73bb39d9198bcc437021df8207758d9b708db658",
+      "both_verbose_logs_pass": true,
+      "executions": [
+        {
+          "python": "Python 3.9.6",
+          "log": "/tmp/p13-doctor-privacy-v2-39.log",
+          "passed_line_matches": [
+            {
+              "line": 1341,
+              "text": "test_no_broad_error_fallback (test_subagent_transport.SubagentTransportTest) ... ok"
+            }
+          ]
+        },
+        {
+          "python": "Python 3.14.6",
+          "log": "/tmp/p13-doctor-privacy-v2-314.log",
+          "passed_line_matches": [
+            {
+              "line": 1343,
+              "text": "test_no_broad_error_fallback (test_subagent_transport.SubagentTransportTest.test_no_broad_error_fallback) ... ok"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "criterion": "A18-01",
+      "selector": "tests.test_subagent_transport.SubagentTransportTest.test_string_reason_alone_and_non_codex_cannot_select_fallback",
+      "file": "tests/test_subagent_transport.py",
+      "line": 167,
+      "source_sha256": "8c07bfed94e8d7185e30c88d73bb39d9198bcc437021df8207758d9b708db658",
+      "both_verbose_logs_pass": true,
+      "executions": [
+        {
+          "python": "Python 3.9.6",
+          "log": "/tmp/p13-doctor-privacy-v2-39.log",
+          "passed_line_matches": [
+            {
+              "line": 1344,
+              "text": "test_string_reason_alone_and_non_codex_cannot_select_fallback (test_subagent_transport.SubagentTransportTest) ... ok"
+            }
+          ]
+        },
+        {
+          "python": "Python 3.14.6",
+          "log": "/tmp/p13-doctor-privacy-v2-314.log",
+          "passed_line_matches": [
+            {
+              "line": 1346,
+              "text": "test_string_reason_alone_and_non_codex_cannot_select_fallback (test_subagent_transport.SubagentTransportTest.test_string_reason_alone_and_non_codex_cannot_select_fallback) ... ok"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "criterion": "A18-01",
+      "selector": "tests.test_subagent_transport.SubagentTransportTest.test_real_queue_with_not_loaded_wake_stays_native_unconfirmed",
+      "file": "tests/test_subagent_transport.py",
+      "line": 179,
+      "source_sha256": "8c07bfed94e8d7185e30c88d73bb39d9198bcc437021df8207758d9b708db658",
+      "both_verbose_logs_pass": true,
+      "executions": [
+        {
+          "python": "Python 3.9.6",
+          "log": "/tmp/p13-doctor-privacy-v2-39.log",
+          "passed_line_matches": [
+            {
+              "line": 1342,
+              "text": "test_real_queue_with_not_loaded_wake_stays_native_unconfirmed (test_subagent_transport.SubagentTransportTest) ... ok"
+            }
+          ]
+        },
+        {
+          "python": "Python 3.14.6",
+          "log": "/tmp/p13-doctor-privacy-v2-314.log",
+          "passed_line_matches": [
+            {
+              "line": 1344,
+              "text": "test_real_queue_with_not_loaded_wake_stays_native_unconfirmed (test_subagent_transport.SubagentTransportTest.test_real_queue_with_not_loaded_wake_stays_native_unconfirmed) ... ok"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "criterion": "A18-02",
+      "selector": "tests.test_handoff_consumer.HandoffConsumerTest.test_actual_send_legacy_export_claim_cancel_recover_and_explicit_ack",
+      "file": "tests/test_handoff_consumer.py",
+      "line": 34,
+      "source_sha256": "31f5d017861e402dc9a4c70314b395821b98f2f1daf3071b9adf1f5b06a37771",
+      "both_verbose_logs_pass": true,
+      "executions": [
+        {
+          "python": "Python 3.9.6",
+          "log": "/tmp/p13-doctor-privacy-v2-39.log",
+          "passed_line_matches": [
+            {
+              "line": 406,
+              "text": "test_actual_send_legacy_export_claim_cancel_recover_and_explicit_ack (test_handoff_consumer.HandoffConsumerTest) ... ok"
+            }
+          ]
+        },
+        {
+          "python": "Python 3.14.6",
+          "log": "/tmp/p13-doctor-privacy-v2-314.log",
+          "passed_line_matches": [
+            {
+              "line": 406,
+              "text": "test_actual_send_legacy_export_claim_cancel_recover_and_explicit_ack (test_handoff_consumer.HandoffConsumerTest.test_actual_send_legacy_export_claim_cancel_recover_and_explicit_ack) ... ok"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "criterion": "A18-02",
+      "selector": "tests.test_handoff_consumer.HandoffConsumerTest.test_sigkill_after_actual_consumer_handoff_before_output_recovers_same_id",
+      "file": "tests/test_handoff_consumer.py",
+      "line": 193,
+      "source_sha256": "31f5d017861e402dc9a4c70314b395821b98f2f1daf3071b9adf1f5b06a37771",
+      "both_verbose_logs_pass": true,
+      "executions": [
+        {
+          "python": "Python 3.9.6",
+          "log": "/tmp/p13-doctor-privacy-v2-39.log",
+          "passed_line_matches": [
+            {
+              "line": 422,
+              "text": "test_sigkill_after_actual_consumer_handoff_before_output_recovers_same_id (test_handoff_consumer.HandoffConsumerTest) ... ok"
+            }
+          ]
+        },
+        {
+          "python": "Python 3.14.6",
+          "log": "/tmp/p13-doctor-privacy-v2-314.log",
+          "passed_line_matches": [
+            {
+              "line": 422,
+              "text": "test_sigkill_after_actual_consumer_handoff_before_output_recovers_same_id (test_handoff_consumer.HandoffConsumerTest.test_sigkill_after_actual_consumer_handoff_before_output_recovers_same_id) ... ok"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "criterion": "A18-02",
+      "selector": "tests.test_handoff_consumer.HandoffConsumerTest.test_batch_output_cancel_releases_all_unreturned_claims",
+      "file": "tests/test_handoff_consumer.py",
+      "line": 367,
+      "source_sha256": "31f5d017861e402dc9a4c70314b395821b98f2f1daf3071b9adf1f5b06a37771",
+      "both_verbose_logs_pass": true,
+      "executions": [
+        {
+          "python": "Python 3.9.6",
+          "log": "/tmp/p13-doctor-privacy-v2-39.log",
+          "passed_line_matches": [
+            {
+              "line": 407,
+              "text": "test_batch_output_cancel_releases_all_unreturned_claims (test_handoff_consumer.HandoffConsumerTest) ... ok"
+            }
+          ]
+        },
+        {
+          "python": "Python 3.14.6",
+          "log": "/tmp/p13-doctor-privacy-v2-314.log",
+          "passed_line_matches": [
+            {
+              "line": 407,
+              "text": "test_batch_output_cancel_releases_all_unreturned_claims (test_handoff_consumer.HandoffConsumerTest.test_batch_output_cancel_releases_all_unreturned_claims) ... ok"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "criterion": "A18-02",
+      "selector": "tests.test_handoff_crash.HandoffCrashTest.test_sigkill_after_claim_commit_recovers_dead_owner_and_invalidates_old_token",
+      "file": "tests/test_handoff_crash.py",
+      "line": 66,
+      "source_sha256": "ad29ac98711e8ad235e3918335f6d58ac4ae1909c3ec268285ba7aec33f35dd9",
+      "both_verbose_logs_pass": true,
+      "executions": [
+        {
+          "python": "Python 3.9.6",
+          "log": "/tmp/p13-doctor-privacy-v2-39.log",
+          "passed_line_matches": [
+            {
+              "line": 432,
+              "text": "test_sigkill_after_claim_commit_recovers_dead_owner_and_invalidates_old_token (test_handoff_crash.HandoffCrashTest) ... ok"
+            }
+          ]
+        },
+        {
+          "python": "Python 3.14.6",
+          "log": "/tmp/p13-doctor-privacy-v2-314.log",
+          "passed_line_matches": [
+            {
+              "line": 432,
+              "text": "test_sigkill_after_claim_commit_recovers_dead_owner_and_invalidates_old_token (test_handoff_crash.HandoffCrashTest.test_sigkill_after_claim_commit_recovers_dead_owner_and_invalidates_old_token) ... ok"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "criterion": "A18-02",
+      "selector": "tests.test_handoff_crash.HandoffCrashTest.test_sigkill_after_ack_commit_lost_response_readback_suppresses_duplicate",
+      "file": "tests/test_handoff_crash.py",
+      "line": 81,
+      "source_sha256": "ad29ac98711e8ad235e3918335f6d58ac4ae1909c3ec268285ba7aec33f35dd9",
+      "both_verbose_logs_pass": true,
+      "executions": [
+        {
+          "python": "Python 3.9.6",
+          "log": "/tmp/p13-doctor-privacy-v2-39.log",
+          "passed_line_matches": [
+            {
+              "line": 431,
+              "text": "test_sigkill_after_ack_commit_lost_response_readback_suppresses_duplicate (test_handoff_crash.HandoffCrashTest) ... ok"
+            }
+          ]
+        },
+        {
+          "python": "Python 3.14.6",
+          "log": "/tmp/p13-doctor-privacy-v2-314.log",
+          "passed_line_matches": [
+            {
+              "line": 431,
+              "text": "test_sigkill_after_ack_commit_lost_response_readback_suppresses_duplicate (test_handoff_crash.HandoffCrashTest.test_sigkill_after_ack_commit_lost_response_readback_suppresses_duplicate) ... ok"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "criterion": "A18-02",
+      "selector": "tests.test_mcp_wait_process.McpWaitProcessTest.test_ping_cancel_lost_auto_id_and_late_reply_keep_inbox_and_request",
+      "file": "tests/test_mcp_wait_process.py",
+      "line": 17,
+      "source_sha256": "92725ad677f5f0e964a1e20cf52ecdaab7b28b4f14a4060aa49ee0a09ad24385",
+      "both_verbose_logs_pass": true,
+      "executions": [
+        {
+          "python": "Python 3.9.6",
+          "log": "/tmp/p13-doctor-privacy-v2-39.log",
+          "passed_line_matches": [
+            {
+              "line": 704,
+              "text": "test_ping_cancel_lost_auto_id_and_late_reply_keep_inbox_and_request (test_mcp_wait_process.McpWaitProcessTest) ... ok"
+            }
+          ]
+        },
+        {
+          "python": "Python 3.14.6",
+          "log": "/tmp/p13-doctor-privacy-v2-314.log",
+          "passed_line_matches": [
+            {
+              "line": 704,
+              "text": "test_ping_cancel_lost_auto_id_and_late_reply_keep_inbox_and_request (test_mcp_wait_process.McpWaitProcessTest.test_ping_cancel_lost_auto_id_and_late_reply_keep_inbox_and_request) ... ok"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "criterion": "A18-02",
+      "selector": "tests.test_question_interfaces.QuestionInterfacesTest.test_mcp_answer_cancel_or_output_failure_releases_its_handoff_call",
+      "file": "tests/test_question_interfaces.py",
+      "line": 332,
+      "source_sha256": "66e5791078f5b38bba20c08a278cbdc2efe7d82aebc95da81ca666c883ac94d5",
+      "both_verbose_logs_pass": true,
+      "executions": [
+        {
+          "python": "Python 3.9.6",
+          "log": "/tmp/p13-doctor-privacy-v2-39.log",
+          "passed_line_matches": [
+            {
+              "line": 1193,
+              "text": "test_mcp_answer_cancel_or_output_failure_releases_its_handoff_call (test_question_interfaces.QuestionInterfacesTest) ... ok"
+            }
+          ]
+        },
+        {
+          "python": "Python 3.14.6",
+          "log": "/tmp/p13-doctor-privacy-v2-314.log",
+          "passed_line_matches": [
+            {
+              "line": 1195,
+              "text": "test_mcp_answer_cancel_or_output_failure_releases_its_handoff_call (test_question_interfaces.QuestionInterfacesTest.test_mcp_answer_cancel_or_output_failure_releases_its_handoff_call) ... ok"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "criterion": "A23-08",
+      "selector": "tests.test_install_safety.InstallerSafetyTest.test_interrupted_copy_preserves_old_reader_pointer_and_metadata",
+      "file": "tests/test_install_safety.py",
+      "line": 230,
+      "source_sha256": "0a5ae8020ca9042b20354adaddc02bff9cd1923ca3e813fda8575a011c1896b7",
+      "both_verbose_logs_pass": true,
+      "executions": [
+        {
+          "python": "Python 3.9.6",
+          "log": "/tmp/p13-doctor-privacy-v2-39.log",
+          "passed_line_matches": [
+            {
+              "line": 588,
+              "text": "test_interrupted_copy_preserves_old_reader_pointer_and_metadata (test_install_safety.InstallerSafetyTest) ... ok"
+            }
+          ]
+        },
+        {
+          "python": "Python 3.14.6",
+          "log": "/tmp/p13-doctor-privacy-v2-314.log",
+          "passed_line_matches": [
+            {
+              "line": 588,
+              "text": "test_interrupted_copy_preserves_old_reader_pointer_and_metadata (test_install_safety.InstallerSafetyTest.test_interrupted_copy_preserves_old_reader_pointer_and_metadata) ... ok"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "criterion": "A23-08",
+      "selector": "tests.test_install_safety.InstallerSafetyTest.test_metadata_publish_failure_restores_only_our_pointer_and_retains_old_runtime",
+      "file": "tests/test_install_safety.py",
+      "line": 242,
+      "source_sha256": "0a5ae8020ca9042b20354adaddc02bff9cd1923ca3e813fda8575a011c1896b7",
+      "both_verbose_logs_pass": true,
+      "executions": [
+        {
+          "python": "Python 3.9.6",
+          "log": "/tmp/p13-doctor-privacy-v2-39.log",
+          "passed_line_matches": [
+            {
+              "line": 591,
+              "text": "test_metadata_publish_failure_restores_only_our_pointer_and_retains_old_runtime (test_install_safety.InstallerSafetyTest) ... ok"
+            }
+          ]
+        },
+        {
+          "python": "Python 3.14.6",
+          "log": "/tmp/p13-doctor-privacy-v2-314.log",
+          "passed_line_matches": [
+            {
+              "line": 591,
+              "text": "test_metadata_publish_failure_restores_only_our_pointer_and_retains_old_runtime (test_install_safety.InstallerSafetyTest.test_metadata_publish_failure_restores_only_our_pointer_and_retains_old_runtime) ... ok"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "criterion": "A23-08",
+      "selector": "tests.test_install_safety.InstallerSafetyTest.test_live_old_reader_survives_upgrade_and_prune_and_can_read_again",
+      "file": "tests/test_install_safety.py",
+      "line": 270,
+      "source_sha256": "0a5ae8020ca9042b20354adaddc02bff9cd1923ca3e813fda8575a011c1896b7",
+      "both_verbose_logs_pass": true,
+      "executions": [
+        {
+          "python": "Python 3.9.6",
+          "log": "/tmp/p13-doctor-privacy-v2-39.log",
+          "passed_line_matches": [
+            {
+              "line": 589,
+              "text": "test_live_old_reader_survives_upgrade_and_prune_and_can_read_again (test_install_safety.InstallerSafetyTest) ... ok"
+            }
+          ]
+        },
+        {
+          "python": "Python 3.14.6",
+          "log": "/tmp/p13-doctor-privacy-v2-314.log",
+          "passed_line_matches": [
+            {
+              "line": 589,
+              "text": "test_live_old_reader_survives_upgrade_and_prune_and_can_read_again (test_install_safety.InstallerSafetyTest.test_live_old_reader_survives_upgrade_and_prune_and_can_read_again) ... ok"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "criterion": "A23-08",
+      "selector": "tests.test_install_safety.InstallerSafetyTest.test_active_corrupt_snapshot_is_preserved_instead_of_deleted_or_replaced",
+      "file": "tests/test_install_safety.py",
+      "line": 259,
+      "source_sha256": "0a5ae8020ca9042b20354adaddc02bff9cd1923ca3e813fda8575a011c1896b7",
+      "both_verbose_logs_pass": true,
+      "executions": [
+        {
+          "python": "Python 3.9.6",
+          "log": "/tmp/p13-doctor-privacy-v2-39.log",
+          "passed_line_matches": [
+            {
+              "line": 581,
+              "text": "test_active_corrupt_snapshot_is_preserved_instead_of_deleted_or_replaced (test_install_safety.InstallerSafetyTest) ... ok"
+            }
+          ]
+        },
+        {
+          "python": "Python 3.14.6",
+          "log": "/tmp/p13-doctor-privacy-v2-314.log",
+          "passed_line_matches": [
+            {
+              "line": 581,
+              "text": "test_active_corrupt_snapshot_is_preserved_instead_of_deleted_or_replaced (test_install_safety.InstallerSafetyTest.test_active_corrupt_snapshot_is_preserved_instead_of_deleted_or_replaced) ... ok"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "criterion": "A23-08",
+      "selector": "tests.test_install_cli_flow.InstallCliFlowTest.test_cli_failed_upgrade_keeps_old_snapshot_and_flow_id",
+      "file": "tests/test_install_cli_flow.py",
+      "line": 222,
+      "source_sha256": "2726d9a8ddb1b1acb93c9a6d82b7fae5ed811d79e13ba642083c67b08f9444b4",
+      "both_verbose_logs_pass": true,
+      "executions": [
+        {
+          "python": "Python 3.9.6",
+          "log": "/tmp/p13-doctor-privacy-v2-39.log",
+          "passed_line_matches": [
+            {
+              "line": 487,
+              "text": "test_cli_failed_upgrade_keeps_old_snapshot_and_flow_id (test_install_cli_flow.InstallCliFlowTest) ... ok"
+            }
+          ]
+        },
+        {
+          "python": "Python 3.14.6",
+          "log": "/tmp/p13-doctor-privacy-v2-314.log",
+          "passed_line_matches": [
+            {
+              "line": 487,
+              "text": "test_cli_failed_upgrade_keeps_old_snapshot_and_flow_id (test_install_cli_flow.InstallCliFlowTest.test_cli_failed_upgrade_keeps_old_snapshot_and_flow_id) ... ok"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "criterion": "A23-08",
+      "selector": "tests.test_install_cli_flow.InstallCliFlowTest.test_cli_cas_preserves_user_followup",
+      "file": "tests/test_install_cli_flow.py",
+      "line": 213,
+      "source_sha256": "2726d9a8ddb1b1acb93c9a6d82b7fae5ed811d79e13ba642083c67b08f9444b4",
+      "both_verbose_logs_pass": true,
+      "executions": [
+        {
+          "python": "Python 3.9.6",
+          "log": "/tmp/p13-doctor-privacy-v2-39.log",
+          "passed_line_matches": [
+            {
+              "line": 486,
+              "text": "test_cli_cas_preserves_user_followup (test_install_cli_flow.InstallCliFlowTest) ... ok"
+            }
+          ]
+        },
+        {
+          "python": "Python 3.14.6",
+          "log": "/tmp/p13-doctor-privacy-v2-314.log",
+          "passed_line_matches": [
+            {
+              "line": 486,
+              "text": "test_cli_cas_preserves_user_followup (test_install_cli_flow.InstallCliFlowTest.test_cli_cas_preserves_user_followup) ... ok"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "criterion": "A23-08",
+      "selector": "tests.test_install_cli_flow.InstallCliFlowTest.test_cli_replaced_flow_cannot_write_old_settings_or_completion",
+      "file": "tests/test_install_cli_flow.py",
+      "line": 216,
+      "source_sha256": "2726d9a8ddb1b1acb93c9a6d82b7fae5ed811d79e13ba642083c67b08f9444b4",
+      "both_verbose_logs_pass": true,
+      "executions": [
+        {
+          "python": "Python 3.9.6",
+          "log": "/tmp/p13-doctor-privacy-v2-39.log",
+          "passed_line_matches": [
+            {
+              "line": 489,
+              "text": "test_cli_replaced_flow_cannot_write_old_settings_or_completion (test_install_cli_flow.InstallCliFlowTest) ... ok"
+            }
+          ]
+        },
+        {
+          "python": "Python 3.14.6",
+          "log": "/tmp/p13-doctor-privacy-v2-314.log",
+          "passed_line_matches": [
+            {
+              "line": 489,
+              "text": "test_cli_replaced_flow_cannot_write_old_settings_or_completion (test_install_cli_flow.InstallCliFlowTest.test_cli_replaced_flow_cannot_write_old_settings_or_completion) ... ok"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "criterion": "A23-08",
+      "selector": "tests.test_install_cli_flow.InstallCliFlowTest.test_actual_cli_upgrade_preserves_live_reader_and_reports_only_passive_observations",
+      "file": "tests/test_install_cli_flow.py",
+      "line": 371,
+      "source_sha256": "2726d9a8ddb1b1acb93c9a6d82b7fae5ed811d79e13ba642083c67b08f9444b4",
+      "both_verbose_logs_pass": true,
+      "executions": [
+        {
+          "python": "Python 3.9.6",
+          "log": "/tmp/p13-doctor-privacy-v2-39.log",
+          "passed_line_matches": [
+            {
+              "line": 484,
+              "text": "test_actual_cli_upgrade_preserves_live_reader_and_reports_only_passive_observations (test_install_cli_flow.InstallCliFlowTest) ... ok"
+            }
+          ]
+        },
+        {
+          "python": "Python 3.14.6",
+          "log": "/tmp/p13-doctor-privacy-v2-314.log",
+          "passed_line_matches": [
+            {
+              "line": 484,
+              "text": "test_actual_cli_upgrade_preserves_live_reader_and_reports_only_passive_observations (test_install_cli_flow.InstallCliFlowTest.test_actual_cli_upgrade_preserves_live_reader_and_reports_only_passive_observations) ... ok"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "criterion": "A23-08",
+      "selector": "tests.test_handoff_consumer.HandoffConsumerTest.test_old_taking_is_imported_and_legacy_original_is_preserved",
+      "file": "tests/test_handoff_consumer.py",
+      "line": 159,
+      "source_sha256": "31f5d017861e402dc9a4c70314b395821b98f2f1daf3071b9adf1f5b06a37771",
+      "both_verbose_logs_pass": true,
+      "executions": [
+        {
+          "python": "Python 3.9.6",
+          "log": "/tmp/p13-doctor-privacy-v2-39.log",
+          "passed_line_matches": [
+            {
+              "line": 418,
+              "text": "test_old_taking_is_imported_and_legacy_original_is_preserved (test_handoff_consumer.HandoffConsumerTest) ... ok"
+            }
+          ]
+        },
+        {
+          "python": "Python 3.14.6",
+          "log": "/tmp/p13-doctor-privacy-v2-314.log",
+          "passed_line_matches": [
+            {
+              "line": 418,
+              "text": "test_old_taking_is_imported_and_legacy_original_is_preserved (test_handoff_consumer.HandoffConsumerTest.test_old_taking_is_imported_and_legacy_original_is_preserved) ... ok"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "selector_binding_failures": [],
+  "native_manifest_integrity": [
+    {
+      "manifest": "deliverables/p13-live/native-handoff-factory-20261029-7091030d/manifest.json",
+      "total": 95,
+      "matching": 95,
+      "mismatches": []
+    },
+    {
+      "manifest": "deliverables/p13-live/different-parent-native-20261029-5564a814/manifest.json",
+      "total": 168,
+      "matching": 168,
+      "mismatches": []
+    }
+  ],
+  "typed_native_fallback": {
+    "summary_declared_count": 8,
+    "raw_revalidated_count": 8,
+    "rows": [
+      {
+        "id_sha256": "8d949154229a9080e9a38eb9727d6eed48a45ea915436f8b72b340b7809b3cb1",
+        "canonical_raw": "/private/tmp/different-parent-native-3jr1o8uv/state/handoffs/a4954d0a7d3fc0a7dbf3f2878cb1e511967f8356f01d83470526b2d5652688b2/6ef48ff9cb164b6f.json",
+        "ledger_raw": "/private/tmp/different-parent-native-3jr1o8uv/state/ledger/6ef48ff9cb164b6f.json",
+        "delivery_route": "mcp-inbox",
+        "canonical_state": "acknowledged",
+        "queued_ok": false,
+        "queued_detail": "unsupported-capability: Error: failed to queue session message: thread/queue/add failed: direct app-server input is not allowed for unloaded spawned sub-agents (code -32600)",
+        "sender_ledger_runtime_reached": false,
+        "logical_wake": true
+      },
+      {
+        "id_sha256": "d2956aad592f4f43d5ab48419bcc1f036ecfd698f687fe9041bbd50f86b07fb6",
+        "canonical_raw": "/private/tmp/different-parent-native-3jr1o8uv/state/handoffs/a4954d0a7d3fc0a7dbf3f2878cb1e511967f8356f01d83470526b2d5652688b2/ccd69e1c380645d3.json",
+        "ledger_raw": "/private/tmp/different-parent-native-3jr1o8uv/state/ledger/ccd69e1c380645d3.json",
+        "delivery_route": "mcp-inbox",
+        "canonical_state": "acknowledged",
+        "queued_ok": false,
+        "queued_detail": "unsupported-capability: Error: failed to queue session message: thread/queue/add failed: direct app-server input is not allowed for unloaded spawned sub-agents (code -32600)",
+        "sender_ledger_runtime_reached": false,
+        "logical_wake": true
+      },
+      {
+        "id_sha256": "03fe982c62e7e064129c3a14141d1b7bc35026a8372442fa0866ea56e05245b2",
+        "canonical_raw": "/private/tmp/different-parent-native-3jr1o8uv/state/handoffs/a4954d0a7d3fc0a7dbf3f2878cb1e511967f8356f01d83470526b2d5652688b2/e1b5c4deccb64851.json",
+        "ledger_raw": "/private/tmp/different-parent-native-3jr1o8uv/state/ledger/e1b5c4deccb64851.json",
+        "delivery_route": "mcp-inbox",
+        "canonical_state": "acknowledged",
+        "queued_ok": false,
+        "queued_detail": "unsupported-capability: Error: failed to queue session message: thread/queue/add failed: direct app-server input is not allowed for unloaded spawned sub-agents (code -32600)",
+        "sender_ledger_runtime_reached": false,
+        "logical_wake": true
+      },
+      {
+        "id_sha256": "d558b2f0cc62cbef30b4a53c35451c935b8e540fd423e454c0f706589aa4b685",
+        "canonical_raw": "/private/tmp/different-parent-native-3jr1o8uv/state/handoffs/a4954d0a7d3fc0a7dbf3f2878cb1e511967f8356f01d83470526b2d5652688b2/8ebd81df269d48cb.json",
+        "ledger_raw": "/private/tmp/different-parent-native-3jr1o8uv/state/ledger/8ebd81df269d48cb.json",
+        "delivery_route": "mcp-inbox",
+        "canonical_state": "acknowledged",
+        "queued_ok": false,
+        "queued_detail": "unsupported-capability: Error: failed to queue session message: thread/queue/add failed: direct app-server input is not allowed for unloaded spawned sub-agents (code -32600)",
+        "sender_ledger_runtime_reached": false,
+        "logical_wake": true
+      },
+      {
+        "id_sha256": "f960b2aa0dc430827cfc3e072cc84a7c920219a8eef52bddd964f062e2195b2f",
+        "canonical_raw": "/private/tmp/different-parent-native-3jr1o8uv/state/handoffs/47b5cd193b1e019227427497e0a8efd9d2bb5893133d595cf1fefccdca88e2f7/9c1b91f0211b492f.json",
+        "ledger_raw": "/private/tmp/different-parent-native-3jr1o8uv/state/ledger/9c1b91f0211b492f.json",
+        "delivery_route": "mcp-inbox",
+        "canonical_state": "acknowledged",
+        "queued_ok": false,
+        "queued_detail": "unsupported-capability: Error: failed to queue session message: thread/queue/add failed: direct app-server input is not allowed for unloaded spawned sub-agents (code -32600)",
+        "sender_ledger_runtime_reached": false,
+        "logical_wake": true
+      },
+      {
+        "id_sha256": "46e8f69581be6799a8ce18004370dad99f3442104d5943a3ab48000f401c32aa",
+        "canonical_raw": "/private/tmp/different-parent-native-3jr1o8uv/state/handoffs/47b5cd193b1e019227427497e0a8efd9d2bb5893133d595cf1fefccdca88e2f7/bbefe06b155b449b.json",
+        "ledger_raw": "/private/tmp/different-parent-native-3jr1o8uv/state/ledger/bbefe06b155b449b.json",
+        "delivery_route": "mcp-inbox",
+        "canonical_state": "acknowledged",
+        "queued_ok": false,
+        "queued_detail": "unsupported-capability: Error: failed to queue session message: thread/queue/add failed: direct app-server input is not allowed for unloaded spawned sub-agents (code -32600)",
+        "sender_ledger_runtime_reached": false,
+        "logical_wake": true
+      },
+      {
+        "id_sha256": "2e0f4f38a9cfc022922f41b0964f9927beb36768188541803af89d835c43fa7b",
+        "canonical_raw": "/private/tmp/different-parent-native-3jr1o8uv/state/handoffs/47b5cd193b1e019227427497e0a8efd9d2bb5893133d595cf1fefccdca88e2f7/7bbf155fed2340ad.json",
+        "ledger_raw": "/private/tmp/different-parent-native-3jr1o8uv/state/ledger/7bbf155fed2340ad.json",
+        "delivery_route": "mcp-inbox",
+        "canonical_state": "acknowledged",
+        "queued_ok": false,
+        "queued_detail": "unsupported-capability: Error: failed to queue session message: thread/queue/add failed: direct app-server input is not allowed for unloaded spawned sub-agents (code -32600)",
+        "sender_ledger_runtime_reached": false,
+        "logical_wake": true
+      },
+      {
+        "id_sha256": "98e699b8c87b22690ecb4e0f672f080b72b1d3f080fb5950f2dabb66b4c2ad70",
+        "canonical_raw": "/private/tmp/different-parent-native-3jr1o8uv/state/handoffs/47b5cd193b1e019227427497e0a8efd9d2bb5893133d595cf1fefccdca88e2f7/11f8150b86184fc2.json",
+        "ledger_raw": "/private/tmp/different-parent-native-3jr1o8uv/state/ledger/11f8150b86184fc2.json",
+        "delivery_route": "mcp-inbox",
+        "canonical_state": "acknowledged",
+        "queued_ok": false,
+        "queued_detail": "unsupported-capability: Error: failed to queue session message: thread/queue/add failed: direct app-server input is not allowed for unloaded spawned sub-agents (code -32600)",
+        "sender_ledger_runtime_reached": false,
+        "logical_wake": true
+      }
+    ]
+  },
+  "native_handoff": {
+    "summary_source": "/private/tmp/xsm-p13-postqa-frozen-bukwksw6",
+    "raw_root": "/private/tmp/native-handoff-factory-cytvti8g",
+    "withheld_actual_response_bytes": 0,
+    "synthetic_result": false,
+    "owner_dead_recovery": true,
+    "same_CID_verified_resume": "same CID, new actual native PID/generation",
+    "actual_ACK": true,
+    "correlated_reply": true,
+    "post_ACK_actual_inbox_empty": true,
+    "canonical_states": [
+      {
+        "path": "/private/tmp/native-handoff-factory-cytvti8g/state/handoffs/642453aa7159f78d835b9e745d2fc5e66915a00de1e363651327177bc6796c7f/7356aa0f0e654405.json",
+        "id_sha256": "efd87c62c659409bcf3726723cec0f0d09ea9c80443e16132b098a0cf2c31759",
+        "state": "acknowledged",
+        "digest": "0dc34cde5c8e59aac8ff5df3059c84f423464de6e44286c08a795ee6ca94a2ac",
+        "recovery_reason": "owner-dead",
+        "previous_claim_present": true,
+        "acknowledged_at_present": true
+      },
+      {
+        "path": "/private/tmp/native-handoff-factory-cytvti8g/state/handoffs/a48ba0b33e22e172b8f2a81b9d17fd1dd4dc105ebf3a3539d69987d9a7cfb934/789409fc88f74110.json",
+        "id_sha256": "ed8b0cd606a21a3f0571131b6796acb3bf244e8a4c3bdb5b965e09dd1d329340",
+        "state": "acknowledged",
+        "digest": "463ed254242360f77cfa52e10aea32592e69759bfafbad58e4e8b545810ec850",
+        "recovery_reason": null,
+        "previous_claim_present": false,
+        "acknowledged_at_present": true
+      }
+    ],
+    "observed_native_cancel_notifications": 0,
+    "client_tools": [
+      {
+        "role": "receiver-initial",
+        "line": 4,
+        "raw": "/private/tmp/native-handoff-factory-cytvti8g/receiver-initial/client-wire.jsonl",
+        "tool": "xsm_inbox",
+        "request_id": 2
+      },
+      {
+        "role": "receiver-resume-verified",
+        "line": 4,
+        "raw": "/private/tmp/native-handoff-factory-cytvti8g/receiver-resume-verified/client-wire.jsonl",
+        "tool": "xsm_inbox",
+        "request_id": 2
+      },
+      {
+        "role": "receiver-resume-verified",
+        "line": 5,
+        "raw": "/private/tmp/native-handoff-factory-cytvti8g/receiver-resume-verified/client-wire.jsonl",
+        "tool": "xsm_send",
+        "request_id": 3
+      },
+      {
+        "role": "receiver-resume-verified",
+        "line": 6,
+        "raw": "/private/tmp/native-handoff-factory-cytvti8g/receiver-resume-verified/client-wire.jsonl",
+        "tool": "xsm_ack",
+        "request_id": 4
+      },
+      {
+        "role": "receiver-resume-verified",
+        "line": 7,
+        "raw": "/private/tmp/native-handoff-factory-cytvti8g/receiver-resume-verified/client-wire.jsonl",
+        "tool": "xsm_inbox",
+        "request_id": 5
+      }
+    ],
+    "profile_drift_writer": "unknown; no evaluator profile-write command",
+    "control_limit": "core recovery/ACK/reply/no-redelivery observed; initial wrapper/native exit race and observer tail race prevent a clean single-pass control claim"
+  },
+  "native_upgrade": {
+    "raw_trials": [
+      {
+        "label": "old",
+        "raw": "/private/tmp/p10-upgrade-uj5wwj7e/old.jsonl",
+        "sha256": "aff4228b80711fc587693d3980598996bd0531b15cf073d6493fafb7a02a0952",
+        "exit_code": 0,
+        "native_thread_ids": [
+          "01a18372-28bb-71d3-833f-5c1ed1be7cac"
+        ],
+        "tools": [
+          {
+            "line": 5,
+            "tool": "xsm_inbox",
+            "error": null
+          },
+          {
+            "line": 7,
+            "tool": "xsm_send",
+            "error": null
+          },
+          {
+            "line": 9,
+            "tool": "xsm_inbox",
+            "error": null
+          },
+          {
+            "line": 11,
+            "tool": "xsm_send",
+            "error": null
+          }
+        ],
+        "terminal_events": [
+          "turn.completed"
+        ]
+      },
+      {
+        "label": "new",
+        "raw": "/private/tmp/p10-upgrade-uj5wwj7e/new.jsonl",
+        "sha256": "3e87eb7a00aa3384ef9e30a9c008fab6fe55586db3b21e515d6fb0bcdfcdc29e",
+        "exit_code": 0,
+        "native_thread_ids": [
+          "01a18372-fe16-7911-b007-8597d1beac53"
+        ],
+        "tools": [
+          {
+            "line": 5,
+            "tool": "xsm_inbox",
+            "error": null
+          },
+          {
+            "line": 7,
+            "tool": "xsm_ack",
+            "error": null
+          },
+          {
+            "line": 9,
+            "tool": "xsm_send",
+            "error": null
+          }
+        ],
+        "terminal_events": []
+      }
+    ],
+    "old_native_cid": "01a18372-28bb-71d3-833f-5c1ed1be7cac",
+    "old_mcp_pid": 18595,
+    "upgrade": {
+      "removed": [],
+      "old_snapshot_exists": true,
+      "current_id": "c54adca61daf",
+      "new_id": "c54adca61daf",
+      "source_ids_differ": true,
+      "old_held_by_process_table": true,
+      "after_prune": {
+        "native_process_alive": true,
+        "native_root_pid": 18456,
+        "native_thread": "01a18372-28bb-71d3-833f-5c1ed1be7cac",
+        "old_mcp_pid": 18595,
+        "same_mcp_generation_alive": true,
+        "mcp_beacons": [
+          {
+            "pid": 18595,
+            "ppid": 18458,
+            "lstart": "Thu Oct 29 01:57:39 2026",
+            "cwd": "/private/tmp/p10-upgrade-uj5wwj7e/state/runtime/2389da782089"
+          }
+        ],
+        "same_mcp_only": true
+      }
+    },
+    "reply_before": {
+      "id": "6f4cd3ded0814bbb",
+      "reply_to": "015e48d807f64a15",
+      "sender_native": "01a18372-28bb-71d3-833f-5c1ed1be7cac"
+    },
+    "reply_after": {
+      "id": "3b0b2802f0f44791",
+      "reply_to": "5137642a9a114c78",
+      "sender_native": "01a18372-28bb-71d3-833f-5c1ed1be7cac"
+    },
+    "protection": {
+      "settings_unchanged": true,
+      "credential_metadata_unchanged": true,
+      "old_runtime_unchanged": true,
+      "global_current_unchanged": true,
+      "global_link_unchanged": true,
+      "credential_values_opened_by_evaluator": false,
+      "global_xsm_home_changed": false
+    },
+    "credential_metadata_only_not_values_rechecked": true,
+    "legacy_reader_evidence_path": "deliverables/b04-live/legacy-reader.json"
+  },
+  "source_current_binding": [
+    {
+      "epoch": "fallback",
+      "path": "xsm/adapters.py",
+      "function": "to_codex",
+      "historical_line": 143,
+      "current_line": 143,
+      "historical_file_sha256": "0b0d77d724130b2671d2fdc8eb0da64bc80d178b4be54b766c0b9a8629e950dd",
+      "v2_current_file_sha256": "0b0d77d724130b2671d2fdc8eb0da64bc80d178b4be54b766c0b9a8629e950dd",
+      "function_ast_equal": true
+    },
+    {
+      "epoch": "fallback",
+      "path": "xsm/send.py",
+      "function": "send",
+      "historical_line": 83,
+      "current_line": 83,
+      "historical_file_sha256": "05390ef61f53860c84311bc3f2f3aaa428508e615f989f21398dcd427f601fbe",
+      "v2_current_file_sha256": "05390ef61f53860c84311bc3f2f3aaa428508e615f989f21398dcd427f601fbe",
+      "function_ast_equal": true
+    },
+    {
+      "epoch": "fallback",
+      "path": "xsm/ledger.py",
+      "function": "evidence_of",
+      "historical_line": 194,
+      "current_line": 194,
+      "historical_file_sha256": "f291d11b736608bb3d2d07bdccdcc15348af2cbdfa73e1fb9d4c5628063e459f",
+      "v2_current_file_sha256": "f291d11b736608bb3d2d07bdccdcc15348af2cbdfa73e1fb9d4c5628063e459f",
+      "function_ast_equal": true
+    },
+    {
+      "epoch": "fallback",
+      "path": "xsm/ledger.py",
+      "function": "step",
+      "historical_line": 145,
+      "current_line": 145,
+      "historical_file_sha256": "f291d11b736608bb3d2d07bdccdcc15348af2cbdfa73e1fb9d4c5628063e459f",
+      "v2_current_file_sha256": "f291d11b736608bb3d2d07bdccdcc15348af2cbdfa73e1fb9d4c5628063e459f",
+      "function_ast_equal": true
+    },
+    {
+      "epoch": "factory",
+      "path": "xsm/handoff.py",
+      "function": "claim",
+      "historical_line": 247,
+      "current_line": 308,
+      "historical_file_sha256": "4157d48fe0acb5d6f14df089ce128bd4faa5a8185d85e9c9f818e9ff09cb175f",
+      "v2_current_file_sha256": "48f8b6c1c4ab29ede46141e6eeb431bd08501407dbf42c75948c477bdd767d00",
+      "function_ast_equal": true
+    },
+    {
+      "epoch": "factory",
+      "path": "xsm/handoff.py",
+      "function": "recover",
+      "historical_line": 323,
+      "current_line": 384,
+      "historical_file_sha256": "4157d48fe0acb5d6f14df089ce128bd4faa5a8185d85e9c9f818e9ff09cb175f",
+      "v2_current_file_sha256": "48f8b6c1c4ab29ede46141e6eeb431bd08501407dbf42c75948c477bdd767d00",
+      "function_ast_equal": true
+    },
+    {
+      "epoch": "factory",
+      "path": "xsm/handoff.py",
+      "function": "ack",
+      "historical_line": 313,
+      "current_line": 374,
+      "historical_file_sha256": "4157d48fe0acb5d6f14df089ce128bd4faa5a8185d85e9c9f818e9ff09cb175f",
+      "v2_current_file_sha256": "48f8b6c1c4ab29ede46141e6eeb431bd08501407dbf42c75948c477bdd767d00",
+      "function_ast_equal": true
+    },
+    {
+      "epoch": "factory",
+      "path": "xsm/handoff.py",
+      "function": "handoff",
+      "historical_line": 308,
+      "current_line": 369,
+      "historical_file_sha256": "4157d48fe0acb5d6f14df089ce128bd4faa5a8185d85e9c9f818e9ff09cb175f",
+      "v2_current_file_sha256": "48f8b6c1c4ab29ede46141e6eeb431bd08501407dbf42c75948c477bdd767d00",
+      "function_ast_equal": true
+    },
+    {
+      "epoch": "factory",
+      "path": "xsm/handoff.py",
+      "function": "release",
+      "historical_line": 318,
+      "current_line": 379,
+      "historical_file_sha256": "4157d48fe0acb5d6f14df089ce128bd4faa5a8185d85e9c9f818e9ff09cb175f",
+      "v2_current_file_sha256": "48f8b6c1c4ab29ede46141e6eeb431bd08501407dbf42c75948c477bdd767d00",
+      "function_ast_equal": true
+    },
+    {
+      "epoch": "factory",
+      "path": "xsm/receive.py",
+      "function": "take_inbox_claims",
+      "historical_line": 1090,
+      "current_line": 1090,
+      "historical_file_sha256": "05a7991f531f14cf9ce376c7cde6d32c703f2cbb9c01709c494ee2faafdee1e2",
+      "v2_current_file_sha256": "f0844cf0dde52979fb2361a7501fa9be8dd554b8052cac2acd56e3347a7add94",
+      "function_ast_equal": false
+    },
+    {
+      "epoch": "factory",
+      "path": "xsm/receive.py",
+      "function": "ack_inbox",
+      "historical_line": 1272,
+      "current_line": 1273,
+      "historical_file_sha256": "05a7991f531f14cf9ce376c7cde6d32c703f2cbb9c01709c494ee2faafdee1e2",
+      "v2_current_file_sha256": "f0844cf0dde52979fb2361a7501fa9be8dd554b8052cac2acd56e3347a7add94",
+      "function_ast_equal": true
+    },
+    {
+      "epoch": "factory",
+      "path": "xsm/receive.py",
+      "function": "release_inbox",
+      "historical_line": 1283,
+      "current_line": 1284,
+      "historical_file_sha256": "05a7991f531f14cf9ce376c7cde6d32c703f2cbb9c01709c494ee2faafdee1e2",
+      "v2_current_file_sha256": "f0844cf0dde52979fb2361a7501fa9be8dd554b8052cac2acd56e3347a7add94",
+      "function_ast_equal": true
+    },
+    {
+      "epoch": "upgrade_new",
+      "path": "xsm/install.py",
+      "function": "make_snapshot",
+      "historical_line": 912,
+      "current_line": 912,
+      "historical_file_sha256": "c2f97ecef55e1001e3d66294bccc4cd19e878bb0e78f99145f15b05ea0bc5b16",
+      "v2_current_file_sha256": "a8e712de6e8b2b9f368946333a6c8793168c6734484be45a60dbe967d0aa1960",
+      "function_ast_equal": true
+    },
+    {
+      "epoch": "upgrade_new",
+      "path": "xsm/install.py",
+      "function": "prune_snapshots",
+      "historical_line": 1089,
+      "current_line": 1089,
+      "historical_file_sha256": "c2f97ecef55e1001e3d66294bccc4cd19e878bb0e78f99145f15b05ea0bc5b16",
+      "v2_current_file_sha256": "a8e712de6e8b2b9f368946333a6c8793168c6734484be45a60dbe967d0aa1960",
+      "function_ast_equal": true
+    },
+    {
+      "epoch": "upgrade_new",
+      "path": "xsm/install.py",
+      "function": "_running_from",
+      "historical_line": 1041,
+      "current_line": 1041,
+      "historical_file_sha256": "c2f97ecef55e1001e3d66294bccc4cd19e878bb0e78f99145f15b05ea0bc5b16",
+      "v2_current_file_sha256": "a8e712de6e8b2b9f368946333a6c8793168c6734484be45a60dbe967d0aa1960",
+      "function_ast_equal": true
+    },
+    {
+      "epoch": "upgrade_new",
+      "path": "xsm/install.py",
+      "function": "_cas_bytes",
+      "historical_line": 174,
+      "current_line": 174,
+      "historical_file_sha256": "c2f97ecef55e1001e3d66294bccc4cd19e878bb0e78f99145f15b05ea0bc5b16",
+      "v2_current_file_sha256": "a8e712de6e8b2b9f368946333a6c8793168c6734484be45a60dbe967d0aa1960",
+      "function_ast_equal": true
+    }
+  ],
+  "source_delta_accounting": {
+    "factory_take_inbox_claims_ast_changed": true,
+    "exact_delta": "passive_only && logical wake True skip now exempts delivery_route=mcp-inbox; claim/recover/ACK/release unchanged",
+    "coverage": "factory explicit inbox claim path + current SubagentTransportTest true-wake fallback + newer actual different-parent native fallback. Do not claim whole factory receive.py equals v2.",
+    "doctor_privacy_delta_scope": "current full epoch contains install.stuck diagnostic-only change and two test changes since native latest source; upgrade make_snapshot/prune/_running_from/_cas_bytes AST equal."
+  },
+  "conclusion": {
+    "all_three_criterion_rebinding_possible": true,
+    "formal_ledger_or_gate_promotion_performed": false,
+    "proven_count_not_incremented": 18,
+    "no_new_true_missing_beyond_binding_failures": true,
+    "qualification": "level-combination closure proposal; not every subcase native, not all versions, not global/release completion"
+  },
+  "evidence_files": [
+    {
+      "path": "deliverables/p13-live/remaining-execution-frontier.json",
+      "kind": "criterion-frontier",
+      "sha256": "b4bce276712e1ab0737cf6e0d8dfab843e7b509772912ef89fa74ac8e0cbb0ff",
+      "bytes": 172402
+    },
+    {
+      "path": "docs/plan/reason-inspired-adrs/completion-ledger.json",
+      "kind": "read-only-ledger-baseline",
+      "sha256": "197c345c77fadd86a5c91e2efb27611e90b13ac660e774970816602231cee870",
+      "bytes": 693993
+    },
+    {
+      "path": "deliverables/p13-live/doctor-privacy-v2-regression.json",
+      "kind": "current-full-regression",
+      "sha256": "847f818f6b20a6ca32d85cc83844bd0035ec360008c970ad17b8d60cff5239bb",
+      "bytes": 31547
+    },
+    {
+      "path": "deliverables/p13-live/doctor-privacy-v2-source-manifest.json",
+      "kind": "current-source-manifest",
+      "sha256": "215cbfe165819fa9358d71d57ba069e0dbd8e48090701e81081da0e000871b64",
+      "bytes": 99111
+    },
+    {
+      "path": "/tmp/p13-doctor-privacy-v2-39.log",
+      "kind": "current-full-verbose-log",
+      "sha256": "f5f7bdb1cbb417f288aa9e0b2321fd07ac3e94f0490ce67c4e34fc6318eae06f",
+      "bytes": 190666
+    },
+    {
+      "path": "/tmp/p13-doctor-privacy-v2-314.log",
+      "kind": "current-full-verbose-log",
+      "sha256": "d95520c6e04b7ac943ce82a9f4e0a18369fbfb70da4c4a9470fefe4873ee7d8a",
+      "bytes": 285586
+    },
+    {
+      "path": "/private/tmp/xsm-doctor-privacy-v2-frozen-i7xbamec/tests/test_xsm.py",
+      "kind": "executed-test-source",
+      "sha256": "e20e700777e1304506957f3d4dd806d5b8315f7b137139a5f403e691a56eb417",
+      "bytes": 228276
+    },
+    {
+      "path": "tests/test_xsm.py",
+      "kind": "current-test-source",
+      "sha256": "e20e700777e1304506957f3d4dd806d5b8315f7b137139a5f403e691a56eb417",
+      "bytes": 228276
+    },
+    {
+      "path": "/private/tmp/xsm-doctor-privacy-v2-frozen-i7xbamec/tests/test_remote.py",
+      "kind": "executed-test-source",
+      "sha256": "470a35476c53ea75689a642a76a33dbf60f5a6f699094e5a766337cbad61a20d",
+      "bytes": 30727
+    },
+    {
+      "path": "tests/test_remote.py",
+      "kind": "current-test-source",
+      "sha256": "470a35476c53ea75689a642a76a33dbf60f5a6f699094e5a766337cbad61a20d",
+      "bytes": 30727
+    },
+    {
+      "path": "/private/tmp/xsm-doctor-privacy-v2-frozen-i7xbamec/tests/test_subagent_transport.py",
+      "kind": "executed-test-source",
+      "sha256": "8c07bfed94e8d7185e30c88d73bb39d9198bcc437021df8207758d9b708db658",
+      "bytes": 15639
+    },
+    {
+      "path": "tests/test_subagent_transport.py",
+      "kind": "current-test-source",
+      "sha256": "8c07bfed94e8d7185e30c88d73bb39d9198bcc437021df8207758d9b708db658",
+      "bytes": 15639
+    },
+    {
+      "path": "/private/tmp/xsm-doctor-privacy-v2-frozen-i7xbamec/tests/test_handoff_consumer.py",
+      "kind": "executed-test-source",
+      "sha256": "31f5d017861e402dc9a4c70314b395821b98f2f1daf3071b9adf1f5b06a37771",
+      "bytes": 26744
+    },
+    {
+      "path": "tests/test_handoff_consumer.py",
+      "kind": "current-test-source",
+      "sha256": "31f5d017861e402dc9a4c70314b395821b98f2f1daf3071b9adf1f5b06a37771",
+      "bytes": 26744
+    },
+    {
+      "path": "/private/tmp/xsm-doctor-privacy-v2-frozen-i7xbamec/tests/test_handoff_crash.py",
+      "kind": "executed-test-source",
+      "sha256": "ad29ac98711e8ad235e3918335f6d58ac4ae1909c3ec268285ba7aec33f35dd9",
+      "bytes": 6663
+    },
+    {
+      "path": "tests/test_handoff_crash.py",
+      "kind": "current-test-source",
+      "sha256": "ad29ac98711e8ad235e3918335f6d58ac4ae1909c3ec268285ba7aec33f35dd9",
+      "bytes": 6663
+    },
+    {
+      "path": "/private/tmp/xsm-doctor-privacy-v2-frozen-i7xbamec/tests/test_mcp_wait_process.py",
+      "kind": "executed-test-source",
+      "sha256": "92725ad677f5f0e964a1e20cf52ecdaab7b28b4f14a4060aa49ee0a09ad24385",
+      "bytes": 5599
+    },
+    {
+      "path": "tests/test_mcp_wait_process.py",
+      "kind": "current-test-source",
+      "sha256": "92725ad677f5f0e964a1e20cf52ecdaab7b28b4f14a4060aa49ee0a09ad24385",
+      "bytes": 5599
+    },
+    {
+      "path": "/private/tmp/xsm-doctor-privacy-v2-frozen-i7xbamec/tests/test_question_interfaces.py",
+      "kind": "executed-test-source",
+      "sha256": "66e5791078f5b38bba20c08a278cbdc2efe7d82aebc95da81ca666c883ac94d5",
+      "bytes": 33473
+    },
+    {
+      "path": "tests/test_question_interfaces.py",
+      "kind": "current-test-source",
+      "sha256": "66e5791078f5b38bba20c08a278cbdc2efe7d82aebc95da81ca666c883ac94d5",
+      "bytes": 33473
+    },
+    {
+      "path": "/private/tmp/xsm-doctor-privacy-v2-frozen-i7xbamec/tests/test_install_safety.py",
+      "kind": "executed-test-source",
+      "sha256": "0a5ae8020ca9042b20354adaddc02bff9cd1923ca3e813fda8575a011c1896b7",
+      "bytes": 15678
+    },
+    {
+      "path": "tests/test_install_safety.py",
+      "kind": "current-test-source",
+      "sha256": "0a5ae8020ca9042b20354adaddc02bff9cd1923ca3e813fda8575a011c1896b7",
+      "bytes": 15678
+    },
+    {
+      "path": "/private/tmp/xsm-doctor-privacy-v2-frozen-i7xbamec/tests/test_install_cli_flow.py",
+      "kind": "executed-test-source",
+      "sha256": "2726d9a8ddb1b1acb93c9a6d82b7fae5ed811d79e13ba642083c67b08f9444b4",
+      "bytes": 24785
+    },
+    {
+      "path": "tests/test_install_cli_flow.py",
+      "kind": "current-test-source",
+      "sha256": "2726d9a8ddb1b1acb93c9a6d82b7fae5ed811d79e13ba642083c67b08f9444b4",
+      "bytes": 24785
+    },
+    {
+      "path": "deliverables/p13-live/native-handoff-factory-20261029-7091030d/manifest.json",
+      "kind": "native-raw-manifest",
+      "sha256": "cc18365c5beef3a9f01e92475ddbeb8903a57187e162856bb2b37f95914efaea",
+      "bytes": 24791
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/native-child-cleanup-fix.json",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "766c8b2d41a6a89a94d93a1fd04184c0113b22e22677c588fb463fa938d087db",
+      "bytes": 234
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/plan.json",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "91fef44a6f4b1e367702b5309141d54dfb5ae3657e5c3853ce11ee2bdcc295ac",
+      "bytes": 1023
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/proxy.py",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "97251e811f27004a4ab8aa0020f490322296a06bd0ce1790b261999d518b5fc8",
+      "bytes": 3460
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/receiver-initial/client-wire.jsonl",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "4460d25b9ecea1315ed23572948e6134c0e88a22362a583669ee5603323b3d81",
+      "bytes": 1464
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/receiver-initial/fault-observed.json",
+      "kind": "actual-fault-boundary",
+      "sha256": "c8c138adae0be7a31f174a9f99a6de713039d97c3682775c7501b3982748cdcd",
+      "bytes": 1906
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/receiver-initial/forwarded.jsonl",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "a78954220ea47569304ba0f1b732b093130b39233f83fa7365d844eeea74bbb6",
+      "bytes": 234
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/receiver-initial/handles.json",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "4d8a4910bb956a60ecd3f339d5fc85165c3a56f6ff824d08ddead4c9b2ecc4d6",
+      "bytes": 228
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/receiver-initial/native.jsonl",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "86b7654510f312ba6f42466c622493323e2a90093a6e7727dbc68bb994646f2a",
+      "bytes": 52517
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/receiver-initial/native.stderr",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "1aa26269eb1cc57f86b235a03cda53c004edb5b1e9fc99d4da4f00843293d721",
+      "bytes": 39
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/receiver-initial/server-wire.jsonl",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "494221a6de762e8ce579942a76b42758aaebbfc3b40ed35d153892ef454b89f9",
+      "bytes": 26498
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/receiver-initial/server.stderr",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/receiver-initial/withheld-response.json",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "d7d3538ca0a79465da803634a9b1923157ae2dc9bf555f23ec86364033988f3b",
+      "bytes": 2265
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/receiver-resume/native.jsonl",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/receiver-resume/native.stderr",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "fc46457500f08206a6f0138ae2defc36376f83b68114548670ca118d532a9b8d",
+      "bytes": 509
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/receiver-resume-verified/client-wire.jsonl",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "a2d4a46f1393f935efd7012d767a8b2d3343bf870419a20310e280798164e3f8",
+      "bytes": 5071
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/receiver-resume-verified/forwarded.jsonl",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "f93dbb6be45015e0e2667d131034dc08eefbec2edf1742f3f968aee80710b19e",
+      "bytes": 724
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/receiver-resume-verified/handles.json",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "fa02118c6038adaa96b572d2574db92cedd8e862119f6c4e1c4229791b53d257",
+      "bytes": 228
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/receiver-resume-verified/native.jsonl",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "76fb5530b8a3d9224b192497637aa383477f386d0517bcf2c494de5236845e87",
+      "bytes": 5961
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/receiver-resume-verified/native.stderr",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/receiver-resume-verified/server-wire.jsonl",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "16a38fe07ac3b2db88945dbed7775c50304b92b3f17bf40c833792c20e62a38f",
+      "bytes": 26959
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/receiver-resume-verified/server.stderr",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/result.json",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "4465d53f20fc47adf19b07274aee59b50a9e967dadb68a5c46baefadb5476939",
+      "bytes": 33707
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/resume-verified.py",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "4a1099f12ace46ac0dfc7620b0cab95ba7d8e2d5625596024185b62e7c61cdec",
+      "bytes": 1740
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/run.py",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "df11988a2d4e2e1ad7a357d040d820faead700383a4d221dccd2702902d46733",
+      "bytes": 12732
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/sender/client-wire.jsonl",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "557c885fa63cc54bff345511a9ca6c22d16337a371f492f5c6e346057a156f57",
+      "bytes": 6129
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/sender/forwarded.jsonl",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "6bd0df53f95d330b1f9f8c86bf2faffe98ed003f3e4c7b79c0c3e6c8368a4531",
+      "bytes": 872
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/sender/handles.json",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "de16ab4eb773ab5db7433572eb367b40a3c7247cf2b67d0fc0017ea7ed969a67",
+      "bytes": 228
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/sender/native.jsonl",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "c768aab30da6e047aad8611e978940287851cefbd598018f1ff6626f7890475a",
+      "bytes": 66858
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/sender/native.stderr",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "1aa26269eb1cc57f86b235a03cda53c004edb5b1e9fc99d4da4f00843293d721",
+      "bytes": 39
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/sender/server-wire.jsonl",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "98c8435bda6356f28d2953c98b2b9c40bb0b400d50e491032bd80a8d0d3b50bf",
+      "bytes": 34943
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/sender/server.stderr",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/source-manifest.json",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "f05abb9df2bdef69ed1cfc50f5aba7cbdea4c513f5c82cf3e69ba8f9a2f8c92a",
+      "bytes": 5116
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/state/.config-policy.lock",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/state/capability-observations/0f736e6b63138f03f8269a2261b3fda78c89fc673ac7cecd0f4c4f1072b409cc.json",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "2ec01ce81bcbe5acb8fe05a6f00ad9a3ec65439e6808d4e4ab9c8807bc1515a0",
+      "bytes": 380
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/state/capability-observations/5caea27c859c9401208475dbe97ee25572801e72759867c6d95ff7fea8ef59f1.json",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "fde6d5010f0bc184860ce9b24864e94a59647b8ff60a98a42beb6e6fdd18804d",
+      "bytes": 379
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/state/capability-observations/b73af64d9a5983537c58d5068f4f6decd637a691cddcaa1134936e0ab1dac9ae.json",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "0722011c4aea6be678aa633b49c1a742878a9fcae253a789a7e18c62c9f7121f",
+      "bytes": 379
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/state/config.last-valid.json",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "922f3dc6512bfc4b1092790b7b1087738dc59d9ab5ef9b3bfb954eb045fb2265",
+      "bytes": 282
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/state/decisions.jsonl",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "4057772cfd75eeb9ee592de5548768d2e1bb4514af78e7a607e8a5ab0a8b80aa",
+      "bytes": 3940
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/state/handoffs/642453aa7159f78d835b9e745d2fc5e66915a00de1e363651327177bc6796c7f/.lock",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/state/handoffs/642453aa7159f78d835b9e745d2fc5e66915a00de1e363651327177bc6796c7f/7356aa0f0e654405.json",
+      "kind": "native-canonical-state",
+      "sha256": "ddac453b3388fefb2eb80b5a56f073706e3f7c6aaa14d2e4d519b76f5ae54053",
+      "bytes": 5452
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/state/handoffs/a48ba0b33e22e172b8f2a81b9d17fd1dd4dc105ebf3a3539d69987d9a7cfb934/.lock",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/state/handoffs/a48ba0b33e22e172b8f2a81b9d17fd1dd4dc105ebf3a3539d69987d9a7cfb934/789409fc88f74110.json",
+      "kind": "native-canonical-state",
+      "sha256": "8be1aff2751b877c2c20ab03e0e89323443581d18046f378828c7ea81b0f74e3",
+      "bytes": 5078
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/state/homes.json",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "ae0e4b94dbd9c01ab3e00f35be7d29861071efc42346224844114ffe233b2481",
+      "bytes": 93
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/state/install-locks/9c21b61a6237f2620aa0b9e42a02131caa5e1e96bb8c2e4fc24d15c190a91eea.lock",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/state/ledger/7356aa0f0e654405.handoff.json",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "cb9eba75f89777aef2aeebd0c315b1fa0372f02977d6c966409a19545acb92f1",
+      "bytes": 421
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/state/ledger/7356aa0f0e654405.handoff.json.lock",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/state/ledger/7356aa0f0e654405.json",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "eefb1eaf6a6d2dc6057c18b9325c1a85eb3b622841e076bf2dc3767bca8ad941",
+      "bytes": 1346
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/state/ledger/7356aa0f0e654405.recv.json",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "cec260055adf656e5a361208cfbf3d346b6b853502f342f84433e123ebcb49be",
+      "bytes": 370
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/state/ledger/789409fc88f74110.handoff.json",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "eeec23b383b8e2056ab3a3f76608a6cff7046d4dc35481c8617a4f7109174860",
+      "bytes": 420
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/state/ledger/789409fc88f74110.handoff.json.lock",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/state/ledger/789409fc88f74110.json",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "1bf79c0c4fd5bece77c2ba57067f9f643a34640d8899002fd2cbc390283baaf9",
+      "bytes": 1240
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/state/ledger/789409fc88f74110.recv.json",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "7a415b793d7b04e66e1afb907340480095dce5a066aa603d310077edff4d1ec0",
+      "bytes": 403
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/state/legacy-inbox-originals/5f3f3970565475d9b2e9cccd0f03f19a9be57a3f6f38d497a712678280b49536/490b29c9197030a1119b1982f1a0ab5adee098ead4bb633b847243911e099f83.json",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "b3c4f39b658c54c9291f0637c63b78026f44b7c93914ff85c9c16b7c7256cb5b",
+      "bytes": 1236
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/state/legacy-inbox-originals/5f3f3970565475d9b2e9cccd0f03f19a9be57a3f6f38d497a712678280b49536/ea3c9b6f49c6a42f294052c33ce178f8fe4b40e136a1832bf32930bff1214ca6.json",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "d09091c5cb6d118048c0c53abd05ef13355d4c624e92d7274259649b41f07e1b",
+      "bytes": 1105
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/state/legacy-inbox-originals/8dae7eca752ab5d0262f97e341b8df03268beba7528662345eafd41bd0aa971d/3c49e392729240e4f18dd05c0afa16d2cf58b00bdaa3dabda9580574a0553658.json",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "06a829c16db3955bd178f12f405e1fe343713dae50b0b1338946021f20db8530",
+      "bytes": 1113
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/state/legacy-inbox-originals/8dae7eca752ab5d0262f97e341b8df03268beba7528662345eafd41bd0aa971d/c6418a262d4bdf897a0d61709bb4cb7f19796799793bd185efbe05fc170e8d87.json",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "e46372a8e476c820770f4b8ac2eacefb297438ed10737888f20a892e9c550990",
+      "bytes": 1250
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/state/mcp/15187.json",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "1a1e2601594c71f9e458118e15cc37ff20268dc4877dc7938b1d32d6162db6db",
+      "bytes": 159
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/state/otel-metrics.jsonl",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "8b2370d8613616ee87821d5ac157f9ed7767cb1ee0754580ad1b6499755a5c9d",
+      "bytes": 641
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/state/otel-spans.jsonl",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "036705056d346eddbc8c8f348ed75b0fbf082f88c6a3f3d83375a350057dbe1f",
+      "bytes": 1541
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/state/questions/7356aa0f0e654405.json",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "83a19be0aa531c36a11d16e412c26f1a75c5a1d407bb30704ef11a4efec03442",
+      "bytes": 2392
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/state/questions/7356aa0f0e654405.json.lock",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/state/sessions/codex-01a18433-3ab0-73c1-900d-a0f3519f0e58.json",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "6baa7445f15f7c395869c672f0a04fe9692e22d6d984f28ada9822a5319cae6a",
+      "bytes": 402
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/state/sessions/codex-01a18433-3deb-75b2-ad9d-e0eb2c299d92.json",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "0f1e9a333a32e5e4f51ff551c7cca372cf316e1fd3f2ac9174448233fccdb549",
+      "bytes": 409
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/state/traffic/b0901b21f4df8f3ccd684ba3ec07ce760f1a8af72567ba3d0dcc57186f1deb2a.json",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "bbbe65d23f3f00921c91a3ca135e06d3da42e9790e9818dc6aabbb849ab48e0d",
+      "bytes": 686
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/state/traffic/b0901b21f4df8f3ccd684ba3ec07ce760f1a8af72567ba3d0dcc57186f1deb2a.lock",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "8e7c4b55b2043ae615c74d4c7f957d9a3bfa44eca0169855cfb8a87c924ac7de",
+      "bytes": 15
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/state/traffic/b2c9cec2392bf930890a60459764962474287e6f752363efc35b021ca3e449dc.json",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "f34a65e93c404375eb49ca6ff7d21da9cfb8d95d18b7c2f4c8e72f93138ca9a7",
+      "bytes": 687
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/state/traffic/b2c9cec2392bf930890a60459764962474287e6f752363efc35b021ca3e449dc.lock",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "8e7c4b55b2043ae615c74d4c7f957d9a3bfa44eca0169855cfb8a87c924ac7de",
+      "bytes": 15
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/verified-result.json",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "a87b26de3d981e7cb8bdd64924bcfeeaa362960ea5698c513a695e6eb0bffd9c",
+      "bytes": 27246
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/work/.agents/skills/xsm/SKILL.md",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "3e583bcd294862775c6590766b96cea2260c879329a32ffbe5306f128da55896",
+      "bytes": 5448
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/work/.agents/skills/xsm/references/guide.md",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "6bffc41da7cce01cc6080c8afb62e54efc910fd67b59d9d11b0c119130c43981",
+      "bytes": 37275
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/work/.agents/skills/xsm/references/messaging.md",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "324b020e2e8eb899469e8d6478d046bcde18d405dc46667d817581a0ef974cb0",
+      "bytes": 6272
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/work/.git/HEAD",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "28d25bf82af4c0e2b72f50959b2beb859e3e60b9630a5e8c603dad4ddb2b6e80",
+      "bytes": 21
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/work/.git/config",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "cae33efdb02cf774435c1ff9cb16bcc1014606908530c6e1dc727615fe3e8cda",
+      "bytes": 137
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/work/.git/description",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "85ab6c163d43a17ea9cf7788308bca1466f1b0a8d1cc92e26e9bf63da4062aee",
+      "bytes": 73
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/work/.git/hooks/applypatch-msg.sample",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "0223497a0b8b033aa58a3a521b8629869386cf7ab0e2f101963d328aa62193f7",
+      "bytes": 478
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/work/.git/hooks/commit-msg.sample",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "1f74d5e9292979b573ebd59741d46cb93ff391acdd083d340b94370753d92437",
+      "bytes": 896
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/work/.git/hooks/fsmonitor-watchman.sample",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "e0549964e93897b519bd8e333c037e51fff0f88ba13e086a331592bf801fa1d0",
+      "bytes": 4726
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/work/.git/hooks/post-update.sample",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "81765af2daef323061dcbc5e61fc16481cb74b3bac9ad8a174b186523586f6c5",
+      "bytes": 189
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/work/.git/hooks/pre-applypatch.sample",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "e15c5b469ea3e0a695bea6f2c82bcf8e62821074939ddd85b77e0007ff165475",
+      "bytes": 424
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/work/.git/hooks/pre-commit.sample",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "57185b7b9f05239d7ab52db045f5b89eb31348d7b2177eab214f5eb872e1971b",
+      "bytes": 1649
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/work/.git/hooks/pre-merge-commit.sample",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "d3825a70337940ebbd0a5c072984e13245920cdf8898bd225c8d27a6dfc9cb53",
+      "bytes": 416
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/work/.git/hooks/pre-push.sample",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "ecce9c7e04d3f5dd9d8ada81753dd1d549a9634b26770042b58dda00217d086a",
+      "bytes": 1374
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/work/.git/hooks/pre-rebase.sample",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "4febce867790052338076f4e66cc47efb14879d18097d1d61c8261859eaaa7b3",
+      "bytes": 4898
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/work/.git/hooks/pre-receive.sample",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "a4c3d2b9c7bb3fd8d1441c31bd4ee71a595d66b44fcf49ddb310252320169989",
+      "bytes": 544
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/work/.git/hooks/prepare-commit-msg.sample",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "e9ddcaa4189fddd25ed97fc8c789eca7b6ca16390b2392ae3276f0c8e1aa4619",
+      "bytes": 1492
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/work/.git/hooks/push-to-checkout.sample",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "a53d0741798b287c6dd7afa64aee473f305e65d3f49463bb9d7408ec3b12bf5f",
+      "bytes": 2783
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/work/.git/hooks/sendemail-validate.sample",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "44ebfc923dc5466bc009602f0ecf067b9c65459abfe8868ddc49b78e6ced7a92",
+      "bytes": 2308
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/work/.git/hooks/update.sample",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "8d5f2fa83e103cf08b57eaa67521df9194f45cbdbcb37da52ad586097a14d106",
+      "bytes": 3650
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/work/.git/info/exclude",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "6671fe83b7a07c8932ee89164d1f2793b2318058eb8b98dc5c06ee0a5a3b0ec1",
+      "bytes": 240
+    },
+    {
+      "path": "deliverables/p13-live/native-handoff-factory-20261029-7091030d/controller.py",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "df11988a2d4e2e1ad7a357d040d820faead700383a4d221dccd2702902d46733",
+      "bytes": 12732
+    },
+    {
+      "path": "deliverables/p13-live/native-handoff-factory-20261029-7091030d/plan.json",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "91fef44a6f4b1e367702b5309141d54dfb5ae3657e5c3853ce11ee2bdcc295ac",
+      "bytes": 1023
+    },
+    {
+      "path": "deliverables/p13-live/native-handoff-factory-20261029-7091030d/proxy.py",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "97251e811f27004a4ab8aa0020f490322296a06bd0ce1790b261999d518b5fc8",
+      "bytes": 3460
+    },
+    {
+      "path": "deliverables/p13-live/native-handoff-factory-20261029-7091030d/report.md",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "5aef95108e3aa006141b571794e324ff4d2e417ed353aa1ebe6576936e4d014c",
+      "bytes": 3277
+    },
+    {
+      "path": "deliverables/p13-live/native-handoff-factory-20261029-7091030d/resume-observer.py",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "4a1099f12ace46ac0dfc7620b0cab95ba7d8e2d5625596024185b62e7c61cdec",
+      "bytes": 1740
+    },
+    {
+      "path": "deliverables/p13-live/native-handoff-factory-20261029-7091030d/summary.json",
+      "kind": "summary",
+      "sha256": "39c016745de20a41bf97b4eaa10c08482991ab82fdc151f5cdd0c8b60b585135",
+      "bytes": 5058
+    },
+    {
+      "path": "deliverables/p13-live/different-parent-native-20261029-5564a814/manifest.json",
+      "kind": "native-raw-manifest",
+      "sha256": "c98342d0bddca918f029ce536af1abee13a5317ce423b312e8fa22daa437f922",
+      "bytes": 48076
+    },
+    {
+      "path": "/private/tmp/different-parent-native-3jr1o8uv/audit-summary.json",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "cf7685819e76d85837459b45b86cf290a57960f7e9738e33e5522f380e678b30",
+      "bytes": 11733
+    },
+    {
+      "path": "/private/tmp/different-parent-native-3jr1o8uv/native-rollouts/0924883f570f6eccd98d323bf5849b420cc6cb6a7e0c2ec678de8dbe6f2c4ed9.jsonl",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "ae5bd6721911a753278ed0c70a8a1a23396c4d797ea7097e7dfa5d75f08cee9e",
+      "bytes": 209129
+    },
+    {
+      "path": "/private/tmp/different-parent-native-3jr1o8uv/native-rollouts/478350d5f3a2226b2bde448385ee7dd8f0a1c92aa4db6cbb5236fb6e71ef272c.jsonl",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "1b6347425773b0ad14057a902cb73aa7160f0ef5a981562e7cd547adca6fa745",
+      "bytes": 406646
+    },
+    {
+      "path": "/private/tmp/different-parent-native-3jr1o8uv/native-rollouts/766842235fefdf73f71c5681f085db7fd825a9dc5d7de4b574584d1ece66d6d5.jsonl",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "3c9c2fec4a0f0e89de281539f88b025931cb947852624b0d203e31efa88b3ade",
+      "bytes": 430521
+    },
+    {
+      "path": "/private/tmp/different-parent-native-3jr1o8uv/native-rollouts/f23747694fb78088f399a4d1fef12872f4afdebf470f0783d409ca0bbbfe19ee.jsonl",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "21660e55ebd4e38df4318859c33ed51e8160ce13217c7357b042f494eabc6ac5",
+      "bytes": 205108
+    },
+    {
+      "path": "/private/tmp/different-parent-native-3jr1o8uv/parent-a1/native.jsonl",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "aee62337385597a0c6eda66114dbf8ec075223e0ef6dc5fec117215c8d28e9c8",
+      "bytes": 2257
+    },
+    {
+      "path": "/private/tmp/different-parent-native-3jr1o8uv/parent-a1/native.stderr",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "ba2b323d2ece1b6d59fbeab5b1f9425abc1bbba4c840e9944c78d411b818a3b2",
+      "bytes": 178
+    },
+    {
+      "path": "/private/tmp/different-parent-native-3jr1o8uv/parent-a1/proxies/57827-e5a8d34f/client-wire.jsonl",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "e4751006bff94ddd60c368c97e00fcd7b046098a4690c12c8e09f06fb6826cb9",
+      "bytes": 399
+    },
+    {
+      "path": "/private/tmp/different-parent-native-3jr1o8uv/parent-a1/proxies/57827-e5a8d34f/events.jsonl",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "652ad53f8e27ead92bf516ba2ce0758d855ce7bc5e5357b0a0526324bb4f4856",
+      "bytes": 1166
+    },
+    {
+      "path": "/private/tmp/different-parent-native-3jr1o8uv/parent-a1/proxies/57827-e5a8d34f/handles.json",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "555d04ccf2e2bb3b3eeb1c355f31a6c8033452539bf340724e4e3ec4fa128018",
+      "bytes": 1050
+    },
+    {
+      "path": "/private/tmp/different-parent-native-3jr1o8uv/parent-a1/proxies/57827-e5a8d34f/server-wire.jsonl",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "2429966ff374044e376c0384105fedc1d71fcbf390b696ce926aaa9e3cb9cf3e",
+      "bytes": 25479
+    },
+    {
+      "path": "/private/tmp/different-parent-native-3jr1o8uv/parent-a1/proxies/57827-e5a8d34f/server.stderr",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "/private/tmp/different-parent-native-3jr1o8uv/parent-a1/proxies/61014-f9df6292/client-wire.jsonl",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "a2f2192ad1316471f6cfe0fa528b40c62824fe359d19b337bf3f9c1d0862185d",
+      "bytes": 18142
+    },
+    {
+      "path": "/private/tmp/different-parent-native-3jr1o8uv/parent-a1/proxies/61014-f9df6292/events.jsonl",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "99107a5e7d43fc1862edd38045e27558cf54c213c0df56c21c2d97d882ed723e",
+      "bytes": 21023
+    },
+    {
+      "path": "/private/tmp/different-parent-native-3jr1o8uv/parent-a1/proxies/61014-f9df6292/handles.json",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "11ee1c3d1f145a773fe9d6cb9f63746f7956ca47859eb67b7c4318f6051ce211",
+      "bytes": 1050
+    },
+    {
+      "path": "/private/tmp/different-parent-native-3jr1o8uv/parent-a1/proxies/61014-f9df6292/server-wire.jsonl",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "ea44b7e409b9af693c63b8ed2453fc79c5d35f1e00c40503da2b4d2b2c431d5c",
+      "bytes": 46044
+    },
+    {
+      "path": "/private/tmp/different-parent-native-3jr1o8uv/parent-a1/proxies/61014-f9df6292/server.stderr",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "/private/tmp/different-parent-native-3jr1o8uv/parent-a2/native.jsonl",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "fd36311f05a53275f036054f3311db7fed2cbc8946f37149309918cf1a050b03",
+      "bytes": 2095
+    },
+    {
+      "path": "/private/tmp/different-parent-native-3jr1o8uv/parent-a2/native.stderr",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "1aa26269eb1cc57f86b235a03cda53c004edb5b1e9fc99d4da4f00843293d721",
+      "bytes": 39
+    },
+    {
+      "path": "/private/tmp/different-parent-native-3jr1o8uv/parent-a2/proxies/57444-564ec627/client-wire.jsonl",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "e4751006bff94ddd60c368c97e00fcd7b046098a4690c12c8e09f06fb6826cb9",
+      "bytes": 399
+    },
+    {
+      "path": "/private/tmp/different-parent-native-3jr1o8uv/parent-a2/proxies/57444-564ec627/events.jsonl",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "44fe28e8d91dc518e703ce07b961551ce03731deb31aca34dbf3c75d053da323",
+      "bytes": 1169
+    },
+    {
+      "path": "/private/tmp/different-parent-native-3jr1o8uv/parent-a2/proxies/57444-564ec627/handles.json",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "4fc7e67c972e36c465939a1ccb4e5a4958f1f8eb0652b09f4b8044ca99cd5616",
+      "bytes": 1050
+    },
+    {
+      "path": "/private/tmp/different-parent-native-3jr1o8uv/parent-a2/proxies/57444-564ec627/server-wire.jsonl",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "2429966ff374044e376c0384105fedc1d71fcbf390b696ce926aaa9e3cb9cf3e",
+      "bytes": 25479
+    },
+    {
+      "path": "/private/tmp/different-parent-native-3jr1o8uv/parent-a2/proxies/57444-564ec627/server.stderr",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "/private/tmp/different-parent-native-3jr1o8uv/parent-a2/proxies/60506-0e32d727/client-wire.jsonl",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "3add715cc810062a143a8de39b1489fb349d21b7e6dcfc8f6a83d9a98485be49",
+      "bytes": 17689
+    },
+    {
+      "path": "/private/tmp/different-parent-native-3jr1o8uv/parent-a2/proxies/60506-0e32d727/events.jsonl",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "03738b76aa402287fa2fd9af601dead4df89444febf8561789ffca6230b74227",
+      "bytes": 21018
+    },
+    {
+      "path": "/private/tmp/different-parent-native-3jr1o8uv/parent-a2/proxies/60506-0e32d727/handles.json",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "79787213371795a00b25888f28198c1f2feb8c3a64152915eb75ce67077b7900",
+      "bytes": 1050
+    },
+    {
+      "path": "/private/tmp/different-parent-native-3jr1o8uv/parent-a2/proxies/60506-0e32d727/server-wire.jsonl",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "306de765d8877397ff6cc791e2306d0c4d086084065331a4bf5a31c4f1ae9269",
+      "bytes": 41794
+    },
+    {
+      "path": "/private/tmp/different-parent-native-3jr1o8uv/parent-a2/proxies/60506-0e32d727/server.stderr",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "/private/tmp/different-parent-native-3jr1o8uv/plan.json",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "59cfc22497583896265b50fc510659628314c0fa454537651899b14915a07daa",
+      "bytes": 1357
+    },
+    {
+      "path": "/private/tmp/different-parent-native-3jr1o8uv/proxy.py",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "927e6f5df075be6c4d40ca2748fd2b8214613db0a9408776b529d41351a3af53",
+      "bytes": 2805
+    },
+    {
+      "path": "/private/tmp/different-parent-native-3jr1o8uv/result.json",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "f3e8602f3c637aa2e99f30e6c5ef6555f157129be8f057ac6ed61c2c1da73bc6",
+      "bytes": 12804
+    },
+    {
+      "path": "/private/tmp/different-parent-native-3jr1o8uv/run.py",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "b35d17204623e29e04b465ca65cec491963303fb43114f2769513ac82e51f0de",
+      "bytes": 9688
+    },
+    {
+      "path": "/private/tmp/different-parent-native-3jr1o8uv/source-manifest.json",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "af1078b3479c0707c87088ce6aa76deb17e2896e08425629bd0b85ff7926bade",
+      "bytes": 5116
+    },
+    {
+      "path": "/private/tmp/different-parent-native-3jr1o8uv/state/.config-policy.lock",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "/private/tmp/different-parent-native-3jr1o8uv/state/capability-observations/1591b8687037af4440cb3701835ffc7e582e9d6edac8530f03d3b2081e120af5.json",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "17f3cf54a49be8f94a45612ac7cd7d9e733ff37a685400c49e27a5f2e309f7b7",
+      "bytes": 380
+    },
+    {
+      "path": "/private/tmp/different-parent-native-3jr1o8uv/state/capability-observations/1eb84dd99ed48a53d5b89d5f6bf535a47ab888d7379c17e47d75ac29ea8e1e75.json",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "c6a92573f568ceb6d9d561c280ff15b78be1d4db14a95c22e6ddee3413cbfebb",
+      "bytes": 379
+    },
+    {
+      "path": "/private/tmp/different-parent-native-3jr1o8uv/state/capability-observations/8322dee73260e50fdbf70ffaee6209085a16e4c2dd722942f7e890554d1c1e30.json",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "d28a1d0db020fed7f426c76270491dc99ad81fcee9b626b4c66ac78e069e2420",
+      "bytes": 379
+    },
+    {
+      "path": "/private/tmp/different-parent-native-3jr1o8uv/state/capability-observations/fae97f0dad6325f14104a1b743e3f11c3d1dac3f9aefd945cc9c0b1598646cb6.json",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "d285c84db7d3bddfad1935db5e692c121320813b846be979abd45bcd482ad143",
+      "bytes": 380
+    },
+    {
+      "path": "/private/tmp/different-parent-native-3jr1o8uv/state/config.last-valid.json",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "c7b58a5ef0ebb7bab9646ac68f3e59b1166c8eb83b2bdc98e1eecd90a768a89c",
+      "bytes": 283
+    },
+    {
+      "path": "/private/tmp/different-parent-native-3jr1o8uv/state/decisions.jsonl",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "fa486fc733bfbb3c65bef6787b213a551c27e40f68e47661b051dab821bb19af",
+      "bytes": 12359
+    },
+    {
+      "path": "/private/tmp/different-parent-native-3jr1o8uv/state/file-copies/.lock",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "/private/tmp/different-parent-native-3jr1o8uv/state/file-copies/incoming/839f8d2a144948f6a1eb27eb32150a9e/a53e15b34bd444ac84b8709f0a9fc85f.blob",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "70ce994e467e0cc86275c21fa85aedf9a6cbfcd46ca214a3c9f8b8c1dd233bd2",
+      "bytes": 381
+    },
+    {
+      "path": "/private/tmp/different-parent-native-3jr1o8uv/state/file-copies/incoming/839f8d2a144948f6a1eb27eb32150a9e/record.json",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "f8362361b368997f20adfb4660c8b80de196a76e75e0cd36d16c3fd7ed6ea19e",
+      "bytes": 1266
+    },
+    {
+      "path": "/private/tmp/different-parent-native-3jr1o8uv/state/file-copies/incoming/84cc41131d22489e9f9d43684b7c2bbb/af1b25ddf87347229a0dcea92e4d6f1d.blob",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "70ce994e467e0cc86275c21fa85aedf9a6cbfcd46ca214a3c9f8b8c1dd233bd2",
+      "bytes": 381
+    },
+    {
+      "path": "/private/tmp/different-parent-native-3jr1o8uv/state/file-copies/incoming/84cc41131d22489e9f9d43684b7c2bbb/record.json",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "f288c5f64876cbb730afcd396ade8aac8d14009460fe37dbf5e1569ed2ad919f",
+      "bytes": 1270
+    },
+    {
+      "path": "/private/tmp/different-parent-native-3jr1o8uv/state/file-copies/incoming/8deacfe16a5340d489706e0d1d5d93ea/9ed5d4965f7646bb8f9aac4c55cb4688.blob",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "438a2345cb889fda364687be176d3033553d99cf1b03d23975b27ad68b743417",
+      "bytes": 402
+    },
+    {
+      "path": "/private/tmp/different-parent-native-3jr1o8uv/state/file-copies/incoming/8deacfe16a5340d489706e0d1d5d93ea/record.json",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "6ec4d0af9e93432b92039c02f68cee72543b558d4eb574c5edd7c20ae80b9dc0",
+      "bytes": 1260
+    },
+    {
+      "path": "/private/tmp/different-parent-native-3jr1o8uv/state/file-copies/outgoing/0200e986d5ac49228a0c51e179e0bf92/2961717461574ca6bc23603f8463a628.blob",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "70ce994e467e0cc86275c21fa85aedf9a6cbfcd46ca214a3c9f8b8c1dd233bd2",
+      "bytes": 381
+    },
+    {
+      "path": "/private/tmp/different-parent-native-3jr1o8uv/state/file-copies/outgoing/0200e986d5ac49228a0c51e179e0bf92/record.json",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "0975b8424e358b4c189a71e2d37e442269a7eedbdfd25d355576c99a35f38eeb",
+      "bytes": 1247
+    },
+    {
+      "path": "/private/tmp/different-parent-native-3jr1o8uv/state/file-copies/outgoing/d2a3eddbe3774d0ebf90cf3ca2f88a7d/4815299689b943c284929199b1551156.blob",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "70ce994e467e0cc86275c21fa85aedf9a6cbfcd46ca214a3c9f8b8c1dd233bd2",
+      "bytes": 381
+    },
+    {
+      "path": "/private/tmp/different-parent-native-3jr1o8uv/state/file-copies/outgoing/d2a3eddbe3774d0ebf90cf3ca2f88a7d/record.json",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "6c0d4d1b0695e079499a5bd654b697809a03e51c6a482df766efd981d4993942",
+      "bytes": 1250
+    },
+    {
+      "path": "/private/tmp/different-parent-native-3jr1o8uv/state/file-copies/outgoing/e18d3d2ca0024728ab0dabf625615f5e/ec2a2005749a4321883355cf94859e23.blob",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "438a2345cb889fda364687be176d3033553d99cf1b03d23975b27ad68b743417",
+      "bytes": 402
+    },
+    {
+      "path": "/private/tmp/different-parent-native-3jr1o8uv/state/file-copies/outgoing/e18d3d2ca0024728ab0dabf625615f5e/record.json",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "b2544c9eefbd28480111bc840d276b45704245dad34f1df3faadc7244fa2f8e4",
+      "bytes": 1240
+    },
+    {
+      "path": "/private/tmp/different-parent-native-3jr1o8uv/state/handoffs/233de4849cb684e544ea65f6ab3fb2f1711446046102b2999bef31298da01f43/.lock",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "/private/tmp/different-parent-native-3jr1o8uv/state/handoffs/47b5cd193b1e019227427497e0a8efd9d2bb5893133d595cf1fefccdca88e2f7/.lock",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "/private/tmp/different-parent-native-3jr1o8uv/state/handoffs/47b5cd193b1e019227427497e0a8efd9d2bb5893133d595cf1fefccdca88e2f7/11f8150b86184fc2.json",
+      "kind": "typed-fallback-canonical-state",
+      "sha256": "f119d93aebcb12f404e03d7650bf03b248c0e730a9d6e0a10b3c2dc0f4c2791f",
+      "bytes": 5056
+    },
+    {
+      "path": "/private/tmp/different-parent-native-3jr1o8uv/state/handoffs/47b5cd193b1e019227427497e0a8efd9d2bb5893133d595cf1fefccdca88e2f7/7bbf155fed2340ad.json",
+      "kind": "typed-fallback-canonical-state",
+      "sha256": "748c248b680959fbfdfd22486b31059492d3dec36a776f0efb8f73ef8cacdedd",
+      "bytes": 5655
+    },
+    {
+      "path": "/private/tmp/different-parent-native-3jr1o8uv/state/handoffs/47b5cd193b1e019227427497e0a8efd9d2bb5893133d595cf1fefccdca88e2f7/9c1b91f0211b492f.json",
+      "kind": "typed-fallback-canonical-state",
+      "sha256": "bc5d946c06861b7ee25ba3f52a0d0a2cd89d21caa0be8985c1685cf900d929f3",
+      "bytes": 4638
+    },
+    {
+      "path": "/private/tmp/different-parent-native-3jr1o8uv/state/handoffs/47b5cd193b1e019227427497e0a8efd9d2bb5893133d595cf1fefccdca88e2f7/bbefe06b155b449b.json",
+      "kind": "typed-fallback-canonical-state",
+      "sha256": "0402b3ec4aff0a7a77e7af654f5887757e6f80e82a7bf2c44f001ad9ec03257d",
+      "bytes": 6322
+    },
+    {
+      "path": "/private/tmp/different-parent-native-3jr1o8uv/state/handoffs/a4954d0a7d3fc0a7dbf3f2878cb1e511967f8356f01d83470526b2d5652688b2/.lock",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "/private/tmp/different-parent-native-3jr1o8uv/state/handoffs/a4954d0a7d3fc0a7dbf3f2878cb1e511967f8356f01d83470526b2d5652688b2/6ef48ff9cb164b6f.json",
+      "kind": "typed-fallback-canonical-state",
+      "sha256": "174005a51252a850a3ebf92e40216bfa16c886e5f5e9b8277d5435d02630b482",
+      "bytes": 4821
+    },
+    {
+      "path": "/private/tmp/different-parent-native-3jr1o8uv/state/handoffs/a4954d0a7d3fc0a7dbf3f2878cb1e511967f8356f01d83470526b2d5652688b2/8ebd81df269d48cb.json",
+      "kind": "typed-fallback-canonical-state",
+      "sha256": "472ed1a32d3ec54eb1e232c88585abb0ca252639fe1bff5e683524d94363355f",
+      "bytes": 5366
+    },
+    {
+      "path": "/private/tmp/different-parent-native-3jr1o8uv/state/handoffs/a4954d0a7d3fc0a7dbf3f2878cb1e511967f8356f01d83470526b2d5652688b2/ccd69e1c380645d3.json",
+      "kind": "typed-fallback-canonical-state",
+      "sha256": "20157f64e6d98c94370a3637380f8e5352d9bfd640208ee4706b0d3b9cf2382e",
+      "bytes": 5914
+    },
+    {
+      "path": "/private/tmp/different-parent-native-3jr1o8uv/state/handoffs/a4954d0a7d3fc0a7dbf3f2878cb1e511967f8356f01d83470526b2d5652688b2/e1b5c4deccb64851.json",
+      "kind": "typed-fallback-canonical-state",
+      "sha256": "5ce91fd217bb5d38a608f0991c95a3f6484e7bf1b2dd170398b03f6b56877154",
+      "bytes": 4880
+    },
+    {
+      "path": "/private/tmp/different-parent-native-3jr1o8uv/state/handoffs/c95d4a8ae6b8f65ced1f8f2e19fcf629ab2a238ad888277de18b4bd02a4720ac/.lock",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "/private/tmp/different-parent-native-3jr1o8uv/state/homes.json",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "ae0e4b94dbd9c01ab3e00f35be7d29861071efc42346224844114ffe233b2481",
+      "bytes": 93
+    },
+    {
+      "path": "/private/tmp/different-parent-native-3jr1o8uv/state/install-locks/9bbe55e1b3e12f1f03e4956df90d1e4be2712082fbdcca1b4961441ca8a939d0.lock",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "/private/tmp/different-parent-native-3jr1o8uv/state/ledger/11f8150b86184fc2.handoff.json",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "bf34823766044e46bf3754876437caad7be0c1c3000ee609f23e7c4308b910a0",
+      "bytes": 420
+    },
+    {
+      "path": "/private/tmp/different-parent-native-3jr1o8uv/state/ledger/11f8150b86184fc2.handoff.json.lock",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "/private/tmp/different-parent-native-3jr1o8uv/state/ledger/11f8150b86184fc2.json",
+      "kind": "typed-failure-ledger",
+      "sha256": "80a53c81e18b3e1be765155b403c0c06b701bf8ff61369bcfe8da848bd1a5236",
+      "bytes": 1509
+    },
+    {
+      "path": "/private/tmp/different-parent-native-3jr1o8uv/state/ledger/11f8150b86184fc2.recv.json",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "642dc47f65ab50fe1d3aeea61328843d531a600eefe9bcc060dba4a68318e5d8",
+      "bytes": 369
+    },
+    {
+      "path": "/private/tmp/different-parent-native-3jr1o8uv/state/ledger/6ef48ff9cb164b6f.handoff.json",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "b65ce49fdb5981d214f06b5915b59ffbf46dc1c008f23ef1cc988ddfb9b2fdfe",
+      "bytes": 420
+    },
+    {
+      "path": "/private/tmp/different-parent-native-3jr1o8uv/state/ledger/6ef48ff9cb164b6f.handoff.json.lock",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "/private/tmp/different-parent-native-3jr1o8uv/state/ledger/6ef48ff9cb164b6f.json",
+      "kind": "typed-failure-ledger",
+      "sha256": "ddc3259b933bcbce2c72331ee51a0f768d021b841a8d35eafd75bdc0ffa89f69",
+      "bytes": 1302
+    },
+    {
+      "path": "/private/tmp/different-parent-native-3jr1o8uv/state/ledger/6ef48ff9cb164b6f.recv.json",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "e3386059715b4aa954d868d603bcf9f2c127118d24e18425e34269df119f686a",
+      "bytes": 370
+    },
+    {
+      "path": "/private/tmp/different-parent-native-3jr1o8uv/state/ledger/7bbf155fed2340ad.handoff.json",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "f13e42f123c6ea13a1fe09f9f400e5474ee6a6ff64d035964319e0ccd718fff6",
+      "bytes": 421
+    },
+    {
+      "path": "/private/tmp/different-parent-native-3jr1o8uv/state/ledger/7bbf155fed2340ad.handoff.json.lock",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "/private/tmp/different-parent-native-3jr1o8uv/state/ledger/7bbf155fed2340ad.json",
+      "kind": "typed-failure-ledger",
+      "sha256": "4f74e8fb5be40fcad11331cd4ae7fa51a5270139ca35347426065cbb5db74357",
+      "bytes": 1746
+    },
+    {
+      "path": "/private/tmp/different-parent-native-3jr1o8uv/state/ledger/7bbf155fed2340ad.recv.json",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "5a03a33cb3eeac5942295db93ef4ac07d7947bf48b600a4a1436e1884285356b",
+      "bytes": 370
+    },
+    {
+      "path": "/private/tmp/different-parent-native-3jr1o8uv/state/ledger/8ebd81df269d48cb.handoff.json",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "287265dc79d0c99edc60897fdebc309c4cc7f60c12e3154c2fedb9e1f5e37381",
+      "bytes": 419
+    },
+    {
+      "path": "/private/tmp/different-parent-native-3jr1o8uv/state/ledger/8ebd81df269d48cb.handoff.json.lock",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "/private/tmp/different-parent-native-3jr1o8uv/state/ledger/8ebd81df269d48cb.json",
+      "kind": "typed-failure-ledger",
+      "sha256": "45ec3ac5ee3a6e0f1c9c528a1c1d7f40601c6aaf878656e3ac7a70d50bf94ffc",
+      "bytes": 1646
+    },
+    {
+      "path": "/private/tmp/different-parent-native-3jr1o8uv/state/ledger/8ebd81df269d48cb.recv.json",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "606ff294a0147d97aa5a68750d09f4093d6f26b576346e9ebe828dbd69c9d9c2",
+      "bytes": 370
+    },
+    {
+      "path": "/private/tmp/different-parent-native-3jr1o8uv/state/ledger/9c1b91f0211b492f.handoff.json",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "56fda66cf5d1b43ba80842307884d582262d55a8c5d8bbef10bbd9767757aea0",
+      "bytes": 420
+    },
+    {
+      "path": "/private/tmp/different-parent-native-3jr1o8uv/state/ledger/9c1b91f0211b492f.handoff.json.lock",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "/private/tmp/different-parent-native-3jr1o8uv/state/ledger/9c1b91f0211b492f.json",
+      "kind": "typed-failure-ledger",
+      "sha256": "891ebff34cb252b78ef8f116b6828f5b7219ee458b74c15f186cb37a608e224d",
+      "bytes": 1240
+    },
+    {
+      "path": "/private/tmp/different-parent-native-3jr1o8uv/state/ledger/9c1b91f0211b492f.recv.json",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "dae976455df2b2882116684c04c7efa56f991f722071edcf1b31e760d8c027fd",
+      "bytes": 371
+    },
+    {
+      "path": "/private/tmp/different-parent-native-3jr1o8uv/state/ledger/bbefe06b155b449b.handoff.json",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "66039c66a7bf14b5ffb3a5d362166645f7e11e9d366928452acc880cbbee662b",
+      "bytes": 421
+    },
+    {
+      "path": "/private/tmp/different-parent-native-3jr1o8uv/state/ledger/bbefe06b155b449b.handoff.json.lock",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "/private/tmp/different-parent-native-3jr1o8uv/state/ledger/bbefe06b155b449b.json",
+      "kind": "typed-failure-ledger",
+      "sha256": "4d53256f6f9f5b3ed076cd8294d7bc6e903deaa19723df1ea1a82d842fbb0a66",
+      "bytes": 1695
+    },
+    {
+      "path": "/private/tmp/different-parent-native-3jr1o8uv/state/ledger/bbefe06b155b449b.recv.json",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "c5d34642a03275323d5ad162cb2dcb52f17bc9ea30fac312708e41053ec81519",
+      "bytes": 395
+    },
+    {
+      "path": "/private/tmp/different-parent-native-3jr1o8uv/state/ledger/ccd69e1c380645d3.handoff.json",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "689f0f853f976f7e738b5c9684732c11e954a08e806a1178b2b9755840eb46ed",
+      "bytes": 420
+    },
+    {
+      "path": "/private/tmp/different-parent-native-3jr1o8uv/state/ledger/ccd69e1c380645d3.handoff.json.lock",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "/private/tmp/different-parent-native-3jr1o8uv/state/ledger/ccd69e1c380645d3.json",
+      "kind": "typed-failure-ledger",
+      "sha256": "f3a2d5fc31a97f8984cae66f3245c65f2b90663cb741329d1d8bd999d9e935c7",
+      "bytes": 1310
+    },
+    {
+      "path": "/private/tmp/different-parent-native-3jr1o8uv/state/ledger/ccd69e1c380645d3.recv.json",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "beecb46178316bedf1f06d3e0eab35902d50e55832da60e0a52f8bfe985d7fae",
+      "bytes": 396
+    },
+    {
+      "path": "/private/tmp/different-parent-native-3jr1o8uv/state/ledger/e1b5c4deccb64851.handoff.json",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "56542074e6be774a222b0ba7897f34c5e2a7452ce3c76f146b442566126a778c",
+      "bytes": 419
+    },
+    {
+      "path": "/private/tmp/different-parent-native-3jr1o8uv/state/ledger/e1b5c4deccb64851.handoff.json.lock",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "/private/tmp/different-parent-native-3jr1o8uv/state/ledger/e1b5c4deccb64851.json",
+      "kind": "typed-failure-ledger",
+      "sha256": "d255e03a2692f54a4f8a6fa59ce3e82704c29e283eeffe1cff5babcc7a3826b9",
+      "bytes": 1338
+    },
+    {
+      "path": "/private/tmp/different-parent-native-3jr1o8uv/state/ledger/e1b5c4deccb64851.recv.json",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "60d55aecf666e710647162482472a3a1039e0482c529b428dd29c785e4f6629a",
+      "bytes": 395
+    },
+    {
+      "path": "/private/tmp/different-parent-native-3jr1o8uv/state/legacy-inbox-originals/478350d5f3a2226b2bde448385ee7dd8f0a1c92aa4db6cbb5236fb6e71ef272c/2cd3aebb0957472191941dfcc856f90afa759e565d28a340f0d072fa31b0e01f.json",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "913f64f80d4b166b4458c06604104ebc5e0f7f18fc3c7e69163a31f3885a8691",
+      "bytes": 1684
+    },
+    {
+      "path": "/private/tmp/different-parent-native-3jr1o8uv/state/legacy-inbox-originals/478350d5f3a2226b2bde448385ee7dd8f0a1c92aa4db6cbb5236fb6e71ef272c/6b359bc1a37ddc3510c44285364867d479fea4b25a621610bb34af7765a2c0a8.json",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "ffc4ae2c4619596ad502928da701b4bed072aefa82e5265a5b4de1d6f82caa0b",
+      "bytes": 1218
+    },
+    {
+      "path": "/private/tmp/different-parent-native-3jr1o8uv/state/legacy-inbox-originals/478350d5f3a2226b2bde448385ee7dd8f0a1c92aa4db6cbb5236fb6e71ef272c/73bbc0867b57db4e14fea07a73d1a2aebe30f02b538bd8dfb980fe668bf47871.json",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "04b4cdd0c1b52a57c38e0fbdf20fcb5338eeaa99d3074150a947d3dc97022fcf",
+      "bytes": 988
+    },
+    {
+      "path": "/private/tmp/different-parent-native-3jr1o8uv/state/legacy-inbox-originals/478350d5f3a2226b2bde448385ee7dd8f0a1c92aa4db6cbb5236fb6e71ef272c/95485518902d0a3b32630487781a8be74374ce3470910c37a7600f8b5a8b433e.json",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "adede345a3a6a76c9c7ea73f44da4608e2e1643072d145ce4565e9ea1b19177b",
+      "bytes": 1088
+    },
+    {
+      "path": "/private/tmp/different-parent-native-3jr1o8uv/state/legacy-inbox-originals/478350d5f3a2226b2bde448385ee7dd8f0a1c92aa4db6cbb5236fb6e71ef272c/a2487e44336df25fdb93fe480f4b0422cbd2869242656ad8d7ace73b986d1752.json",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "69a1f2456de9f2744077c22dcf85c54f548ddbcfaa78a914e5d0797820d5cbfd",
+      "bytes": 1213
+    },
+    {
+      "path": "/private/tmp/different-parent-native-3jr1o8uv/state/legacy-inbox-originals/478350d5f3a2226b2bde448385ee7dd8f0a1c92aa4db6cbb5236fb6e71ef272c/d3e4b0261aaeab5b123e173c6dfe17187cdbc5e8db573aa7f679953de2309181.json",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "69051d40507f55417c477b4cd4e257ec5783984df27af391fa74d33edaaac799",
+      "bytes": 1455
+    },
+    {
+      "path": "/private/tmp/different-parent-native-3jr1o8uv/state/legacy-inbox-originals/478350d5f3a2226b2bde448385ee7dd8f0a1c92aa4db6cbb5236fb6e71ef272c/dce5ba8e1987aca1831cfd70075c5057e7489c77c04f5ccf886180542df98d35.json",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "8826cd39d5234a81d82818e7c60f33893318fa2b2b8614619e45a873afa61e67",
+      "bytes": 1443
+    },
+    {
+      "path": "/private/tmp/different-parent-native-3jr1o8uv/state/legacy-inbox-originals/478350d5f3a2226b2bde448385ee7dd8f0a1c92aa4db6cbb5236fb6e71ef272c/f2a732c38a0af6ba3784435305d21930b2ec51903a118aff520dba9e117b8079.json",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "6baed9468051f5c95db30ad798bd9d4a5d418dae98debc84460f97d1c0c2db9b",
+      "bytes": 858
+    },
+    {
+      "path": "/private/tmp/different-parent-native-3jr1o8uv/state/legacy-inbox-originals/766842235fefdf73f71c5681f085db7fd825a9dc5d7de4b574584d1ece66d6d5/2aa01ca78006c4afa82faf1117c22cc479b09a5b5c9e3787ac9672003373f827.json",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "77a31f08d730283c180e15635e604985685eb1a474ab577103c6fe837bb457b5",
+      "bytes": 1345
+    },
+    {
+      "path": "/private/tmp/different-parent-native-3jr1o8uv/state/legacy-inbox-originals/766842235fefdf73f71c5681f085db7fd825a9dc5d7de4b574584d1ece66d6d5/472f62833468f5289685c069f0e9361918ffa190bb6c69e9d602be5803a7f1be.json",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "ab3cd62e03632793b225e37544955ef925a08b77e391d9a95acd585f28f2f0ad",
+      "bytes": 1147
+    },
+    {
+      "path": "/private/tmp/different-parent-native-3jr1o8uv/state/legacy-inbox-originals/766842235fefdf73f71c5681f085db7fd825a9dc5d7de4b574584d1ece66d6d5/5502b7a5e02d29ab33718994324e9c1ccac7106a9d46fd3e3b1c1018ed6c9b5c.json",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "b28270117bdc7a103a426c71b857cb191f138f82be5fa3e7d99aad3efc27a01f",
+      "bytes": 1172
+    },
+    {
+      "path": "/private/tmp/different-parent-native-3jr1o8uv/state/legacy-inbox-originals/766842235fefdf73f71c5681f085db7fd825a9dc5d7de4b574584d1ece66d6d5/5ac570a900753bd6b5439311283cafc3607fb4eaad537df7fa7c39f41125afa7.json",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "0f3b3ed84eb18d9f1ced69d11190610455ea9cd1fc2d934d2fb28c9f2ce24bc9",
+      "bytes": 943
+    },
+    {
+      "path": "/private/tmp/different-parent-native-3jr1o8uv/state/legacy-inbox-originals/766842235fefdf73f71c5681f085db7fd825a9dc5d7de4b574584d1ece66d6d5/8a08e3c71e94cd7623035ec6a48fcd15a39bf5232987c12fab21c883b33cd9ea.json",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "69c1a83941f85e2cca627f9c6946c31dedccd9c4f4dcd04cfe63130db0bf0219",
+      "bytes": 1521
+    },
+    {
+      "path": "/private/tmp/different-parent-native-3jr1o8uv/state/legacy-inbox-originals/766842235fefdf73f71c5681f085db7fd825a9dc5d7de4b574584d1ece66d6d5/9101ef87a3363f7d87dabf084ce82748cb2abda4b22f1b46c06b04d6d7a9040f.json",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "cdd3c1de2488acd53c25aa3e10a7b0065f835700e6c315b0ab5375cbb7b53317",
+      "bytes": 1292
+    },
+    {
+      "path": "/private/tmp/different-parent-native-3jr1o8uv/state/legacy-inbox-originals/766842235fefdf73f71c5681f085db7fd825a9dc5d7de4b574584d1ece66d6d5/9257c188e810ffcaec000f5735ac451e2390685f555d710834b88f355a127a99.json",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "c529a74f8152ca03891ba49976dca20269fd6f10f6c46d4193fa217b176fb518",
+      "bytes": 1117
+    },
+    {
+      "path": "/private/tmp/different-parent-native-3jr1o8uv/state/legacy-inbox-originals/766842235fefdf73f71c5681f085db7fd825a9dc5d7de4b574584d1ece66d6d5/f6480d30609e0ff62043db92c4f3d3467169bf0c79ed6b203705487b7507d0cf.json",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "8ff0f2dc98c420e96b434b555121151561c6de3a11165ceabb7cc030aaa07330",
+      "bytes": 918
+    },
+    {
+      "path": "/private/tmp/different-parent-native-3jr1o8uv/state/material-intents/0adde4550c2caec952b7e049e1f7ea19dfa0c04700453e7f7d8e8d753df0c141.json",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "97b1b4f48e09d39011c2c99f72bf30d6e5e724adba957a9266e55da1159eb6c8",
+      "bytes": 392
+    },
+    {
+      "path": "/private/tmp/different-parent-native-3jr1o8uv/state/material-intents/0adde4550c2caec952b7e049e1f7ea19dfa0c04700453e7f7d8e8d753df0c141.lock",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "/private/tmp/different-parent-native-3jr1o8uv/state/material-intents/0c1103163f83945359734d517ce218f3dce9723cb79501c12fb5845e1d56b829.json",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "ba1a9a46f771395814c31abf842dc92578e83488ab4daf514170c7dbe9a45149",
+      "bytes": 392
+    },
+    {
+      "path": "/private/tmp/different-parent-native-3jr1o8uv/state/material-intents/0c1103163f83945359734d517ce218f3dce9723cb79501c12fb5845e1d56b829.lock",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "/private/tmp/different-parent-native-3jr1o8uv/state/material-intents/8b75f279b06c8607412c489b6931052b484a7badaf0e07e9116c62d4297482dc.json",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "d53f3090ce84f78f0bdea4d5b0e09cfe6d45f33488d352a0df23792a5b8d52de",
+      "bytes": 392
+    },
+    {
+      "path": "/private/tmp/different-parent-native-3jr1o8uv/state/material-intents/8b75f279b06c8607412c489b6931052b484a7badaf0e07e9116c62d4297482dc.lock",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "/private/tmp/different-parent-native-3jr1o8uv/state/otel-metrics.jsonl",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "3a6774f837495fc67e281b05e4b08e8c1bb165b681e7304633a72dba37c92e78",
+      "bytes": 2679
+    },
+    {
+      "path": "/private/tmp/different-parent-native-3jr1o8uv/state/otel-spans.jsonl",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "85374770700e482d6fc2933a31412733a7d2f2f108b3d3ede4b5584da03b7c57",
+      "bytes": 7690
+    },
+    {
+      "path": "/private/tmp/different-parent-native-3jr1o8uv/state/questions/11f8150b86184fc2.json",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "661a500e2035652eaa2e1aed041fab77ce2ed62fb4388acd7d0c9eb802a68a9e",
+      "bytes": 3130
+    },
+    {
+      "path": "/private/tmp/different-parent-native-3jr1o8uv/state/questions/11f8150b86184fc2.json.lock",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "/private/tmp/different-parent-native-3jr1o8uv/state/questions/7bbf155fed2340ad.json",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "01d5955c598d98b748311a1773817246685cc6dcdac1ca05bf4e53af28cbafa6",
+      "bytes": 2828
+    },
+    {
+      "path": "/private/tmp/different-parent-native-3jr1o8uv/state/questions/7bbf155fed2340ad.json.lock",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "/private/tmp/different-parent-native-3jr1o8uv/state/questions/8ebd81df269d48cb.json",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "e36a1ef90d079e2e4c69fa5145cafec2415aa877f7080228ec311c1c7f77561c",
+      "bytes": 2628
+    },
+    {
+      "path": "/private/tmp/different-parent-native-3jr1o8uv/state/questions/8ebd81df269d48cb.json.lock",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "/private/tmp/different-parent-native-3jr1o8uv/state/questions/ccd69e1c380645d3.json.lock",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "/private/tmp/different-parent-native-3jr1o8uv/state/sessions/codex-01a166ab-647c-7a11-8cc0-ff5daf0cff01.json",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "d19317d08424b9922ede4aa664c102544480dd60ae6dd5a02e2c5048a85731ac",
+      "bytes": 386
+    },
+    {
+      "path": "/private/tmp/different-parent-native-3jr1o8uv/state/sessions/codex-01a1849f-5ff2-7eb2-98f8-484a642e9472.json",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "7411b65b24dc3ec8efc204c5c3d7cb11ce7de023900b78f9a25ba081d72195ca",
+      "bytes": 410
+    },
+    {
+      "path": "/private/tmp/different-parent-native-3jr1o8uv/state/sessions/codex-01a1849f-5fff-7570-b7b8-2f86544d05a1.json",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "3362ff42a4845af5dcf03f7e8bff374984606f168bf6b577688d1c80b82a9d42",
+      "bytes": 410
+    },
+    {
+      "path": "/private/tmp/different-parent-native-3jr1o8uv/state/sessions/codex-01a1849f-7e90-7c73-9c85-440f9d9bc4e4.json",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "5585f856f55c27cb4cf7229077f57eef91ce14e348a11959e9611e20087aa55d",
+      "bytes": 403
+    },
+    {
+      "path": "/private/tmp/different-parent-native-3jr1o8uv/state/sessions/codex-01a1849f-88d2-7461-911d-4cf2ff364349.json",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "3320920b1804d39f02b7cdc3e4fb9faae33d745313cc0fdf9698d0a3e18e8cd9",
+      "bytes": 402
+    },
+    {
+      "path": "/private/tmp/different-parent-native-3jr1o8uv/state/traffic/215c6aafe63b06f5fe9a08dbd4c8fbe4b91e290dd392aca03ae56ab895777ea5.json",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "2543b9cea407ffac50dbfba921df9a648636db8015d82b4b6a4572d2149ef195",
+      "bytes": 2716
+    },
+    {
+      "path": "/private/tmp/different-parent-native-3jr1o8uv/state/traffic/215c6aafe63b06f5fe9a08dbd4c8fbe4b91e290dd392aca03ae56ab895777ea5.lock",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "8e7c4b55b2043ae615c74d4c7f957d9a3bfa44eca0169855cfb8a87c924ac7de",
+      "bytes": 15
+    },
+    {
+      "path": "/private/tmp/different-parent-native-3jr1o8uv/state/traffic/d7ff1275c8190396aff75a9447cb6a9ab82c17790b98976e247665336d720434.json",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "3907ede136a89c24cba312dc2108fa38de2f7c468686d4fdcd88d9601acc29bd",
+      "bytes": 2720
+    },
+    {
+      "path": "/private/tmp/different-parent-native-3jr1o8uv/state/traffic/d7ff1275c8190396aff75a9447cb6a9ab82c17790b98976e247665336d720434.lock",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "8e7c4b55b2043ae615c74d4c7f957d9a3bfa44eca0169855cfb8a87c924ac7de",
+      "bytes": 15
+    },
+    {
+      "path": "/private/tmp/different-parent-native-3jr1o8uv/work/.agents/skills/xsm/SKILL.md",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "3e583bcd294862775c6590766b96cea2260c879329a32ffbe5306f128da55896",
+      "bytes": 5448
+    },
+    {
+      "path": "/private/tmp/different-parent-native-3jr1o8uv/work/.agents/skills/xsm/references/guide.md",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "6bffc41da7cce01cc6080c8afb62e54efc910fd67b59d9d11b0c119130c43981",
+      "bytes": 37275
+    },
+    {
+      "path": "/private/tmp/different-parent-native-3jr1o8uv/work/.agents/skills/xsm/references/messaging.md",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "b76f2de35f0579bb74bca8f32ebe1f07f4a2bc83e5ed776284f738df88de3eef",
+      "bytes": 7221
+    },
+    {
+      "path": "/private/tmp/different-parent-native-3jr1o8uv/work/.git/HEAD",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "28d25bf82af4c0e2b72f50959b2beb859e3e60b9630a5e8c603dad4ddb2b6e80",
+      "bytes": 21
+    },
+    {
+      "path": "/private/tmp/different-parent-native-3jr1o8uv/work/.git/config",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "cae33efdb02cf774435c1ff9cb16bcc1014606908530c6e1dc727615fe3e8cda",
+      "bytes": 137
+    },
+    {
+      "path": "/private/tmp/different-parent-native-3jr1o8uv/work/.git/description",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "85ab6c163d43a17ea9cf7788308bca1466f1b0a8d1cc92e26e9bf63da4062aee",
+      "bytes": 73
+    },
+    {
+      "path": "/private/tmp/different-parent-native-3jr1o8uv/work/.git/hooks/applypatch-msg.sample",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "0223497a0b8b033aa58a3a521b8629869386cf7ab0e2f101963d328aa62193f7",
+      "bytes": 478
+    },
+    {
+      "path": "/private/tmp/different-parent-native-3jr1o8uv/work/.git/hooks/commit-msg.sample",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "1f74d5e9292979b573ebd59741d46cb93ff391acdd083d340b94370753d92437",
+      "bytes": 896
+    },
+    {
+      "path": "/private/tmp/different-parent-native-3jr1o8uv/work/.git/hooks/fsmonitor-watchman.sample",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "e0549964e93897b519bd8e333c037e51fff0f88ba13e086a331592bf801fa1d0",
+      "bytes": 4726
+    },
+    {
+      "path": "/private/tmp/different-parent-native-3jr1o8uv/work/.git/hooks/post-update.sample",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "81765af2daef323061dcbc5e61fc16481cb74b3bac9ad8a174b186523586f6c5",
+      "bytes": 189
+    },
+    {
+      "path": "/private/tmp/different-parent-native-3jr1o8uv/work/.git/hooks/pre-applypatch.sample",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "e15c5b469ea3e0a695bea6f2c82bcf8e62821074939ddd85b77e0007ff165475",
+      "bytes": 424
+    },
+    {
+      "path": "/private/tmp/different-parent-native-3jr1o8uv/work/.git/hooks/pre-commit.sample",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "57185b7b9f05239d7ab52db045f5b89eb31348d7b2177eab214f5eb872e1971b",
+      "bytes": 1649
+    },
+    {
+      "path": "/private/tmp/different-parent-native-3jr1o8uv/work/.git/hooks/pre-merge-commit.sample",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "d3825a70337940ebbd0a5c072984e13245920cdf8898bd225c8d27a6dfc9cb53",
+      "bytes": 416
+    },
+    {
+      "path": "/private/tmp/different-parent-native-3jr1o8uv/work/.git/hooks/pre-push.sample",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "ecce9c7e04d3f5dd9d8ada81753dd1d549a9634b26770042b58dda00217d086a",
+      "bytes": 1374
+    },
+    {
+      "path": "/private/tmp/different-parent-native-3jr1o8uv/work/.git/hooks/pre-rebase.sample",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "4febce867790052338076f4e66cc47efb14879d18097d1d61c8261859eaaa7b3",
+      "bytes": 4898
+    },
+    {
+      "path": "/private/tmp/different-parent-native-3jr1o8uv/work/.git/hooks/pre-receive.sample",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "a4c3d2b9c7bb3fd8d1441c31bd4ee71a595d66b44fcf49ddb310252320169989",
+      "bytes": 544
+    },
+    {
+      "path": "/private/tmp/different-parent-native-3jr1o8uv/work/.git/hooks/prepare-commit-msg.sample",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "e9ddcaa4189fddd25ed97fc8c789eca7b6ca16390b2392ae3276f0c8e1aa4619",
+      "bytes": 1492
+    },
+    {
+      "path": "/private/tmp/different-parent-native-3jr1o8uv/work/.git/hooks/push-to-checkout.sample",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "a53d0741798b287c6dd7afa64aee473f305e65d3f49463bb9d7408ec3b12bf5f",
+      "bytes": 2783
+    },
+    {
+      "path": "/private/tmp/different-parent-native-3jr1o8uv/work/.git/hooks/sendemail-validate.sample",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "44ebfc923dc5466bc009602f0ecf067b9c65459abfe8868ddc49b78e6ced7a92",
+      "bytes": 2308
+    },
+    {
+      "path": "/private/tmp/different-parent-native-3jr1o8uv/work/.git/hooks/update.sample",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "8d5f2fa83e103cf08b57eaa67521df9194f45cbdbcb37da52ad586097a14d106",
+      "bytes": 3650
+    },
+    {
+      "path": "/private/tmp/different-parent-native-3jr1o8uv/work/.git/info/exclude",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "6671fe83b7a07c8932ee89164d1f2793b2318058eb8b98dc5c06ee0a5a3b0ec1",
+      "bytes": 240
+    },
+    {
+      "path": "/private/tmp/different-parent-native-3jr1o8uv/work/a1-review-memo.md",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "70ce994e467e0cc86275c21fa85aedf9a6cbfcd46ca214a3c9f8b8c1dd233bd2",
+      "bytes": 381
+    },
+    {
+      "path": "deliverables/p13-live/different-parent-native-20261029-5564a814/audit.py",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "f790aac17ed5fddadca4466eb3ef1fed3f88ba32d191d5ad6a450e4db476e5f3",
+      "bytes": 9419
+    },
+    {
+      "path": "deliverables/p13-live/different-parent-native-20261029-5564a814/plan.json",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "59cfc22497583896265b50fc510659628314c0fa454537651899b14915a07daa",
+      "bytes": 1357
+    },
+    {
+      "path": "deliverables/p13-live/different-parent-native-20261029-5564a814/proxy.py",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "927e6f5df075be6c4d40ca2748fd2b8214613db0a9408776b529d41351a3af53",
+      "bytes": 2805
+    },
+    {
+      "path": "deliverables/p13-live/different-parent-native-20261029-5564a814/report.md",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "9c96d9ccdd5b0bed4bf91047c5f1a8e64b1e2794e6f49093e6fabccb0c60bda4",
+      "bytes": 7186
+    },
+    {
+      "path": "deliverables/p13-live/different-parent-native-20261029-5564a814/run.py",
+      "kind": "retained-native-raw-or-state",
+      "sha256": "b35d17204623e29e04b465ca65cec491963303fb43114f2769513ac82e51f0de",
+      "bytes": 9688
+    },
+    {
+      "path": "deliverables/p13-live/different-parent-native-20261029-5564a814/summary.json",
+      "kind": "summary",
+      "sha256": "ec014caeb6297462166d583b73649c6b2288fd3e2b2279d85fdabf3c0f91598b",
+      "bytes": 12211
+    },
+    {
+      "path": "deliverables/p10-live/native-upgrade.json",
+      "kind": "summary",
+      "sha256": "e07dd307d0fa15aa68f6fc504a98ed1281913bc58cc6d9d01dd616db6268972c",
+      "bytes": 15371
+    },
+    {
+      "path": "deliverables/p10-live/runtime-readback.json",
+      "kind": "summary",
+      "sha256": "3e8ade6b842ba034c176fc451f1b42058033f452dd71b0d27e167c54a4638f7d",
+      "bytes": 1630
+    },
+    {
+      "path": "deliverables/p10-live/eval_upgrade.py",
+      "kind": "native-upgrade-producer",
+      "sha256": "3c0e29d06c5810153e30ab34c13d35e8ffa9301db85841dc0bd33091007aa784",
+      "bytes": 23385
+    },
+    {
+      "path": "deliverables/p10-live/native-upgrade.md",
+      "kind": "historical-scope-report",
+      "sha256": "9b681f00e9225b085857e1ce4410a66df9beafb8aee4af7189a764052402583c",
+      "bytes": 4447
+    },
+    {
+      "path": "/private/tmp/p10-upgrade-uj5wwj7e/old.jsonl",
+      "kind": "upgrade-native-stdout",
+      "sha256": "aff4228b80711fc587693d3980598996bd0531b15cf073d6493fafb7a02a0952",
+      "bytes": 5567
+    },
+    {
+      "path": "/private/tmp/p10-upgrade-uj5wwj7e/old.stderr",
+      "kind": "upgrade-native-stderr",
+      "sha256": "0b93eb196bdc48686caa6c2e05028028ed1f2ece8dc89995523f30ead5481907",
+      "bytes": 220
+    },
+    {
+      "path": "/private/tmp/p10-upgrade-uj5wwj7e/new.jsonl",
+      "kind": "upgrade-native-stdout",
+      "sha256": "3e87eb7a00aa3384ef9e30a9c008fab6fe55586db3b21e515d6fb0bcdfcdc29e",
+      "bytes": 3865
+    },
+    {
+      "path": "/private/tmp/p10-upgrade-uj5wwj7e/new.stderr",
+      "kind": "upgrade-native-stderr",
+      "sha256": "091ff035491d56e04d3594e9a854b1afd3330a639a9f526d36fc6d84269b5d3b",
+      "bytes": 431
+    },
+    {
+      "path": "/private/tmp/xsm-final-receipt-frozen-i3u9pms3/xsm/adapters.py",
+      "kind": "actual-native-source",
+      "sha256": "0b0d77d724130b2671d2fdc8eb0da64bc80d178b4be54b766c0b9a8629e950dd",
+      "bytes": 13088
+    },
+    {
+      "path": "/private/tmp/xsm-doctor-privacy-v2-frozen-i7xbamec/xsm/adapters.py",
+      "kind": "v2-tested-source",
+      "sha256": "0b0d77d724130b2671d2fdc8eb0da64bc80d178b4be54b766c0b9a8629e950dd",
+      "bytes": 13088
+    },
+    {
+      "path": "xsm/adapters.py",
+      "kind": "current-product-source",
+      "sha256": "0b0d77d724130b2671d2fdc8eb0da64bc80d178b4be54b766c0b9a8629e950dd",
+      "bytes": 13088
+    },
+    {
+      "path": "/private/tmp/xsm-final-receipt-frozen-i3u9pms3/xsm/send.py",
+      "kind": "actual-native-source",
+      "sha256": "05390ef61f53860c84311bc3f2f3aaa428508e615f989f21398dcd427f601fbe",
+      "bytes": 41837
+    },
+    {
+      "path": "/private/tmp/xsm-doctor-privacy-v2-frozen-i7xbamec/xsm/send.py",
+      "kind": "v2-tested-source",
+      "sha256": "05390ef61f53860c84311bc3f2f3aaa428508e615f989f21398dcd427f601fbe",
+      "bytes": 41837
+    },
+    {
+      "path": "xsm/send.py",
+      "kind": "current-product-source",
+      "sha256": "05390ef61f53860c84311bc3f2f3aaa428508e615f989f21398dcd427f601fbe",
+      "bytes": 41837
+    },
+    {
+      "path": "/private/tmp/xsm-final-receipt-frozen-i3u9pms3/xsm/ledger.py",
+      "kind": "actual-native-source",
+      "sha256": "f291d11b736608bb3d2d07bdccdcc15348af2cbdfa73e1fb9d4c5628063e459f",
+      "bytes": 19243
+    },
+    {
+      "path": "/private/tmp/xsm-doctor-privacy-v2-frozen-i7xbamec/xsm/ledger.py",
+      "kind": "v2-tested-source",
+      "sha256": "f291d11b736608bb3d2d07bdccdcc15348af2cbdfa73e1fb9d4c5628063e459f",
+      "bytes": 19243
+    },
+    {
+      "path": "xsm/ledger.py",
+      "kind": "current-product-source",
+      "sha256": "f291d11b736608bb3d2d07bdccdcc15348af2cbdfa73e1fb9d4c5628063e459f",
+      "bytes": 19243
+    },
+    {
+      "path": "/private/tmp/xsm-p13-postqa-frozen-bukwksw6/xsm/handoff.py",
+      "kind": "actual-native-source",
+      "sha256": "4157d48fe0acb5d6f14df089ce128bd4faa5a8185d85e9c9f818e9ff09cb175f",
+      "bytes": 16090
+    },
+    {
+      "path": "/private/tmp/xsm-doctor-privacy-v2-frozen-i7xbamec/xsm/handoff.py",
+      "kind": "v2-tested-source",
+      "sha256": "48f8b6c1c4ab29ede46141e6eeb431bd08501407dbf42c75948c477bdd767d00",
+      "bytes": 19114
+    },
+    {
+      "path": "xsm/handoff.py",
+      "kind": "current-product-source",
+      "sha256": "48f8b6c1c4ab29ede46141e6eeb431bd08501407dbf42c75948c477bdd767d00",
+      "bytes": 19114
+    },
+    {
+      "path": "/private/tmp/xsm-p13-postqa-frozen-bukwksw6/xsm/receive.py",
+      "kind": "actual-native-source",
+      "sha256": "05a7991f531f14cf9ce376c7cde6d32c703f2cbb9c01709c494ee2faafdee1e2",
+      "bytes": 77096
+    },
+    {
+      "path": "/private/tmp/xsm-doctor-privacy-v2-frozen-i7xbamec/xsm/receive.py",
+      "kind": "v2-tested-source",
+      "sha256": "f0844cf0dde52979fb2361a7501fa9be8dd554b8052cac2acd56e3347a7add94",
+      "bytes": 77166
+    },
+    {
+      "path": "xsm/receive.py",
+      "kind": "current-product-source",
+      "sha256": "f0844cf0dde52979fb2361a7501fa9be8dd554b8052cac2acd56e3347a7add94",
+      "bytes": 77166
+    },
+    {
+      "path": "/private/tmp/p10-upgrade-uj5wwj7e/state/runtime/c54adca61daf/xsm/install.py",
+      "kind": "actual-native-source",
+      "sha256": "c2f97ecef55e1001e3d66294bccc4cd19e878bb0e78f99145f15b05ea0bc5b16",
+      "bytes": 117622
+    },
+    {
+      "path": "/private/tmp/xsm-doctor-privacy-v2-frozen-i7xbamec/xsm/install.py",
+      "kind": "v2-tested-source",
+      "sha256": "a8e712de6e8b2b9f368946333a6c8793168c6734484be45a60dbe967d0aa1960",
+      "bytes": 120421
+    },
+    {
+      "path": "xsm/install.py",
+      "kind": "current-product-source",
+      "sha256": "a8e712de6e8b2b9f368946333a6c8793168c6734484be45a60dbe967d0aa1960",
+      "bytes": 120421
+    },
+    {
+      "path": "deliverables/b04-live/legacy-reader.json",
+      "kind": "summary",
+      "sha256": "77ab28b92a2643c126e97daa0dbc34f2715684cce890b08eb6896031f3ad5d8d",
+      "bytes": 664
+    },
+    {
+      "path": "docs/adr/0018-delivery-evidence-and-recovery.md",
+      "kind": "original-ADR",
+      "sha256": "a5b48a15e124b7fa98469f23b7d344f8bfc1d7719d78c7c950d5887141e92d70",
+      "bytes": 10204
+    },
+    {
+      "path": "docs/adr/0023-runtime-adapters-and-operability.md",
+      "kind": "original-ADR",
+      "sha256": "5e4837989dd248fb850cce6d84e4a5134b46b7c1ff5d6d3d8f6ee01e116868ce",
+      "bytes": 11496
+    }
+  ],
+  "log_parser_note": "unittest verbose docstring test emits header and ... ok on separate lines; corresponding continuation lines bound explicitly, no test rerun or original log edit",
+  "end_readback_changed_input_files": []
+}

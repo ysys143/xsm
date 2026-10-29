@@ -1,0 +1,18 @@
+{
+  "at": 1793258285.0510452,
+  "executed_manifest_sha256": "5ac5d6338be88f4cc85754c3daa539b52b7778c48062712aa0031be549d7fe68",
+  "executed_copy_unchanged": true,
+  "current_repository_differences": [
+    {
+      "path": "xsm/network.py",
+      "executed_frozen_sha256": "9366ca66ad294233537cf43cd33b4142e1432dde0290283a3ca7e601d985d034",
+      "current_repository_sha256": "f52485d50b5008a92860d8409df0b722fef0c26034c87938a1967af59d653265"
+    },
+    {
+      "path": "xsm/probe.py",
+      "executed_frozen_sha256": "5727d930fafd3793da7f24f2179fb15dbc3ea07f58d53cd193ea6c1a093c828c",
+      "current_repository_sha256": "452835fb1ca280eb95094d89cc5775f8d510d4e3941c4469740f071ce27b676d"
+    }
+  ],
+  "condition": "completed native workflow used the original fixed copy; later timeout distinction changes in network.py/probe.py were not loaded; slow filesystem recovery is outside this native sample"
+}

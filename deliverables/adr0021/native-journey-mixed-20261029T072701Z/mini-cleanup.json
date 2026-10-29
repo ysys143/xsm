@@ -1,0 +1,121 @@
+{
+  "at": 1793260503.6573172,
+  "root": "/private/tmp/native-journey-mixed-mini-z2hfqmak",
+  "service_before": {
+    "status": "running",
+    "endpoint_id": "caa3af417594c6136542788c61f7b8701c614c505b41fe473f181cc95f92e5a2",
+    "address": {
+      "addrs": [
+        {
+          "Ip": "100.77.24.16:64629"
+        },
+        {
+          "Ip": "127.0.0.1:64629"
+        },
+        {
+          "Ip": "192.168.0.64:64629"
+        },
+        {
+          "Ip": "[::1]:55808"
+        }
+      ],
+      "id": "caa3af417594c6136542788c61f7b8701c614c505b41fe473f181cc95f92e5a2"
+    },
+    "active": true,
+    "network": {
+      "version": 1,
+      "network_id": "8259b4c768f094704910e111cec4f478729d85d1acbeaaeccd7171039d3c8b17:28408368410bf43f75e9080aa31bd8b706417ce1a89db4f67eb152b672a19774",
+      "name": "mixed-native-20261029",
+      "members": [
+        {
+          "endpoint_id": "8259b4c768f094704910e111cec4f478729d85d1acbeaaeccd7171039d3c8b17",
+          "machine_name": "mixed-claude-book",
+          "status": "active"
+        },
+        {
+          "endpoint_id": "caa3af417594c6136542788c61f7b8701c614c505b41fe473f181cc95f92e5a2",
+          "machine_name": "native-journey-mini",
+          "status": "active"
+        }
+      ],
+      "invites": [
+        {
+          "invite_hash": "5936d16d1e3274c84d7547d64741303c6609726286953bd89bacaf8cf5c5184a",
+          "issuer": "8259b4c768f094704910e111cec4f478729d85d1acbeaaeccd7171039d3c8b17",
+          "reusable": true,
+          "expires_at": null,
+          "revoked": false,
+          "consumed_by": []
+        },
+        {
+          "invite_hash": "5ddde175916cbbfe1049ed5049031f057bce006f5c07b690c651578a68e7e2b4",
+          "issuer": "8259b4c768f094704910e111cec4f478729d85d1acbeaaeccd7171039d3c8b17",
+          "reusable": true,
+          "expires_at": null,
+          "revoked": false,
+          "consumed_by": [
+            "caa3af417594c6136542788c61f7b8701c614c505b41fe473f181cc95f92e5a2"
+          ]
+        }
+      ]
+    },
+    "transport": {
+      "address": {
+        "addrs": [
+          {
+            "Ip": "100.77.24.16:64629"
+          },
+          {
+            "Ip": "127.0.0.1:64629"
+          },
+          {
+            "Ip": "192.168.0.64:64629"
+          },
+          {
+            "Ip": "[::1]:55808"
+          }
+        ],
+        "id": "caa3af417594c6136542788c61f7b8701c614c505b41fe473f181cc95f92e5a2"
+      },
+      "bound_addresses": [
+        "0.0.0.0:64629",
+        "[::]:55808"
+      ],
+      "endpoint_id": "caa3af417594c6136542788c61f7b8701c614c505b41fe473f181cc95f92e5a2",
+      "event": "ready",
+      "port_fallback": false,
+      "relay_mode": "off",
+      "relay_online": false,
+      "requested_port": 0
+    },
+    "last_transport": {
+      "path": "direct",
+      "selected": "direct",
+      "selection_reason": "iroh_path_selection",
+      "fallback_reason": null,
+      "remote_address": "192.168.0.11:51703",
+      "paths": [
+        {
+          "kind": "direct",
+          "remote": "ip:192.168.0.11:51703",
+          "selected": true
+        }
+      ]
+    },
+    "service_pid": 65114,
+    "engine_pid": 65116,
+    "known_peers": [
+      "8259b4c768f094704910e111cec4f478729d85d1acbeaaeccd7171039d3c8b17"
+    ]
+  },
+  "stop": {
+    "exit": 0,
+    "stdout": "{\"exit\": 0, \"result\": {\"status\": \"stopping\"}, \"stderr_bytes\": 0}\n",
+    "stderr": ""
+  },
+  "signals": [],
+  "known_process_count": 5,
+  "remaining_owned": [],
+  "state_and_keys_deleted": false,
+  "evidence_deleted": false
+}

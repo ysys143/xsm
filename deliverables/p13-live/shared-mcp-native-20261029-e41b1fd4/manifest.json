@@ -1,0 +1,2714 @@
+{
+  "scope": "actual native separated-MCP observation; not shared-MCP acceptance",
+  "raw_root": "/private/tmp/shared-mcp-native-yjfl3mjl",
+  "files": [
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/CLI-help-stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/CLI-help.txt",
+      "bytes": 5944,
+      "sha256": "c45272069305746def807625680ee74891c9b367bff346ff776206b98c79331a",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/exec-help-stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/exec-help.txt",
+      "bytes": 4331,
+      "sha256": "df0d864ca2076f7654288c6a1e3394e3eaa2ea8f15021df2524efdd90c70986c",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/features-stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/features.txt",
+      "bytes": 11951,
+      "sha256": "3f0cb57a279bb96194b3e16b36f180f15d68da10d96dc3c94852ab2bef030bc4",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/identity-ownership-audit.json",
+      "bytes": 13206,
+      "sha256": "6f1eaa9cd9f0ef13552765d9c05ab52ead6229f753e759455f1234ba84dfb30c",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/native-rollout-manifest.json",
+      "bytes": 1964,
+      "sha256": "fc6059e3db32c7b7713895854f396342adc83d3507d1009a2dd666d108bc63bc",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/native-rollouts/4aaf5ecec309efd6d38c850c653f530acd38fbeb90abc128e23d7bb61fc6f44c.jsonl",
+      "bytes": 530180,
+      "sha256": "8611a79921147c491bccc5bd1e34c23809074e6ece05f37f45c02744fb583234",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/native-rollouts/4b1f2b3bb7d602c9a82cfffc75349a25974df535f801d0e3393e2e4f456a3587.jsonl",
+      "bytes": 530048,
+      "sha256": "d62c7decb5a600b29895fac879614e1c3ed20ecabaa19ae0367c953d0347893f",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/native-rollouts/924c64de3c407b8b314b799cb2780db2e516471f26a4843372f87b8004f669ae.jsonl",
+      "bytes": 499129,
+      "sha256": "68e51d6188afed18a75067578a05b9f13f670a0f94ba9d76035367ffd1daa940",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/native.jsonl",
+      "bytes": 101171,
+      "sha256": "f185097590dd85313673a9b3ef7d23e0e7ae8cec4547577a2dcab9cbeeb123b1",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/native.stderr",
+      "bytes": 39,
+      "sha256": "1aa26269eb1cc57f86b235a03cda53c004edb5b1e9fc99d4da4f00843293d721",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/plan.json",
+      "bytes": 1078,
+      "sha256": "81807b4f4da4e0dedfee94cb2c043f0d1a0cab1b8c709d6c1f2d42af4482a0c6",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/proxies/42229-d5474141/client-wire.jsonl",
+      "bytes": 399,
+      "sha256": "e4751006bff94ddd60c368c97e00fcd7b046098a4690c12c8e09f06fb6826cb9",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/proxies/42229-d5474141/events.jsonl",
+      "bytes": 1168,
+      "sha256": "c3a58a3019050b980c5e821e535032dbf8508ed9213b6ab17d8358aee02f2e1d",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/proxies/42229-d5474141/handles.json",
+      "bytes": 1050,
+      "sha256": "600fbb9f23ba09d1d04c9032c1d3608522152c5f1f7381d411727050c299c06f",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/proxies/42229-d5474141/server-wire.jsonl",
+      "bytes": 24289,
+      "sha256": "5d0c7a1e5379e29a72580cb80a4f9248e7de14174b885fc41489fbd66fe207f0",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/proxies/42229-d5474141/server.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/proxies/44000-c68b12b2/client-wire.jsonl",
+      "bytes": 17699,
+      "sha256": "48bb998256d3bde252d398e0919a659f6c45e2fad42fe32f330de5318111641d",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/proxies/44000-c68b12b2/events.jsonl",
+      "bytes": 22500,
+      "sha256": "dc2315dabfbe03472fdea838ced083781beb55c1c4c72aec69a7f28fe1a13a7a",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/proxies/44000-c68b12b2/handles.json",
+      "bytes": 1050,
+      "sha256": "17bf92203c2482bf3bf17346d7b15ec00c158de1e2a1d6674e6c07932c9dbb28",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/proxies/44000-c68b12b2/server-wire.jsonl",
+      "bytes": 43003,
+      "sha256": "6323b7f87fd7b9af554eba6d560f594f826cb7c67454efd10ba57fc3907d0d14",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/proxies/44000-c68b12b2/server.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/proxies/44220-393c36eb/client-wire.jsonl",
+      "bytes": 20438,
+      "sha256": "2f37577808d685a030362be7e66f662ca37e35d18704f776ff3297df9a2a4a8e",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/proxies/44220-393c36eb/events.jsonl",
+      "bytes": 23991,
+      "sha256": "102ad369af1ba7d4dc0258fbf0844e7349c190cfac5706c1fdc2aa912dc4636d",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/proxies/44220-393c36eb/handles.json",
+      "bytes": 1050,
+      "sha256": "611c78c7f6414411d4fab4fa6d3819dd2ff276a8712433ad62f624e907b112a0",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/proxies/44220-393c36eb/server-wire.jsonl",
+      "bytes": 42015,
+      "sha256": "f7966bdcccc48384b28b043ae1e94e9f86b3203e19ecbf62f3ba98545261e741",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/proxies/44220-393c36eb/server.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/proxy.py",
+      "bytes": 2805,
+      "sha256": "927e6f5df075be6c4d40ca2748fd2b8214613db0a9408776b529d41351a3af53",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/result.json",
+      "bytes": 8134,
+      "sha256": "5122543a7e1153a536302f0c0cc2dee0790857fb01bdfd03bd4857526c70114d",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/run.py",
+      "bytes": 9544,
+      "sha256": "c7769629c3b7c8ae8458ec512ba51e66a8c01aeca4d1b57bde832c8c555e7422",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/ApplyPatchApprovalParams.json",
+      "bytes": 2657,
+      "sha256": "179d91081c3c84d0f79fc544a3d6d423f280c0f9d93512cdd0344c80e09b99a3",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/ApplyPatchApprovalResponse.json",
+      "bytes": 4278,
+      "sha256": "a5e145b4794ea91da6eb478626fac96bbbd4485c3399fabd1c9972d53d2d9010",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/AttestationGenerateParams.json",
+      "bytes": 118,
+      "sha256": "b85df8f169cfbca98724df3a5f7550fc4649fa69b23f5160aafdb52e027133a8",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/AttestationGenerateResponse.json",
+      "bytes": 277,
+      "sha256": "2eb86b2a37bca01a8cb5d0822f28cf13d46dd106c8b1d38e7ba097e436b5ab30",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/ChatgptAuthTokensRefreshParams.json",
+      "bytes": 971,
+      "sha256": "03b7a734b8b3180d9cb477b33564385d29b22a2528165a614891f13849060503",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/ChatgptAuthTokensRefreshResponse.json",
+      "bytes": 406,
+      "sha256": "06d6b30436fc962d80b5d7920f8f323de12a052214d9148c5f0dfbaedd5eec6c",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/ClientNotification.json",
+      "bytes": 431,
+      "sha256": "706cf248d75027c84a3c63348d0ed507182e8eba40069dd17541793de029145a",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/ClientRequest.json",
+      "bytes": 216762,
+      "sha256": "9b89e2459362d20cec67a429ef9430fe6b0e9fb8bd87d445d4c9a6acccd87450",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/CommandExecutionRequestApprovalParams.json",
+      "bytes": 15559,
+      "sha256": "16a71816c2d66e319c2c4aa83dd636dfdc43c61e72b6d5475e421ce08d8e6558",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/CommandExecutionRequestApprovalResponse.json",
+      "bytes": 3202,
+      "sha256": "6d0767113e22f311381809b6b236b0dde2b99b01992879c26bf7b1ea0e003cb7",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/DynamicToolCallParams.json",
+      "bytes": 519,
+      "sha256": "401bba20cfbd95762bef0467d840430c46be53369093ad9f26425ba757e34efc",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/DynamicToolCallResponse.json",
+      "bytes": 2010,
+      "sha256": "abb082cad67f11fcc98ba75f2eff75d7d1723af0c657655329b83ff160451a02",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/ExecCommandApprovalParams.json",
+      "bytes": 3768,
+      "sha256": "653116614df1aa5011c3cc399cf79bae6b9eb28c1d527df27275abf61ceb1365",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/ExecCommandApprovalResponse.json",
+      "bytes": 4279,
+      "sha256": "80dba6d9f28d19c57960db72340554c193624f014cd496714a0c7aabe1120046",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/FileChangeRequestApprovalParams.json",
+      "bytes": 968,
+      "sha256": "13848b26814c286ad6425a20d01c1691c86790e1f9e2529399677a8a22fe0d18",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/FileChangeRequestApprovalResponse.json",
+      "bytes": 1158,
+      "sha256": "b95b03ee6be674e25cee2e863cc135a28620e1070addd2f34685aadee27cde08",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/FuzzyFileSearchParams.json",
+      "bytes": 413,
+      "sha256": "0291dbb87a7c3d8ef7f7cdf8d5d61f929deabab8c0ea79f064da95984d7d5f4f",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/FuzzyFileSearchResponse.json",
+      "bytes": 1332,
+      "sha256": "4984c3dba591e240407c39531d41c6b499c4816017de70a3371c7d6fa2d0951f",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/FuzzyFileSearchSessionCompletedNotification.json",
+      "bytes": 244,
+      "sha256": "d3af2e301142ac0cb2462d95b052162ff4f25d83f9c1b21e319d5ce9c860d401",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/FuzzyFileSearchSessionUpdatedNotification.json",
+      "bytes": 1474,
+      "sha256": "b8626521028e0c68611c57d458f27dbc9bf8be542e804865ae0d14acd78cf2e6",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/JSONRPCError.json",
+      "bytes": 893,
+      "sha256": "d7ea353d4875ae204625da5a00a1ecb5afc69101d5778b9acc253a49f8932992",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/JSONRPCErrorError.json",
+      "bytes": 314,
+      "sha256": "12cc5cd5d9df9246defa609c472375020fe5250f3aeabd7d529076cecd9f541e",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/JSONRPCMessage.json",
+      "bytes": 2888,
+      "sha256": "6da4cc373a7ccd01f5608ad4496eeb4d44b6a9b0d3158e85ed66b59f3c0b5114",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/JSONRPCNotification.json",
+      "bytes": 303,
+      "sha256": "c2b43f26880db331393fe09f34bdd76dfeb4dc30d8418d1c26e18db166d6c8c8",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/JSONRPCRequest.json",
+      "bytes": 1093,
+      "sha256": "31bd6f360b2dd8a7ceaf682708105d40d38cb0b9d0821357a04da67028438f73",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/JSONRPCResponse.json",
+      "bytes": 520,
+      "sha256": "4796738c04c74288213a08fb8d820c7b4df19e0977cdcd35b65ffcb43cfc93ab",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/McpServerElicitationRequestParams.json",
+      "bytes": 13636,
+      "sha256": "5cbeb6bc702d2efa076da4c1dfb00672c970c1bad747031eb880b9ab907815c0",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/McpServerElicitationRequestResponse.json",
+      "bytes": 741,
+      "sha256": "792a012fdfe53ac211575a6c37ffbd492be848d15cb313d1bb4b534ade1f54ac",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/PermissionsRequestApprovalParams.json",
+      "bytes": 7286,
+      "sha256": "c11fbe632472ab0923aba5c0a53da3d6d86929bcd5c78e7c13c51c6b2db508ff",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/PermissionsRequestApprovalResponse.json",
+      "bytes": 7068,
+      "sha256": "23f3f24e9dbf35db3e0b85703f0d934da5a1cff3cbb611fba8bcd41f3b4a04b0",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/RequestId.json",
+      "bytes": 197,
+      "sha256": "9c72d59a306d827113020c6d31a14c326d55210d9bd6954f825196a52009f1c7",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/ServerNotification.json",
+      "bytes": 214381,
+      "sha256": "0352806952c06bf4b802b45966ca8d6f6442464aeebd816db74158da784d3c1c",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/ServerRequest.json",
+      "bytes": 49887,
+      "sha256": "f339be472737a0003efa25fba2e6e6c9237e621cd065b6d6995c51256e9dc1fb",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/ToolRequestUserInputParams.json",
+      "bytes": 2143,
+      "sha256": "fda15b62e7446105b59c8ed85c908abed2a47db70653e57c92c47a2f204fa77a",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/ToolRequestUserInputResponse.json",
+      "bytes": 793,
+      "sha256": "5073b245f741fa8ce62ec52e4dd1809b7831f9c4284c279a78abc9b171f8e3f2",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/codex_app_server_protocol.schemas.json",
+      "bytes": 736478,
+      "sha256": "5f633ad1f0a07459a5f63ed5604f8a61e0366ac5c36a15d648b44c8de4ffafb1",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/codex_app_server_protocol.v2.schemas.json",
+      "bytes": 633771,
+      "sha256": "705a08b903fecb9457a6c888040b16ff20be4bc74682ee3896c61cb27ce43060",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v1/InitializeParams.json",
+      "bytes": 2401,
+      "sha256": "b55124e7c0f36a1789396daa5578217a92be67f053903696236686e59f6f212e",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v1/InitializeResponse.json",
+      "bytes": 1286,
+      "sha256": "62ad689c2cb6379913c1d72749cfd8de5089d35760214123518eb92eef11acc9",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/AccountLoginCompletedNotification.json",
+      "bytes": 720,
+      "sha256": "d81e8821fd5a4a9ad118dfc3506ea156d32dcb18da388b336501bbc6a5ccb4a6",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/AccountRateLimitsUpdatedNotification.json",
+      "bytes": 4807,
+      "sha256": "fb62719b2edf989399a744e06e38b1828bf81bd10afaf6910d91c39b2e48d952",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/AccountUpdatedNotification.json",
+      "bytes": 2798,
+      "sha256": "963599d45751f44b79b668d521fc8e2f1a4a7201fc1f7411a36b391bc941f941",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/AgentMessageDeltaNotification.json",
+      "bytes": 406,
+      "sha256": "996e6c0ea65e57bed5a00f410b94381fe5ebf804333e5d00c2b6e6d47e5c55f6",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/AppListUpdatedNotification.json",
+      "bytes": 5703,
+      "sha256": "2c67a3bc676309afdd0d6952ad454c2a040a3d4c09d38c8f63ca7fb632034cce",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/AppsInstalledParams.json",
+      "bytes": 570,
+      "sha256": "c2027510d5d041c2205349036f9c2bea10b20df309de5330beab9de8a9e50bdb",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/AppsInstalledResponse.json",
+      "bytes": 1343,
+      "sha256": "d8ef8dd14dcba8aaaaaf2b0b80db90d66edf8f4ff422589b844ae2b0edcb46d4",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/AppsListParams.json",
+      "bytes": 904,
+      "sha256": "e880d0c24811118a2d3c2c7f0569a14aae5b12a31b0efe56809ccca8bbd85802",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/AppsListResponse.json",
+      "bytes": 5888,
+      "sha256": "5811fda68d6274decfc11744ad72bbe93e601d8514549e94f361ba3131d1adeb",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/AppsReadParams.json",
+      "bytes": 823,
+      "sha256": "61e6a9d35515f3164a7f7e7a5b0c5ac92817c5a3b5d7fb27e9a704fe2935ddf7",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/AppsReadResponse.json",
+      "bytes": 2443,
+      "sha256": "f3b73c2c31f16a2cff013c9682dfea48f26571f94002195c93ce10722a288791",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/AuthRecoveryNotification.json",
+      "bytes": 409,
+      "sha256": "c19238d43cf8bf610ea346afefc390b9ffa4f01e98ec6b42af0addf29d6cb7d5",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/CancelLoginAccountParams.json",
+      "bytes": 221,
+      "sha256": "a4570a7542b82b918f69199f1e214ef747151c678473a5af58c58b088fdf58b6",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/CancelLoginAccountResponse.json",
+      "bytes": 404,
+      "sha256": "06bc17624df01600fdc399d3c0f222f875c010d2d952c1d1191cb84de9b59014",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/CommandExecOutputDeltaNotification.json",
+      "bytes": 1585,
+      "sha256": "28e74454b211ab677a256129e623fc5a2a29ce5394da1c69d3bc5136f7e37c57",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/CommandExecParams.json",
+      "bytes": 7397,
+      "sha256": "e4f20080b92c6199cf132941840c4bd0fb9a90e3fec197ceb0e1ce9084346e18",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/CommandExecResizeParams.json",
+      "bytes": 1216,
+      "sha256": "b748fee19979d2c32ac17a460ccfdc761e125cc2939bc551945e1e2c2af34197",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/CommandExecResizeResponse.json",
+      "bytes": 188,
+      "sha256": "01da20d70957fa5b43cf41365c5fee4fb3a69927947a45f92866f9bcf0895d0f",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/CommandExecResponse.json",
+      "bytes": 699,
+      "sha256": "dec52d187121e8dd48124b47a4a8d8428ef3717b98b9200345bb404f73b62c9d",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/CommandExecTerminateParams.json",
+      "bytes": 404,
+      "sha256": "979ece7059c6713d0909ab1690daec27149510f4ea2ec10014600bfb1d631c97",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/CommandExecTerminateResponse.json",
+      "bytes": 194,
+      "sha256": "d46aa76d952bb3ac95d0bd64de609fb8a82efd98d9ee38264fe3673fd184ce5d",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/CommandExecWriteParams.json",
+      "bytes": 716,
+      "sha256": "3e8e849ce321c85987bbe96ce1f913df0047696a5207bc97dfa1409b0142eda8",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/CommandExecWriteResponse.json",
+      "bytes": 186,
+      "sha256": "22887250f84443b2a6f5fc6f9c46cf9e2af072ff631574340018c48771411571",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/CommandExecutionOutputDeltaNotification.json",
+      "bytes": 416,
+      "sha256": "841fa94098ddb63a71acf1bf5f9e3fac1b0491f4ed3fa8ef86f9a6ca1260b539",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/ConfigBatchWriteParams.json",
+      "bytes": 1369,
+      "sha256": "d092c4412237735cdc9516b396ab1445f079e956cc10271be7c53f0d0e1e650e",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/ConfigReadParams.json",
+      "bytes": 495,
+      "sha256": "257c54a423b47c1d209ff1076765a1564d82322fd5161670fd489a2874de1bac",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/ConfigReadResponse.json",
+      "bytes": 28443,
+      "sha256": "69a32e3d84e16045802dff8abf01770d759ebc758965c3258a30ea4a93159fce",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/ConfigRequirementsReadResponse.json",
+      "bytes": 27705,
+      "sha256": "d3f165fc346345c5ba4d452c30d6b1de2d6f5eff31f796612c7725fe5ca1b287",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/ConfigValueWriteParams.json",
+      "bytes": 763,
+      "sha256": "b9032e35bf64d4628bfc72e22b58b71bbcf754aeb720a86eacb091e0137547c9",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/ConfigWarningNotification.json",
+      "bytes": 1640,
+      "sha256": "533e713405b582cce4d772d0b4ebbc75e840f0fe71cedbb17c2c83da285a21d4",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/ConfigWriteResponse.json",
+      "bytes": 8685,
+      "sha256": "1d690287d9e8a0c552f664038d3810dfc3903ec8042eb2c0f772856414f59954",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/ConsumeAccountRateLimitResetCreditParams.json",
+      "bytes": 594,
+      "sha256": "ce36a9f59ce3b8138fccdca042538f723e93d0e34d08441e6846d3153ee0b291",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/ConsumeAccountRateLimitResetCreditResponse.json",
+      "bytes": 1177,
+      "sha256": "6d4144c00dcb7f73be6ad24693ff7e539bad56064e4432f7f2bf8d20b3bab724",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/ContextCompactedNotification.json",
+      "bytes": 362,
+      "sha256": "c9f9a58ef680e09d568cff5f24b45895841e1cf138b650bae64dcf6c85f177af",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/DeprecationNoticeNotification.json",
+      "bytes": 457,
+      "sha256": "29fdb44fc0a09bfdc5c4924ff34e33679acc9201730fa4fe9be7ed1978af0b72",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/EnvironmentConnectionNotification.json",
+      "bytes": 306,
+      "sha256": "007e9a6ccae0003a56476bb7cdc9a097141e964c168e7ae43d213a763c93fb56",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/ErrorNotification.json",
+      "bytes": 7283,
+      "sha256": "63518d8faae38b8eb73518d59b113f77603d238dd0cf36260b4232f381f43f8c",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/ExperimentalFeatureEnablementSetParams.json",
+      "bytes": 509,
+      "sha256": "00aaf2ef719cc336e4d20eb26dd6158be1eb26161fb7647372804b80a02e3131",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/ExperimentalFeatureEnablementSetResponse.json",
+      "bytes": 386,
+      "sha256": "5ecd92ee95380d7cadc4c109091530aa71245e41b9f1b530a5e9d5c5c9eda95b",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/ExperimentalFeatureListParams.json",
+      "bytes": 827,
+      "sha256": "4db92977e59fea4125710babb4cd2128dc2cebef8292e3619d0844089e7fc1f5",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/ExperimentalFeatureListResponse.json",
+      "bytes": 3066,
+      "sha256": "4084a25f32333b3f58eb5e9803a5983739b57f945c4e7e4002e85851622ce597",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/ExternalAgentConfigDetectParams.json",
+      "bytes": 1414,
+      "sha256": "db6c6ea654efb4095dc745a1e65bee76d0d063b03f2bc3202b9077a1569211f8",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/ExternalAgentConfigDetectResponse.json",
+      "bytes": 5240,
+      "sha256": "36c4173d5f30ebd04be3d40389c904bc4ecadfbb8e5d1dd46b9b589254f7e1d9",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/ExternalAgentConfigImportCompletedNotification.json",
+      "bytes": 3025,
+      "sha256": "c54702d40c3a40bcb3e3e835d99860473831725acbd3576fc26d2d4fa3a7617a",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/ExternalAgentConfigImportHistoriesReadResponse.json",
+      "bytes": 3890,
+      "sha256": "1c09641e957333a2f602a350532acd99cf538a73ea45f39a2294289907a0bd96",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/ExternalAgentConfigImportHistoryRecordParams.json",
+      "bytes": 3237,
+      "sha256": "6a3e8071854771b0f34c6623fb7dcfbeaa7518a90779cc4a40c97fe92ac6f3ed",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/ExternalAgentConfigImportHistoryRecordResponse.json",
+      "bytes": 245,
+      "sha256": "a252a2c2a03b4460bf3635d517c0735fa487a2f8a97de1aa0637f930419ae656",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/ExternalAgentConfigImportParams.json",
+      "bytes": 5152,
+      "sha256": "6b8d0a8fbd5a7ddd455ec0dea6d1b578f56841480c8a5fffbfcd045db79458ee",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/ExternalAgentConfigImportProgressNotification.json",
+      "bytes": 3024,
+      "sha256": "dae7bfc12026811ba24cc6f32dc01ae9ffaee7d9340d7768f9afce94575c23d2",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/ExternalAgentConfigImportResponse.json",
+      "bytes": 232,
+      "sha256": "0ad2fc7dff7b1bdc471cc365985f559490f253ea127263417f0a0a1edcb33cef",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/FeedbackSaveParams.json",
+      "bytes": 1094,
+      "sha256": "1c2cb8b988b832b50db4705af4d234da50a5d3f1377384dd638563da9275bfee",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/FeedbackSaveResponse.json",
+      "bytes": 576,
+      "sha256": "4563a3b28f6ae444e0fe559f09bc4cc6393ad20df9627526dc96328b47c1e2fa",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/FeedbackUploadParams.json",
+      "bytes": 726,
+      "sha256": "aa958cd74b37fb28cc49ce22345a1efcda9d4cf5fa47e7cce6949e5366ff8b2e",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/FeedbackUploadResponse.json",
+      "bytes": 555,
+      "sha256": "d23cb7bfa94f59fbb423b1e042239ac1b6dc344be15c5efc69ef04badff01a91",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/FileChangeOutputDeltaNotification.json",
+      "bytes": 544,
+      "sha256": "04c3df83d46725ffc048577e7a5aa25de9a6c8ea9eff713bbae2b408672481c5",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/FileChangePatchUpdatedNotification.json",
+      "bytes": 2159,
+      "sha256": "cfb69d18658610a0510f213e09c6847f70517410ed91cf99cc4713c15a795213",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/FsChangedNotification.json",
+      "bytes": 1061,
+      "sha256": "197693fcb852a85fedfbcf1cd00c9a3cc74dddfa09bdf6b11fdafebbcd12ea2d",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/FsCopyParams.json",
+      "bytes": 1198,
+      "sha256": "bc1135070827681e4d9a14f79b5b06a4f5652e538ae6a89642d27dbc8b2a2af1",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/FsCopyResponse.json",
+      "bytes": 162,
+      "sha256": "c88392d6c3ff394441231cdf5614794ba0c2b4ba683811f6033a01fe65528a59",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/FsCreateDirectoryParams.json",
+      "bytes": 1047,
+      "sha256": "405fd718ebafe7f47ffd82c86540ab4af663659c737ea2b25acd3e04a1bc94ea",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/FsCreateDirectoryResponse.json",
+      "bytes": 184,
+      "sha256": "a658fbd34d5e3d6300bcb7015f10fc1764aa8aca3088abc79af9caa2e848e527",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/FsGetMetadataParams.json",
+      "bytes": 851,
+      "sha256": "382bbf3a8b5c7e8cb16a1a29f853ce49c2904e563325e33a9e41dcbf632dab5e",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/FsGetMetadataResponse.json",
+      "bytes": 1005,
+      "sha256": "b8355f112eda37d7ff25ad0eda7dae912dba695961855c5cb8444a7f867d66c2",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/FsReadDirectoryParams.json",
+      "bytes": 862,
+      "sha256": "c4ca6cdc129d70375fe638c723c1b1bb07a9716101525970cf77bf7560fec657",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/FsReadDirectoryResponse.json",
+      "bytes": 1139,
+      "sha256": "2cfb28c3c1ab1487f6b778f4d76871e3a9f590597bdf0da502cc41b202269dbc",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/FsReadFileParams.json",
+      "bytes": 844,
+      "sha256": "74b325108195fe955e6ffcb6032e9380d3bfdee8aed7d115f5f1e4b127c5d706",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/FsReadFileResponse.json",
+      "bytes": 354,
+      "sha256": "fd67dd725b5bf5c7f27e78cc3d66fe24314f08913fc00ace9dbb663bf2f487e1",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/FsRemoveParams.json",
+      "bytes": 1199,
+      "sha256": "c453f8ae4b3311f5da88f67f743fdabbcdc323dc3d9eaa40d750ceae147bb630",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/FsRemoveResponse.json",
+      "bytes": 166,
+      "sha256": "6371aba2cae2f92be487be05c1ce531ca4139da5004b740a0010ccfdba548100",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/FsUnwatchParams.json",
+      "bytes": 368,
+      "sha256": "3134d42c231f40769a4d1ac4adcf051be5205e7a1b70bb32c4a8655fea730175",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/FsUnwatchResponse.json",
+      "bytes": 168,
+      "sha256": "9c59c3473df1f1873ee0d87ed33cecec0766b24c8357ee7dc8b29a57ca21e104",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/FsWatchParams.json",
+      "bytes": 1042,
+      "sha256": "10bd9c01b3819db1ed8e2487a277f20b35e3a9f74ae77214654f1a529fc1444d",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/FsWatchResponse.json",
+      "bytes": 864,
+      "sha256": "d32e77e7d6f619c5f4183c335ecddd3c4ffb95a51761198985c47838ae891a6c",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/FsWriteFileParams.json",
+      "bytes": 970,
+      "sha256": "2167e05c7f3eb26d475f9c1ce71697ba3b635efd8761a00b22abfd6af175bd2f",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/FsWriteFileResponse.json",
+      "bytes": 172,
+      "sha256": "0e4153ee7baa5c1203c2c573504baaa40e1dd8738d78e4c1e3a179fb49df6b16",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/GatewayOAuthCancelResponse.json",
+      "bytes": 119,
+      "sha256": "4a9e0055de416774443ec00e3ecfe49a585fedc48da38dc14cb474f2019eb5fd",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/GatewayOAuthChangedNotification.json",
+      "bytes": 758,
+      "sha256": "c36528330ab426fd137e50aa5e5e351f1af9f3f72be29edd2dc64f910ab12d74",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/GatewayOAuthLoginResponse.json",
+      "bytes": 118,
+      "sha256": "03a413b9fe9359aeba086dad3a1780fdefaa018b3fc03372f99a37a73b969e1e",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/GatewayOAuthReadResponse.json",
+      "bytes": 1088,
+      "sha256": "db30683d7b042570533120f0effb2396ada3ac9cf5cf02d72e911a30e28534ae",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/GetAccountParams.json",
+      "bytes": 485,
+      "sha256": "30b545275f60975b55bd6fbaafd70f15505801d14168ee82d3931b6e93c78aab",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/GetAccountRateLimitsResponse.json",
+      "bytes": 8239,
+      "sha256": "9c0def7f8ab2396122af939dffbf01b34b8d66082fe4129dd20917bfd4313fdc",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/GetAccountResponse.json",
+      "bytes": 3127,
+      "sha256": "612109fe4c80e62a6f6a36f056761bc2b4f60f9b811edf23bbb86004274ec7a3",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/GetAccountTokenUsageResponse.json",
+      "bytes": 3838,
+      "sha256": "a58e58c852c888e5de925d99a66688d55ebb2fff038e795aadf04f8a8426dff8",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/GetWorkspaceMessagesResponse.json",
+      "bytes": 1565,
+      "sha256": "3ebd00f0acca088e5ee0309ec09b9a571e7f2eea5b63a32cda67be01c6886d67",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/GuardianWarningNotification.json",
+      "bytes": 423,
+      "sha256": "5325551d2efb47d578665e3deb846f6369e05f98fbc5bfbffc5d9fe0cb0bd167",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/HookCompletedNotification.json",
+      "bytes": 4342,
+      "sha256": "79242f3007d469bbe6eb6e314ff1d9bb76c242ce6fb271ac7d8a4d2d4d3d7a9b",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/HookStartedNotification.json",
+      "bytes": 4340,
+      "sha256": "352c6523c3e1e74af1e792743deb813b3ec7f8a1d6d0b1cb23f313b6ff140cde",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/HooksListParams.json",
+      "bytes": 311,
+      "sha256": "07638c3a8a3690cf368fa92c7ff697fdd0132865e8c59d53f6e5789e5a260053",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/HooksListResponse.json",
+      "bytes": 5905,
+      "sha256": "bdbfdff0bd38bf3fb6d8d37d1ef740cd2f60c5de5dca930da3b0640b1e644ee1",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/ItemCompletedNotification.json",
+      "bytes": 50445,
+      "sha256": "2b80261a0bdb2c6fa2ffd97584ae3fb7979f2105614b395ef66375bc10b4e69b",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/ItemGuardianApprovalReviewCompletedNotification.json",
+      "bytes": 16915,
+      "sha256": "a9f56c22fa2bdac445e4099bb0b16d92a4166f119127c871c24716977fcacdae",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/ItemGuardianApprovalReviewStartedNotification.json",
+      "bytes": 16417,
+      "sha256": "eb6283bd8ab1f7d23439cb9f140ea6bf13d6ebb47f59aeb73f46f9948d5c9657",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/ItemStartedNotification.json",
+      "bytes": 50437,
+      "sha256": "c5dc7bc43ffd6164b0920004e15b97f0d2b91f44e21547615122dbd6b104faf1",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/ListMcpServerStatusParams.json",
+      "bytes": 1223,
+      "sha256": "30b978c6502b37c9f0002aeba241f41c91d4c6adf0f92d89242b62ffde415a2d",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/ListMcpServerStatusResponse.json",
+      "bytes": 6444,
+      "sha256": "c5a6c05092a9b1fa90c7cb3a319685a769a67c16e19048e8bbab5007b358be74",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/LoginAccountParams.json",
+      "bytes": 4353,
+      "sha256": "48fb9bea54d7e0890052653ac06737efb3200ba2261515b2c4014027f36bea3d",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/LoginAccountResponse.json",
+      "bytes": 2521,
+      "sha256": "72e6d77f49bc5809c3af50f183e2a0862dd8f7836816d4796ff69bb13eae0e89",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/LogoutAccountResponse.json",
+      "bytes": 114,
+      "sha256": "ac14ddfca2ec6092b0039be8720262d5a9930484d23e62544d2ef0b7e1db7926",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/MarketplaceAddParams.json",
+      "bytes": 431,
+      "sha256": "e6c92ca2a3889641ca2281cca7684569b1187653b25b57f9beabf85519d638a2",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/MarketplaceAddResponse.json",
+      "bytes": 865,
+      "sha256": "a37633e9ecc2fdd87ea582861bcdcbf7963a8fab6db9fbc1bc8eac7d2f7f9a8b",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/MarketplaceRemoveParams.json",
+      "bytes": 236,
+      "sha256": "220c2475a96f32ca095f80f3ecbad427477b4ba37dfad7fb48a0acabdeb1f4eb",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/MarketplaceRemoveResponse.json",
+      "bytes": 869,
+      "sha256": "98deb2f721d57ed727f7cc7b4f478db5f604b6b6d40e6261928dfd5f586405e3",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/MarketplaceUpgradeParams.json",
+      "bytes": 228,
+      "sha256": "93fc5d331d353b1b89262625c38eed54c6c16b2fb8aa0eac718245c7bdcbe4dc",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/MarketplaceUpgradeResponse.json",
+      "bytes": 1348,
+      "sha256": "2402379cb0ed1168a7dc327c412fd61bafdea2ad13ea7a3b3ebaee3b43c45963",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/McpResourceReadParams.json",
+      "bytes": 1330,
+      "sha256": "7ff0e4de6d70bd1c86b6d32ae781c9a841fee4d2e6d11eff8d8d0f224f7ad801",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/McpResourceReadResponse.json",
+      "bytes": 1664,
+      "sha256": "a48af749203ed3307414750d5070facb5ae6ef8b00253f1cfd9a8124bdfcfe41",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/McpServerEventStreamNotification.json",
+      "bytes": 614,
+      "sha256": "44b04b6cc079ec0b99b4d29af1a69d99037505c19a2a07cff955aa298d7c181b",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/McpServerOauthLoginCompletedNotification.json",
+      "bytes": 630,
+      "sha256": "6bddb335e7a9a6bb1bde6a32532a903a8968aaf7854afc37857c641b723302cc",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/McpServerOauthLoginParams.json",
+      "bytes": 1003,
+      "sha256": "83446fb61e04a361691f84fe236a51fff2ee4fb12a8f58e2e828a32cf6f6cc75",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/McpServerOauthLoginResponse.json",
+      "bytes": 514,
+      "sha256": "dd17c57725bfda17c1f4ab7319a3bfd78aa084ec0191fa0fcf0d17b4106bc597",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/McpServerRefreshResponse.json",
+      "bytes": 117,
+      "sha256": "54a77812db02175dc69053870e582d3b314af6f161f0c76846f3563b0f9487c4",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/McpServerStatusUpdatedNotification.json",
+      "bytes": 973,
+      "sha256": "d6f4cb120b2363d321247592f03b9afbbf2762ad6d8af31b88c1b1bf39c4c7aa",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/McpServerToolCallParams.json",
+      "bytes": 380,
+      "sha256": "7039a7583a1cbf38e9e0f5fe6398ff3711acd4d654b81b0be562514087fce6ba",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/McpServerToolCallResponse.json",
+      "bytes": 374,
+      "sha256": "04a59b2064922c37b0c49bdb2470b8fff08d943e56dba4f7280a6b34bfa52c68",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/McpToolCallProgressNotification.json",
+      "bytes": 412,
+      "sha256": "64a32b8282226876e749bc107a81db89d20d5ce5cb86ee6a043b960763214b1d",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/ModelListParams.json",
+      "bytes": 688,
+      "sha256": "de29a536c00a5b8f46f34dba417dabd93365305571a8ed200e33bea85db68b5a",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/ModelListResponse.json",
+      "bytes": 7169,
+      "sha256": "2fb387a2ed258fc74258828ea342d68f89ce4e8e22cd0329ca59d2b423f9108b",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/ModelProviderCapabilitiesReadParams.json",
+      "bytes": 128,
+      "sha256": "9db732188a15476cabb42cf05e495ae0803a1ada993fca7348c21c30a998388d",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/ModelProviderCapabilitiesReadResponse.json",
+      "bytes": 318,
+      "sha256": "96979d0111a38cb35a313e111c2f7c449441aee7fd51e1757f2d11c2213d4e77",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/ModelReroutedNotification.json",
+      "bytes": 636,
+      "sha256": "37cd3c1b3a3560b85b01d4061a07d830fc9ed93b80e4663f975f9197cdb501ef",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/ModelSafetyBufferingUpdatedNotification.json",
+      "bytes": 746,
+      "sha256": "4cf853e3a2f968fdfde75206fd497d3d530b26769026bee343c3ef09ce438cfd",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/ModelVerificationNotification.json",
+      "bytes": 574,
+      "sha256": "4f27a99d0c8664c29abb4d65384ab16853bbc29b61de5e749111cefdc6994655",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/NullableGetAccountRateLimitsParams.json",
+      "bytes": 1002,
+      "sha256": "072f813ca1c696831a7f2fbd934feaa8cad228a6b3d44a4be8877547c796341b",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/NullableGetAccountTokenUsageParams.json",
+      "bytes": 573,
+      "sha256": "a992c6ea0fe02b0e9f46b18afb51b8ee2635e7f0c7d546f71e7f95e2a98bebba",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/PermissionProfileListParams.json",
+      "bytes": 667,
+      "sha256": "576d405f6c94cbde982a9f65c9301717043683b83ca35d564247907feb16b1b4",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/PermissionProfileListResponse.json",
+      "bytes": 1174,
+      "sha256": "4a290b5b9d47c2fc671033e22754671161bc563027ba387e861bd935398f0def",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/PlanDeltaNotification.json",
+      "bytes": 565,
+      "sha256": "a5cf42ccfc6cf905ede0fa9041e9c951ea7870aba4e3a7c7f68d85f01416d3af",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/PluginInstallParams.json",
+      "bytes": 1136,
+      "sha256": "d6a8ff6356aed22c916cfd5a791ecce34ee2ac509750f690e7d0ef483fec7472",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/PluginInstallResponse.json",
+      "bytes": 1190,
+      "sha256": "ae283e1ecb9f454f7614c6a4348fda5a7aba5af99e9ab9177b9a0cd3e1cd7db7",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/PluginInstalledParams.json",
+      "bytes": 1174,
+      "sha256": "0b56f55a817b6e82ea104496281cd43714ee96800f9b984412a3a858f444f68c",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/PluginInstalledResponse.json",
+      "bytes": 15679,
+      "sha256": "8afc8a16fa5c21d67f66d1855bf29890bad10a6229bafc960b3503281fc878e2",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/PluginListParams.json",
+      "bytes": 1629,
+      "sha256": "bc6b499161306df7082c5a8cc51fd793cd6d28dda93555b12ae299445132270a",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/PluginListResponse.json",
+      "bytes": 15802,
+      "sha256": "a405d2514d6236df75130c87c749e0e070b946a889f143a0448bbcd27d1d8501",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/PluginReadParams.json",
+      "bytes": 947,
+      "sha256": "f15952a2828c90501cc32f347c1e1691ea65cd2d97f503ab40e7be08757de74d",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/PluginReadResponse.json",
+      "bytes": 24097,
+      "sha256": "fecc4792b298b66cad24b418f9c34d80ffe3dcf1572d9d05fd5a4ac1f824acb7",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/PluginReconcileParams.json",
+      "bytes": 314,
+      "sha256": "91dfe0967326b876e50ddf8d896c6c516440c43a36b08efd4746c0bd770882dc",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/PluginReconcileResponse.json",
+      "bytes": 2424,
+      "sha256": "ba2a8e317c9098beed39d4decc433d9dc29ba0c8164e8d4c229481b9243c5ec8",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/PluginShareCheckoutParams.json",
+      "bytes": 236,
+      "sha256": "25fd868fff9500ff244150a4ecd36322c0d31b339a4709649594b79aa1349185",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/PluginShareCheckoutResponse.json",
+      "bytes": 1187,
+      "sha256": "d6271afa9bba5531574ba255d22b03f70fe10b8ef159185355625d92b6f9fac6",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/PluginShareDeleteParams.json",
+      "bytes": 234,
+      "sha256": "d422a3fdecf91612bdf839d4fea6f1cddccb794869dc03ad3b8998bcb8e27fff",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/PluginShareDeleteResponse.json",
+      "bytes": 118,
+      "sha256": "ae881a7f898f5287354de5adf6f42094cef9029a9b9376bfd12aa1b0fe0b3106",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/PluginShareListParams.json",
+      "bytes": 114,
+      "sha256": "0d71280d2a655ffc26375044ec1693203848614f99fdb4563e0cb5a4ee40122b",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/PluginShareListResponse.json",
+      "bytes": 14477,
+      "sha256": "d349a496947956fd5f4d125b8348faa2ef0c91daf7f3cd74ae0616f55c8e328b",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/PluginShareSaveParams.json",
+      "bytes": 1974,
+      "sha256": "ec937521a40437506ceb2dcfe79cedd03812dd1b8233c651b89c2ddd76e148fe",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/PluginShareSaveResponse.json",
+      "bytes": 417,
+      "sha256": "3eb7c0ed6e6c72126c7bb3d845e73d5de98ad0d4ea8639d2f227fecd16c15411",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/PluginShareUpdateTargetsParams.json",
+      "bytes": 1369,
+      "sha256": "0ecf16212022bca115211cbf13a1302f8995d7be5664ca268b926b7d00add7b0",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/PluginShareUpdateTargetsResponse.json",
+      "bytes": 1380,
+      "sha256": "caf42dec67940f9e686ac7b4e77484921d62fee400b3af73fc85e6f46eaa03f4",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/PluginSkillReadParams.json",
+      "bytes": 388,
+      "sha256": "8850a9a45b9cf6e8b016f014c7c65f7062937be896d4fa0eafdaccc816909a56",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/PluginSkillReadResponse.json",
+      "bytes": 220,
+      "sha256": "dedaf95c4a8f70c022f5cac6fe3882603ed2b27d5efef710b52ae370869956cc",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/PluginUninstallParams.json",
+      "bytes": 220,
+      "sha256": "4c9e1da7048fc99ef5269d4c3f4c6c3297dac01992c2756340fa210ae8f800cc",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/PluginUninstallResponse.json",
+      "bytes": 116,
+      "sha256": "f6a0c9c8dfd9e3fc4a535ecfa606f12922c09e469a37d6b1c6e189f45cacb89e",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/ProcessExitedNotification.json",
+      "bytes": 1419,
+      "sha256": "06cb5f39c67f84c227063d7f40e5e78fb62afdb76778c3d603687181896e8440",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/ProcessOutputDeltaNotification.json",
+      "bytes": 1436,
+      "sha256": "c31714aa83297b83fd69dee98db877be7d4a3f98551dbeb517750efba0ecd79d",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/ProjectChangedNotification.json",
+      "bytes": 481,
+      "sha256": "b32151fcb7ef78fc5c969db44255756e5e6e1754398a5b6b09244dcff0c1eab9",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/RawResponseCompletedNotification.json",
+      "bytes": 1998,
+      "sha256": "aba140e87952c900f96e0308a8849d3e313d985de1f1aa2b77f193884a76357c",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/RawResponseItemCompletedNotification.json",
+      "bytes": 36105,
+      "sha256": "6b5ec5c46b0224af45a46953d64735a1067677b2959f4780a628fffb307a75d2",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/ReasoningSummaryPartAddedNotification.json",
+      "bytes": 454,
+      "sha256": "c8dfcb82d773d0f5d297ae1a47749e2b719013e82030a3af5d4550f9feb8eed6",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/ReasoningSummaryTextDeltaNotification.json",
+      "bytes": 512,
+      "sha256": "895bdca00b4674634c25a5c4d1f82e55e65767d81ddcac4bb7b00aa3d438e62f",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/ReasoningTextDeltaNotification.json",
+      "bytes": 505,
+      "sha256": "16cdc13080a7523b44f00fb6fdb660c56a7c4c8cda96b2f9b87b7e72264170fb",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/RemoteControlStatusChangedNotification.json",
+      "bytes": 800,
+      "sha256": "56aa1d58294238557cd8b16199909c2c157a7542b9259ef2deddf40fe4c02c91",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/ReviewStartParams.json",
+      "bytes": 3341,
+      "sha256": "31f826890392eb5cdc9995c94884d3a5ca6af84c66283f2f981e792a1419769f",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/ReviewStartResponse.json",
+      "bytes": 60179,
+      "sha256": "604c537b35e9414de9a180bb5a96fe3d03848cd51ea828308b79ac7a994311cb",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/SendAddCreditsNudgeEmailParams.json",
+      "bytes": 420,
+      "sha256": "91b380293f5685573f8dcdf46c99eba6f8a2adb7a206df9ac987f7fe6cb282a1",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/SendAddCreditsNudgeEmailResponse.json",
+      "bytes": 417,
+      "sha256": "389978f741476c7cbcaec716b11a5bfb7f17581a28013e18cbf7a73ec8a45ae6",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/ServerRequestResolvedNotification.json",
+      "bytes": 514,
+      "sha256": "4f03d586a5af04edd912cad08cc97eceb658e7e06744565e6d41a93e04a55966",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/SkillsChangedNotification.json",
+      "bytes": 341,
+      "sha256": "84f7f1d327c5c774899992f32c98e9e95ee3e010a410d233ec0c33221e4ccbfb",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/SkillsConfigWriteParams.json",
+      "bytes": 1011,
+      "sha256": "6e7dea83b649bfd118828b60446eb2eab2f5ce3cafe287c933b830c9cae9b170",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/SkillsConfigWriteResponse.json",
+      "bytes": 241,
+      "sha256": "628bc112ca64f5475eb02a0eda718e82d670c40299444494e02a8dc278a772c7",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/SkillsExtraRootsSetParams.json",
+      "bytes": 761,
+      "sha256": "bb60389a0c7d4b73f625b9a40965e5e67b56b6503989f2d732cae12e9ca9698a",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/SkillsExtraRootsSetResponse.json",
+      "bytes": 120,
+      "sha256": "b659ec17a196eaa3a23273a3e2d5596460ea329bc3ade249971576bc723d9e96",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/SkillsListParams.json",
+      "bytes": 453,
+      "sha256": "1d245374e64c5acc9739dfc68a4fe5114c6c9147af04c480886f1846d2ca6239",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/SkillsListResponse.json",
+      "bytes": 5358,
+      "sha256": "d11084bd4bfa50f747e880ab9a08eb8e8073c67d67c79907f4cff090db7b48f4",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/StrictReviewRequiredNotification.json",
+      "bytes": 470,
+      "sha256": "16b50621c0982d84bd83b6e85586c1038ff309337e4253219895be7c118df470",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/TerminalInteractionNotification.json",
+      "bytes": 474,
+      "sha256": "5383b3d9681d3c071c9845fd4f043afd60fbe1bcc3650939356cb03848a7d627",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/ThreadApproveGuardianDeniedActionParams.json",
+      "bytes": 360,
+      "sha256": "082e5278ed4fb1fc23eafbe658e95ec21d81c446bb6daf2b57e25e8cd3aebd5e",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/ThreadApproveGuardianDeniedActionResponse.json",
+      "bytes": 134,
+      "sha256": "628336c7cdabd508d5202695502bb0f9ce42fdde380f5efdd4b033cf215d93e5",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/ThreadArchiveParams.json",
+      "bytes": 218,
+      "sha256": "dc2c0b133b814a5d9d543cc37afdb3f4f22feca35b7cea4272834b20a1e47705",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/ThreadArchiveResponse.json",
+      "bytes": 114,
+      "sha256": "2e021dabd0930ae3e2beb68cd0ddbafc40fc20cfbf8dbcb5e2f9c0493d06a08c",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/ThreadArchivedNotification.json",
+      "bytes": 225,
+      "sha256": "54ca94956719ade8682c766f31419ee9953dee8f4587b5b30efd0927de6ca26e",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/ThreadAttachmentAddParams.json",
+      "bytes": 498,
+      "sha256": "9fb9d132c284d92759f39605177eef49ede6605106a211f121ad8b0cde240b3f",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/ThreadAttachmentAddResponse.json",
+      "bytes": 1249,
+      "sha256": "06fd0a224722c962687bf808bd3f4d5233e35ae9fbcccd88711fa6f55334d626",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/ThreadAttachmentListParams.json",
+      "bytes": 505,
+      "sha256": "1e999a37aa4ea451887d6cb9154c6c6aec0130ba8b56eef65827bf864b5810cc",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/ThreadAttachmentListResponse.json",
+      "bytes": 1086,
+      "sha256": "1ba64dc8c5d173c044753e1207ba906550be15b67c4ee105957bdaf4489cc1e8",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/ThreadAttachmentOwnerListParams.json",
+      "bytes": 806,
+      "sha256": "a4bb0c34e975fc81ab551957b5a9fdba3f88c0a5241de4a31ba1f1e00057e4a0",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/ThreadAttachmentOwnerListResponse.json",
+      "bytes": 999,
+      "sha256": "3ce366f00d2f4fcebf16abba56d20752661789cc38189ce688f854c247754e58",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/ThreadAttachmentRemoveParams.json",
+      "bytes": 468,
+      "sha256": "9b262d87755c4ccbd1bf6d17dc71d45d173d80f26e4af9dc6df65bc2c206203d",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/ThreadAttachmentRemoveResponse.json",
+      "bytes": 207,
+      "sha256": "905003d0d531365a3557f42dfdcc9a2d5ff13c4992f860d7e6145cbd74083dbe",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/ThreadAttachmentUpdatedNotification.json",
+      "bytes": 880,
+      "sha256": "4470f2a0322b9a179e6970f02c5a862dc05ef4c052d948d4baa21934668c1408",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/ThreadClosedNotification.json",
+      "bytes": 223,
+      "sha256": "d504cceb70e3397ad684924b08d3bff328a927be02ef4e3d482a18e27bab73de",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/ThreadCompactStartParams.json",
+      "bytes": 223,
+      "sha256": "684b20adf20213a9fcbca31b59108feadcd5a8b693c16431c20d701049df3737",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/ThreadCompactStartResponse.json",
+      "bytes": 119,
+      "sha256": "74674e47f33e37d7d97d144eac1789ef0580a1fc12d45a5675bb97caa08d803a",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/ThreadDeleteParams.json",
+      "bytes": 217,
+      "sha256": "0d5425d94af95e3dd20971cee052b2cb8c7d0d23195db1d17fde4e59cfbdec4a",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/ThreadDeleteResponse.json",
+      "bytes": 113,
+      "sha256": "333c0c5df96d78d1bcbdb19b57ddfa941de9a02bdae1c29d13c5311c2cdf6527",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/ThreadDeletedNotification.json",
+      "bytes": 224,
+      "sha256": "6f8d6fa96700ec6fff4b8c2bddf6768539b7ec7ba5dc05483aba53f5183386f9",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/ThreadForkParams.json",
+      "bytes": 5385,
+      "sha256": "60540b97d453ddbc5e12bfaa007a3718f31847d18dec0da59a5e4b89be4717ad",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/ThreadForkResponse.json",
+      "bytes": 81112,
+      "sha256": "79bfd749f8667048d5e85e2a82916fe47588380a38919fa8352c6d5ee1f1956b",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/ThreadGoalClearParams.json",
+      "bytes": 721,
+      "sha256": "9f40b83771b3cc733e05579041600db6371968e1547ef9626a589525022cb8ae",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/ThreadGoalClearResponse.json",
+      "bytes": 221,
+      "sha256": "2652c2d0072be8ccb71c8dcaaa054aa74f974e68156a73451baf72c8597669c2",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/ThreadGoalClearedNotification.json",
+      "bytes": 228,
+      "sha256": "ad6c2cf53970e45cae55d36dbddd84ecc7b34837846616493efa7b132a35a051",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/ThreadGoalGetParams.json",
+      "bytes": 218,
+      "sha256": "1a5de89b3c5c49528af404a65411a73ef05dc7c9c49c3f00c90d9926dfe34137",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/ThreadGoalGetResponse.json",
+      "bytes": 1491,
+      "sha256": "f610000963194731c96ce2b45e46722ca700f1b6ccc1fc55a2fd95e526018fd9",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/ThreadGoalSetParams.json",
+      "bytes": 1282,
+      "sha256": "36c1f1935e1a352865512433aae44c9fffde4a7fa3db127449da088a8a212287",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/ThreadGoalSetResponse.json",
+      "bytes": 1428,
+      "sha256": "b1c61b6068b3b73dd3d97b38f8a269593f8f7added4643bfdb2016315b71ad8e",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/ThreadGoalUpdatedNotification.json",
+      "bytes": 1580,
+      "sha256": "52010479c7efcc6dc749e2d9bf1e27c134453d92a1f0b367193d8125eec1fedc",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/ThreadInjectItemsParams.json",
+      "bytes": 397,
+      "sha256": "8d7e754402a2bb71bd817882076d2f8ac4cd75d4573306db082a83b841aa3532",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/ThreadInjectItemsResponse.json",
+      "bytes": 118,
+      "sha256": "93d909e5b49b44da02072d340f8ad0ecd417d448ccf27fe50be7e369c7864159",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/ThreadItemsListParams.json",
+      "bytes": 2291,
+      "sha256": "d5cf9784413f1d1abba756e04e48b273a9d12ab2c5675442e91b6a4ee55e19f0",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/ThreadItemsListResponse.json",
+      "bytes": 51485,
+      "sha256": "fa5a85adff4a594f6c7183aca89414338fbe51b692d5f5ff8edd88d01f51dc4d",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/ThreadListParams.json",
+      "bytes": 4375,
+      "sha256": "e9da2e0bf099d21ab7982210073f927a50370c4e28be7140c314f82c524070bd",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/ThreadListResponse.json",
+      "bytes": 76177,
+      "sha256": "215b560c2a27998088992b3b0521f42a58b4230fbad276b8ce19872c0add68ab",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/ThreadLoadedListParams.json",
+      "bytes": 489,
+      "sha256": "42c2d124ab2b2998d84f0126daae2d32b0bf9c5a7ea7266e3a0814e5e37cf00d",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/ThreadLoadedListResponse.json",
+      "bytes": 565,
+      "sha256": "1ea02c4710083e552b2a3a89b931b9049d5bf05b7db46278b8352cf9fd80cd52",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/ThreadMetadataUpdateParams.json",
+      "bytes": 1465,
+      "sha256": "190da07d8c7c89c44b1e44b4e57fb5d803f356953534498a7a7f39fe29a8a6a4",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/ThreadMetadataUpdateResponse.json",
+      "bytes": 73830,
+      "sha256": "7d18403dae1060d72bd788e1cf59200fa3bf6fb14e183f5431a0d35fed146aba",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/ThreadNameUpdatedNotification.json",
+      "bytes": 312,
+      "sha256": "06d5e6b0e1eaf03eb88891af58eff14368a76e300a40a9bed71bacce2093b960",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/ThreadPredictionUpdatedNotification.json",
+      "bytes": 1389,
+      "sha256": "bf2f8f8f99eb47222a7b578246bea1a509b9814795669c48c22d7fffe40815c8",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/ThreadProjectUpdatedNotification.json",
+      "bytes": 331,
+      "sha256": "ad31b029957a9259f26352ce879219cbe25f0314ae883d02ab811a0c6427a1e5",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/ThreadQueueChangedNotification.json",
+      "bytes": 229,
+      "sha256": "0a960da43fb14f69dae2550ac4f8517760464eedbf95a9977718548739fdcf21",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/ThreadReadParams.json",
+      "bytes": 502,
+      "sha256": "dfe040c6ac71d30795b8be3f3ff232e66f362a37f883b491e5d1ea367f470db4",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/ThreadReadResponse.json",
+      "bytes": 75513,
+      "sha256": "a9883531c643c87e54e5275b30bf4380f36a6ec396a168940f9e57f057457a09",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/ThreadReadStateChangedNotification.json",
+      "bytes": 2038,
+      "sha256": "e3387ae0890ac14ed45ba1046f706b51a57b97caef645b080d6946b257a17c4b",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/ThreadRealtimeClosedNotification.json",
+      "bytes": 393,
+      "sha256": "5290a73f8d4652b59d2f82d89c7bd289003fe2981fb0c628a61e801fa2123364",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/ThreadRealtimeErrorNotification.json",
+      "bytes": 377,
+      "sha256": "aeba7e4b477b4825b41990a4da69b0f3cb3a00f44cf9e2e42e275b944b7cb040",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/ThreadRealtimeItemAddedNotification.json",
+      "bytes": 358,
+      "sha256": "48aabfcbfd2361b5830a93257bc9eb31a6933f6e390694e188bfb287acbad9b4",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/ThreadRealtimeItemCompletedNotification.json",
+      "bytes": 5063,
+      "sha256": "b2a5e38840b8afc2111620c332801603e832b91ad4c95dd1f13c926923b760ef",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/ThreadRealtimeItemStartedNotification.json",
+      "bytes": 5063,
+      "sha256": "ef1a68a635ce680b321e276fd9144ef614b37bab16942368bdc16bb8ee217f46",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/ThreadRealtimeItemTranscriptDeltaNotification.json",
+      "bytes": 450,
+      "sha256": "42f2456726367b90a2626a32f3f88495de87032243beecd9bfbad28734f4b62d",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/ThreadRealtimeOutputAudioDeltaNotification.json",
+      "bytes": 1261,
+      "sha256": "4f73a5c606fda4984da4fc14e4cd98f62c8f9aa75b2db17cff76562c2d176ec0",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/ThreadRealtimeSdpNotification.json",
+      "bytes": 376,
+      "sha256": "1e276f48d346e6cace65551f84ef9b0bc8daba2a3ce93499f3a902551de239fc",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/ThreadRealtimeStartedNotification.json",
+      "bytes": 661,
+      "sha256": "483d324381a8ced04c8ab158c825bca2b64c06a4e85b350a086730050fe8f188",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/ThreadRealtimeTranscriptDeltaNotification.json",
+      "bytes": 533,
+      "sha256": "1a6add677534de891026eb56aac815b2585fbd4a6d6475f679a722c52b778703",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/ThreadRealtimeTranscriptDoneNotification.json",
+      "bytes": 528,
+      "sha256": "0000453425e300fd19ac2bc5fba4ebf3fbce48ac9a9b62ceb8bc5db8b6c77fff",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/ThreadResumeParams.json",
+      "bytes": 43009,
+      "sha256": "8dceca415b2c16693b55658ea629cba5ffc82ac300dcd403db0ba7455e491496",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/ThreadResumeResponse.json",
+      "bytes": 83654,
+      "sha256": "03e34c14e83b7729a3b80d8f35375af35200cd9dcba9d9dbde8b19b374e54680",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/ThreadRevertParams.json",
+      "bytes": 579,
+      "sha256": "3a5e85a67906c8ea3ad9f5065559d263d968a28a957739e7a1d9e4e1981e4eb8",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/ThreadRevertResponse.json",
+      "bytes": 74630,
+      "sha256": "8583f27b294059f59efcc5ae93b94f154a3c03e16419e18a4d918a0d797e9326",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/ThreadRevertedNotification.json",
+      "bytes": 225,
+      "sha256": "570995a91a4436d403bafbf9a4c34ead666b137ecd5406803e14826a6d84cf22",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/ThreadSectionCreateParams.json",
+      "bytes": 969,
+      "sha256": "e3bf941ceab7a4dd39ce1b4063168621d60162aa97f7171cef59819c999c501e",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/ThreadSectionCreateResponse.json",
+      "bytes": 1548,
+      "sha256": "2b0b0e7a2651354aac35aa5d1a423b9f207ee8d46b2de077df747f4ed4f4c8de",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/ThreadSectionDeleteParams.json",
+      "bytes": 401,
+      "sha256": "93cc3d12bd5580966b59bbab8f2ccddd31b3b4bce56f76d49cfe41f1916b5deb",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/ThreadSectionDeleteResponse.json",
+      "bytes": 201,
+      "sha256": "9bbee5cca1fca02e4a65c2481dc3b24f090bca7afb786923ee481017b133b091",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/ThreadSectionListParams.json",
+      "bytes": 570,
+      "sha256": "6aea71b3fba46351fcaf648eab0da564080ba424599a012648abd9fd44464cf8",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/ThreadSectionListResponse.json",
+      "bytes": 1760,
+      "sha256": "dc3b5e5501a56ea2a1a83cb97c5221b355629f8c9468793d94e22673424140bc",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/ThreadSectionMoveParams.json",
+      "bytes": 768,
+      "sha256": "48bc921055838df25c5595c96be7bd25beef3accb8bd1d28026fcaa7d81487b1",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/ThreadSectionMoveResponse.json",
+      "bytes": 118,
+      "sha256": "243299d7eebd4fb264d4e75efeb5058982681202371c2b83ff1a63b3369ddbb6",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/ThreadSectionUpdateParams.json",
+      "bytes": 1211,
+      "sha256": "6cc7b7e486026a59d6fcc0701407d9293c0fe8b96e41894630c3a39fee967980",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/ThreadSectionUpdateResponse.json",
+      "bytes": 1552,
+      "sha256": "4588cbf0374204c17f02f15eecb5390cd5346bc551675e07e541bbfd28d020bf",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/ThreadSetNameParams.json",
+      "bytes": 274,
+      "sha256": "8e334c816bbaeb80f807aca61bf659246f3f60c245c21b5cb7e3ca4ee3ce4820",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/ThreadSetNameResponse.json",
+      "bytes": 114,
+      "sha256": "f8763716433feea94f7c1ebd59b6cea4c261432e83240c13a8d49ba8185aa567",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/ThreadSettingsUpdatedNotification.json",
+      "bytes": 10787,
+      "sha256": "1decdf57238a1573ffbbf0bf695acba50888c1580e44670471dd88bfc2bd540f",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/ThreadShellCommandParams.json",
+      "bytes": 917,
+      "sha256": "dc646457ca36be601c8c3d15c44d14907d9a165ccf2b9635a8e9a878f0ca0727",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/ThreadShellCommandResponse.json",
+      "bytes": 119,
+      "sha256": "fd4911613f6a6da2ca13b75342501d4d61f64e00a1083c6d60038369b8caeefe",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/ThreadStartParams.json",
+      "bytes": 10358,
+      "sha256": "e9c6d3cc18d049bfbc0249add3808fb8e5a27e1a0b5a423767aafbc3859a9428",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/ThreadStartResponse.json",
+      "bytes": 81113,
+      "sha256": "5c52c38fc5a0f7937ba84cf370d39d877211628e7e8e766187efbe9eddf80bdd",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/ThreadStartedNotification.json",
+      "bytes": 73827,
+      "sha256": "2c479a495915056230ee9b5d5e340ca9e5fce2d120a8348f812bab0756ab1dbd",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/ThreadStatusChangedNotification.json",
+      "bytes": 2207,
+      "sha256": "26f3c60c1b73f7fa2d31c74429cdc36f8746c76c33e3d314b3fb61d3661f05f6",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/ThreadTokenUsageUpdatedNotification.json",
+      "bytes": 1727,
+      "sha256": "aba4f6c7e4a19b2b842c08ee793b57000c07dafd57b922ad0d8e7c76609108c2",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/ThreadTurnsListParams.json",
+      "bytes": 1889,
+      "sha256": "2a8b93d7d4437cc25e16a1dde16d8db3c338d39e16c5eece2a56e943a21577d7",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/ThreadTurnsListResponse.json",
+      "bytes": 60544,
+      "sha256": "340d0a2ae04f6466f307d8adc92b0b006506bdb0e6c234acb06d992295b15717",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/ThreadUnarchiveParams.json",
+      "bytes": 220,
+      "sha256": "a1d5d847b61ea16ab09d5b9d1c1461134a7829292aae02a7e11b0a69b00c76ca",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/ThreadUnarchiveResponse.json",
+      "bytes": 73825,
+      "sha256": "498cc0760ebc839d19d3e115da5e3abcbfe04961edb9ba3652e8fab42b77c4e8",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/ThreadUnarchivedNotification.json",
+      "bytes": 227,
+      "sha256": "fc00949cdc588b84800a26403647eda0e22d6f28663dc032a90db9c20dfa822d",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/ThreadUnsubscribeParams.json",
+      "bytes": 222,
+      "sha256": "77c67e0dc0a729af2d4612f30ed63f1297160232e96cd32b7cb9cc3e7fff0233",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/ThreadUnsubscribeResponse.json",
+      "bytes": 431,
+      "sha256": "9cad5e71a589c3c20e0980ce34a894a29e2898a075b10b1493bc87f32500081a",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/TurnCompletedNotification.json",
+      "bytes": 59986,
+      "sha256": "963c4b492eecd8975a3134200b9a2b834f82841243736283c9c18d88d60106a8",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/TurnDiffUpdatedNotification.json",
+      "bytes": 494,
+      "sha256": "59a02535094b591b926cdc11a8e5f5babf73b442323a02cace1661c62f0c2918",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/TurnInterruptParams.json",
+      "bytes": 278,
+      "sha256": "6dff382dae73d1dbc58406ed045605f647e7a49660e2540fbd2c6c24d60c5f2b",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/TurnInterruptResponse.json",
+      "bytes": 114,
+      "sha256": "531de6be06fe979b5963f249bab82498a175e614bf65ac12fb2e849dfe60bcf1",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/TurnModerationMetadataNotification.json",
+      "bytes": 331,
+      "sha256": "90fe9ade83c46fd42af9d023737a9990595dac71e059158744950f538e802876",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/TurnPlanUpdatedNotification.json",
+      "bytes": 948,
+      "sha256": "2522f743be0a1e9666dec5ad4f18d8ecba3c4f16e66d510b1491d4117d1dd0ba",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/TurnStartParams.json",
+      "bytes": 23322,
+      "sha256": "835e0d4ca1a0ddc4fb6db1e2b3249dd67f07c50ac2506092ba81543efc92829b",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/TurnStartResponse.json",
+      "bytes": 59914,
+      "sha256": "6ce0f9ca622a54830c523793d841318f09c604211ec0d24b315c75edd7ffcbfa",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/TurnStartedNotification.json",
+      "bytes": 59984,
+      "sha256": "2b1b825106ad82509e31836fae7b82acb309a7043137f59fa6066be13c57cf73",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/TurnSteerParams.json",
+      "bytes": 6923,
+      "sha256": "857e7a2b061ae46ed6aedea6a5fddd3a6ce14f0334bf7eafaf10d4cbe68ec78b",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/TurnSteerResponse.json",
+      "bytes": 212,
+      "sha256": "866ba9a77c12b5d570c837d58f73bf40b24e50fa93404bdf792dd984d313b1aa",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/WarningNotification.json",
+      "bytes": 454,
+      "sha256": "f83c400591b923400ca0beaaaab1341c712d5ac0dee4ce6868a8e590f46490f9",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/WindowsSandboxReadinessResponse.json",
+      "bytes": 435,
+      "sha256": "077f60a3d6d1fc226c45059472b29caf675fdc3fdebb29569eaab94bd05ceb00",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/WindowsSandboxSetupCompletedNotification.json",
+      "bytes": 556,
+      "sha256": "dc5383ae8fc2a46badbc2dab3ccd0447fed97729c2d5a177e28c4a7e2a60c329",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/WindowsSandboxSetupStartParams.json",
+      "bytes": 1002,
+      "sha256": "8610d077fff4fc5811f2e33dea82617a15ffb82f08e55e1540aef877133f5b4f",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/WindowsSandboxSetupStartResponse.json",
+      "bytes": 230,
+      "sha256": "830bf89deac3e73e36b7d9799ceed32ee25e782c30b1d25266374aa020d3bc7e",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema/v2/WindowsWorldWritableWarningNotification.json",
+      "bytes": 478,
+      "sha256": "bfa34d4890c8121a04412b8d53314a13adf98289fdd948857fd97b808dcbe79e",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/schema-generation.json",
+      "bytes": 53,
+      "sha256": "0765c95806b10addb2925536a0666d0b35b8703c31ba49a46d8b52c83412f8be",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/source-manifest.json",
+      "bytes": 5116,
+      "sha256": "f05abb9df2bdef69ed1cfc50f5aba7cbdea4c513f5c82cf3e69ba8f9a2f8c92a",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/state/.config-policy.lock",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/state/capability-observations/b3e296afc31b90286a4871131f2e1c30387eba425bedb3af6fbf7ae44ad490f5.json",
+      "bytes": 379,
+      "sha256": "3c0448e480e7d6b6caa0b29ad8e4a9e8edc4952ba5b19361cee64206f369c866",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/state/capability-observations/df036cc0fae8492958ccd7903a4c4e3198cf56b8c188f095fe8cd9623ba6d3ce.json",
+      "bytes": 379,
+      "sha256": "562c5a426c404166cff49bc31ea65bd728ff29b15f555117e796744005993e21",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/state/capability-observations/fdb081c634f0d7a7673ff99da42477e44cfa3f613a928559bb4404408c7e5e4c.json",
+      "bytes": 379,
+      "sha256": "59634bdd7fe6fff7bed841a411afc45b064b1e75b533d643a5e4798cbdc8d18f",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/state/config.last-valid.json",
+      "bytes": 277,
+      "sha256": "edd493446d0277559b667ef065eb65ee299166aa31afa882de39a477c3a1d0f7",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/state/decisions.jsonl",
+      "bytes": 1323,
+      "sha256": "0f750eb4e58b570cc79982203384c449c03975990bebbc71794b6f925a3f0eec",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/state/file-copies/.lock",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/state/file-copies/incoming/6a9835b0a7694aafbd0a75f464a60b1c/61048ccb45be405db1f8963be9dcb233.blob",
+      "bytes": 430,
+      "sha256": "d14f13440e06fe298dbea777fdec92aeef41ce6b4d884b08eca7fa98eb095144",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/state/file-copies/incoming/6a9835b0a7694aafbd0a75f464a60b1c/record.json",
+      "bytes": 1262,
+      "sha256": "9f26540034049b1c0986e2b2317270644693445416af96d38c93a3e4766f170b",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/state/file-copies/incoming/cb77dd10446b436e98bc8638adfa79fa/3e37a4118bdf458fbcc7e5000455537c.blob",
+      "bytes": 490,
+      "sha256": "21892e51ad87853dea2e059ec3b532f34f6359b57c8b1bd8518ce0d0c358977d",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/state/file-copies/incoming/cb77dd10446b436e98bc8638adfa79fa/record.json",
+      "bytes": 1258,
+      "sha256": "b07b181f0179ca961ae64065315e0097507e815a241636b32bad42233316a0ee",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/state/file-copies/incoming/d12770e207904ce192563a81b53737f7/f3b9a42505c740f6ba627f1fe4cd65d2.blob",
+      "bytes": 490,
+      "sha256": "21892e51ad87853dea2e059ec3b532f34f6359b57c8b1bd8518ce0d0c358977d",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/state/file-copies/incoming/d12770e207904ce192563a81b53737f7/record.json",
+      "bytes": 1260,
+      "sha256": "0c9bf74d4643c8b0a263e952ff877b700ac104e2e9bf3a21be72d90a4e9140b0",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/state/file-copies/outgoing/58cdcfec60154f94922f907bd229e639/073434ffa59a4e119b8ed812ebe4b1eb.blob",
+      "bytes": 430,
+      "sha256": "d14f13440e06fe298dbea777fdec92aeef41ce6b4d884b08eca7fa98eb095144",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/state/file-copies/outgoing/58cdcfec60154f94922f907bd229e639/record.json",
+      "bytes": 1244,
+      "sha256": "85cf1e577a5e6c3cfcf6ee6207649e93d502421df722bc0dde476fc2ce086574",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/state/file-copies/outgoing/86d43e4f82a74fafa86f44d7469068f3/d1be7af6c7a8402ebad54661be34f1d7.blob",
+      "bytes": 490,
+      "sha256": "21892e51ad87853dea2e059ec3b532f34f6359b57c8b1bd8518ce0d0c358977d",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/state/file-copies/outgoing/86d43e4f82a74fafa86f44d7469068f3/record.json",
+      "bytes": 1238,
+      "sha256": "a9be2357b8550d4297191cc055ac1d51c62914ddb5061db11c31c6882fdbf945",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/state/file-copies/outgoing/ad95e57643d24632bbbc88d77f6140aa/6c6e046fe45c464585e90198ede7ad45.blob",
+      "bytes": 490,
+      "sha256": "21892e51ad87853dea2e059ec3b532f34f6359b57c8b1bd8518ce0d0c358977d",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/state/file-copies/outgoing/ad95e57643d24632bbbc88d77f6140aa/record.json",
+      "bytes": 1241,
+      "sha256": "ca1570f878d3f7301a84b48a3718377c6fb52442f4988d8b719fe3f118e8d854",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/state/handoffs/0547ce26b13243469b0549b3d88ae2ca809cdb38e54fa87def368f544cf8f04b/.lock",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/state/handoffs/0547ce26b13243469b0549b3d88ae2ca809cdb38e54fa87def368f544cf8f04b/00fb13fe6f6c4519.json",
+      "bytes": 3815,
+      "sha256": "c610a7a8c241a703d17e9924246b3b32d254de37fd621468100b9720a5d5bab5",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/state/handoffs/0547ce26b13243469b0549b3d88ae2ca809cdb38e54fa87def368f544cf8f04b/49179de2df37403e.json",
+      "bytes": 4391,
+      "sha256": "516b518d2f992c50d9a0530eaff38d03e7eb965e7e831978e226fdcc68d07e46",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/state/handoffs/0547ce26b13243469b0549b3d88ae2ca809cdb38e54fa87def368f544cf8f04b/ee9446d42af749fd.json",
+      "bytes": 4391,
+      "sha256": "a568dba248de21f54fb77bdf2943e04805b3445a4375a963d1f659ac4cd65135",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/state/handoffs/9a10b7195cc10e0774fa435c7c693701de3b10c15d4bb7a376625aed13038f4b/.lock",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/state/handoffs/c4318cf7b87ac8e1bae162954475594b8235ebbff3dafffcf447825e8cd20abc/.lock",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/state/handoffs/c4318cf7b87ac8e1bae162954475594b8235ebbff3dafffcf447825e8cd20abc/4cc2970a45e54c3f.json",
+      "bytes": 4955,
+      "sha256": "0813fbce065a89d032bc8e24d711f8a701a7ac2d9521a5ec164439b73d0339f1",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/state/handoffs/c4318cf7b87ac8e1bae162954475594b8235ebbff3dafffcf447825e8cd20abc/60a12d9d0f2b4baf.json",
+      "bytes": 4281,
+      "sha256": "6e0c8dacd1192634ec0e71a8aedaca19246320d79a57701cdcacdd16df119957",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/state/homes.json",
+      "bytes": 93,
+      "sha256": "ae0e4b94dbd9c01ab3e00f35be7d29861071efc42346224844114ffe233b2481",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/state/ledger/00fb13fe6f6c4519.handoff.json",
+      "bytes": 241,
+      "sha256": "4fae5633ee437d4dbc4aff5bb7769dbc3f47d069853042ff01b7e6130e05b6dd",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/state/ledger/00fb13fe6f6c4519.handoff.json.lock",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/state/ledger/00fb13fe6f6c4519.json",
+      "bytes": 1085,
+      "sha256": "d9f3dda7b963f144455363152533d356fae0880c1c85e2301c674eb6e4eb8867",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/state/ledger/49179de2df37403e.handoff.json",
+      "bytes": 241,
+      "sha256": "a3c890a876be43707bb908ac26c59ec8411e70c1abc605ad3625909f4d2386a3",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/state/ledger/49179de2df37403e.handoff.json.lock",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/state/ledger/49179de2df37403e.json",
+      "bytes": 1357,
+      "sha256": "4a68748ced3b8ed26249686345af49ff6738289d2efcfa9fe631404d40fd2eb4",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/state/ledger/4cc2970a45e54c3f.handoff.json",
+      "bytes": 421,
+      "sha256": "d5c641927c2a21c1f0923c37ada38e4cdcc74a548bfe730cb0ba34b5663ddf33",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/state/ledger/4cc2970a45e54c3f.handoff.json.lock",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/state/ledger/4cc2970a45e54c3f.json",
+      "bytes": 1082,
+      "sha256": "0479d56aee11f7636e79c86dc7e28156fd534f7d37eb78a43ed14ca7f8bb1bf7",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/state/ledger/4cc2970a45e54c3f.recv.json",
+      "bytes": 380,
+      "sha256": "758b376b58621789b01076aeea02939acc7a786b5effcc066847fb5d8f0e86f5",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/state/ledger/60a12d9d0f2b4baf.handoff.json",
+      "bytes": 241,
+      "sha256": "f18afa9fb07512885f27bc4dbaec11b40a76b25a2813acb063be0cc081bf442f",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/state/ledger/60a12d9d0f2b4baf.handoff.json.lock",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/state/ledger/60a12d9d0f2b4baf.json",
+      "bytes": 1656,
+      "sha256": "a7fcae4e7a81d5eb75296141a50d9b9e761fb2b3b3cc8546d64b6c156432217f",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/state/ledger/ee9446d42af749fd.handoff.json",
+      "bytes": 242,
+      "sha256": "a6e16912cb292b557d31544a9b31573d647ed4224bbb0acf6347562237552737",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/state/ledger/ee9446d42af749fd.handoff.json.lock",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/state/ledger/ee9446d42af749fd.json",
+      "bytes": 1695,
+      "sha256": "0e7da558b014f8fe52021cf120b30b23c086b23dd15ff4345180f7e2f7c26677",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/state/legacy-inbox-originals/4aaf5ecec309efd6d38c850c653f530acd38fbeb90abc128e23d7bb61fc6f44c/555f4694299b3f2413845b31acf8381b025d5c01e8560442565ff3acba73dec9.json",
+      "bytes": 1203,
+      "sha256": "0e2775e080a2c9a753816fc4969b64cf769679c9e375af2897a55d9b8ff61b1b",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/state/legacy-inbox-originals/4aaf5ecec309efd6d38c850c653f530acd38fbeb90abc128e23d7bb61fc6f44c/5fa7464a3cf5dddac31b71c30e24da0576ccc50812ca705c0cae06fc3ef6a539.json",
+      "bytes": 1437,
+      "sha256": "76d72ca027be8215bac99ef1160bade7145d8209571b85a8d797e84d455a53f4",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/state/legacy-inbox-originals/4b1f2b3bb7d602c9a82cfffc75349a25974df535f801d0e3393e2e4f456a3587/14f173550f3105b7799c72b55c76bf6a8e1890e7476a15121b351bf74f561e63.json",
+      "bytes": 1474,
+      "sha256": "0a41a6fd0cfcda130ff930418930c7ff25cbeffed889477f43a8dd26c26b2c04",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/state/legacy-inbox-originals/4b1f2b3bb7d602c9a82cfffc75349a25974df535f801d0e3393e2e4f456a3587/70ab05189aab9f3076f7fa8ba9bf29904383df26c5c6a9e0a10869910f9b8c16.json",
+      "bytes": 1241,
+      "sha256": "fa0aba88b42e69f86ffb4111cb824a6a6cd4d43c4dac50d81e37fbf59c1f0ece",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/state/material-intents/9a4d4aa461895fc65c23f5b65dae46260ecf7d41f83579544992c52bafff7e58.json",
+      "bytes": 392,
+      "sha256": "73fd349bdef00183fb7ccf1951056795e4834b79f554de5a48a4dc565cd46e1a",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/state/material-intents/9a4d4aa461895fc65c23f5b65dae46260ecf7d41f83579544992c52bafff7e58.lock",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/state/material-intents/aca9b441c25d1e9446f4f84245a3458ac863d0348cca24cf2fd295ba67c9f81e.json",
+      "bytes": 392,
+      "sha256": "8ccdeeba45ea837236251cab4e036122529f62f56866dd3363efadd90183c3dc",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/state/material-intents/aca9b441c25d1e9446f4f84245a3458ac863d0348cca24cf2fd295ba67c9f81e.lock",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/state/material-intents/d20213329bc1e9ee107ea4df31a4bd3d47353d12b1a29ed991345c2517e4dfa1.json",
+      "bytes": 392,
+      "sha256": "10f329e83cf8d9f91360befeaf0a2ba113d959a1d9cdd06bcc4c83b9d2c9be6a",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/state/material-intents/d20213329bc1e9ee107ea4df31a4bd3d47353d12b1a29ed991345c2517e4dfa1.lock",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/state/otel-metrics.jsonl",
+      "bytes": 1028,
+      "sha256": "8fff1619c7b10c9462bc5fe475a025c430324b8759b7d9a4ce62bbdce154767c",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/state/otel-spans.jsonl",
+      "bytes": 3945,
+      "sha256": "31abc4824c731fc359ad3f697bb5e7d1ced1ab2b01cf7ac2a525764f12f9f3cd",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/state/questions/49179de2df37403e.json",
+      "bytes": 1590,
+      "sha256": "83ae48c1345944fcfd48aef5ffd4c5098ce18fca6a47da649019ac07b63004d0",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/state/questions/49179de2df37403e.json.lock",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/state/questions/60a12d9d0f2b4baf.json",
+      "bytes": 1660,
+      "sha256": "3d03300a985cd7318280203c5c9b75b882ca3c282c83bf9609795e566bc12eff",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/state/questions/60a12d9d0f2b4baf.json.lock",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/state/questions/ee9446d42af749fd.json",
+      "bytes": 1697,
+      "sha256": "1acd6efeb3943159020d5c3b94f9e1da64e586abc08ddf0fc8bff3e186f11f38",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/state/questions/ee9446d42af749fd.json.lock",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/state/sessions/codex-01a166ab-647c-7a11-8cc0-ff5daf0cff01.json",
+      "bytes": 386,
+      "sha256": "5f1326ebc310b23d24e0046f323eb3ff853b3652b27f2ef1857786335837893c",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/state/sessions/codex-01a18443-ec4e-74e2-a156-c8ab42151b35.json",
+      "bytes": 380,
+      "sha256": "a7733c3d99c1d7505dfb735dfaa61f1b1898489f53494802a7073b3e4f66f0d5",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/state/sessions/codex-01a18444-392c-7e01-a846-c045081dd058.json",
+      "bytes": 382,
+      "sha256": "18b2dcd5e4cdb8efae8941eaf031491add369477ef13b2f70092ba3ff3a8f52e",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/state/sessions/codex-01a18444-4a0f-7f50-b5f2-fa4d808de8af.json",
+      "bytes": 382,
+      "sha256": "596e60b5ca93e13b694d15e18c6f98d97a5f96cc74a311ccfce777927c6ce8f4",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/state/traffic/165c8790847ce6b6bf0166f4978e3a715c1b1841d5234c6a003a8e6ef147189f.json",
+      "bytes": 686,
+      "sha256": "f09ae6984a25aa63793dfc57c2db223f550625304f2703cc923fd7a727c28c3e",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/state/traffic/165c8790847ce6b6bf0166f4978e3a715c1b1841d5234c6a003a8e6ef147189f.lock",
+      "bytes": 15,
+      "sha256": "8e7c4b55b2043ae615c74d4c7f957d9a3bfa44eca0169855cfb8a87c924ac7de",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/work/.agents/skills/xsm/SKILL.md",
+      "bytes": 5448,
+      "sha256": "3e583bcd294862775c6590766b96cea2260c879329a32ffbe5306f128da55896",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/work/.agents/skills/xsm/references/guide.md",
+      "bytes": 37275,
+      "sha256": "6bffc41da7cce01cc6080c8afb62e54efc910fd67b59d9d11b0c119130c43981",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/work/.agents/skills/xsm/references/messaging.md",
+      "bytes": 6272,
+      "sha256": "324b020e2e8eb899469e8d6478d046bcde18d405dc46667d817581a0ef974cb0",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/work/.git/HEAD",
+      "bytes": 21,
+      "sha256": "28d25bf82af4c0e2b72f50959b2beb859e3e60b9630a5e8c603dad4ddb2b6e80",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/work/.git/config",
+      "bytes": 137,
+      "sha256": "cae33efdb02cf774435c1ff9cb16bcc1014606908530c6e1dc727615fe3e8cda",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/work/.git/description",
+      "bytes": 73,
+      "sha256": "85ab6c163d43a17ea9cf7788308bca1466f1b0a8d1cc92e26e9bf63da4062aee",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/work/.git/hooks/applypatch-msg.sample",
+      "bytes": 478,
+      "sha256": "0223497a0b8b033aa58a3a521b8629869386cf7ab0e2f101963d328aa62193f7",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/work/.git/hooks/commit-msg.sample",
+      "bytes": 896,
+      "sha256": "1f74d5e9292979b573ebd59741d46cb93ff391acdd083d340b94370753d92437",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/work/.git/hooks/fsmonitor-watchman.sample",
+      "bytes": 4726,
+      "sha256": "e0549964e93897b519bd8e333c037e51fff0f88ba13e086a331592bf801fa1d0",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/work/.git/hooks/post-update.sample",
+      "bytes": 189,
+      "sha256": "81765af2daef323061dcbc5e61fc16481cb74b3bac9ad8a174b186523586f6c5",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/work/.git/hooks/pre-applypatch.sample",
+      "bytes": 424,
+      "sha256": "e15c5b469ea3e0a695bea6f2c82bcf8e62821074939ddd85b77e0007ff165475",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/work/.git/hooks/pre-commit.sample",
+      "bytes": 1649,
+      "sha256": "57185b7b9f05239d7ab52db045f5b89eb31348d7b2177eab214f5eb872e1971b",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/work/.git/hooks/pre-merge-commit.sample",
+      "bytes": 416,
+      "sha256": "d3825a70337940ebbd0a5c072984e13245920cdf8898bd225c8d27a6dfc9cb53",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/work/.git/hooks/pre-push.sample",
+      "bytes": 1374,
+      "sha256": "ecce9c7e04d3f5dd9d8ada81753dd1d549a9634b26770042b58dda00217d086a",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/work/.git/hooks/pre-rebase.sample",
+      "bytes": 4898,
+      "sha256": "4febce867790052338076f4e66cc47efb14879d18097d1d61c8261859eaaa7b3",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/work/.git/hooks/pre-receive.sample",
+      "bytes": 544,
+      "sha256": "a4c3d2b9c7bb3fd8d1441c31bd4ee71a595d66b44fcf49ddb310252320169989",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/work/.git/hooks/prepare-commit-msg.sample",
+      "bytes": 1492,
+      "sha256": "e9ddcaa4189fddd25ed97fc8c789eca7b6ca16390b2392ae3276f0c8e1aa4619",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/work/.git/hooks/push-to-checkout.sample",
+      "bytes": 2783,
+      "sha256": "a53d0741798b287c6dd7afa64aee473f305e65d3f49463bb9d7408ec3b12bf5f",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/work/.git/hooks/sendemail-validate.sample",
+      "bytes": 2308,
+      "sha256": "44ebfc923dc5466bc009602f0ecf067b9c65459abfe8868ddc49b78e6ced7a92",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/work/.git/hooks/update.sample",
+      "bytes": 3650,
+      "sha256": "8d5f2fa83e103cf08b57eaa67521df9194f45cbdbcb37da52ad586097a14d106",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/work/.git/info/exclude",
+      "bytes": 240,
+      "sha256": "6671fe83b7a07c8932ee89164d1f2793b2318058eb8b98dc5c06ee0a5a3b0ec1",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/work/review_five.md",
+      "bytes": 1254,
+      "sha256": "4dc66ec314ec988d27d2b27377682cc4e2db62e365a2603da1703fa258359deb",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/private/tmp/shared-mcp-native-yjfl3mjl/work/review_zero.md",
+      "bytes": 490,
+      "sha256": "21892e51ad87853dea2e059ec3b532f34f6359b57c8b1bd8518ce0d0c358977d",
+      "storage": "private raw evidence"
+    },
+    {
+      "path": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/deliverables/p13-live/shared-mcp-native-20261029-e41b1fd4/audit.py",
+      "bytes": 9729,
+      "sha256": "fcc41cdd670ac7813267d4d13d9a4db72942e045f3ce29dde4d8402ee1112e7d",
+      "storage": "public sanitized report or code"
+    },
+    {
+      "path": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/deliverables/p13-live/shared-mcp-native-20261029-e41b1fd4/plan.json",
+      "bytes": 1078,
+      "sha256": "81807b4f4da4e0dedfee94cb2c043f0d1a0cab1b8c709d6c1f2d42af4482a0c6",
+      "storage": "public sanitized report or code"
+    },
+    {
+      "path": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/deliverables/p13-live/shared-mcp-native-20261029-e41b1fd4/proxy.py",
+      "bytes": 2805,
+      "sha256": "927e6f5df075be6c4d40ca2748fd2b8214613db0a9408776b529d41351a3af53",
+      "storage": "public sanitized report or code"
+    },
+    {
+      "path": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/deliverables/p13-live/shared-mcp-native-20261029-e41b1fd4/report.md",
+      "bytes": 5532,
+      "sha256": "2d0c439dc7bb471b006d979afb632511cbdd67037e7a8d10ac8a80cf7c0b2662",
+      "storage": "public sanitized report or code"
+    },
+    {
+      "path": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/deliverables/p13-live/shared-mcp-native-20261029-e41b1fd4/run.py",
+      "bytes": 9544,
+      "sha256": "c7769629c3b7c8ae8458ec512ba51e66a8c01aeca4d1b57bde832c8c555e7422",
+      "storage": "public sanitized report or code"
+    },
+    {
+      "path": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/deliverables/p13-live/shared-mcp-native-20261029-e41b1fd4/summary.json",
+      "bytes": 13471,
+      "sha256": "ef9a40f815fb83fc142951ae6fec03df81b723e7e5f24aab857f6af2d4a78ea6",
+      "storage": "public sanitized report or code"
+    }
+  ],
+  "wire_meta_or_results_modified": false,
+  "native_retries_added_by_audit": 0
+}
