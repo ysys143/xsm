@@ -74,12 +74,12 @@ machines guide](references/network.md); create, join, remove or leave only on yo
 
 ## Called without one
 
-When loaded for a request in words, read the table in the [guide](references/guide.md)
-before choosing a command or address, then only the file it names for what you are about
-to do. Sessions on another machine: [network](references/network.md).
+When loaded for a request in words, read the table in the [guide](references/guide.md) before choosing a
+command or address, then only the file it names. Another machine: [network](references/network.md).
 
-In a sandboxed Codex, choose MCP first. If a shell already refused, use xsm_send
-with the same target, kind and text; do not retry or widen the sandbox.
+In a sandboxed Codex, choose MCP first: `codex queue` needs Codex's state DB and app server, which
+the sandbox shuts out, and the MCP server runs outside it. If a shell already refused, use xsm_send
+with the same target, kind and text, and say why; do not retry or widen the sandbox.
 
 Others are not breakage. `… is not registered yet` just after installing or trusting the hooks means
 they register this session at its next prompt: have your user send any message, then retry; do not
