@@ -1,7 +1,18 @@
-# Optional P2P networking
+# Other machines
 
-Use this only when the user asks to join, create or manage an xsm network.
-Local messaging and existing SSH peers keep working without this service.
+Read this when your user wants sessions on another machine: the opt-in P2P
+network below, or a machine paired over SSH (last section). Local messaging and
+existing SSH peers keep working without the network service.
+
+An opted-in P2P network merges permitted remote candidates into `xsm discover` /
+`xsm_discover`. Show the machine and work metadata, let the user select one,
+then use its returned target with connect/ask/send. Same-repository visibility
+across machines requires an explicitly verified repository binding. Publication
+or a shared network never supplies collaboration permission.
+
+## Optional P2P networking
+
+Create, join or change a network only on your user's instruction.
 Device keys and a valid invitation establish membership; no xsm account is
 required. Every active member may invite, add or remove devices. The founder is
 the trust root, not a privileged administrator.
@@ -57,3 +68,11 @@ For a sandbox refusal, use the supported MCP path; do not widen the sandbox,
 change permission rules or bypass hook trust. A missing network management MCP
 tool is not authority to change the agent's permissions. Report the concrete
 blocked operation after checking the available authorized CLI path.
+
+## Machines paired over SSH
+
+If your user paired this project with another machine (`xsm remote list`),
+`xsm remote sessions <peer>` shows its live sessions and
+`xsm send <name>@<home>@<peer>` reaches them over SSH; replies come back the
+same way. Pairing a machine is your user's decision (`xsm_grant`, option
+`remote`).

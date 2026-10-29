@@ -58,8 +58,13 @@ Codex에서는 앞의 `/`를 `$`로 바꾼다. 인자가 없거나 모르는 명
 
 **스킬의 모양.** `skills/xsm/SKILL.md`는 짧다. 앞부분은 명령마다 실행할 셸 명령 하나와 "출력을 그대로
 옮겨라"를 적은 디스패치 표다. 에이전트가 말로 된 부탁을 받고 스스로 스킬을 불렀을 때는
-`skills/xsm/references/guide.md`(주소, 프로젝트, 채널, 공동 문서, 원격, 워커)를 읽으라고만 가리킨다.
-`/xsm list`를 부를 때마다 긴 참고 본문이 컨텍스트에 들어가지 않게 하려는 것이다. `allowed-tools`는
+`skills/xsm/references/guide.md`의 목차를 읽고, 하려는 일에 맞는 파일 하나만 열라고 가리킨다. 참고 파일은
+용도별로 나뉜다: `messaging.md`(발견·연결·질문), `sessions.md`(목록·주소·전송·수신), `permissions.md`(폴더 연결과
+사용자 결정), `channel.md`(채널·공동 문서), `network.md`(다른 머신: P2P와 SSH), `workers.md`, `troubleshooting.md`.
+다른 머신은 `SKILL.md`에서 `network.md`로 바로 이어진다(2026-10-30). `/xsm list`를 부를 때마다 긴 참고 본문이
+컨텍스트에 들어가지 않게 하고, 말로 된 부탁에도 필요한 절만 읽히려는 것이다. 설명문에는 파일 경로를 적지
+않는다(아래 2026-09-27 실측). `tests/test_xsm.py`의 `SkillLayoutTest`가 usage 문구와 `argument-hint`의 일치,
+링크 끊김과 고아 참고 파일, 설명문의 경로를 검사한다. `allowed-tools`는
 본문이 시키는 읽기 명령 여섯 개(`xsm list --table`, `xsm ledger --table --mine --last 5`, `xsm held list --table`
 등)를 **정확한 형태로만** 미리 승인한다. `xsm held:*`처럼 접두어로 적으면 `xsm held drop`, `xsm list clear`
 같은 삭제 명령까지 승인된다. `xsm send`도 넣지 않는다. 넣으면 모델이 스스로 스킬을 불렀을 때도 확인 없이
