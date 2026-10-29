@@ -1,0 +1,58 @@
+{
+  "scope": "new fixture variant, original no-SSH abort preserved; no product change",
+  "files": {
+    "deliverables/p11-live/no-ssh-v2-audit.py": "f2b7030a7bb5f17d140fb5fb0a56e35194eebdd977e97e9f84da85f9827c8d90",
+    "deliverables/p11-live/no-ssh-v2-lib.py": "814570f08546b69f8c348fa84867eee4713fa313bb0da33644b9523e2f52ef1d",
+    "deliverables/p11-live/no-ssh-v2-native-launch.py": "223a66f1d37b604eddc5ee6d7c95339bfed27c83ed5154e5d31a52e55677817f",
+    "deliverables/p11-live/no-ssh-v2-native.py": "ec62b5e6d8ca1a96b11809780b2ebecfa1290e5ba6eb0b029728ff3ddc46bf72",
+    "deliverables/p11-live/no-ssh-v2-peer.py": "1779e99fc86195a4fc2ee89abfd76a43c034585141560cb9f46124e1b4a75763",
+    "deliverables/p11-live/no-ssh-v2-proc-layout.c": "cae3d628086dd82818ed6be154b27cd7be383836978b320efa140c3a6b6b7374",
+    "deliverables/p11-live/no-ssh-v2-proc.py": "1fc3d1f5c4b2448d0259cec915ad27bb1c5c47d14bb19eb890a28f515faf6302",
+    "deliverables/p11-live/no-ssh-v2-readback.py": "42fabde1ff1088b5a0332e04a6034934b4baa5464cf0a754a56d9d3852389477",
+    "deliverables/p11-live/no-ssh-v2-results.json": "b1529dda8fac92ceef36735887e60db2d4ccb96ef2ea4238355f985ab2b024d5",
+    "deliverables/p11-live/no-ssh-v2-run.py": "e2a923b2f60e7c36d0c17a17a5b1ff572b7053e2220652c22cddd37e94a7ad29",
+    "deliverables/p11-live/no-ssh-v2-summary.md": "2fdef2d2186c7a07497a7be16adec329e89c92bd259126cafe591ba6da5b6557"
+  },
+  "executed_private_code": {
+    "/private/tmp/p11-C-no-ssh-v2-local-51bqm_cj/code/C-fixture-lib.py": "9073360fd422877987ca2ebdea55a31186fe82d47308de4973ce95b9bf80e9a3",
+    "/private/tmp/p11-C-no-ssh-v2-local-51bqm_cj/code/C-native-base.py": "ec62b5e6d8ca1a96b11809780b2ebecfa1290e5ba6eb0b029728ff3ddc46bf72",
+    "/private/tmp/p11-C-no-ssh-v2-local-51bqm_cj/code/no-ssh-v2-lib.py": "814570f08546b69f8c348fa84867eee4713fa313bb0da33644b9523e2f52ef1d",
+    "/private/tmp/p11-C-no-ssh-v2-local-51bqm_cj/code/no-ssh-v2-native-launch.py": "223a66f1d37b604eddc5ee6d7c95339bfed27c83ed5154e5d31a52e55677817f",
+    "/private/tmp/p11-C-no-ssh-v2-local-51bqm_cj/code/no-ssh-v2-native.py": "ec62b5e6d8ca1a96b11809780b2ebecfa1290e5ba6eb0b029728ff3ddc46bf72",
+    "/private/tmp/p11-C-no-ssh-v2-local-51bqm_cj/code/no-ssh-v2-peer.py": "1779e99fc86195a4fc2ee89abfd76a43c034585141560cb9f46124e1b4a75763",
+    "/private/tmp/p11-C-no-ssh-v2-local-51bqm_cj/code/no-ssh-v2-proc.py": "1fc3d1f5c4b2448d0259cec915ad27bb1c5c47d14bb19eb890a28f515faf6302"
+  },
+  "private_evidence": {
+    "/private/tmp/p11-C-no-ssh-v2-local-51bqm_cj/result.json": "ba915acaec9e1c91a6a62b8e50c4bcff32881f253c178898df4473d1f5b98df2",
+    "/private/tmp/p11-C-no-ssh-v2-local-51bqm_cj/bootstrap.stdout": "9ea2989de96a469b5dcbb5eafee0d7161c51ec37ac50dd9fdd71b7493b9ca32a",
+    "/private/tmp/p11-C-no-ssh-v2-local-51bqm_cj/cleanup.json": "5ffff4bf9d63ec576f1eb51a836f3ed1a820f9b15d6d974e6aed01c8fe6e3b34",
+    "/private/tmp/p11-C-no-ssh-v2-local-51bqm_cj/engine-handles.json": "9092590e4ed25c5d3525a80b5c181078fbdc684057d0be4672510c14bd9d5374",
+    "/private/tmp/p11-C-no-ssh-v2-local-51bqm_cj/post-window-audit.json": "cec59e8485bbc1e2b23d3a66ab5e667d90c7cf98f87ab1326d09f4da04033656",
+    "/private/tmp/p11-C-no-ssh-v2-local-51bqm_cj/peer-raw/helper.stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "/private/tmp/p11-C-no-ssh-v2-local-51bqm_cj/peer-raw/native-starting.json": "e8aeb516ded705a6469d681d3faf7ed74d8b7b4cfe81a0a7efbdcb3e4ad2272b",
+    "/private/tmp/p11-C-no-ssh-v2-local-51bqm_cj/peer-raw/peer-final.json": "158cca1b5690d31eff8d326da3463f00a852529949523cc486708ea67fe16a2e",
+    "/private/tmp/p11-C-no-ssh-v2-local-51bqm_cj/peer-raw/helper.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "/private/tmp/p11-C-no-ssh-v2-local-51bqm_cj/peer-raw/cleanup.json": "bac4f594099a706020c8bd9ccef6087dce7b198ba077ce5073f8d372b1bb23ac",
+    "/private/tmp/p11-C-no-ssh-v2-local-51bqm_cj/peer-raw/engine-handles.json": "469408c3d8c801c8b0fc7ef8ff04543ba0dee2196832963acf216fea252f433c",
+    "/private/tmp/p11-C-no-ssh-v2-local-51bqm_cj/peer-raw/ready.json": "06acb14222e931e75d6f4288394eb512ffc534cd7ebeb19675a4c39677198db0",
+    "/private/tmp/p11-C-no-ssh-v2-local-51bqm_cj/peer-raw/restricted.json": "00a649aee49c90ab1ea3abc0f2590e1b04b6882a0825bae0b9fafb5117c1431f",
+    "/private/tmp/p11-C-no-ssh-v2-local-51bqm_cj/peer-raw/native/first/handle.json": "98ae9b9a5d2d0c7a4ad50f35c27d565187cf60827aa7d9473137208c24cf4f48",
+    "/private/tmp/p11-C-no-ssh-v2-local-51bqm_cj/peer-raw/native/first/result.json": "d3e7d8871a1543882e6a684d55a5040db4b8a4e089599d5129a52bf1f62f1052",
+    "/private/tmp/p11-C-no-ssh-v2-local-51bqm_cj/peer-raw/native/first/stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "/private/tmp/p11-C-no-ssh-v2-local-51bqm_cj/peer-raw/native/first/native-root-metadata.json": "36e2405e8d0545c709bf2627094e43d2edc0f834a99031a3aba088c5923c6e79",
+    "/private/tmp/p11-C-no-ssh-v2-local-51bqm_cj/peer-raw/native/first/stdout.jsonl": "9d1e1ca0113f84302701515c47903d15c0129d7eb92b0f2641de266a9a088723"
+  },
+  "SDK_headers": {
+    "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/sys/proc_info.h": "e427fa96b348537b21552b9de71e01039410bcad2cedee5584c5e5fddafd70fc",
+    "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/libproc.h": "246d87709fc6b9157ce5cf3c475656ac48e0e1ae8bbdc46cf45acd34294448cd"
+  },
+  "old_manifest_sha256": "6740e37ae7ff7494d69735c97cbd827adc7f78f4fba4dc8e9057b3f133eaa26c",
+  "SDK_compiled_layout": {
+    "flavor": 3,
+    "size": 136,
+    "pid_offset": 12,
+    "uid_offset": 20,
+    "start_seconds_offset": 120,
+    "start_microseconds_offset": 128
+  }
+}

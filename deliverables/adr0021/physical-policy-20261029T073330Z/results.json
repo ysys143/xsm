@@ -1,0 +1,539 @@
+{
+  "kind": "two physical Macs, operator/directRPC and FILE actors, no LLM calls",
+  "manifest": "manifest.json",
+  "steps": [
+    {
+      "name": "verify-a",
+      "at": 1793259424.5404758,
+      "match": true,
+      "files": 55,
+      "python": "3.14.6",
+      "hostname": "Jaesolui-MacBookPro.local"
+    },
+    {
+      "name": "verify-b",
+      "at": 1793259424.960421,
+      "match": true,
+      "files": 55,
+      "python": "3.9.6",
+      "hostname": "Jaesolui-Macmini.local"
+    },
+    {
+      "name": "three-services-ready",
+      "at": 1793259426.545797,
+      "physical_hosts": 2,
+      "same_host_third_node": "C on MacBook with A",
+      "endpoints": {
+        "a": "00090c4bcc46f35f81fa70dc07c9cf3f7d1858f86d8fffcf31c26d226155d306",
+        "b": "574f8f3534633f091fb35e517deb048317ccb6942c15fd990adad99f7ee45f0b",
+        "c": "0c8da9ac499029e76aa5da6951583e84a6c69be96a2c5cb4abf3602a74b0bdc0"
+      }
+    },
+    {
+      "name": "before-join-directory",
+      "at": 1793259428.3681972,
+      "physical_boundary": "B mini -> A book",
+      "rejected": true,
+      "code": "not-an-active-member",
+      "candidate_count": 0
+    },
+    {
+      "name": "B-joins-A",
+      "at": 1793259430.167306,
+      "exit": 0,
+      "same_network": true,
+      "active": true
+    },
+    {
+      "name": "stranger-rejected",
+      "at": 1793259430.733482,
+      "physical_boundary": "C book -> B mini",
+      "rejected": true,
+      "code": "not-an-active-member",
+      "tls_origin_matches_B": true
+    },
+    {
+      "name": "after-join-publication",
+      "at": 1793259431.541367,
+      "physical_boundary": "B mini -> A book",
+      "candidate_ids": [
+        "file-published"
+      ],
+      "only_published": true,
+      "private_paths_absent": true,
+      "native_read_counts": {
+        "file-published": 1
+      },
+      "hidden_unread": true
+    },
+    {
+      "name": "forged-sender-rejected",
+      "at": 1793259432.152351,
+      "physical_boundary": "B mini -> A book",
+      "rejected": true,
+      "code": "origin-mismatch"
+    },
+    {
+      "name": "publication-not-work-authority",
+      "at": 1793259432.908523,
+      "rejected": true,
+      "code": "selection-required",
+      "target_canonical_status": "not-found",
+      "no_model_called": true
+    },
+    {
+      "name": "founder-offline",
+      "at": 1793259433.85719,
+      "remaining_owned_pids": [],
+      "control_socket_exists": false,
+      "B_active": true
+    },
+    {
+      "name": "wrong-network-preserves-current",
+      "at": 1793259435.251113,
+      "physical_boundary": "Mac mini B -> MacBook C",
+      "exit": 4,
+      "code": "join-refused-or-state-mismatch",
+      "rejected": true,
+      "prior_affiliation_preserved": true
+    },
+    {
+      "name": "expired-invite-preserves-current",
+      "at": 1793259438.675219,
+      "physical_boundary": "Mac mini B -> MacBook C",
+      "exit": 4,
+      "code": "join-refused-or-state-mismatch",
+      "rejected": true,
+      "prior_affiliation_preserved": true
+    },
+    {
+      "name": "revoked-invite-preserves-current",
+      "at": 1793259440.24878,
+      "physical_boundary": "Mac mini B -> MacBook C",
+      "exit": 4,
+      "code": "join-refused-or-state-mismatch",
+      "rejected": true,
+      "prior_affiliation_preserved": true
+    },
+    {
+      "name": "nonfounder-invites-adds-C",
+      "at": 1793259442.108607,
+      "physical_boundary": "B mini -> C book",
+      "founder_offline": true,
+      "exit": 0,
+      "C_active": true,
+      "C_network_matches": true,
+      "B_member_status": {
+        "00090c4bcc46f35f81fa70dc07c9cf3f7d1858f86d8fffcf31c26d226155d306": "active",
+        "0c8da9ac499029e76aa5da6951583e84a6c69be96a2c5cb4abf3602a74b0bdc0": "active",
+        "574f8f3534633f091fb35e517deb048317ccb6942c15fd990adad99f7ee45f0b": "active"
+      }
+    },
+    {
+      "name": "nonfounders-physical-ping",
+      "at": 1793259443.669495,
+      "founder_offline": true,
+      "roundtrips": [
+        {
+          "source": "b",
+          "target": "c",
+          "ok": true,
+          "returned_endpoint": "0c8da9ac499029e76aa5da6951583e84a6c69be96a2c5cb4abf3602a74b0bdc0"
+        },
+        {
+          "source": "c",
+          "target": "b",
+          "ok": true,
+          "returned_endpoint": "574f8f3534633f091fb35e517deb048317ccb6942c15fd990adad99f7ee45f0b"
+        }
+      ]
+    },
+    {
+      "name": "nonfounder-removes-offline-C",
+      "at": 1793259445.595449,
+      "founder_offline": true,
+      "exit": 0,
+      "C_status": "removed"
+    },
+    {
+      "name": "removed-reconnect-policy",
+      "at": 1793259447.798111,
+      "same_machine_key": true,
+      "current_network_preserved": true,
+      "C_active": false,
+      "C_self_status": "removed",
+      "ordinary_ping_rejected": true,
+      "wire_ping_rejected": true,
+      "wire_code": "not-an-active-member"
+    },
+    {
+      "name": "old-link-cannot-reactivate-removed-C",
+      "at": 1793259448.5358012,
+      "rejected": true,
+      "code": "join-refused-or-state-mismatch",
+      "removed_affiliation_preserved": true
+    }
+  ],
+  "cleanup": {
+    "a": {
+      "remaining_owned_pids": [],
+      "socket_exists": false,
+      "udp_rebind": [
+        {
+          "address": "0.0.0.0:59572",
+          "free": true
+        },
+        {
+          "address": "[::]:64236",
+          "free": true
+        }
+      ],
+      "stop_exit": 0
+    },
+    "c-before-removal": {
+      "remaining_owned_pids": [],
+      "socket_exists": false,
+      "udp_rebind": [
+        {
+          "address": "0.0.0.0:55185",
+          "free": true
+        },
+        {
+          "address": "[::]:65211",
+          "free": true
+        }
+      ],
+      "stop_exit": 0
+    },
+    "b": {
+      "remaining_owned_pids": [],
+      "socket_exists": false,
+      "udp_rebind": [
+        {
+          "address": "0.0.0.0:52048",
+          "free": true
+        },
+        {
+          "address": "[::]:55781",
+          "free": true
+        }
+      ],
+      "stop_exit": 0
+    },
+    "c": {
+      "remaining_owned_pids": [],
+      "socket_exists": false,
+      "udp_rebind": [
+        {
+          "address": "0.0.0.0:54951",
+          "free": true
+        },
+        {
+          "address": "[::]:63640",
+          "free": true
+        }
+      ],
+      "stop_exit": 0
+    }
+  },
+  "phone_touched": false,
+  "started_at": 1793259424.4606578,
+  "completed": true,
+  "transport_observations": {
+    "a": [
+      {
+        "event": "incoming-response",
+        "operation": "directory",
+        "request_sha256": "a9ea896025a21b51bbd88542c73693062e23ada2de57e6e08a9d4181d7ab9460",
+        "response_sha256": "19b3dc082480a7627b2d2ccb36063f4fb6e60f3b7300f6822d6c76883e6de45e",
+        "tls_origin": "574f8f3534633f091fb35e517deb048317ccb6942c15fd990adad99f7ee45f0b",
+        "ok": false,
+        "code": "not-an-active-member",
+        "at": 1793259428.325332,
+        "service_pid": 79506
+      },
+      {
+        "event": "incoming-response",
+        "operation": "directory",
+        "request_sha256": "8ba762189d4e6f98af899718debab73c578c6e0f573eb037bd74a4828e7c4e14",
+        "response_sha256": "b9ddfbc7f275ea723505177570367c279d08648b03be62d1f7b951f3061de10e",
+        "tls_origin": "574f8f3534633f091fb35e517deb048317ccb6942c15fd990adad99f7ee45f0b",
+        "ok": true,
+        "code": null,
+        "at": 1793259431.2817411,
+        "service_pid": 79506
+      },
+      {
+        "event": "incoming-response",
+        "operation": "directory",
+        "request_sha256": "1966d5c26b5e436c6fc7d80b587b8c06554189e65fd8d5d31a00a2bb3ca04943",
+        "response_sha256": "200188ac8bdef6775edf4c2de8ae79839b08b0c9ba76a19335e913df99430f78",
+        "tls_origin": "574f8f3534633f091fb35e517deb048317ccb6942c15fd990adad99f7ee45f0b",
+        "ok": false,
+        "code": "origin-mismatch",
+        "at": 1793259432.13423,
+        "service_pid": 79506
+      }
+    ],
+    "b": [
+      {
+        "event": "request-response",
+        "operation": "directory",
+        "request_sha256": "a9ea896025a21b51bbd88542c73693062e23ada2de57e6e08a9d4181d7ab9460",
+        "response_sha256": "19b3dc082480a7627b2d2ccb36063f4fb6e60f3b7300f6822d6c76883e6de45e",
+        "tls_origin": "00090c4bcc46f35f81fa70dc07c9cf3f7d1858f86d8fffcf31c26d226155d306",
+        "expected_peer": "00090c4bcc46f35f81fa70dc07c9cf3f7d1858f86d8fffcf31c26d226155d306",
+        "transport": {
+          "fallback_reason": null,
+          "path": "direct",
+          "paths": [
+            {
+              "kind": "direct",
+              "remote": "ip:192.168.0.11:59572",
+              "selected": true
+            }
+          ],
+          "remote_address": "192.168.0.11:59572",
+          "selected": "direct",
+          "selection_reason": "iroh_path_selection"
+        },
+        "native_event_id": "py-2",
+        "at": 1793259432.2231529,
+        "service_pid": 68835
+      },
+      {
+        "event": "incoming-response",
+        "operation": "ping",
+        "request_sha256": "3cffd0cb51199a64281e982d56e9c602891b4583bf54e6266b55ad443c11bf98",
+        "response_sha256": "19b3dc082480a7627b2d2ccb36063f4fb6e60f3b7300f6822d6c76883e6de45e",
+        "tls_origin": "0c8da9ac499029e76aa5da6951583e84a6c69be96a2c5cb4abf3602a74b0bdc0",
+        "ok": false,
+        "code": "not-an-active-member",
+        "at": 1793259434.608906,
+        "service_pid": 68835
+      },
+      {
+        "event": "request-response",
+        "operation": "directory",
+        "request_sha256": "8ba762189d4e6f98af899718debab73c578c6e0f573eb037bd74a4828e7c4e14",
+        "response_sha256": "b9ddfbc7f275ea723505177570367c279d08648b03be62d1f7b951f3061de10e",
+        "tls_origin": "00090c4bcc46f35f81fa70dc07c9cf3f7d1858f86d8fffcf31c26d226155d306",
+        "expected_peer": "00090c4bcc46f35f81fa70dc07c9cf3f7d1858f86d8fffcf31c26d226155d306",
+        "transport": {
+          "fallback_reason": null,
+          "path": "direct",
+          "paths": [
+            {
+              "kind": "direct",
+              "remote": "ip:192.168.0.11:59572",
+              "selected": true
+            }
+          ],
+          "remote_address": "192.168.0.11:59572",
+          "selected": "direct",
+          "selection_reason": "iroh_path_selection"
+        },
+        "native_event_id": "py-159",
+        "at": 1793259435.3305159,
+        "service_pid": 68835
+      },
+      {
+        "event": "request-response",
+        "operation": "directory",
+        "request_sha256": "1966d5c26b5e436c6fc7d80b587b8c06554189e65fd8d5d31a00a2bb3ca04943",
+        "response_sha256": "200188ac8bdef6775edf4c2de8ae79839b08b0c9ba76a19335e913df99430f78",
+        "tls_origin": "00090c4bcc46f35f81fa70dc07c9cf3f7d1858f86d8fffcf31c26d226155d306",
+        "expected_peer": "00090c4bcc46f35f81fa70dc07c9cf3f7d1858f86d8fffcf31c26d226155d306",
+        "transport": {
+          "fallback_reason": null,
+          "path": "direct",
+          "paths": [
+            {
+              "kind": "direct",
+              "remote": "ip:192.168.0.11:59572",
+              "selected": true
+            }
+          ],
+          "remote_address": "192.168.0.11:59572",
+          "selected": "direct",
+          "selection_reason": "iroh_path_selection"
+        },
+        "native_event_id": "py-205",
+        "at": 1793259436.033104,
+        "service_pid": 68835
+      },
+      {
+        "event": "request-response",
+        "operation": "ping",
+        "request_sha256": "d15a59e19a789da6c7845253997ee0839a1067b3ff517668b0ce379fafda8385",
+        "response_sha256": "a1413bfd012d73b5bcde6815f71e445408ab52acf0758c459853e880cea3188f",
+        "tls_origin": "0c8da9ac499029e76aa5da6951583e84a6c69be96a2c5cb4abf3602a74b0bdc0",
+        "expected_peer": "0c8da9ac499029e76aa5da6951583e84a6c69be96a2c5cb4abf3602a74b0bdc0",
+        "transport": {
+          "fallback_reason": null,
+          "path": "direct",
+          "paths": [
+            {
+              "kind": "direct",
+              "remote": "ip:192.168.0.11:55185",
+              "selected": true
+            }
+          ],
+          "remote_address": "192.168.0.11:55185",
+          "selected": "direct",
+          "selection_reason": "iroh_path_selection"
+        },
+        "native_event_id": "py-866",
+        "at": 1793259446.680005,
+        "service_pid": 68835
+      },
+      {
+        "event": "incoming-response",
+        "operation": "ping",
+        "request_sha256": "e1a221b4241d0e58d8142024f5902b80479a0e8c23d93c44ae33c6f0e3816e1d",
+        "response_sha256": "b1ef7a2c1a73fa4cda90984c805018643b37af437483e7f0a8e9a035616f68ea",
+        "tls_origin": "0c8da9ac499029e76aa5da6951583e84a6c69be96a2c5cb4abf3602a74b0bdc0",
+        "ok": true,
+        "code": null,
+        "at": 1793259447.521823,
+        "service_pid": 68835
+      },
+      {
+        "event": "incoming-response",
+        "operation": "ping",
+        "request_sha256": "8d9b370c53871d6ad4a36686c475618f334d8fa6cfa38674147ea175a3519650",
+        "response_sha256": "b4f239bed4fcc97c04d84eac4a7beb7a827594769b6d581ac5fb3a52f18f77ac",
+        "tls_origin": "0c8da9ac499029e76aa5da6951583e84a6c69be96a2c5cb4abf3602a74b0bdc0",
+        "ok": false,
+        "code": "not-an-active-member",
+        "at": 1793259450.635517,
+        "service_pid": 68835
+      },
+      {
+        "event": "incoming-response",
+        "operation": "ping",
+        "request_sha256": "3cffd0cb51199a64281e982d56e9c602891b4583bf54e6266b55ad443c11bf98",
+        "response_sha256": "b4f239bed4fcc97c04d84eac4a7beb7a827594769b6d581ac5fb3a52f18f77ac",
+        "tls_origin": "0c8da9ac499029e76aa5da6951583e84a6c69be96a2c5cb4abf3602a74b0bdc0",
+        "ok": false,
+        "code": "not-an-active-member",
+        "at": 1793259451.6743581,
+        "service_pid": 68835
+      }
+    ],
+    "c": [
+      {
+        "event": "request-response",
+        "operation": "ping",
+        "request_sha256": "3cffd0cb51199a64281e982d56e9c602891b4583bf54e6266b55ad443c11bf98",
+        "response_sha256": "19b3dc082480a7627b2d2ccb36063f4fb6e60f3b7300f6822d6c76883e6de45e",
+        "tls_origin": "574f8f3534633f091fb35e517deb048317ccb6942c15fd990adad99f7ee45f0b",
+        "expected_peer": "574f8f3534633f091fb35e517deb048317ccb6942c15fd990adad99f7ee45f0b",
+        "transport": {
+          "fallback_reason": null,
+          "path": "direct",
+          "paths": [
+            {
+              "kind": "direct",
+              "remote": "ip:192.168.0.64:52048",
+              "selected": true
+            }
+          ],
+          "remote_address": "192.168.0.64:52048",
+          "selected": "direct",
+          "selection_reason": "iroh_path_selection"
+        },
+        "native_event_id": "py-17",
+        "at": 1793259430.726581,
+        "service_pid": 79507
+      },
+      {
+        "event": "incoming-response",
+        "operation": "ping",
+        "request_sha256": "d15a59e19a789da6c7845253997ee0839a1067b3ff517668b0ce379fafda8385",
+        "response_sha256": "a1413bfd012d73b5bcde6815f71e445408ab52acf0758c459853e880cea3188f",
+        "tls_origin": "574f8f3534633f091fb35e517deb048317ccb6942c15fd990adad99f7ee45f0b",
+        "ok": true,
+        "code": null,
+        "at": 1793259442.773985,
+        "service_pid": 79507
+      },
+      {
+        "event": "request-response",
+        "operation": "ping",
+        "request_sha256": "e1a221b4241d0e58d8142024f5902b80479a0e8c23d93c44ae33c6f0e3816e1d",
+        "response_sha256": "b1ef7a2c1a73fa4cda90984c805018643b37af437483e7f0a8e9a035616f68ea",
+        "tls_origin": "574f8f3534633f091fb35e517deb048317ccb6942c15fd990adad99f7ee45f0b",
+        "expected_peer": "574f8f3534633f091fb35e517deb048317ccb6942c15fd990adad99f7ee45f0b",
+        "transport": {
+          "fallback_reason": null,
+          "path": "direct",
+          "paths": [
+            {
+              "kind": "direct",
+              "remote": "ip:100.77.24.16:52048",
+              "selected": true
+            }
+          ],
+          "remote_address": "100.77.24.16:52048",
+          "selected": "direct",
+          "selection_reason": "iroh_path_selection"
+        },
+        "native_event_id": "py-618",
+        "at": 1793259443.6486819,
+        "service_pid": 79507
+      },
+      {
+        "event": "request-response",
+        "operation": "ping",
+        "request_sha256": "8d9b370c53871d6ad4a36686c475618f334d8fa6cfa38674147ea175a3519650",
+        "response_sha256": "b4f239bed4fcc97c04d84eac4a7beb7a827594769b6d581ac5fb3a52f18f77ac",
+        "tls_origin": "574f8f3534633f091fb35e517deb048317ccb6942c15fd990adad99f7ee45f0b",
+        "expected_peer": "574f8f3534633f091fb35e517deb048317ccb6942c15fd990adad99f7ee45f0b",
+        "transport": {
+          "fallback_reason": null,
+          "path": "direct",
+          "paths": [
+            {
+              "kind": "direct",
+              "remote": "ip:100.77.24.16:52048",
+              "selected": true
+            }
+          ],
+          "remote_address": "100.77.24.16:52048",
+          "selected": "direct",
+          "selection_reason": "iroh_path_selection"
+        },
+        "native_event_id": "py-101",
+        "at": 1793259446.7743528,
+        "service_pid": 80910
+      },
+      {
+        "event": "request-response",
+        "operation": "ping",
+        "request_sha256": "3cffd0cb51199a64281e982d56e9c602891b4583bf54e6266b55ad443c11bf98",
+        "response_sha256": "b4f239bed4fcc97c04d84eac4a7beb7a827594769b6d581ac5fb3a52f18f77ac",
+        "tls_origin": "574f8f3534633f091fb35e517deb048317ccb6942c15fd990adad99f7ee45f0b",
+        "expected_peer": "574f8f3534633f091fb35e517deb048317ccb6942c15fd990adad99f7ee45f0b",
+        "transport": {
+          "fallback_reason": null,
+          "path": "direct",
+          "paths": [
+            {
+              "kind": "direct",
+              "remote": "ip:192.168.0.64:52048",
+              "selected": true
+            }
+          ],
+          "remote_address": "192.168.0.64:52048",
+          "selected": "direct",
+          "selection_reason": "iroh_path_selection"
+        },
+        "native_event_id": "py-191",
+        "at": 1793259447.790891,
+        "service_pid": 80910
+      }
+    ]
+  },
+  "finished_at": 1793259451.560129
+}

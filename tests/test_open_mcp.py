@@ -91,6 +91,75 @@ class McpSendTest(TempState):
                          15.0)
 
 
+class WideningNeedsSureIdentityTest(TempState):
+    """P01 item 2: a shared MCP server may answer a call from a neighbour it
+    guessed (the newest live record under a shared daemon's pid) for ordinary
+    messaging, but a neighbour must never widen a permission (A17-02, A23-03)."""
+
+    def _call(self, name, args, ctx=None, me=None):
+        from xsm import mcp
+        msgs = [{"jsonrpc": "2.0", "id": 1, "method": "tools/call",
+                 "params": {"name": name, "arguments": args}}]
+        out = io.StringIO()
+        server = mcp.Server(io.StringIO("".join(json.dumps(m) + "\n" for m in msgs)), out)
+        rec = me or {"name": "me", "alias": "h", "ref": "aaaaaa", "runtime": "codex",
+                     "cwd": self.tmp}
+
+        def session():
+            server.ctx = ctx
+            return rec
+        server.session = session
+        server.serve()
+        return json.loads(out.getvalue().splitlines()[0])["result"]
+
+    def test_a_provisional_caller_cannot_reach_the_grant_tool(self):
+        from xsm import context
+        weak = context.CallContext(runtime="codex", home=self.tmp, conversation="t-b",
+                                   basis=context.BASIS_NEIGHBOR)
+        reply = self._call("xsm_grant", {"runtime": "codex", "options": ["full_access"],
+                                         "reason": "why"}, ctx=weak)
+        self.assertTrue(reply["isError"])
+        self.assertIn("guess at which session is asking", reply["content"][0]["text"])
+
+    def test_a_provisional_caller_cannot_link_or_join_or_reach(self):
+        from xsm import context
+        weak = context.CallContext(runtime="codex", home=self.tmp, conversation="t-b",
+                                   basis=context.BASIS_CWD)
+        for name, args in (("xsm_link", {"dir": self.tmp}), ("xsm_join", {"project": "p"}),
+                           ("xsm_reach", {"dir": self.tmp})):
+            reply = self._call(name, args, ctx=weak)
+            self.assertTrue(reply["isError"], name)
+            self.assertIn("guess at which session is asking", reply["content"][0]["text"], name)
+
+    def test_a_sure_caller_passes_the_guard(self):
+        from xsm import channel, context
+        sure = context.CallContext(runtime="codex", home=self.tmp, conversation="t-a",
+                                   basis=context.BASIS_THREAD)
+        # It gets past the guard and fails inside the tool for its own reason
+        # (no elicitation on this fake client), not with the identity message.
+        reply = self._call("xsm_grant", {"runtime": "codex", "options": ["full_access"],
+                                         "reason": "why"}, ctx=sure)
+        self.assertTrue(reply["isError"])
+        self.assertNotIn("guess at which session", reply["content"][0]["text"])
+        self.assertIn("cannot show a form", reply["content"][0]["text"])
+
+    def test_ordinary_messaging_still_answers_a_provisional_caller(self):
+        """The old accessibility is kept: a weak identity may still send, and the
+        result says the identity is provisional rather than refusing outright."""
+        from xsm import context, send
+        weak = context.CallContext(runtime="codex", home=self.tmp, conversation="t-b",
+                                   basis=context.BASIS_NEIGHBOR)
+        seen = {}
+
+        def fake(target, text, **kw):
+            seen.update(kw)
+            return send.SendResult("sent-unconfirmed", "queued", "m1")
+        with mock.patch.object(send, "send", fake):
+            reply = self._call("xsm_send", {"target": "x", "text": "hi"}, ctx=weak)
+        self.assertFalse(reply["isError"])
+        self.assertIs(seen["call"], weak, "the caller context travels into the send")
+
+
 class ToolAnnotationsTest(TempState):
     """B6: Codex under approval_policy "never" declines a tool that says nothing."""
 

@@ -7,6 +7,7 @@ prose: 0 ok, 2 refused (scope, liveness, ambiguity), 3 sent but unconfirmed,
 from __future__ import annotations
 
 import argparse
+import base64
 import glob
 import json
 import os
@@ -16,6 +17,10 @@ import time
 
 from . import config, consent, envelope, housekeeping, identity, inbox, install, ledger, paths, \
     policy, probe, receive, registry, resolve, send, workers
+
+from .instructions import HANDSHAKE_TEXT
+from .provenance import readable as _readable_json
+from .provenance import display_text as _display_text, display_body as _display_body
 
 OK, REFUSED, UNCONFIRMED, USAGE = 0, 2, 3, 4
 
@@ -128,10 +133,10 @@ def _compact_groups(rows: list, me: dict | None, here: str) -> list:
 
     lines = []
     for folder, members in _folder_groups(rows, me, here, label):
-        lines.append(folder)
+        lines.append(_display_text(folder))
         for r, flags in members:
-            lines.append(" %s@%s [%s]%s" % (r.get("name"), r.get("alias"), r.get("ref") or "-",
-                                            (" (" + ", ".join(flags) + ")") if flags else ""))
+            lines.append(" %s@%s [%s]%s" % (_display_text(r.get("name")), _display_text(r.get("alias")), _display_text(r.get("ref") or "-"),
+                                            (" (" + ", ".join(_display_text(f) for f in flags) + ")") if flags else ""))
     return lines
 
 
@@ -151,14 +156,14 @@ def _table(rows: list, me: dict | None, here: str) -> list:
         return (cwd or "?").replace(home, "~", 1)
 
     def cell(text: str) -> str:
-        return (text or "").replace("|", "\\|")
+        return _display_text(text or "").replace("|", "\\|")
 
     lines = ["| folder | session | runtime | ref | note |", "|---|---|---|---|---|"]
     for folder, members in _folder_groups(rows, me, here, label):
         for i, (r, flags) in enumerate(members):
             lines.append("| %s | %s | %s | `%s` | %s |" % (
                 cell(folder) if i == 0 else "", cell(r.get("name") or ""),
-                cell(r.get("alias") or ""), r.get("ref") or "-", cell(", ".join(flags))))
+                cell(r.get("alias") or ""), cell(r.get("ref") or "-"), cell(", ".join(flags))))
     return lines
 
 
@@ -233,7 +238,7 @@ def _cmd_list(args) -> int:
                                                     str(row.get("session_id") or ""),
                                                     folder=row.get("home") or "", default=False))
     if args.json:
-        print(json.dumps(rows, ensure_ascii=False, indent=1))
+        print(_readable_json(rows))
         return OK
     if not rows:
         if args.all:
@@ -303,7 +308,7 @@ def cmd_who(args) -> int:
         print(registry.unregistered_reason(), file=sys.stderr)
         return REFUSED
     if args.json:
-        print(json.dumps(me, ensure_ascii=False, indent=1))
+        print(_readable_json(me))
         return OK
     if getattr(args, "table", False):
         auto = me.get("name_source") and me["name_source"] != "user"
@@ -313,8 +318,8 @@ def cmd_who(args) -> int:
                 ("folder", _home_tilde(me.get("cwd") or ""))]
         print("\n".join(_md_table(["this session", ""], rows)))
         return OK
-    print("%s@%s [%s] %s %s" % (me["name"], me["alias"], me["ref"],
-                                me["runtime"], me.get("cwd") or ""))
+    print("%s@%s [%s] %s %s" % tuple(_display_text(v) for v in (me["name"], me["alias"], me["ref"],
+                                me["runtime"], me.get("cwd") or "")))
     if me.get("name_source") and me["name_source"] != "user":
         print("this name was %s, not chosen by your user; it can change. "
               "The stable address is ref:%s" % (me["name_source"], me["ref"]))
@@ -335,6 +340,43 @@ def _print_members(scope: dict, root: str) -> None:
 # The reply of the person that let the last _person_or_refuse through, if
 # that is what did; recorded as `by` on what it changed.
 _verdict: str | None = None
+
+
+def _unsure_ctx(ctx, what: str) -> str | None:
+    """Why `ctx` may not `what` because the caller is only a guess, or None when
+    it may.
+
+    The CLI and the MCP server must guard the same things the same way (P01
+    item 2): a shell that carries no session id and matched one live record by
+    folder is a guess, and a guess must not widen a permission. A person at this
+    terminal is not a guessed session, so their own command is never refused; a
+    context that names no rule (a harness-provided record) is left alone too, and
+    the command's own checks decide.
+    """
+    from . import context, workers
+    if ctx is None or ctx.sure or ctx.basis == context.BASIS_NONE \
+            or workers.human_terminal():
+        # `none` means no record matched at all: that is the unregistered case,
+        # which has its own refusal and message. Only a *guess* at which session
+        # is asking is stopped here.
+        return None
+    return context.require_sure(ctx, what)
+
+
+def _unsure_caller(what: str):
+    """(record, why): the caller and, when its identity is only a guess, why it
+    may not `what`. The lookup runs here so the caller can hand the record on
+    (`_here(args, me=record)`) instead of asking again: a second `me()` would
+    open another probe budget for the same question (#17).
+
+    The record is None when nothing matched at all (the unregistered case), and
+    `why` is None then too -- that refusal has its own message."""
+    from . import probe, registry
+    with probe.quick():
+        registry.forget_identity()
+        me = registry.me()
+        ctx = registry.last_identity()
+    return me, _unsure_ctx(ctx, what)
 
 
 def _by() -> str:
@@ -388,7 +430,17 @@ def cmd_join(args) -> int:
     except ValueError as exc:
         print("refused: %s" % exc, file=sys.stderr)
         return USAGE
-    here = _here(args)                          # refuses an agent's --dir, before the reply is used
+    if not getattr(args, "leave", False):
+        # Joining widens who may talk; leaving narrows, and anyone may narrow.
+        me, why = _unsure_caller("join a project")
+        if why:
+            print("refused: %s" % why, file=sys.stderr)
+            return REFUSED
+    else:
+        me = None
+    # refuses an agent's --dir, before the reply is used; the guard's own lookup
+    # is reused, so one join asks the process table once (#17).
+    here = _here(args, me=me)
     why = _person_or_refuse("joining a project", "xsm_join", ("join", args.project))
     if why:
         print("refused: %s" % why, file=sys.stderr)
@@ -445,6 +497,8 @@ def _memberships(here: str) -> list:
 
 def cmd_reach(args) -> int:
     """Let one running session talk with the sessions of one other folder."""
+    from . import probe
+    registry.forget_identity()
     if args.session:
         found = resolve.resolve(args.session)
         me = found.record if found.ok else None
@@ -453,7 +507,8 @@ def cmd_reach(args) -> int:
                   file=sys.stderr)
             return REFUSED
     else:
-        me = registry.me()
+        with probe.quick():
+            me = registry.me()
     if not args.folder and not args.drop:
         rows = config.reaches()
         if not rows:
@@ -474,6 +529,14 @@ def cmd_reach(args) -> int:
         n = config.drop_reach(me["ref"], folder, session=me)
         print("dropped %d reach(es) of ref:%s" % (n, me["ref"]))
         return OK
+    # A reach widens who may talk to whom, so the shell that asks must know
+    # which session it is: a guess is refused, as the MCP tool refuses one (P01
+    # item 2). A named --session is that session's own ref, not a guess.
+    if not args.session:
+        why = _unsure_ctx(registry.last_identity(), "let a session reach another folder")
+        if why:
+            print("refused: %s" % why, file=sys.stderr)
+            return REFUSED
     try:
         config.check_reach(folder)              # before the typed consent is used up
     except ValueError as exc:
@@ -507,6 +570,7 @@ def _links_here(root: str) -> list:
 
 def cmd_link(args) -> int:
     """Link this project folder with another one, both ways, until unlinked."""
+    registry.forget_identity()
     here = _here(args)
     root = config.project_root(here)
     if not args.folder:
@@ -542,6 +606,12 @@ def cmd_link(args) -> int:
     except ValueError as exc:
         print("refused: %s" % exc, file=sys.stderr)
         return USAGE
+    # A link widens who may talk to whom, so the shell that asks must know which
+    # session it is; a guess is refused, as the MCP tool refuses one (P01 item 2).
+    why = _unsure_ctx(registry.last_identity(), "link two folders")
+    if why:
+        print("refused: %s" % why, file=sys.stderr)
+        return REFUSED
     why = _person_or_refuse("linking two folders", "xsm_link", ("link", other, here))
     if why:
         print("refused: %s" % why, file=sys.stderr)
@@ -661,6 +731,155 @@ def cmd_homes(args) -> int:
     return OK
 
 
+def _question_pump(me, request_id):
+    last_scan = [float("-inf")]
+    def pump():
+        now = time.monotonic()
+        if now - last_scan[0] >= .2:
+            last_scan[0] = now
+            receive.poll_replies(me, request_id)
+        return True
+    return pump
+
+
+def _print_question_result(me, result):
+    result = receive.claim_question_replies(me, result)
+    result.update(inbox.pending_fields(me, owner_alive=receive._consumer_alive))
+    try:
+        print(_readable_json(result), flush=True)
+    except BaseException:
+        for claim in result['claims']:
+            try:
+                receive.release_inbox(me, [claim['token']], owner=claim['owner'], generation=claim['generation'])
+            except (OSError, ValueError):
+                pass  # Preserve the original output error; canonical recovery remains.
+        raise
+    return result
+
+
+def cmd_connect(args) -> int:
+    from . import connect, questions
+    me, why = _unsure_caller("connect the selected session")
+    if why or not me:
+        print(why or "this session is not registered", file=sys.stderr)
+        return REFUSED
+    with probe.quick():
+        found = resolve.resolve(args.target, caller=me)
+    if not found.ok:
+        print(found.reason, file=sys.stderr)
+        return REFUSED
+    if args.request_id and (not questions.expects_reply(me, found.record, args.request_id)
+                            or questions.status(me, args.request_id).get("purpose") != "handshake"):
+        print("refused: request ID does not belong to this selected handshake", file=sys.stderr)
+        return REFUSED
+    result = connect.select(me, found.record, call=registry.last_identity())
+    if result["status"] == "permitted":
+        request_id = args.request_id or envelope.new_id()
+        if args.request_id:
+            receive.poll_replies(me, request_id)
+            result = questions.wait_for(me, request_id, wait=args.wait,
+                                         pump=_question_pump(me, request_id))
+        else:
+            result = questions.ask(me, args.target, HANDSHAKE_TEXT, wait=args.wait,
+                                   request_id=request_id, purpose="handshake",
+                                   pump=_question_pump(me, request_id))
+    result = _print_question_result(me, result)
+    if result.get("handshake") == "declined":
+        return REFUSED
+    return OK if result.get("handshake") == "completed" else UNCONFIRMED \
+        if result.get("id") else REFUSED
+
+
+
+
+def cmd_ask(args) -> int:
+    from . import questions, materials, files
+    me, why = _unsure_caller("bind a question to this conversation")
+    if why or not me:
+        print(why or "this session is not registered", file=sys.stderr)
+        return REFUSED
+    if args.wake not in ("auto", "never"):
+        print("unsupported wake mode; use auto or never", file=sys.stderr)
+        return REFUSED
+    request_id = args.request_id or envelope.new_id()
+    try:
+        prepared=materials.prepare(me,args.target,args.text,request_id,args.attachment,source="cli",
+            manifest_id=args.manifest,previous=args.previous_manifest,fallback=args.attachment_fallback,
+            call=registry.last_identity())
+    except files.FileError as exc:
+        print(_readable_json(materials.failure(exc)),file=sys.stderr)
+        return REFUSED
+    result = questions.ask(me, args.target, prepared["body"], wait=args.wait, request_id=request_id,
+                           priority=args.priority, pump=_question_pump(me, request_id),wake=args.wake,
+                           attachments=prepared["attachments"],file_packet=prepared["file_packet"],
+                           file_limits=prepared["file_limits"])
+    if prepared["manifest_id"]:
+        result["materials"]=materials.public(prepared)
+    result = _print_question_result(me, result)
+    return OK if result.get("replies") else UNCONFIRMED \
+        if result.get("status") == "pending" else REFUSED
+
+
+def cmd_question_status(args) -> int:
+    from . import questions
+    me, why = _unsure_caller("read this conversation's answer")
+    if why or not me:
+        print(why or "this session is not registered", file=sys.stderr)
+        return REFUSED
+    if args.id is None:
+        if args.wait:
+            print("an id is required to wait; omit --wait to list your requests", file=sys.stderr)
+            return REFUSED
+        print(_readable_json({"status": "requests", "requests": questions.list_requests(me)}))
+        return OK
+    network_state = None
+    if str(ledger.status(args.id).get("scope") or "").startswith("network:"):
+        from . import network
+        network_state = network.reconcile(args.id, caller=me)
+    receive.poll_replies(me, args.id)
+    result = questions.wait_for(me, args.id, wait=args.wait,
+                                pump=_question_pump(me, args.id))
+    if network_state is not None:
+        for key in ("network_status", "network_delivery"):
+            if key in network_state:
+                result[key] = network_state[key]
+    result = _print_question_result(me, result)
+    return OK if result.get("replies") else UNCONFIRMED \
+        if result.get("status") == "pending" else REFUSED
+
+
+def cmd_decision_status(args) -> int:
+    from . import decisions
+    me, why = _unsure_caller("read this conversation's human decisions")
+    if why or not me:
+        print(why or "this session is not registered", file=sys.stderr)
+        return REFUSED
+    print(_readable_json(decisions.public_status(me, args.id, args.cancel)))
+    return OK
+
+
+def cmd_discover(args) -> int:
+    from . import directory
+    me, why = _unsure_caller("discover collaborators for this conversation")
+    if why or not me:
+        print(why or "this session is not registered", file=sys.stderr)
+        return REFUSED
+    result = directory.discover(me, machine=args.machine, work=args.work, branch=args.branch)
+    print(_readable_json(result))
+    return OK
+
+
+def cmd_publish(args) -> int:
+    from . import connect
+    me, why = _unsure_caller("publish this conversation")
+    if why or not me:
+        print(why or "this session is not registered", file=sys.stderr)
+        return REFUSED
+    result = connect.publication(me, visible=not args.off, call=registry.last_identity())
+    print(_readable_json(result))
+    return OK if result["status"] in ("published", "hidden") else REFUSED
+
+
 def cmd_send(args) -> int:
     body = args.text
     if args.held:
@@ -681,14 +900,40 @@ def cmd_send(args) -> int:
             print("refused: --outcome belongs to the reply that closes a task, not to %s"
                   % args.kind, file=sys.stderr)
             return REFUSED
-    result = send.send(args.target or "", body or "", kind=args.kind, reply_to=args.reply_to,
+    from . import files, materials
+    prepared=None;me=None;call=None
+    request_id=args.resend or args.request_id or envelope.new_id()
+    if args.attachment or args.manifest:
+        if args.held:
+            print("held sends reuse their stored material; do not supply new attachments",file=sys.stderr)
+            return REFUSED
+        me,why=_unsure_caller("prepare attachments")
+        if why or not me:
+            print(why or "this session is not registered",file=sys.stderr)
+            return REFUSED
+        call=registry.last_identity()
+        try:
+            prepared=materials.prepare(me,args.target,body,request_id,args.attachment,source="cli",
+                manifest_id=args.manifest,previous=args.previous_manifest,fallback=args.attachment_fallback,call=call)
+        except files.FileError as exc:
+            print(_readable_json(materials.failure(exc)),file=sys.stderr)
+            return REFUSED
+        body=prepared["body"]
+    result = send.send(args.target or "", body or "", sender=me,call=call,kind=args.kind, reply_to=args.reply_to,
                        priority=args.priority, wait=args.wait, outcome=args.outcome,
-                       msg_id=args.resend, resend=bool(args.resend), held=args.held)
+                       msg_id=request_id if (args.resend or args.request_id or prepared) else None,
+                       resend=bool(args.resend),held=args.held,
+                       wake=args.wake != "never",attachments=prepared["attachments"] if prepared else None,
+                       file_packet=prepared["file_packet"] if prepared else None,
+                       file_limits=prepared["file_limits"] if prepared else None)
     if args.json:
-        print(json.dumps(result.as_dict(), ensure_ascii=False))
+        value=result.as_dict()
+        if prepared:value["materials"]=materials.public(prepared)
+        print(_readable_json(value))
     else:
         print("\n".join(result.lines()))
-    return {"delivered": OK, "sent-unconfirmed": UNCONFIRMED, "unknown": UNCONFIRMED,
+        if prepared:print("Materials: "+_readable_json(materials.public(prepared)))
+    return {"delivered": OK, "stored": OK, "sent-unconfirmed": UNCONFIRMED, "unknown": UNCONFIRMED,
             "held": REFUSED, "blocked": REFUSED, "refused": REFUSED}.get(result.status, USAGE)
 
 
@@ -696,25 +941,76 @@ def cmd_inbox(args) -> int:
     """Messages waiting for this Codex session, now rather than at the end of
     its turn. For a Claude session there is nothing to take: its inbox socket
     delivers as soon as it is idle."""
-    me = registry.me()
-    if not me:
-        print("this session is not registered; run `xsm doctor`", file=sys.stderr)
+    me, why = _unsure_caller("read this conversation's inbox")
+    if why or not me:
+        print(why or "this session is not registered; run `xsm doctor`", file=sys.stderr)
         return REFUSED
     if args.wait > 0:
         if args.wait > inbox.MAX_WAIT:
             print("[xsm] --wait clamped to %ds; it blocks one command, it is not a daemon."
                   % inbox.MAX_WAIT, file=sys.stderr)
-        inbox.wait_for(me.get("session_id"), args.wait, out=sys.stderr)
-    texts = receive.take_inbox(me)
-    if not texts:
-        print("(no messages waiting)")
-        return OK
-    print(("\n\n" + "-" * 40 + "\n\n").join(texts))
+        inbox.wait_for(me.get("session_id"), args.wait, out=sys.stderr,
+            counter=lambda: inbox.pending_fields(me, owner_alive=receive._consumer_alive)['inbox_pending'])
+    owner, generation = receive.consumer_for(me)
+    pack = receive.take_inbox_claims(me, owner=owner, generation=generation)
+    pack.update(inbox.pending_fields(me, owner_alive=receive._consumer_alive))
+    try:
+        if args.json:
+            print(_readable_json(pack), flush=True)
+        else:
+            empty = ('(no messages returned; pending count unknown, originals retained)'
+                     if pack['inbox_pending'] is None else '(no messages waiting)')
+            print(("\n\n" + "-" * 40 + "\n\n").join(pack["messages"]) or empty)
+            if pack["claims"]:
+                print("Unconfirmed claims; after reading: xsm ack " + " ".join(c["token"] for c in pack["claims"]))
+            sys.stdout.flush()
+    except BaseException:
+        receive.release_inbox(me, [c["token"] for c in pack["claims"]], owner=owner, generation=generation)
+        raise
+    return OK
+
+
+def cmd_ack(args) -> int:
+    me, why = _unsure_caller("acknowledge this conversation's inbox")
+    if why or not me:
+        print(why or "this session is not registered", file=sys.stderr)
+        return REFUSED
+    owner, generation = receive.consumer_for(me)
+    try:
+        result = receive.ack_inbox(me, args.tokens, owner=owner, generation=generation)
+    except ValueError as exc:
+        print(str(exc), file=sys.stderr)
+        return REFUSED
+    print(_readable_json(result))
+    return OK
+
+
+def cmd_files(args) -> int:
+    from . import files
+    me,why=_unsure_caller("read this conversation's attachment copies")
+    if why or not me:
+        print(why or "this session is not registered",file=sys.stderr)
+        return REFUSED
+    try:
+        if not args.entry:
+            result={"storage_id":args.storage_id,"manifest":files.manifest(me,args.storage_id,incoming=not args.outgoing)}
+        else:
+            data=files.read_copy(me,args.storage_id,args.entry,incoming=not args.outgoing)
+            content=base64.b64encode(data).decode("ascii") if args.encoding=="base64" else data.decode("utf-8")
+            result={"storage_id":args.storage_id,"entry_id":args.entry,"encoding":args.encoding,"content":content}
+    except (files.FileError,UnicodeError) as exc:
+        print(str(exc),file=sys.stderr)
+        return REFUSED
+    print(_readable_json(result))
     return OK
 
 
 def cmd_status(args) -> int:
-    if (ledger.status(args.msg_id).get("scope") or "").startswith("remote:"):
+    scope = ledger.status(args.msg_id).get("scope") or ""
+    if scope.startswith("network:"):
+        from . import network
+        state = network.reconcile(args.msg_id, caller=registry.me(), wait=args.wait)
+    elif scope.startswith("remote:"):
         # Its receipt is on the other machine; only the peer can say (issue #4).
         from . import remote
         state = remote.reconcile(args.msg_id, args.wait)
@@ -740,7 +1036,9 @@ def _mark_undelivered(rows: list) -> list:
     recorded as delivered. Say so instead of leaving it looking pending."""
     live = {r.get("ref") for r in registry.records() if r.get("state") == "live"}
     for row in rows:
-        if row.get("status") == "queued" and (row.get("to") or {}).get("runtime") == "remote":
+        if row.get("status") == "queued" and str(row.get("scope") or "").startswith("network:"):
+            row["note"] = "on the network peer; `xsm status %s` retrieves its delivery evidence" % row.get("id")
+        elif row.get("status") == "queued" and (row.get("to") or {}).get("runtime") == "remote":
             # The target lives on the peer, not in this registry; its receipt
             # is there too (issue #4).
             row["note"] = "on %s; `xsm status %s` asks it" % (
@@ -829,7 +1127,7 @@ def cmd_otlp_export(args) -> int:
         return otlp_export.run(url, interval=args.interval)
     result = otlp_export.export_once(url)
     if args.json:
-        print(json.dumps(result, ensure_ascii=False))
+        print(_readable_json(result))
         return OK
     if not result["spans_sent"] and not result["points_sent"]:
         failed = False in (result["traces_ok"], result["metrics_ok"])
@@ -946,19 +1244,70 @@ def cmd_install(args) -> int:
     """`--dev` is the policy runtime=checkout for this run (policy.py), through
     the variable that overrides it; the variable is put back afterwards, and the
     choice is kept in config.json (`_keep_dev`)."""
-    if not args.dev:
-        return _cmd_install(args)
+    from . import setup_flow
+    targets = [(home, "claude") for home in (args.claude_home or [])] + \
+              [(home, "codex") for home in (args.codex_home or [])]
+    if args.refresh and not targets:
+        targets = [(home["path"], home["runtime"]) for home in config.homes()
+                   if os.path.isdir(home["path"])]
+    flows, seen = [], set()
+    if not args.dry_run:
+        try:
+            for home, runtime in targets:
+                target = {"home": os.path.realpath(os.path.expanduser(home)), "runtime": runtime}
+                key = (target["home"], runtime)
+                if key in seen:
+                    continue
+                seen.add(key)
+                flow = setup_flow.begin(target, steps=("runtime", "harness", "existing-session", "first-roundtrip"),
+                                        optional_steps=("existing-session",))
+                flows.append(flow)
+                print("setup flow %s generation=%s runtime=%s target=%s status=pending" % (
+                    flow["flow_id"], flow["generation"], runtime, _home_tilde(target["home"])))
+        except (OSError, ValueError) as err:
+            print("setup flow could not start: %s" % type(err).__name__, file=sys.stderr)
+            return USAGE
     before = os.environ.get("XSM_RUNTIME")
-    os.environ["XSM_RUNTIME"] = "checkout"
+    if args.dev:
+        os.environ["XSM_RUNTIME"] = "checkout"
+    code = USAGE
     try:
-        code = _cmd_install(args)
+        with setup_flow.installation(flows):
+            code = _cmd_install(args)
+            if code == OK and args.dev and not args.dry_run and not install.runtime_in_place():
+                _keep_dev()
+            for flow in flows:
+                observed = setup_flow.installation_readback(flow["target"], mcp_requested=not args.no_mcp,
+                                                           plugin_allowed=not args.force)
+                for step in ("runtime", "harness"):
+                    status = "failed" if code == REFUSED and step == "harness" else observed[step]
+                    setup_flow.record(flow["flow_id"], flow["target"], flow["generation"], step, status,
+                                      evidence={"home_match": True, "observation": "configuration-readback"})
+                for step in ("existing-session", "first-roundtrip"):
+                    setup_flow.record(flow["flow_id"], flow["target"], flow["generation"], step, "unknown")
+                state = setup_flow.read(flow["target"])
+                print("setup flow %s generation=%s status=%s first-roundtrip=unknown mcp=%s" % (
+                    flow["flow_id"], flow["generation"], state["status"], observed["mcp"]))
+                if state["status"] == "failed" and code == OK:
+                    code = USAGE
+    except (OSError, ValueError) as err:
+        print("install/setup failed: %s" % type(err).__name__, file=sys.stderr)
+        code = USAGE
+        for flow in flows:
+            try:
+                setup_flow.record(flow["flow_id"], flow["target"], flow["generation"], "harness", "failed",
+                                  evidence={"error_code": type(err).__name__})
+                print("setup flow %s generation=%s status=failed error=%s" % (
+                    flow["flow_id"], flow["generation"], type(err).__name__), file=sys.stderr)
+            except (OSError, ValueError) as state_error:
+                print("setup flow %s generation=%s result-not-saved=%s" % (
+                    flow["flow_id"], flow["generation"], type(state_error).__name__), file=sys.stderr)
     finally:
-        if before is None:
-            os.environ.pop("XSM_RUNTIME", None)
-        else:
-            os.environ["XSM_RUNTIME"] = before
-    if code == OK and not args.dry_run and not install.runtime_in_place():
-        _keep_dev()
+        if args.dev:
+            if before is None:
+                os.environ.pop("XSM_RUNTIME", None)
+            else:
+                os.environ["XSM_RUNTIME"] = before
     return code
 
 
@@ -1204,9 +1553,17 @@ def cmd_uninstall(args) -> int:
     targets = [(h, "claude") for h in (args.claude_home or [])] + \
               [(h, "codex") for h in (args.codex_home or [])]
     targets = targets or [(h["path"], h["runtime"]) for h in config.homes()]
+    failed = False
     for home, runtime in targets:
+        try:
+            mcp_removed = install.remove_mcp(home, runtime)
+        except (OSError, ValueError) as exc:
+            print("%s: uninstall incomplete: %s; hooks and remaining components retained" % (
+                home, _display_text(str(exc))), file=sys.stderr)
+            failed = True
+            continue
         result = install.remove(home, runtime)
-        if install.remove_mcp(home, runtime):
+        if mcp_removed:
             print("%s: removed the MCP server" % home)
         gone = install.remove_retired(home)
         if gone:
@@ -1224,8 +1581,9 @@ def cmd_uninstall(args) -> int:
         print("%s: removed %s xsm hook group(s)%s" % (
             result.get("file"), result.get("removed", 0),
             "" if not result.get("error") else " (%s)" % result["error"]))
-    _uninstall_runtime(targets)
-    return OK
+    if not failed:
+        _uninstall_runtime(targets)
+    return USAGE if failed else OK
 
 
 def _uninstall_runtime(done: list) -> None:
@@ -1246,8 +1604,15 @@ def _uninstall_runtime(done: list) -> None:
 
 
 def cmd_doctor(args) -> int:
+    from . import setup_flow
     report = install.doctor()
     report["policy"] = policy.report()
+    report["policy_health"] = config.policy_health()
+    try:
+        report["setup"] = setup_flow.doctor_report(report)
+    except (OSError, ValueError) as err:
+        report["setup"] = {"status": "unavailable", "error": type(err).__name__,
+                           "active_probe":"not-run","homes": []}
     if args.json:
         print(json.dumps(report, ensure_ascii=False, indent=1))
         return OK
@@ -1265,6 +1630,11 @@ def cmd_doctor(args) -> int:
         print("runtime    %s" % line)
     if report.get("policy"):
         print("policy     %s" % _policy_note(report["policy"]))
+    if report["policy_health"]["health"] != "healthy":
+        print("policy     %s (new grants disabled): %s" % (report["policy_health"]["source"], report["policy_health"]["error"]))
+    for check, result in _doctor_rows(report):
+        if check in ("setup", "setup flow", "readback", "ownership", "supply"):
+            print("%-10s %s" % (check, result))
     print("python     %s%s" % (report["interpreter"], "" if report["interpreter_ok"] else "  TOO OLD"))
     versions = report.get("codex_binaries") or []
     if not versions:
@@ -1538,6 +1908,26 @@ def _doctor_rows(report: dict) -> list:
         rows.append(("runtime", line))
     if report.get("policy"):
         rows.append(("policy", _policy_note(report["policy"])))
+    health = report.get("policy_health") or {}
+    if health and health.get("health") != "healthy":
+        rows.append(("policy health", "%s (new grants disabled): %s" % (health.get("source"), health.get("error"))))
+    setup = report.get("setup") or {}
+    if setup:
+        rows.append(("setup", "%s; active probe %s" % (
+            setup.get("status", "unknown"),
+            setup.get("active_probe", "not-run"))))
+        supply = setup.get("supply") or {}
+        rows.append(("supply", "checksum=%s signature=%s license=%s" % (
+            supply.get("checksum", "unknown"), supply.get("signature", "unknown"), supply.get("license", "unknown"))))
+        for home in setup.get("homes", []):
+            label = "%s home=%s" % (home["runtime"], home["home_id"][:12])
+            flow = home.get("flow") or {}
+            rows.append(("setup flow", "%s id=%s generation=%s status=%s" % (
+                label, flow.get("flow_id", "unknown"), flow.get("generation", "unknown"), flow.get("status", "unknown"))))
+            rows.append(("readback", "%s trust=%s process=%s socket=%s mcp=%s first-roundtrip=%s" % (
+                label, home["trust"], home["process"], home["socket"], home["mcp"], home["first_roundtrip"])))
+            ownership = home.get("ownership")
+            rows.append(("ownership", "%s %s" % (label, ", ".join(sorted(ownership)) if isinstance(ownership, dict) else "unknown")))
     for pid, folder in report.get("orphaned_servers") or []:
         rows.append(("orphaned", _orphan_note(pid, folder)))
     for plan in report["installs"]:
@@ -1697,6 +2087,38 @@ def _worker_status(me: dict | None) -> list:
         return ["workers " + " ".join(shown)]
     except Exception:                              # a statusline must never break the UI
         return ["workers ?"]
+
+
+def cmd_owned(args) -> int:
+    from . import owned_requests
+    me,why=_unsure_caller("operate this conversation's owned workers")
+    if why or not me:
+        print(why or "owned workers require a registered native conversation",file=sys.stderr)
+        return REFUSED
+    try:
+        if args.action=="create":
+            result=workers.create_owned(args.runtime,caller=me,name=args.name,cwd=args.dir,home=args.home,
+                model=args.model,effort=args.effort,grant=args.grant)
+        elif args.action=="run":
+            if not args.text or not args.work:
+                print("run requires --text and --work",file=sys.stderr)
+                return USAGE
+            result=workers.run_owned(args.name,me,args.text,work_context=args.work,
+                request_id=args.request_id,independent=args.fresh)
+        elif args.action=="status":
+            result=(workers.owned_status(args.name,me,args.request_id) if args.request_id else
+                {"status":"requests","requests":workers.owned_history(args.name,me)})
+        else:
+            if not args.request_id:
+                print("reply recovery requires --request-id",file=sys.stderr)
+                return USAGE
+            recover=workers.resend_owned if args.action=="retry" else workers.reconcile_owned
+            result=recover(args.name,me,args.request_id)
+    except (workers.WorkerError,owned_requests.OwnedError,ValueError) as exc:
+        print(str(exc),file=sys.stderr)
+        return REFUSED
+    print(_readable_json(result))
+    return OK if result.get("status") in (None,"published","requests") else UNCONFIRMED
 
 
 def cmd_spawn(args) -> int:
@@ -2117,7 +2539,10 @@ def cmd_prune(args) -> int:
         print("  session %s" % name)
     for name, count in sorted(lines.items()):
         print("  %s: %d line(s) already exported" % (name, count))
-    return OK
+    copies=removed.get('files') or {}
+    print('  attachment copies: %s %d; cleanup errors %d' %
+          (verb,len(copies.get('removed') or []),len(copies.get('errors') or [])))
+    return REFUSED if copies.get('errors') else OK
 
 
 class _Version(argparse.Action):
@@ -2138,6 +2563,8 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--version", action=_Version)
     p.add_argument("--xsm-home", help="state directory (default ~/.xsm or $XSM_HOME)")
     sub = p.add_subparsers(dest="command", required=True)
+    from . import network
+    network.configure_parser(sub)
 
     ls = sub.add_parser("list", help="registered sessions")
     ls.add_argument("action", nargs="?", choices=["clear"],
@@ -2166,6 +2593,21 @@ def build_parser() -> argparse.ArgumentParser:
         sp.add_argument("project")
         sp.add_argument("--dir", help="the folder to speak for (default: this session's)")
         sp.set_defaults(func=func)
+    service=sub.add_parser("owned",help="journal requests to an explicitly owned headless worker")
+    service.add_argument("action",choices=["create","run","status","retry","reconcile"])
+    service.add_argument("name")
+    service.add_argument("--runtime",choices=["claude","codex"])
+    service.add_argument("--dir")
+    service.add_argument("--home")
+    service.add_argument("--model")
+    service.add_argument("--effort")
+    service.add_argument("--grant")
+    service.add_argument("--text")
+    service.add_argument("--work",help="stable unit of work; contexts are also partitioned by native sender")
+    service.add_argument("--request-id")
+    service.add_argument("--fresh",action="store_true",help="independent context for this request")
+    service.set_defaults(func=cmd_owned)
+
     sp = sub.add_parser("spawn", help="start a worker session, optionally with a task")
     sp.add_argument("runtime", choices=["claude", "codex"])
     sp.add_argument("--name")
@@ -2314,6 +2756,40 @@ def build_parser() -> argparse.ArgumentParser:
     prune.add_argument("--dry-run", action="store_true")
     prune.set_defaults(func=cmd_prune)
 
+    con = sub.add_parser("connect", help="collaborate with the selected conversation only")
+    con.add_argument("target", help="the exact handle selected from the directory")
+    con.add_argument("--wait", type=float, default=0, help="wait for the peer's actual reply")
+    con.add_argument("--request-id", help="resume the same handshake after a timeout")
+    con.set_defaults(func=cmd_connect)
+    ask = sub.add_parser("ask", help="send one question and collect its actual correlated reply")
+    ask.add_argument("target")
+    ask.add_argument("--text", required=True)
+    ask.add_argument("--wait", type=float, default=0)
+    ask.add_argument("--request-id")
+    ask.add_argument("--priority", choices=["next", "now"], default="next")
+    ask.add_argument("--wake", choices=["auto", "now", "never"], default="auto",
+                     help="never stores a local question without queueing or waking the peer")
+    ask.add_argument("--attachment", action="append", help="snapshot a file using this CLI's own read permission")
+    ask.add_argument("--manifest", help="reuse the frozen manifest for this same request ID and body")
+    ask.add_argument("--previous-manifest", help="prior manifest for a new version under a new request ID")
+    ask.add_argument("--attachment-fallback", choices=["inline"], help="explicit UTF-8 body fallback for an older or unknown peer")
+    ask.set_defaults(func=cmd_ask)
+    qs = sub.add_parser("question-status", help="recover actual replies, including late replies")
+    qs.add_argument("id", nargs="?", help="omit to recover your request IDs after a cancelled response")
+    qs.add_argument("--wait", type=float, default=0)
+    qs.set_defaults(func=cmd_question_status)
+    decision = sub.add_parser("decision-status", help="recover or withdraw this conversation's pending human question")
+    decision.add_argument("id", nargs="?")
+    decision.add_argument("--cancel", action="store_true")
+    decision.set_defaults(func=cmd_decision_status)
+    ds = sub.add_parser("discover", help="find published or same-repository conversations")
+    ds.add_argument("--machine")
+    ds.add_argument("--work")
+    ds.add_argument("--branch")
+    ds.set_defaults(func=cmd_discover)
+    pub = sub.add_parser("publish", help="make this conversation discoverable; does not connect it")
+    pub.add_argument("--off", action="store_true", help="stop publishing this conversation")
+    pub.set_defaults(func=cmd_publish)
     snd = sub.add_parser("send", help="send a message to another session")
     snd.add_argument("target", nargs="?",
                      help="name, name@home, name [ref], ref:xxxxxx, claude:ID, codex:ID")
@@ -2331,16 +2807,35 @@ def build_parser() -> argparse.ArgumentParser:
                      help="send the message a refused send kept under this id (out of scope: it "
                           "waits for your user's yes to connect, then goes with it)")
     snd.add_argument("--priority", choices=["next", "now", "later"], default="next")
+    snd.add_argument("--wake", choices=["auto", "never"], default="auto",
+                     help="never stores a local FYI without queueing or waking the peer")
     snd.add_argument("--wait", type=float, default=0.0,
                      help="seconds to wait for the receiver's own record of delivery")
     snd.add_argument("--json", action="store_true")
+    snd.add_argument("--request-id", help="stable ID for an initial send; --resend explicitly retries an earlier attempt")
+    snd.add_argument("--attachment", action="append", help="snapshot a file using this CLI's own read permission")
+    snd.add_argument("--manifest", help="reuse the frozen manifest for this same request ID and body")
+    snd.add_argument("--previous-manifest", help="prior manifest for a new version under a new request ID")
+    snd.add_argument("--attachment-fallback", choices=["inline"], help="explicit UTF-8 body fallback for an older or unknown peer")
     snd.set_defaults(func=cmd_send)
 
     ib = sub.add_parser("inbox", help="messages waiting for this Codex session, read mid-turn")
     ib.add_argument("--wait", type=float, default=0.0,
                     help="block until a message arrives, at most this many seconds (max %d); "
                          "returns the moment one does, and 0 either way" % inbox.MAX_WAIT)
+    ib.add_argument("--json", action="store_true")
     ib.set_defaults(func=cmd_inbox)
+
+    ack = sub.add_parser("ack", help="acknowledge inbox claim tokens after reading")
+    ack.add_argument("tokens", nargs="+")
+    ack.set_defaults(func=cmd_ack)
+
+    copies=sub.add_parser("files",help="read this conversation's received attachment copies")
+    copies.add_argument("storage_id")
+    copies.add_argument("--entry",help="one copied entry ID; omit to read the manifest")
+    copies.add_argument("--outgoing",action="store_true",help="read your own outgoing snapshot")
+    copies.add_argument("--encoding",choices=["text","base64"],default="text")
+    copies.set_defaults(func=cmd_files)
 
     st = sub.add_parser("status", help="delivery state of one message")
     st.add_argument("msg_id")
@@ -2421,6 +2916,14 @@ def build_parser() -> argparse.ArgumentParser:
     stest.set_defaults(func=cmd_selftest)
     for name in ASKING:
         sub.choices[name].add_argument(
+            "--question", metavar="TEXT",
+            help="the exact original question for --answer-request; native user evidence "
+                 "must match it before recovery")
+        sub.choices[name].add_argument(
+            "--answer-request", metavar="QUESTION_ID",
+            help="read back the actual native answer to this exact harness question id "
+                 "when its hook missed it; never supplies an answer")
+        sub.choices[name].add_argument(
             "--reply", metavar="TEXT",
             help="your user's answer to the question you asked them, in their exact words, "
                  "only when xsm's hook did not record it (it is shown to you first, as a "
@@ -2431,7 +2934,7 @@ def build_parser() -> argparse.ArgumentParser:
 # The commands that ask your user, and so take their words with --reply when the
 # hook that keeps replies did not (consent.supplied).
 ASKING = ("join", "leave", "spawn", "post", "doc", "remote", "approve", "link", "reach", "unblock",
-          "attempts", "frameworks", "send", "held")
+          "attempts", "frameworks", "send", "held", "connect", "publish")
 
 
 def main(argv=None) -> int:
@@ -2448,6 +2951,11 @@ def main(argv=None) -> int:
         if not paths.blocked_write(err):
             raise
     consent.supplied = consent.used_via = None
+    consent.answer_request = getattr(args, "answer_request", None)
+    consent.question_text = getattr(args, "question", None)
+    if consent.answer_request and consent.question_text is None:
+        print("refused: --answer-request requires --question with the exact original question", file=sys.stderr)
+        return REFUSED
     if getattr(args, "reply", None):
         if config.policy("reply_flag"):
             consent.supplied = args.reply
@@ -2486,7 +2994,10 @@ def _inbox_notice(command: str) -> None:
     if command in ("hook", "mcp", "statusline", "worker-finish"):
         return
     thread = os.environ.get("CODEX_THREAD_ID")
-    text = inbox.notice(thread) if thread and command != "inbox" else ""
+    caller = registry.last_identity()
+    me = caller.record if caller is not None and caller.sure else None
+    text = (inbox.notice(me.get('session_id'), receiver=me, owner_alive=receive._consumer_alive)
+            if me and command != 'inbox' else '')
     # Either runtime's session: a Claude session learns here that a
     # SendMessage it sent was held on the other side (issue #8).
     from . import bounce

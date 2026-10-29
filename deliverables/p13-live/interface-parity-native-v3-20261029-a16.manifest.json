@@ -1,0 +1,33 @@
+{
+  "scope": "private worktree single-condition evidence; no attestation/permission grant",
+  "script_sha256": "bdcd88de9d3beb2922956f331390676159aff972f4e5e4ffc1b13925a8f021cf",
+  "raw_root": "/private/tmp/p13-interface-parity-v3-d4vpjzwz",
+  "files": {
+    "body.txt": "422926721f39140968245efafd36818f0cc87fc55f04c7e84e0f66ce34c1a38f",
+    "files-readiness.json": "9db0e7b43264807fd1c2c1698ed4fa4f233dd547d3a0d986aad9e5fc05656d36",
+    "initiator.jsonl": "bd51d80c74049fa24a12d0509268b98f88cc2cdc826a9ea85cac4a143240b9cd",
+    "initiator.stderr": "1aa26269eb1cc57f86b235a03cda53c004edb5b1e9fc99d4da4f00843293d721",
+    "repository/.agents/skills/xsm/SKILL.md": "3e583bcd294862775c6590766b96cea2260c879329a32ffbe5306f128da55896",
+    "repository/.agents/skills/xsm/references/guide.md": "6bffc41da7cce01cc6080c8afb62e54efc910fd67b59d9d11b0c119130c43981",
+    "repository/.agents/skills/xsm/references/messaging.md": "b76f2de35f0579bb74bca8f32ebe1f07f4a2bc83e5ed776284f738df88de3eef",
+    "repository/README.md": "ae4e96750e86afe023ca4253de8042b369a40abd9060431f7e9877a11a87bc02",
+    "repository/frozen-xsm": "4490fe5e3fca17ac1e6d9d73d9b143ea99f33e2a243d4a3ea2aa2fc54e4cca75",
+    "repository/parity-body.txt": "422926721f39140968245efafd36818f0cc87fc55f04c7e84e0f66ce34c1a38f",
+    "repository/parity-material.md": "3cad50466049851d62a25839a4789b5d707510690a35a9460b446c2f778b7f61",
+    "review-worktree/.agents/skills/xsm/SKILL.md": "3e583bcd294862775c6590766b96cea2260c879329a32ffbe5306f128da55896",
+    "review-worktree/.agents/skills/xsm/references/guide.md": "6bffc41da7cce01cc6080c8afb62e54efc910fd67b59d9d11b0c119130c43981",
+    "review-worktree/.agents/skills/xsm/references/messaging.md": "b76f2de35f0579bb74bca8f32ebe1f07f4a2bc83e5ed776284f738df88de3eef",
+    "review-worktree/README.md": "ae4e96750e86afe023ca4253de8042b369a40abd9060431f7e9877a11a87bc02",
+    "reviewer.jsonl": "9dee42f352ccb041c852f897957907f3809efdccf481a025224bfc7dd5328c89",
+    "reviewer.stderr": "1aa26269eb1cc57f86b235a03cda53c004edb5b1e9fc99d4da4f00843293d721",
+    "source-final.txt": "3cad50466049851d62a25839a4789b5d707510690a35a9460b446c2f778b7f61",
+    "source-v1.txt": "3cad50466049851d62a25839a4789b5d707510690a35a9460b446c2f778b7f61",
+    "state/.config-policy.lock": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "state/config.last-valid.json": "6c487519aa746548e38d5896a7a77283715db5041d609b30d5a312d227ca4c6d",
+    "state/homes.json": "ae0e4b94dbd9c01ab3e00f35be7d29861071efc42346224844114ffe233b2481",
+    "state/last-prune": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "state/otel-spans.jsonl": "0912957ca5b70adac4074635b003574aece325d712b6f53036ba9afecd5a2510",
+    "state/sessions/codex-01a1851d-33e7-7852-a991-75db25a3dfc2.json": "8d8828cc391296e6edd708fd791ab0ca2e0d7d143e0c4414c7394d90658060d6",
+    "state/sessions/codex-01a1851d-4ad8-7750-b184-53631e2afe9f.json": "0e74484fc118bca3909433f5f19dbadadbcb85802b9016d8ab3a2e07e7d02e17"
+  }
+}

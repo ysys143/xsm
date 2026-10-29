@@ -1,0 +1,576 @@
+{
+  "raw_root": "/private/tmp/native-handoff-factory-cytvti8g",
+  "raw_values_published": false,
+  "files": [
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/native-child-cleanup-fix.json",
+      "bytes": 234,
+      "sha256": "766c8b2d41a6a89a94d93a1fd04184c0113b22e22677c588fb463fa938d087db",
+      "storage": "private raw"
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/plan.json",
+      "bytes": 1023,
+      "sha256": "91fef44a6f4b1e367702b5309141d54dfb5ae3657e5c3853ce11ee2bdcc295ac",
+      "storage": "private raw"
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/proxy.py",
+      "bytes": 3460,
+      "sha256": "97251e811f27004a4ab8aa0020f490322296a06bd0ce1790b261999d518b5fc8",
+      "storage": "private raw"
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/receiver-initial/client-wire.jsonl",
+      "bytes": 1464,
+      "sha256": "4460d25b9ecea1315ed23572948e6134c0e88a22362a583669ee5603323b3d81",
+      "storage": "private raw"
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/receiver-initial/fault-observed.json",
+      "bytes": 1906,
+      "sha256": "c8c138adae0be7a31f174a9f99a6de713039d97c3682775c7501b3982748cdcd",
+      "storage": "private raw"
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/receiver-initial/forwarded.jsonl",
+      "bytes": 234,
+      "sha256": "a78954220ea47569304ba0f1b732b093130b39233f83fa7365d844eeea74bbb6",
+      "storage": "private raw"
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/receiver-initial/handles.json",
+      "bytes": 228,
+      "sha256": "4d8a4910bb956a60ecd3f339d5fc85165c3a56f6ff824d08ddead4c9b2ecc4d6",
+      "storage": "private raw"
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/receiver-initial/native.jsonl",
+      "bytes": 52517,
+      "sha256": "86b7654510f312ba6f42466c622493323e2a90093a6e7727dbc68bb994646f2a",
+      "storage": "private raw"
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/receiver-initial/native.stderr",
+      "bytes": 39,
+      "sha256": "1aa26269eb1cc57f86b235a03cda53c004edb5b1e9fc99d4da4f00843293d721",
+      "storage": "private raw"
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/receiver-initial/server-wire.jsonl",
+      "bytes": 26498,
+      "sha256": "494221a6de762e8ce579942a76b42758aaebbfc3b40ed35d153892ef454b89f9",
+      "storage": "private raw"
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/receiver-initial/server.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storage": "private raw"
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/receiver-initial/withheld-response.json",
+      "bytes": 2265,
+      "sha256": "d7d3538ca0a79465da803634a9b1923157ae2dc9bf555f23ec86364033988f3b",
+      "storage": "private raw"
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/receiver-resume/native.jsonl",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storage": "private raw"
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/receiver-resume/native.stderr",
+      "bytes": 509,
+      "sha256": "fc46457500f08206a6f0138ae2defc36376f83b68114548670ca118d532a9b8d",
+      "storage": "private raw"
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/receiver-resume-verified/client-wire.jsonl",
+      "bytes": 5071,
+      "sha256": "a2d4a46f1393f935efd7012d767a8b2d3343bf870419a20310e280798164e3f8",
+      "storage": "private raw"
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/receiver-resume-verified/forwarded.jsonl",
+      "bytes": 724,
+      "sha256": "f93dbb6be45015e0e2667d131034dc08eefbec2edf1742f3f968aee80710b19e",
+      "storage": "private raw"
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/receiver-resume-verified/handles.json",
+      "bytes": 228,
+      "sha256": "fa02118c6038adaa96b572d2574db92cedd8e862119f6c4e1c4229791b53d257",
+      "storage": "private raw"
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/receiver-resume-verified/native.jsonl",
+      "bytes": 5961,
+      "sha256": "76fb5530b8a3d9224b192497637aa383477f386d0517bcf2c494de5236845e87",
+      "storage": "private raw"
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/receiver-resume-verified/native.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storage": "private raw"
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/receiver-resume-verified/server-wire.jsonl",
+      "bytes": 26959,
+      "sha256": "16a38fe07ac3b2db88945dbed7775c50304b92b3f17bf40c833792c20e62a38f",
+      "storage": "private raw"
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/receiver-resume-verified/server.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storage": "private raw"
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/result.json",
+      "bytes": 33707,
+      "sha256": "4465d53f20fc47adf19b07274aee59b50a9e967dadb68a5c46baefadb5476939",
+      "storage": "private raw"
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/resume-verified.py",
+      "bytes": 1740,
+      "sha256": "4a1099f12ace46ac0dfc7620b0cab95ba7d8e2d5625596024185b62e7c61cdec",
+      "storage": "private raw"
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/run.py",
+      "bytes": 12732,
+      "sha256": "df11988a2d4e2e1ad7a357d040d820faead700383a4d221dccd2702902d46733",
+      "storage": "private raw"
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/sender/client-wire.jsonl",
+      "bytes": 6129,
+      "sha256": "557c885fa63cc54bff345511a9ca6c22d16337a371f492f5c6e346057a156f57",
+      "storage": "private raw"
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/sender/forwarded.jsonl",
+      "bytes": 872,
+      "sha256": "6bd0df53f95d330b1f9f8c86bf2faffe98ed003f3e4c7b79c0c3e6c8368a4531",
+      "storage": "private raw"
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/sender/handles.json",
+      "bytes": 228,
+      "sha256": "de16ab4eb773ab5db7433572eb367b40a3c7247cf2b67d0fc0017ea7ed969a67",
+      "storage": "private raw"
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/sender/native.jsonl",
+      "bytes": 66858,
+      "sha256": "c768aab30da6e047aad8611e978940287851cefbd598018f1ff6626f7890475a",
+      "storage": "private raw"
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/sender/native.stderr",
+      "bytes": 39,
+      "sha256": "1aa26269eb1cc57f86b235a03cda53c004edb5b1e9fc99d4da4f00843293d721",
+      "storage": "private raw"
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/sender/server-wire.jsonl",
+      "bytes": 34943,
+      "sha256": "98c8435bda6356f28d2953c98b2b9c40bb0b400d50e491032bd80a8d0d3b50bf",
+      "storage": "private raw"
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/sender/server.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storage": "private raw"
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/source-manifest.json",
+      "bytes": 5116,
+      "sha256": "f05abb9df2bdef69ed1cfc50f5aba7cbdea4c513f5c82cf3e69ba8f9a2f8c92a",
+      "storage": "private raw"
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/state/.config-policy.lock",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storage": "private raw"
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/state/capability-observations/0f736e6b63138f03f8269a2261b3fda78c89fc673ac7cecd0f4c4f1072b409cc.json",
+      "bytes": 380,
+      "sha256": "2ec01ce81bcbe5acb8fe05a6f00ad9a3ec65439e6808d4e4ab9c8807bc1515a0",
+      "storage": "private raw"
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/state/capability-observations/5caea27c859c9401208475dbe97ee25572801e72759867c6d95ff7fea8ef59f1.json",
+      "bytes": 379,
+      "sha256": "fde6d5010f0bc184860ce9b24864e94a59647b8ff60a98a42beb6e6fdd18804d",
+      "storage": "private raw"
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/state/capability-observations/b73af64d9a5983537c58d5068f4f6decd637a691cddcaa1134936e0ab1dac9ae.json",
+      "bytes": 379,
+      "sha256": "0722011c4aea6be678aa633b49c1a742878a9fcae253a789a7e18c62c9f7121f",
+      "storage": "private raw"
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/state/config.last-valid.json",
+      "bytes": 282,
+      "sha256": "922f3dc6512bfc4b1092790b7b1087738dc59d9ab5ef9b3bfb954eb045fb2265",
+      "storage": "private raw"
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/state/decisions.jsonl",
+      "bytes": 3940,
+      "sha256": "4057772cfd75eeb9ee592de5548768d2e1bb4514af78e7a607e8a5ab0a8b80aa",
+      "storage": "private raw"
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/state/handoffs/642453aa7159f78d835b9e745d2fc5e66915a00de1e363651327177bc6796c7f/.lock",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storage": "private raw"
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/state/handoffs/642453aa7159f78d835b9e745d2fc5e66915a00de1e363651327177bc6796c7f/7356aa0f0e654405.json",
+      "bytes": 5452,
+      "sha256": "ddac453b3388fefb2eb80b5a56f073706e3f7c6aaa14d2e4d519b76f5ae54053",
+      "storage": "private raw"
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/state/handoffs/a48ba0b33e22e172b8f2a81b9d17fd1dd4dc105ebf3a3539d69987d9a7cfb934/.lock",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storage": "private raw"
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/state/handoffs/a48ba0b33e22e172b8f2a81b9d17fd1dd4dc105ebf3a3539d69987d9a7cfb934/789409fc88f74110.json",
+      "bytes": 5078,
+      "sha256": "8be1aff2751b877c2c20ab03e0e89323443581d18046f378828c7ea81b0f74e3",
+      "storage": "private raw"
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/state/homes.json",
+      "bytes": 93,
+      "sha256": "ae0e4b94dbd9c01ab3e00f35be7d29861071efc42346224844114ffe233b2481",
+      "storage": "private raw"
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/state/install-locks/9c21b61a6237f2620aa0b9e42a02131caa5e1e96bb8c2e4fc24d15c190a91eea.lock",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storage": "private raw"
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/state/ledger/7356aa0f0e654405.handoff.json",
+      "bytes": 421,
+      "sha256": "cb9eba75f89777aef2aeebd0c315b1fa0372f02977d6c966409a19545acb92f1",
+      "storage": "private raw"
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/state/ledger/7356aa0f0e654405.handoff.json.lock",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storage": "private raw"
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/state/ledger/7356aa0f0e654405.json",
+      "bytes": 1346,
+      "sha256": "eefb1eaf6a6d2dc6057c18b9325c1a85eb3b622841e076bf2dc3767bca8ad941",
+      "storage": "private raw"
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/state/ledger/7356aa0f0e654405.recv.json",
+      "bytes": 370,
+      "sha256": "cec260055adf656e5a361208cfbf3d346b6b853502f342f84433e123ebcb49be",
+      "storage": "private raw"
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/state/ledger/789409fc88f74110.handoff.json",
+      "bytes": 420,
+      "sha256": "eeec23b383b8e2056ab3a3f76608a6cff7046d4dc35481c8617a4f7109174860",
+      "storage": "private raw"
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/state/ledger/789409fc88f74110.handoff.json.lock",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storage": "private raw"
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/state/ledger/789409fc88f74110.json",
+      "bytes": 1240,
+      "sha256": "1bf79c0c4fd5bece77c2ba57067f9f643a34640d8899002fd2cbc390283baaf9",
+      "storage": "private raw"
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/state/ledger/789409fc88f74110.recv.json",
+      "bytes": 403,
+      "sha256": "7a415b793d7b04e66e1afb907340480095dce5a066aa603d310077edff4d1ec0",
+      "storage": "private raw"
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/state/legacy-inbox-originals/5f3f3970565475d9b2e9cccd0f03f19a9be57a3f6f38d497a712678280b49536/490b29c9197030a1119b1982f1a0ab5adee098ead4bb633b847243911e099f83.json",
+      "bytes": 1236,
+      "sha256": "b3c4f39b658c54c9291f0637c63b78026f44b7c93914ff85c9c16b7c7256cb5b",
+      "storage": "private raw"
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/state/legacy-inbox-originals/5f3f3970565475d9b2e9cccd0f03f19a9be57a3f6f38d497a712678280b49536/ea3c9b6f49c6a42f294052c33ce178f8fe4b40e136a1832bf32930bff1214ca6.json",
+      "bytes": 1105,
+      "sha256": "d09091c5cb6d118048c0c53abd05ef13355d4c624e92d7274259649b41f07e1b",
+      "storage": "private raw"
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/state/legacy-inbox-originals/8dae7eca752ab5d0262f97e341b8df03268beba7528662345eafd41bd0aa971d/3c49e392729240e4f18dd05c0afa16d2cf58b00bdaa3dabda9580574a0553658.json",
+      "bytes": 1113,
+      "sha256": "06a829c16db3955bd178f12f405e1fe343713dae50b0b1338946021f20db8530",
+      "storage": "private raw"
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/state/legacy-inbox-originals/8dae7eca752ab5d0262f97e341b8df03268beba7528662345eafd41bd0aa971d/c6418a262d4bdf897a0d61709bb4cb7f19796799793bd185efbe05fc170e8d87.json",
+      "bytes": 1250,
+      "sha256": "e46372a8e476c820770f4b8ac2eacefb297438ed10737888f20a892e9c550990",
+      "storage": "private raw"
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/state/mcp/15187.json",
+      "bytes": 159,
+      "sha256": "1a1e2601594c71f9e458118e15cc37ff20268dc4877dc7938b1d32d6162db6db",
+      "storage": "private raw"
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/state/otel-metrics.jsonl",
+      "bytes": 641,
+      "sha256": "8b2370d8613616ee87821d5ac157f9ed7767cb1ee0754580ad1b6499755a5c9d",
+      "storage": "private raw"
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/state/otel-spans.jsonl",
+      "bytes": 1541,
+      "sha256": "036705056d346eddbc8c8f348ed75b0fbf082f88c6a3f3d83375a350057dbe1f",
+      "storage": "private raw"
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/state/questions/7356aa0f0e654405.json",
+      "bytes": 2392,
+      "sha256": "83a19be0aa531c36a11d16e412c26f1a75c5a1d407bb30704ef11a4efec03442",
+      "storage": "private raw"
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/state/questions/7356aa0f0e654405.json.lock",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storage": "private raw"
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/state/sessions/codex-01a18433-3ab0-73c1-900d-a0f3519f0e58.json",
+      "bytes": 402,
+      "sha256": "6baa7445f15f7c395869c672f0a04fe9692e22d6d984f28ada9822a5319cae6a",
+      "storage": "private raw"
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/state/sessions/codex-01a18433-3deb-75b2-ad9d-e0eb2c299d92.json",
+      "bytes": 409,
+      "sha256": "0f1e9a333a32e5e4f51ff551c7cca372cf316e1fd3f2ac9174448233fccdb549",
+      "storage": "private raw"
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/state/traffic/b0901b21f4df8f3ccd684ba3ec07ce760f1a8af72567ba3d0dcc57186f1deb2a.json",
+      "bytes": 686,
+      "sha256": "bbbe65d23f3f00921c91a3ca135e06d3da42e9790e9818dc6aabbb849ab48e0d",
+      "storage": "private raw"
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/state/traffic/b0901b21f4df8f3ccd684ba3ec07ce760f1a8af72567ba3d0dcc57186f1deb2a.lock",
+      "bytes": 15,
+      "sha256": "8e7c4b55b2043ae615c74d4c7f957d9a3bfa44eca0169855cfb8a87c924ac7de",
+      "storage": "private raw"
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/state/traffic/b2c9cec2392bf930890a60459764962474287e6f752363efc35b021ca3e449dc.json",
+      "bytes": 687,
+      "sha256": "f34a65e93c404375eb49ca6ff7d21da9cfb8d95d18b7c2f4c8e72f93138ca9a7",
+      "storage": "private raw"
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/state/traffic/b2c9cec2392bf930890a60459764962474287e6f752363efc35b021ca3e449dc.lock",
+      "bytes": 15,
+      "sha256": "8e7c4b55b2043ae615c74d4c7f957d9a3bfa44eca0169855cfb8a87c924ac7de",
+      "storage": "private raw"
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/verified-result.json",
+      "bytes": 27246,
+      "sha256": "a87b26de3d981e7cb8bdd64924bcfeeaa362960ea5698c513a695e6eb0bffd9c",
+      "storage": "private raw"
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/work/.agents/skills/xsm/SKILL.md",
+      "bytes": 5448,
+      "sha256": "3e583bcd294862775c6590766b96cea2260c879329a32ffbe5306f128da55896",
+      "storage": "private raw"
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/work/.agents/skills/xsm/references/guide.md",
+      "bytes": 37275,
+      "sha256": "6bffc41da7cce01cc6080c8afb62e54efc910fd67b59d9d11b0c119130c43981",
+      "storage": "private raw"
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/work/.agents/skills/xsm/references/messaging.md",
+      "bytes": 6272,
+      "sha256": "324b020e2e8eb899469e8d6478d046bcde18d405dc46667d817581a0ef974cb0",
+      "storage": "private raw"
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/work/.git/HEAD",
+      "bytes": 21,
+      "sha256": "28d25bf82af4c0e2b72f50959b2beb859e3e60b9630a5e8c603dad4ddb2b6e80",
+      "storage": "private raw"
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/work/.git/config",
+      "bytes": 137,
+      "sha256": "cae33efdb02cf774435c1ff9cb16bcc1014606908530c6e1dc727615fe3e8cda",
+      "storage": "private raw"
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/work/.git/description",
+      "bytes": 73,
+      "sha256": "85ab6c163d43a17ea9cf7788308bca1466f1b0a8d1cc92e26e9bf63da4062aee",
+      "storage": "private raw"
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/work/.git/hooks/applypatch-msg.sample",
+      "bytes": 478,
+      "sha256": "0223497a0b8b033aa58a3a521b8629869386cf7ab0e2f101963d328aa62193f7",
+      "storage": "private raw"
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/work/.git/hooks/commit-msg.sample",
+      "bytes": 896,
+      "sha256": "1f74d5e9292979b573ebd59741d46cb93ff391acdd083d340b94370753d92437",
+      "storage": "private raw"
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/work/.git/hooks/fsmonitor-watchman.sample",
+      "bytes": 4726,
+      "sha256": "e0549964e93897b519bd8e333c037e51fff0f88ba13e086a331592bf801fa1d0",
+      "storage": "private raw"
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/work/.git/hooks/post-update.sample",
+      "bytes": 189,
+      "sha256": "81765af2daef323061dcbc5e61fc16481cb74b3bac9ad8a174b186523586f6c5",
+      "storage": "private raw"
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/work/.git/hooks/pre-applypatch.sample",
+      "bytes": 424,
+      "sha256": "e15c5b469ea3e0a695bea6f2c82bcf8e62821074939ddd85b77e0007ff165475",
+      "storage": "private raw"
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/work/.git/hooks/pre-commit.sample",
+      "bytes": 1649,
+      "sha256": "57185b7b9f05239d7ab52db045f5b89eb31348d7b2177eab214f5eb872e1971b",
+      "storage": "private raw"
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/work/.git/hooks/pre-merge-commit.sample",
+      "bytes": 416,
+      "sha256": "d3825a70337940ebbd0a5c072984e13245920cdf8898bd225c8d27a6dfc9cb53",
+      "storage": "private raw"
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/work/.git/hooks/pre-push.sample",
+      "bytes": 1374,
+      "sha256": "ecce9c7e04d3f5dd9d8ada81753dd1d549a9634b26770042b58dda00217d086a",
+      "storage": "private raw"
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/work/.git/hooks/pre-rebase.sample",
+      "bytes": 4898,
+      "sha256": "4febce867790052338076f4e66cc47efb14879d18097d1d61c8261859eaaa7b3",
+      "storage": "private raw"
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/work/.git/hooks/pre-receive.sample",
+      "bytes": 544,
+      "sha256": "a4c3d2b9c7bb3fd8d1441c31bd4ee71a595d66b44fcf49ddb310252320169989",
+      "storage": "private raw"
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/work/.git/hooks/prepare-commit-msg.sample",
+      "bytes": 1492,
+      "sha256": "e9ddcaa4189fddd25ed97fc8c789eca7b6ca16390b2392ae3276f0c8e1aa4619",
+      "storage": "private raw"
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/work/.git/hooks/push-to-checkout.sample",
+      "bytes": 2783,
+      "sha256": "a53d0741798b287c6dd7afa64aee473f305e65d3f49463bb9d7408ec3b12bf5f",
+      "storage": "private raw"
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/work/.git/hooks/sendemail-validate.sample",
+      "bytes": 2308,
+      "sha256": "44ebfc923dc5466bc009602f0ecf067b9c65459abfe8868ddc49b78e6ced7a92",
+      "storage": "private raw"
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/work/.git/hooks/update.sample",
+      "bytes": 3650,
+      "sha256": "8d5f2fa83e103cf08b57eaa67521df9194f45cbdbcb37da52ad586097a14d106",
+      "storage": "private raw"
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/work/.git/info/exclude",
+      "bytes": 240,
+      "sha256": "6671fe83b7a07c8932ee89164d1f2793b2318058eb8b98dc5c06ee0a5a3b0ec1",
+      "storage": "private raw"
+    },
+    {
+      "path": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/deliverables/p13-live/native-handoff-factory-20261029-7091030d/controller.py",
+      "bytes": 12732,
+      "sha256": "df11988a2d4e2e1ad7a357d040d820faead700383a4d221dccd2702902d46733",
+      "storage": "public script/summary"
+    },
+    {
+      "path": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/deliverables/p13-live/native-handoff-factory-20261029-7091030d/plan.json",
+      "bytes": 1023,
+      "sha256": "91fef44a6f4b1e367702b5309141d54dfb5ae3657e5c3853ce11ee2bdcc295ac",
+      "storage": "public script/summary"
+    },
+    {
+      "path": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/deliverables/p13-live/native-handoff-factory-20261029-7091030d/proxy.py",
+      "bytes": 3460,
+      "sha256": "97251e811f27004a4ab8aa0020f490322296a06bd0ce1790b261999d518b5fc8",
+      "storage": "public script/summary"
+    },
+    {
+      "path": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/deliverables/p13-live/native-handoff-factory-20261029-7091030d/report.md",
+      "bytes": 3277,
+      "sha256": "5aef95108e3aa006141b571794e324ff4d2e417ed353aa1ebe6576936e4d014c",
+      "storage": "public script/summary"
+    },
+    {
+      "path": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/deliverables/p13-live/native-handoff-factory-20261029-7091030d/resume-observer.py",
+      "bytes": 1740,
+      "sha256": "4a1099f12ace46ac0dfc7620b0cab95ba7d8e2d5625596024185b62e7c61cdec",
+      "storage": "public script/summary"
+    },
+    {
+      "path": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/deliverables/p13-live/native-handoff-factory-20261029-7091030d/summary.json",
+      "bytes": 5058,
+      "sha256": "39c016745de20a41bf97b4eaa10c08482991ab82fdc151f5cdd0c8b60b585135",
+      "storage": "public script/summary"
+    }
+  ]
+}

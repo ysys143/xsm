@@ -1,0 +1,72 @@
+{
+  "date": "2026-10-24",
+  "ghidra_version": "12.2",
+  "jdk_version": "25.0.5.0.2",
+  "ghidra_prefix": "/opt/homebrew/opt/ghidra",
+  "headless_path": "/opt/homebrew/opt/ghidra/libexec/support/analyzeHeadless",
+  "install": {
+    "exit": 0,
+    "elapsed_s": 79.19974994659424
+  },
+  "dependency_changes": [
+    "brotli (1.2.0 -> 1.2.1)",
+    "libpng (1.6.58 -> 1.6.59)",
+    "freetype (2.14.3 -> 2.15.0)",
+    "json-c (0.18 -> 0.19)",
+    "libunistring (1.4.2 -> 1.5)",
+    "fontconfig (2.18.1 -> 2.18.3)",
+    "pcre2 (10.47_1 -> 10.49)",
+    "glib (2.88.2 -> 2.90.1)",
+    "xorgproto (2025.1 -> 2026.1)",
+    "libx11 (1.8.13 -> 1.8.14)",
+    "libxrender (0.9.12 -> 0.9.13)",
+    "cairo (1.18.4 -> 1.18.6)",
+    "harfbuzz (14.2.1 -> 14.6.0)",
+    "jpeg-turbo (3.1.4.1 -> 3.2.0)",
+    "xz (5.8.3 -> 5.8.4)",
+    "libtiff (4.7.1_1 -> 4.7.2)",
+    "little-cms2 (2.19 -> 2.19.1)",
+    "openjdk@25 (25.0.5.0.2)"
+  ],
+  "default_java_after": "17.0.15",
+  "global_java_profile_changed": false,
+  "uninstall_note": "brew uninstall ghidra removes Ghidra; installed/updated dependencies remain unless separately managed",
+  "native_repair": {
+    "source": "Ghidra 12.2 installed C++ sources",
+    "build": {
+      "exit": 0,
+      "elapsed_s": 25.45175814628601
+    },
+    "files": [
+      {
+        "relative_path": "Ghidra/Features/Decompiler/os/mac_arm_64/decompile",
+        "bytes": 3275576,
+        "sha256": "1adfefcc3933d2e117dbef2bf3f6b8a83ab3e1a33c8905eb20d4290500bb7c4a",
+        "architecture": "Mach-O 64-bit executable arm64"
+      },
+      {
+        "relative_path": "Ghidra/Features/Decompiler/os/mac_arm_64/sleigh",
+        "bytes": 889992,
+        "sha256": "e6131fef2381d3060f32590b745071a86bde2aade285aa0740f69f74e6441fe9",
+        "architecture": "Mach-O 64-bit executable arm64"
+      }
+    ],
+    "official_archive_did_not_include_mac_native": true,
+    "sleigh_build": {
+      "exit": 0,
+      "elapsed_s": 6.528512001037598
+    }
+  },
+  "official_archive": {
+    "url": "https://github.com/NationalSecurityAgency/ghidra/releases/download/Ghidra_12.2_build/ghidra_12.2_PUBLIC_20261016.zip",
+    "bytes": 569712708,
+    "sha256": "2c2cd776db3c1f6a097ba418922378ac3649cadd5e844a6f5f088ae628a7be67",
+    "expected_sha256": "2c2cd776db3c1f6a097ba418922378ac3649cadd5e844a6f5f088ae628a7be67",
+    "matches": true,
+    "elapsed": 11.798330783843994,
+    "native_platforms_shipped": [
+      "linux_x86_64",
+      "win_x86_64"
+    ]
+  }
+}

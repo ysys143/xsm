@@ -1,0 +1,486 @@
+{
+  "fixture_root": "/private/tmp/p10-upgrade-uj5wwj7e",
+  "fixture_state": "/private/tmp/p10-upgrade-uj5wwj7e/state",
+  "old_source": "/Users/jaesolshin/.xsm/runtime/2389da782089",
+  "controller": {
+    "runtime": "codex",
+    "home": "/Users/jaesolshin/.codex-3",
+    "session_id": "01a166ab-647c-7a11-8cc0-ff5daf0cff01",
+    "ref": "e885bc",
+    "pid": 9102,
+    "lstart": "Wed Oct 28 05:55:24 2026",
+    "cwd": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging"
+  },
+  "condition": "actual native Codex + actual old snapshot stdio MCP; no permissions correction",
+  "events": [
+    {
+      "phase": "old-native-started",
+      "at": 1793206659.141182,
+      "root_pid": 18456,
+      "old_snapshot": "2389da782089"
+    },
+    {
+      "phase": "task-submitted",
+      "at": 1793206659.716852,
+      "trial": "old",
+      "number": 1,
+      "request_id": "015e48d807f64a15",
+      "send_status": "sent-unconfirmed"
+    },
+    {
+      "phase": "first-old-reply-verified",
+      "at": 1793206691.329599,
+      "reply_id": "6f4cd3ded0814bbb",
+      "mcp_pid": 18595
+    },
+    {
+      "phase": "private-upgrade-and-prune-observed",
+      "at": 1793206691.5422668,
+      "old_exists": true,
+      "current_id": "c54adca61daf",
+      "removed": []
+    },
+    {
+      "phase": "task-submitted",
+      "at": 1793206691.709132,
+      "trial": "old",
+      "number": 2,
+      "request_id": "5137642a9a114c78",
+      "send_status": "sent-unconfirmed"
+    },
+    {
+      "phase": "second-old-reply-verified",
+      "at": 1793206713.707684,
+      "reply_id": "3b0b2802f0f44791",
+      "native_thread": "01a18372-28bb-71d3-833f-5c1ed1be7cac"
+    },
+    {
+      "phase": "task-submitted",
+      "at": 1793206714.764506,
+      "trial": "new",
+      "number": 1,
+      "request_id": "ac7b9192e1c0417b",
+      "send_status": "pending"
+    },
+    {
+      "phase": "new-snapshot-roundtrip-verified",
+      "at": 1793206729.6498718,
+      "reply_id": "f2fa36032aa84151"
+    },
+    {
+      "phase": "finished",
+      "at": 1793206729.683842,
+      "status": "passed",
+      "protection": {
+        "settings_unchanged": true,
+        "credential_metadata_unchanged": true,
+        "old_runtime_unchanged": true,
+        "global_current_unchanged": true,
+        "global_link_unchanged": true,
+        "credential_values_opened_by_evaluator": false,
+        "global_xsm_home_changed": false
+      }
+    }
+  ],
+  "trials": [
+    {
+      "label": "old",
+      "execution": {
+        "pid": 18456,
+        "lstart": "Thu Oct 29 01:57:39 2026",
+        "profile": "/Users/jaesolshin/.codex-3",
+        "mcp_module_root": "/private/tmp/p10-upgrade-uj5wwj7e/state/runtime/2389da782089",
+        "sandbox": "workspace-write",
+        "approval_policy": "never",
+        "model_override": false,
+        "allowed_tools_override": false,
+        "mcp_factory": [
+          "/Users/jaesolshin/.nvm/versions/node/v24.19.0/bin/codex",
+          "exec",
+          "--json",
+          "--sandbox",
+          "workspace-write",
+          "-c",
+          "approval_policy=\"never\"",
+          "-c",
+          "mcp_servers.xsm_eval.command=\"/usr/bin/python3\"",
+          "-c",
+          "mcp_servers.xsm_eval.args=[\"-m\",\"xsm\",\"mcp\"]",
+          "-c",
+          "mcp_servers.xsm_eval.cwd=\"/private/tmp/p10-upgrade-uj5wwj7e/state/runtime/2389da782089/\"",
+          "-c",
+          "mcp_servers.xsm_eval.env.CODEX_HOME=\"/Users/jaesolshin/.codex-3\"",
+          "-c",
+          "mcp_servers.xsm_eval.env.XSM_HOME=\"/private/tmp/p10-upgrade-uj5wwj7e/state\"",
+          "-c",
+          "mcp_servers.xsm_eval.env.PYTHONPATH=\"/private/tmp/p10-upgrade-uj5wwj7e/state/runtime/2389da782089/\"",
+          "-c",
+          "mcp_servers.xsm_eval.env.PYTHONDONTWRITEBYTECODE=\"1\""
+        ]
+      },
+      "first_reply": {
+        "id": "6f4cd3ded0814bbb",
+        "reply_to": "015e48d807f64a15",
+        "body": "P10-QA-023db9d76f-R1: 4",
+        "sender_native": "01a18372-28bb-71d3-833f-5c1ed1be7cac",
+        "evidence": "actual reply body in fixture inbox; not a delivery receipt",
+        "request_id": "015e48d807f64a15",
+        "task_send": {
+          "status": "sent-unconfirmed",
+          "reason": "queued; a Codex session picks the queue up within about 10 seconds when the thread is loaded and idle, or mid-turn with `xsm inbox`",
+          "id": "015e48d807f64a15",
+          "to": "P10-QA-old@codex-3",
+          "runtime_reached": false,
+          "evidence": {
+            "accepted": true,
+            "queued": true,
+            "wake": false,
+            "stored": true
+          }
+        },
+        "live_when_body_observed": {
+          "native_process_alive": true,
+          "native_root_pid": 18456,
+          "native_thread": "01a18372-28bb-71d3-833f-5c1ed1be7cac",
+          "old_mcp_pid": 18595,
+          "same_mcp_generation_alive": true,
+          "mcp_beacons": [
+            {
+              "pid": 18595,
+              "ppid": 18458,
+              "lstart": "Thu Oct 29 01:57:39 2026",
+              "cwd": "/private/tmp/p10-upgrade-uj5wwj7e/state/runtime/2389da782089"
+            }
+          ],
+          "same_mcp_only": true
+        }
+      },
+      "second_reply": {
+        "id": "3b0b2802f0f44791",
+        "reply_to": "5137642a9a114c78",
+        "body": "P10-QA-023db9d76f-R2: 42",
+        "sender_native": "01a18372-28bb-71d3-833f-5c1ed1be7cac",
+        "evidence": "actual reply body in fixture inbox; not a delivery receipt",
+        "request_id": "5137642a9a114c78",
+        "task_send": {
+          "status": "sent-unconfirmed",
+          "reason": "queued; a Codex session picks the queue up within about 10 seconds when the thread is loaded and idle, or mid-turn with `xsm inbox`",
+          "id": "5137642a9a114c78",
+          "to": "P10-QA-old@codex-3",
+          "runtime_reached": false,
+          "evidence": {
+            "accepted": true,
+            "queued": true,
+            "wake": false,
+            "stored": true
+          }
+        },
+        "live_when_body_observed": {
+          "native_process_alive": true,
+          "native_root_pid": 18456,
+          "native_thread": "01a18372-28bb-71d3-833f-5c1ed1be7cac",
+          "old_mcp_pid": 18595,
+          "same_mcp_generation_alive": true,
+          "mcp_beacons": [
+            {
+              "pid": 18595,
+              "ppid": 18458,
+              "lstart": "Thu Oct 29 01:57:39 2026",
+              "cwd": "/private/tmp/p10-upgrade-uj5wwj7e/state/runtime/2389da782089"
+            }
+          ],
+          "same_mcp_only": true
+        }
+      },
+      "tools": [
+        {
+          "server": "xsm_eval",
+          "tool": "xsm_inbox",
+          "arguments": {
+            "wait": 5
+          },
+          "error": false
+        },
+        {
+          "server": "xsm_eval",
+          "tool": "xsm_send",
+          "arguments": {
+            "kind": "reply",
+            "reply_to": "015e48d807f64a15",
+            "outcome": "succeeded",
+            "text": "P10-QA-023db9d76f-R1: 4"
+          },
+          "error": false
+        },
+        {
+          "server": "xsm_eval",
+          "tool": "xsm_inbox",
+          "arguments": {
+            "wait": 5
+          },
+          "error": false
+        },
+        {
+          "server": "xsm_eval",
+          "tool": "xsm_send",
+          "arguments": {
+            "kind": "reply",
+            "reply_to": "5137642a9a114c78",
+            "outcome": "succeeded",
+            "text": "P10-QA-023db9d76f-R2: 42"
+          },
+          "error": false
+        }
+      ],
+      "same_native_conversation": true,
+      "old_default_wake_only": true
+    },
+    {
+      "label": "new",
+      "condition": "new snapshot MCP + unchanged existing home hooks; quiet reply",
+      "execution": {
+        "pid": 20539,
+        "lstart": "Thu Oct 29 01:58:33 2026",
+        "profile": "/Users/jaesolshin/.codex",
+        "mcp_module_root": "/private/tmp/p10-upgrade-uj5wwj7e/state/runtime/c54adca61daf",
+        "sandbox": "workspace-write",
+        "approval_policy": "never",
+        "model_override": false,
+        "allowed_tools_override": false,
+        "mcp_factory": [
+          "/Users/jaesolshin/.nvm/versions/node/v24.19.0/bin/codex",
+          "exec",
+          "--json",
+          "--sandbox",
+          "workspace-write",
+          "-c",
+          "approval_policy=\"never\"",
+          "-c",
+          "mcp_servers.xsm_eval.command=\"/usr/bin/python3\"",
+          "-c",
+          "mcp_servers.xsm_eval.args=[\"-m\",\"xsm\",\"mcp\"]",
+          "-c",
+          "mcp_servers.xsm_eval.cwd=\"/private/tmp/p10-upgrade-uj5wwj7e/state/runtime/c54adca61daf/\"",
+          "-c",
+          "mcp_servers.xsm_eval.env.CODEX_HOME=\"/Users/jaesolshin/.codex\"",
+          "-c",
+          "mcp_servers.xsm_eval.env.XSM_HOME=\"/private/tmp/p10-upgrade-uj5wwj7e/state\"",
+          "-c",
+          "mcp_servers.xsm_eval.env.PYTHONPATH=\"/private/tmp/p10-upgrade-uj5wwj7e/state/runtime/c54adca61daf/\"",
+          "-c",
+          "mcp_servers.xsm_eval.env.PYTHONDONTWRITEBYTECODE=\"1\""
+        ]
+      },
+      "reply": {
+        "id": "f2fa36032aa84151",
+        "reply_to": "ac7b9192e1c0417b",
+        "body": "P10-QA-5eb59b0d15-R1: 4",
+        "sender_native": "01a18372-fe16-7911-b007-8597d1beac53",
+        "evidence": "actual endpoint-bound canonical reply body",
+        "request_id": "ac7b9192e1c0417b",
+        "task_send": {
+          "status": "pending",
+          "id": "ac7b9192e1c0417b",
+          "purpose": "question",
+          "replies": [],
+          "final": false,
+          "final_outcome": null,
+          "recover_at": {
+            "cli": [
+              "xsm",
+              "question-status",
+              "ac7b9192e1c0417b"
+            ],
+            "mcp": {
+              "tool": "xsm_question_status",
+              "arguments": {
+                "id": "ac7b9192e1c0417b"
+              }
+            }
+          },
+          "wait_end_reason": "timeout",
+          "capabilities": {
+            "attachments": true,
+            "wake_control": true,
+            "priority": {
+              "claude": [
+                "next",
+                "now"
+              ],
+              "codex": [
+                "next"
+              ]
+            }
+          },
+          "wake": "transport_policy",
+          "send_evidence": {
+            "status": "sent-unconfirmed",
+            "reason": "queued; a Codex session picks the queue up within about 10 seconds when the thread is loaded and idle, or mid-turn with `xsm inbox`",
+            "id": "ac7b9192e1c0417b",
+            "to": "P10-QA-new@codex",
+            "runtime_reached": false,
+            "evidence": {
+              "accepted": true,
+              "queued": true,
+              "wake": false,
+              "stored": true
+            }
+          },
+          "delivery_evidence": {
+            "steps": {
+              "accepted": {
+                "ok": true,
+                "t": 1793206714.444767
+              },
+              "queued": {
+                "ok": true,
+                "t": 1793206714.761867,
+                "detail": "07a0a1dd-220c-4971-a854-452d6c80d967"
+              },
+              "wake": {
+                "ok": false,
+                "t": 1793206714.7623081,
+                "detail": "unavailable"
+              },
+              "stored": {
+                "ok": true,
+                "t": 1793206714.4433448
+              }
+            },
+            "runtime_reached": false,
+            "digest": "cf824b3ccddaeb3f85a656c54e2658c37a5c71890099e84ac11b412729b900e1",
+            "req_version": 1,
+            "legacy": false,
+            "verified": true,
+            "upgraded_from_legacy": false,
+            "acknowledged": false,
+            "handoff_status": "pending"
+          },
+          "handshake": "not-started"
+        },
+        "live_when_body_observed": {
+          "native_process_alive": true,
+          "native_root_pid": 20539,
+          "native_thread": "01a18372-fe16-7911-b007-8597d1beac53",
+          "old_mcp_pid": 20676,
+          "same_mcp_generation_alive": true,
+          "mcp_beacons": [
+            {
+              "pid": 20676,
+              "ppid": 20541,
+              "lstart": "Thu Oct 29 01:58:33 2026",
+              "cwd": "/private/tmp/p10-upgrade-uj5wwj7e/state/runtime/c54adca61daf"
+            }
+          ],
+          "same_mcp_only": true
+        }
+      },
+      "tools": [
+        {
+          "server": "xsm_eval",
+          "tool": "xsm_inbox",
+          "arguments": {
+            "wait": 5
+          },
+          "error": false
+        },
+        {
+          "server": "xsm_eval",
+          "tool": "xsm_ack",
+          "arguments": {},
+          "error": false
+        },
+        {
+          "server": "xsm_eval",
+          "tool": "xsm_send",
+          "arguments": {
+            "kind": "reply",
+            "reply_to": "ac7b9192e1c0417b",
+            "outcome": "succeeded",
+            "wake": "never",
+            "text": "P10-QA-5eb59b0d15-R1: 4"
+          },
+          "error": false
+        }
+      ],
+      "status": "passed"
+    }
+  ],
+  "status": "passed",
+  "cleanup": [],
+  "old_snapshot": {
+    "id": "2389da782089",
+    "path": "/private/tmp/p10-upgrade-uj5wwj7e/state/runtime/2389da782089",
+    "source": "/Users/jaesolshin/.xsm/runtime/2389da782089",
+    "made": 1793206659.130132
+  },
+  "before_upgrade": {
+    "native_process_alive": true,
+    "native_root_pid": 18456,
+    "native_thread": "01a18372-28bb-71d3-833f-5c1ed1be7cac",
+    "old_mcp_pid": 18595,
+    "same_mcp_generation_alive": true,
+    "mcp_beacons": [
+      {
+        "pid": 18595,
+        "ppid": 18458,
+        "lstart": "Thu Oct 29 01:57:39 2026",
+        "cwd": "/private/tmp/p10-upgrade-uj5wwj7e/state/runtime/2389da782089"
+      }
+    ],
+    "same_mcp_only": true
+  },
+  "new_snapshot": {
+    "id": "c54adca61daf",
+    "path": "/private/tmp/p10-upgrade-uj5wwj7e/state/runtime/c54adca61daf",
+    "source": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging",
+    "made": 1793206691.410675
+  },
+  "upgrade": {
+    "removed": [],
+    "old_snapshot_exists": true,
+    "current_id": "c54adca61daf",
+    "new_id": "c54adca61daf",
+    "source_ids_differ": true,
+    "old_held_by_process_table": true,
+    "after_prune": {
+      "native_process_alive": true,
+      "native_root_pid": 18456,
+      "native_thread": "01a18372-28bb-71d3-833f-5c1ed1be7cac",
+      "old_mcp_pid": 18595,
+      "same_mcp_generation_alive": true,
+      "mcp_beacons": [
+        {
+          "pid": 18595,
+          "ppid": 18458,
+          "lstart": "Thu Oct 29 01:57:39 2026",
+          "cwd": "/private/tmp/p10-upgrade-uj5wwj7e/state/runtime/2389da782089"
+        }
+      ],
+      "same_mcp_only": true
+    }
+  },
+  "process_results": [
+    {
+      "label": "old",
+      "exit_code": 0,
+      "events": "/private/tmp/p10-upgrade-uj5wwj7e/old.jsonl",
+      "stderr": "/private/tmp/p10-upgrade-uj5wwj7e/old.stderr"
+    },
+    {
+      "label": "new",
+      "exit_code": 0,
+      "events": "/private/tmp/p10-upgrade-uj5wwj7e/new.jsonl",
+      "stderr": "/private/tmp/p10-upgrade-uj5wwj7e/new.stderr"
+    }
+  ],
+  "protection": {
+    "settings_unchanged": true,
+    "credential_metadata_unchanged": true,
+    "old_runtime_unchanged": true,
+    "global_current_unchanged": true,
+    "global_link_unchanged": true,
+    "credential_values_opened_by_evaluator": false,
+    "global_xsm_home_changed": false
+  }
+}

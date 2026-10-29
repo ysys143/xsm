@@ -1,0 +1,21 @@
+{
+  "at": 1793291275.244121,
+  "failed_third_request_id": "e1ce6790c1734665",
+  "actual_MCP_status": "refused",
+  "actual_reason": "service-unavailable-or-response-unknown",
+  "question_original_exists": false,
+  "rejected_stage": "resolve before questions record creation",
+  "initial_bound_ports": {
+    "book": 51296,
+    "mini": 57444
+  },
+  "new_bound_ports": {
+    "book": 60039,
+    "mini": 51783
+  },
+  "both_peer_caches_still_original_ports": true,
+  "both_last_transport": null,
+  "configured_port": 0,
+  "relay": "off",
+  "no_peer_cache_or_original_correction": true
+}

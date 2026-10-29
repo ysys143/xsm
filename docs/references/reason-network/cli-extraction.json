@@ -1,0 +1,44 @@
+[
+  {
+    "name": "network-command",
+    "offset": 63214722,
+    "end": 63235498,
+    "bytes": 20776,
+    "sha256": "6da62c027f05ebd277921aca0404bba6ef77b93b4bf61d15f70c9228cd9ba2b9"
+  },
+  {
+    "name": "ask-worker",
+    "offset": 70020205,
+    "end": 70029060,
+    "bytes": 8855,
+    "sha256": "4b09793ad393a40fbdc7725fb30ace618b0f74bc8ecf7f6e20c1acec8a0a9840"
+  },
+  {
+    "name": "network-core",
+    "offset": 63204729,
+    "end": 63214721,
+    "bytes": 9992,
+    "sha256": "a8346d278b4d00256d87287819573c6df7152adf93be3f12eed9476e2830f9e1"
+  },
+  {
+    "name": "entry-runtime",
+    "offset": 63185191,
+    "end": 63204728,
+    "bytes": 19537,
+    "sha256": "3f055cbcfc9ff3d45244ac284c0ee0da7a5a71c1ba45a27ed9452a9f8021de82"
+  },
+  {
+    "name": "cloud-relay",
+    "offset": 69977926,
+    "end": 69989223,
+    "bytes": 11297,
+    "sha256": "858d55f6a2a7877c7e2b1a10e521c20affc08e53d96bc57abe5b9d73d06c5775"
+  },
+  {
+    "name": "network-sign-in",
+    "offset": 69990151,
+    "end": 70011224,
+    "bytes": 21073,
+    "sha256": "7ec87eddbb51ad85391eabf5af88b987b766e57d7c7620481e7cdb90c10b3738"
+  }
+]

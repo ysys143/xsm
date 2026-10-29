@@ -1,0 +1,91 @@
+{
+  "objective": "adr-0021 완주",
+  "status": "complete_adr21_scope",
+  "completed_at_utc": "2026-10-29T17:08:55.977060+00:00",
+  "criteria_count": 7,
+  "criteria": [
+    {
+      "id": "A21-01",
+      "status": "closed_with_recorded_limits",
+      "evidence": [
+        "deliverables/adr0021/physical-core-20261029-report.md",
+        "deliverables/adr0021/carrier-20261029T054513Z-o9wax0v1/report.md",
+        "deliverables/adr0021/physical-core-selfhost-20261029-report.md",
+        "deliverables/adr0021/phone-nat-20261029T0817Z/report.md",
+        "deliverables/adr0021/ssh-only-20261029T132950Z/report.md"
+      ],
+      "limits_document": "docs/plan/reason-inspired-adrs/adr-0021-closure.md"
+    },
+    {
+      "id": "A21-02",
+      "status": "closed_with_recorded_limits",
+      "evidence": [
+        "deliverables/adr0021/physical-policy-20261029T073330Z/report.md",
+        "deliverables/adr0021/key-rotation-20261030/results.json",
+        "deliverables/adr0021/team-switch-20261030/results.json"
+      ],
+      "limits_document": "docs/plan/reason-inspired-adrs/adr-0021-closure.md"
+    },
+    {
+      "id": "A21-03",
+      "status": "closed_with_recorded_limits",
+      "evidence": [
+        "deliverables/adr0021/comparison-20261030/summary.json",
+        "deliverables/adr0021/native-journey-common-math-latest-retry1-20261029T155548Z/results.json"
+      ],
+      "limits_document": "docs/plan/reason-inspired-adrs/adr-0021-closure.md"
+    },
+    {
+      "id": "A21-04",
+      "status": "closed_with_recorded_limits",
+      "evidence": [
+        "deliverables/adr0021/native-journey-20261029T060853Z-fresh164-v2/report.md",
+        "deliverables/adr0021/native-journey-mixed-proc-20261029T084031Z/report.md",
+        "deliverables/adr0021/native-journey-samename-latest-20261029T152847Z/results.json",
+        "deliverables/adr0021/native-journey-common-math-latest-retry1-20261029T155548Z/results.json"
+      ],
+      "limits_document": "docs/plan/reason-inspired-adrs/adr-0021-closure.md"
+    },
+    {
+      "id": "A21-05",
+      "status": "closed_with_recorded_limits",
+      "evidence": [
+        "deliverables/adr0021/physical-policy-a21-05-native-20261029T090428Z/summary.json",
+        "deliverables/adr0021/uninstall-20261030/results.json"
+      ],
+      "limits_document": "docs/plan/reason-inspired-adrs/adr-0021-closure.md"
+    },
+    {
+      "id": "A21-06",
+      "status": "closed_with_recorded_limits",
+      "evidence": [
+        "deliverables/adr0021/physical-policy-20261029T073330Z/report.md",
+        "docs/xsm/NETWORK.md"
+      ],
+      "limits_document": "docs/plan/reason-inspired-adrs/adr-0021-closure.md"
+    },
+    {
+      "id": "A21-07",
+      "status": "closed_with_recorded_limits",
+      "evidence": [
+        "deliverables/adr0021/carrier-ipv6-fault-resolved-20261029T085407Z/report.md",
+        "deliverables/adr0021/phone-nat-20261029T0817Z/results.json"
+      ],
+      "limits_document": "docs/plan/reason-inspired-adrs/adr-0021-closure.md"
+    }
+  ],
+  "source_manifest_sha256": "ccc3f22a1d65a33ddc76b0ad1abc4966a65664a6e41777d52b70230cd4fd4011",
+  "validation": "deliverables/adr0021/legacy-native-recovery-20261030/final-validation/summary.json",
+  "review": "deliverables/adr0021/legacy-native-recovery-20261030/final-surface-review/review-parsed.json",
+  "common_math_checks": 17,
+  "actual_canonical_ACKs": 8,
+  "global_gate_promoted": false,
+  "other_63_conditions_closed": false,
+  "deployment_performed": false,
+  "report_file_sha256": {
+    "docs/adr/0021-cross-machine-network-and-membership.md": "6a20bdfe00bf3c57d595a6afed1211f39d3ca93e304e75d9ed6e19250fddb102",
+    "docs/plan/reason-inspired-adrs/adr-0021-closure.md": "164eca5e7230d7a68a95d422b1229c0327a33f4310ab7b80fa4eff2a52a906b5",
+    "docs/plan/reason-inspired-adrs/adr-0021-progress.md": "5103f5b5078be0deae9bbb27fdeee4e4f6675d59a7e8688039f430dd8232876c",
+    "docs/plan/reason-inspired-adrs/current-handoff.md": "b3f4dfcb7ced343f56b13c1b891433905511463d9fb998f6db17119d5e7394b1"
+  }
+}

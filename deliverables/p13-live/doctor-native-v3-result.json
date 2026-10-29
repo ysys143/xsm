@@ -1,0 +1,271 @@
+{
+  "schema": "xsm.A23-07.doctor-native-v3-result.v1",
+  "criterion": "A23-07",
+  "version": "v3-selected-real-home",
+  "verdict": "partial-final-no-retry",
+  "started_at_utc": "2026-10-29T00:31:38+00:00",
+  "finished_at_utc": "2026-10-29T00:36:46.614171+00:00",
+  "elapsed_seconds": 308.614171,
+  "timebox_minutes": 10,
+  "finality": {
+    "supplemental_doctor_invocations": 1,
+    "further_experiments": 0,
+    "retry_planned": false,
+    "product_plan_ledger_edited": false,
+    "previous_0_0_artifacts_edited": false
+  },
+  "source": {
+    "snapshot": "/private/tmp/xsm-final-receipt-frozen-i3u9pms3",
+    "manifest": {
+      "path": "deliverables/p13-live/final-source-manifest.json",
+      "sha256": "cb05d6ecb3ab87d95359de3cc318f5ea217bee23837e72b9fff34f6512fb1463",
+      "bytes": 38515,
+      "mode": "0o644"
+    },
+    "primary_count": 135,
+    "changed_primary": [],
+    "reviewed_hashes": {
+      "xsm/cli.py": "76f29a9ef05d070dc61d68008ae87db2e5935dc76d0e333bd30c3db29d54cb1c",
+      "xsm/install.py": "6b6facc89dee67bf27899cbae9e36cfb701b2c497d2a1fc33a43cf8e49daccd2",
+      "xsm/setup_flow.py": "1dfbfb19e1bb8ce267c3bd3ad9519420017af01c78a63ce187c3a709d27247cd",
+      "xsm/registry.py": "edce2c6e75ec4d1803f402db565900080be337b2727a40ff663376c355890360",
+      "xsm/identity.py": "ecfddb64f394455bf68117076127f1c0a07888c0df4cd734f219771bce3004a5",
+      "xsm/codex_daemon.py": "d7423388a943868a06411ca33725b17a128bd9c6c641232da0844a59ff9a1f3d"
+    }
+  },
+  "registration": {
+    "state": "own private state only",
+    "selected_home_sha256": "8f68eb952a346564ce4e74fa28f6be1313901a8164edfe6761ea0f8bc4a71fe4",
+    "same_as_current_CODEX_HOME": true,
+    "thread_id_sha256": "0a7dc256b44c9bc938cb51ca16f73622278f29efe3f82288fdb988f4a378f6d6",
+    "runtime_pid": 9102,
+    "runtime_lstart": "Wed Oct 28 05:55:24 2026",
+    "native_db_mode": "mode=ro + PRAGMA query_only=ON",
+    "native_before_after_same_CID": true,
+    "native_before_after_same_cwd": true,
+    "native_archived_before": 0,
+    "native_archived_after": 0,
+    "service": "registry.upsert(actual runtime=codex, actual CODEX_HOME, actual CID, actual PID, native cwd); also adds selected home to own homes.json",
+    "facts_checked": [
+      "CID exists in actual native DB and matches current tool thread",
+      "native cwd matches this workspace",
+      "direct parent process executable is Codex",
+      "record lstart matches OS sample"
+    ],
+    "observation_only_scope": "normal registry record in a disposable private state; never used for messaging, permission elevation or a caller-certainty claim",
+    "product_app_server_flag": true,
+    "fake_identity_fields": false
+  },
+  "execution": {
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/private/tmp/doctor-native-v3-8t5nskxm/doctor-v3.sb",
+      "/usr/bin/python3",
+      "-B",
+      "-m",
+      "xsm",
+      "doctor",
+      "--json"
+    ],
+    "cwd": "/private/tmp/xsm-final-receipt-frozen-i3u9pms3",
+    "env_overrides": {
+      "XSM_HOME": "/private/tmp/doctor-native-v3-8t5nskxm/state",
+      "PYTHONPATH": "/private/tmp/doctor-native-v3-8t5nskxm/observer:/private/tmp/xsm-final-receipt-frozen-i3u9pms3",
+      "PYTHONDONTWRITEBYTECODE": "1",
+      "LC_ALL": "C"
+    },
+    "HOME_unchanged": true,
+    "CODEX_HOME_unchanged": true,
+    "doctor_started_at_utc": "2026-10-29T00:34:09.078008+00:00",
+    "doctor_finished_at_utc": "2026-10-29T00:34:09.629515+00:00",
+    "exit_code": 0,
+    "attempts": 1,
+    "entry": "actual final source python -B -m xsm doctor --json; no service function/registry/transport replacement",
+    "observer": "sitecustomize passive audit/frame trace intended, failed at initialization opening own audit log with PermissionError; therefore no access/RPC trace proof",
+    "observer_log_created": false,
+    "observer_initialization_failed": true
+  },
+  "private_raw": {
+    "root": "/private/tmp/doctor-native-v3-8t5nskxm",
+    "root_mode": "0o700",
+    "stdout": {
+      "path": "/private/tmp/doctor-native-v3-8t5nskxm/doctor.stdout",
+      "sha256": "cd130304263cf05c1110cb4aae2bfb50cd9660bf2ea8199b5a8b315b754d1107",
+      "bytes": 5744,
+      "mode": "0o600"
+    },
+    "stderr": {
+      "path": "/private/tmp/doctor-native-v3-8t5nskxm/doctor.stderr",
+      "sha256": "c4454a21207a19811cec58a4624f0a3fc8336d2494da5e424d37deca76e6ad27",
+      "bytes": 163,
+      "mode": "0o600"
+    },
+    "metadata": {
+      "path": "/private/tmp/doctor-native-v3-8t5nskxm/run-meta.json",
+      "sha256": "53abf95287f32ba83f8daaae21079af035a888eeb27880425f02535212630b77",
+      "bytes": 5677,
+      "mode": "0o600"
+    },
+    "observer_script": {
+      "path": "/private/tmp/doctor-native-v3-8t5nskxm/observer/sitecustomize.py",
+      "sha256": "1426493280081bb07bebbfc43b1389f9dc60b31bb7f573d56a5a12af5398791d",
+      "bytes": 1616,
+      "mode": "0o600"
+    },
+    "sandbox_policy": {
+      "path": "/private/tmp/doctor-native-v3-8t5nskxm/doctor-v3.sb",
+      "sha256": "3a86464d0d4a2ee14a076749de7ebd81fb144dfed1a1c10dc4c8ef91d2a10b21",
+      "bytes": 407,
+      "mode": "0o600"
+    },
+    "public_copy_of_raw": false
+  },
+  "doctor_observations": {
+    "home_count": 1,
+    "selected_home_in_report": true,
+    "registered_count": 1,
+    "sessions_live_count": 1,
+    "sessions_stopped_count": 0,
+    "unregistered_count": 0,
+    "setup_status": "observational",
+    "active_probe": "not-run",
+    "setup_home_count": 1,
+    "setup_rows": [
+      {
+        "runtime": "codex",
+        "settings": "present",
+        "trust": "observed",
+        "process": "unknown",
+        "home_match": "unknown",
+        "mcp": "unknown",
+        "first_roundtrip": "unknown",
+        "process_evidence": "pid-and-start-time-readback",
+        "socket_evidence": "filesystem-readback"
+      }
+    ],
+    "install_metadata": [
+      {
+        "runtime": "codex",
+        "exists": true,
+        "has_error": false
+      }
+    ],
+    "trust_flags": [
+      {
+        "SessionStart": true,
+        "UserPromptSubmit": true
+      }
+    ],
+    "proof_of_real_metadata_consumption": "report contains the selected actual home and present installation plus parsed trust flags; source codex_trust reads selected home hooks.json/config.toml. No access-log claim because observer failed.",
+    "does_not_prove": "live=1 does not supply missing setup process/home_match readback or independently establish per-thread liveness reason"
+  },
+  "synthetic_sensitive_nonoutput": {
+    "location": "own state/decisions.jsonl; one synthetic event reason contains internal error + body/invite; body/invite fields also seeded",
+    "marker_results": {
+      "body": {
+        "sha256": "c36286a9c758fe9cd4635a6735012570dc0eb9625ab1721eb43b35f65f7fbfa4",
+        "in_stdout": false,
+        "in_stderr": false
+      },
+      "invite": {
+        "sha256": "2da389b38b64b0c7e8bcd315f9d44c29fba72925a338302f01482d817f31154a",
+        "in_stdout": false,
+        "in_stderr": false
+      }
+    },
+    "decisions_seen": 1,
+    "hook_errors_recent": 1,
+    "read_path_exercised": true,
+    "conclusion": "synthetic event consumed by existing doctor aggregation; body/invite not copied to either stream",
+    "scope": "this decisions/error aggregation path; not every state record or arbitrary credential value"
+  },
+  "sensitive_output_checks": {
+    "generic_pattern_results": {
+      "email_address": false,
+      "bearer_value": false,
+      "private_key_header": false,
+      "openai_style_key": false,
+      "credential_assignment": false
+    },
+    "actual_credential_values_loaded_or_compared": false,
+    "credential_file_reads_by_driver": 0,
+    "credential_open_trace": "unavailable because observer failed; known auth/key files denied by OS sandbox and source path reviewed",
+    "real_user_home_path_present": true,
+    "entire_home_anonymization_claimed": false,
+    "stderr_classification": {
+      "bytes": 163,
+      "lines": 2,
+      "contains_sitecustomize_initialization_error": true,
+      "contains_PermissionError": true
+    },
+    "unknown_secrets_scan_limit": "generic patterns + synthetic markers only; no real key-value comparison or universal privacy proof"
+  },
+  "external_runtime_survival": {
+    "before": {
+      "pid": 9102,
+      "ppid": 77641,
+      "lstart": "Wed Oct 28 05:55:24 2026",
+      "exit_code": 0
+    },
+    "after": {
+      "pid": 9102,
+      "ppid": 77641,
+      "lstart": "Wed Oct 28 05:55:24 2026",
+      "exit_code": 0
+    },
+    "same_generation_before_after": true,
+    "followup_actual_tool": {
+      "pid": 9102,
+      "ppid": 77641,
+      "lstart": "Wed Oct 28 05:55:24 2026"
+    },
+    "same_generation_followup": true,
+    "same_thread_native_metadata_followup": true,
+    "archived_followup": 0,
+    "runtime_shared": true,
+    "distinction": "external OS PID/lstart and actual subsequent tool prove current shared runtime survival/continued tool execution; never substitute for doctor setup.process=unknown or home_match=unknown"
+  },
+  "guards_and_preservation": {
+    "writes_outside_private_root_denied": true,
+    "nonzero_signals_denied_by_policy": true,
+    "credential_path_reads_denied_by_policy": true,
+    "selected_home_read_allowed": true,
+    "other_real_home_reads_restricted": true,
+    "local_readonly_daemon_query_not_explicitly_blocked": true,
+    "known_source_liveness_probe": "identity.pid_alive uses os.kill(pid,0), a nondelivering liveness check; not a terminate/wake action",
+    "runtime_daemon_source_query": "identity hosted liveness -> codex_daemon.loaded_threads -> initialize/initialized/thread/loaded/list only; no actual RPC trace available",
+    "actual_config_and_hooks_metadata_unchanged": true,
+    "actual_config_metadata_compared": "stat inode/size/mtime/mode only; no auth/key file stat/hash/content used",
+    "new_models": 0,
+    "driver_login_or_messaging_or_wake_calls": 0,
+    "driver_nonzero_signal_calls": 0,
+    "global_settings_writes": 0,
+    "source135_unchanged": true,
+    "prior_artifact_hashes": {
+      "deliverables/p13-live/doctor-native-result.json": "04c013b982395546634c232d910e4e88078d5f0c19fe04460bdbc83d634bf15b",
+      "deliverables/p13-live/doctor-native-result.md": "e0233f62a270b6ecab40edf1c36543b15d9611c5ac2354e98ada83e9bfb73486",
+      "deliverables/p13-live/doctor-closure-audit.json": "a2c25044634890cd59fee03656ffc5c02d8dbbd0a8eb7b2da9f554582019e7ed",
+      "deliverables/p13-live/doctor-closure-audit.md": "44e351ba79ee6e7a3dea38c66b7cbbbc55120f250d55cc1776acf2319fc70176"
+    }
+  },
+  "closure_assessment": {
+    "missing_cell_fully_closed": false,
+    "reason": "selected-home/install/trust and synthetic nonoutput are positive. setup.process/home_match remain unknown; observer setup failed and stderr is nonempty. External runtime survival cannot replace doctor actual readback. No changed conditions or rerun per user instruction.",
+    "stronger_than_prior_0_0": "real selected home 1 / real observation registry 1, present installation/trust observed, consumed synthetic record",
+    "remaining": "doctor setup-observed selected real process/home match and clean diagnostic/access provenance not obtained in this single allowed v3 sample",
+    "final": "partial; no further experiments performed or scheduled"
+  },
+  "limitations": [
+    "observation trace initialization failed; no file-open/RPC method success proof",
+    "setup.process and home_match unknown despite live count=1 and out-of-band survival",
+    "sandbox retains write/credential/signal restrictions and restricts other real homes; not an unrestricted global-home diagnostic claim",
+    "normal registry upsert facts do not grant communication authority or caller certainty in this audit",
+    "synthetic markers cover decisions aggregation, not all possible sensitive stores",
+    "no claim all user homes/threads anonymized or alive"
+  ],
+  "public_artifacts": [
+    "deliverables/p13-live/doctor-native-v3-result.json",
+    "deliverables/p13-live/doctor-native-v3-result.md"
+  ]
+}

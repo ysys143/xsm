@@ -1,0 +1,323 @@
+{
+  "started_utc": "2026-10-29T15:38:28.636734+00:00",
+  "commands": [
+    {
+      "label": "install-a",
+      "argv": [
+        "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/adr21-final-20261030-fx0yt4x3/bin/xsm",
+        "install",
+        "--codex-home",
+        "/private/tmp/adr21-uninstall-2fafuj8s/codex-a",
+        "--python",
+        "/usr/bin/python3"
+      ],
+      "at_utc": "2026-10-29T15:38:29.382701+00:00",
+      "seconds": 0.737,
+      "exit_code": 0,
+      "stdout_bytes": 1514,
+      "stderr_bytes": 0,
+      "stdout_sha256": "2c70bc7a384f05fe703631ade06fdae8fb5fcfb5b7055075c51196f434818ece",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "install-b",
+      "argv": [
+        "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/adr21-final-20261030-fx0yt4x3/bin/xsm",
+        "install",
+        "--codex-home",
+        "/private/tmp/adr21-uninstall-2fafuj8s/codex-b",
+        "--python",
+        "/usr/bin/python3"
+      ],
+      "at_utc": "2026-10-29T15:38:29.802635+00:00",
+      "seconds": 0.419,
+      "exit_code": 0,
+      "stdout_bytes": 1515,
+      "stderr_bytes": 0,
+      "stdout_sha256": "98e6fd7989e41f9cd3ad4f609011a72a929f3cd06b3f9e7abd4a33f07ae53251",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "configure-shared",
+      "argv": [
+        "/private/tmp/adr21-uninstall-2fafuj8s/home/.local/bin/xsm",
+        "network",
+        "configure",
+        "--relay",
+        "off",
+        "--port",
+        "0"
+      ],
+      "at_utc": "2026-10-29T15:38:30.579885+00:00",
+      "seconds": 0.777,
+      "exit_code": 0,
+      "stdout_bytes": 91,
+      "stderr_bytes": 0,
+      "stdout_sha256": "4f4abb1548467b7f1bdcbf264f0a2c2741b9d3545b1b9d8751e37e0d8b1fc476",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "init-shared",
+      "argv": [
+        "/private/tmp/adr21-uninstall-2fafuj8s/home/.local/bin/xsm",
+        "network",
+        "init",
+        "private-uninstall-evaluation"
+      ],
+      "at_utc": "2026-10-29T15:38:30.966221+00:00",
+      "seconds": 0.386,
+      "exit_code": 0,
+      "stdout_bytes": 1272,
+      "stderr_bytes": 0,
+      "stdout_sha256": "25ceb58df1c446ba8a57bb34c91f8c1afb35cc6103ce64f1d6493dd6a406a90d",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "configure-peer",
+      "argv": [
+        "/private/tmp/adr21-uninstall-2fafuj8s/home/.local/bin/xsm",
+        "network",
+        "configure",
+        "--relay",
+        "off",
+        "--port",
+        "0"
+      ],
+      "at_utc": "2026-10-29T15:38:31.246045+00:00",
+      "seconds": 0.279,
+      "exit_code": 0,
+      "stdout_bytes": 91,
+      "stderr_bytes": 0,
+      "stdout_sha256": "4f4abb1548467b7f1bdcbf264f0a2c2741b9d3545b1b9d8751e37e0d8b1fc476",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "invite-private",
+      "argv": [
+        "/private/tmp/adr21-uninstall-2fafuj8s/home/.local/bin/xsm",
+        "network",
+        "invite"
+      ],
+      "at_utc": "2026-10-29T15:38:31.462481+00:00",
+      "seconds": 0.216,
+      "exit_code": 0,
+      "stdout_bytes": 282,
+      "stderr_bytes": 0,
+      "stdout_sha256": "0da0445bd0c88d82387956bbf4d4ef2d59532ef2a60ca72b49afcffdcca300b2",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "join-peer",
+      "argv": [
+        "/private/tmp/adr21-uninstall-2fafuj8s/home/.local/bin/xsm",
+        "network",
+        "join",
+        "--ticket-file",
+        "/private/tmp/adr21-uninstall-2fafuj8s/state/network/invites/afc681186c8f62915267ed377372a54f.json"
+      ],
+      "at_utc": "2026-10-29T15:38:31.861174+00:00",
+      "seconds": 0.398,
+      "exit_code": 0,
+      "stdout_bytes": 2004,
+      "stderr_bytes": 0,
+      "stdout_sha256": "5d786191b53ff9258528df9a6344ed71034f2e5d3657f1617daec0fc406aacbb",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "shared-before-uninstall",
+      "argv": [
+        "/private/tmp/adr21-uninstall-2fafuj8s/home/.local/bin/xsm",
+        "network",
+        "status"
+      ],
+      "at_utc": "2026-10-29T15:38:32.081982+00:00",
+      "seconds": 0.22,
+      "exit_code": 0,
+      "stdout_bytes": 2036,
+      "stderr_bytes": 0,
+      "stdout_sha256": "c0ed8dd3dccc72c886b4b146a3f228446d4600ca832ba64ffa9aac0bf24652f3",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "uninstall-a-shared-service-live",
+      "argv": [
+        "/private/tmp/adr21-uninstall-2fafuj8s/home/.local/bin/xsm",
+        "uninstall",
+        "--codex-home",
+        "/private/tmp/adr21-uninstall-2fafuj8s/codex-a"
+      ],
+      "at_utc": "2026-10-29T15:38:32.395113+00:00",
+      "seconds": 0.306,
+      "exit_code": 0,
+      "stdout_bytes": 222,
+      "stderr_bytes": 0,
+      "stdout_sha256": "107f7817282682148990882b12b40d2ce557271ff029ac0fb1010114f3d3433f",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "shared-after-a-removal",
+      "argv": [
+        "/private/tmp/adr21-uninstall-2fafuj8s/home/.local/bin/xsm",
+        "network",
+        "status"
+      ],
+      "at_utc": "2026-10-29T15:38:32.611648+00:00",
+      "seconds": 0.216,
+      "exit_code": 0,
+      "stdout_bytes": 2036,
+      "stderr_bytes": 0,
+      "stdout_sha256": "c0ed8dd3dccc72c886b4b146a3f228446d4600ca832ba64ffa9aac0bf24652f3",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "explicit-network-stop",
+      "argv": [
+        "/private/tmp/adr21-uninstall-2fafuj8s/home/.local/bin/xsm",
+        "network",
+        "stop"
+      ],
+      "at_utc": "2026-10-29T15:38:32.826983+00:00",
+      "seconds": 0.214,
+      "exit_code": 0,
+      "stdout_bytes": 23,
+      "stderr_bytes": 0,
+      "stdout_sha256": "9bc0117136549c27b7d456324e9d5e875a2aa4d6f52c3d5d0832570ccdf86194",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "uninstall-b-after-explicit-stop",
+      "argv": [
+        "/private/tmp/adr21-uninstall-2fafuj8s/home/.local/bin/xsm",
+        "uninstall",
+        "--codex-home",
+        "/private/tmp/adr21-uninstall-2fafuj8s/codex-b"
+      ],
+      "at_utc": "2026-10-29T15:38:33.391095+00:00",
+      "seconds": 0.31,
+      "exit_code": 0,
+      "stdout_bytes": 427,
+      "stderr_bytes": 0,
+      "stdout_sha256": "a22f5492e279b439d5397066f10fad93362b0247acdbb6b4565bb692121d93c4",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "cleanup-status-peer",
+      "argv": [
+        "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/adr21-final-20261030-fx0yt4x3/bin/xsm",
+        "network",
+        "status"
+      ],
+      "at_utc": "2026-10-29T15:38:33.609563+00:00",
+      "seconds": 0.214,
+      "exit_code": 0,
+      "stdout_bytes": 2036,
+      "stderr_bytes": 0,
+      "stdout_sha256": "9c0bca2a735d274a2ce807ce7deab014dddb70b3e4c80f0726906572cec62b45",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "cleanup-stop-peer",
+      "argv": [
+        "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/adr21-final-20261030-fx0yt4x3/bin/xsm",
+        "network",
+        "stop"
+      ],
+      "at_utc": "2026-10-29T15:38:33.835723+00:00",
+      "seconds": 0.226,
+      "exit_code": 0,
+      "stdout_bytes": 23,
+      "stderr_bytes": 0,
+      "stdout_sha256": "9bc0117136549c27b7d456324e9d5e875a2aa4d6f52c3d5d0832570ccdf86194",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "install-c-canonical-preservation",
+      "argv": [
+        "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/adr21-final-20261030-fx0yt4x3/bin/xsm",
+        "install",
+        "--codex-home",
+        "/private/tmp/adr21-uninstall-2fafuj8s/codex-c",
+        "--python",
+        "/usr/bin/python3"
+      ],
+      "at_utc": "2026-10-29T15:40:51.426914+00:00",
+      "seconds": 0.427,
+      "exit_code": 0,
+      "supplement": "canonical-original preservation; no new network/model run",
+      "stdout_sha256": "335f7d9f863da9010482a5a2c0c3f55e9301b736c507c5433cc49c760f79f151",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "uninstall-c-canonical-preservation",
+      "argv": [
+        "/private/tmp/adr21-uninstall-2fafuj8s/home/.local/bin/xsm",
+        "uninstall",
+        "--codex-home",
+        "/private/tmp/adr21-uninstall-2fafuj8s/codex-c"
+      ],
+      "at_utc": "2026-10-29T15:40:51.740595+00:00",
+      "seconds": 0.302,
+      "exit_code": 0,
+      "supplement": "canonical-original preservation; no new network/model run",
+      "stdout_sha256": "ed7af5b993eb5492f5c700007b9bf10b8b4622297667fb8fc749c3d9792c9726",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "new_model_calls": 0,
+  "interactive_prompts": 0,
+  "checks": {
+    "single_home_removal": {
+      "xsm_MCP_absent": true,
+      "xsm_skill_absent": true,
+      "custom_hook_exact": true,
+      "custom_MCP_and_settings_preserved": true,
+      "custom_skill_marker_preserved": true,
+      "shared_service_same_live_PID": true,
+      "other_home_exactly_unchanged": true,
+      "CLI_link_preserved": true
+    },
+    "after_explicit_stop": {
+      "control_socket_remaining": false,
+      "recorded_pids_remaining": false,
+      "UDP_rebind_success_count": 2,
+      "all_bound_UDP_addresses_rebound": true
+    },
+    "last_home_removal": {
+      "xsm_MCP_absent": true,
+      "xsm_skill_absent": true,
+      "custom_hook_exact": true,
+      "custom_MCP_and_settings_preserved": true,
+      "custom_skill_marker_preserved": true,
+      "CLI_link_removed": true
+    },
+    "preservation": {
+      "key_metadata_unchanged": true,
+      "key_values_read": false,
+      "custom_XSM_configuration_bytes_unchanged": true,
+      "original_bytes_unchanged": true,
+      "runtime_copies_retained_unchanged": true,
+      "private_auth_files_absent": true
+    },
+    "canonical_original_preservation_supplement": {
+      "actual_handoff_API_fixture": true,
+      "actual_LLM_session": false,
+      "before_after_canonical_record_bytes_equal": true,
+      "body_digest": "662a832373e45307e0523044139713c091ef64bf8aaba57fa48d4079732d5730",
+      "canonical_records_checked": 1,
+      "request_status_preserved": "pending",
+      "node_key_metadata_unchanged": true,
+      "user_custom_config_values_preserved": true
+    }
+  },
+  "cleanup": {
+    "peer": {
+      "control_socket_remaining": false,
+      "recorded_pids_remaining": false,
+      "UDP_rebind_success_count": 2,
+      "all_bound_UDP_addresses_rebound": true
+    }
+  },
+  "frozen_manifest_sha256": "5e203237d953a8b656ff4083503fd8b9b5c02c744a3f4939b1ce3236bda461ec",
+  "completed": true,
+  "finished_utc": "2026-10-29T15:40:51.741335+00:00"
+}

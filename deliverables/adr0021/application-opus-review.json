@@ -1,0 +1,123 @@
+{
+  "scope": "frozen-application-integration-source-review",
+  "requested_model": "claude-opus-5-5",
+  "actual_init_model": "claude-opus-5-5",
+  "actual_modelUsage_IDs": [
+    "claude-opus-5-5"
+  ],
+  "model_review_count": 1,
+  "verdict": "changes_required",
+  "review": {
+    "verdict": "changes_required",
+    "findings": [
+      {
+        "id": "F1",
+        "severity": "Medium",
+        "title": "원격 send의 확정 ID 충돌이 operation-failed/unknown으로 바뀌고, 이후 상태 조회가 충돌한 기존 메시지의 상태를 이번 전송 결과처럼 보고함",
+        "file": "xsm/network.py",
+        "lines": "483-498, 199-205, 930-936",
+        "trigger": "이미 로컬 ledger에 있는 ID(이전 로컬 send나 다른 network send)를 써서 `xsm send net:... --request-id X --text ... [--wait N]`를 실행하는 경우. --resend는 쓰지 않음",
+        "reproduction_path": "정적 호출 경로이며 실행 증거가 아님: cli.cmd_send(xsm/cli.py:905,924)가 msg_id=X로 send._send를 부름 → send.py:279 network.call op=send → Daemon.send_remote가 prepared_intent=bool(ledger.status(X))=True를 넘겨 gateway.prepare를 호출(network.py:493-498) → network_messages.py:391-419에서 기존 outbound는 _same을 거쳐 GatewayError('message-id-conflict'), ledger row만 있으면 _intent_matches 실패로 GatewayError('prepared-intent-unverified')를 던짐 → GatewayError는 NetworkError가 아니므로 serve Handler(network.py:935-936)가 'operation-failed'로 응답함 → send.py:285-288의 refused 목록에 없어서 status='unknown'이 됨 → wait>0이면 network.reconcile(X)(send.py:293-298)으로 감. 충돌한 ledger row의 scope가 network:가 아니면 network.py:203-204가 그 row를 그대로 돌려주고, send.py:296-297이 그 status('delivered' 등)를 이번 전송 결과로 채택함. network: row라면 옛 to.ref로 message-status를 조회함",
+        "impact": "전송되지 않은 원격 메시지가 delivered로 보고되거나(CLI exit OK), 확정 거부가 unknown으로 남아 '같은 ID로 status 조회' 안내를 따르면 다른 메시지의 증거를 읽게 됨. PUBLIC_CODES와 send.py에 정의된 'message-id-conflict'→refused 계약은 실제 경로에서 한 번도 만들어지지 않음. ledger.queued가 prepare 뒤에 있어서 기존 row가 덮어써지지는 않음",
+        "test_evidence": "test_network_messages.py는 Gateway가 GatewayError를 던지는지만 확인함. test_network_application.py에는 Daemon/IPC/send.py를 거친 ID 충돌 결과 매핑을 검증하는 테스트가 없음. 비테스트 코드 어디에도 GatewayError를 NetworkError('message-id-conflict')로 바꾸는 곳이 없음(grep 결과)"
+      },
+      {
+        "id": "F2",
+        "severity": "Medium",
+        "title": "P2P admission이 일시적으로 확인되지 않으면(서비스 중단, 2초 타임아웃) 영구 held/refused 영수증이 남고, 서비스가 복구돼도 원본이 다시 제공되지 않음",
+        "file": "xsm/receive.py",
+        "lines": "690-694, 1160-1163, 1176-1189, 600-615",
+        "trigger": "P2P 메시지가 저장된 뒤 수신 기기의 네트워크 서비스가 멈췄거나 admission RPC가 2초 안에 답하지 못한 상태(resolve_local/git probe 지연 등)에서 MCP inbox, `xsm inbox` 또는 네이티브 훅이 그 메시지를 처리하는 경우",
+        "reproduction_path": "정적 경로: network.inbound_record(network.py:190-196)가 call(op=admission, timeout=2)에서 NetworkError를 받아 None을 반환함 → receive.check(receive.py:692-694)가 'block'을 반환함 → take_inbox_claims(receive.py:1176-1189)가 hold() 후 ledger.receipt(id,'held'|'blocked')를 쓰고 delivery_state='held'|'refused'로 release함. 훅 경로인 _gate(receive.py:606-615)도 같은 영수증을 씀 → 서비스를 재시작해도 take_inbox_claims는 traffic 사유가 아닌 held/blocked 영수증을 건너뜀(receive.py:1160-1163). 자동 재평가 경로가 없음. 송신 측 reconcile은 gateway._delivery의 'held'/'refused'를 종료 상태로 받아들임(network.py:228)",
+        "impact": "유효하게 승인·저장된 원격 작업이나 질문 답변이 일시적인 서비스 장애 하나로 사람의 `held deliver`가 있어야만 전달됨. 그 경로도 4000자에서 잘린 사본이고, 정식 ACK와 파일 context가 없음. 송신자에게는 거부로 보임. 원본은 남아 있지만 정상 소비 경로로 복구되지 않아, 문서의 '서비스 중단 시 원격 큐 보존'과 맞지 않음",
+        "test_evidence": "test_service_down_preserves_remote_queue_and_local_consume_stays_independent는 서비스가 멈춘 동안 receive.check만 직접 호출하고, take_inbox_claims나 _gate를 부르지 않음. 그래서 영수증이 쓰이지 않은 상태에서 재시작 후 consume이 성공함. 실제 소비 경로에서 생기는 영구 hold는 검증되지 않음"
+      },
+      {
+        "id": "F3",
+        "severity": "Medium",
+        "title": "소비 시점 admission이 배달 당시의 수신 generation에 묶여 있어, 수신 대화가 resume/재시작되면 이미 받은 P2P 메시지와 답변을 소비할 수 없음",
+        "file": "xsm/network.py",
+        "lines": "652-668",
+        "trigger": "wake=False FYI나 mcp-inbox 경로로 저장된 P2P 메시지(또는 질문 답변)를 읽기 전에, 수신 Codex/Claude 대화가 같은 session_id로 resume되거나 pid/lstart/mcp_pid가 바뀌는 경우",
+        "reproduction_path": "정적 경로: admission op가 resolve_local(record['packet']['receiver'], ...)를 호출하는데(network.py:659), packet.receiver에는 배달 당시 generation이 들어 있음 → resolve_local(network_directory.py:376)은 public_endpoint(r)==handle의 정확한 일치를 요구하고, generation은 pid/lstart/mcp_pid/mcp_lstart/native_start/app_server의 digest임(network_directory.py:72-82) → 새 실행에서는 None이 나와 {'allowed': False} → inbound_record가 None → receive.check가 block → F2와 같은 held/refused 처리. 송신자가 같은 ID로 resend하면 send_remote가 새 generation을 resolve하지만, Gateway.prepare는 기존 outbound가 있으면 _same만 거치고, receive는 기존 inbound record(옛 generation packet)의 committed 경로를 반환함(network_messages.py:582-595). 그래서 admission 근거는 갱신되지 않음",
+        "impact": "선택된 협업 쌍과 멤버십이 그대로인데도, 수신 측 대화의 정상적인 resume만으로 대기 중인 원격 작업과 questions 답변이 영구 차단/보류됨. collaboration.drop 문서가 '일시적 offline/resume은 철회가 아니다'라고 한 의도와 어긋남",
+        "test_evidence": "test_resolve_refreshes_generation_and_stale_local_caller_is_rejected는 전송 전에 generation이 바뀌는 경우(send 시 갱신)만 검증함. 저장 후 수신 generation이 바뀐 뒤의 consume을 확인하는 테스트는 없음"
+      }
+    ],
+    "reviewed_surfaces": [
+      "source-manifest.json, review-context.md, docs/xsm/NETWORK.md",
+      "xsm/network.py: inbound_record/reconcile/Daemon(_grant,_check_grant,_permission,resolve/select/send_remote,wake_native,admission,incoming deliver/message-status,_incoming_target,rpc,serve handler)",
+      "xsm/network_messages.py: Gateway.prepare/receive/_global/_route/_ingress/status, prepared_intent 검사",
+      "xsm/network_directory.py: public_endpoint/resolve_local/local_candidates/RepositoryMap",
+      "xsm/network_identity.py, xsm/collaboration.py, xsm/connect.py(_select_network)",
+      "xsm/send.py net: 분기와 resend_refusal, xsm/questions.py ask/record_reply, xsm/materials.py remote capability",
+      "xsm/receive.py register/note_native_reader, check P2P 분기, _gate, _native_handoff, take_inbox_claims, _sender_record",
+      "xsm/envelope.py request_identity/_canon_handle/build, xsm/handoff.py delivery, xsm/ledger.py status/queued/unknown",
+      "xsm/cli.py send/status/question-status/held deliver, xsm/directory.py discover/resolve_candidate",
+      "tests/test_network_application.py"
+    ],
+    "tests_executed": false,
+    "limits": [
+      "읽기 전용 고정 소스 검토",
+      "전체 ADR 완료 승인 아님",
+      "도구는 Read/Glob/Grep만 사용했고, 실행·테스트·네트워크 접근은 하지 않음",
+      "보고 대상에서 제외한 항목: issuer 측 collaboration.drop이 수신 측에 보관된 member-attested grant를 무효화하지 않는 점(제품 코드에 drop 호출자가 없어 트리거가 구체적이지 않음), wake_native의 handoff.delivery가 동시에 held된 delivery_state를 pending으로 되돌릴 수 있는 경합(창이 좁고 영향이 제한적)",
+      "Rust 엔진, network_membership/transport 내부, files.py, mcp.py 전체는 호출 경로에 필요한 부분만 확인함",
+      "결함이 없다는 보장이 아님"
+    ]
+  },
+  "tests_executed_by_reviewer": false,
+  "raw_private_root": "/private/tmp/adr21-app-opus-9il8p9yn",
+  "raw_sha256": "5c4620b0550c2e9f5277d69e6a871380f3ae05765733516d5b037e28139f0c66",
+  "source_manifest_sha256": "dabc35c91a6e74b2b1d8b0edb216f5c84f6a6804e87c54befe2127ab0cb12bca",
+  "execution": {
+    "scope": "frozen-application-integration-review",
+    "requested_model": "claude-opus-5-5",
+    "argv_without_prompt": [
+      "/Users/jaesolshin/.local/share/claude/versions/2.1.312",
+      "-p",
+      "--model",
+      "claude-opus-5-5",
+      "--tools",
+      "Read,Glob,Grep",
+      "--allowedTools",
+      "Read",
+      "Glob",
+      "Grep",
+      "--permission-mode",
+      "dontAsk",
+      "--strict-mcp-config",
+      "--mcp-config",
+      "{\"mcpServers\":{}}",
+      "--setting-sources",
+      "",
+      "--safe-mode",
+      "--restricted",
+      "--disable-slash-commands",
+      "--no-session-persistence",
+      "--output-format",
+      "json",
+      "--verbose"
+    ],
+    "file_count": 67,
+    "source_manifest_sha256": "dabc35c91a6e74b2b1d8b0edb216f5c84f6a6804e87c54befe2127ab0cb12bca",
+    "bundle": "/private/tmp/adr21-app-opus-9il8p9yn/bundle",
+    "state": "completed",
+    "model_launches": 1,
+    "started_at_utc": "2026-10-29T05:40:01.869123+00:00",
+    "pid": 8190,
+    "exit_code": 0,
+    "wall_time_seconds": 326.602,
+    "completed_at_utc": "2026-10-29T05:45:28.485909+00:00"
+  },
+  "available_tools": [
+    "Glob",
+    "Grep",
+    "Read"
+  ],
+  "mcp_servers": [],
+  "permission_rules_changed": false,
+  "API_key_used": false,
+  "credential_values_queried": false,
+  "whole_ADR_complete": false
+}

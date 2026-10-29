@@ -1,0 +1,10 @@
+{
+  "root": "/private/tmp/exclusion-cli-native-jhehrztq",
+  "source_manifest": "deliverables/p13-live/doctor-privacy-source-manifest.json",
+  "condition": "current actual caller APIs and real in-process CLI parser; no model/new native, no certainty override",
+  "negative_originals": "initial generated digest plus stat only after exclusion; never post-read or post-hash",
+  "A17_05": "same native cwd realpath through private symlink, own exclusion applied to registry/discover/capture",
+  "A19_03": "separate private excluded file and synthetic apikey.env direct CLI capture API plus CLI parser",
+  "original_artifacts": "reused unchanged, no hidden/outside/mode000/symlink/Unicode fixture rerun",
+  "deadline_utc": "2026-10-29T02:17:13+00:00"
+}

@@ -1,0 +1,683 @@
+{
+  "status": "공개 후보 선택·혼합 실제 업무·자료 검토 완주, 전역 profile 데이터 hash 1건은 변경 주체 미확인",
+  "source_manifest_sha256": "f4172fc9f4c49433eb90fe44a54dad5631ede60249b60a5905e3524d794c62a4",
+  "source_52_changes": false,
+  "executed_source_files": 65,
+  "source_matches_both": true,
+  "models": {
+    "claude": "claude-sonnet-5-5",
+    "codex": [
+      "gpt-6.1-sol"
+    ]
+  },
+  "Claude_CID": "d9736a11-0c50-4196-995d-0f87a4634f07",
+  "Codex_CID": "01a187cf-5153-7e53-810d-405946f9e666",
+  "questions": [
+    {
+      "id": "960d055aca004b34",
+      "purpose": "handshake",
+      "sender": {
+        "runtime": "codex",
+        "home": "/private/tmp/native-journey-mixed-proc-mini-pe1e7c8g/codex-home",
+        "session_id": "01a187cf-5153-7e53-810d-405946f9e666",
+        "ref": "83d506",
+        "name": "requester",
+        "alias": "codex-home"
+      },
+      "target": {
+        "machine": "e4824763e4b2ea2e28e3107f0c8e44d4e9e690eaa387c2f1b7c1de0b3d4ae01d",
+        "runtime": "claude",
+        "home_id": "1f3efe9ffb9cf15ba352aa22f67362777ae05495d0bb84b9b5b8268090817da7",
+        "session_id": "d9736a11-0c50-4196-995d-0f87a4634f07",
+        "ref": "net:e4824763e4b2ea2e28e3107f0c8e44d4e9e690eaa387c2f1b7c1de0b3d4ae01d:claude:1f3efe9ffb9cf15ba352aa22f67362777ae05495d0bb84b9b5b8268090817da7:d9736a11-0c50-4196-995d-0f87a4634f07",
+        "name": "a1",
+        "alias": "e4824763e4b2ea2e28e3107f0c8e44d4e9e690eaa387c2f1b7c1de0b3d4ae01d"
+      },
+      "body": "협업을 시작하려고 합니다. 이 원 요청에 reply_to를 붙여 준비 여부와 수신 가능한 작업 방식을 짧게 회신해 주세요. 준비됐으면 outcome=succeeded, 협업할 수 없으면 outcome=failed를 붙여 주세요. 이 메시지는 협업 확인 요청입니다.",
+      "attachments": [],
+      "reply": {
+        "id": "9017dc72105a4f61",
+        "body": "검토 담당 a1 준비 완료입니다. 근거: SKILL.md와 references/messaging.md를 직접 읽었고, 이 세션을 공개(status=published)했으며, 수신함에서 원 요청 960d055aca004b34(kind=task)를 직접 읽었습니다. 작업 방식: 검토 자료를 attachments 또는 본문으로 보내 주시면 읽기 전용으로 검토해 근거와 자료 식별 문구를 붙여 회신하고, 후속 검토도 같은 방식으로 받습니다. 권한·설정 변경 요청은 받지 않습니다.",
+        "outcome": "succeeded",
+        "sender": {
+          "machine": "e4824763e4b2ea2e28e3107f0c8e44d4e9e690eaa387c2f1b7c1de0b3d4ae01d",
+          "runtime": "claude",
+          "home_id": "1f3efe9ffb9cf15ba352aa22f67362777ae05495d0bb84b9b5b8268090817da7",
+          "session_id": "d9736a11-0c50-4196-995d-0f87a4634f07",
+          "ref": null,
+          "name": null,
+          "alias": null
+        },
+        "receiver": {
+          "runtime": "codex",
+          "home": "/private/tmp/native-journey-mixed-proc-mini-pe1e7c8g/codex-home",
+          "session_id": "01a187cf-5153-7e53-810d-405946f9e666",
+          "ref": "83d506",
+          "name": "requester",
+          "alias": "codex-home"
+        },
+        "received_at": 1793280507.00119
+      },
+      "receiver_request_state": "acknowledged",
+      "caller_reply_state": "acknowledged",
+      "file_marker_in_reply": false
+    },
+    {
+      "id": "de6caa36ed204273",
+      "purpose": "question",
+      "sender": {
+        "runtime": "codex",
+        "home": "/private/tmp/native-journey-mixed-proc-mini-pe1e7c8g/codex-home",
+        "session_id": "01a187cf-5153-7e53-810d-405946f9e666",
+        "ref": "83d506",
+        "name": "requester",
+        "alias": "codex-home"
+      },
+      "target": {
+        "machine": "e4824763e4b2ea2e28e3107f0c8e44d4e9e690eaa387c2f1b7c1de0b3d4ae01d",
+        "runtime": "claude",
+        "home_id": "1f3efe9ffb9cf15ba352aa22f67362777ae05495d0bb84b9b5b8268090817da7",
+        "session_id": "d9736a11-0c50-4196-995d-0f87a4634f07",
+        "ref": "net:e4824763e4b2ea2e28e3107f0c8e44d4e9e690eaa387c2f1b7c1de0b3d4ae01d:claude:1f3efe9ffb9cf15ba352aa22f67362777ae05495d0bb84b9b5b8268090817da7:d9736a11-0c50-4196-995d-0f87a4634f07",
+        "name": "a1",
+        "alias": "e4824763e4b2ea2e28e3107f0c8e44d4e9e690eaa387c2f1b7c1de0b3d4ae01d"
+      },
+      "body": "첫 검토의 단위 수 계산과 후계자 함수 유도를 반영한 수정안 1입니다. 첨부 사본을 직접 읽고 MIXDOC 식별 문구와 버전을 확인한 뒤 주장, 근거, 수정 이유의 정확성과 남은 오류를 후속 검토해 주세요. 수용 가능한지 명시해 주세요.",
+      "attachments": [
+        {
+          "path": "manifest:7ee9db6787a94885b1a0c4fb4e2426e9",
+          "id": "7ee9db6787a94885b1a0c4fb4e2426e9",
+          "version": 2,
+          "sha256": "3221b1263d57061d6888ab26a022fe8453c9f4906dfc731f7536d25f912bbaef",
+          "size": 638
+        }
+      ],
+      "reply": {
+        "id": "ee010a0cf6f246ad",
+        "body": "수용 가능합니다. 확인한 자료: review-material-revised.md (638 bytes), 자료 식별 문구 MIXDOC-643bdef6b9044a78, 버전 수정안 1을 xsm_files로 직접 읽었습니다. 검토: (1) 주장 2+2=4는 옳습니다. (2) 근거의 유도가 정확합니다. 2=S(1), 1=S(0)이므로 2+1=S(2+0)=S(2)=3, 2+2=S(2+1)=S(3)=4입니다. 재귀 정의 a+0=a, a+S(b)=S(a+b) 적용에 오류가 없습니다. 겹치지 않는 2단위 묶음 두 개의 합이 4단위라는 서술도 맞습니다. (3) 수정 이유는 원문 가정이 표준 덧셈과 모순된다는 점과 반영 내용을 정확히 기술했습니다. 남은 오류는 없습니다. 선택 사항인 사소한 정리만 남깁니다. 후계자 함수 정의는 자연수 기준이므로 \"정수\"를 \"자연수(또는 음이 아닌 정수)\"로 쓰면 더 엄밀하며, 이는 수용 여부에 영향이 없습니다.",
+        "outcome": "succeeded",
+        "sender": {
+          "machine": "e4824763e4b2ea2e28e3107f0c8e44d4e9e690eaa387c2f1b7c1de0b3d4ae01d",
+          "runtime": "claude",
+          "home_id": "1f3efe9ffb9cf15ba352aa22f67362777ae05495d0bb84b9b5b8268090817da7",
+          "session_id": "d9736a11-0c50-4196-995d-0f87a4634f07",
+          "ref": null,
+          "name": null,
+          "alias": null
+        },
+        "receiver": {
+          "runtime": "codex",
+          "home": "/private/tmp/native-journey-mixed-proc-mini-pe1e7c8g/codex-home",
+          "session_id": "01a187cf-5153-7e53-810d-405946f9e666",
+          "ref": "83d506",
+          "name": "requester",
+          "alias": "codex-home"
+        },
+        "received_at": 1793280571.325834
+      },
+      "receiver_request_state": "acknowledged",
+      "caller_reply_state": "acknowledged",
+      "file_marker_in_reply": true
+    },
+    {
+      "id": "664b736162384904",
+      "purpose": "question",
+      "sender": {
+        "runtime": "codex",
+        "home": "/private/tmp/native-journey-mixed-proc-mini-pe1e7c8g/codex-home",
+        "session_id": "01a187cf-5153-7e53-810d-405946f9e666",
+        "ref": "83d506",
+        "name": "requester",
+        "alias": "codex-home"
+      },
+      "target": {
+        "machine": "e4824763e4b2ea2e28e3107f0c8e44d4e9e690eaa387c2f1b7c1de0b3d4ae01d",
+        "runtime": "claude",
+        "home_id": "1f3efe9ffb9cf15ba352aa22f67362777ae05495d0bb84b9b5b8268090817da7",
+        "session_id": "d9736a11-0c50-4196-995d-0f87a4634f07",
+        "ref": "net:e4824763e4b2ea2e28e3107f0c8e44d4e9e690eaa387c2f1b7c1de0b3d4ae01d:claude:1f3efe9ffb9cf15ba352aa22f67362777ae05495d0bb84b9b5b8268090817da7:d9736a11-0c50-4196-995d-0f87a4634f07",
+        "name": "a1",
+        "alias": "e4824763e4b2ea2e28e3107f0c8e44d4e9e690eaa387c2f1b7c1de0b3d4ae01d"
+      },
+      "body": "준비 회신을 확인했습니다. 제가 작업폴더에서 직접 읽은 review-material.md의 정확한 사본을 첨부합니다. 사본을 직접 읽고 자료 식별 문구를 명시하여 주장과 근거를 독립적으로 검토해 주세요. 오류의 구체적 근거와 수정 방향을 회신해 주세요. 이후 이를 반영한 수정안을 다시 검토 요청하겠습니다.",
+      "attachments": [
+        {
+          "path": "manifest:9d981a759f1043378738e502d061c818",
+          "id": "9d981a759f1043378738e502d061c818",
+          "version": 1,
+          "sha256": "8b7ed708b0b8e294c330fe6ffb2b93a83ff26d7d896eb8c471f8794a72498cfd",
+          "size": 296
+        }
+      ],
+      "reply": {
+        "id": "f666be91a9e34cfe",
+        "body": "자료 식별 문구 MIXDOC-643bdef6b9044a78 (review-material.md, 296 bytes) 사본을 xsm_files로 직접 읽고 검토했습니다. 결론: 주장 \"표준 정수 산술에서 2+2=5\"는 틀렸습니다. 오류 근거: (1) 표준 정수 산술(페아노 공리)에서 2+2=S(S(2))=4입니다. 2+0=2, 2+1=3, 2+2=4로 계산됩니다. (2) 근거 \"두 단위 묶음 두 개를 합치면 다섯 단위\"는 가정 자체가 틀립니다. 2단위 묶음 2개는 2x2=4단위이며, 5가 되려면 묶음 크기나 개수가 달라야 합니다. 합치는 과정에서 단위가 생기지 않습니다. 수정 방향: 주장을 \"표준 정수 산술에서 2+2=4이다\"로 고치고, 근거는 \"2단위 묶음 두 개를 합치면 2+2=4단위\"로 바꾸거나 후계자 함수 정의로 유도하세요. 5를 유지하려면 \"표준 정수 산술\"이 아니라 다른 체계나 비표준 정의를 명시하고 그 정의를 근거로 제시해야 합니다. 수정안 재검토 요청을 기다립니다.",
+        "outcome": "succeeded",
+        "sender": {
+          "machine": "e4824763e4b2ea2e28e3107f0c8e44d4e9e690eaa387c2f1b7c1de0b3d4ae01d",
+          "runtime": "claude",
+          "home_id": "1f3efe9ffb9cf15ba352aa22f67362777ae05495d0bb84b9b5b8268090817da7",
+          "session_id": "d9736a11-0c50-4196-995d-0f87a4634f07",
+          "ref": null,
+          "name": null,
+          "alias": null
+        },
+        "receiver": {
+          "runtime": "codex",
+          "home": "/private/tmp/native-journey-mixed-proc-mini-pe1e7c8g/codex-home",
+          "session_id": "01a187cf-5153-7e53-810d-405946f9e666",
+          "ref": "83d506",
+          "name": "requester",
+          "alias": "codex-home"
+        },
+        "received_at": 1793280535.1442208
+      },
+      "receiver_request_state": "acknowledged",
+      "caller_reply_state": "acknowledged",
+      "file_marker_in_reply": true
+    }
+  ],
+  "file_transfers": [
+    {
+      "request_text": "준비 회신을 확인했습니다. 제가 작업폴더에서 직접 읽은 review-material.md의 정확한 사본을 첨부합니다. 사본을 직접 읽고 자료 식별 문구를 명시하여 주장과 근거를 독립적으로 검토해 주세요. 오류의 구체적 근거와 수정 방향을 회신해 주세요. 이후 이를 반영한 수정안을 다시 검토 요청하겠습니다.",
+      "name": "review-material.md",
+      "caller_attachment_exact_file": true,
+      "bytes": 296,
+      "sha256": "0b253f4be06fb900017b9becdc3cf98afe3a4f7b4ebd8bb33d78b06200667f75",
+      "marker_in_attachment": true
+    },
+    {
+      "request_text": "첫 검토의 단위 수 계산과 후계자 함수 유도를 반영한 수정안 1입니다. 첨부 사본을 직접 읽고 MIXDOC 식별 문구와 버전을 확인한 뒤 주장, 근거, 수정 이유의 정확성과 남은 오류를 후속 검토해 주세요. 수용 가능한지 명시해 주세요.",
+      "name": "review-material-revised.md",
+      "caller_attachment_exact_file": true,
+      "bytes": 638,
+      "sha256": "463479d4a25ef9a708d71a09832bb96ab1199ffc469b840fd3f29fe40b3f31a2",
+      "marker_in_attachment": true
+    }
+  ],
+  "receiver_file_reads": [
+    {
+      "input": {
+        "storage_id": "56af7f6093b244ad9fe9437acf65238b",
+        "entry_id": "57056d5426484c7b99597f7346a43e49"
+      },
+      "tool_result": {
+        "tool_use_id": "toolu_013Th16yFG8XRLfFquvQFZZA",
+        "type": "tool_result",
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"storage_id\":\"56af7f6093b244ad9fe9437acf65238b\",\"entry_id\":\"57056d5426484c7b99597f7346a43e49\",\"encoding\":\"text\",\"content\":\"검토 자료\\n\\n주장: 표준 정수 산술에서 2+2=5이다.\\n근거: 두 단위 묶음 두 개를 합치면 다섯 단위가 된다고 가정했다.\\n검토 요청: 이 주장과 근거를 독립적으로 검토하고 수정 방향을 제시한다.\\n자료 식별 문구: MIXDOC-643bdef6b9044a78\\n\",\"inbox_pending\":0}"
+          }
+        ]
+      },
+      "contains_original_exact": true,
+      "contains_revised_exact": false,
+      "contains_file_only_marker": true
+    },
+    {
+      "input": {
+        "storage_id": "efc6fdf0fec54f0b992ee4404bc88435",
+        "entry_id": "9a4a6ea748b74793831bf96f1969f1d8"
+      },
+      "tool_result": {
+        "tool_use_id": "toolu_012pDYMAiepCMXy6zQugNzi7",
+        "type": "tool_result",
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"storage_id\":\"efc6fdf0fec54f0b992ee4404bc88435\",\"entry_id\":\"9a4a6ea748b74793831bf96f1969f1d8\",\"encoding\":\"text\",\"content\":\"검토 자료 수정안\\n\\n주장: 표준 정수 산술에서 2+2=4이다.\\n근거: 서로 겹치지 않는 2단위 묶음 두 개를 합치면 총 4단위가 된다. 덧셈의 재귀 정의 a+0=a, a+S(b)=S(a+b)를 적용하면 2+1=S(2+0)=3이고 2+2=S(2+1)=4이다. 여기서 S(n)은 n의 다음 정수이다.\\n수정 이유: 원문의 “다섯 단위가 된다”는 가정은 표준 정수 덧셈과 모순되며, 주장을 뒷받침하는 독립적인 근거가 아니다. a1의 사본 검토에서 제시한 단위 수 계산과 후계자 함수 유도를 반영했다.\\n자료 식별 문구: MIXDOC-643bdef6b9044a78\\n버전: 수정안 1\\n\",\"inbox_pending\":0}"
+          }
+        ]
+      },
+      "contains_original_exact": false,
+      "contains_revised_exact": true,
+      "contains_file_only_marker": true
+    }
+  ],
+  "marker_only_in_document": true,
+  "existing_approved_native_hook_sources": {
+    "exit": 0,
+    "stdout": "{\"existing_approved_XSM_sources\": 2, \"new_trust_hashes_created\": 0, \"same_approval_blocks\": true, \"cached_plugin\": \"/private/tmp/native-journey-mixed-proc-mini-pe1e7c8g/codex-home/plugins/cache/xsm/xsm/0.4.20\", \"material\": \"/private/tmp/native-journey-mixed-proc-mini-pe1e7c8g/work/review-material.md\"}\n",
+    "stderr": ""
+  },
+  "collaborations": [
+    {
+      "id": "cc9f37507622cce99ef8e36f75679bc4a88456bcae8ff554d7a0d0b43a04f1bf",
+      "kind": "collaboration",
+      "endpoints": [
+        {
+          "runtime": "codex",
+          "home": "/private/tmp/native-journey-mixed-proc-mini-pe1e7c8g/codex-home",
+          "session_id": "01a187cf-5153-7e53-810d-405946f9e666"
+        },
+        {
+          "machine": "e4824763e4b2ea2e28e3107f0c8e44d4e9e690eaa387c2f1b7c1de0b3d4ae01d",
+          "runtime": "claude",
+          "home_id": "1f3efe9ffb9cf15ba352aa22f67362777ae05495d0bb84b9b5b8268090817da7",
+          "session_id": "d9736a11-0c50-4196-995d-0f87a4634f07"
+        }
+      ],
+      "active": true,
+      "verdict": "공개된 a1이랑 붙어서 일하자. 이 작업폴더의 review-material.md를 직접 읽어 a1에게 자료 사본의 검토를 부탁하고, 받은 근거를 반영한 수정안을 후속 검토받아 보고하세요. 실제 준비 회신을 확인한 뒤 업무를 진행하세요. 최신 안내는 /private/tmp/native-journey-mixed-proc-mini-pe1e7c8g/payload/skills/xsm/SKILL.md입니다. 권한을 늘리거나 본문·ACK·동의 답변을 상태파일에서 보정하지 마세요.",
+      "created_at": 1793280497.012384
+    }
+  ],
+  "repository_maps_created": false,
+  "native_MCP_counts": {
+    "claude": {
+      "Read": 2,
+      "ToolSearch": 1,
+      "mcp__xsm__xsm_publish": 2,
+      "mcp__xsm__xsm_inbox": 3,
+      "mcp__xsm__xsm_send": 3,
+      "mcp__xsm__xsm_ack": 3,
+      "mcp__xsm__xsm_files": 2
+    },
+    "codex": {
+      "xsm_discover": 1,
+      "xsm_connect": 2,
+      "xsm_inbox": 3,
+      "xsm_ack": 3,
+      "xsm_ask": 2
+    }
+  },
+  "discovery_before_business_MCP": true,
+  "P2P_body_origin_evidence": [
+    {
+      "direction": "caller-to-reviewer",
+      "body_sha256": "dae85dafa408416d5fc92b173995abd019e1cb4c45607edb25ce782934c31ac8",
+      "matching_native_inbound_events": 1,
+      "TLS_origin_matches": true
+    },
+    {
+      "direction": "caller-to-reviewer",
+      "body_sha256": "8452e46cdded45f22c5a634bd2c86a4801ada87302de24643708bef2217f3b6d",
+      "matching_native_inbound_events": 1,
+      "TLS_origin_matches": true
+    },
+    {
+      "direction": "caller-to-reviewer",
+      "body_sha256": "929283e0cf45dd491582d38765bbd64df2786b2065eb90be17373bd776b678ce",
+      "matching_native_inbound_events": 1,
+      "TLS_origin_matches": true
+    },
+    {
+      "direction": "reviewer-to-caller",
+      "body_sha256": "a6c2615a0582b206e72a1b1915272385a161816770c6fcc99a6817abb1919dda",
+      "matching_native_inbound_events": 1,
+      "TLS_origin_matches": true
+    },
+    {
+      "direction": "reviewer-to-caller",
+      "body_sha256": "14cfb45e638acc5265a858a00813686e34f1dd608f0770a57532f2dd75cb056c",
+      "matching_native_inbound_events": 1,
+      "TLS_origin_matches": true
+    },
+    {
+      "direction": "reviewer-to-caller",
+      "body_sha256": "aa7885942d7787cd98fc9820c1e1db6c90b502163fe22a25a418397d6a908487",
+      "matching_native_inbound_events": 1,
+      "TLS_origin_matches": true
+    }
+  ],
+  "SSHDeny": {
+    "Book_preflight": {
+      "exit": 0,
+      "stdout": "[{\"port\": 22, \"errno\": 1, \"error\": \"[Errno 1] Operation not permitted\"}, {\"port\": 8022, \"errno\": 1, \"error\": \"[Errno 1] Operation not permitted\"}]\n",
+      "stderr": "",
+      "operator_bootstrap_outside_guard": true
+    },
+    "Mini_preflight": {
+      "exit": 1,
+      "stdout": "{\"TCP_probe_exit\": 0, \"stdout\": \"[{\\\"port\\\": 22, \\\"errno\\\": 1}, {\\\"port\\\": 8022, \\\"errno\\\": 1}]\\n\", \"stderr\": \"\"}\n",
+      "stderr": "Traceback (most recent call last):\n  File \"<stdin>\", line 6, in <module>\n  File \"/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/subprocess.py\", line 507, in run\n    stdout, stderr = process.communicate(input, timeout=timeout)\n  File \"/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/subprocess.py\", line 1134, in communicate\n    stdout, stderr = self._communicate(input, endtime, timeout)\n  File \"/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/subprocess.py\", line 1980, in _communicate\n    self._check_timeout(endtime, orig_timeout, stdout, stderr)\n  File \"/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/subprocess.py\", line 1178, in _check_timeout\n    raise TimeoutExpired(\nsubprocess.TimeoutExpired: Command '['/private/tmp/xnj-mini-gl2ut38t/native-runtime/codex', 'plugin', 'list']' timed out after 15 seconds\n"
+    },
+    "outside_guard": {
+      "exit": 0,
+      "stdout": "[{\"port\": 22, \"outside_errno\": 0}, {\"port\": 8022, \"outside_errno\": 61}]\n",
+      "stderr": ""
+    },
+    "scope": "Book whole native SDK process plus inherited MCP/hooks; Mini guarded MCP/own hooks plus original workspace-write network-restricted shell; Mini outer parent guard conflict kept separate"
+  },
+  "profiles": {
+    "Book_all_old_baseline_match": false,
+    "Book_unmatched": [
+      "/Users/jaesolshin/.claude-3/.claude.json"
+    ],
+    "Mini_all_baseline_match": true,
+    "Book_settings_and_auth_unchanged": true,
+    "unattributed_profile_data_drift": true
+  },
+  "cleanup": {
+    "book": {
+      "at": 1793281514.056555,
+      "root": "/private/tmp/native-journey-mixed-proc-book-g54im4t2",
+      "service_before": {
+        "status": "running",
+        "endpoint_id": "e4824763e4b2ea2e28e3107f0c8e44d4e9e690eaa387c2f1b7c1de0b3d4ae01d",
+        "address": {
+          "addrs": [
+            {
+              "Ip": "100.123.30.11:52940"
+            },
+            {
+              "Ip": "127.0.0.1:52940"
+            },
+            {
+              "Ip": "172.30.1.32:52940"
+            },
+            {
+              "Ip": "[::1]:50763"
+            }
+          ],
+          "id": "e4824763e4b2ea2e28e3107f0c8e44d4e9e690eaa387c2f1b7c1de0b3d4ae01d"
+        },
+        "active": true,
+        "network": {
+          "version": 1,
+          "network_id": "e4824763e4b2ea2e28e3107f0c8e44d4e9e690eaa387c2f1b7c1de0b3d4ae01d:b06a6e33ece42d3e3cc863ba15f5069c424cb512c832e5b7f8f21c1945430885",
+          "name": "mixed-libproc-20261029",
+          "members": [
+            {
+              "endpoint_id": "c707810aefe751232c0a82ce65df1b40f3129e1582e2f4440b5c3c565cebdde1",
+              "machine_name": "native-journey-mini",
+              "status": "active"
+            },
+            {
+              "endpoint_id": "e4824763e4b2ea2e28e3107f0c8e44d4e9e690eaa387c2f1b7c1de0b3d4ae01d",
+              "machine_name": "mixed-claude-book",
+              "status": "active"
+            }
+          ],
+          "invites": [
+            {
+              "invite_hash": "31b3b6c0aa71c269db00ae37703d9e6b2f55895dfd8b6e55dc27b81e292eea36",
+              "issuer": "e4824763e4b2ea2e28e3107f0c8e44d4e9e690eaa387c2f1b7c1de0b3d4ae01d",
+              "reusable": true,
+              "expires_at": null,
+              "revoked": false,
+              "consumed_by": [
+                "c707810aefe751232c0a82ce65df1b40f3129e1582e2f4440b5c3c565cebdde1"
+              ]
+            }
+          ]
+        },
+        "transport": {
+          "address": {
+            "addrs": [
+              {
+                "Ip": "100.123.30.11:52940"
+              },
+              {
+                "Ip": "127.0.0.1:52940"
+              },
+              {
+                "Ip": "192.168.0.11:52940"
+              },
+              {
+                "Ip": "[::1]:50763"
+              }
+            ],
+            "id": "e4824763e4b2ea2e28e3107f0c8e44d4e9e690eaa387c2f1b7c1de0b3d4ae01d"
+          },
+          "bound_addresses": [
+            "0.0.0.0:52940",
+            "[::]:50763"
+          ],
+          "endpoint_id": "e4824763e4b2ea2e28e3107f0c8e44d4e9e690eaa387c2f1b7c1de0b3d4ae01d",
+          "event": "ready",
+          "port_fallback": false,
+          "relay_mode": "off",
+          "relay_online": false,
+          "requested_port": 0
+        },
+        "last_transport": {
+          "path": "direct",
+          "selected": "direct",
+          "selection_reason": "iroh_path_selection",
+          "fallback_reason": null,
+          "remote_address": "100.77.24.16:62121",
+          "paths": [
+            {
+              "kind": "direct",
+              "remote": "ip:100.77.24.16:62121",
+              "selected": true
+            }
+          ]
+        },
+        "service_pid": 34354,
+        "engine_pid": 34375,
+        "known_peers": [
+          "c707810aefe751232c0a82ce65df1b40f3129e1582e2f4440b5c3c565cebdde1"
+        ]
+      },
+      "stop": {
+        "exit": 0,
+        "stdout": "{\"exit\": 0, \"result\": {\"status\": \"stopping\"}, \"stderr_bytes\": 0}\n",
+        "stderr": ""
+      },
+      "signals": [],
+      "known_process_count": 11,
+      "remaining_owned": [],
+      "state_and_keys_deleted": false,
+      "evidence_deleted": false
+    },
+    "mini": {
+      "at": 1793281513.936801,
+      "root": "/private/tmp/native-journey-mixed-proc-mini-pe1e7c8g",
+      "service_before": {
+        "status": "running",
+        "endpoint_id": "c707810aefe751232c0a82ce65df1b40f3129e1582e2f4440b5c3c565cebdde1",
+        "address": {
+          "addrs": [
+            {
+              "Ip": "100.77.24.16:62121"
+            },
+            {
+              "Ip": "127.0.0.1:62121"
+            },
+            {
+              "Ip": "192.168.0.64:62121"
+            },
+            {
+              "Ip": "[::1]:49418"
+            }
+          ],
+          "id": "c707810aefe751232c0a82ce65df1b40f3129e1582e2f4440b5c3c565cebdde1"
+        },
+        "active": true,
+        "network": {
+          "version": 1,
+          "network_id": "e4824763e4b2ea2e28e3107f0c8e44d4e9e690eaa387c2f1b7c1de0b3d4ae01d:b06a6e33ece42d3e3cc863ba15f5069c424cb512c832e5b7f8f21c1945430885",
+          "name": "mixed-libproc-20261029",
+          "members": [
+            {
+              "endpoint_id": "c707810aefe751232c0a82ce65df1b40f3129e1582e2f4440b5c3c565cebdde1",
+              "machine_name": "native-journey-mini",
+              "status": "active"
+            },
+            {
+              "endpoint_id": "e4824763e4b2ea2e28e3107f0c8e44d4e9e690eaa387c2f1b7c1de0b3d4ae01d",
+              "machine_name": "mixed-claude-book",
+              "status": "active"
+            }
+          ],
+          "invites": [
+            {
+              "invite_hash": "31b3b6c0aa71c269db00ae37703d9e6b2f55895dfd8b6e55dc27b81e292eea36",
+              "issuer": "e4824763e4b2ea2e28e3107f0c8e44d4e9e690eaa387c2f1b7c1de0b3d4ae01d",
+              "reusable": true,
+              "expires_at": null,
+              "revoked": false,
+              "consumed_by": [
+                "c707810aefe751232c0a82ce65df1b40f3129e1582e2f4440b5c3c565cebdde1"
+              ]
+            }
+          ]
+        },
+        "transport": {
+          "address": {
+            "addrs": [
+              {
+                "Ip": "100.77.24.16:62121"
+              },
+              {
+                "Ip": "127.0.0.1:62121"
+              },
+              {
+                "Ip": "192.168.0.64:62121"
+              },
+              {
+                "Ip": "[::1]:49418"
+              }
+            ],
+            "id": "c707810aefe751232c0a82ce65df1b40f3129e1582e2f4440b5c3c565cebdde1"
+          },
+          "bound_addresses": [
+            "0.0.0.0:62121",
+            "[::]:49418"
+          ],
+          "endpoint_id": "c707810aefe751232c0a82ce65df1b40f3129e1582e2f4440b5c3c565cebdde1",
+          "event": "ready",
+          "port_fallback": false,
+          "relay_mode": "off",
+          "relay_online": false,
+          "requested_port": 0
+        },
+        "last_transport": {
+          "path": "direct",
+          "selected": "direct",
+          "selection_reason": "iroh_path_selection",
+          "fallback_reason": null,
+          "remote_address": "100.123.30.11:52940",
+          "paths": [
+            {
+              "kind": "direct",
+              "remote": "ip:100.123.30.11:52940",
+              "selected": true
+            }
+          ]
+        },
+        "service_pid": 33871,
+        "engine_pid": 33873,
+        "known_peers": [
+          "e4824763e4b2ea2e28e3107f0c8e44d4e9e690eaa387c2f1b7c1de0b3d4ae01d"
+        ]
+      },
+      "stop": {
+        "exit": 0,
+        "stdout": "{\"exit\": 0, \"result\": {\"status\": \"stopping\"}, \"stderr_bytes\": 0}\n",
+        "stderr": ""
+      },
+      "signals": [],
+      "known_process_count": 8,
+      "remaining_owned": [],
+      "state_and_keys_deleted": false,
+      "evidence_deleted": false
+    }
+  },
+  "file_stage_source_SHA": {
+    "xsm/files.py": "01425c645b7047590c452aaa7ea4f348a17aa5e25481e8ae4597dee5ab1d1ca3",
+    "xsm/materials.py": "8ca0986b7e8bfab10f6ba3ffb8301e53974ea7721dcbded2bc7cf0931d43ea9e",
+    "xsm/network_messages.py": "2b2a238ecf9e7a55265fabc5673de086c97818b78188d9716cceb6fb214c22a2",
+    "xsm/network.py": "f52485d50b5008a92860d8409df0b722fef0c26034c87938a1967af59d653265",
+    "xsm/mcp.py": "c13c6cc62149a6728ef7cd936e32428f055c72e038cd460a8fc2ee6124a13b2d",
+    "xsm/instructions.py": "4b3208a5b1b6b951bc0a14b468576eb0da7be2352d5fb28dbc0d816a8087feb8"
+  },
+  "raw_statuses_not_normalized": true,
+  "business_complete": true,
+  "materials_complete": true,
+  "P2P_verified": true,
+  "cleanup_complete": true,
+  "all_isolation_conditions_verified": false,
+  "native_hook_verdict_exact_user_prompt": true,
+  "requester_self_publish_calls": 0,
+  "caller_file_read_evidence": [
+    {
+      "actual_native_file_read": true,
+      "commands": [
+        "/bin/zsh -c 'cat /private/tmp/native-journey-mixed-proc-mini-pe1e7c8g/work/review-material.md'"
+      ],
+      "sha256": "0b253f4be06fb900017b9becdc3cf98afe3a4f7b4ebd8bb33d78b06200667f75"
+    },
+    {
+      "actual_native_file_read": true,
+      "commands": [
+        "/bin/zsh -lc 'cat review-material-revised.md'"
+      ],
+      "sha256": "463479d4a25ef9a708d71a09832bb96ab1199ffc469b840fd3f29fe40b3f31a2"
+    }
+  ],
+  "caller_files_really_read": true,
+  "native_hook_source_and_argv": {
+    "existing_approved_blocks": 2,
+    "reused_unchanged": true,
+    "hook_files": [
+      {
+        "path": "hooks/codex-hooks.json",
+        "global_sha256": "b972a24035252a9a56c1bc315549dd37b3b066c4865335625e4246cbf90a550b",
+        "private_sha256": "b972a24035252a9a56c1bc315549dd37b3b066c4865335625e4246cbf90a550b",
+        "same": true
+      },
+      {
+        "path": "hooks/xsm-hook",
+        "global_sha256": "b5d01706b7b2d0b0dc1ad0094c8a7211c730b4c5d34fb8dd1be6beea571f547c",
+        "private_sha256": "b5d01706b7b2d0b0dc1ad0094c8a7211c730b4c5d34fb8dd1be6beea571f547c",
+        "same": true
+      },
+      {
+        "path": "hooks/xsm-hook.py",
+        "global_sha256": "c94bf31c8e282e8745c3666e6de6186098bd5737bc4ad87676837c8f7328df92",
+        "private_sha256": "c94bf31c8e282e8745c3666e6de6186098bd5737bc4ad87676837c8f7328df92",
+        "same": true
+      }
+    ],
+    "actual_argv": [
+      "/private/tmp/xnj-mini-gl2ut38t/native-runtime/codex",
+      "exec",
+      "--json",
+      "--sandbox",
+      "workspace-write",
+      "-c",
+      "approval_policy=\"never\"",
+      "-c",
+      "mcp_servers.xsm.command=\"/usr/bin/sandbox-exec\"",
+      "-c",
+      "mcp_servers.xsm.args=[\"-f\", \"/private/tmp/native-journey-mixed-proc-mini-pe1e7c8g/write-ssh-guard.sb\", \"/usr/bin/python3\", \"-B\", \"/private/tmp/native-journey-mixed-proc-mini-pe1e7c8g/payload/proxy.py\", \"/private/tmp/native-journey-mixed-proc-mini-pe1e7c8g/actor\", \"/private/tmp/native-journey-mixed-proc-mini-pe1e7c8g/payload\"]",
+      "-c",
+      "mcp_servers.xsm.cwd=\"/private/tmp/native-journey-mixed-proc-mini-pe1e7c8g/payload\"",
+      "-c",
+      "mcp_servers.xsm.env.XSM_HOME=\"/private/tmp/native-journey-mixed-proc-mini-pe1e7c8g/state\"",
+      "-c",
+      "mcp_servers.xsm.env.CODEX_HOME=\"/private/tmp/native-journey-mixed-proc-mini-pe1e7c8g/codex-home\"",
+      "-c",
+      "mcp_servers.xsm.env.PYTHONPATH=\"/private/tmp/native-journey-mixed-proc-mini-pe1e7c8g/payload\"",
+      "-c",
+      "mcp_servers.xsm.env.PYTHONDONTWRITEBYTECODE=\"1\"",
+      "-c",
+      "mcp_servers.xsm.env.TMPDIR=\"/private/tmp/native-journey-mixed-proc-mini-pe1e7c8g/tmp\"",
+      "-c",
+      "mcp_servers.xsm.env.PATH=\"/private/tmp/native-journey-mixed-proc-mini-pe1e7c8g/shim:/private/tmp/native-journey-mixed-proc-mini-pe1e7c8g/payload/bin:/Users/jaesolshin/.railway/bin:/Users/jaesolshin/.pyenv/shims:/Users/jaesolshin/.pyenv/bin:/Users/jaesolshin/.local/bin:/usr/bin:/bin:/usr/sbin:/sbin\"",
+      "resume",
+      "01a187cf-5153-7e53-810d-405946f9e666",
+      "공개된 a1이랑 붙어서 일하자. 이 작업폴더의 review-material.md를 직접 읽어 a1에게 자료 사본의 검토를 부탁하고, 받은 근거를 반영한 수정안을 후속 검토받아 보고하세요. 실제 준비 회신을 확인한 뒤 업무를 진행하세요. 최신 안내는 /private/tmp/native-journey-mixed-proc-mini-pe1e7c8g/payload/skills/xsm/SKILL.md입니다. 권한을 늘리거나 본문·ACK·동의 답변을 상태파일에서 보정하지 마세요."
+    ],
+    "forbidden_flags_present": []
+  },
+  "prior_pending_evidence": [
+    {
+      "path": "/private/tmp/xnj-mini-gl2ut38t/state/handoffs/4029b379d07920ef2d9f02a4aec75aaa625a5d17d8b75054a1edb4302fdfb7d7/ed42ef075aff4b47.json",
+      "id": "ed42ef075aff4b47",
+      "state": "pending",
+      "sha256": "5ea991dc642a9e425dd7f5294290407bfd19ce080c8dbaccee05cbc1f1cee2d1",
+      "receiver_CID": "01a1862d-c1f7-73d2-b616-f34d78d81772"
+    }
+  ],
+  "A21_04": {
+    "same_name_self_remote_covered": false,
+    "no_original_misdelivery": true,
+    "new_models": 0,
+    "labels_changed": false
+  }
+}

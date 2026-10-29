@@ -1,0 +1,28 @@
+{
+  "runtime": "claude",
+  "profile": "/Users/jaesolshin/.claude-3",
+  "session_id": "3bdc0235-4d28-480e-b9aa-e5d1624ec4dd",
+  "model_observed": "claude-sonnet-5-5",
+  "exit_code": 0,
+  "request_id": "355fb08092974278",
+  "send_status": "stored",
+  "receiver_status": "acknowledged",
+  "actual_attachment_reply": true,
+  "reply_ids": [
+    "a500cdba879d4870"
+  ],
+  "tool_calls": [
+    "ToolSearch",
+    "mcp__xsm__xsm_inbox",
+    "mcp__xsm__xsm_files",
+    "mcp__xsm__xsm_ack",
+    "mcp__xsm__xsm_send"
+  ],
+  "permission_denials": [],
+  "result": "첨부 평가를 마쳤습니다. 회신은 보냈고 파일·설정·권한은 바꾸지 않았습니다.\n\n- **inbox:** `xsm_inbox(wait=5)`를 첫 호출에서 바로 메시지를 받았습니다(id `355fb08092974278`, 발신 Reason Network 조사@codex-3).\n- **첨부 읽기:** `xsm_files`로 `검토.json`을 읽었습니다. 값은 `claude-file-f82df71ec2c24a6d8035b277c08fad66`입니다.\n- **ack:** claim token으로 `xsm_ack`를 호출했고 `355fb08092974278`이 확인 처리됐습니다.\n- **회신:** `ref:e885bc`에 `kind=reply`, `reply_to=355fb08092974278`, `outcome=succeeded`, `wake=never`로 file-token을 보냈습니다. 도구 응답은 \"strict FYI stored\"(id `a500cdba879d4870`)였고, 상대 세션이 다음 경계에서 읽도록 저장만 된 상태입니다.\n\n도구가 거절한 단계는 없었습니다.",
+  "events": "/private/tmp/p06-claude-kvt51lm9/claude.json",
+  "stderr": "/private/tmp/p06-claude-kvt51lm9/claude.err",
+  "fixture_state": "/private/tmp/p06-claude-kvt51lm9/state",
+  "permission_adjustments": false,
+  "token_only_in_attachment": true
+}

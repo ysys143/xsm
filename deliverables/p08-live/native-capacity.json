@@ -1,0 +1,102 @@
+{
+  "fixture_state": "/private/tmp/p08-native-memory-cn0y8j6u/state",
+  "configured_capacity": 4,
+  "actual_concurrent_children": [
+    {
+      "id": "capacity-3879b3ac-0",
+      "state": "running",
+      "pid": 47512
+    },
+    {
+      "id": "capacity-3879b3ac-1",
+      "state": "running",
+      "pid": 47516
+    },
+    {
+      "id": "capacity-3879b3ac-2",
+      "state": "running",
+      "pid": 47520
+    },
+    {
+      "id": "capacity-3879b3ac-3",
+      "state": "running",
+      "pid": 47524
+    }
+  ],
+  "overlap_observed": true,
+  "fifth_initial_status": "queued",
+  "fifth_admission": "overloaded",
+  "fifth_capacity": {
+    "limit": 4,
+    "busy": 4,
+    "available": 0
+  },
+  "fifth_initial_executed": false,
+  "fifth_id": "capacity-3879b3ac-4",
+  "fifth_resumed_same_id": true,
+  "fifth_resumed_status": "reply-stored",
+  "errors": {},
+  "completed": [
+    {
+      "id": "capacity-3879b3ac-2",
+      "status": "reply-stored",
+      "reply_id": "bd0745f622dc4d54",
+      "context_id": "703c3b3958db090725339d708af7ba1fcf21e430eb9aa236cf7c6737c097bcdd"
+    },
+    {
+      "id": "capacity-3879b3ac-1",
+      "status": "unknown",
+      "reply_id": null,
+      "context_id": "0d01c2417647864d89b295a21a232b927576beb9704cf66dd4771de83d53d4b5"
+    },
+    {
+      "id": "capacity-3879b3ac-3",
+      "status": "unknown",
+      "reply_id": null,
+      "context_id": "7685ccb9f3b5e20d6128c011062e3c843b17dcb396d3ca38eac4a6090e7efc84"
+    },
+    {
+      "id": "capacity-3879b3ac-0",
+      "status": "unknown",
+      "reply_id": null,
+      "context_id": "66ff952e253ae534ce316161783e24e86f4a57729b73c4c9c65874425d9ddea0"
+    },
+    {
+      "id": "capacity-3879b3ac-4",
+      "status": "reply-stored",
+      "reply_id": "5e98df250f284ce3",
+      "context_id": "c2507b86e785df4faa61b0e17715247a47f83d1236c422be438c4823507c42ee"
+    }
+  ],
+  "native_conversations": [
+    "01a18325-90a3-7b51-b415-f26424b537ac",
+    "01a18329-ef3b-7052-813b-22aca9b73e4e"
+  ],
+  "all_native_ids_retained": true,
+  "reply_mode": "explicit quiet publication; model permissions unchanged",
+  "global_settings_changed": false,
+  "permission_adjustments": false,
+  "accepted_result_count_before_fix": 2,
+  "actual_model_turns": 5,
+  "status": "admission and existing-output recovery passed; no model rerun",
+  "parser_defect": {
+    "unknown_requests": [
+      "capacity-3879b3ac-0",
+      "capacity-3879b3ac-1",
+      "capacity-3879b3ac-3"
+    ],
+    "native_diagnostic": "Reconnecting... 1/5 (exceeded retry limit, last status: 429 Too Many Requests)",
+    "each_has_turn_completed": true,
+    "expected_recovery": "read existing native stdout; never start a new model turn"
+  },
+  "accepted_result_count_after_readback": 5,
+  "native_conversations_after_readback": [
+    "01a18325-90a2-7043-a98f-931518158f12",
+    "01a18325-90a2-7700-8bf2-3ec8b8e55efc",
+    "01a18325-90a3-7831-a3af-ee6fc07b542a",
+    "01a18325-90a3-7b51-b415-f26424b537ac",
+    "01a18329-ef3b-7052-813b-22aca9b73e4e"
+  ],
+  "all_native_ids_retained_after_readback": true,
+  "readback_evidence": "deliverables/p08-live/native-capacity-readback.json"
+}

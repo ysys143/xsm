@@ -1,0 +1,151 @@
+{
+  "scope": "one C physical two-node engine-only UDP-egress-denied fixture; not D12 adoption",
+  "task_marker": "P11-QA-40c1afc34bbd43c4",
+  "local_root": "/private/tmp/p11-C-udp-s3mrn30l",
+  "peer_root": "/private/tmp/p11-C-udp-tih25w67",
+  "binary_sha256": "6ac4bb4837469867edc2dba3cbbd6e4dd9fb18ad0389db69ff6ef21683317a44",
+  "UDP_profile": "(version 1) (allow default) (deny network-outbound (remote udp \"*:*\"))",
+  "profile_applied_to": "each owned engine daemon Popen only",
+  "network_team_created": false,
+  "production_team_used": false,
+  "native_model_calls": 0,
+  "passed": false,
+  "phases": [],
+  "private_plan_sha256": "609a6c9813920f4e97a72d3342c08f5f5e900acadfdde74b4e325c60e564ce64",
+  "preflight": {
+    "scope": "two physical Macs; actual child-only kernel UDP denial and TCP control",
+    "local": {
+      "hostname": "Jaesolui-MacBookPro.local",
+      "root": "/private/tmp/p11-C-udp-s3mrn30l",
+      "uid": 501,
+      "profile": "(version 1) (allow default) (deny network-outbound (remote udp \"*:*\"))",
+      "normal_udp": {
+        "exit_code": 0,
+        "output": {
+          "sent": 17
+        },
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stderr_empty": true,
+        "datagram_received": true
+      },
+      "denied_udp": {
+        "exit_code": 0,
+        "output": {
+          "errno": 1,
+          "error": "PermissionError"
+        },
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stderr_empty": true,
+        "datagram_received": false
+      },
+      "TCP_under_same_profile": {
+        "exit_code": 0,
+        "output": {
+          "tcp_ok": true
+        },
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stderr_empty": true,
+        "parent_echo_observed": true
+      },
+      "passed": true,
+      "global_policy_changed": false,
+      "owned_sockets_closed": true
+    },
+    "peer": {
+      "hostname": "Jaesolui-Macmini.local",
+      "root": "/private/tmp/p11-C-udp-tih25w67",
+      "uid": 501,
+      "profile": "(version 1) (allow default) (deny network-outbound (remote udp \"*:*\"))",
+      "normal_udp": {
+        "exit_code": 0,
+        "output": {
+          "sent": 17
+        },
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stderr_empty": true,
+        "datagram_received": true
+      },
+      "denied_udp": {
+        "exit_code": 0,
+        "output": {
+          "errno": 1,
+          "error": "PermissionError"
+        },
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stderr_empty": true,
+        "datagram_received": false
+      },
+      "TCP_under_same_profile": {
+        "exit_code": 0,
+        "output": {
+          "tcp_ok": true
+        },
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stderr_empty": true,
+        "parent_echo_observed": true
+      },
+      "passed": true,
+      "global_policy_changed": false,
+      "owned_sockets_closed": true
+    },
+    "both_passed": true
+  },
+  "stage_peer": {
+    "staged": true,
+    "binary_sha256": "6ac4bb4837469867edc2dba3cbbd6e4dd9fb18ad0389db69ff6ef21683317a44",
+    "root": "/private/tmp/p11-C-udp-tih25w67",
+    "role": "controlled-peer"
+  },
+  "local_initial_handle": {
+    "pid": 19685,
+    "lstart": "Thu Oct 29 05:00:55 2026",
+    "binary_sha256": "6ac4bb4837469867edc2dba3cbbd6e4dd9fb18ad0389db69ff6ef21683317a44",
+    "alive_after_start": true,
+    "role": "local",
+    "socket": "/private/tmp/p11-C-udp-s3mrn30l/state/network.sock",
+    "UDP_profile": "(version 1) (allow default) (deny network-outbound (remote udp \"*:*\"))",
+    "sandbox_scope": "this owned engine daemon only",
+    "exit_code": -15
+  },
+  "local_endpoint": {
+    "endpoint_sha256": "9329c0dfda84f72e01199c21faa9a66257d21a3a022fad0b343ab030f9245c8a",
+    "exit_code": 0
+  },
+  "failure": {
+    "operation": "controller",
+    "error": {
+      "error_type": "RuntimeError",
+      "error_sha256": "4a1b74ee3f19cd00a25f4f3e3a1201f8497d4ffd330a53b2363e0728a40d9a3e",
+      "safe_error_terms": []
+    }
+  },
+  "verdict": "failed original UDP-denied specimen; deny retained, no model retry",
+  "cleanup": {
+    "local": {
+      "stopped": true,
+      "handles": [
+        {
+          "pid": 19685,
+          "lstart": "Thu Oct 29 05:00:55 2026",
+          "binary_sha256": "6ac4bb4837469867edc2dba3cbbd6e4dd9fb18ad0389db69ff6ef21683317a44",
+          "alive_after_start": true,
+          "role": "local",
+          "socket": "/private/tmp/p11-C-udp-s3mrn30l/state/network.sock",
+          "UDP_profile": "(version 1) (allow default) (deny network-outbound (remote udp \"*:*\"))",
+          "sandbox_scope": "this owned engine daemon only",
+          "exit_code": -15
+        }
+      ],
+      "ipc_connect_after_stop": 61,
+      "private_state_removed": true,
+      "engine_copy_removed": true
+    }
+  },
+  "bootstrap_diagnosis": {
+    "observed": "private peer control EOF; peer engine never started",
+    "confirmed_source_reference": "code/C-fixture-lib.py",
+    "actually_staged": "code/udp-blocked-lib.py",
+    "classification": "evaluation harness module path mismatch before team/native; not UDP or OS permission failure",
+    "native_calls": 0
+  }
+}

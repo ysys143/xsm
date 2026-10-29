@@ -1,0 +1,146 @@
+{
+  "schema_version": 1,
+  "run_id": "native-handoff-20261029-f2193749",
+  "private_evidence_root": "/private/tmp/native-handoff-evidence-zz3nvwnv",
+  "relocated_utc": "2026-10-28T19:54:41.165198+00:00",
+  "all_original_bytes_and_sha256_preserved": true,
+  "profile_auth_contents_read_or_copied": false,
+  "claim_tokens_published": false,
+  "original_logs_not_rewritten": true,
+  "process_final_audit": [
+    {
+      "pid": 7375,
+      "recorded_lstart": "Thu Oct 29 04:50:49 2026",
+      "current_lstart": null,
+      "same_owned_process_alive": false
+    },
+    {
+      "pid": 7480,
+      "recorded_lstart": "Thu Oct 29 04:50:50 2026",
+      "current_lstart": null,
+      "same_owned_process_alive": false
+    },
+    {
+      "pid": 7683,
+      "recorded_lstart": "Thu Oct 29 04:50:50 2026",
+      "current_lstart": null,
+      "same_owned_process_alive": false
+    }
+  ],
+  "files": [
+    {
+      "original_path": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/deliverables/p13-live/native-handoff-20261029-f2193749/plan.json",
+      "relative_path": "plan.json",
+      "bytes": 773,
+      "sha256": "f1e4e2e5cff5b8f50d6810e23652330196c68b4edfec605ff659deea502388b4",
+      "storage": "private-evidence",
+      "current_path": "/private/tmp/native-handoff-evidence-zz3nvwnv/plan.json"
+    },
+    {
+      "original_path": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/deliverables/p13-live/native-handoff-20261029-f2193749/product-instructions.md",
+      "relative_path": "product-instructions.md",
+      "bytes": 48343,
+      "sha256": "ec9f1372121682970201a12e049f9ffccd158707bea6664b7f2fd13b28a9401d",
+      "storage": "private-evidence",
+      "current_path": "/private/tmp/native-handoff-evidence-zz3nvwnv/product-instructions.md"
+    },
+    {
+      "original_path": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/deliverables/p13-live/native-handoff-20261029-f2193749/proxy.py",
+      "relative_path": "proxy.py",
+      "bytes": 3474,
+      "sha256": "257b8860dbef34853d0a712b9fb8637b280b47f65671495b96cd4a28619c8d84",
+      "storage": "deliverables-script-or-hash",
+      "current_path": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/deliverables/p13-live/native-handoff-20261029-f2193749/proxy.py"
+    },
+    {
+      "original_path": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/deliverables/p13-live/native-handoff-20261029-f2193749/receiver-initial/client-wire.jsonl",
+      "relative_path": "receiver-initial/client-wire.jsonl",
+      "bytes": 435,
+      "sha256": "0feea679cb81bc4e6bf1801ce4e817b796b41a4180abe08ba0054a1521d19f89",
+      "storage": "private-evidence",
+      "current_path": "/private/tmp/native-handoff-evidence-zz3nvwnv/receiver-initial/client-wire.jsonl"
+    },
+    {
+      "original_path": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/deliverables/p13-live/native-handoff-20261029-f2193749/receiver-initial/forwarded.jsonl",
+      "relative_path": "receiver-initial/forwarded.jsonl",
+      "bytes": 234,
+      "sha256": "5e58f511af95f5f2ed12fa91bef4024212eecdb5a3c04d44fc73acaef5700c8b",
+      "storage": "private-evidence",
+      "current_path": "/private/tmp/native-handoff-evidence-zz3nvwnv/receiver-initial/forwarded.jsonl"
+    },
+    {
+      "original_path": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/deliverables/p13-live/native-handoff-20261029-f2193749/receiver-initial/handles.json",
+      "relative_path": "receiver-initial/handles.json",
+      "bytes": 225,
+      "sha256": "8230d15653a0cf1bf87cb2c71480ee27e6f019736bcc279b805c594dd5beb1e3",
+      "storage": "private-evidence",
+      "current_path": "/private/tmp/native-handoff-evidence-zz3nvwnv/receiver-initial/handles.json"
+    },
+    {
+      "original_path": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/deliverables/p13-live/native-handoff-20261029-f2193749/receiver-initial/native.jsonl",
+      "relative_path": "receiver-initial/native.jsonl",
+      "bytes": 101,
+      "sha256": "7ebe18815f0b96e9cb7fa28a5d43b2f8d936a1c016940f69502f310a5b7e5823",
+      "storage": "private-evidence",
+      "current_path": "/private/tmp/native-handoff-evidence-zz3nvwnv/receiver-initial/native.jsonl"
+    },
+    {
+      "original_path": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/deliverables/p13-live/native-handoff-20261029-f2193749/receiver-initial/native.stderr",
+      "relative_path": "receiver-initial/native.stderr",
+      "bytes": 339,
+      "sha256": "c23401d01f1f773371a45b02f0054d129d1be51c4e76acf43d2ef2ff4fbb3875",
+      "storage": "private-evidence",
+      "current_path": "/private/tmp/native-handoff-evidence-zz3nvwnv/receiver-initial/native.stderr"
+    },
+    {
+      "original_path": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/deliverables/p13-live/native-handoff-20261029-f2193749/receiver-initial/proxy-exit.json",
+      "relative_path": "receiver-initial/proxy-exit.json",
+      "bytes": 29,
+      "sha256": "7f905b107ccaea62127caf665555901c7725ecaa39ea327028c0dc9275305f13",
+      "storage": "private-evidence",
+      "current_path": "/private/tmp/native-handoff-evidence-zz3nvwnv/receiver-initial/proxy-exit.json"
+    },
+    {
+      "original_path": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/deliverables/p13-live/native-handoff-20261029-f2193749/receiver-initial/server-wire.jsonl",
+      "relative_path": "receiver-initial/server-wire.jsonl",
+      "bytes": 23387,
+      "sha256": "5a4984c0e3523522669e25064f0e5ee8a32f29ecbab8060bca000f815d5e38c0",
+      "storage": "private-evidence",
+      "current_path": "/private/tmp/native-handoff-evidence-zz3nvwnv/receiver-initial/server-wire.jsonl"
+    },
+    {
+      "original_path": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/deliverables/p13-live/native-handoff-20261029-f2193749/receiver-initial/server.stderr",
+      "relative_path": "receiver-initial/server.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storage": "private-evidence",
+      "current_path": "/private/tmp/native-handoff-evidence-zz3nvwnv/receiver-initial/server.stderr"
+    },
+    {
+      "original_path": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/deliverables/p13-live/native-handoff-20261029-f2193749/result.json",
+      "relative_path": "result.json",
+      "bytes": 5039,
+      "sha256": "30df235d75ad591600d89a3fd00ae8e46f622ae997ef9ccfcc4e3969b298b92c",
+      "storage": "private-evidence",
+      "current_path": "/private/tmp/native-handoff-evidence-zz3nvwnv/result.json"
+    },
+    {
+      "original_path": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/deliverables/p13-live/native-handoff-20261029-f2193749/run.py",
+      "relative_path": "run.py",
+      "bytes": 11350,
+      "sha256": "7040d043328c0b41958b08cd5f587c696d24f1f4fbdcc108aba91aeeb467060f",
+      "storage": "deliverables-script-or-hash",
+      "current_path": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/deliverables/p13-live/native-handoff-20261029-f2193749/run.py"
+    },
+    {
+      "original_path": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/deliverables/p13-live/native-handoff-20261029-f2193749/source-manifest.json",
+      "relative_path": "source-manifest.json",
+      "bytes": 5116,
+      "sha256": "e32d1316371cbd351b27d44d59354dd0823383641bf0470bf9199b8869ac8bfb",
+      "storage": "deliverables-script-or-hash",
+      "current_path": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/deliverables/p13-live/native-handoff-20261029-f2193749/source-manifest.json"
+    }
+  ],
+  "executed_scripts_private_copy": "/private/tmp/native-handoff-evidence-zz3nvwnv/executed-code",
+  "rerun_note": "Scripts describe this one executed specimen and its original root; do not rerun them in the deliverables directory. No second native execution was made."
+}

@@ -423,6 +423,62 @@ class LinkUsabilityTest(_Session, TempState):
         self.assertEqual(len(config.links()), 1, "not removed on its own")
 
 
+class CliWideningNeedsSureIdentityTest(_Session, TempState):
+    """G01 review F2: the CLI widening commands carry the same guard as the MCP
+    tools. A shell that matched one live record by folder is a guess between
+    sessions, and a guess must not link, join or reach (P01 item 2)."""
+
+    def _cli(self, argv, me, ctx):
+        from xsm import cli, registry, workers
+        out, err = io.StringIO(), io.StringIO()
+        with mock.patch.object(registry, "me", return_value=me), \
+                mock.patch.object(registry, "last_identity", return_value=ctx), \
+                mock.patch.object(workers, "human_terminal", return_value=False), \
+                contextlib.redirect_stdout(out), contextlib.redirect_stderr(err):
+            code = cli.main(argv)
+        return code, out.getvalue() + err.getvalue()
+
+    def _weak(self, me):
+        from xsm import context
+        return context.CallContext(runtime="claude", home=self.tmp, conversation=me["session_id"],
+                                   cwd=me["cwd"], basis=context.BASIS_CWD, record=me)
+
+    def test_a_guessed_shell_cannot_link_or_join_or_reach(self):
+        from xsm import config
+        a, b = self._dirs()
+        me = self._me(a)
+        weak = self._weak(me)
+        for argv, why in ((["link", b], "link two folders"),
+                          (["join", "demo"], "join a project"),
+                          (["reach", b], "let a session reach another folder")):
+            code, text = self._cli(argv, me, weak)
+            self.assertEqual(code, 2, (argv, text))
+            self.assertIn("guess at which session is asking", text, argv)
+        self.assertEqual(config.links(), [])
+        self.assertEqual(config.reaches(), [])
+        self.assertEqual(config.projects(), [])
+
+    def test_leaving_a_project_is_still_allowed(self):
+        # Narrowing never needs an exact identity.
+        a, _ = self._dirs()
+        me = self._me(a)
+        code, text = self._cli(["leave", "demo"], me, self._weak(me))
+        self.assertEqual(code, 2, text)          # not in the project: the ordinary refusal
+        self.assertNotIn("guess at which session is asking", text)
+
+    def test_an_unregistered_shell_keeps_its_own_message(self):
+        from xsm import context
+        a, b = self._dirs()
+        me = self._me(a)
+        none = context.CallContext(runtime="claude", home=self.tmp, basis=context.BASIS_NONE)
+        code, text = self._cli(["link", b], me, none)
+        # No record matched at all: the command runs on and asks for consent,
+        # rather than reporting an identity guess that was never made.
+        self.assertEqual(code, 2, text)
+        self.assertIn("needs your user's yes", text)
+        self.assertNotIn("guess at which session", text)
+
+
 class InstallNoteTest(TempState):
     def _plugin_home(self, events, hooks=None):
         from xsm import paths

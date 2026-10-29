@@ -25,12 +25,40 @@ def _record_path(runtime: str, session_id: str) -> str:
     return paths.path(paths.SESSIONS, "%s-%s.json" % (runtime, safe))
 
 
+def _registered_pointer(record) -> bool:
+    """A rejected registration is not a persisted/addressable caller identity.
+
+    Reject legacy accidentally persisted placeholders too. Ordinary raw pointers
+    predate the registered flag, so absence of that flag is not rejection.
+    """
+    return bool(isinstance(record, dict) and record and not record.get("excluded")
+                and record.get("registered") is not False)
+
+
+def _exclusion_status(cwd: str, roots) -> str:
+    if roots == []:
+        return "included"  # Preserve the old no-policy lookup/probe cost.
+    from . import directory
+    return directory.exclusion_status(cwd, roots)
+
+
 def upsert(runtime: str, home: str, session_id: str, pid: int, cwd: str,
            permission_mode: str | None = None, name: str | None = None,
            mcp_pid: int | None = None, socket: str | None = None,
-           inside: str | None | bool = False) -> dict:
+           inside: str | None | bool = False, transcript_path: str | None = None) -> dict:
+    status = _exclusion_status(cwd, config.load().get("directory_excluded_paths", []))
+    if status == "excluded":
+        return {"runtime": runtime, "home": os.path.realpath(os.path.expanduser(home)),
+                "session_id": session_id, "cwd": os.path.realpath(cwd),
+                "registered": False, "excluded": True}
     home = os.path.realpath(os.path.expanduser(home))
     record = paths.read_json(_record_path(runtime, session_id), {}) or {}
+    if not _registered_pointer(record):
+        record = {}
+    if status == "unknown":
+        record["directory_exclusion_status"] = "unknown"
+    else:
+        record.pop("directory_exclusion_status", None)
     previous_pid = record.get("pid")
     record.update({
         "runtime": runtime,
@@ -84,6 +112,10 @@ def upsert(runtime: str, home: str, session_id: str, pid: int, cwd: str,
             record["inside"] = str(inside)
         else:
             record.pop("inside", None)
+    if isinstance(transcript_path, str) and transcript_path:
+        canonical = os.path.realpath(os.path.expanduser(transcript_path))
+        if os.path.commonpath((home, canonical)) == home:
+            record["transcript_path"] = canonical
     paths.write_json(_record_path(runtime, session_id), record)
     if not any(h.get("path") == home for h in config.homes()):
         config.add_home(home, runtime)
@@ -188,7 +220,9 @@ def codex_interrupted(home: str, thread_id: str) -> bool:
     return False
 
 
-def _enrich(record: dict) -> dict:
+def _enrich(record: dict) -> dict | None:
+    if not _registered_pointer(record):
+        return None
     out = dict(record)
     if record.get("runtime") == "claude":
         home, pid = record.get("home", ""), record.get("pid")
@@ -232,14 +266,27 @@ def raw_records() -> list:
     out = []
     for p in glob.glob(paths.path(paths.SESSIONS, "*.json")):
         rec = paths.read_json(p)
-        if rec and rec.get("session_id"):
+        if _registered_pointer(rec) and rec.get("session_id"):
             out.append(rec)
     return sorted(out, key=lambda r: r.get("updated", 0), reverse=True)
 
 
 def records() -> list:
     """Every registered session with its current details, newest first."""
-    return [_enrich(rec) for rec in raw_records()]
+    rows = raw_records()
+    excluded_roots = config.load().get("directory_excluded_paths", [])
+    if excluded_roots != []:
+        kept = []
+        with probe.quick():
+            for record in rows:
+                status = _exclusion_status(record.get("cwd"), excluded_roots)
+                if status == "excluded":
+                    continue
+                if status == "unknown":
+                    record = dict(record, directory_exclusion_status="unknown")
+                kept.append(record)
+        rows = kept
+    return [_enrich(rec) for rec in rows]
 
 
 def _codex_recent_threads(home: str, within: float = 86400.0) -> list:
@@ -422,10 +469,14 @@ def adopt_codex_thread(thread_id: str, pid: int, homes: list, mcp_pid: int | Non
             return None
         name, cwd, parent = found
         if parent:
+            if _exclusion_status(cwd or "", config.load().get("directory_excluded_paths", [])) == "excluded":
+                return None
             live = by_session("codex", parent)
             if live and live.get("state") == "live" and live.get("pid") == pid:
                 return live
         rec = upsert("codex", home, thread_id, pid, cwd or "", name=name, mcp_pid=mcp_pid)
+        if not _registered_pointer(rec):
+            return None
         rec["adopted"] = True
         paths.write_json(_record_path("codex", thread_id), rec)
         return _enrich(rec)
@@ -472,6 +523,8 @@ def adopt_open_codex(accept=None) -> list:
                 continue
             rec = upsert("codex", home["path"], thread_id, pid, cwd or "", name=name,
                          mcp_pid=beacon_for(pid))
+            if not _registered_pointer(rec):
+                continue
             rec["adopted"] = True
             paths.write_json(_record_path("codex", thread_id), rec)
             adopted.append(rec)
@@ -485,6 +538,8 @@ def adopt_open_codex(accept=None) -> list:
             continue
         rec = upsert("codex", row["home"], row["session_id"], row["pid"], row.get("cwd") or "",
                      mcp_pid=row["mcp_pid"])
+        if not _registered_pointer(rec):
+            continue
         rec["adopted"] = True
         rec["unprompted"] = True
         paths.write_json(_record_path("codex", row["session_id"]), rec)
@@ -593,6 +648,8 @@ def adopt_self() -> dict | None:
 def _adopt_claude(home: str, sid: str, pid, cwd: str, socket: str | None) -> dict | None:
     try:
         rec = upsert("claude", home, sid, pid, cwd, socket=socket)
+        if not _registered_pointer(rec):
+            return None
         rec["adopted"] = True
         paths.write_json(_record_path("claude", sid), rec)
     except OSError:
@@ -784,7 +841,7 @@ def mark_ended(runtime: str, session_id: str, reason: str | None,
     home is not the pointer's leaves the pointer alone."""
     p = _record_path(runtime, session_id)
     rec = paths.read_json(p)
-    if not rec:
+    if not _registered_pointer(rec):
         return None
     if home and os.path.realpath(os.path.expanduser(home)) != \
             os.path.realpath(rec.get("home") or ""):
@@ -809,7 +866,7 @@ def cheap_records() -> list:
     out = []
     for p in glob.glob(paths.path(paths.SESSIONS, "*.json")):
         rec = paths.read_json(p)
-        if rec and rec.get("pid") and identity.pid_alive(rec["pid"]):
+        if _registered_pointer(rec) and rec.get("pid") and identity.pid_alive(rec["pid"]):
             out.append(rec)
     return out
 
@@ -837,7 +894,67 @@ def me(session_id: str | None = None, cwd: str | None = None):
         telemetry.annotate("xsm.identity.via", how)
     except ImportError:
         pass
+    _remember_identity(rec, how)
     return rec
+
+
+# Which rule found the session -> how sure the identity is (context.py). A rule
+# that names the session outright is exact; cwd is a guess between live sessions.
+BASIS_FOR_HOW = {"session_id": "session_id", "codex_thread_id": "thread_id",
+                 "adopted": "adopted", "socket": "socket", "ancestor": "ancestor",
+                 "cwd": "cwd"}
+
+# The context of the caller lookup the last `me()`/`me_context()` in this process
+# ran, so a caller that only wants the record can still ask how surely it was
+# found (P01 item 2: the CLI widening commands guard on this). None when the
+# record was provided directly -- a harness or a test -- and there is no guess
+# to guard against.
+_last_identity = None
+
+
+def last_identity():
+    """The CallContext of the most recent caller lookup here, or None when the
+    record came from somewhere that does not name a rule. Read-only; the lookup
+    is not repeated (a second `me()` would open another probe budget, #17)."""
+    return _last_identity
+
+
+def forget_identity() -> None:
+    """Drop the remembered lookup. A caller that is about to run `me()` and then
+    ask `last_identity()` calls this first, so a value left by an earlier lookup
+    in this process is never read as this one's (P01 item 2, the CLI guards)."""
+    global _last_identity
+    _last_identity = None
+
+
+def _remember_identity(rec, how):
+    global _last_identity
+    from . import context
+    _last_identity = context.of_record(rec, BASIS_FOR_HOW.get(how, "none"),
+                                      evidence=("registry rule: %s" % how,))
+    return _last_identity
+
+
+def me_context(session_id: str | None = None, cwd: str | None = None):
+    """(record, CallContext): the caller, and *how* it was identified. The CLI
+    path and the MCP path both hand a context onward, so the same meaning
+    travels whichever entry point ran (P01 item 1).
+
+    `how` starts with `none:` when nothing matched; that is a context with no
+    runtime, marked provisional, rather than another session's identity."""
+    from . import context
+    with probe.quick():
+        rec, how = _me(session_id, cwd)
+    basis = BASIS_FOR_HOW.get(how, "none")
+    try:
+        from . import telemetry
+        telemetry.annotate("xsm.identity.via", how)
+    except ImportError:
+        pass
+    ctx = context.of_record(rec, basis, evidence=("registry rule: %s" % how,))
+    global _last_identity
+    _last_identity = ctx
+    return rec, ctx
 
 
 def _runtime_here(rows: list | None = None) -> str | None:
@@ -1053,3 +1170,78 @@ def mode_class(record: dict) -> str | None:
     if not mode:
         return None
     return "bypass" if mode in ("bypassPermissions", "bypass") else "prompting"
+
+
+def _capability_endpoint(record):
+    """Current exact native generation, never a cwd/neighbor/anonymous claim."""
+    if not _registered_pointer(record) or record.get("certainty") == "provisional" \
+            or record.get("identity_certainty") == "provisional" \
+            or record.get("basis") in ("cwd", "neighbor", "none") \
+            or record.get("identity_basis") in ("cwd", "neighbor", "none"):
+        return None
+    if any(not isinstance(record.get(k), str) or not record[k] for k in ("runtime", "home", "session_id", "lstart")):
+        return None
+    current = paths.read_json(_record_path(record["runtime"], record["session_id"]))
+    if not _registered_pointer(current) or current.get("ended_at"):
+        return None
+    fields = ("runtime", "session_id", "pid", "lstart")
+    if any(current.get(k) != record.get(k) for k in fields) \
+            or os.path.realpath(current.get("home") or "") != os.path.realpath(record["home"]) \
+            or record.get("native_session_id") not in (None, record["session_id"]):
+        return None
+    pid = current.get("pid")
+    if not identity.pid_alive(pid) or identity.lstart(pid) != current["lstart"]:
+        return None
+    return {"runtime": current["runtime"], "home": os.path.realpath(current["home"]),
+            "session_id": current["session_id"], "pid": pid, "lstart": current["lstart"]}
+
+
+def _capability_path(endpoint):
+    import hashlib
+    key = hashlib.sha256(json.dumps(endpoint, sort_keys=True).encode()).hexdigest()
+    return paths.path("capability-observations", key + ".json")
+
+
+def note_capabilities(me, capabilities, *, reader_pid):
+    """MCP sure-context adapter only: bind to exact native generation and reader.
+
+    Failure only disables files, never an unrelated messaging call. Peer data
+    cannot supply this observation; the MCP adapter supplies its actual pid.
+    """
+    try:
+        endpoint = _capability_endpoint(me)
+        files = capabilities.get("files") if isinstance(capabilities, dict) else None
+        if endpoint is None or not isinstance(files, dict) or files.get("status") != "observed" \
+                or type(files.get("version")) is not int or files["version"] != 1 \
+                or type(reader_pid) is not int or reader_pid <= 0 or not identity.pid_alive(reader_pid):
+            return False
+        start = identity.lstart(reader_pid)
+        if not start:
+            return False
+        observation = {"endpoint": endpoint, "reader_pid": reader_pid, "reader_lstart": start,
+                       "observed_at": time.time(), "files": {"status": "observed", "version": 1,
+                                                               "source": "mcp-reader"}}
+        paths.write_json(_capability_path(endpoint), observation)
+        return True
+    except (OSError, ValueError, TypeError):
+        return False
+
+
+def file_capability(target):
+    """Observed only while the same native generation AND reader are alive."""
+    unknown = {"status": "unknown", "version": None, "source": "registry:reader-observation"}
+    try:
+        endpoint = _capability_endpoint(target)
+        if endpoint is None:
+            return dict(unknown, reason="native identity/generation unverified")
+        value = paths.read_json(_capability_path(endpoint))
+        if not isinstance(value, dict) or value.get("endpoint") != endpoint:
+            return dict(unknown, reason="no current reader observation")
+        pid, start = value.get("reader_pid"), value.get("reader_lstart")
+        if type(pid) is not int or not start or not identity.pid_alive(pid) or identity.lstart(pid) != start:
+            return dict(unknown, reason="reader absent or generation changed")
+        if value.get("files") != {"status": "observed", "version": 1, "source": "mcp-reader"}:
+            return dict(unknown, reason="malformed observation")
+        return dict(value["files"], observed_at=value.get("observed_at"), reader_pid=pid)
+    except (OSError, ValueError, TypeError):
+        return dict(unknown, reason="capability observation unavailable")

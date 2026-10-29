@@ -1,0 +1,75 @@
+{
+  "scope": "owned two-machine anonymous HTTP CONNECT restriction cell; not D12 adoption",
+  "local_root": "/private/tmp/p11-C-proxy-rxp7xnqr",
+  "peer_root": "/private/tmp/p11-C-proxy-5y3nciws",
+  "binary_sha256": "6ac4bb4837469867edc2dba3cbbd6e4dd9fb18ad0389db69ff6ef21683317a44",
+  "task_marker": "P11-QA-40c1afc34bbd43c4",
+  "passed": false,
+  "native_model_calls": 0,
+  "phases": [],
+  "network_team_created": false,
+  "production_team_used": false,
+  "plan_sha256": "f821e0f41b3e5589ac1dbaa006d98b4a62e85784a48eb5e14d19b2ee5a834cde",
+  "local_preflight": {
+    "direct_child": {
+      "exit_code": 65,
+      "output": null,
+      "stderr_sha256": "6cb5f9187cea1a3595a533423f6b173c5cffe9a21745d0665ebb94b3bf01c14c",
+      "stderr_permission_or_sandbox_apply": false
+    },
+    "direct_UDP_no_datagram": true,
+    "direct_TCP_no_connection": true,
+    "proxy_connection_child": {
+      "exit_code": 65,
+      "output": null,
+      "stderr_sha256": "6cb5f9187cea1a3595a533423f6b173c5cffe9a21745d0665ebb94b3bf01c14c",
+      "stderr_permission_or_sandbox_apply": false
+    },
+    "TLS_tunnel": {
+      "exit_code": 65,
+      "result": null,
+      "stderr_sha256": "6cb5f9187cea1a3595a533423f6b173c5cffe9a21745d0665ebb94b3bf01c14c",
+      "certificate_verification_disabled": false
+    },
+    "profile": "(version 1) (allow default) (deny network-outbound (remote udp \"*:*\")) (deny network-outbound (require-all (remote tcp \"*:*\") (require-not (remote tcp \"127.0.0.1:54240\"))))",
+    "passed": false
+  },
+  "local_proxy_preflight": {
+    "pid": 23713,
+    "bind": "127.0.0.1",
+    "port": 54240,
+    "profile": "(version 1) (allow default) (deny network-outbound (remote udp \"*:*\")) (deny network-outbound (require-all (remote tcp \"*:*\") (require-not (remote tcp \"127.0.0.1:54240\"))))",
+    "phase": "preflight",
+    "CONNECT_records": [],
+    "TLS_MITM": false,
+    "raw_payload_logged": false
+  },
+  "failure": {
+    "operation": "controller",
+    "error": {
+      "error_type": "RuntimeError",
+      "error_sha256": "4b2aabcf233eb1bb38c81bacb95f154184cde584e712a15138891a68e872c17f",
+      "safe_error_terms": []
+    }
+  },
+  "verdict": "original failed/unsupported proxy restriction specimen; no native retry",
+  "cleanup": {
+    "local_proxy": {
+      "pid": 23713,
+      "bind": "127.0.0.1",
+      "port": 54240,
+      "profile": "(version 1) (allow default) (deny network-outbound (remote udp \"*:*\")) (deny network-outbound (require-all (remote tcp \"*:*\") (require-not (remote tcp \"127.0.0.1:54240\"))))",
+      "phase": "preflight",
+      "CONNECT_records": [],
+      "TLS_MITM": false,
+      "raw_payload_logged": false,
+      "connect_after_stop": 61
+    }
+  },
+  "preparation_failure": {
+    "phase": "sandbox profile grammar, before child execution/engine/model",
+    "exit_code": 65,
+    "observed_stderr": "sandbox-exec: host must be * or localhost in network address\n\nBacktrace: \n<input string>:1:141:\n\t(remote tcp \"127.0.0.1:54240\")\n\n",
+    "same_intended_proxy_exception": "replace unsupported host spelling 127.0.0.1 with sandbox native localhost; no external TCP/UDP exception added"
+  }
+}

@@ -1,0 +1,106 @@
+{
+  "module_sha256": "4b09793ad393a40fbdc7725fb30ace618b0f74bc8ecf7f6e20c1acec8a0a9840",
+  "actor_sha256": "7b60baaa4ded5444dedfce74d365d5c825191b7ebd7e0a6212818c4b55081d6c",
+  "fixture_root": "/private/tmp/reason-worker-cases-g59v63_t",
+  "native_llm_calls": 0,
+  "scope": "수정하지 않은 배포 ask-worker JS. 자식 CLI·모델 결과·네트워크·표시 helper는 fixture 대체. 실제 전체 CLI/모델 통합 검증과 구별.",
+  "results": [
+    {
+      "name": "same-sender-reuses-child",
+      "passed": true,
+      "classification": "verified-control-flow",
+      "detail": null
+    },
+    {
+      "name": "different-senders-use-distinct-children",
+      "passed": true,
+      "classification": "verified-control-flow",
+      "detail": null
+    },
+    {
+      "name": "same-sender-serial-and-other-sender-parallel",
+      "passed": true,
+      "classification": "verified-control-flow",
+      "detail": null
+    },
+    {
+      "name": "successful-replies-remove-journal-entries",
+      "passed": true,
+      "classification": "verified-control-flow",
+      "detail": null
+    },
+    {
+      "name": "claude-default-has-strict-mcp-and-hooks-disabled",
+      "passed": true,
+      "classification": "verified-control-flow",
+      "detail": null
+    },
+    {
+      "name": "ephemeral-ask-addresses-of-one-person-share-context",
+      "passed": true,
+      "classification": "verified-control-flow",
+      "detail": null
+    },
+    {
+      "name": "codex-spawns-per-request-without-resume",
+      "passed": true,
+      "classification": "verified-control-flow",
+      "detail": null
+    },
+    {
+      "name": "seventh-sender-can-receive-worker-stopped-answer",
+      "passed": true,
+      "classification": "observed-admission-defect",
+      "detail": {
+        "replies": 7,
+        "not_executed": 1,
+        "failed_request": "pool6"
+      }
+    },
+    {
+      "name": "requests-persist-before-network-ack",
+      "passed": true,
+      "classification": "verified-control-flow",
+      "detail": null
+    },
+    {
+      "name": "restart-recovers-unanswered-request",
+      "passed": true,
+      "classification": "verified-control-flow",
+      "detail": null
+    },
+    {
+      "name": "answer-persists-before-reply-send",
+      "passed": true,
+      "classification": "verified-control-flow",
+      "detail": null
+    },
+    {
+      "name": "saved-answer-retries-without-new-work",
+      "passed": true,
+      "classification": "verified-control-flow",
+      "detail": null
+    },
+    {
+      "name": "reply-failure-retains-answer-after-three-attempts",
+      "passed": true,
+      "classification": "verified-control-flow",
+      "detail": null
+    },
+    {
+      "name": "reply-failure-recovery-does-not-repeat-work",
+      "passed": true,
+      "classification": "verified-control-flow",
+      "detail": null
+    },
+    {
+      "name": "effect-before-answer-crash-can-repeat-work",
+      "passed": true,
+      "classification": "observed-at-least-once-gap",
+      "detail": {
+        "simulated_effects": 2
+      }
+    }
+  ],
+  "passed": true
+}

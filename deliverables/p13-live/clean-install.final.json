@@ -1,0 +1,63 @@
+{
+  "scope": "local installer/MCP/uninstall fix; not full J01/G10",
+  "original_failure_preserved": true,
+  "native_model_calls": 0,
+  "credential_values_read_or_copied": false,
+  "hook_trust_grants": 0,
+  "verification": {
+    "3.9": {
+      "tests": 91,
+      "passed": true,
+      "log": "/tmp/p13-install-final-39.log",
+      "sha256": "53614a6dbb12a001eda8f3fdffbd940295077d45cfffd20f1e0cc14d8b1cdb05"
+    },
+    "3.14": {
+      "tests": 91,
+      "passed": true,
+      "log": "/tmp/p13-install-final-314.log",
+      "sha256": "a6cec7e5c1ce31155abcc885b1cc9ac2dcec20c5133e6283ecdf38318c834009"
+    }
+  },
+  "evidence": {
+    "clean-install.json": {
+      "path": "deliverables/p13-live/clean-install.json",
+      "sha256": "d5310fb51cf9684912a89a8e64459aa512cdadf31a2adb1c64dc43b38949c168"
+    },
+    "clean-install.diagnostic-pre.json": {
+      "path": "deliverables/p13-live/clean-install.diagnostic-pre.json",
+      "sha256": "5c20ede59f4de0292168e6817d16212c2282129fa5a846a8253872e5ef558af0"
+    },
+    "clean-install.diagnostic-post.json": {
+      "path": "deliverables/p13-live/clean-install.diagnostic-post.json",
+      "sha256": "895c9047112bc6cfda4ca9bedf4b52d69f514dc1f322ec5050427983174fe3ec"
+    },
+    "clean-install.uninstall.json": {
+      "path": "deliverables/p13-live/clean-install.uninstall.json",
+      "sha256": "152b689f7dd84fc8590d30e559007ce5ee7799897c718d2c92e21f1de3a3b71b"
+    },
+    "clean-install.uninstall-fixed.json": {
+      "path": "deliverables/p13-live/clean-install.uninstall-fixed.json",
+      "sha256": "274f3d57561e35a2533c4240228f1f6e9e2b3ef4dcab436ffdd760a09a3d0060"
+    },
+    "clean-install.uninstall-normal.json": {
+      "path": "deliverables/p13-live/clean-install.uninstall-normal.json",
+      "sha256": "9d9eb0381fa31f908ff554ed6c4349aa7554278abb8c6727e92e5ca4a3cec123"
+    },
+    "clean-install.mutations.json": {
+      "path": "deliverables/p13-live/clean-install.mutations.json",
+      "sha256": "eb93a592d203f53719b322e75688d745ba93e1e3a3ba66946141a07bc7709129"
+    },
+    "clean-install.uninstall-mutation.json": {
+      "path": "deliverables/p13-live/clean-install.uninstall-mutation.json",
+      "sha256": "4dab121376dd06643fc42322254fe044b42cf6102d988af6759bee511512923d"
+    }
+  },
+  "source": {
+    "xsm/install.py": "6b6facc89dee67bf27899cbae9e36cfb701b2c497d2a1fc33a43cf8e49daccd2",
+    "tests/test_install_native_mcp.py": "a21fb6b5d8cb9f618c60b45af3a5eb02c6d49e2cd0492366b58e71e1382811b2"
+  },
+  "coordinator_source": "xsm/cli.py cmd_uninstall",
+  "frozen": true,
+  "remaining": "clean native discovery/first question/reply not run: auth prerequisites unmet",
+  "official_auth_reference": "https://developers.openai.com/codex/auth/"
+}

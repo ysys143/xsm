@@ -1,0 +1,26 @@
+{
+  "scope": "reviewed pre-M1 local source; receipt exclusion fix not included",
+  "manifest": "deliverables/p13-live/native-integration-source-manifest.json",
+  "snapshot": "/private/tmp/xsm-native-integration-frozen-tsucjdu0",
+  "results": [
+    {
+      "python": "3.9",
+      "tests": 1695,
+      "seconds": 445.286,
+      "exit_code": 0,
+      "result": "OK",
+      "log": "/tmp/p13-native-final39.log",
+      "sha256": "2fd43079e086e79071d23c41d6fae6edb2ad6fb34d783bc0c2ccbe05e8442882"
+    },
+    {
+      "python": "3.14",
+      "tests": 1695,
+      "seconds": 334.302,
+      "exit_code": 0,
+      "result": "OK",
+      "log": "/tmp/p13-native-final314.log",
+      "sha256": "3de59945d84cc413ee3c5431890cf79a089c923b54480f037e7bdf1c2aa28bb3"
+    }
+  ],
+  "whole_plan_complete": false
+}

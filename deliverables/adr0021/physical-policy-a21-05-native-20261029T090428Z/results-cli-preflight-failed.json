@@ -1,0 +1,58 @@
+{
+  "kind": "actual Codex local workflow under owned remote/link outages",
+  "manifest": "manifest.json",
+  "phases": [],
+  "cleanup": {
+    "reviewer": {
+      "signals": [],
+      "remaining_owned": []
+    },
+    "requester": {
+      "signals": [],
+      "remaining_owned": []
+    },
+    "network-a": {
+      "remaining_owned_pids": [],
+      "socket_exists": true,
+      "udp_rebind": [
+        {
+          "address": "0.0.0.0:55623",
+          "free": true
+        },
+        {
+          "address": "[::]:51758",
+          "free": true
+        }
+      ],
+      "stop_exit": 1
+    },
+    "network-b": {
+      "remaining_owned_pids": [],
+      "socket_exists": true,
+      "udp_rebind": [
+        {
+          "address": "0.0.0.0:59202",
+          "free": true
+        },
+        {
+          "address": "[::]:50304",
+          "free": true
+        }
+      ],
+      "stop_exit": 1
+    }
+  },
+  "controller_body_relay_or_ACK_or_index_repair": false,
+  "model_override": false,
+  "started_at": 1793265353.717793,
+  "completed": false,
+  "failure_code": "AssertionError",
+  "actor_final_observations": [],
+  "source_auth_metadata_unchanged": true,
+  "source_profile_unchanged": true,
+  "actual_CIDs": {
+    "reviewer": null,
+    "requester": null
+  },
+  "finished_at": 1793265369.197823
+}

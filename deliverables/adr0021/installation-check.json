@@ -1,0 +1,17 @@
+{
+  "scope": "actual-private-release-build-install-start-stop",
+  "private_record": "/private/tmp/adr21-install-0q83fzpr/result.json",
+  "private_record_sha256": "a15218f59a2c8fc6d7f09896dc22f224fd3485490e6ab0ae58915bac56b13e7f",
+  "native_binary_sha256": "c963e9d4e4ffda47dead354d7d66e2f71fea037932b51846422bdbacb5b39a7d",
+  "global_profile_changes": false,
+  "private_network_mode": "0o700",
+  "native_engine_path": "/private/tmp/adr21-install-0q83fzpr/state/network/bin/xsm-net",
+  "default_binary_lookup_verified": true,
+  "service_stopped": true,
+  "stopping_observations": [
+    "service-disconnected"
+  ],
+  "signature": "not-verified",
+  "source": "local-locked-build",
+  "prior_error": "missing parents were initially 0755; fixed to create every missing directory as 0700"
+}

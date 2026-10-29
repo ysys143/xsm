@@ -1,0 +1,9 @@
+{
+  "exit_code": 0,
+  "elapsed_seconds": 64.46,
+  "verdict_messages": [
+    "지정한 보고서와 같은 디렉터리의 evidence.json만 읽고, 집계와 각 결론이 증거에 맞는지 대조하겠습니다.",
+    "PASS. 관찰 24건과 성공14·사용자 수행/승인2·실패4·누락/불일치3·원인분리1 집계가 일치합니다. 요청한 이벤트·로그·설정 비교·정리 결과도 증거와 부합합니다.\n\nxsm 공존, 기존 `crossSessionInbound: accept`·권한 모드 `auto`, 독립 엔진 `--no-setup`의 한계를 명시했습니다. 실행기 exit 0을 연결 성공으로 혼동하지 않았고, 실제 홈의 큐 등록 성공도 원래 유휴 수신 실패와 구분했습니다.\n\n성공 과장이나 실패 누락은 발견하지 못했습니다. 평가·기록 완료와 제품 기능의 미해결 실패도 명확히 구분했습니다."
+  ],
+  "scope": "Read-only independent Codex runtime review of the 24 observations, redacted evidence, bounds and cleanup; the reviewer performed no product repair."
+}

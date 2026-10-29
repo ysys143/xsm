@@ -1,0 +1,45 @@
+{
+  "existing_summary_completed": true,
+  "current_recorded_pids_present": [],
+  "raw_phase_checks": [
+    {
+      "role": "reviewer",
+      "phase": "phase0",
+      "native_events": 30,
+      "native_error_events": 0,
+      "stderr_502_count": 0,
+      "shell_commands": 0,
+      "direct_private_state_commands": 0
+    },
+    {
+      "role": "requester",
+      "phase": "phase2",
+      "native_events": 9,
+      "native_error_events": 0,
+      "stderr_502_count": 0,
+      "shell_commands": 0,
+      "direct_private_state_commands": 0
+    },
+    {
+      "role": "requester",
+      "phase": "phase0",
+      "native_events": 16,
+      "native_error_events": 0,
+      "stderr_502_count": 0,
+      "shell_commands": 0,
+      "direct_private_state_commands": 0
+    },
+    {
+      "role": "requester",
+      "phase": "phase1",
+      "native_events": 9,
+      "native_error_events": 0,
+      "stderr_502_count": 0,
+      "shell_commands": 0,
+      "direct_private_state_commands": 0
+    }
+  ],
+  "new_model_calls": 0,
+  "new_experiments": 0,
+  "original_body_ACK_indexes_modified": false
+}

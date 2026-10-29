@@ -1,0 +1,168 @@
+{
+  "book": {
+    "at": 1793292883.2980769,
+    "processes": [
+      {
+        "pid": 33226,
+        "lstart": "Fri Oct 30 00:56:31 2026",
+        "kind": "native",
+        "current_ps": "",
+        "same_identity_alive": false
+      },
+      {
+        "pid": 33225,
+        "lstart": "Fri Oct 30 00:56:31 2026",
+        "kind": "observer-controller",
+        "current_ps": "",
+        "same_identity_alive": false
+      },
+      {
+        "pid": 33396,
+        "lstart": "Fri Oct 30 00:56:34 2026",
+        "kind": "MCP",
+        "current_ps": "",
+        "same_identity_alive": false
+      },
+      {
+        "pid": 84634,
+        "lstart": "Fri Oct 30 01:32:09 2026",
+        "kind": "last-owned-service",
+        "current_ps": "",
+        "same_identity_alive": false
+      },
+      {
+        "pid": 78517,
+        "lstart": "Fri Oct 30 01:16:32 2026",
+        "kind": "MCP-after-first-reconnect",
+        "current_ps": "",
+        "same_identity_alive": false
+      },
+      {
+        "pid": 47061,
+        "lstart": "Fri Oct 30 01:41:48 2026",
+        "kind": "MCP-after-closure-reconnect",
+        "current_ps": "",
+        "same_identity_alive": false
+      }
+    ],
+    "remaining_same_owned_identity": []
+  },
+  "mini": {
+    "at": 1793292881.581374,
+    "processes": [
+      {
+        "pid": 76740,
+        "lstart": "Fri Oct 30 01:41:43 2026",
+        "kind": "native",
+        "current_ps": "",
+        "same_identity_alive": false
+      },
+      {
+        "pid": 43005,
+        "lstart": "Fri Oct 30 01:34:24 2026",
+        "kind": "native",
+        "current_ps": "",
+        "same_identity_alive": false
+      },
+      {
+        "pid": 67758,
+        "lstart": "Fri Oct 30 00:57:38 2026",
+        "kind": "native",
+        "current_ps": "",
+        "same_identity_alive": false
+      },
+      {
+        "pid": 57613,
+        "lstart": "Fri Oct 30 01:16:26 2026",
+        "kind": "native",
+        "current_ps": "",
+        "same_identity_alive": false
+      },
+      {
+        "pid": 73985,
+        "lstart": "Fri Oct 30 01:19:49 2026",
+        "kind": "native",
+        "current_ps": "",
+        "same_identity_alive": false
+      },
+      {
+        "pid": 76895,
+        "lstart": "Fri Oct 30 01:41:43 2026",
+        "kind": "MCP",
+        "current_ps": "",
+        "same_identity_alive": false
+      },
+      {
+        "pid": 43105,
+        "lstart": "Fri Oct 30 01:34:25 2026",
+        "kind": "MCP",
+        "current_ps": "",
+        "same_identity_alive": false
+      },
+      {
+        "pid": 67924,
+        "lstart": "Fri Oct 30 00:57:39 2026",
+        "kind": "MCP",
+        "current_ps": "",
+        "same_identity_alive": false
+      },
+      {
+        "pid": 57838,
+        "lstart": "Fri Oct 30 01:16:27 2026",
+        "kind": "MCP",
+        "current_ps": "",
+        "same_identity_alive": false
+      },
+      {
+        "pid": 74059,
+        "lstart": "Fri Oct 30 01:19:50 2026",
+        "kind": "MCP",
+        "current_ps": "",
+        "same_identity_alive": false
+      },
+      {
+        "pid": 67877,
+        "lstart": "Fri Oct 30 00:57:39 2026",
+        "kind": "proxy",
+        "current_ps": "",
+        "same_identity_alive": false
+      },
+      {
+        "pid": 43073,
+        "lstart": "Fri Oct 30 01:34:25 2026",
+        "kind": "proxy",
+        "current_ps": "",
+        "same_identity_alive": false
+      },
+      {
+        "pid": 74026,
+        "lstart": "Fri Oct 30 01:19:50 2026",
+        "kind": "proxy",
+        "current_ps": "",
+        "same_identity_alive": false
+      },
+      {
+        "pid": 57768,
+        "lstart": "Fri Oct 30 01:16:27 2026",
+        "kind": "proxy",
+        "current_ps": "",
+        "same_identity_alive": false
+      },
+      {
+        "pid": 76827,
+        "lstart": "Fri Oct 30 01:41:43 2026",
+        "kind": "proxy",
+        "current_ps": "",
+        "same_identity_alive": false
+      },
+      {
+        "pid": 32033,
+        "lstart": "Fri Oct 30 01:32:06 2026",
+        "kind": "last-owned-service",
+        "current_ps": "",
+        "same_identity_alive": false
+      }
+    ],
+    "remaining_same_owned_identity": []
+  }
+}

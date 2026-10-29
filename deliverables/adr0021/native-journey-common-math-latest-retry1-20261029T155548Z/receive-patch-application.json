@@ -1,0 +1,33 @@
+{
+  "parent_source": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/xsm/receive.py",
+  "parent_sha256": "e2c3fa86a3fecd35d735965c458ff833dcc562aa6b2a4d52b5a34fe33360320e",
+  "book": {
+    "before_sha256": "e3cbe2ece4d70bafbb8d8d4ae3be05a7aeaf64035f564cdc93832fbe78512dcb",
+    "after_sha256": "e2c3fa86a3fecd35d735965c458ff833dcc562aa6b2a4d52b5a34fe33360320e",
+    "applied_at": 1793290529.684535,
+    "target": "/private/tmp/mq-b-hd9g8g9k/payload/xsm/receive.py"
+  },
+  "mini": {
+    "before_sha256": "e3cbe2ece4d70bafbb8d8d4ae3be05a7aeaf64035f564cdc93832fbe78512dcb",
+    "after_sha256": "e2c3fa86a3fecd35d735965c458ff833dcc562aa6b2a4d52b5a34fe33360320e",
+    "applied_at": 1793290529.9057522,
+    "target": "/private/tmp/mq-m-tn48g8wb/payload/xsm/receive.py"
+  },
+  "frozen_receive_sha256_unchanged": "e3cbe2ece4d70bafbb8d8d4ae3be05a7aeaf64035f564cdc93832fbe78512dcb",
+  "protected_originals_before_apply": {
+    "/private/tmp/mq-b-hd9g8g9k/state/held/1793289496678.json": "6edd32f59c1c6cc585b1cddd2aa59fb867b73f998a1fa5ea483f50c31c84fdd2",
+    "/private/tmp/mq-b-hd9g8g9k/state/handoffs/73cd7605dd279d1c62affc6a88e35f2e0638c877604a72a225c4ef6448e8bfd8/c18d0295024549c8.json": "24eb87b687375471ca3a846d41bdf5745c21b5f665d65646e9589f949ad3dd76",
+    "/private/tmp/mq-b-hd9g8g9k/state/handoffs/73cd7605dd279d1c62affc6a88e35f2e0638c877604a72a225c4ef6448e8bfd8/9f11884127764cad.json": "53f722f6cfb606e43648f3a4af5c13397442259d97fe6a222c9ed0a3fb34ef87",
+    "/private/tmp/mq-b-hd9g8g9k/state/ledger/9f11884127764cad.recv.json": "72324f3470cc43a98ca8db0f9d647a5c447d70ddc77fce1a7693d7ddd62f8ca7",
+    "/private/tmp/mq-b-hd9g8g9k/state/ledger/c18d0295024549c8.recv.json": "6a2b1c1ee08a7f0656fd1b179df2fbe3e538afd9c71395fd85f37eaacc5359f7",
+    "/private/tmp/mq-b-hd9g8g9k/state/ledger/c18d0295024549c8.handoff.json": "b2fbc3367c04b1d5dc5c2655f66ceafb2a6aa4d08188d36a71b67f6cb2db13b7",
+    "/private/tmp/mq-b-hd9g8g9k/state/ledger/78247e05ee7546eb.recv.json": "a41d1d4e4845860f97dcbdd266013e4a7b42b6d8eb843488aa7a550d242be0ee",
+    "/private/tmp/mq-b-hd9g8g9k/state/ledger/78247e05ee7546eb.json": "085ec986b023ec2f6ebf36609e67e78dda1713d6f2bb26411e5436d5a3fcc825",
+    "/private/tmp/mq-b-hd9g8g9k/state/asked/f5fcb3.recent.json": "0230b609f1aee1401ba716533b5602e4c853db569a79f9f50fa6ae0b32cca3ec",
+    "/private/tmp/mq-b-hd9g8g9k/state/asked/f5fcb3.d0c4872fbeeca184.pending.json": "aebb33be6640a710101b409307533a9c6b60ae61bccec1aae7fe508a70f63fd8"
+  },
+  "state_ledger_held_ACK_consent_modified": false,
+  "final_parent_frozen_source": "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/adr21-legacy-final-20261030-3ykbtain/xsm/receive.py",
+  "final_parent_frozen_sha256": "e2c3fa86a3fecd35d735965c458ff833dcc562aa6b2a4d52b5a34fe33360320e",
+  "matched_previously_applied_bytes": true
+}

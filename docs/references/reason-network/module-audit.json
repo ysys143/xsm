@@ -1,0 +1,272 @@
+{
+  "modules": [
+    {
+      "path": "src/agent.rs",
+      "role": "하네스 탐지·호출 meta·프로세스와 대화 식별·소켓 게시",
+      "lines": 481,
+      "test_declarations": 7,
+      "review_scope": "정적 책임·진입점·연결부 대조. 핵심 계약별 실행은 별도 근거 참조"
+    },
+    {
+      "path": "src/claude.rs",
+      "role": "Claude 네이티브 레지스트리·소켓과 프로세스 대조",
+      "lines": 168,
+      "test_declarations": 2,
+      "review_scope": "정적 책임·진입점·연결부 대조. 핵심 계약별 실행은 별도 근거 참조"
+    },
+    {
+      "path": "src/client.rs",
+      "role": "JSON 요청 상관관계·호출 기한·데몬 시작·재접속·재등록",
+      "lines": 387,
+      "test_declarations": 3,
+      "review_scope": "정적 책임·진입점·연결부 대조. 핵심 계약별 실행은 별도 근거 참조"
+    },
+    {
+      "path": "src/codex.rs",
+      "role": "rollout 턴 시작·종료·부분 줄·증분 읽기",
+      "lines": 188,
+      "test_declarations": 1,
+      "review_scope": "정적 책임·진입점·연결부 대조. 핵심 계약별 실행은 별도 근거 참조"
+    },
+    {
+      "path": "src/config.rs",
+      "role": "기본 공유·수신 정책·폴더 제외·심볼릭 링크·포트",
+      "lines": 434,
+      "test_declarations": 9,
+      "review_scope": "정적 책임·진입점·연결부 대조. 핵심 계약별 실행은 별도 근거 참조"
+    },
+    {
+      "path": "src/daemon/ask.rs",
+      "role": "질문 원문·중복 합류·취소·늦은 답·서명·OS 패널",
+      "lines": 621,
+      "test_declarations": 5,
+      "review_scope": "정적 책임·진입점·연결부 대조. 핵심 계약별 실행은 별도 근거 참조"
+    },
+    {
+      "path": "src/daemon/directory.rs",
+      "role": "로컬/원격 디렉터리·업무·presence·주소 해석",
+      "lines": 694,
+      "test_declarations": 5,
+      "review_scope": "정적 책임·진입점·연결부 대조. 핵심 계약별 실행은 별도 근거 참조"
+    },
+    {
+      "path": "src/daemon/mail.rs",
+      "role": "저장·전달 경로·확인·outbox·재시도·루프·첨부 협상",
+      "lines": 1211,
+      "test_declarations": 10,
+      "review_scope": "정적 책임·진입점·연결부 대조. 핵심 계약별 실행은 별도 근거 참조"
+    },
+    {
+      "path": "src/daemon/mod.rs",
+      "role": "데몬 생명주기·동시 IPC dispatch·상태와 락",
+      "lines": 429,
+      "test_declarations": 1,
+      "review_scope": "정적 책임·진입점·연결부 대조. 핵심 계약별 실행은 별도 근거 참조"
+    },
+    {
+      "path": "src/daemon/notify.rs",
+      "role": "데스크톱 알림·빈도·유효 시간·OS 차이",
+      "lines": 228,
+      "test_declarations": 2,
+      "review_scope": "정적 책임·진입점·연결부 대조. 핵심 계약별 실행은 별도 근거 참조"
+    },
+    {
+      "path": "src/daemon/reason.rs",
+      "role": "Reason 클라우드 세션 열거·전달·비공개 relay 프로세스 경계",
+      "lines": 269,
+      "test_declarations": 2,
+      "review_scope": "정적 책임·진입점·연결부 대조. 핵심 계약별 실행은 별도 근거 참조"
+    },
+    {
+      "path": "src/daemon/sessions.rs",
+      "role": "등록·이름 소유·대화 전환·hook·재개·보존·제외 폴더",
+      "lines": 1480,
+      "test_declarations": 29,
+      "review_scope": "정적 책임·진입점·연결부 대조. 핵심 계약별 실행은 별도 근거 참조"
+    },
+    {
+      "path": "src/daemon/teamops.rs",
+      "role": "팀 생성·가입·초대·제명·릴레이·서명 상태 반영",
+      "lines": 704,
+      "test_declarations": 1,
+      "review_scope": "정적 책임·진입점·연결부 대조. 핵심 계약별 실행은 별도 근거 참조"
+    },
+    {
+      "path": "src/daemon/update.rs",
+      "role": "standalone 업데이트·소유자·체크섬 설치·재시작",
+      "lines": 125,
+      "test_declarations": 1,
+      "review_scope": "정적 책임·진입점·연결부 대조. 핵심 계약별 실행은 별도 근거 참조"
+    },
+    {
+      "path": "src/doing.rs",
+      "role": "제목과 현재 할 일 추출·캐시·부분 줄·파일 재작성",
+      "lines": 266,
+      "test_declarations": 2,
+      "review_scope": "정적 책임·진입점·연결부 대조. 핵심 계약별 실행은 별도 근거 참조"
+    },
+    {
+      "path": "src/files.rs",
+      "role": "파일 범위·이름·크기·할당량·저장·보존·본문 대체",
+      "lines": 816,
+      "test_declarations": 12,
+      "review_scope": "정적 책임·진입점·연결부 대조. 핵심 계약별 실행은 별도 근거 참조"
+    },
+    {
+      "path": "src/git.rs",
+      "role": "저장소·브랜치·remote slug 추출",
+      "lines": 58,
+      "test_declarations": 1,
+      "review_scope": "정적 책임·진입점·연결부 대조. 핵심 계약별 실행은 별도 근거 참조"
+    },
+    {
+      "path": "src/hook.rs",
+      "role": "하네스 이벤트 정규화·메일 주입·출력 뒤 확인·기한",
+      "lines": 202,
+      "test_declarations": 2,
+      "review_scope": "정적 책임·진입점·연결부 대조. 핵심 계약별 실행은 별도 근거 참조"
+    },
+    {
+      "path": "src/invite.rs",
+      "role": "단어 코드 생성·정규화·코드 기반 임시 키",
+      "lines": 71,
+      "test_declarations": 1,
+      "review_scope": "정적 책임·진입점·연결부 대조. 핵심 계약별 실행은 별도 근거 참조"
+    },
+    {
+      "path": "src/ipc.rs",
+      "role": "Unix socket/Windows named pipe·경로·접속 소유",
+      "lines": 93,
+      "test_declarations": 0,
+      "review_scope": "정적 책임·진입점·연결부 대조. 핵심 계약별 실행은 별도 근거 참조"
+    },
+    {
+      "path": "src/main.rs",
+      "role": "공개 CLI parsing·상태·발신자 구분·등록·명령 dispatch",
+      "lines": 937,
+      "test_declarations": 5,
+      "review_scope": "정적 책임·진입점·연결부 대조. 핵심 계약별 실행은 별도 근거 참조"
+    },
+    {
+      "path": "src/mcp.rs",
+      "role": "스키마·초기 지침·매 호출 식별·도구 숨김·수신·파일 루트",
+      "lines": 447,
+      "test_declarations": 2,
+      "review_scope": "정적 책임·진입점·연결부 대조. 핵심 계약별 실행은 별도 근거 참조"
+    },
+    {
+      "path": "src/migrate.rs",
+      "role": "tincan에서의 설치 소유·서비스·실행 중 세션 호환 이동",
+      "lines": 100,
+      "test_declarations": 0,
+      "review_scope": "정적 책임·진입점·연결부 대조. 핵심 계약별 실행은 별도 근거 참조"
+    },
+    {
+      "path": "src/net.rs",
+      "role": "QUIC·멤버 gate·가입·릴레이·프록시·포트·presence·ack·재시도",
+      "lines": 1523,
+      "test_declarations": 13,
+      "review_scope": "정적 책임·진입점·연결부 대조. 핵심 계약별 실행은 별도 근거 참조"
+    },
+    {
+      "path": "src/opencode-plugin.ts",
+      "role": "1.x/2.x 상태·할 일·prompt API·플러그인 종료",
+      "lines": 147,
+      "test_declarations": 0,
+      "review_scope": "정적 책임·진입점·연결부 대조. 핵심 계약별 실행은 별도 근거 참조"
+    },
+    {
+      "path": "src/paths.rs",
+      "role": "상태·프로필 경로·짧은 소켓·기존 경로 호환·권한",
+      "lines": 268,
+      "test_declarations": 1,
+      "review_scope": "정적 책임·진입점·연결부 대조. 핵심 계약별 실행은 별도 근거 참조"
+    },
+    {
+      "path": "src/pi-extension.ts",
+      "role": "세션별 지연 MCP 노출·상태·steer/idle 주입·종료",
+      "lines": 75,
+      "test_declarations": 0,
+      "review_scope": "정적 책임·진입점·연결부 대조. 핵심 계약별 실행은 별도 근거 참조"
+    },
+    {
+      "path": "src/proof.rs",
+      "role": "JWS·키 pin·issuer/audience·만료와 이름 소유 구분",
+      "lines": 440,
+      "test_declarations": 10,
+      "review_scope": "정적 책임·진입점·연결부 대조. 핵심 계약별 실행은 별도 근거 참조"
+    },
+    {
+      "path": "src/proto.rs",
+      "role": "로컬 요청·응답·이벤트·메시지·공개 상태 자료형",
+      "lines": 557,
+      "test_declarations": 2,
+      "review_scope": "정적 책임·진입점·연결부 대조. 핵심 계약별 실행은 별도 근거 참조"
+    },
+    {
+      "path": "src/relays.rs",
+      "role": "서명된 릴레이 목록·유효성·캐시·업데이트·실패 대체",
+      "lines": 442,
+      "test_declarations": 8,
+      "review_scope": "정적 책임·진입점·연결부 대조. 핵심 계약별 실행은 별도 근거 참조"
+    },
+    {
+      "path": "src/render.rs",
+      "role": "출처 프레임·표시·제어 문자·가짜 승인·자료 경로 분리",
+      "lines": 670,
+      "test_declarations": 7,
+      "review_scope": "정적 책임·진입점·연결부 대조. 핵심 계약별 실행은 별도 근거 참조"
+    },
+    {
+      "path": "src/setup/zcode.rs",
+      "role": "사용자/공용 MCP 설정의 실제 우선순위·제거",
+      "lines": 206,
+      "test_declarations": 6,
+      "review_scope": "정적 책임·진입점·연결부 대조. 핵심 계약별 실행은 별도 근거 참조"
+    },
+    {
+      "path": "src/setup.rs",
+      "role": "설정 탐지·백업·병합·훅·MCP·서비스·제거·doctor",
+      "lines": 1654,
+      "test_declarations": 11,
+      "review_scope": "정적 책임·진입점·연결부 대조. 핵심 계약별 실행은 별도 근거 참조"
+    },
+    {
+      "path": "src/store.rs",
+      "role": "SQLite 우편함·outbox·세션·첨부·중복·마이그레이션·정리",
+      "lines": 1124,
+      "test_declarations": 13,
+      "review_scope": "정적 책임·진입점·연결부 대조. 핵심 계약별 실행은 별도 근거 참조"
+    },
+    {
+      "path": "src/team.rs",
+      "role": "서명 멤버십·admission·초대·이름 소유·상태 병합·ticket",
+      "lines": 1254,
+      "test_declarations": 25,
+      "review_scope": "정적 책임·진입점·연결부 대조. 핵심 계약별 실행은 별도 근거 참조"
+    },
+    {
+      "path": "src/tray.rs",
+      "role": "메뉴바 상태·누가 온라인인지·미독 표시·데몬 수명",
+      "lines": 270,
+      "test_declarations": 0,
+      "review_scope": "정적 책임·진입점·연결부 대조. 핵심 계약별 실행은 별도 근거 참조"
+    },
+    {
+      "path": "src/util.rs",
+      "role": "이름·표시·프로세스·락·권한·원자적 유틸리티",
+      "lines": 372,
+      "test_declarations": 6,
+      "review_scope": "정적 책임·진입점·연결부 대조. 핵심 계약별 실행은 별도 근거 참조"
+    },
+    {
+      "path": "src/wizard.rs",
+      "role": "사람의 대화형 가입과 에이전트 비대화형 기본값·설정 선택",
+      "lines": 321,
+      "test_declarations": 0,
+      "review_scope": "정적 책임·진입점·연결부 대조. 핵심 계약별 실행은 별도 근거 참조"
+    }
+  ],
+  "rust": 36,
+  "typescript": 2
+}

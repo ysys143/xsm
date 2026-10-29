@@ -1,0 +1,34 @@
+{
+  "at": 1793289870.462677,
+  "id": "9f11884127764cad",
+  "latest_actual_MCP_inbox_return": {
+    "messages": [],
+    "claims": [],
+    "inbox_pending": 0
+  },
+  "reason_present": false,
+  "claim_diagnostics_present": false,
+  "ledger_receipt": {
+    "id": "9f11884127764cad",
+    "decision": "held",
+    "reason": "remote message from p2p:75c1181ce5e57de097475aba33df1b34bf1a18fbc8b0363514dd8c07c9e294fe was not received by this machine's xsm",
+    "t": 1793289496.678518,
+    "receiver": {
+      "name": "a1",
+      "alias": "claude-3",
+      "ref": "f5fcb3",
+      "runtime": "claude"
+    }
+  },
+  "canonical_state": "pending",
+  "delivery_state": "pending",
+  "claim": null,
+  "handoff_path": "/private/tmp/mq-b-hd9g8g9k/state/handoffs/73cd7605dd279d1c62affc6a88e35f2e0638c877604a72a225c4ef6448e8bfd8/9f11884127764cad.json",
+  "handoff_file_sha256": "53f722f6cfb606e43648f3a4af5c13397442259d97fe6a222c9ed0a3fb34ef87",
+  "canonical_digest": "6d0a5470531c55bae5aa608c4a56921341752ad87269f81b8c0488f04f8058d8",
+  "actual_CID": "d6ad76ce-8cd2-4f66-adcd-66d6c3805cc7",
+  "native_PID": 33226,
+  "expected_lstart": "Fri Oct 30 00:56:31 2026",
+  "current_ps": "33226 Fri Oct 30 00:56:31 2026     Ss   /private/tmp/mq-b-hd9g8g9k/runtime/claude",
+  "state_corrections": 0
+}

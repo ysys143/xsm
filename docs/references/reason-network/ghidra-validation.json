@@ -1,0 +1,33 @@
+{
+  "date": "2026-10-24",
+  "checks": {
+    "programs": 2,
+    "decompiler_available_both": true,
+    "selected_functions": {
+      "reason-cli-0.2.557": 8,
+      "reason-network-0.12.10": 12
+    },
+    "decompiled_functions": {
+      "reason-cli-0.2.557": 8,
+      "reason-network-0.12.10": 12
+    },
+    "js_memory_hashes_match_all_six": true,
+    "js_regions_non_executable": true,
+    "unrelated_header_not_recovered": true,
+    "linker_candidates_contain_evidence": true,
+    "membership_reject_code_message_length": true,
+    "wrong_reject_code_detected": true,
+    "original_binaries_unchanged": true,
+    "source_script_matches_cli_run": true,
+    "all_exports_exit_zero": true,
+    "initial_automatic_analysis_partial_both": true,
+    "current_automatic_analysis_completed_both": true,
+    "full_inventory_rows": {
+      "reason-cli-0.2.557": 66226,
+      "reason-network-0.12.10": 17727
+    }
+  },
+  "errors": [],
+  "status": "passed",
+  "scope": "초기 선택 결과와 후속 전체 자동 분석의 수집 검증. 의미 동등성·전체 기능 실행 성공을 증명하지 않는다."
+}

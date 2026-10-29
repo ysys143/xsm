@@ -1,0 +1,426 @@
+{
+  "schema": "xsm.A15-03.collector-cut-native.v1",
+  "verdict": "partial-preflight-only-no-collector-fault-executed",
+  "criterion": "actual collection cut -> unknown -> original intent/ID/recovery readback; no approval from fake claim",
+  "started_at_utc": "2026-10-29T02:25:25+00:00",
+  "finished_at_utc": "2026-10-29T02:36:03.188202+00:00",
+  "elapsed_seconds": 638.188202,
+  "timebox_seconds": 600,
+  "timebox_met": false,
+  "source": "/private/tmp/xsm-doctor-privacy-v2-frozen-i7xbamec",
+  "source_manifest": {
+    "path": "deliverables/p13-live/doctor-privacy-v2-source-manifest.json",
+    "sha256": "215cbfe165819fa9358d71d57ba069e0dbd8e48090701e81081da0e000871b64",
+    "bytes": 99111
+  },
+  "source135_unchanged": true,
+  "actual_route": "Codex native app-server API initialize -> thread/start (no turn/start) -> mcpServerStatus/list, real xsm stdio proxy without metadata/capability/result rewrites",
+  "native_API_argv": [
+    "codex",
+    "app-server",
+    "-c",
+    "mcp_servers.xsm.command=\"/usr/bin/python3\"",
+    "-c",
+    "mcp_servers.xsm.args=[\"/private/tmp/collector-cut-native-aurzj351/proxy.py\", \"/private/tmp/collector-cut-native-aurzj351\", \"/private/tmp/xsm-doctor-privacy-v2-frozen-i7xbamec\"]",
+    "-c",
+    "mcp_servers.xsm.cwd=\"/private/tmp/xsm-doctor-privacy-v2-frozen-i7xbamec\"",
+    "-c",
+    "mcp_servers.xsm.env.XSM_HOME=\"/private/tmp/collector-cut-native-aurzj351/state\"",
+    "-c",
+    "mcp_servers.xsm.env.CODEX_HOME=\"/Users/jaesolshin/.codex-3\"",
+    "-c",
+    "mcp_servers.xsm.env.PYTHONPATH=\"/private/tmp/xsm-doctor-privacy-v2-frozen-i7xbamec\"",
+    "-c",
+    "mcp_servers.xsm.env.PYTHONDONTWRITEBYTECODE=\"1\""
+  ],
+  "preflight": {
+    "API_initialize": true,
+    "API_thread_start": true,
+    "native_CID_sha256": "8080fe476821bd03dfd25b1e5faa0ef9342188bb75ae4d9d215c40d8cf42fb4e",
+    "API_tools_status": true,
+    "actual_MCP_initialize_count": 2,
+    "actual_MCP_tools_list": 2,
+    "actual_MCP_capabilities": [
+      {
+        "experimental": {
+          "codex/auth-change": {}
+        },
+        "elicitation": {
+          "form": {},
+          "url": {}
+        }
+      },
+      {
+        "elicitation": {
+          "form": {},
+          "url": {}
+        }
+      }
+    ],
+    "actual_source_tools_calls": 0,
+    "identity_registration_executed": false
+  },
+  "pre_initialize_failure": {
+    "preserved_directory": "/private/tmp/collector-cut-native-aurzj351/pre-initialize-argument-failure",
+    "cause": "app-server rejected unsupported --ignore-user-config before API initialize; no CID/model/tool was created",
+    "manual_setup_correction": "removed unsupported argument once; not a native condition/model automatic retry",
+    "CLI_process_launch_attempts": 2,
+    "automatic_retries": 0
+  },
+  "fault": {
+    "planned": "drop only real server elicitation/create before native client; preserve all other bytes",
+    "executed": false,
+    "real_elicitation_requests_observed": 0,
+    "reason": "driver could not prove full provider DB CID/cwd + actual native ancestor at registration barrier; stopped before any permission tool call",
+    "native_client_refusal_observed": false,
+    "collector_absence_or_cut_observed": false,
+    "do_not_conflate": "initialize/tool listing is not a collection cut; no client rejection or unknown success inferred"
+  },
+  "requested_acceptance": {
+    "source_unknown_read_by_actual_caller": false,
+    "same_ID_readback": false,
+    "recover_at_observed": false,
+    "original_intent_request_created": false,
+    "fake_approval_negative_executed": false,
+    "grant_application_calls": 0,
+    "not_evidence_of_grant_safety": "no permission request/tool call was issued; grant0 here is a non-action observation, not the required negative test"
+  },
+  "late_metadata_observation": {
+    "provider_DB_row_seen_after_process_stop": true,
+    "limit": "row presence after stop cannot fill the actual registration barrier retroactively; no actor/server restart to use it"
+  },
+  "source_review": {
+    "paths": {
+      "xsm/consent.py": "26adb2e00e2466594a6dee3fe4850cc6ee8ee20c7187c0e1f490d51d603b95e0",
+      "xsm/mcp.py": "8f8a234180fd3be42dca7ebebadfe16ac399f755cbcfb7c5b8453a6406a6ca05",
+      "xsm/cli.py": "76f29a9ef05d070dc61d68008ae87db2e5935dc76d0e333bd30c3db29d54cb1c",
+      "xsm/decisions.py": "ee9964969497d3726dad7cdb27913bf2df382615abf6ae9ab6fc66b59a72fb2b",
+      "xsm/connect.py": "61aa314f64c122955a929406778f940cf96cdc7a90ec0425cbe958dcb486c292"
+    },
+    "observations": [
+      "Server.ask_client EOF/OSError calls decisions.abandon_display then rethrows",
+      "abandon_display resets display to not-requested but does not itself set status unknown",
+      "public_status returns question/id/status/display, no generic recover_at field",
+      "CLI consent path records pending ask and requires real bound user evidence; it does not itself carry a native elicitation request"
+    ],
+    "limit": "source observation only; no fake callback or capability injected to manufacture native success"
+  },
+  "private_state_counts": {
+    "human-decisions": 0,
+    "native-answers": 0,
+    "asked": 0,
+    "collaborations": 0
+  },
+  "policy_and_profile": {
+    "private_permission_tool_calls": 0,
+    "links_or_scope_application_attempts": 0,
+    "positive_answer_or_token_fabricated": false,
+    "profile_metadata_unchanged": false,
+    "changed_metadata_filenames": [
+      "config.toml"
+    ],
+    "profile_policy_unchanged_proven": false,
+    "before_stat": {
+      "config.toml": [
+        1050362890,
+        21114,
+        1793239474187341105,
+        33152
+      ],
+      "hooks.json": [
+        1040863516,
+        1542,
+        1792734705341475194,
+        33188
+      ],
+      "settings.json": null
+    },
+    "after_stat": {
+      "config.toml": [
+        1050395279,
+        21200,
+        1793241184325510676,
+        33152
+      ],
+      "hooks.json": [
+        1040863516,
+        1542,
+        1792734705341475194,
+        33188
+      ],
+      "settings.json": null
+    },
+    "writer": "unknown; no direct driver config/auth/permission editing command; native startup or concurrent writer not assigned",
+    "credential_content_read_or_key_comparison_by_driver": false,
+    "note": "metadata drift is preserved, not reported as global profile/policy immutability; no rollback or credential inspection"
+  },
+  "native_exit": 0,
+  "new_model_turns": 0,
+  "new_Codex_model_children": 0,
+  "native_API_threads_started": 1,
+  "new_approval_UI_shown": false,
+  "native_answers_injected": 0,
+  "source_plan_ledger_existing_artifact_edits": 0,
+  "raw_files": [
+    {
+      "path": "/private/tmp/collector-cut-native-aurzj351/native-input.jsonl",
+      "sha256": "f09946f8fd4412adca6e959308d5e17bc8aa4a7c1e3d763ef4553d2c0a96f543",
+      "bytes": 575
+    },
+    {
+      "path": "/private/tmp/collector-cut-native-aurzj351/result.json",
+      "sha256": "6279176854b97a86042f7b66c491e2223def3ee090f17f9c8c329465a2087309",
+      "bytes": 5058872
+    },
+    {
+      "path": "/private/tmp/collector-cut-native-aurzj351/proxy.py",
+      "sha256": "9b539736fd245742a0b5626d33b09f60c85df988a0d2e3a9bceb18eff695c8fe",
+      "bytes": 1596
+    },
+    {
+      "path": "/private/tmp/collector-cut-native-aurzj351/driver.py",
+      "sha256": "4a10384d7135c6c8aa6276ba04642cc5a5579606c5ff0331f009186766bccf35",
+      "bytes": 6900
+    },
+    {
+      "path": "/private/tmp/collector-cut-native-aurzj351/native-output.jsonl",
+      "sha256": "f7c5eb48300b161ce39050625df4f7ca9d6e852ae0227e03ba331e2820c487b4",
+      "bytes": 2427652
+    },
+    {
+      "path": "/private/tmp/collector-cut-native-aurzj351/native.stderr",
+      "sha256": "34a10ce07d305022ad66f21211b839937ebdc9e32992d6bd0adab4453a15996b",
+      "bytes": 181
+    },
+    {
+      "path": "/private/tmp/collector-cut-native-aurzj351/proxy/server-wire.jsonl",
+      "sha256": "93cce5bb92e7686ac25d887c80f4491822d389933a60e9b4ae6d9eef1918a0c4",
+      "bytes": 51124
+    },
+    {
+      "path": "/private/tmp/collector-cut-native-aurzj351/proxy/client-wire.jsonl",
+      "sha256": "905a4e0bbdd3b3d42b019306f88dbe0ad59fc440e792ced5c7afedcabf01ad3d",
+      "bytes": 948
+    },
+    {
+      "path": "/private/tmp/collector-cut-native-aurzj351/proxy/server.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "/private/tmp/collector-cut-native-aurzj351/proxy/handles.json",
+      "sha256": "ba00b99544e146df6e24fc7ba2d174ec301f97ae78524d678c7370d7535e78c2",
+      "bytes": 484
+    },
+    {
+      "path": "/private/tmp/collector-cut-native-aurzj351/pre-initialize-argument-failure/native-input.jsonl",
+      "sha256": "a2d6f11b36742d03870dd2eee148b8217c34c318eb25968eabc731d62e9142c9",
+      "bytes": 152
+    },
+    {
+      "path": "/private/tmp/collector-cut-native-aurzj351/pre-initialize-argument-failure/result.json",
+      "sha256": "2ba22e32e133809a34612badd9b9425d08113db87c1e4fd62ebc89671942b1ff",
+      "bytes": 1843
+    },
+    {
+      "path": "/private/tmp/collector-cut-native-aurzj351/pre-initialize-argument-failure/driver.py",
+      "sha256": "5bedb619aeea004f0eb22366c634a6f07cfc1f266f2bd8d827575560376fedff",
+      "bytes": 6909
+    },
+    {
+      "path": "/private/tmp/collector-cut-native-aurzj351/pre-initialize-argument-failure/native.stderr",
+      "sha256": "6232895c011c146a178309415c9d4d169a187590bac56600317b7f77009582c9",
+      "bytes": 201
+    },
+    {
+      "path": "/private/tmp/collector-cut-native-aurzj351/work/.git/config",
+      "sha256": "cae33efdb02cf774435c1ff9cb16bcc1014606908530c6e1dc727615fe3e8cda",
+      "bytes": 137
+    },
+    {
+      "path": "/private/tmp/collector-cut-native-aurzj351/work/.git/HEAD",
+      "sha256": "28d25bf82af4c0e2b72f50959b2beb859e3e60b9630a5e8c603dad4ddb2b6e80",
+      "bytes": 21
+    },
+    {
+      "path": "/private/tmp/collector-cut-native-aurzj351/work/.git/description",
+      "sha256": "85ab6c163d43a17ea9cf7788308bca1466f1b0a8d1cc92e26e9bf63da4062aee",
+      "bytes": 73
+    },
+    {
+      "path": "/private/tmp/collector-cut-native-aurzj351/work/.git/info/exclude",
+      "sha256": "6671fe83b7a07c8932ee89164d1f2793b2318058eb8b98dc5c06ee0a5a3b0ec1",
+      "bytes": 240
+    },
+    {
+      "path": "/private/tmp/collector-cut-native-aurzj351/work/.git/hooks/commit-msg.sample",
+      "sha256": "1f74d5e9292979b573ebd59741d46cb93ff391acdd083d340b94370753d92437",
+      "bytes": 896
+    },
+    {
+      "path": "/private/tmp/collector-cut-native-aurzj351/work/.git/hooks/pre-rebase.sample",
+      "sha256": "4febce867790052338076f4e66cc47efb14879d18097d1d61c8261859eaaa7b3",
+      "bytes": 4898
+    },
+    {
+      "path": "/private/tmp/collector-cut-native-aurzj351/work/.git/hooks/sendemail-validate.sample",
+      "sha256": "44ebfc923dc5466bc009602f0ecf067b9c65459abfe8868ddc49b78e6ced7a92",
+      "bytes": 2308
+    },
+    {
+      "path": "/private/tmp/collector-cut-native-aurzj351/work/.git/hooks/pre-commit.sample",
+      "sha256": "57185b7b9f05239d7ab52db045f5b89eb31348d7b2177eab214f5eb872e1971b",
+      "bytes": 1649
+    },
+    {
+      "path": "/private/tmp/collector-cut-native-aurzj351/work/.git/hooks/applypatch-msg.sample",
+      "sha256": "0223497a0b8b033aa58a3a521b8629869386cf7ab0e2f101963d328aa62193f7",
+      "bytes": 478
+    },
+    {
+      "path": "/private/tmp/collector-cut-native-aurzj351/work/.git/hooks/fsmonitor-watchman.sample",
+      "sha256": "e0549964e93897b519bd8e333c037e51fff0f88ba13e086a331592bf801fa1d0",
+      "bytes": 4726
+    },
+    {
+      "path": "/private/tmp/collector-cut-native-aurzj351/work/.git/hooks/pre-receive.sample",
+      "sha256": "a4c3d2b9c7bb3fd8d1441c31bd4ee71a595d66b44fcf49ddb310252320169989",
+      "bytes": 544
+    },
+    {
+      "path": "/private/tmp/collector-cut-native-aurzj351/work/.git/hooks/prepare-commit-msg.sample",
+      "sha256": "e9ddcaa4189fddd25ed97fc8c789eca7b6ca16390b2392ae3276f0c8e1aa4619",
+      "bytes": 1492
+    },
+    {
+      "path": "/private/tmp/collector-cut-native-aurzj351/work/.git/hooks/post-update.sample",
+      "sha256": "81765af2daef323061dcbc5e61fc16481cb74b3bac9ad8a174b186523586f6c5",
+      "bytes": 189
+    },
+    {
+      "path": "/private/tmp/collector-cut-native-aurzj351/work/.git/hooks/pre-merge-commit.sample",
+      "sha256": "d3825a70337940ebbd0a5c072984e13245920cdf8898bd225c8d27a6dfc9cb53",
+      "bytes": 416
+    },
+    {
+      "path": "/private/tmp/collector-cut-native-aurzj351/work/.git/hooks/pre-applypatch.sample",
+      "sha256": "e15c5b469ea3e0a695bea6f2c82bcf8e62821074939ddd85b77e0007ff165475",
+      "bytes": 424
+    },
+    {
+      "path": "/private/tmp/collector-cut-native-aurzj351/work/.git/hooks/pre-push.sample",
+      "sha256": "ecce9c7e04d3f5dd9d8ada81753dd1d549a9634b26770042b58dda00217d086a",
+      "bytes": 1374
+    },
+    {
+      "path": "/private/tmp/collector-cut-native-aurzj351/work/.git/hooks/update.sample",
+      "sha256": "8d5f2fa83e103cf08b57eaa67521df9194f45cbdbcb37da52ad586097a14d106",
+      "bytes": 3650
+    },
+    {
+      "path": "/private/tmp/collector-cut-native-aurzj351/work/.git/hooks/push-to-checkout.sample",
+      "sha256": "a53d0741798b287c6dd7afa64aee473f305e65d3f49463bb9d7408ec3b12bf5f",
+      "bytes": 2783
+    },
+    {
+      "path": "/private/tmp/collector-cut-native-aurzj351/other/.git/config",
+      "sha256": "cae33efdb02cf774435c1ff9cb16bcc1014606908530c6e1dc727615fe3e8cda",
+      "bytes": 137
+    },
+    {
+      "path": "/private/tmp/collector-cut-native-aurzj351/other/.git/HEAD",
+      "sha256": "28d25bf82af4c0e2b72f50959b2beb859e3e60b9630a5e8c603dad4ddb2b6e80",
+      "bytes": 21
+    },
+    {
+      "path": "/private/tmp/collector-cut-native-aurzj351/other/.git/description",
+      "sha256": "85ab6c163d43a17ea9cf7788308bca1466f1b0a8d1cc92e26e9bf63da4062aee",
+      "bytes": 73
+    },
+    {
+      "path": "/private/tmp/collector-cut-native-aurzj351/other/.git/info/exclude",
+      "sha256": "6671fe83b7a07c8932ee89164d1f2793b2318058eb8b98dc5c06ee0a5a3b0ec1",
+      "bytes": 240
+    },
+    {
+      "path": "/private/tmp/collector-cut-native-aurzj351/other/.git/hooks/commit-msg.sample",
+      "sha256": "1f74d5e9292979b573ebd59741d46cb93ff391acdd083d340b94370753d92437",
+      "bytes": 896
+    },
+    {
+      "path": "/private/tmp/collector-cut-native-aurzj351/other/.git/hooks/pre-rebase.sample",
+      "sha256": "4febce867790052338076f4e66cc47efb14879d18097d1d61c8261859eaaa7b3",
+      "bytes": 4898
+    },
+    {
+      "path": "/private/tmp/collector-cut-native-aurzj351/other/.git/hooks/sendemail-validate.sample",
+      "sha256": "44ebfc923dc5466bc009602f0ecf067b9c65459abfe8868ddc49b78e6ced7a92",
+      "bytes": 2308
+    },
+    {
+      "path": "/private/tmp/collector-cut-native-aurzj351/other/.git/hooks/pre-commit.sample",
+      "sha256": "57185b7b9f05239d7ab52db045f5b89eb31348d7b2177eab214f5eb872e1971b",
+      "bytes": 1649
+    },
+    {
+      "path": "/private/tmp/collector-cut-native-aurzj351/other/.git/hooks/applypatch-msg.sample",
+      "sha256": "0223497a0b8b033aa58a3a521b8629869386cf7ab0e2f101963d328aa62193f7",
+      "bytes": 478
+    },
+    {
+      "path": "/private/tmp/collector-cut-native-aurzj351/other/.git/hooks/fsmonitor-watchman.sample",
+      "sha256": "e0549964e93897b519bd8e333c037e51fff0f88ba13e086a331592bf801fa1d0",
+      "bytes": 4726
+    },
+    {
+      "path": "/private/tmp/collector-cut-native-aurzj351/other/.git/hooks/pre-receive.sample",
+      "sha256": "a4c3d2b9c7bb3fd8d1441c31bd4ee71a595d66b44fcf49ddb310252320169989",
+      "bytes": 544
+    },
+    {
+      "path": "/private/tmp/collector-cut-native-aurzj351/other/.git/hooks/prepare-commit-msg.sample",
+      "sha256": "e9ddcaa4189fddd25ed97fc8c789eca7b6ca16390b2392ae3276f0c8e1aa4619",
+      "bytes": 1492
+    },
+    {
+      "path": "/private/tmp/collector-cut-native-aurzj351/other/.git/hooks/post-update.sample",
+      "sha256": "81765af2daef323061dcbc5e61fc16481cb74b3bac9ad8a174b186523586f6c5",
+      "bytes": 189
+    },
+    {
+      "path": "/private/tmp/collector-cut-native-aurzj351/other/.git/hooks/pre-merge-commit.sample",
+      "sha256": "d3825a70337940ebbd0a5c072984e13245920cdf8898bd225c8d27a6dfc9cb53",
+      "bytes": 416
+    },
+    {
+      "path": "/private/tmp/collector-cut-native-aurzj351/other/.git/hooks/pre-applypatch.sample",
+      "sha256": "e15c5b469ea3e0a695bea6f2c82bcf8e62821074939ddd85b77e0007ff165475",
+      "bytes": 424
+    },
+    {
+      "path": "/private/tmp/collector-cut-native-aurzj351/other/.git/hooks/pre-push.sample",
+      "sha256": "ecce9c7e04d3f5dd9d8ada81753dd1d549a9634b26770042b58dda00217d086a",
+      "bytes": 1374
+    },
+    {
+      "path": "/private/tmp/collector-cut-native-aurzj351/other/.git/hooks/update.sample",
+      "sha256": "8d5f2fa83e103cf08b57eaa67521df9194f45cbdbcb37da52ad586097a14d106",
+      "bytes": 3650
+    },
+    {
+      "path": "/private/tmp/collector-cut-native-aurzj351/other/.git/hooks/push-to-checkout.sample",
+      "sha256": "a53d0741798b287c6dd7afa64aee473f305e65d3f49463bb9d7408ec3b12bf5f",
+      "bytes": 2783
+    }
+  ],
+  "limitations": [
+    "no actual collector cut/unknown/same-ID recovery trace obtained",
+    "metadata became observable later but actor was already stopped; no rerun",
+    "global config metadata drift observed, policy-value invariance unproven",
+    "zero-model API preflight is not model-native A15-03 proof"
+  ],
+  "new_artifacts": [
+    "deliverables/p13-live/collector-cut-native-result.json",
+    "deliverables/p13-live/collector-cut-native-result.md"
+  ]
+}

@@ -1,0 +1,360 @@
+{
+  "scope": "one C physical two-node engine-only UDP-egress-denied fixture; not D12 adoption",
+  "task_marker": "P11-QA-40c1afc34bbd43c4",
+  "local_root": "/private/tmp/p11-C-udp2-sjkpra10",
+  "peer_root": "/private/tmp/p11-C-udp2-cysgvtr5",
+  "binary_sha256": "6ac4bb4837469867edc2dba3cbbd6e4dd9fb18ad0389db69ff6ef21683317a44",
+  "UDP_profile": "(version 1) (allow default) (deny network-outbound (remote udp \"*:*\"))",
+  "profile_applied_to": "each owned engine daemon Popen only",
+  "network_team_created": true,
+  "production_team_used": false,
+  "native_model_calls": 0,
+  "passed": false,
+  "phases": [],
+  "private_plan_sha256": "e0348da87a7ccaf2cd1746eb9341432aa65095fb8a137a33f530ab5dab764210",
+  "preflight": {
+    "scope": "two physical Macs; actual child-only kernel UDP denial and TCP control",
+    "local": {
+      "hostname": "Jaesolui-MacBookPro.local",
+      "root": "/private/tmp/p11-C-udp-s3mrn30l",
+      "uid": 501,
+      "profile": "(version 1) (allow default) (deny network-outbound (remote udp \"*:*\"))",
+      "normal_udp": {
+        "exit_code": 0,
+        "output": {
+          "sent": 17
+        },
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stderr_empty": true,
+        "datagram_received": true
+      },
+      "denied_udp": {
+        "exit_code": 0,
+        "output": {
+          "errno": 1,
+          "error": "PermissionError"
+        },
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stderr_empty": true,
+        "datagram_received": false
+      },
+      "TCP_under_same_profile": {
+        "exit_code": 0,
+        "output": {
+          "tcp_ok": true
+        },
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stderr_empty": true,
+        "parent_echo_observed": true
+      },
+      "passed": true,
+      "global_policy_changed": false,
+      "owned_sockets_closed": true
+    },
+    "peer": {
+      "hostname": "Jaesolui-Macmini.local",
+      "root": "/private/tmp/p11-C-udp-tih25w67",
+      "uid": 501,
+      "profile": "(version 1) (allow default) (deny network-outbound (remote udp \"*:*\"))",
+      "normal_udp": {
+        "exit_code": 0,
+        "output": {
+          "sent": 17
+        },
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stderr_empty": true,
+        "datagram_received": true
+      },
+      "denied_udp": {
+        "exit_code": 0,
+        "output": {
+          "errno": 1,
+          "error": "PermissionError"
+        },
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stderr_empty": true,
+        "datagram_received": false
+      },
+      "TCP_under_same_profile": {
+        "exit_code": 0,
+        "output": {
+          "tcp_ok": true
+        },
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stderr_empty": true,
+        "parent_echo_observed": true
+      },
+      "passed": true,
+      "global_policy_changed": false,
+      "owned_sockets_closed": true
+    },
+    "both_passed": true
+  },
+  "stage_peer": {
+    "staged": true,
+    "binary_sha256": "6ac4bb4837469867edc2dba3cbbd6e4dd9fb18ad0389db69ff6ef21683317a44",
+    "root": "/private/tmp/p11-C-udp2-cysgvtr5",
+    "role": "controlled-peer"
+  },
+  "local_initial_handle": {
+    "pid": 23523,
+    "lstart": "Thu Oct 29 05:02:58 2026",
+    "binary_sha256": "6ac4bb4837469867edc2dba3cbbd6e4dd9fb18ad0389db69ff6ef21683317a44",
+    "alive_after_start": true,
+    "role": "local",
+    "socket": "/private/tmp/p11-C-udp2-sjkpra10/state/network.sock",
+    "UDP_profile": "(version 1) (allow default) (deny network-outbound (remote udp \"*:*\"))",
+    "sandbox_scope": "this owned engine daemon only",
+    "exit_code": 0
+  },
+  "local_endpoint": {
+    "endpoint_sha256": "0fe7628d20accd246bbf1b3430ac6916a3d786778979c627f12306ec2a65dcda",
+    "exit_code": 0
+  },
+  "peer_control_handle": {
+    "local_ssh_pid": 23572,
+    "alive_after_ready": true,
+    "peer_control_pid": 29923
+  },
+  "peer_initial_handle": {
+    "pid": 29924,
+    "lstart": "Thu Oct 29 05:02:59 2026",
+    "binary_sha256": "6ac4bb4837469867edc2dba3cbbd6e4dd9fb18ad0389db69ff6ef21683317a44",
+    "alive_after_start": true,
+    "role": "peer",
+    "socket": "/private/tmp/p11-C-udp2-cysgvtr5/state/network.sock",
+    "UDP_profile": "(version 1) (allow default) (deny network-outbound (remote udp \"*:*\"))",
+    "sandbox_scope": "this owned engine daemon only"
+  },
+  "peer_endpoint": {
+    "endpoint_sha256": "c564dc0c0847227452d73649ee0da936abb7f1f026aa1815d8f200875acf2206",
+    "exit_code": 0
+  },
+  "private_create": {
+    "created": true,
+    "team_id_sha256": "000c600c959759d7fd302583ec66e22db94adc33b3cb81760c968857cb7aac84",
+    "proof_used": false
+  },
+  "private_join": {
+    "joined": true,
+    "team_id_sha256": "000c600c959759d7fd302583ec66e22db94adc33b3cb81760c968857cb7aac84",
+    "capability_sha256": "81715f9382ab010005abd1b92732bdbe7da0c6668c4a3ca0f835cc4b245ef704",
+    "proof_used": false
+  },
+  "capability_handling": {
+    "sha256": "81715f9382ab010005abd1b92732bdbe7da0c6668c4a3ca0f835cc4b245ef704",
+    "raw_stored_or_logged": false,
+    "channel": "memory -> existing SSH stdin -> explicit private IPC"
+  },
+  "last_membership_readback": {
+    "local": {
+      "team_id_sha256": "000c600c959759d7fd302583ec66e22db94adc33b3cb81760c968857cb7aac84",
+      "member_count": 2,
+      "relay_connected": true,
+      "relay_url_sha256": null,
+      "machines": [
+        {
+          "endpoint_sha256": "0fe7628d20accd246bbf1b3430ac6916a3d786778979c627f12306ec2a65dcda",
+          "is_me": true,
+          "online": true,
+          "link": null,
+          "rtt_ms": null,
+          "verified": false,
+          "has_proof": false
+        },
+        {
+          "endpoint_sha256": "c564dc0c0847227452d73649ee0da936abb7f1f026aa1815d8f200875acf2206",
+          "is_me": false,
+          "online": true,
+          "link": "relay",
+          "rtt_ms": 242,
+          "verified": false,
+          "has_proof": false
+        }
+      ]
+    },
+    "peer": {
+      "team_id_sha256": "000c600c959759d7fd302583ec66e22db94adc33b3cb81760c968857cb7aac84",
+      "member_count": 2,
+      "relay_connected": false,
+      "relay_url_sha256": null,
+      "machines": [
+        {
+          "endpoint_sha256": "c564dc0c0847227452d73649ee0da936abb7f1f026aa1815d8f200875acf2206",
+          "is_me": true,
+          "online": true,
+          "link": null,
+          "rtt_ms": null,
+          "verified": false,
+          "has_proof": false
+        },
+        {
+          "endpoint_sha256": "0fe7628d20accd246bbf1b3430ac6916a3d786778979c627f12306ec2a65dcda",
+          "is_me": false,
+          "online": true,
+          "link": "relay",
+          "rtt_ms": 351,
+          "verified": false,
+          "has_proof": false
+        }
+      ]
+    }
+  },
+  "membership_before": {
+    "local": {
+      "team_id_sha256": "000c600c959759d7fd302583ec66e22db94adc33b3cb81760c968857cb7aac84",
+      "member_count": 2,
+      "relay_connected": true,
+      "relay_url_sha256": null,
+      "machines": [
+        {
+          "endpoint_sha256": "0fe7628d20accd246bbf1b3430ac6916a3d786778979c627f12306ec2a65dcda",
+          "is_me": true,
+          "online": true,
+          "link": null,
+          "rtt_ms": null,
+          "verified": false,
+          "has_proof": false
+        },
+        {
+          "endpoint_sha256": "c564dc0c0847227452d73649ee0da936abb7f1f026aa1815d8f200875acf2206",
+          "is_me": false,
+          "online": true,
+          "link": "relay",
+          "rtt_ms": 242,
+          "verified": false,
+          "has_proof": false
+        }
+      ]
+    },
+    "peer": {
+      "team_id_sha256": "000c600c959759d7fd302583ec66e22db94adc33b3cb81760c968857cb7aac84",
+      "member_count": 2,
+      "relay_connected": false,
+      "relay_url_sha256": null,
+      "machines": [
+        {
+          "endpoint_sha256": "c564dc0c0847227452d73649ee0da936abb7f1f026aa1815d8f200875acf2206",
+          "is_me": true,
+          "online": true,
+          "link": null,
+          "rtt_ms": null,
+          "verified": false,
+          "has_proof": false
+        },
+        {
+          "endpoint_sha256": "0fe7628d20accd246bbf1b3430ac6916a3d786778979c627f12306ec2a65dcda",
+          "is_me": false,
+          "online": true,
+          "link": "relay",
+          "rtt_ms": 351,
+          "verified": false,
+          "has_proof": false
+        }
+      ]
+    },
+    "only_controlled_endpoints": true
+  },
+  "private_clients": {
+    "local": {
+      "registered": true,
+      "session_key_sha256": "93fb0ad7fd9d735f9ac4dc38b6962735834ee13eaadd14230ff5969fdfc0df2d",
+      "address_sha256": "3addf457d14470386f49488e479a267c33dc6648e17851fd4fc0792614ce1c81",
+      "tier": "pull"
+    },
+    "peer": {
+      "registered": true,
+      "session_key_sha256": "1ee5df327121481f9ca9aefec1dfcfab1de0e9e646fafc6b8960be6986e5b024",
+      "address_sha256": "879058674c73e665e30d29a36ac3036eb5ed197170fa870da4844cf1bc931502",
+      "tier": "pull"
+    }
+  },
+  "failure": {
+    "operation": "send",
+    "error": {
+      "error_type": "RuntimeError",
+      "error_sha256": "daf06c1b99d2a090a5af7c62a6496350d0d26e97ce59369c1e4a43e7ca2433a1",
+      "safe_error_terms": []
+    }
+  },
+  "verdict": "failed original UDP-denied specimen; deny retained, no model retry",
+  "cleanup": {
+    "peer": {
+      "stopped": true,
+      "handles": [
+        {
+          "pid": 29924,
+          "lstart": "Thu Oct 29 05:02:59 2026",
+          "binary_sha256": "6ac4bb4837469867edc2dba3cbbd6e4dd9fb18ad0389db69ff6ef21683317a44",
+          "alive_after_start": true,
+          "role": "peer",
+          "socket": "/private/tmp/p11-C-udp2-cysgvtr5/state/network.sock",
+          "UDP_profile": "(version 1) (allow default) (deny network-outbound (remote udp \"*:*\"))",
+          "sandbox_scope": "this owned engine daemon only",
+          "exit_code": 0
+        },
+        {
+          "pid": 30026,
+          "lstart": "Thu Oct 29 05:03:05 2026",
+          "binary_sha256": "6ac4bb4837469867edc2dba3cbbd6e4dd9fb18ad0389db69ff6ef21683317a44",
+          "alive_after_start": true,
+          "role": "peer",
+          "socket": "/private/tmp/p11-C-udp2-cysgvtr5/state/network.sock",
+          "UDP_profile": "(version 1) (allow default) (deny network-outbound (remote udp \"*:*\"))",
+          "sandbox_scope": "this owned engine daemon only",
+          "exit_code": -15
+        }
+      ],
+      "ipc_connect_after_stop": 61,
+      "private_state_removed": true,
+      "engine_copy_removed": true,
+      "ssh_exit_code": 0,
+      "control_handle": {
+        "local_ssh_pid": 23572,
+        "alive_after_ready": true,
+        "peer_control_pid": 29923
+      }
+    },
+    "local": {
+      "stopped": true,
+      "handles": [
+        {
+          "pid": 23523,
+          "lstart": "Thu Oct 29 05:02:58 2026",
+          "binary_sha256": "6ac4bb4837469867edc2dba3cbbd6e4dd9fb18ad0389db69ff6ef21683317a44",
+          "alive_after_start": true,
+          "role": "local",
+          "socket": "/private/tmp/p11-C-udp2-sjkpra10/state/network.sock",
+          "UDP_profile": "(version 1) (allow default) (deny network-outbound (remote udp \"*:*\"))",
+          "sandbox_scope": "this owned engine daemon only",
+          "exit_code": 0
+        },
+        {
+          "pid": 23602,
+          "lstart": "Thu Oct 29 05:03:00 2026",
+          "binary_sha256": "6ac4bb4837469867edc2dba3cbbd6e4dd9fb18ad0389db69ff6ef21683317a44",
+          "alive_after_start": true,
+          "role": "local",
+          "socket": "/private/tmp/p11-C-udp2-sjkpra10/state/network.sock",
+          "UDP_profile": "(version 1) (allow default) (deny network-outbound (remote udp \"*:*\"))",
+          "sandbox_scope": "this owned engine daemon only",
+          "exit_code": -15
+        }
+      ],
+      "ipc_connect_after_stop": 61,
+      "private_state_removed": true,
+      "engine_copy_removed": true
+    }
+  },
+  "counts_final": {
+    "native_model_calls": 0,
+    "native_model_attempts": 0
+  },
+  "diagnosis": {
+    "confirmed_error": "no session called 'p11-c-peer/qa-peer'. Run list_team (or `reason-network who`) to see who is around (sessions without Reason Network can't receive).",
+    "verification": "full observed error SHA equals fixed v0.12.10 directory.rs formatted error",
+    "native_attempts": 0,
+    "readiness_gap": "registered peer pull session not yet visible to sender; machine link was relay",
+    "denial_relaxed": false
+  }
+}

@@ -1,0 +1,443 @@
+{
+  "runtime": "actual Codex parent MCP → subscribed owned Codex",
+  "snapshot": {
+    "id": "e2f8b7859e5c",
+    "source": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging",
+    "rev": "4fd7c9f550dd5bafa8e754701ab1f0802c74b064",
+    "describe": "v0.4.20-1-g4fd7c9f-dirty",
+    "version": "0.4.20",
+    "manifest": [
+      {
+        "path": ".claude-plugin/plugin.json",
+        "sha256": "2a9ce315d97eeea658a303911b15f2f0a0495738a308da9ddbcb10ab9263877e",
+        "mode": 420
+      },
+      {
+        "path": ".codex-plugin/plugin.json",
+        "sha256": "ac671b412f00f2728317f14faa3234154810b73921635e1cc3b1dd2773851fc4",
+        "mode": 420
+      },
+      {
+        "path": "LICENSE",
+        "sha256": "af6dec946d376711503790a7fc6b9f5f8bb09c5b5909efa6c046c0d98433aa45",
+        "mode": 420
+      },
+      {
+        "path": "bin/xsm",
+        "sha256": "3c80672e2f062a8792bc89eb1b74b229db7e55c64e93a20910fa88f8ca33ec88",
+        "mode": 493
+      },
+      {
+        "path": "hooks/codex-hooks.json",
+        "sha256": "b972a24035252a9a56c1bc315549dd37b3b066c4865335625e4246cbf90a550b",
+        "mode": 420
+      },
+      {
+        "path": "hooks/codex-mcp.json",
+        "sha256": "b1d2a3f79ecf47ddc2fc3f03dda113b5b9bf1685e223baf801479b35112e4815",
+        "mode": 420
+      },
+      {
+        "path": "hooks/hooks.json",
+        "sha256": "ade596e312dfa1d97bd6e4f5ab024bfcd6d7ce2e50649ee1ecdc53b0d2cd7cfe",
+        "mode": 420
+      },
+      {
+        "path": "hooks/xsm-hook",
+        "sha256": "b5d01706b7b2d0b0dc1ad0094c8a7211c730b4c5d34fb8dd1be6beea571f547c",
+        "mode": 493
+      },
+      {
+        "path": "hooks/xsm-hook.py",
+        "sha256": "c94bf31c8e282e8745c3666e6de6186098bd5737bc4ad87676837c8f7328df92",
+        "mode": 493
+      },
+      {
+        "path": "hooks/xsm-mcp",
+        "sha256": "01fcc6d51a3ee6fa0aa15b2293ab1c02bc8c8fc733f67bb3d1d3e7b96e1a56bf",
+        "mode": 493
+      },
+      {
+        "path": "hooks/xsm-mcp.py",
+        "sha256": "fb04f9e18fc9c1ff620c1825c8451b84980496631ed23e20d8a9097f5e0f6edf",
+        "mode": 420
+      },
+      {
+        "path": "hooks/xsm-remote.py",
+        "sha256": "9096a2710256944c5225174563f3b50f53031efde369d296994e8b73950f3616",
+        "mode": 420
+      },
+      {
+        "path": "skills/xsm/SKILL.md",
+        "sha256": "3e583bcd294862775c6590766b96cea2260c879329a32ffbe5306f128da55896",
+        "mode": 420
+      },
+      {
+        "path": "skills/xsm/references/guide.md",
+        "sha256": "6bffc41da7cce01cc6080c8afb62e54efc910fd67b59d9d11b0c119130c43981",
+        "mode": 420
+      },
+      {
+        "path": "skills/xsm/references/messaging.md",
+        "sha256": "578fe8679a954e2bc14a40afd92803b6d65812ff7ae1c357410d53d7494ef7ef",
+        "mode": 420
+      },
+      {
+        "path": "xsm/__init__.py",
+        "sha256": "6f3c027b81d76181e6d7ead368d3206768d662f437f097cd194d27e9cf7735ba",
+        "mode": 420
+      },
+      {
+        "path": "xsm/__main__.py",
+        "sha256": "13a1a5b340cdcfc1902b62be90e508c7c71886000d5bf087e7854aadf09fb35e",
+        "mode": 420
+      },
+      {
+        "path": "xsm/abuse.py",
+        "sha256": "a15303d88acded3e03110b125da91e11ffd5de96d266a9485a0f476d991d8e66",
+        "mode": 420
+      },
+      {
+        "path": "xsm/adapters.py",
+        "sha256": "eb0ca85de53a8ab9db94ad55e2d14b669297992dc56a2fac1dca3046687df70c",
+        "mode": 420
+      },
+      {
+        "path": "xsm/attempts.py",
+        "sha256": "224b86ae077fc6e285716e73850317e9e6efcdba244eac16a3f9edef6dad320a",
+        "mode": 420
+      },
+      {
+        "path": "xsm/attention.py",
+        "sha256": "8cd167c01cc560f92580646c2e081ca2604c8548184ce493ef1e8bf875a9e866",
+        "mode": 420
+      },
+      {
+        "path": "xsm/bounce.py",
+        "sha256": "4a3ede5b15d85dea65388e26fa21f62dd2e9ab7da06c94ef3b9d788085aeaecc",
+        "mode": 420
+      },
+      {
+        "path": "xsm/channel.py",
+        "sha256": "459f8125b03eddbd2d8be23474b5f50b740aa7f777d2ea436f0aaa55db235382",
+        "mode": 420
+      },
+      {
+        "path": "xsm/cli.py",
+        "sha256": "168c1eb54d6f3744af9c80c95b9468afbff1b1f6a9e6b856d52fb810a3e2004d",
+        "mode": 420
+      },
+      {
+        "path": "xsm/codex_daemon.py",
+        "sha256": "d7423388a943868a06411ca33725b17a128bd9c6c641232da0844a59ff9a1f3d",
+        "mode": 420
+      },
+      {
+        "path": "xsm/collaboration.py",
+        "sha256": "4955c37de5aa9dd85a7f083db95cc6e39b7120681dddf63f7f8a871346e7d290",
+        "mode": 420
+      },
+      {
+        "path": "xsm/config.py",
+        "sha256": "92255fcee9cd2fe3b013851b056533a78d5090b225123f0d460de9c425feb5ca",
+        "mode": 420
+      },
+      {
+        "path": "xsm/connect.py",
+        "sha256": "61aa314f64c122955a929406778f940cf96cdc7a90ec0425cbe958dcb486c292",
+        "mode": 420
+      },
+      {
+        "path": "xsm/consent.py",
+        "sha256": "26adb2e00e2466594a6dee3fe4850cc6ee8ee20c7187c0e1f490d51d603b95e0",
+        "mode": 420
+      },
+      {
+        "path": "xsm/context.py",
+        "sha256": "3a8355156f5d5497a0e945fe1a2c05791439cfe172f8fa5ae0eed936830ecb03",
+        "mode": 420
+      },
+      {
+        "path": "xsm/decisions.py",
+        "sha256": "002a896cd0ac4eacb451bd1bcb364265378b768d750959abdd58e50a73592491",
+        "mode": 420
+      },
+      {
+        "path": "xsm/directory.py",
+        "sha256": "f185dbc0b59907988e7f3f26cddf40d6696d9e477e568c86f8c8e48c6aee3d17",
+        "mode": 420
+      },
+      {
+        "path": "xsm/doc.py",
+        "sha256": "465d44d8ed5c3c2c458d67a0071c3dc56ef483794f34858b26eae82258a68011",
+        "mode": 420
+      },
+      {
+        "path": "xsm/envelope.py",
+        "sha256": "12cd108b9c25e00ee510177c191bac546ed36b835a4456d49fb89d60f095f6cf",
+        "mode": 420
+      },
+      {
+        "path": "xsm/files.py",
+        "sha256": "e80912155732ee62a90fcb846d15be479df6b7a4cdee081ca7455c338fb493fb",
+        "mode": 420
+      },
+      {
+        "path": "xsm/handoff.py",
+        "sha256": "4157d48fe0acb5d6f14df089ce128bd4faa5a8185d85e9c9f818e9ff09cb175f",
+        "mode": 420
+      },
+      {
+        "path": "xsm/housekeeping.py",
+        "sha256": "5d1a0f1c1f3cf2ef820344935db26aeda5bed5b27e66ba99b1868e8c1d53cf3a",
+        "mode": 420
+      },
+      {
+        "path": "xsm/identity.py",
+        "sha256": "ecfddb64f394455bf68117076127f1c0a07888c0df4cd734f219771bce3004a5",
+        "mode": 420
+      },
+      {
+        "path": "xsm/inbox.py",
+        "sha256": "10423b60c7ac5ea81613a8ae65ed1cc80a6a9cc37e9c5348ad813483bbf08ae8",
+        "mode": 420
+      },
+      {
+        "path": "xsm/install.py",
+        "sha256": "c2f97ecef55e1001e3d66294bccc4cd19e878bb0e78f99145f15b05ea0bc5b16",
+        "mode": 420
+      },
+      {
+        "path": "xsm/instructions.py",
+        "sha256": "1bed9a120324012961c3c7f4f6d3165adfb65b7673cbb5476c270e04708e8351",
+        "mode": 420
+      },
+      {
+        "path": "xsm/ledger.py",
+        "sha256": "f291d11b736608bb3d2d07bdccdcc15348af2cbdfa73e1fb9d4c5628063e459f",
+        "mode": 420
+      },
+      {
+        "path": "xsm/materials.py",
+        "sha256": "815d5520a9f1033576b6511dc6f9ad2774fb18480962cbdaa78aad0a20e59d04",
+        "mode": 420
+      },
+      {
+        "path": "xsm/mcp.py",
+        "sha256": "6c48d0d1a53b5b97796153d25fb4d1ed4d2901515a337481b102bd6827131064",
+        "mode": 420
+      },
+      {
+        "path": "xsm/otlp_export.py",
+        "sha256": "8ce0b354b4c3f5687c5b0cdd49825f5248ac4725dfbca6b96f5f3750dc32cc2a",
+        "mode": 420
+      },
+      {
+        "path": "xsm/outbox.py",
+        "sha256": "1ab6e31b52feae97e06f326c9d4f7658a2e02549b5085e0e864ea1e002bbe211",
+        "mode": 420
+      },
+      {
+        "path": "xsm/owned_requests.py",
+        "sha256": "6e55c26db5709189619196f5ed373004fa0fa468246dc99b899dd14cce4e2a69",
+        "mode": 420
+      },
+      {
+        "path": "xsm/paths.py",
+        "sha256": "242b8e64b5d564e503d5e0bbef1d7e8d160690e8bd5199bc160523969835bb39",
+        "mode": 420
+      },
+      {
+        "path": "xsm/policy.py",
+        "sha256": "9f912493ca4a26e22af110edead346e58924022de4d2c99c56c566279c1c7cc7",
+        "mode": 420
+      },
+      {
+        "path": "xsm/probe.py",
+        "sha256": "5727d930fafd3793da7f24f2179fb15dbc3ea07f58d53cd193ea6c1a093c828c",
+        "mode": 420
+      },
+      {
+        "path": "xsm/provenance.py",
+        "sha256": "7639e2b111f964a6eaa8031408fda9fc094eaa9c714653085b0f5ea5fbf755d6",
+        "mode": 420
+      },
+      {
+        "path": "xsm/questions.py",
+        "sha256": "77043b034b6a227a4714390674a344af9997d92314eea89271a3350c019aba32",
+        "mode": 420
+      },
+      {
+        "path": "xsm/receive.py",
+        "sha256": "2b008da9b9938e16bfd60df43c87340ec942229a8196bcee5a76fec1ddfbe96b",
+        "mode": 420
+      },
+      {
+        "path": "xsm/registry.py",
+        "sha256": "edce2c6e75ec4d1803f402db565900080be337b2727a40ff663376c355890360",
+        "mode": 420
+      },
+      {
+        "path": "xsm/remote.py",
+        "sha256": "d79acd373ea13490ae7ac34a86f7d376520d51293a4cad68728db35eaa44e3cf",
+        "mode": 420
+      },
+      {
+        "path": "xsm/resolve.py",
+        "sha256": "024de94e03a72e24f0d966386dd73090220d45a88c45bcc7c839e60b666c9fcb",
+        "mode": 420
+      },
+      {
+        "path": "xsm/send.py",
+        "sha256": "f73399e87581f6ac9c3d86d174f284b3f4c27294e5bbf1c78da767bf2dec8f70",
+        "mode": 420
+      },
+      {
+        "path": "xsm/setup_flow.py",
+        "sha256": "7808e17fa07cf223ae5d8c7523ea27ff9ef0e959077f4dde796ad64da0efa117",
+        "mode": 420
+      },
+      {
+        "path": "xsm/telemetry.py",
+        "sha256": "bf0411d546c02a2f3e6aaea7d6f8f2549eeeeb57a7aedcc1cb968b5c87c1e2ea",
+        "mode": 420
+      },
+      {
+        "path": "xsm/user_answers.py",
+        "sha256": "872c05f0012550b6c94aaadf32cf134395cb95ce7c33969c81083386a3f3a2c7",
+        "mode": 420
+      },
+      {
+        "path": "xsm/workers.py",
+        "sha256": "518cb28f77c3ee222d1adf7e49068e671fc38dbc43fb5e1ac0ed6ef139299fa5",
+        "mode": 420
+      }
+    ],
+    "supply": {
+      "source": "local-runtime-files",
+      "revision": "4fd7c9f550dd5bafa8e754701ab1f0802c74b064",
+      "observed_sha256": "e2f8b7859e5c4a0b0223ec969047b05f987b9fe680112f72028d169f447facb6",
+      "checksum": "unknown",
+      "checksum_independent_authentication": false,
+      "signature": "unknown",
+      "signature_evidence": "not-observed",
+      "license": "MIT",
+      "license_sha256": "af6dec946d376711503790a7fc6b9f5f8bb09c5b5909efa6c046c0d98433aa45",
+      "update_owner": {
+        "runtime_copy": "existing-installer",
+        "plugin_copy": "plugin-manager",
+        "checkout": "checkout-owner",
+        "network_engine": "unknown"
+      },
+      "automatic_replacement": "unchanged",
+      "backup_retention": "unchanged",
+      "support_matrix": "D11-undecided"
+    },
+    "made": 1793206073.563339,
+    "path": "/private/tmp/p08-mcp-owned-0q8nu4is/state/runtime/e2f8b7859e5c"
+  },
+  "fixture_state": "/private/tmp/p08-mcp-owned-0q8nu4is/state",
+  "parent": {
+    "exit_code": 0,
+    "native_session_id": "01a18369-3994-7161-a478-487332cef06e",
+    "answer": "{\n  \"parent_memory\": \"parent-958ab424bfc64ec4b390034d9afeb2b6\",\n  \"child_first\": {\n    \"body\": \"child-12521288c4cc4b36a3db1190c25244b9\",\n    \"outcome\": \"succeeded\"\n  },\n  \"child_second\": {\n    \"body\": \"{\\\"child_memory\\\":\\\"child-12521288c4cc4b36a3db1190c25244b9\\\"}\",\n    \"outcome\": null\n  },\n  \"worker_name\": \"mcp-owned-1e5fc71fee55\",\n  \"request_ids\": [\n    \"1e5fc71fee55-first\",\n    \"1e5fc71fee55-second\"\n  ]\n}",
+    "tool_calls": [
+      {
+        "server": "xsm_eval",
+        "tool": "xsm_owned",
+        "arguments": {
+          "action": "create",
+          "name": "mcp-owned-1e5fc71fee55",
+          "runtime": "codex"
+        },
+        "error": null
+      },
+      {
+        "server": "xsm_eval",
+        "tool": "xsm_owned",
+        "arguments": {
+          "action": "run",
+          "name": "mcp-owned-1e5fc71fee55",
+          "work_context": "memory",
+          "request_id": "1e5fc71fee55-first",
+          "wait": 60,
+          "text": "이 대화에서 기억할 child_memory 값은 child-12521288c4cc4b36a3db1190c25244b9 입니다. 파일·설정·권한은 바꾸지 마세요. body에 실제 기억값을 넣고 outcome=succeeded인 JSON 하나로 답하세요."
+        },
+        "error": null
+      },
+      {
+        "server": "xsm_eval",
+        "tool": "xsm_owned",
+        "arguments": {
+          "action": "run",
+          "name": "mcp-owned-1e5fc71fee55",
+          "work_context": "memory",
+          "request_id": "1e5fc71fee55-second",
+          "wait": 60,
+          "text": "앞서 child_memory가 무엇이었는지 JSON으로 답하세요."
+        },
+        "error": null
+      }
+    ],
+    "events": "/private/tmp/p08-mcp-owned-0q8nu4is/first.jsonl",
+    "stderr": "/private/tmp/p08-mcp-owned-0q8nu4is/first.err"
+  },
+  "parent_followup": {
+    "exit_code": 0,
+    "native_session_id": "01a18369-3994-7161-a478-487332cef06e",
+    "answer": "{\"parent_memory\":\"parent-958ab424bfc64ec4b390034d9afeb2b6\"}",
+    "tool_calls": [],
+    "events": "/private/tmp/p08-mcp-owned-0q8nu4is/followup.jsonl",
+    "stderr": "/private/tmp/p08-mcp-owned-0q8nu4is/followup.err"
+  },
+  "parent_memory_expected": "parent-958ab424bfc64ec4b390034d9afeb2b6",
+  "child_memory_expected": "child-12521288c4cc4b36a3db1190c25244b9",
+  "parent_followup_remembers": true,
+  "owned_requests": [
+    {
+      "id": "1e5fc71fee55-first",
+      "status": "sent",
+      "reply_id": "2c1747f9f26a4c65",
+      "native_session_id": "01a18369-9184-7ea2-874d-561c14ed1869",
+      "body": "child-12521288c4cc4b36a3db1190c25244b9"
+    },
+    {
+      "id": "1e5fc71fee55-second",
+      "status": "sent",
+      "reply_id": "3a2be6b50533480f",
+      "native_session_id": "01a18369-9184-7ea2-874d-561c14ed1869",
+      "body": "{\"child_memory\":\"child-12521288c4cc4b36a3db1190c25244b9\"}"
+    }
+  ],
+  "owned_memory_matches": true,
+  "same_owned_native": true,
+  "parent_same_native": true,
+  "permission_adjustments": false,
+  "global_settings_changed": false,
+  "owned_memory_strict_string_check": false,
+  "owned_memory_observations": [
+    {
+      "id": "1e5fc71fee55-first",
+      "raw_body": "child-12521288c4cc4b36a3db1190c25244b9",
+      "observed_memory_value": "child-12521288c4cc4b36a3db1190c25244b9",
+      "matches_expected": true
+    },
+    {
+      "id": "1e5fc71fee55-second",
+      "raw_body": "{\"child_memory\":\"child-12521288c4cc4b36a3db1190c25244b9\"}",
+      "observed_memory_value": "child-12521288c4cc4b36a3db1190c25244b9",
+      "matches_expected": true
+    }
+  ],
+  "owned_task_finality": [
+    {
+      "id": "1e5fc71fee55-first",
+      "outcome": "succeeded"
+    },
+    {
+      "id": "1e5fc71fee55-second",
+      "outcome": null
+    }
+  ],
+  "observation_note": "Second worker returned a child_memory JSON object without an outcome. Its memory value is correct; task finality stays unknown. No model run was repeated."
+}

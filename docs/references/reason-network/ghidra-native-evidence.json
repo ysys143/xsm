@@ -1,0 +1,1626 @@
+{
+  "date": "2026-10-24",
+  "ghidra": "12.2",
+  "jdk": "25.0.5.0.2",
+  "programs": [
+    {
+      "program": "reason-cli-0.2.557",
+      "executable_format": "Mac OS X Mach-O",
+      "language": "AARCH64:LE:64:AppleSilicon",
+      "compiler_spec": "default",
+      "image_base": "100000000",
+      "function_count": 2637,
+      "analysis_timed_out": true,
+      "analysis_scope": "retained project export; timeout flag belongs to the prior automatic analysis",
+      "target_sha256": "00a94cc9c119a3ab40e7d8454cbf896f99f4cc59e53df721c3de8b8ab98dd7c9",
+      "memory_blocks": [
+        {
+          "name": "__TEXT",
+          "start": "100000000",
+          "end": "100000a7f",
+          "size": 2688,
+          "initialized": true,
+          "execute": true,
+          "write": false
+        },
+        {
+          "name": "__text",
+          "start": "100000a80",
+          "end": "1031e81ff",
+          "size": 52328320,
+          "initialized": true,
+          "execute": true,
+          "write": false
+        },
+        {
+          "name": "__jsc_int",
+          "start": "1031e8200",
+          "end": "10324a2df",
+          "size": 401632,
+          "initialized": true,
+          "execute": true,
+          "write": false
+        },
+        {
+          "name": "__stubs",
+          "start": "10324a2e0",
+          "end": "10324c31f",
+          "size": 8256,
+          "initialized": true,
+          "execute": true,
+          "write": false
+        },
+        {
+          "name": "__init_offsets",
+          "start": "10324c320",
+          "end": "10324c32f",
+          "size": 16,
+          "initialized": true,
+          "execute": false,
+          "write": false
+        },
+        {
+          "name": "__bun_builtins",
+          "start": "10324c330",
+          "end": "1034cafff",
+          "size": 2616528,
+          "initialized": true,
+          "execute": false,
+          "write": false
+        },
+        {
+          "name": "__const",
+          "start": "1034cb000",
+          "end": "1038096f0",
+          "size": 3401457,
+          "initialized": true,
+          "execute": false,
+          "write": false
+        },
+        {
+          "name": "__cstring",
+          "start": "1038096f1",
+          "end": "10396de3f",
+          "size": 1460047,
+          "initialized": true,
+          "execute": false,
+          "write": false
+        },
+        {
+          "name": "__literals",
+          "start": "10396de40",
+          "end": "1039736e3",
+          "size": 22692,
+          "initialized": true,
+          "execute": false,
+          "write": false
+        },
+        {
+          "name": "__ustring",
+          "start": "1039736e4",
+          "end": "103973fff",
+          "size": 2332,
+          "initialized": true,
+          "execute": false,
+          "write": false
+        },
+        {
+          "name": "__got",
+          "start": "103978000",
+          "end": "1039795f7",
+          "size": 5624,
+          "initialized": true,
+          "execute": false,
+          "write": true
+        },
+        {
+          "name": "__DATA_CONST",
+          "start": "1039795f8",
+          "end": "1039795ff",
+          "size": 8,
+          "initialized": true,
+          "execute": false,
+          "write": true
+        },
+        {
+          "name": "__const",
+          "start": "103979600",
+          "end": "103a9bfff",
+          "size": 1190400,
+          "initialized": true,
+          "execute": false,
+          "write": false
+        },
+        {
+          "name": "__thread_vars",
+          "start": "103a9c000",
+          "end": "103a9cca7",
+          "size": 3240,
+          "initialized": true,
+          "execute": false,
+          "write": true
+        },
+        {
+          "name": "__DATA",
+          "start": "103a9cca8",
+          "end": "103a9ccbf",
+          "size": 24,
+          "initialized": true,
+          "execute": false,
+          "write": true
+        },
+        {
+          "name": "__data",
+          "start": "103a9ccc0",
+          "end": "103aabfff",
+          "size": 62272,
+          "initialized": true,
+          "execute": false,
+          "write": true
+        },
+        {
+          "name": "__wtf_config",
+          "start": "103aac000",
+          "end": "103aaffff",
+          "size": 16384,
+          "initialized": true,
+          "execute": false,
+          "write": true
+        },
+        {
+          "name": "__jsc_opcodes",
+          "start": "103ab0000",
+          "end": "103ab3fff",
+          "size": 16384,
+          "initialized": true,
+          "execute": false,
+          "write": true
+        },
+        {
+          "name": "__thread_data",
+          "start": "103ab4000",
+          "end": "103ab7fff",
+          "size": 16384,
+          "initialized": true,
+          "execute": false,
+          "write": true
+        },
+        {
+          "name": "__DATA",
+          "start": "103ab8000",
+          "end": "103ab96ff",
+          "size": 5888,
+          "initialized": false,
+          "execute": false,
+          "write": true
+        },
+        {
+          "name": "__common",
+          "start": "103ab9700",
+          "end": "103c2deff",
+          "size": 1525760,
+          "initialized": false,
+          "execute": false,
+          "write": true
+        },
+        {
+          "name": "__bss",
+          "start": "103c2df00",
+          "end": "103c67fff",
+          "size": 237824,
+          "initialized": false,
+          "execute": false,
+          "write": true
+        },
+        {
+          "name": "__bun",
+          "start": "103c68000",
+          "end": "1044fcb74",
+          "size": 8997749,
+          "initialized": true,
+          "execute": false,
+          "write": true
+        },
+        {
+          "name": "__BUN",
+          "start": "1044fcb75",
+          "end": "1044fffff",
+          "size": 13451,
+          "initialized": true,
+          "execute": false,
+          "write": true
+        },
+        {
+          "name": "__LINKEDIT",
+          "start": "104500000",
+          "end": "1045b5f9f",
+          "size": 745376,
+          "initialized": true,
+          "execute": false,
+          "write": false
+        },
+        {
+          "name": "__LINKEDIT",
+          "start": "1045b5fa0",
+          "end": "1045b7fff",
+          "size": 8288,
+          "initialized": false,
+          "execute": false,
+          "write": false
+        },
+        {
+          "name": "EXTERNAL",
+          "start": "1045b8000",
+          "end": "1045b98c7",
+          "size": 6344,
+          "initialized": false,
+          "execute": false,
+          "write": true
+        }
+      ],
+      "entry_points": [
+        {
+          "address": "10000463c",
+          "function": "entry"
+        },
+        {
+          "address": "10169c62c",
+          "function": null
+        },
+        {
+          "address": "100000000",
+          "function": null
+        },
+        {
+          "address": "100ca21e0",
+          "function": "_uv_now"
+        },
+        {
+          "address": "100ca25d0",
+          "function": "_uv_queue_work"
+        },
+        {
+          "address": "100ca3008",
+          "function": "_uv_version"
+        },
+        {
+          "address": "102776734",
+          "function": "__ZN3JSC9CallFrame13describeFrameEv"
+        },
+        {
+          "address": "100ca1418",
+          "function": "_uv_accept"
+        },
+        {
+          "address": "100ca1460",
+          "function": "_uv_available_parallelism"
+        },
+        {
+          "address": "100ca14f0",
+          "function": "_uv_buf_init"
+        },
+        {
+          "address": "100ca16a0",
+          "function": "_uv_disable_stdio_inheritance"
+        },
+        {
+          "address": "100ca1688",
+          "function": "_uv_default_loop"
+        },
+        {
+          "address": "100ca1748",
+          "function": "_uv_exepath"
+        },
+        {
+          "address": "100ca1718",
+          "function": "_uv_err_name"
+        },
+        {
+          "address": "100ca1508",
+          "function": "_uv_cancel"
+        },
+        {
+          "address": "100ca1670",
+          "function": "_uv_cwd"
+        }
+      ],
+      "unmatched_recovery_requests": [
+        "100000000"
+      ],
+      "script_recovered_entry_call_targets": [
+        {
+          "target": "1000046a4",
+          "call_instruction": "100004658",
+          "created_in_analysis_project": false,
+          "function": "native_call_target_1000046a4"
+        },
+        {
+          "target": "100004a4c",
+          "call_instruction": "100004674",
+          "created_in_analysis_project": false,
+          "function": "native_call_target_100004a4c"
+        },
+        {
+          "target": "1000051f8",
+          "call_instruction": "100004678",
+          "created_in_analysis_project": false,
+          "function": "native_call_target_1000051f8"
+        },
+        {
+          "target": "1000052a0",
+          "call_instruction": "10000467c",
+          "created_in_analysis_project": false,
+          "function": "native_call_target_1000052a0"
+        },
+        {
+          "target": "1000053dc",
+          "call_instruction": "100004688",
+          "created_in_analysis_project": false,
+          "function": "native_call_target_1000053dc"
+        },
+        {
+          "target": "101c36400",
+          "call_instruction": "100004694",
+          "created_in_analysis_project": false,
+          "function": "native_call_target_101c36400"
+        },
+        {
+          "target": "1000053dc",
+          "call_instruction": "100004698",
+          "created_in_analysis_project": false,
+          "function": "native_call_target_1000053dc"
+        }
+      ],
+      "script_recovered_linker_functions": [],
+      "javascript_regions": [
+        {
+          "name": "network-command",
+          "file_offset": 63214722,
+          "address": "103dfd482",
+          "block": "__bun",
+          "execute": false,
+          "native_function_at_start": null,
+          "bytes_read": 20776,
+          "sha256": "6da62c027f05ebd277921aca0404bba6ef77b93b4bf61d15f70c9228cd9ba2b9",
+          "matches_extracted_module": true
+        },
+        {
+          "name": "ask-worker",
+          "file_offset": 70020205,
+          "address": "10447ac6d",
+          "block": "__bun",
+          "execute": false,
+          "native_function_at_start": null,
+          "bytes_read": 8855,
+          "sha256": "4b09793ad393a40fbdc7725fb30ace618b0f74bc8ecf7f6e20c1acec8a0a9840",
+          "matches_extracted_module": true
+        },
+        {
+          "name": "network-core",
+          "file_offset": 63204729,
+          "address": "103dfad79",
+          "block": "__bun",
+          "execute": false,
+          "native_function_at_start": null,
+          "bytes_read": 9992,
+          "sha256": "a8346d278b4d00256d87287819573c6df7152adf93be3f12eed9476e2830f9e1",
+          "matches_extracted_module": true
+        },
+        {
+          "name": "entry-runtime",
+          "file_offset": 63185191,
+          "address": "103df6127",
+          "block": "__bun",
+          "execute": false,
+          "native_function_at_start": null,
+          "bytes_read": 19537,
+          "sha256": "3f055cbcfc9ff3d45244ac284c0ee0da7a5a71c1ba45a27ed9452a9f8021de82",
+          "matches_extracted_module": true
+        },
+        {
+          "name": "cloud-relay",
+          "file_offset": 69977926,
+          "address": "104470746",
+          "block": "__bun",
+          "execute": false,
+          "native_function_at_start": null,
+          "bytes_read": 11297,
+          "sha256": "858d55f6a2a7877c7e2b1a10e521c20affc08e53d96bc57abe5b9d73d06c5775",
+          "matches_extracted_module": true
+        },
+        {
+          "name": "network-sign-in",
+          "file_offset": 69990151,
+          "address": "104473707",
+          "block": "__bun",
+          "execute": false,
+          "native_function_at_start": null,
+          "bytes_read": 21073,
+          "sha256": "7ec87eddbb51ad85391eabf5af88b987b766e57d7c7620481e7cdb90c10b3738",
+          "matches_extracted_module": true
+        }
+      ],
+      "string_matches": [
+        {
+          "needle": "ask-workers",
+          "address": "10447c3ac",
+          "block": "__bun",
+          "references_first_24": []
+        },
+        {
+          "needle": "network serve",
+          "address": "103dfdac4",
+          "block": "__bun",
+          "references_first_24": []
+        },
+        {
+          "needle": "network serve",
+          "address": "103dfdf8e",
+          "block": "__bun",
+          "references_first_24": []
+        },
+        {
+          "needle": "network serve",
+          "address": "103e01f02",
+          "block": "__bun",
+          "references_first_24": []
+        },
+        {
+          "needle": "network serve",
+          "address": "10447a1f5",
+          "block": "__bun",
+          "references_first_24": []
+        },
+        {
+          "needle": "network/auth/start",
+          "address": "104473c2b",
+          "block": "__bun",
+          "references_first_24": []
+        },
+        {
+          "needle": "CODEX_HOME",
+          "address": "103d76679",
+          "block": "__bun",
+          "references_first_24": []
+        },
+        {
+          "needle": "CODEX_HOME",
+          "address": "103de51cf",
+          "block": "__bun",
+          "references_first_24": []
+        },
+        {
+          "needle": "CODEX_HOME",
+          "address": "1041007c7",
+          "block": "__bun",
+          "references_first_24": []
+        },
+        {
+          "needle": "CODEX_HOME",
+          "address": "10447b264",
+          "block": "__bun",
+          "references_first_24": []
+        }
+      ],
+      "string_scope": "initialized non-executable blocks; at most six exact occurrences per needle and 24 refs per occurrence; one data-reference hop is explicitly marked",
+      "decompiler_available": true,
+      "decompiler_error": null,
+      "selected_functions": [
+        {
+          "address": "10000463c",
+          "name": "entry",
+          "body_addresses": 104,
+          "thunk": false,
+          "callees_first_24": [
+            "10324a748 _signal",
+            "1000052a0 native_call_target_1000052a0",
+            "101c36400 native_call_target_101c36400",
+            "1000046a4 native_call_target_1000046a4",
+            "1000051f8 native_call_target_1000051f8",
+            "10026d204 FUN_10026d204",
+            "1000053dc native_call_target_1000053dc",
+            "100004a4c native_call_target_100004a4c"
+          ],
+          "decompile_completed": true,
+          "error": "",
+          "private_pseudocode_file": "function-10000463c.c.txt",
+          "pseudocode_sha256": "8f1b4c1432cda9d1fa9dd9ed44b0b2cf7a503a2ab898ce56ad03da524e330d4f",
+          "pseudocode_chars": 662,
+          "pseudocode_warning_markers": 2
+        },
+        {
+          "address": "1000046a4",
+          "name": "native_call_target_1000046a4",
+          "body_addresses": 192,
+          "thunk": false,
+          "callees_first_24": [
+            "101d8b804 FUN_101d8b804",
+            "10324b42c _sigemptyset"
+          ],
+          "decompile_completed": true,
+          "error": "",
+          "private_pseudocode_file": "function-1000046a4.c.txt",
+          "pseudocode_sha256": "82bad8f1fa7b5c2c44de8ed0f9745ef65a4ecaa3819a6a31ce3841896d0afd22",
+          "pseudocode_chars": 827,
+          "pseudocode_warning_markers": 1
+        },
+        {
+          "address": "100004a4c",
+          "name": "native_call_target_100004a4c",
+          "body_addresses": 552,
+          "thunk": false,
+          "callees_first_24": [
+            "101d8b5c0 FUN_101d8b5c0"
+          ],
+          "decompile_completed": true,
+          "error": "",
+          "private_pseudocode_file": "function-100004a4c.c.txt",
+          "pseudocode_sha256": "067fcd69c12caa7aa18450f8fd59c9ecfbdc0485d232b3f7c40b7944eab8129f",
+          "pseudocode_chars": 3480,
+          "pseudocode_warning_markers": 1
+        },
+        {
+          "address": "1000051f8",
+          "name": "native_call_target_1000051f8",
+          "body_addresses": 168,
+          "thunk": false,
+          "callees_first_24": [
+            "10324a8a4 _pthread_get_stacksize_np",
+            "10324a8bc _pthread_get_stackaddr_np",
+            "10324a8c8 _pthread_self",
+            "10324a8d4 _pthread_main_np",
+            "10324a8b0 _getrlimit"
+          ],
+          "decompile_completed": true,
+          "error": "",
+          "private_pseudocode_file": "function-1000051f8.c.txt",
+          "pseudocode_sha256": "6e324eb639ada705292e8c569bc042e1fd66564a868b00814252abb89abdcf9e",
+          "pseudocode_chars": 622,
+          "pseudocode_warning_markers": 0
+        },
+        {
+          "address": "1000052a0",
+          "name": "native_call_target_1000052a0",
+          "body_addresses": 316,
+          "thunk": false,
+          "callees_first_24": [
+            "10324a310 _getenv",
+            "10324a364 _strlen",
+            "10324a4cc _strncasecmp"
+          ],
+          "decompile_completed": true,
+          "error": "",
+          "private_pseudocode_file": "function-1000052a0.c.txt",
+          "pseudocode_sha256": "a3cfbb7d536fc0e83da8cfa93007caace7a40e190ce75c0662682da882966737",
+          "pseudocode_chars": 1104,
+          "pseudocode_warning_markers": 0
+        },
+        {
+          "address": "1000053dc",
+          "name": "native_call_target_1000053dc",
+          "body_addresses": 788,
+          "thunk": false,
+          "callees_first_24": [
+            "10324a52c _clock_gettime",
+            "101d7dc18 FUN_101d7dc18",
+            "10324b4d4 _pthread_threadid_np"
+          ],
+          "decompile_completed": true,
+          "error": "",
+          "private_pseudocode_file": "function-1000053dc.c.txt",
+          "pseudocode_sha256": "ee404d1ac3d179fe14d1f7dc213880786bd348639ac2885e79772c4932677b7a",
+          "pseudocode_chars": 4116,
+          "pseudocode_warning_markers": 53
+        },
+        {
+          "address": "101c36400",
+          "name": "native_call_target_101c36400",
+          "body_addresses": 452,
+          "thunk": false,
+          "callees_first_24": [
+            "10324ab50 _getppid",
+            "10324a8ec _pthread_mutex_unlock",
+            "101d84e50 FUN_101d84e50",
+            "10324b51c _setenv",
+            "10324a8e0 _pthread_mutex_lock"
+          ],
+          "decompile_completed": true,
+          "error": "",
+          "private_pseudocode_file": "function-101c36400.c.txt",
+          "pseudocode_sha256": "fb057296923825bd13430b6b1331c988ccc176d4d0a8621b0e4ea931f88c200f",
+          "pseudocode_chars": 2040,
+          "pseudocode_warning_markers": 2
+        },
+        {
+          "address": "10026d204",
+          "name": "FUN_10026d204",
+          "body_addresses": 48,
+          "thunk": false,
+          "callees_first_24": [
+            "10324b180 _exit"
+          ],
+          "decompile_completed": true,
+          "error": "",
+          "private_pseudocode_file": "function-10026d204.c.txt",
+          "pseudocode_sha256": "ff341149cd4202cc982928522fb247d3628d210f0922a03ef4f18d09472a9698",
+          "pseudocode_chars": 281,
+          "pseudocode_warning_markers": 1
+        }
+      ],
+      "function_count_after_script": 2637,
+      "decompile_scope": "bounded selected native functions; pseudocode is an analysis result, not recovered original source",
+      "export_receipt": {
+        "exit": 0,
+        "elapsed_s": 6.411937952041626
+      },
+      "pseudocode_scope": "원시 의사코드는 사설 평가 경로에 보존. 저장소에는 주소·참조·해시·경고 수만 포함."
+    },
+    {
+      "program": "reason-network-0.12.10",
+      "executable_format": "Mac OS X Mach-O",
+      "language": "AARCH64:LE:64:AppleSilicon",
+      "compiler_spec": "default",
+      "image_base": "100000000",
+      "function_count": 9982,
+      "analysis_timed_out": true,
+      "analysis_scope": "retained project export; timeout flag belongs to the prior automatic analysis",
+      "target_sha256": "6ac4bb4837469867edc2dba3cbbd6e4dd9fb18ad0389db69ff6ef21683317a44",
+      "memory_blocks": [
+        {
+          "name": "__TEXT",
+          "start": "100000000",
+          "end": "10000363f",
+          "size": 13888,
+          "initialized": true,
+          "execute": true,
+          "write": false
+        },
+        {
+          "name": "__text",
+          "start": "100003640",
+          "end": "100b1c7bf",
+          "size": 11637120,
+          "initialized": true,
+          "execute": true,
+          "write": false
+        },
+        {
+          "name": "__stubs",
+          "start": "100b1c7c0",
+          "end": "100b1d467",
+          "size": 3240,
+          "initialized": true,
+          "execute": true,
+          "write": false
+        },
+        {
+          "name": "__stub_helper",
+          "start": "100b1d468",
+          "end": "100b1e127",
+          "size": 3264,
+          "initialized": true,
+          "execute": true,
+          "write": false
+        },
+        {
+          "name": "__gcc_except_tab",
+          "start": "100b1e128",
+          "end": "100ba7fff",
+          "size": 564952,
+          "initialized": true,
+          "execute": false,
+          "write": false
+        },
+        {
+          "name": "__const",
+          "start": "100ba8000",
+          "end": "100cdd947",
+          "size": 1268040,
+          "initialized": true,
+          "execute": false,
+          "write": false
+        },
+        {
+          "name": "__cstring",
+          "start": "100cdd948",
+          "end": "100d042fb",
+          "size": 158132,
+          "initialized": true,
+          "execute": false,
+          "write": false
+        },
+        {
+          "name": "__unwind_info",
+          "start": "100d042fc",
+          "end": "100d2fc0f",
+          "size": 178452,
+          "initialized": true,
+          "execute": false,
+          "write": false
+        },
+        {
+          "name": "__eh_frame",
+          "start": "100d2fc10",
+          "end": "100e23fff",
+          "size": 1000432,
+          "initialized": true,
+          "execute": false,
+          "write": false
+        },
+        {
+          "name": "__got",
+          "start": "100e24000",
+          "end": "100e24087",
+          "size": 136,
+          "initialized": true,
+          "execute": false,
+          "write": true
+        },
+        {
+          "name": "__const",
+          "start": "100e24088",
+          "end": "100e6ad57",
+          "size": 290000,
+          "initialized": true,
+          "execute": false,
+          "write": false
+        },
+        {
+          "name": "__DATA_CONST",
+          "start": "100e6ad58",
+          "end": "100e6bfff",
+          "size": 4776,
+          "initialized": true,
+          "execute": false,
+          "write": true
+        },
+        {
+          "name": "__la_symbol_ptr",
+          "start": "100e6c000",
+          "end": "100e6c86f",
+          "size": 2160,
+          "initialized": true,
+          "execute": false,
+          "write": true
+        },
+        {
+          "name": "__data",
+          "start": "100e6c870",
+          "end": "100e71d77",
+          "size": 21768,
+          "initialized": true,
+          "execute": false,
+          "write": true
+        },
+        {
+          "name": "__thread_vars",
+          "start": "100e71d78",
+          "end": "100e71fb7",
+          "size": 576,
+          "initialized": true,
+          "execute": false,
+          "write": true
+        },
+        {
+          "name": "__thread_data",
+          "start": "100e71fb8",
+          "end": "100e72070",
+          "size": 185,
+          "initialized": true,
+          "execute": false,
+          "write": true
+        },
+        {
+          "name": "__DATA",
+          "start": "100e72071",
+          "end": "100e7237f",
+          "size": 783,
+          "initialized": true,
+          "execute": false,
+          "write": true
+        },
+        {
+          "name": "__bss",
+          "start": "100e72380",
+          "end": "100e73fff",
+          "size": 7296,
+          "initialized": true,
+          "execute": false,
+          "write": true
+        },
+        {
+          "name": "__bss",
+          "start": "100e74000",
+          "end": "100e74ed7",
+          "size": 3800,
+          "initialized": false,
+          "execute": false,
+          "write": true
+        },
+        {
+          "name": "__common",
+          "start": "100e74ed8",
+          "end": "100e74f1f",
+          "size": 72,
+          "initialized": false,
+          "execute": false,
+          "write": true
+        },
+        {
+          "name": "__DATA",
+          "start": "100e74f20",
+          "end": "100e77fff",
+          "size": 12512,
+          "initialized": false,
+          "execute": false,
+          "write": true
+        },
+        {
+          "name": "__LINKEDIT",
+          "start": "100e78000",
+          "end": "100e9335f",
+          "size": 111456,
+          "initialized": true,
+          "execute": false,
+          "write": false
+        },
+        {
+          "name": "__LINKEDIT",
+          "start": "100e93360",
+          "end": "100e93fff",
+          "size": 3232,
+          "initialized": false,
+          "execute": false,
+          "write": false
+        },
+        {
+          "name": "EXTERNAL",
+          "start": "100e94000",
+          "end": "100e94fff",
+          "size": 4096,
+          "initialized": false,
+          "execute": false,
+          "write": true
+        }
+      ],
+      "entry_points": [
+        {
+          "address": "10035862c",
+          "function": "entry"
+        },
+        {
+          "address": "10084e00c",
+          "function": "_rust_eh_personality"
+        },
+        {
+          "address": "100000000",
+          "function": null
+        },
+        {
+          "address": "100362b8c",
+          "function": "_blake3_compress_in_place_portable"
+        },
+        {
+          "address": "100ab7edc",
+          "function": "_blake3_hash_many_neon"
+        },
+        {
+          "address": "10093fad0",
+          "function": "_sqlite3_hard_heap_limit64"
+        },
+        {
+          "address": "100950514",
+          "function": "_sqlite3_next_stmt"
+        },
+        {
+          "address": "100955174",
+          "function": "_sqlite3_cancel_auto_extension"
+        },
+        {
+          "address": "10095a800",
+          "function": "_sqlite3_changes"
+        },
+        {
+          "address": "1009563cc",
+          "function": "_sqlite3_drop_modules"
+        },
+        {
+          "address": "100948eb0",
+          "function": "_sqlite3_enable_shared_cache"
+        },
+        {
+          "address": "10093feac",
+          "function": "_sqlite3_free"
+        },
+        {
+          "address": "10095f278",
+          "function": "_sqlite3_get_clientdata"
+        },
+        {
+          "address": "1009559b8",
+          "function": "_sqlite3_get_table"
+        },
+        {
+          "address": "10095b618",
+          "function": "_sqlite3_is_interrupted"
+        },
+        {
+          "address": "1009582d0",
+          "function": "_sqlite3_keyword_name"
+        }
+      ],
+      "script_recovered_entry_call_targets": [],
+      "script_recovered_linker_functions": [
+        {
+          "start": "100248d0c",
+          "evidence_address": "100249204",
+          "needle": "not a member of this team",
+          "next_linker_start": "0x100249738",
+          "boundary_source": "LC_FUNCTION_STARTS in the target Mach-O",
+          "created_in_analysis_project": true,
+          "contains_evidence_instruction": true,
+          "function": "linker_function_100248d0c"
+        },
+        {
+          "start": "100225c70",
+          "evidence_address": "100226c1c",
+          "needle": "PostToolUse",
+          "next_linker_start": "0x1002281b4",
+          "boundary_source": "LC_FUNCTION_STARTS in the target Mach-O",
+          "created_in_analysis_project": true,
+          "contains_evidence_instruction": true,
+          "function": "linker_function_100225c70"
+        },
+        {
+          "start": "1002cce94",
+          "evidence_address": "1002ce078",
+          "needle": "PostToolUse",
+          "next_linker_start": "0x1002cf21c",
+          "boundary_source": "LC_FUNCTION_STARTS in the target Mach-O",
+          "created_in_analysis_project": true,
+          "contains_evidence_instruction": true,
+          "function": "linker_function_1002cce94"
+        }
+      ],
+      "javascript_regions": [],
+      "string_matches": [
+        {
+          "needle": "falling back to hooks",
+          "address": "100cdf43a",
+          "block": "__cstring",
+          "references_first_24": []
+        },
+        {
+          "needle": "queue",
+          "address": "100c2a5a5",
+          "block": "__const",
+          "references_first_24": [
+            {
+              "from": "1002a2254",
+              "type": "READ",
+              "function": "FUN_1002a1d34",
+              "function_address": "1002a1d34"
+            }
+          ]
+        },
+        {
+          "needle": "queue",
+          "address": "100c2a5e7",
+          "block": "__const",
+          "references_first_24": []
+        },
+        {
+          "needle": "queue",
+          "address": "100c2a625",
+          "block": "__const",
+          "references_first_24": []
+        },
+        {
+          "needle": "queue",
+          "address": "100c2a650",
+          "block": "__const",
+          "references_first_24": [
+            {
+              "from": "1002a2a30",
+              "type": "PARAM",
+              "function": "FUN_1002a1d34",
+              "function_address": "1002a1d34"
+            }
+          ]
+        },
+        {
+          "needle": "queue",
+          "address": "100c2a6de",
+          "block": "__const",
+          "references_first_24": [
+            {
+              "from": "1002a2c24",
+              "type": "READ",
+              "function": "FUN_1002a1d34",
+              "function_address": "1002a1d34"
+            },
+            {
+              "from": "1002a2d94",
+              "type": "READ",
+              "function": "FUN_1002a1d34",
+              "function_address": "1002a1d34"
+            }
+          ]
+        },
+        {
+          "needle": "queue",
+          "address": "100c2a716",
+          "block": "__const",
+          "references_first_24": [
+            {
+              "from": "1002a2420",
+              "type": "READ",
+              "function": "FUN_1002a1d34",
+              "function_address": "1002a1d34"
+            }
+          ]
+        },
+        {
+          "needle": "not a member of this team",
+          "address": "100bb4436",
+          "block": "__const",
+          "references_first_24": [
+            {
+              "from": "100249204",
+              "type": "PARAM",
+              "function": "linker_function_100248d0c",
+              "function_address": "100248d0c"
+            }
+          ]
+        },
+        {
+          "needle": "outside this session",
+          "address": "100ce05ec",
+          "block": "__cstring",
+          "references_first_24": []
+        },
+        {
+          "needle": "reason-network-proof",
+          "address": "100c2b97b",
+          "block": "__const",
+          "references_first_24": [
+            {
+              "from": "1002c46ac",
+              "type": "PARAM",
+              "function": "FUN_1002c4674",
+              "function_address": "1002c4674"
+            },
+            {
+              "from": "1002c559c",
+              "type": "DATA",
+              "function": "FUN_1002c4674",
+              "function_address": "1002c4674"
+            },
+            {
+              "from": "1002c55a0",
+              "type": "DATA",
+              "function": "FUN_1002c4674",
+              "function_address": "1002c4674"
+            },
+            {
+              "from": "1002c56d0",
+              "type": "DATA",
+              "function": "FUN_1002c4674",
+              "function_address": "1002c4674"
+            },
+            {
+              "from": "1002c5734",
+              "type": "DATA",
+              "function": "FUN_1002c4674",
+              "function_address": "1002c4674"
+            }
+          ]
+        },
+        {
+          "needle": "CODEX_HOME",
+          "address": "100c2b892",
+          "block": "__const",
+          "references_first_24": [
+            {
+              "from": "1002c7970",
+              "type": "READ",
+              "function": "FUN_1002c7948",
+              "function_address": "1002c7948"
+            },
+            {
+              "from": "1002be04c",
+              "type": "READ",
+              "function": "FUN_1002bd3f8",
+              "function_address": "1002bd3f8"
+            }
+          ]
+        },
+        {
+          "needle": "PostToolUse",
+          "address": "100c2b63a",
+          "block": "__const",
+          "references_first_24": [
+            {
+              "from": "100226c1c",
+              "type": "PARAM",
+              "function": "linker_function_100225c70",
+              "function_address": "100225c70"
+            },
+            {
+              "from": "1002ce078",
+              "type": "DATA",
+              "function": "linker_function_1002cce94",
+              "function_address": "1002cce94"
+            },
+            {
+              "from": "1002d019c",
+              "type": "DATA",
+              "function": "FUN_1002cf558",
+              "function_address": "1002cf558"
+            }
+          ]
+        }
+      ],
+      "string_scope": "initialized non-executable blocks; at most six exact occurrences per needle and 24 refs per occurrence; one data-reference hop is explicitly marked",
+      "decompiler_available": true,
+      "decompiler_error": null,
+      "selected_functions": [
+        {
+          "address": "10035862c",
+          "name": "entry",
+          "body_addresses": 1328,
+          "thunk": false,
+          "callees_first_24": [
+            "100b1cfc4 _open",
+            "100b1cbf8 _dup",
+            "100b1d324 _signal",
+            "100b113e0 FUN_100b113e0",
+            "100ae2758 FUN_100ae2758",
+            "100b1d108 _pthread_get_stackaddr_np",
+            "100b1cf10 _mprotect",
+            "100b1d2f4 _sigaction",
+            "10086d880 FUN_10086d880",
+            "100b14a34 FUN_100b14a34",
+            "100b1cc4c _fcntl",
+            "100b1d114 _pthread_get_stacksize_np",
+            "100b1ca54 _abort",
+            "10086c74c FUN_10086c74c",
+            "10056c084 FUN_10056c084",
+            "10006a648 FUN_10006a648",
+            "100b1d1a4 _pthread_setname_np",
+            "100b1cf04 _mmap",
+            "100b1d198 _pthread_self",
+            "100b15224 FUN_100b15224",
+            "100b1d3d8 _sysconf",
+            "10087715c FUN_10087715c",
+            "100ae22dc FUN_100ae22dc",
+            "100b1c9b8 ___error"
+          ],
+          "decompile_completed": true,
+          "error": "",
+          "private_pseudocode_file": "function-10035862c.c.txt",
+          "pseudocode_sha256": "41cc847e6e9d2c3b792d70362be600c607610d2fc51a6fdbb797e3fae4cce373",
+          "pseudocode_chars": 6015,
+          "pseudocode_warning_markers": 5
+        },
+        {
+          "address": "100248d0c",
+          "name": "linker_function_100248d0c",
+          "body_addresses": 2028,
+          "thunk": false,
+          "callees_first_24": [
+            "100020418 FUN_100020418",
+            "100b1ce50 _malloc",
+            "100295364 FUN_100295364",
+            "1006277fc FUN_1006277fc",
+            "10025d194 FUN_10025d194",
+            "100869ba4 FUN_100869ba4",
+            "1008d7878 FUN_1008d7878",
+            "10035cc70 FUN_10035cc70",
+            "100ae0d10 FUN_100ae0d10",
+            "100629494 FUN_100629494",
+            "100056f58 FUN_100056f58",
+            "10006bea8 FUN_10006bea8",
+            "1008c2334 FUN_1008c2334",
+            "1002b2958 FUN_1002b2958",
+            "1001f9ad0 FUN_1001f9ad0",
+            "10004a99c FUN_10004a99c",
+            "100b1cec8 _memcpy",
+            "100ae2790 FUN_100ae2790",
+            "10002fef0 FUN_10002fef0",
+            "1008c22ac FUN_1008c22ac",
+            "1008d643c FUN_1008d643c",
+            "100057458 FUN_100057458",
+            "10061328c FUN_10061328c",
+            "100054a08 FUN_100054a08"
+          ],
+          "decompile_completed": true,
+          "error": "",
+          "private_pseudocode_file": "function-100248d0c.c.txt",
+          "pseudocode_sha256": "66cb8e4b294ce0d3701fb28caf3a83b352a6372579d8b0ef0a96c2e2affee33e",
+          "pseudocode_chars": 15867,
+          "pseudocode_warning_markers": 5
+        },
+        {
+          "address": "100225c70",
+          "name": "linker_function_100225c70",
+          "body_addresses": 8456,
+          "thunk": false,
+          "callees_first_24": [
+            "100b1ce50 _malloc",
+            "10026e354 FUN_10026e354",
+            "100835f44 FUN_100835f44",
+            "100053c74 FUN_100053c74",
+            "10017e768 FUN_10017e768",
+            "100836f40 FUN_100836f40",
+            "10035cc70 FUN_10035cc70",
+            "100adade4 FUN_100adade4",
+            "1003a3f2c FUN_1003a3f2c",
+            "100015a28 FUN_100015a28",
+            "100b1cec8 _memcpy",
+            "10027f274 FUN_10027f274",
+            "1002b7f64 FUN_1002b7f64",
+            "10000dbe4 FUN_10000dbe4",
+            "10001dc94 FUN_10001dc94",
+            "100ae2790 FUN_100ae2790",
+            "100879cd0 FUN_100879cd0",
+            "1008353bc FUN_1008353bc",
+            "100ae0cfc FUN_100ae0cfc",
+            "10004149c FUN_10004149c",
+            "10026c6b0 FUN_10026c6b0",
+            "100b1cebc _memcmp",
+            "10087a180 FUN_10087a180",
+            "10022588c FUN_10022588c"
+          ],
+          "decompile_completed": true,
+          "error": "",
+          "private_pseudocode_file": "function-100225c70.c.txt",
+          "pseudocode_sha256": "e5e9b28d05efe373fd323fa5abb6a1459f82e79fc0b303e8ccfd711d664a02d0",
+          "pseudocode_chars": 54515,
+          "pseudocode_warning_markers": 32
+        },
+        {
+          "address": "1002cce94",
+          "name": "linker_function_1002cce94",
+          "body_addresses": 7616,
+          "thunk": false,
+          "callees_first_24": [
+            "100b1cebc _memcmp",
+            "1000543a0 FUN_1000543a0",
+            "10027f5c4 FUN_10027f5c4",
+            "10086f574 FUN_10086f574",
+            "1002d533c FUN_1002d533c",
+            "10028e2bc FUN_10028e2bc",
+            "100ad1998 FUN_100ad1998",
+            "100901f1c FUN_100901f1c",
+            "1002b7a20 FUN_1002b7a20",
+            "1002d8c90 FUN_1002d8c90",
+            "10086edb0 FUN_10086edb0",
+            "10022a5e4 FUN_10022a5e4",
+            "100b1ce50 _malloc",
+            "1002c80d8 FUN_1002c80d8",
+            "100ae0d10 FUN_100ae0d10",
+            "1008ed3e4 FUN_1008ed3e4",
+            "1002c7b44 FUN_1002c7b44",
+            "100879cd0 FUN_100879cd0",
+            "1001055f0 FUN_1001055f0",
+            "100ae0cfc FUN_100ae0cfc",
+            "10029eea4 FUN_10029eea4",
+            "100054130 FUN_100054130",
+            "1002d8e6c FUN_1002d8e6c",
+            "1008f8f30 FUN_1008f8f30"
+          ],
+          "decompile_completed": true,
+          "error": "",
+          "private_pseudocode_file": "function-1002cce94.c.txt",
+          "pseudocode_sha256": "39e8ccb1988cc21d0e67397c9f24039b863dbdf4573d8fa3347524c39434b25f",
+          "pseudocode_chars": 65960,
+          "pseudocode_warning_markers": 17
+        },
+        {
+          "address": "1002a1d34",
+          "name": "FUN_1002a1d34",
+          "body_addresses": 10020,
+          "thunk": false,
+          "callees_first_24": [
+            "100b1cebc _memcmp",
+            "100591278 FUN_100591278",
+            "10001683c FUN_10001683c",
+            "1000587cc FUN_1000587cc",
+            "100297cb0 FUN_100297cb0",
+            "100836f40 FUN_100836f40",
+            "100057e40 FUN_100057e40",
+            "100015a28 FUN_100015a28",
+            "100171170 FUN_100171170",
+            "100171b10 FUN_100171b10",
+            "100b1ce50 _malloc",
+            "10027f79c FUN_10027f79c",
+            "100ae0d10 FUN_100ae0d10",
+            "100053bb0 FUN_100053bb0",
+            "100ae0cfc FUN_100ae0cfc",
+            "1002bba18 FUN_1002bba18",
+            "100358c94 FUN_100358c94",
+            "1008db65c FUN_1008db65c",
+            "1002693a0 FUN_1002693a0",
+            "10035d218 FUN_10035d218",
+            "100876a0c FUN_100876a0c",
+            "100ae25b4 FUN_100ae25b4",
+            "1002bcaa4 FUN_1002bcaa4",
+            "100ae22dc FUN_100ae22dc"
+          ],
+          "decompile_completed": true,
+          "error": "",
+          "private_pseudocode_file": "function-1002a1d34.c.txt",
+          "pseudocode_sha256": "d5b5d80c039245a1a8dfcf90eaffe304735bfd9f005dcc572e9f125a9460283d",
+          "pseudocode_chars": 93892,
+          "pseudocode_warning_markers": 43
+        },
+        {
+          "address": "1002c4674",
+          "name": "FUN_1002c4674",
+          "body_addresses": 6516,
+          "thunk": false,
+          "callees_first_24": [
+            "100b1cebc _memcmp",
+            "100ad18b8 FUN_100ad18b8",
+            "100061cb4 FUN_100061cb4",
+            "100ade370 FUN_100ade370",
+            "100adb244 FUN_100adb244",
+            "100280de0 FUN_100280de0",
+            "10016b67c FUN_10016b67c",
+            "1000258e0 FUN_1000258e0",
+            "1000ef628 FUN_1000ef628",
+            "100b1cec8 _memcpy",
+            "1000ef7f0 FUN_1000ef7f0",
+            "100ad29d8 FUN_100ad29d8",
+            "100b1ce50 _malloc",
+            "100ade87c FUN_100ade87c",
+            "1000b8994 FUN_1000b8994",
+            "10015906c FUN_10015906c",
+            "100b1cc94 _free",
+            "100ae0cfc FUN_100ae0cfc",
+            "1002c63d8 FUN_1002c63d8",
+            "100adf578 FUN_100adf578",
+            "100adedc0 FUN_100adedc0",
+            "100b0fbe4 FUN_100b0fbe4",
+            "100835c60 FUN_100835c60",
+            "100aded24 FUN_100aded24"
+          ],
+          "decompile_completed": true,
+          "error": "",
+          "private_pseudocode_file": "function-1002c4674.c.txt",
+          "pseudocode_sha256": "292c915630b4585bb8766ffee7a5b5236fa5bcdcb0af23de3a77758383c69ed4",
+          "pseudocode_chars": 51869,
+          "pseudocode_warning_markers": 3
+        },
+        {
+          "address": "1002c7948",
+          "name": "FUN_1002c7948",
+          "body_addresses": 484,
+          "thunk": false,
+          "callees_first_24": [
+            "100ae0cfc FUN_100ae0cfc",
+            "100856010 FUN_100856010",
+            "100869db4 FUN_100869db4",
+            "100b1ce50 _malloc",
+            "100b1cc94 _free"
+          ],
+          "decompile_completed": true,
+          "error": "",
+          "private_pseudocode_file": "function-1002c7948.c.txt",
+          "pseudocode_sha256": "adc84c2cf8bcee78559bf70da15b4bbc8100a0af5a10f164c32e1904ea9c6cad",
+          "pseudocode_chars": 2704,
+          "pseudocode_warning_markers": 3
+        },
+        {
+          "address": "1002bd3f8",
+          "name": "FUN_1002bd3f8",
+          "body_addresses": 9052,
+          "thunk": false,
+          "callees_first_24": [
+            "100b1c9b8 ___error",
+            "100b1ce38 _lseek",
+            "10006a260 FUN_10006a260",
+            "100198180 FUN_100198180",
+            "100ad6b88 FUN_100ad6b88",
+            "100b1cebc _memcmp",
+            "1003a274c FUN_1003a274c",
+            "100879cd0 FUN_100879cd0",
+            "100173870 FUN_100173870",
+            "100af1f74 FUN_100af1f74",
+            "100ae2628 FUN_100ae2628",
+            "10001683c FUN_10001683c",
+            "1008353bc FUN_1008353bc",
+            "100358c94 FUN_100358c94",
+            "100ad273c FUN_100ad273c",
+            "10035d218 FUN_10035d218",
+            "100855ab4 FUN_100855ab4",
+            "100b1cc94 _free",
+            "100b1cb2c _close",
+            "10014c1e4 FUN_10014c1e4",
+            "100053c74 FUN_100053c74",
+            "100b1143c FUN_100b1143c",
+            "1002281b4 FUN_1002281b4",
+            "100033614 FUN_100033614"
+          ],
+          "decompile_completed": true,
+          "error": "",
+          "private_pseudocode_file": "function-1002bd3f8.c.txt",
+          "pseudocode_sha256": "cb3c05751518a3780ae35dc14ec673b2a335a08b1150f8e9b7ebbace8a0f7b00",
+          "pseudocode_chars": 117143,
+          "pseudocode_warning_markers": 19
+        },
+        {
+          "address": "1002cf558",
+          "name": "FUN_1002cf558",
+          "body_addresses": 5728,
+          "thunk": false,
+          "callees_first_24": [
+            "100901f1c FUN_100901f1c",
+            "1003aed00 FUN_1003aed00",
+            "1002c7b44 FUN_1002c7b44",
+            "100ae0cfc FUN_100ae0cfc",
+            "10022b4ec FUN_10022b4ec",
+            "1008fd754 FUN_1008fd754",
+            "1002c80d8 FUN_1002c80d8",
+            "100ae0d10 FUN_100ae0d10",
+            "1009024cc FUN_1009024cc",
+            "1008f8f30 FUN_1008f8f30",
+            "1008f8994 FUN_1008f8994",
+            "1002d8e6c FUN_1002d8e6c",
+            "1008f3088 FUN_1008f3088",
+            "100879cd0 FUN_100879cd0",
+            "100ae2628 FUN_100ae2628",
+            "10086eaa0 FUN_10086eaa0",
+            "1001055f0 FUN_1001055f0",
+            "1002d919c FUN_1002d919c",
+            "10035cc70 FUN_10035cc70",
+            "100b1ce50 _malloc",
+            "100ae25f8 FUN_100ae25f8",
+            "100b1cc94 _free",
+            "100ad1998 FUN_100ad1998",
+            "10000a9f0 FUN_10000a9f0"
+          ],
+          "decompile_completed": true,
+          "error": "",
+          "private_pseudocode_file": "function-1002cf558.c.txt",
+          "pseudocode_sha256": "ca8bee4f3eacdb67857a6ddd9a867caf1b0b50786c1e27d175988447cc457612",
+          "pseudocode_chars": 45979,
+          "pseudocode_warning_markers": 14
+        },
+        {
+          "address": "10006a648",
+          "name": "FUN_10006a648",
+          "body_addresses": 20,
+          "thunk": false,
+          "callees_first_24": [],
+          "decompile_completed": true,
+          "error": "",
+          "private_pseudocode_file": "function-10006a648.c.txt",
+          "pseudocode_sha256": "6de8b4703d2090856e121e8afc9fce42ab733cb5891f4722fa86f1b89a043adc",
+          "pseudocode_chars": 67,
+          "pseudocode_warning_markers": 0
+        },
+        {
+          "address": "10056c084",
+          "name": "FUN_10056c084",
+          "body_addresses": 44,
+          "thunk": false,
+          "callees_first_24": [],
+          "decompile_completed": true,
+          "error": "",
+          "private_pseudocode_file": "function-10056c084.c.txt",
+          "pseudocode_sha256": "ce526b2d267a52379291c0f78027aab6911e5218bf31971744bcd5d67c834bf6",
+          "pseudocode_chars": 352,
+          "pseudocode_warning_markers": 2
+        },
+        {
+          "address": "1008698d4",
+          "name": "FUN_1008698d4",
+          "body_addresses": 252,
+          "thunk": false,
+          "callees_first_24": [
+            "1003a21e8 FUN_1003a21e8",
+            "100ae23a0 FUN_100ae23a0",
+            "1002ee398 FUN_1002ee398",
+            "100b1c9b8 ___error",
+            "100b1d450 _write"
+          ],
+          "decompile_completed": true,
+          "error": "",
+          "private_pseudocode_file": "function-1008698d4.c.txt",
+          "pseudocode_sha256": "410a392f452e29a121bc6f1ce2a80eaa1cc47d8d080d0373ddfcba32880ee531",
+          "pseudocode_chars": 1283,
+          "pseudocode_warning_markers": 1
+        }
+      ],
+      "function_count_after_script": 9985,
+      "decompile_scope": "bounded selected native functions; pseudocode is an analysis result, not recovered original source",
+      "export_receipt": {
+        "exit": 0,
+        "elapsed_s": 19.16430902481079
+      },
+      "pseudocode_scope": "원시 의사코드는 사설 평가 경로에 보존. 저장소에는 주소·참조·해시·경고 수만 포함."
+    }
+  ],
+  "cli_first_recovery": [
+    {
+      "target": "1000046a4",
+      "call_instruction": "100004658",
+      "created_in_analysis_project": true,
+      "function": "native_call_target_1000046a4"
+    },
+    {
+      "target": "100004a4c",
+      "call_instruction": "100004674",
+      "created_in_analysis_project": true,
+      "function": "native_call_target_100004a4c"
+    },
+    {
+      "target": "1000051f8",
+      "call_instruction": "100004678",
+      "created_in_analysis_project": true,
+      "function": "native_call_target_1000051f8"
+    },
+    {
+      "target": "1000052a0",
+      "call_instruction": "10000467c",
+      "created_in_analysis_project": true,
+      "function": "native_call_target_1000052a0"
+    },
+    {
+      "target": "1000053dc",
+      "call_instruction": "100004688",
+      "created_in_analysis_project": true,
+      "function": "native_call_target_1000053dc"
+    },
+    {
+      "target": "101c36400",
+      "call_instruction": "100004694",
+      "created_in_analysis_project": true,
+      "function": "native_call_target_101c36400"
+    },
+    {
+      "target": "1000053dc",
+      "call_instruction": "100004698",
+      "created_in_analysis_project": false,
+      "function": "native_call_target_1000053dc"
+    }
+  ],
+  "linker_recovery": {
+    "table_file_offset": 15177272,
+    "table_bytes": 30048,
+    "function_starts": 17426,
+    "candidates": [
+      {
+        "needle": "not a member of this team",
+        "start": "0x100248d0c",
+        "evidence_address": "0x100249204",
+        "next_start": "0x100249738",
+        "linker_table_file_offset": 15177272
+      },
+      {
+        "needle": "PostToolUse",
+        "start": "0x100225c70",
+        "evidence_address": "0x100226c1c",
+        "next_start": "0x1002281b4",
+        "linker_table_file_offset": 15177272
+      },
+      {
+        "needle": "PostToolUse",
+        "start": "0x1002cce94",
+        "evidence_address": "0x1002ce078",
+        "next_start": "0x1002cf21c",
+        "linker_table_file_offset": 15177272
+      }
+    ]
+  },
+  "source_script_sha256": "85dada810be16220424edf2c6a0151eb15ca12cd6e69031f30ff1c90b3eb18a3",
+  "limits": [
+    "양쪽 전체 자동 분석은 각각 600초에 시간 초과. 선택 함수·자료 구간의 근거다.",
+    "생성한 native_call_target/linker_function 이름은 원래 심볼이 아니다.",
+    "디컴파일 완료는 의사코드 정확성이나 실제 통신 성공을 보장하지 않는다."
+  ],
+  "initial_analysis_only": true,
+  "full_analysis_followup": "full-native-analysis.json"
+}

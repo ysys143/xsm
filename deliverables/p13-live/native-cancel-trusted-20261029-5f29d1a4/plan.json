@@ -1,0 +1,12 @@
+{
+  "source": "/private/tmp/xsm-final-receipt-frozen-i3u9pms3",
+  "cwd": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging",
+  "private_root": "/private/tmp/native-cancel-trusted-w23wicuo",
+  "scope": "one already-trusted cwd TUI, sandbox read-only, one pending-call Esc, at most two turns, no automatic retry",
+  "trust": "existing exact repository metadata verified; never change/save trust or approval rules",
+  "MCP_binding": "same invocation-only private XSM/frozen server recording proxy as preceding harness; no persisted config override",
+  "canonical_setup_messages": 0,
+  "source135_verified_before": 135,
+  "original_CID0_failure_preserved": "deliverables/p13-live/native-cancel-20261029-660a8b39",
+  "deadline_utc": "2026-10-29T00:54:36+00:00"
+}

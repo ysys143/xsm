@@ -1,0 +1,83 @@
+{
+  "reused": [
+    {
+      "path": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/docs/plan/reason-inspired-adrs/plan.json",
+      "sha256": "ccdcb59f0a1cebe61fd805c40a09e486641e801ff3d5f9bc6b30fa9033ceadc9",
+      "bytes": 173071
+    },
+    {
+      "path": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/docs/adr/0017-directory-and-session-lifecycle.md",
+      "sha256": "2df665789ed1654b1a763e0bb10eb0ba1498f63b9233f1f98ac02d673ce42736",
+      "bytes": 6977
+    },
+    {
+      "path": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/deliverables/p13-live/native-handoff-factory-20261029-7091030d/report.md",
+      "sha256": "5aef95108e3aa006141b571794e324ff4d2e417ed353aa1ebe6576936e4d014c",
+      "bytes": 3277
+    },
+    {
+      "path": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/deliverables/p13-live/native-handoff-factory-20261029-7091030d/summary.json",
+      "sha256": "39c016745de20a41bf97b4eaa10c08482991ab82fdc151f5cdd0c8b60b585135",
+      "bytes": 5058
+    },
+    {
+      "path": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/deliverables/p13-live/native-handoff-factory-20261029-7091030d/manifest.json",
+      "sha256": "cc18365c5beef3a9f01e92475ddbeb8903a57187e162856bb2b37f95914efaea",
+      "bytes": 24791
+    },
+    {
+      "path": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/deliverables/b03-live/native-mcp-fixed.json",
+      "sha256": "630ed96fd9f23ace2e7b6b544437c3121c2ba706130373e5ca8c14bf66251d5b",
+      "bytes": 1711
+    },
+    {
+      "path": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/deliverables/p13-live/final-source-manifest.json",
+      "sha256": "cb05d6ecb3ab87d95359de3cc318f5ea217bee23837e72b9fff34f6512fb1463",
+      "bytes": 38515
+    }
+  ],
+  "final_frozen_files_verified": 315,
+  "reuse_scope": "prior same-CID claim recovery exists, older source and fault condition; not evidence of same-name new CID unread or permission lifecycle",
+  "raw_reused": [
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/result.json",
+      "sha256": "4465d53f20fc47adf19b07274aee59b50a9e967dadb68a5c46baefadb5476939",
+      "bytes": 33707
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/verified-result.json",
+      "sha256": "a87b26de3d981e7cb8bdd64924bcfeeaa362960ea5698c513a695e6eb0bffd9c",
+      "bytes": 27246,
+      "matches_prior_manifest": true
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/receiver-initial/native.jsonl",
+      "sha256": "86b7654510f312ba6f42466c622493323e2a90093a6e7727dbc68bb994646f2a",
+      "bytes": 52517,
+      "matches_prior_manifest": true
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/receiver-resume-verified/native.jsonl",
+      "sha256": "76fb5530b8a3d9224b192497637aa383477f386d0517bcf2c494de5236845e87",
+      "bytes": 5961,
+      "matches_prior_manifest": true
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/receiver-resume-verified/client-wire.jsonl",
+      "sha256": "a2d4a46f1393f935efd7012d767a8b2d3343bf870419a20310e280798164e3f8",
+      "bytes": 5071,
+      "matches_prior_manifest": true
+    },
+    {
+      "path": "/private/tmp/native-handoff-factory-cytvti8g/receiver-resume-verified/server-wire.jsonl",
+      "sha256": "16a38fe07ac3b2db88945dbed7775c50304b92b3f17bf40c833792c20e62a38f",
+      "bytes": 26959,
+      "matches_prior_manifest": true
+    }
+  ],
+  "prior_raw_verified_checks": {
+    "same_native_CID_observed_in_verified_stream": true,
+    "verified_resume_actual_ACK_call": true,
+    "initial_controller_result_tail_race_not_used_as_success": true
+  }
+}
