@@ -1,0 +1,75 @@
+{
+  "scope": "current HEAD after ADR21 and the skill split; fixture/process rebinding only, not native/UI/physical, not global G13",
+  "freeze": {
+    "head": "5773ca25a900379e2df7d0db330af51d529dee7d",
+    "manifest_sha256": "c05dc0a0ab3f8c5b3b80d914b6f5a1e14b42c1d727506959639dc39263607fc1",
+    "files": 184,
+    "python_modules": 53,
+    "test_modules": 87,
+    "binary_sha256": "f17f03fafcdf3a31e374d6cbc0ccbbbd8000ba6a7eba5d9b44605e742c409aed",
+    "previous1936_manifest_sha256": "ccc3f22a1d65a33ddc76b0ad1abc4966a65664a6e41777d52b70230cd4fd4011",
+    "changed_from1936": [
+      "scripts/audit-reason-plan.py",
+      "skills/xsm/SKILL.md",
+      "skills/xsm/references/guide.md",
+      "skills/xsm/references/network.md",
+      "tests/test_owned_interfaces.py",
+      "tests/test_person_decisions.py",
+      "tests/test_xsm.py"
+    ],
+    "added_since1936": [
+      "skills/xsm/references/channel.md",
+      "skills/xsm/references/permissions.md",
+      "skills/xsm/references/sessions.md",
+      "skills/xsm/references/troubleshooting.md",
+      "skills/xsm/references/workers.md",
+      "tests/test_mcp_shared_process.py"
+    ],
+    "removed_since1936": []
+  },
+  "full_regression": [
+    {
+      "label": "py39",
+      "argv": [
+        "/usr/bin/python3",
+        "-B",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests",
+        "-q"
+      ],
+      "tests_run": 1941,
+      "test_seconds": 809.826,
+      "elapsed_seconds": 810.568,
+      "exit_code": 0,
+      "skipped": 0,
+      "log": "py39.stderr",
+      "log_sha256": "c16a03dbafdea43c91b9902af9936d33f24cacaf40a230ddbae90fd1eb2c02c0"
+    },
+    {
+      "label": "py314",
+      "argv": [
+        "/opt/homebrew/bin/python3.14",
+        "-B",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests",
+        "-q"
+      ],
+      "tests_run": 1941,
+      "test_seconds": 530.99,
+      "elapsed_seconds": 531.79,
+      "exit_code": 0,
+      "skipped": 0,
+      "log": "py314.stderr",
+      "log_sha256": "e0abd4e57f6348536235237157f68ed58b63904a117966498abfe04456037791"
+    }
+  ],
+  "changed_after_freeze": [],
+  "changed_after_freeze_note": "scripts/audit-reason-plan.py is excluded: no test reads it, and it is the audit of this run",
+  "whole_plan_complete": false
+}
