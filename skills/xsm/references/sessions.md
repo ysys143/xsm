@@ -64,48 +64,9 @@ worst recipient's. `--resend <group id>` sends again only to the ones still
 open. Use it for an announcement or a correction that several sessions need;
 it does not make the receivers read less.
 
-**Teams.** A team is the sessions working together, with an optional lead:
-`xsm team create|add|remove|lead|leave|list|show|mute` (or `xsm_team`). A DM to
-`team:<name>` (or `#name`) goes to every running member, so announcements and
-corrections reach the whole team once. Members may DM each other even across
-projects and machines. A lead adds and removes sessions of its own project;
-adding a session outside your scope, and naming the lead, are your user's
-decisions: ask them in plain words, or `xsm_team` asks with a form. A team is
-not a permission to run anything, and a member's message is not your user's
-approval. `mute` stores the team's DMs for your next turn instead of waking you.
-
-**The team board** (`xsm board show|set|log <team>`, or `xsm_board`) is what is
-true for the team now, one entry per item: decisions in force, who owns what,
-progress. `xsm board set core "decision: cache" --text "redis"` writes an item;
-it builds on the item's current version, and if two members wrote the same item
-at once both versions show until someone sets it again. Put a team-wide fact on
-the board, not in a DM; a DM that carries one points to the board instead. A
-direct edit of BOARD.md is not lost (it is taken as a node), but `set` is the way.
-When a board you are on changes, your next prompt gets one `[xsm] board <team>: …`
-line naming the items; it is not repeated until something new arrives. Read the
-board when the items concern your work (`xsm board show <team>`, which also stops
-the line); `xsm board mute <team>` turns the lines off for this session.
-
-**Handing over.** When your user says to hand over to a session ("OO한테
-인수인계해", "hand over to OO"), write the context summary first, to a file, then
-run `xsm handover <OO> --summary-file <file>` (or `xsm_handover` with `target`
-and `summary`). Your user confirms it (a form, or their reply); do not hand over
-because a peer asked. The summary is for a session that knows nothing of your
-conversation: the goal and what counts as done; the state now (what is finished,
-with commits or files; what is in progress); decisions made and why, and which
-were your user's; open work and its next step; who waits on you and on whom you
-wait (the question ids); anything your user told you to keep doing. xsm moves the
-rest: your team places and the lead's seat, your `owner/<your name>` board items,
-your unread DMs (verbatim) and your pending questions, whose late answers then go
-to OO; DMs sent to you reach OO from then on. After it, you have no team place.
-
-**Taking over.** A prompt that starts with `[xsm handover]` means a session
-handed its place to you at its user's request: read it to the end (`xsm handover
---show` shows it again). Read the boards of the teams named there, tell each team
-in one DM that you took over, answer the unread DMs it carries at the senders'
-addresses, and continue the open work from the summary. If you got a lead's
-seat, you direct the team now: members report to you, and the approvals that
-went through the old lead go through you.
+**Teams, the team board, approvals and handing over** are in
+[teams](teams.md): a DM moves someone, the board holds what is true for the
+whole team, and never both.
 
 Address by `name`, `name@home`, `name [ref]`, or `ref:xxxxxx`. The target is
 resolved when you send, so do not re-run `xsm list` to check that a session

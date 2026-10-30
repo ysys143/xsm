@@ -111,6 +111,14 @@ CODEX_HOME=<대상 홈> codex queue --thread <thread-uuid> --message <봉투 전
 | `handoffs/<endpoint-hash>/<id>.json` | 전체 receiver, 원문 message/digest, delivery_state와 독립 state(`pending/claimed/handoff-recorded/acknowledged`), owner/generation/token. ack·release·recover 전이를 보존. 수신 lease는 삭제 TTL이 아님 |
 | `legacy-inbox-originals/<endpoint-hash>/<content-hash>.json` | 구 writer export 원문 보존. 신원 미확정 자료를 인증된 새 메시지로 승격하지 않음 |
 | `questions/<id>.json`, `question-reply-copies/<endpoint-hash>/<reply-id>.json` | 질문의 원문·전체 sender/target·digest·send_evidence·부분/최종 replies와 구 hook에 앞서 보존하는 reply 사본. timeout/취소 뒤 조회 가능 |
+| `groups/<group-id>.json` | 다중 수신 DM 한 번: `{id, sender ref, kind, reply_to, outcome, priority, recipients: [{spec, label, id, status}], body}`. 수신자마다 따로 보낸 메시지 ID를 담고, `--resend <group id>`가 다시 보낼 수 있는 상태의 수신자만 같은 ID로 다시 보낸다(§5.12) |
+| `question-groups/<group-id>.json` | 다중 수신 질문: `{id, sender(native), created_at, recipients, children: ["<group>-<n>"], notes}`. 질문 하나하나는 `questions/<group>-<n>.json`이다(§5.12) |
+| `teams/<팀>/team.json` | `{name, id, generation, lead, members, created_at, updated_at, origin?, pair?, log}`. 구성원은 로컬 이름 구성원 `{runtime, home, name}`, 로컬 대화 구성원 `{runtime, home, session_id, name}`, 다른 머신 구성원 `{machine, runtime, home_id, session_id, name}` 중 하나다. 바꿀 때마다 `generation`이 오른다(§5.13) |
+| `teams/<팀>/muted/<runtime>-<session>` | 팀 DM을 깨우지 않고 다음 턴에 받는 세션 표시 |
+| `teams/<팀>/BOARD.md`, `teams/<팀>/BOARD.md.nodes/` | 팀 보드와 그 노드(§5.7 형식에 `item`, `decision` 필드). 노드 폴더의 `.rendered`는 마지막 렌더의 SHA-256이다(§5.14) |
+| `teams/<팀>/BOARD.md.nodes/seen/<runtime>-<session>.json` | 보드 알림 위치: `{read, notified, decisions_read, decisions_notified, muted}`(노드·결재 ID 목록) |
+| `teams/<팀>/decisions/<id>.json` | 결재 기록 `{id, t, team, question, answer, options, decided_by, via, asked_by, item, from_machine?}`. `id`는 앞 9개 필드의 정렬 JSON SHA-256 앞 12자, `O_EXCL`로 한 번만 쓴다(§5.14) |
+| `handovers/<endpoint-hash>.json` | 인수인계 `{t, from, from_identity, to, to_identity, approval, teams, items, questions, groups, messages, letter, shown}`. 이름은 옛 세션 native 신원의 해시다(§5.15) |
 | `directory-publications/<endpoint-hash>.json`, `collaborations/<pair-id>.json` | 명시 공개 상태와 선택된 두 native 대화의 협업 범위를 분리. 후보 공개·검색만으로 통신 권한이 생기지 않음 |
 | `human-decisions/<key>.json`, `native-answers/<key>.json`, `attention/<key>.json` | 사람 질문의 표시/답/적용/취소와 native 답 결속, 알림 결과. OS 알림 성공을 사람 열람으로 세지 않음 |
 | `owned-requests/<owner-hash>.json`, `owned-runs/<worker-id>/` | owned worker의 요청/context/slot·native 실행/저장 결과/회신 전이. 일반 세션을 headless worker로 전환하지 않음 |
@@ -443,7 +451,7 @@ Claude는 우리 훅보다 **먼저** 자체 판정을 한다. 구현은 보내�
 
 ### 5.7 공동 문서(노드)
 
-문서 `<path>`의 노드는 `<path>.nodes/<id>.md`다. 머리는 `---`로 감싼 `key: value` 줄이다(`id`, `t`, `author`, `author_kind`, `tags`, `parents`, 선택적으로 `approved`). 본문은 그 아래에 온다. `id`는 `sha256("t|author|tags|parents|body")`의 앞 12자다. 노드는 `O_CREAT|O_EXCL`로 만들므로 이미 있는 노드를 덮어쓰지 않는다. 부모는 이미 있는 노드여야 한다. `endorsed`는 `author_kind: human`일 때만 쓸 수 있다. 사람 판정은 채널과 같고, MCP `xsm_doc_endorse`의 elicitation도 사람으로 인정한다. `render`의 기준 노드는 가장 최근의 `endorsed`, 없으면 가장 최근의 `report`다. 여기에 끝 노드(자식이 없는 노드)와, `verification` 자식이 없는 `hypothesis`를 덧붙인다.
+문서 `<path>`의 노드는 `<path>.nodes/<id>.md`다. 머리는 `---`로 감싼 `key: value` 줄이다(`id`, `t`, `author`, `author_kind`, `tags`, `parents`, 선택적으로 `approved`). 본문은 그 아래에 온다. `id`는 `sha256("t|author|tags|parents|body")`의 앞 12자다. 보드 노드는 머리에 `item`(항목 이름)과 선택적 `decision`(결재 ID)을 더 싣고, 있을 때만 `"|item=…|decision=…"`가 해시 입력 끝에 붙는다(없는 노드의 ID는 이전과 같다). 노드는 `O_CREAT|O_EXCL`로 만들므로 이미 있는 노드를 덮어쓰지 않는다. 부모는 이미 있는 노드여야 한다. `endorsed`는 `author_kind: human`일 때만 쓸 수 있다. 사람 판정은 채널과 같고, MCP `xsm_doc_endorse`의 elicitation도 사람으로 인정한다. `render`의 기준 노드는 가장 최근의 `endorsed`, 없으면 가장 최근의 `report`다. 여기에 끝 노드(자식이 없는 노드)와, `verification` 자식이 없는 `hypothesis`를 덧붙인다.
 
 `xsm doc next <문서>`는 그 두 집합의 **합집합**을 한 목록으로 낸다. 이미 있는 두 뷰를 합칠 뿐 새 판단을 들이지 않기 위해서다. 규칙:
 
@@ -479,6 +487,32 @@ Claude는 우리 훅보다 **먼저** 자체 판정을 한다. 구현은 보내�
 `send`/`ask`의 CLI `--attachment`는 그 CLI 프로세스가 실제로 읽을 수 있는 파일만 snapshot한다. MCP는 호출자가 읽은 `name+text/base64`와 frozen `manifest_id`를 받으며 서버의 임의 경로 읽기를 제공하지 않는다. manifest·copy SHA·버전·크기·request ID/body·native owner를 검증하고 파일 저장을 본문 전달/열람으로 취급하지 않는다. 구/unknown peer의 inline 대체는 명시 선택이며 자동 잘라내기는 없다. `files`/`xsm_files`는 해당 대화의 storage_id/entry_id로 자기 사본만 조회하고 원본/다른 대화 파일 권한을 열지 않는다. cleanup은 사본 저장소에만 적용하며 원본 파일을 지우지 않는다([files](../../xsm/files.py), [materials](../../xsm/materials.py)).
 
 `owned`/`xsm_owned`의 create/run/status/retry/reconcile은 명시 owned headless worker용이다. create/run은 기존 worker scope/grant/framework guard를 유지한다. 전체 native owner·sender/work_context별 context를 분리하고 independent 요청은 새 context를 만든다. 용량 reservation·수락·native 실행·결과 저장·회신은 별도 전이다. unknown 부작용은 자동 재실행하지 않고 retry는 저장된 답을 같은 request ID로 재게시한다. 일반 세션을 owned worker로 전환하지 않으며 worker 기록 제거와 보존 요청/결과의 수명도 별개다([owned_requests](../../xsm/owned_requests.py), [workers](../../xsm/workers.py)).
+
+### 5.12 다중 수신 DM과 질문
+
+`send A B C`(MCP `targets`)와 `send team:<팀>`은 수신자마다 `send`를 따로 부른다. 각자 자기 메시지 ID를 가지며 본문 첫 줄에 `(also sent to: …)`가 붙는다(헤더를 바꾸지 않아 이전 버전 수신자와도 호환된다). 수신자는 해석·중복 제거하고 자기 자신은 뺀다. 범위 밖 수신자는 연결을 묻지 않고 "out of scope, so not sent"로 건너뛴다. 결과 종료 코드는 가장 나쁜 수신자의 상태다(`delivered`/`stored` 0, `refused`/`held`/`blocked` 2, `sent-unconfirmed`/`unknown` 3, `error` 4). 수신자 상한 16. `ask`도 같다: 질문 묶음 ID 아래 수신자마다 `<group>-<n>` 질문을 만들고, `question-status <group>`이 묶음 상태(`pending`, `reply_received`, `replied`, `final`, `refused`)와 각자의 답·대기 중인 수신자를 돌려준다. 대기는 모두 답했거나 끝났을 때 끝난다.
+
+### 5.13 팀
+
+팀 권한은 `config.scope_for`의 한 갈래다: 두 세션이 같은 팀의 구성원이고 둘 다 끝나지 않았으면 범위는 `team:<이름>`이다. 쌍별 허가로 전개하지 않는다. 구성원 판정: 이름 구성원은 runtime·home·이름이 같으면, 대화 구성원은 session_id까지 같으면, 다른 머신 구성원은 끝점이 같으면 맞는다. 추가 규칙은 같은 프로젝트(`team_aware=False`로 계산한 범위가 있음)면 팀장(없으면 구성원), 아니면 사용자 승인이다. 팀장 지정은 늘 사용자 승인이다. `connect`의 선택은 대화 구성원 둘인 `pair-<id 앞 10자>` 팀을 만들고 선택 기록은 0.5.0 상대를 위해 남긴다. 한쪽이 나가면 선택 기록도 내린다.
+
+머신 간: 팀이 바뀐 머신의 서비스가 로컬 요청 `team-publish`를 받아, 원격 구성원 머신마다 상대 요청 `team`으로 팀 기록을 끝점 형태로 보낸다(실행 중인 로컬 이름 구성원은 그 세션의 끝점으로, 실행 중이 아닌 것은 `not_running` 이름만으로). 받는 머신은 보낸 머신과 자기 머신 모두에 구성원이 있고, 같은 이름의 다른 팀 ID가 없으며, `(generation, origin)`이 더 클 때만 받는다. 자기 끝점은 등록 기록이 있으면 로컬 이름 구성원으로 되돌린다. P2P 수신 허가(`Daemon._permission`)는 보낸 쪽과 받는 쪽이 같은 팀이면 쌍별 grant 없이 허가한다.
+
+### 5.14 팀 보드와 결재 기록
+
+보드는 §5.7 노드를 쓰되 렌더가 다르다. 항목마다 같은 항목의 다른 노드가 부모로 삼지 않은 노드(머리)를 보인다. 머리가 둘 이상이면 모두 보이고, `set`은 그 항목의 모든 머리를 부모로 삼는다. 렌더 전에 BOARD.md의 SHA-256이 `.rendered`와 다르면 바뀐 항목을 `author_kind: file-edit` 노드로 받는다. 구성원만 읽고 쓴다.
+
+결재 기록은 두 경로에서만 생긴다: MCP `xsm_decide`에 `team`을 준 양식의 답(`via: mcp-elicitation`)과, 사람의 `xsm board decide`(`via: terminal`, `workers.human_terminal()`일 때만, 구성원 확인 없음). `item`이 있으면 `author_kind: human` 노드가 `decision: <id>`를 달고 그 항목을 정한다. 렌더는 결재 ID의 기록이 있고 그 ID가 내용과 맞을 때만 "decided by …"로 보이고, 아니면 "has no record here: not confirmed"로 보인다.
+
+머신 간: 로컬 요청 `board-publish`가 원격 구성원 머신마다 상대 요청 `board-nodes`로 `{team, team_id, nodes: [{id, text}], decisions}`를 보낸다. 받는 머신은 팀 ID가 같고 보낸 머신에 구성원이 있을 때만 받는다. 노드는 파싱한 내용의 ID가 이름과 맞을 때만 `O_EXCL`로 쓰고, 결재 기록은 ID가 내용과 맞을 때만 `from_machine`을 붙여 쓴다. 이미 있는 것은 바꾸지 않는다.
+
+보드 알림: 수신 훅의 `UserPromptSubmit`이 팀마다 읽은 위치에 없는 노드·결재가 알린 위치에도 없으면 한 줄을 붙이고 알린 위치를 옮긴다. 읽은 위치는 `board show|log|decisions`와 자기 쓰기가 옮긴다. 상한: 팀 5개(나머지는 한 줄로 센다), 항목 이름 3개, 한 줄 240자, 팀당 파싱 200개. 알림 실패는 프롬프트에 영향을 주지 않는다.
+
+### 5.15 인수인계
+
+`handover <후임>`(MCP `xsm_handover`)은 사용자 승인 뒤 다음 순서로 옮긴다: 보드의 `owner/<옛 이름>[/…]` 항목(머리가 하나인 것만)을 `owner/<새 이름>…`으로 쓰고 옛 항목과 `handover/<옛 이름>` 항목에 기록 → 팀마다 구성원과 팀장 자리 교체(`log`에 `handover`) → 최종 답이 없는 질문과 질문 묶음의 발신자 교체(`handed_over_from`) → ACK되지 않은 `handoffs` 기록을 `acknowledged` + `moved_to`로 닫고 원문을 문서에 싣기(legacy inbox 사본도) → `handovers/` 기록 → 원격 구성원 머신에 팀 기록 재전송. 후임은 이 머신의 실행 중인 등록 세션이어야 하고, 옛 세션과 후임 모두 이미 인수인계한 적이 없어야 한다.
+
+옛 주소의 해석: 로컬 `send`와 SSH 원격 수신은 해석한 대상(또는 이름이 멈춘 세션만 가리킬 때 그 후보들)을 인수인계 기록으로 따라간다(8단계까지). P2P 수신 게이트는 받는 끝점이 정확히 해석되면 그 기록을, 해석되지 않으면 끝점의 runtime·home_id·session_id와 맞는 인수인계 기록의 후임을 쓴다. 회신의 역방향 검사는 원래 보낸 대화이거나 그 후임이면 통과한다. 질문 기록은 답한 쪽이 원래 받은 대화이거나 그 후임이면 답을 받는다(로컬 대화만). 인수인계 문서는 후임의 다음 `UserPromptSubmit`에 한 번 붙는다.
 
 ## 6. 결과값과 종료 코드
 

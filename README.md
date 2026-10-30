@@ -395,6 +395,41 @@ xsm doctor                                     # which homes lack hooks, stale c
 xsm selftest                                   # whether the hooks actually run
 ```
 
+### 9. Working as a team
+
+When several sessions work on one thing, make them a team. A team is a list of members with an optional
+lead; members may DM each other even across projects and machines, and a DM to `team:<name>` reaches every
+running member and tells each who else got it. Adding a session from outside your scope, and naming the lead,
+take your yes. `xsm connect` makes a team of two.
+
+```bash
+xsm team create core                                   # this session is the first member
+xsm team add core api-worker                           # same project: no question; otherwise your yes
+xsm team lead core planner                             # your decision
+xsm send team:core --text "main is frozen until 18:00"  # one DM to every member
+```
+
+Each team has a board: what is true for the team now, one entry per item (decisions in force, who owns what,
+progress). Members write items as immutable nodes of an xsm doc, so two writes never overwrite each other; two
+versions written at once both show until someone settles them. The rule the agents follow is short: a DM to
+move someone, the board for a fact the whole team needs, never both. When a board changes, each member's next
+prompt gets one line naming the changed items, once, not the text.
+
+```bash
+xsm board set core "decision: cache" --text "redis, for the session store"
+xsm board show core                                    # ~/.xsm/teams/core/BOARD.md, the same for every worktree
+```
+
+Approvals go through the lead, who faces you: cost, anything that goes outside (push, PR, release, a post),
+and a change of scope usually need one. The lead asks you with a form (`xsm_decide` with the team), and your
+answer is recorded beside the board under its own id; the board item shows who decided. A node that only
+claims a decision shows "not confirmed".
+
+To hand a session's place over to another (say "hand over to night-shift" in the session that is leaving),
+the agent writes a context summary and runs `xsm handover`, which you confirm. Its team places and lead's
+seat, its own board items, its unread DMs and its pending questions move to the successor, which reads all of
+it at its next prompt; DMs to the old session reach the successor from then on.
+
 ## Reference
 
 ### Communication scope

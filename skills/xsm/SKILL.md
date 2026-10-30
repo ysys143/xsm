@@ -1,7 +1,7 @@
 ---
 name: xsm
 description: Talk to other Claude Code or Codex sessions on this machine or on your user's other machines — find one by its work, list them, send a message or a task, ask and get the answer back, start workers, and see what was delivered. Use when the user asks to contact, hand off to, or coordinate with another session or agent. Your user calls it as `/xsm <command>` in Claude Code and `$xsm <command>` in Codex (discover, ask, list, who, log, projects, doctor, send, link, join, leave, reach, network); you run the `xsm` shell command (`xsm list`, `xsm send <name|ref:xxxxxx> --text "..."`). Load this skill before naming any other xsm command or address, or before acting on an xsm refusal — a made-up address is a message nobody receives. From a sandboxed shell, reach a Codex session with the `xsm_send` MCP tool instead; a row whose ref is `[-]` has no address yet.
-argument-hint: "discover | publish | connect <target> | ask <target> | question-status <id> | list | who | log | projects | doctor | send <target> <message> | link <folder> | join <project> | leave <project> | reach <folder> | network <subcommand>"
+argument-hint: "discover | publish | connect <target> | ask <target> | question-status <id> | list | who | log | projects | doctor | send <target> <message> | link <folder> | join <project> | leave <project> | reach <folder> | team <subcommand> | board <team> | handover <session> | network <subcommand>"
 allowed-tools: Bash(xsm send:*), Bash(xsm list --table), Bash(xsm who --table), Bash(xsm projects --table), Bash(xsm doctor --table), Bash(xsm ledger --table --mine --last 5), Bash(xsm held list --table)
 ---
 
@@ -65,12 +65,12 @@ Never ask your user to type a command.
 
 **Words that are not a command** (`/xsm tell plugin-worker what I did`): a
 request in words, see "Called without one". **Nothing, or nonsense** — reply with exactly:
-usage: /xsm discover | publish | connect <target> | ask <target> | question-status <id> | list | who | log | projects | doctor | send <target> <message> | link <folder> | join <project> | leave <project> | reach <folder> | network <subcommand>
+usage: /xsm discover | publish | connect <target> | ask <target> | question-status <id> | list | who | log | projects | doctor | send <target> <message> | link <folder> | join <project> | leave <project> | reach <folder> | team <subcommand> | board <team> | handover <session> | network <subcommand>
 
-For `discover`, `publish`, `connect`, `ask`, and `question-status`, follow the
-[common messaging guide](references/messaging.md). Use MCP first in a sandboxed
-Codex; existing `send --wait` remains delivery-only. For `network`, follow the [other
-machines guide](references/network.md); create, join, remove or leave only on your user's word.
+For `discover`, `publish`, `connect`, `ask`, and `question-status`, follow the [common messaging
+guide](references/messaging.md). Use MCP first in a sandboxed Codex; existing `send --wait` remains
+delivery-only. For `network`, follow the [other machines guide](references/network.md); create, join,
+remove or leave only on your user's word. For `team`, `board` and `handover`, the [teams guide](references/teams.md).
 
 ## Called without one
 
