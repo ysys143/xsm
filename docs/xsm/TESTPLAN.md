@@ -6,7 +6,7 @@
 
 실제 평가에서는 에이전트에게 목표와 설치된 skill/tool description만 제공한다. 사람이 이 문서의 정답 명령·인자·전송 경로를 대신 알려 주거나 첫 실패 뒤 숨은 설정을 고쳐 주지 않는다. agent-only라 해도 사람의 선택·OS/로그인/신뢰 승인처럼 실제 사용자가 해야 하는 단계는 계수한다. 이미 준 지시의 재질문·사람의 경로 교정도 비용이다. 수동 baseline은 실패 원인 진단용 별도 run으로 기록한다.
 
-[계획의 J01–J09](../plan/reason-inspired-adrs/spec.md#j01j09-사용자-여정)를 다음처럼 구분해 실행한다. 이 표는 실행 계획이며 체크 완료표가 아니다.
+[계획의 J01–J09](../plan/collaboration/spec.md#j01j09-사용자-여정)를 다음처럼 구분해 실행한다. 이 표는 실행 계획이며 체크 완료표가 아니다.
 
 | 여정 | 에이전트에게 주는 목표 / 확인할 경계 |
 |---|---|
@@ -24,7 +24,7 @@
 
 native 모델 실행, fake runtime/echo/transport fixture, 수동 사용자 표본, UI·물리 네트워크 표본을 분리한다. 권한 거부·취소·timeout·unknown의 첫 실패 결과도 보존하고 수정 뒤 실행과 섞지 않는다. 반례는 가짜 승인 본문, 같은 ID의 다른 전체 본문/상대/reply_to, 다른 native home, ack 전 reader 종료, 무관한 사본/원본 삭제를 포함한다.
 
-P11의 A/B/D native 9회와 C native 6회·cached 2회는 [carrier 비교](../plan/reason-inspired-adrs/remote-decision.md)의 제한된 실제 증거다. J07/J09 제품 전체 여정이나 새 remote directory/가입 성공이 아니다. D12 미응답·G11 미완 등으로 **P12 전제 미충족**이며 다른 NAT·강제 relay·UDP 차단·proxy·SSH 불가 환경은 미실행으로 남긴다. 현재 로컬 gate 성공을 J01–J09·70개 수용 조건 전체 성공으로 자동 승격하지 않는다.
+P11의 A/B/D native 9회와 C native 6회·cached 2회는 [carrier 비교](../plan/collaboration/remote-decision.md)의 제한된 실제 증거다. J07/J09 제품 전체 여정이나 새 remote directory/가입 성공이 아니다. D12 미응답·G11 미완 등으로 **P12 전제 미충족**이며 다른 NAT·강제 relay·UDP 차단·proxy·SSH 불가 환경은 미실행으로 남긴다. 현재 로컬 gate 성공을 J01–J09·70개 수용 조건 전체 성공으로 자동 승격하지 않는다.
 
 ## 수동 baseline 실행 경계
 

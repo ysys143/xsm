@@ -1,8 +1,8 @@
 """P00 crash-control fixtures: a real process dies at a named boundary, and the
 next run is observed.
 
-[execution.md G00](../../docs/plan/reason-inspired-adrs/execution.md) and
-[spec.md P00.4](../../docs/plan/reason-inspired-adrs/spec.md) ask for fixtures
+[execution.md G00](../../docs/plan/collaboration/execution.md) and
+[spec.md P00.4](../../docs/plan/collaboration/spec.md) ask for fixtures
 that die at a boundary and then run again. Two boundaries are covered.
 
 1. **After the connection is applied, before the message goes.** The person

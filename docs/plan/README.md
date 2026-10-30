@@ -1,6 +1,6 @@
 # 실행 계획: 에이전트 세션 간 메시징 (cross-session messaging 확장)
 
-2026-10-24 신규 ADR-0015–0023의 구현 계획은 [Reason에서 배운 xsm 개선](reason-inspired-adrs/spec.md)에 있다. 2026-10-29 원격 제품 방향·Reason식 멤버십은 [ADR-0021](../adr/0021-cross-machine-network-and-membership.md)로 확정됐고 구현 goal은 일시정지 상태다. 아래는 초기 설계·스파이크 계획의 이력이며, 현재 ADR 상태는 [ADR 목록](../adr/README.md)을 따른다.
+xsm 0.5.0의 협업·원격 기능(ADR-0015–0024)의 구현 계획과 검증 기록은 [collaboration/](collaboration/README.md)에 있다. 아래는 초기 설계·스파이크 계획의 이력이며, 현재 ADR 상태는 [ADR 목록](../adr/README.md)을 따른다.
 
 - 상태: 골격(scaffold). 레퍼런스 조사, 적대적 리뷰(`docs/reviews/`), 보강 조사(`docs/references/supplement/`)를 마쳤다. 확정·변경 사항은 `docs/references/README.md` 0.5절에 있다. 스파이크(5장)와 ADR 토론(6장)이 남았다.
 - 원본 의도: `INTENT.md`
@@ -210,4 +210,4 @@ G1~G8과 C1·C2는 INTENT.md에 있는 라벨이 아니다. 이 계획이 INTENT
 
 ## 2026-10-28 확정 협업 여정
 
-[발견·선택·핸드셰이크 설계 및 구현목표](reason-inspired-adrs/collaboration-contract.md), [Accepted ADR-0024](../adr/0024-discover-select-and-handshake.md). 기존 Reason 계획 62개 조건에 8개를 추가해 70개로 추적한다. 사용자의 재개 지시에 따라 전체 구현 목표는 실행 중이다. [현재 체크포인트](reason-inspired-adrs/current-handoff.md), [단계별 진행](reason-inspired-adrs/plan.json), [조건별 증거와 미완 항목](reason-inspired-adrs/completion-ledger.md)에서 확인한다.
+[발견·선택·핸드셰이크 설계 및 구현목표](collaboration/collaboration-contract.md), [Accepted ADR-0024](../adr/0024-discover-select-and-handshake.md). 기존 Reason 계획 62개 조건에 8개를 추가해 70개로 추적한다. 사용자의 재개 지시에 따라 전체 구현 목표는 실행 중이다. [현재 체크포인트](collaboration/records/current-handoff.md), [단계별 진행](collaboration/plan.json), [조건별 증거와 미완 항목](collaboration/completion-ledger.md)에서 확인한다.

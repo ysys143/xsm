@@ -15,7 +15,8 @@
     }
   },
   "source_coverage": {
-    "path": "docs/references/reason-network/coverage.json",
+    "summary": "docs/references/reason.md",
+    "path": "docs/references/reason-network/coverage.json (kept outside the public repository)",
     "sha256": "b26dab03f123c14e83cf325227668878bb27137194e424bd49ddffc058c006bc"
   },
   "adrs": [
@@ -107,7 +108,7 @@
       "exit_gate": "G00",
       "policy_decision_checks": [],
       "required_user_decisions": [],
-      "evidence": "gates/G00-baseline.md",
+      "evidence": "records/gates/G00-baseline.md",
       "status_scope": "기준선과 재현 시험체의 로컬 기술 계약"
     },
     {
@@ -141,7 +142,7 @@
         "D03"
       ],
       "required_user_decisions": [],
-      "evidence": "gates/G01-identity-integrity.md",
+      "evidence": "records/gates/G01-identity-integrity.md",
       "status_scope": "신원·무결성·증거의 로컬 기술 계약"
     },
     {
@@ -179,7 +180,7 @@
         "D04"
       ],
       "required_user_decisions": [],
-      "design_contract": "docs/plan/reason-inspired-adrs/collaboration-contract.md"
+      "design_contract": "docs/plan/collaboration/collaboration-contract.md"
     },
     {
       "id": "P03",
@@ -217,7 +218,7 @@
         "D02"
       ],
       "required_user_decisions": [],
-      "design_contract": "docs/plan/reason-inspired-adrs/collaboration-contract.md",
+      "design_contract": "docs/plan/collaboration/collaboration-contract.md",
       "status_scope": "local technical contract after actual subagent MCP route/canonical wait and M1 receipt fixes; whole acceptance closure remains separately audited",
       "evidence": "../../../deliverables/p13-live/native-integration-review-closure.json"
     },
@@ -294,7 +295,7 @@
         "D06"
       ],
       "required_user_decisions": [],
-      "design_contract": "docs/plan/reason-inspired-adrs/collaboration-contract.md"
+      "design_contract": "docs/plan/collaboration/collaboration-contract.md"
     },
     {
       "id": "P06",
@@ -334,7 +335,7 @@
         "D07"
       ],
       "required_user_decisions": [],
-      "evidence": "gates/B05-local-integration.md"
+      "evidence": "records/gates/B05-local-integration.md"
     },
     {
       "id": "P07",
@@ -369,7 +370,7 @@
         "D08"
       ],
       "required_user_decisions": [],
-      "design_contract": "docs/plan/reason-inspired-adrs/collaboration-contract.md"
+      "design_contract": "docs/plan/collaboration/collaboration-contract.md"
     },
     {
       "id": "P08",
@@ -404,7 +405,7 @@
         "D09"
       ],
       "required_user_decisions": [],
-      "evidence": "gates/B05-local-integration.md"
+      "evidence": "records/gates/B05-local-integration.md"
     },
     {
       "id": "P09",
@@ -440,8 +441,8 @@
         "D10"
       ],
       "required_user_decisions": [],
-      "design_contract": "docs/plan/reason-inspired-adrs/collaboration-contract.md",
-      "evidence": "gates/B05-local-integration.md"
+      "design_contract": "docs/plan/collaboration/collaboration-contract.md",
+      "evidence": "records/gates/B05-local-integration.md"
     },
     {
       "id": "P10",
@@ -482,7 +483,7 @@
         "D11"
       ],
       "required_user_decisions": [],
-      "evidence": "gates/G10-installation-evidence.md",
+      "evidence": "records/gates/G10-installation-evidence.md",
       "status_scope": "local technical contract; actual native CLI registration/uninstall fixes verified; clean-profile auth/first native roundtrip remains unmet",
       "failure_evidence": "../../../deliverables/p13-live/clean-install.json"
     },
@@ -556,7 +557,7 @@
         "D12"
       ],
       "required_user_decisions": [],
-      "design_contract": "docs/plan/reason-inspired-adrs/collaboration-contract.md",
+      "design_contract": "docs/plan/collaboration/collaboration-contract.md",
       "preparation": {
         "status": "separate-contract-only",
         "evidence": "../../../deliverables/p12-prep/README.md",
@@ -608,8 +609,8 @@
       "exit_gate": "G13",
       "policy_decision_checks": [],
       "required_user_decisions": [],
-      "design_contract": "docs/plan/reason-inspired-adrs/collaboration-contract.md",
-      "evidence": "release-candidate.md",
+      "design_contract": "docs/plan/collaboration/collaboration-contract.md",
+      "evidence": "records/release-candidate.md",
       "status_scope": "로컬 native 여정·감사·릴리스 자료 준비; G07/G12 선행 미충족으로 전체 통합 판정 전제 미충족"
     }
   ],
@@ -5378,7 +5379,7 @@
         ],
         "acceptance_scope": "해당 단계 구현 경로의 기술 판정. 수용 조건 전체 통과와 구분",
         "required_user_decisions": [],
-        "evidence": "gates/B05-local-integration.md"
+        "evidence": "records/gates/B05-local-integration.md"
       },
       {
         "id": "G07",
@@ -5445,7 +5446,7 @@
         ],
         "acceptance_scope": "해당 단계 구현 경로의 기술 판정. 수용 조건 전체 통과와 구분",
         "required_user_decisions": [],
-        "evidence": "gates/B05-local-integration.md"
+        "evidence": "records/gates/B05-local-integration.md"
       },
       {
         "id": "G09",
@@ -5478,7 +5479,7 @@
         ],
         "acceptance_scope": "해당 단계 구현 경로의 기술 판정. 수용 조건 전체 통과와 구분",
         "required_user_decisions": [],
-        "evidence": "gates/B05-local-integration.md"
+        "evidence": "records/gates/B05-local-integration.md"
       },
       {
         "id": "G10",
@@ -5512,7 +5513,7 @@
         ],
         "acceptance_scope": "해당 단계 구현 경로의 기술 판정. 수용 조건 전체 통과와 구분",
         "required_user_decisions": [],
-        "evidence": "gates/G10-installation-evidence.md",
+        "evidence": "records/gates/G10-installation-evidence.md",
         "status_scope": "local technical contract after actual clean CLI fixes; see explicit incomplete native matrix scope",
         "latest_reopen": "2026-10-29 A23-07: doctor stuck returns raw preview/unknown rows and freeform error buckets; actual red/green CLI and current-source regression required",
         "latest_closure": {
@@ -5635,7 +5636,7 @@
         ],
         "acceptance_scope": "해당 단계 구현 경로의 기술 판정. 수용 조건 전체 통과와 구분",
         "required_user_decisions": [],
-        "evidence": "release-candidate.md",
+        "evidence": "records/release-candidate.md",
         "status_scope": "local evidence preparation only; full integration prerequisites unmet"
       }
     ],
@@ -5690,7 +5691,7 @@
     "P08": "local implementation passed; native sample scope is recorded in B05",
     "P10": "local contract passed after genuine CLI failure fixes; matrix scope remains explicit",
     "P11": "partial: actual carrier comparison retained; D12 product requirements accepted, remaining physical comparison cells unverified",
-    "B05": "local integration passed: frozen Python 3.9/3.14 each1648 OK; see gates/B05-local-integration.md",
+    "B05": "local integration passed: frozen Python 3.9/3.14 each1648 OK; see records/gates/B05-local-integration.md",
     "G06": "passed local contract; remote closure requires G12/G13",
     "G08": "passed local contract; named native samples recorded",
     "G10": "passed local technical contract: actual native CLI MCP6 cells/combined install/uninstall; fresh-profile first model roundtrip still unknown",
@@ -5865,10 +5866,10 @@
       "A24-07",
       "A24-08"
     ],
-    "design_document": "docs/plan/reason-inspired-adrs/collaboration-contract.md"
+    "design_document": "docs/plan/collaboration/collaboration-contract.md"
   },
   "development_policy": {
-    "path": "docs/plan/reason-inspired-adrs/development-policy.md",
+    "path": "docs/plan/collaboration/records/development-policy.md",
     "updated_at": "2026-10-28T21:15:00+09:00",
     "deadline": "2026-10-29T08:00:00+09:00",
     "deadline_scope": "entire P00-P13 implementation plan, as reset by user",
@@ -5891,7 +5892,7 @@
     "objective": "adr-0021 완주",
     "status": "complete",
     "source": "2026-10-29 새 사용자 goal",
-    "progress_document": "docs/plan/reason-inspired-adrs/adr-0021-progress.md",
+    "progress_document": "docs/plan/collaboration/adr-0021-progress.md",
     "whole_adr_complete": true,
     "implementation_interfaces": "integrated; two physical Mac Codex and mixed Claude/Codex material journeys completed; self/remote same-name exact selection and direct reply/ACK completed with recorded source limitations",
     "core_opus_review": "changes_required preserved; 2 findings corrected and regression-checked",
@@ -5916,7 +5917,7 @@
     "final_review": "deliverables/adr0021/final-review-20261030/report.md",
     "key_rotation_evidence": "deliverables/adr0021/key-rotation-20261030/report.md",
     "same_name_evidence": "deliverables/adr0021/native-journey-samename-latest-20261029T152847Z/results.json",
-    "closure_document": "docs/plan/reason-inspired-adrs/adr-0021-closure.md",
+    "closure_document": "docs/plan/collaboration/adr-0021-closure.md",
     "same_name_source_binding": "deliverables/adr0021/native-journey-samename-latest-20261029T152847Z/source-binding.json",
     "team_switch_evidence": "deliverables/adr0021/team-switch-20261030/report.md",
     "uninstall_evidence": "deliverables/adr0021/uninstall-20261030/results.json",

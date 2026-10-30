@@ -5,7 +5,7 @@
 - 작성일: 2026-09-19 (v2: 적대적 리뷰와 보강 조사 반영)
 - 개별 보고서: 이 디렉터리의 `orca.md`, `herdr.md`, `moai-adk.md`, `buzz.md`, `agent-comms.md`, `agora.md`. Claude Code는 `../list-agents-cross-session-messaging.md`. orca의 후속 조사(CLI·스킬 표면, 2026-09-23)는 `orca-benchmark.md`. xsm 0.4.15와 A2A·agent-comms·ACP 비교(2026-10-02)는 `xsm-a2a-agent-comms.md`, A2A 명세 정리는 `a2a.md`, ACP 두 프로토콜 정리는 `acp.md`. AgentGrid(2026-10-03)는 `agentgrid.md`, Comma의 Salix는 `salix.md`, humanize는 `humanize.md`, OpenRig(2026-10-04)는 `openrig.md`.
 
-후속 조사(2026-10-24): [Reason Network 역공학](reason-network.md)은 공개 엔진 두 버전·설치 CLI 배포물·실제 협업 기록을 대조한다. [R01–R43 추적표](reason-network/README.md)와 ADR-0015–0023의 Proposed 계약을 연결하며, 아래 2026-09-19 조사 결과를 소급 변경하지 않는다.
+후속 조사(2026-10-24): [Reason Network 비교 노트](reason.md)는 공개 엔진 소스·공식 문서·함께 써 본 기록에서 배운 것과 따르지 않은 것을 ADR-0015–0024에 대응시킨다. 아래 2026-09-19 조사 결과를 소급 변경하지 않는다.
 
 ## 0. 조사 방법과 출처
 

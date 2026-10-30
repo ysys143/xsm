@@ -25,23 +25,23 @@
   },
   "artifacts": [
     {
-      "path": "docs/plan/reason-inspired-adrs/spec.md",
+      "path": "docs/plan/collaboration/spec.md",
       "sha256": "f2c476b07c283d9d6459131b6f905ab249d5899b22b8ffa4ea4fc10882679cc3"
     },
     {
-      "path": "docs/plan/reason-inspired-adrs/execution.md",
+      "path": "docs/plan/collaboration/execution.md",
       "sha256": "350cb3b7b2660df3575d61c9abd8e73c4d035c9524616fcd49a9d2d2997d8620"
     },
     {
-      "path": "docs/plan/reason-inspired-adrs/acceptance.md",
+      "path": "docs/plan/collaboration/acceptance.md",
       "sha256": "6d6058a48360e82550331d0b67a4b8356e16b4604fcb21e7f5f3cb8ca7876364"
     },
     {
-      "path": "docs/plan/reason-inspired-adrs/collaboration-contract.md",
+      "path": "docs/plan/collaboration/collaboration-contract.md",
       "sha256": "38b43c24593cdfdfaf1cb839a6f7fb9bd3785054d8de46d27c9a3464b9d4d6cd"
     },
     {
-      "path": "docs/plan/reason-inspired-adrs/plan.json",
+      "path": "docs/plan/collaboration/plan.json",
       "sha256": "e32e004ae6d6076cfff9e2275d71615b381a1facbdde641f403045eecc93838a"
     },
     {
@@ -102,19 +102,19 @@
     "review": "코디네이터 자체 대조. 신규 독립 검토자·worker 미실행.",
     "artifacts": [
       {
-        "path": "docs/plan/reason-inspired-adrs/spec.md",
+        "path": "docs/plan/collaboration/spec.md",
         "sha256": "5fc1e39c5be7432f120bc5125619e9de07ed757047ef5336d57925d399ed753f"
       },
       {
-        "path": "docs/plan/reason-inspired-adrs/acceptance.md",
+        "path": "docs/plan/collaboration/acceptance.md",
         "sha256": "41d4d759ddaa22e8509b835fc2c2247bf8f710aa28b0f4146d1a8b5fe130e3f0"
       },
       {
-        "path": "docs/plan/reason-inspired-adrs/execution.md",
+        "path": "docs/plan/collaboration/execution.md",
         "sha256": "0b8b3b7edecaf74ce6c9a4435fc44f3fd2bf32a90c09c542dc5565569f44bb40"
       },
       {
-        "path": "docs/plan/reason-inspired-adrs/plan.json",
+        "path": "docs/plan/collaboration/plan.json",
         "sha256": "e4d4b63882ecb075bcf2cdde24a39ba1a156ede03b7eb5ebf704ac5528696a4e"
       }
     ],

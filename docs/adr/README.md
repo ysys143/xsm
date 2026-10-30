@@ -53,10 +53,10 @@
 | [0023](0023-runtime-adapters-and-operability.md) | 설치와 하네스 어댑터의 생명주기를 검증 가능하게 만든다 | Proposed | G1, G2, G3, G4, C1 |
 | [0024](0024-discover-select-and-handshake.md) | 공개된 후보를 찾고 선택한 세션과 협업한다 | Accepted | G1, G2, G4, G5 |
 
-[ADR-0024](0024-discover-select-and-handshake.md)는 2026-10-28 사용자 결정으로 Accepted다. 발견 후보·공개·선택·핸드셰이크에 관해 0015–0023의 관련 제안을 보완하며, 나머지 미결까지 일괄 채택한 것은 아니다. 구현목표는 [확정 설계](../plan/reason-inspired-adrs/collaboration-contract.md)를 따른다.
+[ADR-0024](0024-discover-select-and-handshake.md)는 2026-10-28 사용자 결정으로 Accepted다. 발견 후보·공개·선택·핸드셰이크에 관해 0015–0023의 관련 제안을 보완하며, 나머지 미결까지 일괄 채택한 것은 아니다. 구현목표는 [확정 설계](../plan/collaboration/collaboration-contract.md)를 따른다.
 
 ADR-0021은 2026-10-29 사용자 결정으로 자체 P2P·선택적 Tailscale 경로·Reason식 동등 멤버십 요구사항을 확정했다. 이는 구현 완료나 실제 네트워크 변경 승인이 아니다. 나머지 ADR 상태는 위 표를 따른다.
 
-0015–0023은 [Reason 역공학](../references/reason-network.md)의 R01–R43을 반영한 제안이다. [전체 추적표](../references/reason-network/README.md)에서 각 발견·기존 xsm 코드·관련 계약·수용 검사를 확인한다. 기존 Accepted ADR과의 관계는 각 결정의 적용 범위를 따른다. ADR-0021은 신규 원격 경로의 SSH 필수 전제만 바꾸며 기존 SSH 기능과 로컬 경계를 보존한다.
+0015–0023은 Reason Network 비교 조사를 반영한 제안이다. 무엇을 배웠고 무엇을 따르지 않았는지는 [Reason 비교 노트](../references/reason.md)에 있다. 기존 Accepted ADR과의 관계는 각 결정의 적용 범위를 따른다. ADR-0021은 신규 원격 경로의 SSH 필수 전제만 바꾸며 기존 SSH 기능과 로컬 경계를 보존한다.
 
 새 ADR은 [TEMPLATE.md](TEMPLATE.md)를 복사해 만든다.
