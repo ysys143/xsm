@@ -1,0 +1,37 @@
+{
+  "verified": true,
+  "problems": [],
+  "model_calls": {
+    "F1": 80,
+    "F2": 80,
+    "F3": 15
+  },
+  "planned_calls": {
+    "F1": 80,
+    "F2": 80,
+    "F3": 15
+  },
+  "F0_cases": 50,
+  "label_cells": 400,
+  "proxy_records": 95,
+  "actual_models": {
+    "F0": [],
+    "F1": [
+      "claude-haiku-5-5"
+    ],
+    "F2": [
+      "gpt-6-luna"
+    ],
+    "F3": [
+      "gpt-6.1-sol"
+    ]
+  },
+  "cli_proxy_usage_mismatches": [],
+  "codex_config_sha256_after": {
+    ".codex": "114cea23867b36e464ddf0dafeb390fb38ff1a4c384e390cc10c1e44793ce49b",
+    ".codex-2": "39c0bf2507acba6802c3c488674069bada0eef68ee2342e829005f18b62d1172",
+    ".codex-3": "4f3edea63e649fbe1ce710ceb6b7d4ee5c6f52bcee2a9ceaf6f0e7ce4a346c6e"
+  },
+  "codex_config_changed": [],
+  "checked_at": "2026-10-30T09:42:09.151218+00:00"
+}

@@ -1,0 +1,16 @@
+{
+  "items": [
+    {
+      "id": "B04-01",
+      "title": "#30 리뷰",
+      "quote": "담당: Plover. web/checkout/CardForm.tsx 변경에 대한 리뷰 요청이 접수됐습니다.",
+      "reason": "Plover가 소유한 #30과 대상 파일 web/checkout/CardForm.tsx에 리뷰 두 건이 걸려 있고, 두 리뷰가 끝나야 운영 반영 승인으로 넘어간다."
+    },
+    {
+      "id": "B04-07",
+      "title": "#426 자원",
+      "quote": "앱팀 Ibis 공지. 앱 대규모 업데이트를 앞두고 화면 스냅샷 대조 서버 pixel-diff를 이번 주 월요일부터 목요일 밤까지 앱팀 전용으로 씁니다.",
+      "reason": "Plover의 머지 조건인 화면 단위 시각 비교 테스트가 쓰는 pixel-diff 서버를 이번 주 월요일부터 목요일 밤까지 앱팀이 독점하므로 그 기간 동안 대조가 처리되지 않는다."
+    }
+  ]
+}

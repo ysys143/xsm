@@ -1,0 +1,56 @@
+[
+  {
+    "case": "B01-Tern",
+    "item": "B01-02",
+    "label": "AMBIGUOUS",
+    "hard_negative": false,
+    "author": "R3",
+    "independent": "N",
+    "reason": "Tern의 작업 설명은 캐싱 위치를 말하지 않는다. 공용 인메모리 저장소에 기댄다는 전제는 작성자의 숨은 메모에만 있고 설명에서 추론된다고 보기 어렵다. 근거가 갈려 모호로 둔다."
+  },
+  {
+    "case": "B02-Heron",
+    "item": "B02-04",
+    "label": "R3",
+    "hard_negative": false,
+    "author": "R2",
+    "independent": "R3",
+    "reason": "독립 라벨 채택. Heron은 이식 전후 동작이 같음을 확인해야 하는데, 이 변경은 그 기준 동작(활동 시 보관 기간 갱신)을 바꾼다. R2에도 해당하지만 우선순위 R3>R2에 따라 R3."
+  },
+  {
+    "case": "B03-Tern",
+    "item": "B03-02",
+    "label": "AMBIGUOUS",
+    "hard_negative": false,
+    "author": "R4",
+    "independent": "N",
+    "reason": "같은 이유. 공용 저장소의 스테이징 사본이 Tern에게 필요한 자원인지는 설명만으로 정해지지 않는다."
+  },
+  {
+    "case": "B04-Tern",
+    "item": "B04-02",
+    "label": "AMBIGUOUS",
+    "hard_negative": false,
+    "author": "R3",
+    "independent": "N",
+    "reason": "같은 이유. 키 자동 소멸 기능이 Tern의 캐싱 전제인지는 설명만으로 정해지지 않는다."
+  },
+  {
+    "case": "B05-Heron",
+    "item": "B05-07",
+    "label": "R3",
+    "hard_negative": false,
+    "author": "R2",
+    "independent": "R3",
+    "reason": "독립 라벨 채택. 강제 로그아웃의 기준 동작 자체를 바꾸는 작업이다. R2에도 해당하지만 우선순위에 따라 R3."
+  },
+  {
+    "case": "B10-Heron",
+    "item": "B10-04",
+    "label": "R3",
+    "hard_negative": false,
+    "author": "R2",
+    "independent": "R3",
+    "reason": "독립 라벨 채택. 보관 기간 갱신 계산과 내보내기 동작을 새로 짜서 기준 동작이 바뀐다. 우선순위에 따라 R3."
+  }
+]

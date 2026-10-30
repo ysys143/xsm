@@ -1,0 +1,57 @@
+{
+  "interpretation": "10 independent deltas against the same base BOARD.md; each changes 8 sections. Not a sequential history.",
+  "taxonomy": {
+    "R1": "세션 이름, 담당 항목 번호 또는 담당 파일을 직접 지명한다.",
+    "R2": "다른 사람이 그 세션과 같은 일(같은 대상의 같은 변경)을 시작했거나 하고 있다. 이름 지명 없음.",
+    "R3": "작업 설명에서 추론되는, 작업이 기대는 사실을 뒤집거나 무효로 만든다.",
+    "R4": "작업 설명에서 추론되는 필요 자원(환경·장비·계정·할당량)을 다른 작업이 점유하거나 쓸 수 없게 된다.",
+    "N": "관련 없음. 같은 단어가 나와도 다른 맥락이면 N."
+  },
+  "precedence": [
+    "R4",
+    "R3",
+    "R2",
+    "R1"
+  ],
+  "ambiguous": "작성자·독립 라벨이 다른 셀은 필터 호출 전에 검토한다. 작성자가 근거를 적고 고치면 그 라벨로, 근거가 갈리면 AMBIGUOUS로 고정하고 주요 지표에서 제외해 별도 집계한다.",
+  "repeats": [
+    "B01-Heron",
+    "B02-Kestrel",
+    "B03-Wren",
+    "B04-Plover",
+    "B05-Tern",
+    "B06-Heron",
+    "B07-Kestrel",
+    "B08-Wren",
+    "B09-Plover",
+    "B10-Tern"
+  ],
+  "extra_repeats": 3,
+  "F3_batches": [
+    "B01",
+    "B05",
+    "B10"
+  ],
+  "f0": "변경 후 본문 또는 항목 제목에 세션 이름, 담당 항목 번호, 파일 경로가 글자 그대로 포함되면 선택. 대소문자 구분. S12와 같은 정의.",
+  "metrics": {
+    "recall": "TP_label / all_gold_label",
+    "precision": "TP_related / predicted_related",
+    "unrelated_pass_rate": "FP_N / all_gold_N",
+    "hard_negative_pass_rate": "FP on N cells marked hard_negative / those cells; also lexical-overlap N cells (N cells whose item contains a distinctive term of the session)",
+    "quote": "각 예측 항목의 quote가 해당 변경 after의 연속 부분문자열이고 공백 제외 길이가 1 이상이면 충실. 서로 다른 항목 인용은 불충실.",
+    "repeats": "같은 10사례의 본 실행 및 추가 3회, 총 4회의 전체 및 라벨별 재현율 max-min. 분모 0이면 NA."
+  },
+  "thresholds": {
+    "R2_recall": 0.9,
+    "R3_recall": 0.9,
+    "quote": 0.95,
+    "repeat_spread": 0.1,
+    "source": "S12에서 가져온 계획 작성자의 제안값이며 사용자가 정한 값이 아님. 실제 기준은 사용자가 정한다."
+  },
+  "models": {
+    "F1": "claude -p --model haiku",
+    "F2": "codex exec --model openai/gpt-6-luna, model_reasoning_effort=low, CODEX_HOME=~/.codex-3",
+    "F3": "codex exec --model gpt-6.1-sol, model_reasoning_effort=low, CODEX_HOME=~/.codex-3"
+  },
+  "schedule": "F0 50사례; F1 및 F2 각각 기본50+추가30=80회; F3 3묶음x5세션=15회; 합계 175회. 첫 F1/F2 호출에서 실제 모델 검증, 불일치/검증불가면 전체 중단. 각 호출은 새 프로세스."
+}

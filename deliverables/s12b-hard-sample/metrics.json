@@ -1,0 +1,5920 @@
+{
+  "label_counts": {
+    "R1": 14,
+    "N": 332,
+    "R3": 22,
+    "AMBIGUOUS": 3,
+    "R2": 15,
+    "R4": 14
+  },
+  "hard_negative_cells": 22,
+  "lexical_negative_cells": 43,
+  "label_disagreements": 6,
+  "conditions": {
+    "F0": {
+      "baseline": {
+        "cases": 50,
+        "label_denominators": {
+          "R1": 14,
+          "R3": 22,
+          "N": 332,
+          "R4": 14,
+          "R2": 15,
+          "AMBIGUOUS": 3
+        },
+        "label_hits": {
+          "R1": 14,
+          "N": 1
+        },
+        "recall": {
+          "R1": {
+            "numerator": 14,
+            "denominator": 14,
+            "value": 1.0
+          },
+          "R2": {
+            "numerator": 0,
+            "denominator": 15,
+            "value": 0.0
+          },
+          "R3": {
+            "numerator": 0,
+            "denominator": 22,
+            "value": 0.0
+          },
+          "R4": {
+            "numerator": 0,
+            "denominator": 14,
+            "value": 0.0
+          }
+        },
+        "recall_overall": {
+          "numerator": 14,
+          "denominator": 65,
+          "value": 0.2153846153846154
+        },
+        "precision": {
+          "numerator": 14,
+          "denominator": 15,
+          "value": 0.9333333333333333
+        },
+        "unrelated_pass_rate": {
+          "numerator": 1,
+          "denominator": 332,
+          "value": 0.0030120481927710845
+        },
+        "hard_negative_pass_rate": {
+          "numerator": 1,
+          "denominator": 22,
+          "value": 0.045454545454545456
+        },
+        "lexical_negative_pass_rate": {
+          "numerator": 1,
+          "denominator": 43,
+          "value": 0.023255813953488372
+        },
+        "quote_fidelity": {
+          "numerator": 15,
+          "denominator": 15,
+          "value": 1.0
+        },
+        "quote_share_of_item": {
+          "n": 15,
+          "mean": 1.0,
+          "median": 1.0,
+          "p95": 1.0,
+          "min": 1.0,
+          "max": 1.0
+        },
+        "ambiguous_selected": 0,
+        "ambiguous_cells": 3,
+        "invalid_ids": 0,
+        "title_mismatches": 0,
+        "duplicates": 0,
+        "selected": [
+          {
+            "case": "B01-Heron",
+            "selected": [
+              "B01-01"
+            ]
+          },
+          {
+            "case": "B01-Kestrel",
+            "selected": [
+              "B01-08"
+            ]
+          },
+          {
+            "case": "B01-Wren",
+            "selected": []
+          },
+          {
+            "case": "B01-Plover",
+            "selected": []
+          },
+          {
+            "case": "B01-Tern",
+            "selected": []
+          },
+          {
+            "case": "B02-Heron",
+            "selected": []
+          },
+          {
+            "case": "B02-Kestrel",
+            "selected": []
+          },
+          {
+            "case": "B02-Wren",
+            "selected": []
+          },
+          {
+            "case": "B02-Plover",
+            "selected": []
+          },
+          {
+            "case": "B02-Tern",
+            "selected": [
+              "B02-01"
+            ]
+          },
+          {
+            "case": "B03-Heron",
+            "selected": []
+          },
+          {
+            "case": "B03-Kestrel",
+            "selected": []
+          },
+          {
+            "case": "B03-Wren",
+            "selected": [
+              "B03-01"
+            ]
+          },
+          {
+            "case": "B03-Plover",
+            "selected": []
+          },
+          {
+            "case": "B03-Tern",
+            "selected": []
+          },
+          {
+            "case": "B04-Heron",
+            "selected": []
+          },
+          {
+            "case": "B04-Kestrel",
+            "selected": []
+          },
+          {
+            "case": "B04-Wren",
+            "selected": []
+          },
+          {
+            "case": "B04-Plover",
+            "selected": [
+              "B04-01"
+            ]
+          },
+          {
+            "case": "B04-Tern",
+            "selected": []
+          },
+          {
+            "case": "B05-Heron",
+            "selected": [
+              "B05-01"
+            ]
+          },
+          {
+            "case": "B05-Kestrel",
+            "selected": []
+          },
+          {
+            "case": "B05-Wren",
+            "selected": []
+          },
+          {
+            "case": "B05-Plover",
+            "selected": [
+              "B05-08"
+            ]
+          },
+          {
+            "case": "B05-Tern",
+            "selected": []
+          },
+          {
+            "case": "B06-Heron",
+            "selected": []
+          },
+          {
+            "case": "B06-Kestrel",
+            "selected": [
+              "B06-01"
+            ]
+          },
+          {
+            "case": "B06-Wren",
+            "selected": []
+          },
+          {
+            "case": "B06-Plover",
+            "selected": []
+          },
+          {
+            "case": "B06-Tern",
+            "selected": []
+          },
+          {
+            "case": "B07-Heron",
+            "selected": []
+          },
+          {
+            "case": "B07-Kestrel",
+            "selected": []
+          },
+          {
+            "case": "B07-Wren",
+            "selected": [
+              "B07-01"
+            ]
+          },
+          {
+            "case": "B07-Plover",
+            "selected": []
+          },
+          {
+            "case": "B07-Tern",
+            "selected": []
+          },
+          {
+            "case": "B08-Heron",
+            "selected": [
+              "B08-06"
+            ]
+          },
+          {
+            "case": "B08-Kestrel",
+            "selected": []
+          },
+          {
+            "case": "B08-Wren",
+            "selected": []
+          },
+          {
+            "case": "B08-Plover",
+            "selected": [
+              "B08-01"
+            ]
+          },
+          {
+            "case": "B08-Tern",
+            "selected": []
+          },
+          {
+            "case": "B09-Heron",
+            "selected": []
+          },
+          {
+            "case": "B09-Kestrel",
+            "selected": []
+          },
+          {
+            "case": "B09-Wren",
+            "selected": []
+          },
+          {
+            "case": "B09-Plover",
+            "selected": []
+          },
+          {
+            "case": "B09-Tern",
+            "selected": [
+              "B09-01"
+            ]
+          },
+          {
+            "case": "B10-Heron",
+            "selected": [
+              "B10-08"
+            ]
+          },
+          {
+            "case": "B10-Kestrel",
+            "selected": [
+              "B10-01"
+            ]
+          },
+          {
+            "case": "B10-Wren",
+            "selected": [
+              "B10-06"
+            ]
+          },
+          {
+            "case": "B10-Plover",
+            "selected": []
+          },
+          {
+            "case": "B10-Tern",
+            "selected": []
+          }
+        ],
+        "errors": [
+          {
+            "case": "B01-Heron",
+            "item": "B01-02",
+            "type": "false_negative",
+            "gold": "R3"
+          },
+          {
+            "case": "B01-Kestrel",
+            "item": "B01-05",
+            "type": "false_negative",
+            "gold": "R4"
+          },
+          {
+            "case": "B01-Wren",
+            "item": "B01-04",
+            "type": "false_negative",
+            "gold": "R2"
+          },
+          {
+            "case": "B01-Plover",
+            "item": "B01-07",
+            "type": "false_negative",
+            "gold": "R3"
+          },
+          {
+            "case": "B02-Heron",
+            "item": "B02-04",
+            "type": "false_negative",
+            "gold": "R3"
+          },
+          {
+            "case": "B02-Kestrel",
+            "item": "B02-02",
+            "type": "false_negative",
+            "gold": "R3"
+          },
+          {
+            "case": "B02-Wren",
+            "item": "B02-03",
+            "type": "false_negative",
+            "gold": "R4"
+          },
+          {
+            "case": "B02-Plover",
+            "item": "B02-06",
+            "type": "false_negative",
+            "gold": "R2"
+          },
+          {
+            "case": "B02-Tern",
+            "item": "B02-07",
+            "type": "false_negative",
+            "gold": "R4"
+          },
+          {
+            "case": "B03-Heron",
+            "item": "B03-02",
+            "type": "false_negative",
+            "gold": "R4"
+          },
+          {
+            "case": "B03-Kestrel",
+            "item": "B03-03",
+            "type": "false_negative",
+            "gold": "R2"
+          },
+          {
+            "case": "B03-Wren",
+            "item": "B03-07",
+            "type": "false_negative",
+            "gold": "R3"
+          },
+          {
+            "case": "B03-Plover",
+            "item": "B03-04",
+            "type": "false_negative",
+            "gold": "R3"
+          },
+          {
+            "case": "B03-Tern",
+            "item": "B03-06",
+            "type": "false_negative",
+            "gold": "R3"
+          },
+          {
+            "case": "B04-Heron",
+            "item": "B04-02",
+            "type": "false_negative",
+            "gold": "R3"
+          },
+          {
+            "case": "B04-Kestrel",
+            "item": "B04-03",
+            "type": "false_negative",
+            "gold": "R3"
+          },
+          {
+            "case": "B04-Wren",
+            "item": "B04-04",
+            "type": "false_negative",
+            "gold": "R2"
+          },
+          {
+            "case": "B04-Plover",
+            "item": "B04-07",
+            "type": "false_negative",
+            "gold": "R4"
+          },
+          {
+            "case": "B04-Tern",
+            "item": "B04-05",
+            "type": "false_negative",
+            "gold": "R2"
+          },
+          {
+            "case": "B05-Heron",
+            "item": "B05-07",
+            "type": "false_negative",
+            "gold": "R3"
+          },
+          {
+            "case": "B05-Kestrel",
+            "item": "B05-03",
+            "type": "false_negative",
+            "gold": "R4"
+          },
+          {
+            "case": "B05-Wren",
+            "item": "B05-05",
+            "type": "false_negative",
+            "gold": "R3"
+          },
+          {
+            "case": "B05-Plover",
+            "item": "B05-04",
+            "type": "false_negative",
+            "gold": "R2"
+          },
+          {
+            "case": "B05-Tern",
+            "item": "B05-02",
+            "type": "false_negative",
+            "gold": "R3"
+          },
+          {
+            "case": "B06-Heron",
+            "item": "B06-06",
+            "type": "false_negative",
+            "gold": "R4"
+          },
+          {
+            "case": "B06-Kestrel",
+            "item": "B06-07",
+            "type": "false_negative",
+            "gold": "R2"
+          },
+          {
+            "case": "B06-Wren",
+            "item": "B06-02",
+            "type": "false_negative",
+            "gold": "R4"
+          },
+          {
+            "case": "B06-Plover",
+            "item": "B06-03",
+            "type": "false_negative",
+            "gold": "R3"
+          },
+          {
+            "case": "B06-Tern",
+            "item": "B06-04",
+            "type": "false_negative",
+            "gold": "R4"
+          },
+          {
+            "case": "B07-Heron",
+            "item": "B07-02",
+            "type": "false_negative",
+            "gold": "R3"
+          },
+          {
+            "case": "B07-Kestrel",
+            "item": "B07-04",
+            "type": "false_negative",
+            "gold": "R3"
+          },
+          {
+            "case": "B07-Wren",
+            "item": "B07-07",
+            "type": "false_negative",
+            "gold": "R2"
+          },
+          {
+            "case": "B07-Plover",
+            "item": "B07-05",
+            "type": "false_negative",
+            "gold": "R4"
+          },
+          {
+            "case": "B07-Plover",
+            "item": "B07-08",
+            "type": "false_negative",
+            "gold": "R4"
+          },
+          {
+            "case": "B07-Tern",
+            "item": "B07-03",
+            "type": "false_negative",
+            "gold": "R2"
+          },
+          {
+            "case": "B08-Heron",
+            "item": "B08-06",
+            "type": "false_positive",
+            "gold": "N",
+            "hard_negative": true,
+            "lexical_overlap": true
+          },
+          {
+            "case": "B08-Heron",
+            "item": "B08-03",
+            "type": "false_negative",
+            "gold": "R4"
+          },
+          {
+            "case": "B08-Kestrel",
+            "item": "B08-04",
+            "type": "false_negative",
+            "gold": "R3"
+          },
+          {
+            "case": "B08-Wren",
+            "item": "B08-05",
+            "type": "false_negative",
+            "gold": "R3"
+          },
+          {
+            "case": "B08-Plover",
+            "item": "B08-07",
+            "type": "false_negative",
+            "gold": "R2"
+          },
+          {
+            "case": "B08-Tern",
+            "item": "B08-02",
+            "type": "false_negative",
+            "gold": "R3"
+          },
+          {
+            "case": "B09-Heron",
+            "item": "B09-05",
+            "type": "false_negative",
+            "gold": "R2"
+          },
+          {
+            "case": "B09-Kestrel",
+            "item": "B09-02",
+            "type": "false_negative",
+            "gold": "R2"
+          },
+          {
+            "case": "B09-Kestrel",
+            "item": "B09-08",
+            "type": "false_negative",
+            "gold": "R4"
+          },
+          {
+            "case": "B09-Wren",
+            "item": "B09-03",
+            "type": "false_negative",
+            "gold": "R4"
+          },
+          {
+            "case": "B09-Plover",
+            "item": "B09-04",
+            "type": "false_negative",
+            "gold": "R3"
+          },
+          {
+            "case": "B09-Tern",
+            "item": "B09-07",
+            "type": "false_negative",
+            "gold": "R2"
+          },
+          {
+            "case": "B10-Heron",
+            "item": "B10-02",
+            "type": "false_negative",
+            "gold": "R3"
+          },
+          {
+            "case": "B10-Heron",
+            "item": "B10-04",
+            "type": "false_negative",
+            "gold": "R3"
+          },
+          {
+            "case": "B10-Kestrel",
+            "item": "B10-05",
+            "type": "false_negative",
+            "gold": "R2"
+          },
+          {
+            "case": "B10-Wren",
+            "item": "B10-07",
+            "type": "false_negative",
+            "gold": "R3"
+          },
+          {
+            "case": "B10-Plover",
+            "item": "B10-03",
+            "type": "false_negative",
+            "gold": "R2"
+          }
+        ]
+      },
+      "expected_baseline": 50,
+      "observed_baseline": 50,
+      "expected_calls": 0,
+      "observed_calls": 0,
+      "time_seconds": {
+        "n": 50,
+        "mean": 1.0973382741212845e-05,
+        "median": 1.09999964479357e-05,
+        "p95": 1.1666008504107594e-05,
+        "min": 9.95802110992372e-06,
+        "max": 1.5541998436674476e-05
+      },
+      "tokens_input": {
+        "n": 50,
+        "mean": 0,
+        "median": 0.0,
+        "p95": 0,
+        "min": 0,
+        "max": 0
+      },
+      "tokens_output": {
+        "n": 50,
+        "mean": 0,
+        "median": 0.0,
+        "p95": 0,
+        "min": 0,
+        "max": 0
+      },
+      "tokens_cached_input": {
+        "n": 50,
+        "mean": 0,
+        "median": 0.0,
+        "p95": 0,
+        "min": 0,
+        "max": 0
+      },
+      "actual_models": []
+    },
+    "F1": {
+      "baseline": {
+        "cases": 50,
+        "label_denominators": {
+          "R1": 14,
+          "R3": 22,
+          "N": 332,
+          "R4": 14,
+          "R2": 15,
+          "AMBIGUOUS": 3
+        },
+        "label_hits": {
+          "R3": 22,
+          "R1": 14,
+          "N": 16,
+          "R2": 15,
+          "R4": 13
+        },
+        "recall": {
+          "R1": {
+            "numerator": 14,
+            "denominator": 14,
+            "value": 1.0
+          },
+          "R2": {
+            "numerator": 15,
+            "denominator": 15,
+            "value": 1.0
+          },
+          "R3": {
+            "numerator": 22,
+            "denominator": 22,
+            "value": 1.0
+          },
+          "R4": {
+            "numerator": 13,
+            "denominator": 14,
+            "value": 0.9285714285714286
+          }
+        },
+        "recall_overall": {
+          "numerator": 64,
+          "denominator": 65,
+          "value": 0.9846153846153847
+        },
+        "precision": {
+          "numerator": 64,
+          "denominator": 80,
+          "value": 0.8
+        },
+        "unrelated_pass_rate": {
+          "numerator": 16,
+          "denominator": 332,
+          "value": 0.04819277108433735
+        },
+        "hard_negative_pass_rate": {
+          "numerator": 1,
+          "denominator": 22,
+          "value": 0.045454545454545456
+        },
+        "lexical_negative_pass_rate": {
+          "numerator": 4,
+          "denominator": 43,
+          "value": 0.09302325581395349
+        },
+        "quote_fidelity": {
+          "numerator": 82,
+          "denominator": 83,
+          "value": 0.9879518072289156
+        },
+        "quote_share_of_item": {
+          "n": 82,
+          "mean": 0.25262187319451784,
+          "median": 0.24529023902036973,
+          "p95": 0.4444444444444444,
+          "min": 0.09900990099009901,
+          "max": 0.5689655172413793
+        },
+        "ambiguous_selected": 3,
+        "ambiguous_cells": 3,
+        "invalid_ids": 0,
+        "title_mismatches": 2,
+        "duplicates": 0,
+        "selected": [
+          {
+            "case": "B01-Heron",
+            "selected": [
+              "B01-01",
+              "B01-02"
+            ]
+          },
+          {
+            "case": "B01-Kestrel",
+            "selected": [
+              "B01-02",
+              "B01-06",
+              "B01-08"
+            ]
+          },
+          {
+            "case": "B01-Wren",
+            "selected": [
+              "B01-04"
+            ]
+          },
+          {
+            "case": "B01-Plover",
+            "selected": [
+              "B01-07"
+            ]
+          },
+          {
+            "case": "B01-Tern",
+            "selected": [
+              "B01-02"
+            ]
+          },
+          {
+            "case": "B02-Heron",
+            "selected": [
+              "B02-04"
+            ]
+          },
+          {
+            "case": "B02-Kestrel",
+            "selected": [
+              "B02-02"
+            ]
+          },
+          {
+            "case": "B02-Wren",
+            "selected": [
+              "B02-03"
+            ]
+          },
+          {
+            "case": "B02-Plover",
+            "selected": [
+              "B02-06"
+            ]
+          },
+          {
+            "case": "B02-Tern",
+            "selected": [
+              "B02-01",
+              "B02-07"
+            ]
+          },
+          {
+            "case": "B03-Heron",
+            "selected": [
+              "B03-02"
+            ]
+          },
+          {
+            "case": "B03-Kestrel",
+            "selected": [
+              "B03-03",
+              "B03-06"
+            ]
+          },
+          {
+            "case": "B03-Wren",
+            "selected": [
+              "B03-01",
+              "B03-06",
+              "B03-07"
+            ]
+          },
+          {
+            "case": "B03-Plover",
+            "selected": [
+              "B03-04"
+            ]
+          },
+          {
+            "case": "B03-Tern",
+            "selected": [
+              "B03-02",
+              "B03-06"
+            ]
+          },
+          {
+            "case": "B04-Heron",
+            "selected": [
+              "B04-02"
+            ]
+          },
+          {
+            "case": "B04-Kestrel",
+            "selected": [
+              "B04-03"
+            ]
+          },
+          {
+            "case": "B04-Wren",
+            "selected": [
+              "B04-04"
+            ]
+          },
+          {
+            "case": "B04-Plover",
+            "selected": [
+              "B04-01",
+              "B04-07"
+            ]
+          },
+          {
+            "case": "B04-Tern",
+            "selected": [
+              "B04-02",
+              "B04-05"
+            ]
+          },
+          {
+            "case": "B05-Heron",
+            "selected": [
+              "B05-01",
+              "B05-07"
+            ]
+          },
+          {
+            "case": "B05-Kestrel",
+            "selected": [
+              "B05-02",
+              "B05-03"
+            ]
+          },
+          {
+            "case": "B05-Wren",
+            "selected": [
+              "B05-02",
+              "B05-05"
+            ]
+          },
+          {
+            "case": "B05-Plover",
+            "selected": [
+              "B05-04",
+              "B05-08"
+            ]
+          },
+          {
+            "case": "B05-Tern",
+            "selected": [
+              "B05-02"
+            ]
+          },
+          {
+            "case": "B06-Heron",
+            "selected": [
+              "B06-06"
+            ]
+          },
+          {
+            "case": "B06-Kestrel",
+            "selected": [
+              "B06-01",
+              "B06-03",
+              "B06-07"
+            ]
+          },
+          {
+            "case": "B06-Wren",
+            "selected": [
+              "B06-02",
+              "B06-04"
+            ]
+          },
+          {
+            "case": "B06-Plover",
+            "selected": [
+              "B06-03",
+              "B06-06"
+            ]
+          },
+          {
+            "case": "B06-Tern",
+            "selected": [
+              "B06-01",
+              "B06-04"
+            ]
+          },
+          {
+            "case": "B07-Heron",
+            "selected": [
+              "B07-02",
+              "B07-08"
+            ]
+          },
+          {
+            "case": "B07-Kestrel",
+            "selected": [
+              "B07-04"
+            ]
+          },
+          {
+            "case": "B07-Wren",
+            "selected": [
+              "B07-01",
+              "B07-07"
+            ]
+          },
+          {
+            "case": "B07-Plover",
+            "selected": [
+              "B07-05",
+              "B07-08"
+            ]
+          },
+          {
+            "case": "B07-Tern",
+            "selected": [
+              "B07-03"
+            ]
+          },
+          {
+            "case": "B08-Heron",
+            "selected": [
+              "B08-03"
+            ]
+          },
+          {
+            "case": "B08-Kestrel",
+            "selected": [
+              "B08-02",
+              "B08-04"
+            ]
+          },
+          {
+            "case": "B08-Wren",
+            "selected": [
+              "B08-02",
+              "B08-04",
+              "B08-05"
+            ]
+          },
+          {
+            "case": "B08-Plover",
+            "selected": [
+              "B08-01",
+              "B08-07"
+            ]
+          },
+          {
+            "case": "B08-Tern",
+            "selected": [
+              "B08-02",
+              "B08-04"
+            ]
+          },
+          {
+            "case": "B09-Heron",
+            "selected": [
+              "B09-05"
+            ]
+          },
+          {
+            "case": "B09-Kestrel",
+            "selected": [
+              "B09-02",
+              "B09-08"
+            ]
+          },
+          {
+            "case": "B09-Wren",
+            "selected": [
+              "B09-03"
+            ]
+          },
+          {
+            "case": "B09-Plover",
+            "selected": [
+              "B09-04"
+            ]
+          },
+          {
+            "case": "B09-Tern",
+            "selected": [
+              "B09-01",
+              "B09-07"
+            ]
+          },
+          {
+            "case": "B10-Heron",
+            "selected": [
+              "B10-02",
+              "B10-04",
+              "B10-08"
+            ]
+          },
+          {
+            "case": "B10-Kestrel",
+            "selected": [
+              "B10-01",
+              "B10-05"
+            ]
+          },
+          {
+            "case": "B10-Wren",
+            "selected": [
+              "B10-06",
+              "B10-07"
+            ]
+          },
+          {
+            "case": "B10-Plover",
+            "selected": [
+              "B10-02",
+              "B10-03"
+            ]
+          },
+          {
+            "case": "B10-Tern",
+            "selected": []
+          }
+        ],
+        "errors": [
+          {
+            "case": "B01-Kestrel",
+            "item": "B01-06",
+            "type": "false_positive",
+            "gold": "N",
+            "hard_negative": true,
+            "lexical_overlap": true
+          },
+          {
+            "case": "B01-Kestrel",
+            "item": "B01-02",
+            "type": "false_positive",
+            "gold": "N",
+            "hard_negative": false,
+            "lexical_overlap": false
+          },
+          {
+            "case": "B01-Kestrel",
+            "item": "B01-05",
+            "type": "false_negative",
+            "gold": "R4"
+          },
+          {
+            "case": "B03-Kestrel",
+            "item": "B03-06",
+            "type": "false_positive",
+            "gold": "N",
+            "hard_negative": false,
+            "lexical_overlap": false
+          },
+          {
+            "case": "B03-Wren",
+            "item": "B03-06",
+            "type": "false_positive",
+            "gold": "N",
+            "hard_negative": false,
+            "lexical_overlap": false
+          },
+          {
+            "case": "B05-Kestrel",
+            "item": "B05-02",
+            "type": "false_positive",
+            "gold": "N",
+            "hard_negative": false,
+            "lexical_overlap": false
+          },
+          {
+            "case": "B05-Wren",
+            "item": "B05-02",
+            "type": "false_positive",
+            "gold": "N",
+            "hard_negative": false,
+            "lexical_overlap": false
+          },
+          {
+            "case": "B06-Kestrel",
+            "item": "B06-03",
+            "type": "false_positive",
+            "gold": "N",
+            "hard_negative": false,
+            "lexical_overlap": false
+          },
+          {
+            "case": "B06-Wren",
+            "item": "B06-04",
+            "type": "false_positive",
+            "gold": "N",
+            "hard_negative": false,
+            "lexical_overlap": false
+          },
+          {
+            "case": "B06-Plover",
+            "item": "B06-06",
+            "type": "false_positive",
+            "gold": "N",
+            "hard_negative": false,
+            "lexical_overlap": false
+          },
+          {
+            "case": "B06-Tern",
+            "item": "B06-01",
+            "type": "false_positive",
+            "gold": "N",
+            "hard_negative": false,
+            "lexical_overlap": true
+          },
+          {
+            "case": "B07-Heron",
+            "item": "B07-08",
+            "type": "false_positive",
+            "gold": "N",
+            "hard_negative": false,
+            "lexical_overlap": false
+          },
+          {
+            "case": "B08-Kestrel",
+            "item": "B08-02",
+            "type": "false_positive",
+            "gold": "N",
+            "hard_negative": false,
+            "lexical_overlap": false
+          },
+          {
+            "case": "B08-Wren",
+            "item": "B08-04",
+            "type": "false_positive",
+            "gold": "N",
+            "hard_negative": false,
+            "lexical_overlap": false
+          },
+          {
+            "case": "B08-Wren",
+            "item": "B08-02",
+            "type": "false_positive",
+            "gold": "N",
+            "hard_negative": false,
+            "lexical_overlap": true
+          },
+          {
+            "case": "B08-Tern",
+            "item": "B08-04",
+            "type": "false_positive",
+            "gold": "N",
+            "hard_negative": false,
+            "lexical_overlap": true
+          },
+          {
+            "case": "B10-Plover",
+            "item": "B10-02",
+            "type": "false_positive",
+            "gold": "N",
+            "hard_negative": false,
+            "lexical_overlap": false
+          }
+        ]
+      },
+      "expected_baseline": 50,
+      "observed_baseline": 50,
+      "expected_calls": 80,
+      "observed_calls": 80,
+      "repeat": [
+        {
+          "repetition": 0,
+          "metrics": {
+            "cases": 10,
+            "label_denominators": {
+              "R1": 3,
+              "R3": 7,
+              "N": 68,
+              "R4": 2
+            },
+            "label_hits": {
+              "R3": 7,
+              "R1": 3,
+              "N": 3,
+              "R4": 2
+            },
+            "recall": {
+              "R1": {
+                "numerator": 3,
+                "denominator": 3,
+                "value": 1.0
+              },
+              "R2": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null
+              },
+              "R3": {
+                "numerator": 7,
+                "denominator": 7,
+                "value": 1.0
+              },
+              "R4": {
+                "numerator": 2,
+                "denominator": 2,
+                "value": 1.0
+              }
+            },
+            "recall_overall": {
+              "numerator": 12,
+              "denominator": 12,
+              "value": 1.0
+            },
+            "precision": {
+              "numerator": 12,
+              "denominator": 15,
+              "value": 0.8
+            },
+            "unrelated_pass_rate": {
+              "numerator": 3,
+              "denominator": 68,
+              "value": 0.04411764705882353
+            },
+            "hard_negative_pass_rate": {
+              "numerator": 0,
+              "denominator": 4,
+              "value": 0.0
+            },
+            "lexical_negative_pass_rate": {
+              "numerator": 1,
+              "denominator": 11,
+              "value": 0.09090909090909091
+            },
+            "quote_fidelity": {
+              "numerator": 15,
+              "denominator": 15,
+              "value": 1.0
+            },
+            "quote_share_of_item": {
+              "n": 15,
+              "mean": 0.25587951194651076,
+              "median": 0.2508710801393728,
+              "p95": 0.5689655172413793,
+              "min": 0.09900990099009901,
+              "max": 0.5689655172413793
+            },
+            "ambiguous_selected": 0,
+            "ambiguous_cells": 0,
+            "invalid_ids": 0,
+            "title_mismatches": 0,
+            "duplicates": 0,
+            "selected": [
+              {
+                "case": "B01-Heron",
+                "selected": [
+                  "B01-01",
+                  "B01-02"
+                ]
+              },
+              {
+                "case": "B02-Kestrel",
+                "selected": [
+                  "B02-02"
+                ]
+              },
+              {
+                "case": "B03-Wren",
+                "selected": [
+                  "B03-01",
+                  "B03-06",
+                  "B03-07"
+                ]
+              },
+              {
+                "case": "B04-Plover",
+                "selected": [
+                  "B04-01",
+                  "B04-07"
+                ]
+              },
+              {
+                "case": "B05-Tern",
+                "selected": [
+                  "B05-02"
+                ]
+              },
+              {
+                "case": "B06-Heron",
+                "selected": [
+                  "B06-06"
+                ]
+              },
+              {
+                "case": "B07-Kestrel",
+                "selected": [
+                  "B07-04"
+                ]
+              },
+              {
+                "case": "B08-Wren",
+                "selected": [
+                  "B08-02",
+                  "B08-04",
+                  "B08-05"
+                ]
+              },
+              {
+                "case": "B09-Plover",
+                "selected": [
+                  "B09-04"
+                ]
+              },
+              {
+                "case": "B10-Tern",
+                "selected": []
+              }
+            ],
+            "errors": [
+              {
+                "case": "B03-Wren",
+                "item": "B03-06",
+                "type": "false_positive",
+                "gold": "N",
+                "hard_negative": false,
+                "lexical_overlap": false
+              },
+              {
+                "case": "B08-Wren",
+                "item": "B08-04",
+                "type": "false_positive",
+                "gold": "N",
+                "hard_negative": false,
+                "lexical_overlap": false
+              },
+              {
+                "case": "B08-Wren",
+                "item": "B08-02",
+                "type": "false_positive",
+                "gold": "N",
+                "hard_negative": false,
+                "lexical_overlap": true
+              }
+            ]
+          }
+        },
+        {
+          "repetition": 1,
+          "metrics": {
+            "cases": 10,
+            "label_denominators": {
+              "R1": 3,
+              "R3": 7,
+              "N": 68,
+              "R4": 2
+            },
+            "label_hits": {
+              "R3": 7,
+              "R1": 3,
+              "N": 3,
+              "R4": 2
+            },
+            "recall": {
+              "R1": {
+                "numerator": 3,
+                "denominator": 3,
+                "value": 1.0
+              },
+              "R2": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null
+              },
+              "R3": {
+                "numerator": 7,
+                "denominator": 7,
+                "value": 1.0
+              },
+              "R4": {
+                "numerator": 2,
+                "denominator": 2,
+                "value": 1.0
+              }
+            },
+            "recall_overall": {
+              "numerator": 12,
+              "denominator": 12,
+              "value": 1.0
+            },
+            "precision": {
+              "numerator": 12,
+              "denominator": 15,
+              "value": 0.8
+            },
+            "unrelated_pass_rate": {
+              "numerator": 3,
+              "denominator": 68,
+              "value": 0.04411764705882353
+            },
+            "hard_negative_pass_rate": {
+              "numerator": 0,
+              "denominator": 4,
+              "value": 0.0
+            },
+            "lexical_negative_pass_rate": {
+              "numerator": 1,
+              "denominator": 11,
+              "value": 0.09090909090909091
+            },
+            "quote_fidelity": {
+              "numerator": 15,
+              "denominator": 15,
+              "value": 1.0
+            },
+            "quote_share_of_item": {
+              "n": 15,
+              "mean": 0.2685200546685873,
+              "median": 0.2542372881355932,
+              "p95": 0.6334519572953736,
+              "min": 0.09900990099009901,
+              "max": 0.6334519572953736
+            },
+            "ambiguous_selected": 0,
+            "ambiguous_cells": 0,
+            "invalid_ids": 0,
+            "title_mismatches": 0,
+            "duplicates": 0,
+            "selected": [
+              {
+                "case": "B01-Heron",
+                "selected": [
+                  "B01-01",
+                  "B01-02"
+                ]
+              },
+              {
+                "case": "B02-Kestrel",
+                "selected": [
+                  "B02-02"
+                ]
+              },
+              {
+                "case": "B03-Wren",
+                "selected": [
+                  "B03-01",
+                  "B03-06",
+                  "B03-07"
+                ]
+              },
+              {
+                "case": "B04-Plover",
+                "selected": [
+                  "B04-01",
+                  "B04-07"
+                ]
+              },
+              {
+                "case": "B05-Tern",
+                "selected": [
+                  "B05-02"
+                ]
+              },
+              {
+                "case": "B06-Heron",
+                "selected": [
+                  "B06-06"
+                ]
+              },
+              {
+                "case": "B07-Kestrel",
+                "selected": [
+                  "B07-04"
+                ]
+              },
+              {
+                "case": "B08-Wren",
+                "selected": [
+                  "B08-02",
+                  "B08-04",
+                  "B08-05"
+                ]
+              },
+              {
+                "case": "B09-Plover",
+                "selected": [
+                  "B09-04"
+                ]
+              },
+              {
+                "case": "B10-Tern",
+                "selected": []
+              }
+            ],
+            "errors": [
+              {
+                "case": "B03-Wren",
+                "item": "B03-06",
+                "type": "false_positive",
+                "gold": "N",
+                "hard_negative": false,
+                "lexical_overlap": false
+              },
+              {
+                "case": "B08-Wren",
+                "item": "B08-02",
+                "type": "false_positive",
+                "gold": "N",
+                "hard_negative": false,
+                "lexical_overlap": true
+              },
+              {
+                "case": "B08-Wren",
+                "item": "B08-04",
+                "type": "false_positive",
+                "gold": "N",
+                "hard_negative": false,
+                "lexical_overlap": false
+              }
+            ]
+          }
+        },
+        {
+          "repetition": 2,
+          "metrics": {
+            "cases": 10,
+            "label_denominators": {
+              "R1": 3,
+              "R3": 7,
+              "N": 68,
+              "R4": 2
+            },
+            "label_hits": {
+              "R3": 7,
+              "R1": 3,
+              "N": 4,
+              "R4": 2
+            },
+            "recall": {
+              "R1": {
+                "numerator": 3,
+                "denominator": 3,
+                "value": 1.0
+              },
+              "R2": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null
+              },
+              "R3": {
+                "numerator": 7,
+                "denominator": 7,
+                "value": 1.0
+              },
+              "R4": {
+                "numerator": 2,
+                "denominator": 2,
+                "value": 1.0
+              }
+            },
+            "recall_overall": {
+              "numerator": 12,
+              "denominator": 12,
+              "value": 1.0
+            },
+            "precision": {
+              "numerator": 12,
+              "denominator": 16,
+              "value": 0.75
+            },
+            "unrelated_pass_rate": {
+              "numerator": 4,
+              "denominator": 68,
+              "value": 0.058823529411764705
+            },
+            "hard_negative_pass_rate": {
+              "numerator": 0,
+              "denominator": 4,
+              "value": 0.0
+            },
+            "lexical_negative_pass_rate": {
+              "numerator": 1,
+              "denominator": 11,
+              "value": 0.09090909090909091
+            },
+            "quote_fidelity": {
+              "numerator": 15,
+              "denominator": 16,
+              "value": 0.9375
+            },
+            "quote_share_of_item": {
+              "n": 15,
+              "mean": 0.29153742758559464,
+              "median": 0.2604166666666667,
+              "p95": 0.6797153024911032,
+              "min": 0.09900990099009901,
+              "max": 0.6797153024911032
+            },
+            "ambiguous_selected": 0,
+            "ambiguous_cells": 0,
+            "invalid_ids": 0,
+            "title_mismatches": 0,
+            "duplicates": 0,
+            "selected": [
+              {
+                "case": "B01-Heron",
+                "selected": [
+                  "B01-01",
+                  "B01-02"
+                ]
+              },
+              {
+                "case": "B02-Kestrel",
+                "selected": [
+                  "B02-02"
+                ]
+              },
+              {
+                "case": "B03-Wren",
+                "selected": [
+                  "B03-01",
+                  "B03-02",
+                  "B03-06",
+                  "B03-07"
+                ]
+              },
+              {
+                "case": "B04-Plover",
+                "selected": [
+                  "B04-01",
+                  "B04-07"
+                ]
+              },
+              {
+                "case": "B05-Tern",
+                "selected": [
+                  "B05-02"
+                ]
+              },
+              {
+                "case": "B06-Heron",
+                "selected": [
+                  "B06-06"
+                ]
+              },
+              {
+                "case": "B07-Kestrel",
+                "selected": [
+                  "B07-04"
+                ]
+              },
+              {
+                "case": "B08-Wren",
+                "selected": [
+                  "B08-02",
+                  "B08-04",
+                  "B08-05"
+                ]
+              },
+              {
+                "case": "B09-Plover",
+                "selected": [
+                  "B09-04"
+                ]
+              },
+              {
+                "case": "B10-Tern",
+                "selected": []
+              }
+            ],
+            "errors": [
+              {
+                "case": "B03-Wren",
+                "item": "B03-06",
+                "type": "false_positive",
+                "gold": "N",
+                "hard_negative": false,
+                "lexical_overlap": false
+              },
+              {
+                "case": "B03-Wren",
+                "item": "B03-02",
+                "type": "false_positive",
+                "gold": "N",
+                "hard_negative": false,
+                "lexical_overlap": false
+              },
+              {
+                "case": "B08-Wren",
+                "item": "B08-04",
+                "type": "false_positive",
+                "gold": "N",
+                "hard_negative": false,
+                "lexical_overlap": false
+              },
+              {
+                "case": "B08-Wren",
+                "item": "B08-02",
+                "type": "false_positive",
+                "gold": "N",
+                "hard_negative": false,
+                "lexical_overlap": true
+              }
+            ]
+          }
+        },
+        {
+          "repetition": 3,
+          "metrics": {
+            "cases": 10,
+            "label_denominators": {
+              "R1": 3,
+              "R3": 7,
+              "N": 68,
+              "R4": 2
+            },
+            "label_hits": {
+              "R3": 7,
+              "R1": 3,
+              "N": 5,
+              "R4": 2
+            },
+            "recall": {
+              "R1": {
+                "numerator": 3,
+                "denominator": 3,
+                "value": 1.0
+              },
+              "R2": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null
+              },
+              "R3": {
+                "numerator": 7,
+                "denominator": 7,
+                "value": 1.0
+              },
+              "R4": {
+                "numerator": 2,
+                "denominator": 2,
+                "value": 1.0
+              }
+            },
+            "recall_overall": {
+              "numerator": 12,
+              "denominator": 12,
+              "value": 1.0
+            },
+            "precision": {
+              "numerator": 12,
+              "denominator": 17,
+              "value": 0.7058823529411765
+            },
+            "unrelated_pass_rate": {
+              "numerator": 5,
+              "denominator": 68,
+              "value": 0.07352941176470588
+            },
+            "hard_negative_pass_rate": {
+              "numerator": 0,
+              "denominator": 4,
+              "value": 0.0
+            },
+            "lexical_negative_pass_rate": {
+              "numerator": 2,
+              "denominator": 11,
+              "value": 0.18181818181818182
+            },
+            "quote_fidelity": {
+              "numerator": 17,
+              "denominator": 17,
+              "value": 1.0
+            },
+            "quote_share_of_item": {
+              "n": 17,
+              "mean": 0.2432665444025384,
+              "median": 0.2542372881355932,
+              "p95": 0.4075342465753425,
+              "min": 0.09900990099009901,
+              "max": 0.4075342465753425
+            },
+            "ambiguous_selected": 0,
+            "ambiguous_cells": 0,
+            "invalid_ids": 0,
+            "title_mismatches": 0,
+            "duplicates": 0,
+            "selected": [
+              {
+                "case": "B01-Heron",
+                "selected": [
+                  "B01-01",
+                  "B01-02"
+                ]
+              },
+              {
+                "case": "B02-Kestrel",
+                "selected": [
+                  "B02-02"
+                ]
+              },
+              {
+                "case": "B03-Wren",
+                "selected": [
+                  "B03-01",
+                  "B03-06",
+                  "B03-07"
+                ]
+              },
+              {
+                "case": "B04-Plover",
+                "selected": [
+                  "B04-01",
+                  "B04-07"
+                ]
+              },
+              {
+                "case": "B05-Tern",
+                "selected": [
+                  "B05-02",
+                  "B05-07"
+                ]
+              },
+              {
+                "case": "B06-Heron",
+                "selected": [
+                  "B06-06"
+                ]
+              },
+              {
+                "case": "B07-Kestrel",
+                "selected": [
+                  "B07-04"
+                ]
+              },
+              {
+                "case": "B08-Wren",
+                "selected": [
+                  "B08-02",
+                  "B08-04",
+                  "B08-05"
+                ]
+              },
+              {
+                "case": "B09-Plover",
+                "selected": [
+                  "B09-04"
+                ]
+              },
+              {
+                "case": "B10-Tern",
+                "selected": [
+                  "B10-02"
+                ]
+              }
+            ],
+            "errors": [
+              {
+                "case": "B03-Wren",
+                "item": "B03-06",
+                "type": "false_positive",
+                "gold": "N",
+                "hard_negative": false,
+                "lexical_overlap": false
+              },
+              {
+                "case": "B05-Tern",
+                "item": "B05-07",
+                "type": "false_positive",
+                "gold": "N",
+                "hard_negative": false,
+                "lexical_overlap": false
+              },
+              {
+                "case": "B08-Wren",
+                "item": "B08-04",
+                "type": "false_positive",
+                "gold": "N",
+                "hard_negative": false,
+                "lexical_overlap": false
+              },
+              {
+                "case": "B08-Wren",
+                "item": "B08-02",
+                "type": "false_positive",
+                "gold": "N",
+                "hard_negative": false,
+                "lexical_overlap": true
+              },
+              {
+                "case": "B10-Tern",
+                "item": "B10-02",
+                "type": "false_positive",
+                "gold": "N",
+                "hard_negative": false,
+                "lexical_overlap": true
+              }
+            ]
+          }
+        }
+      ],
+      "repeat_spread": {
+        "R1": 0.0,
+        "R2": null,
+        "R3": 0.0,
+        "R4": 0.0,
+        "overall": 0.0
+      },
+      "time_seconds": {
+        "n": 80,
+        "mean": 11.205765003077612,
+        "median": 10.872657999498188,
+        "p95": 15.13734458302497,
+        "min": 6.419127791014034,
+        "max": 16.662967125012074
+      },
+      "tokens_input": {
+        "n": 80,
+        "mean": 20498.7375,
+        "median": 20469.5,
+        "p95": 20757,
+        "min": 20163,
+        "max": 20875
+      },
+      "tokens_output": {
+        "n": 80,
+        "mean": 1843.875,
+        "median": 1767.0,
+        "p95": 2768,
+        "min": 671,
+        "max": 3169
+      },
+      "tokens_cached_input": {
+        "n": 80,
+        "mean": 4788.2875,
+        "median": 3053.0,
+        "p95": 20703,
+        "min": 649,
+        "max": 20755
+      },
+      "actual_models": [
+        "claude-haiku-5-5"
+      ]
+    },
+    "F2": {
+      "baseline": {
+        "cases": 50,
+        "label_denominators": {
+          "R1": 14,
+          "R3": 22,
+          "N": 332,
+          "R4": 14,
+          "R2": 15,
+          "AMBIGUOUS": 3
+        },
+        "label_hits": {
+          "R3": 18,
+          "R1": 14,
+          "R2": 15,
+          "R4": 9,
+          "N": 5
+        },
+        "recall": {
+          "R1": {
+            "numerator": 14,
+            "denominator": 14,
+            "value": 1.0
+          },
+          "R2": {
+            "numerator": 15,
+            "denominator": 15,
+            "value": 1.0
+          },
+          "R3": {
+            "numerator": 18,
+            "denominator": 22,
+            "value": 0.8181818181818182
+          },
+          "R4": {
+            "numerator": 9,
+            "denominator": 14,
+            "value": 0.6428571428571429
+          }
+        },
+        "recall_overall": {
+          "numerator": 56,
+          "denominator": 65,
+          "value": 0.8615384615384616
+        },
+        "precision": {
+          "numerator": 56,
+          "denominator": 61,
+          "value": 0.9180327868852459
+        },
+        "unrelated_pass_rate": {
+          "numerator": 5,
+          "denominator": 332,
+          "value": 0.015060240963855422
+        },
+        "hard_negative_pass_rate": {
+          "numerator": 0,
+          "denominator": 22,
+          "value": 0.0
+        },
+        "lexical_negative_pass_rate": {
+          "numerator": 0,
+          "denominator": 43,
+          "value": 0.0
+        },
+        "quote_fidelity": {
+          "numerator": 62,
+          "denominator": 62,
+          "value": 1.0
+        },
+        "quote_share_of_item": {
+          "n": 62,
+          "mean": 0.8471968658506723,
+          "median": 1.0,
+          "p95": 1.0,
+          "min": 0.19858156028368795,
+          "max": 1.0
+        },
+        "ambiguous_selected": 1,
+        "ambiguous_cells": 3,
+        "invalid_ids": 0,
+        "title_mismatches": 0,
+        "duplicates": 0,
+        "selected": [
+          {
+            "case": "B01-Heron",
+            "selected": [
+              "B01-01",
+              "B01-02"
+            ]
+          },
+          {
+            "case": "B01-Kestrel",
+            "selected": [
+              "B01-08"
+            ]
+          },
+          {
+            "case": "B01-Wren",
+            "selected": [
+              "B01-04"
+            ]
+          },
+          {
+            "case": "B01-Plover",
+            "selected": [
+              "B01-07"
+            ]
+          },
+          {
+            "case": "B01-Tern",
+            "selected": []
+          },
+          {
+            "case": "B02-Heron",
+            "selected": [
+              "B02-04"
+            ]
+          },
+          {
+            "case": "B02-Kestrel",
+            "selected": [
+              "B02-02"
+            ]
+          },
+          {
+            "case": "B02-Wren",
+            "selected": [
+              "B02-03"
+            ]
+          },
+          {
+            "case": "B02-Plover",
+            "selected": [
+              "B02-06"
+            ]
+          },
+          {
+            "case": "B02-Tern",
+            "selected": [
+              "B02-01"
+            ]
+          },
+          {
+            "case": "B03-Heron",
+            "selected": []
+          },
+          {
+            "case": "B03-Kestrel",
+            "selected": [
+              "B03-03"
+            ]
+          },
+          {
+            "case": "B03-Wren",
+            "selected": [
+              "B03-01"
+            ]
+          },
+          {
+            "case": "B03-Plover",
+            "selected": [
+              "B03-04"
+            ]
+          },
+          {
+            "case": "B03-Tern",
+            "selected": []
+          },
+          {
+            "case": "B04-Heron",
+            "selected": [
+              "B04-02"
+            ]
+          },
+          {
+            "case": "B04-Kestrel",
+            "selected": [
+              "B04-02",
+              "B04-03"
+            ]
+          },
+          {
+            "case": "B04-Wren",
+            "selected": [
+              "B04-04"
+            ]
+          },
+          {
+            "case": "B04-Plover",
+            "selected": [
+              "B04-01",
+              "B04-07"
+            ]
+          },
+          {
+            "case": "B04-Tern",
+            "selected": [
+              "B04-02",
+              "B04-05"
+            ]
+          },
+          {
+            "case": "B05-Heron",
+            "selected": [
+              "B05-01",
+              "B05-07"
+            ]
+          },
+          {
+            "case": "B05-Kestrel",
+            "selected": []
+          },
+          {
+            "case": "B05-Wren",
+            "selected": [
+              "B05-03",
+              "B05-05"
+            ]
+          },
+          {
+            "case": "B05-Plover",
+            "selected": [
+              "B05-03",
+              "B05-04",
+              "B05-08"
+            ]
+          },
+          {
+            "case": "B05-Tern",
+            "selected": [
+              "B05-02",
+              "B05-03"
+            ]
+          },
+          {
+            "case": "B06-Heron",
+            "selected": []
+          },
+          {
+            "case": "B06-Kestrel",
+            "selected": [
+              "B06-01",
+              "B06-07"
+            ]
+          },
+          {
+            "case": "B06-Wren",
+            "selected": [
+              "B06-02"
+            ]
+          },
+          {
+            "case": "B06-Plover",
+            "selected": [
+              "B06-03"
+            ]
+          },
+          {
+            "case": "B06-Tern",
+            "selected": [
+              "B06-04"
+            ]
+          },
+          {
+            "case": "B07-Heron",
+            "selected": [
+              "B07-02"
+            ]
+          },
+          {
+            "case": "B07-Kestrel",
+            "selected": [
+              "B07-04"
+            ]
+          },
+          {
+            "case": "B07-Wren",
+            "selected": [
+              "B07-01",
+              "B07-07"
+            ]
+          },
+          {
+            "case": "B07-Plover",
+            "selected": [
+              "B07-05",
+              "B07-08"
+            ]
+          },
+          {
+            "case": "B07-Tern",
+            "selected": [
+              "B07-03"
+            ]
+          },
+          {
+            "case": "B08-Heron",
+            "selected": [
+              "B08-03"
+            ]
+          },
+          {
+            "case": "B08-Kestrel",
+            "selected": [
+              "B08-05"
+            ]
+          },
+          {
+            "case": "B08-Wren",
+            "selected": [
+              "B08-05"
+            ]
+          },
+          {
+            "case": "B08-Plover",
+            "selected": [
+              "B08-01",
+              "B08-07"
+            ]
+          },
+          {
+            "case": "B08-Tern",
+            "selected": [
+              "B08-02"
+            ]
+          },
+          {
+            "case": "B09-Heron",
+            "selected": [
+              "B09-05"
+            ]
+          },
+          {
+            "case": "B09-Kestrel",
+            "selected": [
+              "B09-02",
+              "B09-08"
+            ]
+          },
+          {
+            "case": "B09-Wren",
+            "selected": [
+              "B09-03"
+            ]
+          },
+          {
+            "case": "B09-Plover",
+            "selected": []
+          },
+          {
+            "case": "B09-Tern",
+            "selected": [
+              "B09-01",
+              "B09-07"
+            ]
+          },
+          {
+            "case": "B10-Heron",
+            "selected": [
+              "B10-02",
+              "B10-04",
+              "B10-08"
+            ]
+          },
+          {
+            "case": "B10-Kestrel",
+            "selected": [
+              "B10-01",
+              "B10-05"
+            ]
+          },
+          {
+            "case": "B10-Wren",
+            "selected": [
+              "B10-06",
+              "B10-07"
+            ]
+          },
+          {
+            "case": "B10-Plover",
+            "selected": [
+              "B10-03"
+            ]
+          },
+          {
+            "case": "B10-Tern",
+            "selected": []
+          }
+        ],
+        "errors": [
+          {
+            "case": "B01-Kestrel",
+            "item": "B01-05",
+            "type": "false_negative",
+            "gold": "R4"
+          },
+          {
+            "case": "B02-Tern",
+            "item": "B02-07",
+            "type": "false_negative",
+            "gold": "R4"
+          },
+          {
+            "case": "B03-Heron",
+            "item": "B03-02",
+            "type": "false_negative",
+            "gold": "R4"
+          },
+          {
+            "case": "B03-Wren",
+            "item": "B03-07",
+            "type": "false_negative",
+            "gold": "R3"
+          },
+          {
+            "case": "B03-Tern",
+            "item": "B03-06",
+            "type": "false_negative",
+            "gold": "R3"
+          },
+          {
+            "case": "B04-Kestrel",
+            "item": "B04-02",
+            "type": "false_positive",
+            "gold": "N",
+            "hard_negative": false,
+            "lexical_overlap": false
+          },
+          {
+            "case": "B05-Kestrel",
+            "item": "B05-03",
+            "type": "false_negative",
+            "gold": "R4"
+          },
+          {
+            "case": "B05-Wren",
+            "item": "B05-03",
+            "type": "false_positive",
+            "gold": "N",
+            "hard_negative": false,
+            "lexical_overlap": false
+          },
+          {
+            "case": "B05-Plover",
+            "item": "B05-03",
+            "type": "false_positive",
+            "gold": "N",
+            "hard_negative": false,
+            "lexical_overlap": false
+          },
+          {
+            "case": "B05-Tern",
+            "item": "B05-03",
+            "type": "false_positive",
+            "gold": "N",
+            "hard_negative": false,
+            "lexical_overlap": false
+          },
+          {
+            "case": "B06-Heron",
+            "item": "B06-06",
+            "type": "false_negative",
+            "gold": "R4"
+          },
+          {
+            "case": "B08-Kestrel",
+            "item": "B08-05",
+            "type": "false_positive",
+            "gold": "N",
+            "hard_negative": false,
+            "lexical_overlap": false
+          },
+          {
+            "case": "B08-Kestrel",
+            "item": "B08-04",
+            "type": "false_negative",
+            "gold": "R3"
+          },
+          {
+            "case": "B09-Plover",
+            "item": "B09-04",
+            "type": "false_negative",
+            "gold": "R3"
+          }
+        ]
+      },
+      "expected_baseline": 50,
+      "observed_baseline": 50,
+      "expected_calls": 80,
+      "observed_calls": 80,
+      "repeat": [
+        {
+          "repetition": 0,
+          "metrics": {
+            "cases": 10,
+            "label_denominators": {
+              "R1": 3,
+              "R3": 7,
+              "N": 68,
+              "R4": 2
+            },
+            "label_hits": {
+              "R3": 5,
+              "R1": 3,
+              "R4": 1,
+              "N": 1
+            },
+            "recall": {
+              "R1": {
+                "numerator": 3,
+                "denominator": 3,
+                "value": 1.0
+              },
+              "R2": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null
+              },
+              "R3": {
+                "numerator": 5,
+                "denominator": 7,
+                "value": 0.7142857142857143
+              },
+              "R4": {
+                "numerator": 1,
+                "denominator": 2,
+                "value": 0.5
+              }
+            },
+            "recall_overall": {
+              "numerator": 9,
+              "denominator": 12,
+              "value": 0.75
+            },
+            "precision": {
+              "numerator": 9,
+              "denominator": 10,
+              "value": 0.9
+            },
+            "unrelated_pass_rate": {
+              "numerator": 1,
+              "denominator": 68,
+              "value": 0.014705882352941176
+            },
+            "hard_negative_pass_rate": {
+              "numerator": 0,
+              "denominator": 4,
+              "value": 0.0
+            },
+            "lexical_negative_pass_rate": {
+              "numerator": 0,
+              "denominator": 11,
+              "value": 0.0
+            },
+            "quote_fidelity": {
+              "numerator": 10,
+              "denominator": 10,
+              "value": 1.0
+            },
+            "quote_share_of_item": {
+              "n": 10,
+              "mean": 0.8499322563835331,
+              "median": 1.0,
+              "p95": 1.0,
+              "min": 0.23859649122807017,
+              "max": 1.0
+            },
+            "ambiguous_selected": 0,
+            "ambiguous_cells": 0,
+            "invalid_ids": 0,
+            "title_mismatches": 0,
+            "duplicates": 0,
+            "selected": [
+              {
+                "case": "B01-Heron",
+                "selected": [
+                  "B01-01",
+                  "B01-02"
+                ]
+              },
+              {
+                "case": "B02-Kestrel",
+                "selected": [
+                  "B02-02"
+                ]
+              },
+              {
+                "case": "B03-Wren",
+                "selected": [
+                  "B03-01"
+                ]
+              },
+              {
+                "case": "B04-Plover",
+                "selected": [
+                  "B04-01",
+                  "B04-07"
+                ]
+              },
+              {
+                "case": "B05-Tern",
+                "selected": [
+                  "B05-02",
+                  "B05-03"
+                ]
+              },
+              {
+                "case": "B06-Heron",
+                "selected": []
+              },
+              {
+                "case": "B07-Kestrel",
+                "selected": [
+                  "B07-04"
+                ]
+              },
+              {
+                "case": "B08-Wren",
+                "selected": [
+                  "B08-05"
+                ]
+              },
+              {
+                "case": "B09-Plover",
+                "selected": []
+              },
+              {
+                "case": "B10-Tern",
+                "selected": []
+              }
+            ],
+            "errors": [
+              {
+                "case": "B03-Wren",
+                "item": "B03-07",
+                "type": "false_negative",
+                "gold": "R3"
+              },
+              {
+                "case": "B05-Tern",
+                "item": "B05-03",
+                "type": "false_positive",
+                "gold": "N",
+                "hard_negative": false,
+                "lexical_overlap": false
+              },
+              {
+                "case": "B06-Heron",
+                "item": "B06-06",
+                "type": "false_negative",
+                "gold": "R4"
+              },
+              {
+                "case": "B09-Plover",
+                "item": "B09-04",
+                "type": "false_negative",
+                "gold": "R3"
+              }
+            ]
+          }
+        },
+        {
+          "repetition": 1,
+          "metrics": {
+            "cases": 10,
+            "label_denominators": {
+              "R1": 3,
+              "R3": 7,
+              "N": 68,
+              "R4": 2
+            },
+            "label_hits": {
+              "R3": 4,
+              "R1": 2,
+              "R4": 2
+            },
+            "recall": {
+              "R1": {
+                "numerator": 2,
+                "denominator": 3,
+                "value": 0.6666666666666666
+              },
+              "R2": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null
+              },
+              "R3": {
+                "numerator": 4,
+                "denominator": 7,
+                "value": 0.5714285714285714
+              },
+              "R4": {
+                "numerator": 2,
+                "denominator": 2,
+                "value": 1.0
+              }
+            },
+            "recall_overall": {
+              "numerator": 8,
+              "denominator": 12,
+              "value": 0.6666666666666666
+            },
+            "precision": {
+              "numerator": 8,
+              "denominator": 8,
+              "value": 1.0
+            },
+            "unrelated_pass_rate": {
+              "numerator": 0,
+              "denominator": 68,
+              "value": 0.0
+            },
+            "hard_negative_pass_rate": {
+              "numerator": 0,
+              "denominator": 4,
+              "value": 0.0
+            },
+            "lexical_negative_pass_rate": {
+              "numerator": 0,
+              "denominator": 11,
+              "value": 0.0
+            },
+            "quote_fidelity": {
+              "numerator": 8,
+              "denominator": 8,
+              "value": 1.0
+            },
+            "quote_share_of_item": {
+              "n": 8,
+              "mean": 0.74046631823778,
+              "median": 0.9598014721534446,
+              "p95": 1.0,
+              "min": 0.11643835616438356,
+              "max": 1.0
+            },
+            "ambiguous_selected": 0,
+            "ambiguous_cells": 0,
+            "invalid_ids": 0,
+            "title_mismatches": 0,
+            "duplicates": 0,
+            "selected": [
+              {
+                "case": "B01-Heron",
+                "selected": [
+                  "B01-01",
+                  "B01-02"
+                ]
+              },
+              {
+                "case": "B02-Kestrel",
+                "selected": [
+                  "B02-02"
+                ]
+              },
+              {
+                "case": "B03-Wren",
+                "selected": []
+              },
+              {
+                "case": "B04-Plover",
+                "selected": [
+                  "B04-01",
+                  "B04-07"
+                ]
+              },
+              {
+                "case": "B05-Tern",
+                "selected": []
+              },
+              {
+                "case": "B06-Heron",
+                "selected": [
+                  "B06-06"
+                ]
+              },
+              {
+                "case": "B07-Kestrel",
+                "selected": [
+                  "B07-04"
+                ]
+              },
+              {
+                "case": "B08-Wren",
+                "selected": [
+                  "B08-05"
+                ]
+              },
+              {
+                "case": "B09-Plover",
+                "selected": []
+              },
+              {
+                "case": "B10-Tern",
+                "selected": []
+              }
+            ],
+            "errors": [
+              {
+                "case": "B03-Wren",
+                "item": "B03-01",
+                "type": "false_negative",
+                "gold": "R1"
+              },
+              {
+                "case": "B03-Wren",
+                "item": "B03-07",
+                "type": "false_negative",
+                "gold": "R3"
+              },
+              {
+                "case": "B05-Tern",
+                "item": "B05-02",
+                "type": "false_negative",
+                "gold": "R3"
+              },
+              {
+                "case": "B09-Plover",
+                "item": "B09-04",
+                "type": "false_negative",
+                "gold": "R3"
+              }
+            ]
+          }
+        },
+        {
+          "repetition": 2,
+          "metrics": {
+            "cases": 10,
+            "label_denominators": {
+              "R1": 3,
+              "R3": 7,
+              "N": 68,
+              "R4": 2
+            },
+            "label_hits": {
+              "R3": 5,
+              "R1": 3,
+              "N": 1,
+              "R4": 2
+            },
+            "recall": {
+              "R1": {
+                "numerator": 3,
+                "denominator": 3,
+                "value": 1.0
+              },
+              "R2": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null
+              },
+              "R3": {
+                "numerator": 5,
+                "denominator": 7,
+                "value": 0.7142857142857143
+              },
+              "R4": {
+                "numerator": 2,
+                "denominator": 2,
+                "value": 1.0
+              }
+            },
+            "recall_overall": {
+              "numerator": 10,
+              "denominator": 12,
+              "value": 0.8333333333333334
+            },
+            "precision": {
+              "numerator": 10,
+              "denominator": 11,
+              "value": 0.9090909090909091
+            },
+            "unrelated_pass_rate": {
+              "numerator": 1,
+              "denominator": 68,
+              "value": 0.014705882352941176
+            },
+            "hard_negative_pass_rate": {
+              "numerator": 0,
+              "denominator": 4,
+              "value": 0.0
+            },
+            "lexical_negative_pass_rate": {
+              "numerator": 0,
+              "denominator": 11,
+              "value": 0.0
+            },
+            "quote_fidelity": {
+              "numerator": 11,
+              "denominator": 11,
+              "value": 1.0
+            },
+            "quote_share_of_item": {
+              "n": 11,
+              "mean": 0.8988808404937243,
+              "median": 1.0,
+              "p95": 1.0,
+              "min": 0.2542372881355932,
+              "max": 1.0
+            },
+            "ambiguous_selected": 0,
+            "ambiguous_cells": 0,
+            "invalid_ids": 0,
+            "title_mismatches": 0,
+            "duplicates": 0,
+            "selected": [
+              {
+                "case": "B01-Heron",
+                "selected": [
+                  "B01-01",
+                  "B01-02"
+                ]
+              },
+              {
+                "case": "B02-Kestrel",
+                "selected": [
+                  "B02-02"
+                ]
+              },
+              {
+                "case": "B03-Wren",
+                "selected": [
+                  "B03-01",
+                  "B03-02",
+                  "B03-07"
+                ]
+              },
+              {
+                "case": "B04-Plover",
+                "selected": [
+                  "B04-01",
+                  "B04-07"
+                ]
+              },
+              {
+                "case": "B05-Tern",
+                "selected": []
+              },
+              {
+                "case": "B06-Heron",
+                "selected": [
+                  "B06-06"
+                ]
+              },
+              {
+                "case": "B07-Kestrel",
+                "selected": [
+                  "B07-04"
+                ]
+              },
+              {
+                "case": "B08-Wren",
+                "selected": [
+                  "B08-05"
+                ]
+              },
+              {
+                "case": "B09-Plover",
+                "selected": []
+              },
+              {
+                "case": "B10-Tern",
+                "selected": []
+              }
+            ],
+            "errors": [
+              {
+                "case": "B03-Wren",
+                "item": "B03-02",
+                "type": "false_positive",
+                "gold": "N",
+                "hard_negative": false,
+                "lexical_overlap": false
+              },
+              {
+                "case": "B05-Tern",
+                "item": "B05-02",
+                "type": "false_negative",
+                "gold": "R3"
+              },
+              {
+                "case": "B09-Plover",
+                "item": "B09-04",
+                "type": "false_negative",
+                "gold": "R3"
+              }
+            ]
+          }
+        },
+        {
+          "repetition": 3,
+          "metrics": {
+            "cases": 10,
+            "label_denominators": {
+              "R1": 3,
+              "R3": 7,
+              "N": 68,
+              "R4": 2
+            },
+            "label_hits": {
+              "R3": 4,
+              "R1": 3,
+              "N": 1,
+              "R4": 2
+            },
+            "recall": {
+              "R1": {
+                "numerator": 3,
+                "denominator": 3,
+                "value": 1.0
+              },
+              "R2": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null
+              },
+              "R3": {
+                "numerator": 4,
+                "denominator": 7,
+                "value": 0.5714285714285714
+              },
+              "R4": {
+                "numerator": 2,
+                "denominator": 2,
+                "value": 1.0
+              }
+            },
+            "recall_overall": {
+              "numerator": 9,
+              "denominator": 12,
+              "value": 0.75
+            },
+            "precision": {
+              "numerator": 9,
+              "denominator": 10,
+              "value": 0.9
+            },
+            "unrelated_pass_rate": {
+              "numerator": 1,
+              "denominator": 68,
+              "value": 0.014705882352941176
+            },
+            "hard_negative_pass_rate": {
+              "numerator": 0,
+              "denominator": 4,
+              "value": 0.0
+            },
+            "lexical_negative_pass_rate": {
+              "numerator": 0,
+              "denominator": 11,
+              "value": 0.0
+            },
+            "quote_fidelity": {
+              "numerator": 10,
+              "denominator": 10,
+              "value": 1.0
+            },
+            "quote_share_of_item": {
+              "n": 10,
+              "mean": 0.6840294574589993,
+              "median": 0.6664095229514843,
+              "p95": 1.0,
+              "min": 0.2542372881355932,
+              "max": 1.0
+            },
+            "ambiguous_selected": 0,
+            "ambiguous_cells": 0,
+            "invalid_ids": 0,
+            "title_mismatches": 0,
+            "duplicates": 0,
+            "selected": [
+              {
+                "case": "B01-Heron",
+                "selected": [
+                  "B01-01",
+                  "B01-02"
+                ]
+              },
+              {
+                "case": "B02-Kestrel",
+                "selected": [
+                  "B02-02"
+                ]
+              },
+              {
+                "case": "B03-Wren",
+                "selected": [
+                  "B03-01",
+                  "B03-02"
+                ]
+              },
+              {
+                "case": "B04-Plover",
+                "selected": [
+                  "B04-01",
+                  "B04-07"
+                ]
+              },
+              {
+                "case": "B05-Tern",
+                "selected": []
+              },
+              {
+                "case": "B06-Heron",
+                "selected": [
+                  "B06-06"
+                ]
+              },
+              {
+                "case": "B07-Kestrel",
+                "selected": [
+                  "B07-04"
+                ]
+              },
+              {
+                "case": "B08-Wren",
+                "selected": [
+                  "B08-05"
+                ]
+              },
+              {
+                "case": "B09-Plover",
+                "selected": []
+              },
+              {
+                "case": "B10-Tern",
+                "selected": []
+              }
+            ],
+            "errors": [
+              {
+                "case": "B03-Wren",
+                "item": "B03-02",
+                "type": "false_positive",
+                "gold": "N",
+                "hard_negative": false,
+                "lexical_overlap": false
+              },
+              {
+                "case": "B03-Wren",
+                "item": "B03-07",
+                "type": "false_negative",
+                "gold": "R3"
+              },
+              {
+                "case": "B05-Tern",
+                "item": "B05-02",
+                "type": "false_negative",
+                "gold": "R3"
+              },
+              {
+                "case": "B09-Plover",
+                "item": "B09-04",
+                "type": "false_negative",
+                "gold": "R3"
+              }
+            ]
+          }
+        }
+      ],
+      "repeat_spread": {
+        "R1": 0.33333333333333337,
+        "R2": null,
+        "R3": 0.1428571428571429,
+        "R4": 0.5,
+        "overall": 0.16666666666666674
+      },
+      "time_seconds": {
+        "n": 80,
+        "mean": 7.540161830751458,
+        "median": 7.2976788750092965,
+        "p95": 10.235846959025366,
+        "min": 5.011008333007339,
+        "max": 11.492747834010515
+      },
+      "tokens_input": {
+        "n": 80,
+        "mean": 21428.4625,
+        "median": 21428.5,
+        "p95": 21510,
+        "min": 21318,
+        "max": 21553
+      },
+      "tokens_output": {
+        "n": 80,
+        "mean": 218.0375,
+        "median": 208.0,
+        "p95": 469,
+        "min": 8,
+        "max": 672
+      },
+      "tokens_cached_input": {
+        "n": 80,
+        "mean": 12620.8,
+        "median": 10624.0,
+        "p95": 15360,
+        "min": 10624,
+        "max": 15360
+      },
+      "actual_models": [
+        "gpt-6-luna"
+      ]
+    },
+    "F3": {
+      "baseline": {
+        "cases": 15,
+        "label_denominators": {
+          "R1": 7,
+          "R3": 8,
+          "N": 98,
+          "R4": 2,
+          "R2": 4,
+          "AMBIGUOUS": 1
+        },
+        "label_hits": {
+          "R3": 8,
+          "R1": 7,
+          "N": 2,
+          "R4": 2,
+          "R2": 4
+        },
+        "recall": {
+          "R1": {
+            "numerator": 7,
+            "denominator": 7,
+            "value": 1.0
+          },
+          "R2": {
+            "numerator": 4,
+            "denominator": 4,
+            "value": 1.0
+          },
+          "R3": {
+            "numerator": 8,
+            "denominator": 8,
+            "value": 1.0
+          },
+          "R4": {
+            "numerator": 2,
+            "denominator": 2,
+            "value": 1.0
+          }
+        },
+        "recall_overall": {
+          "numerator": 21,
+          "denominator": 21,
+          "value": 1.0
+        },
+        "precision": {
+          "numerator": 21,
+          "denominator": 23,
+          "value": 0.9130434782608695
+        },
+        "unrelated_pass_rate": {
+          "numerator": 2,
+          "denominator": 98,
+          "value": 0.02040816326530612
+        },
+        "hard_negative_pass_rate": {
+          "numerator": 0,
+          "denominator": 8,
+          "value": 0.0
+        },
+        "lexical_negative_pass_rate": {
+          "numerator": 0,
+          "denominator": 15,
+          "value": 0.0
+        },
+        "quote_fidelity": {
+          "numerator": 24,
+          "denominator": 24,
+          "value": 1.0
+        },
+        "quote_share_of_item": {
+          "n": 24,
+          "mean": 0.8951934928927407,
+          "median": 1.0,
+          "p95": 1.0,
+          "min": 0.3291139240506329,
+          "max": 1.0
+        },
+        "ambiguous_selected": 1,
+        "ambiguous_cells": 1,
+        "invalid_ids": 0,
+        "title_mismatches": 0,
+        "duplicates": 0,
+        "selected": [
+          {
+            "case": "B01-Heron",
+            "selected": [
+              "B01-01",
+              "B01-02"
+            ]
+          },
+          {
+            "case": "B01-Kestrel",
+            "selected": [
+              "B01-02",
+              "B01-05",
+              "B01-08"
+            ]
+          },
+          {
+            "case": "B01-Wren",
+            "selected": [
+              "B01-04"
+            ]
+          },
+          {
+            "case": "B01-Plover",
+            "selected": [
+              "B01-07"
+            ]
+          },
+          {
+            "case": "B01-Tern",
+            "selected": [
+              "B01-02"
+            ]
+          },
+          {
+            "case": "B05-Heron",
+            "selected": [
+              "B05-01",
+              "B05-07"
+            ]
+          },
+          {
+            "case": "B05-Kestrel",
+            "selected": [
+              "B05-02",
+              "B05-03"
+            ]
+          },
+          {
+            "case": "B05-Wren",
+            "selected": [
+              "B05-05"
+            ]
+          },
+          {
+            "case": "B05-Plover",
+            "selected": [
+              "B05-04",
+              "B05-08"
+            ]
+          },
+          {
+            "case": "B05-Tern",
+            "selected": [
+              "B05-02"
+            ]
+          },
+          {
+            "case": "B10-Heron",
+            "selected": [
+              "B10-02",
+              "B10-04",
+              "B10-08"
+            ]
+          },
+          {
+            "case": "B10-Kestrel",
+            "selected": [
+              "B10-01",
+              "B10-05"
+            ]
+          },
+          {
+            "case": "B10-Wren",
+            "selected": [
+              "B10-06",
+              "B10-07"
+            ]
+          },
+          {
+            "case": "B10-Plover",
+            "selected": [
+              "B10-03"
+            ]
+          },
+          {
+            "case": "B10-Tern",
+            "selected": []
+          }
+        ],
+        "errors": [
+          {
+            "case": "B01-Kestrel",
+            "item": "B01-02",
+            "type": "false_positive",
+            "gold": "N",
+            "hard_negative": false,
+            "lexical_overlap": false
+          },
+          {
+            "case": "B05-Kestrel",
+            "item": "B05-02",
+            "type": "false_positive",
+            "gold": "N",
+            "hard_negative": false,
+            "lexical_overlap": false
+          }
+        ]
+      },
+      "expected_baseline": 15,
+      "observed_baseline": 15,
+      "expected_calls": 15,
+      "observed_calls": 15,
+      "repeat": [],
+      "repeat_spread": {},
+      "time_seconds": {
+        "n": 15,
+        "mean": 11.159016755667592,
+        "median": 10.06036558400956,
+        "p95": 15.833063625002978,
+        "min": 8.602788042015163,
+        "max": 15.833063625002978
+      },
+      "tokens_input": {
+        "n": 15,
+        "mean": 22157.533333333333,
+        "median": 22138,
+        "p95": 22245,
+        "min": 22069,
+        "max": 22245
+      },
+      "tokens_output": {
+        "n": 15,
+        "mean": 338.6666666666667,
+        "median": 248,
+        "p95": 716,
+        "min": 26,
+        "max": 716
+      },
+      "tokens_cached_input": {
+        "n": 15,
+        "mean": 2978.133333333333,
+        "median": 0,
+        "p95": 16000,
+        "min": 0,
+        "max": 16000
+      },
+      "actual_models": [
+        "gpt-6.1-sol"
+      ]
+    }
+  },
+  "calls": [
+    {
+      "name": "F1-r0-B01-Heron",
+      "condition": "F1",
+      "repetition": 0,
+      "case": "B01-Heron",
+      "models": [
+        "claude-haiku-5-5"
+      ],
+      "elapsed_seconds": 12.68608183300239,
+      "input": 20216,
+      "output": 2173,
+      "cached_input": 649,
+      "source": "Claude result.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F1-r0-B01-Kestrel",
+      "condition": "F1",
+      "repetition": 0,
+      "case": "B01-Kestrel",
+      "models": [
+        "claude-haiku-5-5"
+      ],
+      "elapsed_seconds": 13.570739333023084,
+      "input": 20202,
+      "output": 2418,
+      "cached_input": 3053,
+      "source": "Claude result.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F1-r0-B01-Wren",
+      "condition": "F1",
+      "repetition": 0,
+      "case": "B01-Wren",
+      "models": [
+        "claude-haiku-5-5"
+      ],
+      "elapsed_seconds": 11.173357457999373,
+      "input": 20190,
+      "output": 1818,
+      "cached_input": 3053,
+      "source": "Claude result.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F1-r0-B01-Plover",
+      "condition": "F1",
+      "repetition": 0,
+      "case": "B01-Plover",
+      "models": [
+        "claude-haiku-5-5"
+      ],
+      "elapsed_seconds": 9.836548791994574,
+      "input": 20203,
+      "output": 1601,
+      "cached_input": 3053,
+      "source": "Claude result.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F1-r0-B01-Tern",
+      "condition": "F1",
+      "repetition": 0,
+      "case": "B01-Tern",
+      "models": [
+        "claude-haiku-5-5"
+      ],
+      "elapsed_seconds": 9.845618958002888,
+      "input": 20242,
+      "output": 1535,
+      "cached_input": 3053,
+      "source": "Claude result.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F1-r0-B02-Heron",
+      "condition": "F1",
+      "repetition": 0,
+      "case": "B02-Heron",
+      "models": [
+        "claude-haiku-5-5"
+      ],
+      "elapsed_seconds": 12.963271125016036,
+      "input": 20177,
+      "output": 1304,
+      "cached_input": 3053,
+      "source": "Claude result.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F1-r0-B02-Kestrel",
+      "condition": "F1",
+      "repetition": 0,
+      "case": "B02-Kestrel",
+      "models": [
+        "claude-haiku-5-5"
+      ],
+      "elapsed_seconds": 9.986823667015415,
+      "input": 20163,
+      "output": 1234,
+      "cached_input": 3053,
+      "source": "Claude result.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F1-r0-B02-Wren",
+      "condition": "F1",
+      "repetition": 0,
+      "case": "B02-Wren",
+      "models": [
+        "claude-haiku-5-5"
+      ],
+      "elapsed_seconds": 9.79965641599847,
+      "input": 20222,
+      "output": 1602,
+      "cached_input": 3053,
+      "source": "Claude result.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F1-r0-B02-Plover",
+      "condition": "F1",
+      "repetition": 0,
+      "case": "B02-Plover",
+      "models": [
+        "claude-haiku-5-5"
+      ],
+      "elapsed_seconds": 9.058010582986753,
+      "input": 20235,
+      "output": 1546,
+      "cached_input": 3053,
+      "source": "Claude result.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F1-r0-B02-Tern",
+      "condition": "F1",
+      "repetition": 0,
+      "case": "B02-Tern",
+      "models": [
+        "claude-haiku-5-5"
+      ],
+      "elapsed_seconds": 9.587315333017614,
+      "input": 20246,
+      "output": 1569,
+      "cached_input": 3053,
+      "source": "Claude result.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F1-r0-B03-Heron",
+      "condition": "F1",
+      "repetition": 0,
+      "case": "B03-Heron",
+      "models": [
+        "claude-haiku-5-5"
+      ],
+      "elapsed_seconds": 9.371900833008112,
+      "input": 20265,
+      "output": 1474,
+      "cached_input": 3053,
+      "source": "Claude result.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F1-r0-B03-Kestrel",
+      "condition": "F1",
+      "repetition": 0,
+      "case": "B03-Kestrel",
+      "models": [
+        "claude-haiku-5-5"
+      ],
+      "elapsed_seconds": 10.720291083009215,
+      "input": 20307,
+      "output": 1774,
+      "cached_input": 3053,
+      "source": "Claude result.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F1-r0-B03-Wren",
+      "condition": "F1",
+      "repetition": 0,
+      "case": "B03-Wren",
+      "models": [
+        "claude-haiku-5-5"
+      ],
+      "elapsed_seconds": 12.36723787500523,
+      "input": 20281,
+      "output": 2278,
+      "cached_input": 3053,
+      "source": "Claude result.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F1-r0-B03-Plover",
+      "condition": "F1",
+      "repetition": 0,
+      "case": "B03-Plover",
+      "models": [
+        "claude-haiku-5-5"
+      ],
+      "elapsed_seconds": 10.815415290999226,
+      "input": 20337,
+      "output": 1677,
+      "cached_input": 3053,
+      "source": "Claude result.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F1-r0-B03-Tern",
+      "condition": "F1",
+      "repetition": 0,
+      "case": "B03-Tern",
+      "models": [
+        "claude-haiku-5-5"
+      ],
+      "elapsed_seconds": 11.126835542003391,
+      "input": 20348,
+      "output": 1957,
+      "cached_input": 3053,
+      "source": "Claude result.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F1-r0-B04-Heron",
+      "condition": "F1",
+      "repetition": 0,
+      "case": "B04-Heron",
+      "models": [
+        "claude-haiku-5-5"
+      ],
+      "elapsed_seconds": 10.00798404199304,
+      "input": 20343,
+      "output": 1651,
+      "cached_input": 3053,
+      "source": "Claude result.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F1-r0-B04-Kestrel",
+      "condition": "F1",
+      "repetition": 0,
+      "case": "B04-Kestrel",
+      "models": [
+        "claude-haiku-5-5"
+      ],
+      "elapsed_seconds": 11.155477958993288,
+      "input": 20350,
+      "output": 1778,
+      "cached_input": 3053,
+      "source": "Claude result.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F1-r0-B04-Wren",
+      "condition": "F1",
+      "repetition": 0,
+      "case": "B04-Wren",
+      "models": [
+        "claude-haiku-5-5"
+      ],
+      "elapsed_seconds": 8.302949582983274,
+      "input": 20324,
+      "output": 1227,
+      "cached_input": 3053,
+      "source": "Claude result.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F1-r0-B04-Plover",
+      "condition": "F1",
+      "repetition": 0,
+      "case": "B04-Plover",
+      "models": [
+        "claude-haiku-5-5"
+      ],
+      "elapsed_seconds": 10.416890332999174,
+      "input": 20337,
+      "output": 1728,
+      "cached_input": 3053,
+      "source": "Claude result.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F1-r0-B04-Tern",
+      "condition": "F1",
+      "repetition": 0,
+      "case": "B04-Tern",
+      "models": [
+        "claude-haiku-5-5"
+      ],
+      "elapsed_seconds": 11.851596124994103,
+      "input": 20348,
+      "output": 1946,
+      "cached_input": 3053,
+      "source": "Claude result.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F1-r0-B05-Heron",
+      "condition": "F1",
+      "repetition": 0,
+      "case": "B05-Heron",
+      "models": [
+        "claude-haiku-5-5"
+      ],
+      "elapsed_seconds": 10.051901583996369,
+      "input": 20390,
+      "output": 1590,
+      "cached_input": 3053,
+      "source": "Claude result.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F1-r0-B05-Kestrel",
+      "condition": "F1",
+      "repetition": 0,
+      "case": "B05-Kestrel",
+      "models": [
+        "claude-haiku-5-5"
+      ],
+      "elapsed_seconds": 12.84754304101807,
+      "input": 20376,
+      "output": 2060,
+      "cached_input": 3053,
+      "source": "Claude result.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F1-r0-B05-Wren",
+      "condition": "F1",
+      "repetition": 0,
+      "case": "B05-Wren",
+      "models": [
+        "claude-haiku-5-5"
+      ],
+      "elapsed_seconds": 11.86039562500082,
+      "input": 20350,
+      "output": 1909,
+      "cached_input": 3053,
+      "source": "Claude result.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F1-r0-B05-Plover",
+      "condition": "F1",
+      "repetition": 0,
+      "case": "B05-Plover",
+      "models": [
+        "claude-haiku-5-5"
+      ],
+      "elapsed_seconds": 11.697440582996933,
+      "input": 20385,
+      "output": 2007,
+      "cached_input": 3053,
+      "source": "Claude result.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F1-r0-B05-Tern",
+      "condition": "F1",
+      "repetition": 0,
+      "case": "B05-Tern",
+      "models": [
+        "claude-haiku-5-5"
+      ],
+      "elapsed_seconds": 9.857109833013965,
+      "input": 20396,
+      "output": 1399,
+      "cached_input": 3053,
+      "source": "Claude result.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F1-r0-B06-Heron",
+      "condition": "F1",
+      "repetition": 0,
+      "case": "B06-Heron",
+      "models": [
+        "claude-haiku-5-5"
+      ],
+      "elapsed_seconds": 8.08375208399957,
+      "input": 20388,
+      "output": 1247,
+      "cached_input": 3053,
+      "source": "Claude result.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F1-r0-B06-Kestrel",
+      "condition": "F1",
+      "repetition": 0,
+      "case": "B06-Kestrel",
+      "models": [
+        "claude-haiku-5-5"
+      ],
+      "elapsed_seconds": 14.924997416004771,
+      "input": 20374,
+      "output": 2768,
+      "cached_input": 3053,
+      "source": "Claude result.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F1-r0-B06-Wren",
+      "condition": "F1",
+      "repetition": 0,
+      "case": "B06-Wren",
+      "models": [
+        "claude-haiku-5-5"
+      ],
+      "elapsed_seconds": 12.176521083019907,
+      "input": 20387,
+      "output": 1980,
+      "cached_input": 3053,
+      "source": "Claude result.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F1-r0-B06-Plover",
+      "condition": "F1",
+      "repetition": 0,
+      "case": "B06-Plover",
+      "models": [
+        "claude-haiku-5-5"
+      ],
+      "elapsed_seconds": 16.593855416984297,
+      "input": 20400,
+      "output": 3169,
+      "cached_input": 3053,
+      "source": "Claude result.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F1-r0-B06-Tern",
+      "condition": "F1",
+      "repetition": 0,
+      "case": "B06-Tern",
+      "models": [
+        "claude-haiku-5-5"
+      ],
+      "elapsed_seconds": 16.662967125012074,
+      "input": 20411,
+      "output": 3071,
+      "cached_input": 3053,
+      "source": "Claude result.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F1-r0-B07-Heron",
+      "condition": "F1",
+      "repetition": 0,
+      "case": "B07-Heron",
+      "models": [
+        "claude-haiku-5-5"
+      ],
+      "elapsed_seconds": 12.843320875021163,
+      "input": 20437,
+      "output": 2212,
+      "cached_input": 3053,
+      "source": "Claude result.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F1-r0-B07-Kestrel",
+      "condition": "F1",
+      "repetition": 0,
+      "case": "B07-Kestrel",
+      "models": [
+        "claude-haiku-5-5"
+      ],
+      "elapsed_seconds": 9.961302249983419,
+      "input": 20423,
+      "output": 1519,
+      "cached_input": 3053,
+      "source": "Claude result.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F1-r0-B07-Wren",
+      "condition": "F1",
+      "repetition": 0,
+      "case": "B07-Wren",
+      "models": [
+        "claude-haiku-5-5"
+      ],
+      "elapsed_seconds": 11.520219625002937,
+      "input": 20397,
+      "output": 1859,
+      "cached_input": 3053,
+      "source": "Claude result.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F1-r0-B07-Plover",
+      "condition": "F1",
+      "repetition": 0,
+      "case": "B07-Plover",
+      "models": [
+        "claude-haiku-5-5"
+      ],
+      "elapsed_seconds": 8.533814207999967,
+      "input": 20410,
+      "output": 1362,
+      "cached_input": 3053,
+      "source": "Claude result.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F1-r0-B07-Tern",
+      "condition": "F1",
+      "repetition": 0,
+      "case": "B07-Tern",
+      "models": [
+        "claude-haiku-5-5"
+      ],
+      "elapsed_seconds": 11.523056459001964,
+      "input": 20421,
+      "output": 2033,
+      "cached_input": 3053,
+      "source": "Claude result.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F1-r0-B08-Heron",
+      "condition": "F1",
+      "repetition": 0,
+      "case": "B08-Heron",
+      "models": [
+        "claude-haiku-5-5"
+      ],
+      "elapsed_seconds": 7.934000209002988,
+      "input": 20428,
+      "output": 1101,
+      "cached_input": 3053,
+      "source": "Claude result.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F1-r0-B08-Kestrel",
+      "condition": "F1",
+      "repetition": 0,
+      "case": "B08-Kestrel",
+      "models": [
+        "claude-haiku-5-5"
+      ],
+      "elapsed_seconds": 10.929900707997149,
+      "input": 20414,
+      "output": 1675,
+      "cached_input": 3053,
+      "source": "Claude result.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F1-r0-B08-Wren",
+      "condition": "F1",
+      "repetition": 0,
+      "case": "B08-Wren",
+      "models": [
+        "claude-haiku-5-5"
+      ],
+      "elapsed_seconds": 14.749840541015146,
+      "input": 20388,
+      "output": 2739,
+      "cached_input": 3053,
+      "source": "Claude result.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F1-r0-B08-Plover",
+      "condition": "F1",
+      "repetition": 0,
+      "case": "B08-Plover",
+      "models": [
+        "claude-haiku-5-5"
+      ],
+      "elapsed_seconds": 10.477166875003604,
+      "input": 20401,
+      "output": 1685,
+      "cached_input": 3053,
+      "source": "Claude result.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F1-r0-B08-Tern",
+      "condition": "F1",
+      "repetition": 0,
+      "case": "B08-Tern",
+      "models": [
+        "claude-haiku-5-5"
+      ],
+      "elapsed_seconds": 13.140927500004182,
+      "input": 20481,
+      "output": 2362,
+      "cached_input": 3053,
+      "source": "Claude result.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F1-r0-B09-Heron",
+      "condition": "F1",
+      "repetition": 0,
+      "case": "B09-Heron",
+      "models": [
+        "claude-haiku-5-5"
+      ],
+      "elapsed_seconds": 8.263495625025826,
+      "input": 20503,
+      "output": 1283,
+      "cached_input": 3053,
+      "source": "Claude result.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F1-r0-B09-Kestrel",
+      "condition": "F1",
+      "repetition": 0,
+      "case": "B09-Kestrel",
+      "models": [
+        "claude-haiku-5-5"
+      ],
+      "elapsed_seconds": 13.43895758301369,
+      "input": 20489,
+      "output": 2463,
+      "cached_input": 3053,
+      "source": "Claude result.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F1-r0-B09-Wren",
+      "condition": "F1",
+      "repetition": 0,
+      "case": "B09-Wren",
+      "models": [
+        "claude-haiku-5-5"
+      ],
+      "elapsed_seconds": 10.176773624989437,
+      "input": 20463,
+      "output": 1561,
+      "cached_input": 3053,
+      "source": "Claude result.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F1-r0-B09-Plover",
+      "condition": "F1",
+      "repetition": 0,
+      "case": "B09-Plover",
+      "models": [
+        "claude-haiku-5-5"
+      ],
+      "elapsed_seconds": 10.36841587498202,
+      "input": 20476,
+      "output": 1734,
+      "cached_input": 3053,
+      "source": "Claude result.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F1-r0-B09-Tern",
+      "condition": "F1",
+      "repetition": 0,
+      "case": "B09-Tern",
+      "models": [
+        "claude-haiku-5-5"
+      ],
+      "elapsed_seconds": 12.090425165981287,
+      "input": 20487,
+      "output": 2244,
+      "cached_input": 3053,
+      "source": "Claude result.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F1-r0-B10-Heron",
+      "condition": "F1",
+      "repetition": 0,
+      "case": "B10-Heron",
+      "models": [
+        "claude-haiku-5-5"
+      ],
+      "elapsed_seconds": 11.603880625014426,
+      "input": 20516,
+      "output": 2142,
+      "cached_input": 3053,
+      "source": "Claude result.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F1-r0-B10-Kestrel",
+      "condition": "F1",
+      "repetition": 0,
+      "case": "B10-Kestrel",
+      "models": [
+        "claude-haiku-5-5"
+      ],
+      "elapsed_seconds": 14.50017108299653,
+      "input": 20542,
+      "output": 2566,
+      "cached_input": 3053,
+      "source": "Claude result.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F1-r0-B10-Wren",
+      "condition": "F1",
+      "repetition": 0,
+      "case": "B10-Wren",
+      "models": [
+        "claude-haiku-5-5"
+      ],
+      "elapsed_seconds": 11.217433084006188,
+      "input": 20516,
+      "output": 1901,
+      "cached_input": 3053,
+      "source": "Claude result.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F1-r0-B10-Plover",
+      "condition": "F1",
+      "repetition": 0,
+      "case": "B10-Plover",
+      "models": [
+        "claude-haiku-5-5"
+      ],
+      "elapsed_seconds": 10.758243791991845,
+      "input": 20585,
+      "output": 1760,
+      "cached_input": 3053,
+      "source": "Claude result.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F1-r0-B10-Tern",
+      "condition": "F1",
+      "repetition": 0,
+      "case": "B10-Tern",
+      "models": [
+        "claude-haiku-5-5"
+      ],
+      "elapsed_seconds": 11.15047091699671,
+      "input": 20596,
+      "output": 1631,
+      "cached_input": 3053,
+      "source": "Claude result.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F1-r1-B01-Heron",
+      "condition": "F1",
+      "repetition": 1,
+      "case": "B01-Heron",
+      "models": [
+        "claude-haiku-5-5"
+      ],
+      "elapsed_seconds": 15.13734458302497,
+      "input": 20806,
+      "output": 2665,
+      "cached_input": 3053,
+      "source": "Claude result.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F1-r1-B02-Kestrel",
+      "condition": "F1",
+      "repetition": 1,
+      "case": "B02-Kestrel",
+      "models": [
+        "claude-haiku-5-5"
+      ],
+      "elapsed_seconds": 7.888293666008394,
+      "input": 20698,
+      "output": 1056,
+      "cached_input": 3053,
+      "source": "Claude result.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F1-r1-B03-Wren",
+      "condition": "F1",
+      "repetition": 1,
+      "case": "B03-Wren",
+      "models": [
+        "claude-haiku-5-5"
+      ],
+      "elapsed_seconds": 13.413850250013638,
+      "input": 20675,
+      "output": 2287,
+      "cached_input": 3053,
+      "source": "Claude result.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F1-r1-B04-Plover",
+      "condition": "F1",
+      "repetition": 1,
+      "case": "B04-Plover",
+      "models": [
+        "claude-haiku-5-5"
+      ],
+      "elapsed_seconds": 9.362302249995992,
+      "input": 20667,
+      "output": 1551,
+      "cached_input": 3053,
+      "source": "Claude result.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F1-r1-B05-Tern",
+      "condition": "F1",
+      "repetition": 1,
+      "case": "B05-Tern",
+      "models": [
+        "claude-haiku-5-5"
+      ],
+      "elapsed_seconds": 9.52031987500959,
+      "input": 20688,
+      "output": 1352,
+      "cached_input": 3053,
+      "source": "Claude result.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F1-r1-B06-Heron",
+      "condition": "F1",
+      "repetition": 1,
+      "case": "B06-Heron",
+      "models": [
+        "claude-haiku-5-5"
+      ],
+      "elapsed_seconds": 10.381036124977982,
+      "input": 20658,
+      "output": 1825,
+      "cached_input": 3053,
+      "source": "Claude result.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F1-r1-B07-Kestrel",
+      "condition": "F1",
+      "repetition": 1,
+      "case": "B07-Kestrel",
+      "models": [
+        "claude-haiku-5-5"
+      ],
+      "elapsed_seconds": 10.48177833299269,
+      "input": 20654,
+      "output": 1554,
+      "cached_input": 3053,
+      "source": "Claude result.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F1-r1-B08-Wren",
+      "condition": "F1",
+      "repetition": 1,
+      "case": "B08-Wren",
+      "models": [
+        "claude-haiku-5-5"
+      ],
+      "elapsed_seconds": 12.806491416995414,
+      "input": 20605,
+      "output": 2245,
+      "cached_input": 3053,
+      "source": "Claude result.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F1-r1-B09-Plover",
+      "condition": "F1",
+      "repetition": 1,
+      "case": "B09-Plover",
+      "models": [
+        "claude-haiku-5-5"
+      ],
+      "elapsed_seconds": 9.234516291995533,
+      "input": 20626,
+      "output": 1346,
+      "cached_input": 3053,
+      "source": "Claude result.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F1-r1-B10-Tern",
+      "condition": "F1",
+      "repetition": 1,
+      "case": "B10-Tern",
+      "models": [
+        "claude-haiku-5-5"
+      ],
+      "elapsed_seconds": 6.419127791014034,
+      "input": 20668,
+      "output": 671,
+      "cached_input": 3053,
+      "source": "Claude result.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F1-r2-B01-Heron",
+      "condition": "F1",
+      "repetition": 2,
+      "case": "B01-Heron",
+      "models": [
+        "claude-haiku-5-5"
+      ],
+      "elapsed_seconds": 15.792516333982348,
+      "input": 20860,
+      "output": 3081,
+      "cached_input": 3053,
+      "source": "Claude result.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F1-r2-B02-Kestrel",
+      "condition": "F1",
+      "repetition": 2,
+      "case": "B02-Kestrel",
+      "models": [
+        "claude-haiku-5-5"
+      ],
+      "elapsed_seconds": 9.704681625007652,
+      "input": 20752,
+      "output": 1433,
+      "cached_input": 3053,
+      "source": "Claude result.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F1-r2-B03-Wren",
+      "condition": "F1",
+      "repetition": 2,
+      "case": "B03-Wren",
+      "models": [
+        "claude-haiku-5-5"
+      ],
+      "elapsed_seconds": 14.745302916999208,
+      "input": 20744,
+      "output": 2711,
+      "cached_input": 3053,
+      "source": "Claude result.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F1-r2-B04-Plover",
+      "condition": "F1",
+      "repetition": 2,
+      "case": "B04-Plover",
+      "models": [
+        "claude-haiku-5-5"
+      ],
+      "elapsed_seconds": 10.930945665983018,
+      "input": 20736,
+      "output": 1866,
+      "cached_input": 3053,
+      "source": "Claude result.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F1-r2-B05-Tern",
+      "condition": "F1",
+      "repetition": 2,
+      "case": "B05-Tern",
+      "models": [
+        "claude-haiku-5-5"
+      ],
+      "elapsed_seconds": 9.867679832997965,
+      "input": 20757,
+      "output": 1428,
+      "cached_input": 3053,
+      "source": "Claude result.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F1-r2-B06-Heron",
+      "condition": "F1",
+      "repetition": 2,
+      "case": "B06-Heron",
+      "models": [
+        "claude-haiku-5-5"
+      ],
+      "elapsed_seconds": 7.999878582981182,
+      "input": 20727,
+      "output": 1176,
+      "cached_input": 3053,
+      "source": "Claude result.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F1-r2-B07-Kestrel",
+      "condition": "F1",
+      "repetition": 2,
+      "case": "B07-Kestrel",
+      "models": [
+        "claude-haiku-5-5"
+      ],
+      "elapsed_seconds": 13.481716667010915,
+      "input": 20705,
+      "output": 2271,
+      "cached_input": 3053,
+      "source": "Claude result.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F1-r2-B08-Wren",
+      "condition": "F1",
+      "repetition": 2,
+      "case": "B08-Wren",
+      "models": [
+        "claude-haiku-5-5"
+      ],
+      "elapsed_seconds": 12.253980000008596,
+      "input": 20656,
+      "output": 2015,
+      "cached_input": 3053,
+      "source": "Claude result.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F1-r2-B09-Plover",
+      "condition": "F1",
+      "repetition": 2,
+      "case": "B09-Plover",
+      "models": [
+        "claude-haiku-5-5"
+      ],
+      "elapsed_seconds": 10.045594791998155,
+      "input": 20659,
+      "output": 1517,
+      "cached_input": 3053,
+      "source": "Claude result.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F1-r2-B10-Tern",
+      "condition": "F1",
+      "repetition": 2,
+      "case": "B10-Tern",
+      "models": [
+        "claude-haiku-5-5"
+      ],
+      "elapsed_seconds": 7.600024292012677,
+      "input": 20683,
+      "output": 887,
+      "cached_input": 3053,
+      "source": "Claude result.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F1-r3-B01-Heron",
+      "condition": "F1",
+      "repetition": 3,
+      "case": "B01-Heron",
+      "models": [
+        "claude-haiku-5-5"
+      ],
+      "elapsed_seconds": 16.556515125004807,
+      "input": 20875,
+      "output": 3168,
+      "cached_input": 3053,
+      "source": "Claude result.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F1-r3-B02-Kestrel",
+      "condition": "F1",
+      "repetition": 3,
+      "case": "B02-Kestrel",
+      "models": [
+        "claude-haiku-5-5"
+      ],
+      "elapsed_seconds": 9.111372042010771,
+      "input": 20767,
+      "output": 1317,
+      "cached_input": 3053,
+      "source": "Claude result.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F1-r3-B03-Wren",
+      "condition": "F1",
+      "repetition": 3,
+      "case": "B03-Wren",
+      "models": [
+        "claude-haiku-5-5"
+      ],
+      "elapsed_seconds": 14.581840041006217,
+      "input": 20744,
+      "output": 2614,
+      "cached_input": 20742,
+      "source": "Claude result.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F1-r3-B04-Plover",
+      "condition": "F1",
+      "repetition": 3,
+      "case": "B04-Plover",
+      "models": [
+        "claude-haiku-5-5"
+      ],
+      "elapsed_seconds": 10.409136750007747,
+      "input": 20736,
+      "output": 1793,
+      "cached_input": 20734,
+      "source": "Claude result.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F1-r3-B05-Tern",
+      "condition": "F1",
+      "repetition": 3,
+      "case": "B05-Tern",
+      "models": [
+        "claude-haiku-5-5"
+      ],
+      "elapsed_seconds": 11.955875709012616,
+      "input": 20757,
+      "output": 1941,
+      "cached_input": 20755,
+      "source": "Claude result.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F1-r3-B06-Heron",
+      "condition": "F1",
+      "repetition": 3,
+      "case": "B06-Heron",
+      "models": [
+        "claude-haiku-5-5"
+      ],
+      "elapsed_seconds": 10.138117875001626,
+      "input": 20727,
+      "output": 1636,
+      "cached_input": 20725,
+      "source": "Claude result.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F1-r3-B07-Kestrel",
+      "condition": "F1",
+      "repetition": 3,
+      "case": "B07-Kestrel",
+      "models": [
+        "claude-haiku-5-5"
+      ],
+      "elapsed_seconds": 10.085541917011142,
+      "input": 20705,
+      "output": 1568,
+      "cached_input": 20703,
+      "source": "Claude result.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F1-r3-B08-Wren",
+      "condition": "F1",
+      "repetition": 3,
+      "case": "B08-Wren",
+      "models": [
+        "claude-haiku-5-5"
+      ],
+      "elapsed_seconds": 10.985548625001684,
+      "input": 20656,
+      "output": 1999,
+      "cached_input": 20654,
+      "source": "Claude result.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F1-r3-B09-Plover",
+      "condition": "F1",
+      "repetition": 3,
+      "case": "B09-Plover",
+      "models": [
+        "claude-haiku-5-5"
+      ],
+      "elapsed_seconds": 7.956495332997292,
+      "input": 20659,
+      "output": 1148,
+      "cached_input": 20657,
+      "source": "Claude result.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F1-r3-B10-Tern",
+      "condition": "F1",
+      "repetition": 3,
+      "case": "B10-Tern",
+      "models": [
+        "claude-haiku-5-5"
+      ],
+      "elapsed_seconds": 13.031072958023287,
+      "input": 20683,
+      "output": 2067,
+      "cached_input": 20681,
+      "source": "Claude result.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F2-r0-B01-Heron",
+      "condition": "F2",
+      "repetition": 0,
+      "case": "B01-Heron",
+      "models": [
+        "gpt-6-luna"
+      ],
+      "elapsed_seconds": 10.654325792012969,
+      "input": 21498,
+      "output": 468,
+      "cached_input": 10624,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F2-r0-B01-Kestrel",
+      "condition": "F2",
+      "repetition": 0,
+      "case": "B01-Kestrel",
+      "models": [
+        "gpt-6-luna"
+      ],
+      "elapsed_seconds": 7.303921542013995,
+      "input": 21489,
+      "output": 228,
+      "cached_input": 10624,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F2-r0-B01-Wren",
+      "condition": "F2",
+      "repetition": 0,
+      "case": "B01-Wren",
+      "models": [
+        "gpt-6-luna"
+      ],
+      "elapsed_seconds": 6.887471041991375,
+      "input": 21528,
+      "output": 211,
+      "cached_input": 10624,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F2-r0-B01-Plover",
+      "condition": "F2",
+      "repetition": 0,
+      "case": "B01-Plover",
+      "models": [
+        "gpt-6-luna"
+      ],
+      "elapsed_seconds": 5.834939749998739,
+      "input": 21533,
+      "output": 94,
+      "cached_input": 10624,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F2-r0-B01-Tern",
+      "condition": "F2",
+      "repetition": 0,
+      "case": "B01-Tern",
+      "models": [
+        "gpt-6-luna"
+      ],
+      "elapsed_seconds": 6.080605041002855,
+      "input": 21484,
+      "output": 8,
+      "cached_input": 10624,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F2-r0-B02-Heron",
+      "condition": "F2",
+      "repetition": 0,
+      "case": "B02-Heron",
+      "models": [
+        "gpt-6-luna"
+      ],
+      "elapsed_seconds": 7.4350505839975085,
+      "input": 21477,
+      "output": 206,
+      "cached_input": 10624,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F2-r0-B02-Kestrel",
+      "condition": "F2",
+      "repetition": 0,
+      "case": "B02-Kestrel",
+      "models": [
+        "gpt-6-luna"
+      ],
+      "elapsed_seconds": 6.78481345801265,
+      "input": 21413,
+      "output": 235,
+      "cached_input": 10624,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F2-r0-B02-Wren",
+      "condition": "F2",
+      "repetition": 0,
+      "case": "B02-Wren",
+      "models": [
+        "gpt-6-luna"
+      ],
+      "elapsed_seconds": 6.773424207989592,
+      "input": 21399,
+      "output": 157,
+      "cached_input": 15232,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F2-r0-B02-Plover",
+      "condition": "F2",
+      "repetition": 0,
+      "case": "B02-Plover",
+      "models": [
+        "gpt-6-luna"
+      ],
+      "elapsed_seconds": 6.735026417009067,
+      "input": 21404,
+      "output": 206,
+      "cached_input": 10624,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F2-r0-B02-Tern",
+      "condition": "F2",
+      "repetition": 0,
+      "case": "B02-Tern",
+      "models": [
+        "gpt-6-luna"
+      ],
+      "elapsed_seconds": 7.01136254100129,
+      "input": 21408,
+      "output": 201,
+      "cached_input": 15232,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F2-r0-B03-Heron",
+      "condition": "F2",
+      "repetition": 0,
+      "case": "B03-Heron",
+      "models": [
+        "gpt-6-luna"
+      ],
+      "elapsed_seconds": 5.478329709003447,
+      "input": 21468,
+      "output": 8,
+      "cached_input": 15232,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F2-r0-B03-Kestrel",
+      "condition": "F2",
+      "repetition": 0,
+      "case": "B03-Kestrel",
+      "models": [
+        "gpt-6-luna"
+      ],
+      "elapsed_seconds": 7.923750540998299,
+      "input": 21510,
+      "output": 212,
+      "cached_input": 10624,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F2-r0-B03-Wren",
+      "condition": "F2",
+      "repetition": 0,
+      "case": "B03-Wren",
+      "models": [
+        "gpt-6-luna"
+      ],
+      "elapsed_seconds": 7.79379887500545,
+      "input": 21443,
+      "output": 210,
+      "cached_input": 10624,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F2-r0-B03-Plover",
+      "condition": "F2",
+      "repetition": 0,
+      "case": "B03-Plover",
+      "models": [
+        "gpt-6-luna"
+      ],
+      "elapsed_seconds": 8.635110333998455,
+      "input": 21501,
+      "output": 259,
+      "cached_input": 10624,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F2-r0-B03-Tern",
+      "condition": "F2",
+      "repetition": 0,
+      "case": "B03-Tern",
+      "models": [
+        "gpt-6-luna"
+      ],
+      "elapsed_seconds": 5.5838317909801845,
+      "input": 21452,
+      "output": 8,
+      "cached_input": 10624,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F2-r0-B04-Heron",
+      "condition": "F2",
+      "repetition": 0,
+      "case": "B04-Heron",
+      "models": [
+        "gpt-6-luna"
+      ],
+      "elapsed_seconds": 8.728123458015034,
+      "input": 21445,
+      "output": 229,
+      "cached_input": 10624,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F2-r0-B04-Kestrel",
+      "condition": "F2",
+      "repetition": 0,
+      "case": "B04-Kestrel",
+      "models": [
+        "gpt-6-luna"
+      ],
+      "elapsed_seconds": 9.001876916008769,
+      "input": 21434,
+      "output": 481,
+      "cached_input": 15360,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F2-r0-B04-Wren",
+      "condition": "F2",
+      "repetition": 0,
+      "case": "B04-Wren",
+      "models": [
+        "gpt-6-luna"
+      ],
+      "elapsed_seconds": 6.99371570898802,
+      "input": 21420,
+      "output": 199,
+      "cached_input": 10624,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F2-r0-B04-Plover",
+      "condition": "F2",
+      "repetition": 0,
+      "case": "B04-Plover",
+      "models": [
+        "gpt-6-luna"
+      ],
+      "elapsed_seconds": 7.874842166987946,
+      "input": 21425,
+      "output": 417,
+      "cached_input": 10624,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F2-r0-B04-Tern",
+      "condition": "F2",
+      "repetition": 0,
+      "case": "B04-Tern",
+      "models": [
+        "gpt-6-luna"
+      ],
+      "elapsed_seconds": 7.591071041999385,
+      "input": 21429,
+      "output": 453,
+      "cached_input": 10624,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F2-r0-B05-Heron",
+      "condition": "F2",
+      "repetition": 0,
+      "case": "B05-Heron",
+      "models": [
+        "gpt-6-luna"
+      ],
+      "elapsed_seconds": 9.606524292001268,
+      "input": 21446,
+      "output": 410,
+      "cached_input": 15360,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F2-r0-B05-Kestrel",
+      "condition": "F2",
+      "repetition": 0,
+      "case": "B05-Kestrel",
+      "models": [
+        "gpt-6-luna"
+      ],
+      "elapsed_seconds": 5.526637708011549,
+      "input": 21435,
+      "output": 8,
+      "cached_input": 10624,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F2-r0-B05-Wren",
+      "condition": "F2",
+      "repetition": 0,
+      "case": "B05-Wren",
+      "models": [
+        "gpt-6-luna"
+      ],
+      "elapsed_seconds": 9.175123875000281,
+      "input": 21368,
+      "output": 428,
+      "cached_input": 10624,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F2-r0-B05-Plover",
+      "condition": "F2",
+      "repetition": 0,
+      "case": "B05-Plover",
+      "models": [
+        "gpt-6-luna"
+      ],
+      "elapsed_seconds": 9.856733499997063,
+      "input": 21373,
+      "output": 632,
+      "cached_input": 15232,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F2-r0-B05-Tern",
+      "condition": "F2",
+      "repetition": 0,
+      "case": "B05-Tern",
+      "models": [
+        "gpt-6-luna"
+      ],
+      "elapsed_seconds": 6.9791575410054065,
+      "input": 21430,
+      "output": 197,
+      "cached_input": 10624,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F2-r0-B06-Heron",
+      "condition": "F2",
+      "repetition": 0,
+      "case": "B06-Heron",
+      "models": [
+        "gpt-6-luna"
+      ],
+      "elapsed_seconds": 6.26698404099443,
+      "input": 21434,
+      "output": 8,
+      "cached_input": 10624,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F2-r0-B06-Kestrel",
+      "condition": "F2",
+      "repetition": 0,
+      "case": "B06-Kestrel",
+      "models": [
+        "gpt-6-luna"
+      ],
+      "elapsed_seconds": 7.634090792009374,
+      "input": 21370,
+      "output": 396,
+      "cached_input": 10624,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F2-r0-B06-Wren",
+      "condition": "F2",
+      "repetition": 0,
+      "case": "B06-Wren",
+      "models": [
+        "gpt-6-luna"
+      ],
+      "elapsed_seconds": 6.81991658298648,
+      "input": 21356,
+      "output": 139,
+      "cached_input": 15232,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F2-r0-B06-Plover",
+      "condition": "F2",
+      "repetition": 0,
+      "case": "B06-Plover",
+      "models": [
+        "gpt-6-luna"
+      ],
+      "elapsed_seconds": 7.4944532079971395,
+      "input": 21414,
+      "output": 119,
+      "cached_input": 15360,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F2-r0-B06-Tern",
+      "condition": "F2",
+      "repetition": 0,
+      "case": "B06-Tern",
+      "models": [
+        "gpt-6-luna"
+      ],
+      "elapsed_seconds": 7.291436208004598,
+      "input": 21418,
+      "output": 231,
+      "cached_input": 15360,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F2-r0-B07-Heron",
+      "condition": "F2",
+      "repetition": 0,
+      "case": "B07-Heron",
+      "models": [
+        "gpt-6-luna"
+      ],
+      "elapsed_seconds": 7.848903499980224,
+      "input": 21400,
+      "output": 211,
+      "cached_input": 10624,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F2-r0-B07-Kestrel",
+      "condition": "F2",
+      "repetition": 0,
+      "case": "B07-Kestrel",
+      "models": [
+        "gpt-6-luna"
+      ],
+      "elapsed_seconds": 7.240338790987153,
+      "input": 21389,
+      "output": 230,
+      "cached_input": 10624,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F2-r0-B07-Wren",
+      "condition": "F2",
+      "repetition": 0,
+      "case": "B07-Wren",
+      "models": [
+        "gpt-6-luna"
+      ],
+      "elapsed_seconds": 7.96741741601727,
+      "input": 21375,
+      "output": 437,
+      "cached_input": 10624,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F2-r0-B07-Plover",
+      "condition": "F2",
+      "repetition": 0,
+      "case": "B07-Plover",
+      "models": [
+        "gpt-6-luna"
+      ],
+      "elapsed_seconds": 8.739669458998833,
+      "input": 21380,
+      "output": 252,
+      "cached_input": 10624,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F2-r0-B07-Tern",
+      "condition": "F2",
+      "repetition": 0,
+      "case": "B07-Tern",
+      "models": [
+        "gpt-6-luna"
+      ],
+      "elapsed_seconds": 6.312130041013006,
+      "input": 21384,
+      "output": 79,
+      "cached_input": 10624,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F2-r0-B08-Heron",
+      "condition": "F2",
+      "repetition": 0,
+      "case": "B08-Heron",
+      "models": [
+        "gpt-6-luna"
+      ],
+      "elapsed_seconds": 10.807944750005845,
+      "input": 21439,
+      "output": 196,
+      "cached_input": 10624,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F2-r0-B08-Kestrel",
+      "condition": "F2",
+      "repetition": 0,
+      "case": "B08-Kestrel",
+      "models": [
+        "gpt-6-luna"
+      ],
+      "elapsed_seconds": 6.2679974579950795,
+      "input": 21428,
+      "output": 83,
+      "cached_input": 10624,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F2-r0-B08-Wren",
+      "condition": "F2",
+      "repetition": 0,
+      "case": "B08-Wren",
+      "models": [
+        "gpt-6-luna"
+      ],
+      "elapsed_seconds": 7.287560625001788,
+      "input": 21414,
+      "output": 215,
+      "cached_input": 15360,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F2-r0-B08-Plover",
+      "condition": "F2",
+      "repetition": 0,
+      "case": "B08-Plover",
+      "models": [
+        "gpt-6-luna"
+      ],
+      "elapsed_seconds": 7.284303709020605,
+      "input": 21419,
+      "output": 158,
+      "cached_input": 10624,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F2-r0-B08-Tern",
+      "condition": "F2",
+      "repetition": 0,
+      "case": "B08-Tern",
+      "models": [
+        "gpt-6-luna"
+      ],
+      "elapsed_seconds": 7.3624229170090985,
+      "input": 21423,
+      "output": 228,
+      "cached_input": 15360,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F2-r0-B09-Heron",
+      "condition": "F2",
+      "repetition": 0,
+      "case": "B09-Heron",
+      "models": [
+        "gpt-6-luna"
+      ],
+      "elapsed_seconds": 6.584986542002298,
+      "input": 21391,
+      "output": 215,
+      "cached_input": 10624,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F2-r0-B09-Kestrel",
+      "condition": "F2",
+      "repetition": 0,
+      "case": "B09-Kestrel",
+      "models": [
+        "gpt-6-luna"
+      ],
+      "elapsed_seconds": 7.273789250000846,
+      "input": 21380,
+      "output": 436,
+      "cached_input": 10624,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F2-r0-B09-Wren",
+      "condition": "F2",
+      "repetition": 0,
+      "case": "B09-Wren",
+      "models": [
+        "gpt-6-luna"
+      ],
+      "elapsed_seconds": 7.189931917004287,
+      "input": 21366,
+      "output": 184,
+      "cached_input": 10624,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F2-r0-B09-Plover",
+      "condition": "F2",
+      "repetition": 0,
+      "case": "B09-Plover",
+      "models": [
+        "gpt-6-luna"
+      ],
+      "elapsed_seconds": 5.752467709011398,
+      "input": 21371,
+      "output": 8,
+      "cached_input": 10624,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F2-r0-B09-Tern",
+      "condition": "F2",
+      "repetition": 0,
+      "case": "B09-Tern",
+      "models": [
+        "gpt-6-luna"
+      ],
+      "elapsed_seconds": 7.7418910000124015,
+      "input": 21375,
+      "output": 374,
+      "cached_input": 15360,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F2-r0-B10-Heron",
+      "condition": "F2",
+      "repetition": 0,
+      "case": "B10-Heron",
+      "models": [
+        "gpt-6-luna"
+      ],
+      "elapsed_seconds": 10.235846959025366,
+      "input": 21462,
+      "output": 527,
+      "cached_input": 15360,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F2-r0-B10-Kestrel",
+      "condition": "F2",
+      "repetition": 0,
+      "case": "B10-Kestrel",
+      "models": [
+        "gpt-6-luna"
+      ],
+      "elapsed_seconds": 8.907173999992665,
+      "input": 21451,
+      "output": 423,
+      "cached_input": 15360,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F2-r0-B10-Wren",
+      "condition": "F2",
+      "repetition": 0,
+      "case": "B10-Wren",
+      "models": [
+        "gpt-6-luna"
+      ],
+      "elapsed_seconds": 8.654096374986693,
+      "input": 21384,
+      "output": 442,
+      "cached_input": 10624,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F2-r0-B10-Plover",
+      "condition": "F2",
+      "repetition": 0,
+      "case": "B10-Plover",
+      "models": [
+        "gpt-6-luna"
+      ],
+      "elapsed_seconds": 8.001635666994844,
+      "input": 21442,
+      "output": 213,
+      "cached_input": 15360,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F2-r0-B10-Tern",
+      "condition": "F2",
+      "repetition": 0,
+      "case": "B10-Tern",
+      "models": [
+        "gpt-6-luna"
+      ],
+      "elapsed_seconds": 5.245566083991434,
+      "input": 21446,
+      "output": 8,
+      "cached_input": 15360,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F2-r1-B01-Heron",
+      "condition": "F2",
+      "repetition": 1,
+      "case": "B01-Heron",
+      "models": [
+        "gpt-6-luna"
+      ],
+      "elapsed_seconds": 7.962494792009238,
+      "input": 21553,
+      "output": 463,
+      "cached_input": 15360,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F2-r1-B02-Kestrel",
+      "condition": "F2",
+      "repetition": 1,
+      "case": "B02-Kestrel",
+      "models": [
+        "gpt-6-luna"
+      ],
+      "elapsed_seconds": 8.476914208993549,
+      "input": 21413,
+      "output": 88,
+      "cached_input": 15232,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F2-r1-B03-Wren",
+      "condition": "F2",
+      "repetition": 1,
+      "case": "B03-Wren",
+      "models": [
+        "gpt-6-luna"
+      ],
+      "elapsed_seconds": 6.006487291015219,
+      "input": 21496,
+      "output": 8,
+      "cached_input": 15360,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F2-r1-B04-Plover",
+      "condition": "F2",
+      "repetition": 1,
+      "case": "B04-Plover",
+      "models": [
+        "gpt-6-luna"
+      ],
+      "elapsed_seconds": 9.381803541997215,
+      "input": 21425,
+      "output": 416,
+      "cached_input": 10624,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F2-r1-B05-Tern",
+      "condition": "F2",
+      "repetition": 1,
+      "case": "B05-Tern",
+      "models": [
+        "gpt-6-luna"
+      ],
+      "elapsed_seconds": 6.981880624982296,
+      "input": 21377,
+      "output": 8,
+      "cached_input": 15232,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F2-r1-B06-Heron",
+      "condition": "F2",
+      "repetition": 1,
+      "case": "B06-Heron",
+      "models": [
+        "gpt-6-luna"
+      ],
+      "elapsed_seconds": 7.538056290999521,
+      "input": 21434,
+      "output": 155,
+      "cached_input": 10624,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F2-r1-B07-Kestrel",
+      "condition": "F2",
+      "repetition": 1,
+      "case": "B07-Kestrel",
+      "models": [
+        "gpt-6-luna"
+      ],
+      "elapsed_seconds": 8.130924750003032,
+      "input": 21442,
+      "output": 86,
+      "cached_input": 10624,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F2-r1-B08-Wren",
+      "condition": "F2",
+      "repetition": 1,
+      "case": "B08-Wren",
+      "models": [
+        "gpt-6-luna"
+      ],
+      "elapsed_seconds": 6.598032541980501,
+      "input": 21414,
+      "output": 239,
+      "cached_input": 15360,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F2-r1-B09-Plover",
+      "condition": "F2",
+      "repetition": 1,
+      "case": "B09-Plover",
+      "models": [
+        "gpt-6-luna"
+      ],
+      "elapsed_seconds": 6.098726666998118,
+      "input": 21318,
+      "output": 8,
+      "cached_input": 10624,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F2-r1-B10-Tern",
+      "condition": "F2",
+      "repetition": 1,
+      "case": "B10-Tern",
+      "models": [
+        "gpt-6-luna"
+      ],
+      "elapsed_seconds": 5.888859957980458,
+      "input": 21393,
+      "output": 8,
+      "cached_input": 10624,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F2-r2-B01-Heron",
+      "condition": "F2",
+      "repetition": 2,
+      "case": "B01-Heron",
+      "models": [
+        "gpt-6-luna"
+      ],
+      "elapsed_seconds": 11.492747834010515,
+      "input": 21500,
+      "output": 469,
+      "cached_input": 10624,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F2-r2-B02-Kestrel",
+      "condition": "F2",
+      "repetition": 2,
+      "case": "B02-Kestrel",
+      "models": [
+        "gpt-6-luna"
+      ],
+      "elapsed_seconds": 5.936643958004424,
+      "input": 21466,
+      "output": 90,
+      "cached_input": 10624,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F2-r2-B03-Wren",
+      "condition": "F2",
+      "repetition": 2,
+      "case": "B03-Wren",
+      "models": [
+        "gpt-6-luna"
+      ],
+      "elapsed_seconds": 8.953051958000287,
+      "input": 21496,
+      "output": 672,
+      "cached_input": 10624,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F2-r2-B04-Plover",
+      "condition": "F2",
+      "repetition": 2,
+      "case": "B04-Plover",
+      "models": [
+        "gpt-6-luna"
+      ],
+      "elapsed_seconds": 9.021846208022907,
+      "input": 21372,
+      "output": 437,
+      "cached_input": 15232,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F2-r2-B05-Tern",
+      "condition": "F2",
+      "repetition": 2,
+      "case": "B05-Tern",
+      "models": [
+        "gpt-6-luna"
+      ],
+      "elapsed_seconds": 5.724155375006376,
+      "input": 21430,
+      "output": 8,
+      "cached_input": 15360,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F2-r2-B06-Heron",
+      "condition": "F2",
+      "repetition": 2,
+      "case": "B06-Heron",
+      "models": [
+        "gpt-6-luna"
+      ],
+      "elapsed_seconds": 6.903814999997849,
+      "input": 21434,
+      "output": 140,
+      "cached_input": 15360,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F2-r2-B07-Kestrel",
+      "condition": "F2",
+      "repetition": 2,
+      "case": "B07-Kestrel",
+      "models": [
+        "gpt-6-luna"
+      ],
+      "elapsed_seconds": 7.586263917008182,
+      "input": 21442,
+      "output": 224,
+      "cached_input": 15360,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F2-r2-B08-Wren",
+      "condition": "F2",
+      "repetition": 2,
+      "case": "B08-Wren",
+      "models": [
+        "gpt-6-luna"
+      ],
+      "elapsed_seconds": 7.169092541997088,
+      "input": 21361,
+      "output": 216,
+      "cached_input": 10624,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F2-r2-B09-Plover",
+      "condition": "F2",
+      "repetition": 2,
+      "case": "B09-Plover",
+      "models": [
+        "gpt-6-luna"
+      ],
+      "elapsed_seconds": 7.264644209004473,
+      "input": 21371,
+      "output": 8,
+      "cached_input": 15360,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F2-r2-B10-Tern",
+      "condition": "F2",
+      "repetition": 2,
+      "case": "B10-Tern",
+      "models": [
+        "gpt-6-luna"
+      ],
+      "elapsed_seconds": 5.646699500008253,
+      "input": 21446,
+      "output": 8,
+      "cached_input": 15360,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F2-r3-B01-Heron",
+      "condition": "F2",
+      "repetition": 3,
+      "case": "B01-Heron",
+      "models": [
+        "gpt-6-luna"
+      ],
+      "elapsed_seconds": 8.19514304198674,
+      "input": 21553,
+      "output": 325,
+      "cached_input": 10624,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F2-r3-B02-Kestrel",
+      "condition": "F2",
+      "repetition": 3,
+      "case": "B02-Kestrel",
+      "models": [
+        "gpt-6-luna"
+      ],
+      "elapsed_seconds": 9.769491208018735,
+      "input": 21466,
+      "output": 111,
+      "cached_input": 15360,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F2-r3-B03-Wren",
+      "condition": "F2",
+      "repetition": 3,
+      "case": "B03-Wren",
+      "models": [
+        "gpt-6-luna"
+      ],
+      "elapsed_seconds": 9.169817249989137,
+      "input": 21443,
+      "output": 459,
+      "cached_input": 15232,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F2-r3-B04-Plover",
+      "condition": "F2",
+      "repetition": 3,
+      "case": "B04-Plover",
+      "models": [
+        "gpt-6-luna"
+      ],
+      "elapsed_seconds": 11.467529624991585,
+      "input": 21425,
+      "output": 403,
+      "cached_input": 10624,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F2-r3-B05-Tern",
+      "condition": "F2",
+      "repetition": 3,
+      "case": "B05-Tern",
+      "models": [
+        "gpt-6-luna"
+      ],
+      "elapsed_seconds": 6.801554459001636,
+      "input": 21430,
+      "output": 8,
+      "cached_input": 10624,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F2-r3-B06-Heron",
+      "condition": "F2",
+      "repetition": 3,
+      "case": "B06-Heron",
+      "models": [
+        "gpt-6-luna"
+      ],
+      "elapsed_seconds": 7.487560958019458,
+      "input": 21434,
+      "output": 151,
+      "cached_input": 15360,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F2-r3-B07-Kestrel",
+      "condition": "F2",
+      "repetition": 3,
+      "case": "B07-Kestrel",
+      "models": [
+        "gpt-6-luna"
+      ],
+      "elapsed_seconds": 6.188129165995633,
+      "input": 21442,
+      "output": 97,
+      "cached_input": 15360,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F2-r3-B08-Wren",
+      "condition": "F2",
+      "repetition": 3,
+      "case": "B08-Wren",
+      "models": [
+        "gpt-6-luna"
+      ],
+      "elapsed_seconds": 8.2809106670029,
+      "input": 21414,
+      "output": 145,
+      "cached_input": 15360,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F2-r3-B09-Plover",
+      "condition": "F2",
+      "repetition": 3,
+      "case": "B09-Plover",
+      "models": [
+        "gpt-6-luna"
+      ],
+      "elapsed_seconds": 5.616137750010239,
+      "input": 21371,
+      "output": 8,
+      "cached_input": 15360,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F2-r3-B10-Tern",
+      "condition": "F2",
+      "repetition": 3,
+      "case": "B10-Tern",
+      "models": [
+        "gpt-6-luna"
+      ],
+      "elapsed_seconds": 5.011008333007339,
+      "input": 21393,
+      "output": 8,
+      "cached_input": 15232,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F3-r0-B01-Heron",
+      "condition": "F3",
+      "repetition": 0,
+      "case": "B01-Heron",
+      "models": [
+        "gpt-6.1-sol"
+      ],
+      "elapsed_seconds": 14.290355250006542,
+      "input": 22245,
+      "output": 426,
+      "cached_input": 0,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F3-r0-B01-Kestrel",
+      "condition": "F3",
+      "repetition": 0,
+      "case": "B01-Kestrel",
+      "models": [
+        "gpt-6.1-sol"
+      ],
+      "elapsed_seconds": 15.833063625002978,
+      "input": 22234,
+      "output": 716,
+      "cached_input": 0,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F3-r0-B01-Wren",
+      "condition": "F3",
+      "repetition": 0,
+      "case": "B01-Wren",
+      "models": [
+        "gpt-6.1-sol"
+      ],
+      "elapsed_seconds": 9.359703791997163,
+      "input": 22220,
+      "output": 235,
+      "cached_input": 0,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F3-r0-B01-Plover",
+      "condition": "F3",
+      "repetition": 0,
+      "case": "B01-Plover",
+      "models": [
+        "gpt-6.1-sol"
+      ],
+      "elapsed_seconds": 10.06036558400956,
+      "input": 22225,
+      "output": 244,
+      "cached_input": 0,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F3-r0-B01-Tern",
+      "condition": "F3",
+      "repetition": 0,
+      "case": "B01-Tern",
+      "models": [
+        "gpt-6.1-sol"
+      ],
+      "elapsed_seconds": 9.77433816701523,
+      "input": 22229,
+      "output": 248,
+      "cached_input": 7168,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F3-r0-B05-Heron",
+      "condition": "F3",
+      "repetition": 0,
+      "case": "B05-Heron",
+      "models": [
+        "gpt-6.1-sol"
+      ],
+      "elapsed_seconds": 9.189720333000878,
+      "input": 22138,
+      "output": 217,
+      "cached_input": 0,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F3-r0-B05-Kestrel",
+      "condition": "F3",
+      "repetition": 0,
+      "case": "B05-Kestrel",
+      "models": [
+        "gpt-6.1-sol"
+      ],
+      "elapsed_seconds": 12.355956167011755,
+      "input": 22074,
+      "output": 368,
+      "cached_input": 7168,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F3-r0-B05-Wren",
+      "condition": "F3",
+      "repetition": 0,
+      "case": "B05-Wren",
+      "models": [
+        "gpt-6.1-sol"
+      ],
+      "elapsed_seconds": 8.868938457977492,
+      "input": 22113,
+      "output": 230,
+      "cached_input": 16000,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F3-r0-B05-Plover",
+      "condition": "F3",
+      "repetition": 0,
+      "case": "B05-Plover",
+      "models": [
+        "gpt-6.1-sol"
+      ],
+      "elapsed_seconds": 10.400015249993885,
+      "input": 22118,
+      "output": 410,
+      "cached_input": 0,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F3-r0-B05-Tern",
+      "condition": "F3",
+      "repetition": 0,
+      "case": "B05-Tern",
+      "models": [
+        "gpt-6.1-sol"
+      ],
+      "elapsed_seconds": 8.602788042015163,
+      "input": 22069,
+      "output": 224,
+      "cached_input": 0,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F3-r0-B10-Heron",
+      "condition": "F3",
+      "repetition": 0,
+      "case": "B10-Heron",
+      "models": [
+        "gpt-6.1-sol"
+      ],
+      "elapsed_seconds": 15.123714375018608,
+      "input": 22154,
+      "output": 643,
+      "cached_input": 7168,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F3-r0-B10-Kestrel",
+      "condition": "F3",
+      "repetition": 0,
+      "case": "B10-Kestrel",
+      "models": [
+        "gpt-6.1-sol"
+      ],
+      "elapsed_seconds": 10.441868875001092,
+      "input": 22143,
+      "output": 419,
+      "cached_input": 7168,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F3-r0-B10-Wren",
+      "condition": "F3",
+      "repetition": 0,
+      "case": "B10-Wren",
+      "models": [
+        "gpt-6.1-sol"
+      ],
+      "elapsed_seconds": 14.509861333004665,
+      "input": 22129,
+      "output": 450,
+      "cached_input": 0,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F3-r0-B10-Plover",
+      "condition": "F3",
+      "repetition": 0,
+      "case": "B10-Plover",
+      "models": [
+        "gpt-6.1-sol"
+      ],
+      "elapsed_seconds": 9.450572874979116,
+      "input": 22134,
+      "output": 224,
+      "cached_input": 0,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F3-r0-B10-Tern",
+      "condition": "F3",
+      "repetition": 0,
+      "case": "B10-Tern",
+      "models": [
+        "gpt-6.1-sol"
+      ],
+      "elapsed_seconds": 9.123989208979765,
+      "input": 22138,
+      "output": 26,
+      "cached_input": 0,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    }
+  ],
+  "missing": [],
+  "invalid": [],
+  "freeze_verified": true,
+  "planned_model_calls": 175,
+  "observed_model_calls": 175,
+  "complete": true
+}
