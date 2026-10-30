@@ -18,6 +18,7 @@ nodes themselves.
 from __future__ import annotations
 
 import hashlib
+import json
 import os
 import re
 
@@ -56,12 +57,13 @@ def _require_member(me: dict, team_name: str) -> dict:
 # --- the items ------------------------------------------------------------------
 
 def items(nodes: list) -> dict:
-    """item -> its nodes, in the order the items first appeared."""
+    """item -> its nodes, items in the order they first appeared (node times
+    are to the second, so items begun in the same second go by name)."""
     out = {}
     for n in nodes:
         if n.get("item"):
             out.setdefault(n["item"], []).append(n)
-    return out
+    return dict(sorted(out.items(), key=lambda kv: (kv[1][0].get("t", ""), kv[0])))
 
 
 def heads(item_nodes: list) -> list:
@@ -78,10 +80,17 @@ def current(team: str) -> dict:
 
 # --- render and direct edits ------------------------------------------------------------
 
-def _footer(n: dict) -> str:
+def _footer(n: dict, team: str | None = None) -> str:
     extra = []
     if n.get("decision"):
-        extra.append("decision %s" % n["decision"])
+        rec = load_decision(team, n["decision"]) if team else None
+        if rec:
+            where = (" on machine %s" % rec["from_machine"][:8]) if rec.get("from_machine") else ""
+            extra.append("decided%s by %s: %s -> %s" % (where, rec.get("decided_by", "the user"),
+                                                        rec.get("question"), rec.get("answer")))
+        else:
+            # A node can name a decision id, but only the record makes it one.
+            extra.append("decision %s has no record here: not confirmed" % n["decision"])
     if n.get("author_kind") == "file-edit":
         extra.append("taken from a direct edit")
     return "_by %s · %s · node %s%s_" % (n["author"], n["t"], n["id"],
@@ -97,11 +106,11 @@ def render_text(team: str, state: dict | None = None) -> str:
     for item, hs in state.items():
         out += ["", "## %s" % item, ""]
         if len(hs) == 1:
-            out += [hs[0]["body"].rstrip(), "", _footer(hs[0])]
+            out += [hs[0]["body"].rstrip(), "", _footer(hs[0], team)]
             continue
         out += ["_%d %s_" % (len(hs), CONFLICT)]
         for i, n in enumerate(hs, 1):
-            out += ["", "### version %d" % i, "", n["body"].rstrip(), "", _footer(n)]
+            out += ["", "### version %d" % i, "", n["body"].rstrip(), "", _footer(n, team)]
     return "\n".join(out).rstrip() + "\n"
 
 
@@ -229,3 +238,88 @@ def changed_since(team: str, since_ids: set) -> dict:
         if n.get("item") and n["id"] not in since_ids:
             out[n["item"]] = out.get(n["item"], 0) + 1
     return out
+
+
+# --- decisions beside the board (ADR-0026 decision 7) ------------------------------------
+
+def decisions_dir(team: str) -> str:
+    return os.path.join(teams.folder(team), "decisions")
+
+
+def decision_id(record: dict) -> str:
+    body = {k: record.get(k) for k in ("t", "team", "question", "answer", "options", "decided_by",
+                                       "via", "asked_by", "item")}
+    return hashlib.sha256(json.dumps(body, sort_keys=True, ensure_ascii=False).encode()).hexdigest()[:12]
+
+
+def load_decision(team: str, ident: str) -> dict | None:
+    if not isinstance(ident, str) or not re.fullmatch(r"[0-9a-f]{12}", ident):
+        return None
+    try:
+        rec = json.load(open(os.path.join(decisions_dir(team), ident + ".json"), encoding="utf-8"))
+    except (OSError, ValueError):
+        return None
+    return rec if isinstance(rec, dict) and decision_id(rec) == ident else None
+
+
+def decisions(team: str) -> list:
+    try:
+        names = sorted(os.listdir(decisions_dir(team)))
+    except OSError:
+        return []
+    out = [load_decision(team, n[:-5]) for n in names if n.endswith(".json")]
+    return sorted([r for r in out if r], key=lambda r: r.get("t", 0))
+
+
+def _write_decision(team: str, record: dict) -> bool:
+    """Write a decision record once; never replace one. Returns whether written."""
+    os.makedirs(decisions_dir(team), mode=0o700, exist_ok=True)
+    try:
+        fd = os.open(os.path.join(decisions_dir(team), record["id"] + ".json"),
+                     os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
+    except FileExistsError:
+        return False
+    with os.fdopen(fd, "w", encoding="utf-8") as fh:
+        json.dump(record, fh, ensure_ascii=False, indent=1)
+    return True
+
+
+def record_decision(me: dict, team_name: str, question: str, answer: str, *, via: str,
+                    options=None, item: str | None = None, summary: str | None = None) -> dict:
+    """Keep the user's answer beside the board and, with an item, set that item
+    to it. Only the two places that hold the user's own answer call this: the
+    xsm_decide form and a person at this terminal (`xsm board decide`)."""
+    import time
+    from . import workers
+    if me is None:
+        if via != "terminal" or not workers.human_terminal():
+            raise BoardError("without a session, only the person themselves records a decision")
+        try:
+            team = teams.require(team_name)
+        except teams.TeamError as exc:
+            raise BoardError(str(exc))
+    else:
+        team = _require_member(me, team_name)
+    if via not in ("mcp-elicitation", "terminal"):
+        raise BoardError("a decision is your user's own answer, from the form or the terminal")
+    record = {"t": time.time(), "team": team["name"], "question": question, "answer": answer,
+              "options": list(options) if options else None,
+              "decided_by": "%s (person via %s)" % (os.environ.get("USER") or "person", via),
+              "via": via, "asked_by": (me or {}).get("ref"), "item": item}
+    record["id"] = decision_id(record)
+    _write_decision(team["name"], record)
+    node = None
+    if item:
+        hs = current(team["name"]).get(item, [])
+        text = "%s: %s" % (summary, answer) if summary else "%s -> %s" % (question, answer)
+        try:
+            node = doc.add(path(team["name"]), {"kind": "human", "name": os.environ.get("USER") or "person",
+                                                "via": via}, text, ["update"], [n["id"] for n in hs],
+                           item=item, decision=record["id"])
+        except doc.DocError as exc:
+            raise BoardError(str(exc))
+    render(team["name"])
+    from . import board_sync
+    record["sync_notes"] = board_sync.publish(team, [node] if node else [], decisions=[record])
+    record["node"] = node["id"] if node else None
+    return record

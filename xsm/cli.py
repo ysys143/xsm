@@ -1125,6 +1125,24 @@ def cmd_team(args) -> int:
 def cmd_board(args) -> int:
     """A team's board (ADR-0026): show, set an item, log, sync to other machines."""
     from . import board, board_sync, teams
+    if args.action == "decide":
+        # Your user's own answer, from the person themselves: not a session,
+        # so no membership is needed; a session asks with xsm_decide.
+        from . import workers
+        if not workers.human_terminal():
+            print("refused: a decision is your user's own answer. From a session, ask them with "
+                  "the xsm_decide MCP tool (team and item)", file=sys.stderr)
+            return REFUSED
+        if not args.item or not args.text:
+            print("usage: xsm board decide <team> <item> --text \"<the decision>\"", file=sys.stderr)
+            return USAGE
+        try:
+            rec = board.record_decision(None, args.team, args.item, args.text, via="terminal", item=args.item)
+        except (board.BoardError, teams.TeamError) as exc:
+            print("refused: %s" % exc, file=sys.stderr)
+            return REFUSED
+        print("recorded decision %s and set %s" % (rec["id"], args.item))
+        return OK
     me, why = _unsure_caller("read or write a team board")
     if why or not me:
         print(why or "this session is not registered", file=sys.stderr)
@@ -1141,6 +1159,14 @@ def cmd_board(args) -> int:
                 for n in rows:
                     print("%s %s [%s] %s: %s" % (n["id"], n["t"], n.get("item"), n["author"],
                                                  (n["body"].splitlines() or [""])[0][:100]))
+            return OK
+        if args.action == "decisions":
+            board.show(me, args.team)                 # a member only
+            rows = board.decisions(args.team)
+            print(_readable_json({"decisions": rows}) if args.json else "\n".join(
+                "%s %s -> %s%s" % (r["id"], r["question"], r["answer"],
+                                   (" (item %s)" % r["item"]) if r.get("item") else "") for r in rows)
+                or "no decisions recorded beside %s's board" % args.team)
             return OK
         if args.action == "sync":
             team = teams.require(args.team)
@@ -2848,7 +2874,7 @@ def build_parser() -> argparse.ArgumentParser:
     tm.add_argument("--json", action="store_true")
     tm.set_defaults(func=cmd_team)
     bd = sub.add_parser("board", help="a team's board: show, set <team> <item> --text, log, sync")
-    bd.add_argument("action", choices=["show", "set", "log", "sync"])
+    bd.add_argument("action", choices=["show", "set", "log", "sync", "decisions", "decide"])
     bd.add_argument("team")
     bd.add_argument("item", nargs="?", help="set/log: the item, e.g. 'decision: cache' or 'owner/bee'")
     bd.add_argument("--text")

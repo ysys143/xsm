@@ -283,15 +283,18 @@ TOOLS = [
                      "waiting request of your workers."),
      "inputSchema": {"type": "object", "properties": {"id": {"type": "string"}}}},
     {"name": "xsm_decide",
-     "description": ("Ask your user to decide, and record their answer as a decision in the "
-                     "channel. Your user sees the question and picks an option or writes an "
-                     "answer; you do not choose for them. Use it when a choice should be on "
-                     "record as the user's."),
+     "description": ("Ask your user to decide, and record their answer as a decision. With "
+                     "team (and item), it is kept beside that team's board and the item is set "
+                     "to it; a team lead takes approvals this way. Your user sees the question "
+                     "and picks an option or writes an answer; you do not choose for them. Use it "
+                     "when a choice should be on record as the user's."),
      "inputSchema": {"type": "object", "properties": {
          "question": {"type": "string"},
          "options": {"type": "array", "items": {"type": "string"},
                      "description": "choices to offer; omit for a free-text answer"},
          "summary": {"type": "string", "description": "one line on what is being decided"},
+         "team": {"type": "string", "description": "record it beside this team's board (you must be a member)"},
+         "item": {"type": "string", "description": "with team: set this board item to the answer"},
          "reply_to": {"type": "string"},
          "channel": {"type": "string"}},
          "required": ["question"]}},
@@ -1291,6 +1294,17 @@ class Server:
                                                        me, 'xsm post --tag decision "<the '
                                                            'decision to record>"'))
         summary = (args.get("summary") or "").strip()
+        if args.get("team"):
+            from . import board
+            try:
+                rec = board.record_decision(me, args["team"], question, answer, via="mcp-elicitation",
+                                            options=options or None, item=(args.get("item") or "").strip() or None,
+                                            summary=summary or None)
+            except board.BoardError as exc:
+                raise channel.ChannelError("%s; the answer was %r and is not recorded" % (exc, answer))
+            return "\n".join(["recorded decision %s beside team %s's board: %s%s" % (
+                rec["id"], args["team"], answer, " (item %s set)" % args["item"] if rec.get("node") else "")]
+                + (rec.get("sync_notes") or []))
         text = "%s: %s" % (summary, answer) if summary else "%s -> %s" % (question, answer)
         author = {"kind": "human", "name": os.environ.get("USER") or "person",
                   "via": "mcp-elicitation", "asked_by": me.get("ref"),

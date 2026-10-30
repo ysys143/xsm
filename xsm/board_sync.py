@@ -21,16 +21,18 @@ def _remote(team: dict) -> bool:
     return any(m.get("machine") for m in team.get("members", []))
 
 
-def publish(team: dict, nodes: list) -> list:
-    """Send nodes to the team's other machines. Returns notes to show."""
+def publish(team: dict, nodes: list, decisions: list | None = None) -> list:
+    """Send nodes (and decision records) to the team's other machines.
+    Returns notes to show."""
     from . import network
-    if not nodes or not _remote(team):
+    decisions = [{k: v for k, v in d.items() if k not in ("sync_notes", "node")} for d in decisions or []]
+    if not (nodes or decisions) or not _remote(team):
         return []
     payload = [{"id": n["id"], "text": doc._serialize(n)} for n in nodes]
     try:
         result = network.call({"op": "board-publish", "team": team["name"], "team_id": team["id"],
                                "machines": sorted({m["machine"] for m in team["members"] if m.get("machine")}),
-                               "nodes": payload}, timeout=30)
+                               "nodes": payload, "decisions": decisions}, timeout=30)
     except network.NetworkError as exc:
         return ["the board change was not sent to the team's other machines (%s); "
                 "`xsm board sync %s` sends every node again" % (exc, team["name"])]
@@ -40,10 +42,10 @@ def publish(team: dict, nodes: list) -> list:
 
 def sync(team: dict) -> list:
     from . import board
-    return publish(team, doc.read(board.path(team["name"])))
+    return publish(team, doc.read(board.path(team["name"])), decisions=board.decisions(team["name"]))
 
 
-def receive(origin: str, team_name: str, team_id: str, nodes: list) -> dict:
+def receive(origin: str, team_name: str, team_id: str, nodes: list, decisions=None) -> dict:
     """Take board nodes another machine sent. Returns {"taken", "kept", "refused"}."""
     from . import board
     team = teams.load(teams.check_name(team_name))
@@ -74,6 +76,17 @@ def receive(origin: str, team_name: str, team_id: str, nodes: list) -> dict:
         with os.fdopen(fd, "w", encoding="utf-8") as fh:
             fh.write(item["text"])
         taken += 1
-    if taken:
+    decided = 0
+    for record in decisions or []:
+        # The user of a member machine decided it: that machine's testimony,
+        # kept as it came, never this user's approval (ADR-0021, ADR-0025).
+        if not isinstance(record, dict) or record.get("team") != team["name"] \
+                or record.get("id") != board.decision_id(record):
+            refused += 1
+            continue
+        record = dict(record, from_machine=origin)
+        if board._write_decision(team["name"], record):
+            decided += 1
+    if taken or decided:
         board.render(team["name"])
-    return {"taken": taken, "kept": kept, "refused": refused}
+    return {"taken": taken, "kept": kept, "refused": refused, "decisions": decided}

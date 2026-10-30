@@ -37,7 +37,7 @@ class BoardTest(test_xsm.TempState):
         self.assertIn('## decision: cache\n\nmemcached after the benchmark', text)
         self.assertNotIn('\nredis\n', text)
         self.assertIn('## owner/bee', text)
-        self.assertLess(text.index('decision: cache'), text.index('owner/bee'))
+        self.assertLess(text.index('## decision: cache'), text.index('## owner/bee'))  # same second: by name
         self.assertEqual(len(board.log(self.me, 'core', 'decision: cache')), 2)
 
     def test_two_versions_at_once_are_both_shown_and_set_settles_them(self):
@@ -150,7 +150,7 @@ class BoardSyncTest(test_xsm.TempState):
         good = self._node()
         bad = dict(self._node('original'), text=self._node('changed')['text'])
         res = board_sync.receive(self.remote, 'core', self.team['id'], [good, bad])
-        self.assertEqual(res, {'taken': 1, 'kept': 0, 'refused': 1})
+        self.assertEqual(res, {'taken': 1, 'kept': 0, 'refused': 1, 'decisions': 0})
         self.assertEqual(board_sync.receive(self.remote, 'core', self.team['id'], [good])['kept'], 1)
         self.assertIn('from the other machine', board.render('core'))
 
@@ -173,3 +173,86 @@ class BoardSyncTest(test_xsm.TempState):
         with mock.patch.object(network, 'call', side_effect=network.NetworkError('service-unavailable-or-response-unknown')):
             node = board.set_item(self.me, 'core', 'plan', 'again')
         self.assertIn('xsm board sync core', node['sync_notes'][0])
+
+
+class DecisionTest(test_xsm.TempState):
+    """T6: decisions kept beside the board (ADR-0026 decision 7)."""
+
+    def setUp(self):
+        super().setUp()
+        from xsm import registry, teams
+        home = self.tmp + '/codex'
+        os.makedirs(home)
+        self.me = registry.upsert('codex', home, 'lead', os.getpid(), self.tmp, name='lead')
+        teams.create(self.me, 'core')
+        self.human = mock.patch('xsm.workers.human_terminal', return_value=False)
+        self.human.start()
+        self.addCleanup(self.human.stop)
+
+    def test_a_recorded_decision_sets_the_item_and_shows_who_decided(self):
+        from xsm import board
+        rec = board.record_decision(self.me, 'core', 'Which cache?', 'redis', via='mcp-elicitation',
+                                    options=['redis', 'memcached'], item='decision: cache')
+        self.assertEqual(board.load_decision('core', rec['id'])['answer'], 'redis')
+        text = board.show(self.me, 'core')
+        self.assertIn('## decision: cache\n\nWhich cache? -> redis', text)
+        self.assertIn('decided by', text)
+        self.assertIn('Which cache? -> redis_', text)
+        self.assertEqual([d['id'] for d in board.decisions('core')], [rec['id']])
+
+    def test_a_node_naming_a_decision_without_its_record_is_marked_unconfirmed(self):
+        from xsm import board, doc
+        doc.add(board.path('core'), board.author(self.me), 'we decided memcached', ['update'],
+                item='decision: cache', decision='0123456789ab')
+        self.assertIn('decision 0123456789ab has no record here: not confirmed', board.show(self.me, 'core'))
+
+    def test_only_the_users_own_answer_records_a_decision(self):
+        from xsm import board
+        with self.assertRaises(board.BoardError):
+            board.record_decision(self.me, 'core', 'q', 'a', via='agent')
+        with self.assertRaises(board.BoardError):
+            board.record_decision(None, 'core', 'q', 'a', via='terminal')     # not a person here
+        rec = board.record_decision(self.me, 'core', 'q', 'a', via='terminal')
+        self.assertFalse(board._write_decision('core', dict(rec, answer='changed')))   # never replaced
+        self.assertEqual(board.load_decision('core', rec['id'])['answer'], 'a')
+
+    def test_xsm_decide_with_a_team_records_beside_the_board(self):
+        from xsm import mcp
+        server = mcp.Server(io.StringIO(''), io.StringIO())
+        server.ctx = None
+        server.client_caps = {'elicitation': {}}
+        # The form lifecycle around it is the form tools' own; this is what the
+        # answer does once the person picked it.
+        with mock.patch.object(server, 'ask_client', return_value={'result': {'action': 'accept', 'content': {'answer': 'redis'}}}):
+            out = server.decide(('repo', 'repo-key'), self.me,
+                                {'question': 'Which cache?', 'options': ['redis', 'memcached'],
+                                 'team': 'core', 'item': 'decision: cache'})
+        self.assertIn("beside team core's board: redis (item decision: cache set)", out)
+
+    def test_a_person_at_the_terminal_decides_with_board_decide(self):
+        from xsm import board, cli
+        with mock.patch('xsm.workers.human_terminal', return_value=True):
+            with redirect_stdout(io.StringIO()):
+                self.assertEqual(cli.main(['board', 'decide', 'core', 'decision: db', '--text', 'postgres']), cli.OK)
+        self.assertEqual(board.decisions('core')[0]['via'], 'terminal')
+        err = io.StringIO()
+        from contextlib import redirect_stderr
+        with redirect_stderr(err):
+            self.assertEqual(cli.main(['board', 'decide', 'core', 'decision: db', '--text', 'x']), cli.REFUSED)
+        self.assertIn('xsm_decide', err.getvalue())
+
+    def test_decisions_from_another_machine_are_kept_as_its_testimony(self):
+        from xsm import board, board_sync, paths, teams
+        team = teams.require('core')
+        remote = 'a' * 64
+        team['members'].append({'machine': remote, 'runtime': 'codex', 'home_id': 'c' * 64,
+                                'session_id': 'r1', 'name': 'boss'})
+        paths.write_json(teams._file('core'), team)
+        rec = {'t': 1.0, 'team': 'core', 'question': 'q', 'answer': 'their answer', 'options': None,
+               'decided_by': 'them (person via terminal)', 'via': 'terminal', 'asked_by': None, 'item': None}
+        rec['id'] = board.decision_id(rec)
+        bad = dict(rec, answer='tampered')
+        res = board_sync.receive(remote, 'core', team['id'], [], [rec, bad])
+        self.assertEqual((res['decisions'], res['refused']), (1, 1))
+        kept = board.load_decision('core', rec['id'])
+        self.assertEqual(kept['from_machine'], remote)

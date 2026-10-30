@@ -557,7 +557,8 @@ class Daemon:
                 continue
             try:
                 answer = self.rpc(self.peer_address(machine), {"op": "board-nodes",
-                    "team": request["team"], "team_id": request["team_id"], "nodes": request["nodes"]})
+                    "team": request["team"], "team_id": request["team_id"], "nodes": request["nodes"],
+                    "decisions": request.get("decisions") or []})
                 published.append({"machine": machine, **(answer.get("result") or {})})
             except NetworkError as exc:
                 failed.append({"machine": machine, "code": str(exc)})
@@ -935,7 +936,8 @@ class Daemon:
                     from . import board_sync
                     try:
                         return {"ok": True, "result": board_sync.receive(
-                            origin, request.get("team"), request.get("team_id"), request.get("nodes"))}
+                            origin, request.get("team"), request.get("team_id"), request.get("nodes"),
+                            request.get("decisions"))}
                     except ValueError:
                         return {"ok": False, "code": "invalid-board"}
                 if op == "team":
