@@ -1383,6 +1383,7 @@ class Server:
         action = args.get("action")
         try:
             if action == "list":
+                teams.adopt_pairs()
                 return json.dumps({"teams": [{"name": t["name"], "lead": teams.label(t["lead"]) if t.get("lead") else None,
                                               "members": [teams.label(m) for m in t["members"]]}
                                              for t in teams.all_teams()]}, ensure_ascii=False)

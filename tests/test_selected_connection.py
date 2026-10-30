@@ -73,7 +73,9 @@ class SelectedConnectionTest(test_xsm.TempState):
         self.assertEqual(applied["status"], "permitted", applied)
         self.assertEqual(applied["handshake"], "not-started")
         scope = applied["scope"]
-        self.assertTrue(scope.startswith("collaboration:"))
+        # ADR-0025 decision 13: a connect makes a team of two.
+        record0 = collaboration.scope_for(self.sender, self.target)
+        self.assertEqual(scope, "team:pair-" + record0["id"][:10])
         for a, b in ((self.sender, self.target), (self.target, self.sender)):
             self.assertEqual(config.scope_for(a, b)[0], scope)
         record = collaboration.scope_for(self.sender, self.target)

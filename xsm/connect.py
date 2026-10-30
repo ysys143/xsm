@@ -194,7 +194,7 @@ def offer(sender: dict, target: dict, spec: str, msg: dict, why: str) -> Step | 
 
 
 def _select_network(sender: dict, target: dict) -> dict:
-    from . import collaboration, network, network_identity, resolve
+    from . import collaboration, network, network_identity, resolve, team_sync, teams
     try:
         address = network_identity.target(target)
     except ValueError as exc:
@@ -242,7 +242,10 @@ def _select_network(sender: dict, target: dict) -> dict:
 
         def apply_selection(verdict):
             current = fresh().record
-            collaboration.create(sender, current, verdict)
+            record = collaboration.create(sender, current, verdict)
+            pair.append(teams.make_pair(sender, current, record))
+
+        pair = []
 
         verdict, go, kept = consent.take_or_request(
             sender, "collaborate", name,
@@ -255,7 +258,11 @@ def _select_network(sender: dict, target: dict) -> dict:
                       "then run the same connect again" % name)
             return {"status": "selection-required", "reason": reason,
                     "target": address, "handshake": "not-started"}
-        return {"status": "permitted", "scope": synchronize(),
+        scope = synchronize()
+        if pair:
+            # The peer checks the team record; a 0.5.0 peer checks the selection.
+            team_sync.publish(pair[0])
+        return {"status": "permitted", "scope": scope, "team": pair[0]["name"] if pair else None,
                 "target": address, "handshake": "not-started"}
     except ValueError as exc:
         return {"status": "refused", "reason": str(exc), "handshake": "not-started"}
@@ -267,7 +274,7 @@ def select(sender: dict, target: dict, call=None) -> dict:
     This is permission to attempt the handshake, never evidence that the peer
     has answered. The ordinary folder commands retain their separate scope.
     """
-    from . import collaboration, context, registry
+    from . import collaboration, context, registry, teams
     why = context.require_sure(call, "connect the selected session") if call else None
     if why:
         return {"status": "refused", "reason": why}
@@ -294,7 +301,11 @@ def select(sender: dict, target: dict, call=None) -> dict:
                r.get("session_id") == target.get("session_id")]
         if len(now) != 1 or now[0].get("state") in ("ended", "stale"):
             raise ValueError("the selected conversation ended before applying")
-        applied.append(collaboration.create(sender, now[0], verdict))
+        record = collaboration.create(sender, now[0], verdict)
+        # A connect makes a team of two (ADR-0025 decision 13). The selection
+        # record stays: it is the evidence a 0.5.0 peer checks.
+        teams.make_pair(sender, now[0], record)
+        applied.append(record)
 
     try:
         verdict, go, kept = consent.take_or_request(
@@ -310,7 +321,8 @@ def select(sender: dict, target: dict, call=None) -> dict:
         return {"status": "selection-required", "reason": reason,
                 "target": target.get("ref"), "handshake": "not-started"}
     record = applied[0]
-    return {"status": "permitted", "scope": "collaboration:" + record["id"],
+    return {"status": "permitted", "scope": "team:" + teams.pair_name(record["id"]),
+            "team": teams.pair_name(record["id"]),
             "target": target.get("ref"), "handshake": "not-started"}
 
 

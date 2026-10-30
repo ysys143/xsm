@@ -88,34 +88,49 @@ def all_teams() -> list:
 
 # --- members --------------------------------------------------------------------
 
-def member_of(record: dict) -> dict:
-    """The member key of a registry record (local) or a P2P endpoint (remote)."""
+def member_of(record: dict, by_conversation: bool = False) -> dict:
+    """The member key of a registry record (local) or a P2P endpoint (remote).
+    A local session is held by name (D26); one without a name, or a member
+    made from a selected conversation (by_conversation), by its session id."""
     if record.get("machine") and record.get("home_id") and not record.get("home"):
         return {"machine": record["machine"], "runtime": record.get("runtime"),
                 "home_id": record["home_id"], "session_id": record.get("session_id"),
                 "name": record.get("name")}
-    if not (record.get("runtime") and record.get("home") and record.get("name")):
-        raise TeamError("this session has no name xsm can hold it by; give it one first "
-                        "(/rename in Claude Code) and try again")
-    return {"runtime": record["runtime"], "home": os.path.realpath(os.path.expanduser(record["home"])),
-            "name": record["name"]}
+    if not (record.get("runtime") and record.get("home")):
+        raise TeamError("not a registered session")
+    home = os.path.realpath(os.path.expanduser(record["home"]))
+    if record.get("name") and not by_conversation:
+        return {"runtime": record["runtime"], "home": home, "name": record["name"]}
+    if not record.get("session_id"):
+        raise TeamError("not a registered session")
+    return {"runtime": record["runtime"], "home": home, "session_id": record["session_id"],
+            "name": record.get("name")}
 
 
 def _same(member: dict, other: dict) -> bool:
     if member.get("machine") or other.get("machine"):
         return all(member.get(k) == other.get(k) for k in ("machine", "runtime", "home_id", "session_id"))
-    return all(member.get(k) == other.get(k) for k in ("runtime", "home", "name"))
+    if member.get("runtime") != other.get("runtime") or member.get("home") != other.get("home"):
+        return False
+    if member.get("session_id") or other.get("session_id"):
+        return member.get("session_id") == other.get("session_id")
+    return member.get("name") == other.get("name")
 
 
 def matches(member: dict, record: dict) -> bool:
-    """Whether a session (registry record or P2P endpoint) is this member."""
+    """Whether a session (registry record or P2P endpoint) is this member: by
+    name for a name member, by session id for a conversation member."""
     try:
+        if member.get("session_id") and not member.get("machine"):
+            return _same(member, member_of(record, by_conversation=True))
         return _same(member, member_of(record))
     except (TeamError, TypeError):
         return False
 
 
 def label(member: dict) -> str:
+    if member.get("session_id") and not member.get("machine") and not member.get("name"):
+        return "%s:%s" % (member.get("runtime"), member["session_id"][:12])
     if member.get("machine"):
         return "%s on %s [%s]" % (member.get("name") or member.get("session_id"),
                                    member["machine"][:8], member.get("runtime"))
@@ -230,7 +245,8 @@ def add(me: dict, name: str, target: dict, approval: str) -> dict:
 
 
 def remove(me: dict, name: str, member_spec: dict, approval: str | None) -> dict:
-    """Remove a member: the member itself, the lead, or on the user's approval."""
+    """Remove a member: the member itself, the lead, or on the user's approval.
+    A pair made by connect also loses the selection it was made from."""
     with _locked(check_name(name)) as path:
         team = paths.read_json(path)
         if not team:
@@ -246,7 +262,61 @@ def remove(me: dict, name: str, member_spec: dict, approval: str | None) -> dict
             team["lead"] = None
         _log(team, "leave" if itself else "remove", me, member_spec, approval)
         paths.write_json(path, team)
+    if team.get("pair"):
+        from . import collaboration
+        collaboration.drop_id(team["pair"]["collaboration"])
     return team
+
+
+# --- connect: a pair is a team of two (ADR-0025 decision 13) --------------------------
+
+def pair_name(collaboration_id: str) -> str:
+    return "pair-" + collaboration_id[:10]
+
+
+def make_pair(sender: dict, target: dict, collaboration: dict) -> dict:
+    """The two-member team a connect makes. Members are the two selected
+    conversations themselves (connect selects a conversation, not a name).
+    Idempotent: an existing pair team for the same selection is returned."""
+    name = pair_name(collaboration["id"])
+    members = [member_of(sender, by_conversation=True), member_of(target, by_conversation=True)]
+    with _locked(name) as path:
+        team = paths.read_json(path)
+        if team and (team.get("pair") or {}).get("collaboration") == collaboration["id"] \
+                and len(team.get("members", [])) == 2:
+            return team
+        team = {"name": name, "id": uuid.uuid4().hex, "created_at": time.time(),
+                "created_by": members[0], "lead": None, "members": members, "generation": 0,
+                "pair": {"collaboration": collaboration["id"]}}
+        _log(team, "connect", sender, members[1], collaboration.get("verdict"))
+        paths.write_json(path, team)
+    return team
+
+
+def adopt_pairs() -> int:
+    """Show the selections made before 0.5.1 as pair teams. Their permission
+    already holds through the selection itself; this only lists them."""
+    from . import collaboration
+    made = 0
+    try:
+        files = os.listdir(paths.path(collaboration.DIRECTORY))
+    except OSError:
+        return 0
+    for fname in files:
+        if not fname.endswith(".json"):
+            continue
+        record = paths.read_json(paths.path(collaboration.DIRECTORY, fname))
+        if not isinstance(record, dict) or record.get("active") is not True or load(pair_name(record.get("id", ""))):
+            continue
+        ends = record.get("endpoints") or []
+        if len(ends) != 2:
+            continue
+        try:
+            make_pair(ends[0], ends[1], record)
+            made += 1
+        except (TeamError, KeyError, TypeError, ValueError):
+            continue
+    return made
 
 
 def set_lead(me: dict, name: str, member_spec: dict | None, approval: str) -> dict:

@@ -1025,6 +1025,7 @@ def cmd_team(args) -> int:
     scope, and naming the lead, are your user's decisions."""
     from . import teams
     if args.action == "list":
+        teams.adopt_pairs()
         rows = teams.all_teams()
         if args.json:
             print(_readable_json({"teams": [_team_view(t) for t in rows]}))

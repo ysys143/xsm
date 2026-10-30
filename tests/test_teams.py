@@ -262,3 +262,48 @@ class TeamSyncTest(test_xsm.TempState):
         self.assertIn('not sent to its members on other machines', notes[0])
         with mock.patch.object(network, 'call', return_value={'published': [], 'failed': [{'machine': MACHINE_A, 'code': 'peer-refused'}]}):
             self.assertIn('not updated on machine aaaaaaaa: peer-refused', team_sync.publish(team)[0])
+
+
+class ConnectPairTest(test_xsm.TempState):
+    """T4: a connect makes a team of two; leaving it drops the selection."""
+
+    def setUp(self):
+        super().setUp()
+        from xsm import registry
+        home = self.tmp + '/codex'
+        os.makedirs(home)
+        other = self.tmp + '/elsewhere'
+        os.makedirs(other)
+        self.a = registry.upsert('codex', home, 'a-thread', os.getpid(), self.tmp, name='alpha')
+        self.b = registry.upsert('codex', home, 'b-thread', os.getpid(), other, name=None)
+
+    def test_pair_team_follows_the_selection_and_leaving_revokes_it(self):
+        from xsm import collaboration, config, teams
+        record = collaboration.create(self.a, self.b, 'work with b')
+        team = teams.make_pair(self.a, self.b, record)
+        self.assertEqual(team['name'], 'pair-' + record['id'][:10])
+        self.assertEqual([m.get('session_id') for m in team['members']], ['a-thread', 'b-thread'])
+        self.assertEqual(teams.make_pair(self.a, self.b, record)['id'], team['id'])   # idempotent
+        self.assertEqual(config.scope_for(self.a, self.b)[0], 'team:' + team['name'])
+        # a renamed or restarted session with the same name is not the selected conversation
+        from xsm import registry
+        same_name = registry.upsert('codex', self.a['home'], 'a2', os.getpid(), self.tmp, name='alpha')
+        self.assertFalse(teams.is_member(team, same_name))
+        teams.remove(self.b, team['name'], teams.member_of(self.b, by_conversation=True), None)
+        self.assertIsNone(collaboration.scope_for(self.a, self.b))
+        self.assertIsNone(config.scope_for(self.a, self.b)[0])
+
+    def test_selections_made_before_are_listed_as_pairs(self):
+        from xsm import collaboration, teams
+        record = collaboration.create(self.a, self.b, 'yes')
+        self.assertEqual(teams.adopt_pairs(), 1)
+        self.assertEqual(teams.adopt_pairs(), 0)
+        self.assertIsNotNone(teams.load('pair-' + record['id'][:10]))
+        collaboration.drop(self.a, self.b)
+        self.assertEqual(teams.adopt_pairs(), 0)
+
+    def test_unnamed_sessions_are_held_by_conversation(self):
+        from xsm import teams
+        self.assertEqual(teams.member_of(self.b), {'runtime': 'codex', 'home': os.path.realpath(self.b['home']),
+                                                  'session_id': 'b-thread', 'name': None})
+        self.assertEqual(teams.label(teams.member_of(self.b)), 'codex:b-thread')
