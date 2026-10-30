@@ -549,6 +549,20 @@ class Daemon:
                 failed.append({"machine": machine, "code": str(exc)})
         return {"published": published, "failed": failed}
 
+    def publish_board(self, request):
+        """Send board nodes to the machines of the team's remote members (ADR-0026)."""
+        published, failed = [], []
+        for machine in sorted(set(request.get("machines") or [])):
+            if machine == self.transport.endpoint_id:
+                continue
+            try:
+                answer = self.rpc(self.peer_address(machine), {"op": "board-nodes",
+                    "team": request["team"], "team_id": request["team_id"], "nodes": request["nodes"]})
+                published.append({"machine": machine, **(answer.get("result") or {})})
+            except NetworkError as exc:
+                failed.append({"machine": machine, "code": str(exc)})
+        return {"published": published, "failed": failed}
+
     def select_remote(self, caller, target):
         from .network_directory import public_endpoint
         caller = self.caller(caller)
@@ -767,6 +781,8 @@ class Daemon:
             return self.select_remote(request["caller"], request["target"])
         if op == "team-publish":
             return self.publish_team(request["team"])
+        if op == "board-publish":
+            return self.publish_board(request)
         if op == "send":
             return self.send_remote(request)
         if op == "admission":
@@ -915,6 +931,13 @@ class Daemon:
                         work=request.get("work"), branch=request.get("branch"))}
                 if op in ("resolve", "selection", "capabilities"):
                     return self._incoming_target(origin, request)
+                if op == "board-nodes":
+                    from . import board_sync
+                    try:
+                        return {"ok": True, "result": board_sync.receive(
+                            origin, request.get("team"), request.get("team_id"), request.get("nodes"))}
+                    except ValueError:
+                        return {"ok": False, "code": "invalid-board"}
                 if op == "team":
                     from . import team_sync
                     try:

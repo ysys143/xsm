@@ -212,6 +212,19 @@ TOOLS = [
                                                      "remove/lead: a member's name or ref"},
          "reason": {"type": "string"}},
          "required": ["action"]}, "annotations": MESSAGING},
+    {"name": "xsm_board",
+     "description": ("A team's board: what is true for the team now (decisions in force, who owns "
+                     "what, progress), one entry per item. show renders it; set writes an item "
+                     "(it builds on the item's current version, and settles two versions written "
+                     "at once); log lists the nodes. Members only. Put team-wide facts here, not in "
+                     "DMs; a DM that carries one points here instead."),
+     "inputSchema": {"type": "object", "properties": {
+         "action": {"type": "string", "enum": ["show", "set", "log"]},
+         "team": {"type": "string"},
+         "item": {"type": "string", "description": "set/log: e.g. 'decision: cache' or 'owner/bee'"},
+         "text": {"type": "string", "description": MESSAGE_TEXT_DESCRIPTION},
+         "tag": {"type": "string", "description": "optional; default update"}},
+         "required": ["action", "team"]}, "annotations": MESSAGING},
     {"name": "xsm_ack", "description": "Acknowledge inbox claim tokens only after reading their messages. "
      "Output delivery alone does not acknowledge them. Unacknowledged originals remain recoverable. "
      "Pass each claim's token value; a claim object as shown in the receive context is also accepted.",
@@ -1108,6 +1121,22 @@ class Server:
             return self.endorse(me, args)
         if name == "xsm_team":
             return self.team(me, args)
+        if name == "xsm_board":
+            from . import board
+            try:
+                if args.get("action") == "show":
+                    return board.show(me, args.get("team") or "")
+                if args.get("action") == "log":
+                    return json.dumps({"nodes": board.log(me, args.get("team") or "", args.get("item"))},
+                                      ensure_ascii=False)
+                if args.get("action") == "set":
+                    node = board.set_item(me, args.get("team") or "", args.get("item") or "",
+                                          args.get("text") or "", tag=args.get("tag"))
+                    return "\n".join(["set %s (node %s)" % (args.get("item"), node["id"])]
+                                     + (node.get("sync_notes") or []))
+            except board.BoardError as exc:
+                raise channel.ChannelError(str(exc))
+            raise channel.ChannelError("action is show, set or log")
         if name == "xsm_ack":
             from . import receive
             tokens = args.get("tokens")

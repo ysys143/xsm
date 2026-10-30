@@ -1122,6 +1122,49 @@ def cmd_team(args) -> int:
     return USAGE
 
 
+def cmd_board(args) -> int:
+    """A team's board (ADR-0026): show, set an item, log, sync to other machines."""
+    from . import board, board_sync, teams
+    me, why = _unsure_caller("read or write a team board")
+    if why or not me:
+        print(why or "this session is not registered", file=sys.stderr)
+        return REFUSED
+    try:
+        if args.action == "show":
+            print(board.show(me, args.team), end="")
+            return OK
+        if args.action == "log":
+            rows = board.log(me, args.team, args.item)
+            if args.json:
+                print(_readable_json({"nodes": rows}))
+            else:
+                for n in rows:
+                    print("%s %s [%s] %s: %s" % (n["id"], n["t"], n.get("item"), n["author"],
+                                                 (n["body"].splitlines() or [""])[0][:100]))
+            return OK
+        if args.action == "sync":
+            team = teams.require(args.team)
+            board.show(me, args.team)                 # a member only
+            notes = board_sync.sync(team)
+            print("\n".join(notes) if notes else "sent every node of %s's board to its other machines"
+                  % team["name"])
+            return OK
+        if not args.item:
+            print("usage: xsm board set <team> <item> --text ...", file=sys.stderr)
+            return USAGE
+        text = args.text
+        if args.text_file:
+            text = sys.stdin.read() if args.text_file == "-" else open(args.text_file).read()
+        node = board.set_item(me, args.team, args.item, text or "", tag=args.tag)
+        for note in node.get("sync_notes") or []:
+            print(note, file=sys.stderr)
+        print("set %s on %s's board (node %s)" % (args.item, args.team, node["id"]))
+        return OK
+    except (board.BoardError, teams.TeamError) as exc:
+        print("refused: %s" % exc, file=sys.stderr)
+        return REFUSED
+
+
 def _team_view(team: dict) -> dict:
     from . import teams
     return {"name": team["name"], "lead": teams.label(team["lead"]) if team.get("lead") else None,
@@ -2804,6 +2847,15 @@ def build_parser() -> argparse.ArgumentParser:
     tm.add_argument("--off", action="store_true", help="mute: unmute")
     tm.add_argument("--json", action="store_true")
     tm.set_defaults(func=cmd_team)
+    bd = sub.add_parser("board", help="a team's board: show, set <team> <item> --text, log, sync")
+    bd.add_argument("action", choices=["show", "set", "log", "sync"])
+    bd.add_argument("team")
+    bd.add_argument("item", nargs="?", help="set/log: the item, e.g. 'decision: cache' or 'owner/bee'")
+    bd.add_argument("--text")
+    bd.add_argument("--text-file", help="file path, or - for stdin")
+    bd.add_argument("--tag", help="optional; default update")
+    bd.add_argument("--json", action="store_true")
+    bd.set_defaults(func=cmd_board)
     service=sub.add_parser("owned",help="journal requests to an explicitly owned headless worker")
     service.add_argument("action",choices=["create","run","status","retry","reconcile"])
     service.add_argument("name")

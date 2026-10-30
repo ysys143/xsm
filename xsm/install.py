@@ -1739,8 +1739,9 @@ STALE_RULES = ("Bash(xsm spawn:*)", "Bash(xsm post:*)", "Bash(xsm doc add:*)")
 # post` and `doc add` stay with the classifier. Policy allow_messaging=false
 # takes them out again on the next refresh.
 MESSAGING_COMMANDS = ("connect", "ask", "question-status", "decision-status", "discover", "send", "inbox", "ack", "files", "owned", "list", "who", "held", "ledger", "status", "doctor",
-                      "--version")
-MESSAGING_TOOLS = ("xsm_connect", "xsm_ask", "xsm_question_status", "xsm_decision_status", "xsm_discover", "xsm_send", "xsm_inbox", "xsm_ack", "xsm_files", "xsm_owned", "xsm_post", "xsm_channel")
+                      "board", "--version")
+MESSAGING_TOOLS = ("xsm_connect", "xsm_ask", "xsm_question_status", "xsm_decision_status", "xsm_discover", "xsm_send", "xsm_inbox", "xsm_ack", "xsm_files", "xsm_owned", "xsm_post", "xsm_channel",
+                   "xsm_board")
 
 
 def mcp_tool_names() -> list:
