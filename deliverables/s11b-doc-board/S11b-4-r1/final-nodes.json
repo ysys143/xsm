@@ -1,0 +1,12 @@
+{
+  "e3144d67aed7.md": "---\nid: e3144d67aed7\nt: 2026-10-30T14:56:58+0900\nauthor: S11b setup fixture (person)\nauthor_kind: human\ntags: setup\nparents: 894d103bf408\n---\n\n## 담당: C\n대기.\n",
+  "631ae68ba9dd.md": "---\nid: 631ae68ba9dd\nt: 2026-10-30T14:57:34+0900\nauthor: wt-b-57@claude-home [099307]\nauthor_kind: agent\ntags: result\nparents: 46944a68c187\n---\n\n담당: B — S11b-4-r1-B-8b70b0a3ad — A 결정 원문: cache-choice-f46e6d97019c403b9aae32dc44638140\n",
+  "75a883065e23.md": "---\nid: 75a883065e23\nt: 2026-10-30T14:56:58+0900\nauthor: S11b setup fixture (person)\nauthor_kind: human\ntags: setup\nparents: 894d103bf408\n---\n\n## 결정: 캐시 전략\n대기.\n",
+  "203543ef9c7e.md": "---\nid: 203543ef9c7e\nt: 2026-10-30T14:57:14+0900\nauthor: wt-a-2c@claude-home [6ade80]\nauthor_kind: agent\ntags: result\nparents: fb71c8048075\n---\n\n담당: A S11b-4-r1-A-a7ea9cfa91\n",
+  "46944a68c187.md": "---\nid: 46944a68c187\nt: 2026-10-30T14:56:58+0900\nauthor: S11b setup fixture (person)\nauthor_kind: human\ntags: setup\nparents: 894d103bf408\n---\n\n## 담당: B\n대기.\n",
+  "fb71c8048075.md": "---\nid: fb71c8048075\nt: 2026-10-30T14:56:58+0900\nauthor: S11b setup fixture (person)\nauthor_kind: human\ntags: setup\nparents: 894d103bf408\n---\n\n## 담당: A\n대기.\n",
+  "fbc0015754e9.md": "---\nid: fbc0015754e9\nt: 2026-10-30T14:56:58+0900\nauthor: S11b setup fixture (person)\nauthor_kind: human\ntags: setup\nparents: 894d103bf408\n---\n\n## 진행 기록\n대기.\n",
+  "ac3171983ea7.md": "---\nid: ac3171983ea7\nt: 2026-10-30T14:57:14+0900\nauthor: wt-a-2c@claude-home [6ade80]\nauthor_kind: agent\ntags: result\nparents: 75a883065e23\n---\n\nA 결정: cache-choice-f46e6d97019c403b9aae32dc44638140\n",
+  "894d103bf408.md": "---\nid: 894d103bf408\nt: 2026-10-30T14:56:58+0900\nauthor: S11b setup fixture (person)\nauthor_kind: human\ntags: report\nparents: \n---\n\n# 공동 작업 보드\n\n## 결정: 캐시 전략\n아직 결정 없음.\n\n## 담당: A\n대기.\n\n## 담당: B\n대기.\n\n## 담당: C\n대기.\n\n## 진행 기록\n실험 시작.\n",
+  "0397d4213cfa.md": "---\nid: 0397d4213cfa\nt: 2026-10-30T14:57:12+0900\nauthor: codex-7b1c7e@codex-home [b9b1d0]\nauthor_kind: agent\ntags: result\nparents: e3144d67aed7\n---\n\n담당: C — S11b-4-r1-C-9be24958de\n"
+}

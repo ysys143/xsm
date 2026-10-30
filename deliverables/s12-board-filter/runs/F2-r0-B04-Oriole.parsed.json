@@ -1,0 +1,16 @@
+{
+  "items": [
+    {
+      "id": "B04-03",
+      "title": "## T07 일정",
+      "quote": "auth-staging 예약이 Foxtrot의 부하 시험과 겹쳐 내일로 밀렸다.",
+      "reason": "필요한 auth-staging 자원이 부하 시험과 겹쳐 일정이 변경됐다."
+    },
+    {
+      "id": "B04-04",
+      "title": "## T08 운영",
+      "quote": "src/auth/refresh.ts 리뷰 담당에 Echo를 추가한다.",
+      "reason": "세션이 소유한 파일에 다른 작업자의 리뷰가 추가됐다."
+    }
+  ]
+}

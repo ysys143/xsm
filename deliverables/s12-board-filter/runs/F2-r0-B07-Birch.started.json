@@ -1,0 +1,22 @@
+{
+  "name": "F2-r0-B07-Birch",
+  "command": [
+    "codex",
+    "exec",
+    "--model",
+    "openai/gpt-6-luna",
+    "--ephemeral",
+    "--sandbox",
+    "read-only",
+    "--json",
+    "--color",
+    "never",
+    "-c",
+    "mcp_servers.reason-network.enabled=false",
+    "-c",
+    "model_reasoning_effort=\"low\"",
+    "-"
+  ],
+  "started_at": "2026-10-30T05:24:06.376416+00:00",
+  "prompt_sha256": "cbb8be8c6f31c3d573d2ee3ae3504075446b15edd99ac9126c5c2f86dad34d17"
+}

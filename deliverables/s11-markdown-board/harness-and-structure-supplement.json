@@ -1,0 +1,43 @@
+{
+  "counts": {
+    "claude": [
+      {
+        "method": "item_edit",
+        "status": "succeeded",
+        "count": 50
+      },
+      {
+        "method": "item_edit",
+        "status": "failed",
+        "count": 7
+      }
+    ],
+    "codex": [
+      {
+        "method": "patch_update",
+        "status": "succeeded",
+        "count": 15
+      },
+      {
+        "method": "shell_write",
+        "status": "succeeded",
+        "count": 4
+      }
+    ]
+  },
+  "structural_damage": [
+    {
+      "case": "S11-4-r4",
+      "actor_board": "A",
+      "missing_headings": [
+        "## 담당: C"
+      ],
+      "unexpected_headings": [
+        "## 담당: S11-4-r4-C-1dd60504afc7"
+      ],
+      "path": "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11-va4hq9ed/cases/S11-4-r4/shared/BOARD.md"
+    }
+  ],
+  "structural_damage_count": 1,
+  "note": "Heading structure checked independently of marker preservation and lost update."
+}

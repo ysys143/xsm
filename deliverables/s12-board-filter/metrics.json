@@ -1,0 +1,5206 @@
+{
+  "label_counts": {
+    "R1": 20,
+    "N": 238,
+    "R2": 20,
+    "R3": 22,
+    "R4": 20
+  },
+  "label_disagreements": 0,
+  "conditions": {
+    "F0": {
+      "baseline": {
+        "cases": 40,
+        "label_denominators": {
+          "R1": 20,
+          "R2": 20,
+          "N": 238,
+          "R3": 22,
+          "R4": 20
+        },
+        "label_hits": {
+          "R1": 20
+        },
+        "recall": {
+          "R1": {
+            "numerator": 20,
+            "denominator": 20,
+            "value": 1.0
+          },
+          "R2": {
+            "numerator": 0,
+            "denominator": 20,
+            "value": 0.0
+          },
+          "R3": {
+            "numerator": 0,
+            "denominator": 22,
+            "value": 0.0
+          },
+          "R4": {
+            "numerator": 0,
+            "denominator": 20,
+            "value": 0.0
+          }
+        },
+        "recall_overall": {
+          "numerator": 20,
+          "denominator": 82,
+          "value": 0.24390243902439024
+        },
+        "precision": {
+          "numerator": 20,
+          "denominator": 20,
+          "value": 1.0
+        },
+        "unrelated_pass_rate": {
+          "numerator": 0,
+          "denominator": 238,
+          "value": 0.0
+        },
+        "quote_fidelity": {
+          "numerator": 20,
+          "denominator": 20,
+          "value": 1.0
+        },
+        "ambiguous_selected": 0,
+        "invalid_ids": 0,
+        "title_mismatches": 0,
+        "duplicates": 0,
+        "selected": [
+          {
+            "case": "B01-Oriole",
+            "selected": [
+              "B01-01"
+            ]
+          },
+          {
+            "case": "B01-Birch",
+            "selected": []
+          },
+          {
+            "case": "B01-Cedar",
+            "selected": [
+              "B01-06"
+            ]
+          },
+          {
+            "case": "B01-Dune",
+            "selected": []
+          },
+          {
+            "case": "B02-Oriole",
+            "selected": []
+          },
+          {
+            "case": "B02-Birch",
+            "selected": [
+              "B02-01"
+            ]
+          },
+          {
+            "case": "B02-Cedar",
+            "selected": []
+          },
+          {
+            "case": "B02-Dune",
+            "selected": [
+              "B02-06"
+            ]
+          },
+          {
+            "case": "B03-Oriole",
+            "selected": []
+          },
+          {
+            "case": "B03-Birch",
+            "selected": [
+              "B03-08"
+            ]
+          },
+          {
+            "case": "B03-Cedar",
+            "selected": [
+              "B03-01"
+            ]
+          },
+          {
+            "case": "B03-Dune",
+            "selected": []
+          },
+          {
+            "case": "B04-Oriole",
+            "selected": [
+              "B04-04"
+            ]
+          },
+          {
+            "case": "B04-Birch",
+            "selected": []
+          },
+          {
+            "case": "B04-Cedar",
+            "selected": []
+          },
+          {
+            "case": "B04-Dune",
+            "selected": [
+              "B04-01"
+            ]
+          },
+          {
+            "case": "B05-Oriole",
+            "selected": [
+              "B05-01"
+            ]
+          },
+          {
+            "case": "B05-Birch",
+            "selected": []
+          },
+          {
+            "case": "B05-Cedar",
+            "selected": []
+          },
+          {
+            "case": "B05-Dune",
+            "selected": [
+              "B05-08"
+            ]
+          },
+          {
+            "case": "B06-Oriole",
+            "selected": []
+          },
+          {
+            "case": "B06-Birch",
+            "selected": [
+              "B06-01"
+            ]
+          },
+          {
+            "case": "B06-Cedar",
+            "selected": [
+              "B06-04"
+            ]
+          },
+          {
+            "case": "B06-Dune",
+            "selected": []
+          },
+          {
+            "case": "B07-Oriole",
+            "selected": [
+              "B07-06"
+            ]
+          },
+          {
+            "case": "B07-Birch",
+            "selected": []
+          },
+          {
+            "case": "B07-Cedar",
+            "selected": [
+              "B07-01"
+            ]
+          },
+          {
+            "case": "B07-Dune",
+            "selected": [
+              "B07-04"
+            ]
+          },
+          {
+            "case": "B08-Oriole",
+            "selected": []
+          },
+          {
+            "case": "B08-Birch",
+            "selected": [
+              "B08-05"
+            ]
+          },
+          {
+            "case": "B08-Cedar",
+            "selected": []
+          },
+          {
+            "case": "B08-Dune",
+            "selected": []
+          },
+          {
+            "case": "B09-Oriole",
+            "selected": [
+              "B09-01"
+            ]
+          },
+          {
+            "case": "B09-Birch",
+            "selected": [
+              "B09-04"
+            ]
+          },
+          {
+            "case": "B09-Cedar",
+            "selected": [
+              "B09-06"
+            ]
+          },
+          {
+            "case": "B09-Dune",
+            "selected": []
+          },
+          {
+            "case": "B10-Oriole",
+            "selected": []
+          },
+          {
+            "case": "B10-Birch",
+            "selected": []
+          },
+          {
+            "case": "B10-Cedar",
+            "selected": []
+          },
+          {
+            "case": "B10-Dune",
+            "selected": [
+              "B10-05"
+            ]
+          }
+        ],
+        "errors": [
+          {
+            "case": "B01-Oriole",
+            "item": "B01-02",
+            "type": "false_negative",
+            "gold": "R2",
+            "text": "팀 Echo가 로그인 토큰의 동시 갱신 잠금 구현에 착수했다."
+          },
+          {
+            "case": "B01-Birch",
+            "item": "B01-03",
+            "type": "false_negative",
+            "gold": "R3",
+            "text": "상품 상세 캐시의 저장소를 Redis에서 프로세스 메모리로 바꾼다."
+          },
+          {
+            "case": "B01-Birch",
+            "item": "B01-04",
+            "type": "false_negative",
+            "gold": "R4",
+            "text": "Echo가 cache-staging을 오늘 18시까지 독점 사용한다."
+          },
+          {
+            "case": "B01-Cedar",
+            "item": "B01-05",
+            "type": "false_negative",
+            "gold": "R2",
+            "text": "팀 Echo가 매출 차트의 실시간 데이터 갱신 UI 구현을 시작했다."
+          },
+          {
+            "case": "B01-Dune",
+            "item": "B01-07",
+            "type": "false_negative",
+            "gold": "R4",
+            "text": "Echo가 gpu-embedding을 오늘 18시까지 독점 사용한다."
+          },
+          {
+            "case": "B01-Dune",
+            "item": "B01-08",
+            "type": "false_negative",
+            "gold": "R3",
+            "text": "문서 임베딩 차원을 768에서 1024로 변경하기로 결정했다."
+          },
+          {
+            "case": "B02-Oriole",
+            "item": "B02-07",
+            "type": "false_negative",
+            "gold": "R3",
+            "text": "인증 세션 저장소를 Redis에서 로컬 메모리로 바꾸기로 결정했다."
+          },
+          {
+            "case": "B02-Oriole",
+            "item": "B02-08",
+            "type": "false_negative",
+            "gold": "R4",
+            "text": "Echo가 auth-staging을 오늘 18시까지 독점 사용한다."
+          },
+          {
+            "case": "B02-Birch",
+            "item": "B02-02",
+            "type": "false_negative",
+            "gold": "R2",
+            "text": "팀 Foxtrot이 상품 상세 캐시 무효화 로직을 다시 구현하기 시작했다."
+          },
+          {
+            "case": "B02-Cedar",
+            "item": "B02-03",
+            "type": "false_negative",
+            "gold": "R4",
+            "text": "Foxtrot이 preview-slot을 오늘 18시까지 독점 사용한다."
+          },
+          {
+            "case": "B02-Cedar",
+            "item": "B02-04",
+            "type": "false_negative",
+            "gold": "R3",
+            "text": "매출 API의 필드를 snake_case에서 camelCase로 변경한다."
+          },
+          {
+            "case": "B02-Dune",
+            "item": "B02-05",
+            "type": "false_negative",
+            "gold": "R2",
+            "text": "Foxtrot이 문서 의미 검색의 벡터 색인 갱신 작업을 시작했다."
+          },
+          {
+            "case": "B03-Oriole",
+            "item": "B03-05",
+            "type": "false_negative",
+            "gold": "R2",
+            "text": "다른 작업자가 만료 직전 토큰의 재발급 경쟁 상태를 수정 중이다."
+          },
+          {
+            "case": "B03-Oriole",
+            "item": "B03-06",
+            "type": "false_negative",
+            "gold": "R3",
+            "text": "로그인 토큰 session_rev를 정수에서 UUID 문자열로 변경한다."
+          },
+          {
+            "case": "B03-Birch",
+            "item": "B03-07",
+            "type": "false_negative",
+            "gold": "R4",
+            "text": "cache-staging 예약을 다른 작업의 장시간 부하 시험에 배정했다."
+          },
+          {
+            "case": "B03-Cedar",
+            "item": "B03-02",
+            "type": "false_negative",
+            "gold": "R4",
+            "text": "preview-slot을 다른 팀 데모에 배정하여 오늘은 비어 있지 않다."
+          },
+          {
+            "case": "B03-Dune",
+            "item": "B03-03",
+            "type": "false_negative",
+            "gold": "R3",
+            "text": "문서 검색 벡터 저장소를 pgvector에서 별도 벡터 서비스로 옮긴다."
+          },
+          {
+            "case": "B03-Dune",
+            "item": "B03-04",
+            "type": "false_negative",
+            "gold": "R2",
+            "text": "다른 작업자가 문서 변경 시 검색용 벡터를 다시 기록하는 코드를 작성한다."
+          },
+          {
+            "case": "B04-Oriole",
+            "item": "B04-03",
+            "type": "false_negative",
+            "gold": "R4",
+            "text": "auth-staging 예약이 Foxtrot의 부하 시험과 겹쳐 내일로 밀렸다."
+          },
+          {
+            "case": "B04-Birch",
+            "item": "B04-05",
+            "type": "false_negative",
+            "gold": "R2",
+            "text": "Echo가 상품 갱신 이벤트의 중복 수신에 대한 캐시 제거 패치를 작성한다."
+          },
+          {
+            "case": "B04-Birch",
+            "item": "B04-06",
+            "type": "false_negative",
+            "gold": "R3",
+            "text": "상품 갱신 이벤트 명칭을 item.updated에서 catalog.changed로 바꾼다."
+          },
+          {
+            "case": "B04-Cedar",
+            "item": "B04-07",
+            "type": "false_negative",
+            "gold": "R3",
+            "text": "매출 페이지 next_cursor를 불투명 문자열 대신 정수 오프셋으로 바꾼다."
+          },
+          {
+            "case": "B04-Cedar",
+            "item": "B04-08",
+            "type": "false_negative",
+            "gold": "R2",
+            "text": "다른 작업자가 매출 분석 화면의 다음 페이지 버튼을 구현 중이다."
+          },
+          {
+            "case": "B04-Dune",
+            "item": "B04-02",
+            "type": "false_negative",
+            "gold": "R4",
+            "text": "gpu-embedding 예약을 Foxtrot의 학습 작업에 오늘 종일 배정했다."
+          },
+          {
+            "case": "B05-Oriole",
+            "item": "B05-02",
+            "type": "false_negative",
+            "gold": "R3",
+            "text": "인증과 상품을 포함한 공유 Redis 서비스는 이번 배포에서 완전히 폐기한다."
+          },
+          {
+            "case": "B05-Oriole",
+            "item": "B05-03",
+            "type": "false_negative",
+            "gold": "R3",
+            "text": "상품 캐시를 포함한 공유 Redis 클러스터의 사용을 종료한다."
+          },
+          {
+            "case": "B05-Birch",
+            "item": "B05-02",
+            "type": "false_negative",
+            "gold": "R3",
+            "text": "인증과 상품을 포함한 공유 Redis 서비스는 이번 배포에서 완전히 폐기한다."
+          },
+          {
+            "case": "B05-Birch",
+            "item": "B05-03",
+            "type": "false_negative",
+            "gold": "R3",
+            "text": "상품 캐시를 포함한 공유 Redis 클러스터의 사용을 종료한다."
+          },
+          {
+            "case": "B05-Birch",
+            "item": "B05-04",
+            "type": "false_negative",
+            "gold": "R2",
+            "text": "Foxtrot이 상품 상세 데이터의 만료와 재조회 처리를 구현 중이다."
+          },
+          {
+            "case": "B05-Cedar",
+            "item": "B05-05",
+            "type": "false_negative",
+            "gold": "R4",
+            "text": "웹 검증 환경 preview-slot은 Echo가 업무 종료까지 점유한다."
+          },
+          {
+            "case": "B05-Cedar",
+            "item": "B05-06",
+            "type": "false_negative",
+            "gold": "R2",
+            "text": "Foxtrot이 매출 통계의 실시간 그래프를 만드는 작업에 착수했다."
+          },
+          {
+            "case": "B05-Dune",
+            "item": "B05-07",
+            "type": "false_negative",
+            "gold": "R2",
+            "text": "Echo가 문서 의미 색인의 오래된 벡터를 갱신하는 처리를 구현 중이다."
+          },
+          {
+            "case": "B06-Oriole",
+            "item": "B06-07",
+            "type": "false_negative",
+            "gold": "R2",
+            "text": "Echo가 로그인 토큰 재발급의 다중 탭 충돌 방지 패치를 작성한다."
+          },
+          {
+            "case": "B06-Oriole",
+            "item": "B06-08",
+            "type": "false_negative",
+            "gold": "R4",
+            "text": "인증 검증용 auth-staging을 Echo가 전체 작업 시간 동안 점유한다."
+          },
+          {
+            "case": "B06-Birch",
+            "item": "B06-02",
+            "type": "false_negative",
+            "gold": "R4",
+            "text": "다른 팀이 cache-staging의 전용 슬롯을 오늘 종일 점유한다."
+          },
+          {
+            "case": "B06-Cedar",
+            "item": "B06-03",
+            "type": "false_negative",
+            "gold": "R3",
+            "text": "매출 응답의 gross_sales 필드는 grossSales로만 반환한다."
+          },
+          {
+            "case": "B06-Dune",
+            "item": "B06-05",
+            "type": "false_negative",
+            "gold": "R4",
+            "text": "다른 팀이 gpu-embedding을 종료 시각까지 점유한다."
+          },
+          {
+            "case": "B06-Dune",
+            "item": "B06-06",
+            "type": "false_negative",
+            "gold": "R3",
+            "text": "새 문서 임베딩 모델은 768차원이 아닌 1536차원 벡터를 반환한다."
+          },
+          {
+            "case": "B07-Oriole",
+            "item": "B07-05",
+            "type": "false_negative",
+            "gold": "R3",
+            "text": "로그인 토큰 버전 값은 더 이상 정수가 아니며 이제 십진 문자열이다."
+          },
+          {
+            "case": "B07-Birch",
+            "item": "B07-07",
+            "type": "false_negative",
+            "gold": "R2",
+            "text": "팀 Echo가 상품 수정 알림을 받으면 캐시를 비우는 기능에 착수했다."
+          },
+          {
+            "case": "B07-Birch",
+            "item": "B07-08",
+            "type": "false_negative",
+            "gold": "R3",
+            "text": "상품 변경 알림은 item.updated 대신 product.revised로만 발행한다."
+          },
+          {
+            "case": "B07-Cedar",
+            "item": "B07-02",
+            "type": "false_negative",
+            "gold": "R2",
+            "text": "Echo가 매출 화면의 실시간 차트와 페이지 전환 UI를 다시 작성한다."
+          },
+          {
+            "case": "B07-Dune",
+            "item": "B07-03",
+            "type": "false_negative",
+            "gold": "R4",
+            "text": "gpu-embedding의 남은 전용 시간을 다른 팀이 모두 예약했다."
+          },
+          {
+            "case": "B08-Oriole",
+            "item": "B08-03",
+            "type": "false_negative",
+            "gold": "R4",
+            "text": "Foxtrot이 auth-staging을 오늘 종료 시각까지 예약했다."
+          },
+          {
+            "case": "B08-Oriole",
+            "item": "B08-04",
+            "type": "false_negative",
+            "gold": "R2",
+            "text": "다른 팀이 재발급 요청 두 개가 동시에 올 때의 잠금 로직을 구현한다."
+          },
+          {
+            "case": "B08-Birch",
+            "item": "B08-06",
+            "type": "false_negative",
+            "gold": "R4",
+            "text": "cache-staging의 남은 사용 시간을 다른 팀이 전부 예약했다."
+          },
+          {
+            "case": "B08-Cedar",
+            "item": "B08-07",
+            "type": "false_negative",
+            "gold": "R3",
+            "text": "매출 API는 다음 페이지 위치를 문자열 토큰 대신 숫자로 반환한다."
+          },
+          {
+            "case": "B08-Cedar",
+            "item": "B08-08",
+            "type": "false_negative",
+            "gold": "R4",
+            "text": "preview-slot 사용 예약이 다른 팀의 발표와 겹쳐 승인되지 않았다."
+          },
+          {
+            "case": "B08-Dune",
+            "item": "B08-01",
+            "type": "false_negative",
+            "gold": "R2",
+            "text": "Foxtrot이 문서 검색 벡터의 증분 재색인 로직 구현을 시작했다."
+          },
+          {
+            "case": "B08-Dune",
+            "item": "B08-02",
+            "type": "false_negative",
+            "gold": "R3",
+            "text": "문서 벡터를 PostgreSQL 밖으로 옮기고 pgvector 확장을 제거한다."
+          },
+          {
+            "case": "B09-Oriole",
+            "item": "B09-02",
+            "type": "false_negative",
+            "gold": "R3",
+            "text": "인증 세션은 이제 공유 저장소 없이 각 프로세스 안에만 보관한다."
+          },
+          {
+            "case": "B09-Birch",
+            "item": "B09-03",
+            "type": "false_negative",
+            "gold": "R4",
+            "text": "cache-staging을 저녁까지 Echo의 재현 시험에 배정했다."
+          },
+          {
+            "case": "B09-Cedar",
+            "item": "B09-05",
+            "type": "false_negative",
+            "gold": "R2",
+            "text": "다른 팀이 매출 대시보드의 실시간 시각화 구현을 시작했다."
+          },
+          {
+            "case": "B09-Dune",
+            "item": "B09-07",
+            "type": "false_negative",
+            "gold": "R3",
+            "text": "임베딩 서비스가 이제 문서당 512개 성분의 벡터만 반환한다."
+          },
+          {
+            "case": "B09-Dune",
+            "item": "B09-08",
+            "type": "false_negative",
+            "gold": "R4",
+            "text": "gpu-embedding을 다른 팀의 야간 작업까지 계속 사용한다."
+          },
+          {
+            "case": "B10-Oriole",
+            "item": "B10-07",
+            "type": "false_negative",
+            "gold": "R2",
+            "text": "Echo가 갱신 토큰의 동시 사용 시 중복 발급 방지 작업을 시작했다."
+          },
+          {
+            "case": "B10-Oriole",
+            "item": "B10-08",
+            "type": "false_negative",
+            "gold": "R4",
+            "text": "auth-staging 단독 슬롯을 다른 팀에 배정하여 오늘은 사용할 수 없다."
+          },
+          {
+            "case": "B10-Birch",
+            "item": "B10-01",
+            "type": "false_negative",
+            "gold": "R3",
+            "text": "상품 상세 데이터는 이제 Redis에 캐시하지 않고 프로세스별로 보관한다."
+          },
+          {
+            "case": "B10-Birch",
+            "item": "B10-02",
+            "type": "false_negative",
+            "gold": "R2",
+            "text": "다른 팀이 상품 상세 캐시의 만료 시점 경합을 고치는 중이다."
+          },
+          {
+            "case": "B10-Cedar",
+            "item": "B10-03",
+            "type": "false_negative",
+            "gold": "R4",
+            "text": "preview-slot은 다른 팀이 오늘 하루 단독으로 사용한다."
+          },
+          {
+            "case": "B10-Cedar",
+            "item": "B10-04",
+            "type": "false_negative",
+            "gold": "R3",
+            "text": "매출 API에서 snake_case 필드 제공을 중단하고 모두 camelCase로 제공한다."
+          },
+          {
+            "case": "B10-Dune",
+            "item": "B10-06",
+            "type": "false_negative",
+            "gold": "R2",
+            "text": "다른 작업자가 문서 임베딩 갱신과 벡터 색인 교체를 구현한다."
+          }
+        ]
+      },
+      "expected_baseline": 40,
+      "observed_baseline": 40,
+      "expected_calls": 0,
+      "observed_calls": 0,
+      "time_seconds": {
+        "n": 40,
+        "mean": 6.357175880111754e-06,
+        "median": 6.124493665993214e-06,
+        "p95": 7.208000170066953e-06,
+        "min": 5.416019121184945e-06,
+        "max": 1.4042016118764877e-05
+      },
+      "tokens_input": {
+        "n": 40,
+        "mean": 0,
+        "median": 0.0,
+        "p95": 0,
+        "min": 0,
+        "max": 0
+      },
+      "tokens_output": {
+        "n": 40,
+        "mean": 0,
+        "median": 0.0,
+        "p95": 0,
+        "min": 0,
+        "max": 0
+      },
+      "actual_models": []
+    },
+    "F1": {
+      "baseline": {
+        "cases": 40,
+        "label_denominators": {
+          "R1": 20,
+          "R2": 20,
+          "N": 238,
+          "R3": 22,
+          "R4": 20
+        },
+        "label_hits": {
+          "R2": 20,
+          "R1": 20,
+          "R3": 22,
+          "R4": 20
+        },
+        "recall": {
+          "R1": {
+            "numerator": 20,
+            "denominator": 20,
+            "value": 1.0
+          },
+          "R2": {
+            "numerator": 20,
+            "denominator": 20,
+            "value": 1.0
+          },
+          "R3": {
+            "numerator": 22,
+            "denominator": 22,
+            "value": 1.0
+          },
+          "R4": {
+            "numerator": 20,
+            "denominator": 20,
+            "value": 1.0
+          }
+        },
+        "recall_overall": {
+          "numerator": 82,
+          "denominator": 82,
+          "value": 1.0
+        },
+        "precision": {
+          "numerator": 82,
+          "denominator": 82,
+          "value": 1.0
+        },
+        "unrelated_pass_rate": {
+          "numerator": 0,
+          "denominator": 238,
+          "value": 0.0
+        },
+        "quote_fidelity": {
+          "numerator": 82,
+          "denominator": 82,
+          "value": 1.0
+        },
+        "ambiguous_selected": 0,
+        "invalid_ids": 0,
+        "title_mismatches": 2,
+        "duplicates": 0,
+        "selected": [
+          {
+            "case": "B01-Oriole",
+            "selected": [
+              "B01-01",
+              "B01-02"
+            ]
+          },
+          {
+            "case": "B01-Birch",
+            "selected": [
+              "B01-03",
+              "B01-04"
+            ]
+          },
+          {
+            "case": "B01-Cedar",
+            "selected": [
+              "B01-05",
+              "B01-06"
+            ]
+          },
+          {
+            "case": "B01-Dune",
+            "selected": [
+              "B01-07",
+              "B01-08"
+            ]
+          },
+          {
+            "case": "B02-Oriole",
+            "selected": [
+              "B02-07",
+              "B02-08"
+            ]
+          },
+          {
+            "case": "B02-Birch",
+            "selected": [
+              "B02-01",
+              "B02-02"
+            ]
+          },
+          {
+            "case": "B02-Cedar",
+            "selected": [
+              "B02-03",
+              "B02-04"
+            ]
+          },
+          {
+            "case": "B02-Dune",
+            "selected": [
+              "B02-05",
+              "B02-06"
+            ]
+          },
+          {
+            "case": "B03-Oriole",
+            "selected": [
+              "B03-05",
+              "B03-06"
+            ]
+          },
+          {
+            "case": "B03-Birch",
+            "selected": [
+              "B03-07",
+              "B03-08"
+            ]
+          },
+          {
+            "case": "B03-Cedar",
+            "selected": [
+              "B03-01",
+              "B03-02"
+            ]
+          },
+          {
+            "case": "B03-Dune",
+            "selected": [
+              "B03-03",
+              "B03-04"
+            ]
+          },
+          {
+            "case": "B04-Oriole",
+            "selected": [
+              "B04-03",
+              "B04-04"
+            ]
+          },
+          {
+            "case": "B04-Birch",
+            "selected": [
+              "B04-05",
+              "B04-06"
+            ]
+          },
+          {
+            "case": "B04-Cedar",
+            "selected": [
+              "B04-07",
+              "B04-08"
+            ]
+          },
+          {
+            "case": "B04-Dune",
+            "selected": [
+              "B04-01",
+              "B04-02"
+            ]
+          },
+          {
+            "case": "B05-Oriole",
+            "selected": [
+              "B05-01",
+              "B05-02",
+              "B05-03"
+            ]
+          },
+          {
+            "case": "B05-Birch",
+            "selected": [
+              "B05-02",
+              "B05-03",
+              "B05-04"
+            ]
+          },
+          {
+            "case": "B05-Cedar",
+            "selected": [
+              "B05-05",
+              "B05-06"
+            ]
+          },
+          {
+            "case": "B05-Dune",
+            "selected": [
+              "B05-07",
+              "B05-08"
+            ]
+          },
+          {
+            "case": "B06-Oriole",
+            "selected": [
+              "B06-07",
+              "B06-08"
+            ]
+          },
+          {
+            "case": "B06-Birch",
+            "selected": [
+              "B06-01",
+              "B06-02"
+            ]
+          },
+          {
+            "case": "B06-Cedar",
+            "selected": [
+              "B06-03",
+              "B06-04"
+            ]
+          },
+          {
+            "case": "B06-Dune",
+            "selected": [
+              "B06-05",
+              "B06-06"
+            ]
+          },
+          {
+            "case": "B07-Oriole",
+            "selected": [
+              "B07-05",
+              "B07-06"
+            ]
+          },
+          {
+            "case": "B07-Birch",
+            "selected": [
+              "B07-07",
+              "B07-08"
+            ]
+          },
+          {
+            "case": "B07-Cedar",
+            "selected": [
+              "B07-01",
+              "B07-02"
+            ]
+          },
+          {
+            "case": "B07-Dune",
+            "selected": [
+              "B07-03",
+              "B07-04"
+            ]
+          },
+          {
+            "case": "B08-Oriole",
+            "selected": [
+              "B08-03",
+              "B08-04"
+            ]
+          },
+          {
+            "case": "B08-Birch",
+            "selected": [
+              "B08-05",
+              "B08-06"
+            ]
+          },
+          {
+            "case": "B08-Cedar",
+            "selected": [
+              "B08-07",
+              "B08-08"
+            ]
+          },
+          {
+            "case": "B08-Dune",
+            "selected": [
+              "B08-01",
+              "B08-02"
+            ]
+          },
+          {
+            "case": "B09-Oriole",
+            "selected": [
+              "B09-01",
+              "B09-02"
+            ]
+          },
+          {
+            "case": "B09-Birch",
+            "selected": [
+              "B09-03",
+              "B09-04"
+            ]
+          },
+          {
+            "case": "B09-Cedar",
+            "selected": [
+              "B09-05",
+              "B09-06"
+            ]
+          },
+          {
+            "case": "B09-Dune",
+            "selected": [
+              "B09-07",
+              "B09-08"
+            ]
+          },
+          {
+            "case": "B10-Oriole",
+            "selected": [
+              "B10-07",
+              "B10-08"
+            ]
+          },
+          {
+            "case": "B10-Birch",
+            "selected": [
+              "B10-01",
+              "B10-02"
+            ]
+          },
+          {
+            "case": "B10-Cedar",
+            "selected": [
+              "B10-03",
+              "B10-04"
+            ]
+          },
+          {
+            "case": "B10-Dune",
+            "selected": [
+              "B10-05",
+              "B10-06"
+            ]
+          }
+        ],
+        "errors": []
+      },
+      "expected_baseline": 40,
+      "observed_baseline": 40,
+      "expected_calls": 70,
+      "observed_calls": 70,
+      "repeat": [
+        {
+          "repetition": 0,
+          "metrics": {
+            "cases": 10,
+            "label_denominators": {
+              "R1": 8,
+              "R2": 5,
+              "N": 59,
+              "R4": 3,
+              "R3": 5
+            },
+            "label_hits": {
+              "R2": 5,
+              "R1": 8,
+              "R4": 3,
+              "R3": 5
+            },
+            "recall": {
+              "R1": {
+                "numerator": 8,
+                "denominator": 8,
+                "value": 1.0
+              },
+              "R2": {
+                "numerator": 5,
+                "denominator": 5,
+                "value": 1.0
+              },
+              "R3": {
+                "numerator": 5,
+                "denominator": 5,
+                "value": 1.0
+              },
+              "R4": {
+                "numerator": 3,
+                "denominator": 3,
+                "value": 1.0
+              }
+            },
+            "recall_overall": {
+              "numerator": 21,
+              "denominator": 21,
+              "value": 1.0
+            },
+            "precision": {
+              "numerator": 21,
+              "denominator": 21,
+              "value": 1.0
+            },
+            "unrelated_pass_rate": {
+              "numerator": 0,
+              "denominator": 59,
+              "value": 0.0
+            },
+            "quote_fidelity": {
+              "numerator": 21,
+              "denominator": 21,
+              "value": 1.0
+            },
+            "ambiguous_selected": 0,
+            "invalid_ids": 0,
+            "title_mismatches": 0,
+            "duplicates": 0,
+            "selected": [
+              {
+                "case": "B01-Oriole",
+                "selected": [
+                  "B01-01",
+                  "B01-02"
+                ]
+              },
+              {
+                "case": "B02-Birch",
+                "selected": [
+                  "B02-01",
+                  "B02-02"
+                ]
+              },
+              {
+                "case": "B03-Cedar",
+                "selected": [
+                  "B03-01",
+                  "B03-02"
+                ]
+              },
+              {
+                "case": "B04-Dune",
+                "selected": [
+                  "B04-01",
+                  "B04-02"
+                ]
+              },
+              {
+                "case": "B05-Oriole",
+                "selected": [
+                  "B05-01",
+                  "B05-02",
+                  "B05-03"
+                ]
+              },
+              {
+                "case": "B06-Birch",
+                "selected": [
+                  "B06-01",
+                  "B06-02"
+                ]
+              },
+              {
+                "case": "B07-Cedar",
+                "selected": [
+                  "B07-01",
+                  "B07-02"
+                ]
+              },
+              {
+                "case": "B08-Dune",
+                "selected": [
+                  "B08-01",
+                  "B08-02"
+                ]
+              },
+              {
+                "case": "B09-Oriole",
+                "selected": [
+                  "B09-01",
+                  "B09-02"
+                ]
+              },
+              {
+                "case": "B10-Birch",
+                "selected": [
+                  "B10-01",
+                  "B10-02"
+                ]
+              }
+            ],
+            "errors": []
+          }
+        },
+        {
+          "repetition": 1,
+          "metrics": {
+            "cases": 10,
+            "label_denominators": {
+              "R1": 8,
+              "R2": 5,
+              "N": 59,
+              "R4": 3,
+              "R3": 5
+            },
+            "label_hits": {
+              "R2": 5,
+              "R1": 8,
+              "R4": 3,
+              "R3": 5
+            },
+            "recall": {
+              "R1": {
+                "numerator": 8,
+                "denominator": 8,
+                "value": 1.0
+              },
+              "R2": {
+                "numerator": 5,
+                "denominator": 5,
+                "value": 1.0
+              },
+              "R3": {
+                "numerator": 5,
+                "denominator": 5,
+                "value": 1.0
+              },
+              "R4": {
+                "numerator": 3,
+                "denominator": 3,
+                "value": 1.0
+              }
+            },
+            "recall_overall": {
+              "numerator": 21,
+              "denominator": 21,
+              "value": 1.0
+            },
+            "precision": {
+              "numerator": 21,
+              "denominator": 21,
+              "value": 1.0
+            },
+            "unrelated_pass_rate": {
+              "numerator": 0,
+              "denominator": 59,
+              "value": 0.0
+            },
+            "quote_fidelity": {
+              "numerator": 21,
+              "denominator": 21,
+              "value": 1.0
+            },
+            "ambiguous_selected": 0,
+            "invalid_ids": 0,
+            "title_mismatches": 0,
+            "duplicates": 0,
+            "selected": [
+              {
+                "case": "B01-Oriole",
+                "selected": [
+                  "B01-01",
+                  "B01-02"
+                ]
+              },
+              {
+                "case": "B02-Birch",
+                "selected": [
+                  "B02-01",
+                  "B02-02"
+                ]
+              },
+              {
+                "case": "B03-Cedar",
+                "selected": [
+                  "B03-01",
+                  "B03-02"
+                ]
+              },
+              {
+                "case": "B04-Dune",
+                "selected": [
+                  "B04-01",
+                  "B04-02"
+                ]
+              },
+              {
+                "case": "B05-Oriole",
+                "selected": [
+                  "B05-01",
+                  "B05-02",
+                  "B05-03"
+                ]
+              },
+              {
+                "case": "B06-Birch",
+                "selected": [
+                  "B06-01",
+                  "B06-02"
+                ]
+              },
+              {
+                "case": "B07-Cedar",
+                "selected": [
+                  "B07-01",
+                  "B07-02"
+                ]
+              },
+              {
+                "case": "B08-Dune",
+                "selected": [
+                  "B08-01",
+                  "B08-02"
+                ]
+              },
+              {
+                "case": "B09-Oriole",
+                "selected": [
+                  "B09-01",
+                  "B09-02"
+                ]
+              },
+              {
+                "case": "B10-Birch",
+                "selected": [
+                  "B10-01",
+                  "B10-02"
+                ]
+              }
+            ],
+            "errors": []
+          }
+        },
+        {
+          "repetition": 2,
+          "metrics": {
+            "cases": 10,
+            "label_denominators": {
+              "R1": 8,
+              "R2": 5,
+              "N": 59,
+              "R4": 3,
+              "R3": 5
+            },
+            "label_hits": {
+              "R2": 5,
+              "R1": 8,
+              "R4": 3,
+              "R3": 5
+            },
+            "recall": {
+              "R1": {
+                "numerator": 8,
+                "denominator": 8,
+                "value": 1.0
+              },
+              "R2": {
+                "numerator": 5,
+                "denominator": 5,
+                "value": 1.0
+              },
+              "R3": {
+                "numerator": 5,
+                "denominator": 5,
+                "value": 1.0
+              },
+              "R4": {
+                "numerator": 3,
+                "denominator": 3,
+                "value": 1.0
+              }
+            },
+            "recall_overall": {
+              "numerator": 21,
+              "denominator": 21,
+              "value": 1.0
+            },
+            "precision": {
+              "numerator": 21,
+              "denominator": 21,
+              "value": 1.0
+            },
+            "unrelated_pass_rate": {
+              "numerator": 0,
+              "denominator": 59,
+              "value": 0.0
+            },
+            "quote_fidelity": {
+              "numerator": 21,
+              "denominator": 21,
+              "value": 1.0
+            },
+            "ambiguous_selected": 0,
+            "invalid_ids": 0,
+            "title_mismatches": 0,
+            "duplicates": 0,
+            "selected": [
+              {
+                "case": "B01-Oriole",
+                "selected": [
+                  "B01-01",
+                  "B01-02"
+                ]
+              },
+              {
+                "case": "B02-Birch",
+                "selected": [
+                  "B02-01",
+                  "B02-02"
+                ]
+              },
+              {
+                "case": "B03-Cedar",
+                "selected": [
+                  "B03-01",
+                  "B03-02"
+                ]
+              },
+              {
+                "case": "B04-Dune",
+                "selected": [
+                  "B04-01",
+                  "B04-02"
+                ]
+              },
+              {
+                "case": "B05-Oriole",
+                "selected": [
+                  "B05-01",
+                  "B05-02",
+                  "B05-03"
+                ]
+              },
+              {
+                "case": "B06-Birch",
+                "selected": [
+                  "B06-01",
+                  "B06-02"
+                ]
+              },
+              {
+                "case": "B07-Cedar",
+                "selected": [
+                  "B07-01",
+                  "B07-02"
+                ]
+              },
+              {
+                "case": "B08-Dune",
+                "selected": [
+                  "B08-01",
+                  "B08-02"
+                ]
+              },
+              {
+                "case": "B09-Oriole",
+                "selected": [
+                  "B09-01",
+                  "B09-02"
+                ]
+              },
+              {
+                "case": "B10-Birch",
+                "selected": [
+                  "B10-01",
+                  "B10-02"
+                ]
+              }
+            ],
+            "errors": []
+          }
+        },
+        {
+          "repetition": 3,
+          "metrics": {
+            "cases": 10,
+            "label_denominators": {
+              "R1": 8,
+              "R2": 5,
+              "N": 59,
+              "R4": 3,
+              "R3": 5
+            },
+            "label_hits": {
+              "R2": 5,
+              "R1": 8,
+              "R4": 3,
+              "R3": 5
+            },
+            "recall": {
+              "R1": {
+                "numerator": 8,
+                "denominator": 8,
+                "value": 1.0
+              },
+              "R2": {
+                "numerator": 5,
+                "denominator": 5,
+                "value": 1.0
+              },
+              "R3": {
+                "numerator": 5,
+                "denominator": 5,
+                "value": 1.0
+              },
+              "R4": {
+                "numerator": 3,
+                "denominator": 3,
+                "value": 1.0
+              }
+            },
+            "recall_overall": {
+              "numerator": 21,
+              "denominator": 21,
+              "value": 1.0
+            },
+            "precision": {
+              "numerator": 21,
+              "denominator": 21,
+              "value": 1.0
+            },
+            "unrelated_pass_rate": {
+              "numerator": 0,
+              "denominator": 59,
+              "value": 0.0
+            },
+            "quote_fidelity": {
+              "numerator": 21,
+              "denominator": 21,
+              "value": 1.0
+            },
+            "ambiguous_selected": 0,
+            "invalid_ids": 0,
+            "title_mismatches": 0,
+            "duplicates": 0,
+            "selected": [
+              {
+                "case": "B01-Oriole",
+                "selected": [
+                  "B01-01",
+                  "B01-02"
+                ]
+              },
+              {
+                "case": "B02-Birch",
+                "selected": [
+                  "B02-01",
+                  "B02-02"
+                ]
+              },
+              {
+                "case": "B03-Cedar",
+                "selected": [
+                  "B03-01",
+                  "B03-02"
+                ]
+              },
+              {
+                "case": "B04-Dune",
+                "selected": [
+                  "B04-01",
+                  "B04-02"
+                ]
+              },
+              {
+                "case": "B05-Oriole",
+                "selected": [
+                  "B05-01",
+                  "B05-02",
+                  "B05-03"
+                ]
+              },
+              {
+                "case": "B06-Birch",
+                "selected": [
+                  "B06-01",
+                  "B06-02"
+                ]
+              },
+              {
+                "case": "B07-Cedar",
+                "selected": [
+                  "B07-01",
+                  "B07-02"
+                ]
+              },
+              {
+                "case": "B08-Dune",
+                "selected": [
+                  "B08-01",
+                  "B08-02"
+                ]
+              },
+              {
+                "case": "B09-Oriole",
+                "selected": [
+                  "B09-01",
+                  "B09-02"
+                ]
+              },
+              {
+                "case": "B10-Birch",
+                "selected": [
+                  "B10-01",
+                  "B10-02"
+                ]
+              }
+            ],
+            "errors": []
+          }
+        }
+      ],
+      "repeat_spread": {
+        "R1": 0.0,
+        "R2": 0.0,
+        "R3": 0.0,
+        "R4": 0.0,
+        "overall": 0.0
+      },
+      "time_seconds": {
+        "n": 70,
+        "mean": 7.368353449941996,
+        "median": 7.260733645991422,
+        "p95": 9.25384358302108,
+        "min": 6.1386771659890655,
+        "max": 9.721184666996123
+      },
+      "tokens_input": {
+        "n": 70,
+        "mean": 18219.928571428572,
+        "median": 18219.0,
+        "p95": 18253,
+        "min": 18175,
+        "max": 18253
+      },
+      "tokens_output": {
+        "n": 70,
+        "mean": 1068.4285714285713,
+        "median": 1037.5,
+        "p95": 1430,
+        "min": 790,
+        "max": 1685
+      },
+      "tokens_cached_input": {
+        "n": 70,
+        "mean": 7573.914285714286,
+        "median": 3053.0,
+        "p95": 18248,
+        "min": 649,
+        "max": 18251
+      },
+      "actual_models": [
+        "claude-haiku-5-5"
+      ]
+    },
+    "F2": {
+      "baseline": {
+        "cases": 40,
+        "label_denominators": {
+          "R1": 20,
+          "R2": 20,
+          "N": 238,
+          "R3": 22,
+          "R4": 20
+        },
+        "label_hits": {
+          "R2": 20,
+          "R1": 20,
+          "R3": 21,
+          "R4": 20,
+          "N": 1
+        },
+        "recall": {
+          "R1": {
+            "numerator": 20,
+            "denominator": 20,
+            "value": 1.0
+          },
+          "R2": {
+            "numerator": 20,
+            "denominator": 20,
+            "value": 1.0
+          },
+          "R3": {
+            "numerator": 21,
+            "denominator": 22,
+            "value": 0.9545454545454546
+          },
+          "R4": {
+            "numerator": 20,
+            "denominator": 20,
+            "value": 1.0
+          }
+        },
+        "recall_overall": {
+          "numerator": 81,
+          "denominator": 82,
+          "value": 0.9878048780487805
+        },
+        "precision": {
+          "numerator": 81,
+          "denominator": 82,
+          "value": 0.9878048780487805
+        },
+        "unrelated_pass_rate": {
+          "numerator": 1,
+          "denominator": 238,
+          "value": 0.004201680672268907
+        },
+        "quote_fidelity": {
+          "numerator": 81,
+          "denominator": 82,
+          "value": 0.9878048780487805
+        },
+        "ambiguous_selected": 0,
+        "invalid_ids": 0,
+        "title_mismatches": 57,
+        "duplicates": 0,
+        "selected": [
+          {
+            "case": "B01-Oriole",
+            "selected": [
+              "B01-01",
+              "B01-02"
+            ]
+          },
+          {
+            "case": "B01-Birch",
+            "selected": [
+              "B01-03",
+              "B01-04"
+            ]
+          },
+          {
+            "case": "B01-Cedar",
+            "selected": [
+              "B01-05",
+              "B01-06"
+            ]
+          },
+          {
+            "case": "B01-Dune",
+            "selected": [
+              "B01-07",
+              "B01-08"
+            ]
+          },
+          {
+            "case": "B02-Oriole",
+            "selected": [
+              "B02-07",
+              "B02-08"
+            ]
+          },
+          {
+            "case": "B02-Birch",
+            "selected": [
+              "B02-01",
+              "B02-02"
+            ]
+          },
+          {
+            "case": "B02-Cedar",
+            "selected": [
+              "B02-03",
+              "B02-04"
+            ]
+          },
+          {
+            "case": "B02-Dune",
+            "selected": [
+              "B02-05",
+              "B02-06"
+            ]
+          },
+          {
+            "case": "B03-Oriole",
+            "selected": [
+              "B03-05",
+              "B03-06"
+            ]
+          },
+          {
+            "case": "B03-Birch",
+            "selected": [
+              "B03-07",
+              "B03-08"
+            ]
+          },
+          {
+            "case": "B03-Cedar",
+            "selected": [
+              "B03-01",
+              "B03-02"
+            ]
+          },
+          {
+            "case": "B03-Dune",
+            "selected": [
+              "B03-03",
+              "B03-04"
+            ]
+          },
+          {
+            "case": "B04-Oriole",
+            "selected": [
+              "B04-03",
+              "B04-04"
+            ]
+          },
+          {
+            "case": "B04-Birch",
+            "selected": [
+              "B04-05",
+              "B04-06"
+            ]
+          },
+          {
+            "case": "B04-Cedar",
+            "selected": [
+              "B04-07",
+              "B04-08"
+            ]
+          },
+          {
+            "case": "B04-Dune",
+            "selected": [
+              "B04-01",
+              "B04-02"
+            ]
+          },
+          {
+            "case": "B05-Oriole",
+            "selected": [
+              "B05-01",
+              "B05-02",
+              "B05-05"
+            ]
+          },
+          {
+            "case": "B05-Birch",
+            "selected": [
+              "B05-02",
+              "B05-03",
+              "B05-04"
+            ]
+          },
+          {
+            "case": "B05-Cedar",
+            "selected": [
+              "B05-05",
+              "B05-06"
+            ]
+          },
+          {
+            "case": "B05-Dune",
+            "selected": [
+              "B05-07",
+              "B05-08"
+            ]
+          },
+          {
+            "case": "B06-Oriole",
+            "selected": [
+              "B06-07",
+              "B06-08"
+            ]
+          },
+          {
+            "case": "B06-Birch",
+            "selected": [
+              "B06-01",
+              "B06-02"
+            ]
+          },
+          {
+            "case": "B06-Cedar",
+            "selected": [
+              "B06-03",
+              "B06-04"
+            ]
+          },
+          {
+            "case": "B06-Dune",
+            "selected": [
+              "B06-05",
+              "B06-06"
+            ]
+          },
+          {
+            "case": "B07-Oriole",
+            "selected": [
+              "B07-05",
+              "B07-06"
+            ]
+          },
+          {
+            "case": "B07-Birch",
+            "selected": [
+              "B07-07",
+              "B07-08"
+            ]
+          },
+          {
+            "case": "B07-Cedar",
+            "selected": [
+              "B07-01",
+              "B07-02"
+            ]
+          },
+          {
+            "case": "B07-Dune",
+            "selected": [
+              "B07-03",
+              "B07-04"
+            ]
+          },
+          {
+            "case": "B08-Oriole",
+            "selected": [
+              "B08-03",
+              "B08-04"
+            ]
+          },
+          {
+            "case": "B08-Birch",
+            "selected": [
+              "B08-05",
+              "B08-06"
+            ]
+          },
+          {
+            "case": "B08-Cedar",
+            "selected": [
+              "B08-07",
+              "B08-08"
+            ]
+          },
+          {
+            "case": "B08-Dune",
+            "selected": [
+              "B08-01",
+              "B08-02"
+            ]
+          },
+          {
+            "case": "B09-Oriole",
+            "selected": [
+              "B09-01",
+              "B09-02"
+            ]
+          },
+          {
+            "case": "B09-Birch",
+            "selected": [
+              "B09-03",
+              "B09-04"
+            ]
+          },
+          {
+            "case": "B09-Cedar",
+            "selected": [
+              "B09-05",
+              "B09-06"
+            ]
+          },
+          {
+            "case": "B09-Dune",
+            "selected": [
+              "B09-07",
+              "B09-08"
+            ]
+          },
+          {
+            "case": "B10-Oriole",
+            "selected": [
+              "B10-07",
+              "B10-08"
+            ]
+          },
+          {
+            "case": "B10-Birch",
+            "selected": [
+              "B10-01",
+              "B10-02"
+            ]
+          },
+          {
+            "case": "B10-Cedar",
+            "selected": [
+              "B10-03",
+              "B10-04"
+            ]
+          },
+          {
+            "case": "B10-Dune",
+            "selected": [
+              "B10-05",
+              "B10-06"
+            ]
+          }
+        ],
+        "errors": [
+          {
+            "case": "B05-Oriole",
+            "item": "B05-05",
+            "type": "false_positive",
+            "gold": "N",
+            "text": "웹 검증 환경 preview-slot은 Echo가 업무 종료까지 점유한다."
+          },
+          {
+            "case": "B05-Oriole",
+            "item": "B05-03",
+            "type": "false_negative",
+            "gold": "R3",
+            "text": "상품 캐시를 포함한 공유 Redis 클러스터의 사용을 종료한다."
+          }
+        ]
+      },
+      "expected_baseline": 40,
+      "observed_baseline": 40,
+      "expected_calls": 70,
+      "observed_calls": 70,
+      "repeat": [
+        {
+          "repetition": 0,
+          "metrics": {
+            "cases": 10,
+            "label_denominators": {
+              "R1": 8,
+              "R2": 5,
+              "N": 59,
+              "R4": 3,
+              "R3": 5
+            },
+            "label_hits": {
+              "R2": 5,
+              "R1": 8,
+              "R4": 3,
+              "R3": 4,
+              "N": 1
+            },
+            "recall": {
+              "R1": {
+                "numerator": 8,
+                "denominator": 8,
+                "value": 1.0
+              },
+              "R2": {
+                "numerator": 5,
+                "denominator": 5,
+                "value": 1.0
+              },
+              "R3": {
+                "numerator": 4,
+                "denominator": 5,
+                "value": 0.8
+              },
+              "R4": {
+                "numerator": 3,
+                "denominator": 3,
+                "value": 1.0
+              }
+            },
+            "recall_overall": {
+              "numerator": 20,
+              "denominator": 21,
+              "value": 0.9523809523809523
+            },
+            "precision": {
+              "numerator": 20,
+              "denominator": 21,
+              "value": 0.9523809523809523
+            },
+            "unrelated_pass_rate": {
+              "numerator": 1,
+              "denominator": 59,
+              "value": 0.01694915254237288
+            },
+            "quote_fidelity": {
+              "numerator": 21,
+              "denominator": 21,
+              "value": 1.0
+            },
+            "ambiguous_selected": 0,
+            "invalid_ids": 0,
+            "title_mismatches": 13,
+            "duplicates": 0,
+            "selected": [
+              {
+                "case": "B01-Oriole",
+                "selected": [
+                  "B01-01",
+                  "B01-02"
+                ]
+              },
+              {
+                "case": "B02-Birch",
+                "selected": [
+                  "B02-01",
+                  "B02-02"
+                ]
+              },
+              {
+                "case": "B03-Cedar",
+                "selected": [
+                  "B03-01",
+                  "B03-02"
+                ]
+              },
+              {
+                "case": "B04-Dune",
+                "selected": [
+                  "B04-01",
+                  "B04-02"
+                ]
+              },
+              {
+                "case": "B05-Oriole",
+                "selected": [
+                  "B05-01",
+                  "B05-02",
+                  "B05-05"
+                ]
+              },
+              {
+                "case": "B06-Birch",
+                "selected": [
+                  "B06-01",
+                  "B06-02"
+                ]
+              },
+              {
+                "case": "B07-Cedar",
+                "selected": [
+                  "B07-01",
+                  "B07-02"
+                ]
+              },
+              {
+                "case": "B08-Dune",
+                "selected": [
+                  "B08-01",
+                  "B08-02"
+                ]
+              },
+              {
+                "case": "B09-Oriole",
+                "selected": [
+                  "B09-01",
+                  "B09-02"
+                ]
+              },
+              {
+                "case": "B10-Birch",
+                "selected": [
+                  "B10-01",
+                  "B10-02"
+                ]
+              }
+            ],
+            "errors": [
+              {
+                "case": "B05-Oriole",
+                "item": "B05-05",
+                "type": "false_positive",
+                "gold": "N",
+                "text": "웹 검증 환경 preview-slot은 Echo가 업무 종료까지 점유한다."
+              },
+              {
+                "case": "B05-Oriole",
+                "item": "B05-03",
+                "type": "false_negative",
+                "gold": "R3",
+                "text": "상품 캐시를 포함한 공유 Redis 클러스터의 사용을 종료한다."
+              }
+            ]
+          }
+        },
+        {
+          "repetition": 1,
+          "metrics": {
+            "cases": 10,
+            "label_denominators": {
+              "R1": 8,
+              "R2": 5,
+              "N": 59,
+              "R4": 3,
+              "R3": 5
+            },
+            "label_hits": {
+              "R2": 5,
+              "R1": 8,
+              "R4": 3,
+              "R3": 4
+            },
+            "recall": {
+              "R1": {
+                "numerator": 8,
+                "denominator": 8,
+                "value": 1.0
+              },
+              "R2": {
+                "numerator": 5,
+                "denominator": 5,
+                "value": 1.0
+              },
+              "R3": {
+                "numerator": 4,
+                "denominator": 5,
+                "value": 0.8
+              },
+              "R4": {
+                "numerator": 3,
+                "denominator": 3,
+                "value": 1.0
+              }
+            },
+            "recall_overall": {
+              "numerator": 20,
+              "denominator": 21,
+              "value": 0.9523809523809523
+            },
+            "precision": {
+              "numerator": 20,
+              "denominator": 20,
+              "value": 1.0
+            },
+            "unrelated_pass_rate": {
+              "numerator": 0,
+              "denominator": 59,
+              "value": 0.0
+            },
+            "quote_fidelity": {
+              "numerator": 20,
+              "denominator": 20,
+              "value": 1.0
+            },
+            "ambiguous_selected": 0,
+            "invalid_ids": 0,
+            "title_mismatches": 14,
+            "duplicates": 0,
+            "selected": [
+              {
+                "case": "B01-Oriole",
+                "selected": [
+                  "B01-01",
+                  "B01-02"
+                ]
+              },
+              {
+                "case": "B02-Birch",
+                "selected": [
+                  "B02-01",
+                  "B02-02"
+                ]
+              },
+              {
+                "case": "B03-Cedar",
+                "selected": [
+                  "B03-01",
+                  "B03-02"
+                ]
+              },
+              {
+                "case": "B04-Dune",
+                "selected": [
+                  "B04-01",
+                  "B04-02"
+                ]
+              },
+              {
+                "case": "B05-Oriole",
+                "selected": [
+                  "B05-01",
+                  "B05-02"
+                ]
+              },
+              {
+                "case": "B06-Birch",
+                "selected": [
+                  "B06-01",
+                  "B06-02"
+                ]
+              },
+              {
+                "case": "B07-Cedar",
+                "selected": [
+                  "B07-01",
+                  "B07-02"
+                ]
+              },
+              {
+                "case": "B08-Dune",
+                "selected": [
+                  "B08-01",
+                  "B08-02"
+                ]
+              },
+              {
+                "case": "B09-Oriole",
+                "selected": [
+                  "B09-01",
+                  "B09-02"
+                ]
+              },
+              {
+                "case": "B10-Birch",
+                "selected": [
+                  "B10-01",
+                  "B10-02"
+                ]
+              }
+            ],
+            "errors": [
+              {
+                "case": "B05-Oriole",
+                "item": "B05-03",
+                "type": "false_negative",
+                "gold": "R3",
+                "text": "상품 캐시를 포함한 공유 Redis 클러스터의 사용을 종료한다."
+              }
+            ]
+          }
+        },
+        {
+          "repetition": 2,
+          "metrics": {
+            "cases": 10,
+            "label_denominators": {
+              "R1": 8,
+              "R2": 5,
+              "N": 59,
+              "R4": 3,
+              "R3": 5
+            },
+            "label_hits": {
+              "R2": 5,
+              "R1": 8,
+              "R4": 3,
+              "R3": 4,
+              "N": 1
+            },
+            "recall": {
+              "R1": {
+                "numerator": 8,
+                "denominator": 8,
+                "value": 1.0
+              },
+              "R2": {
+                "numerator": 5,
+                "denominator": 5,
+                "value": 1.0
+              },
+              "R3": {
+                "numerator": 4,
+                "denominator": 5,
+                "value": 0.8
+              },
+              "R4": {
+                "numerator": 3,
+                "denominator": 3,
+                "value": 1.0
+              }
+            },
+            "recall_overall": {
+              "numerator": 20,
+              "denominator": 21,
+              "value": 0.9523809523809523
+            },
+            "precision": {
+              "numerator": 20,
+              "denominator": 21,
+              "value": 0.9523809523809523
+            },
+            "unrelated_pass_rate": {
+              "numerator": 1,
+              "denominator": 59,
+              "value": 0.01694915254237288
+            },
+            "quote_fidelity": {
+              "numerator": 21,
+              "denominator": 21,
+              "value": 1.0
+            },
+            "ambiguous_selected": 0,
+            "invalid_ids": 0,
+            "title_mismatches": 13,
+            "duplicates": 0,
+            "selected": [
+              {
+                "case": "B01-Oriole",
+                "selected": [
+                  "B01-01",
+                  "B01-02"
+                ]
+              },
+              {
+                "case": "B02-Birch",
+                "selected": [
+                  "B02-01",
+                  "B02-02"
+                ]
+              },
+              {
+                "case": "B03-Cedar",
+                "selected": [
+                  "B03-01",
+                  "B03-02"
+                ]
+              },
+              {
+                "case": "B04-Dune",
+                "selected": [
+                  "B04-01",
+                  "B04-02"
+                ]
+              },
+              {
+                "case": "B05-Oriole",
+                "selected": [
+                  "B05-01",
+                  "B05-02",
+                  "B05-05"
+                ]
+              },
+              {
+                "case": "B06-Birch",
+                "selected": [
+                  "B06-01",
+                  "B06-02"
+                ]
+              },
+              {
+                "case": "B07-Cedar",
+                "selected": [
+                  "B07-01",
+                  "B07-02"
+                ]
+              },
+              {
+                "case": "B08-Dune",
+                "selected": [
+                  "B08-01",
+                  "B08-02"
+                ]
+              },
+              {
+                "case": "B09-Oriole",
+                "selected": [
+                  "B09-01",
+                  "B09-02"
+                ]
+              },
+              {
+                "case": "B10-Birch",
+                "selected": [
+                  "B10-01",
+                  "B10-02"
+                ]
+              }
+            ],
+            "errors": [
+              {
+                "case": "B05-Oriole",
+                "item": "B05-05",
+                "type": "false_positive",
+                "gold": "N",
+                "text": "웹 검증 환경 preview-slot은 Echo가 업무 종료까지 점유한다."
+              },
+              {
+                "case": "B05-Oriole",
+                "item": "B05-03",
+                "type": "false_negative",
+                "gold": "R3",
+                "text": "상품 캐시를 포함한 공유 Redis 클러스터의 사용을 종료한다."
+              }
+            ]
+          }
+        },
+        {
+          "repetition": 3,
+          "metrics": {
+            "cases": 10,
+            "label_denominators": {
+              "R1": 8,
+              "R2": 5,
+              "N": 59,
+              "R4": 3,
+              "R3": 5
+            },
+            "label_hits": {
+              "R2": 5,
+              "R1": 8,
+              "N": 2,
+              "R4": 3,
+              "R3": 4
+            },
+            "recall": {
+              "R1": {
+                "numerator": 8,
+                "denominator": 8,
+                "value": 1.0
+              },
+              "R2": {
+                "numerator": 5,
+                "denominator": 5,
+                "value": 1.0
+              },
+              "R3": {
+                "numerator": 4,
+                "denominator": 5,
+                "value": 0.8
+              },
+              "R4": {
+                "numerator": 3,
+                "denominator": 3,
+                "value": 1.0
+              }
+            },
+            "recall_overall": {
+              "numerator": 20,
+              "denominator": 21,
+              "value": 0.9523809523809523
+            },
+            "precision": {
+              "numerator": 20,
+              "denominator": 22,
+              "value": 0.9090909090909091
+            },
+            "unrelated_pass_rate": {
+              "numerator": 2,
+              "denominator": 59,
+              "value": 0.03389830508474576
+            },
+            "quote_fidelity": {
+              "numerator": 22,
+              "denominator": 22,
+              "value": 1.0
+            },
+            "ambiguous_selected": 0,
+            "invalid_ids": 0,
+            "title_mismatches": 15,
+            "duplicates": 0,
+            "selected": [
+              {
+                "case": "B01-Oriole",
+                "selected": [
+                  "B01-01",
+                  "B01-02"
+                ]
+              },
+              {
+                "case": "B02-Birch",
+                "selected": [
+                  "B02-01",
+                  "B02-02",
+                  "B02-07"
+                ]
+              },
+              {
+                "case": "B03-Cedar",
+                "selected": [
+                  "B03-01",
+                  "B03-02"
+                ]
+              },
+              {
+                "case": "B04-Dune",
+                "selected": [
+                  "B04-01",
+                  "B04-02"
+                ]
+              },
+              {
+                "case": "B05-Oriole",
+                "selected": [
+                  "B05-01",
+                  "B05-02",
+                  "B05-05"
+                ]
+              },
+              {
+                "case": "B06-Birch",
+                "selected": [
+                  "B06-01",
+                  "B06-02"
+                ]
+              },
+              {
+                "case": "B07-Cedar",
+                "selected": [
+                  "B07-01",
+                  "B07-02"
+                ]
+              },
+              {
+                "case": "B08-Dune",
+                "selected": [
+                  "B08-01",
+                  "B08-02"
+                ]
+              },
+              {
+                "case": "B09-Oriole",
+                "selected": [
+                  "B09-01",
+                  "B09-02"
+                ]
+              },
+              {
+                "case": "B10-Birch",
+                "selected": [
+                  "B10-01",
+                  "B10-02"
+                ]
+              }
+            ],
+            "errors": [
+              {
+                "case": "B02-Birch",
+                "item": "B02-07",
+                "type": "false_positive",
+                "gold": "N",
+                "text": "인증 세션 저장소를 Redis에서 로컬 메모리로 바꾸기로 결정했다."
+              },
+              {
+                "case": "B05-Oriole",
+                "item": "B05-05",
+                "type": "false_positive",
+                "gold": "N",
+                "text": "웹 검증 환경 preview-slot은 Echo가 업무 종료까지 점유한다."
+              },
+              {
+                "case": "B05-Oriole",
+                "item": "B05-03",
+                "type": "false_negative",
+                "gold": "R3",
+                "text": "상품 캐시를 포함한 공유 Redis 클러스터의 사용을 종료한다."
+              }
+            ]
+          }
+        }
+      ],
+      "repeat_spread": {
+        "R1": 0.0,
+        "R2": 0.0,
+        "R3": 0.0,
+        "R4": 0.0,
+        "overall": 0.0
+      },
+      "time_seconds": {
+        "n": 70,
+        "mean": 5.599112864874353,
+        "median": 5.561750624503475,
+        "p95": 6.4319295000168495,
+        "min": 4.396009374991991,
+        "max": 8.512401042011334
+      },
+      "tokens_input": {
+        "n": 70,
+        "mean": 20454,
+        "median": 20468.0,
+        "p95": 20485,
+        "min": 20409,
+        "max": 20486
+      },
+      "tokens_output": {
+        "n": 70,
+        "mean": 123.12857142857143,
+        "median": 118.0,
+        "p95": 170,
+        "min": 107,
+        "max": 208
+      },
+      "tokens_cached_input": {
+        "n": 70,
+        "mean": 10748.342857142858,
+        "median": 10624.0,
+        "p95": 15360,
+        "min": 0,
+        "max": 15360
+      },
+      "actual_models": [
+        "gpt-6-luna"
+      ]
+    },
+    "F3": {
+      "baseline": {
+        "cases": 12,
+        "label_denominators": {
+          "R1": 5,
+          "R2": 8,
+          "N": 70,
+          "R3": 8,
+          "R4": 5
+        },
+        "label_hits": {
+          "R2": 8,
+          "R1": 5,
+          "R3": 8,
+          "R4": 5
+        },
+        "recall": {
+          "R1": {
+            "numerator": 5,
+            "denominator": 5,
+            "value": 1.0
+          },
+          "R2": {
+            "numerator": 8,
+            "denominator": 8,
+            "value": 1.0
+          },
+          "R3": {
+            "numerator": 8,
+            "denominator": 8,
+            "value": 1.0
+          },
+          "R4": {
+            "numerator": 5,
+            "denominator": 5,
+            "value": 1.0
+          }
+        },
+        "recall_overall": {
+          "numerator": 26,
+          "denominator": 26,
+          "value": 1.0
+        },
+        "precision": {
+          "numerator": 26,
+          "denominator": 26,
+          "value": 1.0
+        },
+        "unrelated_pass_rate": {
+          "numerator": 0,
+          "denominator": 70,
+          "value": 0.0
+        },
+        "quote_fidelity": {
+          "numerator": 26,
+          "denominator": 26,
+          "value": 1.0
+        },
+        "ambiguous_selected": 0,
+        "invalid_ids": 0,
+        "title_mismatches": 0,
+        "duplicates": 0,
+        "selected": [
+          {
+            "case": "B01-Oriole",
+            "selected": [
+              "B01-01",
+              "B01-02"
+            ]
+          },
+          {
+            "case": "B01-Birch",
+            "selected": [
+              "B01-03",
+              "B01-04"
+            ]
+          },
+          {
+            "case": "B01-Cedar",
+            "selected": [
+              "B01-05",
+              "B01-06"
+            ]
+          },
+          {
+            "case": "B01-Dune",
+            "selected": [
+              "B01-07",
+              "B01-08"
+            ]
+          },
+          {
+            "case": "B05-Oriole",
+            "selected": [
+              "B05-01",
+              "B05-02",
+              "B05-03"
+            ]
+          },
+          {
+            "case": "B05-Birch",
+            "selected": [
+              "B05-02",
+              "B05-03",
+              "B05-04"
+            ]
+          },
+          {
+            "case": "B05-Cedar",
+            "selected": [
+              "B05-05",
+              "B05-06"
+            ]
+          },
+          {
+            "case": "B05-Dune",
+            "selected": [
+              "B05-07",
+              "B05-08"
+            ]
+          },
+          {
+            "case": "B10-Oriole",
+            "selected": [
+              "B10-07",
+              "B10-08"
+            ]
+          },
+          {
+            "case": "B10-Birch",
+            "selected": [
+              "B10-01",
+              "B10-02"
+            ]
+          },
+          {
+            "case": "B10-Cedar",
+            "selected": [
+              "B10-03",
+              "B10-04"
+            ]
+          },
+          {
+            "case": "B10-Dune",
+            "selected": [
+              "B10-05",
+              "B10-06"
+            ]
+          }
+        ],
+        "errors": []
+      },
+      "expected_baseline": 12,
+      "observed_baseline": 12,
+      "expected_calls": 12,
+      "observed_calls": 12,
+      "repeat": [],
+      "repeat_spread": {},
+      "time_seconds": {
+        "n": 12,
+        "mean": 7.855195343916421,
+        "median": 7.593710062501486,
+        "p95": 11.10100500000408,
+        "min": 6.179134250007337,
+        "max": 11.10100500000408
+      },
+      "tokens_input": {
+        "n": 12,
+        "mean": 21150.75,
+        "median": 21160.0,
+        "p95": 21172,
+        "min": 21106,
+        "max": 21172
+      },
+      "tokens_output": {
+        "n": 12,
+        "mean": 136,
+        "median": 130.0,
+        "p95": 186,
+        "min": 114,
+        "max": 186
+      },
+      "tokens_cached_input": {
+        "n": 12,
+        "mean": 2389.3333333333335,
+        "median": 0.0,
+        "p95": 7168,
+        "min": 0,
+        "max": 7168
+      },
+      "actual_models": [
+        "gpt-6.1-sol"
+      ]
+    }
+  },
+  "calls": [
+    {
+      "name": "F1-r0-B01-Oriole",
+      "condition": "F1",
+      "repetition": 0,
+      "case": "B01-Oriole",
+      "models": [
+        "claude-haiku-5-5"
+      ],
+      "elapsed_seconds": 7.52681116599706,
+      "input": 18184,
+      "output": 1076,
+      "cached_input": 649,
+      "fresh_input": 17535,
+      "source": "Claude result.usage (all cache-inclusive input)"
+    },
+    {
+      "name": "F1-r0-B01-Birch",
+      "condition": "F1",
+      "repetition": 0,
+      "case": "B01-Birch",
+      "models": [
+        "claude-haiku-5-5"
+      ],
+      "elapsed_seconds": 6.988096665998455,
+      "input": 18189,
+      "output": 994,
+      "cached_input": 3053,
+      "fresh_input": 15136,
+      "source": "Claude result.usage (all cache-inclusive input)"
+    },
+    {
+      "name": "F1-r0-B01-Cedar",
+      "condition": "F1",
+      "repetition": 0,
+      "case": "B01-Cedar",
+      "models": [
+        "claude-haiku-5-5"
+      ],
+      "elapsed_seconds": 8.089463790995069,
+      "input": 18188,
+      "output": 1227,
+      "cached_input": 3053,
+      "fresh_input": 15135,
+      "source": "Claude result.usage (all cache-inclusive input)"
+    },
+    {
+      "name": "F1-r0-B01-Dune",
+      "condition": "F1",
+      "repetition": 0,
+      "case": "B01-Dune",
+      "models": [
+        "claude-haiku-5-5"
+      ],
+      "elapsed_seconds": 6.72343391700997,
+      "input": 18181,
+      "output": 939,
+      "cached_input": 3053,
+      "fresh_input": 15128,
+      "source": "Claude result.usage (all cache-inclusive input)"
+    },
+    {
+      "name": "F1-r0-B02-Oriole",
+      "condition": "F1",
+      "repetition": 0,
+      "case": "B02-Oriole",
+      "models": [
+        "claude-haiku-5-5"
+      ],
+      "elapsed_seconds": 7.741696666984353,
+      "input": 18178,
+      "output": 1132,
+      "cached_input": 3053,
+      "fresh_input": 15125,
+      "source": "Claude result.usage (all cache-inclusive input)"
+    },
+    {
+      "name": "F1-r0-B02-Birch",
+      "condition": "F1",
+      "repetition": 0,
+      "case": "B02-Birch",
+      "models": [
+        "claude-haiku-5-5"
+      ],
+      "elapsed_seconds": 7.785794750001514,
+      "input": 18183,
+      "output": 1201,
+      "cached_input": 3053,
+      "fresh_input": 15130,
+      "source": "Claude result.usage (all cache-inclusive input)"
+    },
+    {
+      "name": "F1-r0-B02-Cedar",
+      "condition": "F1",
+      "repetition": 0,
+      "case": "B02-Cedar",
+      "models": [
+        "claude-haiku-5-5"
+      ],
+      "elapsed_seconds": 6.461244000005536,
+      "input": 18182,
+      "output": 822,
+      "cached_input": 3053,
+      "fresh_input": 15129,
+      "source": "Claude result.usage (all cache-inclusive input)"
+    },
+    {
+      "name": "F1-r0-B02-Dune",
+      "condition": "F1",
+      "repetition": 0,
+      "case": "B02-Dune",
+      "models": [
+        "claude-haiku-5-5"
+      ],
+      "elapsed_seconds": 6.973655666020932,
+      "input": 18175,
+      "output": 979,
+      "cached_input": 3053,
+      "fresh_input": 15122,
+      "source": "Claude result.usage (all cache-inclusive input)"
+    },
+    {
+      "name": "F1-r0-B03-Oriole",
+      "condition": "F1",
+      "repetition": 0,
+      "case": "B03-Oriole",
+      "models": [
+        "claude-haiku-5-5"
+      ],
+      "elapsed_seconds": 6.496063083002809,
+      "input": 18200,
+      "output": 892,
+      "cached_input": 3053,
+      "fresh_input": 15147,
+      "source": "Claude result.usage (all cache-inclusive input)"
+    },
+    {
+      "name": "F1-r0-B03-Birch",
+      "condition": "F1",
+      "repetition": 0,
+      "case": "B03-Birch",
+      "models": [
+        "claude-haiku-5-5"
+      ],
+      "elapsed_seconds": 6.464229999983218,
+      "input": 18205,
+      "output": 832,
+      "cached_input": 3053,
+      "fresh_input": 15152,
+      "source": "Claude result.usage (all cache-inclusive input)"
+    },
+    {
+      "name": "F1-r0-B03-Cedar",
+      "condition": "F1",
+      "repetition": 0,
+      "case": "B03-Cedar",
+      "models": [
+        "claude-haiku-5-5"
+      ],
+      "elapsed_seconds": 8.194747250003275,
+      "input": 18204,
+      "output": 1337,
+      "cached_input": 3053,
+      "fresh_input": 15151,
+      "source": "Claude result.usage (all cache-inclusive input)"
+    },
+    {
+      "name": "F1-r0-B03-Dune",
+      "condition": "F1",
+      "repetition": 0,
+      "case": "B03-Dune",
+      "models": [
+        "claude-haiku-5-5"
+      ],
+      "elapsed_seconds": 7.517476374981925,
+      "input": 18197,
+      "output": 1076,
+      "cached_input": 3053,
+      "fresh_input": 15144,
+      "source": "Claude result.usage (all cache-inclusive input)"
+    },
+    {
+      "name": "F1-r0-B04-Oriole",
+      "condition": "F1",
+      "repetition": 0,
+      "case": "B04-Oriole",
+      "models": [
+        "claude-haiku-5-5"
+      ],
+      "elapsed_seconds": 7.6335222919879016,
+      "input": 18214,
+      "output": 1122,
+      "cached_input": 3053,
+      "fresh_input": 15161,
+      "source": "Claude result.usage (all cache-inclusive input)"
+    },
+    {
+      "name": "F1-r0-B04-Birch",
+      "condition": "F1",
+      "repetition": 0,
+      "case": "B04-Birch",
+      "models": [
+        "claude-haiku-5-5"
+      ],
+      "elapsed_seconds": 9.721184666996123,
+      "input": 18219,
+      "output": 1461,
+      "cached_input": 3053,
+      "fresh_input": 15166,
+      "source": "Claude result.usage (all cache-inclusive input)"
+    },
+    {
+      "name": "F1-r0-B04-Cedar",
+      "condition": "F1",
+      "repetition": 0,
+      "case": "B04-Cedar",
+      "models": [
+        "claude-haiku-5-5"
+      ],
+      "elapsed_seconds": 6.930159084004117,
+      "input": 18218,
+      "output": 1028,
+      "cached_input": 3053,
+      "fresh_input": 15165,
+      "source": "Claude result.usage (all cache-inclusive input)"
+    },
+    {
+      "name": "F1-r0-B04-Dune",
+      "condition": "F1",
+      "repetition": 0,
+      "case": "B04-Dune",
+      "models": [
+        "claude-haiku-5-5"
+      ],
+      "elapsed_seconds": 7.287017750000814,
+      "input": 18211,
+      "output": 986,
+      "cached_input": 3053,
+      "fresh_input": 15158,
+      "source": "Claude result.usage (all cache-inclusive input)"
+    },
+    {
+      "name": "F1-r0-B05-Oriole",
+      "condition": "F1",
+      "repetition": 0,
+      "case": "B05-Oriole",
+      "models": [
+        "claude-haiku-5-5"
+      ],
+      "elapsed_seconds": 7.949537000007695,
+      "input": 18210,
+      "output": 1317,
+      "cached_input": 3053,
+      "fresh_input": 15157,
+      "source": "Claude result.usage (all cache-inclusive input)"
+    },
+    {
+      "name": "F1-r0-B05-Birch",
+      "condition": "F1",
+      "repetition": 0,
+      "case": "B05-Birch",
+      "models": [
+        "claude-haiku-5-5"
+      ],
+      "elapsed_seconds": 8.004169333988102,
+      "input": 18215,
+      "output": 1243,
+      "cached_input": 3053,
+      "fresh_input": 15162,
+      "source": "Claude result.usage (all cache-inclusive input)"
+    },
+    {
+      "name": "F1-r0-B05-Cedar",
+      "condition": "F1",
+      "repetition": 0,
+      "case": "B05-Cedar",
+      "models": [
+        "claude-haiku-5-5"
+      ],
+      "elapsed_seconds": 6.7258397080004215,
+      "input": 18214,
+      "output": 917,
+      "cached_input": 3053,
+      "fresh_input": 15161,
+      "source": "Claude result.usage (all cache-inclusive input)"
+    },
+    {
+      "name": "F1-r0-B05-Dune",
+      "condition": "F1",
+      "repetition": 0,
+      "case": "B05-Dune",
+      "models": [
+        "claude-haiku-5-5"
+      ],
+      "elapsed_seconds": 7.039660709007876,
+      "input": 18207,
+      "output": 1038,
+      "cached_input": 3053,
+      "fresh_input": 15154,
+      "source": "Claude result.usage (all cache-inclusive input)"
+    },
+    {
+      "name": "F1-r0-B06-Oriole",
+      "condition": "F1",
+      "repetition": 0,
+      "case": "B06-Oriole",
+      "models": [
+        "claude-haiku-5-5"
+      ],
+      "elapsed_seconds": 6.3595081660023425,
+      "input": 18189,
+      "output": 854,
+      "cached_input": 3053,
+      "fresh_input": 15136,
+      "source": "Claude result.usage (all cache-inclusive input)"
+    },
+    {
+      "name": "F1-r0-B06-Birch",
+      "condition": "F1",
+      "repetition": 0,
+      "case": "B06-Birch",
+      "models": [
+        "claude-haiku-5-5"
+      ],
+      "elapsed_seconds": 6.1386771659890655,
+      "input": 18194,
+      "output": 790,
+      "cached_input": 3053,
+      "fresh_input": 15141,
+      "source": "Claude result.usage (all cache-inclusive input)"
+    },
+    {
+      "name": "F1-r0-B06-Cedar",
+      "condition": "F1",
+      "repetition": 0,
+      "case": "B06-Cedar",
+      "models": [
+        "claude-haiku-5-5"
+      ],
+      "elapsed_seconds": 6.506111583992606,
+      "input": 18193,
+      "output": 868,
+      "cached_input": 3053,
+      "fresh_input": 15140,
+      "source": "Claude result.usage (all cache-inclusive input)"
+    },
+    {
+      "name": "F1-r0-B06-Dune",
+      "condition": "F1",
+      "repetition": 0,
+      "case": "B06-Dune",
+      "models": [
+        "claude-haiku-5-5"
+      ],
+      "elapsed_seconds": 7.526544833002845,
+      "input": 18186,
+      "output": 1139,
+      "cached_input": 3053,
+      "fresh_input": 15133,
+      "source": "Claude result.usage (all cache-inclusive input)"
+    },
+    {
+      "name": "F1-r0-B07-Oriole",
+      "condition": "F1",
+      "repetition": 0,
+      "case": "B07-Oriole",
+      "models": [
+        "claude-haiku-5-5"
+      ],
+      "elapsed_seconds": 7.4069485000218265,
+      "input": 18207,
+      "output": 1064,
+      "cached_input": 3053,
+      "fresh_input": 15154,
+      "source": "Claude result.usage (all cache-inclusive input)"
+    },
+    {
+      "name": "F1-r0-B07-Birch",
+      "condition": "F1",
+      "repetition": 0,
+      "case": "B07-Birch",
+      "models": [
+        "claude-haiku-5-5"
+      ],
+      "elapsed_seconds": 7.467385500000091,
+      "input": 18212,
+      "output": 1107,
+      "cached_input": 3053,
+      "fresh_input": 15159,
+      "source": "Claude result.usage (all cache-inclusive input)"
+    },
+    {
+      "name": "F1-r0-B07-Cedar",
+      "condition": "F1",
+      "repetition": 0,
+      "case": "B07-Cedar",
+      "models": [
+        "claude-haiku-5-5"
+      ],
+      "elapsed_seconds": 7.351833833992714,
+      "input": 18211,
+      "output": 1004,
+      "cached_input": 3053,
+      "fresh_input": 15158,
+      "source": "Claude result.usage (all cache-inclusive input)"
+    },
+    {
+      "name": "F1-r0-B07-Dune",
+      "condition": "F1",
+      "repetition": 0,
+      "case": "B07-Dune",
+      "models": [
+        "claude-haiku-5-5"
+      ],
+      "elapsed_seconds": 7.224970374983968,
+      "input": 18204,
+      "output": 1015,
+      "cached_input": 3053,
+      "fresh_input": 15151,
+      "source": "Claude result.usage (all cache-inclusive input)"
+    },
+    {
+      "name": "F1-r0-B08-Oriole",
+      "condition": "F1",
+      "repetition": 0,
+      "case": "B08-Oriole",
+      "models": [
+        "claude-haiku-5-5"
+      ],
+      "elapsed_seconds": 8.388729083002545,
+      "input": 18215,
+      "output": 1317,
+      "cached_input": 3053,
+      "fresh_input": 15162,
+      "source": "Claude result.usage (all cache-inclusive input)"
+    },
+    {
+      "name": "F1-r0-B08-Birch",
+      "condition": "F1",
+      "repetition": 0,
+      "case": "B08-Birch",
+      "models": [
+        "claude-haiku-5-5"
+      ],
+      "elapsed_seconds": 7.006506417004857,
+      "input": 18220,
+      "output": 987,
+      "cached_input": 3053,
+      "fresh_input": 15167,
+      "source": "Claude result.usage (all cache-inclusive input)"
+    },
+    {
+      "name": "F1-r0-B08-Cedar",
+      "condition": "F1",
+      "repetition": 0,
+      "case": "B08-Cedar",
+      "models": [
+        "claude-haiku-5-5"
+      ],
+      "elapsed_seconds": 7.59436504097539,
+      "input": 18219,
+      "output": 1117,
+      "cached_input": 3053,
+      "fresh_input": 15166,
+      "source": "Claude result.usage (all cache-inclusive input)"
+    },
+    {
+      "name": "F1-r0-B08-Dune",
+      "condition": "F1",
+      "repetition": 0,
+      "case": "B08-Dune",
+      "models": [
+        "claude-haiku-5-5"
+      ],
+      "elapsed_seconds": 6.794319542008452,
+      "input": 18212,
+      "output": 935,
+      "cached_input": 3053,
+      "fresh_input": 15159,
+      "source": "Claude result.usage (all cache-inclusive input)"
+    },
+    {
+      "name": "F1-r0-B09-Oriole",
+      "condition": "F1",
+      "repetition": 0,
+      "case": "B09-Oriole",
+      "models": [
+        "claude-haiku-5-5"
+      ],
+      "elapsed_seconds": 7.621251208009198,
+      "input": 18200,
+      "output": 1098,
+      "cached_input": 3053,
+      "fresh_input": 15147,
+      "source": "Claude result.usage (all cache-inclusive input)"
+    },
+    {
+      "name": "F1-r0-B09-Birch",
+      "condition": "F1",
+      "repetition": 0,
+      "case": "B09-Birch",
+      "models": [
+        "claude-haiku-5-5"
+      ],
+      "elapsed_seconds": 7.122490375011694,
+      "input": 18205,
+      "output": 1009,
+      "cached_input": 3053,
+      "fresh_input": 15152,
+      "source": "Claude result.usage (all cache-inclusive input)"
+    },
+    {
+      "name": "F1-r0-B09-Cedar",
+      "condition": "F1",
+      "repetition": 0,
+      "case": "B09-Cedar",
+      "models": [
+        "claude-haiku-5-5"
+      ],
+      "elapsed_seconds": 7.638857167010428,
+      "input": 18204,
+      "output": 1110,
+      "cached_input": 3053,
+      "fresh_input": 15151,
+      "source": "Claude result.usage (all cache-inclusive input)"
+    },
+    {
+      "name": "F1-r0-B09-Dune",
+      "condition": "F1",
+      "repetition": 0,
+      "case": "B09-Dune",
+      "models": [
+        "claude-haiku-5-5"
+      ],
+      "elapsed_seconds": 6.898466124985134,
+      "input": 18197,
+      "output": 932,
+      "cached_input": 3053,
+      "fresh_input": 15144,
+      "source": "Claude result.usage (all cache-inclusive input)"
+    },
+    {
+      "name": "F1-r0-B10-Oriole",
+      "condition": "F1",
+      "repetition": 0,
+      "case": "B10-Oriole",
+      "models": [
+        "claude-haiku-5-5"
+      ],
+      "elapsed_seconds": 7.744763958005933,
+      "input": 18248,
+      "output": 1123,
+      "cached_input": 3053,
+      "fresh_input": 15195,
+      "source": "Claude result.usage (all cache-inclusive input)"
+    },
+    {
+      "name": "F1-r0-B10-Birch",
+      "condition": "F1",
+      "repetition": 0,
+      "case": "B10-Birch",
+      "models": [
+        "claude-haiku-5-5"
+      ],
+      "elapsed_seconds": 7.413570750009967,
+      "input": 18253,
+      "output": 1063,
+      "cached_input": 3053,
+      "fresh_input": 15200,
+      "source": "Claude result.usage (all cache-inclusive input)"
+    },
+    {
+      "name": "F1-r0-B10-Cedar",
+      "condition": "F1",
+      "repetition": 0,
+      "case": "B10-Cedar",
+      "models": [
+        "claude-haiku-5-5"
+      ],
+      "elapsed_seconds": 8.071258790994762,
+      "input": 18252,
+      "output": 979,
+      "cached_input": 3053,
+      "fresh_input": 15199,
+      "source": "Claude result.usage (all cache-inclusive input)"
+    },
+    {
+      "name": "F1-r0-B10-Dune",
+      "condition": "F1",
+      "repetition": 0,
+      "case": "B10-Dune",
+      "models": [
+        "claude-haiku-5-5"
+      ],
+      "elapsed_seconds": 7.2651678749825805,
+      "input": 18245,
+      "output": 1002,
+      "cached_input": 3053,
+      "fresh_input": 15192,
+      "source": "Claude result.usage (all cache-inclusive input)"
+    },
+    {
+      "name": "F1-r1-B01-Oriole",
+      "condition": "F1",
+      "repetition": 1,
+      "case": "B01-Oriole",
+      "models": [
+        "claude-haiku-5-5"
+      ],
+      "elapsed_seconds": 8.099471207999159,
+      "input": 18222,
+      "output": 1204,
+      "cached_input": 3053,
+      "fresh_input": 15169,
+      "source": "Claude result.usage (all cache-inclusive input)"
+    },
+    {
+      "name": "F1-r1-B02-Birch",
+      "condition": "F1",
+      "repetition": 1,
+      "case": "B02-Birch",
+      "models": [
+        "claude-haiku-5-5"
+      ],
+      "elapsed_seconds": 6.999797957978444,
+      "input": 18221,
+      "output": 1006,
+      "cached_input": 3053,
+      "fresh_input": 15168,
+      "source": "Claude result.usage (all cache-inclusive input)"
+    },
+    {
+      "name": "F1-r1-B03-Cedar",
+      "condition": "F1",
+      "repetition": 1,
+      "case": "B03-Cedar",
+      "models": [
+        "claude-haiku-5-5"
+      ],
+      "elapsed_seconds": 7.972903458023211,
+      "input": 18242,
+      "output": 1227,
+      "cached_input": 3053,
+      "fresh_input": 15189,
+      "source": "Claude result.usage (all cache-inclusive input)"
+    },
+    {
+      "name": "F1-r1-B04-Dune",
+      "condition": "F1",
+      "repetition": 1,
+      "case": "B04-Dune",
+      "models": [
+        "claude-haiku-5-5"
+      ],
+      "elapsed_seconds": 7.293332416011253,
+      "input": 18249,
+      "output": 1037,
+      "cached_input": 3053,
+      "fresh_input": 15196,
+      "source": "Claude result.usage (all cache-inclusive input)"
+    },
+    {
+      "name": "F1-r1-B05-Oriole",
+      "condition": "F1",
+      "repetition": 1,
+      "case": "B05-Oriole",
+      "models": [
+        "claude-haiku-5-5"
+      ],
+      "elapsed_seconds": 7.539373500010697,
+      "input": 18248,
+      "output": 1266,
+      "cached_input": 3053,
+      "fresh_input": 15195,
+      "source": "Claude result.usage (all cache-inclusive input)"
+    },
+    {
+      "name": "F1-r1-B06-Birch",
+      "condition": "F1",
+      "repetition": 1,
+      "case": "B06-Birch",
+      "models": [
+        "claude-haiku-5-5"
+      ],
+      "elapsed_seconds": 6.4512034579820465,
+      "input": 18232,
+      "output": 839,
+      "cached_input": 3053,
+      "fresh_input": 15179,
+      "source": "Claude result.usage (all cache-inclusive input)"
+    },
+    {
+      "name": "F1-r1-B07-Cedar",
+      "condition": "F1",
+      "repetition": 1,
+      "case": "B07-Cedar",
+      "models": [
+        "claude-haiku-5-5"
+      ],
+      "elapsed_seconds": 7.3465610000130255,
+      "input": 18249,
+      "output": 1096,
+      "cached_input": 3053,
+      "fresh_input": 15196,
+      "source": "Claude result.usage (all cache-inclusive input)"
+    },
+    {
+      "name": "F1-r1-B08-Dune",
+      "condition": "F1",
+      "repetition": 1,
+      "case": "B08-Dune",
+      "models": [
+        "claude-haiku-5-5"
+      ],
+      "elapsed_seconds": 7.486889209016226,
+      "input": 18250,
+      "output": 1103,
+      "cached_input": 3053,
+      "fresh_input": 15197,
+      "source": "Claude result.usage (all cache-inclusive input)"
+    },
+    {
+      "name": "F1-r1-B09-Oriole",
+      "condition": "F1",
+      "repetition": 1,
+      "case": "B09-Oriole",
+      "models": [
+        "claude-haiku-5-5"
+      ],
+      "elapsed_seconds": 6.890320624981541,
+      "input": 18219,
+      "output": 965,
+      "cached_input": 3053,
+      "fresh_input": 15166,
+      "source": "Claude result.usage (all cache-inclusive input)"
+    },
+    {
+      "name": "F1-r1-B10-Birch",
+      "condition": "F1",
+      "repetition": 1,
+      "case": "B10-Birch",
+      "models": [
+        "claude-haiku-5-5"
+      ],
+      "elapsed_seconds": 7.24697004200425,
+      "input": 18253,
+      "output": 1124,
+      "cached_input": 18251,
+      "fresh_input": 2,
+      "source": "Claude result.usage (all cache-inclusive input)"
+    },
+    {
+      "name": "F1-r2-B01-Oriole",
+      "condition": "F1",
+      "repetition": 2,
+      "case": "B01-Oriole",
+      "models": [
+        "claude-haiku-5-5"
+      ],
+      "elapsed_seconds": 8.246568875008961,
+      "input": 18222,
+      "output": 1247,
+      "cached_input": 18220,
+      "fresh_input": 2,
+      "source": "Claude result.usage (all cache-inclusive input)"
+    },
+    {
+      "name": "F1-r2-B02-Birch",
+      "condition": "F1",
+      "repetition": 2,
+      "case": "B02-Birch",
+      "models": [
+        "claude-haiku-5-5"
+      ],
+      "elapsed_seconds": 7.247401542001171,
+      "input": 18221,
+      "output": 1046,
+      "cached_input": 18219,
+      "fresh_input": 2,
+      "source": "Claude result.usage (all cache-inclusive input)"
+    },
+    {
+      "name": "F1-r2-B03-Cedar",
+      "condition": "F1",
+      "repetition": 2,
+      "case": "B03-Cedar",
+      "models": [
+        "claude-haiku-5-5"
+      ],
+      "elapsed_seconds": 6.850079875002848,
+      "input": 18242,
+      "output": 991,
+      "cached_input": 18240,
+      "fresh_input": 2,
+      "source": "Claude result.usage (all cache-inclusive input)"
+    },
+    {
+      "name": "F1-r2-B04-Dune",
+      "condition": "F1",
+      "repetition": 2,
+      "case": "B04-Dune",
+      "models": [
+        "claude-haiku-5-5"
+      ],
+      "elapsed_seconds": 7.833821291016648,
+      "input": 18249,
+      "output": 1151,
+      "cached_input": 18247,
+      "fresh_input": 2,
+      "source": "Claude result.usage (all cache-inclusive input)"
+    },
+    {
+      "name": "F1-r2-B05-Oriole",
+      "condition": "F1",
+      "repetition": 2,
+      "case": "B05-Oriole",
+      "models": [
+        "claude-haiku-5-5"
+      ],
+      "elapsed_seconds": 9.25384358302108,
+      "input": 18248,
+      "output": 1589,
+      "cached_input": 18246,
+      "fresh_input": 2,
+      "source": "Claude result.usage (all cache-inclusive input)"
+    },
+    {
+      "name": "F1-r2-B06-Birch",
+      "condition": "F1",
+      "repetition": 2,
+      "case": "B06-Birch",
+      "models": [
+        "claude-haiku-5-5"
+      ],
+      "elapsed_seconds": 6.60617749998346,
+      "input": 18232,
+      "output": 910,
+      "cached_input": 18230,
+      "fresh_input": 2,
+      "source": "Claude result.usage (all cache-inclusive input)"
+    },
+    {
+      "name": "F1-r2-B07-Cedar",
+      "condition": "F1",
+      "repetition": 2,
+      "case": "B07-Cedar",
+      "models": [
+        "claude-haiku-5-5"
+      ],
+      "elapsed_seconds": 7.256299417000264,
+      "input": 18249,
+      "output": 1110,
+      "cached_input": 18247,
+      "fresh_input": 2,
+      "source": "Claude result.usage (all cache-inclusive input)"
+    },
+    {
+      "name": "F1-r2-B08-Dune",
+      "condition": "F1",
+      "repetition": 2,
+      "case": "B08-Dune",
+      "models": [
+        "claude-haiku-5-5"
+      ],
+      "elapsed_seconds": 9.357233374990756,
+      "input": 18250,
+      "output": 1430,
+      "cached_input": 18248,
+      "fresh_input": 2,
+      "source": "Claude result.usage (all cache-inclusive input)"
+    },
+    {
+      "name": "F1-r2-B09-Oriole",
+      "condition": "F1",
+      "repetition": 2,
+      "case": "B09-Oriole",
+      "models": [
+        "claude-haiku-5-5"
+      ],
+      "elapsed_seconds": 6.686249499995029,
+      "input": 18219,
+      "output": 975,
+      "cached_input": 18217,
+      "fresh_input": 2,
+      "source": "Claude result.usage (all cache-inclusive input)"
+    },
+    {
+      "name": "F1-r2-B10-Birch",
+      "condition": "F1",
+      "repetition": 2,
+      "case": "B10-Birch",
+      "models": [
+        "claude-haiku-5-5"
+      ],
+      "elapsed_seconds": 7.110661499988055,
+      "input": 18253,
+      "output": 1010,
+      "cached_input": 18251,
+      "fresh_input": 2,
+      "source": "Claude result.usage (all cache-inclusive input)"
+    },
+    {
+      "name": "F1-r3-B01-Oriole",
+      "condition": "F1",
+      "repetition": 3,
+      "case": "B01-Oriole",
+      "models": [
+        "claude-haiku-5-5"
+      ],
+      "elapsed_seconds": 7.210979374998715,
+      "input": 18222,
+      "output": 1024,
+      "cached_input": 18220,
+      "fresh_input": 2,
+      "source": "Claude result.usage (all cache-inclusive input)"
+    },
+    {
+      "name": "F1-r3-B02-Birch",
+      "condition": "F1",
+      "repetition": 3,
+      "case": "B02-Birch",
+      "models": [
+        "claude-haiku-5-5"
+      ],
+      "elapsed_seconds": 7.7433806249755435,
+      "input": 18221,
+      "output": 1048,
+      "cached_input": 18219,
+      "fresh_input": 2,
+      "source": "Claude result.usage (all cache-inclusive input)"
+    },
+    {
+      "name": "F1-r3-B03-Cedar",
+      "condition": "F1",
+      "repetition": 3,
+      "case": "B03-Cedar",
+      "models": [
+        "claude-haiku-5-5"
+      ],
+      "elapsed_seconds": 6.922066083003301,
+      "input": 18242,
+      "output": 933,
+      "cached_input": 18240,
+      "fresh_input": 2,
+      "source": "Claude result.usage (all cache-inclusive input)"
+    },
+    {
+      "name": "F1-r3-B04-Dune",
+      "condition": "F1",
+      "repetition": 3,
+      "case": "B04-Dune",
+      "models": [
+        "claude-haiku-5-5"
+      ],
+      "elapsed_seconds": 7.06712058300036,
+      "input": 18249,
+      "output": 903,
+      "cached_input": 18247,
+      "fresh_input": 2,
+      "source": "Claude result.usage (all cache-inclusive input)"
+    },
+    {
+      "name": "F1-r3-B05-Oriole",
+      "condition": "F1",
+      "repetition": 3,
+      "case": "B05-Oriole",
+      "models": [
+        "claude-haiku-5-5"
+      ],
+      "elapsed_seconds": 9.48989908301155,
+      "input": 18248,
+      "output": 1685,
+      "cached_input": 18246,
+      "fresh_input": 2,
+      "source": "Claude result.usage (all cache-inclusive input)"
+    },
+    {
+      "name": "F1-r3-B06-Birch",
+      "condition": "F1",
+      "repetition": 3,
+      "case": "B06-Birch",
+      "models": [
+        "claude-haiku-5-5"
+      ],
+      "elapsed_seconds": 6.531342582980869,
+      "input": 18232,
+      "output": 825,
+      "cached_input": 18230,
+      "fresh_input": 2,
+      "source": "Claude result.usage (all cache-inclusive input)"
+    },
+    {
+      "name": "F1-r3-B07-Cedar",
+      "condition": "F1",
+      "repetition": 3,
+      "case": "B07-Cedar",
+      "models": [
+        "claude-haiku-5-5"
+      ],
+      "elapsed_seconds": 7.095069250004599,
+      "input": 18249,
+      "output": 1019,
+      "cached_input": 18247,
+      "fresh_input": 2,
+      "source": "Claude result.usage (all cache-inclusive input)"
+    },
+    {
+      "name": "F1-r3-B08-Dune",
+      "condition": "F1",
+      "repetition": 3,
+      "case": "B08-Dune",
+      "models": [
+        "claude-haiku-5-5"
+      ],
+      "elapsed_seconds": 7.016956541978288,
+      "input": 18250,
+      "output": 1092,
+      "cached_input": 18248,
+      "fresh_input": 2,
+      "source": "Claude result.usage (all cache-inclusive input)"
+    },
+    {
+      "name": "F1-r3-B09-Oriole",
+      "condition": "F1",
+      "repetition": 3,
+      "case": "B09-Oriole",
+      "models": [
+        "claude-haiku-5-5"
+      ],
+      "elapsed_seconds": 6.4938939170097,
+      "input": 18219,
+      "output": 891,
+      "cached_input": 18217,
+      "fresh_input": 2,
+      "source": "Claude result.usage (all cache-inclusive input)"
+    },
+    {
+      "name": "F1-r3-B10-Birch",
+      "condition": "F1",
+      "repetition": 3,
+      "case": "B10-Birch",
+      "models": [
+        "claude-haiku-5-5"
+      ],
+      "elapsed_seconds": 6.643343957985053,
+      "input": 18253,
+      "output": 912,
+      "cached_input": 18251,
+      "fresh_input": 2,
+      "source": "Claude result.usage (all cache-inclusive input)"
+    },
+    {
+      "name": "F2-r0-B01-Oriole",
+      "condition": "F2",
+      "repetition": 0,
+      "case": "B01-Oriole",
+      "models": [
+        "gpt-6-luna"
+      ],
+      "elapsed_seconds": 6.189766082999995,
+      "input": 20410,
+      "output": 114,
+      "cached_input": 0,
+      "fresh_input": 20410,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F2-r0-B01-Birch",
+      "condition": "F2",
+      "repetition": 0,
+      "case": "B01-Birch",
+      "models": [
+        "gpt-6-luna"
+      ],
+      "elapsed_seconds": 6.2076263340131845,
+      "input": 20411,
+      "output": 111,
+      "cached_input": 0,
+      "fresh_input": 20411,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F2-r0-B01-Cedar",
+      "condition": "F2",
+      "repetition": 0,
+      "case": "B01-Cedar",
+      "models": [
+        "gpt-6-luna"
+      ],
+      "elapsed_seconds": 5.6057573330181185,
+      "input": 20466,
+      "output": 123,
+      "cached_input": 0,
+      "fresh_input": 20466,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F2-r0-B01-Dune",
+      "condition": "F2",
+      "repetition": 0,
+      "case": "B01-Dune",
+      "models": [
+        "gpt-6-luna"
+      ],
+      "elapsed_seconds": 5.576415709016146,
+      "input": 20467,
+      "output": 125,
+      "cached_input": 7168,
+      "fresh_input": 13299,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F2-r0-B02-Oriole",
+      "condition": "F2",
+      "repetition": 0,
+      "case": "B02-Oriole",
+      "models": [
+        "gpt-6-luna"
+      ],
+      "elapsed_seconds": 5.687894417002099,
+      "input": 20465,
+      "output": 112,
+      "cached_input": 7168,
+      "fresh_input": 13297,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F2-r0-B02-Birch",
+      "condition": "F2",
+      "repetition": 0,
+      "case": "B02-Birch",
+      "models": [
+        "gpt-6-luna"
+      ],
+      "elapsed_seconds": 4.704767249990255,
+      "input": 20466,
+      "output": 127,
+      "cached_input": 0,
+      "fresh_input": 20466,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F2-r0-B02-Cedar",
+      "condition": "F2",
+      "repetition": 0,
+      "case": "B02-Cedar",
+      "models": [
+        "gpt-6-luna"
+      ],
+      "elapsed_seconds": 6.068439833004959,
+      "input": 20468,
+      "output": 112,
+      "cached_input": 7168,
+      "fresh_input": 13300,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F2-r0-B02-Dune",
+      "condition": "F2",
+      "repetition": 0,
+      "case": "B02-Dune",
+      "models": [
+        "gpt-6-luna"
+      ],
+      "elapsed_seconds": 5.324369708017912,
+      "input": 20469,
+      "output": 121,
+      "cached_input": 0,
+      "fresh_input": 20469,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F2-r0-B03-Oriole",
+      "condition": "F2",
+      "repetition": 0,
+      "case": "B03-Oriole",
+      "models": [
+        "gpt-6-luna"
+      ],
+      "elapsed_seconds": 4.838442542008124,
+      "input": 20476,
+      "output": 133,
+      "cached_input": 15360,
+      "fresh_input": 5116,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F2-r0-B03-Birch",
+      "condition": "F2",
+      "repetition": 0,
+      "case": "B03-Birch",
+      "models": [
+        "gpt-6-luna"
+      ],
+      "elapsed_seconds": 6.155160499998601,
+      "input": 20477,
+      "output": 111,
+      "cached_input": 10624,
+      "fresh_input": 9853,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F2-r0-B03-Cedar",
+      "condition": "F2",
+      "repetition": 0,
+      "case": "B03-Cedar",
+      "models": [
+        "gpt-6-luna"
+      ],
+      "elapsed_seconds": 5.43526374999783,
+      "input": 20479,
+      "output": 111,
+      "cached_input": 7168,
+      "fresh_input": 13311,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F2-r0-B03-Dune",
+      "condition": "F2",
+      "repetition": 0,
+      "case": "B03-Dune",
+      "models": [
+        "gpt-6-luna"
+      ],
+      "elapsed_seconds": 6.215260249999119,
+      "input": 20480,
+      "output": 141,
+      "cached_input": 15360,
+      "fresh_input": 5120,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F2-r0-B04-Oriole",
+      "condition": "F2",
+      "repetition": 0,
+      "case": "B04-Oriole",
+      "models": [
+        "gpt-6-luna"
+      ],
+      "elapsed_seconds": 6.035571292013628,
+      "input": 20468,
+      "output": 118,
+      "cached_input": 15360,
+      "fresh_input": 5108,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F2-r0-B04-Birch",
+      "condition": "F2",
+      "repetition": 0,
+      "case": "B04-Birch",
+      "models": [
+        "gpt-6-luna"
+      ],
+      "elapsed_seconds": 5.4686468330037314,
+      "input": 20469,
+      "output": 128,
+      "cached_input": 7168,
+      "fresh_input": 13301,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F2-r0-B04-Cedar",
+      "condition": "F2",
+      "repetition": 0,
+      "case": "B04-Cedar",
+      "models": [
+        "gpt-6-luna"
+      ],
+      "elapsed_seconds": 4.396009374991991,
+      "input": 20471,
+      "output": 114,
+      "cached_input": 7168,
+      "fresh_input": 13303,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F2-r0-B04-Dune",
+      "condition": "F2",
+      "repetition": 0,
+      "case": "B04-Dune",
+      "models": [
+        "gpt-6-luna"
+      ],
+      "elapsed_seconds": 5.726845666998997,
+      "input": 20472,
+      "output": 112,
+      "cached_input": 0,
+      "fresh_input": 20472,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F2-r0-B05-Oriole",
+      "condition": "F2",
+      "repetition": 0,
+      "case": "B05-Oriole",
+      "models": [
+        "gpt-6-luna"
+      ],
+      "elapsed_seconds": 5.6955059170140885,
+      "input": 20470,
+      "output": 170,
+      "cached_input": 15360,
+      "fresh_input": 5110,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F2-r0-B05-Birch",
+      "condition": "F2",
+      "repetition": 0,
+      "case": "B05-Birch",
+      "models": [
+        "gpt-6-luna"
+      ],
+      "elapsed_seconds": 7.052419832994929,
+      "input": 20471,
+      "output": 182,
+      "cached_input": 15360,
+      "fresh_input": 5111,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F2-r0-B05-Cedar",
+      "condition": "F2",
+      "repetition": 0,
+      "case": "B05-Cedar",
+      "models": [
+        "gpt-6-luna"
+      ],
+      "elapsed_seconds": 5.215670125006,
+      "input": 20473,
+      "output": 120,
+      "cached_input": 0,
+      "fresh_input": 20473,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F2-r0-B05-Dune",
+      "condition": "F2",
+      "repetition": 0,
+      "case": "B05-Dune",
+      "models": [
+        "gpt-6-luna"
+      ],
+      "elapsed_seconds": 5.714127917017322,
+      "input": 20474,
+      "output": 122,
+      "cached_input": 15360,
+      "fresh_input": 5114,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F2-r0-B06-Oriole",
+      "condition": "F2",
+      "repetition": 0,
+      "case": "B06-Oriole",
+      "models": [
+        "gpt-6-luna"
+      ],
+      "elapsed_seconds": 5.489587457996095,
+      "input": 20415,
+      "output": 123,
+      "cached_input": 15232,
+      "fresh_input": 5183,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F2-r0-B06-Birch",
+      "condition": "F2",
+      "repetition": 0,
+      "case": "B06-Birch",
+      "models": [
+        "gpt-6-luna"
+      ],
+      "elapsed_seconds": 5.848871125024743,
+      "input": 20416,
+      "output": 119,
+      "cached_input": 7168,
+      "fresh_input": 13248,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F2-r0-B06-Cedar",
+      "condition": "F2",
+      "repetition": 0,
+      "case": "B06-Cedar",
+      "models": [
+        "gpt-6-luna"
+      ],
+      "elapsed_seconds": 5.137614167004358,
+      "input": 20471,
+      "output": 120,
+      "cached_input": 15360,
+      "fresh_input": 5111,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F2-r0-B06-Dune",
+      "condition": "F2",
+      "repetition": 0,
+      "case": "B06-Dune",
+      "models": [
+        "gpt-6-luna"
+      ],
+      "elapsed_seconds": 4.538879708008608,
+      "input": 20419,
+      "output": 117,
+      "cached_input": 10624,
+      "fresh_input": 9795,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F2-r0-B07-Oriole",
+      "condition": "F2",
+      "repetition": 0,
+      "case": "B07-Oriole",
+      "models": [
+        "gpt-6-luna"
+      ],
+      "elapsed_seconds": 5.410183416010113,
+      "input": 20482,
+      "output": 128,
+      "cached_input": 15360,
+      "fresh_input": 5122,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F2-r0-B07-Birch",
+      "condition": "F2",
+      "repetition": 0,
+      "case": "B07-Birch",
+      "models": [
+        "gpt-6-luna"
+      ],
+      "elapsed_seconds": 5.082967875001486,
+      "input": 20483,
+      "output": 123,
+      "cached_input": 7168,
+      "fresh_input": 13315,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F2-r0-B07-Cedar",
+      "condition": "F2",
+      "repetition": 0,
+      "case": "B07-Cedar",
+      "models": [
+        "gpt-6-luna"
+      ],
+      "elapsed_seconds": 5.990575375006301,
+      "input": 20485,
+      "output": 115,
+      "cached_input": 7168,
+      "fresh_input": 13317,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F2-r0-B07-Dune",
+      "condition": "F2",
+      "repetition": 0,
+      "case": "B07-Dune",
+      "models": [
+        "gpt-6-luna"
+      ],
+      "elapsed_seconds": 5.123911000002408,
+      "input": 20486,
+      "output": 116,
+      "cached_input": 0,
+      "fresh_input": 20486,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F2-r0-B08-Oriole",
+      "condition": "F2",
+      "repetition": 0,
+      "case": "B08-Oriole",
+      "models": [
+        "gpt-6-luna"
+      ],
+      "elapsed_seconds": 4.653493624995463,
+      "input": 20419,
+      "output": 116,
+      "cached_input": 10624,
+      "fresh_input": 9795,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F2-r0-B08-Birch",
+      "condition": "F2",
+      "repetition": 0,
+      "case": "B08-Birch",
+      "models": [
+        "gpt-6-luna"
+      ],
+      "elapsed_seconds": 4.886559417005628,
+      "input": 20473,
+      "output": 116,
+      "cached_input": 15360,
+      "fresh_input": 5113,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F2-r0-B08-Cedar",
+      "condition": "F2",
+      "repetition": 0,
+      "case": "B08-Cedar",
+      "models": [
+        "gpt-6-luna"
+      ],
+      "elapsed_seconds": 5.191367374995025,
+      "input": 20475,
+      "output": 110,
+      "cached_input": 7168,
+      "fresh_input": 13307,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F2-r0-B08-Dune",
+      "condition": "F2",
+      "repetition": 0,
+      "case": "B08-Dune",
+      "models": [
+        "gpt-6-luna"
+      ],
+      "elapsed_seconds": 5.0529275000153575,
+      "input": 20476,
+      "output": 116,
+      "cached_input": 7168,
+      "fresh_input": 13308,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F2-r0-B09-Oriole",
+      "condition": "F2",
+      "repetition": 0,
+      "case": "B09-Oriole",
+      "models": [
+        "gpt-6-luna"
+      ],
+      "elapsed_seconds": 5.362161124998238,
+      "input": 20409,
+      "output": 113,
+      "cached_input": 7168,
+      "fresh_input": 13241,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F2-r0-B09-Birch",
+      "condition": "F2",
+      "repetition": 0,
+      "case": "B09-Birch",
+      "models": [
+        "gpt-6-luna"
+      ],
+      "elapsed_seconds": 6.064262166997651,
+      "input": 20410,
+      "output": 112,
+      "cached_input": 10624,
+      "fresh_input": 9786,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F2-r0-B09-Cedar",
+      "condition": "F2",
+      "repetition": 0,
+      "case": "B09-Cedar",
+      "models": [
+        "gpt-6-luna"
+      ],
+      "elapsed_seconds": 5.895929124992108,
+      "input": 20465,
+      "output": 114,
+      "cached_input": 15360,
+      "fresh_input": 5105,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F2-r0-B09-Dune",
+      "condition": "F2",
+      "repetition": 0,
+      "case": "B09-Dune",
+      "models": [
+        "gpt-6-luna"
+      ],
+      "elapsed_seconds": 6.566985249985009,
+      "input": 20413,
+      "output": 129,
+      "cached_input": 10624,
+      "fresh_input": 9789,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F2-r0-B10-Oriole",
+      "condition": "F2",
+      "repetition": 0,
+      "case": "B10-Oriole",
+      "models": [
+        "gpt-6-luna"
+      ],
+      "elapsed_seconds": 5.517884917004267,
+      "input": 20424,
+      "output": 117,
+      "cached_input": 15232,
+      "fresh_input": 5192,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F2-r0-B10-Birch",
+      "condition": "F2",
+      "repetition": 0,
+      "case": "B10-Birch",
+      "models": [
+        "gpt-6-luna"
+      ],
+      "elapsed_seconds": 6.1200602920143865,
+      "input": 20425,
+      "output": 133,
+      "cached_input": 0,
+      "fresh_input": 20425,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F2-r0-B10-Cedar",
+      "condition": "F2",
+      "repetition": 0,
+      "case": "B10-Cedar",
+      "models": [
+        "gpt-6-luna"
+      ],
+      "elapsed_seconds": 5.549715208006091,
+      "input": 20480,
+      "output": 119,
+      "cached_input": 15360,
+      "fresh_input": 5120,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F2-r0-B10-Dune",
+      "condition": "F2",
+      "repetition": 0,
+      "case": "B10-Dune",
+      "models": [
+        "gpt-6-luna"
+      ],
+      "elapsed_seconds": 5.901173165999353,
+      "input": 20428,
+      "output": 125,
+      "cached_input": 15232,
+      "fresh_input": 5196,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F2-r1-B01-Oriole",
+      "condition": "F2",
+      "repetition": 1,
+      "case": "B01-Oriole",
+      "models": [
+        "gpt-6-luna"
+      ],
+      "elapsed_seconds": 5.665544709016103,
+      "input": 20463,
+      "output": 114,
+      "cached_input": 15360,
+      "fresh_input": 5103,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F2-r1-B02-Birch",
+      "condition": "F2",
+      "repetition": 1,
+      "case": "B02-Birch",
+      "models": [
+        "gpt-6-luna"
+      ],
+      "elapsed_seconds": 4.706313957984094,
+      "input": 20413,
+      "output": 117,
+      "cached_input": 10624,
+      "fresh_input": 9789,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F2-r1-B03-Cedar",
+      "condition": "F2",
+      "repetition": 1,
+      "case": "B03-Cedar",
+      "models": [
+        "gpt-6-luna"
+      ],
+      "elapsed_seconds": 5.426971459004562,
+      "input": 20479,
+      "output": 115,
+      "cached_input": 10624,
+      "fresh_input": 9855,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F2-r1-B04-Dune",
+      "condition": "F2",
+      "repetition": 1,
+      "case": "B04-Dune",
+      "models": [
+        "gpt-6-luna"
+      ],
+      "elapsed_seconds": 5.980536457995186,
+      "input": 20472,
+      "output": 107,
+      "cached_input": 15360,
+      "fresh_input": 5112,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F2-r1-B05-Oriole",
+      "condition": "F2",
+      "repetition": 1,
+      "case": "B05-Oriole",
+      "models": [
+        "gpt-6-luna"
+      ],
+      "elapsed_seconds": 6.306574832997285,
+      "input": 20417,
+      "output": 110,
+      "cached_input": 10624,
+      "fresh_input": 9793,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F2-r1-B06-Birch",
+      "condition": "F2",
+      "repetition": 1,
+      "case": "B06-Birch",
+      "models": [
+        "gpt-6-luna"
+      ],
+      "elapsed_seconds": 4.627415041992208,
+      "input": 20469,
+      "output": 118,
+      "cached_input": 15360,
+      "fresh_input": 5109,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F2-r1-B07-Cedar",
+      "condition": "F2",
+      "repetition": 1,
+      "case": "B07-Cedar",
+      "models": [
+        "gpt-6-luna"
+      ],
+      "elapsed_seconds": 5.417226916993968,
+      "input": 20485,
+      "output": 122,
+      "cached_input": 15360,
+      "fresh_input": 5125,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F2-r1-B08-Dune",
+      "condition": "F2",
+      "repetition": 1,
+      "case": "B08-Dune",
+      "models": [
+        "gpt-6-luna"
+      ],
+      "elapsed_seconds": 5.8245972500008065,
+      "input": 20476,
+      "output": 136,
+      "cached_input": 15360,
+      "fresh_input": 5116,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F2-r1-B09-Oriole",
+      "condition": "F2",
+      "repetition": 1,
+      "case": "B09-Oriole",
+      "models": [
+        "gpt-6-luna"
+      ],
+      "elapsed_seconds": 5.907299250015058,
+      "input": 20409,
+      "output": 113,
+      "cached_input": 15232,
+      "fresh_input": 5177,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F2-r1-B10-Birch",
+      "condition": "F2",
+      "repetition": 1,
+      "case": "B10-Birch",
+      "models": [
+        "gpt-6-luna"
+      ],
+      "elapsed_seconds": 5.7898815410153475,
+      "input": 20478,
+      "output": 125,
+      "cached_input": 15360,
+      "fresh_input": 5118,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F2-r2-B01-Oriole",
+      "condition": "F2",
+      "repetition": 2,
+      "case": "B01-Oriole",
+      "models": [
+        "gpt-6-luna"
+      ],
+      "elapsed_seconds": 4.9643984170106705,
+      "input": 20463,
+      "output": 122,
+      "cached_input": 15360,
+      "fresh_input": 5103,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F2-r2-B02-Birch",
+      "condition": "F2",
+      "repetition": 2,
+      "case": "B02-Birch",
+      "models": [
+        "gpt-6-luna"
+      ],
+      "elapsed_seconds": 5.576469666993944,
+      "input": 20466,
+      "output": 112,
+      "cached_input": 15360,
+      "fresh_input": 5106,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F2-r2-B03-Cedar",
+      "condition": "F2",
+      "repetition": 2,
+      "case": "B03-Cedar",
+      "models": [
+        "gpt-6-luna"
+      ],
+      "elapsed_seconds": 5.239515791996382,
+      "input": 20426,
+      "output": 117,
+      "cached_input": 15232,
+      "fresh_input": 5194,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F2-r2-B04-Dune",
+      "condition": "F2",
+      "repetition": 2,
+      "case": "B04-Dune",
+      "models": [
+        "gpt-6-luna"
+      ],
+      "elapsed_seconds": 5.015963500016369,
+      "input": 20472,
+      "output": 110,
+      "cached_input": 10624,
+      "fresh_input": 9848,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F2-r2-B05-Oriole",
+      "condition": "F2",
+      "repetition": 2,
+      "case": "B05-Oriole",
+      "models": [
+        "gpt-6-luna"
+      ],
+      "elapsed_seconds": 5.8322843330097385,
+      "input": 20470,
+      "output": 167,
+      "cached_input": 15360,
+      "fresh_input": 5110,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F2-r2-B06-Birch",
+      "condition": "F2",
+      "repetition": 2,
+      "case": "B06-Birch",
+      "models": [
+        "gpt-6-luna"
+      ],
+      "elapsed_seconds": 6.328946333000204,
+      "input": 20469,
+      "output": 123,
+      "cached_input": 0,
+      "fresh_input": 20469,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F2-r2-B07-Cedar",
+      "condition": "F2",
+      "repetition": 2,
+      "case": "B07-Cedar",
+      "models": [
+        "gpt-6-luna"
+      ],
+      "elapsed_seconds": 5.479807291994803,
+      "input": 20485,
+      "output": 123,
+      "cached_input": 15360,
+      "fresh_input": 5125,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F2-r2-B08-Dune",
+      "condition": "F2",
+      "repetition": 2,
+      "case": "B08-Dune",
+      "models": [
+        "gpt-6-luna"
+      ],
+      "elapsed_seconds": 6.4319295000168495,
+      "input": 20476,
+      "output": 126,
+      "cached_input": 15360,
+      "fresh_input": 5116,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F2-r2-B09-Oriole",
+      "condition": "F2",
+      "repetition": 2,
+      "case": "B09-Oriole",
+      "models": [
+        "gpt-6-luna"
+      ],
+      "elapsed_seconds": 5.467201958002988,
+      "input": 20409,
+      "output": 115,
+      "cached_input": 10624,
+      "fresh_input": 9785,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F2-r2-B10-Birch",
+      "condition": "F2",
+      "repetition": 2,
+      "case": "B10-Birch",
+      "models": [
+        "gpt-6-luna"
+      ],
+      "elapsed_seconds": 6.118011957994895,
+      "input": 20478,
+      "output": 132,
+      "cached_input": 15360,
+      "fresh_input": 5118,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F2-r3-B01-Oriole",
+      "condition": "F2",
+      "repetition": 3,
+      "case": "B01-Oriole",
+      "models": [
+        "gpt-6-luna"
+      ],
+      "elapsed_seconds": 5.399960916984128,
+      "input": 20463,
+      "output": 114,
+      "cached_input": 15360,
+      "fresh_input": 5103,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F2-r3-B02-Birch",
+      "condition": "F2",
+      "repetition": 3,
+      "case": "B02-Birch",
+      "models": [
+        "gpt-6-luna"
+      ],
+      "elapsed_seconds": 8.512401042011334,
+      "input": 20413,
+      "output": 208,
+      "cached_input": 15232,
+      "fresh_input": 5181,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F2-r3-B03-Cedar",
+      "condition": "F2",
+      "repetition": 3,
+      "case": "B03-Cedar",
+      "models": [
+        "gpt-6-luna"
+      ],
+      "elapsed_seconds": 4.925040875008563,
+      "input": 20426,
+      "output": 110,
+      "cached_input": 10624,
+      "fresh_input": 9802,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F2-r3-B04-Dune",
+      "condition": "F2",
+      "repetition": 3,
+      "case": "B04-Dune",
+      "models": [
+        "gpt-6-luna"
+      ],
+      "elapsed_seconds": 5.255732541001635,
+      "input": 20419,
+      "output": 113,
+      "cached_input": 15232,
+      "fresh_input": 5187,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F2-r3-B05-Oriole",
+      "condition": "F2",
+      "repetition": 3,
+      "case": "B05-Oriole",
+      "models": [
+        "gpt-6-luna"
+      ],
+      "elapsed_seconds": 5.573786041000858,
+      "input": 20470,
+      "output": 171,
+      "cached_input": 15360,
+      "fresh_input": 5110,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F2-r3-B06-Birch",
+      "condition": "F2",
+      "repetition": 3,
+      "case": "B06-Birch",
+      "models": [
+        "gpt-6-luna"
+      ],
+      "elapsed_seconds": 4.8915582499757875,
+      "input": 20416,
+      "output": 113,
+      "cached_input": 15232,
+      "fresh_input": 5184,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F2-r3-B07-Cedar",
+      "condition": "F2",
+      "repetition": 3,
+      "case": "B07-Cedar",
+      "models": [
+        "gpt-6-luna"
+      ],
+      "elapsed_seconds": 6.424948540981859,
+      "input": 20432,
+      "output": 122,
+      "cached_input": 10624,
+      "fresh_input": 9808,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F2-r3-B08-Dune",
+      "condition": "F2",
+      "repetition": 3,
+      "case": "B08-Dune",
+      "models": [
+        "gpt-6-luna"
+      ],
+      "elapsed_seconds": 5.663807833014289,
+      "input": 20423,
+      "output": 122,
+      "cached_input": 7168,
+      "fresh_input": 13255,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F2-r3-B09-Oriole",
+      "condition": "F2",
+      "repetition": 3,
+      "case": "B09-Oriole",
+      "models": [
+        "gpt-6-luna"
+      ],
+      "elapsed_seconds": 5.0279790830099955,
+      "input": 20462,
+      "output": 116,
+      "cached_input": 10624,
+      "fresh_input": 9838,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F2-r3-B10-Birch",
+      "condition": "F2",
+      "repetition": 3,
+      "case": "B10-Birch",
+      "models": [
+        "gpt-6-luna"
+      ],
+      "elapsed_seconds": 5.456725291995099,
+      "input": 20425,
+      "output": 118,
+      "cached_input": 15232,
+      "fresh_input": 5193,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F3-r0-B01-Oriole",
+      "condition": "F3",
+      "repetition": 0,
+      "case": "B01-Oriole",
+      "models": [
+        "gpt-6.1-sol"
+      ],
+      "elapsed_seconds": 7.490466291987104,
+      "input": 21155,
+      "output": 131,
+      "cached_input": 7168,
+      "fresh_input": 13987,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F3-r0-B01-Birch",
+      "condition": "F3",
+      "repetition": 0,
+      "case": "B01-Birch",
+      "models": [
+        "gpt-6.1-sol"
+      ],
+      "elapsed_seconds": 7.902022708993172,
+      "input": 21156,
+      "output": 116,
+      "cached_input": 0,
+      "fresh_input": 21156,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F3-r0-B01-Cedar",
+      "condition": "F3",
+      "repetition": 0,
+      "case": "B01-Cedar",
+      "models": [
+        "gpt-6.1-sol"
+      ],
+      "elapsed_seconds": 6.621514708007453,
+      "input": 21158,
+      "output": 114,
+      "cached_input": 7168,
+      "fresh_input": 13990,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F3-r0-B01-Dune",
+      "condition": "F3",
+      "repetition": 0,
+      "case": "B01-Dune",
+      "models": [
+        "gpt-6.1-sol"
+      ],
+      "elapsed_seconds": 7.3324686249834485,
+      "input": 21106,
+      "output": 129,
+      "cached_input": 0,
+      "fresh_input": 21106,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F3-r0-B05-Oriole",
+      "condition": "F3",
+      "repetition": 0,
+      "case": "B05-Oriole",
+      "models": [
+        "gpt-6.1-sol"
+      ],
+      "elapsed_seconds": 8.07411920899176,
+      "input": 21162,
+      "output": 186,
+      "cached_input": 0,
+      "fresh_input": 21162,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F3-r0-B05-Birch",
+      "condition": "F3",
+      "repetition": 0,
+      "case": "B05-Birch",
+      "models": [
+        "gpt-6.1-sol"
+      ],
+      "elapsed_seconds": 8.282527959003346,
+      "input": 21110,
+      "output": 179,
+      "cached_input": 7168,
+      "fresh_input": 13942,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F3-r0-B05-Cedar",
+      "condition": "F3",
+      "repetition": 0,
+      "case": "B05-Cedar",
+      "models": [
+        "gpt-6.1-sol"
+      ],
+      "elapsed_seconds": 7.262334583996562,
+      "input": 21165,
+      "output": 119,
+      "cached_input": 7168,
+      "fresh_input": 13997,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F3-r0-B05-Dune",
+      "condition": "F3",
+      "repetition": 0,
+      "case": "B05-Dune",
+      "models": [
+        "gpt-6.1-sol"
+      ],
+      "elapsed_seconds": 7.696953833015868,
+      "input": 21166,
+      "output": 122,
+      "cached_input": 0,
+      "fresh_input": 21166,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F3-r0-B10-Oriole",
+      "condition": "F3",
+      "repetition": 0,
+      "case": "B10-Oriole",
+      "models": [
+        "gpt-6.1-sol"
+      ],
+      "elapsed_seconds": 9.618464875005884,
+      "input": 21169,
+      "output": 140,
+      "cached_input": 0,
+      "fresh_input": 21169,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F3-r0-B10-Birch",
+      "condition": "F3",
+      "repetition": 0,
+      "case": "B10-Birch",
+      "models": [
+        "gpt-6.1-sol"
+      ],
+      "elapsed_seconds": 6.701332083001034,
+      "input": 21170,
+      "output": 133,
+      "cached_input": 0,
+      "fresh_input": 21170,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F3-r0-B10-Cedar",
+      "condition": "F3",
+      "repetition": 0,
+      "case": "B10-Cedar",
+      "models": [
+        "gpt-6.1-sol"
+      ],
+      "elapsed_seconds": 11.10100500000408,
+      "input": 21172,
+      "output": 129,
+      "cached_input": 0,
+      "fresh_input": 21172,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    },
+    {
+      "name": "F3-r0-B10-Dune",
+      "condition": "F3",
+      "repetition": 0,
+      "case": "B10-Dune",
+      "models": [
+        "gpt-6.1-sol"
+      ],
+      "elapsed_seconds": 6.179134250007337,
+      "input": 21120,
+      "output": 134,
+      "cached_input": 0,
+      "fresh_input": 21120,
+      "source": "Codex turn.completed.usage (cache-inclusive input)"
+    }
+  ],
+  "missing": [],
+  "freeze_verified": true,
+  "planned_model_calls": 152,
+  "observed_model_calls": 152,
+  "complete": true
+}

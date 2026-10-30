@@ -1,0 +1,39 @@
+{
+  "name": "F2-r3-B04-Dune",
+  "command": [
+    "codex",
+    "exec",
+    "--model",
+    "openai/gpt-6-luna",
+    "--ephemeral",
+    "--sandbox",
+    "read-only",
+    "--json",
+    "--color",
+    "never",
+    "-c",
+    "mcp_servers.reason-network.enabled=false",
+    "-c",
+    "model_reasoning_effort=\"low\"",
+    "-"
+  ],
+  "started_at": "2026-10-30T05:28:04.764307+00:00",
+  "prompt_sha256": "0af8df0ab30c851906b2c0bc318a909e5631adaa80d58ee68f4d9835f82a8635",
+  "returncode": 0,
+  "elapsed_seconds": 5.255732541001635,
+  "response_models": [],
+  "codex_usage": [
+    {
+      "input_tokens": 20419,
+      "cached_input_tokens": 15232,
+      "cache_write_input_tokens": 0,
+      "output_tokens": 113,
+      "reasoning_output_tokens": 0
+    }
+  ],
+  "thread_ids": [
+    "01a18b47-8e51-7503-822f-9e5e956d536b"
+  ],
+  "proxy_requests": 0,
+  "finished_at": "2026-10-30T05:28:10.352805+00:00"
+}

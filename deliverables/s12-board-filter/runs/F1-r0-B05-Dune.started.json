@@ -1,0 +1,21 @@
+{
+  "name": "F1-r0-B05-Dune",
+  "command": [
+    "claude",
+    "-p",
+    "--model",
+    "haiku",
+    "--tools",
+    "",
+    "--strict-mcp-config",
+    "--mcp-config",
+    "{\"mcpServers\":{}}",
+    "--no-session-persistence",
+    "--output-format",
+    "stream-json",
+    "--verbose",
+    "--include-partial-messages"
+  ],
+  "started_at": "2026-10-30T05:23:50.674754+00:00",
+  "prompt_sha256": "93c52c737c01fcec039f906ed59bc65d43d76ec8c39489c21e80ef39e9869057"
+}

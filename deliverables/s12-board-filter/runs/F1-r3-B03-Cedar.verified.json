@@ -1,0 +1,82 @@
+{
+  "name": "F1-r3-B03-Cedar",
+  "command": [
+    "claude",
+    "-p",
+    "--model",
+    "haiku",
+    "--tools",
+    "",
+    "--strict-mcp-config",
+    "--mcp-config",
+    "{\"mcpServers\":{}}",
+    "--no-session-persistence",
+    "--output-format",
+    "stream-json",
+    "--verbose",
+    "--include-partial-messages"
+  ],
+  "started_at": "2026-10-30T05:29:08.150754+00:00",
+  "prompt_sha256": "56cc918d19a58afdea28ab9b192fac4fc69f34eaf1ce9faada322ae04eba739e",
+  "returncode": 0,
+  "elapsed_seconds": 6.922066083003301,
+  "model_usage": {
+    "claude-haiku-5-5": {
+      "inputTokens": 2,
+      "outputTokens": 933,
+      "cacheReadInputTokens": 18240,
+      "cacheCreationInputTokens": 0,
+      "webSearchRequests": 0,
+      "costUSD": 0.0006491,
+      "contextWindow": 1000000,
+      "maxOutputTokens": 128000,
+      "thinkingTokens": 701,
+      "cacheCreationEphemeral5mInputTokens": 0,
+      "cacheCreationEphemeral1hInputTokens": 0,
+      "canonicalModel": "claude-haiku-5-5",
+      "provider": "firstParty",
+      "costBasis": "list"
+    }
+  },
+  "claude_usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 18240,
+    "output_tokens": 933,
+    "output_tokens_details": {
+      "thinking_tokens": 701
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "global",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 933,
+        "cache_read_input_tokens": 18240,
+        "cache_creation_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard",
+    "fallback_credit": null
+  },
+  "is_error": false,
+  "response_models": [
+    "claude-haiku-5-5"
+  ],
+  "codex_usage": [],
+  "thread_ids": [],
+  "finished_at": "2026-10-30T05:29:15.074134+00:00"
+}

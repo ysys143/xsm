@@ -1,0 +1,3 @@
+BOARD.md는 xsm doc이 렌더합니다. 렌더 파일을 직접 고치지 말고 xsm doc add /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-2-node-r3/repo/BOARD.md --tag ... --parent <항목 노드> 로 노드를 더하고, 필요하면 xsm doc render로 다시 렌더하세요. 초기 항목 노드는 {"decision": "255ab00214ca", "A": "6645a022529a", "B": "05a6be9c095a", "C": "813bfd59c0a4", "progress": "7f01155552ed"}입니다.
+당신은 참여자 C이며 보드는 /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-2-node-r3/repo/BOARD.md입니다. 다른 참여자와 함께 쓰는 시험입니다. 지정 보드·노드와 필요한 준비 파일 외에는 고치지 말고, 사용자 설정·권한·외부 메시지는 변경하지 마세요. 끝나면 결과를 짧게 보고하세요.
+'결정: 캐시 전략' 항목에 의견 'C: S11b-2-node-r3-C-88df31c5b9' 한 줄을 추가하세요.

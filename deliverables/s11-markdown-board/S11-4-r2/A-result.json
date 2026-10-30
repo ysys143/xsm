@@ -1,0 +1,87 @@
+{
+  "exit_code": 0,
+  "timed_out": false,
+  "harness_success": true,
+  "final_text": "보드에 요청한 결정 내용을 기록하고 ‘담당: A’를 `S11-4-r2-A-a9e6f7bd5460`로 갱신했습니다.",
+  "response_model_labels": [
+    "ocx-claude-native--gpt-6-luna"
+  ],
+  "actor": "A",
+  "native_session_id": "67f3ea45-6695-485c-a809-22e0b30fd5d3",
+  "conversation_hash": "b95ef1fe086adfcbbccd91c69597a030",
+  "started_ms": 1793337402721,
+  "ended_ms": 1793337413221,
+  "model_evidence": {
+    "query_exit": 0,
+    "rows": [
+      {
+        "requestId": "ocx-500f8e0e261637202dd2d55ffc021aab",
+        "timestamp": 1793337403202,
+        "conversationId": "b95ef1fe086adfcbbccd91c69597a030",
+        "model": "gpt-6-luna",
+        "requestedModel": "gpt-6-luna",
+        "resolvedModel": "gpt-6-luna",
+        "servedModel": "gpt-6-luna",
+        "provider": "openai",
+        "status": 200,
+        "inboundProtocol": "messages",
+        "terminalStatus": "completed",
+        "usageStatus": "reported",
+        "attempts": [
+          {
+            "provider": "openai",
+            "model": "gpt-6-luna",
+            "status": 200,
+            "ordinal": 1
+          }
+        ]
+      },
+      {
+        "requestId": "ocx-4f6dad0201115daafb15adb888ea43c0",
+        "timestamp": 1793337406017,
+        "conversationId": "b95ef1fe086adfcbbccd91c69597a030",
+        "model": "gpt-6-luna",
+        "requestedModel": "gpt-6-luna",
+        "resolvedModel": "gpt-6-luna",
+        "servedModel": "gpt-6-luna",
+        "provider": "openai",
+        "status": 200,
+        "inboundProtocol": "messages",
+        "terminalStatus": "completed",
+        "usageStatus": "reported",
+        "attempts": [
+          {
+            "provider": "openai",
+            "model": "gpt-6-luna",
+            "status": 200,
+            "ordinal": 1
+          }
+        ]
+      },
+      {
+        "requestId": "ocx-1382d667863868061b0f304b6f9fd8d6",
+        "timestamp": 1793337409288,
+        "conversationId": "b95ef1fe086adfcbbccd91c69597a030",
+        "model": "gpt-6-luna",
+        "requestedModel": "gpt-6-luna",
+        "resolvedModel": "gpt-6-luna",
+        "servedModel": "gpt-6-luna",
+        "provider": "openai",
+        "status": 200,
+        "inboundProtocol": "messages",
+        "terminalStatus": "completed",
+        "usageStatus": "reported",
+        "attempts": [
+          {
+            "provider": "openai",
+            "model": "gpt-6-luna",
+            "status": 200,
+            "ordinal": 1
+          }
+        ]
+      }
+    ],
+    "verified": true,
+    "scope": "conversation hash matches native session metadata; selected proxy fields only, no credentials"
+  }
+}

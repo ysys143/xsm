@@ -1,0 +1,83 @@
+{
+  "scope": "docs/team-communication-model source (ADR-0025/0026, README DM and channel notes); fixture/process rebinding only, not native/UI/physical, not global G13",
+  "freeze": {
+    "head": "90a5cc9f33bfe2970061ac2b1bb3dd9c23753bba",
+    "manifest_sha256": "77cda0b4d29db67fecfedf7d5b64a4d70b937b3a49165904c1e53b653ed5d275",
+    "files": 184,
+    "python_modules": 53,
+    "test_modules": 87,
+    "binary_sha256": "f17f03fafcdf3a31e374d6cbc0ccbbbd8000ba6a7eba5d9b44605e742c409aed",
+    "previous1936_manifest_sha256": "ccc3f22a1d65a33ddc76b0ad1abc4966a65664a6e41777d52b70230cd4fd4011",
+    "changed_from1936": [
+      ".claude-plugin/marketplace.json",
+      ".claude-plugin/plugin.json",
+      ".codex-plugin/plugin.json",
+      "README.md",
+      "README_ko.md",
+      "skills/xsm/SKILL.md",
+      "skills/xsm/references/guide.md",
+      "skills/xsm/references/network.md",
+      "tests/test_crash_boundaries.py",
+      "tests/test_owned_interfaces.py",
+      "tests/test_person_decisions.py",
+      "tests/test_xsm.py"
+    ],
+    "added_since1936": [
+      "scripts/audit-collaboration-plan.py",
+      "skills/xsm/references/channel.md",
+      "skills/xsm/references/permissions.md",
+      "skills/xsm/references/sessions.md",
+      "skills/xsm/references/troubleshooting.md",
+      "skills/xsm/references/workers.md",
+      "tests/test_mcp_shared_process.py"
+    ],
+    "removed_since1936": [
+      "scripts/audit-reason-plan.py"
+    ]
+  },
+  "full_regression": [
+    {
+      "label": "py39",
+      "argv": [
+        "/usr/bin/python3",
+        "-B",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests",
+        "-q"
+      ],
+      "tests_run": 1941,
+      "test_seconds": 744.067,
+      "elapsed_seconds": 744.784,
+      "exit_code": 0,
+      "skipped": 0,
+      "log": "py39.stderr",
+      "log_sha256": "404e650b402b10b539dea11d52e0aa19ee6ae3195d71b4d6cc134d51e6f73a93"
+    },
+    {
+      "label": "py314",
+      "argv": [
+        "/opt/homebrew/bin/python3.14",
+        "-B",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests",
+        "-q"
+      ],
+      "tests_run": 1941,
+      "test_seconds": 468.868,
+      "elapsed_seconds": 469.599,
+      "exit_code": 0,
+      "skipped": 0,
+      "log": "py314.stderr",
+      "log_sha256": "8c9877a7e44c44ed9073f25e59afb455d9be6569a3ebc7a217a1017b2926ad7c"
+    }
+  ],
+  "changed_after_freeze": [],
+  "changed_after_freeze_note": "scripts/audit-collaboration-plan.py is excluded: no test reads it, and it is the audit of this run",
+  "whole_plan_complete": false
+}

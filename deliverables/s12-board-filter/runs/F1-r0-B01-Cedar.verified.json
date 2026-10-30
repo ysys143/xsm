@@ -1,0 +1,82 @@
+{
+  "name": "F1-r0-B01-Cedar",
+  "command": [
+    "claude",
+    "-p",
+    "--model",
+    "haiku",
+    "--tools",
+    "",
+    "--strict-mcp-config",
+    "--mcp-config",
+    "{\"mcpServers\":{}}",
+    "--no-session-persistence",
+    "--output-format",
+    "stream-json",
+    "--verbose",
+    "--include-partial-messages"
+  ],
+  "started_at": "2026-10-30T05:21:43.927132+00:00",
+  "prompt_sha256": "c2b5b32893b2c0a8e6ca65b6bad8f24c287ca459e797b4dac6c8cd2b58730bcc",
+  "returncode": 0,
+  "elapsed_seconds": 8.089463790995069,
+  "model_usage": {
+    "claude-haiku-5-5": {
+      "inputTokens": 2,
+      "outputTokens": 1227,
+      "cacheReadInputTokens": 3053,
+      "cacheCreationInputTokens": 15133,
+      "webSearchRequests": 0,
+      "costUSD": 0.0036708300000000004,
+      "contextWindow": 1000000,
+      "maxOutputTokens": 128000,
+      "thinkingTokens": 984,
+      "cacheCreationEphemeral5mInputTokens": 0,
+      "cacheCreationEphemeral1hInputTokens": 15133,
+      "canonicalModel": "claude-haiku-5-5",
+      "provider": "firstParty",
+      "costBasis": "list"
+    }
+  },
+  "claude_usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 15133,
+    "cache_read_input_tokens": 3053,
+    "output_tokens": 1227,
+    "output_tokens_details": {
+      "thinking_tokens": 984
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 15133,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "global",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 1227,
+        "cache_read_input_tokens": 3053,
+        "cache_creation_input_tokens": 15133,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 15133
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard",
+    "fallback_credit": null
+  },
+  "is_error": false,
+  "response_models": [
+    "claude-haiku-5-5"
+  ],
+  "codex_usage": [],
+  "thread_ids": [],
+  "finished_at": "2026-10-30T05:21:52.018148+00:00"
+}

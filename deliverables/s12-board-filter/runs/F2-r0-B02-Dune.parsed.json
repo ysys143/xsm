@@ -1,0 +1,16 @@
+{
+  "items": [
+    {
+      "id": "B02-05",
+      "title": "## T27 자원",
+      "quote": "Foxtrot이 문서 의미 검색의 벡터 색인 갱신 작업을 시작했다.",
+      "reason": "Foxtrot이 같은 벡터 색인 갱신 작업을 맡아 업무가 겹친다."
+    },
+    {
+      "id": "B02-06",
+      "title": "## T28 담당",
+      "quote": "Dune가 doc-index의 증분 갱신 검수를 맡는다.",
+      "reason": "Dune의 doc-index 작업과 직접 연결된다."
+    }
+  ]
+}

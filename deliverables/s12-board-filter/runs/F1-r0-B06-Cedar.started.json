@@ -1,0 +1,21 @@
+{
+  "name": "F1-r0-B06-Cedar",
+  "command": [
+    "claude",
+    "-p",
+    "--model",
+    "haiku",
+    "--tools",
+    "",
+    "--strict-mcp-config",
+    "--mcp-config",
+    "{\"mcpServers\":{}}",
+    "--no-session-persistence",
+    "--output-format",
+    "stream-json",
+    "--verbose",
+    "--include-partial-messages"
+  ],
+  "started_at": "2026-10-30T05:24:10.219121+00:00",
+  "prompt_sha256": "e513eec3efe3b520c4e4f9b52e70bc07208110e6ad08c78d563977a2bc44eba6"
+}

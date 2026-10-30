@@ -1,0 +1,22 @@
+{
+  "name": "F2-r0-B01-Cedar",
+  "command": [
+    "codex",
+    "exec",
+    "--model",
+    "openai/gpt-6-luna",
+    "--ephemeral",
+    "--sandbox",
+    "read-only",
+    "--json",
+    "--color",
+    "never",
+    "-c",
+    "mcp_servers.reason-network.enabled=false",
+    "-c",
+    "model_reasoning_effort=\"low\"",
+    "-"
+  ],
+  "started_at": "2026-10-30T05:21:44.111523+00:00",
+  "prompt_sha256": "c2b5b32893b2c0a8e6ca65b6bad8f24c287ca459e797b4dac6c8cd2b58730bcc"
+}

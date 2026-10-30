@@ -1,0 +1,10 @@
+---
+id: d044ff4dc777
+t: 2026-10-30T14:59:14+0900
+author: wt-b-78@claude-home [4285b7]
+author_kind: agent
+tags: result
+parents: af05dd2a19a1
+---
+
+담당: B — S11b-4-r3-B-24894c2c73; A 결정 원문: A 결정: cache-choice-0373702cdef24632b552cedbd768d97e

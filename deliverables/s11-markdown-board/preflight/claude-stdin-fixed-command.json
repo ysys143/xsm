@@ -1,0 +1,25 @@
+{
+  "argv": [
+    "/Users/jaesolshin/.local/bin/claude",
+    "-p",
+    "--model",
+    "ocx-claude-native--gpt-6-luna",
+    "--output-format",
+    "stream-json",
+    "--verbose",
+    "--include-partial-messages",
+    "--no-session-persistence",
+    "--safe-mode",
+    "--setting-sources",
+    "",
+    "--strict-mcp-config",
+    "--mcp-config",
+    "{\"mcpServers\":{}}",
+    "--tools",
+    "",
+    "--",
+    "Reply with S11_CLAUDE_SUBSCRIPTION_PREFLIGHT_OK only. Do not call tools."
+  ],
+  "stdin": "DEVNULL",
+  "started_ms": 1793336615252
+}

@@ -1,0 +1,7 @@
+clean predictions: all metrics 1.0
+removed R2 item: R2 recall 1.0 -> 0.0 (detected)
+mutated quote: fidelity 1.0 -> 0.5 (detected)
+added unrelated item: precision 1.0 -> 2/3; N pass rate 0 -> 1/6 (detected)
+ambiguous item: excluded from precision; separate count 1
+unknown item ID: invalid ID 1; quote fidelity and precision 2/3 (detected)
+duplicated prediction: duplicate count 1 (detected)

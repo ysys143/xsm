@@ -1,0 +1,1 @@
+{"items":[{"id":"B07-03","title":"## T29 검토","quote":"gpu-embedding의 남은 전용 시간을 다른 팀이 모두 예약했다.","reason":"문서 임베딩에 필요한 gpu-embedding 자원이 점유되어 있습니다."},{"id":"B07-04","title":"## T30 의존성","quote":"Dune의 문서 색인 갱신 패치 리뷰 담당은 Echo다.","reason":"Dune의 색인 갱신 작업을 직접 지명합니다."}]}

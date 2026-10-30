@@ -1,0 +1,30 @@
+{
+  "argv": [
+    "/Users/jaesolshin/.local/bin/claude",
+    "-p",
+    "--model",
+    "ocx-claude-native--gpt-6-luna",
+    "--effort",
+    "low",
+    "--output-format",
+    "stream-json",
+    "--verbose",
+    "--include-hook-events",
+    "--no-session-persistence",
+    "--setting-sources",
+    "user",
+    "--permission-mode",
+    "acceptEdits",
+    "--allowedTools",
+    "Bash",
+    "--add-dir",
+    "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-2-node-r1/shared",
+    "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/xsm-state",
+    "--session-id",
+    "3c8dff89-4f48-448b-952b-f7ac78ee46fb",
+    "--",
+    "BOARD.md는 xsm doc이 렌더합니다. 렌더 파일을 직접 고치지 말고 xsm doc add /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-2-node-r1/repo/BOARD.md --tag ... --parent <항목 노드> 로 노드를 더하고, 필요하면 xsm doc render로 다시 렌더하세요. 초기 항목 노드는 {\"decision\": \"d5c3ab1918f3\", \"A\": \"63eb89bb1683\", \"B\": \"8501560b5616\", \"C\": \"cf7ae8fa0b19\", \"progress\": \"1efcd8f7e0bc\"}입니다.\n당신은 참여자 B이며 보드는 /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-2-node-r1/repo/BOARD.md입니다. 다른 참여자와 함께 쓰는 시험입니다. 지정 보드·노드와 필요한 준비 파일 외에는 고치지 말고, 사용자 설정·권한·외부 메시지는 변경하지 마세요. 끝나면 결과를 짧게 보고하세요.\n'결정: 캐시 전략' 항목에 의견 'B: S11b-2-node-r1-B-1b1b0118f0' 한 줄을 추가하세요."
+  ],
+  "cwd": "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-2-node-r1/repo",
+  "stdin": "DEVNULL"
+}

@@ -1,0 +1,21 @@
+{
+  "recorded_at": "2026-10-30T05:33:55.039180+00:00",
+  "method": "read-only TOML projects keys containing s12 (case insensitive); no restoration",
+  "homes": [
+    {
+      "home": ".codex",
+      "s12_projects_count": 0,
+      "s12_projects": {}
+    },
+    {
+      "home": ".codex-2",
+      "s12_projects_count": 0,
+      "s12_projects": {}
+    },
+    {
+      "home": ".codex-3",
+      "s12_projects_count": 0,
+      "s12_projects": {}
+    }
+  ]
+}

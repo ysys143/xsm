@@ -1,0 +1,179 @@
+[
+  {
+    "requestId": "ocx-e4394e7a8fface5679155a2bc245770b",
+    "timestamp": 1793338301577,
+    "model": "gpt-6.1-sol",
+    "provider": "openai",
+    "admissionKind": "loopback",
+    "inboundProtocol": "responses",
+    "conversationId": "994e813ff5c0f92f8bb3e0b29ce8472d",
+    "requestedModel": "gpt-6.1-sol",
+    "requestedEffort": "low",
+    "modelSupportsServiceTier": true,
+    "responseServiceTier": "default",
+    "tierOutcome": {
+      "wireKind": null,
+      "wireValue": null,
+      "fastOutcome": "not-requested",
+      "confirmation": "unknown",
+      "responseServiceTier": "default"
+    },
+    "resolvedModel": "gpt-6.1-sol",
+    "servedModel": "gpt-6.1-sol",
+    "status": 200,
+    "durationMs": 4157,
+    "firstOutputMs": 2890,
+    "terminalStatus": "completed",
+    "closeReason": "terminal",
+    "usageStatus": "reported",
+    "usage": {
+      "inputTokens": 21120,
+      "outputTokens": 134,
+      "totalTokens": 21254,
+      "cachedInputTokens": 0,
+      "cacheReadInputTokens": 0,
+      "cacheCreationInputTokens": 0,
+      "reasoningOutputTokens": 0
+    },
+    "totalTokens": 21254,
+    "attempts": [
+      {
+        "ordinal": 1,
+        "provider": "openai",
+        "model": "gpt-6.1-sol",
+        "adapter": "openai-responses",
+        "status": 200,
+        "durationMs": 4149,
+        "sendCount": 1,
+        "recoveryKinds": [],
+        "usageStatus": "reported",
+        "requestedEffort": "low",
+        "tierOutcome": {
+          "wireKind": null,
+          "wireValue": null,
+          "fastOutcome": "not-requested",
+          "confirmation": "unknown",
+          "responseServiceTier": "default"
+        },
+        "codexWsStage": {
+          "requestBytes": null,
+          "sent": true,
+          "upstreamFrames": 135,
+          "controlFrames": 2,
+          "relayedEvents": 132,
+          "firstFrameMs": 495,
+          "firstResponseMs": 878,
+          "elapsedMs": 3286,
+          "pings": 0,
+          "pongs": 0,
+          "closeCode": null,
+          "reused": false,
+          "ocxVersion": "2.67.0",
+          "bunVersion": "1.4.0"
+        },
+        "firstOutputMs": 2883,
+        "usage": {
+          "inputTokens": 21120,
+          "outputTokens": 134,
+          "totalTokens": 21254,
+          "cachedInputTokens": 0,
+          "cacheReadInputTokens": 0,
+          "cacheCreationInputTokens": 0,
+          "reasoningOutputTokens": 0
+        },
+        "totalTokens": 21254,
+        "displayMetrics": {
+          "tokPerSecond": {
+            "kind": "value",
+            "value": 32.29693902145095,
+            "estimated": false
+          },
+          "decodeTokPerSecond": {
+            "kind": "value",
+            "value": 105.84518167456557,
+            "estimated": true
+          },
+          "cost": {
+            "kind": "unavailable",
+            "reason": "price_unmatched"
+          }
+        }
+      }
+    ],
+    "spend": {
+      "sends": 1,
+      "settled": 1,
+      "unresolved": 0
+    },
+    "cacheProvenance": "synthesized",
+    "transportPhase": "terminal_sse",
+    "terminalSource": "upstream",
+    "routeDecision": {
+      "version": 1,
+      "decisionId": "333728907e31",
+      "createdAt": 1793338301582,
+      "requestedModel": "gpt-6.1-sol",
+      "routeKind": "native",
+      "requirements": [],
+      "candidates": [
+        {
+          "provider": "openai",
+          "model": "gpt-6.1-sol",
+          "eligible": true,
+          "exclusions": []
+        }
+      ],
+      "selected": {
+        "candidateIndex": 0,
+        "provider": "openai",
+        "model": "gpt-6.1-sol",
+        "reason": "native-family"
+      }
+    },
+    "protocolTrace": {
+      "v": 1,
+      "inbound": "responses",
+      "mode": "native",
+      "upstream": "responses",
+      "requestPath": [
+        "responses",
+        "responses"
+      ],
+      "responsePath": [
+        "responses",
+        "responses"
+      ],
+      "reasonCodes": [
+        "same-wire-native"
+      ],
+      "attempts": [
+        {
+          "ordinal": 1,
+          "upstream": "responses",
+          "mode": "native",
+          "requestPath": [
+            "responses",
+            "responses"
+          ]
+        }
+      ],
+      "contractVersion": "2026-09-25.2"
+    },
+    "displayMetrics": {
+      "tokPerSecond": {
+        "kind": "value",
+        "value": 32.23478470050517,
+        "estimated": false
+      },
+      "decodeTokPerSecond": {
+        "kind": "value",
+        "value": 105.76164167324389,
+        "estimated": true
+      },
+      "cost": {
+        "kind": "unavailable",
+        "reason": "combo_attempt_unavailable"
+      }
+    }
+  }
+]

@@ -1,0 +1,12 @@
+{
+  "970d795a79ce.md": "---\nid: 970d795a79ce\nt: 2026-10-30T14:59:44+0900\nauthor: wt-a-75@claude-home [cbc7ba]\nauthor_kind: agent\ntags: result\nparents: a813a7064d98\n---\n\n담당: A S11b-4-r4-A-ec71d2daf9\n",
+  "2374e033a2e2.md": "---\nid: 2374e033a2e2\nt: 2026-10-30T14:59:43+0900\nauthor: wt-a-75@claude-home [cbc7ba]\nauthor_kind: agent\ntags: result\nparents: 9f0624e00a86\n---\n\nA 결정: cache-choice-38b6381b6ce1493e98f0c5302babfa36\n",
+  "1ec596b32872.md": "---\nid: 1ec596b32872\nt: 2026-10-30T14:59:22+0900\nauthor: S11b setup fixture (person)\nauthor_kind: human\ntags: setup\nparents: 07334251a2ae\n---\n\n## 담당: B\n대기.\n",
+  "3fc4575a4060.md": "---\nid: 3fc4575a4060\nt: 2026-10-30T14:59:37+0900\nauthor: codex-200a36@codex-home [f6c076]\nauthor_kind: agent\ntags: wip\nparents: 56aa2c734c09\n---\n\n## 담당: S11b-4-r4-C-d3a1ba8f02\n대기.\n",
+  "6eafc80f94cc.md": "---\nid: 6eafc80f94cc\nt: 2026-10-30T14:59:22+0900\nauthor: S11b setup fixture (person)\nauthor_kind: human\ntags: setup\nparents: 07334251a2ae\n---\n\n## 진행 기록\n대기.\n",
+  "9f0624e00a86.md": "---\nid: 9f0624e00a86\nt: 2026-10-30T14:59:22+0900\nauthor: S11b setup fixture (person)\nauthor_kind: human\ntags: setup\nparents: 07334251a2ae\n---\n\n## 결정: 캐시 전략\n대기.\n",
+  "07334251a2ae.md": "---\nid: 07334251a2ae\nt: 2026-10-30T14:59:22+0900\nauthor: S11b setup fixture (person)\nauthor_kind: human\ntags: report\nparents: \n---\n\n# 공동 작업 보드\n\n## 결정: 캐시 전략\n아직 결정 없음.\n\n## 담당: A\n대기.\n\n## 담당: B\n대기.\n\n## 담당: C\n대기.\n\n## 진행 기록\n실험 시작.\n",
+  "a813a7064d98.md": "---\nid: a813a7064d98\nt: 2026-10-30T14:59:22+0900\nauthor: S11b setup fixture (person)\nauthor_kind: human\ntags: setup\nparents: 07334251a2ae\n---\n\n## 담당: A\n대기.\n",
+  "56aa2c734c09.md": "---\nid: 56aa2c734c09\nt: 2026-10-30T14:59:22+0900\nauthor: S11b setup fixture (person)\nauthor_kind: human\ntags: setup\nparents: 07334251a2ae\n---\n\n## 담당: C\n대기.\n",
+  "77b93b41065c.md": "---\nid: 77b93b41065c\nt: 2026-10-30T15:00:01+0900\nauthor: wt-b-7e@claude-home [6d7aff]\nauthor_kind: agent\ntags: result\nparents: 1ec596b32872\n---\n\n## 담당: B\nS11b-4-r4-B-fdaa5a20e6 — A 결정 원문: 대기.\n"
+}

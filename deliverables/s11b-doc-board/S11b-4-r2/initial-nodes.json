@@ -1,0 +1,8 @@
+{
+  "42594015be0a.md": "---\nid: 42594015be0a\nt: 2026-10-30T14:57:38+0900\nauthor: S11b setup fixture (person)\nauthor_kind: human\ntags: setup\nparents: 5462add32625\n---\n\n## 담당: C\n대기.\n",
+  "4dc5b745143a.md": "---\nid: 4dc5b745143a\nt: 2026-10-30T14:57:38+0900\nauthor: S11b setup fixture (person)\nauthor_kind: human\ntags: setup\nparents: 5462add32625\n---\n\n## 담당: A\n대기.\n",
+  "f7c3407d3423.md": "---\nid: f7c3407d3423\nt: 2026-10-30T14:57:38+0900\nauthor: S11b setup fixture (person)\nauthor_kind: human\ntags: setup\nparents: 5462add32625\n---\n\n## 결정: 캐시 전략\n대기.\n",
+  "3eee8a26d730.md": "---\nid: 3eee8a26d730\nt: 2026-10-30T14:57:38+0900\nauthor: S11b setup fixture (person)\nauthor_kind: human\ntags: setup\nparents: 5462add32625\n---\n\n## 진행 기록\n대기.\n",
+  "5462add32625.md": "---\nid: 5462add32625\nt: 2026-10-30T14:57:38+0900\nauthor: S11b setup fixture (person)\nauthor_kind: human\ntags: report\nparents: \n---\n\n# 공동 작업 보드\n\n## 결정: 캐시 전략\n아직 결정 없음.\n\n## 담당: A\n대기.\n\n## 담당: B\n대기.\n\n## 담당: C\n대기.\n\n## 진행 기록\n실험 시작.\n",
+  "184f0f840268.md": "---\nid: 184f0f840268\nt: 2026-10-30T14:57:38+0900\nauthor: S11b setup fixture (person)\nauthor_kind: human\ntags: setup\nparents: 5462add32625\n---\n\n## 담당: B\n대기.\n"
+}

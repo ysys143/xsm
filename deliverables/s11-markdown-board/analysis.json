@@ -1,0 +1,2789 @@
+{
+  "analysis_controls": {
+    "lost_update_mutation": "detected",
+    "never_written_is_not_lost": "passed",
+    "B_reflection_elsewhere_false_positive": "rejected",
+    "shell_write_vs_read": "passed"
+  },
+  "completed_cases": 20,
+  "launched_actors": 60,
+  "scenarios": [
+    {
+      "scenario": "S11-1",
+      "completed": 5,
+      "models_verified": 5,
+      "harnesses_success": 5,
+      "lost_updates": 0,
+      "never_written_missing": 0,
+      "B_reflected": 0,
+      "injections": 0
+    },
+    {
+      "scenario": "S11-2",
+      "completed": 5,
+      "models_verified": 5,
+      "harnesses_success": 5,
+      "lost_updates": 0,
+      "never_written_missing": 0,
+      "B_reflected": 0,
+      "injections": 5
+    },
+    {
+      "scenario": "S11-3",
+      "completed": 5,
+      "models_verified": 5,
+      "harnesses_success": 5,
+      "lost_updates": 0,
+      "never_written_missing": 0,
+      "B_reflected": 0,
+      "injections": 0
+    },
+    {
+      "scenario": "S11-4",
+      "completed": 5,
+      "models_verified": 5,
+      "harnesses_success": 5,
+      "lost_updates": 0,
+      "never_written_missing": 1,
+      "B_reflected": 5,
+      "injections": 0
+    }
+  ],
+  "write_methods": [
+    {
+      "method": "item_edit",
+      "status": "failed",
+      "count": 7
+    },
+    {
+      "method": "item_edit",
+      "status": "succeeded",
+      "count": 50
+    },
+    {
+      "method": "patch_update",
+      "status": "succeeded",
+      "count": 15
+    },
+    {
+      "method": "shell_write",
+      "status": "succeeded",
+      "count": 4
+    }
+  ],
+  "failure_actions": {
+    "reread_then_item_edit": 7
+  },
+  "successful_board_write_operations": 69,
+  "whole_file_or_shell_successes": 4,
+  "whole_file_or_shell_fraction": 0.057971014492753624,
+  "threshold_is_plan_proposal_not_user_policy": 0.1,
+  "measurement_limitations": [
+    "Snapshots poll every 5ms; transient writes shorter than that can be missed.",
+    "Codex file_change JSONL does not expose patch hunk coverage; patch-update counts are tool-level.",
+    "Runner provisional B_reflected_A checks the whole board; this analysis deliberately checks the B section only.",
+    "No failed board-write event means no observation of failure recovery; it is not proof that stale edits are always rejected."
+  ],
+  "cases": [
+    {
+      "case": "S11-1-r1",
+      "scenario": 1,
+      "all_models_verified": true,
+      "all_harnesses_success": true,
+      "lost_updates": 0,
+      "never_written_missing": 0,
+      "marker_outcomes": [
+        {
+          "actor": "A",
+          "marker": "S11-1-r1-A-279ba4d2be8c",
+          "present_final": true,
+          "observed_written": true,
+          "lost_update": false,
+          "never_observed_and_missing": false
+        },
+        {
+          "actor": "A",
+          "marker": "S11-1-r1-A-279ba4d2be8c-progress",
+          "present_final": true,
+          "observed_written": true,
+          "lost_update": false,
+          "never_observed_and_missing": false
+        },
+        {
+          "actor": "B",
+          "marker": "S11-1-r1-B-8921a692df5b",
+          "present_final": true,
+          "observed_written": true,
+          "lost_update": false,
+          "never_observed_and_missing": false
+        },
+        {
+          "actor": "B",
+          "marker": "S11-1-r1-B-8921a692df5b-progress",
+          "present_final": true,
+          "observed_written": true,
+          "lost_update": false,
+          "never_observed_and_missing": false
+        },
+        {
+          "actor": "C",
+          "marker": "S11-1-r1-C-a57c368985c3",
+          "present_final": true,
+          "observed_written": true,
+          "lost_update": false,
+          "never_observed_and_missing": false
+        },
+        {
+          "actor": "C",
+          "marker": "S11-1-r1-C-a57c368985c3-progress",
+          "present_final": true,
+          "observed_written": true,
+          "lost_update": false,
+          "never_observed_and_missing": false
+        }
+      ],
+      "operations": {
+        "A": [
+          {
+            "event_index": 62,
+            "id": "call_0f22b294d360451e9944013305ded94e",
+            "tool": "Read",
+            "method": "read",
+            "status": "succeeded",
+            "failure_text": null,
+            "new_text": ""
+          },
+          {
+            "event_index": 164,
+            "id": "call_e3f1f56b9ad94106b44b604e72551ee7",
+            "tool": "Edit",
+            "method": "item_edit",
+            "status": "succeeded",
+            "failure_text": null,
+            "new_text": "## 담당: A\nS11-1-r1-A-279ba4d2be8c"
+          },
+          {
+            "event_index": 237,
+            "id": "call_4775ec406a0445c590a6aa02ae1a32d7",
+            "tool": "Read",
+            "method": "read",
+            "status": "succeeded",
+            "failure_text": null,
+            "new_text": ""
+          },
+          {
+            "event_index": 343,
+            "id": "call_9b46136dbf3e4191ab6698e341a712b2",
+            "tool": "Edit",
+            "method": "item_edit",
+            "status": "succeeded",
+            "failure_text": null,
+            "new_text": "## 진행 기록\n실험 시작.\nS11-1-r1-A-279ba4d2be8c-progress"
+          }
+        ],
+        "B": [
+          {
+            "event_index": 62,
+            "id": "call_ff9d42176bee48b59da0f8a8acf4a52b",
+            "tool": "Read",
+            "method": "read",
+            "status": "succeeded",
+            "failure_text": null,
+            "new_text": ""
+          },
+          {
+            "event_index": 163,
+            "id": "call_b970654f8b14408b8058154c744b6df7",
+            "tool": "Edit",
+            "method": "item_edit",
+            "status": "succeeded",
+            "failure_text": null,
+            "new_text": "## 담당: B\nS11-1-r1-B-8921a692df5b"
+          },
+          {
+            "event_index": 268,
+            "id": "call_98dd2928560f48afb62f6c395fa875ee",
+            "tool": "Edit",
+            "method": "item_edit",
+            "status": "succeeded",
+            "failure_text": null,
+            "new_text": "## 진행 기록\n실험 시작.\nS11-1-r1-B-8921a692df5b-progress"
+          }
+        ],
+        "C": [
+          {
+            "event_index": 4,
+            "id": "item_1",
+            "tool": "command_execution",
+            "method": "read",
+            "status": "succeeded",
+            "command": "/bin/zsh -lc \"pwd && rg --files -g 'BOARD.md' -g 'AGENTS.md' -g 'SKILLS.md' -g 'CLAUDE.md'\"",
+            "failure_text": null
+          },
+          {
+            "event_index": 7,
+            "id": "item_3",
+            "tool": "command_execution",
+            "method": "read",
+            "status": "succeeded",
+            "command": "/bin/zsh -lc 'cat BOARD.md'",
+            "failure_text": null
+          },
+          {
+            "event_index": 9,
+            "id": "item_4",
+            "tool": "file_change",
+            "method": "patch_update",
+            "status": "succeeded",
+            "scope_observation": "JSONL reports update/path, not the patch hunk coverage"
+          }
+        ]
+      },
+      "failure_actions": [],
+      "A_decision_persisted": null,
+      "B_reflected_in_B_section": null,
+      "B_prompt_contains_A_oracle": null,
+      "injection_status": [],
+      "launch_spread_ms": 0
+    },
+    {
+      "case": "S11-1-r2",
+      "scenario": 1,
+      "all_models_verified": true,
+      "all_harnesses_success": true,
+      "lost_updates": 0,
+      "never_written_missing": 0,
+      "marker_outcomes": [
+        {
+          "actor": "A",
+          "marker": "S11-1-r2-A-608183ad8316",
+          "present_final": true,
+          "observed_written": true,
+          "lost_update": false,
+          "never_observed_and_missing": false
+        },
+        {
+          "actor": "A",
+          "marker": "S11-1-r2-A-608183ad8316-progress",
+          "present_final": true,
+          "observed_written": true,
+          "lost_update": false,
+          "never_observed_and_missing": false
+        },
+        {
+          "actor": "B",
+          "marker": "S11-1-r2-B-0b7e3be4168c",
+          "present_final": true,
+          "observed_written": true,
+          "lost_update": false,
+          "never_observed_and_missing": false
+        },
+        {
+          "actor": "B",
+          "marker": "S11-1-r2-B-0b7e3be4168c-progress",
+          "present_final": true,
+          "observed_written": true,
+          "lost_update": false,
+          "never_observed_and_missing": false
+        },
+        {
+          "actor": "C",
+          "marker": "S11-1-r2-C-082d977e1944",
+          "present_final": true,
+          "observed_written": true,
+          "lost_update": false,
+          "never_observed_and_missing": false
+        },
+        {
+          "actor": "C",
+          "marker": "S11-1-r2-C-082d977e1944-progress",
+          "present_final": true,
+          "observed_written": true,
+          "lost_update": false,
+          "never_observed_and_missing": false
+        }
+      ],
+      "operations": {
+        "A": [
+          {
+            "event_index": 62,
+            "id": "call_ba8567904a044dc79a8c08df385260a5",
+            "tool": "Read",
+            "method": "read",
+            "status": "succeeded",
+            "failure_text": null,
+            "new_text": ""
+          },
+          {
+            "event_index": 161,
+            "id": "call_041864fce9de436d9f78a427b79d11bc",
+            "tool": "Edit",
+            "method": "item_edit",
+            "status": "succeeded",
+            "failure_text": null,
+            "new_text": "## 담당: A\nS11-1-r2-A-608183ad8316"
+          },
+          {
+            "event_index": 226,
+            "id": "call_85499e816cc84323aae1231498ee58f0",
+            "tool": "Read",
+            "method": "read",
+            "status": "succeeded",
+            "failure_text": null,
+            "new_text": ""
+          },
+          {
+            "event_index": 332,
+            "id": "call_b0094fbed1b14bc689135d9d74603cea",
+            "tool": "Edit",
+            "method": "item_edit",
+            "status": "succeeded",
+            "failure_text": null,
+            "new_text": "## 진행 기록\n실험 시작.\nS11-1-r2-A-608183ad8316-progress\n"
+          }
+        ],
+        "B": [
+          {
+            "event_index": 62,
+            "id": "call_aa9213b3df224db6ab57f6a0a5698b07",
+            "tool": "Read",
+            "method": "read",
+            "status": "succeeded",
+            "failure_text": null,
+            "new_text": ""
+          },
+          {
+            "event_index": 165,
+            "id": "call_b615232766f34228985fa886e8a1fb07",
+            "tool": "Edit",
+            "method": "item_edit",
+            "status": "succeeded",
+            "failure_text": null,
+            "new_text": "## 담당: B\nS11-1-r2-B-0b7e3be4168c"
+          },
+          {
+            "event_index": 272,
+            "id": "call_222aa1a90b7948c4a1ff098db1781178",
+            "tool": "Edit",
+            "method": "item_edit",
+            "status": "succeeded",
+            "failure_text": null,
+            "new_text": "## 진행 기록\n실험 시작.\nS11-1-r2-B-0b7e3be4168c-progress"
+          }
+        ],
+        "C": [
+          {
+            "event_index": 4,
+            "id": "item_1",
+            "tool": "command_execution",
+            "method": "read",
+            "status": "succeeded",
+            "command": "/bin/zsh -lc \"pwd && rg --files -g 'AGENTS.md' -g 'BOARD.md'\"",
+            "failure_text": null
+          },
+          {
+            "event_index": 6,
+            "id": "item_2",
+            "tool": "command_execution",
+            "method": "read",
+            "status": "succeeded",
+            "command": "/bin/zsh -lc 'cat BOARD.md'",
+            "failure_text": null
+          },
+          {
+            "event_index": 8,
+            "id": "item_3",
+            "tool": "file_change",
+            "method": "patch_update",
+            "status": "succeeded",
+            "scope_observation": "JSONL reports update/path, not the patch hunk coverage"
+          }
+        ]
+      },
+      "failure_actions": [],
+      "A_decision_persisted": null,
+      "B_reflected_in_B_section": null,
+      "B_prompt_contains_A_oracle": null,
+      "injection_status": [],
+      "launch_spread_ms": 0
+    },
+    {
+      "case": "S11-1-r3",
+      "scenario": 1,
+      "all_models_verified": true,
+      "all_harnesses_success": true,
+      "lost_updates": 0,
+      "never_written_missing": 0,
+      "marker_outcomes": [
+        {
+          "actor": "A",
+          "marker": "S11-1-r3-A-ee7a2d0f4290",
+          "present_final": true,
+          "observed_written": true,
+          "lost_update": false,
+          "never_observed_and_missing": false
+        },
+        {
+          "actor": "A",
+          "marker": "S11-1-r3-A-ee7a2d0f4290-progress",
+          "present_final": true,
+          "observed_written": true,
+          "lost_update": false,
+          "never_observed_and_missing": false
+        },
+        {
+          "actor": "B",
+          "marker": "S11-1-r3-B-8fff3d459a98",
+          "present_final": true,
+          "observed_written": true,
+          "lost_update": false,
+          "never_observed_and_missing": false
+        },
+        {
+          "actor": "B",
+          "marker": "S11-1-r3-B-8fff3d459a98-progress",
+          "present_final": true,
+          "observed_written": true,
+          "lost_update": false,
+          "never_observed_and_missing": false
+        },
+        {
+          "actor": "C",
+          "marker": "S11-1-r3-C-34c7eeefebc9",
+          "present_final": true,
+          "observed_written": true,
+          "lost_update": false,
+          "never_observed_and_missing": false
+        },
+        {
+          "actor": "C",
+          "marker": "S11-1-r3-C-34c7eeefebc9-progress",
+          "present_final": true,
+          "observed_written": true,
+          "lost_update": false,
+          "never_observed_and_missing": false
+        }
+      ],
+      "operations": {
+        "A": [
+          {
+            "event_index": 62,
+            "id": "call_3db5040a900442d0aae56955028fb182",
+            "tool": "Read",
+            "method": "read",
+            "status": "succeeded",
+            "failure_text": null,
+            "new_text": ""
+          },
+          {
+            "event_index": 164,
+            "id": "call_65dc165f59df468c909f84cdf907a3a5",
+            "tool": "Edit",
+            "method": "item_edit",
+            "status": "succeeded",
+            "failure_text": null,
+            "new_text": "## 담당: A\nS11-1-r3-A-ee7a2d0f4290"
+          },
+          {
+            "event_index": 270,
+            "id": "call_84597375584147ffa448684ead520334",
+            "tool": "Edit",
+            "method": "item_edit",
+            "status": "succeeded",
+            "failure_text": null,
+            "new_text": "## 진행 기록\n실험 시작.\nS11-1-r3-A-ee7a2d0f4290-progress"
+          }
+        ],
+        "B": [
+          {
+            "event_index": 62,
+            "id": "call_d89db98e71bd40c99e7f5bc58ebc7a0b",
+            "tool": "Read",
+            "method": "read",
+            "status": "succeeded",
+            "failure_text": null,
+            "new_text": ""
+          },
+          {
+            "event_index": 166,
+            "id": "call_639a05ce30334a2cb8a99186c1c098bf",
+            "tool": "Edit",
+            "method": "item_edit",
+            "status": "succeeded",
+            "failure_text": null,
+            "new_text": "## 담당: B\nS11-1-r3-B-8fff3d459a98\n"
+          },
+          {
+            "event_index": 231,
+            "id": "call_40af7df8294c4ae1acb90592a1b44731",
+            "tool": "Read",
+            "method": "read",
+            "status": "succeeded",
+            "failure_text": null,
+            "new_text": ""
+          },
+          {
+            "event_index": 357,
+            "id": "call_4439922dc6bb4ddcb11c5eea07b16942",
+            "tool": "Edit",
+            "method": "item_edit",
+            "status": "succeeded",
+            "failure_text": null,
+            "new_text": "S11-1-r3-C-34c7eeefebc9-progress\nS11-1-r3-B-8fff3d459a98-progress\n"
+          }
+        ],
+        "C": [
+          {
+            "event_index": 4,
+            "id": "item_1",
+            "tool": "command_execution",
+            "method": "read",
+            "status": "succeeded",
+            "command": "/bin/zsh -lc 'cat BOARD.md'",
+            "failure_text": null
+          },
+          {
+            "event_index": 6,
+            "id": "item_2",
+            "tool": "file_change",
+            "method": "patch_update",
+            "status": "succeeded",
+            "scope_observation": "JSONL reports update/path, not the patch hunk coverage"
+          }
+        ]
+      },
+      "failure_actions": [],
+      "A_decision_persisted": null,
+      "B_reflected_in_B_section": null,
+      "B_prompt_contains_A_oracle": null,
+      "injection_status": [],
+      "launch_spread_ms": 0
+    },
+    {
+      "case": "S11-1-r4",
+      "scenario": 1,
+      "all_models_verified": true,
+      "all_harnesses_success": true,
+      "lost_updates": 0,
+      "never_written_missing": 0,
+      "marker_outcomes": [
+        {
+          "actor": "A",
+          "marker": "S11-1-r4-A-44a768dcdc7d",
+          "present_final": true,
+          "observed_written": true,
+          "lost_update": false,
+          "never_observed_and_missing": false
+        },
+        {
+          "actor": "A",
+          "marker": "S11-1-r4-A-44a768dcdc7d-progress",
+          "present_final": true,
+          "observed_written": true,
+          "lost_update": false,
+          "never_observed_and_missing": false
+        },
+        {
+          "actor": "B",
+          "marker": "S11-1-r4-B-fb53c9b90dfb",
+          "present_final": true,
+          "observed_written": true,
+          "lost_update": false,
+          "never_observed_and_missing": false
+        },
+        {
+          "actor": "B",
+          "marker": "S11-1-r4-B-fb53c9b90dfb-progress",
+          "present_final": true,
+          "observed_written": true,
+          "lost_update": false,
+          "never_observed_and_missing": false
+        },
+        {
+          "actor": "C",
+          "marker": "S11-1-r4-C-086d7a5d0fde",
+          "present_final": true,
+          "observed_written": true,
+          "lost_update": false,
+          "never_observed_and_missing": false
+        },
+        {
+          "actor": "C",
+          "marker": "S11-1-r4-C-086d7a5d0fde-progress",
+          "present_final": true,
+          "observed_written": true,
+          "lost_update": false,
+          "never_observed_and_missing": false
+        }
+      ],
+      "operations": {
+        "A": [
+          {
+            "event_index": 62,
+            "id": "call_def864a7e1ff496e90a873d108ec071e",
+            "tool": "Read",
+            "method": "read",
+            "status": "succeeded",
+            "failure_text": null,
+            "new_text": ""
+          },
+          {
+            "event_index": 163,
+            "id": "call_544e7208dc2542998a4f86a4bfd19c8f",
+            "tool": "Edit",
+            "method": "item_edit",
+            "status": "succeeded",
+            "failure_text": null,
+            "new_text": "## 담당: A\nS11-1-r4-A-44a768dcdc7d"
+          },
+          {
+            "event_index": 236,
+            "id": "call_264d1c7e34ed4e4fa0e36cba47240bdd",
+            "tool": "Read",
+            "method": "read",
+            "status": "succeeded",
+            "failure_text": null,
+            "new_text": ""
+          },
+          {
+            "event_index": 344,
+            "id": "call_33cd631e0300443c8dbde93054ff1801",
+            "tool": "Edit",
+            "method": "item_edit",
+            "status": "succeeded",
+            "failure_text": null,
+            "new_text": "## 진행 기록\n실험 시작.\nS11-1-r4-A-44a768dcdc7d-progress\n"
+          }
+        ],
+        "B": [
+          {
+            "event_index": 62,
+            "id": "call_a028863ea6084f10a4000a44dc36d9e4",
+            "tool": "Read",
+            "method": "read",
+            "status": "succeeded",
+            "failure_text": null,
+            "new_text": ""
+          },
+          {
+            "event_index": 164,
+            "id": "call_368d4bfb00c74083806f7c054e766530",
+            "tool": "Edit",
+            "method": "item_edit",
+            "status": "succeeded",
+            "failure_text": null,
+            "new_text": "## 담당: B\nS11-1-r4-B-fb53c9b90dfb"
+          },
+          {
+            "event_index": 270,
+            "id": "call_fb5abe359a214a8eabeaef85aa00b06d",
+            "tool": "Edit",
+            "method": "item_edit",
+            "status": "succeeded",
+            "failure_text": null,
+            "new_text": "## 진행 기록\n실험 시작.\nS11-1-r4-B-fb53c9b90dfb-progress"
+          }
+        ],
+        "C": [
+          {
+            "event_index": 4,
+            "id": "item_1",
+            "tool": "command_execution",
+            "method": "read",
+            "status": "succeeded",
+            "command": "/bin/zsh -lc 'cat BOARD.md'",
+            "failure_text": null
+          },
+          {
+            "event_index": 6,
+            "id": "item_2",
+            "tool": "file_change",
+            "method": "patch_update",
+            "status": "succeeded",
+            "scope_observation": "JSONL reports update/path, not the patch hunk coverage"
+          }
+        ]
+      },
+      "failure_actions": [],
+      "A_decision_persisted": null,
+      "B_reflected_in_B_section": null,
+      "B_prompt_contains_A_oracle": null,
+      "injection_status": [],
+      "launch_spread_ms": 0
+    },
+    {
+      "case": "S11-1-r5",
+      "scenario": 1,
+      "all_models_verified": true,
+      "all_harnesses_success": true,
+      "lost_updates": 0,
+      "never_written_missing": 0,
+      "marker_outcomes": [
+        {
+          "actor": "A",
+          "marker": "S11-1-r5-A-0abe38eda072",
+          "present_final": true,
+          "observed_written": true,
+          "lost_update": false,
+          "never_observed_and_missing": false
+        },
+        {
+          "actor": "A",
+          "marker": "S11-1-r5-A-0abe38eda072-progress",
+          "present_final": true,
+          "observed_written": true,
+          "lost_update": false,
+          "never_observed_and_missing": false
+        },
+        {
+          "actor": "B",
+          "marker": "S11-1-r5-B-63759293d170",
+          "present_final": true,
+          "observed_written": true,
+          "lost_update": false,
+          "never_observed_and_missing": false
+        },
+        {
+          "actor": "B",
+          "marker": "S11-1-r5-B-63759293d170-progress",
+          "present_final": true,
+          "observed_written": true,
+          "lost_update": false,
+          "never_observed_and_missing": false
+        },
+        {
+          "actor": "C",
+          "marker": "S11-1-r5-C-7cc90a21a66d",
+          "present_final": true,
+          "observed_written": true,
+          "lost_update": false,
+          "never_observed_and_missing": false
+        },
+        {
+          "actor": "C",
+          "marker": "S11-1-r5-C-7cc90a21a66d-progress",
+          "present_final": true,
+          "observed_written": true,
+          "lost_update": false,
+          "never_observed_and_missing": false
+        }
+      ],
+      "operations": {
+        "A": [
+          {
+            "event_index": 62,
+            "id": "call_c1389b559d9c429585ed8c30eabd3c03",
+            "tool": "Read",
+            "method": "read",
+            "status": "succeeded",
+            "failure_text": null,
+            "new_text": ""
+          },
+          {
+            "event_index": 161,
+            "id": "call_f8798cdb7a024f20bfb0ae48fd551add",
+            "tool": "Edit",
+            "method": "item_edit",
+            "status": "succeeded",
+            "failure_text": null,
+            "new_text": "## 담당: A\nS11-1-r5-A-0abe38eda072"
+          },
+          {
+            "event_index": 226,
+            "id": "call_9f2d38bcdd22492290748a633b3f93a1",
+            "tool": "Read",
+            "method": "read",
+            "status": "succeeded",
+            "failure_text": null,
+            "new_text": ""
+          },
+          {
+            "event_index": 329,
+            "id": "call_9ee948c419f04a75931bc201b226b7c1",
+            "tool": "Edit",
+            "method": "item_edit",
+            "status": "succeeded",
+            "failure_text": null,
+            "new_text": "## 진행 기록\n실험 시작.\nS11-1-r5-A-0abe38eda072-progress"
+          }
+        ],
+        "B": [
+          {
+            "event_index": 62,
+            "id": "call_afa59e9f0bff4ce39df4887c7fb6e49e",
+            "tool": "Read",
+            "method": "read",
+            "status": "succeeded",
+            "failure_text": null,
+            "new_text": ""
+          },
+          {
+            "event_index": 161,
+            "id": "call_3a363548e72f425fbf745c20b4a7b41a",
+            "tool": "Edit",
+            "method": "item_edit",
+            "status": "succeeded",
+            "failure_text": null,
+            "new_text": "## 담당: B\nS11-1-r5-B-63759293d170"
+          },
+          {
+            "event_index": 264,
+            "id": "call_e54499dab1344269a57134a085c74277",
+            "tool": "Edit",
+            "method": "item_edit",
+            "status": "succeeded",
+            "failure_text": null,
+            "new_text": "## 진행 기록\n실험 시작.\nS11-1-r5-B-63759293d170-progress"
+          }
+        ],
+        "C": [
+          {
+            "event_index": 4,
+            "id": "item_1",
+            "tool": "command_execution",
+            "method": "read",
+            "status": "succeeded",
+            "command": "/bin/zsh -lc \"pwd && rg --files -g 'AGENTS.md' -g 'BOARD.md' -g '\"'!**/.git/**'\"'\"",
+            "failure_text": null
+          },
+          {
+            "event_index": 6,
+            "id": "item_2",
+            "tool": "command_execution",
+            "method": "read",
+            "status": "succeeded",
+            "command": "/bin/zsh -lc 'cat BOARD.md'",
+            "failure_text": null
+          },
+          {
+            "event_index": 8,
+            "id": "item_3",
+            "tool": "file_change",
+            "method": "patch_update",
+            "status": "succeeded",
+            "scope_observation": "JSONL reports update/path, not the patch hunk coverage"
+          },
+          {
+            "event_index": 10,
+            "id": "item_4",
+            "tool": "command_execution",
+            "method": "read",
+            "status": "succeeded",
+            "command": "/bin/zsh -lc 'cat BOARD.md'",
+            "failure_text": null
+          }
+        ]
+      },
+      "failure_actions": [],
+      "A_decision_persisted": null,
+      "B_reflected_in_B_section": null,
+      "B_prompt_contains_A_oracle": null,
+      "injection_status": [],
+      "launch_spread_ms": 0
+    },
+    {
+      "case": "S11-2-r1",
+      "scenario": 2,
+      "all_models_verified": true,
+      "all_harnesses_success": true,
+      "lost_updates": 0,
+      "never_written_missing": 0,
+      "marker_outcomes": [
+        {
+          "actor": "A",
+          "marker": "S11-2-r1-A-a2efbdb21f4c",
+          "present_final": true,
+          "observed_written": true,
+          "lost_update": false,
+          "never_observed_and_missing": false
+        },
+        {
+          "actor": "B",
+          "marker": "S11-2-r1-B-eb9d4fd03cc2",
+          "present_final": true,
+          "observed_written": true,
+          "lost_update": false,
+          "never_observed_and_missing": false
+        },
+        {
+          "actor": "C",
+          "marker": "S11-2-r1-C-61af84168944",
+          "present_final": true,
+          "observed_written": true,
+          "lost_update": false,
+          "never_observed_and_missing": false
+        },
+        {
+          "actor": "injector",
+          "marker": "S11-2-r1-INJECT-7c02ddcc75b2",
+          "present_final": true,
+          "observed_written": true,
+          "lost_update": false,
+          "never_observed_and_missing": false
+        }
+      ],
+      "operations": {
+        "A": [
+          {
+            "event_index": 62,
+            "id": "call_8110dd6b4c9f43fbbee249e58ec9e603",
+            "tool": "Read",
+            "method": "read",
+            "status": "succeeded",
+            "failure_text": null,
+            "new_text": ""
+          },
+          {
+            "event_index": 222,
+            "id": "call_28dc8eb3c5b04673978e51e318b46a73",
+            "tool": "Edit",
+            "method": "item_edit",
+            "status": "succeeded",
+            "failure_text": null,
+            "new_text": "## 결정: 캐시 전략\n판정자: S11-2-r1-INJECT-7c02ddcc75b2\n아직 결정 없음.\nA: S11-2-r1-A-a2efbdb21f4c"
+          }
+        ],
+        "B": [
+          {
+            "event_index": 62,
+            "id": "call_f558c4bf0cec4ee081477e0a73991d24",
+            "tool": "Read",
+            "method": "read",
+            "status": "succeeded",
+            "failure_text": null,
+            "new_text": ""
+          },
+          {
+            "event_index": 177,
+            "id": "call_37275dad695644029a46ccc590eb53fe",
+            "tool": "Edit",
+            "method": "item_edit",
+            "status": "failed",
+            "failure_text": "<tool_use_error>File has been modified since read, either by the user or by a linter. Read it again before attempting to write it.</tool_use_error>",
+            "new_text": "## 결정: 캐시 전략\n아직 결정 없음.\nB: S11-2-r1-B-eb9d4fd03cc2"
+          },
+          {
+            "event_index": 242,
+            "id": "call_1aa0ecb7ce644cebaabcc91baf8d6269",
+            "tool": "Read",
+            "method": "read",
+            "status": "succeeded",
+            "failure_text": null,
+            "new_text": ""
+          },
+          {
+            "event_index": 471,
+            "id": "call_02dcf2620df9480ead89c26da5482e7e",
+            "tool": "Edit",
+            "method": "item_edit",
+            "status": "succeeded",
+            "failure_text": null,
+            "new_text": "## 결정: 캐시 전략\n판정자: S11-2-r1-INJECT-7c02ddcc75b2\n아직 결정 없음.\nC: S11-2-r1-C-61af84168944\nA: S11-2-r1-A-a2efbdb21f4c\nB: S11-2-r1-B-eb9d4fd03cc2"
+          }
+        ],
+        "C": [
+          {
+            "event_index": 4,
+            "id": "item_1",
+            "tool": "command_execution",
+            "method": "read",
+            "status": "succeeded",
+            "command": "/bin/zsh -lc \"pwd && rg --files -g 'AGENTS.md' -g 'BOARD.md' -g 'SKILLS.md'\"",
+            "failure_text": null
+          },
+          {
+            "event_index": 7,
+            "id": "item_3",
+            "tool": "command_execution",
+            "method": "read",
+            "status": "succeeded",
+            "command": "/bin/zsh -lc \"sed -n '1,240p' BOARD.md; for f in AGENTS.md SKILLS.md; do if test -f \\\"\"'$f\"; then printf '\"'\\\\n--- %s ---\\\\n' \\\"\"'$f\"; sed -n '\"'1,200p' \\\"\"'$f\"; fi; done'",
+            "failure_text": null
+          },
+          {
+            "event_index": 9,
+            "id": "item_4",
+            "tool": "command_execution",
+            "method": "shell_write",
+            "status": "succeeded",
+            "command": "/bin/zsh -lc \"python3 -c 'from pathlib import Path; p=Path(\\\"BOARD.md\\\"); s=p.read_text(); old=\\\"## 결정: 캐시 전략\\\\n판정자: S11-2-r1-INJECT-7c02ddcc75b2\\\\n아직 결정 없음.\\\"; new=old+\\\"\\\\nC: S11-2-r1-C-61af84168944\\\"; assert s.count(old)==1; p.write_text(s.replace(old,new,1))' && sed -n '1,14p' BOARD.md\"",
+            "failure_text": null
+          }
+        ]
+      },
+      "failure_actions": [
+        {
+          "actor": "B",
+          "failed_id": "call_37275dad695644029a46ccc590eb53fe",
+          "action": "reread_then_item_edit",
+          "failure_text": "<tool_use_error>File has been modified since read, either by the user or by a linter. Read it again before attempting to write it.</tool_use_error>"
+        }
+      ],
+      "A_decision_persisted": null,
+      "B_reflected_in_B_section": null,
+      "B_prompt_contains_A_oracle": null,
+      "injection_status": [
+        "injected"
+      ],
+      "launch_spread_ms": 0
+    },
+    {
+      "case": "S11-2-r2",
+      "scenario": 2,
+      "all_models_verified": true,
+      "all_harnesses_success": true,
+      "lost_updates": 0,
+      "never_written_missing": 0,
+      "marker_outcomes": [
+        {
+          "actor": "A",
+          "marker": "S11-2-r2-A-de50b8f19880",
+          "present_final": true,
+          "observed_written": true,
+          "lost_update": false,
+          "never_observed_and_missing": false
+        },
+        {
+          "actor": "B",
+          "marker": "S11-2-r2-B-0436c3c45eac",
+          "present_final": true,
+          "observed_written": true,
+          "lost_update": false,
+          "never_observed_and_missing": false
+        },
+        {
+          "actor": "C",
+          "marker": "S11-2-r2-C-de345278f87a",
+          "present_final": true,
+          "observed_written": true,
+          "lost_update": false,
+          "never_observed_and_missing": false
+        },
+        {
+          "actor": "injector",
+          "marker": "S11-2-r2-INJECT-92e26c466b70",
+          "present_final": true,
+          "observed_written": true,
+          "lost_update": false,
+          "never_observed_and_missing": false
+        }
+      ],
+      "operations": {
+        "A": [
+          {
+            "event_index": 62,
+            "id": "call_17197bbb19f74464bfcec5883500b873",
+            "tool": "Read",
+            "method": "read",
+            "status": "succeeded",
+            "failure_text": null,
+            "new_text": ""
+          },
+          {
+            "event_index": 218,
+            "id": "call_e1ce4c6085c740bcb005fa37776241b5",
+            "tool": "Edit",
+            "method": "item_edit",
+            "status": "succeeded",
+            "failure_text": null,
+            "new_text": "## 결정: 캐시 전략\n판정자: S11-2-r2-INJECT-92e26c466b70\n아직 결정 없음.\nA: S11-2-r2-A-de50b8f19880"
+          }
+        ],
+        "B": [
+          {
+            "event_index": 62,
+            "id": "call_3d1a01ebbdb141118d1b4452f29438bf",
+            "tool": "Read",
+            "method": "read",
+            "status": "succeeded",
+            "failure_text": null,
+            "new_text": ""
+          },
+          {
+            "event_index": 181,
+            "id": "call_7741de7df5394b31a153acafab3ae9be",
+            "tool": "Edit",
+            "method": "item_edit",
+            "status": "failed",
+            "failure_text": "<tool_use_error>File has been modified since read, either by the user or by a linter. Read it again before attempting to write it.</tool_use_error>",
+            "new_text": "## 결정: 캐시 전략\n아직 결정 없음.\nB: S11-2-r2-B-0436c3c45eac\n"
+          },
+          {
+            "event_index": 246,
+            "id": "call_6bc35107bb774b8fb27e8402f17af721",
+            "tool": "Read",
+            "method": "read",
+            "status": "succeeded",
+            "failure_text": null,
+            "new_text": ""
+          },
+          {
+            "event_index": 472,
+            "id": "call_18463d944eac4aa1a673c773c6426822",
+            "tool": "Edit",
+            "method": "item_edit",
+            "status": "succeeded",
+            "failure_text": null,
+            "new_text": "## 결정: 캐시 전략\n판정자: S11-2-r2-INJECT-92e26c466b70\n아직 결정 없음.\nC: S11-2-r2-C-de345278f87a\nA: S11-2-r2-A-de50b8f19880\nB: S11-2-r2-B-0436c3c45eac\n"
+          }
+        ],
+        "C": [
+          {
+            "event_index": 4,
+            "id": "item_1",
+            "tool": "command_execution",
+            "method": "read",
+            "status": "succeeded",
+            "command": "/bin/zsh -lc \"pwd && rg --files -g 'AGENTS.md' -g 'BOARD.md' -g 'SKILLS.md' -g '*PREP*' -g '*prep*'\"",
+            "failure_text": null
+          },
+          {
+            "event_index": 6,
+            "id": "item_2",
+            "tool": "command_execution",
+            "method": "read",
+            "status": "succeeded",
+            "command": "/bin/zsh -lc 'cat BOARD.md'",
+            "failure_text": null
+          },
+          {
+            "event_index": 9,
+            "id": "item_4",
+            "tool": "file_change",
+            "method": "patch_update",
+            "status": "succeeded",
+            "scope_observation": "JSONL reports update/path, not the patch hunk coverage"
+          }
+        ]
+      },
+      "failure_actions": [
+        {
+          "actor": "B",
+          "failed_id": "call_7741de7df5394b31a153acafab3ae9be",
+          "action": "reread_then_item_edit",
+          "failure_text": "<tool_use_error>File has been modified since read, either by the user or by a linter. Read it again before attempting to write it.</tool_use_error>"
+        }
+      ],
+      "A_decision_persisted": null,
+      "B_reflected_in_B_section": null,
+      "B_prompt_contains_A_oracle": null,
+      "injection_status": [
+        "injected"
+      ],
+      "launch_spread_ms": 0
+    },
+    {
+      "case": "S11-2-r3",
+      "scenario": 2,
+      "all_models_verified": true,
+      "all_harnesses_success": true,
+      "lost_updates": 0,
+      "never_written_missing": 0,
+      "marker_outcomes": [
+        {
+          "actor": "A",
+          "marker": "S11-2-r3-A-aa45a323a73a",
+          "present_final": true,
+          "observed_written": true,
+          "lost_update": false,
+          "never_observed_and_missing": false
+        },
+        {
+          "actor": "B",
+          "marker": "S11-2-r3-B-b1e940a56e09",
+          "present_final": true,
+          "observed_written": true,
+          "lost_update": false,
+          "never_observed_and_missing": false
+        },
+        {
+          "actor": "C",
+          "marker": "S11-2-r3-C-be2bb869e064",
+          "present_final": true,
+          "observed_written": true,
+          "lost_update": false,
+          "never_observed_and_missing": false
+        },
+        {
+          "actor": "injector",
+          "marker": "S11-2-r3-INJECT-e7a350ecd095",
+          "present_final": true,
+          "observed_written": true,
+          "lost_update": false,
+          "never_observed_and_missing": false
+        }
+      ],
+      "operations": {
+        "A": [
+          {
+            "event_index": 62,
+            "id": "call_452b4ec0d35c42c48b1160c88d523a2b",
+            "tool": "Read",
+            "method": "read",
+            "status": "succeeded",
+            "failure_text": null,
+            "new_text": ""
+          },
+          {
+            "event_index": 179,
+            "id": "call_112412ab505a4934b8e8998fffacc64b",
+            "tool": "Edit",
+            "method": "item_edit",
+            "status": "failed",
+            "failure_text": "<tool_use_error>File has been modified since read, either by the user or by a linter. Read it again before attempting to write it.</tool_use_error>",
+            "new_text": "## 결정: 캐시 전략\n아직 결정 없음.\nA: S11-2-r3-A-aa45a323a73a\n"
+          },
+          {
+            "event_index": 244,
+            "id": "call_17f5f115f37d42189a674f85ac8c8dd9",
+            "tool": "Read",
+            "method": "read",
+            "status": "succeeded",
+            "failure_text": null,
+            "new_text": ""
+          },
+          {
+            "event_index": 466,
+            "id": "call_82c961c6f1d841ffb0fbf1a366c11ce7",
+            "tool": "Edit",
+            "method": "item_edit",
+            "status": "succeeded",
+            "failure_text": null,
+            "new_text": "## 결정: 캐시 전략\n판정자: S11-2-r3-INJECT-e7a350ecd095\n아직 결정 없음.\nC: S11-2-r3-C-be2bb869e064\nB: S11-2-r3-B-b1e940a56e09\nA: S11-2-r3-A-aa45a323a73a\n"
+          }
+        ],
+        "B": [
+          {
+            "event_index": 62,
+            "id": "call_f12fd98d6c254ea7ac09ed69340dcefd",
+            "tool": "Read",
+            "method": "read",
+            "status": "succeeded",
+            "failure_text": null,
+            "new_text": ""
+          },
+          {
+            "event_index": 215,
+            "id": "call_302c0f6a7daa4ffc9300c2aec29ee760",
+            "tool": "Edit",
+            "method": "item_edit",
+            "status": "succeeded",
+            "failure_text": null,
+            "new_text": "## 결정: 캐시 전략\n판정자: S11-2-r3-INJECT-e7a350ecd095\n아직 결정 없음.\nB: S11-2-r3-B-b1e940a56e09"
+          }
+        ],
+        "C": [
+          {
+            "event_index": 3,
+            "id": "item_0",
+            "tool": "command_execution",
+            "method": "read",
+            "status": "succeeded",
+            "command": "/bin/zsh -lc \"pwd && rg --files -g 'AGENTS.md' -g 'BOARD.md' -g 'S11-2-r3-C-be2bb869e064'\"",
+            "failure_text": null
+          },
+          {
+            "event_index": 5,
+            "id": "item_1",
+            "tool": "command_execution",
+            "method": "read",
+            "status": "succeeded",
+            "command": "/bin/zsh -lc \"cat BOARD.md && rg -n 'S11-2-r3-C-be2bb869e064|결정: 캐시 전략' .\"",
+            "failure_text": null
+          },
+          {
+            "event_index": 7,
+            "id": "item_2",
+            "tool": "file_change",
+            "method": "patch_update",
+            "status": "succeeded",
+            "scope_observation": "JSONL reports update/path, not the patch hunk coverage"
+          }
+        ]
+      },
+      "failure_actions": [
+        {
+          "actor": "A",
+          "failed_id": "call_112412ab505a4934b8e8998fffacc64b",
+          "action": "reread_then_item_edit",
+          "failure_text": "<tool_use_error>File has been modified since read, either by the user or by a linter. Read it again before attempting to write it.</tool_use_error>"
+        }
+      ],
+      "A_decision_persisted": null,
+      "B_reflected_in_B_section": null,
+      "B_prompt_contains_A_oracle": null,
+      "injection_status": [
+        "injected"
+      ],
+      "launch_spread_ms": 0
+    },
+    {
+      "case": "S11-2-r4",
+      "scenario": 2,
+      "all_models_verified": true,
+      "all_harnesses_success": true,
+      "lost_updates": 0,
+      "never_written_missing": 0,
+      "marker_outcomes": [
+        {
+          "actor": "A",
+          "marker": "S11-2-r4-A-f668ea1b63fe",
+          "present_final": true,
+          "observed_written": true,
+          "lost_update": false,
+          "never_observed_and_missing": false
+        },
+        {
+          "actor": "B",
+          "marker": "S11-2-r4-B-8cbf2fb0b3e2",
+          "present_final": true,
+          "observed_written": true,
+          "lost_update": false,
+          "never_observed_and_missing": false
+        },
+        {
+          "actor": "C",
+          "marker": "S11-2-r4-C-16524fba8768",
+          "present_final": true,
+          "observed_written": true,
+          "lost_update": false,
+          "never_observed_and_missing": false
+        },
+        {
+          "actor": "injector",
+          "marker": "S11-2-r4-INJECT-c9f4fa8c3ecf",
+          "present_final": true,
+          "observed_written": true,
+          "lost_update": false,
+          "never_observed_and_missing": false
+        }
+      ],
+      "operations": {
+        "A": [
+          {
+            "event_index": 62,
+            "id": "call_f06bf7ed40704c32bb3bd30c1937e798",
+            "tool": "Read",
+            "method": "read",
+            "status": "succeeded",
+            "failure_text": null,
+            "new_text": ""
+          },
+          {
+            "event_index": 176,
+            "id": "call_c222de0339804937986a0d4f804f154a",
+            "tool": "Edit",
+            "method": "item_edit",
+            "status": "failed",
+            "failure_text": "<tool_use_error>File has been modified since read, either by the user or by a linter. Read it again before attempting to write it.</tool_use_error>",
+            "new_text": "## 결정: 캐시 전략\n아직 결정 없음.\nA: S11-2-r4-A-f668ea1b63fe"
+          },
+          {
+            "event_index": 241,
+            "id": "call_ae0f2a7ffdf047eca5816450bf433a09",
+            "tool": "Read",
+            "method": "read",
+            "status": "succeeded",
+            "failure_text": null,
+            "new_text": ""
+          },
+          {
+            "event_index": 443,
+            "id": "call_f8b19162f6f7485182c6bb9629910312",
+            "tool": "Edit",
+            "method": "item_edit",
+            "status": "succeeded",
+            "failure_text": null,
+            "new_text": "## 결정: 캐시 전략\n판정자: S11-2-r4-INJECT-c9f4fa8c3ecf\n아직 결정 없음.\nB: S11-2-r4-B-8cbf2fb0b3e2\nA: S11-2-r4-A-f668ea1b63fe"
+          }
+        ],
+        "B": [
+          {
+            "event_index": 62,
+            "id": "call_55b0ee450aaa4af2b1dac0b331782abd",
+            "tool": "Read",
+            "method": "read",
+            "status": "succeeded",
+            "failure_text": null,
+            "new_text": ""
+          },
+          {
+            "event_index": 226,
+            "id": "call_9efcd17353dc4c149bb15e846d93b0dc",
+            "tool": "Edit",
+            "method": "item_edit",
+            "status": "succeeded",
+            "failure_text": null,
+            "new_text": "## 결정: 캐시 전략\n판정자: S11-2-r4-INJECT-c9f4fa8c3ecf\n아직 결정 없음.\nB: S11-2-r4-B-8cbf2fb0b3e2"
+          }
+        ],
+        "C": [
+          {
+            "event_index": 4,
+            "id": "item_1",
+            "tool": "command_execution",
+            "method": "read",
+            "status": "succeeded",
+            "command": "/bin/zsh -lc \"pwd && rg --files -g 'AGENTS.md' -g 'BOARD.md' -g 'SKILLS.md'\"",
+            "failure_text": null
+          },
+          {
+            "event_index": 6,
+            "id": "item_2",
+            "tool": "command_execution",
+            "method": "read",
+            "status": "succeeded",
+            "command": "/bin/zsh -lc 'cat BOARD.md'",
+            "failure_text": null
+          },
+          {
+            "event_index": 8,
+            "id": "item_3",
+            "tool": "file_change",
+            "method": "patch_update",
+            "status": "succeeded",
+            "scope_observation": "JSONL reports update/path, not the patch hunk coverage"
+          }
+        ]
+      },
+      "failure_actions": [
+        {
+          "actor": "A",
+          "failed_id": "call_c222de0339804937986a0d4f804f154a",
+          "action": "reread_then_item_edit",
+          "failure_text": "<tool_use_error>File has been modified since read, either by the user or by a linter. Read it again before attempting to write it.</tool_use_error>"
+        }
+      ],
+      "A_decision_persisted": null,
+      "B_reflected_in_B_section": null,
+      "B_prompt_contains_A_oracle": null,
+      "injection_status": [
+        "injected"
+      ],
+      "launch_spread_ms": 0
+    },
+    {
+      "case": "S11-2-r5",
+      "scenario": 2,
+      "all_models_verified": true,
+      "all_harnesses_success": true,
+      "lost_updates": 0,
+      "never_written_missing": 0,
+      "marker_outcomes": [
+        {
+          "actor": "A",
+          "marker": "S11-2-r5-A-6cea3d0eed04",
+          "present_final": true,
+          "observed_written": true,
+          "lost_update": false,
+          "never_observed_and_missing": false
+        },
+        {
+          "actor": "B",
+          "marker": "S11-2-r5-B-a66dc9b7ab08",
+          "present_final": true,
+          "observed_written": true,
+          "lost_update": false,
+          "never_observed_and_missing": false
+        },
+        {
+          "actor": "C",
+          "marker": "S11-2-r5-C-dd1ce789af8a",
+          "present_final": true,
+          "observed_written": true,
+          "lost_update": false,
+          "never_observed_and_missing": false
+        },
+        {
+          "actor": "injector",
+          "marker": "S11-2-r5-INJECT-f432b2fdcbb4",
+          "present_final": true,
+          "observed_written": true,
+          "lost_update": false,
+          "never_observed_and_missing": false
+        }
+      ],
+      "operations": {
+        "A": [
+          {
+            "event_index": 62,
+            "id": "call_45a255089ae945929711da7cae908280",
+            "tool": "Read",
+            "method": "read",
+            "status": "succeeded",
+            "failure_text": null,
+            "new_text": ""
+          },
+          {
+            "event_index": 177,
+            "id": "call_9be32f300a244e15bc809da7ae67ce3b",
+            "tool": "Edit",
+            "method": "item_edit",
+            "status": "failed",
+            "failure_text": "<tool_use_error>File has been modified since read, either by the user or by a linter. Read it again before attempting to write it.</tool_use_error>",
+            "new_text": "## 결정: 캐시 전략\n아직 결정 없음.\nA: S11-2-r5-A-6cea3d0eed04"
+          },
+          {
+            "event_index": 242,
+            "id": "call_cf54c67aff184a939956d2ce1c319d92",
+            "tool": "Read",
+            "method": "read",
+            "status": "succeeded",
+            "failure_text": null,
+            "new_text": ""
+          },
+          {
+            "event_index": 377,
+            "id": "call_8e4c1d8d4238454cbe1f1235705bb162",
+            "tool": "Edit",
+            "method": "item_edit",
+            "status": "failed",
+            "failure_text": "<tool_use_error>File has been modified since read, either by the user or by a linter. Read it again before attempting to write it.</tool_use_error>",
+            "new_text": "아직 결정 없음.\nC: S11-2-r5-C-dd1ce789af8a\nA: S11-2-r5-A-6cea3d0eed04"
+          },
+          {
+            "event_index": 442,
+            "id": "call_40f27b7f912043cb8e548999a8f78fe1",
+            "tool": "Read",
+            "method": "read",
+            "status": "succeeded",
+            "failure_text": null,
+            "new_text": ""
+          },
+          {
+            "event_index": 565,
+            "id": "call_97be09305b9c444da2739253fe7e68cf",
+            "tool": "Edit",
+            "method": "item_edit",
+            "status": "succeeded",
+            "failure_text": null,
+            "new_text": "C: S11-2-r5-C-dd1ce789af8a\nA: S11-2-r5-A-6cea3d0eed04"
+          }
+        ],
+        "B": [
+          {
+            "event_index": 62,
+            "id": "call_8fa7751d7ef247a1a3e0da13501bb2c7",
+            "tool": "Read",
+            "method": "read",
+            "status": "succeeded",
+            "failure_text": null,
+            "new_text": ""
+          },
+          {
+            "event_index": 177,
+            "id": "call_a5356ba6449d4903b6e5024c0bb06c6a",
+            "tool": "Edit",
+            "method": "item_edit",
+            "status": "failed",
+            "failure_text": "<tool_use_error>File has been modified since read, either by the user or by a linter. Read it again before attempting to write it.</tool_use_error>",
+            "new_text": "## 결정: 캐시 전략\n아직 결정 없음.\nB: S11-2-r5-B-a66dc9b7ab08"
+          },
+          {
+            "event_index": 242,
+            "id": "call_ddcaea9980eb4314acb6d22000fa6a6e",
+            "tool": "Read",
+            "method": "read",
+            "status": "succeeded",
+            "failure_text": null,
+            "new_text": ""
+          },
+          {
+            "event_index": 398,
+            "id": "call_cfc620fe3ef84975af039fad916cf25e",
+            "tool": "Edit",
+            "method": "item_edit",
+            "status": "succeeded",
+            "failure_text": null,
+            "new_text": "## 결정: 캐시 전략\n판정자: S11-2-r5-INJECT-f432b2fdcbb4\n아직 결정 없음.\nB: S11-2-r5-B-a66dc9b7ab08"
+          }
+        ],
+        "C": [
+          {
+            "event_index": 4,
+            "id": "item_1",
+            "tool": "command_execution",
+            "method": "read",
+            "status": "succeeded",
+            "command": "/bin/zsh -lc \"pwd; rg --files -g 'AGENTS.md' -g 'BOARD.md' -g 'SKILLS.md'\"",
+            "failure_text": null
+          },
+          {
+            "event_index": 6,
+            "id": "item_2",
+            "tool": "command_execution",
+            "method": "read",
+            "status": "succeeded",
+            "command": "/bin/zsh -lc 'cat BOARD.md; git status --short -- BOARD.md'",
+            "failure_text": null
+          },
+          {
+            "event_index": 9,
+            "id": "item_4",
+            "tool": "command_execution",
+            "method": "shell_write",
+            "status": "succeeded",
+            "command": "/bin/zsh -lc \"python3 -c 'from pathlib import Path; p=Path(\\\"BOARD.md\\\"); s=p.read_text(); marker=\\\"## 결정: 캐시 전략\\\\n\\\"; line=\\\"C: S11-2-r5-C-dd1ce789af8a\\\"; start=s.index(marker)+len(marker); end=s.find(\\\"\\\\n## \\\", start); end=len(s) if end<0 else end; section=s[start:end];\nif line not in section:\n    insertion=end\n    s=s[:insertion]+(\\\"\\\" if insertion==0 or s[insertion-1]==\\\"\\\\n\\\" else \\\"\\\\n\\\")+line+\\\"\\\\n\\\"+s[insertion:]\n    p.write_text(s)' ; git diff -- BOARD.md\"",
+            "failure_text": null
+          }
+        ]
+      },
+      "failure_actions": [
+        {
+          "actor": "A",
+          "failed_id": "call_9be32f300a244e15bc809da7ae67ce3b",
+          "action": "reread_then_item_edit",
+          "failure_text": "<tool_use_error>File has been modified since read, either by the user or by a linter. Read it again before attempting to write it.</tool_use_error>"
+        },
+        {
+          "actor": "A",
+          "failed_id": "call_8e4c1d8d4238454cbe1f1235705bb162",
+          "action": "reread_then_item_edit",
+          "failure_text": "<tool_use_error>File has been modified since read, either by the user or by a linter. Read it again before attempting to write it.</tool_use_error>"
+        },
+        {
+          "actor": "B",
+          "failed_id": "call_a5356ba6449d4903b6e5024c0bb06c6a",
+          "action": "reread_then_item_edit",
+          "failure_text": "<tool_use_error>File has been modified since read, either by the user or by a linter. Read it again before attempting to write it.</tool_use_error>"
+        }
+      ],
+      "A_decision_persisted": null,
+      "B_reflected_in_B_section": null,
+      "B_prompt_contains_A_oracle": null,
+      "injection_status": [
+        "injected"
+      ],
+      "launch_spread_ms": 0
+    },
+    {
+      "case": "S11-3-r1",
+      "scenario": 3,
+      "all_models_verified": true,
+      "all_harnesses_success": true,
+      "lost_updates": 0,
+      "never_written_missing": 0,
+      "marker_outcomes": [
+        {
+          "actor": "A",
+          "marker": "S11-3-r1-A-e37eda5bd3af",
+          "present_final": true,
+          "observed_written": true,
+          "lost_update": false,
+          "never_observed_and_missing": false
+        },
+        {
+          "actor": "A",
+          "marker": "cache-choice-37acd824fd464edcb722c05ac537c219",
+          "present_final": true,
+          "observed_written": true,
+          "lost_update": false,
+          "never_observed_and_missing": false
+        },
+        {
+          "actor": "B",
+          "marker": "S11-3-r1-B-10b022d9474a",
+          "present_final": true,
+          "observed_written": true,
+          "lost_update": false,
+          "never_observed_and_missing": false
+        },
+        {
+          "actor": "C",
+          "marker": "S11-3-r1-C-422d1e98311b",
+          "present_final": true,
+          "observed_written": true,
+          "lost_update": false,
+          "never_observed_and_missing": false
+        }
+      ],
+      "operations": {
+        "A": [
+          {
+            "event_index": 63,
+            "id": "call_dc163c45969a430bb4b442c8ac60cd59",
+            "tool": "Read",
+            "method": "read",
+            "status": "succeeded",
+            "failure_text": null,
+            "new_text": ""
+          },
+          {
+            "event_index": 207,
+            "id": "call_aa77eaa2521d4cd8b2d2c4cdf3ee7fb4",
+            "tool": "Edit",
+            "method": "item_edit",
+            "status": "succeeded",
+            "failure_text": null,
+            "new_text": "## 결정: 캐시 전략\nA 결정: cache-choice-37acd824fd464edcb722c05ac537c219\n\n## 담당: A\nS11-3-r1-A-e37eda5bd3af"
+          }
+        ],
+        "B": [
+          {
+            "event_index": 385,
+            "id": "call_5a190f9787704cfd803442a9f6a07fb3",
+            "tool": "Read",
+            "method": "read",
+            "status": "succeeded",
+            "failure_text": null,
+            "new_text": ""
+          },
+          {
+            "event_index": 499,
+            "id": "call_a4faf35396c64827a3879c35eef3dcef",
+            "tool": "Edit",
+            "method": "item_edit",
+            "status": "succeeded",
+            "failure_text": null,
+            "new_text": "## 담당: B\nS11-3-r1-B-10b022d9474a — NOT_SEEN (보드에 A의 결정 없음)."
+          }
+        ],
+        "C": [
+          {
+            "event_index": 4,
+            "id": "item_1",
+            "tool": "command_execution",
+            "method": "read",
+            "status": "failed",
+            "command": "/bin/zsh -lc \"rg -n -C 2 '담당: C' BOARD.md\"",
+            "failure_text": "Failed to create unified exec process: No such file or directory (os error 2)"
+          },
+          {
+            "event_index": 7,
+            "id": "item_3",
+            "tool": "command_execution",
+            "method": "read",
+            "status": "succeeded",
+            "command": "/bin/zsh -lc \"pwd && rg -n -C 2 '담당: C' /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11-va4hq9ed/cases/S11-3-r1/wt-C/BOARD.md\"",
+            "failure_text": null
+          },
+          {
+            "event_index": 9,
+            "id": "item_4",
+            "tool": "command_execution",
+            "method": "shell_write",
+            "status": "succeeded",
+            "command": "/bin/zsh -lc \"python3 -c 'from pathlib import Path; p=Path(\\\"/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11-va4hq9ed/cases/S11-3-r1/wt-C/BOARD.md\\\"); s=p.read_text(); old=\\\"## 담당: C\\\\n대기.\\\"; new=\\\"## 담당: C\\\\nS11-3-r1-C-422d1e98311b\\\"; assert s.count(old)==1; p.write_text(s.replace(old,new))' && rg -n -A 1 '\"'^## 담당: C$'\"' /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11-va4hq9ed/cases/S11-3-r1/wt-C/BOARD.md\"",
+            "failure_text": null
+          }
+        ]
+      },
+      "failure_actions": [],
+      "A_decision_persisted": true,
+      "B_reflected_in_B_section": false,
+      "B_prompt_contains_A_oracle": false,
+      "injection_status": [],
+      "launch_spread_ms": 0
+    },
+    {
+      "case": "S11-3-r2",
+      "scenario": 3,
+      "all_models_verified": true,
+      "all_harnesses_success": true,
+      "lost_updates": 0,
+      "never_written_missing": 0,
+      "marker_outcomes": [
+        {
+          "actor": "A",
+          "marker": "S11-3-r2-A-7e2c34227464",
+          "present_final": true,
+          "observed_written": true,
+          "lost_update": false,
+          "never_observed_and_missing": false
+        },
+        {
+          "actor": "A",
+          "marker": "cache-choice-142bb05c6f414e4f9f91806931870184",
+          "present_final": true,
+          "observed_written": true,
+          "lost_update": false,
+          "never_observed_and_missing": false
+        },
+        {
+          "actor": "B",
+          "marker": "S11-3-r2-B-6d2e6733380c",
+          "present_final": true,
+          "observed_written": true,
+          "lost_update": false,
+          "never_observed_and_missing": false
+        },
+        {
+          "actor": "C",
+          "marker": "S11-3-r2-C-06fdeae8fcad",
+          "present_final": true,
+          "observed_written": true,
+          "lost_update": false,
+          "never_observed_and_missing": false
+        }
+      ],
+      "operations": {
+        "A": [
+          {
+            "event_index": 63,
+            "id": "call_53204a274b48461ba3ee39fa5a832783",
+            "tool": "Read",
+            "method": "read",
+            "status": "succeeded",
+            "failure_text": null,
+            "new_text": ""
+          },
+          {
+            "event_index": 211,
+            "id": "call_b4953666066c491ca39b5cb28cc9acec",
+            "tool": "Edit",
+            "method": "item_edit",
+            "status": "succeeded",
+            "failure_text": null,
+            "new_text": "## 결정: 캐시 전략\nA 결정: cache-choice-142bb05c6f414e4f9f91806931870184\n\n## 담당: A\nS11-3-r2-A-7e2c34227464"
+          }
+        ],
+        "B": [
+          {
+            "event_index": 156,
+            "id": "call_836ac38740ee49f884275a80ac57080f",
+            "tool": "Read",
+            "method": "read",
+            "status": "succeeded",
+            "failure_text": null,
+            "new_text": ""
+          },
+          {
+            "event_index": 262,
+            "id": "call_b401db9b07564f56bbac4e0492b5e266",
+            "tool": "Edit",
+            "method": "item_edit",
+            "status": "succeeded",
+            "failure_text": null,
+            "new_text": "## 담당: B\nS11-3-r2-B-6d2e6733380c — NOT_SEEN"
+          }
+        ],
+        "C": [
+          {
+            "event_index": 4,
+            "id": "item_1",
+            "tool": "command_execution",
+            "method": "read",
+            "status": "succeeded",
+            "command": "/bin/zsh -lc 'cat BOARD.md'",
+            "failure_text": null
+          },
+          {
+            "event_index": 6,
+            "id": "item_2",
+            "tool": "file_change",
+            "method": "patch_update",
+            "status": "succeeded",
+            "scope_observation": "JSONL reports update/path, not the patch hunk coverage"
+          }
+        ]
+      },
+      "failure_actions": [],
+      "A_decision_persisted": true,
+      "B_reflected_in_B_section": false,
+      "B_prompt_contains_A_oracle": false,
+      "injection_status": [],
+      "launch_spread_ms": 1
+    },
+    {
+      "case": "S11-3-r3",
+      "scenario": 3,
+      "all_models_verified": true,
+      "all_harnesses_success": true,
+      "lost_updates": 0,
+      "never_written_missing": 0,
+      "marker_outcomes": [
+        {
+          "actor": "A",
+          "marker": "S11-3-r3-A-45107c5df9e3",
+          "present_final": true,
+          "observed_written": true,
+          "lost_update": false,
+          "never_observed_and_missing": false
+        },
+        {
+          "actor": "A",
+          "marker": "cache-choice-364b1626707b467db107509e0eebbc01",
+          "present_final": true,
+          "observed_written": true,
+          "lost_update": false,
+          "never_observed_and_missing": false
+        },
+        {
+          "actor": "B",
+          "marker": "S11-3-r3-B-8b1b48adc890",
+          "present_final": true,
+          "observed_written": true,
+          "lost_update": false,
+          "never_observed_and_missing": false
+        },
+        {
+          "actor": "C",
+          "marker": "S11-3-r3-C-e6409131627a",
+          "present_final": true,
+          "observed_written": true,
+          "lost_update": false,
+          "never_observed_and_missing": false
+        }
+      ],
+      "operations": {
+        "A": [
+          {
+            "event_index": 63,
+            "id": "call_595852f39df742db84a17133801a306e",
+            "tool": "Read",
+            "method": "read",
+            "status": "succeeded",
+            "failure_text": null,
+            "new_text": ""
+          },
+          {
+            "event_index": 211,
+            "id": "call_f015b2c37638401f9e9ee1c07c7223d5",
+            "tool": "Edit",
+            "method": "item_edit",
+            "status": "succeeded",
+            "failure_text": null,
+            "new_text": "## 결정: 캐시 전략\nA 결정: cache-choice-364b1626707b467db107509e0eebbc01\n\n## 담당: A\nS11-3-r3-A-45107c5df9e3"
+          }
+        ],
+        "B": [
+          {
+            "event_index": 163,
+            "id": "call_5291de83364e4e0cbb1334a4870491e7",
+            "tool": "Read",
+            "method": "read",
+            "status": "succeeded",
+            "failure_text": null,
+            "new_text": ""
+          },
+          {
+            "event_index": 268,
+            "id": "call_03890e97fec948f7b91e0809324f9809",
+            "tool": "Edit",
+            "method": "item_edit",
+            "status": "succeeded",
+            "failure_text": null,
+            "new_text": "## 담당: B\nS11-3-r3-B-8b1b48adc890 — NOT_SEEN"
+          }
+        ],
+        "C": [
+          {
+            "event_index": 4,
+            "id": "item_1",
+            "tool": "command_execution",
+            "method": "read",
+            "status": "succeeded",
+            "command": "/bin/zsh -lc \"rg -n -C 2 '담당: C' BOARD.md && sed -n '1,240p' BOARD.md\"",
+            "failure_text": null
+          },
+          {
+            "event_index": 6,
+            "id": "item_2",
+            "tool": "file_change",
+            "method": "patch_update",
+            "status": "succeeded",
+            "scope_observation": "JSONL reports update/path, not the patch hunk coverage"
+          }
+        ]
+      },
+      "failure_actions": [],
+      "A_decision_persisted": true,
+      "B_reflected_in_B_section": false,
+      "B_prompt_contains_A_oracle": false,
+      "injection_status": [],
+      "launch_spread_ms": 0
+    },
+    {
+      "case": "S11-3-r4",
+      "scenario": 3,
+      "all_models_verified": true,
+      "all_harnesses_success": true,
+      "lost_updates": 0,
+      "never_written_missing": 0,
+      "marker_outcomes": [
+        {
+          "actor": "A",
+          "marker": "S11-3-r4-A-8e3c07c0146a",
+          "present_final": true,
+          "observed_written": true,
+          "lost_update": false,
+          "never_observed_and_missing": false
+        },
+        {
+          "actor": "A",
+          "marker": "cache-choice-f2a0c3fa09634f6d97008d3ab094052b",
+          "present_final": true,
+          "observed_written": true,
+          "lost_update": false,
+          "never_observed_and_missing": false
+        },
+        {
+          "actor": "B",
+          "marker": "S11-3-r4-B-bac547adc0b3",
+          "present_final": true,
+          "observed_written": true,
+          "lost_update": false,
+          "never_observed_and_missing": false
+        },
+        {
+          "actor": "C",
+          "marker": "S11-3-r4-C-734a7b4d3825",
+          "present_final": true,
+          "observed_written": true,
+          "lost_update": false,
+          "never_observed_and_missing": false
+        }
+      ],
+      "operations": {
+        "A": [
+          {
+            "event_index": 63,
+            "id": "call_4c9e54612b584b01bd0bd6c63e2c5c1b",
+            "tool": "Read",
+            "method": "read",
+            "status": "succeeded",
+            "failure_text": null,
+            "new_text": ""
+          },
+          {
+            "event_index": 215,
+            "id": "call_de11779b3b7348a3a36e83adc5f8f172",
+            "tool": "Edit",
+            "method": "item_edit",
+            "status": "succeeded",
+            "failure_text": null,
+            "new_text": "## 결정: 캐시 전략\nA 결정: cache-choice-f2a0c3fa09634f6d97008d3ab094052b\n\n## 담당: A\nS11-3-r4-A-8e3c07c0146a"
+          }
+        ],
+        "B": [
+          {
+            "event_index": 414,
+            "id": "call_29ae6451870740caa32e90c8b159c023",
+            "tool": "Read",
+            "method": "read",
+            "status": "succeeded",
+            "failure_text": null,
+            "new_text": ""
+          },
+          {
+            "event_index": 525,
+            "id": "call_fe9b1c3b5ade40fb94f81cb906f77968",
+            "tool": "Edit",
+            "method": "item_edit",
+            "status": "succeeded",
+            "failure_text": null,
+            "new_text": "## 담당: B\nS11-3-r4-B-bac547adc0b3\nNOT_SEEN"
+          }
+        ],
+        "C": [
+          {
+            "event_index": 4,
+            "id": "item_1",
+            "tool": "command_execution",
+            "method": "read",
+            "status": "succeeded",
+            "command": "/bin/zsh -lc \"rg -n -C 2 '담당: C|S11-3-r4-C-734a7b4d3825' BOARD.md\"",
+            "failure_text": null
+          },
+          {
+            "event_index": 6,
+            "id": "item_2",
+            "tool": "file_change",
+            "method": "patch_update",
+            "status": "succeeded",
+            "scope_observation": "JSONL reports update/path, not the patch hunk coverage"
+          },
+          {
+            "event_index": 8,
+            "id": "item_3",
+            "tool": "command_execution",
+            "method": "read",
+            "status": "succeeded",
+            "command": "/bin/zsh -lc \"sed -n '12,14p' BOARD.md\"",
+            "failure_text": null
+          }
+        ]
+      },
+      "failure_actions": [],
+      "A_decision_persisted": true,
+      "B_reflected_in_B_section": false,
+      "B_prompt_contains_A_oracle": false,
+      "injection_status": [],
+      "launch_spread_ms": 0
+    },
+    {
+      "case": "S11-3-r5",
+      "scenario": 3,
+      "all_models_verified": true,
+      "all_harnesses_success": true,
+      "lost_updates": 0,
+      "never_written_missing": 0,
+      "marker_outcomes": [
+        {
+          "actor": "A",
+          "marker": "S11-3-r5-A-a3494cb5ee10",
+          "present_final": true,
+          "observed_written": true,
+          "lost_update": false,
+          "never_observed_and_missing": false
+        },
+        {
+          "actor": "A",
+          "marker": "cache-choice-f53d0be36fa14c0ea3ec9732362bcec2",
+          "present_final": true,
+          "observed_written": true,
+          "lost_update": false,
+          "never_observed_and_missing": false
+        },
+        {
+          "actor": "B",
+          "marker": "S11-3-r5-B-4ee51b0ff9d3",
+          "present_final": true,
+          "observed_written": true,
+          "lost_update": false,
+          "never_observed_and_missing": false
+        },
+        {
+          "actor": "C",
+          "marker": "S11-3-r5-C-8ed6ed5a8cb4",
+          "present_final": true,
+          "observed_written": true,
+          "lost_update": false,
+          "never_observed_and_missing": false
+        }
+      ],
+      "operations": {
+        "A": [
+          {
+            "event_index": 63,
+            "id": "call_ec81c1c64f0a474fb834f2e10db07022",
+            "tool": "Read",
+            "method": "read",
+            "status": "succeeded",
+            "failure_text": null,
+            "new_text": ""
+          },
+          {
+            "event_index": 211,
+            "id": "call_2d372b47de054fa9abbe245ae6a5348b",
+            "tool": "Edit",
+            "method": "item_edit",
+            "status": "succeeded",
+            "failure_text": null,
+            "new_text": "## 결정: 캐시 전략\nA 결정: cache-choice-f53d0be36fa14c0ea3ec9732362bcec2\n\n## 담당: A\nS11-3-r5-A-a3494cb5ee10"
+          }
+        ],
+        "B": [
+          {
+            "event_index": 157,
+            "id": "call_345ecfab8c6b47e8966f81d24f552782",
+            "tool": "Read",
+            "method": "read",
+            "status": "succeeded",
+            "failure_text": null,
+            "new_text": ""
+          },
+          {
+            "event_index": 264,
+            "id": "call_881e9aecab3e403ab83eaeeb8e8ec38a",
+            "tool": "Edit",
+            "method": "item_edit",
+            "status": "succeeded",
+            "failure_text": null,
+            "new_text": "## 담당: B\nS11-3-r5-B-4ee51b0ff9d3 — NOT_SEEN"
+          }
+        ],
+        "C": [
+          {
+            "event_index": 4,
+            "id": "item_1",
+            "tool": "command_execution",
+            "method": "read",
+            "status": "succeeded",
+            "command": "/bin/zsh -lc \"rg -n -C 2 '담당: C' BOARD.md\"",
+            "failure_text": null
+          },
+          {
+            "event_index": 6,
+            "id": "item_2",
+            "tool": "file_change",
+            "method": "patch_update",
+            "status": "succeeded",
+            "scope_observation": "JSONL reports update/path, not the patch hunk coverage"
+          },
+          {
+            "event_index": 8,
+            "id": "item_3",
+            "tool": "command_execution",
+            "method": "read",
+            "status": "succeeded",
+            "command": "/bin/zsh -lc \"sed -n '12,14p' BOARD.md\"",
+            "failure_text": null
+          }
+        ]
+      },
+      "failure_actions": [],
+      "A_decision_persisted": true,
+      "B_reflected_in_B_section": false,
+      "B_prompt_contains_A_oracle": false,
+      "injection_status": [],
+      "launch_spread_ms": 0
+    },
+    {
+      "case": "S11-4-r1",
+      "scenario": 4,
+      "all_models_verified": true,
+      "all_harnesses_success": true,
+      "lost_updates": 0,
+      "never_written_missing": 1,
+      "marker_outcomes": [
+        {
+          "actor": "A",
+          "marker": "S11-4-r1-A-c4e447d06a8d",
+          "present_final": true,
+          "observed_written": true,
+          "lost_update": false,
+          "never_observed_and_missing": false
+        },
+        {
+          "actor": "A",
+          "marker": "cache-choice-89ed719cf2b848f2a9806fb3e059520f",
+          "present_final": true,
+          "observed_written": true,
+          "lost_update": false,
+          "never_observed_and_missing": false
+        },
+        {
+          "actor": "B",
+          "marker": "S11-4-r1-B-a5ba2d53a909",
+          "present_final": true,
+          "observed_written": true,
+          "lost_update": false,
+          "never_observed_and_missing": false
+        },
+        {
+          "actor": "C",
+          "marker": "S11-4-r1-C-6c78d2e669dd",
+          "present_final": false,
+          "observed_written": false,
+          "lost_update": false,
+          "never_observed_and_missing": true
+        }
+      ],
+      "operations": {
+        "A": [
+          {
+            "event_index": 61,
+            "id": "call_8cec7a6419f345f4af435a4513cb8ab7",
+            "tool": "Read",
+            "method": "read",
+            "status": "succeeded",
+            "failure_text": null,
+            "new_text": ""
+          },
+          {
+            "event_index": 209,
+            "id": "call_f217fa7f4dcb4de2b0eddf178fb5e3df",
+            "tool": "Edit",
+            "method": "item_edit",
+            "status": "succeeded",
+            "failure_text": null,
+            "new_text": "## 결정: 캐시 전략\nA 결정: cache-choice-89ed719cf2b848f2a9806fb3e059520f\n\n## 담당: A\nS11-4-r1-A-c4e447d06a8d"
+          }
+        ],
+        "B": [
+          {
+            "event_index": 446,
+            "id": "call_6a31c4508e514d89b13c4b4021efd404",
+            "tool": "Read",
+            "method": "read",
+            "status": "succeeded",
+            "failure_text": null,
+            "new_text": ""
+          },
+          {
+            "event_index": 567,
+            "id": "call_a0866812c9b54b07988661e50a385af1",
+            "tool": "Edit",
+            "method": "item_edit",
+            "status": "succeeded",
+            "failure_text": null,
+            "new_text": "## 담당: B\nS11-4-r1-B-a5ba2d53a909 — cache-choice-89ed719cf2b848f2a9806fb3e059520f"
+          }
+        ],
+        "C": [
+          {
+            "event_index": 4,
+            "id": "item_1",
+            "tool": "command_execution",
+            "method": "read",
+            "status": "failed",
+            "command": "/bin/zsh -lc \"rg -n -C 2 '담당: C|S11-4-r1-C-6c78d2e669dd' /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11-4-r1/shared/BOARD.md\"",
+            "failure_text": "rg: /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11-4-r1/shared/BOARD.md: IO error for operation on /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11-4-r1/shared/BOARD.md: No such file or directory (os error 2)\n"
+          }
+        ]
+      },
+      "failure_actions": [],
+      "A_decision_persisted": true,
+      "B_reflected_in_B_section": true,
+      "B_prompt_contains_A_oracle": false,
+      "injection_status": [],
+      "launch_spread_ms": 0
+    },
+    {
+      "case": "S11-4-r2",
+      "scenario": 4,
+      "all_models_verified": true,
+      "all_harnesses_success": true,
+      "lost_updates": 0,
+      "never_written_missing": 0,
+      "marker_outcomes": [
+        {
+          "actor": "A",
+          "marker": "S11-4-r2-A-a9e6f7bd5460",
+          "present_final": true,
+          "observed_written": true,
+          "lost_update": false,
+          "never_observed_and_missing": false
+        },
+        {
+          "actor": "A",
+          "marker": "cache-choice-12f13ff5a7d342a8babf9df0209ddc3a",
+          "present_final": true,
+          "observed_written": true,
+          "lost_update": false,
+          "never_observed_and_missing": false
+        },
+        {
+          "actor": "B",
+          "marker": "S11-4-r2-B-2fe931e7bdcf",
+          "present_final": true,
+          "observed_written": true,
+          "lost_update": false,
+          "never_observed_and_missing": false
+        },
+        {
+          "actor": "C",
+          "marker": "S11-4-r2-C-b0ab9ae268cc",
+          "present_final": true,
+          "observed_written": true,
+          "lost_update": false,
+          "never_observed_and_missing": false
+        }
+      ],
+      "operations": {
+        "A": [
+          {
+            "event_index": 61,
+            "id": "call_9e1b6acd49dc4f91b99022164e8588f0",
+            "tool": "Read",
+            "method": "read",
+            "status": "succeeded",
+            "failure_text": null,
+            "new_text": ""
+          },
+          {
+            "event_index": 212,
+            "id": "call_13ce12b0b3a3441183741530924028aa",
+            "tool": "Edit",
+            "method": "item_edit",
+            "status": "succeeded",
+            "failure_text": null,
+            "new_text": "## 결정: 캐시 전략\nA 결정: cache-choice-12f13ff5a7d342a8babf9df0209ddc3a\n\n## 담당: A\nS11-4-r2-A-a9e6f7bd5460"
+          }
+        ],
+        "B": [
+          {
+            "event_index": 405,
+            "id": "call_7d2061810a9d4ae3949e0b085334c9a2",
+            "tool": "Read",
+            "method": "read",
+            "status": "succeeded",
+            "failure_text": null,
+            "new_text": ""
+          },
+          {
+            "event_index": 529,
+            "id": "call_c142bd41fd29471cb5e48ec8860ec7d2",
+            "tool": "Edit",
+            "method": "item_edit",
+            "status": "succeeded",
+            "failure_text": null,
+            "new_text": "## 담당: B\nS11-4-r2-B-2fe931e7bdcf — cache-choice-12f13ff5a7d342a8babf9df0209ddc3a"
+          }
+        ],
+        "C": [
+          {
+            "event_index": 4,
+            "id": "item_1",
+            "tool": "command_execution",
+            "method": "read",
+            "status": "succeeded",
+            "command": "/bin/zsh -lc 'cat BOARD.md && pwd'",
+            "failure_text": null
+          },
+          {
+            "event_index": 6,
+            "id": "item_2",
+            "tool": "file_change",
+            "method": "patch_update",
+            "status": "succeeded",
+            "scope_observation": "JSONL reports update/path, not the patch hunk coverage"
+          }
+        ]
+      },
+      "failure_actions": [],
+      "A_decision_persisted": true,
+      "B_reflected_in_B_section": true,
+      "B_prompt_contains_A_oracle": false,
+      "injection_status": [],
+      "launch_spread_ms": 0
+    },
+    {
+      "case": "S11-4-r3",
+      "scenario": 4,
+      "all_models_verified": true,
+      "all_harnesses_success": true,
+      "lost_updates": 0,
+      "never_written_missing": 0,
+      "marker_outcomes": [
+        {
+          "actor": "A",
+          "marker": "S11-4-r3-A-38c824cb739e",
+          "present_final": true,
+          "observed_written": true,
+          "lost_update": false,
+          "never_observed_and_missing": false
+        },
+        {
+          "actor": "A",
+          "marker": "cache-choice-889a2194dce345508aea8c2e24290ed7",
+          "present_final": true,
+          "observed_written": true,
+          "lost_update": false,
+          "never_observed_and_missing": false
+        },
+        {
+          "actor": "B",
+          "marker": "S11-4-r3-B-17c4eab1a84d",
+          "present_final": true,
+          "observed_written": true,
+          "lost_update": false,
+          "never_observed_and_missing": false
+        },
+        {
+          "actor": "C",
+          "marker": "S11-4-r3-C-1c1e34facedc",
+          "present_final": true,
+          "observed_written": true,
+          "lost_update": false,
+          "never_observed_and_missing": false
+        }
+      ],
+      "operations": {
+        "A": [
+          {
+            "event_index": 60,
+            "id": "call_93c00e6cf34841a18bd053da1730a495",
+            "tool": "Read",
+            "method": "read",
+            "status": "succeeded",
+            "failure_text": null,
+            "new_text": ""
+          },
+          {
+            "event_index": 205,
+            "id": "call_b1547a1a417a48fc8fdfc1d75bb97a5e",
+            "tool": "Edit",
+            "method": "item_edit",
+            "status": "succeeded",
+            "failure_text": null,
+            "new_text": "## 결정: 캐시 전략\nA 결정: cache-choice-889a2194dce345508aea8c2e24290ed7\n\n## 담당: A\nS11-4-r3-A-38c824cb739e"
+          }
+        ],
+        "B": [
+          {
+            "event_index": 461,
+            "id": "call_51adad23b98142078eeab46700398a07",
+            "tool": "Read",
+            "method": "read",
+            "status": "succeeded",
+            "failure_text": null,
+            "new_text": ""
+          },
+          {
+            "event_index": 583,
+            "id": "call_ff5e99fa00424daa9abdca2e556b198b",
+            "tool": "Edit",
+            "method": "item_edit",
+            "status": "succeeded",
+            "failure_text": null,
+            "new_text": "## 담당: B\nS11-4-r3-B-17c4eab1a84d — cache-choice-889a2194dce345508aea8c2e24290ed7"
+          }
+        ],
+        "C": [
+          {
+            "event_index": 4,
+            "id": "item_1",
+            "tool": "command_execution",
+            "method": "read",
+            "status": "succeeded",
+            "command": "/bin/zsh -lc \"rg -n -C 2 '담당: C' /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11-va4hq9ed/cases/S11-4-r3/shared/BOARD.md\"",
+            "failure_text": null
+          },
+          {
+            "event_index": 6,
+            "id": "item_2",
+            "tool": "file_change",
+            "method": "patch_update",
+            "status": "succeeded",
+            "scope_observation": "JSONL reports update/path, not the patch hunk coverage"
+          }
+        ]
+      },
+      "failure_actions": [],
+      "A_decision_persisted": true,
+      "B_reflected_in_B_section": true,
+      "B_prompt_contains_A_oracle": false,
+      "injection_status": [],
+      "launch_spread_ms": 0
+    },
+    {
+      "case": "S11-4-r4",
+      "scenario": 4,
+      "all_models_verified": true,
+      "all_harnesses_success": true,
+      "lost_updates": 0,
+      "never_written_missing": 0,
+      "marker_outcomes": [
+        {
+          "actor": "A",
+          "marker": "S11-4-r4-A-792aee2fd5c9",
+          "present_final": true,
+          "observed_written": true,
+          "lost_update": false,
+          "never_observed_and_missing": false
+        },
+        {
+          "actor": "A",
+          "marker": "cache-choice-5748b642d7044fc68e9f77050c39e67b",
+          "present_final": true,
+          "observed_written": true,
+          "lost_update": false,
+          "never_observed_and_missing": false
+        },
+        {
+          "actor": "B",
+          "marker": "S11-4-r4-B-9258f3deb242",
+          "present_final": true,
+          "observed_written": true,
+          "lost_update": false,
+          "never_observed_and_missing": false
+        },
+        {
+          "actor": "C",
+          "marker": "S11-4-r4-C-1dd60504afc7",
+          "present_final": true,
+          "observed_written": true,
+          "lost_update": false,
+          "never_observed_and_missing": false
+        }
+      ],
+      "operations": {
+        "A": [
+          {
+            "event_index": 61,
+            "id": "call_f0ab2db305c14ab188f17c596bcaa764",
+            "tool": "Read",
+            "method": "read",
+            "status": "succeeded",
+            "failure_text": null,
+            "new_text": ""
+          },
+          {
+            "event_index": 210,
+            "id": "call_e774350b607f4a9ea4a0deecc585a0f4",
+            "tool": "Edit",
+            "method": "item_edit",
+            "status": "succeeded",
+            "failure_text": null,
+            "new_text": "## 결정: 캐시 전략\nA 결정: cache-choice-5748b642d7044fc68e9f77050c39e67b\n\n## 담당: A\nS11-4-r4-A-792aee2fd5c9"
+          }
+        ],
+        "B": [
+          {
+            "event_index": 655,
+            "id": "call_1d9c7029b1d141dd87d54eb74123dec3",
+            "tool": "Read",
+            "method": "read",
+            "status": "succeeded",
+            "failure_text": null,
+            "new_text": ""
+          },
+          {
+            "event_index": 776,
+            "id": "call_8a6ee73103894dc682c5fb6beb12d365",
+            "tool": "Edit",
+            "method": "item_edit",
+            "status": "succeeded",
+            "failure_text": null,
+            "new_text": "## 담당: B\nS11-4-r4-B-9258f3deb242\ncache-choice-5748b642d7044fc68e9f77050c39e67b"
+          }
+        ],
+        "C": [
+          {
+            "event_index": 4,
+            "id": "item_1",
+            "tool": "command_execution",
+            "method": "read",
+            "status": "succeeded",
+            "command": "/bin/zsh -lc \"rg -n -C 2 '담당: C' /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11-va4hq9ed/cases/S11-4-r4/shared/BOARD.md\"",
+            "failure_text": null
+          },
+          {
+            "event_index": 6,
+            "id": "item_2",
+            "tool": "command_execution",
+            "method": "shell_write",
+            "status": "succeeded",
+            "command": "/bin/zsh -lc \"python3 -c \\\"from pathlib import Path; p=Path('/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11-va4hq9ed/cases/S11-4-r4/shared/BOARD.md'); s=p.read_text(); old='## 담당: C'; new='## 담당: S11-4-r4-C-1dd60504afc7'; assert s.count(old)==1; p.write_text(s.replace(old,new))\\\" && rg -n -C 1 '담당: S11-4-r4-C-1dd60504afc7' /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11-va4hq9ed/cases/S11-4-r4/shared/BOARD.md\"",
+            "failure_text": null
+          }
+        ]
+      },
+      "failure_actions": [],
+      "A_decision_persisted": true,
+      "B_reflected_in_B_section": true,
+      "B_prompt_contains_A_oracle": false,
+      "injection_status": [],
+      "launch_spread_ms": 0
+    },
+    {
+      "case": "S11-4-r5",
+      "scenario": 4,
+      "all_models_verified": true,
+      "all_harnesses_success": true,
+      "lost_updates": 0,
+      "never_written_missing": 0,
+      "marker_outcomes": [
+        {
+          "actor": "A",
+          "marker": "S11-4-r5-A-bb24511a2af4",
+          "present_final": true,
+          "observed_written": true,
+          "lost_update": false,
+          "never_observed_and_missing": false
+        },
+        {
+          "actor": "A",
+          "marker": "cache-choice-c57dc39687bb410cac7159cc692b0a32",
+          "present_final": true,
+          "observed_written": true,
+          "lost_update": false,
+          "never_observed_and_missing": false
+        },
+        {
+          "actor": "B",
+          "marker": "S11-4-r5-B-21fa1250c52b",
+          "present_final": true,
+          "observed_written": true,
+          "lost_update": false,
+          "never_observed_and_missing": false
+        },
+        {
+          "actor": "C",
+          "marker": "S11-4-r5-C-fc237b19482c",
+          "present_final": true,
+          "observed_written": true,
+          "lost_update": false,
+          "never_observed_and_missing": false
+        }
+      ],
+      "operations": {
+        "A": [
+          {
+            "event_index": 61,
+            "id": "call_5b4d39a77dcb4adeb349be226d191a51",
+            "tool": "Read",
+            "method": "read",
+            "status": "succeeded",
+            "failure_text": null,
+            "new_text": ""
+          },
+          {
+            "event_index": 205,
+            "id": "call_e195ec4d33c64653ab6dfa45890e5a58",
+            "tool": "Edit",
+            "method": "item_edit",
+            "status": "succeeded",
+            "failure_text": null,
+            "new_text": "## 결정: 캐시 전략\nA 결정: cache-choice-c57dc39687bb410cac7159cc692b0a32\n\n## 담당: A\nS11-4-r5-A-bb24511a2af4"
+          }
+        ],
+        "B": [
+          {
+            "event_index": 585,
+            "id": "call_63c1911aa0a741658eaeba906614c3b4",
+            "tool": "Read",
+            "method": "read",
+            "status": "succeeded",
+            "failure_text": null,
+            "new_text": ""
+          },
+          {
+            "event_index": 885,
+            "id": "call_de800ab4b72249c98cf0776af0a6ae24",
+            "tool": "Read",
+            "method": "read",
+            "status": "succeeded",
+            "failure_text": null,
+            "new_text": ""
+          },
+          {
+            "event_index": 949,
+            "id": "call_56d2b05dadd640e597e82e1fde4ca485",
+            "tool": "Read",
+            "method": "read",
+            "status": "succeeded",
+            "failure_text": null,
+            "new_text": ""
+          },
+          {
+            "event_index": 1074,
+            "id": "call_86529fc1257a4900a3fa0aa69e660221",
+            "tool": "Edit",
+            "method": "item_edit",
+            "status": "succeeded",
+            "failure_text": null,
+            "new_text": "## 담당: B\nS11-4-r5-B-21fa1250c52b — cache-choice-c57dc39687bb410cac7159cc692b0a32"
+          }
+        ],
+        "C": [
+          {
+            "event_index": 4,
+            "id": "item_1",
+            "tool": "command_execution",
+            "method": "read",
+            "status": "succeeded",
+            "command": "/bin/zsh -lc 'cat BOARD.md'",
+            "failure_text": null
+          },
+          {
+            "event_index": 6,
+            "id": "item_2",
+            "tool": "file_change",
+            "method": "patch_update",
+            "status": "succeeded",
+            "scope_observation": "JSONL reports update/path, not the patch hunk coverage"
+          }
+        ]
+      },
+      "failure_actions": [],
+      "A_decision_persisted": true,
+      "B_reflected_in_B_section": true,
+      "B_prompt_contains_A_oracle": false,
+      "injection_status": [],
+      "launch_spread_ms": 0
+    }
+  ]
+}

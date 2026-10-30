@@ -1,0 +1,1 @@
+{"items":[{"id":"B03-01","title":"## T21 검토","quote":"web/sales/chart.tsx에 대한 디자인 검토가 필요하다.","reason":"작업 대상 파일인 web/sales/chart.tsx의 변경을 직접 검토해야 한다."},{"id":"B03-02","title":"## T22 의존성","quote":"preview-slot을 다른 팀 데모에 배정하여 오늘은 비어 있지 않다.","reason":"작업에 필요한 preview-slot이 점유되어 있다."}]}

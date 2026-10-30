@@ -1,0 +1,11 @@
+---
+id: 888f3b6274da
+t: 2026-10-30T14:53:07+0900
+author: S11b setup fixture (person)
+author_kind: human
+tags: setup
+parents: 59a17026202c
+---
+
+## 진행 기록
+대기.

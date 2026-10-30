@@ -1,0 +1,263 @@
+[
+  {
+    "requestId": "ocx-ebcc9cbb296f460ab5e9e834a38525e1",
+    "timestamp": 1793337989762,
+    "model": "gpt-6-luna",
+    "provider": "openai",
+    "admissionKind": "loopback",
+    "inboundProtocol": "responses",
+    "conversationId": "bf0e5ec8abb7f546f282b26064e2cd95",
+    "requestedModel": "openai/gpt-6-luna",
+    "requestedAlias": "openai/gpt-6-luna",
+    "requestedEffort": "low",
+    "modelSupportsServiceTier": true,
+    "responseServiceTier": "default",
+    "tierOutcome": {
+      "wireKind": null,
+      "wireValue": null,
+      "fastOutcome": "not-requested",
+      "confirmation": "unknown",
+      "responseServiceTier": "default"
+    },
+    "resolvedModel": "gpt-6-luna",
+    "servedModel": "gpt-6-luna",
+    "status": 200,
+    "durationMs": 3212,
+    "firstOutputMs": 2422,
+    "terminalStatus": "completed",
+    "closeReason": "terminal",
+    "usageStatus": "reported",
+    "usage": {
+      "inputTokens": 20409,
+      "outputTokens": 113,
+      "totalTokens": 20522,
+      "cachedInputTokens": 15232,
+      "cacheReadInputTokens": 15232,
+      "cacheCreationInputTokens": 0,
+      "reasoningOutputTokens": 0
+    },
+    "totalTokens": 20522,
+    "attempts": [
+      {
+        "ordinal": 1,
+        "provider": "openai",
+        "model": "gpt-6-luna",
+        "adapter": "openai-responses",
+        "status": 200,
+        "durationMs": 3197,
+        "sendCount": 1,
+        "recoveryKinds": [],
+        "usageStatus": "reported",
+        "requestedEffort": "low",
+        "tierOutcome": {
+          "wireKind": null,
+          "wireValue": null,
+          "fastOutcome": "not-requested",
+          "confirmation": "unknown",
+          "responseServiceTier": "default"
+        },
+        "codexWsStage": {
+          "requestBytes": null,
+          "sent": true,
+          "upstreamFrames": 121,
+          "controlFrames": 2,
+          "relayedEvents": 118,
+          "firstFrameMs": 557,
+          "firstResponseMs": 920,
+          "elapsedMs": 2374,
+          "pings": 0,
+          "pongs": 0,
+          "closeCode": null,
+          "reused": false,
+          "ocxVersion": "2.67.0",
+          "bunVersion": "1.4.0"
+        },
+        "firstOutputMs": 2409,
+        "usage": {
+          "inputTokens": 20409,
+          "outputTokens": 113,
+          "totalTokens": 20522,
+          "cachedInputTokens": 15232,
+          "cacheReadInputTokens": 15232,
+          "cacheCreationInputTokens": 0,
+          "reasoningOutputTokens": 0
+        },
+        "totalTokens": 20522,
+        "displayMetrics": {
+          "tokPerSecond": {
+            "kind": "value",
+            "value": 35.34563653425086,
+            "estimated": false
+          },
+          "decodeTokPerSecond": {
+            "kind": "unavailable",
+            "reason": "decode_window_too_short"
+          },
+          "cost": {
+            "kind": "value",
+            "estimate": {
+              "tokens": {
+                "input": 5177,
+                "output": 113,
+                "cacheRead": 15232,
+                "cacheWrite": 0
+              },
+              "price": {
+                "provider": "openai",
+                "modelId": "gpt-6-luna",
+                "cost4": {
+                  "input": 0.1,
+                  "output": 0.5,
+                  "cacheRead": 0.01,
+                  "cacheWrite": 0.125
+                },
+                "source": "expected",
+                "sourceRef": "API-reference comparison estimate: https://developers.openai.com/api/docs/changelog (2026-09-22: GPT-6 Sol $2 / $0.20 cached / $10; GPT-6 Luna $0.10 / $0.01 cached / $0.50)",
+                "verifiedAt": "2026-09-23",
+                "status": "verified-derived"
+              },
+              "cost": {
+                "input": 0.0005177000000000001,
+                "output": 5.65e-05,
+                "cacheRead": 0.00015232,
+                "cacheWrite": 0,
+                "total": 0.00072652
+              },
+              "estimated": true
+            },
+            "estimateReasons": [
+              "expected_price_overlay"
+            ]
+          }
+        }
+      }
+    ],
+    "spend": {
+      "sends": 1,
+      "settled": 1,
+      "unresolved": 0
+    },
+    "cacheProvenance": "observed",
+    "transportPhase": "terminal_sse",
+    "terminalSource": "upstream",
+    "routeDecision": {
+      "version": 1,
+      "decisionId": "9f64f715dfd4",
+      "createdAt": 1793337989772,
+      "requestedModel": "openai/gpt-6-luna",
+      "routeKind": "explicit-provider",
+      "requirements": [],
+      "candidates": [
+        {
+          "provider": "openai",
+          "model": "gpt-6-luna",
+          "eligible": true,
+          "exclusions": []
+        }
+      ],
+      "selected": {
+        "candidateIndex": 0,
+        "provider": "openai",
+        "model": "gpt-6-luna",
+        "reason": "explicit-provider-namespace"
+      }
+    },
+    "protocolTrace": {
+      "v": 1,
+      "inbound": "responses",
+      "mode": "native",
+      "upstream": "responses",
+      "requestPath": [
+        "responses",
+        "responses"
+      ],
+      "responsePath": [
+        "responses",
+        "responses"
+      ],
+      "reasonCodes": [
+        "same-wire-native"
+      ],
+      "attempts": [
+        {
+          "ordinal": 1,
+          "upstream": "responses",
+          "mode": "native",
+          "requestPath": [
+            "responses",
+            "responses"
+          ]
+        }
+      ],
+      "contractVersion": "2026-09-25.2"
+    },
+    "displayMetrics": {
+      "tokPerSecond": {
+        "kind": "value",
+        "value": 35.18057285180573,
+        "estimated": false
+      },
+      "decodeTokPerSecond": {
+        "kind": "unavailable",
+        "reason": "decode_window_too_short"
+      },
+      "cost": {
+        "kind": "value",
+        "estimate": {
+          "tokens": {
+            "input": 5177,
+            "output": 113,
+            "cacheRead": 15232,
+            "cacheWrite": 0
+          },
+          "cost": {
+            "input": 0.0005177000000000001,
+            "output": 5.65e-05,
+            "cacheRead": 0.00015232,
+            "cacheWrite": 0,
+            "total": 0.00072652
+          },
+          "estimated": true,
+          "attempts": [
+            {
+              "ordinal": 1,
+              "provider": "openai",
+              "model": "gpt-6-luna",
+              "tokens": {
+                "input": 5177,
+                "output": 113,
+                "cacheRead": 15232,
+                "cacheWrite": 0
+              },
+              "price": {
+                "provider": "openai",
+                "modelId": "gpt-6-luna",
+                "cost4": {
+                  "input": 0.1,
+                  "output": 0.5,
+                  "cacheRead": 0.01,
+                  "cacheWrite": 0.125
+                },
+                "source": "expected",
+                "sourceRef": "API-reference comparison estimate: https://developers.openai.com/api/docs/changelog (2026-09-22: GPT-6 Sol $2 / $0.20 cached / $10; GPT-6 Luna $0.10 / $0.01 cached / $0.50)",
+                "verifiedAt": "2026-09-23",
+                "status": "verified-derived"
+              },
+              "cost": {
+                "input": 0.0005177000000000001,
+                "output": 5.65e-05,
+                "cacheRead": 0.00015232,
+                "cacheWrite": 0,
+                "total": 0.00072652
+              },
+              "estimated": true
+            }
+          ]
+        },
+        "estimateReasons": [
+          "expected_price_overlay"
+        ]
+      }
+    }
+  }
+]

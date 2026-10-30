@@ -1,0 +1,39 @@
+{
+  "name": "F3-r0-B01-Oriole",
+  "command": [
+    "codex",
+    "exec",
+    "--model",
+    "gpt-6.1-sol",
+    "--ephemeral",
+    "--sandbox",
+    "read-only",
+    "--json",
+    "--color",
+    "never",
+    "-c",
+    "mcp_servers.reason-network.enabled=false",
+    "-c",
+    "model_reasoning_effort=\"low\"",
+    "-"
+  ],
+  "started_at": "2026-10-30T05:30:05.455374+00:00",
+  "prompt_sha256": "5bde9eb40e6ffd80d0a6f79990071d54f8b6b7e9346feca9704a0a0493de25f6",
+  "returncode": 0,
+  "elapsed_seconds": 7.490466291987104,
+  "response_models": [],
+  "codex_usage": [
+    {
+      "input_tokens": 21155,
+      "cached_input_tokens": 7168,
+      "cache_write_input_tokens": 0,
+      "output_tokens": 131,
+      "reasoning_output_tokens": 0
+    }
+  ],
+  "thread_ids": [
+    "01a18b49-6565-7031-ba7a-eee1368f2a35"
+  ],
+  "proxy_requests": 0,
+  "finished_at": "2026-10-30T05:30:13.256547+00:00"
+}

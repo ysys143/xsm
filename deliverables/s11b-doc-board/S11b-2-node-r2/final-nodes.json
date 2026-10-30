@@ -1,0 +1,12 @@
+{
+  "d38b76c6d5aa.md": "---\nid: d38b76c6d5aa\nt: 2026-10-30T14:54:27+0900\nauthor: S11b setup fixture (person)\nauthor_kind: human\ntags: setup\nparents: 10c1dfcb1520\n---\n\n## 담당: A\n대기.\n",
+  "273e00fba0ed.md": "---\nid: 273e00fba0ed\nt: 2026-10-30T14:54:35+0900\nauthor: codex-892efc@codex-home [5d26c9]\nauthor_kind: agent\ntags: insight\nparents: dff57ed643dd\n---\n\nC: S11b-2-node-r2-C-d4a98dd4fd\n",
+  "f96f34fec3e0.md": "---\nid: f96f34fec3e0\nt: 2026-10-30T14:54:50+0900\nauthor: repo-fe@claude-home [459188]\nauthor_kind: agent\ntags: insight\nparents: dff57ed643dd\n---\n\n의견: A: S11b-2-node-r2-A-3089e23498\n",
+  "24e800876ff9.md": "---\nid: 24e800876ff9\nt: 2026-10-30T14:54:27+0900\nauthor: S11b setup fixture (person)\nauthor_kind: human\ntags: setup\nparents: 10c1dfcb1520\n---\n\n## 진행 기록\n대기.\n",
+  "dff57ed643dd.md": "---\nid: dff57ed643dd\nt: 2026-10-30T14:54:27+0900\nauthor: S11b setup fixture (person)\nauthor_kind: human\ntags: setup\nparents: 10c1dfcb1520\n---\n\n## 결정: 캐시 전략\n대기.\n",
+  "864c8f45b244.md": "---\nid: 864c8f45b244\nt: 2026-10-30T14:54:27+0900\nauthor: S11b setup fixture (person)\nauthor_kind: human\ntags: setup\nparents: 10c1dfcb1520\n---\n\n## 담당: C\n대기.\n",
+  "d2c74fc3cbec.md": "---\nid: d2c74fc3cbec\nt: 2026-10-30T14:54:27+0900\nauthor: S11b setup fixture (person)\nauthor_kind: human\ntags: setup\nparents: 10c1dfcb1520\n---\n\n## 담당: B\n대기.\n",
+  "39e7037dcb71.md": "---\nid: 39e7037dcb71\nt: 2026-10-30T14:54:44+0900\nauthor: repo-24@claude-home [4c62fa]\nauthor_kind: agent\ntags: insight\nparents: d2c74fc3cbec\n---\n\nB: S11b-2-node-r2-B-fcf7cc7036\n",
+  "45e6f3334e04.md": "---\nid: 45e6f3334e04\nt: 2026-10-30T14:54:33+0900\nauthor: S11b injector fixture (person)\nauthor_kind: human\ntags: result\nparents: dff57ed643dd\n---\n\n판정자: S11b-2-node-r2-INJECT-2a18e25466\n",
+  "10c1dfcb1520.md": "---\nid: 10c1dfcb1520\nt: 2026-10-30T14:54:27+0900\nauthor: S11b setup fixture (person)\nauthor_kind: human\ntags: report\nparents: \n---\n\n# 공동 작업 보드\n\n## 결정: 캐시 전략\n아직 결정 없음.\n\n## 담당: A\n대기.\n\n## 담당: B\n대기.\n\n## 담당: C\n대기.\n\n## 진행 기록\n실험 시작.\n"
+}

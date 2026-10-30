@@ -1,0 +1,10 @@
+[
+  {
+    "status": "injected",
+    "kind": "node",
+    "marker": "S11b-2-node-r2-INJECT-2a18e25466",
+    "node_id": "45e6f3334e04",
+    "at_ns": 221030888607166,
+    "delay_after_read_seconds": 0.15985986765877724
+  }
+]

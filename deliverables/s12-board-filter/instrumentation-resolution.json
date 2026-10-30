@@ -1,0 +1,7 @@
+{
+  "reason": "original collector matched raw UUID to a SHA256 digest",
+  "actual_F2": "gpt-6-luna",
+  "action": "offline correlation corrected; original STOP and outputs preserved; no model substitution or rerun",
+  "concurrency": "one sequential F1 arm and one sequential F2 arm concurrently; F3 afterwards",
+  "fixed_inputs_unchanged": true
+}

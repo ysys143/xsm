@@ -1,0 +1,13 @@
+{
+  "frozen_at": "2026-10-30T05:19:30.009110+00:00",
+  "sha256": {
+    "BOARD.md": "2755765887b641a00b92dd69e01ab9061fbe97b051e65fbfeb077335ff1c08cc",
+    "fixture.json": "3cf119943b60a76baef91efbec35a8ff56d088671196c0684efaca0285f33aa8",
+    "labels-author.json": "290c584e54d2bae7ea71324dc79f769f45e266892165acff79edbc0b5d554344",
+    "policy.json": "adff723593d84ed203702f48316ed03cc2a25890fff52f9c78b6230a2a17c6e1",
+    "filter-prompt.txt": "84f3ebeb634c043b580e8ad7a2ca5f81f52c280b73a307bd6bf02541f5023437",
+    "label-prompt.txt": "ace878bd461a5d4edf29e5d71c69efe4ed7b50f0e540a1b4fefaf24ad7255334",
+    "build_fixture.py": "cb04e391ad4d811c8c3569c3da568de2acd3313e88667afddb3660846546f5bf"
+  },
+  "stage": "pre-inference input/author-label/policy freeze; independent labels and final reconciliation follow before filter inference"
+}

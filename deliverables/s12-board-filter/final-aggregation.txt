@@ -1,0 +1,7 @@
+{"label_counts": {"R1": 20, "N": 238, "R2": 20, "R3": 22, "R4": 20}, "label_disagreements": 0, "freeze_verified": true, "planned_model_calls": 152, "observed_model_calls": 152, "complete": true}
+missing: 0
+F0 0 {'R1': 1.0, 'R2': 0.0, 'R3': 0.0, 'R4': 0.0} {'numerator': 20, 'denominator': 20, 'value': 1.0} {'numerator': 20, 'denominator': 20, 'value': 1.0}
+F1 70 {'R1': 1.0, 'R2': 1.0, 'R3': 1.0, 'R4': 1.0} {'numerator': 82, 'denominator': 82, 'value': 1.0} {'numerator': 82, 'denominator': 82, 'value': 1.0}
+F2 70 {'R1': 1.0, 'R2': 1.0, 'R3': 0.9545454545454546, 'R4': 1.0} {'numerator': 81, 'denominator': 82, 'value': 0.9878048780487805} {'numerator': 81, 'denominator': 82, 'value': 0.9878048780487805}
+F3 12 {'R1': 1.0, 'R2': 1.0, 'R3': 1.0, 'R4': 1.0} {'numerator': 26, 'denominator': 26, 'value': 1.0} {'numerator': 26, 'denominator': 26, 'value': 1.0}
+report: /Users/jaesolshin/Documents/GitHub/cross-session-messaging/docs/spikes/S12-results.md

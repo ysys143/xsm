@@ -1,0 +1,21 @@
+{
+  "name": "F1-r0-B02-Oriole",
+  "command": [
+    "claude",
+    "-p",
+    "--model",
+    "haiku",
+    "--tools",
+    "",
+    "--strict-mcp-config",
+    "--mcp-config",
+    "{\"mcpServers\":{}}",
+    "--no-session-persistence",
+    "--output-format",
+    "stream-json",
+    "--verbose",
+    "--include-partial-messages"
+  ],
+  "started_at": "2026-10-30T05:21:58.744359+00:00",
+  "prompt_sha256": "6617da2064e26f85d624c6e5d4bb4da5ea781eeaa0029cb31879ae8624ff733a"
+}

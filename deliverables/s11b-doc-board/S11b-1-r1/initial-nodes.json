@@ -1,0 +1,8 @@
+{
+  "933dbaa8c728.md": "---\nid: 933dbaa8c728\nt: 2026-10-30T14:47:41+0900\nauthor: S11b setup fixture (person)\nauthor_kind: human\ntags: setup\nparents: 19ea3bb12699\n---\n\n## 담당: C\n대기.\n",
+  "19ea3bb12699.md": "---\nid: 19ea3bb12699\nt: 2026-10-30T14:47:41+0900\nauthor: S11b setup fixture (person)\nauthor_kind: human\ntags: report\nparents: \n---\n\n# 공동 작업 보드\n\n## 결정: 캐시 전략\n아직 결정 없음.\n\n## 담당: A\n대기.\n\n## 담당: B\n대기.\n\n## 담당: C\n대기.\n\n## 진행 기록\n실험 시작.\n",
+  "89c999d46468.md": "---\nid: 89c999d46468\nt: 2026-10-30T14:47:41+0900\nauthor: S11b setup fixture (person)\nauthor_kind: human\ntags: setup\nparents: 19ea3bb12699\n---\n\n## 결정: 캐시 전략\n대기.\n",
+  "6a0a3cf27975.md": "---\nid: 6a0a3cf27975\nt: 2026-10-30T14:47:41+0900\nauthor: S11b setup fixture (person)\nauthor_kind: human\ntags: setup\nparents: 19ea3bb12699\n---\n\n## 담당: A\n대기.\n",
+  "eec54bef068e.md": "---\nid: eec54bef068e\nt: 2026-10-30T14:47:41+0900\nauthor: S11b setup fixture (person)\nauthor_kind: human\ntags: setup\nparents: 19ea3bb12699\n---\n\n## 담당: B\n대기.\n",
+  "24c0e87f5868.md": "---\nid: 24c0e87f5868\nt: 2026-10-30T14:47:41+0900\nauthor: S11b setup fixture (person)\nauthor_kind: human\ntags: setup\nparents: 19ea3bb12699\n---\n\n## 진행 기록\n대기.\n"
+}

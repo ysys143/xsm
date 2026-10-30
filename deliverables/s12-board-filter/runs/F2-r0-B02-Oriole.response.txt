@@ -1,0 +1,1 @@
+{"items":[{"id":"B02-07","title":"T03 자원","quote":"인증 세션 저장소를 Redis에서 로컬 메모리로 바꾸기로 결정했다.","reason":"세션 저장소가 공유 Redis라는 작업 전제를 변경한다."},{"id":"B02-08","title":"T04 담당","quote":"Echo가 auth-staging을 오늘 18시까지 독점 사용한다.","reason":"작업에 필요한 auth-staging 자원을 독점 점유한다."}]}

@@ -6950,7 +6950,7 @@
       ]
     },
     "head-rebind-regression": {
-      "path": "deliverables/ledger-rebind-0.5.0/summary.json",
+      "path": "deliverables/ledger-rebind-20261030-adr0025/summary.json",
       "levels": [
         "fixture",
         "process"
@@ -6960,7 +6960,7 @@
       "available": true,
       "executed": true,
       "result": "recorded-pass",
-      "sha256": "fd122c7b56284ec594969783a6c8784586744d71040acb036b4b7d8e91e33611",
+      "sha256": "d6c8c92a58e1c4ccd25a123adfd7fde3ed82d1d066fcf4b1e0e8a1b52ee30a3c",
       "coverage_ceiling": "partial",
       "complete_for": {},
       "checks": {
@@ -6975,7 +6975,7 @@
       }
     },
     "head-rebind-A18-03": {
-      "path": "deliverables/ledger-rebind-0.5.0/summary.json",
+      "path": "deliverables/ledger-rebind-20261030-adr0025/summary.json",
       "levels": [
         "fixture",
         "process"
@@ -6985,7 +6985,7 @@
       "available": true,
       "executed": true,
       "result": "recorded-pass",
-      "sha256": "fd122c7b56284ec594969783a6c8784586744d71040acb036b4b7d8e91e33611",
+      "sha256": "d6c8c92a58e1c4ccd25a123adfd7fde3ed82d1d066fcf4b1e0e8a1b52ee30a3c",
       "coverage_ceiling": "partial",
       "complete_for": {
         "A18-03": [
@@ -7004,7 +7004,7 @@
       ]
     },
     "head-rebind-A18-07": {
-      "path": "deliverables/ledger-rebind-0.5.0/summary.json",
+      "path": "deliverables/ledger-rebind-20261030-adr0025/summary.json",
       "levels": [
         "fixture",
         "process"
@@ -7014,7 +7014,7 @@
       "available": true,
       "executed": true,
       "result": "recorded-pass",
-      "sha256": "fd122c7b56284ec594969783a6c8784586744d71040acb036b4b7d8e91e33611",
+      "sha256": "d6c8c92a58e1c4ccd25a123adfd7fde3ed82d1d066fcf4b1e0e8a1b52ee30a3c",
       "coverage_ceiling": "partial",
       "complete_for": {
         "A18-07": [
@@ -7033,7 +7033,7 @@
       ]
     },
     "head-rebind-A22-06": {
-      "path": "deliverables/ledger-rebind-0.5.0/summary.json",
+      "path": "deliverables/ledger-rebind-20261030-adr0025/summary.json",
       "levels": [
         "fixture",
         "process"
@@ -7043,7 +7043,7 @@
       "available": true,
       "executed": true,
       "result": "recorded-pass",
-      "sha256": "fd122c7b56284ec594969783a6c8784586744d71040acb036b4b7d8e91e33611",
+      "sha256": "d6c8c92a58e1c4ccd25a123adfd7fde3ed82d1d066fcf4b1e0e8a1b52ee30a3c",
       "coverage_ceiling": "partial",
       "complete_for": {
         "A22-06": [
@@ -7062,7 +7062,7 @@
       ]
     },
     "head-rebind-A23-02": {
-      "path": "deliverables/ledger-rebind-0.5.0/summary.json",
+      "path": "deliverables/ledger-rebind-20261030-adr0025/summary.json",
       "levels": [
         "fixture",
         "process"
@@ -7072,7 +7072,7 @@
       "available": true,
       "executed": true,
       "result": "recorded-pass",
-      "sha256": "fd122c7b56284ec594969783a6c8784586744d71040acb036b4b7d8e91e33611",
+      "sha256": "d6c8c92a58e1c4ccd25a123adfd7fde3ed82d1d066fcf4b1e0e8a1b52ee30a3c",
       "coverage_ceiling": "partial",
       "complete_for": {
         "A23-02": [
@@ -7091,7 +7091,7 @@
       ]
     },
     "head-rebind-shared-mcp": {
-      "path": "deliverables/ledger-rebind-0.5.0/summary.json",
+      "path": "deliverables/ledger-rebind-20261030-adr0025/summary.json",
       "levels": [
         "fixture"
       ],
@@ -7100,7 +7100,7 @@
       "available": true,
       "executed": true,
       "result": "recorded-pass",
-      "sha256": "fd122c7b56284ec594969783a6c8784586744d71040acb036b4b7d8e91e33611",
+      "sha256": "d6c8c92a58e1c4ccd25a123adfd7fde3ed82d1d066fcf4b1e0e8a1b52ee30a3c",
       "coverage_ceiling": "partial",
       "complete_for": {
         "A17-02": [

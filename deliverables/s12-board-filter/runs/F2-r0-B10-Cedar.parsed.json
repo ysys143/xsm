@@ -1,0 +1,16 @@
+{
+  "items": [
+    {
+      "id": "B10-03",
+      "title": "## T19 자원",
+      "quote": "preview-slot은 다른 팀이 오늘 하루 단독으로 사용한다.",
+      "reason": "Cedar가 필요한 preview-slot을 오늘 사용할 수 없다."
+    },
+    {
+      "id": "B10-04",
+      "title": "## T20 담당",
+      "quote": "매출 API에서 snake_case 필드 제공을 중단하고 모두 camelCase로 제공한다.",
+      "reason": "매출 차트가 전제한 snake_case 응답 형식이 바뀌어 구현에 영향을 준다."
+    }
+  ]
+}

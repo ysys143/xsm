@@ -1,0 +1,12 @@
+{
+  "8501560b5616.md": "---\nid: 8501560b5616\nt: 2026-10-30T14:54:02+0900\nauthor: S11b setup fixture (person)\nauthor_kind: human\ntags: setup\nparents: cda94b9d33e6\n---\n\n## 담당: B\n대기.\n",
+  "fef7757a7f86.md": "---\nid: fef7757a7f86\nt: 2026-10-30T14:54:19+0900\nauthor: repo-05@claude-home [bc8fe4]\nauthor_kind: agent\ntags: result\nparents: d5c3ab1918f3\n---\n\nA: S11b-2-node-r1-A-86eb8db021\n",
+  "d5c3ab1918f3.md": "---\nid: d5c3ab1918f3\nt: 2026-10-30T14:54:02+0900\nauthor: S11b setup fixture (person)\nauthor_kind: human\ntags: setup\nparents: cda94b9d33e6\n---\n\n## 결정: 캐시 전략\n대기.\n",
+  "f74c4db9da23.md": "---\nid: f74c4db9da23\nt: 2026-10-30T14:54:07+0900\nauthor: S11b injector fixture (person)\nauthor_kind: human\ntags: result\nparents: d5c3ab1918f3\n---\n\n판정자: S11b-2-node-r1-INJECT-d32138e3df\n",
+  "050c8a5f0770.md": "---\nid: 050c8a5f0770\nt: 2026-10-30T14:54:21+0900\nauthor: repo-98@claude-home [0d1d73]\nauthor_kind: agent\ntags: report\nparents: d5c3ab1918f3\n---\n\nB: S11b-2-node-r1-B-1b1b0118f0\n",
+  "63eb89bb1683.md": "---\nid: 63eb89bb1683\nt: 2026-10-30T14:54:02+0900\nauthor: S11b setup fixture (person)\nauthor_kind: human\ntags: setup\nparents: cda94b9d33e6\n---\n\n## 담당: A\n대기.\n",
+  "1efcd8f7e0bc.md": "---\nid: 1efcd8f7e0bc\nt: 2026-10-30T14:54:02+0900\nauthor: S11b setup fixture (person)\nauthor_kind: human\ntags: setup\nparents: cda94b9d33e6\n---\n\n## 진행 기록\n대기.\n",
+  "cda94b9d33e6.md": "---\nid: cda94b9d33e6\nt: 2026-10-30T14:54:02+0900\nauthor: S11b setup fixture (person)\nauthor_kind: human\ntags: report\nparents: \n---\n\n# 공동 작업 보드\n\n## 결정: 캐시 전략\n아직 결정 없음.\n\n## 담당: A\n대기.\n\n## 담당: B\n대기.\n\n## 담당: C\n대기.\n\n## 진행 기록\n실험 시작.\n",
+  "183eb967a89c.md": "---\nid: 183eb967a89c\nt: 2026-10-30T14:54:11+0900\nauthor: codex-6be142@codex-home [9a7088]\nauthor_kind: agent\ntags: result\nparents: d5c3ab1918f3\n---\n\nC: S11b-2-node-r1-C-5e8ba63c09\n",
+  "cf7ae8fa0b19.md": "---\nid: cf7ae8fa0b19\nt: 2026-10-30T14:54:02+0900\nauthor: S11b setup fixture (person)\nauthor_kind: human\ntags: setup\nparents: cda94b9d33e6\n---\n\n## 담당: C\n대기.\n"
+}

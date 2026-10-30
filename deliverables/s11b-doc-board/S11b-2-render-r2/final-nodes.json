@@ -1,0 +1,11 @@
+{
+  "b6c4b7c9ee59.md": "---\nid: b6c4b7c9ee59\nt: 2026-10-30T14:52:26+0900\nauthor: S11b setup fixture (person)\nauthor_kind: human\ntags: setup\nparents: 8014f445879d\n---\n\n## 담당: A\n대기.\n",
+  "8014f445879d.md": "---\nid: 8014f445879d\nt: 2026-10-30T14:52:26+0900\nauthor: S11b setup fixture (person)\nauthor_kind: human\ntags: report\nparents: \n---\n\n# 공동 작업 보드\n\n## 결정: 캐시 전략\n아직 결정 없음.\n\n## 담당: A\n대기.\n\n## 담당: B\n대기.\n\n## 담당: C\n대기.\n\n## 진행 기록\n실험 시작.\n",
+  "3fc443374f86.md": "---\nid: 3fc443374f86\nt: 2026-10-30T14:52:26+0900\nauthor: S11b setup fixture (person)\nauthor_kind: human\ntags: setup\nparents: 8014f445879d\n---\n\n## 진행 기록\n대기.\n",
+  "f1f2bf5588b1.md": "---\nid: f1f2bf5588b1\nt: 2026-10-30T14:52:26+0900\nauthor: S11b setup fixture (person)\nauthor_kind: human\ntags: setup\nparents: 8014f445879d\n---\n\n## 결정: 캐시 전략\n대기.\n",
+  "47b9a69c8c59.md": "---\nid: 47b9a69c8c59\nt: 2026-10-30T14:52:43+0900\nauthor: repo-1b@claude-home [789b80]\nauthor_kind: agent\ntags: insight\nparents: f1f2bf5588b1\n---\n\nB: S11b-2-render-r2-B-f12e148f10\n",
+  "78b81504f58c.md": "---\nid: 78b81504f58c\nt: 2026-10-30T14:52:26+0900\nauthor: S11b setup fixture (person)\nauthor_kind: human\ntags: setup\nparents: 8014f445879d\n---\n\n## 담당: B\n대기.\n",
+  "7a0fff27c16e.md": "---\nid: 7a0fff27c16e\nt: 2026-10-30T14:52:26+0900\nauthor: S11b setup fixture (person)\nauthor_kind: human\ntags: setup\nparents: 8014f445879d\n---\n\n## 담당: C\n대기.\n",
+  "3f7616344661.md": "---\nid: 3f7616344661\nt: 2026-10-30T14:52:41+0900\nauthor: repo-29@claude-home [eb9039]\nauthor_kind: agent\ntags: insight\nparents: f1f2bf5588b1\n---\n\nA: S11b-2-render-r2-A-cfb47c5cc5\n",
+  "e0ebeecbcbe7.md": "---\nid: e0ebeecbcbe7\nt: 2026-10-30T14:52:36+0900\nauthor: codex-91f2bf@codex-home [53b4a8]\nauthor_kind: agent\ntags: insight\nparents: f1f2bf5588b1\n---\n\nC: S11b-2-render-r2-C-241f9bd869\n"
+}

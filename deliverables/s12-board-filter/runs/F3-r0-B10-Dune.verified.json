@@ -1,0 +1,42 @@
+{
+  "name": "F3-r0-B10-Dune",
+  "command": [
+    "codex",
+    "exec",
+    "--model",
+    "gpt-6.1-sol",
+    "--ephemeral",
+    "--sandbox",
+    "read-only",
+    "--json",
+    "--color",
+    "never",
+    "-c",
+    "mcp_servers.reason-network.enabled=false",
+    "-c",
+    "model_reasoning_effort=\"low\"",
+    "-"
+  ],
+  "started_at": "2026-10-30T05:31:40.592646+00:00",
+  "prompt_sha256": "0eb8957389e33875657e383ef033f8cc1884a06a22a1f166a85ae8d631e64f2e",
+  "returncode": 0,
+  "elapsed_seconds": 6.179134250007337,
+  "response_models": [
+    "gpt-6.1-sol"
+  ],
+  "codex_usage": [
+    {
+      "input_tokens": 21120,
+      "cached_input_tokens": 0,
+      "cache_write_input_tokens": 0,
+      "output_tokens": 134,
+      "reasoning_output_tokens": 0
+    }
+  ],
+  "thread_ids": [
+    "01a18b4a-d910-7d02-9f7a-455ca4d5e84a"
+  ],
+  "proxy_requests": 1,
+  "finished_at": "2026-10-30T05:31:47.111041+00:00",
+  "evidence_correction": "sha256(thread-id)[:32] correlation; original .meta/.proxy retained"
+}

@@ -1,0 +1,1 @@
+{"items":[{"id":"B06-01","title":"T11 자원","quote":"product-cache의 완료 조건에 중복 이벤트 처리를 추가한다.","reason":"Birch이 소유한 product-cache의 완료 조건이 바뀌었고, item.updated 중복 전달이라는 Birch의 전제와 직접 맞닿는다."},{"id":"B06-02","title":"T12 담당","quote":"다른 팀이 cache-staging의 전용 슬롯을 오늘 종일 점유한다.","reason":"Birch이 필요로 하는 cache-staging 자원이 오늘 종일 다른 팀에 점유되어 작업 진행에 영향을 준다."}]}

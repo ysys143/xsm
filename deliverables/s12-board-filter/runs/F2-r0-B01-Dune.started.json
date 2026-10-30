@@ -1,0 +1,22 @@
+{
+  "name": "F2-r0-B01-Dune",
+  "command": [
+    "codex",
+    "exec",
+    "--model",
+    "openai/gpt-6-luna",
+    "--ephemeral",
+    "--sandbox",
+    "read-only",
+    "--json",
+    "--color",
+    "never",
+    "-c",
+    "mcp_servers.reason-network.enabled=false",
+    "-c",
+    "model_reasoning_effort=\"low\"",
+    "-"
+  ],
+  "started_at": "2026-10-30T05:21:50.350834+00:00",
+  "prompt_sha256": "1f811efb02b710bf54e0853aa41929f2f04a7b03666eb1fdc1ab1043621031fe"
+}

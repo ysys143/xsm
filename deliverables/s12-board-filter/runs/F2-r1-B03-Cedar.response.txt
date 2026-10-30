@@ -1,0 +1,1 @@
+{"items":[{"id":"B03-01","title":"## T21 검토","quote":"web/sales/chart.tsx에 대한 디자인 검토가 필요하다.","reason":"Cedar가 소유한 sales-console의 작업 파일을 직접 지명한다."},{"id":"B03-02","title":"## T22 의존성","quote":"preview-slot을 다른 팀 데모에 배정하여 오늘은 비어 있지 않다.","reason":"Cedar 작업에 필요한 preview-slot 자원이 점유됐다."}]}

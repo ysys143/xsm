@@ -1,0 +1,25 @@
+{
+  "case": "S11-2-r5",
+  "scenario": 2,
+  "repeat": 5,
+  "started_at": "2026-10-30T05:14:14.098527+00:00",
+  "workdirs": {
+    "A": "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11-va4hq9ed/cases/S11-2-r5/repo",
+    "B": "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11-va4hq9ed/cases/S11-2-r5/repo",
+    "C": "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11-va4hq9ed/cases/S11-2-r5/repo"
+  },
+  "boards": {
+    "A": "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11-va4hq9ed/cases/S11-2-r5/repo/BOARD.md",
+    "B": "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11-va4hq9ed/cases/S11-2-r5/repo/BOARD.md",
+    "C": "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11-va4hq9ed/cases/S11-2-r5/repo/BOARD.md"
+  },
+  "markers": {
+    "A": "S11-2-r5-A-6cea3d0eed04",
+    "B": "S11-2-r5-B-a66dc9b7ab08",
+    "C": "S11-2-r5-C-dd1ce789af8a"
+  },
+  "A_decision": "cache-choice-ce275ef57559492db30a193af58b6dc9",
+  "gate": "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11-va4hq9ed/cases/S11-2-r5/shared/A-finished.json",
+  "injection_marker": "S11-2-r5-INJECT-f432b2fdcbb4",
+  "note": "A decision value is only in A's prompt. B/C prompts and gate contain no oracle."
+}

@@ -1,0 +1,25 @@
+---
+id: b64758d8b485
+t: 2026-10-30T14:50:28+0900
+author: S11b setup fixture (person)
+author_kind: human
+tags: report
+parents: 
+---
+
+# 공동 작업 보드
+
+## 결정: 캐시 전략
+아직 결정 없음.
+
+## 담당: A
+대기.
+
+## 담당: B
+대기.
+
+## 담당: C
+대기.
+
+## 진행 기록
+실험 시작.

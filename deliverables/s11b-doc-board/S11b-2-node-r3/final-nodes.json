@@ -1,0 +1,12 @@
+{
+  "255ab00214ca.md": "---\nid: 255ab00214ca\nt: 2026-10-30T14:54:53+0900\nauthor: S11b setup fixture (person)\nauthor_kind: human\ntags: setup\nparents: a4eb9d98f0b0\n---\n\n## 결정: 캐시 전략\n대기.\n",
+  "6645a022529a.md": "---\nid: 6645a022529a\nt: 2026-10-30T14:54:53+0900\nauthor: S11b setup fixture (person)\nauthor_kind: human\ntags: setup\nparents: a4eb9d98f0b0\n---\n\n## 담당: A\n대기.\n",
+  "a4eb9d98f0b0.md": "---\nid: a4eb9d98f0b0\nt: 2026-10-30T14:54:53+0900\nauthor: S11b setup fixture (person)\nauthor_kind: human\ntags: report\nparents: \n---\n\n# 공동 작업 보드\n\n## 결정: 캐시 전략\n아직 결정 없음.\n\n## 담당: A\n대기.\n\n## 담당: B\n대기.\n\n## 담당: C\n대기.\n\n## 진행 기록\n실험 시작.\n",
+  "9df6968942d6.md": "---\nid: 9df6968942d6\nt: 2026-10-30T14:55:01+0900\nauthor: S11b injector fixture (person)\nauthor_kind: human\ntags: result\nparents: 255ab00214ca\n---\n\n판정자: S11b-2-node-r3-INJECT-4149137b75\n",
+  "813bfd59c0a4.md": "---\nid: 813bfd59c0a4\nt: 2026-10-30T14:54:53+0900\nauthor: S11b setup fixture (person)\nauthor_kind: human\ntags: setup\nparents: a4eb9d98f0b0\n---\n\n## 담당: C\n대기.\n",
+  "c2b880531638.md": "---\nid: c2b880531638\nt: 2026-10-30T14:55:05+0900\nauthor: codex-96fa80@codex-home [3bb482]\nauthor_kind: agent\ntags: insight\nparents: 255ab00214ca\n---\n\nC: S11b-2-node-r3-C-88df31c5b9\n",
+  "7f01155552ed.md": "---\nid: 7f01155552ed\nt: 2026-10-30T14:54:53+0900\nauthor: S11b setup fixture (person)\nauthor_kind: human\ntags: setup\nparents: a4eb9d98f0b0\n---\n\n## 진행 기록\n대기.\n",
+  "05a6be9c095a.md": "---\nid: 05a6be9c095a\nt: 2026-10-30T14:54:53+0900\nauthor: S11b setup fixture (person)\nauthor_kind: human\ntags: setup\nparents: a4eb9d98f0b0\n---\n\n## 담당: B\n대기.\n",
+  "b6500e6ed743.md": "---\nid: b6500e6ed743\nt: 2026-10-30T14:55:09+0900\nauthor: repo-9a@claude-home [f87017]\nauthor_kind: agent\ntags: insight\nparents: 05a6be9c095a\n---\n\nB: S11b-2-node-r3-B-d0958a1cad\n",
+  "839638aa5198.md": "---\nid: 839638aa5198\nt: 2026-10-30T14:55:04+0900\nauthor: repo-73@claude-home [1d5e52]\nauthor_kind: agent\ntags: insight\nparents: 255ab00214ca\n---\n\nA: S11b-2-node-r3-A-11073d724a\n"
+}

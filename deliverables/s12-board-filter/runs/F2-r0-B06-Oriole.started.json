@@ -1,0 +1,22 @@
+{
+  "name": "F2-r0-B06-Oriole",
+  "command": [
+    "codex",
+    "exec",
+    "--model",
+    "openai/gpt-6-luna",
+    "--ephemeral",
+    "--sandbox",
+    "read-only",
+    "--json",
+    "--color",
+    "never",
+    "-c",
+    "mcp_servers.reason-network.enabled=false",
+    "-c",
+    "model_reasoning_effort=\"low\"",
+    "-"
+  ],
+  "started_at": "2026-10-30T05:23:36.735202+00:00",
+  "prompt_sha256": "3055707ec1f178c16d925cfed526a0cc38936995cb03ca44236b4f20288a2381"
+}

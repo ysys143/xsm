@@ -1,0 +1,39 @@
+{
+  "name": "F2-r0-B05-Oriole",
+  "command": [
+    "codex",
+    "exec",
+    "--model",
+    "openai/gpt-6-luna",
+    "--ephemeral",
+    "--sandbox",
+    "read-only",
+    "--json",
+    "--color",
+    "never",
+    "-c",
+    "mcp_servers.reason-network.enabled=false",
+    "-c",
+    "model_reasoning_effort=\"low\"",
+    "-"
+  ],
+  "started_at": "2026-10-30T05:23:10.469717+00:00",
+  "prompt_sha256": "ce8d7d4eca64fd060f2807278177ea33806a99c8b214b376890a1c8fb30b978b",
+  "returncode": 0,
+  "elapsed_seconds": 5.6955059170140885,
+  "response_models": [],
+  "codex_usage": [
+    {
+      "input_tokens": 20470,
+      "cached_input_tokens": 15360,
+      "cache_write_input_tokens": 0,
+      "output_tokens": 170,
+      "reasoning_output_tokens": 0
+    }
+  ],
+  "thread_ids": [
+    "01a18b43-10a1-75b0-a7cf-2597c98b76e4"
+  ],
+  "proxy_requests": 0,
+  "finished_at": "2026-10-30T05:23:16.478687+00:00"
+}

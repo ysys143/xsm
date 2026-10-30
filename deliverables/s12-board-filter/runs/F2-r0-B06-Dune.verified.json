@@ -1,0 +1,42 @@
+{
+  "name": "F2-r0-B06-Dune",
+  "command": [
+    "codex",
+    "exec",
+    "--model",
+    "openai/gpt-6-luna",
+    "--ephemeral",
+    "--sandbox",
+    "read-only",
+    "--json",
+    "--color",
+    "never",
+    "-c",
+    "mcp_servers.reason-network.enabled=false",
+    "-c",
+    "model_reasoning_effort=\"low\"",
+    "-"
+  ],
+  "started_at": "2026-10-30T05:23:55.159371+00:00",
+  "prompt_sha256": "3f1f2d15eb22fda7578f3a97c4f9aab02757ff487f8a9db5035cfd2892132cc3",
+  "returncode": 0,
+  "elapsed_seconds": 4.538879708008608,
+  "response_models": [
+    "gpt-6-luna"
+  ],
+  "codex_usage": [
+    {
+      "input_tokens": 20419,
+      "cached_input_tokens": 10624,
+      "cache_write_input_tokens": 0,
+      "output_tokens": 117,
+      "reasoning_output_tokens": 0
+    }
+  ],
+  "thread_ids": [
+    "01a18b43-bef5-7221-a007-f1ec33d871b4"
+  ],
+  "proxy_requests": 1,
+  "finished_at": "2026-10-30T05:24:00.024141+00:00",
+  "evidence_correction": "sha256(thread-id)[:32] correlation; original .meta/.proxy retained"
+}

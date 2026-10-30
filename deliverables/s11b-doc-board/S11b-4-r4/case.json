@@ -1,0 +1,30 @@
+{
+  "case": "S11b-4-r4",
+  "scenario": "4",
+  "repeat": 4,
+  "board": "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-4-r4/shared/BOARD.md",
+  "workdirs": {
+    "A": "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-4-r4/wt-A",
+    "B": "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-4-r4/wt-B",
+    "C": "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-4-r4/wt-C"
+  },
+  "initial": {
+    "root": "07334251a2ae",
+    "items": {
+      "decision": "9f0624e00a86",
+      "A": "a813a7064d98",
+      "B": "1ec596b32872",
+      "C": "56aa2c734c09",
+      "progress": "6eafc80f94cc"
+    }
+  },
+  "markers": {
+    "A": "S11b-4-r4-A-ec71d2daf9",
+    "B": "S11b-4-r4-B-fdaa5a20e6",
+    "C": "S11b-4-r4-C-d3a1ba8f02"
+  },
+  "A_value": "cache-choice-38b6381b6ce1493e98f0c5302babfa36",
+  "injection_marker": null,
+  "gate": "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-4-r4/shared/A-finished.json",
+  "started_ms": 1793339962522
+}

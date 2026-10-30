@@ -1,0 +1,1 @@
+{"items":[{"id":"B06-07","title":"T03 자원","quote":"Echo가 로그인 토큰 재발급의 다중 탭 충돌 방지 패치를 작성한다.","reason":"Oriole의 owned 영역 auth-refresh와 같은 로그인 토큰 재발급 경로를 Echo가 수정하므로 작업이 겹친다."},{"id":"B06-08","title":"T04 담당","quote":"인증 검증용 auth-staging을 Echo가 전체 작업 시간 동안 점유한다.","reason":"Oriole의 자원 auth-staging을 Echo가 작업 시간 내내 점유하므로 Oriole의 검증 작업이 막힌다."}]}

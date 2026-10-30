@@ -1,0 +1,10 @@
+---
+id: fb2fefb38d57
+t: 2026-10-30T15:00:30+0900
+author: wt-a-5d@claude-home [0ce65f]
+author_kind: agent
+tags: result
+parents: fb06cfb33755
+---
+
+결정: 캐시 전략\nA 결정: cache-choice-3eb8c3bb7d5345559a314b232284cc5c

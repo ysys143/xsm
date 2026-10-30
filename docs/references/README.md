@@ -7,6 +7,10 @@
 
 후속 조사(2026-10-24): [Reason Network 비교 노트](reason.md)는 공개 엔진 소스·공식 문서·함께 써 본 기록에서 배운 것과 따르지 않은 것을 ADR-0015–0024에 대응시킨다. 아래 2026-09-19 조사 결과를 소급 변경하지 않는다.
 
+후속 조사(2026-10-30): [Parley 조사](parley.md)는 `colinsurprenant/parley`의 고정 소스에서 IRC 공유 채널, Claude·Codex·OpenCode 수신 경로, 권한·보류·복구·설치 계약을 분석한다. [모듈 지도](parley/source-map.md)·[실행 근거](parley/validation.json)에 정적 분석과 실제 Ergo/CLI·합성 API 관찰을 구분하고, 현재 xsm과의 비교 및 설계 참고 16개를 기록했다.
+
+후속 조사(2026-10-30): [DM과 공유 채널의 공존 사례](dm-and-channels.md)는 ExaDev/agent-comms, msanchezdev/agent-bridge, keshrath/agent-comm의 공식 README를 커밋에 고정해 비교한다. 피어 간 메시·로컬 파일·중앙 서버에서 DM과 채널을 함께 제공하는 구조, 수신·깨우기·보존의 차이와 xsm 설계 참고점을 기록한 문서 조사이며 설치·실행 검증은 하지 않았다.
+
 ## 0. 조사 방법과 출처
 
 소스는 `/tmp/xsm-refs/`에 `git clone --depth 1`로 받았다.

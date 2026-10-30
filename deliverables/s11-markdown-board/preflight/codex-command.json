@@ -1,0 +1,24 @@
+{
+  "argv": [
+    "/Users/jaesolshin/.nvm/versions/node/v24.19.0/bin/codex",
+    "exec",
+    "--ignore-user-config",
+    "--ephemeral",
+    "-C",
+    "/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11-va4hq9ed/repo",
+    "-s",
+    "read-only",
+    "-m",
+    "openai/gpt-6-luna",
+    "-c",
+    "model_provider=\"s11_ocx\"",
+    "-c",
+    "model_providers.s11_ocx={name=\"S11 OCX\",base_url=\"http://127.0.0.1:10100/v1\",wire_api=\"responses\",requires_openai_auth=true}",
+    "-c",
+    "model_reasoning_effort=\"low\"",
+    "--json",
+    "Reply with S11_CODEX_PREFLIGHT_OK only. Do not call tools."
+  ],
+  "started_utc": "2026-10-30T05:01:12.345781+00:00",
+  "note": "Preflight only, current Codex auth, configuration overridden only in this invocation, API-key variables removed"
+}

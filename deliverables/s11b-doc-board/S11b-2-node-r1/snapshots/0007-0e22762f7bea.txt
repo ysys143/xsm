@@ -1,0 +1,10 @@
+---
+id: f74c4db9da23
+t: 2026-10-30T14:54:07+0900
+author: S11b injector fixture (person)
+author_kind: human
+tags: result
+parents: d5c3ab1918f3
+---
+
+판정자: S11b-2-node-r1-INJECT-d32138e3df

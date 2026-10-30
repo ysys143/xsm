@@ -1,0 +1,1 @@
+{"items":[{"id":"B09-03","title":"## T09 진행","quote":"cache-staging을 저녁까지 Echo의 재현 시험에 배정했다.","reason":"필요한 staging 자원이 저녁까지 다른 작업에 배정됐다."},{"id":"B09-04","title":"## T10 결정","quote":"src/cache/products.ts의 변경 범위에 만료 경계 조건을 포함한다.","reason":"세션이 수정하는 파일의 변경 범위를 명시한다."}]}

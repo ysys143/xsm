@@ -1,0 +1,21 @@
+{
+  "name": "F1-r0-B09-Birch",
+  "command": [
+    "claude",
+    "-p",
+    "--model",
+    "haiku",
+    "--tools",
+    "",
+    "--strict-mcp-config",
+    "--mcp-config",
+    "{\"mcpServers\":{}}",
+    "--no-session-persistence",
+    "--output-format",
+    "stream-json",
+    "--verbose",
+    "--include-partial-messages"
+  ],
+  "started_at": "2026-10-30T05:25:31.161891+00:00",
+  "prompt_sha256": "6a4df8afb44283a88e5437d3b220a4b85d45bfd059d9a5bad94d45384a6f02b5"
+}

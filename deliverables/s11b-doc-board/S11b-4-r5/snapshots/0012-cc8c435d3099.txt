@@ -1,0 +1,10 @@
+---
+id: d572db0b3cd2
+t: 2026-10-30T15:00:56+0900
+author: wt-b-20@claude-home [045274]
+author_kind: agent
+tags: result
+parents: 723a8b87a518
+---
+
+담당: B — S11b-4-r5-B-d0105b35e7; A 결정 원문: 결정: 캐시 전략\nA 결정: cache-choice-3eb8c3bb7d5345559a314b232284cc5c

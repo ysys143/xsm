@@ -1,0 +1,1 @@
+{"items":[{"id":"B06-01","title":"## T11 자원","quote":"product-cache의 완료 조건에 중복 이벤트 처리를 추가한다.","reason":"세션 전제에 중복 전달되는 상품 갱신 이벤트 처리가 포함된다."},{"id":"B06-02","title":"## T12 담당","quote":"다른 팀이 cache-staging의 전용 슬롯을 오늘 종일 점유한다.","reason":"세션이 필요한 cache-staging 자원을 점유한다."}]}

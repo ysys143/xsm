@@ -1,0 +1,1047 @@
+{
+  "counted_cases": 20,
+  "counted_actor_runs": 60,
+  "per_scenario_completed": [
+    5,
+    5,
+    5,
+    5
+  ],
+  "actor_task_markers_present": 59,
+  "model_request_count": 254,
+  "served_model_verified_runs": [
+    {
+      "case": "S11-1-r1",
+      "actor": "A",
+      "native_session_id": "fef49bcf-c719-493f-9668-ed4f22b1ac50",
+      "conversation_hash": "6071ebb2264680e1c34c4f48abb4cf42",
+      "request_ids": [
+        "ocx-cccf84ac32e3ee35a3682d709d414716",
+        "ocx-0eb8e4d012aad0118c55e117bf4ff43e",
+        "ocx-b35048a221b30d7806e100c152e3a163",
+        "ocx-ec729ea405ca1801cb693546dfa50d73",
+        "ocx-fb4302cd247ff16b0effc05685800e76"
+      ],
+      "served_models": [
+        "gpt-6-luna"
+      ],
+      "provider": "openai"
+    },
+    {
+      "case": "S11-1-r1",
+      "actor": "B",
+      "native_session_id": "54fefe5e-35da-406d-b27b-92f493413ef8",
+      "conversation_hash": "d128d6a00e80ad4ffd5485e0d6bc6c7a",
+      "request_ids": [
+        "ocx-4fa9b6b0dc0fc49a9be4d237a41710b5",
+        "ocx-d1d934fc906262efa6735eb431457d83",
+        "ocx-b97325107de0e93d804a2a1627ca3c5f",
+        "ocx-4eeee4ee4fc3b4ee7e6994a7df60ed07"
+      ],
+      "served_models": [
+        "gpt-6-luna"
+      ],
+      "provider": "openai"
+    },
+    {
+      "case": "S11-1-r1",
+      "actor": "C",
+      "native_session_id": "01a18b37-6aae-7a62-869c-340064ea7075",
+      "conversation_hash": "e10fcac4111aef6d0b106a6a318b9d04",
+      "request_ids": [
+        "ocx-4131faccfddcfe62561c8cfa37435ed4",
+        "ocx-90b7b3db762e2992455b482e881978a2",
+        "ocx-eeddd3e364b15960465f541c41d001ff",
+        "ocx-a40a979e71f4aee4e99a9d2f098eed65"
+      ],
+      "served_models": [
+        "gpt-6-luna"
+      ],
+      "provider": "openai"
+    },
+    {
+      "case": "S11-1-r2",
+      "actor": "A",
+      "native_session_id": "400d7190-80ba-4d3b-8078-3d0a8d960afd",
+      "conversation_hash": "8a162bd45631f892dcbd309e5b5ea506",
+      "request_ids": [
+        "ocx-22e0eae7eeeb3f376b8843fcded15eaa",
+        "ocx-a6e5568ff797fb13cad4e58cb3f782c7",
+        "ocx-c7029f45a7eb0d6a7125a897697bc7c9",
+        "ocx-47b5216481171fc291354e4a3ad9f612",
+        "ocx-6ac79e9664d0d0a6cb49a643bda0e4a6"
+      ],
+      "served_models": [
+        "gpt-6-luna"
+      ],
+      "provider": "openai"
+    },
+    {
+      "case": "S11-1-r2",
+      "actor": "B",
+      "native_session_id": "2d07efe3-c67f-4502-b33f-744c59c37691",
+      "conversation_hash": "6a35b19a7d983494fde9a25be7babdc2",
+      "request_ids": [
+        "ocx-117b6592252e0a48532ef05c09501639",
+        "ocx-92f8f1e34ca0bc3bcd4e36a3155ace17",
+        "ocx-8172acae2564367f724ada2f6e2d0eb3",
+        "ocx-a1700c013d3d897150c4d1922b7948f9"
+      ],
+      "served_models": [
+        "gpt-6-luna"
+      ],
+      "provider": "openai"
+    },
+    {
+      "case": "S11-1-r2",
+      "actor": "C",
+      "native_session_id": "01a18b38-d836-73c1-810c-9197c4c9e5f4",
+      "conversation_hash": "e6d459b6232594ec26c9915bbd5822ed",
+      "request_ids": [
+        "ocx-f80c4a10203ed62e5315627b5528c243",
+        "ocx-0f9f2b4b37970d26cae35137511efa89",
+        "ocx-04a2a6784d997624c718b432361a1aca",
+        "ocx-997bf4aa7cd76e39c8d015bab26e585e"
+      ],
+      "served_models": [
+        "gpt-6-luna"
+      ],
+      "provider": "openai"
+    },
+    {
+      "case": "S11-1-r3",
+      "actor": "A",
+      "native_session_id": "da0b4ce0-3e91-4279-960f-3f470e34dbdf",
+      "conversation_hash": "920c296b3adf8e7b73f2e29c2c08c5a5",
+      "request_ids": [
+        "ocx-17a415f0e6b6cbe02005011ba1952852",
+        "ocx-24011a9e27c4043e2f8835d3a46f6bac",
+        "ocx-a04b1fe556014e1d694e76e03521b321",
+        "ocx-c411846456797c6fd602aeda0c7be9b0"
+      ],
+      "served_models": [
+        "gpt-6-luna"
+      ],
+      "provider": "openai"
+    },
+    {
+      "case": "S11-1-r3",
+      "actor": "B",
+      "native_session_id": "ee7f5ebd-ecbd-44bb-b293-94b1304a8f84",
+      "conversation_hash": "e9e0ae2ba76393c84ff8fb5700bb25ca",
+      "request_ids": [
+        "ocx-d89d7945db2a0b01bc00d8b52424110b",
+        "ocx-ca293c8c11f64d338d120a68154ab254",
+        "ocx-4e73283ec8d1bd2c8b1120bbdfe2aade",
+        "ocx-4a038c8f17d30fdb2593105530f12dc1",
+        "ocx-fee1d6f6e535687143321529a45e1adf"
+      ],
+      "served_models": [
+        "gpt-6-luna"
+      ],
+      "provider": "openai"
+    },
+    {
+      "case": "S11-1-r3",
+      "actor": "C",
+      "native_session_id": "01a18b39-192b-7073-acc6-3ae6148f5bfa",
+      "conversation_hash": "bf01a3608a4806f79d2a9704534c1ac2",
+      "request_ids": [
+        "ocx-270e4cc01d1fb6b1f8121bb3c5a4e283",
+        "ocx-7bd672ada2bbda1b8f93af4c1e8dc8bf",
+        "ocx-4eca1790593cebeffbb83f9ab6b036cb"
+      ],
+      "served_models": [
+        "gpt-6-luna"
+      ],
+      "provider": "openai"
+    },
+    {
+      "case": "S11-1-r4",
+      "actor": "A",
+      "native_session_id": "a0b9cd40-8ed6-4a05-9781-1c28cd77d5f8",
+      "conversation_hash": "e2083e9047f868845f1abf8dba0e00dc",
+      "request_ids": [
+        "ocx-416baca47b4fb91ffdf45826ea886adc",
+        "ocx-ab4a4e2190e92ec77c347ac6b299dae4",
+        "ocx-e6086cefd9c4078766db54ba4a840c11",
+        "ocx-e0ae1b4dba560f38aaab6eaa408138e4",
+        "ocx-1e9e4aa3c578e1ae8ce3f63dac01c8c8"
+      ],
+      "served_models": [
+        "gpt-6-luna"
+      ],
+      "provider": "openai"
+    },
+    {
+      "case": "S11-1-r4",
+      "actor": "B",
+      "native_session_id": "ba678a06-0dbc-4411-9915-729f1d7c2ec0",
+      "conversation_hash": "efb256293ee11d13c7496cdf04c2c754",
+      "request_ids": [
+        "ocx-3414cf819995b750d8b63fac36cd87d2",
+        "ocx-0d384d5542476768593e3d62298e9b86",
+        "ocx-af30b1bd0905b7347db2a37de94587b1",
+        "ocx-2cc4b238e071e280eb2831650655af13"
+      ],
+      "served_models": [
+        "gpt-6-luna"
+      ],
+      "provider": "openai"
+    },
+    {
+      "case": "S11-1-r4",
+      "actor": "C",
+      "native_session_id": "01a18b39-6c19-7af2-8d84-8e9457750952",
+      "conversation_hash": "2ed3399e382883c4c5e3786a1b18dfe0",
+      "request_ids": [
+        "ocx-612d92f1691789837c576e8c353f183a",
+        "ocx-e6f906fdf57eac74b176dc7885259cc4",
+        "ocx-d7303bad90fc9966b77342af68c7064c"
+      ],
+      "served_models": [
+        "gpt-6-luna"
+      ],
+      "provider": "openai"
+    },
+    {
+      "case": "S11-1-r5",
+      "actor": "A",
+      "native_session_id": "e95a50a5-ac59-44b1-a6e8-c7148a5b9049",
+      "conversation_hash": "c845b1c691c7e843871179a10489a14f",
+      "request_ids": [
+        "ocx-2f71d8f152318d7efed04fb76ad1d43e",
+        "ocx-c36b2f88b500097dc83c81e3137f4f05",
+        "ocx-0725534750ac2e69c70eacf7926e6720",
+        "ocx-efa92c696b1a73dff81e0a35badf12e8",
+        "ocx-f86b221e9d8595c1ab78cde4be2334b9"
+      ],
+      "served_models": [
+        "gpt-6-luna"
+      ],
+      "provider": "openai"
+    },
+    {
+      "case": "S11-1-r5",
+      "actor": "B",
+      "native_session_id": "3eca91c8-07b1-4422-9ccd-e73bd414b720",
+      "conversation_hash": "0646ab60d758958ce887cc999c0531a7",
+      "request_ids": [
+        "ocx-759ddb4bd8ca964b074c01cd4cb24aaa",
+        "ocx-ce03a0834698ea5e5820238d2579237b",
+        "ocx-d59e813a2229d011b3d8ad0e3f47eaa0",
+        "ocx-c234d1c2b2684f5cb7774421c9e4d0e0"
+      ],
+      "served_models": [
+        "gpt-6-luna"
+      ],
+      "provider": "openai"
+    },
+    {
+      "case": "S11-1-r5",
+      "actor": "C",
+      "native_session_id": "01a18b39-ab09-7312-b156-ad476d21d197",
+      "conversation_hash": "2bbe39f32aab0a1408ffdbfc7c62c19a",
+      "request_ids": [
+        "ocx-3173dbc31bec6061e864cc497cb269b3",
+        "ocx-09ebbe871abbc1495cc9e3c80e3c4efb",
+        "ocx-117dcf3df208343dfb09d40582fda699",
+        "ocx-d9750f9f52bdf1a049c2b085d030ca24",
+        "ocx-53f1a53c9aaac688a633ea35418ae6b9"
+      ],
+      "served_models": [
+        "gpt-6-luna"
+      ],
+      "provider": "openai"
+    },
+    {
+      "case": "S11-2-r1",
+      "actor": "A",
+      "native_session_id": "fe5eb3fe-4afe-4c44-adc1-f3ab97f07ad2",
+      "conversation_hash": "f0dbb72721639e2dbcb4f4936f1cd129",
+      "request_ids": [
+        "ocx-7e5aa9be77b403ccfb85bffaa62fb88b",
+        "ocx-1d064662749db2fb80feeaea094440df",
+        "ocx-e005619a314d902deaf30fee13313eb0"
+      ],
+      "served_models": [
+        "gpt-6-luna"
+      ],
+      "provider": "openai"
+    },
+    {
+      "case": "S11-2-r1",
+      "actor": "B",
+      "native_session_id": "53d0f0ef-b56e-44f0-ad34-66b0bdbb828e",
+      "conversation_hash": "38ea1ee6761ff7ea46bc8dfda632bb2d",
+      "request_ids": [
+        "ocx-d78dd5fa4f76da209dff9646a60f380d",
+        "ocx-c40df5d242c955ca1f02140ee536d952",
+        "ocx-e3e1f4bf1b0eb27dfd13bb0acc0fee00",
+        "ocx-7162a7477488f3ba123403f53a55229a",
+        "ocx-56004ac35a2ab5a10d3a8d41e730a13e"
+      ],
+      "served_models": [
+        "gpt-6-luna"
+      ],
+      "provider": "openai"
+    },
+    {
+      "case": "S11-2-r1",
+      "actor": "C",
+      "native_session_id": "01a18b39-e580-7372-a672-1766589ddf2f",
+      "conversation_hash": "8247cff9b13aa844153f92e0db0e784d",
+      "request_ids": [
+        "ocx-df7b2a5a4fc2cf7f70bf937ebde64229",
+        "ocx-231c55d5286d70b19fba670f2c486067",
+        "ocx-ed60845b0cf8ffc5261fa0907fe97fa3",
+        "ocx-af716623eb3beee1af66be6f1c5c9cc8"
+      ],
+      "served_models": [
+        "gpt-6-luna"
+      ],
+      "provider": "openai"
+    },
+    {
+      "case": "S11-2-r2",
+      "actor": "A",
+      "native_session_id": "c29548e8-7be5-4bfb-8572-9282a80636c8",
+      "conversation_hash": "97c7a3930acd1d1a7924bf628cd83b2b",
+      "request_ids": [
+        "ocx-fa858d0bd15a2a02451fa4ef3920a2f7",
+        "ocx-0486e730b04ff29dcb74c2d523dbb946",
+        "ocx-2c14b5416610193f435c9c67fcfeb664"
+      ],
+      "served_models": [
+        "gpt-6-luna"
+      ],
+      "provider": "openai"
+    },
+    {
+      "case": "S11-2-r2",
+      "actor": "B",
+      "native_session_id": "35c2f367-5da5-469f-9b68-4d2f2150913b",
+      "conversation_hash": "a0efc2f7c24b4e2494c02f7110cdeb87",
+      "request_ids": [
+        "ocx-6c87354dad39041da1b8c06682452502",
+        "ocx-93f0674407d835e2d769298f4f0494d0",
+        "ocx-f925762479fdabaaf081a7991f0c03ef",
+        "ocx-36e69b72b6b539b166ea9b7c647b4fed",
+        "ocx-f61caf52f70cfc689a7fb4009511c52b"
+      ],
+      "served_models": [
+        "gpt-6-luna"
+      ],
+      "provider": "openai"
+    },
+    {
+      "case": "S11-2-r2",
+      "actor": "C",
+      "native_session_id": "01a18b3a-2755-7ad0-a775-c55e512a46b6",
+      "conversation_hash": "030b08c1041aa99c5c597cd1742564eb",
+      "request_ids": [
+        "ocx-32dcfdc1be40171089a55cfb0c9ab663",
+        "ocx-ac61ba4d7c231f99ed172c00c407b8ad",
+        "ocx-b0072786bf2ba62f87b84a2e4adba3b7",
+        "ocx-d4f431908b9f9607b679f7dcc779a429"
+      ],
+      "served_models": [
+        "gpt-6-luna"
+      ],
+      "provider": "openai"
+    },
+    {
+      "case": "S11-2-r3",
+      "actor": "A",
+      "native_session_id": "fedd8071-2d83-48c5-8f12-5d366854b973",
+      "conversation_hash": "7c8bf2a5cf9b288fd063cb3f662b61b7",
+      "request_ids": [
+        "ocx-2dff18df70db74f57e15ba3582b16fcb",
+        "ocx-b670f77da485928167fb6a5dc54b2348",
+        "ocx-8b13c93135bad44558ce10971192bfba",
+        "ocx-183fd3b6359f14a217f1949a4a789c98",
+        "ocx-930d14a8c068577db024096a0c2a800c"
+      ],
+      "served_models": [
+        "gpt-6-luna"
+      ],
+      "provider": "openai"
+    },
+    {
+      "case": "S11-2-r3",
+      "actor": "B",
+      "native_session_id": "ce1c8023-cbd9-4b1f-9ad1-f737fe341fa7",
+      "conversation_hash": "bb1e8aa5d583b0b0882a37253c0032a2",
+      "request_ids": [
+        "ocx-a302ce2830ec059318b8ca7407a33386",
+        "ocx-03241caacf456f4dd077ba281321f0ce",
+        "ocx-65bcb942b9bde416f920f3899444f6ab"
+      ],
+      "served_models": [
+        "gpt-6-luna"
+      ],
+      "provider": "openai"
+    },
+    {
+      "case": "S11-2-r3",
+      "actor": "C",
+      "native_session_id": "01a18b3a-6905-7312-bd5d-7d1d6dacfd77",
+      "conversation_hash": "2f87398220ebd99f6f655193884218a3",
+      "request_ids": [
+        "ocx-4d5acb636c2140c331256a06c1fc2a1b",
+        "ocx-da58fabc7b456c9a7f4afb0cc93b17b3",
+        "ocx-d1779d0436c328139dec0a32c376e13d",
+        "ocx-f137b33660a8648296191835f71ce293"
+      ],
+      "served_models": [
+        "gpt-6-luna"
+      ],
+      "provider": "openai"
+    },
+    {
+      "case": "S11-2-r4",
+      "actor": "A",
+      "native_session_id": "ddfb44f9-903c-4ea5-b545-951d2f75b0b0",
+      "conversation_hash": "c920e35e99b3a2a99db9861646a74c21",
+      "request_ids": [
+        "ocx-f634ca1bcdca5b2bfcb320cc3bd118ac",
+        "ocx-b98b312358031eabbc6d9fa41589188c",
+        "ocx-4fc2cabb77713c087ff2bf33cab7e714",
+        "ocx-a5522cb2a4204674335eb0e795b7c3be",
+        "ocx-4ad54b0e6dccdc7836def733d4ac1a30"
+      ],
+      "served_models": [
+        "gpt-6-luna"
+      ],
+      "provider": "openai"
+    },
+    {
+      "case": "S11-2-r4",
+      "actor": "B",
+      "native_session_id": "da4d12c2-936a-48c3-bf96-3d8053fa1a55",
+      "conversation_hash": "b4220d6d4750b6554ab62379a3e01ddf",
+      "request_ids": [
+        "ocx-73951ec073e93e0fb9d9db87485faf90",
+        "ocx-77352a5db6e6ffe97245eabb86808f6b",
+        "ocx-9afc329f78b9b367f9929a7fc9f34257"
+      ],
+      "served_models": [
+        "gpt-6-luna"
+      ],
+      "provider": "openai"
+    },
+    {
+      "case": "S11-2-r4",
+      "actor": "C",
+      "native_session_id": "01a18b3a-a5db-73f3-8fa7-34fb91e328f6",
+      "conversation_hash": "2ec5d066305908ab19990a78afea2c95",
+      "request_ids": [
+        "ocx-5f32fdb9c6880e122518331424bca4b6",
+        "ocx-18f57db2f48b9b21a78ebb4fd6037b7d",
+        "ocx-7d899be2d4ec7e12a567989be65ed7b3",
+        "ocx-3e61a5cc7b3b8ce21ff4bd51a8661515"
+      ],
+      "served_models": [
+        "gpt-6-luna"
+      ],
+      "provider": "openai"
+    },
+    {
+      "case": "S11-2-r5",
+      "actor": "A",
+      "native_session_id": "275f04dd-003e-4849-9183-7fec9a6aadfb",
+      "conversation_hash": "123c08a64b2098b5263b9365d9a681e7",
+      "request_ids": [
+        "ocx-35a5fc1e587b0c1d10700557d13f1092",
+        "ocx-c0167254e9b8af595b6098cc9a2e4309",
+        "ocx-d3df067fc12551f689b5ba7375e988cf",
+        "ocx-f9bd062a3699b94f9f0a681dc0e351d4",
+        "ocx-db27ca4d74c75de6ab64cc88fef1a458",
+        "ocx-b53a3d992a98af2530141a53a9ec070d",
+        "ocx-f7e808dc85a106ffb4c1a1b34afa0b41"
+      ],
+      "served_models": [
+        "gpt-6-luna"
+      ],
+      "provider": "openai"
+    },
+    {
+      "case": "S11-2-r5",
+      "actor": "B",
+      "native_session_id": "00c2f62d-8b0b-40ef-b1f4-d17a42b37cbb",
+      "conversation_hash": "bba5c27cb5ef661d5fada09c8895b009",
+      "request_ids": [
+        "ocx-97a1b83f6c0ba3a72b72ad7a067e56a9",
+        "ocx-5ee082880ceab496100f75afb2cf7a39",
+        "ocx-d007f96c5793d075820598a90c958bb1",
+        "ocx-c61405a13babff9f9cc28c890c47ebf6",
+        "ocx-40e7c49378d382f001a955ecff6d4db9"
+      ],
+      "served_models": [
+        "gpt-6-luna"
+      ],
+      "provider": "openai"
+    },
+    {
+      "case": "S11-2-r5",
+      "actor": "C",
+      "native_session_id": "01a18b3a-e14d-7461-9253-b58543f2d7ad",
+      "conversation_hash": "3acb908220e83667bccc5f8c18df1db5",
+      "request_ids": [
+        "ocx-5dd11d9e684cad1fabd7af9f477e16e9",
+        "ocx-d736416be8f7318f1d758733dbce10b2",
+        "ocx-a29f7a93b436efbb8a9d591ed90b5119",
+        "ocx-e02f0f048a3bef3f44c66cce0955afbb"
+      ],
+      "served_models": [
+        "gpt-6-luna"
+      ],
+      "provider": "openai"
+    },
+    {
+      "case": "S11-3-r1",
+      "actor": "A",
+      "native_session_id": "6e047fa5-0d4a-489d-846f-9ffff4834e81",
+      "conversation_hash": "dd5550f0535faaf2b325055b3be9b3f0",
+      "request_ids": [
+        "ocx-a901ad6ee715ccd60da4d59bf8ace2b4",
+        "ocx-efe2e177e57050ac121c801669393179",
+        "ocx-5bc637bdf928dd5f744aafaba8d42d36"
+      ],
+      "served_models": [
+        "gpt-6-luna"
+      ],
+      "provider": "openai"
+    },
+    {
+      "case": "S11-3-r1",
+      "actor": "B",
+      "native_session_id": "b8a1b59e-27f8-4900-8af8-01c59f388e13",
+      "conversation_hash": "cb5fc94d844309aec332b00e6f411a69",
+      "request_ids": [
+        "ocx-d4a93d514aab4e6814d62277215fd522",
+        "ocx-b449ae4b3a595d9d18ab003b732f4282",
+        "ocx-63790b22fac70a5be070d49c6578a254",
+        "ocx-275d97e233aa37bee4f1e2e9301b2c2a",
+        "ocx-07efc5c7055fdb9d8ebe5b1671afbdf1",
+        "ocx-6ac2b05d5b240592ec5b1ff4e3848046"
+      ],
+      "served_models": [
+        "gpt-6-luna"
+      ],
+      "provider": "openai"
+    },
+    {
+      "case": "S11-3-r1",
+      "actor": "C",
+      "native_session_id": "01a18b3b-359d-7032-a253-21277a02e8c1",
+      "conversation_hash": "ecb03ee22b9f8e84c9ce58ffeab13bc5",
+      "request_ids": [
+        "ocx-5a5a7085557d641aba937cfbba234ae6",
+        "ocx-a8e57398a261d86031aacbcc5b25d9cd",
+        "ocx-c95c0ffdbd499d6160b22d247e4cbea9",
+        "ocx-fd97cb7859bcf6636b46aa1751172f2d"
+      ],
+      "served_models": [
+        "gpt-6-luna"
+      ],
+      "provider": "openai"
+    },
+    {
+      "case": "S11-3-r2",
+      "actor": "A",
+      "native_session_id": "c4f5a9bb-6934-461c-93ab-60c680a76f0e",
+      "conversation_hash": "4e135dfd40333eb7c7254db0275d734f",
+      "request_ids": [
+        "ocx-02970acac4dff194ca1d223767b121c1",
+        "ocx-4efc96043040fb3a2361b8bc7cb3db34",
+        "ocx-e979631920d532f578a770e419dd25d3"
+      ],
+      "served_models": [
+        "gpt-6-luna"
+      ],
+      "provider": "openai"
+    },
+    {
+      "case": "S11-3-r2",
+      "actor": "B",
+      "native_session_id": "c684bdee-ec6b-45e0-bb01-303059c5591b",
+      "conversation_hash": "d2786652fd62fd45c401775862f56e78",
+      "request_ids": [
+        "ocx-1ad92b3df003bee47d091381ab286c0c",
+        "ocx-a20cfa17984e07a0d5e6672afe1692e8",
+        "ocx-75c2390ccf079c806972bb05be06ad98",
+        "ocx-92469dbb77069d60be40058ea87ae9fe"
+      ],
+      "served_models": [
+        "gpt-6-luna"
+      ],
+      "provider": "openai"
+    },
+    {
+      "case": "S11-3-r2",
+      "actor": "C",
+      "native_session_id": "01a18b3b-91eb-7941-8b12-3f9aeab74aa9",
+      "conversation_hash": "c44da76bf85eaefdc1fc59b67a3b27fe",
+      "request_ids": [
+        "ocx-805c7b7da75693a20f5dd958365849c1",
+        "ocx-d79b10f036286eacf0fe2e77e21e4f3d",
+        "ocx-856290b6714b0c8fbf153afc99db4354"
+      ],
+      "served_models": [
+        "gpt-6-luna"
+      ],
+      "provider": "openai"
+    },
+    {
+      "case": "S11-3-r3",
+      "actor": "A",
+      "native_session_id": "7a8ffccb-9bc5-40ed-9de2-5925981650cb",
+      "conversation_hash": "d71deb36d61b10319ff45b4f62031107",
+      "request_ids": [
+        "ocx-3df4bce1cd660a7310a7a97da9a0a8f1",
+        "ocx-9da4e7fc3558093ed69e3c59738f6750",
+        "ocx-91ce544c0277b0b8824282409a4a11b4"
+      ],
+      "served_models": [
+        "gpt-6-luna"
+      ],
+      "provider": "openai"
+    },
+    {
+      "case": "S11-3-r3",
+      "actor": "B",
+      "native_session_id": "b512bc89-b757-4ff6-a81d-00ff4dc4954f",
+      "conversation_hash": "029dc63d41752f4092807cb9e4e64318",
+      "request_ids": [
+        "ocx-93d2dddfe350bf97cb9edfa7c2943891",
+        "ocx-7a4f86267f4e7d5990a847c4498c9b24",
+        "ocx-f63a96361e2f2da3c8b555a86a70008b",
+        "ocx-7d789eed8ed6e0fd2254d2f22203130a"
+      ],
+      "served_models": [
+        "gpt-6-luna"
+      ],
+      "provider": "openai"
+    },
+    {
+      "case": "S11-3-r3",
+      "actor": "C",
+      "native_session_id": "01a18b3b-e0aa-7db3-ab1c-fbb24df122e9",
+      "conversation_hash": "80ed44e7e14691ec7b39627966b4eab8",
+      "request_ids": [
+        "ocx-bf2a11eb9fcaace0844923e9a5913570",
+        "ocx-63837c6945176a2d6cdfb4d216c45ca1",
+        "ocx-1e0043bb1d8db0ea1b4e4569bdc9b88d"
+      ],
+      "served_models": [
+        "gpt-6-luna"
+      ],
+      "provider": "openai"
+    },
+    {
+      "case": "S11-3-r4",
+      "actor": "A",
+      "native_session_id": "fa94d86b-556a-4503-9882-6aa6f77218c5",
+      "conversation_hash": "501237ae00c4d4f07b411467b7d516b8",
+      "request_ids": [
+        "ocx-0ec560104a11880324504d3884b64548",
+        "ocx-ca554b4ddd951f5cd32f0c88e5620ac6",
+        "ocx-8917942e316a84a42b8795b560be5970"
+      ],
+      "served_models": [
+        "gpt-6-luna"
+      ],
+      "provider": "openai"
+    },
+    {
+      "case": "S11-3-r4",
+      "actor": "B",
+      "native_session_id": "e731261d-7dd9-4945-a288-9497f698d29b",
+      "conversation_hash": "b7e079d80a9207774278195b0c69b8b0",
+      "request_ids": [
+        "ocx-1331670ec4dd17aa5054a2664a954f01",
+        "ocx-51fc8386ccc7da680bfa87c77fd82912",
+        "ocx-93fee8e1c69dee49a8fbcb6313d3fa44",
+        "ocx-d7c27ef3d1be05bd2056207464075a16",
+        "ocx-b10b7f44fd704819a8a84b14140b3a17",
+        "ocx-417209e81cb259ea1516dfd423d23a38"
+      ],
+      "served_models": [
+        "gpt-6-luna"
+      ],
+      "provider": "openai"
+    },
+    {
+      "case": "S11-3-r4",
+      "actor": "C",
+      "native_session_id": "01a18b3c-2f37-7f70-a615-0cb63a445fc3",
+      "conversation_hash": "eb514c4e96dbd36d3f8ce3820c5f24df",
+      "request_ids": [
+        "ocx-a9264529a113f4d49917709f5f700f26",
+        "ocx-d9b291193fc2cea7a7b382032965e7ae",
+        "ocx-c627b5248b24ee9fbc52f87f9451750b",
+        "ocx-47d41c589cf44b38743c2dbd717f2244"
+      ],
+      "served_models": [
+        "gpt-6-luna"
+      ],
+      "provider": "openai"
+    },
+    {
+      "case": "S11-3-r5",
+      "actor": "A",
+      "native_session_id": "6db81cc5-359e-4116-9fae-6c7983b889c7",
+      "conversation_hash": "79dcca08cb2ec67ebb72499fa1a94e38",
+      "request_ids": [
+        "ocx-f8dac46a72221537cae786946af6c505",
+        "ocx-0702ddd40b422cb9bb005ba2406a7343",
+        "ocx-30ebce3618675ec0c1939e5cfa460eaa"
+      ],
+      "served_models": [
+        "gpt-6-luna"
+      ],
+      "provider": "openai"
+    },
+    {
+      "case": "S11-3-r5",
+      "actor": "B",
+      "native_session_id": "00682cd9-2907-4f7c-be46-2787a1f44e9a",
+      "conversation_hash": "af61bf2d8a97a9b81e82a6714dc3337b",
+      "request_ids": [
+        "ocx-c7546c21edaddd97a22c338b3e8cde1b",
+        "ocx-f4943460ef878efe6fbaa68568b9abf4",
+        "ocx-98e342fc83eedefac88d3b14109f1fc8",
+        "ocx-9bd750a9494429cf2b90f594cfadf8d7"
+      ],
+      "served_models": [
+        "gpt-6-luna"
+      ],
+      "provider": "openai"
+    },
+    {
+      "case": "S11-3-r5",
+      "actor": "C",
+      "native_session_id": "01a18b3c-883b-7b33-b9c7-9ded3b7d4f9e",
+      "conversation_hash": "219a70b6c5aacfd71809bd2df83432fa",
+      "request_ids": [
+        "ocx-7e1c1d2372aa355146d1591378b61f9e",
+        "ocx-25b9b42e9201fb3133ceb5b887572f37",
+        "ocx-005ded078389fa6194986768733a20a5",
+        "ocx-bd9d82a3d849bb799b4c49f5b73e29a6"
+      ],
+      "served_models": [
+        "gpt-6-luna"
+      ],
+      "provider": "openai"
+    },
+    {
+      "case": "S11-4-r1",
+      "actor": "A",
+      "native_session_id": "e7e90c9d-c65b-4ab0-a388-52048d634e19",
+      "conversation_hash": "f1290f24d36df0fe2efe037ab52ca436",
+      "request_ids": [
+        "ocx-46b14128cc4a200fbb885fb69ac60c20",
+        "ocx-ca1dc9dffdb6026c4ab7efa7d646fd51",
+        "ocx-f81be4c1f3068b6ade1c7854432a12a8"
+      ],
+      "served_models": [
+        "gpt-6-luna"
+      ],
+      "provider": "openai"
+    },
+    {
+      "case": "S11-4-r1",
+      "actor": "B",
+      "native_session_id": "f10bc540-97de-4d71-bd93-b1b49e4bf75a",
+      "conversation_hash": "df5bc3b92614b74244816c1f84bd99d6",
+      "request_ids": [
+        "ocx-bdb8b3fc25869e5e56693affe691f754",
+        "ocx-90a933fde89964fda7147e713a64ff47",
+        "ocx-8f04a65a8903fa8a9251b1f3a55b0c9c",
+        "ocx-8b5f373ff2ff667ff21483afd67e3e21",
+        "ocx-2b2f16767b483f2e71467fd3572182ff",
+        "ocx-e0cd1b29497ace0ed606267cec47007c"
+      ],
+      "served_models": [
+        "gpt-6-luna"
+      ],
+      "provider": "openai"
+    },
+    {
+      "case": "S11-4-r1",
+      "actor": "C",
+      "native_session_id": "01a18b3c-d80f-7712-a5d8-cd3451ac9c30",
+      "conversation_hash": "8f8ee9b7ad85c36653130bcd1f8e360e",
+      "request_ids": [
+        "ocx-6df98b84850d7761e5b9d5764fd7fa90",
+        "ocx-e768fc1586e6981fdbc0deea5facc003",
+        "ocx-03b2db9cbbdb4345e970abafd691209c"
+      ],
+      "served_models": [
+        "gpt-6-luna"
+      ],
+      "provider": "openai"
+    },
+    {
+      "case": "S11-4-r2",
+      "actor": "A",
+      "native_session_id": "67f3ea45-6695-485c-a809-22e0b30fd5d3",
+      "conversation_hash": "b95ef1fe086adfcbbccd91c69597a030",
+      "request_ids": [
+        "ocx-500f8e0e261637202dd2d55ffc021aab",
+        "ocx-4f6dad0201115daafb15adb888ea43c0",
+        "ocx-1382d667863868061b0f304b6f9fd8d6"
+      ],
+      "served_models": [
+        "gpt-6-luna"
+      ],
+      "provider": "openai"
+    },
+    {
+      "case": "S11-4-r2",
+      "actor": "B",
+      "native_session_id": "04259e4d-75c3-4a1d-9bf0-c2b438393be6",
+      "conversation_hash": "a615a4fd26e1402475e61354c8d681ba",
+      "request_ids": [
+        "ocx-59cf92c9ae5b89511dfdff7e3f9a904a",
+        "ocx-0b7cba123910d4b3050ed594124a90b1",
+        "ocx-fe664cf4ea3de35fb5e5226afbb5338f",
+        "ocx-2b6b04fff460355ca7457d6de787b976",
+        "ocx-63566fa00ef38d8d3d34ea05e4085eb8",
+        "ocx-25a8e5fed29dab27c9f053091b0c2644"
+      ],
+      "served_models": [
+        "gpt-6-luna"
+      ],
+      "provider": "openai"
+    },
+    {
+      "case": "S11-4-r2",
+      "actor": "C",
+      "native_session_id": "01a18b3d-261e-7c40-add0-4bbe922406d4",
+      "conversation_hash": "32faa93f008bde7bee7e60b3f2f9b2e3",
+      "request_ids": [
+        "ocx-e341cfc1d13365c890ab80ff681524ff",
+        "ocx-e0cb037290b662aaf0c4f3f9e4e7a96e",
+        "ocx-477200c6faa2fdb52a4db3b8b7eafb04"
+      ],
+      "served_models": [
+        "gpt-6-luna"
+      ],
+      "provider": "openai"
+    },
+    {
+      "case": "S11-4-r3",
+      "actor": "A",
+      "native_session_id": "7c1e24d8-fe62-461e-8898-e049c8659bc5",
+      "conversation_hash": "a6371ac09749d36ded50772d2659a479",
+      "request_ids": [
+        "ocx-de51081ecbaf362eed3f2a1bc0f33a1e",
+        "ocx-7d2ec439088922cf6d4d1c7bf4eca7fc",
+        "ocx-cd13454b4907134bbecfe3fae8beb1e3"
+      ],
+      "served_models": [
+        "gpt-6-luna"
+      ],
+      "provider": "openai"
+    },
+    {
+      "case": "S11-4-r3",
+      "actor": "B",
+      "native_session_id": "607d615c-10d2-4406-9ed7-204588e5e215",
+      "conversation_hash": "ec00d8e3727a9ef5a7628a9c17a31b74",
+      "request_ids": [
+        "ocx-9c0c7bf0ddd8de932bc0eaa3e85b61b4",
+        "ocx-c9b0177153cf89b116b885b4ea25e699",
+        "ocx-e8a432604740467b3272f67d30fb9fd8",
+        "ocx-ffa0b491e728a4955d5e1758eb6e2b14",
+        "ocx-678d312d0716e0dce752907e0e49b0ee",
+        "ocx-690ebe48b3d501a01b96500468ec27a1",
+        "ocx-262916cf6b24d37eacc175eb8e941b1d"
+      ],
+      "served_models": [
+        "gpt-6-luna"
+      ],
+      "provider": "openai"
+    },
+    {
+      "case": "S11-4-r3",
+      "actor": "C",
+      "native_session_id": "01a18b3d-7aeb-7ff2-8742-79ee295e1e04",
+      "conversation_hash": "e63d1bec92d678511145af9317ab389f",
+      "request_ids": [
+        "ocx-0cd8edadf062aa000e01affc2251ea95",
+        "ocx-726e10fc978f739528356b04ce7affd5",
+        "ocx-3a47bdfbc4aebd6ad63a921eb9bf840d"
+      ],
+      "served_models": [
+        "gpt-6-luna"
+      ],
+      "provider": "openai"
+    },
+    {
+      "case": "S11-4-r4",
+      "actor": "A",
+      "native_session_id": "dbe825f7-7c5b-46f3-b25e-f64546c8cad4",
+      "conversation_hash": "055432a49fc7470534fa587e9de70bdd",
+      "request_ids": [
+        "ocx-cae9235802bc96c14ed7634ff169a989",
+        "ocx-3d40da18b8cc330d3fbe807c50ad75ad",
+        "ocx-609fb456b3103352a69e79bedd6cc753"
+      ],
+      "served_models": [
+        "gpt-6-luna"
+      ],
+      "provider": "openai"
+    },
+    {
+      "case": "S11-4-r4",
+      "actor": "B",
+      "native_session_id": "620df7b2-368f-4b21-84a0-5749a210d840",
+      "conversation_hash": "3e3372de8328b090bd97f8d4dc14aaa8",
+      "request_ids": [
+        "ocx-c05ee58e96eac9829946162ed04a2507",
+        "ocx-8847b3a7659e671281129b4ea1517363",
+        "ocx-47339436c3c8d9bcaba75e1a9b610cef",
+        "ocx-306fa185664bd3b8462cc2fa48e36509",
+        "ocx-2e58c1857ddcd89e3872141f5c8009d7",
+        "ocx-e27675e33ad51f776bc39b0940216a92",
+        "ocx-dfbbb54909b35c39b742239045695a73",
+        "ocx-ba627ba1749839795f9e7b2f416ed241",
+        "ocx-c9186a513b1abdeafc75c2ecff4abb72"
+      ],
+      "served_models": [
+        "gpt-6-luna"
+      ],
+      "provider": "openai"
+    },
+    {
+      "case": "S11-4-r4",
+      "actor": "C",
+      "native_session_id": "01a18b3d-f57c-7a33-b77e-f67cb5f12e79",
+      "conversation_hash": "0807ee0a90596bd8a9b95eb7139f5742",
+      "request_ids": [
+        "ocx-bde70f9097bbbe4730cfc96e9f3237b5",
+        "ocx-abc714ff0521775499740563098a8542",
+        "ocx-f8eccc25016434c6e308b8a267b84135"
+      ],
+      "served_models": [
+        "gpt-6-luna"
+      ],
+      "provider": "openai"
+    },
+    {
+      "case": "S11-4-r5",
+      "actor": "A",
+      "native_session_id": "e8c99387-1359-480c-b96a-3bb7f0248d59",
+      "conversation_hash": "c52c4ccaadb58b90fd47baa45fe6845e",
+      "request_ids": [
+        "ocx-acb1d6bdc74ddcb9f243975da0fcc8ad",
+        "ocx-6d3804a9f08d14447de5c7bf6a0d04ac",
+        "ocx-f3383d16c77308c410d84dcdf360c79c"
+      ],
+      "served_models": [
+        "gpt-6-luna"
+      ],
+      "provider": "openai"
+    },
+    {
+      "case": "S11-4-r5",
+      "actor": "B",
+      "native_session_id": "7be83a4b-8152-41dc-90dd-dcaba8bc7c66",
+      "conversation_hash": "d7c5bf7523d740ddaf093ce3dd897c20",
+      "request_ids": [
+        "ocx-c6f1d421533cfaa7699dec1aa94cd621",
+        "ocx-dda95f6a8811f86132eac6ec3f2345c1",
+        "ocx-7cf32521e9c80cda247bde6cdc82bdb2",
+        "ocx-dea29053f2006fca73472f752ee87a07",
+        "ocx-2f7feb711a7afff6ba3e27845122f0f7",
+        "ocx-4dbf3471f153214e4b66a5d0a31427f2",
+        "ocx-3a15384a68c91db8efec5529498a7d84",
+        "ocx-5386044922c7de98121f31146c84fb56",
+        "ocx-9876c1c2201699efef3f3a5a95fe4532",
+        "ocx-5be5e8f1f25f204c1a965bf487dec8f7",
+        "ocx-7b5d4c2fc09e36124d5b9d78ea4e81f7"
+      ],
+      "served_models": [
+        "gpt-6-luna"
+      ],
+      "provider": "openai"
+    },
+    {
+      "case": "S11-4-r5",
+      "actor": "C",
+      "native_session_id": "01a18b3e-5b41-77b0-9567-6c9ed9cb034e",
+      "conversation_hash": "5c3feb98a39633e60f92a94fac9cfb83",
+      "request_ids": [
+        "ocx-4ce24892d4cbbaffe562bed3052bdcda",
+        "ocx-a53cb1f7ecfc5051e6f065cfa5926b2c",
+        "ocx-3bc564302aa90fe169624654ac4e1662"
+      ],
+      "served_models": [
+        "gpt-6-luna"
+      ],
+      "provider": "openai"
+    }
+  ],
+  "profiles_after_cleanup": [
+    {
+      "path": "/Users/jaesolshin/.claude-3/settings.json",
+      "before_sha256": "a29463f405d8562ae37f4a86905a767157792b92df68404a5ba698232597f420",
+      "after_sha256": "a29463f405d8562ae37f4a86905a767157792b92df68404a5ba698232597f420",
+      "byte_equal": true
+    },
+    {
+      "path": "/Users/jaesolshin/.codex-3/config.toml",
+      "before_sha256": "4f3edea63e649fbe1ce710ceb6b7d4ee5c6f52bcee2a9ceaf6f0e7ce4a346c6e",
+      "after_sha256": "4f3edea63e649fbe1ce710ceb6b7d4ee5c6f52bcee2a9ceaf6f0e7ce4a346c6e",
+      "byte_equal": true
+    },
+    {
+      "path": "/Users/jaesolshin/.opencodex/config.json",
+      "before_sha256": "24ddc3031dd7fac6324f3cb0c6e1d989f5eaadbf721237a75262a0b46ac266cb",
+      "after_sha256": "24ddc3031dd7fac6324f3cb0c6e1d989f5eaadbf721237a75262a0b46ac266cb",
+      "byte_equal": true
+    }
+  ],
+  "plan_unchanged": true,
+  "measurement_controls": {
+    "lost_update_mutation": "detected",
+    "never_written_is_not_lost": "passed",
+    "B_reflection_elsewhere_false_positive": "rejected",
+    "shell_write_vs_read": "passed"
+  },
+  "proposed_threshold_not_user_decision": 0.1,
+  "constraint_side_effect": "Codex persisted 20 temporary-project trust entries despite ignore-user-config; removed only those blocks and restored exact baseline bytes. The no-settings-change-during-run constraint was not met.",
+  "overall_dispatch_outcome": "failed due to the temporary settings/permission side effect; 20/20 measurements completed and retained.",
+  "case_protocol_successes": 20,
+  "native_actor_protocol_successes": 60,
+  "document_check": {
+    "links_missing": [],
+    "metrics_cross_checked": true,
+    "plan_threshold_explicitly_not_user_policy": true,
+    "report_sha256": "2482d42f1004a790eca98fdd161bccf33efb66e5a60ddeece5125d6ce93f6116",
+    "artifact_file_count_at_metric_validation": 604,
+    "artifact_bytes_at_metric_validation": 6463037,
+    "artifact_file_count_after_dispatch": 606
+  },
+  "dispatch": {
+    "id": "s11-markdown-board-final-20261030",
+    "status": "delivered",
+    "reply_to": "s11-markdown-board-20261030",
+    "outcome": "failed",
+    "note": "Failure reports the intermediate settings/permission side effect, not missing counted scenario runs."
+  },
+  "S11b_requested_supplement": {
+    "claude_successful_writes": 50,
+    "claude_shell_or_Write": 0,
+    "codex_successful_writes": 19,
+    "codex_shell_writes": 4,
+    "codex_shell_fraction": 0.21052631578947367,
+    "structural_damage_count": 1,
+    "case": "S11-4-r4",
+    "evidence": "harness-and-structure-supplement.json",
+    "new_model_runs_for_supplement": 0
+  }
+}
