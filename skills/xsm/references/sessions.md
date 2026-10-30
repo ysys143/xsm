@@ -81,6 +81,10 @@ it builds on the item's current version, and if two members wrote the same item
 at once both versions show until someone sets it again. Put a team-wide fact on
 the board, not in a DM; a DM that carries one points to the board instead. A
 direct edit of BOARD.md is not lost (it is taken as a node), but `set` is the way.
+When a board you are on changes, your next prompt gets one `[xsm] board <team>: …`
+line naming the items; it is not repeated until something new arrives. Read the
+board when the items concern your work (`xsm board show <team>`, which also stops
+the line); `xsm board mute <team>` turns the lines off for this session.
 
 Address by `name`, `name@home`, `name [ref]`, or `ref:xxxxxx`. The target is
 resolved when you send, so do not re-run `xsm list` to check that a session

@@ -215,19 +215,25 @@ def set_item(me: dict, team_name: str, item: str, text: str, tag: str | None = N
     except doc.DocError as exc:
         raise BoardError(str(exc))
     render(team["name"])
-    from . import board_sync
+    from . import board_notice, board_sync
+    board_notice.mark_read(me, team["name"], nodes=[node["id"]])
     node["sync_notes"] = board_sync.publish(team, [node])
     return node
 
 
 def show(me: dict, team_name: str) -> str:
+    from . import board_notice
     team = _require_member(me, team_name)
-    return render(team["name"])
+    text = render(team["name"])
+    board_notice.mark_read(me, team["name"])
+    return text
 
 
 def log(me: dict, team_name: str, item: str | None = None) -> list:
+    from . import board_notice
     team = _require_member(me, team_name)
     nodes = doc.read(path(team["name"]))
+    board_notice.mark_read(me, team["name"])
     return [n for n in nodes if item is None or n.get("item") == item]
 
 
@@ -256,7 +262,8 @@ def load_decision(team: str, ident: str) -> dict | None:
     if not isinstance(ident, str) or not re.fullmatch(r"[0-9a-f]{12}", ident):
         return None
     try:
-        rec = json.load(open(os.path.join(decisions_dir(team), ident + ".json"), encoding="utf-8"))
+        with open(os.path.join(decisions_dir(team), ident + ".json"), encoding="utf-8") as fh:
+            rec = json.load(fh)
     except (OSError, ValueError):
         return None
     return rec if isinstance(rec, dict) and decision_id(rec) == ident else None
@@ -319,7 +326,10 @@ def record_decision(me: dict, team_name: str, question: str, answer: str, *, via
         except doc.DocError as exc:
             raise BoardError(str(exc))
     render(team["name"])
-    from . import board_sync
+    from . import board_notice, board_sync
+    if me is not None:
+        board_notice.mark_read(me, team["name"], nodes=[node["id"]] if node else [],
+                               decisions=[record["id"]])
     record["sync_notes"] = board_sync.publish(team, [node] if node else [], decisions=[record])
     record["node"] = node["id"] if node else None
     return record

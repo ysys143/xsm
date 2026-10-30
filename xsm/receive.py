@@ -419,7 +419,7 @@ def _handle(data: dict) -> dict | None:
 
 def _with_bounces(runtime: str, me: dict | None, out: dict | None) -> dict | None:
     """Add, once, the notes left for this session about its held SendMessages
-    (issue #8). A refused prompt cannot carry context, so they wait for the
+    (issue #8), and a line per team board that changed (board_notice). A refused prompt cannot carry context, so they wait for the
     next one that goes through."""
     if not me or (out is not None and "decision" in out):
         return out
@@ -427,7 +427,13 @@ def _with_bounces(runtime: str, me: dict | None, out: dict | None) -> dict | Non
         from . import bounce
         notes = bounce.notice(me.get("session_id"))
     except Exception:                   # noqa: BLE001 - a note must not cost the prompt
-        return out
+        notes = None
+    try:
+        from . import board_notice
+        board = board_notice.notice(me)
+    except Exception:                   # noqa: BLE001 - nor a board line
+        board = None
+    notes = "\n\n".join(n for n in (notes, board) if n)
     if not notes:
         return out
     if out is None:

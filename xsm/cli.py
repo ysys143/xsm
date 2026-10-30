@@ -1168,9 +1168,15 @@ def cmd_board(args) -> int:
                                    (" (item %s)" % r["item"]) if r.get("item") else "") for r in rows)
                 or "no decisions recorded beside %s's board" % args.team)
             return OK
+        if args.action == "mute":
+            from . import board_notice
+            team = board._require_member(me, args.team)
+            board_notice.mute(me, team["name"], on=not args.off)
+            print("%s board %s's change lines for this session" % ("unmuted" if args.off else "muted",
+                                                                   team["name"]))
+            return OK
         if args.action == "sync":
-            team = teams.require(args.team)
-            board.show(me, args.team)                 # a member only
+            team = board._require_member(me, args.team)
             notes = board_sync.sync(team)
             print("\n".join(notes) if notes else "sent every node of %s's board to its other machines"
                   % team["name"])
@@ -2873,14 +2879,15 @@ def build_parser() -> argparse.ArgumentParser:
     tm.add_argument("--off", action="store_true", help="mute: unmute")
     tm.add_argument("--json", action="store_true")
     tm.set_defaults(func=cmd_team)
-    bd = sub.add_parser("board", help="a team's board: show, set <team> <item> --text, log, sync")
-    bd.add_argument("action", choices=["show", "set", "log", "sync", "decisions", "decide"])
+    bd = sub.add_parser("board", help="a team's board: show, set <team> <item> --text, log, sync, mute")
+    bd.add_argument("action", choices=["show", "set", "log", "sync", "decisions", "decide", "mute"])
     bd.add_argument("team")
     bd.add_argument("item", nargs="?", help="set/log: the item, e.g. 'decision: cache' or 'owner/bee'")
     bd.add_argument("--text")
     bd.add_argument("--text-file", help="file path, or - for stdin")
     bd.add_argument("--tag", help="optional; default update")
     bd.add_argument("--json", action="store_true")
+    bd.add_argument("--off", action="store_true", help="mute: show the change lines again")
     bd.set_defaults(func=cmd_board)
     service=sub.add_parser("owned",help="journal requests to an explicitly owned headless worker")
     service.add_argument("action",choices=["create","run","status","retry","reconcile"])

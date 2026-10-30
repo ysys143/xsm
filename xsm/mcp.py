@@ -217,9 +217,11 @@ TOOLS = [
                      "what, progress), one entry per item. show renders it; set writes an item "
                      "(it builds on the item's current version, and settles two versions written "
                      "at once); log lists the nodes. Members only. Put team-wide facts here, not in "
-                     "DMs; a DM that carries one points here instead."),
+                     "DMs; a DM that carries one points here instead. A changed board is named in "
+                     "one line at your next prompt; mute/unmute turns those lines off for this "
+                     "session."),
      "inputSchema": {"type": "object", "properties": {
-         "action": {"type": "string", "enum": ["show", "set", "log"]},
+         "action": {"type": "string", "enum": ["show", "set", "log", "mute", "unmute"]},
          "team": {"type": "string"},
          "item": {"type": "string", "description": "set/log: e.g. 'decision: cache' or 'owner/bee'"},
          "text": {"type": "string", "description": MESSAGE_TEXT_DESCRIPTION},
@@ -1137,9 +1139,14 @@ class Server:
                                           args.get("text") or "", tag=args.get("tag"))
                     return "\n".join(["set %s (node %s)" % (args.get("item"), node["id"])]
                                      + (node.get("sync_notes") or []))
+                if args.get("action") in ("mute", "unmute"):
+                    from . import board_notice
+                    team = board._require_member(me, args.get("team") or "")
+                    board_notice.mute(me, team["name"], on=args["action"] == "mute")
+                    return "%sd board %s's change lines for this session" % (args["action"], team["name"])
             except board.BoardError as exc:
                 raise channel.ChannelError(str(exc))
-            raise channel.ChannelError("action is show, set or log")
+            raise channel.ChannelError("action is show, set, log, mute or unmute")
         if name == "xsm_ack":
             from . import receive
             tokens = args.get("tokens")
