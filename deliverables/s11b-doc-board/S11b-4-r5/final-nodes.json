@@ -1,0 +1,12 @@
+{
+  "1b83719f7659.md": "---\nid: 1b83719f7659\nt: 2026-10-30T15:00:19+0900\nauthor: codex-516fbf@codex-home [b61d46]\nauthor_kind: agent\ntags: result\nparents: 55f0ce84208d\n---\n\n담당: C — S11b-4-r5-C-05e3743079\n",
+  "8f85e1bd074f.md": "---\nid: 8f85e1bd074f\nt: 2026-10-30T15:00:08+0900\nauthor: S11b setup fixture (person)\nauthor_kind: human\ntags: setup\nparents: cbb4529e7619\n---\n\n## 진행 기록\n대기.\n",
+  "cbb4529e7619.md": "---\nid: cbb4529e7619\nt: 2026-10-30T15:00:08+0900\nauthor: S11b setup fixture (person)\nauthor_kind: human\ntags: report\nparents: \n---\n\n# 공동 작업 보드\n\n## 결정: 캐시 전략\n아직 결정 없음.\n\n## 담당: A\n대기.\n\n## 담당: B\n대기.\n\n## 담당: C\n대기.\n\n## 진행 기록\n실험 시작.\n",
+  "fb06cfb33755.md": "---\nid: fb06cfb33755\nt: 2026-10-30T15:00:08+0900\nauthor: S11b setup fixture (person)\nauthor_kind: human\ntags: setup\nparents: cbb4529e7619\n---\n\n## 결정: 캐시 전략\n대기.\n",
+  "55f0ce84208d.md": "---\nid: 55f0ce84208d\nt: 2026-10-30T15:00:08+0900\nauthor: S11b setup fixture (person)\nauthor_kind: human\ntags: setup\nparents: cbb4529e7619\n---\n\n## 담당: C\n대기.\n",
+  "233fa39542ad.md": "---\nid: 233fa39542ad\nt: 2026-10-30T15:00:34+0900\nauthor: wt-a-5d@claude-home [0ce65f]\nauthor_kind: agent\ntags: result\nparents: 97d501defbdf\n---\n\n담당: A\n",
+  "fb2fefb38d57.md": "---\nid: fb2fefb38d57\nt: 2026-10-30T15:00:30+0900\nauthor: wt-a-5d@claude-home [0ce65f]\nauthor_kind: agent\ntags: result\nparents: fb06cfb33755\n---\n\n결정: 캐시 전략\\nA 결정: cache-choice-3eb8c3bb7d5345559a314b232284cc5c\n",
+  "97d501defbdf.md": "---\nid: 97d501defbdf\nt: 2026-10-30T15:00:08+0900\nauthor: S11b setup fixture (person)\nauthor_kind: human\ntags: setup\nparents: cbb4529e7619\n---\n\n## 담당: A\n대기.\n",
+  "723a8b87a518.md": "---\nid: 723a8b87a518\nt: 2026-10-30T15:00:08+0900\nauthor: S11b setup fixture (person)\nauthor_kind: human\ntags: setup\nparents: cbb4529e7619\n---\n\n## 담당: B\n대기.\n",
+  "d572db0b3cd2.md": "---\nid: d572db0b3cd2\nt: 2026-10-30T15:00:56+0900\nauthor: wt-b-20@claude-home [045274]\nauthor_kind: agent\ntags: result\nparents: 723a8b87a518\n---\n\n담당: B — S11b-4-r5-B-d0105b35e7; A 결정 원문: 결정: 캐시 전략\\nA 결정: cache-choice-3eb8c3bb7d5345559a314b232284cc5c\n"
+}

@@ -1,0 +1,1 @@
+{"items":[{"id":"B01-03","title":"T09 진행","quote":"상품 상세 캐시의 저장소를 Redis에서 프로세스 메모리로 바꾼다.","reason":"상품 캐시가 Redis에 저장된다는 작업 전제가 변경된다."},{"id":"B01-04","title":"T10 결정","quote":"Echo가 cache-staging을 오늘 18시까지 독점 사용한다.","reason":"세션에 필요한 cache-staging 자원을 다른 작업자가 독점 사용한다."}]}

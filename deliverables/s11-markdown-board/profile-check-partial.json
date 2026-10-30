@@ -1,0 +1,20 @@
+[
+  {
+    "path": "/Users/jaesolshin/.claude-3/settings.json",
+    "unchanged": true,
+    "before_mtime_ns": 1793327614839003745,
+    "current_mtime_ns": 1793327614839003745
+  },
+  {
+    "path": "/Users/jaesolshin/.codex-3/config.toml",
+    "unchanged": false,
+    "before_mtime_ns": 1793335976145903977,
+    "current_mtime_ns": 1793337424617172026
+  },
+  {
+    "path": "/Users/jaesolshin/.opencodex/config.json",
+    "unchanged": true,
+    "before_mtime_ns": 1793169133627141301,
+    "current_mtime_ns": 1793169133627141301
+  }
+]

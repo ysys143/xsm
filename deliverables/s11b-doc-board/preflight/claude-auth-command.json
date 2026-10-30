@@ -1,0 +1,17 @@
+[
+  "/Users/jaesolshin/.local/bin/claude",
+  "-p",
+  "--model",
+  "ocx-claude-native--gpt-6-luna",
+  "--effort",
+  "low",
+  "--output-format",
+  "stream-json",
+  "--verbose",
+  "--no-session-persistence",
+  "--safe-mode",
+  "--tools",
+  "",
+  "--",
+  "Reply S11B_ISOLATED_CLAUDE_OK only."
+]

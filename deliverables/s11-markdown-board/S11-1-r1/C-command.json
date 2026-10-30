@@ -1,0 +1,28 @@
+{
+  "actor": "C",
+  "harness": "codex",
+  "argv": [
+    "/Users/jaesolshin/.nvm/versions/node/v24.19.0/bin/codex",
+    "exec",
+    "--ignore-user-config",
+    "--ephemeral",
+    "-C",
+    "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11-va4hq9ed/cases/S11-1-r1/repo",
+    "-s",
+    "workspace-write",
+    "-m",
+    "openai/gpt-6-luna",
+    "-c",
+    "model_provider=\"s11_ocx\"",
+    "-c",
+    "model_providers.s11_ocx={name=\"S11 OCX\",base_url=\"http://127.0.0.1:10100/v1\",wire_api=\"responses\",requires_openai_auth=true}",
+    "-c",
+    "model_reasoning_effort=\"low\"",
+    "--json",
+    "--",
+    "공동 작업 보드 /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11-va4hq9ed/cases/S11-1-r1/repo/BOARD.md를 다른 참여자와 함께 쓰고 있습니다. 당신은 참여자 C입니다. 지정된 보드와 필요한 준비 파일 외의 자료를 읽거나 고치지 마세요. 사용자 프로젝트·설정·권한을 변경하거나 외부 메시지를 보내지 마세요. 작업을 끝내고 결과를 짧게 보고하세요.\n보드의 '담당: C' 항목을 'S11-1-r1-C-a57c368985c3'로 갱신하고, '진행 기록'에 'S11-1-r1-C-a57c368985c3-progress' 한 줄을 추가하세요."
+  ],
+  "cwd": "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11-va4hq9ed/cases/S11-1-r1/repo",
+  "stdin": "DEVNULL",
+  "session_id_requested": null
+}

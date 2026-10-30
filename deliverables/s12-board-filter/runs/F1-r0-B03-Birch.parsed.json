@@ -1,0 +1,16 @@
+{
+  "items": [
+    {
+      "id": "B03-07",
+      "title": "T13 검토",
+      "quote": "cache-staging 예약을 다른 작업의 장시간 부하 시험에 배정했다.",
+      "reason": "세션이 필요로 하는 cache-staging 자원이 다른 작업의 장시간 부하 시험에 점유되었다."
+    },
+    {
+      "id": "B03-08",
+      "title": "T14 의존성",
+      "quote": "src/cache/products.ts의 수정 사항에 리뷰가 필요하다.",
+      "reason": "세션이 수정하는 src/cache/products.ts 파일에 대한 리뷰 의존성이 생겼다."
+    }
+  ]
+}

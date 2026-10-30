@@ -1,0 +1,16 @@
+{
+  "items": [
+    {
+      "id": "B08-05",
+      "title": "T15 일정",
+      "quote": "Birch의 상품 캐시 패치에 대한 리뷰어를 Foxtrot으로 바꾼다.",
+      "reason": "Birch의 상품 캐시 패치를 직접 지목하며, 해당 작업의 리뷰 담당이 바뀌어 Birch가 알아야 한다."
+    },
+    {
+      "id": "B08-06",
+      "title": "T16 운영",
+      "quote": "cache-staging의 남은 사용 시간을 다른 팀이 전부 예약했다.",
+      "reason": "Birch가 필요로 하는 cache-staging 자원의 남은 사용 시간이 다른 팀에 점유되어 있다."
+    }
+  ]
+}

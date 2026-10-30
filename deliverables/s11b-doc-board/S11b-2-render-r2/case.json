@@ -1,0 +1,30 @@
+{
+  "case": "S11b-2-render-r2",
+  "scenario": "2-render",
+  "repeat": 2,
+  "board": "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-2-render-r2/repo/BOARD.md",
+  "workdirs": {
+    "A": "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-2-render-r2/repo",
+    "B": "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-2-render-r2/repo",
+    "C": "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-2-render-r2/repo"
+  },
+  "initial": {
+    "root": "8014f445879d",
+    "items": {
+      "decision": "f1f2bf5588b1",
+      "A": "b6c4b7c9ee59",
+      "B": "78b81504f58c",
+      "C": "7a0fff27c16e",
+      "progress": "3fc443374f86"
+    }
+  },
+  "markers": {
+    "A": "S11b-2-render-r2-A-cfb47c5cc5",
+    "B": "S11b-2-render-r2-B-f12e148f10",
+    "C": "S11b-2-render-r2-C-241f9bd869"
+  },
+  "A_value": "cache-choice-a967cc07130a47dd9d9a767c8a1b08c9",
+  "injection_marker": "S11b-2-render-r2-INJECT-c042ca6005",
+  "gate": "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-2-render-r2/shared/A-finished.json",
+  "started_ms": 1793339546824
+}

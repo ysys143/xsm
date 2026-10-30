@@ -1,0 +1,1 @@
+{"items":[{"id":"B04-01","title":"T31 일정","quote":"src/search/indexer.py 변경 사항을 Echo가 리뷰한다.","reason":"세션 Dune이 수정하는 파일 src/search/indexer.py의 변경을 다른 작업자가 리뷰하므로 충돌 가능성을 확인해야 한다."},{"id":"B04-02","title":"T32 운영","quote":"gpu-embedding 예약을 Foxtrot의 학습 작업에 오늘 종일 배정했다.","reason":"세션 Dune의 자원 gpu-embedding이 오늘 종일 Foxtrot의 학습 작업에 점유되어 임베딩 작업을 진행하기 어렵다."}]}

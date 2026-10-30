@@ -1,0 +1,12 @@
+{
+  "26bcf348a970.md": "---\nid: 26bcf348a970\nt: 2026-10-30T14:51:27+0900\nauthor: codex-b87704@codex-home [2b74c6]\nauthor_kind: agent\ntags: report\nparents: 1baa4ce6d404\n---\n\nS11b-1-r4-C-20e5c91ecb-progress\n",
+  "9077705782cf.md": "---\nid: 9077705782cf\nt: 2026-10-30T14:51:35+0900\nauthor: repo-b9@claude-home [ab7c0a]\nauthor_kind: agent\ntags: report\nparents: 1baa4ce6d404\n---\n\nS11b-1-r4-A-447d60692f-progress\n",
+  "cdbf21500c31.md": "---\nid: cdbf21500c31\nt: 2026-10-30T14:51:16+0900\nauthor: S11b setup fixture (person)\nauthor_kind: human\ntags: setup\nparents: 7abd0252f720\n---\n\n## 담당: A\n대기.\n",
+  "8b508bdc400b.md": "---\nid: 8b508bdc400b\nt: 2026-10-30T14:51:16+0900\nauthor: S11b setup fixture (person)\nauthor_kind: human\ntags: setup\nparents: 7abd0252f720\n---\n\n## 결정: 캐시 전략\n대기.\n",
+  "1eaca48193d8.md": "---\nid: 1eaca48193d8\nt: 2026-10-30T14:51:16+0900\nauthor: S11b setup fixture (person)\nauthor_kind: human\ntags: setup\nparents: 7abd0252f720\n---\n\n## 담당: C\n대기.\n",
+  "7abd0252f720.md": "---\nid: 7abd0252f720\nt: 2026-10-30T14:51:16+0900\nauthor: S11b setup fixture (person)\nauthor_kind: human\ntags: report\nparents: \n---\n\n# 공동 작업 보드\n\n## 결정: 캐시 전략\n아직 결정 없음.\n\n## 담당: A\n대기.\n\n## 담당: B\n대기.\n\n## 담당: C\n대기.\n\n## 진행 기록\n실험 시작.\n",
+  "5e5ecacda151.md": "---\nid: 5e5ecacda151\nt: 2026-10-30T14:51:27+0900\nauthor: codex-b87704@codex-home [2b74c6]\nauthor_kind: agent\ntags: result\nparents: 1eaca48193d8\n---\n\n## 담당: C\nS11b-1-r4-C-20e5c91ecb\n",
+  "c0925ccc8750.md": "---\nid: c0925ccc8750\nt: 2026-10-30T14:51:35+0900\nauthor: repo-b9@claude-home [ab7c0a]\nauthor_kind: agent\ntags: report\nparents: cdbf21500c31\n---\n\nS11b-1-r4-A-447d60692f\n",
+  "1baa4ce6d404.md": "---\nid: 1baa4ce6d404\nt: 2026-10-30T14:51:16+0900\nauthor: S11b setup fixture (person)\nauthor_kind: human\ntags: setup\nparents: 7abd0252f720\n---\n\n## 진행 기록\n대기.\n",
+  "4ddfa761c8e7.md": "---\nid: 4ddfa761c8e7\nt: 2026-10-30T14:51:16+0900\nauthor: S11b setup fixture (person)\nauthor_kind: human\ntags: setup\nparents: 7abd0252f720\n---\n\n## 담당: B\n대기.\n"
+}

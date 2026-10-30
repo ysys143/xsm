@@ -1,0 +1,1 @@
+{"items":[{"id":"B03-01","title":"T21 검토","quote":"web/sales/chart.tsx에 대한 디자인 검토가 필요하다.","reason":"Cedar가 수정할 web/sales/chart.tsx에 디자인 검토가 필요하다는 직접 관련 변경이다."},{"id":"B03-02","title":"T22 의존성","quote":"preview-slot을 다른 팀 데모에 배정하여 오늘은 비어 있지 않다.","reason":"Cedar가 필요로 하는 자원 preview-slot이 다른 팀 데모에 배정되어 오늘 사용할 수 없다."}]}

@@ -1,0 +1,16 @@
+{
+  "items": [
+    {
+      "id": "B04-05",
+      "title": "T15 일정",
+      "quote": "Echo가 상품 갱신 이벤트의 중복 수신에 대한 캐시 제거 패치를 작성한다.",
+      "reason": "상품 갱신 이벤트 중복 수신 시 캐시 제거를 Echo가 따로 작성하므로 Birch의 무효화 작업과 업무가 겹친다."
+    },
+    {
+      "id": "B04-06",
+      "title": "T16 운영",
+      "quote": "상품 갱신 이벤트 명칭을 item.updated에서 catalog.changed로 바꾼다.",
+      "reason": "Birch의 전제인 상품 갱신 이벤트명 item.updated가 변경되어 작업 전제가 달라진다."
+    }
+  ]
+}

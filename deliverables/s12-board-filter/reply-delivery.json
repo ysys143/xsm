@@ -1,0 +1,5 @@
+{
+  "returncode": 0,
+  "stdout": "delivered: receiver recorded it (id 3a653bb2d0c34424)\n",
+  "stderr": "[xsm] 1 message from other sessions waiting for you; read with `xsm inbox` (or the xsm_inbox MCP tool) before waiting again.\n"
+}

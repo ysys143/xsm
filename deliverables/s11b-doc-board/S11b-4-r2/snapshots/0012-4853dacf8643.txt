@@ -1,0 +1,10 @@
+---
+id: c088f2469fdf
+t: 2026-10-30T14:58:21+0900
+author: wt-b-1d@claude-home [e62ebc]
+author_kind: agent
+tags: result
+parents: 184f0f840268
+---
+
+담당: B — S11b-4-r2-B-0d2388b701. A 결정 원문: A 결정: cache-choice-2b90a2c443aa4ff98a95bf7e598e68d6

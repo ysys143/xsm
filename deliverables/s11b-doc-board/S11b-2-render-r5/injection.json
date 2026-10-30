@@ -1,0 +1,9 @@
+[
+  {
+    "status": "injected",
+    "kind": "render",
+    "marker": "S11b-2-render-r5-INJECT-ee2d9d691e",
+    "at_ns": 220978562658083,
+    "delay_after_read_seconds": 0.09408359140636562
+  }
+]

@@ -1,0 +1,69 @@
+{
+  "debate_rounds": [
+    {
+      "round": 1,
+      "request_id": "channel-design-debate-20261030-r1",
+      "reply_id": "def81d63036b4ae0",
+      "outcome": null,
+      "verified_request_ack": true
+    },
+    {
+      "round": 2,
+      "request_id": "channel-design-debate-20261030-r2",
+      "reply_id": "e4b0df54285747ab",
+      "outcome": null,
+      "verified_request_ack": true
+    },
+    {
+      "round": 3,
+      "request_id": "channel-design-debate-20261030-r3",
+      "reply_id": "7011f39553634b85",
+      "outcome": "succeeded",
+      "verified_request_ack": true
+    },
+    {
+      "round": 4,
+      "request_id": "channel-design-debate-20261030-r4",
+      "reply_id": "e8a42b9bd4f14f1c",
+      "outcome": "succeeded",
+      "verified_request_ack": true
+    }
+  ],
+  "acceptance_cases": 19,
+  "acceptance_case_status": "all not executed; design only",
+  "unresolved_policy_groups": 7,
+  "local_link_missing": [],
+  "missing_link_negative_control": "rejected",
+  "source_snapshot_files": 16,
+  "source_drift": [],
+  "coordinator_doc_language": "Korean prose checked for accidental Japanese/CJK",
+  "trailing_whitespace": [],
+  "last_peer_review": "R4 before coordinator revisions; post-R4 revisions not independently re-reviewed",
+  "peer_reported_metrics_and_other_user_preferences": "not independently verified; not used as approval or performance proof",
+  "product_tests_run": false,
+  "files": [
+    {
+      "path": "docs/plan/collaboration/channel-design-discussion.md",
+      "sha256": "1fd58a2430aa1a9e1fd171c079a0f20d0ee8df32c6ecc9b692b2fd78cf13073d"
+    },
+    {
+      "path": "docs/references/dm-and-channels.md",
+      "sha256": "2efbaeb44fef832e09dc28236cd28ae1581d5056f6d750d514f52096279a06f3"
+    },
+    {
+      "path": "deliverables/channel-design-debate-20261030/transcript.md",
+      "sha256": "9197cc53337adba24f967c96b451c06037f5da02a1eb5c239edbd09ba3e84633"
+    },
+    {
+      "path": "deliverables/channel-design-debate-20261030/requests.md",
+      "sha256": "1645aa63925b8ee1558502a8a14227744f372b4844c38a02e81d73206f07a412"
+    }
+  ],
+  "closing_fyi": {
+    "id": "96c033e0a6fa4cdf",
+    "status": "stored",
+    "wake": "never",
+    "peer_consumed": null
+  },
+  "final_document_check": "passed after post-R4 revisions; no product test was run"
+}

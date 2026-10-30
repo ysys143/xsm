@@ -1,0 +1,1 @@
+{"items":[{"id":"B07-07","title":"## T13 검토","quote":"팀 Echo가 상품 수정 알림을 받으면 캐시를 비우는 기능에 착수했다.","reason":"Echo의 상품 캐시 무효화 작업과 업무가 겹칩니다."},{"id":"B07-08","title":"## T14 의존성","quote":"상품 변경 알림은 item.updated 대신 product.revised로만 발행한다.","reason":"상품 갱신 이벤트 전제가 item.updated에서 product.revised로 변경됩니다."}]}

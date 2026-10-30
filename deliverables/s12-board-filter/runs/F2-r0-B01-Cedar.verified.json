@@ -1,0 +1,42 @@
+{
+  "name": "F2-r0-B01-Cedar",
+  "command": [
+    "codex",
+    "exec",
+    "--model",
+    "openai/gpt-6-luna",
+    "--ephemeral",
+    "--sandbox",
+    "read-only",
+    "--json",
+    "--color",
+    "never",
+    "-c",
+    "mcp_servers.reason-network.enabled=false",
+    "-c",
+    "model_reasoning_effort=\"low\"",
+    "-"
+  ],
+  "started_at": "2026-10-30T05:21:44.111523+00:00",
+  "prompt_sha256": "c2b5b32893b2c0a8e6ca65b6bad8f24c287ca459e797b4dac6c8cd2b58730bcc",
+  "returncode": 0,
+  "elapsed_seconds": 5.6057573330181185,
+  "response_models": [
+    "gpt-6-luna"
+  ],
+  "codex_usage": [
+    {
+      "input_tokens": 20466,
+      "cached_input_tokens": 0,
+      "cache_write_input_tokens": 0,
+      "output_tokens": 123,
+      "reasoning_output_tokens": 0
+    }
+  ],
+  "thread_ids": [
+    "01a18b41-bf63-7fa2-a643-a8e63c0729ba"
+  ],
+  "proxy_requests": 1,
+  "finished_at": "2026-10-30T05:21:50.040586+00:00",
+  "evidence_correction": "sha256(thread-id)[:32] correlation; original .meta/.proxy retained"
+}

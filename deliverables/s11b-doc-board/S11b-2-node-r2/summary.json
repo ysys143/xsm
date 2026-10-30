@@ -1,0 +1,517 @@
+{
+  "case": "S11b-2-node-r2",
+  "actors": {
+    "C": {
+      "actor": "C",
+      "native_session_id": "01a18b5f-b5b7-7cc0-bdc3-f4fde1892efc",
+      "conversation_hash": "fe3a71864dbbfad4508c49559a4b6cca",
+      "started_ms": 1793339667805,
+      "ended_ms": 1793339679070,
+      "exit_code": 0,
+      "timed_out": false,
+      "harness_success": true,
+      "model_evidence": {
+        "query_exit": 0,
+        "rows": [
+          {
+            "requestId": "ocx-e8740f9bec082dcfb9ff9132cd1d2b8d",
+            "timestamp": 1793339668320,
+            "conversationId": "fe3a71864dbbfad4508c49559a4b6cca",
+            "model": "gpt-6-luna",
+            "requestedModel": "openai/gpt-6-luna",
+            "resolvedModel": "gpt-6-luna",
+            "servedModel": "gpt-6-luna",
+            "provider": "openai",
+            "status": 200,
+            "inboundProtocol": "responses",
+            "terminalStatus": "completed",
+            "usageStatus": "reported",
+            "attempts": [
+              {
+                "provider": "openai",
+                "model": "gpt-6-luna",
+                "status": 200,
+                "ordinal": 1
+              }
+            ]
+          },
+          {
+            "requestId": "ocx-e7f7754d8dc092346613ccebc5579ff6",
+            "timestamp": 1793339671206,
+            "conversationId": "fe3a71864dbbfad4508c49559a4b6cca",
+            "model": "gpt-6-luna",
+            "requestedModel": "openai/gpt-6-luna",
+            "resolvedModel": "gpt-6-luna",
+            "servedModel": "gpt-6-luna",
+            "provider": "openai",
+            "status": 200,
+            "inboundProtocol": "responses",
+            "terminalStatus": "completed",
+            "usageStatus": "reported",
+            "attempts": [
+              {
+                "provider": "openai",
+                "model": "gpt-6-luna",
+                "status": 200,
+                "ordinal": 1
+              }
+            ]
+          },
+          {
+            "requestId": "ocx-f0ac9a8577ca9d825971bae76362ab5c",
+            "timestamp": 1793339673117,
+            "conversationId": "fe3a71864dbbfad4508c49559a4b6cca",
+            "model": "gpt-6-luna",
+            "requestedModel": "openai/gpt-6-luna",
+            "resolvedModel": "gpt-6-luna",
+            "servedModel": "gpt-6-luna",
+            "provider": "openai",
+            "status": 200,
+            "inboundProtocol": "responses",
+            "terminalStatus": "completed",
+            "usageStatus": "reported",
+            "attempts": [
+              {
+                "provider": "openai",
+                "model": "gpt-6-luna",
+                "status": 200,
+                "ordinal": 1
+              }
+            ]
+          },
+          {
+            "requestId": "ocx-2d48a2480af8b642f0a845407d2ba8e0",
+            "timestamp": 1793339675172,
+            "conversationId": "fe3a71864dbbfad4508c49559a4b6cca",
+            "model": "gpt-6-luna",
+            "requestedModel": "openai/gpt-6-luna",
+            "resolvedModel": "gpt-6-luna",
+            "servedModel": "gpt-6-luna",
+            "provider": "openai",
+            "status": 200,
+            "inboundProtocol": "responses",
+            "terminalStatus": "completed",
+            "usageStatus": "reported",
+            "attempts": [
+              {
+                "provider": "openai",
+                "model": "gpt-6-luna",
+                "status": 200,
+                "ordinal": 1
+              }
+            ]
+          },
+          {
+            "requestId": "ocx-e9638daeda20992f64ebcdacb4e34df2",
+            "timestamp": 1793339677117,
+            "conversationId": "fe3a71864dbbfad4508c49559a4b6cca",
+            "model": "gpt-6-luna",
+            "requestedModel": "openai/gpt-6-luna",
+            "resolvedModel": "gpt-6-luna",
+            "servedModel": "gpt-6-luna",
+            "provider": "openai",
+            "status": 200,
+            "inboundProtocol": "responses",
+            "terminalStatus": "completed",
+            "usageStatus": "reported",
+            "attempts": [
+              {
+                "provider": "openai",
+                "model": "gpt-6-luna",
+                "status": 200,
+                "ordinal": 1
+              }
+            ]
+          }
+        ],
+        "verified": true,
+        "scope": "conversation hash matches native session metadata; selected proxy fields only, no credentials"
+      }
+    },
+    "B": {
+      "actor": "B",
+      "native_session_id": "2ea944d4-f010-4729-a2dc-889693b84ca7",
+      "conversation_hash": "e589b8cdf87a1a78562cd8e7a4425541",
+      "started_ms": 1793339667805,
+      "ended_ms": 1793339688196,
+      "exit_code": 0,
+      "timed_out": false,
+      "harness_success": true,
+      "model_evidence": {
+        "query_exit": 0,
+        "rows": [
+          {
+            "requestId": "ocx-39eec5ecbbe3fb240799167409769b7d",
+            "timestamp": 1793339668464,
+            "conversationId": "e589b8cdf87a1a78562cd8e7a4425541",
+            "model": "gpt-6-luna",
+            "requestedModel": "gpt-6-luna",
+            "resolvedModel": "gpt-6-luna",
+            "servedModel": "gpt-6-luna",
+            "provider": "openai",
+            "status": 200,
+            "inboundProtocol": "messages",
+            "terminalStatus": "completed",
+            "usageStatus": "reported",
+            "attempts": [
+              {
+                "provider": "openai",
+                "model": "gpt-6-luna",
+                "status": 200,
+                "ordinal": 1
+              }
+            ]
+          },
+          {
+            "requestId": "ocx-7f1673f64fcc17ec19b31a5edb8355c6",
+            "timestamp": 1793339670763,
+            "conversationId": "e589b8cdf87a1a78562cd8e7a4425541",
+            "model": "gpt-6-luna",
+            "requestedModel": "gpt-6-luna",
+            "resolvedModel": "gpt-6-luna",
+            "servedModel": "gpt-6-luna",
+            "provider": "openai",
+            "status": 200,
+            "inboundProtocol": "messages",
+            "terminalStatus": "completed",
+            "usageStatus": "reported",
+            "attempts": [
+              {
+                "provider": "openai",
+                "model": "gpt-6-luna",
+                "status": 200,
+                "ordinal": 1
+              }
+            ]
+          },
+          {
+            "requestId": "ocx-1e01e41b679dc792fdfe102105d03b77",
+            "timestamp": 1793339673579,
+            "conversationId": "e589b8cdf87a1a78562cd8e7a4425541",
+            "model": "gpt-6-luna",
+            "requestedModel": "gpt-6-luna",
+            "resolvedModel": "gpt-6-luna",
+            "servedModel": "gpt-6-luna",
+            "provider": "openai",
+            "status": 200,
+            "inboundProtocol": "messages",
+            "terminalStatus": "completed",
+            "usageStatus": "reported",
+            "attempts": [
+              {
+                "provider": "openai",
+                "model": "gpt-6-luna",
+                "status": 200,
+                "ordinal": 1
+              }
+            ]
+          },
+          {
+            "requestId": "ocx-acc116136e964d21d0f95c792f86e214",
+            "timestamp": 1793339677055,
+            "conversationId": "e589b8cdf87a1a78562cd8e7a4425541",
+            "model": "gpt-6-luna",
+            "requestedModel": "gpt-6-luna",
+            "resolvedModel": "gpt-6-luna",
+            "servedModel": "gpt-6-luna",
+            "provider": "openai",
+            "status": 200,
+            "inboundProtocol": "messages",
+            "terminalStatus": "completed",
+            "usageStatus": "reported",
+            "attempts": [
+              {
+                "provider": "openai",
+                "model": "gpt-6-luna",
+                "status": 200,
+                "ordinal": 1
+              }
+            ]
+          },
+          {
+            "requestId": "ocx-e168581de2bf889e68a8a75bf316348a",
+            "timestamp": 1793339680779,
+            "conversationId": "e589b8cdf87a1a78562cd8e7a4425541",
+            "model": "gpt-6-luna",
+            "requestedModel": "gpt-6-luna",
+            "resolvedModel": "gpt-6-luna",
+            "servedModel": "gpt-6-luna",
+            "provider": "openai",
+            "status": 200,
+            "inboundProtocol": "messages",
+            "terminalStatus": "completed",
+            "usageStatus": "reported",
+            "attempts": [
+              {
+                "provider": "openai",
+                "model": "gpt-6-luna",
+                "status": 200,
+                "ordinal": 1
+              }
+            ]
+          },
+          {
+            "requestId": "ocx-6138f61759b07e2440987f65d3644aa8",
+            "timestamp": 1793339684580,
+            "conversationId": "e589b8cdf87a1a78562cd8e7a4425541",
+            "model": "gpt-6-luna",
+            "requestedModel": "gpt-6-luna",
+            "resolvedModel": "gpt-6-luna",
+            "servedModel": "gpt-6-luna",
+            "provider": "openai",
+            "status": 200,
+            "inboundProtocol": "messages",
+            "terminalStatus": "completed",
+            "usageStatus": "reported",
+            "attempts": [
+              {
+                "provider": "openai",
+                "model": "gpt-6-luna",
+                "status": 200,
+                "ordinal": 1
+              }
+            ]
+          }
+        ],
+        "verified": true,
+        "scope": "conversation hash matches native session metadata; selected proxy fields only, no credentials"
+      }
+    },
+    "A": {
+      "actor": "A",
+      "native_session_id": "b8b0459f-a68b-4f62-bb6e-7aab75a6bca8",
+      "conversation_hash": "72e41cc861d7468507083b734414bab6",
+      "started_ms": 1793339667805,
+      "ended_ms": 1793339693596,
+      "exit_code": 0,
+      "timed_out": false,
+      "harness_success": true,
+      "model_evidence": {
+        "query_exit": 0,
+        "rows": [
+          {
+            "requestId": "ocx-d2b38c65e81f30c11535cd4929c8e29c",
+            "timestamp": 1793339668470,
+            "conversationId": "72e41cc861d7468507083b734414bab6",
+            "model": "gpt-6-luna",
+            "requestedModel": "gpt-6-luna",
+            "resolvedModel": "gpt-6-luna",
+            "servedModel": "gpt-6-luna",
+            "provider": "openai",
+            "status": 200,
+            "inboundProtocol": "messages",
+            "terminalStatus": "completed",
+            "usageStatus": "reported",
+            "attempts": [
+              {
+                "provider": "openai",
+                "model": "gpt-6-luna",
+                "status": 200,
+                "ordinal": 1
+              }
+            ]
+          },
+          {
+            "requestId": "ocx-1014ee2ed2aff043a0678890198e4fc7",
+            "timestamp": 1793339670804,
+            "conversationId": "72e41cc861d7468507083b734414bab6",
+            "model": "gpt-6-luna",
+            "requestedModel": "gpt-6-luna",
+            "resolvedModel": "gpt-6-luna",
+            "servedModel": "gpt-6-luna",
+            "provider": "openai",
+            "status": 200,
+            "inboundProtocol": "messages",
+            "terminalStatus": "completed",
+            "usageStatus": "reported",
+            "attempts": [
+              {
+                "provider": "openai",
+                "model": "gpt-6-luna",
+                "status": 200,
+                "ordinal": 1
+              }
+            ]
+          },
+          {
+            "requestId": "ocx-a4cf2d6575fc00495ae200c0ddebc113",
+            "timestamp": 1793339674230,
+            "conversationId": "72e41cc861d7468507083b734414bab6",
+            "model": "gpt-6-luna",
+            "requestedModel": "gpt-6-luna",
+            "resolvedModel": "gpt-6-luna",
+            "servedModel": "gpt-6-luna",
+            "provider": "openai",
+            "status": 200,
+            "inboundProtocol": "messages",
+            "terminalStatus": "completed",
+            "usageStatus": "reported",
+            "attempts": [
+              {
+                "provider": "openai",
+                "model": "gpt-6-luna",
+                "status": 200,
+                "ordinal": 1
+              }
+            ]
+          },
+          {
+            "requestId": "ocx-8d0e5ca4c42ba2e526460114a7dc4ae5",
+            "timestamp": 1793339679594,
+            "conversationId": "72e41cc861d7468507083b734414bab6",
+            "model": "gpt-6-luna",
+            "requestedModel": "gpt-6-luna",
+            "resolvedModel": "gpt-6-luna",
+            "servedModel": "gpt-6-luna",
+            "provider": "openai",
+            "status": 200,
+            "inboundProtocol": "messages",
+            "terminalStatus": "completed",
+            "usageStatus": "reported",
+            "attempts": [
+              {
+                "provider": "openai",
+                "model": "gpt-6-luna",
+                "status": 200,
+                "ordinal": 1
+              }
+            ]
+          },
+          {
+            "requestId": "ocx-2622258f89491e9033fc31c94eafe8c8",
+            "timestamp": 1793339682242,
+            "conversationId": "72e41cc861d7468507083b734414bab6",
+            "model": "gpt-6-luna",
+            "requestedModel": "gpt-6-luna",
+            "resolvedModel": "gpt-6-luna",
+            "servedModel": "gpt-6-luna",
+            "provider": "openai",
+            "status": 200,
+            "inboundProtocol": "messages",
+            "terminalStatus": "completed",
+            "usageStatus": "reported",
+            "attempts": [
+              {
+                "provider": "openai",
+                "model": "gpt-6-luna",
+                "status": 200,
+                "ordinal": 1
+              }
+            ]
+          },
+          {
+            "requestId": "ocx-1825929ab29d6e257a297df09b672eb6",
+            "timestamp": 1793339686182,
+            "conversationId": "72e41cc861d7468507083b734414bab6",
+            "model": "gpt-6-luna",
+            "requestedModel": "gpt-6-luna",
+            "resolvedModel": "gpt-6-luna",
+            "servedModel": "gpt-6-luna",
+            "provider": "openai",
+            "status": 200,
+            "inboundProtocol": "messages",
+            "terminalStatus": "completed",
+            "usageStatus": "reported",
+            "attempts": [
+              {
+                "provider": "openai",
+                "model": "gpt-6-luna",
+                "status": 200,
+                "ordinal": 1
+              }
+            ]
+          },
+          {
+            "requestId": "ocx-52336bb6af2fecaab0a9e65f0e6a9a0b",
+            "timestamp": 1793339690100,
+            "conversationId": "72e41cc861d7468507083b734414bab6",
+            "model": "gpt-6-luna",
+            "requestedModel": "gpt-6-luna",
+            "resolvedModel": "gpt-6-luna",
+            "servedModel": "gpt-6-luna",
+            "provider": "openai",
+            "status": 200,
+            "inboundProtocol": "messages",
+            "terminalStatus": "completed",
+            "usageStatus": "reported",
+            "attempts": [
+              {
+                "provider": "openai",
+                "model": "gpt-6-luna",
+                "status": 200,
+                "ordinal": 1
+              }
+            ]
+          }
+        ],
+        "verified": true,
+        "scope": "conversation hash matches native session metadata; selected proxy fields only, no credentials"
+      }
+    }
+  },
+  "node_count": 10,
+  "rendered_bytes": 949,
+  "injection": [
+    {
+      "status": "injected",
+      "kind": "node",
+      "marker": "S11b-2-node-r2-INJECT-2a18e25466",
+      "node_id": "45e6f3334e04",
+      "at_ns": 221030888607166,
+      "delay_after_read_seconds": 0.15985986765877724
+    }
+  ],
+  "all_models_verified": true,
+  "all_harnesses_success": true,
+  "protected_checks": [
+    {
+      "path": "/Users/jaesolshin/.codex/config.toml",
+      "unchanged": true
+    },
+    {
+      "path": "/Users/jaesolshin/.codex-2/config.toml",
+      "unchanged": true
+    },
+    {
+      "path": "/Users/jaesolshin/.codex-3/config.toml",
+      "unchanged": true
+    },
+    {
+      "path": "/Users/jaesolshin/.claude-science/settings.json",
+      "unchanged": true
+    },
+    {
+      "path": "/Users/jaesolshin/.claude/settings.json",
+      "unchanged": true
+    },
+    {
+      "path": "/Users/jaesolshin/.claude-shared/settings.json",
+      "unchanged": true
+    },
+    {
+      "path": "/Users/jaesolshin/.claude-dev/settings.json",
+      "unchanged": true
+    },
+    {
+      "path": "/Users/jaesolshin/.claude-2/settings.json",
+      "unchanged": true
+    },
+    {
+      "path": "/Users/jaesolshin/.claude-3/settings.json",
+      "unchanged": true
+    },
+    {
+      "path": "/Users/jaesolshin/.claude-4/settings.json",
+      "unchanged": true
+    },
+    {
+      "path": "/Users/jaesolshin/.opencodex/config.json",
+      "unchanged": true
+    },
+    {
+      "path": "/Users/jaesolshin/.xsm/config.json",
+      "unchanged": true
+    }
+  ],
+  "ended_ms": 1793339693599
+}

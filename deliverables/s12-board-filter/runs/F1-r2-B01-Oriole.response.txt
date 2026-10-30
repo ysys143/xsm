@@ -1,0 +1,1 @@
+{"items":[{"id":"B01-01","title":"T01 진행","quote":"Oriole가 auth-refresh의 갱신 요청 중복 처리를 맡는다.","reason":"Oriole가 auth-refresh를 소유하고 같은 갱신 요청 중복 처리를 직접 맡았다고 지명되어 있다."},{"id":"B01-02","title":"T02 결정","quote":"팀 Echo가 로그인 토큰의 동시 갱신 잠금 구현에 착수했다.","reason":"Oriole의 로그인 토큰 갱신 경쟁 조건 수정과 같은 문제를 Echo가 구현하고 있어 업무가 겹친다."}]}

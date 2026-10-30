@@ -1,0 +1,1 @@
+{"items":[{"id":"B08-01","title":"T31 일정","quote":"Foxtrot이 문서 검색 벡터의 증분 재색인 로직 구현을 시작했다.","reason":"세션 Dune의 작업인 문서 검색 벡터 색인 갱신과 같은 구현을 다른 작업자가 진행하므로 업무가 겹친다."},{"id":"B08-02","title":"T32 운영","quote":"문서 벡터를 PostgreSQL 밖으로 옮기고 pgvector 확장을 제거한다.","reason":"세션 Dune의 전제인 '검색 벡터는 PostgreSQL pgvector에 저장된다'를 무효화한다."}]}

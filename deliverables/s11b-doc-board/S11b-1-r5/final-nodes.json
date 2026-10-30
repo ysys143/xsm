@@ -1,0 +1,14 @@
+{
+  "77659285c37f.md": "---\nid: 77659285c37f\nt: 2026-10-30T14:51:55+0900\nauthor: repo-8f@claude-home [6c18a5]\nauthor_kind: agent\ntags: report\nparents: af34c6df18cc\n---\n\nS11b-1-r5-A-0968bad7fd-progress\n",
+  "4d4aa5c19881.md": "---\nid: 4d4aa5c19881\nt: 2026-10-30T14:51:39+0900\nauthor: S11b setup fixture (person)\nauthor_kind: human\ntags: setup\nparents: 5800b595c2da\n---\n\n## 담당: B\n대기.\n",
+  "c1ded62298d4.md": "---\nid: c1ded62298d4\nt: 2026-10-30T14:51:55+0900\nauthor: repo-8f@claude-home [6c18a5]\nauthor_kind: agent\ntags: result\nparents: 90dc3a810919\n---\n\nS11b-1-r5-A-0968bad7fd\n",
+  "439004eb31f5.md": "---\nid: 439004eb31f5\nt: 2026-10-30T14:51:39+0900\nauthor: S11b setup fixture (person)\nauthor_kind: human\ntags: setup\nparents: 5800b595c2da\n---\n\n## 결정: 캐시 전략\n대기.\n",
+  "90dc3a810919.md": "---\nid: 90dc3a810919\nt: 2026-10-30T14:51:39+0900\nauthor: S11b setup fixture (person)\nauthor_kind: human\ntags: setup\nparents: 5800b595c2da\n---\n\n## 담당: A\n대기.\n",
+  "1441d01b78be.md": "---\nid: 1441d01b78be\nt: 2026-10-30T14:51:57+0900\nauthor: codex-8f9985@codex-home [f370be]\nauthor_kind: agent\ntags: result\nparents: 7da81a64d1cf\n---\n\n담당: C\\nS11b-1-r5-C-d58c39b14b\n",
+  "b10f46471e62.md": "---\nid: b10f46471e62\nt: 2026-10-30T14:51:54+0900\nauthor: repo-28@claude-home [05b368]\nauthor_kind: agent\ntags: result\nparents: 4d4aa5c19881\n---\n\nS11b-1-r5-B-5c8a519b99\n",
+  "4a9343bcb3eb.md": "---\nid: 4a9343bcb3eb\nt: 2026-10-30T14:51:54+0900\nauthor: repo-28@claude-home [05b368]\nauthor_kind: agent\ntags: result\nparents: af34c6df18cc\n---\n\nS11b-1-r5-B-5c8a519b99-progress\n",
+  "ec327d7f3e28.md": "---\nid: ec327d7f3e28\nt: 2026-10-30T14:51:58+0900\nauthor: codex-8f9985@codex-home [f370be]\nauthor_kind: agent\ntags: result\nparents: af34c6df18cc\n---\n\nS11b-1-r5-C-d58c39b14b-progress\n",
+  "af34c6df18cc.md": "---\nid: af34c6df18cc\nt: 2026-10-30T14:51:39+0900\nauthor: S11b setup fixture (person)\nauthor_kind: human\ntags: setup\nparents: 5800b595c2da\n---\n\n## 진행 기록\n대기.\n",
+  "7da81a64d1cf.md": "---\nid: 7da81a64d1cf\nt: 2026-10-30T14:51:39+0900\nauthor: S11b setup fixture (person)\nauthor_kind: human\ntags: setup\nparents: 5800b595c2da\n---\n\n## 담당: C\n대기.\n",
+  "5800b595c2da.md": "---\nid: 5800b595c2da\nt: 2026-10-30T14:51:39+0900\nauthor: S11b setup fixture (person)\nauthor_kind: human\ntags: report\nparents: \n---\n\n# 공동 작업 보드\n\n## 결정: 캐시 전략\n아직 결정 없음.\n\n## 담당: A\n대기.\n\n## 담당: B\n대기.\n\n## 담당: C\n대기.\n\n## 진행 기록\n실험 시작.\n"
+}

@@ -1,0 +1,12 @@
+{
+  "f02cae35cc3d.md": "---\nid: f02cae35cc3d\nt: 2026-10-30T14:57:49+0900\nauthor: codex-78659c@codex-home [41ed1e]\nauthor_kind: agent\ntags: result\nparents: 42594015be0a\n---\n\n담당: C — S11b-4-r2-C-fbc9ad8c89\n",
+  "42594015be0a.md": "---\nid: 42594015be0a\nt: 2026-10-30T14:57:38+0900\nauthor: S11b setup fixture (person)\nauthor_kind: human\ntags: setup\nparents: 5462add32625\n---\n\n## 담당: C\n대기.\n",
+  "c088f2469fdf.md": "---\nid: c088f2469fdf\nt: 2026-10-30T14:58:21+0900\nauthor: wt-b-1d@claude-home [e62ebc]\nauthor_kind: agent\ntags: result\nparents: 184f0f840268\n---\n\n담당: B — S11b-4-r2-B-0d2388b701. A 결정 원문: A 결정: cache-choice-2b90a2c443aa4ff98a95bf7e598e68d6\n",
+  "4dc5b745143a.md": "---\nid: 4dc5b745143a\nt: 2026-10-30T14:57:38+0900\nauthor: S11b setup fixture (person)\nauthor_kind: human\ntags: setup\nparents: 5462add32625\n---\n\n## 담당: A\n대기.\n",
+  "f7c3407d3423.md": "---\nid: f7c3407d3423\nt: 2026-10-30T14:57:38+0900\nauthor: S11b setup fixture (person)\nauthor_kind: human\ntags: setup\nparents: 5462add32625\n---\n\n## 결정: 캐시 전략\n대기.\n",
+  "3eee8a26d730.md": "---\nid: 3eee8a26d730\nt: 2026-10-30T14:57:38+0900\nauthor: S11b setup fixture (person)\nauthor_kind: human\ntags: setup\nparents: 5462add32625\n---\n\n## 진행 기록\n대기.\n",
+  "5462add32625.md": "---\nid: 5462add32625\nt: 2026-10-30T14:57:38+0900\nauthor: S11b setup fixture (person)\nauthor_kind: human\ntags: report\nparents: \n---\n\n# 공동 작업 보드\n\n## 결정: 캐시 전략\n아직 결정 없음.\n\n## 담당: A\n대기.\n\n## 담당: B\n대기.\n\n## 담당: C\n대기.\n\n## 진행 기록\n실험 시작.\n",
+  "2a5fc3278988.md": "---\nid: 2a5fc3278988\nt: 2026-10-30T14:57:54+0900\nauthor: wt-a-a1@claude-home [277ec0]\nauthor_kind: agent\ntags: result\nparents: f7c3407d3423\n---\n\nA 결정: cache-choice-2b90a2c443aa4ff98a95bf7e598e68d6\n",
+  "184f0f840268.md": "---\nid: 184f0f840268\nt: 2026-10-30T14:57:38+0900\nauthor: S11b setup fixture (person)\nauthor_kind: human\ntags: setup\nparents: 5462add32625\n---\n\n## 담당: B\n대기.\n",
+  "0c5ec4aeb8b9.md": "---\nid: 0c5ec4aeb8b9\nt: 2026-10-30T14:57:59+0900\nauthor: wt-a-a1@claude-home [277ec0]\nauthor_kind: agent\ntags: result\nparents: 4dc5b745143a\n---\n\n담당: A\n"
+}

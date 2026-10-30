@@ -1,0 +1,3 @@
+BOARD.md는 xsm doc이 렌더합니다. 렌더 파일을 직접 고치지 말고 xsm doc add /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-1-r1/repo/BOARD.md --tag ... --parent <항목 노드> 로 노드를 더하고, 필요하면 xsm doc render로 다시 렌더하세요. 초기 항목 노드는 {"decision": "89c999d46468", "A": "6a0a3cf27975", "B": "eec54bef068e", "C": "933dbaa8c728", "progress": "24c0e87f5868"}입니다.
+당신은 참여자 C이며 보드는 /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-1-r1/repo/BOARD.md입니다. 다른 참여자와 함께 쓰는 시험입니다. 지정 보드·노드와 필요한 준비 파일 외에는 고치지 말고, 사용자 설정·권한·외부 메시지는 변경하지 마세요. 끝나면 결과를 짧게 보고하세요.
+'담당: C' 항목을 S11b-1-r1-C-643043d9a0로 갱신하고 '진행 기록'에 S11b-1-r1-C-643043d9a0-progress 한 줄을 남기세요.

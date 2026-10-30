@@ -1,0 +1,1 @@
+{"items":[{"id":"B04-01","title":"T31 일정","quote":"src/search/indexer.py 변경 사항을 Echo가 리뷰한다.","reason":"같은 파일 변경을 Echo가 리뷰하므로 작업 내용과 직접 겹친다."},{"id":"B04-02","title":"T32 운영","quote":"gpu-embedding 예약을 Foxtrot의 학습 작업에 오늘 종일 배정했다.","reason":"필요한 gpu-embedding 자원이 오늘 종일 점유되어 있다."}]}

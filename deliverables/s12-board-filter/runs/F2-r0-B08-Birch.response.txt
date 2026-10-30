@@ -1,0 +1,1 @@
+{"items":[{"id":"B08-05","title":"T15 일정","quote":"Foxtrot이 Birch의 상품 캐시 패치에 대한 리뷰어가 되었다.","reason":"Birch의 상품 캐시 패치를 직접 지명하며 리뷰 담당자 변경을 알린다."},{"id":"B08-06","title":"T16 운영","quote":"cache-staging의 남은 사용 시간을 다른 팀이 전부 예약했다.","reason":"작업에 필요한 cache-staging 자원이 모두 점유되었다."}]}

@@ -1,0 +1,20 @@
+{
+  "cases": [
+    "S11b-1",
+    "S11b-2-render",
+    "S11b-2-node",
+    "S11b-4"
+  ],
+  "repeats_per_case": 5,
+  "total_cases": 20,
+  "total_actor_runs": 60,
+  "S11-3": "omitted under explicit delegation permission",
+  "guidance": "one paragraph, same as delegated skill-level doc advice; no editor tool selected",
+  "installation": "existing apply, install_skill, install_mcp functions into isolated homes; no global CLI link installation",
+  "initial_nodes": "one human-authored report with the full board, five human-authored setup item nodes parented to that report; fixtures, not real approval",
+  "auth": "non-secret loopback proxy marker; no credential copying; native Luna route",
+  "profile_guard": "12 protected paths hashed before and after every case, including real .codex/.codex-2/.codex-3 config.toml",
+  "scratch": "/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb",
+  "runner_sha256": "0aa1f2c62673d83914b7317f8f759b53ee862b06685fa44635270b8cc5b33ea8",
+  "imported_s11_helper_sha256": "8c4c271b985ddf12bb5758277bdaa176e4b82cf839ebdff348e46d7adefab18b"
+}

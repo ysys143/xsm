@@ -1,0 +1,11 @@
+[
+  {
+    "status": "injected",
+    "at": "2026-10-30T05:13:46.296074+00:00",
+    "monotonic_ns": 218583853064625,
+    "delay_after_read_seconds": 0.04916983292420674,
+    "marker": "S11-2-r3-INJECT-e7a350ecd095",
+    "before_sha256": "11eb1f351c9e73beca2189a234e6453cbb5dad998064ccbc4429b18168402f18",
+    "after_sha256": "c4d81d7a351fe74778f9ee3662dea72ac573125bdd435404faf0c2d069e414fa"
+  }
+]

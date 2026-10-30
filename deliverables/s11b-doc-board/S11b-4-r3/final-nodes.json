@@ -1,0 +1,12 @@
+{
+  "381d76343a80.md": "---\nid: 381d76343a80\nt: 2026-10-30T14:58:26+0900\nauthor: S11b setup fixture (person)\nauthor_kind: human\ntags: setup\nparents: 4b7f2913acab\n---\n\n## 진행 기록\n대기.\n",
+  "4b7f2913acab.md": "---\nid: 4b7f2913acab\nt: 2026-10-30T14:58:26+0900\nauthor: S11b setup fixture (person)\nauthor_kind: human\ntags: report\nparents: \n---\n\n# 공동 작업 보드\n\n## 결정: 캐시 전략\n아직 결정 없음.\n\n## 담당: A\n대기.\n\n## 담당: B\n대기.\n\n## 담당: C\n대기.\n\n## 진행 기록\n실험 시작.\n",
+  "5e66be853ef3.md": "---\nid: 5e66be853ef3\nt: 2026-10-30T14:58:26+0900\nauthor: S11b setup fixture (person)\nauthor_kind: human\ntags: setup\nparents: 4b7f2913acab\n---\n\n## 결정: 캐시 전략\n대기.\n",
+  "20039e62514e.md": "---\nid: 20039e62514e\nt: 2026-10-30T14:58:43+0900\nauthor: wt-a-93@claude-home [eb76db]\nauthor_kind: agent\ntags: result\nparents: d7ca4e8ec7f3\n---\n\n담당: A\n",
+  "d044ff4dc777.md": "---\nid: d044ff4dc777\nt: 2026-10-30T14:59:14+0900\nauthor: wt-b-78@claude-home [4285b7]\nauthor_kind: agent\ntags: result\nparents: af05dd2a19a1\n---\n\n담당: B — S11b-4-r3-B-24894c2c73; A 결정 원문: A 결정: cache-choice-0373702cdef24632b552cedbd768d97e\n",
+  "af05dd2a19a1.md": "---\nid: af05dd2a19a1\nt: 2026-10-30T14:58:26+0900\nauthor: S11b setup fixture (person)\nauthor_kind: human\ntags: setup\nparents: 4b7f2913acab\n---\n\n## 담당: B\n대기.\n",
+  "b339dca428cb.md": "---\nid: b339dca428cb\nt: 2026-10-30T14:58:26+0900\nauthor: S11b setup fixture (person)\nauthor_kind: human\ntags: setup\nparents: 4b7f2913acab\n---\n\n## 담당: C\n대기.\n",
+  "b061ac1413a1.md": "---\nid: b061ac1413a1\nt: 2026-10-30T14:58:37+0900\nauthor: codex-e5f2d4@codex-home [971b19]\nauthor_kind: agent\ntags: result\nparents: b339dca428cb\n---\n\n## 담당: C\nS11b-4-r3-C-6064621326\n",
+  "c0f2d916e152.md": "---\nid: c0f2d916e152\nt: 2026-10-30T14:58:43+0900\nauthor: wt-a-93@claude-home [eb76db]\nauthor_kind: agent\ntags: result\nparents: 5e66be853ef3\n---\n\nA 결정: cache-choice-0373702cdef24632b552cedbd768d97e\n",
+  "d7ca4e8ec7f3.md": "---\nid: d7ca4e8ec7f3\nt: 2026-10-30T14:58:26+0900\nauthor: S11b setup fixture (person)\nauthor_kind: human\ntags: setup\nparents: 4b7f2913acab\n---\n\n## 담당: A\n대기.\n"
+}

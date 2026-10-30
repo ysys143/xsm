@@ -1,0 +1,4616 @@
+{
+  "completed_cases": 15,
+  "native_actor_runs": 45,
+  "controls": {
+    "doc_add_vs_render": "passed",
+    "help_not_add": "passed",
+    "echoed_add_not_counted": "rejected",
+    "missing_parent_negative_control": "detected",
+    "node_preservation_not_render_presence": "distinguished",
+    "own_marker_not_inferred_from_progress_prefix": "rejected"
+  },
+  "scenarios": [
+    {
+      "scenario": "1",
+      "completed": 5,
+      "missing_agent_contributions": 5,
+      "canonical_node_markers_lost": 0,
+      "nodes_preserved_but_not_rendered": 5,
+      "render_only_injection_disappeared": 0,
+      "node_injection_preserved": 0,
+      "agent_structure_damage_cases": 3,
+      "judge_structure_damage_cases": 3,
+      "broken_parent_edges": 0,
+      "B_reflected": 0,
+      "node_counts": [
+        12,
+        10,
+        12,
+        10,
+        12
+      ],
+      "rendered_bytes": [
+        913,
+        835,
+        739,
+        613,
+        737
+      ]
+    },
+    {
+      "scenario": "2-render",
+      "completed": 5,
+      "missing_agent_contributions": 2,
+      "canonical_node_markers_lost": 0,
+      "nodes_preserved_but_not_rendered": 0,
+      "render_only_injection_disappeared": 5,
+      "node_injection_preserved": 0,
+      "agent_structure_damage_cases": 0,
+      "judge_structure_damage_cases": 0,
+      "broken_parent_edges": 0,
+      "B_reflected": 0,
+      "node_counts": [
+        9,
+        9,
+        8,
+        9,
+        8
+      ],
+      "rendered_bytes": [
+        912,
+        912,
+        744,
+        841,
+        744
+      ]
+    },
+    {
+      "scenario": "2-node",
+      "completed": 5,
+      "missing_agent_contributions": 1,
+      "canonical_node_markers_lost": 0,
+      "nodes_preserved_but_not_rendered": 0,
+      "render_only_injection_disappeared": 0,
+      "node_injection_preserved": 5,
+      "agent_structure_damage_cases": 1,
+      "judge_structure_damage_cases": 1,
+      "broken_parent_edges": 0,
+      "B_reflected": 0,
+      "node_counts": [
+        10,
+        10,
+        10,
+        10,
+        9
+      ],
+      "rendered_bytes": [
+        780,
+        949,
+        941,
+        1011,
+        916
+      ]
+    },
+    {
+      "scenario": "4",
+      "completed": 0,
+      "missing_agent_contributions": 0,
+      "canonical_node_markers_lost": 0,
+      "nodes_preserved_but_not_rendered": 0,
+      "render_only_injection_disappeared": 0,
+      "node_injection_preserved": 0,
+      "agent_structure_damage_cases": 0,
+      "judge_structure_damage_cases": 0,
+      "broken_parent_edges": 0,
+      "B_reflected": 0,
+      "node_counts": [],
+      "rendered_bytes": []
+    }
+  ],
+  "by_harness": {
+    "claude": [
+      {
+        "method": "doc_add",
+        "status": "succeeded",
+        "count": 35
+      },
+      {
+        "method": "doc_add_failed_tool_call",
+        "status": "failed",
+        "count": 35
+      },
+      {
+        "method": "doc_render",
+        "status": "succeeded",
+        "count": 22
+      },
+      {
+        "method": "doc_render_failed_tool_call",
+        "status": "failed",
+        "count": 6
+      },
+      {
+        "method": "read_doc_show",
+        "status": "succeeded",
+        "count": 7
+      },
+      {
+        "method": "read_render_file",
+        "status": "succeeded",
+        "count": 6
+      }
+    ],
+    "codex": [
+      {
+        "method": "doc_add",
+        "status": "failed",
+        "count": 1
+      },
+      {
+        "method": "doc_add",
+        "status": "succeeded",
+        "count": 17
+      },
+      {
+        "method": "doc_add_failed_tool_call",
+        "status": "failed",
+        "count": 3
+      },
+      {
+        "method": "doc_render",
+        "status": "succeeded",
+        "count": 11
+      },
+      {
+        "method": "doc_render_failed_tool_call",
+        "status": "failed",
+        "count": 3
+      },
+      {
+        "method": "read_doc_leaves",
+        "status": "succeeded",
+        "count": 1
+      },
+      {
+        "method": "read_doc_show",
+        "status": "failed",
+        "count": 2
+      },
+      {
+        "method": "read_doc_show",
+        "status": "succeeded",
+        "count": 14
+      },
+      {
+        "method": "read_node_file",
+        "status": "succeeded",
+        "count": 1
+      },
+      {
+        "method": "read_render_file",
+        "status": "succeeded",
+        "count": 15
+      }
+    ]
+  },
+  "measurement_notes": [
+    "doc_add counts successful returned node IDs, not Bash invocations; failed tool calls counted separately.",
+    "Official render writes are separated from direct edits of the rendered file.",
+    "Agent-final projection and the explicit judge's final render are separate artifacts.",
+    "Absent from render but present in nodes is not counted as canonical contribution loss.",
+    "Compound-shell direct file writes mixed with official doc commands require manual review."
+  ],
+  "cases": [
+    {
+      "case": "S11b-1-r1",
+      "scenario": "1",
+      "node_count": 12,
+      "rendered_bytes": 913,
+      "agent_rendered_bytes": 913,
+      "all_models_verified": true,
+      "all_harnesses_success": true,
+      "protected_files_unchanged": true,
+      "missing_contributions_nodes_or_render": [],
+      "nodes_preserved_but_not_rendered": [
+        {
+          "actor": "B",
+          "marker": "S11b-1-r1-B-d6a4914a75",
+          "in_final_nodes": true,
+          "in_agent_final_render": false,
+          "in_judge_final_render": false,
+          "observed_in_node_snapshot": true,
+          "canonical_node_marker_lost": false
+        },
+        {
+          "actor": "C",
+          "marker": "S11b-1-r1-C-643043d9a0",
+          "in_final_nodes": true,
+          "in_agent_final_render": false,
+          "in_judge_final_render": false,
+          "observed_in_node_snapshot": true,
+          "canonical_node_marker_lost": false
+        },
+        {
+          "actor": "C",
+          "marker": "S11b-1-r1-C-643043d9a0-progress",
+          "in_final_nodes": true,
+          "in_agent_final_render": false,
+          "in_judge_final_render": false,
+          "observed_in_node_snapshot": true,
+          "canonical_node_marker_lost": false
+        }
+      ],
+      "marker_rows": [
+        {
+          "actor": "A",
+          "marker": "S11b-1-r1-A-b053958641",
+          "in_final_nodes": true,
+          "in_agent_final_render": true,
+          "in_judge_final_render": true,
+          "observed_in_node_snapshot": true,
+          "canonical_node_marker_lost": false
+        },
+        {
+          "actor": "A",
+          "marker": "S11b-1-r1-A-b053958641-progress",
+          "in_final_nodes": true,
+          "in_agent_final_render": true,
+          "in_judge_final_render": true,
+          "observed_in_node_snapshot": true,
+          "canonical_node_marker_lost": false
+        },
+        {
+          "actor": "B",
+          "marker": "S11b-1-r1-B-d6a4914a75",
+          "in_final_nodes": true,
+          "in_agent_final_render": false,
+          "in_judge_final_render": false,
+          "observed_in_node_snapshot": true,
+          "canonical_node_marker_lost": false
+        },
+        {
+          "actor": "B",
+          "marker": "S11b-1-r1-B-d6a4914a75-progress",
+          "in_final_nodes": true,
+          "in_agent_final_render": true,
+          "in_judge_final_render": true,
+          "observed_in_node_snapshot": true,
+          "canonical_node_marker_lost": false
+        },
+        {
+          "actor": "C",
+          "marker": "S11b-1-r1-C-643043d9a0",
+          "in_final_nodes": true,
+          "in_agent_final_render": false,
+          "in_judge_final_render": false,
+          "observed_in_node_snapshot": true,
+          "canonical_node_marker_lost": false
+        },
+        {
+          "actor": "C",
+          "marker": "S11b-1-r1-C-643043d9a0-progress",
+          "in_final_nodes": true,
+          "in_agent_final_render": false,
+          "in_judge_final_render": false,
+          "observed_in_node_snapshot": true,
+          "canonical_node_marker_lost": false
+        }
+      ],
+      "malformed_node_files": [],
+      "missing_parents": [],
+      "initial_node_changed_or_removed": [],
+      "agent_render_missing_headings": [],
+      "judge_render_missing_headings": [],
+      "injection": [],
+      "render_only_injection_absent_after_judge_render": false,
+      "node_injection_preserved": false,
+      "B_reflected_A_in_own_node": null,
+      "added_nodes": [
+        {
+          "actor": "A",
+          "node_id": "97e8fbb6d194",
+          "present_final": true,
+          "parents": [
+            "24c0e87f5868"
+          ],
+          "tags": [
+            "wip"
+          ],
+          "body": "S11b-1-r1-A-b053958641-progress",
+          "parent_items": [
+            "progress"
+          ]
+        },
+        {
+          "actor": "A",
+          "node_id": "c737cb81f3eb",
+          "present_final": true,
+          "parents": [
+            "6a0a3cf27975"
+          ],
+          "tags": [
+            "wip"
+          ],
+          "body": "S11b-1-r1-A-b053958641",
+          "parent_items": [
+            "A"
+          ]
+        },
+        {
+          "actor": "B",
+          "node_id": "05baf462be5c",
+          "present_final": true,
+          "parents": [
+            "24c0e87f5868"
+          ],
+          "tags": [
+            "result"
+          ],
+          "body": "S11b-1-r1-B-d6a4914a75-progress",
+          "parent_items": [
+            "progress"
+          ]
+        },
+        {
+          "actor": "B",
+          "node_id": "c5771b21727b",
+          "present_final": true,
+          "parents": [
+            "eec54bef068e"
+          ],
+          "tags": [
+            "result"
+          ],
+          "body": "## 담당: B\nS11b-1-r1-B-d6a4914a75",
+          "parent_items": [
+            "B"
+          ]
+        },
+        {
+          "actor": "C",
+          "node_id": "af6db86fbeab",
+          "present_final": true,
+          "parents": [
+            "933dbaa8c728"
+          ],
+          "tags": [
+            "result"
+          ],
+          "body": "## 담당: C\nS11b-1-r1-C-643043d9a0",
+          "parent_items": [
+            "C"
+          ]
+        },
+        {
+          "actor": "C",
+          "node_id": "b41492909850",
+          "present_final": true,
+          "parents": [
+            "24c0e87f5868"
+          ],
+          "tags": [
+            "result"
+          ],
+          "body": "## 진행 기록\nS11b-1-r1-C-643043d9a0-progress",
+          "parent_items": [
+            "progress"
+          ]
+        }
+      ],
+      "usage": {
+        "A": [
+          {
+            "id": "call_e7f4dea01e2c4237ace35c794a97c2f8",
+            "tool": "Bash",
+            "status": "failed",
+            "methods": [
+              "doc_add_failed_tool_call"
+            ],
+            "actions": [
+              "add"
+            ],
+            "args": {
+              "command": "xsm doc add /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-1-r1/repo/BOARD.md --tag S11b-1-r1-A-b053958641 --parent 6a0a3cf27975",
+              "description": "Add A's assigned board item"
+            },
+            "output": "Exit code 2\nrefused: a node needs a body"
+          },
+          {
+            "id": "call_765b49b62b974ed7a279f77eda6615eb",
+            "tool": "Bash",
+            "status": "failed",
+            "methods": [
+              "doc_add_failed_tool_call"
+            ],
+            "actions": [
+              "add"
+            ],
+            "args": {
+              "command": "xsm doc add /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-1-r1/repo/BOARD.md --tag S11b-1-r1-A-b053958641 --parent 6a0a3cf27975 --text '담당: A — S11b-1-r1-A-b053958641'",
+              "description": "Add A's assigned board item"
+            },
+            "output": "Exit code 2\nrefused: unknown tag S11b-1-r1-A-b053958641; tags: setup, result, insight, hypothesis, verification, report, wip, endorsed"
+          },
+          {
+            "id": "call_001ddba3c4734290bc5dfcb4f4e5e861",
+            "tool": "Bash",
+            "status": "succeeded",
+            "methods": [
+              "doc_add",
+              "doc_add",
+              "doc_render"
+            ],
+            "actions": [
+              "add",
+              "add",
+              "render"
+            ],
+            "args": {
+              "command": "xsm doc add /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-1-r1/repo/BOARD.md --tag wip --parent 6a0a3cf27975 --text 'S11b-1-r1-A-b053958641' && xsm doc add /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-1-r1/repo/BOARD.md --tag wip --parent 24c0e87f5868 --text 'S11b-1-r1-A-b053958641-progress' && xsm doc render /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-1-r1/repo/BOARD.md",
+              "description": "Add assignment and progress entries, then render board"
+            },
+            "output": null
+          }
+        ],
+        "B": [
+          {
+            "id": "call_b1d29318d0e44c618feb1c44961d6e85",
+            "tool": "Bash",
+            "status": "succeeded",
+            "methods": [
+              "read_doc_show"
+            ],
+            "actions": [
+              "show"
+            ],
+            "args": {
+              "command": "xsm doc show /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-1-r1/repo/BOARD.md 6a0a3cf27975",
+              "description": "Inspect participant B board node"
+            },
+            "output": null
+          },
+          {
+            "id": "call_24456c435eee48f3afa601e39def2cee",
+            "tool": "Bash",
+            "status": "succeeded",
+            "methods": [
+              "read_doc_show"
+            ],
+            "actions": [
+              "show"
+            ],
+            "args": {
+              "command": "xsm doc show /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-1-r1/repo/BOARD.md eec54bef068e",
+              "description": "Inspect participant B board node"
+            },
+            "output": null
+          },
+          {
+            "id": "call_5055d63df0ca41f9b20f2128d787cf2b",
+            "tool": "Bash",
+            "status": "succeeded",
+            "methods": [
+              "doc_add",
+              "doc_add",
+              "doc_render"
+            ],
+            "actions": [
+              "add",
+              "add",
+              "render"
+            ],
+            "args": {
+              "command": "xsm doc add /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-1-r1/repo/BOARD.md --tag result --parent eec54bef068e --text '## 담당: B\nS11b-1-r1-B-d6a4914a75' && xsm doc add /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-1-r1/repo/BOARD.md --tag result --parent 24c0e87f5868 --text 'S11b-1-r1-B-d6a4914a75-progress' && xsm doc render /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-1-r1/repo/BOARD.md",
+              "description": "Update board through document nodes"
+            },
+            "output": null
+          }
+        ],
+        "C": [
+          {
+            "id": "item_3",
+            "tool": "Bash",
+            "status": "failed",
+            "methods": [
+              "read_doc_show"
+            ],
+            "actions": [
+              "show"
+            ],
+            "args": {
+              "command": "/bin/zsh -lc 'xsm doc --help && xsm doc show /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-1-r1/repo/BOARD.md'"
+            },
+            "output": "usage: xsm doc [-h] [--tag TAG] [--parent PARENT] [--text TEXT] [--file FILE]\n               [--json] [--limit LIMIT] [--question TEXT]\n               [--answer-request QUESTION_ID] [--reply TEXT]\n               {add,render,log,next,leaves,show} doc [node]\n\npositional arguments:\n  {add,render,log,next,leaves,show}\n  doc                   the document, e.g. docs/research/cache.md\n  node                  show: the node id\n\noptions:\n  -h, --help            show this help message and exit\n  --tag TAG             setup, result, insight, hypothesis, verification,\n                        report, wip; endorsed is a person's\n  --parent PARENT       a node this builds on or revises\n  --text TEXT\n  --file FILE\n  --json                next: the candidates as JSON\n  --limit LIMIT         next: show at most this many\n  --question TEXT       the exact original question for --answer-request;\n                        native user evidence must match it before recovery\n  --answer-request QUESTION_ID\n                        read back the actual native answer to this exact\n                        harness question id when its hook missed it; never\n                        supplies an answer\n  --reply TEXT          your user's answer to the question you asked them, in\n                        their exact words, only when xsm's hook did not record\n                        it (it is shown to you first, as a recorded one is)\nrefused: no node None\n"
+          },
+          {
+            "id": "item_5",
+            "tool": "Bash",
+            "status": "succeeded",
+            "methods": [
+              "read_doc_show"
+            ],
+            "actions": [
+              "show"
+            ],
+            "args": {
+              "command": "/bin/zsh -lc 'xsm doc show /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-1-r1/repo/BOARD.md 24c0e87f5868'"
+            },
+            "output": null
+          },
+          {
+            "id": "item_7",
+            "tool": "Bash",
+            "status": "succeeded",
+            "methods": [
+              "read_doc_leaves"
+            ],
+            "actions": [
+              "leaves"
+            ],
+            "args": {
+              "command": "/bin/zsh -lc 'xsm doc leaves /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-1-r1/repo/BOARD.md'"
+            },
+            "output": null
+          },
+          {
+            "id": "item_8",
+            "tool": "Bash",
+            "status": "succeeded",
+            "methods": [
+              "read_doc_show"
+            ],
+            "actions": [
+              "show"
+            ],
+            "args": {
+              "command": "/bin/zsh -lc 'xsm doc show /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-1-r1/repo/BOARD.md 933dbaa8c728'"
+            },
+            "output": null
+          },
+          {
+            "id": "item_9",
+            "tool": "Bash",
+            "status": "succeeded",
+            "methods": [
+              "doc_add",
+              "doc_add",
+              "doc_render"
+            ],
+            "actions": [
+              "add",
+              "add",
+              "render"
+            ],
+            "args": {
+              "command": "/bin/zsh -lc \"xsm doc add /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-1-r1/repo/BOARD.md --tag result --parent 933dbaa8c728 --text '## 담당: C\nS11b-1-r1-C-643043d9a0' && xsm doc add /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-1-r1/repo/BOARD.md --tag result --parent 24c0e87f5868 --text '## 진행 기록\nS11b-1-r1-C-643043d9a0-progress' && xsm doc render /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-1-r1/repo/BOARD.md\""
+            },
+            "output": null
+          }
+        ]
+      }
+    },
+    {
+      "case": "S11b-1-r2",
+      "scenario": "1",
+      "node_count": 10,
+      "rendered_bytes": 835,
+      "agent_rendered_bytes": 835,
+      "all_models_verified": true,
+      "all_harnesses_success": true,
+      "protected_files_unchanged": true,
+      "missing_contributions_nodes_or_render": [
+        {
+          "actor": "A",
+          "marker": "S11b-1-r2-A-49296daddc",
+          "in_final_nodes": false,
+          "in_agent_final_render": false,
+          "in_judge_final_render": false,
+          "observed_in_node_snapshot": false,
+          "canonical_node_marker_lost": false
+        },
+        {
+          "actor": "A",
+          "marker": "S11b-1-r2-A-49296daddc-progress",
+          "in_final_nodes": false,
+          "in_agent_final_render": false,
+          "in_judge_final_render": false,
+          "observed_in_node_snapshot": false,
+          "canonical_node_marker_lost": false
+        }
+      ],
+      "nodes_preserved_but_not_rendered": [
+        {
+          "actor": "C",
+          "marker": "S11b-1-r2-C-d0c8844515",
+          "in_final_nodes": true,
+          "in_agent_final_render": false,
+          "in_judge_final_render": false,
+          "observed_in_node_snapshot": true,
+          "canonical_node_marker_lost": false
+        }
+      ],
+      "marker_rows": [
+        {
+          "actor": "A",
+          "marker": "S11b-1-r2-A-49296daddc",
+          "in_final_nodes": false,
+          "in_agent_final_render": false,
+          "in_judge_final_render": false,
+          "observed_in_node_snapshot": false,
+          "canonical_node_marker_lost": false
+        },
+        {
+          "actor": "A",
+          "marker": "S11b-1-r2-A-49296daddc-progress",
+          "in_final_nodes": false,
+          "in_agent_final_render": false,
+          "in_judge_final_render": false,
+          "observed_in_node_snapshot": false,
+          "canonical_node_marker_lost": false
+        },
+        {
+          "actor": "B",
+          "marker": "S11b-1-r2-B-2ecdd28b81",
+          "in_final_nodes": true,
+          "in_agent_final_render": true,
+          "in_judge_final_render": true,
+          "observed_in_node_snapshot": true,
+          "canonical_node_marker_lost": false
+        },
+        {
+          "actor": "B",
+          "marker": "S11b-1-r2-B-2ecdd28b81-progress",
+          "in_final_nodes": true,
+          "in_agent_final_render": true,
+          "in_judge_final_render": true,
+          "observed_in_node_snapshot": true,
+          "canonical_node_marker_lost": false
+        },
+        {
+          "actor": "C",
+          "marker": "S11b-1-r2-C-d0c8844515",
+          "in_final_nodes": true,
+          "in_agent_final_render": false,
+          "in_judge_final_render": false,
+          "observed_in_node_snapshot": true,
+          "canonical_node_marker_lost": false
+        },
+        {
+          "actor": "C",
+          "marker": "S11b-1-r2-C-d0c8844515-progress",
+          "in_final_nodes": true,
+          "in_agent_final_render": true,
+          "in_judge_final_render": true,
+          "observed_in_node_snapshot": true,
+          "canonical_node_marker_lost": false
+        }
+      ],
+      "malformed_node_files": [],
+      "missing_parents": [],
+      "initial_node_changed_or_removed": [],
+      "agent_render_missing_headings": [],
+      "judge_render_missing_headings": [],
+      "injection": [],
+      "render_only_injection_absent_after_judge_render": false,
+      "node_injection_preserved": false,
+      "B_reflected_A_in_own_node": null,
+      "added_nodes": [
+        {
+          "actor": "B",
+          "node_id": "8d39a327785e",
+          "present_final": true,
+          "parents": [
+            "be62deb7dbbd"
+          ],
+          "tags": [
+            "wip"
+          ],
+          "body": "S11b-1-r2-B-2ecdd28b81",
+          "parent_items": [
+            "A"
+          ]
+        },
+        {
+          "actor": "B",
+          "node_id": "3428df2f2534",
+          "present_final": true,
+          "parents": [
+            "b624f66b5058"
+          ],
+          "tags": [
+            "wip"
+          ],
+          "body": "S11b-1-r2-B-2ecdd28b81-progress",
+          "parent_items": [
+            "progress"
+          ]
+        },
+        {
+          "actor": "C",
+          "node_id": "7af47c9b7aca",
+          "present_final": true,
+          "parents": [
+            "406f667c143f"
+          ],
+          "tags": [
+            "result"
+          ],
+          "body": "## 담당: C\nS11b-1-r2-C-d0c8844515",
+          "parent_items": [
+            "C"
+          ]
+        },
+        {
+          "actor": "C",
+          "node_id": "27ec3d036af0",
+          "present_final": true,
+          "parents": [
+            "b624f66b5058"
+          ],
+          "tags": [
+            "result"
+          ],
+          "body": "S11b-1-r2-C-d0c8844515-progress",
+          "parent_items": [
+            "progress"
+          ]
+        }
+      ],
+      "usage": {
+        "A": [
+          {
+            "id": "call_c12a62cef8d743cea1c8a53e6f803004",
+            "tool": "Bash",
+            "status": "failed",
+            "methods": [
+              "doc_add_failed_tool_call"
+            ],
+            "actions": [
+              "add",
+              "add"
+            ],
+            "args": {
+              "command": "xsm doc add /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-1-r2/repo/BOARD.md --tag S11b-1-r2-A-49296daddc --parent be62deb7dbbd && xsm doc add /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-1-r2/repo/BOARD.md --tag S11b-1-r2-A-49296daddc-progress --parent b624f66b5058",
+              "description": "Add participant A update and progress nodes"
+            },
+            "output": "Exit code 2\nrefused: a node needs a body"
+          },
+          {
+            "id": "call_834b691e4cdd44fcb2b9dd01e896d275",
+            "tool": "Bash",
+            "status": "failed",
+            "methods": [
+              "doc_add_failed_tool_call",
+              "doc_render_failed_tool_call"
+            ],
+            "actions": [
+              "add",
+              "add",
+              "render"
+            ],
+            "args": {
+              "command": "xsm doc add /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-1-r2/repo/BOARD.md --tag S11b-1-r2-A-49296daddc --parent be62deb7dbbd --text '담당: A — S11b-1-r2-A-49296daddc' && xsm doc add /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-1-r2/repo/BOARD.md --tag S11b-1-r2-A-49296daddc-progress --parent b624f66b5058 --text 'A 진행 기록: S11b-1-r2-A-49296daddc' && xsm doc render /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-1-r2/repo/BOARD.md",
+              "description": "Add A assignment and progress, then render board"
+            },
+            "output": "Exit code 2\nrefused: unknown tag S11b-1-r2-A-49296daddc; tags: setup, result, insight, hypothesis, verification, report, wip, endorsed"
+          }
+        ],
+        "B": [
+          {
+            "id": "call_547be8c4b1fc4bc9ab7edd0ee66f39e5",
+            "tool": "Bash",
+            "status": "failed",
+            "methods": [
+              "doc_add_failed_tool_call"
+            ],
+            "actions": [
+              "add"
+            ],
+            "args": {
+              "command": "xsm doc add /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-1-r2/repo/BOARD.md --tag S11b-1-r2-B-2ecdd28b81 --parent be62deb7dbbd",
+              "description": "Add requested node under participant B"
+            },
+            "output": "Exit code 2\nrefused: a node needs a body"
+          },
+          {
+            "id": "call_7faad8dfd14e4ab4b5509f3cdd5cbbe2",
+            "tool": "Bash",
+            "status": "succeeded",
+            "methods": [
+              "doc_add"
+            ],
+            "actions": [
+              "add"
+            ],
+            "args": {
+              "command": "xsm doc add /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-1-r2/repo/BOARD.md --tag wip --parent be62deb7dbbd --text 'S11b-1-r2-B-2ecdd28b81'",
+              "description": "Update participant B task node"
+            },
+            "output": null
+          },
+          {
+            "id": "call_7fada47384174b87a155a04ac167c9a9",
+            "tool": "Bash",
+            "status": "succeeded",
+            "methods": [
+              "doc_add"
+            ],
+            "actions": [
+              "add"
+            ],
+            "args": {
+              "command": "xsm doc add /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-1-r2/repo/BOARD.md --tag wip --parent b624f66b5058 --text 'S11b-1-r2-B-2ecdd28b81-progress'",
+              "description": "Add requested progress record"
+            },
+            "output": null
+          },
+          {
+            "id": "call_8e45f61cfef847f8a03d9cbbd519bcc9",
+            "tool": "Bash",
+            "status": "succeeded",
+            "methods": [
+              "doc_render"
+            ],
+            "actions": [
+              "render"
+            ],
+            "args": {
+              "command": "xsm doc render /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-1-r2/repo/BOARD.md",
+              "description": "Render updated board"
+            },
+            "output": null
+          }
+        ],
+        "C": [
+          {
+            "id": "item_3",
+            "tool": "Bash",
+            "status": "succeeded",
+            "methods": [
+              "read_render_file"
+            ],
+            "actions": [],
+            "args": {
+              "command": "/bin/zsh -lc \"pwd && rg --files -g 'BOARD.md' -g 'AGENTS.md' -g '*' | head -60 && command -v xsm\""
+            },
+            "output": null
+          },
+          {
+            "id": "item_4",
+            "tool": "Bash",
+            "status": "succeeded",
+            "methods": [
+              "read_node_file"
+            ],
+            "actions": [],
+            "args": {
+              "command": "/bin/zsh -lc 'cat BOARD.md && cat BOARD.md.nodes/406f667c143f.md && xsm doc --help'"
+            },
+            "output": null
+          },
+          {
+            "id": "item_5",
+            "tool": "Bash",
+            "status": "succeeded",
+            "methods": [
+              "read_doc_show"
+            ],
+            "actions": [
+              "show",
+              "show"
+            ],
+            "args": {
+              "command": "/bin/zsh -lc 'xsm doc show /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-1-r2/repo/BOARD.md 406f667c143f && xsm doc show /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-1-r2/repo/BOARD.md b624f66b5058'"
+            },
+            "output": null
+          },
+          {
+            "id": "item_6",
+            "tool": "Bash",
+            "status": "succeeded",
+            "methods": [
+              "doc_add"
+            ],
+            "actions": [
+              "add"
+            ],
+            "args": {
+              "command": "/bin/zsh -lc \"xsm doc add '/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-1-r2/repo/BOARD.md' --tag result --parent 406f667c143f --text '## 담당: C\nS11b-1-r2-C-d0c8844515'\""
+            },
+            "output": null
+          },
+          {
+            "id": "item_7",
+            "tool": "Bash",
+            "status": "succeeded",
+            "methods": [
+              "doc_add"
+            ],
+            "actions": [
+              "add"
+            ],
+            "args": {
+              "command": "/bin/zsh -lc \"xsm doc add '/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-1-r2/repo/BOARD.md' --tag result --parent b624f66b5058 --text 'S11b-1-r2-C-d0c8844515-progress'\""
+            },
+            "output": null
+          },
+          {
+            "id": "item_8",
+            "tool": "Bash",
+            "status": "succeeded",
+            "methods": [
+              "doc_render"
+            ],
+            "actions": [
+              "render"
+            ],
+            "args": {
+              "command": "/bin/zsh -lc \"xsm doc render '/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-1-r2/repo/BOARD.md' && cat '/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-1-r2/repo/BOARD.md'\""
+            },
+            "output": null
+          }
+        ]
+      }
+    },
+    {
+      "case": "S11b-1-r3",
+      "scenario": "1",
+      "node_count": 12,
+      "rendered_bytes": 739,
+      "agent_rendered_bytes": 739,
+      "all_models_verified": true,
+      "all_harnesses_success": true,
+      "protected_files_unchanged": true,
+      "missing_contributions_nodes_or_render": [],
+      "nodes_preserved_but_not_rendered": [],
+      "marker_rows": [
+        {
+          "actor": "A",
+          "marker": "S11b-1-r3-A-a687ff50ca",
+          "in_final_nodes": true,
+          "in_agent_final_render": true,
+          "in_judge_final_render": true,
+          "observed_in_node_snapshot": true,
+          "canonical_node_marker_lost": false
+        },
+        {
+          "actor": "A",
+          "marker": "S11b-1-r3-A-a687ff50ca-progress",
+          "in_final_nodes": true,
+          "in_agent_final_render": true,
+          "in_judge_final_render": true,
+          "observed_in_node_snapshot": true,
+          "canonical_node_marker_lost": false
+        },
+        {
+          "actor": "B",
+          "marker": "S11b-1-r3-B-9fd8aedc89",
+          "in_final_nodes": true,
+          "in_agent_final_render": true,
+          "in_judge_final_render": true,
+          "observed_in_node_snapshot": true,
+          "canonical_node_marker_lost": false
+        },
+        {
+          "actor": "B",
+          "marker": "S11b-1-r3-B-9fd8aedc89-progress",
+          "in_final_nodes": true,
+          "in_agent_final_render": true,
+          "in_judge_final_render": true,
+          "observed_in_node_snapshot": true,
+          "canonical_node_marker_lost": false
+        },
+        {
+          "actor": "C",
+          "marker": "S11b-1-r3-C-aaa5e89c7e",
+          "in_final_nodes": true,
+          "in_agent_final_render": true,
+          "in_judge_final_render": true,
+          "observed_in_node_snapshot": true,
+          "canonical_node_marker_lost": false
+        },
+        {
+          "actor": "C",
+          "marker": "S11b-1-r3-C-aaa5e89c7e-progress",
+          "in_final_nodes": true,
+          "in_agent_final_render": true,
+          "in_judge_final_render": true,
+          "observed_in_node_snapshot": true,
+          "canonical_node_marker_lost": false
+        }
+      ],
+      "malformed_node_files": [],
+      "missing_parents": [],
+      "initial_node_changed_or_removed": [],
+      "agent_render_missing_headings": [
+        "## 결정: 캐시 전략",
+        "## 담당: A",
+        "## 담당: B",
+        "## 담당: C",
+        "## 진행 기록"
+      ],
+      "judge_render_missing_headings": [
+        "## 결정: 캐시 전략",
+        "## 담당: A",
+        "## 담당: B",
+        "## 담당: C",
+        "## 진행 기록"
+      ],
+      "injection": [],
+      "render_only_injection_absent_after_judge_render": false,
+      "node_injection_preserved": false,
+      "B_reflected_A_in_own_node": null,
+      "added_nodes": [
+        {
+          "actor": "A",
+          "node_id": "8ca3dad104b4",
+          "present_final": true,
+          "parents": [
+            "fb14cc4ae183"
+          ],
+          "tags": [
+            "wip"
+          ],
+          "body": "S11b-1-r3-A-a687ff50ca-progress",
+          "parent_items": [
+            "progress"
+          ]
+        },
+        {
+          "actor": "A",
+          "node_id": "e6bfecc7509e",
+          "present_final": true,
+          "parents": [
+            "1d8a73114f7b"
+          ],
+          "tags": [
+            "wip"
+          ],
+          "body": "담당: A — S11b-1-r3-A-a687ff50ca",
+          "parent_items": [
+            "A"
+          ]
+        },
+        {
+          "actor": "B",
+          "node_id": "8b59aac9010b",
+          "present_final": true,
+          "parents": [
+            "65128448184f"
+          ],
+          "tags": [
+            "wip"
+          ],
+          "body": "S11b-1-r3-B-9fd8aedc89: 담당: B",
+          "parent_items": [
+            "B"
+          ]
+        },
+        {
+          "actor": "B",
+          "node_id": "a397f169fd93",
+          "present_final": true,
+          "parents": [
+            "fb14cc4ae183"
+          ],
+          "tags": [
+            "wip"
+          ],
+          "body": "S11b-1-r3-B-9fd8aedc89-progress",
+          "parent_items": [
+            "progress"
+          ]
+        },
+        {
+          "actor": "C",
+          "node_id": "30bd01fdac9a",
+          "present_final": true,
+          "parents": [
+            "fb14cc4ae183"
+          ],
+          "tags": [
+            "report"
+          ],
+          "body": "S11b-1-r3-C-aaa5e89c7e-progress",
+          "parent_items": [
+            "progress"
+          ]
+        },
+        {
+          "actor": "C",
+          "node_id": "5fe075fe6cb9",
+          "present_final": true,
+          "parents": [
+            "4c2bc304d8eb"
+          ],
+          "tags": [
+            "result"
+          ],
+          "body": "S11b-1-r3-C-aaa5e89c7e",
+          "parent_items": [
+            "C"
+          ]
+        }
+      ],
+      "usage": {
+        "A": [
+          {
+            "id": "call_6d00febb6ae9416fa6fe1271257c5178",
+            "tool": "Bash",
+            "status": "succeeded",
+            "methods": [
+              "read_doc_show"
+            ],
+            "actions": [
+              "show"
+            ],
+            "args": {
+              "command": "xsm doc show /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-1-r3/repo/BOARD.md 1d8a73114f7b",
+              "description": "Inspect participant A board node"
+            },
+            "output": null
+          },
+          {
+            "id": "call_18e3308057f54678a33e5c5349f16ad4",
+            "tool": "Bash",
+            "status": "succeeded",
+            "methods": [
+              "doc_add",
+              "doc_add",
+              "doc_render"
+            ],
+            "actions": [
+              "add",
+              "add",
+              "render"
+            ],
+            "args": {
+              "command": "xsm doc add /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-1-r3/repo/BOARD.md --tag wip --parent 1d8a73114f7b --text '담당: A — S11b-1-r3-A-a687ff50ca' && xsm doc add /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-1-r3/repo/BOARD.md --tag wip --parent fb14cc4ae183 --text 'S11b-1-r3-A-a687ff50ca-progress' && xsm doc render /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-1-r3/repo/BOARD.md",
+              "description": "Update assigned item and progress record"
+            },
+            "output": null
+          }
+        ],
+        "B": [
+          {
+            "id": "call_8d6889c0c99e4b6588ba70b15770f48d",
+            "tool": "Bash",
+            "status": "failed",
+            "methods": [
+              "doc_add_failed_tool_call"
+            ],
+            "actions": [
+              "add"
+            ],
+            "args": {
+              "command": "xsm doc add /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-1-r3/repo/BOARD.md --tag S11b-1-r3-B-9fd8aedc89 --parent 65128448184f",
+              "description": "Add requested B board item"
+            },
+            "output": "Exit code 2\nrefused: a node needs a body"
+          },
+          {
+            "id": "call_380b393a037b450b9c620024617008a0",
+            "tool": "Bash",
+            "status": "failed",
+            "methods": [
+              "doc_add_failed_tool_call"
+            ],
+            "actions": [
+              "add"
+            ],
+            "args": {
+              "command": "xsm doc add /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-1-r3/repo/BOARD.md --tag S11b-1-r3-B-9fd8aedc89 --parent 65128448184f --text '담당: B'",
+              "description": "Add requested B board item"
+            },
+            "output": "Exit code 2\nrefused: unknown tag S11b-1-r3-B-9fd8aedc89; tags: setup, result, insight, hypothesis, verification, report, wip, endorsed"
+          },
+          {
+            "id": "call_09a402c5f6964920a01e5ec5a099e212",
+            "tool": "Bash",
+            "status": "succeeded",
+            "methods": [
+              "doc_add"
+            ],
+            "actions": [
+              "add"
+            ],
+            "args": {
+              "command": "xsm doc add /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-1-r3/repo/BOARD.md --tag wip --parent 65128448184f --text 'S11b-1-r3-B-9fd8aedc89: 담당: B'",
+              "description": "Add requested B board item"
+            },
+            "output": null
+          },
+          {
+            "id": "call_8b0ed2f3e5914155bb6abc0c26a136ca",
+            "tool": "Bash",
+            "status": "succeeded",
+            "methods": [
+              "doc_add"
+            ],
+            "actions": [
+              "add"
+            ],
+            "args": {
+              "command": "xsm doc add /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-1-r3/repo/BOARD.md --tag wip --parent fb14cc4ae183 --text 'S11b-1-r3-B-9fd8aedc89-progress'",
+              "description": "Add progress record to board"
+            },
+            "output": null
+          },
+          {
+            "id": "call_17604160cdc64b52b3aabcf6312e79df",
+            "tool": "Bash",
+            "status": "succeeded",
+            "methods": [
+              "doc_render"
+            ],
+            "actions": [
+              "render"
+            ],
+            "args": {
+              "command": "xsm doc render /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-1-r3/repo/BOARD.md",
+              "description": "Render updated board"
+            },
+            "output": null
+          }
+        ],
+        "C": [
+          {
+            "id": "item_3",
+            "tool": "Bash",
+            "status": "succeeded",
+            "methods": [
+              "read_render_file"
+            ],
+            "actions": [],
+            "args": {
+              "command": "/bin/zsh -lc \"pwd && rg --files -g 'BOARD.md' -g 'AGENTS.md' -g '*xsm*' .\""
+            },
+            "output": null
+          },
+          {
+            "id": "item_4",
+            "tool": "Bash",
+            "status": "succeeded",
+            "methods": [
+              "read_render_file"
+            ],
+            "actions": [],
+            "args": {
+              "command": "/bin/zsh -lc 'cat BOARD.md && xsm doc --help'"
+            },
+            "output": null
+          },
+          {
+            "id": "item_5",
+            "tool": "Bash",
+            "status": "succeeded",
+            "methods": [
+              "doc_add",
+              "doc_add",
+              "doc_render"
+            ],
+            "actions": [
+              "add",
+              "add",
+              "render"
+            ],
+            "args": {
+              "command": "/bin/zsh -lc \"xsm doc add /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-1-r3/repo/BOARD.md --tag result --parent 4c2bc304d8eb --text 'S11b-1-r3-C-aaa5e89c7e' && xsm doc add /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-1-r3/repo/BOARD.md --tag report --parent fb14cc4ae183 --text 'S11b-1-r3-C-aaa5e89c7e-progress' && xsm doc render /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-1-r3/repo/BOARD.md\""
+            },
+            "output": null
+          }
+        ]
+      }
+    },
+    {
+      "case": "S11b-1-r4",
+      "scenario": "1",
+      "node_count": 10,
+      "rendered_bytes": 613,
+      "agent_rendered_bytes": 613,
+      "all_models_verified": true,
+      "all_harnesses_success": true,
+      "protected_files_unchanged": true,
+      "missing_contributions_nodes_or_render": [
+        {
+          "actor": "B",
+          "marker": "S11b-1-r4-B-6cc1ee9f36",
+          "in_final_nodes": false,
+          "in_agent_final_render": false,
+          "in_judge_final_render": false,
+          "observed_in_node_snapshot": false,
+          "canonical_node_marker_lost": false
+        },
+        {
+          "actor": "B",
+          "marker": "S11b-1-r4-B-6cc1ee9f36-progress",
+          "in_final_nodes": false,
+          "in_agent_final_render": false,
+          "in_judge_final_render": false,
+          "observed_in_node_snapshot": false,
+          "canonical_node_marker_lost": false
+        }
+      ],
+      "nodes_preserved_but_not_rendered": [
+        {
+          "actor": "C",
+          "marker": "S11b-1-r4-C-20e5c91ecb",
+          "in_final_nodes": true,
+          "in_agent_final_render": false,
+          "in_judge_final_render": false,
+          "observed_in_node_snapshot": true,
+          "canonical_node_marker_lost": false
+        }
+      ],
+      "marker_rows": [
+        {
+          "actor": "A",
+          "marker": "S11b-1-r4-A-447d60692f",
+          "in_final_nodes": true,
+          "in_agent_final_render": true,
+          "in_judge_final_render": true,
+          "observed_in_node_snapshot": true,
+          "canonical_node_marker_lost": false
+        },
+        {
+          "actor": "A",
+          "marker": "S11b-1-r4-A-447d60692f-progress",
+          "in_final_nodes": true,
+          "in_agent_final_render": true,
+          "in_judge_final_render": true,
+          "observed_in_node_snapshot": true,
+          "canonical_node_marker_lost": false
+        },
+        {
+          "actor": "B",
+          "marker": "S11b-1-r4-B-6cc1ee9f36",
+          "in_final_nodes": false,
+          "in_agent_final_render": false,
+          "in_judge_final_render": false,
+          "observed_in_node_snapshot": false,
+          "canonical_node_marker_lost": false
+        },
+        {
+          "actor": "B",
+          "marker": "S11b-1-r4-B-6cc1ee9f36-progress",
+          "in_final_nodes": false,
+          "in_agent_final_render": false,
+          "in_judge_final_render": false,
+          "observed_in_node_snapshot": false,
+          "canonical_node_marker_lost": false
+        },
+        {
+          "actor": "C",
+          "marker": "S11b-1-r4-C-20e5c91ecb",
+          "in_final_nodes": true,
+          "in_agent_final_render": false,
+          "in_judge_final_render": false,
+          "observed_in_node_snapshot": true,
+          "canonical_node_marker_lost": false
+        },
+        {
+          "actor": "C",
+          "marker": "S11b-1-r4-C-20e5c91ecb-progress",
+          "in_final_nodes": true,
+          "in_agent_final_render": true,
+          "in_judge_final_render": true,
+          "observed_in_node_snapshot": true,
+          "canonical_node_marker_lost": false
+        }
+      ],
+      "malformed_node_files": [],
+      "missing_parents": [],
+      "initial_node_changed_or_removed": [],
+      "agent_render_missing_headings": [
+        "## 결정: 캐시 전략",
+        "## 담당: A",
+        "## 담당: B",
+        "## 담당: C",
+        "## 진행 기록"
+      ],
+      "judge_render_missing_headings": [
+        "## 결정: 캐시 전략",
+        "## 담당: A",
+        "## 담당: B",
+        "## 담당: C",
+        "## 진행 기록"
+      ],
+      "injection": [],
+      "render_only_injection_absent_after_judge_render": false,
+      "node_injection_preserved": false,
+      "B_reflected_A_in_own_node": null,
+      "added_nodes": [
+        {
+          "actor": "A",
+          "node_id": "9077705782cf",
+          "present_final": true,
+          "parents": [
+            "1baa4ce6d404"
+          ],
+          "tags": [
+            "report"
+          ],
+          "body": "S11b-1-r4-A-447d60692f-progress",
+          "parent_items": [
+            "progress"
+          ]
+        },
+        {
+          "actor": "A",
+          "node_id": "c0925ccc8750",
+          "present_final": true,
+          "parents": [
+            "cdbf21500c31"
+          ],
+          "tags": [
+            "report"
+          ],
+          "body": "S11b-1-r4-A-447d60692f",
+          "parent_items": [
+            "A"
+          ]
+        },
+        {
+          "actor": "C",
+          "node_id": "26bcf348a970",
+          "present_final": true,
+          "parents": [
+            "1baa4ce6d404"
+          ],
+          "tags": [
+            "report"
+          ],
+          "body": "S11b-1-r4-C-20e5c91ecb-progress",
+          "parent_items": [
+            "progress"
+          ]
+        },
+        {
+          "actor": "C",
+          "node_id": "5e5ecacda151",
+          "present_final": true,
+          "parents": [
+            "1eaca48193d8"
+          ],
+          "tags": [
+            "result"
+          ],
+          "body": "## 담당: C\nS11b-1-r4-C-20e5c91ecb",
+          "parent_items": [
+            "C"
+          ]
+        }
+      ],
+      "usage": {
+        "A": [
+          {
+            "id": "call_cc7b3a55429d4cd39dede3183194598f",
+            "tool": "Read",
+            "status": "succeeded",
+            "methods": [
+              "read_render_file"
+            ],
+            "actions": [],
+            "args": {
+              "file_path": "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-1-r4/repo/BOARD.md"
+            },
+            "output": null
+          },
+          {
+            "id": "call_3df4cd785e5b46c5b0d6d9fc4fc3a13a",
+            "tool": "Bash",
+            "status": "failed",
+            "methods": [
+              "doc_add_failed_tool_call",
+              "doc_render_failed_tool_call"
+            ],
+            "actions": [
+              "add",
+              "add",
+              "render"
+            ],
+            "args": {
+              "command": "xsm doc add /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-1-r4/repo/BOARD.md --tag report --parent cdbf21500c31 S11b-1-r4-A-447d60692f && xsm doc add /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-1-r4/repo/BOARD.md --tag report --parent 1baa4ce6d404 S11b-1-r4-A-447d60692f-progress && xsm doc render /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-1-r4/repo/BOARD.md",
+              "description": "Add assigned board update and progress entry"
+            },
+            "output": "Exit code 2\nrefused: a node needs a body"
+          },
+          {
+            "id": "call_eb81f1ae7b494466be4ad1c4e3cf146e",
+            "tool": "Bash",
+            "status": "succeeded",
+            "methods": [
+              "doc_add",
+              "doc_add",
+              "doc_render"
+            ],
+            "actions": [
+              "add",
+              "add",
+              "render"
+            ],
+            "args": {
+              "command": "xsm doc add /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-1-r4/repo/BOARD.md --tag report --parent cdbf21500c31 --text 'S11b-1-r4-A-447d60692f' && xsm doc add /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-1-r4/repo/BOARD.md --tag report --parent 1baa4ce6d404 --text 'S11b-1-r4-A-447d60692f-progress' && xsm doc render /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-1-r4/repo/BOARD.md",
+              "description": "Add the requested board entries and render"
+            },
+            "output": null
+          }
+        ],
+        "B": [
+          {
+            "id": "call_0bdf12a74b9e4ab7aa8c259f9f18ea98",
+            "tool": "Read",
+            "status": "succeeded",
+            "methods": [
+              "read_render_file"
+            ],
+            "actions": [],
+            "args": {
+              "file_path": "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-1-r4/repo/BOARD.md"
+            },
+            "output": null
+          },
+          {
+            "id": "call_b559b86c14134bc8b247fc762e6e6448",
+            "tool": "Bash",
+            "status": "failed",
+            "methods": [
+              "doc_add_failed_tool_call"
+            ],
+            "actions": [
+              "add"
+            ],
+            "args": {
+              "command": "xsm doc add /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-1-r4/repo/BOARD.md --tag S11b-1-r4-B-6cc1ee9f36 --parent 4ddfa761c8e7",
+              "description": "Add B assignment node to the board"
+            },
+            "output": "Exit code 2\nrefused: a node needs a body"
+          }
+        ],
+        "C": [
+          {
+            "id": "item_3",
+            "tool": "Bash",
+            "status": "succeeded",
+            "methods": [
+              "read_render_file"
+            ],
+            "actions": [],
+            "args": {
+              "command": "/bin/zsh -lc \"pwd && rg --files -g 'AGENTS.md' -g 'BOARD.md' -g '*xsm*' | head -80 && xsm doc --help\""
+            },
+            "output": null
+          },
+          {
+            "id": "item_4",
+            "tool": "Bash",
+            "status": "succeeded",
+            "methods": [
+              "read_doc_show"
+            ],
+            "actions": [
+              "show"
+            ],
+            "args": {
+              "command": "/bin/zsh -lc 'cat BOARD.md && xsm doc show BOARD.md 1eaca48193d8'"
+            },
+            "output": null
+          },
+          {
+            "id": "item_5",
+            "tool": "Bash",
+            "status": "succeeded",
+            "methods": [
+              "doc_add",
+              "doc_add",
+              "doc_render"
+            ],
+            "actions": [
+              "add",
+              "add",
+              "render"
+            ],
+            "args": {
+              "command": "/bin/zsh -lc \"xsm doc add /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-1-r4/repo/BOARD.md --tag result --parent 1eaca48193d8 --text '## 담당: C\nS11b-1-r4-C-20e5c91ecb' && xsm doc add /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-1-r4/repo/BOARD.md --tag report --parent 1baa4ce6d404 --text 'S11b-1-r4-C-20e5c91ecb-progress' && xsm doc render /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-1-r4/repo/BOARD.md && git status --short\""
+            },
+            "output": null
+          }
+        ]
+      }
+    },
+    {
+      "case": "S11b-1-r5",
+      "scenario": "1",
+      "node_count": 12,
+      "rendered_bytes": 737,
+      "agent_rendered_bytes": 737,
+      "all_models_verified": true,
+      "all_harnesses_success": true,
+      "protected_files_unchanged": true,
+      "missing_contributions_nodes_or_render": [
+        {
+          "actor": "C",
+          "marker": "S11b-1-r5-C-d58c39b14b",
+          "in_final_nodes": false,
+          "in_agent_final_render": false,
+          "in_judge_final_render": false,
+          "observed_in_node_snapshot": false,
+          "canonical_node_marker_lost": false
+        }
+      ],
+      "nodes_preserved_but_not_rendered": [],
+      "marker_rows": [
+        {
+          "actor": "A",
+          "marker": "S11b-1-r5-A-0968bad7fd",
+          "in_final_nodes": true,
+          "in_agent_final_render": true,
+          "in_judge_final_render": true,
+          "observed_in_node_snapshot": true,
+          "canonical_node_marker_lost": false
+        },
+        {
+          "actor": "A",
+          "marker": "S11b-1-r5-A-0968bad7fd-progress",
+          "in_final_nodes": true,
+          "in_agent_final_render": true,
+          "in_judge_final_render": true,
+          "observed_in_node_snapshot": true,
+          "canonical_node_marker_lost": false
+        },
+        {
+          "actor": "B",
+          "marker": "S11b-1-r5-B-5c8a519b99",
+          "in_final_nodes": true,
+          "in_agent_final_render": true,
+          "in_judge_final_render": true,
+          "observed_in_node_snapshot": true,
+          "canonical_node_marker_lost": false
+        },
+        {
+          "actor": "B",
+          "marker": "S11b-1-r5-B-5c8a519b99-progress",
+          "in_final_nodes": true,
+          "in_agent_final_render": true,
+          "in_judge_final_render": true,
+          "observed_in_node_snapshot": true,
+          "canonical_node_marker_lost": false
+        },
+        {
+          "actor": "C",
+          "marker": "S11b-1-r5-C-d58c39b14b",
+          "in_final_nodes": false,
+          "in_agent_final_render": false,
+          "in_judge_final_render": false,
+          "observed_in_node_snapshot": false,
+          "canonical_node_marker_lost": false
+        },
+        {
+          "actor": "C",
+          "marker": "S11b-1-r5-C-d58c39b14b-progress",
+          "in_final_nodes": true,
+          "in_agent_final_render": true,
+          "in_judge_final_render": true,
+          "observed_in_node_snapshot": true,
+          "canonical_node_marker_lost": false
+        }
+      ],
+      "malformed_node_files": [],
+      "missing_parents": [],
+      "initial_node_changed_or_removed": [],
+      "agent_render_missing_headings": [
+        "## 결정: 캐시 전략",
+        "## 담당: A",
+        "## 담당: B",
+        "## 담당: C",
+        "## 진행 기록"
+      ],
+      "judge_render_missing_headings": [
+        "## 결정: 캐시 전략",
+        "## 담당: A",
+        "## 담당: B",
+        "## 담당: C",
+        "## 진행 기록"
+      ],
+      "injection": [],
+      "render_only_injection_absent_after_judge_render": false,
+      "node_injection_preserved": false,
+      "B_reflected_A_in_own_node": null,
+      "added_nodes": [
+        {
+          "actor": "A",
+          "node_id": "77659285c37f",
+          "present_final": true,
+          "parents": [
+            "af34c6df18cc"
+          ],
+          "tags": [
+            "report"
+          ],
+          "body": "S11b-1-r5-A-0968bad7fd-progress",
+          "parent_items": [
+            "progress"
+          ]
+        },
+        {
+          "actor": "A",
+          "node_id": "c1ded62298d4",
+          "present_final": true,
+          "parents": [
+            "90dc3a810919"
+          ],
+          "tags": [
+            "result"
+          ],
+          "body": "S11b-1-r5-A-0968bad7fd",
+          "parent_items": [
+            "A"
+          ]
+        },
+        {
+          "actor": "B",
+          "node_id": "4a9343bcb3eb",
+          "present_final": true,
+          "parents": [
+            "af34c6df18cc"
+          ],
+          "tags": [
+            "result"
+          ],
+          "body": "S11b-1-r5-B-5c8a519b99-progress",
+          "parent_items": [
+            "progress"
+          ]
+        },
+        {
+          "actor": "B",
+          "node_id": "b10f46471e62",
+          "present_final": true,
+          "parents": [
+            "4d4aa5c19881"
+          ],
+          "tags": [
+            "result"
+          ],
+          "body": "S11b-1-r5-B-5c8a519b99",
+          "parent_items": [
+            "B"
+          ]
+        },
+        {
+          "actor": "C",
+          "node_id": "1441d01b78be",
+          "present_final": true,
+          "parents": [
+            "7da81a64d1cf"
+          ],
+          "tags": [
+            "result"
+          ],
+          "body": "담당: C\\nS11b-1-r5-C-d58c39b14b",
+          "parent_items": [
+            "C"
+          ]
+        },
+        {
+          "actor": "C",
+          "node_id": "ec327d7f3e28",
+          "present_final": true,
+          "parents": [
+            "af34c6df18cc"
+          ],
+          "tags": [
+            "result"
+          ],
+          "body": "S11b-1-r5-C-d58c39b14b-progress",
+          "parent_items": [
+            "progress"
+          ]
+        }
+      ],
+      "usage": {
+        "A": [
+          {
+            "id": "call_cd6e2abf8d0c49b89ce534bf1fac1878",
+            "tool": "Read",
+            "status": "succeeded",
+            "methods": [
+              "read_render_file"
+            ],
+            "actions": [],
+            "args": {
+              "file_path": "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-1-r5/repo/BOARD.md"
+            },
+            "output": null
+          },
+          {
+            "id": "call_f1d16eca116f4eda9aedbd3f2968fde0",
+            "tool": "Bash",
+            "status": "failed",
+            "methods": [
+              "doc_add_failed_tool_call",
+              "doc_render_failed_tool_call"
+            ],
+            "actions": [
+              "add",
+              "add",
+              "render"
+            ],
+            "args": {
+              "command": "xsm doc add /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-1-r5/repo/BOARD.md --tag S11b-1-r5-A-0968bad7fd --parent 90dc3a810919 && xsm doc add /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-1-r5/repo/BOARD.md --tag S11b-1-r5-A-0968bad7fd-progress --parent af34c6df18cc && xsm doc render /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-1-r5/repo/BOARD.md",
+              "description": "Add assigned board nodes and render"
+            },
+            "output": "Exit code 2\nrefused: a node needs a body"
+          },
+          {
+            "id": "call_84c4179a8f21455cb461a45b94576b3d",
+            "tool": "Bash",
+            "status": "succeeded",
+            "methods": [
+              "doc_add",
+              "doc_add",
+              "doc_render"
+            ],
+            "actions": [
+              "add",
+              "add",
+              "render"
+            ],
+            "args": {
+              "command": "xsm doc add /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-1-r5/repo/BOARD.md --tag result --parent 90dc3a810919 --text 'S11b-1-r5-A-0968bad7fd' && xsm doc add /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-1-r5/repo/BOARD.md --tag report --parent af34c6df18cc --text 'S11b-1-r5-A-0968bad7fd-progress' && xsm doc render /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-1-r5/repo/BOARD.md",
+              "description": "Add assignment and progress nodes, render board"
+            },
+            "output": null
+          }
+        ],
+        "B": [
+          {
+            "id": "call_158de6931eff4e358ba73042807d9d17",
+            "tool": "Bash",
+            "status": "succeeded",
+            "methods": [
+              "read_doc_show"
+            ],
+            "actions": [
+              "show"
+            ],
+            "args": {
+              "command": "xsm doc show /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-1-r5/repo/BOARD.md 4d4aa5c19881",
+              "description": "Inspect participant B board item"
+            },
+            "output": null
+          },
+          {
+            "id": "call_a992701c73354220ad081a28e5f2b647",
+            "tool": "Bash",
+            "status": "succeeded",
+            "methods": [
+              "read_doc_show"
+            ],
+            "actions": [
+              "show"
+            ],
+            "args": {
+              "command": "xsm doc show /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-1-r5/repo/BOARD.md af34c6df18cc",
+              "description": "Inspect progress record section"
+            },
+            "output": null
+          },
+          {
+            "id": "call_099715c7095946c081d675973496f2dc",
+            "tool": "Bash",
+            "status": "succeeded",
+            "methods": [
+              "doc_add",
+              "doc_add",
+              "doc_render"
+            ],
+            "actions": [
+              "add",
+              "add",
+              "render"
+            ],
+            "args": {
+              "command": "xsm doc add /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-1-r5/repo/BOARD.md --tag result --parent 4d4aa5c19881 --text 'S11b-1-r5-B-5c8a519b99' && xsm doc add /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-1-r5/repo/BOARD.md --tag result --parent af34c6df18cc --text 'S11b-1-r5-B-5c8a519b99-progress' && xsm doc render /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-1-r5/repo/BOARD.md",
+              "description": "Add B assignment and progress nodes"
+            },
+            "output": null
+          }
+        ],
+        "C": [
+          {
+            "id": "item_4",
+            "tool": "Bash",
+            "status": "failed",
+            "methods": [
+              "read_doc_show"
+            ],
+            "actions": [
+              "show"
+            ],
+            "args": {
+              "command": "/bin/zsh -lc 'xsm doc show /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-1-r5/repo/BOARD.md C'"
+            },
+            "output": "refused: no node C\n"
+          },
+          {
+            "id": "item_5",
+            "tool": "Bash",
+            "status": "succeeded",
+            "methods": [
+              "read_doc_show"
+            ],
+            "actions": [
+              "show"
+            ],
+            "args": {
+              "command": "/bin/zsh -lc 'xsm doc show /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-1-r5/repo/BOARD.md 7da81a64d1cf'"
+            },
+            "output": null
+          },
+          {
+            "id": "item_6",
+            "tool": "Bash",
+            "status": "succeeded",
+            "methods": [
+              "read_doc_show"
+            ],
+            "actions": [
+              "show"
+            ],
+            "args": {
+              "command": "/bin/zsh -lc 'xsm doc show /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-1-r5/repo/BOARD.md af34c6df18cc'"
+            },
+            "output": null
+          },
+          {
+            "id": "item_7",
+            "tool": "Bash",
+            "status": "succeeded",
+            "methods": [
+              "doc_add"
+            ],
+            "actions": [
+              "add"
+            ],
+            "args": {
+              "command": "/bin/zsh -lc \"xsm doc add /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-1-r5/repo/BOARD.md --tag result --parent 7da81a64d1cf --text '담당: C\\\\nS11b-1-r5-C-d58c39b14b'\""
+            },
+            "output": null
+          },
+          {
+            "id": "item_8",
+            "tool": "Bash",
+            "status": "succeeded",
+            "methods": [
+              "doc_add"
+            ],
+            "actions": [
+              "add"
+            ],
+            "args": {
+              "command": "/bin/zsh -lc \"xsm doc add /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-1-r5/repo/BOARD.md --tag result --parent af34c6df18cc --text 'S11b-1-r5-C-d58c39b14b-progress'\""
+            },
+            "output": null
+          },
+          {
+            "id": "item_9",
+            "tool": "Bash",
+            "status": "succeeded",
+            "methods": [
+              "doc_render"
+            ],
+            "actions": [
+              "render"
+            ],
+            "args": {
+              "command": "/bin/zsh -lc 'xsm doc render /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-1-r5/repo/BOARD.md'"
+            },
+            "output": null
+          }
+        ]
+      }
+    },
+    {
+      "case": "S11b-2-node-r1",
+      "scenario": "2-node",
+      "node_count": 10,
+      "rendered_bytes": 780,
+      "agent_rendered_bytes": 780,
+      "all_models_verified": true,
+      "all_harnesses_success": true,
+      "protected_files_unchanged": true,
+      "missing_contributions_nodes_or_render": [],
+      "nodes_preserved_but_not_rendered": [],
+      "marker_rows": [
+        {
+          "actor": "A",
+          "marker": "S11b-2-node-r1-A-86eb8db021",
+          "in_final_nodes": true,
+          "in_agent_final_render": true,
+          "in_judge_final_render": true,
+          "observed_in_node_snapshot": true,
+          "canonical_node_marker_lost": false
+        },
+        {
+          "actor": "B",
+          "marker": "S11b-2-node-r1-B-1b1b0118f0",
+          "in_final_nodes": true,
+          "in_agent_final_render": true,
+          "in_judge_final_render": true,
+          "observed_in_node_snapshot": true,
+          "canonical_node_marker_lost": false
+        },
+        {
+          "actor": "C",
+          "marker": "S11b-2-node-r1-C-5e8ba63c09",
+          "in_final_nodes": true,
+          "in_agent_final_render": true,
+          "in_judge_final_render": true,
+          "observed_in_node_snapshot": true,
+          "canonical_node_marker_lost": false
+        },
+        {
+          "actor": "injector",
+          "marker": "S11b-2-node-r1-INJECT-d32138e3df",
+          "in_final_nodes": true,
+          "in_agent_final_render": true,
+          "in_judge_final_render": true,
+          "observed_in_node_snapshot": true,
+          "canonical_node_marker_lost": false
+        }
+      ],
+      "malformed_node_files": [],
+      "missing_parents": [],
+      "initial_node_changed_or_removed": [],
+      "agent_render_missing_headings": [
+        "## 결정: 캐시 전략",
+        "## 담당: A",
+        "## 담당: B",
+        "## 담당: C",
+        "## 진행 기록"
+      ],
+      "judge_render_missing_headings": [
+        "## 결정: 캐시 전략",
+        "## 담당: A",
+        "## 담당: B",
+        "## 담당: C",
+        "## 진행 기록"
+      ],
+      "injection": [
+        {
+          "status": "injected",
+          "kind": "node",
+          "marker": "S11b-2-node-r1-INJECT-d32138e3df",
+          "node_id": "f74c4db9da23",
+          "at_ns": 221004670062500,
+          "delay_after_read_seconds": 0.04140738398909864
+        }
+      ],
+      "render_only_injection_absent_after_judge_render": false,
+      "node_injection_preserved": true,
+      "B_reflected_A_in_own_node": null,
+      "added_nodes": [
+        {
+          "actor": "A",
+          "node_id": "fef7757a7f86",
+          "present_final": true,
+          "parents": [
+            "d5c3ab1918f3"
+          ],
+          "tags": [
+            "result"
+          ],
+          "body": "A: S11b-2-node-r1-A-86eb8db021",
+          "parent_items": [
+            "decision"
+          ]
+        },
+        {
+          "actor": "B",
+          "node_id": "050c8a5f0770",
+          "present_final": true,
+          "parents": [
+            "d5c3ab1918f3"
+          ],
+          "tags": [
+            "report"
+          ],
+          "body": "B: S11b-2-node-r1-B-1b1b0118f0",
+          "parent_items": [
+            "decision"
+          ]
+        },
+        {
+          "actor": "C",
+          "node_id": "183eb967a89c",
+          "present_final": true,
+          "parents": [
+            "d5c3ab1918f3"
+          ],
+          "tags": [
+            "result"
+          ],
+          "body": "C: S11b-2-node-r1-C-5e8ba63c09",
+          "parent_items": [
+            "decision"
+          ]
+        }
+      ],
+      "usage": {
+        "A": [
+          {
+            "id": "call_e3dacc201429402c87103f9c73d28a9d",
+            "tool": "Read",
+            "status": "succeeded",
+            "methods": [
+              "read_render_file"
+            ],
+            "actions": [],
+            "args": {
+              "file_path": "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-2-node-r1/repo/BOARD.md"
+            },
+            "output": null
+          },
+          {
+            "id": "call_632dac84ad32492a84f2b58c5c4082c0",
+            "tool": "Bash",
+            "status": "succeeded",
+            "methods": [
+              "doc_add",
+              "doc_render"
+            ],
+            "actions": [
+              "add",
+              "render"
+            ],
+            "args": {
+              "command": "xsm doc add /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-2-node-r1/repo/BOARD.md --tag result --parent d5c3ab1918f3 --text 'A: S11b-2-node-r1-A-86eb8db021' && xsm doc render /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-2-node-r1/repo/BOARD.md",
+              "description": "Add A's cache strategy note and render the board"
+            },
+            "output": null
+          }
+        ],
+        "B": [
+          {
+            "id": "call_4d81f3a3f14d4302a461ecc061562edb",
+            "tool": "Bash",
+            "status": "failed",
+            "methods": [
+              "doc_add_failed_tool_call"
+            ],
+            "actions": [
+              "add"
+            ],
+            "args": {
+              "command": "xsm doc add /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-2-node-r1/repo/BOARD.md --tag 'B: S11b-2-node-r1-B-1b1b0118f0' --parent d5c3ab1918f3",
+              "description": "Add opinion node to decision item"
+            },
+            "output": "Exit code 2\nrefused: a node needs a body"
+          },
+          {
+            "id": "call_418f2a927fe24722a5ef0d9c99c038a1",
+            "tool": "Bash",
+            "status": "failed",
+            "methods": [
+              "doc_add_failed_tool_call"
+            ],
+            "actions": [
+              "add"
+            ],
+            "args": {
+              "command": "xsm doc add /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-2-node-r1/repo/BOARD.md --tag 'B: S11b-2-node-r1-B-1b1b0118f0' --parent d5c3ab1918f3 --body 'B: S11b-2-node-r1-B-1b1b0118f0'",
+              "description": "Add opinion node to decision item"
+            },
+            "output": "Exit code 2\nusage: xsm [-h] [--version] [--xsm-home XSM_HOME]\n           {network,list,who,join,leave,owned,spawn,workers,reap,stop,attach,worker-finish,post,channel,doc,remote,mcp,approvals,approve,deny,link,unlink,reach,block,unblock,attempts,frameworks,projects,homes,prune,connect,ask,question-status,decision-status,discover,publish,send,inbox,ack,files,status,ledger,metrics,otlp-export,held,install,uninstall,doctor,statusline,selftest} ...\nxsm: error: unrecognized arguments: --body"
+          },
+          {
+            "id": "call_148d7c01dd984bec953b492db445b35e",
+            "tool": "Bash",
+            "status": "failed",
+            "methods": [
+              "doc_add_failed_tool_call"
+            ],
+            "actions": [
+              "add"
+            ],
+            "args": {
+              "command": "xsm doc add /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-2-node-r1/repo/BOARD.md --tag 'B: S11b-2-node-r1-B-1b1b0118f0' --parent d5c3ab1918f3 --text 'B: S11b-2-node-r1-B-1b1b0118f0'",
+              "description": "Add opinion node to decision item"
+            },
+            "output": "Exit code 2\nrefused: unknown tag B: S11b-2-node-r1-B-1b1b0118f0; tags: setup, result, insight, hypothesis, verification, report, wip, endorsed"
+          },
+          {
+            "id": "call_8a109238188447179299c92d1757e502",
+            "tool": "Bash",
+            "status": "succeeded",
+            "methods": [
+              "doc_add"
+            ],
+            "actions": [
+              "add"
+            ],
+            "args": {
+              "command": "xsm doc add /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-2-node-r1/repo/BOARD.md --tag report --parent d5c3ab1918f3 --text 'B: S11b-2-node-r1-B-1b1b0118f0'",
+              "description": "Add opinion node to decision item"
+            },
+            "output": null
+          },
+          {
+            "id": "call_78a64367d92c477cb8ed90fc480968fd",
+            "tool": "Bash",
+            "status": "succeeded",
+            "methods": [
+              "doc_render"
+            ],
+            "actions": [
+              "render"
+            ],
+            "args": {
+              "command": "xsm doc render /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-2-node-r1/repo/BOARD.md",
+              "description": "Render updated board"
+            },
+            "output": null
+          }
+        ],
+        "C": [
+          {
+            "id": "item_3",
+            "tool": "Bash",
+            "status": "succeeded",
+            "methods": [
+              "read_render_file"
+            ],
+            "actions": [],
+            "args": {
+              "command": "/bin/zsh -lc 'cat BOARD.md && xsm doc --help'"
+            },
+            "output": null
+          },
+          {
+            "id": "item_4",
+            "tool": "Bash",
+            "status": "succeeded",
+            "methods": [
+              "read_doc_show"
+            ],
+            "actions": [
+              "show"
+            ],
+            "args": {
+              "command": "/bin/zsh -lc 'xsm doc show /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-2-node-r1/repo/BOARD.md d5c3ab1918f3'"
+            },
+            "output": null
+          },
+          {
+            "id": "item_5",
+            "tool": "Bash",
+            "status": "succeeded",
+            "methods": [
+              "doc_add",
+              "doc_render"
+            ],
+            "actions": [
+              "add",
+              "render"
+            ],
+            "args": {
+              "command": "/bin/zsh -lc \"xsm doc add /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-2-node-r1/repo/BOARD.md --tag result --parent d5c3ab1918f3 --text 'C: S11b-2-node-r1-C-5e8ba63c09' && xsm doc render /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-2-node-r1/repo/BOARD.md\""
+            },
+            "output": null
+          }
+        ]
+      }
+    },
+    {
+      "case": "S11b-2-node-r2",
+      "scenario": "2-node",
+      "node_count": 10,
+      "rendered_bytes": 949,
+      "agent_rendered_bytes": 850,
+      "all_models_verified": true,
+      "all_harnesses_success": true,
+      "protected_files_unchanged": true,
+      "missing_contributions_nodes_or_render": [],
+      "nodes_preserved_but_not_rendered": [],
+      "marker_rows": [
+        {
+          "actor": "A",
+          "marker": "S11b-2-node-r2-A-3089e23498",
+          "in_final_nodes": true,
+          "in_agent_final_render": false,
+          "in_judge_final_render": true,
+          "observed_in_node_snapshot": true,
+          "canonical_node_marker_lost": false
+        },
+        {
+          "actor": "B",
+          "marker": "S11b-2-node-r2-B-fcf7cc7036",
+          "in_final_nodes": true,
+          "in_agent_final_render": true,
+          "in_judge_final_render": true,
+          "observed_in_node_snapshot": true,
+          "canonical_node_marker_lost": false
+        },
+        {
+          "actor": "C",
+          "marker": "S11b-2-node-r2-C-d4a98dd4fd",
+          "in_final_nodes": true,
+          "in_agent_final_render": true,
+          "in_judge_final_render": true,
+          "observed_in_node_snapshot": true,
+          "canonical_node_marker_lost": false
+        },
+        {
+          "actor": "injector",
+          "marker": "S11b-2-node-r2-INJECT-2a18e25466",
+          "in_final_nodes": true,
+          "in_agent_final_render": true,
+          "in_judge_final_render": true,
+          "observed_in_node_snapshot": true,
+          "canonical_node_marker_lost": false
+        }
+      ],
+      "malformed_node_files": [],
+      "missing_parents": [],
+      "initial_node_changed_or_removed": [],
+      "agent_render_missing_headings": [],
+      "judge_render_missing_headings": [],
+      "injection": [
+        {
+          "status": "injected",
+          "kind": "node",
+          "marker": "S11b-2-node-r2-INJECT-2a18e25466",
+          "node_id": "45e6f3334e04",
+          "at_ns": 221030888607166,
+          "delay_after_read_seconds": 0.15985986765877724
+        }
+      ],
+      "render_only_injection_absent_after_judge_render": false,
+      "node_injection_preserved": true,
+      "B_reflected_A_in_own_node": null,
+      "added_nodes": [
+        {
+          "actor": "A",
+          "node_id": "f96f34fec3e0",
+          "present_final": true,
+          "parents": [
+            "dff57ed643dd"
+          ],
+          "tags": [
+            "insight"
+          ],
+          "body": "의견: A: S11b-2-node-r2-A-3089e23498",
+          "parent_items": [
+            "decision"
+          ]
+        },
+        {
+          "actor": "B",
+          "node_id": "39e7037dcb71",
+          "present_final": true,
+          "parents": [
+            "d2c74fc3cbec"
+          ],
+          "tags": [
+            "insight"
+          ],
+          "body": "B: S11b-2-node-r2-B-fcf7cc7036",
+          "parent_items": [
+            "B"
+          ]
+        },
+        {
+          "actor": "C",
+          "node_id": "273e00fba0ed",
+          "present_final": true,
+          "parents": [
+            "dff57ed643dd"
+          ],
+          "tags": [
+            "insight"
+          ],
+          "body": "C: S11b-2-node-r2-C-d4a98dd4fd",
+          "parent_items": [
+            "decision"
+          ]
+        }
+      ],
+      "usage": {
+        "A": [
+          {
+            "id": "call_e374929154384b06af936dbcde366e5c",
+            "tool": "Bash",
+            "status": "failed",
+            "methods": [
+              "doc_add_failed_tool_call"
+            ],
+            "actions": [
+              "add"
+            ],
+            "args": {
+              "command": "xsm doc add /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-2-node-r2/repo/BOARD.md --tag '의견: A: S11b-2-node-r2-A-3089e23498' --parent dff57ed643dd",
+              "description": "Add requested opinion to decision node"
+            },
+            "output": "Exit code 2\nrefused: a node needs a body"
+          },
+          {
+            "id": "call_08431c3dee614725984867972f9e8e29",
+            "tool": "Bash",
+            "status": "failed",
+            "methods": [
+              "doc_add_failed_tool_call"
+            ],
+            "actions": [
+              "add"
+            ],
+            "args": {
+              "command": "xsm doc add /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-2-node-r2/repo/BOARD.md --tag '의견' --parent dff57ed643dd --body 'A: S11b-2-node-r2-A-3089e23498'",
+              "description": "Add requested opinion to decision node"
+            },
+            "output": "Exit code 2\nusage: xsm [-h] [--version] [--xsm-home XSM_HOME]\n           {network,list,who,join,leave,owned,spawn,workers,reap,stop,attach,worker-finish,post,channel,doc,remote,mcp,approvals,approve,deny,link,unlink,reach,block,unblock,attempts,frameworks,projects,homes,prune,connect,ask,question-status,decision-status,discover,publish,send,inbox,ack,files,status,ledger,metrics,otlp-export,held,install,uninstall,doctor,statusline,selftest} ...\nxsm: error: unrecognized arguments: --body"
+          },
+          {
+            "id": "call_d1145d34ebf5432dbc3caa758aacc8bc",
+            "tool": "Bash",
+            "status": "failed",
+            "methods": [
+              "doc_add_failed_tool_call"
+            ],
+            "actions": [
+              "add"
+            ],
+            "args": {
+              "command": "xsm doc add /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-2-node-r2/repo/BOARD.md --tag '의견' --parent dff57ed643dd --text 'A: S11b-2-node-r2-A-3089e23498'",
+              "description": "Add requested opinion to decision node"
+            },
+            "output": "Exit code 2\nrefused: unknown tag 의견; tags: setup, result, insight, hypothesis, verification, report, wip, endorsed"
+          },
+          {
+            "id": "call_9305ccee557f45b6a077b253bc344ba7",
+            "tool": "Bash",
+            "status": "succeeded",
+            "methods": [
+              "doc_add"
+            ],
+            "actions": [
+              "add"
+            ],
+            "args": {
+              "command": "xsm doc add /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-2-node-r2/repo/BOARD.md --tag insight --parent dff57ed643dd --text '의견: A: S11b-2-node-r2-A-3089e23498'",
+              "description": "Add requested opinion to decision node"
+            },
+            "output": null
+          }
+        ],
+        "B": [
+          {
+            "id": "call_12305b6ddd2c464da2909324a5aea93f",
+            "tool": "Bash",
+            "status": "failed",
+            "methods": [
+              "doc_add_failed_tool_call",
+              "doc_render_failed_tool_call"
+            ],
+            "actions": [
+              "add",
+              "render"
+            ],
+            "args": {
+              "command": "xsm doc add /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-2-node-r2/repo/BOARD.md --tag note --parent d2c74fc3cbec --text 'B: S11b-2-node-r2-B-fcf7cc7036' && xsm doc render /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-2-node-r2/repo/BOARD.md",
+              "description": "Add B's note and render the board"
+            },
+            "output": "Exit code 2\nrefused: unknown tag note; tags: setup, result, insight, hypothesis, verification, report, wip, endorsed"
+          },
+          {
+            "id": "call_a6ab957935d04f16a514135dfdebfc15",
+            "tool": "Bash",
+            "status": "succeeded",
+            "methods": [
+              "doc_add",
+              "doc_render"
+            ],
+            "actions": [
+              "add",
+              "render"
+            ],
+            "args": {
+              "command": "xsm doc add /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-2-node-r2/repo/BOARD.md --tag insight --parent d2c74fc3cbec --text 'B: S11b-2-node-r2-B-fcf7cc7036' && xsm doc render /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-2-node-r2/repo/BOARD.md",
+              "description": "Add B's opinion and render board"
+            },
+            "output": null
+          }
+        ],
+        "C": [
+          {
+            "id": "item_4",
+            "tool": "Bash",
+            "status": "succeeded",
+            "methods": [
+              "read_doc_show"
+            ],
+            "actions": [
+              "show"
+            ],
+            "args": {
+              "command": "/bin/zsh -lc 'xsm doc show /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-2-node-r2/repo/BOARD.md dff57ed643dd'"
+            },
+            "output": null
+          },
+          {
+            "id": "item_5",
+            "tool": "Bash",
+            "status": "succeeded",
+            "methods": [
+              "doc_add"
+            ],
+            "actions": [
+              "add"
+            ],
+            "args": {
+              "command": "/bin/zsh -lc \"xsm doc add /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-2-node-r2/repo/BOARD.md --tag insight --parent dff57ed643dd --text 'C: S11b-2-node-r2-C-d4a98dd4fd'\""
+            },
+            "output": null
+          },
+          {
+            "id": "item_6",
+            "tool": "Bash",
+            "status": "succeeded",
+            "methods": [
+              "doc_render"
+            ],
+            "actions": [
+              "render"
+            ],
+            "args": {
+              "command": "/bin/zsh -lc 'xsm doc render /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-2-node-r2/repo/BOARD.md'"
+            },
+            "output": null
+          }
+        ]
+      }
+    },
+    {
+      "case": "S11b-2-node-r3",
+      "scenario": "2-node",
+      "node_count": 10,
+      "rendered_bytes": 941,
+      "agent_rendered_bytes": 920,
+      "all_models_verified": true,
+      "all_harnesses_success": true,
+      "protected_files_unchanged": true,
+      "missing_contributions_nodes_or_render": [],
+      "nodes_preserved_but_not_rendered": [],
+      "marker_rows": [
+        {
+          "actor": "A",
+          "marker": "S11b-2-node-r3-A-11073d724a",
+          "in_final_nodes": true,
+          "in_agent_final_render": true,
+          "in_judge_final_render": true,
+          "observed_in_node_snapshot": true,
+          "canonical_node_marker_lost": false
+        },
+        {
+          "actor": "B",
+          "marker": "S11b-2-node-r3-B-d0958a1cad",
+          "in_final_nodes": true,
+          "in_agent_final_render": false,
+          "in_judge_final_render": true,
+          "observed_in_node_snapshot": true,
+          "canonical_node_marker_lost": false
+        },
+        {
+          "actor": "C",
+          "marker": "S11b-2-node-r3-C-88df31c5b9",
+          "in_final_nodes": true,
+          "in_agent_final_render": true,
+          "in_judge_final_render": true,
+          "observed_in_node_snapshot": true,
+          "canonical_node_marker_lost": false
+        },
+        {
+          "actor": "injector",
+          "marker": "S11b-2-node-r3-INJECT-4149137b75",
+          "in_final_nodes": true,
+          "in_agent_final_render": true,
+          "in_judge_final_render": true,
+          "observed_in_node_snapshot": true,
+          "canonical_node_marker_lost": false
+        }
+      ],
+      "malformed_node_files": [],
+      "missing_parents": [],
+      "initial_node_changed_or_removed": [],
+      "agent_render_missing_headings": [],
+      "judge_render_missing_headings": [],
+      "injection": [
+        {
+          "status": "injected",
+          "kind": "node",
+          "marker": "S11b-2-node-r3-INJECT-4149137b75",
+          "node_id": "9df6968942d6",
+          "at_ns": 221059555713666,
+          "delay_after_read_seconds": 0.045428891012066756
+        }
+      ],
+      "render_only_injection_absent_after_judge_render": false,
+      "node_injection_preserved": true,
+      "B_reflected_A_in_own_node": null,
+      "added_nodes": [
+        {
+          "actor": "A",
+          "node_id": "839638aa5198",
+          "present_final": true,
+          "parents": [
+            "255ab00214ca"
+          ],
+          "tags": [
+            "insight"
+          ],
+          "body": "A: S11b-2-node-r3-A-11073d724a",
+          "parent_items": [
+            "decision"
+          ]
+        },
+        {
+          "actor": "B",
+          "node_id": "b6500e6ed743",
+          "present_final": true,
+          "parents": [
+            "05a6be9c095a"
+          ],
+          "tags": [
+            "insight"
+          ],
+          "body": "B: S11b-2-node-r3-B-d0958a1cad",
+          "parent_items": [
+            "B"
+          ]
+        },
+        {
+          "actor": "C",
+          "node_id": "c2b880531638",
+          "present_final": true,
+          "parents": [
+            "255ab00214ca"
+          ],
+          "tags": [
+            "insight"
+          ],
+          "body": "C: S11b-2-node-r3-C-88df31c5b9",
+          "parent_items": [
+            "decision"
+          ]
+        }
+      ],
+      "usage": {
+        "A": [
+          {
+            "id": "call_cb3b1ae99b9249bea06dffcfe4c72f0c",
+            "tool": "Bash",
+            "status": "failed",
+            "methods": [
+              "doc_add_failed_tool_call"
+            ],
+            "actions": [
+              "add"
+            ],
+            "args": {
+              "command": "xsm doc add /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-2-node-r3/repo/BOARD.md --tag opinion --parent 255ab00214ca --text 'A: S11b-2-node-r3-A-11073d724a'",
+              "description": "Add requested opinion to decision board"
+            },
+            "output": "Exit code 2\nrefused: unknown tag opinion; tags: setup, result, insight, hypothesis, verification, report, wip, endorsed"
+          },
+          {
+            "id": "call_1e2e277874264608aaab7d776b07ae36",
+            "tool": "Bash",
+            "status": "succeeded",
+            "methods": [
+              "doc_add"
+            ],
+            "actions": [
+              "add"
+            ],
+            "args": {
+              "command": "xsm doc add /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-2-node-r3/repo/BOARD.md --tag insight --parent 255ab00214ca --text 'A: S11b-2-node-r3-A-11073d724a'",
+              "description": "Add requested opinion to decision board"
+            },
+            "output": null
+          },
+          {
+            "id": "call_2b7be122c6924b368a6747a82559b5fa",
+            "tool": "Bash",
+            "status": "succeeded",
+            "methods": [
+              "doc_render"
+            ],
+            "actions": [
+              "render"
+            ],
+            "args": {
+              "command": "xsm doc render /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-2-node-r3/repo/BOARD.md",
+              "description": "Render updated decision board"
+            },
+            "output": null
+          }
+        ],
+        "B": [
+          {
+            "id": "call_18220bdff33a4d2289ef859de9145a28",
+            "tool": "Bash",
+            "status": "failed",
+            "methods": [
+              "doc_add_failed_tool_call"
+            ],
+            "actions": [
+              "add"
+            ],
+            "args": {
+              "command": "xsm doc add /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-2-node-r3/repo/BOARD.md --tag 의견 --parent 05a6be9c095a \"B: S11b-2-node-r3-B-d0958a1cad\"",
+              "description": "Add B's opinion to the board"
+            },
+            "output": "Exit code 2\nrefused: a node needs a body"
+          },
+          {
+            "id": "call_819068b3ff4743b7838283d1a0be568a",
+            "tool": "Bash",
+            "status": "failed",
+            "methods": [
+              "doc_add_failed_tool_call"
+            ],
+            "actions": [
+              "add"
+            ],
+            "args": {
+              "command": "xsm doc add /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-2-node-r3/repo/BOARD.md --tag 의견 --parent 05a6be9c095a --body \"B: S11b-2-node-r3-B-d0958a1cad\"",
+              "description": "Add B's opinion to the board"
+            },
+            "output": "Exit code 2\nusage: xsm [-h] [--version] [--xsm-home XSM_HOME]\n           {network,list,who,join,leave,owned,spawn,workers,reap,stop,attach,worker-finish,post,channel,doc,remote,mcp,approvals,approve,deny,link,unlink,reach,block,unblock,attempts,frameworks,projects,homes,prune,connect,ask,question-status,decision-status,discover,publish,send,inbox,ack,files,status,ledger,metrics,otlp-export,held,install,uninstall,doctor,statusline,selftest} ...\nxsm: error: unrecognized arguments: --body"
+          },
+          {
+            "id": "call_2ce427ac3e754f578b012e84240c95b7",
+            "tool": "Bash",
+            "status": "succeeded",
+            "methods": [
+              "doc_add"
+            ],
+            "actions": [
+              "add"
+            ],
+            "args": {
+              "command": "xsm doc add /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-2-node-r3/repo/BOARD.md --tag insight --parent 05a6be9c095a --text \"B: S11b-2-node-r3-B-d0958a1cad\"",
+              "description": "Add B's opinion to the board"
+            },
+            "output": null
+          }
+        ],
+        "C": [
+          {
+            "id": "item_4",
+            "tool": "Bash",
+            "status": "succeeded",
+            "methods": [
+              "read_doc_show"
+            ],
+            "actions": [
+              "show"
+            ],
+            "args": {
+              "command": "/bin/zsh -lc 'xsm doc show /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-2-node-r3/repo/BOARD.md 255ab00214ca'"
+            },
+            "output": null
+          },
+          {
+            "id": "item_5",
+            "tool": "Bash",
+            "status": "succeeded",
+            "methods": [
+              "doc_add"
+            ],
+            "actions": [
+              "add"
+            ],
+            "args": {
+              "command": "/bin/zsh -lc \"xsm doc add /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-2-node-r3/repo/BOARD.md --tag insight --parent 255ab00214ca --text 'C: S11b-2-node-r3-C-88df31c5b9'\""
+            },
+            "output": null
+          },
+          {
+            "id": "item_6",
+            "tool": "Bash",
+            "status": "succeeded",
+            "methods": [
+              "doc_render"
+            ],
+            "actions": [
+              "render"
+            ],
+            "args": {
+              "command": "/bin/zsh -lc 'xsm doc render /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-2-node-r3/repo/BOARD.md'"
+            },
+            "output": null
+          }
+        ]
+      }
+    },
+    {
+      "case": "S11b-2-node-r4",
+      "scenario": "2-node",
+      "node_count": 10,
+      "rendered_bytes": 1011,
+      "agent_rendered_bytes": 1011,
+      "all_models_verified": true,
+      "all_harnesses_success": true,
+      "protected_files_unchanged": true,
+      "missing_contributions_nodes_or_render": [],
+      "nodes_preserved_but_not_rendered": [],
+      "marker_rows": [
+        {
+          "actor": "A",
+          "marker": "S11b-2-node-r4-A-06b1353e5f",
+          "in_final_nodes": true,
+          "in_agent_final_render": true,
+          "in_judge_final_render": true,
+          "observed_in_node_snapshot": true,
+          "canonical_node_marker_lost": false
+        },
+        {
+          "actor": "B",
+          "marker": "S11b-2-node-r4-B-01e9eef7eb",
+          "in_final_nodes": true,
+          "in_agent_final_render": true,
+          "in_judge_final_render": true,
+          "observed_in_node_snapshot": true,
+          "canonical_node_marker_lost": false
+        },
+        {
+          "actor": "C",
+          "marker": "S11b-2-node-r4-C-cfd7acc511",
+          "in_final_nodes": true,
+          "in_agent_final_render": true,
+          "in_judge_final_render": true,
+          "observed_in_node_snapshot": true,
+          "canonical_node_marker_lost": false
+        },
+        {
+          "actor": "injector",
+          "marker": "S11b-2-node-r4-INJECT-2a675564ba",
+          "in_final_nodes": true,
+          "in_agent_final_render": true,
+          "in_judge_final_render": true,
+          "observed_in_node_snapshot": true,
+          "canonical_node_marker_lost": false
+        }
+      ],
+      "malformed_node_files": [],
+      "missing_parents": [],
+      "initial_node_changed_or_removed": [],
+      "agent_render_missing_headings": [],
+      "judge_render_missing_headings": [],
+      "injection": [
+        {
+          "status": "injected",
+          "kind": "node",
+          "marker": "S11b-2-node-r4-INJECT-2a675564ba",
+          "node_id": "236eb96fe5c0",
+          "at_ns": 221076418774833,
+          "delay_after_read_seconds": 0.0974741027223736
+        }
+      ],
+      "render_only_injection_absent_after_judge_render": false,
+      "node_injection_preserved": true,
+      "B_reflected_A_in_own_node": null,
+      "added_nodes": [
+        {
+          "actor": "A",
+          "node_id": "f7ed42616046",
+          "present_final": true,
+          "parents": [
+            "42edd248661a"
+          ],
+          "tags": [
+            "insight"
+          ],
+          "body": "A: S11b-2-node-r4-A-06b1353e5f",
+          "parent_items": [
+            "decision"
+          ]
+        },
+        {
+          "actor": "B",
+          "node_id": "65a4f0cda4e8",
+          "present_final": true,
+          "parents": [
+            "42edd248661a"
+          ],
+          "tags": [
+            "insight"
+          ],
+          "body": "B: S11b-2-node-r4-B-01e9eef7eb",
+          "parent_items": [
+            "decision"
+          ]
+        },
+        {
+          "actor": "C",
+          "node_id": "ce74f0e72691",
+          "present_final": true,
+          "parents": [
+            "42edd248661a"
+          ],
+          "tags": [
+            "insight"
+          ],
+          "body": "C: S11b-2-node-r4-C-cfd7acc511",
+          "parent_items": [
+            "decision"
+          ]
+        }
+      ],
+      "usage": {
+        "A": [
+          {
+            "id": "call_7c1d6c670d554943b7e84e2a78ebba1e",
+            "tool": "Bash",
+            "status": "succeeded",
+            "methods": [
+              "read_doc_show"
+            ],
+            "actions": [
+              "show"
+            ],
+            "args": {
+              "command": "xsm doc show /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-2-node-r4/repo/BOARD.md 42edd248661a",
+              "description": "Inspect target decision node"
+            },
+            "output": null
+          },
+          {
+            "id": "call_e6fdeeb8bd3e4c69acd280b31d512713",
+            "tool": "Bash",
+            "status": "succeeded",
+            "methods": [
+              "doc_add"
+            ],
+            "actions": [
+              "add"
+            ],
+            "args": {
+              "command": "xsm doc add /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-2-node-r4/repo/BOARD.md --tag insight --parent 42edd248661a --text 'A: S11b-2-node-r4-A-06b1353e5f'",
+              "description": "Add A's opinion to the decision node"
+            },
+            "output": null
+          }
+        ],
+        "B": [
+          {
+            "id": "call_6116678392a341f68808b161c319dfac",
+            "tool": "Read",
+            "status": "succeeded",
+            "methods": [
+              "read_render_file"
+            ],
+            "actions": [],
+            "args": {
+              "file_path": "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-2-node-r4/repo/BOARD.md"
+            },
+            "output": null
+          },
+          {
+            "id": "call_9945c975d39b4b75a1894ff543bdffe2",
+            "tool": "Bash",
+            "status": "failed",
+            "methods": [
+              "doc_add_failed_tool_call",
+              "doc_render_failed_tool_call"
+            ],
+            "actions": [
+              "add",
+              "render"
+            ],
+            "args": {
+              "command": "xsm doc add /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-2-node-r4/repo/BOARD.md --tag opinion --parent 42edd248661a --text 'B: S11b-2-node-r4-B-01e9eef7eb' && xsm doc render /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-2-node-r4/repo/BOARD.md",
+              "description": "Add B's opinion to the cache strategy node"
+            },
+            "output": "Exit code 2\nrefused: unknown tag opinion; tags: setup, result, insight, hypothesis, verification, report, wip, endorsed"
+          },
+          {
+            "id": "call_12cf882ae98646d8a11f78343854d95b",
+            "tool": "Bash",
+            "status": "succeeded",
+            "methods": [
+              "doc_add",
+              "doc_render"
+            ],
+            "actions": [
+              "add",
+              "render"
+            ],
+            "args": {
+              "command": "xsm doc add /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-2-node-r4/repo/BOARD.md --tag insight --parent 42edd248661a --text 'B: S11b-2-node-r4-B-01e9eef7eb' && xsm doc render /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-2-node-r4/repo/BOARD.md",
+              "description": "Add B's opinion to the cache strategy node"
+            },
+            "output": null
+          }
+        ],
+        "C": [
+          {
+            "id": "item_3",
+            "tool": "Bash",
+            "status": "succeeded",
+            "methods": [
+              "read_render_file"
+            ],
+            "actions": [],
+            "args": {
+              "command": "/bin/zsh -lc 'xsm doc --help && rg -n \"결정: 캐시 전략|42edd248661a\" BOARD.md'"
+            },
+            "output": null
+          },
+          {
+            "id": "item_4",
+            "tool": "Bash",
+            "status": "succeeded",
+            "methods": [
+              "read_doc_show"
+            ],
+            "actions": [
+              "show"
+            ],
+            "args": {
+              "command": "/bin/zsh -lc \"sed -n '1,80p' BOARD.md && xsm doc show BOARD.md 42edd248661a\""
+            },
+            "output": null
+          },
+          {
+            "id": "item_5",
+            "tool": "Bash",
+            "status": "succeeded",
+            "methods": [
+              "doc_add"
+            ],
+            "actions": [
+              "add"
+            ],
+            "args": {
+              "command": "/bin/zsh -lc \"xsm doc add /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-2-node-r4/repo/BOARD.md --tag insight --parent 42edd248661a --text 'C: S11b-2-node-r4-C-cfd7acc511' --json\""
+            },
+            "output": null
+          }
+        ]
+      }
+    },
+    {
+      "case": "S11b-2-node-r5",
+      "scenario": "2-node",
+      "node_count": 9,
+      "rendered_bytes": 916,
+      "agent_rendered_bytes": 916,
+      "all_models_verified": true,
+      "all_harnesses_success": true,
+      "protected_files_unchanged": true,
+      "missing_contributions_nodes_or_render": [
+        {
+          "actor": "C",
+          "marker": "S11b-2-node-r5-C-34696d97dd",
+          "in_final_nodes": false,
+          "in_agent_final_render": false,
+          "in_judge_final_render": false,
+          "observed_in_node_snapshot": false,
+          "canonical_node_marker_lost": false
+        }
+      ],
+      "nodes_preserved_but_not_rendered": [],
+      "marker_rows": [
+        {
+          "actor": "A",
+          "marker": "S11b-2-node-r5-A-75ce940842",
+          "in_final_nodes": true,
+          "in_agent_final_render": true,
+          "in_judge_final_render": true,
+          "observed_in_node_snapshot": true,
+          "canonical_node_marker_lost": false
+        },
+        {
+          "actor": "B",
+          "marker": "S11b-2-node-r5-B-1443091031",
+          "in_final_nodes": true,
+          "in_agent_final_render": true,
+          "in_judge_final_render": true,
+          "observed_in_node_snapshot": true,
+          "canonical_node_marker_lost": false
+        },
+        {
+          "actor": "C",
+          "marker": "S11b-2-node-r5-C-34696d97dd",
+          "in_final_nodes": false,
+          "in_agent_final_render": false,
+          "in_judge_final_render": false,
+          "observed_in_node_snapshot": false,
+          "canonical_node_marker_lost": false
+        },
+        {
+          "actor": "injector",
+          "marker": "S11b-2-node-r5-INJECT-75b1f49a6b",
+          "in_final_nodes": true,
+          "in_agent_final_render": true,
+          "in_judge_final_render": true,
+          "observed_in_node_snapshot": true,
+          "canonical_node_marker_lost": false
+        }
+      ],
+      "malformed_node_files": [],
+      "missing_parents": [],
+      "initial_node_changed_or_removed": [],
+      "agent_render_missing_headings": [],
+      "judge_render_missing_headings": [],
+      "injection": [
+        {
+          "status": "injected",
+          "kind": "node",
+          "marker": "S11b-2-node-r5-INJECT-75b1f49a6b",
+          "node_id": "eabbd8dbdf19",
+          "at_ns": 221113766720000,
+          "delay_after_read_seconds": 0.10385085800216522
+        }
+      ],
+      "render_only_injection_absent_after_judge_render": false,
+      "node_injection_preserved": true,
+      "B_reflected_A_in_own_node": null,
+      "added_nodes": [
+        {
+          "actor": "A",
+          "node_id": "6acf668c19ab",
+          "present_final": true,
+          "parents": [
+            "91cad39cd148"
+          ],
+          "tags": [
+            "insight"
+          ],
+          "body": "A: S11b-2-node-r5-A-75ce940842",
+          "parent_items": [
+            "decision"
+          ]
+        },
+        {
+          "actor": "B",
+          "node_id": "367db6ce609c",
+          "present_final": true,
+          "parents": [
+            "91cad39cd148"
+          ],
+          "tags": [
+            "insight"
+          ],
+          "body": "B: S11b-2-node-r5-B-1443091031",
+          "parent_items": [
+            "decision"
+          ]
+        }
+      ],
+      "usage": {
+        "A": [
+          {
+            "id": "call_cd3c6029a6cc45969401b4fa75246c31",
+            "tool": "Bash",
+            "status": "failed",
+            "methods": [
+              "doc_add_failed_tool_call"
+            ],
+            "actions": [
+              "add"
+            ],
+            "args": {
+              "command": "xsm doc add /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-2-node-r5/repo/BOARD.md --tag ... --parent 91cad39cd148",
+              "description": "Add opinion to decision board"
+            },
+            "output": "Exit code 2\nrefused: a node needs a body"
+          },
+          {
+            "id": "call_9dba08baceaf423a910143eb498b2ca0",
+            "tool": "Bash",
+            "status": "succeeded",
+            "methods": [
+              "doc_add"
+            ],
+            "actions": [
+              "add"
+            ],
+            "args": {
+              "command": "xsm doc add /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-2-node-r5/repo/BOARD.md --tag insight --parent 91cad39cd148 --text 'A: S11b-2-node-r5-A-75ce940842'",
+              "description": "Add opinion to decision board"
+            },
+            "output": null
+          },
+          {
+            "id": "call_2450593d70014cc2b845c100930b2330",
+            "tool": "Bash",
+            "status": "succeeded",
+            "methods": [
+              "doc_render"
+            ],
+            "actions": [
+              "render"
+            ],
+            "args": {
+              "command": "xsm doc render /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-2-node-r5/repo/BOARD.md",
+              "description": "Render updated decision board"
+            },
+            "output": null
+          }
+        ],
+        "B": [
+          {
+            "id": "call_e64d2003425e4d7e8293a119512c7007",
+            "tool": "Bash",
+            "status": "succeeded",
+            "methods": [
+              "read_doc_show"
+            ],
+            "actions": [
+              "show"
+            ],
+            "args": {
+              "command": "xsm doc show /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-2-node-r5/repo/BOARD.md 91cad39cd148",
+              "description": "Inspect requested board entry"
+            },
+            "output": null
+          },
+          {
+            "id": "call_ad64e06736164950a9844c2e03659bb3",
+            "tool": "Bash",
+            "status": "succeeded",
+            "methods": [
+              "doc_add"
+            ],
+            "actions": [
+              "add"
+            ],
+            "args": {
+              "command": "xsm doc add /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-2-node-r5/repo/BOARD.md --tag insight --parent 91cad39cd148 --text 'B: S11b-2-node-r5-B-1443091031'",
+              "description": "Add participant B opinion to board"
+            },
+            "output": null
+          },
+          {
+            "id": "call_843cf554595749139bfc5a349067cc9f",
+            "tool": "Bash",
+            "status": "succeeded",
+            "methods": [
+              "doc_render"
+            ],
+            "actions": [
+              "render"
+            ],
+            "args": {
+              "command": "xsm doc render /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-2-node-r5/repo/BOARD.md",
+              "description": "Render updated shared board"
+            },
+            "output": null
+          }
+        ],
+        "C": [
+          {
+            "id": "item_3",
+            "tool": "Bash",
+            "status": "succeeded",
+            "methods": [
+              "read_render_file"
+            ],
+            "actions": [],
+            "args": {
+              "command": "/bin/zsh -lc 'pwd && rg -n \"91cad39cd148|캐시 전략|34696d97dd\" BOARD.md'"
+            },
+            "output": null
+          },
+          {
+            "id": "item_4",
+            "tool": "Bash",
+            "status": "succeeded",
+            "methods": [
+              "read_render_file"
+            ],
+            "actions": [],
+            "args": {
+              "command": "/bin/zsh -lc \"sed -n '1,18p' BOARD.md && xsm doc --help\""
+            },
+            "output": null
+          },
+          {
+            "id": "item_5",
+            "tool": "Bash",
+            "status": "failed",
+            "methods": [
+              "doc_add_failed_tool_call",
+              "doc_render_failed_tool_call"
+            ],
+            "actions": [
+              "add",
+              "render"
+            ],
+            "args": {
+              "command": "/bin/zsh -lc \"xsm doc add /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-2-node-r5/repo/BOARD.md --tag endorsed --parent 91cad39cd148 --text 'C: S11b-2-node-r5-C-34696d97dd' && xsm doc render /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-2-node-r5/repo/BOARD.md\""
+            },
+            "output": "refused: endorsing in /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-2-node-r5/repo/BOARD.md: C: S11b-2-node-r5-C-34696d97dd needs your user's yes. First ask them, in plain words, whether to go ahead, and wait for their answer. After they answer, run this same command again: xsm keeps their latest answer in this session as the verdict, and this run shows you that reply without acting on it. If it is a yes, run the command once more to go ahead; if it is a no or a question, leave it and answer them. Use --reply only when they have answered the question you asked them and this run still shows no reply (xsm's hook did not record it): run it again with --reply \"<their answer, exactly as they wrote it>\". Never use it before you have asked, or with what they said earlier, such as their original request. (The xsm_doc_endorse MCP tool asks with a form instead.)\n"
+          }
+        ]
+      }
+    },
+    {
+      "case": "S11b-2-render-r1",
+      "scenario": "2-render",
+      "node_count": 9,
+      "rendered_bytes": 912,
+      "agent_rendered_bytes": 912,
+      "all_models_verified": true,
+      "all_harnesses_success": true,
+      "protected_files_unchanged": true,
+      "missing_contributions_nodes_or_render": [],
+      "nodes_preserved_but_not_rendered": [],
+      "marker_rows": [
+        {
+          "actor": "A",
+          "marker": "S11b-2-render-r1-A-8779a2dec7",
+          "in_final_nodes": true,
+          "in_agent_final_render": true,
+          "in_judge_final_render": true,
+          "observed_in_node_snapshot": true,
+          "canonical_node_marker_lost": false
+        },
+        {
+          "actor": "B",
+          "marker": "S11b-2-render-r1-B-03671d5545",
+          "in_final_nodes": true,
+          "in_agent_final_render": true,
+          "in_judge_final_render": true,
+          "observed_in_node_snapshot": true,
+          "canonical_node_marker_lost": false
+        },
+        {
+          "actor": "C",
+          "marker": "S11b-2-render-r1-C-d28a360ff2",
+          "in_final_nodes": true,
+          "in_agent_final_render": true,
+          "in_judge_final_render": true,
+          "observed_in_node_snapshot": true,
+          "canonical_node_marker_lost": false
+        },
+        {
+          "actor": "injector",
+          "marker": "S11b-2-render-r1-INJECT-2ce0a223b1",
+          "in_final_nodes": false,
+          "in_agent_final_render": false,
+          "in_judge_final_render": false,
+          "observed_in_node_snapshot": false,
+          "canonical_node_marker_lost": false
+        }
+      ],
+      "malformed_node_files": [],
+      "missing_parents": [],
+      "initial_node_changed_or_removed": [],
+      "agent_render_missing_headings": [],
+      "judge_render_missing_headings": [],
+      "injection": [
+        {
+          "status": "injected",
+          "kind": "render",
+          "marker": "S11b-2-render-r1-INJECT-2ce0a223b1",
+          "at_ns": 220887218935583,
+          "delay_after_read_seconds": 0.05804141157164365
+        }
+      ],
+      "render_only_injection_absent_after_judge_render": true,
+      "node_injection_preserved": false,
+      "B_reflected_A_in_own_node": null,
+      "added_nodes": [
+        {
+          "actor": "A",
+          "node_id": "3d74b8fed5aa",
+          "present_final": true,
+          "parents": [
+            "70a4e7fdde05"
+          ],
+          "tags": [
+            "insight"
+          ],
+          "body": "A: S11b-2-render-r1-A-8779a2dec7",
+          "parent_items": [
+            "decision"
+          ]
+        },
+        {
+          "actor": "B",
+          "node_id": "726e91ddb211",
+          "present_final": true,
+          "parents": [
+            "70a4e7fdde05"
+          ],
+          "tags": [
+            "insight"
+          ],
+          "body": "B: S11b-2-render-r1-B-03671d5545",
+          "parent_items": [
+            "decision"
+          ]
+        },
+        {
+          "actor": "C",
+          "node_id": "0c247ce00f46",
+          "present_final": true,
+          "parents": [
+            "70a4e7fdde05"
+          ],
+          "tags": [
+            "insight"
+          ],
+          "body": "C: S11b-2-render-r1-C-d28a360ff2",
+          "parent_items": [
+            "decision"
+          ]
+        }
+      ],
+      "usage": {
+        "A": [
+          {
+            "id": "call_2b261aa540a4467c887b7df25c9fe085",
+            "tool": "Bash",
+            "status": "failed",
+            "methods": [
+              "doc_add_failed_tool_call"
+            ],
+            "actions": [
+              "add"
+            ],
+            "args": {
+              "command": "xsm doc add /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-2-render-r1/repo/BOARD.md --tag opinion --parent 70a4e7fdde05 --text 'A: S11b-2-render-r1-A-8779a2dec7'",
+              "description": "Add the requested opinion to the decision node"
+            },
+            "output": "Exit code 2\nrefused: unknown tag opinion; tags: setup, result, insight, hypothesis, verification, report, wip, endorsed"
+          },
+          {
+            "id": "call_135f37b025054caa9e3cadf1aff49bc2",
+            "tool": "Bash",
+            "status": "succeeded",
+            "methods": [
+              "doc_add"
+            ],
+            "actions": [
+              "add"
+            ],
+            "args": {
+              "command": "xsm doc add /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-2-render-r1/repo/BOARD.md --tag insight --parent 70a4e7fdde05 --text 'A: S11b-2-render-r1-A-8779a2dec7'",
+              "description": "Add the requested opinion to the decision node"
+            },
+            "output": null
+          }
+        ],
+        "B": [
+          {
+            "id": "call_1ad6dd9304774654855eff734bfcc8b6",
+            "tool": "Bash",
+            "status": "failed",
+            "methods": [
+              "doc_add_failed_tool_call",
+              "doc_render_failed_tool_call"
+            ],
+            "actions": [
+              "add",
+              "render"
+            ],
+            "args": {
+              "command": "xsm doc add /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-2-render-r1/repo/BOARD.md --tag note --parent d4a719b26574 --text 'B: S11b-2-render-r1-B-03671d5545' && xsm doc render /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-2-render-r1/repo/BOARD.md",
+              "description": "Add B’s note to the decision board and render it"
+            },
+            "output": "Exit code 2\nrefused: unknown tag note; tags: setup, result, insight, hypothesis, verification, report, wip, endorsed"
+          },
+          {
+            "id": "call_4fcc5389e09b459aacffab137afbe23a",
+            "tool": "Read",
+            "status": "succeeded",
+            "methods": [
+              "read_render_file"
+            ],
+            "actions": [],
+            "args": {
+              "file_path": "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-2-render-r1/repo/BOARD.md"
+            },
+            "output": null
+          },
+          {
+            "id": "call_f54cdcfc34cb40d5908df93a4cc5c5c2",
+            "tool": "Bash",
+            "status": "succeeded",
+            "methods": [
+              "doc_add",
+              "doc_render"
+            ],
+            "actions": [
+              "add",
+              "render"
+            ],
+            "args": {
+              "command": "xsm doc add /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-2-render-r1/repo/BOARD.md --tag insight --parent 70a4e7fdde05 --text 'B: S11b-2-render-r1-B-03671d5545' && xsm doc render /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-2-render-r1/repo/BOARD.md",
+              "description": "Add B’s insight to the decision item and render the board"
+            },
+            "output": null
+          }
+        ],
+        "C": [
+          {
+            "id": "item_3",
+            "tool": "Bash",
+            "status": "succeeded",
+            "methods": [
+              "read_render_file"
+            ],
+            "actions": [],
+            "args": {
+              "command": "/bin/zsh -lc \"pwd && rg --files -g 'AGENTS.md' -g 'BOARD.md' -g '*xsm*' | head -80 && xsm doc --help\""
+            },
+            "output": null
+          },
+          {
+            "id": "item_5",
+            "tool": "Bash",
+            "status": "succeeded",
+            "methods": [
+              "doc_add",
+              "doc_render"
+            ],
+            "actions": [
+              "add",
+              "render"
+            ],
+            "args": {
+              "command": "/bin/zsh -lc \"xsm doc add /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-2-render-r1/repo/BOARD.md --tag insight --parent 70a4e7fdde05 --text 'C: S11b-2-render-r1-C-d28a360ff2' && xsm doc render /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-2-render-r1/repo/BOARD.md\""
+            },
+            "output": null
+          }
+        ]
+      }
+    },
+    {
+      "case": "S11b-2-render-r2",
+      "scenario": "2-render",
+      "node_count": 9,
+      "rendered_bytes": 912,
+      "agent_rendered_bytes": 912,
+      "all_models_verified": true,
+      "all_harnesses_success": true,
+      "protected_files_unchanged": true,
+      "missing_contributions_nodes_or_render": [],
+      "nodes_preserved_but_not_rendered": [],
+      "marker_rows": [
+        {
+          "actor": "A",
+          "marker": "S11b-2-render-r2-A-cfb47c5cc5",
+          "in_final_nodes": true,
+          "in_agent_final_render": true,
+          "in_judge_final_render": true,
+          "observed_in_node_snapshot": true,
+          "canonical_node_marker_lost": false
+        },
+        {
+          "actor": "B",
+          "marker": "S11b-2-render-r2-B-f12e148f10",
+          "in_final_nodes": true,
+          "in_agent_final_render": true,
+          "in_judge_final_render": true,
+          "observed_in_node_snapshot": true,
+          "canonical_node_marker_lost": false
+        },
+        {
+          "actor": "C",
+          "marker": "S11b-2-render-r2-C-241f9bd869",
+          "in_final_nodes": true,
+          "in_agent_final_render": true,
+          "in_judge_final_render": true,
+          "observed_in_node_snapshot": true,
+          "canonical_node_marker_lost": false
+        },
+        {
+          "actor": "injector",
+          "marker": "S11b-2-render-r2-INJECT-c042ca6005",
+          "in_final_nodes": false,
+          "in_agent_final_render": false,
+          "in_judge_final_render": false,
+          "observed_in_node_snapshot": false,
+          "canonical_node_marker_lost": false
+        }
+      ],
+      "malformed_node_files": [],
+      "missing_parents": [],
+      "initial_node_changed_or_removed": [],
+      "agent_render_missing_headings": [],
+      "judge_render_missing_headings": [],
+      "injection": [
+        {
+          "status": "injected",
+          "kind": "render",
+          "marker": "S11b-2-render-r2-INJECT-c042ca6005",
+          "at_ns": 220911171261416,
+          "delay_after_read_seconds": 0.1928955945689364
+        }
+      ],
+      "render_only_injection_absent_after_judge_render": true,
+      "node_injection_preserved": false,
+      "B_reflected_A_in_own_node": null,
+      "added_nodes": [
+        {
+          "actor": "A",
+          "node_id": "3f7616344661",
+          "present_final": true,
+          "parents": [
+            "f1f2bf5588b1"
+          ],
+          "tags": [
+            "insight"
+          ],
+          "body": "A: S11b-2-render-r2-A-cfb47c5cc5",
+          "parent_items": [
+            "decision"
+          ]
+        },
+        {
+          "actor": "B",
+          "node_id": "47b9a69c8c59",
+          "present_final": true,
+          "parents": [
+            "f1f2bf5588b1"
+          ],
+          "tags": [
+            "insight"
+          ],
+          "body": "B: S11b-2-render-r2-B-f12e148f10",
+          "parent_items": [
+            "decision"
+          ]
+        },
+        {
+          "actor": "C",
+          "node_id": "e0ebeecbcbe7",
+          "present_final": true,
+          "parents": [
+            "f1f2bf5588b1"
+          ],
+          "tags": [
+            "insight"
+          ],
+          "body": "C: S11b-2-render-r2-C-241f9bd869",
+          "parent_items": [
+            "decision"
+          ]
+        }
+      ],
+      "usage": {
+        "A": [
+          {
+            "id": "call_a1ad2b606e324078a3fa4acd127eb97b",
+            "tool": "Bash",
+            "status": "failed",
+            "methods": [
+              "doc_add_failed_tool_call"
+            ],
+            "actions": [
+              "add"
+            ],
+            "args": {
+              "command": "xsm doc add /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-2-render-r2/repo/BOARD.md --tag \"A: S11b-2-render-r2-A-cfb47c5cc5\" --parent b6c4b7c9ee59",
+              "description": "Add the requested opinion to the board"
+            },
+            "output": "Exit code 2\nrefused: a node needs a body"
+          },
+          {
+            "id": "call_dc32d2ce21994b94ac6886208f41e6b1",
+            "tool": "Bash",
+            "status": "succeeded",
+            "methods": [
+              "doc_add",
+              "doc_render"
+            ],
+            "actions": [
+              "add",
+              "render"
+            ],
+            "args": {
+              "command": "xsm doc add /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-2-render-r2/repo/BOARD.md --tag insight --parent f1f2bf5588b1 --text \"A: S11b-2-render-r2-A-cfb47c5cc5\" && xsm doc render /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-2-render-r2/repo/BOARD.md",
+              "description": "Add opinion and render the board"
+            },
+            "output": null
+          }
+        ],
+        "B": [
+          {
+            "id": "call_2ca2f2bad6a64c77b5a7f81ab4827a69",
+            "tool": "Bash",
+            "status": "failed",
+            "methods": [
+              "doc_add_failed_tool_call"
+            ],
+            "actions": [
+              "add"
+            ],
+            "args": {
+              "command": "xsm doc add /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-2-render-r2/repo/BOARD.md --tag opinion --parent b6c4b7c9ee59 --text 'B: S11b-2-render-r2-B-f12e148f10'",
+              "description": "Add participant B’s opinion to the board"
+            },
+            "output": "Exit code 2\nrefused: unknown tag opinion; tags: setup, result, insight, hypothesis, verification, report, wip, endorsed"
+          },
+          {
+            "id": "call_d292c71ab03f4ba19571b68460452fdb",
+            "tool": "Bash",
+            "status": "succeeded",
+            "methods": [
+              "doc_add"
+            ],
+            "actions": [
+              "add"
+            ],
+            "args": {
+              "command": "xsm doc add /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-2-render-r2/repo/BOARD.md --tag insight --parent f1f2bf5588b1 --text 'B: S11b-2-render-r2-B-f12e148f10'",
+              "description": "Add participant B’s opinion to the decision node"
+            },
+            "output": null
+          },
+          {
+            "id": "call_ec58dec3b4c94f90adedd8622b994fe7",
+            "tool": "Bash",
+            "status": "succeeded",
+            "methods": [
+              "doc_render"
+            ],
+            "actions": [
+              "render"
+            ],
+            "args": {
+              "command": "xsm doc render /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-2-render-r2/repo/BOARD.md",
+              "description": "Render the updated board"
+            },
+            "output": null
+          }
+        ],
+        "C": [
+          {
+            "id": "item_3",
+            "tool": "Bash",
+            "status": "succeeded",
+            "methods": [
+              "read_render_file"
+            ],
+            "actions": [],
+            "args": {
+              "command": "/bin/zsh -lc 'pwd && rg -n \"결정: 캐시 전략|f1f2bf5588b1|b6c4b7c9ee59\" BOARD.md && xsm doc --help'"
+            },
+            "output": null
+          },
+          {
+            "id": "item_4",
+            "tool": "Bash",
+            "status": "succeeded",
+            "methods": [
+              "read_doc_show"
+            ],
+            "actions": [
+              "show"
+            ],
+            "args": {
+              "command": "/bin/zsh -lc 'xsm doc show /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-2-render-r2/repo/BOARD.md f1f2bf5588b1'"
+            },
+            "output": null
+          },
+          {
+            "id": "item_5",
+            "tool": "Bash",
+            "status": "succeeded",
+            "methods": [
+              "doc_add",
+              "doc_render"
+            ],
+            "actions": [
+              "add",
+              "render"
+            ],
+            "args": {
+              "command": "/bin/zsh -lc \"xsm doc add /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-2-render-r2/repo/BOARD.md --tag insight --parent f1f2bf5588b1 --text 'C: S11b-2-render-r2-C-241f9bd869' && xsm doc render /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-2-render-r2/repo/BOARD.md\""
+            },
+            "output": null
+          }
+        ]
+      }
+    },
+    {
+      "case": "S11b-2-render-r3",
+      "scenario": "2-render",
+      "node_count": 8,
+      "rendered_bytes": 744,
+      "agent_rendered_bytes": 744,
+      "all_models_verified": true,
+      "all_harnesses_success": true,
+      "protected_files_unchanged": true,
+      "missing_contributions_nodes_or_render": [
+        {
+          "actor": "C",
+          "marker": "S11b-2-render-r3-C-0417f9b65e",
+          "in_final_nodes": false,
+          "in_agent_final_render": false,
+          "in_judge_final_render": false,
+          "observed_in_node_snapshot": false,
+          "canonical_node_marker_lost": false
+        }
+      ],
+      "nodes_preserved_but_not_rendered": [],
+      "marker_rows": [
+        {
+          "actor": "A",
+          "marker": "S11b-2-render-r3-A-b95ce7ca74",
+          "in_final_nodes": true,
+          "in_agent_final_render": true,
+          "in_judge_final_render": true,
+          "observed_in_node_snapshot": true,
+          "canonical_node_marker_lost": false
+        },
+        {
+          "actor": "B",
+          "marker": "S11b-2-render-r3-B-1958cad48a",
+          "in_final_nodes": true,
+          "in_agent_final_render": true,
+          "in_judge_final_render": true,
+          "observed_in_node_snapshot": true,
+          "canonical_node_marker_lost": false
+        },
+        {
+          "actor": "C",
+          "marker": "S11b-2-render-r3-C-0417f9b65e",
+          "in_final_nodes": false,
+          "in_agent_final_render": false,
+          "in_judge_final_render": false,
+          "observed_in_node_snapshot": false,
+          "canonical_node_marker_lost": false
+        },
+        {
+          "actor": "injector",
+          "marker": "S11b-2-render-r3-INJECT-97164c68d8",
+          "in_final_nodes": false,
+          "in_agent_final_render": false,
+          "in_judge_final_render": false,
+          "observed_in_node_snapshot": false,
+          "canonical_node_marker_lost": false
+        }
+      ],
+      "malformed_node_files": [],
+      "missing_parents": [],
+      "initial_node_changed_or_removed": [],
+      "agent_render_missing_headings": [],
+      "judge_render_missing_headings": [],
+      "injection": [
+        {
+          "status": "injected",
+          "kind": "render",
+          "marker": "S11b-2-render-r3-INJECT-97164c68d8",
+          "at_ns": 220933212111791,
+          "delay_after_read_seconds": 0.1872270927764107
+        }
+      ],
+      "render_only_injection_absent_after_judge_render": true,
+      "node_injection_preserved": false,
+      "B_reflected_A_in_own_node": null,
+      "added_nodes": [
+        {
+          "actor": "A",
+          "node_id": "6eaed1ff45f4",
+          "present_final": true,
+          "parents": [
+            "78f63109bea6"
+          ],
+          "tags": [
+            "insight"
+          ],
+          "body": "A: S11b-2-render-r3-A-b95ce7ca74",
+          "parent_items": [
+            "decision"
+          ]
+        },
+        {
+          "actor": "B",
+          "node_id": "c4bf0aff03a2",
+          "present_final": true,
+          "parents": [
+            "aae59aa7a525"
+          ],
+          "tags": [
+            "result"
+          ],
+          "body": "B: S11b-2-render-r3-B-1958cad48a",
+          "parent_items": [
+            "A"
+          ]
+        }
+      ],
+      "usage": {
+        "A": [
+          {
+            "id": "call_298830fc193348cf9039b01a31acd579",
+            "tool": "Bash",
+            "status": "failed",
+            "methods": [
+              "doc_add_failed_tool_call"
+            ],
+            "actions": [
+              "add"
+            ],
+            "args": {
+              "command": "xsm doc add /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-2-render-r3/repo/BOARD.md --tag note --parent 78f63109bea6 --text 'A: S11b-2-render-r3-A-b95ce7ca74'",
+              "description": "Add participant A's note to the decision node"
+            },
+            "output": "Exit code 2\nrefused: unknown tag note; tags: setup, result, insight, hypothesis, verification, report, wip, endorsed"
+          },
+          {
+            "id": "call_60b6080690c14c0791e5fe7ec372f096",
+            "tool": "Bash",
+            "status": "succeeded",
+            "methods": [
+              "doc_add"
+            ],
+            "actions": [
+              "add"
+            ],
+            "args": {
+              "command": "xsm doc add /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-2-render-r3/repo/BOARD.md --tag insight --parent 78f63109bea6 --text 'A: S11b-2-render-r3-A-b95ce7ca74'",
+              "description": "Add participant A's note to the decision node"
+            },
+            "output": null
+          },
+          {
+            "id": "call_13f2b92fe14a470dafb54ae90bda7a65",
+            "tool": "Bash",
+            "status": "succeeded",
+            "methods": [
+              "doc_render"
+            ],
+            "actions": [
+              "render"
+            ],
+            "args": {
+              "command": "xsm doc render /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-2-render-r3/repo/BOARD.md",
+              "description": "Render the updated document board"
+            },
+            "output": null
+          }
+        ],
+        "B": [
+          {
+            "id": "call_7545072bbb1543c0a3d4701c12f56327",
+            "tool": "Bash",
+            "status": "failed",
+            "methods": [
+              "doc_add_failed_tool_call"
+            ],
+            "actions": [
+              "add"
+            ],
+            "args": {
+              "command": "xsm doc add /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-2-render-r3/repo/BOARD.md --tag B --parent aae59aa7a525",
+              "description": "Add requested board note"
+            },
+            "output": "Exit code 2\nrefused: a node needs a body"
+          },
+          {
+            "id": "call_ec571af71ee643078f7360bf699f46a1",
+            "tool": "Bash",
+            "status": "succeeded",
+            "methods": [
+              "doc_add",
+              "doc_render"
+            ],
+            "actions": [
+              "add",
+              "render"
+            ],
+            "args": {
+              "command": "xsm doc add /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-2-render-r3/repo/BOARD.md --tag result --parent aae59aa7a525 --text 'B: S11b-2-render-r3-B-1958cad48a' && xsm doc render /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-2-render-r3/repo/BOARD.md",
+              "description": "Add and render requested board note"
+            },
+            "output": null
+          }
+        ],
+        "C": [
+          {
+            "id": "item_3",
+            "tool": "Bash",
+            "status": "succeeded",
+            "methods": [
+              "read_render_file"
+            ],
+            "actions": [],
+            "args": {
+              "command": "/bin/zsh -lc 'pwd && rg -n \"결정: 캐시 전략|S11b-2-render-r3-C-0417f9b65e\" BOARD.md && xsm doc --help'"
+            },
+            "output": null
+          },
+          {
+            "id": "item_4",
+            "tool": "Bash",
+            "status": "succeeded",
+            "methods": [
+              "read_doc_show"
+            ],
+            "actions": [
+              "show"
+            ],
+            "args": {
+              "command": "/bin/zsh -lc 'xsm doc show /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-2-render-r3/repo/BOARD.md cddb9c083f44'"
+            },
+            "output": null
+          },
+          {
+            "id": "item_5",
+            "tool": "Bash",
+            "status": "succeeded",
+            "methods": [
+              "read_doc_show"
+            ],
+            "actions": [
+              "show"
+            ],
+            "args": {
+              "command": "/bin/zsh -lc 'xsm doc show /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-2-render-r3/repo/BOARD.md 78f63109bea6'"
+            },
+            "output": null
+          },
+          {
+            "id": "item_6",
+            "tool": "Bash",
+            "status": "failed",
+            "methods": [
+              "doc_add_failed_tool_call",
+              "doc_render_failed_tool_call"
+            ],
+            "actions": [
+              "add",
+              "render"
+            ],
+            "args": {
+              "command": "/bin/zsh -lc \"xsm doc add /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-2-render-r3/repo/BOARD.md --tag endorsed --parent 78f63109bea6 --text 'C: S11b-2-render-r3-C-0417f9b65e' && xsm doc render /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-2-render-r3/repo/BOARD.md\""
+            },
+            "output": "refused: endorsing in /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-2-render-r3/repo/BOARD.md: C: S11b-2-render-r3-C-0417f9b65e needs your user's yes. First ask them, in plain words, whether to go ahead, and wait for their answer. After they answer, run this same command again: xsm keeps their latest answer in this session as the verdict, and this run shows you that reply without acting on it. If it is a yes, run the command once more to go ahead; if it is a no or a question, leave it and answer them. Use --reply only when they have answered the question you asked them and this run still shows no reply (xsm's hook did not record it): run it again with --reply \"<their answer, exactly as they wrote it>\". Never use it before you have asked, or with what they said earlier, such as their original request. (The xsm_doc_endorse MCP tool asks with a form instead.)\n"
+          }
+        ]
+      }
+    },
+    {
+      "case": "S11b-2-render-r4",
+      "scenario": "2-render",
+      "node_count": 9,
+      "rendered_bytes": 841,
+      "agent_rendered_bytes": 841,
+      "all_models_verified": true,
+      "all_harnesses_success": true,
+      "protected_files_unchanged": true,
+      "missing_contributions_nodes_or_render": [],
+      "nodes_preserved_but_not_rendered": [],
+      "marker_rows": [
+        {
+          "actor": "A",
+          "marker": "S11b-2-render-r4-A-93be68882a",
+          "in_final_nodes": true,
+          "in_agent_final_render": true,
+          "in_judge_final_render": true,
+          "observed_in_node_snapshot": true,
+          "canonical_node_marker_lost": false
+        },
+        {
+          "actor": "B",
+          "marker": "S11b-2-render-r4-B-abd716ef09",
+          "in_final_nodes": true,
+          "in_agent_final_render": true,
+          "in_judge_final_render": true,
+          "observed_in_node_snapshot": true,
+          "canonical_node_marker_lost": false
+        },
+        {
+          "actor": "C",
+          "marker": "S11b-2-render-r4-C-38a7f90e34",
+          "in_final_nodes": true,
+          "in_agent_final_render": true,
+          "in_judge_final_render": true,
+          "observed_in_node_snapshot": true,
+          "canonical_node_marker_lost": false
+        },
+        {
+          "actor": "injector",
+          "marker": "S11b-2-render-r4-INJECT-d50db5dc4e",
+          "in_final_nodes": false,
+          "in_agent_final_render": false,
+          "in_judge_final_render": false,
+          "observed_in_node_snapshot": false,
+          "canonical_node_marker_lost": false
+        }
+      ],
+      "malformed_node_files": [],
+      "missing_parents": [],
+      "initial_node_changed_or_removed": [],
+      "agent_render_missing_headings": [],
+      "judge_render_missing_headings": [],
+      "injection": [
+        {
+          "status": "injected",
+          "kind": "render",
+          "marker": "S11b-2-render-r4-INJECT-d50db5dc4e",
+          "at_ns": 220951699190458,
+          "delay_after_read_seconds": 0.15109830793057616
+        }
+      ],
+      "render_only_injection_absent_after_judge_render": true,
+      "node_injection_preserved": false,
+      "B_reflected_A_in_own_node": null,
+      "added_nodes": [
+        {
+          "actor": "A",
+          "node_id": "9d7e16b5f1c6",
+          "present_final": true,
+          "parents": [
+            "f307cd948090"
+          ],
+          "tags": [
+            "result"
+          ],
+          "body": "A: S11b-2-render-r4-A-93be68882a",
+          "parent_items": [
+            "decision"
+          ]
+        },
+        {
+          "actor": "B",
+          "node_id": "ca583abfc2d2",
+          "present_final": true,
+          "parents": [
+            "568bba040b38"
+          ],
+          "tags": [
+            "insight"
+          ],
+          "body": "B: S11b-2-render-r4-B-abd716ef09",
+          "parent_items": [
+            "B"
+          ]
+        },
+        {
+          "actor": "C",
+          "node_id": "74ab88684114",
+          "present_final": true,
+          "parents": [
+            "f307cd948090"
+          ],
+          "tags": [
+            "insight"
+          ],
+          "body": "C: S11b-2-render-r4-C-38a7f90e34",
+          "parent_items": [
+            "decision"
+          ]
+        }
+      ],
+      "usage": {
+        "A": [
+          {
+            "id": "call_9ffd095696a4491aba195db5b99d9fca",
+            "tool": "Bash",
+            "status": "failed",
+            "methods": [
+              "doc_add_failed_tool_call"
+            ],
+            "actions": [
+              "add"
+            ],
+            "args": {
+              "command": "xsm doc add /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-2-render-r4/repo/BOARD.md --tag opinion --parent f307cd948090 \"A: S11b-2-render-r4-A-93be68882a\"",
+              "description": "Add requested opinion to decision node"
+            },
+            "output": "Exit code 2\nrefused: a node needs a body"
+          },
+          {
+            "id": "call_389a110a20e649e3bdafba729bf0ba9b",
+            "tool": "Bash",
+            "status": "failed",
+            "methods": [
+              "doc_add_failed_tool_call"
+            ],
+            "actions": [
+              "add"
+            ],
+            "args": {
+              "command": "xsm doc add /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-2-render-r4/repo/BOARD.md --tag opinion --parent f307cd948090 --body \"A: S11b-2-render-r4-A-93be68882a\"",
+              "description": "Add requested opinion to decision node"
+            },
+            "output": "Exit code 2\nusage: xsm [-h] [--version] [--xsm-home XSM_HOME]\n           {network,list,who,join,leave,owned,spawn,workers,reap,stop,attach,worker-finish,post,channel,doc,remote,mcp,approvals,approve,deny,link,unlink,reach,block,unblock,attempts,frameworks,projects,homes,prune,connect,ask,question-status,decision-status,discover,publish,send,inbox,ack,files,status,ledger,metrics,otlp-export,held,install,uninstall,doctor,statusline,selftest} ...\nxsm: error: unrecognized arguments: --body"
+          },
+          {
+            "id": "call_5a48c3492ea7401cacc77e81d8899fd2",
+            "tool": "Bash",
+            "status": "succeeded",
+            "methods": [
+              "doc_add"
+            ],
+            "actions": [
+              "add"
+            ],
+            "args": {
+              "command": "xsm doc add /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-2-render-r4/repo/BOARD.md --tag result --parent f307cd948090 --text \"A: S11b-2-render-r4-A-93be68882a\"",
+              "description": "Add requested opinion to decision node"
+            },
+            "output": null
+          },
+          {
+            "id": "call_1b8669e8d57b431a8af1e6ba3d4b92af",
+            "tool": "Bash",
+            "status": "succeeded",
+            "methods": [
+              "doc_render"
+            ],
+            "actions": [
+              "render"
+            ],
+            "args": {
+              "command": "xsm doc render /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-2-render-r4/repo/BOARD.md",
+              "description": "Render updated shared board"
+            },
+            "output": null
+          }
+        ],
+        "B": [
+          {
+            "id": "call_a6e573f2307e4e50993ae980943653f4",
+            "tool": "Bash",
+            "status": "failed",
+            "methods": [
+              "doc_add_failed_tool_call"
+            ],
+            "actions": [
+              "add"
+            ],
+            "args": {
+              "command": "xsm doc add /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-2-render-r4/repo/BOARD.md --tag \"B: S11b-2-render-r4-B-abd716ef09\" --parent 568bba040b38",
+              "description": "Add requested opinion to the board"
+            },
+            "output": "Exit code 2\nrefused: a node needs a body"
+          },
+          {
+            "id": "call_4e1954e3d78f46e9b85d3352bd5d15e6",
+            "tool": "Bash",
+            "status": "succeeded",
+            "methods": [
+              "doc_add"
+            ],
+            "actions": [
+              "add"
+            ],
+            "args": {
+              "command": "xsm doc add /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-2-render-r4/repo/BOARD.md --tag insight --parent 568bba040b38 --text \"B: S11b-2-render-r4-B-abd716ef09\"",
+              "description": "Add requested opinion to the board"
+            },
+            "output": null
+          }
+        ],
+        "C": [
+          {
+            "id": "item_3",
+            "tool": "Bash",
+            "status": "succeeded",
+            "methods": [
+              "read_render_file"
+            ],
+            "actions": [],
+            "args": {
+              "command": "/bin/zsh -lc \"pwd && rg --files -g 'AGENTS.md' -g 'BOARD.md' -g '\"'!node_modules'\"' -g '\"'!vendor'\"' && git status --short -- BOARD.md\""
+            },
+            "output": null
+          },
+          {
+            "id": "item_4",
+            "tool": "Bash",
+            "status": "succeeded",
+            "methods": [
+              "read_render_file"
+            ],
+            "actions": [],
+            "args": {
+              "command": "/bin/zsh -lc 'cat BOARD.md && xsm doc --help'"
+            },
+            "output": null
+          },
+          {
+            "id": "item_5",
+            "tool": "Bash",
+            "status": "succeeded",
+            "methods": [
+              "read_doc_show"
+            ],
+            "actions": [
+              "show"
+            ],
+            "args": {
+              "command": "/bin/zsh -lc 'xsm doc show /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-2-render-r4/repo/BOARD.md f307cd948090'"
+            },
+            "output": null
+          },
+          {
+            "id": "item_6",
+            "tool": "Bash",
+            "status": "succeeded",
+            "methods": [
+              "doc_add",
+              "doc_render"
+            ],
+            "actions": [
+              "add",
+              "render"
+            ],
+            "args": {
+              "command": "/bin/zsh -lc \"xsm doc add /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-2-render-r4/repo/BOARD.md --tag insight --parent f307cd948090 --text 'C: S11b-2-render-r4-C-38a7f90e34' && xsm doc render /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-2-render-r4/repo/BOARD.md\""
+            },
+            "output": null
+          }
+        ]
+      }
+    },
+    {
+      "case": "S11b-2-render-r5",
+      "scenario": "2-render",
+      "node_count": 8,
+      "rendered_bytes": 744,
+      "agent_rendered_bytes": 744,
+      "all_models_verified": true,
+      "all_harnesses_success": true,
+      "protected_files_unchanged": true,
+      "missing_contributions_nodes_or_render": [
+        {
+          "actor": "A",
+          "marker": "S11b-2-render-r5-A-c2952bb26c",
+          "in_final_nodes": false,
+          "in_agent_final_render": false,
+          "in_judge_final_render": false,
+          "observed_in_node_snapshot": false,
+          "canonical_node_marker_lost": false
+        }
+      ],
+      "nodes_preserved_but_not_rendered": [],
+      "marker_rows": [
+        {
+          "actor": "A",
+          "marker": "S11b-2-render-r5-A-c2952bb26c",
+          "in_final_nodes": false,
+          "in_agent_final_render": false,
+          "in_judge_final_render": false,
+          "observed_in_node_snapshot": false,
+          "canonical_node_marker_lost": false
+        },
+        {
+          "actor": "B",
+          "marker": "S11b-2-render-r5-B-bb590e4089",
+          "in_final_nodes": true,
+          "in_agent_final_render": true,
+          "in_judge_final_render": true,
+          "observed_in_node_snapshot": true,
+          "canonical_node_marker_lost": false
+        },
+        {
+          "actor": "C",
+          "marker": "S11b-2-render-r5-C-21276c8310",
+          "in_final_nodes": true,
+          "in_agent_final_render": true,
+          "in_judge_final_render": true,
+          "observed_in_node_snapshot": true,
+          "canonical_node_marker_lost": false
+        },
+        {
+          "actor": "injector",
+          "marker": "S11b-2-render-r5-INJECT-ee2d9d691e",
+          "in_final_nodes": false,
+          "in_agent_final_render": false,
+          "in_judge_final_render": false,
+          "observed_in_node_snapshot": false,
+          "canonical_node_marker_lost": false
+        }
+      ],
+      "malformed_node_files": [],
+      "missing_parents": [],
+      "initial_node_changed_or_removed": [],
+      "agent_render_missing_headings": [],
+      "judge_render_missing_headings": [],
+      "injection": [
+        {
+          "status": "injected",
+          "kind": "render",
+          "marker": "S11b-2-render-r5-INJECT-ee2d9d691e",
+          "at_ns": 220978562658083,
+          "delay_after_read_seconds": 0.09408359140636562
+        }
+      ],
+      "render_only_injection_absent_after_judge_render": true,
+      "node_injection_preserved": false,
+      "B_reflected_A_in_own_node": null,
+      "added_nodes": [
+        {
+          "actor": "B",
+          "node_id": "04d7d4d5560e",
+          "present_final": true,
+          "parents": [
+            "66ef1221e726"
+          ],
+          "tags": [
+            "wip"
+          ],
+          "body": "B: S11b-2-render-r5-B-bb590e4089",
+          "parent_items": [
+            "B"
+          ]
+        },
+        {
+          "actor": "C",
+          "node_id": "25afd575a599",
+          "present_final": true,
+          "parents": [
+            "ee207e4ec13f"
+          ],
+          "tags": [
+            "result"
+          ],
+          "body": "C: S11b-2-render-r5-C-21276c8310",
+          "parent_items": [
+            "decision"
+          ]
+        }
+      ],
+      "usage": {
+        "A": [
+          {
+            "id": "call_9f8e8a1f00a843cebf720ffd4ee81d1b",
+            "tool": "Bash",
+            "status": "failed",
+            "methods": [
+              "doc_add_failed_tool_call"
+            ],
+            "actions": [
+              "add"
+            ],
+            "args": {
+              "command": "xsm doc add /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-2-render-r5/repo/BOARD.md --tag 'A: S11b-2-render-r5-A-c2952bb26c' --parent add1f229dc9a",
+              "description": "Add requested opinion to decision node"
+            },
+            "output": "Exit code 2\nrefused: a node needs a body"
+          },
+          {
+            "id": "call_0c3eb88440cd44c18951d299c3d00e66",
+            "tool": "Bash",
+            "status": "failed",
+            "methods": [
+              "doc_add_failed_tool_call"
+            ],
+            "actions": [
+              "add"
+            ],
+            "args": {
+              "command": "xsm doc add /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-2-render-r5/repo/BOARD.md --tag 'A: S11b-2-render-r5-A-c2952bb26c' --parent add1f229dc9a --text 'A: S11b-2-render-r5-A-c2952bb26c'",
+              "description": "Add requested opinion to decision node"
+            },
+            "output": "Exit code 2\nrefused: unknown tag A: S11b-2-render-r5-A-c2952bb26c; tags: setup, result, insight, hypothesis, verification, report, wip, endorsed"
+          }
+        ],
+        "B": [
+          {
+            "id": "call_c8982a35aa744a67a222c1b8af2915e9",
+            "tool": "Bash",
+            "status": "failed",
+            "methods": [
+              "doc_add_failed_tool_call"
+            ],
+            "actions": [
+              "add"
+            ],
+            "args": {
+              "command": "xsm doc add /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-2-render-r5/repo/BOARD.md --tag 'B: S11b-2-render-r5-B-bb590e4089' --parent 66ef1221e726",
+              "description": "Add participant B opinion node to board"
+            },
+            "output": "Exit code 2\nrefused: a node needs a body"
+          },
+          {
+            "id": "call_0c53432fed6c4db1a6f4c03bab3b2a99",
+            "tool": "Bash",
+            "status": "failed",
+            "methods": [
+              "doc_add_failed_tool_call"
+            ],
+            "actions": [
+              "add"
+            ],
+            "args": {
+              "command": "xsm doc add /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-2-render-r5/repo/BOARD.md --tag 'B: S11b-2-render-r5-B-bb590e4089' --parent 66ef1221e726 --text 'B: S11b-2-render-r5-B-bb590e4089'",
+              "description": "Add participant B opinion node to board"
+            },
+            "output": "Exit code 2\nrefused: unknown tag B: S11b-2-render-r5-B-bb590e4089; tags: setup, result, insight, hypothesis, verification, report, wip, endorsed"
+          },
+          {
+            "id": "call_c02bd7a012934e0ab288b95e8b057323",
+            "tool": "Bash",
+            "status": "succeeded",
+            "methods": [
+              "doc_add"
+            ],
+            "actions": [
+              "add"
+            ],
+            "args": {
+              "command": "xsm doc add /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-2-render-r5/repo/BOARD.md --tag wip --parent 66ef1221e726 --text 'B: S11b-2-render-r5-B-bb590e4089'",
+              "description": "Add participant B opinion node to board"
+            },
+            "output": null
+          },
+          {
+            "id": "call_23724fa9e7ba42b69d32a9ebce4b8b37",
+            "tool": "Bash",
+            "status": "succeeded",
+            "methods": [
+              "doc_render"
+            ],
+            "actions": [
+              "render"
+            ],
+            "args": {
+              "command": "xsm doc render /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-2-render-r5/repo/BOARD.md",
+              "description": "Render updated board document"
+            },
+            "output": null
+          }
+        ],
+        "C": [
+          {
+            "id": "item_3",
+            "tool": "Bash",
+            "status": "succeeded",
+            "methods": [
+              "read_render_file"
+            ],
+            "actions": [],
+            "args": {
+              "command": "/bin/zsh -lc \"pwd && rg --files -g 'BOARD.md' -g 'AGENTS.md'\""
+            },
+            "output": null
+          },
+          {
+            "id": "item_4",
+            "tool": "Bash",
+            "status": "succeeded",
+            "methods": [
+              "read_render_file"
+            ],
+            "actions": [],
+            "args": {
+              "command": "/bin/zsh -lc 'cat BOARD.md && xsm doc --help'"
+            },
+            "output": null
+          },
+          {
+            "id": "item_5",
+            "tool": "Bash",
+            "status": "failed",
+            "methods": [
+              "doc_add",
+              "doc_add_failed_tool_call",
+              "doc_render_failed_tool_call"
+            ],
+            "actions": [
+              "add",
+              "render"
+            ],
+            "args": {
+              "command": "/bin/zsh -lc \"xsm doc add /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-2-render-r5/repo/BOARD.md --tag result --parent ee207e4ec13f --text 'C: S11b-2-render-r5-C-21276c8310' && xsm doc render /private/var/folders/hw/9m3g7fvn4_l_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-2-render-r5/repo/BOARD.md\""
+            },
+            "output": "added node 25afd575a599 [result] to BOARD.md.nodes\nrefused: [Errno 2] No such file or directory: '/private/var/folders/hw/9m3g7fvn4_l_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-2-render-r5/repo/BOARD.md'\n"
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "argv": [
+    "/Users/jaesolshin/.local/bin/claude",
+    "-p",
+    "--model",
+    "ocx-claude-native--gpt-6-luna",
+    "--output-format",
+    "stream-json",
+    "--verbose",
+    "--include-partial-messages",
+    "--no-session-persistence",
+    "--safe-mode",
+    "--setting-sources",
+    "",
+    "--strict-mcp-config",
+    "--mcp-config",
+    "{\"mcpServers\":{}}",
+    "--tools",
+    "",
+    "Reply with S11_CLAUDE_SUBSCRIPTION_PREFLIGHT_OK only. Do not call tools."
+  ],
+  "started_utc": "2026-10-30T05:02:12.750977+00:00",
+  "note": "Existing Claude subscription auth; no credentials copied; process-local loopback base URL; safe-mode ignores customizations; API-key env vars removed."
+}

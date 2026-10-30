@@ -1,0 +1,18 @@
+{
+  "recorded_at": "2026-10-30T05:25:50.897799+00:00",
+  "claude_auth": {
+    "loggedIn": true,
+    "authMethod": "claude.ai",
+    "apiProvider": "firstParty",
+    "subscriptionType": "max"
+  },
+  "codex_config": {
+    "model": "gpt-6.1-sol",
+    "model_reasoning_effort": "high",
+    "openai_base_url": "http://127.0.0.1:10100/v1"
+  },
+  "proxy_version": "opencodex 2.67.0",
+  "codex_version": "codex-cli 0.163.0",
+  "claude_version": "2.1.314 (Claude Code)",
+  "proxy_catalog_openai": "gpt-5.5  [native, disabled]\ngpt-5.6-sol  [native, disabled]\ngpt-5.6-terra  [native, disabled]\ngpt-5.6-luna  [native, disabled]\ngpt-6-astra  [native, enabled]\ngpt-6-sol  [native, disabled]\ngpt-6-luna  [native, enabled]\ngpt-6.1-sol  [native, enabled]\ngpt-6.1-terra  [native, enabled]"
+}

@@ -1,0 +1,1 @@
+{"items":[{"id":"B08-07","title":"T23 일정","quote":"매출 API는 다음 페이지 위치를 문자열 토큰 대신 숫자로 반환한다.","reason":"매출 페이지의 next_cursor가 불투명 문자열이라는 구현 전제가 바뀌었다."},{"id":"B08-08","title":"T24 운영","quote":"preview-slot 사용 예약이 다른 팀의 발표와 겹쳐 승인되지 않았다.","reason":"작업에 필요한 preview-slot을 사용할 수 없다."}]}

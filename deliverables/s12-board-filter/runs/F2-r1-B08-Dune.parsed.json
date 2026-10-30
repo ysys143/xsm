@@ -1,0 +1,16 @@
+{
+  "items": [
+    {
+      "id": "B08-01",
+      "title": "T31 일정",
+      "quote": "Foxtrot이 문서 검색 벡터의 증분 재색인 로직 구현을 시작했다.",
+      "reason": "Foxtrot이 같은 문서 검색 벡터 재색인 작업을 진행해 업무가 겹친다."
+    },
+    {
+      "id": "B08-02",
+      "title": "T32 운영",
+      "quote": "문서 벡터를 PostgreSQL 밖으로 옮기고 pgvector 확장을 제거한다.",
+      "reason": "PostgreSQL과 pgvector를 전제로 한 색인 구현의 저장소 전제가 바뀐다."
+    }
+  ]
+}

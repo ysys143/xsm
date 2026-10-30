@@ -1,0 +1,10 @@
+{
+  "ee207e4ec13f.md": "---\nid: ee207e4ec13f\nt: 2026-10-30T14:53:35+0900\nauthor: S11b setup fixture (person)\nauthor_kind: human\ntags: setup\nparents: 4489713fae35\n---\n\n## 결정: 캐시 전략\n대기.\n",
+  "4489713fae35.md": "---\nid: 4489713fae35\nt: 2026-10-30T14:53:35+0900\nauthor: S11b setup fixture (person)\nauthor_kind: human\ntags: report\nparents: \n---\n\n# 공동 작업 보드\n\n## 결정: 캐시 전략\n아직 결정 없음.\n\n## 담당: A\n대기.\n\n## 담당: B\n대기.\n\n## 담당: C\n대기.\n\n## 진행 기록\n실험 시작.\n",
+  "394cfb9d9187.md": "---\nid: 394cfb9d9187\nt: 2026-10-30T14:53:35+0900\nauthor: S11b setup fixture (person)\nauthor_kind: human\ntags: setup\nparents: 4489713fae35\n---\n\n## 담당: C\n대기.\n",
+  "66ef1221e726.md": "---\nid: 66ef1221e726\nt: 2026-10-30T14:53:35+0900\nauthor: S11b setup fixture (person)\nauthor_kind: human\ntags: setup\nparents: 4489713fae35\n---\n\n## 담당: B\n대기.\n",
+  "add1f229dc9a.md": "---\nid: add1f229dc9a\nt: 2026-10-30T14:53:35+0900\nauthor: S11b setup fixture (person)\nauthor_kind: human\ntags: setup\nparents: 4489713fae35\n---\n\n## 담당: A\n대기.\n",
+  "25afd575a599.md": "---\nid: 25afd575a599\nt: 2026-10-30T14:53:43+0900\nauthor: codex-5d3af9@codex-home [78f59f]\nauthor_kind: agent\ntags: result\nparents: ee207e4ec13f\n---\n\nC: S11b-2-render-r5-C-21276c8310\n",
+  "04d7d4d5560e.md": "---\nid: 04d7d4d5560e\nt: 2026-10-30T14:53:55+0900\nauthor: repo-6f@claude-home [6eea5b]\nauthor_kind: agent\ntags: wip\nparents: 66ef1221e726\n---\n\nB: S11b-2-render-r5-B-bb590e4089\n",
+  "6d82a48c051f.md": "---\nid: 6d82a48c051f\nt: 2026-10-30T14:53:35+0900\nauthor: S11b setup fixture (person)\nauthor_kind: human\ntags: setup\nparents: 4489713fae35\n---\n\n## 진행 기록\n대기.\n"
+}

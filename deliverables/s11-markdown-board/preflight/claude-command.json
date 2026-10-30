@@ -1,0 +1,26 @@
+{
+  "argv": [
+    "/Users/jaesolshin/.nvm/versions/node/v24.19.0/bin/ocx",
+    "claude",
+    "-p",
+    "--model",
+    "ocx-claude-native--gpt-6-luna",
+    "--output-format",
+    "stream-json",
+    "--verbose",
+    "--include-partial-messages",
+    "--no-session-persistence",
+    "--safe-mode",
+    "--setting-sources",
+    "",
+    "--strict-mcp-config",
+    "--mcp-config",
+    "{\"mcpServers\":{}}",
+    "--tools",
+    "",
+    "Reply with S11_PREFLIGHT_OK only. Do not call any tools."
+  ],
+  "cwd": "/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11-va4hq9ed/repo",
+  "started_utc": "2026-10-30T05:00:39.865427+00:00",
+  "note": "Preflight only, not one of 20 scenarios. Isolated Claude config directory, API-key variables removed, existing live proxy."
+}

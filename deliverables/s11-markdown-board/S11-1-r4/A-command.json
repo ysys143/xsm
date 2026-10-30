@@ -1,0 +1,32 @@
+{
+  "actor": "A",
+  "harness": "claude",
+  "argv": [
+    "/Users/jaesolshin/.local/bin/claude",
+    "-p",
+    "--model",
+    "ocx-claude-native--gpt-6-luna",
+    "--effort",
+    "low",
+    "--output-format",
+    "stream-json",
+    "--verbose",
+    "--include-partial-messages",
+    "--no-session-persistence",
+    "--safe-mode",
+    "--setting-sources",
+    "",
+    "--strict-mcp-config",
+    "--mcp-config",
+    "{\"mcpServers\":{}}",
+    "--permission-mode",
+    "acceptEdits",
+    "--session-id",
+    "a0b9cd40-8ed6-4a05-9781-1c28cd77d5f8",
+    "--",
+    "공동 작업 보드 /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11-va4hq9ed/cases/S11-1-r4/repo/BOARD.md를 다른 참여자와 함께 쓰고 있습니다. 당신은 참여자 A입니다. 지정된 보드와 필요한 준비 파일 외의 자료를 읽거나 고치지 마세요. 사용자 프로젝트·설정·권한을 변경하거나 외부 메시지를 보내지 마세요. 작업을 끝내고 결과를 짧게 보고하세요.\n보드의 '담당: A' 항목을 'S11-1-r4-A-44a768dcdc7d'로 갱신하고, '진행 기록'에 'S11-1-r4-A-44a768dcdc7d-progress' 한 줄을 추가하세요."
+  ],
+  "cwd": "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11-va4hq9ed/cases/S11-1-r4/repo",
+  "stdin": "DEVNULL",
+  "session_id_requested": "a0b9cd40-8ed6-4a05-9781-1c28cd77d5f8"
+}

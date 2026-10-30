@@ -1,0 +1,1 @@
+{"items":[{"id":"B08-03","title":"T07 일정","quote":"Foxtrot이 auth-staging을 오늘 종료 시각까지 예약했다.","reason":"Oriole이 필요로 하는 자원 auth-staging이 Foxtrot에게 오늘 종료 시각까지 점유되어 있다."},{"id":"B08-04","title":"T08 운영","quote":"다른 팀이 재발급 요청 두 개가 동시에 올 때의 잠금 로직을 구현한다.","reason":"Oriole의 로그인 토큰 갱신 경쟁 조건 수정과 같은 동시 재발급 문제를 다른 팀이 구현하고 있어 업무가 겹친다."}]}

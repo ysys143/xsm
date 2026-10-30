@@ -1,0 +1,16 @@
+{
+  "items": [
+    {
+      "id": "B01-05",
+      "title": "T17 진행",
+      "quote": "팀 Echo가 매출 차트의 실시간 데이터 갱신 UI 구현을 시작했다.",
+      "reason": "Cedar의 실시간 매출 차트 구현과 같은 기능을 Echo가 동시에 구현하므로 작업이 겹친다."
+    },
+    {
+      "id": "B01-06",
+      "title": "T18 결정",
+      "quote": "Cedar가 sales-console 페이지 이동 부분의 검수를 맡는다.",
+      "reason": "Cedar가 직접 지명되었고, 페이지 이동은 Cedar의 작업 범위이자 소유 영역인 sales-console에 속한다."
+    }
+  ]
+}

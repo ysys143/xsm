@@ -1,0 +1,29 @@
+{
+  "started_at": "before counted scenario runs",
+  "profiles": [
+    {
+      "path": "/Users/jaesolshin/.claude-3/settings.json",
+      "sha256": "a29463f405d8562ae37f4a86905a767157792b92df68404a5ba698232597f420",
+      "mtime_ns": 1793327614839003745
+    },
+    {
+      "path": "/Users/jaesolshin/.codex-3/config.toml",
+      "sha256": "4f3edea63e649fbe1ce710ceb6b7d4ee5c6f52bcee2a9ceaf6f0e7ce4a346c6e",
+      "mtime_ns": 1793335976145903977
+    },
+    {
+      "path": "/Users/jaesolshin/.opencodex/config.json",
+      "sha256": "24ddc3031dd7fac6324f3cb0c6e1d989f5eaadbf721237a75262a0b46ac266cb",
+      "mtime_ns": 1793169133627141301
+    }
+  ],
+  "plan_sha256": "fd37f2d7be9cfaa19b680a08c370f85a63d471efba6812307b954a837320e4ef",
+  "scratch": "/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11-va4hq9ed",
+  "requested_model": "openai/gpt-6-luna",
+  "route": "OpenAI ChatGPT subscription backend through existing OCX",
+  "counted_scenarios": 20,
+  "counted_agent_runs": 60,
+  "effort": "low on both harnesses",
+  "runtime_permissions": "Claude acceptEdits, Codex workspace-write; invocation only, no settings changed",
+  "stdin": "DEVNULL; Claude uses explicit -- before prompt"
+}

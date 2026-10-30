@@ -1,0 +1,70 @@
+{
+  "head": "90a5cc9f33bfe2970061ac2b1bb3dd9c23753bba",
+  "note": "Selected files read during the discussion; hash snapshot, not a test run or immutable repository-wide freeze. No implementation edits were made for this task.",
+  "files": [
+    {
+      "path": "xsm/channel.py",
+      "sha256": "459f8125b03eddbd2d8be23474b5f50b740aa7f777d2ea436f0aaa55db235382"
+    },
+    {
+      "path": "xsm/network_messages.py",
+      "sha256": "c9986c606db5ddbde9d0b30689e83e4da80240a6d8ef0d4e2ecebfe0788af6ea"
+    },
+    {
+      "path": "xsm/network.py",
+      "sha256": "79125d7d90a3255bdf1ce6c15edc1abcf759ef0a8ee702c5c8f32444870c6b71"
+    },
+    {
+      "path": "xsm/network_membership.py",
+      "sha256": "f3496c84b86be111a120baf4d7b74f8fdfdeea415ac89cfb2fff4eb841ddb54a"
+    },
+    {
+      "path": "xsm/questions.py",
+      "sha256": "1b13a9c4a3db2e9f933ebc97ed00f362bb4f3cac95b7092ca5c302e718296a70"
+    },
+    {
+      "path": "xsm/abuse.py",
+      "sha256": "a15303d88acded3e03110b125da91e11ffd5de96d266a9485a0f476d991d8e66"
+    },
+    {
+      "path": "xsm/collaboration.py",
+      "sha256": "f29c91f0d5f26cd2c4971c619ab5dc7ea6dc3bfa5e32ad0791e17c0f3aff5cb7"
+    },
+    {
+      "path": "xsm/provenance.py",
+      "sha256": "7639e2b111f964a6eaa8031408fda9fc094eaa9c714653085b0f5ea5fbf755d6"
+    },
+    {
+      "path": "xsm/receive.py",
+      "sha256": "edc2b652dfd334bff67d56557ba512069697bd647e9551e8f642793a25fa54b6"
+    },
+    {
+      "path": "docs/adr/0003-no-wrapper-runtime-boundary.md",
+      "sha256": "dd804901868464f63a04e65756684ee7daffe5c14f1f63e3032ea49d415ccced"
+    },
+    {
+      "path": "docs/adr/0005-channel-thread-store.md",
+      "sha256": "89cf511f0ee2b50619c4b818c4855453afe58abce4e9c33c15590edca2c13cce"
+    },
+    {
+      "path": "docs/adr/0021-cross-machine-network-and-membership.md",
+      "sha256": "f2defaf4dea5b68cb21c626ee6f05998cffd2389f9d4a9e8033812b298651290"
+    },
+    {
+      "path": "docs/adr/0024-discover-select-and-handshake.md",
+      "sha256": "e3e2668a22a98f4f5773b009c08938f840f3d3d1d06e07bfb9dd5f702cdafce7"
+    },
+    {
+      "path": "xsm/doc.py",
+      "sha256": "465d44d8ed5c3c2c458d67a0071c3dc56ef483794f34858b26eae82258a68011"
+    },
+    {
+      "path": "docs/adr/0006-shared-document-editing.md",
+      "sha256": "9a65db85621ba3fcdf98523088befaaba357ec8d9dcd538b96e867c9a24b7df1"
+    },
+    {
+      "path": "docs/adr/0014-shared-board.md",
+      "sha256": "348d721e2d705a1d638b6fc2f0bc1ba68416f6e4280dd7d03f8328d4179a6cb7"
+    }
+  ]
+}

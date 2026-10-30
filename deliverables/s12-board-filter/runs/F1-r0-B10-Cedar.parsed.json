@@ -1,0 +1,16 @@
+{
+  "items": [
+    {
+      "id": "B10-03",
+      "title": "T19 자원",
+      "quote": "preview-slot은 다른 팀이 오늘 하루 단독으로 사용한다.",
+      "reason": "세션 Cedar가 필요로 하는 preview-slot을 다른 팀이 오늘 단독 점유하므로 자원 사용이 막힌다."
+    },
+    {
+      "id": "B10-04",
+      "title": "T20 담당",
+      "quote": "매출 API에서 snake_case 필드 제공을 중단하고 모두 camelCase로 제공한다.",
+      "reason": "세션 Cedar의 전제인 '매출 API 응답 필드는 snake_case'가 깨져 매출 화면 구현에 직접 영향을 준다."
+    }
+  ]
+}

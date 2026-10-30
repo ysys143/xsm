@@ -1,0 +1,10 @@
+---
+id: c0f2d916e152
+t: 2026-10-30T14:58:43+0900
+author: wt-a-93@claude-home [eb76db]
+author_kind: agent
+tags: result
+parents: 5e66be853ef3
+---
+
+A 결정: cache-choice-0373702cdef24632b552cedbd768d97e

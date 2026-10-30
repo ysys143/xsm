@@ -1,0 +1,46 @@
+{
+  "title_counts": {
+    "F1 title exact mismatch": 2,
+    "F1 title hash-prefix-only": 2,
+    "F2 title exact mismatch": 99,
+    "F2 title hash-prefix-only": 98
+  },
+  "items": [
+    {
+      "run": "F2-r0-B03-Birch.verified.json",
+      "item": {
+        "id": "B03-07",
+        "title": "T13 의존성",
+        "quote": "cache-staging 예약을 다른 작업의 장시간 부하 시험에 배정했다.",
+        "reason": "요청 세션이 사용할 cache-staging 자원이 다른 작업에 배정됐다."
+      },
+      "issues": [
+        "title content mismatch"
+      ],
+      "expected": {
+        "id": "B03-07",
+        "title": "T13 검토",
+        "before": "상태: 아직 변경 없음.",
+        "after": "cache-staging 예약을 다른 작업의 장시간 부하 시험에 배정했다."
+      }
+    },
+    {
+      "run": "F2-r0-B08-Birch.verified.json",
+      "item": {
+        "id": "B08-05",
+        "title": "T15 일정",
+        "quote": "Foxtrot이 Birch의 상품 캐시 패치에 대한 리뷰어가 되었다.",
+        "reason": "Birch의 상품 캐시 패치를 직접 지명하며 리뷰 담당자 변경을 알린다."
+      },
+      "issues": [
+        "quote mismatch"
+      ],
+      "expected": {
+        "id": "B08-05",
+        "title": "T15 일정",
+        "before": "상태: 아직 변경 없음.",
+        "after": "Birch의 상품 캐시 패치에 대한 리뷰어를 Foxtrot으로 바꾼다."
+      }
+    }
+  ]
+}

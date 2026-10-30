@@ -1,0 +1,16 @@
+# 공동 작업 보드
+
+## 결정: 캐시 전략
+A 결정: cache-choice-889a2194dce345508aea8c2e24290ed7
+
+## 담당: A
+S11-4-r3-A-38c824cb739e
+
+## 담당: B
+S11-4-r3-B-17c4eab1a84d — cache-choice-889a2194dce345508aea8c2e24290ed7
+
+## 담당: C
+S11-4-r3-C-1c1e34facedc
+
+## 진행 기록
+실험 시작.

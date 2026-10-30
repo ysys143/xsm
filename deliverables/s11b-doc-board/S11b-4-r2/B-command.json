@@ -1,0 +1,30 @@
+{
+  "argv": [
+    "/Users/jaesolshin/.local/bin/claude",
+    "-p",
+    "--model",
+    "ocx-claude-native--gpt-6-luna",
+    "--effort",
+    "low",
+    "--output-format",
+    "stream-json",
+    "--verbose",
+    "--include-hook-events",
+    "--no-session-persistence",
+    "--setting-sources",
+    "user",
+    "--permission-mode",
+    "acceptEdits",
+    "--allowedTools",
+    "Bash",
+    "--add-dir",
+    "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-4-r2/shared",
+    "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/xsm-state",
+    "--session-id",
+    "a0bd8621-2e32-4d16-a634-bde8cadc28ae",
+    "--",
+    "BOARD.md는 xsm doc이 렌더합니다. 렌더 파일을 직접 고치지 말고 xsm doc add /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-4-r2/shared/BOARD.md --tag ... --parent <항목 노드> 로 노드를 더하고, 필요하면 xsm doc render로 다시 렌더하세요. 초기 항목 노드는 {\"decision\": \"f7c3407d3423\", \"A\": \"4dc5b745143a\", \"B\": \"184f0f840268\", \"C\": \"42594015be0a\", \"progress\": \"3eee8a26d730\"}입니다.\n당신은 참여자 B이며 보드는 /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-4-r2/shared/BOARD.md입니다. 다른 참여자와 함께 쓰는 시험입니다. 지정 보드·노드와 필요한 준비 파일 외에는 고치지 말고, 사용자 설정·권한·외부 메시지는 변경하지 마세요. 끝나면 결과를 짧게 보고하세요.\n준비 파일 /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-4-r2/shared/A-finished.json가 생기면 A 실행이 끝난 것입니다. 최대 100초 기다린 뒤 보드의 현재 상태를 읽고 '담당: B'에 S11b-4-r2-B-0d2388b701와 읽은 A 결정 원문을 반영하세요. 준비 파일에는 결정 내용이 없습니다. 결정이 없다면 추측하지 말고 NOT_SEEN을 남기세요."
+  ],
+  "cwd": "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/cases/S11b-4-r2/wt-B",
+  "stdin": "DEVNULL"
+}

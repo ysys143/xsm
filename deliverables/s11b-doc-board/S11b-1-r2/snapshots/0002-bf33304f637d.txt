@@ -1,0 +1,11 @@
+---
+id: 3ed59b889d06
+t: 2026-10-30T14:50:28+0900
+author: S11b setup fixture (person)
+author_kind: human
+tags: setup
+parents: b64758d8b485
+---
+
+## 결정: 캐시 전략
+대기.

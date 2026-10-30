@@ -1,0 +1,10 @@
+{
+  "format": "json:device_id,account_uuid,session_id:spaces=False",
+  "identity_source": "/Users/jaesolshin/.claude-3/.claude.json",
+  "session_id": "7f412907-003e-444a-b1d6-114832684219",
+  "conversation_hash": "71c321cc840b85d67d7c8d8a2785107e",
+  "requestId": "ocx-234ec23e7312d082b33bb383271a60f3",
+  "servedModel": "gpt-6-luna",
+  "provider": "openai",
+  "status": 200
+}

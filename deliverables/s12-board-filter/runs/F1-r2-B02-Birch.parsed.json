@@ -1,0 +1,16 @@
+{
+  "items": [
+    {
+      "id": "B02-01",
+      "title": "T11 자원",
+      "quote": "Birch가 product-cache 만료 처리의 회귀 점검을 맡는다.",
+      "reason": "Birch가 소유한 product-cache의 만료 처리를 직접 지명받은 변경이다."
+    },
+    {
+      "id": "B02-02",
+      "title": "T12 담당",
+      "quote": "팀 Foxtrot이 상품 상세 캐시 무효화 로직을 다시 구현하기 시작했다.",
+      "reason": "Birch의 작업인 상품 상세 캐시 무효화와 같은 로직을 다른 팀이 구현해 업무가 겹친다."
+    }
+  ]
+}

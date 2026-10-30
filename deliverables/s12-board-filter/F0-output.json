@@ -1,0 +1,226 @@
+{
+  "predictions": {
+    "B01-Oriole": [
+      {
+        "id": "B01-01",
+        "title": "T01 진행",
+        "quote": "Oriole가 auth-refresh의 갱신 요청 중복 처리를 맡는다.",
+        "reason": "literal match"
+      }
+    ],
+    "B01-Birch": [],
+    "B01-Cedar": [
+      {
+        "id": "B01-06",
+        "title": "T18 결정",
+        "quote": "Cedar가 sales-console 페이지 이동 부분의 검수를 맡는다.",
+        "reason": "literal match"
+      }
+    ],
+    "B01-Dune": [],
+    "B02-Oriole": [],
+    "B02-Birch": [
+      {
+        "id": "B02-01",
+        "title": "T11 자원",
+        "quote": "Birch가 product-cache 만료 처리의 회귀 점검을 맡는다.",
+        "reason": "literal match"
+      }
+    ],
+    "B02-Cedar": [],
+    "B02-Dune": [
+      {
+        "id": "B02-06",
+        "title": "T28 담당",
+        "quote": "Dune가 doc-index의 증분 갱신 검수를 맡는다.",
+        "reason": "literal match"
+      }
+    ],
+    "B03-Oriole": [],
+    "B03-Birch": [
+      {
+        "id": "B03-08",
+        "title": "T14 의존성",
+        "quote": "src/cache/products.ts의 수정 사항에 리뷰가 필요하다.",
+        "reason": "literal match"
+      }
+    ],
+    "B03-Cedar": [
+      {
+        "id": "B03-01",
+        "title": "T21 검토",
+        "quote": "web/sales/chart.tsx에 대한 디자인 검토가 필요하다.",
+        "reason": "literal match"
+      }
+    ],
+    "B03-Dune": [],
+    "B04-Oriole": [
+      {
+        "id": "B04-04",
+        "title": "T08 운영",
+        "quote": "src/auth/refresh.ts 리뷰 담당에 Echo를 추가한다.",
+        "reason": "literal match"
+      }
+    ],
+    "B04-Birch": [],
+    "B04-Cedar": [],
+    "B04-Dune": [
+      {
+        "id": "B04-01",
+        "title": "T31 일정",
+        "quote": "src/search/indexer.py 변경 사항을 Echo가 리뷰한다.",
+        "reason": "literal match"
+      }
+    ],
+    "B05-Oriole": [
+      {
+        "id": "B05-01",
+        "title": "T01 진행",
+        "quote": "auth-refresh 완료 기준에 재시도 시 중복 갱신 방지를 추가한다.",
+        "reason": "literal match"
+      }
+    ],
+    "B05-Birch": [],
+    "B05-Cedar": [],
+    "B05-Dune": [
+      {
+        "id": "B05-08",
+        "title": "T26 결정",
+        "quote": "doc-index 완료 조건에 문서 삭제 시 벡터 정리를 추가한다.",
+        "reason": "literal match"
+      }
+    ],
+    "B06-Oriole": [],
+    "B06-Birch": [
+      {
+        "id": "B06-01",
+        "title": "T11 자원",
+        "quote": "product-cache의 완료 조건에 중복 이벤트 처리를 추가한다.",
+        "reason": "literal match"
+      }
+    ],
+    "B06-Cedar": [
+      {
+        "id": "B06-04",
+        "title": "T20 담당",
+        "quote": "sales-console의 완료 기준에 페이지 이동 중 실시간 갱신을 추가한다.",
+        "reason": "literal match"
+      }
+    ],
+    "B06-Dune": [],
+    "B07-Oriole": [
+      {
+        "id": "B07-06",
+        "title": "T06 의존성",
+        "quote": "Oriole의 갱신 오류 수정은 보안 리뷰가 끝날 때까지 보류한다.",
+        "reason": "literal match"
+      }
+    ],
+    "B07-Birch": [],
+    "B07-Cedar": [
+      {
+        "id": "B07-01",
+        "title": "T21 검토",
+        "quote": "Cedar의 매출 차트 구현에 Foxtrot을 리뷰어로 지정한다.",
+        "reason": "literal match"
+      }
+    ],
+    "B07-Dune": [
+      {
+        "id": "B07-04",
+        "title": "T30 의존성",
+        "quote": "Dune의 문서 색인 갱신 패치 리뷰 담당은 Echo다.",
+        "reason": "literal match"
+      }
+    ],
+    "B08-Oriole": [],
+    "B08-Birch": [
+      {
+        "id": "B08-05",
+        "title": "T15 일정",
+        "quote": "Birch의 상품 캐시 패치에 대한 리뷰어를 Foxtrot으로 바꾼다.",
+        "reason": "literal match"
+      }
+    ],
+    "B08-Cedar": [],
+    "B08-Dune": [],
+    "B09-Oriole": [
+      {
+        "id": "B09-01",
+        "title": "T01 진행",
+        "quote": "src/auth/refresh.ts에 대한 리뷰 요청이 새로 등록됐다.",
+        "reason": "literal match"
+      }
+    ],
+    "B09-Birch": [
+      {
+        "id": "B09-04",
+        "title": "T10 결정",
+        "quote": "src/cache/products.ts의 변경 범위에 만료 경계 조건을 포함한다.",
+        "reason": "literal match"
+      }
+    ],
+    "B09-Cedar": [
+      {
+        "id": "B09-06",
+        "title": "T18 결정",
+        "quote": "web/sales/chart.tsx의 페이지 전환 변경에 리뷰를 요청한다.",
+        "reason": "literal match"
+      }
+    ],
+    "B09-Dune": [],
+    "B10-Oriole": [],
+    "B10-Birch": [],
+    "B10-Cedar": [],
+    "B10-Dune": [
+      {
+        "id": "B10-05",
+        "title": "T27 자원",
+        "quote": "src/search/indexer.py의 증분 처리 변경에 리뷰를 요청한다.",
+        "reason": "literal match"
+      }
+    ]
+  },
+  "elapsed_seconds": [
+    1.4042016118764877e-05,
+    7.208000170066953e-06,
+    6.66698906570673e-06,
+    6.4159976318478584e-06,
+    6.04201341047883e-06,
+    6.33401214145124e-06,
+    5.999987479299307e-06,
+    6.165995728224516e-06,
+    6.333022611215711e-06,
+    6.791000487282872e-06,
+    8.125003660097718e-06,
+    6.500020390376449e-06,
+    6.374990334734321e-06,
+    6.166985258460045e-06,
+    5.875015631318092e-06,
+    6.457994459196925e-06,
+    5.749985575675964e-06,
+    5.917012458667159e-06,
+    5.707988748326898e-06,
+    6.04201341047883e-06,
+    5.749985575675964e-06,
+    6.041984306648374e-06,
+    5.62501372769475e-06,
+    5.999987479299307e-06,
+    6.166985258460045e-06,
+    6.4159976318478584e-06,
+    5.750014679506421e-06,
+    6.041984306648374e-06,
+    5.416019121184945e-06,
+    5.54099096916616e-06,
+    5.458015948534012e-06,
+    5.832989700138569e-06,
+    6.250018486753106e-06,
+    6.417016265913844e-06,
+    6.207992555573583e-06,
+    6.290996680036187e-06,
+    6.082991603761911e-06,
+    5.958019755780697e-06,
+    5.707988748326898e-06,
+    6.4159976318478584e-06
+  ]
+}

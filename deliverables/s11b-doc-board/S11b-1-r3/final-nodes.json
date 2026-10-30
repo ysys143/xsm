@@ -1,0 +1,14 @@
+{
+  "a397f169fd93.md": "---\nid: a397f169fd93\nt: 2026-10-30T14:51:09+0900\nauthor: repo-b1@claude-home [2fcdfb]\nauthor_kind: agent\ntags: wip\nparents: fb14cc4ae183\n---\n\nS11b-1-r3-B-9fd8aedc89-progress\n",
+  "65128448184f.md": "---\nid: 65128448184f\nt: 2026-10-30T14:50:48+0900\nauthor: S11b setup fixture (person)\nauthor_kind: human\ntags: setup\nparents: 4f22b7a5f298\n---\n\n## 담당: B\n대기.\n",
+  "fb14cc4ae183.md": "---\nid: fb14cc4ae183\nt: 2026-10-30T14:50:48+0900\nauthor: S11b setup fixture (person)\nauthor_kind: human\ntags: setup\nparents: 4f22b7a5f298\n---\n\n## 진행 기록\n대기.\n",
+  "4f22b7a5f298.md": "---\nid: 4f22b7a5f298\nt: 2026-10-30T14:50:48+0900\nauthor: S11b setup fixture (person)\nauthor_kind: human\ntags: report\nparents: \n---\n\n# 공동 작업 보드\n\n## 결정: 캐시 전략\n아직 결정 없음.\n\n## 담당: A\n대기.\n\n## 담당: B\n대기.\n\n## 담당: C\n대기.\n\n## 진행 기록\n실험 시작.\n",
+  "4c2bc304d8eb.md": "---\nid: 4c2bc304d8eb\nt: 2026-10-30T14:50:48+0900\nauthor: S11b setup fixture (person)\nauthor_kind: human\ntags: setup\nparents: 4f22b7a5f298\n---\n\n## 담당: C\n대기.\n",
+  "30bd01fdac9a.md": "---\nid: 30bd01fdac9a\nt: 2026-10-30T14:50:58+0900\nauthor: codex-7175f6@codex-home [29429a]\nauthor_kind: agent\ntags: report\nparents: fb14cc4ae183\n---\n\nS11b-1-r3-C-aaa5e89c7e-progress\n",
+  "1d8a73114f7b.md": "---\nid: 1d8a73114f7b\nt: 2026-10-30T14:50:48+0900\nauthor: S11b setup fixture (person)\nauthor_kind: human\ntags: setup\nparents: 4f22b7a5f298\n---\n\n## 담당: A\n대기.\n",
+  "5fe075fe6cb9.md": "---\nid: 5fe075fe6cb9\nt: 2026-10-30T14:50:57+0900\nauthor: codex-7175f6@codex-home [29429a]\nauthor_kind: agent\ntags: result\nparents: 4c2bc304d8eb\n---\n\nS11b-1-r3-C-aaa5e89c7e\n",
+  "8b59aac9010b.md": "---\nid: 8b59aac9010b\nt: 2026-10-30T14:51:06+0900\nauthor: repo-b1@claude-home [2fcdfb]\nauthor_kind: agent\ntags: wip\nparents: 65128448184f\n---\n\nS11b-1-r3-B-9fd8aedc89: 담당: B\n",
+  "e6bfecc7509e.md": "---\nid: e6bfecc7509e\nt: 2026-10-30T14:51:02+0900\nauthor: repo-61@claude-home [892622]\nauthor_kind: agent\ntags: wip\nparents: 1d8a73114f7b\n---\n\n담당: A — S11b-1-r3-A-a687ff50ca\n",
+  "8ca3dad104b4.md": "---\nid: 8ca3dad104b4\nt: 2026-10-30T14:51:02+0900\nauthor: repo-61@claude-home [892622]\nauthor_kind: agent\ntags: wip\nparents: fb14cc4ae183\n---\n\nS11b-1-r3-A-a687ff50ca-progress\n",
+  "5ffe84008ec6.md": "---\nid: 5ffe84008ec6\nt: 2026-10-30T14:50:48+0900\nauthor: S11b setup fixture (person)\nauthor_kind: human\ntags: setup\nparents: 4f22b7a5f298\n---\n\n## 결정: 캐시 전략\n대기.\n"
+}

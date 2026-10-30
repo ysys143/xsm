@@ -1,0 +1,62 @@
+[
+  {
+    "path": "/Users/jaesolshin/.codex/config.toml",
+    "before_sha256": "114cea23867b36e464ddf0dafeb390fb38ff1a4c384e390cc10c1e44793ce49b",
+    "after_sha256": "114cea23867b36e464ddf0dafeb390fb38ff1a4c384e390cc10c1e44793ce49b"
+  },
+  {
+    "path": "/Users/jaesolshin/.codex-2/config.toml",
+    "before_sha256": "39c0bf2507acba6802c3c488674069bada0eef68ee2342e829005f18b62d1172",
+    "after_sha256": "39c0bf2507acba6802c3c488674069bada0eef68ee2342e829005f18b62d1172"
+  },
+  {
+    "path": "/Users/jaesolshin/.codex-3/config.toml",
+    "before_sha256": "4f3edea63e649fbe1ce710ceb6b7d4ee5c6f52bcee2a9ceaf6f0e7ce4a346c6e",
+    "after_sha256": "4f3edea63e649fbe1ce710ceb6b7d4ee5c6f52bcee2a9ceaf6f0e7ce4a346c6e"
+  },
+  {
+    "path": "/Users/jaesolshin/.claude-science/settings.json",
+    "before_sha256": "84aedf9eeffd5ca1b37f92f04d301c3d6e6b5a48e07cb459ef592d779cccaf26",
+    "after_sha256": "84aedf9eeffd5ca1b37f92f04d301c3d6e6b5a48e07cb459ef592d779cccaf26"
+  },
+  {
+    "path": "/Users/jaesolshin/.claude/settings.json",
+    "before_sha256": "72e1c8e00623f1091670201b3c1877d3c7d6eb4adfe26bc834b1f6e0b9da0aad",
+    "after_sha256": "72e1c8e00623f1091670201b3c1877d3c7d6eb4adfe26bc834b1f6e0b9da0aad"
+  },
+  {
+    "path": "/Users/jaesolshin/.claude-shared/settings.json",
+    "before_sha256": "e10b9d1c9b3517d7b2eaffda611a5329e92bd69e157460a1e22ecabbfd256988",
+    "after_sha256": "e10b9d1c9b3517d7b2eaffda611a5329e92bd69e157460a1e22ecabbfd256988"
+  },
+  {
+    "path": "/Users/jaesolshin/.claude-dev/settings.json",
+    "before_sha256": "bf5cb08519d49f37c65cf8512c58ae5dd0f913240a5d2674fc97f1b2f22b000c",
+    "after_sha256": "bf5cb08519d49f37c65cf8512c58ae5dd0f913240a5d2674fc97f1b2f22b000c"
+  },
+  {
+    "path": "/Users/jaesolshin/.claude-2/settings.json",
+    "before_sha256": "c662db452a14756838aa83b2227f89e8c4f49d9bc30531b49c1df5ea7b375f6a",
+    "after_sha256": "c662db452a14756838aa83b2227f89e8c4f49d9bc30531b49c1df5ea7b375f6a"
+  },
+  {
+    "path": "/Users/jaesolshin/.claude-3/settings.json",
+    "before_sha256": "a29463f405d8562ae37f4a86905a767157792b92df68404a5ba698232597f420",
+    "after_sha256": "a29463f405d8562ae37f4a86905a767157792b92df68404a5ba698232597f420"
+  },
+  {
+    "path": "/Users/jaesolshin/.claude-4/settings.json",
+    "before_sha256": "806370eda29ba67765319b7d9fa7d276a9162ae222b1b9e8fdd48c732ce1f6b9",
+    "after_sha256": "806370eda29ba67765319b7d9fa7d276a9162ae222b1b9e8fdd48c732ce1f6b9"
+  },
+  {
+    "path": "/Users/jaesolshin/.opencodex/config.json",
+    "before_sha256": "24ddc3031dd7fac6324f3cb0c6e1d989f5eaadbf721237a75262a0b46ac266cb",
+    "after_sha256": "24ddc3031dd7fac6324f3cb0c6e1d989f5eaadbf721237a75262a0b46ac266cb"
+  },
+  {
+    "path": "/Users/jaesolshin/.xsm/config.json",
+    "before_sha256": "3c82d867e0fde6c8576a40512b8e4663763644f2f5a22bc539909e6a5d22d178",
+    "after_sha256": "3c82d867e0fde6c8576a40512b8e4663763644f2f5a22bc539909e6a5d22d178"
+  }
+]

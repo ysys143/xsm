@@ -1,0 +1,1726 @@
+{
+  "completed_cases": 20,
+  "native_actor_runs": 60,
+  "isolated_registry_confirmed": 60,
+  "actual_model_confirmed": 60,
+  "proxy_request_count": 373,
+  "models": [
+    {
+      "case": "S11b-1-r1",
+      "actor": "A",
+      "native_session_id": "5ad05aa6-f330-40c5-a29a-941e8e175b5f",
+      "conversation_hash": "2930cc41c8219be6ccda5bc95d87cfe2",
+      "request_ids": [
+        "ocx-6d7d5f4afc9176da9c5a97cd733afc4c",
+        "ocx-fb5c36f38ab56bd1c8f2dd8df0c267da",
+        "ocx-348217f580726a2b46e7f4e442aefa29",
+        "ocx-7b11de178edd8771bf9c3b2283cbb8e2",
+        "ocx-8bb7ab74e0bec3fda9af975ceee338a8",
+        "ocx-328a6153257d0147704de2c6d50eacfc"
+      ],
+      "served_models": [
+        "gpt-6-luna"
+      ],
+      "model_verified": true,
+      "isolated_registry_matches": [
+        {
+          "runtime": "claude",
+          "home": "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/claude-home",
+          "ref": "94e9a0",
+          "registered": null
+        }
+      ]
+    },
+    {
+      "case": "S11b-1-r1",
+      "actor": "B",
+      "native_session_id": "b96df6e2-e36d-40ff-a82d-50d341739236",
+      "conversation_hash": "94bb3c45c8f0e38556c4c45657579603",
+      "request_ids": [
+        "ocx-2606fc88eca7f59a70077155776448c1",
+        "ocx-daf35ea380d88ca0fc2191036ea11f31",
+        "ocx-0166ceb1f1b445a83d811b9c22de47c8",
+        "ocx-3481ce202baf5f190db6f3860b527170",
+        "ocx-2e62b91dced0b052a949ab9ec5d7f883",
+        "ocx-5b11230c6349d41db91a1af2380b9cfa"
+      ],
+      "served_models": [
+        "gpt-6-luna"
+      ],
+      "model_verified": true,
+      "isolated_registry_matches": [
+        {
+          "runtime": "claude",
+          "home": "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/claude-home",
+          "ref": "bfd2fd",
+          "registered": null
+        }
+      ]
+    },
+    {
+      "case": "S11b-1-r1",
+      "actor": "C",
+      "native_session_id": "01a18b59-80f5-73d3-9ead-4c7987eee1c9",
+      "conversation_hash": "55ce28d8ff2ec17b35e54369aa85963e",
+      "request_ids": [
+        "ocx-af5e0b7570ac062ce468df70a4ef1dcd",
+        "ocx-4ca9bcc1a0c64b1691cbea556ce433cb",
+        "ocx-b03e94c387772f259659a3965c1e55e4",
+        "ocx-f56d3e8b3b3bb008f89a7629c7e806f9",
+        "ocx-1f25fe3f04e4bc4afbcef921097dafef",
+        "ocx-3eb515707ecb795562eae24546057cb4"
+      ],
+      "served_models": [
+        "gpt-6-luna"
+      ],
+      "model_verified": true,
+      "isolated_registry_matches": [
+        {
+          "runtime": "codex",
+          "home": "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/codex-home",
+          "ref": "6fc97f",
+          "registered": null
+        }
+      ]
+    },
+    {
+      "case": "S11b-1-r2",
+      "actor": "A",
+      "native_session_id": "c681d8e8-28a7-4f12-9bf5-12fb3f4369b6",
+      "conversation_hash": "044b579e8816c9f397c8ebf8d1751897",
+      "request_ids": [
+        "ocx-69ce6a49b4feb018293bba590834b4e7",
+        "ocx-b080edd605918cded78780b986bd136f",
+        "ocx-ace3cf8c63fa63bd1a57995657d466a8",
+        "ocx-eb7320cd417155194db402a84a28f7bb",
+        "ocx-f818a8bf963a3635a5b390c0d39ec9f4"
+      ],
+      "served_models": [
+        "gpt-6-luna"
+      ],
+      "model_verified": true,
+      "isolated_registry_matches": [
+        {
+          "runtime": "claude",
+          "home": "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/claude-home",
+          "ref": "eeb322",
+          "registered": null
+        }
+      ]
+    },
+    {
+      "case": "S11b-1-r2",
+      "actor": "B",
+      "native_session_id": "21d78a01-91f2-4720-84fa-ad583e373d32",
+      "conversation_hash": "69c3a4542daed7783857ea67afbd3417",
+      "request_ids": [
+        "ocx-2b9c0c1bd99cbffcdc1ba1a430f004ab",
+        "ocx-e5e5b186090185abb7285742524f188f",
+        "ocx-f4ea355514daa9888eb53222e3eb77b3",
+        "ocx-7ddd64d42dc44b193c718cd5e5f065fc",
+        "ocx-d1fc656b9b125edb612cdc11384a3385",
+        "ocx-f050541103763b041655b88845d1b8b8"
+      ],
+      "served_models": [
+        "gpt-6-luna"
+      ],
+      "model_verified": true,
+      "isolated_registry_matches": [
+        {
+          "runtime": "claude",
+          "home": "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/claude-home",
+          "ref": "8e6350",
+          "registered": null
+        }
+      ]
+    },
+    {
+      "case": "S11b-1-r2",
+      "actor": "C",
+      "native_session_id": "01a18b5c-0d73-7952-b11d-85486820429d",
+      "conversation_hash": "dabcd36b2f9582d33d5a82284c25b33c",
+      "request_ids": [
+        "ocx-0c1a5c5bb0e94af882bed89fd14826af",
+        "ocx-1346589a19c08c343747ee56917fc1eb",
+        "ocx-31e15df97206746dcee4356d13f4787a",
+        "ocx-a1138981f10b015d99e26671eb0e70e7",
+        "ocx-acd8a8ebf9e0ce402b46626076f21917",
+        "ocx-a686afb1fc82dbb14dcaced63f6e27db",
+        "ocx-95ed1ca86314555e13d452db2f869004"
+      ],
+      "served_models": [
+        "gpt-6-luna"
+      ],
+      "model_verified": true,
+      "isolated_registry_matches": [
+        {
+          "runtime": "codex",
+          "home": "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/codex-home",
+          "ref": "ed3869",
+          "registered": null
+        }
+      ]
+    },
+    {
+      "case": "S11b-1-r3",
+      "actor": "A",
+      "native_session_id": "c4a47643-930f-450c-92dc-b1fbfe89a67c",
+      "conversation_hash": "8258e98dc210278833be68fa3cf5ca64",
+      "request_ids": [
+        "ocx-5d4c72746c6146c3e862ae07517d414c",
+        "ocx-b08e0bf3dc96e05c06e906ddad075296",
+        "ocx-e1a1a1d139aa216c689a52d18858965d",
+        "ocx-329d1919422e86050df3346bdf4c35a9",
+        "ocx-7ea5eb07c82fe40cba99fab062f12567"
+      ],
+      "served_models": [
+        "gpt-6-luna"
+      ],
+      "model_verified": true,
+      "isolated_registry_matches": [
+        {
+          "runtime": "claude",
+          "home": "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/claude-home",
+          "ref": "892622",
+          "registered": null
+        }
+      ]
+    },
+    {
+      "case": "S11b-1-r3",
+      "actor": "B",
+      "native_session_id": "4b3a3915-ac58-40a7-97c4-947e4b9d23cd",
+      "conversation_hash": "1a66d699ad81d69aab15d0dbd21eb07c",
+      "request_ids": [
+        "ocx-adad50767b753860656533946fc9f8e3",
+        "ocx-5e8b21d231bcdf8f1827d66caba07cdd",
+        "ocx-e73c730bc95c052457d2d3036ee557a1",
+        "ocx-23f2249d0e3242e1d69ce7bb6f32894e",
+        "ocx-209d974b8cfdda2fdb2fffb813ab52ec",
+        "ocx-a85972fb659f930fceb2ea9c28cfda09",
+        "ocx-f2dded57687d8477b310024a7db8d34f",
+        "ocx-a68aa373e61e5a3003a81c63cd46e1f5"
+      ],
+      "served_models": [
+        "gpt-6-luna"
+      ],
+      "model_verified": true,
+      "isolated_registry_matches": [
+        {
+          "runtime": "claude",
+          "home": "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/claude-home",
+          "ref": "2fcdfb",
+          "registered": null
+        }
+      ]
+    },
+    {
+      "case": "S11b-1-r3",
+      "actor": "C",
+      "native_session_id": "01a18b5c-5efd-7a03-9a40-ee62b57175f6",
+      "conversation_hash": "328bca2049a3262944ebe72454c22bc8",
+      "request_ids": [
+        "ocx-282813174bc272ef0bfcde288536a994",
+        "ocx-e6a1cb5cbc120c5d16ee7e6207d93017",
+        "ocx-e0a2359c4c0667d5abb51d09954e5bbe",
+        "ocx-1b673d0b3402c17442ed5fe95930dbc9"
+      ],
+      "served_models": [
+        "gpt-6-luna"
+      ],
+      "model_verified": true,
+      "isolated_registry_matches": [
+        {
+          "runtime": "codex",
+          "home": "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/codex-home",
+          "ref": "29429a",
+          "registered": null
+        }
+      ]
+    },
+    {
+      "case": "S11b-1-r4",
+      "actor": "A",
+      "native_session_id": "c9da6e99-014a-40a5-a075-478e44b02669",
+      "conversation_hash": "9ea679c4a3f72e80cbb6b950e7f3d213",
+      "request_ids": [
+        "ocx-29b7bc45be843583d94936e6746b0234",
+        "ocx-5be683d962b0b55fa6e91e7c5cda6974",
+        "ocx-30a255dcbb7d098ba82d80ee0eff16b1",
+        "ocx-f812679d5975a66c5340b5b61559f07f",
+        "ocx-cbf9f016f820dd92fd3bf1fbb1436982",
+        "ocx-6f47812b7dfebff857cbf6044709b582"
+      ],
+      "served_models": [
+        "gpt-6-luna"
+      ],
+      "model_verified": true,
+      "isolated_registry_matches": [
+        {
+          "runtime": "claude",
+          "home": "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/claude-home",
+          "ref": "ab7c0a",
+          "registered": null
+        }
+      ]
+    },
+    {
+      "case": "S11b-1-r4",
+      "actor": "B",
+      "native_session_id": "2ad98500-ca47-4bea-b751-7b476bfc5d27",
+      "conversation_hash": "777782192ed28dd0cb685e0147b16279",
+      "request_ids": [
+        "ocx-190c254993d0e4267a280ce7f6e51bd1",
+        "ocx-ab1729a5bae4ce51613adb1a56c166a4",
+        "ocx-6137c6ac97127b26bb148db976da96f9",
+        "ocx-7072fe5920b15b5ce20c870232913db2"
+      ],
+      "served_models": [
+        "gpt-6-luna"
+      ],
+      "model_verified": true,
+      "isolated_registry_matches": [
+        {
+          "runtime": "claude",
+          "home": "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/claude-home",
+          "ref": "9ef6b3",
+          "registered": null
+        }
+      ]
+    },
+    {
+      "case": "S11b-1-r4",
+      "actor": "C",
+      "native_session_id": "01a18b5c-ca46-73a3-b4b7-be3f6eb87704",
+      "conversation_hash": "81ceb35b1b2c1bac6d1538657c8a80c0",
+      "request_ids": [
+        "ocx-be32699fe12e476c1493a5600ab72cd4",
+        "ocx-697487c58548b9f0498541f51c6361f9",
+        "ocx-43b95ca6bb246ca844d627d93937cdeb",
+        "ocx-906669b8dce848dd4744cafc0669b325"
+      ],
+      "served_models": [
+        "gpt-6-luna"
+      ],
+      "model_verified": true,
+      "isolated_registry_matches": [
+        {
+          "runtime": "codex",
+          "home": "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/codex-home",
+          "ref": "2b74c6",
+          "registered": null
+        }
+      ]
+    },
+    {
+      "case": "S11b-1-r5",
+      "actor": "A",
+      "native_session_id": "fbc3dcb5-f8dc-45ef-9603-bf6360ecc515",
+      "conversation_hash": "7ddf7ec0f843dab39cef0d96571043b0",
+      "request_ids": [
+        "ocx-f72efee6e872d08a024ca30cda9c7f11",
+        "ocx-ea8fb9ef464593ac9043f24602a6bf29",
+        "ocx-f167af55a3c51cd76b921f8a9e6f3e21",
+        "ocx-246f46934b5a40cd3566e55f0144ecc3",
+        "ocx-4dba12f0a1c0255c2321b4e45bc97368",
+        "ocx-de23c0b47219a91f25f2406d78eec4db"
+      ],
+      "served_models": [
+        "gpt-6-luna"
+      ],
+      "model_verified": true,
+      "isolated_registry_matches": [
+        {
+          "runtime": "claude",
+          "home": "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/claude-home",
+          "ref": "6c18a5",
+          "registered": null
+        }
+      ]
+    },
+    {
+      "case": "S11b-1-r5",
+      "actor": "B",
+      "native_session_id": "598cb138-2622-46de-9982-241f566962fc",
+      "conversation_hash": "25dac9019b37af04f2fb59fe4f646a17",
+      "request_ids": [
+        "ocx-646267f977003c49f40287790ba57252",
+        "ocx-28f320abc9a40f54f07af90823d00b5c",
+        "ocx-171ae4995cce8ffdcb41188875eac47a",
+        "ocx-3cb7b7096430bf63666af4585ec5b302",
+        "ocx-8a8c50f7efe2e0c159d8d987c647a980",
+        "ocx-23ea38681dbf3dc30db3e939cb085eae"
+      ],
+      "served_models": [
+        "gpt-6-luna"
+      ],
+      "model_verified": true,
+      "isolated_registry_matches": [
+        {
+          "runtime": "claude",
+          "home": "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/claude-home",
+          "ref": "05b368",
+          "registered": null
+        }
+      ]
+    },
+    {
+      "case": "S11b-1-r5",
+      "actor": "C",
+      "native_session_id": "01a18b5d-236a-7711-aa55-ef02438f9985",
+      "conversation_hash": "3b448257c636401aea1966727fa39914",
+      "request_ids": [
+        "ocx-bd000ab7ddca8fef47e213d13d356cd2",
+        "ocx-6452a6c6c373a23bc3e0a8db75792b2f",
+        "ocx-dacb3aaceed68faa7391251d1404e870",
+        "ocx-ecea22f8d80260d9b8327cde5835a365",
+        "ocx-b9464528676af834bdcd0079d63ffa39",
+        "ocx-b58e184df109a4572ee37d85e79a89ca",
+        "ocx-068ea8b75a798f165e139ad56ed58997"
+      ],
+      "served_models": [
+        "gpt-6-luna"
+      ],
+      "model_verified": true,
+      "isolated_registry_matches": [
+        {
+          "runtime": "codex",
+          "home": "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/codex-home",
+          "ref": "f370be",
+          "registered": null
+        }
+      ]
+    },
+    {
+      "case": "S11b-2-node-r1",
+      "actor": "A",
+      "native_session_id": "adb46946-6f4e-4d82-aa72-f4550b47a3c3",
+      "conversation_hash": "cf575442f6623d1e5ab63eede05b1996",
+      "request_ids": [
+        "ocx-7ed257dafe0ba4ee87a2a393499f6c80",
+        "ocx-89878f2b9ebb8395359e2b39fb750f7b",
+        "ocx-d0e9fc93e2bb65c4d60f7fe702e2a7fc",
+        "ocx-208ed5d4bb5c21fd938d07263cac3dc5",
+        "ocx-992e26f4f0e9c67c1519049f70ba95ae",
+        "ocx-da0331b039487a75e1dfb069e643bb25"
+      ],
+      "served_models": [
+        "gpt-6-luna"
+      ],
+      "model_verified": true,
+      "isolated_registry_matches": [
+        {
+          "runtime": "claude",
+          "home": "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/claude-home",
+          "ref": "bc8fe4",
+          "registered": null
+        }
+      ]
+    },
+    {
+      "case": "S11b-2-node-r1",
+      "actor": "B",
+      "native_session_id": "3c8dff89-4f48-448b-952b-f7ac78ee46fb",
+      "conversation_hash": "8a5658cf3eccdb49f296227f5eba2121",
+      "request_ids": [
+        "ocx-e47f6ee0757af11d52ad5c32009700fd",
+        "ocx-8869a8332a239ce0171fea236db2a1dc",
+        "ocx-bbe639b51a2398c37860bc1386986a31",
+        "ocx-5ae40c3706fb4a50d9122d8aae1ced58",
+        "ocx-16f9aa42df42d21672772aa14f4514a8",
+        "ocx-db4d56bbfcfd53ed2da8bc4388974c65",
+        "ocx-61f1b6bc5bdd378c85d0b622922005b1",
+        "ocx-e4103e10101efb8f3c89f668b6dcda2b"
+      ],
+      "served_models": [
+        "gpt-6-luna"
+      ],
+      "model_verified": true,
+      "isolated_registry_matches": [
+        {
+          "runtime": "claude",
+          "home": "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/claude-home",
+          "ref": "0d1d73",
+          "registered": null
+        }
+      ]
+    },
+    {
+      "case": "S11b-2-node-r1",
+      "actor": "C",
+      "native_session_id": "01a18b5f-54e6-7633-a9b0-df21976be142",
+      "conversation_hash": "49eb2fdcc83528312ba757c385bad219",
+      "request_ids": [
+        "ocx-d40fc8a945595142208d0c1d3ffff38a",
+        "ocx-268671c88f7d196e2712eac13855c489",
+        "ocx-93ec2a4306cc86bb2ea6c385b368555f",
+        "ocx-0df7ca5117f30ce2eae9a51029177c2d"
+      ],
+      "served_models": [
+        "gpt-6-luna"
+      ],
+      "model_verified": true,
+      "isolated_registry_matches": [
+        {
+          "runtime": "codex",
+          "home": "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/codex-home",
+          "ref": "9a7088",
+          "registered": null
+        }
+      ]
+    },
+    {
+      "case": "S11b-2-node-r2",
+      "actor": "A",
+      "native_session_id": "b8b0459f-a68b-4f62-bb6e-7aab75a6bca8",
+      "conversation_hash": "72e41cc861d7468507083b734414bab6",
+      "request_ids": [
+        "ocx-d2b38c65e81f30c11535cd4929c8e29c",
+        "ocx-1014ee2ed2aff043a0678890198e4fc7",
+        "ocx-a4cf2d6575fc00495ae200c0ddebc113",
+        "ocx-8d0e5ca4c42ba2e526460114a7dc4ae5",
+        "ocx-2622258f89491e9033fc31c94eafe8c8",
+        "ocx-1825929ab29d6e257a297df09b672eb6",
+        "ocx-52336bb6af2fecaab0a9e65f0e6a9a0b"
+      ],
+      "served_models": [
+        "gpt-6-luna"
+      ],
+      "model_verified": true,
+      "isolated_registry_matches": [
+        {
+          "runtime": "claude",
+          "home": "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/claude-home",
+          "ref": "459188",
+          "registered": null
+        }
+      ]
+    },
+    {
+      "case": "S11b-2-node-r2",
+      "actor": "B",
+      "native_session_id": "2ea944d4-f010-4729-a2dc-889693b84ca7",
+      "conversation_hash": "e589b8cdf87a1a78562cd8e7a4425541",
+      "request_ids": [
+        "ocx-39eec5ecbbe3fb240799167409769b7d",
+        "ocx-7f1673f64fcc17ec19b31a5edb8355c6",
+        "ocx-1e01e41b679dc792fdfe102105d03b77",
+        "ocx-acc116136e964d21d0f95c792f86e214",
+        "ocx-e168581de2bf889e68a8a75bf316348a",
+        "ocx-6138f61759b07e2440987f65d3644aa8"
+      ],
+      "served_models": [
+        "gpt-6-luna"
+      ],
+      "model_verified": true,
+      "isolated_registry_matches": [
+        {
+          "runtime": "claude",
+          "home": "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/claude-home",
+          "ref": "4c62fa",
+          "registered": null
+        }
+      ]
+    },
+    {
+      "case": "S11b-2-node-r2",
+      "actor": "C",
+      "native_session_id": "01a18b5f-b5b7-7cc0-bdc3-f4fde1892efc",
+      "conversation_hash": "fe3a71864dbbfad4508c49559a4b6cca",
+      "request_ids": [
+        "ocx-e8740f9bec082dcfb9ff9132cd1d2b8d",
+        "ocx-e7f7754d8dc092346613ccebc5579ff6",
+        "ocx-f0ac9a8577ca9d825971bae76362ab5c",
+        "ocx-2d48a2480af8b642f0a845407d2ba8e0",
+        "ocx-e9638daeda20992f64ebcdacb4e34df2"
+      ],
+      "served_models": [
+        "gpt-6-luna"
+      ],
+      "model_verified": true,
+      "isolated_registry_matches": [
+        {
+          "runtime": "codex",
+          "home": "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/codex-home",
+          "ref": "5d26c9",
+          "registered": null
+        }
+      ]
+    },
+    {
+      "case": "S11b-2-node-r3",
+      "actor": "A",
+      "native_session_id": "31b16586-acf3-4de4-84d9-b5f33598f79b",
+      "conversation_hash": "f4e117eaaefda51976cd0d98aec76b3c",
+      "request_ids": [
+        "ocx-afe2c895a83f520684c1a7bf7898936f",
+        "ocx-294076b1e3fb0b006ad1cfaae0c38a58",
+        "ocx-7644ab9ad66812fbe3059d8f35dd86b1",
+        "ocx-a330a86035c99fcb9c23feb8a61ee3f6",
+        "ocx-88beab3f3d1122f741fca675ac1fcc55"
+      ],
+      "served_models": [
+        "gpt-6-luna"
+      ],
+      "model_verified": true,
+      "isolated_registry_matches": [
+        {
+          "runtime": "claude",
+          "home": "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/claude-home",
+          "ref": "1d5e52",
+          "registered": null
+        }
+      ]
+    },
+    {
+      "case": "S11b-2-node-r3",
+      "actor": "B",
+      "native_session_id": "b0eba800-1497-478e-88de-40e048a5da32",
+      "conversation_hash": "8da793a4596853f03e22ec72d57d73fd",
+      "request_ids": [
+        "ocx-971d76fb7c2a464963e1bc8896e32459",
+        "ocx-bd44266c5707f6ab7331d3e029fc687e",
+        "ocx-3c4d3aab00400081c14e4a26ce8b78a8",
+        "ocx-e4439f6d2fbf3bbcbfa1516588797d5a",
+        "ocx-27ac86ba444f1634986aa0db4597a13e",
+        "ocx-aca620a3e9da9f4f7e1fb6175c2bbb6a"
+      ],
+      "served_models": [
+        "gpt-6-luna"
+      ],
+      "model_verified": true,
+      "isolated_registry_matches": [
+        {
+          "runtime": "claude",
+          "home": "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/claude-home",
+          "ref": "f87017",
+          "registered": null
+        }
+      ]
+    },
+    {
+      "case": "S11b-2-node-r3",
+      "actor": "C",
+      "native_session_id": "01a18b60-1ab1-7c12-8db4-65007c96fa80",
+      "conversation_hash": "b4252b047166ce9475d71ebc1d6fb4a2",
+      "request_ids": [
+        "ocx-0a48417952f455392aa86017cf0a7985",
+        "ocx-88ad9eab63a5a7a672e0d1d4423600ec",
+        "ocx-4a8c930eb422f413330d325d1a8c1eda",
+        "ocx-0d696410ce659fb774ddc8ffa1fbf541",
+        "ocx-c8939747fff431ad715e7d2be1cc79db"
+      ],
+      "served_models": [
+        "gpt-6-luna"
+      ],
+      "model_verified": true,
+      "isolated_registry_matches": [
+        {
+          "runtime": "codex",
+          "home": "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/codex-home",
+          "ref": "3bb482",
+          "registered": null
+        }
+      ]
+    },
+    {
+      "case": "S11b-2-node-r4",
+      "actor": "A",
+      "native_session_id": "7d6b20ba-b7f7-48d3-802e-ea98339fc747",
+      "conversation_hash": "a4fdb3468f4e837a6476c67390da6952",
+      "request_ids": [
+        "ocx-4e536ffcdf76a9fdaeafd6769c22d72a",
+        "ocx-2fb977ab644cc6ea67246656d466fa7a",
+        "ocx-f6cb11864cb6309e994559e3a31c73b0",
+        "ocx-ed108ac0dd89c446acb2994a332f39e1",
+        "ocx-1adce57fea7bb9c9e3422dc074d391fe",
+        "ocx-a83d1b474656d7e5ef58d1d5987defe6"
+      ],
+      "served_models": [
+        "gpt-6-luna"
+      ],
+      "model_verified": true,
+      "isolated_registry_matches": [
+        {
+          "runtime": "claude",
+          "home": "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/claude-home",
+          "ref": "b72806",
+          "registered": null
+        }
+      ]
+    },
+    {
+      "case": "S11b-2-node-r4",
+      "actor": "B",
+      "native_session_id": "ea3000c7-9849-4a55-a173-b9983087721f",
+      "conversation_hash": "14cadc26b5bfc805100a7d14b5667e53",
+      "request_ids": [
+        "ocx-d4b8b986bbaea97a7ce76be83f9a5ebd",
+        "ocx-2750bf0763690c6c9eaf931c4475657d",
+        "ocx-4e21e0c185844c10aa16808128b20430",
+        "ocx-1ff5947242d7f2e2dc943ae89c7b711c",
+        "ocx-d70264ddd0255d08905a41e87d9056fa",
+        "ocx-5c68cd3497d7eb7a04bde2186fb946e0",
+        "ocx-65ef3d2920985eac3ec485070a4421a1"
+      ],
+      "served_models": [
+        "gpt-6-luna"
+      ],
+      "model_verified": true,
+      "isolated_registry_matches": [
+        {
+          "runtime": "claude",
+          "home": "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/claude-home",
+          "ref": "9a9762",
+          "registered": null
+        }
+      ]
+    },
+    {
+      "case": "S11b-2-node-r4",
+      "actor": "C",
+      "native_session_id": "01a18b60-66aa-7a71-ae82-b397bd16efb6",
+      "conversation_hash": "6dacf18602021f0c259ab0f7251a7753",
+      "request_ids": [
+        "ocx-d4e95de908bf79b6ee54e644eb63cf1b",
+        "ocx-dabb2543f7ed0112c57bfb0c9667eb73",
+        "ocx-e96fc8510fed202fe82b5e5129555ea4",
+        "ocx-3a36f5e8c58d0a8b7c4d41da930c5a24"
+      ],
+      "served_models": [
+        "gpt-6-luna"
+      ],
+      "model_verified": true,
+      "isolated_registry_matches": [
+        {
+          "runtime": "codex",
+          "home": "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/codex-home",
+          "ref": "c03b0c",
+          "registered": null
+        }
+      ]
+    },
+    {
+      "case": "S11b-2-node-r5",
+      "actor": "A",
+      "native_session_id": "901ef4bc-4329-4c43-85ab-d48a9b4a67a9",
+      "conversation_hash": "27c97177492975f7f20fe6615477244f",
+      "request_ids": [
+        "ocx-2ba91122e90986266370a9ecf769a38a",
+        "ocx-412b9d4ed1a8ba7dc8dcbe4f6ec2b414",
+        "ocx-b0532475cdfe80a1c45d050b86043b6f",
+        "ocx-7c9fd20df6e1b65c18d14a1e19892f55",
+        "ocx-b2d06f36941c19318bb2e088328340e7",
+        "ocx-aa065d35a2c28219b00e592da69e3810",
+        "ocx-5ab76317fdc8564ddaaaa88834073a03",
+        "ocx-62db628c7a93f5d53e4c4a4efd4c8e11"
+      ],
+      "served_models": [
+        "gpt-6-luna"
+      ],
+      "model_verified": true,
+      "isolated_registry_matches": [
+        {
+          "runtime": "claude",
+          "home": "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/claude-home",
+          "ref": "961ace",
+          "registered": null
+        }
+      ]
+    },
+    {
+      "case": "S11b-2-node-r5",
+      "actor": "B",
+      "native_session_id": "8f63a2db-e35a-4416-9f4a-edbb156fec9a",
+      "conversation_hash": "d1b9ddfa29075f9ae36fbb47ce2b0571",
+      "request_ids": [
+        "ocx-0349774eca9adf48569670bab810ed45",
+        "ocx-6a292f801e1c735785d9d26b72433dd2",
+        "ocx-42c89fb0a4886651ae105b87aaecb20e",
+        "ocx-691853a0f9fcb15bfc4a7ec51bc7f59b",
+        "ocx-b6fea996f9f7aeebef12f88690e32367",
+        "ocx-be9727b97471fc508c7d7dfbd0628278",
+        "ocx-e6a9a13573d80ac1119d316cca8dacce",
+        "ocx-e58c5008691d64352fc06ddde2152311"
+      ],
+      "served_models": [
+        "gpt-6-luna"
+      ],
+      "model_verified": true,
+      "isolated_registry_matches": [
+        {
+          "runtime": "claude",
+          "home": "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/claude-home",
+          "ref": "33543f",
+          "registered": null
+        }
+      ]
+    },
+    {
+      "case": "S11b-2-node-r5",
+      "actor": "C",
+      "native_session_id": "01a18b60-b999-7482-9c21-7463bbe22e0c",
+      "conversation_hash": "f224c66da9df85677c2518e4a488fc25",
+      "request_ids": [
+        "ocx-0008bf8ae9409fd6e8efc80ac6d582cc",
+        "ocx-b8be2e49a6e145008dd7ad8c937ebb84",
+        "ocx-e6b651e645754fd9af82fc1247d5ba31",
+        "ocx-c28bc091c15698b77ff947ee64e698ef"
+      ],
+      "served_models": [
+        "gpt-6-luna"
+      ],
+      "model_verified": true,
+      "isolated_registry_matches": [
+        {
+          "runtime": "codex",
+          "home": "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/codex-home",
+          "ref": "79565f",
+          "registered": null
+        }
+      ]
+    },
+    {
+      "case": "S11b-2-render-r1",
+      "actor": "A",
+      "native_session_id": "26ab9807-4cfd-49bc-8ff7-1a9464317c35",
+      "conversation_hash": "39d43196aefa834b178aaeda9d2c518c",
+      "request_ids": [
+        "ocx-e71a4f2bb77cce563cac6ccf81eb3510",
+        "ocx-d547dfba79728c6a75d6571f7ab6107d",
+        "ocx-d5dc03f0088c4a66e2cb02f272f6cc0b",
+        "ocx-d9f5132f6f5f3f36eed10610e25c38dc"
+      ],
+      "served_models": [
+        "gpt-6-luna"
+      ],
+      "model_verified": true,
+      "isolated_registry_matches": [
+        {
+          "runtime": "claude",
+          "home": "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/claude-home",
+          "ref": "0204c7",
+          "registered": null
+        }
+      ]
+    },
+    {
+      "case": "S11b-2-render-r1",
+      "actor": "B",
+      "native_session_id": "b74bd799-84e9-4f8e-a761-d9718d83d5fa",
+      "conversation_hash": "cd1c89ad998fb24a8a4ca232b0bfcd20",
+      "request_ids": [
+        "ocx-01f5fff1e83e39264092fd2629cb2ec8",
+        "ocx-ebf375a7320f85a5c8de975f3044d36f",
+        "ocx-9556cc2920b0806d2c609148d8c4f8e9",
+        "ocx-ed5d8769deeee71b453f29d3c92bb685",
+        "ocx-2479a888478c962e8af9c75ed82b540e",
+        "ocx-ec5ddd083e39dc9ef98bdbe36c76ecd7",
+        "ocx-e02a71eb8978e30baeecb025d38b9880"
+      ],
+      "served_models": [
+        "gpt-6-luna"
+      ],
+      "model_verified": true,
+      "isolated_registry_matches": [
+        {
+          "runtime": "claude",
+          "home": "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/claude-home",
+          "ref": "96e595",
+          "registered": null
+        }
+      ]
+    },
+    {
+      "case": "S11b-2-render-r1",
+      "actor": "C",
+      "native_session_id": "01a18b5d-8492-72f3-8fd3-b541db0efb92",
+      "conversation_hash": "1930e20885843a128a9cf5632a60024a",
+      "request_ids": [
+        "ocx-fb0f69c7ac9b3d7e0f5e65b233781fa6",
+        "ocx-d1af6aeb2fb07cbadc5f6613cbe9979c",
+        "ocx-0dd6dbb01a902f1801b0c16a00e07153"
+      ],
+      "served_models": [
+        "gpt-6-luna"
+      ],
+      "model_verified": true,
+      "isolated_registry_matches": [
+        {
+          "runtime": "codex",
+          "home": "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/codex-home",
+          "ref": "f6b080",
+          "registered": null
+        }
+      ]
+    },
+    {
+      "case": "S11b-2-render-r2",
+      "actor": "A",
+      "native_session_id": "4a37ac89-0e82-4e7e-981c-07e67a2fbba4",
+      "conversation_hash": "0925c6a406d491eeec73415bde2b5d44",
+      "request_ids": [
+        "ocx-dd050b91d209f0ff9a2f432e8504c57e",
+        "ocx-c24526aa965d2dadb0bd33c4f17c605d",
+        "ocx-7ecada4b1bff7efa8fa0629a18a6db47",
+        "ocx-09447ac647018d963938b1faa7833353",
+        "ocx-610c84ed3b1b8c4856bd62ba1c93633b"
+      ],
+      "served_models": [
+        "gpt-6-luna"
+      ],
+      "model_verified": true,
+      "isolated_registry_matches": [
+        {
+          "runtime": "claude",
+          "home": "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/claude-home",
+          "ref": "eb9039",
+          "registered": null
+        }
+      ]
+    },
+    {
+      "case": "S11b-2-render-r2",
+      "actor": "B",
+      "native_session_id": "28e87ab8-97c6-4b52-b476-840948fac149",
+      "conversation_hash": "b5f8820dc2c95faee741dbce4c90c058",
+      "request_ids": [
+        "ocx-07c79ec30cf35ff85f8913f135dcf2ff",
+        "ocx-7179e6b12f0da2e73174f4e3c9090caf",
+        "ocx-101e6e0c77b3bce8753140573245860c",
+        "ocx-3a311ab5a5255f62e3670bbb46b7a0ed",
+        "ocx-a8493989b32eab47c19a92096ae88852",
+        "ocx-51dbc5d8e3c0c03814340d5444079533"
+      ],
+      "served_models": [
+        "gpt-6-luna"
+      ],
+      "model_verified": true,
+      "isolated_registry_matches": [
+        {
+          "runtime": "claude",
+          "home": "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/claude-home",
+          "ref": "789b80",
+          "registered": null
+        }
+      ]
+    },
+    {
+      "case": "S11b-2-render-r2",
+      "actor": "C",
+      "native_session_id": "01a18b5d-dd20-7a11-9a58-3e01d091f2bf",
+      "conversation_hash": "dc5f1a4210fef7fb12b70cf82e7b657a",
+      "request_ids": [
+        "ocx-94d22d8bce72abde7723c5348774c2da",
+        "ocx-5445085c40de145753bea0fbecb645e7",
+        "ocx-dc5f644d11c1dc5424b500bee6d0e175",
+        "ocx-bb67327a88b17cbf4ac14c4137ccb94a"
+      ],
+      "served_models": [
+        "gpt-6-luna"
+      ],
+      "model_verified": true,
+      "isolated_registry_matches": [
+        {
+          "runtime": "codex",
+          "home": "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/codex-home",
+          "ref": "53b4a8",
+          "registered": null
+        }
+      ]
+    },
+    {
+      "case": "S11b-2-render-r3",
+      "actor": "A",
+      "native_session_id": "d3ca6f22-86f2-4b84-b320-f5a671c509d1",
+      "conversation_hash": "6df7f79e1a10139a438f800d93fc2dd7",
+      "request_ids": [
+        "ocx-ee205e633d47a9be345cb28e0a98cd91",
+        "ocx-9a575217a3dbf7a1d05335523beb90e0",
+        "ocx-e659aa1966a2ee4a50abd875c76d097c",
+        "ocx-59a5a66c6dc83331aa547aa89f7ea428",
+        "ocx-328608188a5a775a0c6cd3166278e0d6"
+      ],
+      "served_models": [
+        "gpt-6-luna"
+      ],
+      "model_verified": true,
+      "isolated_registry_matches": [
+        {
+          "runtime": "claude",
+          "home": "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/claude-home",
+          "ref": "b7ee99",
+          "registered": null
+        }
+      ]
+    },
+    {
+      "case": "S11b-2-render-r3",
+      "actor": "B",
+      "native_session_id": "ec897bd0-83e6-43d8-9f04-042bd2425a39",
+      "conversation_hash": "fcff952aa9b54a9f3064d16dde1bf18c",
+      "request_ids": [
+        "ocx-67f4cc53e690f68b06552877baaf24ea",
+        "ocx-1d0df9ab7f7168f4025739f79ee28ab2",
+        "ocx-f7f5e3b0fab3efaa69c32d2a1b80354f",
+        "ocx-dec50427b8b3f56643d2ddf2c16be98b",
+        "ocx-eb42e8cf6de4680a3b0ae4c28afc3162"
+      ],
+      "served_models": [
+        "gpt-6-luna"
+      ],
+      "model_verified": true,
+      "isolated_registry_matches": [
+        {
+          "runtime": "claude",
+          "home": "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/claude-home",
+          "ref": "215d5f",
+          "registered": null
+        }
+      ]
+    },
+    {
+      "case": "S11b-2-render-r3",
+      "actor": "C",
+      "native_session_id": "01a18b5e-358a-7991-a080-19ceaa3fe58b",
+      "conversation_hash": "41992926650c0fd466cc7b39264e93f0",
+      "request_ids": [
+        "ocx-0d1da9c47fed69cda91427562c9f5e70",
+        "ocx-a8e708fe52a911a15c699c2507fb2a5c",
+        "ocx-4def4fc4cd685c2c0b22e23a6a8b4eba",
+        "ocx-b25ac8a66b30b2b5f1ceebec93d411ad",
+        "ocx-7e4723d08726db4ecb1b836568e2f0a8"
+      ],
+      "served_models": [
+        "gpt-6-luna"
+      ],
+      "model_verified": true,
+      "isolated_registry_matches": [
+        {
+          "runtime": "codex",
+          "home": "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/codex-home",
+          "ref": "d10edf",
+          "registered": null
+        }
+      ]
+    },
+    {
+      "case": "S11b-2-render-r4",
+      "actor": "A",
+      "native_session_id": "041cf25c-b727-4325-8662-e8fb143b759f",
+      "conversation_hash": "d1784640b901ba5d98b5079ca93767cd",
+      "request_ids": [
+        "ocx-10a43abf97a3ad09946698c69ce9f539",
+        "ocx-8d942f023cf26b8445d71bf407c9c32c",
+        "ocx-15504f27a0d9b0c0ffb8dcab28875f8f",
+        "ocx-75f5e227cb93c06268f1147cbb3e82d4",
+        "ocx-7e4fcad0e3a61a25f6e9aad9fae76756",
+        "ocx-ea7dabfe0c0a25e1b14e1e52be841f96",
+        "ocx-5b1f98213615adea4752001112532aff",
+        "ocx-3bb4f0fda69efb650016af1e9c440cde",
+        "ocx-b2e7118aac169a7182011161c7828c59"
+      ],
+      "served_models": [
+        "gpt-6-luna"
+      ],
+      "model_verified": true,
+      "isolated_registry_matches": [
+        {
+          "runtime": "claude",
+          "home": "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/claude-home",
+          "ref": "0fcc77",
+          "registered": null
+        }
+      ]
+    },
+    {
+      "case": "S11b-2-render-r4",
+      "actor": "B",
+      "native_session_id": "4a4939fd-aea5-4f7c-824e-9dce9e43f26f",
+      "conversation_hash": "4994054818bfca6df046910999f87eaf",
+      "request_ids": [
+        "ocx-88fa94fb19a3772e92c44c3901000de0",
+        "ocx-f7b103619b305af1b38f44b1ac38b434",
+        "ocx-1a69234257647c90fc4574eb4e2c228e",
+        "ocx-87e33b6e321b24501539eabdc2623716",
+        "ocx-867501b79580040c69ca458642296dd6"
+      ],
+      "served_models": [
+        "gpt-6-luna"
+      ],
+      "model_verified": true,
+      "isolated_registry_matches": [
+        {
+          "runtime": "claude",
+          "home": "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/claude-home",
+          "ref": "acc21f",
+          "registered": null
+        }
+      ]
+    },
+    {
+      "case": "S11b-2-render-r4",
+      "actor": "C",
+      "native_session_id": "01a18b5e-7d68-7f12-8818-74484707c2f2",
+      "conversation_hash": "274ac92b92ae1c13e41d535a549f53b4",
+      "request_ids": [
+        "ocx-6d3e53fd1ce1f38d6cb215aba6c8d2c5",
+        "ocx-9ee0433e1a508e07a502ce9e39dd73c7",
+        "ocx-802b4dc9cd1cbe37d091c058358d5c18",
+        "ocx-a9b9da152065b9fbfb9ad07657e311d1",
+        "ocx-82bd715533f28b29645ae56e3594967e"
+      ],
+      "served_models": [
+        "gpt-6-luna"
+      ],
+      "model_verified": true,
+      "isolated_registry_matches": [
+        {
+          "runtime": "codex",
+          "home": "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/codex-home",
+          "ref": "c52cac",
+          "registered": null
+        }
+      ]
+    },
+    {
+      "case": "S11b-2-render-r5",
+      "actor": "A",
+      "native_session_id": "387a891d-7ff9-47da-a732-38a21b7f2739",
+      "conversation_hash": "37ad9abdb2631b30292d3b35e50c4065",
+      "request_ids": [
+        "ocx-8dec2e83689d96cb712f3dc53ba295d2",
+        "ocx-e5b69a5d503236e94542130122474eac",
+        "ocx-6d58a7d21e877744914d9cc2777ef8b7",
+        "ocx-9a61215af3c1efb74b5e9980862ad1dc",
+        "ocx-2462a03222725a06f5f9ff4df965a44c"
+      ],
+      "served_models": [
+        "gpt-6-luna"
+      ],
+      "model_verified": true,
+      "isolated_registry_matches": [
+        {
+          "runtime": "claude",
+          "home": "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/claude-home",
+          "ref": "18dc75",
+          "registered": null
+        }
+      ]
+    },
+    {
+      "case": "S11b-2-render-r5",
+      "actor": "B",
+      "native_session_id": "8686440b-094f-488a-9e96-a6c1c88f9d52",
+      "conversation_hash": "941cdcfd88a77b8d27d3c5f515529af0",
+      "request_ids": [
+        "ocx-f578aac07d604cead3a63ae99b639562",
+        "ocx-ae8a06af3789ec380d66799542a9461d",
+        "ocx-ddba16cdcf57ebe7d8bb47878f0bca83",
+        "ocx-c6be5af50e732c0500f7e6777bd016a0",
+        "ocx-81e29c2bd640b862b10820577a0b3c00",
+        "ocx-8e4c44660f8f60b44a297848e0ccd3ec",
+        "ocx-fccc6b4047880c2745265803c67ae408"
+      ],
+      "served_models": [
+        "gpt-6-luna"
+      ],
+      "model_verified": true,
+      "isolated_registry_matches": [
+        {
+          "runtime": "claude",
+          "home": "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/claude-home",
+          "ref": "6eea5b",
+          "registered": null
+        }
+      ]
+    },
+    {
+      "case": "S11b-2-render-r5",
+      "actor": "C",
+      "native_session_id": "01a18b5e-eaf2-7b72-84d7-b2c49a5d3af9",
+      "conversation_hash": "a56c4059567abb24b749b626595f0266",
+      "request_ids": [
+        "ocx-30b54e075ebdbd0552717451f358baf9",
+        "ocx-1036346073c496bf87c40ea69bdab2b8",
+        "ocx-51b031a0ec2d32cb39fd193b73c99c10",
+        "ocx-36a5cdfc9ab934b09e178af6680f4c13"
+      ],
+      "served_models": [
+        "gpt-6-luna"
+      ],
+      "model_verified": true,
+      "isolated_registry_matches": [
+        {
+          "runtime": "codex",
+          "home": "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/codex-home",
+          "ref": "78f59f",
+          "registered": null
+        }
+      ]
+    },
+    {
+      "case": "S11b-4-r1",
+      "actor": "A",
+      "native_session_id": "da7caa3d-ed70-4f83-8aee-bb24dae83667",
+      "conversation_hash": "21b2f1d8578b0d108279e5c830ac5f86",
+      "request_ids": [
+        "ocx-8af754e12d4f97b3bf8afc0f4b01bbdc",
+        "ocx-470f93124b483b3cd35aaefdf5c86640",
+        "ocx-27a37476699ea069fe3d1f6456cfe501",
+        "ocx-c903ac9f70bea01d46c73cd898b55379",
+        "ocx-580814ae53e68c0918e1720cec95cbb0",
+        "ocx-24827652ef8f1d7158da28565239080a"
+      ],
+      "served_models": [
+        "gpt-6-luna"
+      ],
+      "model_verified": true,
+      "isolated_registry_matches": [
+        {
+          "runtime": "claude",
+          "home": "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/claude-home",
+          "ref": "6ade80",
+          "registered": null
+        }
+      ]
+    },
+    {
+      "case": "S11b-4-r1",
+      "actor": "B",
+      "native_session_id": "491c7c03-001d-4d1f-b2d8-393101a04ad9",
+      "conversation_hash": "f5ce1211c2b26c9c5f263ac3e5cc2638",
+      "request_ids": [
+        "ocx-9a357b592462bf55e6dc7fddd3354703",
+        "ocx-e4d4e14b6e053915fd2f4a65d4add3e9",
+        "ocx-22d627002a4b270bc3c680a157003140",
+        "ocx-829c246677c2ddd483dcd94161c58639",
+        "ocx-71dc496c8c9df84f219220ff83132fee",
+        "ocx-b001fb4696bd44fa22420e4c49733188",
+        "ocx-42e7070ff190a8d545e86ff2d75f5ee8"
+      ],
+      "served_models": [
+        "gpt-6-luna"
+      ],
+      "model_verified": true,
+      "isolated_registry_matches": [
+        {
+          "runtime": "claude",
+          "home": "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/claude-home",
+          "ref": "099307",
+          "registered": null
+        }
+      ]
+    },
+    {
+      "case": "S11b-4-r1",
+      "actor": "C",
+      "native_session_id": "01a18b62-0277-7522-89f9-2423e07b1c7e",
+      "conversation_hash": "330c0a0ab6bf78761f28781374726dc0",
+      "request_ids": [
+        "ocx-6a1ebfe5a3feaf10d2ed5af2aef62cda",
+        "ocx-fb90f076f3152fba3a0d90329b8c1359",
+        "ocx-0f462dd4be18e38a0de7b37191839a3e",
+        "ocx-79a49106a28cdec98566e94fec76b61a",
+        "ocx-75bb6f097839072e514503d3ac49ad39",
+        "ocx-430e87cc91b6bd03692ec26b35a0703c"
+      ],
+      "served_models": [
+        "gpt-6-luna"
+      ],
+      "model_verified": true,
+      "isolated_registry_matches": [
+        {
+          "runtime": "codex",
+          "home": "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/codex-home",
+          "ref": "b9b1d0",
+          "registered": null
+        }
+      ]
+    },
+    {
+      "case": "S11b-4-r2",
+      "actor": "A",
+      "native_session_id": "3727debb-c4de-4f2b-9c39-d6b31f24d5b0",
+      "conversation_hash": "f2fb444116934821646caa353ea871fd",
+      "request_ids": [
+        "ocx-ca6b3b291a42d18fe03e74bb096b2c46",
+        "ocx-50a4fe46830ec709b37bf3a8baf46940",
+        "ocx-684fea51c1052038e4946453a99df702",
+        "ocx-b8e82208db304c19768e787f8719c3d4",
+        "ocx-02ba624e6e833ada88ec8d95df04c784",
+        "ocx-65c020fb342e33d742ed11743edd87eb",
+        "ocx-09222489160f524267d3baaad672a42e"
+      ],
+      "served_models": [
+        "gpt-6-luna"
+      ],
+      "model_verified": true,
+      "isolated_registry_matches": [
+        {
+          "runtime": "claude",
+          "home": "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/claude-home",
+          "ref": "277ec0",
+          "registered": null
+        }
+      ]
+    },
+    {
+      "case": "S11b-4-r2",
+      "actor": "B",
+      "native_session_id": "a0bd8621-2e32-4d16-a634-bde8cadc28ae",
+      "conversation_hash": "1492466ef9c79d3eb8b0638514d2e612",
+      "request_ids": [
+        "ocx-5bf0814f264e2421f4f38aa6a23f74c5",
+        "ocx-2ee8344092decf062028bc9f9c847cfb",
+        "ocx-1cec24cbacbf92052948c741e948429c",
+        "ocx-a4b1a45104df555e72f5868f68699bed",
+        "ocx-e99d64710718ed6223059327e816a979",
+        "ocx-489a929c53d6a9d3892287d30295aa5e",
+        "ocx-0b2c9d48abc86c47e40837a00f22e4a8",
+        "ocx-f7005c75f3fa32fd920983a862cfaee3",
+        "ocx-a789a8ae0ae010da8d0e7a900ebb8c6d",
+        "ocx-1472f203f9ff226e79e0f1f0ec591465"
+      ],
+      "served_models": [
+        "gpt-6-luna"
+      ],
+      "model_verified": true,
+      "isolated_registry_matches": [
+        {
+          "runtime": "claude",
+          "home": "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/claude-home",
+          "ref": "e62ebc",
+          "registered": null
+        }
+      ]
+    },
+    {
+      "case": "S11b-4-r2",
+      "actor": "C",
+      "native_session_id": "01a18b62-9e4c-70d1-86a8-29094b78659c",
+      "conversation_hash": "9d676bc991d6a5b337e57b0459a89245",
+      "request_ids": [
+        "ocx-2becb7ee6c7657ae8382875556e44be1",
+        "ocx-efec030ddd05ed5ac21d518b1357ba23",
+        "ocx-7f33c4bc423acb15481e31d5ffbbf969",
+        "ocx-8769dcfd81f3b874546ae7408d379a84",
+        "ocx-119e71e3a135a0b4ba14a170dca8d80f"
+      ],
+      "served_models": [
+        "gpt-6-luna"
+      ],
+      "model_verified": true,
+      "isolated_registry_matches": [
+        {
+          "runtime": "codex",
+          "home": "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/codex-home",
+          "ref": "41ed1e",
+          "registered": null
+        }
+      ]
+    },
+    {
+      "case": "S11b-4-r3",
+      "actor": "A",
+      "native_session_id": "ad318a43-3dfe-4e19-ae93-15dc68b145df",
+      "conversation_hash": "c593edf84316302f04c907b661caabc3",
+      "request_ids": [
+        "ocx-172847524ebedf388930a25e01d8e1fb",
+        "ocx-a3e3e8071bc8b7108deb85eb248f60e1",
+        "ocx-46f5fb85ea68a177bc42f8efdf973fd3",
+        "ocx-044f562e3fbed17cc5567f52081f8282",
+        "ocx-43470ba2e7608b539b7b1f57d810f94a"
+      ],
+      "served_models": [
+        "gpt-6-luna"
+      ],
+      "model_verified": true,
+      "isolated_registry_matches": [
+        {
+          "runtime": "claude",
+          "home": "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/claude-home",
+          "ref": "eb76db",
+          "registered": null
+        }
+      ]
+    },
+    {
+      "case": "S11b-4-r3",
+      "actor": "B",
+      "native_session_id": "24b85210-ea9e-4e35-885f-2203c0806905",
+      "conversation_hash": "5128be1168f5b801adc6dae821ae5aeb",
+      "request_ids": [
+        "ocx-27646476d7119c642413bc893444a37b",
+        "ocx-92c17b126e7f6f1427b82e9e3d8eb6e1",
+        "ocx-250b1382b67984c7ce85ff1f5ebe285a",
+        "ocx-e3920c645f256e9397fb564c073baae8",
+        "ocx-c1bd7f797ea78de1b8443658b69ebb96",
+        "ocx-d9f2ec2545b335ea05fedc108de84582",
+        "ocx-c59428bc93348cfc8e23b2dc5934c3a5",
+        "ocx-cacdda5df72a2882dcf3f733e2ee8f0e",
+        "ocx-15b697b2152fb6e1dd189619f59f4976",
+        "ocx-491e1ab941e43b9ac7bcda909a9dee31",
+        "ocx-48731a724c0534ec24f0488039a42a8b",
+        "ocx-c4c100a7d30c70ab18147396f257ec1f",
+        "ocx-fa669a768feee4e2df635f6fbb925073",
+        "ocx-a576c8f2b52950ed1f0f93651b3cde41",
+        "ocx-766e29a9d6eab0397ff8cc9a27baaedb",
+        "ocx-0c1daf32dd740d81cc490d65ae785e9e",
+        "ocx-8518b2134898f6c648ddc75769873dc7"
+      ],
+      "served_models": [
+        "gpt-6-luna"
+      ],
+      "model_verified": true,
+      "isolated_registry_matches": [
+        {
+          "runtime": "claude",
+          "home": "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/claude-home",
+          "ref": "4285b7",
+          "registered": null
+        }
+      ]
+    },
+    {
+      "case": "S11b-4-r3",
+      "actor": "C",
+      "native_session_id": "01a18b63-5a54-7653-b9ec-8c500de5f2d4",
+      "conversation_hash": "2224e89d5c5145244006c6d35d25ea44",
+      "request_ids": [
+        "ocx-0a5a6443916354b821b3178c2d411a9a",
+        "ocx-21ee2a5ab934139b89eeee13f50dc62b",
+        "ocx-4626add7f5a105ededf0fea81351b0d6",
+        "ocx-58e627df1c66cb2ef4ceeb6f299fc3ab",
+        "ocx-fdfcdc9e8ff3f08b028866c2f04438a0"
+      ],
+      "served_models": [
+        "gpt-6-luna"
+      ],
+      "model_verified": true,
+      "isolated_registry_matches": [
+        {
+          "runtime": "codex",
+          "home": "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/codex-home",
+          "ref": "971b19",
+          "registered": null
+        }
+      ]
+    },
+    {
+      "case": "S11b-4-r4",
+      "actor": "A",
+      "native_session_id": "5435259e-9b45-41f5-be8a-4d1d22b365b7",
+      "conversation_hash": "629c0ece4c952acca39bc59bb2e9161c",
+      "request_ids": [
+        "ocx-e996b5836fd308a01d0c2a852276c91c",
+        "ocx-348e102f97fea6f5de15d12ddd029992",
+        "ocx-b51ef9f3eb0018a442cc3c0b63d70fd9",
+        "ocx-3e5474362bc1161cdada86274bdc690b",
+        "ocx-8b95763611f58a2fb8bf132d3a1cd22a",
+        "ocx-149603eb6bb4a3dd82b811913bb2511b",
+        "ocx-d2212f330cc99d2cdce071d79d410143",
+        "ocx-9c93fbf6d9507baec53f8a6954c0503b",
+        "ocx-fb56ca34301c13ec7123089652755cc8"
+      ],
+      "served_models": [
+        "gpt-6-luna"
+      ],
+      "model_verified": true,
+      "isolated_registry_matches": [
+        {
+          "runtime": "claude",
+          "home": "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/claude-home",
+          "ref": "cbc7ba",
+          "registered": null
+        }
+      ]
+    },
+    {
+      "case": "S11b-4-r4",
+      "actor": "B",
+      "native_session_id": "890510dd-459e-4527-84be-9122100b7ae8",
+      "conversation_hash": "17b095af1da3a90e9874cf3bc54e2523",
+      "request_ids": [
+        "ocx-33c79980a01e45b408a67b5fb164cded",
+        "ocx-56a3c5303fea4a65ed8f9ab95a179b42",
+        "ocx-9ada9c5528ed92774f2aa3fd5f6d0f59",
+        "ocx-f052346ba4e3b5982690d4f0a3951b02",
+        "ocx-7b7e50c77db31476d6cc526da4614fae",
+        "ocx-2558187097db39f5ba43a2065515baa5",
+        "ocx-5635d2878cfd0d2f64e8d518e96247c5",
+        "ocx-2cc75081483b9ae9efb11aba4407742d",
+        "ocx-ce72860a786b587102a5acc394f2ed73",
+        "ocx-dc7da7422981c81165190207b043e50f",
+        "ocx-100fe7e9a6edc794cb1d614439fa46d5",
+        "ocx-486ff98ae7a48a9ba07fceaae6301284",
+        "ocx-f5bc52034a81698a45d0e35e8ee45b24",
+        "ocx-d168650b1e0aa8ca0a3ec2e832575df2"
+      ],
+      "served_models": [
+        "gpt-6-luna"
+      ],
+      "model_verified": true,
+      "isolated_registry_matches": [
+        {
+          "runtime": "claude",
+          "home": "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/claude-home",
+          "ref": "6d7aff",
+          "registered": null
+        }
+      ]
+    },
+    {
+      "case": "S11b-4-r4",
+      "actor": "C",
+      "native_session_id": "01a18b64-34f6-76b2-8de1-ec567a200a36",
+      "conversation_hash": "44fa573d5c947d9905d041f981309f96",
+      "request_ids": [
+        "ocx-9541274277a1ffa2404b267afa262a68",
+        "ocx-6a852d985b950978207229df0a26a42d",
+        "ocx-bca5003e7edf05e85a343533298bd7b6",
+        "ocx-9985b85c789429360159040f8a991047",
+        "ocx-3ecfbd24a244516d16c39d1160aa6c76",
+        "ocx-f9a37bd221936f20c8ad8437209610b7",
+        "ocx-15e5fd93f81ee04cd32a9f184b901ea6"
+      ],
+      "served_models": [
+        "gpt-6-luna"
+      ],
+      "model_verified": true,
+      "isolated_registry_matches": [
+        {
+          "runtime": "codex",
+          "home": "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/codex-home",
+          "ref": "f6c076",
+          "registered": null
+        }
+      ]
+    },
+    {
+      "case": "S11b-4-r5",
+      "actor": "A",
+      "native_session_id": "9cc13939-efb0-4162-a8fa-506f474cb8bc",
+      "conversation_hash": "53e653e64f575c3321680e8f91cfceaf",
+      "request_ids": [
+        "ocx-4f958ac8dcfa2d229c45f3c49f71da2b",
+        "ocx-9f1813d95cca383f8d11b9c188bb3d9c",
+        "ocx-c961604312eca47d7d2ecb958629f5b9",
+        "ocx-1d686b846597fbd7055a8bc1dafc6634",
+        "ocx-6cc018e83e7ab01af2e376b0d21454f1",
+        "ocx-a228eed8ea7a3e784abe7a56049eca82",
+        "ocx-126651ea5f9ca8be39b3a54b7956c650",
+        "ocx-1ec4be3c9c863b9f3571ab2132942fff",
+        "ocx-d6fac72ad5185d55ffe43ad7d319312d"
+      ],
+      "served_models": [
+        "gpt-6-luna"
+      ],
+      "model_verified": true,
+      "isolated_registry_matches": [
+        {
+          "runtime": "claude",
+          "home": "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/claude-home",
+          "ref": "0ce65f",
+          "registered": null
+        }
+      ]
+    },
+    {
+      "case": "S11b-4-r5",
+      "actor": "B",
+      "native_session_id": "53a85a0d-6f1d-401d-8e71-4f693022ff7d",
+      "conversation_hash": "031ffa92a63a9f9f2287d5555d3b0f0a",
+      "request_ids": [
+        "ocx-6a9a7bceac9ada70c361be4729486f52",
+        "ocx-86083c80717374524ea83deea63b386a",
+        "ocx-4cd4096645df4bc0b97b6f5ca8c35f7c",
+        "ocx-cbd610a788e7d60df90bc3fb60b8c628",
+        "ocx-ea88bb6d77bf6207468c865a2a0a1175",
+        "ocx-19ee437f46cd9119de4e557d9a302ccf",
+        "ocx-846c6856c1d80288de96a1efd6b85cb0"
+      ],
+      "served_models": [
+        "gpt-6-luna"
+      ],
+      "model_verified": true,
+      "isolated_registry_matches": [
+        {
+          "runtime": "claude",
+          "home": "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/claude-home",
+          "ref": "045274",
+          "registered": null
+        }
+      ]
+    },
+    {
+      "case": "S11b-4-r5",
+      "actor": "C",
+      "native_session_id": "01a18b64-ea5d-7de0-9b4c-44455f516fbf",
+      "conversation_hash": "6019198a1222e1f8d9e361a2e3f513f8",
+      "request_ids": [
+        "ocx-01efd5a8b0dfe28e9955928864359111",
+        "ocx-5a996190eaeb79865cacf8f417dc2881",
+        "ocx-e0589380d478f747acd37d5b9c429d9a",
+        "ocx-b068346d1edaf62bb5ad9285b603e3a0",
+        "ocx-9933afd800a058d17a773a26b6fd7c03"
+      ],
+      "served_models": [
+        "gpt-6-luna"
+      ],
+      "model_verified": true,
+      "isolated_registry_matches": [
+        {
+          "runtime": "codex",
+          "home": "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-s11b-4yguf5vb/codex-home",
+          "ref": "b61d46",
+          "registered": null
+        }
+      ]
+    }
+  ],
+  "protected_paths": [
+    {
+      "path": "/Users/jaesolshin/.codex/config.toml",
+      "before_sha256": "114cea23867b36e464ddf0dafeb390fb38ff1a4c384e390cc10c1e44793ce49b",
+      "after_sha256": "114cea23867b36e464ddf0dafeb390fb38ff1a4c384e390cc10c1e44793ce49b"
+    },
+    {
+      "path": "/Users/jaesolshin/.codex-2/config.toml",
+      "before_sha256": "39c0bf2507acba6802c3c488674069bada0eef68ee2342e829005f18b62d1172",
+      "after_sha256": "39c0bf2507acba6802c3c488674069bada0eef68ee2342e829005f18b62d1172"
+    },
+    {
+      "path": "/Users/jaesolshin/.codex-3/config.toml",
+      "before_sha256": "4f3edea63e649fbe1ce710ceb6b7d4ee5c6f52bcee2a9ceaf6f0e7ce4a346c6e",
+      "after_sha256": "4f3edea63e649fbe1ce710ceb6b7d4ee5c6f52bcee2a9ceaf6f0e7ce4a346c6e"
+    },
+    {
+      "path": "/Users/jaesolshin/.claude-science/settings.json",
+      "before_sha256": "84aedf9eeffd5ca1b37f92f04d301c3d6e6b5a48e07cb459ef592d779cccaf26",
+      "after_sha256": "84aedf9eeffd5ca1b37f92f04d301c3d6e6b5a48e07cb459ef592d779cccaf26"
+    },
+    {
+      "path": "/Users/jaesolshin/.claude/settings.json",
+      "before_sha256": "72e1c8e00623f1091670201b3c1877d3c7d6eb4adfe26bc834b1f6e0b9da0aad",
+      "after_sha256": "72e1c8e00623f1091670201b3c1877d3c7d6eb4adfe26bc834b1f6e0b9da0aad"
+    },
+    {
+      "path": "/Users/jaesolshin/.claude-shared/settings.json",
+      "before_sha256": "e10b9d1c9b3517d7b2eaffda611a5329e92bd69e157460a1e22ecabbfd256988",
+      "after_sha256": "e10b9d1c9b3517d7b2eaffda611a5329e92bd69e157460a1e22ecabbfd256988"
+    },
+    {
+      "path": "/Users/jaesolshin/.claude-dev/settings.json",
+      "before_sha256": "bf5cb08519d49f37c65cf8512c58ae5dd0f913240a5d2674fc97f1b2f22b000c",
+      "after_sha256": "bf5cb08519d49f37c65cf8512c58ae5dd0f913240a5d2674fc97f1b2f22b000c"
+    },
+    {
+      "path": "/Users/jaesolshin/.claude-2/settings.json",
+      "before_sha256": "c662db452a14756838aa83b2227f89e8c4f49d9bc30531b49c1df5ea7b375f6a",
+      "after_sha256": "c662db452a14756838aa83b2227f89e8c4f49d9bc30531b49c1df5ea7b375f6a"
+    },
+    {
+      "path": "/Users/jaesolshin/.claude-3/settings.json",
+      "before_sha256": "a29463f405d8562ae37f4a86905a767157792b92df68404a5ba698232597f420",
+      "after_sha256": "a29463f405d8562ae37f4a86905a767157792b92df68404a5ba698232597f420"
+    },
+    {
+      "path": "/Users/jaesolshin/.claude-4/settings.json",
+      "before_sha256": "806370eda29ba67765319b7d9fa7d276a9162ae222b1b9e8fdd48c732ce1f6b9",
+      "after_sha256": "806370eda29ba67765319b7d9fa7d276a9162ae222b1b9e8fdd48c732ce1f6b9"
+    },
+    {
+      "path": "/Users/jaesolshin/.opencodex/config.json",
+      "before_sha256": "24ddc3031dd7fac6324f3cb0c6e1d989f5eaadbf721237a75262a0b46ac266cb",
+      "after_sha256": "24ddc3031dd7fac6324f3cb0c6e1d989f5eaadbf721237a75262a0b46ac266cb"
+    },
+    {
+      "path": "/Users/jaesolshin/.xsm/config.json",
+      "before_sha256": "3c82d867e0fde6c8576a40512b8e4663763644f2f5a22bc539909e6a5d22d178",
+      "after_sha256": "3c82d867e0fde6c8576a40512b8e4663763644f2f5a22bc539909e6a5d22d178"
+    }
+  ],
+  "failed_doc_add_tool_call_categories": {
+    "empty-body": 21,
+    "unknown-tag": 17,
+    "unsupported-flag": 5,
+    "human-endorsement-required": 2,
+    "other": 1
+  },
+  "node_body_changed_item_headings": [
+    {
+      "case": "S11b-4-r4",
+      "actor": "C",
+      "node_id": "3fc4575a4060",
+      "heading": "## 담당: S11b-4-r4-C-d3a1ba8f02"
+    }
+  ],
+  "node_body_changed_item_heading_count": 1,
+  "all_successfully_returned_node_ids_preserved": 73,
+  "agent_final_vs_judge_final_render_diff_cases": [
+    "S11b-2-node-r2",
+    "S11b-2-node-r3"
+  ],
+  "S11-3": "explicitly omitted under task allowance",
+  "threshold_10_percent": "plan proposal, not user policy",
+  "no_xsm_product_code_changed": true,
+  "native_harness_success_is_not_task_success": true,
+  "successful_node_authors_verified_as_actual_registered_actors": 73,
+  "measurements": {
+    "node_adds_by_agents": 73,
+    "initial_fixture_nodes": 120,
+    "injected_fixture_nodes": 5,
+    "total_final_nodes": 198,
+    "canonical_node_markers_lost": 0,
+    "requested_agent_markers_missing": 11,
+    "node_markers_not_shown_in_final_render": 7,
+    "projection_heading_damage_cases": 4,
+    "node_body_heading_renames": 1,
+    "broken_parent_edges": 0
+  },
+  "measurement_controls": {
+    "doc_add_vs_render": "passed",
+    "help_not_add": "passed",
+    "echoed_add_not_counted": "rejected",
+    "missing_parent_negative_control": "detected",
+    "node_preservation_not_render_presence": "distinguished",
+    "own_marker_not_inferred_from_progress_prefix": "rejected",
+    "short_circuited_render_not_called_success": "rejected",
+    "delete_observed_node_marker_mutation": "detected",
+    "never_written_not_node_loss": "passed"
+  },
+  "document_validation": {
+    "missing_links": [],
+    "metrics_cross_checked": true,
+    "controls": {
+      "doc_add_vs_render": "passed",
+      "help_not_add": "passed",
+      "echoed_add_not_counted": "rejected",
+      "missing_parent_negative_control": "detected",
+      "node_preservation_not_render_presence": "distinguished",
+      "own_marker_not_inferred_from_progress_prefix": "rejected",
+      "short_circuited_render_not_called_success": "rejected",
+      "delete_observed_node_marker_mutation": "detected",
+      "never_written_not_node_loss": "passed"
+    },
+    "S11_3_explicitly_omitted": true,
+    "plan_threshold_not_user_policy": true,
+    "new_product_code_changes": false,
+    "report_sha256": "b6c152e9987acb44e6115210ecf55d312652b0361ba11819a37859c9b6f36828",
+    "artifact_files": 807,
+    "artifact_bytes": 2910994,
+    "manually_audited_shell_write_candidates": 0,
+    "artifact_files_after_dispatch": 809
+  },
+  "experimental_native_ids_found_in_actual_xsm_registry": [],
+  "dispatch": {
+    "reply_to": "s11b-doc-board-20261030",
+    "request_id": "s11b-doc-board-final-20261030",
+    "outcome": "succeeded",
+    "status": "sent-unconfirmed",
+    "meaning": "All selected scenario measurements completed with immutable real profiles; not approval or a passing product usability result.",
+    "latest_status": "queued",
+    "runtime_reached": false
+  }
+}

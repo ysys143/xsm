@@ -1,0 +1,10 @@
+---
+id: c2b880531638
+t: 2026-10-30T14:55:05+0900
+author: codex-96fa80@codex-home [3bb482]
+author_kind: agent
+tags: insight
+parents: 255ab00214ca
+---
+
+C: S11b-2-node-r3-C-88df31c5b9

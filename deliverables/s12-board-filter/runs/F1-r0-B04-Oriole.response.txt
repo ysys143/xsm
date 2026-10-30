@@ -1,0 +1,1 @@
+{"items":[{"id":"B04-03","title":"T07 일정","quote":"auth-staging 예약이 Foxtrot의 부하 시험과 겹쳐 내일로 밀렸다.","reason":"Oriole이 점유하는 자원 auth-staging의 예약 일정이 바뀌었다."},{"id":"B04-04","title":"T08 운영","quote":"src/auth/refresh.ts 리뷰 담당에 Echo를 추가한다.","reason":"Oriole이 수정하는 파일 src/auth/refresh.ts에 다른 작업자 Echo가 리뷰어로 추가되었다."}]}

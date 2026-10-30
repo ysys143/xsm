@@ -1,0 +1,42 @@
+{
+  "name": "F2-r2-B02-Birch",
+  "command": [
+    "codex",
+    "exec",
+    "--model",
+    "openai/gpt-6-luna",
+    "--ephemeral",
+    "--sandbox",
+    "read-only",
+    "--json",
+    "--color",
+    "never",
+    "-c",
+    "mcp_servers.reason-network.enabled=false",
+    "-c",
+    "model_reasoning_effort=\"low\"",
+    "-"
+  ],
+  "started_at": "2026-10-30T05:26:46.663033+00:00",
+  "prompt_sha256": "34b82278e1488717314c0b1add1971cf5fe1c8152e141cd5dd9cf500d6b5bd5e",
+  "returncode": 0,
+  "elapsed_seconds": 5.576469666993944,
+  "response_models": [
+    "gpt-6-luna"
+  ],
+  "codex_usage": [
+    {
+      "input_tokens": 20466,
+      "cached_input_tokens": 15360,
+      "cache_write_input_tokens": 0,
+      "output_tokens": 112,
+      "reasoning_output_tokens": 0
+    }
+  ],
+  "thread_ids": [
+    "01a18b46-5ce6-7182-b9c0-b157858ff69a"
+  ],
+  "proxy_requests": 1,
+  "finished_at": "2026-10-30T05:26:52.560923+00:00",
+  "evidence_correction": "sha256(thread-id)[:32] correlation; original .meta/.proxy retained"
+}

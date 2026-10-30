@@ -1,0 +1,4 @@
+{"type":"thread.started","thread_id":"01a18b4f-b192-7d42-81a3-d324cd1397fe"}
+{"type":"turn.started"}
+{"type":"item.completed","item":{"id":"item_0","type":"agent_message","text":"S11B_ISOLATED_CODEX_OK"}}
+{"type":"turn.completed","usage":{"input_tokens":12543,"cached_input_tokens":8448,"cache_write_input_tokens":0,"output_tokens":13,"reasoning_output_tokens":0}}

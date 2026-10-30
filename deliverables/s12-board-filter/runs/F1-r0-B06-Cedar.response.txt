@@ -1,0 +1,1 @@
+{"items":[{"id":"B06-03","title":"T19 자원","quote":"매출 응답의 gross_sales 필드는 grossSales로만 반환한다.","reason":"세션의 전제 \"매출 API 응답의 필드는 snake_case다\"와 충돌한다. 매출 응답 필드가 camelCase로 바뀌어 차트 구현이 영향을 받는다."},{"id":"B06-04","title":"T20 담당","quote":"sales-console의 완료 기준에 페이지 이동 중 실시간 갱신을 추가한다.","reason":"세션이 점유한 sales-console의 완료 기준에 페이지 이동 중 실시간 갱신이 추가되어, 이 세션의 실시간 차트와 페이지 이동 작업 범위와 직접 겹친다."}]}

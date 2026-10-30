@@ -1,0 +1,26 @@
+{
+  "verified": true,
+  "model_calls": {
+    "F1": 70,
+    "F2": 70,
+    "F3": 12
+  },
+  "F0_cases": 40,
+  "label_cells": 320,
+  "label_disagreements": 0,
+  "proxy_records": 82,
+  "actual_models": {
+    "F1": [
+      "claude-haiku-5-5"
+    ],
+    "F2": [
+      "gpt-6-luna"
+    ],
+    "F3": [
+      "gpt-6.1-sol"
+    ]
+  },
+  "freeze_verified": true,
+  "all_prompts_match_frozen": true,
+  "cli_proxy_usage_mismatches": []
+}

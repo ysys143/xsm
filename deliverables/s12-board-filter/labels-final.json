@@ -1,0 +1,2242 @@
+[
+  {
+    "case": "B01-Oriole",
+    "item": "B01-01",
+    "label": "R1",
+    "independent": "R1",
+    "author": "R1"
+  },
+  {
+    "case": "B01-Birch",
+    "item": "B01-01",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B01-Cedar",
+    "item": "B01-01",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B01-Dune",
+    "item": "B01-01",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B01-Oriole",
+    "item": "B01-02",
+    "label": "R2",
+    "independent": "R2",
+    "author": "R2"
+  },
+  {
+    "case": "B01-Birch",
+    "item": "B01-02",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B01-Cedar",
+    "item": "B01-02",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B01-Dune",
+    "item": "B01-02",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B01-Oriole",
+    "item": "B01-03",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B01-Birch",
+    "item": "B01-03",
+    "label": "R3",
+    "independent": "R3",
+    "author": "R3"
+  },
+  {
+    "case": "B01-Cedar",
+    "item": "B01-03",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B01-Dune",
+    "item": "B01-03",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B01-Oriole",
+    "item": "B01-04",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B01-Birch",
+    "item": "B01-04",
+    "label": "R4",
+    "independent": "R4",
+    "author": "R4"
+  },
+  {
+    "case": "B01-Cedar",
+    "item": "B01-04",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B01-Dune",
+    "item": "B01-04",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B01-Oriole",
+    "item": "B01-05",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B01-Birch",
+    "item": "B01-05",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B01-Cedar",
+    "item": "B01-05",
+    "label": "R2",
+    "independent": "R2",
+    "author": "R2"
+  },
+  {
+    "case": "B01-Dune",
+    "item": "B01-05",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B01-Oriole",
+    "item": "B01-06",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B01-Birch",
+    "item": "B01-06",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B01-Cedar",
+    "item": "B01-06",
+    "label": "R1",
+    "independent": "R1",
+    "author": "R1"
+  },
+  {
+    "case": "B01-Dune",
+    "item": "B01-06",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B01-Oriole",
+    "item": "B01-07",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B01-Birch",
+    "item": "B01-07",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B01-Cedar",
+    "item": "B01-07",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B01-Dune",
+    "item": "B01-07",
+    "label": "R4",
+    "independent": "R4",
+    "author": "R4"
+  },
+  {
+    "case": "B01-Oriole",
+    "item": "B01-08",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B01-Birch",
+    "item": "B01-08",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B01-Cedar",
+    "item": "B01-08",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B01-Dune",
+    "item": "B01-08",
+    "label": "R3",
+    "independent": "R3",
+    "author": "R3"
+  },
+  {
+    "case": "B02-Oriole",
+    "item": "B02-01",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B02-Birch",
+    "item": "B02-01",
+    "label": "R1",
+    "independent": "R1",
+    "author": "R1"
+  },
+  {
+    "case": "B02-Cedar",
+    "item": "B02-01",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B02-Dune",
+    "item": "B02-01",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B02-Oriole",
+    "item": "B02-02",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B02-Birch",
+    "item": "B02-02",
+    "label": "R2",
+    "independent": "R2",
+    "author": "R2"
+  },
+  {
+    "case": "B02-Cedar",
+    "item": "B02-02",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B02-Dune",
+    "item": "B02-02",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B02-Oriole",
+    "item": "B02-03",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B02-Birch",
+    "item": "B02-03",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B02-Cedar",
+    "item": "B02-03",
+    "label": "R4",
+    "independent": "R4",
+    "author": "R4"
+  },
+  {
+    "case": "B02-Dune",
+    "item": "B02-03",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B02-Oriole",
+    "item": "B02-04",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B02-Birch",
+    "item": "B02-04",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B02-Cedar",
+    "item": "B02-04",
+    "label": "R3",
+    "independent": "R3",
+    "author": "R3"
+  },
+  {
+    "case": "B02-Dune",
+    "item": "B02-04",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B02-Oriole",
+    "item": "B02-05",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B02-Birch",
+    "item": "B02-05",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B02-Cedar",
+    "item": "B02-05",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B02-Dune",
+    "item": "B02-05",
+    "label": "R2",
+    "independent": "R2",
+    "author": "R2"
+  },
+  {
+    "case": "B02-Oriole",
+    "item": "B02-06",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B02-Birch",
+    "item": "B02-06",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B02-Cedar",
+    "item": "B02-06",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B02-Dune",
+    "item": "B02-06",
+    "label": "R1",
+    "independent": "R1",
+    "author": "R1"
+  },
+  {
+    "case": "B02-Oriole",
+    "item": "B02-07",
+    "label": "R3",
+    "independent": "R3",
+    "author": "R3"
+  },
+  {
+    "case": "B02-Birch",
+    "item": "B02-07",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B02-Cedar",
+    "item": "B02-07",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B02-Dune",
+    "item": "B02-07",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B02-Oriole",
+    "item": "B02-08",
+    "label": "R4",
+    "independent": "R4",
+    "author": "R4"
+  },
+  {
+    "case": "B02-Birch",
+    "item": "B02-08",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B02-Cedar",
+    "item": "B02-08",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B02-Dune",
+    "item": "B02-08",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B03-Oriole",
+    "item": "B03-01",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B03-Birch",
+    "item": "B03-01",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B03-Cedar",
+    "item": "B03-01",
+    "label": "R1",
+    "independent": "R1",
+    "author": "R1"
+  },
+  {
+    "case": "B03-Dune",
+    "item": "B03-01",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B03-Oriole",
+    "item": "B03-02",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B03-Birch",
+    "item": "B03-02",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B03-Cedar",
+    "item": "B03-02",
+    "label": "R4",
+    "independent": "R4",
+    "author": "R4"
+  },
+  {
+    "case": "B03-Dune",
+    "item": "B03-02",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B03-Oriole",
+    "item": "B03-03",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B03-Birch",
+    "item": "B03-03",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B03-Cedar",
+    "item": "B03-03",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B03-Dune",
+    "item": "B03-03",
+    "label": "R3",
+    "independent": "R3",
+    "author": "R3"
+  },
+  {
+    "case": "B03-Oriole",
+    "item": "B03-04",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B03-Birch",
+    "item": "B03-04",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B03-Cedar",
+    "item": "B03-04",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B03-Dune",
+    "item": "B03-04",
+    "label": "R2",
+    "independent": "R2",
+    "author": "R2"
+  },
+  {
+    "case": "B03-Oriole",
+    "item": "B03-05",
+    "label": "R2",
+    "independent": "R2",
+    "author": "R2"
+  },
+  {
+    "case": "B03-Birch",
+    "item": "B03-05",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B03-Cedar",
+    "item": "B03-05",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B03-Dune",
+    "item": "B03-05",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B03-Oriole",
+    "item": "B03-06",
+    "label": "R3",
+    "independent": "R3",
+    "author": "R3"
+  },
+  {
+    "case": "B03-Birch",
+    "item": "B03-06",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B03-Cedar",
+    "item": "B03-06",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B03-Dune",
+    "item": "B03-06",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B03-Oriole",
+    "item": "B03-07",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B03-Birch",
+    "item": "B03-07",
+    "label": "R4",
+    "independent": "R4",
+    "author": "R4"
+  },
+  {
+    "case": "B03-Cedar",
+    "item": "B03-07",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B03-Dune",
+    "item": "B03-07",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B03-Oriole",
+    "item": "B03-08",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B03-Birch",
+    "item": "B03-08",
+    "label": "R1",
+    "independent": "R1",
+    "author": "R1"
+  },
+  {
+    "case": "B03-Cedar",
+    "item": "B03-08",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B03-Dune",
+    "item": "B03-08",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B04-Oriole",
+    "item": "B04-01",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B04-Birch",
+    "item": "B04-01",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B04-Cedar",
+    "item": "B04-01",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B04-Dune",
+    "item": "B04-01",
+    "label": "R1",
+    "independent": "R1",
+    "author": "R1"
+  },
+  {
+    "case": "B04-Oriole",
+    "item": "B04-02",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B04-Birch",
+    "item": "B04-02",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B04-Cedar",
+    "item": "B04-02",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B04-Dune",
+    "item": "B04-02",
+    "label": "R4",
+    "independent": "R4",
+    "author": "R4"
+  },
+  {
+    "case": "B04-Oriole",
+    "item": "B04-03",
+    "label": "R4",
+    "independent": "R4",
+    "author": "R4"
+  },
+  {
+    "case": "B04-Birch",
+    "item": "B04-03",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B04-Cedar",
+    "item": "B04-03",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B04-Dune",
+    "item": "B04-03",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B04-Oriole",
+    "item": "B04-04",
+    "label": "R1",
+    "independent": "R1",
+    "author": "R1"
+  },
+  {
+    "case": "B04-Birch",
+    "item": "B04-04",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B04-Cedar",
+    "item": "B04-04",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B04-Dune",
+    "item": "B04-04",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B04-Oriole",
+    "item": "B04-05",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B04-Birch",
+    "item": "B04-05",
+    "label": "R2",
+    "independent": "R2",
+    "author": "R2"
+  },
+  {
+    "case": "B04-Cedar",
+    "item": "B04-05",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B04-Dune",
+    "item": "B04-05",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B04-Oriole",
+    "item": "B04-06",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B04-Birch",
+    "item": "B04-06",
+    "label": "R3",
+    "independent": "R3",
+    "author": "R3"
+  },
+  {
+    "case": "B04-Cedar",
+    "item": "B04-06",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B04-Dune",
+    "item": "B04-06",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B04-Oriole",
+    "item": "B04-07",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B04-Birch",
+    "item": "B04-07",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B04-Cedar",
+    "item": "B04-07",
+    "label": "R3",
+    "independent": "R3",
+    "author": "R3"
+  },
+  {
+    "case": "B04-Dune",
+    "item": "B04-07",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B04-Oriole",
+    "item": "B04-08",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B04-Birch",
+    "item": "B04-08",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B04-Cedar",
+    "item": "B04-08",
+    "label": "R2",
+    "independent": "R2",
+    "author": "R2"
+  },
+  {
+    "case": "B04-Dune",
+    "item": "B04-08",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B05-Oriole",
+    "item": "B05-01",
+    "label": "R1",
+    "independent": "R1",
+    "author": "R1"
+  },
+  {
+    "case": "B05-Birch",
+    "item": "B05-01",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B05-Cedar",
+    "item": "B05-01",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B05-Dune",
+    "item": "B05-01",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B05-Oriole",
+    "item": "B05-02",
+    "label": "R3",
+    "independent": "R3",
+    "author": "R3"
+  },
+  {
+    "case": "B05-Birch",
+    "item": "B05-02",
+    "label": "R3",
+    "independent": "R3",
+    "author": "R3"
+  },
+  {
+    "case": "B05-Cedar",
+    "item": "B05-02",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B05-Dune",
+    "item": "B05-02",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B05-Oriole",
+    "item": "B05-03",
+    "label": "R3",
+    "independent": "R3",
+    "author": "R3"
+  },
+  {
+    "case": "B05-Birch",
+    "item": "B05-03",
+    "label": "R3",
+    "independent": "R3",
+    "author": "R3"
+  },
+  {
+    "case": "B05-Cedar",
+    "item": "B05-03",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B05-Dune",
+    "item": "B05-03",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B05-Oriole",
+    "item": "B05-04",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B05-Birch",
+    "item": "B05-04",
+    "label": "R2",
+    "independent": "R2",
+    "author": "R2"
+  },
+  {
+    "case": "B05-Cedar",
+    "item": "B05-04",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B05-Dune",
+    "item": "B05-04",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B05-Oriole",
+    "item": "B05-05",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B05-Birch",
+    "item": "B05-05",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B05-Cedar",
+    "item": "B05-05",
+    "label": "R4",
+    "independent": "R4",
+    "author": "R4"
+  },
+  {
+    "case": "B05-Dune",
+    "item": "B05-05",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B05-Oriole",
+    "item": "B05-06",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B05-Birch",
+    "item": "B05-06",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B05-Cedar",
+    "item": "B05-06",
+    "label": "R2",
+    "independent": "R2",
+    "author": "R2"
+  },
+  {
+    "case": "B05-Dune",
+    "item": "B05-06",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B05-Oriole",
+    "item": "B05-07",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B05-Birch",
+    "item": "B05-07",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B05-Cedar",
+    "item": "B05-07",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B05-Dune",
+    "item": "B05-07",
+    "label": "R2",
+    "independent": "R2",
+    "author": "R2"
+  },
+  {
+    "case": "B05-Oriole",
+    "item": "B05-08",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B05-Birch",
+    "item": "B05-08",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B05-Cedar",
+    "item": "B05-08",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B05-Dune",
+    "item": "B05-08",
+    "label": "R1",
+    "independent": "R1",
+    "author": "R1"
+  },
+  {
+    "case": "B06-Oriole",
+    "item": "B06-01",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B06-Birch",
+    "item": "B06-01",
+    "label": "R1",
+    "independent": "R1",
+    "author": "R1"
+  },
+  {
+    "case": "B06-Cedar",
+    "item": "B06-01",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B06-Dune",
+    "item": "B06-01",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B06-Oriole",
+    "item": "B06-02",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B06-Birch",
+    "item": "B06-02",
+    "label": "R4",
+    "independent": "R4",
+    "author": "R4"
+  },
+  {
+    "case": "B06-Cedar",
+    "item": "B06-02",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B06-Dune",
+    "item": "B06-02",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B06-Oriole",
+    "item": "B06-03",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B06-Birch",
+    "item": "B06-03",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B06-Cedar",
+    "item": "B06-03",
+    "label": "R3",
+    "independent": "R3",
+    "author": "R3"
+  },
+  {
+    "case": "B06-Dune",
+    "item": "B06-03",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B06-Oriole",
+    "item": "B06-04",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B06-Birch",
+    "item": "B06-04",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B06-Cedar",
+    "item": "B06-04",
+    "label": "R1",
+    "independent": "R1",
+    "author": "R1"
+  },
+  {
+    "case": "B06-Dune",
+    "item": "B06-04",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B06-Oriole",
+    "item": "B06-05",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B06-Birch",
+    "item": "B06-05",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B06-Cedar",
+    "item": "B06-05",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B06-Dune",
+    "item": "B06-05",
+    "label": "R4",
+    "independent": "R4",
+    "author": "R4"
+  },
+  {
+    "case": "B06-Oriole",
+    "item": "B06-06",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B06-Birch",
+    "item": "B06-06",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B06-Cedar",
+    "item": "B06-06",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B06-Dune",
+    "item": "B06-06",
+    "label": "R3",
+    "independent": "R3",
+    "author": "R3"
+  },
+  {
+    "case": "B06-Oriole",
+    "item": "B06-07",
+    "label": "R2",
+    "independent": "R2",
+    "author": "R2"
+  },
+  {
+    "case": "B06-Birch",
+    "item": "B06-07",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B06-Cedar",
+    "item": "B06-07",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B06-Dune",
+    "item": "B06-07",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B06-Oriole",
+    "item": "B06-08",
+    "label": "R4",
+    "independent": "R4",
+    "author": "R4"
+  },
+  {
+    "case": "B06-Birch",
+    "item": "B06-08",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B06-Cedar",
+    "item": "B06-08",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B06-Dune",
+    "item": "B06-08",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B07-Oriole",
+    "item": "B07-01",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B07-Birch",
+    "item": "B07-01",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B07-Cedar",
+    "item": "B07-01",
+    "label": "R1",
+    "independent": "R1",
+    "author": "R1"
+  },
+  {
+    "case": "B07-Dune",
+    "item": "B07-01",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B07-Oriole",
+    "item": "B07-02",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B07-Birch",
+    "item": "B07-02",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B07-Cedar",
+    "item": "B07-02",
+    "label": "R2",
+    "independent": "R2",
+    "author": "R2"
+  },
+  {
+    "case": "B07-Dune",
+    "item": "B07-02",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B07-Oriole",
+    "item": "B07-03",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B07-Birch",
+    "item": "B07-03",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B07-Cedar",
+    "item": "B07-03",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B07-Dune",
+    "item": "B07-03",
+    "label": "R4",
+    "independent": "R4",
+    "author": "R4"
+  },
+  {
+    "case": "B07-Oriole",
+    "item": "B07-04",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B07-Birch",
+    "item": "B07-04",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B07-Cedar",
+    "item": "B07-04",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B07-Dune",
+    "item": "B07-04",
+    "label": "R1",
+    "independent": "R1",
+    "author": "R1"
+  },
+  {
+    "case": "B07-Oriole",
+    "item": "B07-05",
+    "label": "R3",
+    "independent": "R3",
+    "author": "R3"
+  },
+  {
+    "case": "B07-Birch",
+    "item": "B07-05",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B07-Cedar",
+    "item": "B07-05",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B07-Dune",
+    "item": "B07-05",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B07-Oriole",
+    "item": "B07-06",
+    "label": "R1",
+    "independent": "R1",
+    "author": "R1"
+  },
+  {
+    "case": "B07-Birch",
+    "item": "B07-06",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B07-Cedar",
+    "item": "B07-06",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B07-Dune",
+    "item": "B07-06",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B07-Oriole",
+    "item": "B07-07",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B07-Birch",
+    "item": "B07-07",
+    "label": "R2",
+    "independent": "R2",
+    "author": "R2"
+  },
+  {
+    "case": "B07-Cedar",
+    "item": "B07-07",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B07-Dune",
+    "item": "B07-07",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B07-Oriole",
+    "item": "B07-08",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B07-Birch",
+    "item": "B07-08",
+    "label": "R3",
+    "independent": "R3",
+    "author": "R3"
+  },
+  {
+    "case": "B07-Cedar",
+    "item": "B07-08",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B07-Dune",
+    "item": "B07-08",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B08-Oriole",
+    "item": "B08-01",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B08-Birch",
+    "item": "B08-01",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B08-Cedar",
+    "item": "B08-01",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B08-Dune",
+    "item": "B08-01",
+    "label": "R2",
+    "independent": "R2",
+    "author": "R2"
+  },
+  {
+    "case": "B08-Oriole",
+    "item": "B08-02",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B08-Birch",
+    "item": "B08-02",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B08-Cedar",
+    "item": "B08-02",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B08-Dune",
+    "item": "B08-02",
+    "label": "R3",
+    "independent": "R3",
+    "author": "R3"
+  },
+  {
+    "case": "B08-Oriole",
+    "item": "B08-03",
+    "label": "R4",
+    "independent": "R4",
+    "author": "R4"
+  },
+  {
+    "case": "B08-Birch",
+    "item": "B08-03",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B08-Cedar",
+    "item": "B08-03",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B08-Dune",
+    "item": "B08-03",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B08-Oriole",
+    "item": "B08-04",
+    "label": "R2",
+    "independent": "R2",
+    "author": "R2"
+  },
+  {
+    "case": "B08-Birch",
+    "item": "B08-04",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B08-Cedar",
+    "item": "B08-04",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B08-Dune",
+    "item": "B08-04",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B08-Oriole",
+    "item": "B08-05",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B08-Birch",
+    "item": "B08-05",
+    "label": "R1",
+    "independent": "R1",
+    "author": "R1"
+  },
+  {
+    "case": "B08-Cedar",
+    "item": "B08-05",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B08-Dune",
+    "item": "B08-05",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B08-Oriole",
+    "item": "B08-06",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B08-Birch",
+    "item": "B08-06",
+    "label": "R4",
+    "independent": "R4",
+    "author": "R4"
+  },
+  {
+    "case": "B08-Cedar",
+    "item": "B08-06",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B08-Dune",
+    "item": "B08-06",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B08-Oriole",
+    "item": "B08-07",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B08-Birch",
+    "item": "B08-07",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B08-Cedar",
+    "item": "B08-07",
+    "label": "R3",
+    "independent": "R3",
+    "author": "R3"
+  },
+  {
+    "case": "B08-Dune",
+    "item": "B08-07",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B08-Oriole",
+    "item": "B08-08",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B08-Birch",
+    "item": "B08-08",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B08-Cedar",
+    "item": "B08-08",
+    "label": "R4",
+    "independent": "R4",
+    "author": "R4"
+  },
+  {
+    "case": "B08-Dune",
+    "item": "B08-08",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B09-Oriole",
+    "item": "B09-01",
+    "label": "R1",
+    "independent": "R1",
+    "author": "R1"
+  },
+  {
+    "case": "B09-Birch",
+    "item": "B09-01",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B09-Cedar",
+    "item": "B09-01",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B09-Dune",
+    "item": "B09-01",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B09-Oriole",
+    "item": "B09-02",
+    "label": "R3",
+    "independent": "R3",
+    "author": "R3"
+  },
+  {
+    "case": "B09-Birch",
+    "item": "B09-02",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B09-Cedar",
+    "item": "B09-02",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B09-Dune",
+    "item": "B09-02",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B09-Oriole",
+    "item": "B09-03",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B09-Birch",
+    "item": "B09-03",
+    "label": "R4",
+    "independent": "R4",
+    "author": "R4"
+  },
+  {
+    "case": "B09-Cedar",
+    "item": "B09-03",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B09-Dune",
+    "item": "B09-03",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B09-Oriole",
+    "item": "B09-04",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B09-Birch",
+    "item": "B09-04",
+    "label": "R1",
+    "independent": "R1",
+    "author": "R1"
+  },
+  {
+    "case": "B09-Cedar",
+    "item": "B09-04",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B09-Dune",
+    "item": "B09-04",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B09-Oriole",
+    "item": "B09-05",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B09-Birch",
+    "item": "B09-05",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B09-Cedar",
+    "item": "B09-05",
+    "label": "R2",
+    "independent": "R2",
+    "author": "R2"
+  },
+  {
+    "case": "B09-Dune",
+    "item": "B09-05",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B09-Oriole",
+    "item": "B09-06",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B09-Birch",
+    "item": "B09-06",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B09-Cedar",
+    "item": "B09-06",
+    "label": "R1",
+    "independent": "R1",
+    "author": "R1"
+  },
+  {
+    "case": "B09-Dune",
+    "item": "B09-06",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B09-Oriole",
+    "item": "B09-07",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B09-Birch",
+    "item": "B09-07",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B09-Cedar",
+    "item": "B09-07",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B09-Dune",
+    "item": "B09-07",
+    "label": "R3",
+    "independent": "R3",
+    "author": "R3"
+  },
+  {
+    "case": "B09-Oriole",
+    "item": "B09-08",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B09-Birch",
+    "item": "B09-08",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B09-Cedar",
+    "item": "B09-08",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B09-Dune",
+    "item": "B09-08",
+    "label": "R4",
+    "independent": "R4",
+    "author": "R4"
+  },
+  {
+    "case": "B10-Oriole",
+    "item": "B10-01",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B10-Birch",
+    "item": "B10-01",
+    "label": "R3",
+    "independent": "R3",
+    "author": "R3"
+  },
+  {
+    "case": "B10-Cedar",
+    "item": "B10-01",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B10-Dune",
+    "item": "B10-01",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B10-Oriole",
+    "item": "B10-02",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B10-Birch",
+    "item": "B10-02",
+    "label": "R2",
+    "independent": "R2",
+    "author": "R2"
+  },
+  {
+    "case": "B10-Cedar",
+    "item": "B10-02",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B10-Dune",
+    "item": "B10-02",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B10-Oriole",
+    "item": "B10-03",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B10-Birch",
+    "item": "B10-03",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B10-Cedar",
+    "item": "B10-03",
+    "label": "R4",
+    "independent": "R4",
+    "author": "R4"
+  },
+  {
+    "case": "B10-Dune",
+    "item": "B10-03",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B10-Oriole",
+    "item": "B10-04",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B10-Birch",
+    "item": "B10-04",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B10-Cedar",
+    "item": "B10-04",
+    "label": "R3",
+    "independent": "R3",
+    "author": "R3"
+  },
+  {
+    "case": "B10-Dune",
+    "item": "B10-04",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B10-Oriole",
+    "item": "B10-05",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B10-Birch",
+    "item": "B10-05",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B10-Cedar",
+    "item": "B10-05",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B10-Dune",
+    "item": "B10-05",
+    "label": "R1",
+    "independent": "R1",
+    "author": "R1"
+  },
+  {
+    "case": "B10-Oriole",
+    "item": "B10-06",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B10-Birch",
+    "item": "B10-06",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B10-Cedar",
+    "item": "B10-06",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B10-Dune",
+    "item": "B10-06",
+    "label": "R2",
+    "independent": "R2",
+    "author": "R2"
+  },
+  {
+    "case": "B10-Oriole",
+    "item": "B10-07",
+    "label": "R2",
+    "independent": "R2",
+    "author": "R2"
+  },
+  {
+    "case": "B10-Birch",
+    "item": "B10-07",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B10-Cedar",
+    "item": "B10-07",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B10-Dune",
+    "item": "B10-07",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B10-Oriole",
+    "item": "B10-08",
+    "label": "R4",
+    "independent": "R4",
+    "author": "R4"
+  },
+  {
+    "case": "B10-Birch",
+    "item": "B10-08",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B10-Cedar",
+    "item": "B10-08",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  },
+  {
+    "case": "B10-Dune",
+    "item": "B10-08",
+    "label": "N",
+    "independent": "N",
+    "author": "N"
+  }
+]

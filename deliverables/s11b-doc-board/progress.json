@@ -1,0 +1,142 @@
+[
+  {
+    "case": "S11b-1-r1",
+    "node_count": 12,
+    "rendered_bytes": 913,
+    "all_models_verified": true,
+    "all_harnesses_success": true
+  },
+  {
+    "case": "S11b-1-r2",
+    "node_count": 10,
+    "rendered_bytes": 835,
+    "all_models_verified": true,
+    "all_harnesses_success": true
+  },
+  {
+    "case": "S11b-1-r3",
+    "node_count": 12,
+    "rendered_bytes": 739,
+    "all_models_verified": true,
+    "all_harnesses_success": true
+  },
+  {
+    "case": "S11b-1-r4",
+    "node_count": 10,
+    "rendered_bytes": 613,
+    "all_models_verified": true,
+    "all_harnesses_success": true
+  },
+  {
+    "case": "S11b-1-r5",
+    "node_count": 12,
+    "rendered_bytes": 737,
+    "all_models_verified": true,
+    "all_harnesses_success": true
+  },
+  {
+    "case": "S11b-2-render-r1",
+    "node_count": 9,
+    "rendered_bytes": 912,
+    "all_models_verified": true,
+    "all_harnesses_success": true
+  },
+  {
+    "case": "S11b-2-render-r2",
+    "node_count": 9,
+    "rendered_bytes": 912,
+    "all_models_verified": true,
+    "all_harnesses_success": true
+  },
+  {
+    "case": "S11b-2-render-r3",
+    "node_count": 8,
+    "rendered_bytes": 744,
+    "all_models_verified": true,
+    "all_harnesses_success": true
+  },
+  {
+    "case": "S11b-2-render-r4",
+    "node_count": 9,
+    "rendered_bytes": 841,
+    "all_models_verified": true,
+    "all_harnesses_success": true
+  },
+  {
+    "case": "S11b-2-render-r5",
+    "node_count": 8,
+    "rendered_bytes": 744,
+    "all_models_verified": true,
+    "all_harnesses_success": true
+  },
+  {
+    "case": "S11b-2-node-r1",
+    "node_count": 10,
+    "rendered_bytes": 780,
+    "all_models_verified": true,
+    "all_harnesses_success": true
+  },
+  {
+    "case": "S11b-2-node-r2",
+    "node_count": 10,
+    "rendered_bytes": 949,
+    "all_models_verified": true,
+    "all_harnesses_success": true
+  },
+  {
+    "case": "S11b-2-node-r3",
+    "node_count": 10,
+    "rendered_bytes": 941,
+    "all_models_verified": true,
+    "all_harnesses_success": true
+  },
+  {
+    "case": "S11b-2-node-r4",
+    "node_count": 10,
+    "rendered_bytes": 1011,
+    "all_models_verified": true,
+    "all_harnesses_success": true
+  },
+  {
+    "case": "S11b-2-node-r5",
+    "node_count": 9,
+    "rendered_bytes": 916,
+    "all_models_verified": true,
+    "all_harnesses_success": true
+  },
+  {
+    "case": "S11b-4-r1",
+    "node_count": 10,
+    "rendered_bytes": 889,
+    "all_models_verified": true,
+    "all_harnesses_success": true
+  },
+  {
+    "case": "S11b-4-r2",
+    "node_count": 10,
+    "rendered_bytes": 871,
+    "all_models_verified": true,
+    "all_harnesses_success": true
+  },
+  {
+    "case": "S11b-4-r3",
+    "node_count": 10,
+    "rendered_bytes": 847,
+    "all_models_verified": true,
+    "all_harnesses_success": true
+  },
+  {
+    "case": "S11b-4-r4",
+    "node_count": 10,
+    "rendered_bytes": 792,
+    "all_models_verified": true,
+    "all_harnesses_success": true
+  },
+  {
+    "case": "S11b-4-r5",
+    "node_count": 10,
+    "rendered_bytes": 906,
+    "all_models_verified": true,
+    "all_harnesses_success": true
+  }
+]
