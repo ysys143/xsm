@@ -5,33 +5,17 @@
 > **All you need is a message channel. The rest is done by agents.**
 > 필요한 것은 메시지 채널 하나뿐입니다. 나머지는 에이전트가 합니다.
 
-xsm은 실행 중인 Claude Code와 Codex 세션이 서로를 찾고 메시지를 주고받게 합니다.
+xsm은 이미 쓰고 있는 Claude Code와 Codex 세션이 서로를 찾아 함께 일하게 합니다. 한 머신 안에서, 설정 홈과
+런타임이 달라도, 그리고 사용자의 다른 머신 사이에서도 그렇습니다. 에이전트는 하는 일로 상대를 찾고, 사용자가
+고른 상대와 연결하고, 질문을 보내 실제 답을 돌려받습니다. 단계마다 무엇이 일어났고 무엇이 아직인지도 알려 줍니다.
 
 ![XSM이 런타임의 네이티브 전달 경로와 명시적 통신 범위로 에이전트 세션을 연결하는 구조](docs/assets/xsm-overview.svg)
 
-## 개발 중인 협업 인터페이스
-
-현재 작업 트리에는 세션 공개·업무 검색·선택 상대와의 핸드셰이크, 실제 답을 기다리는 `ask`가 추가됐습니다.
-로컬 검색 후보는 사용자가 공개한 세션과 같은 저장소·워크트리의 세션입니다. 후보를 보여주는 것만으로
-통신 권한이 열리지는 않습니다. 사용자가 상대를 고르면 에이전트가 연결하고, 상대의 실제 회신으로 준비를 확인합니다.
-머신 간 새 발견·가입 경로는 [구현 계획](docs/plan/reason-inspired-adrs/execution.md)에서 별도로 추적합니다.
-선택적 P2P의 설치·기기 초대·저장소 대응·경로 진단은 [네트워크 안내](docs/xsm/NETWORK.md)에 있습니다.
-[진행 기록](docs/plan/reason-inspired-adrs/adr-0021-progress.md)은 확인한 경로와 미검증 환경을 구분합니다.
-
-```text
-이 세션은 xsm에서 찾을 수 있게 공개해 둬.
-설정 변경을 리뷰하고 있는 에이전트를 찾아 후보를 보여줘.
-a1이랑 붙어서 함께 작업하자.
-```
-
-`xsm ask TARGET --text "질문"`은 원 요청 ID를 반환하며, `question-status ID`로 늦은 답도 회수합니다.
-`--wake never`는 상대를 깨우지 않고 다음 자연 입력 시점까지 보관합니다. 수신함 확인은 원문을 삭제하지 않으며,
-에이전트가 내용을 읽은 뒤 `ack`으로 확인합니다. 전달 영수증·읽기 확인·과제의 성공 여부는 별도 값입니다.
-
-CLI의 `--attachment PATH`는 호출자의 읽기 권한으로 사본을 만들고, MCP는 직접 읽은 inline 내용이나 같은
-대화가 이미 만든 사본을 사용합니다. 저장 ID로 읽는 사본은 원본 파일을 덮어쓰지 않습니다.
-명시적으로 만든 소유 headless worker는 `owned create|run|status|retry|reconcile`로 사용하며, 발신자·업무별
-문맥과 저장된 답을 유지합니다. 자세한 인터페이스는 [에이전트용 안내](skills/xsm/references/messaging.md)에 있습니다.
+> **릴리스 상태.** 업무 검색, `connect`와 `ask`, 첨부, 소유 워커, 선택적 P2P 네트워크는 `main`에 들어갔지만
+> 아직 릴리스되지 않았습니다. 플러그인 버전이 아직 0.4.20이라 기존 플러그인 설치는 다음 릴리스에서 받습니다.
+> 최신 체크아웃으로 갱신한 직접 설치에는 지금 들어 있습니다. [변경 기록](CHANGELOG.md)을 보세요. 부분별로 어떤
+> 환경에서 검증했는지는 [ADR-0021 종료 기록](docs/plan/reason-inspired-adrs/adr-0021-closure.md)과
+> [완료 색인](docs/plan/reason-inspired-adrs/completion-ledger.md)에 있으며, 계획 전체는 아직 완료되지 않았습니다.
 
 ## 철학
 
@@ -45,17 +29,23 @@ xsm에 없는 것:
 
 - 오케스트레이터, 팀 정의, 작업 그래프가 없습니다. 누가 무엇을 할지는 대화에서 정해집니다
 - 자체 런타임도, `claude`·`codex`를 감싸는 래퍼도 없습니다. 세션은 늘 하던 대로 띄웁니다
-- 로컬 메시징은 훅·파일·일회성 명령으로 동작합니다. 선택적 머신 간 P2P는 별도로 중지할 수 있는 서비스를 사용합니다
+- 한 머신 안의 세션 사이에 서버가 없습니다. 로컬 메시징은 훅·파일·일회성 명령입니다. 계속 떠 있는 프로세스는
+  선택적 P2P 네트워크 서비스 하나뿐이며, 네트워크를 만들거나 가입한 뒤에만 돌고 `xsm network stop`으로 멈춥니다
 
 나머지를 에이전트에게 맡기는 만큼, 채널만큼은 믿을 수 있어야 합니다. xsm은 노력을 여기에 씁니다.
 
 - **메시지가 세션을 깨웁니다.** 터미널에 타이핑해 넣지 않고 각 런타임의 고유 경로(Claude inbox 소켓,
   `codex queue`)로 넣습니다. 그래서 쉬고 있는 세션도 메시지를 받고, 메시지는 사용자가 친 입력처럼 보이지 않고
-  발신자 표시를 달고 도착합니다.
-- **보낸 쪽이 결과를 압니다.** 전송·런타임 도달·수신 확인과 실제 과제 회신을 구별해 보고합니다.
-  확인 전 원문은 회수할 수 있고, 과제 성공은 상대의 명시적 결과로 판단합니다.
-- **경계는 사람이 정합니다.** 어떤 세션끼리 말할 수 있는지는 사용자가 정하는 범위이고, 넓히려면 사용자의
-  승인이 필요합니다.
+  발신자 표시를 달고 도착합니다. 끼어들 필요가 없는 메시지는 상대의 다음 자연스러운 턴까지 기다리게 할 수도
+  있습니다(`--wake never`).
+- **보낸 쪽이 결과를 압니다.** 저장, 런타임 전달, 읽은 뒤의 수신 확인, 실제 답변은 서로 다른 네 가지 사실이며,
+  결과마다 어느 것이 성립했는지 알려 줍니다. 응답을 잃어도 같은 요청 ID로 회수하고 새 ID로 다시 보내지 않으며,
+  과제 완료는 상대가 명시한 결과로만 판단합니다.
+- **찾았다고 권한이 생기지 않습니다.** 사용자가 공개했거나 같은 저장소에 있는 세션만 후보가 됩니다. 하나를
+  고르면 그 대화와만 연결되고, 그 폴더나 다른 후보는 연결되지 않습니다.
+- **경계는 사람이 정합니다.** 어떤 세션끼리 말할 수 있는지는 사용자가 정하는 범위입니다. 범위를 넓히거나
+  세션을 공개하거나 네트워크에 가입하려면 사용자의 말이 필요하고, 다른 에이전트의 메시지는 사용자의 승인으로
+  치지 않습니다.
 
 ## TL;DR
 
@@ -71,10 +61,13 @@ https://github.com/ysys143/xsm 의 xsm을 이 머신의 Claude Code와 Codex 양
 에이전트는 이 README를 따라 두 런타임에 설치하고, 무엇을 검증했는지 보고합니다. 코딩 에이전트는 `/plugin`
 같은 슬래시 명령을 직접 입력하지 못하는 경우가 많습니다. 그때는 빠른 시작의 직접 설치(`xsm install`)를 씁니다.
 
-설치가 끝나면 어느 쪽이든 새 세션을 열어 이렇게 물어보세요.
+설치가 끝나면 어느 쪽이든 새 세션을 열어 이렇게 말해 보세요.
 
 ```
 이거 어떻게 쓰는 거야? 실제 데모로 보여줘.
+이 세션을 xsm에서 찾을 수 있게 공개해줘.
+설정 변경 작업을 하고 있는 세션들 찾아서 후보를 보여줘.
+a1이랑 붙어서 일하자. 내 diff 검토 좀 부탁해 봐.
 ```
 
 에이전트가 스킬의 참고 문서를 읽고 직접 `xsm`을 실행하므로, 명령을 미리 익힐 필요가 없습니다.
@@ -85,8 +78,9 @@ https://github.com/ysys143/xsm 의 xsm을 이 머신의 Claude Code와 Codex 양
 ### 1. 직접 설치
 
 macOS와 Linux에서 동작합니다. Unix 소켓, `ps`, `/dev/tty`, tmux가 필요하므로 네이티브 Windows는 지원하지
-않습니다. 로컬 메시징은 Python 표준 라이브러리를 쓰며 선택적 P2P에는 Rust 네트워크 엔진이 추가됩니다.
-설치란 각 세션이 xsm의 훅을 실행하게 만드는 일입니다.
+않습니다. 로컬 메시징은 Python 표준 라이브러리만 씁니다. 선택적 P2P 네트워크는 엔진을 한 번 빌드할 Rust
+toolchain이 더 필요합니다([다른 머신과 일하기](#5-다른-머신과-일하기) 참고). 설치란 각 세션이 xsm의 훅을
+실행하게 만드는 일입니다.
 
 **Claude Code 플러그인** (권장). 저장소 자체가 마켓플레이스입니다.
 
@@ -144,22 +138,33 @@ bin/xsm doctor                                                # 설치 상태, �
 훅 명령(`hooks/xsm-hook` 런처: 쓸 수 있는 파이썬을 스스로 찾고, 열 수 없는 스크립트는 프롬프트를 막지 않는
 오류로 바꿉니다), MCP 서버 등록(`hooks/xsm-mcp` 런처), `~/.local/bin/xsm`이 그렇습니다. macOS는 세션을 연 앱에
 체크아웃이 있는 폴더(`~/Documents`) 접근을 막을 수 있고, 실행하지 못한 훅이 프롬프트를 막아서는 안 됩니다. 직전
-사본은 그보다 먼저 시작한 살아 있는 세션이 없어질 때까지 남고, 그 뒤 다음 `xsm install`이 끝날 때 정리됩니다(그전에는 아닙니다. 정리가 프로세스 표를 읽는데 훅에는 그럴 시간이 없습니다). `xsm doctor`의 `runtime` 줄이
-사본을 알려 주고 체크아웃이 앞서가면 그렇게 말하며, 그러면 에이전트가 `<체크아웃>/bin/xsm install --refresh`를
-실행합니다. `--dev`(또는 `config.json`의 `"runtime": "checkout"`)는 xsm을 개발할 때 모든 것을 체크아웃에 둡니다. `--dev`는 그 줄을 스스로 저장하므로 이후의 `install --refresh`와 `doctor`도 그것을 지킵니다(사본으로 돌아가려면 그 줄을 지웁니다).
-Codex 직접 설치는 이미 가진 훅 명령을 그대로 둡니다. Codex의 신뢰가 그 문자열을 덮기 때문입니다. 새로 하는 설치는
-갱신해도 그대로인 `~/.xsm/runtime/current`를 씁니다. 기존 Codex 설치를 체크아웃에서 옮기는 것은
-`codex plugin add xsm@xsm`뿐입니다.
+사본은 그보다 먼저 시작한 살아 있는 세션이 없어질 때까지 남고, 그 뒤 다음 `xsm install`이 끝날 때
+정리됩니다(그전에는 아닙니다. 정리가 프로세스 표를 읽는데 훅에는 그럴 시간이 없습니다). `xsm doctor`의
+`runtime` 줄이 사본을 알려 주고 체크아웃이 앞서가면 그렇게 말하며, 그러면 에이전트가
+`<체크아웃>/bin/xsm install --refresh`를 실행합니다. `--dev`(또는 `config.json`의 `"runtime": "checkout"`)는
+xsm을 개발할 때 모든 것을 체크아웃에 둡니다. `--dev`는 그 줄을 스스로 저장하므로 이후의 `install --refresh`와
+`doctor`도 그것을 지킵니다(사본으로 돌아가려면 그 줄을 지웁니다). Codex 직접 설치는 이미 가진 훅 명령을 그대로
+둡니다. Codex의 신뢰가 그 문자열을 덮기 때문입니다. 새로 하는 설치는 갱신해도 그대로인
+`~/.xsm/runtime/current`를 씁니다. 기존 Codex 설치를 체크아웃에서 옮기는 것은 `codex plugin add xsm@xsm`뿐입니다.
 
 설치는 Claude 홈마다 `crossSessionInbound`도 `"accept"`로 둡니다(Claude Code 2.1.224 이상, 홈에 이미 값이 있으면
-그대로 둡니다). 그러면 두 세션의 권한 모드가 달라도 Claude가 내 다른 세션의 메시지를 전달합니다. 메시지 명령
-(`xsm send`, `inbox`, `list`, `who`, `held`, `ledger`, `status`, `doctor`, `--version`을 이름과 런타임의 절대
-경로로)과 MCP 도구(`xsm_send`, `xsm_inbox`, `xsm_post`, `xsm_channel`)도 `permissions.allow`에 넣어 auto와 default
-모드가 메시지를 막지 않게 합니다. `xsm uninstall`은 설치가 더한 훅, MCP 항목, 스킬 링크, 상태줄, 설정 항목을 뺍니다. `~/.local/bin/xsm` 링크가 런타임 사본을 가리키고 다른 홈에 xsm이 남아 있지 않으면 그 링크도 뺍니다. `~/.xsm/runtime`의 사본은 남으므로, 그것을 쓰는 세션이 없을 때 그 폴더를 지우면 됩니다. 이 기본값은 모두 열린 쪽이고
-`~/.xsm/config.json`이나 환경 변수(이쪽이 이깁니다)로 닫을 수 있습니다: `runtime`(`snapshot` | `checkout`,
-`XSM_RUNTIME`), `claude_inbound`(`accept` | `leave`, `XSM_CLAUDE_INBOUND`), `allow_messaging`
-(`XSM_ALLOW_MESSAGING`), `human_send_connects`(`XSM_HUMAN_SEND_CONNECTS`: 사람이 직접 친 범위 밖 `xsm send`가
-필요한 폴더를 잇고 전달합니다). 기본값에서 벗어난 것은 `xsm doctor`가 `policy` 한 줄로 보여 줍니다.
+그대로 둡니다). 그러면 두 세션의 권한 모드가 달라도 Claude가 내 다른 세션의 메시지를 전달합니다. 메시지 명령을
+이름과 런타임의 절대 경로로 `permissions.allow`에 넣습니다: `connect`, `ask`, `question-status`,
+`decision-status`, `discover`, `send`, `inbox`, `ack`, `files`, `owned`, `list`, `who`, `held`, `ledger`,
+`status`, `doctor`, `--version`. 짝이 되는 MCP 도구도 넣습니다: `xsm_connect`, `xsm_ask`, `xsm_question_status`,
+`xsm_decision_status`, `xsm_discover`, `xsm_send`, `xsm_inbox`, `xsm_ack`, `xsm_files`, `xsm_owned`, `xsm_post`,
+`xsm_channel`. 그래서 auto와 default 모드가 메시지를 막지 않습니다. `publish`, `network`, `spawn`, `post`,
+`doc add`는 목록에 없으며 런타임의 권한 확인을 그대로 거칩니다.
+
+`xsm uninstall`은 설치가 더한 훅, MCP 항목, 스킬 링크, 상태줄, 설정 항목을 뺍니다. `~/.local/bin/xsm` 링크가
+런타임 사본을 가리키고 다른 홈에 xsm이 남아 있지 않으면 그 링크도 뺍니다. `~/.xsm/runtime`의 사본은 남으므로,
+그것을 쓰는 세션이 없을 때 그 폴더를 지우면 됩니다. 한 홈을 제거해도 다른 홈과 실행 중인 네트워크 서비스는
+그대로입니다.
+
+이 기본값은 모두 열린 쪽이고 `~/.xsm/config.json`이나 환경 변수(이쪽이 이깁니다)로 닫을 수 있습니다:
+`runtime`(`snapshot` | `checkout`, `XSM_RUNTIME`), `claude_inbound`(`accept` | `leave`, `XSM_CLAUDE_INBOUND`),
+`allow_messaging`(`XSM_ALLOW_MESSAGING`), `human_send_connects`(`XSM_HUMAN_SEND_CONNECTS`: 사람이 직접 친 범위 밖
+`xsm send`가 필요한 폴더를 잇고 전달합니다). 기본값에서 벗어난 것은 `xsm doctor`가 `policy` 한 줄로 보여 줍니다.
 
 </details>
 
@@ -174,6 +179,8 @@ Codex 직접 설치는 이미 가진 훅 명령을 그대로 둡니다. Codex의
 - xsm을 설치하기 전에(또는 플러그인을 켜기 전에) 시작한 세션은 아직 훅이 돈 적이 없습니다. 그 세션은 처음 xsm
   명령이나 도구를 실행할 때 스스로 등록하고, 그 이름으로 보내는 쪽에는 열려 있지만 등록되지 않았다는 것과
   등록되는 방법이 알려집니다.
+- xsm을 갱신할 때 이미 떠 있던 세션은 시작할 때의 훅과 MCP 서버를 그대로 씁니다. 새 버전을 쓰려면 새 세션을
+  여세요.
 - Linux에서는 X.Org의 세션 관리자도 이름이 `xsm`입니다(x11-session-utils 패키지). 설치되어 있다면
   `command -v xsm`으로 이쪽이 먼저 잡히는지 확인하세요.
 
@@ -185,7 +192,9 @@ Codex 직접 설치는 이미 가진 훅 명령을 그대로 둡니다. Codex의
 등록이 곧 동의이므로, 훅을 실행한 적 없는 세션은 목록에 `unregistered`로만 보이고 주소로 쓸 수 없습니다
 (ADR-0001, 세션 레지스트리).
 
-세션 안에서는 명령을 스킬 `xsm`의 인자로 넘깁니다. Claude Code는 `/xsm`, Codex는 `$xsm`입니다.
+보통은 말로 부탁합니다("설정 변경을 검토하는 세션 찾아줘", "저쪽 세션에 물어봐"). 에이전트가 스킬의 참고
+문서를 읽고 명령을 골라 직접 `xsm`을 실행합니다. 명령을 스킬 `xsm`의 인자로 넘길 수도 있습니다. Claude Code는
+`/xsm`, Codex는 `$xsm`입니다.
 
 ```
 /xsm list                            # Claude Code: 이 프로젝트에서 말을 걸 수 있는 세션들
@@ -195,10 +204,11 @@ $xsm list                            # Codex
 ```
 
 터미널에서는 같은 명령을 `xsm list`, `xsm who`, `xsm send ...`로 씁니다. 인자 없이 부르면 스킬이 사용법 한 줄을
-출력합니다. 말로 부탁해도("저쪽 세션에 물어봐") 에이전트가 스킬의 참고 문서를 읽고 직접 `xsm`을 실행합니다.
-같은 이름의 개인 스킬이 있다면 플러그인 쪽은 `/xsm:xsm list`로 부릅니다.
+출력합니다. 같은 이름의 개인 스킬이 있다면 플러그인 쪽은 `/xsm:xsm list`로 부릅니다.
 
-전체 명령: `list`, `who`, `log`, `projects`, `doctor`, `send`, `link`, `join`, `leave`, `reach`.
+자주 쓰는 명령: `discover`, `publish`, `connect`, `ask`, `question-status`, `send`, `inbox`, `ack`, `list`,
+`who`, `log`, `projects`, `doctor`, `link`, `join`, `leave`, `reach`, `network`. 전체 목록은 `xsm --help`가
+보여 줍니다.
 
 ## 사용 사례
 
@@ -225,33 +235,145 @@ xsm who                                        # 이 세션이 어떻게 보이�
 `xsm doctor`가 보여 줍니다. `who`는 세션이 등록돼 있으면 자기 세션만 확인합니다. 등록된 `ref:`, `claude:`,
 `codex:` 주소로 보내면 그 대상만 확인하고 열린 Codex 창을 찾지 않습니다.
 
-`send --wait`은 메시지를 넘긴 뒤 수신 기록을 기다리는 시간입니다. 그 안에 수신 기록이 없으면
-`sent-unconfirmed`(종료 코드 3), 전달이 실패하면 `error`(종료 코드 4)이고 원장에 남습니다. 결과 줄 끝에는
-메시지 id가 붙습니다. `xsm status <id>`와 `--resend <id>`에 그 id를 씁니다.
+### 2. 하는 일로 협업 상대 찾기
 
-### 2. 다른 저장소 세션과 연결
+세션의 이름이나 주소를 몰라도 됩니다. 무엇을 하고 있는 세션을 찾아 달라고 에이전트에게 부탁하고, 각 후보가
+하는 일을 본 뒤 함께 일할 상대를 말하면 됩니다.
+
+```
+macmini에서 설정 변경 작업 하고 있는 세션 찾아와 봐.
+a1이랑 붙어서 일하자.
+```
+
+후보는 사용자가 공개한 세션과 같은 Git 저장소에 있는 세션입니다. 같은 저장소의 다른 폴더와 linked worktree도
+따로 공개하지 않아도 들어갑니다. 후보마다 머신, 런타임, 이름, 저장소, branch, 작업 요약, 상태와 각 값의 최신성이
+나옵니다. xsm이 읽지 못한 값은 짐작하지 않고 unknown으로 표시합니다. 그 아래에서 에이전트는 이렇게 실행합니다.
+
+```bash
+xsm publish                                    # 이 대화를 찾을 수 있게 공개. 사용자가 말했을 때만
+xsm publish --off                              # 공개 철회
+xsm discover --machine macmini --work config   # 후보(에이전트용 JSON), 각 후보에 target이 붙음
+xsm connect candidate:<id> --wait 30           # 사용자가 고른 상대와 핸드셰이크
+```
+
+공개는 세션을 보이게 할 뿐, 누구에게도 메시지를 보낼 권리를 주지 않습니다. 사용자의 선택은 두 대화만
+연결하고 그 폴더는 연결하지 않으며, 다른 후보도 그대로입니다. 핸드셰이크는 고른 상대가 직접
+`outcome=succeeded`로 답했을 때만 완료됩니다. 실패 결과는 거절이고, 답이 없으면 준비 여부는 미확인으로 남습니다
+(시간이 지난 뒤에는 `--request-id`로 같은 핸드셰이크를 잇습니다). 재개한 대화는 다시 확인하고, 이름만 같은 새
+대화는 아무것도 물려받지 않습니다.
+
+### 3. 묻고 실제 답 받기
+
+`ask`는 질문 하나를 보내고 그 질문에 대한 답을 모읍니다. 기본으로는 요청 ID를 바로 돌려주고 에이전트는 하던
+일을 계속합니다. 시간이 지나거나, 도구 호출이 취소되거나, 재시작한 뒤에도 답을 나중에 회수할 수 있습니다.
+
+```bash
+xsm ask a1 --text "이 마이그레이션이 기존 행을 남겨?"          # 요청 id를 바로 반환
+xsm ask a1 --text "..." --wait 60                              # 또는 답을 기다림
+xsm question-status <id> --wait 60                             # 답. 늦은 답과 부분 답도
+xsm question-status                                            # 응답을 잃었을 때 내 요청 id 목록
+xsm ack <token>...                                             # 답을 실제로 읽은 뒤
+```
+
+전달 영수증은 답이 아니고, 답을 출력했다고 읽은 것도 아닙니다. 에이전트는 읽은 뒤 `ack`(MCP `xsm_ack`)로
+수신을 확인하며, 그 전까지 원문은 회수할 수 있습니다. 과제 완료는 상대가 명시한 `outcome`으로만 판단합니다.
+
+답을 모을 필요가 없는 알림이나 일 넘기기는 전처럼 `send`를 씁니다.
+
+```bash
+xsm send my-reviewer --text "이것 좀 봐줘"                        # 알림
+xsm send my-reviewer --text "이 테스트 고쳐줘" --kind task --wait 15  # 일 넘기기. 전달을 기다림
+xsm send my-reviewer --text "참고만" --wake never                # 저장만. 상대는 다음 턴에 읽음
+xsm ledger                                                       # 전달 상태
+```
+
+`send --wait`은 답이 아니라 수신 기록을 기다리는 시간입니다. 그 안에 수신 기록이 없으면
+`sent-unconfirmed`(종료 코드 3), 전달이 실패하면 `error`(종료 코드 4)이고 원장에 남습니다. 결과 줄 끝에는
+메시지 ID가 붙습니다. `xsm status <id>`와 `--resend <id>`에 그 ID를 씁니다. `--priority now`는 Claude에 다음
+턴 대신 즉시 전달로 넘어갑니다. Codex는 턴 사이에만 메시지를 받으므로 `now`를 명시적으로 거부합니다.
+
+### 4. 메시지에 파일 붙이기
+
+```bash
+xsm ask a1 --text "이 설정 검토해 줘" --attachment ./config.yaml
+xsm files <storage_id>                         # 받는 쪽: 메시지와 함께 온 것
+xsm files <storage_id> --entry <entry_id>      # 파일 하나를 텍스트로 (바이너리는 --encoding base64)
+```
+
+`--attachment`는 보내는 CLI 자신의 읽기 권한으로 파일을 스냅숏합니다. MCP는 에이전트가 실제로 읽은 내용만 받고,
+열어 볼 경로는 받지 않습니다. 받는 쪽은 저장소 ID가 붙은 별도 사본을 받습니다. 원본 파일은 건드리지 않으며,
+사본은 상대가 보낸 데이터일 뿐 읽기·실행·변경 권한이 아닙니다. 승인이나 중단 뒤에 다시 보낼 때는 같은 요청
+ID와 그 manifest를 다시 씁니다. 파일이 바뀌었으면 새 요청입니다. 파일을 받지 못하는 상대에게는 거부되며,
+`--attachment-fallback inline`을 고르면 UTF-8 텍스트를 본문에 넣어 보냅니다(자동으로 낮추지 않습니다).
+기본값은 파일당 1 MiB, 메시지당 4 MiB·16개, 사본 저장 256 MiB, 보관 7일입니다.
+
+### 5. 다른 머신과 일하기
+
+**선택적 P2P 네트워크.** 기기끼리 기기키와 초대로 가입하며, xsm 계정도 SSH 설정도 필요 없습니다. 기본은 공개
+relay이고, 자체 relay를 설정할 수 있으며, Tailscale 주소를 같은 프로토콜의 경로로 더할 수도 있습니다.
+
+```bash
+xsm network build                                    # 한 번: xsm 상태 폴더에 엔진 빌드 (Rust 필요)
+xsm network init my-network --machine-name macbook
+xsm network invite                                   # 비공개(0600) 초대 파일을 만들고 경로만 출력
+# 그 파일을 믿을 수 있는 수단으로 다른 머신에 옮긴 뒤, 그 머신에서:
+xsm network join --ticket-file /path/to/ticket.json --machine-name macmini
+xsm network members
+xsm network status                                   # 요청 포트와 실제 포트, relay, 마지막 관측 경로
+```
+
+그 뒤에는 `discover --machine macmini`가 그 머신의 공개 세션과 같은 저장소 세션을 보여 주고, `connect`, `ask`,
+`send`가 로컬과 똑같이 동작합니다. 두 머신의 저장소는 양쪽에 대응을 기록한 뒤에만 같은 저장소로
+봅니다(`xsm network map-repository`). 폴더 이름이나 remote URL이 같다는 것만으로는 부족합니다.
+
+활성 멤버라면 누구나 초대·추가·제명할 수 있고, 처음 만든 기기도 다른 기기에 대한 관리자 권한이 없습니다.
+네트워크에 가입해도 세션이 공개되지 않고, 어느 멤버에게도 그 세션과 일할 권한이 생기지 않습니다. 서로 믿는
+기기들을 위한 모델이며, 악의적인 멤버를 막아 주지는 않습니다.
+
+`xsm network stop`은 네트워크 서비스만 멈추고 로컬 메시징은 계속 동작합니다. `start`는 같은 키와 가입 상태로
+다시 시작합니다. 서비스를 멈추거나 다른 네트워크로 바꾼 뒤에도 내가 보낸 원문은 회수할 수
+있습니다(`xsm network requests`, `export`, `archive`). 만료되거나 한 번만 쓰는 초대, 멤버 제명, 키 교체, relay,
+포트, 복구는 [네트워크 안내](docs/xsm/NETWORK.md)에 있습니다.
+
+**양방향 SSH.** SSH로 짝지은 머신도 그대로 동작합니다.
+
+```bash
+xsm remote add <host>                          # 짝짓기는 사용자가 결정
+xsm remote sessions <host>                     # 그 머신의 살아 있는 세션
+xsm send <이름>@<홈>@<host> --text "..."       # 답도 같은 길로 돌아옴
+```
+
+### 6. 다른 저장소 전체와 연결
+
+보통은 위처럼 고른 세션 하나와 연결하면 충분합니다. 두 폴더의 모든 세션이 서로 말하게 하려면 연결합니다.
 
 ```bash
 /xsm link ~/src/other-repo                     # 어느 한쪽 세션에서 직접 입력 (Codex: $xsm link ...)하거나 에이전트에게 연결을 부탁
 xsm projects                                   # 어떤 폴더들이 연결·참여되어 있는지
 ```
 
-### 3. 메시지 보내고 답장 받기
+`link`, `join`, `reach`는 [통신 범위](#통신-범위)를 보세요.
+
+### 7. 워커에게 일 시키기
 
 ```bash
-xsm send my-reviewer --text "이것 좀 봐줘"     # 그냥 알림
-xsm send my-reviewer --text "이 테스트 고쳐줘" --kind task --wait 15   # 일 시키고 답장 기다림
-xsm ledger                                     # 전달 상태 확인
-```
-
-### 4. 워커에게 일 시키기
-
-```bash
-xsm spawn codex --task "이 테스트 고쳐줘"      # 띄우고, 지시하고, 답장으로 결과를 받음
+xsm spawn codex --task "이 테스트 고쳐줘"      # tmux에 워커를 띄우고, 지시하고, 답장으로 결과를 받음
 xsm workers                                    # 워커 상태
 ```
 
-### 5. 설치가 안 된 홈 진단
+반복되는 headless 작업에는 소유 워커를 만들고 요청을 보냅니다. 요청은 워커가 시작하기 전에 기록되고, 문맥은
+보낸 쪽과 작업 단위별로 나뉘며, 저장된 답은 모델을 다시 돌리지 않고 회수하거나 다시 게시할 수 있습니다.
+
+```bash
+xsm owned create reviewer --runtime codex                       # --dir를 주지 않으면 이 세션의 폴더
+xsm owned run reviewer --work pr-42 --text "diff 검토해 줘"      # 독립 문맥은 --fresh
+xsm owned status reviewer                                        # 내 요청과 그 답
+```
+
+이미 떠 있는 일반 세션을 소유 워커로 가져오지는 않습니다. Orca나 herdr 터미널 안에서는 사용자가 따로 정하지
+않는 한 워커 띄우기를 그 도구에 맡깁니다(`xsm frameworks`).
+
+### 8. 설치가 안 된 홈 진단
 
 ```bash
 xsm doctor                                     # 어느 홈에 훅이 없는지, 낡은 사본, 지금 막힌 것
@@ -263,9 +385,13 @@ xsm selftest                                   # 훅이 실제로 도는지
 ### 통신 범위
 
 같은 Git 저장소 안의 세션끼리는 하위 폴더가 달라도 통신할 수 있습니다. Git 저장소 밖에서는 같은 폴더의
-세션끼리 통신합니다. 다른 폴더와 연결하려면 어느 한쪽 세션의 에이전트에게 연결해 달라고 부탁하세요. 에이전트가
-사용자에게 말로 묻고 `xsm link <폴더>`를 직접 실행하며, 사용자의 답이 동의입니다. `/xsm link <폴더>`를 직접
-입력해도 됩니다. 한쪽에서만 하면 되고, 연결은 양방향이며 직접 풀 때까지 유지됩니다.
+세션끼리 통신합니다. 그 밖으로 넓히는 길은 둘입니다.
+
+- **고른 세션 하나**([사용 사례 2](#2-하는-일로-협업-상대-찾기)): 사용자의 선택은 정확히 두 대화만 연결하고
+  다른 것은 열지 않습니다.
+- **폴더 전체**: 어느 한쪽 세션의 에이전트에게 연결해 달라고 부탁하세요. 에이전트가 사용자에게 말로 묻고
+  `xsm link <폴더>`를 직접 실행하며, 사용자의 답이 동의입니다. `/xsm link <폴더>`를 직접 입력해도 됩니다.
+  한쪽에서만 하면 되고, 연결은 양방향이며 직접 풀 때까지 유지됩니다.
 
 ```bash
 xsm link ~/src/other-repo            # 사용자가 허락한 뒤 에이전트가 실행하는 명령
@@ -283,9 +409,14 @@ xsm unlink ~/src/other-repo          # 연결은 누구나 풀 수 있습니다
 ```bash
 xsm send agent-name --text "이것 좀 봐줘"
 xsm send agent-name --text "이 테스트 고쳐줘" --kind task --wait 15
-xsm send ref:a1b2c3 --text "..."     # 이름이 겹칠 때는 ref로
-xsm send agent@hostB --text "..."    # 다른 머신 (xsm remote add 후)
+xsm send ref:a1b2c3 --text "..."             # 이름이 겹칠 때는 ref로
+xsm send candidate:<id> --text "..."         # discover가 돌려준 대상, connect 뒤 (로컬이든 다른 머신이든)
+xsm send agent@home@hostB --text "..."       # SSH로 짝지은 머신
+xsm ask agent-name --text "..."              # 답을 돌려받을 질문
 ```
+
+에이전트는 명령이 돌려준 대상을 그대로 쓰고, 표시 이름으로 주소를 지어내지 않습니다. 샌드박스 안의 Codex는
+셸이 Codex의 상태에 닿지 못하므로, 서버가 샌드박스 밖에서 도는 MCP 도구(`xsm_send`, `xsm_ask` 등)를 씁니다.
 
 ### 메시지 수신
 
@@ -293,12 +424,15 @@ xsm send agent@hostB --text "..."    # 다른 머신 (xsm remote add 후)
 세션의 프롬프트로 직접 넣습니다. 거절된 메시지는 버려지지 않고 보관됩니다. Claude 자체의 세션 간 메시지
 (`SendMessage`, xsm 헤더 없음)는 이 기계의 세션이 보냈다면 범위와 상관없이 그대로 들어갑니다. Claude 자체 게이트가
 이미 판정했고, 보낸 쪽도 같은 기계의 사용자 자신이기 때문입니다. 이 기계 밖(Remote Control, 클라우드)에서 온 것은
-어디서 왔는지 적은 쪽지와 함께 들어갑니다(`"remote_native": "hold"`면 예전처럼 보관합니다). 범위는 xsm 자체 메시지에 적용되고, `xsm send`는 범위 밖 대상을 보내기 전에 거부합니다. linked worktree(Orca,
-`claude --worktree`)와 메인 체크아웃은 같은 저장소로 봅니다. 두 폴더를 연결할 때는 에이전트가 사용자에게 말로 묻고
-`xsm link <폴더>`를 직접 실행합니다. 사용자의 답은 판정으로 남습니다(`xsm_link` 도구는 승인 양식으로 묻습니다).
-xsm 헤더가 없는 메시지를 모두 보관하려면 `~/.xsm/config.json`에
-`"strict_peers": true`를 넣습니다(ADR-0013). Claude 자체 게이트가 먼저 판정하므로, 권한 모드가 달라 Claude가
-보류한 메시지는 xsm까지 오지 않습니다.
+어디서 왔는지 적은 쪽지와 함께 들어갑니다(`"remote_native": "hold"`면 예전처럼 보관합니다). 범위는 xsm 자체
+메시지에 적용되고, `xsm send`는 범위 밖 대상을 보내기 전에 거부합니다. linked worktree(Orca,
+`claude --worktree`)와 메인 체크아웃은 같은 저장소로 봅니다. xsm 헤더가 없는 메시지를 모두 보관하려면
+`~/.xsm/config.json`에 `"strict_peers": true`를 넣습니다(ADR-0013). Claude 자체 게이트가 먼저 판정하므로, 권한
+모드가 달라 Claude가 보류한 메시지는 xsm까지 오지 않습니다.
+
+수신함(`xsm inbox`, MCP `xsm_inbox`, Codex의 일반 경로)으로 읽은 메시지에는 claim 토큰이 붙습니다. 에이전트는
+읽은 뒤 그 토큰으로 `ack`를 부릅니다. 그 전까지 원문은 회수할 수 있고, 그 뒤에는 원문을 보관하되 다시 전달하지
+않습니다. 답을 기다리는 동안 다른 메시지를 소비하지 않으며, 결과마다 이 대화에 아직 남은 메시지 수를 알려 줍니다.
 
 사용자가 원한 세션 간 대화는 보이지 않는 보류에 막히지 않습니다. 게이트가 고장 나거나 메시지를 확인하지 못하면(보낸
 세션이 이미 끝났거나 이 기계 밖에서 왔을 때) 보관하지 않고 `[xsm] could not check this message` 쪽지와 함께 넣습니다.
@@ -311,6 +445,27 @@ xsm ledger                           # 최근 메시지와 전달 상태
 xsm status <message-id>              # 한 건의 상태
 xsm held                             # 이 머신이 거절하고 보관한 것
 ```
+
+### 사용자의 결정
+
+xsm이 사용자의 허락을 받아야 할 때(폴더 연결, 넓은 권한으로 워커 띄우기, 공동 문서 승인)는 에이전트가 묻고,
+xsm이 질문과 답을 원문 그대로 남깁니다. 같은 결정을 다시 시도하면 새 질문을 열지 않고 같은 기록을 잇습니다.
+범위나 질문이 바뀌면 새 결정입니다. 대기 중인 질문은 회수하거나 철회할 수 있습니다(`xsm decision-status`,
+`--cancel`). 질문을 철회해도 이미 적용된 권한은 되돌아가지 않으니, 그 권한 자체의 해제를 쓰세요. 다른
+에이전트의 메시지는 결코 사용자의 승인이 아닙니다.
+
+### 트래픽 제어
+
+xsm은 보낸 쪽과 받는 쪽 짝별로 메시지 트래픽을 기록합니다. 기본은 관찰만 합니다. 제한하려면
+`~/.xsm/config.json`에 한도를 명시합니다. 내장된 차단 수치는 없으며, 아래 값은 예시일 뿐입니다(`strict`에는
+window와 한도 하나 이상이 필요합니다).
+
+```json
+{"traffic_control": {"mode": "strict", "window_seconds": 60, "max_messages": 30, "max_same_body": 3}}
+```
+
+제한된 메시지도 요청 ID를 유지하고 회수할 수 있습니다. 트래픽 제어는 부하만 다루며 통신 범위를 넓히거나 좁히지
+않습니다.
 
 ### 관측 (텔레메트리)
 
@@ -356,75 +511,90 @@ Grafana Tempo에서 메시지가 어디서 멈췄는지 바로 볼 수 있습니
 
 ## 동작 방식
 
-xsm은 메시지를 한 세션의 입력으로 직접 넣습니다. 서버도, 상주 프로세스도 없습니다.
+xsm은 메시지를 한 세션의 입력으로, 그 런타임이 이미 가진 경로를 통해 직접 넣습니다.
 
 ```
 Claude Code Session A -> xsm -> Claude Code Session B     같은 머신
 Claude Code <-> Codex                                     서로 다른 CONFIG_HOME 사이에서도
-Local Machine -> SSH -> Remote Server                     양쪽 다 xsm 설치 + `xsm remote add`
+Machine A -> P2P (직접 또는 relay) -> Machine B           선택적 네트워크: 기기키와 초대
+Machine A -> SSH -> Machine B                             양쪽 다 xsm 설치 + `xsm remote add`
 ```
 
 각 세션의 훅이 시작할 때와 프롬프트를 낼 때마다 자신을 등록합니다(등록이 곧 동의). 발신은 각 런타임이
 이미 가진 수단, 곧 Claude 인박스 소켓과 `codex queue`로만 합니다. 수신 측 훅이 게이트가 되어 범위와 발신자를
-확인한 뒤 세션의 프롬프트로 넣고, 거절한 메시지는 보관합니다.
+확인한 뒤 세션의 프롬프트로 넣고, 거절한 메시지는 보관합니다. 모든 메시지는 원문과 요청 ID를 지니므로, 답을
+질문과 짝지을 수 있고 응답을 잃은 뒤에도 회수할 수 있습니다. 머신 사이에서는 P2P 서비스가 같은 메시지를
+나르며, 받는 머신이 전달하기 전에 멤버십, 자기 쪽 차단과 제외, 선택을 다시 확인합니다.
 
 원칙:
 
-- **No wrapper runtime**: 별도 런타임 없이 기존 Claude Code와 Codex 세션 안에서 동작하며, 계속 띄워 둘 우리 쪽
-  프로세스가 없습니다.
-- **Project-scoped trust**: 누가 누구와 통신할 수 있는지를 프로젝트별로 정의합니다.
+- **No wrapper runtime**: 별도 런타임 없이 기존 Claude Code와 Codex 세션 안에서 동작합니다. 계속 떠 있는 우리
+  쪽 프로세스는 선택적 네트워크 서비스뿐입니다.
+- **Project-scoped trust**: 누가 누구와 통신할 수 있는지를 프로젝트별로 정의하며, 선택은 정확히 한 쌍만 더합니다.
 - **Session-independent**: 각 세션의 `CONFIG_HOME`(`~/.claude`, `~/.codex` 등)과 무관하게 동작합니다.
-- **Async-first**: 메시지는 비동기라서 협업이 서로를 막지 않습니다.
+- **Async-first**: 메시지는 비동기이고 답은 나중에 회수할 수 있어서, 협업이 서로를 막지 않습니다.
+- **Separate evidence**: 저장, 전달, 수신 확인, 실제 답을 따로 보고합니다.
 - **Observable**: 스팬과 메트릭을 OTLP 형식으로 기록하며, SDK 의존성은 없습니다.
 
 <details>
 <summary>저장소 구조</summary>
 
 ```
-├── .claude-plugin/               # 플러그인·마켓플레이스 매니페스트
-├── hooks/hooks.json, .mcp.json   # 플러그인이 제공하는 훅과 MCP 서버
-├── .codex-plugin/, .agents/plugins/   # Codex용 같은 매니페스트
-├── hooks/codex-hooks.json, codex-mcp.json   # Codex 플러그인의 훅과 MCP 서버
-├── bin/xsm                       # 런처 (현재 디렉터리와 상관없이 자기 폴더의 xsm.cli를 실행)
-├── xsm/                          # 메시징·정책·CLI (Python, stdlib만)
-├── native/xsm-net/               # 선택적 P2P 엔진 (Rust, iroh)
-│   ├── cli.py                   # 서브커맨드 전부
-│   ├── registry.py              # 세션 레지스트리 (훅이 기록, 조회 시 런타임에서 보강)
-│   ├── send.py / receive.py     # 송신, 그리고 훅이 부르는 수신 게이트
-│   ├── envelope.py              # 메시지 봉투와 헤더
-│   ├── adapters.py              # 두 가지 네이티브 전달 경로 (UDS 소켓, codex queue)
-│   ├── codex_daemon.py          # Esc로 멈춘 Codex에 넣은 대기열 항목을 데몬에 시작 요청
-│   ├── config.py                # 프로젝트·범위·차단 설정
-│   ├── remote.py                # 다른 머신 (양방향 SSH, ADR-0007)
-│   ├── workers.py               # 워커 생성·승인·종료 (ADR-0010)
-│   ├── channel.py / doc.py      # 채널 기록 (0005), 공동 문서 (0006)
-│   ├── telemetry.py             # 스팬·메트릭 기록 (ADR-0011)
-│   ├── otlp_export.py           # OTLP/HTTP+JSON 전송
-│   ├── install.py               # 훅 설치·진단
-│   └── mcp.py                   # MCP 서버
-├── hooks/                        # 런타임이 부르는 훅 진입점
-├── skills/xsm/                   # 스킬 하나: `/xsm <명령>`(Codex `$xsm <명령>`)과 참고 문서
+├── .claude-plugin/                     # 플러그인·마켓플레이스 매니페스트
+├── .codex-plugin/, .agents/plugins/    # Codex용 같은 매니페스트
+├── bin/xsm                             # 런처 (현재 디렉터리와 상관없이 자기 폴더의 xsm.cli를 실행)
+├── hooks/                              # 훅 진입점, 플러그인의 훅과 MCP 서버 정의
+├── xsm/                                # 메시징·정책·CLI (Python, stdlib만)
+│   ├── cli.py                         # 서브커맨드 전부
+│   ├── registry.py                    # 세션 레지스트리 (훅이 기록, 조회 시 런타임에서 보강)
+│   ├── send.py / receive.py           # 송신, 그리고 훅이 부르는 수신 게이트
+│   ├── envelope.py                    # 메시지 봉투와 헤더
+│   ├── adapters.py                    # 두 가지 네이티브 전달 경로 (UDS 소켓, codex queue)
+│   ├── directory.py                   # 공개와 발견 (ADR-0017, 0024)
+│   ├── collaboration.py / connect.py  # 선택한 짝과 그 핸드셰이크
+│   ├── handoff.py / inbox.py          # 상관된 답, claim과 수신 확인 (ADR-0016, 0018)
+│   ├── files.py / materials.py        # 첨부 스냅숏과 사본 (ADR-0019)
+│   ├── decisions.py / attention.py    # 기록된 사용자 결정, 우선순위와 깨우기 (ADR-0020)
+│   ├── abuse.py                       # 트래픽 관찰과 명시적 한도 (ADR-0022)
+│   ├── owned_requests.py              # 소유 headless 워커의 요청 기록
+│   ├── network*.py                    # P2P 멤버십, 디렉터리, 메시지, 복구 (ADR-0021)
+│   ├── remote.py                      # 다른 머신 (양방향 SSH, ADR-0007)
+│   ├── workers.py                     # 워커 생성·승인·종료 (ADR-0010)
+│   ├── channel.py / doc.py            # 채널 기록 (0005), 공동 문서 (0006)
+│   ├── telemetry.py / otlp_export.py  # 스팬·메트릭 기록, OTLP/HTTP+JSON 전송 (ADR-0011)
+│   ├── install.py                     # 훅 설치·진단
+│   └── mcp.py                         # MCP 서버
+├── native/xsm-net/                     # 선택적 P2P 엔진 (Rust, iroh)
+├── skills/xsm/                         # 스킬 하나: `/xsm <명령>`(Codex `$xsm <명령>`)과
+│                                       #   references/ 아래 용도별 참고 문서
 ├── docs/
-│   ├── adr/                     # 아키텍처 결정 기록 (0001-0012)
-│   ├── xsm/                     # 프로토콜·테스트 계획
-│   ├── references/              # 조사 자료, 오버헤드 실측
-│   ├── plan/ · spikes/ · reviews/
+│   ├── adr/                           # 아키텍처 결정 기록 (0001-0024)
+│   ├── xsm/                           # 프로토콜·테스트 계획·네트워크 안내
+│   ├── plan/                          # 구현 계획과 증거 색인
+│   ├── references/ · spikes/ · reviews/
 │   └── list-agents-cross-session-messaging.md
-├── tests/                        # unittest, 벡터 포함
-└── tools/                        # 스파이크·벤치마크 스크립트
+├── deliverables/                       # 계획이 증거로 인용하는 실행 기록
+├── evals/                              # 스킬의 `claude plugin eval` 케이스
+├── tests/                              # unittest, 벡터 포함
+└── tools/, scripts/                    # 스파이크·벤치마크·감사 스크립트
 ```
 
 </details>
 
 ## 주요 문서
 
+- **[CHANGELOG.md](CHANGELOG.md)**: 릴리스별 변경 기록
 - **[INTENT.md](INTENT.md)**: 프로젝트 목표 및 비전
 - **[ADR (Architecture Decision Records)](docs/adr/)**: 설계 결정 기록
   - [Session Registry](docs/adr/0001-session-registry.md)
   - [Communication Scope](docs/adr/0004-communication-scope.md)
   - [Remote Transport & Trust](docs/adr/0007-remote-transport-and-trust.md)
+  - [Cross-machine Network & Membership](docs/adr/0021-cross-machine-network-and-membership.md)
+  - [Discover, Select & Handshake](docs/adr/0024-discover-select-and-handshake.md)
 - **[Protocol Spec](docs/xsm/)**: 메시지 프로토콜 명세
+- **[Network Guide](docs/xsm/NETWORK.md)**: 선택적 P2P 네트워크
 - **[Test Protocol](docs/xsm/TESTPLAN.md)**: 실사용 점검 절차 (개발자용 테스트는 여기)
+- **[Collaboration Plan](docs/plan/reason-inspired-adrs/execution.md)**: ADR-0015~0024의 계획과 남은 일
 - **[Agent Messaging Guide](docs/list-agents-cross-session-messaging.md)**: 에이전트 메시징 구현
 
 ## 라이선스
@@ -433,4 +603,4 @@ MIT
 
 ## 피드백
 
-이슈, 제안, PR을 환영합니다.
+이슈, 제안, PR 모두 환영합니다.
