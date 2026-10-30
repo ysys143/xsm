@@ -189,7 +189,8 @@ TOOLS = [
          "wait": {"type": "number", "default": 15}}, "required": []},
      "annotations": MESSAGING},
     {"name": "xsm_ack", "description": "Acknowledge inbox claim tokens only after reading their messages. "
-     "Output delivery alone does not acknowledge them. Unacknowledged originals remain recoverable.",
+     "Output delivery alone does not acknowledge them. Unacknowledged originals remain recoverable. "
+     "Pass each claim's token value; a claim object as shown in the receive context is also accepted.",
      "inputSchema": {"type": "object", "properties": {
          "tokens": {"type": "array", "items": {"type": "string"}, "minItems": 1}},
          "required": ["tokens"]}, "annotations": MESSAGING},
@@ -751,7 +752,14 @@ class Server:
         with probe.quick():
             me = self.session()
         if not me:
-            raise channel.ChannelError(registry.unregistered_reason())
+            # The server's own environment does not carry the caller's thread id,
+            # so name the runtime and thread the call resolved, and say why it
+            # found no record: a bare "no hook record" hid the cause (T0).
+            runtime = self.ctx.runtime if self.ctx and self.ctx.runtime else None
+            why = registry.unregistered_reason(runtime or ("codex" if self.call_thread else None),
+                                               self.call_thread)
+            evidence = "; ".join(self.ctx.evidence) if self.ctx and self.ctx.evidence else ""
+            raise channel.ChannelError(why + (" (caller lookup: %s)" % evidence if evidence else ""))
         if self.ctx is None:
             # A harness or an older entry point set the record without going
             # through `_resolve`: its identity is the record itself.
@@ -1020,8 +1028,9 @@ class Server:
         if name == "xsm_ack":
             from . import receive
             tokens = args.get("tokens")
-            if not isinstance(tokens, list) or not tokens or not all(isinstance(t, str) for t in tokens):
-                raise channel.ChannelError("tokens must be a nonempty array of claim tokens")
+            if not isinstance(tokens, list) or not tokens or not all(isinstance(t, (str, dict)) for t in tokens):
+                raise channel.ChannelError("tokens must be a nonempty array of claim tokens "
+                                           "(the token values, or the claim objects as shown)")
             owner, generation = receive.consumer_for(me)
             return json.dumps(receive.ack_inbox(me, tokens, owner=owner, generation=generation))
         if name == "xsm_inbox":

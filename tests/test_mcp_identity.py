@@ -523,3 +523,27 @@ class AdoptUnknownThreadTest(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class UnresolvedCodexCallTest(unittest.TestCase):
+    """T0: a Codex call whose thread has no record and cannot be adopted used to
+    read "no hook record for it" (the server's own env names no thread), which
+    hid both the runtime and the cause. The refusal names the thread the call
+    named and how the lookup ended."""
+
+    def test_refusal_names_the_called_thread_and_the_lookup(self):
+        server = mcp.Server(io.StringIO(""), io.StringIO())
+        server.call_thread = "thread-new"
+        env = {k: v for k, v in os.environ.items() if k not in ("CODEX_THREAD_ID", "CLAUDE_CODE_SESSION_ID")}
+        with mock.patch.dict(os.environ, env, clear=True), \
+                mock.patch.object(mcp.identity, "ancestor_pid", return_value=DAEMON), \
+                mock.patch.object(mcp.identity, "comm", return_value="codex"), \
+                mock.patch.object(mcp.registry, "raw_records", return_value=[]), \
+                mock.patch.object(mcp.registry, "adopt_codex_thread", return_value=None), \
+                mock.patch.object(mcp.registry, "adopt_claude_process", return_value=None):
+            with self.assertRaises(mcp.channel.ChannelError) as raised:
+                server.call("xsm_inbox", {})
+        text = str(raised.exception)
+        self.assertIn("this Codex thread (thread-new) is not registered yet", text)
+        self.assertIn("caller lookup: no record carries this pid", text)
+        self.assertNotIn("no hook record for it", text)
