@@ -35,10 +35,11 @@ What xsm does not have:
 Because everything else is left to the agents, the channel itself has to be dependable. That is where xsm puts
 its effort:
 
-- **A message wakes the session.** It goes in through each runtime's own path (the Claude inbox socket,
-  `codex queue`), not by typing into a terminal, so an idle session picks it up, and the message arrives marked
-  with its sender instead of looking like something you typed. A message that should not interrupt can wait
-  for the session's next natural turn instead (`--wake never`).
+- **A message wakes the session.** A message is a DM, addressed to the session the sender names. It goes in
+  through each runtime's own path (the Claude inbox socket, `codex queue`), not by typing into a terminal, so an
+  idle session picks it up, and the message arrives marked with its sender instead of looking like something
+  you typed. A message that should not interrupt can wait for the session's next natural turn instead
+  (`--wake never`).
 - **The sender knows what happened.** Stored, handed to the runtime, acknowledged after reading, and actually
   answered are four separate facts, and each result says which ones hold. A lost response is recovered by its
   request ID, never resent under a new one, and a task counts as done only when the peer says so.
@@ -269,9 +270,9 @@ conversation is checked again; a new conversation with the same name inherits no
 
 ### 3. Asking and getting the answer back
 
-`ask` sends one question and collects the reply that answers it. By default it returns a request ID at once
-and the agent goes on working; the answer can be collected later, even after a timeout, a cancelled tool call
-or a restart:
+`ask` sends one question as a DM to the session you name and collects the reply that answers it. By default
+it returns a request ID at once and the agent goes on working; the answer can be collected later, even after a
+timeout, a cancelled tool call or a restart:
 
 ```bash
 xsm ask a1 --text "does this migration keep the old rows?"     # returns a request id immediately
@@ -419,6 +420,8 @@ xsm unlink ~/src/other-repo          # anyone may remove it
 
 ### Sending messages
 
+`send` and `ask` send DMs: the target you give is the recipient session.
+
 ```bash
 xsm send agent-name --text "please take a look"
 xsm send agent-name --text "fix this test" --kind task --wait 15
@@ -434,8 +437,8 @@ whose server runs outside the sandbox.
 
 ### Receiving messages
 
-The receiving side runs nothing. A hook acts as the gate: it checks the scope and the sender, then puts the
-message directly into the session's prompt. A rejected message is held, not dropped. Claude's own
+The receiving side of a DM runs nothing. A hook acts as the gate: it checks the scope and the sender, then puts
+the message directly into the session's prompt. A rejected message is held, not dropped. Claude's own
 cross-session messages (`SendMessage`, no xsm header) from a session on this machine arrive untouched, whatever
 the scope: Claude's own gate has already decided, and the sender is you on the same machine. Ones from off this
 machine (Remote Control, cloud) pass with a note naming where they came from (`"remote_native": "hold"` holds
@@ -530,7 +533,14 @@ Instrumentation costs about 0.175 ms per send
 
 ## How it works
 
-xsm puts a message directly into a session's input, through the path that runtime already has.
+xsm puts a message directly into a session's input, through the path that runtime already has. Such a message
+is a DM (direct message): the sender names the recipient, and because the message arrives in that session's
+input it can wake the session, its delivery is recorded, the receiver can acknowledge it, and it can be
+answered. Direct means addressed, not one-to-one, the way a Slack group DM is still a DM. The channel
+(`xsm post`, `xsm channel`) works the other way: a post names no recipient, goes into one shared record, wakes
+nobody, and is read by whoever comes to read it. The channel is under review and is to be removed once teams
+and team boards replace it ([ADR-0025](docs/adr/0025-team-and-multi-recipient-dm.md),
+[ADR-0026](docs/adr/0026-team-board-on-xsm-doc.md)).
 
 ```
 Claude Code Session A -> xsm -> Claude Code Session B     same machine

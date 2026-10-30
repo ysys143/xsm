@@ -1,0 +1,37 @@
+{
+  "root": "/private/tmp/claude-501/-Users-jaesolshin-Documents-GitHub-cross-session-messaging/33bf5e13-fa64-4f22-844c-d0a499ae4150/scratchpad/xsm-ledger-rebind-rnfkvfuk",
+  "head": "90a5cc9f33bfe2970061ac2b1bb3dd9c23753bba",
+  "started_utc": "2026-10-30T06:56:04.619144+00:00",
+  "manifest_sha256": "77cda0b4d29db67fecfedf7d5b64a4d70b937b3a49165904c1e53b653ed5d275",
+  "files": 184,
+  "python_modules": 53,
+  "test_modules": 87,
+  "binary_sha256": "f17f03fafcdf3a31e374d6cbc0ccbbbd8000ba6a7eba5d9b44605e742c409aed",
+  "previous1936_manifest_sha256": "ccc3f22a1d65a33ddc76b0ad1abc4966a65664a6e41777d52b70230cd4fd4011",
+  "changed_from1936": [
+    ".claude-plugin/marketplace.json",
+    ".claude-plugin/plugin.json",
+    ".codex-plugin/plugin.json",
+    "README.md",
+    "README_ko.md",
+    "skills/xsm/SKILL.md",
+    "skills/xsm/references/guide.md",
+    "skills/xsm/references/network.md",
+    "tests/test_crash_boundaries.py",
+    "tests/test_owned_interfaces.py",
+    "tests/test_person_decisions.py",
+    "tests/test_xsm.py"
+  ],
+  "added_since1936": [
+    "scripts/audit-collaboration-plan.py",
+    "skills/xsm/references/channel.md",
+    "skills/xsm/references/permissions.md",
+    "skills/xsm/references/sessions.md",
+    "skills/xsm/references/troubleshooting.md",
+    "skills/xsm/references/workers.md",
+    "tests/test_mcp_shared_process.py"
+  ],
+  "removed_since1936": [
+    "scripts/audit-reason-plan.py"
+  ]
+}

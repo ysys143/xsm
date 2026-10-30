@@ -34,9 +34,9 @@ OLD_RECORDS = {'current-handoff.md', 'development-policy.md', 'release-candidate
                'adr-0021-implementation.md', 'policy-validation.json', 'validation.json'}
 LEDGER = BASE + 'completion-ledger.json'
 REPORT = BASE + 'completion-ledger.md'
-# Full regression of the 0.5.0 release source (2026-10-30). It rebinds fixture/process
+# Full regression of the source with ADR-0025/0026 and the README notes (2026-10-30). It rebinds fixture/process
 # cells only: native/UI/physical runs were made on earlier sources.
-REBIND = 'deliverables/ledger-rebind-0.5.0/'
+REBIND = 'deliverables/ledger-rebind-20261030-adr0025/'
 ADR21 = 'deliverables/adr0021/'
 # This audit under its current and earlier name; no test reads either.
 AUDIT_SCRIPTS = {'scripts/audit-collaboration-plan.py', 'scripts/audit-reason-plan.py'}
