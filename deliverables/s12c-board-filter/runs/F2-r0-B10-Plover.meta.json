@@ -1,0 +1,60 @@
+{
+  "name": "F2-r0-B10-Plover",
+  "condition": "F2",
+  "command": [
+    "env",
+    "-u",
+    "ANTHROPIC_API_KEY",
+    "-u",
+    "OPENAI_API_KEY",
+    "codex",
+    "exec",
+    "--model",
+    "openai/gpt-6-luna",
+    "--ephemeral",
+    "--sandbox",
+    "read-only",
+    "--skip-git-repo-check",
+    "--json",
+    "--color",
+    "never",
+    "-c",
+    "mcp_servers.reason-network.enabled=false",
+    "-c",
+    "model_reasoning_effort=\"low\"",
+    "-"
+  ],
+  "codex_home": "/Users/jaesolshin/.codex-3",
+  "cwd": "/private/tmp/claude-501/-Users-jaesolshin-Documents-GitHub-cross-session-messaging/33bf5e13-fa64-4f22-844c-d0a499ae4150/scratchpad/s12c/codex-cwd",
+  "started_at": "2026-10-30T11:40:51.223018+00:00",
+  "prompt_sha256": "994329d20184c0e36c9c60bb7e649edeb4e308a787ca5d37075c469ea507acfd",
+  "returncode": 0,
+  "elapsed_seconds": 5.334402916021645,
+  "finished_at": "2026-10-30T11:40:56.557298+00:00",
+  "stderr_tail": "",
+  "event_types": [
+    "item.completed",
+    "thread.started",
+    "turn.completed",
+    "turn.started"
+  ],
+  "thread_ids": [
+    "01a18c9c-d727-72d0-bac3-000b4e39267e"
+  ],
+  "codex_usage": [
+    {
+      "input_tokens": 22111,
+      "cached_input_tokens": 15232,
+      "cache_write_input_tokens": 0,
+      "output_tokens": 175,
+      "reasoning_output_tokens": 0
+    }
+  ],
+  "proxy_requests": 1,
+  "response_models": [
+    "gpt-6-luna"
+  ],
+  "requested_models": [
+    "openai/gpt-6-luna"
+  ]
+}

@@ -1,0 +1,60 @@
+{
+  "name": "F2-r2-B01-Heron",
+  "condition": "F2",
+  "command": [
+    "env",
+    "-u",
+    "ANTHROPIC_API_KEY",
+    "-u",
+    "OPENAI_API_KEY",
+    "codex",
+    "exec",
+    "--model",
+    "openai/gpt-6-luna",
+    "--ephemeral",
+    "--sandbox",
+    "read-only",
+    "--skip-git-repo-check",
+    "--json",
+    "--color",
+    "never",
+    "-c",
+    "mcp_servers.reason-network.enabled=false",
+    "-c",
+    "model_reasoning_effort=\"low\"",
+    "-"
+  ],
+  "codex_home": "/Users/jaesolshin/.codex-3",
+  "cwd": "/private/tmp/claude-501/-Users-jaesolshin-Documents-GitHub-cross-session-messaging/33bf5e13-fa64-4f22-844c-d0a499ae4150/scratchpad/s12c/codex-cwd",
+  "started_at": "2026-10-30T11:47:21.655510+00:00",
+  "prompt_sha256": "cb3680a8e88a7a5c8e9bc92c7428a3d0fedd5e195efa93ba84cbc96e024e169b",
+  "returncode": 0,
+  "elapsed_seconds": 6.396296833991073,
+  "finished_at": "2026-10-30T11:47:28.051648+00:00",
+  "stderr_tail": "",
+  "event_types": [
+    "item.completed",
+    "thread.started",
+    "turn.completed",
+    "turn.started"
+  ],
+  "thread_ids": [
+    "01a18ca2-cc44-74c0-b895-6eb03af0b4c8"
+  ],
+  "codex_usage": [
+    {
+      "input_tokens": 22174,
+      "cached_input_tokens": 15232,
+      "cache_write_input_tokens": 0,
+      "output_tokens": 303,
+      "reasoning_output_tokens": 0
+    }
+  ],
+  "proxy_requests": 1,
+  "response_models": [
+    "gpt-6-luna"
+  ],
+  "requested_models": [
+    "openai/gpt-6-luna"
+  ]
+}

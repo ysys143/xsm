@@ -1,0 +1,31 @@
+[
+  {
+    "conversationId": "b79d07194bb119efe08634148a4df71e",
+    "timestamp": 1793362688633,
+    "requestedModel": "gpt-6.1-sol",
+    "requestedEffort": "low",
+    "resolvedModel": "gpt-6.1-sol",
+    "servedModel": "gpt-6.1-sol",
+    "provider": "openai",
+    "status": 200,
+    "durationMs": 8517,
+    "terminalStatus": "completed",
+    "usage": {
+      "inputTokens": 20910,
+      "outputTokens": 123,
+      "totalTokens": 21033,
+      "cachedInputTokens": 7168,
+      "cacheReadInputTokens": 7168,
+      "cacheCreationInputTokens": 0,
+      "reasoningOutputTokens": 53
+    },
+    "attempts": [
+      {
+        "provider": "openai",
+        "model": "gpt-6.1-sol",
+        "status": 200,
+        "requestedEffort": "low"
+      }
+    ]
+  }
+]

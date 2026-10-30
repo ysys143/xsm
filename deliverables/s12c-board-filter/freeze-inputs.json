@@ -1,0 +1,30 @@
+{
+  "frozen_at": "2026-10-30T11:28:09.639368+00:00",
+  "sha256": {
+    "BOARD.md": "c66bb50dae0f6126b67efbcae134cbe419544fddcdbcd63917acc34db80a0694",
+    "fixture.json": "771d878e0f5fa56a026dd2815dd1f9984465d33a3144b8137f5e3402bae8358c",
+    "labels-author.json": "9756093a0a7e60e85e1ca41c54bf2d25269bdcee14ee394f32858506b2c1649a",
+    "policy.json": "292685499718410decea42a4b3bcecd9ff6236ace0fc9293c92b8d005c287b64",
+    "filter-prompt.txt": "84f3ebeb634c043b580e8ad7a2ca5f81f52c280b73a307bd6bf02541f5023437",
+    "label-prompt.txt": "16aa812fd49a889cb812777a60670dd8a1f4027cca0ff9ee3402b42ce01e1af8",
+    "f4-prompt.txt": "a4c8645db6ae3a9d4106bde78413d1bbf22e73fcec71388b877dd8c30c90b3c7",
+    "f4-filtered-note.txt": "9c47d66ddb48feddc0314194e303a771fb31298fe78b45db1cb419d78f560fe7",
+    "select_repeats.py": "4bb00934fc46498096980349fd7d2fefd8585aca0de08240d85d7d8a34517b82",
+    "build_fixture.py": "aa6e11caa57b40957830adb7eeabbfc3cefc77c72236a4f06f69d8c6e19a3770",
+    "src/sessions.json": "9bdf2e1504ecce33647997448d9bb1d18956842066c35e8970fa0cc15fd0a615",
+    "src/B01.json": "a013bae3b5cd4b7994616b07c2df0bbc38802e3feb70caf5d0411ef49b8e21d5",
+    "src/B02.json": "3b5634321b9d4e7e92938e8974ce3bfe2136e55105d2968ca4b85f4a8be13f6e",
+    "src/B03.json": "7842126520ed03c06a01d772be628327d119e98e3b4042605ec8d014c0b86408",
+    "src/B04.json": "1aa8653dadb3ae6afdb1a78791ac44d9ef7ce0ba6fcde166128c46560b85948f",
+    "src/B05.json": "94fc846025cffcbe4578fad3227ef5ca5cf19ef8e2a5df0f79ca0cebe0eda598",
+    "src/B06.json": "13304a1dc97b3c246f1af64bdab1d3e63ae2a3b0c3a3ef1e60c1268f369d31b2",
+    "src/B07.json": "5f3f01b901c943d5d47d323b98a3441183bb645c1d0198370f4b9475792bddad",
+    "src/B08.json": "c2c0775be1a55da67a2408efeddc89b40d5fe295d5cb726b241f50925f11af06",
+    "src/B09.json": "1b1810813f4c3ad656b1083bd5df87907d414123b14b09c1baea63e975065e9b",
+    "src/B10.json": "f6baa30bb27976167d68770b8c15f5aa4e165059614d8aa749f958878ca4861d",
+    "src/B11.json": "a79b765f44102608a75985588df912d74adec690aa4993524f3adf6d278016ea",
+    "src/B12.json": "46bc96ef567995d17b6b24a421212f89859c20846c0965c9786eccc9680ed9d6",
+    "src/B13.json": "7f2e024ddf1aa6c9c4246b3bdea925876abfa3bcdb136399ee69a18142ae723c"
+  },
+  "stage": "pre-inference input/author-label/policy freeze; independent labels and reconciliation follow before any filter call"
+}
