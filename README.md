@@ -12,11 +12,9 @@ you at each step what has and has not happened.
 ![How XSM connects agent sessions through native runtime paths and explicit communication scopes](docs/assets/xsm-overview.svg)
 
 > **Release status.** Work discovery, `connect` and `ask`, attachments, owned workers and the opt-in P2P
-> network are on `main` but not in a release yet. The plugin version is still 0.4.20, so an existing plugin
-> install picks them up at the next release; a direct install refreshed from a current checkout has them now.
-> See the [changelog](CHANGELOG.md). Which environments each part was verified on is recorded in the
-> [ADR-0021 closure record](docs/plan/reason-inspired-adrs/adr-0021-closure.md) and the
-> [completion ledger](docs/plan/reason-inspired-adrs/completion-ledger.md); the plan as a whole is not complete.
+> network arrived in 0.5.0; see the [changelog](CHANGELOG.md). Which environments each part was verified on is recorded in the
+> [ADR-0021 closure record](docs/plan/collaboration/adr-0021-closure.md) and the
+> [completion ledger](docs/plan/collaboration/completion-ledger.md); the plan as a whole is not complete.
 
 ## Philosophy
 
@@ -618,7 +616,7 @@ Most documents under `docs/` are written in Korean.
 - **[Protocol Spec](docs/xsm/)**: message protocol specification
 - **[Network Guide](docs/xsm/NETWORK.md)**: the opt-in P2P network
 - **[Test Protocol](docs/xsm/TESTPLAN.md)**: hands-on check procedure (developer tests live here)
-- **[Collaboration Plan](docs/plan/reason-inspired-adrs/execution.md)**: the plan behind ADR-0015 to 0024, and what is still open
+- **[Collaboration Plan](docs/plan/collaboration/execution.md)**: the plan behind ADR-0015 to 0024, and what is still open
 - **[Agent Messaging Guide](docs/list-agents-cross-session-messaging.md)**: implementing agent messaging
 
 ## License

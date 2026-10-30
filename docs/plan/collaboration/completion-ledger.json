@@ -1,12 +1,12 @@
 {
   "schema_version": 1,
   "purpose": "P13 완료 증거 색인/검사; 승인·생략·완료 선언 권한 없음",
-  "plan_path": "docs/plan/reason-inspired-adrs/plan.json",
-  "spec_path": "docs/plan/reason-inspired-adrs/spec.md",
+  "plan_path": "docs/plan/collaboration/plan.json",
+  "spec_path": "docs/plan/collaboration/spec.md",
   "inventory_sha256": "cf7be014791d83196e6b11ef4e1a062833a3f20cf535c9e1c5771d43a816a435",
   "evidence_catalog": {
     "gate-G00": {
-      "path": "docs/plan/reason-inspired-adrs/gates/G00-baseline.md",
+      "path": "docs/plan/collaboration/records/gates/G00-baseline.md",
       "levels": [
         "fixture",
         "process"
@@ -25,7 +25,7 @@
       }
     },
     "gate-G01": {
-      "path": "docs/plan/reason-inspired-adrs/gates/G01-identity-integrity.md",
+      "path": "docs/plan/collaboration/records/gates/G01-identity-integrity.md",
       "levels": [
         "fixture",
         "process"
@@ -44,7 +44,7 @@
       }
     },
     "gate-G02": {
-      "path": "docs/plan/reason-inspired-adrs/gates/G02-connection-intent.md",
+      "path": "docs/plan/collaboration/records/gates/G02-connection-intent.md",
       "levels": [
         "fixture",
         "process"
@@ -63,7 +63,7 @@
       }
     },
     "gate-G03": {
-      "path": "docs/plan/reason-inspired-adrs/gates/G03-question-interface.md",
+      "path": "docs/plan/collaboration/records/gates/G03-question-interface.md",
       "levels": [
         "fixture",
         "process"
@@ -82,7 +82,7 @@
       }
     },
     "gate-G04": {
-      "path": "docs/plan/reason-inspired-adrs/gates/G04-recoverable-handoff.md",
+      "path": "docs/plan/collaboration/records/gates/G04-recoverable-handoff.md",
       "levels": [
         "fixture",
         "process"
@@ -101,7 +101,7 @@
       }
     },
     "gate-G05": {
-      "path": "docs/plan/reason-inspired-adrs/gates/G05-directory.md",
+      "path": "docs/plan/collaboration/records/gates/G05-directory.md",
       "levels": [
         "fixture",
         "process"
@@ -120,7 +120,7 @@
       }
     },
     "gate-G06": {
-      "path": "docs/plan/reason-inspired-adrs/gates/G06-material-copies.md",
+      "path": "docs/plan/collaboration/records/gates/G06-material-copies.md",
       "levels": [
         "fixture",
         "process"
@@ -139,7 +139,7 @@
       }
     },
     "gate-G08": {
-      "path": "docs/plan/reason-inspired-adrs/gates/G08-owned-runtime.md",
+      "path": "docs/plan/collaboration/records/gates/G08-owned-runtime.md",
       "levels": [
         "fixture",
         "process"
@@ -158,7 +158,7 @@
       }
     },
     "gate-G09": {
-      "path": "docs/plan/reason-inspired-adrs/gates/G09-provenance-traffic.md",
+      "path": "docs/plan/collaboration/records/gates/G09-provenance-traffic.md",
       "levels": [
         "fixture",
         "process"
@@ -177,7 +177,7 @@
       }
     },
     "gate-G10": {
-      "path": "docs/plan/reason-inspired-adrs/gates/G10-installation-evidence.md",
+      "path": "docs/plan/collaboration/records/gates/G10-installation-evidence.md",
       "levels": [
         "fixture",
         "process"
@@ -187,7 +187,7 @@
       "available": true,
       "executed": true,
       "result": "recorded-pass",
-      "sha256": "8d962c0fcb45052ffbae36c499445584e08164dcf4203cc6b0344b49f6c9d93b",
+      "sha256": "1dc8ebdfd2a950439c5eec8af07239ac369de5b874fe574f02c65bac6ee02513",
       "coverage_ceiling": "partial",
       "complete_for": {},
       "checks": {
@@ -197,7 +197,7 @@
       }
     },
     "b05-local-integration": {
-      "path": "docs/plan/reason-inspired-adrs/gates/B05-local-integration.md",
+      "path": "docs/plan/collaboration/records/gates/B05-local-integration.md",
       "levels": [
         "fixture",
         "process"
@@ -268,7 +268,7 @@
       }
     },
     "b04-regression": {
-      "path": "docs/plan/reason-inspired-adrs/gates/G04-recoverable-handoff.md",
+      "path": "docs/plan/collaboration/records/gates/G04-recoverable-handoff.md",
       "levels": [
         "fixture",
         "process"
@@ -758,14 +758,14 @@
       }
     },
     "local-release-preparation": {
-      "path": "docs/plan/reason-inspired-adrs/release-candidate.md",
+      "path": "docs/plan/collaboration/records/release-candidate.md",
       "levels": [],
       "scope": "미커밋 로컬 변경·복구/검토 문서만. 릴리스/배포/후속 변경 전체 회귀/원격/UI 완료 아님",
       "authority": "recorded-local-scope",
       "available": true,
       "executed": false,
       "result": "local-preparation-only",
-      "sha256": "157851abaa7f8de7acd031c3a05aeff18a3ea79c4d17a3a04a925863c2daafff",
+      "sha256": "8e79eb29a59e84612edbd9c600023c67a3ffad3015f72ed7e983788492e98f1a",
       "coverage_ceiling": "partial",
       "complete_for": {},
       "checks": {
@@ -775,7 +775,7 @@
       }
     },
     "remote-comparison": {
-      "path": "docs/plan/reason-inspired-adrs/remote-decision.md",
+      "path": "docs/plan/collaboration/remote-decision.md",
       "levels": [
         "physical"
       ],
@@ -784,7 +784,7 @@
       "available": true,
       "executed": true,
       "result": "recorded-pass",
-      "sha256": "9dd7e61d119e5828649d99ac3ae5fab4fc7502b73ebe5fdda114a97693c954b2",
+      "sha256": "5bf758f95e99ce7aa72ff578cd5f881a2c279fd2cd9f580b959bbcc9ae017fd7",
       "coverage_ceiling": "partial",
       "complete_for": {},
       "checks": {
@@ -926,12 +926,12 @@
       "document_revision_binding": {
         "docs/plan/reason-inspired-adrs/remote-decision.md": {
           "coordinator_followup_sha256": "7b95561024c129f84728ad445655339039cc0364763ea2fc044b4c905dbed70b",
-          "current_sha256": "9dd7e61d119e5828649d99ac3ae5fab4fc7502b73ebe5fdda114a97693c954b2",
+          "current_sha256": "5bf758f95e99ce7aa72ff578cd5f881a2c279fd2cd9f580b959bbcc9ae017fd7",
           "same_revision": false
         },
         "docs/plan/reason-inspired-adrs/gates/G11-remote-comparison-draft.md": {
           "coordinator_followup_sha256": "92eb0002e7a4b7fe7b8e116da4f8ed85b22dc4c58d7c3aed8d5bfb666ca95cf7",
-          "current_sha256": "ebf8b4b3bc25cb829fc2253dcf8cef452db32ad8b1b84dd83b966159eca3a752",
+          "current_sha256": "a8bc650a38cff65ba656aff55ad7ef8aa142c8439f132461115f4ce6f346c26f",
           "same_revision": false
         },
         "deliverables/p11-live/C-native-roundtrip-20261029.md": {
@@ -1054,6 +1054,7 @@
         "status": "changed-rebinding-required",
         "changed_paths": [
           "skills/xsm/references/messaging.md",
+          "tests/test_crash_boundaries.py",
           "tests/test_install_cli_flow.py",
           "tests/test_mcp_wait_process.py",
           "tests/test_owned_interfaces.py",
@@ -1064,6 +1065,9 @@
           "xsm/instructions.py",
           "xsm/materials.py",
           "xsm/questions.py",
+          ".claude-plugin/marketplace.json",
+          ".claude-plugin/plugin.json",
+          ".codex-plugin/plugin.json",
           "skills/xsm/SKILL.md",
           "skills/xsm/references/guide.md",
           "tests/test_install_runtime.py",
@@ -1861,9 +1865,13 @@
       "current_source_binding": {
         "status": "changed-rebinding-required",
         "changed_paths": [
+          ".claude-plugin/marketplace.json",
+          ".claude-plugin/plugin.json",
+          ".codex-plugin/plugin.json",
           "skills/xsm/SKILL.md",
           "skills/xsm/references/guide.md",
           "skills/xsm/references/messaging.md",
+          "tests/test_crash_boundaries.py",
           "tests/test_install_cli_flow.py",
           "tests/test_install_runtime.py",
           "tests/test_owned_interfaces.py",
@@ -3645,9 +3653,13 @@
       "current_source_observation": {
         "status": "changed-rebinding-required",
         "changed_paths": [
+          ".claude-plugin/marketplace.json",
+          ".claude-plugin/plugin.json",
+          ".codex-plugin/plugin.json",
           "skills/xsm/SKILL.md",
           "skills/xsm/references/guide.md",
           "skills/xsm/references/messaging.md",
+          "tests/test_crash_boundaries.py",
           "tests/test_install_cli_flow.py",
           "tests/test_install_runtime.py",
           "tests/test_owned_interfaces.py",
@@ -6938,7 +6950,7 @@
       ]
     },
     "head-rebind-regression": {
-      "path": "deliverables/ledger-rebind-20261030/summary.json",
+      "path": "deliverables/ledger-rebind-0.5.0/summary.json",
       "levels": [
         "fixture",
         "process"
@@ -6948,7 +6960,7 @@
       "available": true,
       "executed": true,
       "result": "recorded-pass",
-      "sha256": "3568f1e6b3a2c9514f289db0f937f744edaf0dee0a94f865e09154bda43e6221",
+      "sha256": "fd122c7b56284ec594969783a6c8784586744d71040acb036b4b7d8e91e33611",
       "coverage_ceiling": "partial",
       "complete_for": {},
       "checks": {
@@ -6963,7 +6975,7 @@
       }
     },
     "head-rebind-A18-03": {
-      "path": "deliverables/ledger-rebind-20261030/summary.json",
+      "path": "deliverables/ledger-rebind-0.5.0/summary.json",
       "levels": [
         "fixture",
         "process"
@@ -6973,7 +6985,7 @@
       "available": true,
       "executed": true,
       "result": "recorded-pass",
-      "sha256": "3568f1e6b3a2c9514f289db0f937f744edaf0dee0a94f865e09154bda43e6221",
+      "sha256": "fd122c7b56284ec594969783a6c8784586744d71040acb036b4b7d8e91e33611",
       "coverage_ceiling": "partial",
       "complete_for": {
         "A18-03": [
@@ -6992,7 +7004,7 @@
       ]
     },
     "head-rebind-A18-07": {
-      "path": "deliverables/ledger-rebind-20261030/summary.json",
+      "path": "deliverables/ledger-rebind-0.5.0/summary.json",
       "levels": [
         "fixture",
         "process"
@@ -7002,7 +7014,7 @@
       "available": true,
       "executed": true,
       "result": "recorded-pass",
-      "sha256": "3568f1e6b3a2c9514f289db0f937f744edaf0dee0a94f865e09154bda43e6221",
+      "sha256": "fd122c7b56284ec594969783a6c8784586744d71040acb036b4b7d8e91e33611",
       "coverage_ceiling": "partial",
       "complete_for": {
         "A18-07": [
@@ -7021,7 +7033,7 @@
       ]
     },
     "head-rebind-A22-06": {
-      "path": "deliverables/ledger-rebind-20261030/summary.json",
+      "path": "deliverables/ledger-rebind-0.5.0/summary.json",
       "levels": [
         "fixture",
         "process"
@@ -7031,7 +7043,7 @@
       "available": true,
       "executed": true,
       "result": "recorded-pass",
-      "sha256": "3568f1e6b3a2c9514f289db0f937f744edaf0dee0a94f865e09154bda43e6221",
+      "sha256": "fd122c7b56284ec594969783a6c8784586744d71040acb036b4b7d8e91e33611",
       "coverage_ceiling": "partial",
       "complete_for": {
         "A22-06": [
@@ -7050,7 +7062,7 @@
       ]
     },
     "head-rebind-A23-02": {
-      "path": "deliverables/ledger-rebind-20261030/summary.json",
+      "path": "deliverables/ledger-rebind-0.5.0/summary.json",
       "levels": [
         "fixture",
         "process"
@@ -7060,7 +7072,7 @@
       "available": true,
       "executed": true,
       "result": "recorded-pass",
-      "sha256": "3568f1e6b3a2c9514f289db0f937f744edaf0dee0a94f865e09154bda43e6221",
+      "sha256": "fd122c7b56284ec594969783a6c8784586744d71040acb036b4b7d8e91e33611",
       "coverage_ceiling": "partial",
       "complete_for": {
         "A23-02": [
@@ -7079,7 +7091,7 @@
       ]
     },
     "head-rebind-shared-mcp": {
-      "path": "deliverables/ledger-rebind-20261030/summary.json",
+      "path": "deliverables/ledger-rebind-0.5.0/summary.json",
       "levels": [
         "fixture"
       ],
@@ -7088,7 +7100,7 @@
       "available": true,
       "executed": true,
       "result": "recorded-pass",
-      "sha256": "3568f1e6b3a2c9514f289db0f937f744edaf0dee0a94f865e09154bda43e6221",
+      "sha256": "fd122c7b56284ec594969783a6c8784586744d71040acb036b4b7d8e91e33611",
       "coverage_ceiling": "partial",
       "complete_for": {
         "A17-02": [
@@ -7375,7 +7387,7 @@
       "level": "decision",
       "status": "partial",
       "context_refs": [
-        "docs/plan/reason-inspired-adrs/plan.json#/decision_resolutions/D12"
+        "docs/plan/collaboration/plan.json#/decision_resolutions/D12"
       ],
       "reason": "사용자가 ADR-0021로 자체 P2P 기본·선택적 Tailscale·Reason식 멤버십을 결정(2026-10-29). 결정 기록은 backend 통합 성공의 증거가 아님.",
       "owner": "코디네이터 및 해당 실환경 검증 담당",
@@ -7576,7 +7588,7 @@
   "decisions": {
     "D12": {
       "status": "partial",
-      "source": "docs/plan/reason-inspired-adrs/plan.json#/decision_resolutions/D12",
+      "source": "docs/plan/collaboration/plan.json#/decision_resolutions/D12",
       "reason": "새 resolution은 증거/범위 재결속 필요; 존재만으로 backend 통합 성공 아님"
     }
   },
@@ -19524,9 +19536,13 @@
     "current_source_binding": {
       "status": "changed-rebinding-required",
       "changed_paths": [
+        ".claude-plugin/marketplace.json",
+        ".claude-plugin/plugin.json",
+        ".codex-plugin/plugin.json",
         "skills/xsm/SKILL.md",
         "skills/xsm/references/guide.md",
         "skills/xsm/references/messaging.md",
+        "tests/test_crash_boundaries.py",
         "tests/test_install_cli_flow.py",
         "tests/test_install_runtime.py",
         "tests/test_owned_interfaces.py",
