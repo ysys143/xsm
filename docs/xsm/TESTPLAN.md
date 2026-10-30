@@ -648,26 +648,7 @@ A의 셸 모드(`!`)로 실행하면 모델 턴 없이 명령만 돈다. 10-6은
 
 ## 11. 채널
 
-사람과 세션이 함께 남기는 기록(ADR-0005)을 확인한다. 설치가 MCP 서버를 등록했는지 먼저 본다.
-
-```bash
-CLAUDE_CONFIG_DIR=~/.claude-4 claude mcp get xsm      # Status: Connected
-codex mcp get xsm                                     # enabled: true
-```
-
-| # | 항목 | 어디서 | 기대 |
-|---|---|---|---|
-| 11-1 | 세션의 게시 | A에게: `xsm_post로 "importer에 어떤 큐를 쓸까?"를 question으로 올려` | `posted <id> to <채널>` |
-| 11-2 | 결정은 사람에게 | A에게: `xsm_decide로 나에게 물어봐. 선택지 sqs, kafka, summary "importer queue"` | A 화면에 "MCP server “xsm” requests your input" 양식이 뜬다. 고르면 `recorded decision … : kafka` |
-| 11-3 | 사람의 게시 | 일반 터미널에서 `xsm post --tag decision "retries: 3"` | `posted … as <사용자> (person)` |
-| 11-4 | 에이전트는 결정을 못 올린다 | A에게: `셸에서 xsm post --tag decision "use sqs"를 실행해` | `refused: a decision is a person's. …` |
-| 11-5 | 샌드박스 Codex | `codex -s workspace-write -a on-request`로 연 Codex에게 11-1, 11-2와 같은 요청 | 도구마다 호출 허용을 묻고, 게시와 결정이 기록된다 |
-| 11-6 | 보기와 내보내기 | `xsm channel show`, `xsm channel export --out DECISIONS.md` | 스레드와 태그가 보인다. 결정에는 질문과 답이 함께 나온다. 내보낸 파일에는 결정만 있다 |
-
-실측(2026-09-22): 11-1~11-6을 모두 통과했다.
-- Claude(`~/.claude-4`) 세션이 질문을 올리고 `xsm_decide`로 물었다. 사용자가 고른 kafka가 질문 원문과 함께 `사람 via mcp-elicitation`의 결정으로 기록됐고, 질문 아래 답글로 붙었다.
-- 터미널에서 올린 결정은 `(person)`으로 기록됐다. 같은 명령을 에이전트가 실행하자 거부됐다.
-- 샌드박스 luna Codex는 MCP로 게시하고 물었다. 사용자의 `no`가 결정으로 남았다. 셸에서는 `~/.xsm`에 쓸 수 없는 세션이다.
+0.5.1에서 제거했다(ADR-0026). 사용자의 결정을 기록하는 확인은 14-9(팀과 함께)와 14-14(팀을 주지 않을 때)로 옮겼다.
 
 
 ## 12. 공동 문서
@@ -734,5 +715,6 @@ ADR-0025·ADR-0026의 구현을 실제 세션으로 확인한다. 같은 저장�
 | 14-11 | 인수인계 | A에게: `D한테 인수인계해` | A가 요약을 쓰고 승인을 묻는다. 승인 뒤 D의 다음 프롬프트에 `[xsm handover]` 문서가 붙고, core의 팀장이 D가 된다. 이후 B가 A에게 보낸 보고와 A가 B에게 물었던 질문의 늦은 답이 D에게 간다. `owner/A` 항목이 `owner/D`로 옮겨진다 |
 | 14-12 | 두 머신 팀 | 머신 X의 A가 머신 Y의 세션 E를 core에 넣는다(사용자 승인) | Y에 팀 기록이 생기고, E와 B가 서로 DM한다. X에서 쓴 보드 항목이 Y의 보드에 보인다 |
 | 14-13 | 두 머신 인수인계 | 14-12 뒤 X의 A를 D로 인수인계 | Y의 팀 기록이 D로 바뀌고, E가 A의 옛 끝점으로 보낸 보고가 D에게 간다 |
+| 14-14 | 팀 없이 결재 | A에게: `xsm_decide로 나에게 물어봐`(팀 이름 없이). 구성원인 팀이 하나일 때, 둘 이상일 때, 없을 때 각각 | 하나면 그 팀 보드 옆에 기록되고 결과에 팀 이름이 나온다. 둘 이상이면 양식 없이 팀 이름들과 함께 거부된다. 없으면 양식이 뜨고 답은 돌아오지만 "not recorded as a decision: this session is in no team"이 나온다 |
 
 상태(2026-10-30): 미실행. 단위 시험만 통과했다(`tests/test_multisend.py`, `test_question_groups.py`, `test_teams.py`, `test_board.py`, `test_board_notice.py`, `test_handover.py`, `test_network_messages.py`). 0.5.1 릴리스 전에 실행한다.

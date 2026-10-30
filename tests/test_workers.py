@@ -549,9 +549,19 @@ class GrantTest(TempState):
                 workers.spawn("claude", cwd=self.tmp, trust_hooks=True, caller=self.ME)
         self.assertIn("Codex option", str(cm.exception))
 
+    def _grant_records(self):
+        """The form's human-decisions records for xsm_grant: where the person's
+        answer is kept now that the channel is gone (T11)."""
+        from xsm import decisions, paths
+        folder = paths.path(decisions.DIRECTORY)
+        names = sorted(n for n in os.listdir(folder) if n.endswith(".json")) \
+            if os.path.isdir(folder) else []
+        rows = [paths.read_json(os.path.join(folder, n)) for n in names]
+        return [r for r in rows if r["scope"]["tool"] == "xsm_grant"]
+
     def test_mcp_grant_asks_and_records(self):
         import io
-        from xsm import channel, mcp, workers
+        from xsm import mcp, workers
         here = os.path.join(self.tmp, "proj")
         os.makedirs(here)
         msgs = [{"jsonrpc": "2.0", "id": 1, "method": "initialize",
@@ -572,14 +582,17 @@ class GrantTest(TempState):
         text = next(m for m in replies if m.get("id") == 2)["result"]["content"][0]["text"]
         gid = text.split()[1].rstrip(":")
         workers.use_grant(gid, self.ME, "codex", here, ["full_access"])
-        rec = channel.read(channel.resolve(here)[1])[-1]
-        self.assertEqual((rec["tag"], rec["author"]["via"]), ("decision", "mcp-elicitation"))
+        rec, = self._grant_records()
+        self.assertEqual((rec["status"], rec["answer"]["source"]), ("applied", "mcp-elicitation"))
+        self.assertEqual(rec["answer"]["reply"]["result"]["content"]["answer"], "allow once")
+        self.assertIn("FULL ACCESS", rec["question"])
+        self.assertEqual(rec["choices"], ["deny", "allow once"])
 
     def test_mcp_grant_records_a_refusal_only_when_a_person_chose(self):
         """An error, a dismissal or a bare decline is nobody's decision; only a
         chosen deny goes on record as the person's."""
         import io
-        from xsm import channel, mcp
+        from xsm import mcp
         here = os.path.join(self.tmp, "proj")
         os.makedirs(here)
 
@@ -601,11 +614,13 @@ class GrantTest(TempState):
         for reply in ({"error": {"code": -1, "message": "boom"}},
                       {"result": {"action": "cancel"}}, {"result": {"action": "decline"}}):
             self.assertIn("do not start", ask(reply))
-            self.assertEqual(channel.read(channel.resolve(here)[1]), [], reply)
+            self.assertEqual([r for r in self._grant_records()
+                              if r["status"] in ("answered", "applied", "denied")], [], reply)
         self.assertIn("they chose 'deny'",
                       ask({"result": {"action": "accept", "content": {"answer": "deny"}}}))
-        rec = channel.read(channel.resolve(here)[1])[-1]
-        self.assertEqual((rec["tag"], rec["approved"]["answer"]), ("decision", "deny"))
+        chosen = [r for r in self._grant_records() if r["status"] in ("answered", "applied", "denied")]
+        self.assertEqual([(r["status"], r["answer"]["reply"]["result"]["content"]["answer"])
+                          for r in chosen], [("denied", "deny")])
 
 
 class DangerousFlagsTest(TempState):
@@ -959,7 +974,7 @@ class Adr0009FixesTest(TempState):
         code, text = self._cli("join", "demo")
         self.assertEqual(code, 2)
         self.assertIn("xsm_join", text)
-        code, text = self._cli("post", "hi", "--dir", self.tmp)
+        code, text = self._cli("leave", "demo", "--dir", self.tmp)
         self.assertIn("only a person", text)
 
     def test_block_is_open_to_anyone_unblock_only_to_a_person(self):

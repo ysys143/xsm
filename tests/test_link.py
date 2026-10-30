@@ -10,11 +10,11 @@ import unittest
 from unittest import mock
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from tests import test_channel, test_xsm  # noqa: E402
+from tests import test_mcp_forms, test_xsm  # noqa: E402
 
 # Module names only: a class imported here by name would run its tests twice.
 TempState = test_xsm.TempState
-AGENT = test_channel.AGENT
+AGENT = test_mcp_forms.AGENT
 
 
 class _Folders:
@@ -581,9 +581,9 @@ class InstallNoteTest(TempState):
 
 
 class LinkMcpTest(_Folders, TempState):
-    INIT = test_channel.McpServerTest.INIT
-    _run = test_channel.McpServerTest._run
-    _ask = test_channel.McpServerTest._ask
+    INIT = test_mcp_forms.McpServerTest.INIT
+    _run = test_mcp_forms.McpServerTest._run
+    _ask = test_mcp_forms.McpServerTest._ask
 
     def _call(self, args, *replies, session=AGENT, cwd=None):
         call = {"jsonrpc": "2.0", "id": 2, "method": "tools/call",

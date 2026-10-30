@@ -150,9 +150,9 @@ xsm을 개발할 때 모든 것을 체크아웃에 둡니다. `--dev`는 그 줄
 그대로 둡니다). 그러면 두 세션의 권한 모드가 달라도 Claude가 내 다른 세션의 메시지를 전달합니다. 메시지 명령을
 이름과 런타임의 절대 경로로 `permissions.allow`에 넣습니다: `connect`, `ask`, `question-status`,
 `decision-status`, `discover`, `send`, `inbox`, `ack`, `files`, `owned`, `list`, `who`, `held`, `ledger`,
-`status`, `doctor`, `--version`. 짝이 되는 MCP 도구도 넣습니다: `xsm_connect`, `xsm_ask`, `xsm_question_status`,
-`xsm_decision_status`, `xsm_discover`, `xsm_send`, `xsm_inbox`, `xsm_ack`, `xsm_files`, `xsm_owned`, `xsm_post`,
-`xsm_channel`. 그래서 auto와 default 모드가 메시지를 막지 않습니다. `publish`, `network`, `spawn`, `post`,
+`status`, `doctor`, `board`, `--version`. 짝이 되는 MCP 도구도 넣습니다: `xsm_connect`, `xsm_ask`,
+`xsm_question_status`, `xsm_decision_status`, `xsm_discover`, `xsm_send`, `xsm_inbox`, `xsm_ack`, `xsm_files`,
+`xsm_owned`, `xsm_board`. 그래서 auto와 default 모드가 메시지를 막지 않습니다. `publish`, `network`, `spawn`,
 `doc add`는 목록에 없으며 런타임의 권한 확인을 그대로 거칩니다.
 
 `xsm uninstall`은 설치가 더한 훅, MCP 항목, 스킬 링크, 상태줄, 설정 항목을 뺍니다. `~/.local/bin/xsm` 링크가
@@ -551,9 +551,8 @@ Grafana Tempo에서 메시지가 어디서 멈췄는지 바로 볼 수 있습니
 xsm은 메시지를 한 세션의 입력으로, 그 런타임이 이미 가진 경로를 통해 직접 넣습니다. 이 메시지는
 DM(direct message, 직접 메시지)입니다. 보내는 쪽이 받는 세션을 지정하고, 메시지가 그 세션의 입력으로 들어가므로
 세션을 깨울 수 있고, 전달이 기록되고 받는 쪽이 수신을 확인할 수 있으며, 답을 받을 수 있습니다. 직접이라는 말은 받는 쪽을
-지정한다는 뜻이지 일대일이라는 뜻이 아닙니다. Slack의 그룹 DM도 DM인 것과 같습니다. 채널(`xsm post`,
-`xsm channel`)은 반대로 움직입니다. 게시는 받는 쪽을 지정하지 않고 공유 기록 하나에 쓰이며, 누구도 깨우지 않고,
-읽을 쪽이 찾아와 읽습니다. 채널은 검토 중이며 팀과 팀 보드가 대체하면 제거할 예정입니다
+지정한다는 뜻이지 일대일이라는 뜻이 아닙니다. Slack의 그룹 DM도 DM인 것과 같습니다. 팀 전체가 알아야 할 사실은
+DM 대신 팀 보드에 둡니다([사용 사례 9](#9-팀으로-일하기)). 보드는 누구도 깨우지 않고, 구성원이 찾아와 읽습니다
 ([ADR-0025](docs/adr/0025-team-and-multi-recipient-dm.md), [ADR-0026](docs/adr/0026-team-board-on-xsm-doc.md)).
 
 ```
@@ -603,7 +602,7 @@ Machine A -> SSH -> Machine B                             양쪽 다 xsm 설치 
 │   ├── network*.py                    # P2P 멤버십, 디렉터리, 메시지, 복구 (ADR-0021)
 │   ├── remote.py                      # 다른 머신 (양방향 SSH, ADR-0007)
 │   ├── workers.py                     # 워커 생성·승인·종료 (ADR-0010)
-│   ├── channel.py / doc.py            # 채널 기록 (0005), 공동 문서 (0006)
+│   ├── doc.py / board.py              # 공동 문서 (0006), 팀 보드 (0026)
 │   ├── telemetry.py / otlp_export.py  # 스팬·메트릭 기록, OTLP/HTTP+JSON 전송 (ADR-0011)
 │   ├── install.py                     # 훅 설치·진단
 │   └── mcp.py                         # MCP 서버

@@ -153,11 +153,11 @@ For each Claude home, install also sets `crossSessionInbound` to `"accept"` (Cla
 a value the home already has stays), so Claude delivers a message from another of your sessions whatever the
 two permission modes are. It allows the messaging commands in `permissions.allow`, by name and by the
 runtime's absolute path: `connect`, `ask`, `question-status`, `decision-status`, `discover`, `send`, `inbox`,
-`ack`, `files`, `owned`, `list`, `who`, `held`, `ledger`, `status`, `doctor` and `--version`. It allows the
-matching MCP tools too: `xsm_connect`, `xsm_ask`, `xsm_question_status`, `xsm_decision_status`,
-`xsm_discover`, `xsm_send`, `xsm_inbox`, `xsm_ack`, `xsm_files`, `xsm_owned`, `xsm_post` and
-`xsm_channel`. Auto and default modes then never stop a message. `publish`, `network`, `spawn`, `post` and
-`doc add` are not on the list and stay with the runtime's own permission check.
+`ack`, `files`, `owned`, `list`, `who`, `held`, `ledger`, `status`, `doctor`, `board` and `--version`. It
+allows the matching MCP tools too: `xsm_connect`, `xsm_ask`, `xsm_question_status`, `xsm_decision_status`,
+`xsm_discover`, `xsm_send`, `xsm_inbox`, `xsm_ack`, `xsm_files`, `xsm_owned` and `xsm_board`. Auto and
+default modes then never stop a message. `publish`, `network`, `spawn` and `doc add` are not on the list and
+stay with the runtime's own permission check.
 
 `xsm uninstall` takes out the hooks, MCP entry, skill link, statusLine and settings entries install added,
 and the `~/.local/bin/xsm` link when it points into the runtime copy and no other home keeps xsm. The copies
@@ -572,10 +572,9 @@ Instrumentation costs about 0.175 ms per send
 xsm puts a message directly into a session's input, through the path that runtime already has. Such a message
 is a DM (direct message): the sender names the recipient, and because the message arrives in that session's
 input it can wake the session, its delivery is recorded, the receiver can acknowledge it, and it can be
-answered. Direct means addressed, not one-to-one, the way a Slack group DM is still a DM. The channel
-(`xsm post`, `xsm channel`) works the other way: a post names no recipient, goes into one shared record, wakes
-nobody, and is read by whoever comes to read it. The channel is under review and is to be removed once teams
-and team boards replace it ([ADR-0025](docs/adr/0025-team-and-multi-recipient-dm.md),
+answered. Direct means addressed, not one-to-one, the way a Slack group DM is still a DM. A fact the whole
+team needs goes on the team board instead ([use case 9](#9-working-as-a-team)), which wakes nobody and is read
+by the members who come to read it ([ADR-0025](docs/adr/0025-team-and-multi-recipient-dm.md),
 [ADR-0026](docs/adr/0026-team-board-on-xsm-doc.md)).
 
 ```
@@ -626,7 +625,7 @@ Principles:
 │   ├── network*.py                    # P2P membership, directory, messages, recovery (ADR-0021)
 │   ├── remote.py                      # other machines over two-way SSH (ADR-0007)
 │   ├── workers.py                     # spawning, approving and stopping workers (ADR-0010)
-│   ├── channel.py / doc.py            # channel log (0005), shared documents (0006)
+│   ├── doc.py / board.py              # shared documents (0006), team boards (0026)
 │   ├── telemetry.py / otlp_export.py  # span and metric recording, OTLP/HTTP+JSON export (ADR-0011)
 │   ├── install.py                     # hook installation and diagnosis
 │   └── mcp.py                         # MCP server

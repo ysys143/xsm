@@ -8,6 +8,8 @@ decisions recorded beside it.
 ## DM or board
 
 - To make someone act, or to get an answer: a DM, to them or to `team:<name>`.
+  Asking a session to do work is `--kind task` (`xsm send api-worker --kind task
+  --text "..."`), with everything it needs in the message.
 - A fact the whole team needs (a decision in force, who owns what, progress):
   the board. Not also a DM.
 - Never both. A DM that carries a team-wide fact names the board item instead
@@ -78,6 +80,11 @@ Your user's answer is recorded beside the board under its own id and, with
 form, or your user running `xsm board decide` themselves, records one: a node
 that names a decision id without that record shows "not confirmed". Never write
 a decision as yours.
+
+Without `team`, a session in one team records the answer beside that team's
+board, and one in several teams is refused until it names the team. A session
+in no team gets your user's answer back, but it is not on record: a decision is
+kept beside a team's board.
 
 ## A status file you already keep
 

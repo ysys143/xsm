@@ -94,7 +94,7 @@ WORKER_POLICY = {
            "Codex by refusing (it has no such hook)",
 }
 CLAUDE_WORKER_TOOLS = ("Bash", "Monitor", "Read", "Glob", "Grep")
-CLAUDE_WORKER_MCP = ("xsm_send", "xsm_post", "xsm_channel", "xsm_inbox")
+CLAUDE_WORKER_MCP = ("xsm_send", "xsm_inbox")
 
 
 class WorkerError(Exception):

@@ -541,7 +541,7 @@ class UnresolvedCodexCallTest(unittest.TestCase):
                 mock.patch.object(mcp.registry, "raw_records", return_value=[]), \
                 mock.patch.object(mcp.registry, "adopt_codex_thread", return_value=None), \
                 mock.patch.object(mcp.registry, "adopt_claude_process", return_value=None):
-            with self.assertRaises(mcp.channel.ChannelError) as raised:
+            with self.assertRaises(mcp.ToolError) as raised:
                 server.call("xsm_inbox", {})
         text = str(raised.exception)
         self.assertIn("this Codex thread (thread-new) is not registered yet", text)

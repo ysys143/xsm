@@ -31,7 +31,7 @@ def _here(args, me=None) -> str:
     that changes or writes on a folder's behalf takes --dir only from a person:
     otherwise one agent could speak for another project (ADR-0009)."""
     if getattr(args, "dir", None):
-        if args.command in ("join", "leave", "post", "link") and not workers.human_terminal():
+        if args.command in ("join", "leave", "link") and not workers.human_terminal():
             raise SystemExit("refused: --dir speaks for another folder; only a person at a "
                              "terminal may use it with %s" % args.command)
         return os.path.realpath(os.path.expanduser(args.dir))
@@ -1131,7 +1131,7 @@ def cmd_board(args) -> int:
         from . import workers
         if not workers.human_terminal():
             print("refused: a decision is your user's own answer. From a session, ask them with "
-                  "the xsm_decide MCP tool (team and item)", file=sys.stderr)
+                  "the xsm_decide MCP tool", file=sys.stderr)
             return REFUSED
         if not args.item or not args.text:
             print("usage: xsm board decide <team> <item> --text \"<the decision>\"", file=sys.stderr)
@@ -1774,7 +1774,7 @@ def _install(args, targets) -> int:
         if not args.no_mcp:
             outcome = install.install_mcp(home, runtime)
             print("  MCP server: %s" % {
-                "added": "registered (xsm_post, xsm_channel, xsm_decide)",
+                "added": "registered (xsm_send, xsm_board, xsm_decide)",
                 "current": "already registered",
                 "replaced": "re-registered with the current command",
             }.get(outcome, outcome))
@@ -2696,27 +2696,6 @@ def cmd_answer(args) -> int:
     return OK
 
 
-def cmd_post(args) -> int:
-    from . import channel
-    me = registry.me()
-    here = _here(args, me)
-    try:
-        where = channel.resolve(here, args.channel)
-        author = channel.author_here(me)
-        if args.tag == "decision" and author.get("kind") != "human":
-            author = _decided_by_reply(me, "recording as a decision in %s: %s" % (
-                where[0], (args.text or "")[:120]), "xsm_decide",
-                ("decide", consent.digest(where[1], args.text)))
-            if author is None:
-                return REFUSED
-        rec = channel.post(where, author, args.text, args.tag, args.reply_to)
-    except channel.ChannelError as exc:
-        print("refused: %s" % exc, file=sys.stderr)
-        return REFUSED
-    print("posted %s to %s as %s" % (rec["id"], where[0], channel.label(author)))
-    return OK
-
-
 def _decided_by_reply(me: dict | None, what: str, mcp_tool: str, ask: tuple) -> dict | None:
     """A person's decision made through their reply (user decision,
     2026-10-01): the author is the person, with their words. None after
@@ -2730,47 +2709,13 @@ def _decided_by_reply(me: dict | None, what: str, mcp_tool: str, ask: tuple) -> 
             "runtime": (me or {}).get("runtime")}
 
 
-def cmd_channel(args) -> int:
-    from . import channel
-    me = registry.me()
-    if args.action == "list":
-        here = _here(args, me)
-        mine = {key for _, key in channel.memberships(here)}
-        for name, key in channel.memberships(here):
-            n = len(channel.read(key))
-            print("%s  %d post(s)%s" % (name, n, "" if n else "  (empty)"))
-        others = [c for c in channel.all_channels() if c[0] not in mine]
-        if others:
-            print("(%d other channel(s) this folder is not in)" % len(others))
-        return OK
-    try:
-        where = channel.resolve(_here(args, me), args.channel)
-    except channel.ChannelError as exc:
-        print("refused: %s" % exc, file=sys.stderr)
-        return REFUSED
-    rows = channel.read(where[1])
-    if args.action == "export":
-        text = channel.export_markdown(where[0], rows, args.tag or "decision")
-        if args.out:
-            with open(args.out, "w", encoding="utf-8") as fh:
-                fh.write(text)
-            print("wrote %s (%d post(s)); review it, then commit it yourself"
-                  % (args.out, len([r for r in rows if r.get("tag") == (args.tag or "decision")])))
-        else:
-            sys.stdout.write(text)
-        return OK
-    text = channel.render(rows, tag=args.tag, limit=args.limit)
-    print(text or "(no posts in %s)" % where[0])
-    return OK
-
-
 def cmd_doc(args) -> int:
-    from . import channel, doc
+    from . import doc
     try:
         if args.action == "add":
             body = open(args.file, encoding="utf-8").read() if args.file else (args.text or "")
             me = registry.me()
-            author = channel.author_here(me)
+            author = doc.author_here(me)
             if "endorsed" in (args.tag or []) and author.get("kind") != "human":
                 author = _decided_by_reply(me, "endorsing in %s: %s" % (args.doc, body[:120]),
                                            "xsm_doc_endorse",
@@ -2799,7 +2744,7 @@ def cmd_doc(args) -> int:
             if not node:
                 raise doc.DocError("no node %s" % args.node)
             print(doc._serialize(node))
-    except (doc.DocError, channel.ChannelError, OSError) as exc:
+    except (doc.DocError, OSError) as exc:
         print("refused: %s" % exc, file=sys.stderr)
         return REFUSED
     return OK
@@ -3006,22 +2951,6 @@ def build_parser() -> argparse.ArgumentParser:
         if verb == "stop":
             sp.add_argument("--internal", action="store_true", help=argparse.SUPPRESS)
         sp.set_defaults(func=func)
-    po = sub.add_parser("post", help="post to this project's channel (the shared record)")
-    po.add_argument("text")
-    po.add_argument("--tag", default="note", help="note, question, proposal, result, hypothesis, "
-                    "decision (your user's)")
-    po.add_argument("--reply-to")
-    po.add_argument("--channel", help="a named project (default: this project)")
-    po.add_argument("--dir")
-    po.set_defaults(func=cmd_post)
-    ch = sub.add_parser("channel", help="read, list or export channels")
-    ch.add_argument("action", nargs="?", default="show", choices=["show", "list", "export"])
-    ch.add_argument("--channel")
-    ch.add_argument("--tag")
-    ch.add_argument("--limit", type=int)
-    ch.add_argument("--out", help="export: write the markdown here")
-    ch.add_argument("--dir")
-    ch.set_defaults(func=cmd_channel)
     dc = sub.add_parser("doc", help="shared documents as immutable nodes (add, render, log, "
                         "next, leaves, show)")
     dc.add_argument("action", choices=["add", "render", "log", "next", "leaves", "show"])
@@ -3288,7 +3217,7 @@ def build_parser() -> argparse.ArgumentParser:
 
 # The commands that ask your user, and so take their words with --reply when the
 # hook that keeps replies did not (consent.supplied).
-ASKING = ("join", "leave", "spawn", "post", "doc", "remote", "approve", "link", "reach", "unblock",
+ASKING = ("join", "leave", "spawn", "doc", "remote", "approve", "link", "reach", "unblock",
           "attempts", "frameworks", "send", "held", "connect", "publish", "team", "handover")
 
 

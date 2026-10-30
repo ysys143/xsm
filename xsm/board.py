@@ -80,20 +80,54 @@ def current(team: str) -> dict:
 
 # --- render and direct edits ------------------------------------------------------------
 
+ROLE_TAG = re.compile(r"</?\s*[A-Za-z][\w-]*(?:\s[^<>]*)?/?>")
+ROLE_LINE = re.compile(r"(?im)^\s*(?:system|user|developer|source|permissions|approver)\s*[:=]")
+# The board's own structure: a heading starts an item, a footer says who wrote
+# it (and who decided), a comment is the header. A body may not draw them.
+BOARD_LINE = re.compile(r"(?m)^\s*(?:#|_by |<!--)")
+
+
+def _risky(body: str) -> bool:
+    """A body that could pose as a role frame or as the board's own structure,
+    or hides characters. Markdown's `->`, `code` and [links] are not: the board
+    is read as markdown. Checked after NFKC, so full-width brackets count."""
+    import unicodedata
+    text = unicodedata.normalize("NFKC", body)
+    return bool(ROLE_TAG.search(text) or ROLE_LINE.search(text) or BOARD_LINE.search(text) or any(
+        unicodedata.category(c) in ("Cf", "Cs", "Zl", "Zp")
+        or (unicodedata.category(c) == "Cc" and c not in "\n\t") for c in body))
+
+
+def _plain(value) -> str:
+    """One line of footer text, shown as written (a ref stays `[a1b2c3]`), with
+    no tag, line break or hidden character of its own."""
+    import unicodedata
+    text = "".join(" " if unicodedata.category(c)[0] in "CZ" and c != " " else c for c in str(value))
+    return text.replace("<", "&lt;").replace(">", "&gt;")
+
+
+def _shown(n: dict) -> str:
+    """A node's body as the board shows it: a risky body is shown framed as
+    peer data, as the channel showed posts (provenance.display_body); the node
+    keeps the original."""
+    from .provenance import display_body
+    return (display_body(n["body"]) if _risky(n["body"]) else n["body"]).rstrip()
+
+
 def _footer(n: dict, team: str | None = None) -> str:
     extra = []
     if n.get("decision"):
         rec = load_decision(team, n["decision"]) if team else None
         if rec:
             where = (" on machine %s" % rec["from_machine"][:8]) if rec.get("from_machine") else ""
-            extra.append("decided%s by %s: %s -> %s" % (where, rec.get("decided_by", "the user"),
-                                                        rec.get("question"), rec.get("answer")))
+            extra.append("decided%s by %s: %s -> %s" % (where, _plain(rec.get("decided_by", "the user")),
+                                                        _plain(rec.get("question")), _plain(rec.get("answer"))))
         else:
             # A node can name a decision id, but only the record makes it one.
             extra.append("decision %s has no record here: not confirmed" % n["decision"])
     if n.get("author_kind") == "file-edit":
         extra.append("taken from a direct edit")
-    return "_by %s · %s · node %s%s_" % (n["author"], n["t"], n["id"],
+    return "_by %s · %s · node %s%s_" % (_plain(n["author"]), _plain(n["t"]), n["id"],
                                          "".join(" · " + e for e in extra))
 
 
@@ -106,11 +140,11 @@ def render_text(team: str, state: dict | None = None) -> str:
     for item, hs in state.items():
         out += ["", "## %s" % item, ""]
         if len(hs) == 1:
-            out += [hs[0]["body"].rstrip(), "", _footer(hs[0], team)]
+            out += [_shown(hs[0]), "", _footer(hs[0], team)]
             continue
         out += ["_%d %s_" % (len(hs), CONFLICT)]
         for i, n in enumerate(hs, 1):
-            out += ["", "### version %d" % i, "", n["body"].rstrip(), "", _footer(n, team)]
+            out += ["", "### version %d" % i, "", _shown(n), "", _footer(n, team)]
     return "\n".join(out).rstrip() + "\n"
 
 
@@ -165,7 +199,7 @@ def take_edits(team: str) -> list:
         if not body or not doc.ITEM_RE.match(item):
             continue
         hs = state.get(item, [])
-        if len(hs) == 1 and hs[0]["body"].strip() == body:
+        if len(hs) == 1 and _shown(hs[0]).strip() == body:     # as rendered, not as stored
             continue
         if len(hs) > 1:
             continue
@@ -309,6 +343,10 @@ def record_decision(me: dict, team_name: str, question: str, answer: str, *, via
         team = _require_member(me, team_name)
     if via not in ("mcp-elicitation", "terminal"):
         raise BoardError("a decision is your user's own answer, from the form or the terminal")
+    if item is not None and not doc.ITEM_RE.match(item):
+        # Before anything is kept: a refusal here must mean nothing was recorded.
+        raise BoardError("an item is a short name (letters, digits, spaces, . _ / : -), "
+                         "e.g. 'decision: cache'")
     record = {"t": time.time(), "team": team["name"], "question": question, "answer": answer,
               "options": list(options) if options else None,
               "decided_by": "%s (person via %s)" % (os.environ.get("USER") or "person", via),

@@ -47,7 +47,7 @@ The receiver and your user will read these messages. Use ordinary sentences
 with normal word spacing in the language of the conversation. Keep them
 concise without removing spaces or joining words and identifiers into
 compressed strings. For longer updates, use short sentences or bullets. This
-applies to both `xsm send` / `xsm_send` and `xsm post` / `xsm_post`.
+applies to both `xsm send` and `xsm_send`, and to what you write on a team board.
 
 ```bash
 xsm send "reviewer@claude-4" --text "Tests pass on my branch. Can you review docs/plan?"
@@ -145,7 +145,7 @@ session) `xsm send` to a Codex peer refuses at once and says to use the
 `xsm_send` MCP tool: `codex queue` cannot run inside the sandbox. Use the tool.
 Any xsm command that cannot write its state folder (a sandbox, a read-only
 folder) answers `sandbox-blocked: …` with the file and the cause, never a
-traceback: send with `xsm_send`, and use `xsm_inbox`, `xsm_post`, `xsm_channel`
+traceback: send with `xsm_send`, and use `xsm_inbox` and `xsm_board`
 for the rest. A send your user typed themselves, out of scope, connects the
 folders it needs and delivers, and prints what it connected.
 

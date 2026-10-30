@@ -1,5 +1,6 @@
-"""Channels (ADR-0005): the record sessions and people share, and decisions
-that only a person makes."""
+"""The MCP form tools: what only a person decides is asked with a form, and
+only the person's own choice acts. (The channel these lived beside was removed
+in 0.5.1, ADR-0026; a decision is kept beside a team's board.)"""
 import io
 import json
 import os
@@ -12,75 +13,6 @@ from tests.test_xsm import TempState  # noqa: E402
 
 AGENT = {"kind": "agent", "name": "builder", "alias": "claude-4", "ref": "aaaaaa",
          "runtime": "claude"}
-PERSON = {"kind": "human", "name": "me"}
-
-
-class ChannelTest(TempState):
-    def _here(self, name="proj"):
-        d = os.path.join(self.tmp, name)
-        os.makedirs(d, exist_ok=True)
-        return d
-
-    def test_threads_tags_and_months(self):
-        from xsm import channel
-        where = channel.resolve(self._here())
-        q = channel.post(where, AGENT, "Which cache?", "question")
-        channel.post(where, PERSON, "redis", "note", reply_to=q["id"])
-        text = channel.render(channel.read(where[1]))
-        lines = text.splitlines()
-        self.assertIn("[question] Which cache?", lines[0])
-        self.assertTrue(lines[1].startswith("    "), "a reply sits under its root")
-        self.assertEqual(channel.render(channel.read(where[1]), tag="note").count("\n"), 0)
-
-    def test_a_decision_is_a_persons(self):
-        from xsm import channel
-        where = channel.resolve(self._here())
-        with self.assertRaises(channel.ChannelError) as cm:
-            channel.post(where, AGENT, "we use redis", "decision")
-        self.assertIn("xsm_decide", str(cm.exception))
-        channel.post(where, PERSON, "we use redis", "decision")
-
-    def test_channels_follow_scope(self):
-        from xsm import channel, config
-        a, b = self._here("a"), self._here("b")
-        self.assertNotEqual(channel.resolve(a)[1], channel.resolve(b)[1])
-        with self.assertRaises(channel.ChannelError):
-            channel.resolve(a, "demo")
-        config.join("demo", a)
-        config.join("demo", b)
-        self.assertEqual(channel.resolve(a, "demo"), channel.resolve(b, "demo"))
-
-    def test_same_basename_repositories_do_not_share_a_channel(self):
-        from xsm import channel
-        one, two = os.path.join(self.tmp, "x", "app"), os.path.join(self.tmp, "y", "app")
-        for d in (one, two):
-            os.makedirs(d)
-            subprocess.run(["git", "init", "-q", d], check=True)
-        self.assertEqual(channel.resolve(one)[0], channel.resolve(two)[0])     # both repo:app
-        self.assertNotEqual(channel.resolve(one)[1], channel.resolve(two)[1])
-
-    def test_concurrent_appends_keep_every_record(self):
-        from xsm import channel
-        here = self._here()
-        code = ("import sys; sys.path.insert(0, %r); import os; os.environ['XSM_HOME']=%r\n"
-                "from xsm import paths, channel; paths.HOME=%r\n"
-                "w = channel.resolve(%r)\n"
-                "[channel.post(w, {'kind':'agent','name':'p','alias':'a','ref':'r'}, 'x'*3000)"
-                " for _ in range(50)]") % (os.path.dirname(os.path.dirname(os.path.abspath(
-                    __file__))), self.tmp, self.tmp, here)
-        procs = [subprocess.Popen([sys.executable, "-c", code]) for _ in range(8)]
-        for p in procs:
-            p.wait()
-        self.assertEqual(len(channel.read(channel.resolve(here)[1])), 400)
-
-    def test_export_carries_the_question_and_answer(self):
-        from xsm import channel
-        where = channel.resolve(self._here())
-        channel.post(where, dict(PERSON, via="mcp-elicitation"), "cache: redis", "decision",
-                     approved={"question": "Which cache?", "answer": "redis"})
-        md = channel.export_markdown(where[0], channel.read(where[1]))
-        self.assertIn("- Asked: Which cache?", md)
-        self.assertIn("- Answer: redis", md)
 
 
 class McpServerTest(TempState):
@@ -100,32 +32,65 @@ class McpServerTest(TempState):
     INIT = {"jsonrpc": "2.0", "id": 1, "method": "initialize",
             "params": {"protocolVersion": "2025-06-18", "capabilities": {"elicitation": {}}}}
 
+    def _in_team(self, agent=AGENT):
+        """The asking session as a member of team core, the one team it is in,
+        so xsm_decide without `team` records beside core's board."""
+        from xsm import teams
+        home = os.path.join(self.tmp, "homes", "claude")
+        os.makedirs(home, exist_ok=True)
+        agent = dict(agent, home=home)
+        teams.create(agent, "core")
+        return agent
+
     def test_decide_asks_the_person_and_records_their_answer(self):
-        from xsm import channel
+        from xsm import board
+        agent = self._in_team()
         call = {"jsonrpc": "2.0", "id": 2, "method": "tools/call", "params": {
             "name": "xsm_decide", "arguments": {"question": "Which queue?",
                                                 "options": ["sqs", "kafka"], "summary": "queue"}}}
         answer = {"jsonrpc": "2.0", "id": "xsm-1", "result": {"action": "accept",
                                                               "content": {"answer": "kafka"}}}
-        out, here = self._run(self.INIT, call, answer)
+        out, here = self._run(self.INIT, call, answer, session=agent)
         elicit = next(m for m in out if m.get("method") == "elicitation/create")
         self.assertEqual(elicit["params"]["requestedSchema"]["properties"]["answer"]["enum"],
                          ["sqs", "kafka"])
-        rec = channel.read(channel.resolve(here)[1])[-1]
-        self.assertEqual((rec["tag"], rec["text"], rec["author"]["kind"]),
-                         ("decision", "queue: kafka", "human"))
-        self.assertEqual(rec["approved"], {"question": "Which queue?", "answer": "kafka",
-                                           "options": ["sqs", "kafka"]})
+        self.assertIn("beside team core's board (the one team this session is in): kafka",
+                      next(m for m in out if m.get("id") == 2)["result"]["content"][0]["text"])
+        rec = board.decisions("core")[-1]
+        self.assertEqual((rec["question"], rec["answer"], rec["options"], rec["via"]),
+                         ("Which queue?", "kafka", ["sqs", "kafka"], "mcp-elicitation"))
+        self.assertIn("person via mcp-elicitation", rec["decided_by"])
+
+    def test_decide_in_no_team_returns_the_answer_and_records_nothing(self):
+        """T11: with no team to keep it beside, the person is still asked and
+        their answer goes back to the agent, which is told it is not on record."""
+        from xsm import paths
+        call = {"jsonrpc": "2.0", "id": 2, "method": "tools/call", "params": {
+            "name": "xsm_decide", "arguments": {"question": "Which queue?",
+                                                "options": ["sqs", "kafka"]}}}
+        answer = {"jsonrpc": "2.0", "id": "xsm-1", "result": {"action": "accept",
+                                                              "content": {"answer": "kafka"}}}
+        out, _ = self._run(self.INIT, call, answer)
+        self.assertTrue(any(m.get("method") == "elicitation/create" for m in out))
+        reply = next(m for m in out if m.get("id") == 2)["result"]
+        text = reply["content"][0]["text"]
+        self.assertFalse(reply["isError"])
+        self.assertIn("your user answered: kafka", text)
+        self.assertIn("not recorded as a decision: this session is in no team", text)
+        self.assertIn("xsm team create", text)
+        self.assertFalse(os.path.isdir(paths.path("teams")))
 
     def test_a_declined_question_records_nothing(self):
-        from xsm import channel
+        from xsm import board
+        agent = self._in_team()
         call = {"jsonrpc": "2.0", "id": 2, "method": "tools/call", "params": {
             "name": "xsm_decide", "arguments": {"question": "Ship it?"}}}
         answer = {"jsonrpc": "2.0", "id": "xsm-1", "result": {"action": "decline"}}
-        out, here = self._run(self.INIT, call, answer)
+        out, here = self._run(self.INIT, call, answer, session=agent)
         reply = next(m for m in out if m.get("id") == 2)
         self.assertIn("did not answer", reply["result"]["content"][0]["text"])
-        self.assertEqual(channel.read(channel.resolve(here)[1]), [])
+        self.assertNotIn("xsm post", reply["result"]["content"][0]["text"])
+        self.assertEqual(board.decisions("core"), [])
 
     def test_a_refusal_says_who_answered(self):
         from xsm import mcp
@@ -181,20 +146,19 @@ class McpServerTest(TempState):
         that would make it act, and what it changed — so a reply can be checked
         against all six at once. The session is a running record, so a reach
         allowed here is really added (test_a_persons_choice_acts_in_all_six)."""
-        from xsm import channel, config, doc, paths, registry, workers
+        from xsm import board, config, doc, paths, registry, workers
         other = os.path.join(self.tmp, "other")
         os.makedirs(other, exist_ok=True)
         home = os.path.join(self.tmp, "homes", "codex")
         os.makedirs(home, exist_ok=True)
         rec = registry.upsert("codex", home, "t-six", os.getpid(), self.tmp, name="builder")
-        agent = dict(AGENT, ref=rec["ref"])
+        agent = self._in_team(dict(AGENT, ref=rec["ref"]))
         node = doc.add(os.path.join(here, "d.md"), AGENT, "the report", ["report"])
         workers.save({"name": "w1", "parent_ref": agent["ref"], "created": 0})
         os.makedirs(paths.path(workers.APPROVALS), exist_ok=True)
         paths.write_json(paths.path(workers.APPROVALS, "r1.json"),
                          {"id": "r1", "worker": "w1", "status": "pending", "t": 1, "summary": "x"})
-        decisions = lambda: [r for r in channel.read(channel.resolve(here)[1])
-                             if r["tag"] == "decision"]
+        decisions = lambda: board.decisions("core")
         grants = lambda: os.listdir(paths.path(workers.GRANTS)) \
             if os.path.isdir(paths.path(workers.GRANTS)) else []
         return agent, [
@@ -207,7 +171,7 @@ class McpServerTest(TempState):
              lambda: [r for r in [paths.read_json(paths.path(workers.APPROVALS, "r1.json"))]
                       if r["status"] != "pending"]),
             ("xsm_grant", {"runtime": "codex", "options": ["full_access"], "reason": "r"},
-             "allow once", lambda: grants() + decisions()),
+             "allow once", grants),
         ]
 
     def _ask(self, name, args, reply, cwd=None, session=AGENT, init=None):
@@ -349,7 +313,7 @@ class McpServerTest(TempState):
     def test_a_decline_from_a_client_that_shows_forms_is_the_persons_no(self):
         """The MCP spec: decline is an explicit no, cancel a dismissal. A form
         tool read both as no answer and the agent asked again (2026-10-01)."""
-        from xsm import channel, config, mcp
+        from xsm import board, config, mcp
         init = dict(self.INIT, params=dict(self.INIT["params"], clientInfo={"name": "claude-code"}))
         decline = {"result": {"action": "decline"}}
         cancel = {"result": {"action": "cancel"}}
@@ -368,15 +332,16 @@ class McpServerTest(TempState):
         call = {"jsonrpc": "2.0", "id": 2, "method": "tools/call", "params": {
             "name": "xsm_decide", "arguments": {"question": "Ship it?"}}}
         out, here = self._run(init, call, {"jsonrpc": "2.0", "id": "xsm-1", "result": {
-            "action": "decline"}})
+            "action": "decline"}}, session=self._in_team())
         said = next(m for m in out if m.get("id") == 2)["result"]["content"][0]["text"]
         self.assertIn("your user declined", said)
-        self.assertEqual(channel.read(channel.resolve(here)[1]), [])
+        self.assertEqual(board.decisions("core"), [])
 
     def test_decide_offers_options_as_they_are_compared(self):
         # " yes " was offered as is and compared stripped, so the person's
         # choice was refused (2026-09-28).
-        from xsm import channel
+        from xsm import board
+        agent = self._in_team()
         call = {"jsonrpc": "2.0", "id": 2, "method": "tools/call", "params": {
             "name": "xsm_decide", "arguments": {"question": "Ship?",
                                                 "options": [" yes ", "no", "yes", "  "]}}}
@@ -384,20 +349,19 @@ class McpServerTest(TempState):
             with self.subTest(chosen=chosen):
                 answer = {"jsonrpc": "2.0", "id": "xsm-1", "result": {
                     "action": "accept", "content": {"answer": chosen}}}
-                out, here = self._run(self.INIT, call, answer)
+                out, here = self._run(self.INIT, call, answer, session=agent)
                 elicit = next(m for m in out if m.get("method") == "elicitation/create")
                 self.assertEqual(elicit["params"]["requestedSchema"]["properties"]["answer"]
                                  ["enum"], ["yes", "no"])
                 self.assertIn("recorded decision", next(m for m in out if m.get("id") == 2)
                               ["result"]["content"][0]["text"])
-                rec = channel.read(channel.resolve(here)[1])[-1]
-                self.assertEqual(rec["approved"]["answer"], "yes")
+                self.assertEqual(board.decisions("core")[-1]["answer"], "yes")
 
     def test_a_tool_that_fails_is_that_calls_error_not_the_servers_end(self):
         from xsm import mcp
         msgs = [self.INIT,
                 {"jsonrpc": "2.0", "id": 2, "method": "tools/call",
-                 "params": {"name": "xsm_post", "arguments": {"text": "x"}}},
+                 "params": {"name": "xsm_send", "arguments": {"target": "x", "text": "x"}}},
                 {"jsonrpc": "2.0", "id": 3, "method": "tools/list"}]
         out = io.StringIO()
         server = mcp.Server(io.StringIO("".join(json.dumps(m) + "\n" for m in msgs)), out)
@@ -412,16 +376,13 @@ class McpServerTest(TempState):
         self.assertIn("unhashable", replies[2]["result"]["content"][0]["text"])
         self.assertIn("tools", replies[3]["result"])
 
-    def test_post_cannot_make_a_decision_and_needs_a_session(self):
+    def test_a_tool_needs_a_registered_session(self):
         call = {"jsonrpc": "2.0", "id": 2, "method": "tools/call", "params": {
-            "name": "xsm_post", "arguments": {"text": "we chose x", "tag": "decision"}}}
-        out, _ = self._run(self.INIT, call)
-        self.assertTrue(next(m for m in out if m.get("id") == 2)["result"]["isError"])
-        out, _ = self._run(self.INIT, dict(call, params={"name": "xsm_post",
-                                                         "arguments": {"text": "hi"}}),
-                           session=None)
-        self.assertIn("not registered", next(m for m in out if m.get("id") == 2)
-                      ["result"]["content"][0]["text"])
+            "name": "xsm_send", "arguments": {"target": "x", "text": "hi"}}}
+        out, _ = self._run(self.INIT, call, session=None)
+        reply = next(m for m in out if m.get("id") == 2)["result"]
+        self.assertTrue(reply["isError"])
+        self.assertIn("not registered", reply["content"][0]["text"])
 
     def test_without_elicitation_support_decide_refuses(self):
         init = dict(self.INIT, params={"protocolVersion": "2025-06-18", "capabilities": {}})
@@ -430,7 +391,8 @@ class McpServerTest(TempState):
         out, _ = self._run(init, call)
         text = next(m for m in out if m.get("id") == 2)["result"]["content"][0]["text"]
         self.assertIn("cannot show a form", text)
-        self.assertIn("xsm post --tag decision", text)
+        self.assertIn("nothing was recorded", text)
+        self.assertNotIn("xsm post", text)
         self.assertNotIn("in a terminal", text)
 
 

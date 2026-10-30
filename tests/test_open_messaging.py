@@ -44,9 +44,11 @@ class AllowMessagingTest(TempState):
             self.assertIn("Bash(%s %s:*)" % (os.path.join(install.runtime_root(), "bin", "xsm"),
                                               command), allow)
         for prefix in ("mcp__xsm__", "mcp__plugin_xsm_xsm__"):
-            for tool in ("xsm_send", "xsm_inbox", "xsm_post", "xsm_channel"):
+            for tool in ("xsm_send", "xsm_inbox", "xsm_board"):
                 self.assertIn(prefix + tool, allow)
-        for command in ("spawn", "post", "doc add", "install", "uninstall", "stop"):
+            for tool in ("xsm_post", "xsm_channel"):
+                self.assertNotIn(prefix + tool, allow, "removed in 0.5.1")
+        for command in ("spawn", "post", "channel", "doc add", "install", "uninstall", "stop"):
             self.assertNotIn("Bash(xsm %s:*)" % command, allow, "still the classifier's")
 
     def test_a_plugin_homes_path_is_allowed_too_and_a_replaced_one_goes(self):
@@ -218,6 +220,49 @@ class InboundTest(TempState):
         self.assertIn("removed the crossSessionInbound xsm set", text)
         self.assertEqual(paths.read_json(target), {"model": "opus", "hooks": {},
                                                    "permissions": {"allow": ["Bash(ls:*)"]}})
+
+    def test_refresh_takes_out_the_rules_xsm_wrote_for_the_removed_channel(self):
+        """T11: xsm_post and xsm_channel are gone. Their rules, as xsm noted it
+        wrote them (and the old builds' `Bash(xsm post:*)`), go on the next
+        refresh; a rule of the person's own stays."""
+        from xsm import install, paths
+        retired = ["mcp__xsm__xsm_post", "mcp__xsm__xsm_channel",
+                   "mcp__plugin_xsm_xsm__xsm_post", "mcp__plugin_xsm_xsm__xsm_channel"]
+        theirs = ["Bash(ls:*)", "mcp__other__xsm_post"]
+        home = self._home(settings={"permissions": {"allow": list(theirs)}})
+        target = os.path.join(home, "settings.json")
+        note_path = install._state_file(install.ALLOWED, target)
+        code, text = _run_cli("install", "--claude-home", home, "--no-mcp", "--python",
+                              sys.executable)
+        self.assertEqual(code, 0, text)
+        # A current note, as 0.5.0 wrote it: the channel tools among what it added.
+        data = paths.read_json(target)
+        data["permissions"]["allow"] += retired
+        paths.write_json(target, data)
+        note = paths.read_json(note_path)
+        note["added"] += retired
+        paths.write_json(note_path, note)
+        code, text = _run_cli("install", "--refresh", "--no-mcp", "--python", sys.executable)
+        self.assertEqual(code, 0, text)
+        allow = paths.read_json(target)["permissions"]["allow"]
+        for rule in retired:
+            self.assertNotIn(rule, allow)
+            self.assertNotIn(rule, paths.read_json(note_path)["added"])
+        for rule in theirs:
+            self.assertIn(rule, allow, "the person's own")
+        self.assertIn("mcp__xsm__xsm_send", allow)
+        # No note at all (an old build): the names alone say they are xsm's.
+        data = paths.read_json(target)
+        data["permissions"]["allow"] += retired + ["Bash(xsm post:*)"]
+        paths.write_json(target, data)
+        os.remove(note_path)
+        code, text = _run_cli("install", "--refresh", "--no-mcp", "--python", sys.executable)
+        self.assertEqual(code, 0, text)
+        allow = paths.read_json(target)["permissions"]["allow"]
+        for rule in retired + ["Bash(xsm post:*)"]:
+            self.assertNotIn(rule, allow)
+        for rule in theirs:
+            self.assertIn(rule, allow, "the person's own")
 
     def test_a_home_on_the_plugin_gets_it_on_refresh(self):
         from xsm import config, install, paths

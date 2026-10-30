@@ -83,8 +83,15 @@ class DeliveryVersusReplyTest(TempState):
 
 
 class FormInputTest(TempState):
+    ME = {"name": "tester", "alias": "fixture", "ref": "aaaaaa", "runtime": "claude"}
+
+    def _me(self):
+        return dict(self.ME, home=os.path.join(self.tmp, "home"), cwd=self.tmp)
+
     def _run(self, during=(), after=()):
-        from xsm import mcp
+        from xsm import mcp, teams
+        if not teams.load("core"):
+            teams.create(self._me(), "core")     # the board the other tool calls use
         messages = [
             {"id": 1, "method": "initialize", "params": {"capabilities": {"elicitation": {}}}},
             self._tool(2, "xsm_decide", {"question": "Which cache?"}),
@@ -96,8 +103,7 @@ class FormInputTest(TempState):
                                     for m in messages))
         out = io.StringIO()
         server = mcp.Server(stream, out)
-        server.session = lambda: {"name": "tester", "alias": "fixture", "ref": "aaaaaa",
-                                  "runtime": "claude", "cwd": self.tmp}
+        server.session = self._me
         self.assertEqual(server.serve(), 0)
         self.assertEqual(stream.read(), "")
         output = [json.loads(line) for line in out.getvalue().splitlines()]
@@ -109,9 +115,9 @@ class FormInputTest(TempState):
         return output
 
     @staticmethod
-    def _tool(mid, name="xsm_channel", arguments=None):
+    def _tool(mid, name="xsm_board", arguments=None):
         return {"id": mid, "method": "tools/call",
-                "params": {"name": name, "arguments": arguments or {}}}
+                "params": {"name": name, "arguments": arguments or {"action": "show", "team": "core"}}}
 
     def test_ping_during_form_is_answered_before_form_completion(self):
         output = self._run(during=[{"id": 3, "method": "ping"}])
@@ -127,14 +133,15 @@ class FormInputTest(TempState):
         self.assertFalse(later["result"]["isError"], later)
 
     def test_tool_effect_is_preserved_when_ping_is_interleaved(self):
-        from xsm import channel
-        output = self._run(during=[self._tool(3, "xsm_post", {"text": "lost-post"}),
+        from xsm import board
+        set_item = lambda item, text: {"action": "set", "team": "core", "item": item, "text": text}
+        output = self._run(during=[self._tool(3, "xsm_board", set_item("during", "lost-post")),
                                    {"id": 4, "method": "ping"}],
-                           after=[self._tool(5, "xsm_post", {"text": "kept-post"})])
+                           after=[self._tool(5, "xsm_board", set_item("after", "kept-post"))])
         self.assertTrue(any(m.get("id") == 3 for m in output), output)
         self.assertEqual(next(m for m in output if m.get("id") == 4)["result"], {})
         self.assertFalse(next(m for m in output if m.get("id") == 5)["result"]["isError"])
-        texts = [r["text"] for r in channel.read(channel.resolve(self.tmp)[1])]
+        texts = [n["body"] for n in board.log(self._me(), "core")]
         self.assertIn("lost-post", texts)
         self.assertIn("kept-post", texts)
 

@@ -128,7 +128,7 @@ class QuestionGroupTest(test_xsm.TempState):
             self._reply(self.c, self._child(res, 'cee@')['id'], 'r9', 'ok', 'succeeded')
             st = json.loads(server.call('xsm_question_status', {'id': res['id']}))
             self.assertEqual(st['answered'], 1)
-            with self.assertRaises(mcp.channel.ChannelError):
+            with self.assertRaises(mcp.ToolError):
                 server.call('xsm_ask', {'targets': ['codex:bee'], 'target': 'codex:cee', 'text': 'q'})
-            with self.assertRaises(mcp.channel.ChannelError):
+            with self.assertRaises(mcp.ToolError):
                 server.call('xsm_ask', {'text': 'q'})

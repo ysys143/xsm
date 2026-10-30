@@ -1,6 +1,6 @@
 # ADR-0005: 채널-스레드 기록 저장소
 
-- 상태: Accepted. [ADR-0026](0026-team-board-on-xsm-doc.md)에 따라 제거 예정: 팀·보드·결재 기록이 준비되고 `xsm_decide`가 옮겨지면 Superseded가 된다(2026-10-30 사용자 결정)
+- 상태: Superseded (ADR-0026). 팀·보드·결재 기록이 준비되고 `xsm_decide`가 옮겨져 0.5.1에서 채널(`xsm post`, `xsm channel`, `xsm_post`, `xsm_channel`)을 제거했다(2026-10-30 사용자 결정)
 - 관련 목표: G6
 - 작성일: 2026-09-19
 

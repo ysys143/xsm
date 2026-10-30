@@ -144,5 +144,5 @@ class MultiSendTest(test_xsm.TempState):
             text = server.call('xsm_send', {'targets': ['codex:bee', 'codex:cee'], 'text': 'x', 'wait': 0})
         self.assertIn('2 of 2 recipients sent', text)
         with mock.patch.object(server, 'session', return_value=self.me):
-            with self.assertRaises(mcp.channel.ChannelError):
+            with self.assertRaises(mcp.ToolError):
                 server.call('xsm_send', {'targets': ['codex:bee'], 'target': 'codex:cee', 'text': 'x'})

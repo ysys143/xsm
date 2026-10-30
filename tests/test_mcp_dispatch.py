@@ -10,19 +10,24 @@ class McpDispatchTest(TempState):
         return {"id": mid, "method": "tools/call", "params": {
             "name": name, "arguments": args, "_meta": {"threadId": who}}}
 
+    def caller(self, who):
+        return {"runtime": "claude", "home": self.tmp + "/home", "alias": "fixture",
+                "session_id": who, "ref": who * 6, "name": who,
+                "cwd": os.path.join(self.tmp, who)}
+
     def run_stream(self, rows):
-        from xsm import mcp, context
+        from xsm import mcp, context, teams
         for who in ("a", "b"):
             os.makedirs(os.path.join(self.tmp, who), exist_ok=True)
+            # Each caller's one team, where its xsm_decide answer is kept.
+            if not teams.load("team-" + who):
+                teams.create(self.caller(who), "team-" + who)
         inp = io.StringIO("".join(json.dumps(x) + "\n" for x in [
             {"id": 0, "method": "initialize", "params": {"capabilities": {"elicitation": {}}}},
             *rows]))
         out = io.StringIO();server = mcp.Server(inp, out)
         def session():
-            who = server.call_thread
-            record = {"runtime": "claude", "home": self.tmp + "/home", "alias": "fixture",
-                      "session_id": who, "ref": who * 6, "name": who,
-                      "cwd": os.path.join(self.tmp, who)}
+            record = self.caller(server.call_thread)
             server.ctx = context.of_record(record, context.BASIS_THREAD)
             return record
         server.session = session
@@ -34,8 +39,8 @@ class McpDispatchTest(TempState):
         return [json.loads(x) for x in out.getvalue().splitlines()]
 
     def records(self, who):
-        from xsm import channel
-        return channel.read(channel.resolve(os.path.join(self.tmp, who))[1])
+        from xsm import board
+        return board.decisions("team-" + who)
 
     def test_nested_forms_route_out_of_order_replies_to_their_own_caller(self):
         rows = [self.tool(1, "a", question="outer"), self.tool(2, "b", question="inner"),
@@ -50,35 +55,37 @@ class McpDispatchTest(TempState):
         for who, answer in (("a", "A"), ("b", "B")):
             records = self.records(who)
             self.assertEqual(len(records), 1)
-            self.assertEqual(records[0]["author"]["asked_by"], who * 6)
-            self.assertTrue(records[0]["text"].endswith(" -> " + answer))
+            self.assertEqual(records[0]["asked_by"], who * 6)
+            self.assertEqual(records[0]["answer"], answer)
 
     def test_cancelled_form_does_not_apply_a_late_yes_and_next_tool_still_runs(self):
         output = self.run_stream([
             self.tool(1, "a", question="must not apply"),
             {"method": "notifications/cancelled", "params": {"requestId": 1}},
             {"id": "xsm-1", "result": {"action": "accept", "content": {"answer": "yes"}}},
-            self.tool(2, "b", "xsm_post", text="still working")])
+            self.tool(2, "b", "xsm_board", action="set", team="team-b", item="progress",
+                      text="still working")])
         self.assertEqual(self.records("a"), [])
-        self.assertEqual([r["text"] for r in self.records("b")], ["still working"])
+        from xsm import board
+        self.assertIn("still working", board.show(self.caller("b"), "team-b"))
         result = next(x for x in output if x.get("id") == 1 and "result" in x)
         self.assertIn("nothing was recorded", result["result"]["content"][0]["text"])
 
     def test_nested_calls_do_not_inherit_another_callers_consent_globals(self):
         from xsm import consent
         observed = {}
-        def inspect(original, name, args, me, where, author):
+        def inspect(original, name, args, me):
             if me["session_id"] == "a":
                 consent.answer_request = "outer-question"
                 consent.question_text = "outer-text"
-                result = original(name, args, me, where, author)
+                result = original(name, args, me)
                 observed["restored"] = consent.answer_request
                 return result
             observed["child"] = (consent.answer_request, consent.question_text)
-            return original(name, args, me, where, author)
+            return original(name, args, me)
         self.inspect_call = inspect
         self.run_stream([self.tool(1, "a", question="outer"),
-                         self.tool(2, "b", "xsm_post", text="child"),
+                         self.tool(2, "b", "xsm_board", action="show", team="team-b"),
                          {"id": "xsm-1", "result": {"action": "accept",
                           "content": {"answer": "yes"}}}])
         self.assertEqual(observed["child"], (None, None))

@@ -229,19 +229,6 @@ class PersonDecisionTest(AskHelpers, TempState):
         self.assertEqual(self._cli(["unblock", "dddddd"])[0], 0)
         self.assertNotIn("dddddd", config.blocked())
 
-    def test_a_decision_is_the_persons_words(self):
-        from xsm import channel
-        self._asks(["post", "--tag", "decision", "ship on friday"])
-        self._reply("yes, friday")
-        self._shows(["post", "--tag", "decision", "ship on friday"], "yes, friday")
-        code, text = self._cli(["post", "--tag", "decision", "ship on friday"])
-        self.assertEqual(code, 0, text)
-        where = channel.resolve(self.tmp, None)
-        rec = [r for r in channel.read(where[1]) if r.get("tag") == "decision"][-1]
-        self.assertEqual(rec["author"]["kind"], "human")
-        self.assertEqual(rec["author"]["via"], "verdict")
-        self.assertEqual(rec["author"]["verdict"], "yes, friday")
-
     def test_an_endorsement_is_the_persons_words(self):
         from xsm import doc
         path = os.path.join(self.tmp, "notes.md")
@@ -303,7 +290,6 @@ class PersonDecisionTest(AskHelpers, TempState):
                    ("xsm/mcp.py", "--dir is taken only from a person at a terminal"),
                    # Who can answer for a worker no session started, and who wrote a record.
                    ("xsm/cli.py", "so only a person at a terminal can answer"),
-                   ("xsm/channel.py", "not a person at a terminal and not a registered"),
                    ("xsm/doc.py", "a person at a terminal, or a session asking its user"),
                    ("xsm/workers.py", "A person typing `spawn` at a terminal needs no grant"),
                    ("xsm/workers.py", "Approving is a person's: at a terminal, or through"))
@@ -1113,12 +1099,14 @@ class PersonDecisionTest(AskHelpers, TempState):
         grant = workers.use_grant(gid, self.me, "remote:box", self.tmp, ["remote"])
         self.assertEqual(grant["id"], gid, "a grant for the session's folder covers the command")
 
-    def test_a_decision_has_no_key_to_record_so_its_command_comes_first(self):
-        """The text to record is the agent's: nothing to record before it runs."""
+    def test_a_decision_without_a_form_names_no_command_and_records_no_ask(self):
+        """T11: `xsm post --tag decision` was the road round a missing form; with
+        the channel gone there is none for a session, and nothing is made up."""
         text = self._form("xsm_decide", {"question": "Ship it?"})
-        self.assertIn("Run `xsm post --tag decision", text)
-        self.assertIn("first", text)
-        self.assertNotIn("Ask your user now", text)
+        self.assertIn("cannot be recorded as a decision from here", text)
+        self.assertIn("Ask them in plain words", text)
+        self.assertNotIn("xsm post", text)
+        self.assertNotIn("in your shell", text)
         self.assertEqual(self._asked_files(), [])
 
     def test_when_the_ask_cannot_be_kept_the_command_comes_first_there_too(self):

@@ -14,8 +14,8 @@ purpose; open another only when it sends you there.
 | find a collaborator by work, connect to the one your user selected, ask and recover an answer | [messaging](messaging.md) |
 | list sessions, address one, send, read what arrived, answer a task | [sessions](sessions.md) |
 | connect another folder or session (link, join, reach, block), or xsm says it needs your user's yes | [permissions](permissions.md) |
-| work in a team: team DMs, the team board, a decision for the team, a handover | [teams](teams.md) |
-| keep a record with your user (the channel) or add to a shared document | [channel](channel.md) |
+| work in a team: team DMs, the team board, putting your user's decision on record, a handover | [teams](teams.md) |
+| add to a shared document | [docs](docs.md) |
 | reach a session on another machine, join or manage an xsm network | [network](network.md) |
 | start a session to hand work to | [workers](workers.md) |
 | act on a failure, a missing tool, or mixed xsm versions | [troubleshooting](troubleshooting.md) |

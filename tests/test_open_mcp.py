@@ -132,7 +132,7 @@ class WideningNeedsSureIdentityTest(TempState):
             self.assertIn("guess at which session is asking", reply["content"][0]["text"], name)
 
     def test_a_sure_caller_passes_the_guard(self):
-        from xsm import channel, context
+        from xsm import context
         sure = context.CallContext(runtime="codex", home=self.tmp, conversation="t-a",
                                    basis=context.BASIS_THREAD)
         # It gets past the guard and fails inside the tool for its own reason
@@ -172,9 +172,9 @@ class ToolAnnotationsTest(TempState):
 
     def test_the_messaging_tools_say_what_they_do(self):
         tools = self._tools()
-        self.assertEqual(tools["xsm_channel"]["annotations"],
+        self.assertEqual(tools["xsm_discover"]["annotations"],
                          {"readOnlyHint": True, "openWorldHint": False})
-        for name in ("xsm_send", "xsm_post", "xsm_inbox"):
+        for name in ("xsm_send", "xsm_board", "xsm_inbox"):
             self.assertEqual(tools[name]["annotations"],
                              {"readOnlyHint": False, "destructiveHint": False,
                               "openWorldHint": False}, name)
@@ -182,7 +182,7 @@ class ToolAnnotationsTest(TempState):
     def test_message_text_descriptions_ask_for_readable_sentences(self):
         tools = self._tools()
         descriptions = [tools[name]["inputSchema"]["properties"]["text"]["description"]
-                        for name in ("xsm_send", "xsm_post")]
+                        for name in ("xsm_send", "xsm_board")]
         self.assertEqual(descriptions[0], descriptions[1])
         for phrase in ("receiver and your user", "normal word spacing",
                        "language of the conversation", "short sentences or bullets"):
@@ -277,17 +277,18 @@ class SandboxTest(TempState):
         self.assertIn("serverInfo", out.getvalue())
 
     def test_a_tool_that_hits_a_refused_write_says_so(self):
-        from xsm import channel, mcp
+        from xsm import board, mcp
         msgs = [{"jsonrpc": "2.0", "id": 2, "method": "tools/call",
-                 "params": {"name": "xsm_post", "arguments": {"text": "x"}}}]
+                 "params": {"name": "xsm_board", "arguments": {"action": "set", "team": "core",
+                                                               "item": "x", "text": "x"}}}]
         out = io.StringIO()
         server = mcp.Server(io.StringIO("".join(json.dumps(m) + "\n" for m in msgs)), out)
         server.session = lambda: {"name": "me", "alias": "h", "ref": "aaaaaa", "cwd": self.tmp}
-        with mock.patch.object(channel, "post", side_effect=self._denied("/ro/channel.jsonl")):
+        with mock.patch.object(board, "set_item", side_effect=self._denied("/ro/BOARD.md")):
             server.serve()
         reply = json.loads(out.getvalue().splitlines()[0])["result"]
         self.assertTrue(reply["isError"])
-        self.assertIn("sandbox-blocked: xsm cannot use /ro/channel.jsonl",
+        self.assertIn("sandbox-blocked: xsm cannot use /ro/BOARD.md",
                       reply["content"][0]["text"])
 
     def test_the_inbox_socket_hint_names_the_mcp_tool(self):

@@ -531,7 +531,6 @@ def send(sender: dict, spec: str, peer: str, body: str, kind: str, reply_to: str
          wait: float, msg_id: str | None = None, traceparent: str | None = None,
          outcome: str | None = None) -> dict:
     pairing = pairing_for(peer)
-    from . import channel
     if not _project_members(pairing["local_project"], sender.get("cwd") or "/"):
         return {"ok": False, "status": "refused",
                 "error": "this session is not in project %s, which is what %s is paired with"

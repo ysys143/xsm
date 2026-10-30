@@ -1035,7 +1035,7 @@ def _nested_runtime(rows: list, own_session: str, thread: str) -> str:
 
 def _me(session_id: str | None, cwd: str | None) -> tuple:
     """(record or None, which rule found it) — the rule is what a span of a
-    refused command needs, since "cannot tell who is posting" has one cause
+    refused command needs, since "cannot tell who is writing" has one cause
     per rule that could have matched and did not.
 
     The shell's own runtime is settled first, and only that runtime's id is

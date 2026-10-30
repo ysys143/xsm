@@ -68,7 +68,7 @@ call the tool again in a loop, and never edit `~/.xsm/config.json` to get round 
 
 **Their reply is the verdict.** A shell command that is your user's decision
 (link, join, leave, reach, unblock, approve, `attempts clear`, `frameworks
-ignore`, a `spawn` or `remote add` that needs a grant, a decision post, an
+ignore`, a `spawn` or `remote add` that needs a grant, a handover, an
 endorsement) refuses until they answer, and tells you what to ask. Ask them first, in plain
 words or, in Claude Code, with your question tool (AskUserQuestion), and wait for
 their answer. xsm keeps their latest message in this session, word for word; an
