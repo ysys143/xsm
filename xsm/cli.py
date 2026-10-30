@@ -742,8 +742,26 @@ def _question_pump(me, request_id):
     return pump
 
 
-def _print_question_result(me, result):
-    result = receive.claim_question_replies(me, result)
+def _print_group_result(me, result):
+    for row in result.get("recipients") or []:
+        if row.get("id"):
+            receive.poll_replies(me, row["id"])
+    from . import question_groups
+    if result.get("id") and result.get("status") not in ("not-found", "refused"):
+        fresh = question_groups.status(me, result["id"])
+        fresh["wait_end_reason"] = result.get("wait_end_reason")
+        result = fresh
+    return _print_question_result(me, question_groups.with_claims(me, result), claimed=True)
+
+
+def _group_exit(result) -> int:
+    return OK if result.get("replies") else UNCONFIRMED \
+        if result.get("status") == "pending" else REFUSED
+
+
+def _print_question_result(me, result, claimed=False):
+    if not claimed:
+        result = receive.claim_question_replies(me, result)
     result.update(inbox.pending_fields(me, owner_alive=receive._consumer_alive))
     try:
         print(_readable_json(result), flush=True)
@@ -801,6 +819,21 @@ def cmd_ask(args) -> int:
     if args.wake not in ("auto", "never"):
         print("unsupported wake mode; use auto or never", file=sys.stderr)
         return REFUSED
+    targets = list(args.target)
+    if len(targets) > 1:
+        from . import question_groups
+        if args.request_id or args.attachment or args.manifest:
+            print("refused: --request-id and attachments take one recipient", file=sys.stderr)
+            return USAGE
+        try:
+            result = question_groups.ask_many(me, targets, args.text, wait=args.wait,
+                                              priority=args.priority, wake=args.wake,
+                                              poll=lambda child: receive.poll_replies(me, child))
+        except question_groups.GroupError as exc:
+            print("refused: %s" % exc, file=sys.stderr)
+            return REFUSED
+        return _group_exit(_print_group_result(me, result))
+    args.target = targets[0]
     request_id = args.request_id or envelope.new_id()
     try:
         prepared=materials.prepare(me,args.target,args.text,request_id,args.attachment,source="cli",
@@ -836,6 +869,11 @@ def cmd_question_status(args) -> int:
     if str(ledger.status(args.id).get("scope") or "").startswith("network:"):
         from . import network
         network_state = network.reconcile(args.id, caller=me)
+    from . import question_groups
+    if question_groups.is_group(args.id):
+        result = question_groups.wait_for(me, args.id, wait=args.wait,
+                                          poll=lambda child: receive.poll_replies(me, child))
+        return _group_exit(_print_group_result(me, result))
     receive.poll_replies(me, args.id)
     result = questions.wait_for(me, args.id, wait=args.wait,
                                 pump=_question_pump(me, args.id))
@@ -2803,7 +2841,8 @@ def build_parser() -> argparse.ArgumentParser:
     con.add_argument("--request-id", help="resume the same handshake after a timeout")
     con.set_defaults(func=cmd_connect)
     ask = sub.add_parser("ask", help="send one question and collect its actual correlated reply")
-    ask.add_argument("target")
+    ask.add_argument("target", nargs="+",
+                     help="the session to ask; name several to ask each (each is told who else was asked)")
     ask.add_argument("--text", required=True)
     ask.add_argument("--wait", type=float, default=0)
     ask.add_argument("--request-id")

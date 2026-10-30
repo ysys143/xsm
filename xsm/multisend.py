@@ -95,23 +95,10 @@ def load_group(group_id: str) -> dict | None:
         return None
 
 
-def send_many(specs: list, body: str, *, sender: dict | None = None, call=None, kind: str = "note",
-              reply_to: str | None = None, priority: str = "next", wait: float = 0.0,
-              outcome: str | None = None, wake: bool = True) -> MultiResult:
-    specs = [s.strip() for s in specs if s and s.strip()]
-    if not specs:
-        raise MultiError("no recipients")
-    if len(specs) > LIMIT:
-        raise MultiError("at most %d recipients in one send" % LIMIT)
-    if sender is None:
-        registry.forget_identity()
-        with probe.quick():
-            sender = registry.me()
-            call = call or registry.last_identity()
-    if not sender:
-        raise MultiError("this session is not registered; run `xsm doctor`")
-
-    # Resolve every recipient first, so each one can be told who else gets it.
+def plan_recipients(specs: list, sender: dict) -> list:
+    """Resolve every recipient first, so each one can be told who else gets it.
+    Returns [{"spec", "label", "target", "skip"}]; skip is a refusal SendResult
+    for one that is not sent (unknown, yourself, out of scope)."""
     plan, seen = [], set()
     for spec in specs:
         entry = {"spec": spec, "target": None, "skip": None}
@@ -142,6 +129,26 @@ def send_many(specs: list, body: str, *, sender: dict | None = None, call=None, 
         entry["label"] = _label(entry["target"], spec)
         plan.append(entry)
 
+    return plan
+
+
+def send_many(specs: list, body: str, *, sender: dict | None = None, call=None, kind: str = "note",
+              reply_to: str | None = None, priority: str = "next", wait: float = 0.0,
+              outcome: str | None = None, wake: bool = True) -> MultiResult:
+    specs = [s.strip() for s in specs if s and s.strip()]
+    if not specs:
+        raise MultiError("no recipients")
+    if len(specs) > LIMIT:
+        raise MultiError("at most %d recipients in one send" % LIMIT)
+    if sender is None:
+        registry.forget_identity()
+        with probe.quick():
+            sender = registry.me()
+            call = call or registry.last_identity()
+    if not sender:
+        raise MultiError("this session is not registered; run `xsm doctor`")
+
+    plan = plan_recipients(specs, sender)
     group_id = envelope.new_id()
     going = [e for e in plan if e["skip"] is None]
     record = {"id": group_id, "t": time.time(), "sender": sender.get("ref"), "kind": kind,

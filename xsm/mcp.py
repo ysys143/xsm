@@ -92,13 +92,18 @@ TOOLS = [
                      "cancel": {"type": "boolean", "default": False}}}},
     {"name": "xsm_ask", "description": MESSAGING_GUIDE,
      "inputSchema": {"type": "object", "properties": {
-         "target": {"type": "string"}, "text": {"type": "string"},
+         "target": {"type": "string"},
+         "targets": {"type": "array", "items": {"type": "string"}, "minItems": 2,
+                     "description": "several recipients instead of target: each gets its own "
+                                    "question and is told who else was asked; the result and "
+                                    "xsm_question_status(id=<group id>) hold every recipient's answer"},
+         "text": {"type": "string"},
          "wait": {"type": "number", "default": 0, "minimum": 0},
          "request_id": {"type": "string"},
          "priority": {"type": "string", "enum": ["next", "now"], "default": "next"},
          "wake": {"type": "string", "enum": ["auto", "never"], "default": "auto",
                   "description": "never stores a passive local question without native queue/socket/wake."}},
-         "required": ["target", "text"]}, "annotations": MESSAGING},
+         "required": ["text"]}, "annotations": MESSAGING},
     {"name": "xsm_question_status", "description": "Recover this conversation's actual replies "
      "by request ID, including late and partial replies; timeout does not delete them. "
      "Omit id to list your requests if cancellation lost the original response and ID. "
@@ -932,6 +937,36 @@ class Server:
 
             kwargs = {"wait": wait, "pump": pump,
                       "cancelled": lambda: owner in self.cancelled}
+            from . import inbox, question_groups
+            group_poll = lambda child: receive.poll_replies(me, child)  # noqa: E731
+            if name == "xsm_ask" and args.get("targets") is not None:
+                targets = args.get("targets")
+                if not isinstance(targets, list) or not all(isinstance(t, str) for t in targets) \
+                        or args.get("target") or args.get("request_id") \
+                        or args.get("attachments") or args.get("manifest_id"):
+                    raise channel.ChannelError("targets is a list of recipients, used instead of "
+                                               "target, request_id and attachments")
+                try:
+                    result = question_groups.ask_many(
+                        me, targets, args.get("text") or "", wait=wait,
+                        priority=args.get("priority", "next"), wake=args.get("wake", "auto"),
+                        pump=self.pump, cancelled=lambda: owner in self.cancelled, poll=group_poll)
+                except question_groups.GroupError as exc:
+                    raise channel.ChannelError(str(exc))
+                result = question_groups.with_claims(me, result)
+                result.update(inbox.pending_fields(me, owner_alive=receive._consumer_alive))
+                result["wait_budget"] = {"requested": requested_wait, "effective": wait, "cap": 60}
+                return json.dumps(result, ensure_ascii=False)
+            if name == "xsm_question_status" and question_groups.is_group(request_id):
+                result = question_groups.wait_for(me, request_id, wait=wait, pump=self.pump,
+                                                  cancelled=lambda: owner in self.cancelled,
+                                                  poll=group_poll)
+                result = question_groups.with_claims(me, result)
+                result.update(inbox.pending_fields(me, owner_alive=receive._consumer_alive))
+                result["wait_budget"] = {"requested": requested_wait, "effective": wait, "cap": 60}
+                return json.dumps(result, ensure_ascii=False)
+            if name == "xsm_ask" and not args.get("target"):
+                raise channel.ChannelError("target (or targets) is required")
             if name == "xsm_question_status":
                 from . import ledger
                 network_state = None

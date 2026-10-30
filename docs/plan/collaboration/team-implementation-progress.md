@@ -5,8 +5,8 @@
 | 단계 | 상태 | 커밋 |
 |---|---|---|
 | T0 결함 수정 | 구현·단위 검증 완료, 원인 일부 미확정 | 2fd32e5 |
-| T1 다중 수신 send | 구현·단위 검증 완료, 실제 세션 확인 전 | (이 커밋) |
-| T2 다중 수신 ask | 대기 | |
+| T1 다중 수신 send | 구현·단위 검증 완료, 실제 세션 확인 전 | cdbfa5e |
+| T2 다중 수신 ask | 구현·단위 검증 완료, 실제 세션 확인 전 | (이 커밋) |
 | T3 팀 | 대기 | |
 | T4 connect 통합 | 대기 | |
 | T5 doc 보드 | 대기 | |
@@ -45,3 +45,19 @@
 - 원격 수신자의 영수증은 묶음 대기에서 세지 않는다(로컬만).
 
 검증: `tests/test_multisend.py` 11건(범위 밖 건너뛰기, 수신자 표시, 중복·자기 자신, 상한, 묶음 대기, 실패 수신자만 재전송, 다른 세션의 묶음 재전송 거부, CLI 종료 코드·JSON, 단일 대상 기존 경로, MCP `targets`). 관련 모음 407건 통과.
+
+## T2
+
+`xsm/question_groups.py`. `xsm ask A B C --text ...`, MCP `xsm_ask(targets=[...])`, `question-status <묶음 ID>`.
+
+- 수신자 해석·범위 판정은 T1의 `multisend.plan_recipients`를 함께 쓴다. 범위 밖 수신자는 건너뛰고 결과에 적는다.
+- 수신자마다 기존 `questions.ask`로 하위 질문 `<묶음>-<n>`을 만든다. 상관 회신·늦은 답·부분 답·outcome·ACK는 하위 질문마다 기존 경로 그대로다. 수신자 표시는 T1과 같은 본문 첫 줄.
+- 묶음 상태: `pending`, `reply_received`(일부 답, 일부 대기), `replied`(모두 답했거나 끝남), `final`(모두 outcome), `refused`. `waiting_on`에 아직 답하지 않은 수신자를 적는다.
+- 답의 claim 토큰은 하위 질문마다 `receive.claim_question_replies`로 붙이고 모아서 돌려준다(`question_groups.with_claims`).
+
+구현 시 택한 기본값(사용자 확인 전):
+- **`--wait` 종료 조건**: 모든 수신자가 답했거나 끝났을 때(또는 기한·취소). 첫 답에서 끝나는 선택지는 두지 않았다.
+- 첨부·`--request-id`는 수신자 하나일 때만 받는다.
+- 하위 질문은 `question-status`(ID 없이) 목록에 각자 나타난다. 묶음 자체는 목록에 따로 넣지 않았다.
+
+검증: `tests/test_question_groups.py` 6건(건너뛰기와 하위 질문, 수신자별 답과 상태 전이, 다른 상대의 답 거부, 기한·전원 답·poll, 다른 대화의 묶음 읽기 거부, CLI·MCP). 질문·연결 관련 모음 50건과 전체 관련 모음 통과.
