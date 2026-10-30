@@ -24,7 +24,7 @@ C는 고정 standalone 엔진 `0.12.10`의 사본을 양쪽 private HOME/state/I
 
 B는 최소 시험체를 확보했지만 지금 채택할 근거는 부족하다. 직접 TCP·임시 인증·중복 방지·복구는 관측했으나, 암호화·실제 가입/제명·NAT traversal·relay·업데이트 경로가 없다. 이번 시험체가 쓰는 임시 HMAC 인증은 격리 fixture의 검사용이며, 폐기된 로컬 pair/HMAC 정책을 복원하거나 제품 인증안을 정한 것이 아니다.
 
-[A/B/D 실제 보고서](../../../deliverables/p11-live/native-carrier-roundtrip-20261029.md)의 native 9회와 C의 6회는 모두 실제 peer Codex가 같은 수학 과제를 검토한 답이다. 기본 비교의 합계는 native 15회이며 cached 회수는 A/B/D 각 1회와 C 2회, 합계 5회로 별도 집계한다. 기존 D 우선 검토 의견은 운영 전제 재사용에 대한 제안으로 유지하며 이 작은 지연 표본으로 후보의 성능 순위를 정하지 않는다. [G11 판정 초안](gates/G11-remote-comparison-draft.md)은 비교체 성공과 남은 수용 증거를 분리한다. G11은 D12 선택 자체를 통과 근거로 요구하지 않으며, D12 미응답과 별개로 미실행 환경·설치/운영 비교의 부족이 남아 있다.
+[A/B/D 실제 보고서](../../../deliverables/p11-live/native-carrier-roundtrip-20261029.md)의 native 9회와 C의 6회는 모두 실제 peer Codex가 같은 수학 과제를 검토한 답이다. 기본 비교의 합계는 native 15회이며 cached 회수는 A/B/D 각 1회와 C 2회, 합계 5회로 별도 집계한다. 기존 D 우선 검토 의견은 운영 전제 재사용에 대한 제안으로 유지하며 이 작은 지연 표본으로 후보의 성능 순위를 정하지 않는다. [G11 판정 초안](records/gates/G11-remote-comparison-draft.md)은 비교체 성공과 남은 수용 증거를 분리한다. G11은 D12 선택 자체를 통과 근거로 요구하지 않으며, D12 미응답과 별개로 미실행 환경·설치/운영 비교의 부족이 남아 있다.
 
 ### 후속 제한 환경: C의 UDP outbound 차단과 relay
 
@@ -135,12 +135,12 @@ B 재시작 준비 시간은 453.188 ms였다. 연결 수명이 다르고 표본
 | 구분 | 확인 결과 | 사용 범위 |
 |---|---|---|
 | 현재 공개 엔진 binary | `~/.reason/bin/reason-network`, 0.12.10, 15,266,656 bytes | `--version`, `--help`, 격리 IPC 실행 |
-| binary SHA-256 | `6ac4bb4837469867edc2dba3cbbd6e4dd9fb18ad0389db69ff6ef21683317a44` | [기존 release 대조](../../references/reason-network/installed-engine-release-check.json) 값과 일치 |
+| binary SHA-256 | `6ac4bb4837469867edc2dba3cbbd6e4dd9fb18ad0389db69ff6ef21683317a44` | 기존 release 대조 값과 일치(조사 기록은 저장소 밖 보관) |
 | 비공개 Reason CLI | `~/.local/bin/reason` → `~/Library/Application Support/Reason/CLI/versions/0.2.557/reason` | 파일 위치만 확인. 비교 엔진이나 새 실행 의존으로 쓰지 않음 |
 | peer binary / 초기 조사 | 당시 조사 범위에서 기존 실행 경로를 발견하지 못함 | 과거 표본. 현재 peer 부재 판정으로 사용하지 않음 |
 | peer staging / 후속 private 실행 | 먼저 고정 binary byte/hash·`--version`·`--help`를 검증하고 제거. 이후 두 고유 tmp fixture에서 같은 SHA의 엔진 실행 | staging만으로 native 성공을 세지 않음. 후속 실제 native 6회·cached 2회와 정리 readback을 별도 집계 |
-| 현재 재실행 가능한 probe | `docs/references/reason-network/probe_engine.py` 및 같은 디렉터리의 기존 probe 자료 | 새 다운로드·의존성 설치 없이 고정 로컬 엔진에 사용 |
-| 기존 정적 분석 소스 기준 | v0.12.11, `b3557ff454cd26a04c2a18804ba83ae5db8b119d` | [source-map](../../references/reason-network/source-map.md), [버전 차이](../../references/reason-network/version-delta.md). 실행한 0.12.10과 혼합하지 않음 |
+| 현재 재실행 가능한 probe | 공개 엔진용 probe 스크립트(저장소 밖 조사 기록) | 새 다운로드·의존성 설치 없이 고정 로컬 엔진에 사용 |
+| 기존 정적 분석 소스 기준 | v0.12.11, `b3557ff454cd26a04c2a18804ba83ae5db8b119d` | [Reason 비교 노트](../../references/reason.md). 실행한 0.12.10과 혼합하지 않음 |
 | C private 실행의 규약·격리 검토 | v0.12.10의 proto/paths/config/net/relays/teamops/migration 등 11개 source | [C JSON](../../../deliverables/p11-live/C-native-roundtrip-20261029.json)의 `source_protocol_evidence`와 [manifest](../../../deliverables/p11-live/C-native-evidence-manifest-20261029.json). signature 검증은 unknown |
 
 [공개 저장소](https://github.com/reason-machines/reason-network)는 엔진과 MIT OR Apache-2.0 라이선스를 공개한다. 실제 포함 시 LICENSE/NOTICE·고정 버전·업데이트 주체 확인이 필요하다. 이번에 라이선스가 확정된 새 종속성을 제품에 추가한 것은 아니다.
@@ -192,7 +192,7 @@ B의 NAT/relay 미구현은 **이번 Python 시험체의 한계**이며 자체 P
 | 라이선스·공급·운영 비용 비교 | P11 비교 담당·공급 검증 담당. 후보별 고정 공급 경로와 운영 절차 확보 시 | 출처/라이선스/업데이트 소유자, 실제 운영 비용과 미확정 항목 | Reason의 기존 라이선스 자료와 binary pin은 있음. 네 후보의 제품 공급·운영 비용 비교 전체는 미완 |
 | 초대/제명/전환·origin·업무 권한 | D12 뒤 P12 통합/검증 담당 | A21-02/04/06, 새 origin 증거와 xsm 권한 분리 | fixture 인증 성공을 이 계약의 성공으로 세지 않음 |
 | 고정 UDP/IPv6/fallback | P11/P12 실환경 담당. 고정 버전과 격리 포트 조건 확보 시 | A21-07 실제 점유·IPv6 부재·주소 변경 및 선택된 포트 | 기존 0.12.11 분석과 별도로 0.12.10 private 실행은 확보. wire UDP 포트·IPv6 부재·점유/대체 조건은 미실행 |
-| 독립 검토와 G11 판정 | 코디네이터/독립 검증 담당. 부족 셀 보완 뒤 | A21-03 및 G11 설치·개입·첫 왕복·경로·운영/제거의 동일 기준 대조 | [판정 초안](gates/G11-remote-comparison-draft.md)은 partial 제안. 이 문서로 passed를 확정하지 않음 |
+| 독립 검토와 G11 판정 | 코디네이터/독립 검증 담당. 부족 셀 보완 뒤 | A21-03 및 G11 설치·개입·첫 왕복·경로·운영/제거의 동일 기준 대조 | [판정 초안](records/gates/G11-remote-comparison-draft.md)은 partial 제안. 이 문서로 passed를 확정하지 않음 |
 | D12 사용자 선택 | 사용자. 비교 결과와 반대 증거 검토 뒤 | backend·종속성·relay·멤버 관리·공개 범위에 대한 실제 응답 | 미응답·미선택. private C 시험에 대한 코디네이터 범위 판단을 D12 응답으로 해석하지 않음 |
 
 D12의 선택, 새 종속성, relay 운영자, 제품 멤버 관리 권한, 공개 범위는 사용자가 정한다. 선택 후에도 엔진의 팀 accept·TCP ACK·SSH exit 0이 xsm의 사용자 승인이나 실제 상대 회신을 대신하지 않는다. P12 진입은 [execution.md](execution.md)의 G04/05/06/07/09/10/11 및 D12 전제를 별도로 만족해야 한다. 이번 갱신은 로컬 gate 판정을 바꾸지 않으며, D12 미선택 및 G11 미완으로 P12는 전제 미충족이다.
@@ -207,7 +207,7 @@ ssh -oBatchMode=yes -oConnectTimeout=5 jaesol-macmini /usr/bin/python3 -
 # stdin의 읽기 전용 probe: hostname/버전/선택 repo status/native metadata.
 # git 조회는 GIT_OPTIONAL_LOCKS=0, 프로필을 시작하는 명령은 사용하지 않음.
 
-/usr/bin/python3 docs/references/reason-network/probe_engine.py \
+/usr/bin/python3 <저장소 밖 조사 기록>/probe_engine.py \
   --engine /Users/jaesolshin/.reason/bin/reason-network \
   --output /tmp/p11-reason-ipc-20261028.json
 

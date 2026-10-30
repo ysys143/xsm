@@ -3,7 +3,7 @@
 - 상태: Proposed
 - 관련 목표: G2, G5, G6
 - 작성일: 2026-10-24
-- 역공학 추적: R02, R24, R25, R26, R27, R38
+- 비교 근거: [Reason 비교 노트](../references/reason.md)
 - 기존 결정 효력: 이 문서는 아직 Accepted ADR을 대체하지 않는다.
 
 ## 질문
@@ -16,7 +16,7 @@ Reason의 ask_user는 about으로 받은 동료 요청 원문을 먼저 보여 �
 
 머신 서명은 해당 머신이 답을 기록했다는 증거다. 같은 사용자 권한의 프로그램 전체를 막는 인증 수단은 아니다. 사람이 보지 못한 잘린 원문까지 승인됐다고 해석해서도 안 된다. 플랫폼별 화면 표시 범위의 한계가 있다.
 
-후속 [격리 실행](../references/reason-network/followup-findings.md)에서 OS 알림 명령의 완료 전에 `popped up` 응답이 오고, 나중에 명령이 실패해도 빈도 제한을 소모함을 0.12.10·0.12.11에서 확인했다. 인증 finisher의 pending 파일 교체 조건에서도 이전 결과 저장 경로를 관측했다. 실제 OS UI나 실제 다중 CLI 경쟁을 입증한 것은 아니며, 답·현재 요청·적용 단계의 결속을 분리할 근거다.
+공개 엔진의 격리 시험에서 OS 알림 명령의 완료 전에 `popped up` 응답이 오고, 나중에 명령이 실패해도 빈도 제한을 소모함을 0.12.10·0.12.11에서 확인했다. 실제 OS UI나 실제 다중 CLI 경쟁을 입증한 것은 아니며, 답·현재 요청·적용 단계의 결속을 분리할 근거다.
 
 xsm도 [MCP person_answer·elicitation](../../xsm/mcp.py), [consent](../../xsm/consent.py), [channel의 결정](../../xsm/channel.py), [worker 승인](../../xsm/workers.py)을 구현한다. 새로운 사용자 질문 기능을 처음 추가하는 문제가 아니라 여러 승인 경로의 수집·출처·재대기 계약을 일치시키는 문제다.
 
@@ -64,13 +64,13 @@ B를 제안한다. 자체 UI는 검증된 선택적 어댑터이며 기본 필�
 
 ## 근거
 
-[Reason 역공학 보고서](../references/reason-network.md), [전체 추적표](../references/reason-network/README.md), [실제 비교 증거](../../deliverables/xsm-reason-live-comparison-2026-10-23/evidence.json).
+[Reason 비교 노트](../references/reason.md), [실제 비교 증거](../../deliverables/xsm-reason-live-comparison-2026-10-23/evidence.json).
 
 ## 토론 기록
 
 | 라운드 | 참가자 | 입장 | 근거 | 반론/응답 |
 |---|---|---|---|---|
-| 0 | 코디네이터 | 역공학에 근거한 제안 작성. 채택 결정은 미정 | 위 코드·실행 근거와 R 항목 | 미검증 경로와 기존 구현을 별도 표시 |
+| 0 | 코디네이터 | Reason 비교 조사에 근거한 제안 작성. 채택 결정은 미정 | 위 코드·실행 근거 | 미검증 경로와 기존 구현을 별도 표시 |
 
 ## 결정
 
