@@ -1,6 +1,6 @@
 # 로컬 변경 검토와 복구 자료
 
-이 문서는 미커밋 구현의 검토 자료다. 배포판이 아니며 P12 원격 제품 통합, 실제 UI 관측, 전체 여정의 완료 판정은 남아 있다. 전체 진행은 [현재 체크포인트](current-handoff.md)와 [조건별 증거 색인](completion-ledger.md)을 따른다.
+이 문서는 미커밋 구현의 검토 자료다. 배포판이 아니며 P12 원격 제품 통합, 실제 UI 관측, 전체 여정의 완료 판정은 남아 있다. 전체 진행은 [현재 체크포인트](current-handoff.md)와 [조건별 증거 색인](../completion-ledger.md)을 따른다.
 
 ## 사용 경로의 변경
 
@@ -11,18 +11,18 @@
 - 명시적으로 만든 `owned` 런타임은 발신자·업무별 대화를 유지한다. overload·대기 취소·native 종료를 구분하고, 저장된 답은 모델 재실행 없이 조회하거나 재송신한다.
 - 설치·진단은 설정 쓰기, 런타임 로딩, 실제 첫 왕복을 나눠 표시한다. 설정 파일에 도구가 있다는 이유만으로 수신 능력을 확인했다고 표시하지 않는다.
 
-CLI와 MCP의 상세 인자는 [공통 메시징 안내](../../../skills/xsm/references/messaging.md)에 있다. 신규 traffic 정책의 기본값은 observe다. 이번 구현이 전역 차단 기준이나 새로운 원격 backend를 활성화하지는 않았다.
+CLI와 MCP의 상세 인자는 [공통 메시징 안내](../../../../skills/xsm/references/messaging.md)에 있다. 신규 traffic 정책의 기본값은 observe다. 이번 구현이 전역 차단 기준이나 새로운 원격 backend를 활성화하지는 않았다.
 
 ## 확인 범위
 
-[최신 로컬 결과](../../../deliverables/p13-live/doctor-privacy-v2-regression.json)는 기존 설치·회신·수신 개선과 doctor 원문 노출 수정을 포함한다. Python 3.9.6의 1700개/435.648초와 Python 3.14.6의 1700개/319.740초 모두 OK이며 skip0이다. 고정본315파일과 관련135개 primary의 hash를 확인했다. 첫1700 full의 테스트 홈 fixture 오류와 정정, 이전1697 및 그 이전 결과를 각 source 이력으로 보존한다. 제품 delta의 actual Opus5.5 검토와 postfix 실제CLI 검증도 완료했다. 원격 제품 통합과 실제 UI 성공은 이 검사에 포함되지 않는다.
+[최신 로컬 결과](../../../../deliverables/p13-live/doctor-privacy-v2-regression.json)는 기존 설치·회신·수신 개선과 doctor 원문 노출 수정을 포함한다. Python 3.9.6의 1700개/435.648초와 Python 3.14.6의 1700개/319.740초 모두 OK이며 skip0이다. 고정본315파일과 관련135개 primary의 hash를 확인했다. 첫1700 full의 테스트 홈 fixture 오류와 정정, 이전1697 및 그 이전 결과를 각 source 이력으로 보존한다. 제품 delta의 actual Opus5.5 검토와 postfix 실제CLI 검증도 완료했다. 원격 제품 통합과 실제 UI 성공은 이 검사에 포함되지 않는다.
 
 실제 native 증거는 Claude/Codex의 첨부 읽기·회신, 서로 다른 Codex 홈과 부모의 직접 협업, 질문 뒤 독립 작업을 마친 다음 같은 ID로 늦은 답 회수, 수정본과 옛 사본의 별도 검토, owned 대화 기억·동시 실행·저장 답 회수, 살아 있는 구버전 MCP를 보존한 업그레이드를 포함한다. 각 실행의 설정 보정·지원하지 않은 셀·실패와 원인 미확정 프로필 drift는 원 보고서에 남아 있다.
 
 - [B05 통합·검토 지적과 수정](gates/B05-local-integration.md)
-- [기존 MCP를 살려 둔 업그레이드](../../../deliverables/p10-live/native-upgrade.md)
-- [두 물리 머신 Reason 엔진 비교](../../../deliverables/p11-live/C-native-roundtrip-20261029.md)
-- [원격 후보 비교와 미확보 환경](remote-decision.md)
+- [기존 MCP를 살려 둔 업그레이드](../../../../deliverables/p10-live/native-upgrade.md)
+- [두 물리 머신 Reason 엔진 비교](../../../../deliverables/p11-live/C-native-roundtrip-20261029.md)
+- [원격 후보 비교와 미확보 환경](../remote-decision.md)
 
 두 머신의 carrier 성공은 원격 후보 발견·선택·승인·첨부·후속까지 통합된 제품의 성공과 구분한다. C의 소유 프로세스에 한정한 UDP 차단·CONNECT proxy·bootstrap 뒤 SSH 차단은 실제 native 표본을 추가했지만, 다른 후보와 전체 네트워크 환경으로 확대하지 않는다. 확정한 D12 방향의 P12 제품 구현과 실제 UI·다른 NAT·전체 제한 환경·자체 relay 조건이 남아 있어 전체 릴리스 기준은 미충족이다.
 

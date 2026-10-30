@@ -25,15 +25,17 @@ from pathlib import Path
 import re
 import sys
 
-PLAN = 'docs/plan/reason-inspired-adrs/plan.json'
-SPEC = 'docs/plan/reason-inspired-adrs/spec.md'
-BASE = 'docs/plan/reason-inspired-adrs/'
+PLAN = 'docs/plan/collaboration/plan.json'
+SPEC = 'docs/plan/collaboration/spec.md'
+BASE = 'docs/plan/collaboration/'
 LEDGER = BASE + 'completion-ledger.json'
 REPORT = BASE + 'completion-ledger.md'
-# Current-HEAD full regression after ADR21 (2026-10-30). It rebinds fixture/process
+# Full regression of the 0.5.0 release source (2026-10-30). It rebinds fixture/process
 # cells only: native/UI/physical runs were made on earlier sources.
-REBIND = 'deliverables/ledger-rebind-20261030/'
+REBIND = 'deliverables/ledger-rebind-0.5.0/'
 ADR21 = 'deliverables/adr0021/'
+# This audit under its current and earlier name; no test reads either.
+AUDIT_SCRIPTS = {'scripts/audit-collaboration-plan.py', 'scripts/audit-reason-plan.py'}
 ADR21_RELEASE_SHA = 'f17f03fafcdf3a31e374d6cbc0ccbbbd8000ba6a7eba5d9b44605e742c409aed'
 STATES = {'proven', 'partial', 'missing', 'contradicted'}
 LEVELS = {'fixture': 'fixture', 'subprocess': 'process', 'harness': 'native',
@@ -312,9 +314,9 @@ def head_rebind_regression_checks(root, data):
     manifest_file = local(root, REBIND + 'manifest.json')
     # This audit is not an input of the suite it audits (no test reads scripts/);
     # its own checks are --self-test and --predicate-self-test.
-    manifest = {p: h for p, h in load_json(manifest_file).items() if p != 'scripts/audit-reason-plan.py'}
+    manifest = {p: h for p, h in load_json(manifest_file).items() if p not in AUDIT_SCRIPTS}
     wanted = {str(p.relative_to(root)) for pattern in ('xsm/*.py', 'tests/test_*.py', 'hooks/*', 'skills/xsm/**/*.md', 'scripts/*.py')
-              for p in root.glob(pattern) if p.is_file()} - {'scripts/audit-reason-plan.py'}
+              for p in root.glob(pattern) if p.is_file()} - AUDIT_SCRIPTS
     runs = data['full_regression']
     logs = []
     for run in runs:
@@ -1617,12 +1619,12 @@ def catalog(root):
         result[key] = fact(root, path, levels, **kwargs)
     for number, name in ((0, 'baseline'), (1, 'identity-integrity'), (2, 'connection-intent'),
                          (3, 'question-interface'), (4, 'recoverable-handoff'), (5, 'directory')):
-        add('gate-G%02d' % number, BASE + 'gates/G%02d-%s.md' % (number, name), ('fixture', 'process'),
+        add('gate-G%02d' % number, BASE + 'records/gates/G%02d-%s.md' % (number, name), ('fixture', 'process'),
             scope='게이트 문서에 기록된 해당 로컬 revision/검사만; 조건 전체·현재 통합·다른 환경으로 승격 금지',
             predicate=lambda d: {'reported_gate_result': 'passed' in d, 'execution_result_recorded': 'OK' in d or '통과' in d})
     for number, name in ((6, 'material-copies'), (8, 'owned-runtime'),
                          (9, 'provenance-traffic'), (10, 'installation-evidence')):
-        add('gate-G%02d' % number, BASE + 'gates/G%02d-%s.md' % (number, name), ('fixture', 'process'),
+        add('gate-G%02d' % number, BASE + 'records/gates/G%02d-%s.md' % (number, name), ('fixture', 'process'),
             scope=('clean native CLI 등록/제거 반례·91개씩 및 새1667에 결속된 local G10만; clean 로그인/첫모델/UI/전체여정 아님'
                    if number == 10 else 'B05에 연결된 해당 로컬 기술 gate만; 전체 수용 조건/UI/원격 완료 아님'),
             predicate=lambda d, n=number: ({'local_pass': 'passed' in d and 'clean-install.final.json' in d,
@@ -1630,7 +1632,7 @@ def catalog(root):
                                             'clean_LLM_not_run': '미실행' in d} if n == 10 else
                                           {'local_pass': 'passed' in d and 'B05-local-integration.md' in d,
                                            'bounded_scope': '전체 70개' in d}))
-    add('b05-local-integration', BASE + 'gates/B05-local-integration.md', ('fixture', 'process'),
+    add('b05-local-integration', BASE + 'records/gates/B05-local-integration.md', ('fixture', 'process'),
         scope='고정본 두 Python 1648 OK 기록; 앞선 1629 실패/1648 matrix 오류와 구별. G13 최종 회귀 아님',
         predicate=lambda d: {'both_runs': all(s in d for s in ('1648개 / 309.054초 / OK', '1648개 / 424.796초 / OK')),
                              'manifest_binding': 'final-source-manifest.json' in d,
@@ -1645,7 +1647,7 @@ def catalog(root):
     add('b03-regression', 'deliverables/b03-live/closure.json', ('fixture', 'process'),
         scope='B03 고정 source에서 1305개 회귀; P04 이후 조건 미포함',
         predicate=lambda d: {'passed_record': d['status'] == 'passed', 'later_scope_retained': bool(d['remaining'])})
-    add('b04-regression', BASE + 'gates/G04-recoverable-handoff.md', ('fixture', 'process'),
+    add('b04-regression', BASE + 'records/gates/G04-recoverable-handoff.md', ('fixture', 'process'),
         scope='B04 frozen2: 두 Python 1517 OK 기록. 첫 실패 기록을 최종 성공으로 읽지 않음',
         predicate=lambda d: {'frozen2_record': '1517' in d and 'frozen2' in d, 'scope_local': '전체 70개' in d})
     add('b04-first-failure', 'deliverables/b04-live/frozen-regression.json',
@@ -1744,7 +1746,7 @@ def catalog(root):
     add('p10-controller-arrival', 'deliverables/p10-live/controller-native-arrival.json',
         scope='R1 보존/R2 actual main 도착을 native-upgrade 원 id/reply_to/body와 대조. provenance unchecked·identity/permission승격0·추가humanprompt0; goal auto 활성의 wake 원인은 미확정',
         predicate=lambda d: arrival_checks(root, d))
-    add('local-release-preparation', BASE + 'release-candidate.md',
+    add('local-release-preparation', BASE + 'records/release-candidate.md',
         scope='미커밋 로컬 변경·복구/검토 문서만. 릴리스/배포/후속 변경 전체 회귀/원격/UI 완료 아님',
         execution='local-preparation-only',
         predicate=lambda d: {'not_a_release': '배포판이 아니며' in d,
@@ -2637,10 +2639,10 @@ def markdown(ledger):
              '- `partial`: 관련 실행/로컬 검증이 있으나 조건·revision·환경 전체는 남음.',
              '- `missing`: 필요한 실행 증거가 없음. `contradicted`: 해당 범위의 유효 반대 증거가 있음.', '',
              '검사 명령:', '', '```sh',
-             'python3 scripts/audit-reason-plan.py --structure-only  # 색인 무결성: exit 0, 제품 완료 아님',
-             'python3 scripts/audit-reason-plan.py                   # 미완/필수 gate 미충족: exit 1이 정상',
-             'python3 scripts/audit-reason-plan.py --self-test       # in-memory 변이 검출',
-             'python3 scripts/audit-reason-plan.py --refresh --structure-only', '```', '',
+             'python3 scripts/audit-collaboration-plan.py --structure-only  # 색인 무결성: exit 0, 제품 완료 아님',
+             'python3 scripts/audit-collaboration-plan.py                   # 미완/필수 gate 미충족: exit 1이 정상',
+             'python3 scripts/audit-collaboration-plan.py --self-test       # in-memory 변이 검출',
+             'python3 scripts/audit-collaboration-plan.py --refresh --structure-only', '```', '',
              '현재 행 분류(70+20+9): ' + ', '.join('%s %d' % pair for pair in ledger['status_counts'].items()) + '.', '',
              '2026-10-30 재결속: 이전 증명은 doctor-privacy v2(1697) 소스에 묶여 있었고 ADR21 통합으로 제품 모듈 15개가 바뀌었다. '
              '현재 HEAD 동결본의 두 Python 전체 회귀(`deliverables/ledger-rebind-20261030/`)로 구체 반례가 있는 fixture/process 셀만 다시 묶었다. '

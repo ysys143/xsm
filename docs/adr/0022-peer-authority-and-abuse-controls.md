@@ -3,7 +3,7 @@
 - 상태: Proposed
 - 관련 목표: G2, G5, G6
 - 작성일: 2026-10-24
-- 역공학 추적: R05, R24, R28, R29, R38, R43
+- 비교 근거: [Reason 비교 노트](../references/reason.md)
 - 기존 결정 효력: 이 문서는 아직 Accepted ADR을 대체하지 않는다.
 
 ## 질문
@@ -61,13 +61,13 @@ B를 제안한다. 동료 요청이 권한을 부여하지 않는다는 지침�
 
 ## 근거
 
-[Reason 역공학 보고서](../references/reason-network.md), [전체 추적표](../references/reason-network/README.md), [실제 설치 평가](../../deliverables/reason-network-evaluation-2026-10-23.md), [실제 비교](../../deliverables/xsm-reason-live-comparison-2026-10-23.md).
+[Reason 비교 노트](../references/reason.md), [실제 설치 평가](../../deliverables/reason-network-evaluation-2026-10-23.md), [실제 비교](../../deliverables/xsm-reason-live-comparison-2026-10-23.md).
 
 ## 토론 기록
 
 | 라운드 | 참가자 | 입장 | 근거 | 반론/응답 |
 |---|---|---|---|---|
-| 0 | 코디네이터 | 역공학에 근거한 제안 작성. 채택 결정은 미정 | 위 코드·실행 근거와 R 항목 | 미검증·기존 사용자 결정·운영 비용을 분리 |
+| 0 | 코디네이터 | Reason 비교 조사에 근거한 제안 작성. 채택 결정은 미정 | 위 코드·실행 근거 | 미검증·기존 사용자 결정·운영 비용을 분리 |
 
 ## 결정
 

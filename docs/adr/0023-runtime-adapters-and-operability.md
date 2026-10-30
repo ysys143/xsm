@@ -3,7 +3,7 @@
 - 상태: Proposed
 - 관련 목표: G1, G2, G3, G4, C1
 - 작성일: 2026-10-24
-- 역공학 추적: R01, R09, R16, R33, R34, R35, R36, R37, R38, R39, R40, R41, R42
+- 비교 근거: [Reason 비교 노트](../references/reason.md)
 - 기존 결정 효력: 이 문서는 아직 Accepted ADR을 대체하지 않는다.
 
 ## 질문
@@ -14,7 +14,7 @@
 
 Reason의 공개 엔진은 정적 바이너리, MCP·훅·플러그인 어댑터, 설정 병합·원본 백업·원자적 교체·설정 권한 유지, 선택적 로그인 서비스와 doctor를 제공한다. 오래 실행 중인 MCP는 데몬에 재접속하고 등록을 복원한다. tincan에서의 이동은 이전 경로·소켓을 연결해 기존 세션을 유지한다. [setup.rs](https://github.com/reason-machines/reason-network/blob/b3557ff454cd26a04c2a18804ba83ae5db8b119d/src/setup.rs), [client.rs](https://github.com/reason-machines/reason-network/blob/b3557ff454cd26a04c2a18804ba83ae5db8b119d/src/client.rs), [paths.rs](https://github.com/reason-machines/reason-network/blob/b3557ff454cd26a04c2a18804ba83ae5db8b119d/src/paths.rs).
 
-설치 스크립트는 체크섬을 검사하고 macOS에서 기존 개발자 팀 서명을 유지하려 한다. standalone 자동 업데이트와 Reason CLI가 핀한 엔진의 업데이트 소유자가 다르다. 공개 엔진은 MIT OR Apache-2.0이고 NOTICE는 tincan 출처를 명시한다. 비공개 CLI의 공개 저장소는 없지만 설치 바이너리 내 JavaScript 여섯 모듈의 정적 분석은 수행했다. 로그인 서비스·호스팅 MCP 서버의 내부 구현은 얻지 못했다. [배포물 분석](../references/reason-network/cli-analysis.md), [공식 공개 범위](https://reasonmachines.com/network), [NOTICE](https://github.com/reason-machines/reason-network/blob/b3557ff454cd26a04c2a18804ba83ae5db8b119d/NOTICE).
+설치 스크립트는 체크섬을 검사하고 macOS에서 기존 개발자 팀 서명을 유지하려 한다. standalone 자동 업데이트와 Reason CLI가 핀한 엔진의 업데이트 소유자가 다르다. 공개 엔진은 MIT OR Apache-2.0이고 NOTICE는 tincan 출처를 명시한다. CLI와 로그인 서비스·호스팅 MCP 서버는 공개되지 않았으며 이 비교에서 다루지 않는다. [공식 공개 범위](https://reasonmachines.com/network), [NOTICE](https://github.com/reason-machines/reason-network/blob/b3557ff454cd26a04c2a18804ba83ae5db8b119d/NOTICE).
 
 실제 설치에서는 로그인·가입을 사용자가 직접 했고 Codex 훅 신뢰도 사용자 승인이 필요했다. serve Claude의 기본 MCP 부재·일반 Codex 다중 홈 전달 실패·일부 상태 등록 실패가 있었다. 자동 설치가 모든 기존 세션의 정상 참여를 증명하지 않는다. xsm의 [install](../../xsm/install.py), [identity](../../xsm/identity.py), [adapters](../../xsm/adapters.py), [probe](../../xsm/probe.py)와 비교해야 한다.
 
@@ -81,17 +81,13 @@ B를 제안한다.
 
 ## 근거
 
-[Reason 역공학 보고서](../references/reason-network.md), [전체 추적표](../references/reason-network/README.md), [실제 설치 평가](../../deliverables/reason-network-evaluation-2026-10-23.md), [실제 비교](../../deliverables/xsm-reason-live-comparison-2026-10-23.md).
-
-2026-10-24 [Ghidra 후속 분석](../references/reason-network/ghidra-native.md)에서는 패키지 설치가 exit 0이어도 native decompiler가 없어 실제 기능 호출이 실패했다. 같은 버전 소스로 복구한 뒤 선택 함수 추출로 동작을 확인했다. 또한 엔진의 PostToolUse 문자열을 참조하는 linker 함수 두 곳을 분석했다. 설치·능력 선언과 실제 경로의 검증을 분리하는 근거로 남긴다.
-
-이후 두 바이너리의 시간 제한 없는 전체 자동 분석·함수 목록 추출·저장을 완료했다. [후속 실행](../references/reason-network/followup-findings.md)에는 공개 E2E 7종의 실패 보존·구버전 시험체 정정, 배포 워커의 과부하·복구, 인증 완료 모듈의 잠금·요청 결속 관측을 추가했다. 합성 모델·한 물리 호스트의 성공을 기존 일반 Codex 실패의 해결로 해석하지 않는다.
+[Reason 비교 노트](../references/reason.md), [실제 설치 평가](../../deliverables/reason-network-evaluation-2026-10-23.md), [실제 비교](../../deliverables/xsm-reason-live-comparison-2026-10-23.md).
 
 ## 토론 기록
 
 | 라운드 | 참가자 | 입장 | 근거 | 반론/응답 |
 |---|---|---|---|---|
-| 0 | 코디네이터 | 역공학에 근거한 제안 작성. 채택 결정은 미정 | 위 코드·실행 근거와 R 항목 | 미검증·기존 사용자 결정·운영 비용을 분리 |
+| 0 | 코디네이터 | Reason 비교 조사에 근거한 제안 작성. 채택 결정은 미정 | 위 코드·실행 근거 | 미검증·기존 사용자 결정·운영 비용을 분리 |
 
 ## 결정
 
