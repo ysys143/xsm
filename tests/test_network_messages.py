@@ -133,6 +133,32 @@ class NetworkMessagesTest(unittest.TestCase):
         self.assertEqual(self.gb.status(A, packet["id"], dict(self.ap, session_id="other")), {"status":"not-found"})
         self.assertTrue(self.gb.ingress_record(packet["id"])["verified"])
 
+    def _handed_over(self, old, new):
+        from xsm import handover
+        self.store(new)
+        self.native(new)
+        paths.write_json(handover._file(handoff._identity(old)), {
+            "t": time.time(), "from_identity": handoff._identity(old),
+            "to_identity": handoff._identity(new), "letter": "", "shown": True})
+
+    def test_a_message_for_a_handed_over_session_is_stored_for_its_successor(self):
+        b2 = self.row("receiver-b2", home=self.b["home"])
+        self._handed_over(self.b, b2)
+        packet = self.prepare(kind="task")
+        self.assertEqual(self.gb.receive(A, packet)["status"], "queued")
+        self.assertEqual(handoff.status(b2, packet["id"])["status"], "pending")
+        self.assertEqual(handoff.status(self.b, packet["id"])["status"], "not-found")
+
+    def test_a_reply_to_a_handed_over_question_reaches_the_successor(self):
+        packet = self.prepare(kind="task")
+        self.gb.receive(A, packet)
+        a2 = self.row("sender-a2")
+        self._handed_over(self.a, a2)
+        reply = self.gb.prepare(self.b, self.ap, "늦은 답", request_id="reply-late", kind="reply",
+                                reply_to=packet["id"], outcome="succeeded")
+        self.assertEqual(self.ga.receive(B, reply)["status"], "queued")
+        self.assertEqual(handoff.status(a2, "reply-late")["status"], "pending")
+
     def test_duplicate_preserves_claim_ack_and_original_raw_body(self):
         packet = self.prepare(wake=False)
         self.gb.receive(A, packet)

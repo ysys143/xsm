@@ -444,6 +444,22 @@ def recover(receiver, *, owner_alive=None, retention=None):
     return results
 
 
+def move_out(receiver, to):
+    """Close every message not yet acknowledged here as moved to `to` (a
+    handover, handover.py) and return their records. Nothing is deleted: the
+    original stays, marked with where it went."""
+    target = _identity(to)
+    moved = []
+    with _locked(receiver) as folder:
+        for record in _records(folder, receiver):
+            if record['state'] == 'acknowledged':
+                continue
+            moved.append(copy.deepcopy(record))
+            record.update(state='acknowledged', claim=None, moved_to=target, moved_at=time.time())
+            _write(os.path.join(folder, record['id'] + '.json'), record)
+    return moved
+
+
 def status(receiver, message_id):
     """Read only this endpoint's message. Other homes/CIDs see not-found."""
     record = _read(_folder(receiver), _id(message_id), receiver)

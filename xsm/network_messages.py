@@ -162,6 +162,15 @@ def _owner(local):
     return handoff._identity(local)
 
 
+def _handed_to(original, local):
+    """A reply to a question the original asker handed over (handover.py)."""
+    from . import handover
+    try:
+        return handover.succeeds(local, original)
+    except (ValueError, TypeError):
+        return False
+
+
 def _private(info, directory=False):
     expected = stat.S_ISDIR if directory else stat.S_ISREG
     if not expected(info.st_mode) or info.st_uid != os.getuid() \
@@ -637,13 +646,23 @@ class Gateway:
         snapshot["home"] = _owner(local)["home"]
         return hashlib.sha256(_json(snapshot)).hexdigest()
 
+    def _receiving(self, handle):
+        """The exact local record for a handle, or the session the one it names
+        handed its place over to (handover.py): never a name fallback."""
+        from . import handover
+        local = network_directory.resolve_local(handle, self.node_id)
+        if local is not None:
+            nxt, note = handover.follow(local)
+            return nxt if note else local
+        return handover.for_handle(handle)
+
     def _checked_target(self, origin, packet):
-        local = network_directory.resolve_local(packet["receiver"], self.node_id)
+        local = self._receiving(packet["receiver"])
         if local is None:
             raise GatewayError("local-target-unverified")
         before = self._authority_snapshot(local)
         allowed = self._permission(origin, packet, local)
-        current = network_directory.resolve_local(packet["receiver"], self.node_id)
+        current = self._receiving(packet["receiver"])
         if current is None or self._authority_snapshot(current) != before:
             raise GatewayError("local-target-changed-during-permission")
         return current, allowed
@@ -659,7 +678,8 @@ class Gateway:
             local, allowed = self._checked_target(origin, packet)
             original = self._load("outbound", packet["reply_to"]) if packet["kind"] == "reply" else None
             reverse = packet["kind"] == "reply" and self._reverse(original, packet) \
-                and _owner(original["local"]) == _owner(local)
+                and (_owner(original["local"]) == _owner(local)
+                     or _handed_to(original["local"], local))
             if not allowed and not reverse:
                 raise GatewayError("local-permission-denied")
             if packet["kind"] == "reply" and not reverse:

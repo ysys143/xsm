@@ -433,7 +433,12 @@ def _with_bounces(runtime: str, me: dict | None, out: dict | None) -> dict | Non
         board = board_notice.notice(me)
     except Exception:                   # noqa: BLE001 - nor a board line
         board = None
-    notes = "\n\n".join(n for n in (notes, board) if n)
+    try:
+        from . import handover
+        letter = handover.notice(me)
+    except Exception:                   # noqa: BLE001 - nor a handover letter
+        letter = None
+    notes = "\n\n".join(n for n in (letter, notes, board) if n)
     if not notes:
         return out
     if out is None:

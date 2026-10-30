@@ -50,7 +50,7 @@ MESSAGING = {"readOnlyHint": False, "destructiveHint": False, "openWorldHint": F
 # an exact caller identity, never a neighbour guessed from a shared daemon pid
 # (P01 item 2, A17-02, A23-03).
 WIDENING = ("xsm_publish", "xsm_connect", "xsm_grant", "xsm_approve", "xsm_link", "xsm_join", "xsm_reach",
-            "xsm_team")
+            "xsm_team", "xsm_handover")
 # Tools that read a file on the caller's behalf. The path is taken relative to
 # the caller's own folder, so a guessed neighbour would have another session's
 # files read for it -- the second thing spec P01 item 2 puts behind an exact
@@ -212,6 +212,18 @@ TOOLS = [
                                                      "remove/lead: a member's name or ref"},
          "reason": {"type": "string"}},
          "required": ["action"]}, "annotations": MESSAGING},
+    {"name": "xsm_handover",
+     "description": ("Hand this session's xsm place over to another session, when your user asks "
+                     "(\"hand over to OO\"): its team places and lead's seat, its owner/<name> "
+                     "board items, its unread DMs, its pending questions, and your context summary "
+                     "move to that session, and DMs to this session reach it from then on. Your "
+                     "user confirms in a form. show lists the handovers made to this session."),
+     "inputSchema": {"type": "object", "properties": {
+         "action": {"type": "string", "enum": ["hand_over", "show"], "default": "hand_over"},
+         "target": {"type": "string", "description": "the session that takes over"},
+         "summary": {"type": "string", "description": "what the successor needs to continue: "
+                     "goal, state, decisions and why, open work, who waits on what"}},
+         "required": []}, "annotations": MESSAGING},
     {"name": "xsm_board",
      "description": ("A team's board: what is true for the team now (decisions in force, who owns "
                      "what, progress), one entry per item. show renders it; set writes an item "
@@ -327,7 +339,7 @@ for _tool in TOOLS:
                 "description": "Explicitly carry UTF-8 copies in the body if peer files support is unknown; never automatic."},
             "request_id": {"type": "string"}})
     if _tool["name"] in ("xsm_link", "xsm_join", "xsm_reach", "xsm_grant", "xsm_approve", "xsm_decide", "xsm_doc_endorse",
-                         "xsm_team"):
+                         "xsm_team", "xsm_handover"):
         _tool["inputSchema"]["properties"]["answer_request"] = {"type": "string"}
         _tool["inputSchema"]["properties"]["original_question"] = {"type": "string"}
         _tool["inputSchema"]["properties"]["decision_key"] = {
@@ -840,7 +852,7 @@ class Server:
             author["identity_basis"] = self.ctx.basis
             author["identity_certainty"] = self.ctx.certainty
         form_tools = ("xsm_link", "xsm_join", "xsm_reach", "xsm_grant", "xsm_approve",
-                      "xsm_decide", "xsm_doc_endorse", "xsm_team")
+                      "xsm_decide", "xsm_doc_endorse", "xsm_team", "xsm_handover")
         decision_call = None
         if name in form_tools:
             from . import decisions
@@ -1126,6 +1138,8 @@ class Server:
             return self.endorse(me, args)
         if name == "xsm_team":
             return self.team(me, args)
+        if name == "xsm_handover":
+            return self.handover(me, args)
         if name == "xsm_board":
             from . import board
             try:
@@ -1425,6 +1439,39 @@ class Server:
             raise channel.ChannelError(str(exc))
         return ("%s: the sessions in %s and %s can talk, both ways, until unlinked; run `xsm list` "
                 "to see them" % ("linked" if added else "already linked", root, other))
+
+    def handover(self, me: dict, args: dict) -> str:
+        """xsm_handover: the same as `xsm handover`; the user confirms in a form."""
+        from . import handover, resolve
+        if args.get("action") == "show":
+            rows = handover.received(me)
+            return "\n\n".join(r["letter"] for r in rows) if rows else \
+                "no session handed its place over to this one"
+        word = (args.get("target") or "").strip()
+        summary = (args.get("summary") or "").strip()
+        if not word or not summary:
+            raise channel.ChannelError("target (the session that takes over) and summary (what it "
+                                       "needs to continue) are both required")
+        with probe.quick():
+            found = resolve.resolve(word)
+        if not found.ok:
+            raise channel.ChannelError(found.reason)
+        target = found.record
+        try:
+            handover._check(me, target)
+            ok, refusal = self.allowed(
+                me, "%s@%s asks to hand its xsm place over to %s: its teams and lead's seat, its "
+                "board items, unread DMs and pending questions move there, and DMs to it reach "
+                "that session from now on.\nAllow it?" % (me.get("name"), me.get("alias"),
+                                                          handover.label(target)),
+                "xsm handover %s --summary-file <file>" % shlex.quote(word),
+                ("handover", target.get("name") or word))
+            if not ok:
+                return refusal + "; nothing moved"
+            rec = handover.hand_over(me, target, summary, "your user approved in the form")
+        except handover.HandoverError as exc:
+            raise channel.ChannelError(str(exc))
+        return "\n".join([handover.summary_line(rec)] + (rec.get("notes") or []))
 
     def team(self, me: dict, args: dict) -> str:
         """xsm_team: the same rules as `xsm team`; a decision that is the

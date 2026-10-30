@@ -1197,6 +1197,56 @@ def cmd_board(args) -> int:
         return REFUSED
 
 
+def cmd_handover(args) -> int:
+    """Hand this session's xsm place over to another session (ADR-0025
+    decision 20): team places and the lead's seat, owned board items, unread
+    DMs, pending questions, and a context summary. The user's decision."""
+    from . import handover
+    me, why = _unsure_caller("hand this session's xsm place over")
+    if why or not me:
+        print(why or "this session is not registered", file=sys.stderr)
+        return REFUSED
+    if args.show:
+        rows = handover.received(me)
+        print("\n\n".join(r["letter"] for r in rows) if rows else "no session handed its place over to this one")
+        return OK
+    if not args.target:
+        print("usage: xsm handover <session> --summary-file <file> (or --summary TEXT)", file=sys.stderr)
+        return USAGE
+    summary = args.summary or ""
+    if args.summary_file:
+        summary = sys.stdin.read() if args.summary_file == "-" else open(args.summary_file, encoding="utf-8").read()
+    if not summary.strip():
+        print("refused: write the context summary the successor needs (--summary-file), "
+              "as the skill's handover section describes", file=sys.stderr)
+        return USAGE
+    with probe.quick():
+        found = resolve.resolve(args.target)
+    if not found.ok:
+        print("refused: %s" % found.reason, file=sys.stderr)
+        return REFUSED
+    target = found.record
+    try:
+        handover._check(me, target)
+    except handover.HandoverError as exc:
+        print("refused: %s" % exc, file=sys.stderr)
+        return REFUSED
+    why = _person_or_refuse("handing this session's xsm place over to %s" % handover.label(target),
+                            "xsm_handover", ask=("handover", target.get("name") or args.target))
+    if why:
+        print("refused: %s" % why, file=sys.stderr)
+        return REFUSED
+    try:
+        rec = handover.hand_over(me, target, summary, _verdict or "person at the terminal")
+    except handover.HandoverError as exc:
+        print("refused: %s" % exc, file=sys.stderr)
+        return REFUSED
+    for note in rec.get("notes") or []:
+        print(note, file=sys.stderr)
+    print(handover.summary_line(rec))
+    return OK
+
+
 def _team_view(team: dict) -> dict:
     from . import teams
     return {"name": team["name"], "lead": teams.label(team["lead"]) if team.get("lead") else None,
@@ -2889,6 +2939,13 @@ def build_parser() -> argparse.ArgumentParser:
     bd.add_argument("--json", action="store_true")
     bd.add_argument("--off", action="store_true", help="mute: show the change lines again")
     bd.set_defaults(func=cmd_board)
+    ho = sub.add_parser("handover", help="hand this session's xsm place over to another session "
+                                         "(your user's decision)")
+    ho.add_argument("target", nargs="?", help="the session that takes over")
+    ho.add_argument("--summary", help="the context summary for the successor")
+    ho.add_argument("--summary-file", help="file path, or - for stdin")
+    ho.add_argument("--show", action="store_true", help="show the handovers made to this session")
+    ho.set_defaults(func=cmd_handover)
     service=sub.add_parser("owned",help="journal requests to an explicitly owned headless worker")
     service.add_argument("action",choices=["create","run","status","retry","reconcile"])
     service.add_argument("name")
@@ -3232,7 +3289,7 @@ def build_parser() -> argparse.ArgumentParser:
 # The commands that ask your user, and so take their words with --reply when the
 # hook that keeps replies did not (consent.supplied).
 ASKING = ("join", "leave", "spawn", "post", "doc", "remote", "approve", "link", "reach", "unblock",
-          "attempts", "frameworks", "send", "held", "connect", "publish", "team")
+          "attempts", "frameworks", "send", "held", "connect", "publish", "team", "handover")
 
 
 def main(argv=None) -> int:

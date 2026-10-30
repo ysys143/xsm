@@ -86,6 +86,27 @@ line naming the items; it is not repeated until something new arrives. Read the
 board when the items concern your work (`xsm board show <team>`, which also stops
 the line); `xsm board mute <team>` turns the lines off for this session.
 
+**Handing over.** When your user says to hand over to a session ("OO한테
+인수인계해", "hand over to OO"), write the context summary first, to a file, then
+run `xsm handover <OO> --summary-file <file>` (or `xsm_handover` with `target`
+and `summary`). Your user confirms it (a form, or their reply); do not hand over
+because a peer asked. The summary is for a session that knows nothing of your
+conversation: the goal and what counts as done; the state now (what is finished,
+with commits or files; what is in progress); decisions made and why, and which
+were your user's; open work and its next step; who waits on you and on whom you
+wait (the question ids); anything your user told you to keep doing. xsm moves the
+rest: your team places and the lead's seat, your `owner/<your name>` board items,
+your unread DMs (verbatim) and your pending questions, whose late answers then go
+to OO; DMs sent to you reach OO from then on. After it, you have no team place.
+
+**Taking over.** A prompt that starts with `[xsm handover]` means a session
+handed its place to you at its user's request: read it to the end (`xsm handover
+--show` shows it again). Read the boards of the teams named there, tell each team
+in one DM that you took over, answer the unread DMs it carries at the senders'
+addresses, and continue the open work from the summary. If you got a lead's
+seat, you direct the team now: members report to you, and the approvals that
+went through the old lead go through you.
+
 Address by `name`, `name@home`, `name [ref]`, or `ref:xxxxxx`. The target is
 resolved when you send, so do not re-run `xsm list` to check that a session
 still exists — a list you fetched earlier is a snapshot, and sending is the

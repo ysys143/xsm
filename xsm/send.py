@@ -347,9 +347,17 @@ def _send(target_spec: str, body: str, *, sender: dict | None = None, kind: str 
             registry.adopt_open_codex()
         found = (resolve.resolve(target_spec, caller=sender) if target_spec.startswith("candidate:")
                  else resolve.resolve(target_spec))
+    if not found.ok and found.status == "offline-only":
+        # A name only stopped sessions match may have been handed over (handover.py).
+        from . import handover
+        nxt = handover.follow_offline(found.candidates)
+        if nxt is not None:
+            found = resolve.Resolution("resolved", nxt)
     if not found.ok:
         return SendResult("refused", found.reason, candidates=found.candidates)
-    target = found.record or {}
+    from . import handover
+    target, _ = handover.follow(found.record or {})
+    target = target or {}
     if target.get("remote"):
         return _send(target["target"], body, sender=sender, kind=kind, reply_to=reply_to,
                      priority=priority, wait=wait, msg_id=msg_id, outcome=outcome,

@@ -385,9 +385,15 @@ def _serve(peer: str, request: dict, span=None) -> dict:
                          % (pairing["remote_project"], request.get("project"))}
     from . import resolve
     found = resolve.resolve(request.get("target") or "")
+    if not found.ok and found.status == "offline-only":
+        from . import handover
+        nxt = handover.follow_offline(found.candidates)
+        if nxt is not None:
+            found = resolve.Resolution("resolved", nxt)
     if not found.ok:
         return {"ok": False, "status": "refused", "error": found.reason}
-    target = found.record
+    from . import handover
+    target, _ = handover.follow(found.record)
     from .send import not_running
     stopped = not_running(target)
     if stopped:

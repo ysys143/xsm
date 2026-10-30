@@ -293,6 +293,16 @@ def ask(sender, target_spec, body, wait=0, request_id=None, priority="next",
         return _result(request_id, state="refused", reason=str(exc))
 
 
+def _answerer(sender, target):
+    """The asked session, or the one it handed its place over to (handover.py)."""
+    if _native(sender) == _native(target):
+        return True
+    if "home_id" in target or target.get("remote"):
+        return False
+    from . import handover
+    return handover.succeeds(sender, target)
+
+
 def expects_reply(receiver, sender, request_id):
     """Whether this exact pair has a stored request; read-only, not receive auth.
 
@@ -304,7 +314,7 @@ def expects_reply(receiver, sender, request_id):
         record = paths.read_json(_filename(request_id))
         return bool(record and record.get("id") == request_id
                     and _native(receiver) == _native(record["sender"])
-                    and _native(sender) == _native(record["target"]))
+                    and _answerer(sender, record["target"]))
     except (ValueError, KeyError, TypeError, AttributeError):
         return False
 
@@ -331,7 +341,7 @@ def record_reply(receiver, sender, header, body):
         with _locked(request_id) as filename:
             record = paths.read_json(filename)
             if not record or _native(receiver) != _native(record["sender"]) or \
-                    _native(sender) != _native(record["target"]):
+                    not _answerer(sender, record["target"]):
                 return False
             reply = {"id": reply_id, "body": body, "outcome": outcome,
                      "sender": _handle(sender), "receiver": _handle(receiver)}
