@@ -190,3 +190,102 @@ class HandoverTest(test_xsm.TempState):
             self.assertIn('handed over to next', server.call('xsm_handover', {'target': 'next', 'summary': 's'}))
         with mock.patch.object(server, 'session', return_value=self.new):
             self.assertIn('[xsm handover]', server.call('xsm_handover', {'action': 'show'}))
+
+
+MACHINE_A, MACHINE_B, MACHINE_C = 'a' * 64, 'b' * 64, 'c' * 64
+
+
+class RemoteHandoverTest(test_xsm.TempState):
+    """A question asked from another machine is answered by the successor
+    (user decision 2026-10-30: before 0.5.1)."""
+
+    def setUp(self):
+        super().setUp()
+        self.old = {'machine': MACHINE_B, 'runtime': 'codex', 'home_id': 'd' * 64, 'session_id': 'old-thread'}
+        self.new = dict(self.old, session_id='new-thread')
+
+    def test_a_machine_testifies_only_about_its_own_sessions(self):
+        from xsm import handover
+        with self.assertRaises(ValueError):
+            handover.receive_testimony(MACHINE_A, self.old, self.new)           # not B's word
+        with self.assertRaises(ValueError):
+            handover.receive_testimony(MACHINE_B, self.old, dict(self.new, machine=MACHINE_C))
+        with self.assertRaises(ValueError):
+            handover.receive_testimony(MACHINE_B, self.old, self.old)
+        self.assertEqual(handover.receive_testimony(MACHINE_B, self.old, self.new)['status'], 'stored')
+        self.assertEqual(handover.receive_testimony(MACHINE_B, self.old, self.new)['status'], 'kept')
+        other = dict(self.new, session_id='someone-else')
+        self.assertEqual(handover.receive_testimony(MACHINE_B, self.old, other)['status'], 'conflict')
+        self.assertTrue(handover.endpoint_succeeds(self.new, self.old))
+        self.assertFalse(handover.endpoint_succeeds(other, self.old))     # the first word stands
+
+    def test_testimony_is_followed_along_a_chain(self):
+        from xsm import handover
+        third = dict(self.old, session_id='third-thread')
+        self.assertFalse(handover.endpoint_succeeds(self.new, self.old))
+        handover.receive_testimony(MACHINE_B, self.old, self.new)
+        handover.receive_testimony(MACHINE_B, self.new, third)
+        self.assertTrue(handover.endpoint_succeeds(third, self.old))
+        self.assertFalse(handover.endpoint_succeeds(self.old, third))       # not backwards
+
+    def test_the_asking_machine_records_the_successors_answer(self):
+        from xsm import paths, questions, registry
+        home = self.tmp + '/codex'
+        os.makedirs(home)
+        asker = registry.by_session('codex', registry.upsert('codex', home, 'asker', os.getpid(),
+                                                             self.tmp, name='asker')['session_id'])
+        paths.write_json(questions._filename('rq'), {
+            'id': 'rq', 'sender': questions._handle(asker), 'target': dict(self.old), 'body': 'q',
+            'replies': [], 'purpose': 'question', 'created_at': 1.0})
+        header = {'kind': 'reply', 'reply-to': 'rq', 'id': 'ra'}
+        self.assertFalse(questions.record_reply(asker, dict(self.new), header, 'late answer'))
+        from xsm import handover
+        handover.receive_testimony(MACHINE_B, self.old, self.new)
+        self.assertTrue(questions.record_reply(asker, dict(self.new), header, 'late answer'))
+        self.assertFalse(questions.record_reply(asker, dict(self.new, session_id='x'),
+                                                dict(header, id='rb'), 'not the successor'))
+
+    def _daemon(self):
+        from xsm import network
+        daemon = network.Daemon.__new__(network.Daemon)
+        daemon.transport = mock.Mock(endpoint_id=MACHINE_B)
+        daemon.peer_address = lambda key: {'id': key}
+        daemon.calls = []
+
+        def rpc(peer, request):
+            daemon.calls.append((peer['id'], request))
+            return {'result': {'status': 'stored'}}
+        daemon.rpc = rpc
+        return daemon
+
+    def test_the_service_tells_team_machines_and_those_that_wrote_to_the_old_session(self):
+        from xsm import network
+        daemon = self._daemon()
+        old = {'runtime': 'codex', 'home': self.tmp, 'session_id': 'old-thread'}
+        new = dict(old, session_id='new-thread')
+        gateway = mock.Mock()
+        gateway.origins_for.return_value = {MACHINE_C, MACHINE_B}
+        with mock.patch.object(network, 'message_gateway', return_value=gateway):
+            out = daemon.publish_handover({'old': old, 'new': new, 'machines': [MACHINE_A]})
+        self.assertEqual(sorted(m for m, _ in daemon.calls), [MACHINE_A, MACHINE_C])   # never itself
+        sent = daemon.calls[0][1]
+        self.assertEqual((sent['op'], sent['old']['machine'], sent['old']['session_id'], sent['new']['session_id']),
+                         ('handover', MACHINE_B, 'old-thread', 'new-thread'))
+        self.assertNotIn('home', sent['old'])
+        self.assertEqual(len(out['published']), 2)
+
+    def test_the_service_takes_testimony_from_a_member_machine(self):
+        from xsm import handover
+        daemon = self._daemon()
+        daemon.transport = mock.Mock(endpoint_id=MACHINE_A)
+        daemon._lock = mock.MagicMock()
+        store = mock.Mock(network_id='n')
+        store.is_active.return_value = True
+        daemon.store = lambda: store
+        daemon._learn_contacts = lambda *a: None
+        out = daemon.incoming(MACHINE_B, {'network_id': 'n', 'op': 'handover', 'old': self.old, 'new': self.new})
+        self.assertEqual(out, {'ok': True, 'result': {'status': 'stored'}})
+        self.assertTrue(handover.endpoint_succeeds(self.new, self.old))
+        out = daemon.incoming(MACHINE_C, {'network_id': 'n', 'op': 'handover',
+                                          'old': dict(self.old, session_id='o2'), 'new': self.new})
+        self.assertEqual(out, {'ok': False, 'code': 'invalid-handover'})

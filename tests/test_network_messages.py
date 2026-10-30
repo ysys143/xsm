@@ -16,7 +16,7 @@ import time
 import unittest
 from unittest import mock
 
-from xsm import envelope, files, handoff, network_directory, network_messages as messages, paths
+from xsm import envelope, files, handoff, network_directory, network_identity, network_messages as messages, paths
 
 A = "a" * 64
 B = "b" * 64
@@ -46,8 +46,8 @@ def _crash_gateway(state, root, packet, phase):
 
 class NetworkMessagesTest(unittest.TestCase):
     def setUp(self):
-        global envelope, files, handoff, network_directory, messages, paths
-        from xsm import envelope, files, handoff, network_directory, network_messages as messages, paths
+        global envelope, files, handoff, network_directory, network_identity, messages, paths
+        from xsm import envelope, files, handoff, network_directory, network_identity, network_messages as messages, paths
         from xsm import config, identity
         temporary = tempfile.TemporaryDirectory(prefix="xsm-network-messages-")
         self.addCleanup(temporary.cleanup)
@@ -158,6 +158,25 @@ class NetworkMessagesTest(unittest.TestCase):
                                 reply_to=packet["id"], outcome="succeeded")
         self.assertEqual(self.ga.receive(B, reply)["status"], "queued")
         self.assertEqual(handoff.status(a2, "reply-late")["status"], "pending")
+
+    def test_the_successor_answers_a_question_the_old_session_was_asked_from_another_machine(self):
+        packet = self.prepare(kind="task")
+        self.gb.receive(A, packet)
+        b2 = self.row("receiver-b2", home=self.b["home"])
+        self._handed_over(self.b, b2)
+        b2p = network_directory.public_endpoint(b2, B)
+        reply = self.gb.prepare(b2, self.ap, "후임의 답", request_id="reply-successor", kind="reply",
+                                reply_to=packet["id"], outcome="succeeded")
+        self.assertEqual(network_identity.endpoint(reply["sender"]), network_identity.endpoint(b2p))
+        # Both gateways share this test's state, so the asking side reads the
+        # handover record itself; across machines it reads B's testimony.
+        self.assertEqual(self.ga.receive(B, reply)["status"], "queued")
+        stranger = self.row("someone-else", home=self.b["home"])
+        self.store(stranger)
+        self.native(stranger)
+        with self.assertRaises(messages.GatewayError):
+            self.gb.prepare(stranger, self.ap, "남의 답", request_id="reply-stranger", kind="reply",
+                            reply_to=packet["id"], outcome="succeeded")
 
     def test_duplicate_preserves_claim_ack_and_original_raw_body(self):
         packet = self.prepare(wake=False)

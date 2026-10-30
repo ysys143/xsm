@@ -162,6 +162,17 @@ def _owner(local):
     return handoff._identity(local)
 
 
+def _answered_by(asked, answering):
+    """The endpoint a request went to, or the one it was handed over to (handover.py)."""
+    if asked == answering:
+        return True
+    from . import handover
+    try:
+        return handover.endpoint_succeeds(answering, asked)
+    except (ValueError, TypeError):
+        return False
+
+
 def _handed_to(original, local):
     """A reply to a question the original asker handed over (handover.py)."""
     from . import handover
@@ -374,11 +385,27 @@ class Gateway:
                 or old["file_packet"] != _semantic_packet(packet)["file_packet"] or old["reply_binding"] != packet["reply_binding"]:
             raise GatewayError("message-id-conflict")
 
+    def origins_for(self, identity):
+        """The machines that sent this local conversation a message: those that
+        may hold a question for it (handover.py)."""
+        out = set()
+        for name in os.listdir(self.root / "inbound") if (self.root / "inbound").is_dir() else []:
+            if not name.endswith(".json"):
+                continue
+            try:
+                record = self._load("inbound", name[:-5])
+                if record and _owner(record["local"]) == handoff._identity(identity):
+                    out.add(record["origin"])
+            except (GatewayError, OSError, ValueError, KeyError, TypeError):
+                continue
+        return out
+
     def _reverse(self, original, packet):
         return bool(original and original["fingerprint"] == packet["reply_binding"]["fingerprint"]
                     and original["id"] == packet["reply_to"]
                     and network_identity.endpoint(original["packet"]["sender"]) == network_identity.endpoint(packet["receiver"])
-                    and network_identity.endpoint(original["packet"]["receiver"]) == network_identity.endpoint(packet["sender"]))
+                    and _answered_by(network_identity.endpoint(original["packet"]["receiver"]),
+                                     network_identity.endpoint(packet["sender"])))
 
     def _index_reply(self, direction, original, message_id):
         if message_id not in original["reply_ids"]:
@@ -409,7 +436,8 @@ class Gateway:
             if kind == "reply":
                 original = self._load("inbound", _id(reply_to))
                 if not original or self._ingress(original) is None \
-                        or _owner(original["local"]) != _owner(local):
+                        or not (_owner(original["local"]) == _owner(local)
+                                or _handed_to(original["local"], local)):
                     raise GatewayError("reply-original-unverified")
                 packet["reply_binding"] = {"id": reply_to, "fingerprint": original["fingerprint"]}
                 if not self._reverse(original, packet):

@@ -549,6 +549,27 @@ class Daemon:
                 failed.append({"machine": machine, "code": str(exc)})
         return {"published": published, "failed": failed}
 
+    def publish_handover(self, request):
+        """Tell other machines a local session handed its place over
+        (handover.py): the team's remote member machines the caller names, and
+        every machine that sent the old session a message."""
+        from . import handover
+        me = self.transport.endpoint_id
+        old = handover.local_endpoint(request["old"], me)
+        new = handover.local_endpoint(request["new"], me)
+        machines = set(request.get("machines") or []) | message_gateway().origins_for(request["old"])
+        published, failed = [], []
+        for machine in sorted(machines - {me}):
+            try:
+                answer = self.rpc(self.peer_address(machine), {"op": "handover", "old": old, "new": new})
+                status = (answer.get("result") or {}).get("status")
+                (published if status in ("stored", "kept") else failed).append(
+                    {"machine": machine, "status": status} if status in ("stored", "kept")
+                    else {"machine": machine, "code": status or "refused"})
+            except NetworkError as exc:
+                failed.append({"machine": machine, "code": str(exc)})
+        return {"published": published, "failed": failed}
+
     def publish_board(self, request):
         """Send board nodes to the machines of the team's remote members (ADR-0026)."""
         published, failed = [], []
@@ -784,6 +805,8 @@ class Daemon:
             return self.publish_team(request["team"])
         if op == "board-publish":
             return self.publish_board(request)
+        if op == "handover-publish":
+            return self.publish_handover(request)
         if op == "send":
             return self.send_remote(request)
         if op == "admission":
@@ -940,6 +963,13 @@ class Daemon:
                             request.get("decisions"))}
                     except ValueError:
                         return {"ok": False, "code": "invalid-board"}
+                if op == "handover":
+                    from . import handover
+                    try:
+                        return {"ok": True, "result": handover.receive_testimony(
+                            origin, request.get("old"), request.get("new"))}
+                    except (ValueError, TypeError):
+                        return {"ok": False, "code": "invalid-handover"}
                 if op == "team":
                     from . import team_sync
                     try:

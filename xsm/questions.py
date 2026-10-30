@@ -297,9 +297,13 @@ def _answerer(sender, target):
     """The asked session, or the one it handed its place over to (handover.py)."""
     if _native(sender) == _native(target):
         return True
-    if "home_id" in target or target.get("remote"):
-        return False
     from . import handover
+    if "home_id" in target or target.get("remote"):
+        # Asked on another machine: that machine's testimony of the handover.
+        try:
+            return handover.endpoint_succeeds(_native(sender), _native(target))
+        except (ValueError, TypeError):
+            return False
     return handover.succeeds(sender, target)
 
 

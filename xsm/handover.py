@@ -122,21 +122,117 @@ def succeeds(newer: dict, older: dict) -> bool:
     return a == b or successor_identity(b) == a
 
 
+def _records() -> list:
+    try:
+        names = sorted(os.listdir(paths.path(DIRECTORY)))
+    except OSError:
+        return []
+    return [r for r in (paths.read_json(paths.path(DIRECTORY, n)) for n in names if n.endswith(".json")) if r]
+
+
+def _names(identity: dict, endpoint: dict) -> bool:
+    """Whether a local identity is the conversation a P2P endpoint names."""
+    return identity.get("runtime") == endpoint.get("runtime") \
+        and identity.get("session_id") == endpoint.get("session_id") \
+        and hashlib.sha256(str(identity.get("home")).encode()).hexdigest() == endpoint.get("home_id")
+
+
 def for_handle(handle: dict) -> dict | None:
     """The local successor record for a P2P endpoint of a handed-over session
     (network_messages): the handle names runtime, home_id and session_id."""
-    try:
-        names = os.listdir(paths.path(DIRECTORY))
-    except OSError:
-        return None
-    for name in names:
-        rec = paths.read_json(paths.path(DIRECTORY, name)) if name.endswith(".json") else None
-        old = (rec or {}).get("from_identity") or {}
-        if old.get("runtime") == handle.get("runtime") and old.get("session_id") == handle.get("session_id") \
-                and hashlib.sha256(str(old.get("home")).encode()).hexdigest() == handle.get("home_id"):
+    for rec in _records():
+        old = rec.get("from_identity") or {}
+        if _names(old, handle):
             nxt, note = follow(old)
             return nxt if note else None
     return None
+
+
+# --- other machines ------------------------------------------------------------------------
+#
+# A question asked from another machine is bound there to the endpoint it was
+# sent to: that machine accepts an answer only from that endpoint. So the
+# machine that made a handover tells the machines it talks to (testimony, as
+# a team record is: ADR-0021), and they accept the successor's answer. A
+# machine testifies only about its own sessions: the old and the new endpoint
+# are both on the machine that sends it.
+
+REMOTE = "remote-handovers"
+ENDPOINT = ("machine", "runtime", "home_id", "session_id")
+
+
+def _key(endpoint: dict) -> dict:
+    return {k: endpoint.get(k) for k in ENDPOINT}
+
+
+def _remote_file(endpoint: dict) -> str:
+    digest = hashlib.sha256(json.dumps(_key(endpoint), sort_keys=True).encode()).hexdigest()
+    return paths.path(REMOTE, digest + ".json")
+
+
+def local_endpoint(identity: dict, machine: str) -> dict:
+    """This machine's P2P endpoint (without its generation) of a local identity."""
+    ident = _identity(identity)
+    return {"machine": machine, "runtime": ident["runtime"], "session_id": ident["session_id"],
+            "home_id": hashlib.sha256(ident["home"].encode()).hexdigest()}
+
+
+def receive_testimony(origin: str, old: dict, new: dict) -> dict:
+    """Keep another machine's statement that its session `old` handed over to
+    its session `new`. Refused unless both are the sending machine's."""
+    from .network_identity import endpoint
+    old, new = endpoint(old), endpoint(new)
+    if not (origin == old["machine"] == new["machine"]) or old == new:
+        raise ValueError("a machine speaks only for its own sessions")
+    path = _remote_file(old)
+    current = paths.read_json(path)
+    if current:
+        return {"status": "kept" if _key(current.get("new") or {}) == new else "conflict"}
+    paths.write_json(path, {"t": time.time(), "origin": origin, "old": old, "new": new})
+    return {"status": "stored"}
+
+
+def endpoint_succeeds(newer: dict, older: dict) -> bool:
+    """Whether P2P endpoint `newer` is `older` or holds its place by handover:
+    by this machine's own handovers, or by the testimony of the machine both
+    are on."""
+    newer, older = _key(newer), _key(older)
+    if newer == older:
+        return True
+    if newer["machine"] != older["machine"]:
+        return False
+    current = older
+    for _ in range(CHAIN):
+        rec = paths.read_json(_remote_file(current))
+        if not rec:
+            break
+        current = _key(rec.get("new") or {})
+        if current == newer:
+            return True
+    for rec in _records():
+        if _names(rec.get("from_identity") or {}, older):
+            nxt = successor_identity(rec["from_identity"])
+            return bool(nxt) and _names(nxt, newer)
+    return False
+
+
+def _publish(record: dict, teams_moved: list) -> list:
+    """Tell the machines this session talks to (its teams' remote members, and
+    the network service adds those that sent it messages) about the handover."""
+    from . import network
+    machines = sorted({m["machine"] for t in teams_moved for m in t["record"].get("members", [])
+                       if m.get("machine")})
+    if not network.available():
+        return ["the handover was not sent to the team's other machines: the network service "
+                "is not running"] if machines else []
+    try:
+        result = network.call({"op": "handover-publish", "old": record["from_identity"],
+                               "new": record["to_identity"], "machines": machines}, timeout=30)
+    except network.NetworkError as exc:
+        return ["the handover was not sent to other machines (%s); answers from them to questions "
+                "the old session was asked are not taken as answers until it is" % exc]
+    return ["the handover was not recorded on machine %s: %s" % (f["machine"][:8], f["code"])
+            for f in result.get("failed", [])]
 
 
 # --- the handover itself ------------------------------------------------------------------
@@ -336,6 +432,7 @@ def hand_over(me: dict, target: dict, summary: str, approval: str) -> dict:
     notes = []
     for t in teams_moved:
         notes += team_sync.publish(t["record"])
+    notes += _publish(record, teams_moved)
     record["notes"] = notes
     return record
 

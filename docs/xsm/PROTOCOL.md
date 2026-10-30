@@ -118,6 +118,7 @@ CODEX_HOME=<대상 홈> codex queue --thread <thread-uuid> --message <봉투 전
 | `teams/<팀>/BOARD.md`, `teams/<팀>/BOARD.md.nodes/` | 팀 보드와 그 노드(§5.7 형식에 `item`, `decision` 필드). 노드 폴더의 `.rendered`는 마지막 렌더의 SHA-256이다(§5.14) |
 | `teams/<팀>/BOARD.md.nodes/seen/<runtime>-<session>.json` | 보드 알림 위치: `{read, notified, decisions_read, decisions_notified, muted}`(노드·결재 ID 목록) |
 | `teams/<팀>/decisions/<id>.json` | 결재 기록 `{id, t, team, question, answer, options, decided_by, via, asked_by, item, from_machine?}`. `id`는 앞 9개 필드의 정렬 JSON SHA-256 앞 12자, `O_EXCL`로 한 번만 쓴다(§5.14) |
+| `remote-handovers/<endpoint-hash>.json` | 다른 머신의 인수인계 증언 `{t, origin, old, new}`(끝점은 machine·runtime·home_id·session_id). 보낸 머신이 두 끝점 모두의 머신일 때만 쓰고, 같은 옛 끝점에 다른 후임이 오면 바꾸지 않는다(§5.15) |
 | `handovers/<endpoint-hash>.json` | 인수인계 `{t, from, from_identity, to, to_identity, approval, teams, items, questions, groups, messages, letter, shown}`. 이름은 옛 세션 native 신원의 해시다(§5.15) |
 | `directory-publications/<endpoint-hash>.json`, `collaborations/<pair-id>.json` | 명시 공개 상태와 선택된 두 native 대화의 협업 범위를 분리. 후보 공개·검색만으로 통신 권한이 생기지 않음 |
 | `human-decisions/<key>.json`, `native-answers/<key>.json`, `attention/<key>.json` | 사람 질문의 표시/답/적용/취소와 native 답 결속, 알림 결과. OS 알림 성공을 사람 열람으로 세지 않음 |
@@ -507,7 +508,7 @@ Claude는 우리 훅보다 **먼저** 자체 판정을 한다. 구현은 보내�
 
 `handover <후임>`(MCP `xsm_handover`)은 사용자 승인 뒤 다음 순서로 옮긴다: 보드의 `owner/<옛 이름>[/…]` 항목(머리가 하나인 것만)을 `owner/<새 이름>…`으로 쓰고 옛 항목과 `handover/<옛 이름>` 항목에 기록 → 팀마다 구성원과 팀장 자리 교체(`log`에 `handover`) → 최종 답이 없는 질문과 질문 묶음의 발신자 교체(`handed_over_from`) → ACK되지 않은 `handoffs` 기록을 `acknowledged` + `moved_to`로 닫고 원문을 문서에 싣기(legacy inbox 사본도) → `handovers/` 기록 → 원격 구성원 머신에 팀 기록 재전송. 후임은 이 머신의 실행 중인 등록 세션이어야 하고, 옛 세션과 후임 모두 이미 인수인계한 적이 없어야 한다.
 
-옛 주소의 해석: 로컬 `send`와 SSH 원격 수신은 해석한 대상(또는 이름이 멈춘 세션만 가리킬 때 그 후보들)을 인수인계 기록으로 따라간다(8단계까지). P2P 수신 게이트는 받는 끝점이 정확히 해석되면 그 기록을, 해석되지 않으면 끝점의 runtime·home_id·session_id와 맞는 인수인계 기록의 후임을 쓴다. 회신의 역방향 검사는 원래 보낸 대화이거나 그 후임이면 통과한다. 질문 기록은 답한 쪽이 원래 받은 대화이거나 그 후임이면 답을 받는다(로컬 대화만). 인수인계 문서는 후임의 다음 `UserPromptSubmit`에 한 번 붙는다.
+옛 주소의 해석: 로컬 `send`와 SSH 원격 수신은 해석한 대상(또는 이름이 멈춘 세션만 가리킬 때 그 후보들)을 인수인계 기록으로 따라간다(8단계까지). P2P 수신 게이트는 받는 끝점이 정확히 해석되면 그 기록을, 해석되지 않으면 끝점의 runtime·home_id·session_id와 맞는 인수인계 기록의 후임을 쓴다. 회신의 역방향 검사는 원래 보낸 대화이거나 그 후임이면 통과한다(회신을 준비하는 쪽의 소유 검사도 같다). 질문 기록은 답한 쪽이 원래 받은 대화이거나 그 후임이면 답을 받는다. 다른 머신에서 물은 질문은 그 머신의 증언으로 판단한다: 인수인계한 머신의 서비스가 로컬 요청 `handover-publish`를 받아 팀의 원격 구성원 머신과 옛 대화에 메시지를 보낸 머신(게이트웨이의 inbound 기록)에 상대 요청 `handover`로 `{old, new}` 끝점을 보내고, 받는 머신은 `origin == old.machine == new.machine`일 때만 `remote-handovers/`에 쓴다. 끝점 후임 판정은 이 증언을 8단계까지 따라가고, 이 머신의 인수인계 기록도 본다. 인수인계 문서는 후임의 다음 `UserPromptSubmit`에 한 번 붙는다.
 
 ## 6. 결과값과 종료 코드
 
