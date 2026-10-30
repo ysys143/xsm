@@ -3,12 +3,12 @@
 What changed in xsm, newest first. Each released version's full notes, with its verification and upgrade
 steps, are on [GitHub Releases](https://github.com/ysys143/xsm/releases) (in Korean).
 
-## Unreleased
+## [0.5.0](https://github.com/ysys143/xsm/releases/tag/v0.5.0) - 2026-10-30
 
-On `main` since 0.4.20 (merged in #20); not in a release yet. The plugin version is still 0.4.20, so an
-existing plugin install picks this up at the next release. A direct install refreshed from a current checkout
-has it now. Sessions that were already running keep the hooks and MCP server they started with; open a new
-session to use it.
+Merged in #20 and #21. Update a plugin install with `claude plugin marketplace update xsm` and
+`claude plugin update xsm@xsm` (Codex: `codex plugin marketplace upgrade xsm`, then `codex plugin add xsm@xsm`),
+and a direct install with `xsm install --refresh` from an updated checkout. Sessions that were already running
+keep the hooks and MCP server they started with; open a new session to use 0.5.0.
 
 The concept moves from "address a session and put a message in it" to "find a peer by its work, connect to
 the one you pick, ask it, and get the actual answer back with evidence". Everything that worked in 0.4.20
@@ -59,7 +59,7 @@ still works: no command or flag was removed.
 - **Traffic control** (ADR-0022). Traffic is observed per sender and recipient. `traffic_control` in
   `~/.xsm/config.json` throttles only with explicit limits (`mode: strict`, `window_seconds`, and
   `max_messages` or `max_same_body`); there are no built-in blocking numbers.
-- **Documents**: ADR-0015 to ADR-0024, the [collaboration plan](docs/plan/reason-inspired-adrs/execution.md)
+- **Documents**: ADR-0015 to ADR-0024, the [collaboration plan](docs/plan/collaboration/execution.md)
   with its acceptance criteria and evidence ledger, and recorded runs under `deliverables/`.
 - **Evals**: `work-with-another-machine` (an agent explains joining a network without SSH).
 
@@ -75,7 +75,13 @@ still works: no command or flag was removed.
 - `send` gained `--request-id`, `--wake`, `--attachment`, `--manifest`, `--previous-manifest` and
   `--attachment-fallback`.
 - README and README_ko describe the new flow first; the earlier "in development" section is folded into the
-  main text.
+  main text. The plugin version moves from 0.4.20 to 0.5.0.
+- The collaboration plan moves to [docs/plan/collaboration/](docs/plan/collaboration/README.md), with a README
+  for outside readers and the agents' working notes under `records/`. Its audit is now
+  `scripts/audit-collaboration-plan.py`. Recorded runs under `deliverables/` keep the paths of the time.
+- The Reason research is published as one [comparison note](docs/references/reason.md) built on the public engine,
+  the official docs and using both tools. The detailed research, including analysis of the non-public CLI, is
+  no longer in the repository.
 
 ### Fixed
 
@@ -92,7 +98,7 @@ still works: no command or flag was removed.
   observed yet, and earlier native and physical runs were made on sources before the last receive change.
 - Remote paths were tested on two physical Macs and a phone on another NAT. The HTTPS proxy and self-hosted
   relay were tested on one host only, IPv6 absence was injected per process, and hosted MCP internals were
-  not observed. Details: [ADR-0021 closure record](docs/plan/reason-inspired-adrs/adr-0021-closure.md).
+  not observed. Details: [ADR-0021 closure record](docs/plan/collaboration/adr-0021-closure.md).
 - The P2P network is a model for machines that trust each other; it does not isolate a hostile member.
 
 ## 0.4.x

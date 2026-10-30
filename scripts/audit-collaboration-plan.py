@@ -28,6 +28,10 @@ import sys
 PLAN = 'docs/plan/collaboration/plan.json'
 SPEC = 'docs/plan/collaboration/spec.md'
 BASE = 'docs/plan/collaboration/'
+# Where the plan lived until 2026-10-30. Recorded evidence and frozen snapshots keep it.
+OLD_BASE = 'docs/plan/reason-inspired-adrs/'
+OLD_RECORDS = {'current-handoff.md', 'development-policy.md', 'release-candidate.md',
+               'adr-0021-implementation.md', 'policy-validation.json', 'validation.json'}
 LEDGER = BASE + 'completion-ledger.json'
 REPORT = BASE + 'completion-ledger.md'
 # Full regression of the 0.5.0 release source (2026-10-30). It rebinds fixture/process
@@ -225,7 +229,18 @@ def local(root, relative):
     resolved = (root / path).resolve()
     if root.resolve() not in resolved.parents and resolved != root.resolve():
         raise ValueError('evidence path escapes repository: ' + relative)
+    if not resolved.exists() and str(relative).startswith(OLD_BASE):
+        moved = (root / moved_plan_path(str(relative))).resolve()
+        if moved.exists():
+            return moved
     return resolved
+
+
+def moved_plan_path(relative):
+    """The current place of a plan file a record names by its pre-2026-10-30 path."""
+    rest = relative[len(OLD_BASE):]
+    name = rest.split('#', 1)[0]
+    return BASE + ('records/' + rest if name in OLD_RECORDS or name.startswith('gates/') else rest)
 
 
 def load_json(path):
@@ -1110,7 +1125,7 @@ def capacity_rebinding_checks(root, data):
 # 공통 byte/selector 검증. ledger baseline은 refresh에 따라 바뀌는 문맥이며 실행 증거가 아니다.
 def evidence_rows_bound(root, rows):
     return bool(rows) and all(file_sha(evidence_path(root, r['path'])) == r['sha256'] for r in rows
-        if not (r.get('kind') == 'read-only-ledger-baseline' and r['path'] == LEDGER))
+        if not (r.get('kind') == 'read-only-ledger-baseline' and r['path'] in (LEDGER, OLD_BASE + 'completion-ledger.json')))
 
 
 def scoped_ast_node(path, name):
@@ -2530,11 +2545,11 @@ def _build(root, plan, spec):
                         '없는 증거·환경은 missing이며 생략 승인을 만들지 않음', '기록 당시 source 범위를 현재 최종 통합 revision으로 확대하지 않음',
                         'prepared-not-displayed·human_saw null·LLM 미실행은 성공 증거가 아님']}
     integration = load_json(local(root, 'deliverables/p13-live/native-integration-source-manifest.json'))
-    historical_path = local(Path(integration['snapshot']), LEDGER)
+    historical_path = local(Path(integration['snapshot']), OLD_BASE + 'completion-ledger.json')
     historical = load_json(historical_path)
     ledger['historical_completion_snapshot'] = {
         'path': str(historical_path), 'sha256': file_sha(historical_path),
-        'manifest_hash_matches': file_sha(historical_path) == integration['files'].get(LEDGER),
+        'manifest_hash_matches': file_sha(historical_path) == integration['files'].get(OLD_BASE + 'completion-ledger.json'),
         'source_scope': '1667/133 primary 시대의 완료 색인을 새315 고정본에 원문 보존. 새135 primary 성공으로 전이하지 않음',
         'counts': historical['counts'], 'status_counts': historical['status_counts'],
         'proven_acceptance': [r['id'] for r in historical['acceptance'] if r['status'] == 'proven']}

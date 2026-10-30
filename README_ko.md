@@ -11,11 +11,10 @@ xsm은 이미 쓰고 있는 Claude Code와 Codex 세션이 서로를 찾아 함�
 
 ![XSM이 런타임의 네이티브 전달 경로와 명시적 통신 범위로 에이전트 세션을 연결하는 구조](docs/assets/xsm-overview.svg)
 
-> **릴리스 상태.** 업무 검색, `connect`와 `ask`, 첨부, 소유 워커, 선택적 P2P 네트워크는 `main`에 들어갔지만
-> 아직 릴리스되지 않았습니다. 플러그인 버전이 아직 0.4.20이라 기존 플러그인 설치는 다음 릴리스에서 받습니다.
-> 최신 체크아웃으로 갱신한 직접 설치에는 지금 들어 있습니다. [변경 기록](CHANGELOG.md)을 보세요. 부분별로 어떤
-> 환경에서 검증했는지는 [ADR-0021 종료 기록](docs/plan/reason-inspired-adrs/adr-0021-closure.md)과
-> [완료 색인](docs/plan/reason-inspired-adrs/completion-ledger.md)에 있으며, 계획 전체는 아직 완료되지 않았습니다.
+> **릴리스 상태.** 업무 검색, `connect`와 `ask`, 첨부, 소유 워커, 선택적 P2P 네트워크는 0.5.0에
+> 들어갔습니다. [변경 기록](CHANGELOG.md)을 보세요. 부분별로 어떤
+> 환경에서 검증했는지는 [ADR-0021 종료 기록](docs/plan/collaboration/adr-0021-closure.md)과
+> [완료 색인](docs/plan/collaboration/completion-ledger.md)에 있으며, 계획 전체는 아직 완료되지 않았습니다.
 
 ## 철학
 
@@ -594,7 +593,7 @@ Machine A -> SSH -> Machine B                             양쪽 다 xsm 설치 
 - **[Protocol Spec](docs/xsm/)**: 메시지 프로토콜 명세
 - **[Network Guide](docs/xsm/NETWORK.md)**: 선택적 P2P 네트워크
 - **[Test Protocol](docs/xsm/TESTPLAN.md)**: 실사용 점검 절차 (개발자용 테스트는 여기)
-- **[Collaboration Plan](docs/plan/reason-inspired-adrs/execution.md)**: ADR-0015~0024의 계획과 남은 일
+- **[Collaboration Plan](docs/plan/collaboration/execution.md)**: ADR-0015~0024의 계획과 남은 일
 - **[Agent Messaging Guide](docs/list-agents-cross-session-messaging.md)**: 에이전트 메시징 구현
 
 ## 라이선스
