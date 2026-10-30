@@ -168,6 +168,10 @@ TOOLS = [
                      "name@home, ref:xxxxxx, and …@<paired machine>."),
      "inputSchema": {"type": "object", "properties": {
          "target": {"type": "string"},
+         "targets": {"type": "array", "items": {"type": "string"}, "minItems": 2,
+                     "description": "several recipients instead of target: one DM to each, and "
+                                    "each is told who else got it; one outside your scope is "
+                                    "skipped and named in the result"},
          "text": {"type": "string", "description": MESSAGE_TEXT_DESCRIPTION},
          "kind": {"type": "string", "enum": ["note", "task", "reply"], "default": "note"},
          "reply_to": {"type": "string"},
@@ -1003,6 +1007,25 @@ class Server:
                 raise channel.ChannelError("outcome belongs only to a reply that closes a task")
             if args.get("wake", "auto") not in ("auto", "never"):
                 raise channel.ChannelError("unsupported wake mode; use auto or never")
+            targets = args.get("targets")
+            if targets is not None:
+                from . import multisend
+                if not isinstance(targets, list) or not all(isinstance(t, str) for t in targets) \
+                        or args.get("target") or args.get("held") or args.get("resend") \
+                        or args.get("attachments") or args.get("manifest_id"):
+                    raise channel.ChannelError("targets is a list of recipients, used instead of "
+                                               "target, held, resend and attachments")
+                wait = args.get("wait", 15)
+                try:
+                    result = multisend.send_many(
+                        targets, args.get("text") or "", sender=me, call=self.ctx,
+                        kind=args.get("kind") or "note", reply_to=args.get("reply_to"),
+                        priority=args.get("priority") or "next", wait=float(15 if wait is None else wait),
+                        outcome=args.get("outcome") if args.get("kind") == "reply" else None,
+                        wake=args.get("wake", "auto") != "never")
+                except multisend.MultiError as exc:
+                    raise channel.ChannelError(str(exc))
+                return "\n".join(result.lines())
             from . import envelope, materials
             request_id = args.get("resend") or args.get("request_id") or envelope.new_id()
             if args.get("held") and (args.get("attachments") or args.get("manifest_id")):

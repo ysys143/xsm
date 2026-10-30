@@ -881,6 +881,10 @@ def cmd_publish(args) -> int:
 
 
 def cmd_send(args) -> int:
+    targets = list(args.target or [])
+    args.target = targets[0] if len(targets) == 1 else (None if not targets else targets)
+    if isinstance(args.target, list) or (args.resend and _group_resend(args.resend)):
+        return _send_many(args, targets)
     body = args.text
     if args.held:
         if args.target or args.text or args.text_file or args.resend:
@@ -935,6 +939,43 @@ def cmd_send(args) -> int:
         if prepared:print("Materials: "+_readable_json(materials.public(prepared)))
     return {"delivered": OK, "stored": OK, "sent-unconfirmed": UNCONFIRMED, "unknown": UNCONFIRMED,
             "held": REFUSED, "blocked": REFUSED, "refused": REFUSED}.get(result.status, USAGE)
+
+
+def _group_resend(ident: str) -> bool:
+    from . import multisend
+    return multisend.load_group(ident) is not None
+
+
+def _send_many(args, targets: list) -> int:
+    """One DM to several recipients (ADR-0025): `xsm send A B C --text ...`,
+    or `--resend <group id>` to send again to the ones still open."""
+    from . import multisend
+    if args.held or args.attachment or args.manifest or args.request_id:
+        print("refused: --held, --attachment, --manifest and --request-id take one recipient",
+              file=sys.stderr)
+        return USAGE
+    try:
+        if args.resend:
+            result = multisend.resend_group(args.resend, wait=args.wait)
+        else:
+            body = args.text
+            if args.text_file:
+                body = sys.stdin.read() if args.text_file == "-" else open(args.text_file).read()
+            if not body:
+                print("nothing to send: pass --text or --text-file", file=sys.stderr)
+                return USAGE
+            if args.outcome and args.kind != "reply":
+                print("refused: --outcome belongs to the reply that closes a task, not to %s"
+                      % args.kind, file=sys.stderr)
+                return REFUSED
+            result = multisend.send_many(targets, body, kind=args.kind, reply_to=args.reply_to,
+                                         priority=args.priority, wait=args.wait,
+                                         outcome=args.outcome, wake=args.wake != "never")
+    except multisend.MultiError as exc:
+        print("refused: %s" % exc, file=sys.stderr)
+        return REFUSED
+    print(_readable_json(result.as_dict()) if args.json else "\n".join(result.lines()))
+    return multisend.SEVERITY.get(result.worst, USAGE)
 
 
 def cmd_inbox(args) -> int:
@@ -2791,8 +2832,9 @@ def build_parser() -> argparse.ArgumentParser:
     pub.add_argument("--off", action="store_true", help="stop publishing this conversation")
     pub.set_defaults(func=cmd_publish)
     snd = sub.add_parser("send", help="send a message to another session")
-    snd.add_argument("target", nargs="?",
-                     help="name, name@home, name [ref], ref:xxxxxx, claude:ID, codex:ID")
+    snd.add_argument("target", nargs="*",
+                     help="name, name@home, name [ref], ref:xxxxxx, claude:ID, codex:ID; "
+                          "name several to send one DM to each (each is told who else got it)")
     snd.add_argument("--text")
     snd.add_argument("--text-file", help="file path, or - for stdin")
     snd.add_argument("--kind", choices=list(envelope.KINDS), default="note")

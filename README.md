@@ -292,6 +292,7 @@ For a notice or a handed-off task without collecting an answer, `send` works as 
 xsm send my-reviewer --text "please take a look"                  # a notice
 xsm send my-reviewer --text "fix this test" --kind task --wait 15 # hand off work; wait for delivery
 xsm send my-reviewer --text "FYI" --wake never                    # store it; the peer reads it at its next turn
+xsm send reviewer tester docs --text "main is frozen until 18:00"  # one DM to each; each is told who else got it
 xsm ledger                                                        # delivery state
 ```
 

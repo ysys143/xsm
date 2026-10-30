@@ -56,6 +56,14 @@ xsm send "ref:a1b2c3" --text "..." --kind task
 xsm send "ref:a1b2c3" --text "done, 3 tests fixed" --kind reply --reply-to 9f2c1d --outcome succeeded
 ```
 
+A message is a DM: you name who gets it, and you may name several. `xsm send
+A B C --text "..."` (or `xsm_send` with `targets`) sends one DM to each under its
+own id, tells each who else got it, and skips one outside your scope instead of
+asking to connect it; the result lists every recipient. The exit code is the
+worst recipient's. `--resend <group id>` sends again only to the ones still
+open. Use it for an announcement or a correction that several sessions need;
+it does not make the receivers read less.
+
 Address by `name`, `name@home`, `name [ref]`, or `ref:xxxxxx`. The target is
 resolved when you send, so do not re-run `xsm list` to check that a session
 still exists — a list you fetched earlier is a snapshot, and sending is the

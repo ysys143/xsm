@@ -284,6 +284,7 @@ xsm ack <token>...                                             # 답을 실제�
 xsm send my-reviewer --text "이것 좀 봐줘"                        # 알림
 xsm send my-reviewer --text "이 테스트 고쳐줘" --kind task --wait 15  # 일 넘기기. 전달을 기다림
 xsm send my-reviewer --text "참고만" --wake never                # 저장만. 상대는 다음 턴에 읽음
+xsm send reviewer tester docs --text "18시까지 main 동결"         # 각자에게 DM 하나씩, 누가 함께 받았는지 알려 줌
 xsm ledger                                                       # 전달 상태
 ```
 
