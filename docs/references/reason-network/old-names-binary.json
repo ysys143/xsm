@@ -1,7 +1,0 @@
-{
-  "version": "0.12.6",
-  "source": "https://github.com/reason-machines/reason-network/releases/download/v0.12.6/reason-network-aarch64-apple-darwin.tar.gz",
-  "archive_matches": true,
-  "archive_sha256": "8c9543f1a159c6cda1ff0ed52459f0ac4695e6e24b2d4ecde826ac4b901649c9",
-  "binary_sha256": "7b834bb44eb1b1f13c5b48d72658652a4e75366a80990db0698e498b5e970e0d"
-}

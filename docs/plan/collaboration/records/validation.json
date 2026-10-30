@@ -1,0 +1,124 @@
+{
+  "date": "2026-10-28",
+  "status": "passed",
+  "scope": "확정 설계·구현목표의 문서 일관성. 제품 구현/실제 하네스 통과 검사 아님",
+  "command": "python3 /tmp/xsm-check-design.py",
+  "checks": {
+    "adrs": 10,
+    "acceptance": 70,
+    "original_acceptance_preserved": 62,
+    "additional_acceptance": 8,
+    "steps": 14,
+    "gates": 14,
+    "journeys": 9,
+    "residuals": 20,
+    "local_markdown_links": 105,
+    "acceptance_owner_and_closure_gate_mapping": "passed",
+    "user_goal_remains_paused": true
+  },
+  "negative_controls": {
+    "missing_acceptance": true,
+    "publication_implies_collaboration": true,
+    "folder_scope_expansion": true,
+    "receipt_as_handshake": true,
+    "implicit_execution_resume": true
+  },
+  "artifacts": [
+    {
+      "path": "docs/plan/collaboration/spec.md",
+      "sha256": "f2c476b07c283d9d6459131b6f905ab249d5899b22b8ffa4ea4fc10882679cc3"
+    },
+    {
+      "path": "docs/plan/collaboration/execution.md",
+      "sha256": "350cb3b7b2660df3575d61c9abd8e73c4d035c9524616fcd49a9d2d2997d8620"
+    },
+    {
+      "path": "docs/plan/collaboration/acceptance.md",
+      "sha256": "6d6058a48360e82550331d0b67a4b8356e16b4604fcb21e7f5f3cb8ca7876364"
+    },
+    {
+      "path": "docs/plan/collaboration/collaboration-contract.md",
+      "sha256": "38b43c24593cdfdfaf1cb839a6f7fb9bd3785054d8de46d27c9a3464b9d4d6cd"
+    },
+    {
+      "path": "docs/plan/collaboration/plan.json",
+      "sha256": "e32e004ae6d6076cfff9e2275d71615b381a1facbdde641f403045eecc93838a"
+    },
+    {
+      "path": "docs/adr/0024-discover-select-and-handshake.md",
+      "sha256": "e3e2668a22a98f4f5773b009c08938f840f3d3d1d06e07bfb9dd5f702cdafce7"
+    },
+    {
+      "path": "docs/adr/README.md",
+      "sha256": "b57a684655c40d955eff458535877affa0271b610e2f4df6603c1bddff5a7357"
+    },
+    {
+      "path": "docs/plan/README.md",
+      "sha256": "2df1ce06e662bce2d6ab39b48810ec80166ac030b383e8720c98637b88748996"
+    }
+  ],
+  "previous_validation": {
+    "date": "2026-10-24",
+    "status": "passed",
+    "scope": "계획의 원문 추적·병렬 준비 조건·공유 소유권·게이트·개수·경로·링크·미검증 유지 자체 검사. 실제 제품/worker/단계 게이트 실행 아님.",
+    "checks": {
+      "adrs": 9,
+      "steps": 14,
+      "gates": 14,
+      "batches": 8,
+      "interfaces": 6,
+      "acceptance": 62,
+      "findings": 43,
+      "residuals": 20,
+      "markdown_links": 61,
+      "dependency_graph": "acyclic",
+      "shared_resources": 9,
+      "scheduler_examples": 6,
+      "product_execution": "not-started"
+    },
+    "negative_controls": {
+      "missing_acceptance": true,
+      "dependency_cycle": true,
+      "fabricated_skip_approval": true,
+      "missing_entry_gate": true,
+      "out_of_order_batch": true,
+      "missing_shared_file_owner": true,
+      "false_gate_pass": true,
+      "policy_bypass": true,
+      "unbound_acceptance_gate": true,
+      "broken_link": true
+    },
+    "product_paths_compared": 72,
+    "product_paths_changed": [],
+    "existing_adr_bodies_changed": [],
+    "observed_baseline": {
+      "command": "python3 -m unittest tests.test_mcp_identity tests.test_one_yes tests.test_discovery_latency -q",
+      "exit_code": 0,
+      "tests": 91,
+      "seconds": 30.676,
+      "scope": "이번 계획 작성의 기준선 일부. 신규 수용 조건 통과 아님"
+    },
+    "baseline_provenance": "앞선 상세 계획 작성에서 실제 실행한 91개 기준 검사 결과를 유지. 이번 문서 보강에서 제품 테스트는 재실행하지 않음.",
+    "review": "코디네이터 자체 대조. 신규 독립 검토자·worker 미실행.",
+    "artifacts": [
+      {
+        "path": "docs/plan/collaboration/spec.md",
+        "sha256": "5fc1e39c5be7432f120bc5125619e9de07ed757047ef5336d57925d399ed753f"
+      },
+      {
+        "path": "docs/plan/collaboration/acceptance.md",
+        "sha256": "41d4d759ddaa22e8509b835fc2c2247bf8f710aa28b0f4146d1a8b5fe130e3f0"
+      },
+      {
+        "path": "docs/plan/collaboration/execution.md",
+        "sha256": "0b8b3b7edecaf74ce6c9a4435fc44f3fd2bf32a90c09c542dc5565569f44bb40"
+      },
+      {
+        "path": "docs/plan/collaboration/plan.json",
+        "sha256": "e4d4b63882ecb075bcf2cdde24a39ba1a156ede03b7eb5ebf704ac5528696a4e"
+      }
+    ],
+    "errors": []
+  },
+  "errors": []
+}

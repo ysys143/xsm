@@ -3,7 +3,7 @@
 - 상태: Proposed
 - 관련 목표: G2, G3, G6, C1
 - 작성일: 2026-10-24
-- 역공학 추적: R11, R12, R13, R14, R15, R16, R18, R36, R38, R39
+- 비교 근거: [Reason 비교 노트](../references/reason.md)
 - 기존 결정 효력: 이 문서는 아직 Accepted ADR을 대체하지 않는다.
 
 ## 질문
@@ -16,9 +16,7 @@ Reason CLI는 짧은 질문 한 호출에 실제 답을 반환했다. MCP는 목
 
 xsm에도 비동기 송신, 수신 안내, 동료 직접 협업, priority와 채널 게시가 있다. 다만 [MCP 스키마](../../xsm/mcp.py)에는 송신 priority가 없고, [ledger.wait_for](../../xsm/ledger.py)는 답이 아닌 전달 상태를 기다린다. README의 답장 대기 설명과 차이가 있다. 일반 Codex의 답장은 CLI 실패 후 MCP로 복구된 실제 표본이 있다. [실제 비교](../../deliverables/xsm-reason-live-comparison-2026-10-23.md).
 
-이번 조사에서는 설치 CLI 0.2.557 바이너리에 포함된 network-command와 ask-worker JavaScript의 경계를 추출해 정적으로 대조했다. 원문은 배포 라이선스를 확인하지 못해 저장소에 복제하지 않고 바이너리 SHA·오프셋·모듈 SHA와 분석을 [배포물 분석](../references/reason-network/cli-analysis.md)에 기록한다. Claude는 발신자별 warm 세션, 같은 발신자 직렬·다른 발신자 병렬, 유휴 세션 회수 구조를 가진다. Codex는 요청마다 새 exec이며 resume를 넘기지 않는다. 일반 세션의 문맥 유지와 serve의 문맥 유지는 같은 계약이 아니다.
-
-후속 [원본 모듈 격리 실행](../references/reason-network/followup-findings.md)에서 재사용·직렬화·병렬화를 확인했다. 동시에 풀의 기존 6명이 모두 작업 중이면 일곱 번째 발신자의 새 워커를 유휴 회수해 실행하지 못하는 경로도 재현했다. 실제 7개 모델을 실행한 시험은 아니며, 전송·자식 런타임을 대체한 배포 모듈의 제어 흐름 관측이다.
+공개되지 않은 CLI의 질문 처리는 사용 관찰로만 비교했다. 일반 세션의 문맥 유지와 요청을 받아 따로 실행하는 쪽의 문맥 유지는 같은 계약이 아니다.
 
 ## 선택지
 
@@ -82,13 +80,13 @@ CLI와 MCP는 이 계약의 의미를 공유한다. 호출 하나가 제한 시�
 
 ## 근거
 
-[Reason 역공학 보고서](../references/reason-network.md), [전체 추적표](../references/reason-network/README.md), [원시 비교 증거](../../deliverables/xsm-reason-live-comparison-2026-10-23/evidence.json).
+[Reason 비교 노트](../references/reason.md), [원시 비교 증거](../../deliverables/xsm-reason-live-comparison-2026-10-23/evidence.json).
 
 ## 토론 기록
 
 | 라운드 | 참가자 | 입장 | 근거 | 반론/응답 |
 |---|---|---|---|---|
-| 0 | 코디네이터 | 역공학에 근거한 제안 작성. 채택 결정은 미정 | 위 코드·실행 근거와 R 항목 | 실험의 버전·미검증·기존 기능을 구분 |
+| 0 | 코디네이터 | Reason 비교 조사에 근거한 제안 작성. 채택 결정은 미정 | 위 코드·실행 근거 | 실험의 버전·미검증·기존 기능을 구분 |
 
 ## 결정
 
