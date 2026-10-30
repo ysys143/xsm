@@ -3,7 +3,7 @@
 - 상태: Proposed
 - 관련 목표: G1, G2, G5
 - 작성일: 2026-10-24
-- 역공학 추적: R02, R03, R04, R05, R32, R38, R43
+- 비교 근거: [Reason 비교 노트](../references/reason.md)
 - 기존 결정 효력: 이 문서는 아직 Accepted ADR을 대체하지 않는다.
 
 ## 질문
@@ -71,15 +71,15 @@ B를 제안한다. C의 가입 편의는 명시적으로 승인한 협업 집합
 
 ## 근거
 
-[Reason 역공학 보고서](../references/reason-network.md), [전체 추적표](../references/reason-network/README.md), [원시 비교 증거](../../deliverables/xsm-reason-live-comparison-2026-10-23/evidence.json).
+[Reason 비교 노트](../references/reason.md), [원시 비교 증거](../../deliverables/xsm-reason-live-comparison-2026-10-23/evidence.json).
 
-후속 [native 분석](../references/reason-network/ghidra-native.md)은 엔진의 팀 밖 연결 거부 문자열·403 코드 전달을 바이너리에서 확인했다. 머신 멤버십 거부의 근거이며 사용자 업무 권한·연결 수명의 결정을 대신하지 않는다.
+공개 엔진은 팀 밖의 연결을 멤버십 검사에서 거부한다. 머신 멤버십 거부의 근거이며 사용자 업무 권한·연결 수명의 결정을 대신하지 않는다.
 
 ## 토론 기록
 
 | 라운드 | 참가자 | 입장 | 근거 | 반론/응답 |
 |---|---|---|---|---|
-| 0 | 코디네이터 | 역공학에 근거한 제안 작성. 채택 결정은 미정 | 위 코드·실행 근거와 R 항목 | 실험의 버전·미검증·기존 기능을 구분 |
+| 0 | 코디네이터 | Reason 비교 조사에 근거한 제안 작성. 채택 결정은 미정 | 위 코드·실행 근거 | 실험의 버전·미검증·기존 기능을 구분 |
 
 ## 결정
 

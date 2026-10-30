@@ -5,7 +5,7 @@
 - 결정자: 사용자
 - 관련 목표: G4, G5, C1
 - 작성일: 2026-10-24
-- 역공학 추적: R03, R10, R30, R31, R32, R38, R42
+- 비교 근거: [Reason 비교 노트](../references/reason.md)
 - 기존 결정 효력: ADR-0003의 로컬 핵심 경로 데몬 비의존을 유지한다. ADR-0007의 기존 SSH 호환을 보존하면서 신규 원격 경로의 필수 SSH·프로젝트 짝짓기 전제를 대체한다.
 
 ## 질문
@@ -18,7 +18,7 @@ Reason은 머신별 iroh Endpoint와 공개키, LAN mDNS·NAT 통과·HTTPS 릴�
 
 재사용 팀 링크와 1회 코드의 의미가 다르고, 누구나 초대·제명할 수 있는 친구 팀 모델이다. 제명된 머신의 암호학적 권한이 모두 사라지는 강한 관리 모델로 설명하면 안 된다. 자체 릴레이 설정 시 기본 서비스 접속 경로도 달라진다. 0.12.11은 고정 UDP 포트·IPv4/IPv6 바인딩·점유 시 랜덤 포트 대체와 실제 포트 진단을 추가했다. 이전 0.12.10 실통신 표본과 구분한다.
 
-[0007](0007-remote-transport-and-trust.md)의 xsm은 강제 명령 SSH 키와 양쪽 프로젝트 짝을 사용한다. 양방향 SSH가 전제이고 목록 병합은 없다. [remote.py](../../xsm/remote.py)는 발신 주장 대신 SSH 연결에서 origin을 정한다. 최초 단일 머신 조사 이후 두 물리 머신의 carrier 비교가 추가됐다. [P11 기록](../plan/reason-inspired-adrs/remote-decision.md)의 범위·한계를 보존하며 이를 신규 P2P 제품의 구현·안정성 증거로 해석하지 않는다.
+[0007](0007-remote-transport-and-trust.md)의 xsm은 강제 명령 SSH 키와 양쪽 프로젝트 짝을 사용한다. 양방향 SSH가 전제이고 목록 병합은 없다. [remote.py](../../xsm/remote.py)는 발신 주장 대신 SSH 연결에서 origin을 정한다. 최초 단일 머신 조사 이후 두 물리 머신의 carrier 비교가 추가됐다. [P11 기록](../plan/collaboration/remote-decision.md)의 범위·한계를 보존하며 이를 신규 P2P 제품의 구현·안정성 증거로 해석하지 않는다.
 
 ## 검토한 선택지
 
@@ -93,15 +93,13 @@ P2P는 VPN 설정 부담을 줄일 수 있지만 상주 네트워크 프로세�
 
 ## 근거
 
-[Reason 역공학 보고서](../references/reason-network.md), [전체 추적표](../references/reason-network/README.md), [실제 설치 평가](../../deliverables/reason-network-evaluation-2026-10-23.md), [실제 비교](../../deliverables/xsm-reason-live-comparison-2026-10-23.md).
-
-[Ghidra 후속 분석](../references/reason-network/ghidra-native.md)은 0.12.10 엔진의 linker 경계로 멤버십 거부 메시지 참조 함수를 복구하고, 의사코드에서 403·메시지 주소·길이의 결속을 확인했다. 전체 네트워크 인증의 형식 증명이나 물리 머신 왕복 시험은 아니다.
+[Reason 비교 노트](../references/reason.md), [실제 설치 평가](../../deliverables/reason-network-evaluation-2026-10-23.md), [실제 비교](../../deliverables/xsm-reason-live-comparison-2026-10-23.md).
 
 ## 토론 기록
 
 | 라운드 | 참가자 | 입장 | 근거 | 반론/응답 |
 |---|---|---|---|---|
-| 0 | 코디네이터 | 역공학에 근거한 제안 작성. 당시 채택 미정 | 위 코드·실행 근거와 R 항목 | 미검증·기존 사용자 결정·운영 비용을 분리 |
+| 0 | 코디네이터 | Reason 비교 조사에 근거한 제안 작성. 당시 채택 미정 | 위 코드·실행 근거 | 미검증·기존 사용자 결정·운영 비용을 분리 |
 | 1 | 사용자·코디네이터 | 자체 P2P와 선택적 Tailscale 경로, 공개 relay 기본/자체 설정, 계정 비필수 | 2026-10-29 계획 대화와 사용자 선택 | 구현 매개변수와 실제 운영 승인은 분리 |
 | 2 | 사용자·코디네이터 | Reason식 동등 멤버 권한 채택 | team.rs·DESIGN.md 대조 후 사용자의 요구사항 고정·문서 수정 지시 | 앞서 제안한 관리자 전용 모델을 대체. 구현 goal은 일시정지 유지 |
 
@@ -109,5 +107,5 @@ P2P는 VPN 설정 부담을 줄일 수 있지만 상주 네트워크 프로세�
 
 B를 제품 방향으로 채택하고 Tailscale을 같은 P2P 프로토콜의 선택적 접속 경로로 결합한다. D처럼 Tailscale+SSH를 신규 원격 기능의 필수 기반으로 삼지 않고, C의 Reason 엔진 바이너리도 필수 의존성으로 채택하지 않는다. 기존 A/SSH 기능은 호환을 위해 보존한다. 멤버십은 Reason의 상호 신뢰 모델을 따른다. 관리자 계층과 중복 가입 승인 단계를 추가하지 않는다.
 
-D12 결정과 구현 검증은 별도 기록이다. 앞선 전체 구현 goal은 일시정지 뒤 해제됐고, 이후 별도 `adr-0021 완주` goal에서 A21-01–07의 7조건을 기록된 전제·환경·제약 안에서 종결했다. [종료 기록](../plan/reason-inspired-adrs/adr-0021-closure.md)과 [진행 기록](../plan/reason-inspired-adrs/adr-0021-progress.md)에 최종 소스·두 Python 각1936개 회귀·Opus 검토·두 머신 실제 업무·조건별 실측 및 한계를 결속했다. 다른 63조건과 전역 G11/G12/G13, 운영 배포의 판정은 바꾸지 않는다.
+D12 결정과 구현 검증은 별도 기록이다. 앞선 전체 구현 goal은 일시정지 뒤 해제됐고, 이후 별도 `adr-0021 완주` goal에서 A21-01–07의 7조건을 기록된 전제·환경·제약 안에서 종결했다. [종료 기록](../plan/collaboration/adr-0021-closure.md)과 [진행 기록](../plan/collaboration/adr-0021-progress.md)에 최종 소스·두 Python 각1936개 회귀·Opus 검토·두 머신 실제 업무·조건별 실측 및 한계를 결속했다. 다른 63조건과 전역 G11/G12/G13, 운영 배포의 판정은 바꾸지 않는다.
 

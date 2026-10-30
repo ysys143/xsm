@@ -3,7 +3,7 @@
 - 상태: Proposed
 - 관련 목표: G1, G2, G5
 - 작성일: 2026-10-24
-- 역공학 추적: R06, R07, R08, R09, R10, R20, R38, R43
+- 비교 근거: [Reason 비교 노트](../references/reason.md)
 - 기존 결정 효력: 이 문서는 아직 Accepted ADR을 대체하지 않는다.
 
 ## 질문
@@ -60,13 +60,13 @@ doing·전체 경로의 공유 기본값, 상태 신선도 예산, 대화 이름
 
 ## 근거
 
-[Reason 역공학 보고서](../references/reason-network.md), [전체 추적표](../references/reason-network/README.md), [원시 비교 증거](../../deliverables/xsm-reason-live-comparison-2026-10-23/evidence.json).
+[Reason 비교 노트](../references/reason.md), [원시 비교 증거](../../deliverables/xsm-reason-live-comparison-2026-10-23/evidence.json).
 
 ## 토론 기록
 
 | 라운드 | 참가자 | 입장 | 근거 | 반론/응답 |
 |---|---|---|---|---|
-| 0 | 코디네이터 | 역공학에 근거한 제안 작성. 채택 결정은 미정 | 위 코드·실행 근거와 R 항목 | 실험의 버전·미검증·기존 기능을 구분 |
+| 0 | 코디네이터 | Reason 비교 조사에 근거한 제안 작성. 채택 결정은 미정 | 위 코드·실행 근거 | 실험의 버전·미검증·기존 기능을 구분 |
 
 ## 결정
 
