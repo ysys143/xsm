@@ -495,6 +495,10 @@ class Daemon:
             return False
         if self.repositories().allows(origin, repository_id, local.get("cwd")):
             return True
+        from . import teams
+        if teams.scope_for(local, sender):
+            # Both are members of one team this machine holds (ADR-0025, D19).
+            return True
         try:
             saved = grant or _read_private(self._grant_file(sender, own))
         except FileNotFoundError:
@@ -525,6 +529,25 @@ class Daemon:
             "authorization": grant})
         return {"target": result["target"], "scope": result.get("scope"),
                 "scope_basis": result.get("scope_basis")}
+
+    def publish_team(self, team):
+        """Send a team record to the machines of its remote members (ADR-0025).
+        The record is what this machine holds; members are sent as endpoints."""
+        from . import team_sync
+        record = team_sync.to_endpoints(team, self.transport.endpoint_id)
+        machines = sorted({m["machine"] for m in record["members"]
+                           if m and m.get("machine") and m["machine"] != self.transport.endpoint_id})
+        published, failed = [], []
+        for machine in machines:
+            try:
+                answer = self.rpc(self.peer_address(machine), {"op": "team", "team": record})
+                status = (answer.get("result") or {}).get("status")
+                (published if status in ("updated", "stale") else failed).append(
+                    {"machine": machine, "status": status} if status in ("updated", "stale")
+                    else {"machine": machine, "code": status or "refused"})
+            except NetworkError as exc:
+                failed.append({"machine": machine, "code": str(exc)})
+        return {"published": published, "failed": failed}
 
     def select_remote(self, caller, target):
         from .network_directory import public_endpoint
@@ -742,6 +765,8 @@ class Daemon:
             return self.resolve_remote(request["caller"], request["target"])
         if op == "selection":
             return self.select_remote(request["caller"], request["target"])
+        if op == "team-publish":
+            return self.publish_team(request["team"])
         if op == "send":
             return self.send_remote(request)
         if op == "admission":
@@ -890,6 +915,13 @@ class Daemon:
                         work=request.get("work"), branch=request.get("branch"))}
                 if op in ("resolve", "selection", "capabilities"):
                     return self._incoming_target(origin, request)
+                if op == "team":
+                    from . import team_sync
+                    try:
+                        return {"ok": True, "result": team_sync.receive(
+                            origin, request.get("team"), self.transport.endpoint_id)}
+                    except ValueError:
+                        return {"ok": False, "code": "invalid-team"}
                 if op == "deliver":
                     packet = request["packet"]
                     if packet.get("attachments"):

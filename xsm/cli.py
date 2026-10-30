@@ -819,8 +819,9 @@ def cmd_ask(args) -> int:
     if args.wake not in ("auto", "never"):
         print("unsupported wake mode; use auto or never", file=sys.stderr)
         return REFUSED
+    from . import teams
     targets = list(args.target)
-    if len(targets) > 1:
+    if len(targets) > 1 or any(teams.is_address(t) for t in targets):
         from . import question_groups
         if args.request_id or args.attachment or args.manifest:
             print("refused: --request-id and attachments take one recipient", file=sys.stderr)
@@ -919,9 +920,11 @@ def cmd_publish(args) -> int:
 
 
 def cmd_send(args) -> int:
+    from . import teams
     targets = list(args.target or [])
     args.target = targets[0] if len(targets) == 1 else (None if not targets else targets)
-    if isinstance(args.target, list) or (args.resend and _group_resend(args.resend)):
+    if isinstance(args.target, list) or any(teams.is_address(t) for t in targets) \
+            or (args.resend and _group_resend(args.resend)):
         return _send_many(args, targets)
     body = args.text
     if args.held:
@@ -1014,6 +1017,124 @@ def _send_many(args, targets: list) -> int:
         return REFUSED
     print(_readable_json(result.as_dict()) if args.json else "\n".join(result.lines()))
     return multisend.SEVERITY.get(result.worst, USAGE)
+
+
+def cmd_team(args) -> int:
+    """Teams of sessions working together (ADR-0025): create, add, remove,
+    lead, leave, list, show, mute. Adding a session outside this project's
+    scope, and naming the lead, are your user's decisions."""
+    from . import teams
+    if args.action == "list":
+        rows = teams.all_teams()
+        if args.json:
+            print(_readable_json({"teams": [_team_view(t) for t in rows]}))
+        else:
+            for t in rows:
+                print("%s: %s%s" % (t["name"], ", ".join(teams.label(m) for m in t["members"]),
+                                    "  lead %s" % teams.label(t["lead"]) if t.get("lead") else ""))
+            if not rows:
+                print("no teams. To start one: xsm team create <name>")
+        return OK
+    if not args.name:
+        print("usage: xsm team %s <team> ..." % args.action, file=sys.stderr)
+        return USAGE
+    me, why = _unsure_caller("change or read a team")
+    if why or not me:
+        print(why or "this session is not registered", file=sys.stderr)
+        return REFUSED
+    try:
+        if args.action == "show":
+            team = teams.require(args.name)
+            print(_readable_json(_team_view(team)))
+            return OK
+        if args.action == "create":
+            team = teams.create(me, args.name)
+            print("created team %s with %s; add members with `xsm team add %s <session>`"
+                  % (team["name"], teams.label(team["members"][0]), team["name"]))
+            return OK
+        if args.action == "mute":
+            team = teams.require(args.name)
+            if not teams.is_member(team, me):
+                raise teams.TeamError("you are not in team %s" % team["name"])
+            teams.mute(team["name"], me, on=not args.off)
+            print("%s team %s's DMs: %s" % ("unmuted" if args.off else "muted", team["name"],
+                  "they wake this session again" if args.off else
+                  "they are stored for this session's next turn, without a wake"))
+            return OK
+        if args.action == "leave":
+            team = teams.remove(me, args.name, teams.member_of(me), None)
+            print("left team %s" % team["name"])
+            return OK
+        if not args.member:
+            print("usage: xsm team %s <team> <session>" % args.action, file=sys.stderr)
+            return USAGE
+        team = teams.require(args.name)
+        if args.action == "add":
+            with probe.quick():
+                found = resolve.resolve(args.member, caller=me) if args.member.startswith(("net:", "candidate:")) \
+                    else resolve.resolve(args.member)
+            if not found.ok:
+                print("refused: %s" % found.reason, file=sys.stderr)
+                return REFUSED
+            target = found.record
+            rule = teams.add_rule(me, team, target)
+            approval = "lead"
+            if rule == "user":
+                why = _person_or_refuse("adding %s to team %s" % (teams.label(teams.member_of(target)), team["name"]),
+                                        "xsm_team", ask=("team-add-" + team["name"], target.get("name") or args.member))
+                if why:
+                    print("refused: %s" % why, file=sys.stderr)
+                    return REFUSED
+                approval = _verdict or "person at the terminal"
+            team = teams.add(me, team["name"], target, approval)
+            _team_sync(team)
+            print("added %s to team %s (%s)" % (teams.label(teams.member_of(target)), team["name"],
+                  "the lead's own project" if approval == "lead" else "your user approved"))
+            return OK
+        member = teams.find_member(team, args.member)
+        if args.action == "remove":
+            approval = None
+            if not (teams.matches(member, me) or teams.is_lead(team, me)):
+                why = _person_or_refuse("removing %s from team %s" % (teams.label(member), team["name"]),
+                                        "xsm_team", ask=("team-remove-" + team["name"], member.get("name") or args.member))
+                if why:
+                    print("refused: %s" % why, file=sys.stderr)
+                    return REFUSED
+                approval = _verdict or "person at the terminal"
+            team = teams.remove(me, team["name"], member, approval)
+            _team_sync(team)
+            print("removed %s from team %s" % (teams.label(member), team["name"]))
+            return OK
+        if args.action == "lead":
+            why = _person_or_refuse("making %s the lead of team %s" % (teams.label(member), team["name"]),
+                                    "xsm_team", ask=("team-lead-" + team["name"], member.get("name") or args.member))
+            if why:
+                print("refused: %s" % why, file=sys.stderr)
+                return REFUSED
+            team = teams.set_lead(me, team["name"], member, _verdict or "person at the terminal")
+            _team_sync(team)
+            print("%s is the lead of team %s" % (teams.label(member), team["name"]))
+            return OK
+    except teams.TeamError as exc:
+        print("refused: %s" % exc, file=sys.stderr)
+        return REFUSED
+    return USAGE
+
+
+def _team_view(team: dict) -> dict:
+    from . import teams
+    return {"name": team["name"], "lead": teams.label(team["lead"]) if team.get("lead") else None,
+            "members": [{"member": teams.label(m), "running": teams.address(m) is not None,
+                         "remote": bool(m.get("machine"))} for m in team["members"]],
+            "generation": team.get("generation"), "log": team.get("log", [])[-10:]}
+
+
+def _team_sync(team: dict) -> None:
+    """Send the changed team record to the machines of its remote members, so
+    each can check a member's DM against the same record (ADR-0025, D22)."""
+    from . import team_sync
+    for note in team_sync.publish(team):
+        print(note, file=sys.stderr)
 
 
 def cmd_inbox(args) -> int:
@@ -2672,6 +2793,16 @@ def build_parser() -> argparse.ArgumentParser:
         sp.add_argument("project")
         sp.add_argument("--dir", help="the folder to speak for (default: this session's)")
         sp.set_defaults(func=func)
+    tm = sub.add_parser("team", help="teams of sessions working together: create, add, remove, "
+                                     "lead, leave, list, show, mute (adding outside this project, "
+                                     "and the lead, are your user's decision)")
+    tm.add_argument("action", choices=["create", "add", "remove", "lead", "leave", "list", "show", "mute"])
+    tm.add_argument("name", nargs="?")
+    tm.add_argument("member", nargs="?", help="add: a session (name, ref:xxxxxx, net:...); "
+                                              "remove/lead: a member's name or ref")
+    tm.add_argument("--off", action="store_true", help="mute: unmute")
+    tm.add_argument("--json", action="store_true")
+    tm.set_defaults(func=cmd_team)
     service=sub.add_parser("owned",help="journal requests to an explicitly owned headless worker")
     service.add_argument("action",choices=["create","run","status","retry","reconcile"])
     service.add_argument("name")
@@ -3015,7 +3146,7 @@ def build_parser() -> argparse.ArgumentParser:
 # The commands that ask your user, and so take their words with --reply when the
 # hook that keeps replies did not (consent.supplied).
 ASKING = ("join", "leave", "spawn", "post", "doc", "remote", "approve", "link", "reach", "unblock",
-          "attempts", "frameworks", "send", "held", "connect", "publish")
+          "attempts", "frameworks", "send", "held", "connect", "publish", "team")
 
 
 def main(argv=None) -> int:

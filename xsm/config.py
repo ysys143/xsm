@@ -605,9 +605,10 @@ def member_matches(member: dict, session: dict) -> bool:
     return fnmatch.fnmatch(cwd, _expand(pattern))
 
 
-def scope_for(a: dict, b: dict, cfg: dict | None = None):
+def scope_for(a: dict, b: dict, cfg: dict | None = None, team_aware: bool = True):
     """Returns (scope_id, reason). scope_id is None when the two sessions may
-    not talk; reason explains the verdict either way."""
+    not talk; reason explains the verdict either way. team_aware=False leaves
+    teams out: what the scope would be without them (who may add to a team)."""
     cfg = cfg or load()
     scope, reason = _scope_for(a, b, cfg)
     if scope:
@@ -621,6 +622,13 @@ def scope_for(a: dict, b: dict, cfg: dict | None = None):
     link = _reach_link(a, b, cfg)
     if link:
         return link, "a reach your user allowed"
+    if team_aware:
+        # A team is its own permission (ADR-0025, D19): both sessions are
+        # members of one team. Read from the team record, never from pairs.
+        from . import teams
+        team = teams.scope_for(a, b)
+        if team and not any(r.get("state") in ("ended", "stale") or r.get("ended_at") for r in (a, b)):
+            return "team:" + team, "two sessions in team %s" % team
     from . import collaboration
     selected = collaboration.scope_for(a, b)
     if selected and not any(r.get("state") in ("ended", "stale") or r.get("ended_at")

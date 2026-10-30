@@ -49,11 +49,15 @@ def ask_many(sender: dict, specs: list, body: str, *, wait: float = 0, priority:
         raise GroupError("at most %d recipients in one question" % multisend.LIMIT)
     if not isinstance(body, str) or not body.strip():
         raise GroupError("question body required")
+    try:
+        specs, notes, _ = multisend.expand_teams(specs, sender)
+    except multisend.MultiError as exc:
+        raise GroupError(str(exc))
     plan = multisend.plan_recipients(specs, sender)
     group_id = envelope.new_id()
     going = [e for e in plan if e["skip"] is None]
     record = {"id": group_id, "sender": questions._native(sender), "created_at": time.time(),
-              "recipients": []}
+              "recipients": [], "notes": notes}
     for n, entry in enumerate(plan):
         if entry["skip"] is not None:
             record["recipients"].append({"spec": entry["spec"], "label": entry["label"], "id": None,
@@ -103,7 +107,7 @@ def status(sender: dict, group_id: str) -> dict:
         overall = "refused"
     else:
         overall = "pending"
-    return {"status": overall, "id": group_id, "group": True,
+    return {"status": overall, "id": group_id, "group": True, "notes": record.get("notes") or [],
             "answered": len(answered), "asked": len(asked), "skipped": len(rows) - len(asked),
             "waiting_on": [r["recipient"] for r in open_],
             "recipients": rows, "replies": replies,

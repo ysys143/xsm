@@ -1706,7 +1706,7 @@ def remove_statusline(home: str) -> bool:
 # (issue #8, measured with Claude Code 2.1.286, 2026-10-01). Allowing the call
 # lets the form ask; the form is the consent (user decision, 2026-10-01).
 FORM_TOOLS = ("xsm_publish", "xsm_link", "xsm_reach", "xsm_join", "xsm_approve", "xsm_grant", "xsm_decide",
-              "xsm_doc_endorse")
+              "xsm_doc_endorse", "xsm_team")
 # A direct install registers the server as "xsm"; the plugin's is "xsm" in plugin "xsm".
 FORM_TOOL_PREFIXES = ("mcp__xsm__", "mcp__plugin_xsm_xsm__")
 

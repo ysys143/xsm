@@ -49,7 +49,8 @@ MESSAGING = {"readOnlyHint": False, "destructiveHint": False, "openWorldHint": F
 # Tools that widen a permission or touch another session's files: these require
 # an exact caller identity, never a neighbour guessed from a shared daemon pid
 # (P01 item 2, A17-02, A23-03).
-WIDENING = ("xsm_publish", "xsm_connect", "xsm_grant", "xsm_approve", "xsm_link", "xsm_join", "xsm_reach")
+WIDENING = ("xsm_publish", "xsm_connect", "xsm_grant", "xsm_approve", "xsm_link", "xsm_join", "xsm_reach",
+            "xsm_team")
 # Tools that read a file on the caller's behalf. The path is taken relative to
 # the caller's own folder, so a guessed neighbour would have another session's
 # files read for it -- the second thing spec P01 item 2 puts behind an exact
@@ -93,7 +94,7 @@ TOOLS = [
     {"name": "xsm_ask", "description": MESSAGING_GUIDE,
      "inputSchema": {"type": "object", "properties": {
          "target": {"type": "string"},
-         "targets": {"type": "array", "items": {"type": "string"}, "minItems": 2,
+         "targets": {"type": "array", "items": {"type": "string"}, "minItems": 1,
                      "description": "several recipients instead of target: each gets its own "
                                     "question and is told who else was asked; the result and "
                                     "xsm_question_status(id=<group id>) hold every recipient's answer"},
@@ -173,7 +174,7 @@ TOOLS = [
                      "name@home, ref:xxxxxx, and …@<paired machine>."),
      "inputSchema": {"type": "object", "properties": {
          "target": {"type": "string"},
-         "targets": {"type": "array", "items": {"type": "string"}, "minItems": 2,
+         "targets": {"type": "array", "items": {"type": "string"}, "minItems": 1,
                      "description": "several recipients instead of target: one DM to each, and "
                                     "each is told who else got it; one outside your scope is "
                                     "skipped and named in the result"},
@@ -197,6 +198,20 @@ TOOLS = [
                                  "sends it as it was kept, so target and text are not needed."},
          "wait": {"type": "number", "default": 15}}, "required": []},
      "annotations": MESSAGING},
+    {"name": "xsm_team",
+     "description": ("Teams of sessions working together (a team is a list of members with an "
+                     "optional lead; a DM to team:<name> goes to every member). Actions: list, "
+                     "show, create, add, remove, lead, leave, mute, unmute. A lead adds and removes "
+                     "sessions of its own project; adding a session outside your scope, and naming "
+                     "the lead, ask your user with a form."),
+     "inputSchema": {"type": "object", "properties": {
+         "action": {"type": "string", "enum": ["list", "show", "create", "add", "remove", "lead",
+                                               "leave", "mute", "unmute"]},
+         "team": {"type": "string"},
+         "member": {"type": "string", "description": "add: a session (name, ref:xxxxxx, net:...); "
+                                                     "remove/lead: a member's name or ref"},
+         "reason": {"type": "string"}},
+         "required": ["action"]}, "annotations": MESSAGING},
     {"name": "xsm_ack", "description": "Acknowledge inbox claim tokens only after reading their messages. "
      "Output delivery alone does not acknowledge them. Unacknowledged originals remain recoverable. "
      "Pass each claim's token value; a claim object as shown in the receive context is also accepted.",
@@ -293,7 +308,8 @@ for _tool in TOOLS:
             "attachment_fallback": {"type": "string", "enum": ["inline"],
                 "description": "Explicitly carry UTF-8 copies in the body if peer files support is unknown; never automatic."},
             "request_id": {"type": "string"}})
-    if _tool["name"] in ("xsm_link", "xsm_join", "xsm_reach", "xsm_grant", "xsm_approve", "xsm_decide", "xsm_doc_endorse"):
+    if _tool["name"] in ("xsm_link", "xsm_join", "xsm_reach", "xsm_grant", "xsm_approve", "xsm_decide", "xsm_doc_endorse",
+                         "xsm_team"):
         _tool["inputSchema"]["properties"]["answer_request"] = {"type": "string"}
         _tool["inputSchema"]["properties"]["original_question"] = {"type": "string"}
         _tool["inputSchema"]["properties"]["decision_key"] = {
@@ -806,7 +822,7 @@ class Server:
             author["identity_basis"] = self.ctx.basis
             author["identity_certainty"] = self.ctx.certainty
         form_tools = ("xsm_link", "xsm_join", "xsm_reach", "xsm_grant", "xsm_approve",
-                      "xsm_decide", "xsm_doc_endorse")
+                      "xsm_decide", "xsm_doc_endorse", "xsm_team")
         decision_call = None
         if name in form_tools:
             from . import decisions
@@ -939,6 +955,9 @@ class Server:
                       "cancelled": lambda: owner in self.cancelled}
             from . import inbox, question_groups
             group_poll = lambda child: receive.poll_replies(me, child)  # noqa: E731
+            from . import teams as teams_mod
+            if name == "xsm_ask" and args.get("targets") is None and teams_mod.is_address(args.get("target") or ""):
+                args = dict(args, targets=[args["target"]], target=None)
             if name == "xsm_ask" and args.get("targets") is not None:
                 targets = args.get("targets")
                 if not isinstance(targets, list) or not all(isinstance(t, str) for t in targets) \
@@ -1043,6 +1062,10 @@ class Server:
             if args.get("wake", "auto") not in ("auto", "never"):
                 raise channel.ChannelError("unsupported wake mode; use auto or never")
             targets = args.get("targets")
+            from . import teams as teams_mod
+            if targets is None and teams_mod.is_address(args.get("target") or ""):
+                args = dict(args, targets=[args["target"]], target=None)
+                targets = args["targets"]
             if targets is not None:
                 from . import multisend
                 if not isinstance(targets, list) or not all(isinstance(t, str) for t in targets) \
@@ -1083,6 +1106,8 @@ class Server:
             return text
         if name == "xsm_doc_endorse":
             return self.endorse(me, args)
+        if name == "xsm_team":
+            return self.team(me, args)
         if name == "xsm_ack":
             from . import receive
             tokens = args.get("tokens")
@@ -1350,6 +1375,92 @@ class Server:
             raise channel.ChannelError(str(exc))
         return ("%s: the sessions in %s and %s can talk, both ways, until unlinked; run `xsm list` "
                 "to see them" % ("linked" if added else "already linked", root, other))
+
+    def team(self, me: dict, args: dict) -> str:
+        """xsm_team: the same rules as `xsm team`; a decision that is the
+        user's is asked with a form (self.allowed)."""
+        from . import resolve, team_sync, teams
+        action = args.get("action")
+        try:
+            if action == "list":
+                return json.dumps({"teams": [{"name": t["name"], "lead": teams.label(t["lead"]) if t.get("lead") else None,
+                                              "members": [teams.label(m) for m in t["members"]]}
+                                             for t in teams.all_teams()]}, ensure_ascii=False)
+            name = (args.get("team") or "").strip()
+            if not name:
+                raise channel.ChannelError("team: the team's name")
+            if action == "create":
+                team = teams.create(me, name)
+                return "created team %s with %s" % (team["name"], teams.label(team["members"][0]))
+            team = teams.require(name)
+            if action == "show":
+                return json.dumps({"name": team["name"], "lead": teams.label(team["lead"]) if team.get("lead") else None,
+                                   "members": [{"member": teams.label(m), "running": teams.address(m) is not None}
+                                               for m in team["members"]]}, ensure_ascii=False)
+            if action in ("mute", "unmute"):
+                if not teams.is_member(team, me):
+                    raise teams.TeamError("you are not in team %s" % team["name"])
+                teams.mute(team["name"], me, on=action == "mute")
+                return "%sd team %s's DMs for this session" % (action, team["name"])
+            if action == "leave":
+                team = teams.remove(me, name, teams.member_of(me), None)
+                team_sync.publish(team)
+                return "left team %s" % team["name"]
+            word = (args.get("member") or "").strip()
+            if not word:
+                raise channel.ChannelError("member: the session to %s" % action)
+            reason = ("\nReason: " + args["reason"]) if args.get("reason") else ""
+            if action == "add":
+                with probe.quick():
+                    found = resolve.resolve(word, caller=me) if word.startswith(("net:", "candidate:")) \
+                        else resolve.resolve(word)
+                if not found.ok:
+                    raise channel.ChannelError(found.reason)
+                target = found.record
+                approval = "lead"
+                if teams.add_rule(me, team, target) == "user":
+                    who = teams.label(teams.member_of(target))
+                    ok, refusal = self.allowed(
+                        me, "%s@%s asks to add %s to team %s, so the team's members and it can DM "
+                        "each other.%s\nAllow it?" % (me.get("name"), me.get("alias"), who, name, reason),
+                        "xsm team add %s %s" % (shlex.quote(name), shlex.quote(word)),
+                        ("team-add-" + name, target.get("name") or word))
+                    if not ok:
+                        return refusal + "; the team is unchanged"
+                    approval = "your user approved in the form"
+                team = teams.add(me, name, target, approval)
+                notes = team_sync.publish(team)
+                return "\n".join(["added %s to team %s" % (teams.label(teams.member_of(target)), name)] + notes)
+            member = teams.find_member(team, word)
+            if action == "remove":
+                approval = None
+                if not (teams.matches(member, me) or teams.is_lead(team, me)):
+                    ok, refusal = self.allowed(
+                        me, "%s@%s asks to remove %s from team %s.%s\nAllow it?" % (
+                            me.get("name"), me.get("alias"), teams.label(member), name, reason),
+                        "xsm team remove %s %s" % (shlex.quote(name), shlex.quote(word)),
+                        ("team-remove-" + name, member.get("name") or word))
+                    if not ok:
+                        return refusal + "; the team is unchanged"
+                    approval = "your user approved in the form"
+                team = teams.remove(me, name, member, approval)
+                team_sync.publish(team)
+                return "removed %s from team %s" % (teams.label(member), name)
+            if action == "lead":
+                ok, refusal = self.allowed(
+                    me, "%s@%s asks to make %s the lead of team %s: the session that faces you, "
+                    "takes your approvals and adds or removes this project's sessions.%s\nAllow it?" % (
+                        me.get("name"), me.get("alias"), teams.label(member), name, reason),
+                    "xsm team lead %s %s" % (shlex.quote(name), shlex.quote(word)),
+                    ("team-lead-" + name, member.get("name") or word))
+                if not ok:
+                    return refusal + "; the lead is unchanged"
+                team = teams.set_lead(me, name, member, "your user approved in the form")
+                team_sync.publish(team)
+                return "%s is the lead of team %s" % (teams.label(member), name)
+        except teams.TeamError as exc:
+            raise channel.ChannelError(str(exc))
+        raise channel.ChannelError("unknown action %r" % action)
 
     def join(self, me: dict, args: dict) -> str:
         from . import config

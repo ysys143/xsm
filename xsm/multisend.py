@@ -36,6 +36,7 @@ class MultiResult:
     def __init__(self, group_id: str, rows: list):
         self.group_id = group_id
         self.rows = rows              # [{"spec", "label", "result": SendResult}]
+        self.notes = []               # team members that were not running
 
     @property
     def worst(self) -> str:
@@ -44,7 +45,7 @@ class MultiResult:
 
     def lines(self) -> list:
         sent = sum(1 for r in self.rows if r["result"].status in send.LEFT)
-        out = ["group %s: %d of %d recipients sent" % (self.group_id, sent, len(self.rows))]
+        out = list(self.notes) + ["group %s: %d of %d recipients sent" % (self.group_id, sent, len(self.rows))]
         for row in self.rows:
             res = row["result"]
             line = "  %s: %s: %s" % (row["label"], res.status, res.reason or "")
@@ -54,7 +55,7 @@ class MultiResult:
         return out
 
     def as_dict(self) -> dict:
-        return {"group": self.group_id, "status": self.worst,
+        return {"group": self.group_id, "status": self.worst, "notes": list(self.notes),
                 "recipients": [dict(spec=r["spec"], label=r["label"], **r["result"].as_dict())
                                for r in self.rows]}
 
@@ -148,6 +149,7 @@ def send_many(specs: list, body: str, *, sender: dict | None = None, call=None, 
     if not sender:
         raise MultiError("this session is not registered; run `xsm doctor`")
 
+    specs, notes, team_names = expand_teams(specs, sender)
     plan = plan_recipients(specs, sender)
     group_id = envelope.new_id()
     going = [e for e in plan if e["skip"] is None]
@@ -162,9 +164,12 @@ def send_many(specs: list, body: str, *, sender: dict | None = None, call=None, 
             continue
         others = [e["label"] for e in going if e is not entry]
         text = also_note(others) + "\n" + body if others else body
+        quiet = wake and priority == "next" and muted_in(team_names, entry["target"])
         result = send.send(entry["spec"], text, sender=sender, call=call, kind=kind,
                            reply_to=reply_to, priority=priority, wait=0.0, outcome=outcome,
-                           wake=wake)
+                           wake=wake and not quiet)
+        if quiet and result.status in send.LEFT:
+            result.reason = "muted this team, so stored for its next turn without a wake"
         rows.append({"spec": entry["spec"], "label": entry["label"], "result": result})
         record["recipients"].append({"spec": entry["spec"], "label": entry["label"],
                                      "id": result.msg_id, "status": result.status, "body": text})
@@ -172,7 +177,38 @@ def send_many(specs: list, body: str, *, sender: dict | None = None, call=None, 
     for row, saved in zip(rows, record["recipients"]):
         saved["status"] = row["result"].status
     _save(record)
-    return MultiResult(group_id, rows)
+    result = MultiResult(group_id, rows)
+    result.notes = notes
+    return result
+
+
+def expand_teams(specs: list, sender: dict) -> tuple:
+    """Team addresses (`team:<name>`, `#name`) become their members (ADR-0025).
+    Returns (specs, notes, team names)."""
+    from . import teams
+    named = [teams.team_name(s) for s in specs if teams.is_address(s)]
+    if not named:
+        return specs, [], []
+    try:
+        out, notes = teams.expand(specs, sender)
+    except teams.TeamError as exc:
+        raise MultiError(str(exc))
+    from . import team_sync
+    for name in dict.fromkeys(named):
+        # A remote member matches by the session running now; publish first so
+        # a member that restarted here is known there before it is written to.
+        notes += team_sync.publish(teams.require(name))
+    if not out:
+        raise MultiError("no running member of %s to send to" % ", ".join(named))
+    return out, notes, named
+
+
+def muted_in(team_names: list, target: dict | None) -> bool:
+    """Whether a local recipient muted one of the teams this send was addressed to."""
+    if not team_names or not target or target.get("remote"):
+        return False
+    from . import teams
+    return any(teams.muted(name, target) for name in team_names)
 
 
 def _wait_together(rows: list, wait: float) -> None:
