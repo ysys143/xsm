@@ -742,7 +742,7 @@ ADR-0025·ADR-0026의 구현을 실제 세션으로 확인한다. 같은 저장�
 
 ## 15. 승인 결속 (#25)
 
-자동 시험은 `tests/test_answer_binding.py`, `tests/test_approval_binding.py`, `tests/test_worker_permission_binding.py`다. 변이 시험은 표식 없는 전부 쓰기, `--reply` 우회, 낡은 표식의 이름 전락, 뒤이은 말 누락, 옛 훅 퍼짐, 닫힌 요청의 말 재사용, 워커 판별 제거, 결속 잠금 제거 등 31종을 임시 복제본에 넣어 모두 실패로 잡았다.
+자동 시험은 `tests/test_answer_binding.py`, `tests/test_approval_binding.py`, `tests/test_worker_permission_binding.py`다. 변이 시험은 표식 없는 전부 쓰기, `--reply` 우회, 낡은 표식의 이름 전락, 뒤이은 말 누락, 옛 훅 퍼짐, 닫힌 요청의 말 재사용, 워커 판별 제거, 결속 잠금 제거 등 32종을 임시 복제본에 넣어 모두 실패로 잡았다.
 
 실제 세션은 임시 `XSM_HOME`과 임시 `CODEX_HOME`에서 돌렸다. 답은 시험 세션의 질문 화면에 직접 입력했다.
 
@@ -758,13 +758,19 @@ ADR-0025·ADR-0026의 구현을 실제 세션으로 확인한다. 같은 저장�
 | 15-8 | Claude Code 2.1.314 | 요청 둘, AskUserQuestion, 표식 질문 | [x] delta만 `request-marker`. 결과의 `answers` 형식이 코드 전제와 같음 |
 | 15-9 | 같음 | 이어서 평문 "응" | [x] 어디에도 안 붙음 |
 | 15-10 | Codex never | `spawn --trust-hooks`: 대상이 해시라 이름으로 지목 불가 | [x] 표식 질문으로 grant 통과 |
-| 15-11 | Codex 백그라운드 워커 | `xsm_link`, `xsm_publish`가 양식 없이 부모 안내 | [ ] **미실행.** 임시 홈에서 워커가 등록 전에 종료됐다(`can't find pane`). 판별은 서버 수준 시험만 있다 |
+| 15-11 | Codex 백그라운드 워커 | `xsm_publish`, `xsm_link` | [x] 양식 없이 "부모나 lead에게 DM"으로 거부. `XSM_WORKER`가 없는 MCP 서버에서 워커 기록으로 판별. 워커가 결과를 부모에게 보냄 |
+| 15-12 | 신뢰 안 된 폴더의 Codex 워커 | `spawn --background` | [x] 신뢰 화면에서 멈추고 부모가 표식 질문으로 `xsm_approve`, 워커 시작 |
+| 15-13 | Codex never, Default 모드 | 도구를 지정하지 않고 거부문만 보여 줌 | [x] 모델이 스스로 `request_user_input_async`로 묻고 표식을 맨 앞에 넣음(지시문이 있는 세션, 표본 1건, `gpt-6.1-sol`) |
+| 15-14 | Codex `on-request` | `xsm_reach` | [x] 호출 확인 없이 양식이 표시되고 allow로 적용 |
+| 15-15 | Claude `--bg` 새 작업 | `xsm join` | [x] `bg-spare` 프로세스로 등록되고 정상 동작 |
 
 15-6에서 찾은 것: 주석 없는 도구는 Codex never가 서버에 닿기 전에 거부한다(`MCP tool call requires approval, but approval policy is never`). 폼 도구와 `xsm_decision_status`, `xsm_publish`에 주석을 달았다. 이 도구들은 서버에서 사람에게 묻거나 읽기만 한다. on-request에서는 Codex의 호출 확인 한 단계가 사라지고 양식은 그대로다.
 
 이전 세션의 실측(임시 홈, Claude Code 2.1.316): 플러그인 홈에서 Write 한 번에 PermissionRequest 훅 2회, 승인 요청은 네이티브 도구 호출 id로 합쳐 1개(F18). 백그라운드 워커의 AskUserQuestion은 승인 요청 0개로 즉시 거부되고 부모 안내(F17).
 
-확인하지 못한 것: 폼이 보이는 Codex 정책(on-request)에서의 양식 표시, Default 모드 지시문의 "권한에 `request_user_input`을 쓰지 말라"가 async에도 적용되는지(15-3은 모델이 지시대로 호출했을 뿐이다), Claude 백그라운드 작업(`claude bg-spare`) 자체.
+15-11에서 찾은 것: Codex 0.165는 신뢰 화면 문구가 `Trust this folder?`로 바뀌어 감지에 실패했다. `/rename`이 그 화면에 입력돼 워커가 사람에게 묻지 못하고 죽었다. 두 문구를 모두 인식한다. 워커의 MCP 설정은 `CODEX_HOME`도 넘긴다.
+
+확인하지 못한 것: 대화 중 백그라운드로 넘어간 Claude 세션이 등록을 잃는 원인(14-11). 등록은 이슈 범위 밖이고, 안내만 고쳤다. 15-15처럼 새로 시작한 작업은 등록된다.
 
 리뷰에서 재현돼 고친 것: 사람의 "아니"를 옛 말의 `--reply`가 덮는 경로(훅이 보관한 답은 `--reply`가 바꾸지 못하고, 양식 거부는 그때까지의 말을 소모한다), `reason`만 다른 `xsm_grant` 두 호출에 "yes" 하나가 붙어 grant가 둘 생기는 경로(MCP 결정마다 다른 결정으로 센다), 팀 결정의 답이 이름이 겹치는 권한 요청에 붙는 경로.
 

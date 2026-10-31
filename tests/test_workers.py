@@ -750,20 +750,21 @@ class DangerousFlagsTest(TempState):
         typed there, it would trust the folder with nobody asked."""
         from unittest import mock
         from xsm import workers
-        typed = []
-        calls = []
-        def screen(pane):
-            calls.append(pane)
-            return "Do you trust the contents of this directory?" if len(calls) <= 2 else "> ready"
-        w = {"name": "cx", "runtime": "codex", "mode": "pane", "pane": "%3", "pid": None,
-             "home": self.tmp, "created": 0, "needs_rename": True}
-        with mock.patch.object(workers, "_screen", screen), \
-                mock.patch.object(workers, "_tmux_type", lambda pane, text: typed.append(text)), \
-                mock.patch.object(workers, "_register_named_thread", lambda wk: None), \
-                mock.patch.object(workers.time, "sleep", lambda s: None):
-            with self.assertRaises(workers.WorkerError):
-                workers._wait_for_registration(w, 0.2)
-        self.assertEqual(typed, ["/rename cx"], "typed once, after the trust screen was gone")
+        for prompt in ("Do you trust the contents of this directory?", "Trust this folder? Codex can read"):
+            typed = []
+            calls = []
+            def screen(pane):
+                calls.append(pane)
+                return prompt if len(calls) <= 2 else "> ready"
+            w = {"name": "cx", "runtime": "codex", "mode": "pane", "pane": "%3", "pid": None,
+                 "home": self.tmp, "created": 0, "needs_rename": True}
+            with mock.patch.object(workers, "_screen", screen), \
+                    mock.patch.object(workers, "_tmux_type", lambda pane, text: typed.append(text)), \
+                    mock.patch.object(workers, "_register_named_thread", lambda wk: None), \
+                    mock.patch.object(workers.time, "sleep", lambda s: None):
+                with self.assertRaises(workers.WorkerError):
+                    workers._wait_for_registration(w, 0.2)
+            self.assertEqual(typed, ["/rename cx"], "typed once, after the trust screen was gone")
 
     def test_two_background_spawns_at_once_both_get_a_window(self):
         """The loser of the race to create xsm-workers opens a window in it."""
@@ -813,6 +814,8 @@ class DangerousFlagsTest(TempState):
             self.assertEqual("sandbox_workspace_write.writable_roots" in command, expect, mode)
             self.assertEqual("mcp_servers.%s.env={XSM_HOME=" % install.MCP_NAME in command, expect,
                              "the xsm MCP server must look in the worker's store, not ~/.xsm")
+            self.assertEqual("CODEX_HOME=" in command.partition("mcp_servers.%s.env=" % install.MCP_NAME)[2],
+                             expect, "a direct install finds its home only from this")
             self.assertEqual('mcp_servers.%s.default_tools_approval_mode="approve"'
                              % install.MCP_NAME in command, expect, mode)
 

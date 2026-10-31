@@ -14,6 +14,8 @@ steps, are on [GitHub Releases](https://github.com/ysys143/xsm/releases) (in Kor
   (MCP `pending_consent`, `drop_consent`). Codex is told `request_user_input_async`, never the synchronous tool.
 - Recover permission replies inside the same MCP operation. Verify exact native question evidence for
   team decisions and record `native-user` separately. Persist application start and refuse uncertain replay.
+- A Codex worker in an untrusted folder asks its parent again: Codex 0.165 reworded its trust screen, the screen went
+  unseen, and the worker died. Workers pass `CODEX_HOME` to their MCP server.
 - Redirect unattended questions to the parent or lead, recognising a worker by its record too, so Codex and owned
   workers are covered and `xsm_connect` and `xsm_publish` no longer leak past it. Deduplicate worker permission hooks by native
   invocation ID, observed in worker-local hooks before transcript flushing; preserve deadlines and denial notices.

@@ -1746,7 +1746,8 @@ def cannot_keep(what: str, form_tool: str | None, me: dict | None = None) -> str
            "decided from here.")
     return ("%s needs your user's yes, but xsm cannot keep their reply in this session (it is "
             "not a registered session of theirs, or its state cannot be written; a Claude Code "
-            "background job is not registered, and sending it a message does not change that). %s"
+            "session moved into the background can lose its record, and another message may not "
+            "bring it back). %s"
             % (what, way))
 
 

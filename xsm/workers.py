@@ -63,10 +63,12 @@ CLAUDE_SOCKETS = "/tmp/cc-socks"    # where every Claude session opens its inbox
 
 # A runtime's "do you trust this folder" screen, and the keys that answer it
 # (measured 2026-09-22 in tmux: Claude's cursor starts on "No, exit", Codex's
-# on "Yes, continue", so the same Enter means opposite things).
+# on "Yes, continue", so the same Enter means opposite things). Codex 0.165 reworded
+# its screen; missed, `/rename` was typed into it and the worker died unasked (2026-10-31).
 TRUST_PROMPTS = {
-    "claude": ("Yes, I trust this folder", {"yes": ["Down", "Enter"], "no": ["Enter"]}),
-    "codex": ("Do you trust the contents of this directory", {"yes": ["Enter"], "no": ["2"]}),
+    "claude": (("Yes, I trust this folder",), {"yes": ["Down", "Enter"], "no": ["Enter"]}),
+    "codex": (("Do you trust the contents of this directory", "Trust this folder?"),
+              {"yes": ["Enter"], "no": ["2"]}),
 }
 CODEX_MODEL = "gpt-5.6-luna"    # the default for tests; --model overrides
 
@@ -682,7 +684,8 @@ def _codex_mcp_overrides(home: str) -> list:
                  "-c", "mcp_servers.%s.cwd=%s" % (name, json.dumps(plugin["root"]))]
     return whole + [
         "-c", 'mcp_servers.%s.default_tools_approval_mode="approve"' % name,
-        "-c", 'mcp_servers.%s.env={XSM_HOME=%s}' % (name, json.dumps(paths.HOME))]
+        "-c", 'mcp_servers.%s.env={XSM_HOME=%s,CODEX_HOME=%s}' % (
+            name, json.dumps(paths.HOME), json.dumps(os.path.realpath(home)))]
 
 
 def _start_in_tmux(worker: dict, pane: str | None) -> None:
@@ -791,8 +794,11 @@ def _screen(pane: str, lines: int | None = None) -> str:
 
 
 def _at_trust_prompt(worker: dict) -> bool:
-    marker = TRUST_PROMPTS.get(worker["runtime"], ("",))[0]
-    return bool(marker and worker.get("pane") and marker in _screen(worker["pane"]))
+    markers = TRUST_PROMPTS.get(worker["runtime"], ((),))[0]
+    if not markers or not worker.get("pane"):
+        return False
+    screen = _screen(worker["pane"])
+    return any(marker in screen for marker in markers)
 
 
 def _press(worker: dict, answer: str) -> None:
