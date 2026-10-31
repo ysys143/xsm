@@ -274,6 +274,33 @@ class RemoteHandoverTest(test_xsm.TempState):
         self.assertNotIn('home', sent['old'])
         self.assertEqual(len(out['published']), 2)
 
+    def test_the_old_endpoint_is_judged_as_its_successor(self):
+        """Measured on two machines, 2026-10-31: the old session had left the
+        team, so a late answer to it was refused before the gateway followed it."""
+        from xsm import handover, network, network_directory, registry
+        daemon = self._daemon()
+        daemon.repositories = lambda: mock.Mock()
+        seen = []
+        daemon._permission = lambda origin, sender, local, *a: seen.append(local['session_id']) or True
+        daemon.store = lambda: mock.Mock(network_id='n')
+        handle = dict(self.old, generation='g')
+        caller = dict(self.new, machine=MACHINE_A, session_id='caller')
+        request = {'op': 'resolve', 'caller': caller, 'target': self.old}
+        with mock.patch.object(registry, 'raw_records', return_value=[{}]), \
+                mock.patch.object(network_directory, 'public_endpoint', return_value=handle), \
+                mock.patch.object(network_directory, 'local_candidates', return_value=[]), \
+                mock.patch.object(network_directory, 'resolve_local', return_value={'session_id': 'old-thread'}), \
+                mock.patch.object(handover, 'follow', return_value=({'session_id': 'new-thread'}, 'moved')):
+            out = daemon._incoming_target(MACHINE_A, request)
+        self.assertTrue(out['ok'])
+        self.assertEqual(seen, ['new-thread'])
+        with mock.patch.object(registry, 'raw_records', return_value=[{}]), \
+                mock.patch.object(network_directory, 'public_endpoint', return_value=handle), \
+                mock.patch.object(network_directory, 'local_candidates', return_value=[]), \
+                mock.patch.object(network_directory, 'resolve_local', return_value=None), \
+                mock.patch.object(handover, 'for_handle', return_value={'session_id': 'new-thread'}):
+            self.assertTrue(daemon._incoming_target(MACHINE_A, request)['ok'])       # the old one has stopped
+
     def test_the_service_takes_testimony_from_a_member_machine(self):
         from xsm import handover
         daemon = self._daemon()

@@ -1024,7 +1024,11 @@ class Daemon:
         if len(handles) != 1:
             return {"ok": False, "code": "target-unavailable"}
         handle = handles[0]
+        # The one exception: a conversation handed over answers for its successor
+        # (handover.py), as the gateway does, so the permission is the successor's.
+        from . import handover
         local = resolve_local(handle, self.transport.endpoint_id)
+        local = handover.for_handle(handle) if local is None else handover.follow(local)[0]
         if local is None:
             return {"ok": False, "code": "target-unavailable"}
         rows = local_candidates(origin, request.get("repository_id"), self.repositories(), self.transport.endpoint_id)
