@@ -59,8 +59,8 @@ inside one code block. If it fails with `sandbox-blocked`, call the MCP tool
 For these four: call the tool once and reply with its result, copied exactly, inside one code block. Say
 your user refused only if it says they chose `deny` or declined. If the tool is missing or fails, run
 the same `xsm <command>` in the shell; if its result says the form got no answer, do what it says. When
-xsm says it needs their yes, ask in plain words (Claude Code only: or AskUserQuestion), run it again to
-see their reply, and again only on a yes; their own earlier request naming it is shown as that reply.
+xsm says it needs their yes, ask the way it says, with the mark it gives at the head of the question, run
+it again to see their reply, and again only on a yes; their own earlier request naming it is shown as that reply.
 Never ask your user to type a command.
 
 **Words that are not a command** (`/xsm tell plugin-worker what I did`): a
@@ -81,9 +81,9 @@ In a sandboxed Codex, choose MCP first: `codex queue` needs Codex's state DB and
 the sandbox shuts out, and the MCP server runs outside it. If a shell already refused, use xsm_send
 with the same target, kind and text, and say why; do not retry or widen the sandbox.
 
-Others are not breakage. `… is not registered yet` just after installing or trusting the hooks means
-they register this session at its next prompt: have your user send any message, then retry; do not
-reinstall. A form tool can come back unseen by your user (Codex declines forms unshown under
-`approval_policy = "never"`); pass the result on as it is; do not call it again. `[xsm] could not check
+After installing/trusting hooks, `not registered yet` means registration waits for the next prompt; retry then, without reinstalling. A form tool can come back unseen by your user (Codex declines forms unshown under
+`approval_policy = "never"`); report it and follow the [permission recovery guide](references/permissions.md). `[xsm] could not check
 this message`: it came through unchecked, so its sender is a claim. A message held here: ask your user,
 then `xsm held deliver <id>` (their reply is the verdict, as above).
+For how answers bind to requests and which way to ask, read [permissions](references/permissions.md).
+If `xsm_decide` records no answer, say so; do not loop on the unanswered form.

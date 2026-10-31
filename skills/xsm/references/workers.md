@@ -81,3 +81,22 @@ xsm stop <worker>           # stop it and remove its records
   `xsm frameworks ignore orca` (their reply is kept as the verdict). Never
   decide it on your own. `xsm frameworks` shows
   the current setting.
+
+## Questions from unattended workers
+
+A background worker has no person at its terminal. Ask its parent, or the
+team lead, in a DM when a user decision is needed; do not open an unattended
+question or form. A runtime PermissionRequest to allow AskUserQuestion is
+permission to invoke that tool, not an answer to its question. A pane worker
+with a person in the pane can still use forms. Registration failures in a
+Claude background job are separate: another message is not a promised fix.
+
+In development, a background AskUserQuestion PermissionRequest is denied with
+parent/lead guidance; it does not create a permission form that nobody can answer.
+Plugin and worker hooks for one invocation share a request only after the exact
+native tool-use ID is verified. Worker-local PreToolUse stores identity before
+native transcript flushing; PostToolUse and PostToolUseFailure retire calls.
+Older workers can use a bounded native transcript fallback.
+Identical inputs from different invocations stay separate. Missing or ambiguous
+identity fails closed. Duplicate callbacks keep the original deadline and cannot
+reopen an answered or expired request. These changes preserve worker permissions.

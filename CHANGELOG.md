@@ -3,6 +3,22 @@
 What changed in xsm, newest first. Each released version's full notes, with its verification and upgrade
 steps, are on [GitHub Releases](https://github.com/ysys143/xsm/releases) (in Korean).
 
+## Unreleased
+
+- One answer, one request ([#25](https://github.com/ysys143/xsm/issues/25)). Every refusal gives the ask's mark,
+  `[xsm:<id>]`, for the head of the question. A question-tool answer reaches the ask its question names, by id, mark
+  or target, question by question; a plain reply binds when one decision is open or when it names one. An answer
+  that binds to nothing approves nothing, `--reply` cannot use it, and the next run shows it once. A question asked
+  before its ask counts once, by name. Replies an older hook wrote to several asks pass neither.
+- `xsm decision-status --pending-consent` lists open asks and unbound answers, `--drop-consent <mark>` closes one
+  (MCP `pending_consent`, `drop_consent`). Codex is told `request_user_input_async`, never the synchronous tool.
+- Recover permission replies inside the same MCP operation. Verify exact native question evidence for
+  team decisions and record `native-user` separately. Persist application start and refuse uncertain replay.
+- Redirect unattended questions to the parent or lead, recognising a worker by its record too, so Codex and owned
+  workers are covered and `xsm_connect` and `xsm_publish` no longer leak past it. Deduplicate worker permission hooks by native
+  invocation ID, observed in worker-local hooks before transcript flushing; preserve deadlines and denial notices.
+  Global hook registrations and worker permission rules are unchanged.
+
 ## [0.5.1](https://github.com/ysys143/xsm/releases/tag/v0.5.1) - 2026-10-31
 
 Update a plugin install with `claude plugin marketplace update xsm` and `claude plugin update xsm@xsm` (Codex:
@@ -57,7 +73,7 @@ is gone.
 - A Claude background job (`claude bg-spare`) is not found by xsm, so tools that need the user's answer are refused there.
 - A machine that was off when a handover was published does not accept the successor's answer; there is no resend.
 - One reply to a yes-or-no request is attached to every request open in that session, so it can pass more than one
-  (present since before 0.5.0; first on the list for 0.5.2, see `docs/plan/collaboration/approval-channels-audit.md`).
+  (present since before 0.5.0; fixed after 0.5.1, [#25](https://github.com/ysys143/xsm/issues/25)).
 
 ## [0.5.0](https://github.com/ysys143/xsm/releases/tag/v0.5.0) - 2026-10-30
 
@@ -115,7 +131,7 @@ still works: no command or flag was removed.
 - **Traffic control** (ADR-0022). Traffic is observed per sender and recipient. `traffic_control` in
   `~/.xsm/config.json` throttles only with explicit limits (`mode: strict`, `window_seconds`, and
   `max_messages` or `max_same_body`); there are no built-in blocking numbers.
-- **Documents**: ADR-0015 to ADR-0024, the [collaboration plan](docs/plan/collaboration/execution.md)
+- **Documents**: ADR-0015 to ADR-0024, the [collaboration plan](https://github.com/ysys143/xsm/blob/ab8f173a90172f8564196467c5d952173ecaaacc/docs/plan/collaboration/execution.md)
   with its acceptance criteria and evidence ledger, and recorded runs under `deliverables/`.
 - **Evals**: `work-with-another-machine` (an agent explains joining a network without SSH).
 
@@ -132,10 +148,10 @@ still works: no command or flag was removed.
   `--attachment-fallback`.
 - README and README_ko describe the new flow first; the earlier "in development" section is folded into the
   main text. The plugin version moves from 0.4.20 to 0.5.0.
-- The collaboration plan moves to [docs/plan/collaboration/](docs/plan/collaboration/README.md), with a README
+- The collaboration plan moves to [docs/plan/collaboration/](https://github.com/ysys143/xsm/blob/ab8f173a90172f8564196467c5d952173ecaaacc/docs/plan/collaboration/README.md), with a README
   for outside readers and the agents' working notes under `records/`. Its audit is now
   `scripts/audit-collaboration-plan.py`. Recorded runs under `deliverables/` keep the paths of the time.
-- The Reason research is published as one [comparison note](docs/references/reason.md) built on the public engine,
+- The Reason research is published as one [comparison note](https://github.com/ysys143/xsm/blob/ab8f173a90172f8564196467c5d952173ecaaacc/docs/references/reason.md) built on the public engine,
   the official docs and using both tools. The detailed research, including analysis of the non-public CLI, is
   no longer in the repository.
 
@@ -154,7 +170,7 @@ still works: no command or flag was removed.
   observed yet, and earlier native and physical runs were made on sources before the last receive change.
 - Remote paths were tested on two physical Macs and a phone on another NAT. The HTTPS proxy and self-hosted
   relay were tested on one host only, IPv6 absence was injected per process, and hosted MCP internals were
-  not observed. Details: [ADR-0021 closure record](docs/plan/collaboration/adr-0021-closure.md).
+  not observed. Details: [ADR-0021 closure record](https://github.com/ysys143/xsm/blob/ab8f173a90172f8564196467c5d952173ecaaacc/docs/plan/collaboration/adr-0021-closure.md).
 - The P2P network is a model for machines that trust each other; it does not isolate a hostile member.
 
 ## 0.4.x

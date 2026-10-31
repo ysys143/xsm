@@ -10,6 +10,17 @@ xsm 0.5.0의 업무 검색, 선택한 상대와의 핸드셰이크, 상관된 �
 
 ## 읽는 순서
 
+### 0.5.1 후속: 팀·보드·인수인계
+
+이 문서의 0.5.0 계획·70개 수용 조건과 구분해 읽는다. 팀 기능의 실측 통과가 기존 계획 전체의 완료를 뜻하지는 않는다.
+
+- [ADR-0025](../../adr/0025-team-and-multi-recipient-dm.md), [ADR-0026](../../adr/0026-team-board-on-xsm-doc.md): 확정된 제품 계약
+- [팀 소통 설계 메모](team-communication-memo.md), [구현 계획](team-implementation-plan.md), [진행 기록](team-implementation-progress.md): 결정 배경·구현·검증과 한계
+- [TESTPLAN §14](../../xsm/TESTPLAN.md#14-팀-보드-결재-인수인계-051): 팀·보드·결재·인수인계 실제 세션 확인 기록
+- [승인 채널 감사](approval-channels-audit.md), [이슈 #25](https://github.com/ysys143/xsm/issues/25): 승인 결속·복구 문제와 그 처리 결과
+
+### 0.5.0 협업·원격 계획
+
 | 문서 | 내용 |
 |---|---|
 | [spec.md](spec.md) | 실행 단위 P00–P13의 상세 작업 |

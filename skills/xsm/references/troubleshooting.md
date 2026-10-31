@@ -49,8 +49,15 @@ choice in front of your user: never decide for them. Ask them in plain words
 and run the shell form (`xsm approve <id>`, `xsm doc add … --tag endorsed`,
 `xsm spawn` without `--grant`): it keeps their reply as the verdict.
 `xsm_decide` has no shell form for a session: act on their plain answer, and
-say it is not on record as a decision. The reverse also holds: when the shell is sandboxed and refuses, use
-the MCP tool (see Sending). Tell your user a session showing `orphaned` in
+say it is not on record as a decision. Do not loop or claim a decision was
+recorded. Follow [how an answer binds](permissions.md#how-an-answer-binds):
+permission replies can finish in the same MCP operation; team records can use
+verified native answers. Inspect status first and preserve its exact scoped question.
+The preceding shell-only recovery limitations describe released 0.5.1.
+For messaging, when the shell is sandboxed and refuses, use the MCP tool
+(see Sending). A permission path can instead be blocked in both directions:
+if the form got no answer and the shell cannot keep a request, report that
+result rather than switching between them repeatedly. Tell your user a session showing `orphaned` in
 `xsm doctor` needs restarting.
 
 ### When versions are mixed
