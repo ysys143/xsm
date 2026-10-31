@@ -404,14 +404,14 @@ take your yes. `xsm connect` makes a team of two.
 
 ```bash
 xsm team create core                                   # this session is the first member
-xsm team add core api-worker                           # same project: no question; otherwise your yes
 xsm team lead core planner                             # your decision
+xsm team add core api-worker                           # by the lead, same project: no question; otherwise your yes
 xsm send team:core --text "main is frozen until 18:00"  # one DM to every member
 ```
 
 Each team has a board: what is true for the team now, one entry per item (decisions in force, who owns what,
-progress). Members write items as immutable nodes of an xsm doc, so two writes never overwrite each other; two
-versions written at once both show until someone settles them. The rule the agents follow is short: a DM to
+progress). Members write items as immutable nodes of an xsm doc, and a write builds only on the versions its writer has
+read, so a version nobody read is never buried; both show until someone who read them settles it. The rule the agents follow is short: a DM to
 move someone, the board for a fact the whole team needs, never both. When a board changes, each member's next
 prompt gets one line naming the changed items, once, not the text.
 

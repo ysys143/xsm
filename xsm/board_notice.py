@@ -67,6 +67,11 @@ def _decision_ids(team: str) -> list:
         return []
 
 
+def read_ids(record: dict, team: str) -> set:
+    """The nodes of a board this session has read or written."""
+    return _load(team, record)["read"]
+
+
 def mark_read(record: dict, team: str, nodes=None, decisions=None) -> None:
     """Move the read position: all of the board (nodes and decisions None),
     or only the ids given (what this member wrote itself)."""

@@ -223,7 +223,10 @@ def add_rule(me: dict, team: dict, target: dict) -> str:
         return "user"
     from . import config
     scope, _ = config.scope_for(me, target, team_aware=False)
-    return "lead" if scope and is_lead(team, me) else "user"
+    # Only a project is the lead's: a worker link or a reach joins one session to
+    # the caller, and a team would open it to every member (measured 2026-10-31).
+    project = scope and not scope.startswith(("worker:", "reach:"))
+    return "lead" if project and is_lead(team, me) else "user"
 
 
 def add(me: dict, name: str, target: dict, approval: str) -> dict:

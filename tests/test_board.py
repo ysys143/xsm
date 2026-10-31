@@ -32,6 +32,7 @@ class BoardTest(test_xsm.TempState):
         from xsm import board
         board.set_item(self.me, 'core', 'decision: cache', 'redis')
         board.set_item(self.b, 'core', 'owner/bee', 'bee owns the importer')
+        board.show(self.b, 'core')
         board.set_item(self.b, 'core', 'decision: cache', 'memcached after the benchmark')
         text = board.show(self.me, 'core')
         self.assertIn('## decision: cache\n\nmemcached after the benchmark', text)
@@ -53,6 +54,27 @@ class BoardTest(test_xsm.TempState):
         settled = board.set_item(self.me, 'core', 'plan', 'agreed: mine')
         self.assertEqual(len(settled['parents']), 2)
         self.assertNotIn('versions at once', board.show(self.me, 'core'))
+
+    def test_a_write_does_not_bury_a_version_its_writer_never_read(self):
+        """Measured with two real sessions, 2026-10-31: a set 32 ms after
+        another built on it unread, and the first value disappeared."""
+        from xsm import board
+        board.set_item(self.b, 'core', 'plan', 'bee value')
+        unread = board.set_item(self.me, 'core', 'plan', 'lead value')
+        self.assertEqual(unread['parents'], [])
+        text = board.show(self.me, 'core')              # now the lead has read both
+        self.assertIn('_2 versions at once', text)
+        self.assertIn('bee value', text)
+        self.assertIn('lead value', text)
+        settled = board.set_item(self.me, 'core', 'plan', 'agreed')
+        self.assertEqual(len(settled['parents']), 2)
+        self.assertNotIn('versions at once', board.show(self.b, 'core'))
+        # Unread again: a newer version stays beside this write, built on the
+        # last one this session read, not on nothing.
+        newer = board.set_item(self.b, 'core', 'plan', 'bee again')
+        late = board.set_item(self.me, 'core', 'plan', 'lead again')
+        self.assertEqual(late['parents'], [settled['id']])
+        self.assertEqual({n['id'] for n in board.current('core')['plan']}, {newer['id'], late['id']})
 
     def test_a_report_tag_does_not_take_over_the_board(self):
         from xsm import board

@@ -216,8 +216,9 @@ TOOLS = [
     {"name": "xsm_board",
      "description": ("A team's board: what is true for the team now (decisions in force, who owns "
                      "what, progress), one entry per item. show renders it; set writes an item "
-                     "(it builds on the item's current version, and settles two versions written "
-                     "at once); log lists the nodes. Members only. Put team-wide facts here, not in "
+                     "(it builds on the versions you have read, so read before you change what "
+                     "another member wrote: a version you have not read stays beside yours until "
+                     "someone who read both sets it); log lists the nodes. Members only. Put team-wide facts here, not in "
                      "DMs; a DM that carries one points here instead. A changed board is named in "
                      "one line at your next prompt; mute/unmute turns those lines off for this "
                      "session."),

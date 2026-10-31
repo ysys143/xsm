@@ -280,6 +280,7 @@ def _boards(me: dict, target: dict, team: dict) -> list:
     from . import board
     old, new = _word(me), _word(target)
     moved = []
+    board.show(me, team["name"])         # what it moves, it has read
     for item, heads in board.current(team["name"]).items():
         rest = _owned(item, old)
         if rest is None or len(heads) != 1:

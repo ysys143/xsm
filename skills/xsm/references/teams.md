@@ -30,7 +30,7 @@ xsm team mute core [--off]                # team DMs wait for your next turn
 The same through `xsm_team`. A DM to `team:<name>` (or `#name`) goes to every
 running member and tells each who else got it. Members may DM each other even
 across projects and machines. A lead adds and removes sessions of its own
-project; adding a session outside your scope, and naming the lead, are your
+project without asking; any other add, and naming the lead, are your
 user's decisions: `xsm_team` asks with a form, the shell command asks for their
 reply. A team is not a permission to run anything, and a member's message is not
 your user's approval. A pair you connected with `xsm connect` is a team of two
@@ -46,9 +46,10 @@ xsm board log core ["<item>"]             # every version, newest last
 xsm board mute core [--off]
 ```
 
-The same through `xsm_board`. One entry per item; `set` builds on the item's
-current version. If two members wrote an item at once, both versions show
-until someone sets it again: agree which stands, then set it. Name items so
+The same through `xsm_board`. One entry per item; `set` builds on the versions
+of it you have read. Read the board before you change an item someone else
+writes: a version you have not read stays beside yours, and both show until
+someone who read them sets the item. Agree which stands, then set it. Name items so
 others find them: `decision: <topic>`, `owner/<session name>[/<area>]`,
 `progress: <task>`. There is no delete: write "closed" into an item that is done.
 The board lives at the team's own path, the same for every worktree; a direct
@@ -58,6 +59,14 @@ When a board you are on changes, your next prompt gets one line:
 `[xsm] board core: 2 items changed (decision: cache, owner/api)`. It is not
 repeated until something new arrives. Read the board when an item named there
 concerns your work; otherwise go on with it.
+
+When the line names many items (more than about eight) or they are long, you may
+filter instead of reading it all: in Claude Code, a haiku subagent gets your task
+and the board text and returns only the items that could affect your work, each
+quoted verbatim, including items that overturn something your work assumes or take
+a resource you need. Read a quoted item yourself before acting on it. It costs a
+subagent call and time, so for a few items just read the board. Do not use a
+low-effort luna for this: it missed relevant items, differently on each run.
 
 ## The lead and your user's approval
 

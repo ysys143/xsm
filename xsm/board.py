@@ -237,19 +237,25 @@ def author(me: dict) -> dict:
 
 def set_item(me: dict, team_name: str, item: str, text: str, tag: str | None = None,
              decision: str | None = None) -> dict:
-    """Write an item: a new node that builds on the item's current version(s),
-    so setting an item also settles a conflict on it."""
+    """Write an item: a new node that builds on the versions of it this session
+    has read. So a member that read two versions settles them by setting the
+    item; one that never read a version another member wrote does not build on
+    it, and both show until someone who read them sets it. Building on whatever
+    is newest at the moment of writing lost a value to any write that came
+    a moment later (measured: 32 ms apart, two sessions, 2026-10-31)."""
+    from . import board_notice
     team = _require_member(me, team_name)
     item = (item or "").strip()
     take_edits(team["name"])
-    hs = current(team["name"]).get(item, [])
+    seen = board_notice.read_ids(me, team["name"])
+    hs = heads([n for n in items(doc.read(path(team["name"]))).get(item, []) if n["id"] in seen])
     try:
         node = doc.add(path(team["name"]), author(me), text, [tag] if tag else ["update"],
                        [n["id"] for n in hs], item=item, decision=decision)
     except doc.DocError as exc:
         raise BoardError(str(exc))
     render(team["name"])
-    from . import board_notice, board_sync
+    from . import board_sync
     board_notice.mark_read(me, team["name"], nodes=[node["id"]])
     node["sync_notes"] = board_sync.publish(team, [node])
     return node

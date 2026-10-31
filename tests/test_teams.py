@@ -52,6 +52,10 @@ class TeamTest(test_xsm.TempState):
         team = teams.set_lead(self.me, 'core', teams.member_of(self.me), 'yes, lead is fine')
         self.assertEqual(teams.add_rule(self.me, team, self.b), 'lead')     # lead, same project
         self.assertEqual(teams.add_rule(self.me, team, self.far), 'user')   # outside the scope
+        from xsm import config
+        for link in ('worker:rs-c', 'reach:a1b2c3'):                        # one session, not a project
+            with mock.patch.object(config, 'scope_for', return_value=(link, 'x')):
+                self.assertEqual(teams.add_rule(self.me, team, self.far), 'user')
         with self.assertRaises(teams.TeamError):
             teams.add_rule(self.b, team, self.far)                          # not a member
         team = teams.add(self.me, 'core', self.b, 'lead')
