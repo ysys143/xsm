@@ -185,11 +185,12 @@ class OneAnswerOneDecisionTest(_Asks):
 
 class RefusalStandsTest(_Asks):
     def test_a_no_on_the_ask_is_not_replaced_by_earlier_words(self):
-        """Security review: `--reply "ok thanks"` turned the person's no into a yes."""
-        self.say("ok thanks, run the tests")
+        """Security review: `--reply` with earlier words turned the person's no into a yes.
+        These name the target, so only the kept answer stands in their way."""
+        self.say("alpha looks good")
         pending = self.asks("alpha")
         self.say("no, do not do that")
-        consent.supplied = "ok thanks"
+        consent.supplied = "alpha looks good"
         reply, go, _ = consent.take_or_request(self.me, "join", "alpha")
         self.assertEqual(reply, "no, do not do that")
         self.assertFalse(go)
