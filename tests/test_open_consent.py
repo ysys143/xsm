@@ -238,10 +238,10 @@ class ReplyFlagTest(_Repos, TempState):
 
     def test_the_words_a_person_wrote_pass_and_what_is_kept_is_their_wording(self):
         from xsm import config, paths
-        self._reply("yes, go ahead and connect them")   # before the ask: no pending to attach to
-        code, text = self._link("--reply", "YES,   go ahead and connect them, thanks to the agent")
+        self._reply("yes, go ahead and connect repo-b")   # before the ask: no pending to attach to
+        code, text = self._link("--reply", "YES,   go ahead and connect repo-b, thanks to the agent")
         self.assertEqual(code, 2, text)
-        self.assertIn('your user replied: "yes, go ahead and connect them"', text,
+        self.assertIn('your user replied: "yes, go ahead and connect repo-b"', text,
                       "the person's words, not the agent's wording")
         self.assertNotIn("thanks to the agent", text)
         self.assertEqual(self._links(), [])
@@ -252,7 +252,7 @@ class ReplyFlagTest(_Repos, TempState):
         self.assertIn("given with --reply by the agent", text)
         (link,) = config.links()
         self.assertIn("agent-supplied", link["by"], "the record says it was not typed into xsm")
-        self.assertIn("yes, go ahead and connect them", link["by"])
+        self.assertIn("yes, go ahead and connect repo-b", link["by"])
         consents = [d for d in paths.read_jsonl("decisions.jsonl") if d.get("event") == "consent"]
         self.assertEqual(consents[-1]["via"], "agent-supplied")
         flags = [d for d in paths.read_jsonl("decisions.jsonl") if d.get("event") == "consent-flag"]
@@ -334,13 +334,13 @@ class ReplyFlagTest(_Repos, TempState):
 
     def test_the_words_a_flag_carried_are_spent_too(self):
         from xsm import config
-        self._reply("yes, go ahead and connect them")
-        self._link("--reply", "yes, go ahead and connect them")
+        self._reply("yes, go ahead and connect repo-b")
+        self._link("--reply", "yes, go ahead and connect repo-b")
         self._waited()
-        self.assertEqual(self._link("--reply", "yes, go ahead and connect them")[0], 0)
+        self.assertEqual(self._link("--reply", "yes, go ahead and connect repo-b")[0], 0)
         self.assertEqual(len(config.links()), 1)
         self._third()
-        code, text = self._cli(["link", "../repo-c", "--reply", "yes, go ahead and connect them"])
+        code, text = self._cli(["link", "../repo-c", "--reply", "yes, go ahead and connect repo-b"])
         self.assertEqual(code, 2, text)
         self.assertIn("--reply is ignored", text)
         self.assertEqual(len(config.links()), 1)
@@ -356,22 +356,32 @@ class ReplyFlagTest(_Repos, TempState):
         self.assertIn("--reply is ignored", text)
         self.assertEqual(len(config.links()), 1)
 
-    def test_a_yes_said_before_the_command_ran_is_not_asked_again(self):
-        """The agent asked in the conversation, the person said yes, then the agent ran
-        the command (which made the ask): their yes is the answer, not a reason to ask
-        twice (review of PR #11)."""
+    def test_a_yes_said_before_the_command_ran_counts_when_it_names_the_folder(self):
+        """The agent asked in the conversation, the person said yes to it by name, then
+        the agent ran the command (which made the ask): they are not asked twice."""
         from xsm import config
-        self._reply("yes, go ahead")
+        self._reply("yes, repo-b is fine")
         self._asks(["link", "../repo-b"])
-        code, text = self._link("--reply", "yes, go ahead")
+        code, text = self._link("--reply", "yes, repo-b is fine")
         self.assertEqual(code, 2, text)
-        self.assertIn('your user replied: "yes, go ahead"', text)
+        self.assertIn('your user replied: "yes, repo-b is fine"', text)
         self.assertNotIn("--reply is ignored", text)
         self._waited()
-        code, text = self._link("--reply", "yes, go ahead")
+        code, text = self._link("--reply", "yes, repo-b is fine")
         self.assertEqual(code, 0, text)
         self.assertNotIn("--reply is ignored", text, "the same words again are not a warning")
         self.assertEqual(len(config.links()), 1)
+
+    def test_words_from_before_the_ask_that_name_nothing_are_no_answer(self):
+        """User decision, 2026-11-01: security review passed `--reply` with a fragment of a
+        prompt about something else, alone, with nobody asked."""
+        from xsm import config
+        self._reply("please fix the failing tests")
+        for words in ("please fix the failing tests", "fix"):
+            code, text = self._link("--reply", words)
+            self.assertEqual(code, 2, text)
+            self.assertIn("--reply is ignored", text)
+        self.assertEqual(config.links(), [])
 
     def test_a_reply_sitting_on_another_ask_is_not_taken_for_this_one(self):
         from xsm import config, consent
@@ -485,14 +495,14 @@ class OneSlotPerThingTest(_Repos, TempState):
         self.assertEqual(len(files), 2)
         self.assertEqual(len({os.path.basename(f) for f in files}), 2)
 
-    def test_the_reply_is_written_to_every_open_ask_and_each_shows_it(self):
+    def test_ambiguous_plain_reply_does_not_approve_either_request(self):
         self._asks(["unblock", "aaa111"])
         self._asks(["join", "demo"])
         self._reply("응")
         code, text = self._cli(["unblock", "aaa111"])
-        self.assertIn('your user replied: "응"', text)
+        self.assertNotIn('your user replied: "응"', text)
         code, text = self._cli(["join", "demo"])
-        self.assertIn('your user replied: "응"', text)
+        self.assertNotIn('your user replied: "응"', text)
 
     def test_an_expired_ask_does_not_keep_the_reply_of_another(self):
         from xsm import consent, paths
@@ -528,18 +538,21 @@ class OneSlotPerThingTest(_Repos, TempState):
 class HookLockWaitTest(_Repos, TempState):
     """B7: a hook runs on every prompt of every session; a command may wait longer."""
 
-    def test_the_hook_waits_one_second_and_a_command_five(self):
+    def test_the_hook_waits_well_under_its_limit_and_a_command_five(self):
         from xsm import consent
-        self.assertEqual(consent.HOOK_LOCK_WAIT, 1.0)
+        self.assertEqual(consent.HOOK_LOCK_WAIT, 4.0)   # a run applying a plan holds the lock
         self.assertEqual(consent.LOCK_WAIT, 5.0)
         self._asks(["unblock", "bbb111"])
         waits = []
-        with mock.patch.object(consent, "_lock", side_effect=lambda lock, wait=None:
-                               waits.append(wait)):
+        original_lock = consent._lock
+        def tracked_lock(lock, wait=None):
+            waits.append(wait)
+            return original_lock(lock, wait)
+        with mock.patch.object(consent, "_lock", side_effect=tracked_lock):
             consent.note_verdict(self.me, "응")
             consent.take_or_request(self.me, "unblock", "bbb111")
-        self.assertEqual(waits, [consent.HOOK_LOCK_WAIT, None],
-                         "the hook's own wait; the command's is the default")
+        self.assertTrue(all(w == consent.HOOK_LOCK_WAIT for w in waits[:-2]))
+        self.assertEqual(waits[-2:], [None, None], "commands serialize binding and request locks")
 
     def test_a_held_lock_costs_the_hook_about_a_second_and_loses_nothing_else(self):
         from xsm import consent
@@ -548,7 +561,7 @@ class HookLockWaitTest(_Repos, TempState):
         try:
             with mock.patch.object(consent, "HOOK_LOCK_WAIT", 0.3):
                 began = time.monotonic()
-                self.assertTrue(consent.note_verdict(self.me, "응"))
+                self.assertFalse(consent.note_verdict(self.me, "응"))
             self.assertLess(time.monotonic() - began, 3, "bounded by the hook's wait")
         finally:
             os.close(held)

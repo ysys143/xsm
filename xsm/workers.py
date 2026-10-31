@@ -63,10 +63,12 @@ CLAUDE_SOCKETS = "/tmp/cc-socks"    # where every Claude session opens its inbox
 
 # A runtime's "do you trust this folder" screen, and the keys that answer it
 # (measured 2026-09-22 in tmux: Claude's cursor starts on "No, exit", Codex's
-# on "Yes, continue", so the same Enter means opposite things).
+# on "Yes, continue", so the same Enter means opposite things). Codex 0.165 reworded
+# its screen; missed, `/rename` was typed into it and the worker died unasked (2026-10-31).
 TRUST_PROMPTS = {
-    "claude": ("Yes, I trust this folder", {"yes": ["Down", "Enter"], "no": ["Enter"]}),
-    "codex": ("Do you trust the contents of this directory", {"yes": ["Enter"], "no": ["2"]}),
+    "claude": (("Yes, I trust this folder",), {"yes": ["Down", "Enter"], "no": ["Enter"]}),
+    "codex": (("Do you trust the contents of this directory", "Trust this folder?"),
+              {"yes": ["Enter"], "no": ["2"]}),
 }
 CODEX_MODEL = "gpt-5.6-luna"    # the default for tests; --model overrides
 
@@ -91,7 +93,7 @@ WORKER_POLICY = {
     "write": "write inside the working folder only, plus the xsm store",
     "reach": "message peers: the xsm MCP tools, which run outside the sandbox",
     "ask": "anything else goes to a person: Claude through the PermissionRequest hook, "
-           "Codex by refusing (it has no such hook)",
+           "Codex by refusing in the configured background-worker mode",
 }
 CLAUDE_WORKER_TOOLS = ("Bash", "Monitor", "Read", "Glob", "Grep")
 CLAUDE_WORKER_MCP = ("xsm_send", "xsm_inbox")
@@ -272,7 +274,7 @@ def use_grant(grant_id: str | None, caller: dict | None, runtime: str, cwd: str,
             os.rename(p, p + ".used")         # spent on this spawn, like a --grant
             return grant
         if not kept:
-            raise WorkerError(consent.cannot_keep(what, "xsm_grant"))
+            raise WorkerError(consent.cannot_keep(what, "xsm_grant", caller))
         raise WorkerError(consent.asks(what, " (The xsm_grant MCP tool asks with a form "
                                              "instead; then pass --grant <id>.)",
                                        (caller or {}).get("runtime")))
@@ -404,6 +406,9 @@ def _claude_worker_settings(worker: dict) -> str:
         settings["hooks"] = {"PermissionRequest": [{"hooks": [{
             "type": "command", "command": _hook_command(),
             "timeout": int(worker["approval_timeout"]) + 30}]}]}
+        for event in ("PreToolUse", "PostToolUse", "PostToolUseFailure"):
+            settings["hooks"][event] = [{"hooks": [{"type": "command",
+                "command": _hook_command(), "timeout": 10}]}]
     path = os.path.join(_dir(worker["name"]), "settings.json")
     paths.write_json(path, settings, mode=0o600)
     return path
@@ -679,7 +684,8 @@ def _codex_mcp_overrides(home: str) -> list:
                  "-c", "mcp_servers.%s.cwd=%s" % (name, json.dumps(plugin["root"]))]
     return whole + [
         "-c", 'mcp_servers.%s.default_tools_approval_mode="approve"' % name,
-        "-c", 'mcp_servers.%s.env={XSM_HOME=%s}' % (name, json.dumps(paths.HOME))]
+        "-c", 'mcp_servers.%s.env={XSM_HOME=%s,CODEX_HOME=%s}' % (
+            name, json.dumps(paths.HOME), json.dumps(os.path.realpath(home)))]
 
 
 def _start_in_tmux(worker: dict, pane: str | None) -> None:
@@ -788,8 +794,11 @@ def _screen(pane: str, lines: int | None = None) -> str:
 
 
 def _at_trust_prompt(worker: dict) -> bool:
-    marker = TRUST_PROMPTS.get(worker["runtime"], ("",))[0]
-    return bool(marker and worker.get("pane") and marker in _screen(worker["pane"]))
+    markers = TRUST_PROMPTS.get(worker["runtime"], ((),))[0]
+    if not markers or not worker.get("pane"):
+        return False
+    screen = _screen(worker["pane"])
+    return any(marker in screen for marker in markers)
 
 
 def _press(worker: dict, answer: str) -> None:
@@ -943,12 +952,29 @@ def permission_request(data: dict, runtime: str) -> dict | None:
     worker = load(name) if name else None
     if not worker or worker.get("mode") != "background":
         return None                     # a pane worker's person answers in the pane
-    allow, reason = _await_person(worker, runtime, data.get("tool_name") or "?",
-                                  data.get("tool_input"))
+    if data.get("tool_name") == "AskUserQuestion":
+        return _decision(False, "this background worker has no person at its terminal; send the "
+                         "question to the parent or team lead in a DM, not a permission form")
+    from . import native_permissions
+    native = native_permissions.identify(worker, data, runtime)
+    if not native:
+        try:
+            paths.append_jsonl("approval-diagnostics.jsonl", {"worker": worker["name"],
+                "session_id": data.get("session_id"), "tool": data.get("tool_name"),
+                "reason": "native invocation missing or ambiguous; no approval request created", "t": time.time()})
+        except OSError:
+            pass
+        return _decision(False, "native invocation missing or ambiguous; ask the parent or lead "
+                         "in a DM rather than retrying the unidentified permission")
+    try:
+        allow, reason = _await_person(worker, runtime, data.get("tool_name") or "?",
+                                     data.get("tool_input"), native_identity=native)
+    except (OSError, ValueError):
+        return _decision(False, "could not retain the exact native invocation; nothing approved")
     return _decision(allow, reason)
 
 
-def _await_person(worker: dict, runtime: str, tool: str, tool_input) -> tuple:
+def _await_person(worker: dict, runtime: str, tool: str, tool_input, native_identity=None) -> tuple:
     """Record a request, tell the parent, and wait for a person's answer.
     Returns (allowed, reason)."""
     try:
@@ -962,7 +988,7 @@ def _await_person(worker: dict, runtime: str, tool: str, tool_input) -> tuple:
     allowed, reason = False, None
     try:
         with span_cm as span:
-            allowed, reason = _await_person_inner(worker, runtime, tool, tool_input)
+            allowed, reason = _await_person_inner(worker, runtime, tool, tool_input, native_identity=native_identity)
             if span is not None:
                 span.set_attribute("xsm.approval.allowed", allowed)
             return allowed, reason
@@ -974,29 +1000,52 @@ def _await_person(worker: dict, runtime: str, tool: str, tool_input) -> tuple:
                                 {"xsm.approval.outcome": "approved" if allowed else "denied"})
 
 
-def _await_person_inner(worker: dict, runtime: str, tool: str, tool_input) -> tuple:
-    summary = summarize(tool, tool_input) if not isinstance(tool_input, str) \
-        else "%s: %s" % (tool, tool_input)
-    req = {"id": uuid.uuid4().hex[:8], "worker": worker["name"], "runtime": runtime,
-           "t": time.time(), "tool": tool, "input": tool_input, "status": "pending",
-           "summary": summary}
+def _await_person_inner(worker: dict, runtime: str, tool: str, tool_input, native_identity=None) -> tuple:
+    from . import consent, native_permissions
+    summary = summarize(tool, tool_input) if not isinstance(tool_input, str) else "%s: %s" % (tool, tool_input)
+    full_key = native_permissions.key(native_identity) if native_identity else None
+    req = {"id": full_key[:16] if full_key else uuid.uuid4().hex[:8],
+           "worker": worker["name"], "runtime": runtime, "t": time.time(), "tool": tool,
+           "input": tool_input, "status": "pending", "summary": summary}
+    req["expires_at"] = req["t"] + float(worker.get("approval_timeout") or APPROVAL_TIMEOUT)
+    if native_identity:
+        req["native_identity"] = native_identity
+    filename = _approval_path(req["id"])
     os.makedirs(paths.path(APPROVALS), mode=0o700, exist_ok=True)
-    paths.write_json(_approval_path(req["id"]), req)
-    _notify_parent(worker, req)
-    deadline = time.time() + float(worker.get("approval_timeout") or APPROVAL_TIMEOUT)
-    while time.time() < deadline:
-        cur = paths.read_json(_approval_path(req["id"])) or {}
+    with consent._strict_locked(filename):
+        prior = paths.read_json(filename)
+        if prior:
+            if not native_identity:
+                raise ValueError("unidentified permission collision; not merged")
+            if (prior.get("native_identity") != native_identity or prior.get("worker") != worker["name"]
+                    or prior.get("tool") != tool
+                    or native_permissions.canonical(prior.get("input")) != native_permissions.canonical(tool_input)):
+                raise ValueError("native permission identity or scope changed")
+            req, created = prior, False
+        else:
+            paths.write_json(filename, req)
+            created = True
+    if created:
+        _notify_parent(worker, req)
+    deadline = req.get("expires_at", req["t"] + float(worker.get("approval_timeout") or APPROVAL_TIMEOUT))
+    while True:
+        notify = None
+        with consent._strict_locked(filename):
+            cur = paths.read_json(filename) or {}
+            if cur.get("status") not in ("pending", "approved", "denied"):
+                return False, "approval request disappeared or is invalid; nothing approved"
+            if cur.get("status") == "pending" and time.time() >= deadline:
+                cur.update(status="denied", reason="nobody answered within %ds" % (deadline - req["t"]))
+                paths.write_json(filename, cur)
+            if cur.get("status") == "denied" and not cur.get("outcome_notified"):
+                cur["outcome_notified"] = True
+                paths.write_json(filename, cur)
+                notify = "denied (%s)" % (cur.get("reason") or "your user said no")
+        if notify:
+            _notify_parent(worker, cur, outcome=notify)
         if cur.get("status") in ("approved", "denied"):
-            if cur["status"] == "denied":
-                _notify_parent(worker, cur, outcome="denied (%s)" % (cur.get("reason") or
-                                                                  "your user said no"))
             return cur["status"] == "approved", cur.get("reason")
         time.sleep(1)
-    req.update({"status": "denied", "reason": "nobody answered within %ds" %
-                (deadline - req["t"])})
-    paths.write_json(_approval_path(req["id"]), req)
-    _notify_parent(worker, req, outcome=req["reason"])
-    return False, req["reason"]
 
 
 def _decision(allow: bool, reason: str | None) -> dict:
@@ -1058,15 +1107,35 @@ def human_terminal() -> bool:
     return True
 
 
-def answer_asked(req_id: str, approve: bool, asked_by: str | None, reason: str | None = None) -> dict:
-    """An answer the person gave in an MCP elicitation form (xsm_approve). The
-    form is the check that a person answered, so no terminal is needed; only
-    the session that started the worker may ask."""
+def _check_native_deadline(req_id, req, approve):
+    if req.get("native_identity") and approve and time.time() >= req.get("expires_at", 0):
+        req.update(status="denied", reason="native permission request expired; nothing approved")
+        paths.write_json(_approval_path(req_id), req)
+        raise WorkerError(req["reason"])
+
+
+def answer_asked(req_id: str, approve: bool, asked_by: str | None, reason: str | None = None,
+                 via: str = "mcp-elicitation") -> dict:
+    from . import consent
+    try:
+        with consent._strict_locked(_approval_path(req_id)):
+            return _answer_asked_locked(req_id, approve, asked_by, reason, via)
+    except OSError as exc:
+        raise WorkerError("could not lock the permission request; nothing approved") from exc
+
+
+def _answer_asked_locked(req_id: str, approve: bool, asked_by: str | None, reason: str | None = None,
+                         via: str = "mcp-elicitation") -> dict:
+    """A user answer verified by xsm_approve's decision controller.
+    The source is retained without requiring a terminal; only the session that
+    started the worker may ask. Native invocation deadlines still apply.
+    """
     if approve:
         config.require_valid_policy()
     req = paths.read_json(_approval_path(req_id))
     if not req or req.get("status") != "pending":
         raise WorkerError("no pending approval request %s" % req_id)
+    _check_native_deadline(req_id, req, approve)
     worker = load(req.get("worker") or "") or {}
     if not worker.get("parent_ref"):
         raise WorkerError("request %s belongs to a worker no session started; it waits for "
@@ -1074,12 +1143,22 @@ def answer_asked(req_id: str, approve: bool, asked_by: str | None, reason: str |
     if worker.get("parent_ref") != asked_by:
         raise WorkerError("request %s belongs to a worker another session started" % req_id)
     req.update({"status": "approved" if approve else "denied", "answered": time.time(),
-                "reason": reason, "via": "mcp-elicitation"})
+                "reason": reason, "via": via})
     paths.write_json(_approval_path(req_id), req)
     return req
 
 
 def answer(req_id: str, approve: bool, reason: str | None = None,
+           approver: str | None = None) -> dict:
+    from . import consent
+    try:
+        with consent._strict_locked(_approval_path(req_id)):
+            return _answer_locked(req_id, approve, reason, approver)
+    except OSError as exc:
+        raise WorkerError("could not lock the permission request; nothing approved") from exc
+
+
+def _answer_locked(req_id: str, approve: bool, reason: str | None = None,
            approver: str | None = None) -> dict:
     """Answer a worker's request. Approving is a person's: at a terminal, or
     through `approver`, the person's own reply the agent asked for and the
@@ -1091,9 +1170,12 @@ def answer(req_id: str, approve: bool, reason: str | None = None,
         raise WorkerError("no approval request %s" % req_id)
     if req.get("status") != "pending":
         raise WorkerError("request %s is already %s" % (req_id, req.get("status")))
+    _check_native_deadline(req_id, req, approve)
     if approve and not human_terminal() and not approver:
-        raise WorkerError("approving is your user's decision: ask them in plain words and run "
-                          "`xsm approve %s` again; their reply is kept as the verdict" % req_id)
+        from . import consent
+        raise WorkerError("approving is your user's decision: ask them %s and run `xsm approve %s` "
+                          "again; their reply is kept as the verdict"
+                          % (consent.how((registry.me() or {}).get("runtime")), req_id))
     req.update({"status": "approved" if approve else "denied", "answered": time.time(),
                 "reason": reason})
     if approver:

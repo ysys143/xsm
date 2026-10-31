@@ -97,6 +97,8 @@ class BoardNoticeTest(test_xsm.TempState):
         for i in range(5):
             self._set('item %d' % i, 'x')
         self.assertIn('(item 0, item 1, item 2, +2 more)', board_notice.notice(self.bee))
+        from xsm import board
+        board.show(self.bee, 'core')  # only the new long names must be candidates for truncation
         for i in range(3):
             self._set('a long item name number %d ' % i + 'x' * 50, 'x')     # 76 characters
         line = board_notice.notice(self.bee)

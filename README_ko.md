@@ -11,27 +11,36 @@ xsm은 이미 쓰고 있는 Claude Code와 Codex 세션이 서로를 찾아 함�
 
 ![XSM이 런타임의 네이티브 전달 경로와 명시적 통신 범위로 에이전트 세션을 연결하는 구조](docs/assets/xsm-overview.svg)
 
-> **릴리스 상태.** 업무 검색, `connect`와 `ask`, 첨부, 소유 워커, 선택적 P2P 네트워크는 0.5.0에
-> 들어갔습니다. [변경 기록](CHANGELOG.md)을 보세요. 부분별로 어떤
-> 환경에서 검증했는지는 [ADR-0021 종료 기록](docs/plan/collaboration/adr-0021-closure.md)과
-> [완료 색인](docs/plan/collaboration/completion-ledger.md)에 있으며, 계획 전체는 아직 완료되지 않았습니다.
+> **릴리스 상태.** 0.5.1은 팀, 여러 수신자에게 보내는 DM, 팀 보드, 인수인계를 추가하고 기존 channel을
+> 제거했습니다. 검증 환경과 알려진 한계는 [변경 기록](CHANGELOG.md),
+> [팀 기능 시험](docs/xsm/TESTPLAN.md#14-팀-보드-결재-인수인계-051),
+> [구현 진행 기록](https://github.com/ysys143/xsm/blob/a124b22782d68c1541f6dd5893a57bbe6797b926/docs/plan/collaboration/team-implementation-progress.md)에 있습니다.
+> 기존 협업 계획의 [전체 수용 조건](https://github.com/ysys143/xsm/blob/a124b22782d68c1541f6dd5893a57bbe6797b926/docs/plan/collaboration/completion-ledger.md)은
+> 아직 완료되지 않았습니다.
+
+미릴리스 구현에는 요청별 답 결속과 검증된 네이티브 답 복구가 추가됐습니다.
+개발 계약은 [권한 복구 안내](skills/xsm/references/permissions.md#development-binding-and-recovery-path)를 따르며,
+위의 릴리스 한계는 설치된 0.5.1에 계속 적용됩니다.
 
 ## 철학
 
 Orca, herdr, OpenRig 같은 멀티 에이전트 도구는 조율 자체를 제품으로 만듭니다. 디스패처, 작업 그래프, YAML로
-정의한 팀, 도구가 소유한 터미널이 그것입니다. xsm은 그중 어느 것도 만들지 않습니다. 이미 쓰고 있는 세션들이
-서로에게 닿을 길만 주고, 나머지는 세션들에게 맡깁니다. 에이전트는 평범한 말을 읽고 씁니다. 채널이 있으면 사람이
-채팅 채널에서 하듯 일을 나누고, 넘기고, 서로 검토하고, 결과를 보고합니다. 모델이 좋아질수록 고정된 구조는 덜
-도움이 되고 더 방해가 됩니다.
+정의한 팀, 도구가 소유한 터미널이 그것입니다. xsm은 이미 쓰고 있는 세션들이 서로에게 닿을 길을 줍니다.
+에이전트는 평범한 말을 읽고 쓰며 일을 나누고, 넘기고, 서로 검토하고, 결과를 보고합니다. 누가 무엇을 할지는
+대화에서 정합니다. 모델이 좋아질수록 고정된 구조는 덜 도움이 되고 더 방해가 됩니다.
+
+**DM**은 하나 이상의 세션을 지정해 행동이나 답을 요청하는 경로입니다. **팀**은 함께 일하는 세션들의 구성원
+목록이며 팀장을 둘 수 있습니다. **보드**에는 팀 전체에 유효한 결정·담당·진행을 둡니다. 이 소통 경로는 선택적
+P2P 네트워크를 통해 머신 사이에서도 동작합니다.
 
 xsm에 없는 것:
 
-- 오케스트레이터, 팀 정의, 작업 그래프가 없습니다. 누가 무엇을 할지는 대화에서 정해집니다
+- 일을 배정하는 오케스트레이터나 작업 그래프를 강제하지 않습니다. 팀은 구성원을 묶고, 일의 분담은 대화에서 정합니다
 - 자체 런타임도, `claude`·`codex`를 감싸는 래퍼도 없습니다. 세션은 늘 하던 대로 띄웁니다
 - 한 머신 안의 세션 사이에 서버가 없습니다. 로컬 메시징은 훅·파일·일회성 명령입니다. 계속 떠 있는 프로세스는
   선택적 P2P 네트워크 서비스 하나뿐이며, 네트워크를 만들거나 가입한 뒤에만 돌고 `xsm network stop`으로 멈춥니다
 
-나머지를 에이전트에게 맡기는 만큼, 채널만큼은 믿을 수 있어야 합니다. xsm은 노력을 여기에 씁니다.
+일을 에이전트에게 맡기는 만큼, 소통 경로는 믿을 수 있어야 합니다. xsm은 노력을 여기에 씁니다.
 
 - **메시지가 세션을 깨웁니다.** 메시지는 보내는 쪽이 지정한 세션 앞으로 가는 DM입니다. 터미널에 타이핑해
   넣지 않고 각 런타임의 고유 경로(Claude inbox 소켓, `codex queue`)로 넣습니다. 그래서 쉬고 있는 세션도
@@ -179,7 +188,8 @@ xsm을 개발할 때 모든 것을 체크아웃에 둡니다. `--dev`는 그 줄
   명령이나 도구를 실행할 때 스스로 등록하고, 그 이름으로 보내는 쪽에는 열려 있지만 등록되지 않았다는 것과
   등록되는 방법이 알려집니다.
 - xsm을 갱신할 때 이미 떠 있던 세션은 시작할 때의 훅과 MCP 서버를 그대로 씁니다. 새 버전을 쓰려면 새 세션을
-  여세요.
+  여세요. 검증 당시 Codex 0.165에서는 플러그인 내용이 바뀌면 `/hooks`에서 다시 검토해야 했으며,
+  `xsm doctor`는 이 신뢰 상태를 확인하지 못합니다.
 - Linux에서는 X.Org의 세션 관리자도 이름이 `xsm`입니다(x11-session-utils 패키지). 설치되어 있다면
   `command -v xsm`으로 이쪽이 먼저 잡히는지 확인하세요.
 
@@ -206,7 +216,7 @@ $xsm list                            # Codex
 출력합니다. 같은 이름의 개인 스킬이 있다면 플러그인 쪽은 `/xsm:xsm list`로 부릅니다.
 
 자주 쓰는 명령: `discover`, `publish`, `connect`, `ask`, `question-status`, `send`, `inbox`, `ack`, `list`,
-`who`, `log`, `projects`, `doctor`, `link`, `join`, `leave`, `reach`, `network`. 전체 목록은 `xsm --help`가
+`who`, `log`, `projects`, `doctor`, `link`, `join`, `leave`, `reach`, `team`, `board`, `handover`, `network`. 전체 목록은 `xsm --help`가
 보여 줍니다.
 
 ## 사용 사례
@@ -388,11 +398,16 @@ xsm selftest                                   # 훅이 실제로 도는지
 받았는지 알려 줍니다. 범위 밖 세션을 넣는 것과 팀장을 정하는 것은 사용자의 승인을 받습니다. `xsm connect`는 구성원
 둘인 팀을 만듭니다.
 
+project는 폴더와 그 안의 세션들을 묶고, 팀은 함께 일하는 세션을 지정합니다. 한 세션은 여러 팀에 속할 수 있습니다.
+일반 로컬 팀의 구성원 자리는 같은 런타임·설정 홈·이름으로 다시 연 대화가 이어받습니다. 원격 구성원과 `connect`로
+만든 둘짜리 팀은 대화 단위입니다. 구성원 자리를 잇는 것만으로 미확인 DM이나 대기 질문이 옮겨지지는 않으며,
+그것까지 넘기려면 인수인계를 씁니다.
+
 ```bash
 xsm team create core                                   # 이 세션이 첫 구성원
 xsm team lead core planner                             # 사용자의 결정
 xsm team add core api-worker                           # 팀장이 같은 프로젝트 세션을 넣으면 묻지 않음, 아니면 사용자 승인
-xsm send team:core --text "18시까지 main 동결"           # 모든 구성원에게 DM 하나씩
+xsm send team:core --kind task --text "각자 맡은 테스트를 실행하고 결과를 알려줘"  # 구성원마다 과제 전달
 ```
 
 팀마다 보드가 있습니다. 지금 팀에 유효한 것(현행 결정, 누가 무엇을 맡았는지, 진행)을 항목 하나에 하나씩 둡니다.
@@ -406,14 +421,22 @@ xsm board set core "decision: cache" --text "redis, 세션 저장소용"
 xsm board show core                                    # ~/.xsm/teams/core/BOARD.md, 모든 워크트리에서 같음
 ```
 
+기존 지시로 `PHASE.md` 같은 상태 파일을 쓰고 있다면 보드와 함께 갱신하고, 에이전트 간 작업의 정본은 보드라는
+안내를 둡니다. 상태 파일은 사람이 진행을 확인하는 용도입니다.
+
 결재는 사용자와 대면하는 팀장을 거칩니다. 비용, 밖으로 나가는 일(push, PR, 릴리스, 게시), 범위 변경은 보통 결재
 대상입니다. 팀장이 양식으로 묻고(팀을 지정한 `xsm_decide`) 사용자의 답은 보드 옆에 고유 ID로 기록되며, 보드 항목에
 누가 결정했는지 나옵니다. 결정이라고 주장만 하는 노드는 "not confirmed"로 보입니다.
+팀장은 사용자가 정하며, 팀장이 아닌 구성원에게도 직접 지시할 수 있습니다. 양식 실패와 0.5.1의 승인 결함은
+[사용자의 결정](#사용자의-결정)을 보세요.
 
 한 세션의 자리를 다른 세션에 넘기려면, 떠나는 세션에서 "night-shift한테 인수인계해"라고 말하면 됩니다. 에이전트가
 작업 맥락 요약을 쓰고 `xsm handover`를 실행하며, 사용자가 확인합니다. 팀 자리와 팀장 자리, 자기 보드 항목, 안 읽은
 DM, 답을 기다리는 질문이 후임에게 옮겨 가고, 후임은 다음 프롬프트에서 이 모두를 받습니다. 이후 옛 세션 앞으로 오는
 DM은 후임에게 갑니다.
+후임은 같은 머신에서 실행 중인 등록 세션이어야 합니다. 인수인계를 발행할 때 오프라인이던 다른 머신에는 증언이
+전달되지 않으며 자동 재전송도 없습니다. 그 머신은 후임의 답을 옛 질문의 답으로 받아들이지 않습니다.
+전파 경고를 확인하고, 자세한 조건은 [인수인계 안내](docs/xsm/README.md#인수인계)를 보세요.
 
 ## 참고
 
@@ -491,6 +514,12 @@ xsm이 질문과 답을 원문 그대로 남깁니다. 같은 결정을 다시 �
 `--cancel`). 질문을 철회해도 이미 적용된 권한은 되돌아가지 않으니, 그 권한 자체의 해제를 쓰세요. 다른
 에이전트의 메시지는 결코 사용자의 승인이 아닙니다.
 
+**답 하나에 요청 하나([#25](https://github.com/ysys143/xsm/issues/25)).** 요청마다 `[xsm:<id>]` 표식이 있고
+에이전트가 이를 질문 맨 앞에 넣습니다. 답은 질문이 표식이나 대상으로 지목한 요청에만 붙습니다. 평문은 열린 결정이
+하나이거나 답이 하나를 지목할 때만 붙습니다. 어디에도 붙지 않은 답은 아무것도 승인하지 않고 다음 실행에서 알려 줍니다.
+0.5.1에서는 답 하나가 열린 요청을 모두 통과시키고 Codex에서 답이 유실될 수 있었습니다. 양식은 여전히 보이지 않은 채
+거절될 수 있습니다. `xsm_decide`가 답을 기록하지 못했다면 결정은 기록되지 않은 것이고 평문 답이 그것을 대신하지 않습니다.
+
 ### 트래픽 제어
 
 xsm은 보낸 쪽과 받는 쪽 짝별로 메시지 트래픽을 기록합니다. 기본은 관찰만 합니다. 제한하려면
@@ -542,7 +571,7 @@ xsm otlp-export --once
 Grafana Tempo에서 메시지가 어디서 멈췄는지 바로 볼 수 있습니다.
 
 계측 비용은 send 1회당 약 0.175ms입니다
-([telemetry-overhead.md](docs/references/telemetry-overhead.md)).
+([telemetry-overhead.md](https://github.com/ysys143/xsm/blob/a124b22782d68c1541f6dd5893a57bbe6797b926/docs/references/telemetry-overhead.md)).
 
 </details>
 
@@ -594,6 +623,9 @@ Machine A -> SSH -> Machine B                             양쪽 다 xsm 설치 
 │   ├── adapters.py                    # 두 가지 네이티브 전달 경로 (UDS 소켓, codex queue)
 │   ├── directory.py                   # 공개와 발견 (ADR-0017, 0024)
 │   ├── collaboration.py / connect.py  # 선택한 짝과 그 핸드셰이크
+│   ├── teams.py / team_sync.py        # 팀 구성원·권한과 복제 (0025)
+│   ├── multisend.py / question_groups.py # 다중 수신과 수신자별 답 수집
+│   ├── handover.py                    # 팀 자리·미확인 DM·대기 질문을 후임에게 이전
 │   ├── handoff.py / inbox.py          # 상관된 답, claim과 수신 확인 (ADR-0016, 0018)
 │   ├── files.py / materials.py        # 첨부 스냅숏과 사본 (ADR-0019)
 │   ├── decisions.py / attention.py    # 기록된 사용자 결정, 우선순위와 깨우기 (ADR-0020)
@@ -610,7 +642,7 @@ Machine A -> SSH -> Machine B                             양쪽 다 xsm 설치 
 ├── skills/xsm/                         # 스킬 하나: `/xsm <명령>`(Codex `$xsm <명령>`)과
 │                                       #   references/ 아래 용도별 참고 문서
 ├── docs/
-│   ├── adr/                           # 아키텍처 결정 기록 (0001-0024)
+│   ├── adr/                           # 아키텍처 결정 기록 (0001-0026)
 │   ├── xsm/                           # 프로토콜·테스트 계획·네트워크 안내
 │   ├── plan/                          # 구현 계획과 증거 색인
 │   ├── references/ · spikes/ · reviews/
@@ -633,10 +665,12 @@ Machine A -> SSH -> Machine B                             양쪽 다 xsm 설치 
   - [Remote Transport & Trust](docs/adr/0007-remote-transport-and-trust.md)
   - [Cross-machine Network & Membership](docs/adr/0021-cross-machine-network-and-membership.md)
   - [Discover, Select & Handshake](docs/adr/0024-discover-select-and-handshake.md)
+  - [Teams & Multiple Recipients](docs/adr/0025-team-and-multi-recipient-dm.md)
+  - [Team Boards & Channel Removal](docs/adr/0026-team-board-on-xsm-doc.md)
 - **[Protocol Spec](docs/xsm/)**: 메시지 프로토콜 명세
 - **[Network Guide](docs/xsm/NETWORK.md)**: 선택적 P2P 네트워크
 - **[Test Protocol](docs/xsm/TESTPLAN.md)**: 실사용 점검 절차 (개발자용 테스트는 여기)
-- **[Collaboration Plan](docs/plan/collaboration/execution.md)**: ADR-0015~0024의 계획과 남은 일
+- **[Collaboration Plan](https://github.com/ysys143/xsm/blob/a124b22782d68c1541f6dd5893a57bbe6797b926/docs/plan/collaboration/execution.md)**: ADR-0015~0024의 계획과 남은 일
 - **[Agent Messaging Guide](docs/list-agents-cross-session-messaging.md)**: 에이전트 메시징 구현
 
 ## 라이선스

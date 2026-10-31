@@ -608,7 +608,8 @@ class LinkMcpTest(_Folders, TempState):
         a, b = self._dirs()
         forms, text = self._call({"dir": b}, {"result": {"action": "decline"}}, cwd=a)
         self.assertEqual(len(forms), 1)
-        self.assertIn("`xsm link %s` in your shell" % shlex.quote(b), text)
+        self.assertIn("Shell equivalent: `xsm link %s`" % shlex.quote(b), text)
+        self.assertIn("retry this same MCP tool", text)
         self.assertEqual(config.links(), [])
         forms, text = self._call({"dir": b}, {"result": {"action": "accept", "content": {
             "answer": "allow", }, "_meta": {"approvals_reviewer": "auto_review"}}}, cwd=a)

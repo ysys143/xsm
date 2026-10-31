@@ -1,7 +1,7 @@
 # 팀 소통 모델 설계 메모: DM, 팀, 보드
 
 - 작성: 2026-10-30
-- 상태: 설계 결정 메모. 아래 결정은 사용자가 이 대화에서 내린 것이다. 구현은 착수하지 않았다.
+- 상태: 설계 결정 메모. 아래 결정은 사용자 결정의 기록이며 0.5.1에서 구현했다. 현재 검증·한계와 이후 D32 결정은 [구현 진행 기록](team-implementation-progress.md)을 따른다. 아래 관찰·미커밋 표시·구현 과제는 결정 당시 상태를 보존한다.
 - 결정 기록: [ADR-0025](../../adr/0025-team-and-multi-recipient-dm.md)(다중 수신 DM, 팀, 인수인계), [ADR-0026](../../adr/0026-team-board-on-xsm-doc.md)(doc 보드, 결재 기록, channel 정리). 이 메모는 그 배경과 결정 번호(D1–D33)를 담는다.
 - 관련: [채널 설계 토론](channel-design-discussion.md), [S11](../../spikes/S11-results.md), [S11b](../../spikes/S11b-results.md), [S12](../../spikes/S12-results.md), [S10](../../spikes/S10-results.md), [DM·채널 레퍼런스](../../references/dm-and-channels.md)
 

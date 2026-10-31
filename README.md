@@ -11,28 +11,39 @@ you at each step what has and has not happened.
 
 ![How XSM connects agent sessions through native runtime paths and explicit communication scopes](docs/assets/xsm-overview.svg)
 
-> **Release status.** Work discovery, `connect` and `ask`, attachments, owned workers and the opt-in P2P
-> network arrived in 0.5.0; see the [changelog](CHANGELOG.md). Which environments each part was verified on is recorded in the
-> [ADR-0021 closure record](docs/plan/collaboration/adr-0021-closure.md) and the
-> [completion ledger](docs/plan/collaboration/completion-ledger.md); the plan as a whole is not complete.
+> **Release status.** 0.5.1 adds teams, DMs to multiple recipients, team boards and session handover,
+> and removes the old channel. See the [changelog](CHANGELOG.md), [team verification](docs/xsm/TESTPLAN.md#14-팀-보드-결재-인수인계-051)
+> and [implementation record](https://github.com/ysys143/xsm/blob/a124b22782d68c1541f6dd5893a57bbe6797b926/docs/plan/collaboration/team-implementation-progress.md)
+> for the tested environments and known limits. The earlier collaboration plan's
+> [full acceptance criteria](https://github.com/ysys143/xsm/blob/a124b22782d68c1541f6dd5893a57bbe6797b926/docs/plan/collaboration/completion-ledger.md)
+> remain incomplete.
+
+The unreleased implementation adds request binding and verified native-answer recovery.
+For the development contract, see [permission recovery](skills/xsm/references/permissions.md#development-binding-and-recovery-path);
+the release limits above still apply to installed 0.5.1.
 
 ## Philosophy
 
 Multi-agent tools such as Orca, herdr and OpenRig make coordination their product: a dispatcher, a task
-graph, a team defined in YAML, terminals the tool owns. xsm builds none of that. It gives the sessions you
-already run a way to reach each other, and leaves the rest to them. Agents read and write plain language;
-given a channel, they split the work, hand it off, review each other and report back, the way people do in a
-chat channel. The better the models get, the less a fixed structure helps and the more it gets in the way.
+graph, a team defined in YAML, terminals the tool owns. xsm gives the sessions you already run a way to
+reach each other. Agents read and write plain language; they split the work, hand it off, review each
+other and report back. Who does what is decided in conversation. The better the models get, the less a
+fixed structure helps and the more it gets in the way.
+
+A **DM** addresses one or more sessions and asks someone to act or answer. A **team** is a list of sessions
+working together, with an optional lead. Its **board** holds the decisions, ownership and progress that
+apply to the whole team. These communication paths also work across machines through the opt-in P2P
+network.
 
 What xsm does not have:
 
-- no orchestrator, team spec or task graph: who does what is decided in the conversation
+- no prescribed orchestrator or task graph: a team groups members; it does not schedule their work
 - no runtime of its own and no wrapper around `claude` or `codex`: you start your sessions as you always do
 - no server between sessions on one machine: local messaging is hooks, files and one-shot commands. The only
   resident process is the opt-in P2P network service, which runs only after you create or join a network
   and stops with `xsm network stop`
 
-Because everything else is left to the agents, the channel itself has to be dependable. That is where xsm puts
+Because the work is left to the agents, communication itself has to be dependable. That is where xsm puts
 its effort:
 
 - **A message wakes the session.** A message is a DM, addressed to the session the sender names. It goes in
@@ -184,7 +195,8 @@ and delivers). `xsm doctor` shows any that is not at its default on one `policy`
   It registers itself the first time it runs an xsm command or tool, and a sender that names it is told it is
   open but unregistered, and how it gets registered.
 - A session that was already running when xsm was updated keeps the hooks and MCP server it started with.
-  Open a new session to use the new version.
+  Open a new session to use the new version. In the tested Codex 0.165, a plugin content change also
+  requires another review under `/hooks`; `xsm doctor` cannot observe that trust state.
 - On Linux, X.Org's session manager is also called `xsm` (package x11-session-utils). If it is installed,
   run `command -v xsm` to check that this one comes first.
 
@@ -211,7 +223,8 @@ The same commands work in a terminal as `xsm list`, `xsm who`, `xsm send ...`. W
 prints a one-line usage. If you have a personal skill named `xsm`, call the plugin's as `/xsm:xsm list`.
 
 The commands you will meet most: `discover`, `publish`, `connect`, `ask`, `question-status`, `send`,
-`inbox`, `ack`, `list`, `who`, `log`, `projects`, `doctor`, `link`, `join`, `leave`, `reach` and `network`.
+`inbox`, `ack`, `list`, `who`, `log`, `projects`, `doctor`, `link`, `join`, `leave`, `reach`, `team`,
+`board`, `handover` and `network`.
 `xsm --help` lists them all.
 
 ## Use cases
@@ -402,11 +415,17 @@ lead; members may DM each other even across projects and machines, and a DM to `
 running member and tells each who else got it. Adding a session from outside your scope, and naming the lead,
 take your yes. `xsm connect` makes a team of two.
 
+A project groups folders and their sessions; a team names the sessions working together. A session may
+belong to several teams. An ordinary local team membership follows the name within the same runtime and
+config home, so a new conversation with that name takes its place back. Remote members and the pair
+teams made by `connect` are bound to their conversations. Membership does not transfer unread DMs or
+pending questions; use handover for that.
+
 ```bash
 xsm team create core                                   # this session is the first member
 xsm team lead core planner                             # your decision
 xsm team add core api-worker                           # by the lead, same project: no question; otherwise your yes
-xsm send team:core --text "main is frozen until 18:00"  # one DM to every member
+xsm send team:core --kind task --text "Run your tests and report the results"  # each member gets the task
 ```
 
 Each team has a board: what is true for the team now, one entry per item (decisions in force, who owns what,
@@ -420,15 +439,24 @@ xsm board set core "decision: cache" --text "redis, for the session store"
 xsm board show core                                    # ~/.xsm/teams/core/BOARD.md, the same for every worktree
 ```
 
+If you already keep a `PHASE.md` or similar status file, keep it in step with the board and mark the board
+as the agents' working source; the status file is for people to follow progress.
+
 Approvals go through the lead, who faces you: cost, anything that goes outside (push, PR, release, a post),
 and a change of scope usually need one. The lead asks you with a form (`xsm_decide` with the team), and your
 answer is recorded beside the board under its own id; the board item shows who decided. A node that only
 claims a decision shows "not confirmed".
+You choose the lead and may still direct any member yourself. For form failures and the approval defects
+in 0.5.1, see [Your decisions](#your-decisions).
 
 To hand a session's place over to another (say "hand over to night-shift" in the session that is leaving),
 the agent writes a context summary and runs `xsm handover`, which you confirm. Its team places and lead's
 seat, its own board items, its unread DMs and its pending questions move to the successor, which reads all of
 it at its next prompt; DMs to the old session reach the successor from then on.
+The successor must be registered and running on the same machine. A remote machine that is offline when
+the handover is published misses its testimony; there is no automatic resend, and that machine will not
+accept the successor's reply as an answer to the old question. Check any propagation warnings; see the
+[handover conditions](docs/xsm/README.md#인수인계).
 
 ## Reference
 
@@ -511,6 +539,13 @@ decision continues the same record instead of opening a new question; a changed 
 decision. A pending question can be recovered or withdrawn (`xsm decision-status`, `--cancel`). Withdrawing a question does not undo a permission already applied; use
 that permission's own removal. A message from another agent is never your approval.
 
+**One answer, one request ([#25](https://github.com/ysys143/xsm/issues/25)).** Each request has a mark,
+`[xsm:<id>]`, that the agent puts at the head of its question. An answer reaches the request its question
+names, by that mark or by target; a plain reply binds when one decision is open or when it names one. An
+answer that binds to nothing approves nothing, and the next run says so. In 0.5.1 one reply could pass
+every open request, and Codex could lose an answer. A form may still be declined without being shown: if
+`xsm_decide` records no answer, no decision was recorded, and a plain reply does not become one.
+
 ### Traffic control
 
 xsm records message traffic per sender and recipient. By default it only observes. To throttle, set explicit
@@ -563,7 +598,7 @@ A message's whole path (sender, SSH, receiving machine, the target session's hoo
 Jaeger or Grafana Tempo shows where a message stopped.
 
 Instrumentation costs about 0.175 ms per send
-([telemetry-overhead.md](docs/references/telemetry-overhead.md)).
+([telemetry-overhead.md](https://github.com/ysys143/xsm/blob/a124b22782d68c1541f6dd5893a57bbe6797b926/docs/references/telemetry-overhead.md)).
 
 </details>
 
@@ -617,6 +652,9 @@ Principles:
 │   ├── adapters.py                    # the two native delivery paths (UDS socket, codex queue)
 │   ├── directory.py                   # publication and discovery (ADR-0017, 0024)
 │   ├── collaboration.py / connect.py  # the selected pair and its handshake
+│   ├── teams.py / team_sync.py        # team membership, permissions and replication (0025)
+│   ├── multisend.py / question_groups.py # multiple recipients and their individual answers
+│   ├── handover.py                    # team places, unread DMs and pending questions moving to a successor
 │   ├── handoff.py / inbox.py          # correlated replies, claims and acknowledgement (ADR-0016, 0018)
 │   ├── files.py / materials.py        # attachment snapshots and copies (ADR-0019)
 │   ├── decisions.py / attention.py    # your recorded decisions, priority and wake (ADR-0020)
@@ -633,7 +671,7 @@ Principles:
 ├── skills/xsm/                         # one skill: `/xsm <command>` (Codex `$xsm <command>`), with a guide
 │                                       #   split by purpose under references/
 ├── docs/
-│   ├── adr/                           # architecture decision records (0001-0024)
+│   ├── adr/                           # architecture decision records (0001-0026)
 │   ├── xsm/                           # protocol, test plan, network guide
 │   ├── plan/                          # implementation plans and their evidence ledgers
 │   ├── references/ · spikes/ · reviews/
@@ -658,10 +696,12 @@ Most documents under `docs/` are written in Korean.
   - [Remote Transport & Trust](docs/adr/0007-remote-transport-and-trust.md)
   - [Cross-machine Network & Membership](docs/adr/0021-cross-machine-network-and-membership.md)
   - [Discover, Select & Handshake](docs/adr/0024-discover-select-and-handshake.md)
+  - [Teams & Multiple Recipients](docs/adr/0025-team-and-multi-recipient-dm.md)
+  - [Team Boards & Channel Removal](docs/adr/0026-team-board-on-xsm-doc.md)
 - **[Protocol Spec](docs/xsm/)**: message protocol specification
 - **[Network Guide](docs/xsm/NETWORK.md)**: the opt-in P2P network
 - **[Test Protocol](docs/xsm/TESTPLAN.md)**: hands-on check procedure (developer tests live here)
-- **[Collaboration Plan](docs/plan/collaboration/execution.md)**: the plan behind ADR-0015 to 0024, and what is still open
+- **[Collaboration Plan](https://github.com/ysys143/xsm/blob/a124b22782d68c1541f6dd5893a57bbe6797b926/docs/plan/collaboration/execution.md)**: the plan behind ADR-0015 to 0024, and what is still open
 - **[Agent Messaging Guide](docs/list-agents-cross-session-messaging.md)**: implementing agent messaging
 
 ## License

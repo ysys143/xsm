@@ -408,8 +408,8 @@ def _person_or_refuse(what: str, mcp_tool: str, typed: tuple | None = None,
         return None
     key = typed or ask
     if not key:
-        return ("%s is your user's decision: ask them in plain words, then run this again"
-                % what)
+        return ("%s is your user's decision: ask them %s, then run this again"
+                % (what, consent.how((me or {}).get("runtime"))))
     verdict, go, kept = consent.take_or_request(me, *key)
     if verdict is not None and not go:
         return consent.shown_refusal(verdict, what, kept)
@@ -418,7 +418,7 @@ def _person_or_refuse(what: str, mcp_tool: str, typed: tuple | None = None,
         print(consent.approved(key[0], key[1], verdict, kept, (me or {}).get("name")))
         return None
     if not kept:
-        return consent.cannot_keep(what, mcp_tool)
+        return consent.cannot_keep(what, mcp_tool, me)
     tool = " (The %s MCP tool asks with a form instead.)" % mcp_tool \
         if mcp_tool and mcp_tool != "no" else ""
     return consent.asks(what, tool, (me or {}).get("runtime"))
@@ -893,7 +893,17 @@ def cmd_decision_status(args) -> int:
     if why or not me:
         print(why or "this session is not registered", file=sys.stderr)
         return REFUSED
-    print(_readable_json(decisions.public_status(me, args.id, args.cancel)))
+    if getattr(args, "drop_consent", None):
+        from . import consent
+        if not consent.drop_request(me, args.drop_consent):
+            print("no open request %s in this conversation" % args.drop_consent, file=sys.stderr)
+            return REFUSED
+        print("closed %s: it approves nothing and no longer counts as open" % args.drop_consent)
+    elif getattr(args, "pending_consent", False):
+        from . import consent
+        print(_readable_json(consent.pending_status(me)))
+    else:
+        print(_readable_json(decisions.public_status(me, args.id, args.cancel)))
     return OK
 
 
@@ -3072,6 +3082,8 @@ def build_parser() -> argparse.ArgumentParser:
     decision = sub.add_parser("decision-status", help="recover or withdraw this conversation's pending human question")
     decision.add_argument("id", nargs="?")
     decision.add_argument("--cancel", action="store_true")
+    decision.add_argument("--pending-consent", action="store_true", help="list this conversation's consent requests and unbound answers")
+    decision.add_argument("--drop-consent", metavar="MARK", help="close one open consent request by its [xsm:<id>] mark; it approves nothing")
     decision.set_defaults(func=cmd_decision_status)
     ds = sub.add_parser("discover", help="find published or same-repository conversations")
     ds.add_argument("--machine")

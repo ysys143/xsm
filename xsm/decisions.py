@@ -30,11 +30,14 @@ def owner(me):
             "conversation": me.get("session_id") or me.get("conversation") or me.get("ref")}
 
 
-def invocation(me, tool, arguments, generation):
+def invocation(me, tool, arguments, generation, resource=None):
     args = {k: v for k, v in arguments.items()
             if k not in ("answer_request", "original_question", "notify")}
-    return digest({"owner": owner(me), "tool": tool, "scope": args,
-                   "generation": generation})
+    value = {"owner": owner(me), "tool": tool, "scope": args,
+             "generation": generation, "cwd": os.path.realpath(me["cwd"]) if me.get("cwd") else None}
+    if resource is not None:
+        value["resource"] = resource
+    return digest(value)
 
 
 def filename(key):
@@ -76,7 +79,8 @@ def begin(key, me, scope, generation, question, ttl=1800, waiter=None, now=None,
                       "created_at": now, "expires_at": now + ttl,
                       "status": "pending", "display": {"status": "not-requested"},
                       "waiters": {}, "answer": None, "application": None,
-                      "choices": choices}
+                      "choices": choices,
+                      "native_question": "[xsm-decision:%s] %s" % (key[:16], question)}
         if waiter is not None:
             record["waiters"][str(waiter)] = "waiting"
         paths.write_json(path, record)
@@ -161,9 +165,10 @@ def response(key, reply, source, source_id=None, displayed=None, now=None):
         if displayed is not None:
             record["display"]["reported_text"] = displayed
             record["display"]["reported_digest"] = digest(displayed)
+            expected = record.get("native_question", record["question"]) if source == "native-user" else record["question"]
             record["display"]["complete"] = (record["display"].get("complete", False)
-                and displayed == record["display"].get("text")
-                and displayed == record["question"])
+                and displayed == expected
+                and (source == "native-user" or displayed == record["display"].get("text")))
         paths.write_json(path, record)
         return record
 
@@ -187,16 +192,35 @@ def revoke(key):
 
 def claim_native(me, source_id, key):
     from . import consent
-    marker = consent.native_answer_path(me, source_id)
-    with consent._locked(marker):
-        prior = paths.read_json(marker)
-        if prior and (prior.get("consumed") or prior.get("owner") != "decision:" + key):
-            raise ValueError("this native user answer already belongs to another operation")
-        paths.write_json(marker, {"owner": "decision:" + key, "consumed": False,
-                                  "request": source_id}, mode=0o600)
+    record = read(key)
+    question = record.get("native_question", record["question"])
+    marker = consent.claim_answer(me, source_id, consent.digest(question), "decision:" + key)
+    if not marker:
+        raise ValueError("this native user answer already belongs to another operation")
     with locked(key) as path:
         record = paths.read_json(path);record["native_marker"] = marker
         paths.write_json(path, record)
+
+
+def start_application(key, generation, scope, receipt=None, reader=None):
+    """Persist acceptance before effects. A lost completion requires readback, not replay."""
+    now = time.time()
+    with locked(key) as path:
+        record = paths.read_json(path)
+        if record["generation"] != generation or record["scope_digest"] != digest(scope):
+            raise ValueError("decision caller or scope changed")
+        if (record["status"] in TERMINAL or (record.get("application") or {}).get("phase") == "started"
+                or now < record["created_at"] or now > record["expires_at"]):
+            raise ValueError("decision closed or outcome unknown; inspect status and domain state before retrying")
+        if not receipt and (record["status"] != "answered" or not record["display"].get("complete")):
+            raise ValueError("no complete user answer to apply")
+        if receipt:
+            record["permission_receipt"] = receipt
+        record.update(status="unknown", application={"phase": "started", "started_at": now,
+                      "reader": reader, "source": (receipt or {}).get("source") or
+                      (record.get("answer") or {}).get("source")})
+        paths.write_json(path, record)
+        return record
 
 
 def applied(key, result, generation, scope, now=None):
@@ -208,6 +232,13 @@ def applied(key, result, generation, scope, now=None):
             return record
         if (record["generation"] != generation or record["scope_digest"] != digest(scope)):
             record["status"] = "superseded"
+        elif (record.get("application") or {}).get("phase") == "started":
+            if not record.get("permission_receipt") and not record["display"].get("complete"):
+                raise ValueError("no complete user answer to commit")
+            application = dict(record["application"], phase="completed", result=result, observed_at=now)
+            if now < application["started_at"]:
+                application["clock_rollback_after_start"] = True
+            record.update(status="applied", application=application)
         elif now<record['created_at']:
             record['status']='unknown'
         elif now > record["expires_at"]:
@@ -230,7 +261,7 @@ def applied(key, result, generation, scope, now=None):
 def deny(key):
     with locked(key) as path:
         record = paths.read_json(path)
-        if record["status"] == "answered":
+        if record["status"] in ("answered", "unshown-or-declined"):
             record["status"] = "denied"
             paths.write_json(path, record)
         return record
@@ -276,12 +307,20 @@ def public_status(me, key=None, cancel=False):
     if not record or record["owner"] != owner(me):
         return {"id": key, "status": "not-found"}
     if cancel:
+        if (record.get("application") or {}).get("phase") == "started":
+            return {"id": key, "status": "application-started", "reason": "withdrawal cannot stop an operation already started; inspect domain state before retrying or revoking"}
         if record["status"] == "applied":
             return {"id": key, "status": "already-applied",
                     "reason": "cancel cannot undo an applied effect; use its domain revocation"}
         record = revoke(key)
+        from . import consent
+        consent.cancel_bound_requests(me, key)
     result = {k: record[k] for k in ("id", "status", "question", "question_digest", "display",
                                    "answer", "application", "expires_at", "choices")}
+    result["scope"] = record["scope"]
+    result["native_question"] = record.get("native_question", record["question"])
+    if record.get("permission_receipt"):
+        result["permission_receipt"] = record["permission_receipt"]
     result['status']=_visible_status(record)
     result["attention"] = paths.read_json(paths.path("attention", key + ".json"))
     return result

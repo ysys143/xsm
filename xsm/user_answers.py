@@ -87,7 +87,7 @@ def _user_text(row):
     return False, None
 
 
-def _answer(text, request):
+def _answer(text, request, question=None):
     if not isinstance(text, str) or not text.strip():
         return None
     text = text.strip()
@@ -111,9 +111,14 @@ def _answer(text, request):
                 not isinstance(item.get(key), str) or not item[key].strip()
                 for key in ("questionItemId", "answer", "question")):
             return None
-    ids = {item["questionItemId"] for item in items}
-    if len(ids) != 1 or (request is not None and ids != {request}):
+    if request is not None:
+        items = [item for item in items if item["questionItemId"] == request]
+    if question is not None:
+        items = [item for item in items if item["question"] == question]
+    if not items or len({item["questionItemId"] for item in items}) != 1:
         return None
+    if question is not None and len(items) != 1:
+        return None  # duplicate native evidence for the same exact question
     kept = [{key: item[key] for key in ("questionItemId", "answer", "question")}
             for item in items]
     return {"text": "; ".join(i["question"] + " -> " + i["answer"] for i in kept),
@@ -122,7 +127,7 @@ def _answer(text, request):
             "question": "\n".join(i["question"] for i in kept), "answers": kept}
 
 
-def read_answer(me, request=None, since=None, *, tail_bytes=TAIL_BYTES, latest_only=False):
+def read_answer(me, request=None, since=None, *, tail_bytes=TAIL_BYTES, latest_only=False, question=None):
     """Return native user evidence, or None (no writes or consumption).
 
     request is an exact questionItemId string. since is an inclusive Unix
@@ -213,7 +218,7 @@ def read_answer(me, request=None, since=None, *, tail_bytes=TAIL_BYTES, latest_o
         for row, text in candidates:
             if latest_only and request is not None and _known_injection(text):
                 continue
-            answer = _answer(text, request)
+            answer = _answer(text, request, question)
             if answer is None:
                 if latest_only and request is not None:
                     return None

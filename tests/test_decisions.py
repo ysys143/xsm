@@ -167,6 +167,14 @@ class DecisionsTest(test_xsm.TempState):
         self.assertEqual(first, again)
         self.assertEqual(again["application"]["result"], "one observed result")
 
+    def test_native_claim_uses_the_displayed_question_across_recovery_routes(self):
+        from xsm import consent
+        record = self.begin()
+        consent.claim_answer(self.me, "shared-answer", consent.digest(record["native_question"]),
+                             "permission:another-operation")
+        with self.assertRaises(ValueError):
+            self.d.claim_native(self.me, "shared-answer", self.key)
+
     def test_public_status_expires_a_silent_question_and_retry_does_not_display_it_again(self):
         self.begin()
         with mock.patch.object(self.d.time,'time',return_value=131):
@@ -249,9 +257,9 @@ class DecisionMcpTest(test_xsm.TempState):
         from pathlib import Path
         return [json.loads(p.read_text()) for p in Path(self.paths.path(self.d.DIRECTORY)).glob("*.json")]
 
-    def run_server(self, rows, before_answer=None):
+    def run_server(self, rows, before_answer=None, capabilities=None):
         initial = {"id": 0, "method": "initialize", "params": {
-            "capabilities": {"elicitation": {}}, "clientInfo": {"name": "fixture-human-client"}}}
+            "capabilities": {"elicitation": {}} if capabilities is None else capabilities, "clientInfo": {"name": "fixture-human-client"}}}
         inp = io.StringIO("".join(json.dumps(row) + "\n" for row in [initial] + rows))
         out = io.StringIO()
         server = self.mcp.Server(inp, out)
@@ -265,6 +273,142 @@ class DecisionMcpTest(test_xsm.TempState):
         self.assertEqual(server.serve(), 0)
         self.assertIsNone(server.ctx)
         return [json.loads(line) for line in out.getvalue().splitlines()]
+
+    def grant_call(self, mid):
+        return {"id": mid, "method": "tools/call", "params": {"name": "xsm_grant", "arguments": {
+            "runtime": "codex", "dir": self.tmp, "options": ["full_access"], "reason": "isolated fixture"}}}
+
+    def test_mcp_grant_recovers_its_reply_without_bouncing_to_a_shell(self):
+        from xsm import consent, workers
+        self.run_server([self.grant_call(1)], capabilities={})
+        consent.record(self.me, {"hook_event_name": "UserPromptSubmit", "prompt": "yes"})
+        shown = self.run_server([self.grant_call(2)], capabilities={})
+        self.assertIn("your user replied", json.dumps(shown))
+        pending = consent.pending_files(self.me["ref"])[0]
+        entry = self.paths.read_json(pending)
+        entry["shown_t"] -= consent.SHOW_DELAY + 1
+        self.paths.write_json(pending, entry)
+        self.run_server([self.grant_call(3)], capabilities={})
+        self.run_server([self.grant_call(4)], capabilities={})
+        from pathlib import Path
+        grants = list(Path(self.paths.path(workers.GRANTS)).glob("*.json"))
+        self.assertEqual(len(grants), 1)
+        record = self.decisions()[0]
+        self.assertEqual(record["status"], "applied")
+        self.assertEqual(record["permission_receipt"]["text"], "yes")
+        self.assertEqual(record["application"]["source"], "input-consent")
+
+    def test_cancelling_form_decision_clears_its_bound_reply_request(self):
+        from xsm import consent
+        self.run_server([self.grant_call(1)], capabilities={})
+        record = self.decisions()[0]
+        self.d.public_status(self.me, record["id"], cancel=True)
+        self.assertEqual(consent.pending_status(self.me)["requests"], [])
+
+    def test_changed_working_directory_does_not_replay_an_applied_result(self):
+        self.run_server([self.tool(1), dict(id="xsm-1", **accepted())])
+        self.assertEqual(len(self.records()), 1)
+        changed = self.tmp + "/different-worktree"
+        os.mkdir(changed)
+        self.registry.upsert("codex", self.me["home"], "decision-owner", os.getpid(), changed,
+                             name="fixture-owner")
+        output = self.run_server([self.tool(2)], capabilities={})
+        self.assertEqual(len(self.records()), 1, output)
+        self.assertEqual(sorted(r["status"] for r in self.decisions()), ["applied", "pending"])
+
+    def test_implicit_team_is_fixed_before_the_native_question_is_asked(self):
+        from xsm import teams, user_answers
+        self.run_server([self.tool(1)], capabilities={})
+        first = self.decisions()[0]
+        self.assertEqual(first["scope"]["arguments"]["team"], "core")
+        teams.remove(self.me, "core", teams.member_of(self.me), None)
+        teams.create(self.me, "other-team")
+        evidence = {"question": first["native_question"], "answer": "approve", "questionItemId": "q"}
+        args = dict(self.args, answer_request="q", original_question=first["native_question"])
+        with mock.patch.object(user_answers, "read_answer", return_value=evidence):
+            output = self.run_server([self.tool(2, args)], capabilities={})
+        self.assertEqual(self.board.decisions("other-team"), [], output)
+
+    def test_mcp_can_read_pending_consent_without_a_shell(self):
+        self.run_server([self.grant_call(1)], capabilities={})
+        call = {"id": 2, "method": "tools/call", "params": {"name": "xsm_decision_status", "arguments": {
+            "pending_consent": True}}}
+        output = self.run_server([call], capabilities={})
+        response = next(row for row in output if row.get("id") == 2)
+        self.assertEqual(len(json.loads(response["result"]["content"][0]["text"])["requests"]), 1)
+
+    def test_no_form_retains_request_then_reads_an_actual_native_fixture_file(self):
+        from datetime import datetime, timezone
+        from unittest.mock import patch
+        self.run_server([self.tool(1)], capabilities={})
+        self.assertEqual(self.decisions()[0]["status"], "pending")
+        path = os.path.join(self.me["home"], "native-answer.jsonl")
+        question = self.decisions()[0]["native_question"]
+        answer = "<send_user_message_question_reply>" + json.dumps([
+            {"questionItemId": "verified-q", "question": question, "answer": "approve"}]) + "</send_user_message_question_reply>"
+        rows = [{"type": "session_meta", "payload": {"id": self.me["session_id"]}},
+                {"type": "response_item", "timestamp": datetime.now(timezone.utc).isoformat(),
+                 "payload": {"type": "message", "role": "user", "content": [{"type": "input_text", "text": answer}]}}]
+        with open(path, "w") as stream:
+            stream.write("".join(json.dumps(row) + "\n" for row in rows))
+        args = dict(self.args, answer_request="verified-q", original_question=question)
+        with patch.object(self.registry, "codex_rollout", return_value=path):
+            output = self.run_server([self.tool(2, args)], capabilities={})
+        self.assertEqual(len(self.records()), 1, output)
+        self.assertEqual(self.records()[0]["via"], "native-user")
+        self.assertFalse(any(row.get("method") == "elicitation/create" for row in output))
+
+    def test_verified_native_answer_records_its_real_source_and_cannot_be_reused(self):
+        from unittest.mock import patch
+        from xsm import user_answers
+        # Persisted 0.5.1 requests had no scoped native-question marker. They
+        # still need the single-use claim when upgrading.
+        other = dict(self.args, decision_key="another-request")
+        self.run_server([self.tool(10), self.tool(11, other)], capabilities={})
+        for record in self.decisions():
+            record.pop("native_question", None)
+            self.paths.write_json(self.d.filename(record["id"]), record)
+        args = dict(self.args, answer_request="native-question", original_question=self.args["question"])
+        evidence = {"question": self.args["question"], "answer": "approve", "questionItemId": "native-question"}
+        with patch.object(user_answers, "read_answer", return_value=evidence):
+            output = self.run_server([self.tool(1, args), self.tool(2, dict(args, decision_key="another-request"))])
+        self.assertEqual(len(self.records()), 1)
+        self.assertEqual(self.records()[0]["via"], "native-user")
+        self.assertFalse(any(r.get("method") == "elicitation/create" for r in output))
+        second = next(r for r in output if r.get("id") == 2)
+        self.assertTrue(second["result"].get("isError"), second)
+
+    def test_scoped_native_question_cannot_be_imported_for_another_decision(self):
+        from unittest.mock import patch
+        from xsm import user_answers
+        other = dict(self.args, decision_key="other-decision")
+        self.run_server([self.tool(10), self.tool(11, other)], capabilities={})
+        records = self.decisions()
+        self.assertNotEqual(records[0]["native_question"], records[1]["native_question"])
+        wrong = next(r["native_question"] for r in records if r["scope"]["arguments"]["decision_key"] == self.args["decision_key"])
+        with patch.object(user_answers, "read_answer", return_value={"question": wrong, "answer": "approve", "questionItemId": "q"}):
+            output = self.run_server([self.tool(12, dict(other, answer_request="q", original_question=wrong))], capabilities={})
+        self.assertEqual(self.records(), [], output)
+
+    def test_unknown_application_is_not_replayed_after_a_domain_error(self):
+        from unittest.mock import patch
+        with patch.object(self.board, "record_decision", side_effect=OSError("injected domain failure")):
+            self.run_server([self.tool(1), dict(id="xsm-1", **accepted())])
+        record = self.decisions()[0]
+        self.assertEqual(record["status"], "unknown")
+        self.assertEqual(record["application"]["phase"], "started")
+        output = self.run_server([self.tool(2)])
+        self.assertEqual(self.records(), [], output)
+        self.assertFalse(any(row.get("method") == "elicitation/create" for row in output))
+
+    def test_native_question_mismatch_does_not_record_or_open_a_form(self):
+        from unittest.mock import patch
+        from xsm import user_answers
+        args = dict(self.args, answer_request="native-question", original_question=self.args["question"])
+        with patch.object(user_answers, "read_answer", return_value={"question": "Different?", "answer": "approve"}):
+            output = self.run_server([self.tool(1, args)])
+        self.assertEqual(self.records(), [])
+        self.assertFalse(any(r.get("method") == "elicitation/create" for r in output))
 
     def test_real_server_nested_duplicate_and_retry_show_one_form_append_one_decision(self):
         output = self.run_server([self.tool(1), self.tool(2), dict(id="xsm-1", **accepted()), self.tool(3)])

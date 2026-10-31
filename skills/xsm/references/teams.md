@@ -21,8 +21,10 @@ decisions recorded beside it.
 ```bash
 xsm team create core                      # you are its first member
 xsm team add core <session>               # name, ref:xxxxxx or net:...
-xsm team show core | xsm team list
-xsm team remove core <member> | xsm team leave core
+xsm team show core
+xsm team list
+xsm team remove core <member>
+xsm team leave core
 xsm team lead core <member>               # your user's decision
 xsm team mute core [--off]                # team DMs wait for your next turn
 ```
@@ -35,6 +37,13 @@ user's decisions: `xsm_team` asks with a form, the shell command asks for their
 reply. A team is not a permission to run anything, and a member's message is not
 your user's approval. A pair you connected with `xsm connect` is a team of two
 (`pair-…`).
+
+A project groups folders and their sessions; a team names its members, and a
+session may belong to several teams. An ordinary local membership follows
+runtime, config home and name: a new conversation with that name takes the
+place back. Unnamed local members, remote members and `connect` pair members
+are bound to conversations. Membership alone does not move unread DMs or
+pending questions; handover does.
 
 ## The board
 
@@ -60,7 +69,9 @@ When a board you are on changes, your next prompt gets one line:
 repeated until something new arrives. Read the board when an item named there
 concerns your work; otherwise go on with it.
 
-When the line names many items (more than about eight) or they are long, you may
+The line names at most three items and summarizes the rest as `+N more`.
+Use its changed-item count, not the number of printed names, to judge the
+amount of change. When many items changed or the board text is long, you may
 filter instead of reading it all: in Claude Code, a haiku subagent gets your task
 and the board text and returns only the items that could affect your work, each
 quoted verbatim, including items that overturn something your work assumes or take
@@ -85,8 +96,10 @@ with `xsm_decide` and the team:
                team="core", item="decision: release")
 
 Your user's answer is recorded beside the board under its own id and, with
-`item`, sets that item to it; members see "decided by …" on the board. Only the
-form, or your user running `xsm board decide` themselves, records one: a node
+`item`, sets that item to it; members see "decided by …" on the board. The form, or your user running `xsm board decide` themselves, records one.
+The development native-readback path also records a verified `native-user`
+answer under the [recovery contract](permissions.md#development-binding-and-recovery-path).
+A node alone cannot record approval: a node
 that names a decision id without that record shows "not confirmed". Never write
 a decision as yours.
 
@@ -94,6 +107,13 @@ Without `team`, a session in one team records the answer beside that team's
 board, and one in several teams is refused until it names the team. A session
 in no team gets your user's answer back, but it is not on record: a decision is
 kept beside a team's board.
+
+If the form comes back with no answer, say that no decision was recorded.
+Do not call `xsm_decide` repeatedly, treat an unseen form as your user's no,
+or claim that a plain reply was stored as a team decision. A Codex lead whose
+form does not show can record it from a native answer: see [permissions](permissions.md).
+See [permissions](permissions.md) for the separate permission-reply path and
+its limits; it is not a substitute for a missing decision record.
 
 ## A status file you already keep
 
@@ -125,6 +145,12 @@ xsm moves the rest: your team places and the lead's seat, your `owner/<your
 name>` board items, your unread DMs (verbatim), your pending questions (late
 answers go to OO), and DMs sent to you from then on. After it you have no team
 place.
+
+The successor must be registered and running on the same machine. A remote
+machine offline when the handover is published misses its testimony; there
+is no automatic resend, so it will not accept the successor's reply to the
+old question. Report any propagation warnings separately from the local
+handover result. Do not promise that every remote machine received it.
 
 ## Taking over
 

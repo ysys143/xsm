@@ -334,6 +334,15 @@ def _link_cli() -> None:
 
 def _handle(data: dict) -> dict | None:
     runtime = detect_runtime(data)
+    event = data.get("hook_event_name")
+    if event in ("PreToolUse", "PostToolUse", "PostToolUseFailure"):
+        worker_name = os.environ.get("XSM_WORKER")
+        worker = workers.load(worker_name) if worker_name else None
+        if worker:
+            from . import native_permissions
+            native_permissions.observe(worker, data, runtime)
+        if event != "PostToolUse":
+            return None
     if data.get("hook_event_name") == "PermissionRequest":
         return workers.permission_request(data, runtime)
     if data.get("hook_event_name") == "SessionEnd":
@@ -355,7 +364,8 @@ def _handle(data: dict) -> dict | None:
             _record_consent(registry.by_session(runtime, data["session_id"]), data)
         return None
     if data.get("hook_event_name") == "PostToolUse":
-        # Claude: only AskUserQuestion is installed (its matcher). The person's
+        # Foreground Claude installs only AskUserQuestion; worker-local hooks
+        # also observe other tools' completion above. The person's
         # answer comes back as the tool's result, which no prompt hook sees, so
         # it is kept here as the reply to an ask (consent.py). Nothing printed.
         if data.get("tool_name") == "AskUserQuestion" and data.get("session_id"):
@@ -1544,7 +1554,7 @@ def main(argv=None) -> int:
             "event": event, "decision": "block" if refuse else "pass",
             "reason": "xsm internal error: %s" % type(err).__name__,
             "detail": str(err)[:300], "peer_like": looks_like_peer})
-        if event in ("PermissionRequest", "UserPromptExpansion", "PostToolUse"):
+        if event in ("PermissionRequest", "UserPromptExpansion", "PreToolUse", "PostToolUse", "PostToolUseFailure"):
             # No answer means the runtime's own default, which for a background
             # worker is to refuse. Never print a prompt decision here. An
             # expansion is the person's own slash command: nothing to refuse.

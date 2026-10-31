@@ -83,7 +83,7 @@ class AskHelpers:
         """What asks left in the state folder. The person's last prompts
         (`<ref>.recent.json`, kept for `consent.from_request`) are not an ask's."""
         folder = os.path.join(self.tmp, "asked")
-        return sorted(n for n in os.listdir(folder) if recent or not n.endswith(".recent.json")) \
+        return sorted(n for n in os.listdir(folder) if (recent or not n.endswith(".recent.json")) and not n.endswith(".unbound.json")) \
             if os.path.isdir(folder) else []
 
 
@@ -103,6 +103,8 @@ class PersonDecisionTest(AskHelpers, TempState):
                   ' "question":"connect?", '
                   '"questionItemId":"[\\"request_user_input_async\\",\\"call_x\\",0]"}]'
                   '</send_user_message_question_reply>')
+        consent.bind_question(self.me, "link", there, '["request_user_input_async","call_x",0]',
+                              self.tmp, question="connect?")
         consent.record(self.me, {"hook_event_name": "UserPromptSubmit", "prompt": answer})
         entry = self._pending()
         self.assertEqual(entry.get("verdict"), "yes, connect it")
@@ -132,8 +134,20 @@ class PersonDecisionTest(AskHelpers, TempState):
         from xsm import consent
         questions = [{"question": q, "header": "Q", "multiSelect": False,
                       "options": [{"label": "Yes", "description": "go"}]} for q in answers]
+        from xsm import paths
+        selected = me or self.me
+        pending = consent.pending_files(selected["ref"])
+        request = None
+        if len(answers) == 1 and len(pending) == 1:
+            entry = paths.read_json(pending[0])
+            if entry.get("session_id") == selected.get("session_id"):
+                request = "fixture-question-" + entry["ask_id"]
+                entry.update(question_request=request, question_digest=consent.digest(next(iter(answers))))
+                paths.write_json(pending[0], entry)
+        self.formatted_answer = consent.answers_text({"tool_response": response if response is not None else {
+            "answers": answers, "annotations": annotations or {}}})
         consent.record(me or self.me, {
-            "hook_event_name": event, "tool_name": tool, "session_id": "s-agent",
+            "tool_use_id": request, "hook_event_name": event, "tool_name": tool, "session_id": "s-agent",
             "tool_input": {"questions": questions},
             "tool_response": response if response is not None else {
                 "questions": questions, "answers": answers, "annotations": annotations or {}}})
@@ -608,7 +622,7 @@ class PersonDecisionTest(AskHelpers, TempState):
                 code, text = self._cli(["join", "demo"])
                 self.assertEqual(code, 2, text)
                 self.assertIn("cannot keep their reply", text)
-                self.assertIn("xsm_join MCP tool", text)
+                self.assertIn("parent or team lead" if label == "a worker" else "xsm_join MCP tool", text)
                 self.assertNotIn("is kept as the verdict", text)
                 self.assertNotIn("type", text)
 
@@ -712,17 +726,18 @@ class PersonDecisionTest(AskHelpers, TempState):
         self._answered({"Lift it?": "Yes", "Also log it?": "(notes only)"},
                        {"Lift it?": {"preview": "a diff nobody chose"},
                         "Also log it?": {"notes": "only if it is quiet"}})
-        self.assertEqual(self._pending()["verdict"],
+        self.assertEqual(self.formatted_answer,
                          "Lift it? -> Yes; Also log it? -> (notes only) "
                          "(notes: only if it is quiet)")
 
-    def test_a_plain_text_result_is_kept_as_it_is(self):
+    def test_a_plain_text_result_is_formatted_but_not_used_as_approval(self):
         self._asks(["unblock", "aaa334"])
         self._answered({}, response='User has answered your questions: "Lift it?"="Yes".')
-        self.assertEqual(self._pending()["verdict"], 'User has answered your questions: '
-                                                      '"Lift it?"="Yes".')
+        self.assertIsNone(self._pending()["verdict"])
+        self.assertEqual(self.formatted_answer, 'User has answered your questions: "Lift it?"="Yes".')
         self._answered({}, response=[{"type": "text", "text": "Lift it? = no"}])
-        self.assertEqual(self._pending()["verdict"], "Lift it? = no")
+        self.assertIsNone(self._pending()["verdict"])
+        self.assertEqual(self.formatted_answer, "Lift it? = no")
 
     def test_an_answer_with_no_ask_waiting_is_nothing(self):
         from xsm import consent
@@ -761,6 +776,11 @@ class PersonDecisionTest(AskHelpers, TempState):
                 "tool_input": {"questions": []},
                 "tool_response": {"questions": [], "answers": {"Lift it?": "Yes"},
                                   "annotations": {}}}
+        from xsm import consent, paths
+        entry = self._pending()
+        data["tool_use_id"] = "hook-question"
+        entry.update(question_request="hook-question", question_digest=consent.digest("Lift it?"))
+        paths.write_json(self._pending_file(), entry)
         with mock.patch.object(registry, "by_session", return_value=self.me):
             self.assertIsNone(receive.handle(data))
             self.assertEqual(self._pending()["verdict"], "Lift it? -> Yes")
@@ -988,7 +1008,8 @@ class PersonDecisionTest(AskHelpers, TempState):
         self.assertIsNotNone(entry, "the MCP server recorded the ask")
         self.assertIsNone(entry["verdict"])
         from xsm import consent
-        self.assertTrue(consent.note_verdict(self.me, "응"), "the first yes has an ask to attach to")
+        self.assertTrue(consent.note_verdict(self.me, "응", question="[xsm:%s]" % entry["ask_id"]),
+                        "this exact fixture question has its own ask, even with other asks pending")
         shown = run()
         self.assertIn('your user replied: "응"', shown)
         return shown
@@ -1113,11 +1134,11 @@ class PersonDecisionTest(AskHelpers, TempState):
         for label, env in (("a worker", {"XSM_WORKER": "w1"}),):
             with self.subTest(label), mock.patch.dict(os.environ, env):
                 text = self._form("xsm_join", {"project": "demo"})
-                self.assertIn("Run `xsm join demo` in your shell first", text)
+                self.assertIn("parent or team lead", text)
                 self.assertNotIn("Ask your user now", text)
                 self.assertEqual(self._asked_files(), [])
         self.me = dict(self.me, ref=None)
-        self.assertIn("first", self._form("xsm_join", {"project": "demo"}))
+        self.assertIn("not registered", self._form("xsm_join", {"project": "demo"}))
 
     def test_a_declined_form_is_a_no_and_records_no_ask(self):
         from xsm import mcp
@@ -1140,8 +1161,11 @@ class PersonDecisionTest(AskHelpers, TempState):
         self.assertEqual((entry["verb"], entry["target"], entry["verdict"]),
                          ("join", "demo", None))
         self._reply("응")
-        self._shows(["join", "demo"], "응")
-        self._shows(["unblock", "zzz111"], "응")
+        self.assertIsNone(self._pending()["verdict"])
+        self.assertTrue(consent.pending_status(self.me)["unbound"])
+        for p in consent.pending_files(self.me["ref"]):
+            from xsm import paths
+            self.assertIsNone(paths.read_json(p)["verdict"])
 
     def test_a_reply_already_given_survives_an_ask_about_something_else(self):
         self._asks(["unblock", "yyy111"])
@@ -1342,7 +1366,7 @@ class PersonDecisionTest(AskHelpers, TempState):
                    for i in range(12)}
         self._asks(["unblock", "ddd444"])
         self._answered(answers)
-        said = self._pending()["verdict"]
+        said = self.formatted_answer
         self.assertLessEqual(len(said), consent.VERDICT_MAX)
         for i in range(12):
             self.assertIn("-> Answer %d %s" % (i, "a" * 150), said, "no answer is cut")
@@ -1358,7 +1382,7 @@ class PersonDecisionTest(AskHelpers, TempState):
         answers = {"Q%d?" % i: str(i) * 1100 for i in range(4)}
         self._asks(["unblock", "eee111"])
         self._answered(answers)
-        said = self._pending()["verdict"]
+        said = self.formatted_answer
         self.assertLessEqual(len(said), consent.VERDICT_MAX)
         runs = []
         for i in range(4):
@@ -1376,7 +1400,7 @@ class PersonDecisionTest(AskHelpers, TempState):
         notes = {q: {"notes": "note %s" % ("n" * 590)} for q in long_q}
         self._asks(["unblock", "eee222"])
         self._answered(long_q, notes)
-        said = self._pending()["verdict"]
+        said = self.formatted_answer
         self.assertLessEqual(len(said), consent.VERDICT_MAX)
         self.assertEqual(said.count("a" * 590), 4, "every answer whole")
         self.assertNotIn("q" * 100, said, "the questions went to their floor first")
@@ -1386,7 +1410,7 @@ class PersonDecisionTest(AskHelpers, TempState):
         # With the notes small, the answers are what gives way, and the notes are cut first
         small = {"Question %d" % i: "A" * 1100 for i in range(4)}
         self._answered(small, {q: {"notes": "x" * 60} for q in small})
-        said = self._pending()["verdict"]
+        said = self.formatted_answer
         self.assertLessEqual(len(said), consent.VERDICT_MAX)
         self.assertNotIn("x" * 60, said, "notes first")
         self.assertNotIn("A" * 1100, said)
@@ -1395,7 +1419,7 @@ class PersonDecisionTest(AskHelpers, TempState):
     def test_a_form_that_fits_is_kept_as_it_was_with_no_mark(self):
         self._asks(["unblock", "eee333"])
         self._answered({"Lift it?": "Yes", "Log it?": "No"})
-        self.assertEqual(self._pending()["verdict"], "Lift it? -> Yes; Log it? -> No")
+        self.assertEqual(self.formatted_answer, "Lift it? -> Yes; Log it? -> No")
 
     def test_a_long_reply_is_kept_beyond_the_old_thousand(self):
         from xsm import consent

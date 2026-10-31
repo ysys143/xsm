@@ -188,11 +188,13 @@ class ToolAnnotationsTest(TempState):
                        "language of the conversation", "short sentences or bullets"):
             self.assertIn(phrase, descriptions[0])
 
-    def test_the_form_tools_are_left_to_their_own_forms(self):
+    def test_the_form_tools_reach_their_own_forms(self):
+        """Their question to the person is the consent, and a Codex under approval policy
+        never refuses an unannotated tool before it can ask (0.165, 2026-10-31)."""
         tools = self._tools()
         for name in ("xsm_link", "xsm_reach", "xsm_join", "xsm_approve", "xsm_grant",
                      "xsm_decide", "xsm_doc_endorse"):
-            self.assertNotIn("annotations", tools[name], name)
+            self.assertFalse(tools[name]["annotations"]["destructiveHint"], name)
 
     def test_the_codex_server_config_is_not_changed_by_it(self):
         with open(os.path.join(REPO, "hooks", "codex-mcp.json")) as fh:

@@ -1,8 +1,16 @@
-# xsm v0.1 — 세션 간 메시징
+# xsm 사용·운영 안내
 
-서로 다른 프로필(`~/.claude`, `~/.claude-3`, …)과 런타임(Claude Code, Codex)의 세션이 서로를 찾고 메시지를 주고받게 한다. 이 메시지는 DM(direct message)이다. 보내는 쪽이 받는 세션을 지정하고, xsm이 그 세션의 입력으로 바로 넣는다. 그래서 세션을 깨울 수 있고, 전달이 기록되고 받는 쪽이 수신을 확인할 수 있으며, 답을 받을 수 있다. 직접이라는 말은 일대일이 아니라 받는 쪽을 지정한다는 뜻이다(Slack의 그룹 DM도 DM이다). 상주 프로세스도, 서버도, 외부 연결도 없다. 훅이 포인터를 남기고, 일회성 CLI가 각 런타임의 네이티브 경로로 전달하며, 모든 상태는 `~/.xsm`의 파일이다.
+서로 다른 프로필(`~/.claude`, `~/.claude-3`, …)과 런타임(Claude Code, Codex)의 세션이 서로를 찾고 함께 일하게 한다.
+메시지는 받는 세션을 지정하는 DM(direct message)이다. direct는 일대일이라는 뜻이 아니며 여러 세션이나 팀에 보낼 수 있다.
+xsm이 각 런타임의 네이티브 입력으로 전달하므로 세션을 깨우고, 전달·수신 확인·답변을 따로 기록할 수 있다.
 
-설계 근거는 `docs/adr/`의 결정 초안과 `docs/spikes/`의 실측이다. 이 문서는 쓰는 방법만 다룬다. 형식과 판정 규칙의 명세는 `PROTOCOL.md`, 실사용 점검 절차는 `TESTPLAN.md`에 있다. 첫 실사용 시험 결과는 `TRIAL-2026-09-21.md`에 있다.
+팀은 함께 일하는 세션들의 구성원 목록이고, 보드는 팀 전체에 유효한 결정·담당·진행을 항목별로 보관한다.
+행동이나 답을 요청할 때는 DM, 공동 상태를 남길 때는 보드를 쓴다. 기존 channel은 0.5.1에서 제거했다.
+
+로컬 메시징은 훅·파일·일회성 CLI로 동작하며 별도 상주 서버가 없다. 다른 머신과의 통신에는 선택적 P2P 네트워크
+서비스를 쓴다. 이 서비스는 네트워크를 만들거나 가입한 뒤에만 돌고 `xsm network stop`으로 멈춘다.
+
+설계 근거는 `docs/adr/`의 결정·제안과 `docs/spikes/`의 실측이다. 이 문서는 쓰는 방법만 다룬다. 형식과 판정 규칙의 명세는 `PROTOCOL.md`, 실사용 점검 절차는 `TESTPLAN.md`에 있다. 첫 실사용 시험 결과는 `TRIAL-2026-09-21.md`에 있다.
 
 ## 설치
 
@@ -132,21 +140,27 @@ Claude 쪽 입력은 명령마다 약 67~70k토큰이지만 대부분 캐시이�
 
 | 길 | 대상 | 갱신 | 특징 |
 |---|---|---|---|
-| 플러그인 (`/plugin install xsm@xsm`) | Claude Code | `plugin.json`의 `version` | 훅·스킬·MCP·`bin/`이 한 번에. 끄면 훅도 꺼짐. `/xsm list` |
-| `xsm install` | Codex, 플러그인 안 쓰는 Claude 홈 | `xsm install --refresh` | 설정 파일에 훅을 병합하고 스킬을 링크. `/xsm list`, Codex는 `$xsm list` |
+| Claude 플러그인 (`/plugin install xsm@xsm`) | Claude Code | `claude plugin marketplace update xsm`, `claude plugin update xsm@xsm` | 훅·스킬·MCP·`bin/`을 묶음. `/xsm list` |
+| Codex 플러그인 (`codex plugin add xsm@xsm`) | Codex | `codex plugin marketplace upgrade xsm`, `codex plugin add xsm@xsm` | 훅·스킬·MCP를 묶음. `$xsm list`. `/hooks`에서 신뢰 필요 |
+| 직접 설치 (`xsm install`) | 플러그인을 쓰지 않는 Claude·Codex 홈 | 갱신한 checkout의 `bin/xsm install --refresh` | 홈을 명시해 훅·스킬·MCP 설치. Claude는 `/xsm list`, Codex는 `$xsm list` |
 
-한 Claude 홈에 둘 다 두면 훅이 두 번 돈다. 두 번째 수신 게이트가 자기 영수증을 보고 중복으로 거부하므로
-메시지가 사라진다. `xsm install`은 플러그인이 있는 홈을 거부한다. `xsm doctor`가 어느 홈이 어느 길인지,
-복사본이 낡았는지, 지금 무엇이 막혀 있는지 보여 준다.
+한 홈에 플러그인과 직접 설치를 함께 두면 훅이 중복으로 돌아 수신이 실패할 수 있다. 기존 직접 설치에서 플러그인으로
+옮기는 절차는 [루트 README](../../README_ko.md#1-직접-설치)를 따른다. `xsm doctor`는 설치 경로와 낡은 복사본을 보여 준다.
+갱신 전에 열었던 세션은 기존 훅과 MCP 서버를 유지하므로 새 세션을 연다. 검증 당시 Codex 0.165는 플러그인 내용이
+바뀌면 `/hooks`에서 다시 검토해야 했으며, doctor는 이 신뢰 상태를 확인하지 못한다.
 
 ### 무엇이 배포되고 무엇이 남나
 
-| 배포 | 개발 전용 |
+| 구성 | 경로 |
 |---|---|
-| `xsm/`, `hooks/`, `bin/`, `skills/`, `.claude-plugin/`, `.mcp.json`, `evals/` | `tests/`, `tools/`, `docs/spikes/`, `docs/reviews/`, `docs/plan/`, `docs/references/` |
+| 로컬 런타임과 플러그인 | `xsm/`, `hooks/`, `bin/`, `skills/`, `.claude-plugin/`, `.codex-plugin/`, `.agents/plugins/`, `.mcp.json` |
+| 선택적 P2P 엔진 | `native/xsm-net/` |
+| 배포에 남는 안내·평가 | 루트 README·CHANGELOG, `docs/xsm/`, `docs/adr/`, `docs/assets/`, `evals/` |
+| 개발 전용 | `tests/`, `tools/`, `docs/spikes/`, `docs/reviews/`, `docs/plan/`, `docs/references/` |
 
-`.gitattributes`의 `export-ignore`가 이 경계다. `git archive`로 만든 릴리스 아카이브는 2.0MB에서 0.8MB로 줄고
-실험 도구와 스파이크 문서가 빠진다. git clone으로 설치하면 모두 들어온다(제품 동작에는 영향이 없다).
+`.gitattributes`의 `export-ignore`가 아카이브에서 개발 자료를 제외한다. 초기 정리 때의 2.0MB→0.8MB는 당시 표본의
+측정값이며 현재 배포 크기가 아니다. git clone에는 개발 자료도 들어온다. 배포에서 제외한 근거 문서를 제품 안내에서
+인용할 때는 해당 릴리스 커밋의 웹 링크를 쓴다.
 
 **로컬 디렉터리를 마켓플레이스로 쓰면 git이 무시하는 파일까지 복사된다**(실측: 설치본 루트에 `.local/`, `.omc/`가
 들어왔다). 배포에는 GitHub 소스를, 검증에는 `git archive`로 만든 깨끗한 사본을 쓴다.
@@ -292,15 +306,16 @@ xsm team create core
 xsm team add core <세션>          # 이름, ref:xxxxxx, net:...
 xsm team remove core <구성원> | xsm team leave core
 xsm team lead core <구성원>       # 사용자의 결정
-xsm team list | xsm team show core
+xsm team list
+xsm team show core
 xsm team mute core [--off]        # 팀 DM을 깨우지 않고 다음 턴에 받는다
 ```
 
 - **권한.** 팀은 구성원끼리의 DM을 허용하는 새 권한이다(D19). 프로젝트와 머신이 달라도 구성원끼리는 보낼 수 있고, 팀 밖 세션에는 아무것도 열지 않는다. 끝난 세션은 구성원이어도 권한이 없다.
 - **추가와 팀장.** 같은 프로젝트 안의 세션은 팀장이 묻지 않고 넣고 뺀다. 팀장이 아닌 구성원이 넣을 때, 범위 밖 세션을 넣을 때, 팀장을 정할 때는 사용자의 승인을 받는다(CLI는 사용자의 회신, MCP `xsm_team`은 양식). 팀을 만든 세션이 팀장이 되지는 않는다.
-- **구성원은 이름 단위다(D26).** 같은 이름으로 다시 연 대화가 자리를 이어받는다. 다른 머신의 구성원은 P2P 끝점에 이름이 없으므로 대화 단위다.
+- **구성원의 수명(D26).** 일반 로컬 팀에서는 같은 런타임·설정 홈·이름으로 다시 연 대화가 자리를 이어받는다. 이름이 없는 로컬 세션과 다른 머신의 구성원은 대화 단위다. 구성원 자리를 잇는 것만으로 미확인 DM·대기 질문이 옮겨지지는 않는다. 그것까지 넘기는 것은 인수인계다.
 - **주소.** `team:<이름>` 또는 `#<이름>`으로 보낸 DM은 실행 중인 구성원 각자에게 따로 가고, 본문 첫 줄에 누가 함께 받았는지 적힌다. 실행 중이 아닌 구성원은 결과에 이름이 나온다.
-- **connect는 둘인 팀이다(D21).** 사용자가 고른 대화와 연결하면 `pair-<선택 ID 앞 10자>` 팀이 생긴다. 0.5.0 상대와의 호환을 위해 선택 기록도 그대로 둔다.
+- **connect는 둘인 팀이다(D21).** 사용자가 고른 대화와 연결하면 `pair-<선택 ID 앞 10자>` 팀이 생긴다. 일반 로컬 팀과 달리 두 구성원 모두 대화 단위여서 같은 이름의 새 대화가 승계하지 않는다. 0.5.0 상대와의 호환을 위해 선택 기록도 그대로 둔다.
 - **머신 간.** 팀이 바뀌면 원격 구성원의 머신마다 팀 기록을 보낸다. 받는 머신은 보낸 머신과 자기 머신 모두에 구성원이 있고, 팀 ID가 같으며, 세대가 더 새로울 때만 받는다. 두 머신이 동시에 바꾸면 합치지 않고 더 새 세대가 이긴다.
 - **저장.** `~/.xsm/teams/<팀>/team.json`(구성원, 팀장, 세대, 변경 이력). 끄기는 `muted/` 아래 세션별 파일이다.
 
@@ -326,7 +341,24 @@ xsm board mute core [--off]      # 변경 알림 줄을 끈다
 
 ## 결재 기록
 
+Codex 양식이 닿지 않으면 네이티브 사용자 답을 검증한 뒤 `native-user` 출처로 결재를 기록한다.
+질문 ID·원문·정확한 대화·유효 시간·단회 사용을 확인하며, 에이전트가 옮겨 적은 승인 문장은 받지 않는다.
+거부문이 요청의 `[xsm:<id>]` 표식을 알려 주고, 에이전트는 이를 질문 맨 앞에 넣는다. 평문 답은 열린 결정이 하나이거나 답이 하나를 지목할 때만 결속한다.
+현재 대화의 요청·표식과 미결속 사유는 `xsm decision-status --pending-consent`로 조회하고, `--drop-consent <표식>`으로 낡은 요청을 닫는다.
+MCP만 쓸 수 있는 세션은 `xsm_decision_status(pending_consent=true)`로 같은 목록을 읽는다.
+MCP 결재를 네이티브 답으로 복구하려면 결정 상태의 `native_question`과 선택지를 그대로 묻고,
+상태의 `scope.arguments`로 같은 도구를 재호출하며 `answer_request`와 `original_question`을 전달한다.
+이때 `[xsm-decision:…]` 표식과 CLI 권한 요청의 `[xsm:…]` 표식을 섞지 않는다.
+권한 도구는 폼이 답을 받지 못해도 같은 MCP 호출에서 답을 보관·표시·소비한다. 팀 결재는
+양식 또는 검증된 네이티브 답이 필요하다. 적용 시작 뒤 결과가 불명확하면 상태와 실제 적용 대상을
+조회하며, 재실행하거나 새 키로 우회하지 않는다.
+실제 시험 경로와 미검증 경계는 [TESTPLAN 15절](TESTPLAN.md#15-승인-결속-25)에 있다.
+
 팀의 결재는 사용자와 대면하는 팀장을 거친다(D5, D6). 결재 범주는 정하지 않는다. 스킬은 비용·외부 공개·범위 변경을 흔한 결재 대상으로 안내한다.
+
+원문 기록과 요청별 승인 결속은 별개다. 양식이 답을 받지 못했다면 결재가 기록되지 않았다고 알리고, 같은 도구를
+반복 호출하거나 평문 답이 결재 기록으로 남았다고 말하지 않는다. 제품 수정 전까지의 상세 한계는
+[승인 채널 감사](https://github.com/ysys143/xsm/blob/a124b22782d68c1541f6dd5893a57bbe6797b926/docs/plan/collaboration/approval-channels-audit.md)에 있다.
 
 ```
 xsm_decide(question=..., options=[...], team="core", item="decision: cache")   # MCP 양식
@@ -334,7 +366,7 @@ xsm board decide core "decision: cache" --text "redis"                         #
 xsm board decisions core
 ```
 
-- **기록.** `~/.xsm/teams/<팀>/decisions/<ID>.json`. ID는 기록 내용의 해시이고 한 번만 쓴다. 기록 경로는 MCP 양식(`via: mcp-elicitation`)과 사용자 본인의 `board decide`(`via: terminal`) 둘뿐이다.
+- **기록.** `~/.xsm/teams/<팀>/decisions/<ID>.json`. ID는 기록 내용의 해시이고 한 번만 쓴다. 기록 경로는 MCP 양식(`via: mcp-elicitation`), 사용자 본인의 `board decide`(`via: terminal`), 검증된 네이티브 답 재판독(`via: native-user`, Codex)이다.
 - **팀을 주지 않으면.** 구성원인 팀이 하나면 그 팀 보드 옆에 기록하고 결과에 팀 이름을 적는다. 둘 이상이면 양식을 띄우기 전에 팀 이름들을 대며 `team`을 달라고 거부한다. 팀이 없으면 양식을 띄워 답을 에이전트에게 돌려주되, 이 세션이 어느 팀에도 없어 기록하지 않았다고 적는다(`xsm team create`가 팀을 만든다). 연결(`xsm connect`)이 만든 둘짜리 팀(`pair-…`)도 팀으로 센다.
 - **보드 항목.** `item`을 주면 그 항목을 답으로 정하는 노드가 결재 ID를 단다. 렌더는 기록이 있으면 "decided by …"를, 기록이 없으면 "not confirmed"를 보인다.
 - **머신 간.** 결재 기록도 보드 노드와 함께 보낸다. 받은 기록은 `from_machine`이 붙고 그 머신 사용자의 증언으로 보인다. 이 머신 사용자의 승인으로 쓰지 않는다.
@@ -356,7 +388,12 @@ xsm handover --show                          # 이 세션이 받은 인수인계
 
 ## MCP 서버
 
-설치할 때 각 홈에 `xsm`이라는 이름으로 등록된다(`claude mcp add --scope user`, `codex mcp add`). 세션이 띄우고 세션과 함께 끝난다. Codex가 띄운 MCP 서버는 샌드박스 밖에서 돌기 때문에, 샌드박스 Codex도 MCP 도구로 보내고 받고 보드에 쓸 수 있다(실측). `xsm_decide` 같은 양식 도구가 띄운 질문에 사용자가 고른 답은 모델을 거치지 않고 xsm에 도착한다. Claude Code와 Codex 모두 된다(실측). Codex는 MCP 도구마다 호출 허용을 묻는다. 등록을 원하지 않으면 `xsm install --no-mcp`.
+설치할 때 각 홈에 `xsm`이라는 이름으로 등록된다(`claude mcp add --scope user`, `codex mcp add`). 세션이 띄우고
+세션과 함께 끝난다. Codex가 띄운 MCP 서버는 샌드박스 밖에서 돌기 때문에, 샌드박스 Codex도 MCP 도구로 보내고 받고
+보드에 쓸 수 있다(실측). 양식에 사용자가 고른 답이 돌아오면 모델을 거치지 않고 xsm에 도착한다. TESTPLAN §14의
+실측 환경에서는 Claude Code와 Codex 모두 답을 받았다. 다만 Codex는 `approval_policy = "never"` 등의 조건에서
+양식을 보여 주지 않고 거절할 수 있으며, 호출 허용과 양식의 사용자 답은 별개다. 답을 받지 못한 경우의 한계는
+[결재 기록](#결재-기록)을 따른다. 등록을 원하지 않으면 `xsm install --no-mcp`.
 
 0.5.1에서 채널(`xsm post`, `xsm channel`, `xsm_post`, `xsm_channel`)을 제거했다(ADR-0026). 팀 전체가 알아야 할 사실은 [팀 보드](#팀-보드)에, 사용자의 결정은 [결재 기록](#결재-기록)에 둔다. 이전 게시 파일(`~/.xsm/channels/`)은 지우지 않으며 xsm이 더 읽지 않는다.
 

@@ -46,9 +46,16 @@ verdict, exactly as a typed reply would be. What the hook receives was read from
 a transcript: the tool's own result is {"questions", "answers": {question:
 label or the person's own words}, "annotations": {question: {"notes"?}}}.
 
-An MCP form tool that gets no answer (no form, a decline the client never showed,
-a dismissal) records the ask itself (`ask`), under the key its CLI command will
-use, and tells the agent to ask now. Telling it to run the command and then ask
+Codex request_user_input_async replies arrive as tagged user input. Each question's
+title and item ID bind separately; synchronous request_user_input tool output is
+not this capture path. Use only the tool permitted by the current harness.
+Question tools and their hooks/SDK callbacks are trusted inside the uid boundary;
+this is not proof that only a physical person could supply their results.
+
+An MCP permission tool that gets no usable answer keeps its pending decision and
+bound input request; the same MCP operation can show and consume the user's reply.
+Team decision records instead require a form or verified native user evidence.
+CLI requests retain the separate show/consume path. Telling it to run the command and then ask
 made the person say yes twice: their first "yes" had no ask to attach to
 (2026-10-01, Codex).
 
@@ -71,10 +78,18 @@ name or an intent the person is asked as before. Policy `reply_from_request` = f
 turns it off.
 
 Each thing asked about has its own request file (asked/<ref>.<digest of verb and
-target>.pending.json), so asking about a reach does not erase the reply to a link; a
-reply is written to every request the session has open, and the show step guards which
-one it answers. The single slot older versions wrote is still read. An ask lives
-ASK_MAX; a reply is good for TTL.
+target>.pending.json), so asking about a reach does not erase the reply to a link.
+Each ask has a marker, `[xsm:<ask_id>]`, which the refusal hands the agent to put at the
+head of its question; the head survives when Codex shortens a long question (41 answers
+measured 2026-10-31). A structured answer binds to the ask its question names: by exact
+question id, by marker, or by naming one decision's target. Plain words have no question,
+so they bind when one decision is open or when they name one. Two asks that differ only by
+the peer they would reach (`binding`) are one decision. An answer that binds to nothing
+approves nothing: it is kept briefly and shown on the next run. Words that came while
+several decisions were open are shown with the replies already on them, so a "cancel" is
+not lost, and `--reply` cannot use them. What a person said before an ask was made counts
+only by naming it, and only once. The legacy single slot is still read.
+An ask lives ASK_MAX; a reply is good for TTL.
 
 When the hook did not record the reply (a session started before an update; a state
 folder it could not write) the agent gives it itself, `--reply "<their words>"` on the
@@ -97,9 +112,8 @@ Words approve once (2026-10-02, live Codex test: the "응" that linked one folde
 `--reply "응"` link the next, though the person was never asked about it). When a verdict
 passes, the hook's, the request taken as one, or the flag's, the prompts that say it are
 marked `used` in recent.json (`_spend`), and neither the flag nor a request reads a used
-prompt. And when the ask for this target was on record before the flag was given, a prompt
-from before that ask is not an answer to it; with no ask yet, the prompt may be the
-request, said before there was a question.
+prompt. A prompt from before the ask is an answer to it only if it names what is being
+decided (user decision, 2026-11-01), so a fragment of an unrelated prompt is not one.
 """
 from __future__ import annotations
 
@@ -131,10 +145,11 @@ QUESTION_MAX = 200
 SHOW_DELAY = 1.0
 # How long a run waits for another that holds the lock of an ask; then it goes
 # on unlocked, as it does where the folder cannot be written (2026-10-01). A
-# hook runs on every prompt of every session under a 10 s limit, so it waits
-# a fifth of that.
+# hook runs on every prompt of every session under a 10 s limit, and a run that
+# applies an approved plan holds the lock meanwhile: a reply must not be turned
+# away for it, so the hook waits well under that limit but not briefly.
 LOCK_WAIT = 5.0
-HOOK_LOCK_WAIT = 1.0
+HOOK_LOCK_WAIT = 4.0
 # A lock file with no ask is an orphan only after this long: a run makes the
 # lock a moment before it writes the ask, and a sweep in between would take it
 # from under the run (2026-10-01).
@@ -178,6 +193,12 @@ HARNESS_PREFIXES = ("<task-notification", "<system-reminder", "<command-", "<loc
 TAG_RE = re.compile(r"\A<([a-z][a-z0-9]*[_-][a-z0-9_-]*)[\s>]")
 # A slash command (`/clear`, `/model opus`) is not an answer; a path ("/tmp/x") is.
 SLASH_RE = re.compile(r"\A/[A-Za-z][\w:.-]*(?:\s|\Z)")
+# The mark that ties a question to one ask.
+MARK_RE = re.compile(r"\[xsm:([a-zA-Z0-9-]+)\]")
+# Words `_names_for` accepts from a person's request but that name no one target
+# in a question: "end this session?" is not about publishing it.
+GENERIC_NAMES = {"this session", "이 세션", "이세션"}
+DECISION_MARK = "[xsm-decision:"
 
 
 def _path(ref: str) -> str:
@@ -449,10 +470,17 @@ def record(me: dict | None, data: dict) -> dict | None:
     event = data.get("hook_event_name")
     if event == "PostToolUse":
         # Claude's AskUserQuestion: the answer is a tool result, which no
-        # prompt hook sees (2026-10-01). Only the person can have chosen it.
-        text = answers_text(data) if data.get("tool_name") == "AskUserQuestion" else None
-        if text:
-            note_verdict(me, text)
+        # prompt hook sees. The harness reports an answer; hooks/SDKs can supply it too.
+        out = data.get("tool_response")
+        if data.get("tool_name") == "AskUserQuestion" and isinstance(out, dict) and isinstance(out.get("answers"), dict):
+            for question, answer in out["answers"].items():
+                one = dict(data, tool_response=dict(out, answers={question: answer}))
+                text = answers_text(one)
+                if text:
+                    note_verdict(me, text, request=data.get("tool_use_id"), question=str(question))
+        elif data.get("tool_name") == "AskUserQuestion":
+            _unbound_alone(me, answers_text(data) or "unreadable question response", None,
+                           data.get("tool_use_id"), "missing structured question identity; not applied")
         return None
     if event == "UserPromptExpansion":
         if data.get("expansion_type") != "slash_command" or \
@@ -466,19 +494,27 @@ def record(me: dict | None, data: dict) -> dict | None:
         # A question tool's answer tag: the person's own choice, wrapped the
         # harness way. Keep the answer as the verdict, and the request id it
         # names as the tool call it answers (G00/S5, P02 item 3).
-        answered, request = answer_reply(text)
-        if answered:
-            payload = json.loads(ANSWER_RE.match(text.strip()).group(1))
-            questions = " / ".join(str(item.get("question") or "")
-                                   for item in payload if isinstance(item, dict))
-            note_verdict(me, answered, request=request, question=questions)
+        match = ANSWER_RE.match(text.strip())
+        if match:
+            try:
+                payload = json.loads(match.group(1))
+            except ValueError:
+                payload = []
+            if not isinstance(payload, list) or not payload:
+                _unbound_alone(me, text, None, None, "empty or malformed native question response; not applied")
+            for item in payload if isinstance(payload, list) else []:
+                if isinstance(item, dict) and all(isinstance(item.get(k), str) and item[k].strip()
+                        for k in ("answer", "question", "questionItemId")):
+                    note_verdict(me, item["answer"], request=item["questionItemId"],
+                                 question=item["question"])
+                else:
+                    _unbound_alone(me, json.dumps(item, ensure_ascii=False), None, None,
+                                   "malformed native question item; not applied")
             return None
-        if ANSWER_RE.match(text.strip()):
-            return None  # empty, malformed or multi-question payload is not consent
         m = CODEX_RE.match(text) if (me or {}).get("runtime") == "codex" else None
         if not m and not not_a_reply(text):
             note_verdict(me, text)
-            remember(me, text)
+            remember(me, text, noted_to)
     else:
         return None
     return _write(me, m.group(1), m.group(2)) if m else None
@@ -502,60 +538,320 @@ def _fresh_pending(me: dict | None, p: str) -> tuple:
     return p, entry
 
 
-def note_verdict(me: dict | None, text: str, wait: float | None = None,
-                 request: str | None = None, question: str | None = None) -> bool:
-    """Keep the person's latest message after a request as its verdict. It
-    replaces an earlier one (user decision, 2026-10-01): the first message is
-    often a question ("does that delete the other records too?") and the yes
-    or no comes after it. A new reply has not been shown to the agent yet.
+@contextlib.contextmanager
+def _strict_locked(p, wait=None):
+    fd = _lock(p + ".lock", wait)
+    if fd is None:
+        raise OSError("consent binding lock unavailable")
+    try:
+        yield
+    finally:
+        os.close(fd)
 
-    It goes to every request the session has open: the person may be answering
-    any of them, and what each shows the agent is the words, for the agent to
-    judge against what it asked. Called from the hook, so the lock is waited
-    for HOOK_LOCK_WAIT, not as long as a command would."""
+
+# What the last note_verdict did with a prompt, for `remember`: the ask ids it was
+# bound to, AMBIGUOUS when asks were open and it named none of them, or None when
+# there was nothing to bind to.
+noted_to = None
+AMBIGUOUS = "ambiguous"
+
+
+def note_verdict(me, text, wait=None, request=None, question=None):
+    global noted_to
+    noted_to = None
+    try:
+        return _note_verdict(me, text, wait, request, question)
+    except OSError:
+        try:
+            _unbound(me, text, question, request, "binding lock unavailable; answer not applied")
+        except OSError:
+            pass
+        return False  # never write a verdict without its lock
+
+
+def _decision_of(entry: dict) -> tuple:
+    """What an ask decides. Asks with different bindings can be the same decision:
+    a send to two peers of one folder asks to connect that folder twice. Two calls of an
+    MCP tool cannot (one yes would make two grants of the same target), and neither can a
+    collaboration with two peers of one name."""
+    binding = entry.get("binding") or {}
+    return entry.get("verb"), entry.get("target"), entry.get("here"), binding.get("mcp_decision"), \
+        json.dumps(binding.get("pair"), sort_keys=True)
+
+
+def _named(entry: dict, text: str) -> bool:
+    """Whether `text` names what `entry` decides, by a name of its own."""
+    target = entry.get("target") or ""
+    names = _names_for(entry.get("verb"), target, target) - GENERIC_NAMES
+    return any(_mentions(text, name) for name in names)
+
+
+def _select(live: list, text: str, request, question) -> tuple:
+    """(the asks of `live` this answer belongs to, how it was told). `question` is
+    None for plain words, which say nothing of what was asked."""
+    said = text if question is None else question
+    tokens = MARK_RE.findall(said)
+    if request:
+        exact = [(p, e) for p, e in live if e.get("question_request") == request and
+                 (e.get("question_digest") == digest(question or "") or
+                  (question is None and not e.get("question_digest")))]
+        if exact:
+            return exact[:1], "question-id"
+    if tokens:
+        # A mark ends the search: a stale one must not fall through to a name and
+        # land on the ask made after it, which would undo ASK_MAX.
+        return ([(p, e) for p, e in live if tokens == [e.get("ask_id")]], "request-marker")
+    groups = {}
+    for p, entry in live:
+        groups.setdefault(_decision_of(entry), []).append((p, entry))
+    if question is None and not request and len(groups) == 1:
+        return live, "single-live-request"
+    named = [group for group in groups.values() if _named(group[0][1], said)]
+    if len(named) == 1:
+        return named[0], "named"
+    # Asked before asks had marks (`marked`): the agent had no mark to use.
+    if len(groups) == 1 and not live[0][1].get("marked"):
+        return live, "single-open-unbound"
+    return [], None
+
+
+def _note_verdict(me: dict | None, text: str, wait: float | None = None,
+                 request: str | None = None, question: str | None = None) -> bool:
+    """Bind one answer to the decision it belongs to; an answer that belongs to no
+    one decision is written to none."""
+    global noted_to
     if not me or not me.get("ref") or not text.strip():
         return False
+    if question and DECISION_MARK in question:
+        return False    # a team decision's question: read back by xsm_decide, and no permission's
     wait = HOOK_LOCK_WAIT if wait is None else wait
-    noted = False
-    pending = pending_files(me["ref"])
-    # A structured answer must not fan out to unrelated open asks. A legacy
-    # single ask can still display it, explicitly marked as unbound.
-    for p in pending:  # every prompt comes by here: one listdir
-        try:
-            with _locked(p, wait):
+    plain = question is None and not request
+    # Serialize arrivals and candidate selection across all requests of this conversation.
+    with _strict_locked(paths.path("consent-bindings", me["ref"]), wait):
+        live = []
+        pending = pending_files(me["ref"])
+        for p in pending:
+            with _strict_locked(p, wait):
                 _, entry = _fresh_pending(me, p)
-                if not entry:
+                if entry:
+                    live.append((p, entry))
+        selected, how_told = _select(live, text, request, question)
+        if not selected:
+            if not pending and plain:
+                return False  # ordinary chat is already handled by remember()
+            said = text if question is None else question
+            marked = bool(MARK_RE.search(said))
+            if plain and live:
+                noted_to = AMBIGUOUS
+                for p, _ in live:
+                    with _strict_locked(p, wait):
+                        _, entry = _fresh_pending(me, p)
+                        if entry and entry.get("verdict") is not None:
+                            # The latest word still matters: it goes out with the
+                            # reply already kept, which has to be read again.
+                            entry["after"] = (entry.get("after") or [])[-(RECENT_KEEP - 1):] + \
+                                [text.strip()[:QUESTION_MAX]]
+                            entry["shown"] = False
+                            paths.write_json(p, entry, mode=0o600)
+            _unbound(me, text, question, request,
+                     "its request has expired or is not known" if marked else
+                     "ambiguous or unmatched answer" if live else
+                     "no live request; answer arrived before the request or after expiry",
+                     early=not plain and not marked and not any(_named(e, said) for _, e in live),
+                     quiet=not plain and not marked and not live)
+            return False
+        bound = []
+        for p, chosen in selected:
+            with _strict_locked(p, wait):
+                _, entry = _fresh_pending(me, p)
+                if not entry or entry.get("ask_id") != chosen.get("ask_id"):
                     continue
+                entry.pop("native_marker", None)
+                entry.pop("native_evidence", None)
+                entry.pop("after", None)
+                entry.update(verdict=text.strip()[:VERDICT_MAX], verdict_t=time.time(), shown=False,
+                             answer_binding=how_told)
                 if request:
-                    expected = entry.get("question_request")
-                    if expected != request and (expected or len(pending) != 1):
-                        continue
-                    entry["answer_binding"] = "question-id" if expected else "single-open-unbound"
-                entry.update({"verdict": text.strip()[:VERDICT_MAX], "verdict_t": time.time(),
-                              "shown": False})
-                if request:
-                    # The harness answer named the tool call it answers, so the
-                    # agent can check the verdict against the question it asked
-                    # rather than against whatever request happened to be open
-                    # (P02 item 3).
                     entry["answer_request"] = request
-                    entry["answer_question"] = (question or "")[:VERDICT_MAX]
                 else:
-                    for key in ("answer_request", "answer_question", "answer_binding"):
-                        entry.pop(key, None)
-                entry.pop("old_hook", None)     # this reply came by a hook that marks it
+                    entry.pop("answer_request", None)
+                if question is not None:
+                    entry["answer_question"] = question[:VERDICT_MAX]
+                    entry["answer_question_digest"] = digest(question)
+                else:
+                    entry.pop("answer_question", None)
+                    entry.pop("answer_question_digest", None)
+                entry.pop("old_hook", None)
                 paths.write_json(p, entry, mode=0o600)
-                noted = True
-        except OSError:
-            continue                    # a folder that cannot be written keeps no reply
-    return noted
+                bound.append(entry.get("ask_id"))
+        noted_to = bound or None
+        return bool(bound)
 
 
-def remember(me: dict | None, text: str) -> None:
+def _unbound_alone(me, text, question, request, reason):
+    """`_unbound` outside note_verdict: it reads and rewrites the file, under the lock."""
+    if not me or not me.get("ref"):
+        return
+    try:
+        with _strict_locked(paths.path("consent-bindings", me["ref"]), HOOK_LOCK_WAIT):
+            _unbound(me, text, question, request, reason)
+    except OSError:
+        pass
+
+
+def _unbound(me, text, question, request, reason, early=False, quiet=False):
+    if not me or not me.get("ref"):
+        return
+    p = paths.path(ASKED, me["ref"] + ".unbound.json")
+    prior = paths.read_json(p, {})
+    previous = prior.get("answers", []) if prior.get("session_id") == str(me.get("session_id") or "") else []
+    now = time.time()
+    events = [e for e in previous if now - e.get("t", 0) <= TTL]
+    answer, asked = text[:VERDICT_MAX], (question or "")[:VERDICT_MAX]
+    if events and (events[-1].get("answer"), events[-1].get("question"), events[-1].get("request")) \
+            == (answer, asked, request) and now - events[-1].get("t", 0) < 5:
+        return                          # a second hook registration saw the same answer
+    events.append({"t": now, "answer": answer, "question": asked, "request": request,
+                   "reason": reason, "early": early, "quiet": quiet})
+    paths.write_json(p, {"session_id": str(me.get("session_id") or ""),
+                         "answers": events[-RECENT_KEEP:]}, mode=0o600)
+
+
+def _saved_unbound(me) -> tuple:
+    """(the unbound file, its answers still within TTL)."""
+    p = paths.path(ASKED, me["ref"] + ".unbound.json")
+    saved = paths.read_json(p, {})
+    answers = saved.get("answers", []) if isinstance(saved, dict) and \
+        saved.get("session_id") == str(me.get("session_id") or "") else []
+    now = time.time()
+    return p, [e for e in answers if now - e.get("t", 0) <= TTL]
+
+
+def _unbound_note(me) -> str | None:
+    """What the next run tells the agent about answers that reached no request,
+    once each. Words the agent never sees are the silent loss of issue #25."""
+    p, answers = _saved_unbound(me)
+    # With nothing open, a question that names no mark is likely about something else.
+    fresh = [e for e in answers if not e.get("told") and not e.get("quiet")]
+    if not fresh:
+        return None
+    for event in fresh:
+        event["told"] = True
+    paths.write_json(p, {"session_id": str(me.get("session_id") or ""), "answers": answers},
+                     mode=0o600)
+    said = "; ".join('"%s"%s (%s)' % (
+        e.get("answer", "")[:QUESTION_MAX], ' to "%s"' % e["question"][:QUESTION_MAX]
+        if e.get("question") else "", e.get("reason")) for e in fresh)
+    return ("Your user said something xsm could not tie to one request, so it approves nothing: "
+            "%s. Ask again about one thing, with its mark." % said)
+
+
+def _from_early(me: dict, p: str) -> bool:
+    """A question answered before its ask existed (the agent asked, then ran the
+    command) counts when the question named this and no other open decision was
+    meant: without this the person answered twice. One use: it leaves the file.
+    Called with the locks held."""
+    _, entry = _fresh_pending(me, p)
+    if not entry or entry.get("verdict") is not None:
+        return False
+    keep, answers = _saved_unbound(me)
+    hit = next((e for e in reversed(answers) if e.get("early") and e.get("question")
+                and _named(entry, e["question"])), None)
+    if hit is None:
+        return False
+    entry.update(verdict=hit["answer"], verdict_t=time.time(), shown=False, answer_binding="named",
+                 answer_question=hit["question"], answer_question_digest=digest(hit["question"]))
+    if hit.get("request"):
+        entry["answer_request"] = hit["request"]
+    paths.write_json(p, entry, mode=0o600)
+    answers.remove(hit)
+    paths.write_json(keep, {"session_id": str(me.get("session_id") or ""), "answers": answers},
+                     mode=0o600)
+    return True
+
+
+def _close(me: dict, p: str, entry: dict) -> None:
+    """Drop an ask that was settled another way, with its lock held. Its reply is
+    spent: words that were on it must not approve something else through --reply."""
+    if isinstance(entry.get("verdict"), str):
+        _spend(me, entry["verdict"])
+    _drop(p)
+
+
+def spend_recent(me: dict) -> None:
+    """Mark every kept prompt of this session used: the person refused, and nothing
+    they said before that may stand for their yes on a new ask (--reply)."""
+    p = _recent_path(me["ref"])
+    entry = paths.read_json(p)
+    if not isinstance(entry, dict) or entry.get("session_id") != str(me.get("session_id") or ""):
+        return
+    for prompt in entry.get("prompts") or []:
+        if isinstance(prompt, dict):
+            prompt["used"] = True
+    try:
+        paths.write_json(p, entry, mode=0o600)
+    except OSError:
+        pass
+
+
+def clear_request(me, verb, target, here=None):
+    want, want_here = _wanted(me, verb, target, here)
+    with _strict_locked(paths.path("consent-bindings", me["ref"])):
+        for p in pending_files(me["ref"]):
+            with _strict_locked(p):
+                _, entry = _fresh_pending(me, p)
+                if entry and _matches(entry, verb, want, want_here):
+                    _close(me, p, entry)
+
+
+def cancel_bound_requests(me, decision_id):
+    """Withdraw only this conversation's requests bound to the cancelled MCP decision."""
+    if not isinstance(decision_id, str) or not decision_id:
+        return
+    with _strict_locked(paths.path("consent-bindings", me["ref"])):
+        for p in pending_files(me["ref"]):
+            with _strict_locked(p):
+                _, entry = _fresh_pending(me, p)
+                if entry and (entry.get("binding") or {}).get("mcp_decision") == decision_id:
+                    _close(me, p, entry)
+
+
+def drop_request(me, mark: str) -> bool:
+    """Close one open ask by its mark: it approves nothing and stops counting as
+    open, which is what a stale ask needs when it keeps plain answers from binding."""
+    found = MARK_RE.findall(mark)
+    wanted = found[0] if found else mark
+    with _strict_locked(paths.path("consent-bindings", me["ref"])):
+        for p in pending_files(me["ref"]):
+            with _strict_locked(p):
+                _, entry = _fresh_pending(me, p)
+                if entry and entry.get("ask_id") == wanted:
+                    _close(me, p, entry)
+                    return True
+    return False
+
+
+def pending_status(me):
+    """Read only: do not expire/delete requests while listing them."""
+    now = time.time()
+    requests = []
+    for p in pending_files(me["ref"]):
+        e = paths.read_json(p, {})
+        if e.get("session_id") != str(me.get("session_id") or ""):
+            continue
+        requests.append({"id": e.get("ask_id"), "marker": "[xsm:%s]" % e.get("ask_id"),
+                         "verb": e.get("verb"), "target": e.get("target"),
+                         "status": "expired" if _expired(e, now) else
+                         ("answered" if e.get("verdict") is not None else "pending")})
+    return {"requests": requests, "unbound": _saved_unbound(me)[1]}
+
+
+def remember(me: dict | None, text: str, noted=None) -> None:
     """Keep the person's last RECENT_KEEP prompts of this session, for
     `_from_request`. Not a command, not text the harness wrote (record only
     passes what could be a reply), and a prompt a second hook registration saw
-    a moment ago is the same one."""
+    a moment ago is the same one. `noted` is where note_verdict put it, so words
+    that answered one ask cannot be given again for another (`_free_for`)."""
     if not me or not me.get("ref") or os.environ.get("XSM_WORKER") or not text.strip():
         return
     now, p = time.time(), _recent_path(me["ref"])
@@ -566,9 +862,25 @@ def remember(me: dict | None, text: str) -> None:
     text = text.strip()[:VERDICT_MAX]
     if kept and kept[-1].get("text") == text and now - float(kept[-1].get("t") or 0) < 5:
         return
-    kept.append({"text": text, "t": now})
+    item = {"text": text, "t": now}
+    if noted == AMBIGUOUS:
+        item["ambiguous"] = True
+    elif noted:
+        item["bound_to"] = list(noted)
+    kept.append(item)
     paths.write_json(p, {"session_id": str(me.get("session_id") or ""), "t": now,
                          "prompts": kept[-RECENT_KEEP:]}, mode=0o600)
+
+
+def _free_for(prompt: dict, entry: dict | None, as_reply: bool = True) -> bool:
+    """Whether a kept prompt may stand for the ask `entry`. Words bound to another
+    ask answered that one. Words that came while several were open answered none, so
+    they cannot be a reply; they can still be a request, which names its own target
+    (`_from_request`)."""
+    if as_reply and prompt.get("ambiguous"):
+        return False
+    bound = prompt.get("bound_to")
+    return not bound or bool(entry) and entry.get("ask_id") in bound
 
 
 def _wanted(me: dict, verb: str, target: str, here: str | None) -> tuple:
@@ -624,11 +936,27 @@ def _spend(me: dict, verdict: str) -> None:
 # `shown`, which an old one never writes; 2026-10-01). It is not let go of: the
 # first show marks the ask `old_hook`, so every later show carries the note and
 # the pass line says it too, for the agent and the log. It does not block (ease
-# of connection, and the first message is the person's own words).
+# of connection, and the first message is the person's own words), unless that
+# hook wrote the same reply to another decision (`_twin`): one reply does not pass two.
 OLD_HOOK = ("Note: this session's xsm hooks are older than this xsm command, so only their first "
             "message after the ask was kept. If they said anything else since, it is not here, "
             "and you must not run this again on it: tell them a new session is needed for the "
             "update, or use the MCP form tool if there is one.")
+
+
+def _twins(me: dict, p: str, entry: dict) -> list:
+    """The other asks an older hook, which wrote a reply to every open ask, wrote this
+    reply to, in different decisions. Those replies carry no `answer_binding`. Called
+    with the conversation's lock held, which every writer of a verdict takes first."""
+    found = []
+    for other in pending_files(me["ref"]):
+        if other == p:
+            continue
+        _, them = _fresh_pending(me, other)
+        if them and _decision_of(them) != _decision_of(entry) and not them.get("answer_binding") \
+                and _norm(them.get("verdict")) == _norm(entry.get("verdict")):
+            found.append((other, them))
+    return found
 
 
 def _take(me: dict, p: str, verb: str, want: str, want_here: str | None, apply=None) -> tuple:
@@ -638,12 +966,34 @@ def _take(me: dict, p: str, verb: str, want: str, want_here: str | None, apply=N
     p, entry = _fresh_pending(me, p)
     if not p or entry.get("verdict") is None or not _matches(entry, verb, want, want_here):
         return None, False, True
+    decision_id = (entry.get("binding") or {}).get("mcp_decision")
+    if decision_id:
+        from . import decisions
+        record = decisions.read(decision_id)
+        from . import context
+        stale_owner = record and (record["owner"] != decisions.owner(me) or
+            isinstance(record["generation"], str) and context.of_record(me, context.BASIS_SESSION).generation != record["generation"])
+        if record and (stale_owner or record["status"] in decisions.TERMINAL or (record.get("application") or {}).get("phase") == "started"):
+            _drop(p)
+            return None, False, True
+    twins = _twins(me, p, entry) if not entry.get("answer_binding") and not entry.get("via") else []
+    if twins:
+        _unbound(me, entry["verdict"], None, None, "an older hook wrote this to several requests; "
+                 "open a new session, or close the others with `xsm decision-status --drop-consent`")
+        for path, ask in twins + [(p, entry)]:
+            ask.update(verdict=None, shown=False)
+            paths.write_json(path, ask, mode=0o600)
+        return None, False, True
     now = time.time()
     channel_note = ("Question answer %s (%s)." %
                     (entry["answer_request"], entry.get("answer_binding", "unbound"))) \
         if entry.get("answer_request") else None
     if channel_note and entry.get("answer_question"):
         channel_note += " Asked: " + entry["answer_question"]
+    if entry.get("after"):
+        channel_note = ((channel_note + " ") if channel_note else "") + \
+            "They have said since, about no one request: %s. Read that before you go on." \
+            % "; ".join('"%s"' % said for said in entry["after"])
     if not entry.get("shown"):
         if "shown" not in entry:
             entry["old_hook"] = True
@@ -653,13 +1003,14 @@ def _take(me: dict, p: str, verb: str, want: str, want_here: str | None, apply=N
     kept = OLD_HOOK if entry.get("old_hook") else (channel_note or True)
     if now - float(entry.get("shown_t") or 0) < SHOW_DELAY:
         return entry["verdict"], False, kept
-    if entry.get("answer_request") and not entry.get("native_marker"):
-        key = digest(me.get("runtime"), me.get("home"), me.get("session_id"),
-                     entry["answer_request"])
-        entry["native_marker"] = paths.path("native-answers", key + ".json")
-        previous_use = paths.read_json(entry["native_marker"])
-        if previous_use and previous_use.get("consumed"):
+    if entry.get("answer_request"):
+        owner = os.path.basename(p) + ":" + str(entry.get("ask_id") or "")
+        marker = claim_answer(me, entry["answer_request"], entry.get("answer_question_digest"), owner)
+        if not marker:
+            _unbound(me, entry["verdict"], entry.get("answer_question"), entry["answer_request"],
+                     "this answer was consumed or belongs to another operation; not applied")
             return None, False, True
+        entry["native_marker"] = marker
     if apply is not None:
         # Keep the verified answer if applying its exact plan fails. Retrying
         # that plan must not ask the person to approve the same thing again.
@@ -674,7 +1025,7 @@ def _take(me: dict, p: str, verb: str, want: str, want_here: str | None, apply=N
     _drop(p)                            # the lock too
     if entry.get("native_marker"):
         marker = entry["native_marker"]
-        with _locked(marker):
+        with _strict_locked(marker):
             record = paths.read_json(marker, {})
             record["consumed"] = True
             paths.write_json(marker, record, mode=0o600)
@@ -694,7 +1045,7 @@ def _record(me: dict, p: str, verb: str, want: str, want_here: str | None) -> No
     paths.write_json(p, {
         "verb": verb, "target": want, "here": want_here, "cwd": me.get("cwd") or "",
         "t": time.time(), "session_id": str(me.get("session_id") or ""),
-        "ask_id": envelope.new_id(), "verdict": None}, mode=0o600)
+        "ask_id": envelope.new_id(), "marked": True, "verdict": None}, mode=0o600)
 
 
 # A reply given on the command line, as `--reply "<their words>"` (set by the CLI
@@ -723,10 +1074,11 @@ def _their_words(me: dict, entry: dict | None, text: str, elsewhere: set | None 
     on the ask counts when either contains the other, whitespace and case aside; what is
     returned is that record, so the agent's own wording is never what the verdict says.
     `elsewhere` holds the replies sitting on this session's other open asks: those
-    words answer something else. A prompt from before the ask still counts: the agent
-    often asks in the conversation first and runs the command after the person said yes,
-    and asking them again is the ping-pong the person refused (review of PR #11,
-    2026-10-02); words already spent on a verdict never count twice. A session the hook
+    words answer something else. A prompt from before the ask counts only when it names
+    what is being decided (user decision, 2026-11-01): security review passed `--reply`
+    with a fragment of an unrelated prompt, which PR #11 had allowed so that a person who
+    said yes in the conversation first was not asked again. Words already spent on a
+    verdict never count twice. A session the hook
     never wrote a record for (an older hook, a state folder it cannot write) has nothing
     to check against, and the text is taken as given: `--reply` is how the person is
     heard there. Called with the lock held."""
@@ -734,7 +1086,8 @@ def _their_words(me: dict, entry: dict | None, text: str, elsewhere: set | None 
     hooked = isinstance(saved, dict) and saved.get("session_id") == str(me.get("session_id") or "")
     kept = [x["text"] for x in reversed((saved.get("prompts") or []) if hooked else [])
             if isinstance(x, dict) and isinstance(x.get("text"), str) and not x.get("used")
-            and now - float(x.get("t") or 0) <= ASK_MAX
+            and now - float(x.get("t") or 0) <= ASK_MAX and _free_for(x, entry)
+            and (float(x.get("t") or 0) >= float((entry or {}).get("t") or 0) or _named(entry, x["text"]))
             and _norm(x["text"]) not in (elsewhere or set())]
     if entry and entry.get("via") != "flag" and isinstance(entry.get("verdict"), str):
         kept.append(entry["verdict"])       # the hook's, or the person's own request
@@ -759,6 +1112,8 @@ def _supply(me: dict, p: str, verb: str, want: str, want_here: str | None, text:
     _, entry = _fresh_pending(me, p)
     if not text or not entry or not _matches(entry, verb, want, want_here):
         return
+    if isinstance(entry.get("verdict"), str) and entry.get("via") != "flag":
+        return              # what the hook kept is their latest word: a "no" stays a no
     if entry.get("via") == "flag" and isinstance(entry.get("verdict"), str):
         said, given = _norm(entry["verdict"]), _norm(text)
         if said and (given in said or said in given):
@@ -774,12 +1129,14 @@ def _supply(me: dict, p: str, verb: str, want: str, want_here: str | None, text:
     if words is None:
         print("xsm: --reply is ignored: it has to be your user's own words from this session, "
               "in answer to your question, and these match nothing they wrote here that has not "
-              "already been used. Ask them in plain words; xsm keeps their answer itself, so run "
-              "the command again after they reply, without --reply.", file=sys.stderr)
+              "already been used for, or said about, another request. Ask them %s; xsm keeps their "
+              "answer itself, so run the command again after they reply, without --reply."
+              % how(me.get("runtime")), file=sys.stderr)
         return
     if entry.get("verdict") == words:
         return
-    entry.update({"verdict": words, "verdict_t": time.time(), "shown": False, "via": "flag"})
+    entry.update({"verdict": words, "verdict_t": time.time(), "shown": False, "via": "flag",
+                  "answer_binding": "flag"})
     entry.pop("old_hook", None)
     paths.write_json(p, entry, mode=0o600)
     paths.append_jsonl("decisions.jsonl", {"event": "consent-flag", "verb": verb, "target": want,
@@ -875,6 +1232,8 @@ def _from_request(me: dict, p: str, verb: str, target: str, want: str,
     if not config.policy("reply_from_request") or (verb == "held-deliver" and _forged(want)):
         return None
     last = _latest_request(me)
+    if last and not _free_for(last, paths.read_json(p), as_reply=False):
+        return None
     intent = re.compile(r"공개|노출|\bpublish\b|discoverable|make.+visible", re.I) \
         if verb == "publish" else INTENT_RE
     if not last or not intent.search(last["text"]):
@@ -885,10 +1244,12 @@ def _from_request(me: dict, p: str, verb: str, target: str, want: str,
             not any(_mentions(last["text"], n, minimum) for n in _session_names(verb, want)):
         return None
     now = time.time()
+    asked = paths.read_json(p) or {}
     paths.write_json(p, {
         "verb": verb, "target": want, "here": want_here, "cwd": me.get("cwd") or "", "t": now,
         "session_id": str(me.get("session_id") or ""), "verdict": last["text"], "verdict_t": now,
-        "shown": True, "shown_t": now, "via": "request"}, mode=0o600)
+        "shown": True, "shown_t": now, "via": "request", "answer_binding": "request",
+        "ask_id": asked.get("ask_id") or envelope.new_id(), "marked": True}, mode=0o600)
     _spend(me, last["text"])
     paths.append_jsonl("decisions.jsonl", {"event": "consent-request", "verb": verb,
                                            "target": want, "verdict": last["text"][:200]})
@@ -898,11 +1259,52 @@ def _from_request(me: dict, p: str, verb: str, target: str, want: str,
 # Exact harness question to read back when an installed hook missed its answer.
 answer_request: str | None = None
 question_text: str | None = None
+# For what the refusal says, like used_via: the mark of the ask this run left open,
+# and what became of answers that reached no request. Reset by take_or_request and ask.
+ask_mark: str | None = None
+pending_note: str | None = None
 
 
-def native_answer_path(me, request):
-    key = digest(me.get("runtime"), me.get("home"), me.get("session_id"), request)
+def _mark(entry) -> str | None:
+    return "[xsm:%s]" % entry["ask_id"] if isinstance(entry, dict) and entry.get("ask_id") else None
+
+
+def native_answer_path(me, request, question_digest=None):
+    parts = (me.get("runtime"), me.get("home"), me.get("session_id"), request)
+    key = digest(*(parts + (question_digest,) if question_digest is not None else parts))
     return paths.path("native-answers", key + ".json")
+
+
+def claim_answer(me, request, question_digest, owner):
+    """One owner per question, even when a native item contains several questions.
+
+    A scoped tombstone at the old item-only path makes older readers refuse
+    this item rather than overlooking question-specific consumption records.
+    """
+    base = native_answer_path(me, request)
+    marker = native_answer_path(me, request, question_digest)
+    with _strict_locked(base):
+        legacy = paths.read_json(base)
+        if legacy and not legacy.get("question_scoped") and (
+                legacy.get("consumed") or legacy.get("owner") != owner):
+            return None
+        if marker == base:
+            if legacy and legacy.get("question_scoped"):
+                return None
+            if not legacy:
+                paths.write_json(marker, {"owner": owner, "consumed": False, "request": request}, mode=0o600)
+            return marker
+        with _strict_locked(marker):
+            prior = paths.read_json(marker)
+            if prior and (prior.get("consumed") or prior.get("owner") != owner):
+                return None
+            if not legacy or not legacy.get("question_scoped"):
+                paths.write_json(base, {"question_scoped": True, "consumed": True,
+                                       "request": request}, mode=0o600)
+            if not prior:
+                paths.write_json(marker, {"owner": owner, "consumed": False,
+                                          "request": request, "question_digest": question_digest}, mode=0o600)
+            return marker
 
 
 def _recover_native_answer(me: dict, p: str, verb: str, want: str, want_here):
@@ -910,12 +1312,14 @@ def _recover_native_answer(me: dict, p: str, verb: str, want: str, want_here):
         return
     from . import user_answers
     evidence = user_answers.read_answer(me, request=answer_request,
-                                        since=time.time() - TTL, latest_only=True,
+                                        since=time.time() - TTL, latest_only=True, question=question_text,
                                         tail_bytes=user_answers.MAX_TAIL_BYTES)
     if not evidence:
         return
     question = evidence.get("question", "")
-    matches = _mentions(question, want, 2 if verb in ("collaborate", "publish") else 3)
+    _, original_entry = _fresh_pending(me, p)
+    marker_matches = original_entry and MARK_RE.findall(question) == [original_entry.get("ask_id")]
+    matches = bool(marker_matches) or _mentions(question, want, 2 if verb in ("collaborate", "publish") else 3)
     if verb == "publish" and not matches:
         matches = any(_mentions(question, name) for name in ("this session", "이 세션", "이세션"))
     if not matches and verb in ("link", "reach"):
@@ -931,22 +1335,21 @@ def _recover_native_answer(me: dict, p: str, verb: str, want: str, want_here):
         return
     # A named answer authorizes its one exact question, not the next question
     # with the same text. Claim it durably so a different target cannot use it.
-    marker = native_answer_path(me, answer_request)
-    with _locked(marker):
+    entry.setdefault("ask_id", envelope.new_id())
+    owner = os.path.basename(p) + ":" + entry["ask_id"]
+    marker = claim_answer(me, answer_request, digest(question), owner)
+    if not marker:
+        return
+    with _strict_locked(marker):
         prior = paths.read_json(marker)
-        entry.setdefault("ask_id", envelope.new_id())
-        owner = os.path.basename(p) + ":" + entry["ask_id"]
-        if prior and (prior.get("owner") != owner or prior.get("consumed")):
-            return
-        recovered_at = (prior or {}).get("recovered_at", time.time())
+        recovered_at = prior.get("recovered_at", time.time())
         if time.time() - recovered_at > TTL:
             return
-        paths.write_json(marker, {"owner": owner, "consumed": False,
-                                  "request": answer_request,
-                                  "recovered_at": recovered_at}, mode=0o600)
+        prior["recovered_at"] = recovered_at
+        paths.write_json(marker, prior, mode=0o600)
     entry.update(verdict=evidence["answer"], verdict_t=recovered_at, shown=False,
                  answer_request=answer_request, answer_question=evidence["question"],
-                 answer_binding="native-question-id", native_marker=marker,
+                 answer_question_digest=digest(evidence["question"]), answer_binding="native-question-id", native_marker=marker,
                  native_evidence={k: evidence[k] for k in
                      ("timestamp", "source_path", "native_type", "native_role",
                       "runtime", "home", "session_id")})
@@ -986,9 +1389,9 @@ def take_or_request(me: dict | None, verb: str, target: str, here: str | None = 
     between a take and a separate request was overwritten unseen (adversarial
     check, 2026-10-01). Each thing asked about has its own request file, so one
     ask does not erase the reply to another."""
-    global used_via
-    used_via = None
-    if not me or not me.get("ref") or os.environ.get("XSM_WORKER") or not target:
+    global used_via, ask_mark, pending_note
+    used_via = ask_mark = pending_note = None
+    if not me or not me.get("ref") or os.environ.get("XSM_WORKER") or unattended(me) or not target:
         return None, False, False
     want, want_here = _wanted(me, verb, target, here)
     base_path = _pending_path(me["ref"], digest(verb, want))
@@ -1000,16 +1403,8 @@ def take_or_request(me: dict | None, verb: str, target: str, here: str | None = 
         _, folder_ask = _fresh_pending(me, base_path)
         if folder_ask and not folder_ask.get("binding"):
             p = base_path
-    elif not os.path.exists(base_path):
-        # The explicit folder command can finish a single one-yes send ask.
-        # With multiple asks it must ask for its own unambiguous decision.
-        candidates = []
-        for candidate in pending_files(me["ref"]):
-            _, entry = _fresh_pending(me, candidate)
-            if entry and _matches(entry, verb, want, want_here):
-                candidates.append(candidate)
-        if len(candidates) == 1:
-            p = candidates[0]
+    else:
+        p = _ask_path(me, verb, want, want_here, base_path)
     if answer_request and question_text is not None:
         with _locked(p):
             _record(me, p, verb, want, want_here)
@@ -1021,7 +1416,13 @@ def take_or_request(me: dict | None, verb: str, target: str, here: str | None = 
                              question=question_text, binding=binding):
             return None, False, False
     try:
-        with _locked(p):
+        with _strict_locked(paths.path("consent-bindings", me["ref"])), _strict_locked(p):
+            current = paths.read_json(p)
+            if binding is not None and current and _matches(current, verb, want, want_here):
+                if current.get("binding") not in (None, binding):
+                    return None, False, False
+                current["binding"] = binding
+                paths.write_json(p, current, mode=0o600)
             _recover_native_answer(me, p, verb, want, want_here)
             if supplied:
                 _supply(me, p, verb, want, want_here, supplied)
@@ -1033,14 +1434,30 @@ def take_or_request(me: dict | None, verb: str, target: str, here: str | None = 
             if reply is None:
                 _record(me, p, verb, want, want_here)
                 reply = _from_request(me, p, verb, target, want, want_here)
-                if binding is not None:
-                    entry = paths.read_json(p)
-                    if isinstance(entry, dict):
-                        entry["binding"] = binding
-                        paths.write_json(p, entry, mode=0o600)
+                if reply is None and _from_early(me, p):
+                    reply, go, kept = _take(me, p, verb, want, want_here, apply)
+                entry = paths.read_json(p)
+                if binding is not None and isinstance(entry, dict):
+                    entry["binding"] = binding
+                    paths.write_json(p, entry, mode=0o600)
+                ask_mark = _mark(entry)
+            pending_note = _unbound_note(me)
             return reply, go, kept
     except OSError:
         return None, False, False
+
+
+def _ask_path(me: dict, verb: str, want: str, want_here: str | None, base: str) -> str:
+    """The ask for this decision: its own key, or the one ask a send made for it
+    under a binding. With several, it asks for its own unambiguous decision."""
+    if os.path.exists(base):
+        return base
+    candidates = []
+    for candidate in pending_files(me["ref"]):
+        _, entry = _fresh_pending(me, candidate)
+        if entry and _matches(entry, verb, want, want_here):
+            candidates.append(candidate)
+    return candidates[0] if len(candidates) == 1 else base
 
 
 def ask(me: dict | None, verb: str, target: str, here: str | None = None) -> bool:
@@ -1050,16 +1467,47 @@ def ask(me: dict | None, verb: str, target: str, here: str | None = None) -> boo
     to (note_verdict), or attaches to an unrelated one (2026-10-01). The CLI
     command that follows finds this ask by the same key. True when an ask is on
     record, with the same limits as take_or_request."""
-    if not me or not me.get("ref") or os.environ.get("XSM_WORKER") or not target:
+    global ask_mark, pending_note
+    ask_mark = pending_note = None
+    if not me or not me.get("ref") or os.environ.get("XSM_WORKER") or unattended(me) or not target:
         return False
     want, want_here = _wanted(me, verb, target, here)
-    p = _pending_path(me["ref"], digest(verb, want))
+    p = _ask_path(me, verb, want, want_here, _pending_path(me["ref"], digest(verb, want)))
     try:
-        with _locked(p):
+        with _strict_locked(paths.path("consent-bindings", me["ref"])), _strict_locked(p):
             _record(me, p, verb, want, want_here)
+            ask_mark = _mark(paths.read_json(p))
+            pending_note = _unbound_note(me)
     except OSError:
         return False
     return True
+
+
+def unattended(me: dict | None) -> dict | None:
+    """The worker record of a session with no person at it, which nobody answers: a
+    background or owned worker that is still its worker. By the record, not only by
+    XSM_WORKER: Codex does not pass that to its MCP servers. A pane worker's person is
+    right there, and a person who resumed a finished worker's session is that session's
+    person now."""
+    from . import workers
+    name = os.environ.get("XSM_WORKER")
+    worker = dict({"name": name}, **(workers.load(name) or {})) if name \
+        else workers.for_session((me or {}).get("session_id"))
+    if not worker or worker.get("mode", "background") not in ("background", "owned"):
+        return None
+    if not name and worker.get("mode") != "owned" and workers.state(worker) != "running":
+        return None
+    return worker
+
+
+def no_person(what: str, worker: dict | None = None) -> str:
+    """What a session with no person at it is told: where the question goes. The
+    DM is a question, not an approval: the reader asks their own user."""
+    parent = (worker or {}).get("parent_ref")
+    return ("%s needs your user's yes, and xsm cannot keep their reply in a worker: no one answers "
+            "here. Send the question in a DM to your parent%s or team lead; do not open a form or "
+            "ask a question here. They ask their own user: a peer's message is never that yes."
+            % (what, " (ref:%s)" % parent if parent else ""))
 
 
 def _stale(p: str, now: float, typed: bool) -> bool:
@@ -1118,6 +1566,14 @@ def prune(now: float | None = None, dry_run: bool = False) -> list:
         p = os.path.join(folder, name)
         if not os.path.exists(p):
             continue                    # went with the ask before it
+        if name.endswith(".unbound.json"):
+            entry = paths.read_json(p, {})
+            events = entry.get("answers", [])
+            if not events or all(now - e.get("t", 0) > TTL for e in events):
+                removed.append(name)
+                if not dry_run:
+                    os.unlink(p)
+            continue
         if name.endswith(".pending.json.lock"):
             lock, pending = p, p[:-len(".lock")]
             stale = not os.path.exists(pending) and not _young(p, now)
@@ -1173,10 +1629,28 @@ def prune(now: float | None = None, dry_run: bool = False) -> list:
 
 
 def how(runtime: str | None) -> str:
-    """How the agent may ask. A Claude Code agent may use its question tool: the
-    answer it gets is kept as the reply (answers_text); no other runtime's is."""
-    return "in plain words, or with your question tool (AskUserQuestion)" if runtime == "claude" \
-        else "in plain words"
+    """How the agent may ask, runtime by runtime; `ask_hint` says what the question
+    has to carry. Codex's question tool is named exactly: the synchronous
+    request_user_input answers in its tool output, where no hook of xsm's sees it."""
+    if runtime == "claude":
+        return "in plain words, or with your question tool (AskUserQuestion), one thing at a time"
+    if runtime == "codex":
+        return ("in plain words or, if your harness allows it, with request_user_input_async "
+                "(questions take title and options; one thing per question; in Plan mode ask in "
+                "plain words; never the synchronous request_user_input, whose answer xsm cannot "
+                "see)")
+    return "in plain words"
+
+
+def ask_hint() -> str:
+    """What the question has to carry, and what became of earlier answers."""
+    told = ["Start the question with %s, exactly as written: it ties their answer to this "
+            "request and no other." % ask_mark] if ask_mark else \
+        ["For question tools, copy the exact request marker from xsm decision-status "
+         "--pending-consent into each question."]
+    if pending_note:
+        told.append(pending_note)
+    return " ".join(told)
 
 
 def asks(what: str, tail: str = "", runtime: str | None = None) -> str:
@@ -1191,8 +1665,9 @@ def asks(what: str, tail: str = "", runtime: str | None = None) -> str:
             "have answered the question you asked them and this run still shows no reply (xsm's "
             "hook did not record it): run it again with --reply \"<their answer, exactly as they "
             "wrote it>\". Never use it before you have asked, or with what they said earlier, "
-            "such as their original request.%s"
-            % (what, how(runtime), tail))
+            "such as their original request. %s Unmatched answers are reported with --pending-consent "
+            "on xsm decision-status and never approve another request.%s"
+            % (what, how(runtime), ask_hint(), tail))
 
 
 def shown_refusal(reply: str, what: str, kept=None) -> str:
@@ -1202,7 +1677,8 @@ def shown_refusal(reply: str, what: str, kept=None) -> str:
     text = ('your user replied: "%s". If that is a yes to %s, run this same command again to '
             'go ahead; if it is a no or a question, do not: answer them, and their next '
             'message replaces it.' % (reply, what[:1].lower() + what[1:]))
-    return text + " " + kept if isinstance(kept, str) else text
+    text = text + " " + kept if isinstance(kept, str) else text
+    return text + " " + pending_note if pending_note else text
 
 
 def approved_line(verdict: str, kept=None, via: str | None = None) -> str:
@@ -1222,7 +1698,7 @@ def approved(verb: str, target: str, verdict: str, kept=None, name: str | None =
     workers.use_grant and the one-yes send (connect.py) all say it this way. A reply
     the agent gave with --reply is marked `via: agent-supplied` (used_via)."""
     record = {"event": "consent", "verb": verb, "target": target, "verdict": verdict, "by": name}
-    if isinstance(kept, str):
+    if kept == OLD_HOOK:
         record["old_hooks"] = True              # an older hook kept this reply
     if used_via == "flag":
         record["via"] = AGENT_SUPPLIED
@@ -1249,25 +1725,30 @@ def in_words(command: str, kept: bool, runtime: str | None = None) -> str:
     answer before it has nothing to attach to (2026-10-01: the person said yes
     twice)."""
     if kept:
-        return ("Ask your user now, %s, whether to go ahead. After they answer, run `%s` in your "
+        return ("Ask your user now, %s, whether to go ahead. %s After they answer, run `%s` in your "
                 "shell: it shows you their reply without acting on it. If it is a yes, run it once "
                 "more to go ahead; if it is a no or a question, leave it and answer them."
-                % (how(runtime), command))
+                % (how(runtime), ask_hint(), command))
     return ("Run `%s` in your shell first: it records that you are asking and tells you what to "
             "ask. Then ask your user, %s, whether to go ahead; after they answer, run it again to "
             "be shown their reply, and once more on a yes." % (command, how(runtime)))
 
 
-def cannot_keep(what: str, form_tool: str | None) -> str:
+def cannot_keep(what: str, form_tool: str | None, me: dict | None = None) -> str:
     """The refusal when no reply can be kept here: say so, and never promise
-    what xsm cannot do (issue #9)."""
+    what xsm cannot do (issue #9). A worker is told where the question goes."""
+    worker = unattended(me)
+    if worker:
+        return no_person(what, worker)
     way = ("If the %s MCP tool is available, use it: it asks them with a form. If it is "
            "not, tell them plainly that this cannot be decided from here." % form_tool
            if form_tool and form_tool != "no" else
            "There is no form tool for this decision, so tell them plainly that it cannot be "
            "decided from here.")
     return ("%s needs your user's yes, but xsm cannot keep their reply in this session (it is "
-            "not a registered session of theirs, or its state cannot be written). %s"
+            "not a registered session of theirs, or its state cannot be written; a Claude Code "
+            "session moved into the background can lose its record, and another message may not "
+            "bring it back). %s"
             % (what, way))
 
 
@@ -1299,4 +1780,8 @@ def take(me: dict | None, verb: str, target: str, here: str | None = None) -> bo
         os.unlink(p)
     except OSError:
         return False                    # someone else used it first
+    try:
+        clear_request(me, verb, target, here)
+    except OSError:
+        pass                            # the consent is used: an ask left behind expires
     return True

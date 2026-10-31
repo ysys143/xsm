@@ -6,7 +6,7 @@
 
 실제 평가에서는 에이전트에게 목표와 설치된 skill/tool description만 제공한다. 사람이 이 문서의 정답 명령·인자·전송 경로를 대신 알려 주거나 첫 실패 뒤 숨은 설정을 고쳐 주지 않는다. agent-only라 해도 사람의 선택·OS/로그인/신뢰 승인처럼 실제 사용자가 해야 하는 단계는 계수한다. 이미 준 지시의 재질문·사람의 경로 교정도 비용이다. 수동 baseline은 실패 원인 진단용 별도 run으로 기록한다.
 
-[계획의 J01–J09](../plan/collaboration/spec.md#j01j09-사용자-여정)를 다음처럼 구분해 실행한다. 이 표는 실행 계획이며 체크 완료표가 아니다.
+[계획의 J01–J09](https://github.com/ysys143/xsm/blob/a124b22782d68c1541f6dd5893a57bbe6797b926/docs/plan/collaboration/spec.md#j01j09-사용자-여정)를 다음처럼 구분해 실행한다. 이 표는 실행 계획이며 체크 완료표가 아니다.
 
 | 여정 | 에이전트에게 주는 목표 / 확인할 경계 |
 |---|---|
@@ -24,7 +24,7 @@
 
 native 모델 실행, fake runtime/echo/transport fixture, 수동 사용자 표본, UI·물리 네트워크 표본을 분리한다. 권한 거부·취소·timeout·unknown의 첫 실패 결과도 보존하고 수정 뒤 실행과 섞지 않는다. 반례는 가짜 승인 본문, 같은 ID의 다른 전체 본문/상대/reply_to, 다른 native home, ack 전 reader 종료, 무관한 사본/원본 삭제를 포함한다.
 
-P11의 A/B/D native 9회와 C native 6회·cached 2회는 [carrier 비교](../plan/collaboration/remote-decision.md)의 제한된 실제 증거다. J07/J09 제품 전체 여정이나 새 remote directory/가입 성공이 아니다. D12 미응답·G11 미완 등으로 **P12 전제 미충족**이며 다른 NAT·강제 relay·UDP 차단·proxy·SSH 불가 환경은 미실행으로 남긴다. 현재 로컬 gate 성공을 J01–J09·70개 수용 조건 전체 성공으로 자동 승격하지 않는다.
+P11의 A/B/D native 9회와 C native 6회·cached 2회는 [carrier 비교](https://github.com/ysys143/xsm/blob/a124b22782d68c1541f6dd5893a57bbe6797b926/docs/plan/collaboration/remote-decision.md)의 제한된 실제 증거다. J07/J09 제품 전체 여정이나 새 remote directory/가입 성공이 아니다. D12 미응답·G11 미완 등으로 **P12 전제 미충족**이며 다른 NAT·강제 relay·UDP 차단·proxy·SSH 불가 환경은 미실행으로 남긴다. 현재 로컬 gate 성공을 J01–J09·70개 수용 조건 전체 성공으로 자동 승격하지 않는다.
 
 ## 수동 baseline 실행 경계
 
@@ -739,3 +739,41 @@ ADR-0025·ADR-0026의 구현을 실제 세션으로 확인한다. 같은 저장�
 실제 세션에서 드러나 고친 결함: `set`이 쓰는 순간의 최신 버전을 이어받아 나중 쓰기가 읽지 않은 값을 가림, 워커 범위만으로 팀장이 승인 없이 팀에 넣음, 문서가 추가 규칙을 틀리게 적음, 플러그인 MCP 서버가 `CODEX_HOME`을 받지 못해 `~/.codex` 밖의 홈에서 호출자를 찾지 못함(T0의 미확정 원인), 옛 끝점 앞 메시지를 옛 세션 권한으로 판정해 거부, 후임에게 저장한 기록을 게이트웨이가 다시 읽지 못함. 단위 시험만으로는 드러나지 않았다.
 
 14-4의 승인 경로는 14-12의 원격 추가 양식으로 확인했다.
+
+## 15. 승인 결속 (#25)
+
+자동 시험은 `tests/test_answer_binding.py`, `tests/test_approval_binding.py`, `tests/test_worker_permission_binding.py`다. 변이 시험은 표식 없는 전부 쓰기, `--reply` 우회, 낡은 표식의 이름 전락, 뒤이은 말 누락, 옛 훅 퍼짐, 닫힌 요청의 말 재사용, 워커 판별 제거, 결속 잠금 제거 등 33종을 임시 복제본에 넣어 모두 실패로 잡았다.
+
+실제 세션은 임시 `XSM_HOME`과 임시 `CODEX_HOME`에서 돌렸다. 답은 시험 세션의 질문 화면에 직접 입력했다.
+
+| # | 환경 | 시험 | 결과 |
+|---|---|---|---|
+| 15-1 | Codex 0.165, never | 0.5.1 훅에서 async 질문에 화면으로 직접 답 | [x] 답 태그에 `UserPromptSubmit` 발화, 판정 기록(F3) |
+| 15-2 | 같음 | 한 호출에 질문 둘 | [x] 질문마다 태그가 따로 오고 id는 인덱스만 다름(F13). 0.5.1 훅은 `Multi two`의 답으로 열린 link의 판정을 덮어썼다 |
+| 15-3 | Codex never | 요청 둘, 표식 질문에 yes | [x] alpha만 `request-marker`, beta 판정 없음 |
+| 15-4 | 같음 | 이어서 평문 "응" | [x] 어디에도 안 붙음. alpha에 `after`, 프롬프트에 `ambiguous` |
+| 15-5 | 같음 | `--reply 응`으로 beta | [x] 거부. alpha는 표시 뒤 진행 |
+| 15-6 | Codex `workspace-write`, never | `xsm_reach`를 셸 없이: 양식 거절, 표식 질문, 재호출 둘 | [x] 끝까지 적용(F8) |
+| 15-7 | 같음 | `xsm_decide`: 양식 거절, `native_question`으로 async, `answer_request`로 재호출 | [x] `via: native-user`, `asked_question` 기록(F7) |
+| 15-8 | Claude Code 2.1.314 | 요청 둘, AskUserQuestion, 표식 질문 | [x] delta만 `request-marker`. 결과의 `answers` 형식이 코드 전제와 같음 |
+| 15-9 | 같음 | 이어서 평문 "응" | [x] 어디에도 안 붙음 |
+| 15-10 | Codex never | `spawn --trust-hooks`: 대상이 해시라 이름으로 지목 불가 | [x] 표식 질문으로 grant 통과 |
+| 15-11 | Codex 백그라운드 워커 | `xsm_publish`, `xsm_link` | [x] 양식 없이 "부모나 lead에게 DM"으로 거부. `XSM_WORKER`가 없는 MCP 서버에서 워커 기록으로 판별. 워커가 결과를 부모에게 보냄 |
+| 15-12 | 신뢰 안 된 폴더의 Codex 워커 | `spawn --background` | [x] 신뢰 화면에서 멈추고 부모가 표식 질문으로 `xsm_approve`, 워커 시작 |
+| 15-13 | Codex never, Default 모드 | 도구를 지정하지 않고 거부문만 보여 줌 | [x] 모델이 스스로 `request_user_input_async`로 묻고 표식을 맨 앞에 넣음(지시문이 있는 세션, 표본 1건, `gpt-6.1-sol`) |
+| 15-14 | Codex `on-request` | `xsm_reach` | [x] 호출 확인 없이 양식이 표시되고 allow로 적용 |
+| 15-15 | Claude `--bg` 새 작업 | `xsm join` | [x] `bg-spare` 프로세스로 등록되고 정상 동작 |
+
+15-6에서 찾은 것: 주석 없는 도구는 Codex never가 서버에 닿기 전에 거부한다(`MCP tool call requires approval, but approval policy is never`). 폼 도구와 `xsm_decision_status`, `xsm_publish`에 주석을 달았다. 이 도구들은 서버에서 사람에게 묻거나 읽기만 한다. on-request에서는 Codex의 호출 확인 한 단계가 사라지고 양식은 그대로다.
+
+이전 세션의 실측(임시 홈, Claude Code 2.1.316): 플러그인 홈에서 Write 한 번에 PermissionRequest 훅 2회, 승인 요청은 네이티브 도구 호출 id로 합쳐 1개(F18). 백그라운드 워커의 AskUserQuestion은 승인 요청 0개로 즉시 거부되고 부모 안내(F17).
+
+15-11에서 찾은 것: Codex 0.165는 신뢰 화면 문구가 `Trust this folder?`로 바뀌어 감지에 실패했다. `/rename`이 그 화면에 입력돼 워커가 사람에게 묻지 못하고 죽었다. 두 문구를 모두 인식한다. 워커의 MCP 설정은 `CODEX_HOME`도 넘긴다.
+
+확인하지 못한 것: 대화 중 백그라운드로 넘어간 Claude 세션이 등록을 잃는 원인(14-11). 등록은 이슈 범위 밖이고, 안내만 고쳤다. 15-15처럼 새로 시작한 작업은 등록된다.
+
+리뷰에서 재현돼 고친 것: 사람의 "아니"를 옛 말의 `--reply`가 덮는 경로(훅이 보관한 답은 `--reply`가 바꾸지 못하고, 양식 거부는 그때까지의 말을 소모한다), `reason`만 다른 `xsm_grant` 두 호출에 "yes" 하나가 붙어 grant가 둘 생기는 경로(MCP 결정마다 다른 결정으로 센다), 팀 결정의 답이 이름이 겹치는 권한 요청에 붙는 경로.
+
+보안 리뷰가 재현한, 무관한 옛 프롬프트의 일부를 `--reply`로 주면 통과하던 경로도 막았다. 요청 전의 말은 대상을 지목할 때만 인정한다(사용자 결정, 2026-11-01, PR #11 결정 변경). 먼저 대화로 묻고 나중에 명령을 실행하는 흐름에서 사람의 답이 대상을 지목하지 않았으면 다시 물어야 한다.
+
+남은 한계: 훅이 한 번도 쓰지 않은 세션은 대조할 기록이 없어 `--reply`를 그대로 받는다. 표식은 질문 내용을 검증하지 않으므로 다른 내용의 질문에 표식을 붙이면 그 요청에 붙는다. 표시 단계에서 질문 원문이 함께 보인다.

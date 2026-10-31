@@ -61,6 +61,52 @@ class McpServerTest(TempState):
                          ("Which queue?", "kafka", ["sqs", "kafka"], "mcp-elicitation"))
         self.assertIn("person via mcp-elicitation", rec["decided_by"])
 
+    def test_a_pane_workers_person_can_still_answer_a_form(self):
+        from unittest.mock import patch
+        from xsm import workers
+        with patch.dict(os.environ, {"XSM_WORKER": "interactive-pane"}), \
+                patch.object(workers, "load", return_value={"mode": "pane"}):
+            self.test_decide_asks_the_person_and_records_their_answer()
+
+    def test_a_worker_known_only_by_its_record_gets_no_form(self):
+        """Codex passes XSM_WORKER to no MCP server, so the record says who is unattended."""
+        from unittest.mock import patch
+        from xsm import workers
+        worker = {"name": "w", "mode": "background", "parent_ref": "abc123"}
+        for tool, arguments in (("xsm_link", {"dir": self.tmp}), ("xsm_publish", {})):
+            call = {"jsonrpc": "2.0", "id": 2, "method": "tools/call",
+                    "params": {"name": tool, "arguments": arguments}}
+            with patch.dict(os.environ), patch.object(workers, "for_session", return_value=worker), \
+                    patch.object(workers, "state", return_value="running"):
+                os.environ.pop("XSM_WORKER", None)
+                out, _ = self._run(self.INIT, call)
+            self.assertFalse(any(m.get("method") == "elicitation/create" for m in out))
+            self.assertIn("ref:abc123", next(m for m in out if m.get("id") == 2)["result"]["content"][0]["text"])
+
+    def test_a_worker_can_still_read_what_asks_nobody(self):
+        from unittest.mock import patch
+        from xsm import workers
+        worker = {"name": "w", "mode": "background", "parent_ref": "abc123"}
+        for tool, arguments in (("xsm_team", {"action": "list"}), ("xsm_handover", {"action": "show"})):
+            call = {"jsonrpc": "2.0", "id": 2, "method": "tools/call",
+                    "params": {"name": tool, "arguments": arguments}}
+            with patch.dict(os.environ), patch.object(workers, "for_session", return_value=worker), \
+                    patch.object(workers, "state", return_value="running"):
+                os.environ.pop("XSM_WORKER", None)
+                out, _ = self._run(self.INIT, call)
+            self.assertFalse(next(m for m in out if m.get("id") == 2)["result"]["isError"], tool)
+
+    def test_a_typed_command_stands_after_a_denied_form(self):
+        """A denied form must not block what the person then typed themselves."""
+        from unittest.mock import patch
+        from xsm import consent, mcp
+        server = mcp.Server(io.StringIO(), io.StringIO())
+        with patch.object(server, "permission_closed", return_value="closed"), \
+                patch.object(consent, "take", return_value=True), \
+                patch.object(server, "permission_started") as started:
+            self.assertTrue(server.typed_permission(AGENT, "link", "/x"))
+        started.assert_not_called()
+
     def test_decide_in_no_team_returns_the_answer_and_records_nothing(self):
         """T11: with no team to keep it beside, the person is still asked and
         their answer goes back to the agent, which is told it is not on record."""
@@ -271,7 +317,8 @@ class McpServerTest(TempState):
         here = os.path.join(self.tmp, "my proj")
         text = self._ask("xsm_join", {"project": "demo"}, {"result": {"action": "decline"}},
                          cwd=here)
-        self.assertIn("`xsm join demo` in your shell", text)
+        self.assertIn("Shell equivalent: `xsm join demo`", text)
+        self.assertIn("retry this same MCP tool", text)
         self.assertNotIn("--dir", text)
         self.assertIn("approval_policy", text)
         other = os.path.join(self.tmp, "other folder")

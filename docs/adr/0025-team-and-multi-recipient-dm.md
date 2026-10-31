@@ -5,7 +5,7 @@
 - 작성일: 2026-10-30
 - 결정자: 사용자
 - 관련: [ADR-0004](0004-communication-scope.md), [ADR-0005](0005-channel-thread-store.md), [ADR-0024](0024-discover-select-and-handshake.md), [ADR-0026](0026-team-board-on-xsm-doc.md), [설계 메모](../plan/collaboration/team-communication-memo.md)
-- 적용 범위: 제품 계약. 구현은 착수하지 않았다.
+- 적용 범위: 제품 계약. 0.5.1에서 구현했다. 검증 범위와 한계는 [진행 기록](https://github.com/ysys143/xsm/blob/a124b22782d68c1541f6dd5893a57bbe6797b926/docs/plan/collaboration/team-implementation-progress.md)과 [TESTPLAN §14](../xsm/TESTPLAN.md#14-팀-보드-결재-인수인계-051)를 따른다. 아래 맥락은 결정 당시 상태다.
 
 ## 질문
 

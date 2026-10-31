@@ -290,3 +290,30 @@
 - `answers_text`가 전제한 AskUserQuestion 결과 형식이 Claude Code 2.1.314에서도 같은지. PROTOCOL은 2.1.286 기준이고 Claude 대화 기록은 읽지 않았다.
 
 작업 중 `git status`에 `docs/plan/collaboration/completion-ledger.*`, `scripts/audit-collaboration-plan.py`, `deliverables/ledger-rebind-0.5.1/` 변경이 나타났다. 이 감사가 만든 것이 아니다. 다른 에이전트의 작업으로 보이지만 확인하지는 않았다.
+
+## 6. 처리 결과 (이슈 #25)
+
+실측과 시험은 [TESTPLAN 15절](../../xsm/TESTPLAN.md#15-승인-결속-25)에 있다.
+
+| 항목 | 처리 |
+|---|---|
+| F1 | 답은 질문이 지목한 결정에만 붙는다. `--reply`와 요청 경로도 `bound_to`, `ambiguous`로 막는다 |
+| F2 | 만료 요청을 세지 않고, 붙지 못한 답은 다음 실행에 알린다 |
+| F3 | 확인됨. 직접 응답한 태그에 `UserPromptSubmit`이 발화한다 |
+| F4, F5 | `how()`가 `request_user_input_async`와 인자를 적고 동기 도구를 금지한다. Default 모드 지시문이 있는 세션에서도 모델이 권한 질문에 async를 썼다(표본 1건) |
+| F6 | 워커 기록으로 판별해 양식 없이 부모·lead로 안내한다. 실제 Codex 워커에서 확인했다. Codex 신뢰 화면 감지 실패로 워커가 죽던 결함도 고쳤다 |
+| F7 | 재판독을 인정하고 `via: native-user`로 기록한다(사용자 결정, ADR-0005 4-4 개정) |
+| F8 | 같은 MCP 도구에서 답을 읽는다. 도구 주석이 없어 Codex가 호출 자체를 거부하던 첫 관문도 고쳤다 |
+| F9 | 등록은 범위 밖. 새로 시작한 작업은 등록된다(실측). 대화 중 넘어간 세션은 등록을 잃을 수 있다고 안내한다. 프로세스 판별은 하지 않고 조건문으로 쓴다 |
+| F10 | 질문이 대상을 지목했으면 요청 뒤에 한 번 쓴다 |
+| F11 | 만료 뒤 도착한 답을 구분해 알린다. `ASK_MAX`는 그대로다 |
+| F12 | 끝난 결정의 요청을 닫고 그 말을 소모한다. `--pending-consent`, `--drop-consent` |
+| F13 | 질문별로 결속한다. 실제 형식은 질문마다 태그 하나다 |
+| F14 | 표식이 있으면 `grant`, `endorse`도 재판독이 된다. `xsm_decide`만 원문 완전 일치 |
+| F15 | `connect`, `publish` 거부문을 `asks()`로 통일했다 |
+| F16 | 문구 수정. 백그라운드 Codex 워커는 `-a never` 유지(사용자 결정) |
+| F17 | 백그라운드 워커의 AskUserQuestion은 즉시 거부하고 안내한다 |
+| F18 | 네이티브 호출 id로 승인 요청을 합친다 |
+| F19 | 주석 수정 |
+
+C14(Codex `PostToolUse` 훅)는 사용자 결정으로 하지 않았다. 훅 해시가 바뀌면 모든 홈의 신뢰가 풀린다.
