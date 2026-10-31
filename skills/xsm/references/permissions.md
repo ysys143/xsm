@@ -174,8 +174,8 @@ only what they said in answer to you; it is logged, marked as given by you. Neve
 before you have asked, or with their original request, or with words they said about something
 else: that is not an answer, and a yes they gave to one thing does not carry to the next. xsm
 checks the words against what its hook kept of what they typed in this session. Words that
-are not theirs, ones already used for an approval, and ones from before this question was
-put are ignored with a line saying so. Only a session whose hook never wrote anything takes
+are not theirs, ones already used for an approval, and ones from before the ask that do not
+name what is being decided are ignored with a line saying so. Only a session whose hook never wrote anything takes
 your words as given. Never write a yes they did not say.
 
 A **reach** is narrower than a link: one session, for as long as it runs. It

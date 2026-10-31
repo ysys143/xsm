@@ -112,9 +112,8 @@ Words approve once (2026-10-02, live Codex test: the "응" that linked one folde
 `--reply "응"` link the next, though the person was never asked about it). When a verdict
 passes, the hook's, the request taken as one, or the flag's, the prompts that say it are
 marked `used` in recent.json (`_spend`), and neither the flag nor a request reads a used
-prompt. And when the ask for this target was on record before the flag was given, a prompt
-from before that ask is not an answer to it; with no ask yet, the prompt may be the
-request, said before there was a question.
+prompt. A prompt from before the ask is an answer to it only if it names what is being
+decided (user decision, 2026-11-01), so a fragment of an unrelated prompt is not one.
 """
 from __future__ import annotations
 
@@ -1075,10 +1074,11 @@ def _their_words(me: dict, entry: dict | None, text: str, elsewhere: set | None 
     on the ask counts when either contains the other, whitespace and case aside; what is
     returned is that record, so the agent's own wording is never what the verdict says.
     `elsewhere` holds the replies sitting on this session's other open asks: those
-    words answer something else. A prompt from before the ask still counts: the agent
-    often asks in the conversation first and runs the command after the person said yes,
-    and asking them again is the ping-pong the person refused (review of PR #11,
-    2026-10-02); words already spent on a verdict never count twice. A session the hook
+    words answer something else. A prompt from before the ask counts only when it names
+    what is being decided (user decision, 2026-11-01): security review passed `--reply`
+    with a fragment of an unrelated prompt, which PR #11 had allowed so that a person who
+    said yes in the conversation first was not asked again. Words already spent on a
+    verdict never count twice. A session the hook
     never wrote a record for (an older hook, a state folder it cannot write) has nothing
     to check against, and the text is taken as given: `--reply` is how the person is
     heard there. Called with the lock held."""
@@ -1087,6 +1087,7 @@ def _their_words(me: dict, entry: dict | None, text: str, elsewhere: set | None 
     kept = [x["text"] for x in reversed((saved.get("prompts") or []) if hooked else [])
             if isinstance(x, dict) and isinstance(x.get("text"), str) and not x.get("used")
             and now - float(x.get("t") or 0) <= ASK_MAX and _free_for(x, entry)
+            and (float(x.get("t") or 0) >= float((entry or {}).get("t") or 0) or _named(entry, x["text"]))
             and _norm(x["text"]) not in (elsewhere or set())]
     if entry and entry.get("via") != "flag" and isinstance(entry.get("verdict"), str):
         kept.append(entry["verdict"])       # the hook's, or the person's own request

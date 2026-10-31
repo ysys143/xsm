@@ -9,7 +9,8 @@ steps, are on [GitHub Releases](https://github.com/ysys143/xsm/releases) (in Kor
   `[xsm:<id>]`, for the head of the question. A question-tool answer reaches the ask its question names, by id, mark
   or target, question by question; a plain reply binds when one decision is open or when it names one. An answer
   that binds to nothing approves nothing, `--reply` cannot use it, and the next run shows it once. A question asked
-  before its ask counts once, by name. Replies an older hook wrote to several asks pass neither.
+  before its ask counts once, by name. Replies an older hook wrote to several asks pass neither. `--reply` takes words
+  from before the ask only if they name what is being decided, and cannot replace an answer the hook kept.
 - `xsm decision-status --pending-consent` lists open asks and unbound answers, `--drop-consent <mark>` closes one
   (MCP `pending_consent`, `drop_consent`). Codex is told `request_user_input_async`, never the synchronous tool.
 - Recover permission replies inside the same MCP operation. Verify exact native question evidence for
