@@ -759,12 +759,14 @@ class DangerousFlagsTest(TempState):
             w = {"name": "cx", "runtime": "codex", "mode": "pane", "pane": "%3", "pid": None,
                  "home": self.tmp, "created": 0, "needs_rename": True}
             with mock.patch.object(workers, "_screen", screen), \
-                    mock.patch.object(workers, "_tmux_type", lambda pane, text: typed.append(text)), \
+                    mock.patch.object(workers, "_tmux_type",
+                                      lambda pane, text: typed.append((text, len(calls)))), \
                     mock.patch.object(workers, "_register_named_thread", lambda wk: None), \
                     mock.patch.object(workers.time, "sleep", lambda s: None):
                 with self.assertRaises(workers.WorkerError):
                     workers._wait_for_registration(w, 0.2)
-            self.assertEqual(typed, ["/rename cx"], "typed once, after the trust screen was gone")
+            self.assertEqual([text for text, _ in typed], ["/rename cx"], "typed once")
+            self.assertGreater(typed[0][1], 2, "after the trust screen was gone: " + prompt)
 
     def test_two_background_spawns_at_once_both_get_a_window(self):
         """The loser of the race to create xsm-workers opens a window in it."""
