@@ -262,5 +262,7 @@ T11 검토 중 찾아 고친 것:
 
 시험 중 승인 절차를 지키지 않은 일: 팀장을 rs-b로 바꾸려고 `teams.set_lead`를 직접 호출해 사람 확인을 건너뛰었고, 인수인계도 같은 방식으로 워커에게 시켰다. 워커가 거부해 인수인계는 실행되지 않았다. 그 시험 팀은 지웠다. 이 팀장 변경은 어떤 항목의 근거로도 쓰지 않았다.
 
-발견했으나 고치지 않은 것: Codex 0.165의 `trusted_content_hash`를 xsm doctor가 보지 않아, Codex가 훅 검토를 요구해도 "hooks trusted"로 표시한다. 릴리스 뒤 두 머신 확인이 이 줄에 기대므로 고쳐야 한다.
+Codex 0.165의 `trusted_content_hash`: xsm은 이 해시의 계산법을 몰라 doctor가 검사하지 못하므로, Codex가 훅 검토를 요구해도 "hooks trusted"로 표시될 수 있다. f06b39f는 검사를 더한 것이 아니라, 이 해시가 있는 홈의 "hooks trusted" 줄에 확인할 수 없다는 문구를 붙였다(시험 통과, 맥북 doctor에서 `~/.codex`, `~/.codex-3`에 표시되고 `~/.codex-2`에는 없음). 해시 자체의 검사는 여전히 없다. 릴리스 뒤 두 머신 확인이 이 줄에 기대므로, 문구가 붙은 홈은 Codex `/hooks`에서 직접 봐야 한다.
+
+발견했으나 고치지 않은 것: 세션 20d352(pid 30646, 그 세션의 보고로는 백그라운드 작업)에서 `xsm_handover`가 "this session is not registered: ... no record carries this pid"로 거부됐다. 이 문구는 `ancestor_pid`가 pid를 찾았지만 그 pid의 살아 있는 기록이 없을 때 나오고, 30646의 기록은 있었다. 훅의 `pid_of`는 소켓 이름에서 pid를 얻지만 MCP 서버는 `ancestor_pid`만 쓰므로 둘이 다른 프로세스를 가리킬 수 있다. `ancestor_pid`는 comm의 basename이 정확히 `claude`여야 하고, 실행 파일은 `~/.local/share/claude/versions/2.1.314`다. comm이 `2.1.314`여서 세션을 건너뛰었다는 것은 추정이다. 샌드박스에서 `ps`가 막혀 comm을 보지 못했다. 같은 실행 파일로 도는 세션 19979(rs-d)에서는 `xsm_inbox`가 정상 응답했으므로, 실행 파일만으로는 설명되지 않을 수 있다. 샌드박스 밖에서 `ps -o pid=,ppid=,comm= -p <pid>`로 조상을 확인해야 한다.
 
