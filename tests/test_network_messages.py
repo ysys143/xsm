@@ -148,6 +148,8 @@ class NetworkMessagesTest(unittest.TestCase):
         self.assertEqual(self.gb.receive(A, packet)["status"], "queued")
         self.assertEqual(handoff.status(b2, packet["id"])["status"], "pending")
         self.assertEqual(handoff.status(self.b, packet["id"])["status"], "not-found")
+        # The receive gate reads it back: measured on two machines, 2026-10-31.
+        self.assertEqual(self.gb.ingress_record(packet["id"])["target_local"]["session_id"], "receiver-b2")
 
     def test_a_reply_to_a_handed_over_question_reaches_the_successor(self):
         packet = self.prepare(kind="task")
@@ -158,6 +160,17 @@ class NetworkMessagesTest(unittest.TestCase):
                                 reply_to=packet["id"], outcome="succeeded")
         self.assertEqual(self.ga.receive(B, reply)["status"], "queued")
         self.assertEqual(handoff.status(a2, "reply-late")["status"], "pending")
+        self.assertEqual(self.ga.ingress_record("reply-late")["target_local"]["session_id"], "sender-a2")
+
+    def test_a_kept_record_for_a_session_that_is_no_successor_is_refused(self):
+        packet = self.prepare(kind="task")
+        self.gb.receive(A, packet)
+        path = self.gb._path("inbound", packet["id"])
+        record = json.loads(Path(path).read_text())
+        record["local"]["session_id"] = "someone-else"
+        Path(path).write_text(json.dumps(record))
+        with self.assertRaises(messages.GatewayError):
+            self.gb.ingress_record(packet["id"])
 
     def test_the_successor_answers_a_question_the_old_session_was_asked_from_another_machine(self):
         packet = self.prepare(kind="task")
