@@ -299,10 +299,14 @@ class Gateway:
                 or not isinstance(record.get("local"), dict) or record.get("admitted") is not True:
             raise GatewayError("invalid-gateway-state")
         expected = packet["sender"] if direction == "outbound" else packet["receiver"]
-        if expected["machine"] != self.node_id \
-                or _owner(record["local"]) != {"runtime": expected["runtime"],
-                    "home": os.path.realpath(record["local"].get("home") or ""), "session_id": expected["session_id"]} \
-                or hashlib.sha256(os.fsencode(os.path.realpath(record["local"]["home"]))).hexdigest() != expected["home_id"]:
+        kept = _owner(record["local"])
+        actual = {"machine": self.node_id, "runtime": kept["runtime"], "session_id": kept["session_id"],
+                  "home_id": hashlib.sha256(os.fsencode(os.path.realpath(record["local"]["home"]))).hexdigest()}
+        named = network_identity.endpoint(expected)
+        # What arrives for a handed-over session is kept for its successor
+        # (handover.py); anything else is one conversation on both sides.
+        if expected["machine"] != self.node_id or not (
+                named == actual or direction == "inbound" and _answered_by(named, actual)):
             raise GatewayError("invalid-gateway-state")
         replies = record.get("reply_ids")
         if not isinstance(replies, list) or len(replies) > 4096 \
