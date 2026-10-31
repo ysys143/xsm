@@ -1485,7 +1485,7 @@ def codex_hook_hash(event: str, group: dict, handler: dict) -> str | None:
 _STATE_HEADER = re.compile(
     r"""^\[\s*hooks\s*\.\s*state\s*\.\s*("(?:[^"\\]|\\.)*"|'[^']*')\s*\]\s*(?:#.*)?$""")
 _STATE_VALUE = re.compile(
-    r"""^(["']?)(enabled|trusted_hash)\1\s*=\s*(true|false|"(?:[^"\\]|\\.)*"|'[^']*')\s*(?:#.*)?$""")
+    r"""^(["']?)(enabled|trusted_hash|trusted_content_hash)\1\s*=\s*(true|false|"(?:[^"\\]|\\.)*"|'[^']*')\s*(?:#.*)?$""")
 
 
 def _toml_string(token: str):

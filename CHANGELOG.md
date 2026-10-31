@@ -3,6 +3,60 @@
 What changed in xsm, newest first. Each released version's full notes, with its verification and upgrade
 steps, are on [GitHub Releases](https://github.com/ysys143/xsm/releases) (in Korean).
 
+## [0.5.1](https://github.com/ysys143/xsm/releases/tag/v0.5.1) - 2026-10-31
+
+Update a plugin install with `claude plugin marketplace update xsm` and `claude plugin update xsm@xsm` (Codex:
+`codex plugin marketplace upgrade xsm`, then `codex plugin add xsm@xsm`), and a direct install with
+`xsm install --refresh` from an updated checkout. Sessions that were already running keep the hooks and MCP
+server they started with; open a new session to use 0.5.1. Codex 0.165 asks to review the hooks again after the
+plugin's content changes: open Codex in that home and trust them in `/hooks`. `xsm doctor` cannot see this and says so.
+
+Two ways to talk, no third: a DM moves someone, a team board holds what is true for the whole team. The channel
+is gone.
+
+### Added
+
+- **Several recipients** (ADR-0025). `xsm send A B C` and `xsm ask A B C` (MCP `targets`) send one DM or question
+  to each under its own id and tell each who else got it. A recipient outside your scope is skipped and named; the
+  others are sent. The exit code is the worst recipient's. `--resend <group id>` and `question-status <group id>`.
+- **Teams** (ADR-0025). `xsm team` / `xsm_team`: named sessions with an optional lead. A session may be in several
+  teams, and members may DM each other across projects and machines. `team:<name>` (or `#name`) addresses every
+  running member. A lead adds and removes sessions of its own project; any other add, and naming the lead, are the
+  user's. `xsm connect` now makes a team of two. Teams replicate to the machines of their remote members.
+- **Team boards** (ADR-0026). `xsm board` / `xsm_board`: one entry per item, owned by xsm doc, at
+  `~/.xsm/teams/<team>/BOARD.md`. A write builds only on the versions its writer has read, so a version nobody read is
+  never buried: both show until someone who read them settles it. A direct edit of the file is taken as a node.
+  Nodes replicate to remote members. Each member's next prompt gets one line naming what changed, once
+  (`xsm board mute` turns it off).
+- **Decisions beside the board** (ADR-0026). `xsm_decide` with a team, or the person's `xsm board decide`, records the
+  user's answer under its own id. A node that only names a decision shows "not confirmed". Decisions from another
+  machine are shown as that machine's testimony.
+- **Handover** (ADR-0025). When the user says "hand over to OO", `xsm handover` / `xsm_handover` moves the session's
+  team places and lead's seat, `owner/<name>` board items, unread DMs, pending questions and a context summary to the
+  successor, which reads them at its next prompt. DMs and answers to the old address reach the successor, on
+  this machine and from other machines, whose question records accept the successor's answer.
+- Skill guide `teams.md`: DM or board, approvals through the lead, keeping a status file beside the board, handing
+  over, and filtering a large change with a haiku subagent (S12c met the user's criteria; low-effort luna did not).
+
+### Removed
+
+- **The channel**: `xsm post`, `xsm channel`, MCP `xsm_post`, `xsm_channel` (ADR-0005 is superseded). `install --refresh`
+  removes their allow rules. Existing posts stay in `~/.xsm/channels/`; nothing reads them now.
+- `xsm_decide` without a team records beside the board of the one team the session is in, refuses if it is in several,
+  and in no team returns the answer and says it was not recorded.
+
+### Fixed
+
+- A plugin MCP server took `~/.codex` for its home, because Codex passes it no `CODEX_HOME`, and refused its own thread
+  in any other home ("not registered yet"). It now reads its home from its own path.
+- `xsm ack` and `xsm_ack` take a claim object as shown, and the receive context shows the exact form.
+- A session name with a line break could add a forged head line to a doc node.
+
+### Known limits
+
+- A Claude background job (`claude bg-spare`) is not found by xsm, so tools that need the user's answer are refused there.
+- A machine that was off when a handover was published does not accept the successor's answer; there is no resend.
+
 ## [0.5.0](https://github.com/ysys143/xsm/releases/tag/v0.5.0) - 2026-10-30
 
 Merged in #20 and #21. Update a plugin install with `claude plugin marketplace update xsm` and
