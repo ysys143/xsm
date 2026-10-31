@@ -76,4 +76,4 @@ xsm uninstall --codex-home /path/to/codex-home
 
 Claude 홈에는 `--claude-home`을 쓴다. 제거기는 자신이 추가한 MCP·훅·스킬 항목만 제거한다. 사용자가 만든 항목, 다른 홈, 원문·기기키·runtime 사본은 보존한다. 마지막 설치 홈을 제거하면 xsm이 만든 CLI 링크도 제거한다. 한 홈의 제거를 멤버 제명이나 진행 중 작업 취소로 해석하지 않는다.
 
-현재 구현·실측 범위와 미검증 환경은 [ADR-0021 진행 기록](../plan/collaboration/adr-0021-progress.md)에 있다. 같은 호스트 시험과 두 물리 머신 시험, 실제 모델 세션과 네이티브 파일 시험체를 구분한다.
+현재 구현·실측 범위와 미검증 환경은 [ADR-0021 진행 기록](https://github.com/ysys143/xsm/blob/a124b22782d68c1541f6dd5893a57bbe6797b926/docs/plan/collaboration/adr-0021-progress.md)에 있다. 같은 호스트 시험과 두 물리 머신 시험, 실제 모델 세션과 네이티브 파일 시험체를 구분한다.

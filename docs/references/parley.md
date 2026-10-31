@@ -1,6 +1,7 @@
 # Parley 조사: 사람이 함께 보는 IRC 채널과 하네스별 수신 경로
 
 - 조사일: 2026-10-30
+- 현행 xsm과의 관계: 아래 비교는 이 문서에 고정한 당시 소스 기준이다. 0.5.1은 기존 channel을 제거하고 팀·보드를 도입했다. 현행 계약은 [ADR-0025](../adr/0025-team-and-multi-recipient-dm.md)와 [ADR-0026](../adr/0026-team-board-on-xsm-doc.md)을 따른다. 당시 비교·실측 결과는 보존한다.
 - 질문: Parley는 기존 코딩 세션의 발견·전달·협업·사람 권한·장애 복구를 어디까지 보장하며, xsm의 기존 계약에 무엇을 참고할 수 있는가?
 - 대상: 사용자가 제시한 Reddit 게시물이 직접 연결한 **colinsurprenant/parley**. 동명 도구의 기능을 섞지 않았다.[1]
 - 방법: 공개 소스와 스킬의 정적 분석, upstream race 검사, 실제 loopback Ergo/CLI 관찰, 합성 Stream을 이용한 독립 API 관찰. 실제 모델 간 협업은 이번에 실행하지 않았다.
@@ -193,7 +194,7 @@ upstream README의 데모는 작성자가 수행한 실제 Claude/Codex 협업 �
 | 역할·워커 | 역할은 사람이 정함. lead/task queue/worker pool 없음 | 일반 세션 통신과 명시적 owned worker 분리 | 상시 역할 협업과 소유 워커를 구별 |
 | 운영 | 로컬 서버 + front, 프로젝트 launch 설정 | 로컬 핵심 경로와 선택적 네트워크 서비스 분리 | 서버 장애가 직접 전달과 기록에 주는 영향 구분 |
 
-xsm 근거: [채널](../../xsm/channel.py), [질문](../../xsm/questions.py), [출처](../../xsm/provenance.py), [반복 제어](../../xsm/abuse.py), [업무 디렉터리](../../xsm/directory.py), [협업 권한](../../xsm/collaboration.py), [자료](../../xsm/materials.py), [수신](../../xsm/receive.py), [원격 멤버십](../../xsm/network_membership.py), [owned worker](../../xsm/owned_requests.py). 전체 완료 여부는 [현재 인계 기록](../plan/reason-inspired-adrs/current-handoff.md)과 구분한다.
+xsm 근거: [채널](https://github.com/ysys143/xsm/blob/092e8801b0afcbb475bdb0384f546e55064fbf6f/xsm/channel.py), [질문](../../xsm/questions.py), [출처](../../xsm/provenance.py), [반복 제어](../../xsm/abuse.py), [업무 디렉터리](../../xsm/directory.py), [협업 권한](../../xsm/collaboration.py), [자료](../../xsm/materials.py), [수신](../../xsm/receive.py), [원격 멤버십](../../xsm/network_membership.py), [owned worker](../../xsm/owned_requests.py). 전체 완료 여부는 [비교 당시 인계 기록](https://github.com/ysys143/xsm/blob/092e8801b0afcbb475bdb0384f546e55064fbf6f/docs/plan/reason-inspired-adrs/current-handoff.md)과 구분한다.
 
 ## 12. 설계 참고와 후속 검증 조건
 

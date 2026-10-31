@@ -5,6 +5,7 @@
 - 작성일: 2026-10-24
 - 비교 근거: [Reason 비교 노트](../references/reason.md)
 - 기존 결정 효력: 이 문서는 아직 Accepted ADR을 대체하지 않는다.
+- 현재 구현과의 관계: 아래 channel 비교는 제안 작성 당시 기록이며 channel 구현 링크는 당시 스냅샷이다. 0.5.1의 팀 결재 저장소는 [ADR-0026](0026-team-board-on-xsm-doc.md)을 따르고, 승인 결속·복구 결함은 [#25](https://github.com/ysys143/xsm/issues/25)에서 추적한다.
 
 ## 질문
 
@@ -18,7 +19,7 @@ Reason의 ask_user는 about으로 받은 동료 요청 원문을 먼저 보여 �
 
 공개 엔진의 격리 시험에서 OS 알림 명령의 완료 전에 `popped up` 응답이 오고, 나중에 명령이 실패해도 빈도 제한을 소모함을 0.12.10·0.12.11에서 확인했다. 실제 OS UI나 실제 다중 CLI 경쟁을 입증한 것은 아니며, 답·현재 요청·적용 단계의 결속을 분리할 근거다.
 
-xsm도 [MCP person_answer·elicitation](../../xsm/mcp.py), [consent](../../xsm/consent.py), [channel의 결정](../../xsm/channel.py), [worker 승인](../../xsm/workers.py)을 구현한다. 새로운 사용자 질문 기능을 처음 추가하는 문제가 아니라 여러 승인 경로의 수집·출처·재대기 계약을 일치시키는 문제다.
+xsm도 [MCP person_answer·elicitation](../../xsm/mcp.py), [consent](../../xsm/consent.py), [channel의 결정](https://github.com/ysys143/xsm/blob/f11efdc7ccd1f30313128a0325f0b8d59d0b3d5c/xsm/channel.py), [worker 승인](../../xsm/workers.py)을 구현한다. 새로운 사용자 질문 기능을 처음 추가하는 문제가 아니라 여러 승인 경로의 수집·출처·재대기 계약을 일치시키는 문제다.
 
 ## 선택지
 
