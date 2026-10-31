@@ -268,3 +268,9 @@ Codex 0.165의 `trusted_content_hash`: xsm은 이 해시의 계산법을 몰라 
 
 발견했으나 고치지 않은 것: 세션 20d352(pid 30646, 그 세션의 보고로는 백그라운드 작업)에서 `xsm_handover`가 "this session is not registered: ... no record carries this pid"로 거부됐다. 이 문구는 `ancestor_pid`가 pid를 찾았지만 그 pid의 살아 있는 기록이 없을 때 나오고, 30646의 기록은 있었다. 훅의 `pid_of`는 소켓 이름에서 pid를 얻지만 MCP 서버는 `ancestor_pid`만 쓰므로 둘이 다른 프로세스를 가리킬 수 있다. `ancestor_pid`는 comm의 basename이 정확히 `claude`여야 하고, 실행 파일은 `~/.local/share/claude/versions/2.1.314`다. comm이 `2.1.314`여서 세션을 건너뛰었다는 것은 추정이다. 샌드박스에서 `ps`가 막혀 comm을 보지 못했다. 같은 실행 파일로 도는 세션 19979(rs-d)에서는 `xsm_inbox`가 정상 응답했으므로, 실행 파일만으로는 설명되지 않을 수 있다. 샌드박스 밖에서 `ps -o pid=,ppid=,comm= -p <pid>`로 조상을 확인해야 한다.
 
+## 릴리스 0.5.1
+
+릴리스 소스를 얼려 전체 회귀를 돌렸다: py3.9, py3.14 각 2033건 통과, skip 0(`deliverables/ledger-rebind-0.5.1/`). 첫 동결에는 시험 중 다시 빌드한 엔진이 들어가 원장 고정 해시와 맞지 않아, 엔진 소스가 그대로임을 확인하고 고정 바이너리로 되돌려 다시 돌렸다. 원장 분류는 재결속 전과 같다(proven 4, partial 95).
+
+승인 경로 분석은 [approval-channels-audit.md](approval-channels-audit.md)에 있다. 답 하나가 열린 요청 전부를 통과시키는 결함은 0.5.0 이전부터 있던 것으로 0.5.1에는 고치지 않고 알려진 한계로 적었다. 0.5.2의 첫 항목이다.
+

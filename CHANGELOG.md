@@ -56,6 +56,8 @@ is gone.
 
 - A Claude background job (`claude bg-spare`) is not found by xsm, so tools that need the user's answer are refused there.
 - A machine that was off when a handover was published does not accept the successor's answer; there is no resend.
+- One reply to a yes-or-no request is attached to every request open in that session, so it can pass more than one
+  (present since before 0.5.0; first on the list for 0.5.2, see `docs/plan/collaboration/approval-channels-audit.md`).
 
 ## [0.5.0](https://github.com/ysys143/xsm/releases/tag/v0.5.0) - 2026-10-30
 
