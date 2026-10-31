@@ -1602,6 +1602,20 @@ def codex_trust(home: str, approvals: bool = False) -> dict:
     return out
 
 
+def codex_content_hashed(home: str) -> bool:
+    """Whether Codex also keeps a content hash for the plugin's hooks here
+    (trusted_content_hash, seen with Codex 0.165). xsm does not know how it is
+    computed, so codex_trust cannot check it: Codex may ask to review hooks that
+    read as trusted, as a home did after its plugin was reinstalled (2026-10-30)."""
+    plugin = codex_plugin(home)
+    if not plugin:
+        return False
+    states = codex_hook_states(_read_text(os.path.join(os.path.realpath(os.path.expanduser(home)),
+                                                       "config.toml")) or "")
+    return any("trusted_content_hash" in v for k, v in states.items()
+               if k.startswith(plugin["key"] + ":"))
+
+
 STATUSLINE_BASE = "statusline-base"      # the statusLine a user had before xsm's
 
 

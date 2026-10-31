@@ -1122,6 +1122,10 @@ def cmd_team(args) -> int:
     return USAGE
 
 
+CONTENT_HASH_NOTE = (" (by the hook hash; Codex also keeps a content hash xsm cannot check, so "
+                     "after a plugin update /hooks may ask again)")
+
+
 def cmd_board(args) -> int:
     """A team's board (ADR-0026): show, set an item, log, sync to other machines."""
     from . import board, board_sync, teams
@@ -1993,7 +1997,9 @@ def cmd_doctor(args) -> int:
             print("codex      %s: xsm hooks not installed" % home)
             continue
         missing = [e for e, ok in trust.items() if not ok]
-        print("codex      %s: hooks %s" % (home, "trusted" if not missing else
+        print("codex      %s: hooks %s" % (home, ("trusted" + CONTENT_HASH_NOTE
+                                                  if install.codex_content_hashed(home) else "trusted")
+              if not missing else
               "NOT trusted for %s — start codex there and choose 'Trust all and continue'"
               % ", ".join(missing)))
     if not report.get("tmux"):
@@ -2266,7 +2272,9 @@ def _doctor_rows(report: dict) -> list:
     for home, trust in (report.get("codex_trust") or {}).items():
         missing = [e for e, ok in (trust or {}).items() if not ok]
         rows.append(("codex trust", "%s: %s" % (_home_tilde(home), (
-            "xsm hooks not installed" if not trust else "hooks trusted" if not missing else
+            "xsm hooks not installed" if not trust else
+            ("hooks trusted" + (CONTENT_HASH_NOTE if install.codex_content_hashed(home) else ""))
+            if not missing else
             "**NOT trusted** for %s: start codex there and choose 'Trust all and continue'"
             % ", ".join(missing)))))
     for home, missing in (report.get("plugin_missing_hooks") or {}).items():
