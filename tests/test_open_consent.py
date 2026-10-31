@@ -485,14 +485,14 @@ class OneSlotPerThingTest(_Repos, TempState):
         self.assertEqual(len(files), 2)
         self.assertEqual(len({os.path.basename(f) for f in files}), 2)
 
-    def test_the_reply_is_written_to_every_open_ask_and_each_shows_it(self):
+    def test_ambiguous_plain_reply_does_not_approve_either_request(self):
         self._asks(["unblock", "aaa111"])
         self._asks(["join", "demo"])
         self._reply("응")
         code, text = self._cli(["unblock", "aaa111"])
-        self.assertIn('your user replied: "응"', text)
+        self.assertNotIn('your user replied: "응"', text)
         code, text = self._cli(["join", "demo"])
-        self.assertIn('your user replied: "응"', text)
+        self.assertNotIn('your user replied: "응"', text)
 
     def test_an_expired_ask_does_not_keep_the_reply_of_another(self):
         from xsm import consent, paths
@@ -534,12 +534,15 @@ class HookLockWaitTest(_Repos, TempState):
         self.assertEqual(consent.LOCK_WAIT, 5.0)
         self._asks(["unblock", "bbb111"])
         waits = []
-        with mock.patch.object(consent, "_lock", side_effect=lambda lock, wait=None:
-                               waits.append(wait)):
+        original_lock = consent._lock
+        def tracked_lock(lock, wait=None):
+            waits.append(wait)
+            return original_lock(lock, wait)
+        with mock.patch.object(consent, "_lock", side_effect=tracked_lock):
             consent.note_verdict(self.me, "응")
             consent.take_or_request(self.me, "unblock", "bbb111")
-        self.assertEqual(waits, [consent.HOOK_LOCK_WAIT, None],
-                         "the hook's own wait; the command's is the default")
+        self.assertTrue(all(w == consent.HOOK_LOCK_WAIT for w in waits[:-2]))
+        self.assertEqual(waits[-2:], [None, None], "commands serialize binding and request locks")
 
     def test_a_held_lock_costs_the_hook_about_a_second_and_loses_nothing_else(self):
         from xsm import consent
@@ -548,7 +551,7 @@ class HookLockWaitTest(_Repos, TempState):
         try:
             with mock.patch.object(consent, "HOOK_LOCK_WAIT", 0.3):
                 began = time.monotonic()
-                self.assertTrue(consent.note_verdict(self.me, "응"))
+                self.assertFalse(consent.note_verdict(self.me, "응"))
             self.assertLess(time.monotonic() - began, 3, "bounded by the hook's wait")
         finally:
             os.close(held)

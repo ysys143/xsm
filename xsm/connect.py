@@ -186,11 +186,20 @@ def offer(sender: dict, target: dict, spec: str, msg: dict, why: str) -> Step | 
             "shows you that reply without acting on it. If it is a yes, run it once more: xsm "
             "connects and sends the message, so there is nothing more to ask. If it is a no or "
             "a question, leave it and answer them: the message stays unsent (kept for a day; "
-            "`xsm send --held %s` sends it if they change their mind)." % (
+            "`xsm send --held %s` sends it if they change their mind). %s" % (
                 why.partition("; to connect")[0], unsent, plan["what"],
-                consent.how(sender.get("runtime")), msg_id)), msg_id)
+                consent.how(sender.get("runtime")), msg_id, consent.ask_hint())), msg_id)
     return Step(False, consent.shown_refusal(reply, plan["what"], None) + " " + unsent +
                 (" " + kept if isinstance(kept, str) else ""), msg_id)
+
+
+def _selection_reason(sender: dict, name: str, verdict, kept) -> str:
+    """Why a connect did not start: the reply to read, or the question to ask."""
+    if verdict is not None:
+        return consent.shown_refusal(verdict, "collaborating with %s" % name, kept)
+    what = "Selecting %s to collaborate with" % name
+    return consent.asks(what, runtime=sender.get("runtime")) if kept \
+        else consent.cannot_keep(what, None, sender)
 
 
 def _select_network(sender: dict, target: dict) -> dict:
@@ -252,10 +261,7 @@ def _select_network(sender: dict, target: dict) -> dict:
             binding={"pair": proposal["endpoints"], "generation": target["generation"]},
             apply=apply_selection)
         if not go:
-            reason = (consent.shown_refusal(verdict, "collaborating with %s" % name, kept)
-                      if verdict is not None else
-                      "needs your user's selection of %s; ask who to collaborate with, "
-                      "then run the same connect again" % name)
+            reason = _selection_reason(sender, name, verdict, kept)
             return {"status": "selection-required", "reason": reason,
                     "target": address, "handshake": "not-started"}
         scope = synchronize()
@@ -314,10 +320,7 @@ def select(sender: dict, target: dict, call=None) -> dict:
     except ValueError as exc:
         return {"status": "refused", "reason": str(exc), "handshake": "not-started"}
     if not go:
-        reason = (consent.shown_refusal(verdict, "collaborating with %s" % name, kept)
-                  if verdict is not None else
-                  "needs your user's selection of %s; ask who to collaborate with, "
-                  "then run the same connect again" % name)
+        reason = _selection_reason(sender, name, verdict, kept)
         return {"status": "selection-required", "reason": reason,
                 "target": target.get("ref"), "handshake": "not-started"}
     record = applied[0]
@@ -348,5 +351,6 @@ def publication(me: dict, visible=True, call=None) -> dict:
     if not go:
         return {"status": "selection-required", "visible": False,
                 "reason": consent.shown_refusal(verdict, "publishing this session for discovery", kept)
-                if verdict else "needs your user's instruction to make this session discoverable"}
+                if verdict else (consent.asks("Making this session discoverable", runtime=me.get("runtime"))
+                                 if kept else consent.cannot_keep("Making this session discoverable", None, me))}
     return {"status": "published", "visible": True}

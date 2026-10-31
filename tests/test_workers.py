@@ -76,7 +76,7 @@ class ApprovalTest(TempState):
     def _worker(self, **extra):
         from xsm import workers
         rec = {"name": "w1", "runtime": "claude", "mode": "background", "approval_timeout": 5,
-               "created": time.time(), "session_id": "s-w1"}
+               "created": time.time(), "session_id": "s-w1", "home": self.tmp}
         rec.update(extra)
         workers.save(rec)
         return rec
@@ -100,7 +100,8 @@ class ApprovalTest(TempState):
                     time.sleep(0.1)
             threading.Thread(target=answer_soon).start()
             out = workers.permission_request(
-                {"tool_name": "Bash", "tool_input": {"command": "rm x"}}, "claude")
+                {"tool_name": "Bash", "tool_input": {"command": "rm x"},
+                 "session_id": "s-w1", "tool_use_id": "fixture-call"}, "claude")
         finally:
             del os.environ["XSM_WORKER"]
         decision = out["hookSpecificOutput"]["decision"]
@@ -866,14 +867,15 @@ class NoIdleWorkerTest(TempState):
         from xsm import registry, workers
         rec = registry.upsert("claude", self.tmp, "s-w", os.getpid(), self.tmp)
         w = {"name": "w1", "runtime": "claude", "mode": "background", "session_id": "s-w",
-             "parent_ref": "pppppp", "approval_timeout": 1}
+             "parent_ref": "pppppp", "approval_timeout": 1, "home": self.tmp}
         workers.save(w)
         sent = []
         from xsm import send
         send.send = lambda target, text, **kw: sent.append((target, kw["kind"], text))
         os.environ["XSM_WORKER"] = "w1"
         try:
-            workers.permission_request({"tool_name": "Bash", "tool_input": {"command": "rm x"}},
+            workers.permission_request({"tool_name": "Bash", "tool_input": {"command": "rm x"},
+                                        "session_id": "s-w", "tool_use_id": "fixture-call"},
                                        "claude")
         finally:
             del os.environ["XSM_WORKER"]

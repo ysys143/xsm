@@ -179,9 +179,7 @@ class UserAnswersTest(unittest.TestCase):
     def test_invalid_structured_answers(self):
         for body in ("not JSON", "{}", "[]", "[null]", '[{"answer":"yes"}]',
                      json.dumps([{"questionItemId": "q1", "answer": "", "question": "Q"}]),
-                     json.dumps([{"questionItemId": "q1", "answer": True, "question": "Q"}]),
-                     json.dumps([{"questionItemId": "q1", "answer": "yes", "question": "Q"},
-                                 {"questionItemId": "q2", "answer": "yes", "question": "Q"}])):
+                     json.dumps([{"questionItemId": "q1", "answer": True, "question": "Q"}])):
             with self.subTest(body=body):
                 self.write(message("<send_user_message_question_reply>" + body
                                    + "</send_user_message_question_reply>"))
@@ -192,6 +190,12 @@ class UserAnswersTest(unittest.TestCase):
             "}]", '}, {"questionItemId":"q1","answer":"no","question":"Other?"}]')
         self.write(message(text))
         self.assertEqual(len(self.read(request="q1")["answers"]), 2)
+
+    def test_multiple_items_are_selected_by_request_and_exact_question(self):
+        text = reply().replace("}]", '}, {"questionItemId":"q2","answer":"no","question":"Other?"}]')
+        self.write(message(text))
+        self.assertEqual(self.read(request="q2", question="Other?")["answer"], "no")
+        self.assertIsNone(self.read(request="q2", question="Wrong?"))
 
     def test_exact_identity_required(self):
         self.write(message(reply()))

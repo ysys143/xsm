@@ -332,10 +332,11 @@ def _write_decision(team: str, record: dict) -> bool:
 
 
 def record_decision(me: dict, team_name: str, question: str, answer: str, *, via: str,
-                    options=None, item: str | None = None, summary: str | None = None) -> dict:
+                    options=None, item: str | None = None, summary: str | None = None,
+                    asked_question: str | None = None) -> dict:
     """Keep the user's answer beside the board and, with an item, set that item
-    to it. Only the two places that hold the user's own answer call this: the
-    xsm_decide form and a person at this terminal (`xsm board decide`)."""
+    to it. The supported paths holding the user's answer call this: the
+    xsm_decide form, verified native-user readback, and a person at this terminal (`xsm board decide`)."""
     import time
     from . import workers
     if me is None:
@@ -347,7 +348,7 @@ def record_decision(me: dict, team_name: str, question: str, answer: str, *, via
             raise BoardError(str(exc))
     else:
         team = _require_member(me, team_name)
-    if via not in ("mcp-elicitation", "terminal"):
+    if via not in ("mcp-elicitation", "native-user", "terminal"):
         raise BoardError("a decision is your user's own answer, from the form or the terminal")
     if item is not None and not doc.ITEM_RE.match(item):
         # Before anything is kept: a refusal here must mean nothing was recorded.
@@ -357,6 +358,8 @@ def record_decision(me: dict, team_name: str, question: str, answer: str, *, via
               "options": list(options) if options else None,
               "decided_by": "%s (person via %s)" % (os.environ.get("USER") or "person", via),
               "via": via, "asked_by": (me or {}).get("ref"), "item": item}
+    if asked_question is not None:
+        record["asked_question"] = asked_question
     record["id"] = decision_id(record)
     _write_decision(team["name"], record)
     node = None

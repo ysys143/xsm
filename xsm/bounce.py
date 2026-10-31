@@ -97,7 +97,8 @@ def text(notes: list) -> str:
         if note.get("here"):
             lines.append(
                 "[xsm] A message from %s was held by this session's gate (%s) and is kept as %s. "
-                "It is not delivered. If your user wants it, ask them, in plain words, whether "
+                "It is not delivered. If your user wants it, ask them, in plain words or with your "
+                "question tool, whether "
                 "to deliver it, and after they answer run `xsm held deliver %s`: that run shows "
                 "you their reply without acting, and on a yes, run it once more to receive the "
                 "message." % (note.get("from") or "an unknown sender",

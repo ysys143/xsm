@@ -282,6 +282,12 @@ class ClaudeWideningThroughResolveTest(TempState):
     context the test injected. A lone Claude session reaches the tool's own
     logic (the form path), which is the behaviour HEAD had and P01 must keep."""
 
+    def setUp(self):
+        super().setUp()
+        global mcp, paths, registry
+        from xsm import mcp, paths, registry
+        self.assertEqual(paths.HOME, self.tmp)
+
     def _tool(self, name, args, records, pid=DAEMON, comm="claude"):
         seen = {}
         msg = {"jsonrpc": "2.0", "id": 1, "method": "tools/call",
@@ -300,6 +306,8 @@ class ClaudeWideningThroughResolveTest(TempState):
 
     def test_a_lone_claude_session_reaches_the_grant_tool(self):
         rec = row("claude", "solo", 100, cwd=self.tmp)
+        home = os.path.expanduser("~/.claude")
+        rec.update(home=home, ref=mcp.identity.ref_of("claude", home, "solo"))
         reply, seen = self._tool("xsm_grant", {"runtime": "codex", "options": ["full_access"],
                                                 "reason": "why"}, [rec])
         self.assertEqual(seen["ctx"].basis, "ancestor")
@@ -311,6 +319,8 @@ class ClaudeWideningThroughResolveTest(TempState):
 
     def test_a_lone_claude_session_reaches_approve(self):
         rec = row("claude", "solo", 100, cwd=self.tmp)
+        home = os.path.expanduser("~/.claude")
+        rec.update(home=home, ref=mcp.identity.ref_of("claude", home, "solo"))
         reply, _ = self._tool("xsm_approve", {}, [rec])
         self.assertFalse(reply["isError"])
         self.assertIn("no waiting request", reply["content"][0]["text"])

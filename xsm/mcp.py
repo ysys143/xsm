@@ -7,7 +7,8 @@ a resident process (ADR-0003). It exists for two reasons (ADR-0005, ADR-0026):
   them through MCP elicitation, and their answer comes back from the client to
   this server without passing through the model (measured on both runtimes,
   2026-09-22). The answer and the question are stored with the decision,
-  beside a team's board.
+  beside a team's board. Verified native-user readback is a separate supported source;
+  it must match the exact conversation, question and unconsumed native answer.
 - A sandboxed Codex cannot write `~/.xsm` from its shell, but the MCP servers it
   starts run outside the sandbox (measured), so messaging and reading go through
   here too.
@@ -32,7 +33,7 @@ import signal
 import sys
 import time
 
-from . import consent, context, identity, paths, probe, registry
+from . import consent, context, identity, paths, probe, registry, workers
 from .instructions import HANDSHAKE_TEXT, MESSAGING_GUIDE
 
 PROTOCOL = "2025-06-18"
@@ -97,7 +98,9 @@ TOOLS = [
      "questions and recorded replies. Omit id to list. cancel=true withdraws a pending question, "
      "not an already applied domain permission.",
      "inputSchema": {"type": "object", "properties": {"id": {"type": "string"},
-                     "cancel": {"type": "boolean", "default": False}}}},
+                     "cancel": {"type": "boolean", "default": False},
+                     "pending_consent": {"type": "boolean", "description": "Read this conversation's consent markers and unbound reasons; cannot combine with id or cancel."},
+                     "drop_consent": {"type": "string", "description": "Close one open consent request by its [xsm:<id>] mark. It approves nothing and stops counting as open."}}}},
     {"name": "xsm_ask", "description": MESSAGING_GUIDE,
      "inputSchema": {"type": "object", "properties": {
          "target": {"type": "string"},
@@ -329,10 +332,14 @@ for _tool in TOOLS:
             "attachment_fallback": {"type": "string", "enum": ["inline"],
                 "description": "Explicitly carry UTF-8 copies in the body if peer files support is unknown; never automatic."},
             "request_id": {"type": "string"}})
+    # Codex refuses a call to an unannotated tool outright under approval policy
+    # never ("requires approval", 0.165, 2026-10-31), so a sandboxed Codex never
+    # reached the person. Each of these asks the person itself or only reads state.
+    _tool.setdefault("annotations", MESSAGING)
     if _tool["name"] in ("xsm_link", "xsm_join", "xsm_reach", "xsm_grant", "xsm_approve", "xsm_decide", "xsm_doc_endorse",
                          "xsm_team", "xsm_handover"):
-        _tool["inputSchema"]["properties"]["answer_request"] = {"type": "string"}
-        _tool["inputSchema"]["properties"]["original_question"] = {"type": "string"}
+        _tool["inputSchema"]["properties"]["answer_request"] = {"type": "string", "description": "Exact native questionItemId of the user's answer; verified against this conversation's native record, single use."}
+        _tool["inputSchema"]["properties"]["original_question"] = {"type": "string", "description": "Exact native_question from xsm_decision_status, including its decision marker; copy choices verbatim and do not paraphrase."}
         _tool["inputSchema"]["properties"]["decision_key"] = {
             "type": "string", "description": "Reuse for retries of one human decision; "
             "use a different label only for a genuinely new user request."}
@@ -527,12 +534,18 @@ class Server:
                                      choices=(((params.get("requestedSchema") or {}).get("properties") or {}).get("answer") or {}).get("enum"))
             record = decisions.recover_display(record["id"])
             if decision.get("native_request"):
+                if (record["status"] not in ("pending", "unshown-or-declined", "unknown") or
+                        (record.get("answer") and self.answer(record["answer"]["reply"], record.get("choices"))[1] == DECLINED) or
+                        time.time() > record["expires_at"] or not self._decision_current(decision)):
+                    self.pending_client.pop(rid, None)
+                    return {"id": rid, "error": {"code": -32000, "message": "decision is closed or expired; native answer not imported"}}
                 from . import user_answers
                 evidence = user_answers.read_answer(decision["me"], request=decision["native_request"],
-                            since=time.time() - consent.TTL, latest_only=True,
+                            since=max(record["created_at"], time.time() - consent.TTL), latest_only=True,
+                            question=decision.get("native_question"),
                             tail_bytes=user_answers.MAX_TAIL_BYTES)
                 original = decision.get("native_question")
-                if not evidence or evidence["question"] != original or original != record["question"]:
+                if not evidence or evidence["question"] != original or original != record.get("native_question", record["question"]):
                     self.pending_client.pop(rid, None)
                     return {"id": rid, "error": {"code": -32000,
                             "message": "native answer or original displayed question could not be verified"}}
@@ -553,9 +566,14 @@ class Server:
                 if record["status"] in ("answered", "denied", "dismissed", "unshown-or-declined"):
                     if not self._decision_current(decision):
                         return {"id": rid, "error": {"code": -32000, "message": "decision caller or scope changed"}}
+                    if record["status"] == "answered":
+                        decisions.start_application(record["id"], decision["generation"], decision["scope"], reader=self.reader_identity)
                     return record["answer"]["reply"]
                 return {"id": rid, "error": {"code": -32000, "message": "decision is not applicable: " + record["status"] +
                         "; inspect xsm_decision_status; a renewed user request uses a new decision_key"}}
+            if "elicitation" not in (self.client_caps or {}):
+                self.pending_client.pop(rid, None)
+                return {"id": rid, "error": {"code": -32000, "message": "client cannot show a form (no elicitation support); pending question retained for verified native recovery"}}
             if not decisions.display(record["id"], owner, params.get("message", ""), "mcp-elicitation", reader=self.reader_identity):
                 self.pending_client.pop(rid, None)
                 return {"id": rid, "error": {"code": -32000,
@@ -569,6 +587,9 @@ class Server:
                 # An optional OS notification cannot orphan the real question.
                 pass
             self.decision_routes[rid] = record["id"]
+        if method == "elicitation/create" and "elicitation" not in (self.client_caps or {}):
+            self.pending_client.pop(rid, None)
+            return {"id": rid, "error": {"code": -32000, "message": "client has no elicitation support"}}
         try:
             self.send({"id": rid, "method": method, "params": params})
             while True:
@@ -582,6 +603,8 @@ class Server:
                             return {"id": rid, "error": {"code": -32000, "message": "decision is " + record["status"]}}
                         if not self._decision_current(decision):
                             return {"id": rid, "error": {"code": -32000, "message": "decision caller or scope changed"}}
+                        if record["status"] == "answered":
+                            decisions.start_application(record["id"], decision["generation"], decision["scope"], reader=self.reader_identity)
                     return reply
                 if owner in self.cancelled:
                     if decision:
@@ -847,25 +870,68 @@ class Server:
         form_tools = ("xsm_link", "xsm_join", "xsm_reach", "xsm_grant", "xsm_approve",
                       "xsm_decide", "xsm_doc_endorse", "xsm_team", "xsm_handover")
         decision_call = None
+        inferred_team = False
+        if name == "xsm_decide" and not args.get("team"):
+            from . import teams
+            names = sorted(t["name"] for t in teams.teams_of(me))
+            own = [n for n in names if not (teams.load(n) or {}).get("pair")]
+            names = own if own else names
+            if len(names) > 1:
+                raise ToolError("this session is in teams %s; pass team. Nothing was asked" % ", ".join(names))
+            if names:
+                args = dict(args, team=names[0])
+                inferred_team = True
+        resolved_handover = None
+        if name in ("xsm_link", "xsm_reach", "xsm_grant") and args.get("dir"):
+            directory = os.path.expanduser(args["dir"])
+            if not os.path.isabs(directory):
+                directory = os.path.join(me.get("cwd") or os.getcwd(), directory)
+            args = dict(args, dir=os.path.realpath(directory))
+        if name == "xsm_handover" and args.get("action") != "show" and args.get("target") and args.get("summary"):
+            from . import resolve
+            with probe.quick():
+                selected = resolve.resolve(args["target"])
+            if not selected.ok:
+                raise ToolError(selected.reason)
+            resolved_handover = selected.record
+            args = dict(args, target="ref:" + resolved_handover["ref"])
         if name in form_tools:
+            if not me.get("ref"):
+                raise ToolError("this session is not registered for user decisions; use a registered foreground session")
+            worker = consent.unattended(me)
+            if worker:
+                raise ToolError(consent.no_person(name, worker))
             from . import decisions
             generation = self.ctx.generation or {"server": self.instance_id}
             scope = {"tool": name, "arguments": {k: v for k, v in args.items()
-                     if k not in ("answer_request", "original_question", "notify")}, "cwd": me.get("cwd")}
-            key = decisions.invocation(me, name, args, generation)
+                     if k not in ("answer_request", "original_question", "notify")}, "cwd": os.path.realpath(me["cwd"]) if me.get("cwd") else None}
+            resource = {k: resolved_handover.get(k) for k in ("runtime", "home", "session_id", "machine")} if resolved_handover else None
+            if resource:
+                scope["resource"] = resource
+            key = decisions.invocation(me, name, args, generation, resource=resource)
             prior = decisions.read(key)
+            if not prior:
+                legacy = decisions.digest({"owner": decisions.owner(me), "tool": name,
+                    "scope": {k: v for k, v in args.items() if k not in ("answer_request", "original_question", "notify")},
+                    "generation": generation})
+                old = decisions.read(legacy)
+                if old and old["owner"] == decisions.owner(me) and old["scope_digest"] == decisions.digest(scope):
+                    key, prior = legacy, old
             if prior and prior["status"] == "applied":
                 return prior["application"]["result"]
+            if prior and (prior.get("application") or {}).get("phase") == "started":
+                raise ToolError("outcome unknown or still applying; inspect xsm_decision_status and domain state before retrying; no operation repeated")
             decision_call = {"key": key, "me": copy.deepcopy(me), "scope": scope, "generation": generation,
                              "notify": args.get("notify") is True,
                              "native_request": args.get("answer_request"),
-                             "native_question": args.get("original_question")}
+                             "native_question": args.get("original_question"), "team_inferred": inferred_team,
+                             "resolved_handover": resolved_handover}
             self.decision_calls[self.active_request] = decision_call
         try:
             text = self._call(name, args, me)
             if decision_call:
                 record = decisions.read(decision_call["key"])
-                if record and record["status"] == "answered":
+                if record and (record["status"] == "answered" or (record.get("application") or {}).get("phase") == "started"):
                     decisions.applied(record["id"], text, decision_call["generation"], scope)
         finally:
             if decision_call:
@@ -933,6 +999,14 @@ class Server:
             return json.dumps({"storage_id": storage, "entry_id": entry, "encoding": encoding, "content": content}, ensure_ascii=False)
         if name == "xsm_decision_status":
             from . import decisions
+            if args.get("pending_consent"):
+                if args.get("id") or args.get("cancel"):
+                    raise ToolError("pending_consent is read-only; omit id and cancel")
+                return json.dumps(consent.pending_status(me), ensure_ascii=False)
+            if args.get("drop_consent"):
+                if not consent.drop_request(me, args["drop_consent"]):
+                    raise ToolError("no open request %s in this conversation" % args["drop_consent"])
+                return json.dumps({"closed": args["drop_consent"]}, ensure_ascii=False)
             return json.dumps(decisions.public_status(me, args.get("id"), args.get("cancel", False)), ensure_ascii=False)
         if name in ("xsm_connect", "xsm_publish") and args.get("answer_request"):
             if not args.get("original_question"):
@@ -1269,17 +1343,99 @@ class Server:
             from .provenance import readable
             raise ToolError(readable(materials.failure(exc))) from exc
 
+    def permission_closed(self):
+        from . import decisions
+        call = self.decision_calls.get(self.active_request)
+        record = decisions.read(call["key"]) if call else None
+        if record and (record["status"] in decisions.TERMINAL or
+                       (record.get("application") or {}).get("phase") == "started" or
+                       time.time() > record["expires_at"]):
+            return "decision closed, expired or outcome unknown; inspect xsm_decision_status; a renewed user request needs a new decision_key"
+        if record and record.get("answer") and self.answer(record["answer"]["reply"], record.get("choices"))[1] == DECLINED:
+            return "your user declined; do not work around it"
+        return None
+
+    def permission_started(self, receipt):
+        from . import decisions
+        call = self.decision_calls.get(self.active_request)
+        if call:
+            if not decisions.read(call["key"]):
+                decisions.begin(call["key"], call["me"], call["scope"], call["generation"], "", waiter=self.active_request)
+            decisions.start_application(call["key"], call["generation"], call["scope"], receipt=receipt, reader=self.reader_identity)
+            call["permission_receipt"] = receipt
+
+    def typed_permission(self, me, *key):
+        closed = self.permission_closed()
+        if closed:
+            raise ToolError(closed)
+        if consent.take(me, *key):
+            self.permission_started({"source": "typed-command", "verb": key[0], "target": key[1]})
+            return True
+        return False
+
+    def permission_reply(self, me, key, question):
+        call = self.decision_calls.get(self.active_request)
+        if call and call.get("native_request"):
+            return None  # explicit form recovery must validate its exact scoped question
+        closed = self.permission_closed()
+        if closed:
+            raise ToolError(closed)
+        if not key:
+            return None
+        if self.typed_permission(me, *key):
+            return True
+        binding = {"mcp_decision": call["key"]} if call else None
+        verdict, go, kept = consent.take_or_request(me, *key, binding=binding)
+        if call:
+            call["permission_key"], call["permission_kept"] = key, bool(kept)
+        if verdict is None:
+            return None
+        if not go:
+            raise ToolError(consent.shown_refusal(verdict, question, kept))
+        self.permission_started({"source": "input-consent", "text": verdict,
+                                 "via": consent.used_via, "binding_note": kept if isinstance(kept, str) else None})
+        return True
+
+    def permission_form(self, me, command, key, params, accept):
+        from . import decisions
+        call = self.decision_calls.get(self.active_request)
+        record = decisions.read(call["key"]) if call else None
+        if record and record["question"] and record["question"] != params["message"]:
+            raise ToolError("question or resolved target changed; inspect status and renew the user request")
+        if self.permission_reply(me, key, params["message"]):
+            return accept, "input-consent"
+        reply = self.ask_client("elicitation/create", params)
+        call = self.decision_calls.get(self.active_request) or {}
+        if "elicitation" not in (self.client_caps or {}) and not call.get("native_request"):
+            raise ToolError("this client cannot show a form. " + self.in_words(me, command, key))
+        choices = params["requestedSchema"]["properties"]["answer"].get("enum")
+        return self.answer(reply, choices)
+
+    def clear_permission(self, me, key):
+        call = self.decision_calls.get(self.active_request)
+        if call:
+            consent.cancel_bound_requests(me, call["key"])
+        else:
+            consent.clear_request(me, *key)
+
+    def permission_words(self, fallback):
+        call = self.decision_calls.get(self.active_request) or {}
+        return (call.get("permission_receipt") or {}).get("text", fallback)
+
+    def answer_source(self):
+        from . import decisions
+        call = self.decision_calls.get(self.active_request)
+        receipt = (call or {}).get("permission_receipt")
+        if receipt:
+            return "agent-supplied" if receipt.get("via") == "flag" else receipt["source"]
+        record = decisions.read(call["key"]) if call else None
+        source = ((record or {}).get("answer") or {}).get("source")
+        return "native-user" if source == "native-user" else "mcp-elicitation"
+
     def decide(self, me: dict, args: dict) -> str:
-        if "elicitation" not in (self.client_caps or {}):
-            # No form, no answer that is the person's own: xsm has no other road
-            # to record one for a session (a person records theirs with
-            # `xsm board decide`).
-            raise ToolError("this client cannot show a form (no elicitation support), so your "
-                            "user's answer cannot be recorded as a decision from here; nothing was "
-                            "recorded. Ask them in plain words and act on what they say")
         # Where the answer is kept is settled before the form: a session in
         # several teams must not be asked for an answer xsm then cannot place.
-        team, inferred = (args.get("team") or "").strip() or None, False
+        team, inferred = (args.get("team") or "").strip() or None, bool((self.decision_calls.get(self.active_request) or {}).get("team_inferred"))
         if not team:
             from . import teams
             mine = sorted(t["name"] for t in teams.teams_of(me))
@@ -1323,8 +1479,11 @@ class Server:
         answer, why = self.answer(reply, options)
         if answer is None:
             return "%s; nothing was recorded%s" % (unanswered(why), "" if why == DECLINED else
-                                                   ". You may ask them in plain words; to put "
-                                                   "their answer on record, call xsm_decide again")
+                                                   ". Your answer cannot be recorded as a decision from here without a verified reply. "
+                                                   "Ask them in plain words or a supported native question tool. "
+                                                   "No team decision was recorded. Inspect xsm_decision_status. "
+                                                   "Recover a verified native question answer with answer_request "
+                                                   "and original_question; do not repeat the unanswered form")
         if not team:
             # The answer is the person's and goes back to the agent; the record
             # lives beside a team's board, and there is none (T11).
@@ -1334,8 +1493,9 @@ class Server:
         summary = (args.get("summary") or "").strip()
         from . import board
         try:
-            rec = board.record_decision(me, team, question, answer, via="mcp-elicitation",
-                                        options=options or None, item=item, summary=summary or None)
+            rec = board.record_decision(me, team, question, answer, via=self.answer_source(),
+                                        options=options or None, item=item, summary=summary or None,
+                                        asked_question=args.get("original_question") if self.answer_source() == "native-user" else None)
         except board.BoardError as exc:
             raise ToolError("%s; the answer was %r and is not recorded" % (exc, answer))
         return "\n".join(["recorded decision %s beside team %s's board%s: %s%s" % (
@@ -1356,57 +1516,73 @@ class Server:
         command = "xsm doc add %s --tag endorsed --parent %s --text %s" % (
             shlex.quote(args.get("doc") or ""), shlex.quote(node["id"]), shlex.quote(node["body"]))
         key = ("endorse", consent.digest(args.get("doc"), node["body"], [node["id"]]))
-        if "elicitation" not in (self.client_caps or {}):
-            raise ToolError("this client cannot show a form. "
-                                       + self.in_words(me, command, key))
         preview = node["body"] if len(node["body"]) < 1500 else node["body"][:1500] + " …"
-        reply = self.ask_client("elicitation/create", {
+        answer, why = self.permission_form(me, command, key, {
             "message": "Endorse this node of %s as the document's text?\n[%s] by %s\n\n%s" % (
                 os.path.basename(path), ", ".join(node["tags"]), node["author"], preview),
             "requestedSchema": {"type": "object", "properties": {"answer": {
                 "type": "string", "title": "Endorse", "enum": ["endorse", "not now"]}},
-                "required": ["answer"]}})
-        answer, why = self.answer(reply, ["endorse", "not now"])
+                "required": ["answer"]}}, accept="endorse")
         if answer != "endorse":
             if answer is not None:
+                self.clear_permission(me, key)
                 self._deny_current_decision()
             return "your user did not endorse it (%s); nothing was added%s" % (
                 why, ". " + self.in_words(me, command, key) if answer is None and why != DECLINED
                 else "")
+        self.clear_permission(me, key)
         author = {"kind": "human", "name": os.environ.get("USER") or "person",
-                  "via": "mcp-elicitation"}
+                  "via": self.answer_source()}
         new = doc.add(path, author, node["body"], ["endorsed"], [node["id"]],
                       approved="asked by %s" % me.get("ref"))
         return "endorsed: node %s now carries %s; run `xsm doc render %s`" % (
             new["id"], node["id"], args.get("doc"))
 
     def in_words(self, me: dict, command: str, key: tuple | None = None) -> str:
-        """What to tell the agent when a form got no answer: ask in plain words,
-        then run `command`. The ask is recorded here under `key` (the one that
-        command computes), so their first "yes" has an ask to attach to; with no
-        key, or no session xsm can keep a reply for, the command goes first
-        (consent.in_words)."""
+        """Describe the retained request and same-MCP reply recovery.
+        Legacy callers without a decision controller use consent.in_words.
+        """
+        worker = consent.unattended(me)
+        if worker:
+            return consent.no_person(command, worker)
+        call = self.decision_calls.get(self.active_request)
+        if call and key == call.get("permission_key"):
+            if not call.get("permission_kept"):
+                return ("the input reply cannot be retained here; nothing was approved. Inspect "
+                        "xsm_decision_status id %s for a supported verified-native recovery path, "
+                        "or use a registered user-facing foreground session. Do not bounce between "
+                        "shell and MCP." % call["key"])
+            return ("Ask your user now, %s. %s After their answer, retry this same MCP "
+                    "tool to read the reply, then once more only on a yes; do not switch to a sandboxed shell. "
+                    "For verified form recovery instead, inspect xsm_decision_status id %s and copy "
+                    "native_question and choices exactly, without adding a CLI marker; then pass "
+                    "answer_request and original_question. Shell equivalent: `%s`." %
+                    (consent.how(me.get("runtime")), consent.ask_hint(), call["key"], command))
         return consent.in_words(command, bool(key) and consent.ask(me, *key), me.get("runtime"))
 
     def allowed(self, me: dict, question: str, command: str, key: tuple | None = None) -> tuple:
         """Ask the person allow/deny. Returns (True, None) on their allow, else
-        (False, what to tell the agent). The way round a form that cannot show
-        is the agent's own shell command, which asks for the user's reply
-        (consent.py) — never the person typing it (user decision, 2026-10-01)."""
-        if "elicitation" not in (self.client_caps or {}):
-            raise ToolError("this client cannot show a form. "
-                                       + self.in_words(me, command, key))
-        reply = self.ask_client("elicitation/create", {"message": question, "requestedSchema": {
-            "type": "object", "properties": {"answer": {"type": "string", "title": "Permission",
-                                                        "enum": ["allow", "deny"]}},
-            "required": ["answer"]}})
-        answer, why = self.answer(reply, ["allow", "deny"])
+        (False, what to tell the agent). If the form cannot show, the same
+        controller retains the input request or verifies native evidence;
+        the agent performs the operation after the user's answer.
+        """
+        answer, why = self.permission_form(me, command, key, {"message": question,
+            "requestedSchema": {"type": "object", "properties": {"answer": {
+                "type": "string", "title": "Permission", "enum": ["allow", "deny"]}},
+                "required": ["answer"]}}, accept="allow")
         if answer == "allow":
+            if key:
+                self.clear_permission(me, key)
             return True, None
         if answer == "deny":
+            if key:
+                self.clear_permission(me, key)
             self._deny_current_decision()
             return False, "your user declined: they chose 'deny'; do not work around it"
         if why == DECLINED:
+            if key:
+                self.clear_permission(me, key)
+            self._deny_current_decision()
             return False, unanswered(why)
         return False, "your user did not answer (%s). %s" % (why, self.in_words(me, command, key))
 
@@ -1429,7 +1605,7 @@ class Server:
             config.check_link(root, other)
         except ValueError as exc:
             raise ToolError(str(exc))
-        if not consent.take(me, "link", other, here):
+        if not self.typed_permission(me, "link", other, here):
             # Run from this session's own folder; --dir is taken only from a
             # person at a terminal, so it would refuse the agent (issue #9).
             command = "xsm link %s" % shlex.quote(other)
@@ -1460,11 +1636,13 @@ class Server:
         if not word or not summary:
             raise ToolError("target (the session that takes over) and summary (what it "
                                        "needs to continue) are both required")
-        with probe.quick():
-            found = resolve.resolve(word)
-        if not found.ok:
-            raise ToolError(found.reason)
-        target = found.record
+        target = (self.decision_calls.get(self.active_request) or {}).get("resolved_handover")
+        if target is None:
+            with probe.quick():
+                found = resolve.resolve(word)
+            if not found.ok:
+                raise ToolError(found.reason)
+            target = found.record
         try:
             handover._check(me, target)
             ok, refusal = self.allowed(
@@ -1581,7 +1759,7 @@ class Server:
                 config.check_join(project)      # before the consent is used up, as for link
             except ValueError as exc:
                 raise ToolError(str(exc))
-        if not consent.take(me, verb, project):       # the person typed /xsm join <project>
+        if not self.typed_permission(me, verb, project):       # the person typed /xsm join <project>
             ok, refusal = self.allowed(
                 me, "%s@%s asks to let %s %s the xsm project %r.%s\nAllow it?" % (
                     me.get("name"), me.get("alias"), root, verb, project,
@@ -1618,7 +1796,7 @@ class Server:
             config.check_reach(root)            # before the consent is used up, as for link
         except ValueError as exc:
             raise ToolError(str(exc))
-        if not consent.take(me, "reach", root):        # the person typed /xsm reach <dir>
+        if not self.typed_permission(me, "reach", root):        # the person typed /xsm reach <dir>
             ok, refusal = self.allowed(
                 me, "%s@%s (%s) asks to talk with the sessions in %s, both ways, until it ends.%s\n"
                 "Allow it?" % (me.get("name"), me.get("alias"), me.get("ref"), root,
@@ -1644,24 +1822,21 @@ class Server:
             return "no waiting request from your workers" + (
                 " with id %s" % args["id"] if args.get("id") else "")
         command, key = "xsm approve %s" % shlex.quote(req["id"]), ("approve", req["id"])
-        if "elicitation" not in (self.client_caps or {}):
-            raise ToolError("this client cannot show a form. "
-                                       + self.in_words(me, command, key))
         allow, deny = "allow", "deny"
-        reply = self.ask_client("elicitation/create", {
+        answer, why = self.permission_form(me, command, key, {
             "message": "Worker %s is waiting for your permission:\n%s\nAllow it?"
                        % (req["worker"], req["summary"]),
             "requestedSchema": {"type": "object", "properties": {"answer": {
                 "type": "string", "title": "Permission", "enum": [allow, deny]}},
-                "required": ["answer"]}})
-        answer, why = self.answer(reply, [allow, deny])
+                "required": ["answer"]}}, accept=allow)
         if why == DECLINED:
             answer = deny               # they said no to the form: the request is answered
         if answer is None:
             return ("your user did not answer (%s); the request is still waiting and the worker "
                     "is blocked until it is answered. %s" % (why, self.in_words(me, command, key)))
+        self.clear_permission(me, key)
         workers.answer_asked(req["id"], answer == allow, me.get("ref"),
-                             None if answer == allow else "your user said no")
+                             None if answer == allow else "your user said no", via=self.answer_source())
         return "%s: worker %s's request [%s] %s" % (
             "allowed" if answer == allow else "denied", req["worker"], req["id"], req["summary"])
 
@@ -1689,10 +1864,6 @@ class Server:
                     "Allow it once?" % (me.get("name"), me.get("alias"), runtime, cwd,
                                         "; ".join(words[o] for o in options), reason))
         allow, deny = "allow once", "deny"
-        reply = self.ask_client("elicitation/create", {
-            "message": question, "requestedSchema": {"type": "object", "properties": {
-                "answer": {"type": "string", "title": "Permission", "enum": [deny, allow]}},
-                "required": ["answer"]}}) if "elicitation" in (self.client_caps or {}) else None
         # What the agent runs without --grant, and the ask that command finds.
         # workers.spawn adds outside_scope itself for a folder outside this
         # session's scope; the other options are the flags it was given.
@@ -1705,23 +1876,26 @@ class Server:
                                + ["--" + o.replace("_", "-") for o in flags])
             asked = flags + ([] if config.scope_for(me, {"cwd": cwd})[0] else ["outside_scope"])
         key = ("grant", workers.grant_target(runtime, cwd, asked))
-        if reply is None:
-            raise ToolError("this client cannot show a form. "
-                                       + self.in_words(me, command, key))
-        answer, why = self.answer(reply, [deny, allow])
+        answer, why = self.permission_form(me, command, key, {
+            "message": question, "requestedSchema": {"type": "object", "properties": {
+                "answer": {"type": "string", "title": "Permission", "enum": [deny, allow]}},
+                "required": ["answer"]}}, accept=allow)
         if answer is None:
             # Nobody chose, so there is no decision to put on record.
             if why == DECLINED:
+                consent.cancel_bound_requests(me, (self.decision_calls.get(self.active_request) or {}).get("key"))
+                self._deny_current_decision()
                 return "%s; nothing was granted — do not start that worker" % unanswered(why)
             return ("%s; nothing was granted, so do not start that worker without their yes. %s"
                     % (unanswered(why), self.in_words(me, command, key)))
         # The answer is on record already: the form's human-decisions record holds
         # the question, the choices, the answer and who asked (decisions.py).
+        self.clear_permission(me, key)
         if answer != allow:
             if answer is not None:
                 self._deny_current_decision()
             return "your user declined: they chose 'deny'; do not start that worker"
-        g = workers.create_grant(me.get("ref"), runtime, cwd, options, answer)
+        g = workers.create_grant(me.get("ref"), runtime, cwd, options, self.permission_words(answer))
         use = command if remote else "xsm spawn %s --dir %s %s" % (
             runtime, cwd, " ".join("--" + o.replace("_", "-") for o in options))
         return "granted %s: %s --grant %s   (one use, %d minutes)" % (

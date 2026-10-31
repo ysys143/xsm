@@ -1126,7 +1126,9 @@ def unregistered_reason(runtime: str | None = None, thread: str | None = None) -
     if why:
         return "this session is not registered: %s" % why
     return ("this session is not registered: no hook record for it. If xsm was just installed, "
-            "send any message in the session first; otherwise run `xsm doctor`")
+            "send any message in the session first; otherwise run `xsm doctor`. "
+            "A background job without a hook record cannot decide here; use a registered foreground "
+            "session rather than assuming another message will register the job")
 
 
 INBOUND_LADDER = ("accept", "hold", "refuse")

@@ -1,5 +1,5 @@
 {
-  "description": "Registers this Codex session so others can address it, and checks every peer message before it reaches the model (ADR-0001, PROTOCOL 5.1).",
+  "description": "Registers this Codex session so others can address it, checks every peer message before it reaches the model (ADR-0001, PROTOCOL 5.1), and keeps a typed $xsm link, or a reply tied to an open request, as the person's consent (PROTOCOL 5.3.3).",
   "hooks": {
     "SessionStart": [
       {
