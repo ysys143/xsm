@@ -11,16 +11,13 @@ you at each step what has and has not happened.
 
 ![How XSM connects agent sessions through native runtime paths and explicit communication scopes](docs/assets/xsm-overview.svg)
 
-> **Release status.** 0.5.1 adds teams, DMs to multiple recipients, team boards and session handover,
-> and removes the old channel. See the [changelog](CHANGELOG.md), [team verification](docs/xsm/TESTPLAN.md#14-팀-보드-결재-인수인계-051)
-> and [implementation record](https://github.com/ysys143/xsm/blob/a124b22782d68c1541f6dd5893a57bbe6797b926/docs/plan/collaboration/team-implementation-progress.md)
-> for the tested environments and known limits. The earlier collaboration plan's
+> **Release status.** 0.5.2 fixes approval binding and answer recovery: one reply applies to the request it
+> identifies, and Codex can complete supported permission flows through MCP and verified native answers.
+> See the [changelog](CHANGELOG.md#052---2026-11-01), [approval verification](docs/xsm/TESTPLAN.md#15-승인-결속-25)
+> and [permission guide](skills/xsm/references/permissions.md). Teams, multi-recipient DMs, team boards and
+> handover remain available; the old channel was removed in 0.5.1. The earlier collaboration plan's
 > [full acceptance criteria](https://github.com/ysys143/xsm/blob/a124b22782d68c1541f6dd5893a57bbe6797b926/docs/plan/collaboration/completion-ledger.md)
-> remain incomplete.
-
-The unreleased implementation adds request binding and verified native-answer recovery.
-For the development contract, see [permission recovery](skills/xsm/references/permissions.md#development-binding-and-recovery-path);
-the release limits above still apply to installed 0.5.1.
+> remain incomplete. Open a new session after updating to use the new hooks and MCP server.
 
 ## Philosophy
 

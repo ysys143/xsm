@@ -91,7 +91,7 @@ permission to invoke that tool, not an answer to its question. A pane worker
 with a person in the pane can still use forms. Registration failures in a
 Claude background job are separate: another message is not a promised fix.
 
-In development, a background AskUserQuestion PermissionRequest is denied with
+A background AskUserQuestion PermissionRequest is denied with
 parent/lead guidance; it does not create a permission form that nobody can answer.
 Plugin and worker hooks for one invocation share a request only after the exact
 native tool-use ID is verified. Worker-local PreToolUse stores identity before

@@ -97,8 +97,8 @@ with `xsm_decide` and the team:
 
 Your user's answer is recorded beside the board under its own id and, with
 `item`, sets that item to it; members see "decided by …" on the board. The form, or your user running `xsm board decide` themselves, records one.
-The development native-readback path also records a verified `native-user`
-answer under the [recovery contract](permissions.md#development-binding-and-recovery-path).
+The native-readback path also records a verified `native-user`
+answer under the [recovery contract](permissions.md#how-an-answer-binds).
 A node alone cannot record approval: a node
 that names a decision id without that record shows "not confirmed". Never write
 a decision as yours.

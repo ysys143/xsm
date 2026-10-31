@@ -3,8 +3,6 @@
 Read this before connecting folders or sessions (link, join, reach, block) and
 whenever xsm says it needs your user's yes.
 
-## Known limits in 0.5.1
-
 ## Which way to ask
 
 Take the first that fits.
@@ -12,14 +10,14 @@ Take the first that fits.
 1. Your user already decided (they typed the command, or their request names it): run it. Do not ask.
 2. No person is at this session (a background worker): DM your parent or team lead. No form, no question tool.
 3. The runtime is asking about your own tool call: leave it to the runtime. A worker of yours waits: `xsm_approve`.
-4. What remains is a decision record (`xsm_decide`): the form only. If it does not reach them, say nothing was recorded.
+4. What remains is a decision record (`xsm_decide`): a form or verified native-answer recovery. Without one, say nothing was recorded.
 5. What remains is a permission: the form tool if it shows. If not, run the command first so the ask exists, then
    ask that one thing with its mark, then run it twice more: Claude Code AskUserQuestion; Codex
    `request_user_input_async` (`title` and `options`); in Plan mode, plain words. Never the synchronous
    `request_user_input`: its answer comes back in the tool output and xsm does not see it.
 6. You only need to know something: ask, in any way. An answer that names no request approves nothing.
 
-A permission ends when it is used. A decision record is read later as what your user decided, so it takes the form.
+A permission ends when it is used. A decision record is read later as what your user decided, so it requires the form or verified native evidence.
 
 ## How an answer binds
 
@@ -66,9 +64,9 @@ There is no need to bounce to a sandboxed shell.
 If status reports an application that started with an unknown outcome, inspect
 the decision and domain state. Do not repeat the operation or choose a new key
 to force it. A pending or uncertain result is not proof that no effect occurred.
-The development changes have automated and bounded native-probe coverage; see
+The 0.5.2 changes have automated and bounded native-probe coverage; see
 [the test record](../../../docs/xsm/TESTPLAN.md#15-승인-결속-25)
-for the exact paths and limits. Released 0.5.1 retains the limits above.
+for the exact paths and remaining limits. Update from 0.5.1 and start a new session to use them.
 
 ## Projects: talking across repositories
 
@@ -127,7 +125,7 @@ client's automatic reviewer", "declined — by your user, or by Codex without
 showing the form", "came back with no choice", "dismissed" (they closed the form
 without choosing), or "they chose 'deny'". Only "your user declined" and the last
 are certainly your user refusing. For the others, tell your user what the result
-says. In this development version, use the same MCP permission operation
+says. In 0.5.2, use the same MCP permission operation
 and the recovery contract above; its server can keep and show the reply without
 shell access. Do not retry an explicit no. For released 0.5.1, the result instead
 names a shell command; its sandbox-to-MCP recovery loop is an unresolved limit.

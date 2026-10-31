@@ -11,16 +11,13 @@ xsm은 이미 쓰고 있는 Claude Code와 Codex 세션이 서로를 찾아 함�
 
 ![XSM이 런타임의 네이티브 전달 경로와 명시적 통신 범위로 에이전트 세션을 연결하는 구조](docs/assets/xsm-overview.svg)
 
-> **릴리스 상태.** 0.5.1은 팀, 여러 수신자에게 보내는 DM, 팀 보드, 인수인계를 추가하고 기존 channel을
-> 제거했습니다. 검증 환경과 알려진 한계는 [변경 기록](CHANGELOG.md),
-> [팀 기능 시험](docs/xsm/TESTPLAN.md#14-팀-보드-결재-인수인계-051),
-> [구현 진행 기록](https://github.com/ysys143/xsm/blob/a124b22782d68c1541f6dd5893a57bbe6797b926/docs/plan/collaboration/team-implementation-progress.md)에 있습니다.
-> 기존 협업 계획의 [전체 수용 조건](https://github.com/ysys143/xsm/blob/a124b22782d68c1541f6dd5893a57bbe6797b926/docs/plan/collaboration/completion-ledger.md)은
-> 아직 완료되지 않았습니다.
-
-미릴리스 구현에는 요청별 답 결속과 검증된 네이티브 답 복구가 추가됐습니다.
-개발 계약은 [권한 복구 안내](skills/xsm/references/permissions.md#development-binding-and-recovery-path)를 따르며,
-위의 릴리스 한계는 설치된 0.5.1에 계속 적용됩니다.
+> **릴리스 상태.** 0.5.2는 승인 결속과 답 복구를 수정했습니다. 답은 자신이 지목한 요청에만 적용되고,
+> Codex에서도 MCP와 검증된 네이티브 답으로 지원되는 승인 경로를 끝낼 수 있습니다.
+> [변경 기록](CHANGELOG.md#052---2026-11-01), [승인 경로 시험](docs/xsm/TESTPLAN.md#15-승인-결속-25),
+> [권한 안내](skills/xsm/references/permissions.md)에 계약과 검증 범위가 있습니다.
+> 팀·다중 수신 DM·팀 보드·인수인계는 계속 제공하며, 기존 channel은 0.5.1에서 제거했습니다.
+> 이전 협업 계획의 [전체 수용 조건](https://github.com/ysys143/xsm/blob/a124b22782d68c1541f6dd5893a57bbe6797b926/docs/plan/collaboration/completion-ledger.md)은
+> 아직 완료되지 않았습니다. 갱신 후 새 세션을 열어야 새 훅과 MCP 서버를 사용합니다.
 
 ## 철학
 

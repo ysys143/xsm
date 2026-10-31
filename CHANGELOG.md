@@ -3,7 +3,14 @@
 What changed in xsm, newest first. Each released version's full notes, with its verification and upgrade
 steps, are on [GitHub Releases](https://github.com/ysys143/xsm/releases) (in Korean).
 
-## Unreleased
+## [0.5.2](https://github.com/ysys143/xsm/releases/tag/v0.5.2) - 2026-11-01
+
+
+Update a plugin install with `claude plugin marketplace update xsm` and `claude plugin update xsm@xsm`
+(Codex, in each home: `codex plugin marketplace upgrade xsm`, then `codex plugin add xsm@xsm`),
+and a direct install with `xsm install --refresh` from an updated checkout. Open a new session afterward:
+already-running sessions keep their old hooks and MCP server. Codex can require hook review after a plugin
+content change; `xsm doctor` cannot verify that content trust.
 
 - One answer, one request ([#25](https://github.com/ysys143/xsm/issues/25)). Every refusal gives the ask's mark,
   `[xsm:<id>]`, for the head of the question. A question-tool answer reaches the ask its question names, by id, mark
@@ -21,6 +28,11 @@ steps, are on [GitHub Releases](https://github.com/ysys143/xsm/releases) (in Kor
   workers are covered and `xsm_connect` and `xsm_publish` no longer leak past it. Deduplicate worker permission hooks by native
   invocation ID, observed in worker-local hooks before transcript flushing; preserve deadlines and denial notices.
   Global hook registrations and worker permission rules are unchanged.
+
+- MCP tool annotations let Codex never reach the permission server. In on-request, this removes Codex's
+  extra tool-call confirmation for the permission tools; xsm still requires the user's answer on the server.
+- Known limit: a Claude session moved to the background during a conversation can lose its xsm registration.
+  Its cause remains unresolved; a newly started `claude --bg` job was verified separately (TESTPLAN §15).
 
 ## [0.5.1](https://github.com/ysys143/xsm/releases/tag/v0.5.1) - 2026-10-31
 
