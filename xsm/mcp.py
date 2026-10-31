@@ -645,6 +645,7 @@ class Server:
         if decision:
             from . import decisions
             decisions.deny(decision["key"])
+            consent.spend_recent(decision["me"])
 
     def answer(self, reply, allowed) -> tuple:
         return person_answer(reply, allowed, self.client_name)
@@ -898,9 +899,6 @@ class Server:
         if name in form_tools:
             if not me.get("ref"):
                 raise ToolError("this session is not registered for user decisions; use a registered foreground session")
-            worker = consent.unattended(me)
-            if worker:
-                raise ToolError(consent.no_person(name, worker))
             from . import decisions
             generation = self.ctx.generation or {"server": self.instance_id}
             scope = {"tool": name, "arguments": {k: v for k, v in args.items()
@@ -1364,26 +1362,36 @@ class Server:
             decisions.start_application(call["key"], call["generation"], call["scope"], receipt=receipt, reader=self.reader_identity)
             call["permission_receipt"] = receipt
 
+    def refuse_unattended(self, me, what):
+        """No form for a session nobody answers: the question goes up in a DM. Only what
+        would ask the person: a worker still lists its teams and leaves one."""
+        worker = consent.unattended(me)
+        if worker:
+            raise ToolError(consent.no_person(what, worker))
+
     def typed_permission(self, me, *key):
+        """A command the person typed is a new yes, whatever became of an earlier ask
+        for the same thing (a denied form), so it comes before that ask's state."""
+        if consent.take(me, *key):
+            if not self.permission_closed():
+                self.permission_started({"source": "typed-command", "verb": key[0], "target": key[1]})
+            return True
         closed = self.permission_closed()
         if closed:
             raise ToolError(closed)
-        if consent.take(me, *key):
-            self.permission_started({"source": "typed-command", "verb": key[0], "target": key[1]})
-            return True
         return False
 
     def permission_reply(self, me, key, question):
         call = self.decision_calls.get(self.active_request)
         if call and call.get("native_request"):
             return None  # explicit form recovery must validate its exact scoped question
+        if key and self.typed_permission(me, *key):
+            return True
         closed = self.permission_closed()
         if closed:
             raise ToolError(closed)
         if not key:
             return None
-        if self.typed_permission(me, *key):
-            return True
         binding = {"mcp_decision": call["key"]} if call else None
         verdict, go, kept = consent.take_or_request(me, *key, binding=binding)
         if call:
@@ -1398,6 +1406,7 @@ class Server:
 
     def permission_form(self, me, command, key, params, accept):
         from . import decisions
+        self.refuse_unattended(me, command)
         call = self.decision_calls.get(self.active_request)
         record = decisions.read(call["key"]) if call else None
         if record and record["question"] and record["question"] != params["message"]:
@@ -1433,6 +1442,7 @@ class Server:
         return "native-user" if source == "native-user" else "mcp-elicitation"
 
     def decide(self, me: dict, args: dict) -> str:
+        self.refuse_unattended(me, "Recording a decision")
         # Where the answer is kept is settled before the form: a session in
         # several teams must not be asked for an answer xsm then cannot place.
         team, inferred = (args.get("team") or "").strip() or None, bool((self.decision_calls.get(self.active_request) or {}).get("team_inferred"))

@@ -111,7 +111,7 @@ class WorkerPermissionBindingTest(TempState):
         reply = self.w.permission_request(dict(self.data, tool_name="AskUserQuestion"), "claude")
         decision = reply["hookSpecificOutput"]["decision"]
         self.assertEqual(decision["behavior"], "deny")
-        self.assertIn("parent", decision["message"])
+        self.assertIn("no person at its terminal", decision["message"])
         self.assertEqual(self.requests(), [])
 
     def observed(self, event, call_id):

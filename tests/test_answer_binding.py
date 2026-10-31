@@ -183,6 +183,38 @@ class OneAnswerOneDecisionTest(_Asks):
         self.assertEqual(paths.read_json(second)["verdict"], "yes")
 
 
+class RefusalStandsTest(_Asks):
+    def test_a_no_on_the_ask_is_not_replaced_by_earlier_words(self):
+        """Security review: `--reply "ok thanks"` turned the person's no into a yes."""
+        self.say("ok thanks, run the tests")
+        pending = self.asks("alpha")
+        self.say("no, do not do that")
+        consent.supplied = "ok thanks"
+        reply, go, _ = consent.take_or_request(self.me, "join", "alpha")
+        self.assertEqual(reply, "no, do not do that")
+        self.assertFalse(go)
+        self.assertEqual(paths.read_json(pending["alpha"][0])["verdict"], "no, do not do that")
+
+    def test_after_a_refusal_earlier_words_stand_for_nothing(self):
+        self.say("ok thanks, run the tests")
+        consent.spend_recent(self.me)
+        consent.supplied = "ok thanks"
+        reply, go, _ = consent.take_or_request(self.me, "join", "alpha")
+        self.assertIsNone(reply)
+        self.assertFalse(go)
+
+    def test_two_calls_of_a_form_tool_are_two_decisions(self):
+        """Security review: one yes made two grants, the reason told apart two calls."""
+        for key, decision in (("one", "d1"), ("two", "d2")):
+            paths.write_json(consent._pending_path(self.me["ref"], key), {
+                "verb": "grant", "target": "same", "here": None, "marked": True, "ask_id": key,
+                "t": consent.time.time(), "verdict": None, "binding": {"mcp_decision": decision},
+                "session_id": str(self.me.get("session_id") or "")})
+        self.say("yes")
+        verdicts = [paths.read_json(p)["verdict"] for p in consent.pending_files(self.me["ref"])]
+        self.assertEqual(verdicts, [None, None])
+
+
 class NothingLostTest(_Asks):
     def test_no_after_two_asks_is_shown_with_the_yes_before_it(self):
         pending = self.asks("alpha", "beta")
@@ -193,6 +225,7 @@ class NothingLostTest(_Asks):
         self.assertFalse(entry["shown"])
         reply, go, kept = consent.take_or_request(self.me, "join", "alpha")
         self.assertFalse(go)
+        consent.pending_note = None
         self.assertIn("취소해", consent.shown_refusal(reply, "joining", kept))
 
     def test_a_new_request_does_not_cost_the_reply_already_kept(self):
@@ -215,6 +248,84 @@ class NothingLostTest(_Asks):
     def test_a_team_decisions_answer_is_no_stray_answer(self):
         self.question("[xsm-decision:abc] Ship?", "ship")
         self.assertEqual(consent.pending_status(self.me)["unbound"], [])
+
+    def test_a_team_decisions_answer_approves_no_permission_it_names(self):
+        pending = self.asks("alpha")
+        self.question("[xsm-decision:abc] Should the team drop alpha?", "Yes")
+        self.assertIsNone(paths.read_json(pending["alpha"][0])["verdict"])
+
+    def test_a_question_about_something_else_with_nothing_open_is_not_reported(self):
+        self.question("Which database?", "postgres")
+        consent.take_or_request(self.me, "join", "alpha")
+        self.assertIsNone(consent.pending_note)
+
+    def test_an_answer_without_structure_is_kept_and_applies_to_nothing(self):
+        pending = self.asks("alpha")
+        consent.record(self.me, {"hook_event_name": "PostToolUse", "tool_name": "AskUserQuestion",
+                                 "tool_response": "Yes"})
+        self.assertIsNone(paths.read_json(pending["alpha"][0])["verdict"])
+        self.assertEqual(consent.pending_status(self.me)["unbound"][0]["answer"], "Yes")
+
+    def test_an_expired_diagnostic_is_pruned(self):
+        consent._unbound(self.me, "Yes", "Q", None, "unmatched")
+        p = paths.path(consent.ASKED, self.me["ref"] + ".unbound.json")
+        saved = paths.read_json(p)
+        saved["answers"][0]["t"] -= consent.TTL + 1
+        paths.write_json(p, saved)
+        consent.prune()
+        self.assertFalse(os.path.exists(p))
+
+    def test_answers_are_selected_under_the_conversations_lock(self):
+        pending = self.asks("alpha")
+        real, taken = consent._strict_locked, []
+
+        def spy(path, wait=None):
+            taken.append(path)
+            return real(path, wait)
+        with mock.patch.object(consent, "_strict_locked", spy):
+            self.say("yes")
+        self.assertIn("consent-bindings", taken[0])
+        self.assertEqual(paths.read_json(pending["alpha"][0])["verdict"], "yes")
+
+    def test_an_older_hook_cannot_move_a_reply_from_one_ask_to_the_other(self):
+        pending = self.asks("alpha", "beta")
+        for p, entry in pending.values():
+            entry.update(verdict="yes", verdict_t=consent.time.time(), shown=False)
+            entry.pop("answer_binding", None)
+            paths.write_json(p, entry)
+        consent.take_or_request(self.me, "join", "alpha")
+        self.assertIsNone(paths.read_json(pending["beta"][0])["verdict"])
+        self.assertIsNone(consent.take_or_request(self.me, "join", "beta")[0])
+
+    def test_a_question_item_claimed_by_question_blocks_older_readers(self):
+        marker = consent.claim_answer(self.me, "item", "digest-1", "owner-1")
+        self.assertTrue(marker)
+        self.assertTrue(paths.read_json(consent.native_answer_path(self.me, "item"))["consumed"])
+
+    def test_a_form_closed_meanwhile_takes_its_ask_with_it(self):
+        from xsm import decisions
+        binding = {"mcp_decision": "d1"}
+        p = consent._pending_path(self.me["ref"], consent.digest(
+            "join", "alpha", json.dumps(binding, sort_keys=True)))
+        paths.write_json(p, {"verb": "join", "target": "alpha", "here": None, "ask_id": "a1", "marked": True,
+                             "t": consent.time.time(), "verdict": "yes", "verdict_t": consent.time.time(),
+                             "shown": True, "shown_t": 0, "answer_binding": "request-marker",
+                             "binding": binding, "session_id": str(self.me.get("session_id") or "")})
+        record = {"owner": decisions.owner(self.me), "generation": {}, "status": "denied"}
+        with mock.patch.object(decisions, "read", return_value=record):
+            self.assertEqual(consent.take_or_request(self.me, "join", "alpha", binding=binding)[:2],
+                             (None, False))
+        self.assertFalse(paths.read_json(p).get("verdict"))
+
+    def test_two_peers_of_one_name_are_two_decisions(self):
+        for key, pair in (("one", ["a", "b"]), ("two", ["a", "c"])):
+            paths.write_json(consent._pending_path(self.me["ref"], key), {
+                "verb": "collaborate", "target": "bee", "here": None, "marked": True, "ask_id": key,
+                "t": consent.time.time(), "verdict": None, "binding": {"pair": pair},
+                "session_id": str(self.me.get("session_id") or "")})
+        self.say("yes")
+        verdicts = [paths.read_json(p)["verdict"] for p in consent.pending_files(self.me["ref"])]
+        self.assertEqual(verdicts, [None, None])
 
     def test_an_answer_after_expiry_says_so(self):
         pending = self.asks("alpha")

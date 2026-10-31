@@ -528,9 +528,9 @@ class OneSlotPerThingTest(_Repos, TempState):
 class HookLockWaitTest(_Repos, TempState):
     """B7: a hook runs on every prompt of every session; a command may wait longer."""
 
-    def test_the_hook_waits_one_second_and_a_command_five(self):
+    def test_the_hook_waits_well_under_its_limit_and_a_command_five(self):
         from xsm import consent
-        self.assertEqual(consent.HOOK_LOCK_WAIT, 1.0)
+        self.assertEqual(consent.HOOK_LOCK_WAIT, 4.0)   # a run applying a plan holds the lock
         self.assertEqual(consent.LOCK_WAIT, 5.0)
         self._asks(["unblock", "bbb111"])
         waits = []
