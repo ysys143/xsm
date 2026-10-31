@@ -195,6 +195,25 @@ class HomeIsTheServersOwnTest(unittest.TestCase):
         # is for another home, so it is not signed as it.
         self.assertIsNone(seen[0])
 
+    def test_a_plugin_server_with_no_codex_home_knows_its_home_from_its_own_path(self):
+        """Codex filters an MCP server's environment: measured 2026-10-31, the
+        daemon had CODEX_HOME and the server under it did not, so a plugin
+        server in ~/.codex-3 refused its own thread."""
+        path = "/homes/.codex-3/plugins/cache/xsm/xsm/0.5.0/xsm/mcp.py"
+        with mock.patch.object(mcp.os.path, "realpath", side_effect=lambda p: p):
+            self.assertEqual(mcp.plugin_home(path), "/homes/.codex-3")
+            self.assertIsNone(mcp.plugin_home("/homes/.xsm/runtime/abc/xsm/mcp.py"))
+        rec = row("codex", "thread-y", 100, cwd="/proj/b")
+        rec["home"] = "/homes/.codex-3"
+        with mock.patch.object(mcp, "plugin_home", return_value="/homes/.codex-3"):
+            seen, result = serve_one([rec], meta={"threadId": "thread-y"}, env={})
+        self.assertIsNotNone(seen[0], "its own home's record, with no CODEX_HOME set")
+        self.assertFalse(result["isError"])
+        # A variable that is set still decides: another home's record is not taken.
+        with mock.patch.object(mcp, "plugin_home", return_value="/homes/.codex-3"):
+            seen, _ = serve_one([rec], meta={"threadId": "thread-y"}, env={"CODEX_HOME": "/homes/other"})
+        self.assertIsNone(seen[0])
+
     def test_a_codex_keeps_its_own_home_record_when_it_inherits_claude_config_dir(self):
         # A Codex started from a Claude shell carries CLAUDE_CONFIG_DIR and the
         # Claude session id. Its own record lives in CODEX_HOME and must be used.

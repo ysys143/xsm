@@ -423,6 +423,16 @@ def who_answered(reply, client=None) -> str:
     return person_answer(reply, client=client)[1]
 
 
+def plugin_home(path: str | None = None) -> str | None:
+    """The CODEX_HOME this server was installed in, from its own path
+    (<home>/plugins/cache/...). Codex hands an MCP server a filtered environment
+    with no CODEX_HOME, so a plugin server in any home but ~/.codex took ~/.codex
+    for its own and refused its own thread (measured with Codex 0.165, 2026-10-31)."""
+    here = os.path.realpath(path or __file__)
+    home, marker, _ = here.partition(os.sep + os.path.join("plugins", "cache") + os.sep)
+    return home if marker else None
+
+
 class Server:
     def __init__(self, inp=sys.stdin, out=sys.stdout):
         self.inp, self.out = inp, out
@@ -769,7 +779,7 @@ class Server:
         if runtime == "claude":
             return context.normalize_home(os.environ.get("CLAUDE_CONFIG_DIR") or "~/.claude")
         if runtime == "codex":
-            return context.normalize_home(os.environ.get("CODEX_HOME") or "~/.codex")
+            return context.normalize_home(os.environ.get("CODEX_HOME") or plugin_home() or "~/.codex")
         return None
 
     @staticmethod
