@@ -30,7 +30,7 @@ def path(*parts: str) -> str:
 # sandbox, which is why it exists, so from a sandboxed shell it is the way
 # round; the server itself replaces this (mcp.main).
 SANDBOX_HINT = ("use the xsm MCP tools instead (xsm_send for a message, same target, kind and "
-                "text; also xsm_inbox, xsm_post, xsm_channel): their server runs outside the "
+                "text; also xsm_inbox, xsm_board): their server runs outside the "
                 "sandbox")
 
 

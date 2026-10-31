@@ -1,0 +1,31 @@
+[
+  {
+    "conversationId": "8622c62e432dd6e6176c65681ec78a7b",
+    "timestamp": 1793360673092,
+    "requestedModel": "openai/gpt-6-luna",
+    "requestedEffort": "low",
+    "resolvedModel": "gpt-6-luna",
+    "servedModel": "gpt-6-luna",
+    "provider": "openai",
+    "status": 200,
+    "durationMs": 2889,
+    "terminalStatus": "completed",
+    "usage": {
+      "inputTokens": 22197,
+      "outputTokens": 184,
+      "totalTokens": 22381,
+      "cachedInputTokens": 10624,
+      "cacheReadInputTokens": 10624,
+      "cacheCreationInputTokens": 0,
+      "reasoningOutputTokens": 0
+    },
+    "attempts": [
+      {
+        "provider": "openai",
+        "model": "gpt-6-luna",
+        "status": 200,
+        "requestedEffort": "low"
+      }
+    ]
+  }
+]

@@ -391,7 +391,8 @@ def _handle(data: dict) -> dict | None:
         if passive["messages"]:
             # Metadata precedes the body; consumers may explicitly acknowledge
             # these tokens. Merely emitting hook context does not confirm receipt.
-            note = "[xsm] Unconfirmed handoff claims: " + json.dumps(passive["claims"])
+            note = ("[xsm] Unconfirmed handoff claims: " + json.dumps(passive["claims"])
+                    + "\nAfter reading, acknowledge them: " + _ack_hint(passive["claims"]))
             out = allow_with_context(runtime, note + "\n\n" + "\n\n".join(passive["messages"]))
         return _with_bounces(runtime, me, out)
     try:
@@ -418,7 +419,7 @@ def _handle(data: dict) -> dict | None:
 
 def _with_bounces(runtime: str, me: dict | None, out: dict | None) -> dict | None:
     """Add, once, the notes left for this session about its held SendMessages
-    (issue #8). A refused prompt cannot carry context, so they wait for the
+    (issue #8), and a line per team board that changed (board_notice). A refused prompt cannot carry context, so they wait for the
     next one that goes through."""
     if not me or (out is not None and "decision" in out):
         return out
@@ -426,7 +427,18 @@ def _with_bounces(runtime: str, me: dict | None, out: dict | None) -> dict | Non
         from . import bounce
         notes = bounce.notice(me.get("session_id"))
     except Exception:                   # noqa: BLE001 - a note must not cost the prompt
-        return out
+        notes = None
+    try:
+        from . import board_notice
+        board = board_notice.notice(me)
+    except Exception:                   # noqa: BLE001 - nor a board line
+        board = None
+    try:
+        from . import handover
+        letter = handover.notice(me)
+    except Exception:                   # noqa: BLE001 - nor a handover letter
+        letter = None
+    notes = "\n\n".join(n for n in (letter, notes, board) if n)
     if not notes:
         return out
     if out is None:
@@ -665,7 +677,8 @@ def _gate(data: dict, runtime: str, me: dict | None, parsed, span=None) -> dict 
     text = _context(decision, reason, parsed, runtime, worker=bool(worker), cwd=(me or {}).get("cwd"))
     text += _file_context(me, parsed)
     if isinstance(native_claim, dict):
-        text += "\nUnconfirmed handoff claim; after reading call xsm_ack with this token: " + json.dumps(native_claim)
+        text += ("\nUnconfirmed handoff claim: " + json.dumps(native_claim)
+                 + "\nAfter reading, acknowledge it: " + _ack_hint([native_claim]))
     return allow_with_context(runtime, text)
 
 
@@ -1325,11 +1338,35 @@ def claim_question_replies(me, result, *, owner=None, generation=None):
     return result
 
 
+def _ack_hint(claims) -> str:
+    """The exact calls that acknowledge these claims: the MCP tool and the CLI
+    both take the bare token values, not the claim objects shown above."""
+    tokens = [c.get("token") for c in claims if isinstance(c, dict) and isinstance(c.get("token"), str)]
+    return ("xsm_ack(tokens=%s) or `xsm ack %s`" % (json.dumps(tokens), " ".join(tokens))) if tokens else "no token"
+
+
+def claim_token(item) -> str:
+    """A claim token from what an agent passes: the bare 32-hex token, or the
+    claim object (or its JSON text) that the receive context printed."""
+    if isinstance(item, str):
+        text = item.strip()
+        if text.startswith("{"):
+            try:
+                item = json.loads(text)
+            except ValueError:
+                raise ValueError("invalid claim token")
+        else:
+            return text
+    if isinstance(item, dict) and isinstance(item.get("token"), str):
+        return item["token"]
+    raise ValueError("invalid claim token")
+
+
 def ack_inbox(me, tokens, *, owner=None, generation=None):
     from . import handoff
     owner, generation = _consumer(me, owner, generation)
     acked = []
-    for token in tokens:
+    for token in (claim_token(t) for t in tokens):
         record = handoff.ack(me, token, owner, generation)
         ledger.handoff_step(record["id"], "ack", me)
         acked.append(record["id"])
@@ -1340,7 +1377,7 @@ def release_inbox(me, tokens, *, owner=None, generation=None):
     from . import handoff
     owner, generation = _consumer(me, owner, generation)
     released = []
-    for token in tokens:
+    for token in (claim_token(t) for t in tokens):
         record = handoff.release(me, token, owner, generation)
         released.append(record["id"])
     return {"released": released}

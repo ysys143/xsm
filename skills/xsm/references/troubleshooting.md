@@ -37,7 +37,7 @@ anyone. Do the same thing once with the shell command, then report its result:
 |---|---|
 | `xsm_send` | `xsm send <target> --text "…"` (same kind, reply-to, resend) |
 | `xsm_inbox` | `xsm inbox` |
-| `xsm_post` / `xsm_channel` | `xsm post "…"` / `xsm channel show` |
+| `xsm_board` | `xsm board show <team>` / `xsm board set <team> "<item>" --text "…"` |
 | `xsm_link` / `xsm_join` / `xsm_reach` | `xsm link <folder>` / `xsm join <project>` (`xsm leave`) / `xsm reach <folder>` |
 
 For link, join and reach the shell takes the same typed consent. Without it,
@@ -46,9 +46,10 @@ then follow "Their reply is the verdict" in [permissions](permissions.md). Never
 type a command.
 `xsm_approve`, `xsm_grant`, `xsm_decide` and `xsm_doc_endorse` exist to put a
 choice in front of your user: never decide for them. Ask them in plain words
-and run the shell form (`xsm approve <id>`, `xsm post --tag decision "…"`,
-`xsm doc add … --tag endorsed`, `xsm spawn` without `--grant`): it keeps their
-reply as the verdict. The reverse also holds: when the shell is sandboxed and refuses, use
+and run the shell form (`xsm approve <id>`, `xsm doc add … --tag endorsed`,
+`xsm spawn` without `--grant`): it keeps their reply as the verdict.
+`xsm_decide` has no shell form for a session: act on their plain answer, and
+say it is not on record as a decision. The reverse also holds: when the shell is sandboxed and refuses, use
 the MCP tool (see Sending). Tell your user a session showing `orphaned` in
 `xsm doctor` needs restarting.
 

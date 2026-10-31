@@ -457,3 +457,57 @@ receive.take_inbox_claims(me)
                     mock.patch.object(remote, 'recorded_inbound', return_value=True), \
                     mock.patch.object(remote, '_project_members', return_value=True):
                 self.assertEqual(receive.check(remote_frame, self.b)[0], 'pass')
+
+
+class AckTokenFormTest(test_xsm.TempState):
+    """T0: the receive context shows claim objects; ack takes them as well as bare tokens."""
+
+    def setUp(self):
+        super().setUp()
+        from xsm import adapters, registry
+        home = self.tmp + '/codex'
+        os.makedirs(home)
+        self.a = registry.upsert('codex', home, 'sender', os.getpid(), self.tmp, name='sender')
+        self.b = registry.upsert('codex', home, 'receiver', os.getpid(), self.tmp, name='receiver')
+        patcher = mock.patch.object(adapters, 'to_codex', return_value='Queued message q-runtime for thread receiver.')
+        patcher.start()
+        self.addCleanup(patcher.stop)
+        self.owner = {'type': 'native', 'id': 'mcp-consumer'}
+        self.generation = 'real-controller-generation'
+
+    _send = HandoffConsumerTest._send
+    _take = HandoffConsumerTest._take
+
+    def _claim(self):
+        self._send()
+        return self._take()['claims'][0]
+
+    def test_ack_takes_the_claim_object_and_its_json_text(self):
+        from xsm import handoff, receive
+        claim = self._claim()
+        self.assertEqual(receive.ack_inbox(self.b, [claim], owner=self.owner, generation=self.generation),
+                         {'acked': [claim['id']]})
+        self.assertEqual(handoff.status(self.b, claim['id'])['status'], 'acknowledged')
+        claim2 = self._claim()
+        self.assertEqual(receive.ack_inbox(self.b, [json.dumps(claim2)], owner=self.owner,
+                                           generation=self.generation), {'acked': [claim2['id']]})
+
+    def test_ack_rejects_objects_without_a_token_and_bad_json(self):
+        from xsm import receive
+        self._claim()
+        for bad in ({'id': 'x'}, '{not json', {'token': 5}, 7):
+            with self.assertRaises(ValueError):
+                receive.ack_inbox(self.b, [bad], owner=self.owner, generation=self.generation)
+
+    def test_hint_names_the_bare_tokens_for_both_paths(self):
+        from xsm import receive
+        hint = receive._ack_hint([{'id': 'a', 'token': 'f' * 32}, {'id': 'b'}])
+        self.assertEqual(hint, 'xsm_ack(tokens=["%s"]) or `xsm ack %s`' % ('f' * 32, 'f' * 32))
+        self.assertEqual(receive._ack_hint([]), 'no token')
+
+    def test_cli_ack_accepts_the_claim_json(self):
+        from xsm import cli, registry
+        claim = self._claim()
+        with mock.patch.object(cli, '_unsure_caller', return_value=(self.b, None)), \
+                mock.patch('xsm.receive.consumer_for', return_value=(self.owner, self.generation)):
+            self.assertEqual(cli.main(['ack', json.dumps(claim)]), cli.OK)

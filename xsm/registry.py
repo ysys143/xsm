@@ -1035,7 +1035,7 @@ def _nested_runtime(rows: list, own_session: str, thread: str) -> str:
 
 def _me(session_id: str | None, cwd: str | None) -> tuple:
     """(record or None, which rule found it) — the rule is what a span of a
-    refused command needs, since "cannot tell who is posting" has one cause
+    refused command needs, since "cannot tell who is writing" has one cause
     per rule that could have matched and did not.
 
     The shell's own runtime is settled first, and only that runtime's id is
@@ -1103,14 +1103,14 @@ def _me(session_id: str | None, cwd: str | None) -> tuple:
     return None, "none:cwd-%d-live" % len(live)
 
 
-def unregistered_reason() -> str:
+def unregistered_reason(runtime: str | None = None, thread: str | None = None) -> str:
     """What to tell a session that has no record. A Codex thread is registered
     by its hooks at its next prompt, so right after installing or trusting
     them the thread running the command is not known yet — "no hook record for
     this cwd" read as a broken install (a tester's report, 2026-09-28). The
     runtime is decided as `me` decides it: a Codex that inherited a Claude
     session id was told to install xsm into that Claude's home."""
-    runtime = _runtime_here()
+    runtime = runtime or _runtime_here()
     if runtime == "ambiguous":
         return ("this shell carries both a Claude Code session id (%s) and a Codex thread id (%s) "
                 "- one runtime was started from the other's shell - and nothing here tells which "
@@ -1121,7 +1121,7 @@ def unregistered_reason() -> str:
         return ("this Codex thread (%s) is not registered yet: xsm's hooks register a thread at "
                 "its next prompt, so if they were just installed or trusted, send any message in "
                 "this session and try again; if it persists, run `xsm doctor`"
-                % os.environ.get("CODEX_THREAD_ID"))
+                % (thread or os.environ.get("CODEX_THREAD_ID")))
     why = self_consent(claude_home_here()) if runtime == "claude" else None
     if why:
         return "this session is not registered: %s" % why

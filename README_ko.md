@@ -150,9 +150,9 @@ xsm을 개발할 때 모든 것을 체크아웃에 둡니다. `--dev`는 그 줄
 그대로 둡니다). 그러면 두 세션의 권한 모드가 달라도 Claude가 내 다른 세션의 메시지를 전달합니다. 메시지 명령을
 이름과 런타임의 절대 경로로 `permissions.allow`에 넣습니다: `connect`, `ask`, `question-status`,
 `decision-status`, `discover`, `send`, `inbox`, `ack`, `files`, `owned`, `list`, `who`, `held`, `ledger`,
-`status`, `doctor`, `--version`. 짝이 되는 MCP 도구도 넣습니다: `xsm_connect`, `xsm_ask`, `xsm_question_status`,
-`xsm_decision_status`, `xsm_discover`, `xsm_send`, `xsm_inbox`, `xsm_ack`, `xsm_files`, `xsm_owned`, `xsm_post`,
-`xsm_channel`. 그래서 auto와 default 모드가 메시지를 막지 않습니다. `publish`, `network`, `spawn`, `post`,
+`status`, `doctor`, `board`, `--version`. 짝이 되는 MCP 도구도 넣습니다: `xsm_connect`, `xsm_ask`,
+`xsm_question_status`, `xsm_decision_status`, `xsm_discover`, `xsm_send`, `xsm_inbox`, `xsm_ack`, `xsm_files`,
+`xsm_owned`, `xsm_board`. 그래서 auto와 default 모드가 메시지를 막지 않습니다. `publish`, `network`, `spawn`,
 `doc add`는 목록에 없으며 런타임의 권한 확인을 그대로 거칩니다.
 
 `xsm uninstall`은 설치가 더한 훅, MCP 항목, 스킬 링크, 상태줄, 설정 항목을 뺍니다. `~/.local/bin/xsm` 링크가
@@ -284,6 +284,7 @@ xsm ack <token>...                                             # 답을 실제�
 xsm send my-reviewer --text "이것 좀 봐줘"                        # 알림
 xsm send my-reviewer --text "이 테스트 고쳐줘" --kind task --wait 15  # 일 넘기기. 전달을 기다림
 xsm send my-reviewer --text "참고만" --wake never                # 저장만. 상대는 다음 턴에 읽음
+xsm send reviewer tester docs --text "18시까지 main 동결"         # 각자에게 DM 하나씩, 누가 함께 받았는지 알려 줌
 xsm ledger                                                       # 전달 상태
 ```
 
@@ -379,6 +380,40 @@ xsm owned status reviewer                                        # 내 요청과
 xsm doctor                                     # 어느 홈에 훅이 없는지, 낡은 사본, 지금 막힌 것
 xsm selftest                                   # 훅이 실제로 도는지
 ```
+
+### 9. 팀으로 일하기
+
+여러 세션이 한 가지 일을 함께 하면 팀으로 묶습니다. 팀은 구성원 목록과 (있으면) 팀장입니다. 구성원끼리는 프로젝트와
+머신이 달라도 DM을 주고받을 수 있고, `team:<이름>`으로 보낸 DM은 실행 중인 모든 구성원에게 가며 각자에게 누가 함께
+받았는지 알려 줍니다. 범위 밖 세션을 넣는 것과 팀장을 정하는 것은 사용자의 승인을 받습니다. `xsm connect`는 구성원
+둘인 팀을 만듭니다.
+
+```bash
+xsm team create core                                   # 이 세션이 첫 구성원
+xsm team lead core planner                             # 사용자의 결정
+xsm team add core api-worker                           # 팀장이 같은 프로젝트 세션을 넣으면 묻지 않음, 아니면 사용자 승인
+xsm send team:core --text "18시까지 main 동결"           # 모든 구성원에게 DM 하나씩
+```
+
+팀마다 보드가 있습니다. 지금 팀에 유효한 것(현행 결정, 누가 무엇을 맡았는지, 진행)을 항목 하나에 하나씩 둡니다.
+구성원은 항목을 xsm doc의 불변 노드로 쓰고, 쓰기는 쓴 세션이 읽은 버전만 이어받습니다. 그래서 아무도 읽지 않은 버전이
+가려지지 않고, 둘을 읽은 세션이 정리할 때까지 둘 다 보입니다. 에이전트가 따르는 규칙은 짧습니다. 누군가를 움직이려면 DM, 팀 전체가 알아야 할 사실이면 보드, 둘 다에
+쓰지 않는다. 보드가 바뀌면 각 구성원의 다음 프롬프트에 바뀐 항목 이름을 담은 한 줄이 한 번 붙습니다(본문은 싣지
+않습니다).
+
+```bash
+xsm board set core "decision: cache" --text "redis, 세션 저장소용"
+xsm board show core                                    # ~/.xsm/teams/core/BOARD.md, 모든 워크트리에서 같음
+```
+
+결재는 사용자와 대면하는 팀장을 거칩니다. 비용, 밖으로 나가는 일(push, PR, 릴리스, 게시), 범위 변경은 보통 결재
+대상입니다. 팀장이 양식으로 묻고(팀을 지정한 `xsm_decide`) 사용자의 답은 보드 옆에 고유 ID로 기록되며, 보드 항목에
+누가 결정했는지 나옵니다. 결정이라고 주장만 하는 노드는 "not confirmed"로 보입니다.
+
+한 세션의 자리를 다른 세션에 넘기려면, 떠나는 세션에서 "night-shift한테 인수인계해"라고 말하면 됩니다. 에이전트가
+작업 맥락 요약을 쓰고 `xsm handover`를 실행하며, 사용자가 확인합니다. 팀 자리와 팀장 자리, 자기 보드 항목, 안 읽은
+DM, 답을 기다리는 질문이 후임에게 옮겨 가고, 후임은 다음 프롬프트에서 이 모두를 받습니다. 이후 옛 세션 앞으로 오는
+DM은 후임에게 갑니다.
 
 ## 참고
 
@@ -516,9 +551,8 @@ Grafana Tempo에서 메시지가 어디서 멈췄는지 바로 볼 수 있습니
 xsm은 메시지를 한 세션의 입력으로, 그 런타임이 이미 가진 경로를 통해 직접 넣습니다. 이 메시지는
 DM(direct message, 직접 메시지)입니다. 보내는 쪽이 받는 세션을 지정하고, 메시지가 그 세션의 입력으로 들어가므로
 세션을 깨울 수 있고, 전달이 기록되고 받는 쪽이 수신을 확인할 수 있으며, 답을 받을 수 있습니다. 직접이라는 말은 받는 쪽을
-지정한다는 뜻이지 일대일이라는 뜻이 아닙니다. Slack의 그룹 DM도 DM인 것과 같습니다. 채널(`xsm post`,
-`xsm channel`)은 반대로 움직입니다. 게시는 받는 쪽을 지정하지 않고 공유 기록 하나에 쓰이며, 누구도 깨우지 않고,
-읽을 쪽이 찾아와 읽습니다. 채널은 검토 중이며 팀과 팀 보드가 대체하면 제거할 예정입니다
+지정한다는 뜻이지 일대일이라는 뜻이 아닙니다. Slack의 그룹 DM도 DM인 것과 같습니다. 팀 전체가 알아야 할 사실은
+DM 대신 팀 보드에 둡니다([사용 사례 9](#9-팀으로-일하기)). 보드는 누구도 깨우지 않고, 구성원이 찾아와 읽습니다
 ([ADR-0025](docs/adr/0025-team-and-multi-recipient-dm.md), [ADR-0026](docs/adr/0026-team-board-on-xsm-doc.md)).
 
 ```
@@ -568,7 +602,7 @@ Machine A -> SSH -> Machine B                             양쪽 다 xsm 설치 
 │   ├── network*.py                    # P2P 멤버십, 디렉터리, 메시지, 복구 (ADR-0021)
 │   ├── remote.py                      # 다른 머신 (양방향 SSH, ADR-0007)
 │   ├── workers.py                     # 워커 생성·승인·종료 (ADR-0010)
-│   ├── channel.py / doc.py            # 채널 기록 (0005), 공동 문서 (0006)
+│   ├── doc.py / board.py              # 공동 문서 (0006), 팀 보드 (0026)
 │   ├── telemetry.py / otlp_export.py  # 스팬·메트릭 기록, OTLP/HTTP+JSON 전송 (ADR-0011)
 │   ├── install.py                     # 훅 설치·진단
 │   └── mcp.py                         # MCP 서버

@@ -1,0 +1,24 @@
+{
+  "frozen_at": "2026-10-30T09:17:18.822711+00:00",
+  "sha256": {
+    "BOARD.md": "c812717dee6ef4275cdfbaa8c06031f4315c4a04f4e2d1f860c9485678cc870d",
+    "fixture.json": "26f20bdf3f4e7e506cd9f14d22227783a1413773325fe73d4ae137a0b7fc99e1",
+    "labels-author.json": "72518aa9fb1c3ac6ca31706d050d6c4226c02917c0795c924d805aec76275f93",
+    "policy.json": "053472f4543066baef4c3b7d0b9ea5ef9bfe57a699225fd260502d7493017df0",
+    "filter-prompt.txt": "84f3ebeb634c043b580e8ad7a2ca5f81f52c280b73a307bd6bf02541f5023437",
+    "label-prompt.txt": "0662576af88ffe6d825d0390698949013aa4290cd5014a915757c9904a63ff58",
+    "build_fixture.py": "b34689292f496dad0d737e3395301321a3d1fb6d90be3989ff6d0d7441db9873",
+    "src/sessions.json": "2354ed6deabc7716bbdc8d61370e72490ef00ab3364ff4e730e3c99d90edbd46",
+    "src/B01.json": "d364fc7ad91f9ee7d8433006144486dec6c488985c555c92ff26fcb62d53e7a3",
+    "src/B02.json": "18aec05c7ffe9b1cb98df38fba8299dea6bf252679e7ca4568fdf7c24f37af29",
+    "src/B03.json": "0497d35e4639c10514f058e53d4cb18f860fd4db23e4c5add0be62df00f92432",
+    "src/B04.json": "114f5f7ce7f3770a6be07b29477ba04a33a79c9c6049e3f13b77d2ed3c26b594",
+    "src/B05.json": "5a1dd14a11c3516bfd0a600f76c2594f741033e905dfd84f3a66579ff2d9e14e",
+    "src/B06.json": "b7020fec126ce03cd8a5af01ac4d1ff933a5f1035d06b22b3ad3dea6ec52b6a9",
+    "src/B07.json": "e9449a122e55dc0b26f4dcbcb9ee3a80d4ea266580dceed0e6b1c280dbe16545",
+    "src/B08.json": "c52eaaca56e2c59ffc94a3710da051758f022b9ee07ae435707679235e35eb2a",
+    "src/B09.json": "eae01a3aee48cd490673de1674f4821b1c17b76393a221bdd707a911cac236f4",
+    "src/B10.json": "01d5eea2bf7f07c63bec7128950dadbc57595fca2950599ccd0a1526ca395068"
+  },
+  "stage": "pre-inference input/author-label/policy freeze; independent labels and reconciliation follow before any filter call"
+}

@@ -1485,7 +1485,7 @@ def codex_hook_hash(event: str, group: dict, handler: dict) -> str | None:
 _STATE_HEADER = re.compile(
     r"""^\[\s*hooks\s*\.\s*state\s*\.\s*("(?:[^"\\]|\\.)*"|'[^']*')\s*\]\s*(?:#.*)?$""")
 _STATE_VALUE = re.compile(
-    r"""^(["']?)(enabled|trusted_hash)\1\s*=\s*(true|false|"(?:[^"\\]|\\.)*"|'[^']*')\s*(?:#.*)?$""")
+    r"""^(["']?)(enabled|trusted_hash|trusted_content_hash)\1\s*=\s*(true|false|"(?:[^"\\]|\\.)*"|'[^']*')\s*(?:#.*)?$""")
 
 
 def _toml_string(token: str):
@@ -1602,6 +1602,20 @@ def codex_trust(home: str, approvals: bool = False) -> dict:
     return out
 
 
+def codex_content_hashed(home: str) -> bool:
+    """Whether Codex also keeps a content hash for the plugin's hooks here
+    (trusted_content_hash, seen with Codex 0.165). xsm does not know how it is
+    computed, so codex_trust cannot check it: Codex may ask to review hooks that
+    read as trusted, as a home did after its plugin was reinstalled (2026-10-30)."""
+    plugin = codex_plugin(home)
+    if not plugin:
+        return False
+    states = codex_hook_states(_read_text(os.path.join(os.path.realpath(os.path.expanduser(home)),
+                                                       "config.toml")) or "")
+    return any("trusted_content_hash" in v for k, v in states.items()
+               if k.startswith(plugin["key"] + ":"))
+
+
 STATUSLINE_BASE = "statusline-base"      # the statusLine a user had before xsm's
 
 
@@ -1706,7 +1720,7 @@ def remove_statusline(home: str) -> bool:
 # (issue #8, measured with Claude Code 2.1.286, 2026-10-01). Allowing the call
 # lets the form ask; the form is the consent (user decision, 2026-10-01).
 FORM_TOOLS = ("xsm_publish", "xsm_link", "xsm_reach", "xsm_join", "xsm_approve", "xsm_grant", "xsm_decide",
-              "xsm_doc_endorse")
+              "xsm_doc_endorse", "xsm_team", "xsm_handover")
 # A direct install registers the server as "xsm"; the plugin's is "xsm" in plugin "xsm".
 FORM_TOOL_PREFIXES = ("mcp__xsm__", "mcp__plugin_xsm_xsm__")
 
@@ -1716,7 +1730,7 @@ FORM_TOOL_PREFIXES = ("mcp__xsm__", "mcp__plugin_xsm_xsm__")
 # measured 2026-10-01). These commands exist to put a person's decision to
 # them: each refuses and tells the agent to ask until the person has replied.
 # Allowing the call lets them ask. Commands that mostly ask no one (spawn,
-# post, doc add) are left to the classifier (review, 2026-10-01). The plugin's
+# doc add) are left to the classifier (review, 2026-10-01). The plugin's
 # skill is named `xsm:xsm` when Claude calls it (the skills documentation:
 # plugin skills are namespaced), the directly installed one `xsm`.
 ASKING_COMMANDS = ("publish", "link", "reach", "join", "leave", "unblock", "approve", "attempts clear",
@@ -1735,12 +1749,17 @@ STALE_RULES = ("Bash(xsm spawn:*)", "Bash(xsm post:*)", "Bash(xsm doc add:*)")
 # send, read, list or report are allowed, by the name `xsm` and by the absolute
 # path of the runtime (what the receive context and the guide hand an agent
 # where `xsm` is not on PATH), and so are the MCP tools that message. This
-# reverses the narrowing of 2026-10-01 (review) for messaging only: spawn, `xsm
-# post` and `doc add` stay with the classifier. Policy allow_messaging=false
-# takes them out again on the next refresh.
+# reverses the narrowing of 2026-10-01 (review) for messaging only: spawn and
+# `doc add` stay with the classifier. Policy allow_messaging=false takes them
+# out again on the next refresh.
 MESSAGING_COMMANDS = ("connect", "ask", "question-status", "decision-status", "discover", "send", "inbox", "ack", "files", "owned", "list", "who", "held", "ledger", "status", "doctor",
-                      "--version")
-MESSAGING_TOOLS = ("xsm_connect", "xsm_ask", "xsm_question_status", "xsm_decision_status", "xsm_discover", "xsm_send", "xsm_inbox", "xsm_ack", "xsm_files", "xsm_owned", "xsm_post", "xsm_channel")
+                      "board", "--version")
+MESSAGING_TOOLS = ("xsm_connect", "xsm_ask", "xsm_question_status", "xsm_decision_status", "xsm_discover", "xsm_send", "xsm_inbox", "xsm_ack", "xsm_files", "xsm_owned",
+                   "xsm_board")
+# MCP tools xsm removed (the channel, 0.5.1: ADR-0026). Earlier versions put
+# them in the allow list as messaging; only xsm's server carries these names,
+# so a refresh takes them out whatever the note says.
+RETIRED_TOOLS = ("xsm_post", "xsm_channel")
 
 
 def mcp_tool_names() -> list:
@@ -1753,6 +1772,11 @@ def mcp_tool_names() -> list:
 def messaging_mcp_names() -> list:
     """The MCP messaging tools in the allow list; xsm's own names, like the form tools."""
     return [prefix + tool for prefix in FORM_TOOL_PREFIXES for tool in MESSAGING_TOOLS]
+
+
+def retired_mcp_names() -> list:
+    """The removed tools' rules (RETIRED_TOOLS): xsm's, and never wanted."""
+    return [prefix + tool for prefix in FORM_TOOL_PREFIXES for tool in RETIRED_TOOLS]
 
 
 def rule_roots(home: str) -> list:
@@ -1819,7 +1843,7 @@ def _xsm_rules(note, allow: list) -> list:
     held = list(note["added"]) if isinstance(note, dict) and isinstance(note.get("added"), list) \
         else []
     known = (mcp_tool_names() if isinstance(note, dict) and note.get("v") == NOTE_VERSION
-             else form_tool_names()) + messaging_mcp_names()
+             else form_tool_names()) + messaging_mcp_names() + retired_mcp_names()
     return held + [n for n in known if n in allow and n not in held]
 
 

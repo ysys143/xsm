@@ -1054,11 +1054,17 @@
         "status": "changed-rebinding-required",
         "changed_paths": [
           "skills/xsm/references/messaging.md",
+          "tests/test_b04_interfaces.py",
           "tests/test_crash_boundaries.py",
+          "tests/test_decisions.py",
+          "tests/test_handoff_consumer.py",
           "tests/test_install_cli_flow.py",
+          "tests/test_mcp_dispatch.py",
           "tests/test_mcp_wait_process.py",
           "tests/test_owned_interfaces.py",
           "tests/test_question_interfaces.py",
+          "tests/test_questions_contract.py",
+          "tests/test_selected_connection.py",
           "xsm/collaboration.py",
           "xsm/directory.py",
           "xsm/handoff.py",
@@ -1070,21 +1076,36 @@
           ".codex-plugin/plugin.json",
           "skills/xsm/SKILL.md",
           "skills/xsm/references/guide.md",
+          "tests/test_channel.py",
+          "tests/test_discovery_latency.py",
+          "tests/test_install_codex.py",
           "tests/test_install_runtime.py",
+          "tests/test_link.py",
+          "tests/test_mcp_identity.py",
+          "tests/test_open_mcp.py",
+          "tests/test_open_messaging.py",
           "tests/test_person_decisions.py",
           "tests/test_workers.py",
           "tests/test_xsm.py",
           "xsm/adapters.py",
+          "xsm/channel.py",
           "xsm/cli.py",
+          "xsm/config.py",
           "xsm/connect.py",
+          "xsm/doc.py",
           "xsm/envelope.py",
           "xsm/inbox.py",
           "xsm/install.py",
           "xsm/mcp.py",
+          "xsm/paths.py",
+          "xsm/policy.py",
           "xsm/probe.py",
           "xsm/receive.py",
+          "xsm/registry.py",
+          "xsm/remote.py",
           "xsm/resolve.py",
-          "xsm/send.py"
+          "xsm/send.py",
+          "xsm/workers.py"
         ],
         "scope": "현재 source 관측은 고정본 실행 이력과 별도. 각 조건은 자기 dependency hash만으로 재결속하며 예정 수정 성공을 추정하지 않음"
       }
@@ -1174,7 +1195,7 @@
           "tests/test_handoff_consumer.py": {
             "B05": "31f5d017861e402dc9a4c70314b395821b98f2f1daf3071b9adf1f5b06a37771",
             "P13": "31f5d017861e402dc9a4c70314b395821b98f2f1daf3071b9adf1f5b06a37771",
-            "current": "31f5d017861e402dc9a4c70314b395821b98f2f1daf3071b9adf1f5b06a37771",
+            "current": "772961adf650c91ad77bc4c584f022d848d27302fe4fbf8c97745da946ca34bc",
             "snapshot": "31f5d017861e402dc9a4c70314b395821b98f2f1daf3071b9adf1f5b06a37771"
           },
           "tests/test_handoff_crash.py": {
@@ -1198,7 +1219,7 @@
           "xsm/handoff.py": {
             "B05": "4157d48fe0acb5d6f14df089ce128bd4faa5a8185d85e9c9f818e9ff09cb175f",
             "P13": "4157d48fe0acb5d6f14df089ce128bd4faa5a8185d85e9c9f818e9ff09cb175f",
-            "current": "12564c8c370e4cf6bfe51af249ba382539759b3168a8aa99eb9a0f7a5055691c",
+            "current": "1a7e5d0224655b40e240a007052f8f5b06ea556407a9d1980ccda47cd26b6a6c",
             "snapshot": "4157d48fe0acb5d6f14df089ce128bd4faa5a8185d85e9c9f818e9ff09cb175f"
           },
           "xsm/identity.py": {
@@ -1216,25 +1237,25 @@
           "xsm/paths.py": {
             "B05": "242b8e64b5d564e503d5e0bbef1d7e8d160690e8bd5199bc160523969835bb39",
             "P13": "242b8e64b5d564e503d5e0bbef1d7e8d160690e8bd5199bc160523969835bb39",
-            "current": "242b8e64b5d564e503d5e0bbef1d7e8d160690e8bd5199bc160523969835bb39",
+            "current": "d0511519bff2f94c995db51abc98c9b0ac810ac4fe2389a29c82d0d9008310de",
             "snapshot": "242b8e64b5d564e503d5e0bbef1d7e8d160690e8bd5199bc160523969835bb39"
           },
           "xsm/receive.py": {
             "B05": "3c03383e0b2ab5e295576ebebaace7b95bb6de56bcfc0928e4abb03457d875fd",
             "P13": "3c03383e0b2ab5e295576ebebaace7b95bb6de56bcfc0928e4abb03457d875fd",
-            "current": "edc2b652dfd334bff67d56557ba512069697bd647e9551e8f642793a25fa54b6",
+            "current": "d35a07b183c84e52bfc883a552b73d9e49f1aeb75288c4bf72ef5d6d63fe4ff6",
             "snapshot": "3c03383e0b2ab5e295576ebebaace7b95bb6de56bcfc0928e4abb03457d875fd"
           },
           "xsm/registry.py": {
             "B05": "edce2c6e75ec4d1803f402db565900080be337b2727a40ff663376c355890360",
             "P13": "edce2c6e75ec4d1803f402db565900080be337b2727a40ff663376c355890360",
-            "current": "edce2c6e75ec4d1803f402db565900080be337b2727a40ff663376c355890360",
+            "current": "f3037f2cc674e2e753e2d2e30f3d95fa8565d65e1d5f85a135f9d650708f67c6",
             "snapshot": "edce2c6e75ec4d1803f402db565900080be337b2727a40ff663376c355890360"
           },
           "xsm/send.py": {
             "B05": "f73399e87581f6ac9c3d86d174f284b3f4c27294e5bbf1c78da767bf2dec8f70",
             "P13": "f73399e87581f6ac9c3d86d174f284b3f4c27294e5bbf1c78da767bf2dec8f70",
-            "current": "c63417d6e5d06542f3b092f6d2569b783b68363295caffc8af7149119e4544d9",
+            "current": "e558bf3e55bebd72f06b44aee28bd4a5b1df2861edff81e9d8f980139cd08017",
             "snapshot": "f73399e87581f6ac9c3d86d174f284b3f4c27294e5bbf1c78da767bf2dec8f70"
           }
         },
@@ -1329,7 +1350,7 @@
           "xsm/connect.py": {
             "B05": "61aa314f64c122955a929406778f940cf96cdc7a90ec0425cbe958dcb486c292",
             "P13": "61aa314f64c122955a929406778f940cf96cdc7a90ec0425cbe958dcb486c292",
-            "current": "be25196f7efd16e43ef09718b97e9bd6b3f5bea737bb6e4f673a8b94688131ff",
+            "current": "de8153c9e6525ab99fc5a7c99a616ee38650f216b3db0d0921392f7330c6b632",
             "snapshot": "61aa314f64c122955a929406778f940cf96cdc7a90ec0425cbe958dcb486c292"
           },
           "xsm/envelope.py": {
@@ -1341,7 +1362,7 @@
           "xsm/handoff.py": {
             "B05": "4157d48fe0acb5d6f14df089ce128bd4faa5a8185d85e9c9f818e9ff09cb175f",
             "P13": "4157d48fe0acb5d6f14df089ce128bd4faa5a8185d85e9c9f818e9ff09cb175f",
-            "current": "12564c8c370e4cf6bfe51af249ba382539759b3168a8aa99eb9a0f7a5055691c",
+            "current": "1a7e5d0224655b40e240a007052f8f5b06ea556407a9d1980ccda47cd26b6a6c",
             "snapshot": "4157d48fe0acb5d6f14df089ce128bd4faa5a8185d85e9c9f818e9ff09cb175f"
           },
           "xsm/ledger.py": {
@@ -1359,25 +1380,25 @@
           "xsm/paths.py": {
             "B05": "242b8e64b5d564e503d5e0bbef1d7e8d160690e8bd5199bc160523969835bb39",
             "P13": "242b8e64b5d564e503d5e0bbef1d7e8d160690e8bd5199bc160523969835bb39",
-            "current": "242b8e64b5d564e503d5e0bbef1d7e8d160690e8bd5199bc160523969835bb39",
+            "current": "d0511519bff2f94c995db51abc98c9b0ac810ac4fe2389a29c82d0d9008310de",
             "snapshot": "242b8e64b5d564e503d5e0bbef1d7e8d160690e8bd5199bc160523969835bb39"
           },
           "xsm/questions.py": {
             "B05": "c039aea75a9a3e1aebcedcbc3a9ddaedf5bff4ca3b2f1153f3c7ab6a3e498270",
             "P13": "c039aea75a9a3e1aebcedcbc3a9ddaedf5bff4ca3b2f1153f3c7ab6a3e498270",
-            "current": "1b13a9c4a3db2e9f933ebc97ed00f362bb4f3cac95b7092ca5c302e718296a70",
+            "current": "43189ba3c5b0b5388e9491dd8ba070ddf0625df12aae6a9499b8024857ee66f8",
             "snapshot": "c039aea75a9a3e1aebcedcbc3a9ddaedf5bff4ca3b2f1153f3c7ab6a3e498270"
           },
           "xsm/receive.py": {
             "B05": "3c03383e0b2ab5e295576ebebaace7b95bb6de56bcfc0928e4abb03457d875fd",
             "P13": "3c03383e0b2ab5e295576ebebaace7b95bb6de56bcfc0928e4abb03457d875fd",
-            "current": "edc2b652dfd334bff67d56557ba512069697bd647e9551e8f642793a25fa54b6",
+            "current": "d35a07b183c84e52bfc883a552b73d9e49f1aeb75288c4bf72ef5d6d63fe4ff6",
             "snapshot": "3c03383e0b2ab5e295576ebebaace7b95bb6de56bcfc0928e4abb03457d875fd"
           },
           "xsm/send.py": {
             "B05": "f73399e87581f6ac9c3d86d174f284b3f4c27294e5bbf1c78da767bf2dec8f70",
             "P13": "f73399e87581f6ac9c3d86d174f284b3f4c27294e5bbf1c78da767bf2dec8f70",
-            "current": "c63417d6e5d06542f3b092f6d2569b783b68363295caffc8af7149119e4544d9",
+            "current": "e558bf3e55bebd72f06b44aee28bd4a5b1df2861edff81e9d8f980139cd08017",
             "snapshot": "f73399e87581f6ac9c3d86d174f284b3f4c27294e5bbf1c78da767bf2dec8f70"
           }
         },
@@ -1449,13 +1470,13 @@
           "tests/test_b04_interfaces.py": {
             "B05": "9e90d53ed1c326a5379631aa6aa5e095cc301f080c05d6bbf724fac24dee8a27",
             "P13": "9e90d53ed1c326a5379631aa6aa5e095cc301f080c05d6bbf724fac24dee8a27",
-            "current": "9e90d53ed1c326a5379631aa6aa5e095cc301f080c05d6bbf724fac24dee8a27",
+            "current": "d0ea95a59d4630509443fe8f9859e0e7e7bd94d825112a4abb6316db46e66f9f",
             "snapshot": "9e90d53ed1c326a5379631aa6aa5e095cc301f080c05d6bbf724fac24dee8a27"
           },
           "tests/test_handoff_consumer.py": {
             "B05": "31f5d017861e402dc9a4c70314b395821b98f2f1daf3071b9adf1f5b06a37771",
             "P13": "31f5d017861e402dc9a4c70314b395821b98f2f1daf3071b9adf1f5b06a37771",
-            "current": "31f5d017861e402dc9a4c70314b395821b98f2f1daf3071b9adf1f5b06a37771",
+            "current": "772961adf650c91ad77bc4c584f022d848d27302fe4fbf8c97745da946ca34bc",
             "snapshot": "31f5d017861e402dc9a4c70314b395821b98f2f1daf3071b9adf1f5b06a37771"
           },
           "tests/test_policy_recovery.py": {
@@ -1473,7 +1494,7 @@
           "xsm/config.py": {
             "B05": "92255fcee9cd2fe3b013851b056533a78d5090b225123f0d460de9c425feb5ca",
             "P13": "92255fcee9cd2fe3b013851b056533a78d5090b225123f0d460de9c425feb5ca",
-            "current": "92255fcee9cd2fe3b013851b056533a78d5090b225123f0d460de9c425feb5ca",
+            "current": "b37e69909ca58f02fa96a6d62935ef25640c94790e45965314cc73b2e2ef8cb5",
             "snapshot": "92255fcee9cd2fe3b013851b056533a78d5090b225123f0d460de9c425feb5ca"
           },
           "xsm/consent.py": {
@@ -1485,37 +1506,37 @@
           "xsm/handoff.py": {
             "B05": "4157d48fe0acb5d6f14df089ce128bd4faa5a8185d85e9c9f818e9ff09cb175f",
             "P13": "4157d48fe0acb5d6f14df089ce128bd4faa5a8185d85e9c9f818e9ff09cb175f",
-            "current": "12564c8c370e4cf6bfe51af249ba382539759b3168a8aa99eb9a0f7a5055691c",
+            "current": "1a7e5d0224655b40e240a007052f8f5b06ea556407a9d1980ccda47cd26b6a6c",
             "snapshot": "4157d48fe0acb5d6f14df089ce128bd4faa5a8185d85e9c9f818e9ff09cb175f"
           },
           "xsm/mcp.py": {
             "B05": "a5b90415f65316ec69b1a438b95f7e528d2f02ba37611aa6af4e4dc7ed99fc03",
             "P13": "a5b90415f65316ec69b1a438b95f7e528d2f02ba37611aa6af4e4dc7ed99fc03",
-            "current": "c13c6cc62149a6728ef7cd936e32428f055c72e038cd460a8fc2ee6124a13b2d",
+            "current": "306de5afe231b06e1afaba5753948d8d04701d41db9d6d460413265197c997a1",
             "snapshot": "a5b90415f65316ec69b1a438b95f7e528d2f02ba37611aa6af4e4dc7ed99fc03"
           },
           "xsm/paths.py": {
             "B05": "242b8e64b5d564e503d5e0bbef1d7e8d160690e8bd5199bc160523969835bb39",
             "P13": "242b8e64b5d564e503d5e0bbef1d7e8d160690e8bd5199bc160523969835bb39",
-            "current": "242b8e64b5d564e503d5e0bbef1d7e8d160690e8bd5199bc160523969835bb39",
+            "current": "d0511519bff2f94c995db51abc98c9b0ac810ac4fe2389a29c82d0d9008310de",
             "snapshot": "242b8e64b5d564e503d5e0bbef1d7e8d160690e8bd5199bc160523969835bb39"
           },
           "xsm/policy.py": {
             "B05": "9f912493ca4a26e22af110edead346e58924022de4d2c99c56c566279c1c7cc7",
             "P13": "9f912493ca4a26e22af110edead346e58924022de4d2c99c56c566279c1c7cc7",
-            "current": "9f912493ca4a26e22af110edead346e58924022de4d2c99c56c566279c1c7cc7",
+            "current": "f95300bcd235bd60c0f98e3b678d9d5240e67a6877520534f523c4ed8d4eaed3",
             "snapshot": "9f912493ca4a26e22af110edead346e58924022de4d2c99c56c566279c1c7cc7"
           },
           "xsm/receive.py": {
             "B05": "3c03383e0b2ab5e295576ebebaace7b95bb6de56bcfc0928e4abb03457d875fd",
             "P13": "3c03383e0b2ab5e295576ebebaace7b95bb6de56bcfc0928e4abb03457d875fd",
-            "current": "edc2b652dfd334bff67d56557ba512069697bd647e9551e8f642793a25fa54b6",
+            "current": "d35a07b183c84e52bfc883a552b73d9e49f1aeb75288c4bf72ef5d6d63fe4ff6",
             "snapshot": "3c03383e0b2ab5e295576ebebaace7b95bb6de56bcfc0928e4abb03457d875fd"
           },
           "xsm/send.py": {
             "B05": "f73399e87581f6ac9c3d86d174f284b3f4c27294e5bbf1c78da767bf2dec8f70",
             "P13": "f73399e87581f6ac9c3d86d174f284b3f4c27294e5bbf1c78da767bf2dec8f70",
-            "current": "c63417d6e5d06542f3b092f6d2569b783b68363295caffc8af7149119e4544d9",
+            "current": "e558bf3e55bebd72f06b44aee28bd4a5b1df2861edff81e9d8f980139cd08017",
             "snapshot": "f73399e87581f6ac9c3d86d174f284b3f4c27294e5bbf1c78da767bf2dec8f70"
           }
         },
@@ -1598,25 +1619,25 @@
           "xsm/cli.py": {
             "B05": "9a9327dd8188973b1b1ce3251afb860140a56d3b2c9559210032ba7c39fe06e6",
             "P13": "9a9327dd8188973b1b1ce3251afb860140a56d3b2c9559210032ba7c39fe06e6",
-            "current": "021c45acc1182a76c5e81d20b0a7a00e5f81aae0a1325ee09e8f9938a2fbafc0",
+            "current": "e4ab4a820d6436a2ec4b9116d4b310f4343ca71bc314d78a7cedb15cdadc1e99",
             "snapshot": "9a9327dd8188973b1b1ce3251afb860140a56d3b2c9559210032ba7c39fe06e6"
           },
           "xsm/config.py": {
             "B05": "92255fcee9cd2fe3b013851b056533a78d5090b225123f0d460de9c425feb5ca",
             "P13": "92255fcee9cd2fe3b013851b056533a78d5090b225123f0d460de9c425feb5ca",
-            "current": "92255fcee9cd2fe3b013851b056533a78d5090b225123f0d460de9c425feb5ca",
+            "current": "b37e69909ca58f02fa96a6d62935ef25640c94790e45965314cc73b2e2ef8cb5",
             "snapshot": "92255fcee9cd2fe3b013851b056533a78d5090b225123f0d460de9c425feb5ca"
           },
           "xsm/install.py": {
             "B05": "c2f97ecef55e1001e3d66294bccc4cd19e878bb0e78f99145f15b05ea0bc5b16",
             "P13": "c2f97ecef55e1001e3d66294bccc4cd19e878bb0e78f99145f15b05ea0bc5b16",
-            "current": "49a3d65beeec935cb624a3701c85995b09cba4861a17c2b446297d8837d3d2d2",
+            "current": "d961377a9b8697e07da1523c7281a274047a9e1170986345893eeebf5f60d654",
             "snapshot": "c2f97ecef55e1001e3d66294bccc4cd19e878bb0e78f99145f15b05ea0bc5b16"
           },
           "xsm/paths.py": {
             "B05": "242b8e64b5d564e503d5e0bbef1d7e8d160690e8bd5199bc160523969835bb39",
             "P13": "242b8e64b5d564e503d5e0bbef1d7e8d160690e8bd5199bc160523969835bb39",
-            "current": "242b8e64b5d564e503d5e0bbef1d7e8d160690e8bd5199bc160523969835bb39",
+            "current": "d0511519bff2f94c995db51abc98c9b0ac810ac4fe2389a29c82d0d9008310de",
             "snapshot": "242b8e64b5d564e503d5e0bbef1d7e8d160690e8bd5199bc160523969835bb39"
           },
           "xsm/setup_flow.py": {
@@ -1691,19 +1712,19 @@
           "tests/test_b04_interfaces.py": {
             "B05": "9e90d53ed1c326a5379631aa6aa5e095cc301f080c05d6bbf724fac24dee8a27",
             "P13": "9e90d53ed1c326a5379631aa6aa5e095cc301f080c05d6bbf724fac24dee8a27",
-            "current": "9e90d53ed1c326a5379631aa6aa5e095cc301f080c05d6bbf724fac24dee8a27",
+            "current": "d0ea95a59d4630509443fe8f9859e0e7e7bd94d825112a4abb6316db46e66f9f",
             "snapshot": "9e90d53ed1c326a5379631aa6aa5e095cc301f080c05d6bbf724fac24dee8a27"
           },
           "xsm/config.py": {
             "B05": "92255fcee9cd2fe3b013851b056533a78d5090b225123f0d460de9c425feb5ca",
             "P13": "92255fcee9cd2fe3b013851b056533a78d5090b225123f0d460de9c425feb5ca",
-            "current": "92255fcee9cd2fe3b013851b056533a78d5090b225123f0d460de9c425feb5ca",
+            "current": "b37e69909ca58f02fa96a6d62935ef25640c94790e45965314cc73b2e2ef8cb5",
             "snapshot": "92255fcee9cd2fe3b013851b056533a78d5090b225123f0d460de9c425feb5ca"
           },
           "xsm/connect.py": {
             "B05": "61aa314f64c122955a929406778f940cf96cdc7a90ec0425cbe958dcb486c292",
             "P13": "61aa314f64c122955a929406778f940cf96cdc7a90ec0425cbe958dcb486c292",
-            "current": "be25196f7efd16e43ef09718b97e9bd6b3f5bea737bb6e4f673a8b94688131ff",
+            "current": "de8153c9e6525ab99fc5a7c99a616ee38650f216b3db0d0921392f7330c6b632",
             "snapshot": "61aa314f64c122955a929406778f940cf96cdc7a90ec0425cbe958dcb486c292"
           },
           "xsm/context.py": {
@@ -1721,7 +1742,7 @@
           "xsm/handoff.py": {
             "B05": "4157d48fe0acb5d6f14df089ce128bd4faa5a8185d85e9c9f818e9ff09cb175f",
             "P13": "4157d48fe0acb5d6f14df089ce128bd4faa5a8185d85e9c9f818e9ff09cb175f",
-            "current": "12564c8c370e4cf6bfe51af249ba382539759b3168a8aa99eb9a0f7a5055691c",
+            "current": "1a7e5d0224655b40e240a007052f8f5b06ea556407a9d1980ccda47cd26b6a6c",
             "snapshot": "4157d48fe0acb5d6f14df089ce128bd4faa5a8185d85e9c9f818e9ff09cb175f"
           },
           "xsm/identity.py": {
@@ -1739,7 +1760,7 @@
           "xsm/instructions.py": {
             "B05": "4decc55c99246c6a7aadd0575622167b327ad70df23499e464a32bc58bc7162f",
             "P13": "4decc55c99246c6a7aadd0575622167b327ad70df23499e464a32bc58bc7162f",
-            "current": "4b3208a5b1b6b951bc0a14b468576eb0da7be2352d5fb28dbc0d816a8087feb8",
+            "current": "79b39f14af658450ec64c17fafc2bcc27101d0aa138148d825738f36c64631cd",
             "snapshot": "4decc55c99246c6a7aadd0575622167b327ad70df23499e464a32bc58bc7162f"
           },
           "xsm/ledger.py": {
@@ -1751,55 +1772,55 @@
           "xsm/mcp.py": {
             "B05": "a5b90415f65316ec69b1a438b95f7e528d2f02ba37611aa6af4e4dc7ed99fc03",
             "P13": "a5b90415f65316ec69b1a438b95f7e528d2f02ba37611aa6af4e4dc7ed99fc03",
-            "current": "c13c6cc62149a6728ef7cd936e32428f055c72e038cd460a8fc2ee6124a13b2d",
+            "current": "306de5afe231b06e1afaba5753948d8d04701d41db9d6d460413265197c997a1",
             "snapshot": "a5b90415f65316ec69b1a438b95f7e528d2f02ba37611aa6af4e4dc7ed99fc03"
           },
           "xsm/paths.py": {
             "B05": "242b8e64b5d564e503d5e0bbef1d7e8d160690e8bd5199bc160523969835bb39",
             "P13": "242b8e64b5d564e503d5e0bbef1d7e8d160690e8bd5199bc160523969835bb39",
-            "current": "242b8e64b5d564e503d5e0bbef1d7e8d160690e8bd5199bc160523969835bb39",
+            "current": "d0511519bff2f94c995db51abc98c9b0ac810ac4fe2389a29c82d0d9008310de",
             "snapshot": "242b8e64b5d564e503d5e0bbef1d7e8d160690e8bd5199bc160523969835bb39"
           },
           "xsm/questions.py": {
             "B05": "c039aea75a9a3e1aebcedcbc3a9ddaedf5bff4ca3b2f1153f3c7ab6a3e498270",
             "P13": "c039aea75a9a3e1aebcedcbc3a9ddaedf5bff4ca3b2f1153f3c7ab6a3e498270",
-            "current": "1b13a9c4a3db2e9f933ebc97ed00f362bb4f3cac95b7092ca5c302e718296a70",
+            "current": "43189ba3c5b0b5388e9491dd8ba070ddf0625df12aae6a9499b8024857ee66f8",
             "snapshot": "c039aea75a9a3e1aebcedcbc3a9ddaedf5bff4ca3b2f1153f3c7ab6a3e498270"
           },
           "xsm/receive.py": {
             "B05": "3c03383e0b2ab5e295576ebebaace7b95bb6de56bcfc0928e4abb03457d875fd",
             "P13": "3c03383e0b2ab5e295576ebebaace7b95bb6de56bcfc0928e4abb03457d875fd",
-            "current": "edc2b652dfd334bff67d56557ba512069697bd647e9551e8f642793a25fa54b6",
+            "current": "d35a07b183c84e52bfc883a552b73d9e49f1aeb75288c4bf72ef5d6d63fe4ff6",
             "snapshot": "3c03383e0b2ab5e295576ebebaace7b95bb6de56bcfc0928e4abb03457d875fd"
           },
           "xsm/registry.py": {
             "B05": "edce2c6e75ec4d1803f402db565900080be337b2727a40ff663376c355890360",
             "P13": "edce2c6e75ec4d1803f402db565900080be337b2727a40ff663376c355890360",
-            "current": "edce2c6e75ec4d1803f402db565900080be337b2727a40ff663376c355890360",
+            "current": "f3037f2cc674e2e753e2d2e30f3d95fa8565d65e1d5f85a135f9d650708f67c6",
             "snapshot": "edce2c6e75ec4d1803f402db565900080be337b2727a40ff663376c355890360"
           },
           "xsm/send.py": {
             "B05": "f73399e87581f6ac9c3d86d174f284b3f4c27294e5bbf1c78da767bf2dec8f70",
             "P13": "f73399e87581f6ac9c3d86d174f284b3f4c27294e5bbf1c78da767bf2dec8f70",
-            "current": "c63417d6e5d06542f3b092f6d2569b783b68363295caffc8af7149119e4544d9",
+            "current": "e558bf3e55bebd72f06b44aee28bd4a5b1df2861edff81e9d8f980139cd08017",
             "snapshot": "f73399e87581f6ac9c3d86d174f284b3f4c27294e5bbf1c78da767bf2dec8f70"
           },
           "skills/xsm/SKILL.md": {
             "B05": "3e583bcd294862775c6590766b96cea2260c879329a32ffbe5306f128da55896",
             "P13": "3e583bcd294862775c6590766b96cea2260c879329a32ffbe5306f128da55896",
-            "current": "3a4e0f903ee4c7dfe0d519617be1f7df94add901795d2eeb2af3968b3ea46035",
+            "current": "796e0f4b3025c7db72d3149ed1e903a712d7db1c73ff2c0b9ab398374b1281ab",
             "snapshot": "3e583bcd294862775c6590766b96cea2260c879329a32ffbe5306f128da55896"
           },
           "skills/xsm/references/guide.md": {
             "B05": "6bffc41da7cce01cc6080c8afb62e54efc910fd67b59d9d11b0c119130c43981",
             "P13": "6bffc41da7cce01cc6080c8afb62e54efc910fd67b59d9d11b0c119130c43981",
-            "current": "da495de9a13d29b9cb7197a148c7f3e8febdaab281b36ddc928a381a89ca82c2",
+            "current": "3ba436ec945ead79182c9bc1fa752af72df4c6ac792270f625494de326a6dfd0",
             "snapshot": "6bffc41da7cce01cc6080c8afb62e54efc910fd67b59d9d11b0c119130c43981"
           },
           "skills/xsm/references/messaging.md": {
             "B05": "a5337aa81bf4bd23d9f050d7cbdf9e68f7354f3550c42301a211393c2f673814",
             "P13": "a5337aa81bf4bd23d9f050d7cbdf9e68f7354f3550c42301a211393c2f673814",
-            "current": "9e7ea1705b7a02e66928761c46e49935644053358e4da53a6dae3115f2697677",
+            "current": "e6d4bb9a7b4d427bc7b55377e8f8fc6a19627de5e11558d5025144f97496761d",
             "snapshot": "a5337aa81bf4bd23d9f050d7cbdf9e68f7354f3550c42301a211393c2f673814"
           }
         },
@@ -1871,19 +1892,35 @@
           "skills/xsm/SKILL.md",
           "skills/xsm/references/guide.md",
           "skills/xsm/references/messaging.md",
+          "tests/test_b04_interfaces.py",
+          "tests/test_channel.py",
           "tests/test_crash_boundaries.py",
+          "tests/test_decisions.py",
+          "tests/test_discovery_latency.py",
+          "tests/test_handoff_consumer.py",
           "tests/test_install_cli_flow.py",
+          "tests/test_install_codex.py",
           "tests/test_install_runtime.py",
+          "tests/test_link.py",
+          "tests/test_mcp_dispatch.py",
+          "tests/test_mcp_identity.py",
+          "tests/test_open_mcp.py",
+          "tests/test_open_messaging.py",
           "tests/test_owned_interfaces.py",
           "tests/test_person_decisions.py",
           "tests/test_question_interfaces.py",
+          "tests/test_questions_contract.py",
+          "tests/test_selected_connection.py",
           "tests/test_workers.py",
           "tests/test_xsm.py",
           "xsm/adapters.py",
+          "xsm/channel.py",
           "xsm/cli.py",
           "xsm/collaboration.py",
+          "xsm/config.py",
           "xsm/connect.py",
           "xsm/directory.py",
+          "xsm/doc.py",
           "xsm/envelope.py",
           "xsm/handoff.py",
           "xsm/inbox.py",
@@ -1891,11 +1928,16 @@
           "xsm/instructions.py",
           "xsm/materials.py",
           "xsm/mcp.py",
+          "xsm/paths.py",
+          "xsm/policy.py",
           "xsm/probe.py",
           "xsm/questions.py",
           "xsm/receive.py",
+          "xsm/registry.py",
+          "xsm/remote.py",
           "xsm/resolve.py",
-          "xsm/send.py"
+          "xsm/send.py",
+          "xsm/workers.py"
         ],
         "scope": "현재 source 관측은 고정본 실행 이력과 별도. 각 조건은 자기 dependency hash만으로 재결속하며 예정 수정 성공을 추정하지 않음"
       },
@@ -2045,7 +2087,7 @@
             "prior1649": "31f5d017861e402dc9a4c70314b395821b98f2f1daf3071b9adf1f5b06a37771",
             "postqa1667": "31f5d017861e402dc9a4c70314b395821b98f2f1daf3071b9adf1f5b06a37771",
             "snapshot": "31f5d017861e402dc9a4c70314b395821b98f2f1daf3071b9adf1f5b06a37771",
-            "current": "31f5d017861e402dc9a4c70314b395821b98f2f1daf3071b9adf1f5b06a37771"
+            "current": "772961adf650c91ad77bc4c584f022d848d27302fe4fbf8c97745da946ca34bc"
           },
           "tests/test_handoff_crash.py": {
             "prior1649": "ad29ac98711e8ad235e3918335f6d58ac4ae1909c3ec268285ba7aec33f35dd9",
@@ -2057,7 +2099,7 @@
             "prior1649": "e6a7c2688a13722add1b2de686fac1e35917e2567c1ecede5a65fc1972cf2552",
             "postqa1667": "c0a98aeefb08bbdbf8d037b7fbd55457cc8b1767f263538f3089ff4f6f936e63",
             "snapshot": "c0a98aeefb08bbdbf8d037b7fbd55457cc8b1767f263538f3089ff4f6f936e63",
-            "current": "66e5791078f5b38bba20c08a278cbdc2efe7d82aebc95da81ca666c883ac94d5"
+            "current": "ae9a21bbdba3329e333ef20fef54f289506722300210097c24780f70bc9811db"
           },
           "tests/test_xsm.py": {
             "prior1649": "f0c4875867c2aaaa8e542035d9f0eaf8ee84ff081af45eec65d36da9c2178d17",
@@ -2075,7 +2117,7 @@
             "prior1649": "4157d48fe0acb5d6f14df089ce128bd4faa5a8185d85e9c9f818e9ff09cb175f",
             "postqa1667": "4157d48fe0acb5d6f14df089ce128bd4faa5a8185d85e9c9f818e9ff09cb175f",
             "snapshot": "4157d48fe0acb5d6f14df089ce128bd4faa5a8185d85e9c9f818e9ff09cb175f",
-            "current": "12564c8c370e4cf6bfe51af249ba382539759b3168a8aa99eb9a0f7a5055691c"
+            "current": "1a7e5d0224655b40e240a007052f8f5b06ea556407a9d1980ccda47cd26b6a6c"
           },
           "xsm/identity.py": {
             "prior1649": "ecfddb64f394455bf68117076127f1c0a07888c0df4cd734f219771bce3004a5",
@@ -2093,25 +2135,25 @@
             "prior1649": "242b8e64b5d564e503d5e0bbef1d7e8d160690e8bd5199bc160523969835bb39",
             "postqa1667": "242b8e64b5d564e503d5e0bbef1d7e8d160690e8bd5199bc160523969835bb39",
             "snapshot": "242b8e64b5d564e503d5e0bbef1d7e8d160690e8bd5199bc160523969835bb39",
-            "current": "242b8e64b5d564e503d5e0bbef1d7e8d160690e8bd5199bc160523969835bb39"
+            "current": "d0511519bff2f94c995db51abc98c9b0ac810ac4fe2389a29c82d0d9008310de"
           },
           "xsm/receive.py": {
             "prior1649": "3c03383e0b2ab5e295576ebebaace7b95bb6de56bcfc0928e4abb03457d875fd",
             "postqa1667": "05a7991f531f14cf9ce376c7cde6d32c703f2cbb9c01709c494ee2faafdee1e2",
             "snapshot": "05a7991f531f14cf9ce376c7cde6d32c703f2cbb9c01709c494ee2faafdee1e2",
-            "current": "edc2b652dfd334bff67d56557ba512069697bd647e9551e8f642793a25fa54b6"
+            "current": "d35a07b183c84e52bfc883a552b73d9e49f1aeb75288c4bf72ef5d6d63fe4ff6"
           },
           "xsm/registry.py": {
             "prior1649": "edce2c6e75ec4d1803f402db565900080be337b2727a40ff663376c355890360",
             "postqa1667": "edce2c6e75ec4d1803f402db565900080be337b2727a40ff663376c355890360",
             "snapshot": "edce2c6e75ec4d1803f402db565900080be337b2727a40ff663376c355890360",
-            "current": "edce2c6e75ec4d1803f402db565900080be337b2727a40ff663376c355890360"
+            "current": "f3037f2cc674e2e753e2d2e30f3d95fa8565d65e1d5f85a135f9d650708f67c6"
           },
           "xsm/send.py": {
             "prior1649": "f73399e87581f6ac9c3d86d174f284b3f4c27294e5bbf1c78da767bf2dec8f70",
             "postqa1667": "f73399e87581f6ac9c3d86d174f284b3f4c27294e5bbf1c78da767bf2dec8f70",
             "snapshot": "f73399e87581f6ac9c3d86d174f284b3f4c27294e5bbf1c78da767bf2dec8f70",
-            "current": "c63417d6e5d06542f3b092f6d2569b783b68363295caffc8af7149119e4544d9"
+            "current": "e558bf3e55bebd72f06b44aee28bd4a5b1df2861edff81e9d8f980139cd08017"
           }
         },
         "changed_paths_since1649": [
@@ -2201,7 +2243,7 @@
             "prior1649": "e6a7c2688a13722add1b2de686fac1e35917e2567c1ecede5a65fc1972cf2552",
             "postqa1667": "c0a98aeefb08bbdbf8d037b7fbd55457cc8b1767f263538f3089ff4f6f936e63",
             "snapshot": "c0a98aeefb08bbdbf8d037b7fbd55457cc8b1767f263538f3089ff4f6f936e63",
-            "current": "66e5791078f5b38bba20c08a278cbdc2efe7d82aebc95da81ca666c883ac94d5"
+            "current": "ae9a21bbdba3329e333ef20fef54f289506722300210097c24780f70bc9811db"
           },
           "tests/test_questions.py": {
             "prior1649": "cb5d55f5bc841a884c856ef09d1e4869d26094daaa2a396af8acf0d04cd35c94",
@@ -2219,7 +2261,7 @@
             "prior1649": "61aa314f64c122955a929406778f940cf96cdc7a90ec0425cbe958dcb486c292",
             "postqa1667": "61aa314f64c122955a929406778f940cf96cdc7a90ec0425cbe958dcb486c292",
             "snapshot": "61aa314f64c122955a929406778f940cf96cdc7a90ec0425cbe958dcb486c292",
-            "current": "be25196f7efd16e43ef09718b97e9bd6b3f5bea737bb6e4f673a8b94688131ff"
+            "current": "de8153c9e6525ab99fc5a7c99a616ee38650f216b3db0d0921392f7330c6b632"
           },
           "xsm/envelope.py": {
             "prior1649": "12cd108b9c25e00ee510177c191bac546ed36b835a4456d49fb89d60f095f6cf",
@@ -2231,7 +2273,7 @@
             "prior1649": "4157d48fe0acb5d6f14df089ce128bd4faa5a8185d85e9c9f818e9ff09cb175f",
             "postqa1667": "4157d48fe0acb5d6f14df089ce128bd4faa5a8185d85e9c9f818e9ff09cb175f",
             "snapshot": "4157d48fe0acb5d6f14df089ce128bd4faa5a8185d85e9c9f818e9ff09cb175f",
-            "current": "12564c8c370e4cf6bfe51af249ba382539759b3168a8aa99eb9a0f7a5055691c"
+            "current": "1a7e5d0224655b40e240a007052f8f5b06ea556407a9d1980ccda47cd26b6a6c"
           },
           "xsm/ledger.py": {
             "prior1649": "f291d11b736608bb3d2d07bdccdcc15348af2cbdfa73e1fb9d4c5628063e459f",
@@ -2249,25 +2291,25 @@
             "prior1649": "242b8e64b5d564e503d5e0bbef1d7e8d160690e8bd5199bc160523969835bb39",
             "postqa1667": "242b8e64b5d564e503d5e0bbef1d7e8d160690e8bd5199bc160523969835bb39",
             "snapshot": "242b8e64b5d564e503d5e0bbef1d7e8d160690e8bd5199bc160523969835bb39",
-            "current": "242b8e64b5d564e503d5e0bbef1d7e8d160690e8bd5199bc160523969835bb39"
+            "current": "d0511519bff2f94c995db51abc98c9b0ac810ac4fe2389a29c82d0d9008310de"
           },
           "xsm/questions.py": {
             "prior1649": "c039aea75a9a3e1aebcedcbc3a9ddaedf5bff4ca3b2f1153f3c7ab6a3e498270",
             "postqa1667": "c039aea75a9a3e1aebcedcbc3a9ddaedf5bff4ca3b2f1153f3c7ab6a3e498270",
             "snapshot": "c039aea75a9a3e1aebcedcbc3a9ddaedf5bff4ca3b2f1153f3c7ab6a3e498270",
-            "current": "1b13a9c4a3db2e9f933ebc97ed00f362bb4f3cac95b7092ca5c302e718296a70"
+            "current": "43189ba3c5b0b5388e9491dd8ba070ddf0625df12aae6a9499b8024857ee66f8"
           },
           "xsm/receive.py": {
             "prior1649": "3c03383e0b2ab5e295576ebebaace7b95bb6de56bcfc0928e4abb03457d875fd",
             "postqa1667": "05a7991f531f14cf9ce376c7cde6d32c703f2cbb9c01709c494ee2faafdee1e2",
             "snapshot": "05a7991f531f14cf9ce376c7cde6d32c703f2cbb9c01709c494ee2faafdee1e2",
-            "current": "edc2b652dfd334bff67d56557ba512069697bd647e9551e8f642793a25fa54b6"
+            "current": "d35a07b183c84e52bfc883a552b73d9e49f1aeb75288c4bf72ef5d6d63fe4ff6"
           },
           "xsm/send.py": {
             "prior1649": "f73399e87581f6ac9c3d86d174f284b3f4c27294e5bbf1c78da767bf2dec8f70",
             "postqa1667": "f73399e87581f6ac9c3d86d174f284b3f4c27294e5bbf1c78da767bf2dec8f70",
             "snapshot": "f73399e87581f6ac9c3d86d174f284b3f4c27294e5bbf1c78da767bf2dec8f70",
-            "current": "c63417d6e5d06542f3b092f6d2569b783b68363295caffc8af7149119e4544d9"
+            "current": "e558bf3e55bebd72f06b44aee28bd4a5b1df2861edff81e9d8f980139cd08017"
           }
         },
         "changed_paths_since1649": [
@@ -2346,13 +2388,13 @@
             "prior1649": "9e90d53ed1c326a5379631aa6aa5e095cc301f080c05d6bbf724fac24dee8a27",
             "postqa1667": "9e90d53ed1c326a5379631aa6aa5e095cc301f080c05d6bbf724fac24dee8a27",
             "snapshot": "9e90d53ed1c326a5379631aa6aa5e095cc301f080c05d6bbf724fac24dee8a27",
-            "current": "9e90d53ed1c326a5379631aa6aa5e095cc301f080c05d6bbf724fac24dee8a27"
+            "current": "d0ea95a59d4630509443fe8f9859e0e7e7bd94d825112a4abb6316db46e66f9f"
           },
           "tests/test_handoff_consumer.py": {
             "prior1649": "31f5d017861e402dc9a4c70314b395821b98f2f1daf3071b9adf1f5b06a37771",
             "postqa1667": "31f5d017861e402dc9a4c70314b395821b98f2f1daf3071b9adf1f5b06a37771",
             "snapshot": "31f5d017861e402dc9a4c70314b395821b98f2f1daf3071b9adf1f5b06a37771",
-            "current": "31f5d017861e402dc9a4c70314b395821b98f2f1daf3071b9adf1f5b06a37771"
+            "current": "772961adf650c91ad77bc4c584f022d848d27302fe4fbf8c97745da946ca34bc"
           },
           "tests/test_policy_recovery.py": {
             "prior1649": "0b75293566ef3f08937d236e3cc430fa701fc1a197d171076c1ddb8deee1597b",
@@ -2364,7 +2406,7 @@
             "prior1649": "e6a7c2688a13722add1b2de686fac1e35917e2567c1ecede5a65fc1972cf2552",
             "postqa1667": "c0a98aeefb08bbdbf8d037b7fbd55457cc8b1767f263538f3089ff4f6f936e63",
             "snapshot": "c0a98aeefb08bbdbf8d037b7fbd55457cc8b1767f263538f3089ff4f6f936e63",
-            "current": "66e5791078f5b38bba20c08a278cbdc2efe7d82aebc95da81ca666c883ac94d5"
+            "current": "ae9a21bbdba3329e333ef20fef54f289506722300210097c24780f70bc9811db"
           },
           "xsm/abuse.py": {
             "prior1649": "a15303d88acded3e03110b125da91e11ffd5de96d266a9485a0f476d991d8e66",
@@ -2376,7 +2418,7 @@
             "prior1649": "92255fcee9cd2fe3b013851b056533a78d5090b225123f0d460de9c425feb5ca",
             "postqa1667": "92255fcee9cd2fe3b013851b056533a78d5090b225123f0d460de9c425feb5ca",
             "snapshot": "92255fcee9cd2fe3b013851b056533a78d5090b225123f0d460de9c425feb5ca",
-            "current": "92255fcee9cd2fe3b013851b056533a78d5090b225123f0d460de9c425feb5ca"
+            "current": "b37e69909ca58f02fa96a6d62935ef25640c94790e45965314cc73b2e2ef8cb5"
           },
           "xsm/consent.py": {
             "prior1649": "26adb2e00e2466594a6dee3fe4850cc6ee8ee20c7187c0e1f490d51d603b95e0",
@@ -2388,37 +2430,37 @@
             "prior1649": "4157d48fe0acb5d6f14df089ce128bd4faa5a8185d85e9c9f818e9ff09cb175f",
             "postqa1667": "4157d48fe0acb5d6f14df089ce128bd4faa5a8185d85e9c9f818e9ff09cb175f",
             "snapshot": "4157d48fe0acb5d6f14df089ce128bd4faa5a8185d85e9c9f818e9ff09cb175f",
-            "current": "12564c8c370e4cf6bfe51af249ba382539759b3168a8aa99eb9a0f7a5055691c"
+            "current": "1a7e5d0224655b40e240a007052f8f5b06ea556407a9d1980ccda47cd26b6a6c"
           },
           "xsm/mcp.py": {
             "prior1649": "a5b90415f65316ec69b1a438b95f7e528d2f02ba37611aa6af4e4dc7ed99fc03",
             "postqa1667": "31d8120c6fbadb75ffa1d2ff9205bad13d84a8527b949bed0db17b8ebc16c6fb",
             "snapshot": "31d8120c6fbadb75ffa1d2ff9205bad13d84a8527b949bed0db17b8ebc16c6fb",
-            "current": "c13c6cc62149a6728ef7cd936e32428f055c72e038cd460a8fc2ee6124a13b2d"
+            "current": "306de5afe231b06e1afaba5753948d8d04701d41db9d6d460413265197c997a1"
           },
           "xsm/paths.py": {
             "prior1649": "242b8e64b5d564e503d5e0bbef1d7e8d160690e8bd5199bc160523969835bb39",
             "postqa1667": "242b8e64b5d564e503d5e0bbef1d7e8d160690e8bd5199bc160523969835bb39",
             "snapshot": "242b8e64b5d564e503d5e0bbef1d7e8d160690e8bd5199bc160523969835bb39",
-            "current": "242b8e64b5d564e503d5e0bbef1d7e8d160690e8bd5199bc160523969835bb39"
+            "current": "d0511519bff2f94c995db51abc98c9b0ac810ac4fe2389a29c82d0d9008310de"
           },
           "xsm/policy.py": {
             "prior1649": "9f912493ca4a26e22af110edead346e58924022de4d2c99c56c566279c1c7cc7",
             "postqa1667": "9f912493ca4a26e22af110edead346e58924022de4d2c99c56c566279c1c7cc7",
             "snapshot": "9f912493ca4a26e22af110edead346e58924022de4d2c99c56c566279c1c7cc7",
-            "current": "9f912493ca4a26e22af110edead346e58924022de4d2c99c56c566279c1c7cc7"
+            "current": "f95300bcd235bd60c0f98e3b678d9d5240e67a6877520534f523c4ed8d4eaed3"
           },
           "xsm/receive.py": {
             "prior1649": "3c03383e0b2ab5e295576ebebaace7b95bb6de56bcfc0928e4abb03457d875fd",
             "postqa1667": "05a7991f531f14cf9ce376c7cde6d32c703f2cbb9c01709c494ee2faafdee1e2",
             "snapshot": "05a7991f531f14cf9ce376c7cde6d32c703f2cbb9c01709c494ee2faafdee1e2",
-            "current": "edc2b652dfd334bff67d56557ba512069697bd647e9551e8f642793a25fa54b6"
+            "current": "d35a07b183c84e52bfc883a552b73d9e49f1aeb75288c4bf72ef5d6d63fe4ff6"
           },
           "xsm/send.py": {
             "prior1649": "f73399e87581f6ac9c3d86d174f284b3f4c27294e5bbf1c78da767bf2dec8f70",
             "postqa1667": "f73399e87581f6ac9c3d86d174f284b3f4c27294e5bbf1c78da767bf2dec8f70",
             "snapshot": "f73399e87581f6ac9c3d86d174f284b3f4c27294e5bbf1c78da767bf2dec8f70",
-            "current": "c63417d6e5d06542f3b092f6d2569b783b68363295caffc8af7149119e4544d9"
+            "current": "e558bf3e55bebd72f06b44aee28bd4a5b1df2861edff81e9d8f980139cd08017"
           }
         },
         "changed_paths_since1649": [
@@ -2515,25 +2557,25 @@
             "prior1649": "9a9327dd8188973b1b1ce3251afb860140a56d3b2c9559210032ba7c39fe06e6",
             "postqa1667": "22daeb0c667a9c8f7b8af9c7905606c3eaf160f342d23f028b14d36642072cac",
             "snapshot": "22daeb0c667a9c8f7b8af9c7905606c3eaf160f342d23f028b14d36642072cac",
-            "current": "021c45acc1182a76c5e81d20b0a7a00e5f81aae0a1325ee09e8f9938a2fbafc0"
+            "current": "e4ab4a820d6436a2ec4b9116d4b310f4343ca71bc314d78a7cedb15cdadc1e99"
           },
           "xsm/config.py": {
             "prior1649": "92255fcee9cd2fe3b013851b056533a78d5090b225123f0d460de9c425feb5ca",
             "postqa1667": "92255fcee9cd2fe3b013851b056533a78d5090b225123f0d460de9c425feb5ca",
             "snapshot": "92255fcee9cd2fe3b013851b056533a78d5090b225123f0d460de9c425feb5ca",
-            "current": "92255fcee9cd2fe3b013851b056533a78d5090b225123f0d460de9c425feb5ca"
+            "current": "b37e69909ca58f02fa96a6d62935ef25640c94790e45965314cc73b2e2ef8cb5"
           },
           "xsm/install.py": {
             "prior1649": "c2f97ecef55e1001e3d66294bccc4cd19e878bb0e78f99145f15b05ea0bc5b16",
             "postqa1667": "6b6facc89dee67bf27899cbae9e36cfb701b2c497d2a1fc33a43cf8e49daccd2",
             "snapshot": "6b6facc89dee67bf27899cbae9e36cfb701b2c497d2a1fc33a43cf8e49daccd2",
-            "current": "49a3d65beeec935cb624a3701c85995b09cba4861a17c2b446297d8837d3d2d2"
+            "current": "d961377a9b8697e07da1523c7281a274047a9e1170986345893eeebf5f60d654"
           },
           "xsm/paths.py": {
             "prior1649": "242b8e64b5d564e503d5e0bbef1d7e8d160690e8bd5199bc160523969835bb39",
             "postqa1667": "242b8e64b5d564e503d5e0bbef1d7e8d160690e8bd5199bc160523969835bb39",
             "snapshot": "242b8e64b5d564e503d5e0bbef1d7e8d160690e8bd5199bc160523969835bb39",
-            "current": "242b8e64b5d564e503d5e0bbef1d7e8d160690e8bd5199bc160523969835bb39"
+            "current": "d0511519bff2f94c995db51abc98c9b0ac810ac4fe2389a29c82d0d9008310de"
           },
           "xsm/setup_flow.py": {
             "prior1649": "1dfbfb19e1bb8ce267c3bd3ad9519420017af01c78a63ce187c3a709d27247cd",
@@ -2619,25 +2661,25 @@
             "prior1649": "9e90d53ed1c326a5379631aa6aa5e095cc301f080c05d6bbf724fac24dee8a27",
             "postqa1667": "9e90d53ed1c326a5379631aa6aa5e095cc301f080c05d6bbf724fac24dee8a27",
             "snapshot": "9e90d53ed1c326a5379631aa6aa5e095cc301f080c05d6bbf724fac24dee8a27",
-            "current": "9e90d53ed1c326a5379631aa6aa5e095cc301f080c05d6bbf724fac24dee8a27"
+            "current": "d0ea95a59d4630509443fe8f9859e0e7e7bd94d825112a4abb6316db46e66f9f"
           },
           "tests/test_question_interfaces.py": {
             "prior1649": "e6a7c2688a13722add1b2de686fac1e35917e2567c1ecede5a65fc1972cf2552",
             "postqa1667": "c0a98aeefb08bbdbf8d037b7fbd55457cc8b1767f263538f3089ff4f6f936e63",
             "snapshot": "c0a98aeefb08bbdbf8d037b7fbd55457cc8b1767f263538f3089ff4f6f936e63",
-            "current": "66e5791078f5b38bba20c08a278cbdc2efe7d82aebc95da81ca666c883ac94d5"
+            "current": "ae9a21bbdba3329e333ef20fef54f289506722300210097c24780f70bc9811db"
           },
           "xsm/config.py": {
             "prior1649": "92255fcee9cd2fe3b013851b056533a78d5090b225123f0d460de9c425feb5ca",
             "postqa1667": "92255fcee9cd2fe3b013851b056533a78d5090b225123f0d460de9c425feb5ca",
             "snapshot": "92255fcee9cd2fe3b013851b056533a78d5090b225123f0d460de9c425feb5ca",
-            "current": "92255fcee9cd2fe3b013851b056533a78d5090b225123f0d460de9c425feb5ca"
+            "current": "b37e69909ca58f02fa96a6d62935ef25640c94790e45965314cc73b2e2ef8cb5"
           },
           "xsm/connect.py": {
             "prior1649": "61aa314f64c122955a929406778f940cf96cdc7a90ec0425cbe958dcb486c292",
             "postqa1667": "61aa314f64c122955a929406778f940cf96cdc7a90ec0425cbe958dcb486c292",
             "snapshot": "61aa314f64c122955a929406778f940cf96cdc7a90ec0425cbe958dcb486c292",
-            "current": "be25196f7efd16e43ef09718b97e9bd6b3f5bea737bb6e4f673a8b94688131ff"
+            "current": "de8153c9e6525ab99fc5a7c99a616ee38650f216b3db0d0921392f7330c6b632"
           },
           "xsm/context.py": {
             "prior1649": "3a8355156f5d5497a0e945fe1a2c05791439cfe172f8fa5ae0eed936830ecb03",
@@ -2655,7 +2697,7 @@
             "prior1649": "4157d48fe0acb5d6f14df089ce128bd4faa5a8185d85e9c9f818e9ff09cb175f",
             "postqa1667": "4157d48fe0acb5d6f14df089ce128bd4faa5a8185d85e9c9f818e9ff09cb175f",
             "snapshot": "4157d48fe0acb5d6f14df089ce128bd4faa5a8185d85e9c9f818e9ff09cb175f",
-            "current": "12564c8c370e4cf6bfe51af249ba382539759b3168a8aa99eb9a0f7a5055691c"
+            "current": "1a7e5d0224655b40e240a007052f8f5b06ea556407a9d1980ccda47cd26b6a6c"
           },
           "xsm/identity.py": {
             "prior1649": "ecfddb64f394455bf68117076127f1c0a07888c0df4cd734f219771bce3004a5",
@@ -2673,7 +2715,7 @@
             "prior1649": "4decc55c99246c6a7aadd0575622167b327ad70df23499e464a32bc58bc7162f",
             "postqa1667": "aca8ade14c5bdc5537a7b6425eded5c2585490cac4202b05191b6da437d4863c",
             "snapshot": "aca8ade14c5bdc5537a7b6425eded5c2585490cac4202b05191b6da437d4863c",
-            "current": "4b3208a5b1b6b951bc0a14b468576eb0da7be2352d5fb28dbc0d816a8087feb8"
+            "current": "79b39f14af658450ec64c17fafc2bcc27101d0aa138148d825738f36c64631cd"
           },
           "xsm/ledger.py": {
             "prior1649": "f291d11b736608bb3d2d07bdccdcc15348af2cbdfa73e1fb9d4c5628063e459f",
@@ -2685,55 +2727,55 @@
             "prior1649": "a5b90415f65316ec69b1a438b95f7e528d2f02ba37611aa6af4e4dc7ed99fc03",
             "postqa1667": "31d8120c6fbadb75ffa1d2ff9205bad13d84a8527b949bed0db17b8ebc16c6fb",
             "snapshot": "31d8120c6fbadb75ffa1d2ff9205bad13d84a8527b949bed0db17b8ebc16c6fb",
-            "current": "c13c6cc62149a6728ef7cd936e32428f055c72e038cd460a8fc2ee6124a13b2d"
+            "current": "306de5afe231b06e1afaba5753948d8d04701d41db9d6d460413265197c997a1"
           },
           "xsm/paths.py": {
             "prior1649": "242b8e64b5d564e503d5e0bbef1d7e8d160690e8bd5199bc160523969835bb39",
             "postqa1667": "242b8e64b5d564e503d5e0bbef1d7e8d160690e8bd5199bc160523969835bb39",
             "snapshot": "242b8e64b5d564e503d5e0bbef1d7e8d160690e8bd5199bc160523969835bb39",
-            "current": "242b8e64b5d564e503d5e0bbef1d7e8d160690e8bd5199bc160523969835bb39"
+            "current": "d0511519bff2f94c995db51abc98c9b0ac810ac4fe2389a29c82d0d9008310de"
           },
           "xsm/questions.py": {
             "prior1649": "c039aea75a9a3e1aebcedcbc3a9ddaedf5bff4ca3b2f1153f3c7ab6a3e498270",
             "postqa1667": "c039aea75a9a3e1aebcedcbc3a9ddaedf5bff4ca3b2f1153f3c7ab6a3e498270",
             "snapshot": "c039aea75a9a3e1aebcedcbc3a9ddaedf5bff4ca3b2f1153f3c7ab6a3e498270",
-            "current": "1b13a9c4a3db2e9f933ebc97ed00f362bb4f3cac95b7092ca5c302e718296a70"
+            "current": "43189ba3c5b0b5388e9491dd8ba070ddf0625df12aae6a9499b8024857ee66f8"
           },
           "xsm/receive.py": {
             "prior1649": "3c03383e0b2ab5e295576ebebaace7b95bb6de56bcfc0928e4abb03457d875fd",
             "postqa1667": "05a7991f531f14cf9ce376c7cde6d32c703f2cbb9c01709c494ee2faafdee1e2",
             "snapshot": "05a7991f531f14cf9ce376c7cde6d32c703f2cbb9c01709c494ee2faafdee1e2",
-            "current": "edc2b652dfd334bff67d56557ba512069697bd647e9551e8f642793a25fa54b6"
+            "current": "d35a07b183c84e52bfc883a552b73d9e49f1aeb75288c4bf72ef5d6d63fe4ff6"
           },
           "xsm/registry.py": {
             "prior1649": "edce2c6e75ec4d1803f402db565900080be337b2727a40ff663376c355890360",
             "postqa1667": "edce2c6e75ec4d1803f402db565900080be337b2727a40ff663376c355890360",
             "snapshot": "edce2c6e75ec4d1803f402db565900080be337b2727a40ff663376c355890360",
-            "current": "edce2c6e75ec4d1803f402db565900080be337b2727a40ff663376c355890360"
+            "current": "f3037f2cc674e2e753e2d2e30f3d95fa8565d65e1d5f85a135f9d650708f67c6"
           },
           "xsm/send.py": {
             "prior1649": "f73399e87581f6ac9c3d86d174f284b3f4c27294e5bbf1c78da767bf2dec8f70",
             "postqa1667": "f73399e87581f6ac9c3d86d174f284b3f4c27294e5bbf1c78da767bf2dec8f70",
             "snapshot": "f73399e87581f6ac9c3d86d174f284b3f4c27294e5bbf1c78da767bf2dec8f70",
-            "current": "c63417d6e5d06542f3b092f6d2569b783b68363295caffc8af7149119e4544d9"
+            "current": "e558bf3e55bebd72f06b44aee28bd4a5b1df2861edff81e9d8f980139cd08017"
           },
           "skills/xsm/SKILL.md": {
             "prior1649": "3e583bcd294862775c6590766b96cea2260c879329a32ffbe5306f128da55896",
             "postqa1667": "3e583bcd294862775c6590766b96cea2260c879329a32ffbe5306f128da55896",
             "snapshot": "3e583bcd294862775c6590766b96cea2260c879329a32ffbe5306f128da55896",
-            "current": "3a4e0f903ee4c7dfe0d519617be1f7df94add901795d2eeb2af3968b3ea46035"
+            "current": "796e0f4b3025c7db72d3149ed1e903a712d7db1c73ff2c0b9ab398374b1281ab"
           },
           "skills/xsm/references/guide.md": {
             "prior1649": "6bffc41da7cce01cc6080c8afb62e54efc910fd67b59d9d11b0c119130c43981",
             "postqa1667": "6bffc41da7cce01cc6080c8afb62e54efc910fd67b59d9d11b0c119130c43981",
             "snapshot": "6bffc41da7cce01cc6080c8afb62e54efc910fd67b59d9d11b0c119130c43981",
-            "current": "da495de9a13d29b9cb7197a148c7f3e8febdaab281b36ddc928a381a89ca82c2"
+            "current": "3ba436ec945ead79182c9bc1fa752af72df4c6ac792270f625494de326a6dfd0"
           },
           "skills/xsm/references/messaging.md": {
             "prior1649": "a5337aa81bf4bd23d9f050d7cbdf9e68f7354f3550c42301a211393c2f673814",
             "postqa1667": "324b020e2e8eb899469e8d6478d046bcde18d405dc46667d817581a0ef974cb0",
             "snapshot": "324b020e2e8eb899469e8d6478d046bcde18d405dc46667d817581a0ef974cb0",
-            "current": "9e7ea1705b7a02e66928761c46e49935644053358e4da53a6dae3115f2697677"
+            "current": "e6d4bb9a7b4d427bc7b55377e8f8fc6a19627de5e11558d5025144f97496761d"
           }
         },
         "changed_paths_since1649": [
@@ -3127,7 +3169,7 @@
             "prior1649": "31f5d017861e402dc9a4c70314b395821b98f2f1daf3071b9adf1f5b06a37771",
             "postqa1667": "31f5d017861e402dc9a4c70314b395821b98f2f1daf3071b9adf1f5b06a37771",
             "snapshot": "31f5d017861e402dc9a4c70314b395821b98f2f1daf3071b9adf1f5b06a37771",
-            "current": "31f5d017861e402dc9a4c70314b395821b98f2f1daf3071b9adf1f5b06a37771"
+            "current": "772961adf650c91ad77bc4c584f022d848d27302fe4fbf8c97745da946ca34bc"
           },
           "tests/test_handoff_crash.py": {
             "prior1649": "ad29ac98711e8ad235e3918335f6d58ac4ae1909c3ec268285ba7aec33f35dd9",
@@ -3145,13 +3187,13 @@
             "prior1649": "e6a7c2688a13722add1b2de686fac1e35917e2567c1ecede5a65fc1972cf2552",
             "postqa1667": "c0a98aeefb08bbdbf8d037b7fbd55457cc8b1767f263538f3089ff4f6f936e63",
             "snapshot": "c0a98aeefb08bbdbf8d037b7fbd55457cc8b1767f263538f3089ff4f6f936e63",
-            "current": "66e5791078f5b38bba20c08a278cbdc2efe7d82aebc95da81ca666c883ac94d5"
+            "current": "ae9a21bbdba3329e333ef20fef54f289506722300210097c24780f70bc9811db"
           },
           "xsm/cli.py": {
             "prior1649": "9a9327dd8188973b1b1ce3251afb860140a56d3b2c9559210032ba7c39fe06e6",
             "postqa1667": "22daeb0c667a9c8f7b8af9c7905606c3eaf160f342d23f028b14d36642072cac",
             "snapshot": "22daeb0c667a9c8f7b8af9c7905606c3eaf160f342d23f028b14d36642072cac",
-            "current": "021c45acc1182a76c5e81d20b0a7a00e5f81aae0a1325ee09e8f9938a2fbafc0"
+            "current": "e4ab4a820d6436a2ec4b9116d4b310f4343ca71bc314d78a7cedb15cdadc1e99"
           },
           "xsm/context.py": {
             "prior1649": "3a8355156f5d5497a0e945fe1a2c05791439cfe172f8fa5ae0eed936830ecb03",
@@ -3169,7 +3211,7 @@
             "prior1649": "4157d48fe0acb5d6f14df089ce128bd4faa5a8185d85e9c9f818e9ff09cb175f",
             "postqa1667": "4157d48fe0acb5d6f14df089ce128bd4faa5a8185d85e9c9f818e9ff09cb175f",
             "snapshot": "4157d48fe0acb5d6f14df089ce128bd4faa5a8185d85e9c9f818e9ff09cb175f",
-            "current": "12564c8c370e4cf6bfe51af249ba382539759b3168a8aa99eb9a0f7a5055691c"
+            "current": "1a7e5d0224655b40e240a007052f8f5b06ea556407a9d1980ccda47cd26b6a6c"
           },
           "xsm/identity.py": {
             "prior1649": "ecfddb64f394455bf68117076127f1c0a07888c0df4cd734f219771bce3004a5",
@@ -3193,31 +3235,31 @@
             "prior1649": "a5b90415f65316ec69b1a438b95f7e528d2f02ba37611aa6af4e4dc7ed99fc03",
             "postqa1667": "31d8120c6fbadb75ffa1d2ff9205bad13d84a8527b949bed0db17b8ebc16c6fb",
             "snapshot": "31d8120c6fbadb75ffa1d2ff9205bad13d84a8527b949bed0db17b8ebc16c6fb",
-            "current": "c13c6cc62149a6728ef7cd936e32428f055c72e038cd460a8fc2ee6124a13b2d"
+            "current": "306de5afe231b06e1afaba5753948d8d04701d41db9d6d460413265197c997a1"
           },
           "xsm/paths.py": {
             "prior1649": "242b8e64b5d564e503d5e0bbef1d7e8d160690e8bd5199bc160523969835bb39",
             "postqa1667": "242b8e64b5d564e503d5e0bbef1d7e8d160690e8bd5199bc160523969835bb39",
             "snapshot": "242b8e64b5d564e503d5e0bbef1d7e8d160690e8bd5199bc160523969835bb39",
-            "current": "242b8e64b5d564e503d5e0bbef1d7e8d160690e8bd5199bc160523969835bb39"
+            "current": "d0511519bff2f94c995db51abc98c9b0ac810ac4fe2389a29c82d0d9008310de"
           },
           "xsm/questions.py": {
             "prior1649": "c039aea75a9a3e1aebcedcbc3a9ddaedf5bff4ca3b2f1153f3c7ab6a3e498270",
             "postqa1667": "c039aea75a9a3e1aebcedcbc3a9ddaedf5bff4ca3b2f1153f3c7ab6a3e498270",
             "snapshot": "c039aea75a9a3e1aebcedcbc3a9ddaedf5bff4ca3b2f1153f3c7ab6a3e498270",
-            "current": "1b13a9c4a3db2e9f933ebc97ed00f362bb4f3cac95b7092ca5c302e718296a70"
+            "current": "43189ba3c5b0b5388e9491dd8ba070ddf0625df12aae6a9499b8024857ee66f8"
           },
           "xsm/receive.py": {
             "prior1649": "3c03383e0b2ab5e295576ebebaace7b95bb6de56bcfc0928e4abb03457d875fd",
             "postqa1667": "05a7991f531f14cf9ce376c7cde6d32c703f2cbb9c01709c494ee2faafdee1e2",
             "snapshot": "05a7991f531f14cf9ce376c7cde6d32c703f2cbb9c01709c494ee2faafdee1e2",
-            "current": "edc2b652dfd334bff67d56557ba512069697bd647e9551e8f642793a25fa54b6"
+            "current": "d35a07b183c84e52bfc883a552b73d9e49f1aeb75288c4bf72ef5d6d63fe4ff6"
           },
           "xsm/registry.py": {
             "prior1649": "edce2c6e75ec4d1803f402db565900080be337b2727a40ff663376c355890360",
             "postqa1667": "edce2c6e75ec4d1803f402db565900080be337b2727a40ff663376c355890360",
             "snapshot": "edce2c6e75ec4d1803f402db565900080be337b2727a40ff663376c355890360",
-            "current": "edce2c6e75ec4d1803f402db565900080be337b2727a40ff663376c355890360"
+            "current": "f3037f2cc674e2e753e2d2e30f3d95fa8565d65e1d5f85a135f9d650708f67c6"
           }
         },
         "changed_paths_since1649": [
@@ -3382,7 +3424,7 @@
             "prior1649": "3ee3d73a17dfdf88b9ed68eae30eef3bb51f8924f806786743ff70655d9e7f07",
             "postqa1667": "3ee3d73a17dfdf88b9ed68eae30eef3bb51f8924f806786743ff70655d9e7f07",
             "snapshot": "3ee3d73a17dfdf88b9ed68eae30eef3bb51f8924f806786743ff70655d9e7f07",
-            "current": "b34bb33bfe86ab28087ebc493de15ee37b62afd71f99d6f08819e3c592461c75"
+            "current": "8a713fe4ba9a2cbf47d873bf9e15e86ce126f8e85b5a721ce25492d8db5c2c1f"
           },
           "tests/test_owned_requests.py": {
             "prior1649": "b6cfe308963d65706a82fe2665135cb5451791b8c7fa1250488a8fec55d43d44",
@@ -3400,13 +3442,13 @@
             "prior1649": "92255fcee9cd2fe3b013851b056533a78d5090b225123f0d460de9c425feb5ca",
             "postqa1667": "92255fcee9cd2fe3b013851b056533a78d5090b225123f0d460de9c425feb5ca",
             "snapshot": "92255fcee9cd2fe3b013851b056533a78d5090b225123f0d460de9c425feb5ca",
-            "current": "92255fcee9cd2fe3b013851b056533a78d5090b225123f0d460de9c425feb5ca"
+            "current": "b37e69909ca58f02fa96a6d62935ef25640c94790e45965314cc73b2e2ef8cb5"
           },
           "xsm/handoff.py": {
             "prior1649": "4157d48fe0acb5d6f14df089ce128bd4faa5a8185d85e9c9f818e9ff09cb175f",
             "postqa1667": "4157d48fe0acb5d6f14df089ce128bd4faa5a8185d85e9c9f818e9ff09cb175f",
             "snapshot": "4157d48fe0acb5d6f14df089ce128bd4faa5a8185d85e9c9f818e9ff09cb175f",
-            "current": "12564c8c370e4cf6bfe51af249ba382539759b3168a8aa99eb9a0f7a5055691c"
+            "current": "1a7e5d0224655b40e240a007052f8f5b06ea556407a9d1980ccda47cd26b6a6c"
           },
           "xsm/identity.py": {
             "prior1649": "ecfddb64f394455bf68117076127f1c0a07888c0df4cd734f219771bce3004a5",
@@ -3430,43 +3472,43 @@
             "prior1649": "242b8e64b5d564e503d5e0bbef1d7e8d160690e8bd5199bc160523969835bb39",
             "postqa1667": "242b8e64b5d564e503d5e0bbef1d7e8d160690e8bd5199bc160523969835bb39",
             "snapshot": "242b8e64b5d564e503d5e0bbef1d7e8d160690e8bd5199bc160523969835bb39",
-            "current": "242b8e64b5d564e503d5e0bbef1d7e8d160690e8bd5199bc160523969835bb39"
+            "current": "d0511519bff2f94c995db51abc98c9b0ac810ac4fe2389a29c82d0d9008310de"
           },
           "xsm/receive.py": {
             "prior1649": "3c03383e0b2ab5e295576ebebaace7b95bb6de56bcfc0928e4abb03457d875fd",
             "postqa1667": "05a7991f531f14cf9ce376c7cde6d32c703f2cbb9c01709c494ee2faafdee1e2",
             "snapshot": "05a7991f531f14cf9ce376c7cde6d32c703f2cbb9c01709c494ee2faafdee1e2",
-            "current": "edc2b652dfd334bff67d56557ba512069697bd647e9551e8f642793a25fa54b6"
+            "current": "d35a07b183c84e52bfc883a552b73d9e49f1aeb75288c4bf72ef5d6d63fe4ff6"
           },
           "xsm/send.py": {
             "prior1649": "f73399e87581f6ac9c3d86d174f284b3f4c27294e5bbf1c78da767bf2dec8f70",
             "postqa1667": "f73399e87581f6ac9c3d86d174f284b3f4c27294e5bbf1c78da767bf2dec8f70",
             "snapshot": "f73399e87581f6ac9c3d86d174f284b3f4c27294e5bbf1c78da767bf2dec8f70",
-            "current": "c63417d6e5d06542f3b092f6d2569b783b68363295caffc8af7149119e4544d9"
+            "current": "e558bf3e55bebd72f06b44aee28bd4a5b1df2861edff81e9d8f980139cd08017"
           },
           "xsm/workers.py": {
             "prior1649": "518cb28f77c3ee222d1adf7e49068e671fc38dbc43fb5e1ac0ed6ef139299fa5",
             "postqa1667": "518cb28f77c3ee222d1adf7e49068e671fc38dbc43fb5e1ac0ed6ef139299fa5",
             "snapshot": "518cb28f77c3ee222d1adf7e49068e671fc38dbc43fb5e1ac0ed6ef139299fa5",
-            "current": "518cb28f77c3ee222d1adf7e49068e671fc38dbc43fb5e1ac0ed6ef139299fa5"
+            "current": "534109d8d6378f295300de1e5ba8bcfce09089d7678433e42ff37fc7088ee8fb"
           },
           "skills/xsm/SKILL.md": {
             "prior1649": "3e583bcd294862775c6590766b96cea2260c879329a32ffbe5306f128da55896",
             "postqa1667": "3e583bcd294862775c6590766b96cea2260c879329a32ffbe5306f128da55896",
             "snapshot": "3e583bcd294862775c6590766b96cea2260c879329a32ffbe5306f128da55896",
-            "current": "3a4e0f903ee4c7dfe0d519617be1f7df94add901795d2eeb2af3968b3ea46035"
+            "current": "796e0f4b3025c7db72d3149ed1e903a712d7db1c73ff2c0b9ab398374b1281ab"
           },
           "skills/xsm/references/guide.md": {
             "prior1649": "6bffc41da7cce01cc6080c8afb62e54efc910fd67b59d9d11b0c119130c43981",
             "postqa1667": "6bffc41da7cce01cc6080c8afb62e54efc910fd67b59d9d11b0c119130c43981",
             "snapshot": "6bffc41da7cce01cc6080c8afb62e54efc910fd67b59d9d11b0c119130c43981",
-            "current": "da495de9a13d29b9cb7197a148c7f3e8febdaab281b36ddc928a381a89ca82c2"
+            "current": "3ba436ec945ead79182c9bc1fa752af72df4c6ac792270f625494de326a6dfd0"
           },
           "skills/xsm/references/messaging.md": {
             "prior1649": "a5337aa81bf4bd23d9f050d7cbdf9e68f7354f3550c42301a211393c2f673814",
             "postqa1667": "324b020e2e8eb899469e8d6478d046bcde18d405dc46667d817581a0ef974cb0",
             "snapshot": "324b020e2e8eb899469e8d6478d046bcde18d405dc46667d817581a0ef974cb0",
-            "current": "9e7ea1705b7a02e66928761c46e49935644053358e4da53a6dae3115f2697677"
+            "current": "e6d4bb9a7b4d427bc7b55377e8f8fc6a19627de5e11558d5025144f97496761d"
           }
         },
         "changed_paths_since1649": [
@@ -3659,28 +3701,50 @@
           "skills/xsm/SKILL.md",
           "skills/xsm/references/guide.md",
           "skills/xsm/references/messaging.md",
+          "tests/test_b04_interfaces.py",
+          "tests/test_channel.py",
           "tests/test_crash_boundaries.py",
+          "tests/test_decisions.py",
+          "tests/test_discovery_latency.py",
+          "tests/test_handoff_consumer.py",
           "tests/test_install_cli_flow.py",
+          "tests/test_install_codex.py",
           "tests/test_install_runtime.py",
+          "tests/test_link.py",
+          "tests/test_mcp_dispatch.py",
+          "tests/test_mcp_identity.py",
+          "tests/test_open_mcp.py",
+          "tests/test_open_messaging.py",
           "tests/test_owned_interfaces.py",
           "tests/test_person_decisions.py",
+          "tests/test_question_interfaces.py",
+          "tests/test_questions_contract.py",
+          "tests/test_selected_connection.py",
           "tests/test_workers.py",
           "tests/test_xsm.py",
+          "xsm/channel.py",
           "xsm/cli.py",
           "xsm/collaboration.py",
+          "xsm/config.py",
           "xsm/connect.py",
           "xsm/directory.py",
+          "xsm/doc.py",
           "xsm/envelope.py",
           "xsm/handoff.py",
           "xsm/install.py",
           "xsm/instructions.py",
           "xsm/materials.py",
           "xsm/mcp.py",
+          "xsm/paths.py",
+          "xsm/policy.py",
           "xsm/probe.py",
           "xsm/questions.py",
           "xsm/receive.py",
+          "xsm/registry.py",
+          "xsm/remote.py",
           "xsm/resolve.py",
-          "xsm/send.py"
+          "xsm/send.py",
+          "xsm/workers.py"
         ],
         "scope": "현재 source 관측은 고정본 실행 이력과 별도. 각 조건은 자기 dependency hash만으로 재결속하며 예정 수정 성공을 추정하지 않음"
       }
@@ -3981,7 +4045,7 @@
           "tests/test_handoff_consumer.py": {
             "prior1649": "31f5d017861e402dc9a4c70314b395821b98f2f1daf3071b9adf1f5b06a37771",
             "snapshot": "31f5d017861e402dc9a4c70314b395821b98f2f1daf3071b9adf1f5b06a37771",
-            "current": "31f5d017861e402dc9a4c70314b395821b98f2f1daf3071b9adf1f5b06a37771",
+            "current": "772961adf650c91ad77bc4c584f022d848d27302fe4fbf8c97745da946ca34bc",
             "selected_epoch": "31f5d017861e402dc9a4c70314b395821b98f2f1daf3071b9adf1f5b06a37771"
           },
           "tests/test_handoff_crash.py": {
@@ -3993,7 +4057,7 @@
           "tests/test_question_interfaces.py": {
             "prior1649": "e6a7c2688a13722add1b2de686fac1e35917e2567c1ecede5a65fc1972cf2552",
             "snapshot": "66e5791078f5b38bba20c08a278cbdc2efe7d82aebc95da81ca666c883ac94d5",
-            "current": "66e5791078f5b38bba20c08a278cbdc2efe7d82aebc95da81ca666c883ac94d5",
+            "current": "ae9a21bbdba3329e333ef20fef54f289506722300210097c24780f70bc9811db",
             "selected_epoch": "66e5791078f5b38bba20c08a278cbdc2efe7d82aebc95da81ca666c883ac94d5"
           },
           "tests/test_xsm.py": {
@@ -4011,7 +4075,7 @@
           "xsm/handoff.py": {
             "prior1649": "4157d48fe0acb5d6f14df089ce128bd4faa5a8185d85e9c9f818e9ff09cb175f",
             "snapshot": "48f8b6c1c4ab29ede46141e6eeb431bd08501407dbf42c75948c477bdd767d00",
-            "current": "12564c8c370e4cf6bfe51af249ba382539759b3168a8aa99eb9a0f7a5055691c",
+            "current": "1a7e5d0224655b40e240a007052f8f5b06ea556407a9d1980ccda47cd26b6a6c",
             "selected_epoch": "48f8b6c1c4ab29ede46141e6eeb431bd08501407dbf42c75948c477bdd767d00"
           },
           "xsm/identity.py": {
@@ -4029,25 +4093,25 @@
           "xsm/paths.py": {
             "prior1649": "242b8e64b5d564e503d5e0bbef1d7e8d160690e8bd5199bc160523969835bb39",
             "snapshot": "242b8e64b5d564e503d5e0bbef1d7e8d160690e8bd5199bc160523969835bb39",
-            "current": "242b8e64b5d564e503d5e0bbef1d7e8d160690e8bd5199bc160523969835bb39",
+            "current": "d0511519bff2f94c995db51abc98c9b0ac810ac4fe2389a29c82d0d9008310de",
             "selected_epoch": "242b8e64b5d564e503d5e0bbef1d7e8d160690e8bd5199bc160523969835bb39"
           },
           "xsm/receive.py": {
             "prior1649": "3c03383e0b2ab5e295576ebebaace7b95bb6de56bcfc0928e4abb03457d875fd",
             "snapshot": "f0844cf0dde52979fb2361a7501fa9be8dd554b8052cac2acd56e3347a7add94",
-            "current": "edc2b652dfd334bff67d56557ba512069697bd647e9551e8f642793a25fa54b6",
+            "current": "d35a07b183c84e52bfc883a552b73d9e49f1aeb75288c4bf72ef5d6d63fe4ff6",
             "selected_epoch": "f0844cf0dde52979fb2361a7501fa9be8dd554b8052cac2acd56e3347a7add94"
           },
           "xsm/registry.py": {
             "prior1649": "edce2c6e75ec4d1803f402db565900080be337b2727a40ff663376c355890360",
             "snapshot": "edce2c6e75ec4d1803f402db565900080be337b2727a40ff663376c355890360",
-            "current": "edce2c6e75ec4d1803f402db565900080be337b2727a40ff663376c355890360",
+            "current": "f3037f2cc674e2e753e2d2e30f3d95fa8565d65e1d5f85a135f9d650708f67c6",
             "selected_epoch": "edce2c6e75ec4d1803f402db565900080be337b2727a40ff663376c355890360"
           },
           "xsm/send.py": {
             "prior1649": "f73399e87581f6ac9c3d86d174f284b3f4c27294e5bbf1c78da767bf2dec8f70",
             "snapshot": "05390ef61f53860c84311bc3f2f3aaa428508e615f989f21398dcd427f601fbe",
-            "current": "c63417d6e5d06542f3b092f6d2569b783b68363295caffc8af7149119e4544d9",
+            "current": "e558bf3e55bebd72f06b44aee28bd4a5b1df2861edff81e9d8f980139cd08017",
             "selected_epoch": "05390ef61f53860c84311bc3f2f3aaa428508e615f989f21398dcd427f601fbe"
           }
         },
@@ -4180,7 +4244,7 @@
           "tests/test_question_interfaces.py": {
             "prior1649": "e6a7c2688a13722add1b2de686fac1e35917e2567c1ecede5a65fc1972cf2552",
             "snapshot": "66e5791078f5b38bba20c08a278cbdc2efe7d82aebc95da81ca666c883ac94d5",
-            "current": "66e5791078f5b38bba20c08a278cbdc2efe7d82aebc95da81ca666c883ac94d5",
+            "current": "ae9a21bbdba3329e333ef20fef54f289506722300210097c24780f70bc9811db",
             "selected_epoch": "66e5791078f5b38bba20c08a278cbdc2efe7d82aebc95da81ca666c883ac94d5"
           },
           "tests/test_questions.py": {
@@ -4198,7 +4262,7 @@
           "xsm/connect.py": {
             "prior1649": "61aa314f64c122955a929406778f940cf96cdc7a90ec0425cbe958dcb486c292",
             "snapshot": "61aa314f64c122955a929406778f940cf96cdc7a90ec0425cbe958dcb486c292",
-            "current": "be25196f7efd16e43ef09718b97e9bd6b3f5bea737bb6e4f673a8b94688131ff",
+            "current": "de8153c9e6525ab99fc5a7c99a616ee38650f216b3db0d0921392f7330c6b632",
             "selected_epoch": "61aa314f64c122955a929406778f940cf96cdc7a90ec0425cbe958dcb486c292"
           },
           "xsm/envelope.py": {
@@ -4210,7 +4274,7 @@
           "xsm/handoff.py": {
             "prior1649": "4157d48fe0acb5d6f14df089ce128bd4faa5a8185d85e9c9f818e9ff09cb175f",
             "snapshot": "48f8b6c1c4ab29ede46141e6eeb431bd08501407dbf42c75948c477bdd767d00",
-            "current": "12564c8c370e4cf6bfe51af249ba382539759b3168a8aa99eb9a0f7a5055691c",
+            "current": "1a7e5d0224655b40e240a007052f8f5b06ea556407a9d1980ccda47cd26b6a6c",
             "selected_epoch": "48f8b6c1c4ab29ede46141e6eeb431bd08501407dbf42c75948c477bdd767d00"
           },
           "xsm/ledger.py": {
@@ -4228,25 +4292,25 @@
           "xsm/paths.py": {
             "prior1649": "242b8e64b5d564e503d5e0bbef1d7e8d160690e8bd5199bc160523969835bb39",
             "snapshot": "242b8e64b5d564e503d5e0bbef1d7e8d160690e8bd5199bc160523969835bb39",
-            "current": "242b8e64b5d564e503d5e0bbef1d7e8d160690e8bd5199bc160523969835bb39",
+            "current": "d0511519bff2f94c995db51abc98c9b0ac810ac4fe2389a29c82d0d9008310de",
             "selected_epoch": "242b8e64b5d564e503d5e0bbef1d7e8d160690e8bd5199bc160523969835bb39"
           },
           "xsm/questions.py": {
             "prior1649": "c039aea75a9a3e1aebcedcbc3a9ddaedf5bff4ca3b2f1153f3c7ab6a3e498270",
             "snapshot": "c039aea75a9a3e1aebcedcbc3a9ddaedf5bff4ca3b2f1153f3c7ab6a3e498270",
-            "current": "1b13a9c4a3db2e9f933ebc97ed00f362bb4f3cac95b7092ca5c302e718296a70",
+            "current": "43189ba3c5b0b5388e9491dd8ba070ddf0625df12aae6a9499b8024857ee66f8",
             "selected_epoch": "c039aea75a9a3e1aebcedcbc3a9ddaedf5bff4ca3b2f1153f3c7ab6a3e498270"
           },
           "xsm/receive.py": {
             "prior1649": "3c03383e0b2ab5e295576ebebaace7b95bb6de56bcfc0928e4abb03457d875fd",
             "snapshot": "f0844cf0dde52979fb2361a7501fa9be8dd554b8052cac2acd56e3347a7add94",
-            "current": "edc2b652dfd334bff67d56557ba512069697bd647e9551e8f642793a25fa54b6",
+            "current": "d35a07b183c84e52bfc883a552b73d9e49f1aeb75288c4bf72ef5d6d63fe4ff6",
             "selected_epoch": "f0844cf0dde52979fb2361a7501fa9be8dd554b8052cac2acd56e3347a7add94"
           },
           "xsm/send.py": {
             "prior1649": "f73399e87581f6ac9c3d86d174f284b3f4c27294e5bbf1c78da767bf2dec8f70",
             "snapshot": "05390ef61f53860c84311bc3f2f3aaa428508e615f989f21398dcd427f601fbe",
-            "current": "c63417d6e5d06542f3b092f6d2569b783b68363295caffc8af7149119e4544d9",
+            "current": "e558bf3e55bebd72f06b44aee28bd4a5b1df2861edff81e9d8f980139cd08017",
             "selected_epoch": "05390ef61f53860c84311bc3f2f3aaa428508e615f989f21398dcd427f601fbe"
           }
         },
@@ -4368,13 +4432,13 @@
           "tests/test_b04_interfaces.py": {
             "prior1649": "9e90d53ed1c326a5379631aa6aa5e095cc301f080c05d6bbf724fac24dee8a27",
             "snapshot": "9e90d53ed1c326a5379631aa6aa5e095cc301f080c05d6bbf724fac24dee8a27",
-            "current": "9e90d53ed1c326a5379631aa6aa5e095cc301f080c05d6bbf724fac24dee8a27",
+            "current": "d0ea95a59d4630509443fe8f9859e0e7e7bd94d825112a4abb6316db46e66f9f",
             "selected_epoch": "9e90d53ed1c326a5379631aa6aa5e095cc301f080c05d6bbf724fac24dee8a27"
           },
           "tests/test_handoff_consumer.py": {
             "prior1649": "31f5d017861e402dc9a4c70314b395821b98f2f1daf3071b9adf1f5b06a37771",
             "snapshot": "31f5d017861e402dc9a4c70314b395821b98f2f1daf3071b9adf1f5b06a37771",
-            "current": "31f5d017861e402dc9a4c70314b395821b98f2f1daf3071b9adf1f5b06a37771",
+            "current": "772961adf650c91ad77bc4c584f022d848d27302fe4fbf8c97745da946ca34bc",
             "selected_epoch": "31f5d017861e402dc9a4c70314b395821b98f2f1daf3071b9adf1f5b06a37771"
           },
           "tests/test_policy_recovery.py": {
@@ -4386,7 +4450,7 @@
           "tests/test_question_interfaces.py": {
             "prior1649": "e6a7c2688a13722add1b2de686fac1e35917e2567c1ecede5a65fc1972cf2552",
             "snapshot": "66e5791078f5b38bba20c08a278cbdc2efe7d82aebc95da81ca666c883ac94d5",
-            "current": "66e5791078f5b38bba20c08a278cbdc2efe7d82aebc95da81ca666c883ac94d5",
+            "current": "ae9a21bbdba3329e333ef20fef54f289506722300210097c24780f70bc9811db",
             "selected_epoch": "66e5791078f5b38bba20c08a278cbdc2efe7d82aebc95da81ca666c883ac94d5"
           },
           "xsm/abuse.py": {
@@ -4398,7 +4462,7 @@
           "xsm/config.py": {
             "prior1649": "92255fcee9cd2fe3b013851b056533a78d5090b225123f0d460de9c425feb5ca",
             "snapshot": "92255fcee9cd2fe3b013851b056533a78d5090b225123f0d460de9c425feb5ca",
-            "current": "92255fcee9cd2fe3b013851b056533a78d5090b225123f0d460de9c425feb5ca",
+            "current": "b37e69909ca58f02fa96a6d62935ef25640c94790e45965314cc73b2e2ef8cb5",
             "selected_epoch": "92255fcee9cd2fe3b013851b056533a78d5090b225123f0d460de9c425feb5ca"
           },
           "xsm/consent.py": {
@@ -4410,37 +4474,37 @@
           "xsm/handoff.py": {
             "prior1649": "4157d48fe0acb5d6f14df089ce128bd4faa5a8185d85e9c9f818e9ff09cb175f",
             "snapshot": "48f8b6c1c4ab29ede46141e6eeb431bd08501407dbf42c75948c477bdd767d00",
-            "current": "12564c8c370e4cf6bfe51af249ba382539759b3168a8aa99eb9a0f7a5055691c",
+            "current": "1a7e5d0224655b40e240a007052f8f5b06ea556407a9d1980ccda47cd26b6a6c",
             "selected_epoch": "48f8b6c1c4ab29ede46141e6eeb431bd08501407dbf42c75948c477bdd767d00"
           },
           "xsm/mcp.py": {
             "prior1649": "a5b90415f65316ec69b1a438b95f7e528d2f02ba37611aa6af4e4dc7ed99fc03",
             "snapshot": "8f8a234180fd3be42dca7ebebadfe16ac399f755cbcfb7c5b8453a6406a6ca05",
-            "current": "c13c6cc62149a6728ef7cd936e32428f055c72e038cd460a8fc2ee6124a13b2d",
+            "current": "306de5afe231b06e1afaba5753948d8d04701d41db9d6d460413265197c997a1",
             "selected_epoch": "8f8a234180fd3be42dca7ebebadfe16ac399f755cbcfb7c5b8453a6406a6ca05"
           },
           "xsm/paths.py": {
             "prior1649": "242b8e64b5d564e503d5e0bbef1d7e8d160690e8bd5199bc160523969835bb39",
             "snapshot": "242b8e64b5d564e503d5e0bbef1d7e8d160690e8bd5199bc160523969835bb39",
-            "current": "242b8e64b5d564e503d5e0bbef1d7e8d160690e8bd5199bc160523969835bb39",
+            "current": "d0511519bff2f94c995db51abc98c9b0ac810ac4fe2389a29c82d0d9008310de",
             "selected_epoch": "242b8e64b5d564e503d5e0bbef1d7e8d160690e8bd5199bc160523969835bb39"
           },
           "xsm/policy.py": {
             "prior1649": "9f912493ca4a26e22af110edead346e58924022de4d2c99c56c566279c1c7cc7",
             "snapshot": "9f912493ca4a26e22af110edead346e58924022de4d2c99c56c566279c1c7cc7",
-            "current": "9f912493ca4a26e22af110edead346e58924022de4d2c99c56c566279c1c7cc7",
+            "current": "f95300bcd235bd60c0f98e3b678d9d5240e67a6877520534f523c4ed8d4eaed3",
             "selected_epoch": "9f912493ca4a26e22af110edead346e58924022de4d2c99c56c566279c1c7cc7"
           },
           "xsm/receive.py": {
             "prior1649": "3c03383e0b2ab5e295576ebebaace7b95bb6de56bcfc0928e4abb03457d875fd",
             "snapshot": "f0844cf0dde52979fb2361a7501fa9be8dd554b8052cac2acd56e3347a7add94",
-            "current": "edc2b652dfd334bff67d56557ba512069697bd647e9551e8f642793a25fa54b6",
+            "current": "d35a07b183c84e52bfc883a552b73d9e49f1aeb75288c4bf72ef5d6d63fe4ff6",
             "selected_epoch": "f0844cf0dde52979fb2361a7501fa9be8dd554b8052cac2acd56e3347a7add94"
           },
           "xsm/send.py": {
             "prior1649": "f73399e87581f6ac9c3d86d174f284b3f4c27294e5bbf1c78da767bf2dec8f70",
             "snapshot": "05390ef61f53860c84311bc3f2f3aaa428508e615f989f21398dcd427f601fbe",
-            "current": "c63417d6e5d06542f3b092f6d2569b783b68363295caffc8af7149119e4544d9",
+            "current": "e558bf3e55bebd72f06b44aee28bd4a5b1df2861edff81e9d8f980139cd08017",
             "selected_epoch": "05390ef61f53860c84311bc3f2f3aaa428508e615f989f21398dcd427f601fbe"
           }
         },
@@ -4579,25 +4643,25 @@
           "xsm/cli.py": {
             "prior1649": "9a9327dd8188973b1b1ce3251afb860140a56d3b2c9559210032ba7c39fe06e6",
             "snapshot": "76f29a9ef05d070dc61d68008ae87db2e5935dc76d0e333bd30c3db29d54cb1c",
-            "current": "021c45acc1182a76c5e81d20b0a7a00e5f81aae0a1325ee09e8f9938a2fbafc0",
+            "current": "e4ab4a820d6436a2ec4b9116d4b310f4343ca71bc314d78a7cedb15cdadc1e99",
             "selected_epoch": "76f29a9ef05d070dc61d68008ae87db2e5935dc76d0e333bd30c3db29d54cb1c"
           },
           "xsm/config.py": {
             "prior1649": "92255fcee9cd2fe3b013851b056533a78d5090b225123f0d460de9c425feb5ca",
             "snapshot": "92255fcee9cd2fe3b013851b056533a78d5090b225123f0d460de9c425feb5ca",
-            "current": "92255fcee9cd2fe3b013851b056533a78d5090b225123f0d460de9c425feb5ca",
+            "current": "b37e69909ca58f02fa96a6d62935ef25640c94790e45965314cc73b2e2ef8cb5",
             "selected_epoch": "92255fcee9cd2fe3b013851b056533a78d5090b225123f0d460de9c425feb5ca"
           },
           "xsm/install.py": {
             "prior1649": "c2f97ecef55e1001e3d66294bccc4cd19e878bb0e78f99145f15b05ea0bc5b16",
             "snapshot": "6b6facc89dee67bf27899cbae9e36cfb701b2c497d2a1fc33a43cf8e49daccd2",
-            "current": "49a3d65beeec935cb624a3701c85995b09cba4861a17c2b446297d8837d3d2d2",
+            "current": "d961377a9b8697e07da1523c7281a274047a9e1170986345893eeebf5f60d654",
             "selected_epoch": "6b6facc89dee67bf27899cbae9e36cfb701b2c497d2a1fc33a43cf8e49daccd2"
           },
           "xsm/paths.py": {
             "prior1649": "242b8e64b5d564e503d5e0bbef1d7e8d160690e8bd5199bc160523969835bb39",
             "snapshot": "242b8e64b5d564e503d5e0bbef1d7e8d160690e8bd5199bc160523969835bb39",
-            "current": "242b8e64b5d564e503d5e0bbef1d7e8d160690e8bd5199bc160523969835bb39",
+            "current": "d0511519bff2f94c995db51abc98c9b0ac810ac4fe2389a29c82d0d9008310de",
             "selected_epoch": "242b8e64b5d564e503d5e0bbef1d7e8d160690e8bd5199bc160523969835bb39"
           },
           "xsm/setup_flow.py": {
@@ -4725,25 +4789,25 @@
           "tests/test_b04_interfaces.py": {
             "prior1649": "9e90d53ed1c326a5379631aa6aa5e095cc301f080c05d6bbf724fac24dee8a27",
             "snapshot": "9e90d53ed1c326a5379631aa6aa5e095cc301f080c05d6bbf724fac24dee8a27",
-            "current": "9e90d53ed1c326a5379631aa6aa5e095cc301f080c05d6bbf724fac24dee8a27",
+            "current": "d0ea95a59d4630509443fe8f9859e0e7e7bd94d825112a4abb6316db46e66f9f",
             "selected_epoch": "9e90d53ed1c326a5379631aa6aa5e095cc301f080c05d6bbf724fac24dee8a27"
           },
           "tests/test_question_interfaces.py": {
             "prior1649": "e6a7c2688a13722add1b2de686fac1e35917e2567c1ecede5a65fc1972cf2552",
             "snapshot": "66e5791078f5b38bba20c08a278cbdc2efe7d82aebc95da81ca666c883ac94d5",
-            "current": "66e5791078f5b38bba20c08a278cbdc2efe7d82aebc95da81ca666c883ac94d5",
+            "current": "ae9a21bbdba3329e333ef20fef54f289506722300210097c24780f70bc9811db",
             "selected_epoch": "66e5791078f5b38bba20c08a278cbdc2efe7d82aebc95da81ca666c883ac94d5"
           },
           "xsm/config.py": {
             "prior1649": "92255fcee9cd2fe3b013851b056533a78d5090b225123f0d460de9c425feb5ca",
             "snapshot": "92255fcee9cd2fe3b013851b056533a78d5090b225123f0d460de9c425feb5ca",
-            "current": "92255fcee9cd2fe3b013851b056533a78d5090b225123f0d460de9c425feb5ca",
+            "current": "b37e69909ca58f02fa96a6d62935ef25640c94790e45965314cc73b2e2ef8cb5",
             "selected_epoch": "92255fcee9cd2fe3b013851b056533a78d5090b225123f0d460de9c425feb5ca"
           },
           "xsm/connect.py": {
             "prior1649": "61aa314f64c122955a929406778f940cf96cdc7a90ec0425cbe958dcb486c292",
             "snapshot": "61aa314f64c122955a929406778f940cf96cdc7a90ec0425cbe958dcb486c292",
-            "current": "be25196f7efd16e43ef09718b97e9bd6b3f5bea737bb6e4f673a8b94688131ff",
+            "current": "de8153c9e6525ab99fc5a7c99a616ee38650f216b3db0d0921392f7330c6b632",
             "selected_epoch": "61aa314f64c122955a929406778f940cf96cdc7a90ec0425cbe958dcb486c292"
           },
           "xsm/context.py": {
@@ -4761,7 +4825,7 @@
           "xsm/handoff.py": {
             "prior1649": "4157d48fe0acb5d6f14df089ce128bd4faa5a8185d85e9c9f818e9ff09cb175f",
             "snapshot": "48f8b6c1c4ab29ede46141e6eeb431bd08501407dbf42c75948c477bdd767d00",
-            "current": "12564c8c370e4cf6bfe51af249ba382539759b3168a8aa99eb9a0f7a5055691c",
+            "current": "1a7e5d0224655b40e240a007052f8f5b06ea556407a9d1980ccda47cd26b6a6c",
             "selected_epoch": "48f8b6c1c4ab29ede46141e6eeb431bd08501407dbf42c75948c477bdd767d00"
           },
           "xsm/identity.py": {
@@ -4779,7 +4843,7 @@
           "xsm/instructions.py": {
             "prior1649": "4decc55c99246c6a7aadd0575622167b327ad70df23499e464a32bc58bc7162f",
             "snapshot": "8767e07bef46cd0859fdef2b7a41d7838fa5faf62fc0cb54baf59a0f1c2c1190",
-            "current": "4b3208a5b1b6b951bc0a14b468576eb0da7be2352d5fb28dbc0d816a8087feb8",
+            "current": "79b39f14af658450ec64c17fafc2bcc27101d0aa138148d825738f36c64631cd",
             "selected_epoch": "8767e07bef46cd0859fdef2b7a41d7838fa5faf62fc0cb54baf59a0f1c2c1190"
           },
           "xsm/ledger.py": {
@@ -4791,55 +4855,55 @@
           "xsm/mcp.py": {
             "prior1649": "a5b90415f65316ec69b1a438b95f7e528d2f02ba37611aa6af4e4dc7ed99fc03",
             "snapshot": "8f8a234180fd3be42dca7ebebadfe16ac399f755cbcfb7c5b8453a6406a6ca05",
-            "current": "c13c6cc62149a6728ef7cd936e32428f055c72e038cd460a8fc2ee6124a13b2d",
+            "current": "306de5afe231b06e1afaba5753948d8d04701d41db9d6d460413265197c997a1",
             "selected_epoch": "8f8a234180fd3be42dca7ebebadfe16ac399f755cbcfb7c5b8453a6406a6ca05"
           },
           "xsm/paths.py": {
             "prior1649": "242b8e64b5d564e503d5e0bbef1d7e8d160690e8bd5199bc160523969835bb39",
             "snapshot": "242b8e64b5d564e503d5e0bbef1d7e8d160690e8bd5199bc160523969835bb39",
-            "current": "242b8e64b5d564e503d5e0bbef1d7e8d160690e8bd5199bc160523969835bb39",
+            "current": "d0511519bff2f94c995db51abc98c9b0ac810ac4fe2389a29c82d0d9008310de",
             "selected_epoch": "242b8e64b5d564e503d5e0bbef1d7e8d160690e8bd5199bc160523969835bb39"
           },
           "xsm/questions.py": {
             "prior1649": "c039aea75a9a3e1aebcedcbc3a9ddaedf5bff4ca3b2f1153f3c7ab6a3e498270",
             "snapshot": "c039aea75a9a3e1aebcedcbc3a9ddaedf5bff4ca3b2f1153f3c7ab6a3e498270",
-            "current": "1b13a9c4a3db2e9f933ebc97ed00f362bb4f3cac95b7092ca5c302e718296a70",
+            "current": "43189ba3c5b0b5388e9491dd8ba070ddf0625df12aae6a9499b8024857ee66f8",
             "selected_epoch": "c039aea75a9a3e1aebcedcbc3a9ddaedf5bff4ca3b2f1153f3c7ab6a3e498270"
           },
           "xsm/receive.py": {
             "prior1649": "3c03383e0b2ab5e295576ebebaace7b95bb6de56bcfc0928e4abb03457d875fd",
             "snapshot": "f0844cf0dde52979fb2361a7501fa9be8dd554b8052cac2acd56e3347a7add94",
-            "current": "edc2b652dfd334bff67d56557ba512069697bd647e9551e8f642793a25fa54b6",
+            "current": "d35a07b183c84e52bfc883a552b73d9e49f1aeb75288c4bf72ef5d6d63fe4ff6",
             "selected_epoch": "f0844cf0dde52979fb2361a7501fa9be8dd554b8052cac2acd56e3347a7add94"
           },
           "xsm/registry.py": {
             "prior1649": "edce2c6e75ec4d1803f402db565900080be337b2727a40ff663376c355890360",
             "snapshot": "edce2c6e75ec4d1803f402db565900080be337b2727a40ff663376c355890360",
-            "current": "edce2c6e75ec4d1803f402db565900080be337b2727a40ff663376c355890360",
+            "current": "f3037f2cc674e2e753e2d2e30f3d95fa8565d65e1d5f85a135f9d650708f67c6",
             "selected_epoch": "edce2c6e75ec4d1803f402db565900080be337b2727a40ff663376c355890360"
           },
           "xsm/send.py": {
             "prior1649": "f73399e87581f6ac9c3d86d174f284b3f4c27294e5bbf1c78da767bf2dec8f70",
             "snapshot": "05390ef61f53860c84311bc3f2f3aaa428508e615f989f21398dcd427f601fbe",
-            "current": "c63417d6e5d06542f3b092f6d2569b783b68363295caffc8af7149119e4544d9",
+            "current": "e558bf3e55bebd72f06b44aee28bd4a5b1df2861edff81e9d8f980139cd08017",
             "selected_epoch": "05390ef61f53860c84311bc3f2f3aaa428508e615f989f21398dcd427f601fbe"
           },
           "skills/xsm/SKILL.md": {
             "prior1649": "3e583bcd294862775c6590766b96cea2260c879329a32ffbe5306f128da55896",
             "snapshot": "3e583bcd294862775c6590766b96cea2260c879329a32ffbe5306f128da55896",
-            "current": "3a4e0f903ee4c7dfe0d519617be1f7df94add901795d2eeb2af3968b3ea46035",
+            "current": "796e0f4b3025c7db72d3149ed1e903a712d7db1c73ff2c0b9ab398374b1281ab",
             "selected_epoch": "3e583bcd294862775c6590766b96cea2260c879329a32ffbe5306f128da55896"
           },
           "skills/xsm/references/guide.md": {
             "prior1649": "6bffc41da7cce01cc6080c8afb62e54efc910fd67b59d9d11b0c119130c43981",
             "snapshot": "6bffc41da7cce01cc6080c8afb62e54efc910fd67b59d9d11b0c119130c43981",
-            "current": "da495de9a13d29b9cb7197a148c7f3e8febdaab281b36ddc928a381a89ca82c2",
+            "current": "3ba436ec945ead79182c9bc1fa752af72df4c6ac792270f625494de326a6dfd0",
             "selected_epoch": "6bffc41da7cce01cc6080c8afb62e54efc910fd67b59d9d11b0c119130c43981"
           },
           "skills/xsm/references/messaging.md": {
             "prior1649": "a5337aa81bf4bd23d9f050d7cbdf9e68f7354f3550c42301a211393c2f673814",
             "snapshot": "b76f2de35f0579bb74bca8f32ebe1f07f4a2bc83e5ed776284f738df88de3eef",
-            "current": "9e7ea1705b7a02e66928761c46e49935644053358e4da53a6dae3115f2697677",
+            "current": "e6d4bb9a7b4d427bc7b55377e8f8fc6a19627de5e11558d5025144f97496761d",
             "selected_epoch": "b76f2de35f0579bb74bca8f32ebe1f07f4a2bc83e5ed776284f738df88de3eef"
           }
         },
@@ -4947,27 +5011,27 @@
           },
           "xsm/config.py": {
             "selected_epoch": "92255fcee9cd2fe3b013851b056533a78d5090b225123f0d460de9c425feb5ca",
-            "current": "92255fcee9cd2fe3b013851b056533a78d5090b225123f0d460de9c425feb5ca"
+            "current": "b37e69909ca58f02fa96a6d62935ef25640c94790e45965314cc73b2e2ef8cb5"
           },
           "xsm/registry.py": {
             "selected_epoch": "edce2c6e75ec4d1803f402db565900080be337b2727a40ff663376c355890360",
-            "current": "edce2c6e75ec4d1803f402db565900080be337b2727a40ff663376c355890360"
+            "current": "f3037f2cc674e2e753e2d2e30f3d95fa8565d65e1d5f85a135f9d650708f67c6"
           },
           "xsm/receive.py": {
             "selected_epoch": "f0844cf0dde52979fb2361a7501fa9be8dd554b8052cac2acd56e3347a7add94",
-            "current": "edc2b652dfd334bff67d56557ba512069697bd647e9551e8f642793a25fa54b6"
+            "current": "d35a07b183c84e52bfc883a552b73d9e49f1aeb75288c4bf72ef5d6d63fe4ff6"
           },
           "xsm/send.py": {
             "selected_epoch": "05390ef61f53860c84311bc3f2f3aaa428508e615f989f21398dcd427f601fbe",
-            "current": "c63417d6e5d06542f3b092f6d2569b783b68363295caffc8af7149119e4544d9"
+            "current": "e558bf3e55bebd72f06b44aee28bd4a5b1df2861edff81e9d8f980139cd08017"
           },
           "xsm/handoff.py": {
             "selected_epoch": "48f8b6c1c4ab29ede46141e6eeb431bd08501407dbf42c75948c477bdd767d00",
-            "current": "12564c8c370e4cf6bfe51af249ba382539759b3168a8aa99eb9a0f7a5055691c"
+            "current": "1a7e5d0224655b40e240a007052f8f5b06ea556407a9d1980ccda47cd26b6a6c"
           },
           "xsm/mcp.py": {
             "selected_epoch": "8f8a234180fd3be42dca7ebebadfe16ac399f755cbcfb7c5b8453a6406a6ca05",
-            "current": "c13c6cc62149a6728ef7cd936e32428f055c72e038cd460a8fc2ee6124a13b2d"
+            "current": "306de5afe231b06e1afaba5753948d8d04701d41db9d6d460413265197c997a1"
           },
           "xsm/inbox.py": {
             "selected_epoch": "299b972ff4fadd91148e495357be10a97ac2640d23d79c317e0b675699541695",
@@ -5066,27 +5130,27 @@
           },
           "xsm/config.py": {
             "selected_epoch": "92255fcee9cd2fe3b013851b056533a78d5090b225123f0d460de9c425feb5ca",
-            "current": "92255fcee9cd2fe3b013851b056533a78d5090b225123f0d460de9c425feb5ca"
+            "current": "b37e69909ca58f02fa96a6d62935ef25640c94790e45965314cc73b2e2ef8cb5"
           },
           "xsm/registry.py": {
             "selected_epoch": "edce2c6e75ec4d1803f402db565900080be337b2727a40ff663376c355890360",
-            "current": "edce2c6e75ec4d1803f402db565900080be337b2727a40ff663376c355890360"
+            "current": "f3037f2cc674e2e753e2d2e30f3d95fa8565d65e1d5f85a135f9d650708f67c6"
           },
           "xsm/receive.py": {
             "selected_epoch": "f0844cf0dde52979fb2361a7501fa9be8dd554b8052cac2acd56e3347a7add94",
-            "current": "edc2b652dfd334bff67d56557ba512069697bd647e9551e8f642793a25fa54b6"
+            "current": "d35a07b183c84e52bfc883a552b73d9e49f1aeb75288c4bf72ef5d6d63fe4ff6"
           },
           "xsm/send.py": {
             "selected_epoch": "05390ef61f53860c84311bc3f2f3aaa428508e615f989f21398dcd427f601fbe",
-            "current": "c63417d6e5d06542f3b092f6d2569b783b68363295caffc8af7149119e4544d9"
+            "current": "e558bf3e55bebd72f06b44aee28bd4a5b1df2861edff81e9d8f980139cd08017"
           },
           "xsm/handoff.py": {
             "selected_epoch": "48f8b6c1c4ab29ede46141e6eeb431bd08501407dbf42c75948c477bdd767d00",
-            "current": "12564c8c370e4cf6bfe51af249ba382539759b3168a8aa99eb9a0f7a5055691c"
+            "current": "1a7e5d0224655b40e240a007052f8f5b06ea556407a9d1980ccda47cd26b6a6c"
           },
           "xsm/mcp.py": {
             "selected_epoch": "8f8a234180fd3be42dca7ebebadfe16ac399f755cbcfb7c5b8453a6406a6ca05",
-            "current": "c13c6cc62149a6728ef7cd936e32428f055c72e038cd460a8fc2ee6124a13b2d"
+            "current": "306de5afe231b06e1afaba5753948d8d04701d41db9d6d460413265197c997a1"
           },
           "xsm/inbox.py": {
             "selected_epoch": "299b972ff4fadd91148e495357be10a97ac2640d23d79c317e0b675699541695",
@@ -5195,7 +5259,7 @@
           "tests/test_handoff_consumer.py": {
             "prior1649": "31f5d017861e402dc9a4c70314b395821b98f2f1daf3071b9adf1f5b06a37771",
             "snapshot": "31f5d017861e402dc9a4c70314b395821b98f2f1daf3071b9adf1f5b06a37771",
-            "current": "31f5d017861e402dc9a4c70314b395821b98f2f1daf3071b9adf1f5b06a37771",
+            "current": "772961adf650c91ad77bc4c584f022d848d27302fe4fbf8c97745da946ca34bc",
             "selected_epoch": "31f5d017861e402dc9a4c70314b395821b98f2f1daf3071b9adf1f5b06a37771"
           },
           "tests/test_handoff_crash.py": {
@@ -5213,13 +5277,13 @@
           "tests/test_question_interfaces.py": {
             "prior1649": "e6a7c2688a13722add1b2de686fac1e35917e2567c1ecede5a65fc1972cf2552",
             "snapshot": "66e5791078f5b38bba20c08a278cbdc2efe7d82aebc95da81ca666c883ac94d5",
-            "current": "66e5791078f5b38bba20c08a278cbdc2efe7d82aebc95da81ca666c883ac94d5",
+            "current": "ae9a21bbdba3329e333ef20fef54f289506722300210097c24780f70bc9811db",
             "selected_epoch": "66e5791078f5b38bba20c08a278cbdc2efe7d82aebc95da81ca666c883ac94d5"
           },
           "xsm/cli.py": {
             "prior1649": "9a9327dd8188973b1b1ce3251afb860140a56d3b2c9559210032ba7c39fe06e6",
             "snapshot": "76f29a9ef05d070dc61d68008ae87db2e5935dc76d0e333bd30c3db29d54cb1c",
-            "current": "021c45acc1182a76c5e81d20b0a7a00e5f81aae0a1325ee09e8f9938a2fbafc0",
+            "current": "e4ab4a820d6436a2ec4b9116d4b310f4343ca71bc314d78a7cedb15cdadc1e99",
             "selected_epoch": "76f29a9ef05d070dc61d68008ae87db2e5935dc76d0e333bd30c3db29d54cb1c"
           },
           "xsm/context.py": {
@@ -5237,7 +5301,7 @@
           "xsm/handoff.py": {
             "prior1649": "4157d48fe0acb5d6f14df089ce128bd4faa5a8185d85e9c9f818e9ff09cb175f",
             "snapshot": "48f8b6c1c4ab29ede46141e6eeb431bd08501407dbf42c75948c477bdd767d00",
-            "current": "12564c8c370e4cf6bfe51af249ba382539759b3168a8aa99eb9a0f7a5055691c",
+            "current": "1a7e5d0224655b40e240a007052f8f5b06ea556407a9d1980ccda47cd26b6a6c",
             "selected_epoch": "48f8b6c1c4ab29ede46141e6eeb431bd08501407dbf42c75948c477bdd767d00"
           },
           "xsm/identity.py": {
@@ -5261,31 +5325,31 @@
           "xsm/mcp.py": {
             "prior1649": "a5b90415f65316ec69b1a438b95f7e528d2f02ba37611aa6af4e4dc7ed99fc03",
             "snapshot": "8f8a234180fd3be42dca7ebebadfe16ac399f755cbcfb7c5b8453a6406a6ca05",
-            "current": "c13c6cc62149a6728ef7cd936e32428f055c72e038cd460a8fc2ee6124a13b2d",
+            "current": "306de5afe231b06e1afaba5753948d8d04701d41db9d6d460413265197c997a1",
             "selected_epoch": "8f8a234180fd3be42dca7ebebadfe16ac399f755cbcfb7c5b8453a6406a6ca05"
           },
           "xsm/paths.py": {
             "prior1649": "242b8e64b5d564e503d5e0bbef1d7e8d160690e8bd5199bc160523969835bb39",
             "snapshot": "242b8e64b5d564e503d5e0bbef1d7e8d160690e8bd5199bc160523969835bb39",
-            "current": "242b8e64b5d564e503d5e0bbef1d7e8d160690e8bd5199bc160523969835bb39",
+            "current": "d0511519bff2f94c995db51abc98c9b0ac810ac4fe2389a29c82d0d9008310de",
             "selected_epoch": "242b8e64b5d564e503d5e0bbef1d7e8d160690e8bd5199bc160523969835bb39"
           },
           "xsm/questions.py": {
             "prior1649": "c039aea75a9a3e1aebcedcbc3a9ddaedf5bff4ca3b2f1153f3c7ab6a3e498270",
             "snapshot": "c039aea75a9a3e1aebcedcbc3a9ddaedf5bff4ca3b2f1153f3c7ab6a3e498270",
-            "current": "1b13a9c4a3db2e9f933ebc97ed00f362bb4f3cac95b7092ca5c302e718296a70",
+            "current": "43189ba3c5b0b5388e9491dd8ba070ddf0625df12aae6a9499b8024857ee66f8",
             "selected_epoch": "c039aea75a9a3e1aebcedcbc3a9ddaedf5bff4ca3b2f1153f3c7ab6a3e498270"
           },
           "xsm/receive.py": {
             "prior1649": "3c03383e0b2ab5e295576ebebaace7b95bb6de56bcfc0928e4abb03457d875fd",
             "snapshot": "f0844cf0dde52979fb2361a7501fa9be8dd554b8052cac2acd56e3347a7add94",
-            "current": "edc2b652dfd334bff67d56557ba512069697bd647e9551e8f642793a25fa54b6",
+            "current": "d35a07b183c84e52bfc883a552b73d9e49f1aeb75288c4bf72ef5d6d63fe4ff6",
             "selected_epoch": "f0844cf0dde52979fb2361a7501fa9be8dd554b8052cac2acd56e3347a7add94"
           },
           "xsm/registry.py": {
             "prior1649": "edce2c6e75ec4d1803f402db565900080be337b2727a40ff663376c355890360",
             "snapshot": "edce2c6e75ec4d1803f402db565900080be337b2727a40ff663376c355890360",
-            "current": "edce2c6e75ec4d1803f402db565900080be337b2727a40ff663376c355890360",
+            "current": "f3037f2cc674e2e753e2d2e30f3d95fa8565d65e1d5f85a135f9d650708f67c6",
             "selected_epoch": "edce2c6e75ec4d1803f402db565900080be337b2727a40ff663376c355890360"
           }
         },
@@ -5419,7 +5483,7 @@
           "tests/test_owned_interfaces.py": {
             "prior1649": "3ee3d73a17dfdf88b9ed68eae30eef3bb51f8924f806786743ff70655d9e7f07",
             "snapshot": "3ee3d73a17dfdf88b9ed68eae30eef3bb51f8924f806786743ff70655d9e7f07",
-            "current": "b34bb33bfe86ab28087ebc493de15ee37b62afd71f99d6f08819e3c592461c75",
+            "current": "8a713fe4ba9a2cbf47d873bf9e15e86ce126f8e85b5a721ce25492d8db5c2c1f",
             "selected_epoch": "3ee3d73a17dfdf88b9ed68eae30eef3bb51f8924f806786743ff70655d9e7f07"
           },
           "tests/test_owned_requests.py": {
@@ -5437,13 +5501,13 @@
           "xsm/config.py": {
             "prior1649": "92255fcee9cd2fe3b013851b056533a78d5090b225123f0d460de9c425feb5ca",
             "snapshot": "92255fcee9cd2fe3b013851b056533a78d5090b225123f0d460de9c425feb5ca",
-            "current": "92255fcee9cd2fe3b013851b056533a78d5090b225123f0d460de9c425feb5ca",
+            "current": "b37e69909ca58f02fa96a6d62935ef25640c94790e45965314cc73b2e2ef8cb5",
             "selected_epoch": "92255fcee9cd2fe3b013851b056533a78d5090b225123f0d460de9c425feb5ca"
           },
           "xsm/handoff.py": {
             "prior1649": "4157d48fe0acb5d6f14df089ce128bd4faa5a8185d85e9c9f818e9ff09cb175f",
             "snapshot": "48f8b6c1c4ab29ede46141e6eeb431bd08501407dbf42c75948c477bdd767d00",
-            "current": "12564c8c370e4cf6bfe51af249ba382539759b3168a8aa99eb9a0f7a5055691c",
+            "current": "1a7e5d0224655b40e240a007052f8f5b06ea556407a9d1980ccda47cd26b6a6c",
             "selected_epoch": "48f8b6c1c4ab29ede46141e6eeb431bd08501407dbf42c75948c477bdd767d00"
           },
           "xsm/identity.py": {
@@ -5467,43 +5531,43 @@
           "xsm/paths.py": {
             "prior1649": "242b8e64b5d564e503d5e0bbef1d7e8d160690e8bd5199bc160523969835bb39",
             "snapshot": "242b8e64b5d564e503d5e0bbef1d7e8d160690e8bd5199bc160523969835bb39",
-            "current": "242b8e64b5d564e503d5e0bbef1d7e8d160690e8bd5199bc160523969835bb39",
+            "current": "d0511519bff2f94c995db51abc98c9b0ac810ac4fe2389a29c82d0d9008310de",
             "selected_epoch": "242b8e64b5d564e503d5e0bbef1d7e8d160690e8bd5199bc160523969835bb39"
           },
           "xsm/receive.py": {
             "prior1649": "3c03383e0b2ab5e295576ebebaace7b95bb6de56bcfc0928e4abb03457d875fd",
             "snapshot": "f0844cf0dde52979fb2361a7501fa9be8dd554b8052cac2acd56e3347a7add94",
-            "current": "edc2b652dfd334bff67d56557ba512069697bd647e9551e8f642793a25fa54b6",
+            "current": "d35a07b183c84e52bfc883a552b73d9e49f1aeb75288c4bf72ef5d6d63fe4ff6",
             "selected_epoch": "f0844cf0dde52979fb2361a7501fa9be8dd554b8052cac2acd56e3347a7add94"
           },
           "xsm/send.py": {
             "prior1649": "f73399e87581f6ac9c3d86d174f284b3f4c27294e5bbf1c78da767bf2dec8f70",
             "snapshot": "05390ef61f53860c84311bc3f2f3aaa428508e615f989f21398dcd427f601fbe",
-            "current": "c63417d6e5d06542f3b092f6d2569b783b68363295caffc8af7149119e4544d9",
+            "current": "e558bf3e55bebd72f06b44aee28bd4a5b1df2861edff81e9d8f980139cd08017",
             "selected_epoch": "05390ef61f53860c84311bc3f2f3aaa428508e615f989f21398dcd427f601fbe"
           },
           "xsm/workers.py": {
             "prior1649": "518cb28f77c3ee222d1adf7e49068e671fc38dbc43fb5e1ac0ed6ef139299fa5",
             "snapshot": "518cb28f77c3ee222d1adf7e49068e671fc38dbc43fb5e1ac0ed6ef139299fa5",
-            "current": "518cb28f77c3ee222d1adf7e49068e671fc38dbc43fb5e1ac0ed6ef139299fa5",
+            "current": "534109d8d6378f295300de1e5ba8bcfce09089d7678433e42ff37fc7088ee8fb",
             "selected_epoch": "518cb28f77c3ee222d1adf7e49068e671fc38dbc43fb5e1ac0ed6ef139299fa5"
           },
           "skills/xsm/SKILL.md": {
             "prior1649": "3e583bcd294862775c6590766b96cea2260c879329a32ffbe5306f128da55896",
             "snapshot": "3e583bcd294862775c6590766b96cea2260c879329a32ffbe5306f128da55896",
-            "current": "3a4e0f903ee4c7dfe0d519617be1f7df94add901795d2eeb2af3968b3ea46035",
+            "current": "796e0f4b3025c7db72d3149ed1e903a712d7db1c73ff2c0b9ab398374b1281ab",
             "selected_epoch": "3e583bcd294862775c6590766b96cea2260c879329a32ffbe5306f128da55896"
           },
           "skills/xsm/references/guide.md": {
             "prior1649": "6bffc41da7cce01cc6080c8afb62e54efc910fd67b59d9d11b0c119130c43981",
             "snapshot": "6bffc41da7cce01cc6080c8afb62e54efc910fd67b59d9d11b0c119130c43981",
-            "current": "da495de9a13d29b9cb7197a148c7f3e8febdaab281b36ddc928a381a89ca82c2",
+            "current": "3ba436ec945ead79182c9bc1fa752af72df4c6ac792270f625494de326a6dfd0",
             "selected_epoch": "6bffc41da7cce01cc6080c8afb62e54efc910fd67b59d9d11b0c119130c43981"
           },
           "skills/xsm/references/messaging.md": {
             "prior1649": "a5337aa81bf4bd23d9f050d7cbdf9e68f7354f3550c42301a211393c2f673814",
             "snapshot": "b76f2de35f0579bb74bca8f32ebe1f07f4a2bc83e5ed776284f738df88de3eef",
-            "current": "9e7ea1705b7a02e66928761c46e49935644053358e4da53a6dae3115f2697677",
+            "current": "e6d4bb9a7b4d427bc7b55377e8f8fc6a19627de5e11558d5025144f97496761d",
             "selected_epoch": "b76f2de35f0579bb74bca8f32ebe1f07f4a2bc83e5ed776284f738df88de3eef"
           }
         },
@@ -5836,8 +5900,8 @@
       "scope": "A16-05: 실제 native 원문/사본/상관 ACK 이력과 선택 source epoch를 별도 결속. 프로필 drift 한계 보존; 다른 조건/clean 설치로 확대하지 않음",
       "authority": "recorded-local-scope",
       "available": true,
-      "executed": true,
-      "result": "recorded-pass",
+      "executed": false,
+      "result": "recorded-failure",
       "sha256": "a06871099b6602f1bd948635c30398cf908d2b2f3776f2979cf5ed0c678c0aeb",
       "coverage_ceiling": "partial",
       "complete_for": {},
@@ -5847,7 +5911,7 @@
         "strict_multireview_remains_partial": true,
         "cached_tools_survive_downgrade": true,
         "native_unread_recovered_and_ACK": true,
-        "scoped_dependency_hashes": true,
+        "scoped_dependency_hashes": false,
         "specific_executed_selectors": true,
         "historical1697_execution": true
       },
@@ -5898,8 +5962,8 @@
       "scope": "A18-06: 실제 native 원문/사본/상관 ACK 이력과 선택 source epoch를 별도 결속. 프로필 drift 한계 보존; 다른 조건/clean 설치로 확대하지 않음",
       "authority": "recorded-local-scope",
       "available": true,
-      "executed": true,
-      "result": "recorded-pass",
+      "executed": false,
+      "result": "recorded-failure",
       "sha256": "a06871099b6602f1bd948635c30398cf908d2b2f3776f2979cf5ed0c678c0aeb",
       "coverage_ceiling": "partial",
       "complete_for": {},
@@ -5909,7 +5973,7 @@
         "strict_multireview_remains_partial": true,
         "natural_FYI_consumption": true,
         "profile_drift_retained": true,
-        "scoped_dependency_hashes": true,
+        "scoped_dependency_hashes": false,
         "specific_executed_selectors": true,
         "historical1697_execution": true
       },
@@ -6211,8 +6275,8 @@
       "scope": "A16-01: 실제 native 원문/사본/상관 ACK 이력과 선택 source epoch를 별도 결속. 프로필 drift 한계 보존; 다른 조건/clean 설치로 확대하지 않음",
       "authority": "recorded-local-scope",
       "available": true,
-      "executed": true,
-      "result": "recorded-pass",
+      "executed": false,
+      "result": "recorded-failure",
       "sha256": "8399e0add4603c443757484af2083771950f05574018f4567d05e911af3b2d39",
       "coverage_ceiling": "partial",
       "complete_for": {},
@@ -6222,7 +6286,7 @@
         "exact_raw_and_audit_hashes": true,
         "real_host_and_child_not_fabricated": true,
         "original_collector_and_runtime_limits_retained": true,
-        "scoped_dependency_hashes": true,
+        "scoped_dependency_hashes": false,
         "specific_executed_selectors": true,
         "historical1697_execution": true
       },
@@ -6950,7 +7014,7 @@
       ]
     },
     "head-rebind-regression": {
-      "path": "deliverables/ledger-rebind-20261030-adr0025/summary.json",
+      "path": "deliverables/ledger-rebind-0.5.1/summary.json",
       "levels": [
         "fixture",
         "process"
@@ -6960,7 +7024,7 @@
       "available": true,
       "executed": true,
       "result": "recorded-pass",
-      "sha256": "d6c8c92a58e1c4ccd25a123adfd7fde3ed82d1d066fcf4b1e0e8a1b52ee30a3c",
+      "sha256": "848f5901161bfa57abe33cec3994c8ea6ed17211a6fa9ea979b762490371fb0a",
       "coverage_ceiling": "partial",
       "complete_for": {},
       "checks": {
@@ -6975,7 +7039,7 @@
       }
     },
     "head-rebind-A18-03": {
-      "path": "deliverables/ledger-rebind-20261030-adr0025/summary.json",
+      "path": "deliverables/ledger-rebind-0.5.1/summary.json",
       "levels": [
         "fixture",
         "process"
@@ -6985,7 +7049,7 @@
       "available": true,
       "executed": true,
       "result": "recorded-pass",
-      "sha256": "d6c8c92a58e1c4ccd25a123adfd7fde3ed82d1d066fcf4b1e0e8a1b52ee30a3c",
+      "sha256": "848f5901161bfa57abe33cec3994c8ea6ed17211a6fa9ea979b762490371fb0a",
       "coverage_ceiling": "partial",
       "complete_for": {
         "A18-03": [
@@ -7004,7 +7068,7 @@
       ]
     },
     "head-rebind-A18-07": {
-      "path": "deliverables/ledger-rebind-20261030-adr0025/summary.json",
+      "path": "deliverables/ledger-rebind-0.5.1/summary.json",
       "levels": [
         "fixture",
         "process"
@@ -7014,7 +7078,7 @@
       "available": true,
       "executed": true,
       "result": "recorded-pass",
-      "sha256": "d6c8c92a58e1c4ccd25a123adfd7fde3ed82d1d066fcf4b1e0e8a1b52ee30a3c",
+      "sha256": "848f5901161bfa57abe33cec3994c8ea6ed17211a6fa9ea979b762490371fb0a",
       "coverage_ceiling": "partial",
       "complete_for": {
         "A18-07": [
@@ -7033,7 +7097,7 @@
       ]
     },
     "head-rebind-A22-06": {
-      "path": "deliverables/ledger-rebind-20261030-adr0025/summary.json",
+      "path": "deliverables/ledger-rebind-0.5.1/summary.json",
       "levels": [
         "fixture",
         "process"
@@ -7043,7 +7107,7 @@
       "available": true,
       "executed": true,
       "result": "recorded-pass",
-      "sha256": "d6c8c92a58e1c4ccd25a123adfd7fde3ed82d1d066fcf4b1e0e8a1b52ee30a3c",
+      "sha256": "848f5901161bfa57abe33cec3994c8ea6ed17211a6fa9ea979b762490371fb0a",
       "coverage_ceiling": "partial",
       "complete_for": {
         "A22-06": [
@@ -7062,7 +7126,7 @@
       ]
     },
     "head-rebind-A23-02": {
-      "path": "deliverables/ledger-rebind-20261030-adr0025/summary.json",
+      "path": "deliverables/ledger-rebind-0.5.1/summary.json",
       "levels": [
         "fixture",
         "process"
@@ -7072,7 +7136,7 @@
       "available": true,
       "executed": true,
       "result": "recorded-pass",
-      "sha256": "d6c8c92a58e1c4ccd25a123adfd7fde3ed82d1d066fcf4b1e0e8a1b52ee30a3c",
+      "sha256": "848f5901161bfa57abe33cec3994c8ea6ed17211a6fa9ea979b762490371fb0a",
       "coverage_ceiling": "partial",
       "complete_for": {
         "A23-02": [
@@ -7091,7 +7155,7 @@
       ]
     },
     "head-rebind-shared-mcp": {
-      "path": "deliverables/ledger-rebind-20261030-adr0025/summary.json",
+      "path": "deliverables/ledger-rebind-0.5.1/summary.json",
       "levels": [
         "fixture"
       ],
@@ -7100,7 +7164,7 @@
       "available": true,
       "executed": true,
       "result": "recorded-pass",
-      "sha256": "d6c8c92a58e1c4ccd25a123adfd7fde3ed82d1d066fcf4b1e0e8a1b52ee30a3c",
+      "sha256": "848f5901161bfa57abe33cec3994c8ea6ed17211a6fa9ea979b762490371fb0a",
       "coverage_ceiling": "partial",
       "complete_for": {
         "A17-02": [
@@ -8829,7 +8893,7 @@
           "scope": "기록된 한정 표본만 재사용; 조건 전수/현재 통합 증거로 자동 승격하지 않음"
         },
         "native": {
-          "status": "partial",
+          "status": "missing",
           "refs": [
             "cached-inbox-recovery-native"
           ],
@@ -8838,7 +8902,7 @@
             "b03-mcp",
             "b03-question"
           ],
-          "scope": "기록된 한정 표본만 재사용; 조건 전수/현재 통합 증거로 자동 승격하지 않음"
+          "scope": "해당 종류의 실행 증거 없음. source/intent/다른 환경으로 대체하지 않음"
         }
       },
       "context_refs": [
@@ -11892,7 +11956,7 @@
       ],
       "source_presence": {
         "xsm/attention.py": true,
-        "xsm/channel.py": true,
+        "xsm/channel.py": false,
         "xsm/consent.py": true,
         "xsm/decisions.py": true,
         "xsm/doc.py": true,
@@ -11997,7 +12061,7 @@
       ],
       "source_presence": {
         "xsm/attention.py": true,
-        "xsm/channel.py": true,
+        "xsm/channel.py": false,
         "xsm/consent.py": true,
         "xsm/decisions.py": true,
         "xsm/doc.py": true,
@@ -12113,7 +12177,7 @@
       ],
       "source_presence": {
         "xsm/attention.py": true,
-        "xsm/channel.py": true,
+        "xsm/channel.py": false,
         "xsm/consent.py": true,
         "xsm/decisions.py": true,
         "xsm/doc.py": true,
@@ -12218,7 +12282,7 @@
       ],
       "source_presence": {
         "xsm/attention.py": true,
-        "xsm/channel.py": true,
+        "xsm/channel.py": false,
         "xsm/consent.py": true,
         "xsm/decisions.py": true,
         "xsm/doc.py": true,
@@ -12326,7 +12390,7 @@
       "source_presence": {
         "xsm/abuse.py": true,
         "xsm/attention.py": true,
-        "xsm/channel.py": true,
+        "xsm/channel.py": false,
         "xsm/consent.py": true,
         "xsm/decisions.py": true,
         "xsm/doc.py": true,
@@ -12449,7 +12513,7 @@
       ],
       "source_presence": {
         "xsm/attention.py": true,
-        "xsm/channel.py": true,
+        "xsm/channel.py": false,
         "xsm/consent.py": true,
         "xsm/decisions.py": true,
         "xsm/doc.py": true,
@@ -19437,8 +19501,8 @@
     },
     "native": {
       "contradicted": 0,
-      "missing": 20,
-      "partial": 59,
+      "missing": 21,
+      "partial": 58,
       "proven": 0
     },
     "physical": {
@@ -19542,28 +19606,50 @@
         "skills/xsm/SKILL.md",
         "skills/xsm/references/guide.md",
         "skills/xsm/references/messaging.md",
+        "tests/test_b04_interfaces.py",
+        "tests/test_channel.py",
         "tests/test_crash_boundaries.py",
+        "tests/test_decisions.py",
+        "tests/test_discovery_latency.py",
+        "tests/test_handoff_consumer.py",
         "tests/test_install_cli_flow.py",
+        "tests/test_install_codex.py",
         "tests/test_install_runtime.py",
+        "tests/test_link.py",
+        "tests/test_mcp_dispatch.py",
+        "tests/test_mcp_identity.py",
+        "tests/test_open_mcp.py",
+        "tests/test_open_messaging.py",
         "tests/test_owned_interfaces.py",
         "tests/test_person_decisions.py",
+        "tests/test_question_interfaces.py",
+        "tests/test_questions_contract.py",
+        "tests/test_selected_connection.py",
         "tests/test_workers.py",
         "tests/test_xsm.py",
+        "xsm/channel.py",
         "xsm/cli.py",
         "xsm/collaboration.py",
+        "xsm/config.py",
         "xsm/connect.py",
         "xsm/directory.py",
+        "xsm/doc.py",
         "xsm/envelope.py",
         "xsm/handoff.py",
         "xsm/install.py",
         "xsm/instructions.py",
         "xsm/materials.py",
         "xsm/mcp.py",
+        "xsm/paths.py",
+        "xsm/policy.py",
         "xsm/probe.py",
         "xsm/questions.py",
         "xsm/receive.py",
+        "xsm/registry.py",
+        "xsm/remote.py",
         "xsm/resolve.py",
-        "xsm/send.py"
+        "xsm/send.py",
+        "xsm/workers.py"
       ],
       "scope": "현재 source 관측은 고정본 실행 이력과 별도. 각 조건은 자기 dependency hash만으로 재결속하며 예정 수정 성공을 추정하지 않음"
     },

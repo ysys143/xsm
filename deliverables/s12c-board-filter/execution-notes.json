@@ -1,0 +1,3 @@
+{"notes": [
+ {"at": "2026-10-30T11:29Z", "event": "first independent-label attempt aborted before any process started", "detail": "run_experiment.py treated condition 'L' as a Codex call (condition != 'F1') and tried to start it in the not-yet-created Codex scratch directory; subprocess raised FileNotFoundError on cwd, so no CLI process and no model call happened. Fixed the condition test to the explicit Codex list (F2, F3, F4a, F4b, F4c, F4z) and re-ran the label stage. run_experiment.py is frozen only at the second (pre-filter) freeze, after this fix."}
+]}

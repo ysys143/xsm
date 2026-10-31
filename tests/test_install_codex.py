@@ -375,3 +375,22 @@ class McpAddTest(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class ContentHashTest(unittest.TestCase):
+    def test_a_content_hash_xsm_cannot_check_is_seen_for_the_plugins_hooks_only(self):
+        from xsm import install
+        with tempfile.TemporaryDirectory() as home:
+            with open(os.path.join(home, "config.toml"), "w") as fh:
+                fh.write('[hooks.state."wdl@wdl:hooks/hooks.json:stop:0:0"]\n'
+                         'trusted_content_hash = "sha256:aa"\n'
+                         '[hooks.state."xsm@xsm:hooks/codex-hooks.json:session_start:0:0"]\n'
+                         'trusted_hash = "sha256:bb"\n')
+            with mock.patch.object(install, "codex_plugin", return_value={"key": "xsm@xsm"}):
+                self.assertFalse(install.codex_content_hashed(home))
+                with open(os.path.join(home, "config.toml"), "a") as fh:
+                    fh.write('trusted_content_hash = "sha256:cc"\n')
+                self.assertTrue(install.codex_content_hashed(home))
+            with mock.patch.object(install, "codex_plugin", return_value=None):
+                self.assertFalse(install.codex_content_hashed(home))
+

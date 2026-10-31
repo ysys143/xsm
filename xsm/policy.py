@@ -26,8 +26,8 @@ POLICIES = {
     # Claude delivers a peer message whatever the two permission modes are.
     "claude_inbound": ("accept", ("accept", "leave")),
     # Whether the allow list holds the messaging commands and tools (send, inbox,
-    # list, who, held, ledger, status, doctor; xsm_send, xsm_inbox, xsm_post,
-    # xsm_channel), so Claude's auto and default modes never stop a message.
+    # list, who, held, ledger, status, doctor, board; xsm_send, xsm_inbox,
+    # xsm_board), so Claude's auto and default modes never stop a message.
     "allow_messaging": (True, None),
     # Whether an `xsm send` a person typed themselves connects the two folders it
     # needs (a link, a join or a reach) and delivers, their typing being the yes.

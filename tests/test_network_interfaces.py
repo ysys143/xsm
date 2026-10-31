@@ -239,8 +239,12 @@ class NetworkInterfacesTest(TempState):
 
     def test_remote_selection_uses_real_consent_and_pair_before_broker_attestation(self):
         from xsm import collaboration, config, connect, consent, network, registry
-        selected = []
-        def broker(request):
+        selected, published = [], []
+        def broker(request, **kwargs):
+            if request["op"] == "team-publish":
+                # ADR-0025 decision 13: the connect's pair team goes to the peer.
+                published.append(request["team"])
+                return {"published": [], "failed": []}
             self.assertEqual(request["caller"], self.sender)
             if request["op"] == "resolve":
                 return self.resolved(self.scope if selected else None, "selected" if selected else None)
@@ -266,6 +270,9 @@ class NetworkInterfacesTest(TempState):
             self.assertEqual(permitted["handshake"], "not-started")
             self.assertEqual(connect.select(self.sender, self.target, call=self.call)["scope"], self.scope)
         self.assertEqual(len(selected), 1)
+        self.assertEqual(len(published), 1)
+        self.assertEqual(published[0]["pair"]["collaboration"],
+                         collaboration.scope_for(self.sender, self.target)["id"])
         self.assertEqual(collaboration.scope_for(self.sender, self.target)["verdict"], "peer이랑 붙어서 일하자")
         self.assertEqual(consent.pending_files(self.sender["ref"]), [])
         self.assertEqual(config.load(), before)
@@ -530,6 +537,8 @@ class NetworkInterfacesTest(TempState):
         candidate = dict(self.target, id=self.candidate_id)
         selected, sent = [], []
         def broker(request, **kwargs):
+            if request["op"] == "team-publish":
+                return {"published": [], "failed": []}
             self.assertEqual(request["caller"], self.sender)
             if request["op"] == "discover":
                 return {"status": "ok", "candidates": [candidate]}

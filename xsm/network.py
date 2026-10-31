@@ -495,6 +495,10 @@ class Daemon:
             return False
         if self.repositories().allows(origin, repository_id, local.get("cwd")):
             return True
+        from . import teams
+        if teams.scope_for(local, sender):
+            # Both are members of one team this machine holds (ADR-0025, D19).
+            return True
         try:
             saved = grant or _read_private(self._grant_file(sender, own))
         except FileNotFoundError:
@@ -525,6 +529,61 @@ class Daemon:
             "authorization": grant})
         return {"target": result["target"], "scope": result.get("scope"),
                 "scope_basis": result.get("scope_basis")}
+
+    def publish_team(self, team):
+        """Send a team record to the machines of its remote members (ADR-0025).
+        The record is what this machine holds; members are sent as endpoints."""
+        from . import team_sync
+        record = team_sync.to_endpoints(team, self.transport.endpoint_id)
+        machines = sorted({m["machine"] for m in record["members"]
+                           if m and m.get("machine") and m["machine"] != self.transport.endpoint_id})
+        published, failed = [], []
+        for machine in machines:
+            try:
+                answer = self.rpc(self.peer_address(machine), {"op": "team", "team": record})
+                status = (answer.get("result") or {}).get("status")
+                (published if status in ("updated", "stale") else failed).append(
+                    {"machine": machine, "status": status} if status in ("updated", "stale")
+                    else {"machine": machine, "code": status or "refused"})
+            except NetworkError as exc:
+                failed.append({"machine": machine, "code": str(exc)})
+        return {"published": published, "failed": failed}
+
+    def publish_handover(self, request):
+        """Tell other machines a local session handed its place over
+        (handover.py): the team's remote member machines the caller names, and
+        every machine that sent the old session a message."""
+        from . import handover
+        me = self.transport.endpoint_id
+        old = handover.local_endpoint(request["old"], me)
+        new = handover.local_endpoint(request["new"], me)
+        machines = set(request.get("machines") or []) | message_gateway().origins_for(request["old"])
+        published, failed = [], []
+        for machine in sorted(machines - {me}):
+            try:
+                answer = self.rpc(self.peer_address(machine), {"op": "handover", "old": old, "new": new})
+                status = (answer.get("result") or {}).get("status")
+                (published if status in ("stored", "kept") else failed).append(
+                    {"machine": machine, "status": status} if status in ("stored", "kept")
+                    else {"machine": machine, "code": status or "refused"})
+            except NetworkError as exc:
+                failed.append({"machine": machine, "code": str(exc)})
+        return {"published": published, "failed": failed}
+
+    def publish_board(self, request):
+        """Send board nodes to the machines of the team's remote members (ADR-0026)."""
+        published, failed = [], []
+        for machine in sorted(set(request.get("machines") or [])):
+            if machine == self.transport.endpoint_id:
+                continue
+            try:
+                answer = self.rpc(self.peer_address(machine), {"op": "board-nodes",
+                    "team": request["team"], "team_id": request["team_id"], "nodes": request["nodes"],
+                    "decisions": request.get("decisions") or []})
+                published.append({"machine": machine, **(answer.get("result") or {})})
+            except NetworkError as exc:
+                failed.append({"machine": machine, "code": str(exc)})
+        return {"published": published, "failed": failed}
 
     def select_remote(self, caller, target):
         from .network_directory import public_endpoint
@@ -742,6 +801,12 @@ class Daemon:
             return self.resolve_remote(request["caller"], request["target"])
         if op == "selection":
             return self.select_remote(request["caller"], request["target"])
+        if op == "team-publish":
+            return self.publish_team(request["team"])
+        if op == "board-publish":
+            return self.publish_board(request)
+        if op == "handover-publish":
+            return self.publish_handover(request)
         if op == "send":
             return self.send_remote(request)
         if op == "admission":
@@ -890,6 +955,28 @@ class Daemon:
                         work=request.get("work"), branch=request.get("branch"))}
                 if op in ("resolve", "selection", "capabilities"):
                     return self._incoming_target(origin, request)
+                if op == "board-nodes":
+                    from . import board_sync
+                    try:
+                        return {"ok": True, "result": board_sync.receive(
+                            origin, request.get("team"), request.get("team_id"), request.get("nodes"),
+                            request.get("decisions"))}
+                    except ValueError:
+                        return {"ok": False, "code": "invalid-board"}
+                if op == "handover":
+                    from . import handover
+                    try:
+                        return {"ok": True, "result": handover.receive_testimony(
+                            origin, request.get("old"), request.get("new"))}
+                    except (ValueError, TypeError):
+                        return {"ok": False, "code": "invalid-handover"}
+                if op == "team":
+                    from . import team_sync
+                    try:
+                        return {"ok": True, "result": team_sync.receive(
+                            origin, request.get("team"), self.transport.endpoint_id)}
+                    except ValueError:
+                        return {"ok": False, "code": "invalid-team"}
                 if op == "deliver":
                     packet = request["packet"]
                     if packet.get("attachments"):
@@ -937,7 +1024,11 @@ class Daemon:
         if len(handles) != 1:
             return {"ok": False, "code": "target-unavailable"}
         handle = handles[0]
+        # The one exception: a conversation handed over answers for its successor
+        # (handover.py), as the gateway does, so the permission is the successor's.
+        from . import handover
         local = resolve_local(handle, self.transport.endpoint_id)
+        local = handover.for_handle(handle) if local is None else handover.follow(local)[0]
         if local is None:
             return {"ok": False, "code": "target-unavailable"}
         rows = local_candidates(origin, request.get("repository_id"), self.repositories(), self.transport.endpoint_id)

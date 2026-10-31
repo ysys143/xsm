@@ -1,0 +1,11 @@
+case B01-Wren: clean predictions, all metrics 1.0
+removed R2 item: R2 recall drops below 1.0 (detected)
+mutated quote: fidelity drops below 1.0 (detected)
+quote taken from another item: counted unfaithful (detected)
+whole-body quotes: faithful and counted as whole body; 40-char quotes counted as excerpts
+added hard negative: precision < 1, N pass 1, hard-negative pass 1 (detected)
+ambiguous item selected: excluded from precision, counted separately
+unknown item ID: invalid ID 1, precision < 1 (detected)
+duplicated prediction: duplicate count 1 (detected)
+verdict: all-pass summary is met; R3 0.949, precision 0.699, quote 0.949, R2 spread 0.101, R1 spread NA each flip it to not met
+verdict: values exactly at the thresholds (R4 0.95, spread 0.10) count as met

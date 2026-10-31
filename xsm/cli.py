@@ -31,7 +31,7 @@ def _here(args, me=None) -> str:
     that changes or writes on a folder's behalf takes --dir only from a person:
     otherwise one agent could speak for another project (ADR-0009)."""
     if getattr(args, "dir", None):
-        if args.command in ("join", "leave", "post", "link") and not workers.human_terminal():
+        if args.command in ("join", "leave", "link") and not workers.human_terminal():
             raise SystemExit("refused: --dir speaks for another folder; only a person at a "
                              "terminal may use it with %s" % args.command)
         return os.path.realpath(os.path.expanduser(args.dir))
@@ -742,8 +742,26 @@ def _question_pump(me, request_id):
     return pump
 
 
-def _print_question_result(me, result):
-    result = receive.claim_question_replies(me, result)
+def _print_group_result(me, result):
+    for row in result.get("recipients") or []:
+        if row.get("id"):
+            receive.poll_replies(me, row["id"])
+    from . import question_groups
+    if result.get("id") and result.get("status") not in ("not-found", "refused"):
+        fresh = question_groups.status(me, result["id"])
+        fresh["wait_end_reason"] = result.get("wait_end_reason")
+        result = fresh
+    return _print_question_result(me, question_groups.with_claims(me, result), claimed=True)
+
+
+def _group_exit(result) -> int:
+    return OK if result.get("replies") else UNCONFIRMED \
+        if result.get("status") == "pending" else REFUSED
+
+
+def _print_question_result(me, result, claimed=False):
+    if not claimed:
+        result = receive.claim_question_replies(me, result)
     result.update(inbox.pending_fields(me, owner_alive=receive._consumer_alive))
     try:
         print(_readable_json(result), flush=True)
@@ -801,6 +819,22 @@ def cmd_ask(args) -> int:
     if args.wake not in ("auto", "never"):
         print("unsupported wake mode; use auto or never", file=sys.stderr)
         return REFUSED
+    from . import teams
+    targets = list(args.target)
+    if len(targets) > 1 or any(teams.is_address(t) for t in targets):
+        from . import question_groups
+        if args.request_id or args.attachment or args.manifest:
+            print("refused: --request-id and attachments take one recipient", file=sys.stderr)
+            return USAGE
+        try:
+            result = question_groups.ask_many(me, targets, args.text, wait=args.wait,
+                                              priority=args.priority, wake=args.wake,
+                                              poll=lambda child: receive.poll_replies(me, child))
+        except question_groups.GroupError as exc:
+            print("refused: %s" % exc, file=sys.stderr)
+            return REFUSED
+        return _group_exit(_print_group_result(me, result))
+    args.target = targets[0]
     request_id = args.request_id or envelope.new_id()
     try:
         prepared=materials.prepare(me,args.target,args.text,request_id,args.attachment,source="cli",
@@ -836,6 +870,11 @@ def cmd_question_status(args) -> int:
     if str(ledger.status(args.id).get("scope") or "").startswith("network:"):
         from . import network
         network_state = network.reconcile(args.id, caller=me)
+    from . import question_groups
+    if question_groups.is_group(args.id):
+        result = question_groups.wait_for(me, args.id, wait=args.wait,
+                                          poll=lambda child: receive.poll_replies(me, child))
+        return _group_exit(_print_group_result(me, result))
     receive.poll_replies(me, args.id)
     result = questions.wait_for(me, args.id, wait=args.wait,
                                 pump=_question_pump(me, args.id))
@@ -881,6 +920,12 @@ def cmd_publish(args) -> int:
 
 
 def cmd_send(args) -> int:
+    from . import teams
+    targets = list(args.target or [])
+    args.target = targets[0] if len(targets) == 1 else (None if not targets else targets)
+    if isinstance(args.target, list) or any(teams.is_address(t) for t in targets) \
+            or (args.resend and _group_resend(args.resend)):
+        return _send_many(args, targets)
     body = args.text
     if args.held:
         if args.target or args.text or args.text_file or args.resend:
@@ -935,6 +980,291 @@ def cmd_send(args) -> int:
         if prepared:print("Materials: "+_readable_json(materials.public(prepared)))
     return {"delivered": OK, "stored": OK, "sent-unconfirmed": UNCONFIRMED, "unknown": UNCONFIRMED,
             "held": REFUSED, "blocked": REFUSED, "refused": REFUSED}.get(result.status, USAGE)
+
+
+def _group_resend(ident: str) -> bool:
+    from . import multisend
+    return multisend.load_group(ident) is not None
+
+
+def _send_many(args, targets: list) -> int:
+    """One DM to several recipients (ADR-0025): `xsm send A B C --text ...`,
+    or `--resend <group id>` to send again to the ones still open."""
+    from . import multisend
+    if args.held or args.attachment or args.manifest or args.request_id:
+        print("refused: --held, --attachment, --manifest and --request-id take one recipient",
+              file=sys.stderr)
+        return USAGE
+    try:
+        if args.resend:
+            result = multisend.resend_group(args.resend, wait=args.wait)
+        else:
+            body = args.text
+            if args.text_file:
+                body = sys.stdin.read() if args.text_file == "-" else open(args.text_file).read()
+            if not body:
+                print("nothing to send: pass --text or --text-file", file=sys.stderr)
+                return USAGE
+            if args.outcome and args.kind != "reply":
+                print("refused: --outcome belongs to the reply that closes a task, not to %s"
+                      % args.kind, file=sys.stderr)
+                return REFUSED
+            result = multisend.send_many(targets, body, kind=args.kind, reply_to=args.reply_to,
+                                         priority=args.priority, wait=args.wait,
+                                         outcome=args.outcome, wake=args.wake != "never")
+    except multisend.MultiError as exc:
+        print("refused: %s" % exc, file=sys.stderr)
+        return REFUSED
+    print(_readable_json(result.as_dict()) if args.json else "\n".join(result.lines()))
+    return multisend.SEVERITY.get(result.worst, USAGE)
+
+
+def cmd_team(args) -> int:
+    """Teams of sessions working together (ADR-0025): create, add, remove,
+    lead, leave, list, show, mute. Adding a session outside this project's
+    scope, and naming the lead, are your user's decisions."""
+    from . import teams
+    if args.action == "list":
+        teams.adopt_pairs()
+        rows = teams.all_teams()
+        if args.json:
+            print(_readable_json({"teams": [_team_view(t) for t in rows]}))
+        else:
+            for t in rows:
+                print("%s: %s%s" % (t["name"], ", ".join(teams.label(m) for m in t["members"]),
+                                    "  lead %s" % teams.label(t["lead"]) if t.get("lead") else ""))
+            if not rows:
+                print("no teams. To start one: xsm team create <name>")
+        return OK
+    if not args.name:
+        print("usage: xsm team %s <team> ..." % args.action, file=sys.stderr)
+        return USAGE
+    me, why = _unsure_caller("change or read a team")
+    if why or not me:
+        print(why or "this session is not registered", file=sys.stderr)
+        return REFUSED
+    try:
+        if args.action == "show":
+            team = teams.require(args.name)
+            print(_readable_json(_team_view(team)))
+            return OK
+        if args.action == "create":
+            team = teams.create(me, args.name)
+            print("created team %s with %s; add members with `xsm team add %s <session>`"
+                  % (team["name"], teams.label(team["members"][0]), team["name"]))
+            return OK
+        if args.action == "mute":
+            team = teams.require(args.name)
+            if not teams.is_member(team, me):
+                raise teams.TeamError("you are not in team %s" % team["name"])
+            teams.mute(team["name"], me, on=not args.off)
+            print("%s team %s's DMs: %s" % ("unmuted" if args.off else "muted", team["name"],
+                  "they wake this session again" if args.off else
+                  "they are stored for this session's next turn, without a wake"))
+            return OK
+        if args.action == "leave":
+            team = teams.remove(me, args.name, teams.member_of(me), None)
+            print("left team %s" % team["name"])
+            return OK
+        if not args.member:
+            print("usage: xsm team %s <team> <session>" % args.action, file=sys.stderr)
+            return USAGE
+        team = teams.require(args.name)
+        if args.action == "add":
+            with probe.quick():
+                found = resolve.resolve(args.member, caller=me) if args.member.startswith(("net:", "candidate:")) \
+                    else resolve.resolve(args.member)
+            if not found.ok:
+                print("refused: %s" % found.reason, file=sys.stderr)
+                return REFUSED
+            target = found.record
+            rule = teams.add_rule(me, team, target)
+            approval = "lead"
+            if rule == "user":
+                why = _person_or_refuse("adding %s to team %s" % (teams.label(teams.member_of(target)), team["name"]),
+                                        "xsm_team", ask=("team-add-" + team["name"], target.get("name") or args.member))
+                if why:
+                    print("refused: %s" % why, file=sys.stderr)
+                    return REFUSED
+                approval = _verdict or "person at the terminal"
+            team = teams.add(me, team["name"], target, approval)
+            _team_sync(team)
+            print("added %s to team %s (%s)" % (teams.label(teams.member_of(target)), team["name"],
+                  "the lead's own project" if approval == "lead" else "your user approved"))
+            return OK
+        member = teams.find_member(team, args.member)
+        if args.action == "remove":
+            approval = None
+            if not (teams.matches(member, me) or teams.is_lead(team, me)):
+                why = _person_or_refuse("removing %s from team %s" % (teams.label(member), team["name"]),
+                                        "xsm_team", ask=("team-remove-" + team["name"], member.get("name") or args.member))
+                if why:
+                    print("refused: %s" % why, file=sys.stderr)
+                    return REFUSED
+                approval = _verdict or "person at the terminal"
+            team = teams.remove(me, team["name"], member, approval)
+            _team_sync(team)
+            print("removed %s from team %s" % (teams.label(member), team["name"]))
+            return OK
+        if args.action == "lead":
+            why = _person_or_refuse("making %s the lead of team %s" % (teams.label(member), team["name"]),
+                                    "xsm_team", ask=("team-lead-" + team["name"], member.get("name") or args.member))
+            if why:
+                print("refused: %s" % why, file=sys.stderr)
+                return REFUSED
+            team = teams.set_lead(me, team["name"], member, _verdict or "person at the terminal")
+            _team_sync(team)
+            print("%s is the lead of team %s" % (teams.label(member), team["name"]))
+            return OK
+    except teams.TeamError as exc:
+        print("refused: %s" % exc, file=sys.stderr)
+        return REFUSED
+    return USAGE
+
+
+CONTENT_HASH_NOTE = (" (by the hook hash; Codex also keeps a content hash xsm cannot check, so "
+                     "after a plugin update /hooks may ask again)")
+
+
+def cmd_board(args) -> int:
+    """A team's board (ADR-0026): show, set an item, log, sync to other machines."""
+    from . import board, board_sync, teams
+    if args.action == "decide":
+        # Your user's own answer, from the person themselves: not a session,
+        # so no membership is needed; a session asks with xsm_decide.
+        from . import workers
+        if not workers.human_terminal():
+            print("refused: a decision is your user's own answer. From a session, ask them with "
+                  "the xsm_decide MCP tool", file=sys.stderr)
+            return REFUSED
+        if not args.item or not args.text:
+            print("usage: xsm board decide <team> <item> --text \"<the decision>\"", file=sys.stderr)
+            return USAGE
+        try:
+            rec = board.record_decision(None, args.team, args.item, args.text, via="terminal", item=args.item)
+        except (board.BoardError, teams.TeamError) as exc:
+            print("refused: %s" % exc, file=sys.stderr)
+            return REFUSED
+        print("recorded decision %s and set %s" % (rec["id"], args.item))
+        return OK
+    me, why = _unsure_caller("read or write a team board")
+    if why or not me:
+        print(why or "this session is not registered", file=sys.stderr)
+        return REFUSED
+    try:
+        if args.action == "show":
+            print(board.show(me, args.team), end="")
+            return OK
+        if args.action == "log":
+            rows = board.log(me, args.team, args.item)
+            if args.json:
+                print(_readable_json({"nodes": rows}))
+            else:
+                for n in rows:
+                    print("%s %s [%s] %s: %s" % (n["id"], n["t"], n.get("item"), n["author"],
+                                                 (n["body"].splitlines() or [""])[0][:100]))
+            return OK
+        if args.action == "decisions":
+            board.show(me, args.team)                 # a member only
+            rows = board.decisions(args.team)
+            print(_readable_json({"decisions": rows}) if args.json else "\n".join(
+                "%s %s -> %s%s" % (r["id"], r["question"], r["answer"],
+                                   (" (item %s)" % r["item"]) if r.get("item") else "") for r in rows)
+                or "no decisions recorded beside %s's board" % args.team)
+            return OK
+        if args.action == "mute":
+            from . import board_notice
+            team = board._require_member(me, args.team)
+            board_notice.mute(me, team["name"], on=not args.off)
+            print("%s board %s's change lines for this session" % ("unmuted" if args.off else "muted",
+                                                                   team["name"]))
+            return OK
+        if args.action == "sync":
+            team = board._require_member(me, args.team)
+            notes = board_sync.sync(team)
+            print("\n".join(notes) if notes else "sent every node of %s's board to its other machines"
+                  % team["name"])
+            return OK
+        if not args.item:
+            print("usage: xsm board set <team> <item> --text ...", file=sys.stderr)
+            return USAGE
+        text = args.text
+        if args.text_file:
+            text = sys.stdin.read() if args.text_file == "-" else open(args.text_file).read()
+        node = board.set_item(me, args.team, args.item, text or "", tag=args.tag)
+        for note in node.get("sync_notes") or []:
+            print(note, file=sys.stderr)
+        print("set %s on %s's board (node %s)" % (args.item, args.team, node["id"]))
+        return OK
+    except (board.BoardError, teams.TeamError) as exc:
+        print("refused: %s" % exc, file=sys.stderr)
+        return REFUSED
+
+
+def cmd_handover(args) -> int:
+    """Hand this session's xsm place over to another session (ADR-0025
+    decision 20): team places and the lead's seat, owned board items, unread
+    DMs, pending questions, and a context summary. The user's decision."""
+    from . import handover
+    me, why = _unsure_caller("hand this session's xsm place over")
+    if why or not me:
+        print(why or "this session is not registered", file=sys.stderr)
+        return REFUSED
+    if args.show:
+        rows = handover.received(me)
+        print("\n\n".join(r["letter"] for r in rows) if rows else "no session handed its place over to this one")
+        return OK
+    if not args.target:
+        print("usage: xsm handover <session> --summary-file <file> (or --summary TEXT)", file=sys.stderr)
+        return USAGE
+    summary = args.summary or ""
+    if args.summary_file:
+        summary = sys.stdin.read() if args.summary_file == "-" else open(args.summary_file, encoding="utf-8").read()
+    if not summary.strip():
+        print("refused: write the context summary the successor needs (--summary-file), "
+              "as the skill's handover section describes", file=sys.stderr)
+        return USAGE
+    with probe.quick():
+        found = resolve.resolve(args.target)
+    if not found.ok:
+        print("refused: %s" % found.reason, file=sys.stderr)
+        return REFUSED
+    target = found.record
+    try:
+        handover._check(me, target)
+    except handover.HandoverError as exc:
+        print("refused: %s" % exc, file=sys.stderr)
+        return REFUSED
+    why = _person_or_refuse("handing this session's xsm place over to %s" % handover.label(target),
+                            "xsm_handover", ask=("handover", target.get("name") or args.target))
+    if why:
+        print("refused: %s" % why, file=sys.stderr)
+        return REFUSED
+    try:
+        rec = handover.hand_over(me, target, summary, _verdict or "person at the terminal")
+    except handover.HandoverError as exc:
+        print("refused: %s" % exc, file=sys.stderr)
+        return REFUSED
+    for note in rec.get("notes") or []:
+        print(note, file=sys.stderr)
+    print(handover.summary_line(rec))
+    return OK
+
+
+def _team_view(team: dict) -> dict:
+    from . import teams
+    return {"name": team["name"], "lead": teams.label(team["lead"]) if team.get("lead") else None,
+            "members": [{"member": teams.label(m), "running": teams.address(m) is not None,
+                         "remote": bool(m.get("machine"))} for m in team["members"]],
+            "generation": team.get("generation"), "log": team.get("log", [])[-10:]}
+
+
+def _team_sync(team: dict) -> None:
+    """Send the changed team record to the machines of its remote members, so
+    each can check a member's DM against the same record (ADR-0025, D22)."""
+    from . import team_sync
+    for note in team_sync.publish(team):
+        print(note, file=sys.stderr)
 
 
 def cmd_inbox(args) -> int:
@@ -1448,7 +1778,7 @@ def _install(args, targets) -> int:
         if not args.no_mcp:
             outcome = install.install_mcp(home, runtime)
             print("  MCP server: %s" % {
-                "added": "registered (xsm_post, xsm_channel, xsm_decide)",
+                "added": "registered (xsm_send, xsm_board, xsm_decide)",
                 "current": "already registered",
                 "replaced": "re-registered with the current command",
             }.get(outcome, outcome))
@@ -1667,7 +1997,9 @@ def cmd_doctor(args) -> int:
             print("codex      %s: xsm hooks not installed" % home)
             continue
         missing = [e for e, ok in trust.items() if not ok]
-        print("codex      %s: hooks %s" % (home, "trusted" if not missing else
+        print("codex      %s: hooks %s" % (home, ("trusted" + CONTENT_HASH_NOTE
+                                                  if install.codex_content_hashed(home) else "trusted")
+              if not missing else
               "NOT trusted for %s — start codex there and choose 'Trust all and continue'"
               % ", ".join(missing)))
     if not report.get("tmux"):
@@ -1940,7 +2272,9 @@ def _doctor_rows(report: dict) -> list:
     for home, trust in (report.get("codex_trust") or {}).items():
         missing = [e for e, ok in (trust or {}).items() if not ok]
         rows.append(("codex trust", "%s: %s" % (_home_tilde(home), (
-            "xsm hooks not installed" if not trust else "hooks trusted" if not missing else
+            "xsm hooks not installed" if not trust else
+            ("hooks trusted" + (CONTENT_HASH_NOTE if install.codex_content_hashed(home) else ""))
+            if not missing else
             "**NOT trusted** for %s: start codex there and choose 'Trust all and continue'"
             % ", ".join(missing)))))
     for home, missing in (report.get("plugin_missing_hooks") or {}).items():
@@ -2370,27 +2704,6 @@ def cmd_answer(args) -> int:
     return OK
 
 
-def cmd_post(args) -> int:
-    from . import channel
-    me = registry.me()
-    here = _here(args, me)
-    try:
-        where = channel.resolve(here, args.channel)
-        author = channel.author_here(me)
-        if args.tag == "decision" and author.get("kind") != "human":
-            author = _decided_by_reply(me, "recording as a decision in %s: %s" % (
-                where[0], (args.text or "")[:120]), "xsm_decide",
-                ("decide", consent.digest(where[1], args.text)))
-            if author is None:
-                return REFUSED
-        rec = channel.post(where, author, args.text, args.tag, args.reply_to)
-    except channel.ChannelError as exc:
-        print("refused: %s" % exc, file=sys.stderr)
-        return REFUSED
-    print("posted %s to %s as %s" % (rec["id"], where[0], channel.label(author)))
-    return OK
-
-
 def _decided_by_reply(me: dict | None, what: str, mcp_tool: str, ask: tuple) -> dict | None:
     """A person's decision made through their reply (user decision,
     2026-10-01): the author is the person, with their words. None after
@@ -2404,47 +2717,13 @@ def _decided_by_reply(me: dict | None, what: str, mcp_tool: str, ask: tuple) -> 
             "runtime": (me or {}).get("runtime")}
 
 
-def cmd_channel(args) -> int:
-    from . import channel
-    me = registry.me()
-    if args.action == "list":
-        here = _here(args, me)
-        mine = {key for _, key in channel.memberships(here)}
-        for name, key in channel.memberships(here):
-            n = len(channel.read(key))
-            print("%s  %d post(s)%s" % (name, n, "" if n else "  (empty)"))
-        others = [c for c in channel.all_channels() if c[0] not in mine]
-        if others:
-            print("(%d other channel(s) this folder is not in)" % len(others))
-        return OK
-    try:
-        where = channel.resolve(_here(args, me), args.channel)
-    except channel.ChannelError as exc:
-        print("refused: %s" % exc, file=sys.stderr)
-        return REFUSED
-    rows = channel.read(where[1])
-    if args.action == "export":
-        text = channel.export_markdown(where[0], rows, args.tag or "decision")
-        if args.out:
-            with open(args.out, "w", encoding="utf-8") as fh:
-                fh.write(text)
-            print("wrote %s (%d post(s)); review it, then commit it yourself"
-                  % (args.out, len([r for r in rows if r.get("tag") == (args.tag or "decision")])))
-        else:
-            sys.stdout.write(text)
-        return OK
-    text = channel.render(rows, tag=args.tag, limit=args.limit)
-    print(text or "(no posts in %s)" % where[0])
-    return OK
-
-
 def cmd_doc(args) -> int:
-    from . import channel, doc
+    from . import doc
     try:
         if args.action == "add":
             body = open(args.file, encoding="utf-8").read() if args.file else (args.text or "")
             me = registry.me()
-            author = channel.author_here(me)
+            author = doc.author_here(me)
             if "endorsed" in (args.tag or []) and author.get("kind") != "human":
                 author = _decided_by_reply(me, "endorsing in %s: %s" % (args.doc, body[:120]),
                                            "xsm_doc_endorse",
@@ -2473,7 +2752,7 @@ def cmd_doc(args) -> int:
             if not node:
                 raise doc.DocError("no node %s" % args.node)
             print(doc._serialize(node))
-    except (doc.DocError, channel.ChannelError, OSError) as exc:
+    except (doc.DocError, OSError) as exc:
         print("refused: %s" % exc, file=sys.stderr)
         return REFUSED
     return OK
@@ -2593,6 +2872,33 @@ def build_parser() -> argparse.ArgumentParser:
         sp.add_argument("project")
         sp.add_argument("--dir", help="the folder to speak for (default: this session's)")
         sp.set_defaults(func=func)
+    tm = sub.add_parser("team", help="teams of sessions working together: create, add, remove, "
+                                     "lead, leave, list, show, mute (adding outside this project, "
+                                     "and the lead, are your user's decision)")
+    tm.add_argument("action", choices=["create", "add", "remove", "lead", "leave", "list", "show", "mute"])
+    tm.add_argument("name", nargs="?")
+    tm.add_argument("member", nargs="?", help="add: a session (name, ref:xxxxxx, net:...); "
+                                              "remove/lead: a member's name or ref")
+    tm.add_argument("--off", action="store_true", help="mute: unmute")
+    tm.add_argument("--json", action="store_true")
+    tm.set_defaults(func=cmd_team)
+    bd = sub.add_parser("board", help="a team's board: show, set <team> <item> --text, log, sync, mute")
+    bd.add_argument("action", choices=["show", "set", "log", "sync", "decisions", "decide", "mute"])
+    bd.add_argument("team")
+    bd.add_argument("item", nargs="?", help="set/log: the item, e.g. 'decision: cache' or 'owner/bee'")
+    bd.add_argument("--text")
+    bd.add_argument("--text-file", help="file path, or - for stdin")
+    bd.add_argument("--tag", help="optional; default update")
+    bd.add_argument("--json", action="store_true")
+    bd.add_argument("--off", action="store_true", help="mute: show the change lines again")
+    bd.set_defaults(func=cmd_board)
+    ho = sub.add_parser("handover", help="hand this session's xsm place over to another session "
+                                         "(your user's decision)")
+    ho.add_argument("target", nargs="?", help="the session that takes over")
+    ho.add_argument("--summary", help="the context summary for the successor")
+    ho.add_argument("--summary-file", help="file path, or - for stdin")
+    ho.add_argument("--show", action="store_true", help="show the handovers made to this session")
+    ho.set_defaults(func=cmd_handover)
     service=sub.add_parser("owned",help="journal requests to an explicitly owned headless worker")
     service.add_argument("action",choices=["create","run","status","retry","reconcile"])
     service.add_argument("name")
@@ -2653,22 +2959,6 @@ def build_parser() -> argparse.ArgumentParser:
         if verb == "stop":
             sp.add_argument("--internal", action="store_true", help=argparse.SUPPRESS)
         sp.set_defaults(func=func)
-    po = sub.add_parser("post", help="post to this project's channel (the shared record)")
-    po.add_argument("text")
-    po.add_argument("--tag", default="note", help="note, question, proposal, result, hypothesis, "
-                    "decision (your user's)")
-    po.add_argument("--reply-to")
-    po.add_argument("--channel", help="a named project (default: this project)")
-    po.add_argument("--dir")
-    po.set_defaults(func=cmd_post)
-    ch = sub.add_parser("channel", help="read, list or export channels")
-    ch.add_argument("action", nargs="?", default="show", choices=["show", "list", "export"])
-    ch.add_argument("--channel")
-    ch.add_argument("--tag")
-    ch.add_argument("--limit", type=int)
-    ch.add_argument("--out", help="export: write the markdown here")
-    ch.add_argument("--dir")
-    ch.set_defaults(func=cmd_channel)
     dc = sub.add_parser("doc", help="shared documents as immutable nodes (add, render, log, "
                         "next, leaves, show)")
     dc.add_argument("action", choices=["add", "render", "log", "next", "leaves", "show"])
@@ -2762,7 +3052,8 @@ def build_parser() -> argparse.ArgumentParser:
     con.add_argument("--request-id", help="resume the same handshake after a timeout")
     con.set_defaults(func=cmd_connect)
     ask = sub.add_parser("ask", help="send one question and collect its actual correlated reply")
-    ask.add_argument("target")
+    ask.add_argument("target", nargs="+",
+                     help="the session to ask; name several to ask each (each is told who else was asked)")
     ask.add_argument("--text", required=True)
     ask.add_argument("--wait", type=float, default=0)
     ask.add_argument("--request-id")
@@ -2791,8 +3082,9 @@ def build_parser() -> argparse.ArgumentParser:
     pub.add_argument("--off", action="store_true", help="stop publishing this conversation")
     pub.set_defaults(func=cmd_publish)
     snd = sub.add_parser("send", help="send a message to another session")
-    snd.add_argument("target", nargs="?",
-                     help="name, name@home, name [ref], ref:xxxxxx, claude:ID, codex:ID")
+    snd.add_argument("target", nargs="*",
+                     help="name, name@home, name [ref], ref:xxxxxx, claude:ID, codex:ID; "
+                          "name several to send one DM to each (each is told who else got it)")
     snd.add_argument("--text")
     snd.add_argument("--text-file", help="file path, or - for stdin")
     snd.add_argument("--kind", choices=list(envelope.KINDS), default="note")
@@ -2933,8 +3225,8 @@ def build_parser() -> argparse.ArgumentParser:
 
 # The commands that ask your user, and so take their words with --reply when the
 # hook that keeps replies did not (consent.supplied).
-ASKING = ("join", "leave", "spawn", "post", "doc", "remote", "approve", "link", "reach", "unblock",
-          "attempts", "frameworks", "send", "held", "connect", "publish")
+ASKING = ("join", "leave", "spawn", "doc", "remote", "approve", "link", "reach", "unblock",
+          "attempts", "frameworks", "send", "held", "connect", "publish", "team", "handover")
 
 
 def main(argv=None) -> int:

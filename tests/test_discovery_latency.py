@@ -777,10 +777,11 @@ class McpCallerLookupTest(Crowd):
         self.assertEqual(sorted(c.args[0]["session_id"] for c in enriched.call_args_list),
                          ["mine", "peer"])
 
-    def test_the_lookup_has_the_quick_budget_and_the_channel_lookup_does_not(self):
-        """MCP-1: the walk, the pointers and the tool run in turn, but the git lookup that
-        decides the channel is not under a budget the lookup may have spent."""
-        from xsm import channel, identity, mcp, probe, registry
+    def test_the_lookup_has_the_quick_budget_and_the_tool_does_not(self):
+        """MCP-1: the walk, the pointers and the tool run in turn, but the tool's own
+        lookups (the git lookup that decides a message's scope) are not under a budget
+        the caller lookup may have spent."""
+        from xsm import identity, mcp, probe, registry
         seen = []
 
         def watch(label, real):
@@ -793,10 +794,9 @@ class McpCallerLookupTest(Crowd):
         server.call_thread = "mine"
         with mock.patch.object(identity, "ancestor_pid", watch("walk", lambda names: os.getpid())), \
                 mock.patch.object(registry, "raw_records", watch("pointers", registry.raw_records)), \
-                mock.patch.object(channel, "resolve", watch("channel", channel.resolve)), \
                 mock.patch.object(mcp.Server, "_call", watch("tool", lambda *a, **k: '{"messages":[],"claims":[]}')):
             server.call("xsm_inbox", {})
-        self.assertEqual([label for label, _ in seen], ["walk", "pointers", "channel", "tool"])
+        self.assertEqual([label for label, _ in seen], ["walk", "pointers", "tool"])
         for label, quick in seen[:2]:
             self.assertEqual(quick, probe.QUICK_TIMEOUT, label)
         for label, quick in seen[2:]:

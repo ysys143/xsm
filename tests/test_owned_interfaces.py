@@ -47,8 +47,8 @@ class OwnedInterfacesTest(TempState):
         self.assertEqual(result['result']['body'],'actual adapter result')
         self.assertEqual(self.invoke(**args)['reply_id'],result['reply_id'])
         self.assertEqual(self.count,1)
-        from xsm import channel
-        with self.assertRaisesRegex(channel.ChannelError,'differs'):
+        from xsm import mcp
+        with self.assertRaisesRegex(mcp.ToolError,'differs'):
             self.invoke(**dict(args,text='different'))
         listed=self.invoke(action='status',name='service')
         self.assertEqual([r['id'] for r in listed['requests']],['owned-public'])
@@ -90,9 +90,9 @@ class OwnedInterfacesTest(TempState):
         self.assertEqual(self.count,1)
 
     def test_provisional_identity_cannot_create_an_owned_service(self):
-        from xsm import channel,context
+        from xsm import context,mcp
         self.server.ctx=context.of_record(self.me,context.BASIS_NEIGHBOR)
-        with self.assertRaisesRegex(channel.ChannelError,'guess'):
+        with self.assertRaisesRegex(mcp.ToolError,'guess'):
             self.create()
 
     def test_public_status_recovers_a_saved_answer_after_worker_record_removal(self):
@@ -124,12 +124,12 @@ class OwnedInterfacesTest(TempState):
         self.assertEqual(self.count,1)
 
     def test_recreated_worker_does_not_reuse_the_previous_workers_cached_result(self):
-        from xsm import channel
+        from xsm import mcp
         first=self.create()
         args={'action':'run','name':'service','text':'work','work_context':'topic','request_id':'worker-generation','wait':1}
         self.invoke(**args)
         self.workers.stop('service')
         self.assertNotEqual(self.create()['id'],first['id'])
-        with self.assertRaisesRegex(channel.ChannelError,'differs'):
+        with self.assertRaisesRegex(mcp.ToolError,'differs'):
             self.invoke(**args)
         self.assertEqual(self.count,1)

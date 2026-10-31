@@ -1,0 +1,8 @@
+case B03-Kestrel: clean predictions, all metrics 1.0
+removed R2 item: R2 recall drops below 1.0 (detected)
+mutated quote: fidelity drops below 1.0 (detected)
+quote taken from another item: counted unfaithful (detected)
+added hard negative: precision < 1, N pass 1, hard-negative pass 1 (detected)
+ambiguous item selected: excluded from precision, counted separately
+unknown item ID: invalid ID 1, precision < 1 (detected)
+duplicated prediction: duplicate count 1 (detected)

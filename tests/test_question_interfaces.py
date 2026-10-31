@@ -403,12 +403,12 @@ class QuestionInterfacesTest(TempState):
         self.assertEqual(self.transport.call_count, before)
 
     def test_invalid_attachment_and_wake_mode_are_explicit_in_both_surfaces(self):
-        from xsm import cli, channel
+        from xsm import cli, mcp
         for flag in (["--attachment", "a.txt"], ["--wake", "now"]):
             with contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(io.StringIO()):
                 self.assertEqual(cli.main(["ask", "ref:" + self.peer["ref"], "--text", "q", *flag]), 2)
         for field in ({"attachments": ["a.txt"]}, {"wake": "now"}):
-            with self.assertRaisesRegex(channel.ChannelError, "unsupported|attachment-error"):
+            with self.assertRaisesRegex(mcp.ToolError, "unsupported|attachment-error"):
                 self.server().call("xsm_ask", {"target": "ref:" + self.peer["ref"], "text": "q", **field})
         self.assertEqual(self.transport.call_count, 0)
 
@@ -481,13 +481,13 @@ class QuestionInterfacesTest(TempState):
         self.assertEqual(questions.status(self.me, request["id"])["replies"], [])
 
     def test_codex_now_priority_and_nonreply_outcome_are_not_silently_ignored(self):
-        from xsm import channel, paths
+        from xsm import mcp, paths
         code, result = self.cli("ask", "ref:" + self.peer["ref"], "--text", "q", "--priority", "now")
         self.assertEqual(code, 2)
         self.assertIn("unsupported", result["reason"])
         self.assertEqual(self.transport.call_count, 0)
         self.assertFalse(os.path.exists(paths.path("questions")), "unsupported requests are not queued")
-        with self.assertRaisesRegex(channel.ChannelError, "outcome"):
+        with self.assertRaisesRegex(mcp.ToolError, "outcome"):
             self.server().call("xsm_send", {"target": "ref:" + self.peer["ref"], "text": "q",
                                            "kind": "note", "outcome": "succeeded"})
 

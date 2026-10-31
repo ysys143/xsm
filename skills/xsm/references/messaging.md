@@ -30,6 +30,11 @@ claim. Cached-only answers or unavailable claims remain visible with
 is not permission to treat an unread reply as acknowledged.
 Existing `send --wait` / `xsm_send`
 continues to wait for delivery, not a reply.
+To ask several sessions the same question, name them all (`xsm ask A B C --text TEXT`
+/ `xsm_ask` with `targets`). Each gets its own question under `<group>-<n>` and is
+told who else was asked; one outside your scope is skipped and named. The result
+and `question-status <group>` list every recipient's answer and who is still open;
+a wait ends when all have answered or ended. Acknowledge each answer's claim.
 
 In a sandboxed Codex shell, choose MCP first for messaging and inbox access.
 Do not try the shell, widen its permissions, or ask the user to type commands.

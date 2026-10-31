@@ -32,7 +32,7 @@
 | [0002](0002-delivery-and-wakeup.md) | 에이전트별 전달·wakeup 방식 | Accepted | G2, G3 |
 | [0003](0003-no-wrapper-runtime-boundary.md) | 진입점 래퍼 금지의 경계 | Accepted | C1 |
 | [0004](0004-communication-scope.md) | 통신 범위(scope) 모델 | Accepted | G5 |
-| [0005](0005-channel-thread-store.md) | 채널-스레드 기록 저장소 | Accepted (제거 예정, 0026) | G6 |
+| [0005](0005-channel-thread-store.md) | 채널-스레드 기록 저장소 | Superseded (0026) | G6 |
 | [0006](0006-shared-document-editing.md) | 공동 문서 편집 규약 | Accepted | G7 |
 | [0007](0007-remote-transport-and-trust.md) | 원격 통신과 신뢰 모델 | Accepted | G4 |
 | [0008](0008-session-naming-and-namespace.md) | 세션 이름, 주소, 네임스페이스 | Accepted | G1, G2, G5 |
@@ -55,7 +55,7 @@
 | [0025](0025-team-and-multi-recipient-dm.md) | 함께 일하는 세션을 팀으로 묶고 DM을 여러 수신자에게 보낸다 | Accepted | G1, G2, G3, G5, G6 |
 | [0026](0026-team-board-on-xsm-doc.md) | 팀 보드는 xsm doc이 소유하고 channel은 대체 뒤 제거한다 | Accepted | G6, G7 |
 
-[ADR-0025](0025-team-and-multi-recipient-dm.md)와 [ADR-0026](0026-team-board-on-xsm-doc.md)은 2026-10-30 사용자 결정으로 Accepted다. 구현은 착수하지 않았다. 0025는 ADR-0024의 connect 의미를 바꾸고, 0026은 0005를 대체가 준비되면 제거하도록 정하며 0006을 확장하고 0014의 에이전트용 공유 기록 부분을 정한다. 결정의 배경과 실험은 [설계 메모](../plan/collaboration/team-communication-memo.md)에 있다.
+[ADR-0025](0025-team-and-multi-recipient-dm.md)와 [ADR-0026](0026-team-board-on-xsm-doc.md)은 2026-10-30 사용자 결정으로 Accepted다. 0.5.1에서 구현했다(진행 기록: [팀 소통 구현 진행 기록](../plan/collaboration/team-implementation-progress.md)). 0025는 ADR-0024의 connect 의미를 바꾸고, 0026은 0005를 대체가 준비되면 제거하도록 정하며(0.5.1에서 제거, 0005는 Superseded) 0006을 확장하고 0014의 에이전트용 공유 기록 부분을 정한다. 결정의 배경과 실험은 [설계 메모](../plan/collaboration/team-communication-memo.md)에 있다.
 
 [ADR-0024](0024-discover-select-and-handshake.md)는 2026-10-28 사용자 결정으로 Accepted다. 발견 후보·공개·선택·핸드셰이크에 관해 0015–0023의 관련 제안을 보완하며, 나머지 미결까지 일괄 채택한 것은 아니다. 구현목표는 [확정 설계](../plan/collaboration/collaboration-contract.md)를 따른다.
 

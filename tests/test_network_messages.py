@@ -16,7 +16,7 @@ import time
 import unittest
 from unittest import mock
 
-from xsm import envelope, files, handoff, network_directory, network_messages as messages, paths
+from xsm import envelope, files, handoff, network_directory, network_identity, network_messages as messages, paths
 
 A = "a" * 64
 B = "b" * 64
@@ -46,8 +46,8 @@ def _crash_gateway(state, root, packet, phase):
 
 class NetworkMessagesTest(unittest.TestCase):
     def setUp(self):
-        global envelope, files, handoff, network_directory, messages, paths
-        from xsm import envelope, files, handoff, network_directory, network_messages as messages, paths
+        global envelope, files, handoff, network_directory, network_identity, messages, paths
+        from xsm import envelope, files, handoff, network_directory, network_identity, network_messages as messages, paths
         from xsm import config, identity
         temporary = tempfile.TemporaryDirectory(prefix="xsm-network-messages-")
         self.addCleanup(temporary.cleanup)
@@ -132,6 +132,64 @@ class NetworkMessagesTest(unittest.TestCase):
         self.assertEqual(self.gb.status(C, packet["id"], self.ap), {"status":"not-found"})
         self.assertEqual(self.gb.status(A, packet["id"], dict(self.ap, session_id="other")), {"status":"not-found"})
         self.assertTrue(self.gb.ingress_record(packet["id"])["verified"])
+
+    def _handed_over(self, old, new):
+        from xsm import handover
+        self.store(new)
+        self.native(new)
+        paths.write_json(handover._file(handoff._identity(old)), {
+            "t": time.time(), "from_identity": handoff._identity(old),
+            "to_identity": handoff._identity(new), "letter": "", "shown": True})
+
+    def test_a_message_for_a_handed_over_session_is_stored_for_its_successor(self):
+        b2 = self.row("receiver-b2", home=self.b["home"])
+        self._handed_over(self.b, b2)
+        packet = self.prepare(kind="task")
+        self.assertEqual(self.gb.receive(A, packet)["status"], "queued")
+        self.assertEqual(handoff.status(b2, packet["id"])["status"], "pending")
+        self.assertEqual(handoff.status(self.b, packet["id"])["status"], "not-found")
+        # The receive gate reads it back: measured on two machines, 2026-10-31.
+        self.assertEqual(self.gb.ingress_record(packet["id"])["target_local"]["session_id"], "receiver-b2")
+
+    def test_a_reply_to_a_handed_over_question_reaches_the_successor(self):
+        packet = self.prepare(kind="task")
+        self.gb.receive(A, packet)
+        a2 = self.row("sender-a2")
+        self._handed_over(self.a, a2)
+        reply = self.gb.prepare(self.b, self.ap, "늦은 답", request_id="reply-late", kind="reply",
+                                reply_to=packet["id"], outcome="succeeded")
+        self.assertEqual(self.ga.receive(B, reply)["status"], "queued")
+        self.assertEqual(handoff.status(a2, "reply-late")["status"], "pending")
+        self.assertEqual(self.ga.ingress_record("reply-late")["target_local"]["session_id"], "sender-a2")
+
+    def test_a_kept_record_for_a_session_that_is_no_successor_is_refused(self):
+        packet = self.prepare(kind="task")
+        self.gb.receive(A, packet)
+        path = self.gb._path("inbound", packet["id"])
+        record = json.loads(Path(path).read_text())
+        record["local"]["session_id"] = "someone-else"
+        Path(path).write_text(json.dumps(record))
+        with self.assertRaises(messages.GatewayError):
+            self.gb.ingress_record(packet["id"])
+
+    def test_the_successor_answers_a_question_the_old_session_was_asked_from_another_machine(self):
+        packet = self.prepare(kind="task")
+        self.gb.receive(A, packet)
+        b2 = self.row("receiver-b2", home=self.b["home"])
+        self._handed_over(self.b, b2)
+        b2p = network_directory.public_endpoint(b2, B)
+        reply = self.gb.prepare(b2, self.ap, "후임의 답", request_id="reply-successor", kind="reply",
+                                reply_to=packet["id"], outcome="succeeded")
+        self.assertEqual(network_identity.endpoint(reply["sender"]), network_identity.endpoint(b2p))
+        # Both gateways share this test's state, so the asking side reads the
+        # handover record itself; across machines it reads B's testimony.
+        self.assertEqual(self.ga.receive(B, reply)["status"], "queued")
+        stranger = self.row("someone-else", home=self.b["home"])
+        self.store(stranger)
+        self.native(stranger)
+        with self.assertRaises(messages.GatewayError):
+            self.gb.prepare(stranger, self.ap, "남의 답", request_id="reply-stranger", kind="reply",
+                            reply_to=packet["id"], outcome="succeeded")
 
     def test_duplicate_preserves_claim_ack_and_original_raw_body(self):
         packet = self.prepare(wake=False)

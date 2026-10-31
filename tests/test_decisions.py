@@ -228,13 +228,13 @@ class _DecisionWire:
 class DecisionMcpTest(test_xsm.TempState):
     def setUp(self):
         super().setUp()
-        from xsm import channel, decisions, mcp, paths, registry
-        self.channel, self.d, self.mcp, self.paths, self.registry = channel, decisions, mcp, paths, registry
+        from xsm import board, decisions, mcp, paths, registry, teams
+        self.board, self.d, self.mcp, self.paths, self.registry = board, decisions, mcp, paths, registry
         home = self.tmp + "/profile"
         os.mkdir(home)
         registry.upsert("codex", home, "decision-owner", os.getpid(), self.tmp, name="fixture-owner")
         self.me = registry.by_session("codex", "decision-owner")
-        self.where = channel.resolve(self.tmp)
+        teams.create(self.me, "core")       # its one team: where xsm_decide keeps the answer
         self.args = {"question": "원문 그대로 기록할까요?", "options": ["approve", "deny"],
                      "decision_key": "one-shared-human-decision"}
 
@@ -243,7 +243,7 @@ class DecisionMcpTest(test_xsm.TempState):
             "name": "xsm_decide", "arguments": dict(self.args if args is None else args)}}
 
     def records(self):
-        return self.channel.read(self.where[1])
+        return self.board.decisions("core")
 
     def decisions(self):
         from pathlib import Path
@@ -273,7 +273,7 @@ class DecisionMcpTest(test_xsm.TempState):
         self.assertEqual(len(self.records()), 1)
         record = self.decisions()[0]
         self.assertEqual(record["status"], "applied")
-        self.assertEqual(self.records()[0]["approved"]["answer"], "approve")
+        self.assertEqual(self.records()[0]["answer"], "approve")
         self.assertEqual(record["question"], self.args["question"])
 
     def test_real_server_generation_change_refuses_domain_application(self):
@@ -305,7 +305,7 @@ class DecisionMcpTest(test_xsm.TempState):
         def change():
             self.paths.write_json(self.registry._record_path("codex", "decision-owner"), dict(self.me, cwd=other))
         self.run_server([self.tool(1), dict(id="xsm-1", **accepted())], before_answer=change)
-        self.assertEqual(self.records(), [], "the original channel must not be written after scope changes")
+        self.assertEqual(self.records(), [], "the decision must not be recorded after scope changes")
         self.assertIsNone(self.decisions()[0]["application"])
 
     def test_real_server_auto_review_never_posts_a_human_decision(self):
@@ -315,7 +315,7 @@ class DecisionMcpTest(test_xsm.TempState):
         self.assertEqual(record["status"], "unknown")
         self.assertIsNone(record["application"])
 
-    def test_real_server_expired_late_answer_is_kept_without_channel_application(self):
+    def test_real_server_expired_late_answer_is_kept_without_application(self):
         def expire():
             record = self.decisions()[0]
             record["expires_at"] = time.time() - 1
@@ -336,7 +336,7 @@ class DecisionMcpTest(test_xsm.TempState):
         self.assertEqual([row["params"]["message"] for row in forms],
                          [self.args["question"], changed["question"]])
         self.assertEqual(len(self.decisions()), 2)
-        self.assertEqual([record["approved"]["answer"] for record in self.records()], ["approve", "deny"])
+        self.assertEqual(sorted(record["answer"] for record in self.records()), ["approve", "deny"])
 
     def test_real_server_late_response_after_waiter_cancel_is_recorded_without_side_effect(self):
         output = self.run_server([self.tool(1), {"method": "notifications/cancelled", "params": {"requestId": 1}},

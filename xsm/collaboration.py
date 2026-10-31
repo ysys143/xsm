@@ -128,3 +128,16 @@ def drop(sender: Mapping, target: Mapping) -> bool:
         record.update(active=False, revoked_at=time.time())
         paths.write_json(paths.path(DIRECTORY, proposal["id"] + ".json"), record)
         return True
+
+
+def drop_id(key: str) -> bool:
+    """Revoke a selection by its id (a pair team was left or emptied)."""
+    if not isinstance(key, str) or not key.isalnum():
+        return False
+    with _locked(key):
+        record = paths.read_json(paths.path(DIRECTORY, key + ".json"))
+        if not isinstance(record, dict) or record.get("active") is not True:
+            return False
+        record.update(active=False, revoked_at=time.time())
+        paths.write_json(paths.path(DIRECTORY, key + ".json"), record)
+        return True

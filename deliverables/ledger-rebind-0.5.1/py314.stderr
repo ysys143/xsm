@@ -1,0 +1,80 @@
+install/setup failed: JSONDecodeError
+setup flow 0b192c548b7c4c96b5123747ade4b8ac generation=3 status=failed error=JSONDecodeError
+/opt/homebrew/Cellar/python@3.14/3.14.6/Frameworks/Python.framework/Versions/3.14/lib/python3.14/tempfile.py:484: ResourceWarning: Implicitly cleaning up <HTTPError 500: 'Internal Server Error'>
+  _warnings.warn(self.warn_message, ResourceWarning)
+/private/tmp/claude-501/-Users-jaesolshin-Documents-GitHub-cross-session-messaging/33bf5e13-fa64-4f22-844c-d0a499ae4150/scratchpad/xsm-ledger-rebind-upxhqe4a/tests/test_workers.py:857: ResourceWarning: unclosed file <_io.TextIOWrapper name='/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-test-yjiyocrw/workers/c/settings.json' mode='r' encoding='UTF-8'>
+  settings = json.load(open(os.path.join(self.tmp, "workers", "c", "settings.json")))
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+/private/tmp/claude-501/-Users-jaesolshin-Documents-GitHub-cross-session-messaging/33bf5e13-fa64-4f22-844c-d0a499ae4150/scratchpad/xsm-ledger-rebind-upxhqe4a/tests/test_workers.py:457: ResourceWarning: unclosed file <_io.TextIOWrapper name='/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-test-ae3bkrwv/workers/sb/settings.json' mode='r' encoding='UTF-8'>
+  settings = json.load(open(workers._claude_worker_settings(w)))
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+/private/tmp/claude-501/-Users-jaesolshin-Documents-GitHub-cross-session-messaging/33bf5e13-fa64-4f22-844c-d0a499ae4150/scratchpad/xsm-ledger-rebind-upxhqe4a/tests/test_workers.py:480: ResourceWarning: unclosed file <_io.TextIOWrapper name='/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-test-ae3bkrwv/workers/sb/settings.json' mode='r' encoding='UTF-8'>
+  again = json.load(open(workers._claude_worker_settings(w)))
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+/private/tmp/claude-501/-Users-jaesolshin-Documents-GitHub-cross-session-messaging/33bf5e13-fa64-4f22-844c-d0a499ae4150/scratchpad/xsm-ledger-rebind-upxhqe4a/tests/test_workers.py:493: ResourceWarning: unclosed file <_io.TextIOWrapper name='/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-test-ae3bkrwv/workers/pn/settings.json' mode='r' encoding='UTF-8'>
+  self.assertNotIn("sandbox", json.load(open(workers._claude_worker_settings(pane))))
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+/opt/homebrew/Cellar/python@3.14/3.14.6/Frameworks/Python.framework/Versions/3.14/lib/python3.14/subprocess.py:1139: ResourceWarning: subprocess 17279 is still running
+  _warn("subprocess %s is still running" % self.pid,
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+/private/tmp/claude-501/-Users-jaesolshin-Documents-GitHub-cross-session-messaging/33bf5e13-fa64-4f22-844c-d0a499ae4150/scratchpad/xsm-ledger-rebind-upxhqe4a/tests/test_xsm.py:3721: ResourceWarning: unclosed file <_io.TextIOWrapper name='/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-test-7bhpvah8/codex-adopt/config.toml' mode='w' encoding='UTF-8'>
+  open(os.path.join(home, "config.toml"), "w").write(body)
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+/private/tmp/claude-501/-Users-jaesolshin-Documents-GitHub-cross-session-messaging/33bf5e13-fa64-4f22-844c-d0a499ae4150/scratchpad/xsm-ledger-rebind-upxhqe4a/tests/test_xsm.py:3721: ResourceWarning: unclosed file <_io.TextIOWrapper name='/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-test-xlc0l5x1/codex-adopt/config.toml' mode='w' encoding='UTF-8'>
+  open(os.path.join(home, "config.toml"), "w").write(body)
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+/private/tmp/claude-501/-Users-jaesolshin-Documents-GitHub-cross-session-messaging/33bf5e13-fa64-4f22-844c-d0a499ae4150/scratchpad/xsm-ledger-rebind-upxhqe4a/tests/test_xsm.py:3721: ResourceWarning: unclosed file <_io.TextIOWrapper name='/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-test-so66hyva/codex-adopt/config.toml' mode='w' encoding='UTF-8'>
+  open(os.path.join(home, "config.toml"), "w").write(body)
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+/private/tmp/claude-501/-Users-jaesolshin-Documents-GitHub-cross-session-messaging/33bf5e13-fa64-4f22-844c-d0a499ae4150/scratchpad/xsm-ledger-rebind-upxhqe4a/tests/test_xsm.py:3721: ResourceWarning: unclosed file <_io.TextIOWrapper name='/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-test-fw20yvw2/codex-adopt/config.toml' mode='w' encoding='UTF-8'>
+  open(os.path.join(home, "config.toml"), "w").write(body)
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+/private/tmp/claude-501/-Users-jaesolshin-Documents-GitHub-cross-session-messaging/33bf5e13-fa64-4f22-844c-d0a499ae4150/scratchpad/xsm-ledger-rebind-upxhqe4a/tests/test_xsm.py:3721: ResourceWarning: unclosed file <_io.TextIOWrapper name='/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-test-c1qm4zkf/codex-adopt/config.toml' mode='w' encoding='UTF-8'>
+  open(os.path.join(home, "config.toml"), "w").write(body)
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+/private/tmp/claude-501/-Users-jaesolshin-Documents-GitHub-cross-session-messaging/33bf5e13-fa64-4f22-844c-d0a499ae4150/scratchpad/xsm-ledger-rebind-upxhqe4a/tests/test_xsm.py:3721: ResourceWarning: unclosed file <_io.TextIOWrapper name='/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-test-5r57dt0r/codex-adopt/config.toml' mode='w' encoding='UTF-8'>
+  open(os.path.join(home, "config.toml"), "w").write(body)
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+/private/tmp/claude-501/-Users-jaesolshin-Documents-GitHub-cross-session-messaging/33bf5e13-fa64-4f22-844c-d0a499ae4150/scratchpad/xsm-ledger-rebind-upxhqe4a/tests/test_xsm.py:3678: ResourceWarning: unclosed file <_io.TextIOWrapper name='/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-test-wxmt5_9d/codex-home/config.toml' mode='w' encoding='UTF-8'>
+  open(os.path.join(home, "config.toml"), "w").write(body)
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+/private/tmp/claude-501/-Users-jaesolshin-Documents-GitHub-cross-session-messaging/33bf5e13-fa64-4f22-844c-d0a499ae4150/scratchpad/xsm-ledger-rebind-upxhqe4a/tests/test_xsm.py:3678: ResourceWarning: unclosed file <_io.TextIOWrapper name='/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-test-yhejwqt7/codex-home/config.toml' mode='w' encoding='UTF-8'>
+  open(os.path.join(home, "config.toml"), "w").write(body)
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+/private/tmp/claude-501/-Users-jaesolshin-Documents-GitHub-cross-session-messaging/33bf5e13-fa64-4f22-844c-d0a499ae4150/scratchpad/xsm-ledger-rebind-upxhqe4a/tests/test_xsm.py:3678: ResourceWarning: unclosed file <_io.TextIOWrapper name='/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-test-49a4kg19/codex-home/config.toml' mode='w' encoding='UTF-8'>
+  open(os.path.join(home, "config.toml"), "w").write(body)
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+/private/tmp/claude-501/-Users-jaesolshin-Documents-GitHub-cross-session-messaging/33bf5e13-fa64-4f22-844c-d0a499ae4150/scratchpad/xsm-ledger-rebind-upxhqe4a/tests/test_xsm.py:3066: ResourceWarning: unclosed file <_io.TextIOWrapper name='/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-test-btd5ks3i/claude-cmd/skills/xsm/references/guide.md' mode='a' encoding='UTF-8'>
+  open(guide, "a").write("\nstale line\n")
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+/private/tmp/claude-501/-Users-jaesolshin-Documents-GitHub-cross-session-messaging/33bf5e13-fa64-4f22-844c-d0a499ae4150/scratchpad/xsm-ledger-rebind-upxhqe4a/tests/test_xsm.py:3216: ResourceWarning: unclosed file <_io.TextIOWrapper name='/private/tmp/claude-501/-Users-jaesolshin-Documents-GitHub-cross-session-messaging/33bf5e13-fa64-4f22-844c-d0a499ae4150/scratchpad/xsm-ledger-rebind-upxhqe4a/skills/xsm/SKILL.md' mode='r' encoding='UTF-8'>
+  skill = open(os.path.join(REPO, "skills", "xsm", "SKILL.md")).read()
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+/private/tmp/claude-501/-Users-jaesolshin-Documents-GitHub-cross-session-messaging/33bf5e13-fa64-4f22-844c-d0a499ae4150/scratchpad/xsm-ledger-rebind-upxhqe4a/tests/test_xsm.py:786: ResourceWarning: unclosed file <_io.TextIOWrapper name='/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-test-4pntcaoi/claude-fmt/settings.json' mode='w' encoding='UTF-8'>
+  open(target, "w").write(original)
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+/private/tmp/claude-501/-Users-jaesolshin-Documents-GitHub-cross-session-messaging/33bf5e13-fa64-4f22-844c-d0a499ae4150/scratchpad/xsm-ledger-rebind-upxhqe4a/tests/test_xsm.py:789: ResourceWarning: unclosed file <_io.TextIOWrapper name='/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-test-4pntcaoi/claude-fmt/settings.json' mode='r' encoding='UTF-8'>
+  self.assertEqual(open(target).read(), original)
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+/private/tmp/claude-501/-Users-jaesolshin-Documents-GitHub-cross-session-messaging/33bf5e13-fa64-4f22-844c-d0a499ae4150/scratchpad/xsm-ledger-rebind-upxhqe4a/tests/test_xsm.py:1693: ResourceWarning: unclosed file <_io.TextIOWrapper name='/private/tmp/claude-501/-Users-jaesolshin-Documents-GitHub-cross-session-messaging/33bf5e13-fa64-4f22-844c-d0a499ae4150/scratchpad/xsm-ledger-rebind-upxhqe4a/.gitattributes' mode='r' encoding='UTF-8'>
+  rules = open(os.path.join(REPO, ".gitattributes")).read()
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+/private/tmp/claude-501/-Users-jaesolshin-Documents-GitHub-cross-session-messaging/33bf5e13-fa64-4f22-844c-d0a499ae4150/scratchpad/xsm-ledger-rebind-upxhqe4a/tests/test_xsm.py:4258: ResourceWarning: unclosed file <_io.TextIOWrapper name='/private/tmp/claude-501/-Users-jaesolshin-Documents-GitHub-cross-session-messaging/33bf5e13-fa64-4f22-844c-d0a499ae4150/scratchpad/xsm-ledger-rebind-upxhqe4a/skills/xsm/SKILL.md' mode='r' encoding='utf-8'>
+  self.skill = open(os.path.join(self.dir, "SKILL.md"), encoding="utf-8").read()
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+/private/tmp/claude-501/-Users-jaesolshin-Documents-GitHub-cross-session-messaging/33bf5e13-fa64-4f22-844c-d0a499ae4150/scratchpad/xsm-ledger-rebind-upxhqe4a/tests/test_xsm.py:4319: ResourceWarning: unclosed file <_io.TextIOWrapper name='/private/tmp/claude-501/-Users-jaesolshin-Documents-GitHub-cross-session-messaging/33bf5e13-fa64-4f22-844c-d0a499ae4150/scratchpad/xsm-ledger-rebind-upxhqe4a/skills/xsm/references/guide.md' mode='r' encoding='utf-8'>
+  guide = open(os.path.join(refs, "guide.md"), encoding="utf-8").read()
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+/private/tmp/claude-501/-Users-jaesolshin-Documents-GitHub-cross-session-messaging/33bf5e13-fa64-4f22-844c-d0a499ae4150/scratchpad/xsm-ledger-rebind-upxhqe4a/tests/test_xsm.py:4300: ResourceWarning: unclosed file <_io.TextIOWrapper name='/private/tmp/claude-501/-Users-jaesolshin-Documents-GitHub-cross-session-messaging/33bf5e13-fa64-4f22-844c-d0a499ae4150/scratchpad/xsm-ledger-rebind-upxhqe4a/skills/xsm/references/guide.md' mode='r' encoding='utf-8'>
+  self.assertNotIn("/xsm-", open(guide, encoding="utf-8").read())
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+/private/tmp/claude-501/-Users-jaesolshin-Documents-GitHub-cross-session-messaging/33bf5e13-fa64-4f22-844c-d0a499ae4150/scratchpad/xsm-ledger-rebind-upxhqe4a/tests/test_xsm.py:3337: ResourceWarning: unclosed file <_io.TextIOWrapper name='/private/tmp/claude-501/-Users-jaesolshin-Documents-GitHub-cross-session-messaging/33bf5e13-fa64-4f22-844c-d0a499ae4150/scratchpad/xsm-ledger-rebind-upxhqe4a/skills/xsm/SKILL.md' mode='r' encoding='UTF-8'>
+  skill = open(os.path.join(REPO, "skills", "xsm", "SKILL.md")).read()
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+/private/tmp/claude-501/-Users-jaesolshin-Documents-GitHub-cross-session-messaging/33bf5e13-fa64-4f22-844c-d0a499ae4150/scratchpad/xsm-ledger-rebind-upxhqe4a/tests/test_xsm.py:1665: ResourceWarning: unclosed file <_io.TextIOWrapper name='/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-test-5xn0yubh/workers/w/settings.json' mode='r' encoding='UTF-8'>
+  settings = _json.load(open(workers._claude_worker_settings(
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+----------------------------------------------------------------------
+Ran 2033 tests in 493.836s
+
+OK

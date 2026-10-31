@@ -1,0 +1,19 @@
+{
+  "recorded_at": "2026-10-30T11:28:19.522651+00:00",
+  "claude_auth": {
+    "loggedIn": true,
+    "authMethod": "claude.ai",
+    "apiProvider": "firstParty",
+    "subscriptionType": "max"
+  },
+  "codex_home": "~/.codex-3",
+  "proxy_version": "opencodex 2.67.0",
+  "codex_version": "codex-cli 0.165.0",
+  "claude_version": "2.1.314 (Claude Code)",
+  "proxy_catalog_lines": [
+    "  gpt-6.1-sol (872k)",
+    "  openai/gpt-6-sol (1050k)",
+    "  openai/gpt-6-luna (1050k)"
+  ],
+  "codex_login_status": "Logged in using ChatGPT (codex login status, CODEX_HOME=~/.codex-3, printed on stderr)"
+}

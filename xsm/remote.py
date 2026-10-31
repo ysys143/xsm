@@ -385,9 +385,15 @@ def _serve(peer: str, request: dict, span=None) -> dict:
                          % (pairing["remote_project"], request.get("project"))}
     from . import resolve
     found = resolve.resolve(request.get("target") or "")
+    if not found.ok and found.status == "offline-only":
+        from . import handover
+        nxt = handover.follow_offline(found.candidates)
+        if nxt is not None:
+            found = resolve.Resolution("resolved", nxt)
     if not found.ok:
         return {"ok": False, "status": "refused", "error": found.reason}
-    target = found.record
+    from . import handover
+    target, _ = handover.follow(found.record)
     from .send import not_running
     stopped = not_running(target)
     if stopped:
@@ -525,7 +531,6 @@ def send(sender: dict, spec: str, peer: str, body: str, kind: str, reply_to: str
          wait: float, msg_id: str | None = None, traceparent: str | None = None,
          outcome: str | None = None) -> dict:
     pairing = pairing_for(peer)
-    from . import channel
     if not _project_members(pairing["local_project"], sender.get("cwd") or "/"):
         return {"ok": False, "status": "refused",
                 "error": "this session is not in project %s, which is what %s is paired with"

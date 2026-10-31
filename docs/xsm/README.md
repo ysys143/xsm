@@ -60,7 +60,7 @@ Codex에서는 앞의 `/`를 `$`로 바꾼다. 인자가 없거나 모르는 명
 옮겨라"를 적은 디스패치 표다. 에이전트가 말로 된 부탁을 받고 스스로 스킬을 불렀을 때는
 `skills/xsm/references/guide.md`의 목차를 읽고, 하려는 일에 맞는 파일 하나만 열라고 가리킨다. 참고 파일은
 용도별로 나뉜다: `messaging.md`(발견·연결·질문), `sessions.md`(목록·주소·전송·수신), `permissions.md`(폴더 연결과
-사용자 결정), `channel.md`(채널·공동 문서), `network.md`(다른 머신: P2P와 SSH), `workers.md`, `troubleshooting.md`.
+사용자 결정), `teams.md`(팀·보드·결재·인수인계), `docs.md`(공동 문서), `network.md`(다른 머신: P2P와 SSH), `workers.md`, `troubleshooting.md`.
 다른 머신은 `SKILL.md`에서 `network.md`로 바로 이어진다(2026-10-30). `/xsm list`를 부를 때마다 긴 참고 본문이
 컨텍스트에 들어가지 않게 하고, 말로 된 부탁에도 필요한 절만 읽히려는 것이다. 설명문에는 파일 경로를 적지
 않는다(아래 2026-09-27 실측). `tests/test_xsm.py`의 `SkillLayoutTest`가 usage 문구와 `argument-hint`의 일치,
@@ -283,26 +283,82 @@ xsm unlink ~/src/other-repo  # 누구나 지울 수 있다
 - 수신자가 꺼져 있으면 `sent-unconfirmed`로 끝난다. 이 상태를 전달로 읽지 않는다.
 - Codex는 진행 중인 턴에 끼어들지 않는다. 전달 시점은 현재 턴이 끝난 뒤이거나, 스레드가 유휴 상태면 약 10초 안이다. Esc로 멈춘 스레드는 xsm이 Codex 데몬에 대기열 항목을 바로 시작하라고 요청해서 깨운다(2026-09-28).
 
-## 채널
+## 팀
 
-검토 중이며 제거 예정이다. 팀과 팀 보드(ADR-0025, ADR-0026)가 준비되고 `xsm_decide`의 결재 기록이 옮겨지면 제거한다. 그전까지는 아래대로 동작한다.
-
-사람과 세션이 함께 남기는 기록이다(ADR-0005). 받는 세션을 지정해 그 입력으로 바로 넣는 DM(`xsm send`)과는 따로다. 게시는 받는 쪽을 지정하지 않고 공유 기록 하나에 남기만 하며, 누구도 깨우지 않는다. 읽을 쪽이 찾아와 읽는다.
+함께 일하는 세션의 구성원 목록이다(ADR-0025). 팀장은 있어도 되고 없어도 된다. 한 세션이 여러 팀에 속할 수 있다.
 
 ```
-xsm post "Which queue should the importer use?" --tag question
-xsm post "retries: 3" --tag decision            # 사람만. 터미널에서
-xsm channel show [--tag decision] [--channel demo]
-xsm channel export --out docs/DECISIONS.md      # 사람이 검토하고 직접 커밋한다
-xsm channel list
+xsm team create core
+xsm team add core <세션>          # 이름, ref:xxxxxx, net:...
+xsm team remove core <구성원> | xsm team leave core
+xsm team lead core <구성원>       # 사용자의 결정
+xsm team list | xsm team show core
+xsm team mute core [--off]        # 팀 DM을 깨우지 않고 다음 턴에 받는다
 ```
 
-- **채널은 범위다.** 이 폴더의 기본 프로젝트, 또는 가입한 이름 붙인 프로젝트의 채널에만 쓰고 읽는다. 원본은 `~/.xsm/channels/`에 있고 자동 정리하지 않는다. 저장소에는 `export`로 만든 요약만 들어간다.
-- **태그.** `note`, `question`, `proposal`, `result`, `hypothesis`, `decision`. 스레드는 `--reply-to <id>`로 잇는다.
-- **작성자는 xsm이 정한다.** 에이전트 표식이 없는 터미널이면 사람이고, 등록된 세션이면 그 세션이다.
-- **`decision`은 사람의 것이다.** 에이전트는 CLI나 `xsm_post`로 결정을 올릴 수 없다. 대신 MCP 도구 `xsm_decide`로 사용자에게 묻는다. 사용자 화면에 질문과 선택지 양식이 뜨고, 사용자가 고른 답은 모델을 거치지 않고 xsm에 도착한다. xsm은 그 답을 질문 원문과 함께 결정으로 기록한다. Claude Code와 Codex 모두 된다(실측). 작성자는 `사람 via mcp-elicitation`으로 남는다.
-- **MCP 서버.** 설치할 때 각 홈에 `xsm`이라는 이름으로 등록된다(`claude mcp add --scope user`, `codex mcp add`). 도구는 `xsm_post`, `xsm_channel`, `xsm_decide` 셋이다. 세션이 띄우고 세션과 함께 끝난다. Codex가 띄운 MCP 서버는 샌드박스 밖에서 돌기 때문에, 샌드박스 Codex도 채널에 쓸 수 있다(실측). Codex는 MCP 도구마다 호출 허용을 묻는다. 등록을 원하지 않으면 `xsm install --no-mcp`.
-- **한계.** 같은 사용자 권한의 에이전트는 파일을 직접 고쳐 작성자나 결정을 위조할 수 있다.
+- **권한.** 팀은 구성원끼리의 DM을 허용하는 새 권한이다(D19). 프로젝트와 머신이 달라도 구성원끼리는 보낼 수 있고, 팀 밖 세션에는 아무것도 열지 않는다. 끝난 세션은 구성원이어도 권한이 없다.
+- **추가와 팀장.** 같은 프로젝트 안의 세션은 팀장이 묻지 않고 넣고 뺀다. 팀장이 아닌 구성원이 넣을 때, 범위 밖 세션을 넣을 때, 팀장을 정할 때는 사용자의 승인을 받는다(CLI는 사용자의 회신, MCP `xsm_team`은 양식). 팀을 만든 세션이 팀장이 되지는 않는다.
+- **구성원은 이름 단위다(D26).** 같은 이름으로 다시 연 대화가 자리를 이어받는다. 다른 머신의 구성원은 P2P 끝점에 이름이 없으므로 대화 단위다.
+- **주소.** `team:<이름>` 또는 `#<이름>`으로 보낸 DM은 실행 중인 구성원 각자에게 따로 가고, 본문 첫 줄에 누가 함께 받았는지 적힌다. 실행 중이 아닌 구성원은 결과에 이름이 나온다.
+- **connect는 둘인 팀이다(D21).** 사용자가 고른 대화와 연결하면 `pair-<선택 ID 앞 10자>` 팀이 생긴다. 0.5.0 상대와의 호환을 위해 선택 기록도 그대로 둔다.
+- **머신 간.** 팀이 바뀌면 원격 구성원의 머신마다 팀 기록을 보낸다. 받는 머신은 보낸 머신과 자기 머신 모두에 구성원이 있고, 팀 ID가 같으며, 세대가 더 새로울 때만 받는다. 두 머신이 동시에 바꾸면 합치지 않고 더 새 세대가 이긴다.
+- **저장.** `~/.xsm/teams/<팀>/team.json`(구성원, 팀장, 세대, 변경 이력). 끄기는 `muted/` 아래 세션별 파일이다.
+
+## 팀 보드
+
+팀에 지금 유효한 것(현행 결정, 담당, 진행)을 항목별로 둔다(ADR-0026). `xsm doc`이 소유한다.
+
+```
+xsm board set core "decision: cache" --text "redis"
+xsm board show core
+xsm board log core ["<항목>"]
+xsm board sync core              # 모든 노드를 다른 머신에 다시 보낸다
+xsm board mute core [--off]      # 변경 알림 줄을 끈다
+```
+
+- **위치.** `~/.xsm/teams/<팀>/BOARD.md`와 그 노드 폴더. 워크트리와 상관없이 같은 보드다(D29). 구성원만 읽고 쓴다.
+- **항목별 렌더(D28).** 노드마다 항목 이름(`item`)이 있다. 항목마다 같은 항목의 뒤 노드가 이어받지 않은 노드를 보인다. `set`은 그 세션이 읽은 버전들만 이어받는다. 그래서 읽지 않은 다른 세션의 버전은 가려지지 않고 "N versions at once"로 둘 다 보이며, 둘을 읽은 세션의 다음 `set`이 정리한다. 항목 삭제는 없다.
+- **직접 편집.** 렌더 결과의 해시를 남겨 두고, 다음 렌더 전에 파일이 바뀌었으면 바뀐 항목을 "a direct edit of BOARD.md" 작성자의 노드로 받는다. 두 버전이 동시에 있는 항목의 편집은 받지 않는다.
+- **DM과 나눔(D30).** 누군가를 움직이려면 DM, 팀 전체가 알아야 할 사실이면 보드, 둘 다에 쓰지 않는다. 스킬이 이 규칙을 안내한다.
+- **상태 파일(D31).** 기존 지시로 `PHASE.md` 류를 쓰고 있으면 따로 두고 보드와 함께 갱신한다. 그 파일 머리에 에이전트 간 정본이 보드라는 안내를 둔다. 스킬이 안내한다.
+- **변경 알림.** 보드가 바뀌면 구성원의 다음 프롬프트에 팀마다 한 줄(`[xsm] board core: 2 items changed (...)`)이 붙는다. 세션별로 읽은 위치(보드를 읽거나 자기가 쓴 것)와 알린 위치를 따로 두어, 같은 변경은 한 번만 알린다. 상한: 팀 5개, 항목 이름 3개, 한 줄 240자, 팀당 파싱 노드 200개.
+- **머신 간.** 새 노드를 원격 구성원 머신에 보낸다. 받는 머신은 같은 팀 ID이고 보낸 머신에 구성원이 있을 때만, 노드 ID가 내용의 해시와 맞을 때만 받으며 있는 노드는 바꾸지 않는다. 끌어오기는 없다(`sync`로 다시 보낸다).
+
+## 결재 기록
+
+팀의 결재는 사용자와 대면하는 팀장을 거친다(D5, D6). 결재 범주는 정하지 않는다. 스킬은 비용·외부 공개·범위 변경을 흔한 결재 대상으로 안내한다.
+
+```
+xsm_decide(question=..., options=[...], team="core", item="decision: cache")   # MCP 양식
+xsm board decide core "decision: cache" --text "redis"                         # 사용자 본인
+xsm board decisions core
+```
+
+- **기록.** `~/.xsm/teams/<팀>/decisions/<ID>.json`. ID는 기록 내용의 해시이고 한 번만 쓴다. 기록 경로는 MCP 양식(`via: mcp-elicitation`)과 사용자 본인의 `board decide`(`via: terminal`) 둘뿐이다.
+- **팀을 주지 않으면.** 구성원인 팀이 하나면 그 팀 보드 옆에 기록하고 결과에 팀 이름을 적는다. 둘 이상이면 양식을 띄우기 전에 팀 이름들을 대며 `team`을 달라고 거부한다. 팀이 없으면 양식을 띄워 답을 에이전트에게 돌려주되, 이 세션이 어느 팀에도 없어 기록하지 않았다고 적는다(`xsm team create`가 팀을 만든다). 연결(`xsm connect`)이 만든 둘짜리 팀(`pair-…`)도 팀으로 센다.
+- **보드 항목.** `item`을 주면 그 항목을 답으로 정하는 노드가 결재 ID를 단다. 렌더는 기록이 있으면 "decided by …"를, 기록이 없으면 "not confirmed"를 보인다.
+- **머신 간.** 결재 기록도 보드 노드와 함께 보낸다. 받은 기록은 `from_machine`이 붙고 그 머신 사용자의 증언으로 보인다. 이 머신 사용자의 승인으로 쓰지 않는다.
+
+## 인수인계
+
+사용자가 떠나는 세션에서 "OO한테 인수인계해"라고 하면 그 세션의 xsm 자리를 OO가 물려받는다(D27).
+
+```
+xsm handover <세션> --summary-file <파일>     # 사용자의 결정
+xsm handover --show                          # 이 세션이 받은 인수인계 문서
+```
+
+- **옮기는 것.** 모든 팀의 구성원 자리와 팀장 자리, `owner/<옛 이름>[/...]` 보드 항목(팀마다 `handover/<옛 이름>` 항목에 기록), 아직 ACK하지 않은 DM(원문 그대로 문서에 싣고 원본은 `moved_to`로 닫는다), 최종 답이 없는 질문과 질문 묶음(발신자를 후임으로), 옛 세션이 쓴 맥락 요약.
+- **이후 옛 주소.** 이 머신에서 옛 세션에게 보낸 DM, SSH 원격 수신, P2P 수신(옛 끝점 앞 메시지, 옛 세션이 물은 질문의 원격 답)이 후임에게 간다. 옛 세션이 받은 질문에 후임이 답하면 이 머신의 질문 기록이 받는다.
+- **문서 전달.** 인수인계 문서는 DM이 아니라 후임의 다음 프롬프트에 훅이 한 번 싣는다. 팀 자리를 옮긴 뒤에는 두 세션 사이에 범위가 없을 수 있기 때문이다.
+- **조건.** 후임은 이 머신에서 실행 중인 등록 세션이어야 한다. 이미 인수인계한 세션은 다시 하지 않는다. 연쇄(A→B→C)는 8단계까지 따라간다.
+- **다른 머신.** 인수인계한 머신의 서비스가 팀의 원격 구성원 머신과 옛 세션에게 메시지를 보낸 머신에 인수인계 사실(옛 끝점과 새 끝점)을 보낸다. 받는 머신은 보낸 머신이 두 끝점 모두의 머신일 때만 받아 두고, 그 뒤 옛 끝점에게 물었던 질문의 답을 후임에게서 받는다. 그 머신이 꺼져 있었으면 그 질문의 답은 받지 않는다(후임은 새 메시지로 답할 수 있다). 저장: `~/.xsm/handovers/`(이 머신의 인수인계), `~/.xsm/remote-handovers/`(다른 머신의 증언).
+
+## MCP 서버
+
+설치할 때 각 홈에 `xsm`이라는 이름으로 등록된다(`claude mcp add --scope user`, `codex mcp add`). 세션이 띄우고 세션과 함께 끝난다. Codex가 띄운 MCP 서버는 샌드박스 밖에서 돌기 때문에, 샌드박스 Codex도 MCP 도구로 보내고 받고 보드에 쓸 수 있다(실측). `xsm_decide` 같은 양식 도구가 띄운 질문에 사용자가 고른 답은 모델을 거치지 않고 xsm에 도착한다. Claude Code와 Codex 모두 된다(실측). Codex는 MCP 도구마다 호출 허용을 묻는다. 등록을 원하지 않으면 `xsm install --no-mcp`.
+
+0.5.1에서 채널(`xsm post`, `xsm channel`, `xsm_post`, `xsm_channel`)을 제거했다(ADR-0026). 팀 전체가 알아야 할 사실은 [팀 보드](#팀-보드)에, 사용자의 결정은 [결재 기록](#결재-기록)에 둔다. 이전 게시 파일(`~/.xsm/channels/`)은 지우지 않으며 xsm이 더 읽지 않는다.
 
 ## 공동 문서
 
@@ -319,7 +375,7 @@ xsm doc show docs/research/cache.md <id>
 - **노드.** 기여 하나가 `<문서>.nodes/<id>.md` 한 파일이다. 한 번 쓰면 바꾸지 않는다. 고칠 때는 `--parent`로 이전 노드를 가리키는 새 노드를 쓴다. 노드마다 파일 이름이 다르므로, 여러 세션이 동시에 써도 git 병합에서 충돌하지 않는다(실측).
 - **태그.** `setup`, `result`, `insight`, `hypothesis`, `verification`, `report`, `wip`, `endorsed`. `endorsed`는 사람만 단다. 세션은 MCP 도구 `xsm_doc_endorse`로 사용자에게 양식으로 묻는다.
 - **문서는 만들어진다.** `render`는 가장 최근의 `endorsed` 노드, 없으면 가장 최근의 `report` 노드 본문을 문서로 쓴다. 그 아래에 아직 이어지지 않은 노드와 검증되지 않은 가설을 붙인다. 문서 머리에 "생성된 파일"이라고 적히므로 손으로 고치지 않는다. 병합에서 문서가 충돌하면 다시 `render`한다.
-- 작성자는 채널과 같은 규칙으로 xsm이 정한다. 사람이 아니고 등록된 세션도 아닌 셸에서는 거부한다.
+- **작성자는 xsm이 정한다.** 에이전트 표식이 없는 터미널이면 사람이고, 등록된 세션이면 그 세션이다. 사람이 아니고 등록된 세션도 아닌 셸에서는 거부한다.
 
 ## 다른 기계의 세션
 
@@ -341,7 +397,7 @@ xsm remote list | remove jaesol-macmini
   - macOS에서는 sshd가 띄운 프로세스가 `~/Documents` 같은 보호 폴더를 읽지 못한다. 그래서 수신기는 `~/.xsm/remote/pkg`의 사본으로 돈다.
   - 원격 짝은 이름 붙인 프로젝트로만 맺는다.
   - 샌드박스 Codex는 MCP 도구 `xsm_send`로 답한다. Codex 백그라운드 서비스가 오래 떠 있었다면, 새 MCP 등록은 그 서비스가 다시 시작해야 반영된다(`codex app-server daemon restart`).
-- **넣지 않은 것.** `xsm list`에 원격 세션을 합치는 것, 채널·문서 공유, 원격 워커. 원격 대상은 이미 떠 있는 세션뿐이다. macOS에서는 비대화식 SSH로 새 Claude 세션을 띄울 수 없다.
+- **넣지 않은 것.** `xsm list`에 원격 세션을 합치는 것, 공동 문서 공유, 원격 워커. 원격 대상은 이미 떠 있는 세션뿐이다. macOS에서는 비대화식 SSH로 새 Claude 세션을 띄울 수 없다.
 
 ## 워커
 
@@ -371,7 +427,7 @@ xsm approvals | approve <id> | deny <id>
 - **동시 워커 수(`max_workers`, 기본 4).** 한 세션이 동시에 돌릴 수 있는 워커 수다. config `max_workers`나 `XSM_MAX_WORKERS`로 정한다. 넘기면 돌고 있는 워커 이름과 함께 거부한다.
 - **남은 워커 정리.** 워커를 띄운 세션이 끝나면(정상 종료, 흔적 없는 정지, 기록 삭제) 그 워커를 종료하고 기록을 지운다. Claude 부모가 정상 종료하면 SessionEnd 훅이 부모 프로세스가 사라지기를 기다렸다가 바로 정리한다(실측 2초 안). 그 밖의 경우는 `xsm workers`, `xsm spawn`, 매시간 정리 때 잡힌다. 부모가 정지한 워커면 그 아래 워커도 이어서 정리된다. 상태를 확인할 수 없는(unknown) 부모의 워커는 건드리지 않는다.
 - **범위 밖 폴더의 워커.** 부모 세션과 범위가 다른 폴더에 워커를 띄우면, 그 워커는 그쪽 프로젝트의 세션들과 통하게 된다. 그래서 `xsm_grant`의 `outside_scope` 허가가 있어야 한다. 사람이 터미널에서 친 `spawn`은 예외다. 부모와 그 워커 사이는 범위와 관계없이 통한다(`worker:<이름>` scope). 0.4.1까지는 이 짝도 범위 검사에 걸려 과제가 워커에 전달되지 않았다. 부모가 그 폴더의 다른 세션과 통하려면 여전히 양쪽 가입이 필요하다.
-- **전체 권한과 훅 신뢰 우회.** `--full-access`는 샌드박스와 승인 없이 띄운다(Codex `--dangerously-bypass-approvals-and-sandbox`, Claude `bypassPermissions`). `--trust-hooks`는 Codex 워커를 `--dangerously-bypass-hook-trust`로 띄운다. 둘 다 **사용자의 명시적 허가**가 있어야 한다. 에이전트는 MCP 도구 `xsm_grant`로 이유와 함께 요청한다. 사용자가 양식에서 "allow once"를 고르면 1회용 허가 id가 나오고, `spawn … --grant <id>`에 쓴다. 허가는 요청한 세션, 런타임, 폴더, 옵션에 묶이고 10분 뒤 만료된다. 허가와 거절은 채널에 결정으로 남는다. 사람이 터미널에서 직접 치는 `spawn`은 그 자체가 허가라서 id가 필요 없다. `xsm workers`에는 `FULL-ACCESS`, `hooks-untrusted`로 표시된다.
+- **전체 권한과 훅 신뢰 우회.** `--full-access`는 샌드박스와 승인 없이 띄운다(Codex `--dangerously-bypass-approvals-and-sandbox`, Claude `bypassPermissions`). `--trust-hooks`는 Codex 워커를 `--dangerously-bypass-hook-trust`로 띄운다. 둘 다 **사용자의 명시적 허가**가 있어야 한다. 에이전트는 MCP 도구 `xsm_grant`로 이유와 함께 요청한다. 사용자가 양식에서 "allow once"를 고르면 1회용 허가 id가 나오고, `spawn … --grant <id>`에 쓴다. 허가는 요청한 세션, 런타임, 폴더, 옵션에 묶이고 10분 뒤 만료된다. 허가와 거절은 양식의 사람 결정 기록(`~/.xsm/human-decisions/`)에 질문·선택지·답과 함께 남는다. 사람이 터미널에서 직접 치는 `spawn`은 그 자체가 허가라서 id가 필요 없다. `xsm workers`에는 `FULL-ACCESS`, `hooks-untrusted`로 표시된다.
 - auto 모드 세션에서 `xsm_grant`가 분류기에 막히면, 위의 규칙대로 에이전트가 먼저 사용자에게 묻는다. xsm은 권한 설정을 바꾸지 않는다.
 - `--once`면 과제의 답이 부모에게 도착하는 순간 부모 쪽 훅이 워커를 종료하고 기록을 지운다.
 - **Codex 워커는 사용자 설정과 관계없이 샌드박스를 명시한다.** 패널 Codex TUI는 `-s workspace-write -a on-request`로 띄워 사용자의 YOLO 설정을 따르지 않고 패널에서 묻는다. 백그라운드 Codex TUI는 물을 사람이 없고 Codex에는 질문을 중계할 훅 이벤트가 없으므로 `-s workspace-write -a never`로 띄운다. 작업 폴더 안에서만 일한다.
@@ -395,8 +451,8 @@ xsm approvals | approve <id> | deny <id>
 | Codex의 턴 경계와 Esc | Codex는 진행 중인 턴에 끼어들지 않으므로 메시지는 턴이 끝난 뒤 도착한다(턴 도중에는 `xsm inbox`). Esc로 멈춘 스레드는 Codex 대기열이 건너뛰므로, xsm이 대기열에 넣은 직후 Codex의 app-server 데몬에 `thread/queue/start`로 그 항목을 시작하라고 요청한다(2026-09-28, ADR-0002 부록). 이 요청은 TUI가 데몬에 붙어 있을 때만 통한다. `--no-daemon`·`--profile` 등으로 띄워 내장 서버를 쓰는 TUI, 샌드박스 셸에서 보낸 경우, Codex가 이 실험 API를 바꾼 경우에는 예전처럼 사람의 다음 입력을 기다린다. `xsm list`는 그런 세션에 `interrupted (Esc)`를 표시한다. 끄려면 config.json에 `"codex_wake": false`. |
 | 샌드박스 Codex | 샌드박스가 켜진 Codex는 셸에서 소켓과 큐 양쪽에 접근하지 못한다(S4). 발신은 샌드박스 밖 실행이나 신뢰된 훅 경로에서만 된다. |
 | 권한 모드가 다른 상대 | Claude는 발신자와 수신자의 권한 모드 부류가 다르면 **우리 훅보다 먼저** 네이티브로 보류한다(S1, S8-g). 예를 들어 bypass로 도는 Codex가 auto로 도는 Claude에 보내면 수신 화면에 보류 창이 뜨고, 발신 측 결과는 `sent-unconfirmed`로 남는다. 해결은 셋 중 하나다. (1) 수신 세션이 `crossSessionInbound: "accept"`를 쓴다(실측: 같은 조건에서 보류 → 전달로 바뀐다). (2) 두 세션의 권한 모드 부류를 맞춘다. (3) 사람이 보류 창에서 승인한다. `xsm send`는 보내기 전에 이 판정을 예측해 결과 문구에 적고, `xsm list`는 보류될 상대에 `would be held`를 표시한다. 예측은 수신 홈의 **사용자 설정 파일**만 읽으므로 `--settings`로 다르게 띄운 세션에서는 어긋날 수 있다. 참고로 이 키는 프로젝트 설정(`.claude/settings*.json`)에서는 적용되지 않는다(2026-09-21 실측). |
-| 원격 | SSH로 짝지은 프로젝트끼리 이미 떠 있는 세션에 보내는 것까지다([다른 기계의 세션](#다른-기계의-세션)). `xsm list`에 원격 세션이 나오지 않고, 채널·문서 공유와 원격 워커는 없다. 단위 테스트는 가짜 ssh로 도는 3건뿐이고, 실제 두 기계 전달은 수동으로만 확인했다. |
-| 채널·공동 문서 | 한 기계 안의 append-only 파일이다([채널](#채널), [공동 문서](#공동-문서)). 원격으로 공유되지 않고, 파일 잠금이 없어 동시 기록이 많은 규모(스웜)는 검증하지 않았다. |
+| 원격 | SSH로 짝지은 프로젝트끼리 이미 떠 있는 세션에 보내는 것까지다([다른 기계의 세션](#다른-기계의-세션)). `xsm list`에 원격 세션이 나오지 않고, 공동 문서 공유와 원격 워커는 없다. 단위 테스트는 가짜 ssh로 도는 3건뿐이고, 실제 두 기계 전달은 수동으로만 확인했다. |
+| 공동 문서 | 한 기계 안의 노드 파일이다([공동 문서](#공동-문서)). 원격으로 공유되지 않고, 동시 기록이 많은 규모(스웜)는 검증하지 않았다. |
 | 플랫폼 | macOS와 Linux만 된다. Unix 소켓, `ps`, `/dev/tty`, tmux 워커에 기댄다. 네이티브 Windows의 Claude inbox는 연결마다 auth 줄을 요구하는데 xsm은 보내지 않으므로 전달도 되지 않는다. |
 | Codex의 승인 양식 | `xsm_join`·`xsm_reach`·`xsm_grant` 같은 MCP 양식(elicitation)은 Codex가 사용자에게 보이지 않고 거절할 때가 있다(0.158 소스 확인). `approval_policy = "never"`나 MCP elicitation을 끈 granular 정책이면 스레드에 full-access 양식 입력이 켜져 있지 않은 한 양식을 띄우지 않고 거절한다. 이 거절은 사람이 Decline을 누른 것과 구별되지 않으므로 결과 문구는 둘 다일 수 있다고 적는다. Codex의 auto-review(guardian)는 `_meta`에 승인 요청을 선언한 양식만 검토하므로 xsm 양식에는 답하지 않는다. xsm은 클라이언트가 보고한 답 중 사람이 고른 것만 받아들이고 (`_meta.approvals_reviewer`가 `user`가 아니면 거부), 사람이 고르지 않았을 때만 결과 문구에 터미널에서 칠 명령을 적는다. 사용자가 설정한 클라이언트 훅(Claude Code Elicitation 훅 등)이 양식에 답하면 사용자의 답으로 보고되며, xsm은 이를 구별할 수 없다. |
 

@@ -1,18 +1,19 @@
-"""The xsm MCP server: channel tools for a session, over stdio.
+"""The xsm MCP server: xsm's tools for a session, over stdio.
 
 Started by the session (Claude Code or Codex) and ending with it, so it is not
-a resident process (ADR-0003). It exists for two reasons (ADR-0005):
+a resident process (ADR-0003). It exists for two reasons (ADR-0005, ADR-0026):
 
 - A decision recorded from a session must be the person's. `xsm_decide` asks
   them through MCP elicitation, and their answer comes back from the client to
   this server without passing through the model (measured on both runtimes,
-  2026-09-22). The answer and the question are stored with the decision.
+  2026-09-22). The answer and the question are stored with the decision,
+  beside a team's board.
 - A sandboxed Codex cannot write `~/.xsm` from its shell, but the MCP servers it
-  starts run outside the sandbox (measured), so posting and reading go through
+  starts run outside the sandbox (measured), so messaging and reading go through
   here too.
 
 The session is identified by this process's ancestry: the nearest `claude` or
-`codex` ancestor is the session, and its registry record is the author. Codex
+`codex` ancestor is the session, and its registry record is the caller. Codex
 threads of one CODEX_HOME share one ancestor (the app-server daemon), so a
 Codex call names its thread in `params._meta.threadId` and that decides; with
 several live threads and no such id, the call is refused (Server.session).
@@ -31,10 +32,16 @@ import signal
 import sys
 import time
 
-from . import channel, consent, context, identity, paths, probe, registry
+from . import consent, context, identity, paths, probe, registry
 from .instructions import HANDSHAKE_TEXT, MESSAGING_GUIDE
 
 PROTOCOL = "2025-06-18"
+
+
+class ToolError(Exception):
+    """A refusal the tool returns to the agent as its result (isError), with
+    this text: what was wrong and what to do instead, never a traceback."""
+
 
 # MCP tool annotations (spec 2025-06-18, ToolAnnotations). Codex under
 # approval_policy "never" declines an MCP tool that carries none, and a tool
@@ -49,7 +56,8 @@ MESSAGING = {"readOnlyHint": False, "destructiveHint": False, "openWorldHint": F
 # Tools that widen a permission or touch another session's files: these require
 # an exact caller identity, never a neighbour guessed from a shared daemon pid
 # (P01 item 2, A17-02, A23-03).
-WIDENING = ("xsm_publish", "xsm_connect", "xsm_grant", "xsm_approve", "xsm_link", "xsm_join", "xsm_reach")
+WIDENING = ("xsm_publish", "xsm_connect", "xsm_grant", "xsm_approve", "xsm_link", "xsm_join", "xsm_reach",
+            "xsm_team", "xsm_handover")
 # Tools that read a file on the caller's behalf. The path is taken relative to
 # the caller's own folder, so a guessed neighbour would have another session's
 # files read for it -- the second thing spec P01 item 2 puts behind an exact
@@ -92,13 +100,18 @@ TOOLS = [
                      "cancel": {"type": "boolean", "default": False}}}},
     {"name": "xsm_ask", "description": MESSAGING_GUIDE,
      "inputSchema": {"type": "object", "properties": {
-         "target": {"type": "string"}, "text": {"type": "string"},
+         "target": {"type": "string"},
+         "targets": {"type": "array", "items": {"type": "string"}, "minItems": 1,
+                     "description": "several recipients instead of target: each gets its own "
+                                    "question and is told who else was asked; the result and "
+                                    "xsm_question_status(id=<group id>) hold every recipient's answer"},
+         "text": {"type": "string"},
          "wait": {"type": "number", "default": 0, "minimum": 0},
          "request_id": {"type": "string"},
          "priority": {"type": "string", "enum": ["next", "now"], "default": "next"},
          "wake": {"type": "string", "enum": ["auto", "never"], "default": "auto",
                   "description": "never stores a passive local question without native queue/socket/wake."}},
-         "required": ["target", "text"]}, "annotations": MESSAGING},
+         "required": ["text"]}, "annotations": MESSAGING},
     {"name": "xsm_question_status", "description": "Recover this conversation's actual replies "
      "by request ID, including late and partial replies; timeout does not delete them. "
      "Omit id to list your requests if cancellation lost the original response and ID. "
@@ -127,24 +140,6 @@ TOOLS = [
          "request_id": {"type": "string"}, "answer_request": {"type": "string"},
          "original_question": {"type": "string"}}, "required": ["target"]},
      "annotations": MESSAGING},
-    {"name": "xsm_post",
-     "description": ("Post to this project's xsm channel, the record people and sessions share. "
-                     "Tags: note, question, proposal, result, hypothesis. A decision cannot be "
-                     "posted: ask your user with xsm_decide."),
-     "inputSchema": {"type": "object", "properties": {
-         "text": {"type": "string", "description": MESSAGE_TEXT_DESCRIPTION},
-         "tag": {"type": "string", "enum": [t for t in channel.TAGS if t != "decision"]},
-         "reply_to": {"type": "string", "description": "id of the post this answers"},
-         "channel": {"type": "string", "description": "a named project; default: this project"}},
-         "required": ["text"]},
-     "annotations": MESSAGING},
-    {"name": "xsm_channel",
-     "description": "Read this project's xsm channel: threads, or only posts with one tag.",
-     "inputSchema": {"type": "object", "properties": {
-         "tag": {"type": "string", "enum": list(channel.TAGS)},
-         "limit": {"type": "integer", "default": 30},
-         "channel": {"type": "string"}}},
-     "annotations": READ_ONLY},
     {"name": "xsm_grant",
      "description": ("Ask your user for explicit permission to start a worker with dangerous "
                      "options: full_access (no sandbox, no approvals) and/or trust_hooks (Codex: "
@@ -168,6 +163,10 @@ TOOLS = [
                      "name@home, ref:xxxxxx, and …@<paired machine>."),
      "inputSchema": {"type": "object", "properties": {
          "target": {"type": "string"},
+         "targets": {"type": "array", "items": {"type": "string"}, "minItems": 1,
+                     "description": "several recipients instead of target: one DM to each, and "
+                                    "each is told who else got it; one outside your scope is "
+                                    "skipped and named in the result"},
          "text": {"type": "string", "description": MESSAGE_TEXT_DESCRIPTION},
          "kind": {"type": "string", "enum": ["note", "task", "reply"], "default": "note"},
          "reply_to": {"type": "string"},
@@ -188,8 +187,51 @@ TOOLS = [
                                  "sends it as it was kept, so target and text are not needed."},
          "wait": {"type": "number", "default": 15}}, "required": []},
      "annotations": MESSAGING},
+    {"name": "xsm_team",
+     "description": ("Teams of sessions working together (a team is a list of members with an "
+                     "optional lead; a DM to team:<name> goes to every member). Actions: list, "
+                     "show, create, add, remove, lead, leave, mute, unmute. A lead adds and removes "
+                     "sessions of its own project; adding a session outside your scope, and naming "
+                     "the lead, ask your user with a form."),
+     "inputSchema": {"type": "object", "properties": {
+         "action": {"type": "string", "enum": ["list", "show", "create", "add", "remove", "lead",
+                                               "leave", "mute", "unmute"]},
+         "team": {"type": "string"},
+         "member": {"type": "string", "description": "add: a session (name, ref:xxxxxx, net:...); "
+                                                     "remove/lead: a member's name or ref"},
+         "reason": {"type": "string"}},
+         "required": ["action"]}, "annotations": MESSAGING},
+    {"name": "xsm_handover",
+     "description": ("Hand this session's xsm place over to another session, when your user asks "
+                     "(\"hand over to OO\"): its team places and lead's seat, its owner/<name> "
+                     "board items, its unread DMs, its pending questions, and your context summary "
+                     "move to that session, and DMs to this session reach it from then on. Your "
+                     "user confirms in a form. show lists the handovers made to this session."),
+     "inputSchema": {"type": "object", "properties": {
+         "action": {"type": "string", "enum": ["hand_over", "show"], "default": "hand_over"},
+         "target": {"type": "string", "description": "the session that takes over"},
+         "summary": {"type": "string", "description": "what the successor needs to continue: "
+                     "goal, state, decisions and why, open work, who waits on what"}},
+         "required": []}, "annotations": MESSAGING},
+    {"name": "xsm_board",
+     "description": ("A team's board: what is true for the team now (decisions in force, who owns "
+                     "what, progress), one entry per item. show renders it; set writes an item "
+                     "(it builds on the versions you have read, so read before you change what "
+                     "another member wrote: a version you have not read stays beside yours until "
+                     "someone who read both sets it); log lists the nodes. Members only. Put team-wide facts here, not in "
+                     "DMs; a DM that carries one points here instead. A changed board is named in "
+                     "one line at your next prompt; mute/unmute turns those lines off for this "
+                     "session."),
+     "inputSchema": {"type": "object", "properties": {
+         "action": {"type": "string", "enum": ["show", "set", "log", "mute", "unmute"]},
+         "team": {"type": "string"},
+         "item": {"type": "string", "description": "set/log: e.g. 'decision: cache' or 'owner/bee'"},
+         "text": {"type": "string", "description": MESSAGE_TEXT_DESCRIPTION},
+         "tag": {"type": "string", "description": "optional; default update"}},
+         "required": ["action", "team"]}, "annotations": MESSAGING},
     {"name": "xsm_ack", "description": "Acknowledge inbox claim tokens only after reading their messages. "
-     "Output delivery alone does not acknowledge them. Unacknowledged originals remain recoverable.",
+     "Output delivery alone does not acknowledge them. Unacknowledged originals remain recoverable. "
+     "Pass each claim's token value; a claim object as shown in the receive context is also accepted.",
      "inputSchema": {"type": "object", "properties": {
          "tokens": {"type": "array", "items": {"type": "string"}, "minItems": 1}},
          "required": ["tokens"]}, "annotations": MESSAGING},
@@ -245,17 +287,21 @@ TOOLS = [
                      "waiting request of your workers."),
      "inputSchema": {"type": "object", "properties": {"id": {"type": "string"}}}},
     {"name": "xsm_decide",
-     "description": ("Ask your user to decide, and record their answer as a decision in the "
-                     "channel. Your user sees the question and picks an option or writes an "
-                     "answer; you do not choose for them. Use it when a choice should be on "
-                     "record as the user's."),
+     "description": ("Ask your user to decide, and record their answer as a decision beside a "
+                     "team's board; with item, that board item is set to it. A team lead takes "
+                     "approvals this way. Without team, a session in one team records it there; "
+                     "one in several teams must name the team; one in no team gets the answer "
+                     "back, but it is not recorded. Your user sees the question and picks an "
+                     "option or writes an answer; you do not choose for them. Use it when a "
+                     "choice should be on record as the user's."),
      "inputSchema": {"type": "object", "properties": {
          "question": {"type": "string"},
          "options": {"type": "array", "items": {"type": "string"},
                      "description": "choices to offer; omit for a free-text answer"},
          "summary": {"type": "string", "description": "one line on what is being decided"},
-         "reply_to": {"type": "string"},
-         "channel": {"type": "string"}},
+         "team": {"type": "string", "description": "record it beside this team's board (you must be a member); "
+                                                   "may be left out when you are in one team"},
+         "item": {"type": "string", "description": "set this board item to the answer"}},
          "required": ["question"]}},
 ]
 
@@ -283,7 +329,8 @@ for _tool in TOOLS:
             "attachment_fallback": {"type": "string", "enum": ["inline"],
                 "description": "Explicitly carry UTF-8 copies in the body if peer files support is unknown; never automatic."},
             "request_id": {"type": "string"}})
-    if _tool["name"] in ("xsm_link", "xsm_join", "xsm_reach", "xsm_grant", "xsm_approve", "xsm_decide", "xsm_doc_endorse"):
+    if _tool["name"] in ("xsm_link", "xsm_join", "xsm_reach", "xsm_grant", "xsm_approve", "xsm_decide", "xsm_doc_endorse",
+                         "xsm_team", "xsm_handover"):
         _tool["inputSchema"]["properties"]["answer_request"] = {"type": "string"}
         _tool["inputSchema"]["properties"]["original_question"] = {"type": "string"}
         _tool["inputSchema"]["properties"]["decision_key"] = {
@@ -374,6 +421,16 @@ def unanswered(why: str) -> str:
 def who_answered(reply, client=None) -> str:
     """Who answered a form, in words for the tool's result."""
     return person_answer(reply, client=client)[1]
+
+
+def plugin_home(path: str | None = None) -> str | None:
+    """The CODEX_HOME this server was installed in, from its own path
+    (<home>/plugins/cache/...). Codex hands an MCP server a filtered environment
+    with no CODEX_HOME, so a plugin server in any home but ~/.codex took ~/.codex
+    for its own and refused its own thread (measured with Codex 0.165, 2026-10-31)."""
+    here = os.path.realpath(path or __file__)
+    home, marker, _ = here.partition(os.sep + os.path.join("plugins", "cache") + os.sep)
+    return home if marker else None
 
 
 class Server:
@@ -722,7 +779,7 @@ class Server:
         if runtime == "claude":
             return context.normalize_home(os.environ.get("CLAUDE_CONFIG_DIR") or "~/.claude")
         if runtime == "codex":
-            return context.normalize_home(os.environ.get("CODEX_HOME") or "~/.codex")
+            return context.normalize_home(os.environ.get("CODEX_HOME") or plugin_home() or "~/.codex")
         return None
 
     @staticmethod
@@ -745,13 +802,20 @@ class Server:
 
     # -- tools --------------------------------------------------------------------
     def call(self, name: str, args: dict) -> str:
-        # The caller lookup shares one bounded budget. The channel below stays out of
-        # it: a spent budget must not starve the git lookup that says which channel
-        # or scope a message belongs to.
+        # The caller lookup shares one bounded budget. The tool's own lookups stay
+        # out of it: a spent budget must not starve the git lookup that says which
+        # scope a message belongs to.
         with probe.quick():
             me = self.session()
         if not me:
-            raise channel.ChannelError(registry.unregistered_reason())
+            # The server's own environment does not carry the caller's thread id,
+            # so name the runtime and thread the call resolved, and say why it
+            # found no record: a bare "no hook record" hid the cause (T0).
+            runtime = self.ctx.runtime if self.ctx and self.ctx.runtime else None
+            why = registry.unregistered_reason(runtime or ("codex" if self.call_thread else None),
+                                               self.call_thread)
+            evidence = "; ".join(self.ctx.evidence) if self.ctx and self.ctx.evidence else ""
+            raise ToolError(why + (" (caller lookup: %s)" % evidence if evidence else ""))
         if self.ctx is None:
             # A harness or an older entry point set the record without going
             # through `_resolve`: its identity is the record itself.
@@ -766,7 +830,7 @@ class Server:
                     "event": "mcp", "decision": "refused", "tool": name,
                     "reason": "caller not surely identified", "basis": self.ctx.basis,
                     "certainty": self.ctx.certainty, "ref": me.get("ref")})
-                raise channel.ChannelError(why)
+                raise ToolError(why)
             from . import config
             config.require_valid_policy()
         if name in FILE_READING:
@@ -776,20 +840,12 @@ class Server:
                     "event": "mcp", "decision": "refused", "tool": name,
                     "reason": "caller not surely identified", "basis": self.ctx.basis,
                     "certainty": self.ctx.certainty, "ref": me.get("ref")})
-                raise channel.ChannelError(why)
+                raise ToolError(why)
         if self.ctx.sure:
             registry.note_capabilities(me, {"files": {"version": 1, "status": "observed"}},
                                        reader_pid=os.getpid())
-        where = channel.resolve(me.get("cwd") or os.getcwd(), args.get("channel"))
-        author = {"kind": "agent", "name": me.get("name"), "alias": me.get("alias"),
-                  "ref": me.get("ref"), "runtime": me.get("runtime")}
-        if not self.ctx.sure:
-            # Say how the caller was identified on anything it posts, so a
-            # provisional identity is visible where it matters (P01 item 2).
-            author["identity_basis"] = self.ctx.basis
-            author["identity_certainty"] = self.ctx.certainty
         form_tools = ("xsm_link", "xsm_join", "xsm_reach", "xsm_grant", "xsm_approve",
-                      "xsm_decide", "xsm_doc_endorse")
+                      "xsm_decide", "xsm_doc_endorse", "xsm_team", "xsm_handover")
         decision_call = None
         if name in form_tools:
             from . import decisions
@@ -806,7 +862,7 @@ class Server:
                              "native_question": args.get("original_question")}
             self.decision_calls[self.active_request] = decision_call
         try:
-            text = self._call(name, args, me, where, author)
+            text = self._call(name, args, me)
             if decision_call:
                 record = decisions.read(decision_call["key"])
                 if record and record["status"] == "answered":
@@ -821,7 +877,7 @@ class Server:
                 owner, generation = receive.consumer_for(me)
             except ValueError:
                 # No runtime generation means no inbox claim, not failure of
-                # the unrelated channel/tool operation already performed.
+                # the unrelated tool operation already performed.
                 incoming = {"messages": [], "claims": []}
             else:
                 incoming = receive.take_inbox_claims(me, owner=owner, generation=generation, passive_only=True)
@@ -857,7 +913,7 @@ class Server:
             text += "\n\n" + held
         return text
 
-    def _call(self, name: str, args: dict, me: dict, where: tuple, author: dict) -> str:
+    def _call(self, name: str, args: dict, me: dict) -> str:
         if name == "xsm_owned":
             return json.dumps(self.owned(me,args),ensure_ascii=False)
         if name == "xsm_files":
@@ -869,25 +925,25 @@ class Server:
             data = files.read_copy(me, storage, entry, incoming=incoming)
             encoding = args.get("encoding", "text")
             if encoding not in ("text", "base64"):
-                raise channel.ChannelError("encoding must be text or base64")
+                raise ToolError("encoding must be text or base64")
             try:
                 content = base64.b64encode(data).decode("ascii") if encoding == "base64" else data.decode("utf-8")
             except UnicodeError as exc:
-                raise channel.ChannelError("binary copy: request encoding=base64") from exc
+                raise ToolError("binary copy: request encoding=base64") from exc
             return json.dumps({"storage_id": storage, "entry_id": entry, "encoding": encoding, "content": content}, ensure_ascii=False)
         if name == "xsm_decision_status":
             from . import decisions
             return json.dumps(decisions.public_status(me, args.get("id"), args.get("cancel", False)), ensure_ascii=False)
         if name in ("xsm_connect", "xsm_publish") and args.get("answer_request"):
             if not args.get("original_question"):
-                raise channel.ChannelError("answer_request requires original_question")
+                raise ToolError("answer_request requires original_question")
             consent.answer_request = args["answer_request"]
             consent.question_text = args["original_question"]
         if name == "xsm_publish":
             from . import connect
             visible = args.get("visible", True)
             if not isinstance(visible, bool):
-                raise channel.ChannelError("visible must be a boolean")
+                raise ToolError("visible must be a boolean")
             return json.dumps(connect.publication(me, visible=visible, call=self.ctx), ensure_ascii=False)
         if name == "xsm_discover":
             from . import directory
@@ -897,13 +953,13 @@ class Server:
             from . import envelope, questions, receive
             requested_wait = float(args.get("wait", 0) or 0)
             if not math.isfinite(requested_wait) or requested_wait < 0:
-                raise channel.ChannelError("wait must be finite and nonnegative")
+                raise ToolError("wait must be finite and nonnegative")
             wait = min(requested_wait, 60.0)
             if args.get("wake", "auto") not in ("auto", "never"):
-                raise channel.ChannelError("unsupported wake mode; use auto or never")
+                raise ToolError("unsupported wake mode; use auto or never")
             if name == "xsm_question_status" and args.get("id") is None:
                 if requested_wait:
-                    raise channel.ChannelError("an id is required to wait; omit wait to list your requests")
+                    raise ToolError("an id is required to wait; omit wait to list your requests")
                 return json.dumps({"status": "requests", "requests": questions.list_requests(me)}, ensure_ascii=False)
             request_id = args.get("id") if name == "xsm_question_status" else \
                 (args.get("request_id") or envelope.new_id())
@@ -920,6 +976,39 @@ class Server:
 
             kwargs = {"wait": wait, "pump": pump,
                       "cancelled": lambda: owner in self.cancelled}
+            from . import inbox, question_groups
+            group_poll = lambda child: receive.poll_replies(me, child)  # noqa: E731
+            from . import teams as teams_mod
+            if name == "xsm_ask" and args.get("targets") is None and teams_mod.is_address(args.get("target") or ""):
+                args = dict(args, targets=[args["target"]], target=None)
+            if name == "xsm_ask" and args.get("targets") is not None:
+                targets = args.get("targets")
+                if not isinstance(targets, list) or not all(isinstance(t, str) for t in targets) \
+                        or args.get("target") or args.get("request_id") \
+                        or args.get("attachments") or args.get("manifest_id"):
+                    raise ToolError("targets is a list of recipients, used instead of "
+                                               "target, request_id and attachments")
+                try:
+                    result = question_groups.ask_many(
+                        me, targets, args.get("text") or "", wait=wait,
+                        priority=args.get("priority", "next"), wake=args.get("wake", "auto"),
+                        pump=self.pump, cancelled=lambda: owner in self.cancelled, poll=group_poll)
+                except question_groups.GroupError as exc:
+                    raise ToolError(str(exc))
+                result = question_groups.with_claims(me, result)
+                result.update(inbox.pending_fields(me, owner_alive=receive._consumer_alive))
+                result["wait_budget"] = {"requested": requested_wait, "effective": wait, "cap": 60}
+                return json.dumps(result, ensure_ascii=False)
+            if name == "xsm_question_status" and question_groups.is_group(request_id):
+                result = question_groups.wait_for(me, request_id, wait=wait, pump=self.pump,
+                                                  cancelled=lambda: owner in self.cancelled,
+                                                  poll=group_poll)
+                result = question_groups.with_claims(me, result)
+                result.update(inbox.pending_fields(me, owner_alive=receive._consumer_alive))
+                result["wait_budget"] = {"requested": requested_wait, "effective": wait, "cap": 60}
+                return json.dumps(result, ensure_ascii=False)
+            if name == "xsm_ask" and not args.get("target"):
+                raise ToolError("target (or targets) is required")
             if name == "xsm_question_status":
                 from . import ledger
                 network_state = None
@@ -945,11 +1034,11 @@ class Server:
                     with probe.quick():
                         found = resolve.resolve(args.get("target", ""), caller=me)
                     if not found.ok:
-                        raise channel.ChannelError(found.reason)
+                        raise ToolError(found.reason)
                     if args.get("request_id") and (
                             not questions.expects_reply(me, found.record, request_id) or
                             questions.status(me, request_id).get("purpose") != "handshake"):
-                        raise channel.ChannelError("request ID does not belong to this selected handshake")
+                        raise ToolError("request ID does not belong to this selected handshake")
                     result = connect.select(me, found.record, call=self.ctx)
                     if result["status"] != "permitted":
                         return json.dumps(result, ensure_ascii=False)
@@ -969,18 +1058,10 @@ class Server:
                     result["materials"] = materials.public(prepared)
             result["wait_budget"] = {"requested": requested_wait, "effective": wait, "cap": 60}
             return json.dumps(result, ensure_ascii=False)
-        if name == "xsm_post":
-            rec = channel.post(where, author, args.get("text", ""), args.get("tag") or "note",
-                               args.get("reply_to"))
-            return "posted %s to %s" % (rec["id"], where[0])
-        if name == "xsm_channel":
-            text = channel.render(channel.read(where[1]), tag=args.get("tag"),
-                                  limit=int(args.get("limit") or 30))
-            return text or "(no posts in %s)" % where[0]
         if name == "xsm_decide":
-            return self.decide(where, me, args)
+            return self.decide(me, args)
         if name == "xsm_grant":
-            return self.grant(where, me, args)
+            return self.grant(me, args)
         if name == "xsm_approve":
             return self.approve(me, args)
         if name == "xsm_join":
@@ -992,13 +1073,36 @@ class Server:
         if name == "xsm_send":
             from . import send as send_mod
             if args.get("outcome") and (args.get("kind") or "note") != "reply":
-                raise channel.ChannelError("outcome belongs only to a reply that closes a task")
+                raise ToolError("outcome belongs only to a reply that closes a task")
             if args.get("wake", "auto") not in ("auto", "never"):
-                raise channel.ChannelError("unsupported wake mode; use auto or never")
+                raise ToolError("unsupported wake mode; use auto or never")
+            targets = args.get("targets")
+            from . import teams as teams_mod
+            if targets is None and teams_mod.is_address(args.get("target") or ""):
+                args = dict(args, targets=[args["target"]], target=None)
+                targets = args["targets"]
+            if targets is not None:
+                from . import multisend
+                if not isinstance(targets, list) or not all(isinstance(t, str) for t in targets) \
+                        or args.get("target") or args.get("held") or args.get("resend") \
+                        or args.get("attachments") or args.get("manifest_id"):
+                    raise ToolError("targets is a list of recipients, used instead of "
+                                               "target, held, resend and attachments")
+                wait = args.get("wait", 15)
+                try:
+                    result = multisend.send_many(
+                        targets, args.get("text") or "", sender=me, call=self.ctx,
+                        kind=args.get("kind") or "note", reply_to=args.get("reply_to"),
+                        priority=args.get("priority") or "next", wait=float(15 if wait is None else wait),
+                        outcome=args.get("outcome") if args.get("kind") == "reply" else None,
+                        wake=args.get("wake", "auto") != "never")
+                except multisend.MultiError as exc:
+                    raise ToolError(str(exc))
+                return "\n".join(result.lines())
             from . import envelope, materials
             request_id = args.get("resend") or args.get("request_id") or envelope.new_id()
             if args.get("held") and (args.get("attachments") or args.get("manifest_id")):
-                raise channel.ChannelError("held sends reuse their stored material; do not supply new attachments")
+                raise ToolError("held sends reuse their stored material; do not supply new attachments")
             prepared = self.prepare_materials(me,args,args.get("text") or "",request_id)
             wait = args.get("wait", 15)             # the schema's default
             r = send_mod.send(args.get("target") or "", prepared["body"], sender=me,
@@ -1017,18 +1121,44 @@ class Server:
             return text
         if name == "xsm_doc_endorse":
             return self.endorse(me, args)
+        if name == "xsm_team":
+            return self.team(me, args)
+        if name == "xsm_handover":
+            return self.handover(me, args)
+        if name == "xsm_board":
+            from . import board
+            try:
+                if args.get("action") == "show":
+                    return board.show(me, args.get("team") or "")
+                if args.get("action") == "log":
+                    return json.dumps({"nodes": board.log(me, args.get("team") or "", args.get("item"))},
+                                      ensure_ascii=False)
+                if args.get("action") == "set":
+                    node = board.set_item(me, args.get("team") or "", args.get("item") or "",
+                                          args.get("text") or "", tag=args.get("tag"))
+                    return "\n".join(["set %s (node %s)" % (args.get("item"), node["id"])]
+                                     + (node.get("sync_notes") or []))
+                if args.get("action") in ("mute", "unmute"):
+                    from . import board_notice
+                    team = board._require_member(me, args.get("team") or "")
+                    board_notice.mute(me, team["name"], on=args["action"] == "mute")
+                    return "%sd board %s's change lines for this session" % (args["action"], team["name"])
+            except board.BoardError as exc:
+                raise ToolError(str(exc))
+            raise ToolError("action is show, set, log, mute or unmute")
         if name == "xsm_ack":
             from . import receive
             tokens = args.get("tokens")
-            if not isinstance(tokens, list) or not tokens or not all(isinstance(t, str) for t in tokens):
-                raise channel.ChannelError("tokens must be a nonempty array of claim tokens")
+            if not isinstance(tokens, list) or not tokens or not all(isinstance(t, (str, dict)) for t in tokens):
+                raise ToolError("tokens must be a nonempty array of claim tokens "
+                                           "(the token values, or the claim objects as shown)")
             owner, generation = receive.consumer_for(me)
             return json.dumps(receive.ack_inbox(me, tokens, owner=owner, generation=generation))
         if name == "xsm_inbox":
             from . import inbox, receive
             wait = float(args.get("wait") or 0)
             if not math.isfinite(wait) or wait < 0:
-                raise channel.ChannelError('wait must be finite and nonnegative')
+                raise ToolError('wait must be finite and nonnegative')
             call_owner = self.active_request
             if wait > 0:
                 # Shorter than the shell's cap: serve() reads one request at a
@@ -1038,7 +1168,7 @@ class Server:
                     pump=self.pump if call_owner is not None else None,
                     cancelled=lambda: call_owner in self.cancelled)
                 if call_owner in self.cancelled or (call_owner is not None and self._closed):
-                    raise channel.ChannelError('inbox wait cancelled or input closed; original retained')
+                    raise ToolError('inbox wait cancelled or input closed; original retained')
             owner, generation = receive.consumer_for(me)
             pack = receive.take_inbox_claims(me, owner=owner, generation=generation)
             if pack["claims"]:
@@ -1046,7 +1176,7 @@ class Server:
             return json.dumps(pack, ensure_ascii=False)
         # A client that loaded its tool list from a newer xsm than this server
         # (the server reads TOOLS once, at its start) names a tool it lacks.
-        raise channel.ChannelError(
+        raise ToolError(
             "unknown tool %s: this xsm server started before xsm was updated. Reconnect it (Claude "
             "Code: /mcp, then xsm) or start a new session; meanwhile run the same `xsm` command "
             "in the shell" % name)
@@ -1055,7 +1185,7 @@ class Server:
         from . import workers,owned_requests,envelope,decisions
         action,name=args.get("action"),args.get("name")
         if not isinstance(name,str) or not name:
-            raise channel.ChannelError("owned worker name required")
+            raise ToolError("owned worker name required")
         if action=="create":
             return workers.create_owned(args.get("runtime"),caller=me,name=name,cwd=args.get("dir"),
                 home=args.get("home"),model=args.get("model"),effort=args.get("effort"),grant=args.get("grant"))
@@ -1065,14 +1195,14 @@ class Server:
             return {"status":"requests","requests":workers.owned_history(name,me)}
         if action in ("retry","reconcile"):
             if not args.get("request_id"):
-                raise channel.ChannelError("request_id required for reply recovery")
+                raise ToolError("request_id required for reply recovery")
             fn=workers.resend_owned if action=="retry" else workers.reconcile_owned
             return fn(name,me,args["request_id"])
         if action!="run":
-            raise channel.ChannelError("unknown owned action")
+            raise ToolError("unknown owned action")
         wait=float(args.get("wait",0) or 0)
         if not math.isfinite(wait) or wait<0:
-            raise channel.ChannelError("wait must be finite and nonnegative")
+            raise ToolError("wait must be finite and nonnegative")
         wait=min(wait,60)
         request_id=args.get("request_id") or envelope.new_id()
         from . import handoff
@@ -1082,13 +1212,13 @@ class Server:
         try:
             verified=workers.submit_owned(name,me,args.get('text') or '',**arguments)
         except (workers.WorkerError,owned_requests.OwnedError) as exc:
-            raise channel.ChannelError(str(exc)) from exc
+            raise ToolError(str(exc)) from exc
         fingerprint=verified['digest']
         key=(me.get("runtime"),me.get("home"),me.get("session_id"),self.ctx.generation,
              verified['worker']['id'],request_id)
         job=self.owned_jobs.get(key)
         if job is not None and job["fingerprint"]!=fingerprint:
-            raise channel.ChannelError("request_id differs in body, work context or sender")
+            raise ToolError("request_id differs in body, work context or sender")
         if job is not None and not job['thread'].is_alive():
             self.owned_jobs.pop(key,None)
             job=None
@@ -1108,7 +1238,7 @@ class Server:
         owner=self.active_request
         while True:
             if job["error"] is not None:
-                raise channel.ChannelError(str(job["error"]))
+                raise ToolError(str(job["error"]))
             if job["result"] is not None:
                 value=job["result"]
                 break
@@ -1137,16 +1267,43 @@ class Server:
                 fallback=args.get("attachment_fallback"),call=self.ctx)
         except files.FileError as exc:
             from .provenance import readable
-            raise channel.ChannelError(readable(materials.failure(exc))) from exc
+            raise ToolError(readable(materials.failure(exc))) from exc
 
-    def decide(self, where: tuple, me: dict, args: dict) -> str:
+    def decide(self, me: dict, args: dict) -> str:
         if "elicitation" not in (self.client_caps or {}):
-            # The text to record is the agent's, so there is no ask to record
-            # for it here: the command comes first (in_words).
-            raise channel.ChannelError("this client cannot show a form (no elicitation "
-                                       "support). " + self.in_words(
-                                           me, 'xsm post --tag decision "<the decision to '
-                                               'record>"'))
+            # No form, no answer that is the person's own: xsm has no other road
+            # to record one for a session (a person records theirs with
+            # `xsm board decide`).
+            raise ToolError("this client cannot show a form (no elicitation support), so your "
+                            "user's answer cannot be recorded as a decision from here; nothing was "
+                            "recorded. Ask them in plain words and act on what they say")
+        # Where the answer is kept is settled before the form: a session in
+        # several teams must not be asked for an answer xsm then cannot place.
+        team, inferred = (args.get("team") or "").strip() or None, False
+        if not team:
+            from . import teams
+            mine = sorted(t["name"] for t in teams.teams_of(me))
+            # A connect pair is a team of two (T4); a session with one team of
+            # its own besides its pairs means that team.
+            own = [n for n in mine if not (teams.load(n) or {}).get("pair")]
+            mine = own if own else mine
+            if len(mine) > 1:
+                raise ToolError("this session is in teams %s; pass team to say beside which "
+                                "board the decision is recorded. Nothing was asked"
+                                % ", ".join(mine))
+            team, inferred = (mine[0], True) if mine else (None, False)
+        item = (args.get("item") or "").strip() or None
+        if team:
+            # A named team the caller is not in, or an item name the board
+            # refuses, is refused before your user answers, not after.
+            from . import board, doc
+            try:
+                board._require_member(me, team)
+            except board.BoardError as exc:
+                raise ToolError("%s. Nothing was asked" % exc)
+            if item and not doc.ITEM_RE.match(item):
+                raise ToolError("item: a short name (letters, digits, spaces, . _ / : -), e.g. "
+                                "'decision: cache'. Nothing was asked")
         question = (args.get("question") or "").strip()
         # Offered as they will be compared: stripped, no empties, no repeats.
         # " yes " used to be offered as is and then compared stripped, so the
@@ -1166,18 +1323,25 @@ class Server:
         answer, why = self.answer(reply, options)
         if answer is None:
             return "%s; nothing was recorded%s" % (unanswered(why), "" if why == DECLINED else
-                                                   ". " + self.in_words(
-                                                       me, 'xsm post --tag decision "<the '
-                                                           'decision to record>"'))
+                                                   ". You may ask them in plain words; to put "
+                                                   "their answer on record, call xsm_decide again")
+        if not team:
+            # The answer is the person's and goes back to the agent; the record
+            # lives beside a team's board, and there is none (T11).
+            return ("your user answered: %s\nIt is not recorded as a decision: this session is in "
+                    "no team, and a decision is kept beside a team's board (`xsm team create "
+                    "<name>` makes one)." % answer)
         summary = (args.get("summary") or "").strip()
-        text = "%s: %s" % (summary, answer) if summary else "%s -> %s" % (question, answer)
-        author = {"kind": "human", "name": os.environ.get("USER") or "person",
-                  "via": "mcp-elicitation", "asked_by": me.get("ref"),
-                  "runtime": me.get("runtime")}
-        rec = channel.post(where, author, text, "decision", args.get("reply_to"),
-                           approved={"question": question, "answer": answer,
-                                     "options": options or None})
-        return "recorded decision %s in %s: %s" % (rec["id"], where[0], answer)
+        from . import board
+        try:
+            rec = board.record_decision(me, team, question, answer, via="mcp-elicitation",
+                                        options=options or None, item=item, summary=summary or None)
+        except board.BoardError as exc:
+            raise ToolError("%s; the answer was %r and is not recorded" % (exc, answer))
+        return "\n".join(["recorded decision %s beside team %s's board%s: %s%s" % (
+            rec["id"], team, " (the one team this session is in)" if inferred else "", answer,
+            " (item %s set)" % item if rec.get("node") else "")]
+            + (rec.get("sync_notes") or []))
 
     def endorse(self, me: dict, args: dict) -> str:
         from . import doc
@@ -1186,14 +1350,14 @@ class Server:
             path = os.path.join(me.get("cwd") or os.getcwd(), path)
         node = next((n for n in doc.read(path) if n["id"] == args.get("node")), None)
         if not node:
-            raise channel.ChannelError("no node %s in %s" % (args.get("node"), path))
+            raise ToolError("no node %s in %s" % (args.get("node"), path))
         # The command is the node's own text, so the ask recorded for it here is
         # the one that command finds (consent.digest as the CLI keys it).
         command = "xsm doc add %s --tag endorsed --parent %s --text %s" % (
             shlex.quote(args.get("doc") or ""), shlex.quote(node["id"]), shlex.quote(node["body"]))
         key = ("endorse", consent.digest(args.get("doc"), node["body"], [node["id"]]))
         if "elicitation" not in (self.client_caps or {}):
-            raise channel.ChannelError("this client cannot show a form. "
+            raise ToolError("this client cannot show a form. "
                                        + self.in_words(me, command, key))
         preview = node["body"] if len(node["body"]) < 1500 else node["body"][:1500] + " …"
         reply = self.ask_client("elicitation/create", {
@@ -1230,7 +1394,7 @@ class Server:
         is the agent's own shell command, which asks for the user's reply
         (consent.py) — never the person typing it (user decision, 2026-10-01)."""
         if "elicitation" not in (self.client_caps or {}):
-            raise channel.ChannelError("this client cannot show a form. "
+            raise ToolError("this client cannot show a form. "
                                        + self.in_words(me, command, key))
         reply = self.ask_client("elicitation/create", {"message": question, "requestedSchema": {
             "type": "object", "properties": {"answer": {"type": "string", "title": "Permission",
@@ -1249,7 +1413,7 @@ class Server:
     def link(self, me: dict, args: dict) -> str:
         from . import config
         if not args.get("dir"):
-            raise channel.ChannelError("dir: the folder to link with")
+            raise ToolError("dir: the folder to link with")
         here = me.get("cwd") or os.getcwd()
         root = config.project_root(here)
         # Relative to the session, like reach: the form, the command and the
@@ -1264,7 +1428,7 @@ class Server:
         try:
             config.check_link(root, other)
         except ValueError as exc:
-            raise channel.ChannelError(str(exc))
+            raise ToolError(str(exc))
         if not consent.take(me, "link", other, here):
             # Run from this session's own folder; --dir is taken only from a
             # person at a terminal, so it would refuse the agent (issue #9).
@@ -1280,9 +1444,129 @@ class Server:
         try:
             entry, added = config.add_link(root, other, os.environ.get("USER") or "person")
         except ValueError as exc:
-            raise channel.ChannelError(str(exc))
+            raise ToolError(str(exc))
         return ("%s: the sessions in %s and %s can talk, both ways, until unlinked; run `xsm list` "
                 "to see them" % ("linked" if added else "already linked", root, other))
+
+    def handover(self, me: dict, args: dict) -> str:
+        """xsm_handover: the same as `xsm handover`; the user confirms in a form."""
+        from . import handover, resolve
+        if args.get("action") == "show":
+            rows = handover.received(me)
+            return "\n\n".join(r["letter"] for r in rows) if rows else \
+                "no session handed its place over to this one"
+        word = (args.get("target") or "").strip()
+        summary = (args.get("summary") or "").strip()
+        if not word or not summary:
+            raise ToolError("target (the session that takes over) and summary (what it "
+                                       "needs to continue) are both required")
+        with probe.quick():
+            found = resolve.resolve(word)
+        if not found.ok:
+            raise ToolError(found.reason)
+        target = found.record
+        try:
+            handover._check(me, target)
+            ok, refusal = self.allowed(
+                me, "%s@%s asks to hand its xsm place over to %s: its teams and lead's seat, its "
+                "board items, unread DMs and pending questions move there, and DMs to it reach "
+                "that session from now on.\nAllow it?" % (me.get("name"), me.get("alias"),
+                                                          handover.label(target)),
+                "xsm handover %s --summary-file <file>" % shlex.quote(word),
+                ("handover", target.get("name") or word))
+            if not ok:
+                return refusal + "; nothing moved"
+            rec = handover.hand_over(me, target, summary, "your user approved in the form")
+        except handover.HandoverError as exc:
+            raise ToolError(str(exc))
+        return "\n".join([handover.summary_line(rec)] + (rec.get("notes") or []))
+
+    def team(self, me: dict, args: dict) -> str:
+        """xsm_team: the same rules as `xsm team`; a decision that is the
+        user's is asked with a form (self.allowed)."""
+        from . import resolve, team_sync, teams
+        action = args.get("action")
+        try:
+            if action == "list":
+                teams.adopt_pairs()
+                return json.dumps({"teams": [{"name": t["name"], "lead": teams.label(t["lead"]) if t.get("lead") else None,
+                                              "members": [teams.label(m) for m in t["members"]]}
+                                             for t in teams.all_teams()]}, ensure_ascii=False)
+            name = (args.get("team") or "").strip()
+            if not name:
+                raise ToolError("team: the team's name")
+            if action == "create":
+                team = teams.create(me, name)
+                return "created team %s with %s" % (team["name"], teams.label(team["members"][0]))
+            team = teams.require(name)
+            if action == "show":
+                return json.dumps({"name": team["name"], "lead": teams.label(team["lead"]) if team.get("lead") else None,
+                                   "members": [{"member": teams.label(m), "running": teams.address(m) is not None}
+                                               for m in team["members"]]}, ensure_ascii=False)
+            if action in ("mute", "unmute"):
+                if not teams.is_member(team, me):
+                    raise teams.TeamError("you are not in team %s" % team["name"])
+                teams.mute(team["name"], me, on=action == "mute")
+                return "%sd team %s's DMs for this session" % (action, team["name"])
+            if action == "leave":
+                team = teams.remove(me, name, teams.member_of(me), None)
+                team_sync.publish(team)
+                return "left team %s" % team["name"]
+            word = (args.get("member") or "").strip()
+            if not word:
+                raise ToolError("member: the session to %s" % action)
+            reason = ("\nReason: " + args["reason"]) if args.get("reason") else ""
+            if action == "add":
+                with probe.quick():
+                    found = resolve.resolve(word, caller=me) if word.startswith(("net:", "candidate:")) \
+                        else resolve.resolve(word)
+                if not found.ok:
+                    raise ToolError(found.reason)
+                target = found.record
+                approval = "lead"
+                if teams.add_rule(me, team, target) == "user":
+                    who = teams.label(teams.member_of(target))
+                    ok, refusal = self.allowed(
+                        me, "%s@%s asks to add %s to team %s, so the team's members and it can DM "
+                        "each other.%s\nAllow it?" % (me.get("name"), me.get("alias"), who, name, reason),
+                        "xsm team add %s %s" % (shlex.quote(name), shlex.quote(word)),
+                        ("team-add-" + name, target.get("name") or word))
+                    if not ok:
+                        return refusal + "; the team is unchanged"
+                    approval = "your user approved in the form"
+                team = teams.add(me, name, target, approval)
+                notes = team_sync.publish(team)
+                return "\n".join(["added %s to team %s" % (teams.label(teams.member_of(target)), name)] + notes)
+            member = teams.find_member(team, word)
+            if action == "remove":
+                approval = None
+                if not (teams.matches(member, me) or teams.is_lead(team, me)):
+                    ok, refusal = self.allowed(
+                        me, "%s@%s asks to remove %s from team %s.%s\nAllow it?" % (
+                            me.get("name"), me.get("alias"), teams.label(member), name, reason),
+                        "xsm team remove %s %s" % (shlex.quote(name), shlex.quote(word)),
+                        ("team-remove-" + name, member.get("name") or word))
+                    if not ok:
+                        return refusal + "; the team is unchanged"
+                    approval = "your user approved in the form"
+                team = teams.remove(me, name, member, approval)
+                team_sync.publish(team)
+                return "removed %s from team %s" % (teams.label(member), name)
+            if action == "lead":
+                ok, refusal = self.allowed(
+                    me, "%s@%s asks to make %s the lead of team %s: the session that faces you, "
+                    "takes your approvals and adds or removes this project's sessions.%s\nAllow it?" % (
+                        me.get("name"), me.get("alias"), teams.label(member), name, reason),
+                    "xsm team lead %s %s" % (shlex.quote(name), shlex.quote(word)),
+                    ("team-lead-" + name, member.get("name") or word))
+                if not ok:
+                    return refusal + "; the lead is unchanged"
+                team = teams.set_lead(me, name, member, "your user approved in the form")
+                team_sync.publish(team)
+                return "%s is the lead of team %s" % (teams.label(member), name)
+        except teams.TeamError as exc:
+            raise ToolError(str(exc))
+        raise ToolError("unknown action %r" % action)
 
     def join(self, me: dict, args: dict) -> str:
         from . import config
@@ -1296,7 +1580,7 @@ class Server:
             try:
                 config.check_join(project)      # before the consent is used up, as for link
             except ValueError as exc:
-                raise channel.ChannelError(str(exc))
+                raise ToolError(str(exc))
         if not consent.take(me, verb, project):       # the person typed /xsm join <project>
             ok, refusal = self.allowed(
                 me, "%s@%s asks to let %s %s the xsm project %r.%s\nAllow it?" % (
@@ -1311,7 +1595,7 @@ class Server:
                 return ("left %s" % project) if changed else "this folder was not in %s" % project
             scope, added = config.join(project, me.get("cwd") or os.getcwd())
         except ValueError as exc:
-            raise channel.ChannelError(str(exc))
+            raise ToolError(str(exc))
         others = [m["root"] for m in scope["members"] if os.path.realpath(m["root"]) != root]
         return "%s %s; other members: %s" % ("joined" if added else "already in", project,
                                              ", ".join(others) or "none yet")
@@ -1319,7 +1603,7 @@ class Server:
     def reach(self, me: dict, args: dict) -> str:
         from . import config
         if not args.get("dir"):
-            raise channel.ChannelError("dir: the folder to reach")
+            raise ToolError("dir: the folder to reach")
         # A relative dir is the session's, and the person's terminal may be
         # anywhere: the form, the command offered instead and the reach itself
         # all name the same absolute root. "../other" was quoted raw in the
@@ -1333,7 +1617,7 @@ class Server:
         try:
             config.check_reach(root)            # before the consent is used up, as for link
         except ValueError as exc:
-            raise channel.ChannelError(str(exc))
+            raise ToolError(str(exc))
         if not consent.take(me, "reach", root):        # the person typed /xsm reach <dir>
             ok, refusal = self.allowed(
                 me, "%s@%s (%s) asks to talk with the sessions in %s, both ways, until it ends.%s\n"
@@ -1346,7 +1630,7 @@ class Server:
             entry, added = config.add_reach(me.get("ref"), root,
                                             os.environ.get("USER") or "person", session=me)
         except ValueError as exc:
-            raise channel.ChannelError(str(exc))
+            raise ToolError(str(exc))
         return "%s: this session can now talk with the sessions in %s; run `xsm list` to see them" % (
             "allowed" if added else "already allowed", entry["root"])
 
@@ -1361,7 +1645,7 @@ class Server:
                 " with id %s" % args["id"] if args.get("id") else "")
         command, key = "xsm approve %s" % shlex.quote(req["id"]), ("approve", req["id"])
         if "elicitation" not in (self.client_caps or {}):
-            raise channel.ChannelError("this client cannot show a form. "
+            raise ToolError("this client cannot show a form. "
                                        + self.in_words(me, command, key))
         allow, deny = "allow", "deny"
         reply = self.ask_client("elicitation/create", {
@@ -1381,11 +1665,11 @@ class Server:
         return "%s: worker %s's request [%s] %s" % (
             "allowed" if answer == allow else "denied", req["worker"], req["id"], req["summary"])
 
-    def grant(self, where: tuple, me: dict, args: dict) -> str:
+    def grant(self, me: dict, args: dict) -> str:
         from . import config, workers
         options = sorted(set(o for o in (args.get("options") or []) if o in workers.DANGEROUS))
         if not options:
-            raise channel.ChannelError("options must name full_access and/or trust_hooks")
+            raise ToolError("options must name full_access and/or trust_hooks")
         runtime = args.get("runtime")
         remote = isinstance(runtime, str) and runtime.startswith("remote:")
         # `xsm remote add` takes no --dir: it pairs the session's own folder, and
@@ -1422,7 +1706,7 @@ class Server:
             asked = flags + ([] if config.scope_for(me, {"cwd": cwd})[0] else ["outside_scope"])
         key = ("grant", workers.grant_target(runtime, cwd, asked))
         if reply is None:
-            raise channel.ChannelError("this client cannot show a form. "
+            raise ToolError("this client cannot show a form. "
                                        + self.in_words(me, command, key))
         answer, why = self.answer(reply, [deny, allow])
         if answer is None:
@@ -1431,12 +1715,8 @@ class Server:
                 return "%s; nothing was granted — do not start that worker" % unanswered(why)
             return ("%s; nothing was granted, so do not start that worker without their yes. %s"
                     % (unanswered(why), self.in_words(me, command, key)))
-        author = {"kind": "human", "name": os.environ.get("USER") or "person",
-                  "via": "mcp-elicitation", "asked_by": me.get("ref"), "runtime": me.get("runtime")}
-        verdict = "allowed" if answer == allow else "refused"
-        channel.post(where, author, "worker permission %s: %s %s in %s" % (
-            verdict, runtime, "+".join(options), cwd), "decision",
-            approved={"question": question, "answer": answer, "options": [deny, allow]})
+        # The answer is on record already: the form's human-decisions record holds
+        # the question, the choices, the answer and who asked (decisions.py).
         if answer != allow:
             if answer is not None:
                 self._deny_current_decision()
@@ -1492,7 +1772,7 @@ class Server:
             try:
                 try:
                     text, error = self.call(params.get("name"), params.get("arguments") or {}), False
-                except (channel.ChannelError, EOFError) as exc:
+                except (ToolError, EOFError) as exc:
                     text, error = str(exc), True
                 except OSError as exc:
                     text, error = (paths.sandbox_blocked(exc) if paths.blocked_write(exc)

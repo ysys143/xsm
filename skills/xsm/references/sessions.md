@@ -47,7 +47,7 @@ The receiver and your user will read these messages. Use ordinary sentences
 with normal word spacing in the language of the conversation. Keep them
 concise without removing spaces or joining words and identifiers into
 compressed strings. For longer updates, use short sentences or bullets. This
-applies to both `xsm send` / `xsm_send` and `xsm post` / `xsm_post`.
+applies to both `xsm send` and `xsm_send`, and to what you write on a team board.
 
 ```bash
 xsm send "reviewer@claude-4" --text "Tests pass on my branch. Can you review docs/plan?"
@@ -55,6 +55,18 @@ xsm send "reviewer@claude-4" --text "..." --wait 20     # wait for the receiver'
 xsm send "ref:a1b2c3" --text "..." --kind task
 xsm send "ref:a1b2c3" --text "done, 3 tests fixed" --kind reply --reply-to 9f2c1d --outcome succeeded
 ```
+
+A message is a DM: you name who gets it, and you may name several. `xsm send
+A B C --text "..."` (or `xsm_send` with `targets`) sends one DM to each under its
+own id, tells each who else got it, and skips one outside your scope instead of
+asking to connect it; the result lists every recipient. The exit code is the
+worst recipient's. `--resend <group id>` sends again only to the ones still
+open. Use it for an announcement or a correction that several sessions need;
+it does not make the receivers read less.
+
+**Teams, the team board, approvals and handing over** are in
+[teams](teams.md): a DM moves someone, the board holds what is true for the
+whole team, and never both.
 
 Address by `name`, `name@home`, `name [ref]`, or `ref:xxxxxx`. The target is
 resolved when you send, so do not re-run `xsm list` to check that a session
@@ -133,7 +145,7 @@ session) `xsm send` to a Codex peer refuses at once and says to use the
 `xsm_send` MCP tool: `codex queue` cannot run inside the sandbox. Use the tool.
 Any xsm command that cannot write its state folder (a sandbox, a read-only
 folder) answers `sandbox-blocked: …` with the file and the cause, never a
-traceback: send with `xsm_send`, and use `xsm_inbox`, `xsm_post`, `xsm_channel`
+traceback: send with `xsm_send`, and use `xsm_inbox` and `xsm_board`
 for the rest. A send your user typed themselves, out of scope, connects the
 folders it needs and delivers, and prints what it connected.
 

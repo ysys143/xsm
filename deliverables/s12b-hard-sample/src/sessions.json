@@ -1,0 +1,23 @@
+{
+  "sessions": [
+    {"id": "Heron", "task": "로그인 세션 캐시를 사내 SDK v4 클라이언트로 이식한다. 슬라이딩 만료 연장과 강제 로그아웃이 이식 전후로 똑같이 동작하는지 회귀 테스트로 확인한 뒤 배포한다.", "owned": ["#07"], "files": ["svc/auth/session_cache.go"]},
+    {"id": "Kestrel", "task": "주문 완료 후 고객에게 보내는 확인 메일을 요청 처리 중의 동기 호출에서 비동기 작업으로 옮긴다. 실패 시 재시도와 중복 발송 방지를 정리한다.", "owned": ["#15"], "files": ["svc/notify/order_mail.py"]},
+    {"id": "Wren", "task": "도서 검색 결과의 정렬에 최근 판매량 가중치를 추가한다. 가중치 조합별 클릭률을 비교해 기본값을 정한다.", "owned": ["#22"], "files": ["svc/search/ranker.py"]},
+    {"id": "Plover", "task": "결제 페이지의 카드 입력 폼을 새 디자인 시스템 컴포넌트로 교체한다. 화면 단위 시각 비교 테스트를 통과해야 머지한다.", "owned": ["#30"], "files": ["web/checkout/CardForm.tsx"]},
+    {"id": "Tern", "task": "마이페이지 주문 내역 목록 API의 응답 시간을 줄인다. 오프셋 방식 대신 커서 페이지네이션을 넣고, 자주 열리는 첫 페이지는 미리 캐싱한다.", "owned": ["#36"], "files": ["svc/orders/history_api.go"]}
+  ],
+  "distinctive_terms": {
+    "Heron": ["Heron", "#07", "svc/auth/session_cache.go", "session_cache", "auth", "로그인", "세션", "캐시", "SDK", "v4", "클라이언트", "이식", "슬라이딩", "만료", "연장", "강제", "로그아웃", "회귀"],
+    "Kestrel": ["Kestrel", "#15", "svc/notify/order_mail.py", "order_mail", "notify", "주문", "완료", "확인 메일", "메일", "동기", "재시도", "중복", "발송"],
+    "Wren": ["Wren", "#22", "svc/search/ranker.py", "ranker", "search", "도서", "검색", "정렬", "판매량", "가중치", "클릭률", "기본값", "조합"],
+    "Plover": ["Plover", "#30", "web/checkout/CardForm.tsx", "CardForm", "checkout", "결제", "페이지", "카드", "입력", "폼", "디자인 시스템", "디자인", "컴포넌트", "교체", "시각 비교", "머지"],
+    "Tern": ["Tern", "#36", "svc/orders/history_api.go", "history_api", "orders", "마이페이지", "주문", "내역", "목록", "API", "응답 시간", "오프셋", "커서", "페이지네이션", "페이지", "캐싱", "캐시"]
+  },
+  "hidden_author_notes": {
+    "Heron": {"premises": ["Session state lives server-side in the shared in-memory key-value cluster (mem-shared).", "Expiry relies on that store's per-key TTL.", "The 4.x line of the in-house dev kit is the supported target."], "resources": ["identity staging environment (stg-identity) for the regression run", "staging copy of the shared in-memory store", "the identity CI runner"]},
+    "Kestrel": {"premises": ["Mail goes out through an external relay vendor (Postfly).", "An in-house background job broker (jobq) exists for async work.", "The purchase-completed event fires once, at payment approval."], "resources": ["Postfly test account quota", "jobq staging / console"]},
+    "Wren": {"premises": ["Sales numbers come from the data team's nightly aggregate table.", "CTR comparison uses fixed-split A/B experiments.", "The engine allows custom scoring scripts."], "resources": ["experiment traffic slot on the book-finding screen", "shadow index cluster", "warehouse query slots"]},
+    "Plover": {"premises": ["Card fields are the PG vendor's (Paynest) hosted iframe fields; our server never receives the number.", "The target UI kit version and its token names are stable.", "The purchase step stays a web screen."], "resources": ["screen snapshot diff server (pixel-diff)", "Paynest test merchant account"]},
+    "Tern": {"premises": ["Order data is in one relational table that can be range-scanned in time order.", "Order IDs increase with time (usable as cursor).", "The shared in-memory cluster (mem-shared) is available for caching, with TTL."], "resources": ["load-test rig (loadbox-2)", "staging copy of the shared in-memory store", "purchase-data snapshot replica"]}
+  }
+}
