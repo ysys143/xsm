@@ -396,3 +396,10 @@ token 회수, agent_end의 별도 복구, Linux 검증은 아직 미완이다.
 큰 원문 100/100 수락·소비·ACK가 통과했다. 복구 후 전송 p95 상한은
 511.044ms다(`openclaw-auto-reconnect-native-100.json`). Outage 전체 지연이나
 종료 전 claim 회수의 증거는 아니다. 모델·사람·실제 agent turn은 0회다.
+
+Linux arm64의 같은 고정 SDK에서도 native 재진입 없는 자동 복구와
+복구 뒤 큰 원문 100/100 수락·소비·ACK가 통과했다. 복구 후 전송 p95
+상한은 409.313ms다
+(`linux-openclaw-auto-reconnect-native-100/output/native-queue-100.json`).
+종료 전 claim·기존 queue token 회수·간헐적 burst ACK 실패와 전체 지원
+범위는 미완이며, 위 Linux 미실행 기록의 후속 표본으로 구분한다.

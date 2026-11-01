@@ -1652,3 +1652,12 @@ connect 반환과 native 활동 복원 완료를 같은 시점으로 취급한 �
 (`openclaw-auto-reconnect-final-verified.log`). 최종 공통 gate도 409개가
 70.157초에 통과했다(`openclaw-auto-reconnect-gate-final.log`). 이 두 결과는
 앞선 최종 초회 실패 뒤의 표본이며 섞어 집계하지 않는다.
+
+Linux 후속 표본도 변경 없는 `87a52d0`으로 통과했다. 고정 native SDK의
+새 도구 호출 없는 같은 ref·새 PID/generation 복구 뒤 큰 원문 100/100
+수락·소비·ACK, 복구 후 전송 p95 상한 409.313ms를 확인했다
+(`linux-openclaw-auto-reconnect-native-100/output/native-queue-100.json`).
+공통 gate 409개는 Linux arm64/Python 3.11.2에서 79.712초에 통과했다
+(`linux-openclaw-auto-reconnect-core/result.json`). 앞선 Linux 미실행
+기록의 후속 검증이며, 실제 모델·사람 UI·기존 claim/token 회수·간헐적
+burst ACK 실패 해결과 전체 계획의 완료를 뜻하지 않는다.

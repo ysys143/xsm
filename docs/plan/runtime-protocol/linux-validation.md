@@ -233,3 +233,22 @@ archive SHA-256·image ID·network none·tracked dirty false를 보존했다.
 잘못된 기한의 spawn 전 거부를 포함한다. Mac은 동일한 403개가 69.910초에
 통과했다. 실제 사용자 UI·모델·메신저 검증을 뜻하지 않는다. 기본 context는
 colima, 기본 VM은 Stopped를 유지했다. P0–P5 전체는 미완이다.
+
+## OpenClaw 자동 transport 복구의 Linux native 검증
+
+변경 없는 `87a52d0`을 고정 OpenClaw 2026.10.9/Linux arm64/Node
+24.22.2/Python 3.11.2에서 실행했다. Backend를 종료한 뒤 새 native 도구
+호출 없이 같은 ref·새 PID·새 generation을 관측했다. 이어 큰 원문
+100/100 수락·prompt helper 소비·명시적 ACK가 통과했고, 복구 후 전송
+p95 상한은 409.313ms였다
+(`linux-openclaw-auto-reconnect-native-100/output/native-queue-100.json`).
+Stage에는 source commit·archive SHA-256·tracked dirty false를 보존했다.
+예상한 종료 EOF 진단 1건도 남았다. 검사 network는 none이고, 모델·사람·
+실제 agent turn·메신저 호출은 0회다. 이 표본은 outage 전체 지연이나
+종료 전 claim·기존 queue token 회수, 간헐적 burst ACK 실패 해결의
+증거가 아니다. 전체 계획은 미완이다.
+
+동일한 변경 없는 `87a52d0`의 공통 gate 409개(핵심 238/Python 48/Node
+123)도 79.712초에 통과했다
+(`linux-openclaw-auto-reconnect-core/result.json`, `protocol.log`). 테스트
+전용 VM의 종료 상태는 같은 폴더 `vm-stopped.json`에 기록했다.
