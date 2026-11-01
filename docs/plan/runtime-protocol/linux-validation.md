@@ -329,3 +329,25 @@ dispatch에서 다른 대화의 backend 등록을 막아 둬도 정상 대화의
 실행이 진행되는 경로를 포함한다. 앞선 13개와 중복 항목이 있어 고유
 검사 30개로 합산하지 않는다. 테스트 전용 VM은 다시 Stopped로 확인했다
 (`linux-python-314-hermes-core/vm-stopped.json`).
+
+## OpenClaw owned 설치 수명의 Linux 검증
+
+변경 없는 `f5aaee3`을 고정 OpenClaw 2026.10.9/Linux arm64/Node
+24.22.2/Python 3.11.2에서 실행했다. Explicit load path 없이 state의
+extensions/xsm을 자동 발견하고 실제 도구·DM pull/ACK를 실행했다.
+업데이트·설치 파일 제거 뒤에도 기존 plugin을 재개했고, backend가
+없는 상태에서 prune해도 로드된 snapshot이 보존됐다. Native unload 후
+lease 제거와 old root 회수까지 통과했다
+(`linux-openclaw-owned-install/output/installed-lifecycle.json`).
+
+로컬 plugin의 native provenance가 없다는 record-missing 경고 1건을
+그대로 보존했다. 설치기는 trust record·allowlist를 쓰지 않았으며,
+검증 fixture에서만 명시적으로 로딩을 허용했다. 모델·실제 agent turn·
+사람 UI·메신저는 0회다. Owned loader를 통한 native queue/UI 인증으로
+확대하지 않는다.
+
+같은 커밋의 공통 gate 424개(핵심 251/Python 48/Node 125)는
+82.964초에 통과했다(`linux-openclaw-owned-install-core/result.json`).
+Source archive hash·image ID·tracked dirty false·network none을 기록했다.
+테스트 VM은 다시 Stopped로 확인했다(`vm-stopped.json`). Owned queue/UI·
+간헐적 burst ACK 실패와 전체 계획은 계속 미완이다.

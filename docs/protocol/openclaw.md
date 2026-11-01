@@ -4,7 +4,8 @@
 명시적 caller fixture에서 실제 native 도구와 xsm 서버의 왕복·수명 정리를
 확인했다. Guarded native 대기열과 prompt 소비 helper도 연결했다.
 소유권 기반 설치·업데이트·제거와 로드된 snapshot 보존을 연결했다.
-실제 agent turn·idle wake·사용자 UI와 설치의 Linux native 검증은 미완이다. 전체 계획은 미완이다.
+설치의 macOS/Linux native 수명을 검증했다. 실제 agent turn·idle wake·
+사용자 UI와 owned loader의 queue/UI 검증은 미완이다. 전체 계획은 미완이다.
 
 ## 고정 버전과 격리 환경
 
@@ -491,3 +492,10 @@ plugin의 재개, backend 없는 상태의 prune 보존, unload 뒤 회수가
 출처 경고만 명시적으로 검사하고 realpath를 대조하도록 바로잡았다.
 관련 실패 로그는 보존했다. 모델·사용자 UI·메신저는 0회이며, 이 설치
 경로의 Linux·owned loader를 통한 native queue/UI 인증은 미완이다.
+
+Linux arm64의 같은 고정 SDK에서도 자동 발견·DM pull/ACK·업데이트/
+설치 제거 후 재개·backend 없는 prune 보존·unload 뒤 snapshot 회수가
+통과했다(`linux-openclaw-owned-install/output/installed-lifecycle.json`).
+공통 gate 424개는 82.964초에 통과했다
+(`linux-openclaw-owned-install-core/result.json`). 위 Linux 미실행 기록의
+후속 표본이며 owned queue/UI·실제 agent/model·전체 지원 인증은 아니다.

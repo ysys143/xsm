@@ -38,7 +38,7 @@
 | P1 공통 서비스 | 부분 구현 | CLI 추출, 일반 원격 신원, 네이티브 UI 연결, 비동기 작업 수명 |
 | P2 SDK·검사기 | 부분 구현 | 독립 구현 적합성, 전체 오류/취소 계약 (Python↔Node 교차 시험 통과) |
 | P3 Pi·OpenCode | 부분 구현 | 연결·수신·설치·대화 수명·자동 재접속의 native fixture 검증. 실제 사용자 UI·native worker·busy/now의 실제 우선순위 등 미완 |
-| P4 Hermes·OpenClaw | 부분 구현 | Hermes native 도구·격리 설치·주입 및 대화별 자동 복구 fixture, OpenClaw guarded queue prototype. 실제 agent turn·idle wake·UI·worker, OpenClaw 설치의 Linux·owned queue/UI 검증과 다양한 장애의 claim 회수 미완 |
+| P4 Hermes·OpenClaw | 부분 구현 | Hermes native 도구·격리 설치·주입 및 대화별 자동 복구 fixture, OpenClaw guarded queue prototype. 실제 agent turn·idle wake·UI·worker, OpenClaw owned queue/UI 검증과 다양한 장애의 claim 회수 미완 |
 | P5 통합·배포 | 부분 검증 | Mac native SDK/CLI fixture와 Linux arm64 공통 gate·Pi/OpenCode/OpenClaw native fixture와 Hermes plugin/API fixture 통과. Hermes native queue p95·idle wake, OpenClaw 간헐적 burst ACK 실패, 30개 방향 조합, 동종 세션, 원격, 버전·플랫폼별 전체 native p95, 실제 모델·메신저·전체 회귀 미완 |
 
 ## 초기 실제 검사
@@ -1811,3 +1811,14 @@ Session end에서 lease를 조기 해제한 변이는 prune 보존 검사에서
 통과했다(`openclaw-owned-install-core.log`). Native 표본은 모델·물리적 UI·
 실제 agent turn·메신저를 호출하지 않았다. Linux 설치·owned queue/UI와
 전체 계획은 계속 미완이다.
+
+OpenClaw 설치의 Linux 후속 검증은 변경 없는 `f5aaee3`으로 통과했다.
+고정 SDK의 global 자동 발견·native 도구·DM pull/ACK·설치 업데이트/
+제거 후 기존 plugin 재개·backend 없는 prune 보존·unload 후 lease와
+old root 회수를 확인했다
+(`linux-openclaw-owned-install/output/installed-lifecycle.json`). Native
+record-missing 경고는 그대로 보존했으며 신뢰 기록을 위조하지 않았다.
+공통 gate 424개도 Linux arm64/Python 3.11.2에서 82.964초에 통과했다
+(`linux-openclaw-owned-install-core/result.json`). 테스트 VM은 중지했다.
+모델·실제 turn·사람 UI·메신저는 0회이며 owned queue/UI와 간헐적
+burst ACK 실패·나머지 P0–P5는 계속 미완이다.
