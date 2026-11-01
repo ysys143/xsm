@@ -103,11 +103,30 @@ class PublicHandoffTest(TempState):
         from xsm.operation_schema import ToolError
         self.send('retain before invalid limit')
         server = self.server()
-        for limit in (None, False, 0, 101, 1.5):
-            with self.assertRaises(ToolError):
-                server.call('xsm_inbox', {'limit': limit})
+        for field, invalid in (('limit', (None, False, 0, 101, 1.5)),
+                               ('max_bytes', (None, False, 0, 1048577, 1.5))):
+            for value in invalid:
+                with self.assertRaises(ToolError):
+                    server.call('xsm_inbox', {field: value})
         packet = json.loads(server.call('xsm_inbox', {'limit': 1}))
         self.assertEqual(len(packet['claims']), 1)
+
+    def test_cli_and_mcp_byte_budgets_read_complete_originals(self):
+        from xsm import cli, context, registry
+        for index in range(3):
+            self.send('byte-%s ' % index + '한글🚀 ' * 1000)
+        call = context.of_record(self.b, context.BASIS_SESSION)
+        with mock.patch.object(registry, 'me', return_value=self.b), \
+                mock.patch.object(registry, 'last_identity', return_value=call):
+            output = io.StringIO()
+            with contextlib.redirect_stdout(output):
+                self.assertEqual(cli.main(['inbox', '--max-bytes', '15000', '--json']), 0)
+            first = json.loads(output.getvalue())
+        self.assertEqual(len(first['claims']), 1)
+        self.assertLessEqual(first['rendered_bytes'], 15000)
+        second = json.loads(self.server().call('xsm_inbox', {'max_bytes': 15000, 'after_id': first['next_after']}))
+        self.assertEqual(len(second['claims']), 1)
+        self.assertNotEqual(first['claims'][0]['id'], second['claims'][0]['id'])
 
     def test_failed_mcp_output_releases_claim_without_ack(self):
         from xsm import handoff

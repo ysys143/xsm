@@ -1283,6 +1283,10 @@ def cmd_inbox(args) -> int:
     if limit is not None and (type(limit) is not int or not 1 <= limit <= 100):
         print('--limit must be an integer from 1 to 100', file=sys.stderr)
         return REFUSED
+    max_bytes = getattr(args, 'max_bytes', None)
+    if max_bytes is not None and (type(max_bytes) is not int or not 1 <= max_bytes <= 1048576):
+        print('--max-bytes must be an integer from 1 to 1048576', file=sys.stderr)
+        return REFUSED
     me, why = _unsure_caller("read this conversation's inbox")
     if why or not me:
         print(why or "this session is not registered; run `xsm doctor`", file=sys.stderr)
@@ -1294,7 +1298,12 @@ def cmd_inbox(args) -> int:
         inbox.wait_for(me.get("session_id"), args.wait, out=sys.stderr,
             counter=lambda: inbox.pending_fields(me, owner_alive=receive._consumer_alive)['inbox_pending'])
     owner, generation = receive.consumer_for(me)
-    pack = receive.take_inbox_claims(me, owner=owner, generation=generation, limit=limit)
+    try:
+        pack = receive.take_inbox_claims(me, owner=owner, generation=generation, limit=limit,
+            max_bytes=max_bytes, after_id=getattr(args, 'after_id', None))
+    except ValueError as error:
+        print(str(error), file=sys.stderr)
+        return REFUSED
     pack.update(inbox.pending_fields(me, owner_alive=receive._consumer_alive))
     try:
         if args.json:
@@ -3133,6 +3142,8 @@ def build_parser() -> argparse.ArgumentParser:
                          "returns the moment one does, and 0 either way" % inbox.MAX_WAIT)
     ib.add_argument("--json", action="store_true")
     ib.add_argument("--limit", type=int, help="maximum messages or notices in this read (1 to 100)")
+    ib.add_argument("--max-bytes", type=int, help="UTF-8 budget; one oversized first item is returned alone")
+    ib.add_argument("--after-id", help="continue after next_after from a bounded read")
     ib.set_defaults(func=cmd_inbox)
 
     ack = sub.add_parser("ack", help="acknowledge inbox claim tokens after reading")

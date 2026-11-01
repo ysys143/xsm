@@ -51,6 +51,10 @@ export function parseHostCommand(text) {
 
 export class XsmHost {
   static async open(options) {
+    if (options.inboxMaxBytes !== undefined && (!Number.isInteger(options.inboxMaxBytes) ||
+        options.inboxMaxBytes < 1 || options.inboxMaxBytes > 1048576)) {
+      throw new TypeError('inboxMaxBytes must be an integer from 1 to 1048576');
+    }
     if (options.inboxBatchSize !== undefined && (!Number.isInteger(options.inboxBatchSize) ||
         options.inboxBatchSize < 1 || options.inboxBatchSize > 100)) {
       throw new TypeError('inboxBatchSize must be an integer from 1 to 100');
@@ -72,6 +76,9 @@ export class XsmHost {
       const session = await client.sessionOpen({ runtime: options.runtime, profile: options.profile,
         conversation: options.conversation, cwd: options.cwd, capabilities });
       const { operations } = await client.request('operations/list');
+      if (options.inboxMaxBytes !== undefined && !operations.find(item => item.name === 'xsm_inbox')?.inputSchema?.properties?.max_bytes) {
+        throw new Error('server does not advertise inbox byte budgets');
+      }
       const host = new XsmHost(client, session, operations, options);
       if (options.deliver) await client.eventsSubscribe(session.session);
       host.pumpTask = host.pump();
@@ -101,11 +108,11 @@ export class XsmHost {
     return state;
   }
 
-  scheduleDelivery(delayMs = 0) {
+  scheduleDelivery(delayMs = 0, afterId) {
     if (this.closed || this.controller.signal.aborted || this.deliverySuspended || this.deliveryTask) return;
     this.deliveryTask = (async () => {
       if (delayMs && !await retryPause(this.controller.signal, delayMs)) return;
-      await this.deliverLoop();
+      await this.deliverLoop(afterId);
     })().finally(() => {
       this.deliveryTask = undefined;
       if (this.pendingWake) this.scheduleDelivery();
@@ -237,12 +244,15 @@ export class XsmHost {
     return result;
   }
 
-  async deliverLoop() {
+  async deliverLoop(afterId) {
     while (this.pendingWake && !this.closed && !this.controller.signal.aborted && !this.deliverySuspended) {
       this.pendingWake = false;
       try {
-        const pack = await this.deliverInbox(true);
-        if (this.options.inboxBatchSize && pack.messages.length >= this.options.inboxBatchSize && pack.claims.length) {
+        const pack = await this.deliverInbox(true, afterId);
+        const progressed = pack.claims.length || (pack.next_after && pack.next_after !== afterId);
+        afterId = pack.next_after ?? undefined;
+        if (progressed && (pack.batch_limited ||
+            (this.options.inboxBatchSize && pack.messages.length >= this.options.inboxBatchSize))) {
           this.pendingWake = true;
         }
       }
@@ -255,10 +265,13 @@ export class XsmHost {
     }
   }
 
-  async deliverInbox(wake) {
+  async deliverInbox(wake, afterId) {
     if (!this.options.deliver) throw new Error('native delivery is not connected');
-    const pack = await this.client.operationCall(this.session.session, 'xsm_inbox',
-      this.options.inboxBatchSize === undefined ? {} : { limit: this.options.inboxBatchSize });
+    const args = {};
+    if (this.options.inboxBatchSize !== undefined) args.limit = this.options.inboxBatchSize;
+    if (this.options.inboxMaxBytes !== undefined) args.max_bytes = this.options.inboxMaxBytes;
+    if (afterId !== undefined) args.after_id = afterId;
+    const pack = await this.client.operationCall(this.session.session, 'xsm_inbox', args);
     if (!pack.messages.length) return pack;
     try {
       // Resolves only after the native binding observes admission, never on stdout flush.
@@ -279,7 +292,14 @@ export class XsmHost {
 
   async naturalBoundary() {
     this.deliverySuspended = false;
-    try { return await this.deliverInbox(false); }
+    try {
+      const pack = await this.deliverInbox(false);
+      if (pack.batch_limited && pack.next_after) {
+        this.pendingWake = true;
+        this.scheduleDelivery(0, pack.next_after);
+      }
+      return pack;
+    }
     catch (error) {
       if (error instanceof RetryAdmission) {
         this.pendingWake = true;

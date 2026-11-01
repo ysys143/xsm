@@ -13,6 +13,7 @@ an authenticated runtime can acknowledge; this module does not infer it.
 from __future__ import annotations
 
 import copy
+from collections import OrderedDict
 from contextlib import contextmanager
 import fcntl
 import hashlib
@@ -21,6 +22,7 @@ import math
 import os
 import re
 import time
+import threading
 import uuid
 
 from . import envelope, paths
@@ -29,6 +31,30 @@ DIRECTORY = 'handoffs'
 CLAIM_LEASE = 120  # D05 user approval; never a body-deletion or retention TTL.
 DELIVERY_STATES = ('pending', 'delivered', 'held', 'offline', 'unknown', 'refused', 'error')
 DELIVERY_ROUTES = ('native', 'mcp-inbox')
+_READ_CACHE = OrderedDict()
+_READ_CACHE_BYTES = 0
+_READ_CACHE_LOCK = threading.RLock()
+_READ_CACHE_LIMIT = 64 * 1024 * 1024
+
+
+def _fingerprint(info):
+    return (info.st_dev, info.st_ino, info.st_size, info.st_mtime_ns, info.st_ctime_ns,
+            info.st_mode, info.st_uid, info.st_gid)
+
+
+def _clear_read_cache():
+    global _READ_CACHE_BYTES
+    with _READ_CACHE_LOCK:
+        _READ_CACHE.clear()
+        _READ_CACHE_BYTES = 0
+
+
+def _forget_read(filename):
+    global _READ_CACHE_BYTES
+    with _READ_CACHE_LOCK:
+        prior = _READ_CACHE.pop(filename, None)
+        if prior:
+            _READ_CACHE_BYTES -= prior[0][2]
 
 
 def _monotonic():
@@ -94,6 +120,7 @@ def _locked(receiver):
 
 def _write(filename, record):
     paths.write_json(filename, record)
+    _forget_read(filename)
     # paths supplies atomic replacement; fsync makes a returned transition
     # durable before the adapter exports or deletes a transport duplicate.
     fd = os.open(filename, os.O_RDONLY)
@@ -109,13 +136,38 @@ def _write(filename, record):
 
 
 def _read(folder, message_id, receiver):
+    global _READ_CACHE_BYTES
     filename = os.path.join(folder, _id(message_id) + '.json')
-    if not os.path.exists(filename):
+    try:
+        before = _fingerprint(os.stat(filename))
+    except FileNotFoundError:
+        _forget_read(filename)
         return None
-    record = paths.read_json(filename)
+    with _READ_CACHE_LOCK:
+        cached = _READ_CACHE.get(filename)
+        if cached and cached[0] == before:
+            _READ_CACHE.move_to_end(filename)
+            record = copy.deepcopy(cached[1])
+        else:
+            record = None
+    if record is None:
+        record = paths.read_json(filename)
     if (not isinstance(record, dict) or record.get('version') != 1 or
             record.get('id') != message_id or record.get('receiver') != _identity(receiver)):
         raise ValueError('invalid handoff record; original retained')
+    if not cached or cached[0] != before:
+        try:
+            after = _fingerprint(os.stat(filename))
+        except FileNotFoundError:
+            after = None
+        if after == before and before[2] <= _READ_CACHE_LIMIT:
+            with _READ_CACHE_LOCK:
+                _forget_read(filename)
+                _READ_CACHE[filename] = (before, copy.deepcopy(record))
+                _READ_CACHE_BYTES += before[2]
+                while _READ_CACHE_BYTES > _READ_CACHE_LIMIT or len(_READ_CACHE) > 256:
+                    _, oldest = _READ_CACHE.popitem(last=False)
+                    _READ_CACHE_BYTES -= oldest[0][2]
     return record
 
 

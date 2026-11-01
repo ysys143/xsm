@@ -60,7 +60,7 @@ function hostBindingTypes(host: XsmHost) {
   renderInboxPacket({ messages: ['example'], claims: [claim] });
   const parsed = parseHostCommand('xsm_inbox {}');
   const result = host.call(parsed.operation, parsed.arguments);
-  XsmHost.open({ runtime: 'fixture', profile: 'p', conversation: 'a', cwd: '/tmp', inboxBatchSize: 2 });
+  XsmHost.open({ runtime: 'fixture', profile: 'p', conversation: 'a', cwd: '/tmp', inboxBatchSize: 2, inboxMaxBytes: 524288 });
   XsmHost.open({ runtime: 'fixture', profile: 'p', conversation: 'a', cwd: '/tmp',
     deliver: async () => false });
   // @ts-expect-error only observed idle/busy states are reported by this helper

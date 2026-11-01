@@ -836,3 +836,45 @@ Pi SDK notice/정상 ACK 회귀도 통과했다(`fyi-boundary-pi-regression.json
 통과했다(`fyi-boundary-types.log`). Native caller/hook과 소비는 fixture다.
 바이트 예산·native 기본 배치·권한 없는 표면의 FYI 경계·전체 agent/UI·P0–P5
 완료 기준은 계속 미완이다.
+
+## Inbox 바이트 예산·cursor와 OpenClaw 기본 배치
+
+공통 receive/service·CLI·MCP·protocol에 max_bytes와 after_id를 추가했다.
+UTF-8 렌더 본문과 join separator를 측정한다. 첫 항목 자체가 크면 단독으로
+반환하며 원문은 자르지 않는다. 다음 원문이 예산을 넘으면 claim을 반환한다.
+batch_limited/next_after로 이어 읽고, notice-only 앞 배치도 cursor를 전진시켜
+뒤의 유효 원문을 읽는다. 대화 밖의 cursor나 사라진 cursor는 거부한다.
+
+두 SDK에 inboxMaxBytes/inbox_max_bytes와 cursor 연속 읽기를 연결했다.
+Native 경계에서 성공한 제한 배치의 나머지도 background로 진행한다.
+OpenClaw 구현 기본값은 16개/512 KiB다. 이는 사용자 지정 기준이 아니라
+native 최대 조각 수를 고려한 구현 값이다. 큰 원문 32개를 소비 없이 먼저 보낸
+실제 SDK fixture는 2개씩 16묶음/96조각으로 모두 수락·소비·ACK했고 중복은
+없었다(`openclaw-byte-burst-first.json`). 이 시험의 시간은 고의적인 소비 지연을
+포함하므로 정상 상태 p95 인증으로 쓰지 않는다.
+
+일반 100표본 재검사는 100초 외부 제한에서 수락 99/ACK 98로 종료됐다
+(`openclaw-byte-default-100.json`). 미완으로 보존했으며, 종료 후 두 backend PID가
+없음을 확인했다(`openclaw-byte-timeout-process-audit.json`). 첫 지연 약 0.38초에서
+후반 약 1.33초로 증가했고, 소스에서 handoff 소유권 조회/전환이 누적 큰 JSON을
+반복 파싱하는 것을 확인했다. 파일 세대가 같은 파싱 결과만 재사용하는 bounded
+cache를 추가했다. Dev/inode/size/mtime_ns/ctime_ns/mode/uid/gid를 재확인하며,
+소유권·token·lease·정책 검사는 생략하지 않는다. 반환 객체는 사본이며 자체
+쓰기에서 무효화한다. 한도는 원본 파일 크기 합계 64 MiB와 최대 256개다.
+
+Cache 검사 6개가 mtime 복원/in-place 수정, 별도 프로세스 claim 교체, 쓰기
+실패, ACK 멱등성, 객체 분리와 메모리 예산 eviction을 확인했다. Python 3.9.6도
+6개 통과했다(`handoff-cache-{final,py39}.log`). Byte/cursor 변이 6개와 cache 변이
+4개를 모두 검출했다(`inbox-byte-mutations.json`, `handoff-cache-mutations.json`).
+초기 cache eviction 검사는 한 record보다 작은 예산을 잘못 잡아 실패했고,
+실제 파일 크기를 기준으로 fixture를 고쳤다. Legacy 읽기의 receipt 순서 변경도
+회귀가 찾아 수정했으며 바이트 예산이 없는 기존 순서를 유지한다.
+
+최신 공통 317개(핵심 197, Python 39, Node 81)가 Python 3.14.6에서
+49.932초에 통과했다(`inbox-byte-budget-final-gate.log`). CLI/MCP 20개와 TypeScript
+컴파일도 통과했다(`inbox-byte-cli-mcp-final.log`, `inbox-byte-budget-types.log`).
+수정 후 같은 큰 원문의 실제 native SDK 100/100 수락·소비·ACK가 완료됐고 p95
+상한은 519.369ms로 1초 기준을 통과했다(`openclaw-byte-cache-100.json`).
+Mac arm64/Node 24.22.2/protocol Python 3.14.6이며 caller와 prompt 소비는 fixture다.
+첫 oversized 원문 자체가 native 32조각을 넘는 전송, 다른 binding 기본 배치,
+권한 없는 표면의 FYI 경계·실제 agent/UI·Linux·전체 P0–P5는 미완이다.

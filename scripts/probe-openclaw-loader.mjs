@@ -9,9 +9,10 @@ import operations from '../integrations/openclaw/tools.mjs';
 
 const [nativeRoot, output, mode, countText, policyFlag] = process.argv.slice(2);
 assert.ok(!mode || ['--execute', '--queue'].includes(mode));
-assert.ok(!policyFlag || (mode === '--queue' && ['--deny-injection', '--large-context', '--deferred-notice', '--capacity-retry', '--capacity-fyi'].includes(policyFlag)));
+assert.ok(!policyFlag || (mode === '--queue' && ['--deny-injection', '--large-context', '--deferred-notice', '--capacity-retry', '--capacity-fyi', '--burst-context'].includes(policyFlag)));
 const denied = policyFlag === '--deny-injection';
-const largeContext = policyFlag === '--large-context';
+const burstContext = policyFlag === '--burst-context';
+const largeContext = policyFlag === '--large-context' || burstContext;
 const deferredNotice = policyFlag === '--deferred-notice';
 const capacityBoundary = policyFlag === '--capacity-fyi';
 const capacityRetry = policyFlag === '--capacity-retry' || capacityBoundary;
@@ -168,134 +169,190 @@ if (mode) {
       assert.ok(retained.details.messages.some(text => text.includes('awaits network revalidation')));
       result.nativeClaimFreeNotice = true;
     }
-    const started = performance.now();
     const sampleText = index => 'OpenClaw native factory fixture message sample-' + index + '-end' +
       (largeContext ? '\n \t' + '한글🚀 '.repeat(16000) + '\n\t ' : '');
-    const firstText = sampleText(0);
-    await executable.find(tool => tool.name === 'xsm_send').execute('send-a-b', {
-      target: 'ref:' + target.ref, text: firstText, wait: 0,
-      ...(capacityBoundary ? { wake: 'never' } : {}),
-    });
-    if (capacityBoundary) {
-      const { getGlobalHookRunner } = await import(pathToFileURL(join(nativeRoot, 'dist/plugin-sdk/plugin-runtime.js')));
-      const hooks = getGlobalHookRunner();
-      assert.ok(hooks?.hasHooks('agent_end'));
-      await hooks.runAgentEnd({ messages: [], success: true, durationMs: 0 }, context('native-fixture-b'));
-      result.nativeFyiBoundaryReturned = true;
-    }
-    if (capacityRetry) {
-      // Read-only inspection of this probe's canonical store proves an attempted admission was released.
-      const code = "import json,sys;sys.path.insert(0,sys.argv[1]);from xsm.handoff import _folder;print(_folder(json.loads(sys.argv[2])))";
-      const folder = execFileSync('python3', ['-B', '-c', code, root, JSON.stringify(target)],
-        { env: process.env, encoding: 'utf8' }).trim();
-      let released = false;
-      const deadline = Date.now() + 5000;
-      while (Date.now() < deadline) {
-        const records = await Promise.all((await readdir(folder)).filter(name => name.endsWith('.json'))
-          .map(async name => JSON.parse(await readFile(join(folder, name), 'utf8'))));
-        if (records.some(row => row.previous_claim && row.state !== 'acknowledged')) { released = true; break; }
-        await new Promise(resolve => setTimeout(resolve, 10));
-      }
-      assert.ok(released, 'capacity refusal never returned the canonical original');
-      await api.runtime.agent.session.patchSessionEntry({ agentId: 'main', sessionKey: context('native-fixture-b').sessionKey,
-        update(row) {
-          const queued = row.pluginNextTurnInjections.xsm;
-          assert.equal(queued.length, 32);
-          assert.ok(queued.every(item => item.metadata.capacityFixture));
-          return { pluginNextTurnInjections: { ...row.pluginNextTurnInjections, xsm: [] } };
-        } });
-      result.nativeCapacityClaimReleased = true;
-    }
-    let tokens;
-    const latencies = [];
-    if (api && !denied) {
-      result.admission = { requestedSamples: samples, samples: 0, milliseconds: latencies };
-      result.nativeQueueAckCount = 0;
-      result.fragmentCounts = [];
-      async function consume(started, expected) {
-        const until = Date.now() + 5000;
-        let injection, queued;
-        while (Date.now() < until) {
-          const row = api.runtime.agent.session.getSessionEntry({ agentId: 'main',
-            sessionKey: context('native-fixture-b').sessionKey, readConsistency: 'latest' });
-          queued = row?.pluginNextTurnInjections?.xsm ?? [];
-          injection = queued[0];
-          if (injection) break;
-          await new Promise(resolve => setTimeout(resolve, 10));
-        }
-        assert.ok(injection, 'actual native context queue did not accept the original');
-        const group = queued.filter(item => item.metadata.xsmHash === injection.metadata.xsmHash)
-          .sort((a, b) => a.metadata.fragmentIndex - b.metadata.fragmentIndex);
-        assert.equal(group.length, injection.metadata.fragmentCount);
-        if (largeContext) assert.ok(group.length > 1, 'large sample did not exercise fragmentation');
-        result.fragmentCounts.push(group.length);
-        const body = entries => entries.map(item => item.text.slice(item.metadata.fragmentHeaderLength,
-          item.metadata.fragmentHeaderLength + item.metadata.fragmentBodyLength)).join('');
-        assert.ok(body(group).includes(expected), 'native queue accepted another sample');
-        assert.ok(group.every(item => item.text.length <= 32768));
-        latencies.push(performance.now() - started);
-        result.admission.samples = latencies.length;
-        const drain = await nativeFunction('host-hook-state-', 'drainPluginNextTurnInjectionContext');
-        const prompt = await drain({ cfg: config, agentId: 'main', sessionKey: context('native-fixture-b').sessionKey });
-        assert.match(prompt.prependContext, /native factory fixture message/);
-        assert.ok(body(prompt.queuedInjections).includes(expected), 'native prompt consumed another sample');
-        assert.deepEqual(prompt.queuedInjections.map(item => item.id), group.map(item => item.id));
-        for (const item of group) assert.ok(prompt.prependContext.includes(item.text), 'native prompt changed fragment whitespace');
-        result.nativeFragmentCount = group.length;
-        result.nativeFragmentTextLengths = group.map(item => item.text.length);
-        result.expectedOriginalUtf16Length = expected.length;
-        const tokens = JSON.parse(/xsm_ack with tokens: (\[[^\n]*?\])/.exec(prompt.prependContext)[1]);
-        assert.equal(tokens.length, 1);
-        const again = await drain({ cfg: config, agentId: 'main', sessionKey: context('native-fixture-b').sessionKey });
-        assert.equal(again.queuedInjections.length, 0);
-        await writeFile(destination, JSON.stringify(result, null, 2) + '\n');
-        return tokens;
-      }
-      tokens = await consume(started, firstText);
-      for (let index = 1; index < samples; index++) {
-        const ack = await second.find(tool => tool.name === 'xsm_ack').execute('consume-' + index, { tokens });
-        assert.equal(ack.details.acked.length, 1);
-        result.nativeQueueAckCount++;
-        const began = performance.now();
-        const text = sampleText(index);
-        await executable.find(tool => tool.name === 'xsm_send').execute('send-' + index, {
-          target: 'ref:' + target.ref, text, wait: 0,
+    if (burstContext) {
+      const sentAt = [], seen = new Set(), latencies = [];
+      result.burst = { requested: samples, consumed: 0, acknowledged: 0, groups: [], milliseconds: latencies,
+        measured: 'sender execute start through prompt-helper consumption after deliberately preloading the entire burst',
+        queueLatencyCertification: false };
+      for (let index = 0; index < samples; index++) {
+        sentAt.push(performance.now());
+        await executable.find(tool => tool.name === 'xsm_send').execute('burst-send-' + index, {
+          target: 'ref:' + target.ref, text: sampleText(index), wait: 0,
         });
-        tokens = await consume(began, text);
       }
-      const sorted = [...latencies].sort((a, b) => a - b);
-      assert.equal(latencies.length, samples);
-      result.admission = { requestedSamples: samples, samples: latencies.length, milliseconds: latencies,
-        p95UpperBoundMs: sorted[Math.ceil(sorted.length * .95) - 1],
-        measured: 'native sender execute start through observed native context queue; includes canonical store time' };
+      const drain = await nativeFunction('host-hook-state-', 'drainPluginNextTurnInjectionContext');
+      const deadline = Date.now() + 20000;
+      while (seen.size < samples && Date.now() < deadline) {
+        const prompt = await drain({ cfg: config, agentId: 'main', sessionKey: context('native-fixture-b').sessionKey });
+        if (!prompt.queuedInjections.length) { await new Promise(resolve => setTimeout(resolve, 10)); continue; }
+        const groups = new Map();
+        for (const item of prompt.queuedInjections) {
+          assert.ok(item.text.length <= 32768);
+          assert.ok(prompt.prependContext.includes(item.text));
+          if (!groups.has(item.metadata.xsmHash)) groups.set(item.metadata.xsmHash, []);
+          groups.get(item.metadata.xsmHash).push(item);
+        }
+        const tokens = [], observedAt = performance.now();
+        let originals = 0;
+        for (const group of groups.values()) {
+          group.sort((a, b) => a.metadata.fragmentIndex - b.metadata.fragmentIndex);
+          assert.equal(group.length, group[0].metadata.fragmentCount);
+          const body = group.map(item => item.text.slice(item.metadata.fragmentHeaderLength,
+            item.metadata.fragmentHeaderLength + item.metadata.fragmentBodyLength)).join('');
+          let matched = 0;
+          for (let index = 0; index < samples; index++) {
+            if (!body.includes(sampleText(index))) continue;
+            assert.ok(!seen.has(index), 'native burst duplicated an already consumed original');
+            seen.add(index); matched++; latencies.push(observedAt - sentAt[index]);
+          }
+          assert.equal(matched, group[0].metadata.messageIds.length);
+          const last = group[group.length - 1];
+          const claims = JSON.parse(/xsm_ack with tokens: (\[[^\n]*?\])/.exec(last.text)[1]);
+          assert.equal(claims.length, matched);
+          tokens.push(...claims); originals += matched;
+          result.burst.groups.push({ originals: matched, fragments: group.length });
+        }
+        const ack = await second.find(tool => tool.name === 'xsm_ack').execute('burst-consume-' + seen.size, { tokens });
+        assert.equal(ack.details.acked.length, originals);
+        result.burst.consumed = seen.size;
+        result.burst.acknowledged += ack.details.acked.length;
+        await writeFile(destination, JSON.stringify(result, null, 2) + '\n');
+      }
+      assert.equal(seen.size, samples, 'native burst did not drain all retained originals');
+      assert.equal(result.burst.acknowledged, samples);
       result.nativeQueuePromptConsumed = true;
-      if (capacityRetry) result.nativeCapacityRetryRecovered = true;
-      if (capacityBoundary) result.nativeFyiBoundaryRetryRecovered = true;
+      result.nativeQueueExplicitAck = true;
       result.nativeWakeTested = false;
     } else {
-      const received = await inboxB.execute('receive-b', { limit: 1 });
-      assert.equal(received.details.claims.length, 1);
-      assert.match(JSON.stringify(received.details.messages), /native factory fixture message/);
-      tokens = received.details.claims.map(claim => claim.token);
-    }
-    const ack = await second.find(tool => tool.name === 'xsm_ack').execute('consume-b', {
-      tokens,
-    });
-    assert.equal(ack.details.acked.length, 1);
-    if (api && !denied) {
-      result.nativeQueueAckCount++;
-      assert.equal(result.nativeQueueAckCount, samples);
-      if (samples >= 100) {
-        result.admission.passesOneSecondDeadline = result.admission.p95UpperBoundMs < 1000;
-        assert.ok(result.admission.passesOneSecondDeadline, 'native admission p95 exceeds one second');
+      const started = performance.now();
+      const firstText = sampleText(0);
+      await executable.find(tool => tool.name === 'xsm_send').execute('send-a-b', {
+        target: 'ref:' + target.ref, text: firstText, wait: 0,
+        ...(capacityBoundary ? { wake: 'never' } : {}),
+      });
+      if (capacityBoundary) {
+        const { getGlobalHookRunner } = await import(pathToFileURL(join(nativeRoot, 'dist/plugin-sdk/plugin-runtime.js')));
+        const hooks = getGlobalHookRunner();
+        assert.ok(hooks?.hasHooks('agent_end'));
+        await hooks.runAgentEnd({ messages: [], success: true, durationMs: 0 }, context('native-fixture-b'));
+        result.nativeFyiBoundaryReturned = true;
       }
-    }
-    result.nativeDmPullAck = !api || denied;
-    result.nativeQueueExplicitAck = Boolean(api) && !denied;
-    if (denied) {
-      const row = api.runtime.agent.session.getSessionEntry({ agentId: 'main',
-        sessionKey: context('native-fixture-b').sessionKey, readConsistency: 'latest' });
-      assert.equal(row.pluginNextTurnInjections?.xsm?.length ?? 0, 0);
+      if (capacityRetry) {
+        // Read-only inspection of this probe's canonical store proves an attempted admission was released.
+        const code = "import json,sys;sys.path.insert(0,sys.argv[1]);from xsm.handoff import _folder;print(_folder(json.loads(sys.argv[2])))";
+        const folder = execFileSync('python3', ['-B', '-c', code, root, JSON.stringify(target)],
+          { env: process.env, encoding: 'utf8' }).trim();
+        let released = false;
+        const deadline = Date.now() + 5000;
+        while (Date.now() < deadline) {
+          const records = await Promise.all((await readdir(folder)).filter(name => name.endsWith('.json'))
+            .map(async name => JSON.parse(await readFile(join(folder, name), 'utf8'))));
+          if (records.some(row => row.previous_claim && row.state !== 'acknowledged')) { released = true; break; }
+          await new Promise(resolve => setTimeout(resolve, 10));
+        }
+        assert.ok(released, 'capacity refusal never returned the canonical original');
+        await api.runtime.agent.session.patchSessionEntry({ agentId: 'main', sessionKey: context('native-fixture-b').sessionKey,
+          update(row) {
+            const queued = row.pluginNextTurnInjections.xsm;
+            assert.equal(queued.length, 32);
+            assert.ok(queued.every(item => item.metadata.capacityFixture));
+            return { pluginNextTurnInjections: { ...row.pluginNextTurnInjections, xsm: [] } };
+          } });
+        result.nativeCapacityClaimReleased = true;
+      }
+      let tokens;
+      const latencies = [];
+      if (api && !denied) {
+        result.admission = { requestedSamples: samples, samples: 0, milliseconds: latencies };
+        result.nativeQueueAckCount = 0;
+        result.fragmentCounts = [];
+        async function consume(started, expected) {
+          const until = Date.now() + 5000;
+          let injection, queued;
+          while (Date.now() < until) {
+            const row = api.runtime.agent.session.getSessionEntry({ agentId: 'main',
+              sessionKey: context('native-fixture-b').sessionKey, readConsistency: 'latest' });
+            queued = row?.pluginNextTurnInjections?.xsm ?? [];
+            injection = queued[0];
+            if (injection) break;
+            await new Promise(resolve => setTimeout(resolve, 10));
+          }
+          assert.ok(injection, 'actual native context queue did not accept the original');
+          const group = queued.filter(item => item.metadata.xsmHash === injection.metadata.xsmHash)
+            .sort((a, b) => a.metadata.fragmentIndex - b.metadata.fragmentIndex);
+          assert.equal(group.length, injection.metadata.fragmentCount);
+          if (largeContext) assert.ok(group.length > 1, 'large sample did not exercise fragmentation');
+          result.fragmentCounts.push(group.length);
+          const body = entries => entries.map(item => item.text.slice(item.metadata.fragmentHeaderLength,
+            item.metadata.fragmentHeaderLength + item.metadata.fragmentBodyLength)).join('');
+          assert.ok(body(group).includes(expected), 'native queue accepted another sample');
+          assert.ok(group.every(item => item.text.length <= 32768));
+          latencies.push(performance.now() - started);
+          result.admission.samples = latencies.length;
+          const drain = await nativeFunction('host-hook-state-', 'drainPluginNextTurnInjectionContext');
+          const prompt = await drain({ cfg: config, agentId: 'main', sessionKey: context('native-fixture-b').sessionKey });
+          assert.match(prompt.prependContext, /native factory fixture message/);
+          assert.ok(body(prompt.queuedInjections).includes(expected), 'native prompt consumed another sample');
+          assert.deepEqual(prompt.queuedInjections.map(item => item.id), group.map(item => item.id));
+          for (const item of group) assert.ok(prompt.prependContext.includes(item.text), 'native prompt changed fragment whitespace');
+          result.nativeFragmentCount = group.length;
+          result.nativeFragmentTextLengths = group.map(item => item.text.length);
+          result.expectedOriginalUtf16Length = expected.length;
+          const tokens = JSON.parse(/xsm_ack with tokens: (\[[^\n]*?\])/.exec(prompt.prependContext)[1]);
+          assert.equal(tokens.length, 1);
+          const again = await drain({ cfg: config, agentId: 'main', sessionKey: context('native-fixture-b').sessionKey });
+          assert.equal(again.queuedInjections.length, 0);
+          await writeFile(destination, JSON.stringify(result, null, 2) + '\n');
+          return tokens;
+        }
+        tokens = await consume(started, firstText);
+        for (let index = 1; index < samples; index++) {
+          const ack = await second.find(tool => tool.name === 'xsm_ack').execute('consume-' + index, { tokens });
+          assert.equal(ack.details.acked.length, 1);
+          result.nativeQueueAckCount++;
+          const began = performance.now();
+          const text = sampleText(index);
+          await executable.find(tool => tool.name === 'xsm_send').execute('send-' + index, {
+            target: 'ref:' + target.ref, text, wait: 0,
+          });
+          tokens = await consume(began, text);
+        }
+        const sorted = [...latencies].sort((a, b) => a - b);
+        assert.equal(latencies.length, samples);
+        result.admission = { requestedSamples: samples, samples: latencies.length, milliseconds: latencies,
+          p95UpperBoundMs: sorted[Math.ceil(sorted.length * .95) - 1],
+          measured: 'native sender execute start through observed native context queue; includes canonical store time' };
+        result.nativeQueuePromptConsumed = true;
+        if (capacityRetry) result.nativeCapacityRetryRecovered = true;
+        if (capacityBoundary) result.nativeFyiBoundaryRetryRecovered = true;
+        result.nativeWakeTested = false;
+      } else {
+        const received = await inboxB.execute('receive-b', { limit: 1 });
+        assert.equal(received.details.claims.length, 1);
+        assert.match(JSON.stringify(received.details.messages), /native factory fixture message/);
+        tokens = received.details.claims.map(claim => claim.token);
+      }
+      const ack = await second.find(tool => tool.name === 'xsm_ack').execute('consume-b', {
+        tokens,
+      });
+      assert.equal(ack.details.acked.length, 1);
+      if (api && !denied) {
+        result.nativeQueueAckCount++;
+        assert.equal(result.nativeQueueAckCount, samples);
+        if (samples >= 100) {
+          result.admission.passesOneSecondDeadline = result.admission.p95UpperBoundMs < 1000;
+          assert.ok(result.admission.passesOneSecondDeadline, 'native admission p95 exceeds one second');
+        }
+      }
+      result.nativeDmPullAck = !api || denied;
+      result.nativeQueueExplicitAck = Boolean(api) && !denied;
+      if (denied) {
+        const row = api.runtime.agent.session.getSessionEntry({ agentId: 'main',
+          sessionKey: context('native-fixture-b').sessionKey, readConsistency: 'latest' });
+        assert.equal(row.pluginNextTurnInjections?.xsm?.length ?? 0, 0);
+      }
     }
     await assert.rejects(executable.find(tool => tool.name === 'xsm_decide').execute('unbound-ui', {
       question: 'Native fixture question', options: ['blue', 'green'],

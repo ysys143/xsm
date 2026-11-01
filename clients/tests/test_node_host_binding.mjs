@@ -84,6 +84,42 @@ test('one coalesced wake drains bounded batches without acknowledging originals'
   assert.equal((await host.call('xsm_ack', { tokens: claims.map(claim => claim.token) })).acked.length, 5);
 });
 
+test('a byte-limited batch keeps draining even below the message count limit', { timeout: 10000 }, async t => {
+  const packets = [];
+  const { host, command, env } = await fixture(t, { inboxBatchSize: 16, inboxMaxBytes: 5000,
+    deliver: async packet => { packets.push(packet); } });
+  const sender = await XsmClient.connect({ command, env, cwd: root });
+  t.after(() => sender.close());
+  const origin = await sender.sessionOpen({ runtime: 'byte-sender', profile: 'one', conversation: 'a', cwd: root });
+  for (let index = 0; index < 3; index++) await sender.operationCall(origin.session, 'xsm_send', {
+    target: 'ref:' + host.session.ref, text: 'byte-' + index + 'x'.repeat(3000), wake: 'never', wait: 0,
+  });
+  host.pendingWake = true;
+  await host.deliverLoop();
+  assert.deepEqual(packets.map(packet => packet.claims.length), [1, 1, 1]);
+  assert.ok(packets.every(packet => packet.rendered_bytes <= 5000));
+  assert.equal((await host.call('xsm_ack', { tokens: packets.flatMap(packet => packet.claims.map(claim => claim.token)) })).acked.length, 3);
+});
+
+test('notice-only cursor progress reaches a later original in one bounded drain', { timeout: 10000 }, async t => {
+  const code = "import runpy;from xsm import receive;check=receive.check;receive.check=lambda p,m:('block','P2P admission temporarily unavailable: fixture') if p.body.startswith('defer-') else check(p,m);runpy.run_module('xsm',run_name='__main__')";
+  const packets = [];
+  const { host, command, env } = await fixture(t, { inboxBatchSize: 2, inboxMaxBytes: 10000,
+    command: [process.env.PYTHON ?? 'python3', '-B', '-c', code, 'protocol', 'serve', '--stdio'],
+    deliver: async packet => { packets.push(packet); } });
+  const sender = await XsmClient.connect({ command, env, cwd: root });
+  t.after(() => sender.close());
+  const origin = await sender.sessionOpen({ runtime: 'cursor-sender', profile: 'one', conversation: 'a', cwd: root });
+  for (const text of ['defer-one', 'defer-two', 'allowed-last']) await sender.operationCall(origin.session, 'xsm_send', {
+    target: 'ref:' + host.session.ref, text, wake: 'never', wait: 0,
+  });
+  host.pendingWake = true;
+  await host.deliverLoop();
+  assert.deepEqual(packets.map(packet => packet.claims.length), [0, 1]);
+  assert.match(JSON.stringify(packets[1].messages), /allowed-last/);
+  assert.equal((await host.call('xsm_ack', { tokens: packets[1].claims.map(claim => claim.token) })).acked.length, 1);
+});
+
 test('a full notice-only batch does not spin without acquiring any original', async t => {
   const { host, errors } = await fixture(t, { inboxBatchSize: 2 });
   let reads = 0;

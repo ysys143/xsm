@@ -33,6 +33,56 @@ class ProtocolFixture(TempState):
 
 
 class ProtocolTest(ProtocolFixture):
+    def test_inbox_byte_budget_counts_rendered_utf8_and_retains_the_remainder(self):
+        a, b = self.open(), self.open('byte-budget')
+        for index in range(3):
+            self.operation(a, 'xsm_send', target='ref:' + b['ref'], text='item-%s ' % index + '한글🚀 ' * 1000, wait=0)
+        packets = [self.operation(b, 'xsm_inbox', max_bytes=15000) for _ in range(3)]
+        self.assertEqual([len(packet['claims']) for packet in packets], [1, 1, 1])
+        for packet in packets:
+            self.assertEqual(packet['rendered_bytes'], len('\n\n'.join(packet['messages']).encode('utf-8')))
+            self.assertLessEqual(packet['rendered_bytes'], 15000)
+        self.assertTrue(packets[0]['batch_limited'])
+        self.assertEqual(len({claim['id'] for packet in packets for claim in packet['claims']}), 3)
+
+    def test_one_oversized_original_is_returned_whole_without_starving(self):
+        a, b = self.open(), self.open('oversized')
+        text = 'whole original ' + '끝🚀' * 2000
+        self.operation(a, 'xsm_send', target='ref:' + b['ref'], text=text, wait=0)
+        packet = self.operation(b, 'xsm_inbox', max_bytes=1)
+        self.assertEqual(len(packet['claims']), 1)
+        self.assertIn(text, packet['messages'][0])
+        self.assertGreater(packet['rendered_bytes'], 1)
+
+    def test_invalid_inbox_byte_budgets_are_refused(self):
+        from xsm.protocol import ProtocolError
+        a = self.open()
+        for value in (None, True, 0, -1, 1048577, 1.5, '2'):
+            with self.assertRaises(ProtocolError):
+                self.operation(a, 'xsm_inbox', max_bytes=value)
+
+    def test_bounded_notice_cursor_reaches_later_originals_without_consuming_deferred_ones(self):
+        from xsm import receive
+        a, b = self.open(), self.open('notice-cursor')
+        for text in ('defer-one', 'defer-two', 'allowed-last'):
+            self.operation(a, 'xsm_send', target='ref:' + b['ref'], text=text, wait=0)
+        check = receive.check
+        def pending(parsed, me):
+            if parsed.body.startswith('defer-'):
+                return 'block', 'P2P admission temporarily unavailable: fixture'
+            return check(parsed, me)
+        with mock.patch.object(receive, 'check', side_effect=pending):
+            first = self.operation(b, 'xsm_inbox', limit=2, max_bytes=10000)
+            self.assertEqual(len(first['messages']), 2)
+            self.assertEqual(first['claims'], [])
+            self.assertIsNotNone(first['next_after'])
+            second = self.operation(b, 'xsm_inbox', limit=2, max_bytes=10000, after_id=first['next_after'])
+            self.assertEqual(len(second['claims']), 1)
+            self.assertIn('allowed-last', second['messages'][0])
+            again = self.operation(b, 'xsm_inbox', limit=2)
+            self.assertEqual(len(again['messages']), 2)
+            self.assertEqual(again['claims'], [])
+
     def test_bounded_inbox_retains_unselected_originals_and_requires_explicit_ack(self):
         from xsm import handoff
         a, b = self.open(), self.open('bounded')

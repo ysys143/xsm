@@ -76,6 +76,43 @@ class HostCoordinationTest(unittest.IsolatedAsyncioTestCase):
         ack = await host.call('xsm_ack', {'tokens': [claim['token'] for claim in claims]})
         self.assertEqual(len(ack['acked']), 5)
 
+    async def test_byte_limited_batches_keep_draining_below_count_limit(self):
+        packets = []
+        async def deliver(packet, _options):
+            packets.append(packet)
+        host = await self.host(deliver=deliver, inbox_batch_size=16, inbox_max_bytes=5000)
+        sender, origin = await self.sender()
+        for index in range(3):
+            await sender.operation_call(origin['session'], 'xsm_send', {'target': 'ref:' + host.session['ref'],
+                'text': 'byte-%s ' % index + 'x' * 3000, 'wake': 'never', 'wait': 0})
+        host.pending_wake = True
+        await host._drain()
+        self.assertEqual([len(packet['claims']) for packet in packets], [1, 1, 1])
+        self.assertTrue(all(packet['rendered_bytes'] <= 5000 for packet in packets))
+        tokens = [claim['token'] for packet in packets for claim in packet['claims']]
+        self.assertEqual(len((await host.call('xsm_ack', {'tokens': tokens}))['acked']), 3)
+
+    async def test_notice_cursor_reaches_later_original_in_one_drain(self):
+        packets = []
+        async def deliver(packet, _options):
+            packets.append(packet)
+        code = "import runpy;from xsm import receive;check=receive.check;receive.check=lambda p,m:('block','P2P admission temporarily unavailable: fixture') if p.body.startswith('defer-') else check(p,m);runpy.run_module('xsm',run_name='__main__')"
+        normal = self.command
+        self.command = [sys.executable, '-B', '-c', code, 'protocol', 'serve', '--stdio']
+        try:
+            host = await self.host(deliver=deliver, inbox_batch_size=2, inbox_max_bytes=10000)
+        finally:
+            self.command = normal
+        sender, origin = await self.sender()
+        for text in ('defer-one', 'defer-two', 'allowed-last'):
+            await sender.operation_call(origin['session'], 'xsm_send', {'target': 'ref:' + host.session['ref'],
+                'text': text, 'wake': 'never', 'wait': 0})
+        host.pending_wake = True
+        await host._drain()
+        self.assertEqual([len(packet['claims']) for packet in packets], [0, 1])
+        self.assertIn('allowed-last', str(packets[1]['messages']))
+        self.assertEqual(len((await host.call('xsm_ack', {'tokens': [packets[1]['claims'][0]['token']]}))['acked']), 1)
+
     async def test_full_notice_only_batch_does_not_repeat_without_progress(self):
         async def deliver(_packet, _options):
             pass

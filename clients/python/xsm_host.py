@@ -23,7 +23,9 @@ class RetryAdmission(RuntimeError):
 class XsmHost:
     @classmethod
     async def open(cls, *, runtime, profile, conversation, cwd, deliver=None, present=None,
-                   command=None, env=None, on_error=None, inbox_batch_size=None):
+                   command=None, env=None, on_error=None, inbox_batch_size=None, inbox_max_bytes=None):
+        if inbox_max_bytes is not None and (type(inbox_max_bytes) is not int or not 1 <= inbox_max_bytes <= 1048576):
+            raise ValueError("inbox_max_bytes must be an integer from 1 to 1048576")
         if inbox_batch_size is not None and (type(inbox_batch_size) is not int or not 1 <= inbox_batch_size <= 100):
             raise ValueError("inbox_batch_size must be an integer from 1 to 100")
         command = command or [str(Path(__file__).resolve().parents[2] / "bin/xsm"),
@@ -38,8 +40,12 @@ class XsmHost:
             session = await client.session_open(runtime=runtime, profile=profile, conversation=conversation,
                                                 cwd=cwd, capabilities=capabilities)
             operations = (await client.request("operations/list"))["operations"]
+            if inbox_max_bytes is not None and not any(item['name'] == 'xsm_inbox' and
+                    'max_bytes' in item['inputSchema'].get('properties', {}) for item in operations):
+                raise TransportError('server does not advertise inbox byte budgets')
             host = cls(client, session, operations, deliver, present, on_error)
             host.inbox_batch_size = inbox_batch_size
+            host.inbox_max_bytes = inbox_max_bytes
             if deliver:
                 await client.events_subscribe(session["session"])
             host.pump = asyncio.create_task(host._pump())
@@ -59,6 +65,7 @@ class XsmHost:
         self.delivery_suspended = False
         self.closed = False
         self.inbox_batch_size = None
+        self.inbox_max_bytes = None
         self.failure = None
         self.delivery_task = None
 
@@ -186,9 +193,13 @@ class XsmHost:
                 raise RuntimeError("operation still waiting; inspect its decision status")
         return result
 
-    async def _deliver_inbox(self, wake):
+    async def _deliver_inbox(self, wake, after_id=None):
         async with self.delivery_lock:
             args = {} if self.inbox_batch_size is None else {"limit": self.inbox_batch_size}
+            if self.inbox_max_bytes is not None:
+                args['max_bytes'] = self.inbox_max_bytes
+            if after_id is not None:
+                args['after_id'] = after_id
             packet = await self.client.operation_call(self.session["session"], "xsm_inbox", args)
             if not packet["messages"]:
                 return packet
@@ -208,7 +219,7 @@ class XsmHost:
                 raise
             return packet
 
-    def _schedule_delivery(self, delay=0):
+    def _schedule_delivery(self, delay=0, after_id=None):
         if self.closed or self.cancelled.is_set() or self.delivery_suspended:
             return
         if self.delivery_task and not self.delivery_task.done():
@@ -220,7 +231,7 @@ class XsmHost:
                     return
                 except asyncio.TimeoutError:
                     pass
-            await self._drain()
+            await self._drain(after_id)
         def finished(task):
             if not task.cancelled() and task.exception():
                 self.delivery_suspended = True
@@ -230,12 +241,15 @@ class XsmHost:
         self.delivery_task = asyncio.create_task(run())
         self.delivery_task.add_done_callback(finished)
 
-    async def _drain(self):
+    async def _drain(self, after_id=None):
         while self.pending_wake and not self.closed and not self.delivery_suspended:
             self.pending_wake = False
             try:
-                packet = await self._deliver_inbox(True)
-                if self.inbox_batch_size and len(packet["messages"]) >= self.inbox_batch_size and packet["claims"]:
+                packet = await self._deliver_inbox(True, after_id)
+                progressed = bool(packet['claims'] or (packet.get('next_after') and packet['next_after'] != after_id))
+                after_id = packet.get('next_after')
+                if progressed and (packet.get('batch_limited') or
+                        (self.inbox_batch_size and len(packet['messages']) >= self.inbox_batch_size)):
                     self.pending_wake = True
             except asyncio.CancelledError:
                 raise
@@ -253,7 +267,11 @@ class XsmHost:
             raise RuntimeError("native admission callback is not connected; use xsm_inbox")
         self.delivery_suspended = False
         try:
-            return await self._deliver_inbox(False)
+            packet = await self._deliver_inbox(False)
+            if packet.get('batch_limited') and packet.get('next_after'):
+                self.pending_wake = True
+                self._schedule_delivery(after_id=packet['next_after'])
+            return packet
         except RetryAdmission as error:
             self.pending_wake = True
             self._schedule_delivery(error.delay_seconds)

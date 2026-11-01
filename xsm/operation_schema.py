@@ -214,7 +214,10 @@ TOOLS = [
                   "description": "seconds to block until a message arrives (max 60 here; the "
                                  "shell `xsm inbox --wait` allows longer)"},
          "limit": {"type": "integer", "minimum": 1, "maximum": 100,
-                   "description": "Maximum rendered messages or notices in this read; omitted reads all eligible originals."}}},
+                   "description": "Maximum rendered messages or notices in this read; omitted reads all eligible originals."},
+         "max_bytes": {"type": "integer", "minimum": 1, "maximum": 1048576,
+                       "description": "UTF-8 budget for joined rendered messages. The first oversized item is returned alone for progress; originals are never truncated."},
+         "after_id": {"type": "string", "description": "Continue after next_after from this conversation's previous bounded read. Omit to restart."}}},
      "annotations": MESSAGING},
     {"name": "xsm_link",
      "description": ("Link this session's project folder with another folder, so the sessions "

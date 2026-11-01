@@ -20,6 +20,12 @@ Native 수신기를 연결할 때는 async `deliver(packet, options)`를 제공�
 없는 경우에는 반복하지 않는다. `natural_boundary()`는 설정된 배치 하나를 읽는다.
 이 설정은 바이트 예산이나 native queue의 용량 재시도를 대신하지 않는다.
 
+`inbox_max_bytes`는 UTF-8 렌더 본문의 배치 목표다(1–1048576). 첫 항목 자체가
+크면 자르지 않고 단독으로 받는다. `batch_limited`와 `next_after`를 이용해
+이어 읽으며, notice만 있는 앞 배치도 cursor를 전진시켜 뒤 원문에 도달한다.
+예산을 지원하지 않는 서버는 연결 준비 단계에서 거부한다. Native 경계에서
+성공한 제한 배치의 나머지도 백그라운드로 넘긴다.
+
 Native callback은 확실한 일시 거부에 `RetryAdmission(message, delay_seconds)`를
 사용할 수 있다. 자동 수신 루프는 claim을 먼저 반환하고 기본 0.25초 뒤 새
 token으로 다시 인수한다. 지연은 0초 초과 60초 이하다. 종료·연결 실패는 대기를

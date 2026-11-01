@@ -316,6 +316,24 @@ SDK caller와 hook은 fixture이며 실제 agent/model/UI 실행은 아니다.
 /isolated/node scripts/probe-openclaw-loader.mjs /isolated/node_modules/openclaw deliverables/openclaw-fyi-capacity.json --queue 1 --capacity-fyi
 ```
 
+## 바이트 예산과 큰 원문의 burst
+
+Native 수신기의 구현 기본값은 16개 항목/512 KiB UTF-8 렌더 본문이다.
+SDK가 제한된 inbox를 읽고 cursor를 따라 진행한다. Native 세대·정책 guard와
+전체 조각 공간 예약은 그대로 적용한다. 첫 oversized 원문은 단독으로 받으며,
+그 원문 자체가 32조각을 넘는 경우의 전송은 여전히 미완이다.
+
+실제 SDK의 burst fixture는 약 8만 UTF-16 길이 원문 32개를 소비 없이 먼저
+전송했다. 이후 native prompt helper에서 전체 본문·Unicode·공백과 조각을
+검사하고 원문별로 명시적 ACK를 보냈다. 2개씩 16묶음/총 96조각으로 모두
+수락·소비·ACK됐고 중복 소비는 없었다(`openclaw-byte-burst-first.json`).
+고의적인 소비 지연을 포함한 회복 시험이며 정상 부하의 100표본 p95 인증이 아니다.
+모델·사람과 실제 agent turn도 실행하지 않았다.
+
+```sh
+/isolated/node scripts/probe-openclaw-loader.mjs /isolated/node_modules/openclaw deliverables/openclaw-burst.json --queue 32 --burst-context
+```
+
 ```sh
 /isolated/node scripts/probe-openclaw-loader.mjs /isolated/node_modules/openclaw deliverables/openclaw-large.json --queue 100 --large-context
 ```

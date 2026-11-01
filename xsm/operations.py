@@ -481,6 +481,16 @@ class OperationService:
             limit = args.get("limit")
             if "limit" in args and (type(limit) is not int or not 1 <= limit <= 100):
                 raise ToolError('inbox limit must be an integer from 1 to 100')
+            max_bytes = args.get('max_bytes')
+            if 'max_bytes' in args and (type(max_bytes) is not int or not 1 <= max_bytes <= 1048576):
+                raise ToolError('inbox max_bytes must be an integer from 1 to 1048576')
+            after_id = args.get('after_id')
+            if 'after_id' in args:
+                from . import handoff
+                try:
+                    handoff._id(after_id)
+                except ValueError as error:
+                    raise ToolError(str(error))
             wait = float(args.get("wait") or 0)
             if not math.isfinite(wait) or wait < 0:
                 raise ToolError('wait must be finite and nonnegative')
@@ -495,7 +505,11 @@ class OperationService:
                 if call_owner in self.cancelled or (call_owner is not None and self._closed):
                     raise ToolError('inbox wait cancelled or input closed; original retained')
             owner, generation = receive.consumer_for(me)
-            pack = receive.take_inbox_claims(me, owner=owner, generation=generation, limit=limit)
+            try:
+                pack = receive.take_inbox_claims(me, owner=owner, generation=generation, limit=limit,
+                    max_bytes=max_bytes, after_id=after_id)
+            except ValueError as error:
+                raise ToolError(str(error))
             if pack["claims"]:
                 self.handoff_calls.setdefault(self.active_request, []).append((me, pack, owner, generation))
             return json.dumps(pack, ensure_ascii=False)

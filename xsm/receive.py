@@ -1185,7 +1185,7 @@ def _native_handoff(me, parsed):
 
 
 def take_inbox_claims(me, *, owner=None, generation=None, lease=120, passive_only=False,
-                      message_ids=None, limit=None):
+                      message_ids=None, limit=None, max_bytes=None, after_id=None):
     """Return rendered messages and unconfirmed claim descriptors.
 
     CLI/MCP pass their actual consumer owner/generation. This API never acks;
@@ -1195,6 +1195,8 @@ def take_inbox_claims(me, *, owner=None, generation=None, lease=120, passive_onl
     from . import handoff
     if limit is not None and (type(limit) is not int or not 1 <= limit <= 100):
         raise ValueError('inbox limit must be an integer from 1 to 100')
+    if max_bytes is not None and (type(max_bytes) is not int or not 1 <= max_bytes <= 1048576):
+        raise ValueError('inbox max_bytes must be an integer from 1 to 1048576')
     selected = None if message_ids is None else {handoff._id(mid) for mid in message_ids}
     if selected == set():
         return {"messages": [], "claims": []}
@@ -1217,11 +1219,38 @@ def take_inbox_claims(me, *, owner=None, generation=None, lease=120, passive_onl
     # lease. Normal inbox recovery remains the explicit recovery path.
     records = (handoff.recover(me, owner_alive=_consumer_alive) if selected is None else
                [handoff.status(me, mid) for mid in sorted(selected)])
+    if after_id is not None:
+        after_id = handoff._id(after_id)
+        position = next((index for index, record in enumerate(records) if record.get('id') == after_id), None)
+        if position is None:
+            raise ValueError('inbox cursor is no longer available; restart without after_id')
+        records = records[position + 1:]
     messages, claims = [], []
+    rendered_bytes, batch_limited, last_returned = 0, False, None
+    def room_for(text, token):
+        nonlocal batch_limited
+        if max_bytes is None:
+            return True
+        size = len(text.encode('utf-8')) + (2 if messages else 0)
+        if max_bytes is not None and messages and rendered_bytes + size > max_bytes:
+            handoff.release(me, token, owner, generation)
+            batch_limited = True
+            return False
+        return True
+    def append_text(text):
+        nonlocal rendered_bytes, last_returned
+        if max_bytes is not None:
+            rendered_bytes += len(text.encode('utf-8')) + (2 if messages else 0)
+        messages.append(text)
+        last_returned = record['id']
     acquired = []
     try:
         for record in records:
             if limit is not None and len(messages) >= limit:
+                batch_limited = True
+                break
+            if max_bytes is not None and messages and rendered_bytes >= max_bytes:
+                batch_limited = True
                 break
             if record.get('status') == 'not-found' or (selected is not None and record['id'] not in selected):
                 continue
@@ -1252,22 +1281,39 @@ def take_inbox_claims(me, *, owner=None, generation=None, lease=120, passive_onl
             decision, reason = check(parsed, me)
             if decision == "block":
                 if reason.startswith("P2P admission temporarily unavailable"):
+                    notice = "[xsm] Message %s awaits network revalidation; original retained." % record["id"]
+                    if not room_for(notice, token):
+                        break
                     handoff.release(me, token, owner, generation, delivery_state="pending")
                     handoff.delivery(me, record["id"], "pending", route="mcp-inbox")
-                    messages.append("[xsm] Message %s awaits network revalidation; original retained." % record["id"])
+                    append_text(notice)
                     continue
                 if reason.startswith('traffic '):
+                    notice = '[xsm] Deferred message %s: %s' % (record['id'], provenance.display_text(reason))
+                    if not room_for(notice, token):
+                        break
                     ledger.receipt(record['id'],'held',me,reason)
                     handoff.release(me,token,owner,generation,delivery_state='held')
-                    messages.append('[xsm] Deferred message %s: %s' % (record['id'],provenance.display_text(reason)))
+                    append_text(notice)
                     continue
+                notice = '[xsm] Message %s was refused (%s); original retained.' % (record['id'], provenance.display_text(reason))
+                if not room_for(notice, token):
+                    break
                 stored = hold(me.get("runtime") or "codex", reason, {}, me, parsed)
                 ledger.receipt(record["id"], "held" if stored else "blocked", me, reason)
                 handoff.release(me, token, owner, generation,
                                 delivery_state="held" if stored else "refused")
-                messages.append("[xsm] Message %s was refused (%s)%s." % (
+                append_text(notice if max_bytes is not None else "[xsm] Message %s was refused (%s)%s." % (
                     record["id"], provenance.display_text(reason), "; kept as %s" % stored if stored else "; original retained"))
                 continue
+            def render_current():
+                return _context(decision, reason, parsed, me.get("runtime") or "codex",
+                    worker=bool(os.environ.get("XSM_WORKER") and workers.load(os.environ["XSM_WORKER"])),
+                    cwd=me.get("cwd")) + _file_context(me, parsed) + "\n\n" + provenance.display_body(parsed.body)
+            if max_bytes is not None:
+                text = render_current()
+                if not room_for(text, token):
+                    break
             outcome = _outcome(parsed)
             # Preserve legacy delivery semantics but keep consumption/ack separate.
             if me.get("protocol_version") != "1":
@@ -1279,15 +1325,13 @@ def take_inbox_claims(me, *, owner=None, generation=None, lease=120, passive_onl
                 _index_reply(parsed, me, decision)
                 _close_task(parsed, outcome, me)
                 workers.on_reply(parsed.header.get("ref"), parsed.header.get("reply-to"), me, outcome)
-            text = _context(decision, reason, parsed, me.get("runtime") or "codex",
-                            worker=bool(os.environ.get("XSM_WORKER") and
-                                        workers.load(os.environ["XSM_WORKER"])),
-                            cwd=me.get("cwd")) + _file_context(me, parsed) + "\n\n" + provenance.display_body(parsed.body)
+            if max_bytes is None:
+                text = render_current()
             handoff.handoff(me, token, owner, generation)
             ledger.handoff_step(record["id"], "handoff", me)
             claims.append({"id": record["id"], "token": token, "owner": owner,
                            "generation": generation, "digest": record["digest"]})
-            messages.append(text)
+            append_text(text)
             # Native duplicates may be removed only with a recoverable canonical
             # original already committed. unavailable/absent is not a read ack.
             item = exports.get(record["id"], {})
@@ -1311,7 +1355,12 @@ def take_inbox_claims(me, *, owner=None, generation=None, lease=120, passive_onl
                 # original remains; explicit recovery handles the latter.
                 pass
         raise
-    return {"messages": messages, "claims": claims}
+    result = {"messages": messages, "claims": claims}
+    if limit is not None or max_bytes is not None or after_id is not None:
+        result.update(batch_limited=batch_limited, next_after=last_returned if batch_limited else None)
+    if max_bytes is not None:
+        result['rendered_bytes'] = rendered_bytes
+    return result
 
 
 def claim_question_replies(me, result, *, owner=None, generation=None):

@@ -61,6 +61,15 @@ Omitting it retains the existing unbounded read. Unselected originals stay
 pending, and selected originals still require explicit consumption ACK.
 The CLI exposes the same option as `xsm inbox --limit 2 --json`.
 
+`max_bytes` optionally targets 1–1048576 UTF-8 bytes of the joined rendered
+messages, including the two-newline separators. The first oversized item is
+returned whole and alone so it cannot starve; this is not a hard JSON frame
+limit. Results include `rendered_bytes` and `batch_limited`. Bounded reads
+return `next_after` when more scanning is needed. Pass it as `after_id` to
+continue within this conversation, or omit it to restart. A missing/pruned
+cursor is refused rather than silently selecting another inbox.
+The CLI exposes `--max-bytes` and `--after-id`.
+
 `events.subscribe` enables `events/available` notifications with the bound session
 and pending message IDs. Notifications neither claim nor acknowledge messages.
 The initialization response advertises `limits.claimLeaseSeconds`. Inbox results
@@ -184,8 +193,12 @@ reads. After a full batch that acquired originals, the helper keeps draining
 without requiring a fresh availability notification. A notice-only batch stops
 instead of repeating without progress. `naturalBoundary()` reads one configured
 batch. These options require a server that advertises `xsm_inbox.limit`.
-Defaults of the runtime bindings have not changed. Byte-aware admission remains
-unfinished.
+`inboxMaxBytes` (Python: `inbox_max_bytes`) configures the UTF-8 target and
+requires server advertisement. Bounded automatic reads follow `next_after`,
+including notice-only progress, so temporarily deferred originals do not hide
+later eligible messages. Successful limited boundary reads schedule their
+remainder in the background. OpenClaw uses implementation defaults of 16 items
+and 512 KiB; the other binding defaults are unchanged.
 
 A native delivery callback may throw `RetryAdmission(message, delayMs)` for a
 definite transient refusal. The automatic loop releases its own claims first,

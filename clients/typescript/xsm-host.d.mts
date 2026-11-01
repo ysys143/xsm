@@ -18,6 +18,7 @@ export interface HostOptions extends ConnectOptions {
   conversation: string;
   cwd: string;
   inboxBatchSize?: number;
+  inboxMaxBytes?: number;
   deliver?: (packet: InboxPacket, options: { wake: boolean; signal: AbortSignal; leaseSeconds: number }) => Promise<void | boolean>;
   present?: (event: Notification, options: { signal: AbortSignal }) => Promise<{
     displayed: string; sourceId: string; answer?: string | null; action?: 'accept' | 'decline' | 'cancel';

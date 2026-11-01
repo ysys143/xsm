@@ -51,7 +51,8 @@ export function register(api, options = {}) {
         });
         entry.deliveryConnected = Boolean(deliver);
         const connect = () => XsmHost.open({ command, env: options.env, runtime: 'openclaw',
-          profile, conversation: entry.id, cwd, onError: fail, deliver });
+          profile, conversation: entry.id, cwd, onError: fail, deliver,
+          ...(deliver ? { inboxBatchSize: 16, inboxMaxBytes: 524288 } : {}) });
         return api.lifecycle.runInBackgroundContext ? api.lifecycle.runInBackgroundContext(connect) : connect();
       })();
       entry.pending = pending;
