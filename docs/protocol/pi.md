@@ -182,7 +182,40 @@ backoff를 포함해 통과했다(`pi-auto-reconnect-verified.log`). 자동 복�
 실제 모델/사람의 소비 증거는 아니다.
 
 공통 375개는 58.748초에 통과했다(`pi-auto-reconnect-gate.log`). 최초 backend
-생성 전 실패의 자동 재시도, Pi 프로세스의 component lease를 통한 업데이트/
-제거 중 이전 snapshot 보존, 다른 runtime의 자동 재접속·worker·Linux와 전체
+생성 전 실패의 자동 재시도, 다른 runtime의 자동 재접속·worker·Linux와 전체
 P0–P5의 남은 조건은 미완이다. 현재 표본은 같은 runtime snapshot이 남아 있는
 등록 세션의 transport 복구를 검증했다.
+
+
+## 로드된 코드의 snapshot lease
+
+설치 snapshot의 Pi 확장은 native Pi PID·시작 시각에 결속한 pi-extension
+component lease를 확보한다. Backend가 종료돼 재접속을 기다리더라도 native
+확장이 쓰는 코드를 prune하지 않는다. new/resume/fork에서는 lease를 유지하고
+quit/reload에서 host와 진행 중 등록을 정리한 뒤 해제한다. Checkout 직접 연결은
+snapshot prune 대상이 아니므로 이 lease를 만들지 않는다.
+
+공통 Node helper는 clients/typescript/component-lease.mjs에 두고 OpenCode의
+기존 경로는 compatibility export로 유지했다. 로드된 root가 lease 위치를
+결정하고 설치 소유권 기록의 runtime/home과 고정 Python을 대조한다. Runtime
+정리기는 pi-extension도 유효한 component로 읽는다.
+
+제어 검사 12개는 세 전환 모드의 lease 유지와 reload 해제를 통과했다
+(`pi-component-lifecycle-all-transitions.log`). Lease 확보를 생략한 변이는
+실패했다(`pi-component-lease-mutant.log`). 별도 Python prune 검사는 protocol
+backend 없이 Pi lease만 있을 때 old root가 남고, PID가 죽으면 회수되는 것을
+대조한다. Python 3.9.6 관련 40개도 통과했다(`pi-component-python39.log`).
+
+실제 Pi 1.4.0에서 새 snapshot을 게시·prune해도 실행 중인 old root가 남았고,
+정상 quit 뒤에는 회수됐다. 이 업데이트 표본의 수신/RPC 명령 ACK 100개와
+현재 구현 해시를 확인했으며 p95 상한은 432.114ms다
+(`pi-component-upgrade-native-100/result.json`, `pi-component-upgrade-ack-audit.json`).
+별도 업데이트 후 binding 제거 표본에서도 old root 유지·수신/ACK 5회·quit 뒤
+회수가 통과했다(`pi-component-remove-native/result.json`). 이미 로드된 확장의
+파일 제거는 native reload/quit까지 실행을 중지시키는 조치가 아니다.
+
+실제 프로브의 유지 단계에는 backend도 살아 있었으며, backend 없는 경우의
+독립 원인은 Python prune 검사로 구분한다. 모델 추론·사람 UI 인증은 아니다.
+공통 377개는 59.067초에 통과했다(`pi-component-gate.log`). 공통 helper를 쓰는
+OpenCode 1.19.5의 수락/native ACK 5회 회귀도 통과했다
+(`shared-component-opencode-native/result.json`). 전체 P0–P5 나머지는 미완이다.

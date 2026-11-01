@@ -15,7 +15,7 @@ from . import identity, install, paths
 def hold(component="opencode-tui", expected_parent=None):
     """Called by a short-lived child of the native UI; serialize with pruning."""
     root = os.path.realpath(Path(__file__).resolve().parents[1])
-    if component not in ("opencode-tui", "opencode-server", "hermes-plugin"):
+    if component not in ("opencode-tui", "opencode-server", "hermes-plugin", "pi-extension"):
         raise install.InstallConflictError("unsupported native component")
     if os.path.dirname(root) != os.path.realpath(install.runtime_dir()) or not install._ID.fullmatch(os.path.basename(root)):
         raise install.InstallConflictError("native component did not load an installed snapshot")
@@ -62,7 +62,7 @@ def active_records():
         finally:
             os.close(fd)
         if (not isinstance(value, dict) or value.get("componentLease") != 1 or
-                value.get("component") not in ("opencode-tui", "opencode-server", "hermes-plugin") or not isinstance(value.get("id"), str) or
+                value.get("component") not in ("opencode-tui", "opencode-server", "hermes-plugin", "pi-extension") or not isinstance(value.get("id"), str) or
                 value.get("clock") not in (None, "utc-c") or
                 not re.fullmatch(r"[0-9a-f]{32}", value["id"]) or filename.name != value["id"] + ".json" or
                 type(value.get("pid")) is not int or value["pid"] <= 0 or

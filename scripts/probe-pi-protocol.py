@@ -12,6 +12,7 @@ import os
 from pathlib import Path
 import signal
 import shlex
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -114,8 +115,8 @@ async def run(args):
               "installation": installation,
               "runtimeVersion": version, "platform": sys.platform, "python": sys.version.split()[0],
               "sourceSha256": {name: hashlib.sha256((ROOT / name).read_bytes()).hexdigest()
-                  for name in ("integrations/pi/xsm.mjs", "clients/typescript/xsm-host.mjs",
-                               "xsm/protocol.py", "xsm/receive.py", "scripts/probe-pi-protocol.py")},
+                  for name in ("integrations/pi/xsm.mjs", "clients/typescript/xsm-host.mjs", "clients/typescript/component-lease.mjs",
+                               "xsm/protocol.py", "xsm/receive.py", "xsm/component_leases.py", "scripts/probe-pi-protocol.py")},
               "modelConfigured": False, "physicalHumanUiTested": False, "samples": [],
               "measurement": "send initiation to native message_start observation; upper bound on store-to-admission"}
     def checkpoint():
@@ -173,6 +174,39 @@ async def run(args):
             assert recovered["protocol_generation"] != previous["protocol_generation"]
             result["backendRecovery"] = {"sameRef": True, "generationChanged": True,
                 "oldPid": previous["pid"], "newPid": recovered["pid"], "trigger": "automatic reconnect before native entry" if getattr(args, "auto_reconnect", False) else "native /xsm status; no failed operation replay"}
+            checkpoint()
+        if getattr(args, "lease_update", False):
+            lease_files = list((state / "component-leases").glob("*.json"))
+            leases = [json.loads(path.read_text()) for path in lease_files]
+            lease = next(item for item in leases if item["component"] == "pi-extension" and item["pid"] == process.pid)
+            loaded_root = Path(lease["root"])
+            assert loaded_root.resolve() == Path(installation["runtime_root"]).resolve()
+            inventory_code = "import sys,json;sys.path.insert(0,sys.argv[1]);from xsm.install import runtime_files,SNAPSHOT_FILES;print(json.dumps(runtime_files(sys.argv[1],SNAPSHOT_FILES)))"
+            inventory = json.loads(subprocess.run([sys.executable, "-B", "-c", inventory_code, str(ROOT)],
+                cwd=project, env=env, capture_output=True, text=True, check=True).stdout)
+            checkout = temp / "updated-checkout"
+            for filename in inventory:
+                relative = Path(filename).relative_to(ROOT)
+                destination = checkout / relative
+                destination.parent.mkdir(parents=True, exist_ok=True)
+                shutil.copy2(filename, destination)
+            with (checkout / "xsm/__init__.py").open("a") as stream:
+                stream.write("\n# isolated snapshot upgrade fixture\n")
+            boot = "import runpy,sys;sys.path.insert(0,sys.argv.pop(1));runpy.run_module('xsm',run_name='__main__')"
+            updated = subprocess.run([sys.executable, "-B", "-c", boot, str(checkout), "protocol", "install", "pi", "--home", str(pi_home)],
+                cwd=project, env=env, capture_output=True, text=True, check=True)
+            published = json.loads(updated.stdout)
+            assert Path(published["runtime_root"]).resolve() != loaded_root.resolve()
+            if getattr(args, "lease_remove", False):
+                subprocess.run([sys.executable, "-B", "-c", boot, str(ROOT), "protocol", "uninstall", "pi", "--home", str(pi_home)],
+                    cwd=project, env=env, capture_output=True, text=True, check=True)
+                assert not (pi_home / "extensions/xsm.js").exists()
+            prune_code = "import sys,json;sys.path.insert(0,sys.argv[1]);from xsm.install import prune_snapshots;print(json.dumps(prune_snapshots()))"
+            pruned = json.loads(subprocess.run([sys.executable, "-B", "-c", prune_code, str(ROOT)],
+                cwd=project, env=env, capture_output=True, text=True, check=True).stdout)
+            assert loaded_root.exists() and loaded_root.name not in pruned
+            result["componentLeaseUpdate"] = {"loadedRoot": str(loaded_root), "publishedRoot": published["runtime_root"],
+                "componentPid": lease["pid"], "nativePid": process.pid, "retainedAfterUpgrade": True, "bindingRemovedWhileLoaded": getattr(args, "lease_remove", False)}
             checkpoint()
         # Exercise the real native select dialog protocol. The driver supplies
         # the answer; this is not attributed to a physical human.
@@ -240,6 +274,17 @@ async def run(args):
         result["exit"] = process.returncode
         if process.returncode or result.get("forcedTermination"):
             result["status"] = "failed"
+        if result.get("componentLeaseUpdate"):
+            try:
+                code = "import sys,json;sys.path.insert(0,sys.argv[1]);from xsm.install import prune_snapshots;from xsm.component_leases import active_records;print(json.dumps({'active':active_records(),'removed':prune_snapshots()}))"
+                reclaimed = json.loads(subprocess.run([sys.executable, "-B", "-c", code, str(ROOT)],
+                    cwd=project, env=env, capture_output=True, text=True, check=True).stdout)
+                old_root = Path(result["componentLeaseUpdate"]["loadedRoot"])
+                assert not any(item["pid"] == process.pid for item in reclaimed["active"])
+                assert old_root.name in reclaimed["removed"] and not old_root.exists()
+                result["componentLeaseUpdate"]["reclaimedAfterQuit"] = True
+            except Exception as error:
+                result.update(status="failed", leaseReclaimError=repr(error))
         await native.stderr
         native.stdout_file.close()
         native.stderr_file.close()
@@ -254,10 +299,16 @@ if __name__ == "__main__":
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--samples", type=int, default=2)
     parser.add_argument("--bootstrap-failure", action="store_true")
+    parser.add_argument("--lease-remove", action="store_true")
+    parser.add_argument("--lease-update", action="store_true")
     parser.add_argument("--auto-reconnect", action="store_true")
     parser.add_argument("--crash", action="store_true")
     parser.add_argument("--installed", action="store_true", help="test profile autoload from an owned runtime snapshot")
     options = parser.parse_args()
+    if options.lease_remove and not options.lease_update:
+        parser.error("--lease-remove requires --lease-update")
+    if options.lease_update and not options.installed:
+        parser.error("--lease-update requires --installed")
     if options.samples < 0:
         parser.error("samples must be nonnegative")
     async def bounded_run():

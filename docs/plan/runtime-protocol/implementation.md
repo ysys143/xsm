@@ -1359,3 +1359,31 @@ backoff를 제거한 변이는 각각 실패했다
 통과했다(`pi-auto-reconnect-gate.log`). Pi의 설치 업데이트/제거와 겹친 runtime
 보존은 component lease 추가 검증이 남아 있다. 다른 runtime 자동 복구·최초
 생성 전 실패·worker·Linux·원격·전체 방향 조합과 P0–P5 나머지는 미완이다.
+
+## Pi 실행 코드의 snapshot 수명
+
+Pi에 pi-extension component lease를 연결했다. 등록 backend와 별도로 native
+PID/시작 시각이 old runtime을 보존한다. Native new/resume/fork는 코드를 다시
+로드하지 않으므로 lease를 유지하고 quit/reload 뒤 해제한다. Shared Node helper를
+clients/typescript로 옮기고 OpenCode의 기존 모듈 경로는 re-export로 보존했다.
+설치 자산 검사에도 shared helper를 포함했다.
+
+제어 수명 12개는 모든 전환 모드와 reload 해제를 통과했다
+(`pi-component-lifecycle-all-transitions.log`). Lease 없는 변이는 실패했다
+(`pi-component-lease-mutant.log`). Python prune 검사는 protocol backend가 없어도
+Pi lease가 old root를 보존하고 native PID가 죽으면 회수되는 것을 확인한다.
+Python 3.9.6 관련 40개도 통과했다(`pi-component-python39.log`).
+
+실제 Pi 1.4.0은 새 snapshot 게시/prune 뒤 old root를 유지하고 quit 뒤 회수했다.
+수신/RPC 명령 ACK 100개, 현재 구현 해시 일치와 macOS/protocol Python 3.14.6
+p95 상한 432.114ms를 확인했다(`pi-component-upgrade-native-100/result.json`,
+`pi-component-upgrade-ack-audit.json`). 별도 업데이트 후 binding 제거의 5회 표본도
+old root 유지·수신/ACK·quit 뒤 회수가 통과했다
+(`pi-component-remove-native/result.json`). 실제 유지 단계에는 protocol backend도
+살아 있었으므로 backend 독립 보존의 원인은 Python 단독 검사와 구분한다.
+
+공통 377개(핵심 232, Python 44, Node 101)는 Python 3.14.6에서 59.067초에
+통과했다(`pi-component-gate.log`). OpenCode 1.19.5 실제 native 수락/ACK 5회도
+회귀 통과했다(`shared-component-opencode-native/result.json`). 모든 답/소비는
+fixture이며 모델·사람 UI 인증이 아니다. 자동 복구의 다른 runtime·worker·
+Linux·원격·전체 방향 조합을 포함한 P0–P5 나머지는 미완이다.

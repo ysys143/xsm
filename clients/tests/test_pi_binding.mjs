@@ -19,7 +19,7 @@ async function fixture(t, options = {}) {
   const hooks = new Map(), commands = new Map(), opened = [], entered = deferred(), release = deferred();
   let pause = false, pauseUpdate = false, attempts = 0;
   const attemptTimes = [];
-  const tools = new Map();
+  const tools = new Map(), leases = { held: 0, released: 0 };
   const XsmHost = { async open(hostOptions) {
     attemptTimes.push(performance.now());
     if (++attempts === 1 && options.failOpen) throw new Error("initial backend unavailable");
@@ -31,13 +31,19 @@ async function fixture(t, options = {}) {
     if (pause) { entered.resolve(); await release.promise; }
     return host;
   } };
-  globalThis[key] = { XsmHost, getAgentDir: () => temp };
+  globalThis[key] = { XsmHost, getAgentDir: () => temp, holdComponent: async () => { leases.held++; return async () => { leases.released++; }; } };
   let code = await readFile(new URL('../../integrations/pi/xsm.mjs', import.meta.url), 'utf8');
+  code = code.replace("import { holdComponent } from '../../clients/typescript/component-lease.mjs';", `const {holdComponent}=globalThis[${JSON.stringify(key)}];`);
   code = code.replace("import { getAgentDir } from '@earendil-works/pi-coding-agent';", '');
   code = code.replace("import { XsmHost, RetryAdmission, parseHostCommand, renderInboxPacket } from '../../clients/typescript/xsm-host.mjs';",
     `import { RetryAdmission, parseHostCommand, renderInboxPacket } from ${JSON.stringify(new URL('../typescript/xsm-host.mjs', import.meta.url).href)};\nconst {XsmHost,getAgentDir}=globalThis[${JSON.stringify(key)}];`);
   if (process.env.XSM_PI_LIFETIME_MUTANT === 'backoff') {
     const changed = code.replace('reconnectDelay = Math.min(reconnectDelay * 2, 5000);', 'reconnectDelay = 1;');
+    assert.notEqual(changed, code);
+    code = changed;
+  }
+  if (process.env.XSM_PI_LIFETIME_MUTANT === 'lease') {
+    const changed = code.replace("holdComponent(profile, 'pi-extension', 'pi')", 'Promise.resolve(async () => {})');
     assert.notEqual(changed, code);
     code = changed;
   }
@@ -62,7 +68,7 @@ async function fixture(t, options = {}) {
   t.after(async () => { release.resolve(); await hooks.get('session_shutdown')(); delete globalThis[key]; await rm(temp, { recursive: true, force: true }); });
   if (options.failOpen || options.failUpdate) await assert.rejects(hooks.get('session_start')({}, ctx), /initial/);
   else await hooks.get('session_start')({}, ctx);
-  return { ctx, hooks, opened, entered, release, tools, attemptTimes,
+  return { ctx, hooks, opened, entered, release, tools, attemptTimes, leases,
     pause: () => { pause = true; }, pauseUpdate: () => { pauseUpdate = true; }, command: context => commands.get('xsm').handler('status', context ?? ctx) };
 }
 
@@ -172,4 +178,18 @@ test('Pi backs off failed reconnects then recovers without replay', { timeout: 5
   assert.equal(f.attemptTimes.length, 4);
   assert.ok(f.attemptTimes[2] - f.attemptTimes[1] >= 450);
   assert.ok(f.attemptTimes[3] - f.attemptTimes[2] >= 950);
+});
+
+
+test('Pi keeps one runtime lease across native conversation changes', async t => {
+  const f = await fixture(t);
+  assert.equal(f.leases.held, 1);
+  for (const reason of ['new', 'resume', 'fork']) {
+    await f.hooks.get('session_shutdown')({ reason });
+    assert.equal(f.leases.released, 0);
+    await f.hooks.get('session_start')({}, f.ctx);
+    assert.equal(f.leases.held, 1);
+  }
+  await f.hooks.get('session_shutdown')({ reason: 'reload' });
+  assert.equal(f.leases.released, 1);
 });

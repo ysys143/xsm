@@ -20,7 +20,7 @@ from . import install, paths
 BINDINGS = {"hermes": ("plugins", "xsm", "integrations/hermes/xsm.py"),
             "pi": ("extensions", "xsm.js", "integrations/pi/xsm.mjs"),
             "opencode": ("plugins", "xsm.js", "integrations/opencode/xsm.mjs")}
-SHARED = ("clients/typescript/xsm-client.mjs", "clients/typescript/xsm-host.mjs", "bin/xsm", "xsm/protocol.py")
+SHARED = ("clients/typescript/component-lease.mjs", "clients/typescript/xsm-client.mjs", "clients/typescript/xsm-host.mjs", "bin/xsm", "xsm/protocol.py")
 NATIVE_ASSETS = {"opencode": ("integrations/opencode/ui-channel.mjs", "integrations/opencode/question-ui.mjs",
                                "integrations/opencode/tui.mjs", "integrations/opencode/component-lease.mjs")}
 NOFOLLOW = getattr(os, "O_NOFOLLOW", 0)

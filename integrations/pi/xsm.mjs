@@ -1,6 +1,7 @@
 /** Pi 1.4 host binding. Collaboration policy and recovery live in xsm. */
 import { randomUUID } from 'node:crypto';
 import { mkdir, realpath } from 'node:fs/promises';
+import { holdComponent } from '../../clients/typescript/component-lease.mjs';
 import { TransportError } from '../../clients/typescript/xsm-client.mjs';
 import { getAgentDir } from '@earendil-works/pi-coding-agent';
 import { XsmHost, RetryAdmission, parseHostCommand, renderInboxPacket } from '../../clients/typescript/xsm-host.mjs';
@@ -14,6 +15,7 @@ export default function xsm(pi, options = {}) {
   let recovering;
   let active = false;
   let toolsRegistered = false;
+  let componentLease;
   let reconnectTimer;
   let reconnectDelay = 250;
   const admissions = new Map();
@@ -65,6 +67,13 @@ export default function xsm(pi, options = {}) {
     const profile = await realpath(getAgentDir());
     const cwd = await realpath(ctx.cwd);
     if (token !== epoch || ctx.sessionManager.getSessionId() !== currentConversation) throw new Error('native session changed during registration');
+    if (!componentLease) {
+      const pending = holdComponent(profile, 'pi-extension', 'pi');
+      componentLease = pending;
+      pending.catch(() => { if (componentLease === pending) componentLease = undefined; });
+    }
+    await componentLease;
+    if (token !== epoch) throw new Error('native session changed while acquiring snapshot lease');
     nativeContext = ctx;
     conversation = currentConversation;
     workspace = cwd;
@@ -187,7 +196,7 @@ export default function xsm(pi, options = {}) {
   pi.on('agent_start', (_event, ctx) => active && ensure(ctx).then(current => current.update('busy')).catch(fail));
   pi.on('agent_settled', (_event, ctx) => active && ensure(ctx).then(current => current.update('idle')).catch(fail));
   pi.on('session_info_changed', (event, ctx) => active && ensure(ctx).then(current => current.update(ctx.isIdle() ? 'idle' : 'busy', event.name ?? '')).catch(fail));
-  pi.on('session_shutdown', async () => {
+  pi.on('session_shutdown', async (event = {}) => {
     cancelReconnect();
     active = false;
     ++epoch;
@@ -196,6 +205,11 @@ export default function xsm(pi, options = {}) {
     for (const admission of [...admissions.values()]) admission.reject();
     await closing?.close();
     await pending?.catch(() => {});
+    if (!['new', 'resume', 'fork'].includes(event.reason)) {
+      const lease = componentLease;
+      componentLease = undefined;
+      if (lease) await (await lease)();
+    }
   });
 
   pi.registerCommand('xsm', {
