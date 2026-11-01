@@ -24,10 +24,12 @@ from xsm_client import XsmClient
 
 class AssistantFixture:
     """Explicit scripted assistant packets, never a language model or human answer."""
-    def __init__(self, output):
+    def __init__(self, output, question=None):
         self.calls = 0
         self.tokens = set()
         self.lock = threading.Lock()
+        self.question = question
+        self.question_issued = False
         fixture = self
 
         class Handler(BaseHTTPRequestHandler):
@@ -49,17 +51,23 @@ class AssistantFixture:
                 with fixture.lock:
                     fresh = [token for token in tokens if token not in fixture.tokens]
                     use_tool = bool(fresh) and 'xsm_ack' in available
+                    tool_name, tool_args = 'xsm_ack', {'tokens': fresh}
+                    if fixture.question and not fixture.question_issued and 'xsm_decide' in available:
+                        use_tool = True
+                        tool_name, tool_args = 'xsm_decide', {'question': fixture.question, 'options': ['blue', 'green']}
+                        fixture.question_issued = True
                     if use_tool:
                         fixture.tokens.update(fresh)
                         fixture.calls += 1
                     with (output / 'assistant-fixture.jsonl').open('a') as stream:
-                        stream.write(json.dumps({'request': request, 'ackFixture': use_tool}) + '\n')
+                        stream.write(json.dumps({'request': request, 'ackFixture': use_tool and tool_name == 'xsm_ack',
+                                                 'toolFixture': tool_name if use_tool else None}) + '\n')
                 delta = {'content': 'Explicit assistant fixture; no model inference.'}
                 reason = 'stop'
                 if use_tool:
                     delta = {'tool_calls': [{'index': 0, 'id': 'call_fixture_' + str(fixture.calls),
-                              'type': 'function', 'function': {'name': 'xsm_ack',
-                              'arguments': json.dumps({'tokens': fresh})}}]}
+                              'type': 'function', 'function': {'name': tool_name,
+                              'arguments': json.dumps(tool_args)}}]}
                     reason = 'tool_calls'
                 packets = [{'id': 'fixture', 'object': 'chat.completion.chunk', 'created': int(time.time()),
                             'model': 'fixture', 'choices': [{'index': 0, 'delta': delta, 'finish_reason': None}]},

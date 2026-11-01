@@ -35,6 +35,8 @@ class HostInstallTest(TempState):
         self.assertIn(b"import { tool } from '@opencode-ai/plugin'", loader.read_bytes())
         self.assertIn(b"schema: tool.schema", loader.read_bytes())
         self.assertTrue((Path(result["runtime_root"]) / "integrations/opencode/xsm.mjs").is_file())
+        for filename in host_install.NATIVE_ASSETS["opencode"]:
+            self.assertTrue((Path(result["runtime_root"]) / filename).is_file(), filename)
         self.assertFalse(host_install.apply("opencode", str(profile))["changed"])
         original = loader.read_bytes()
         loader.write_bytes(original + b"// user edit\n")
@@ -45,6 +47,14 @@ class HostInstallTest(TempState):
         self.assertFalse(loader.exists())
         self.assertEqual(settings.read_text(), '{"user":"retain"}')
         self.assertEqual(stat.S_IMODE(settings.stat().st_mode), 0o640)
+
+    def test_missing_native_ui_module_refuses_install_before_creating_a_profile(self):
+        from xsm import host_install
+        (self.source / "integrations/opencode/ui-channel.mjs").unlink()
+        profile = Path(self.user_home, "missing-opencode")
+        with self.assertRaisesRegex(ValueError, "lacks native host assets"):
+            host_install.apply("opencode", str(profile))
+        self.assertFalse(profile.exists())
 
     def test_clean_install_idempotent_and_complete_assets_leave_settings_untouched(self):
         from xsm import host_install

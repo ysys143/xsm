@@ -4,6 +4,7 @@ import argparse
 import asyncio
 import fcntl
 import hashlib
+import importlib.util
 import json
 import os
 from pathlib import Path
@@ -104,11 +105,29 @@ def run(args):
         path.mkdir(parents=True)
     (profile / 'node_modules').symlink_to(args.native_root.resolve() / 'node_modules', target_is_directory=True)
     subprocess.run(['git', 'init', '-q', str(work)], check=True)
+    assistant = None
+    fixture_url = 'http://127.0.0.1:9/v1'
+    if args.native_bridge:
+        spec = importlib.util.spec_from_file_location('xsm_native_fixture', ROOT / 'scripts/probe-opencode-protocol.py')
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        assistant = module.AssistantFixture(args.output)
+        fixture_url = 'http://127.0.0.1:' + str(assistant.server.server_port) + '/v1'
+        plugins = profile / 'plugins'
+        plugins.mkdir()
+        command = [sys.executable, '-B', '-c',
+                   "import runpy,sys;sys.path.insert(0,sys.argv.pop(1));runpy.run_module('xsm',run_name='__main__')",
+                   str(ROOT), 'protocol', 'serve', '--stdio']
+        (plugins / 'xsm.js').write_text('import { tool } from "@opencode-ai/plugin";\nimport binding from ' +
+            json.dumps((ROOT / 'integrations/opencode/xsm.mjs').as_uri()) +
+            ';\nexport default api => binding(api, { schema: tool.schema, nativeUi: true, command: ' +
+            json.dumps(command) + ' });\n')
     (profile / 'opencode.json').write_text(json.dumps({
         'enabled_providers': ['xsm-fixture'], 'model': 'xsm-fixture/fixture',
         'provider': {'xsm-fixture': {'npm': '@ai-sdk/openai-compatible', 'name': 'No model fixture',
-            'options': {'baseURL': 'http://127.0.0.1:9/v1'},
+            'options': {'baseURL': fixture_url},
             'models': {'fixture': {'name': 'fixture', 'limit': {'context': 32000, 'output': 1000}}}}},
+        'permission': {'*': 'deny', 'xsm_decide': 'allow'},
     }))
     env = {key: os.environ[key] for key in ('PATH', 'LANG', 'TMPDIR') if key in os.environ}
     env.update(HOME=str(home), XDG_CONFIG_HOME=str(temp / 'config'), XDG_DATA_HOME=str(temp / 'data'),
@@ -130,8 +149,13 @@ def run(args):
     result = {'status': 'running', 'root': str(temp), 'runtimeVersion': version,
               'modelInferenceTested': False, 'physicalHumanInputTested': False,
               'automatedKeypressFixture': True, 'protocolDecisionApplied': False,
+              'nativeServerTuiBridge': args.native_bridge,
               'sourceSha256': {name: hashlib.sha256((ROOT / name).read_bytes()).hexdigest() for name in
                                ('integrations/opencode/question-ui.mjs', 'scripts/probe-opencode-question-ui.py')}}
+    if args.native_bridge:
+        for name in ('integrations/opencode/ui-channel.mjs', 'integrations/opencode/xsm.mjs',
+                     'integrations/opencode/tui.mjs', 'scripts/probe-opencode-protocol.py'):
+            result['sourceSha256'][name] = hashlib.sha256((ROOT / name).read_bytes()).hexdigest()
     tui_pid = None
     master = None
     protocol = None
@@ -150,9 +174,13 @@ def run(args):
             native = json.load(response)
         events = args.output / 'ui-events.jsonl'
         question = 'XSM runtime UI probe: choose a color\nScope: ' + native['id']
-        protocol = ProtocolQuestion(env, work, profile, native['id'], question)
-        decision_event = protocol.question()
-        params = decision_event['params']
+        if args.native_bridge:
+            assistant.question = question
+            params = None
+        else:
+            protocol = ProtocolQuestion(env, work, profile, native['id'], question)
+            decision_event = protocol.question()
+            params = decision_event['params']
         plugin = temp / 'question-probe.mjs'
         script = '''import { appendFileSync } from 'node:fs';
 import { presentQuestion } from MODULE;
@@ -181,7 +209,28 @@ export default { id: 'xsm-native-question-probe', tui: async api => {
   api.lifecycle.onDispose(() => clearInterval(timer));
 } };
 '''
-        for key, value in {'MODULE': (ROOT / 'integrations/opencode/question-ui.mjs').as_uri(),
+        if args.native_bridge:
+            script = '''import { appendFileSync } from 'node:fs';
+import companion from MODULE;
+const record = event => appendFileSync(EVENTS, JSON.stringify(event) + '\\n');
+export default { id: 'xsm-native-bridge-probe', tui: async api => {
+  const nativeSelect = api.ui.DialogSelect;
+  const ui = { ...api.ui, DialogSelect: props => {
+    record({ type: 'render', title: props.title, options: props.options });
+    return nativeSelect(props);
+  } };
+  await companion.tui({ ...api, ui });
+  record({ type: 'plugin-loaded', version: api.app.version });
+  const timer = setInterval(() => {
+    if (api.route.current.name !== 'session' || !api.state.session.get(CONVERSATION)) return;
+    clearInterval(timer);
+    record({ type: 'native-ready', conversation: api.route.current.params.sessionID });
+  }, 50);
+  api.lifecycle.onDispose(() => clearInterval(timer));
+} };
+'''
+        for key, value in {'MODULE': (ROOT / ('integrations/opencode/tui.mjs' if args.native_bridge
+                                            else 'integrations/opencode/question-ui.mjs')).as_uri(),
                            'EVENTS': str(events), 'CONVERSATION': native['id'], 'PARAMS': params}.items():
             script = script.replace(key, json.dumps(value))
         plugin.write_text(script)
@@ -192,6 +241,7 @@ export default { id: 'xsm-native-question-probe', tui: async api => {
             os.execve(str(binary), [str(binary), 'attach', url, '--dir', str(work), '--session', native['id']], env)
         fcntl.ioctl(master, termios.TIOCSWINSZ, struct.pack('HHHH', 44, 140, 0, 0))
         entered = False
+        triggered = False
         deadline = time.monotonic() + 40
         while time.monotonic() < deadline:
             ready, _, _ = select.select([master], [], [], .05)
@@ -203,6 +253,13 @@ export default { id: 'xsm-native-question-probe', tui: async api => {
                 screen += chunk
                 (args.output / 'terminal.raw').write_bytes(screen)
             records = [json.loads(line) for line in events.read_text().splitlines()] if events.exists() else []
+            if args.native_bridge and not triggered and any(row['type'] == 'native-ready' for row in records):
+                req = urllib.request.Request(url + '/session/' + native['id'] + '/prompt_async',
+                    data=json.dumps({'parts': [{'type': 'text', 'text': 'Run the explicit xsm UI fixture'}]}).encode(),
+                    headers={'Content-Type': 'application/json'})
+                with urllib.request.urlopen(req, timeout=5) as response:
+                    assert response.status == 204
+                triggered = True
             if any(row['type'] == 'failed' for row in records):
                 raise RuntimeError(str(records[-1]))
             plain = re.sub(r'\x1b\[[0-?]*[ -/]*[@-~]', '', screen.decode(errors='replace'))
@@ -210,6 +267,37 @@ export default { id: 'xsm-native-question-probe', tui: async api => {
                     any(row['type'] == 'render' for row in records):
                 os.write(master, b'\r' if args.action == 'choose' else b'\x1b')
                 entered = True
+            if args.native_bridge and entered:
+                decisions = [json.loads(path.read_text()) for path in (temp / 'state/human-decisions').glob('*.json')]
+                decision = next((item for item in decisions if item['question'] == question), None)
+                expected = 'applied' if args.action == 'choose' else 'dismissed'
+                if decision and decision['status'] == expected:
+                    with urllib.request.urlopen(url + '/session/' + native['id'] + '/message?limit=1000', timeout=5) as response:
+                        messages = json.load(response)
+                    completed = [part for message in messages for part in message['parts']
+                                 if part.get('tool') == 'xsm_decide' and part.get('state', {}).get('status') == 'completed']
+                    if completed:
+                        assert decision['answer']['source'] == 'host-user'
+                        assert decision['display']['complete']
+                        control = [part for message in messages for part in message['parts']
+                                   if part.get('metadata', {}).get('xsmUi')]
+                        assert len(control) >= 4, control
+                        assert all(part['ignored'] and part['synthetic'] and not part['text'] for part in control)
+                        model_requests = (args.output / 'assistant-fixture.jsonl').read_text()
+                        observed_requests = [json.loads(line)['request'] for line in model_requests.splitlines()]
+                        if not any(message.get('role') == 'tool' for req in observed_requests
+                                   for message in req.get('messages', [])):
+                            continue  # Inspect a post-tool inference request, after all UI frames were stored.
+                        assert 'xsmUi' not in model_requests
+                        for part in control:
+                            assert part['metadata']['xsmUi']['nonce'] not in model_requests
+                        result.update(status='passed', nativeSession=native['id'], nativeRenderObserved=True,
+                            terminalTitleObserved=True, terminalScopeObserved=True,
+                            protocolDecisionApplied=expected == 'applied', decision=decision,
+                            nativeToolOutput=completed[-1]['state']['output'], controlFrames=len(control),
+                            uiFramesExcludedFromModelInput=True, assistantFixtureQuestionIssued=assistant.question_issued)
+                        (args.output / 'native-messages.json').write_text(json.dumps(messages, indent=2))
+                        break
             answer = next((row for row in records if row['type'] == 'answer'), None)
             if answer:
                 expected_action = 'accept' if args.action == 'choose' else 'cancel'
@@ -229,7 +317,8 @@ export default { id: 'xsm-native-question-probe', tui: async api => {
         else:
             raise TimeoutError('native question render/answer was not observed')
         print(json.dumps({'status': result['status'], 'runtimeVersion': version,
-                          'nativeRenderObserved': True, 'automatedAnswer': result['answer']['answer']}))
+                          'nativeRenderObserved': True, 'nativeBridge': args.native_bridge,
+                          'protocolDecisionApplied': result['protocolDecisionApplied']}))
     except BaseException as error:
         result.update(status='failed', error=repr(error))
         raise
@@ -260,6 +349,8 @@ export default { id: 'xsm-native-question-probe', tui: async api => {
         server_log.close()
         if protocol:
             protocol.close()
+        if assistant:
+            assistant.close()
         (args.output / 'result.json').write_text(json.dumps(result, indent=2) + '\n')
         for path in (temp / 'data').rglob('*.log'):
             (args.output / ('runtime-' + path.name)).write_bytes(path.read_bytes())
@@ -270,4 +361,5 @@ if __name__ == '__main__':
     parser.add_argument('--native-root', type=Path, required=True)
     parser.add_argument('--output', type=Path, required=True)
     parser.add_argument('--action', choices=['choose', 'cancel'], default='choose')
+    parser.add_argument('--native-bridge', action='store_true')
     run(parser.parse_args())

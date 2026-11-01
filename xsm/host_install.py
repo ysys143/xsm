@@ -19,6 +19,8 @@ from . import install, paths
 BINDINGS = {"pi": ("extensions", "xsm.js", "integrations/pi/xsm.mjs"),
             "opencode": ("plugins", "xsm.js", "integrations/opencode/xsm.mjs")}
 SHARED = ("clients/typescript/xsm-client.mjs", "clients/typescript/xsm-host.mjs", "bin/xsm", "xsm/protocol.py")
+NATIVE_ASSETS = {"opencode": ("integrations/opencode/ui-channel.mjs", "integrations/opencode/question-ui.mjs",
+                               "integrations/opencode/tui.mjs")}
 NOFOLLOW = getattr(os, "O_NOFOLLOW", 0)
 DIRECTORY = getattr(os, "O_DIRECTORY", 0)
 
@@ -128,7 +130,7 @@ def _owned(content, record):
 
 
 def _assets(root, runtime):
-    required = SHARED + (BINDINGS[runtime][2],)
+    required = SHARED + (BINDINGS[runtime][2],) + NATIVE_ASSETS.get(runtime, ())
     if any(not os.path.isfile(os.path.join(root, name)) for name in required):
         raise ValueError("runtime snapshot lacks native host assets; update xsm first")
 

@@ -1,7 +1,7 @@
 /** OpenCode 1.19.5 TUI callbacks. Transport and protocol policy stay outside the renderer. */
 const active = new WeakMap();
 
-export function presentQuestion(api, conversation, event, { signal } = {}) {
+export function presentQuestion(api, conversation, event, { signal, onDisplayed } = {}) {
   const params = structuredClone(event.params);
   const { question, questionId, requestedSchema, expiresAt } = params;
   const choices = requestedSchema?.properties?.answer?.enum;
@@ -52,10 +52,14 @@ export function presentQuestion(api, conversation, event, { signal } = {}) {
       if (!current() || expiresAt * 1000 <= Date.now()) cancel();
     }, 50);
     try {
-      dialog.replace(() => choices
-        ? api.ui.DialogSelect({ title: question, skipFilter: true,
+      let rendered = false;
+      dialog.replace(() => {
+        const element = choices ? api.ui.DialogSelect({ title: question, skipFilter: true,
           options: choices.map(value => ({ title: value, value })), onSelect: option => submit(option.value) })
-        : api.ui.DialogPrompt({ title: question, onConfirm: submit, onCancel: () => finish(undefined) }), closed);
+          : api.ui.DialogPrompt({ title: question, onConfirm: submit, onCancel: () => finish(undefined) });
+        if (!rendered) { rendered = true; onDisplayed?.(); }
+        return element;
+      }, closed);
     } catch (error) { finish(undefined, error); }
   });
 }

@@ -6,6 +6,7 @@ import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { XsmClient } from '../../clients/typescript/xsm-client.mjs';
 import { XsmHost } from '../../clients/typescript/xsm-host.mjs';
+import { NativeUiServer, uiParts } from './ui-channel.mjs';
 
 export default async function xsm(api, options = {}) {
   const command = options.command ?? [fileURLToPath(new URL('../../bin/xsm', import.meta.url)),
@@ -62,6 +63,10 @@ export default async function xsm(api, options = {}) {
     else void api.client.app.log({ body: { service: 'xsm', level: 'error',
       message: error.message } }).catch(() => {});
   };
+  const ui = options.nativeUi ? new NativeUiServer({ onError: fail,
+    send: async (id, frame) => {
+      unwrap(await api.client.session.prompt({ path: { id }, body: { noReply: true, parts: uiParts(frame) } }));
+    } }) : undefined;
   async function open(id, cwd) {
     if (disposed) throw new Error('xsm OpenCode binding disposed');
     if (cwd !== undefined && await realpath(cwd) !== await realpath(api.directory)) {
@@ -74,7 +79,8 @@ export default async function xsm(api, options = {}) {
         const host = await XsmHost.open({ command, env: options.env, runtime: 'opencode',
           profile, conversation: id, cwd: api.directory, onError: fail,
           // Only an explicitly connected native UI can advertise user-decisions.
-          present: options.present ? (event, controls) => options.present(id, event, controls) : undefined,
+          present: options.present ? (event, controls) => options.present(id, event, controls)
+            : ui ? (event, controls) => ui.present(id, event, controls) : undefined,
           deliver: async (pack, { wake, signal }) => {
             if (disposed || signal.aborted) throw new Error('native delivery cancelled');
             const admissionID = randomUUID();
@@ -116,6 +122,7 @@ export default async function xsm(api, options = {}) {
     return sessions.get(id);
   }
   async function close(id) {
+    ui?.close(id);
     const pending = sessions.get(id);
     sessions.delete(id);
     states.delete(id);
@@ -130,6 +137,7 @@ export default async function xsm(api, options = {}) {
       },
     }])),
     'chat.message': async (input, output) => {
+      if (ui && await ui.receive(input.sessionID, output.parts)) return;
       if (output.parts.some(part => part.metadata?.xsmDelivery)) return;
       await (await open(input.sessionID)).naturalBoundary();
     },
@@ -148,6 +156,7 @@ export default async function xsm(api, options = {}) {
     },
     dispose: async () => {
       disposed = true;
+      ui?.close();
       const closing = await Promise.allSettled([...sessions.keys()].map(close));
       for (const result of closing) if (result.status === 'rejected') fail(result.reason);
     },

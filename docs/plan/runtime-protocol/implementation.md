@@ -343,3 +343,36 @@ native route/session만 관측하도록 수정했다. 초기 두 실행은 SIGTE
 통과했다. 두 버전 모두 120초 기준 안이다. 두 native TUI 사례의 sourceSha256과
 현재 renderer/하네스 파일도 대조해 일치함을 확인했다. 원시 로그는
 `py39-opencode-ui-first.log`, `py314-opencode-ui-final.log`에 남긴다.
+
+## OpenCode 서버–TUI 직접 연결
+
+`ui-channel.mjs`와 `tui.mjs`로 native API의 빈 ignored/synthetic 부분과
+메타데이터를 이용하는 연결을 구현했다. 별도 listener나 중앙 daemon은 없다.
+서버는 질문별 일회용 값으로 TUI 한 곳을 선택하고, 실제 renderer callback의
+표시 확인이 온 뒤에만 답을 받는다. 다른 대화·일회용 값·UI instance, 표시 전
+답, 늦은 callback과 일반 텍스트에 섞은 제어 부분은 적용하지 않는다.
+호스트 핸들과 원래 protocol challenge는 전송하지 않는다.
+
+현재 기본 설치는 UI 모드를 활성화하거나 native TUI config에 companion을
+등록하지 않는다. 개발 로더의 nativeUi 옵션으로 직접 연결 경로를 시험했다.
+소유권을 보존하는 기본 설치의 미완 항목은
+[opencode-ui-install.md](opencode-ui-install.md)에 기록했다.
+
+실제 OpenCode 1.19.5·macOS의 native 실행 커널에서 xsm_decide를 호출해 TUI의
+Enter와 Escape가 직접 서버로 회신됨을 확인했다. 질문을 옮기는 Python relay는
+쓰지 않는다. Enter는 host-user 답과 원 작업 재호출 뒤 applied, Escape는
+dismissed이며 적용이 없다. 두 실행 모두 제어 프레임 5개를 관측했다.
+도구 실행 후 모델 요청까지 읽어 모든 제어 프레임과 일회용 값이 제외된 것을
+확인했다. `opencode-native-ui-render-choose`, `opencode-native-ui-render-cancel`의
+결과·원시 화면·native 기록·assistant-fixture 요청과 sourceSha256이 근거다.
+실제 사람이나 모델 추론을 시험했다고 부르지 않는다.
+
+빠른 묶음은 핵심 156개 + Python 클라이언트 18개 + Node 45개, 총 219개다.
+`scripts/check-protocol.py`는 Python 3.9.6에서 38.894초, 3.14.6에서 24.529초에
+통과했다. 두 실행 모두 120초 안이다. `*-native-ui-complete-assets.log`에 남긴다.
+
+대화 결속·일회용 값·render 확인을 각각 제거한 세 변이는 새 검사를 실패시켰다.
+snapshot 설치는 UI 관련 세 모듈도 필수 자산으로 검사하며 누락된 경우 프로필
+생성 전에 거부한다. 이 자산 guard를 뺀 변이도 실패했다. 첫 자산 변이 시도는
+테스트 setup의 모듈 재로딩 때문에 주입되지 않았으므로 성공 증거로 쓰지 않는다.
+setup 뒤 주입한 결과와 초기 무효 시도 로그를 모두 보존했다.

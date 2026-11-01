@@ -43,10 +43,17 @@ API는 list/reply/reject를 제공하지만 ask는 제공하지 않으며 MCP el
 연결되어 있지 않다. 기본 설치에 TUI companion을 연결하는 작업이 남아 있다. 사용자
 답이 필요한 작업은 승인을 기록하지 않고 오류를 반환한다.
 
-개발 연결부는 명시적으로 주어진 `present(conversation, event, controls)`
-callback이 있을 때만 해당 능력을 광고한다. callback에는 native 도구 호출의
-대화 ID를 전달한다. 기본 설치에는 아직 서버–TUI companion 연결이 없으므로
-이 callback을 임의로 만들거나 자동 답으로 대체하지 않는다.
+개발 연결부는 명시적 `present(conversation, event, controls)` callback이나
+`nativeUi: true`일 때 해당 능력을 광고한다. 후자는
+[`tui.mjs`](../../integrations/opencode/tui.mjs) companion과 native API로 직접 연결한다.
+기본 설치의 companion 등록·활성화는 아직 미완이다.
+
+제어 전송은 빈 `ignored`/`synthetic` native 텍스트 부분의 메타데이터를 쓴다.
+기존 native 서버 API와 인증 경계를 사용하며 별도 listener를 열지 않는다.
+UI 한 곳이 질문의 일회용 값을 먼저 받고 실제 render callback을 보고해야
+답을 받는다. 대화 ID·일회용 값·선택된 UI instance가 다른 응답은 무시한다.
+호스트의 세션 핸들과 원래 승인 challenge는 TUI에 전달하지 않는다.
+화면이 없거나 렌더되지 않으면 답으로 해석하지 않고 오류로 끝낸다.
 
 [`question-ui.mjs`](../../integrations/opencode/question-ui.mjs)는 고정 버전의
 native DialogSelect/DialogPrompt를 사용한다. 표시 원문·질문 ID를 보존하고
@@ -65,6 +72,8 @@ python3 scripts/check-protocol.py
 python3 scripts/probe-opencode-protocol.py --native-root /isolated/npm-root --output deliverables/opencode-probe --samples 100
 python3 scripts/probe-opencode-question-ui.py --native-root /isolated/npm-root --output deliverables/opencode-ui --action choose
 python3 scripts/probe-opencode-question-ui.py --native-root /isolated/npm-root --output deliverables/opencode-ui-cancel --action cancel
+python3 scripts/probe-opencode-question-ui.py --native-root /isolated/npm-root --output deliverables/opencode-bridge --native-bridge --action choose
+python3 scripts/probe-opencode-question-ui.py --native-root /isolated/npm-root --output deliverables/opencode-bridge-cancel --native-bridge --action cancel
 ```
 
 Native 하네스는 실제 고정 버전 binary와 autoload, 실제 Zod 도구 스키마,
@@ -87,6 +96,14 @@ TUI 하네스는 실제 서버 대화와 고정 버전 TUI를 격리 PTY로 연�
 applied가 되고, Escape는 dismissed이며 적용이 없다. 이는 자동 키 입력 시험이다.
 사람이 실제로 답했다는 주장이나 제품용 서버–TUI IPC/설치 완료의 증거가 아니다.
 결과는 `opencode-tui-protocol-{choose,cancel}/result.json`에 구분해 남긴다.
+
+`--native-bridge` 시험은 Python 질문 relay를 사용하지 않는다. 실제 native
+실행 커널의 xsm_decide가 서버 플러그인→TUI→서버로 답을 받아 완료한다.
+Enter와 Escape의 두 실행 모두 통과했다. 각각 5개 제어 프레임을 관측했고,
+도구 실행 뒤 모델에 보낸 요청에서 프레임과 일회용 값이 제외된 것도 확인했다.
+이는 loopback assistant/키 입력 fixture이며 모델 추론이나 사람의 실제 답은 아니다.
+`opencode-native-ui-render-{choose,cancel}/result.json`이 근거다.
+기본 설치 완료는 [별도 수용 조건](../plan/runtime-protocol/opencode-ui-install.md)으로 남아 있다.
 
 API 근거는 [고정 버전 플러그인](https://github.com/anomalyco/opencode/blob/v1.19.5/packages/plugin/src/index.ts),
 [TUI dialog API](https://github.com/anomalyco/opencode/blob/v1.19.5/packages/plugin/src/tui.ts),
