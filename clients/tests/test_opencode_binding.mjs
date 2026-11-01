@@ -5,8 +5,18 @@ import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { fileURLToPath } from 'node:url';
 import binding from '../../integrations/opencode/xsm.mjs';
-import { XsmClient } from '../typescript/xsm-client.mjs';
+import { XsmClient, TransportError } from '../typescript/xsm-client.mjs';
 import { XsmHost } from '../typescript/xsm-host.mjs';
+
+let selectedBinding = binding;
+if (process.env.XSM_OPENCODE_RECONNECT_MUTANT === 'disabled') {
+  const url = new URL('../../integrations/opencode/xsm.mjs', import.meta.url);
+  let code = await readFile(url, 'utf8');
+  code = code.replace(/from '([^']+)'/g, (_whole, source) => `from ${JSON.stringify(new URL(source, url).href)}`);
+  const changed = code.replace('function scheduleRetry(id, token, delay = 250) {', 'function scheduleRetry(id, token, delay = 250) { return;');
+  assert.notEqual(changed, code);
+  selectedBinding = (await import('data:text/javascript;base64,' + Buffer.from(changed).toString('base64'))).default;
+}
 
 const root = fileURLToPath(new URL('../../', import.meta.url));
 // Native schema objects are inspected here; the pinned native CLI separately checks real Zod schemas.
@@ -46,7 +56,7 @@ async function fixture(t, options = {}) {
     status: async () => ({ data: statuses }),
     promptAsync: async ({ path: { id } }) => { wakes.push(id); return { data: undefined }; },
   } } };
-  const hooks = await binding(api, { schema, command, env, profile,
+  const hooks = await selectedBinding(api, { schema, command, env, profile,
     onError: error => errors.push(error), ...options });
   const invoke = async (id, name, args = {}, extra = {}) => JSON.parse(await hooks.tool[name].execute(args,
     { sessionID: id, directory: temp, abort: new AbortController().signal, ...extra }));
@@ -207,4 +217,62 @@ test('failed initial state update closes participation before retry', { timeout:
     assert.notEqual(recovered.protocol_generation, ended.protocol_generation);
     assert.equal(recovered.ended_at, undefined);
   } finally { await first?.close(); }
+});
+
+test('registered OpenCode session reconnects without a native entry', { timeout: 15000 }, async t => {
+  const { invoke, records, native } = await fixture(t);
+  await invoke('a', 'xsm_inbox');
+  const [before] = await records();
+  process.kill(before.pid, 'SIGKILL');
+  const after = await until(async () => (await records()).find(row => row.pid !== before.pid && !row.ended_at));
+  assert.equal(after.ref, before.ref);
+  assert.notEqual(after.protocol_generation, before.protocol_generation);
+  assert.equal(native.size, 0);
+});
+
+test('native deletion cancels pending automatic OpenCode retry', { timeout: 15000 }, async t => {
+  const { invoke, records, hooks, errors } = await fixture(t);
+  await invoke('a', 'xsm_inbox');
+  const [before] = await records();
+  process.kill(before.pid, 'SIGKILL');
+  await until(() => errors.length);
+  const connect = XsmHost.open;
+  const restarted = t.mock.method(XsmHost, 'open', (...args) => connect.apply(XsmHost, args));
+  await hooks.event({ event: { type: 'session.deleted', properties: { info: { id: 'a' } } } });
+  await new Promise(resolve => setTimeout(resolve, 400));
+  assert.equal(restarted.mock.callCount(), 0);
+  assert.ok((await records()).every(row => row.pid === before.pid));
+});
+
+
+test('OpenCode dispose cancels pending automatic retry', { timeout: 15000 }, async t => {
+  const { invoke, records, hooks, errors } = await fixture(t);
+  await invoke('a', 'xsm_inbox');
+  const [before] = await records();
+  process.kill(before.pid, 'SIGKILL');
+  await until(() => errors.length);
+  const connect = XsmHost.open;
+  const restarted = t.mock.method(XsmHost, 'open', (...args) => connect.apply(XsmHost, args));
+  await hooks.dispose();
+  await new Promise(resolve => setTimeout(resolve, 400));
+  assert.equal(restarted.mock.callCount(), 0);
+});
+
+
+test('OpenCode retries transport failures with increasing delay', { timeout: 15000 }, async t => {
+  const { invoke, records } = await fixture(t);
+  await invoke('a', 'xsm_inbox');
+  const [before] = await records();
+  const connect = XsmHost.open, attempts = [];
+  t.mock.method(XsmHost, 'open', async function (...args) {
+    attempts.push(performance.now());
+    if (attempts.length <= 2) throw new TransportError('backend temporarily unavailable');
+    return connect.apply(this, args);
+  });
+  process.kill(before.pid, 'SIGKILL');
+  const after = await until(async () => (await records()).find(row => row.pid !== before.pid && !row.ended_at));
+  assert.equal(after.ref, before.ref);
+  assert.equal(attempts.length, 3);
+  assert.ok(attempts[1] - attempts[0] >= 450);
+  assert.ok(attempts[2] - attempts[1] >= 950);
 });

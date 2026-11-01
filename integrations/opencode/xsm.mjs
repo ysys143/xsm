@@ -4,7 +4,7 @@ import { mkdir, realpath } from 'node:fs/promises';
 import { homedir } from 'node:os';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { XsmClient } from '../../clients/typescript/xsm-client.mjs';
+import { XsmClient, TransportError } from '../../clients/typescript/xsm-client.mjs';
 import { XsmHost, RetryAdmission, renderInboxPacket } from '../../clients/typescript/xsm-host.mjs';
 import { NativeUiServer, uiParts } from './ui-channel.mjs';
 import { holdComponent } from './component-lease.mjs';
@@ -66,21 +66,50 @@ async function attach(api, options, release) {
 
   const sessions = new Map();
   const states = new Map();
+  const intents = new Set(), versions = new Map(), retries = new Map();
   let disposed = false;
   const fail = error => {
     if (options.onError) options.onError(error);
     else void api.client.app.log({ body: { service: 'xsm', level: 'error',
       message: error.message } }).catch(() => {});
   };
+  function cancelRetry(id) {
+    const pending = retries.get(id);
+    if (pending) clearTimeout(pending.timer);
+    retries.delete(id);
+  }
+  function scheduleRetry(id, token, delay = 250) {
+    if (disposed || !intents.has(id) || (versions.get(id) ?? 0) !== token || retries.has(id)) return;
+    const pending = {};
+    retries.set(id, pending);
+    pending.timer = setTimeout(async () => {
+      pending.timer = undefined;
+      if (disposed || retries.get(id) !== pending || !intents.has(id) || (versions.get(id) ?? 0) !== token) return;
+      let retry = false;
+      try {
+        const current = await open(id);
+        retry = current.closed || current.controller.signal.aborted;
+      } catch (error) {
+        try { fail(error); } catch {}
+        retry = error instanceof TransportError;
+      } finally {
+        if (retries.get(id) === pending) retries.delete(id);
+      }
+      if (retry) scheduleRetry(id, token, Math.min(delay * 2, 5000));
+    }, delay);
+    pending.timer.unref?.();
+  }
   const ui = options.nativeUi ? new NativeUiServer({ onError: fail,
     send: async (id, frame) => {
       unwrap(await api.client.session.prompt({ path: { id }, body: { noReply: true, parts: uiParts(frame) } }));
     } }) : undefined;
   async function open(id, cwd) {
     if (disposed) throw new Error('xsm OpenCode binding disposed');
+    const token = versions.get(id) ?? 0;
     if (cwd !== undefined && await realpath(cwd) !== await realpath(api.directory)) {
       throw new Error('xsm tool directory differs from native plugin directory');
     }
+    if (disposed || (versions.get(id) ?? 0) !== token) throw new Error('native session closed during registration');
     if (sessions.has(id)) {
       const previous = sessions.get(id);
       const existing = await previous;
@@ -102,9 +131,18 @@ async function attach(api, options, release) {
       const opening = (async () => {
         const native = unwrap(await api.client.session.get({ path: { id } }));
         if (native.id !== id) throw new Error('native session identity differs');
+        if (disposed || (versions.get(id) ?? 0) !== token) throw new Error('native session closed during registration');
+        intents.add(id);
+        let observed;
         const host = await XsmHost.open({ command, env: options.env, runtime: 'opencode',
           inboxBatchSize: 16, inboxMaxBytes: 524288,
-          profile, conversation: id, cwd: api.directory, onError: fail,
+          profile, conversation: id, cwd: api.directory,
+          onError: error => {
+            try { fail(error); }
+            finally {
+              if (error instanceof TransportError && observed && !observed.closed && observed.controller.signal.aborted) scheduleRetry(id, token);
+            }
+          },
           // Only an explicitly connected native UI can advertise user-decisions.
           present: options.present ? (event, controls) => options.present(id, event, controls)
             : ui ? (event, controls) => ui.present(id, event, controls) : undefined,
@@ -137,8 +175,9 @@ async function attach(api, options, release) {
             }
           },
         });
+        observed = host;
         try {
-          if (disposed) throw new Error('binding disposed during session registration');
+          if (disposed || (versions.get(id) ?? 0) !== token) throw new Error('binding or native session closed during registration');
           await host.update(states.get(id) ?? 'idle', native.title);
           return host;
         } catch (error) {
@@ -153,6 +192,9 @@ async function attach(api, options, release) {
     return sessions.get(id);
   }
   async function close(id) {
+    intents.delete(id);
+    versions.set(id, (versions.get(id) ?? 0) + 1);
+    cancelRetry(id);
     ui?.close(id);
     const pending = sessions.get(id);
     sessions.delete(id);
@@ -187,6 +229,8 @@ async function attach(api, options, release) {
     },
     dispose: async () => {
       disposed = true;
+      for (const id of retries.keys()) cancelRetry(id);
+      intents.clear();
       ui?.close();
       const closing = await Promise.allSettled([...sessions.keys()].map(close));
       await release();

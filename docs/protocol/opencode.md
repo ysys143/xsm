@@ -196,3 +196,29 @@ ended_at을 확인해 종료된 행을 live로 오인하지 않도록 보완했�
 plugin 도구 목록 조회가 끝난 뒤 참여의 초기 갱신 실패를 다룬다. Plugin 자체의
 최초 descriptor 조회 실패, 유휴 중 자동 재접속·worker·Linux 및 전체 P0–P5의
 남은 조건은 미완이다.
+
+## 등록된 세션의 입력 없는 재접속
+
+등록된 host의 transport 실패는 세션별 timer로 재접속한다. 250ms에서 시작해
+연결 실패 시 두 배, 최대 5초로 제한한다. Native 작업을 반복하지 않고 참여만
+다시 연다. 세션 삭제와 dispose는 intent·epoch를 닫고 timer를 취소한다.
+등록 시도는 기존 공유 Promise를 사용하고 종료된 세대의 후처리는 거부한다.
+
+관련 API/protocol server 검사 13개가 통과했다
+(`opencode-auto-reconnect-all-tests.log`). 입력 없는 복구, 삭제/dispose 뒤 새
+backend 생성 없음, 두 차례 transport 실패 후 증가하는 대기를 확인한다.
+자동 재접속을 끈 변이는 해당 입력 없는 복구 검사에 실패했다
+(`opencode-auto-reconnect-disabled-mutant.log`). 최초 삭제 검사는 강제 종료
+process가 ended_at을 남긴다고 잘못 가정해 실패했다. 수정 검사는 새 backend
+open 횟수와 PID가 변하지 않는지를 직접 확인한다. 이전 실패 로그도 보존했다.
+
+실제 OpenCode 1.19.5의 --auto-reconnect는 최초 상태 갱신 완료를 확인하고 자체
+backend를 종료한다. 명시적 chat/tool 진입을 보내기 전에 같은 ref의 새 PID/세대를
+관측한 뒤 100/100 native 수락·scripted assistant의 native ACK를 완료했다.
+macOS/protocol Python 3.14.6 p95 상한은 353.919ms다
+(`opencode-auto-reconnect-native-100/result.json`). 이 지연은 복구 뒤 전송 표본이며
+outage 전체 시간이나 실제 모델/사람 소비의 인증이 아니다.
+
+공통 381개는 60.723초에 통과했다(`opencode-auto-reconnect-gate-verified.log`).
+Plugin descriptor 최초 조회 실패와 모든 초기 생성 전 오류의 자동 복구,
+Hermes/OpenClaw 자동 재접속·native worker·Linux와 전체 P0–P5는 미완이다.

@@ -1387,3 +1387,28 @@ old root 유지·수신/ACK·quit 뒤 회수가 통과했다
 회귀 통과했다(`shared-component-opencode-native/result.json`). 모든 답/소비는
 fixture이며 모델·사람 UI 인증이 아니다. 자동 복구의 다른 runtime·worker·
 Linux·원격·전체 방향 조합을 포함한 P0–P5 나머지는 미완이다.
+
+## OpenCode 등록 참여의 자동 transport 복구
+
+등록 host의 transport 실패를 세션별 timer가 복구한다. 250ms부터 실패 시
+두 배, 최대 5초까지 기다리고 native 작업을 자동 재실행하지 않는다. 세션별
+intent/epoch로 삭제·dispose 뒤 시도를 막고 기존 open Promise를 공유한다.
+
+관련 13개 검사가 통과했다(`opencode-auto-reconnect-all-tests.log`). 입력 없는
+재등록, 삭제/dispose의 timer 취소와 증가하는 backoff를 실제 protocol server/API
+fixture에서 확인했다. Scheduler를 끈 변이는 실패했다
+(`opencode-auto-reconnect-disabled-mutant.log`). 최초 취소 검사는 강제 종료된
+backend가 ended_at을 기록한다고 잘못 예상해 실패했다
+(`opencode-auto-reconnect-tests.log`, `opencode-auto-reconnect-verified.log`).
+수정 후 새 backend open 횟수/PID가 변하지 않음을 직접 대조했다.
+
+실제 OpenCode 1.19.5도 초기 host 갱신 완료 후 backend를 종료하고 명시적 native
+chat/tool 전에 새 세대를 관측했다. 복구 뒤 100/100 native 수락·native tool ACK를
+완료했고 macOS/protocol Python 3.14.6 p95 상한은 353.919ms다
+(`opencode-auto-reconnect-native-100/result.json`). 현재 연결 코드의 해시 일치도
+확인했다. Outage 전 구간 지연이나 실제 모델/사람 소비를 인증하지 않는다.
+
+공통 381개(핵심 232, Python 44, Node 105)는 Python 3.14.6에서 60.723초에
+통과했다(`opencode-auto-reconnect-gate-verified.log`). Descriptor 최초 조회와
+모든 초기 생성 전 실패·Hermes/OpenClaw 자동 재접속·worker·Linux·원격·전체
+방향 조합과 P0–P5의 나머지는 미완이다.

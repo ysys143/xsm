@@ -215,8 +215,17 @@ async def run(args):
             assert receiver["ref"] == failed["ref"] and receiver["protocol_generation"] != failed["protocol_generation"]
             result["initialUpdateFailure"].update(newPid=receiver["pid"], generationChanged=True)
         result["receiver"] = receiver
-        if getattr(args, "crash", False):
+        if getattr(args, "crash", False) or getattr(args, "auto_reconnect", False):
             previous = receiver
+            for _ in range(100):
+                rows = [json.loads(path.read_text()) for path in (state / "sessions").glob("*.json")]
+                ready = next((row for row in rows if row.get("pid") == previous["pid"] and
+                              row.get("name") == native["title"] and not row.get("ended_at")), None)
+                if ready:
+                    previous = ready
+                    break
+                await asyncio.sleep(.025)
+            assert ready, "initial host state update was not observed before crash"
             assert previous["pid"] != process.pid and os.getpgid(previous["pid"]) == process.pid, "backend is not in the probe's private process group"
             os.kill(previous["pid"], signal.SIGKILL)
             deadline = time.monotonic() + 5
@@ -227,8 +236,20 @@ async def run(args):
                     break
                 assert time.monotonic() < deadline, "backend was not reaped"
                 await asyncio.sleep(.01)
-            await request("/session/" + native["id"] + "/message", {
-                "noReply": True, "parts": [{"type": "text", "text": "Native backend recovery boundary fixture"}]})
+            if getattr(args, "auto_reconnect", False):
+                automatic = None
+                for _ in range(200):
+                    rows = [json.loads(path.read_text()) for path in (state / "sessions").glob("*.json")]
+                    automatic = next((row for row in rows if row.get("ref") == previous["ref"] and
+                                     row.get("pid") != previous["pid"] and not row.get("ended_at")), None)
+                    if automatic:
+                        break
+                    await asyncio.sleep(.025)
+                assert automatic, "backend did not automatically reconnect before a native entry"
+                result["automaticReconnectObservedBeforeNativeEntry"] = True
+            else:
+                await request("/session/" + native["id"] + "/message", {
+                    "noReply": True, "parts": [{"type": "text", "text": "Native backend recovery boundary fixture"}]})
             for _ in range(100):
                 rows = [json.loads(path.read_text()) for path in (state / "sessions").glob("*.json")]
                 receiver = next((row for row in rows if row.get("ref") == previous["ref"] and
@@ -239,7 +260,7 @@ async def run(args):
             assert receiver and receiver["protocol_generation"] != previous["protocol_generation"], "native boundary did not re-register"
             result["backendRecovery"] = {"oldPid": previous["pid"], "newPid": receiver["pid"],
                 "sameRef": receiver["ref"] == previous["ref"], "generationChanged": True,
-                "trigger": "real native chat.message boundary with noReply; no failed operation replay"}
+                "trigger": "automatic transport recovery before native entry" if getattr(args, "auto_reconnect", False) else "real native chat.message boundary with noReply; no failed operation replay"}
             checkpoint()
         sender = await XsmClient.connect([*command, "protocol", "serve", "--stdio"],
                                          cwd=str(work), env=env)
@@ -317,6 +338,7 @@ if __name__ == "__main__":
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--samples", type=int, default=5)
     parser.add_argument("--initial-update-failure", action="store_true")
+    parser.add_argument("--auto-reconnect", action="store_true")
     parser.add_argument("--crash", action="store_true")
     args = parser.parse_args()
     if args.samples < 1:
