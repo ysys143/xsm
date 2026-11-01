@@ -1248,3 +1248,27 @@ RPC 수신 100/100개와 RPC 명령 ACK 100/100개를 확인했다. macOS/protoc
 공통 359개(핵심 231, Python 40, Node 88)는 Python 3.14.6에서 57.057초에
 통과했다(`pi-backend-recovery-gate-final.log`). 최초 등록 실패 재시도·자동 idle
 재접속·실제 모델/사람 UI·worker·Linux·전체 방향 조합과 P0–P5 나머지는 미완이다.
+
+## Pi 최초 등록 실패의 다음 진입 재시도
+
+Native session_start에서 확인한 대화/workspace의 참여 의도를 backend host와
+분리했다. 최초 open/state update 실패 뒤 다음 정상 native 진입은 등록과
+미완료 도구 등록을 재시도한다. 열린 host의 초기 상태 갱신이 실패하면
+정리하고, shutdown 뒤에는 다시 등록하지 않는다. 최초 등록 시도도 같은
+공유 Promise와 epoch로 관리한다.
+
+수정 전 open/state 실패 검사는 재시도하지 못했다(`pi-bootstrap-red.log`).
+수정 후 해당 경우와 shutdown을 포함한 제어 수명 7개가 통과했다
+(`pi-bootstrap-final-tests.log`). 실제 Pi 1.4.0 설치본도 첫 serve를 임시 wrapper로
+실패시킨 뒤 다음 /xsm 명령에서 등록했다. 도구 21개, native 선택 프로토콜,
+수신/RPC 명령 ACK 5회가 통과했다(`pi-bootstrap-native-verified/result.json`).
+모델·사람 UI 증거가 아니며 5회 smoke를 100개 p95 기준으로 쓰지 않는다.
+
+프로브 초회는 설치 명령을 가로막아 실패했고, 두 번째는 설치 후 제거되는
+환경 변수 때문에 실패 주입이 적용되지 않아 표식 검사에서 실패했다.
+`pi-bootstrap-native.log`, `pi-bootstrap-native-fixed.log`를 보존했다. 최종 주입은
+오직 native serve 첫 실행에만 적용되는 임시 wrapper를 사용한다.
+
+공통 362개(핵심 231, Python 40, Node 91)는 Python 3.14.6에서 58.794초에
+통과했다(`pi-bootstrap-gate.log`). 자동 유휴 재접속·실제 모델/사람 UI·worker·
+Linux·원격·전체 방향 조합과 P0–P5 나머지는 미완이다.

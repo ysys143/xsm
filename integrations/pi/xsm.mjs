@@ -11,6 +11,8 @@ export default function xsm(pi, options = {}) {
   let workspace;
   let epoch = 0;
   let recovering;
+  let active = false;
+  let toolsRegistered = false;
   const admissions = new Map();
 
   const fail = error => nativeContext?.ui.notify('xsm: ' + error.message, 'error');
@@ -78,39 +80,46 @@ export default function xsm(pi, options = {}) {
         } catch (error) { cleanup(); reject(error); }
       }),
     });
-    if (token !== epoch) { await opened.close(); throw new Error('native session changed during registration'); }
-    host = opened;
-    await opened.update(ctx.isIdle() ? 'idle' : 'busy', ctx.sessionManager.getSessionName() || undefined);
-    if (token !== epoch || host !== opened) { await opened.close(); throw new Error('native session changed during registration'); }
-    if (register) for (const operation of opened.operations) {
-      pi.registerTool({ name: operation.name, label: operation.name, description: operation.description,
-        parameters: operation.inputSchema,
-        execute: async (_id, args, signal, _onUpdate, toolContext) => {
-          try {
-            const current = await ensure(toolContext);
-            const result = await current.call(operation.name, args, { signal });
-            return { content: [{ type: 'text', text: JSON.stringify(result) }] };
-          } catch (error) { return { content: [{ type: 'text', text: error.message }], isError: true }; }
-        },
-      });
+    try {
+      if (token !== epoch) { await opened.close(); throw new Error('native session changed during registration'); }
+      host = opened;
+      await opened.update(ctx.isIdle() ? 'idle' : 'busy', ctx.sessionManager.getSessionName() || undefined);
+      if (token !== epoch || host !== opened) { await opened.close(); throw new Error('native session changed during registration'); }
+      if (register || !toolsRegistered) for (const operation of opened.operations) {
+        pi.registerTool({ name: operation.name, label: operation.name, description: operation.description,
+          parameters: operation.inputSchema,
+          execute: async (_id, args, signal, _onUpdate, toolContext) => {
+            try {
+              const current = await ensure(toolContext);
+              const result = await current.call(operation.name, args, { signal });
+              return { content: [{ type: 'text', text: JSON.stringify(result) }] };
+            } catch (error) { return { content: [{ type: 'text', text: error.message }], isError: true }; }
+          },
+        });
+      }
+      toolsRegistered = true;
+      ctx.ui.setStatus('xsm', 'xsm [' + opened.session.ref + ']');
+      return opened;
+    } catch (error) {
+      if (host === opened) host = undefined;
+      await opened.close().catch(fail);
+      throw error;
     }
-    ctx.ui.setStatus('xsm', 'xsm [' + opened.session.ref + ']');
-    return opened;
   }
 
   async function ensure(ctx) {
-    if (!host) throw new Error('xsm session is not registered');
+    if (!active) throw new Error('xsm session is not registered');
     const token = epoch;
     const cwd = await realpath(ctx.cwd);
-    if (token !== epoch || !host || ctx.sessionManager.getSessionId() !== conversation || cwd !== workspace) {
+    if (token !== epoch || !active || ctx.sessionManager.getSessionId() !== conversation || cwd !== workspace) {
       throw new Error('native session or workspace changed; wait for session_start');
     }
     nativeContext = ctx;
-    if (host.closed || host.controller.signal.aborted) {
+    if (!host || host.closed || host.controller.signal.aborted) {
       if (!recovering) {
         const previous = host, token = epoch;
         const attempt = (async () => {
-          await previous.close();
+          await previous?.close();
           if (token !== epoch) throw new Error('native session changed during recovery');
           return initialize(ctx, false, token);
         })().finally(() => { if (recovering === attempt) recovering = undefined; });
@@ -124,19 +133,30 @@ export default function xsm(pi, options = {}) {
   pi.on('session_start', async (_event, ctx) => {
     const token = ++epoch, previous = host, pending = recovering;
     host = undefined;
+    active = false;
     recovering = undefined;
     await previous?.close();
     await pending?.catch(() => {});
-    if (token === epoch) await initialize(ctx, true, token);
+    const cwd = await realpath(ctx.cwd);
+    if (token !== epoch) return;
+    nativeContext = ctx;
+    conversation = ctx.sessionManager.getSessionId();
+    workspace = cwd;
+    active = true;
+    const opening = initialize(ctx, true, token);
+    recovering = opening;
+    try { await opening; }
+    finally { if (recovering === opening) recovering = undefined; }
   });
 
   pi.on('before_agent_start', async (_event, ctx) => {
-    if (host) await (await ensure(ctx)).naturalBoundary().catch(error => { if (!(error instanceof RetryAdmission)) throw error; });
+    if (active) await (await ensure(ctx)).naturalBoundary().catch(error => { if (!(error instanceof RetryAdmission)) throw error; });
   });
-  pi.on('agent_start', (_event, ctx) => host && ensure(ctx).then(current => current.update('busy')).catch(fail));
-  pi.on('agent_settled', (_event, ctx) => host && ensure(ctx).then(current => current.update('idle')).catch(fail));
-  pi.on('session_info_changed', (event, ctx) => host && ensure(ctx).then(current => current.update(ctx.isIdle() ? 'idle' : 'busy', event.name ?? '')).catch(fail));
+  pi.on('agent_start', (_event, ctx) => active && ensure(ctx).then(current => current.update('busy')).catch(fail));
+  pi.on('agent_settled', (_event, ctx) => active && ensure(ctx).then(current => current.update('idle')).catch(fail));
+  pi.on('session_info_changed', (event, ctx) => active && ensure(ctx).then(current => current.update(ctx.isIdle() ? 'idle' : 'busy', event.name ?? '')).catch(fail));
   pi.on('session_shutdown', async () => {
+    active = false;
     ++epoch;
     const closing = host, pending = recovering;
     host = undefined;

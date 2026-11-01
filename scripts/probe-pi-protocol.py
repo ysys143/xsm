@@ -11,6 +11,7 @@ import json
 import os
 from pathlib import Path
 import signal
+import shlex
 import subprocess
 import sys
 import tempfile
@@ -81,6 +82,13 @@ async def run(args):
     env = {key: os.environ[key] for key in ("PATH", "LANG", "TMPDIR") if key in os.environ}
     env.update(HOME=str(home), PI_CODING_AGENT_DIR=str(pi_home), XSM_HOME=str(state),
                XSM_PYTHON=sys.executable, PYTHONDONTWRITEBYTECODE="1")
+    if getattr(args, "bootstrap_failure", False):
+        wrapper = temp / "python-first-start-fails"
+        flag = temp / "first-start-attempted"
+        wrapper.write_text("#!/bin/sh\ncase \"$*\" in *'protocol serve --stdio'*)\nif [ ! -f " + shlex.quote(str(flag)) + " ]; then\n  touch " +
+            shlex.quote(str(flag)) + "\n  exit 7\nfi\n;; esac\nexec " + shlex.quote(sys.executable) + ' "$@"\n')
+        wrapper.chmod(0o700)
+        env["XSM_PYTHON"] = str(wrapper)
     version = subprocess.run(["node", str(args.pi_cli), "--version"], cwd=project,
                              env=env, capture_output=True, text=True, check=True).stdout.strip()
     if version != "1.4.0":
@@ -94,6 +102,8 @@ async def run(args):
         extension_args = []  # Native discovery must load the installed profile, not -e.
         env.pop("XSM_PYTHON", None)
         env.pop("PYTHONPATH", None)
+    if getattr(args, "bootstrap_failure", False):
+        env["XSM_PYTHON"] = str(wrapper)
     process = await asyncio.create_subprocess_exec("node", str(args.pi_cli), "--mode", "rpc", "--no-session",
         *extension_args, cwd=str(project), env=env,
         stdin=asyncio.subprocess.PIPE, stdout=asyncio.subprocess.PIPE,
@@ -124,6 +134,9 @@ async def run(args):
         own = next(s for s in statuses if "ref" in s)
         assert set(own["operations"]) == set(own["nativeTools"]), own
         result["nativeToolCount"] = len(own["nativeTools"])
+        if getattr(args, "bootstrap_failure", False):
+            assert (temp / "first-start-attempted").is_file()
+            result["initialBackendFailureRecovered"] = True
         if installation:
             native_records = [json.loads(p.read_text()) for p in (state / "sessions").glob("*.json")]
             actual = next(item for item in native_records if item["runtime"] == "pi")
@@ -230,6 +243,7 @@ if __name__ == "__main__":
     parser.add_argument("--pi-cli", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--samples", type=int, default=2)
+    parser.add_argument("--bootstrap-failure", action="store_true")
     parser.add_argument("--crash", action="store_true")
     parser.add_argument("--installed", action="store_true", help="test profile autoload from an owned runtime snapshot")
     options = parser.parse_args()

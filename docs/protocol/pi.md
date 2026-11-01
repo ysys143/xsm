@@ -127,7 +127,35 @@ ACK 100/100개를 확인했다. macOS/protocol Python 3.14.6 p95 상한은 421.1
 모델이 원문을 읽은 증거로 부르지 않는다. SDK 도구 ACK 표본과도 구분한다.
 복구 후 native select 프로토콜의 답도 fixture가 주었으며 실제 사람 응답이 아니다.
 
-공통 359개는 57.057초에 통과했다(`pi-backend-recovery-gate-final.log`). 이번
-복구는 정상 등록된 세션의 backend 종료를 대상으로 한다. 최초 등록 자체의
-실패 재시도·유휴 중 선제 재접속·실제 모델/사람 UI·worker·Linux와 전체
-P3/P5는 미완이다.
+공통 359개는 57.057초에 통과했다(`pi-backend-recovery-gate-final.log`). 위
+충돌 복구 표본은 정상 등록된 세션의 backend 종료를 대상으로 한다. 최초 등록
+실패의 후속 처리는 아래 절과 구분한다. 유휴 중 선제 재접속·실제 모델/사람
+UI·worker·Linux와 전체 P3/P5는 미완이다.
+
+
+## 최초 backend 등록 실패의 재시도
+
+Native session_start가 대화/workspace를 확인한 뒤에는 backend 생성이 실패해도
+참여 의도를 유지한다. 다음 도구·명령·chat/status 진입에서 같은 native 신원으로
+등록을 다시 시도하며, 최초 도구 등록까지 끝내지 못했다면 함께 수행한다.
+초기 상태 갱신 실패로 이미 열었던 host는 닫는다. 등록 시도도 공유 Promise로
+관리하고 shutdown은 참여 의도를 닫으므로 그 뒤 명령이 다시 등록하지 않는다.
+
+Backend open 실패·초기 상태 갱신 실패·실패 뒤 shutdown을 포함해 제어된 수명
+검사 7개가 통과했다(`pi-bootstrap-final-tests.log`). 수정 전 open/state 실패
+검사는 다음 명령에서 복구하지 못했다(`pi-bootstrap-red.log`). 고정 SDK의
+registerTool은 post-bind refreshTools를 호출하므로 최초 명령에서의 동적 등록을
+지원한다.
+
+실제 Pi 1.4.0 설치본 프로브의 `--bootstrap-failure`는 임시 Python wrapper로
+첫 protocol serve 실행만 실패시킨다. 그 뒤 /xsm status 재등록·21개 도구·native
+선택 프로토콜·수신/명령 ACK 5회가 통과했다
+(`pi-bootstrap-native-verified/result.json`). 5회는 smoke이며 100개 지연 기준의
+인증으로 사용하지 않는다. 모델과 사람의 응답은 실행하지 않았다.
+
+첫 주입은 설치 명령까지 실패시켰고, 두 번째 주입은 설치 후 환경 변수 제거로
+적용되지 않아 표식 검사에서 실패했다. 두 로그를 `pi-bootstrap-native.log`와
+`pi-bootstrap-native-fixed.log`에 보존했다. 수정된 프로브는 native serve에만
+적용되는 wrapper를 명시적으로 유지하며 사용자 프로필·설정을 바꾸지 않는다.
+공통 362개는 58.794초에 통과했다(`pi-bootstrap-gate.log`). 자동 idle 재접속과
+전체 P0–P5의 나머지 수용 조건은 미완이다.

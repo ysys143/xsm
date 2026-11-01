@@ -12,15 +12,17 @@ function deferred() {
   return { promise, resolve };
 }
 
-async function fixture(t) {
+async function fixture(t, options = {}) {
   const temp = await mkdtemp(join(tmpdir(), 'xsm-pi-lifetime-'));
   const key = 'xsmPiFixture' + randomUUID();
   const hooks = new Map(), commands = new Map(), opened = [], entered = deferred(), release = deferred();
-  let pause = false, pauseUpdate = false;
+  let pause = false, pauseUpdate = false, attempts = 0;
+  const tools = new Map();
   const XsmHost = { async open() {
-    const host = { controller: new AbortController(), closed: false, operations: [],
+    if (++attempts === 1 && options.failOpen) throw new Error("initial backend unavailable");
+    const host = { controller: new AbortController(), closed: false, operations: [{ name: "fixture_tool", description: "fixture", inputSchema: { type: "object" } }],
       session: { ref: 'stable', generation: String(opened.length) },
-      async update() { if (pauseUpdate && opened.length > 1) { entered.resolve(); await release.promise; } }, async close() { this.closed = true; this.controller.abort(); } };
+      async update() { if (options.failUpdate && opened.length === 1) throw new Error("initial state unavailable"); if (pauseUpdate && opened.length > 1) { entered.resolve(); await release.promise; } }, async close() { this.closed = true; this.controller.abort(); } };
     opened.push(host);
     if (pause) { entered.resolve(); await release.promise; }
     return host;
@@ -37,14 +39,15 @@ async function fixture(t) {
     code = changed;
   }
   const { default: binding } = await import('data:text/javascript;base64,' + Buffer.from(code).toString('base64'));
-  binding({ on: (name, callback) => hooks.set(name, callback), registerTool() {},
+  binding({ on: (name, callback) => hooks.set(name, callback), registerTool: tool => tools.set(tool.name, tool),
     registerCommand: (name, command) => commands.set(name, command), getAllTools: () => [] });
   const ctx = { cwd: temp, hasUI: false, isIdle: () => true,
     sessionManager: { getSessionId: () => 'native', getSessionName: () => '', getBranch: () => [] },
     ui: { notify() {}, setStatus() {} } };
   t.after(async () => { release.resolve(); await hooks.get('session_shutdown')(); delete globalThis[key]; await rm(temp, { recursive: true, force: true }); });
-  await hooks.get('session_start')({}, ctx);
-  return { ctx, hooks, opened, entered, release,
+  if (options.failOpen || options.failUpdate) await assert.rejects(hooks.get('session_start')({}, ctx), /initial/);
+  else await hooks.get('session_start')({}, ctx);
+  return { ctx, hooks, opened, entered, release, tools,
     pause: () => { pause = true; }, pauseUpdate: () => { pauseUpdate = true; }, command: context => commands.get('xsm').handler('status', context ?? ctx) };
 }
 
@@ -95,4 +98,20 @@ test('Pi shutdown during recovered state update closes the new host', async t =>
   f.release.resolve();
   await Promise.all([rejected, shutdown]);
   assert.ok(f.opened.every(host => host.closed));
+});
+
+
+for (const phase of ['failOpen', 'failUpdate']) test(`Pi retries first registration after ${phase}`, async t => {
+  const f = await fixture(t, { [phase]: true });
+  await f.command();
+  assert.ok(f.tools.has('fixture_tool'));
+  assert.equal(f.opened.at(-1).closed, false);
+  if (phase === 'failUpdate') assert.equal(f.opened[0].closed, true);
+});
+
+test('Pi shutdown prevents retrying a failed initial registration', async t => {
+  const f = await fixture(t, { failOpen: true });
+  await f.hooks.get('session_shutdown')();
+  await assert.rejects(f.command(), /not registered/);
+  assert.equal(f.opened.length, 0);
 });
