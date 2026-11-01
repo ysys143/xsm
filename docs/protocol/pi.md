@@ -46,3 +46,31 @@ node scripts/probe-pi-sdk.mjs /isolated/pi/package-root deliverables/pi-sdk.json
 
 코드·버전이 다른 표본은 같은 결과로 합치지 않는다. 모델 미구성의 큐 관측을
 실제 모델의 작업 성공이나 사람이 직접 답한 사실로 해석하지 않는다.
+
+## 명시적 프로필 설치·검사·제거
+
+```sh
+xsm protocol install pi --home /explicit/pi-profile --dry-run
+xsm protocol install pi --home /explicit/pi-profile
+xsm protocol inspect pi --home /explicit/pi-profile
+xsm protocol uninstall pi --home /explicit/pi-profile
+```
+
+설치기는 실제 프로필의 `extensions/xsm.js`만 관리한다. Pi 1.4.0의 자동
+발견은 `.js`/`.ts`에 한정되므로 개발용 본체 `.mjs`를 그대로 복사하지 않는다.
+로더는 완성된 xsm runtime snapshot의 본체와 공유 클라이언트를 참조한다.
+Python도 설치기의 기존 pin/현재 실행 파일로 고정하며 `PYTHONPATH`나
+체크아웃 CWD에 기대지 않는다. 명시적 `XSM_PYTHON` 오버라이드는 유지한다.
+
+기존 settings·auth·다른 확장은 수정하지 않는다. 소유 기록과 정확한 내용이
+맞는 로더만 갱신·제거하고, 사용자 편집·symlink·손상된 소유 기록·경로 교체는
+거부한다. 사용자 파일을 이전 backup으로 되돌려 덮지 않는다.
+
+이미 실행 중인 Pi에는 설치만으로 반영됐다고 하지 않는다. native reload나
+같은 대화의 재시작/재개가 필요하다. 실행 중인 old snapshot은 남겨두고,
+새 프로세스는 새 로더를 읽는다. 제거도 사용자의 실행 중인 Pi를 종료하지 않는다.
+
+개발 검사에는 `probe-pi-protocol.py --installed`가 있다. 이 모드는 `-e`,
+`PYTHONPATH`, interpreter env 오버라이드 없이 실제 자동 발견·스냅샷 실행과
+설치 당시 Python 버전을 확인한다. `probe-pi-install-lifecycle.py`는 명시적인
+대화 fixture로 기존 대화·문맥 보존과 갱신/재개/제거를 검사한다.

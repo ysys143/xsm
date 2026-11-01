@@ -11,6 +11,7 @@ import time
 
 ROOT = Path(__file__).resolve().parents[1]
 MODULES = ["tests.test_protocol", "tests.test_handoff", "tests.test_handoff_consumer",
+           "tests.test_host_install",
            "tests.test_protocol_decisions",
            "tests.test_handoff_crash", "tests.test_handoff_pending_ids",
            "tests.test_mcp_dispatch", "tests.test_subagent_transport",

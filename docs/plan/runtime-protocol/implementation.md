@@ -33,7 +33,7 @@
 | P0 계약·현황 | 부분 구현 | 전체 기능별 normative 스키마, 독립 구현 적합성, 안정판 API 감사 |
 | P1 공통 서비스 | 부분 구현 | CLI 추출, 일반 원격 신원, 네이티브 UI 연결, 비동기 작업 수명 |
 | P2 SDK·검사기 | 부분 구현 | 독립 구현 적합성, 전체 오류/취소 계약 (Python↔Node 교차 시험 통과) |
-| P3 Pi·OpenCode | 부분 구현 | Pi RPC·SDK·수신 경로 검증. Pi 설치·갱신·워커·재개와 OpenCode는 미완 |
+| P3 Pi·OpenCode | 부분 구현 | Pi RPC·SDK·수신 경로 검증. Pi 소유 설치·갱신·재개·제거 검증. Pi 워커·자동 재접속과 OpenCode는 미완 |
 | P4 Hermes·OpenClaw | 미구현 | 안정판 API 결손 해소, 게이트웨이 시험 경계, 전체 기능 |
 | P5 통합·배포 | 미실행 | Linux, 30개 방향 조합, 동종 세션, 원격, 네이티브 p95, 메신저, 전체 회귀 |
 
@@ -190,3 +190,52 @@ Python 3.14.6에서 100회를 모두 완료했고 p95 상한은 약 0.429초였�
 결과의 sourceSha256으로 실제 실행한 코드와 대조한다. SDK 커널 검사는
 `pi-sdk-admitted.json`에 있으며 모델 호출은 0회이다.
 이 수치는 다른 버전·Linux·실제 모델·실제 사람의 TUI 응답으로 확대하지 않는다.
+
+## Pi 소유 설치와 native 수명 검증
+
+- runtime snapshot에 공유 Node/Python 클라이언트와 integrations 자산을 포함한다.
+- `protocol install/uninstall/inspect pi --home`을 추가했다. 보호된 준비/완료
+  소유 기록과 dir-fd 기반 no-follow/CAS로 자기 로더만 갱신·제거한다.
+- 임의 파일·사용자 편집·로더/상위 폴더 symlink, 준비 후 경로 교체와 늦은
+  사용자 편집, 최종 소유 기록 저장 중단을 실제 파일 경로로 검사했다.
+- 기존 설정 bytes/mode, 다른 확장과 사용자 loader mode는 유지한다.
+  손상된 소유 기록은 변경을 거부하고 snapshot 정리에서도 보수적으로 보존한다.
+- Node 호스트의 bare snapshot-root argv도 정리기의 사용 중 참조로 인식한다.
+- 설치 전용 12개 검사와 기존 설치 관련 70개 회귀가 통과했다. 최신 수치와
+  버전별 core gate는 `host-install-checks.json`에 기록한다.
+- native autoload 최초 시험은 `.mjs`가 자동 발견되지 않아 실패했다.
+  `.js` 로더로 수정한 뒤 실제 -e 없는 경로가 도구 21개와 native 질문을 로드했다.
+- 그 다음 실패는 `/var`와 `/private/var`의 동등 경로를 문자 비교한 검사기 문제였다.
+  realpath로 대조하고 pinned Python과 실행 중 snapshot의 실제 origin을 검증했다.
+- native 수명 하네스는 기존 대화, 문맥 fixture, 아직 반영되지 않은 설치, 같은
+  대화 재개, 실행 중 old snapshot 보존, 새 snapshot 재개와 세대 교체,
+  제거 뒤 기존 문맥/다른 설정 보존을 확인했다.
+- 최초 하네스는 bash 진행 이벤트를 response로 오인했고, 다음에는 Pi가
+  assistant 없는 세션을 아직 파일로 저장하지 않아 중단됐다. 각각 response
+  타입 대조와 public SessionManager의 명시적 assistant fixture로 수정했다.
+  이는 모델 생성 답이나 실제 사람 입력으로 부르지 않는다.
+- native 실행 결과와 모든 실패는 `deliverables/protocol-foundation/`의
+  `pi-installed-*`, `pi-install-lifecycle-*`, `host-install-*.log`에 구분해 남겼다.
+- Linux, 다른 세 런타임, 자동 재접속과 모든 native worker/remote/메신저
+  수용 조건은 그대로 미완이다. 전체 계획이나 Pi 전체 인증을 완료하지 않았다.
+
+### Pi 설치 경로의 최신 증거
+
+핵심 검사 154개 + Python 클라이언트 18개 + Node 클라이언트/호스트 28개로
+현재 빠른 검사는 총 200개이다. Python 3.9에서 37.754초, 3.14에서
+27.015초에 통과했다. 설치 관련 기존 70개 회귀는 별도 실행에서 통과했다.
+
+실제 프로필 autoload와 snapshot interpreter를 검증한 100회 실행은
+`pi-installed-100/result.json`에 있다. macOS·Pi 1.4.0·Python 3.9.6에서
+모두 완료했고, send 시작→native message_start 관측의 p95 상한은 약
+0.506초였다. `.mjs` 직접 로드 표본과 설치된 `.js` 로더 표본을 합치지 않는다.
+
+`pi-install-lifecycle-prune/result.json`은 여섯 native 수명 시나리오를
+통과했다. 실제 live actor가 쓰는 old snapshot은 정리에서 남고, old actor를
+종료한 뒤에는 정리 가능함도 확인했다. 프로세스 사용 사실은 이 시험의
+등록 PID와 실제 protocol_root만 관측했으며 타 사용자 argv를 수집하지 않았다.
+
+설치 자산 누락, directory guard 제거, 늦은 사용자 편집을 덮는 세 변이는
+모두 관련 검사를 실패시켰다. helper와 설치 단계의 실패 기록은 보존했다.
+이 단계의 설치는 전부 격리 HOME/프로필에서만 실행했다. 실제 사용자
+프로필·trust·권한·전역 Python pin·Docker context는 수정하지 않았다.

@@ -293,6 +293,9 @@ class Connection:
                   "ref": identity.ref_of(runtime, home, sid), "name": runtime + "-" + sid[:8],
                   "protocol_version": VERSION, "protocol_generation": uuid.uuid4().hex,
                   "registered": True, "activity": "idle"}
+        record["protocol_root"] = os.path.realpath(os.path.join(os.path.dirname(__file__), ".."))
+        record["protocol_python"] = sys.executable
+        record["protocol_python_version"] = sys.version.split()[0]
         token = uuid.uuid4().hex
         filename = registry._record_path(runtime, sid)
         os.makedirs(os.path.dirname(filename), mode=0o700, exist_ok=True)
@@ -515,3 +518,11 @@ def configure_parser(sub):
     server = actions.add_parser("serve", help="serve JSON-RPC over stdio")
     server.add_argument("--stdio", action="store_true", required=True)
     server.set_defaults(func=lambda args: serve())
+    from . import host_install
+    for action in ("install", "uninstall", "inspect"):
+        parser = actions.add_parser(action, help=action + " a native host binding")
+        parser.add_argument("runtime", choices=sorted(host_install.BINDINGS))
+        parser.add_argument("--home", required=True, help="explicit native profile directory")
+        if action != "inspect":
+            parser.add_argument("--dry-run", action="store_true")
+        parser.set_defaults(func=host_install.command)

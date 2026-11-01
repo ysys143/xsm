@@ -4,7 +4,7 @@ import { mkdir, realpath } from 'node:fs/promises';
 import { getAgentDir } from '@earendil-works/pi-coding-agent';
 import { XsmHost, parseHostCommand } from '../../clients/typescript/xsm-host.mjs';
 
-export default function xsm(pi) {
+export default function xsm(pi, options = {}) {
   let host;
   let nativeContext;
   let conversation;
@@ -28,7 +28,7 @@ export default function xsm(pi) {
     conversation = ctx.sessionManager.getSessionId();
     await mkdir(getAgentDir(), { recursive: true, mode: 0o700 });
     const profile = await realpath(getAgentDir());
-    host = await XsmHost.open({ runtime: 'pi', profile, conversation, cwd: ctx.cwd,
+    host = await XsmHost.open({ runtime: 'pi', profile, conversation, cwd: ctx.cwd, command: options.command,
       onError: fail,
       present: ctx.hasUI ? async (event, { signal }) => {
         assertCurrent(signal);

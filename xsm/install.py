@@ -712,6 +712,8 @@ def xsm_on_path() -> list:
 # What makes xsm run, relative to its folder: the package, the hooks, the skill
 # and the launcher. A copy that cannot name its commit is compared by these.
 RUNTIME_FILES = ("xsm/*.py", "hooks/*", "skills/**", "bin/xsm",
+                 "clients/typescript/*.mjs", "clients/typescript/*.d.mts", "clients/python/*.py",
+                 "integrations/*/*.mjs",
                  "native/xsm-net/Cargo.toml", "native/xsm-net/Cargo.lock",
                  "native/xsm-net/src/*.rs")
 # A commit id as git prints it. Checked before one goes on a git command line.
@@ -1036,7 +1038,7 @@ def _snapshot_ids(text: str) -> set:
     """The snapshot ids a text names as a folder of the runtime directory."""
     found = set()
     for folder in {runtime_dir(), os.path.realpath(runtime_dir())}:
-        found |= set(re.findall(re.escape(folder) + r"/([0-9a-f]{12})/", text))
+        found |= set(re.findall(re.escape(folder) + r"/([0-9a-f]{12})(?=[/\s\"']|$)", text))
     return found
 
 
@@ -1083,6 +1085,11 @@ def _configured_for() -> set:
     for link in links:
         texts.append(os.readlink(link) + "/" if os.path.islink(link) else "")
     found = set()
+    from . import host_install
+    try:
+        texts += [root + "/" for root in host_install.configured_roots()]
+    except (OSError, ValueError):
+        return {name for name in os.listdir(runtime_dir()) if _ID.fullmatch(name)}
     for text in texts:
         found |= _snapshot_ids(text)
     return found

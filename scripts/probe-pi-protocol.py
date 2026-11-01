@@ -58,9 +58,14 @@ class NativePi:
         return await asyncio.wait_for(receive(), timeout)
 
     async def command(self, ident, message):
-        await self.send({"type": "prompt", "id": ident, "message": message})
-        result = await self.until(lambda event: event.get("id") == ident)
+        result = await self.rpc(ident, "prompt", message=message)
         assert result.get("success") and result.get("data", {}).get("disposition") == "handled", result
+        return result
+
+    async def rpc(self, ident, kind, **params):
+        await self.send({"type": kind, "id": ident, **params})
+        result = await self.until(lambda event: event.get("id") == ident and event.get("type") == "response")
+        assert result.get("success"), result
         return result
 
 
@@ -80,13 +85,23 @@ async def run(args):
                              env=env, capture_output=True, text=True, check=True).stdout.strip()
     if version != "1.4.0":
         raise RuntimeError("probe requires the pinned Pi 1.4.0; observed " + version)
+    installation = None
+    extension_args = ["-e", str(ROOT / "integrations/pi/xsm.mjs")]
+    if args.installed:
+        command = [str(ROOT / "bin/xsm"), "protocol", "install", "pi", "--home", str(pi_home)]
+        installed = subprocess.run(command, cwd=project, env=env, capture_output=True, text=True, check=True)
+        installation = json.loads(installed.stdout)
+        extension_args = []  # Native discovery must load the installed profile, not -e.
+        env.pop("XSM_PYTHON", None)
+        env.pop("PYTHONPATH", None)
     process = await asyncio.create_subprocess_exec("node", str(args.pi_cli), "--mode", "rpc", "--no-session",
-        "-e", str(ROOT / "integrations/pi/xsm.mjs"), cwd=str(project), env=env,
+        *extension_args, cwd=str(project), env=env,
         stdin=asyncio.subprocess.PIPE, stdout=asyncio.subprocess.PIPE,
         stderr=asyncio.subprocess.PIPE, start_new_session=True)
     native = NativePi(process, args.output)
     sender = None
     result = {"status": "running", "root": str(temp), "nativePid": process.pid, "samplesRequested": args.samples,
+              "installation": installation,
               "runtimeVersion": version, "platform": sys.platform, "python": sys.version.split()[0],
               "sourceSha256": {name: hashlib.sha256((ROOT / name).read_bytes()).hexdigest()
                   for name in ("integrations/pi/xsm.mjs", "clients/typescript/xsm-host.mjs",
@@ -109,6 +124,12 @@ async def run(args):
         own = next(s for s in statuses if "ref" in s)
         assert set(own["operations"]) == set(own["nativeTools"]), own
         result["nativeToolCount"] = len(own["nativeTools"])
+        if installation:
+            native_records = [json.loads(p.read_text()) for p in (state / "sessions").glob("*.json")]
+            actual = next(item for item in native_records if item["runtime"] == "pi")
+            assert actual["protocol_root"] == os.path.realpath(installation["runtime_root"]), actual
+            assert actual["protocol_python_version"] == sys.version.split()[0], actual
+            result["snapshotRuntimeVerified"] = True
         # Exercise the real native select dialog protocol. The driver supplies
         # the answer; this is not attributed to a physical human.
         await native.send({"type": "prompt", "id": "question", "message": "/xsm xsm_decide " +
@@ -188,6 +209,7 @@ if __name__ == "__main__":
     parser.add_argument("--pi-cli", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--samples", type=int, default=2)
+    parser.add_argument("--installed", action="store_true", help="test profile autoload from an owned runtime snapshot")
     options = parser.parse_args()
     if options.samples < 0:
         parser.error("samples must be nonnegative")
