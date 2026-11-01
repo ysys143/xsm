@@ -23,14 +23,15 @@ class RetryAdmission(RuntimeError):
 class XsmHost:
     @classmethod
     async def open(cls, *, runtime, profile, conversation, cwd, deliver=None, present=None,
-                   command=None, env=None, on_error=None, inbox_batch_size=None, inbox_max_bytes=None):
+                   command=None, env=None, on_error=None, inbox_batch_size=None, inbox_max_bytes=None,
+                   initialize_timeout=10.0):
         if inbox_max_bytes is not None and (type(inbox_max_bytes) is not int or not 1 <= inbox_max_bytes <= 1048576):
             raise ValueError("inbox_max_bytes must be an integer from 1 to 1048576")
         if inbox_batch_size is not None and (type(inbox_batch_size) is not int or not 1 <= inbox_batch_size <= 100):
             raise ValueError("inbox_batch_size must be an integer from 1 to 100")
         command = command or [str(Path(__file__).resolve().parents[2] / "bin/xsm"),
                               "protocol", "serve", "--stdio"]
-        client = await XsmHostClient.connect(command, cwd=cwd, env=env)
+        client = await XsmHostClient.connect(command, cwd=cwd, env=env, initialize_timeout=initialize_timeout)
         try:
             capabilities = ["messaging", "inbox"] + (["events"] if deliver else []) + (["user-decisions"] if present else [])
             available = client.initialization.get("capabilities", [])

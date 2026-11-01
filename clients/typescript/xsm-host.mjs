@@ -62,7 +62,8 @@ export class XsmHost {
     const command = options.command ?? [fileURLToPath(new URL('../../bin/xsm', import.meta.url)),
       'protocol', 'serve', '--stdio'];
     const client = await XsmHostClient.connect({ command, cwd: options.cwd,
-      env: options.env, onStderr: options.onStderr });
+      env: options.env, onStderr: options.onStderr, closeTimeout: options.closeTimeout,
+      initializeTimeout: options.initializeTimeout });
     try {
       const available = client.initialization.capabilities;
       const required = ['messaging', 'inbox', ...(options.deliver ? ['events'] : []),

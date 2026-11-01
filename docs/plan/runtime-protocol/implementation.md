@@ -1544,3 +1544,23 @@ Native stdout의 ACK 100개와 정확한 수신 ID 집합, 현재 구현 hash를
 새로 실행한 것으로 보고하지 않는다. 테스트 VM은 Stopped로 확인했고 기본
 context/기본 VM은 유지했다. Hermes/OpenClaw Linux·worker·실제 모델/사람 UI·
 원격/메신저·전체 방향 및 P0–P5 나머지는 미완이다.
+
+## Initialize 협상 응답 기한
+
+Python/Node SDK와 native host의 초기 협상에 기본 10초 응답 기한을 추가했다.
+Python `initialize_timeout`(초), Node `initializeTimeout`(ms)으로 유한한 양수의
+기한을 전달한다. Node의 timer overflow 범위도 거부한다. 응답 없는 peer는
+`TransportError`로 실패하고 기존 close 경로로 회수한다. 이 기한은 일반
+operation·session.open·operations/list 전체의 기한이나 사용자 질문 제한이
+아니다. 해당 나머지 setup/작업 기한과 P0–P5는 여전히 미완이다.
+
+무응답 subprocess fixture, 종료 회수, invalid value spawn 전 거부, native
+host 옵션 전달 검사를 추가했다. 초기 Python red는 옵션 부재로 실패했다
+(`initialize-timeout-python-red.log`). 전체 최종 검사 결과는 아래 기록한다.
+
+`python3 -B scripts/check-protocol.py`가 401개(핵심 238/Python 47/Node 116)를
+66.503초에 통과했다(`initialize-timeout-core-gate.log`, macOS arm64,
+Python 3.14.6). 초기 기한을 무력화한 Python·Node 임시 변이도 외부 watchdog
+오류로 실패했다(`initialize-timeout-disabled-mutant.log`,
+`initialize-timeout-node-disabled-mutant.log`). 즉 timeout 설정의 존재만
+검사한 결과가 아니다. 이 SDK 변경의 Linux 검증은 아직 미실행이다.

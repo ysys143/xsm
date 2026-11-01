@@ -45,7 +45,7 @@ async def run(profile, conversation, operation, arguments):
             await client.session_close(session)
 ```
 
-`asyncio.wait_for(client.request(...), timeout)`으로 호출 대기 시간을 제한할 수 있다. 취소한 요청의 늦은 응답은 무시한다. 연결 초기화 시간은 `asyncio.wait_for(XsmClient.connect(), timeout)`으로 제한한다.
+`asyncio.wait_for(client.request(...), timeout)`으로 호출 대기 시간을 제한할 수 있다. 취소한 요청의 늦은 응답은 무시한다. 초기 `initialize` 응답 기한은 기본 10초다. Python은 `XsmClient.connect(initialize_timeout=...)`에 초, Node는 `XsmClient.connect({ initializeTimeout: ... })`에 밀리초를 지정한다. 유한한 양수만 허용하며 Node는 timer 상한 2147483647ms를 넘길 수 없다. Native `XsmHost.open`도 같은 옵션을 전달한다. 기한 초과는 `TransportError`로 보고하고 자식 프로세스를 회수한다. 전체 호출을 감싼 `asyncio.wait_for`로 더 짧은 외부 취소 기한을 둘 수도 있다.
 
 ## JavaScript와 TypeScript
 

@@ -31,6 +31,8 @@ export interface ConnectOptions {
   onStderr?: (text: string) => unknown;
   /** Grace period in milliseconds before each termination step. Default 1000. */
   closeTimeout?: number;
+  /** Initialize response deadline in milliseconds. Default 10000. */
+  initializeTimeout?: number;
 }
 export class TransportError extends Error {}
 export class RpcError extends Error {

@@ -5,6 +5,7 @@ from __future__ import annotations
 import asyncio
 import codecs
 import json
+import math
 import sys
 from collections.abc import Callable, Mapping, Sequence
 from typing import Any
@@ -67,9 +68,16 @@ class XsmClient:
         env: Mapping[str, str] | None = None,
         on_stderr: Callable[[str], Any] | None = None,
         close_timeout: float = 1.0,
+        initialize_timeout: float = 10.0,
     ):
         if not command or close_timeout <= 0:
             raise ValueError("command must be nonempty and close_timeout positive")
+        try:
+            valid_timeout = type(initialize_timeout) in (int, float) and math.isfinite(initialize_timeout) and initialize_timeout > 0
+        except OverflowError:
+            valid_timeout = False
+        if not valid_timeout:
+            raise ValueError("initialize_timeout must be finite and positive")
         process = await asyncio.create_subprocess_exec(
             *command, stdin=asyncio.subprocess.PIPE,
             stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE,
@@ -77,9 +85,12 @@ class XsmClient:
         )
         client = cls(process, on_stderr or sys.stderr.write, close_timeout)
         try:
-            client.initialization = await client.request(
-                "initialize", {"protocolVersion": "1"}
-            )
+            try:
+                client.initialization = await asyncio.wait_for(client.request(
+                    "initialize", {"protocolVersion": "1"}
+                ), initialize_timeout)
+            except asyncio.TimeoutError as error:
+                raise TransportError("initialize negotiation timed out") from error
             if not isinstance(client.initialization, dict) or client.initialization.get("protocolVersion") != "1":
                 raise TransportError("unsupported or malformed protocol version negotiation")
             return client

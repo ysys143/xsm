@@ -146,6 +146,35 @@ class ClientTests(unittest.IsolatedAsyncioTestCase):
 
 
 
+    async def test_initialize_deadline_rejects_invalid_values(self):
+        for value in (False, 0, -1, float('inf'), float('nan'), '1', 10 ** 400):
+            with self.subTest(value=repr(value)):
+                with self.assertRaisesRegex(ValueError, 'initialize_timeout'):
+                    await XsmClient.connect(['must-not-spawn'], initialize_timeout=value)
+
+    async def test_host_forwards_initialize_deadline(self):
+        from xsm_host import XsmHost
+        with self.assertRaisesRegex(TransportError, 'initialize.*timed out'):
+            await asyncio.wait_for(XsmHost.open(runtime='fixture', profile='p', conversation='c',
+                cwd=str(pathlib.Path.cwd()), command=[sys.executable, '-u', PEER, 'init-silent'],
+                initialize_timeout=.05), 3)
+
+    async def test_silent_initialize_times_out_and_reaps_peer(self):
+        seen = []
+        class Observed(XsmClient):
+            def __init__(self, *args):
+                super().__init__(*args)
+                seen.append(self)
+        try:
+            with self.assertRaisesRegex(TransportError, 'initialize.*timed out'):
+                await asyncio.wait_for(Observed.connect(
+                    [sys.executable, '-u', PEER, 'init-silent'],
+                    initialize_timeout=.05, close_timeout=.05), 2)
+            self.assertIsNotNone(seen[0].process.returncode)
+        finally:
+            for client in seen:
+                await client.close()
+
     async def test_version_negotiation_rejects_invalid_results_and_reaps_peer(self):
         for mode in ('init-wrong-version', 'init-missing-version', 'init-nonobject'):
             seen = []

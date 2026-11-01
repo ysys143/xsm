@@ -158,3 +158,29 @@ test('negotiation error survives cleanup failure after reaping', settings, async
   assert.ok(seen[0].process.exitCode !== null || seen[0].process.signalCode !== null);
   assert.ok(diagnostics.some(text => /fixture cleanup failure/.test(text)));
 });
+
+test('silent initialize times out and reaps its peer', settings, async () => {
+  const seen = [];
+  class Observed extends XsmClient {
+    constructor(...args) { super(...args); seen.push(this); }
+  }
+  try {
+    await assert.rejects(Observed.connect({ command: [python, '-u', peer, 'init-silent'],
+      initializeTimeout: 50, closeTimeout: 50 }), error =>
+      error instanceof TransportError && /initialize.*timed out/.test(error.message));
+    assert.ok(seen[0].process.exitCode !== null || seen[0].process.signalCode !== null);
+  } finally { await Promise.all(seen.map(client => client.close())); }
+});
+
+test('initialize deadline rejects invalid values before spawn', settings, async () => {
+  for (const initializeTimeout of [false, 0, -1, Infinity, NaN, '1', 2147483648]) {
+    await assert.rejects(XsmClient.connect({ command: ['must-not-spawn'], initializeTimeout }), /initializeTimeout/);
+  }
+});
+
+test('native host forwards initialize deadline', settings, async () => {
+  const { XsmHost } = await import('../typescript/xsm-host.mjs');
+  await assert.rejects(XsmHost.open({ runtime: 'fixture', profile: 'p', conversation: 'c', cwd: '.',
+    command: [python, '-u', peer, 'init-silent'], initializeTimeout: 50, closeTimeout: 50 }),
+    error => error instanceof TransportError && /initialize.*timed out/.test(error.message));
+});

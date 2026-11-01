@@ -43,7 +43,9 @@ for line in sys.stdin.buffer:
     assert request["jsonrpc"] == "2.0"
     if not initialized:
         assert method == "initialize" and params == {"protocolVersion": "1"}
-        if MODE == "init-error":
+        if MODE == "init-silent":
+            time.sleep(60)
+        elif MODE == "init-error":
             error(request, -32001, "unsupported version", {"supported": []})
         elif MODE == "init-eof":
             break

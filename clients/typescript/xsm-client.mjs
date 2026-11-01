@@ -35,14 +35,24 @@ export class XsmClient {
 
   static async connect(options = {}) {
     const { command = XsmClient.DEFAULT_COMMAND, cwd, env,
-      onStderr = text => process.stderr.write(text), closeTimeout = 1000 } = options;
+      onStderr = text => process.stderr.write(text), closeTimeout = 1000, initializeTimeout = 10000 } = options;
     if (!Array.isArray(command) || !command.length || !Number.isFinite(closeTimeout) || closeTimeout <= 0) {
       throw new TypeError('command must be nonempty and closeTimeout positive');
+    }
+    if (!Number.isFinite(initializeTimeout) || initializeTimeout <= 0 || initializeTimeout > 2147483647) {
+      throw new TypeError('initializeTimeout must be finite and within the positive timer range');
     }
     const child = spawn(command[0], command.slice(1), { cwd, env, stdio: ['pipe', 'pipe', 'pipe'], shell: false });
     const client = new this(child, onStderr, closeTimeout);
     try {
-      client.initialization = await client.request('initialize', { protocolVersion: '1' });
+      let timer;
+      try {
+        client.initialization = await Promise.race([
+          client.request('initialize', { protocolVersion: '1' }),
+          new Promise((_, reject) => { timer = setTimeout(() =>
+            reject(new TransportError('initialize negotiation timed out')), initializeTimeout); }),
+        ]);
+      } finally { clearTimeout(timer); }
       if (!object(client.initialization) || client.initialization.protocolVersion !== '1') {
         throw new TransportError('unsupported or malformed protocol version negotiation');
       }
