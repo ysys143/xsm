@@ -34,7 +34,7 @@
 | P1 공통 서비스 | 부분 구현 | CLI 추출, 일반 원격 신원, 네이티브 UI 연결, 비동기 작업 수명 |
 | P2 SDK·검사기 | 부분 구현 | 독립 구현 적합성, 전체 오류/취소 계약 (Python↔Node 교차 시험 통과) |
 | P3 Pi·OpenCode | 부분 구현 | 연결·수신·설치·UI·대화 수명 경로 검증. Native worker·자동 재접속·busy/now의 실제 우선순위 등 미완 |
-| P4 Hermes·OpenClaw | 미구현 | 안정판 API 결손 해소, 게이트웨이 시험 경계, 전체 기능 |
+| P4 Hermes·OpenClaw | 초기 구현 | Hermes 안정판 PluginContext/도구 registry의 pull 연결. Native agent·주입·UI·설치와 OpenClaw 미완 |
 | P5 통합·배포 | 미실행 | Linux, 30개 방향 조합, 동종 세션, 원격, 네이티브 p95, 메신저, 전체 회귀 |
 
 ## 실제 검사
@@ -454,3 +454,50 @@ Python 3.9.6에서 43.295초, 3.14.6에서 27.866초에 통과했다.
 `py39-lock-lifecycle-complete.log`, `py314-lock-lifecycle-complete.log`가 근거다.
 설치와 setup 경로의 별도 회귀 117개는 64.868초에 통과했다
 (`lifecycle-install-setup-regression.log`).
+
+## Python 공통 호스트와 Hermes 안정판 API 연결
+
+`clients/python/xsm_host.py`에 공통 비동기 참여 수명·알림·질문/원 작업 재호출·
+관측 뒤 수락 보고·실패 후 claim release·명시적 ACK 경로를 추가했다.
+Native callback이 없으면 pull-only이며 events나 user-decisions를 광고하지 않는다.
+Python SDK를 package로도 제공해 같은 프로세스의 snapshot별 import를 분리한다.
+Runtime snapshot은 Python integration 파일도 포함한다.
+
+다른 호출이 아직 같은 질문의 RPC를 마무리하는 동안 취소가 표시를 포기하는
+경합을 Python과 기존 JS 양쪽에서 재현했다. 응답 대기자 등록과 취소 판단을
+직렬화해 수정했고 일반 작업을 coalesce하지 않는다. JS 호스트를 사용하는
+Pi/OpenCode도 영향 범위라 실제 SDK/TUI 경로를 다시 검사한다.
+
+Hermes v0.22.5에는 PluginContext.session_key 메서드가 없지만 별도
+plugin_session.session_key와 session_context.async_delivery_supported가 있었다.
+on_session_end는 매 turn 종료이며 finalize/delete와 구분해야 한다.
+Native inject True는 TUI 큐 수락과 gateway 예약의 의미가 다르다. Classic CLI는
+키 검사 전 현재 큐를 사용한다. ask_choice도 동기 slash 문맥에만 연결된다.
+이 경로들을 동일한 native admission/UI로 간주하지 않았다.
+
+`integrations/hermes/xsm.py`는 실제 dispatcher의 session_id와 task-local ID를
+비교하고 native workspace를 사용한다. 공통 스키마의 native 도구 21개를
+등록하며 finalize/resume에서 주소 보존·참여 세대 교체를 처리한다. 현재는
+pull-only이며 자동 주입과 사용자 UI를 만들지 않는다.
+
+실제 고정 SDK의 PluginContext·registry.dispatch·hook dispatcher에서 6개 검사가
+통과했다. 도구 등록·세션/폴더 분리·전송/pull/ACK·불일치 거부·turn/finalize 구분·
+UI 미연결 거부를 포함한다. Native caller는 fixture이며 실제 agent turn이나
+CLI/TUI/메신저 시험으로 세지 않는다. 최초 서로 다른 비 git 폴더 전송은
+정책이 거부했으며 fixture를 같은 저장소의 두 폴더로 고쳐 우회하지 않았다.
+
+`hermes-native-tools-current/result.json`과 실패 로그를 남겼다. Native source는
+고정 v0.22.5, SDK 환경은 별도 Python 3.14이며 실제 사용자 홈·설정·API 키를
+사용하지 않았다. Hermes 설치/수명·native 주입·UI·worker·자동 workspace 전환과
+전체 계획은 미완이다. [API 경계](../../protocol/hermes.md)를 따른다.
+
+최신 빠른 묶음은 핵심 182개 + Python client/host 28개 + Node 46개,
+총 256개다. Python 3.9.6에서 53.701초, 3.14.6에서 34.456초에 통과했다.
+`py39-hermes-sdk-complete.log`, `py314-hermes-sdk-complete.log`가 근거다.
+Python의 native 수락 False guard와 snapshot SDK namespace를 제거한 변이는
+각각 관련 검사를 실패시켰다(`python-host-mutations.json`).
+
+JS 변경 뒤 실제 Pi 1.4.0 SDK 질문/도구 경로와 설치된 OpenCode 1.19.5의
+TUI 선택·취소를 다시 통과했다. Pi는 issuing assistant/UI fixture, OpenCode는
+loopback assistant/키 입력 fixture이며 실제 모델·사람 시험으로 쓰지 않는다.
+`pi-host-waiter-final.json`, `opencode-host-waiter-{final,cancel}/result.json`에 남긴다.

@@ -716,7 +716,7 @@ def xsm_on_path() -> list:
 # and the launcher. A copy that cannot name its commit is compared by these.
 RUNTIME_FILES = ("xsm/*.py", "hooks/*", "skills/**", "bin/xsm",
                  "clients/typescript/*.mjs", "clients/typescript/*.d.mts", "clients/python/*.py",
-                 "integrations/*/*.mjs",
+                 "integrations/*/*.mjs", "integrations/*/*.py",
                  "native/xsm-net/Cargo.toml", "native/xsm-net/Cargo.lock",
                  "native/xsm-net/src/*.rs")
 # A commit id as git prints it. Checked before one goes on a git command line.
