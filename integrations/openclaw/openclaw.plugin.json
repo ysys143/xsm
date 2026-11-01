@@ -1,7 +1,7 @@
 {
   "id": "xsm",
   "name": "xsm",
-  "description": "Experimental protocol tools; native push and user UI are not connected.",
+  "description": "Experimental protocol tools and guarded native context queue; turn wake and user UI remain unconnected.",
   "activation": {
     "onStartup": true
   },

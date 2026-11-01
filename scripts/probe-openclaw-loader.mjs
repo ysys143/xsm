@@ -6,9 +6,14 @@ import { join, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import operations from '../integrations/openclaw/tools.mjs';
 
-const [nativeRoot, output, mode] = process.argv.slice(2);
-assert.ok(!mode || mode === '--execute');
-if (!nativeRoot || !output) throw new Error('usage: node probe-openclaw-loader.mjs <native package root> <output.json> [--execute]');
+const [nativeRoot, output, mode, countText, policyFlag] = process.argv.slice(2);
+assert.ok(!mode || ['--execute', '--queue'].includes(mode));
+assert.ok(!policyFlag || (mode === '--queue' && policyFlag === '--deny-injection'));
+const denied = Boolean(policyFlag);
+const samples = Number(countText ?? 1);
+assert.ok(Number.isInteger(samples) && samples >= 1 && samples <= 1000);
+assert.ok(!countText || mode === '--queue');
+if (!nativeRoot || !output) throw new Error('usage: node probe-openclaw-loader.mjs <native package root> <output.json> [--execute|--queue [samples]]');
 const root = fileURLToPath(new URL('../', import.meta.url));
 const destination = resolve(output);
 const pkg = JSON.parse(await readFile(join(nativeRoot, 'package.json'), 'utf8'));
@@ -37,6 +42,21 @@ const config = {
   plugins: { enabled: true, allow: ['xsm'], load: { paths: [join(root, 'integrations/openclaw/xsm.mjs')] },
     entries: { xsm: { enabled: true } } }, agents: { defaults: { workspace: temp } },
 };
+if (mode === '--queue') {
+  if (denied) config.plugins.entries.xsm.hooks = { allowPromptInjection: false };
+  // This fixture exposes the real API proxy to the probe, without a production global.
+  const directory = join(temp, 'probe-plugin');
+  await mkdir(directory);
+  await writeFile(join(directory, 'openclaw.plugin.json'), await readFile(join(root, 'integrations/openclaw/openclaw.plugin.json')));
+  const source = `import { register } from ${JSON.stringify(pathToFileURL(join(root, 'integrations/openclaw/xsm.mjs')).href)};
+    export default { id: 'xsm', register(api) {
+      globalThis[Symbol.for('xsm.native.queue.probe')] = api;
+      register(api, { command: ${JSON.stringify([join(root, 'bin/xsm'), 'protocol', 'serve', '--stdio'])} });
+    } };`;
+  const entry = join(directory, 'entry.mjs');
+  await writeFile(entry, source);
+  config.plugins.load.paths = [entry];
+}
 const registry = native[alias]({ config, workspaceDir: temp, cache: false, activate: true, onlyPluginIds: ['xsm'] });
 const plugin = registry.plugins.find(item => item.id === 'xsm');
 assert.equal(plugin?.status, 'loaded', JSON.stringify(registry.diagnostics));
@@ -45,11 +65,12 @@ const tools = registry.tools.filter(item => item.pluginId === 'xsm');
 assert.deepEqual(tools.flatMap(item => item.names).sort(), operations.map(item => item.name).sort());
 for (const tool of tools) assert.equal(tool.factory({}), null);
 await assert.rejects(readdir(join(temp, 'xsm/sessions')), { code: 'ENOENT' });
-const result = { status: 'passed', runtimeVersion: pkg.version, node: process.version,
+const result = { status: 'incomplete', runtimeVersion: pkg.version, node: process.version,
+  platform: process.platform, arch: process.arch,
   nativeLoader: true, nativeTools: tools.length, metadataCreatedNoParticipant: true,
   nativeToolExecution: false, nativeUnloadTested: false, modelCalls: 0,
   physicalHumanUiTested: false, diagnostics: registry.diagnostics, root: temp };
-if (mode === '--execute') {
+if (mode) {
   // Resolve pinned host-internal exports by their original names, not guessed minified aliases.
   async function nativeFunction(prefix, name) {
     const files = (await readdir(dist)).filter(file => file.startsWith(prefix) && file.endsWith('.mjs'));
@@ -65,7 +86,23 @@ if (mode === '--execute') {
   try {
     const resolveTools = await nativeFunction('tools-', 'resolvePluginTools');
     const context = id => ({ config, workspaceDir: temp,
-      sessionId: id, sessionKey: 'agent:main:fixture' });
+      sessionId: id, sessionKey: mode === '--queue' ? 'agent:main:' + id : 'agent:main:fixture',
+      ...(mode === '--queue' ? { agentId: 'main' } : {}) });
+    const api = mode === '--queue' ? globalThis[Symbol.for('xsm.native.queue.probe')] : undefined;
+    if (mode === '--queue') assert.ok(api?.runtime?.agent?.session);
+    if (api) {
+      for (const id of ['native-fixture-a', 'native-fixture-b']) {
+        await api.runtime.agent.session.upsertSessionEntry({ agentId: 'main', sessionKey: context(id).sessionKey,
+          entry: { sessionId: id, updatedAt: Date.now() } });
+      }
+      if (denied) {
+        const { nativeDelivery } = await import(pathToFileURL(join(root, 'integrations/openclaw/context-queue.mjs')));
+        assert.equal(nativeDelivery(api, context('native-fixture-b'), () => {}), undefined);
+        result.nativeInjectionPolicyDenied = true;
+        result.registrationPromptPolicy = api.config.plugins?.entries?.xsm?.hooks?.allowPromptInjection ?? null;
+        result.runtimePromptPolicy = api.runtime.config.current()?.plugins?.entries?.xsm?.hooks?.allowPromptInjection ?? null;
+      }
+    }
     const resolve = id => resolveTools({ context: context(id),
       runtimeRegistry: registry, toolAllowlist: ['xsm'] });
     const executable = resolve('native-fixture-a');
@@ -80,6 +117,7 @@ if (mode === '--execute') {
     const record = JSON.parse(await readFile(join(temp, 'xsm/sessions', files[0]), 'utf8'));
     assert.equal(record.runtime, 'openclaw');
     result.nativeRef = record.ref;
+    result.protocolPython = { version: record.protocol_python_version, executable: record.protocol_python };
     const records = async () => Promise.all((await readdir(join(temp, 'xsm/sessions')))
       .filter(file => file.endsWith('.json'))
       .map(async file => JSON.parse(await readFile(join(temp, 'xsm/sessions', file), 'utf8'))));
@@ -90,17 +128,79 @@ if (mode === '--execute') {
     assert.equal(rows.length, 2);
     const target = rows.find(row => row.ref !== record.ref);
     assert.ok(target, 'same route must keep separate native conversation identities');
+    const started = performance.now();
+    const firstText = 'OpenClaw native factory fixture message sample-0-end';
     await executable.find(tool => tool.name === 'xsm_send').execute('send-a-b', {
-      target: 'ref:' + target.ref, text: 'OpenClaw native factory fixture message', wait: 0,
+      target: 'ref:' + target.ref, text: firstText, wait: 0,
     });
-    const received = await inboxB.execute('receive-b', {});
-    assert.equal(received.details.claims.length, 1);
-    assert.match(JSON.stringify(received.details.messages), /native factory fixture message/);
+    let tokens;
+    const latencies = [];
+    if (api && !denied) {
+      result.admission = { requestedSamples: samples, samples: 0, milliseconds: latencies };
+      result.nativeQueueAckCount = 0;
+      async function consume(started, expected) {
+        const until = Date.now() + 5000;
+        let injection;
+        while (Date.now() < until) {
+          const row = api.runtime.agent.session.getSessionEntry({ agentId: 'main',
+            sessionKey: context('native-fixture-b').sessionKey, readConsistency: 'latest' });
+          injection = row?.pluginNextTurnInjections?.xsm?.[0];
+          if (injection) break;
+          await new Promise(resolve => setTimeout(resolve, 10));
+        }
+        assert.ok(injection, 'actual native context queue did not accept the original');
+        assert.ok(injection.text.includes(expected), 'native queue accepted another sample');
+        latencies.push(performance.now() - started);
+        result.admission.samples = latencies.length;
+        const drain = await nativeFunction('host-hook-state-', 'drainPluginNextTurnInjectionContext');
+        const prompt = await drain({ cfg: config, agentId: 'main', sessionKey: context('native-fixture-b').sessionKey });
+        assert.match(prompt.prependContext, /native factory fixture message/);
+        assert.ok(prompt.prependContext.includes(expected), 'native prompt consumed another sample');
+        assert.equal(prompt.queuedInjections.length, 1);
+        const tokens = JSON.parse(/xsm_ack with tokens: (\[[^\n]*?\])/.exec(prompt.prependContext)[1]);
+        assert.equal(tokens.length, 1);
+        const again = await drain({ cfg: config, agentId: 'main', sessionKey: context('native-fixture-b').sessionKey });
+        assert.equal(again.queuedInjections.length, 0);
+        await writeFile(destination, JSON.stringify(result, null, 2) + '\n');
+        return tokens;
+      }
+      tokens = await consume(started, firstText);
+      for (let index = 1; index < samples; index++) {
+        const ack = await second.find(tool => tool.name === 'xsm_ack').execute('consume-' + index, { tokens });
+        assert.equal(ack.details.acked.length, 1);
+        result.nativeQueueAckCount++;
+        const began = performance.now();
+        const text = 'OpenClaw native factory fixture message sample-' + index + '-end';
+        await executable.find(tool => tool.name === 'xsm_send').execute('send-' + index, {
+          target: 'ref:' + target.ref, text, wait: 0,
+        });
+        tokens = await consume(began, text);
+      }
+      const sorted = [...latencies].sort((a, b) => a - b);
+      assert.equal(latencies.length, samples);
+      result.admission = { requestedSamples: samples, samples: latencies.length, milliseconds: latencies,
+        p95UpperBoundMs: sorted[Math.ceil(sorted.length * .95) - 1],
+        measured: 'native sender execute start through observed native context queue; includes canonical store time' };
+      result.nativeQueuePromptConsumed = true;
+      result.nativeWakeTested = false;
+    } else {
+      const received = await inboxB.execute('receive-b', {});
+      assert.equal(received.details.claims.length, 1);
+      assert.match(JSON.stringify(received.details.messages), /native factory fixture message/);
+      tokens = received.details.claims.map(claim => claim.token);
+    }
     const ack = await second.find(tool => tool.name === 'xsm_ack').execute('consume-b', {
-      tokens: received.details.claims.map(claim => claim.token),
+      tokens,
     });
     assert.equal(ack.details.acked.length, 1);
-    result.nativeDmPullAck = true;
+    if (api && !denied) { result.nativeQueueAckCount++; assert.equal(result.nativeQueueAckCount, samples); }
+    result.nativeDmPullAck = !api || denied;
+    result.nativeQueueExplicitAck = Boolean(api) && !denied;
+    if (denied) {
+      const row = api.runtime.agent.session.getSessionEntry({ agentId: 'main',
+        sessionKey: context('native-fixture-b').sessionKey, readConsistency: 'latest' });
+      assert.equal(row.pluginNextTurnInjections?.xsm?.length ?? 0, 0);
+    }
     await assert.rejects(executable.find(tool => tool.name === 'xsm_decide').execute('unbound-ui', {
       question: 'Native fixture question', options: ['blue', 'green'],
     }), /no user-interface/);
@@ -108,7 +208,7 @@ if (mode === '--execute') {
     const { getGlobalHookRunner } = await import(pathToFileURL(join(nativeRoot, 'dist/plugin-sdk/plugin-runtime.js')));
     const hooks = getGlobalHookRunner();
     assert.ok(hooks?.hasHooks('session_end'));
-    await hooks.runSessionEnd({ sessionId: 'native-fixture-a', sessionKey: 'agent:main:fixture',
+    await hooks.runSessionEnd({ sessionId: 'native-fixture-a', sessionKey: context('native-fixture-a').sessionKey,
       messageCount: 0, reason: 'reset' }, context('native-fixture-a'));
     assert.ok((await records()).find(row => row.ref === record.ref).ended_at);
     await assert.rejects(inbox.execute('late-a', {}), /no longer current/);
@@ -118,15 +218,32 @@ if (mode === '--execute') {
     assert.notEqual(after.protocol_generation, record.protocol_generation);
     assert.ok(!after.ended_at);
     result.nativeSessionEndResume = true;
+    result.status = 'passed';
+  } catch (error) {
+    result.status = 'failed';
+    result.error = error.message;
+    throw error;
   } finally {
-    const cleanup = await dispose(registry);
-    assert.deepEqual(cleanup.failures, []);
-    result.nativeUnloadTested = true;
+    try {
+      const cleanup = await dispose(registry);
+      assert.deepEqual(cleanup.failures, []);
+      result.nativeUnloadTested = true;
+      const sessionFiles = await readdir(join(temp, 'xsm/sessions')).catch(error => {
+        if (error.code === 'ENOENT') return [];
+        throw error;
+      });
+      for (const file of sessionFiles.filter(file => file.endsWith('.json'))) {
+        const record = JSON.parse(await readFile(join(temp, 'xsm/sessions', file), 'utf8'));
+        assert.ok(record.ended_at, 'native disposal left a live participation');
+      }
+    } catch (error) {
+      result.status = 'failed'; result.cleanupError = error.message; throw error;
+    } finally {
+      await writeFile(destination, JSON.stringify(result, null, 2) + '\n');
+    }
   }
-  for (const file of (await readdir(join(temp, 'xsm/sessions'))).filter(file => file.endsWith('.json'))) {
-    const record = JSON.parse(await readFile(join(temp, 'xsm/sessions', file), 'utf8'));
-    assert.ok(record.ended_at, 'native disposal left a live participation');
-  }
+} else {
+  result.status = 'passed';
 }
 await writeFile(destination, JSON.stringify(result, null, 2) + '\n');
 console.log(JSON.stringify(result));

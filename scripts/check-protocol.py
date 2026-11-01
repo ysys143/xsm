@@ -36,7 +36,7 @@ def main():
                      "clients/tests/test_node_protocol.mjs", "clients/tests/test_node_host.mjs",
                      "clients/tests/test_node_host_binding.mjs", "clients/tests/test_opencode_binding.mjs",
                      "clients/tests/test_opencode_question_ui.mjs", "clients/tests/test_opencode_ui_channel.mjs",
-                     "clients/tests/test_openclaw_binding.mjs"]]
+                     "clients/tests/test_openclaw_binding.mjs", "clients/tests/test_openclaw_context_queue.mjs"]]
         if not shutil.which("node", path=env.get("PATH")):
             print(json.dumps({"passed": False, "reason": "Node.js is required for client conformance"}))
             return 1

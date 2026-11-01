@@ -20,10 +20,14 @@
   알려지지 않은 런타임을 Codex 전송으로 보내지 않는다.
 - 수신 알림·네이티브 큐 보고·최종 소비 ACK 분리. FYI는 알림을 발생시키지 않는다.
 - `user-decisions` 호스트 질문·응답 결속을 구현했다. 답 저장 뒤 원 작업을
-  재호출해야 적용한다. 네이티브 UI 연결과 실제 사용자 답 검증은 아직 미완이다.
+  재호출해야 적용한다. Pi/OpenCode native UI fixture는 통과했으며, 실제 사용자
+  응답 검증과 Hermes/OpenClaw UI 연결은 미완이다.
   UI 능력이 없는 호스트와 네이티브 transcript 복구 대체는 `-32004`로 거부한다.
 - Python 3.9+ 클라이언트, 실행 가능한 Node 모듈과 TypeScript 타입,
   전송 fixture 및 실제 서버 subprocess 검사.
+- Pi/OpenCode native 연결·설치·UI fixture, Hermes native pull 도구,
+  OpenClaw의 guarded native context queue prototype이 있다. 런타임 전체 지원
+  인증이나 모든 표면의 연결 완료를 뜻하지 않는다.
 - 실험 명세·요청 스키마·README 연결. 안정된 호환성 보장은 아직 아니다.
 
 ## 단계별 판정
@@ -34,14 +38,14 @@
 | P1 공통 서비스 | 부분 구현 | CLI 추출, 일반 원격 신원, 네이티브 UI 연결, 비동기 작업 수명 |
 | P2 SDK·검사기 | 부분 구현 | 독립 구현 적합성, 전체 오류/취소 계약 (Python↔Node 교차 시험 통과) |
 | P3 Pi·OpenCode | 부분 구현 | 연결·수신·설치·UI·대화 수명 경로 검증. Native worker·자동 재접속·busy/now의 실제 우선순위 등 미완 |
-| P4 Hermes·OpenClaw | 초기 구현 | Hermes 안정판 PluginContext/도구 registry의 pull 연결. Native agent·주입·UI·설치와 OpenClaw 미완 |
-| P5 통합·배포 | 미실행 | Linux, 30개 방향 조합, 동종 세션, 원격, 네이티브 p95, 메신저, 전체 회귀 |
+| P4 Hermes·OpenClaw | 부분 구현 | Hermes pull 도구, OpenClaw native 도구/guarded queue prototype. Agent turn·idle wake·UI·설치·worker 미완 |
+| P5 통합·배포 | 부분 검증 | Mac native SDK/CLI fixture 일부 통과. Linux, 30개 방향 조합, 동종 세션, 원격, 버전·플랫폼별 전체 native p95, 메신저, 전체 회귀 미완 |
 
-## 실제 검사
+## 초기 실제 검사
 
 `python3 scripts/check-protocol.py`는 실행 전에 HOME/XSM_HOME/CODEX_HOME/
 CLAUDE_CONFIG_DIR를 격리하고 API 자격 증명과 실행 중 세션 환경을 넘기지 않는다.
-현재 핵심 121개 + Python 클라이언트 15개 + Node 클라이언트 20개가 통과했다.
+초기 표본에서는 핵심 121개 + Python 클라이언트 15개 + Node 클라이언트 20개가 통과했다.
 Python 3.9에서 총 16.267초, Python 3.14에서 9.948초였다.
 이 수치는 네이티브 큐 지연이나 전체 제품 회귀 결과가 아니다.
 
@@ -634,3 +638,40 @@ guard 0회이므로 사용자 guard의 성공으로 세지 않는다.
 `openclaw-session-guard-mutation.json`에 재현 경로와 수치를 남긴다.
 원본 코드·사용자 native 프로필은 바꾸지 않았다. 이는 native SDK 저장소
 fixture이며 자동 수신·실제 agent/reset UI와 전체 계획 완료 증거는 아니다.
+
+## OpenClaw guarded context queue 연결
+
+공개 native SessionEntry의 xsm queue를 공개 runtime.patchSessionEntry와 최종
+assertCommitAllowed로 갱신한다. Binding 수명, native sessionId/lifecycleRevision,
+취소, store, 등록 당시와 현재 prompt-injection 정책을 결속한다. Queue의 실제
+본문·ID·metadata를 관찰한 뒤 공통 Node host가 admitted를 보고한다. Node
+host pump는 native background context에서 시작하며 소비 ACK는 별도다.
+
+같은 원문 묶음의 대기 중 injection은 재사용하며 타 plugin의 queue를 보존한다.
+Native 한도 32개/최종 본문 32768 UTF-16 단위 초과는 거부하고 정본 claim을
+반환한다. 큰 payload 분할, idle wake, 기본 표면의 FYI 경계, busy/now 전체
+동작은 미완이다. Conversation-access 권한이 있는 agent-end 경계는 FYI를
+옮기며, 실제 사용자 권한을 자동으로 켜지 않는다.
+
+제어된 native seam 검사 8개를 빠른 묶음에 포함했다. 최종 guard·용량·수락
+관찰·본문 관찰·등록 정책 거부를 제거한 다섯 변이를 모두 검출했다
+(`openclaw-queue-complete-mutations.json`). 등록 정책 false가 빈 runtime 설정에
+의해 무시되는 경로도 수정했다. 실제 SDK의 거부 fixture는 자동 queue 주입 없이
+pull/ACK를 유지했고, 거부 확인을 제거한 native 변이는 실패했다
+(`openclaw-native-queue-denied.json`, `openclaw-native-policy-mutant.json`).
+
+최신 공통 272개(핵심 184, Python 28, Node 60)가 Python 3.14.6에서
+37.623초에 통과했다(`openclaw-queue-policy-final-py314.log`).
+Mac arm64 / Node 24.22.2 / protocol Python 3.14.6에서 실제 native queue 수락,
+prompt 소비 helper, 명시적 ACK를 100/100 완료했다. Sender execute 직전부터
+queue 관찰까지 p95 상한은 401.576ms이며 정본 저장 시간도 포함한다
+(`openclaw-native-queue-100-current.json`). SDK caller와 prompt 소비는 fixture다.
+모델·실제 native agent turn·idle wake를 실행하거나 인증한 결과가 아니다.
+
+중간 강화 실행은 0/100에서 실패했다. `<sample=0>`이 안전 렌더링에서 보호
+인코딩됐는데 raw 문자열로 비교한 fixture 오류였다. 실패 저장소의 원문 SHA-256
+일치를 대조한 뒤 ASCII 표식으로 바꿨다. 실패 결과와 이전 100개, 재실행 100개를
+섞지 않고 보존했다(`openclaw-native-queue-100-final.json`,
+`openclaw-queue-failed-sample-analysis.json`). Native guard·실제 body 확인은
+완화하지 않았다. OpenClaw의 owned 설치·큰 payload·wake·UI·worker와 P0–P5
+전체 완료 기준은 여전히 미완이다.

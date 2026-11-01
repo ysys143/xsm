@@ -177,6 +177,7 @@ class HostInstallTest(TempState):
             self.assertTrue((root / filename).is_file(), filename)
         for filename in ("clients/python/__init__.py", "clients/python/xsm_host.py", "integrations/hermes/xsm.py",
                          "integrations/openclaw/xsm.mjs", "integrations/openclaw/tools.mjs",
+                         "integrations/openclaw/context-queue.mjs",
                          "integrations/openclaw/openclaw.plugin.json"):
             self.assertTrue((root / filename).is_file(), filename)
         original = self.loader.read_bytes()

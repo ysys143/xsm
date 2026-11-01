@@ -1,8 +1,9 @@
-/** OpenClaw 2026.10.9 direct-turn tools. Native push/UI and v2 continuations remain open. */
+/** OpenClaw 2026.10.9 tools + guarded context queue. Wake/UI/v2 continuations remain open. */
 import { realpath } from 'node:fs/promises';
 import { dirname, isAbsolute, resolve } from 'node:path';
 import { XsmHost } from '../../clients/typescript/xsm-host.mjs';
 import operations from './tools.mjs';
+import { nativeDelivery } from './context-queue.mjs';
 
 export function register(api, options = {}) {
   // Native capture relocates imported JS without copying bin/xsm. The host's
@@ -45,8 +46,13 @@ export function register(api, options = {}) {
       const pending = (async () => {
         const [profile, cwd] = await Promise.all([realpath(profilePath), realpath(entry.cwd)]);
         current(entry, epoch, context, signal);
-        return XsmHost.open({ command, env: options.env, runtime: 'openclaw',
-          profile, conversation: entry.id, cwd, onError: fail });
+        const deliver = nativeDelivery(api, context, () => {
+          if (disposed || epoch !== entry.epoch) throw new Error('xsm native delivery is no longer current');
+        });
+        entry.deliveryConnected = Boolean(deliver);
+        const connect = () => XsmHost.open({ command, env: options.env, runtime: 'openclaw',
+          profile, conversation: entry.id, cwd, onError: fail, deliver });
+        return api.lifecycle.runInBackgroundContext ? api.lifecycle.runInBackgroundContext(connect) : connect();
       })();
       entry.pending = pending;
       pending.catch(() => { if (entry.pending === pending) entry.pending = undefined; });
@@ -58,6 +64,7 @@ export function register(api, options = {}) {
 
   async function end(entry) {
     entry.epoch++;
+    entry.deliveryConnected = false;
     const pending = entry.pending;
     entry.pending = undefined;
     entry.closing = entry.closing.then(async () => {
@@ -88,7 +95,11 @@ export function register(api, options = {}) {
   if (observeTurns) api.on('agent_end', async (_event, context) => {
     const entry = sessions.get(context.sessionId);
     if (entry?.pending && (!context.sessionKey || context.sessionKey === entry.route)) {
-      await (await entry.pending).update('idle');
+      const epoch = entry.epoch, pending = entry.pending;
+      const host = await pending;
+      if (entry.epoch !== epoch || entry.pending !== pending) return;
+      if (entry.deliveryConnected) await host.naturalBoundary();
+      if (entry.epoch === epoch && entry.pending === pending) await host.update('idle');
     }
   });
 
@@ -113,4 +124,4 @@ export function register(api, options = {}) {
 }
 
 export default { id: 'xsm', name: 'xsm',
-  description: 'Experimental xsm protocol tools; native push/UI not connected', register };
+  description: 'Experimental xsm tools and guarded context queue; turn wake/UI not connected', register };

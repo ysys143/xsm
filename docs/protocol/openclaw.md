@@ -2,7 +2,8 @@
 
 상태: 실험적 direct-turn 도구 연결. 실제 고정 로더의 등록·metadata 발견과,
 명시적 caller fixture에서 실제 native 도구와 xsm 서버의 왕복·수명 정리를
-확인했다. Agent turn·설치·수신 주입·UI는 미완이다. 전체 계획은 미완이다.
+확인했다. Guarded native 대기열과 prompt 소비 helper도 연결했다.
+실제 agent turn·idle wake·설치·사용자 UI는 미완이다. 전체 계획은 미완이다.
 
 ## 고정 버전과 격리 환경
 
@@ -91,7 +92,7 @@ lifecycle cleanup에서 세대를 무효화하고 pending open 종료도 기다�
 이전 factory는 다시 열 수 없으며 새 factory의 resume는 주소를 유지하고
 참여 세대를 바꾼다. Workspace 변경은 기존 참여 종료를 요구한다.
 
-Native 수신과 UI는 연결하지 않아 pull-only다. 질문이 필요한 작업은 승인 없이
+초기 연결은 native 수신과 UI가 없는 pull-only였다. 질문이 필요한 작업은 승인 없이
 거부된다. Version 2 continuation은 광고하지 않는다. 외부 플러그인의
 `agent_end`는 native `hooks.allowConversationAccess=true`가 필요하다. 이를
 명시적으로 허용한 프로필에서만 hook과 busy/idle 갱신을 사용한다. 기본
@@ -176,3 +177,66 @@ guard가 막았다고 해석하지 않는다. 이 결과는 native patch의 동�
 ```sh
 /isolated/node scripts/probe-openclaw-session-guard.mjs /isolated/node_modules/openclaw deliverables/openclaw-guard.json
 ```
+
+## Guarded native context queue
+
+`context-queue.mjs`는 native runtime의 공개 `agent.session.patchSessionEntry`와
+`assertCommitAllowed`로 공개 SessionEntry의 xsm next-turn queue를 갱신한다.
+Route-only enqueue API 대신 이 경로를 쓰는 이유는 대상 sessionId·수명·정책을
+최종 쓰기에 결속하기 위해서다. 고정 2026.10.9의 queue record 형식과 용량에
+의존하므로 다른 버전으로 자동 확대하지 않는다. Native 내부 구현을 복사하거나
+DB 파일을 직접 수정하지 않는다.
+
+Native agentId·sessionId·저장소와 필요한 runtime API가 있고 prompt injection이
+금지되지 않은 경우에만 이 수신기를 연결한다. 등록 당시 설정과 현재 runtime
+설정 중 하나라도 명시적으로 거부하면 pull 방식이다. 비어 있는 runtime 설정이
+등록 당시의 거부를 넓힐 수 없다.
+Native lifecycle의 background context에서 공통 host pump를 시작해 최초 도구
+호출의 수명과 분리한다. 최종 쓰기는 binding epoch, 중단 신호, native sessionId,
+lifecycleRevision, 현재 store와 prompt-injection 정책을 검사한다. 저장 후 실제
+queue의 ID·metadata·본문을 확인한 뒤에만 Node host가 admitted를 보고한다.
+Queue 수락이나 prompt helper의 소비는 canonical 메시지의 소비 ACK가 아니다.
+
+같은 원문 묶음의 재시도는 대기 중인 injection과 결속한다. 이전 claim token이
+만료되면 실제 수신 에이전트가 inbox에서 현재 token을 읽고 ACK하도록 안내한다.
+다른 plugin의 queue는 보존한다. 고정 native 한도는 xsm queue 32개와 본문
+32768자다. 용량·길이 초과는 오류와 claim 반환으로 처리하며 원문은 정본에
+남는다. 본문 한도는 ACK 안내 등을 포함한 최종 문자열의 UTF-16 길이다.
+큰 payload의 분할 주입은 아직 미완이다.
+
+Native idle wake는 아직 연결하지 않았다. 입력은 다음 실제 native turn이
+소비할 queue에 들어간다. FYI는 알림으로 깨우지 않으며, conversation-access
+권한이 있는 agent-end 경계에서 queue로 옮긴다. 권한 없는 표면의 FYI 자동
+경계와 idle/busy/now의 전체 동작은 미완이다. 권한을 자동으로 켜지 않는다.
+
+`test_openclaw_context_queue.mjs`의 8개 검사는 최종 guard, 수락 관찰, 실제
+본문, 중복·용량·취소·정책·세대·타 plugin 보존을 확인한다. 최종 guard, 용량,
+관찰, 본문 확인, 등록 정책 거부 확인을 각각 제거한 다섯 변이가 모두 실패했다
+(`openclaw-queue-complete-mutations.json`). 등록 정책을 무시한 변이는 실제
+SDK 검사도 실패시켰다(`openclaw-native-policy-mutant.json`). Native SDK 검사는 다음 명령으로 실제
+대기열과 prompt 소비 helper, 명시적 ACK를 실행한다. Agent/model/UI 실행은
+포함하지 않으며, 실패 시 partial sample과 failed 상태를 결과에 남긴다.
+
+```sh
+/isolated/node scripts/probe-openclaw-loader.mjs /isolated/node_modules/openclaw deliverables/openclaw-queue.json --queue 100
+```
+
+최종 macOS arm64 표본은 Node 24.22.2 / protocol Python 3.14.6에서 100/100
+queue 수락·prompt helper 소비·명시적 ACK를 완료했다. Native sender execute
+직전부터 실제 queue 관찰까지의 p95 상한은 401.576ms다. 정본 저장 시간도
+포함한 상한이며 `openclaw-native-queue-100-current.json`에 100개 원시 수치를
+남겼다. Native idle wake나 실제 agent/model turn의 지연이 아니다. Linux·다른
+버전과 플랫폼의 표본으로 확대하지 않는다.
+
+강화한 중간 실행은 첫 표본에서 0/100으로 실패했다
+(`openclaw-native-queue-100-final.json`). 표식 `<sample=0>`이 안전 렌더링에서
+이스케이프됐는데 raw 문자열로 비교한 fixture 오류였다. 격리 저장소의 원문
+SHA-256 일치와 보호 인코딩을 대조했다
+(`openclaw-queue-failed-sample-analysis.json`). 이후 표식은 ASCII로 만들었으며
+실패 표본과 재실행 표본을 합치지 않았다. 초기 100개와 별도 후속 100개의
+로그도 보존한다. 최초 100개는 최종 정책/본문 검사 변경 전의 표본이다.
+
+실제 SDK의 주입 거부 fixture는 등록 설정이 false, runtime 설정에 항목이 없는
+경우에도 자동 queue 주입 없이 inbox/ACK를 유지했다
+(`openclaw-native-queue-denied.json`). 이 설정은 임시 프로필의 메모리 구성이다.
+실제 사용자 정책·권한은 변경하지 않았다.
