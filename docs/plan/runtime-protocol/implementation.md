@@ -284,3 +284,26 @@ native 실행 커널이 xsm_ack를 실행하고 반환한 acked가 정확히 한
 
 수신 내용 검증을 제거하는 변이와 native 대화 ID를 하나로 공유하는 변이는
 각각 새 검사를 실패시켰다. `opencode-binding-mutations.json`이 근거다.
+
+### OpenCode 최신 로컬 검증
+
+빠른 검사는 핵심 155개 + Python 클라이언트 18개 + Node 클라이언트/호스트
+32개, 총 205개이다. `scripts/check-protocol.py`가 Python 3.9.6에서 42.690초,
+3.14.6에서 27.619초에 통과했다. `opencode-checks.json`과 두 버전의
+`*-opencode-final.log`가 근거다. 두 실행 모두 120초 기준 안이다.
+
+`opencode-native-ack-100/result.json`의 native 시험은 100회를 모두 완료했다.
+OpenCode 1.19.5·macOS·Python 3.9.6의 설치된 snapshot을 사용했다.
+각 표본 시작 전 idle을 확인했고 native 기록에 본문이 들어간 뒤 관측한
+지연의 p95 상한은 약 0.379초였다. 각 표본의 ID와 native xsm_ack 도구의
+acked 반환 ID가 일치한다. 100건 모두 native ACK를 완료했다.
+
+실제 실행 origin이 설치된 snapshot인지, 기록한 sourceSha256이 현재 실행
+소스와 같은지도 대조했다. ACK를 발생시킨 assistant는 loopback fixture이다.
+모델 추론·API 과금·사람의 UI 응답은 없다. 이 표본과 소비 ACK가 없던 최초
+81건 실패 표본은 provider와 소비 조건이 다르므로 같은 조건의 성능 전후
+비교로 쓰지 않는다. 실패 기록은 그대로 남긴다.
+
+이 수치는 해당 native 서버의 idle 입력 진입 검사이다. Busy/now 개입,
+TUI 승인, Linux, 전체 설치 수명, 자동 재접속, native worker, 원격/메신저,
+다른 런타임과의 방향 조합 등 전체 계획의 미완 조건은 유지한다.

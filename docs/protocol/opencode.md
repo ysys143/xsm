@@ -62,6 +62,12 @@ tool-call 패킷으로 native 실행 커널의 xsm_ack와 반환값도 검사한
 응답·Linux·전체 설치 수명·자동 재접속·worker·
 원격/메신저 조합은 이 하네스의 통과만으로 완료되지 않는다.
 
+현재 설치 경로 표본은 macOS·OpenCode 1.19.5·Python 3.9.6에서 100회 모두
+native 입력과 fixture ACK를 완료했다. send 시작부터 기록 진입 관측까지의
+p95 상한은 약 0.379초였다. 결과·실제 origin·소스 해시는
+`deliverables/protocol-foundation/opencode-native-ack-100/result.json`에 있다.
+소비 ACK 없이 81회 뒤 관측에 실패한 초기 실행도 별도 로그로 보존한다.
+
 API 근거는 [고정 버전 플러그인](https://github.com/anomalyco/opencode/blob/v1.19.5/packages/plugin/src/index.ts),
 [도구 스키마 처리](https://github.com/anomalyco/opencode/blob/v1.19.5/packages/opencode/src/tool/registry.ts),
 [native 입력 처리](https://github.com/anomalyco/opencode/blob/v1.19.5/packages/opencode/src/session/prompt.ts)이다.
