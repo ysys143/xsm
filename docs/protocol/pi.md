@@ -159,3 +159,30 @@ registerTool은 post-bind refreshTools를 호출하므로 최초 명령에서의
 적용되는 wrapper를 명시적으로 유지하며 사용자 프로필·설정을 바꾸지 않는다.
 공통 362개는 58.794초에 통과했다(`pi-bootstrap-gate.log`). 자동 idle 재접속과
 전체 P0–P5의 나머지 수용 조건은 미완이다.
+
+## 등록된 transport의 자동 재접속
+
+등록된 host의 transport 실패가 관측되면 native 명령을 기다리지 않고 같은
+대화/workspace에 다시 참여한다. 250ms 뒤 시작하며 연결 실패가 계속되면 대기를
+두 배로 늘려 최대 5초로 제한한다. 일반 native 거부는 재접속하지 않는다.
+Native 작업을 재실행하지 않고 참여와 상태만 복구한다. 세션 전환/shutdown은
+타이머를 취소하고 epoch가 다른 시도는 진행하지 않는다.
+
+제어 수명 11개는 입력 없는 복구·shutdown 취소·일반 오류 제외·두 차례 실패 후
+backoff를 포함해 통과했다(`pi-auto-reconnect-verified.log`). 자동 복구를 끄거나
+대기를 제거한 변이는 각각 검출됐다(`pi-reconnect-{auto,backoff}-mutant-verified.log`).
+처음 제어 검사 수정은 fixture 옵션 이름을 가려 기존 초기 실패 검사가 실패했으며,
+수정 후 전부 다시 확인했다(`pi-auto-reconnect-first.log`).
+
+실제 Pi 1.4.0 설치본은 `--auto-reconnect`에서 자체 backend 종료 후 다음 native
+명령 전 새 PID/세대를 관측했다. 그 뒤 수신 100개와 RPC 명령 ACK 100개가
+완료됐고 macOS/protocol Python 3.14.6의 p95 상한은 433.341ms다
+(`pi-auto-reconnect-native-100/result.json`). 정본 ACK 수와 현재 코드 해시도
+대조했다(`pi-auto-reconnect-ack-audit.json`). UI와 ACK는 fixture가 수행하며
+실제 모델/사람의 소비 증거는 아니다.
+
+공통 375개는 58.748초에 통과했다(`pi-auto-reconnect-gate.log`). 최초 backend
+생성 전 실패의 자동 재시도, Pi 프로세스의 component lease를 통한 업데이트/
+제거 중 이전 snapshot 보존, 다른 runtime의 자동 재접속·worker·Linux와 전체
+P0–P5의 남은 조건은 미완이다. 현재 표본은 같은 runtime snapshot이 남아 있는
+등록 세션의 transport 복구를 검증했다.

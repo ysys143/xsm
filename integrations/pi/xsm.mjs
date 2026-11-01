@@ -1,6 +1,7 @@
 /** Pi 1.4 host binding. Collaboration policy and recovery live in xsm. */
 import { randomUUID } from 'node:crypto';
 import { mkdir, realpath } from 'node:fs/promises';
+import { TransportError } from '../../clients/typescript/xsm-client.mjs';
 import { getAgentDir } from '@earendil-works/pi-coding-agent';
 import { XsmHost, RetryAdmission, parseHostCommand, renderInboxPacket } from '../../clients/typescript/xsm-host.mjs';
 
@@ -13,9 +14,39 @@ export default function xsm(pi, options = {}) {
   let recovering;
   let active = false;
   let toolsRegistered = false;
+  let reconnectTimer;
+  let reconnectDelay = 250;
   const admissions = new Map();
 
-  const fail = error => nativeContext?.ui.notify('xsm: ' + error.message, 'error');
+  const notify = error => { try { nativeContext?.ui.notify('xsm: ' + error.message, 'error'); } catch {} };
+  const fail = error => {
+    notify(error);
+    if (error instanceof TransportError && active && host?.controller.signal.aborted) scheduleReconnect();
+  };
+  function cancelReconnect() {
+    clearTimeout(reconnectTimer);
+    reconnectTimer = undefined;
+    reconnectDelay = 250;
+  }
+  function scheduleReconnect() {
+    if (!active || reconnectTimer) return;
+    const token = epoch;
+    reconnectTimer = setTimeout(async () => {
+      reconnectTimer = undefined;
+      if (!active || token !== epoch) return;
+      try {
+        await ensure(nativeContext);
+        reconnectDelay = 250;
+      } catch (error) {
+        notify(error);
+        if (error instanceof TransportError && active && token === epoch) {
+          reconnectDelay = Math.min(reconnectDelay * 2, 5000);
+          scheduleReconnect();
+        }
+      }
+    }, reconnectDelay);
+    reconnectTimer.unref?.();
+  }
   const assertCurrent = (signal, token) => {
     if (token !== epoch || signal?.aborted || !host || nativeContext.sessionManager.getSessionId() !== conversation) {
       throw new Error('xsm native session changed or delivery was cancelled');
@@ -131,6 +162,7 @@ export default function xsm(pi, options = {}) {
   }
 
   pi.on('session_start', async (_event, ctx) => {
+    cancelReconnect();
     const token = ++epoch, previous = host, pending = recovering;
     host = undefined;
     active = false;
@@ -156,6 +188,7 @@ export default function xsm(pi, options = {}) {
   pi.on('agent_settled', (_event, ctx) => active && ensure(ctx).then(current => current.update('idle')).catch(fail));
   pi.on('session_info_changed', (event, ctx) => active && ensure(ctx).then(current => current.update(ctx.isIdle() ? 'idle' : 'busy', event.name ?? '')).catch(fail));
   pi.on('session_shutdown', async () => {
+    cancelReconnect();
     active = false;
     ++epoch;
     const closing = host, pending = recovering;

@@ -143,7 +143,7 @@ async def run(args):
             assert actual["protocol_root"] == os.path.realpath(installation["runtime_root"]), actual
             assert actual["protocol_python_version"] == sys.version.split()[0], actual
             result["snapshotRuntimeVerified"] = True
-        if getattr(args, "crash", False):
+        if getattr(args, "crash", False) or getattr(args, "auto_reconnect", False):
             native_records = [json.loads(p.read_text()) for p in (state / "sessions").glob("*.json")]
             previous = next(item for item in native_records if item["runtime"] == "pi")
             assert previous["pid"] != process.pid and os.getpgid(previous["pid"]) == process.pid, "backend is not in the probe process group"
@@ -156,13 +156,23 @@ async def run(args):
                     break
                 assert time.monotonic() < deadline, "backend was not reaped"
                 await asyncio.sleep(.01)
+            if getattr(args, "auto_reconnect", False):
+                for _ in range(200):
+                    rows = [json.loads(p.read_text()) for p in (state / "sessions").glob("*.json")]
+                    automatic = next((row for row in rows if row.get("runtime") == "pi" and
+                                     row.get("pid") != previous["pid"] and not row.get("ended_at")), None)
+                    if automatic:
+                        break
+                    await asyncio.sleep(.025)
+                assert automatic, "backend did not reconnect without a native command"
+                result["automaticReconnectObservedBeforeNativeEntry"] = True
             await native.command("recovered-status", "/xsm status")
             current_records = [json.loads(p.read_text()) for p in (state / "sessions").glob("*.json")]
             recovered = next(item for item in current_records if item["runtime"] == "pi")
             assert recovered["ref"] == previous["ref"] and recovered["pid"] != previous["pid"]
             assert recovered["protocol_generation"] != previous["protocol_generation"]
             result["backendRecovery"] = {"sameRef": True, "generationChanged": True,
-                "oldPid": previous["pid"], "newPid": recovered["pid"], "trigger": "native /xsm status; no failed operation replay"}
+                "oldPid": previous["pid"], "newPid": recovered["pid"], "trigger": "automatic reconnect before native entry" if getattr(args, "auto_reconnect", False) else "native /xsm status; no failed operation replay"}
             checkpoint()
         # Exercise the real native select dialog protocol. The driver supplies
         # the answer; this is not attributed to a physical human.
@@ -244,6 +254,7 @@ if __name__ == "__main__":
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--samples", type=int, default=2)
     parser.add_argument("--bootstrap-failure", action="store_true")
+    parser.add_argument("--auto-reconnect", action="store_true")
     parser.add_argument("--crash", action="store_true")
     parser.add_argument("--installed", action="store_true", help="test profile autoload from an owned runtime snapshot")
     options = parser.parse_args()

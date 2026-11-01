@@ -1334,3 +1334,28 @@ Node 수정 전 검사는 실패했다(`version-negotiation-node-red.log`). Pyth
 Python 3.14.6에서 58.769초에 통과했다(`version-negotiation-gate.log`). 협상
 검증은 안정판 호환성 보증이나 모든 SDK 오류/취소 계약 완료가 아니다.
 자동 재접속·native 모델/사람 UI·worker·Linux와 P0–P5 나머지는 미완이다.
+
+## Pi 등록 참여의 자동 transport 복구
+
+Pi host의 TransportError와 중단된 transport를 관측하면 입력 없는 재접속을
+예약한다. 최초 대기는 250ms, 실패 시 두 배로 늘리되 최대 5초로 제한했다.
+같은 native 대화/workspace와 epoch를 검증하며 공유 ensure 경로를 사용한다.
+Native 작업은 재실행하지 않는다. 일반 native 오류는 제외하고 shutdown이나
+세션 전환은 예약을 취소한다. 최초 host 생성 전 오류에는 아직 적용하지 않는다.
+
+제어 수명 11개가 통과했다(`pi-auto-reconnect-verified.log`). 자동 복구를 끄거나
+backoff를 제거한 변이는 각각 실패했다
+(`pi-reconnect-{auto,backoff}-mutant-verified.log`). 처음 fixture 수정은 옵션 이름을
+가려 기존 초기 실패 검사가 실패했으며 그 로그도 보존했다
+(`pi-auto-reconnect-first.log`).
+
+실제 Pi 1.4.0 설치본에서 native 명령 전 자동 재등록을 관측한 뒤 100/100 native
+수락·RPC 명령 ACK를 완료했다. macOS/protocol Python 3.14.6 p95 상한은
+433.341ms다(`pi-auto-reconnect-native-100/result.json`). 정본 ACK 100개와 현재
+코드 해시 일치도 확인했다(`pi-auto-reconnect-ack-audit.json`). 모델/사람 UI가
+실행한 소비가 아니라 명시적 native fixture의 결과다.
+
+공통 375개(핵심 231, Python 44, Node 100)는 Python 3.14.6에서 58.748초에
+통과했다(`pi-auto-reconnect-gate.log`). Pi의 설치 업데이트/제거와 겹친 runtime
+보존은 component lease 추가 검증이 남아 있다. 다른 runtime 자동 복구·최초
+생성 전 실패·worker·Linux·원격·전체 방향 조합과 P0–P5 나머지는 미완이다.
