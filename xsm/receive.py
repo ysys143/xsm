@@ -1105,6 +1105,23 @@ def _import_handoff(me, item):
     parsed = envelope.parse(item.get("content") or "")
     if getattr(parsed, "error", None):
         return None
+    message_id = parsed.header.get("id")
+    if not message_id:
+        return None
+    previous = handoff.status(me, message_id)
+    options = previous.get("message", {})
+    # A preserved compatibility copy of an already authenticated original is
+    # not a new sender discovery or a new stored event. Re-resolving all such
+    # copies on every read made inbox latency grow with acknowledged history.
+    # Exact content and delivery semantics must match; conflicts still take
+    # the complete validation path below and cannot overwrite the original.
+    if (previous.get("status") != "not-found" and options.get("content") == item.get("content")
+            and (item.get("priority") or options.get("priority") or "next") == (options.get("priority") or "next")
+            and item.get("wake", options.get("wake", True)) == options.get("wake", True)
+            and (not parsed.attachments or options.get("file_storage"))):
+        evidence = paths.read_json(paths.path(paths.LEDGER, message_id + ".handoff.json"))
+        if evidence and evidence.get("receiver") == endpoint:
+            return previous
     sender, _ = _sender_record(parsed)
     if sender is None or not parsed.header.get("id"):
         return None
@@ -1112,8 +1129,6 @@ def _import_handoff(me, item):
         handoff._identity(sender)
     except ValueError:
         return None
-    previous = handoff.status(me, parsed.header["id"])
-    options = previous.get("message", {})
     if parsed.attachments and not options.get("file_storage"):
         return None  # A header is not the file packet or proof of a stored copy.
     message = {
@@ -1204,6 +1219,11 @@ def take_inbox_claims(me, *, owner=None, generation=None, lease=120, passive_onl
         for record in records:
             if record.get('status') == 'not-found' or (selected is not None and record['id'] not in selected):
                 continue
+            current = record.get('claim') or {}
+            owned_selected = (selected is not None and record.get('status') in ('claimed', 'handoff-recorded')
+                              and current.get('owner') == owner and current.get('generation') == generation)
+            if record.get('status') != 'pending' and not owned_selected:
+                continue  # Never rescan the folder to claim an acknowledged historical row.
             if (passive_only and record["message"].get("wake", True)
                     and record.get('delivery_route') != 'mcp-inbox'):
                 continue
@@ -1212,7 +1232,6 @@ def take_inbox_claims(me, *, owner=None, generation=None, lease=120, passive_onl
                     not (str(receipt.get('reason') or '').startswith('traffic ') and record.get('delivery_state')=='pending')
                     and not handoff.old_p2p_copy_receipt(record, receipt, me)):
                 continue
-            current = record.get('claim') or {}
             if (selected is not None and record.get('status') in ('claimed', 'handoff-recorded')
                     and current.get('owner') == owner and current.get('generation') == generation):
                 claimed = record  # Same consumer may recover its existing token, without renewing its lease.

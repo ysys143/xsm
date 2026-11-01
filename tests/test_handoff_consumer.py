@@ -31,6 +31,43 @@ class HandoffConsumerTest(test_xsm.TempState):
         from xsm import receive
         return receive.take_inbox_claims(self.b, owner=self.owner, generation=self.generation, **kwargs)
 
+    def test_acknowledged_history_does_not_repeat_sender_resolution_or_claim_scans(self):
+        from xsm import handoff, receive
+        for index in range(20):
+            self._send('history-%d' % index)
+        claims = self._take()['claims']
+        receive.ack_inbox(self.b, claims, owner=self.owner, generation=self.generation)
+        with mock.patch.object(receive, '_sender_record', wraps=receive._sender_record) as sender, \
+                mock.patch.object(handoff, 'claim', wraps=handoff.claim) as claim:
+            self.assertEqual(self._take(), {'messages': [], 'claims': []})
+            self.assertEqual(sender.call_count, 0)
+            self.assertEqual(claim.call_count, 0)
+        self._send('new work')
+        with mock.patch.object(handoff, 'claim', wraps=handoff.claim) as claim:
+            packet = self._take()
+            self.assertEqual(len(packet['claims']), 1)
+            self.assertIn('new work', packet['messages'][0])
+            self.assertEqual(claim.call_count, 1)
+
+    def test_compatibility_copy_cannot_hide_changed_body_or_priority(self):
+        from xsm import receive, handoff, envelope, paths
+        sent = self._send('original')
+        original = handoff.status(self.b, sent.msg_id)
+        base = {'receiver': handoff._identity(self.b), 'content': original['message']['content']}
+        with self.assertRaises(ValueError):
+            receive._import_handoff(self.b, dict(base, priority='now'))
+        tampered = dict(base, content=envelope.build('changed body', msg_id=sent.msg_id,
+            sender=self.a, scope=original['message']['scope'], kind='note'))
+        with self.assertRaises(ValueError):
+            receive._import_handoff(self.b, tampered)
+        evidence = paths.path(paths.LEDGER, sent.msg_id + '.handoff.json')
+        entry = paths.read_json(evidence)
+        entry['receiver'] = dict(entry['receiver'], home=self.tmp + '/foreign')
+        paths.write_json(evidence, entry)
+        with self.assertRaises(ValueError):
+            receive._import_handoff(self.b, base)
+        self.assertEqual(handoff.status(self.b, sent.msg_id)['message']['body'], 'original')
+
     def test_actual_send_legacy_export_claim_cancel_recover_and_explicit_ack(self):
         from xsm import handoff, inbox, ledger, receive
         sent = self._send()
