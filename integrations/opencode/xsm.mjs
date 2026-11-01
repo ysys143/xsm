@@ -73,7 +73,8 @@ export default async function xsm(api, options = {}) {
         if (native.id !== id) throw new Error('native session identity differs');
         const host = await XsmHost.open({ command, env: options.env, runtime: 'opencode',
           profile, conversation: id, cwd: api.directory, onError: fail,
-          // No user-decisions capability until a real TUI display callback is connected.
+          // Only an explicitly connected native UI can advertise user-decisions.
+          present: options.present ? (event, controls) => options.present(id, event, controls) : undefined,
           deliver: async (pack, { wake, signal }) => {
             if (disposed || signal.aborted) throw new Error('native delivery cancelled');
             const admissionID = randomUUID();

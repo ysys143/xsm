@@ -307,3 +307,39 @@ acked 반환 ID가 일치한다. 100건 모두 native ACK를 완료했다.
 이 수치는 해당 native 서버의 idle 입력 진입 검사이다. Busy/now 개입,
 TUI 승인, Linux, 전체 설치 수명, 자동 재접속, native worker, 원격/메신저,
 다른 런타임과의 방향 조합 등 전체 계획의 미완 조건은 유지한다.
+
+## OpenCode native 질문 표시와 프로토콜 결속
+
+`question-ui.mjs`에 고정 버전의 DialogSelect/DialogPrompt callback을 추가했다.
+표시 원문과 질문 ID를 고정하고 native 대화 전환·만료·취소·종료를 검사한다.
+이미 열린 다른 dialog를 덮지 않으며, 대체된 질문의 늦은 callback도 새 dialog를
+지우거나 답을 승인하지 않는다. 서버 binding은 명시적 present callback을 주입한
+경우에만 user-decisions를 광고하고 실제 도구의 대화 ID를 전달한다.
+
+새 renderer 검사 6개와 서버 callback 결속 1개가 통과했다. 대화 전환 검사를
+없애거나 선택지 외 값을 허용한 변이는 각각 관련 검사를 실패시켰다.
+`opencode-ui-mutations.json`에 기록했다.
+
+격리 PTY의 실제 OpenCode 1.19.5 TUI에서 질문·선택지·Scope 렌더링과 Enter/Escape
+callback을 확인했다. `probe-opencode-question-ui.py`는 실제 프로토콜 질문을
+받아 native TUI에 표시하고 실제 callback을 신뢰 호스트 SDK로 회신한다.
+Enter는 답을 저장할 때 answered, 원 작업 재호출 뒤 applied가 된다.
+Escape는 dismissed이며 원 작업을 재호출해도 적용하지 않는다. 출처는 host-user이고
+native-user transcript로 바꾸지 않는다. 두 사례의 원시 화면·event·결과는
+`opencode-tui-protocol-choose`, `opencode-tui-protocol-cancel`에 남긴다.
+
+초기 TUI 하네스는 공급자가 비어 초기 설정 화면이 나타났으며, 관측 코드에
+없는 SDK 내부 필드 접근도 있었다. 공급자는 loopback fixture로 한정하고 공개
+native route/session만 관측하도록 수정했다. 초기 두 실행은 SIGTERM 후 waitpid가
+끝나지 않아 시험이 소유한 TUI PID만 종료했다. 이후 종료 대기와 강제 종료에
+기한을 두었다. 실패한 화면·결과도 각 opencode-tui-* 경로에 보존했다.
+
+이 결과의 응답은 자동 키 입력 fixture이다. 실제 사람의 답, 모델 추론,
+제품용 서버–TUI IPC나 자동 설치를 인증하지 않는다. 기본 설치의 UI 연결은
+아직 미완이며 전체 계획의 수용 조건으로 유지한다.
+
+빠른 검사 묶음은 핵심 155개 + Python 클라이언트 18개 + Node 39개, 총 212개다.
+`scripts/check-protocol.py`는 Python 3.9.6에서 42.314초, 3.14.6에서 27.888초에
+통과했다. 두 버전 모두 120초 기준 안이다. 두 native TUI 사례의 sourceSha256과
+현재 renderer/하네스 파일도 대조해 일치함을 확인했다. 원시 로그는
+`py39-opencode-ui-first.log`, `py314-opencode-ui-final.log`에 남긴다.

@@ -23,7 +23,7 @@ async function until(predicate) {
   throw new Error('expected native observation did not occur');
 }
 
-async function fixture(t) {
+async function fixture(t, options = {}) {
   const temp = await mkdtemp(join(tmpdir(), 'xsm-opencode-binding-'));
   const profile = join(temp, 'profile');
   await mkdir(profile);
@@ -45,7 +45,8 @@ async function fixture(t) {
     status: async () => ({ data: statuses }),
     promptAsync: async ({ path: { id } }) => { wakes.push(id); return { data: undefined }; },
   } } };
-  const hooks = await binding(api, { schema, command, env, profile, onError: error => errors.push(error) });
+  const hooks = await binding(api, { schema, command, env, profile,
+    onError: error => errors.push(error), ...options });
   const invoke = async (id, name, args = {}, extra = {}) => JSON.parse(await hooks.tool[name].execute(args,
     { sessionID: id, directory: temp, abort: new AbortController().signal, ...extra }));
   const records = async () => {
@@ -87,6 +88,20 @@ test('native deletion and resume preserve address but replace the host generatio
   assert.equal(after.ref, before.ref);
   assert.notEqual(after.protocol_generation, before.protocol_generation);
 });
+
+test('an attached native UI receives the actual tool conversation and applies through the common host',
+  { timeout: 10000 }, async t => {
+    const displays = [];
+    const { invoke } = await fixture(t, { present: async (conversation, event, { signal }) => {
+      assert.equal(signal.aborted, false);
+      displays.push({ conversation, question: event.params.question });
+      return { displayed: event.params.question, sourceId: 'opencode-tui:' + event.params.questionId,
+        action: 'accept', answer: 'blue' };
+    } });
+    const result = await invoke('native-question-a', 'xsm_decide', { question: 'Choose a color', options: ['blue', 'green'] });
+    assert.match(JSON.stringify(result), /your user answered: blue/);
+    assert.deepEqual(displays, [{ conversation: 'native-question-a', question: 'Choose a color' }]);
+  });
 
 test('stored native input keeps consumption explicit and does not wake an already busy conversation', { timeout: 10000 }, async t => {
   const { invoke, records, native, send, statuses, wakes, errors } = await fixture(t);
