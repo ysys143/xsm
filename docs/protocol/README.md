@@ -194,6 +194,9 @@ fresh tokens. The default delay is 250 ms; a delay must be positive and no more
 than 60000 ms. Closing the host or losing the connection cancels the wait.
 Ordinary errors and `false` retain the existing suspended-delivery behavior;
 permission failures and server error strings do not opt into retry.
-Wake decisions use the packet actually acquired, so a stale normal notification
-cannot wake a later FYI-only or notice-only packet. Direct `naturalBoundary()`
-still raises the refusal to its caller; non-waking boundary retry is unfinished.
+Wake decisions require explicit metadata in the packet actually acquired, so a
+stale normal notification or missing metadata cannot wake an FYI-only packet.
+Direct `naturalBoundary()` still raises the refusal to its caller, and now
+schedules a cancellable background retry. Native hooks recognize that scheduled
+refusal and let the current turn proceed. No admitted report is emitted until
+the retry actually observes native acceptance.

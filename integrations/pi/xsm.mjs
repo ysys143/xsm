@@ -2,7 +2,7 @@
 import { randomUUID } from 'node:crypto';
 import { mkdir, realpath } from 'node:fs/promises';
 import { getAgentDir } from '@earendil-works/pi-coding-agent';
-import { XsmHost, parseHostCommand, renderInboxPacket } from '../../clients/typescript/xsm-host.mjs';
+import { XsmHost, RetryAdmission, parseHostCommand, renderInboxPacket } from '../../clients/typescript/xsm-host.mjs';
 
 export default function xsm(pi, options = {}) {
   let host;
@@ -88,7 +88,7 @@ export default function xsm(pi, options = {}) {
 
   pi.on('before_agent_start', async (_event, ctx) => {
     nativeContext = ctx;
-    if (host) await host.naturalBoundary();
+    if (host) await host.naturalBoundary().catch(error => { if (!(error instanceof RetryAdmission)) throw error; });
   });
   pi.on('agent_start', () => host?.update('busy').catch(fail));
   pi.on('agent_settled', () => host?.update('idle').catch(fail));

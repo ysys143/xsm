@@ -9,11 +9,12 @@ import operations from '../integrations/openclaw/tools.mjs';
 
 const [nativeRoot, output, mode, countText, policyFlag] = process.argv.slice(2);
 assert.ok(!mode || ['--execute', '--queue'].includes(mode));
-assert.ok(!policyFlag || (mode === '--queue' && ['--deny-injection', '--large-context', '--deferred-notice', '--capacity-retry'].includes(policyFlag)));
+assert.ok(!policyFlag || (mode === '--queue' && ['--deny-injection', '--large-context', '--deferred-notice', '--capacity-retry', '--capacity-fyi'].includes(policyFlag)));
 const denied = policyFlag === '--deny-injection';
 const largeContext = policyFlag === '--large-context';
 const deferredNotice = policyFlag === '--deferred-notice';
-const capacityRetry = policyFlag === '--capacity-retry';
+const capacityBoundary = policyFlag === '--capacity-fyi';
+const capacityRetry = policyFlag === '--capacity-retry' || capacityBoundary;
 const samples = Number(countText ?? 1);
 assert.ok(Number.isInteger(samples) && samples >= 1 && samples <= 1000);
 assert.ok(!countText || mode === '--queue');
@@ -47,6 +48,7 @@ const config = {
     entries: { xsm: { enabled: true } } }, agents: { defaults: { workspace: temp } },
 };
 if (mode === '--queue') {
+  if (capacityBoundary) config.plugins.entries.xsm.hooks = { allowConversationAccess: true };
   if (denied) config.plugins.entries.xsm.hooks = { allowPromptInjection: false };
   // This fixture exposes the real API proxy to the probe, without a production global.
   const directory = join(temp, 'probe-plugin');
@@ -172,7 +174,15 @@ if (mode) {
     const firstText = sampleText(0);
     await executable.find(tool => tool.name === 'xsm_send').execute('send-a-b', {
       target: 'ref:' + target.ref, text: firstText, wait: 0,
+      ...(capacityBoundary ? { wake: 'never' } : {}),
     });
+    if (capacityBoundary) {
+      const { getGlobalHookRunner } = await import(pathToFileURL(join(nativeRoot, 'dist/plugin-sdk/plugin-runtime.js')));
+      const hooks = getGlobalHookRunner();
+      assert.ok(hooks?.hasHooks('agent_end'));
+      await hooks.runAgentEnd({ messages: [], success: true, durationMs: 0 }, context('native-fixture-b'));
+      result.nativeFyiBoundaryReturned = true;
+    }
     if (capacityRetry) {
       // Read-only inspection of this probe's canonical store proves an attempted admission was released.
       const code = "import json,sys;sys.path.insert(0,sys.argv[1]);from xsm.handoff import _folder;print(_folder(json.loads(sys.argv[2])))";
@@ -260,6 +270,7 @@ if (mode) {
         measured: 'native sender execute start through observed native context queue; includes canonical store time' };
       result.nativeQueuePromptConsumed = true;
       if (capacityRetry) result.nativeCapacityRetryRecovered = true;
+      if (capacityBoundary) result.nativeFyiBoundaryRetryRecovered = true;
       result.nativeWakeTested = false;
     } else {
       const received = await inboxB.execute('receive-b', { limit: 1 });

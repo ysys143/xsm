@@ -163,6 +163,56 @@ class HostCoordinationTest(unittest.IsolatedAsyncioTestCase):
         self.assertFalse(packets[1][1])
         self.assertIn('quiet original', str(packets[1][0]['messages']))
 
+    async def test_fyi_boundary_retries_without_waking_a_turn(self):
+        admitted, packets = asyncio.Event(), []
+        async def deliver(packet, options):
+            packets.append((packet, options['wake']))
+            if len(packets) == 1:
+                raise RetryAdmission('queue full', .01)
+            admitted.set()
+        host = await self.host(deliver=deliver)
+        await self.send(host, 'deferred quiet original', wake='never')
+        with self.assertRaises(RetryAdmission):
+            await host.natural_boundary()
+        await asyncio.wait_for(admitted.wait(), 3)
+        await host.delivery_task
+        self.assertEqual([wake for _packet, wake in packets], [False, False])
+        first, second = [packet['claims'][0] for packet, _wake in packets]
+        self.assertEqual(first['id'], second['id'])
+        self.assertNotEqual(first['token'], second['token'])
+        self.assertEqual(len((await host.call('xsm_ack', {'tokens': [second['token']]}))['acked']), 1)
+        self.assertEqual(self.errors, [])
+
+    async def test_close_cancels_initial_boundary_retry_delay(self):
+        attempts = []
+        async def deliver(_packet, _options):
+            attempts.append(True)
+            raise RetryAdmission('queue full', 5)
+        host = await self.host(deliver=deliver)
+        await self.send(host, 'retain quiet original', wake='never')
+        with self.assertRaises(RetryAdmission):
+            await host.natural_boundary()
+        await host.close()
+        self.assertTrue(host.delivery_task.done())
+        self.assertEqual(len(attempts), 1)
+        self.assertEqual(self.errors, [])
+
+    async def test_missing_wake_metadata_never_implies_active_wake(self):
+        wakes = []
+        async def deliver(_packet, options):
+            wakes.append(options['wake'])
+        host = await self.host(deliver=deliver)
+        original = host.client.operation_call
+        async def invoke(*args):
+            result = await original(*args)
+            if args[1] == 'xsm_inbox':
+                result.pop('items', None)
+            return result
+        host.client.operation_call = invoke
+        await self.send(host, 'unknown wake metadata', wake='never')
+        await host._deliver_inbox(True)
+        self.assertEqual(wakes, [False])
+
     async def test_ui_answer_is_applied_only_through_original_operation_retry(self):
         shown = []
         async def present(event, cancelled):

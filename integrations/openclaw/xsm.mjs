@@ -1,7 +1,7 @@
 /** OpenClaw 2026.10.9 tools + guarded context queue. Wake/UI/v2 continuations remain open. */
 import { realpath } from 'node:fs/promises';
 import { dirname, isAbsolute, resolve } from 'node:path';
-import { XsmHost } from '../../clients/typescript/xsm-host.mjs';
+import { XsmHost, RetryAdmission } from '../../clients/typescript/xsm-host.mjs';
 import operations from './tools.mjs';
 import { nativeDelivery } from './context-queue.mjs';
 
@@ -98,7 +98,7 @@ export function register(api, options = {}) {
       const epoch = entry.epoch, pending = entry.pending;
       const host = await pending;
       if (entry.epoch !== epoch || entry.pending !== pending) return;
-      if (entry.deliveryConnected) await host.naturalBoundary();
+      if (entry.deliveryConnected) await host.naturalBoundary().catch(error => { if (!(error instanceof RetryAdmission)) throw error; });
       if (entry.epoch === epoch && entry.pending === pending) await host.update('idle');
     }
   });

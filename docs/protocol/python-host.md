@@ -24,8 +24,10 @@ Native callback은 확실한 일시 거부에 `RetryAdmission(message, delay_sec
 사용할 수 있다. 자동 수신 루프는 claim을 먼저 반환하고 기본 0.25초 뒤 새
 token으로 다시 인수한다. 지연은 0초 초과 60초 이하다. 종료·연결 실패는 대기를
 취소하며, 일반 오류나 권한 거부는 재시도하지 않는다. 이전 알림이 일반 메시지
-알림이었더라도 재인수한 것이 FYI뿐이면 wake하지 않는다. 직접 호출한
-`natural_boundary()`의 거부는 여전히 호출자에게 전달한다.
+알림이었더라도 재인수한 것이 FYI뿐이면 wake하지 않는다. Wake metadata가 없으면
+임의로 active로 간주하지 않는다. 직접 호출한 `natural_boundary()`의 거부는
+호출자에게 전달하면서 백그라운드 재시도를 예약한다. 예약 중 종료하면 초기
+지연도 취소되며, 실제 수락 전에는 admitted를 보고하지 않는다.
 
 UI는 async `present(event, cancelled)`를 제공한 경우에만 광고한다. 반환값의
 키는 displayed, source_id, action, answer이다. 실제 native callback만 연결한다.

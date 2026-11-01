@@ -101,6 +101,17 @@ export class XsmHost {
     return state;
   }
 
+  scheduleDelivery(delayMs = 0) {
+    if (this.closed || this.controller.signal.aborted || this.deliverySuspended || this.deliveryTask) return;
+    this.deliveryTask = (async () => {
+      if (delayMs && !await retryPause(this.controller.signal, delayMs)) return;
+      await this.deliverLoop();
+    })().finally(() => {
+      this.deliveryTask = undefined;
+      if (this.pendingWake) this.scheduleDelivery();
+    });
+  }
+
   error(error) {
     if (this.closed) return;
     try { (this.options.onError ?? (e => console.error('xsm:', e.message)))(error); }
@@ -139,9 +150,7 @@ export class XsmHost {
         if (event.method === 'decision/request') this.present(event);
         else if (event.method === 'events/available' && !this.deliverySuspended) {
           this.pendingWake = true;
-          if (!this.deliveryTask) {
-            this.deliveryTask = this.deliverLoop().finally(() => { this.deliveryTask = undefined; });
-          }
+          this.scheduleDelivery();
         }
       }
     } catch (error) {
@@ -253,8 +262,7 @@ export class XsmHost {
     if (!pack.messages.length) return pack;
     try {
       // Resolves only after the native binding observes admission, never on stdout flush.
-      const shouldWake = Boolean(wake && pack.claims.length &&
-        (pack.items === undefined || pack.items.some(item => item.wake)));
+      const shouldWake = Boolean(wake && pack.claims.length && pack.items?.some(item => item.wake));
       const accepted = await this.options.deliver(pack, { wake: shouldWake, signal: this.controller.signal,
         leaseSeconds: this.client.initialization.limits.claimLeaseSeconds });
       if (accepted === false) throw new Error('native queue refused admission');
@@ -271,7 +279,14 @@ export class XsmHost {
 
   async naturalBoundary() {
     this.deliverySuspended = false;
-    return this.deliverInbox(false);
+    try { return await this.deliverInbox(false); }
+    catch (error) {
+      if (error instanceof RetryAdmission) {
+        this.pendingWake = true;
+        this.scheduleDelivery(error.delayMs);
+      }
+      throw error;
+    }
   }
 
   update(state, name) {

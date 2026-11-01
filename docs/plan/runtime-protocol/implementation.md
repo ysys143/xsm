@@ -808,3 +808,31 @@ Python 3.9.6의 호스트 조정 검사 16개도 14.887초에 통과했다
 (`native-retry-python-final-py39.log`).
 Native SDK caller와 소비는 fixture이며 모델·실제 agent turn 인증이 아니다.
 FYI 경계 재시도, 바이트 예산, binding 기본 배치, 전체 P0–P5 기준은 미완이다.
+
+## FYI 경계의 background retry
+
+Direct natural boundary의 typed refusal도 백그라운드로 예약한다. 호출자는 실제
+수락이 아직 없다는 RetryAdmission을 받고, 세 native hook은 이 예약된 오류만
+처리해 현재 turn을 진행시킨다. 일반 오류를 숨기지 않는다. 완료 직후 새 신호가
+들어오는 경우도 delivery task의 종료 시 pending flag를 다시 확인해 작업을
+놓치지 않게 한다. 종료는 초기 지연과 반복 대기를 모두 취소한다.
+
+실제 서버에서 FYI 거부→새 token 재인수→wake=False 유지→명시적 ACK와 초기
+대기 중 종료를 두 SDK에서 검사했다. 수정 전에는 다음 수락이 없어 실패했다
+(`fyi-boundary-{node,python}-red.log`). Wake metadata 누락을 active로 간주하던
+fallback도 제거했고, 두 SDK에서 이를 되살린 변이는 실패했다
+(`fyi-boundary-metadata-mutants.json`).
+
+실제 OpenClaw 고정 SDK의 native agent_end hook에서도 32개 fixture queue를
+사용해 FYI claim 반환 후 공간 확보만으로 수락·prompt helper 소비·ACK와 수명
+정리를 통과했다(`openclaw-native-fyi-capacity-first.json`). Background 예약을
+제거하면 hook은 반환하지만 이후 수락이 없어 실패했다
+(`fyi-boundary-sdk-mutant.json`). 실제 사용자 구성·권한은 바꾸지 않았다.
+Pi SDK notice/정상 ACK 회귀도 통과했다(`fyi-boundary-pi-regression.json`).
+
+공통 303개(핵심 187, Python 37, Node 79)가 Python 3.14.6에서 43.299초에
+통과했다(`fyi-boundary-complete-gate.log`). Python 3.9.6의 호스트 조정 19개는
+17.725초에 통과했다(`fyi-boundary-complete-py39.log`). TypeScript 컴파일도
+통과했다(`fyi-boundary-types.log`). Native caller/hook과 소비는 fixture다.
+바이트 예산·native 기본 배치·권한 없는 표면의 FYI 경계·전체 agent/UI·P0–P5
+완료 기준은 계속 미완이다.

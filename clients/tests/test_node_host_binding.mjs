@@ -169,6 +169,63 @@ test('a stale normal wake does not wake passive originals found after retry', { 
   assert.match(JSON.stringify(packets[1].packet.messages), /quiet original/);
 });
 
+test('a deferred FYI boundary retries in the background without waking a turn', { timeout: 10000 }, async t => {
+  const admitted = deferred(), packets = [];
+  const { host, command, env, errors } = await fixture(t, { deliver: async (packet, options) => {
+    packets.push({ packet, wake: options.wake });
+    if (packets.length === 1) throw new RetryAdmission('queue full', 10);
+    admitted.resolve();
+  } });
+  const sender = await XsmClient.connect({ command, env, cwd: root });
+  t.after(() => sender.close());
+  const origin = await sender.sessionOpen({ runtime: 'boundary-sender', profile: 'one', conversation: 'a', cwd: root });
+  await sender.operationCall(origin.session, 'xsm_send', { target: 'ref:' + host.session.ref,
+    text: 'deferred quiet original', wake: 'never', wait: 0 });
+  await assert.rejects(host.naturalBoundary(), error => error instanceof RetryAdmission);
+  await admitted.promise;
+  await host.deliveryTask;
+  assert.deepEqual(packets.map(item => item.wake), [false, false]);
+  assert.equal(packets[0].packet.claims[0].id, packets[1].packet.claims[0].id);
+  assert.notEqual(packets[0].packet.claims[0].token, packets[1].packet.claims[0].token);
+  assert.equal((await host.call('xsm_ack', { tokens: [packets[1].packet.claims[0].token] })).acked.length, 1);
+  assert.deepEqual(errors, []);
+});
+
+test('closing a deferred boundary cancels its initial retry delay', { timeout: 10000 }, async t => {
+  let attempts = 0;
+  const { host, command, env, errors } = await fixture(t, { deliver: async () => {
+    attempts++; throw new RetryAdmission('queue full', 5000);
+  } });
+  const sender = await XsmClient.connect({ command, env, cwd: root });
+  t.after(() => sender.close());
+  const origin = await sender.sessionOpen({ runtime: 'boundary-sender', profile: 'one', conversation: 'a', cwd: root });
+  await sender.operationCall(origin.session, 'xsm_send', { target: 'ref:' + host.session.ref,
+    text: 'retain quiet original', wake: 'never', wait: 0 });
+  await assert.rejects(host.naturalBoundary(), error => error instanceof RetryAdmission);
+  await host.close();
+  assert.equal(attempts, 1);
+  assert.equal(host.deliveryTask, undefined);
+  assert.deepEqual(errors, []);
+});
+
+test('missing wake metadata cannot turn a boundary retry into an active wake', { timeout: 10000 }, async t => {
+  const wakes = [];
+  const { host, command, env } = await fixture(t, { deliver: async (_packet, options) => { wakes.push(options.wake); } });
+  const call = host.client.operationCall.bind(host.client);
+  host.client.operationCall = async (...args) => {
+    const result = await call(...args);
+    if (args[1] === 'xsm_inbox') delete result.items;
+    return result;
+  };
+  const sender = await XsmClient.connect({ command, env, cwd: root });
+  t.after(() => sender.close());
+  const origin = await sender.sessionOpen({ runtime: 'boundary-sender', profile: 'one', conversation: 'a', cwd: root });
+  await sender.operationCall(origin.session, 'xsm_send', { target: 'ref:' + host.session.ref,
+    text: 'unknown wake metadata', wake: 'never', wait: 0 });
+  await host.deliverInbox(true);
+  assert.deepEqual(wakes, [false]);
+});
+
 test('explicit false native admission releases claims without recording admission', { timeout: 10000 }, async t => {
   const { host, command, env } = await fixture(t, { deliver: async () => false });
   const sender = await XsmClient.connect({ command, env, cwd: root });

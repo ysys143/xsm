@@ -294,8 +294,27 @@ claim 반환까지 됐지만 이후 수락이 없어서 실패했다
 /isolated/node scripts/probe-openclaw-loader.mjs /isolated/node_modules/openclaw deliverables/openclaw-capacity.json --queue 1 --capacity-retry
 ```
 
-이는 자동 수신의 용량 회복 경로다. FYI 직접 경계의 non-waking 재시도,
+이는 자동 수신의 용량 회복 경로다. FYI 경계의 후속 구현은 아래에 기록한다.
 바이트 예산, binding 기본 배치, 32조각 초과 전송과 전체 agent/UI 인증은 미완이다.
+
+## FYI 경계의 용량 회복
+
+Native agent_end 경계에서 수락하지 못한 FYI도 SDK의 백그라운드 재시도로
+넘긴다. Hook은 예약된 RetryAdmission만 처리하고 현재 turn을 진행시킨다.
+일반 권한·수명 오류는 숨기지 않는다. SDK는 실제 재인수한 packet의 명시적
+wake metadata만 사용하며, FYI와 metadata가 없는 packet을 깨우지 않는다.
+
+`--capacity-fyi` fixture는 임시 native 구성에만 conversation-access를 허용하고
+실제 global hook runner를 호출한다. 32개 fixture 항목 때문에 FYI claim이
+반환된 것을 정본에서 확인하고, fixture 항목을 비운 뒤 새 메시지/notification
+없이 재수락·prompt helper 소비·ACK를 확인했다
+(`openclaw-native-fyi-capacity-first.json`). 예약 처리를 제거한 변이에서는
+hook 반환과 claim 반환 뒤 수락이 없어 실패했다(`fyi-boundary-sdk-mutant.json`).
+SDK caller와 hook은 fixture이며 실제 agent/model/UI 실행은 아니다.
+
+```sh
+/isolated/node scripts/probe-openclaw-loader.mjs /isolated/node_modules/openclaw deliverables/openclaw-fyi-capacity.json --queue 1 --capacity-fyi
+```
 
 ```sh
 /isolated/node scripts/probe-openclaw-loader.mjs /isolated/node_modules/openclaw deliverables/openclaw-large.json --queue 100 --large-context

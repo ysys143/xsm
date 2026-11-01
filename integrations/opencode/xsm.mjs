@@ -5,7 +5,7 @@ import { homedir } from 'node:os';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { XsmClient } from '../../clients/typescript/xsm-client.mjs';
-import { XsmHost, renderInboxPacket } from '../../clients/typescript/xsm-host.mjs';
+import { XsmHost, RetryAdmission, renderInboxPacket } from '../../clients/typescript/xsm-host.mjs';
 import { NativeUiServer, uiParts } from './ui-channel.mjs';
 import { holdComponent } from './component-lease.mjs';
 
@@ -146,7 +146,7 @@ async function attach(api, options, release) {
     'chat.message': async (input, output) => {
       if (ui && await ui.receive(input.sessionID, output.parts)) return;
       if (output.parts.some(part => part.metadata?.xsmDelivery)) return;
-      await (await open(input.sessionID)).naturalBoundary();
+      await (await open(input.sessionID)).naturalBoundary().catch(error => { if (!(error instanceof RetryAdmission)) throw error; });
     },
     event: async ({ event }) => {
       const { type, properties } = event;

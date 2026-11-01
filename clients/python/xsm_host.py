@@ -132,8 +132,7 @@ class XsmHost:
                         state["task"] = asyncio.create_task(self._show(state, event))
                 elif event["method"] == "events/available" and not self.delivery_suspended:
                     self.pending_wake = True
-                    if not self.delivery_task or self.delivery_task.done():
-                        self.delivery_task = asyncio.create_task(self._drain())
+                    self._schedule_delivery()
         except Exception as error:
             if not self.closed:
                 self.failure = error
@@ -195,7 +194,7 @@ class XsmHost:
                 return packet
             try:
                 should_wake = bool(wake and packet["claims"] and
-                    ("items" not in packet or any(item.get("wake") for item in packet["items"])))
+                    any(item.get("wake") for item in packet.get("items", [])))
                 admitted = await self.deliver(packet, {"wake": should_wake, "cancelled": self.cancelled,
                     "lease_seconds": self.client.initialization["limits"]["claimLeaseSeconds"]})
                 if admitted is False:
@@ -208,6 +207,28 @@ class XsmHost:
                         "tokens": [claim["token"] for claim in packet["claims"]]})
                 raise
             return packet
+
+    def _schedule_delivery(self, delay=0):
+        if self.closed or self.cancelled.is_set() or self.delivery_suspended:
+            return
+        if self.delivery_task and not self.delivery_task.done():
+            return
+        async def run():
+            if delay:
+                try:
+                    await asyncio.wait_for(self.cancelled.wait(), delay)
+                    return
+                except asyncio.TimeoutError:
+                    pass
+            await self._drain()
+        def finished(task):
+            if not task.cancelled() and task.exception():
+                self.delivery_suspended = True
+                self._error(task.exception())
+            if self.delivery_task is task and self.pending_wake:
+                self._schedule_delivery()
+        self.delivery_task = asyncio.create_task(run())
+        self.delivery_task.add_done_callback(finished)
 
     async def _drain(self):
         while self.pending_wake and not self.closed and not self.delivery_suspended:
@@ -231,7 +252,12 @@ class XsmHost:
         if self.deliver is None:
             raise RuntimeError("native admission callback is not connected; use xsm_inbox")
         self.delivery_suspended = False
-        return await self._deliver_inbox(False)
+        try:
+            return await self._deliver_inbox(False)
+        except RetryAdmission as error:
+            self.pending_wake = True
+            self._schedule_delivery(error.delay_seconds)
+            raise
 
     async def update(self, state, name=None):
         value = {"state": state}
