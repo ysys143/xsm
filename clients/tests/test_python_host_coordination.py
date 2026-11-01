@@ -12,7 +12,7 @@ import unittest
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "clients/python"))
 from xsm_client import XsmClient, TransportError
-from xsm_host import XsmHost
+from xsm_host import XsmHost, RetryAdmission
 
 
 class HostCoordinationTest(unittest.IsolatedAsyncioTestCase):
@@ -91,6 +91,77 @@ class HostCoordinationTest(unittest.IsolatedAsyncioTestCase):
         await host._drain()
         self.assertEqual(len(reads), 1)
         self.assertEqual(self.errors, [])
+
+    async def test_native_backpressure_reacquires_original_with_new_token(self):
+        packets, attempted, admitted = [], asyncio.Event(), asyncio.Event()
+        async def deliver(packet, _options):
+            packets.append(packet)
+            if len(packets) == 1:
+                attempted.set()
+                raise RetryAdmission('queue full', .05)
+            admitted.set()
+        host = await self.host(deliver=deliver)
+        await self.send(host, 'retry original')
+        await asyncio.wait_for(attempted.wait(), 3)
+        self.assertTrue((await host.client.request('operations/list'))['operations'])
+        await asyncio.wait_for(admitted.wait(), 3)
+        await host.delivery_task
+        self.assertEqual(len(packets), 2)
+        first, second = [packet['claims'][0] for packet in packets]
+        self.assertEqual(first['id'], second['id'])
+        self.assertNotEqual(first['token'], second['token'])
+        self.assertEqual(len((await host.call('xsm_ack', {'tokens': [second['token']]}))['acked']), 1)
+        self.assertEqual(self.errors, [])
+
+    async def test_close_interrupts_native_capacity_retry(self):
+        attempted, attempts = asyncio.Event(), []
+        async def deliver(_packet, _options):
+            attempts.append(True)
+            attempted.set()
+            raise RetryAdmission('queue full', 5)
+        host = await self.host(deliver=deliver)
+        await self.send(host, 'retain on close')
+        await asyncio.wait_for(attempted.wait(), 3)
+        await host.close()
+        self.assertTrue(host.delivery_task.done())
+        self.assertEqual(len(attempts), 1)
+        self.assertEqual(self.errors, [])
+
+    async def test_retry_does_not_wake_fyi_after_original_was_consumed_elsewhere(self):
+        retry_read, release, admitted = asyncio.Event(), asyncio.Event(), asyncio.Event()
+        packets = []
+        async def deliver(packet, options):
+            packets.append((packet, options['wake']))
+            if len(packets) == 1:
+                raise RetryAdmission('queue full', .001)
+            admitted.set()
+        host = await self.host(deliver=deliver)
+        original = host.client.operation_call
+        reads = 0
+        async def invoke(session, name, args):
+            nonlocal reads
+            if name == 'xsm_inbox' and 'limit' not in args:
+                reads += 1
+                if reads == 2:
+                    retry_read.set()
+                    await release.wait()
+            return await original(session, name, args)
+        host.client.operation_call = invoke
+        sender, origin = await self.sender()
+        await sender.operation_call(origin['session'], 'xsm_send', {'target': 'ref:' + host.session['ref'],
+            'text': 'taken directly', 'wait': 0})
+        await asyncio.wait_for(retry_read.wait(), 3)
+        direct = await host.call('xsm_inbox', {'limit': 1})
+        self.assertIn('taken directly', str(direct['messages']))
+        await host.call('xsm_ack', {'tokens': [claim['token'] for claim in direct['claims']]})
+        await sender.operation_call(origin['session'], 'xsm_send', {'target': 'ref:' + host.session['ref'],
+            'text': 'quiet original', 'wake': 'never', 'wait': 0})
+        release.set()
+        await asyncio.wait_for(admitted.wait(), 3)
+        await host.delivery_task
+        self.assertEqual(len(packets), 2)
+        self.assertFalse(packets[1][1])
+        self.assertIn('quiet original', str(packets[1][0]['messages']))
 
     async def test_ui_answer_is_applied_only_through_original_operation_retry(self):
         shown = []

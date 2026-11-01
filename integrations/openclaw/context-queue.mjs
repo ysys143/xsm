@@ -1,6 +1,6 @@
 /** Pinned 2026.10.9 public SessionEntry queue, written through guarded native admission. */
 import { createHash } from 'node:crypto';
-import { inboxAcknowledgement } from '../../clients/typescript/xsm-host.mjs';
+import { inboxAcknowledgement, RetryAdmission } from '../../clients/typescript/xsm-host.mjs';
 
 const LIMIT = 32768;
 const CAPACITY = 32;
@@ -78,6 +78,7 @@ export function nativeDelivery(api, context, assertBindingCurrent) {
       item.metadata.nativeSessionId === context.sessionId && typeof item.text === 'string' &&
       (acknowledgement && index === parts.length - 1 ? item.text.startsWith(parts[index].prefix) : item.text === parts[index].text) &&
       (parts.length === 1 || (item.metadata.fragmentIndex === index && item.metadata.fragmentCount === parts.length));
+    let capacityBlocked = false;
     await session.runWithWorkAdmission({ ...scope, signal }, async admittedSignal => {
       guard(admittedSignal);
       await session.patchSessionEntry({ ...scope,
@@ -105,7 +106,7 @@ export function nativeDelivery(api, context, assertBindingCurrent) {
             }
             return null;
           }
-          if (queue.length + parts.length > CAPACITY) throw new Error('native xsm context queue is full');
+          if (queue.length + parts.length > CAPACITY) { capacityBlocked = true; return null; }
           const additions = parts.map((part, index) => ({
             id: idsForParts[index], pluginId: 'xsm', pluginName: 'xsm', text: part.text, idempotencyKey: idsForParts[index],
             placement: 'prepend_context', createdAt: now, ttlMs: Math.floor(leaseSeconds * 1000),
@@ -117,10 +118,15 @@ export function nativeDelivery(api, context, assertBindingCurrent) {
         },
       });
       guard(admittedSignal);
+      if (capacityBlocked) return;
       const accepted = read()?.pluginNextTurnInjections?.xsm ?? [];
       if (!idsForParts.every((id, index) => matches(accepted.find(item => item.id === id), index))) {
         throw new Error('native context admission was not observed');
       }
     });
+    if (capacityBlocked) {
+      guard(signal);
+      throw new RetryAdmission('native xsm context queue is full');
+    }
   };
 }

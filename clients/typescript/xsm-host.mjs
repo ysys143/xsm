@@ -2,6 +2,25 @@
 import { fileURLToPath } from 'node:url';
 import { XsmHostClient, TransportError } from './xsm-client.mjs';
 
+export class RetryAdmission extends Error {
+  constructor(message, delayMs = 250) {
+    super(message);
+    if (!Number.isFinite(delayMs) || delayMs <= 0 || delayMs > 60000) throw new TypeError('retry delay must be within 0–60000 ms');
+    this.name = 'RetryAdmission';
+    this.delayMs = delayMs;
+  }
+}
+
+function retryPause(signal, delayMs) {
+  if (signal.aborted) return Promise.resolve(false);
+  return new Promise(resolve => {
+    const finish = value => { clearTimeout(timer); signal.removeEventListener('abort', cancel); resolve(value); };
+    const cancel = () => finish(false);
+    const timer = setTimeout(() => finish(true), delayMs);
+    signal.addEventListener('abort', cancel, { once: true });
+  });
+}
+
 export function inboxAcknowledgement(claims) {
   return claims.length ? '\n\nAfter reading, call xsm_ack with tokens: ' +
     JSON.stringify(claims.map(claim => claim.token)) +
@@ -210,7 +229,7 @@ export class XsmHost {
   }
 
   async deliverLoop() {
-    while (this.pendingWake && !this.closed && !this.deliverySuspended) {
+    while (this.pendingWake && !this.closed && !this.controller.signal.aborted && !this.deliverySuspended) {
       this.pendingWake = false;
       try {
         const pack = await this.deliverInbox(true);
@@ -218,7 +237,12 @@ export class XsmHost {
           this.pendingWake = true;
         }
       }
-      catch (error) { this.deliverySuspended = true; this.error(error); }
+      catch (error) {
+        if (error instanceof RetryAdmission) {
+          if (!await retryPause(this.controller.signal, error.delayMs)) break;
+          this.pendingWake = true;
+        } else { this.deliverySuspended = true; this.error(error); }
+      }
     }
   }
 
@@ -229,7 +253,9 @@ export class XsmHost {
     if (!pack.messages.length) return pack;
     try {
       // Resolves only after the native binding observes admission, never on stdout flush.
-      const accepted = await this.options.deliver(pack, { wake, signal: this.controller.signal,
+      const shouldWake = Boolean(wake && pack.claims.length &&
+        (pack.items === undefined || pack.items.some(item => item.wake)));
+      const accepted = await this.options.deliver(pack, { wake: shouldWake, signal: this.controller.signal,
         leaseSeconds: this.client.initialization.limits.claimLeaseSeconds });
       if (accepted === false) throw new Error('native queue refused admission');
       for (const claim of pack.claims) await this.client.deliveryReport(this.session.session, claim.id, 'admitted', claim.token);

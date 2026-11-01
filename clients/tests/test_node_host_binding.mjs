@@ -4,7 +4,7 @@ import { mkdtemp, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { XsmHost, parseHostCommand, inboxAcknowledgement, renderInboxPacket } from '../typescript/xsm-host.mjs';
+import { XsmHost, RetryAdmission, parseHostCommand, inboxAcknowledgement, renderInboxPacket } from '../typescript/xsm-host.mjs';
 import { XsmClient } from '../typescript/xsm-client.mjs';
 
 const root = fileURLToPath(new URL('../../', import.meta.url));
@@ -95,6 +95,78 @@ test('a full notice-only batch does not spin without acquiring any original', as
   await host.deliverLoop();
   assert.equal(reads, 1);
   assert.deepEqual(errors, []);
+});
+
+test('retryable native backpressure releases then reacquires the same original without another wake', { timeout: 10000 }, async t => {
+  const attempted = deferred(), admitted = deferred(), packets = [];
+  const { host, command, env, errors } = await fixture(t, { deliver: async packet => {
+    packets.push(packet);
+    if (packets.length === 1) { attempted.resolve(); throw new RetryAdmission('queue full', 50); }
+    admitted.resolve();
+  } });
+  const sender = await XsmClient.connect({ command, env, cwd: root });
+  t.after(() => sender.close());
+  const origin = await sender.sessionOpen({ runtime: 'retry-sender', profile: 'one', conversation: 'a', cwd: root });
+  await sender.operationCall(origin.session, 'xsm_send', { target: 'ref:' + host.session.ref, text: 'retry original', wait: 0 });
+  await attempted.promise;
+  assert.ok((await host.client.request('operations/list')).operations.length);
+  await admitted.promise;
+  await host.deliveryTask;
+  assert.equal(packets.length, 2);
+  assert.equal(packets[0].claims[0].id, packets[1].claims[0].id);
+  assert.notEqual(packets[0].claims[0].token, packets[1].claims[0].token);
+  assert.equal((await host.call('xsm_ack', { tokens: [packets[1].claims[0].token] })).acked.length, 1);
+  assert.deepEqual(errors, []);
+});
+
+test('closing during native backpressure cancels the retry timer and prevents a later admission', { timeout: 10000 }, async t => {
+  const attempted = deferred();
+  let attempts = 0;
+  const { host, command, env, errors } = await fixture(t, { deliver: async () => {
+    attempts++; attempted.resolve(); throw new RetryAdmission('queue full', 5000);
+  } });
+  const sender = await XsmClient.connect({ command, env, cwd: root });
+  t.after(() => sender.close());
+  const origin = await sender.sessionOpen({ runtime: 'retry-sender', profile: 'one', conversation: 'a', cwd: root });
+  await sender.operationCall(origin.session, 'xsm_send', { target: 'ref:' + host.session.ref, text: 'retain on close', wait: 0 });
+  await attempted.promise;
+  await host.close();
+  assert.equal(attempts, 1);
+  assert.equal(host.deliveryTask, undefined);
+  assert.deepEqual(errors, []);
+});
+
+test('a stale normal wake does not wake passive originals found after retry', { timeout: 10000 }, async t => {
+  const retryRead = deferred(), release = deferred(), admitted = deferred();
+  const packets = [];
+  const { host, command, env } = await fixture(t, { deliver: async (packet, options) => {
+    packets.push({ packet, wake: options.wake });
+    if (packets.length === 1) throw new RetryAdmission('queue full', 1);
+    admitted.resolve();
+  } });
+  const call = host.client.operationCall.bind(host.client);
+  let reads = 0;
+  host.client.operationCall = async (session, name, args) => {
+    if (name === 'xsm_inbox' && args.limit === undefined && ++reads === 2) {
+      retryRead.resolve(); await release.promise;
+    }
+    return call(session, name, args);
+  };
+  const sender = await XsmClient.connect({ command, env, cwd: root });
+  t.after(() => sender.close());
+  const origin = await sender.sessionOpen({ runtime: 'retry-sender', profile: 'one', conversation: 'a', cwd: root });
+  await sender.operationCall(origin.session, 'xsm_send', { target: 'ref:' + host.session.ref, text: 'taken directly', wait: 0 });
+  await retryRead.promise;
+  const direct = await host.call('xsm_inbox', { limit: 1 });
+  assert.match(JSON.stringify(direct.messages), /taken directly/);
+  await host.call('xsm_ack', { tokens: direct.claims.map(claim => claim.token) });
+  await sender.operationCall(origin.session, 'xsm_send', { target: 'ref:' + host.session.ref, text: 'quiet original', wake: 'never', wait: 0 });
+  release.resolve();
+  await admitted.promise;
+  await host.deliveryTask;
+  assert.equal(packets.length, 2);
+  assert.equal(packets[1].wake, false);
+  assert.match(JSON.stringify(packets[1].packet.messages), /quiet original/);
 });
 
 test('explicit false native admission releases claims without recording admission', { timeout: 10000 }, async t => {

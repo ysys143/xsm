@@ -1,6 +1,11 @@
 import type { JsonObject, JsonValue, Notification, OpenSessionResult, ConnectOptions } from './xsm-client.mjs';
 import { XsmHostClient } from './xsm-client.mjs';
 
+export class RetryAdmission extends Error {
+  constructor(message: string, delayMs?: number);
+  readonly delayMs: number;
+}
+
 export interface InboxClaim extends JsonObject { id: string; token: string; }
 export interface InboxPacket extends JsonObject {
   messages: string[];

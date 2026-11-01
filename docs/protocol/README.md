@@ -184,5 +184,16 @@ reads. After a full batch that acquired originals, the helper keeps draining
 without requiring a fresh availability notification. A notice-only batch stops
 instead of repeating without progress. `naturalBoundary()` reads one configured
 batch. These options require a server that advertises `xsm_inbox.limit`.
-Defaults of the runtime bindings have not changed; queue-capacity retry and
-byte-aware admission remain separate unfinished work.
+Defaults of the runtime bindings have not changed. Byte-aware admission remains
+unfinished.
+
+A native delivery callback may throw `RetryAdmission(message, delayMs)` for a
+definite transient refusal. The automatic loop releases its own claims first,
+waits without blocking RPC/UI processing, and reacquires pending originals with
+fresh tokens. The default delay is 250 ms; a delay must be positive and no more
+than 60000 ms. Closing the host or losing the connection cancels the wait.
+Ordinary errors and `false` retain the existing suspended-delivery behavior;
+permission failures and server error strings do not opt into retry.
+Wake decisions use the packet actually acquired, so a stale normal notification
+cannot wake a later FYI-only or notice-only packet. Direct `naturalBoundary()`
+still raises the refusal to its caller; non-waking boundary retry is unfinished.

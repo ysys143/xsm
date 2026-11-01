@@ -776,3 +776,35 @@ native API fixture에서 검사했고, 실제 1.19.5 SDK의 정상 전달 회귀
 통과했다(`native-notice-gate-py314.log`). TypeScript 컴파일도 통과했다
 (`native-notice-types.log`). 이는 notice 렌더링과 관찰 경로의 수정이며 native
 default 배치·용량 retry·바이트 예산·실제 agent/UI와 전체 계획은 미완이다.
+
+## Native 용량 거부의 자동 재시도
+
+Python/Node SDK에 native callback 전용 RetryAdmission을 추가했다. 확실한
+일시 거부는 claim을 반환한 뒤 기본 250ms(Node)/0.25초(Python) 후 새 token으로
+다시 인수한다. 지연은 양수·최대 60초이며 대기는 RPC/UI를 막지 않는다.
+종료·연결 실패는 대기를 취소한다. 일반 오류·권한 거부·원문 자체의 한도 초과는
+자동 재시도하지 않는다. Direct natural boundary의 재시도는 아직 미완이다.
+
+원문 인수 후 실패→같은 ID/새 token으로 재인수→명시적 ACK, 대기 중 종료 후
+추가 인수 없음의 경로를 두 SDK의 실제 protocol subprocess에서 확인했다.
+이전 일반 메시지가 다른 reader에 의해 소비된 사이 FYI만 남은 경우, 기존
+notification을 근거로 FYI를 깨우던 경로도 수정 전 실패로 재현했다. 재시도에서
+실제로 인수한 packet의 items.wake와 claims를 기준으로 wake를 결정한다.
+Notice-only packet 역시 모델을 깨우지 않는다.
+
+OpenClaw는 native queue가 꽉 찬 경우 patch를 게시하지 않고 guard를 재확인한
+뒤 typed retry를 반환한다. Native API 밖에서 오류를 만들어 오류 직렬화에
+분류가 소실되지 않게 한다. 실제 고정 SDK에서 32개 fixture 항목을 채운 다음
+원문을 보냈다. 정본 previous_claim으로 인수 반환을 확인한 뒤 fixture 항목만
+비웠으며, 새 메시지 없이 원문이 재인수·수락·prompt 소비·ACK됐다
+(`openclaw-native-capacity-retry-first.json`). SDK retry 처리를 제거한 변이에서는
+인수 반환 후 회복이 없어 실패했다(`native-retry-sdk-mutant.json`).
+
+공통 297개(핵심 187, Python 34, Node 76)가 Python 3.14.6에서 41.191초에
+통과했다(`native-retry-complete-gate.log`). TypeScript 컴파일도 통과했다
+(`native-retry-types-final.log`). SDK의 FYI race 실패/성공 로그는
+`native-retry-fyi-{node,python}-red.log`, `native-retry-{node,python}-final.log`에 있다.
+Python 3.9.6의 호스트 조정 검사 16개도 14.887초에 통과했다
+(`native-retry-python-final-py39.log`).
+Native SDK caller와 소비는 fixture이며 모델·실제 agent turn 인증이 아니다.
+FYI 경계 재시도, 바이트 예산, binding 기본 배치, 전체 P0–P5 기준은 미완이다.

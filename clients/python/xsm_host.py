@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import asyncio
+import math
 from pathlib import Path
 import sys
 
@@ -9,6 +10,14 @@ if __package__:
     from .xsm_client import XsmHostClient, TransportError
 else:
     from xsm_client import XsmHostClient, TransportError
+
+
+class RetryAdmission(RuntimeError):
+    def __init__(self, message, delay_seconds=.25):
+        if isinstance(delay_seconds, bool) or not isinstance(delay_seconds, (int, float)) or not 0 < delay_seconds <= 60 or not math.isfinite(delay_seconds):
+            raise ValueError("retry delay must be within 0–60 seconds")
+        super().__init__(message)
+        self.delay_seconds = delay_seconds
 
 
 class XsmHost:
@@ -185,7 +194,9 @@ class XsmHost:
             if not packet["messages"]:
                 return packet
             try:
-                admitted = await self.deliver(packet, {"wake": wake, "cancelled": self.cancelled,
+                should_wake = bool(wake and packet["claims"] and
+                    ("items" not in packet or any(item.get("wake") for item in packet["items"])))
+                admitted = await self.deliver(packet, {"wake": should_wake, "cancelled": self.cancelled,
                     "lease_seconds": self.client.initialization["limits"]["claimLeaseSeconds"]})
                 if admitted is False:
                     raise RuntimeError("native admission callback refused the message")
@@ -207,6 +218,11 @@ class XsmHost:
                     self.pending_wake = True
             except asyncio.CancelledError:
                 raise
+            except RetryAdmission as error:
+                try:
+                    await asyncio.wait_for(self.cancelled.wait(), error.delay_seconds)
+                except asyncio.TimeoutError:
+                    self.pending_wake = True
             except Exception as error:
                 self.delivery_suspended = True
                 self._error(error)

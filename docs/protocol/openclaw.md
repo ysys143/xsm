@@ -274,6 +274,29 @@ Python 3.9.6에서 37.938초에 통과했다(`openclaw-fragments-final-py39.log`
 wake·사용자 UI 인증으로 확대하지 않는다. 32개 조각을 넘는 전송, owned 설치,
 worker와 전체 P0–P5 기준은 미완이다.
 
+## Native 용량 거부 후 자동 재시도
+
+한 묶음 자체가 native 한도에 맞지만 기존 queue가 자리를 차지한 경우,
+native patch는 내용을 바꾸지 않고 끝낸다. Native 수명·정책 guard를 다시
+확인한 뒤 SDK의 RetryAdmission을 반환한다. 오류는 native SDK 경계를 벗어난
+뒤 생성해, native API의 오류 직렬화가 재시도 분류를 바꾸지 않게 한다.
+일반 권한·수명 오류와 본문 자체의 batch 한도 초과는 이 분류를 사용하지 않는다.
+
+고정 SDK 시험은 32개 fixture 항목으로 queue를 채우고 원문을 보냈다.
+정본의 previous_claim으로 거부 뒤 claim 반환을 읽기 전용으로 확인한 다음,
+fixture 항목만 제거했다. 새 메시지나 native wake 없이 원문이 재인수·queue
+수락·prompt helper 소비·ACK됐고 수명 정리도 통과했다
+(`openclaw-native-capacity-retry-first.json`). SDK의 retry 처리를 제거한 변이에서는
+claim 반환까지 됐지만 이후 수락이 없어서 실패했다
+(`native-retry-sdk-mutant.json`). 모델·사람은 실행하지 않은 fixture 시험이다.
+
+```sh
+/isolated/node scripts/probe-openclaw-loader.mjs /isolated/node_modules/openclaw deliverables/openclaw-capacity.json --queue 1 --capacity-retry
+```
+
+이는 자동 수신의 용량 회복 경로다. FYI 직접 경계의 non-waking 재시도,
+바이트 예산, binding 기본 배치, 32조각 초과 전송과 전체 agent/UI 인증은 미완이다.
+
 ```sh
 /isolated/node scripts/probe-openclaw-loader.mjs /isolated/node_modules/openclaw deliverables/openclaw-large.json --queue 100 --large-context
 ```

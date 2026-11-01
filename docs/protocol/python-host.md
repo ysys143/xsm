@@ -10,7 +10,7 @@
 기본은 pull-only다. `deliver` callback이 없으면 events를 구독/광고하지 않는다.
 Native 수신기를 연결할 때는 async `deliver(packet, options)`를 제공한다.
 이는 실제 native 입력 수락을 확인한 뒤 반환해야 한다. 단순 작업 예약은 그
-근거가 아니다. False를 반환하거나 예외를 내면 claim을 release하고 자동 전달을
+근거가 아니다. False를 반환하거나 일반 예외를 내면 claim을 release하고 자동 전달을
 중지한다. 이후 `natural_boundary()`가 원본을 다시 확인한다. ACK는 자동으로
 보내지 않는다. options에는 wake, cancelled Event, lease_seconds가 있다.
 
@@ -19,6 +19,13 @@ Native 수신기를 연결할 때는 async `deliver(packet, options)`를 제공�
 원문을 인수한 가득 찬 배치는 새 알림 없이 이어 읽는다. Notice만 반환돼 인수가
 없는 경우에는 반복하지 않는다. `natural_boundary()`는 설정된 배치 하나를 읽는다.
 이 설정은 바이트 예산이나 native queue의 용량 재시도를 대신하지 않는다.
+
+Native callback은 확실한 일시 거부에 `RetryAdmission(message, delay_seconds)`를
+사용할 수 있다. 자동 수신 루프는 claim을 먼저 반환하고 기본 0.25초 뒤 새
+token으로 다시 인수한다. 지연은 0초 초과 60초 이하다. 종료·연결 실패는 대기를
+취소하며, 일반 오류나 권한 거부는 재시도하지 않는다. 이전 알림이 일반 메시지
+알림이었더라도 재인수한 것이 FYI뿐이면 wake하지 않는다. 직접 호출한
+`natural_boundary()`의 거부는 여전히 호출자에게 전달한다.
 
 UI는 async `present(event, cancelled)`를 제공한 경우에만 광고한다. 반환값의
 키는 displayed, source_id, action, answer이다. 실제 native callback만 연결한다.

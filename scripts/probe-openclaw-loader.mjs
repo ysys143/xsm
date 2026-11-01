@@ -1,5 +1,6 @@
 /** Pinned native loader/tools with explicit caller fixtures; no agent/model/messenger execution. */
 import assert from 'node:assert/strict';
+import { execFileSync } from 'node:child_process';
 import { mkdtemp, mkdir, readdir, readFile, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
@@ -8,10 +9,11 @@ import operations from '../integrations/openclaw/tools.mjs';
 
 const [nativeRoot, output, mode, countText, policyFlag] = process.argv.slice(2);
 assert.ok(!mode || ['--execute', '--queue'].includes(mode));
-assert.ok(!policyFlag || (mode === '--queue' && ['--deny-injection', '--large-context', '--deferred-notice'].includes(policyFlag)));
+assert.ok(!policyFlag || (mode === '--queue' && ['--deny-injection', '--large-context', '--deferred-notice', '--capacity-retry'].includes(policyFlag)));
 const denied = policyFlag === '--deny-injection';
 const largeContext = policyFlag === '--large-context';
 const deferredNotice = policyFlag === '--deferred-notice';
+const capacityRetry = policyFlag === '--capacity-retry';
 const samples = Number(countText ?? 1);
 assert.ok(Number.isInteger(samples) && samples >= 1 && samples <= 1000);
 assert.ok(!countText || mode === '--queue');
@@ -134,6 +136,13 @@ if (mode) {
     assert.equal(rows.length, 2);
     const target = rows.find(row => row.ref !== record.ref);
     assert.ok(target, 'same route must keep separate native conversation identities');
+    if (capacityRetry) {
+      await api.runtime.agent.session.patchSessionEntry({ agentId: 'main', sessionKey: context('native-fixture-b').sessionKey,
+        update: row => ({ pluginNextTurnInjections: { ...row.pluginNextTurnInjections,
+          xsm: Array.from({ length: 32 }, (_, index) => ({ id: 'capacity-fixture-' + index, pluginId: 'xsm',
+            text: 'fixture reserved slot', placement: 'prepend_context', createdAt: Date.now(), ttlMs: 60000,
+            metadata: { capacityFixture: true } })) } }) });
+    }
     if (deferredNotice) {
       await executable.find(tool => tool.name === 'xsm_send').execute('send-deferred', {
         target: 'ref:' + target.ref, text: 'defer-fixture original', wait: 0,
@@ -164,6 +173,29 @@ if (mode) {
     await executable.find(tool => tool.name === 'xsm_send').execute('send-a-b', {
       target: 'ref:' + target.ref, text: firstText, wait: 0,
     });
+    if (capacityRetry) {
+      // Read-only inspection of this probe's canonical store proves an attempted admission was released.
+      const code = "import json,sys;sys.path.insert(0,sys.argv[1]);from xsm.handoff import _folder;print(_folder(json.loads(sys.argv[2])))";
+      const folder = execFileSync('python3', ['-B', '-c', code, root, JSON.stringify(target)],
+        { env: process.env, encoding: 'utf8' }).trim();
+      let released = false;
+      const deadline = Date.now() + 5000;
+      while (Date.now() < deadline) {
+        const records = await Promise.all((await readdir(folder)).filter(name => name.endsWith('.json'))
+          .map(async name => JSON.parse(await readFile(join(folder, name), 'utf8'))));
+        if (records.some(row => row.previous_claim && row.state !== 'acknowledged')) { released = true; break; }
+        await new Promise(resolve => setTimeout(resolve, 10));
+      }
+      assert.ok(released, 'capacity refusal never returned the canonical original');
+      await api.runtime.agent.session.patchSessionEntry({ agentId: 'main', sessionKey: context('native-fixture-b').sessionKey,
+        update(row) {
+          const queued = row.pluginNextTurnInjections.xsm;
+          assert.equal(queued.length, 32);
+          assert.ok(queued.every(item => item.metadata.capacityFixture));
+          return { pluginNextTurnInjections: { ...row.pluginNextTurnInjections, xsm: [] } };
+        } });
+      result.nativeCapacityClaimReleased = true;
+    }
     let tokens;
     const latencies = [];
     if (api && !denied) {
@@ -227,6 +259,7 @@ if (mode) {
         p95UpperBoundMs: sorted[Math.ceil(sorted.length * .95) - 1],
         measured: 'native sender execute start through observed native context queue; includes canonical store time' };
       result.nativeQueuePromptConsumed = true;
+      if (capacityRetry) result.nativeCapacityRetryRecovered = true;
       result.nativeWakeTested = false;
     } else {
       const received = await inboxB.execute('receive-b', { limit: 1 });
