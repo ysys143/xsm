@@ -734,8 +734,7 @@ MCP null 처리를 제거한 9개 변이는 모두 실패했다
 4개 실행 뒤 중단됐고, 이 실패와 부분 로그도 보존했다. 이 시점의 Python 3.14 UI 취소 검사에는
 `CancelledError exception in shielded future` 경고가 남았으며, 아래 후속 수정으로
 해결했다. Notice-only pack에 빈 ACK 안내를 붙이는 코드 경로는 Pi/OpenCode/
-OpenClaw 세 연결부에서 확인했다. 담당 구현 세션이 native 배치 연결 단계에서
-수정·실행 검증해야 하며, 해결 완료로 세지 않는다.
+OpenClaw 세 연결부에서 확인했고, 아래 후속 수정에서 해결했다.
 
 ## Python 마지막 질문 대기자의 취소
 
@@ -751,3 +750,29 @@ OpenClaw 세 연결부에서 확인했다. 담당 구현 세션이 native 배치
 포함한다. 공통 286개(핵심 187, Python 31, Node 68)가 Python 3.14.6에서
 36.404초에 통과했다(`python-question-cancel-gate.log`).
 이는 SDK 취소 경고의 해결이며 전체 P2나 native UI 인증 완료를 뜻하지 않는다.
+
+## Claim-free native notice와 Pi idle 수락
+
+Claim 없는 notice에도 세 연결부가 빈 token 배열의 ACK를 안내하고 있었다.
+공통 Node SDK의 renderInboxPacket/inboxAcknowledgement로 렌더링을 통합해
+실제 claim이 있는 경우에만 안내한다. OpenClaw의 큰 notice도 빈 ACK 조각을
+붙이지 않으며 원래 본문과 framing을 유지한다. 수정 전 notice 검사 실패는
+`native-notice-ack-red.log`에 보존했다.
+
+실제 Pi 1.4.0 SDK notice 검사에서 추가 결함을 재현했다. Idle/non-waking
+custom append는 app message_start를 내지만 extension message_start를 내지 않아,
+native branch에 저장된 notice를 수락으로 관찰하지 못했다. 같은 native 세션의
+현재 branch에서 custom type·delivery ID·전체 본문을 확인하도록 수정했다.
+가짜 native event를 만들어 성공시키지 않는다.
+
+`pi-native-notice-first.json`은 실패, `pi-native-notice-final.json`은 claim-free
+notice와 뒤이은 정상 본문·native ACK 성공이다. OpenClaw 고정 SDK도 실제 queue,
+prompt 소비 helper, 원문의 pending 유지와 정상 ACK를 통과했다
+(`openclaw-native-notice.json`). OpenCode notice 경로는 실제 protocol 서버와
+native API fixture에서 검사했고, 실제 1.19.5 SDK의 정상 전달 회귀 5회도 통과했다
+(`opencode-native-notice-regression/result.json`). 모델과 사람의 동작은 fixture다.
+
+공통 291개(핵심 187, Python 31, Node 73)가 Python 3.14.6에서 38.273초에
+통과했다(`native-notice-gate-py314.log`). TypeScript 컴파일도 통과했다
+(`native-notice-types.log`). 이는 notice 렌더링과 관찰 경로의 수정이며 native
+default 배치·용량 retry·바이트 예산·실제 agent/UI와 전체 계획은 미완이다.

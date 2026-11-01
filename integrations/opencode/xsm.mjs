@@ -5,7 +5,7 @@ import { homedir } from 'node:os';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { XsmClient } from '../../clients/typescript/xsm-client.mjs';
-import { XsmHost } from '../../clients/typescript/xsm-host.mjs';
+import { XsmHost, renderInboxPacket } from '../../clients/typescript/xsm-host.mjs';
 import { NativeUiServer, uiParts } from './ui-channel.mjs';
 import { holdComponent } from './component-lease.mjs';
 
@@ -93,9 +93,7 @@ async function attach(api, options, release) {
           deliver: async (pack, { wake, signal }) => {
             if (disposed || signal.aborted) throw new Error('native delivery cancelled');
             const admissionID = randomUUID();
-            const text = pack.messages.join('\n\n') + '\n\nAfter reading, call xsm_ack with tokens: ' +
-              JSON.stringify(pack.claims.map(claim => claim.token)) +
-              '. If expired, read xsm_inbox for current tokens; do not repeat the work.';
+            const text = renderInboxPacket(pack);
             const inserted = unwrap(await api.client.session.prompt({ path: { id }, body: { noReply: true,
               parts: [{ type: 'text', text, synthetic: true, metadata: { xsmDelivery: admissionID } }] },
             signal }));

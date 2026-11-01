@@ -2,7 +2,7 @@
 import { randomUUID } from 'node:crypto';
 import { mkdir, realpath } from 'node:fs/promises';
 import { getAgentDir } from '@earendil-works/pi-coding-agent';
-import { XsmHost, parseHostCommand } from '../../clients/typescript/xsm-host.mjs';
+import { XsmHost, parseHostCommand, renderInboxPacket } from '../../clients/typescript/xsm-host.mjs';
 
 export default function xsm(pi, options = {}) {
   let host;
@@ -57,12 +57,16 @@ export default function xsm(pi, options = {}) {
         timer = setTimeout(() => { cleanup(); reject(new Error('native admission not observed before claim lease')); },
           Math.max(1, leaseSeconds * 1000 - 1000));
         try {
-          const text = pack.messages.join('\n\n') + '\n\nAfter reading, call xsm_ack with tokens: ' +
-            JSON.stringify(pack.claims.map(claim => claim.token)) +
-            '. If a token expired, read xsm_inbox for current tokens; do not repeat the work.';
+          const text = renderInboxPacket(pack);
           pi.sendMessage({ customType: 'xsm', content: text, display: true,
             details: { xsmDelivery: id, messages: pack.claims.map(claim => claim.id) } },
           { triggerTurn: wake, deliverAs: pack.items.some(item => item.priority === 'now') ? 'steer' : 'followUp' });
+          // Idle non-waking appends emit app events, not extension message_start.
+          // Observe the committed active branch instead of waiting for a new turn.
+          assertCurrent(signal);
+          const stored = nativeContext.sessionManager.getBranch().some(entry => entry.type === 'custom_message' &&
+            entry.customType === 'xsm' && entry.details?.xsmDelivery === id && entry.content === text);
+          if (stored) admissions.get(id)?.resolve();
         } catch (error) { cleanup(); reject(error); }
       }),
     });

@@ -90,6 +90,21 @@ test('a registration policy denial cannot be widened by a sparse runtime config'
   assert.equal(nativeDelivery(f.api, f.context, () => {}), undefined);
 });
 
+test('a claim-free native notice does not ask the agent to ACK an empty token array', async () => {
+  const f = fixture(), notice = 'Original retained pending network revalidation.';
+  await f.deliver({ messages: [notice], claims: [] }, f.controls);
+  assert.equal(f.read().pluginNextTurnInjections.xsm[0].text, notice);
+});
+
+test('fragmented claim-free notices have no acknowledgement fragment', async () => {
+  const f = fixture(), notice = 'notice '.repeat(10000);
+  await f.deliver({ messages: [notice], claims: [] }, f.controls);
+  const group = f.read().pluginNextTurnInjections.xsm;
+  assert.equal(recoverBody(group), notice);
+  assert.ok(group.every(item => item.metadata.fragmentBodyLength > 0));
+  assert.ok(group.every(item => !item.text.includes('After reading, call xsm_ack')));
+});
+
 test('an unobserved native write never reports successful admission', async () => {
   const f = fixture();
   f.api.runtime.agent.session.patchSessionEntry = async () => f.read();

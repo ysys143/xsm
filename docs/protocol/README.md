@@ -165,6 +165,10 @@ from the server, handles question correlation and cancellation, and reports
 queue acceptance only after the binding observes admission. It never
 automatically acknowledges message consumption.
 
+Native bindings share `renderInboxPacket` / `inboxAcknowledgement`. ACK
+instructions are appended only when the packet contains claims. A notice-only
+packet preserves its text without inventing an empty `xsm_ack` request.
+
 Without `deliver`, the helper is pull-only: it does not advertise or subscribe
 to `events`. Tools can explicitly read `xsm_inbox` and acknowledge consumption
 with `xsm_ack`. `naturalBoundary()` rejects before fetching any claim when native

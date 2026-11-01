@@ -4,10 +4,21 @@ import { mkdtemp, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { XsmHost, parseHostCommand } from '../typescript/xsm-host.mjs';
+import { XsmHost, parseHostCommand, inboxAcknowledgement, renderInboxPacket } from '../typescript/xsm-host.mjs';
 import { XsmClient } from '../typescript/xsm-client.mjs';
 
 const root = fileURLToPath(new URL('../../', import.meta.url));
+
+test('shared native notice rendering keeps claim-free content without inventing ACK tokens', () => {
+  assert.equal(inboxAcknowledgement([]), '');
+  assert.equal(renderInboxPacket({ messages: ['first notice', 'second notice'], claims: [] }), 'first notice\n\nsecond notice');
+});
+
+test('shared native original rendering retains the exact ACK tokens and recovery hint', () => {
+  const result = renderInboxPacket({ messages: ['original'], claims: [{ id: 'a', token: 'opaque-a' }] });
+  assert.match(result, /^original\n\nAfter reading, call xsm_ack with tokens: \["opaque-a"\]/);
+  assert.match(result, /read xsm_inbox for current tokens/);
+});
 
 test('native command arguments preserve JSON string whitespace and Unicode', () => {
   const args = { text: 'two  spaces\n다음 줄\tend' };

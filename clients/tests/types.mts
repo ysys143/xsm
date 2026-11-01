@@ -1,7 +1,7 @@
 // Compile-only coverage: .mjs imports must resolve the adjacent .d.mts.
 import { XsmClient, XsmHostClient, RpcError, TransportError } from '../typescript/xsm-client.mjs';
 import type { EventsAvailable, JsonValue, SessionHandle, Notification } from '../typescript/xsm-client.mjs';
-import { XsmHost, parseHostCommand } from '../typescript/xsm-host.mjs';
+import { XsmHost, parseHostCommand, renderInboxPacket, inboxAcknowledgement } from '../typescript/xsm-host.mjs';
 
 export async function example(operation: string, args: { text: string }): Promise<JsonValue> {
   const client = await XsmClient.connect({ onStderr: text => console.error(text) });
@@ -52,6 +52,9 @@ export async function hostExample(event: Notification): Promise<JsonValue> {
 }
 
 function hostBindingTypes(host: XsmHost) {
+  const claim = { id: 'example', token: 'opaque' };
+  inboxAcknowledgement([claim]);
+  renderInboxPacket({ messages: ['example'], claims: [claim] });
   const parsed = parseHostCommand('xsm_inbox {}');
   const result = host.call(parsed.operation, parsed.arguments);
   XsmHost.open({ runtime: 'fixture', profile: 'p', conversation: 'a', cwd: '/tmp', inboxBatchSize: 2 });

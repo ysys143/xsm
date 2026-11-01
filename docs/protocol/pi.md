@@ -13,8 +13,10 @@ pi --mode rpc --no-session -e /absolute/xsm/integrations/pi/xsm.mjs
 ```
 
 Pi의 기존 세션 ID와 실제 프로필 경로로 참여한다. 세션 종료·교체는 호스트
-연결을 닫고, 렌더된 peer 본문이 native message_start에 들어온 뒤에만
-문맥 인계를 보고한다. ACK는 모델/사용자가 실제로 읽은 뒤 xsm_ack로 보낸다.
+연결을 닫고, 렌더된 peer 본문이 native message_start에 들어오거나 현재 native
+branch에 같은 delivery ID와 본문으로 들어온 것을 확인한 뒤 문맥 인계를 보고한다.
+Idle/non-waking append는 app event만 발생시키므로 branch 관찰도 필요하다.
+ACK는 모델/사용자가 실제로 읽은 뒤 xsm_ack로 보낸다.
 
 도구 스키마는 공통 서버에서 가져온다. `/xsm status`는 공개 ref와 도구
 이름을 보여주며 `/xsm <operation> <JSON>`은 같은 API의 개발용 진입점이다.
@@ -46,6 +48,14 @@ node scripts/probe-pi-sdk.mjs /isolated/pi/package-root deliverables/pi-sdk.json
 
 코드·버전이 다른 표본은 같은 결과로 합치지 않는다. 모델 미구성의 큐 관측을
 실제 모델의 작업 성공이나 사람이 직접 답한 사실로 해석하지 않는다.
+
+`probe-pi-sdk.mjs ... --notice`는 receive revalidation 실패를 격리 서버에서
+주입해 claim-free notice를 만든다. 실제 native branch의 본문에 빈 ACK 안내가
+없는지 확인하고, 뒤이어 정상 원문을 읽어 native 도구로 ACK한다. 최초 실행은
+idle branch에 저장된 입력을 수락으로 관찰하지 못해 실패했다. 현재 branch의
+delivery ID·custom type·전체 본문 확인을 추가한 뒤 통과했다.
+`pi-native-notice-{first,final}.json`에 실패와 성공을 구분한다. Native SDK 실행이며
+issuing assistant와 UI 답은 fixture다. 모델 호출은 0회다.
 
 ## 명시적 프로필 설치·검사·제거
 

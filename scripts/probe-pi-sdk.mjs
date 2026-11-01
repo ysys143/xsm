@@ -1,11 +1,13 @@
 /** Exercise registered Pi tools through the native execution/validation kernel, without a model. */
 import assert from 'node:assert/strict';
-import { mkdtemp, mkdir, writeFile } from 'node:fs/promises';
+import { mkdtemp, mkdir, writeFile, readdir, readFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import { pathToFileURL, fileURLToPath } from 'node:url';
+import { XsmClient } from '../clients/typescript/xsm-client.mjs';
 
-const [packageRoot, output] = process.argv.slice(2);
+const [packageRoot, output, mode] = process.argv.slice(2);
+assert.ok(!mode || mode === '--notice');
 if (!packageRoot || !output) throw new Error('usage: node probe-pi-sdk.mjs <Pi package root> <output.json>');
 const root = fileURLToPath(new URL('../', import.meta.url));
 const temp = await mkdtemp(join(tmpdir(), 'xsm-pi-sdk-'));
@@ -21,10 +23,18 @@ const sdk = await import(pathToFileURL(join(packageRoot, 'dist/index.js')));
 const result = { status: 'incomplete', root: temp, runtimeVersion: sdk.VERSION,
   modelCalls: 0, physicalHumanUiTested: false };
 let session;
+let sender;
 try {
+  let entry = join(root, 'integrations/pi/xsm.mjs');
+  if (mode === '--notice') {
+    const code = "import runpy,sys;sys.path.insert(0,sys.argv.pop(1));from xsm import receive;check=receive.check;receive.check=lambda p,m:('block','P2P admission temporarily unavailable: fixture') if p.body.startswith('defer-fixture') else check(p,m);runpy.run_module('xsm',run_name='__main__')";
+    entry = join(temp, 'notice-extension.mjs');
+    await writeFile(entry, `import binding from ${JSON.stringify(pathToFileURL(join(root, 'integrations/pi/xsm.mjs')).href)};
+      export default pi => binding(pi, { command: ${JSON.stringify([process.env.XSM_PYTHON ?? 'python3', '-B', '-c', code, root, 'protocol', 'serve', '--stdio'])} });`);
+  }
   const settings = sdk.SettingsManager.inMemory({ compaction: { enabled: false }, retry: { enabled: false } });
   const loader = new sdk.DefaultResourceLoader({ cwd: join(temp, 'project'), agentDir: process.env.PI_CODING_AGENT_DIR,
-    settingsManager: settings, additionalExtensionPaths: [join(root, 'integrations/pi/xsm.mjs')],
+    settingsManager: settings, additionalExtensionPaths: [entry],
     noSkills: true, noPromptTemplates: true, noThemes: true, noContextFiles: true });
   await loader.reload();
   const loaded = await sdk.createAgentSession({ cwd: join(temp, 'project'), agentDir: process.env.PI_CODING_AGENT_DIR,
@@ -61,12 +71,54 @@ try {
   assert.equal(question.isError, false);
   assert.match(JSON.stringify(question.result.content), /your user answered: blue/);
   assert.deepEqual(displayed, [{ title: 'Native SDK choose', options: ['blue', 'green'] }]);
+  if (mode === '--notice') {
+    const folder = join(process.env.XSM_HOME, 'sessions');
+    const records = await Promise.all((await readdir(folder)).filter(name => name.endsWith('.json'))
+      .map(async name => JSON.parse(await readFile(join(folder, name), 'utf8'))));
+    const receiver = records.find(record => record.runtime === 'pi');
+    assert.ok(receiver);
+    sender = await XsmClient.connect({ command: [join(root, 'bin/xsm'), 'protocol', 'serve', '--stdio'],
+      cwd: join(temp, 'project'), env: process.env });
+    const origin = await sender.sessionOpen({ runtime: 'notice-fixture', profile: temp,
+      conversation: 'sender', cwd: join(temp, 'project') });
+    await sender.operationCall(origin.session, 'xsm_send', { target: 'ref:' + receiver.ref,
+      text: 'defer-fixture original', wake: 'never', wait: 0 });
+    const boundary = session.extensionRunner.emit({ type: 'before_agent_start', prompt: 'notice boundary fixture', systemPrompt: '' });
+    boundary.catch(() => {});
+    const admitted = await Promise.race([boundary.then(() => true), new Promise(resolve => setTimeout(() => resolve(false), 2000))]);
+    const notice = session.sessionManager.getBranch().find(entry => entry.type === 'custom_message' &&
+      entry.customType === 'xsm' && entry.content.includes('awaits network revalidation'));
+    assert.ok(notice, 'actual Pi session tree did not store the notice');
+    assert.equal(notice.content.includes('After reading, call xsm_ack'), false);
+    assert.equal(admitted, true, 'idle native storage admission was not observed');
+    result.nativeClaimFreeNotice = true;
+    await sender.operationCall(origin.session, 'xsm_send', { target: 'ref:' + receiver.ref,
+      text: 'ordinary Pi native original', wake: 'never', wait: 0 });
+    await session.extensionRunner.emit({ type: 'before_agent_start', prompt: 'original boundary fixture', systemPrompt: '' });
+    const original = session.sessionManager.getBranch().filter(entry => entry.type === 'custom_message' &&
+      entry.customType === 'xsm' && entry.content.includes('ordinary Pi native original')).at(-1);
+    assert.ok(original);
+    const tokens = JSON.parse(/xsm_ack with tokens: (\[[^\n]*?\])/.exec(original.content)[1]);
+    assert.equal(tokens.length, 1);
+    session.agent.state.messages = [...session.agent.state.messages, {
+      role: 'assistant', content: [{ type: 'toolCall', id: 'notice-ack-probe', name: 'fixture-parent', arguments: {} }],
+      api: 'unknown', provider: 'unknown', model: 'offline-fixture', stopReason: 'toolUse', timestamp: Date.now(),
+      usage: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0, totalTokens: 0,
+        cost: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0, total: 0 } },
+    }];
+    const ackContext = session.extensionRunner.createToolContext('notice-ack-probe', new AbortController().signal);
+    const ack = await ackContext.executeTool('xsm_ack', { tokens });
+    assert.equal(ack.isError, false);
+    assert.equal(JSON.parse(ack.result.content[0].text).acked.length, 1);
+    result.nativeOriginalAfterNoticeAck = true;
+  }
   assert.equal(result.modelCalls, 0);
   result.status = 'passed';
 } catch (error) {
   result.status = 'failed';
   result.error = { message: error.message, stack: error.stack };
 } finally {
+  await sender?.close();
   if (session) {
     await session.extensionRunner.emit({ type: 'session_shutdown', reason: 'quit' });
     session.dispose();

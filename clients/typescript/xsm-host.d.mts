@@ -20,6 +20,8 @@ export interface HostOptions extends ConnectOptions {
   onError?: (error: Error) => void;
 }
 export function parseHostCommand(text: string): { operation: string; arguments: JsonObject };
+export function inboxAcknowledgement(claims: readonly Pick<InboxClaim, 'token'>[]): string;
+export function renderInboxPacket(packet: Pick<InboxPacket, 'messages' | 'claims'>): string;
 export class XsmHost {
   private constructor();
   static open(options: HostOptions): Promise<XsmHost>;

@@ -8,9 +8,10 @@ import operations from '../integrations/openclaw/tools.mjs';
 
 const [nativeRoot, output, mode, countText, policyFlag] = process.argv.slice(2);
 assert.ok(!mode || ['--execute', '--queue'].includes(mode));
-assert.ok(!policyFlag || (mode === '--queue' && ['--deny-injection', '--large-context'].includes(policyFlag)));
+assert.ok(!policyFlag || (mode === '--queue' && ['--deny-injection', '--large-context', '--deferred-notice'].includes(policyFlag)));
 const denied = policyFlag === '--deny-injection';
 const largeContext = policyFlag === '--large-context';
+const deferredNotice = policyFlag === '--deferred-notice';
 const samples = Number(countText ?? 1);
 assert.ok(Number.isInteger(samples) && samples >= 1 && samples <= 1000);
 assert.ok(!countText || mode === '--queue');
@@ -49,10 +50,13 @@ if (mode === '--queue') {
   const directory = join(temp, 'probe-plugin');
   await mkdir(directory);
   await writeFile(join(directory, 'openclaw.plugin.json'), await readFile(join(root, 'integrations/openclaw/openclaw.plugin.json')));
+  const code = "import runpy,sys;sys.path.insert(0,sys.argv.pop(1));from xsm import receive;check=receive.check;receive.check=lambda p,m:('block','P2P admission temporarily unavailable: fixture') if p.body.startswith('defer-fixture') else check(p,m);runpy.run_module('xsm',run_name='__main__')";
+  const command = deferredNotice ? ['python3', '-B', '-c', code, root, 'protocol', 'serve', '--stdio']
+    : [join(root, 'bin/xsm'), 'protocol', 'serve', '--stdio'];
   const source = `import { register } from ${JSON.stringify(pathToFileURL(join(root, 'integrations/openclaw/xsm.mjs')).href)};
     export default { id: 'xsm', register(api) {
       globalThis[Symbol.for('xsm.native.queue.probe')] = api;
-      register(api, { command: ${JSON.stringify([join(root, 'bin/xsm'), 'protocol', 'serve', '--stdio'])} });
+      register(api, { command: ${JSON.stringify(command)} });
     } };`;
   const entry = join(directory, 'entry.mjs');
   await writeFile(entry, source);
@@ -130,6 +134,29 @@ if (mode) {
     assert.equal(rows.length, 2);
     const target = rows.find(row => row.ref !== record.ref);
     assert.ok(target, 'same route must keep separate native conversation identities');
+    if (deferredNotice) {
+      await executable.find(tool => tool.name === 'xsm_send').execute('send-deferred', {
+        target: 'ref:' + target.ref, text: 'defer-fixture original', wait: 0,
+      });
+      let notice;
+      const deadline = Date.now() + 5000;
+      while (Date.now() < deadline) {
+        const row = api.runtime.agent.session.getSessionEntry({ agentId: 'main',
+          sessionKey: context('native-fixture-b').sessionKey, readConsistency: 'latest' });
+        notice = row?.pluginNextTurnInjections?.xsm?.[0];
+        if (notice) break;
+        await new Promise(resolve => setTimeout(resolve, 10));
+      }
+      assert.ok(notice?.text.includes('awaits network revalidation'));
+      assert.equal(notice.text.includes('After reading, call xsm_ack'), false);
+      const drain = await nativeFunction('host-hook-state-', 'drainPluginNextTurnInjectionContext');
+      const prompt = await drain({ cfg: config, agentId: 'main', sessionKey: context('native-fixture-b').sessionKey });
+      assert.ok(prompt.prependContext.includes(notice.text));
+      const retained = await inboxB.execute('deferred-still-pending', { limit: 1 });
+      assert.equal(retained.details.claims.length, 0);
+      assert.ok(retained.details.messages.some(text => text.includes('awaits network revalidation')));
+      result.nativeClaimFreeNotice = true;
+    }
     const started = performance.now();
     const sampleText = index => 'OpenClaw native factory fixture message sample-' + index + '-end' +
       (largeContext ? '\n \t' + '한글🚀 '.repeat(16000) + '\n\t ' : '');

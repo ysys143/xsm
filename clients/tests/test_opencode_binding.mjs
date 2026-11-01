@@ -78,6 +78,18 @@ test('OpenCode uses native conversation identity and preserves optional tool arg
   await assert.rejects(invoke('a', 'xsm_decide', { question: 'Choose', options: ['blue', 'green'] }), /no user-interface/);
 });
 
+test('OpenCode admits a real deferred inbox notice without an empty ACK instruction', { timeout: 10000 }, async t => {
+  const code = "import runpy;from xsm import receive;receive.check=lambda *a,**k:('block','P2P admission temporarily unavailable: fixture');runpy.run_module('xsm',run_name='__main__')";
+  const { invoke, records, native, send } = await fixture(t, {
+    command: [process.env.PYTHON ?? 'python3', '-B', '-c', code, 'protocol', 'serve', '--stdio'],
+  });
+  await invoke('notice-reader', 'xsm_inbox');
+  await send((await records())[0], 'retain this deferred original');
+  await until(() => [...native.values()].some(message => message.parts.some(part => part.text?.includes('awaits network revalidation'))));
+  const text = [...native.values()].flatMap(message => message.parts).find(part => part.text?.includes('awaits network revalidation')).text;
+  assert.equal(text.includes('After reading, call xsm_ack'), false);
+});
+
 test('native deletion and resume preserve address but replace the host generation', { timeout: 10000 }, async t => {
   const { hooks, invoke, records } = await fixture(t);
   await invoke('a', 'xsm_inbox');

@@ -2,6 +2,16 @@
 import { fileURLToPath } from 'node:url';
 import { XsmHostClient, TransportError } from './xsm-client.mjs';
 
+export function inboxAcknowledgement(claims) {
+  return claims.length ? '\n\nAfter reading, call xsm_ack with tokens: ' +
+    JSON.stringify(claims.map(claim => claim.token)) +
+    '. If expired, read xsm_inbox for current tokens; do not repeat the work.' : '';
+}
+
+export function renderInboxPacket(packet) {
+  return packet.messages.join('\n\n') + inboxAcknowledgement(packet.claims);
+}
+
 function aborted() {
   const error = new Error('host operation wait cancelled; no effect applied by this waiter');
   error.name = 'AbortError';

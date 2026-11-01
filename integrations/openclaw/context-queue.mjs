@@ -1,5 +1,6 @@
 /** Pinned 2026.10.9 public SessionEntry queue, written through guarded native admission. */
 import { createHash } from 'node:crypto';
+import { inboxAcknowledgement } from '../../clients/typescript/xsm-host.mjs';
 
 const LIMIT = 32768;
 const CAPACITY = 32;
@@ -10,7 +11,7 @@ const high = value => value >= 0xd800 && value <= 0xdbff;
 const low = value => value >= 0xdc00 && value <= 0xdfff;
 
 function fragments(body, acknowledgement) {
-  const marker = '\n\nAfter reading, call xsm_ack with tokens: ';
+  const marker = acknowledgement ? '\n\nAfter reading, call xsm_ack with tokens: ' : '';
   if (body.length + acknowledgement.length <= LIMIT) {
     return [{ text: body + acknowledgement, prefix: body + marker, headerLength: 0, bodyLength: body.length }];
   }
@@ -24,7 +25,7 @@ function fragments(body, acknowledgement) {
     start = end;
   }
   // A separate final acknowledgement keeps body partitions stable when opaque tokens rotate.
-  parts.push('');
+  if (acknowledgement) parts.push('');
   if (parts.length > CAPACITY) throw new Error('native context exceeds the pinned batch capacity');
   return parts.map((part, index) => {
     const begin = header(index, parts.length), end = footer(index, parts.length);
@@ -67,9 +68,7 @@ export function nativeDelivery(api, context, assertBindingCurrent) {
     const body = packet.messages.join('\n\n');
     const digest = createHash('sha256').update(JSON.stringify([context.sessionId, ids, body])).digest('hex');
     const base = 'xsm-' + digest;
-    const acknowledgement = '\n\nAfter reading, call xsm_ack with tokens: ' +
-      JSON.stringify(packet.claims.map(claim => claim.token)) +
-      '. If expired, read xsm_inbox for current tokens; do not repeat the work.';
+    const acknowledgement = inboxAcknowledgement(packet.claims);
     if (!Number.isFinite(leaseSeconds) || leaseSeconds <= 0) {
       throw new Error('native context has an invalid claim lease');
     }
@@ -77,7 +76,7 @@ export function nativeDelivery(api, context, assertBindingCurrent) {
     let idsForParts = parts.map((_, index) => parts.length === 1 ? base : base + '-' + index);
     const matches = (item, index) => item?.id === idsForParts[index] && item.metadata?.xsmHash === digest &&
       item.metadata.nativeSessionId === context.sessionId && typeof item.text === 'string' &&
-      (index === parts.length - 1 ? item.text.startsWith(parts[index].prefix) : item.text === parts[index].text) &&
+      (acknowledgement && index === parts.length - 1 ? item.text.startsWith(parts[index].prefix) : item.text === parts[index].text) &&
       (parts.length === 1 || (item.metadata.fragmentIndex === index && item.metadata.fragmentCount === parts.length));
     await session.runWithWorkAdmission({ ...scope, signal }, async admittedSignal => {
       guard(admittedSignal);
