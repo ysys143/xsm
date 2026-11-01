@@ -1431,3 +1431,25 @@ chat/tool 전에 새 세대를 관측했다. 복구 뒤 100/100 native 수락·n
 공통 386개(핵심 232, Python 44, Node 110)는 Python 3.14.6에서 62.647초에
 통과했다(`opencode-workspace-gate.log`). 이는 새 등록의 작업 폴더 결속이며
 전체 다중 프로젝트/원격/방향 행렬이나 P0–P5 전체 완료가 아니다.
+
+## Hermes 등록 참여의 자동 broker 복구
+
+세션별 monitor로 registered transport의 실패를 복구한다. 250ms 확인/초기 대기,
+실패 시 두 배·최대 5초로 제한하고 마지막 hook 상태를 복원한다. Native SID와
+검증된 cwd를 유지하며 SDK/native 작업이나 inbox 읽기·ACK를 자동 반복하지 않는다.
+Workspace 전환·finalize/delete/reset은 monitor를 취소하고 unload는 진행 중
+backend open도 취소한 뒤 host와 loop/thread, component lease를 정리한다.
+
+Python 3.9.6 관련 8개에서 실제 backend 종료·자동 등록·마지막 상태 복원·
+finalize 취소, 미완료 open의 unload 취소, 증가하는 backoff를 확인했다
+(`hermes-auto-reconnect-final-tests.log`). Monitor를 끈 변이는 실패했다
+(`hermes-auto-reconnect-disabled-mutant.log`). 실제 Hermes 0.22.5 registry는
+native dispatch 전 새 PID/세대와 상태를 관측했고 원문 보존·old claim 거부·
+새 ACK를 포함한 13개가 통과했다(`hermes-auto-reconnect-native-final/result.json`).
+현재 구현의 해시 일치도 확인했다. Native agent/model·UI 실행의 증거는 아니다.
+
+공통 389개(핵심 235, Python 44, Node 110)는 Python 3.14.6에서 65.631초에
+통과했다(`hermes-auto-reconnect-gate-final.log`). Pull-only이므로 native queue
+수락 지연이나 모델 소비를 인증하지 않는다. Native push/UI·초기 생성 전 실패·
+handshake 응답 기한/대화별 등록 동시성 확대·worker·Linux·메신저·원격과
+전체 P0–P5 나머지는 미완이다.

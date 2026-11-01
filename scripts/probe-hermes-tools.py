@@ -118,7 +118,7 @@ def run(args):
         ack = invoke("native-b", temp / "b", "xsm_ack", {"tokens": [packet["claims"][0]["token"]]})
         assert len(ack["acked"]) == 1, ack
         result["checks"].append("native tool dispatch sends, pulls and explicitly ACKs")
-        if args.crash:
+        if args.crash or args.auto_reconnect:
             invoke("native-a", temp / "a", "xsm_send", {"target": "ref:" + second["ref"],
                    "text": "original survives backend crash", "wait": 0})
             claimed = invoke("native-b", temp / "b", "xsm_inbox")["claims"][0]
@@ -135,6 +135,19 @@ def run(args):
                     break
                 assert time.monotonic() < deadline, "backend process did not exit"
                 time.sleep(.01)
+            if args.auto_reconnect:
+                automatic = None
+                deadline = time.monotonic() + 5
+                while time.monotonic() < deadline:
+                    automatic = next((item for item in records() if item.get("ref") == before["ref"] and
+                        item.get("pid") != before["pid"] and not item.get("ended_at") and
+                        item.get("activity") == before.get("activity")), None)
+                    if automatic:
+                        break
+                    time.sleep(.01)
+                assert automatic, "backend did not reconnect before native dispatch"
+                result["automaticReconnectObservedBeforeNativeEntry"] = True
+                result["checks"].append("automatic backend registration restores hook activity before native dispatch")
             recovered = invoke("native-b", temp / "b", "xsm_inbox")
             after = next(item for item in records() if item["ref"] == second["ref"])
             assert after["pid"] != before["pid"] and after["protocol_generation"] != before["protocol_generation"]
@@ -215,4 +228,5 @@ if __name__ == "__main__":
     parser.add_argument("--discover", action="store_true")
     parser.add_argument("--installed", action="store_true")
     parser.add_argument("--crash", action="store_true")
+    parser.add_argument("--auto-reconnect", action="store_true")
     run(parser.parse_args())

@@ -66,6 +66,10 @@ class HermesBinding:
         self.hosts = {}
         self.host_lock = None
         self.closed = False
+        self.closing = False
+        self.finalizing = set()
+        self.monitors = {}
+        self.states = {}
         self.release_component = None
         self.loop = asyncio.new_event_loop()
         self.thread = threading.Thread(target=self.loop.run_forever, name="xsm-hermes", daemon=True)
@@ -90,16 +94,22 @@ class HermesBinding:
         if self.host_lock is None:
             self.host_lock = asyncio.Lock()
         async with self.host_lock:
+            if self.closed or self.closing or sid in self.finalizing:
+                raise RuntimeError("native participation is closing")
             if sid in self.hosts and self.hosts[sid][0] != cwd:
                 if not rebind:
                     raise RuntimeError("native workspace changed; wait for the native session-start hook")
+                monitor = self.monitors.pop(sid, None)
+                if monitor and monitor is not asyncio.current_task():
+                    monitor.cancel()
+                    await asyncio.gather(monitor, return_exceptions=True)
                 _, previous = self.hosts.pop(sid)
                 await (await previous).close()
             if sid in self.hosts:
                 _, previous = self.hosts[sid]
                 existing = await previous
                 if getattr(existing, "failure", None) is not None or getattr(existing, "closed", False):
-                    # Re-register only for this new native invocation. Never replay a failed operation.
+                    # Replace participation without replaying a failed operation.
                     await existing.close()
                     self.hosts.pop(sid)
             return await self._open_host(sid, cwd)
@@ -116,7 +126,43 @@ class HermesBinding:
                     self.hosts.pop(sid, None)
                 raise
         _, pending = self.hosts[sid]
-        return await pending
+        host = await pending
+        if not self.closing and sid not in self.finalizing and sid not in self.monitors:
+            self.monitors[sid] = asyncio.create_task(self._monitor(sid, cwd))
+        return host
+
+    async def _monitor(self, sid, cwd):
+        delay = .25
+        try:
+            while not self.closed and not self.closing and sid not in self.finalizing:
+                await asyncio.sleep(delay)
+                try:
+                    pair = self.hosts.get(sid)
+                    if pair:
+                        if pair[0] != cwd:
+                            return
+                        if not pair[1].done():
+                            continue
+                        host = pair[1].result()
+                        failure = getattr(host, "failure", None)
+                        if failure is None:
+                            delay = .25
+                            continue
+                        if not isinstance(failure, getattr(self.sdk, "TransportError", ())):
+                            return
+                    host = await self._host(sid, cwd)
+                    await host.update(self.states.get(sid, "idle"))
+                    delay = .25
+                except asyncio.CancelledError:
+                    raise
+                except Exception as error:
+                    print("xsm:", str(error), file=sys.stderr)
+                    if not isinstance(error, getattr(self.sdk, "TransportError", ())):
+                        return
+                    delay = min(delay * 2, 5)
+        finally:
+            if self.monitors.get(sid) is asyncio.current_task():
+                self.monitors.pop(sid, None)
 
     async def _call(self, sid, cwd, operation, args):
         return await (await self._host(sid, cwd)).call(operation, args)
@@ -130,23 +176,35 @@ class HermesBinding:
     def start(self, session_id="", **_native):
         sid, cwd = self._identity(session_id)
         async def update():
+            self.states[sid] = "busy"
             await (await self._host(sid, cwd, rebind=True)).update("busy")
         self._run(update())
 
     def settled(self, session_id="", **_native):
         async def update():
+            if session_id in self.hosts or session_id in self.monitors:
+                self.states[session_id] = "idle"
             if session_id in self.hosts:
                 await (await self.hosts[session_id][1]).update("idle")
         self._run(update())
 
     def finalize(self, session_id="", **_native):
         async def close():
-            if self.host_lock is None:
-                self.host_lock = asyncio.Lock()
-            async with self.host_lock:
-                pair = self.hosts.pop(session_id, None)
-                if pair:
-                    await (await pair[1]).close()
+            self.finalizing.add(session_id)
+            try:
+                monitor = self.monitors.pop(session_id, None)
+                if monitor:
+                    monitor.cancel()
+                    await asyncio.gather(monitor, return_exceptions=True)
+                if self.host_lock is None:
+                    self.host_lock = asyncio.Lock()
+                async with self.host_lock:
+                    pair = self.hosts.pop(session_id, None)
+                    self.states.pop(session_id, None)
+                    if pair:
+                        await (await pair[1]).close()
+            finally:
+                self.finalizing.discard(session_id)
         self._run(close())
 
     def reset(self, old_session_id="", new_session_id="", **_native):
@@ -163,8 +221,21 @@ class HermesBinding:
             self._release_component()
             return
         async def shutdown():
-            pairs = list(self.hosts.values())
-            self.hosts.clear()
+            self.closing = True
+            monitors = list(self.monitors.values())
+            self.monitors.clear()
+            for monitor in monitors:
+                monitor.cancel()
+            await asyncio.gather(*monitors, return_exceptions=True)
+            for _, pending in list(self.hosts.values()):
+                if not pending.done():
+                    pending.cancel()
+            if self.host_lock is None:
+                self.host_lock = asyncio.Lock()
+            async with self.host_lock:
+                pairs = list(self.hosts.values())
+                self.hosts.clear()
+                self.states.clear()
             hosts = await asyncio.gather(*(pair[1] for pair in pairs), return_exceptions=True)
             await asyncio.gather(*(host.close() for host in hosts if not isinstance(host, BaseException)))
         self._run(shutdown())

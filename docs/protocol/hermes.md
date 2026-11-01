@@ -181,8 +181,8 @@ Checkout 직접 등록은 설치 스냅샷 lease를 만들지 않는다.
 
 이미 실패한 작업은 이 경로가 자동 재실행하지 않는다. 전송·권한 변경처럼
 효과가 불명확한 작업은 해당 request ID와 도메인 상태를 확인해야 한다.
-이는 다음 native 호출에서의 복구이며, 유휴 중 자동 재시작이나 모든 런타임의
-재접속 구현을 완료했다는 뜻은 아니다.
+위 표본은 다음 native 호출에서의 복구를 다룬다. 입력 없는 복구는 아래 후속 절로
+구분하며 모든 런타임의 재접속 완료를 뜻하지 않는다.
 
 새 실제 backend 검사는 기존 claim이 있는 서버를 강제 종료한 뒤 같은 주소의
 새 세대에서 원문 회수·이전 토큰 거부·새 토큰 ACK를 확인한다. 제어된 SDK 검사도
@@ -196,3 +196,30 @@ registry.dispatch에서 같은 복구를 포함한 12개 검사를 통과했다
 (`hermes-recovery-native/result.json`). 시험은 종료 대상의 부모 PID가 현재
 프로브인지 확인하며 임시 프로필의 자체 backend만 종료한다. Native agent,
 UI·메신저를 실행한 결과가 아니다.
+
+
+## 등록 참여의 입력 없는 복구
+
+세션별 monitor가 등록된 host의 transport 실패를 관측해 같은 native SID와
+마지막으로 검증된 workspace에 다시 참여한다. 정상 시 확인 간격은 250ms이며
+연결 실패가 계속되면 대기를 두 배로 늘려 최대 5초로 제한한다. 마지막 hook의
+busy/idle 상태를 복원한다. SDK 작업이나 native 작업은 자동 재실행하지 않고
+inbox도 자동으로 읽거나 ACK하지 않는다.
+
+Workspace 전환은 이전 monitor를 취소한다. Finalize/delete/reset과 unload는
+복구 task를 취소하며, unload는 진행 중 backend open도 취소한 뒤 coordinator
+thread와 component lease를 정리한다. 마지막으로 검증한 workspace를 유지하는
+동작이며 새 작업 폴더의 신원을 background에서 추정하지 않는다.
+
+Python 3.9.6 관련 8개는 실제 backend 종료 뒤 입력 없는 재등록·상태 복원·
+finalize 취소, unload 중 미완료 open 취소와 backoff를 통과했다
+(`hermes-auto-reconnect-final-tests.log`). Monitor를 끈 변이는 자동 등록 검사에
+실패했다(`hermes-auto-reconnect-disabled-mutant.log`). 실제 0.22.5 설치본 registry도
+native dispatch 전 새 PID/세대·상태 복원을 관측했고 원문 보존·이전 claim 거부·
+새 ACK를 포함한 13개가 통과했다(`hermes-auto-reconnect-native-final/result.json`).
+현재 연결 코드 해시도 대조했다. 호출자는 fixture이며 실제 agent/model 실행이 아니다.
+
+공통 389개는 65.631초에 통과했다(`hermes-auto-reconnect-gate-final.log`). Native
+push/UI·최초 생성 실패의 자동 복구·handshake 응답 기한과 대화별 등록 동시성
+확대, worker·Linux·메신저와 전체 P0–P5는 미완이다. Pull-only 연결이므로 이
+결과를 native queue p95나 모델 소비 인증으로 쓰지 않는다.

@@ -1,6 +1,7 @@
 """Hermes coordinator lifecycle and isolated backend recovery, without a model."""
 import asyncio
 import importlib.util
+import os
 from pathlib import Path
 from types import SimpleNamespace
 import unittest
@@ -9,7 +10,14 @@ import unittest
 spec = importlib.util.spec_from_file_location(
     "xsm_hermes_binding", Path(__file__).resolve().parents[1] / "integrations/hermes/xsm.py")
 module = importlib.util.module_from_spec(spec)
-spec.loader.exec_module(module)
+if os.environ.get('XSM_HERMES_MONITOR_MUTANT') == 'disabled':
+    code = Path(spec.origin).read_text()
+    changed = code.replace('    async def _monitor(self, sid, cwd):', '    async def _monitor(self, sid, cwd):\n        return')
+    if changed == code:
+        raise RuntimeError('monitor entry moved; update intentional mutation')
+    exec(compile(changed, spec.origin, 'exec'), module.__dict__)
+else:
+    spec.loader.exec_module(module)
 
 
 class HermesLifecycleTest(unittest.IsolatedAsyncioTestCase):
@@ -29,6 +37,7 @@ class HermesLifecycleTest(unittest.IsolatedAsyncioTestCase):
 
         binding = module.HermesBinding.__new__(module.HermesBinding)
         binding.hosts, binding.host_lock = {}, None
+        binding.closed, binding.closing, binding.finalizing, binding.monitors, binding.states = False, False, set(), {}, {}
         binding.profile, binding.command, binding.env = "isolated", [], {}
         binding.sdk = SimpleNamespace(XsmHost=SimpleNamespace(open=open_host))
         scheduled = []
@@ -65,6 +74,7 @@ class HermesLifecycleTest(unittest.IsolatedAsyncioTestCase):
         existing.set_result(old)
         binding = module.HermesBinding.__new__(module.HermesBinding)
         binding.hosts, binding.host_lock = {"native": ("/workspace", existing)}, None
+        binding.closed, binding.closing, binding.finalizing, binding.monitors, binding.states = False, False, set(), {}, {}
         binding.profile, binding.command, binding.env = "isolated", [], {}
         binding.sdk = SimpleNamespace(XsmHost=SimpleNamespace(open=open_host))
         with self.assertRaisesRegex(RuntimeError, "outcome unknown"):
@@ -76,6 +86,40 @@ class HermesLifecycleTest(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(calls, ["xsm_send", "xsm_inbox"])
         self.assertEqual(len(opens), 1)
         self.assertTrue(old.closed)
+
+
+    async def test_monitor_backs_off_transient_failures_and_restores_activity(self):
+        attempts, ready = [], asyncio.Event()
+        async def close():
+            pass
+        async def update(state):
+            self.assertEqual(state, "busy")
+            ready.set()
+        old = SimpleNamespace(failure=RuntimeError("lost transport"), closed=False, close=close)
+        new = SimpleNamespace(failure=None, closed=False, update=update, close=close)
+        async def open_host(**kwargs):
+            attempts.append(asyncio.get_running_loop().time())
+            if len(attempts) < 3:
+                raise RuntimeError("temporary transport failure")
+            return new
+        pending = asyncio.get_running_loop().create_future()
+        pending.set_result(old)
+        binding = module.HermesBinding.__new__(module.HermesBinding)
+        binding.hosts, binding.host_lock = {"native": ("/workspace", pending)}, None
+        binding.closed, binding.closing, binding.finalizing, binding.monitors = False, False, set(), {}
+        binding.states = {"native": "busy"}
+        binding.profile, binding.command, binding.env = "isolated", [], {}
+        binding.sdk = SimpleNamespace(TransportError=RuntimeError, XsmHost=SimpleNamespace(open=open_host))
+        task = asyncio.create_task(binding._monitor("native", "/workspace"))
+        binding.monitors["native"] = task
+        try:
+            await asyncio.wait_for(ready.wait(), 4)
+            self.assertEqual(len(attempts), 3)
+            self.assertGreaterEqual(attempts[1] - attempts[0], .45)
+            self.assertGreaterEqual(attempts[2] - attempts[1], .95)
+        finally:
+            task.cancel()
+            await asyncio.gather(task, return_exceptions=True)
 
 
 from tests.test_xsm import TempState
@@ -169,3 +213,75 @@ class HermesRegistrationTest(TempState):
         finally:
             binding.close()
         self.assertFalse(binding.thread.is_alive())
+
+    def test_registered_backend_reconnects_without_native_call_and_restores_state(self):
+        constants = SimpleNamespace(get_hermes_home=lambda: Path(self.user_home, 'hermes'))
+        with mock.patch.dict(sys.modules, hermes_constants=constants):
+            binding = module.register(self.context())
+        async def crash_and_wait():
+            before = await binding.hosts['automatic'][1]
+            before.client.process.kill()
+            await before.client.process.wait()
+            for _ in range(300):
+                pair = binding.hosts.get('automatic')
+                if pair and pair[1].done():
+                    current = pair[1].result()
+                    rows = [json.loads(path.read_text()) for path in Path(self.tmp, 'sessions').glob('*.json')]
+                    busy = any(row.get('pid') == current.client.process.pid and row.get('activity') == 'busy' for row in rows)
+                    if current is not before and busy:
+                        return before, current
+                await asyncio.sleep(.01)
+            raise AssertionError('no automatic registration')
+        try:
+            binding.start(session_id='automatic')
+            before, after = binding._run(crash_and_wait())
+            self.assertEqual(before.session['ref'], after.session['ref'])
+            self.assertNotEqual(before.session['generation'], after.session['generation'])
+            self.assertNotEqual(before.client.process.pid, after.client.process.pid)
+            binding.finalize(session_id='automatic')
+            async def wait():
+                await asyncio.sleep(.4)
+                return list(binding.hosts), list(binding.monitors)
+            self.assertEqual(binding._run(wait()), ([], []))
+        finally:
+            binding.close()
+        self.assertFalse(binding.thread.is_alive())
+
+
+    def test_unload_cancels_backend_open_before_stopping_loop(self):
+        import concurrent.futures
+        import threading
+        constants = SimpleNamespace(get_hermes_home=lambda: Path(self.user_home, 'hermes'))
+        with mock.patch.dict(sys.modules, hermes_constants=constants):
+            binding = module.HermesBinding(self.context())
+        entered = threading.Event()
+        release = binding._run(self.make_event())
+        async def close():
+            pass
+        async def blocked(**kwargs):
+            entered.set()
+            await release.wait()
+            return SimpleNamespace(close=close)
+        pool = concurrent.futures.ThreadPoolExecutor(max_workers=1)
+        stopping = None
+        try:
+            with mock.patch.object(binding.sdk.XsmHost, 'open', new=blocked):
+                opening = asyncio.run_coroutine_threadsafe(binding._host('pending', self.user_home), binding.loop)
+                self.assertTrue(entered.wait(2))
+                stopping = pool.submit(binding.close)
+                try:
+                    stopping.result(timeout=2)
+                finally:
+                    if not binding.loop.is_closed():
+                        binding.loop.call_soon_threadsafe(release.set)
+                    stopping.result(timeout=3)
+                self.assertTrue(opening.cancelled())
+                self.assertFalse(binding.thread.is_alive())
+        finally:
+            if not binding.loop.is_closed():
+                binding.loop.call_soon_threadsafe(release.set)
+                binding.close()
+            pool.shutdown(wait=True)
+
+    async def make_event(self):
+        return asyncio.Event()
