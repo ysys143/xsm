@@ -532,3 +532,14 @@ Python 3.9/3.14에서 통과했다. `hermes-finalize-race-{red,green-py39,green-
 에 기록했다. 빠른 묶음에 이 검사를 포함한 총 257개(핵심 183, Python 28,
 Node 46)가 Python 3.9.6에서 55.579초에 통과했다
 (`hermes-finalize-gate-py39.log`). 전체 계획과 실제 agent·UI·메신저 검증은 미완이다.
+
+## OpenClaw 고정 소스 API 조사
+
+공식 2026.10.9 package와 같은 Git tag의 소스를 격리 폴더에서 조사했다.
+전역 Node 24.19.0은 engines 조건을 충족하지 않아, 공식 checksum을 확인한
+Node 24.22.2를 임시 폴더에서 실행했다. 사용자 전역 환경은 바꾸지 않았다.
+동기 plugin 등록, sessionId와 route key의 구분, 최종 효과의 권한 guard,
+native system-event 큐의 용량·거부·ACK 경계를 확인했다.
+[구현 경계와 원문 근거](../../protocol/openclaw.md)에 남긴다.
+파일 해시는 `openclaw-stable-api.json`에 있다. Native host·loader·도구 실행은
+아직 하지 않았으며 OpenClaw 연결부 및 P4/P5는 미완이다.
