@@ -7,7 +7,7 @@ envelope. A successful protocol test does not certify a native runtime.
 Native binding notes: [Pi 1.4.0](pi.md), [OpenCode 1.19.5](opencode.md),
 [Hermes 0.22.5 API prototype](hermes.md), [OpenClaw 2026.10.9 prototype](openclaw.md).
 Host coordination: [Python](python-host.md).
-External verification: [stdio lifecycle conformance](conformance.md) (partial contract coverage).
+External verification: [stdio lifecycle and delivery conformance](conformance.md) (partial contract coverage).
 
 Start `python3 -m xsm protocol serve --stdio` from an installed checkout.
 Frames are UTF-8 JSON Lines, JSON-RPC 2.0 objects, at most 1 MiB characters per

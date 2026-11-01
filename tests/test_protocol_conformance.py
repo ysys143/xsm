@@ -36,3 +36,26 @@ class ExternalConformanceTest(unittest.TestCase):
         result = checker.run(self.candidate("skip-lock"))
         self.assertEqual(result["status"], "failed", result)
         self.assertEqual(result["activeCheck"], "single live conversation owner")
+
+    def delivery_candidate(self, fault):
+        return [sys.executable, '-B', str(ROOT / 'tests/fixtures/protocol_delivery_fault.py'), fault]
+
+    def test_actual_server_delivery_contract(self):
+        result = checker.run(self.delivery_candidate('none'), suite='messaging')
+        self.assertEqual(result['status'], 'passed', result)
+        self.assertEqual(len(result['checks']), 29)
+
+    def test_automatic_consumption_on_admission_is_detected(self):
+        result = checker.run(self.delivery_candidate('auto-consume-admitted'), suite='messaging')
+        self.assertEqual(result['status'], 'failed', result)
+        self.assertEqual(result['activeCheck'], 'admitted original survives generation change')
+
+    def test_reused_claim_token_is_detected(self):
+        result = checker.run(self.delivery_candidate('reuse-token'), suite='messaging')
+        self.assertEqual(result['status'], 'failed', result)
+        self.assertEqual(result['activeCheck'], 'retry rotates claim token')
+
+    def test_successful_foreign_ack_response_is_detected(self):
+        result = checker.run(self.delivery_candidate('accept-foreign-ack'), suite='messaging')
+        self.assertEqual(result['status'], 'failed', result)
+        self.assertEqual(result['activeCheck'], 'foreign consumer cannot acknowledge')

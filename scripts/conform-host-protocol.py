@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Black-box stdio lifecycle contract checks. No xsm imports or storage inspection."""
+"""Black-box stdio lifecycle and delivery checks; no xsm imports or storage inspection."""
 import argparse
 import json
 import os
@@ -75,8 +75,52 @@ class Peer:
         return diagnostics
 
 
-def run(command):
-    result = {"suite": "xsm-host-lifecycle-v1", "status": "running", "checks": [],
+def messaging(peer, sender, receiver, reopen, check, equal):
+    def operation(session, name, error=None, **arguments):
+        return peer.call("operation.call", {"session": session["session"],
+                         "operation": name, "arguments": arguments}, error=error)
+    def report(claim, **fields):
+        return peer.call("delivery.report", dict(session=receiver["session"], id=claim["id"], **fields))
+    peer.call("events.subscribe", {"session": receiver["session"]})
+    body = "black-box delivery: 한글 🚀 preserved\n  whitespace"
+    operation(sender, "xsm_send", target="ref:" + receiver["ref"], text=body, wake="never", wait=0)
+    packet = operation(receiver, "xsm_inbox", limit=1)
+    check("stored original can be claimed whole", lambda: equal(len(packet["claims"]) == 1 and
+          body in packet["messages"][0], True))
+    claim = packet["claims"][0]
+    check("foreign consumer cannot acknowledge", lambda:
+          operation(sender, "xsm_ack", tokens=[claim["token"]], error=-32602))
+    check("native admission requires exact claim", lambda: peer.call("delivery.report", {
+          "session": receiver["session"], "id": claim["id"], "state": "admitted", "token": "forged"}, error=-32003))
+    check("queued report is not consumption", lambda: equal(report(claim, state="queued")["acknowledged"], False))
+    check("failed admission releases own claim", lambda: equal(peer.call("inbox.release", {
+          "session": receiver["session"], "tokens": [claim["token"]]})["released"], [claim["id"]]))
+    retry = operation(receiver, "xsm_inbox", limit=1)
+    check("released original remains recoverable", lambda: equal(len(retry["claims"]) == 1 and
+          retry["claims"][0]["id"] == claim["id"] and body in retry["messages"][0], True))
+    current = retry["claims"][0]
+    check("retry rotates claim token", lambda: equal(current["token"] != claim["token"], True))
+    check("released claim cannot acknowledge", lambda:
+          operation(receiver, "xsm_ack", tokens=[claim["token"]], error=-32602))
+    check("admitted report is not consumption", lambda: equal(
+          report(current, state="admitted", token=current["token"])["acknowledged"], False))
+    peer.call("session.close", {"session": receiver["session"]})
+    receiver = peer.call("session.open", reopen)
+    check("resumed receiver rejects previous generation claim", lambda:
+          operation(receiver, "xsm_ack", tokens=[current["token"]], error=-32602))
+    resumed = operation(receiver, "xsm_inbox", limit=1)
+    check("admitted original survives generation change", lambda: equal(len(resumed["claims"]) == 1 and
+          resumed["claims"][0]["id"] == claim["id"] and body in resumed["messages"][0], True))
+    token = resumed["claims"][0]["token"]
+    check("explicit consumer ACK commits", lambda: equal(
+          operation(receiver, "xsm_ack", tokens=[token])["acked"], [claim["id"]]))
+    consumed = operation(receiver, "xsm_inbox")
+    check("consumed original is absent from inbox", lambda: equal(
+          consumed["claims"] == [] and consumed["messages"] == [], True))
+
+
+def run(command, suite="lifecycle"):
+    result = {"suite": "xsm-host-" + suite + "-v1", "status": "running", "checks": [],
               "scope": "stdio negotiation and participation only; no operations, delivery or UI certification"}
     peers = []
     with tempfile.TemporaryDirectory(prefix="xsm-conformance-") as folder:
@@ -124,6 +168,9 @@ def run(command):
             resumed = b.call("session.open", dict(params, profile="other"))
             check("EOF releases conversation ownership", lambda: equal(resumed["ref"] == other["ref"] and
                   resumed["generation"] != other["generation"], True))
+            if suite == "messaging":
+                result["scope"] = "lifecycle and claim/queue/ACK recovery; no native delivery, UI or complete operations certification"
+                messaging(b, reopened, resumed, dict(params, profile="other"), check, equal)
             result.update(status="passed", activeCheck=None)
         except Exception as error:
             result.update(status="failed", error=repr(error))
@@ -134,12 +181,13 @@ def run(command):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--suite", choices=("lifecycle", "messaging"), default="lifecycle")
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--command", nargs=argparse.REMAINDER, required=True)
     args = parser.parse_args()
     if not args.command:
         parser.error("--command requires an executable")
-    result = run(args.command)
+    result = run(args.command, args.suite)
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(result, indent=2) + "\n")
     print(json.dumps({"status": result["status"], "checks": len(result["checks"]), "activeCheck": result["activeCheck"]}))

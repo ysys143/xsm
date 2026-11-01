@@ -984,3 +984,26 @@ xsm을 import하지 않는 stdlib 최소 수명 fixture에서도 16개가 통과
 `docs/protocol/conformance.md`에 기록했다. 전체 normative method/result/error
 schema, operations·delivery·decision 적합성, 독립 작성자의 전체 구현과
 P0/P2 및 P1/P3–P5의 나머지는 여전히 미완이다.
+
+## 외부 전달·claim 복구 계약 검사
+
+외부 검사기에 `--suite messaging`을 추가했다. 기본 수명 16개에 원문·Unicode
+보존, 타 소비자 ACK 거부, admission의 claim 결속, 큐 보고와 소비 구분,
+claim 해제·재획득·토큰 교체, 이전 세대 토큰 거부, admitted 원문 복구,
+명시적 ACK와 소비 후 inbox 제거의 13개를 더해 29개를 검사한다. 실제
+서버가 모두 통과했다(`blackbox-messaging-final.json`). 최초 검사는 타 소비자
+ACK의 결과를 빈 배열로 오독해 실패했다. 실제 계약인 -32602 거부를 검사하도록
+고쳤으며 최초 결과도 보존했다(`blackbox-messaging-first.json`).
+
+실제 서버를 경유하는 test proxy가 admission 시 자동 소비, claim 토큰 재사용,
+타 소비자 ACK 성공 응답의 3개 결함을 주입하면 각각 검사에 실패한다. 특히
+자동 소비는 acknowledged=false 응답을 유지해도 재접속 뒤 원문 유실로
+검출된다. 모델·native queue를 실행한 검사는 아니며 내부 저장소를 읽지 않는다.
+
+공통 337개(핵심 216, Python 39, Node 82)가 Python 3.14.6에서 54.504초에
+통과했다(`blackbox-messaging-gate.log`). 검사기 8개는 Python 3.9.6 -O에서도
+통과했다(`blackbox-messaging-optimized.log`). 이후 소비 후 검사를 claims뿐
+아니라 messages도 비었는지로 강화했고, 최종 검사기 8개와 실제 서버 29개를
+다시 통과했다(`blackbox-messaging-final-tests.log`, `blackbox-messaging-final.json`).
+전체 normative schema·decision/operation 적합성·독립 구현과 P0–P5의 남은
+수용 조건은 미완이다.

@@ -66,3 +66,47 @@ tests also pass under Python `-O`.
 Full normative method/result/error schemas, decision and delivery contracts,
 independently authored complete implementations and the complete P0/P2
 conformance matrix remain outstanding.
+
+## Claim and delivery recovery suite
+
+```sh
+python3 scripts/conform-host-protocol.py --suite messaging \
+  --output /tmp/host-messaging-conformance.json \
+  --command /absolute/path/to/xsm/bin/xsm protocol serve --stdio
+```
+
+The messaging suite includes the 16 lifecycle checks, then exercises 13 more
+contracts through `operation.call`, `delivery.report` and `inbox.release`:
+
+1. A stored Unicode original is returned whole with one claim.
+2. Another consumer's ACK is refused with `-32602`.
+3. Native admission with a forged token is refused with `-32003`.
+4. A queued report returns `acknowledged: false`.
+5. The receiver can release its own claim.
+6. The same original and body are recoverable after release.
+7. A replacement claim has a different token.
+8. The released token cannot ACK (`-32602`).
+9. An admitted report with the exact current token returns `acknowledged: false`.
+10. A resumed receiver cannot use its previous generation's token (`-32602`).
+11. The admitted original remains recoverable after that generation change.
+12. The new consumer's explicit ACK commits that message ID.
+13. The consumed original is absent from the inbox.
+
+The isolated sender uses `wake: never`; this suite does not certify the native
+queue, event timing, idle wake, priority, remote delivery or a human consumer.
+`admitted` is a deliberate host report, rather than an observed native admission.
+The recovery checks verify state through public reads, without inspecting files.
+
+The actual server passed 29 checks in `blackbox-messaging-final.json`. The first
+run expected a foreign ACK to return an empty list rather than a protocol error;
+its failure remains in `blackbox-messaging-first.json`. The contract now checks
+the actual refusal code explicitly.
+
+A test proxy runs the actual server and injects three defects: consuming at
+admission while still reporting `acknowledged: false`, reusing a released claim
+token, and returning success for a foreign ACK. The suite rejects all three.
+The automatic-consumption defect is detected by the missing original after
+resumption, so changing a report field alone cannot satisfy that check. The
+proxy is a test fixture and is not used by the external runner. These checks
+still cover only this defined contract subset, not the full operations or
+user-decision protocol.
