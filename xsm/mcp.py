@@ -826,6 +826,10 @@ class Server:
 
     # -- tools --------------------------------------------------------------------
     def call(self, name: str, args: dict) -> str:
+        from .operations import invoke
+        return invoke(self, name, args)
+
+    def _invoke_operation(self, name: str, args: dict) -> str:
         # The caller lookup shares one bounded budget. The tool's own lookups stay
         # out of it: a spent budget must not starve the git lookup that says which
         # scope a message belongs to.

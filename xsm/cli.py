@@ -2854,6 +2854,8 @@ def build_parser() -> argparse.ArgumentParser:
     sub = p.add_subparsers(dest="command", required=True)
     from . import network
     network.configure_parser(sub)
+    from . import protocol
+    protocol.configure_parser(sub)
 
     ls = sub.add_parser("list", help="registered sessions")
     ls.add_argument("action", nargs="?", choices=["clear"],

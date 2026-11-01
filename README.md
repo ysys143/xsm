@@ -683,6 +683,8 @@ Principles:
 
 ## Documents
 
+- **[Experimental host protocol](docs/protocol/README.md)**: unreleased development path. Generic local participant messaging is under test; additional runtime, approval UI and messenger support is not complete.
+
 Most documents under `docs/` are written in Korean.
 
 - **[CHANGELOG.md](CHANGELOG.md)**: what changed, release by release

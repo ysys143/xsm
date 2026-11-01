@@ -1,0 +1,40 @@
+// Compile-only coverage: .mjs imports must resolve the adjacent .d.mts.
+import { XsmClient, RpcError, TransportError } from '../typescript/xsm-client.mjs';
+import type { EventsAvailable, JsonValue, SessionHandle } from '../typescript/xsm-client.mjs';
+
+export async function example(operation: string, args: { text: string }): Promise<JsonValue> {
+  const client = await XsmClient.connect({ onStderr: text => console.error(text) });
+  try {
+    const opened = await client.sessionOpen({
+      runtime: 'node', profile: 'example', conversation: 'example', cwd: '/tmp', capabilities: [],
+    });
+    const session: SessionHandle = opened.session;
+    await client.sessionUpdate(session, { state: 'busy' });
+    await client.eventsSubscribe(session);
+    const notification = await client.nextNotification();
+    if (notification.method === 'events/available') {
+      const event = notification as EventsAvailable;
+      for (const id of event.params.ids) await client.deliveryReport(event.params.session, id, 'queued');
+    }
+    const result = await client.operationCall(session, operation, args);
+    await client.sessionClose(session);
+    return result;
+  } catch (error) {
+    if (error instanceof RpcError) console.error(error.code, error.data);
+    if (error instanceof TransportError) console.error(error.message);
+    throw error;
+  } finally {
+    await client.close();
+  }
+}
+
+// This function is never executed. The compiler checks invalid callers as well.
+function invalid(client: XsmClient) {
+  // @ts-expect-error session handle is required
+  client.sessionClose();
+  // @ts-expect-error non-JSON argument values are not accepted
+  client.operationCall('session', 'echo', { callback: () => {} });
+  // @ts-expect-error runtime/profile/conversation/cwd are required
+  client.sessionOpen({ capabilities: [] });
+}
+void invalid;

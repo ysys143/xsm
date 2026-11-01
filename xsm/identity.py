@@ -125,6 +125,8 @@ def _state_of(record: dict) -> tuple:
     if not pid:
         return "unknown", "no_pid"
     gone = "ended" if record.get("ended_at") else "stale"
+    if record.get("protocol_version") == "1" and record.get("ended_at"):
+        return "ended", "protocol_closed"
     if record.get("ended_at") and record.get("end_reason") == "worker-stopped":
         # xsm stopped this worker itself; its recorded pid may be a shared
         # process that lives on (a Codex daemon). A new hook clears the mark.

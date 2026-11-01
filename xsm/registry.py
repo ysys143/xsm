@@ -235,7 +235,7 @@ def _enrich(record: dict) -> dict | None:
         out["socket"] = record.get("socket") or native["socket"]
         out["name_source"] = native["name_source"]
         out["native_session_id"] = native["native_session_id"]
-    else:
+    elif record.get("runtime") == "codex":
         from . import workers           # lazy: workers imports this module
         worker = workers.for_session(record.get("session_id"))
         out["name"] = (probe.bounded(_codex_thread_name, record.get("home", ""),
@@ -243,6 +243,9 @@ def _enrich(record: dict) -> dict | None:
                                     folder=record.get("home", ""))
                        or (worker or {}).get("name") or record.get("name")
                        or default_codex_name(str(record.get("session_id") or "")))
+    else:
+        out["name"] = record.get("name") or "%s-%s" % (
+            record.get("runtime"), str(record.get("session_id", ""))[:8])
     out["state"], why = identity.state_reason(out)
     if why == "thread_replaced":
         # The TUI is alive but opened another thread (Codex /new, resume);

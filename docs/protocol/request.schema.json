@@ -1,0 +1,79 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:xsm:host-protocol:1:request",
+  "title": "Experimental xsm host request",
+  "type": "object",
+  "required": [
+    "jsonrpc",
+    "id",
+    "method"
+  ],
+  "properties": {
+    "jsonrpc": {
+      "const": "2.0"
+    },
+    "id": {
+      "type": [
+        "string",
+        "integer",
+        "null"
+      ]
+    },
+    "method": {
+      "type": "string"
+    },
+    "params": {
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "sessionOpen": {
+      "type": "object",
+      "required": [
+        "runtime",
+        "profile",
+        "conversation",
+        "cwd"
+      ],
+      "properties": {
+        "runtime": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9-]{0,63}$",
+          "not": {
+            "enum": [
+              "claude",
+              "codex"
+            ]
+          }
+        },
+        "profile": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096
+        },
+        "conversation": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096
+        },
+        "cwd": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096
+        },
+        "capabilities": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "messaging",
+              "inbox",
+              "events"
+            ]
+          }
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

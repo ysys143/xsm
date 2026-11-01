@@ -576,7 +576,14 @@ def _send(target_spec: str, body: str, *, sender: dict | None = None, kind: str 
             # channel took the frame. It is not the receiver -- only a receipt
             # is (A18-01).
             ledger.step(msg_id, "queued", True, "uds:%s" % target["socket"])
-        else:
+        elif target.get("protocol_version") == "1":
+            # The participant reads the canonical handoff through its bound
+            # connection. No Codex command, native wake or receipt is invented.
+            handoff.delivery(exact_target, msg_id, "pending", route="mcp-inbox")
+            ledger.step(msg_id, "queued", False, "protocol inbox stored; native queue acceptance not observed")
+            ledger.step(msg_id, "wake", False, "participant notification pending")
+            stored_for_mcp = True
+        elif target.get("runtime") == "codex":
             # Codex takes its queue only between turns; the copy is what a
             # session in the middle of one reads with `xsm inbox`.
             inbox.keep(str(target.get("session_id")), msg_id, content, receiver=exact_target)
@@ -589,6 +596,8 @@ def _send(target_spec: str, body: str, *, sender: dict | None = None, kind: str 
             ledger.step(msg_id, "queued", True, adapters.queued_id(queued))
             ledger.step(msg_id, "wake", getattr(queued, "wake", "skipped") == "started",
                         getattr(queued, "wake", "skipped"))
+        else:
+            raise adapters.UnsupportedCapability("delivery", "runtime has no registered delivery path")
     except adapters.DeliveryError as err:
         if (isinstance(err, adapters.UnsupportedCapability) and
                 err.capability == adapters.UNLOADED_SUBAGENT_INPUT and
@@ -635,6 +644,9 @@ def _send(target_spec: str, body: str, *, sender: dict | None = None, kind: str 
             return SendResult(state["status"], (state.get("receipt") or {}).get("reason", ""),
                               msg_id, target)
     if stored_for_mcp:
+        if target.get("protocol_version") == "1":
+            return SendResult("stored", "protocol participant inbox; awaiting actual consumption",
+                              msg_id, target)
         return SendResult("stored", "native direct subagent input is unsupported; "
                           "original retained for the MCP inbox, awaiting actual consumption",
                           msg_id, target)
