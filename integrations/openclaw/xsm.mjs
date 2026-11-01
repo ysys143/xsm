@@ -42,6 +42,22 @@ export function register(api, options = {}) {
   async function open(entry, epoch, context, signal) {
     await entry.closing;
     current(entry, epoch, context, signal);
+    if (entry.pending) {
+      const previous = entry.pending;
+      const existing = await previous;
+      current(entry, epoch, context, signal);
+      if ((existing.closed || existing.controller.signal.aborted) && entry.pending === previous) {
+        const recovering = (async () => {
+          await existing.close();
+          current(entry, epoch, context, signal);
+          if (entry.pending !== recovering) throw new Error('xsm native recovery was replaced');
+          entry.pending = undefined;
+          return open(entry, epoch, context, signal);
+        })();
+        entry.pending = recovering;
+        recovering.catch(() => { if (entry.pending === recovering) entry.pending = undefined; });
+      }
+    }
     if (!entry.pending) {
       const pending = (async () => {
         const [profile, cwd] = await Promise.all([realpath(profilePath), realpath(entry.cwd)]);

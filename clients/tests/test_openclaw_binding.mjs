@@ -6,17 +6,19 @@ import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { fileURLToPath } from 'node:url';
 import { register } from '../../integrations/openclaw/xsm.mjs';
+import { XsmHost } from '../typescript/xsm-host.mjs';
+import { TransportError } from '../typescript/xsm-client.mjs';
 
 const root = fileURLToPath(new URL('../../', import.meta.url));
-async function fixture(t) {
+async function fixture(t, { allowErrors = false } = {}) {
   const temp = await realpath(await mkdtemp(join(tmpdir(), 'xsm-openclaw-binding-')));
   const profile = join(temp, 'native-state');
   await mkdir(profile);
-  const tools = new Map(), hooks = new Map();
+  const tools = new Map(), hooks = new Map(), errors = [];
   let lifecycle;
   const result = register({ config: { plugins: { entries: { xsm: { hooks: { allowConversationAccess: true } } } } },
     runtime: { state: { resolveStateDir: () => profile } },
-    logger: { error: message => assert.fail(message) },
+    logger: { error: message => { errors.push(message); if (!allowErrors) assert.fail(message); } },
     lifecycle: { registerRuntimeLifecycle: entry => { lifecycle = entry; } },
     registerTool: (factory, options) => tools.set(options.name, factory),
     on: (name, callback) => hooks.set(name, callback),
@@ -34,7 +36,7 @@ async function fixture(t) {
       .map(name => readFile(join(dir, name), 'utf8')))).map(JSON.parse);
   };
   t.after(async () => { await result.close(); await rm(temp, { recursive: true, force: true }); });
-  return { tools, hooks, lifecycle, context, tool, invoke, records, temp };
+  return { tools, hooks, lifecycle, context, tool, invoke, records, temp, errors };
 }
 
 test('OpenClaw synchronous catalog and metadata discovery create no participant', async t => {
@@ -93,3 +95,68 @@ test('unbound UI, changed workspace, cancellation and retired plugin cannot manu
     await lifecycle.dispose();
     await assert.rejects(retained.execute('retired', {}), /no longer current/);
   });
+
+test('next native tool coalesces recovery after a real backend exit', { timeout: 10000 }, async t => {
+  const { invoke, records, errors } = await fixture(t, { allowErrors: true });
+  const original = XsmHost.open.bind(XsmHost), hosts = [];
+  t.mock.method(XsmHost, 'open', async options => {
+    const host = await original(options); hosts.push(host); return host;
+  });
+  await invoke('a');
+  const [before] = await records();
+  hosts[0].client.process.kill('SIGKILL');
+  await hosts[0].pumpTask;
+  assert.ok(errors.length);
+  await Promise.all([invoke('a'), invoke('a')]);
+  const [after] = await records();
+  assert.equal(hosts.length, 2);
+  assert.equal(hosts[0].closed, true);
+  assert.equal(after.ref, before.ref);
+  assert.notEqual(after.protocol_generation, before.protocol_generation);
+  assert.equal(after.activity, 'busy');
+});
+
+test('dispose during recovery cannot reopen the native conversation', { timeout: 10000 }, async t => {
+  const { invoke, lifecycle } = await fixture(t, { allowErrors: true });
+  const original = XsmHost.open.bind(XsmHost), hosts = [];
+  t.mock.method(XsmHost, 'open', async options => {
+    const host = await original(options); hosts.push(host); return host;
+  });
+  await invoke('a');
+  const old = hosts[0];
+  old.client.process.kill('SIGKILL'); await old.pumpTask;
+  let release, started;
+  const gate = new Promise(resolve => { release = resolve; });
+  const closing = new Promise(resolve => { started = resolve; });
+  const close = old.close.bind(old);
+  t.mock.method(old, 'close', async () => { started(); await gate; return close(); });
+  const rejected = assert.rejects(invoke('a'), /no longer current/);
+  await closing;
+  const disposed = lifecycle.dispose();
+  release();
+  await Promise.all([rejected, disposed]);
+  assert.equal(hosts.length, 1);
+  assert.equal(old.closed, true);
+});
+
+test('a failed native operation is not replayed during connection recovery', { timeout: 10000 }, async t => {
+  const { invoke } = await fixture(t, { allowErrors: true });
+  const original = XsmHost.open.bind(XsmHost), hosts = [];
+  t.mock.method(XsmHost, 'open', async options => {
+    const host = await original(options); hosts.push(host); return host;
+  });
+  await invoke('a');
+  const old = hosts[0];
+  let attempts = 0;
+  t.mock.method(old, 'call', async () => {
+    attempts++;
+    old.client.process.kill('SIGKILL'); await old.pumpTask;
+    throw new TransportError('in-flight operation interrupted');
+  });
+  await assert.rejects(invoke('a'), /in-flight operation interrupted/);
+  assert.equal(attempts, 1);
+  assert.equal(hosts.length, 1);
+  await invoke('a');
+  assert.equal(hosts.length, 2);
+  assert.equal(attempts, 1);
+});

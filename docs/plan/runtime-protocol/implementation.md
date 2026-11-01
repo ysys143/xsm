@@ -1594,3 +1594,25 @@ subprocess로 실행하고 회수를 확인했다. 단계별 지연은 짧지만
 예산 변경의 Linux 미실행 기록을 보완한다. 첫 상태표도 이미 확인한
 Pi/OpenCode 자동 재접속과 Linux OpenClaw native fixture를 반영했다.
 실제 모델·사용자 UI·worker·원격·메신저와 나머지 요구는 그대로 미완이다.
+
+## OpenClaw 다음 도구 진입의 transport 복구
+
+종료된 host를 다음 native 도구 진입에서 닫고 재등록한다. 동시 호출의
+복구는 하나로 합치며 epoch/dispose 검사를 새 host 생성 전후에 유지한다.
+실패한 operation을 재전송하지 않는다. 실제 backend 종료 후 회귀는
+변경 전 EOF TransportError로 실패했다(`openclaw-boundary-recovery-red.log`).
+수정 후 single recovery·dispose 중 재등록 차단·실패 호출 미재실행을
+포함한 연결 7개가 통과했다(`openclaw-boundary-recovery-verified.log`).
+추가 검사 초회에는 존재하지 않는 xsm_status 도구명을 사용해 1개가
+실패했다. 유효한 inbox 도구로 바로잡았으며 실패 로그도 남겼다
+(`openclaw-boundary-recovery-final.log`). 자동 idle·agent_end 복구, 종료 전
+claim과 기존 queue token 회수·Linux native 검증은 아직 미완이다.
+
+고정 native OpenClaw 2026.10.9/macOS arm64/Node 24.22.2에서도 backend를
+종료하고 다음 inbox 도구로 같은 ref·새 PID·새 세대에 재등록한 뒤 큰
+원문 100/100 수락·prompt 소비·명시적 ACK가 통과했다
+(`openclaw-boundary-recovery-native-100.json`). 복구 뒤 전송 표본의 p95 상한은
+504.905ms다. 모델·사람·실제 agent turn은 0회다. 예상한 종료 EOF 한 건이
+진단에 남았다. 이 표본은 outage 전체 시간이나 종료 전 claim 회수의
+증거가 아니다. 공통 gate 406개(핵심 238/Python 48/Node 120)는 68.904초에
+통과했다(`openclaw-boundary-recovery-gate.log`).

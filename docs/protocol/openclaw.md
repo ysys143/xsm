@@ -349,3 +349,27 @@ SDK가 제한된 inbox를 읽고 cursor를 따라 진행한다. Native 세대·�
 Linux burst에서 관측한 간헐적 ACK token 실패는 별도 미결이다. 재실행
 32/32 통과를 그 실패의 해결 증거로 쓰지 않는다. 플랫폼별 상세 표본과
 미실행 범위는 [Linux 검증 기록](../plan/runtime-protocol/linux-validation.md)에 있다.
+
+## Backend 종료 뒤 다음 도구 호출에서 복구
+
+등록한 backend의 transport 종료를 관측한 뒤 다음 native 도구 호출은
+이전 host를 닫고 같은 대화·ref에 새 세대로 등록한다. 동시에 들어온
+호출은 복구 하나를 공유한다. Session end/dispose 중인 복구는 새 host를
+만들지 않으며, 실패한 operation은 자동 재실행하지 않는다.
+
+이 경로는 다음 도구 호출이 있어야 실행된다. 자동 idle 재접속과
+agent_end만으로 복구하는 경로는 아직 미완이다. 종료 전에 claim한
+원문과 기존 native queue의 token 회수는 별도 검증이 필요하며, 빈 inbox
+상태에서 종료한 표본을 그 증거로 쓰지 않는다.
+
+```sh
+/isolated/node scripts/probe-openclaw-loader.mjs /isolated/node_modules/openclaw deliverables/openclaw-recovery.json --queue 100 --recover-context
+```
+
+이 fixture는 실제 native loader·도구와 prompt helper를 사용하지만
+모델·사람 UI·실제 agent turn·메신저를 실행하지 않는다.
+
+Mac 고정 SDK에서 위 경로로 재등록한 뒤 큰 원문 100/100 수락·소비·ACK,
+복구 후 전송 p95 상한 504.905ms가 통과했다
+(`openclaw-boundary-recovery-native-100.json`). 공통 gate는 406개/68.904초다.
+Linux native와 자동 idle 재접속·종료 전 claim 회수는 미완이다.
