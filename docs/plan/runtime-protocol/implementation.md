@@ -1272,3 +1272,22 @@ Native session_start에서 확인한 대화/workspace의 참여 의도를 backen
 공통 362개(핵심 231, Python 40, Node 91)는 Python 3.14.6에서 58.794초에
 통과했다(`pi-bootstrap-gate.log`). 자동 유휴 재접속·실제 모델/사람 UI·worker·
 Linux·원격·전체 방향 조합과 P0–P5 나머지는 미완이다.
+
+## OpenCode 참여 초기 갱신 실패의 정리
+
+Host를 연 뒤 최초 상태/제목 갱신이 실패하면 session map의 Promise는 지워도
+backend 참여는 남아 다음 등록을 막았다. 등록 후처리 실패 시 host를 닫고
+원래 오류를 유지하도록 수정했다. Cleanup 오류는 별도 진단으로 분리한다.
+수정 전 실제 protocol/API fixture 검사는 열린 host를 확인하고 실패했다
+(`opencode-initial-update-red.log`). 수정 후 관련 9개가 통과했고, 종료 기록과
+같은 ref·새 generation의 재등록을 확인했다(`opencode-initial-update-green.log`).
+
+실제 OpenCode 1.19.5도 임시 wrapper로 첫 session.update만 거부한 뒤 종료된
+참여를 확인하고 다음 chat 경계에서 재등록했다. Native 수락·native tool ACK
+5회가 완료됐다(`opencode-initial-update-native/result.json`). Receiver 검색은
+ended_at을 확인해 종료된 행을 live로 판독하지 않도록 고쳤다. 이 결과는
+scripted assistant fixture이며 모델/사람 UI나 100개 p95 기준의 인증이 아니다.
+
+공통 363개(핵심 231, Python 40, Node 92)는 Python 3.14.6에서 58.657초에
+통과했다(`opencode-initial-update-gate.log`). Plugin 자체 최초 descriptor 조회
+실패·자동 idle 재접속·worker·Linux·원격·전체 방향 조합과 P0–P5는 미완이다.

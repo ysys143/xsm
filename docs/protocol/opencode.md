@@ -171,3 +171,28 @@ UI·Linux 인증도 아니다.
 고친 5회 smoke와 이후 100회 결과를 따로 보존했다. 공통 355개는 59.428초에
 통과했다(`opencode-backend-recovery-gate.log`). Pi 및 다른 runtime의 복구,
 유휴 재접속·worker와 전체 P3/P5는 미완이다.
+
+## 참여 생성 후 초기 갱신 실패 정리
+
+Backend 참여가 열린 뒤 최초 상태·제목 갱신이 실패하면 그 host도 닫는다.
+정리가 끝나고 등록 Promise가 거부되므로 다음 native 진입은 같은 주소를
+새 세대로 다시 등록할 수 있다. 정리 자체가 실패하면 별도 진단으로 보내고
+원래 등록 오류를 호출자에게 유지한다.
+
+실제 protocol server를 사용하는 API fixture는 첫 갱신을 실패시키고 host 종료,
+등록 기록의 ended_at, 다음 등록의 같은 ref·새 세대를 확인한다. 수정 전에는
+host가 열린 채 남았다(`opencode-initial-update-red.log`). 수정 후 관련 9개가
+통과했다(`opencode-initial-update-green.log`).
+
+고정 OpenCode 1.19.5 설치본의 `--initial-update-failure` 프로브는 임시 Python
+wrapper로 첫 session.update만 거부한다. Native session 등록이 종료됐음을
+확인한 뒤 noReply chat 경계를 보내 재등록했다. 이후 native 수락·scripted
+assistant의 native ACK 5회가 통과했다
+(`opencode-initial-update-native/result.json`). 기존 프로브의 receiver 판독도
+ended_at을 확인해 종료된 행을 live로 오인하지 않도록 보완했다. 모델 추론·
+실제 사람 UI를 실행하지 않았으며 5회를 지연 인증으로 쓰지 않는다.
+
+공통 363개는 58.657초에 통과했다(`opencode-initial-update-gate.log`). 이 검사는
+plugin 도구 목록 조회가 끝난 뒤 참여의 초기 갱신 실패를 다룬다. Plugin 자체의
+최초 descriptor 조회 실패, 유휴 중 자동 재접속·worker·Linux 및 전체 P0–P5의
+남은 조건은 미완이다.

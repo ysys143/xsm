@@ -6,6 +6,7 @@ import { tmpdir } from 'node:os';
 import { fileURLToPath } from 'node:url';
 import binding from '../../integrations/opencode/xsm.mjs';
 import { XsmClient } from '../typescript/xsm-client.mjs';
+import { XsmHost } from '../typescript/xsm-host.mjs';
 
 const root = fileURLToPath(new URL('../../', import.meta.url));
 // Native schema objects are inspected here; the pinned native CLI separately checks real Zod schemas.
@@ -184,4 +185,26 @@ test('concurrent native calls recover a dead backend with new claims', { timeout
   await assert.rejects(invoke('a', 'xsm_ack', { tokens: [original.token] }), error => error.code === -32602);
   assert.deepEqual((await invoke('a', 'xsm_ack', { tokens: [claims[0].token] })).acked, [original.id]);
   assert.equal(native.size, 0, 'FYI recovery is a pull, not an unsolicited native injection');
+});
+
+
+test('failed initial state update closes participation before retry', { timeout: 15000 }, async t => {
+  const { invoke, records } = await fixture(t);
+  const update = XsmHost.prototype.update;
+  let first;
+  t.mock.method(XsmHost.prototype, 'update', async function (...args) {
+    if (!first) { first = this; throw new Error('initial state update failed'); }
+    return update.apply(this, args);
+  });
+  try {
+    await assert.rejects(invoke('a', 'xsm_inbox'), /initial state update failed/);
+    assert.equal(first.closed, true);
+    const [ended] = await records();
+    assert.ok(ended.ended_at);
+    await invoke('a', 'xsm_inbox');
+    const [recovered] = await records();
+    assert.equal(recovered.ref, ended.ref);
+    assert.notEqual(recovered.protocol_generation, ended.protocol_generation);
+    assert.equal(recovered.ended_at, undefined);
+  } finally { await first?.close(); }
 });

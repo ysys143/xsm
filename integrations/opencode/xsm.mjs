@@ -137,9 +137,15 @@ async function attach(api, options, release) {
             }
           },
         });
-        if (disposed) { await host.close(); throw new Error('binding disposed during session registration'); }
-        await host.update(states.get(id) ?? 'idle', native.title);
-        return host;
+        try {
+          if (disposed) throw new Error('binding disposed during session registration');
+          await host.update(states.get(id) ?? 'idle', native.title);
+          return host;
+        } catch (error) {
+          try { await host.close(); }
+          catch (cleanupError) { try { fail(cleanupError); } catch {} }
+          throw error;
+        }
       })();
       sessions.set(id, opening);
       opening.catch(() => { if (sessions.get(id) === opening) sessions.delete(id); });

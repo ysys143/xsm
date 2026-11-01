@@ -126,6 +126,24 @@ async def run(args):
     install.check_returncode()
     installation = json.loads(install.stdout)
     env.pop("XSM_PYTHON")
+    if getattr(args, "initial_update_failure", False):
+        flag = temp / "first-update-failed"
+        patch = ("import os,sys;sys.path.insert(0,sys.argv[1]);from xsm import protocol\n"
+                 "_original=protocol.Connection.dispatch\n"
+                 "def _dispatch(self,method,params):\n"
+                 " if method=='session.update':\n"
+                 "  try: fd=os.open(" + repr(str(flag)) + ",os.O_CREAT|os.O_EXCL|os.O_WRONLY,0o600)\n"
+                 "  except FileExistsError: pass\n"
+                 "  else:\n   os.close(fd)\n   raise protocol.ProtocolError(-32003,'fixture initial update failure')\n"
+                 " return _original(self,method,params)\n"
+                 "protocol.Connection.dispatch=_dispatch\n")
+        wrapper = temp / "python-update-fails-once"
+        wrapper.write_text("#!" + sys.executable + "\nimport os,sys\nargs=sys.argv[1:]\n"
+            "if args and args[0]=='-c' and args[-3:]==['protocol','serve','--stdio']:\n"
+            " args[1]=" + repr(patch) + "+'\\nexec('+repr(args[1])+')'\n"
+            "os.execv(" + repr(sys.executable) + ", [" + repr(sys.executable) + ", *args])\n")
+        wrapper.chmod(0o700)
+        env["XSM_PYTHON"] = str(wrapper)
     with socket.socket() as sock:
         sock.bind(("127.0.0.1", 0))
         port = sock.getsockname()[1]
@@ -171,16 +189,31 @@ async def run(args):
         (args.output / "native-tools.json").write_text(json.dumps(schemas, indent=2))
         native = await request("/session", {"title": "xsm model-free admission probe"})
         result["nativeSession"] = native["id"]
+        if getattr(args, "initial_update_failure", False):
+            failed = None
+            for _ in range(100):
+                rows = [json.loads(path.read_text()) for path in (state / "sessions").glob("*.json")]
+                failed = next((row for row in rows if row.get("runtime") == "opencode" and row.get("ended_at")), None)
+                if failed and flag.exists():
+                    break
+                await asyncio.sleep(.05)
+            assert failed and flag.exists(), "failed initial registration was not cleaned up"
+            await request("/session/" + native["id"] + "/message", {"noReply": True,
+                "parts": [{"type": "text", "text": "Retry failed initial registration fixture"}]})
+            result["initialUpdateFailure"] = {"closedBeforeRetry": True, "oldPid": failed["pid"], "ref": failed["ref"]}
         receiver = None
         for _ in range(100):
             rows = [json.loads(path.read_text()) for path in (state / "sessions").glob("*.json")]
             receiver = next((row for row in rows if row.get("runtime") == "opencode" and
-                             row.get("state") != "ended"), None)
+                             not row.get("ended_at")), None)
             if receiver:
                 break
             await asyncio.sleep(.05)
         assert receiver, "native session was not registered"
         assert os.path.realpath(receiver["protocol_root"]) == os.path.realpath(installation["runtime_root"])
+        if getattr(args, "initial_update_failure", False):
+            assert receiver["ref"] == failed["ref"] and receiver["protocol_generation"] != failed["protocol_generation"]
+            result["initialUpdateFailure"].update(newPid=receiver["pid"], generationChanged=True)
         result["receiver"] = receiver
         if getattr(args, "crash", False):
             previous = receiver
@@ -283,6 +316,7 @@ if __name__ == "__main__":
     parser.add_argument("--native-root", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--samples", type=int, default=5)
+    parser.add_argument("--initial-update-failure", action="store_true")
     parser.add_argument("--crash", action="store_true")
     args = parser.parse_args()
     if args.samples < 1:
