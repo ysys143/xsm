@@ -203,3 +203,11 @@ ACK 이전 상태나 원자적 실패의 증거로 해석하지 않는다. 성�
 임시 주입 스크립트는 제거했다. 정책 거부 회귀
 (`openclaw-native-error-capture.json`)와 최종 burst는 정상 통과하고
 해당 오류 배열은 비어 있었다. 제품·사용자 설정은 이 주입으로 바꾸지 않았다.
+
+Linux에서도 변경 없는 `cb403aa`로 32건 burst 5회를 추가 실행했다
+(`linux-openclaw-burst-repeat-cb403aa/run-{1..5}/output/burst.json`). 모두
+32/32 소비·ACK, 총 160/160이며 native 전달 오류는 없었다. 다섯 stage의
+source archive SHA-256이 같고 tracked dirty는 false다. `summary.json`에
+이를 대조한 집계를 남겼다. 기존 간헐적 실패는 이 표본에서 재현되지
+않았으며 해결 판정은 계속 미결이다. 검사 전용 VM은 다시 Stopped로
+확인했다(`vm-stopped.json`). 모델·실제 사람·메신저 호출은 0회다.
