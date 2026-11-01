@@ -288,3 +288,44 @@ targeted token 검사기 확장과 agent_end 회귀까지 포함한 Linux 표본
 Network none·image ID·source archive hash·tracked dirty false를 기록했고
 테스트 VM은 다시 Stopped로 확인했다(`vm-stopped.json`). 전체 계획은
 계속 미완이다.
+
+## Hermes 0.22.5 native Linux arm64
+
+고정 소스 v0.22.5/commit `bf0203a794a07aac3ff764972ab9087baa4e4f4e`의
+PluginContext·registry·주입 함수 본문을 Linux arm64에서 실행했다. Python
+3.14.10/glibc 2.41이며, 준비 단계에서 조회한 공식 Python image를 digest로
+고정했다. 기존 Mac 검증 환경에서 읽은 정확한 dependency 67개를 wheel로
+설치했다. Hermes 자체는 고정 source를 import하며 git tag·tracked clean을
+대조했다. Git 설정·hook·자격 증명은 복사하지 않았고 tag/objects/index만
+검증용으로 보존했다. Image digest·requirements·source archive hash·build
+로그는 `linux-hermes-prepare/` 아래 있다. 검사는 network none이다.
+
+`linux-hermes-native/output/tools/result.json`의 13개가 통과했다. 실제
+PluginContext의 21개 도구 등록, 별도 세션/workspace, native 도구 dispatch의
+DM pull·명시적 ACK, backend 종료 후 native 진입 전 자동 재등록, 같은
+ref·새 세대 복구, workspace 이동, turn end와 finalize/resume 구분,
+UI 없는 승인 거부, 설치 제거 후 로드된 snapshot 보존, unload 뒤 lease
+회수와 운영자 설정 보존을 포함한다. 제품 코드는 변경하지 않았다.
+
+`linux-hermes-native/output/injection/result.json`의 실제 주입 API 관측
+9개도 통과했다. Policy 거부·matching TUI key의 busy queue·기존 transport
+보존·unknown key 거부/별도 gateway scheduling·classic CLI queue·중복 요청의
+true 반환·같은 key의 첫 TUI 선택을 확인했다. Session 행과 method namespace는
+명시적 fixture다. 실제 TUI/agent/model을 실행한 검사가 아니며, gateway의
+성공 반환을 TUI 큐 삽입과 동일시하지 않는다. 이 관측만으로 제품의 native
+push·idle wake·profile별 안전한 routing·queue p95를 인증하지 않는다.
+
+같은 Python image에 검증된 digest의 Node 24.22.2 실행 파일을 추가한
+Linux 공통 gate 416개(핵심 243/Python 48/Node 125)가 100.502초에
+통과했다(`linux-python-314-hermes-core/result.json`). 변경 없는
+`3b47940`의 소스이며 120초 기준을 충족했다. Image ID·source hash·tracked
+dirty false·network none도 기록했다. 모델·사람 UI·메신저 호출은 모두
+0회다. 실제 native queue 100표본 p95·worker·전체 방향/원격·버전과
+플랫폼 전체 및 P0–P5는 계속 미완이다.
+
+별도 native `--slow-registration` 실행의 8개도 통과했다
+(`linux-hermes-slow-registration/output/result/result.json`). 실제 registry
+dispatch에서 다른 대화의 backend 등록을 막아 둬도 정상 대화의 도구
+실행이 진행되는 경로를 포함한다. 앞선 13개와 중복 항목이 있어 고유
+검사 30개로 합산하지 않는다. 테스트 전용 VM은 다시 Stopped로 확인했다
+(`linux-python-314-hermes-core/vm-stopped.json`).

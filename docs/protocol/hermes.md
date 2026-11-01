@@ -248,3 +248,23 @@ marker로 막고 다른 대화의 inbox 요청을 보냈다. 느린 등록이 �
 공통 390개는 65.863초에 통과했다(`hermes-conversation-lock-gate-final.log`).
 초기 handshake 응답 기한·Native push/UI·worker·Linux·메신저와 전체 P0–P5의
 남은 조건은 미완이다.
+
+## Linux arm64의 고정 native API 검증
+
+Hermes v0.22.5/commit `bf0203a794a07aac3ff764972ab9087baa4e4f4e`를
+Python 3.14.10의 격리 Linux image에서 실행했다. 실제 plugin 도구·설치·
+자동 복구·수명 검사 13개와 주입 API 관측 9개가 통과했다
+(`linux-hermes-native/output/{tools,injection}/result.json`). 같은 환경에
+고정 Node 24.22.2를 더한 공통 gate 416개는 100.502초에 통과했다
+(`linux-python-314-hermes-core/result.json`).
+
+위 Linux 미실행 기록의 후속 표본이다. Dependency/image/source hash와
+fixture 경계는 [Linux 검증 기록](../plan/runtime-protocol/linux-validation.md)에
+있다. 주입 API의 session 행·namespace는 fixture이며, 실제 agent turn·
+물리적 CLI/TUI·모델·사람 UI·native push p95·worker 인증은 아니다.
+기본 제품 연결은 계속 pull-only이며 events/user-decisions를 광고하지 않는다.
+
+별도 `--slow-registration`의 native 8개도 통과해 다른 세션의 느린
+backend 등록이 정상 세션 도구를 막지 않는 것을 확인했다
+(`linux-hermes-slow-registration/output/result/result.json`). 앞선
+13개와 중복되는 항목은 별도 표본으로 구분한다.

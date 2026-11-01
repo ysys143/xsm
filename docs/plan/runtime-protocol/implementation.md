@@ -39,7 +39,7 @@
 | P2 SDK·검사기 | 부분 구현 | 독립 구현 적합성, 전체 오류/취소 계약 (Python↔Node 교차 시험 통과) |
 | P3 Pi·OpenCode | 부분 구현 | 연결·수신·설치·대화 수명·자동 재접속의 native fixture 검증. 실제 사용자 UI·native worker·busy/now의 실제 우선순위 등 미완 |
 | P4 Hermes·OpenClaw | 부분 구현 | Hermes native 도구·격리 설치·주입 및 대화별 자동 복구 fixture, OpenClaw guarded queue prototype. 실제 agent turn·idle wake·UI·worker, OpenClaw owned 설치·종료 전 claim 회수 미완 |
-| P5 통합·배포 | 부분 검증 | Mac native SDK/CLI fixture와 Linux arm64 공통 gate·Pi/OpenCode/OpenClaw native fixture 통과. Linux Hermes native, OpenClaw 간헐적 burst ACK 실패, 30개 방향 조합, 동종 세션, 원격, 버전·플랫폼별 전체 native p95, 실제 모델·메신저·전체 회귀 미완 |
+| P5 통합·배포 | 부분 검증 | Mac native SDK/CLI fixture와 Linux arm64 공통 gate·Pi/OpenCode/OpenClaw native fixture와 Hermes plugin/API fixture 통과. Hermes native queue p95·idle wake, OpenClaw 간헐적 burst ACK 실패, 30개 방향 조합, 동종 세션, 원격, 버전·플랫폼별 전체 native p95, 실제 모델·메신저·전체 회귀 미완 |
 
 ## 초기 실제 검사
 
@@ -1758,3 +1758,26 @@ OpenClaw의 agent_end hook으로 같은 ref·새 generation 재등록과 idle
 (`linux-openclaw-agent-end-core/result.json`). 외부 token 재조회 검사기의
 앞선 Linux 미실행 기록까지 보완한다. 실제 모델·사람 UI·메신저·간헐적
 burst ACK 실패와 나머지 P0–P5는 계속 미완이다.
+
+## Hermes native API의 Linux 검증
+
+변경 없는 `3b47940`의 Hermes v0.22.5 고정 plugin source를 Linux
+arm64/Python 3.14.10에서 실행했다. 설치·lease·도구 dispatch·자동 복구·
+세션/workspace·turn/finalize를 포함한 13개와 주입 API 관측 9개가
+통과했다(`linux-hermes-native/output/{tools,injection}/result.json`).
+공식 Python image는 조회 후 digest로 고정했고 기존 검증 환경의 exact
+dependency 67개와 git source/tag/index를 기록했다. Credentials/사용자
+프로필은 넘기지 않았고 검사는 network none이었다.
+
+같은 Python 환경과 Node 24.22.2의 공통 gate 416개는 100.502초에
+통과했다(`linux-python-314-hermes-core/result.json`). 제품 변경 없이
+새 플랫폼 증거를 확보한 작업이다. TUI 세션 행과 namespace는 fixture,
+모델·사람 UI·agent turn·메신저는 0회다. 제품은 계속 pull-only이며 이
+결과를 native queue p95·idle wake·worker·전체 방향/원격의 인증으로
+확대하지 않는다. 전체 계획은 미완이다.
+
+추가 `--slow-registration`의 native 8개도 통과했다
+(`linux-hermes-slow-registration/output/result/result.json`). 다른 대화의
+등록을 막은 동안 정상 대화의 도구 dispatch가 진행되는 경로를 검증했다.
+앞선 native 13개와 중복되는 검사를 고유 개수로 합산하지 않는다.
+테스트 VM은 작업 후 Stopped로 확인했다.
