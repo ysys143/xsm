@@ -7,8 +7,8 @@ import { basename, dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { promisify } from 'node:util';
 
-export async function holdComponent(profile, component = 'opencode-tui', runtime = 'opencode') {
-  const root = await realpath(fileURLToPath(new URL('../../', import.meta.url)));
+export async function holdComponent(profile, component = 'opencode-tui', runtime = 'opencode', loadedRoot) {
+  const root = await realpath(loadedRoot ?? fileURLToPath(new URL('../../', import.meta.url)));
   if (!/^[0-9a-f]{12}$/.test(basename(root)) || basename(dirname(root)) !== 'runtime') return async () => {};
   // The loaded snapshot owns the lease location, even if the caller changed XSM_HOME.
   const state = dirname(dirname(root));
@@ -24,7 +24,7 @@ export async function holdComponent(profile, component = 'opencode-tui', runtime
     }
     manifest = JSON.parse(await source.readFile('utf8'));
   } finally { await source.close(); }
-  if (manifest.bindingInstall !== 1 || !['prepared', 'installed'].includes(manifest.phase) ||
+  if (manifest.bindingInstall !== (runtime === 'openclaw' ? 2 : 1) || !['prepared', 'installed'].includes(manifest.phase) ||
       manifest.runtime !== runtime || manifest.home !== home || typeof manifest.python !== 'string') {
     throw new Error('native UI installation has no pinned interpreter');
   }

@@ -3,7 +3,8 @@
 상태: 실험적 direct-turn 도구 연결. 실제 고정 로더의 등록·metadata 발견과,
 명시적 caller fixture에서 실제 native 도구와 xsm 서버의 왕복·수명 정리를
 확인했다. Guarded native 대기열과 prompt 소비 helper도 연결했다.
-실제 agent turn·idle wake·설치·사용자 UI는 미완이다. 전체 계획은 미완이다.
+소유권 기반 설치·업데이트·제거와 로드된 snapshot 보존을 연결했다.
+실제 agent turn·idle wake·사용자 UI와 설치의 Linux native 검증은 미완이다. 전체 계획은 미완이다.
 
 ## 고정 버전과 격리 환경
 
@@ -450,3 +451,43 @@ invocation callback은 재사용하지 않는다. 다른 route의 hook은 무시
 (`linux-openclaw-agent-end-native-100/output/boundary-recovery.json`). 복구 후
 전송 p95 상한은 412.499ms다. 위 Linux 미실행 기록의 후속 표본이며
 실제 모델 turn·사람 UI·메신저와 간헐적 burst ACK 실패는 계속 미완이다.
+
+## 소유권 기반 로컬 설치
+
+```sh
+xsm protocol install openclaw --home /path/to/openclaw-state --dry-run
+xsm protocol install openclaw --home /path/to/openclaw-state
+xsm protocol inspect openclaw --home /path/to/openclaw-state
+xsm protocol uninstall openclaw --home /path/to/openclaw-state
+```
+
+명시한 state directory의 `extensions/xsm/index.mjs`와
+`openclaw.plugin.json`만 소유한다. Python 실행 파일과 immutable xsm
+snapshot을 고정하고, 준비 journal·두 파일 hash·loader marker·anchored
+no-follow/CAS로 중단 복구와 편집 충돌을 처리한다. 설정·allowlist·신뢰
+기록은 바꾸지 않는다. 알 수 없는 파일은 남기고, 수정된 소유 파일이나
+symlink 경계는 덮어쓰지 않는다. 적용 후 native reload가 필요하다.
+
+활성화는 사용자 선택이다. 고정 native SDK에서 global 발견을 허용한
+fixture는 자동 발견·도구 등록·DM pull/ACK를 통과했지만, native registry의
+설치 출처가 없는 로컬 plugin이므로 `reason=record-missing` 경고가 남는다.
+Allowlist는 로딩을 허용할 뿐 trusted official plugin으로 만들지 않는다.
+이 설치기는 native provenance를 위조하거나 신뢰 권한을 추가하지 않는다.
+
+로드된 plugin은 `openclaw-plugin` component lease로 자신이 사용하는
+snapshot을 보존한다. Native capture가 JS를 다른 경로에 복사해도 loader가
+고정한 root를 사용한다. 업데이트·설치 파일 제거 뒤 backend가 모두
+종료돼도 root를 보존하고, plugin unload 이후 lease를 거둬 회수할 수 있다.
+
+고정 macOS SDK에서 자동 발견, 실제 도구, 업데이트/제거 뒤 로드된
+plugin의 재개, backend 없는 상태의 prune 보존, unload 뒤 회수가
+통과했다(`openclaw-owned-install-lifecycle-final.json`). 공개 CLI 6회도
+격리 프로필에서 설치·반복 설치·inspect·제거·dry-run과 설정 내용/권한
+보존을 확인했다(`openclaw-install-cli/result.json`). 설치·lease 회귀
+48개와 공통 gate 424개/75.383초가 통과했다.
+
+초회 native 프로브는 경고를 오류로 단정해 실패했고, 다음에는 macOS
+`/var`와 `/private/var` 경로 별칭을 문자열로 비교해 실패했다. 기대한
+출처 경고만 명시적으로 검사하고 realpath를 대조하도록 바로잡았다.
+관련 실패 로그는 보존했다. 모델·사용자 UI·메신저는 0회이며, 이 설치
+경로의 Linux·owned loader를 통한 native queue/UI 인증은 미완이다.

@@ -173,3 +173,17 @@ class ComponentLeaseTest(TempState):
                 mock.patch.object(install, '_live_session_starts', return_value=[]), \
                 mock.patch.object(leases.identity, 'pid_alive', return_value=False):
             self.assertIn(self.old.name, install.prune_snapshots())
+    def test_loaded_openclaw_snapshot_is_kept_without_a_protocol_backend(self):
+        from xsm import component_leases as leases, install
+        self.lease['component'] = 'openclaw-plugin'
+        self.save()
+        with mock.patch.object(install, '_running_from', return_value=set()), \
+                mock.patch.object(install, '_live_session_starts', return_value=[]), \
+                mock.patch.object(leases.identity, 'pid_alive', return_value=True), \
+                mock.patch.object(leases.subprocess, 'run', return_value=SimpleNamespace(stdout='fixture-generation')):
+            self.assertEqual(leases.configured_roots(), [str(self.old)])
+            self.assertEqual(install.prune_snapshots(), [])
+        with mock.patch.object(install, '_running_from', return_value=set()), \
+                mock.patch.object(install, '_live_session_starts', return_value=[]), \
+                mock.patch.object(leases.identity, 'pid_alive', return_value=False):
+            self.assertIn(self.old.name, install.prune_snapshots())

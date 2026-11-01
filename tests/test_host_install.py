@@ -26,6 +26,28 @@ class HostInstallTest(TempState):
         self.home = Path(self.user_home, "pi")
         self.loader = self.home / "extensions/xsm.js"
 
+    def test_openclaw_owned_install_keeps_configuration_and_removes_only_owned_files(self):
+        from xsm import host_install
+        profile = Path(self.user_home, 'openclaw')
+        profile.mkdir()
+        settings = profile / 'openclaw.json'
+        original = '{"plugins":{"allow":["operator-plugin"]},"user":"keep"}'
+        settings.write_text(original)
+        result = host_install.apply('openclaw', str(profile))
+        self.assertEqual(result['status'], 'installed')
+        self.assertEqual(result['activation'], 'operator-opt-in')
+        folder = profile / 'extensions/xsm'
+        manifest = json.loads((folder / 'openclaw.plugin.json').read_text())
+        self.assertEqual(manifest['id'], 'xsm')
+        self.assertIn('runtimeRoot', (folder / 'index.mjs').read_text())
+        self.assertIn(result['runtime_root'], host_install.configured_roots())
+        (folder / 'user-note').write_text('keep')
+        host_install.remove('openclaw', str(profile))
+        self.assertEqual(settings.read_text(), original)
+        self.assertEqual((folder / 'user-note').read_text(), 'keep')
+        self.assertFalse((folder / 'index.mjs').exists())
+        self.assertFalse((folder / 'openclaw.plugin.json').exists())
+
     def test_opencode_loader_uses_native_sdk_and_preserves_profile_configuration(self):
         from xsm import host_install, install
         profile = Path(self.user_home, "opencode")
@@ -430,6 +452,84 @@ class HostInstallTest(TempState):
         (profile / "plugins").symlink_to(outside, target_is_directory=True)
         with self.assertRaises(OSError):
             host_install.apply("hermes", str(profile))
+        self.assertEqual(list(outside.iterdir()), [])
+
+
+    def test_openclaw_edited_manifest_refuses_all_mutation(self):
+        from xsm import host_install, install
+        profile = Path(self.user_home, "openclaw-edited")
+        host_install.apply("openclaw", str(profile))
+        folder = profile / "extensions/xsm"
+        original = (folder / "index.mjs").read_bytes()
+        manifest = folder / "openclaw.plugin.json"
+        manifest.write_text(manifest.read_text() + "\n# user edit\n")
+        for action in (host_install.apply, host_install.remove):
+            with self.assertRaisesRegex(install.InstallConflictError, "edited OpenClaw"):
+                action("openclaw", str(profile))
+            self.assertEqual((folder / "index.mjs").read_bytes(), original)
+            self.assertIn("user edit", manifest.read_text())
+
+    def test_openclaw_interrupted_initial_install_can_be_recovered(self):
+        from xsm import host_install, openclaw_install
+        profile = Path(self.user_home, "openclaw-recovery")
+        original = openclaw_install.replace
+        def interrupt(fd, guard, name, *args):
+            if name == "openclaw.plugin.json":
+                raise OSError("interrupted second file")
+            return original(fd, guard, name, *args)
+        with mock.patch.object(openclaw_install, "replace", side_effect=interrupt):
+            with self.assertRaisesRegex(OSError, "interrupted"):
+                host_install.apply("openclaw", str(profile))
+        self.assertEqual(host_install.inspect("openclaw", str(profile))["status"], "partial")
+        self.assertEqual(host_install.read_record("openclaw", str(profile))["phase"], "prepared")
+        final = host_install.apply("openclaw", str(profile))
+        self.assertEqual(final["status"], "installed")
+        self.assertEqual(host_install.read_record("openclaw", str(profile))["phase"], "installed")
+
+    def test_openclaw_symlink_plugin_directory_is_preserved(self):
+        from xsm import host_install
+        profile = Path(self.user_home, "openclaw-link")
+        (profile / "extensions").mkdir(parents=True)
+        outside = Path(self.user_home, "outside")
+        outside.mkdir()
+        (profile / "extensions/xsm").symlink_to(outside, target_is_directory=True)
+        with self.assertRaises(OSError):
+            host_install.apply("openclaw", str(profile))
+        self.assertEqual(list(outside.iterdir()), [])
+
+    def test_openclaw_dry_run_does_not_create_native_profile(self):
+        from xsm import host_install
+        profile = Path(self.user_home, "openclaw-dry")
+        result = host_install.apply("openclaw", str(profile), dry_run=True)
+        self.assertTrue(result["dry_run"])
+        self.assertFalse(profile.exists())
+
+    def test_openclaw_prepared_upgrade_keeps_old_loader_snapshot_until_recovery(self):
+        from xsm import host_install, openclaw_install
+        profile = Path(self.user_home, "openclaw-upgrade")
+        first = host_install.apply("openclaw", str(profile))
+        with (self.source / "xsm/paths.py").open("a") as stream:
+            stream.write("\n# OpenClaw update fixture\n")
+        with mock.patch.object(openclaw_install, "replace", side_effect=OSError("before loader swap")):
+            with self.assertRaises(OSError):
+                host_install.apply("openclaw", str(profile))
+        pending = host_install.read_record("openclaw", str(profile))
+        self.assertNotEqual(first["runtime_root"], pending["root"])
+        self.assertIn(first["runtime_root"], host_install.configured_roots())
+        self.assertIn(pending["root"], host_install.configured_roots())
+        updated = host_install.apply("openclaw", str(profile))
+        self.assertEqual(updated["runtime_root"], pending["root"])
+        self.assertNotIn(first["runtime_root"], host_install.configured_roots())
+
+    def test_openclaw_symlink_plugins_parent_is_preserved(self):
+        from xsm import host_install
+        profile = Path(self.user_home, "openclaw-parent-link")
+        profile.mkdir()
+        outside = Path(self.user_home, "outside-plugins")
+        outside.mkdir()
+        (profile / "extensions").symlink_to(outside, target_is_directory=True)
+        with self.assertRaises(OSError):
+            host_install.apply("openclaw", str(profile))
         self.assertEqual(list(outside.iterdir()), [])
 
 

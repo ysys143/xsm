@@ -3,6 +3,7 @@ import { realpath } from 'node:fs/promises';
 import { dirname, isAbsolute, resolve } from 'node:path';
 import { XsmHost, RetryAdmission } from '../../clients/typescript/xsm-host.mjs';
 import { TransportError } from '../../clients/typescript/xsm-client.mjs';
+import { holdComponent } from '../../clients/typescript/component-lease.mjs';
 import operations from './tools.mjs';
 import { nativeDelivery } from './context-queue.mjs';
 
@@ -21,6 +22,11 @@ export function register(api, options = {}) {
   const observeTurns = api.config?.plugins?.entries?.xsm?.hooks?.allowConversationAccess === true;
   let disposed = false;
   const fail = error => api.logger.error('xsm: ' + error.message);
+  const componentLease = options.runtimeRoot
+    ? holdComponent(profilePath, 'openclaw-plugin', 'openclaw', options.runtimeRoot)
+    : Promise.resolve(async () => {});
+  componentLease.catch(fail);
+  let componentReleased = false;
 
   function cancelReconnect(entry) {
     clearTimeout(entry.retry?.timer);
@@ -69,6 +75,7 @@ export function register(api, options = {}) {
   }
 
   async function open(entry, epoch, context, signal) {
+    await componentLease;
     await entry.closing;
     current(entry, epoch, context, signal);
     if (entry.pending) {
@@ -145,7 +152,13 @@ export function register(api, options = {}) {
     disposed = true;
     const results = await Promise.allSettled([...sessions.values()].map(end));
     const failed = results.find(result => result.status === 'rejected');
-    if (failed) throw failed.reason;
+    try { if (failed) throw failed.reason; }
+    finally {
+      if (!componentReleased) {
+        componentReleased = true;
+        await (await componentLease)();
+      }
+    }
   }
 
   api.lifecycle.registerRuntimeLifecycle({ id: 'xsm-protocol', dispose: close,

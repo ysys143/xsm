@@ -1,14 +1,14 @@
 /** Pinned native loader/tools with explicit caller fixtures; no agent/model/messenger execution. */
 import assert from 'node:assert/strict';
 import { execFileSync } from 'node:child_process';
-import { mkdtemp, mkdir, readdir, readFile, writeFile } from 'node:fs/promises';
+import { mkdtemp, mkdir, readdir, readFile, realpath, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import operations from '../integrations/openclaw/tools.mjs';
 
 const [nativeRoot, output, mode, countText, policyFlag] = process.argv.slice(2);
-assert.ok(!mode || ['--execute', '--queue'].includes(mode));
+assert.ok(!mode || ['--execute', '--queue', '--install'].includes(mode));
 assert.ok(!policyFlag || (mode === '--queue' && ['--deny-injection', '--large-context', '--deferred-notice', '--capacity-retry', '--capacity-fyi', '--burst-context', '--recover-context', '--auto-recover-context', '--recover-claimed-context', '--recover-boundary-context'].includes(policyFlag)));
 const denied = policyFlag === '--deny-injection';
 const burstContext = policyFlag === '--burst-context';
@@ -52,6 +52,13 @@ const config = {
   plugins: { enabled: true, allow: ['xsm'], load: { paths: [join(root, 'integrations/openclaw/xsm.mjs')] },
     entries: { xsm: { enabled: true } } }, agents: { defaults: { workspace: temp } },
 };
+let installation;
+if (mode === '--install') {
+  const code = "import sys,json;sys.path.insert(0,sys.argv[1]);from xsm import host_install;print(json.dumps(host_install.apply('openclaw',sys.argv[2])))";
+  installation = JSON.parse(execFileSync('python3', ['-B', '-c', code, root, process.env.OPENCLAW_STATE_DIR], { encoding: 'utf8' }));
+  // The fixed SDK discovers extensions/xsm itself. Permission is fixture-only.
+  delete config.plugins.load;
+}
 if (mode === '--queue') {
   if (capacityBoundary || recoverBoundaryContext) config.plugins.entries.xsm.hooks = { allowConversationAccess: true };
   if (denied) config.plugins.entries.xsm.hooks = { allowPromptInjection: false };
@@ -79,7 +86,13 @@ if (mode === '--queue') {
 const registry = native[alias]({ config, workspaceDir: temp, cache: false, activate: true, onlyPluginIds: ['xsm'] });
 const plugin = registry.plugins.find(item => item.id === 'xsm');
 assert.equal(plugin?.status, 'loaded', JSON.stringify(registry.diagnostics));
-assert.deepEqual(registry.diagnostics.filter(item => item.pluginId === 'xsm'), []);
+const pluginDiagnostics = registry.diagnostics.filter(item => item.pluginId === 'xsm');
+if (installation) {
+  assert.equal(pluginDiagnostics.length, 1);
+  assert.ok(pluginDiagnostics.every(item => item.level === 'warn' &&
+    item.source === join(process.env.OPENCLAW_STATE_DIR, 'extensions/xsm/index.mjs') &&
+    item.message.includes('reason=record-missing')));
+} else assert.deepEqual(pluginDiagnostics, []);
 const tools = registry.tools.filter(item => item.pluginId === 'xsm');
 assert.deepEqual(tools.flatMap(item => item.names).sort(), operations.map(item => item.name).sort());
 for (const tool of tools) assert.equal(tool.factory({}), null);
@@ -90,7 +103,8 @@ const result = { status: 'incomplete', runtimeVersion: pkg.version, node: proces
   nativeLoader: true, nativeTools: tools.length, metadataCreatedNoParticipant: true,
   nativeToolExecution: false, nativeUnloadTested: false, modelCalls: 0,
   physicalHumanUiTested: false, diagnostics: registry.diagnostics, root: temp,
-  nativeDeliveryErrors: globalThis[Symbol.for('xsm.native.queue.errors')] ?? [] };
+  nativeDeliveryErrors: globalThis[Symbol.for('xsm.native.queue.errors')] ?? [],
+  ...(installation ? { installation } : {}) };
 if (mode) {
   // Resolve pinned host-internal exports by their original names, not guessed minified aliases.
   async function nativeFunction(prefix, name) {
@@ -138,6 +152,20 @@ if (mode) {
     const record = JSON.parse(await readFile(join(temp, 'xsm/sessions', files[0]), 'utf8'));
     assert.equal(record.runtime, 'openclaw');
     result.nativeRef = record.ref;
+    if (installation) {
+      const leases = await Promise.all((await readdir(join(temp, 'xsm/component-leases')))
+        .map(async name => JSON.parse(await readFile(join(temp, 'xsm/component-leases', name), 'utf8'))));
+      assert.equal(leases.length, 1);
+      assert.equal(leases[0].component, 'openclaw-plugin');
+      assert.equal(leases[0].root, await realpath(installation.runtime_root));
+      assert.equal(leases[0].pid, process.pid);
+      result.installedSnapshotLease = true;
+      const code = "import sys,json,shutil,os;sys.path.insert(0,sys.argv[1]);from xsm import install,host_install;source=sys.argv[4]+'/upgrade-source';shutil.copytree(sys.argv[2],source,symlinks=True);file=source+'/xsm/paths.py';os.chmod(file,0o600);open(file,'a').write('\\n# isolated OpenClaw upgrade fixture\\n');install.REPO=source;updated=host_install.apply('openclaw',sys.argv[3]);host_install.remove('openclaw',sys.argv[3]);print(json.dumps(updated))";
+      const updated = JSON.parse(execFileSync('python3', ['-B', '-c', code, root,
+        installation.runtime_root, process.env.OPENCLAW_STATE_DIR, temp], { encoding: 'utf8' }));
+      assert.notEqual(updated.runtime_root, installation.runtime_root);
+      result.installedUpdate = { root: updated.runtime_root, removedOwnedFiles: true };
+    }
     result.protocolPython = { version: record.protocol_python_version, executable: record.protocol_python };
     const records = async () => Promise.all((await readdir(join(temp, 'xsm/sessions')))
       .filter(file => file.endsWith('.json'))
@@ -491,6 +519,16 @@ if (mode) {
       messageCount: 0, reason: 'reset' }, context('native-fixture-a'));
     assert.ok((await records()).find(row => row.ref === record.ref).ended_at);
     await assert.rejects(inbox.execute('late-a', {}), /no longer current/);
+    if (installation) {
+      await hooks.runSessionEnd({ sessionId: 'native-fixture-b', sessionKey: context('native-fixture-b').sessionKey,
+        messageCount: 0, reason: 'reset' }, context('native-fixture-b'));
+      assert.ok((await records()).every(row => row.ended_at));
+      const code = "import sys,json;sys.path.insert(0,sys.argv[1]);from xsm import install;print(json.dumps(install.prune_snapshots()))";
+      const removed = JSON.parse(execFileSync('python3', ['-B', '-c', code, root], { encoding: 'utf8' }));
+      assert.ok(!removed.includes(installation.runtime_root.split('/').at(-1)));
+      await realpath(installation.runtime_root);
+      result.installedSnapshotSurvivedPruneWithoutBackend = true;
+    }
     const resumed = resolve('native-fixture-a').find(tool => tool.name === 'xsm_inbox');
     await resumed.execute('resume-a', {});
     const after = (await records()).find(row => row.ref === record.ref);
@@ -507,6 +545,14 @@ if (mode) {
       const cleanup = await dispose(registry);
       assert.deepEqual(cleanup.failures, []);
       result.nativeUnloadTested = true;
+      if (installation && result.installedUpdate) {
+        const code = "import sys,json;sys.path.insert(0,sys.argv[1]);from xsm import install;print(json.dumps(install.prune_snapshots()))";
+        const removed = JSON.parse(execFileSync('python3', ['-B', '-c', code, root], { encoding: 'utf8' }));
+        assert.ok(removed.includes(installation.runtime_root.split('/').at(-1)));
+        const leases = await readdir(join(temp, 'xsm/component-leases'));
+        assert.equal(leases.filter(name => name.endsWith('.json')).length, 0);
+        result.installedSnapshotReleasedAfterUnload = true;
+      }
       const sessionFiles = await readdir(join(temp, 'xsm/sessions')).catch(error => {
         if (error.code === 'ENOENT') return [];
         throw error;

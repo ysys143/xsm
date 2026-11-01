@@ -240,3 +240,13 @@ state initialization, housekeeping and telemetry; it does not create an xsm
 home or open a participant. Exporting the bundle does not turn the incomplete
 experimental contract or native runtime support into a stable compatibility
 promise.
+
+## Owned native installation
+
+`xsm protocol install|inspect|uninstall <runtime> --home <native-profile>` supports
+experimental Pi, OpenCode, Hermes and OpenClaw bindings. Use `--dry-run` on
+install/uninstall to inspect the proposed action. OpenClaw uses the explicit
+state directory's `extensions/xsm` and preserves configuration and native trust
+records. Activation remains operator opt-in; a local discovery warning is not
+removed by manufacturing native provenance. See [OpenClaw installation](openclaw.md)
+for the verified scope and remaining native checks.

@@ -683,7 +683,7 @@ Principles:
 
 ## Documents
 
-- **[Experimental host protocol](docs/protocol/README.md)**: unreleased development path. Pi and OpenCode bindings, installation and UI are under isolated testing; full runtime and messenger support is incomplete.
+- **[Experimental host protocol](docs/protocol/README.md)**: unreleased development path. Pi, OpenCode, Hermes and OpenClaw bindings and owned installation paths are under isolated testing; native UI, full runtime and messenger support are incomplete.
 
 Most documents under `docs/` are written in Korean.
 
