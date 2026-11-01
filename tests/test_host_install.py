@@ -14,8 +14,11 @@ class HostInstallTest(TempState):
         super().setUp()
         from xsm import install
         self.source = Path(self.tmp, "checkout")
-        for part in ("xsm", "hooks", "skills", "bin", ".claude-plugin", ".codex-plugin", "clients", "integrations"):
+        for part in ("xsm", "hooks", "skills", "bin", ".claude-plugin", ".codex-plugin", "clients", "integrations", "docs/protocol"):
             shutil.copytree(Path(REPO, part), self.source / part, ignore=shutil.ignore_patterns("__pycache__"))
+        (self.source / "scripts").mkdir()
+        for script in ("conform-host-protocol.py", "check-protocol-schema.py"):
+            shutil.copy2(Path(REPO, "scripts", script), self.source / "scripts" / script)
         shutil.copy2(Path(REPO, "LICENSE"), self.source / "LICENSE")
         patch = mock.patch.object(install, "REPO", str(self.source))
         patch.start()
@@ -428,3 +431,71 @@ class HostInstallTest(TempState):
         with self.assertRaises(OSError):
             host_install.apply("hermes", str(profile))
         self.assertEqual(list(outside.iterdir()), [])
+
+
+    def test_installed_snapshot_exports_its_public_protocol_contract_without_checkout(self):
+        import hashlib
+        import subprocess
+        import sys
+        from xsm import host_install, install
+        result = host_install.apply("pi", str(self.home))
+        root = Path(result["runtime_root"])
+        self.assertTrue((root / "docs/protocol/request.schema.json").is_file())
+        self.assertTrue((root / "scripts/conform-host-protocol.py").is_file())
+        self.assertTrue((root / "scripts/check-protocol-schema.py").is_file())
+        shutil.rmtree(self.source)
+        env = dict(PATH=os.environ.get("PATH", os.defpath), HOME=self.user_home,
+                   XSM_HOME=self.tmp, PYTHONDONTWRITEBYTECODE="1")
+        process = subprocess.run([sys.executable, "-B", "-c", install.BOOT, str(root),
+                                  "protocol", "describe"], cwd=self.user_home, env=env,
+                                  capture_output=True, text=True, timeout=10)
+        self.assertEqual(process.returncode, 0, process.stderr)
+        bundle = json.loads(process.stdout)
+        self.assertEqual(bundle["protocolVersion"], "1")
+        self.assertTrue(bundle["experimental"])
+        self.assertEqual(len(bundle["methods"]), 11)
+        self.assertEqual(len(bundle["operations"]), 21)
+        for name, artifact in bundle["artifacts"].items():
+            content = (root / name).read_bytes()
+            self.assertEqual(artifact["text"].encode(), content)
+            self.assertEqual(artifact["sha256"], hashlib.sha256(content).hexdigest())
+        self.assertIn("docs/protocol/output.schema.json", bundle["artifacts"])
+        self.assertIn("scripts/conform-host-protocol.py", bundle["artifacts"])
+
+        report = Path(self.tmp, "snapshot-conformance.json")
+        checked = subprocess.run([sys.executable, "-B", str(root / "scripts/conform-host-protocol.py"),
+            "--output", str(report), "--command", sys.executable, "-B", "-c", install.BOOT, str(root),
+            "protocol", "serve", "--stdio"], cwd=self.user_home, env=env,
+            capture_output=True, text=True, timeout=20)
+        self.assertEqual(checked.returncode, 0, checked.stdout + checked.stderr)
+        self.assertEqual(len(json.loads(report.read_text())["checks"]), 16)
+
+    def test_contract_export_refuses_partial_artifact_set(self):
+        from xsm import protocol_contract
+        (self.source / "docs/protocol/output.schema.json").unlink()
+        with self.assertRaisesRegex(ValueError, "public protocol artifacts missing"):
+            protocol_contract.bundle(self.source)
+
+    def test_contract_export_does_not_follow_an_artifact_symlink(self):
+        from xsm import protocol_contract
+        outside = Path(self.tmp, "not-a-public-artifact")
+        outside.write_text("must-not-export")
+        artifact = self.source / "docs/protocol/output.schema.json"
+        artifact.unlink()
+        artifact.symlink_to(outside)
+        with self.assertRaisesRegex(ValueError, "artifact symlink or outside installation"):
+            protocol_contract.bundle(self.source)
+
+    def test_protocol_describe_does_not_initialize_state_or_home(self):
+        import subprocess
+        import sys
+        state = Path(self.tmp, 'uncreated-state')
+        home = Path(self.tmp, 'uncreated-home')
+        env = dict(PATH=os.environ.get('PATH', os.defpath), HOME=str(home), XSM_HOME=str(state),
+                   PYTHONPATH=REPO, PYTHONDONTWRITEBYTECODE='1')
+        result = subprocess.run([sys.executable, '-B', '-m', 'xsm', 'protocol', 'describe'],
+            cwd=REPO, env=env, capture_output=True, text=True, timeout=10)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(json.loads(result.stdout)['protocolVersion'], '1')
+        self.assertFalse(state.exists())
+        self.assertFalse(home.exists())

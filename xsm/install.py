@@ -718,6 +718,8 @@ RUNTIME_FILES = ("xsm/*.py", "hooks/*", "skills/**", "bin/xsm",
                  "clients/typescript/*.mjs", "clients/typescript/*.d.mts", "clients/python/*.py",
                  "integrations/*/*.mjs", "integrations/*/*.py", "integrations/*/plugin.yaml",
                  "integrations/openclaw/openclaw.plugin.json",
+                 "docs/protocol/*.md", "docs/protocol/*.json", "scripts/conform-host-protocol.py",
+                 "scripts/check-protocol-schema.py",
                  "native/xsm-net/Cargo.toml", "native/xsm-net/Cargo.lock",
                  "native/xsm-net/src/*.rs")
 # A commit id as git prints it. Checked before one goes on a git command line.

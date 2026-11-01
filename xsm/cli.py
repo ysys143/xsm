@@ -3262,6 +3262,9 @@ def main(argv=None) -> int:
     if args.xsm_home:
         os.environ["XSM_HOME"] = os.path.expanduser(args.xsm_home)
         paths.HOME = os.environ["XSM_HOME"]
+    if args.command == "protocol" and args.protocol_action == "describe":
+        # Contract inspection must not create state, prune snapshots, or emit telemetry.
+        return args.func(args)
     try:
         paths.ensure_home()
     except OSError as err:

@@ -546,6 +546,9 @@ def configure_parser(sub):
     server = actions.add_parser("serve", help="serve JSON-RPC over stdio")
     server.add_argument("--stdio", action="store_true", required=True)
     server.set_defaults(func=lambda args: serve())
+    from . import protocol_contract
+    describe = actions.add_parser("describe", help="export this installation's experimental protocol contract as JSON")
+    describe.set_defaults(func=protocol_contract.command)
     from . import host_install
     for action in ("install", "uninstall", "inspect"):
         parser = actions.add_parser(action, help=action + " a native host binding")

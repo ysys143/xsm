@@ -219,3 +219,23 @@ Direct `naturalBoundary()` still raises the refusal to its caller, and now
 schedules a cancellable background retry. Native hooks recognize that scheduled
 refusal and let the current turn proceed. No admitted report is emitted until
 the retry actually observes native acceptance.
+
+## Contract from an installed snapshot
+
+`xsm protocol describe` prints a JSON bundle of this installation's experimental
+protocol version, 11 wire methods, current operation descriptors, public schema/
+example/documentation files and the two verification scripts. Each artifact
+contains its UTF-8 text and SHA-256 digest. The hashes describe the installed
+bytes; they do not independently authenticate the publisher.
+
+Immutable snapshots include `docs/protocol/*.md`, `docs/protocol/*.json`,
+`scripts/conform-host-protocol.py` and `scripts/check-protocol-schema.py`. The
+stdlib conformance runner works without the source checkout. The separate schema
+checker still needs the development `jsonschema` package. Incomplete artifact
+sets and symlinked/outside artifacts are refused rather than exported partially.
+
+Describe is a local CLI action, not a twelfth wire method. It returns before
+state initialization, housekeeping and telemetry; it does not create an xsm
+home or open a participant. Exporting the bundle does not turn the incomplete
+experimental contract or native runtime support into a stable compatibility
+promise.

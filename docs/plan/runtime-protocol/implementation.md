@@ -1147,3 +1147,29 @@ release 외의 ACK/재실행 호출이 없는지 확인한다. 수정 전 Python
 공통 349개(핵심 226, Python 40, Node 83)는 Python 3.14.6에서 59.541초에
 통과했다(`release-primary-gate.log`). 이 검사는 SDK 오류 경로이며 native 모델
 소비·사람 UI·전체 재접속·Linux와 P0–P5 나머지 완료를 증명하지 않는다.
+
+## 설치본의 공개 계약 bundle
+
+불변 runtime 스냅샷에 공개 스키마·예제·문서와 외부 적합성/스키마 검사기를
+포함했다. `xsm protocol describe`는 설치본 자체의 protocol version, 11개 wire
+메서드, 현재 작업 descriptor, 각 자산의 UTF-8 본문과 SHA-256을 JSON으로
+반환한다. 이 CLI action을 새 wire 메서드로 세지 않는다. 누락된 필수 자산과
+symlink/outside 자산은 부분 성공으로 내보내지 않는다. 표준 스키마 검사기의
+jsonschema는 계속 별도 개발 의존성이며 stdlib checker는 독립 실행한다.
+
+변경 전 설치 snapshot에는 request.schema.json부터 없어서 실패했다
+(`installed-contract-red.log`). 수정 후 시험 복사 체크아웃을 제거하고 설치본
+CLI에서 모든 본문/해시와 11개 메서드·21개 작업을 확인했다. 설치본의 stdlib
+checker가 같은 설치본 서버의 수명 계약 16개를 모두 통과했다.
+
+공통 CLI 초기화는 계약 조회에도 상태 폴더 생성과 housekeeping을 시도했다.
+새 읽기 전용 검사는 이를 재현했다(`contract-readonly-red.log`). Describe를
+상태 초기화·prune·telemetry 이전에 반환시켜 새 HOME/XSM_HOME이 생성되지
+않게 했다. Python 3.9.6 설치 관련 검사 31개가 통과했다
+(`contract-readonly-python39.log`). 최종 두 스크립트 포함 상태의 공통
+353개(핵심 230, Python 40, Node 83)는 Python 3.14.6에서 65.321초에 통과했다
+(`installed-contract-gate-final.log`).
+
+공개 자산 제공은 전체 normative operation 결과·독립 전체 구현 인증을
+대체하지 않는다. Native UI/push/worker·자동 재접속·Linux·원격·전체 방향
+조합을 포함한 P0–P5의 남은 수용 조건은 미완이다.
