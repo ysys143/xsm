@@ -47,6 +47,12 @@ for line in sys.stdin.buffer:
             error(request, -32001, "unsupported version", {"supported": []})
         elif MODE == "init-eof":
             break
+        elif MODE == "init-wrong-version":
+            reply(request, {"protocolVersion": "2"})
+        elif MODE == "init-missing-version":
+            reply(request, {})
+        elif MODE == "init-nonobject":
+            reply(request, ["1"])
         else:
             reply(request, {"protocolVersion": "1"})
         initialized = True

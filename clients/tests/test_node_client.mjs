@@ -131,3 +131,30 @@ test('final response before exit is delivered and graceful close reaps the peer'
   await client.close();
   assert.equal(client.process.exitCode, 0);
 });
+
+test('version negotiation rejects invalid results and reaps peer', settings, async t => {
+  const seen = [];
+  class Observed extends XsmClient {
+    constructor(...args) { super(...args); seen.push(this); }
+  }
+  t.after(() => Promise.all(seen.map(client => client.close())));
+  for (const mode of ['init-wrong-version', 'init-missing-version', 'init-nonobject']) {
+    await assert.rejects(Observed.connect({ command: [python, '-u', peer, mode], closeTimeout: 100 }),
+      error => error instanceof TransportError && /version negotiation/.test(error.message));
+    assert.ok(seen.at(-1).process.exitCode !== null || seen.at(-1).process.signalCode !== null);
+  }
+});
+
+test('negotiation error survives cleanup failure after reaping', settings, async t => {
+  const seen = [], diagnostics = [];
+  class CleanupFails extends XsmClient {
+    constructor(...args) { super(...args); seen.push(this); }
+    async close() { await super.close(); throw new Error('fixture cleanup failure'); }
+  }
+  t.after(() => Promise.all(seen.map(client => client.close().catch(() => {}))));
+  await assert.rejects(CleanupFails.connect({ command: [python, '-u', peer, 'init-wrong-version'],
+    closeTimeout: 100, onStderr: text => diagnostics.push(text) }),
+    error => error instanceof TransportError && /version negotiation/.test(error.message));
+  assert.ok(seen[0].process.exitCode !== null || seen[0].process.signalCode !== null);
+  assert.ok(diagnostics.some(text => /fixture cleanup failure/.test(text)));
+});

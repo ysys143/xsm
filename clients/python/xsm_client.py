@@ -80,9 +80,17 @@ class XsmClient:
             client.initialization = await client.request(
                 "initialize", {"protocolVersion": "1"}
             )
+            if not isinstance(client.initialization, dict) or client.initialization.get("protocolVersion") != "1":
+                raise TransportError("unsupported or malformed protocol version negotiation")
             return client
         except BaseException:
-            await client.close()
+            try:
+                await client.close()
+            except Exception as cleanup_error:
+                try:
+                    client._on_stderr("xsm cleanup: " + str(cleanup_error) + "\n")
+                except Exception:
+                    pass
             raise
 
     async def request(self, method: str, params: dict | None = None) -> Any:

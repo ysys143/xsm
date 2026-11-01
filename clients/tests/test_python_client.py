@@ -145,5 +145,44 @@ class ClientTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(client.process.returncode, 0)
 
 
+
+    async def test_version_negotiation_rejects_invalid_results_and_reaps_peer(self):
+        for mode in ('init-wrong-version', 'init-missing-version', 'init-nonobject'):
+            seen = []
+            class Observed(XsmClient):
+                def __init__(self, *args):
+                    super().__init__(*args)
+                    seen.append(self)
+            try:
+                with self.assertRaisesRegex(TransportError, 'version negotiation'):
+                    await Observed.connect([sys.executable, '-u', PEER, mode], close_timeout=.1)
+                self.assertIsNotNone(seen[0].process.returncode)
+            finally:
+                for client in seen:
+                    await client.close()
+
+    async def test_negotiation_error_survives_cleanup_error_after_reaping(self):
+        seen, diagnostics = [], []
+        class CleanupFails(XsmClient):
+            def __init__(self, *args):
+                super().__init__(*args)
+                seen.append(self)
+            async def close(self):
+                await super().close()
+                raise RuntimeError('fixture cleanup failure')
+        try:
+            with self.assertRaisesRegex(TransportError, 'version negotiation'):
+                await CleanupFails.connect([sys.executable, '-u', PEER, 'init-wrong-version'],
+                                           close_timeout=.1, on_stderr=diagnostics.append)
+            self.assertIsNotNone(seen[0].process.returncode)
+            self.assertTrue(any('fixture cleanup failure' in item for item in diagnostics))
+        finally:
+            for client in seen:
+                try:
+                    await client.close()
+                except RuntimeError:
+                    pass
+
+
 if __name__ == "__main__":
     unittest.main()

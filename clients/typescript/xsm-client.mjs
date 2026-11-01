@@ -43,9 +43,15 @@ export class XsmClient {
     const client = new this(child, onStderr, closeTimeout);
     try {
       client.initialization = await client.request('initialize', { protocolVersion: '1' });
+      if (!object(client.initialization) || client.initialization.protocolVersion !== '1') {
+        throw new TransportError('unsupported or malformed protocol version negotiation');
+      }
       return client;
     } catch (error) {
-      await client.close();
+      try { await client.close(); }
+      catch (cleanupError) {
+        try { onStderr('xsm cleanup: ' + cleanupError.message + '\n'); } catch {}
+      }
       throw error;
     }
   }

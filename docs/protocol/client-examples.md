@@ -164,3 +164,17 @@ UI 코드만 소유한다. 모델 도구에는 일반 `XsmClient`의 협업 작�
 
 응답 콜백 시험은 UI 대신 명시적인 시험 호스트를 사용했다. 실제 사용자
 표시·답 수집과 네이티브 런타임 인증이 끝났다는 의미는 아니다.
+
+## Negotiation and failed connection cleanup
+
+Both basic clients require initialize to return an object with
+`protocolVersion: "1"` before returning a connected client. A different version,
+missing version or non-object result raises TransportError. Host capabilities
+and lease validation remain the additional responsibility of XsmHost.
+
+If negotiation fails or is cancelled, connect attempts to close and reap its
+peer. A cleanup failure is reported through the stderr diagnostic callback and
+does not replace the original failure. Cleanup failure is not itself evidence
+that every resource was recovered. The independent echo-peer tests check actual
+process termination after malformed negotiation, including a close override
+that raises only after reaping the process.

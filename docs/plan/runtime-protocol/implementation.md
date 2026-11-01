@@ -1311,3 +1311,26 @@ Claim lease 검증도 두 언어를 맞췄다. 유한한 양수 숫자만 허용
 Python 42, Node 94)는 Python 3.14.6에서 58.621초에 통과했다
 (`sdk-initialize-gate.log`). 이 결과는 SDK host 초기화 경로이며 전체 native
 초기화/재접속·모델/사람 UI·worker·Linux와 P0–P5 나머지는 미완이다.
+
+## 기본 client의 버전 협상과 실패 정리
+
+두 기본 client는 initialize result의 protocolVersion을 확인하지 않고 연결을
+성공으로 반환했다. 버전 불일치·누락·비 object 결과를 TransportError로 거부한다.
+접속 실패 시 close 오류는 stderr 진단으로 분리해 원래 오류를 유지한다.
+Close 실패 자체를 자원 회수 성공으로 보고하지 않는다.
+
+시험 서버는 xsm을 import하지 않는 독립 echo peer다. 잘못된 세 형태의 실제
+stdio 응답을 거부하고 peer 종료를 확인한다. Close가 실제 process를 회수한 뒤
+추가 오류를 던지는 subclass에서도 원래 협상 오류와 정리 진단이 구분된다.
+Node 수정 전 검사는 실패했다(`version-negotiation-node-red.log`). Python 새
+검사는 처음 배치가 잘못돼 수집되지 않았다. 위치를 고쳐 이전 client의 격리
+사본을 실행했고 실제 실패를 확인했다
+(`version-negotiation-python-baseline-verified.log`). 처음 Python red 로그의
+14개 통과를 새 검사 검증으로 세지 않는다.
+
+수정 후 Python 3.9.6 기본 client 검사 16개가 통과했다
+(`version-negotiation-python-final.log`). Node 검사도 통과했다
+(`version-negotiation-node-green.log`). 공통 371개(핵심 231, Python 44, Node 96)는
+Python 3.14.6에서 58.769초에 통과했다(`version-negotiation-gate.log`). 협상
+검증은 안정판 호환성 보증이나 모든 SDK 오류/취소 계약 완료가 아니다.
+자동 재접속·native 모델/사람 UI·worker·Linux와 P0–P5 나머지는 미완이다.
