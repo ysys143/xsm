@@ -616,3 +616,21 @@ fixture다. 같은 route의 두 UUID 분리·DM/pull/ACK·미연결 UI 거부·s
 공통 264개는 수정 후 Python 3.9.6에서 57.203초에 통과했다
 (`openclaw-capture-fix-py39.log`). Native agent turn·모델·실제 사용자 UI·수신
 주입·owned 설치·one-shot CLI·gateway·Linux·메신저와 전체 계획은 미완이다.
+
+## OpenClaw 수신 admission의 native 저장소 실험
+
+Route-only next-turn API는 metadata의 expectedSessionId를 검증하지 않았다.
+Native 저장소의 대화를 교체한 뒤 이전 대화 ID metadata가 든 요청을 보냈을
+때 교체된 대화의 queue에 수락됨을 재현했다. 자동 수신에는 연결하지 않았다.
+
+Public patchSessionEntry의 최종 guard는 이미 교체된 대화의 준비된 쓰기를
+거부했다. Guard를 제거한 변이는 실제 native SDK 검사를 실패시켰다.
+추가 교체 실험은 같은 프로세스/별도 프로세스 × guard 유무의 4건이다.
+같은 프로세스에서는 native 직렬화로 교체가 기다렸고, 별도 프로세스에서는
+교체 후 native SQLite 상태 변경 검사가 쓰기를 거부했다. 뒤의 두 건은 사용자
+guard 0회이므로 사용자 guard의 성공으로 세지 않는다.
+
+`scripts/probe-openclaw-session-guard.mjs`, `openclaw-session-guard-final.json`,
+`openclaw-session-guard-mutation.json`에 재현 경로와 수치를 남긴다.
+원본 코드·사용자 native 프로필은 바꾸지 않았다. 이는 native SDK 저장소
+fixture이며 자동 수신·실제 agent/reset UI와 전체 계획 완료 증거는 아니다.

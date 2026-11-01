@@ -140,3 +140,39 @@ Binding의 기본 명령은 이제 native API의 원본 절대 source에서 계�
 ```sh
 /isolated/node scripts/probe-openclaw-loader.mjs /isolated/node_modules/openclaw deliverables/openclaw-tools.json --execute
 ```
+
+## 자동 수신의 대상 대화 결속 실험
+
+`probe-openclaw-session-guard.mjs`는 고정 native SDK의 실제 저장소를 사용한다.
+모든 HOME/state는 임시 폴더이며 native agent나 모델은 실행하지 않는다.
+대기열 metadata에 `expectedSessionId`를 넣는 것만으로는 검증되지 않았다.
+동일 route의 저장된 sessionId를 교체한 뒤 이전 ID가 담긴 요청을 enqueue하면
+교체된 대화의 대기열에 그대로 수락됐다. 따라서 route-only API에 metadata를
+추가하는 것만으로 xsm의 정확한 대화 결속을 구현할 수 없다.
+
+Public runtime의 `agent.session.patchSessionEntry`와 `assertCommitAllowed`도
+실험했다. 이미 교체된 대화에 준비한 쓰기는 update callback이 실행된 뒤
+최종 guard에서 거부됐다. Guard를 제거한 변이는 이 검사를 실패시켰다.
+
+준비 callback을 중단한 상태의 교체 실험 4건은 다음처럼 구분한다.
+
+| 교체 경로 | 최종 guard | 준비 중 교체 완료 | 결과 |
+|---|---|---|---|
+| 같은 프로세스 | 없음 | 아니요 | native 직렬화 뒤 교체. 교체 전 guard의 효과를 입증하는 표본이 아님 |
+| 같은 프로세스 | 있음 | 아니요 | native 직렬화 뒤 교체. guard 1회 호출 |
+| 별도 프로세스 | 없음 | 예 | native의 SQLite 상태 변경 검사에서 쓰기 거부 |
+| 별도 프로세스 | 있음 | 예 | 같은 native 검사에서 거부. 사용자 guard는 호출되지 않음 |
+
+거부된 쓰기의 표식은 교체된 대화에 남지 않았다. 뒤의 두 결과를 사용자
+guard가 막았다고 해석하지 않는다. 이 결과는 native patch의 동시 변경 보호를
+보여 주며 native queue의 자동 수신 구현이나 실제 reset UI 인증은 아니다.
+
+`openclaw-session-guard-final.json`과 `openclaw-session-guard-mutation.json`에
+결과를 남긴다. `openclaw-session-guard-first.json`은 같은 프로세스만 시험한
+초기 표본이며, 교체가 준비 중 완료되지 않아 경쟁 방어 근거로 쓰지 않는다.
+후속 구현은 exact sessionId/수명과 native 최종 admission을 결속하고, 실제
+대기열 소비·취소·재시도·용량·prompt-injection 정책까지 실행 검증해야 한다.
+
+```sh
+/isolated/node scripts/probe-openclaw-session-guard.mjs /isolated/node_modules/openclaw deliverables/openclaw-guard.json
+```
