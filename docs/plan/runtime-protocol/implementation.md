@@ -543,3 +543,25 @@ native system-event 큐의 용량·거부·ACK 경계를 확인했다.
 [구현 경계와 원문 근거](../../protocol/openclaw.md)에 남긴다.
 파일 해시는 `openclaw-stable-api.json`에 있다. Native host·loader·도구 실행은
 아직 하지 않았으며 OpenClaw 연결부 및 P4/P5는 미완이다.
+
+## Node 호스트의 선택적 수신과 거부 처리
+
+OpenClaw 연결 준비 중 Node 공통 호스트가 수신 callback 없이도 events를
+광고하는 것과 callback의 명시적 false를 admitted로 보고하는 것을 확인했다.
+두 경로를 실제 프로토콜 subprocess 검사에서 수정 전 실패로 재현했다.
+최초 false 검사에는 잘못된 priority가 있어 fixture를 wake=never로 고친 뒤
+다시 실패를 확인했다. 두 실패 로그를 모두 보존했다.
+
+이제 deliver가 없으면 pull-only로 참여하고 events를 구독하지 않는다.
+naturalBoundary는 claim을 가져오기 전에 거부하며 도구의 inbox/ACK는 동작한다.
+false 반환은 수락 거부로 처리하고 claim을 ACK 없이 반환한다. 수신과 UI는
+독립적이며 pull-only host의 질문 응답·원 작업 재호출도 실제 서버에서 통과했다.
+
+공통 259개(핵심 183, Python 28, Node 48)가 Python 3.9에서 57.004초,
+3.14에서 36.710초에 통과했다. TypeScript 컴파일 검사도 통과했다.
+`node-pull-gate-{py39,py314}.log`, `node-pull-types.log`,
+`node-pull-ui-final.log`가 근거다.
+수정 후 실제 Pi 1.4.0 SDK와 설치된 OpenCode 1.19.5의 native TUI 선택·적용
+경로도 통과했다(`pi-node-pull-final.json`, `opencode-node-pull-final/result.json`).
+두 native 시험은 assistant/UI fixture이며 모델이나 사람의 인증으로 세지 않는다.
+OpenClaw 자체의 연결·loader·실제 큐 경로는 여전히 미완이다.

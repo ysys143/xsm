@@ -35,9 +35,48 @@ async function fixture(t, callbacks = {}) {
   return { host, errors, command, env };
 }
 
-test('binding presents a native callback once and retries original operation', { timeout: 10000 }, async t => {
+test('pull-only binding preserves explicit inbox claims without advertising delivery', { timeout: 10000 }, async t => {
+  const { host, command, env, errors } = await fixture(t, { deliver: undefined });
+  assert.equal(host.session.capabilities.includes('events'), false);
+  await assert.rejects(host.naturalBoundary(), /not connected/);
+  const sender = await XsmClient.connect({ command, env, cwd: root });
+  t.after(() => sender.close());
+  const origin = await sender.sessionOpen({ runtime: 'sender-fixture', profile: 'isolated',
+    conversation: 'b', cwd: root });
+  await sender.operationCall(origin.session, 'xsm_send', {
+    target: 'ref:' + host.session.ref, text: 'Pull this original', wait: 0,
+  });
+  const pack = await host.call('xsm_inbox');
+  assert.equal(pack.claims.length, 1);
+  assert.match(JSON.stringify(pack.messages), /Pull this original/);
+  const ack = await host.call('xsm_ack', { tokens: pack.claims.map(c => c.token) });
+  assert.equal(ack.acked.length, 1);
+  assert.deepEqual(errors, []);
+});
+
+test('explicit false native admission releases claims without recording admission', { timeout: 10000 }, async t => {
+  const { host, command, env } = await fixture(t, { deliver: async () => false });
+  const sender = await XsmClient.connect({ command, env, cwd: root });
+  t.after(() => sender.close());
+  const origin = await sender.sessionOpen({ runtime: 'sender-fixture', profile: 'isolated',
+    conversation: 'b', cwd: root });
+  const reports = [];
+  const original = host.client.deliveryReport.bind(host.client);
+  host.client.deliveryReport = (...args) => { reports.push(args); return original(...args); };
+  // FYI reaches only the explicit boundary, avoiding timing assumptions about the pump.
+  await sender.operationCall(origin.session, 'xsm_send', {
+    target: 'ref:' + host.session.ref, text: 'Rejected original', wake: 'never', wait: 0,
+  });
+  await assert.rejects(host.naturalBoundary(), /refused/);
+  assert.deepEqual(reports, []);
+  const pack = await host.call('xsm_inbox');
+  assert.equal(pack.claims.length, 1);
+  assert.match(JSON.stringify(pack.messages), /Rejected original/);
+});
+
+test('pull-only binding presents a native callback once and retries original operation', { timeout: 10000 }, async t => {
   const displayed = [];
-  const { host, errors } = await fixture(t, { present: async event => {
+  const { host, errors } = await fixture(t, { deliver: undefined, present: async event => {
     displayed.push(event.params.question);
     return { displayed: event.params.question, sourceId: event.params.questionId, answer: 'blue' };
   } });

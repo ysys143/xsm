@@ -119,7 +119,7 @@ if (event.method === 'events/available') {
 }
 ```
 
-알림 수신 자체는 배달 처리 완료를 뜻하지 않는다. `delivery.report.state`는 `queued`, `refused`, `unknown`만 허용하며 `received`는 서버에서 거부한다. 보고 결과의 `acknowledged`는 `false`이고 소비 ACK를 대체하지 않는다. `xsm_inbox`가 반환한 실제 메시지를 읽은 뒤 claim의 `token`을 `operation.call`의 `xsm_ack`, `{tokens: [token]}`으로 전달한다. 클라이언트는 자동으로 배달 상태를 보고하거나 ACK하지 않는다. 알림 큐는 제한이 없으므로 구독 후 지속적으로 소비한다. 여러 소비자가 있으면 알림 하나는 소비자 하나에게 전달된다.
+알림 수신 자체는 배달 처리 완료를 뜻하지 않는다. `delivery.report.state`는 `queued`, `admitted`, `refused`, `unknown`을 허용하며 `received`는 서버에서 거부한다. `admitted`는 실제 native context 수락을 관찰한 수신자만 자기 claim의 `token`과 함께 보고한다. 보고 결과의 `acknowledged`는 `false`이고 소비 ACK를 대체하지 않는다. `xsm_inbox`가 반환한 실제 메시지를 읽은 뒤 claim의 `token`을 `operation.call`의 `xsm_ack`, `{tokens: [token]}`으로 전달한다. 저수준 클라이언트는 자동으로 배달 상태를 보고하거나 ACK하지 않는다. 알림 큐는 제한이 없으므로 구독 후 지속적으로 소비한다. 여러 소비자가 있으면 알림 하나는 소비자 하나에게 전달된다.
 
 ## 오류와 프로세스 수명
 

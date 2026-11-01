@@ -12,7 +12,7 @@ export interface HostOptions extends ConnectOptions {
   profile: string;
   conversation: string;
   cwd: string;
-  deliver: (packet: InboxPacket, options: { wake: boolean; signal: AbortSignal; leaseSeconds: number }) => Promise<void>;
+  deliver?: (packet: InboxPacket, options: { wake: boolean; signal: AbortSignal; leaseSeconds: number }) => Promise<void | boolean>;
   present?: (event: Notification, options: { signal: AbortSignal }) => Promise<{
     displayed: string; sourceId: string; answer?: string | null; action?: 'accept' | 'decline' | 'cancel';
   }>;

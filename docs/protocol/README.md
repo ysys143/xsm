@@ -158,5 +158,12 @@ from the server, handles question correlation and cancellation, and reports
 queue acceptance only after the binding observes admission. It never
 automatically acknowledges message consumption.
 
+Without `deliver`, the helper is pull-only: it does not advertise or subscribe
+to `events`. Tools can explicitly read `xsm_inbox` and acknowledge consumption
+with `xsm_ack`. `naturalBoundary()` rejects before fetching any claim when native
+delivery is absent. A delivery callback must resolve only after observed native
+admission; an explicit `false` rejects admission and releases the claims without
+writing an admitted report. `present` remains independent of native delivery.
+
 The helper currently rejects waits on a failed connection; automatic reconnect
 without restarting the native session is still an open acceptance item.

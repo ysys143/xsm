@@ -28,18 +28,19 @@ export class XsmHost {
       env: options.env, onStderr: options.onStderr });
     try {
       const available = client.initialization.capabilities;
-      const required = ['messaging', 'inbox', 'events', ...(options.present ? ['user-decisions'] : [])];
+      const required = ['messaging', 'inbox', ...(options.deliver ? ['events'] : []),
+        ...(options.present ? ['user-decisions'] : [])];
       if (!Array.isArray(available) || required.some(capability => !available.includes(capability)) ||
           !(client.initialization.limits?.claimLeaseSeconds > 0)) {
         throw new Error('server does not expose the required host protocol capabilities and claim lease');
       }
-      const capabilities = ['messaging', 'inbox', 'events'];
+      const capabilities = ['messaging', 'inbox', ...(options.deliver ? ['events'] : [])];
       if (options.present) capabilities.push('user-decisions');
       const session = await client.sessionOpen({ runtime: options.runtime, profile: options.profile,
         conversation: options.conversation, cwd: options.cwd, capabilities });
       const { operations } = await client.request('operations/list');
       const host = new XsmHost(client, session, operations, options);
-      await client.eventsSubscribe(session.session);
+      if (options.deliver) await client.eventsSubscribe(session.session);
       host.pumpTask = host.pump();
       return host;
     } catch (error) { await client.close(); throw error; }
@@ -203,12 +204,14 @@ export class XsmHost {
   }
 
   async deliverInbox(wake) {
+    if (!this.options.deliver) throw new Error('native delivery is not connected');
     const pack = await this.client.operationCall(this.session.session, 'xsm_inbox', {});
     if (!pack.messages.length) return pack;
     try {
       // Resolves only after the native binding observes admission, never on stdout flush.
-      await this.options.deliver(pack, { wake, signal: this.controller.signal,
+      const accepted = await this.options.deliver(pack, { wake, signal: this.controller.signal,
         leaseSeconds: this.client.initialization.limits.claimLeaseSeconds });
+      if (accepted === false) throw new Error('native queue refused admission');
       for (const claim of pack.claims) await this.client.deliveryReport(this.session.session, claim.id, 'admitted', claim.token);
     } catch (error) {
       if (!this.closed && pack.claims.length) {
