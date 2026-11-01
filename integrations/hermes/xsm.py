@@ -50,11 +50,9 @@ class HermesBinding:
         return asyncio.run_coroutine_threadsafe(coroutine, self.loop).result()
 
     def _identity(self, session_id):
-        from gateway.session_context import get_session_env
         sid = str(session_id or "")
-        bound = get_session_env("HERMES_SESSION_ID", "")
-        if not sid or (bound and bound != sid):
-            raise RuntimeError("native caller session identity is missing or differs")
+        if not sid:
+            raise RuntimeError("native dispatcher session identity is missing")
         cwd = self.context.session_cwd()
         if not cwd or not Path(cwd).is_absolute() or not Path(cwd).is_dir():
             raise RuntimeError("native caller has no existing absolute workspace")
@@ -135,12 +133,10 @@ def register(context):
             return (await client.request("operations/list"))["operations"]
     try:
         for operation in binding._run(describe()):
-            registered = context.register_tool(name=operation["name"], toolset="xsm",
+            context.register_tool(name=operation["name"], toolset="xsm",
                 schema={"name": operation["name"], "description": operation["description"],
                         "parameters": operation["inputSchema"]}, handler=binding.handler(operation["name"]),
                 description=operation["description"])
-            if registered is None:
-                raise RuntimeError("native tool registration refused: " + operation["name"])
         for name, callback in (("on_session_start", binding.start), ("on_session_end", binding.settled),
                 ("on_session_finalize", binding.finalize), ("on_session_delete", binding.finalize),
                 ("on_session_reset", binding.reset)):

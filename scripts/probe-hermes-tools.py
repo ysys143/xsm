@@ -91,10 +91,10 @@ def run(args):
         tokens = set_session_vars(platform="tui", session_id="native-b", session_key="native-b", cwd=str(temp / "b"))
         try:
             forged = json.loads(registry.dispatch("xsm_inbox", {}, scope=manager.scope_key, session_id="native-a"))
-            assert "differs" in str(forged), forged
+            assert "workspace changed" in str(forged), forged
         finally:
             clear_session_vars(tokens)
-        result["checks"].append("mismatched native dispatcher identity is refused")
+        result["checks"].append("existing native caller cannot borrow another workspace")
         manager.invoke_hook("on_session_end", session_id="native-a")
         assert not next(item for item in records() if item["ref"] == first["ref"]).get("ended_at")
         manager.invoke_hook("on_session_finalize", session_id="native-a")

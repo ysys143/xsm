@@ -5,7 +5,7 @@ CLI/TUI 전체 수명·자동 주입·사용자 UI·설치·worker는 미완이�
 
 [`integrations/hermes/xsm.py`](../../integrations/hermes/xsm.py)의 `register(context)`는
 공통 서버의 스키마로 native 도구 21개를 등록한다. 도구 dispatcher가 제공한
-`session_id`를 task-local 세션 ID와 비교하고 native `session_cwd()`를 사용한다.
+`session_id`와 native `session_cwd()`를 사용하고 기존 참여의 폴더 일치를 확인한다.
 모델 인자로 발신자를 고르거나 gateway 프로세스의 cwd를 대신 쓰지 않는다.
 프로필은 등록 시 실제 Hermes home으로 고정한다.
 
@@ -26,6 +26,12 @@ Directory entry `__init__.py`와 도구 21개/수명 hook을 선언한 `plugin.y
 원시 결과는 `hermes-directory-entry-fixed.log`에 남겼다. 첫 호출은 parser
 인자를 잘못 전달해 실패했으며 그 로그도 보존했다.
 
+후속 실제 native validator는 15개 검사를 경고 없이 통과했다
+(`hermes-validator-final.log`). 기록용 context가 핸들을 반환하지 않는 경우도
+native API 계약대로 허용하며 충돌 처리는 native registry에 맡긴다. SDK 직접
+실행에서는 도구 21개가 실제 등록됨을 별도로 확인했다. Private session 모듈
+import는 제거했다. 초기 validator 실패도 `hermes-validator-first.log`에 남겼다.
+
 기본 연결은 pull 방식이다. Native push callback이나 사용자 UI를 연결하지
 않았으므로 events/user-decisions를 광고하지 않는다. 읽기는 `xsm_inbox`, 소비는
 명시적 `xsm_ack`로 구분한다. 질문/승인이 필요한 작업은 답을 만들지 않고 거부한다.
@@ -41,7 +47,7 @@ fixture이며 실제 Hermes agent나 외부 메신저의 동작을 시험한 것
 
 모든 HOME/HERMES_HOME/XSM_HOME은 새 임시 경로다. v0.22.5 tag와 실제 import
 경로를 대조한다. SDK 의존성은 고정 lock으로 설치하며 API 키나 실제 모델을
-사용하지 않는다. 결과는 `hermes-native-tools-current/result.json`에 있다.
+사용하지 않는다. 최신 결과는 `hermes-public-api-final/result.json`에 있다.
 최초 전송은 서로 다른 비 git 폴더라 정책이 거부했다. 같은 저장소의 두 작업
 폴더를 만드는 것으로 fixture를 고쳤으며 그 거부를 우회하지 않았다.
 

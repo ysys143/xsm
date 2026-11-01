@@ -501,3 +501,15 @@ JS 변경 뒤 실제 Pi 1.4.0 SDK 질문/도구 경로와 설치된 OpenCode 1.1
 TUI 선택·취소를 다시 통과했다. Pi는 issuing assistant/UI fixture, OpenCode는
 loopback assistant/키 입력 fixture이며 실제 모델·사람 시험으로 쓰지 않는다.
 `pi-host-waiter-final.json`, `opencode-host-waiter-{final,cancel}/result.json`에 남긴다.
+
+## Hermes native validator 호환
+
+실제 v0.22.5 validator의 15개 검사가 경고 없이 통과했다. 최초 검사는 기록용
+context의 register_tool이 핸들을 반환하지 않는 것을 오류로 취급해 실패했고,
+private session 모듈 import도 지적했다. Optional 반환은 native 계약에 맡기고
+dispatcher의 세션 ID와 기존 참여의 workspace를 사용하도록 수정했다.
+실제 SDK 도구 검사 6개도 다시 통과했다. Native caller ID는 모델 인자가 아니다.
+
+`hermes-validator-first.log`, `hermes-validator-final.log`,
+`hermes-public-api-final/result.json`에 구분해 남긴다. Validator 통과를 실제
+agent/자동 주입/UI/설치 수명 완료로 해석하지 않는다. 상위 전체 계획은 미완이다.
