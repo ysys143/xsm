@@ -201,15 +201,16 @@ Queue 수락이나 prompt helper의 소비는 canonical 메시지의 소비 ACK�
 만료되면 실제 수신 에이전트가 inbox에서 현재 token을 읽고 ACK하도록 안내한다.
 다른 plugin의 queue는 보존한다. 고정 native 한도는 xsm queue 32개와 본문
 32768자다. 용량·길이 초과는 오류와 claim 반환으로 처리하며 원문은 정본에
-남는다. 본문 한도는 ACK 안내 등을 포함한 최종 문자열의 UTF-16 길이다.
-큰 payload의 분할 주입은 아직 미완이다.
+남는다. 본문 한도는 ACK 안내 등을 포함한 조각별 최종 문자열의 UTF-16 길이다.
+큰 본문의 원자적 분할은 아래 후속 구현에서 추가했다. 32개 조각을 넘는 배치의
+다중 turn 전송이나 파일 전환은 여전히 미완이다.
 
 Native idle wake는 아직 연결하지 않았다. 입력은 다음 실제 native turn이
 소비할 queue에 들어간다. FYI는 알림으로 깨우지 않으며, conversation-access
 권한이 있는 agent-end 경계에서 queue로 옮긴다. 권한 없는 표면의 FYI 자동
 경계와 idle/busy/now의 전체 동작은 미완이다. 권한을 자동으로 켜지 않는다.
 
-`test_openclaw_context_queue.mjs`의 8개 검사는 최종 guard, 수락 관찰, 실제
+초기 `test_openclaw_context_queue.mjs`의 8개 검사는 최종 guard, 수락 관찰, 실제
 본문, 중복·용량·취소·정책·세대·타 plugin 보존을 확인한다. 최종 guard, 용량,
 관찰, 본문 확인, 등록 정책 거부 확인을 각각 제거한 다섯 변이가 모두 실패했다
 (`openclaw-queue-complete-mutations.json`). 등록 정책을 무시한 변이는 실제
@@ -240,3 +241,39 @@ SHA-256 일치와 보호 인코딩을 대조했다
 경우에도 자동 queue 주입 없이 inbox/ACK를 유지했다
 (`openclaw-native-queue-denied.json`). 이 설정은 임시 프로필의 메모리 구성이다.
 실제 사용자 정책·권한은 변경하지 않았다.
+
+## 큰 본문의 원자적 분할
+
+본문이 한 조각의 native 한도를 넘으면 번호가 있는 peer-data frame들로 나눈다.
+각 frame은 끝 표식을 두어 native prompt helper의 trim이 본문의 끝 공백을
+지우지 못하게 한다. UTF-16 surrogate pair 사이에서는 자르지 않는다. ACK
+안내는 별도 마지막 조각에만 두어 token이 교체돼도 본문 조각의 경계가 유지된다.
+
+한 번의 native patch에서 전체 조각의 자리부터 확보한다. 공간이 부족하면
+일부만 쓰지 않고 전체를 거부한다. 같은 원문의 대기 중 조각은 재사용하고,
+조각이 빠진 기존 묶음은 완전한 수락으로 해석하지 않는다. 수락 관찰도 모든
+조각의 ID·본문·번호를 확인한 뒤 완료한다. 앞서 수락된 단일 본문은 token
+변경으로 새 encoding이 커지더라도 완전한 기존 본문을 재사용할 수 있다.
+
+현재 제어된 native seam 검사는 14개다. Surrogate 경계, trim 방지, 전체 공간
+예약, 모든 조각의 수락 확인, 중복 재시도, 수명·정책 guard 등 9개 변이가 모두
+검사를 실패시켰다(`openclaw-fragment-mutations.json`). 공통 검사 278개가
+Python 3.9.6에서 37.938초에 통과했다(`openclaw-fragments-final-py39.log`).
+
+실제 2026.10.9 SDK에서 약 8만 UTF-16 단위의 Korean/emoji 본문 100개가 각각
+4개 조각으로 들어갔다. 총 400개 조각의 queue 수락·prompt helper 소비와 원문별
+명시적 ACK 100개가 완료됐다. macOS arm64 / Node 24.22.2 / protocol Python
+3.14.6에서 sender 실행 직전→native queue 관찰의 p95 상한은 701.295ms였다.
+검사기는 100개 이상 표본에서는 p95가 1초 이상이면 failed로 기록한다.
+`openclaw-native-large-100.json`에 모든 표본과 조각 수를 남겼다.
+앞 절의 401.576ms는 분할 추가 전 작은 본문 표본이며, 같은 조건의 성능 비교가 아니다.
+
+일반 크기와 주입 거부 정책도 실제 SDK에서 각각 재검사했다
+(`openclaw-fragments-short.json`, `openclaw-fragments-denied.json`). 모든 native
+시험은 caller와 prompt 소비를 fixture로 제공한다. 모델·실제 agent turn·idle
+wake·사용자 UI 인증으로 확대하지 않는다. 32개 조각을 넘는 전송, owned 설치,
+worker와 전체 P0–P5 기준은 미완이다.
+
+```sh
+/isolated/node scripts/probe-openclaw-loader.mjs /isolated/node_modules/openclaw deliverables/openclaw-large.json --queue 100 --large-context
+```

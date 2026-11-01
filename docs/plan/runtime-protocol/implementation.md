@@ -675,3 +675,27 @@ queue 관찰까지 p95 상한은 401.576ms이며 정본 저장 시간도 포함�
 `openclaw-queue-failed-sample-analysis.json`). Native guard·실제 body 확인은
 완화하지 않았다. OpenClaw의 owned 설치·큰 payload·wake·UI·worker와 P0–P5
 전체 완료 기준은 여전히 미완이다.
+
+## OpenClaw 큰 본문의 native 분할
+
+단일 native entry의 한도를 넘는 본문을 Unicode 경계에서 분할하고, 끝 표식으로
+native trim에 의한 공백 유실을 막았다. ACK는 마지막 별도 조각에 둔다.
+모든 조각의 공간을 한 native patch에서 예약하며, 대기 중 묶음을 재사용하고
+기존 묶음이 불완전하거나 수락 관찰에서 하나라도 빠지면 거부한다. Native 한도
+32개 조각을 넘는 배치는 정본을 유지한 채 거부하며, 다중 turn/file 전환은 미완이다.
+
+제어된 seam 검사 14개와 변이 9개가 통과했다. 변이는 최종 guard, 등록 거부,
+실제 body 확인, 모든 조각 확인, 전체 공간 예약, surrogate 경계, trim 방지,
+중복 억제, binding 수명을 제거해 각각 실패를 확인했다
+(`openclaw-fragment-mutations.json`). 공통 278개는 Python 3.9.6에서 37.938초에
+통과했다(`openclaw-fragments-final-py39.log`). 앞선 Python 3.14 표본 277개에는
+후속 surrogate 경계 강제 검사 1개가 아직 없었으며 최신 278개와 구분한다.
+
+실제 2026.10.9 SDK의 약 8만 UTF-16 길이 본문 100개가 모두 4개 조각으로
+수락·prompt helper 소비됐고 명시적 ACK도 100개 완료됐다. Mac arm64 / Node
+24.22.2 / protocol Python 3.14.6의 p95 상한은 701.295ms로 1초 기준을 통과했다
+(`openclaw-native-large-100.json`). 총 조각 수는 400개다. SDK caller와 prompt
+소비는 fixture이며 모델·실제 agent turn·wake 인증은 아니다.
+일반 본문·주입 거부도 실제 SDK에서 재검사했다
+(`openclaw-fragments-short.json`, `openclaw-fragments-denied.json`). Owned 설치,
+worker·wake·UI·한도를 넘는 스트리밍과 전체 계획은 계속 미완이다.

@@ -8,8 +8,9 @@ import operations from '../integrations/openclaw/tools.mjs';
 
 const [nativeRoot, output, mode, countText, policyFlag] = process.argv.slice(2);
 assert.ok(!mode || ['--execute', '--queue'].includes(mode));
-assert.ok(!policyFlag || (mode === '--queue' && policyFlag === '--deny-injection'));
-const denied = Boolean(policyFlag);
+assert.ok(!policyFlag || (mode === '--queue' && ['--deny-injection', '--large-context'].includes(policyFlag)));
+const denied = policyFlag === '--deny-injection';
+const largeContext = policyFlag === '--large-context';
 const samples = Number(countText ?? 1);
 assert.ok(Number.isInteger(samples) && samples >= 1 && samples <= 1000);
 assert.ok(!countText || mode === '--queue');
@@ -67,6 +68,7 @@ for (const tool of tools) assert.equal(tool.factory({}), null);
 await assert.rejects(readdir(join(temp, 'xsm/sessions')), { code: 'ENOENT' });
 const result = { status: 'incomplete', runtimeVersion: pkg.version, node: process.version,
   platform: process.platform, arch: process.arch,
+  largeContext,
   nativeLoader: true, nativeTools: tools.length, metadataCreatedNoParticipant: true,
   nativeToolExecution: false, nativeUnloadTested: false, modelCalls: 0,
   physicalHumanUiTested: false, diagnostics: registry.diagnostics, root: temp };
@@ -129,7 +131,9 @@ if (mode) {
     const target = rows.find(row => row.ref !== record.ref);
     assert.ok(target, 'same route must keep separate native conversation identities');
     const started = performance.now();
-    const firstText = 'OpenClaw native factory fixture message sample-0-end';
+    const sampleText = index => 'OpenClaw native factory fixture message sample-' + index + '-end' +
+      (largeContext ? '\n \t' + '한글🚀 '.repeat(16000) + '\n\t ' : '');
+    const firstText = sampleText(0);
     await executable.find(tool => tool.name === 'xsm_send').execute('send-a-b', {
       target: 'ref:' + target.ref, text: firstText, wait: 0,
     });
@@ -138,25 +142,39 @@ if (mode) {
     if (api && !denied) {
       result.admission = { requestedSamples: samples, samples: 0, milliseconds: latencies };
       result.nativeQueueAckCount = 0;
+      result.fragmentCounts = [];
       async function consume(started, expected) {
         const until = Date.now() + 5000;
-        let injection;
+        let injection, queued;
         while (Date.now() < until) {
           const row = api.runtime.agent.session.getSessionEntry({ agentId: 'main',
             sessionKey: context('native-fixture-b').sessionKey, readConsistency: 'latest' });
-          injection = row?.pluginNextTurnInjections?.xsm?.[0];
+          queued = row?.pluginNextTurnInjections?.xsm ?? [];
+          injection = queued[0];
           if (injection) break;
           await new Promise(resolve => setTimeout(resolve, 10));
         }
         assert.ok(injection, 'actual native context queue did not accept the original');
-        assert.ok(injection.text.includes(expected), 'native queue accepted another sample');
+        const group = queued.filter(item => item.metadata.xsmHash === injection.metadata.xsmHash)
+          .sort((a, b) => a.metadata.fragmentIndex - b.metadata.fragmentIndex);
+        assert.equal(group.length, injection.metadata.fragmentCount);
+        if (largeContext) assert.ok(group.length > 1, 'large sample did not exercise fragmentation');
+        result.fragmentCounts.push(group.length);
+        const body = entries => entries.map(item => item.text.slice(item.metadata.fragmentHeaderLength,
+          item.metadata.fragmentHeaderLength + item.metadata.fragmentBodyLength)).join('');
+        assert.ok(body(group).includes(expected), 'native queue accepted another sample');
+        assert.ok(group.every(item => item.text.length <= 32768));
         latencies.push(performance.now() - started);
         result.admission.samples = latencies.length;
         const drain = await nativeFunction('host-hook-state-', 'drainPluginNextTurnInjectionContext');
         const prompt = await drain({ cfg: config, agentId: 'main', sessionKey: context('native-fixture-b').sessionKey });
         assert.match(prompt.prependContext, /native factory fixture message/);
-        assert.ok(prompt.prependContext.includes(expected), 'native prompt consumed another sample');
-        assert.equal(prompt.queuedInjections.length, 1);
+        assert.ok(body(prompt.queuedInjections).includes(expected), 'native prompt consumed another sample');
+        assert.deepEqual(prompt.queuedInjections.map(item => item.id), group.map(item => item.id));
+        for (const item of group) assert.ok(prompt.prependContext.includes(item.text), 'native prompt changed fragment whitespace');
+        result.nativeFragmentCount = group.length;
+        result.nativeFragmentTextLengths = group.map(item => item.text.length);
+        result.expectedOriginalUtf16Length = expected.length;
         const tokens = JSON.parse(/xsm_ack with tokens: (\[[^\n]*?\])/.exec(prompt.prependContext)[1]);
         assert.equal(tokens.length, 1);
         const again = await drain({ cfg: config, agentId: 'main', sessionKey: context('native-fixture-b').sessionKey });
@@ -170,7 +188,7 @@ if (mode) {
         assert.equal(ack.details.acked.length, 1);
         result.nativeQueueAckCount++;
         const began = performance.now();
-        const text = 'OpenClaw native factory fixture message sample-' + index + '-end';
+        const text = sampleText(index);
         await executable.find(tool => tool.name === 'xsm_send').execute('send-' + index, {
           target: 'ref:' + target.ref, text, wait: 0,
         });
@@ -193,7 +211,14 @@ if (mode) {
       tokens,
     });
     assert.equal(ack.details.acked.length, 1);
-    if (api && !denied) { result.nativeQueueAckCount++; assert.equal(result.nativeQueueAckCount, samples); }
+    if (api && !denied) {
+      result.nativeQueueAckCount++;
+      assert.equal(result.nativeQueueAckCount, samples);
+      if (samples >= 100) {
+        result.admission.passesOneSecondDeadline = result.admission.p95UpperBoundMs < 1000;
+        assert.ok(result.admission.passesOneSecondDeadline, 'native admission p95 exceeds one second');
+      }
+    }
     result.nativeDmPullAck = !api || denied;
     result.nativeQueueExplicitAck = Boolean(api) && !denied;
     if (denied) {
