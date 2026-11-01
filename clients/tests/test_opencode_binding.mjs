@@ -44,7 +44,8 @@ async function fixture(t, options = {}) {
   const native = new Map(), statuses = {}, errors = [], wakes = [];
   let corrupt = false;
   const api = { directory: temp, client: { session: {
-    get: async ({ path: { id } }) => ({ data: { id, title: 'Native ' + id } }),
+    get: async ({ path: { id } }) => ({ data: { id, title: 'Native ' + id,
+      directory: options.nativeDirectory === undefined ? temp : options.nativeDirectory } }),
     prompt: async ({ path: { id }, body }) => {
       assert.equal(body.messageID, undefined, 'native host must allocate its ordered message ID');
       const message = { info: { id: 'msg_fixture_' + native.size, sessionID: id }, parts: body.parts };
@@ -275,4 +276,11 @@ test('OpenCode retries transport failures with increasing delay', { timeout: 150
   assert.equal(attempts.length, 3);
   assert.ok(attempts[1] - attempts[0] >= 450);
   assert.ok(attempts[2] - attempts[1] >= 950);
+});
+
+
+for (const directory of [root, null, '', '.', join(root, 'not-an-existing-native-workspace')]) test(`OpenCode rejects unverified native workspace ${String(directory)}`, { timeout: 15000 }, async t => {
+  const { invoke, records } = await fixture(t, { nativeDirectory: directory });
+  await assert.rejects(invoke('foreign', 'xsm_inbox'), /native session workspace/);
+  assert.deepEqual(await records(), []);
 });

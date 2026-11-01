@@ -1412,3 +1412,22 @@ chat/tool 전에 새 세대를 관측했다. 복구 뒤 100/100 native 수락·n
 통과했다(`opencode-auto-reconnect-gate-verified.log`). Descriptor 최초 조회와
 모든 초기 생성 전 실패·Hermes/OpenClaw 자동 재접속·worker·Linux·원격·전체
 방향 조합과 P0–P5의 나머지는 미완이다.
+
+## OpenCode native directory 검증
+
+새 참여 등록에서 native session.get의 directory를 plugin directory와 비교한다.
+고정 SDK의 Session 타입은 이 필드를 필수로 제공하지만 기존 연결은 ID만
+검사했다. Native directory가 기존 절대 경로이고 realpath가 plugin과 같은지
+확인하며, 다른/누락/빈 값/상대/없는 경로는 host open 전에 거부한다. 확인할 수
+없을 때 plugin cwd를 대신 신원으로 사용하지 않는다. 재접속도 동일 경로다.
+
+변경 전 workspace 거부 검사는 실패했다(`opencode-workspace-red.log`). 변경 후
+관련 18개에서 정상 경로와 거부 5종, 거부 뒤 미등록을 확인했다
+(`opencode-workspace-green.log`). 실제 OpenCode 1.19.5는 입력 없는 재접속 뒤
+100/100 native 수락·native ACK를 통과했다. macOS/protocol Python 3.14.6 p95
+상한은 343.080ms다(`opencode-workspace-native-100/result.json`). 실행 연결 코드와
+현재 해시의 일치도 확인했다. 모델/사람 UI 소비의 인증은 아니다.
+
+공통 386개(핵심 232, Python 44, Node 110)는 Python 3.14.6에서 62.647초에
+통과했다(`opencode-workspace-gate.log`). 이는 새 등록의 작업 폴더 결속이며
+전체 다중 프로젝트/원격/방향 행렬이나 P0–P5 전체 완료가 아니다.

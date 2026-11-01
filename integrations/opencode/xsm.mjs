@@ -2,7 +2,7 @@
 import { randomUUID } from 'node:crypto';
 import { mkdir, realpath } from 'node:fs/promises';
 import { homedir } from 'node:os';
-import { join } from 'node:path';
+import { isAbsolute, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { XsmClient, TransportError } from '../../clients/typescript/xsm-client.mjs';
 import { XsmHost, RetryAdmission, renderInboxPacket } from '../../clients/typescript/xsm-host.mjs';
@@ -131,6 +131,13 @@ async function attach(api, options, release) {
       const opening = (async () => {
         const native = unwrap(await api.client.session.get({ path: { id } }));
         if (native.id !== id) throw new Error('native session identity differs');
+        if (typeof native.directory !== 'string' || !isAbsolute(native.directory)) {
+          throw new Error('native session workspace must be an absolute directory');
+        }
+        let nativeDirectory;
+        try { nativeDirectory = await realpath(native.directory); }
+        catch { throw new Error('native session workspace is unavailable'); }
+        if (nativeDirectory !== await realpath(api.directory)) throw new Error('native session workspace differs from plugin directory');
         if (disposed || (versions.get(id) ?? 0) !== token) throw new Error('native session closed during registration');
         intents.add(id);
         let observed;

@@ -222,3 +222,24 @@ outage 전체 시간이나 실제 모델/사람 소비의 인증이 아니다.
 공통 381개는 60.723초에 통과했다(`opencode-auto-reconnect-gate-verified.log`).
 Plugin descriptor 최초 조회 실패와 모든 초기 생성 전 오류의 자동 복구,
 Hermes/OpenClaw 자동 재접속·native worker·Linux와 전체 P0–P5는 미완이다.
+
+## Native 작업 폴더 결속
+
+새 참여를 열 때 native session.get의 ID뿐 아니라 필수 directory도 확인한다.
+Directory는 기존 절대 경로여야 하며 realpath 결과가 plugin의 directory와 같아야
+한다. 다른 폴더, 누락/빈 값, 상대 경로나 사라진 폴더는 backend를 만들기 전에
+거부한다. 현재 코드가 native 메타데이터를 검증할 수 없다고 plugin 폴더로
+대신 등록하지 않는다. 재접속도 같은 새 등록 경로를 통과한다.
+
+SDK 1.19.5의 Session 타입은 directory를 필수 string으로 선언한다. 기존 연결은
+ID만 확인해 다른 작업 폴더의 메타데이터도 받았다. 변경 전 거부 검사는
+실패했다(`opencode-workspace-red.log`). 수정 후 관련 18개는 정상 폴더와 5종의
+거부 경로를 통과했고, 거부 시 등록 행이 생성되지 않음을 확인했다
+(`opencode-workspace-green.log`).
+
+실제 1.19.5에서도 입력 없는 재접속 뒤 수락·native ACK 100/100개가 완료됐으며
+macOS/protocol Python 3.14.6 p95 상한은 343.080ms다
+(`opencode-workspace-native-100/result.json`). Scripted assistant fixture이며
+실제 모델/사람 UI 인증이 아니다. 공통 386개는 62.647초에 통과했다
+(`opencode-workspace-gate.log`). 전체 다중 프로젝트/원격/플랫폼 행렬과
+P0–P5의 나머지 조건은 미완이다.
