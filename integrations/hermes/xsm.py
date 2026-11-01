@@ -5,6 +5,9 @@ import asyncio
 import hashlib
 import importlib.util
 import json
+import os
+import re
+import subprocess
 from pathlib import Path
 import sys
 import threading
@@ -26,6 +29,29 @@ def _sdk(root):
     return __import__(name + ".xsm_host", fromlist=["XsmHost"])
 
 
+def _component_lease(root, python, env=None):
+    root = root.resolve()
+    if root.parent.name != "runtime" or not re.fullmatch(r"[0-9a-f]{12}", root.name):
+        return lambda: None
+    environment = dict(os.environ if env is None else env, XSM_HOME=str(root.parent.parent))
+    code = ("import json,sys;sys.path.insert(0,sys.argv[1]);"
+            "from xsm.component_leases import hold,release;"
+            "record=json.load(sys.stdin);"
+            "print(json.dumps(hold('hermes-plugin',int(sys.argv[2])) if record is None "
+            "else release(record,int(sys.argv[2]))))")
+    def request(record):
+        result = subprocess.run([python, "-B", "-c", code, str(root), str(os.getpid())],
+            input=json.dumps(record), capture_output=True, text=True, env=environment, timeout=10)
+        if result.returncode:
+            raise RuntimeError("Hermes component lease failed: " + result.stderr[-2000:])
+        return json.loads(result.stdout)
+    record = request(None)
+    if (record.get("root") != str(root) or record.get("pid") != os.getpid() or
+            record.get("component") != "hermes-plugin"):
+        raise RuntimeError("Hermes component lease identity differs")
+    return lambda: request(record)
+
+
 class HermesBinding:
     def __init__(self, context, *, command=None, env=None):
         from hermes_constants import get_hermes_home
@@ -40,6 +66,7 @@ class HermesBinding:
         self.hosts = {}
         self.host_lock = None
         self.closed = False
+        self.release_component = None
         self.loop = asyncio.new_event_loop()
         self.thread = threading.Thread(target=self.loop.run_forever, name="xsm-hermes", daemon=True)
         self.thread.start()
@@ -119,8 +146,14 @@ class HermesBinding:
         if old_session_id and old_session_id != new_session_id:
             self.finalize(session_id=old_session_id)
 
+    def _release_component(self):
+        if self.release_component is not None:
+            self.release_component()
+            self.release_component = None
+
     def close(self):
         if self.closed:
+            self._release_component()
             return
         async def shutdown():
             pairs = list(self.hosts.values())
@@ -134,18 +167,20 @@ class HermesBinding:
         if self.thread.is_alive():
             raise RuntimeError("xsm Hermes coordinator thread did not stop")
         self.loop.close()
+        self._release_component()
 
 
 def register(context, *, command=None, env=None):
     """Register with an optional installer-pinned backend and isolated environment."""
     binding = HermesBinding(context, command=command, env=env)
-    context.on_unload(binding.close)
-    client_type = binding.sdk.XsmHost.__module__.replace("xsm_host", "xsm_client")
-    client_type = __import__(client_type, fromlist=["XsmClient"]).XsmClient
-    async def describe():
-        async with await client_type.connect(binding.command, cwd=str(binding.root), env=binding.env) as client:
-            return (await client.request("operations/list"))["operations"]
     try:
+        binding.release_component = _component_lease(binding.root, binding.command[0], binding.env)
+        context.on_unload(binding.close)
+        client_type = binding.sdk.XsmHost.__module__.replace("xsm_host", "xsm_client")
+        client_type = __import__(client_type, fromlist=["XsmClient"]).XsmClient
+        async def describe():
+            async with await client_type.connect(binding.command, cwd=str(binding.root), env=binding.env) as client:
+                return (await client.request("operations/list"))["operations"]
         for operation in binding._run(describe()):
             context.register_tool(name=operation["name"], toolset="xsm",
                 schema={"name": operation["name"], "description": operation["description"],

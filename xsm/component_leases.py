@@ -15,7 +15,7 @@ from . import identity, install, paths
 def hold(component="opencode-tui", expected_parent=None):
     """Called by a short-lived child of the native UI; serialize with pruning."""
     root = os.path.realpath(Path(__file__).resolve().parents[1])
-    if component not in ("opencode-tui", "opencode-server"):
+    if component not in ("opencode-tui", "opencode-server", "hermes-plugin"):
         raise install.InstallConflictError("unsupported native component")
     if os.path.dirname(root) != os.path.realpath(install.runtime_dir()) or not install._ID.fullmatch(os.path.basename(root)):
         raise install.InstallConflictError("native component did not load an installed snapshot")
@@ -62,7 +62,7 @@ def active_records():
         finally:
             os.close(fd)
         if (not isinstance(value, dict) or value.get("componentLease") != 1 or
-                value.get("component") not in ("opencode-tui", "opencode-server") or not isinstance(value.get("id"), str) or
+                value.get("component") not in ("opencode-tui", "opencode-server", "hermes-plugin") or not isinstance(value.get("id"), str) or
                 value.get("clock") not in (None, "utc-c") or
                 not re.fullmatch(r"[0-9a-f]{32}", value["id"]) or filename.name != value["id"] + ".json" or
                 type(value.get("pid")) is not int or value["pid"] <= 0 or
@@ -92,3 +92,30 @@ def active_records():
 
 def configured_roots():
     return [record['root'] for record in active_records()]
+
+
+def release(record, expected_parent=None):
+    """Release only this child's native parent's exact lease; edited records survive."""
+    pid = os.getppid()
+    if expected_parent is not None and pid != expected_parent:
+        raise install.InstallConflictError("native component parent changed before release")
+    if (not isinstance(record, dict) or record.get("pid") != pid or
+            not isinstance(record.get("id"), str) or not re.fullmatch(r"[0-9a-f]{32}", record["id"])):
+        raise install.InstallConflictError("component lease release owner differs")
+    folder = paths.path("component-leases")
+    name = record["id"] + ".json"
+    fd = os.open(folder, os.O_RDONLY | getattr(os, "O_DIRECTORY", 0) | getattr(os, "O_NOFOLLOW", 0))
+    try:
+        from . import host_install
+        content, revision, _ = host_install._read_at(fd, name)
+        if content is None:
+            return False
+        if json.loads(content) != record:
+            raise install.InstallConflictError("edited component lease preserved")
+        if host_install._read_at(fd, name)[1] != revision:
+            raise install.InstallConflictError("component lease changed before release")
+        os.unlink(name, dir_fd=fd)
+        os.fsync(fd)
+        return True
+    finally:
+        os.close(fd)

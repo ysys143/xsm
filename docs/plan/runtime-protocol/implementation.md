@@ -940,3 +940,25 @@ Hermes의 두 파일 플러그인을 `protocol install/inspect/uninstall hermes`
 활성화는 operator opt-in이며 실제 설정의 활성화 상태 판독, 실행 중 Hermes
 컴포넌트의 스냅샷 lease, native push/UI/worker/agent와 Linux 검증은 미완이다.
 전체 P0–P5를 완료로 판정하지 않는다.
+
+## Hermes 로드 수명과 snapshot lease
+
+설치된 Hermes 플러그인이 세션 없이 로드만 된 상태에서도 이전 스냅샷을
+보존하도록 `hermes-plugin` lease를 연결했다. 고정 Python의 자식 프로세스가
+native 부모 PID·UTC/C 시작 시각과 실제 snapshot root를 확인한다. 등록 실패나
+native unload에서 coordinator를 닫은 다음 자신의 정확한 lease만 해제한다.
+해제 시 부모가 다르거나 내용이 수정된 기록은 보존한다.
+
+실제 Hermes 0.22.5의 설치 프로브 11개가 통과했다
+(`hermes-component-lease-native/result.json`). Native discovery 직후 소유
+설치 파일을 제거해도 같은 snapshot의 도구 호출·세션 수명은 유지됐고,
+unload 뒤 lease 파일은 남지 않았다. Lease 확보를 무력화한 변이는 native
+검사에 실패했다(`hermes-component-lease-mutant/result.json`). 별도 prune
+검사는 설치 loader와 세션 없이도 살아 있는 Hermes lease가 이전 snapshot을
+보존하는 것을 확인한다. Python 3.9.6 관련 검사 38개도 통과했다
+(`hermes-component-lease-python39.log`).
+
+공통 329개(핵심 208, Python 39, Node 82)는 Python 3.14.6에서 51.959초에
+통과했다(`hermes-component-lease-gate.log`). 현재 활성화 설정 판독·native
+push/UI/worker/실제 agent·Linux와 전체 P0–P5는 미완이다. Native 실행은
+명시적 caller fixture이며 모델이나 사람의 UI 응답을 시험하지 않았다.

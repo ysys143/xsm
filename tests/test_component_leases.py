@@ -130,3 +130,31 @@ class ComponentLeaseTest(TempState):
             with self.assertRaisesRegex(ValueError, 'disappeared'):
                 leases.hold()
         self.assertEqual(set(self.folder.iterdir()), before)
+
+    def test_hermes_lease_keeps_snapshot_and_only_exact_owner_can_release(self):
+        from xsm import component_leases as leases
+        self.lease.update(component='hermes-plugin', pid=os.getppid())
+        self.save()
+        with mock.patch.object(leases.identity, 'pid_alive', return_value=True), \
+                mock.patch.object(leases.subprocess, 'run', return_value=SimpleNamespace(stdout='fixture-generation')):
+            self.assertIn(str(self.old), leases.configured_roots())
+        with self.assertRaisesRegex(ValueError, 'owner differs'):
+            leases.release(dict(self.lease, pid=123456789))
+        altered = dict(self.lease, lstart='edited')
+        with self.assertRaisesRegex(ValueError, 'edited component lease'):
+            leases.release(altered)
+        self.assertTrue(self.filename.exists())
+        self.assertTrue(leases.release(self.lease, expected_parent=os.getppid()))
+        self.assertFalse(self.filename.exists())
+        self.assertFalse(leases.release(self.lease))
+
+    def test_pruning_retains_loaded_hermes_without_a_session_or_installed_loader(self):
+        from xsm import component_leases as leases, install
+        self.lease['component'] = 'hermes-plugin'
+        self.save()
+        with mock.patch.object(install, '_running_from', return_value=set()), \
+                mock.patch.object(install, '_live_session_starts', return_value=[]), \
+                mock.patch.object(leases.identity, 'pid_alive', return_value=True), \
+                mock.patch.object(leases.subprocess, 'run', return_value=SimpleNamespace(stdout='fixture-generation')):
+            self.assertEqual(install.prune_snapshots(), [])
+            self.assertTrue(self.old.is_dir())

@@ -118,3 +118,19 @@ Hermes 0.22.5는 `config.yaml`의 `plugins.enabled`에 `xsm`이 포함돼야 불
 `hermes-owned-install-native-canonical/result.json`에 기록했다. 최초 비교는
 macOS의 `/var`와 `/private/var` 표기 차이로 실패했고 원시 로그를 보존했다.
 이 검사는 모델·실제 사용자 UI·push·Linux·자동 활성화 상태 판독을 검증하지 않는다.
+
+## 로드된 스냅샷의 수명
+
+설치 스냅샷에서 등록된 플러그인은 Hermes 프로세스의 PID·시작 시각에 결속한
+`hermes-plugin` component lease를 먼저 확보한다. 세션을 아직 열지 않았거나
+설치 파일을 제거한 뒤에도 snapshot prune이 실행 중인 코드를 보존한다.
+등록 실패와 native unload에서 coordinator를 닫은 다음 정확히 자신이 만든
+lease를 해제한다. 수정된 lease나 다른 부모 프로세스의 lease는 지우지 않는다.
+Checkout 직접 등록은 설치 스냅샷 lease를 만들지 않는다.
+
+실제 0.22.5의 `--installed` 프로브는 로드 직후 설치 파일을 제거한 상태에서
+도구 호출을 계속하고, unload 뒤 lease 파일이 사라지는 것까지 11개 검사를
+통과했다(`hermes-component-lease-native/result.json`). Lease 생성을 생략한
+변이는 같은 검사에서 실패했다(`hermes-component-lease-mutant/result.json`).
+별도 prune 검사는 native 세션과 설치 loader 없이 살아 있는 Hermes lease만으로
+이전 스냅샷이 남는 것을 확인한다. 실제 모델·UI·Linux 검증은 포함하지 않는다.

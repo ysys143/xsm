@@ -85,6 +85,15 @@ def run(args):
             result["nativeDiscoveryTested"] = True
         else:
             binding = module.register(context)
+        if args.installed:
+            from xsm import component_leases
+            live = component_leases.active_records()
+            assert len(live) == 1 and live[0]["component"] == "hermes-plugin", live
+            assert live[0]["pid"] == os.getpid()
+            assert Path(live[0]["root"]).resolve() == Path(installed["runtime_root"]).resolve()
+            host_install.remove("hermes", str(temp / "hermes"))
+            assert str(Path(installed["runtime_root"]).resolve()) in component_leases.configured_roots()
+            result["checks"].append("loaded native plugin retains its snapshot after owned files are removed")
         names = [name for name in manager._plugin_tool_names if name.startswith("xsm_")]
         assert len(names) == 21, names
         result["checks"].append("21 tools registered by actual PluginContext")
@@ -146,6 +155,9 @@ def run(args):
         if args.installed:
             assert all(Path(item["protocol_root"]).resolve() == Path(installed["runtime_root"]).resolve()
                        for item in self_records)
+            assert component_leases.active_records() == []
+            assert list((temp / "state/component-leases").glob("*.json")) == []
+            result["checks"].append("native unload releases the component snapshot lease")
             config_before = (temp / "hermes/config.yaml").read_bytes()
             host_install.remove("hermes", str(temp / "hermes"))
             assert not (temp / "hermes/plugins/xsm/__init__.py").exists()
