@@ -1031,3 +1031,31 @@ Draft 2020-12 검증기로 정상 11개와 오류 41개를 대조했다
 통과했다(`request-schema-gate.log`). 요청 구조와 실행 시 의미 검증의 차이는
 `docs/protocol/request-contract.md`에 기록했다. 전체 작업별 인자/결과·응답·
 알림 스키마, 독립 전체 구현과 P0–P5의 남은 조건은 미완이다.
+
+## 공개 응답·알림 구조와 실제 wire 대조
+
+`output.schema.json`은 성공/오류 응답과 events/available·decision/request의
+구조를 정의한다. x-methodResults로 11개 메서드의 결과 정의를 연결하며
+응답 ID와 원 요청 메서드를 대조해 검증한다. operation.call의 작업별 결과는
+현재 임의 JSON으로 남아 있어 전체 작업별 결과 계약 완료를 뜻하지 않는다.
+결정 결과의 status도 구조만 검사하며 사용자 응답·효과 적용 의미는 별도다.
+
+구조 예제 14개(11개 결과·오류·알림 2종)와 오류 구조 9개를 표준 검증기로
+대조했다. 실제 stdio events suite는 수명·전달 29개에 알림 결속·원문 유지·
+명시적 ACK 3개를 추가해 32개를 통과했다. 실제 frame 38개는 9개 메서드의
+정상 응답과 events/available 알림 1개를 포함하며 전부 스키마에 맞았다
+(`output-schema-events-wire.json`, `output-schema-final-validation.json`).
+사용자 질문 알림과 decision.response/abandon 정상 결과는 이 실행에서
+예제로만 검증했다. Native UI나 실제 모델의 소비를 실행한 인증은 아니다.
+
+Challenge 필수 조건을 제거하거나 admission에서 acknowledged=true를 허용한
+격리 스키마 변이는 모두 검출됐다(`output-schema-mutants.json`). 최초 공통
+검사와 Python 3.9 검사는 시험 proxy가 유휴 알림을 읽지 못해 실패했다
+(`output-schema-gate.log`, `output-schema-python39.log`). 정상 경로는 실제 서버에
+직접 연결하고 proxy는 결함 주입에만 쓰도록 고쳤다. 수정 후 Python 3.9.6의
+관련 검사 13개가 통과했다(`output-schema-python39-final.log`).
+
+공통 342개(핵심 221, Python 39, Node 82)는 Python 3.14.6에서 55.092초에
+통과했다(`output-schema-gate-final.log`). 공개 사용법·표본 범위는
+`docs/protocol/output-contract.md`에 있다. 전체 작업별 스키마·결정 의미의
+외부 적합성·독립 전체 구현과 P0–P5의 나머지는 미완이다.

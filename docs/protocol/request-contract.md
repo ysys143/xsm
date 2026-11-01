@@ -25,8 +25,8 @@ JSON Schema validation alone does not establish a live handle, capabilities,
 claim ownership, directory access, generation, pending question, or exact UI
 binding. It also does not certify operation-specific arguments or results.
 Runtime restrictions and JSON parsing rules in the protocol README still apply.
-The schema remains experimental; result, notification and full operation
-schemas are outstanding.
+The schema remains experimental. [Output definitions](output-contract.md) cover
+response/notification structures separately; full operation schemas remain outstanding.
 
 ## Artifact verification
 

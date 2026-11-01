@@ -1,0 +1,401 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:xsm:host-protocol:1:wire-output",
+  "title": "Experimental xsm server output",
+  "oneOf": [
+    {
+      "type": "object",
+      "properties": {
+        "jsonrpc": {
+          "const": "2.0"
+        },
+        "id": {
+          "type": [
+            "string",
+            "integer",
+            "null"
+          ]
+        },
+        "result": true
+      },
+      "required": [
+        "jsonrpc",
+        "id",
+        "result"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "jsonrpc": {
+          "const": "2.0"
+        },
+        "id": {
+          "type": [
+            "string",
+            "integer",
+            "null"
+          ]
+        },
+        "error": {
+          "type": "object",
+          "properties": {
+            "code": {
+              "type": "integer"
+            },
+            "message": {
+              "type": "string"
+            },
+            "data": true
+          },
+          "required": [
+            "code",
+            "message"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "jsonrpc",
+        "id",
+        "error"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "jsonrpc": {
+          "const": "2.0"
+        },
+        "method": {
+          "const": "events/available"
+        },
+        "params": {
+          "$ref": "#/$defs/availableParams"
+        }
+      },
+      "required": [
+        "jsonrpc",
+        "method",
+        "params"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "jsonrpc": {
+          "const": "2.0"
+        },
+        "method": {
+          "const": "decision/request"
+        },
+        "params": {
+          "$ref": "#/$defs/decisionParams"
+        }
+      },
+      "required": [
+        "jsonrpc",
+        "method",
+        "params"
+      ],
+      "additionalProperties": false
+    }
+  ],
+  "$defs": {
+    "initializeResult": {
+      "type": "object",
+      "properties": {
+        "protocolVersion": {
+          "const": "1"
+        },
+        "experimental": {
+          "const": true
+        },
+        "capabilities": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "messaging",
+              "inbox",
+              "events",
+              "user-decisions"
+            ]
+          }
+        },
+        "limits": {
+          "type": "object",
+          "properties": {
+            "claimLeaseSeconds": {
+              "type": "number",
+              "exclusiveMinimum": 0
+            }
+          },
+          "required": [
+            "claimLeaseSeconds"
+          ],
+          "additionalProperties": false
+        },
+        "operations": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "required": [
+        "protocolVersion",
+        "experimental",
+        "capabilities",
+        "limits",
+        "operations"
+      ],
+      "additionalProperties": false
+    },
+    "operationsResult": {
+      "type": "object",
+      "properties": {
+        "operations": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "minLength": 1
+              },
+              "description": {
+                "type": "string"
+              },
+              "inputSchema": {
+                "type": "object"
+              },
+              "annotations": {
+                "type": "object"
+              }
+            },
+            "required": [
+              "name",
+              "description",
+              "inputSchema"
+            ],
+            "additionalProperties": false
+          }
+        }
+      },
+      "required": [
+        "operations"
+      ],
+      "additionalProperties": false
+    },
+    "sessionOpenResult": {
+      "type": "object",
+      "properties": {
+        "session": {
+          "type": "string",
+          "minLength": 1
+        },
+        "generation": {
+          "type": "string",
+          "minLength": 1
+        },
+        "ref": {
+          "type": "string",
+          "minLength": 1
+        },
+        "capabilities": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "messaging",
+              "inbox",
+              "events",
+              "user-decisions"
+            ]
+          }
+        }
+      },
+      "required": [
+        "session",
+        "generation",
+        "ref",
+        "capabilities"
+      ],
+      "additionalProperties": false
+    },
+    "sessionUpdateResult": {
+      "type": "object",
+      "properties": {
+        "state": {
+          "enum": [
+            "idle",
+            "busy"
+          ]
+        }
+      },
+      "required": [
+        "state"
+      ],
+      "additionalProperties": false
+    },
+    "sessionCloseResult": {
+      "type": "object",
+      "properties": {
+        "closed": {
+          "const": true
+        }
+      },
+      "required": [
+        "closed"
+      ],
+      "additionalProperties": false
+    },
+    "subscribeResult": {
+      "type": "object",
+      "properties": {
+        "subscribed": {
+          "const": true
+        }
+      },
+      "required": [
+        "subscribed"
+      ],
+      "additionalProperties": false
+    },
+    "operationResult": true,
+    "releaseResult": {
+      "type": "object",
+      "properties": {
+        "released": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "required": [
+        "released"
+      ],
+      "additionalProperties": false
+    },
+    "deliveryResult": {
+      "type": "object",
+      "properties": {
+        "recorded": {
+          "enum": [
+            "queued",
+            "admitted",
+            "refused",
+            "unknown"
+          ]
+        },
+        "acknowledged": {
+          "const": false
+        }
+      },
+      "required": [
+        "recorded",
+        "acknowledged"
+      ],
+      "additionalProperties": false
+    },
+    "decisionResult": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "string",
+          "minLength": 1
+        },
+        "decision_id": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "status",
+        "decision_id"
+      ],
+      "additionalProperties": false
+    },
+    "availableParams": {
+      "type": "object",
+      "properties": {
+        "session": {
+          "type": "string",
+          "minLength": 1
+        },
+        "ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "minItems": 1
+        }
+      },
+      "required": [
+        "session",
+        "ids"
+      ],
+      "additionalProperties": false
+    },
+    "decisionParams": {
+      "type": "object",
+      "properties": {
+        "session": {
+          "type": "string",
+          "minLength": 1
+        },
+        "decisionId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "questionId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "challenge": {
+          "type": "string",
+          "minLength": 1
+        },
+        "question": {
+          "type": "string",
+          "minLength": 1
+        },
+        "requestedSchema": {
+          "type": "object"
+        },
+        "expiresAt": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "session",
+        "decisionId",
+        "questionId",
+        "challenge",
+        "question",
+        "requestedSchema",
+        "expiresAt"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "x-methodResults": {
+    "initialize": "#/$defs/initializeResult",
+    "operations/list": "#/$defs/operationsResult",
+    "session.open": "#/$defs/sessionOpenResult",
+    "session.update": "#/$defs/sessionUpdateResult",
+    "session.close": "#/$defs/sessionCloseResult",
+    "events.subscribe": "#/$defs/subscribeResult",
+    "operation.call": "#/$defs/operationResult",
+    "inbox.release": "#/$defs/releaseResult",
+    "delivery.report": "#/$defs/deliveryResult",
+    "decision.response": "#/$defs/decisionResult",
+    "decision.abandon": "#/$defs/decisionResult"
+  }
+}

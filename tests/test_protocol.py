@@ -349,3 +349,17 @@ class ProtocolRequestFieldsTest(ProtocolFixture):
             definition = schema['$defs'][bindings[method]]
             self.assertEqual(set(definition['properties']), fields, method)
             self.assertIs(definition['additionalProperties'], False, method)
+
+    def test_public_output_contract_covers_methods_and_known_notifications(self):
+        from pathlib import Path
+        from xsm.protocol import REQUEST_FIELDS
+        root = Path(__file__).resolve().parents[1]
+        schema = json.loads((root / 'docs/protocol/output.schema.json').read_text())
+        self.assertEqual(set(schema['x-methodResults']), set(REQUEST_FIELDS))
+        for reference in schema['x-methodResults'].values():
+            self.assertIn(reference.split('/')[-1], schema['$defs'])
+        notifications = {branch['properties']['method']['const'] for branch in schema['oneOf']
+                         if 'method' in branch['properties']}
+        self.assertEqual(notifications, {'events/available', 'decision/request'})
+        examples = json.loads((root / 'docs/protocol/output-examples.json').read_text())
+        self.assertEqual({e['method'] for e in examples if 'result' in e['frame']}, set(REQUEST_FIELDS))

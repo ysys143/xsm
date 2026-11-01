@@ -17,7 +17,9 @@ def require(condition, details):
 
 
 class Peer:
-    def __init__(self, command, cwd, env):
+    def __init__(self, command, cwd, env, observations=None):
+        self.observations = observations
+        self.notifications = []
         self.frames = queue.Queue(maxsize=128)
         self.errors = tempfile.TemporaryFile()
         self.process = subprocess.Popen(command, cwd=cwd, env=env, stdin=subprocess.PIPE,
@@ -50,14 +52,32 @@ class Peer:
             require(isinstance(value, dict) and value.get("jsonrpc") == "2.0", value)
             if "id" not in value:
                 require(isinstance(value.get("method"), str) and isinstance(value.get("params"), dict), value)
+                self.notifications.append(value)
+                if self.observations is not None:
+                    self.observations.append({"frame": value})
                 continue
             require(type(value["id"]) is int and value["id"] == self.serial, value)
             require(("result" in value) != ("error" in value), value)
+            if self.observations is not None:
+                self.observations.append({"method": method, "frame": value})
             if error is not None:
                 require(isinstance(value.get("error"), dict) and type(value["error"].get("code")) is int and value["error"]["code"] == error, value)
                 return value["error"]
             require("result" in value, value)
             return value["result"]
+
+    def notification(self):
+        if self.notifications:
+            return self.notifications.pop(0)
+        value = self.frames.get(timeout=5)
+        if isinstance(value, Exception):
+            raise value
+        require(isinstance(value, dict) and value.get("jsonrpc") == "2.0" and
+                "id" not in value and isinstance(value.get("method"), str) and
+                isinstance(value.get("params"), dict), value)
+        if self.observations is not None:
+            self.observations.append({"frame": value})
+        return value
 
     def close(self):
         if self.process.stdin:
@@ -75,7 +95,7 @@ class Peer:
         return diagnostics
 
 
-def messaging(peer, sender, receiver, reopen, check, equal):
+def messaging(peer, sender, receiver, reopen, check, equal, events=False):
     def operation(session, name, error=None, **arguments):
         return peer.call("operation.call", {"session": session["session"],
                          "operation": name, "arguments": arguments}, error=error)
@@ -118,11 +138,28 @@ def messaging(peer, sender, receiver, reopen, check, equal):
     check("consumed original is absent from inbox", lambda: equal(
           consumed["claims"] == [] and consumed["messages"] == [], True))
 
+    if events:
+        peer.call("events.subscribe", {"session": receiver["session"]})
+        operation(sender, "xsm_send", target="ref:" + receiver["ref"], text="event-bound original", wait=0)
+        event = peer.notification()
+        check("event binds receiver and pending IDs", lambda: equal(event["method"] == "events/available" and
+              set(event["params"]) == {"session", "ids"} and event["params"]["session"] == receiver["session"] and
+              len(event["params"]["ids"]) == 1, True))
+        pending = operation(receiver, "xsm_inbox")
+        check("notification neither claims nor consumes original", lambda: equal(len(pending["claims"]) == 1 and
+              pending["claims"][0]["id"] == event["params"]["ids"][0] and
+              "event-bound original" in pending["messages"][0], True))
+        check("event original requires explicit ACK", lambda: equal(operation(receiver, "xsm_ack",
+              tokens=[pending["claims"][0]["token"]])["acked"], event["params"]["ids"]))
 
-def run(command, suite="lifecycle"):
+
+def run(command, suite="lifecycle", capture=False):
     result = {"suite": "xsm-host-" + suite + "-v1", "status": "running", "checks": [],
               "scope": "stdio negotiation and participation only; no operations, delivery or UI certification"}
     peers = []
+    observations = [] if capture else None
+    if capture:
+        result["observations"] = observations
     with tempfile.TemporaryDirectory(prefix="xsm-conformance-") as folder:
         env = {key: os.environ[key] for key in ("PATH", "LANG", "TMPDIR", "SYSTEMROOT") if key in os.environ}
         env.update(HOME=folder, XSM_HOME=folder + "/state", CODEX_HOME=folder + "/codex",
@@ -134,7 +171,7 @@ def run(command, suite="lifecycle"):
         def equal(actual, expected):
             require(actual == expected, {"actual": actual, "expected": expected})
         try:
-            a = Peer(command, folder, env)
+            a = Peer(command, folder, env, observations)
             peers.append(a)
             check("initialize required", lambda: a.call("operations/list", error=-32002))
             check("unsupported version refused", lambda: a.call("initialize", {"protocolVersion": "unsupported"}, error=-32002))
@@ -151,7 +188,7 @@ def run(command, suite="lifecycle"):
                   first[k] and folder not in first[k] for k in ("session", "generation", "ref")), True))
             check("immutable session identity", lambda: a.call("session.update", {"session": first["session"], "cwd": folder}, error=-32602))
             check("state update", lambda: equal(a.call("session.update", {"session": first["session"], "state": "busy"})["state"], "busy"))
-            b = Peer(command, folder, env)
+            b = Peer(command, folder, env, observations)
             peers.append(b)
             b.call("initialize", {"protocolVersion": "1"})
             check("connection-local handles", lambda: b.call("session.update", {"session": first["session"], "state": "idle"}, error=-32001))
@@ -168,9 +205,9 @@ def run(command, suite="lifecycle"):
             resumed = b.call("session.open", dict(params, profile="other"))
             check("EOF releases conversation ownership", lambda: equal(resumed["ref"] == other["ref"] and
                   resumed["generation"] != other["generation"], True))
-            if suite == "messaging":
+            if suite in ("messaging", "events"):
                 result["scope"] = "lifecycle and claim/queue/ACK recovery; no native delivery, UI or complete operations certification"
-                messaging(b, reopened, resumed, dict(params, profile="other"), check, equal)
+                messaging(b, reopened, resumed, dict(params, profile="other"), check, equal, events=suite == "events")
             result.update(status="passed", activeCheck=None)
         except Exception as error:
             result.update(status="failed", error=repr(error))
@@ -181,13 +218,14 @@ def run(command, suite="lifecycle"):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--suite", choices=("lifecycle", "messaging"), default="lifecycle")
+    parser.add_argument("--capture", action="store_true", help="include isolated wire observations in the report")
+    parser.add_argument("--suite", choices=("lifecycle", "messaging", "events"), default="lifecycle")
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--command", nargs=argparse.REMAINDER, required=True)
     args = parser.parse_args()
     if not args.command:
         parser.error("--command requires an executable")
-    result = run(args.command, args.suite)
+    result = run(args.command, args.suite, args.capture)
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(result, indent=2) + "\n")
     print(json.dumps({"status": result["status"], "checks": len(result["checks"]), "activeCheck": result["activeCheck"]}))

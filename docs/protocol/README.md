@@ -8,6 +8,7 @@ Native binding notes: [Pi 1.4.0](pi.md), [OpenCode 1.19.5](opencode.md),
 [Hermes 0.22.5 API prototype](hermes.md), [OpenClaw 2026.10.9 prototype](openclaw.md).
 Host coordination: [Python](python-host.md).
 Request definitions: [envelope contract and examples](request-contract.md).
+Output definitions: [responses, notifications and observed validation](output-contract.md).
 External verification: [stdio lifecycle and delivery conformance](conformance.md) (partial contract coverage).
 
 Start `python3 -m xsm protocol serve --stdio` from an installed checkout.

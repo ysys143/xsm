@@ -38,11 +38,15 @@ class ExternalConformanceTest(unittest.TestCase):
         self.assertEqual(result["activeCheck"], "single live conversation owner")
 
     def delivery_candidate(self, fault):
+        if fault == 'none':
+            return [sys.executable, '-B', '-c',
+                "import runpy,sys;sys.path.insert(0,sys.argv.pop(1));runpy.run_module('xsm',run_name='__main__')",
+                str(ROOT), 'protocol', 'serve', '--stdio']
         return [sys.executable, '-B', str(ROOT / 'tests/fixtures/protocol_delivery_fault.py'), fault]
 
     def test_actual_server_delivery_contract(self):
         result = checker.run(self.delivery_candidate('none'), suite='messaging')
-        self.assertEqual(result['status'], 'passed', result)
+        self.assertEqual(result['status'], 'passed', {k: v for k, v in result.items() if k != 'observations'})
         self.assertEqual(len(result['checks']), 29)
 
     def test_automatic_consumption_on_admission_is_detected(self):
@@ -59,3 +63,11 @@ class ExternalConformanceTest(unittest.TestCase):
         result = checker.run(self.delivery_candidate('accept-foreign-ack'), suite='messaging')
         self.assertEqual(result['status'], 'failed', result)
         self.assertEqual(result['activeCheck'], 'foreign consumer cannot acknowledge')
+
+    def test_actual_notification_is_captured_and_preserves_original(self):
+        result = checker.run(self.delivery_candidate('none'), suite='events', capture=True)
+        self.assertEqual(result['status'], 'passed', {k: v for k, v in result.items() if k != 'observations'})
+        self.assertEqual(len(result['checks']), 32)
+        events = [entry['frame'] for entry in result['observations'] if 'method' in entry['frame']]
+        self.assertTrue(events, result)
+        self.assertEqual(events[0]['method'], 'events/available')

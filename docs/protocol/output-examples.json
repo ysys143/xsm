@@ -1,0 +1,181 @@
+[
+  {
+    "method": "initialize",
+    "frame": {
+      "jsonrpc": "2.0",
+      "id": 1,
+      "result": {
+        "protocolVersion": "1",
+        "experimental": true,
+        "capabilities": [
+          "messaging",
+          "inbox"
+        ],
+        "limits": {
+          "claimLeaseSeconds": 120
+        },
+        "operations": [
+          "xsm_inbox"
+        ]
+      }
+    }
+  },
+  {
+    "method": "operations/list",
+    "frame": {
+      "jsonrpc": "2.0",
+      "id": 2,
+      "result": {
+        "operations": [
+          {
+            "name": "xsm_inbox",
+            "description": "Read inbox",
+            "inputSchema": {
+              "type": "object"
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "method": "session.open",
+    "frame": {
+      "jsonrpc": "2.0",
+      "id": 3,
+      "result": {
+        "session": "opaque-session",
+        "generation": "opaque-generation",
+        "ref": "opaque-address",
+        "capabilities": [
+          "inbox"
+        ]
+      }
+    }
+  },
+  {
+    "method": "session.update",
+    "frame": {
+      "jsonrpc": "2.0",
+      "id": 4,
+      "result": {
+        "state": "idle"
+      }
+    }
+  },
+  {
+    "method": "session.close",
+    "frame": {
+      "jsonrpc": "2.0",
+      "id": 5,
+      "result": {
+        "closed": true
+      }
+    }
+  },
+  {
+    "method": "events.subscribe",
+    "frame": {
+      "jsonrpc": "2.0",
+      "id": 6,
+      "result": {
+        "subscribed": true
+      }
+    }
+  },
+  {
+    "method": "operation.call",
+    "frame": {
+      "jsonrpc": "2.0",
+      "id": 7,
+      "result": {
+        "messages": [],
+        "claims": []
+      }
+    }
+  },
+  {
+    "method": "inbox.release",
+    "frame": {
+      "jsonrpc": "2.0",
+      "id": 8,
+      "result": {
+        "released": [
+          "opaque-message"
+        ]
+      }
+    }
+  },
+  {
+    "method": "delivery.report",
+    "frame": {
+      "jsonrpc": "2.0",
+      "id": 9,
+      "result": {
+        "recorded": "admitted",
+        "acknowledged": false
+      }
+    }
+  },
+  {
+    "method": "decision.response",
+    "frame": {
+      "jsonrpc": "2.0",
+      "id": 10,
+      "result": {
+        "status": "answered",
+        "decision_id": "opaque-decision"
+      }
+    }
+  },
+  {
+    "method": "decision.abandon",
+    "frame": {
+      "jsonrpc": "2.0",
+      "id": 11,
+      "result": {
+        "status": "pending",
+        "decision_id": "opaque-decision"
+      }
+    }
+  },
+  {
+    "frame": {
+      "jsonrpc": "2.0",
+      "id": null,
+      "error": {
+        "code": -32700,
+        "message": "invalid JSON"
+      }
+    }
+  },
+  {
+    "frame": {
+      "jsonrpc": "2.0",
+      "method": "events/available",
+      "params": {
+        "session": "opaque-session",
+        "ids": [
+          "opaque-message"
+        ]
+      }
+    }
+  },
+  {
+    "frame": {
+      "jsonrpc": "2.0",
+      "method": "decision/request",
+      "params": {
+        "session": "opaque-session",
+        "decisionId": "opaque-decision",
+        "questionId": "opaque-question",
+        "challenge": "opaque-challenge",
+        "question": "Exact displayed question",
+        "requestedSchema": {
+          "type": "object"
+        },
+        "expiresAt": 1900000000
+      }
+    }
+  }
+]
