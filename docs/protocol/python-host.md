@@ -67,3 +67,13 @@ Host 초기화가 실패하거나 취소되면 client 정리를 시도한다. �
 callback으로 분리하고 원래 실패/취소는 유지한다. 이 동작은 close가 실패했는데도
 모든 자원을 회수했다고 보증하는 것이 아니다. 이 경우 실제 프로세스 상태와
 정본 참여·lease 복구 규칙으로 확인해야 한다.
+
+## 등록 응답 기한
+
+`XsmHost.open(setup_timeout=10.0)`은 initialize가 끝난 뒤
+session.open·operations/list·events.subscribe에 총 10초를 준다. Node의
+대응 옵션은 `setupTimeout: 10000`이며 ms 단위다. 유한한 양수만 허용한다
+(Node timer 최대 2147483647ms). 각 RPC마다 예산을 새로 주지 않는다.
+초과하면 `TransportError`로 실패하고 backend를 닫아 회수하며 수신 pump를
+시작하지 않는다. Initialize 자체에는 별도의 기본 10초 기한이 있다.
+이 설정은 이후 operation 호출이나 사람이 질문에 응답할 시간을 제한하지 않는다.

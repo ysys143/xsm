@@ -24,14 +24,26 @@ class XsmHost:
     @classmethod
     async def open(cls, *, runtime, profile, conversation, cwd, deliver=None, present=None,
                    command=None, env=None, on_error=None, inbox_batch_size=None, inbox_max_bytes=None,
-                   initialize_timeout=10.0):
+                   initialize_timeout=10.0, setup_timeout=10.0):
         if inbox_max_bytes is not None and (type(inbox_max_bytes) is not int or not 1 <= inbox_max_bytes <= 1048576):
             raise ValueError("inbox_max_bytes must be an integer from 1 to 1048576")
         if inbox_batch_size is not None and (type(inbox_batch_size) is not int or not 1 <= inbox_batch_size <= 100):
             raise ValueError("inbox_batch_size must be an integer from 1 to 100")
+        try:
+            valid_timeout = type(setup_timeout) in (int, float) and math.isfinite(setup_timeout) and setup_timeout > 0
+        except OverflowError:
+            valid_timeout = False
+        if not valid_timeout:
+            raise ValueError("setup_timeout must be finite and positive")
         command = command or [str(Path(__file__).resolve().parents[2] / "bin/xsm"),
                               "protocol", "serve", "--stdio"]
         client = await XsmHostClient.connect(command, cwd=cwd, env=env, initialize_timeout=initialize_timeout)
+        deadline = asyncio.get_running_loop().time() + setup_timeout
+        async def setup(method, awaitable):
+            try:
+                return await asyncio.wait_for(awaitable, max(0, deadline - asyncio.get_running_loop().time()))
+            except asyncio.TimeoutError as error:
+                raise TransportError("host setup timed out at " + method) from error
         try:
             capabilities = ["messaging", "inbox"] + (["events"] if deliver else []) + (["user-decisions"] if present else [])
             available = client.initialization.get("capabilities", [])
@@ -42,17 +54,17 @@ class XsmHost:
                 valid_lease = False
             if not isinstance(available, list) or any(value not in available for value in capabilities) or not valid_lease:
                 raise TransportError("server lacks required host capabilities or a finite positive claim lease")
-            session = await client.session_open(runtime=runtime, profile=profile, conversation=conversation,
-                                                cwd=cwd, capabilities=capabilities)
-            operations = (await client.request("operations/list"))["operations"]
+            session = await setup("session.open", client.session_open(runtime=runtime, profile=profile, conversation=conversation,
+                                                cwd=cwd, capabilities=capabilities))
+            operations = (await setup("operations/list", client.request("operations/list")))["operations"]
             if inbox_max_bytes is not None and not any(item['name'] == 'xsm_inbox' and
                     'max_bytes' in item['inputSchema'].get('properties', {}) for item in operations):
                 raise TransportError('server does not advertise inbox byte budgets')
+            if deliver:
+                await setup("events.subscribe", client.events_subscribe(session["session"]))
             host = cls(client, session, operations, deliver, present, on_error)
             host.inbox_batch_size = inbox_batch_size
             host.inbox_max_bytes = inbox_max_bytes
-            if deliver:
-                await client.events_subscribe(session["session"])
             host.pump = asyncio.create_task(host._pump())
             return host
         except BaseException:

@@ -1569,3 +1569,22 @@ Python 3.14.6). 초기 기한을 무력화한 Python·Node 임시 변이도 외�
 401개가 71.523초에 통과했다
 (`linux-initialize-timeout-core/result.json`). 위 Linux 미실행 기록의
 후속 검증이며, 일반 setup 전체 기한·operation 기한은 계속 미완이다.
+
+## Host 등록 전체 응답 예산
+
+Initialize 이후 session.open·operations/list·events.subscribe를 하나의
+기본 10초 예산으로 제한했다. Python `setup_timeout`(초), Node
+`setupTimeout`(ms)으로 전달한다. 실패 시 기존 close 회수 경로를 사용하고
+수신 pump는 구독까지 성공한 뒤 시작한다. 무응답인 세 단계를 각각
+subprocess로 실행하고 회수를 확인했다. 단계별 지연은 짧지만 합이 예산을
+넘는 fixture도 검사한다. 초기 Python red는 setup 옵션 부재로 3개 분기에서
+실패했다(`host-setup-timeout-red.log`). 일반 operation·사람 질문의 기한이나
+호스트 연결 종료와 다른 개별 native cancellation 계약은 이 변경으로
+완료됐다고 주장하지 않는다. 전체 계획은 미완이다.
+
+`python3 -B scripts/check-protocol.py`는 403개(핵심 238/Python 48/Node 117)를
+69.910초에 통과했다(`host-setup-timeout-gate.log`, macOS arm64/Python
+3.14.6). 각 RPC마다 예산을 새로 주는 임시 Python·Node 변이는 누적 지연
+분기에서 예상한 TransportError가 없어 실패했다
+(`host-setup-reset-budget-mutant.log`, `host-setup-node-reset-budget-mutant.log`).
+이 등록 예산 변경의 Linux 검증은 아직 미실행이다.

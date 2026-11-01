@@ -93,3 +93,25 @@ test('host initialization retains primary failure when close fails', async t => 
     onError: error => diagnostics.push(error) }), error => error === primary);
   assert.deepEqual(diagnostics, [cleanup]);
 });
+
+test('host setup stalls reap the backend at every bootstrap RPC', { timeout: 12000 }, async t => {
+  const { XsmHost } = await import('../typescript/xsm-host.mjs');
+  for (const setupTimeout of [null, false, 0, -1, Infinity, NaN, '1', 2147483648]) {
+    await assert.rejects(XsmHost.open({ runtime: 'fixture', profile: 'p', conversation: 'c', cwd: '.',
+      command: ['must-not-spawn'], setupTimeout }), /setupTimeout/);
+  }
+  const original = XsmHostClient.connect.bind(XsmHostClient), clients = [];
+  t.mock.method(XsmHostClient, 'connect', async (...args) => {
+    const client = await original(...args); clients.push(client); return client;
+  });
+  for (const method of ['session.open', 'operations/list', 'events.subscribe', 'combined-budget']) {
+    try {
+      await assert.rejects(XsmHost.open({ runtime: 'fixture', profile: 'p', conversation: 'c', cwd: '.',
+        command: [process.env.PYTHON ?? 'python3', '-u', fileURLToPath(new URL('./echo_peer.py', import.meta.url)),
+          method === 'combined-budget' ? 'host-slow-setup' : 'host-stall-' + method],
+        setupTimeout: method === 'combined-budget' ? 120 : 50, closeTimeout: 50, deliver: async () => {} }), /host setup timed out/);
+      const child = clients.at(-1).process;
+      assert.ok(child.exitCode !== null || child.signalCode !== null);
+    } finally { await Promise.all(clients.map(client => client.close())); }
+  }
+});

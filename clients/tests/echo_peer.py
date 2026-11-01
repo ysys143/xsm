@@ -56,10 +56,16 @@ for line in sys.stdin.buffer:
         elif MODE == "init-nonobject":
             reply(request, ["1"])
         else:
-            reply(request, {"protocolVersion": "1"})
+            reply(request, {"protocolVersion": "1", **({"capabilities": ["messaging", "inbox", "events"], "limits": {"claimLeaseSeconds": 120}} if MODE.startswith("host-") else {})})
         initialized = True
         continue
-    if method == "test.pair":
+    if MODE == "host-slow-setup" and method in ("session.open", "operations/list", "events.subscribe"):
+        time.sleep(.08)
+    if MODE == "host-stall-" + method:
+        time.sleep(60)
+    if method == "operations/list":
+        reply(request, {"operations": []})
+    elif method == "test.pair":
         held.append(request)
         if len(held) == 2:
             if MODE == "eof":

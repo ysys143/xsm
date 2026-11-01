@@ -12,6 +12,33 @@ from xsm_client import XsmHostClient, RpcError
 
 
 class HostClientTest(unittest.IsolatedAsyncioTestCase):
+    async def test_setup_stalls_reap_backend(self):
+        from unittest.mock import patch
+        from xsm_host import XsmHost
+        from xsm_client import TransportError
+        for value in (False, 0, -1, float('inf'), float('nan'), '1', 10 ** 400):
+            with self.assertRaisesRegex(ValueError, 'setup_timeout'):
+                await XsmHost.open(runtime='fixture', profile='p', conversation='c', cwd=str(ROOT),
+                    command=['must-not-spawn'], setup_timeout=value)
+        original, clients = XsmHostClient.connect, []
+        async def observed(*args, **kwargs):
+            client = await original(*args, **kwargs)
+            clients.append(client)
+            return client
+        for method in ('session.open', 'operations/list', 'events.subscribe', 'combined-budget'):
+            with self.subTest(method=method):
+                try:
+                    with patch.object(XsmHostClient, 'connect', new=observed):
+                        with self.assertRaisesRegex(TransportError, 'host setup timed out'):
+                            await asyncio.wait_for(XsmHost.open(runtime='fixture', profile='p', conversation='c',
+                                cwd=str(ROOT), command=[sys.executable, '-u', str(Path(__file__).with_name('echo_peer.py')),
+                                'host-slow-setup' if method == 'combined-budget' else 'host-stall-' + method],
+                                setup_timeout=.12 if method == 'combined-budget' else .05, deliver=lambda *args: None), 3)
+                    self.assertIsNotNone(clients[-1].process.returncode)
+                finally:
+                    for client in clients:
+                        await client.close()
+
     async def test_real_scoped_question_answer_and_retry(self):
         await asyncio.wait_for(self.roundtrip(), 20)
 

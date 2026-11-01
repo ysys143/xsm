@@ -59,11 +59,25 @@ export class XsmHost {
         options.inboxBatchSize < 1 || options.inboxBatchSize > 100)) {
       throw new TypeError('inboxBatchSize must be an integer from 1 to 100');
     }
+    const { setupTimeout = 10000 } = options;
+    if (!Number.isFinite(setupTimeout) || setupTimeout <= 0 || setupTimeout > 2147483647) {
+      throw new TypeError('setupTimeout must be finite and within the positive timer range');
+    }
     const command = options.command ?? [fileURLToPath(new URL('../../bin/xsm', import.meta.url)),
       'protocol', 'serve', '--stdio'];
     const client = await XsmHostClient.connect({ command, cwd: options.cwd,
       env: options.env, onStderr: options.onStderr, closeTimeout: options.closeTimeout,
       initializeTimeout: options.initializeTimeout });
+    const deadline = performance.now() + setupTimeout;
+    const setup = async (method, request) => {
+      let timer;
+      try {
+        return await Promise.race([request, new Promise((_, reject) => {
+          timer = setTimeout(() => reject(new TransportError('host setup timed out at ' + method)),
+            Math.max(0, deadline - performance.now()));
+        })]);
+      } finally { clearTimeout(timer); }
+    };
     try {
       const available = client.initialization.capabilities;
       const required = ['messaging', 'inbox', ...(options.deliver ? ['events'] : []),
@@ -74,14 +88,14 @@ export class XsmHost {
       }
       const capabilities = ['messaging', 'inbox', ...(options.deliver ? ['events'] : [])];
       if (options.present) capabilities.push('user-decisions');
-      const session = await client.sessionOpen({ runtime: options.runtime, profile: options.profile,
-        conversation: options.conversation, cwd: options.cwd, capabilities });
-      const { operations } = await client.request('operations/list');
+      const session = await setup('session.open', client.sessionOpen({ runtime: options.runtime, profile: options.profile,
+        conversation: options.conversation, cwd: options.cwd, capabilities }));
+      const { operations } = await setup('operations/list', client.request('operations/list'));
       if (options.inboxMaxBytes !== undefined && !operations.find(item => item.name === 'xsm_inbox')?.inputSchema?.properties?.max_bytes) {
         throw new Error('server does not advertise inbox byte budgets');
       }
+      if (options.deliver) await setup('events.subscribe', client.eventsSubscribe(session.session));
       const host = new XsmHost(client, session, operations, options);
-      if (options.deliver) await client.eventsSubscribe(session.session);
       host.pumpTask = host.pump();
       return host;
     } catch (error) {
