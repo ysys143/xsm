@@ -141,3 +141,33 @@ API 근거는 [고정 버전 플러그인](https://github.com/anomalyco/opencode
 [TUI dialog API](https://github.com/anomalyco/opencode/blob/v1.19.5/packages/plugin/src/tui.ts),
 [도구 스키마 처리](https://github.com/anomalyco/opencode/blob/v1.19.5/packages/opencode/src/tool/registry.ts),
 [native 입력 처리](https://github.com/anomalyco/opencode/blob/v1.19.5/packages/opencode/src/session/prompt.ts)이다.
+
+## 백엔드 종료 뒤 native 진입에서 복구
+
+종료되거나 transport 실패로 중단된 host를 다음 도구/chat/status 진입에서
+교체한다. 기존 UI 질문을 닫고 backend 정리를 마친 뒤 같은 native 대화를
+새 participation 세대로 연다. 복구 Promise를 세션 map에 보관하므로 동시에
+들어온 호출들이 같은 새 참여를 기다린다. 실패한 도구 호출을 이 경로가
+자동 재실행하지 않는다. 유휴 중 선제 재시작은 아직 미구현이다.
+
+실제 protocol server와 OpenCode API fixture의 충돌 검사는 원문을 claim한
+backend를 종료한 뒤 두 native 도구 호출을 동시에 보낸다. 같은 ref·다른
+PID/세대에서 원문을 새 token으로 회수하고, 이전 token의 ACK를 거부한 뒤
+새 token으로 소비했다. FYI가 unsolicited native 입력으로 바뀌지 않는 것도
+확인했다. 변경 전 실패는 `opencode-backend-recovery-red.log`, 수정 후 관련
+8개 검사 통과는 `opencode-backend-recovery-green.log`에 기록했다.
+
+고정 OpenCode 1.19.5의 실제 설치본 프로브도 `--crash`를 지원한다. 자체
+프로세스 그룹의 backend만 종료한 뒤 실제 `/session/{id}/message`의 noReply
+chat 경계를 거쳐 같은 주소의 새 세대를 확인한다. 그 후 native 수락과 scripted
+assistant의 native ACK를 100/100개 완료했다. macOS/protocol Python 3.14.6의
+p95 상한은 347.275ms다(`opencode-backend-recovery-native-100/result.json`).
+이 native 프로브의 강제 종료 시점에는 미소비 claim을 남기지 않았다. 원문·
+claim을 남긴 충돌 회복은 앞의 API fixture 결과와 구분한다. 모델 추론·사람
+UI·Linux 인증도 아니다.
+
+첫 실제 프로브는 시험 코드가 `/prompt` 경로를 잘못 사용해 실패했다
+(`opencode-backend-recovery-native/result.json`). 고정 SDK가 쓰는 `/message`로
+고친 5회 smoke와 이후 100회 결과를 따로 보존했다. 공통 355개는 59.428초에
+통과했다(`opencode-backend-recovery-gate.log`). Pi 및 다른 runtime의 복구,
+유휴 재접속·worker와 전체 P3/P5는 미완이다.

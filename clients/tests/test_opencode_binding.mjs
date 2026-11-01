@@ -163,3 +163,25 @@ test('unverified native storage releases a claim for a later natural boundary', 
   const tokens = JSON.parse(text.match(/tokens: (\[[^\n]+?\])/)[1]);
   assert.equal((await invoke('a', 'xsm_ack', { tokens })).acked.length, 1);
 });
+
+test('concurrent native calls recover a dead backend with new claims', { timeout: 15000 }, async t => {
+  const { invoke, records, send, errors, native } = await fixture(t);
+  await invoke('a', 'xsm_inbox');
+  const [before] = await records();
+  await send(before, 'survive OpenCode backend death', { wake: 'never' });
+  const original = (await invoke('a', 'xsm_inbox')).claims[0];
+  process.kill(before.pid, 'SIGKILL');
+  await until(() => errors.length > 0);
+  const packets = await Promise.all([invoke('a', 'xsm_inbox'), invoke('a', 'xsm_inbox')]);
+  const [after] = await records();
+  assert.equal(after.ref, before.ref);
+  assert.notEqual(after.pid, before.pid);
+  assert.notEqual(after.protocol_generation, before.protocol_generation);
+  const claims = packets.flatMap(packet => packet.claims);
+  assert.equal(claims.length, 1);
+  assert.equal(claims[0].id, original.id);
+  assert.notEqual(claims[0].token, original.token);
+  await assert.rejects(invoke('a', 'xsm_ack', { tokens: [original.token] }), error => error.code === -32602);
+  assert.deepEqual((await invoke('a', 'xsm_ack', { tokens: [claims[0].token] })).acked, [original.id]);
+  assert.equal(native.size, 0, 'FYI recovery is a pull, not an unsolicited native injection');
+});

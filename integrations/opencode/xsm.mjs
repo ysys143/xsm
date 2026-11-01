@@ -81,6 +81,23 @@ async function attach(api, options, release) {
     if (cwd !== undefined && await realpath(cwd) !== await realpath(api.directory)) {
       throw new Error('xsm tool directory differs from native plugin directory');
     }
+    if (sessions.has(id)) {
+      const previous = sessions.get(id);
+      const existing = await previous;
+      if ((existing.closed || existing.controller.signal.aborted) && sessions.get(id) === previous) {
+        const recovering = (async () => {
+          ui?.close(id);
+          await existing.close();
+          if (disposed || sessions.get(id) !== recovering) {
+            throw new Error('native session closed during backend recovery');
+          }
+          sessions.delete(id);
+          return open(id, cwd);
+        })();
+        sessions.set(id, recovering);
+        recovering.catch(() => { if (sessions.get(id) === recovering) sessions.delete(id); });
+      }
+    }
     if (!sessions.has(id)) {
       const opening = (async () => {
         const native = unwrap(await api.client.session.get({ path: { id } }));
@@ -154,12 +171,12 @@ async function attach(api, options, release) {
       if (type === 'session.created') await open(properties.info.id);
       else if (type === 'session.deleted') await close(properties.info.id);
       else if (type === 'session.updated' && sessions.has(properties.info.id)) {
-        const host = await sessions.get(properties.info.id);
+        const host = await open(properties.info.id);
         await host.update(states.get(properties.info.id) ?? 'idle', properties.info.title);
       } else if (type === 'session.status') {
         const state = properties.status.type === 'idle' ? 'idle' : 'busy';
         states.set(properties.sessionID, state);
-        if (sessions.has(properties.sessionID)) await (await sessions.get(properties.sessionID)).update(state);
+        if (sessions.has(properties.sessionID)) await (await open(properties.sessionID)).update(state);
       }
     },
     dispose: async () => {

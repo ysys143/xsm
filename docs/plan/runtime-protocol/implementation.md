@@ -1195,3 +1195,28 @@ Python 3.9.6 관련 36개는 통과했다(`operation-schema-python39.log`). 공�
 (`operation-schema-gate.log`). 공개 사용법·범위는 operations-contract.md에 있다.
 이는 구조적 입력 계약이며 모든 domain 필수 조건·권한·native 지원을
 증명하지 않는다. 작업별 결과·독립 전체 구현과 P0–P5의 남은 수용 조건은 미완이다.
+
+## OpenCode 다음 native 진입의 backend 복구
+
+OpenCode의 session map이 transport 실패 host를 계속 반환하던 경로를 수정했다.
+다음 도구/chat 경계와 제목·상태 갱신에서 실패 host를 정리하고 동일 native
+대화를 새 세대로 등록한다. 복구 Promise를 공유해 동시 진입의 중복 등록을
+막으며 이전 UI 질문을 닫는다. 실패한 도구 호출 자체를 자동 재실행하지 않는다.
+
+실제 protocol server/API fixture에서 원문 claim 뒤 backend를 종료하는 검사는
+변경 전 실패했다(`opencode-backend-recovery-red.log`). 수정 후 관련 8개가
+통과했다(`opencode-backend-recovery-green.log`). 동시 도구 호출 두 개에서
+같은 ref·다른 PID/세대, 원문 보존·token 교체·이전 token 거부·새 ACK를 확인했다.
+
+실제 OpenCode 1.19.5도 자체 process group의 backend만 종료한 뒤 실제 noReply
+chat 경계로 복구했다. 첫 프로브는 HTTP 경로를 잘못 사용해 실패했으며 로그를
+보존했다(`opencode-backend-recovery-native/result.json`). 고정 SDK의 /message
+경로로 수정한 5회 smoke 뒤 100/100 native 수락·native ACK를 완료했고 macOS/
+protocol Python 3.14.6 p95 상한은 347.275ms다
+(`opencode-backend-recovery-native-100/result.json`). Native 강제 종료 시 미소비
+원문을 남기지는 않았으므로 그 복구는 앞의 API fixture와 구분한다. Provider는
+scripted assistant fixture이며 모델 추론이나 사람 UI 인증이 아니다.
+
+공통 355개(핵심 231, Python 40, Node 84)는 Python 3.14.6에서 59.428초에
+통과했다(`opencode-backend-recovery-gate.log`). 유휴 중 자동 재접속·Pi/다른
+runtime의 복구·worker·Linux·원격·전체 방향 조합과 P0–P5 나머지는 미완이다.

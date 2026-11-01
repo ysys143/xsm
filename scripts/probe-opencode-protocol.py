@@ -182,6 +182,32 @@ async def run(args):
         assert receiver, "native session was not registered"
         assert os.path.realpath(receiver["protocol_root"]) == os.path.realpath(installation["runtime_root"])
         result["receiver"] = receiver
+        if getattr(args, "crash", False):
+            previous = receiver
+            assert previous["pid"] != process.pid and os.getpgid(previous["pid"]) == process.pid, "backend is not in the probe's private process group"
+            os.kill(previous["pid"], signal.SIGKILL)
+            deadline = time.monotonic() + 5
+            while True:
+                try:
+                    os.kill(previous["pid"], 0)
+                except ProcessLookupError:
+                    break
+                assert time.monotonic() < deadline, "backend was not reaped"
+                await asyncio.sleep(.01)
+            await request("/session/" + native["id"] + "/message", {
+                "noReply": True, "parts": [{"type": "text", "text": "Native backend recovery boundary fixture"}]})
+            for _ in range(100):
+                rows = [json.loads(path.read_text()) for path in (state / "sessions").glob("*.json")]
+                receiver = next((row for row in rows if row.get("ref") == previous["ref"] and
+                                 row.get("pid") != previous["pid"] and not row.get("ended_at")), None)
+                if receiver:
+                    break
+                await asyncio.sleep(.05)
+            assert receiver and receiver["protocol_generation"] != previous["protocol_generation"], "native boundary did not re-register"
+            result["backendRecovery"] = {"oldPid": previous["pid"], "newPid": receiver["pid"],
+                "sameRef": receiver["ref"] == previous["ref"], "generationChanged": True,
+                "trigger": "real native chat.message boundary with noReply; no failed operation replay"}
+            checkpoint()
         sender = await XsmClient.connect([*command, "protocol", "serve", "--stdio"],
                                          cwd=str(work), env=env)
         own = await sender.session_open(runtime="probe", profile="isolated", conversation="sender", cwd=str(work))
@@ -257,6 +283,7 @@ if __name__ == "__main__":
     parser.add_argument("--native-root", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--samples", type=int, default=5)
+    parser.add_argument("--crash", action="store_true")
     args = parser.parse_args()
     if args.samples < 1:
         parser.error("samples must be positive")
