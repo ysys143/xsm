@@ -105,6 +105,18 @@ def run(args):
         finally:
             clear_session_vars(tokens)
         result["checks"].append("existing native caller cannot borrow another workspace")
+        tokens = set_session_vars(platform="tui", session_id="native-a", session_key="native-a", cwd=str(temp / "b"))
+        try:
+            manager.invoke_hook("on_session_start", session_id="native-a")
+        finally:
+            clear_session_vars(tokens)
+        moved = next(item for item in records() if item["ref"] == first["ref"])
+        assert moved["cwd"] == str((temp / "b").resolve())
+        assert moved["protocol_generation"] != first["protocol_generation"]
+        invoke("native-a", temp / "b", "xsm_inbox")
+        stale = invoke("native-a", temp / "a", "xsm_inbox")
+        assert "workspace changed" in str(stale), stale
+        result["checks"].append("native session-start workspace move keeps ref and replaces participation")
         manager.invoke_hook("on_session_end", session_id="native-a")
         assert not next(item for item in records() if item["ref"] == first["ref"]).get("ended_at")
         manager.invoke_hook("on_session_finalize", session_id="native-a")

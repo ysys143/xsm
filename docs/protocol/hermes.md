@@ -11,8 +11,9 @@ CLI/TUI 전체 수명·자동 주입·사용자 UI·설치·worker는 미완이�
 
 `on_session_end`는 turn 종료이므로 idle로만 갱신한다. 실제 finalize/delete에서
 참여를 닫고, 같은 native ID를 다시 열면 주소를 유지하면서 세대를 바꾼다.
-현재 참여 중 작업 폴더가 바뀌면 재참여를 요구하는 오류를 반환한다. 이 경로의
-자동 전환은 아직 구현하지 않았다.
+Native 세션 시작 hook이 작업 폴더 변경을 확인하면 이전 참여를 닫고 같은
+주소의 새 세대로 전환한다. 도구 호출만으로는 폴더를 바꿀 수 없으며, 이전
+폴더의 늦은 호출도 거부한다.
 
 SDK는 immutable root마다 별도 Python package namespace로 로드한다. 같은
 프로세스에서 서로 다른 snapshot의 client 클래스가 먼저 import된 버전으로

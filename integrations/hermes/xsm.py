@@ -38,6 +38,7 @@ class HermesBinding:
             str(self.root), "protocol", "serve", "--stdio"]
         self.env = env
         self.hosts = {}
+        self.host_lock = None
         self.closed = False
         self.loop = asyncio.new_event_loop()
         self.thread = threading.Thread(target=self.loop.run_forever, name="xsm-hermes", daemon=True)
@@ -58,7 +59,18 @@ class HermesBinding:
             raise RuntimeError("native caller has no existing absolute workspace")
         return sid, str(Path(cwd).resolve())
 
-    async def _host(self, sid, cwd):
+    async def _host(self, sid, cwd, *, rebind=False):
+        if self.host_lock is None:
+            self.host_lock = asyncio.Lock()
+        async with self.host_lock:
+            if sid in self.hosts and self.hosts[sid][0] != cwd:
+                if not rebind:
+                    raise RuntimeError("native workspace changed; wait for the native session-start hook")
+                _, previous = self.hosts.pop(sid)
+                await (await previous).close()
+            return await self._open_host(sid, cwd)
+
+    async def _open_host(self, sid, cwd):
         if sid not in self.hosts:
             pending = asyncio.create_task(self.sdk.XsmHost.open(runtime="hermes", profile=self.profile,
                 conversation=sid, cwd=cwd, command=self.command, env=self.env))
@@ -69,9 +81,7 @@ class HermesBinding:
                 if self.hosts.get(sid, (None, None))[1] is pending:
                     self.hosts.pop(sid, None)
                 raise
-        recorded, pending = self.hosts[sid]
-        if recorded != cwd:
-            raise RuntimeError("native workspace changed; finalize the previous participation before reopening")
+        _, pending = self.hosts[sid]
         return await pending
 
     async def _call(self, sid, cwd, operation, args):
@@ -86,7 +96,7 @@ class HermesBinding:
     def start(self, session_id="", **_native):
         sid, cwd = self._identity(session_id)
         async def update():
-            await (await self._host(sid, cwd)).update("busy")
+            await (await self._host(sid, cwd, rebind=True)).update("busy")
         self._run(update())
 
     def settled(self, session_id="", **_native):
