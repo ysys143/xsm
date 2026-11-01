@@ -175,7 +175,9 @@ class HostInstallTest(TempState):
         root = Path(first["runtime_root"])
         for filename in host_install.SHARED + ("integrations/pi/xsm.mjs",):
             self.assertTrue((root / filename).is_file(), filename)
-        for filename in ("clients/python/__init__.py", "clients/python/xsm_host.py", "integrations/hermes/xsm.py"):
+        for filename in ("clients/python/__init__.py", "clients/python/xsm_host.py", "integrations/hermes/xsm.py",
+                         "integrations/openclaw/xsm.mjs", "integrations/openclaw/tools.mjs",
+                         "integrations/openclaw/openclaw.plugin.json"):
             self.assertTrue((root / filename).is_file(), filename)
         original = self.loader.read_bytes()
         self.assertIn(root.as_uri().encode(), original)

@@ -565,3 +565,36 @@ false 반환은 수락 거부로 처리하고 claim을 ACK 없이 반환한다. 
 경로도 통과했다(`pi-node-pull-final.json`, `opencode-node-pull-final/result.json`).
 두 native 시험은 assistant/UI fixture이며 모델이나 사람의 인증으로 세지 않는다.
 OpenClaw 자체의 연결·loader·실제 큐 경로는 여전히 미완이다.
+
+## OpenClaw 실험 도구 연결
+
+`integrations/openclaw/`에 공통 스키마의 동기 catalog, native manifest,
+대화별 XsmHost 연결부를 추가했다. 실제 native caller context의 sessionId를
+conversation으로 사용하고, route/workspace 변경과 오래된 factory를 거부한다.
+Session-end·plugin cleanup에서 epoch를 무효화하고 pending open을 정리한다.
+Native 수신·UI를 광고하지 않는 pull-only이며 version 2 continuation은 미완이다.
+Immutable snapshot에 세 파일이 포함되는 것도 설치 검사에 추가했다.
+
+Fixture API + 실제 서버 subprocess 검사 4개가 DM/pull/ACK, 동일 route의
+대화 분리, 동시 open, 종료/resume, 늦은 도구 거부, 취소·UI 부재·plugin 폐기를
+확인했다. 최초 realpath/activity 필드 오독으로 2개 실패한 로그도 보존했다.
+Epoch 검사 제거·route를 conversation으로 사용·catalog drift의 세 변이는
+모두 검사를 실패시켰다(`openclaw-binding-mutations.json`).
+
+고정 native 패키지는 별도 HOME/npm cache에 install script 없이 설치했다.
+실제 2026.10.9 로더는 native conversation-access 권한 없는 agent_end hook을
+거부했다. 이 권한을 자동으로 켜지 않고 명시적 허용이 있는 경우에만 turn
+hook과 busy/idle 갱신을 사용한다. 기본 native 상태 관찰은 미완이다.
+
+`probe-openclaw-loader.mjs`는 실제 고정 로더에서 21개 도구를 경고 없이
+등록하고 metadata가 참여를 만들지 않음을 확인했다
+(`openclaw-native-loader-current.json`). Host 내부 loader import는 probe에만
+있고 제품은 공개 plugin API만 사용한다. Native 도구 execute·unload·one-shot
+CLI·gateway 수명은 아직 검증하지 않았다.
+
+최신 코드의 공통 264개(핵심 184, Python 28, Node 52)가 Python 3.14.6에서
+35.452초에 통과했다(`openclaw-binding-current-py314.log`). 직전 코드의
+Python 3.9.6 묶음은 53.946초에 통과했고, 이후 one-shot 도구별 조기 종료를
+제거해 CLI 종료 시점의 native cleanup 검증을 미완으로 유지했다.
+실제 native agent·주입·질문 UI·제품 설치기·worker·Linux·메신저와 전체 계획은
+미완이며, 이 결과를 OpenClaw 전체 지원 완료로 세지 않는다.

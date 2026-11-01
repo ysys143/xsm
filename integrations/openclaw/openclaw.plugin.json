@@ -1,0 +1,38 @@
+{
+  "id": "xsm",
+  "name": "xsm",
+  "description": "Experimental protocol tools; native push and user UI are not connected.",
+  "activation": {
+    "onStartup": true
+  },
+  "contracts": {
+    "tools": [
+      "xsm_owned",
+      "xsm_files",
+      "xsm_decision_status",
+      "xsm_ask",
+      "xsm_question_status",
+      "xsm_discover",
+      "xsm_publish",
+      "xsm_connect",
+      "xsm_grant",
+      "xsm_send",
+      "xsm_team",
+      "xsm_handover",
+      "xsm_board",
+      "xsm_ack",
+      "xsm_inbox",
+      "xsm_link",
+      "xsm_join",
+      "xsm_reach",
+      "xsm_doc_endorse",
+      "xsm_approve",
+      "xsm_decide"
+    ]
+  },
+  "configSchema": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {}
+  }
+}

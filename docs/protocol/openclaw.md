@@ -1,7 +1,8 @@
 # OpenClaw 2026.10.9 연결 경계
 
-상태: 고정 소스 API 조사. 연결부·설치·native 실행은 미구현이며 전체 계획은
-미완이다. 다른 런타임의 검사를 OpenClaw 지원 근거로 세지 않는다.
+상태: 실험적 direct-turn 도구 연결. 실제 고정 로더의 등록·metadata 발견과,
+명시적 caller fixture에서 실제 xsm 서버와의 왕복을 확인했다. Native 도구
+실행·agent turn·설치·수신 주입·UI는 미완이다. 전체 계획은 미완이다.
 
 ## 고정 버전과 격리 환경
 
@@ -72,5 +73,47 @@ Wake 요청도 별도이며 큐 수락과 다음 turn의 소비는 별개다. 10
 연결하고, 세션 분리·reset·플러그인 교체·취소·오래된 실행 거부를 실제 경로로
 검사해야 한다. 이어 UI 질문의 requester/표시/응답 결속, owned 설치·업데이트·
 제거, native queue p95, worker와 원격 기능을 구현·검증한다. Linux·교차 런타임·
-메신저까지 원래 완료 조건을 유지한다. 현재 자료는 소스 조사와 격리 Node
-실행 확인이며, native OpenClaw 프로세스나 모델·사용자 UI를 실행한 증거는 아니다.
+메신저까지 원래 완료 조건을 유지한다. 다음 절의 로더 검증 이후에도 native
+agent 실행·모델·사용자 UI 시험은 미완이다.
+
+## 실험 연결부와 후속 실행 증거
+
+`integrations/openclaw/xsm.mjs`는 native function factory를 동기 등록한다.
+`tools.mjs`는 공통 `operation_schema.TOOLS`에서 생성한 정적 catalog이며
+`tests.test_openclaw_schema`가 전체 값과 manifest의 이름 목록을 대조한다.
+새 기능의 독립 정책을 복제하지 않고 대화별 Node XsmHost를 사용한다.
+Manifest·catalog·binding은 immutable runtime snapshot에 포함된다.
+
+Native metadata-only factory는 null을 반환하고 참여를 만들지 않는다.
+실행 context의 sessionId/route/workspace를 사용하며 모델 인자는 이 신원을
+바꾸지 못한다. 같은 route의 다른 UUID는 분리한다. Session-end와 native
+lifecycle cleanup에서 세대를 무효화하고 pending open 종료도 기다린다.
+이전 factory는 다시 열 수 없으며 새 factory의 resume는 주소를 유지하고
+참여 세대를 바꾼다. Workspace 변경은 기존 참여 종료를 요구한다.
+
+Native 수신과 UI는 연결하지 않아 pull-only다. 질문이 필요한 작업은 승인 없이
+거부된다. Version 2 continuation은 광고하지 않는다. 외부 플러그인의
+`agent_end`는 native `hooks.allowConversationAccess=true`가 필요하다. 이를
+명시적으로 허용한 프로필에서만 hook과 busy/idle 갱신을 사용한다. 기본
+프로필의 native busy/idle 관찰은 미완이며 자동으로 권한을 켜지 않는다.
+
+`clients/tests/test_openclaw_binding.mjs`의 4개 검사는 fixture API와 실제 xsm
+subprocess로 동시 연결·대화 분리·DM/pull/ACK·종료/resume·늦은 도구 거부·
+취소·미연결 UI·plugin 폐기를 실행한다. 최초 검사는 Mac의 realpath 차이와
+activity 필드 오독으로 2개 실패했고 fixture를 수정했다. 이 검사를 native
+OpenClaw 도구 실행으로 세지 않는다. 세대 검사를 제거하거나 route를 대화 ID로
+사용하거나 catalog를 바꾼 세 변이는 모두 관련 검사를 실패시켰다.
+
+별도 `scripts/probe-openclaw-loader.mjs`는 실제 2026.10.9 로더에서 도구 21개를
+경고 없이 등록하고 metadata factory가 참여를 만들지 않는 것을 확인했다.
+Native host 내부 loader는 이 고정 probe에서만 import하며 제품에서는 import하지
+않는다. 결과는 `openclaw-native-loader-final.json`이다. Native 도구 execute·
+unload·one-shot CLI 수명·gateway 수명은 아직 검증하지 않았다.
+
+```sh
+/isolated/node scripts/probe-openclaw-loader.mjs /isolated/node_modules/openclaw deliverables/openclaw-loader.json
+```
+
+위 명령은 전용 임시 HOME/native state/XSM_HOME을 만들고 자격 증명을 상속하지
+않는다. 실제 사용자 프로필·권한 설정은 바꾸지 않는다. 제품의 owned 설치기는
+아직 OpenClaw를 지원하지 않으며 이 파일 경로는 native 로더 probe에서만 명시했다.

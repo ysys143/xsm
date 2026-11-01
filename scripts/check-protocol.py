@@ -12,6 +12,7 @@ import time
 ROOT = Path(__file__).resolve().parents[1]
 MODULES = ["tests.test_protocol", "tests.test_handoff", "tests.test_handoff_consumer",
            "tests.test_hermes_binding",
+           "tests.test_openclaw_schema",
            "tests.test_host_install",
            "tests.test_host_ui_config", "tests.test_component_leases",
            "tests.test_install_lock_alias",
@@ -34,7 +35,8 @@ def main():
                     ["node", "--test", "clients/tests/test_node_client.mjs",
                      "clients/tests/test_node_protocol.mjs", "clients/tests/test_node_host.mjs",
                      "clients/tests/test_node_host_binding.mjs", "clients/tests/test_opencode_binding.mjs",
-                     "clients/tests/test_opencode_question_ui.mjs", "clients/tests/test_opencode_ui_channel.mjs"]]
+                     "clients/tests/test_opencode_question_ui.mjs", "clients/tests/test_opencode_ui_channel.mjs",
+                     "clients/tests/test_openclaw_binding.mjs"]]
         if not shutil.which("node", path=env.get("PATH")):
             print(json.dumps({"passed": False, "reason": "Node.js is required for client conformance"}))
             return 1
