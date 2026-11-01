@@ -27,7 +27,13 @@ def run(args):
     subprocess.run(["git", "init", "-q", str(temp)], env=env, check=True)
     # Keep unrelated bundled discovery out of this API probe; register through the actual facade below.
     (temp / "hermes/config.yaml").write_text("plugins:\n  enabled: [xsm]\n" if args.discover else "plugins:\n  enabled: false\n")
-    if args.discover:
+    if args.installed:
+        args.discover = True
+        (temp / "hermes/config.yaml").write_text("plugins:\n  enabled: [xsm]\n")
+        sys.path.insert(0, str(ROOT))
+        from xsm import host_install
+        installed = host_install.apply("hermes", str(temp / "hermes"))
+    elif args.discover:
         folder = temp / "hermes/plugins"
         folder.mkdir()
         (folder / "xsm").symlink_to(ROOT / "integrations/hermes", target_is_directory=True)
@@ -52,6 +58,9 @@ def run(args):
         "nativePluginApiTested": True, "nativeAgentOrModelTested": False, "nativeAdmissionTested": False,
         "callerFixture": True, "checks": [], "sourceSha256": {name: hashlib.sha256((ROOT / name).read_bytes()).hexdigest()
             for name in ("integrations/hermes/xsm.py", "clients/python/xsm_host.py", "scripts/probe-hermes-tools.py")}}
+
+    if args.installed:
+        result["installation"] = installed
 
     def checkpoint():
         (args.output / "result.json").write_text(json.dumps(result, indent=2) + "\n")
@@ -134,6 +143,15 @@ def run(args):
             assert all(registry.get_entry(name, scope=manager.scope_key) is None for name in names)
             assert all(item.get("ended_at") for item in records() if item["runtime"] == "hermes")
             result["checks"].append("native unload removes tools and closes every participation")
+        if args.installed:
+            assert all(Path(item["protocol_root"]).resolve() == Path(installed["runtime_root"]).resolve()
+                       for item in self_records)
+            config_before = (temp / "hermes/config.yaml").read_bytes()
+            host_install.remove("hermes", str(temp / "hermes"))
+            assert not (temp / "hermes/plugins/xsm/__init__.py").exists()
+            assert not (temp / "hermes/plugins/xsm/plugin.yaml").exists()
+            assert (temp / "hermes/config.yaml").read_bytes() == config_before
+            result["checks"].append("owned snapshot backend and uninstall preserve operator configuration")
         result.update(status="passed", nativeTools=sorted(names), records=self_records)
     except BaseException as error:
         result.update(status="failed", error=repr(error))
@@ -152,4 +170,5 @@ if __name__ == "__main__":
     parser.add_argument("--native-source", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--discover", action="store_true")
+    parser.add_argument("--installed", action="store_true")
     run(parser.parse_args())

@@ -17,7 +17,8 @@ from urllib.parse import unquote
 
 from . import install, paths
 
-BINDINGS = {"pi": ("extensions", "xsm.js", "integrations/pi/xsm.mjs"),
+BINDINGS = {"hermes": ("plugins", "xsm", "integrations/hermes/xsm.py"),
+            "pi": ("extensions", "xsm.js", "integrations/pi/xsm.mjs"),
             "opencode": ("plugins", "xsm.js", "integrations/opencode/xsm.mjs")}
 SHARED = ("clients/typescript/xsm-client.mjs", "clients/typescript/xsm-host.mjs", "bin/xsm", "xsm/protocol.py")
 NATIVE_ASSETS = {"opencode": ("integrations/opencode/ui-channel.mjs", "integrations/opencode/question-ui.mjs",
@@ -42,6 +43,9 @@ def record_path(runtime, home):
 
 def read_record(runtime, home):
     home = target(runtime, home)[0]
+    if runtime == "hermes":
+        from . import hermes_install
+        return hermes_install.read_record(home)
     filename = record_path(runtime, home)
     if os.path.islink(filename):
         raise install.InstallConflictError("host ownership symlink preserved")
@@ -144,6 +148,9 @@ def _assets(root, runtime):
 
 
 def inspect(runtime, home):
+    if runtime == "hermes":
+        from . import hermes_install
+        return hermes_install.inspect(target(runtime, home)[0])
     home, directory, name = target(runtime, home)
     record = read_record(runtime, home)
     extra = {}
@@ -169,6 +176,9 @@ def inspect(runtime, home):
 
 
 def apply(runtime, home, dry_run=False):
+    if runtime == "hermes":
+        from . import hermes_install
+        return hermes_install.apply(target(runtime, home)[0], dry_run)
     home, directory, name = target(runtime, home)
     filename = os.path.join(home, directory, name)
     if dry_run:
@@ -250,6 +260,9 @@ def apply(runtime, home, dry_run=False):
 
 
 def remove(runtime, home, dry_run=False):
+    if runtime == "hermes":
+        from . import hermes_install
+        return hermes_install.remove(target(runtime, home)[0], dry_run)
     home, directory, name = target(runtime, home)
     filename = os.path.join(home, directory, name)
     if dry_run:
@@ -317,6 +330,10 @@ def configured_roots():
         record = read_record(value["runtime"], value["home"])
         if record is None or filename != Path(record_path(value["runtime"], value["home"])):
             raise install.InstallConflictError("host ownership locator mismatch")
+        if record["runtime"] == "hermes":
+            from . import hermes_install
+            roots.extend(hermes_install.roots(record))
+            continue
         if record["phase"] != "removed":
             root = record.get("root")
             if not isinstance(root, str) or not os.path.isabs(root):

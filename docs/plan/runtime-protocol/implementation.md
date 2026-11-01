@@ -918,3 +918,25 @@ Python 3.14.6의 공통 검사 320개(핵심 199, Python 39, Node 82)가 48.880�
 (`hermes-pinned-register-native/result.json`). Native 호출자는 fixture이며
 모델·사람 UI·push 수락을 실행한 인증은 아니다. Hermes 소유권 기반 설치·
 업데이트·제거와 활성화 상태 보고는 아직 미구현이다. 전체 P0–P5도 미완이다.
+
+
+## Hermes 소유권 기반 디렉터리 설치
+
+Hermes의 두 파일 플러그인을 `protocol install/inspect/uninstall hermes`에
+연결했다. 파일별 write-ahead 해시, no-follow 디렉터리 접근, 수정 보존,
+중단된 설치 복구와 업그레이드 중 이전 실제 loader 스냅샷의 prune 방지를
+검사한다. 설정·활성화 목록·권한과 디렉터리의 다른 파일은 유지한다.
+
+공통 검사 325개(핵심 204, Python 39, Node 82)가 Python 3.14.6에서
+49.746초에 통과했다(`hermes-owned-install-gate.log`). 이후 추가한 업그레이드
+복구·중간 디렉터리 symlink 검사 2개를 포함한 설치 검사 27개는 Python
+3.9.6과 3.14.6에서 통과했다(`hermes-owned-install-tests-final.log`).
+소유권 해시 검사를 제거한 변이는 사용자 편집 보존
+검사에 실패했다(`hermes-install-ownership-mutant.json`). 실제 Hermes 0.22.5의
+설치 스냅샷 발견·호출·수명·제거 9개도 통과했다
+(`hermes-owned-install-native-canonical/result.json`). 최초 native 실행은
+경로 alias 비교 때문에 실패했으며 로그를 보존했다.
+
+활성화는 operator opt-in이며 실제 설정의 활성화 상태 판독, 실행 중 Hermes
+컴포넌트의 스냅샷 lease, native push/UI/worker/agent와 Linux 검증은 미완이다.
+전체 P0–P5를 완료로 판정하지 않는다.

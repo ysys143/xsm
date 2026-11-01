@@ -328,3 +328,103 @@ class HostInstallTest(TempState):
         retained = install._configured_for()
         self.assertIn(Path(old["runtime_root"]).name, retained)
         self.assertIn(current["id"], retained)
+
+    def test_hermes_install_update_remove_preserves_settings_and_other_files(self):
+        from xsm import host_install
+        profile = Path(self.user_home, "hermes")
+        profile.mkdir()
+        settings = profile / "config.yaml"
+        settings.write_text("plugins:\n  enabled: []\n")
+        settings.chmod(0o640)
+        first = host_install.apply("hermes", str(profile))
+        folder = profile / "plugins/xsm"
+        extra = folder / "notes.txt"
+        extra.write_text("user")
+        self.assertEqual(first["activation"], "operator-opt-in")
+        self.assertIn(first["runtime_root"], host_install.configured_roots())
+        self.assertFalse(host_install.apply("hermes", str(profile))["changed"])
+        self.assertIn(first["runtime_root"], (folder / "__init__.py").read_text())
+        self.assertTrue((folder / "plugin.yaml").read_text().startswith("# xsm managed Hermes"))
+        host_install.remove("hermes", str(profile))
+        self.assertFalse((folder / "__init__.py").exists())
+        self.assertFalse((folder / "plugin.yaml").exists())
+        self.assertEqual(extra.read_text(), "user")
+        self.assertEqual(settings.read_text(), "plugins:\n  enabled: []\n")
+        self.assertEqual(stat.S_IMODE(settings.stat().st_mode), 0o640)
+
+    def test_hermes_edited_manifest_refuses_all_mutation(self):
+        from xsm import host_install, install
+        profile = Path(self.user_home, "hermes-edited")
+        host_install.apply("hermes", str(profile))
+        folder = profile / "plugins/xsm"
+        original = (folder / "__init__.py").read_bytes()
+        manifest = folder / "plugin.yaml"
+        manifest.write_text(manifest.read_text() + "\n# user edit\n")
+        for action in (host_install.apply, host_install.remove):
+            with self.assertRaisesRegex(install.InstallConflictError, "edited Hermes"):
+                action("hermes", str(profile))
+            self.assertEqual((folder / "__init__.py").read_bytes(), original)
+            self.assertIn("user edit", manifest.read_text())
+
+    def test_hermes_interrupted_initial_install_can_be_recovered(self):
+        from xsm import host_install, hermes_install
+        profile = Path(self.user_home, "hermes-recovery")
+        original = hermes_install.replace
+        def interrupt(fd, guard, name, *args):
+            if name == "plugin.yaml":
+                raise OSError("interrupted second file")
+            return original(fd, guard, name, *args)
+        with mock.patch.object(hermes_install, "replace", side_effect=interrupt):
+            with self.assertRaisesRegex(OSError, "interrupted"):
+                host_install.apply("hermes", str(profile))
+        self.assertEqual(host_install.inspect("hermes", str(profile))["status"], "partial")
+        self.assertEqual(host_install.read_record("hermes", str(profile))["phase"], "prepared")
+        final = host_install.apply("hermes", str(profile))
+        self.assertEqual(final["status"], "installed")
+        self.assertEqual(host_install.read_record("hermes", str(profile))["phase"], "installed")
+
+    def test_hermes_symlink_plugin_directory_is_preserved(self):
+        from xsm import host_install
+        profile = Path(self.user_home, "hermes-link")
+        (profile / "plugins").mkdir(parents=True)
+        outside = Path(self.user_home, "outside")
+        outside.mkdir()
+        (profile / "plugins/xsm").symlink_to(outside, target_is_directory=True)
+        with self.assertRaises(OSError):
+            host_install.apply("hermes", str(profile))
+        self.assertEqual(list(outside.iterdir()), [])
+
+    def test_hermes_dry_run_does_not_create_native_profile(self):
+        from xsm import host_install
+        profile = Path(self.user_home, "hermes-dry")
+        result = host_install.apply("hermes", str(profile), dry_run=True)
+        self.assertTrue(result["dry_run"])
+        self.assertFalse(profile.exists())
+
+    def test_hermes_prepared_upgrade_keeps_old_loader_snapshot_until_recovery(self):
+        from xsm import host_install, hermes_install
+        profile = Path(self.user_home, "hermes-upgrade")
+        first = host_install.apply("hermes", str(profile))
+        with (self.source / "xsm/paths.py").open("a") as stream:
+            stream.write("\n# Hermes update fixture\n")
+        with mock.patch.object(hermes_install, "replace", side_effect=OSError("before loader swap")):
+            with self.assertRaises(OSError):
+                host_install.apply("hermes", str(profile))
+        pending = host_install.read_record("hermes", str(profile))
+        self.assertNotEqual(first["runtime_root"], pending["root"])
+        self.assertIn(first["runtime_root"], host_install.configured_roots())
+        self.assertIn(pending["root"], host_install.configured_roots())
+        updated = host_install.apply("hermes", str(profile))
+        self.assertEqual(updated["runtime_root"], pending["root"])
+        self.assertNotIn(first["runtime_root"], host_install.configured_roots())
+
+    def test_hermes_symlink_plugins_parent_is_preserved(self):
+        from xsm import host_install
+        profile = Path(self.user_home, "hermes-parent-link")
+        profile.mkdir()
+        outside = Path(self.user_home, "outside-plugins")
+        outside.mkdir()
+        (profile / "plugins").symlink_to(outside, target_is_directory=True)
+        with self.assertRaises(OSError):
+            host_install.apply("hermes", str(profile))
+        self.assertEqual(list(outside.iterdir()), [])

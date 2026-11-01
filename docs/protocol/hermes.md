@@ -1,7 +1,8 @@
 # Hermes 0.22.5 실험 연결
 
 상태: 초기 구현. 실제 PluginContext/도구 registry에 연결했으며, 실제 agent turn·
-CLI/TUI 전체 수명·자동 주입·사용자 UI·설치·worker는 미완이다.
+CLI/TUI 전체 수명·자동 주입·사용자 UI·worker는 미완이다.
+명시한 프로필에 대한 소유권 기반 파일 설치·업데이트·제거는 지원한다.
 
 [`integrations/hermes/xsm.py`](../../integrations/hermes/xsm.py)의 `register(context)`는
 공통 서버의 스키마로 native 도구 21개를 등록한다. 도구 dispatcher가 제공한
@@ -90,3 +91,30 @@ Native UI 결속과 messaging requester 신원은 미완으로 유지한다.
 재현한다. 수정 전 실패 로그는 `hermes-finalize-race-red.log`이며, 연결 생성과
 종료를 같은 락으로 직렬화한 뒤 Python 3.9/3.14에서 통과했다.
 이는 coordinator의 제어된 동시 실행 검사이며 실제 agent 실행 증거는 아니다.
+
+
+## 프로필 설치와 제거
+
+```sh
+xsm protocol install hermes --home /path/to/hermes-profile --dry-run
+xsm protocol install hermes --home /path/to/hermes-profile
+xsm protocol inspect hermes --home /path/to/hermes-profile
+xsm protocol uninstall hermes --home /path/to/hermes-profile
+```
+
+설치기는 `plugins/xsm/__init__.py`와 `plugin.yaml`을 생성하며 고정 Python과
+불변 xsm 스냅샷을 사용한다. 파일별 해시와 변경 전 기록으로 중단된 설치·
+업데이트·제거를 재시도한다. 사용자 편집, 소유하지 않은 파일, 심볼릭 링크는
+덮어쓰지 않는다. 제거는 두 소유 파일만 지우며 다른 파일과 디렉터리를 남긴다.
+
+Hermes 0.22.5는 `config.yaml`의 `plugins.enabled`에 `xsm`이 포함돼야 불러온다.
+설치기는 이 활성화 목록이나 권한 설정을 변경하지 않는다. 결과의
+`activation: operator-opt-in`은 이 별도 활성화 요건을 나타내며 현재 활성화
+여부를 판독했다는 뜻은 아니다. 적용 후 Hermes를 다시 불러와야 한다.
+
+`probe-hermes-tools.py --installed`는 임시 프로필에 명시적 활성화 목록을 먼저
+준비한 뒤 실제 설치·native discovery·21개 도구 등록·전송/pull/ACK·수명주기·
+제거와 설정 보존을 확인한다. 9개 검사는
+`hermes-owned-install-native-canonical/result.json`에 기록했다. 최초 비교는
+macOS의 `/var`와 `/private/var` 표기 차이로 실패했고 원시 로그를 보존했다.
+이 검사는 모델·실제 사용자 UI·push·Linux·자동 활성화 상태 판독을 검증하지 않는다.
