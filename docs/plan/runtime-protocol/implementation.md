@@ -39,7 +39,7 @@
 | P2 SDK·검사기 | 부분 구현 | 독립 구현 적합성, 전체 오류/취소 계약 (Python↔Node 교차 시험 통과) |
 | P3 Pi·OpenCode | 부분 구현 | 연결·수신·설치·UI·대화 수명 경로 검증. Native worker·자동 재접속·busy/now의 실제 우선순위 등 미완 |
 | P4 Hermes·OpenClaw | 부분 구현 | Hermes pull 도구, OpenClaw native 도구/guarded queue prototype. Agent turn·idle wake·UI·설치·worker 미완 |
-| P5 통합·배포 | 부분 검증 | Mac native SDK/CLI fixture와 Linux arm64 공통 gate 통과. Linux native runtime, 30개 방향 조합, 동종 세션, 원격, 버전·플랫폼별 전체 native p95, 메신저, 전체 회귀 미완 |
+| P5 통합·배포 | 부분 검증 | Mac native SDK/CLI fixture와 Linux arm64 공통 gate 통과. Linux Hermes/OpenClaw native 경로, 30개 방향 조합, 동종 세션, 원격, 버전·플랫폼별 전체 native p95, 메신저, 전체 회귀 미완 |
 
 ## 초기 실제 검사
 
@@ -1522,3 +1522,25 @@ Linux arm64/Python 3.11.2에서 70.194초에 통과했다. 상세 자원/버전�
 linux-validation.md에 기록했다. 테스트 VM은 종료 후 Stopped이며 기본 context와
 기본 VM은 유지했다. 다른 Linux native 런타임·x86_64·원격/방향/메신저/worker와
 P0–P5의 나머지 수용 조건은 미완이다.
+
+
+## Pi native Linux arm64
+
+고정 Pi 1.4.0을 Linux arm64/Node 24.22.2/Python 3.11.2에서 실행했다. Dependency
+준비와 network-none 검사를 분리하고 package lock/archive hash를 보존했다.
+제품과 프로브 수정 없이 설치 자동 발견·입력 없는 backend 재접속·snapshot
+업데이트/binding 제거 중 old root 보존·quit 뒤 회수가 통과했다. Native 수락과
+RPC 명령 ACK 100/100개가 완료됐고 p95 상한은 215.806ms다
+(`linux-pi-native-100/output/native/result.json`).
+
+Native stdout의 ACK 100개와 정확한 수신 ID 집합, 현재 구현 hash를 대조했다
+(`linux-pi-native-100/ack-audit.json`). 실제 SDK nested-tool kernel도 claim을 남긴
+충돌 뒤 원문 회수·이전 token 거부·새 도구 ACK를 통과했다
+(`linux-pi-sdk/sdk-recovery.json`). 큰 FYI 3개와 도구 ACK 3개의 회귀도 통과했다
+(`linux-pi-sdk/sdk-batch.json`). RPC 명령 ACK·도구 ACK·모델 소비를 구분한다.
+모델 호출은 0회이며 assistant/UI는 fixture다.
+
+이번 소스는 68e75f6의 변경 없는 추적 파일이다. 코드 수정이 없어 공통 gate를
+새로 실행한 것으로 보고하지 않는다. 테스트 VM은 Stopped로 확인했고 기본
+context/기본 VM은 유지했다. Hermes/OpenClaw Linux·worker·실제 모델/사람 UI·
+원격/메신저·전체 방향 및 P0–P5 나머지는 미완이다.

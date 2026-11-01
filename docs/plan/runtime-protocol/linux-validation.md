@@ -115,3 +115,38 @@ Python 3.14.6에서 64.046초, Linux arm64의 Python 3.11.2에서 70.194초에 �
 기본 VM은 유지했고 테스트 VM은 다시 Stopped로 확인했다
 (`linux-native-vm-stopped.json`). Pi/Hermes/OpenClaw의 Linux native 검증, x86_64,
 다른 Python·원격·전체 방향·모델/메신저·worker와 전체 P0–P5는 미완이다.
+
+## Pi 1.4.0 native Linux arm64
+
+같은 Linux arm64 image에서 Pi 1.4.0을 고정해 실행했다. Dependency 준비는 별도
+network-enabled container에서 npm --ignore-scripts로 하고, 검사 container는
+network none으로 분리했다. Package lock과 archive hash를 보존했다.
+
+
+실제 RPC 실행 결과(`linux-pi-native-100/output/native/result.json`):
+
+- Linux arm64, Node 24.22.2, Python 3.11.2, Pi CLI 1.4.0.
+- 설치 profile 자동 발견과 immutable runtime 실행 확인.
+- Backend 종료 후 native 진입 전 같은 ref·새 PID/세대로 자동 재접속.
+- Snapshot 업데이트와 binding 제거 뒤에도 로드된 old runtime 보존, quit 뒤 회수.
+- 실제 native 수락 100/100개와 RPC 명령 ACK 100/100개.
+- 복구 후 store→관측 p95 상한 215.806ms, 1초 기준 통과.
+- Native select 프로토콜도 driver가 응답한 fixture이며 실제 사람의 승인이 아니다.
+
+`ack-audit.json`은 native stdout의 명령 ACK 100개가 모든 수신 ID와 일치하고,
+현재 Pi/shared lease 구현 hash도 일치하는 것을 확인한다. 원시 source는
+68e75f6의 변경 없는 추적 파일이다. 이 숫자를 모델이 원문을 읽은 증거로 쓰지
+않으며 outage 전체 구간 지연 인증으로도 쓰지 않는다.
+
+별도 실제 SDK의 nested tool 실행 kernel에서도 원문을 claim한 backend를 종료한
+뒤 회수·이전 token 거부·새 native 도구 ACK가 통과했다
+(`linux-pi-sdk/sdk-recovery.json`). 이 도구 ACK 표본과 RPC 명령 ACK 100개는
+구분한다. 큰 FYI 3개가 별도 native 입력으로 나뉘고 도구 ACK 3개가 완료되는
+회귀도 통과했다(`linux-pi-sdk/sdk-batch.json`). 두 SDK 표본 모두 모델 호출은
+0회이며 assistant 메시지·UI 답은 명시적 fixture다.
+
+이번 검증에는 제품/프로브 수정이 필요하지 않았다. 공통 gate는 이전 392개
+결과를 재실행으로 보고하지 않는다. 테스트 VM은 작업 후 Stopped, 기본 VM과
+전역 context도 이전 상태로 확인했다(`linux-pi-vm-stopped.json`). Hermes/OpenClaw의
+Linux native 검증·x86_64·실제 모델/사람 UI·worker·원격/메신저·전체 방향 행렬과
+P0–P5의 나머지는 미완이다.
