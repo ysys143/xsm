@@ -1082,3 +1082,26 @@ frame 83개에서 11개 메서드의 정상 결과와 알림 2종을 모두 실�
 345개(핵심 224, Python 39, Node 82)는 Python 3.14.6에서 57.185초에 통과했다
 (`decisions-conformance-gate.log`). 만료·decline/cancel·모든 domain 효과의
 외부 검증, 실제 native UI·독립 전체 구현과 P0–P5 나머지는 미완이다.
+
+## Hermes native injection 경로 실험
+
+실제 0.22.5 PluginContext와 TUI injection/queue 함수 본문으로 독립 프로브를
+추가했다(`scripts/probe-hermes-injection.py`). Native method binding은 그대로
+사용하고 세션 행·busy 상태·서버 namespace는 fixture다. 두 임시 프로필에만
+허용/거부 설정을 준비했으며 모델 drain을 guard로 막았다. 고정 tag와 tracked
+소스 일치 및 관련 7개 파일 해시를 기록한다. 최종 9개 검사가 통과했다
+(`hermes-native-injection-source-verified/result.json`).
+
+Keyed busy queue 원문·기존 입력·transport 보존과 정책 거부 뒤 무변경을
+확인했다. 동시에 True가 gateway 예약, CLI의 키 검증 없는 현재 REPL 주입,
+이미 in-flight인 중복으로도 나올 수 있음을 구분했다. 서로 다른 프로필의
+fixture 행에 같은 키를 두면 matcher가 첫 행을 선택한다. 실제 운영 중복 키
+발생 증거로 확대하지 않으며, 이 API가 profile/generation 결속을 보장한다는
+증거도 얻지 못했다. 키 비교·정책 거부를 각각 제거한 변이는 기대한 검사에서
+실패했다(`hermes-injection-mutant-ignore-{key,policy}/result.json`).
+
+이번 변경은 프로브와 문서이며 제품 pull 동작·native 소스·사용자 프로필은
+바꾸지 않았다. 공통 gate는 이번에 재실행하지 않았다. Native 함수 9개 검사와
+명시적 변이 2개의 결과만 새 증거다. 자동 주입에는 native SID/home/generation과
+route의 결속, 실제 context/queue 관측, gateway 예약과 실제 수락의 분리가 남는다.
+Idle wake·실제 UI/agent·메신저·Linux와 전체 P0–P5도 미완이다.

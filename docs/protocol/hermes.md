@@ -134,3 +134,39 @@ Checkout 직접 등록은 설치 스냅샷 lease를 만들지 않는다.
 변이는 같은 검사에서 실패했다(`hermes-component-lease-mutant/result.json`).
 별도 prune 검사는 native 세션과 설치 loader 없이 살아 있는 Hermes lease만으로
 이전 스냅샷이 남는 것을 확인한다. 실제 모델·UI·Linux 검증은 포함하지 않는다.
+
+## Native injection 반환값과 대상 감사
+
+`scripts/probe-hermes-injection.py`는 v0.22.5의 실제 PluginContext와
+`plugins_injection`, TUI `plugin_inject`, `_enqueue_prompt` 함수 본문을
+사용한다. Native method_ctx 방식으로 함수들을 시험 namespace에 결속한다.
+세션 행·프로필·busy 상태는 명시적 fixture이며 실제 TUI 서버나 모델은 아니다.
+두 임시 프로필에만 주입 허용/거부 설정을 만들며 사용자 설정은 읽거나
+바꾸지 않는다. 모델 drain은 시험 guard로 막는다.
+
+고정 태그와 tracked 소스 일치를 확인한 실행의 9개 검사는 다음을 보였다
+(`hermes-native-injection-source-verified/result.json`).
+
+- 프로필 정책이 거부하면 native 큐가 바뀌지 않는다.
+- 허용된 keyed busy TUI 주입은 일치하는 세션 큐에 들어간다. 기존 사용자
+  입력과 transport를 유지하며 실행 중 turn을 중단하지 않는다.
+- TUI 키가 없고 gateway도 없으면 False다. Gateway callback을 붙이면 같은
+  누락 키가 True를 반환할 수 있으며 TUI 큐에는 들어가지 않는다. 이 True는
+  시험 gateway의 예약 수락이며 실제 메신저 전달이 아니다.
+- Classic CLI는 session_key가 맞지 않아도 현재 REPL의 pending 큐로 넣는다.
+- 이미 진행 중인 원문과 같은 text는 새 큐 항목을 만들지 않아도 True다.
+  이 경우 별도 readback 없이 새 큐 수락 시간으로 계측하지 않는다.
+- 서로 다른 프로필의 fixture 행에 같은 키를 두면 native TUI matcher는 먼저
+  나온 행을 선택한다. 이 시험은 실제 운영에서 중복 키가 생성된다는 증거가
+  아니며, API 반환값이 프로필 결속까지 검증한다는 보장도 아니다.
+
+키 비교를 제거하거나 정책 거부를 우회한 시험 변이는 각각 keyed routing과
+거부 뒤 무변경 검사에 실패했다(`hermes-injection-mutant-ignore-key/result.json`,
+`hermes-injection-mutant-ignore-policy/result.json`). 원본 native 파일은 수정하지
+않고 시험 프로세스의 함수·객체에만 변이를 넣었다.
+
+현재 제품의 pull 연결을 단순히 inject_message=True이면 admitted인 연결로
+바꾸지 않았다. 자동 수신 구현에는 native 대화 ID·프로필·세대와 라우팅 키의
+검증, queue/context readback, gateway 비동기 실패와 구분된 수락 근거가 필요하다.
+이는 남은 구현 조건이며 범위에서 제외한 것이 아니다. Idle wake·busy/now의
+실제 우선순위·실제 native turn·UI·메신저와 전체 P4/P5는 여전히 미완이다.
