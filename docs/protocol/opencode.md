@@ -8,6 +8,17 @@ ID를 별도의 xsm 참여자로 등록한다. 도구 호출의 sessionID와 dir
 확인한다. 모델 인자로 발신 대화를 고르지 않는다. 같은 프로필/대화를
 재개하면 주소는 유지하고 참여 세대는 바꾼다.
 
+자동 수신은 배치당 16개/512 KiB UTF-8의 구현 기본값을 사용한다. 첫 oversized
+원문은 단독으로 반환하며, 나머지는 공통 SDK의 cursor와 backpressure 재시도로
+진행한다. FYI를 인수한 background 배치가 새 native turn을 깨우지는 않는다.
+
+실제 protocol 서버와 native API fixture에서 30만 자 원문 3개를 미리 쌓고
+입력 3개로 나누어 저장하며 추가 wake가 없음을 확인했다. 기본 예산을 제거한
+변이는 실패했다(`native-default-budget-mutants.json`). 실제 1.19.5 SDK의 정상
+수신과 native ACK도 100/100 완료했다. macOS 수락 p95 상한은 349.474ms였다
+(`opencode-batch-defaults-native-100/result.json`). Assistant packet과 ACK는
+loopback fixture이며 실제 모델이나 사람을 실행하지 않았다.
+
 ## 명시적 프로필 설치
 
 ```sh

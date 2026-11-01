@@ -86,6 +86,7 @@ async function attach(api, options, release) {
         const native = unwrap(await api.client.session.get({ path: { id } }));
         if (native.id !== id) throw new Error('native session identity differs');
         const host = await XsmHost.open({ command, env: options.env, runtime: 'opencode',
+          inboxBatchSize: 16, inboxMaxBytes: 524288,
           profile, conversation: id, cwd: api.directory, onError: fail,
           // Only an explicitly connected native UI can advertise user-decisions.
           present: options.present ? (event, controls) => options.present(id, event, controls)

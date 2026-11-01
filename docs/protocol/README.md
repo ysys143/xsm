@@ -197,8 +197,8 @@ batch. These options require a server that advertises `xsm_inbox.limit`.
 requires server advertisement. Bounded automatic reads follow `next_after`,
 including notice-only progress, so temporarily deferred originals do not hide
 later eligible messages. Successful limited boundary reads schedule their
-remainder in the background. OpenClaw uses implementation defaults of 16 items
-and 512 KiB; the other binding defaults are unchanged.
+remainder in the background. The Pi, OpenCode and OpenClaw receiving bindings
+use implementation defaults of 16 items and 512 KiB.
 
 A native delivery callback may throw `RetryAdmission(message, delayMs)` for a
 definite transient refusal. The automatic loop releases its own claims first,

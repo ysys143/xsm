@@ -57,8 +57,8 @@ async function fixture(t, options = {}) {
   };
   const sender = await XsmClient.connect({ command, env, cwd: temp });
   const origin = await sender.sessionOpen({ runtime: 'sender-fixture', profile: 'one', conversation: 'sender', cwd: temp });
-  const send = (record, text) => sender.operationCall(origin.session, 'xsm_send',
-    { target: 'ref:' + record.ref, text, wait: 0 });
+  const send = (record, text, options = {}) => sender.operationCall(origin.session, 'xsm_send',
+    { target: 'ref:' + record.ref, text, wait: 0, ...options });
   t.after(async () => { await hooks.dispose(); await sender.close(); await rm(temp, { recursive: true, force: true }); });
   return { hooks, invoke, records, native, errors, wakes, statuses, send,
     corrupt: value => { corrupt = value; } };
@@ -88,6 +88,22 @@ test('OpenCode admits a real deferred inbox notice without an empty ACK instruct
   await until(() => [...native.values()].some(message => message.parts.some(part => part.text?.includes('awaits network revalidation'))));
   const text = [...native.values()].flatMap(message => message.parts).find(part => part.text?.includes('awaits network revalidation')).text;
   assert.equal(text.includes('After reading, call xsm_ack'), false);
+});
+
+test('OpenCode default byte budget splits a passive backlog across native admissions', { timeout: 10000 }, async t => {
+  const { hooks, invoke, records, native, send, wakes } = await fixture(t);
+  await invoke('byte-reader', 'xsm_inbox');
+  const receiver = (await records())[0];
+  for (const marker of ['first-large', 'second-large', 'third-large']) {
+    await send(receiver, marker + 'x'.repeat(300000), { wake: 'never' });
+  }
+  await hooks['chat.message']({ sessionID: 'byte-reader' }, { parts: [] });
+  await until(() => native.size === 3);
+  const texts = [...native.values()].flatMap(message => message.parts).filter(part => part.type === 'text').map(part => part.text);
+  assert.equal(texts.length, 3);
+  assert.ok(texts.every(text => Buffer.byteLength(text) < 524288));
+  for (const marker of ['first-large', 'second-large', 'third-large']) assert.equal(texts.filter(text => text.includes(marker)).length, 1);
+  assert.deepEqual(wakes, []);
 });
 
 test('native deletion and resume preserve address but replace the host generation', { timeout: 10000 }, async t => {

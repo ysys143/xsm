@@ -18,6 +18,18 @@ branch에 같은 delivery ID와 본문으로 들어온 것을 확인한 뒤 문�
 Idle/non-waking append는 app event만 발생시키므로 branch 관찰도 필요하다.
 ACK는 모델/사용자가 실제로 읽은 뒤 xsm_ack로 보낸다.
 
+자동 수신의 구현 기본값은 배치당 16개/512 KiB UTF-8이다. 제한된 native 경계의
+나머지는 공통 SDK가 cursor를 따라 이어 읽으며 FYI의 wake=False를 유지한다.
+첫 원문 자체가 예산보다 크면 자르지 않고 단독으로 받는다.
+
+실제 SDK의 `--batch` fixture는 30만 자 원문 3개를 wake=never로 먼저 보냈다.
+Native branch의 서로 다른 입력 3개를 확인하고 native 도구로 ACK 3개를 보냈다
+(`pi-default-budget-batch.json`). 기본 예산을 제거하면 하나로 합쳐져 검사가
+실패했다(`native-default-budget-mutants.json`). 모델 호출은 0회다.
+새 owned profile의 자동 발견/snapshot 실행에서 native 수락 100/100도 통과했고
+macOS p95 상한은 431.056ms였다(`pi-batch-defaults-native-100/result.json`).
+이 수락 검사를 모델 작업 성공이나 실제 사용자 응답으로 해석하지 않는다.
+
 도구 스키마는 공통 서버에서 가져온다. `/xsm status`는 공개 ref와 도구
 이름을 보여주며 `/xsm <operation> <JSON>`은 같은 API의 개발용 진입점이다.
 JSON 문자열 안의 공백·개행·Unicode는 바꾸지 않는다.
@@ -44,6 +56,7 @@ Linux, 기존 세션 설치·reload, 갱신·제거, worker, 원격 및 다른 �
 python3 scripts/check-protocol.py
 python3 scripts/probe-pi-protocol.py --pi-cli /isolated/pi/dist/bundle/cli.js --output deliverables/pi-probe --samples 100
 node scripts/probe-pi-sdk.mjs /isolated/pi/package-root deliverables/pi-sdk.json
+node scripts/probe-pi-sdk.mjs /isolated/pi/package-root deliverables/pi-batch.json --batch
 ```
 
 코드·버전이 다른 표본은 같은 결과로 합치지 않는다. 모델 미구성의 큐 관측을

@@ -878,3 +878,26 @@ Cache 검사 6개가 mtime 복원/in-place 수정, 별도 프로세스 claim 교
 Mac arm64/Node 24.22.2/protocol Python 3.14.6이며 caller와 prompt 소비는 fixture다.
 첫 oversized 원문 자체가 native 32조각을 넘는 전송, 다른 binding 기본 배치,
 권한 없는 표면의 FYI 경계·실제 agent/UI·Linux·전체 P0–P5는 미완이다.
+
+## Pi/OpenCode native 기본 배치
+
+두 receiving binding에도 16개/512 KiB UTF-8 기본값을 연결했다. 전체 배치를
+한 번에 넘기던 경로를 공통 SDK의 제한 읽기·cursor·retry로 진행한다.
+Pi 실제 SDK는 30만 자 원문 3개를 native branch의 서로 다른 입력 3개로
+수락하고 native 도구로 ACK 3개를 보냈다(`pi-default-budget-batch.json`).
+OpenCode는 실제 protocol 서버와 native API fixture에서 같은 backlog를
+입력 3개로 나누고 wake가 없음을 확인했다. 두 binding에서 기본 예산을
+제거한 변이는 모두 실패했다(`native-default-budget-mutants.json`).
+
+새 Pi owned profile의 자동 발견/snapshot 실행에서 native 수락 100/100을
+완료했다. Mac/Pi 1.4.0/protocol Python 3.14.6의 p95 상한은 431.056ms다
+(`pi-batch-defaults-native-100/result.json`). OpenCode 1.19.5 실제 SDK는 수락과
+scripted assistant의 native ACK를 100/100 완료했고 p95 상한은 349.474ms다
+(`opencode-batch-defaults-native-100/result.json`). Pi의 수락 표본과 OpenCode의
+ACK 표본은 구분한다. 모델과 사람을 실행한 인증은 아니다.
+
+공통 318개(핵심 197, Python 39, Node 82)가 Python 3.14.6에서 48.810초에
+통과했다(`native-batch-defaults-final-gate.log`). Pi notice/정상 ACK 회귀와
+OpenCode 정상 5회 회귀도 별도 통과했다. Native 모델 협업·Linux·원격·worker·
+UI의 전체 수용 조건과 P0–P5는 미완이며, 새 릴리즈나 전체 runtime 지원을
+선언하지 않는다.

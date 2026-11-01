@@ -7,7 +7,7 @@ import { pathToFileURL, fileURLToPath } from 'node:url';
 import { XsmClient } from '../clients/typescript/xsm-client.mjs';
 
 const [packageRoot, output, mode] = process.argv.slice(2);
-assert.ok(!mode || mode === '--notice');
+assert.ok(!mode || ['--notice', '--batch'].includes(mode));
 if (!packageRoot || !output) throw new Error('usage: node probe-pi-sdk.mjs <Pi package root> <output.json>');
 const root = fileURLToPath(new URL('../', import.meta.url));
 const temp = await mkdtemp(join(tmpdir(), 'xsm-pi-sdk-'));
@@ -111,6 +111,45 @@ try {
     assert.equal(ack.isError, false);
     assert.equal(JSON.parse(ack.result.content[0].text).acked.length, 1);
     result.nativeOriginalAfterNoticeAck = true;
+  }
+  if (mode === '--batch') {
+    const folder = join(process.env.XSM_HOME, 'sessions');
+    const records = await Promise.all((await readdir(folder)).filter(name => name.endsWith('.json'))
+      .map(async name => JSON.parse(await readFile(join(folder, name), 'utf8'))));
+    const receiver = records.find(record => record.runtime === 'pi');
+    sender = await XsmClient.connect({ command: [join(root, 'bin/xsm'), 'protocol', 'serve', '--stdio'],
+      cwd: join(temp, 'project'), env: process.env });
+    const origin = await sender.sessionOpen({ runtime: 'batch-fixture', profile: temp,
+      conversation: 'sender', cwd: join(temp, 'project') });
+    const markers = ['first-large', 'second-large', 'third-large'];
+    for (const marker of markers) await sender.operationCall(origin.session, 'xsm_send', {
+      target: 'ref:' + receiver.ref, text: marker + 'x'.repeat(300000), wake: 'never', wait: 0,
+    });
+    await session.extensionRunner.emit({ type: 'before_agent_start', prompt: 'batch boundary fixture', systemPrompt: '' });
+    const read = () => session.sessionManager.getBranch().filter(entry => entry.type === 'custom_message' &&
+      entry.customType === 'xsm' && markers.some(marker => entry.content.includes(marker)));
+    const deadline = Date.now() + 5000;
+    while (read().length < 3 && Date.now() < deadline) await new Promise(resolve => setTimeout(resolve, 10));
+    const delivered = read();
+    assert.equal(delivered.length, 3, 'native byte budget did not split the passive backlog');
+    const tokens = [];
+    for (const message of delivered) {
+      assert.ok(Buffer.byteLength(message.content) < 524288);
+      tokens.push(...JSON.parse(/xsm_ack with tokens: (\[[^\n]*?\])/.exec(message.content)[1]));
+    }
+    assert.equal(new Set(tokens).size, 3);
+    session.agent.state.messages = [...session.agent.state.messages, {
+      role: 'assistant', content: [{ type: 'toolCall', id: 'batch-ack-probe', name: 'fixture-parent', arguments: {} }],
+      api: 'unknown', provider: 'unknown', model: 'offline-fixture', stopReason: 'toolUse', timestamp: Date.now(),
+      usage: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0, totalTokens: 0,
+        cost: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0, total: 0 } },
+    }];
+    const ack = await session.extensionRunner.createToolContext('batch-ack-probe', new AbortController().signal)
+      .executeTool('xsm_ack', { tokens });
+    assert.equal(ack.isError, false);
+    assert.equal(JSON.parse(ack.result.content[0].text).acked.length, 3);
+    result.nativeBoundedPassiveBacklog = { messages: 3, acknowledgements: 3,
+      bytes: delivered.map(message => Buffer.byteLength(message.content)) };
   }
   assert.equal(result.modelCalls, 0);
   result.status = 'passed';

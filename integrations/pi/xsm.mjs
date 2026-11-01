@@ -29,6 +29,7 @@ export default function xsm(pi, options = {}) {
     await mkdir(getAgentDir(), { recursive: true, mode: 0o700 });
     const profile = await realpath(getAgentDir());
     host = await XsmHost.open({ runtime: 'pi', profile, conversation, cwd: ctx.cwd, command: options.command,
+      inboxBatchSize: 16, inboxMaxBytes: 524288,
       onError: fail,
       present: ctx.hasUI ? async (event, { signal }) => {
         assertCurrent(signal);
