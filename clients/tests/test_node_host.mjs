@@ -41,3 +41,30 @@ test('real host UI response is scoped and applies only on retry', { timeout: 200
     await rm(temp, { recursive: true, force: true });
   }
 });
+
+test('claim release failure preserves original admission error', async () => {
+  const { XsmHost, RetryAdmission } = await import('../typescript/xsm-host.mjs');
+  for (const primary of [new Error('native refused'), new RetryAdmission('native busy'),
+    Object.assign(new Error('cancelled'), { name: 'AbortError' })]) {
+    const calls = [], diagnostics = [];
+    const cleanup = new Error('backend unavailable during release');
+    const client = {
+      initialization: { limits: { claimLeaseSeconds: 120 } },
+      async operationCall() {
+        calls.push('xsm_inbox');
+        return { messages: ['original'], claims: [{ id: 'm', token: 't' }], items: [] };
+      },
+      async request(method, args) {
+        calls.push(method);
+        assert.deepEqual(args, { session: 's', tokens: ['t'] });
+        throw cleanup;
+      },
+    };
+    const host = new XsmHost(client, { session: 's' }, [], {
+      deliver: async () => { throw primary; }, onError: error => diagnostics.push(error),
+    });
+    await assert.rejects(host.deliverInbox(false), error => error === primary);
+    assert.deepEqual(diagnostics, [cleanup]);
+    assert.deepEqual(calls, ['xsm_inbox', 'inbox.release']);
+  }
+});

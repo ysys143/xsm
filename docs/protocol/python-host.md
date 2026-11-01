@@ -52,3 +52,9 @@ Python 3.14의 shield가 오류로 보고하던 경로를 수정했다. 서버�
 검사는 실제 protocol subprocess에서 UI 응답/재호출, 동시 대기와 취소,
 수락 실패/회복, FYI, 명시적 ACK, peer 종료, snapshot SDK namespace 분리를
 포함한다. 실제 native UI와 모델 응답은 각 binding에서 별도로 검증한다.
+
+수신 실패 뒤 `inbox.release`도 실패한 경우, Python과 Node SDK는 원래 native
+거부·RetryAdmission·취소 오류를 호출자에게 유지한다. 해제 실패는 별도 진단
+callback으로 보고한다. 해제를 성공했다고 기록하거나 ACK를 만들지 않으며,
+정본 원문과 기존 claim의 lease/세대 복구 규칙은 유지한다. 이 오류 경로는
+실패한 작업을 자동 재실행하지 않는다.

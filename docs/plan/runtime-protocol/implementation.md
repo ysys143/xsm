@@ -1129,3 +1129,21 @@ ACK했다. 최초 수정 검사는 올바르게 거부된 오류의 문구를 �
 않는다. 공통 347개(핵심 226, Python 39, Node 82)는 Python 3.14.6에서
 58.712초에 통과했다(`hermes-recovery-gate.log`). Native agent/UI·자동 idle
 재접속·push·worker·Linux와 P0–P5의 나머지는 미완이다.
+
+## SDK 수신 실패와 claim 정리 오류 분리
+
+두 공통 SDK의 수신 경로에서 native callback이 실패한 뒤 inbox.release도
+실패하면 정리 오류가 원래 실패를 덮어썼다. 백엔드 종료와 native 거부가
+겹치면 원래 RetryAdmission/취소의 종류도 잃었다. 두 SDK 모두 해제를 시도하되
+그 실패를 진단 callback에 별도 보고하고 원래 예외를 그대로 전달한다.
+성공한 release나 ACK를 만들지 않으며 기존 lease/세대 복구 규칙을 따른다.
+
+제어된 callback/transport 검사는 native 일반 거부·일시 거부·취소의 세 경우에
+동일한 원래 예외 객체가 반환되고, 해제 실패가 별도 보고되며, inbox 읽기와
+release 외의 ACK/재실행 호출이 없는지 확인한다. 수정 전 Python과 Node 검사가
+모두 실패했다(`release-primary-{python,node}-red.log`). 수정 후 Python 3.9.6
+관련 3개와 Node 관련 2개가 통과했다(`release-primary-{python,node}-green.log`).
+
+공통 349개(핵심 226, Python 40, Node 83)는 Python 3.14.6에서 59.541초에
+통과했다(`release-primary-gate.log`). 이 검사는 SDK 오류 경로이며 native 모델
+소비·사람 UI·전체 재접속·Linux와 P0–P5 나머지 완료를 증명하지 않는다.

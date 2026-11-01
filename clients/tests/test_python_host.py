@@ -54,3 +54,30 @@ class HostClientTest(unittest.IsolatedAsyncioTestCase):
                 self.assertIn("your user answered: blue", str(result))
                 status = await host.operation_call(session["session"], "xsm_decision_status", {"id": pending["decision_id"]})
                 self.assertEqual(status["status"], "applied")
+
+
+class DeliveryFailureTest(unittest.IsolatedAsyncioTestCase):
+    async def test_release_failure_preserves_admission_error_and_cancellation(self):
+        from types import SimpleNamespace
+        from xsm_host import XsmHost, RetryAdmission
+        for primary in (RuntimeError('native refused'), RetryAdmission('native busy'), asyncio.CancelledError()):
+            with self.subTest(error=type(primary).__name__):
+                calls, diagnostics = [], []
+                cleanup = RuntimeError('backend unavailable during release')
+                async def operation(session, name, args):
+                    calls.append(name)
+                    return {'messages': ['original'], 'claims': [{'id': 'm', 'token': 't'}], 'items': []}
+                async def release(method, args):
+                    calls.append(method)
+                    self.assertEqual(args, {'session': 's', 'tokens': ['t']})
+                    raise cleanup
+                async def deliver(packet, options):
+                    raise primary
+                client = SimpleNamespace(operation_call=operation, request=release,
+                    initialization={'limits': {'claimLeaseSeconds': 120}})
+                host = XsmHost(client, {'session': 's'}, [], deliver, None, diagnostics.append)
+                with self.assertRaises(type(primary)) as refused:
+                    await host._deliver_inbox(False)
+                self.assertIs(refused.exception, primary)
+                self.assertEqual(diagnostics, [cleanup])
+                self.assertEqual(calls, ['xsm_inbox', 'inbox.release'])

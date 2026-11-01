@@ -103,6 +103,9 @@ Codex or manufacturing a native queue success.
 `inbox.release` takes a bound session and nonempty claim `tokens`. A failed
 native admission may release its own claims without ACK; the next eligible
 notification is rearmed. Owner and participation-generation checks still apply.
+If release itself fails, SDKs retain the original admission/cancellation error
+and report cleanup failure separately. They do not claim a successful release
+or acknowledge consumption; lease/generation recovery remains authoritative.
 
 FYI (`wake: "never"`) produces no unsolicited event. It is read at the next
 natural tool/prompt boundary. Claimed messages retain their recoverable originals.

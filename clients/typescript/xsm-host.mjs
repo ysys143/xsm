@@ -282,8 +282,10 @@ export class XsmHost {
       for (const claim of pack.claims) await this.client.deliveryReport(this.session.session, claim.id, 'admitted', claim.token);
     } catch (error) {
       if (!this.closed && pack.claims.length) {
-        await this.client.request('inbox.release', { session: this.session.session,
-          tokens: pack.claims.map(claim => claim.token) });
+        try {
+          await this.client.request('inbox.release', { session: this.session.session,
+            tokens: pack.claims.map(claim => claim.token) });
+        } catch (cleanupError) { this.error(cleanupError); }
       }
       throw error;
     }

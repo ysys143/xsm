@@ -214,8 +214,11 @@ class XsmHost:
                     await self.client.delivery_report(self.session["session"], claim["id"], "admitted", claim["token"])
             except BaseException:
                 if not self.closed and packet["claims"]:
-                    await self.client.request("inbox.release", {"session": self.session["session"],
-                        "tokens": [claim["token"] for claim in packet["claims"]]})
+                    try:
+                        await self.client.request("inbox.release", {"session": self.session["session"],
+                            "tokens": [claim["token"] for claim in packet["claims"]]})
+                    except Exception as cleanup_error:
+                        self._error(cleanup_error)
                 raise
             return packet
 
