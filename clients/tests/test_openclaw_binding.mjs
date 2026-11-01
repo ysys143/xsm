@@ -220,3 +220,48 @@ test('OpenClaw backs off failed automatic reconnects and restores activity', { t
   assert.ok(attempts[2] - attempts[1] >= 800);
   assert.equal((await records())[0].activity, 'busy');
 });
+
+test('agent_end recovers a failed backend and cannot revive ended participation', { timeout: 10000 }, async t => {
+  const { invoke, hooks, records } = await fixture(t, { allowErrors: true });
+  const original = XsmHost.open.bind(XsmHost), hosts = [];
+  t.mock.method(XsmHost, 'open', async options => {
+    const host = await original(options); hosts.push(host); return host;
+  });
+  await invoke('a');
+  const [before] = await records();
+  await hooks.get('agent_end')({}, { sessionId: 'a', sessionKey: 'another-route' });
+  assert.equal((await records())[0].activity, 'busy');
+  hosts[0].client.process.kill('SIGKILL'); await hosts[0].pumpTask;
+  await hooks.get('agent_end')({}, { sessionId: 'a', sessionKey: 'agent:main:route' });
+  assert.equal(hosts.length, 2);
+  const [after] = await records();
+  assert.equal(after.ref, before.ref);
+  assert.notEqual(after.protocol_generation, before.protocol_generation);
+  assert.equal(after.activity, 'idle');
+  await hooks.get('session_end')({ sessionId: 'a', sessionKey: 'agent:main:route' });
+  await hooks.get('agent_end')({}, { sessionId: 'a', sessionKey: 'agent:main:route' });
+  assert.equal(hosts.length, 2);
+});
+
+test('dispose during agent_end recovery does not revive participation', { timeout: 10000 }, async t => {
+  const { invoke, hooks, lifecycle } = await fixture(t, { allowErrors: true });
+  const original = XsmHost.open.bind(XsmHost), hosts = [];
+  t.mock.method(XsmHost, 'open', async options => {
+    const host = await original(options); hosts.push(host); return host;
+  });
+  await invoke('a');
+  const old = hosts[0];
+  old.client.process.kill('SIGKILL'); await old.pumpTask;
+  let release, started;
+  const gate = new Promise(resolve => { release = resolve; });
+  const closing = new Promise(resolve => { started = resolve; });
+  const close = old.close.bind(old);
+  t.mock.method(old, 'close', async () => { started(); await gate; return close(); });
+  const boundary = hooks.get('agent_end')({}, { sessionId: 'a', sessionKey: 'agent:main:route' });
+  await closing;
+  const disposed = lifecycle.dispose();
+  release();
+  await Promise.all([boundary, disposed]);
+  assert.equal(hosts.length, 1);
+  assert.equal(old.closed, true);
+});

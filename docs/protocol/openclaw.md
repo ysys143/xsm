@@ -358,7 +358,7 @@ Linux burst에서 관측한 간헐적 ACK token 실패는 별도 미결이다. �
 만들지 않으며, 실패한 operation은 자동 재실행하지 않는다.
 
 이 진입 경로와 별도로, 아래의 등록 세션 자동 재접속도 구현했다.
-agent_end hook 자체의 별도 복구 처리는 아직 미완이다. 종료 전에 claim한
+`agent_end` hook도 아래의 turn 종료 복구 경로를 사용한다. 종료 전에 claim한
 원문과 기존 native queue의 token 회수는 별도 검증이 필요하며, 빈 inbox
 상태에서 종료한 표본을 그 증거로 쓰지 않는다.
 
@@ -421,3 +421,26 @@ token은 새 host에서 거부된다. 이때 ACK 안내의 `message_ids`로
 ```sh
 /isolated/node scripts/probe-openclaw-loader.mjs /isolated/node_modules/openclaw deliverables/openclaw-claimed-recovery.json --queue 1 --recover-claimed-context
 ```
+
+## Agent turn 종료 시 transport 복구
+
+Conversation access를 명시적으로 허용한 `agent_end` hook은 등록된
+host가 종료됐다면 도구·자동 재접속과 같은 복구를 공유한다. 새 host에서
+자연 inbox 경계를 처리한 뒤 idle 상태를 기록한다. 이전 도구 호출의
+invocation callback은 재사용하지 않는다. 다른 route의 hook은 무시하고
+이미 session_end/dispose한 참여는 다시 열지 않는다. 복구 중 종료되면
+새 host 생성과 후속 idle 쓰기를 막는다.
+
+연결 fixture 12개가 통과했으며, 실제 native hook runner 검증은 별도
+프로브로 구분한다. 이 경로가 실제 모델 turn 종료나 물리적 UI 실행을
+검증했다는 뜻은 아니다.
+
+```sh
+/isolated/node scripts/probe-openclaw-loader.mjs /isolated/node_modules/openclaw deliverables/openclaw-boundary-recovery.json --queue 100 --recover-boundary-context
+```
+
+고정 OpenClaw 2026.10.9/macOS arm64/Node 24.22.2의 실제 hook runner에서
+재등록·idle 복원 뒤 큰 원문 100/100 수락·소비·ACK가 통과했다
+(`openclaw-agent-end-native-100-verified.json`). 복구 후 전송 p95 상한은
+514.525ms다. 공통 gate 416개는 74.598초에 통과했다. 모델·실제 turn·
+사람 UI 실행과 Linux의 이 hook 경로 검증은 아직 미완이다.

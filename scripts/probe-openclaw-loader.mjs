@@ -9,12 +9,13 @@ import operations from '../integrations/openclaw/tools.mjs';
 
 const [nativeRoot, output, mode, countText, policyFlag] = process.argv.slice(2);
 assert.ok(!mode || ['--execute', '--queue'].includes(mode));
-assert.ok(!policyFlag || (mode === '--queue' && ['--deny-injection', '--large-context', '--deferred-notice', '--capacity-retry', '--capacity-fyi', '--burst-context', '--recover-context', '--auto-recover-context', '--recover-claimed-context'].includes(policyFlag)));
+assert.ok(!policyFlag || (mode === '--queue' && ['--deny-injection', '--large-context', '--deferred-notice', '--capacity-retry', '--capacity-fyi', '--burst-context', '--recover-context', '--auto-recover-context', '--recover-claimed-context', '--recover-boundary-context'].includes(policyFlag)));
 const denied = policyFlag === '--deny-injection';
 const burstContext = policyFlag === '--burst-context';
 const recoverClaimedContext = policyFlag === '--recover-claimed-context';
 const autoRecoverContext = policyFlag === '--auto-recover-context' || recoverClaimedContext;
-const recoverContext = policyFlag === '--recover-context' || autoRecoverContext;
+const recoverBoundaryContext = policyFlag === '--recover-boundary-context';
+const recoverContext = policyFlag === '--recover-context' || autoRecoverContext || recoverBoundaryContext;
 const largeContext = policyFlag === '--large-context' || burstContext || recoverContext;
 const deferredNotice = policyFlag === '--deferred-notice';
 const capacityBoundary = policyFlag === '--capacity-fyi';
@@ -52,7 +53,7 @@ const config = {
     entries: { xsm: { enabled: true } } }, agents: { defaults: { workspace: temp } },
 };
 if (mode === '--queue') {
-  if (capacityBoundary) config.plugins.entries.xsm.hooks = { allowConversationAccess: true };
+  if (capacityBoundary || recoverBoundaryContext) config.plugins.entries.xsm.hooks = { allowConversationAccess: true };
   if (denied) config.plugins.entries.xsm.hooks = { allowPromptInjection: false };
   // This fixture exposes the real API proxy to the probe, without a production global.
   const directory = join(temp, 'probe-plugin');
@@ -183,7 +184,12 @@ if (mode) {
         await new Promise(resolve => setTimeout(resolve, 10));
       }
       assert.ok(errors.length > previousErrors, 'native host did not observe backend exit');
-      if (autoRecoverContext) {
+      if (recoverBoundaryContext) {
+        const { getGlobalHookRunner } = await import(pathToFileURL(join(nativeRoot, 'dist/plugin-sdk/plugin-runtime.js')));
+        const hooks = getGlobalHookRunner();
+        assert.ok(hooks?.hasHooks('agent_end'));
+        await hooks.runAgentEnd({ messages: [], success: true, durationMs: 0 }, context('native-fixture-b'));
+      } else if (autoRecoverContext) {
         const deadline = Date.now() + 5000;
         while (Date.now() < deadline) {
           const row = (await records()).find(row => row.ref === target.ref);
@@ -196,8 +202,12 @@ if (mode) {
       assert.notEqual(recovered.pid, target.pid);
       assert.notEqual(recovered.protocol_generation, target.protocol_generation);
       result.nativeBackendRecovery = { sameRef: true, newGeneration: true, newPid: true,
-        trigger: autoRecoverContext ? 'transport exit without another native call' : 'explicit native inbox tool after observed transport exit',
+        trigger: recoverBoundaryContext ? 'native agent_end hook after transport exit' : autoRecoverContext ? 'transport exit without another native call' : 'explicit native inbox tool after observed transport exit',
         automaticIdleReconnect: autoRecoverContext };
+      if (recoverBoundaryContext) {
+        assert.equal(recovered.activity, 'idle');
+        result.nativeBackendRecovery.nativeBoundaryIdleRestored = true;
+      }
     }
 
     if (retained) {

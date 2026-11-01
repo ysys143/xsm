@@ -1722,3 +1722,29 @@ method 9종/notification 1개)의 공개 출력 구조도 검증했다
 (`inbox-owned-token-external-core.log`). 앞선 Linux 413개와 다른 표본이다.
 외부 검사기 확장의 Linux gate, 간헐적 burst ACK 실패와 나머지 전체
 계획은 계속 미완이다.
+
+## OpenClaw agent_end의 transport 복구
+
+Agent 종료 hook이 죽은 host를 그대로 사용하던 경로를 공통 복구에
+연결했다. 다른 route·종료된 참여는 건너뛰고, 복구 중 dispose는 새 host와
+후속 idle 갱신을 막는다. Hook 자체가 수신 경계를 처리하고 idle을 기록한다.
+실제 backend 종료 직후 검사에서 변경 전 EOF TransportError로 실패했다
+(`openclaw-agent-end-recovery-red.log`). Route 격리·이미 종료된 참여 유지·
+dispose 경합을 포함한 최종 연결 12개가 통과했다
+(`openclaw-agent-end-recovery-final.log`).
+
+Native 프로브 초회는 getGlobalHookRunner를 잘못된 내부 export에서 찾아
+전달 표본 이전에 실패했다(`openclaw-agent-end-native-100.json`). 기존
+capacity probe와 같은 공개 `dist/plugin-sdk/plugin-runtime.js` import로
+바로잡고 재실행했다. 실패 로그를 보존하며 이 오류를 제품 transport
+복구 실패로 분류하지 않는다. Linux·실제 모델 turn·사용자 UI·간헐적
+burst ACK 실패와 전체 계획은 계속 미완이다.
+
+수정한 고정 native 프로브에서는 실제 hook runner를 통해 같은 ref·
+새 generation 재등록과 idle 복원을 확인한 뒤 큰 원문 100/100 수락·
+prompt 소비·명시적 ACK가 통과했다
+(`openclaw-agent-end-native-100-verified.json`). 복구 후 전송 p95 상한
+514.525ms이며 모델·실제 agent turn·사람은 0회다. 공통 gate 416개
+(핵심 243/Python 48/Node 125)는 74.598초에 통과했다
+(`openclaw-agent-end-core.log`). 앞선 프로브 실패와 이 성공 표본은
+구분한다. Linux와 전체 계획의 나머지는 계속 미완이다.
