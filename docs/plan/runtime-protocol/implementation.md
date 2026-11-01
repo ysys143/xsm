@@ -901,3 +901,20 @@ ACK 표본은 구분한다. 모델과 사람을 실행한 인증은 아니다.
 OpenCode 정상 5회 회귀도 별도 통과했다. Native 모델 협업·Linux·원격·worker·
 UI의 전체 수용 조건과 P0–P5는 미완이며, 새 릴리즈나 전체 runtime 지원을
 선언하지 않는다.
+
+
+## Hermes 설치용 고정 백엔드 진입점
+
+`register(context, *, command=None, env=None)`가 설치 로더에서 지정한 명령과
+환경을 `HermesBinding`에 전달한다. 기존 `register(context)` 호출은 유지한다.
+새 검사 2개는 변경 전 실패했고 변경 후 통과했다. 격리 환경의 표식으로
+operations/list 등록 과정과 실제 xsm_inbox 호출의 두 백엔드 프로세스가
+지정 명령·환경을 사용한 것을 확인했다. 실패한 백엔드 등록은 coordinator
+스레드를 종료한다. Python 3.9.6의 Hermes 검사 3개도 통과했다.
+
+Python 3.14.6의 공통 검사 320개(핵심 199, Python 39, Node 82)가 48.880초에
+통과했다(`hermes-pinned-registration-gate.log`). Hermes 0.22.5 실제 플러그인
+발견·등록·도구 호출·수명주기 회귀 8개도 통과했다
+(`hermes-pinned-register-native/result.json`). Native 호출자는 fixture이며
+모델·사람 UI·push 수락을 실행한 인증은 아니다. Hermes 소유권 기반 설치·
+업데이트·제거와 활성화 상태 보고는 아직 미구현이다. 전체 P0–P5도 미완이다.

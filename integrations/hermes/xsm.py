@@ -136,8 +136,9 @@ class HermesBinding:
         self.loop.close()
 
 
-def register(context):
-    binding = HermesBinding(context)
+def register(context, *, command=None, env=None):
+    """Register with an optional installer-pinned backend and isolated environment."""
+    binding = HermesBinding(context, command=command, env=env)
     context.on_unload(binding.close)
     client_type = binding.sdk.XsmHost.__module__.replace("xsm_host", "xsm_client")
     client_type = __import__(client_type, fromlist=["XsmClient"]).XsmClient
