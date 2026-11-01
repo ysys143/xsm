@@ -962,3 +962,25 @@ unload 뒤 lease 파일은 남지 않았다. Lease 확보를 무력화한 변이
 통과했다(`hermes-component-lease-gate.log`). 현재 활성화 설정 판독·native
 push/UI/worker/실제 agent·Linux와 전체 P0–P5는 미완이다. Native 실행은
 명시적 caller fixture이며 모델이나 사람의 UI 응답을 시험하지 않았다.
+
+## 외부 stdio 수명 적합성 검사
+
+`scripts/conform-host-protocol.py`는 xsm/SDK import와 정본 저장소 직접 조회
+없이 후보 executable의 stdio만 검사한다. 새 격리 홈과 작업 폴더에서 두
+후보 프로세스를 실행하고 초기화·descriptor·불투명 신원·프로필 분리·
+connection-local handle·단일 live owner·close/reopen·EOF 소유권 해제의
+16개 계약을 확인한다. 실제 서버의 최종 결과는
+`blackbox-lifecycle-server-final.json`이며 16개 모두 통과했다. 첫 실행은
+shell launcher를 Python source로 넘겨 실패했으며 그 결과도 보존했다.
+
+xsm을 import하지 않는 stdlib 최소 수명 fixture에서도 16개가 통과했다.
+고정 세대·다른 pipe의 handle 허용·수명 락 제거 변이는 각각 해당 검사에서
+실패한다. 부모의 가짜 credential이 후보에게 전달되면 fixture가 거부한다.
+검사기 자체 검사 4개는 Python 3.9.6과 `-O`에서도 통과했다. 동일 작성자의
+불완전한 fixture이므로 제3자의 전체 독립 구현 인증으로 보지 않는다.
+
+공통 333개(핵심 212, Python 39, Node 82)는 Python 3.14.6에서 51.461초에
+통과했다(`external-conformance-gate.log`). 공개 사용법과 정확한 16개 계약은
+`docs/protocol/conformance.md`에 기록했다. 전체 normative method/result/error
+schema, operations·delivery·decision 적합성, 독립 작성자의 전체 구현과
+P0/P2 및 P1/P3–P5의 나머지는 여전히 미완이다.
