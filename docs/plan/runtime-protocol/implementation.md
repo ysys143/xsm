@@ -39,7 +39,7 @@
 | P2 SDK·검사기 | 부분 구현 | 독립 구현 적합성, 전체 오류/취소 계약 (Python↔Node 교차 시험 통과) |
 | P3 Pi·OpenCode | 부분 구현 | 연결·수신·설치·UI·대화 수명 경로 검증. Native worker·자동 재접속·busy/now의 실제 우선순위 등 미완 |
 | P4 Hermes·OpenClaw | 부분 구현 | Hermes pull 도구, OpenClaw native 도구/guarded queue prototype. Agent turn·idle wake·UI·설치·worker 미완 |
-| P5 통합·배포 | 부분 검증 | Mac native SDK/CLI fixture 일부 통과. Linux, 30개 방향 조합, 동종 세션, 원격, 버전·플랫폼별 전체 native p95, 메신저, 전체 회귀 미완 |
+| P5 통합·배포 | 부분 검증 | Mac native SDK/CLI fixture와 Linux arm64 공통 gate 통과. Linux native runtime, 30개 방향 조합, 동종 세션, 원격, 버전·플랫폼별 전체 native p95, 메신저, 전체 회귀 미완 |
 
 ## 초기 실제 검사
 
@@ -1478,3 +1478,23 @@ marker로 막은 대화와 별도로 기존 대화가 완료되는 것을 확인
 공통 390개(핵심 236, Python 44, Node 110)는 Python 3.14.6에서 65.863초에
 통과했다(`hermes-conversation-lock-gate-final.log`). Handshake 응답 기한·native
 push/UI·worker·Linux·메신저·원격·전체 방향 조합과 P0–P5는 미완이다.
+
+
+## Linux arm64 공통 gate
+
+별도 Colima VM과 Docker endpoint에서 공통 390개(핵심 236, Python 44, Node 110)가
+Python 3.11.2/Node 24.22.2에서 70.270초에 통과했다
+(`linux-tracked-core-fixed/result.json`, `environment.json`, `protocol.log`). 소스는
+c460a6937730ea489aa32e2863cf0506934bdae6의 변경 없는 추적 파일이며 archive hash와
+image ID를 기록한다. Container 네트워크는 none, 자원은 2 CPU/3 GiB로 제한했다.
+
+처음 VM은 Unix socket 경로가 길어 실패했고 짧은 격리 경로로 옮겼다. Release
+archive는 tests를 제외해 첫 container 실행에서 import 준비가 실패했다. 그 18개
+loader 오류를 실제 검사 실패 수로 세지 않는다. 다음 묶음은 /var→/private/var
+변환으로 guest bind path가 없어 실행 전 실패했다. 둘 다 로그를 보존하고 추적
+파일/경로 표기를 고쳐 전체 gate를 실행했다. 기존 출력 덮어쓰기도 거부했다.
+
+재사용 Dockerfile/runner와 상세 기준은 linux-validation.md에 남겼다. 사용자 기본
+VM/전역 context는 유지했고 자체 VM도 종료 후 Stopped로 확인했다. Linux native
+에이전트/모델/UI/큐 p95·다른 Python/아키텍처·전체 방향/원격/메신저/worker와
+P0–P5의 나머지는 미완이다.
