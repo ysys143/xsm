@@ -107,9 +107,12 @@ class HermesBinding:
 
     def finalize(self, session_id="", **_native):
         async def close():
-            pair = self.hosts.pop(session_id, None)
-            if pair:
-                await (await pair[1]).close()
+            if self.host_lock is None:
+                self.host_lock = asyncio.Lock()
+            async with self.host_lock:
+                pair = self.hosts.pop(session_id, None)
+                if pair:
+                    await (await pair[1]).close()
         self._run(close())
 
     def reset(self, old_session_id="", new_session_id="", **_native):

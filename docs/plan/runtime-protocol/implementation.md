@@ -518,3 +518,17 @@ agent/자동 주입/UI/설치 수명 완료로 해석하지 않는다. 상위 �
 활성화했다. 직접 register 호출을 대체하고 기존 6개 경로와 unload의 도구 제거·
 참여 종료까지 총 7개 검사가 통과했다(`hermes-discovery-unload/result.json`).
 실제 agent turn과 제품 설치기·자동 주입·UI의 미완 상태는 유지한다.
+
+## Hermes workspace 전환과 finalize 경쟁
+
+Native session-start hook에서 workspace가 바뀌면 기존 참여를 닫고 같은 주소의
+새 세대로 전환한다. 도구 호출만으로의 전환과 이전 폴더의 늦은 호출은 거부한다.
+실제 v0.22.5 discovery 검사 8개가 통과했다
+(`hermes-finalize-native/result.json`). Native caller는 여전히 fixture다.
+
+SDK 연결 생성 중 finalize가 항목을 먼저 제거하는 순서를 제어된 검사로
+재현했고 수정 전 `KeyError`로 실패했다. 연결과 종료의 락을 공유한 뒤
+Python 3.9/3.14에서 통과했다. `hermes-finalize-race-{red,green-py39,green-py314}.log`
+에 기록했다. 빠른 묶음에 이 검사를 포함한 총 257개(핵심 183, Python 28,
+Node 46)가 Python 3.9.6에서 55.579초에 통과했다
+(`hermes-finalize-gate-py39.log`). 전체 계획과 실제 agent·UI·메신저 검증은 미완이다.

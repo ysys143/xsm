@@ -48,7 +48,7 @@ fixture이며 실제 Hermes agent나 외부 메신저의 동작을 시험한 것
 
 모든 HOME/HERMES_HOME/XSM_HOME은 새 임시 경로다. v0.22.5 tag와 실제 import
 경로를 대조한다. SDK 의존성은 고정 lock으로 설치하며 API 키나 실제 모델을
-사용하지 않는다. 최신 결과는 `hermes-public-api-final/result.json`에 있다.
+사용하지 않는다. 직접 등록 경로의 결과는 `hermes-public-api-final/result.json`에 있다.
 최초 전송은 서로 다른 비 git 폴더라 정책이 거부했다. 같은 저장소의 두 작업
 폴더를 만드는 것으로 fixture를 고쳤으며 그 거부를 우회하지 않았다.
 
@@ -78,3 +78,15 @@ session_key를 검사하기 전에 현재 REPL 큐로 들어간다. 이를 동�
 호출해 사용자 응답을 확보할 수 있다고 가정하지 않는다. Agent의 clarify는
 별도 inline 실행 경로를 쓰므로 registry.dispatch만으로 UI를 대신하지 않는다.
 Native UI 결속과 messaging requester 신원은 미완으로 유지한다.
+
+## Workspace 전환과 동시 종료
+
+후속 discovery 검사는 native session-start의 폴더 전환, 같은 주소의 세대 교체,
+이전 폴더의 늦은 도구 호출 거부를 포함해 8개다.
+`hermes-finalize-native/result.json`에 결과를 남긴다.
+
+연결 생성 중 finalize가 참여 항목을 먼저 제거하면 `KeyError`가 발생했다.
+`tests.test_hermes_binding`은 SDK open을 의도적으로 지연시켜 이 순서를
+재현한다. 수정 전 실패 로그는 `hermes-finalize-race-red.log`이며, 연결 생성과
+종료를 같은 락으로 직렬화한 뒤 Python 3.9/3.14에서 통과했다.
+이는 coordinator의 제어된 동시 실행 검사이며 실제 agent 실행 증거는 아니다.
