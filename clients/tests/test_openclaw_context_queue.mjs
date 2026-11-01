@@ -7,7 +7,7 @@ function fixture() {
   let row = { sessionId: 'a', lifecycleRevision: 'generation-a', pluginNextTurnInjections: {
     other: [{ id: 'foreign', text: 'keep' }],
   } };
-  let config = {}, beforeCommit = () => {}, current = true;
+  let config = {}, beforeCommit = () => {}, afterCommit = () => {}, current = true;
   const session = {
     resolveStorePath: store => store ?? '/isolated/native/sessions.json',
     getSessionEntry: () => structuredClone(row),
@@ -17,7 +17,9 @@ function fixture() {
       beforeCommit(patch);
       assertCommitAllowed();
       if (patch) row = { ...row, ...patch };
-      return structuredClone(row);
+      const committed = structuredClone(row);
+      afterCommit();
+      return committed;
     },
   };
   const api = { runtime: { agent: { session }, config: { current: () => config } }, lifecycle: {} };
@@ -29,7 +31,7 @@ function fixture() {
   const controls = { signal: new AbortController().signal, leaseSeconds: 120 };
   return { api, context, deliver, packet, controls, read: () => structuredClone(row),
     edit: change => { row = { ...row, ...change }; }, config: value => { config = value; },
-    beforeCommit: callback => { beforeCommit = callback; }, retire: () => { current = false; } };
+    beforeCommit: callback => { beforeCommit = callback; }, afterCommit: callback => { afterCommit = callback; }, retire: () => { current = false; } };
 }
 
 test('native context is observed after admission, preserves other plugins and deduplicates originals', async () => {
@@ -186,4 +188,26 @@ test('a complete pending single context stays reusable when rotated tokens requi
   assert.equal(group.length, 1);
   await f.deliver({ ...packet, claims: [{ id: 'message-a', token: 'x'.repeat(2000) }] }, f.controls);
   assert.deepEqual(f.read().pluginNextTurnInjections.xsm, group);
+});
+
+
+test('native committed snapshot proves admission when consumer drains before readback', async () => {
+  const f = fixture();
+  f.afterCommit(() => f.edit({ pluginNextTurnInjections: { other: [{ id: 'foreign', text: 'keep' }] } }));
+  await f.deliver({ ...f.packet, messages: ['x'.repeat(40000)] }, f.controls);
+  assert.equal(f.read().pluginNextTurnInjections.xsm, undefined);
+  assert.deepEqual(f.read().pluginNextTurnInjections.other, [{ id: 'foreign', text: 'keep' }]);
+});
+
+test('native commit snapshot from another conversation is refused', async () => {
+  const f = fixture(), patch = f.api.runtime.agent.session.patchSessionEntry;
+  f.api.runtime.agent.session.patchSessionEntry = async args => ({ ...await patch(args), sessionId: 'foreign' });
+  await assert.rejects(f.deliver(f.packet, f.controls), /another conversation/);
+});
+
+test('missing native return falls back to exact observed current queue', async () => {
+  const f = fixture(), patch = f.api.runtime.agent.session.patchSessionEntry;
+  f.api.runtime.agent.session.patchSessionEntry = async args => { await patch(args); return null; };
+  await f.deliver(f.packet, f.controls);
+  assert.equal(f.read().pluginNextTurnInjections.xsm.length, 1);
 });

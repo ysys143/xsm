@@ -337,3 +337,15 @@ SDK가 제한된 inbox를 읽고 cursor를 따라 진행한다. Native 세대·�
 ```sh
 /isolated/node scripts/probe-openclaw-loader.mjs /isolated/node_modules/openclaw deliverables/openclaw-large.json --queue 100 --large-context
 ```
+
+## Native commit 직후 소비되는 경우
+
+`patchSessionEntry`가 반환한 committed entry에서 SID·lifecycle revision과
+전체 조각의 내용을 검증한다. Prompt consumer가 commit 직후 큐를 비워도
+뒤따르는 재조회가 비었다는 이유로 이미 수락된 claim을 반환하지 않는다.
+반환값이 null이면 현재 큐의 정확한 전체 조각 검증을 유지하며, 다른 대화의
+반환 entry는 거부한다. 즉시 drain 회귀는 수정 전 실패·수정 후 통과했다.
+
+Linux burst에서 관측한 간헐적 ACK token 실패는 별도 미결이다. 재실행
+32/32 통과를 그 실패의 해결 증거로 쓰지 않는다. 플랫폼별 상세 표본과
+미실행 범위는 [Linux 검증 기록](../plan/runtime-protocol/linux-validation.md)에 있다.

@@ -150,3 +150,35 @@ network none으로 분리했다. Package lock과 archive hash를 보존했다.
 전역 context도 이전 상태로 확인했다(`linux-pi-vm-stopped.json`). Hermes/OpenClaw의
 Linux native 검증·x86_64·실제 모델/사람 UI·worker·원격/메신저·전체 방향 행렬과
 P0–P5의 나머지는 미완이다.
+
+## OpenClaw 2026.10.9 native Linux arm64
+
+Node 24.22.2/Python 3.11.2의 격리 Linux arm64 container에서 고정 native
+SDK와 prompt helper를 실행했다. 설치 단계와 분리해 검사 network는 none이다.
+실제 agent turn·모델·사람 UI·메신저는 실행하지 않았다.
+
+최초 100건 실행은 67건 수락·ACK 뒤 timeout, 진단 실행은 1건 수락 뒤
+ACK token 오류로 실패했다. 원시 로그를 보존했다. Native commit 직후
+consumer가 큐를 비우면 producer의 재조회가 수락을 놓치고 claim을 반환하는
+경로를 단위 검사에서 재현했다. Committed snapshot 검증으로 수정한 뒤:
+
+- `node --test clients/tests/test_openclaw_context_queue.mjs`: 19/19 통과.
+  즉시 소비 검사는 수정 전 실패했고, 다른 SID 반환 거부와 null fallback도 검사했다.
+- `linux-openclaw-commit-native-100/output/native-queue-100.json`: 100/100
+  수락·prompt 소비·명시적 ACK, p95 상한 406.116ms.
+- `openclaw-commit-macos-native-100.json`: 같은 100/100, p95 상한 513.468ms.
+- `linux-openclaw-regressions/output/deny.json`, `capacity-fyi.json`: 정책 거부와
+  capacity claim 반환·자동 retry·FYI 자연 경계 retry 통과.
+- 같은 폴더의 `burst.json`: 32건 중 10건 prompt 관측 후 ACK token 오류.
+  ACK 뒤 갱신하는 consumed counter 0을 실제 관측 0으로 해석하지 않는다.
+- `linux-openclaw-burst-diagnosed/output/burst.json` 및
+  `linux-openclaw-burst-no-delay/output/burst.json`: 재실행 각각 32/32 수락·ACK.
+  후자는 성공 경로에 진단 파일 읽기를 넣지 않았다. 앞선 간헐적 ACK 실패의
+  원인은 미확정이며, 재실행 통과로 해결됐다고 판정하지 않는다.
+
+공통 gate 395개(핵심 238/Python 44/Node 113)가 Mac 63.582초
+(`openclaw-commit-macos-gate-final.log`), Linux 70.547초
+(`linux-openclaw-core/result.json`)에 통과했다. 원시 자료는 모두
+`deliverables/protocol-foundation/` 아래 있다. Burst 지연은 소비를 고의로
+미룬 표본이므로 정상 부하 p95 인증에서 제외한다. Hermes Linux native,
+x86_64, 실제 모델/사람 UI, worker, 원격·전체 방향·메신저 및 P0–P5는 미완이다.

@@ -81,7 +81,7 @@ export function nativeDelivery(api, context, assertBindingCurrent) {
     let capacityBlocked = false;
     await session.runWithWorkAdmission({ ...scope, signal }, async admittedSignal => {
       guard(admittedSignal);
-      await session.patchSessionEntry({ ...scope,
+      const committed = await session.patchSessionEntry({ ...scope,
         assertCommitAllowed: () => guard(admittedSignal),
         update(current) {
           guard(admittedSignal);
@@ -119,7 +119,12 @@ export function nativeDelivery(api, context, assertBindingCurrent) {
       });
       guard(admittedSignal);
       if (capacityBlocked) return;
-      const accepted = read()?.pluginNextTurnInjections?.xsm ?? [];
+      // The native transaction returns its committed row. A prompt consumer may
+      // already have drained the queue by the time a subsequent read completes.
+      if (committed && (committed.sessionId !== context.sessionId || committed.lifecycleRevision !== revision)) {
+        throw new Error('native context commit belongs to another conversation');
+      }
+      const accepted = (committed ?? read())?.pluginNextTurnInjections?.xsm ?? [];
       if (!idsForParts.every((id, index) => matches(accepted.find(item => item.id === id), index))) {
         throw new Error('native context admission was not observed');
       }

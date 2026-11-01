@@ -214,7 +214,28 @@ if (mode) {
           tokens.push(...claims); originals += matched;
           result.burst.groups.push({ originals: matched, fragments: group.length });
         }
-        const ack = await second.find(tool => tool.name === 'xsm_ack').execute('burst-consume-' + seen.size, { tokens });
+        result.burst.observedBeforeAck = seen.size;
+        let ack;
+        try { ack = await second.find(tool => tool.name === 'xsm_ack').execute('burst-consume-' + seen.size, { tokens }); }
+        catch (error) {
+        const claimAudit = [];
+        const requestedIDs = new Set(prompt.queuedInjections.flatMap(item => item.metadata.messageIds));
+        for (const folder of await readdir(join(temp, 'xsm/handoffs'), { withFileTypes: true })) {
+          if (!folder.isDirectory()) continue;
+          for (const id of requestedIDs) {
+            const path = join(temp, 'xsm/handoffs', folder.name, id + '.json');
+            let original;
+            try { original = JSON.parse(await readFile(path, 'utf8')); }
+            catch (error) { if (error.code === 'ENOENT') continue; throw error; }
+            claimAudit.push({ id, state: original.state, token: original.claim?.token,
+              previousToken: original.previous_claim?.token, deliveryState: original.delivery_state });
+          }
+        }
+        result.burst.claimAuditBeforeAck = { tokens, originals: claimAudit };
+
+
+          throw error;
+        }
         assert.equal(ack.details.acked.length, originals);
         result.burst.consumed = seen.size;
         result.burst.acknowledged += ack.details.acked.length;
@@ -228,7 +249,7 @@ if (mode) {
     } else {
       const started = performance.now();
       const firstText = sampleText(0);
-      await executable.find(tool => tool.name === 'xsm_send').execute('send-a-b', {
+      result.lastSend = await executable.find(tool => tool.name === 'xsm_send').execute('send-a-b', {
         target: 'ref:' + target.ref, text: firstText, wait: 0,
         ...(capacityBoundary ? { wake: 'never' } : {}),
       });
@@ -279,6 +300,12 @@ if (mode) {
             if (injection) break;
             await new Promise(resolve => setTimeout(resolve, 10));
           }
+          if (!injection) {
+            const entry = api.runtime.agent.session.getSessionEntry({ agentId: 'main', sessionKey: context('native-fixture-b').sessionKey, readConsistency: 'latest' });
+            result.failedQueueObservation = { sessions: await records(), lastSend: result.lastSend,
+              nativeSessionId: entry?.sessionId, lifecycleRevision: entry?.lifecycleRevision,
+              queuedCount: entry?.pluginNextTurnInjections?.xsm?.length ?? 0 };
+          }
           assert.ok(injection, 'actual native context queue did not accept the original');
           const group = queued.filter(item => item.metadata.xsmHash === injection.metadata.xsmHash)
             .sort((a, b) => a.metadata.fragmentIndex - b.metadata.fragmentIndex);
@@ -314,9 +341,10 @@ if (mode) {
           result.nativeQueueAckCount++;
           const began = performance.now();
           const text = sampleText(index);
-          await executable.find(tool => tool.name === 'xsm_send').execute('send-' + index, {
+          result.lastSend = await executable.find(tool => tool.name === 'xsm_send').execute('send-' + index, {
             target: 'ref:' + target.ref, text, wait: 0,
           });
+          assert.match(result.lastSend.details?.text ?? '', /stored/, 'send was refused before native admission');
           tokens = await consume(began, text);
         }
         const sorted = [...latencies].sort((a, b) => a - b);
