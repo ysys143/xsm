@@ -36,7 +36,7 @@ class HermesLifecycleTest(unittest.IsolatedAsyncioTestCase):
             return host
 
         binding = module.HermesBinding.__new__(module.HermesBinding)
-        binding.hosts, binding.host_lock = {}, None
+        binding.hosts, binding.host_locks = {}, {}
         binding.closed, binding.closing, binding.finalizing, binding.monitors, binding.states = False, False, set(), {}, {}
         binding.profile, binding.command, binding.env = "isolated", [], {}
         binding.sdk = SimpleNamespace(XsmHost=SimpleNamespace(open=open_host))
@@ -48,7 +48,8 @@ class HermesLifecycleTest(unittest.IsolatedAsyncioTestCase):
         await asyncio.sleep(0)
         release.set()
         results = await asyncio.gather(opening, *scheduled, return_exceptions=True)
-        self.assertIs(results[0], host, repr(results))
+        self.assertIsInstance(results[0], RuntimeError, repr(results))
+        self.assertIn("closing", str(results[0]))
         self.assertIsNone(results[1], repr(results))
         self.assertEqual(closed, [True])
         self.assertEqual(binding.hosts, {})
@@ -73,7 +74,7 @@ class HermesLifecycleTest(unittest.IsolatedAsyncioTestCase):
         existing = asyncio.get_running_loop().create_future()
         existing.set_result(old)
         binding = module.HermesBinding.__new__(module.HermesBinding)
-        binding.hosts, binding.host_lock = {"native": ("/workspace", existing)}, None
+        binding.hosts, binding.host_locks = {"native": ("/workspace", existing)}, {}
         binding.closed, binding.closing, binding.finalizing, binding.monitors, binding.states = False, False, set(), {}, {}
         binding.profile, binding.command, binding.env = "isolated", [], {}
         binding.sdk = SimpleNamespace(XsmHost=SimpleNamespace(open=open_host))
@@ -105,7 +106,7 @@ class HermesLifecycleTest(unittest.IsolatedAsyncioTestCase):
         pending = asyncio.get_running_loop().create_future()
         pending.set_result(old)
         binding = module.HermesBinding.__new__(module.HermesBinding)
-        binding.hosts, binding.host_lock = {"native": ("/workspace", pending)}, None
+        binding.hosts, binding.host_locks = {"native": ("/workspace", pending)}, {}
         binding.closed, binding.closing, binding.finalizing, binding.monitors = False, False, set(), {}
         binding.states = {"native": "busy"}
         binding.profile, binding.command, binding.env = "isolated", [], {}
@@ -120,6 +121,37 @@ class HermesLifecycleTest(unittest.IsolatedAsyncioTestCase):
         finally:
             task.cancel()
             await asyncio.gather(task, return_exceptions=True)
+
+
+    async def test_slow_registration_does_not_block_another_native_conversation(self):
+        entered, release = asyncio.Event(), asyncio.Event()
+        async def close():
+            pass
+        async def open_host(**kwargs):
+            if kwargs['conversation'] == 'slow':
+                entered.set()
+                await release.wait()
+            return SimpleNamespace(close=close)
+        binding = module.HermesBinding.__new__(module.HermesBinding)
+        binding.hosts, binding.host_locks = {}, {}
+        binding.closed, binding.closing, binding.finalizing, binding.monitors, binding.states = False, False, set(), {}, {}
+        binding.profile, binding.command, binding.env = 'isolated', [], {}
+        binding.sdk = SimpleNamespace(XsmHost=SimpleNamespace(open=open_host))
+        existing = await binding._host('fast', '/workspace')
+        slow = asyncio.create_task(binding._host('slow', '/workspace'))
+        await entered.wait()
+        fast = asyncio.create_task(binding._host('fast', '/workspace'))
+        try:
+            self.assertIs(await asyncio.wait_for(asyncio.shield(fast), .2), existing)
+            await asyncio.wait_for(binding._host('another', '/workspace'), .2)
+            self.assertFalse(slow.done())
+        finally:
+            release.set()
+            await asyncio.gather(slow, fast, return_exceptions=True)
+            tasks = list(binding.monitors.values())
+            for task in tasks:
+                task.cancel()
+            await asyncio.gather(*tasks, return_exceptions=True)
 
 
 from tests.test_xsm import TempState

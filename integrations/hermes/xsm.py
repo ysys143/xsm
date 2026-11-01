@@ -64,7 +64,7 @@ class HermesBinding:
             str(self.root), "protocol", "serve", "--stdio"]
         self.env = env
         self.hosts = {}
-        self.host_lock = None
+        self.host_locks = {}
         self.closed = False
         self.closing = False
         self.finalizing = set()
@@ -90,10 +90,11 @@ class HermesBinding:
             raise RuntimeError("native caller has no existing absolute workspace")
         return sid, str(Path(cwd).resolve())
 
+    def _host_lock(self, sid):
+        return self.host_locks.setdefault(sid, asyncio.Lock())
+
     async def _host(self, sid, cwd, *, rebind=False):
-        if self.host_lock is None:
-            self.host_lock = asyncio.Lock()
-        async with self.host_lock:
+        async with self._host_lock(sid):
             if self.closed or self.closing or sid in self.finalizing:
                 raise RuntimeError("native participation is closing")
             if sid in self.hosts and self.hosts[sid][0] != cwd:
@@ -115,6 +116,8 @@ class HermesBinding:
             return await self._open_host(sid, cwd)
 
     async def _open_host(self, sid, cwd):
+        if self.closed or self.closing or sid in self.finalizing:
+            raise RuntimeError("native participation is closing")
         if sid not in self.hosts:
             pending = asyncio.create_task(self.sdk.XsmHost.open(runtime="hermes", profile=self.profile,
                 conversation=sid, cwd=cwd, command=self.command, env=self.env))
@@ -127,6 +130,11 @@ class HermesBinding:
                 raise
         _, pending = self.hosts[sid]
         host = await pending
+        if self.closed or self.closing or sid in self.finalizing:
+            if self.hosts.get(sid, (None, None))[1] is pending:
+                self.hosts.pop(sid, None)
+            await host.close()
+            raise RuntimeError("native participation is closing")
         if not self.closing and sid not in self.finalizing and sid not in self.monitors:
             self.monitors[sid] = asyncio.create_task(self._monitor(sid, cwd))
         return host
@@ -196,9 +204,7 @@ class HermesBinding:
                 if monitor:
                     monitor.cancel()
                     await asyncio.gather(monitor, return_exceptions=True)
-                if self.host_lock is None:
-                    self.host_lock = asyncio.Lock()
-                async with self.host_lock:
+                async with self._host_lock(session_id):
                     pair = self.hosts.pop(session_id, None)
                     self.states.pop(session_id, None)
                     if pair:
@@ -230,12 +236,12 @@ class HermesBinding:
             for _, pending in list(self.hosts.values()):
                 if not pending.done():
                     pending.cancel()
-            if self.host_lock is None:
-                self.host_lock = asyncio.Lock()
-            async with self.host_lock:
-                pairs = list(self.hosts.values())
-                self.hosts.clear()
-                self.states.clear()
+            for lock in list(self.host_locks.values()):
+                async with lock:
+                    pass
+            pairs = list(self.hosts.values())
+            self.hosts.clear()
+            self.states.clear()
             hosts = await asyncio.gather(*(pair[1] for pair in pairs), return_exceptions=True)
             await asyncio.gather(*(host.close() for host in hosts if not isinstance(host, BaseException)))
         self._run(shutdown())

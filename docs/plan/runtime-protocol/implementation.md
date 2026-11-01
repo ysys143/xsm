@@ -1453,3 +1453,28 @@ native dispatch 전 새 PID/세대와 상태를 관측했고 원문 보존·old 
 수락 지연이나 모델 소비를 인증하지 않는다. Native push/UI·초기 생성 전 실패·
 handshake 응답 기한/대화별 등록 동시성 확대·worker·Linux·메신저·원격과
 전체 P0–P5 나머지는 미완이다.
+
+## Hermes 대화별 등록 동시성
+
+기존 coordinator의 공통 host_lock은 한 backend 등록이 늦으면 다른 대화도
+막았다. SID별 잠금으로 등록/복구/finalize를 직렬화하고 대화 간에는 진행되게
+했다. 종료 전후를 open 경계에서 확인해 종료 중 완성된 host도 반환하지 않고
+닫는다. Unload는 미완료 open 취소 뒤 잠금을 정리한다.
+
+변경 전 느린 등록과 빠른 대화 검사는 timeout으로 실패했다
+(`hermes-conversation-lock-red.log`). 수정 후 이미 열린 대화와 다른 새 대화가
+느린 등록 중 진행됐다. Finalize의 기존 기대(열린 host 반환)는 강화된 종료
+동작과 달라 확대 검사에서 실패했고, host 닫힘 및 호출자의 종료 오류를
+검사하도록 맞췄다. Python 3.9.6 관련 9개가 통과했다
+(`hermes-conversation-lock-final-tests.log`). 이전 실패 로그도 보존한다.
+
+실제 Hermes 0.22.5의 직접 PluginContext/registry.dispatch fixture는 session.open을
+marker로 막은 대화와 별도로 기존 대화가 완료되는 것을 확인했다
+(`hermes-conversation-isolation-native/result.json`). 전체 8개 검사가 통과했고 현재
+구현 해시도 대조했다. 별도 설치/autoload 자동 복구 13개도 회귀 통과했다
+(`hermes-conversation-lock-native/result.json`). Agent/model·UI·메신저 동시성을
+실행한 인증은 아니다.
+
+공통 390개(핵심 236, Python 44, Node 110)는 Python 3.14.6에서 65.863초에
+통과했다(`hermes-conversation-lock-gate-final.log`). Handshake 응답 기한·native
+push/UI·worker·Linux·메신저·원격·전체 방향 조합과 P0–P5는 미완이다.

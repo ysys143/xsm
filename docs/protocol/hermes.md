@@ -223,3 +223,28 @@ native dispatch 전 새 PID/세대·상태 복원을 관측했고 원문 보존�
 push/UI·최초 생성 실패의 자동 복구·handshake 응답 기한과 대화별 등록 동시성
 확대, worker·Linux·메신저와 전체 P0–P5는 미완이다. Pull-only 연결이므로 이
 결과를 native queue p95나 모델 소비 인증으로 쓰지 않는다.
+
+## 대화별 등록 잠금
+
+등록·복구·finalize 잠금을 native SID별로 분리했다. 다른 대화가 초기 응답을
+기다리는 동안 이미 열린 대화의 요청과 별도의 새 등록이 진행된다. 같은 SID의
+생성/종료는 계속 직렬화한다. 종료가 시작되면 새 open을 막고, 대기하던 open이
+끝나더라도 host를 닫아 호출자에게 종료 오류를 전달한다. Unload는 미완료 open을
+취소한 뒤 대화별 잠금을 정리하므로 backend를 남기지 않는다.
+
+기존 공통 잠금에서는 느린 등록이 빠른 대화를 막아 새 검사가 실패했다
+(`hermes-conversation-lock-red.log`). 수정 후 Python 3.9.6 관련 9개가 통과했다
+(`hermes-conversation-lock-final-tests.log`). 첫 확대 검사는 finalize 중 열린 host를
+그대로 반환한다고 기대해 실패했다. 기준을 host 닫힘과 호출자의 종료 오류로
+맞춘 뒤 통과했으며 이전 로그도 보존했다.
+
+실제 Hermes 0.22.5 PluginContext/registry.dispatch에서도 한 backend의 session.open을
+marker로 막고 다른 대화의 inbox 요청을 보냈다. 느린 등록이 대기 중인 동안 빠른
+호출이 완료됐다(`hermes-conversation-isolation-native/result.json`). 이 표본은 직접
+등록한 native API fixture이며 설치/autoload나 실제 agent turn의 동시 실행으로
+확대하지 않는다. 별도 설치본 자동 복구 회귀 13개도 통과했다
+(`hermes-conversation-lock-native/result.json`).
+
+공통 390개는 65.863초에 통과했다(`hermes-conversation-lock-gate-final.log`).
+초기 handshake 응답 기한·Native push/UI·worker·Linux·메신저와 전체 P0–P5의
+남은 조건은 미완이다.

@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Hermes 0.22.5's real plugin registry/hooks with caller fixtures, no agent/model claims."""
 import argparse
+import concurrent.futures
 import asyncio
 import hashlib
 import importlib.util
@@ -86,7 +87,21 @@ def run(args):
             assert loaded and loaded.enabled, getattr(loaded, "error", "not discovered")
             result["nativeDiscoveryTested"] = True
         else:
-            binding = module.register(context)
+            if args.slow_registration:
+                release = temp / "release-slow-registration"
+                entered = temp / "entered-slow-registration"
+                code = ("import sys,time,pathlib,runpy;sys.path.insert(0,sys.argv[1]);from xsm import protocol\n"
+                    "_open=protocol.Connection.open\n"
+                    "def _slow(self,params):\n"
+                    " if params.get('conversation')=='native-slow':\n"
+                    "  pathlib.Path(" + repr(str(entered)) + ").touch()\n"
+                    "  while not pathlib.Path(" + repr(str(release)) + ").exists(): time.sleep(.01)\n"
+                    " return _open(self,params)\n"
+                    "protocol.Connection.open=_slow\n"
+                    "sys.path.insert(0,sys.argv.pop(1));runpy.run_module('xsm',run_name='__main__')")
+                binding = module.register(context, command=[sys.executable, "-B", "-c", code, str(ROOT), "protocol", "serve", "--stdio"])
+            else:
+                binding = module.register(context)
         if args.installed:
             from xsm import component_leases
             live = component_leases.active_records()
@@ -118,6 +133,27 @@ def run(args):
         ack = invoke("native-b", temp / "b", "xsm_ack", {"tokens": [packet["claims"][0]["token"]]})
         assert len(ack["acked"]) == 1, ack
         result["checks"].append("native tool dispatch sends, pulls and explicitly ACKs")
+        if args.slow_registration:
+            with concurrent.futures.ThreadPoolExecutor(max_workers=2) as pool:
+                slow = pool.submit(invoke, "native-slow", temp / "b", "xsm_inbox")
+                fast = None
+                try:
+                    deadline = time.monotonic() + 3
+                    while not entered.exists():
+                        assert time.monotonic() < deadline, "slow registration did not start"
+                        time.sleep(.01)
+                    started = time.monotonic()
+                    fast = pool.submit(invoke, "native-b", temp / "b", "xsm_inbox")
+                    packet = fast.result(timeout=1)
+                    assert packet["claims"] == [] and not slow.done(), packet
+                    result["registrationIsolation"] = {"fastCompletedWhileOtherOpenBlocked": True,
+                        "fastSeconds": time.monotonic() - started, "nativeDispatchers": 2}
+                    result["checks"].append("native registry dispatch remains available while another backend registration is blocked")
+                finally:
+                    release.touch()
+                    slow.result(timeout=5)
+                    if fast:
+                        fast.result(timeout=5)
         if args.crash or args.auto_reconnect:
             invoke("native-a", temp / "a", "xsm_send", {"target": "ref:" + second["ref"],
                    "text": "original survives backend crash", "wait": 0})
@@ -229,4 +265,8 @@ if __name__ == "__main__":
     parser.add_argument("--installed", action="store_true")
     parser.add_argument("--crash", action="store_true")
     parser.add_argument("--auto-reconnect", action="store_true")
-    run(parser.parse_args())
+    parser.add_argument("--slow-registration", action="store_true")
+    args = parser.parse_args()
+    if args.slow_registration and (args.installed or args.discover):
+        parser.error("--slow-registration uses the explicit native PluginContext fixture")
+    run(args)
