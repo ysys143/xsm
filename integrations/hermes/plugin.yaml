@@ -1,0 +1,37 @@
+{
+  "name": "xsm",
+  "version": "0.0.0",
+  "description": "Experimental xsm pull tools; native push and UI are not connected.",
+  "license": "MIT",
+  "kind": "standalone",
+  "provides_tools": [
+    "xsm_owned",
+    "xsm_files",
+    "xsm_decision_status",
+    "xsm_ask",
+    "xsm_question_status",
+    "xsm_discover",
+    "xsm_publish",
+    "xsm_connect",
+    "xsm_grant",
+    "xsm_send",
+    "xsm_team",
+    "xsm_handover",
+    "xsm_board",
+    "xsm_ack",
+    "xsm_inbox",
+    "xsm_link",
+    "xsm_join",
+    "xsm_reach",
+    "xsm_doc_endorse",
+    "xsm_approve",
+    "xsm_decide"
+  ],
+  "provides_hooks": [
+    "on_session_start",
+    "on_session_end",
+    "on_session_finalize",
+    "on_session_delete",
+    "on_session_reset"
+  ]
+}

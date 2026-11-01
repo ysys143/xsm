@@ -20,6 +20,12 @@ SDK는 immutable root마다 별도 Python package namespace로 로드한다. 같
 
 ## 현재 동작과 증거
 
+Directory entry `__init__.py`와 도구 21개/수명 hook을 선언한 `plugin.yaml`을
+제공한다. 실제 0.22.5 manifest parser와 directory loader의 import를 통과했다.
+이 검사는 활성화 정책·plugin validator·실제 agent 실행을 증명하지 않는다.
+원시 결과는 `hermes-directory-entry-fixed.log`에 남겼다. 첫 호출은 parser
+인자를 잘못 전달해 실패했으며 그 로그도 보존했다.
+
 기본 연결은 pull 방식이다. Native push callback이나 사용자 UI를 연결하지
 않았으므로 events/user-decisions를 광고하지 않는다. 읽기는 `xsm_inbox`, 소비는
 명시적 `xsm_ack`로 구분한다. 질문/승인이 필요한 작업은 답을 만들지 않고 거부한다.
