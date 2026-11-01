@@ -357,8 +357,8 @@ Linux burst에서 관측한 간헐적 ACK token 실패는 별도 미결이다. �
 호출은 복구 하나를 공유한다. Session end/dispose 중인 복구는 새 host를
 만들지 않으며, 실패한 operation은 자동 재실행하지 않는다.
 
-이 경로는 다음 도구 호출이 있어야 실행된다. 자동 idle 재접속과
-agent_end만으로 복구하는 경로는 아직 미완이다. 종료 전에 claim한
+이 진입 경로와 별도로, 아래의 등록 세션 자동 재접속도 구현했다.
+agent_end hook 자체의 별도 복구 처리는 아직 미완이다. 종료 전에 claim한
 원문과 기존 native queue의 token 회수는 별도 검증이 필요하며, 빈 inbox
 상태에서 종료한 표본을 그 증거로 쓰지 않는다.
 
@@ -372,4 +372,27 @@ agent_end만으로 복구하는 경로는 아직 미완이다. 종료 전에 cla
 Mac 고정 SDK에서 위 경로로 재등록한 뒤 큰 원문 100/100 수락·소비·ACK,
 복구 후 전송 p95 상한 504.905ms가 통과했다
 (`openclaw-boundary-recovery-native-100.json`). 공통 gate는 406개/68.904초다.
-Linux native와 자동 idle 재접속·종료 전 claim 회수는 미완이다.
+이 표본의 Linux native·종료 전 claim 회수는 미완이다. 자동 재접속의 후속
+검증은 다음 절에서 구분한다.
+
+## 등록 세션의 자동 재접속
+
+이미 등록된 host의 transport 종료를 감지하면 새 native 호출 없이
+250ms 뒤 재등록한다. 일시적 transport 오류의 재시도 간격은 두 배씩
+최대 5초까지 늘리고 성공하면 초기값으로 되돌린다. 같은 대화·workspace와
+ref를 유지하며 새 generation을 사용하고 이전 busy/idle 상태를 복원한다.
+수신 native scope는 등록 시의 대화 정보에서 만들며 이전 도구 호출의
+assertInvocationCurrent callback을 재사용하지 않는다. Session end·dispose는
+예약을 취소하고 진행 중 복구도 epoch 검사로 차단한다. 실패한 작업을
+재실행하지 않는다. Native agent를 깨우거나 모델을 호출하는 기능과는
+구분한다. 최초 등록 전 실패의 자동 재시도와 종료 전 claim·기존 queue
+token 회수, agent_end의 별도 복구, Linux 검증은 아직 미완이다.
+
+```sh
+/isolated/node scripts/probe-openclaw-loader.mjs /isolated/node_modules/openclaw deliverables/openclaw-auto-recovery.json --queue 100 --auto-recover-context
+```
+
+고정 native SDK/macOS arm64/Node 24.22.2에서 native 호출 없는 재등록 후
+큰 원문 100/100 수락·소비·ACK가 통과했다. 복구 후 전송 p95 상한은
+511.044ms다(`openclaw-auto-reconnect-native-100.json`). Outage 전체 지연이나
+종료 전 claim 회수의 증거는 아니다. 모델·사람·실제 agent turn은 0회다.

@@ -155,8 +155,68 @@ test('a failed native operation is not replayed during connection recovery', { t
   });
   await assert.rejects(invoke('a'), /in-flight operation interrupted/);
   assert.equal(attempts, 1);
-  assert.equal(hosts.length, 1);
+  // Automatic recovery may already finish while the failed call unwinds.
+  assert.ok(hosts.length <= 2);
   await invoke('a');
   assert.equal(hosts.length, 2);
   assert.equal(attempts, 1);
+});
+
+test('registered OpenClaw reconnects without another native call', { timeout: 10000 }, async t => {
+  const { invoke, records } = await fixture(t, { allowErrors: true });
+  const original = XsmHost.open.bind(XsmHost), hosts = [];
+  t.mock.method(XsmHost, 'open', async options => {
+    const host = await original(options); hosts.push(host); return host;
+  });
+  let invocationCurrent = true;
+  await invoke('a', 'xsm_inbox', {}, { assertInvocationCurrent: () => assert.ok(invocationCurrent) });
+  invocationCurrent = false;
+  const [before] = await records();
+  hosts[0].client.process.kill('SIGKILL'); await hosts[0].pumpTask;
+  const deadline = Date.now() + 3000;
+  while (hosts.length < 2 && Date.now() < deadline) await new Promise(resolve => setTimeout(resolve, 10));
+  assert.equal(hosts.length, 2);
+  const [after] = await records();
+  assert.equal(after.ref, before.ref);
+  assert.notEqual(after.protocol_generation, before.protocol_generation);
+});
+
+test('session end cancels automatic OpenClaw reconnect', { timeout: 10000 }, async t => {
+  const { invoke, hooks } = await fixture(t, { allowErrors: true });
+  const original = XsmHost.open.bind(XsmHost), hosts = [];
+  t.mock.method(XsmHost, 'open', async options => {
+    const host = await original(options); hosts.push(host); return host;
+  });
+  await invoke('a');
+  hosts[0].client.process.kill('SIGKILL'); await hosts[0].pumpTask;
+  await hooks.get('session_end')({ sessionId: 'a', sessionKey: 'agent:main:route' });
+  await new Promise(resolve => setTimeout(resolve, 350));
+  assert.equal(hosts.length, 1);
+});
+
+test('OpenClaw backs off failed automatic reconnects and restores activity', { timeout: 10000 }, async t => {
+  const { invoke, records } = await fixture(t, { allowErrors: true });
+  const original = XsmHost.open.bind(XsmHost), hosts = [], attempts = [];
+  let broken = false;
+  t.mock.method(XsmHost, 'open', async options => {
+    if (broken) {
+      attempts.push(performance.now());
+      if (attempts.length <= 2) throw new TransportError('transient reconnect failure');
+    }
+    const host = await original(options); hosts.push(host); return host;
+  });
+  await invoke('a'); broken = true;
+  const stopped = performance.now();
+  hosts[0].client.process.kill('SIGKILL'); await hosts[0].pumpTask;
+  const deadline = Date.now() + 5000;
+  while (Date.now() < deadline) {
+    if (hosts.length === 2 && (await records())[0].activity === 'busy') break;
+    await new Promise(resolve => setTimeout(resolve, 10));
+  }
+  assert.equal(hosts.length, 2);
+  assert.equal(attempts.length, 3);
+  assert.ok(attempts[0] - stopped >= 200);
+  assert.ok(attempts[1] - attempts[0] >= 400);
+  assert.ok(attempts[2] - attempts[1] >= 800);
+  assert.equal((await records())[0].activity, 'busy');
 });

@@ -2,6 +2,7 @@
 import { realpath } from 'node:fs/promises';
 import { dirname, isAbsolute, resolve } from 'node:path';
 import { XsmHost, RetryAdmission } from '../../clients/typescript/xsm-host.mjs';
+import { TransportError } from '../../clients/typescript/xsm-client.mjs';
 import operations from './tools.mjs';
 import { nativeDelivery } from './context-queue.mjs';
 
@@ -21,10 +22,38 @@ export function register(api, options = {}) {
   let disposed = false;
   const fail = error => api.logger.error('xsm: ' + error.message);
 
+  function cancelReconnect(entry) {
+    clearTimeout(entry.retry?.timer);
+    entry.retry = undefined;
+    entry.retryDelay = 250;
+  }
+
+  function scheduleReconnect(entry, epoch) {
+    if (disposed || !entry.registered || entry.epoch !== epoch || entry.retry) return;
+    const retry = {};
+    entry.retry = retry;
+    retry.timer = setTimeout(async () => {
+      if (disposed || entry.epoch !== epoch || entry.retry !== retry) return;
+      try {
+        await open(entry, epoch, entry.nativeContext);
+      } catch (error) {
+        if (entry.retry !== retry || disposed || entry.epoch !== epoch) return;
+        entry.retry = undefined;
+        fail(error);
+        if (error instanceof TransportError) {
+          entry.retryDelay = Math.min((entry.retryDelay ?? 250) * 2, 5000);
+          scheduleReconnect(entry, epoch);
+        }
+      }
+    }, entry.retryDelay ?? 250);
+    retry.timer.unref?.();
+  }
+
   function state(context) {
     const { sessionId: id, sessionKey: route, workspaceDir: cwd } = context;
     if (!id || !route || typeof cwd !== 'string' || !isAbsolute(cwd)) return undefined;
-    if (!sessions.has(id)) sessions.set(id, { id, route, cwd, epoch: 0, closing: Promise.resolve() });
+    if (!sessions.has(id)) sessions.set(id, { id, route, cwd, epoch: 0, closing: Promise.resolve(),
+      nativeContext: { sessionId: id, sessionKey: route, workspaceDir: cwd, agentId: context.agentId } });
     const entry = sessions.get(id);
     if (entry.route !== route || entry.cwd !== cwd) {
       throw new Error('native conversation route or workspace changed; end previous participation first');
@@ -66,9 +95,23 @@ export function register(api, options = {}) {
           if (disposed || epoch !== entry.epoch) throw new Error('xsm native delivery is no longer current');
         });
         entry.deliveryConnected = Boolean(deliver);
-        const connect = () => XsmHost.open({ command, env: options.env, runtime: 'openclaw',
-          profile, conversation: entry.id, cwd, onError: fail, deliver,
-          ...(deliver ? { inboxBatchSize: 16, inboxMaxBytes: 524288 } : {}) });
+        let observed;
+        const connect = async () => {
+          observed = await XsmHost.open({ command, env: options.env, runtime: 'openclaw',
+            profile, conversation: entry.id, cwd, onError: error => {
+              fail(error);
+              if (error instanceof TransportError && observed?.controller.signal.aborted) scheduleReconnect(entry, epoch);
+            }, deliver, ...(deliver ? { inboxBatchSize: 16, inboxMaxBytes: 524288 } : {}) });
+          try {
+            current(entry, epoch, context, signal);
+            if (entry.activity) await observed.update(entry.activity);
+            current(entry, epoch, context, signal);
+            return observed;
+          } catch (error) {
+            try { await observed.close(); } catch (cleanupError) { fail(cleanupError); }
+            throw error;
+          }
+        };
         return api.lifecycle.runInBackgroundContext ? api.lifecycle.runInBackgroundContext(connect) : connect();
       })();
       entry.pending = pending;
@@ -76,11 +119,16 @@ export function register(api, options = {}) {
     }
     const host = await entry.pending;
     current(entry, epoch, context, signal);
+    entry.registered = true;
+    cancelReconnect(entry);
+    if (host.controller.signal.aborted) scheduleReconnect(entry, epoch);
     return host;
   }
 
   async function end(entry) {
     entry.epoch++;
+    entry.registered = false;
+    cancelReconnect(entry);
     entry.deliveryConnected = false;
     const pending = entry.pending;
     entry.pending = undefined;
@@ -116,7 +164,7 @@ export function register(api, options = {}) {
       const host = await pending;
       if (entry.epoch !== epoch || entry.pending !== pending) return;
       if (entry.deliveryConnected) await host.naturalBoundary().catch(error => { if (!(error instanceof RetryAdmission)) throw error; });
-      if (entry.epoch === epoch && entry.pending === pending) await host.update('idle');
+      if (entry.epoch === epoch && entry.pending === pending) { await host.update('idle'); entry.activity = 'idle'; }
     }
   });
 
@@ -130,7 +178,7 @@ export function register(api, options = {}) {
         async execute(_id, args, signal) {
           current(entry, epoch, context, signal);
           const host = await open(entry, epoch, context, signal);
-          if (observeTurns) await host.update('busy');
+          if (observeTurns) { await host.update('busy'); entry.activity = 'busy'; }
           current(entry, epoch, context, signal);
           const result = await host.call(operation.name, args, { signal });
           return { content: [{ type: 'text', text: JSON.stringify(result) }], details: result };

@@ -38,7 +38,7 @@
 | P1 공통 서비스 | 부분 구현 | CLI 추출, 일반 원격 신원, 네이티브 UI 연결, 비동기 작업 수명 |
 | P2 SDK·검사기 | 부분 구현 | 독립 구현 적합성, 전체 오류/취소 계약 (Python↔Node 교차 시험 통과) |
 | P3 Pi·OpenCode | 부분 구현 | 연결·수신·설치·대화 수명·자동 재접속의 native fixture 검증. 실제 사용자 UI·native worker·busy/now의 실제 우선순위 등 미완 |
-| P4 Hermes·OpenClaw | 부분 구현 | Hermes native 도구·격리 설치·주입 및 대화별 자동 복구 fixture, OpenClaw guarded queue prototype. 실제 agent turn·idle wake·UI·worker, OpenClaw owned 설치·자동 재접속 미완 |
+| P4 Hermes·OpenClaw | 부분 구현 | Hermes native 도구·격리 설치·주입 및 대화별 자동 복구 fixture, OpenClaw guarded queue prototype. 실제 agent turn·idle wake·UI·worker, OpenClaw owned 설치·종료 전 claim 회수 미완 |
 | P5 통합·배포 | 부분 검증 | Mac native SDK/CLI fixture와 Linux arm64 공통 gate·Pi/OpenCode/OpenClaw native fixture 통과. Linux Hermes native, OpenClaw 간헐적 burst ACK 실패, 30개 방향 조합, 동종 세션, 원격, 버전·플랫폼별 전체 native p95, 실제 모델·메신저·전체 회귀 미완 |
 
 ## 초기 실제 검사
@@ -1616,3 +1616,39 @@ claim과 기존 queue token 회수·Linux native 검증은 아직 미완이다.
 진단에 남았다. 이 표본은 outage 전체 시간이나 종료 전 claim 회수의
 증거가 아니다. 공통 gate 406개(핵심 238/Python 48/Node 120)는 68.904초에
 통과했다(`openclaw-boundary-recovery-gate.log`).
+
+## OpenClaw 등록 세션의 자동 transport 복구
+
+Transport 종료 후 native 재진입 없이 250ms부터 재접속하고 일시적 실패 시
+두 배씩 최대 5초까지 backoff한다. 같은 대화/ref와 busy/idle을 유지하고
+새 generation을 사용한다. Session end/dispose는 예약과 진행 중 재등록을
+막는다. 실패 작업은 재전송하지 않는다. 등록에 쓰는 native context에는
+이전 도구 호출의 assertInvocationCurrent callback을 보관하지 않는다.
+
+자동 재접속 검사는 변경 전 3초 안에 새 host가 생기지 않아 실패했다
+(`openclaw-auto-reconnect-red.log`). 자동 복구·session end 취소·연결 실패
+두 번 뒤 backoff와 활동 복원을 포함한 10개가 통과했다
+(`openclaw-auto-reconnect-verified.log`). 최초 등록 전 실패·종료 전 claim/
+기존 queue token 회수·agent_end 자체 복구·Linux와 전체 계획은 미완이다.
+
+고정 OpenClaw 2026.10.9/macOS arm64/Node 24.22.2에서는 새 native 호출
+없이 같은 ref·새 PID·generation을 관측한 뒤 큰 원문 100/100 수락·prompt
+소비·ACK가 통과했다(`openclaw-auto-reconnect-native-100.json`). 복구 후
+전송 p95 상한 511.044ms이며, 예상한 backend EOF 진단 1건을 보존했다.
+모델·실제 agent turn·사람은 0회다. 자동 재접속을 없앤 변이와 backoff를
+없앤 변이는 각각 실패했다(`openclaw-reconnect-no-auto-mutant.log`,
+`openclaw-reconnect-no-backoff-mutant.log`). 공통 409개(핵심 238/Python
+48/Node 123)는 67.654초에 통과했다(`openclaw-auto-reconnect-gate.log`).
+최종 연결 검사에는 종료된 이전 도구의 invocation guard를 무효화한 뒤에도
+대화 scope의 자동 복구가 되는 검사를 포함했다. Linux·기존 claim/token
+회수·agent_end 별도 복구·나머지 전체 계획은 여전히 미완이다.
+
+최종 연결 검사 초회(`openclaw-auto-reconnect-final.log`)에서는 backoff
+검사 1개가 새 host 반환 직후 아직 idle인 행을 읽어 실패했다. Mock의
+connect 반환과 native 활동 복원 완료를 같은 시점으로 취급한 검사 경쟁이다.
+상태 행의 busy 복원까지 기다리도록 바로잡았으며 실패 표본을 보존했다.
+
+관측 경쟁을 바로잡은 최종 연결 10개가 통과했다
+(`openclaw-auto-reconnect-final-verified.log`). 최종 공통 gate도 409개가
+70.157초에 통과했다(`openclaw-auto-reconnect-gate-final.log`). 이 두 결과는
+앞선 최종 초회 실패 뒤의 표본이며 섞어 집계하지 않는다.

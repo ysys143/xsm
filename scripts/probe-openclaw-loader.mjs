@@ -9,10 +9,11 @@ import operations from '../integrations/openclaw/tools.mjs';
 
 const [nativeRoot, output, mode, countText, policyFlag] = process.argv.slice(2);
 assert.ok(!mode || ['--execute', '--queue'].includes(mode));
-assert.ok(!policyFlag || (mode === '--queue' && ['--deny-injection', '--large-context', '--deferred-notice', '--capacity-retry', '--capacity-fyi', '--burst-context', '--recover-context'].includes(policyFlag)));
+assert.ok(!policyFlag || (mode === '--queue' && ['--deny-injection', '--large-context', '--deferred-notice', '--capacity-retry', '--capacity-fyi', '--burst-context', '--recover-context', '--auto-recover-context'].includes(policyFlag)));
 const denied = policyFlag === '--deny-injection';
 const burstContext = policyFlag === '--burst-context';
-const recoverContext = policyFlag === '--recover-context';
+const autoRecoverContext = policyFlag === '--auto-recover-context';
+const recoverContext = policyFlag === '--recover-context' || autoRecoverContext;
 const largeContext = policyFlag === '--large-context' || burstContext || recoverContext;
 const deferredNotice = policyFlag === '--deferred-notice';
 const capacityBoundary = policyFlag === '--capacity-fyi';
@@ -155,13 +156,21 @@ if (mode) {
         await new Promise(resolve => setTimeout(resolve, 10));
       }
       assert.ok(errors.length > previousErrors, 'native host did not observe backend exit');
-      await inboxB.execute('recover-b', {});
+      if (autoRecoverContext) {
+        const deadline = Date.now() + 5000;
+        while (Date.now() < deadline) {
+          const row = (await records()).find(row => row.ref === target.ref);
+          if (row?.protocol_generation !== target.protocol_generation && row?.state === 'live') break;
+          await new Promise(resolve => setTimeout(resolve, 10));
+        }
+      } else await inboxB.execute('recover-b', {});
       const recovered = (await records()).find(row => row.ref === target.ref);
       assert.ok(recovered);
       assert.notEqual(recovered.pid, target.pid);
       assert.notEqual(recovered.protocol_generation, target.protocol_generation);
       result.nativeBackendRecovery = { sameRef: true, newGeneration: true, newPid: true,
-        trigger: 'explicit native inbox tool after observed transport exit', automaticIdleReconnect: false };
+        trigger: autoRecoverContext ? 'transport exit without another native call' : 'explicit native inbox tool after observed transport exit',
+        automaticIdleReconnect: autoRecoverContext };
     }
 
     if (capacityRetry) {
