@@ -1498,3 +1498,27 @@ loader 오류를 실제 검사 실패 수로 세지 않는다. 다음 묶음은 
 VM/전역 context는 유지했고 자체 VM도 종료 후 Stopped로 확인했다. Linux native
 에이전트/모델/UI/큐 p95·다른 Python/아키텍처·전체 방향/원격/메신저/worker와
 P0–P5의 나머지는 미완이다.
+
+## OpenCode native Linux arm64
+
+프로브의 Linux=x64 고정 선택을 OS/architecture별 pinned package 선택으로
+바꿨다. 실제 optionalDependencies와 Mac 설치본 SDK/plugin 버전을 확인했고
+지원하지 않는 플랫폼은 거부한다. Mapping 2개 검사와 x64 fallback 변이 검출을
+추가했다(`native-platform-x64-fallback-mutant.json`).
+
+Linux arm64의 OpenCode binary·SDK·plugin 1.19.5를 별도 container에서 준비했다.
+처음 network-none 검사는 plugin bootstrap의 dependency 대기에서 timeout으로
+실패했고 표본은 0개였다(`linux-opencode-native-stage.json`). 고정 버전의
+Config/Npm source와 대조해 node_modules뿐 아니라 준비된 package manifest/lock도
+시험 profile에 넣었다. Offline smoke 5회 뒤 최종 native 수락/ACK 100/100개가
+완료됐고 복구 후 p95 상한은 277.750ms다
+(`linux-opencode-native-100/output/native/result.json`). 명시적 native 진입 전
+자동 재등록과 현재 연결 코드 hash도 확인했다. SDK/provider는 scripted fixture이며
+모델 추론·사람 UI·메신저 인증은 아니다. Package lock과 archive hash/dirty 상태를
+보존했고 실패 표본도 남겼다.
+
+공통 392개(핵심 238, Python 44, Node 110)는 Mac/Python 3.14.6에서 64.046초,
+Linux arm64/Python 3.11.2에서 70.194초에 통과했다. 상세 자원/버전·원시 경로는
+linux-validation.md에 기록했다. 테스트 VM은 종료 후 Stopped이며 기본 context와
+기본 VM은 유지했다. 다른 Linux native 런타임·x86_64·원격/방향/메신저/worker와
+P0–P5의 나머지 수용 조건은 미완이다.

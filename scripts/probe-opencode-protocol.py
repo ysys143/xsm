@@ -5,6 +5,7 @@ import asyncio
 import hashlib
 import json
 import os
+import platform
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 import re
@@ -20,6 +21,21 @@ import urllib.request
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "clients/python"))
 from xsm_client import XsmClient
+
+
+def native_binary(root, system=None, machine=None):
+    system = sys.platform if system is None else system
+    machine = platform.machine() if machine is None else machine
+    supported = {('darwin', 'arm64'): 'opencode-darwin-arm64',
+                 ('linux', 'aarch64'): 'opencode-linux-arm64',
+                 ('linux', 'arm64'): 'opencode-linux-arm64',
+                 ('linux', 'x86_64'): 'opencode-linux-x64',
+                 ('linux', 'amd64'): 'opencode-linux-x64',
+                 ('darwin', 'x86_64'): 'opencode-darwin-x64'}
+    package = supported.get((system, machine.lower()))
+    if package is None:
+        raise ValueError('probe platform is not pinned: ' + system + '/' + machine)
+    return Path(root) / 'node_modules' / package / 'bin/opencode'
 
 
 class AssistantFixture:
@@ -100,6 +116,12 @@ async def run(args):
     assistant = AssistantFixture(args.output)
     # Reuse only the explicitly supplied, privately installed pinned SDK dependencies.
     (profile / "node_modules").symlink_to(args.native_root / "node_modules", target_is_directory=True)
+    # Native Config waits for dependency installation even when node_modules exists.
+    # Preserve the pinned dependency manifest/lock so offline startup does not reify it.
+    for name in ("package.json", "package-lock.json"):
+        source = args.native_root / name
+        if source.is_file():
+            (profile / name).write_bytes(source.read_bytes())
     (profile / "opencode.json").write_text(json.dumps({
         "enabled_providers": ["xsm-fixture"], "model": "xsm-fixture/fixture",
         "provider": {"xsm-fixture": {"npm": "@ai-sdk/openai-compatible", "name": "No model fixture",
@@ -112,9 +134,7 @@ async def run(args):
                XDG_CACHE_HOME=str(temp / "cache"), XSM_HOME=str(state), XSM_PYTHON=sys.executable,
                OPENCODE_DISABLE_DEFAULT_PLUGINS="1", OPENCODE_DISABLE_MODELS_FETCH="1",
                PYTHONDONTWRITEBYTECODE="1")
-    binary = args.native_root / "node_modules/opencode-darwin-arm64/bin/opencode"
-    if sys.platform == "linux":
-        binary = args.native_root / "node_modules/opencode-linux-x64/bin/opencode"
+    binary = native_binary(args.native_root)
     version = subprocess.run([str(binary), "--version"], env=env, capture_output=True, text=True, check=True).stdout.strip()
     assert version == "1.19.5", version
     command = [sys.executable, "-B", "-c",
@@ -152,7 +172,7 @@ async def run(args):
                                cwd=work, env=env, stdout=log, stderr=log, start_new_session=True)
     base = "http://127.0.0.1:" + str(port)
     result = {"status": "running", "root": str(temp), "runtimeVersion": version,
-              "python": sys.version.split()[0], "platform": sys.platform, "installation": installation,
+              "python": sys.version.split()[0], "platform": sys.platform, "machine": platform.machine(), "installation": installation,
               "samplesRequested": args.samples, "samples": [], "modelConfigured": False,
               "providerFixture": "loopback scripted assistant packets; no model inference or API billing",
               "physicalHumanUiTested": False, "nativeToolExecutionTested": False,

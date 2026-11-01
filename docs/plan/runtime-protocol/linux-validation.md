@@ -75,3 +75,43 @@ Colima 0.9.1의 별도 HOME/COLIMA_HOME/DOCKER_CONFIG, --activate=false,
 
 Linux x86_64와 다른 Python 버전, native Pi/OpenCode/Hermes/OpenClaw의 전체 경로,
 30개 방향·동종·원격·메신저·native worker 및 최종 native p95 행렬은 미완이다.
+
+## OpenCode 1.19.5 native Linux arm64
+
+실제 Linux arm64 binary·SDK·plugin 모두 1.19.5로 설치했다. Source image는 위와
+같은 Node 24.22.2/ Python 3.11.2 환경이며 dependency 설치 container와 검사
+container를 분리했다. 설치는 npm --ignore-scripts로 수행하고 package-lock을
+기록했다. 검사 container는 network none이다.
+
+기존 프로브는 모든 Linux를 x64로 골랐다. OS/machine별 고정 package 경로로
+선택하고 모르는 플랫폼은 거부한다. 실제 npm optionalDependencies 목록과
+Mac 설치본의 package 버전을 대조했다. Mapping 검사 2개와 x64 fallback 변이
+검출은 native-platform-x64-fallback-mutant.json에 남겼다.
+
+첫 native 실행은 plugin bootstrap의 dependency 대기에서 timeout이 났고 수신
+표본은 0개였다(`linux-opencode-native-stage.json`, 그 stage의 output/native/).
+node_modules 연결만 있고 profile package manifest/lock이 없어 재설치를 시도한
+경로다. 고정 버전의 [Config dependency 준비](https://github.com/anomalyco/opencode/blob/v1.19.5/packages/opencode/src/config/config.ts)와
+[Npm.install의 node_modules/lock 대조](https://github.com/anomalyco/opencode/blob/v1.19.5/packages/core/src/npm.ts)를
+확인하고 준비한 manifest·lock도 시험 profile에 복사했다. 설치 검사를 무력화하거나
+개발 버전으로 바꾸지 않았다. 그 뒤 offline smoke 5회가 통과했다.
+
+최종 `linux-opencode-native-100/output/native/result.json`에서는 다음을 확인했다.
+
+- Linux/aarch64, OpenCode 1.19.5, Python 3.11.2.
+- Backend 종료 후 명시적 native 진입 전 같은 주소의 새 세대로 자동 재등록.
+- 실제 native transcript 수락과 native tool ACK 100/100개.
+- 복구 후 store→관측 지연 p95 상한 277.750ms로 1초 기준 통과.
+- Provider는 loopback scripted assistant이며 모델 추론·사람 UI는 미실행.
+
+Package lock, source archive hash, commit 및 tracked dirty 여부도 같은 출력에
+기록했다. 이번 입력은 81a844b 기반에 프로브/검사 변경이 있는 working tree다.
+수락된 연결 구현 hash는 현재 파일과 일치한다. 실패 stage와 offline 5회 결과를
+지우지 않았다. 해당 표본을 모델 소비 또는 메신저 전달로 확대하지 않는다.
+
+새 mapping 검사를 포함한 공통 392개(핵심 238, Python 44, Node 110)가 Mac의
+Python 3.14.6에서 64.046초, Linux arm64의 Python 3.11.2에서 70.194초에 통과했다
+(`native-platform-macos-gate.log`, `linux-platform-core/result.json`). 기본 context와
+기본 VM은 유지했고 테스트 VM은 다시 Stopped로 확인했다
+(`linux-native-vm-stopped.json`). Pi/Hermes/OpenClaw의 Linux native 검증, x86_64,
+다른 Python·원격·전체 방향·모델/메신저·worker와 전체 P0–P5는 미완이다.
