@@ -2,6 +2,7 @@
 import io
 import json
 import os
+import sys
 import time
 from unittest import mock
 
@@ -38,6 +39,14 @@ class ProtocolTest(TempState):
         other.dispatch("initialize", {"protocolVersion": "1"})
         with self.assertRaises(ProtocolError):
             other.dispatch("session.update", {"session": self.open()["session"], "state": "busy"})
+
+    def test_generic_host_uses_shared_service_without_mcp_transport(self):
+        from xsm.operations import OperationService
+        self.assertNotIn("xsm.mcp", sys.modules)
+        opened = self.open()
+        host = self.connection.sessions[opened["session"]]
+        self.assertIsInstance(host, OperationService)
+        self.assertEqual(host._invoke_operation.__func__.__module__, "xsm.operations")
 
     def test_native_impersonation_and_identity_replacement_rejected(self):
         from xsm.protocol import ProtocolError

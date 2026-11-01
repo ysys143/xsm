@@ -16,7 +16,9 @@ import threading
 import time
 import uuid
 
-from . import context, handoff, identity, mcp, paths, registry
+from . import context, handoff, identity, paths, registry
+from .operation_schema import TOOLS, ToolError
+from .operations import OperationService
 
 VERSION = "1"
 POLL_INTERVAL = 0.2
@@ -69,9 +71,10 @@ def _object(pairs):
     return result
 
 
-class BoundHost(mcp.Server):
+class BoundHost(OperationService):
     def __init__(self, record):
-        super().__init__()
+        self.initialize_service()
+        self._closed = False
         self.record = record
 
     def session(self):
@@ -107,11 +110,11 @@ class Connection:
             self.initialized = True
             return {"protocolVersion": VERSION, "experimental": True,
                     "capabilities": ["messaging", "inbox", "events"],
-                    "operations": [t["name"] for t in mcp.TOOLS]}
+                    "operations": [t["name"] for t in TOOLS]}
         if not self.initialized:
             raise ProtocolError(-32002, "initialize first")
         if method == "operations/list":
-            return {"operations": mcp.TOOLS}
+            return {"operations": TOOLS}
         if method == "session.open":
             return self.open(params)
         token, host = self.bound(params)
@@ -151,7 +154,7 @@ class Connection:
         if method != "operation.call":
             raise ProtocolError(-32601, "unknown method")
         name, args = params.get("operation"), params.get("arguments", {})
-        tool = next((t for t in mcp.TOOLS if t["name"] == name), None)
+        tool = next((t for t in TOOLS if t["name"] == name), None)
         if tool is None:
             raise ProtocolError(-32601, "unknown operation")
         validate(args, tool["inputSchema"])
@@ -325,7 +328,7 @@ def serve(inp=None, out=None):
                 emit({"jsonrpc": "2.0", "id": mid, "result": result})
             except ProtocolError as exc:
                 emit({"jsonrpc": "2.0", "id": mid, "error": {"code": exc.code, "message": exc.message}})
-            except (ValueError, TypeError, KeyError, mcp.ToolError) as exc:
+            except (ValueError, TypeError, KeyError, ToolError) as exc:
                 emit({"jsonrpc": "2.0", "id": mid, "error": {"code": -32602, "message": str(exc)}})
     except (BrokenPipeError, OSError):
         return 1
