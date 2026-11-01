@@ -1,4 +1,4 @@
-"""Hermes coordinator interleavings with a controlled SDK, without a model."""
+"""Hermes coordinator lifecycle and isolated backend recovery, without a model."""
 import asyncio
 import importlib.util
 from pathlib import Path
@@ -43,6 +43,39 @@ class HermesLifecycleTest(unittest.IsolatedAsyncioTestCase):
         self.assertIsNone(results[1], repr(results))
         self.assertEqual(closed, [True])
         self.assertEqual(binding.hosts, {})
+
+
+    async def test_failed_operation_is_not_replayed_when_next_invocation_recovers(self):
+        calls, opens = [], []
+        async def close():
+            old.closed = True
+        async def failed(operation, arguments):
+            calls.append(operation)
+            old.failure = RuntimeError("outcome unknown")
+            raise old.failure
+        async def successful(operation, arguments):
+            calls.append(operation)
+            return {"recovered": True}
+        old = SimpleNamespace(failure=None, closed=False, call=failed, close=close)
+        new = SimpleNamespace(failure=None, closed=False, call=successful)
+        async def open_host(**kwargs):
+            opens.append(kwargs)
+            return new
+        existing = asyncio.get_running_loop().create_future()
+        existing.set_result(old)
+        binding = module.HermesBinding.__new__(module.HermesBinding)
+        binding.hosts, binding.host_lock = {"native": ("/workspace", existing)}, None
+        binding.profile, binding.command, binding.env = "isolated", [], {}
+        binding.sdk = SimpleNamespace(XsmHost=SimpleNamespace(open=open_host))
+        with self.assertRaisesRegex(RuntimeError, "outcome unknown"):
+            await binding._call("native", "/workspace", "xsm_send", {})
+        self.assertEqual(calls, ["xsm_send"])
+        self.assertEqual(opens, [])
+        result = await binding._call("native", "/workspace", "xsm_inbox", {})
+        self.assertEqual(result, {"recovered": True})
+        self.assertEqual(calls, ["xsm_send", "xsm_inbox"])
+        self.assertEqual(len(opens), 1)
+        self.assertTrue(old.closed)
 
 
 from tests.test_xsm import TempState
@@ -96,4 +129,43 @@ class HermesRegistrationTest(TempState):
         self.assertEqual(len(self.unload), 1)
         binding = self.unload[0].__self__
         self.assertTrue(binding.closed)
+        self.assertFalse(binding.thread.is_alive())
+
+    def test_next_native_call_recovers_dead_backend_without_inheriting_claim(self):
+        constants = SimpleNamespace(get_hermes_home=lambda: Path(self.user_home, 'hermes'))
+        with mock.patch.dict(sys.modules, hermes_constants=constants):
+            binding = module.register(self.context())
+        def invoke(sid, operation, arguments=None):
+            return json.loads(self.tools[operation]['handler'](arguments or {}, session_id=sid))
+        async def host(sid):
+            return await binding.hosts[sid][1]
+        async def crash(value):
+            value.client.process.kill()
+            await value.client.process.wait()
+            for _ in range(100):
+                if value.failure is not None:
+                    return
+                await asyncio.sleep(.01)
+            raise AssertionError('SDK did not observe dead backend')
+        try:
+            invoke('sender', 'xsm_inbox')
+            invoke('receiver', 'xsm_inbox')
+            before = binding._run(host('receiver'))
+            invoke('sender', 'xsm_send', {'target': 'ref:' + before.session['ref'], 'text': 'survive backend death', 'wait': 0})
+            original = invoke('receiver', 'xsm_inbox')['claims'][0]
+            binding._run(crash(before))
+            recovered = invoke('receiver', 'xsm_inbox')
+            after = binding._run(host('receiver'))
+            self.assertIsNot(after, before)
+            self.assertEqual(after.session['ref'], before.session['ref'])
+            self.assertNotEqual(after.session['generation'], before.session['generation'])
+            self.assertNotEqual(after.client.process.pid, before.client.process.pid)
+            self.assertEqual(recovered['claims'][0]['id'], original['id'])
+            self.assertNotEqual(recovered['claims'][0]['token'], original['token'])
+            with self.assertRaises(Exception) as refused:
+                invoke('receiver', 'xsm_ack', {'tokens': [original['token']]})
+            self.assertEqual(refused.exception.code, -32602)
+            self.assertEqual(invoke('receiver', 'xsm_ack', {'tokens': [recovered['claims'][0]['token']]})['acked'], [original['id']])
+        finally:
+            binding.close()
         self.assertFalse(binding.thread.is_alive())

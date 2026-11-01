@@ -8,6 +8,8 @@ import json
 import os
 from pathlib import Path
 import subprocess
+import signal
+import time
 import sys
 import tempfile
 
@@ -116,6 +118,35 @@ def run(args):
         ack = invoke("native-b", temp / "b", "xsm_ack", {"tokens": [packet["claims"][0]["token"]]})
         assert len(ack["acked"]) == 1, ack
         result["checks"].append("native tool dispatch sends, pulls and explicitly ACKs")
+        if args.crash:
+            invoke("native-a", temp / "a", "xsm_send", {"target": "ref:" + second["ref"],
+                   "text": "original survives backend crash", "wait": 0})
+            claimed = invoke("native-b", temp / "b", "xsm_inbox")["claims"][0]
+            before = next(item for item in records() if item["ref"] == second["ref"])
+            parent = subprocess.run(["ps", "-o", "ppid=", "-p", str(before["pid"])],
+                                    capture_output=True, text=True, check=True).stdout.strip()
+            assert int(parent) == os.getpid(), "refuse to kill a process not created by this probe"
+            os.kill(before["pid"], signal.SIGKILL)
+            deadline = time.monotonic() + 5
+            while True:
+                try:
+                    os.kill(before["pid"], 0)
+                except ProcessLookupError:
+                    break
+                assert time.monotonic() < deadline, "backend process did not exit"
+                time.sleep(.01)
+            recovered = invoke("native-b", temp / "b", "xsm_inbox")
+            after = next(item for item in records() if item["ref"] == second["ref"])
+            assert after["pid"] != before["pid"] and after["protocol_generation"] != before["protocol_generation"]
+            assert recovered["claims"][0]["id"] == claimed["id"] and recovered["claims"][0]["token"] != claimed["token"]
+            refused = invoke("native-b", temp / "b", "xsm_ack", {"tokens": [claimed["token"]]})
+            assert "not owned" in str(refused) or "another owner or generation" in str(refused), refused
+            acknowledged = invoke("native-b", temp / "b", "xsm_ack", {"tokens": [recovered["claims"][0]["token"]]})
+            assert acknowledged["acked"] == [claimed["id"]], acknowledged
+            result["backendRecovery"] = {"oldPid": before["pid"], "newPid": after["pid"],
+                "ref": after["ref"], "generationChanged": True, "originalRecovered": True,
+                "previousClaimRejected": True, "explicitAck": acknowledged["acked"]}
+            result["checks"].append("next native dispatch recovers crashed backend with fresh generation and claim")
         tokens = set_session_vars(platform="tui", session_id="native-b", session_key="native-b", cwd=str(temp / "b"))
         try:
             forged = json.loads(registry.dispatch("xsm_inbox", {}, scope=manager.scope_key, session_id="native-a"))
@@ -183,4 +214,5 @@ if __name__ == "__main__":
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--discover", action="store_true")
     parser.add_argument("--installed", action="store_true")
+    parser.add_argument("--crash", action="store_true")
     run(parser.parse_args())

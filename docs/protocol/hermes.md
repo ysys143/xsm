@@ -170,3 +170,29 @@ Checkout 직접 등록은 설치 스냅샷 lease를 만들지 않는다.
 검증, queue/context readback, gateway 비동기 실패와 구분된 수락 근거가 필요하다.
 이는 남은 구현 조건이며 범위에서 제외한 것이 아니다. Idle wake·busy/now의
 실제 우선순위·실제 native turn·UI·메신저와 전체 P4/P5는 여전히 미완이다.
+
+## 백엔드 종료 뒤 다음 호출에서 복구
+
+프로토콜 백엔드가 종료된 뒤에도 Hermes의 native 세션은 살아 있을 수 있다.
+다음 xsm 도구 호출이나 session-start hook은 실패한 host를 닫고 같은 native
+대화·프로필·검증된 workspace로 다시 참여한다. 주소는 유지하지만 participation
+세대·프로세스·claim 토큰은 새로 만든다. 이전 세대의 claim으로 ACK할 수 없으며
+원문을 다시 읽고 새 토큰으로 소비해야 한다.
+
+이미 실패한 작업은 이 경로가 자동 재실행하지 않는다. 전송·권한 변경처럼
+효과가 불명확한 작업은 해당 request ID와 도메인 상태를 확인해야 한다.
+이는 다음 native 호출에서의 복구이며, 유휴 중 자동 재시작이나 모든 런타임의
+재접속 구현을 완료했다는 뜻은 아니다.
+
+새 실제 backend 검사는 기존 claim이 있는 서버를 강제 종료한 뒤 같은 주소의
+새 세대에서 원문 회수·이전 토큰 거부·새 토큰 ACK를 확인한다. 제어된 SDK 검사도
+실패한 전송을 반복하지 않고 다음 inbox 호출만 새 host로 보내는 것을 확인한다.
+변경 전 실제 검사 실패는 `hermes-recover-red.log`에 있다. 최초 수정 검사는
+ACK 오류 문구를 잘못 예상해 실패했고 그 로그도 보존했다. 최종 검사는 공개
+오류 코드 `-32602`를 대조한다.
+
+`probe-hermes-tools.py --installed --crash`는 실제 0.22.5 plugin discovery와
+registry.dispatch에서 같은 복구를 포함한 12개 검사를 통과했다
+(`hermes-recovery-native/result.json`). 시험은 종료 대상의 부모 PID가 현재
+프로브인지 확인하며 임시 프로필의 자체 backend만 종료한다. Native agent,
+UI·메신저를 실행한 결과가 아니다.

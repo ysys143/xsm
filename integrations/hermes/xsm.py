@@ -95,6 +95,13 @@ class HermesBinding:
                     raise RuntimeError("native workspace changed; wait for the native session-start hook")
                 _, previous = self.hosts.pop(sid)
                 await (await previous).close()
+            if sid in self.hosts:
+                _, previous = self.hosts[sid]
+                existing = await previous
+                if getattr(existing, "failure", None) is not None or getattr(existing, "closed", False):
+                    # Re-register only for this new native invocation. Never replay a failed operation.
+                    await existing.close()
+                    self.hosts.pop(sid)
             return await self._open_host(sid, cwd)
 
     async def _open_host(self, sid, cwd):

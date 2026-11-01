@@ -1105,3 +1105,27 @@ fixture 행에 같은 키를 두면 matcher가 첫 행을 선택한다. 실제 �
 명시적 변이 2개의 결과만 새 증거다. 자동 주입에는 native SID/home/generation과
 route의 결속, 실제 context/queue 관측, gateway 예약과 실제 수락의 분리가 남는다.
 Idle wake·실제 UI/agent·메신저·Linux와 전체 P0–P5도 미완이다.
+
+## Hermes 다음 native 호출에서 backend 재등록
+
+Hermes native 세션이 살아 있는데 프로토콜 backend만 종료되면 이후 호출도
+기존 실패 host에 갇혔다. 다음 정상 도구/session-start 진입에서 실패 host를
+정리하고 같은 native SID/profile/workspace의 새 참여를 여는 경로를 추가했다.
+Workspace 검증과 기존 lifecycle lock 안에서 교체하며 실패한 작업 자체는
+자동 재전송하지 않는다. 유휴 중 선제 재접속이나 전체 runtime 복구 완료는 아니다.
+
+실제 backend에 claim을 남긴 뒤 강제 종료한 검사는 변경 전 실패했다
+(`hermes-recover-red.log`). 수정 후 같은 주소·다른 PID/세대에서 같은 원문을
+새 claim으로 회수하고 이전 token의 ACK를 -32602로 거부한 뒤 새 token으로
+ACK했다. 최초 수정 검사는 올바르게 거부된 오류의 문구를 잘못 예상해
+실패했다(`hermes-recover-python39.log`, `hermes-recover-python39-final.log`).
+공개 오류 코드로 수정한 Python 3.9.6 검사 5개는 통과했다
+(`hermes-recovery-python39-verified.log`). 제어된 SDK 검사도 실패한 전송의
+재실행 없이 다음 inbox 호출만 새 host에서 수행함을 확인한다.
+
+실제 Hermes 0.22.5의 설치 snapshot discovery/registry.dispatch에서도 충돌 복구를
+포함한 12개 검사가 통과했다(`hermes-recovery-native/result.json`). 프로브는
+부모 PID를 검증한 자체 backend만 종료하며 사용자 프로세스는 대상으로 하지
+않는다. 공통 347개(핵심 226, Python 39, Node 82)는 Python 3.14.6에서
+58.712초에 통과했다(`hermes-recovery-gate.log`). Native agent/UI·자동 idle
+재접속·push·worker·Linux와 P0–P5의 나머지는 미완이다.
