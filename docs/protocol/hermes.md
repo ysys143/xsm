@@ -53,6 +53,12 @@ fixture이며 실제 Hermes agent나 외부 메신저의 동작을 시험한 것
 
 ## 안정판 API 감사와 남은 연결
 
+`probe-hermes-tools.py --discover`는 새 임시 프로필의 plugin 폴더와 enabled 목록을
+준비하고 실제 native discovery로 활성화한다. 도구 21개 등록부터 dispatch,
+세션 수명, unload 뒤 도구 제거와 모든 참여 종료까지 7개 검사가 통과했다
+(`hermes-discovery-unload/result.json`). 프로필은 전부 시험용이며 실제 agent
+turn·설치기의 소유권 관리·자동 주입·UI를 검증한 것은 아니다.
+
 PluginContext에 session_key 메서드가 없다는 이전 조사만으로 불가능하다고
 판정하지 않는다. 고정 버전에는 별도
 [plugin_session](https://github.com/NousResearch/hermes-agent/blob/v0.22.5/hermes_cli/plugin_session.py)의

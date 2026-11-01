@@ -513,3 +513,8 @@ dispatcher의 세션 ID와 기존 참여의 workspace를 사용하도록 수정�
 `hermes-validator-first.log`, `hermes-validator-final.log`,
 `hermes-public-api-final/result.json`에 구분해 남긴다. Validator 통과를 실제
 agent/자동 주입/UI/설치 수명 완료로 해석하지 않는다. 상위 전체 계획은 미완이다.
+
+후속 `probe-hermes-tools.py --discover`는 격리 프로필의 native discovery로 실제
+활성화했다. 직접 register 호출을 대체하고 기존 6개 경로와 unload의 도구 제거·
+참여 종료까지 총 7개 검사가 통과했다(`hermes-discovery-unload/result.json`).
+실제 agent turn과 제품 설치기·자동 주입·UI의 미완 상태는 유지한다.

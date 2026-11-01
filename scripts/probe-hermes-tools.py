@@ -26,7 +26,11 @@ def run(args):
         (temp / name).mkdir()
     subprocess.run(["git", "init", "-q", str(temp)], env=env, check=True)
     # Keep unrelated bundled discovery out of this API probe; register through the actual facade below.
-    (temp / "hermes/config.yaml").write_text("plugins:\n  enabled: false\n")
+    (temp / "hermes/config.yaml").write_text("plugins:\n  enabled: [xsm]\n" if args.discover else "plugins:\n  enabled: false\n")
+    if args.discover:
+        folder = temp / "hermes/plugins"
+        folder.mkdir()
+        (folder / "xsm").symlink_to(ROOT / "integrations/hermes", target_is_directory=True)
     source = args.native_source.resolve()
     tag = subprocess.run(["git", "describe", "--tags", "--exact-match"], cwd=source,
                          env=env, capture_output=True, text=True, check=True).stdout.strip()
@@ -65,7 +69,13 @@ def run(args):
 
     checkpoint()
     try:
-        binding = module.register(context)
+        if args.discover:
+            manager.discover_and_load()
+            loaded = manager._plugins.get("xsm")
+            assert loaded and loaded.enabled, getattr(loaded, "error", "not discovered")
+            result["nativeDiscoveryTested"] = True
+        else:
+            binding = module.register(context)
         names = [name for name in manager._plugin_tool_names if name.startswith("xsm_")]
         assert len(names) == 21, names
         result["checks"].append("21 tools registered by actual PluginContext")
@@ -107,6 +117,11 @@ def run(args):
         unavailable = invoke("native-a", temp / "a", "xsm_decide", {"question": "Unbound UI must not answer"})
         assert "no user-interface" in str(unavailable), unavailable
         result["checks"].append("unbound native user UI records no approval")
+        if args.discover:
+            manager.unload("xsm")
+            assert all(registry.get_entry(name, scope=manager.scope_key) is None for name in names)
+            assert all(item.get("ended_at") for item in records() if item["runtime"] == "hermes")
+            result["checks"].append("native unload removes tools and closes every participation")
         result.update(status="passed", nativeTools=sorted(names), records=self_records)
     except BaseException as error:
         result.update(status="failed", error=repr(error))
@@ -114,6 +129,8 @@ def run(args):
     finally:
         if binding:
             binding.close()
+        if args.discover:
+            manager.unload("xsm")
         checkpoint()
     print(json.dumps({"status": result["status"], "checks": len(result["checks"]), "tag": tag}))
 
@@ -122,4 +139,5 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--native-source", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--discover", action="store_true")
     run(parser.parse_args())
