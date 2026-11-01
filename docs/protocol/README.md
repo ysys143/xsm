@@ -4,6 +4,8 @@ Status: implementation in progress, **not a stable public compatibility promise*
 This is a local host protocol, separate from the existing `[xsm v1 ...]` message
 envelope. A successful protocol test does not certify a native runtime.
 
+Native binding notes: [Pi 1.4.0](pi.md), [OpenCode 1.19.5](opencode.md).
+
 Start `python3 -m xsm protocol serve --stdio` from an installed checkout.
 Frames are UTF-8 JSON Lines, JSON-RPC 2.0 objects, at most 1 MiB characters per
 input frame. Stdout is protocol only. Diagnostics belong on stderr. Requests

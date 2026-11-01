@@ -239,3 +239,48 @@ Python 3.14.6에서 100회를 모두 완료했고 p95 상한은 약 0.429초였�
 모두 관련 검사를 실패시켰다. helper와 설치 단계의 실패 기록은 보존했다.
 이 단계의 설치는 전부 격리 HOME/프로필에서만 실행했다. 실제 사용자
 프로필·trust·권한·전역 Python pin·Docker context는 수정하지 않았다.
+
+## OpenCode 서버 연결 1차 구현
+
+- OpenCode 1.19.5의 서버 플러그인에서 native 대화별로 공통 호스트를 연다.
+  실제 도구 context의 sessionID/directory에 결속한다. 동시 호출은 opening을
+  공유하고 삭제/재개는 세대를 교체한다.
+- 스키마 21개를 공통 서버에서 읽고 native SDK의 Zod로 변환한다.
+  optional/required를 유지하며 native 프로필에서 SDK를 import한다.
+- noReply 저장 뒤 같은 대화/메시지/본문/메타데이터를 다시 읽어야 admitted를
+  보고한다. Busy 상태의 중복 wake를 피하고 소비 ACK는 별도로 둔다.
+- 명시적 OpenCode 프로필 설치·갱신·제거는 Pi와 같은 소유권/CAS 경로를 쓴다.
+  전체 OpenCode 수명 인증은 미완이다.
+- 첫 native 초기화는 SDK path 조회로 재진입해 멈췄다. 경로를 먼저 확정했다.
+  다음에는 import 전용 SDK export를 require.resolve로 읽을 수 없어 실패했다.
+  native loader에서 공개 import로 tool.schema를 전달하도록 수정했다.
+- 첫 하네스는 shell인 bin/xsm을 Python으로 실행해 설치 전에 실패했다.
+  명시적 Python boot 경로로 수정했다. 설치 snapshot의 native 도구 21개와
+  메시지 5건 진입을 확인했다. 실패한 SDK 초기화와 서버 로그는 보존한다.
+- 새 검사기의 첫 실패는 optional인 text를 required라고 가정하고 registry의
+  lock 파일까지 JSON으로 읽은 오류였다. 다음 실패는 인계한 claim을 일반
+  inbox가 다시 반환한다고 가정한 오류였다. 실제 native 본문의 ACK 토큰으로
+  고쳤다. 설치 검사에서는 /var와 /private/var를 realpath로 대조하도록 고쳤다.
+- TUI 질문은 아직 구현하지 않았다. user-decisions를 광고하지 않고 필요한
+  작업을 거부한다. 전체 계획의 미완 조건으로 유지한다.
+
+### OpenCode 수신 시험의 실패와 보완
+
+최초 100회 native 시험은 81회 관측 뒤 실패했다. 완료 표본에도 1초를 넘는
+지연이 있어 p95 수용 기준의 통과로 쓰지 않는다. 소비 ACK 없이 쌓인 표본이며
+기본 대화 목록 조회의 범위와 모델 미구성 provider의 재시도도 섞였다.
+`opencode-native-100/result.json`과 서버 로그를 보존한다.
+
+조사 과정에서 임의 UUID를 native 메시지 ID로 쓰던 문제를 발견했다.
+OpenCode가 정렬 가능한 ID를 발급하도록 바꾸고 별도의 임의 admission metadata로
+본문 진입을 확인한다. 하네스의 조회 범위도 명시했다. Native ID를 임의로
+넘기면 callback 검사가 실패한다.
+
+응답하지 않는 provider 대신 loopback에서 명시적 assistant fixture의 tool-call
+패킷만 반환하는 하네스를 추가했다. 실제 모델 추론이나 API 과금은 없다.
+native 실행 커널이 xsm_ack를 실행하고 반환한 acked가 정확히 한 건인지 확인한다.
+5회 실행이 모두 통과했다. 이는 실제 모델의 작업 성공이나 사람의 응답이 아니다.
+100회 idle 시작 표본과 전체 수용 조건은 별도로 확인해야 한다.
+
+수신 내용 검증을 제거하는 변이와 native 대화 ID를 하나로 공유하는 변이는
+각각 새 검사를 실패시켰다. `opencode-binding-mutations.json`이 근거다.

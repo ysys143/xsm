@@ -16,7 +16,8 @@ import uuid
 
 from . import install, paths
 
-BINDINGS = {"pi": ("extensions", "xsm.js", "integrations/pi/xsm.mjs")}
+BINDINGS = {"pi": ("extensions", "xsm.js", "integrations/pi/xsm.mjs"),
+            "opencode": ("plugins", "xsm.js", "integrations/opencode/xsm.mjs")}
 SHARED = ("clients/typescript/xsm-client.mjs", "clients/typescript/xsm-host.mjs", "bin/xsm", "xsm/protocol.py")
 NOFOLLOW = getattr(os, "O_NOFOLLOW", 0)
 DIRECTORY = getattr(os, "O_DIRECTORY", 0)
@@ -178,10 +179,12 @@ def apply(runtime, home, dry_run=False):
             ident = (previous or {}).get("install_id") or uuid.uuid4().hex
             uri = Path(os.path.join(root, BINDINGS[runtime][2])).as_uri()
             command = [python, "-c", install.BOOT, root, "protocol", "serve", "--stdio"]
-            data = ("// xsm managed host loader %s\nimport binding from %s;\n"
+            native_import = "import { tool } from '@opencode-ai/plugin';\n" if runtime == "opencode" else ""
+            native_options = ", schema: tool.schema, profile: " + json.dumps(home) if runtime == "opencode" else ""
+            data = ("// xsm managed host loader %s\nimport binding from %s;\n%s"
                     "const command = %s;\nexport default api => binding(api, { command: "
-                    "[process.env.XSM_PYTHON || command[0], ...command.slice(1)] });\n"
-                    % (ident, json.dumps(uri), json.dumps(command))).encode()
+                    "[process.env.XSM_PYTHON || command[0], ...command.slice(1)]%s });\n"
+                    % (ident, json.dumps(uri), native_import, json.dumps(command), native_options)).encode()
             record = {"bindingInstall": 1, "runtime": runtime, "home": home, "file": filename, "install_id": ident,
                       "root": root, "python": python, "phase": "prepared", "sha256": hashlib.sha256(data).hexdigest(),
                       "previous_sha256": hashlib.sha256(content).hexdigest() if content is not None else None}

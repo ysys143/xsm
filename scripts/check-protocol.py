@@ -30,7 +30,7 @@ def main():
                      "-p", "test_python*.py", "-q"],
                     ["node", "--test", "clients/tests/test_node_client.mjs",
                      "clients/tests/test_node_protocol.mjs", "clients/tests/test_node_host.mjs",
-                     "clients/tests/test_node_host_binding.mjs"]]
+                     "clients/tests/test_node_host_binding.mjs", "clients/tests/test_opencode_binding.mjs"]]
         if not shutil.which("node", path=env.get("PATH")):
             print(json.dumps({"passed": False, "reason": "Node.js is required for client conformance"}))
             return 1

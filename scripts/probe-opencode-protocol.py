@@ -1,0 +1,255 @@
+#!/usr/bin/env python3
+"""Pinned OpenCode server/autoload probe in fresh homes. No model or human UI claims."""
+import argparse
+import asyncio
+import hashlib
+import json
+import os
+from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+from pathlib import Path
+import re
+import signal
+import socket
+import subprocess
+import sys
+import tempfile
+import threading
+import time
+import urllib.request
+
+ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT / "clients/python"))
+from xsm_client import XsmClient
+
+
+class AssistantFixture:
+    """Explicit scripted assistant packets, never a language model or human answer."""
+    def __init__(self, output):
+        self.calls = 0
+        self.tokens = set()
+        self.lock = threading.Lock()
+        fixture = self
+
+        class Handler(BaseHTTPRequestHandler):
+            def log_message(self, *_args):
+                pass
+
+            def do_POST(self):
+                request = json.loads(self.rfile.read(int(self.headers['Content-Length'])))
+                available = {tool.get('function', {}).get('name') for tool in request.get('tools', [])}
+                matches = re.findall(r'tokens: (\[[^\n]+?\])', json.dumps(request.get('messages', []), ensure_ascii=False)
+                                     .replace('\\"', '"').replace('\\n', '\n'))
+                tokens = []
+                for match in reversed(matches):
+                    try:
+                        tokens = json.loads(match)
+                        break
+                    except ValueError:
+                        continue
+                with fixture.lock:
+                    fresh = [token for token in tokens if token not in fixture.tokens]
+                    use_tool = bool(fresh) and 'xsm_ack' in available
+                    if use_tool:
+                        fixture.tokens.update(fresh)
+                        fixture.calls += 1
+                    with (output / 'assistant-fixture.jsonl').open('a') as stream:
+                        stream.write(json.dumps({'request': request, 'ackFixture': use_tool}) + '\n')
+                delta = {'content': 'Explicit assistant fixture; no model inference.'}
+                reason = 'stop'
+                if use_tool:
+                    delta = {'tool_calls': [{'index': 0, 'id': 'call_fixture_' + str(fixture.calls),
+                              'type': 'function', 'function': {'name': 'xsm_ack',
+                              'arguments': json.dumps({'tokens': fresh})}}]}
+                    reason = 'tool_calls'
+                packets = [{'id': 'fixture', 'object': 'chat.completion.chunk', 'created': int(time.time()),
+                            'model': 'fixture', 'choices': [{'index': 0, 'delta': delta, 'finish_reason': None}]},
+                           {'id': 'fixture', 'object': 'chat.completion.chunk', 'created': int(time.time()),
+                            'model': 'fixture', 'choices': [{'index': 0, 'delta': {}, 'finish_reason': reason}]}]
+                body = ''.join('data: ' + json.dumps(packet) + '\n\n' for packet in packets) + 'data: [DONE]\n\n'
+                self.send_response(200)
+                self.send_header('Content-Type', 'text/event-stream')
+                self.send_header('Content-Length', str(len(body.encode())))
+                self.end_headers()
+                self.wfile.write(body.encode())
+
+        self.server = ThreadingHTTPServer(('127.0.0.1', 0), Handler)
+        self.thread = threading.Thread(target=self.server.serve_forever, daemon=True)
+        self.thread.start()
+
+    def close(self):
+        self.server.shutdown()
+        self.server.server_close()
+        self.thread.join(timeout=2)
+
+
+async def run(args):
+    args.output.mkdir(parents=True, exist_ok=True)
+    temp = Path(tempfile.mkdtemp(prefix="xsm-opencode-probe-"))
+    work, home, profile, state = [temp / name for name in ("work", "home", "config/opencode", "state")]
+    for path in (work, home, profile):
+        path.mkdir(parents=True)
+    subprocess.run(["git", "init", "-q", str(work)], check=True)
+    assistant = AssistantFixture(args.output)
+    # Reuse only the explicitly supplied, privately installed pinned SDK dependencies.
+    (profile / "node_modules").symlink_to(args.native_root / "node_modules", target_is_directory=True)
+    (profile / "opencode.json").write_text(json.dumps({
+        "enabled_providers": ["xsm-fixture"], "model": "xsm-fixture/fixture",
+        "provider": {"xsm-fixture": {"npm": "@ai-sdk/openai-compatible", "name": "No model fixture",
+            "options": {"baseURL": "http://127.0.0.1:" + str(assistant.server.server_port) + "/v1"},
+            "models": {"fixture": {"name": "fixture", "limit": {"context": 32000, "output": 1000}}}}},
+        "permission": {"*": "deny", "xsm_ack": "allow"},
+    }))
+    env = {key: os.environ[key] for key in ("PATH", "LANG", "TMPDIR") if key in os.environ}
+    env.update(HOME=str(home), XDG_CONFIG_HOME=str(temp / "config"), XDG_DATA_HOME=str(temp / "data"),
+               XDG_CACHE_HOME=str(temp / "cache"), XSM_HOME=str(state), XSM_PYTHON=sys.executable,
+               OPENCODE_DISABLE_DEFAULT_PLUGINS="1", OPENCODE_DISABLE_MODELS_FETCH="1",
+               PYTHONDONTWRITEBYTECODE="1")
+    binary = args.native_root / "node_modules/opencode-darwin-arm64/bin/opencode"
+    if sys.platform == "linux":
+        binary = args.native_root / "node_modules/opencode-linux-x64/bin/opencode"
+    version = subprocess.run([str(binary), "--version"], env=env, capture_output=True, text=True, check=True).stdout.strip()
+    assert version == "1.19.5", version
+    command = [sys.executable, "-B", "-c",
+               "import runpy,sys;sys.path.insert(0,sys.argv.pop(1));runpy.run_module('xsm',run_name='__main__')", str(ROOT)]
+    install = subprocess.run([*command, "protocol", "install", "opencode",
+                              "--home", str(profile)], cwd=ROOT, env=env, capture_output=True, text=True)
+    (args.output / "installation.stdout").write_text(install.stdout)
+    (args.output / "installation.stderr").write_text(install.stderr)
+    install.check_returncode()
+    installation = json.loads(install.stdout)
+    env.pop("XSM_PYTHON")
+    with socket.socket() as sock:
+        sock.bind(("127.0.0.1", 0))
+        port = sock.getsockname()[1]
+    log = (args.output / "native.log").open("w")
+    process = subprocess.Popen([str(binary), "serve", "--port", str(port), "--hostname", "127.0.0.1"],
+                               cwd=work, env=env, stdout=log, stderr=log, start_new_session=True)
+    base = "http://127.0.0.1:" + str(port)
+    result = {"status": "running", "root": str(temp), "runtimeVersion": version,
+              "python": sys.version.split()[0], "platform": sys.platform, "installation": installation,
+              "samplesRequested": args.samples, "samples": [], "modelConfigured": False,
+              "providerFixture": "loopback scripted assistant packets; no model inference or API billing",
+              "physicalHumanUiTested": False, "nativeToolExecutionTested": False,
+              "measurement": "send initiation to observed stored native text; includes polling; consumption not inferred",
+              "sourceSha256": {name: hashlib.sha256((ROOT / name).read_bytes()).hexdigest() for name in
+                  ("integrations/opencode/xsm.mjs", "xsm/host_install.py", "scripts/probe-opencode-protocol.py")}}
+
+    def checkpoint():
+        (args.output / "result.json").write_text(json.dumps(result, indent=2) + "\n")
+
+    async def request(path, body=None):
+        def fetch():
+            req = urllib.request.Request(base + path, data=json.dumps(body).encode() if body is not None else None,
+                                         headers={"Content-Type": "application/json"})
+            with urllib.request.urlopen(req, timeout=8) as response:
+                return json.load(response)
+        return await asyncio.to_thread(fetch)
+
+    sender = None
+    checkpoint()
+    try:
+        for _ in range(100):
+            if process.poll() is not None:
+                raise RuntimeError("native server stopped: " + str(process.returncode))
+            try:
+                await request("/global/health")
+                break
+            except OSError:
+                await asyncio.sleep(.05)
+        tools = await request("/experimental/tool/ids")
+        result["nativeTools"] = [name for name in tools if name.startswith("xsm_")]
+        assert len(result["nativeTools"]) == 21, tools
+        schemas = await request("/experimental/tool?provider=xsm-fixture&model=fixture")
+        (args.output / "native-tools.json").write_text(json.dumps(schemas, indent=2))
+        native = await request("/session", {"title": "xsm model-free admission probe"})
+        result["nativeSession"] = native["id"]
+        receiver = None
+        for _ in range(100):
+            rows = [json.loads(path.read_text()) for path in (state / "sessions").glob("*.json")]
+            receiver = next((row for row in rows if row.get("runtime") == "opencode" and
+                             row.get("state") != "ended"), None)
+            if receiver:
+                break
+            await asyncio.sleep(.05)
+        assert receiver, "native session was not registered"
+        assert os.path.realpath(receiver["protocol_root"]) == os.path.realpath(installation["runtime_root"])
+        result["receiver"] = receiver
+        sender = await XsmClient.connect([*command, "protocol", "serve", "--stdio"],
+                                         cwd=str(work), env=env)
+        own = await sender.session_open(runtime="probe", profile="isolated", conversation="sender", cwd=str(work))
+        for sample in range(args.samples):
+            for _ in range(200):
+                statuses = await request('/session/status')
+                if statuses.get(native['id'], {'type': 'idle'})['type'] == 'idle':
+                    break
+                await asyncio.sleep(.01)
+            else:
+                raise RuntimeError('native session did not return to idle before sample ' + str(sample))
+            marker = "opencode-native-admission-" + str(sample)
+            started = time.monotonic()
+            sent = await sender.operation_call(own["session"], "xsm_send",
+                                                {"target": "ref:" + receiver["ref"], "text": marker, "wait": 0})
+            messages = []
+            for _ in range(150):
+                messages = await request("/session/" + native["id"] + "/message?limit=1000")
+                if any(marker in part.get("text", "") for message in messages for part in message["parts"]):
+                    break
+                await asyncio.sleep(.01)
+            else:
+                raise RuntimeError("message did not enter native transcript: " + marker)
+            result["samples"].append({"marker": marker, "idleBeforeSend": True,
+                                      "upperSeconds": time.monotonic() - started, "send": sent})
+            checkpoint()
+            for _ in range(200):
+                messages = await request("/session/" + native["id"] + "/message?limit=1000")
+                completed = [part for message in messages for part in message['parts']
+                             if part.get('type') == 'tool' and part.get('tool') == 'xsm_ack'
+                             and part.get('state', {}).get('status') == 'completed']
+                if len(completed) >= sample + 1:
+                    break
+                await asyncio.sleep(.01)
+            else:
+                raise RuntimeError('native ACK tool did not complete for sample ' + str(sample))
+            ack_output = completed[-1]['state'].get('output')
+            acked = json.loads(ack_output).get('acked', [])
+            assert len(acked) == 1 and ('id ' + acked[0]) in sent['text'], ack_output
+            result['samples'][-1]['nativeAckOutput'] = ack_output
+            checkpoint()
+        result["p95UpperSeconds"] = sorted(item["upperSeconds"] for item in result["samples"])[
+            max(0, int(len(result["samples"]) * .95 + .999) - 1)]
+        result["status"] = "passed"
+        result["latencyAcceptanceMet"] = args.samples >= 100 and result["p95UpperSeconds"] <= 1
+        result["consumptionAckTested"] = True
+        result["nativeToolExecutionTested"] = True
+        result["assistantFixtureAckCalls"] = assistant.calls
+        (args.output / "native-messages.json").write_text(json.dumps(messages, indent=2))
+        print(json.dumps({key: result[key] for key in ("status", "runtimeVersion", "p95UpperSeconds")}), flush=True)
+    except BaseException as error:
+        result.update(status="failed", error=repr(error))
+        raise
+    finally:
+        checkpoint()
+        if sender:
+            await sender.close()
+        if process.poll() is None:
+            os.killpg(process.pid, signal.SIGTERM)
+            try:
+                await asyncio.to_thread(process.wait, timeout=5)
+            except subprocess.TimeoutExpired:
+                os.killpg(process.pid, signal.SIGKILL)
+                await asyncio.to_thread(process.wait)
+        log.close()
+        assistant.close()
+        for path in (temp / "data").rglob("*.log"):
+            (args.output / ("runtime-" + path.name)).write_bytes(path.read_bytes())
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--native-root", type=Path, required=True)
+    parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--samples", type=int, default=5)
+    args = parser.parse_args()
+    if args.samples < 1:
+        parser.error("samples must be positive")
+    asyncio.run(asyncio.wait_for(run(args), timeout=150))

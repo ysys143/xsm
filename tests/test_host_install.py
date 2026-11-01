@@ -22,6 +22,30 @@ class HostInstallTest(TempState):
         self.home = Path(self.user_home, "pi")
         self.loader = self.home / "extensions/xsm.js"
 
+    def test_opencode_loader_uses_native_sdk_and_preserves_profile_configuration(self):
+        from xsm import host_install, install
+        profile = Path(self.user_home, "opencode")
+        profile.mkdir()
+        settings = profile / "opencode.json"
+        settings.write_text('{"user":"retain"}')
+        settings.chmod(0o640)
+        result = host_install.apply("opencode", str(profile))
+        loader = profile / "plugins/xsm.js"
+        self.assertEqual(Path(result["file"]).resolve(), loader.resolve())
+        self.assertIn(b"import { tool } from '@opencode-ai/plugin'", loader.read_bytes())
+        self.assertIn(b"schema: tool.schema", loader.read_bytes())
+        self.assertTrue((Path(result["runtime_root"]) / "integrations/opencode/xsm.mjs").is_file())
+        self.assertFalse(host_install.apply("opencode", str(profile))["changed"])
+        original = loader.read_bytes()
+        loader.write_bytes(original + b"// user edit\n")
+        with self.assertRaises(install.InstallConflictError):
+            host_install.remove("opencode", str(profile))
+        loader.write_bytes(original)
+        host_install.remove("opencode", str(profile))
+        self.assertFalse(loader.exists())
+        self.assertEqual(settings.read_text(), '{"user":"retain"}')
+        self.assertEqual(stat.S_IMODE(settings.stat().st_mode), 0o640)
+
     def test_clean_install_idempotent_and_complete_assets_leave_settings_untouched(self):
         from xsm import host_install
         self.home.mkdir()
