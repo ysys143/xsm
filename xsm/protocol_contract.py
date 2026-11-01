@@ -1,6 +1,7 @@
 """Read-only export of this installation's public experimental protocol artifacts."""
 from __future__ import annotations
 
+import copy
 import hashlib
 import json
 from pathlib import Path
@@ -9,7 +10,46 @@ import sys
 PATTERNS = ('docs/protocol/*.json', 'docs/protocol/*.md', 'scripts/conform-host-protocol.py', 'scripts/check-protocol-schema.py')
 REQUIRED = ('docs/protocol/README.md', 'docs/protocol/request.schema.json',
             'docs/protocol/request-examples.json', 'docs/protocol/output.schema.json',
-            'docs/protocol/output-examples.json', 'scripts/conform-host-protocol.py', 'scripts/check-protocol-schema.py')
+            'docs/protocol/output-examples.json', 'docs/protocol/operations.schema.json',
+            'docs/protocol/operation-examples.json', 'scripts/conform-host-protocol.py', 'scripts/check-protocol-schema.py')
+
+
+def operation_schema():
+    """Structural operation.call parameters, including this transport's restrictions."""
+    from .operation_schema import TOOLS
+    definitions, choices = {}, []
+    def closed(schema):
+        value = copy.deepcopy(schema)
+        if value.get('type') == 'object':
+            value['additionalProperties'] = False
+        if 'properties' in value:
+            value['properties'] = {key: closed(item) for key, item in value['properties'].items()}
+        if 'items' in value:
+            value['items'] = closed(value['items'])
+        return value
+    for tool in TOOLS:
+        name = tool['name']
+        arguments = closed(tool['inputSchema'])
+        arguments['description'] = tool['description']
+        for key in ('wait', 'wait_secs'):
+            if key in arguments['properties']:
+                arguments['properties'][key].update(const=0, default=0)
+        if 'answer_request' in arguments['properties']:
+            arguments['properties']['answer_request']['maxLength'] = 0
+        definitions[name] = arguments
+        branch = {'properties': {'operation': {'const': name}, 'arguments': {'$ref': '#/$defs/' + name}}}
+        if arguments.get('required'):
+            branch['required'] = ['arguments']
+        choices.append(branch)
+    return {'$schema': 'https://json-schema.org/draft/2020-12/schema',
+        '$id': 'urn:xsm:host-protocol:1:operation-parameters',
+        'title': 'Experimental operation.call structural parameters',
+        'type': 'object', 'required': ['session', 'operation'], 'additionalProperties': False,
+        'properties': {'session': {'type': 'string', 'minLength': 1},
+                       'operation': {'enum': [tool['name'] for tool in TOOLS]},
+                       'arguments': {'type': 'object'}},
+        'oneOf': choices, '$defs': definitions,
+        '$comment': 'Structural inputs only. A schema-valid operation is not proof of runtime support, authorization or effect.'}
 
 
 def bundle(root=None):
@@ -28,6 +68,8 @@ def bundle(root=None):
             content = filename.read_bytes()
             artifacts[filename.relative_to(root).as_posix()] = {
                 'sha256': hashlib.sha256(content).hexdigest(), 'text': content.decode('utf-8')}
+    if json.loads(artifacts['docs/protocol/operations.schema.json']['text']) != operation_schema():
+        raise ValueError('public operation schema differs from this installation; update xsm with matching artifacts')
     return {'protocolVersion': VERSION, 'experimental': True, 'methods': sorted(REQUEST_FIELDS),
             'operations': TOOLS, 'artifacts': artifacts,
             'coverage': 'experimental structures and partial conformance; full operation results and native certification remain incomplete'}

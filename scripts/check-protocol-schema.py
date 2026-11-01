@@ -57,6 +57,51 @@ def output_contract(trace=None):
                 observedNotifications=sum('method' in o['frame'] for o in observations))
 
 
+def operations_contract():
+    schema = json.loads((ROOT / 'docs/protocol/operations.schema.json').read_text())
+    examples = json.loads((ROOT / 'docs/protocol/operation-examples.json').read_text())
+    Draft202012Validator.check_schema(schema)
+    validator = Draft202012Validator(schema)
+    names = schema['properties']['operation']['enum']
+    if set(names) != set(schema['$defs']) or len(names) != len(examples) or set(names) != {e['operation'] for e in examples}:
+        raise ValueError('operation inventory/examples differ')
+    rejected = 0
+    def invalid(value):
+        nonlocal rejected
+        if validator.is_valid(value):
+            raise ValueError('invalid operation parameters accepted: ' + repr(value))
+        rejected += 1
+    for example in examples:
+        validator.validate(example)
+        bad = copy.deepcopy(example)
+        bad['arguments']['unrecognized'] = True
+        invalid(bad)
+        definition = schema['$defs'][example['operation']]
+        if definition.get('required'):
+            invalid({key: value for key, value in example.items() if key != 'arguments'})
+        for key in definition.get('required', []):
+            bad = copy.deepcopy(example)
+            del bad['arguments'][key]
+            invalid(bad)
+        for key in ('wait', 'wait_secs'):
+            if key in definition['properties']:
+                bad = copy.deepcopy(example)
+                bad['arguments'][key] = 1
+                invalid(bad)
+        if 'answer_request' in definition['properties']:
+            bad = copy.deepcopy(example)
+            bad['arguments']['answer_request'] = 'unverified-transcript'
+            invalid(bad)
+    invalid(dict(examples[0], operation='unlisted-operation'))
+    invalid(dict(examples[0], arguments=True))
+    for name in ('xsm_send', 'xsm_ask'):
+        bad = copy.deepcopy(next(e for e in examples if e['operation'] == name))
+        bad['arguments']['attachments'] = [{'name': 'x', 'text': 'copied', 'unrecognized': True}]
+        invalid(bad)
+    return dict(operations=len(names), examples=len(examples), rejected=rejected,
+                scope='structural inputs and transport restrictions; no domain effects or result certification')
+
+
 def run(trace=None):
     schema = json.loads((ROOT / 'docs/protocol/request.schema.json').read_text())
     examples = json.loads((ROOT / 'docs/protocol/request-examples.json').read_text())
@@ -98,7 +143,7 @@ def run(trace=None):
     return dict(passed=True, methods=len(methods), accepted=accepted, rejected=rejected,
                 validator='jsonschema', validatorVersion=importlib.metadata.version('jsonschema'),
                 scope='request and output structures; no full operation results or semantic certification',
-                output=output_contract(trace))
+                output=output_contract(trace), operations=operations_contract())
 
 
 if __name__ == '__main__':

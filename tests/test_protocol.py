@@ -363,3 +363,21 @@ class ProtocolRequestFieldsTest(ProtocolFixture):
         self.assertEqual(notifications, {'events/available', 'decision/request'})
         examples = json.loads((root / 'docs/protocol/output-examples.json').read_text())
         self.assertEqual({e['method'] for e in examples if 'result' in e['frame']}, set(REQUEST_FIELDS))
+
+    def test_public_operation_schema_matches_runtime_structural_contract(self):
+        from pathlib import Path
+        from xsm.protocol_contract import operation_schema
+        from xsm.operation_schema import TOOLS
+        import copy
+        before = copy.deepcopy(TOOLS)
+        actual = operation_schema()
+        artifact = json.loads((Path(__file__).resolve().parents[1] / 'docs/protocol/operations.schema.json').read_text())
+        self.assertEqual(artifact, actual)
+        self.assertEqual(TOOLS, before)
+        self.assertEqual(len(actual['$defs']), 21)
+        for tool in TOOLS:
+            arguments = actual['$defs'][tool['name']]
+            self.assertIs(arguments['additionalProperties'], False)
+            for name in ('wait', 'wait_secs'):
+                if name in arguments['properties']:
+                    self.assertEqual(arguments['properties'][name]['const'], 0)

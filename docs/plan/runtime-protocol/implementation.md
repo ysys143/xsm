@@ -1173,3 +1173,25 @@ checker가 같은 설치본 서버의 수명 계약 16개를 모두 통과했다
 공개 자산 제공은 전체 normative operation 결과·독립 전체 구현 인증을
 대체하지 않는다. Native UI/push/worker·자동 재접속·Linux·원격·전체 방향
 조합을 포함한 P0–P5의 남은 수용 조건은 미완이다.
+
+## 공개 작업 인자의 구조 스키마
+
+21개 작업의 operation.call params를 `operations.schema.json`으로 고정하고,
+작업당 구조 검증 전용 예제를 하나씩 제공한다. 서버 TOOL schema에서 생성해
+알 수 없는 인자의 재귀적 거부, 필수 arguments, protocol wait=0과 비어 있지
+않은 answer_request 거부를 명시한다. MCP/CLI 대기 기본값은 바꾸지 않는다.
+실행 코드와 다른 catalog는 protocol describe가 내보내지 않는다.
+
+개발용 generator는 작업을 실행하지 않고 정적 자산만 갱신한다. 표준
+jsonschema 검증기는 정상 예제 21개를 수락하고 오류 입력 73개를 거부했다
+(`operation-schema-final-validation.json`). 추가 인자를 허용하거나 blocking
+wait 제한을 지운 격리 스키마 변이는 각각 검출됐다
+(`operation-schema-mutants.json`). 실제 bundle export도 다른 catalog를 거부했다
+(`operation-schema-stale-export.json`). Stdlib 검사에서는 committed catalog와
+runtime 생성 결과가 같고 원래 TOOL 객체가 변하지 않는 것을 확인한다.
+
+Python 3.9.6 관련 36개는 통과했다(`operation-schema-python39.log`). 공통
+354개(핵심 231, Python 40, Node 83)는 Python 3.14.6에서 65.580초에 통과했다
+(`operation-schema-gate.log`). 공개 사용법·범위는 operations-contract.md에 있다.
+이는 구조적 입력 계약이며 모든 domain 필수 조건·권한·native 지원을
+증명하지 않는다. 작업별 결과·독립 전체 구현과 P0–P5의 남은 수용 조건은 미완이다.

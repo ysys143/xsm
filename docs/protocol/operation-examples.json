@@ -1,0 +1,140 @@
+[
+  {
+    "session": "opaque-session",
+    "operation": "xsm_owned",
+    "arguments": {
+      "action": "status",
+      "name": "structural-fixture"
+    }
+  },
+  {
+    "session": "opaque-session",
+    "operation": "xsm_files",
+    "arguments": {
+      "storage_id": "structural-fixture"
+    }
+  },
+  {
+    "session": "opaque-session",
+    "operation": "xsm_decision_status",
+    "arguments": {}
+  },
+  {
+    "session": "opaque-session",
+    "operation": "xsm_ask",
+    "arguments": {
+      "text": "structural-fixture"
+    }
+  },
+  {
+    "session": "opaque-session",
+    "operation": "xsm_question_status",
+    "arguments": {}
+  },
+  {
+    "session": "opaque-session",
+    "operation": "xsm_discover",
+    "arguments": {}
+  },
+  {
+    "session": "opaque-session",
+    "operation": "xsm_publish",
+    "arguments": {}
+  },
+  {
+    "session": "opaque-session",
+    "operation": "xsm_connect",
+    "arguments": {
+      "target": "structural-fixture"
+    }
+  },
+  {
+    "session": "opaque-session",
+    "operation": "xsm_grant",
+    "arguments": {
+      "runtime": "structural-fixture",
+      "options": [],
+      "reason": "structural-fixture"
+    }
+  },
+  {
+    "session": "opaque-session",
+    "operation": "xsm_send",
+    "arguments": {}
+  },
+  {
+    "session": "opaque-session",
+    "operation": "xsm_team",
+    "arguments": {
+      "action": "show"
+    }
+  },
+  {
+    "session": "opaque-session",
+    "operation": "xsm_handover",
+    "arguments": {}
+  },
+  {
+    "session": "opaque-session",
+    "operation": "xsm_board",
+    "arguments": {
+      "action": "show",
+      "team": "structural-fixture"
+    }
+  },
+  {
+    "session": "opaque-session",
+    "operation": "xsm_ack",
+    "arguments": {
+      "tokens": [
+        "structural-fixture"
+      ]
+    }
+  },
+  {
+    "session": "opaque-session",
+    "operation": "xsm_inbox",
+    "arguments": {}
+  },
+  {
+    "session": "opaque-session",
+    "operation": "xsm_link",
+    "arguments": {
+      "dir": "structural-fixture"
+    }
+  },
+  {
+    "session": "opaque-session",
+    "operation": "xsm_join",
+    "arguments": {
+      "project": "structural-fixture"
+    }
+  },
+  {
+    "session": "opaque-session",
+    "operation": "xsm_reach",
+    "arguments": {
+      "dir": "structural-fixture"
+    }
+  },
+  {
+    "session": "opaque-session",
+    "operation": "xsm_doc_endorse",
+    "arguments": {
+      "doc": "structural-fixture",
+      "node": "structural-fixture"
+    }
+  },
+  {
+    "session": "opaque-session",
+    "operation": "xsm_approve",
+    "arguments": {}
+  },
+  {
+    "session": "opaque-session",
+    "operation": "xsm_decide",
+    "arguments": {
+      "question": "structural-fixture"
+    }
+  }
+]

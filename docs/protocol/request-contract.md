@@ -11,7 +11,9 @@ supported versions. `operations/list` accepts omitted params or an empty object.
 Session-bound methods require `session`. `session.update` only accepts state and
 name changes. `operation.call` requires an operation name; omitted arguments
 default to an empty object. The actual operation schemas come from
-`operations/list` and are validated before business dispatch.
+`operations/list` and are validated before business dispatch. The
+[structural operation catalog](operations-contract.md) makes those inputs and
+host transport restrictions available as a separate installed artifact.
 
 All known methods reject unrecognized parameter names with `-32602`, before
 changing state. An already initialized connection still rejects a repeated
