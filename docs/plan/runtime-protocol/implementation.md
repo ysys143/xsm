@@ -1748,3 +1748,13 @@ prompt 소비·명시적 ACK가 통과했다
 (핵심 243/Python 48/Node 125)는 74.598초에 통과했다
 (`openclaw-agent-end-core.log`). 앞선 프로브 실패와 이 성공 표본은
 구분한다. Linux와 전체 계획의 나머지는 계속 미완이다.
+
+Linux 후속 검증도 변경 없는 `2f7ac31`에서 통과했다. 고정 native
+OpenClaw의 agent_end hook으로 같은 ref·새 generation 재등록과 idle
+복원을 확인한 뒤 큰 원문 100/100 수락·소비·ACK, 복구 후 전송 p95 상한
+412.499ms를 확인했다
+(`linux-openclaw-agent-end-native-100/output/boundary-recovery.json`).
+공통 gate 416개도 Linux arm64/Python 3.11.2에서 82.241초에 통과했다
+(`linux-openclaw-agent-end-core/result.json`). 외부 token 재조회 검사기의
+앞선 Linux 미실행 기록까지 보완한다. 실제 모델·사람 UI·메신저·간헐적
+burst ACK 실패와 나머지 P0–P5는 계속 미완이다.

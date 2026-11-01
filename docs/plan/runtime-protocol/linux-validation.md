@@ -269,3 +269,22 @@ none·source archive hash·image ID·tracked dirty false를 기록했고 VM은
 다시 Stopped로 확인했다(`vm-stopped.json`). 이후 추가한 외부 검사기
 확장까지 포함하는 Linux gate 표본은 아니다. 간헐적 burst ACK 실패와
 전체 계획은 여전히 미완이다.
+
+## OpenClaw agent_end hook의 Linux 복구
+
+변경 없는 `2f7ac31`을 고정 OpenClaw 2026.10.9/Linux arm64/Node
+24.22.2/Python 3.11.2에서 실행했다. Backend 종료 직후 실제 native
+hook runner의 agent_end를 호출해 같은 ref·새 PID·새 generation의
+재등록과 idle 복원을 확인했다. 이어 큰 원문 100/100 수락·prompt 소비·
+명시적 ACK가 통과했고 복구 후 전송 p95 상한은 412.499ms였다
+(`linux-openclaw-agent-end-native-100/output/boundary-recovery.json`).
+Source archive hash·commit·tracked dirty false도 stage에 보존했다.
+모델·실제 agent turn·사람·메신저는 0회다. 실제 모델 turn 종료와
+outage 전체 지연의 인증으로 확대하지 않는다.
+
+같은 커밋의 공통 gate 416개(핵심 243/Python 48/Node 125)는
+82.241초에 통과했다(`linux-openclaw-agent-end-core/result.json`). 외부
+targeted token 검사기 확장과 agent_end 회귀까지 포함한 Linux 표본이다.
+Network none·image ID·source archive hash·tracked dirty false를 기록했고
+테스트 VM은 다시 Stopped로 확인했다(`vm-stopped.json`). 전체 계획은
+계속 미완이다.

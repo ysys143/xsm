@@ -444,3 +444,9 @@ invocation callback은 재사용하지 않는다. 다른 route의 hook은 무시
 (`openclaw-agent-end-native-100-verified.json`). 복구 후 전송 p95 상한은
 514.525ms다. 공통 gate 416개는 74.598초에 통과했다. 모델·실제 turn·
 사람 UI 실행과 Linux의 이 hook 경로 검증은 아직 미완이다.
+
+같은 변경의 Linux arm64 고정 SDK에서도 실제 agent_end hook runner로
+재등록·idle 복원 후 큰 원문 100/100 수락·소비·ACK가 통과했다
+(`linux-openclaw-agent-end-native-100/output/boundary-recovery.json`). 복구 후
+전송 p95 상한은 412.499ms다. 위 Linux 미실행 기록의 후속 표본이며
+실제 모델 turn·사람 UI·메신저와 간헐적 burst ACK 실패는 계속 미완이다.
