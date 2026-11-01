@@ -25,7 +25,7 @@
   UI 능력이 없는 호스트와 네이티브 transcript 복구 대체는 `-32004`로 거부한다.
 - Python 3.9+ 클라이언트, 실행 가능한 Node 모듈과 TypeScript 타입,
   전송 fixture 및 실제 서버 subprocess 검사.
-- Pi/OpenCode native 연결·설치·UI fixture, Hermes native pull 도구,
+- Pi/OpenCode native 연결·설치·UI fixture, Hermes native 도구·격리 설치·대화별 복구,
   OpenClaw의 guarded native context queue prototype이 있다. 런타임 전체 지원
   인증이나 모든 표면의 연결 완료를 뜻하지 않는다.
 - 실험 명세·요청 스키마·README 연결. 안정된 호환성 보장은 아직 아니다.
@@ -37,9 +37,9 @@
 | P0 계약·현황 | 부분 구현 | 전체 기능별 normative 스키마, 독립 구현 적합성, 안정판 API 감사 |
 | P1 공통 서비스 | 부분 구현 | CLI 추출, 일반 원격 신원, 네이티브 UI 연결, 비동기 작업 수명 |
 | P2 SDK·검사기 | 부분 구현 | 독립 구현 적합성, 전체 오류/취소 계약 (Python↔Node 교차 시험 통과) |
-| P3 Pi·OpenCode | 부분 구현 | 연결·수신·설치·UI·대화 수명 경로 검증. Native worker·자동 재접속·busy/now의 실제 우선순위 등 미완 |
-| P4 Hermes·OpenClaw | 부분 구현 | Hermes pull 도구, OpenClaw native 도구/guarded queue prototype. Agent turn·idle wake·UI·설치·worker 미완 |
-| P5 통합·배포 | 부분 검증 | Mac native SDK/CLI fixture와 Linux arm64 공통 gate 통과. Linux Hermes/OpenClaw native 경로, 30개 방향 조합, 동종 세션, 원격, 버전·플랫폼별 전체 native p95, 메신저, 전체 회귀 미완 |
+| P3 Pi·OpenCode | 부분 구현 | 연결·수신·설치·대화 수명·자동 재접속의 native fixture 검증. 실제 사용자 UI·native worker·busy/now의 실제 우선순위 등 미완 |
+| P4 Hermes·OpenClaw | 부분 구현 | Hermes native 도구·격리 설치·주입 및 대화별 자동 복구 fixture, OpenClaw guarded queue prototype. 실제 agent turn·idle wake·UI·worker, OpenClaw owned 설치·자동 재접속 미완 |
+| P5 통합·배포 | 부분 검증 | Mac native SDK/CLI fixture와 Linux arm64 공통 gate·Pi/OpenCode/OpenClaw native fixture 통과. Linux Hermes native, OpenClaw 간헐적 burst ACK 실패, 30개 방향 조합, 동종 세션, 원격, 버전·플랫폼별 전체 native p95, 실제 모델·메신저·전체 회귀 미완 |
 
 ## 초기 실제 검사
 
@@ -1588,3 +1588,9 @@ subprocess로 실행하고 회수를 확인했다. 단계별 지연은 짧지만
 분기에서 예상한 TransportError가 없어 실패했다
 (`host-setup-reset-budget-mutant.log`, `host-setup-node-reset-budget-mutant.log`).
 이 등록 예산 변경의 Linux 검증은 아직 미실행이다.
+
+후속 Linux arm64/Python 3.11.2 gate도 변경 없는 `245734c`에서 403개가
+75.700초에 통과했다(`linux-host-setup-timeout-core/result.json`). 위 등록
+예산 변경의 Linux 미실행 기록을 보완한다. 첫 상태표도 이미 확인한
+Pi/OpenCode 자동 재접속과 Linux OpenClaw native fixture를 반영했다.
+실제 모델·사용자 UI·worker·원격·메신저와 나머지 요구는 그대로 미완이다.

@@ -222,3 +222,14 @@ archive SHA-256·image ID·network none·tracked dirty false도 기록했다.
 무응답 initialize의 timeout·자식 회수와 native host 옵션 전달 검사까지
 실행한 결과이며, 일반 작업 전체 기한이나 Hermes native 실행의 증거는
 아니다. 이 변경의 Mac gate는 66.503초였다. 전체 P0–P5는 미완이다.
+
+## Host 등록 전체 예산의 Linux 검증
+
+변경 없는 `245734c`의 격리 Linux arm64/Python 3.11.2/Node 24.22.2에서
+공통 gate 403개(핵심 238/Python 48/Node 117)가 75.700초에 통과했다.
+`linux-host-setup-timeout-core/result.json`과 `protocol.log`에 결과·source
+archive SHA-256·image ID·network none·tracked dirty false를 보존했다.
+세 등록 RPC의 무응답·회수, 개별 응답은 빠르지만 합이 기한을 넘는 경로와
+잘못된 기한의 spawn 전 거부를 포함한다. Mac은 동일한 403개가 69.910초에
+통과했다. 실제 사용자 UI·모델·메신저 검증을 뜻하지 않는다. 기본 context는
+colima, 기본 VM은 Stopped를 유지했다. P0–P5 전체는 미완이다.
