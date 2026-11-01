@@ -598,3 +598,21 @@ Python 3.9.6 묶음은 53.946초에 통과했고, 이후 one-shot 도구별 조�
 제거해 CLI 종료 시점의 native cleanup 검증을 미완으로 유지했다.
 실제 native agent·주입·질문 UI·제품 설치기·worker·Linux·메신저와 전체 계획은
 미완이며, 이 결과를 OpenClaw 전체 지원 완료로 세지 않는다.
+
+## OpenClaw native 도구 실행과 폐기
+
+실제 native resolvePluginTools 경로로 최초 실행했을 때 capture된 JS의
+import.meta.url이 존재하지 않는 bin/xsm을 가리켜 ENOENT로 실패했다.
+기본 명령을 native API의 원본 source에서 계산하도록 수정했다. 설치 loader가
+명시적으로 넘기는 pinned command는 그대로 사용한다.
+
+고정 2026.10.9 SDK의 실제 tool resolver·execute, 공개 global session hook,
+registry disposal을 사용한 후속 probe가 통과했다. Context는 명시적 caller
+fixture다. 같은 route의 두 UUID 분리·DM/pull/ACK·미연결 UI 거부·session-end·
+이전 도구 거부·주소 보존/세대 교체 resume·폐기 후 전 참여 종료를 확인했다.
+`openclaw-native-tools-first.log`, `openclaw-native-tools-expanded.json`에
+실패와 성공을 구분했다. Host 내부 resolver/disposal import는 probe에만 있다.
+
+공통 264개는 수정 후 Python 3.9.6에서 57.203초에 통과했다
+(`openclaw-capture-fix-py39.log`). Native agent turn·모델·실제 사용자 UI·수신
+주입·owned 설치·one-shot CLI·gateway·Linux·메신저와 전체 계획은 미완이다.

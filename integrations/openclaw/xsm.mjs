@@ -1,10 +1,16 @@
 /** OpenClaw 2026.10.9 direct-turn tools. Native push/UI and v2 continuations remain open. */
 import { realpath } from 'node:fs/promises';
-import { isAbsolute } from 'node:path';
+import { dirname, isAbsolute, resolve } from 'node:path';
 import { XsmHost } from '../../clients/typescript/xsm-host.mjs';
 import operations from './tools.mjs';
 
 export function register(api, options = {}) {
+  // Native capture relocates imported JS without copying bin/xsm. The host's
+  // original entry is authoritative; installed loaders pass their pinned command.
+  if (!options.command && (typeof api.source !== 'string' || !isAbsolute(api.source))) {
+    throw new Error('OpenClaw original plugin source must be absolute');
+  }
+  const command = options.command ?? [resolve(dirname(api.source), '../../bin/xsm'), 'protocol', 'serve', '--stdio'];
   const profilePath = api.runtime.state.resolveStateDir();
   if (typeof profilePath !== 'string' || !isAbsolute(profilePath)) {
     throw new Error('OpenClaw state directory must be native and absolute');
@@ -39,7 +45,7 @@ export function register(api, options = {}) {
       const pending = (async () => {
         const [profile, cwd] = await Promise.all([realpath(profilePath), realpath(entry.cwd)]);
         current(entry, epoch, context, signal);
-        return XsmHost.open({ command: options.command, env: options.env, runtime: 'openclaw',
+        return XsmHost.open({ command, env: options.env, runtime: 'openclaw',
           profile, conversation: entry.id, cwd, onError: fail });
       })();
       entry.pending = pending;

@@ -1,8 +1,8 @@
 # OpenClaw 2026.10.9 연결 경계
 
 상태: 실험적 direct-turn 도구 연결. 실제 고정 로더의 등록·metadata 발견과,
-명시적 caller fixture에서 실제 xsm 서버와의 왕복을 확인했다. Native 도구
-실행·agent turn·설치·수신 주입·UI는 미완이다. 전체 계획은 미완이다.
+명시적 caller fixture에서 실제 native 도구와 xsm 서버의 왕복·수명 정리를
+확인했다. Agent turn·설치·수신 주입·UI는 미완이다. 전체 계획은 미완이다.
 
 ## 고정 버전과 격리 환경
 
@@ -107,8 +107,9 @@ OpenClaw 도구 실행으로 세지 않는다. 세대 검사를 제거하거나 
 별도 `scripts/probe-openclaw-loader.mjs`는 실제 2026.10.9 로더에서 도구 21개를
 경고 없이 등록하고 metadata factory가 참여를 만들지 않는 것을 확인했다.
 Native host 내부 loader는 이 고정 probe에서만 import하며 제품에서는 import하지
-않는다. 결과는 `openclaw-native-loader-final.json`이다. Native 도구 execute·
-unload·one-shot CLI 수명·gateway 수명은 아직 검증하지 않았다.
+않는다. 결과는 `openclaw-native-loader-final.json`이다. 이 초기 실행에서는
+native 도구 execute·unload를 검사하지 않았다. 후속 결과는 다음 절에 구분한다.
+One-shot CLI 수명·gateway 수명은 여전히 미완이다.
 
 ```sh
 /isolated/node scripts/probe-openclaw-loader.mjs /isolated/node_modules/openclaw deliverables/openclaw-loader.json
@@ -117,3 +118,25 @@ unload·one-shot CLI 수명·gateway 수명은 아직 검증하지 않았다.
 위 명령은 전용 임시 HOME/native state/XSM_HOME을 만들고 자격 증명을 상속하지
 않는다. 실제 사용자 프로필·권한 설정은 바꾸지 않는다. 제품의 owned 설치기는
 아직 OpenClaw를 지원하지 않으며 이 파일 경로는 native 로더 probe에서만 명시했다.
+
+## Native 도구 실행과 capture 경로
+
+후속 probe의 `--execute`는 실제 native `resolvePluginTools`를 사용해 도구를
+구성하고 실행한다. Context의 sessionId·route·workspace는 명시적 fixture다.
+같은 route의 두 대화를 분리하고 DM/pull/ACK, 미연결 UI 거부를 실행한다.
+공개 SDK의 global hook runner로 session-end를 전달해 참여 종료·이전 도구 거부·
+같은 주소의 새 세대 resume를 확인한다. 마지막으로 native registry 폐기를
+호출하고 모든 참여에 ended_at이 생겼는지 검사한다.
+
+첫 실제 실행은 실패했다. OpenClaw가 JS를 native capture 폴더로 옮겨 로드하므로
+import.meta.url 기준의 기본 명령이 복사되지 않은 bin/xsm을 가리켰다.
+Binding의 기본 명령은 이제 native API의 원본 절대 source에서 계산한다.
+향후 설치 loader는 immutable snapshot의 pinned command를 명시해야 한다.
+실패 로그는 `openclaw-native-tools-first.log`, 수정 후 결과는
+`openclaw-native-tools-expanded.json`에 있다. 도구 실행과 native 폐기·참여
+종료가 통과했다. 실제 agent turn·model·사람의 UI 응답·one-shot CLI·gateway
+검증은 포함하지 않는다.
+
+```sh
+/isolated/node scripts/probe-openclaw-loader.mjs /isolated/node_modules/openclaw deliverables/openclaw-tools.json --execute
+```
