@@ -20,7 +20,20 @@
       ]
     },
     "method": {
-      "type": "string"
+      "type": "string",
+      "enum": [
+        "initialize",
+        "operations/list",
+        "session.open",
+        "session.update",
+        "session.close",
+        "events.subscribe",
+        "operation.call",
+        "inbox.release",
+        "delivery.report",
+        "decision.response",
+        "decision.abandon"
+      ]
     },
     "params": {
       "type": "object"
@@ -216,10 +229,127 @@
             ]
           }
         }
-      ]
+      ],
+      "additionalProperties": false
+    },
+    "initialize": {
+      "type": "object",
+      "properties": {
+        "protocolVersion": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "protocolVersion"
+      ],
+      "additionalProperties": false
+    },
+    "empty": {
+      "type": "object",
+      "properties": {},
+      "required": [],
+      "additionalProperties": false
+    },
+    "sessionUpdate": {
+      "type": "object",
+      "properties": {
+        "session": {
+          "type": "string",
+          "minLength": 1
+        },
+        "state": {
+          "enum": [
+            "idle",
+            "busy"
+          ]
+        },
+        "name": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "session"
+      ],
+      "additionalProperties": false
+    },
+    "sessionBound": {
+      "type": "object",
+      "properties": {
+        "session": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "session"
+      ],
+      "additionalProperties": false
+    },
+    "operationCall": {
+      "type": "object",
+      "properties": {
+        "session": {
+          "type": "string",
+          "minLength": 1
+        },
+        "operation": {
+          "type": "string",
+          "minLength": 1
+        },
+        "arguments": {
+          "type": "object"
+        }
+      },
+      "required": [
+        "session",
+        "operation"
+      ],
+      "additionalProperties": false
     }
   },
   "allOf": [
+    {
+      "if": {
+        "properties": {
+          "method": {
+            "const": "initialize"
+          }
+        },
+        "required": [
+          "method"
+        ]
+      },
+      "then": {
+        "properties": {
+          "params": {
+            "$ref": "#/$defs/initialize"
+          }
+        },
+        "required": [
+          "params"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "method": {
+            "const": "operations/list"
+          }
+        },
+        "required": [
+          "method"
+        ]
+      },
+      "then": {
+        "properties": {
+          "params": {
+            "$ref": "#/$defs/empty"
+          }
+        }
+      }
+    },
     {
       "if": {
         "properties": {
@@ -232,21 +362,21 @@
         ]
       },
       "then": {
-        "required": [
-          "params"
-        ],
         "properties": {
           "params": {
             "$ref": "#/$defs/sessionOpen"
           }
-        }
+        },
+        "required": [
+          "params"
+        ]
       }
     },
     {
       "if": {
         "properties": {
           "method": {
-            "const": "decision.response"
+            "const": "session.update"
           }
         },
         "required": [
@@ -254,21 +384,21 @@
         ]
       },
       "then": {
-        "required": [
-          "params"
-        ],
         "properties": {
           "params": {
-            "$ref": "#/$defs/decisionResponse"
+            "$ref": "#/$defs/sessionUpdate"
           }
-        }
+        },
+        "required": [
+          "params"
+        ]
       }
     },
     {
       "if": {
         "properties": {
           "method": {
-            "const": "decision.abandon"
+            "const": "session.close"
           }
         },
         "required": [
@@ -276,14 +406,58 @@
         ]
       },
       "then": {
-        "required": [
-          "params"
-        ],
         "properties": {
           "params": {
-            "$ref": "#/$defs/decisionAbandon"
+            "$ref": "#/$defs/sessionBound"
           }
-        }
+        },
+        "required": [
+          "params"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "method": {
+            "const": "events.subscribe"
+          }
+        },
+        "required": [
+          "method"
+        ]
+      },
+      "then": {
+        "properties": {
+          "params": {
+            "$ref": "#/$defs/sessionBound"
+          }
+        },
+        "required": [
+          "params"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "method": {
+            "const": "operation.call"
+          }
+        },
+        "required": [
+          "method"
+        ]
+      },
+      "then": {
+        "properties": {
+          "params": {
+            "$ref": "#/$defs/operationCall"
+          }
+        },
+        "required": [
+          "params"
+        ]
       }
     },
     {
@@ -298,14 +472,14 @@
         ]
       },
       "then": {
-        "required": [
-          "params"
-        ],
         "properties": {
           "params": {
             "$ref": "#/$defs/inboxRelease"
           }
-        }
+        },
+        "required": [
+          "params"
+        ]
       }
     },
     {
@@ -320,14 +494,58 @@
         ]
       },
       "then": {
-        "required": [
-          "params"
-        ],
         "properties": {
           "params": {
             "$ref": "#/$defs/deliveryReport"
           }
-        }
+        },
+        "required": [
+          "params"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "method": {
+            "const": "decision.response"
+          }
+        },
+        "required": [
+          "method"
+        ]
+      },
+      "then": {
+        "properties": {
+          "params": {
+            "$ref": "#/$defs/decisionResponse"
+          }
+        },
+        "required": [
+          "params"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "method": {
+            "const": "decision.abandon"
+          }
+        },
+        "required": [
+          "method"
+        ]
+      },
+      "then": {
+        "properties": {
+          "params": {
+            "$ref": "#/$defs/decisionAbandon"
+          }
+        },
+        "required": [
+          "params"
+        ]
       }
     }
   ]

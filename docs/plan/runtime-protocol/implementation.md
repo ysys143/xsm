@@ -1007,3 +1007,27 @@ ACK의 결과를 빈 배열로 오독해 실패했다. 실제 계약인 -32602 �
 다시 통과했다(`blackbox-messaging-final-tests.log`, `blackbox-messaging-final.json`).
 전체 normative schema·decision/operation 적합성·독립 구현과 P0–P5의 남은
 수용 조건은 미완이다.
+
+## 공개 요청 메서드 스키마와 서버 경계
+
+기존 요청 스키마는 11개 메서드 중 5개만 params 정의에 연결되어 있었다.
+초기화·작업 목록·세션 갱신/종료·이벤트 구독·작업 호출의 6개를 추가해
+모든 메서드를 연결하고 구조 예제 11개를 제공한다. delivery.report의
+알 수 없는 필드도 닫았다. 서버는 REQUEST_FIELDS로 메서드별 허용 필드를
+공통 검사하며, 반복 초기화·미초기화 오류의 우선순위는 유지한다.
+
+변경 전 unknown 필드가 붙은 session.close가 실제로 참여를 닫는 것을
+재현했다(`request-fields-red.log`). 수정 후에는 상태 변경 전에 -32602로
+거부한다. 공개 스키마의 메서드·필드 표와 실제 서버 표가 일치하는지도
+stdlib 검사에서 확인한다. 관련 Python 3.9.6 검사 42개가 통과했다.
+
+개발용 `scripts/check-protocol-schema.py`는 이미 설치된 jsonschema 4.26.0의
+Draft 2020-12 검증기로 정상 11개와 오류 41개를 대조했다
+(`request-schema-validation.json`). operation.call 결속을 지운 격리 사본에서는
+검사기가 실패했다(`request-schema-binding-mutant.json`). 외부 검증 패키지는
+서버·SDK·빠른 gate의 의존성으로 추가하지 않았다.
+
+공통 340개(핵심 219, Python 39, Node 82)는 Python 3.14.6에서 54.986초에
+통과했다(`request-schema-gate.log`). 요청 구조와 실행 시 의미 검증의 차이는
+`docs/protocol/request-contract.md`에 기록했다. 전체 작업별 인자/결과·응답·
+알림 스키마, 독립 전체 구현과 P0–P5의 남은 조건은 미완이다.

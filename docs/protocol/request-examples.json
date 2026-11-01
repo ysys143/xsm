@@ -1,0 +1,108 @@
+[
+  {
+    "jsonrpc": "2.0",
+    "id": 1,
+    "method": "initialize",
+    "params": {
+      "protocolVersion": "1"
+    }
+  },
+  {
+    "jsonrpc": "2.0",
+    "id": 2,
+    "method": "operations/list",
+    "params": {}
+  },
+  {
+    "jsonrpc": "2.0",
+    "id": 3,
+    "method": "session.open",
+    "params": {
+      "runtime": "fixture",
+      "profile": "isolated",
+      "conversation": "sample",
+      "cwd": "/existing/absolute/workspace"
+    }
+  },
+  {
+    "jsonrpc": "2.0",
+    "id": 4,
+    "method": "session.update",
+    "params": {
+      "session": "opaque-session",
+      "state": "busy"
+    }
+  },
+  {
+    "jsonrpc": "2.0",
+    "id": 5,
+    "method": "session.close",
+    "params": {
+      "session": "opaque-session"
+    }
+  },
+  {
+    "jsonrpc": "2.0",
+    "id": 6,
+    "method": "events.subscribe",
+    "params": {
+      "session": "opaque-session"
+    }
+  },
+  {
+    "jsonrpc": "2.0",
+    "id": 7,
+    "method": "operation.call",
+    "params": {
+      "session": "opaque-session",
+      "operation": "xsm_inbox",
+      "arguments": {}
+    }
+  },
+  {
+    "jsonrpc": "2.0",
+    "id": 8,
+    "method": "inbox.release",
+    "params": {
+      "session": "opaque-session",
+      "tokens": [
+        "opaque-claim"
+      ]
+    }
+  },
+  {
+    "jsonrpc": "2.0",
+    "id": 9,
+    "method": "delivery.report",
+    "params": {
+      "session": "opaque-session",
+      "id": "opaque-message",
+      "state": "admitted",
+      "token": "opaque-claim"
+    }
+  },
+  {
+    "jsonrpc": "2.0",
+    "id": 10,
+    "method": "decision.response",
+    "params": {
+      "session": "opaque-session",
+      "questionId": "opaque-question",
+      "challenge": "opaque-challenge",
+      "displayed": "Exact displayed question",
+      "action": "accept",
+      "answer": "yes",
+      "source_id": "native-user-action"
+    }
+  },
+  {
+    "jsonrpc": "2.0",
+    "id": 11,
+    "method": "decision.abandon",
+    "params": {
+      "session": "opaque-session",
+      "questionId": "opaque-question",
+      "challenge": "opaque-challenge"
+    }
+  }
+]

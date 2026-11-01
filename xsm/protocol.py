@@ -27,6 +27,27 @@ MAX_LINE = 1024 * 1024
 RUNTIME = re.compile(r"[a-z][a-z0-9-]{0,63}\Z")
 
 
+REQUEST_FIELDS = {
+    "initialize": {"protocolVersion"},
+    "operations/list": set(),
+    "session.open": {"runtime", "profile", "conversation", "cwd", "capabilities"},
+    "session.update": {"session", "state", "name"},
+    "session.close": {"session"},
+    "events.subscribe": {"session"},
+    "operation.call": {"session", "operation", "arguments"},
+    "inbox.release": {"session", "tokens"},
+    "delivery.report": {"session", "id", "state", "token"},
+    "decision.response": {"session", "questionId", "challenge", "displayed", "action", "answer", "source_id"},
+    "decision.abandon": {"session", "questionId", "challenge"},
+}
+
+
+def request_fields(method, params):
+    allowed = REQUEST_FIELDS.get(method)
+    if allowed is not None and set(params) - allowed:
+        raise ProtocolError(-32602, "unknown parameters for " + method)
+
+
 class ProtocolError(Exception):
     def __init__(self, code, message):
         self.code, self.message = code, message
@@ -156,6 +177,7 @@ class Connection:
         if method == "initialize":
             if self.initialized:
                 raise ProtocolError(-32600, "connection already initialized")
+            request_fields(method, params)
             if params.get("protocolVersion") != VERSION:
                 raise ProtocolError(-32002, "unsupported protocol version")
             self.initialized = True
@@ -165,6 +187,7 @@ class Connection:
                     "operations": [t["name"] for t in TOOLS]}
         if not self.initialized:
             raise ProtocolError(-32002, "initialize first")
+        request_fields(method, params)
         if method == "operations/list":
             return {"operations": TOOLS}
         if method == "session.open":

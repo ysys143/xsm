@@ -306,3 +306,46 @@ class ProtocolTest(ProtocolFixture):
         results = [json.loads(line) for line in out.getvalue().splitlines()]
         self.assertEqual(results[0]["error"]["code"], -32700)
         self.assertEqual(results[1]["result"]["protocolVersion"], "1")
+
+
+class ProtocolRequestFieldsTest(ProtocolFixture):
+    def test_unknown_parameters_are_refused_before_effects(self):
+        from xsm.protocol import ProtocolError
+        opened = self.open()
+        requests = {
+            'operations/list': {},
+            'events.subscribe': {'session': opened['session']},
+            'inbox.release': {'session': opened['session'], 'tokens': ['unknown']},
+            'delivery.report': {'session': opened['session'], 'id': 'unknown', 'state': 'queued'},
+            'operation.call': {'session': opened['session'], 'operation': 'xsm_inbox', 'arguments': {}},
+            'session.close': {'session': opened['session']},
+        }
+        for method, params in requests.items():
+            with self.subTest(method=method):
+                with self.assertRaises(ProtocolError) as refused:
+                    self.connection.dispatch(method, dict(params, injected='not accepted'))
+                self.assertEqual(refused.exception.code, -32602)
+        self.assertIn(opened['session'], self.connection.sessions)
+        self.assertEqual(self.connection.subscriptions, set())
+
+    def test_initialize_unknown_parameter_is_refused_without_initializing(self):
+        from xsm.protocol import Connection, ProtocolError
+        connection = Connection()
+        with self.assertRaises(ProtocolError) as refused:
+            connection.dispatch('initialize', {'protocolVersion': '1', 'injected': True})
+        self.assertEqual(refused.exception.code, -32602)
+        self.assertFalse(connection.initialized)
+
+    def test_public_schema_binds_every_runtime_method_and_field(self):
+        from pathlib import Path
+        from xsm.protocol import REQUEST_FIELDS
+        schema = json.loads((Path(__file__).resolve().parents[1] / 'docs/protocol/request.schema.json').read_text())
+        self.assertEqual(set(schema['properties']['method']['enum']), set(REQUEST_FIELDS))
+        bindings = {item['if']['properties']['method']['const']:
+                    item['then']['properties']['params']['$ref'].split('/')[-1]
+                    for item in schema['allOf']}
+        self.assertEqual(set(bindings), set(REQUEST_FIELDS))
+        for method, fields in REQUEST_FIELDS.items():
+            definition = schema['$defs'][bindings[method]]
+            self.assertEqual(set(definition['properties']), fields, method)
+            self.assertIs(definition['additionalProperties'], False, method)
