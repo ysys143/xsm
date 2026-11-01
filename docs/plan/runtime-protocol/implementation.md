@@ -33,7 +33,7 @@
 | P0 계약·현황 | 부분 구현 | 전체 기능별 normative 스키마, 독립 구현 적합성, 안정판 API 감사 |
 | P1 공통 서비스 | 부분 구현 | CLI 추출, 일반 원격 신원, 네이티브 UI 연결, 비동기 작업 수명 |
 | P2 SDK·검사기 | 부분 구현 | 독립 구현 적합성, 전체 오류/취소 계약 (Python↔Node 교차 시험 통과) |
-| P3 Pi·OpenCode | 부분 구현 | Pi RPC·SDK·수신 경로 검증. Pi 소유 설치·갱신·재개·제거 검증. Pi 워커·자동 재접속과 OpenCode는 미완 |
+| P3 Pi·OpenCode | 부분 구현 | 연결·수신·설치·UI·대화 수명 경로 검증. Native worker·자동 재접속·busy/now의 실제 우선순위 등 미완 |
 | P4 Hermes·OpenClaw | 미구현 | 안정판 API 결손 해소, 게이트웨이 시험 경계, 전체 기능 |
 | P5 통합·배포 | 미실행 | Linux, 30개 방향 조합, 동종 세션, 원격, 네이티브 p95, 메신저, 전체 회귀 |
 
@@ -419,3 +419,38 @@ Asia/Seoul에서 `identity._state_of`로 읽으면 live에서 stale/lstart_chang
 worker·설치 수명 경로가 포함되며, 22개의 독립 결함이라는 뜻은 아니다.
 새 component 수명은 UTC로 고정했지만 공통 identity 자체는 바꾸지 않았다.
 기존 기록을 무효화하지 않는 이행과 각 경로의 호환 검증이 P1 미완 항목이다.
+
+## OpenCode native 설치 수명과 경로 별칭 잠금
+
+`probe-opencode-install-lifecycle.py`로 설치 전 대화→설치→재개→갱신→이전 UI만
+남은 상태의 보존→정상 종료 후 실제 정리→새 UI 재개→제거/재시작을 검증했다.
+기본 조건과 설치 후 사용자 plugin/로더 편집 조건이 각각 8단계를 통과했다.
+사용자 편집 로더의 설치는 거부해 파일을 보존했고, 제거 뒤 추가한 plugin이
+실제 TUI에서 로드됐다. API 입력은 noReply fixture이며 모델 추론은 없다.
+
+이전 UI만 남은 단계에는 이전 root를 참조하는 다른 설정이 없었고 활성
+component도 해당 UI 하나였다. UI 정상 종료 뒤 실제 정리기가 이전 root를
+삭제했다. UI pin을 제거한 native 변이는 4단계에서 잘못 정리해 실패했다.
+이는 UI와 backend가 모두 살아 있어 잘못된 구현도 통과하는 검사를 피한다.
+
+실제 두 프로세스 검사에서 상위 디렉터리 symlink 별칭이 기존 잠금을 우회함을
+재현했다. `_target_lock`의 14개 직접 사용은 install/setup/host/component 네
+파일에 있다. 상위 경로만 정규화하고 마지막 symlink는 경로 이름으로 잠근다.
+기존 방식과 마지막 symlink까지 해석하는 두 변이는 각각 관련 검사를 실패시켰다.
+
+초기 native 시험은 준비 시간 관측과 의존성 설치 대기에서 실패했다. 고정된
+실제 SDK의 package/lock 정보를 함께 준비해 native 재설치를 분리했고, 같은
+서버 PID에서 준비를 관측한다. `$schema`는 native 자체가 xsm 설치 전에 추가해
+설치 직전 bytes를 기준으로 삼았다. Python 3.9 하네스의 newline 인자 실패도
+보존했다. 초기 실패를 완료 표본으로 합치지 않는다.
+
+정상 결과는 `opencode-lifecycle-final`, `opencode-lifecycle-user-edit-fixed`에,
+의도적 실패는 `opencode-lifecycle-final-no-ui-pin`에 남긴다. 모델·사람의 실제
+응답·Linux 인증이나 다른 런타임의 완료로 확대하지 않는다. 공통 PID 시각
+호환 항목과 상위 전체 계획은 계속 미완이다.
+
+최신 빠른 묶음은 핵심 182개 + Python 클라이언트 18개 + Node 45개, 총 245개다.
+Python 3.9.6에서 43.295초, 3.14.6에서 27.866초에 통과했다.
+`py39-lock-lifecycle-complete.log`, `py314-lock-lifecycle-complete.log`가 근거다.
+설치와 setup 경로의 별도 회귀 117개는 64.868초에 통과했다
+(`lifecycle-install-setup-regression.log`).

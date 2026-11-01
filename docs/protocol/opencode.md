@@ -118,7 +118,13 @@ Enter와 Escape의 두 실행 모두 통과했다. 각각 5개 제어 프레임�
 소스 root가 설치된 snapshot과 일치하며 UI PID 수명 기록도 관측했다.
 이 모드의 추가 TUI observer는 읽기만 하며 dialog 표시나 답 전달을 하지 않는다.
 `opencode-installed-ui-release-{choose,cancel}/result.json`이 근거다.
-Native 갱신·재개·제거의 전체 수명 검증은 [설치 수용 조건](../plan/runtime-protocol/opencode-ui-install.md)에 남아 있다.
+Native 갱신·재개·제거는 기본 조건과 사용자 편집 조건에서 각각 8단계를
+통과했다. 이전 UI만 남았을 때의 snapshot 보존과 종료 뒤 실제 정리도 포함한다.
+세부 경로와 실패/변이 기록은 [설치 수용 조건](../plan/runtime-protocol/opencode-ui-install.md)을 따른다.
+
+설치 잠금은 상위 경로 별칭을 정규화하되 마지막 symlink는 따라가지 않는다.
+같은 파일의 별칭이 다른 잠금을 만들거나 갱신 중인 symlink의 잠금이 바뀌는
+것을 실제 두 프로세스 검사로 막는다. 이 검증은 해당 macOS 고정 버전에 한정한다.
 
 API 근거는 [고정 버전 플러그인](https://github.com/anomalyco/opencode/blob/v1.19.5/packages/plugin/src/index.ts),
 [TUI dialog API](https://github.com/anomalyco/opencode/blob/v1.19.5/packages/plugin/src/tui.ts),

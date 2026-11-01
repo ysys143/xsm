@@ -41,7 +41,7 @@ def hold(component="opencode-tui", expected_parent=None):
         return record
 
 
-def configured_roots():
+def active_records():
     folder = Path(paths.path("component-leases"))
     try:
         info = folder.lstat()
@@ -49,7 +49,7 @@ def configured_roots():
         return []
     if not stat.S_ISDIR(info.st_mode) or info.st_uid != os.getuid() or info.st_mode & 0o077:
         raise install.InstallConflictError("component lease directory is not private")
-    roots = []
+    records = []
     for filename in folder.glob("*.json"):
         fd = os.open(filename, os.O_RDONLY | getattr(os, "O_NOFOLLOW", 0) | getattr(os, "O_NONBLOCK", 0))
         try:
@@ -76,15 +76,19 @@ def configured_roots():
         if not identity.pid_alive(value["pid"]):
             continue
         if value.get("clock") is None:
-            roots.append(str(root))  # Legacy wall-clock zones cannot prove a live PID was reused.
+            records.append(value)  # Legacy wall-clock zones cannot prove a live PID was reused.
             continue
         try:
             result = subprocess.run(["ps", "-o", "lstart=", "-p", str(value["pid"])],
                                     env={**os.environ, "LC_ALL": "C", "TZ": "UTC"}, capture_output=True, text=True, timeout=2)
         except (OSError, subprocess.TimeoutExpired):
-            roots.append(str(root))  # Unavailable evidence must not delete a live component's code.
+            records.append(value)  # Unavailable evidence must not delete a live component's code.
             continue
         observed = result.stdout.strip()
         if not observed or observed == value["lstart"]:
-            roots.append(str(root))
-    return roots
+            records.append(value)
+    return records
+
+
+def configured_roots():
+    return [record['root'] for record in active_records()]

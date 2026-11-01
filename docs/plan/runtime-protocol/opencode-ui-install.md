@@ -1,8 +1,8 @@
 # OpenCode UI 설치의 남은 구현
 
-상태: 부분 구현. 기본 설치의 `nativeUi` 활성화와 TUI 등록, JSONC 보존,
-중단 journal, 서버/TUI component 수명 기록을 구현했다. 실제 설치 경로의
-선택·취소가 통과했다. 아래 native 전체 수명 검증은 아직 남아 있다.
+상태: macOS·OpenCode 1.19.5의 기본 설치와 native 수명 시나리오를 검증했다.
+기본 조건과 사용자 편집 조건이 각각 8단계를 통과했다. 다른 플랫폼·버전과
+전체 런타임 지원이 완료됐다는 뜻은 아니다.
 
 ## 구현한 소유 변경
 
@@ -47,13 +47,48 @@ JSONC 댓글/후행 쉼표·중단 후 반복 갱신·사용자 plugin 추가·�
 통과했다. CAS, 사용자 설정 보존, 활성 component 보존, 정리 잠금을 제거한
 네 변이는 관련 검사를 실패시켰다(`ui-install-mutations.json`).
 
-## 남은 native 수명 검증
+## 실제 native 수명 시나리오
 
-설치 전부터 있던 대화의 문맥을 보존하는 설치·갱신·재개, 실행 중 old UI의
-실제 보존과 종료 후 정리, 제거 후 재시작을 native 프로세스로 확인해야 한다.
-격리 검사로 확인한 사용자 편집·JSONC·중단·경로 교체도 그 전체 수명 시나리오와
-구분해 기록한다. 실제 사용자 프로필을 시험 대상으로 삼지 않는다.
+```sh
+python3 scripts/probe-opencode-install-lifecycle.py --native-root /isolated/npm-root --output deliverables/opencode-lifetime
+python3 scripts/probe-opencode-install-lifecycle.py --native-root /isolated/npm-root --output deliverables/opencode-lifetime-user --user-edit
+```
 
-완료 증거에는 기본 설치 경로에서 native 도구→TUI→호스트 적용/취소,
-모델 입력에서 제어 프레임 제외, 설치/제거 뒤 사용자 설정 보존을 포함한다.
-기본 설치의 선택·취소 증거를 native 갱신/재개/제거 전체의 완료 증거로 대체하지 않는다.
+각 명령은 새 HOME/설정/저장소에서 실제 서버와 TUI를 열어 다음 순서를 확인한다.
+
+1. 설치 전 대화와 문맥을 만들고, 설치 후에도 재로딩이 필요함을 확인한다.
+2. 같은 대화를 재개해 설치된 서버·UI와 도구 21개를 로드한다.
+3. 다른 내용의 snapshot으로 갱신해도 실행 중인 이전 코드는 유지한다.
+4. Backend를 새 코드로 재시작한 뒤, 이전 UI만 이전 snapshot을 보존함을 확인한다.
+5. 이전 UI를 정상 종료하고 실제 정리기가 이전 snapshot을 제거한다.
+6. 새 UI로 같은 대화와 문맥을 다시 연다.
+7. 제거해도 실행 중인 프로세스와 사용자 설정·mode는 보존한다.
+8. 다시 시작하면 같은 대화는 남고 xsm 서버·UI는 로드되지 않는다.
+
+사용자 편집 변형은 설치 후 다른 plugin을 추가하고, 실행 중 로더를 편집한
+경우 설치가 거부되어 현재 파일과 대화가 유지됨도 검사한다. 제거 뒤 추가한
+plugin이 실제 TUI에서 로드된다. 무변경 파일은 원래 bytes, 편집 파일은 사용자
+값과 댓글을 보존하는 기준으로 각각 검사한다.
+
+UI pin을 일부러 무시한 `--mutate-omit-ui` 실행은 4단계에서 살아 있는 UI의
+snapshot을 삭제해 실패했다. 정상 실행의 같은 단계에는 다른 참조가 없었고
+살아 있는 이전 component도 UI 하나였음을 기록했다. Legacy PID 시각은 초
+단위이므로 새 backend는 retirement보다 확실히 늦은 초에 시작해 무관한
+보수적 보존이 검사를 가리지 않게 한다.
+
+첫 실패의 5초 초기화 관측과 native SDK 의존성 대기는 별도 실패 로그에 남겼다.
+시험은 실제 고정 SDK의 package/lock 정보를 함께 준비한다. OpenCode가 xsm
+설치 전에 `$schema`를 자동 추가하므로 설치 직전 bytes를 비교 기준으로 기록한다.
+이 native 자체 변경을 xsm의 변경으로 세지 않는다. Python 3.9에서 지원하지
+않는 하네스 write_text 인자도 수정했고 실패 실행은 보존했다.
+
+결과는 `opencode-lifecycle-final`, `opencode-lifecycle-user-edit-fixed`,
+`opencode-lifecycle-final-no-ui-pin`의 result.json과 원시 화면/서버 로그에 있다.
+실제 사용자 프로필이나 모델 추론을 시험 대상으로 삼지 않는다. Linux, 실제
+모델 협업, 다른 런타임 및 전체 수용 조건은 상위 계획의 미완 항목이다.
+
+수명 검사와 잠금 보완 뒤의 빠른 묶음은 핵심 182개 + Python 클라이언트
+18개 + Node 45개, 총 245개다. Python 3.9.6에서 43.295초, 3.14.6에서
+27.866초에 통과했다. 설치·setup 회귀 117개는 64.868초에 통과했다.
+수치는 `*-lock-lifecycle-complete.log`, `lifecycle-install-setup-regression.log`에
+남겼으며 기존 기본 설치 선택·취소 표본과 별도 실행으로 구분한다.
