@@ -60,6 +60,12 @@ class HandoffConsumerTest(test_xsm.TempState):
             sender=self.a, scope=original['message']['scope'], kind='note'))
         with self.assertRaises(ValueError):
             receive._import_handoff(self.b, tampered)
+        canonical = os.path.join(handoff._folder(self.b), sent.msg_id + '.json')
+        raw = paths.read_json(canonical)
+        paths.write_json(canonical, dict(raw, digest='0' * 64))
+        with self.assertRaises(ValueError):
+            receive._import_handoff(self.b, base)
+        paths.write_json(canonical, raw)
         evidence = paths.path(paths.LEDGER, sent.msg_id + '.handoff.json')
         entry = paths.read_json(evidence)
         entry['receiver'] = dict(entry['receiver'], home=self.tmp + '/foreign')

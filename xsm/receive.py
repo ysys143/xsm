@@ -1116,6 +1116,8 @@ def _import_handoff(me, item):
     # Exact content and delivery semantics must match; conflicts still take
     # the complete validation path below and cannot overwrite the original.
     if (previous.get("status") != "not-found" and options.get("content") == item.get("content")
+            and isinstance(previous.get("identity"), dict)
+            and envelope.request_digest(previous["identity"]) == previous.get("digest")
             and (item.get("priority") or options.get("priority") or "next") == (options.get("priority") or "next")
             and item.get("wake", options.get("wake", True)) == options.get("wake", True)
             and (not parsed.attachments or options.get("file_storage"))):
