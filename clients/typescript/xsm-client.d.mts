@@ -49,12 +49,13 @@ export class XsmClient {
   sessionClose(session: SessionHandle): Promise<JsonValue>;
   operationCall(session: SessionHandle, operation: string, args: JsonObject): Promise<JsonValue>;
   eventsSubscribe(session: SessionHandle): Promise<JsonValue>;
-  deliveryReport(session: SessionHandle, id: string, state: string): Promise<JsonValue>;
+  deliveryReport(session: SessionHandle, id: string, state: string, token?: string): Promise<JsonValue>;
   nextNotification(): Promise<Notification>;
   close(): Promise<void>;
 }
 export class XsmHostClient extends XsmClient {
   static connect(options?: ConnectOptions): Promise<XsmHostClient>;
+  abandonDecision(event: Notification): Promise<JsonValue>;
   respondToDecision(event: Notification, response: {
     displayed: string; sourceId: string; answer?: string | null;
     action?: 'accept' | 'decline' | 'cancel';

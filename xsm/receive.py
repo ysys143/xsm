@@ -1266,10 +1266,11 @@ def take_inbox_claims(me, *, owner=None, generation=None, lease=120, passive_onl
                 continue
             outcome = _outcome(parsed)
             # Preserve legacy delivery semantics but keep consumption/ack separate.
-            ledger.receipt(record["id"], "delivered", me,
-                           "%s; unchecked: %s" % (VIA_INBOX, reason) if decision == "unchecked"
-                           else VIA_INBOX, outcome=outcome, from_ref=parsed.header.get("ref"),
-                           body_sha=_body_sha(parsed), req_digest=_req_digest(parsed))
+            if me.get("protocol_version") != "1":
+                ledger.receipt(record["id"], "delivered", me,
+                               "%s; unchecked: %s" % (VIA_INBOX, reason) if decision == "unchecked"
+                               else VIA_INBOX, outcome=outcome, from_ref=parsed.header.get("ref"),
+                               body_sha=_body_sha(parsed), req_digest=_req_digest(parsed))
             if parsed.header.get("kind") == "reply":
                 _index_reply(parsed, me, decision)
                 _close_task(parsed, outcome, me)
@@ -1408,8 +1409,19 @@ def ack_inbox(me, tokens, *, owner=None, generation=None):
     for token in (claim_token(t) for t in tokens):
         record = handoff.ack(me, token, owner, generation)
         ledger.handoff_step(record["id"], "ack", me)
+        if me.get("protocol_version") == "1":
+            protocol_receipt(me, record, "protocol receiver explicitly acknowledged consumption")
         acked.append(record["id"])
     return {"acked": acked}
+
+
+def protocol_receipt(me, record, reason):
+    """A broker read is not native admission; only host observation or ACK is."""
+    parsed = envelope.parse(record["message"].get("content") or "")
+    if parsed.error or parsed.header.get("id") != record["id"]:
+        raise ValueError("canonical message has no valid native receipt identity")
+    ledger.receipt(record["id"], "delivered", me, reason, outcome=_outcome(parsed),
+                   from_ref=parsed.header.get("ref"), body_sha=_body_sha(parsed), req_digest=_req_digest(parsed))
 
 
 def release_inbox(me, tokens, *, owner=None, generation=None):

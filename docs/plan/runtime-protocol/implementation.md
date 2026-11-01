@@ -33,7 +33,7 @@
 | P0 계약·현황 | 부분 구현 | 전체 기능별 normative 스키마, 독립 구현 적합성, 안정판 API 감사 |
 | P1 공통 서비스 | 부분 구현 | CLI 추출, 일반 원격 신원, 네이티브 UI 연결, 비동기 작업 수명 |
 | P2 SDK·검사기 | 부분 구현 | 독립 구현 적합성, 전체 오류/취소 계약 (Python↔Node 교차 시험 통과) |
-| P3 Pi·OpenCode | 미구현 | 실제 기존 세션·사용자 UI·워커·재개·설치 전부 |
+| P3 Pi·OpenCode | 부분 구현 | Pi RPC·SDK·수신 경로 검증. Pi 설치·갱신·워커·재개와 OpenCode는 미완 |
 | P4 Hermes·OpenClaw | 미구현 | 안정판 API 결손 해소, 게이트웨이 시험 경계, 전체 기능 |
 | P5 통합·배포 | 미실행 | Linux, 30개 방향 조합, 동종 세션, 원격, 네이티브 p95, 메신저, 전체 회귀 |
 
@@ -144,3 +144,49 @@ Pi 1.4.0의 공식 npm 패키지와 고정 태그 API를 조회했다. Node 최�
 설치 스크립트·audit·fund 호출은 끈다. 모델·로그인·유료 API는 호출하지 않는다.
 조회 및 설치 상태는 `deliverables/protocol-foundation/pi-140-*.json`과 로그에
 기록한다. 이는 Pi 연결부 구현이나 네이티브 지원 완료 증거가 아니다.
+
+## 공통 호스트 조정과 Pi 실험 연결
+
+- Node 공통 호스트는 질문별 기다림, 하나만 취소/모두 취소, 표시 포기,
+  연결 종료, 네이티브 큐 거절 뒤 인수 해제를 관리한다. 네이티브 연결부에
+  승인·정본 저장 정책을 복제하지 않는다. Python 저수준 호스트 API도
+  표시 포기를 지원한다.
+- `decision.abandon`은 표시만 포기한다. 미응답을 승인·거부로 바꾸지 않는다.
+  `inbox.release`는 현재 소비자의 인수를 ACK 없이 돌려놓는다.
+- 일반 프로토콜의 단순 inbox 조회가 legacy delivered 영수증을 쓰던 반례를
+  검사로 재현했다. 이제 Native context admission(`admitted`, 자기 claim 토큰
+  필수) 또는 명시적 소비 ACK 전에는 성공 영수증을 쓰지 않는다.
+- canonical ACK가 커밋된 뒤 영수증 미러가 실패해도, sender의 대기·재전송은
+  이미 소비된 원문을 다시 보냈다고 판단하지 않는다.
+- `integrations/pi/xsm.mjs`는 Pi 1.4.0의 세션·메시지 이벤트, UI와 도구 등록만
+  연결한다. 기본 이름은 시간형 UUID 앞부분 대신 정본 endpoint 이름을 쓰고,
+  프로필 경로는 realpath로 정규화해 별칭 경로로 신원을 분리하지 않는다.
+- 실제 Pi RPC에서 도구 21개 등록, 선택 질문 왕복, native message_start,
+  명시적 ACK를 실행했다. SDK의 실제 nested-tool 실행·검증 커널에서도
+  inbox 성공, 미지원 대기의 실제 tool error, 질문·답 경로를 실행했다.
+- SDK 커널 시험은 명시적인 issuing-assistant fixture를 쓴다. 모델 생성
+  응답이나 사람의 승인으로 부르지 않는다. 최초 시험은 이 fixture가 없어
+  커널이 정상 거절했고, 해당 실패도 로그에 보존했다.
+- 큐 성공은 sendMessage 호출 반환으로 단정하지 않고 native message_start
+  관측 뒤에 보고한다. 소비 ACK는 이를 이유로 자동 생성하지 않는다.
+- native p95 측정은 macOS의 모델 미구성 Pi 1.4.0에 한정한다. 각 표본은
+  실제 메시지 진입 뒤 명시적 ACK까지 확인한다. 런타임 버전·플랫폼·Python·
+  코드 해시를 결과에 기록하며 실패/중단 원시 로그는 계속 남긴다.
+- Linux, 실제 모델 회신, 물리적 TUI, native worker, 자동 재접속,
+  설치·업데이트 소유권, 다른 런타임 및 30개 방향 조합은 여전히 미완이다.
+- Linux 환경의 읽기 전용 사전 점검에서는 Docker CLI와 Colima가 발견됐지만
+  Docker engine은 연결되지 않았다. VM·전역 Docker context는 변경하지 않았다.
+
+## 호스트 조정 최종 로컬 검사
+
+현재 묶음은 핵심 142개 + Python 클라이언트 18개 + Node 클라이언트/호스트
+28개, 총 188개이다. Python 3.9.6에서 33.994초, Python 3.14.6에서
+20.897초에 통과했다. `host-coordination-current.json`과 버전별 로그가 근거다.
+원문을 읽기만 해도 runtime_reached가 true였던 반례와, canonical ACK 뒤
+미러 영수증이 없으면 대기가 계속되던 반례는 각각 변이 검사로 재검출했다.
+
+최신 Pi 실행은 `pi-native-admitted/result.json`에 있다. Pi 1.4.0·macOS·
+Python 3.14.6에서 100회를 모두 완료했고 p95 상한은 약 0.429초였다.
+결과의 sourceSha256으로 실제 실행한 코드와 대조한다. SDK 커널 검사는
+`pi-sdk-admitted.json`에 있으며 모델 호출은 0회이다.
+이 수치는 다른 버전·Linux·실제 모델·실제 사람의 TUI 응답으로 확대하지 않는다.

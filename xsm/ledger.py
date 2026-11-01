@@ -372,7 +372,7 @@ def wait_for(msg_id: str, seconds: float, interval: float = 0.4) -> dict:
     deadline = time.time() + seconds
     while True:
         state = status(msg_id)
-        if state.get("status") != "queued":
+        if state.get("status") != "queued" or (state.get("delivery") or {}).get("acknowledged"):
             return state
         if time.time() >= deadline:
             return state

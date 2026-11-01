@@ -91,7 +91,7 @@ class XsmClient:
         decision.response is deliberately unavailable, including through this
         generic entry point: these clients do not establish host trust.
         """
-        if method == "decision.response":
+        if method in ("decision.response", "decision.abandon"):
             raise PermissionError("decision.response requires a trusted host client")
         return await self._request(method, params)
 
@@ -168,10 +168,11 @@ class XsmClient:
     async def events_subscribe(self, session: str) -> Any:
         return await self.request("events.subscribe", {"session": self._session(session)})
 
-    async def delivery_report(self, session: str, ident: str, state: str) -> Any:
-        return await self.request("delivery.report", {
-            "session": self._session(session), "id": ident, "state": state,
-        })
+    async def delivery_report(self, session: str, ident: str, state: str, token=None) -> Any:
+        params = {"session": self._session(session), "id": ident, "state": state}
+        if token is not None:
+            params["token"] = token
+        return await self.request("delivery.report", params)
 
     async def next_notification(self) -> dict:
         """Return the next method/params envelope; raise on transport closure."""
@@ -305,3 +306,11 @@ class XsmHostClient(XsmClient):
             "session": params.get("session"), "questionId": params.get("questionId"),
             "challenge": params.get("challenge"), "displayed": displayed,
             "source_id": source_id, "action": action, "answer": answer})
+
+    async def abandon_decision(self, event):
+        if not isinstance(event, dict) or event.get("method") != "decision/request":
+            raise ValueError("an actual host decision/request event is required")
+        params = event.get("params") or {}
+        return await self._request("decision.abandon", {
+            "session": params.get("session"), "questionId": params.get("questionId"),
+            "challenge": params.get("challenge")})

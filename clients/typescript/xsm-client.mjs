@@ -93,7 +93,7 @@ export class XsmClient {
   }
 
   async request(method, params = {}) {
-    if (method === 'decision.response') throw new Error('decision.response requires a trusted host client');
+    if (['decision.response', 'decision.abandon'].includes(method)) throw new Error('decision.response requires a trusted host client');
     return this._request(method, params);
   }
 
@@ -137,8 +137,9 @@ export class XsmClient {
     return this.request('operation.call', { session: handle(session), operation, arguments: args });
   }
   eventsSubscribe(session) { return this.request('events.subscribe', { session: handle(session) }); }
-  deliveryReport(session, id, state) {
-    return this.request('delivery.report', { session: handle(session), id, state });
+  deliveryReport(session, id, state, token) {
+    return this.request('delivery.report', { session: handle(session), id, state,
+      ...(token !== undefined ? { token } : {}) });
   }
 
   nextNotification() {
@@ -209,6 +210,13 @@ export class XsmClient {
 
 /** Trusted UI bridge; never expose this object as a model-callable tool. */
 export class XsmHostClient extends XsmClient {
+  abandonDecision(event) {
+    if (!object(event) || event.method !== 'decision/request' || !object(event.params)) {
+      throw new TypeError('an actual host decision/request event is required');
+    }
+    const { session, questionId, challenge } = event.params;
+    return this._request('decision.abandon', { session, questionId, challenge });
+  }
   respondToDecision(event, { displayed, sourceId, answer = null, action = 'accept' }) {
     if (!object(event) || event.method !== 'decision/request' || !object(event.params)) {
       throw new TypeError('an actual host decision/request event is required');

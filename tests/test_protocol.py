@@ -131,6 +131,53 @@ class ProtocolTest(ProtocolFixture):
         self.assertEqual(handoff.status(record, mid)["status"], "pending")
         self.assertEqual(list(self.connection.events()), [])
 
+    def test_fetch_release_and_queue_report_never_forge_native_consumption(self):
+        from xsm import ledger
+        a, b = self.open(), self.open("b")
+        self.operation(a, "xsm_send", target="ref:" + b["ref"], text="native admission may fail", wait=0)
+        pack = self.operation(b, "xsm_inbox")
+        mid = pack["claims"][0]["id"]
+        self.assertFalse(ledger.evidence_of(mid)["runtime_reached"])
+        self.assertIsNone(ledger.receipt_of(mid))
+        self.connection.dispatch("inbox.release", {"session": b["session"], "tokens": [pack["claims"][0]["token"]]})
+        self.assertFalse(ledger.evidence_of(mid)["runtime_reached"])
+        self.connection.dispatch("delivery.report", {"session": b["session"], "id": mid, "state": "queued"})
+        self.assertFalse(ledger.evidence_of(mid)["runtime_reached"])
+        current = self.operation(b, "xsm_inbox")
+        self.operation(b, "xsm_ack", tokens=[current["claims"][0]["token"]])
+        self.assertTrue(ledger.evidence_of(mid)["runtime_reached"])
+        self.assertEqual(ledger.receipt_of(mid)["decision"], "delivered")
+
+    def test_native_admission_requires_own_claim_and_is_separate_from_consumption(self):
+        from xsm import ledger, handoff
+        from xsm.protocol import ProtocolError
+        a, b = self.open(), self.open("b")
+        self.operation(a, "xsm_send", target="ref:" + b["ref"], text="native admitted", wait=0)
+        claim = self.operation(b, "xsm_inbox")["claims"][0]
+        for token in (None, "wrong"):
+            with self.assertRaises(ProtocolError):
+                self.connection.dispatch("delivery.report", {"session": b["session"], "id": claim["id"],
+                    "state": "admitted", "token": token})
+        self.assertFalse(ledger.evidence_of(claim["id"])["runtime_reached"])
+        self.connection.dispatch("delivery.report", {"session": b["session"], "id": claim["id"],
+            "state": "admitted", "token": claim["token"]})
+        self.assertTrue(ledger.evidence_of(claim["id"])["runtime_reached"])
+        receiver = self.connection.sessions[b["session"]].record
+        self.assertNotEqual(handoff.status(receiver, claim["id"])["status"], "acknowledged")
+
+    def test_committed_consumption_survives_receipt_mirror_failure(self):
+        from xsm import receive, ledger
+        a, b = self.open(), self.open("b")
+        self.operation(a, "xsm_send", target="ref:" + b["ref"], text="committed read", wait=0)
+        claim = self.operation(b, "xsm_inbox")["claims"][0]
+        with mock.patch.object(receive, "protocol_receipt", side_effect=OSError("mirror interrupted")):
+            with self.assertRaises(OSError):
+                self.operation(b, "xsm_ack", tokens=[claim["token"]])
+        self.assertIsNone(ledger.receipt_of(claim["id"]))
+        with mock.patch.object(ledger.time, "sleep", side_effect=AssertionError("committed ACK must not wait")):
+            self.assertTrue(ledger.wait_for(claim["id"], 1)["delivery"]["acknowledged"])
+        self.assertEqual(self.operation(b, "xsm_inbox")["claims"], [])
+
     def test_closed_connection_preserves_unacknowledged_original(self):
         from xsm import handoff
         a, b = self.open(), self.open("b")

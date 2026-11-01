@@ -640,6 +640,8 @@ def _send(target_spec: str, body: str, *, sender: dict | None = None, kind: str 
         state = ledger.wait_for(msg_id, wait)
         if state.get("status") == "delivered":
             return SendResult("delivered", "receiver recorded it", msg_id, target)
+        if (state.get("delivery") or {}).get("acknowledged"):
+            return SendResult("delivered", "canonical consumption acknowledged; transport receipt unavailable", msg_id, target)
         if state.get("status") in ("held", "blocked"):
             return SendResult(state["status"], (state.get("receipt") or {}).get("reason", ""),
                               msg_id, target)

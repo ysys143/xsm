@@ -183,3 +183,36 @@ class HostDecisionTest(ProtocolFixture):
             with self.assertRaises(ToolError):
                 self.operation(a, "xsm_reach", dir=other)
             self.assertEqual(config.reaches(), [])
+
+    def test_abandon_display_does_not_answer_deny_or_apply_and_retries_fresh_display(self):
+        from xsm import decisions
+        from xsm.protocol import ProtocolError
+        a = self.participant()
+        pending = self.question(a)
+        first = self.event()
+        response = self.connection.dispatch("decision.abandon", {
+            "session": first["session"], "questionId": first["questionId"],
+            "challenge": first["challenge"]})
+        self.assertEqual(response["status"], "pending")
+        self.assertIsNone(decisions.read(first["decisionId"])["answer"])
+        retried = self.question(a)
+        self.assertEqual(retried["decision_id"], pending["decision_id"])
+        self.assertNotEqual(retried["question_id"], pending["question_id"])
+        second = self.event()
+        self.assertNotEqual(first["questionId"], second["questionId"])
+        with self.assertRaises(ProtocolError):
+            self.answer(first)
+        self.answer(second)
+
+    def test_release_claim_rearms_notification_without_ack(self):
+        from xsm import handoff
+        a, b = self.open(), self.open("receiver")
+        self.connection.dispatch("events.subscribe", {"session": b["session"]})
+        self.operation(a, "xsm_send", target="ref:" + b["ref"], text="retry delivery", wait=0)
+        self.assertEqual(len(list(self.connection.events())), 1)
+        claim = self.operation(b, "xsm_inbox")["claims"][0]
+        result = self.connection.dispatch("inbox.release", {"session": b["session"], "tokens": [claim["token"]]})
+        self.assertEqual(result["released"], [claim["id"]])
+        record = self.connection.sessions[b["session"]].record
+        self.assertEqual(handoff.status(record, claim["id"])["status"], "pending")
+        self.assertEqual(len(list(self.connection.events())), 1)

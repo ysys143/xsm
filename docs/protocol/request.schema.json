@@ -123,6 +123,100 @@
         "source_id"
       ],
       "additionalProperties": false
+    },
+    "decisionAbandon": {
+      "type": "object",
+      "properties": {
+        "session": {
+          "type": "string",
+          "minLength": 1
+        },
+        "questionId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "challenge": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "session",
+        "questionId",
+        "challenge"
+      ],
+      "additionalProperties": false
+    },
+    "inboxRelease": {
+      "type": "object",
+      "properties": {
+        "session": {
+          "type": "string",
+          "minLength": 1
+        },
+        "tokens": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "minItems": 1
+        }
+      },
+      "required": [
+        "session",
+        "tokens"
+      ],
+      "additionalProperties": false
+    },
+    "deliveryReport": {
+      "type": "object",
+      "properties": {
+        "session": {
+          "type": "string",
+          "minLength": 1
+        },
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "state": {
+          "enum": [
+            "queued",
+            "admitted",
+            "refused",
+            "unknown"
+          ]
+        },
+        "token": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "session",
+        "id",
+        "state"
+      ],
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "state": {
+                "const": "admitted"
+              }
+            },
+            "required": [
+              "state"
+            ]
+          },
+          "then": {
+            "required": [
+              "token"
+            ]
+          }
+        }
+      ]
     }
   },
   "allOf": [
@@ -166,6 +260,72 @@
         "properties": {
           "params": {
             "$ref": "#/$defs/decisionResponse"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "method": {
+            "const": "decision.abandon"
+          }
+        },
+        "required": [
+          "method"
+        ]
+      },
+      "then": {
+        "required": [
+          "params"
+        ],
+        "properties": {
+          "params": {
+            "$ref": "#/$defs/decisionAbandon"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "method": {
+            "const": "inbox.release"
+          }
+        },
+        "required": [
+          "method"
+        ]
+      },
+      "then": {
+        "required": [
+          "params"
+        ],
+        "properties": {
+          "params": {
+            "$ref": "#/$defs/inboxRelease"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "method": {
+            "const": "delivery.report"
+          }
+        },
+        "required": [
+          "method"
+        ]
+      },
+      "then": {
+        "required": [
+          "params"
+        ],
+        "properties": {
+          "params": {
+            "$ref": "#/$defs/deliveryReport"
           }
         }
       }

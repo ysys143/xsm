@@ -34,8 +34,9 @@ class ProtocolError(Exception):
 
 
 class QuestionPending(Exception):
-    def __init__(self, decision_id):
+    def __init__(self, decision_id, question_id):
         self.decision_id = decision_id
+        self.question_id = question_id
         super().__init__(decision_id)
 
 
@@ -127,7 +128,7 @@ class BoundHost(OperationService):
                     "questionId": uuid.uuid4().hex, "challenge": uuid.uuid4().hex,
                     "question": params["message"], "requestedSchema": params["requestedSchema"],
                     "expiresAt": record["expires_at"]}}
-        raise QuestionPending(record["id"])
+        raise QuestionPending(record["id"], self.connection.ui_requests[record["id"]]["event"]["questionId"])
 
 
 class Connection:
@@ -155,6 +156,7 @@ class Connection:
             self.initialized = True
             return {"protocolVersion": VERSION, "experimental": True,
                     "capabilities": ["messaging", "inbox", "events", "user-decisions"],
+                    "limits": {"claimLeaseSeconds": handoff.CLAIM_LEASE},
                     "operations": [t["name"] for t in TOOLS]}
         if not self.initialized:
             raise ProtocolError(-32002, "initialize first")
@@ -182,20 +184,41 @@ class Connection:
         if method == "events.subscribe":
             self.subscriptions.add(token)
             return {"subscribed": True}
+        if method == "inbox.release":
+            from . import receive
+            tokens = params.get("tokens")
+            if not isinstance(tokens, list) or not tokens or not all(isinstance(t, str) for t in tokens):
+                raise ProtocolError(-32602, "tokens must be a nonempty array of claim tokens")
+            result = receive.release_inbox(host.record, tokens)
+            self.notified.pop(token, None)
+            return result
         if method == "delivery.report":
             mid, state = params.get("id"), params.get("state")
-            if state not in ("queued", "refused", "unknown"):
-                raise ProtocolError(-32602, "state is queued, refused or unknown; use xsm_ack for consumption")
-            if handoff.status(host.record, mid)["status"] == "not-found":
+            if state not in ("queued", "admitted", "refused", "unknown"):
+                raise ProtocolError(-32602, "state is queued, admitted, refused or unknown; use xsm_ack for consumption")
+            original = handoff.status(host.record, mid)
+            if original["status"] == "not-found":
                 raise ProtocolError(-32602, "message does not belong to this receiver")
             from . import ledger
-            if state == "queued":
+            if state == "admitted":
+                from . import receive
+                owner, generation = receive.consumer_for(host.record)
+                current = original.get("claim") or {}
+                supplied = params.get("token")
+                if (not isinstance(supplied, str) or current.get("owner") != owner or
+                        current.get("generation") != generation or
+                        not hmac.compare_digest((current.get("token") or "").encode(), supplied.encode())):
+                    raise ProtocolError(-32003, "native admission requires this host's exact claim token")
+                receive.protocol_receipt(host.record, original, "protocol host observed native context admission")
+            if state in ("queued", "admitted"):
                 ledger.step(mid, "queued", True, "protocol host reports native input queue acceptance")
             paths.append_jsonl("protocol-delivery.jsonl", {
                 "id": mid, "receiver": host.record["ref"], "state": state})
             return {"recorded": state, "acknowledged": False}
         if method == "decision.response":
             return self.decision_response(token, host, params)
+        if method == "decision.abandon":
+            return self.abandon_question(token, host, params)
         if method != "operation.call":
             raise ProtocolError(-32601, "unknown method")
         name, args = params.get("operation"), params.get("arguments", {})
@@ -216,11 +239,19 @@ class Connection:
         try:
             result = host.call(name, args)
             try:
-                return json.loads(result)
+                value = json.loads(result)
+                if name == "xsm_inbox":
+                    value["items"] = []
+                    for claim in value.get("claims", []):
+                        message = handoff.status(host.record, claim["id"])["message"]
+                        value["items"].append({"id": claim["id"], "priority": message.get("priority") or "next",
+                            "kind": message.get("kind") or "note", "wake": message.get("wake", True)})
+                return value
             except (TypeError, ValueError):
                 return {"text": result}
         except QuestionPending as pending:
-            return {"status": "waiting-for-user", "decision_id": pending.decision_id}
+            return {"status": "waiting-for-user", "decision_id": pending.decision_id,
+                    "question_id": pending.question_id}
         finally:
             # Never acknowledge on output flush. Original claims remain durable.
             host.handoff_calls.pop(host.active_request, None)
@@ -381,6 +412,27 @@ class Connection:
         record = decisions.response(key, reply, "host-user", source_id=params["source_id"],
                                     displayed=params["displayed"])
         self.ui_answers[params["questionId"]] = {"session": token, "fingerprint": fingerprint, "decision": key}
+        del self.ui_requests[key]
+        return {"status": record["status"], "decision_id": key}
+
+    def abandon_question(self, token, host, params):
+        from . import decisions
+        if "elicitation" not in host.client_caps:
+            raise ProtocolError(-32004, "host has no user-interface capability")
+        if set(params) != {"session", "questionId", "challenge"}:
+            raise ProtocolError(-32602, "exact question route required")
+        for key in ("questionId", "challenge"):
+            if not isinstance(params[key], str) or not params[key]:
+                raise ProtocolError(-32602, "invalid question route")
+        selected = next(((key, item) for key, item in self.ui_requests.items()
+                         if item["event"]["questionId"] == params["questionId"]), None)
+        if not selected:
+            raise ProtocolError(-32003, "question has no pending display")
+        key, item = selected
+        if (item["host"] is not host or item["event"]["session"] != token or
+                not hmac.compare_digest(item["event"]["challenge"].encode(), params["challenge"].encode())):
+            raise ProtocolError(-32003, "question host identity mismatch")
+        record = decisions.abandon_display(key, host.instance_id)
         del self.ui_requests[key]
         return {"status": record["status"], "decision_id": key}
 

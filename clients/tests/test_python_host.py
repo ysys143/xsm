@@ -15,7 +15,10 @@ class HostClientTest(unittest.IsolatedAsyncioTestCase):
     async def test_real_scoped_question_answer_and_retry(self):
         await asyncio.wait_for(self.roundtrip(), 20)
 
-    async def roundtrip(self):
+    async def test_real_host_abandon_and_explicit_redisplay(self):
+        await asyncio.wait_for(self.roundtrip(abandon=True), 20)
+
+    async def roundtrip(self, abandon=False):
         with tempfile.TemporaryDirectory(prefix="xsm-host-client-") as temp:
             env = {"PATH": os.environ.get("PATH", os.defpath), "HOME": temp,
                    "XSM_HOME": temp + "/state", "PYTHONPATH": str(ROOT),
@@ -30,6 +33,15 @@ class HostClientTest(unittest.IsolatedAsyncioTestCase):
                 event = await host.next_notification()
                 self.assertEqual(event["method"], "decision/request")
                 self.assertEqual(event["params"]["question"], arguments["question"])
+                if abandon:
+                    self.assertEqual((await host.abandon_decision(event))["status"], "pending")
+                    retry = await host.operation_call(session["session"], "xsm_decide", arguments)
+                    self.assertEqual(retry["decision_id"], pending["decision_id"])
+                    fresh = await host.next_notification()
+                    self.assertNotEqual(fresh["params"]["questionId"], event["params"]["questionId"])
+                    with self.assertRaises(RpcError):
+                        await host.respond_to_decision(event, displayed=arguments["question"], source_id="stale-ui", answer="blue")
+                    event = fresh
                 with self.assertRaises(PermissionError):
                     await host.request("decision.response", {})
                 with self.assertRaises(RpcError):
