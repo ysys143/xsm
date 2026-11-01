@@ -105,7 +105,10 @@ def file_revision(target: str) -> str:
 @contextlib.contextmanager
 def _target_lock(target):
     """Stable per-target cross-process lock; reentrant for composed installers."""
-    key = os.path.abspath(target)
+    absolute = os.path.abspath(target)
+    # Parent aliases name the same entry; following the leaf would change the
+    # lock when an installer redirects a managed symlink during an update.
+    key = os.path.join(os.path.realpath(os.path.dirname(absolute)), os.path.basename(absolute))
     with _EDIT_MUTEX:
         if key in _EDIT_ACTIVE:
             yield
