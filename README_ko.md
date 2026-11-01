@@ -654,7 +654,7 @@ Machine A -> SSH -> Machine B                             양쪽 다 xsm 설치 
 
 ## 주요 문서
 
-- **[실험적 호스트 프로토콜](docs/protocol/README.md)**: 미출시 개발 경로. 일반 참여자의 로컬 메시징만 검증 중이며, 추가 런타임·승인 UI·메신저 지원 완료를 뜻하지 않습니다.
+- **[실험적 호스트 프로토콜](docs/protocol/README.md)**: 미출시 개발 경로. Pi·OpenCode 연결·설치·UI를 격리 환경에서 검증 중이며, 전체 런타임·메신저 지원은 미완입니다.
 
 - **[CHANGELOG.md](CHANGELOG.md)**: 릴리스별 변경 기록
 - **[INTENT.md](INTENT.md)**: 프로젝트 목표 및 비전

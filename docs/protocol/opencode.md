@@ -18,9 +18,20 @@ xsm protocol uninstall opencode --home /explicit/opencode-config
 ```
 
 `--home`은 OpenCode 설정 디렉터리 자체이다. XDG_CONFIG_HOME을 사용한다면
-그 아래의 `opencode` 디렉터리이다. 설치기는 `plugins/xsm.js`만 관리하며
-다른 설정·auth·권한 파일을 수정하지 않는다. 설치·갱신·제거 후에는 native
+그 아래의 `opencode` 디렉터리이다. 설치기는 `plugins/xsm.js`와 native TUI
+설정의 xsm plugin URI를 관리한다. 다른 설정 값·auth·권한은 수정하지 않는다.
+설치·갱신·제거 후에는 native
 재시작/재로딩이 필요하다. 실행 중 서버를 종료하지 않는다.
+
+TUI 설정은 기존 소유 파일이 있으면 그 파일을 사용하고, 최초 설치는 기존
+`tui.jsonc`를 우선한다. 둘 다 없으면 `tui.json`을 생성한다. 댓글·후행 쉼표·
+다른 plugin을 보존하고 xsm URI만 편집한다. 원래 파일은 무변경 상태라면
+제거 뒤 byte 단위로 복구한다. 새 파일에 사용자가 설정을 더했다면 자기 URI만
+제거하고 파일을 남긴다. 변경 직전 revision과 디렉터리를 다시 확인한다.
+
+설치 중단은 준비 journal로 복구하며 과거 backup을 사용자 편집 위에 덮지 않는다.
+실행 중인 서버/TUI의 snapshot은 PID·시작 세대와 실제 소스 root를 기록해 보존한다.
+이 기록은 별도 에이전트 참여가 아니며 정리기는 등록된 PID만 조회한다.
 
 로더는 immutable xsm snapshot과 설치 당시 Python을 참조한다. 도구 스키마는
 공통 서버에서 가져와 native SDK의 `tool.schema`로 변환한다. SDK는 OpenCode가
@@ -38,15 +49,14 @@ OpenCode의 기존 시작 동작이다. xsm snapshot에서 별도 npm 설치를 
 입력을 추가하고 실행 중 loop를 사용한다. `now`의 실행 중 개입·중단 우선순위는
 아직 인증하지 않았다. FYI는 공통 호스트의 자연스러운 입력 경계에서 전달한다.
 
-현재 기본 서버 연결은 `user-decisions`를 광고하지 않는다. 고정 버전 SDK의 Question
-API는 list/reply/reject를 제공하지만 ask는 제공하지 않으며 MCP elicitation도
-연결되어 있지 않다. 기본 설치에 TUI companion을 연결하는 작업이 남아 있다. 사용자
-답이 필요한 작업은 승인을 기록하지 않고 오류를 반환한다.
+기본 설치는 서버의 native UI 모드를 켜고 TUI companion을 등록한다. 고정 버전
+SDK의 Question API에는 ask가 없어 아래의 native API 경로를 사용한다.
+서버만 실행 중이거나 TUI가 표시하지 못하면 승인을 기록하지 않고 오류를 반환한다.
 
 개발 연결부는 명시적 `present(conversation, event, controls)` callback이나
 `nativeUi: true`일 때 해당 능력을 광고한다. 후자는
 [`tui.mjs`](../../integrations/opencode/tui.mjs) companion과 native API로 직접 연결한다.
-기본 설치의 companion 등록·활성화는 아직 미완이다.
+소스 연결을 직접 구성하는 개발용 callback도 유지한다.
 
 제어 전송은 빈 `ignored`/`synthetic` native 텍스트 부분의 메타데이터를 쓴다.
 기존 native 서버 API와 인증 경계를 사용하며 별도 listener를 열지 않는다.
@@ -74,6 +84,7 @@ python3 scripts/probe-opencode-question-ui.py --native-root /isolated/npm-root -
 python3 scripts/probe-opencode-question-ui.py --native-root /isolated/npm-root --output deliverables/opencode-ui-cancel --action cancel
 python3 scripts/probe-opencode-question-ui.py --native-root /isolated/npm-root --output deliverables/opencode-bridge --native-bridge --action choose
 python3 scripts/probe-opencode-question-ui.py --native-root /isolated/npm-root --output deliverables/opencode-bridge-cancel --native-bridge --action cancel
+python3 scripts/probe-opencode-question-ui.py --native-root /isolated/npm-root --output deliverables/opencode-installed-ui --native-bridge --installed --action choose
 ```
 
 Native 하네스는 실제 고정 버전 binary와 autoload, 실제 Zod 도구 스키마,
@@ -103,7 +114,11 @@ Enter와 Escape의 두 실행 모두 통과했다. 각각 5개 제어 프레임�
 도구 실행 뒤 모델에 보낸 요청에서 프레임과 일회용 값이 제외된 것도 확인했다.
 이는 loopback assistant/키 입력 fixture이며 모델 추론이나 사람의 실제 답은 아니다.
 `opencode-native-ui-render-{choose,cancel}/result.json`이 근거다.
-기본 설치 완료는 [별도 수용 조건](../plan/runtime-protocol/opencode-ui-install.md)으로 남아 있다.
+기본 설치 경로의 선택·취소도 실제 native TUI에서 통과했다. 서버와 UI의 실제
+소스 root가 설치된 snapshot과 일치하며 UI PID 수명 기록도 관측했다.
+이 모드의 추가 TUI observer는 읽기만 하며 dialog 표시나 답 전달을 하지 않는다.
+`opencode-installed-ui-release-{choose,cancel}/result.json`이 근거다.
+Native 갱신·재개·제거의 전체 수명 검증은 [설치 수용 조건](../plan/runtime-protocol/opencode-ui-install.md)에 남아 있다.
 
 API 근거는 [고정 버전 플러그인](https://github.com/anomalyco/opencode/blob/v1.19.5/packages/plugin/src/index.ts),
 [TUI dialog API](https://github.com/anomalyco/opencode/blob/v1.19.5/packages/plugin/src/tui.ts),

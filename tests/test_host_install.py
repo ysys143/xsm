@@ -1,4 +1,5 @@
 """Native host install ownership, CAS races and complete immutable assets."""
+import json
 import os
 from pathlib import Path
 import shutil
@@ -34,6 +35,9 @@ class HostInstallTest(TempState):
         self.assertEqual(Path(result["file"]).resolve(), loader.resolve())
         self.assertIn(b"import { tool } from '@opencode-ai/plugin'", loader.read_bytes())
         self.assertIn(b"schema: tool.schema", loader.read_bytes())
+        self.assertIn(b"nativeUi: true", loader.read_bytes())
+        ui_file = Path(result["ui"]["file"])
+        self.assertIn(result["ui"]["uri"], ui_file.read_text())
         self.assertTrue((Path(result["runtime_root"]) / "integrations/opencode/xsm.mjs").is_file())
         for filename in host_install.NATIVE_ASSETS["opencode"]:
             self.assertTrue((Path(result["runtime_root"]) / filename).is_file(), filename)
@@ -45,6 +49,7 @@ class HostInstallTest(TempState):
         loader.write_bytes(original)
         host_install.remove("opencode", str(profile))
         self.assertFalse(loader.exists())
+        self.assertFalse(ui_file.exists())
         self.assertEqual(settings.read_text(), '{"user":"retain"}')
         self.assertEqual(stat.S_IMODE(settings.stat().st_mode), 0o640)
 
@@ -55,6 +60,110 @@ class HostInstallTest(TempState):
         with self.assertRaisesRegex(ValueError, "lacks native host assets"):
             host_install.apply("opencode", str(profile))
         self.assertFalse(profile.exists())
+
+    def test_invalid_ui_config_refuses_before_writing_a_backend_loader(self):
+        from xsm import host_install, install
+        profile = Path(self.user_home, "opencode-invalid")
+        profile.mkdir()
+        config = profile / "tui.jsonc"
+        config.write_text('{"plugin":true}')
+        with self.assertRaises(install.InstallConflictError):
+            host_install.apply("opencode", str(profile))
+        self.assertEqual(config.read_text(), '{"plugin":true}')
+        self.assertFalse((profile / "plugins").exists())
+
+    def test_user_edited_ui_snapshot_reference_is_kept_without_adopting_it(self):
+        from xsm import host_install, install
+        profile = Path(self.user_home, "opencode-manual")
+        first = host_install.apply("opencode", str(profile))
+        with (self.source / "xsm/paths.py").open("a") as stream:
+            stream.write("\n# newer UI snapshot\n")
+        host_install.apply("opencode", str(profile))
+        config = Path(first["ui"]["file"])
+        config.write_text('{"plugin":[' + json.dumps(first["ui"]["uri"]) + ']}')
+        with self.assertRaises(install.InstallConflictError):
+            host_install.apply("opencode", str(profile))
+        self.assertIn(Path(first["runtime_root"]).name, install._configured_for())
+
+    def test_ui_upgrade_recovery_keeps_the_actual_old_config_snapshot(self):
+        from xsm import host_install, host_ui_config, install
+        profile = Path(self.user_home, "opencode-recovery")
+        first = host_install.apply("opencode", str(profile))
+        original = Path(first["ui"]["file"]).read_bytes()
+        for number in (1, 2):
+            with (self.source / "xsm/paths.py").open("a") as stream:
+                stream.write("\n# UI upgrade fixture %d\n" % number)
+            with mock.patch.object(host_ui_config, "commit", side_effect=OSError("UI edit interrupted")):
+                with self.assertRaises(OSError):
+                    host_install.apply("opencode", str(profile))
+            record = host_install.read_record("opencode", str(profile))
+            self.assertEqual(record["phase"], "prepared")
+            self.assertEqual(record["ui"]["previous_root"], first["runtime_root"])
+            self.assertIn(Path(first["runtime_root"]).name, install._configured_for())
+            self.assertEqual(Path(first["ui"]["file"]).read_bytes(), original)
+        final = host_install.apply("opencode", str(profile))
+        self.assertIn(final["runtime_root"], host_install.configured_roots())
+        self.assertEqual(host_install.read_record("opencode", str(profile))["ui"]["phase"], "installed")
+
+    def test_late_ui_edit_is_preserved_and_retry_owns_only_its_new_entry(self):
+        from xsm import host_install, install
+        profile = Path(self.user_home, "opencode-late")
+        save = host_install.save_record
+        def edit(record):
+            save(record)
+            if record["phase"] == "prepared":
+                Path(record["ui"]["file"]).write_text('{"theme":"late-user"}')
+        with mock.patch.object(host_install, "save_record", side_effect=edit):
+            with self.assertRaises(install.InstallConflictError):
+                host_install.apply("opencode", str(profile))
+        config = profile / "tui.json"
+        self.assertEqual(config.read_text(), '{"theme":"late-user"}')
+        host_install.apply("opencode", str(profile))
+        self.assertNotIn("late-user", str(host_install.read_record("opencode", str(profile))))
+        host_install.remove("opencode", str(profile))
+        self.assertEqual(config.read_text(), '{"theme":"late-user"}')
+
+    def test_remove_recovers_after_ui_edit_before_backend_removal(self):
+        from xsm import host_install, host_ui_config
+        profile = Path(self.user_home, "opencode-remove")
+        first = host_install.apply("opencode", str(profile))
+        commit = host_ui_config.commit
+        def interrupt(*args):
+            commit(*args)
+            raise OSError("stopped after UI removal")
+        with mock.patch.object(host_ui_config, "commit", side_effect=interrupt):
+            with self.assertRaises(OSError):
+                host_install.remove("opencode", str(profile))
+        self.assertFalse(Path(first["ui"]["file"]).exists())
+        self.assertTrue(Path(first["file"]).exists())
+        host_install.remove("opencode", str(profile))
+        self.assertFalse(Path(first["file"]).exists())
+
+    def test_removing_a_prepared_old_loader_and_manual_rollback_preservation(self):
+        from xsm import host_install, install
+        first = host_install.apply("pi", str(self.home))
+        original = self.loader.read_bytes()
+        with (self.source / "xsm/paths.py").open("a") as stream:
+            stream.write("\n# second snapshot\n")
+        save = host_install.save_record
+        def interrupt(record):
+            save(record)
+            raise OSError("stopped after journal")
+        with mock.patch.object(host_install, "save_record", side_effect=interrupt):
+            with self.assertRaises(OSError):
+                host_install.apply("pi", str(self.home))
+        self.assertEqual(self.loader.read_bytes(), original)
+        self.assertIn(Path(first["runtime_root"]).name, install._configured_for())
+        with mock.patch.object(host_install, "save_record", side_effect=interrupt):
+            with self.assertRaises(OSError):
+                host_install.remove("pi", str(self.home))
+        host_install.remove("pi", str(self.home))
+        second = host_install.apply("pi", str(self.home))
+        self.loader.write_bytes(original)
+        with self.assertRaises(install.InstallConflictError):
+            host_install.apply("pi", str(self.home))
+        self.assertIn(Path(first["runtime_root"]).name, install._configured_for())
+        self.assertNotEqual(first["runtime_root"], second["runtime_root"])
 
     def test_clean_install_idempotent_and_complete_assets_leave_settings_untouched(self):
         from xsm import host_install

@@ -7,20 +7,29 @@ import { fileURLToPath } from 'node:url';
 import { XsmClient } from '../../clients/typescript/xsm-client.mjs';
 import { XsmHost } from '../../clients/typescript/xsm-host.mjs';
 import { NativeUiServer, uiParts } from './ui-channel.mjs';
+import { holdComponent } from './component-lease.mjs';
+
+function unwrap(result) {
+  if (result.error) throw new Error('OpenCode: ' + JSON.stringify(result.error));
+  if (result.data === undefined) throw new Error('OpenCode returned no native data');
+  return result.data;
+}
 
 export default async function xsm(api, options = {}) {
   const command = options.command ?? [fileURLToPath(new URL('../../bin/xsm', import.meta.url)),
     'protocol', 'serve', '--stdio'];
-  const unwrap = result => {
-    if (result.error) throw new Error('OpenCode: ' + JSON.stringify(result.error));
-    if (result.data === undefined) throw new Error('OpenCode returned no native data');
-    return result.data;
-  };
   // Calling a native route here re-enters plugin initialization and can deadlock.
   const profilePath = options.profile ?? process.env.OPENCODE_CONFIG_DIR ??
     join(process.env.XDG_CONFIG_HOME ?? join(homedir(), '.config'), 'opencode');
   await mkdir(profilePath, { recursive: true, mode: 0o700 });
   const profile = await realpath(profilePath);
+  const release = await holdComponent(profile, 'opencode-server');
+  try { return await attach(api, { ...options, command, profile }, release); }
+  catch (error) { await release(); throw error; }
+}
+
+async function attach(api, options, release) {
+  const { command, profile } = options;
   // The native loader imports OpenCode's SDK from its own profile dependency tree.
   const z = options.schema;
   if (!z) throw new Error('xsm native loader must provide OpenCode tool.schema');
@@ -158,6 +167,7 @@ export default async function xsm(api, options = {}) {
       disposed = true;
       ui?.close();
       const closing = await Promise.allSettled([...sessions.keys()].map(close));
+      await release();
       for (const result of closing) if (result.status === 'rejected') fail(result.reason);
     },
   };

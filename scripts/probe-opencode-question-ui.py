@@ -114,14 +114,15 @@ def run(args):
         assistant = module.AssistantFixture(args.output)
         fixture_url = 'http://127.0.0.1:' + str(assistant.server.server_port) + '/v1'
         plugins = profile / 'plugins'
-        plugins.mkdir()
         command = [sys.executable, '-B', '-c',
                    "import runpy,sys;sys.path.insert(0,sys.argv.pop(1));runpy.run_module('xsm',run_name='__main__')",
                    str(ROOT), 'protocol', 'serve', '--stdio']
-        (plugins / 'xsm.js').write_text('import { tool } from "@opencode-ai/plugin";\nimport binding from ' +
-            json.dumps((ROOT / 'integrations/opencode/xsm.mjs').as_uri()) +
-            ';\nexport default api => binding(api, { schema: tool.schema, nativeUi: true, command: ' +
-            json.dumps(command) + ' });\n')
+        if not args.installed:
+            plugins.mkdir()
+            (plugins / 'xsm.js').write_text('import { tool } from "@opencode-ai/plugin";\nimport binding from ' +
+                json.dumps((ROOT / 'integrations/opencode/xsm.mjs').as_uri()) +
+                ';\nexport default api => binding(api, { schema: tool.schema, nativeUi: true, command: ' +
+                json.dumps(command) + ' });\n')
     (profile / 'opencode.json').write_text(json.dumps({
         'enabled_providers': ['xsm-fixture'], 'model': 'xsm-fixture/fixture',
         'provider': {'xsm-fixture': {'npm': '@ai-sdk/openai-compatible', 'name': 'No model fixture',
@@ -134,6 +135,14 @@ def run(args):
                XDG_CACHE_HOME=str(temp / 'cache'), XSM_HOME=str(temp / 'state'),
                TERM='xterm-256color', COLORTERM='truecolor',
                OPENCODE_DISABLE_DEFAULT_PLUGINS='1', OPENCODE_DISABLE_MODELS_FETCH='1')
+    installation = None
+    if args.installed:
+        done = subprocess.run([*command[:5], 'protocol', 'install', 'opencode', '--home', str(profile)],
+                              cwd=work, env=env, capture_output=True, text=True)
+        (args.output / 'installation.stdout').write_text(done.stdout)
+        (args.output / 'installation.stderr').write_text(done.stderr)
+        done.check_returncode()
+        installation = json.loads(done.stdout)
     platform = 'darwin-arm64' if os.uname().sysname == 'Darwin' else 'linux-x64'
     binary = args.native_root.resolve() / ('node_modules/opencode-' + platform + '/bin/opencode')
     version = subprocess.run([str(binary), '--version'], env=env, capture_output=True,
@@ -150,11 +159,16 @@ def run(args):
               'modelInferenceTested': False, 'physicalHumanInputTested': False,
               'automatedKeypressFixture': True, 'protocolDecisionApplied': False,
               'nativeServerTuiBridge': args.native_bridge,
+              'installation': installation,
               'sourceSha256': {name: hashlib.sha256((ROOT / name).read_bytes()).hexdigest() for name in
                                ('integrations/opencode/question-ui.mjs', 'scripts/probe-opencode-question-ui.py')}}
     if args.native_bridge:
         for name in ('integrations/opencode/ui-channel.mjs', 'integrations/opencode/xsm.mjs',
                      'integrations/opencode/tui.mjs', 'scripts/probe-opencode-protocol.py'):
+            result['sourceSha256'][name] = hashlib.sha256((ROOT / name).read_bytes()).hexdigest()
+    if installation:
+        for name in ('integrations/opencode/component-lease.mjs', 'xsm/component_leases.py',
+                     'xsm/host_install.py', 'xsm/host_ui_config.py', 'xsm/jsonc_edit.py'):
             result['sourceSha256'][name] = hashlib.sha256((ROOT / name).read_bytes()).hexdigest()
     tui_pid = None
     master = None
@@ -233,8 +247,31 @@ export default { id: 'xsm-native-bridge-probe', tui: async api => {
                                             else 'integrations/opencode/question-ui.mjs')).as_uri(),
                            'EVENTS': str(events), 'CONVERSATION': native['id'], 'PARAMS': params}.items():
             script = script.replace(key, json.dumps(value))
+        if installation:
+            script = '''import { appendFileSync } from 'node:fs';
+const record = event => appendFileSync(EVENTS, JSON.stringify(event) + '\\n');
+export default { id: 'xsm-readonly-ui-observer', tui: async api => {
+  const off = api.event.on('message.part.updated', event => {
+    const frame = event.properties.part.metadata?.xsmUi;
+    if (frame?.type === 'displayed') record({ type: 'native-render-reported', displayed: frame.displayed });
+  });
+  const timer = setInterval(() => {
+    if (api.route.current.name !== 'session' || !api.state.session.get(CONVERSATION)) return;
+    clearInterval(timer);
+    record({ type: 'native-ready', conversation: api.route.current.params.sessionID });
+  }, 50);
+  api.lifecycle.onDispose(() => { off(); clearInterval(timer); });
+} };
+'''.replace('EVENTS', json.dumps(str(events))).replace('CONVERSATION', json.dumps(native['id']))
         plugin.write_text(script)
-        (profile / 'tui.json').write_text(json.dumps({'plugin': [plugin.as_uri()]}))
+        if installation:
+            config_file = Path(installation['ui']['file'])
+            value = json.loads(config_file.read_text())
+            assert value['plugin'] == [installation['ui']['uri']], value
+            value['plugin'].append(plugin.as_uri())  # A separate read-only observer; never renders or answers.
+            config_file.write_text(json.dumps(value))
+        else:
+            (profile / 'tui.json').write_text(json.dumps({'plugin': [plugin.as_uri()]}))
         tui_pid, master = pty.fork()
         if tui_pid == 0:
             os.chdir(work)
@@ -264,7 +301,13 @@ export default { id: 'xsm-native-bridge-probe', tui: async api => {
                 raise RuntimeError(str(records[-1]))
             plain = re.sub(r'\x1b\[[0-?]*[ -/]*[@-~]', '', screen.decode(errors='replace'))
             if not entered and 'XSM runtime UI probe' in plain and ('Scope: ' + native['id']) in plain and \
-                    any(row['type'] == 'render' for row in records):
+                    any(row['type'] in ('render', 'native-render-reported') for row in records):
+                if installation:
+                    leases = [json.loads(path.read_text()) for path in (temp / 'state/component-leases').glob('*.json')]
+                    lease = next(item for item in leases if item['pid'] == tui_pid)
+                    assert lease['root'] == os.path.realpath(installation['runtime_root']), lease
+                    assert lease['clock'] == 'utc-c', lease
+                    result['activeUiLease'] = lease
                 os.write(master, b'\r' if args.action == 'choose' else b'\x1b')
                 entered = True
             if args.native_bridge and entered:
@@ -296,6 +339,11 @@ export default { id: 'xsm-native-bridge-probe', tui: async api => {
                             protocolDecisionApplied=expected == 'applied', decision=decision,
                             nativeToolOutput=completed[-1]['state']['output'], controlFrames=len(control),
                             uiFramesExcludedFromModelInput=True, assistantFixtureQuestionIssued=assistant.question_issued)
+                        if installation:
+                            actual = [json.loads(path.read_text()) for path in (temp / 'state/sessions').glob('*.json')]
+                            backend = next(item for item in actual if item['runtime'] == 'opencode')
+                            assert backend['protocol_root'] == os.path.realpath(installation['runtime_root']), backend
+                            result['backendOrigin'] = backend['protocol_root']
                         (args.output / 'native-messages.json').write_text(json.dumps(messages, indent=2))
                         break
             answer = next((row for row in records if row['type'] == 'answer'), None)
@@ -362,4 +410,8 @@ if __name__ == '__main__':
     parser.add_argument('--output', type=Path, required=True)
     parser.add_argument('--action', choices=['choose', 'cancel'], default='choose')
     parser.add_argument('--native-bridge', action='store_true')
-    run(parser.parse_args())
+    parser.add_argument('--installed', action='store_true')
+    args = parser.parse_args()
+    if args.installed and not args.native_bridge:
+        parser.error('--installed requires --native-bridge')
+    run(args)

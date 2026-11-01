@@ -376,3 +376,46 @@ snapshot 설치는 UI 관련 세 모듈도 필수 자산으로 검사하며 누�
 생성 전에 거부한다. 이 자산 guard를 뺀 변이도 실패했다. 첫 자산 변이 시도는
 테스트 setup의 모듈 재로딩 때문에 주입되지 않았으므로 성공 증거로 쓰지 않는다.
 setup 뒤 주입한 결과와 초기 무효 시도 로그를 모두 보존했다.
+
+## OpenCode 기본 UI 설치와 snapshot 수명
+
+기본 프로필 설치가 서버 UI 모드를 켜고 immutable snapshot의 TUI URI를 native
+설정에 등록한다. JSONC를 재직렬화하지 않고 자기 URI만 편집하며 댓글·후행
+쉼표·다른 plugin·사용자 mode를 유지한다. 설정 원문을 소유 manifest에 복사하지
+않고 URI 삽입 fragment와 hash만 기록한다. 무변경 파일은 제거 뒤 원래 bytes를
+복구하고, 사용자가 추가한 데이터가 있으면 자기 URI만 제거한다.
+
+서버 로더와 UI 설정을 먼저 검사하고 준비 journal을 남긴 뒤 CAS/no-follow로
+변경한다. 중단된 갱신을 반복해도 실제 old UI URI의 root 참조를 잃지 않는다.
+제거 중단도 재실행으로 복구하며 사용자 편집을 backup으로 덮지 않는다.
+실제 로더/설정의 사용자 snapshot 참조도 정리에서 보존한다.
+
+서버 JS와 TUI는 별도 참여자 대신 실제 PID·시작 세대·소스 root의 component
+수명 기록을 쓴다. 등록과 정리는 같은 snapshot 잠금을 사용한다. 시작 시각은
+C locale/UTC이며 시간대가 없는 과거 수명 기록은 PID가 살아 있으면 보존한다.
+정리기는 그 수명 기록에 있는 PID만 조회한다.
+
+기본 설치에서 실제 native 도구→TUI→서버의 Enter/Escape가 모두 통과했다.
+개발 로더와 Python 질문 relay를 사용하지 않았고 추가 observer는 읽기만 한다.
+서버와 UI가 설치된 snapshot을 사용한 것과 실제 UI PID의 수명 기록을 확인했다.
+결과는 `opencode-installed-ui-release-{choose,cancel}/result.json`에 있다.
+자동 assistant/키 입력 fixture이며 실제 모델 추론·사람의 응답이 아니다.
+
+최신 빠른 검사는 핵심 180개 + Python 18개 + Node 45개, 총 243개이다.
+Python 3.9.6에서 43.324초, 3.14.6에서 28.600초에 통과했다. 두 실행 모두
+120초 안이며, 별도 기존 설치 회귀 104개도 65.389초에 통과했다.
+CAS·사용자 설정 보존·활성 component 보존·정리 잠금의 네 변이도 검출했다.
+Native 갱신·같은 대화 재개·제거·old UI 실제 정리의 전체 수명 시험은 여전히
+미완이다. 세부 기준은 [opencode-ui-install.md](opencode-ui-install.md)를 따른다.
+
+## 확인된 공통 PID 시각 호환 항목
+
+macOS·Python 3.9.6의 자기 PID 표본에서 `ps lstart`는 UTC와 Asia/Seoul에 따라
+다른 문자열을 반환했다. 그 표본에서는 동일 PID의 기록을 UTC로 만든 뒤
+Asia/Seoul에서 `identity._state_of`로 읽으면 live에서 stale/lstart_changed로
+바뀌었다. `legacy-clock-audit.json`이 재현과 AST 호출 목록의 근거다.
+
+기존 공통 lstart 호출은 12개 파일의 22곳이다. 등록·수신 claim·승인 세대·
+worker·설치 수명 경로가 포함되며, 22개의 독립 결함이라는 뜻은 아니다.
+새 component 수명은 UTC로 고정했지만 공통 identity 자체는 바꾸지 않았다.
+기존 기록을 무효화하지 않는 이행과 각 경로의 호환 검증이 P1 미완 항목이다.

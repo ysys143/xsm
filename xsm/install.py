@@ -1085,9 +1085,10 @@ def _configured_for() -> set:
     for link in links:
         texts.append(os.readlink(link) + "/" if os.path.islink(link) else "")
     found = set()
-    from . import host_install
+    from . import host_install, component_leases
     try:
         texts += [root + "/" for root in host_install.configured_roots()]
+        texts += [root + "/" for root in component_leases.configured_roots()]
     except (OSError, ValueError):
         return {name for name in os.listdir(runtime_dir()) if _ID.fullmatch(name)}
     for text in texts:
@@ -1096,6 +1097,11 @@ def _configured_for() -> set:
 
 
 def prune_snapshots(now: float | None = None) -> list:
+    with _target_lock(runtime_dir(CURRENT)):
+        return _prune_snapshots(now)
+
+
+def _prune_snapshots(now: float | None = None) -> list:
     """Remove the snapshots nothing needs; the ids removed. One stays while it is
     the installed one, a config file names it (_configured_for), a process runs
     from it (_running_from), or a session that started before a newer one
