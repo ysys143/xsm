@@ -54,7 +54,7 @@ export async function hostExample(event: Notification): Promise<JsonValue> {
 function hostBindingTypes(host: XsmHost) {
   const parsed = parseHostCommand('xsm_inbox {}');
   const result = host.call(parsed.operation, parsed.arguments);
-  XsmHost.open({ runtime: 'fixture', profile: 'p', conversation: 'a', cwd: '/tmp' });
+  XsmHost.open({ runtime: 'fixture', profile: 'p', conversation: 'a', cwd: '/tmp', inboxBatchSize: 2 });
   XsmHost.open({ runtime: 'fixture', profile: 'p', conversation: 'a', cwd: '/tmp',
     deliver: async () => false });
   // @ts-expect-error only observed idle/busy states are reported by this helper

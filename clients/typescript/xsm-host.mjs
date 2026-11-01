@@ -22,6 +22,10 @@ export function parseHostCommand(text) {
 
 export class XsmHost {
   static async open(options) {
+    if (options.inboxBatchSize !== undefined && (!Number.isInteger(options.inboxBatchSize) ||
+        options.inboxBatchSize < 1 || options.inboxBatchSize > 100)) {
+      throw new TypeError('inboxBatchSize must be an integer from 1 to 100');
+    }
     const command = options.command ?? [fileURLToPath(new URL('../../bin/xsm', import.meta.url)),
       'protocol', 'serve', '--stdio'];
     const client = await XsmHostClient.connect({ command, cwd: options.cwd,
@@ -198,14 +202,20 @@ export class XsmHost {
   async deliverLoop() {
     while (this.pendingWake && !this.closed && !this.deliverySuspended) {
       this.pendingWake = false;
-      try { await this.deliverInbox(true); }
+      try {
+        const pack = await this.deliverInbox(true);
+        if (this.options.inboxBatchSize && pack.messages.length >= this.options.inboxBatchSize && pack.claims.length) {
+          this.pendingWake = true;
+        }
+      }
       catch (error) { this.deliverySuspended = true; this.error(error); }
     }
   }
 
   async deliverInbox(wake) {
     if (!this.options.deliver) throw new Error('native delivery is not connected');
-    const pack = await this.client.operationCall(this.session.session, 'xsm_inbox', {});
+    const pack = await this.client.operationCall(this.session.session, 'xsm_inbox',
+      this.options.inboxBatchSize === undefined ? {} : { limit: this.options.inboxBatchSize });
     if (!pack.messages.length) return pack;
     try {
       // Resolves only after the native binding observes admission, never on stdout flush.

@@ -14,6 +14,12 @@ Native 수신기를 연결할 때는 async `deliver(packet, options)`를 제공�
 중지한다. 이후 `natural_boundary()`가 원본을 다시 확인한다. ACK는 자동으로
 보내지 않는다. options에는 wake, cancelled Event, lease_seconds가 있다.
 
+`inbox_batch_size=2`처럼 지정하면 자동 수신 한 번에 반환할 메시지·notice 수를
+제한한다. 범위는 1–100이며, 생략하면 기존처럼 건수 제한 없이 읽는다.
+원문을 인수한 가득 찬 배치는 새 알림 없이 이어 읽는다. Notice만 반환돼 인수가
+없는 경우에는 반복하지 않는다. `natural_boundary()`는 설정된 배치 하나를 읽는다.
+이 설정은 바이트 예산이나 native queue의 용량 재시도를 대신하지 않는다.
+
 UI는 async `present(event, cancelled)`를 제공한 경우에만 광고한다. 반환값의
 키는 displayed, source_id, action, answer이다. 실제 native callback만 연결한다.
 답 저장 뒤 원래 작업을 동일 인자로 재호출해 적용하며, UI 출력이나 전송 성공을

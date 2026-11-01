@@ -78,6 +78,37 @@ class PublicHandoffTest(TempState):
         from xsm import handoff
         self.assertEqual(handoff.status(self.b, sent.msg_id)['status'], 'acknowledged')
 
+    def test_cli_bounded_reads_retain_remaining_originals_until_explicit_ack(self):
+        from xsm import cli, context, handoff, registry
+        sent = [self.send('cli-batch-%s' % index) for index in range(3)]
+        call = context.of_record(self.b, context.BASIS_SESSION)
+        with mock.patch.object(registry, 'me', return_value=self.b), \
+                mock.patch.object(registry, 'last_identity', return_value=call):
+            with contextlib.redirect_stderr(io.StringIO()):
+                self.assertEqual(cli.main(['inbox', '--limit', '0', '--json']), cli.REFUSED)
+            packets = []
+            for _ in range(2):
+                output = io.StringIO()
+                with contextlib.redirect_stdout(output):
+                    self.assertEqual(cli.main(['inbox', '--limit', '2', '--json']), 0)
+                packets.append(json.loads(output.getvalue()))
+            self.assertEqual([len(packet['messages']) for packet in packets], [2, 1])
+            self.assertTrue(all(handoff.status(self.b, item.msg_id)['status'] != 'acknowledged' for item in sent))
+            tokens = [claim['token'] for packet in packets for claim in packet['claims']]
+            with contextlib.redirect_stdout(io.StringIO()):
+                self.assertEqual(cli.main(['ack', *tokens]), 0)
+        self.assertTrue(all(handoff.status(self.b, item.msg_id)['status'] == 'acknowledged' for item in sent))
+
+    def test_mcp_invalid_limits_never_fall_back_to_an_unbounded_read(self):
+        from xsm.operation_schema import ToolError
+        self.send('retain before invalid limit')
+        server = self.server()
+        for limit in (None, False, 0, 101, 1.5):
+            with self.assertRaises(ToolError):
+                server.call('xsm_inbox', {'limit': limit})
+        packet = json.loads(server.call('xsm_inbox', {'limit': 1}))
+        self.assertEqual(len(packet['claims']), 1)
+
     def test_failed_mcp_output_releases_claim_without_ack(self):
         from xsm import handoff
         sent = self.send()

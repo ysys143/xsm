@@ -49,11 +49,17 @@ Previous approvals and consumer claim tokens are not inherited.
 `operations/list` returns the existing public MCP tool names, argument schemas
 and descriptions. `operation.call` takes `session`, `operation` and `arguments`.
 This uses the existing policy/decision dispatcher; it does not invoke arbitrary
-Python functions or shell commands. Existing enum, type and required-field
-checks are applied. A listed operation is **not proof of feature support** in
+Python functions or shell commands. Existing enum, type, required-field and
+numeric minimum/maximum checks are applied. A listed operation is **not proof of feature support** in
 this experimental host. Native runtime and worker paths are not generalized
 yet. Explicit blocking `wait`/`wait_secs` are rejected. Omitted `wait` is set
 to zero on this transport, without changing CLI/MCP defaults.
+
+`xsm_inbox` accepts an optional integer `limit` from 1 to 100. It bounds the
+rendered messages or notices returned by one read; it is not a byte budget.
+Omitting it retains the existing unbounded read. Unselected originals stay
+pending, and selected originals still require explicit consumption ACK.
+The CLI exposes the same option as `xsm inbox --limit 2 --json`.
 
 `events.subscribe` enables `events/available` notifications with the bound session
 and pending message IDs. Notifications neither claim nor acknowledge messages.
@@ -168,3 +174,11 @@ writing an admitted report. `present` remains independent of native delivery.
 
 The helper currently rejects waits on a failed connection; automatic reconnect
 without restarting the native session is still an open acceptance item.
+
+`inboxBatchSize` (Python: `inbox_batch_size`) configures bounded automatic
+reads. After a full batch that acquired originals, the helper keeps draining
+without requiring a fresh availability notification. A notice-only batch stops
+instead of repeating without progress. `naturalBoundary()` reads one configured
+batch. These options require a server that advertises `xsm_inbox.limit`.
+Defaults of the runtime bindings have not changed; queue-capacity retry and
+byte-aware admission remain separate unfinished work.

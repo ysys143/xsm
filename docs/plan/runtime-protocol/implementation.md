@@ -699,3 +699,40 @@ native trim에 의한 공백 유실을 막았다. ACK는 마지막 별도 조각
 일반 본문·주입 거부도 실제 SDK에서 재검사했다
 (`openclaw-fragments-short.json`, `openclaw-fragments-denied.json`). Owned 설치,
 worker·wake·UI·한도를 넘는 스트리밍과 전체 계획은 계속 미완이다.
+
+## Inbox 건수 제한과 SDK 연속 읽기
+
+공통 receive/service에 `xsm_inbox.limit`(정수 1–100)을 추가했다. CLI는
+`inbox --limit`, MCP와 protocol은 같은 필드를 사용한다. 한 번 반환하는 렌더된
+메시지·notice 수를 제한하며, 선택하지 않은 원문과 소비 ACK는 유지한다.
+생략하면 기존 동작이다. OpenClaw 정적 catalog도 공통 스키마에서 재생성했다.
+Inbox 설명은 특정 하네스 대신 등록된 대화와 native 수신 능력을 기준으로 바꿨다.
+
+Python/Node 호스트는 `inbox_batch_size`/`inboxBatchSize`로 자동 수신을 제한한다.
+한 번의 coalesced tick에서 5개 원문을 2·2·1로 가져오고 명시적으로 ACK하는
+실제 서버 검사가 통과했다. Notice만 있는 가득 찬 배치가 반복되던 경로도
+수정 전 실패로 재현하고, 원문 인수가 없으면 중지하도록 수정했다.
+Runtime binding의 기본 배치 크기는 아직 바꾸지 않았다. Native queue 용량
+재시도, 바이트 예산, transient notice 뒤의 공정한 진행은 미완이다.
+
+초기 검사에서 protocol.validate가 numeric minimum/maximum을 무시하는 문제가
+발견됐다. 전수 범위는 기존 wait 필드 4개와 새 inbox limit이었다. 범위를 적용하고
+큰 Python 정수를 float로 변환하면서 OverflowError가 나는 경로도 수정했다.
+MCP에서는 명시적 null·bool·범위 밖 값이 무제한 읽기로 바뀌지 않게 거부한다.
+첫 core 실패와 소유 worker의 name이 fixture 인자명과 겹친 검사 오류를 원시
+로그에 구분했다. Native SDK에서도 limit=1 도구 호출·DM/pull/ACK·수명을
+통과했다(`inbox-batch-native-sdk.json`). Native caller는 여전히 fixture다.
+
+TypeScript 컴파일과 CLI/MCP 19개 검사가 통과했다
+(`inbox-batch-types-current.log`, `inbox-batch-cli-mcp-final.log`). 최신 공통 285개
+(핵심 187, Python 30, Node 68)가 Python 3.14.6에서 36.216초에 통과했다
+(`inbox-batch-complete-py314.log`). 직전 3.9.6 표본 283개/58.012초에는 후속
+notice-only 비진행 검사 두 개가 아직 없었으므로 구분한다.
+건수 제한 전달, CLI 전달, 두 SDK의 연속 읽기/비진행 중지, 숫자 범위/큰 정수,
+MCP null 처리를 제거한 9개 변이는 모두 실패했다
+(`inbox-batch-verified-mutations.json`). 첫 변이 하네스는 치환 위치가 두 곳이라
+4개 실행 뒤 중단됐고, 이 실패와 부분 로그도 보존했다. Python 3.14의 UI 취소 검사에는
+`CancelledError exception in shielded future` 경고가 남아 있으며 P2 미완으로
+기록한다. Notice-only pack에 빈 ACK 안내를 붙이는 코드 경로는 Pi/OpenCode/
+OpenClaw 세 연결부에서 확인했다. 담당 구현 세션이 native 배치 연결 단계에서
+수정·실행 검증해야 하며, 해결 완료로 세지 않는다.

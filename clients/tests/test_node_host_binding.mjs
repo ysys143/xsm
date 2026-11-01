@@ -54,6 +54,38 @@ test('pull-only binding preserves explicit inbox claims without advertising deli
   assert.deepEqual(errors, []);
 });
 
+test('one coalesced wake drains bounded batches without acknowledging originals', { timeout: 10000 }, async t => {
+  const delivered = [];
+  const { host, command, env } = await fixture(t, { inboxBatchSize: 2,
+    deliver: async packet => { delivered.push(packet); } });
+  const sender = await XsmClient.connect({ command, env, cwd: root });
+  t.after(() => sender.close());
+  const origin = await sender.sessionOpen({ runtime: 'batch-sender', profile: 'one', conversation: 'a', cwd: root });
+  for (let index = 0; index < 5; index++) await sender.operationCall(origin.session, 'xsm_send', {
+    target: 'ref:' + host.session.ref, text: 'bounded-' + index, wake: 'never', wait: 0,
+  });
+  assert.equal(delivered.length, 0);
+  host.pendingWake = true; // One availability tick, without another server notification.
+  await host.deliverLoop();
+  assert.deepEqual(delivered.map(packet => packet.messages.length), [2, 2, 1]);
+  const claims = delivered.flatMap(packet => packet.claims);
+  assert.equal(new Set(claims.map(claim => claim.id)).size, 5);
+  assert.equal((await host.call('xsm_ack', { tokens: claims.map(claim => claim.token) })).acked.length, 5);
+});
+
+test('a full notice-only batch does not spin without acquiring any original', async t => {
+  const { host, errors } = await fixture(t, { inboxBatchSize: 2 });
+  let reads = 0;
+  host.client.operationCall = async () => {
+    if (++reads > 2) throw new Error('notice-only batch repeated');
+    return { messages: ['deferred first', 'deferred second'], claims: [] };
+  };
+  host.pendingWake = true;
+  await host.deliverLoop();
+  assert.equal(reads, 1);
+  assert.deepEqual(errors, []);
+});
+
 test('explicit false native admission releases claims without recording admission', { timeout: 10000 }, async t => {
   const { host, command, env } = await fixture(t, { deliver: async () => false });
   const sender = await XsmClient.connect({ command, env, cwd: root });

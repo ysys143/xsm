@@ -478,6 +478,9 @@ class OperationService:
             return json.dumps(receive.ack_inbox(me, tokens, owner=owner, generation=generation))
         if name == "xsm_inbox":
             from . import inbox, receive
+            limit = args.get("limit")
+            if "limit" in args and (type(limit) is not int or not 1 <= limit <= 100):
+                raise ToolError('inbox limit must be an integer from 1 to 100')
             wait = float(args.get("wait") or 0)
             if not math.isfinite(wait) or wait < 0:
                 raise ToolError('wait must be finite and nonnegative')
@@ -492,7 +495,7 @@ class OperationService:
                 if call_owner in self.cancelled or (call_owner is not None and self._closed):
                     raise ToolError('inbox wait cancelled or input closed; original retained')
             owner, generation = receive.consumer_for(me)
-            pack = receive.take_inbox_claims(me, owner=owner, generation=generation)
+            pack = receive.take_inbox_claims(me, owner=owner, generation=generation, limit=limit)
             if pack["claims"]:
                 self.handoff_calls.setdefault(self.active_request, []).append((me, pack, owner, generation))
             return json.dumps(pack, ensure_ascii=False)

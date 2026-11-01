@@ -33,6 +33,42 @@ class ProtocolFixture(TempState):
 
 
 class ProtocolTest(ProtocolFixture):
+    def test_bounded_inbox_retains_unselected_originals_and_requires_explicit_ack(self):
+        from xsm import handoff
+        a, b = self.open(), self.open('bounded')
+        for index in range(5):
+            self.operation(a, 'xsm_send', target='ref:' + b['ref'], text='batch-%s' % index, wait=0)
+        packets = [self.operation(b, 'xsm_inbox', limit=2) for _ in range(3)]
+        self.assertEqual([len(packet['messages']) for packet in packets], [2, 2, 1])
+        claims = [claim for packet in packets for claim in packet['claims']]
+        self.assertEqual(len({claim['id'] for claim in claims}), 5)
+        receiver = self.connection.sessions[b['session']].record
+        self.assertTrue(all(handoff.status(receiver, claim['id'])['status'] != 'acknowledged' for claim in claims))
+        self.assertEqual(self.operation(b, 'xsm_inbox', limit=2)['messages'], [])
+        ack = self.operation(b, 'xsm_ack', tokens=[claim['token'] for claim in claims])
+        self.assertEqual(len(ack['acked']), 5)
+
+    def test_invalid_inbox_limits_are_refused(self):
+        from xsm.protocol import ProtocolError
+        a = self.open()
+        for limit in (None, 0, -1, 101, 1.5, True, '2'):
+            with self.assertRaises(ProtocolError, msg=repr(limit)):
+                self.operation(a, 'xsm_inbox', limit=limit)
+
+    def test_existing_numeric_schema_bounds_reject_before_business_dispatch(self):
+        from xsm.protocol import ProtocolError
+        a = self.open()
+        cases = [('xsm_owned', {'action': 'status', 'name': 'unstarted', 'wait': 61}, 'exceeds maximum'),
+                 ('xsm_owned', {'action': 'status', 'name': 'unstarted', 'wait': 2 ** 2048}, 'exceeds maximum'),
+                 ('xsm_owned', {'action': 'status', 'name': 'unstarted', 'wait': -1}, 'below minimum'),
+                 ('xsm_ask', {'targets': ['ref:000000'], 'text': 'not sent', 'wait': -1}, 'below minimum'),
+                 ('xsm_question_status', {'id': 'not-opened', 'wait': -1}, 'below minimum'),
+                 ('xsm_connect', {'target': 'ref:000000', 'wait': -1}, 'below minimum')]
+        for name, args, message in cases:
+            with self.assertRaisesRegex(ProtocolError, message):
+                self.connection.dispatch('operation.call', {
+                    'session': a['session'], 'operation': name, 'arguments': args})
+
     def test_open_separates_profiles_and_opaque_handles(self):
         a, b = self.open(), self.open(profile="second")
         self.assertNotEqual(a["session"], b["session"])

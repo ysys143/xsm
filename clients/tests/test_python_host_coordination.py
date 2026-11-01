@@ -57,6 +57,41 @@ class HostCoordinationTest(unittest.IsolatedAsyncioTestCase):
         with self.assertRaisesRegex(RuntimeError, "not connected"):
             await host.natural_boundary()
 
+    async def test_one_coalesced_wake_drains_bounded_batches_without_auto_ack(self):
+        packets = []
+        async def deliver(packet, _options):
+            packets.append(packet)
+        host = await self.host(deliver=deliver, inbox_batch_size=2)
+        client, session = await self.sender()
+        for index in range(5):
+            await client.operation_call(session['session'], 'xsm_send', {
+                'target': 'ref:' + host.session['ref'], 'text': 'bounded-%s' % index,
+                'wake': 'never', 'wait': 0})
+        self.assertEqual(packets, [])
+        host.pending_wake = True
+        await host._drain()
+        self.assertEqual([len(packet['messages']) for packet in packets], [2, 2, 1])
+        claims = [claim for packet in packets for claim in packet['claims']]
+        self.assertEqual(len({claim['id'] for claim in claims}), 5)
+        ack = await host.call('xsm_ack', {'tokens': [claim['token'] for claim in claims]})
+        self.assertEqual(len(ack['acked']), 5)
+
+    async def test_full_notice_only_batch_does_not_repeat_without_progress(self):
+        async def deliver(_packet, _options):
+            pass
+        host = await self.host(deliver=deliver, inbox_batch_size=2)
+        reads = []
+        async def notices(*_args):
+            reads.append(True)
+            if len(reads) > 2:
+                raise RuntimeError('notice-only batch repeated')
+            return {'messages': ['deferred first', 'deferred second'], 'claims': []}
+        host.client.operation_call = notices
+        host.pending_wake = True
+        await host._drain()
+        self.assertEqual(len(reads), 1)
+        self.assertEqual(self.errors, [])
+
     async def test_ui_answer_is_applied_only_through_original_operation_retry(self):
         shown = []
         async def present(event, cancelled):

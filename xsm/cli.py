@@ -1278,9 +1278,11 @@ def _team_sync(team: dict) -> None:
 
 
 def cmd_inbox(args) -> int:
-    """Messages waiting for this Codex session, now rather than at the end of
-    its turn. For a Claude session there is nothing to take: its inbox socket
-    delivers as soon as it is idle."""
+    """Read queued originals for the registered caller without acknowledging consumption."""
+    limit = getattr(args, 'limit', None)
+    if limit is not None and (type(limit) is not int or not 1 <= limit <= 100):
+        print('--limit must be an integer from 1 to 100', file=sys.stderr)
+        return REFUSED
     me, why = _unsure_caller("read this conversation's inbox")
     if why or not me:
         print(why or "this session is not registered; run `xsm doctor`", file=sys.stderr)
@@ -1292,7 +1294,7 @@ def cmd_inbox(args) -> int:
         inbox.wait_for(me.get("session_id"), args.wait, out=sys.stderr,
             counter=lambda: inbox.pending_fields(me, owner_alive=receive._consumer_alive)['inbox_pending'])
     owner, generation = receive.consumer_for(me)
-    pack = receive.take_inbox_claims(me, owner=owner, generation=generation)
+    pack = receive.take_inbox_claims(me, owner=owner, generation=generation, limit=limit)
     pack.update(inbox.pending_fields(me, owner_alive=receive._consumer_alive))
     try:
         if args.json:
@@ -3125,11 +3127,12 @@ def build_parser() -> argparse.ArgumentParser:
     snd.add_argument("--attachment-fallback", choices=["inline"], help="explicit UTF-8 body fallback for an older or unknown peer")
     snd.set_defaults(func=cmd_send)
 
-    ib = sub.add_parser("inbox", help="messages waiting for this Codex session, read mid-turn")
+    ib = sub.add_parser("inbox", help="read messages waiting for this conversation")
     ib.add_argument("--wait", type=float, default=0.0,
                     help="block until a message arrives, at most this many seconds (max %d); "
                          "returns the moment one does, and 0 either way" % inbox.MAX_WAIT)
     ib.add_argument("--json", action="store_true")
+    ib.add_argument("--limit", type=int, help="maximum messages or notices in this read (1 to 100)")
     ib.set_defaults(func=cmd_inbox)
 
     ack = sub.add_parser("ack", help="acknowledge inbox claim tokens after reading")

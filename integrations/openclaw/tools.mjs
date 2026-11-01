@@ -687,7 +687,7 @@ export default [
   },
   {
     "name": "xsm_inbox",
-    "description": "Codex sessions: read messages other sessions sent you that are still waiting. Codex takes them only between turns; while you are working, call this whenever an xsm result says messages are waiting, and before you wait on a peer. A Claude session never needs it: its messages arrive on their own. `wait` blocks until one arrives instead of sleeping in a loop — a loop that never ends your turn is why six messages once went unread. Returns messages and claim tokens. After reading, call xsm_ack with their tokens.",
+    "description": "Read messages waiting for this session. A native host may deliver them automatically; otherwise read before waiting on a peer. Returns messages and claim tokens, without acknowledging consumption. After reading, call xsm_ack with their tokens. Optional limit bounds one batch; remaining originals stay pending. The host protocol supports nonblocking reads; MCP and CLI may support bounded waits.",
     "inputSchema": {
       "type": "object",
       "properties": {
@@ -695,6 +695,12 @@ export default [
           "type": "number",
           "default": 0,
           "description": "seconds to block until a message arrives (max 60 here; the shell `xsm inbox --wait` allows longer)"
+        },
+        "limit": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100,
+          "description": "Maximum rendered messages or notices in this read; omitted reads all eligible originals."
         }
       }
     },

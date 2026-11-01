@@ -110,7 +110,7 @@ if (mode) {
     const executable = resolve('native-fixture-a');
     assert.equal(executable.length, operations.length);
     const inbox = executable.find(tool => tool.name === 'xsm_inbox');
-    const packet = await inbox.execute('native-inbox', {}, new AbortController().signal);
+    const packet = await inbox.execute('native-inbox', { limit: 1 }, new AbortController().signal);
     assert.equal(packet.details.claims.length, 0);
     result.nativeToolExecution = true;
     result.explicitCallerFixture = true;
@@ -202,7 +202,7 @@ if (mode) {
       result.nativeQueuePromptConsumed = true;
       result.nativeWakeTested = false;
     } else {
-      const received = await inboxB.execute('receive-b', {});
+      const received = await inboxB.execute('receive-b', { limit: 1 });
       assert.equal(received.details.claims.length, 1);
       assert.match(JSON.stringify(received.details.messages), /native factory fixture message/);
       tokens = received.details.claims.map(claim => claim.token);

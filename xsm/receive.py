@@ -1185,7 +1185,7 @@ def _native_handoff(me, parsed):
 
 
 def take_inbox_claims(me, *, owner=None, generation=None, lease=120, passive_only=False,
-                      message_ids=None):
+                      message_ids=None, limit=None):
     """Return rendered messages and unconfirmed claim descriptors.
 
     CLI/MCP pass their actual consumer owner/generation. This API never acks;
@@ -1193,6 +1193,8 @@ def take_inbox_claims(me, *, owner=None, generation=None, lease=120, passive_onl
     from its process generation or the approved lease. Tokens are not consent.
     """
     from . import handoff
+    if limit is not None and (type(limit) is not int or not 1 <= limit <= 100):
+        raise ValueError('inbox limit must be an integer from 1 to 100')
     selected = None if message_ids is None else {handoff._id(mid) for mid in message_ids}
     if selected == set():
         return {"messages": [], "claims": []}
@@ -1219,6 +1221,8 @@ def take_inbox_claims(me, *, owner=None, generation=None, lease=120, passive_onl
     acquired = []
     try:
         for record in records:
+            if limit is not None and len(messages) >= limit:
+                break
             if record.get('status') == 'not-found' or (selected is not None and record['id'] not in selected):
                 continue
             current = record.get('claim') or {}

@@ -14,7 +14,9 @@ else:
 class XsmHost:
     @classmethod
     async def open(cls, *, runtime, profile, conversation, cwd, deliver=None, present=None,
-                   command=None, env=None, on_error=None):
+                   command=None, env=None, on_error=None, inbox_batch_size=None):
+        if inbox_batch_size is not None and (type(inbox_batch_size) is not int or not 1 <= inbox_batch_size <= 100):
+            raise ValueError("inbox_batch_size must be an integer from 1 to 100")
         command = command or [str(Path(__file__).resolve().parents[2] / "bin/xsm"),
                               "protocol", "serve", "--stdio"]
         client = await XsmHostClient.connect(command, cwd=cwd, env=env)
@@ -28,6 +30,7 @@ class XsmHost:
                                                 cwd=cwd, capabilities=capabilities)
             operations = (await client.request("operations/list"))["operations"]
             host = cls(client, session, operations, deliver, present, on_error)
+            host.inbox_batch_size = inbox_batch_size
             if deliver:
                 await client.events_subscribe(session["session"])
             host.pump = asyncio.create_task(host._pump())
@@ -46,6 +49,7 @@ class XsmHost:
         self.pending_wake = False
         self.delivery_suspended = False
         self.closed = False
+        self.inbox_batch_size = None
         self.failure = None
         self.delivery_task = None
 
@@ -176,7 +180,8 @@ class XsmHost:
 
     async def _deliver_inbox(self, wake):
         async with self.delivery_lock:
-            packet = await self.client.operation_call(self.session["session"], "xsm_inbox", {})
+            args = {} if self.inbox_batch_size is None else {"limit": self.inbox_batch_size}
+            packet = await self.client.operation_call(self.session["session"], "xsm_inbox", args)
             if not packet["messages"]:
                 return packet
             try:
@@ -197,7 +202,9 @@ class XsmHost:
         while self.pending_wake and not self.closed and not self.delivery_suspended:
             self.pending_wake = False
             try:
-                await self._deliver_inbox(True)
+                packet = await self._deliver_inbox(True)
+                if self.inbox_batch_size and len(packet["messages"]) >= self.inbox_batch_size and packet["claims"]:
+                    self.pending_wake = True
             except asyncio.CancelledError:
                 raise
             except Exception as error:

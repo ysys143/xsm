@@ -48,10 +48,15 @@ def validate(value, schema, path="arguments"):
     if kind in types and (not isinstance(value, types[kind]) or
             (kind in ("number", "integer") and isinstance(value, bool))):
         raise ProtocolError(-32602, path + " must be " + kind)
-    if kind == "number":
+    if kind == "number" and isinstance(value, float):
         import math
         if not math.isfinite(value):
             raise ProtocolError(-32602, path + " must be finite")
+    if kind in ("number", "integer"):
+        if "minimum" in schema and value < schema["minimum"]:
+            raise ProtocolError(-32602, path + " is below minimum")
+        if "maximum" in schema and value > schema["maximum"]:
+            raise ProtocolError(-32602, path + " exceeds maximum")
     if "enum" in schema and value not in schema["enum"]:
         raise ProtocolError(-32602, path + " has an unsupported value")
     if isinstance(value, dict):
