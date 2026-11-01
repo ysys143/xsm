@@ -1661,3 +1661,37 @@ Linux 후속 표본도 변경 없는 `87a52d0`으로 통과했다. 고정 native
 (`linux-openclaw-auto-reconnect-core/result.json`). 앞선 Linux 미실행
 기록의 후속 검증이며, 실제 모델·사람 UI·기존 claim/token 회수·간헐적
 burst ACK 실패 해결과 전체 계획의 완료를 뜻하지 않는다.
+
+## 이미 소유한 원문의 ACK token 재조회
+
+기존 안내는 만료 token을 inbox에서 다시 읽으라고 했지만 일반 inbox는
+소유 중인 claim을 건너뛰어 자동 재등록 뒤 현재 token을 얻을 공개 경로가
+없었다. `xsm_inbox(message_ids=[...])`를 기존 내부 targeted reader에
+연결했다. 같은 대화/owner/generation의 current token을 lease 연장 없이
+반환하고 ACK는 별도다. 다른 대화나 선택하지 않은 원문은 읽거나
+회수하지 않는다. Byte budget·실패 cleanup에서도 이전부터 소유한 claim을
+반환하지 않게 했다. SDK의 ACK 안내에는 message_ids도 넣었다.
+
+기존 API에서 targeted 조회 검사는 거부돼 실패했다
+(`inbox-owned-token-red.log`). 첫 구현의 invalid ID 3건은 protocol
+validator에 pattern/maxItems 처리가 없어 ToolError가 그대로 올라왔다
+(`inbox-owned-token-green.log`). 두 제약을 validator에 연결하고 경계·외부
+JSON Schema 사례도 검사했다. 최종 protocol/catalog 35개가 통과했다
+(`inbox-owned-token-final-verified.log`). Filter를 무시한 변이는 실패했다
+(`inbox-owned-token-ignored-filter-mutant-verified.log`). 변이 초회는 fixture
+setup이 module을 다시 로드해 주입이 사라졌으므로 유효한 검증이 아니며
+해당 로그도 보존했다(`inbox-owned-token-ignored-filter-mutant.log`).
+
+고정 native SDK의 종료 전 원문 복구도 통과했다
+(`openclaw-owned-claim-recovery.json`). 기존 큐와 본문 보존·이전 token
+거부·일반 inbox의 소유 claim 제외·targeted current token 조회·명시적
+ACK·중복 prompt 소비 없음이 포함된다. 모델/실제 agent turn/사람은
+0회다. 공통 gate 413개(핵심 242/Python 48/Node 123)는 73.220초에
+통과했다(`inbox-owned-token-core.log`). 외부 jsonschema 검사는 입력
+11개/거부 41개, 출력 14개/거부 9개, operation 기본 21개와 targeted
+정상 1개/거부 81개가 통과했다(`inbox-owned-token-schema-final.json`).
+Linux의 이 변경 검증·간헐적 burst ACK 실패와 전체 계획은 계속 미완이다.
+
+Byte budget 초과 시 기존 소유 claim까지 release하도록 바꾼 변이도
+관련 검사가 실패했다(`inbox-owned-token-budget-mutant.log`). 이전 claim의
+유지를 실제 정본 token과 비교한 결과다.

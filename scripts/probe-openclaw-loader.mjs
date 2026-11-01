@@ -9,10 +9,11 @@ import operations from '../integrations/openclaw/tools.mjs';
 
 const [nativeRoot, output, mode, countText, policyFlag] = process.argv.slice(2);
 assert.ok(!mode || ['--execute', '--queue'].includes(mode));
-assert.ok(!policyFlag || (mode === '--queue' && ['--deny-injection', '--large-context', '--deferred-notice', '--capacity-retry', '--capacity-fyi', '--burst-context', '--recover-context', '--auto-recover-context'].includes(policyFlag)));
+assert.ok(!policyFlag || (mode === '--queue' && ['--deny-injection', '--large-context', '--deferred-notice', '--capacity-retry', '--capacity-fyi', '--burst-context', '--recover-context', '--auto-recover-context', '--recover-claimed-context'].includes(policyFlag)));
 const denied = policyFlag === '--deny-injection';
 const burstContext = policyFlag === '--burst-context';
-const autoRecoverContext = policyFlag === '--auto-recover-context';
+const recoverClaimedContext = policyFlag === '--recover-claimed-context';
+const autoRecoverContext = policyFlag === '--auto-recover-context' || recoverClaimedContext;
 const recoverContext = policyFlag === '--recover-context' || autoRecoverContext;
 const largeContext = policyFlag === '--large-context' || burstContext || recoverContext;
 const deferredNotice = policyFlag === '--deferred-notice';
@@ -147,6 +148,32 @@ if (mode) {
     assert.equal(rows.length, 2);
     const target = rows.find(row => row.ref !== record.ref);
     assert.ok(target, 'same route must keep separate native conversation identities');
+    let retained;
+    async function admittedReports(id) {
+      let text;
+      try { text = await readFile(join(temp, 'xsm/protocol-delivery.jsonl'), 'utf8'); }
+      catch (error) { if (error.code === 'ENOENT') return 0; throw error; }
+      return text.trim().split('\n').filter(Boolean).map(line => JSON.parse(line))
+        .filter(item => item.id === id && item.state === 'admitted').length;
+    }
+    if (recoverClaimedContext) {
+      const body = 'retained before restart ' + '한글🚀 '.repeat(10000);
+      await executable.find(tool => tool.name === 'xsm_send').execute('retain-before-crash', {
+        target: 'ref:' + target.ref, text: body, wait: 0 });
+      const deadline = Date.now() + 5000;
+      while (Date.now() < deadline) {
+        const queue = api.runtime.agent.session.getSessionEntry({ agentId: 'main',
+          sessionKey: context('native-fixture-b').sessionKey, readConsistency: 'latest' })?.pluginNextTurnInjections?.xsm ?? [];
+        if (queue.length && await admittedReports(queue[0].metadata.messageIds[0])) {
+          retained = { body, queue, id: queue[0].metadata.messageIds[0],
+            tokens: JSON.parse(/xsm_ack with tokens: (\[[^\n]*?\])/.exec(queue.at(-1).text)[1]) };
+          break;
+        }
+        await new Promise(resolve => setTimeout(resolve, 10));
+      }
+      assert.ok(retained, 'pre-crash original was not admitted');
+      result.claimedRecovery = { originalId: retained.id, admittedBeforeCrash: true };
+    }
     if (recoverContext) {
       const errors = globalThis[Symbol.for('xsm.native.queue.errors')];
       const previousErrors = errors.length;
@@ -171,6 +198,33 @@ if (mode) {
       result.nativeBackendRecovery = { sameRef: true, newGeneration: true, newPid: true,
         trigger: autoRecoverContext ? 'transport exit without another native call' : 'explicit native inbox tool after observed transport exit',
         automaticIdleReconnect: autoRecoverContext };
+    }
+
+    if (retained) {
+      const deadline = Date.now() + 5000;
+      while (await admittedReports(retained.id) < 2 && Date.now() < deadline) {
+        await new Promise(resolve => setTimeout(resolve, 10));
+      }
+      assert.ok(await admittedReports(retained.id) >= 2, 'new host did not recover and admit the pre-crash original');
+      const drain = await nativeFunction('host-hook-state-', 'drainPluginNextTurnInjectionContext');
+      const prompt = await drain({ cfg: config, agentId: 'main', sessionKey: context('native-fixture-b').sessionKey });
+      assert.deepEqual(prompt.queuedInjections.map(item => item.id), retained.queue.map(item => item.id));
+      assert.deepEqual(prompt.queuedInjections.map(item => item.text), retained.queue.map(item => item.text));
+      await assert.rejects(second.find(tool => tool.name === 'xsm_ack').execute('stale-pre-crash-ack', {
+        tokens: retained.tokens }), /claim|token|owner/);
+      const ordinary = await inboxB.execute('ordinary-after-recovery', {});
+      assert.equal(ordinary.details.claims.length, 0);
+      const current = await inboxB.execute('recover-owned-token', { message_ids: [retained.id] });
+      assert.equal(current.details.claims.length, 1);
+      assert.equal(current.details.claims[0].id, retained.id);
+      assert.notEqual(current.details.claims[0].token, retained.tokens[0]);
+      const ack = await second.find(tool => tool.name === 'xsm_ack').execute('retained-explicit-ack', {
+        tokens: current.details.claims.map(claim => claim.token) });
+      assert.equal(ack.details.acked.length, 1);
+      const again = await drain({ cfg: config, agentId: 'main', sessionKey: context('native-fixture-b').sessionKey });
+      assert.equal(again.queuedInjections.length, 0);
+      Object.assign(result.claimedRecovery, { oldTokenRefused: true, currentOwnedTokenRead: true,
+        originalQueuePreserved: true, explicitAck: true, duplicatePromptConsumption: false });
     }
 
     if (capacityRetry) {

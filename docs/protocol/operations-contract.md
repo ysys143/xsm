@@ -46,3 +46,23 @@ code (`operation-schema-stale-export.json`). The catalog and examples ship in
 immutable snapshots. Update/reinstall an inconsistent installation rather than
 editing its immutable artifacts. This remains an experimental structural
 contract, not full operation or runtime certification.
+
+## 이미 소유한 inbox claim의 token 재조회
+
+`xsm_inbox`의 선택적 `message_ids`는 현재 대화의 canonical 원문 ID
+1–100개 배열이다. 각 ID는 영문·숫자·밑줄·하이픈 1–160자다. 이를
+지정하면 해당 원문만 조회하며 같은 host·generation이 이미 소유한
+active claim도 현재 token과 함께 반환한다. Lease를 연장하거나
+acknowledge하지 않는다. 일반 조회는 소유 중인 claim을 다시 반환하지
+않으므로 자동 전달 loop의 중복 소비를 막는 기존 동작을 유지한다.
+다른 대화·다른 owner의 claim을 가져오지 않으며, 선택하지 않은 원문의
+lease를 회수하지 않는다. 만료/이전 generation의 회수는 일반 inbox의
+기존 명시적 recovery 경로를 따른다.
+
+```json
+{"session":"opaque-session","operation":"xsm_inbox","arguments":{"message_ids":["original-1"]}}
+```
+
+원문을 이미 읽었지만 ACK token이 바뀌었다면 현재 token만 재조회해
+ACK하고 작업은 반복하지 않는다. Byte budget으로 반환되지 않은 기존
+소유 claim도 해제하지 않는다.

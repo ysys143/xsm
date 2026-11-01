@@ -78,6 +78,10 @@ def validate(value, schema, path="arguments"):
             raise ProtocolError(-32602, path + " is below minimum")
         if "maximum" in schema and value > schema["maximum"]:
             raise ProtocolError(-32602, path + " exceeds maximum")
+    if isinstance(value, str) and "pattern" in schema:
+        import re
+        if re.search(schema["pattern"], value) is None:
+            raise ProtocolError(-32602, path + " has an invalid format")
     if "enum" in schema and value not in schema["enum"]:
         raise ProtocolError(-32602, path + " has an unsupported value")
     if isinstance(value, dict):
@@ -92,6 +96,8 @@ def validate(value, schema, path="arguments"):
     if isinstance(value, list):
         if len(value) < schema.get("minItems", 0):
             raise ProtocolError(-32602, path + " has too few items")
+        if "maxItems" in schema and len(value) > schema["maxItems"]:
+            raise ProtocolError(-32602, path + " has too many items")
         for item in value:
             validate(item, schema.get("items", {}), path + "[]")
 

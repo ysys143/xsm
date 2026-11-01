@@ -33,6 +33,50 @@ class ProtocolFixture(TempState):
 
 
 class ProtocolTest(ProtocolFixture):
+    def test_targeted_inbox_recovers_current_owned_tokens_without_renewing(self):
+        from xsm import handoff
+        a, b = self.open(), self.open('owned-token')
+        self.operation(a, 'xsm_send', target='ref:' + b['ref'], text='do once', wait=0)
+        claim = self.operation(b, 'xsm_inbox')['claims'][0]
+        rec = self.connection.sessions[b['session']].record
+        before = handoff.status(rec, claim['id'])['claim']
+        self.assertEqual(self.operation(b, 'xsm_inbox')['claims'], [])
+        pack = self.operation(b, 'xsm_inbox', message_ids=[claim['id']])
+        self.assertEqual(pack['claims'][0]['token'], claim['token'])
+        self.assertEqual(handoff.status(rec, claim['id'])['claim'], before)
+        self.operation(b, 'xsm_ack', tokens=[claim['token']])
+        self.assertEqual(self.operation(b, 'xsm_inbox', message_ids=[claim['id']])['claims'], [])
+
+    def test_targeted_inbox_cannot_read_another_conversation_or_take_unselected_messages(self):
+        a, b, c = self.open(), self.open('target-b'), self.open('target-c')
+        self.operation(a, 'xsm_send', target='ref:' + c['ref'], text='foreign', wait=0)
+        foreign = self.operation(c, 'xsm_inbox')['claims'][0]
+        self.operation(a, 'xsm_send', target='ref:' + b['ref'], text='unselected', wait=0)
+        self.assertEqual(self.operation(b, 'xsm_inbox', message_ids=[foreign['id']])['claims'], [])
+        self.assertEqual(len(self.operation(b, 'xsm_inbox')['claims']), 1)
+
+    def test_targeted_byte_budget_does_not_release_an_existing_claim(self):
+        from xsm import handoff
+        a, b = self.open(), self.open('owned-byte-budget')
+        for text in ('first', 'second' * 2000):
+            self.operation(a, 'xsm_send', target='ref:' + b['ref'], text=text, wait=0)
+        packet = self.operation(b, 'xsm_inbox')
+        rec = self.connection.sessions[b['session']].record
+        claims = packet['claims']
+        before = [handoff.status(rec, claim['id'])['claim'] for claim in claims]
+        bounded = self.operation(b, 'xsm_inbox', message_ids=[claim['id'] for claim in claims],
+                                 max_bytes=len(packet['messages'][0].encode('utf-8')) + 20)
+        self.assertEqual(len(bounded['claims']), 1)
+        self.assertEqual([handoff.status(rec, claim['id'])['claim'] for claim in claims], before)
+
+    def test_targeted_inbox_rejects_invalid_ids(self):
+        from xsm.protocol import ProtocolError
+        a = self.open()
+        for value in (None, [], 'id', [True], ['../bad'], ['bad\n'], ['x' * 161], ['x'] * 101):
+            with self.subTest(value=repr(value)):
+                with self.assertRaises(ProtocolError):
+                    self.operation(a, 'xsm_inbox', message_ids=value)
+
     def test_inbox_byte_budget_counts_rendered_utf8_and_retains_the_remainder(self):
         a, b = self.open(), self.open('byte-budget')
         for index in range(3):

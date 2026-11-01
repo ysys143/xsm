@@ -17,7 +17,7 @@ test('shared native notice rendering keeps claim-free content without inventing 
 test('shared native original rendering retains the exact ACK tokens and recovery hint', () => {
   const result = renderInboxPacket({ messages: ['original'], claims: [{ id: 'a', token: 'opaque-a' }] });
   assert.match(result, /^original\n\nAfter reading, call xsm_ack with tokens: \["opaque-a"\]/);
-  assert.match(result, /read xsm_inbox for current tokens/);
+  assert.match(result, /read xsm_inbox for current tokens with message_ids: \["a"\]/);
 });
 
 test('native command arguments preserve JSON string whitespace and Unicode', () => {

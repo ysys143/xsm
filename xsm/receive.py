@@ -1233,7 +1233,8 @@ def take_inbox_claims(me, *, owner=None, generation=None, lease=120, passive_onl
             return True
         size = len(text.encode('utf-8')) + (2 if messages else 0)
         if max_bytes is not None and messages and rendered_bytes + size > max_bytes:
-            handoff.release(me, token, owner, generation)
+            if not owned_selected:
+                handoff.release(me, token, owner, generation)
             batch_limited = True
             return False
         return True
@@ -1275,7 +1276,8 @@ def take_inbox_claims(me, *, owner=None, generation=None, lease=120, passive_onl
             if claimed["status"] == "empty":
                 continue
             token = claimed["claim"]["token"]
-            acquired.append(token)
+            if not owned_selected:
+                acquired.append(token)
             ledger.handoff_step(record["id"], "claimed", me)
             parsed = envelope.parse(claimed["message"]["content"])
             decision, reason = check(parsed, me)

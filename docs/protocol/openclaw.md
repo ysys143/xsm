@@ -403,3 +403,21 @@ Linux arm64의 같은 고정 SDK에서도 native 재진입 없는 자동 복구�
 (`linux-openclaw-auto-reconnect-native-100/output/native-queue-100.json`).
 종료 전 claim·기존 queue token 회수·간헐적 burst ACK 실패와 전체 지원
 범위는 미완이며, 위 Linux 미실행 기록의 후속 표본으로 구분한다.
+
+## 종료 전에 큐에 수락된 원문의 token 복구
+
+자동 재등록 뒤에도 이전 큐의 본문과 이전 token 안내를 보존한다. 이전
+token은 새 host에서 거부된다. 이때 ACK 안내의 `message_ids`로
+`xsm_inbox`를 조회하면 이미 소유한 현재 token을 읽을 수 있다. Lease를
+연장하거나 원문을 다시 수행하지 않고, 새 token으로 명시적 ACK한다.
+
+고정 native SDK/macOS에서 큰 원문을 수락한 뒤 backend를 종료하고
+자동 재등록·기존 큐 보존·이전 token 거부·현재 token 재조회·ACK 및
+중복 prompt 소비 없음을 확인했다(`openclaw-owned-claim-recovery.json`).
+이는 해당 표본의 claim 복구이며 간헐적 Linux burst ACK 오류 전체를
+해결했다는 판정은 아니다. Linux의 이 경로 검증은 아직 미실행이다.
+모델·실제 agent turn·사람 UI는 0회다.
+
+```sh
+/isolated/node scripts/probe-openclaw-loader.mjs /isolated/node_modules/openclaw deliverables/openclaw-claimed-recovery.json --queue 1 --recover-claimed-context
+```

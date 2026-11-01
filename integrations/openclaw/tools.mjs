@@ -395,7 +395,7 @@ export default [
   },
   {
     "name": "xsm_send",
-    "description": "Send a message to another session through xsm, the same as `xsm send`. Use it when your shell cannot run xsm (a sandboxed Codex cannot: xsm needs the process table, and a remote needs the network). Targets: name, name@home, ref:xxxxxx, and …@<paired machine>.",
+    "description": "Send a message to another session through xsm, the same as `xsm send`. Use it when your shell cannot run xsm (a sandboxed Codex cannot: xsm needs the process table, and a remote needs the network). Targets: name, name@home, ref:xxxxxx, and \u2026@<paired machine>.",
     "inputSchema": {
       "type": "object",
       "properties": {
@@ -432,7 +432,7 @@ export default [
             "succeeded",
             "failed"
           ],
-          "description": "only on a reply that closes a task you were given: how it ended. Say a failure here, not only in the words — the flag is what the sender can act on."
+          "description": "only on a reply that closes a task you were given: how it ended. Say a failure here, not only in the words \u2014 the flag is what the sender can act on."
         },
         "priority": {
           "type": "string",
@@ -707,6 +707,16 @@ export default [
           "minimum": 1,
           "maximum": 1048576,
           "description": "UTF-8 budget for joined rendered messages. The first oversized item is returned alone for progress; originals are never truncated."
+        },
+        "message_ids": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 100,
+          "items": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_-]{1,160}(?![\\s\\S])"
+          },
+          "description": "Read only these canonical originals in this conversation, including this host's active claims to retrieve current tokens without renewing leases or repeating work."
         },
         "after_id": {
           "type": "string",

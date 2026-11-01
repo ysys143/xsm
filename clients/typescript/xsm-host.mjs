@@ -24,7 +24,9 @@ function retryPause(signal, delayMs) {
 export function inboxAcknowledgement(claims) {
   return claims.length ? '\n\nAfter reading, call xsm_ack with tokens: ' +
     JSON.stringify(claims.map(claim => claim.token)) +
-    '. If expired, read xsm_inbox for current tokens; do not repeat the work.' : '';
+    '. If expired, read xsm_inbox for current tokens' +
+    (claims.every(claim => typeof claim.id === 'string') ? ' with message_ids: ' + JSON.stringify(claims.map(claim => claim.id)) : '') +
+    '; do not repeat the work.' : '';
 }
 
 export function renderInboxPacket(packet) {

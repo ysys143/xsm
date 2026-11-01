@@ -491,6 +491,16 @@ class OperationService:
                     handoff._id(after_id)
                 except ValueError as error:
                     raise ToolError(str(error))
+            message_ids = args.get('message_ids')
+            if 'message_ids' in args:
+                from . import handoff
+                if not isinstance(message_ids, list) or not 1 <= len(message_ids) <= 100:
+                    raise ToolError('message_ids must be an array of 1 to 100 message IDs')
+                try:
+                    for mid in message_ids:
+                        handoff._id(mid)
+                except ValueError as error:
+                    raise ToolError(str(error))
             wait = float(args.get("wait") or 0)
             if not math.isfinite(wait) or wait < 0:
                 raise ToolError('wait must be finite and nonnegative')
@@ -507,7 +517,7 @@ class OperationService:
             owner, generation = receive.consumer_for(me)
             try:
                 pack = receive.take_inbox_claims(me, owner=owner, generation=generation, limit=limit,
-                    max_bytes=max_bytes, after_id=after_id)
+                    max_bytes=max_bytes, after_id=after_id, message_ids=message_ids)
             except ValueError as error:
                 raise ToolError(str(error))
             if pack["claims"]:
