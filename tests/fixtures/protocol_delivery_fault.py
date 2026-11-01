@@ -28,8 +28,10 @@ def exchange(request, notifications=True):
 try:
     for line in sys.stdin:
         request = json.loads(line)
-        reply = exchange(request)
         params = request.get('params', {})
+        if fault == 'ignore-inbox-filter' and params.get('operation') == 'xsm_inbox':
+            params.get('arguments', {}).pop('message_ids', None)
+        reply = exchange(request)
         if request['method'] == 'operation.call':
             if params.get('operation') == 'xsm_inbox' and 'result' in reply:
                 claims = reply['result'].get('claims', [])

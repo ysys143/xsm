@@ -1695,3 +1695,30 @@ Linux의 이 변경 검증·간헐적 burst ACK 실패와 전체 계획은 계�
 Byte budget 초과 시 기존 소유 claim까지 release하도록 바꾼 변이도
 관련 검사가 실패했다(`inbox-owned-token-budget-mutant.log`). 이전 claim의
 유지를 실제 정본 token과 비교한 결과다.
+
+## Owned token 재조회의 Linux·외부 적합성 검증
+
+변경 없는 `896e4ef`로 Linux native에서도 종료 전 큐 수락·backend 종료·
+자동 재등록·기존 큐 보존·이전 token 거부·현재 owned token 조회·명시적
+ACK·중복 prompt 소비 없음이 통과했다
+(`linux-openclaw-owned-claim-recovery/output/claimed-recovery.json`).
+같은 커밋의 Linux 공통 gate 413개는 81.337초에 통과했다
+(`linux-inbox-owned-token-core/result.json`). 모델·사람·agent turn은 0회다.
+테스트 VM은 중지했다.
+
+외부 stdio 적합성 검사기에 일반 inbox의 소유 claim 제외, targeted token
+조회, 대화 격리, ACK 후 targeted 부재를 추가했다. Messaging은 33개,
+events는 36개가 통과했다(`inbox-owned-token-external-{messaging,events}.json`).
+서버 구현을 import하거나 저장소를 읽지 않는 경계 검사다. Wire proxy가
+message_ids를 제거하면 targeted owned token 검사에서 실패하는 회귀도
+통과했다. Checker 회귀 13개가 통과했다
+(`inbox-owned-token-external-checker.log`). 실제 wire frame 79개(성공
+method 9종/notification 1개)의 공개 출력 구조도 검증했다
+(`inbox-owned-token-external-wire-schema.json`). Lease 보존의 증거는
+별도 정본 검사이며, 이 구조 검증으로 domain 결과 전체를 인증하지 않는다.
+
+외부 검사기 확장을 포함한 Mac 최종 공통 gate 414개(핵심 243/Python
+48/Node 123)가 74.814초에 통과했다
+(`inbox-owned-token-external-core.log`). 앞선 Linux 413개와 다른 표본이다.
+외부 검사기 확장의 Linux gate, 간헐적 burst ACK 실패와 나머지 전체
+계획은 계속 미완이다.

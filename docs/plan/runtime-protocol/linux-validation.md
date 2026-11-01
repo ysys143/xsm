@@ -252,3 +252,20 @@ Stage에는 source commit·archive SHA-256·tracked dirty false를 보존했다.
 123)도 79.712초에 통과했다
 (`linux-openclaw-auto-reconnect-core/result.json`, `protocol.log`). 테스트
 전용 VM의 종료 상태는 같은 폴더 `vm-stopped.json`에 기록했다.
+
+## 종료 전 claim의 token 재조회
+
+변경 없는 `896e4ef`를 고정 OpenClaw 2026.10.9/Linux arm64/Node
+24.22.2/Python 3.11.2에서 실행했다. 종료 전에 큰 원문이 native 큐에
+수락된 뒤 backend를 종료했다. 자동 재등록 후 기존 큐 본문·ID 보존,
+이전 token 거부, 일반 inbox의 소유 claim 제외, message_ids로 현재
+token 조회, 명시적 ACK 및 중복 prompt 소비 없음이 통과했다
+(`linux-openclaw-owned-claim-recovery/output/claimed-recovery.json`).
+모델·실제 agent turn·사람·메신저는 0회다.
+
+같은 변경 없는 커밋의 공통 gate 413개(핵심 242/Python 48/Node 123)가
+81.337초에 통과했다(`linux-inbox-owned-token-core/result.json`). 네트워크
+none·source archive hash·image ID·tracked dirty false를 기록했고 VM은
+다시 Stopped로 확인했다(`vm-stopped.json`). 이후 추가한 외부 검사기
+확장까지 포함하는 Linux gate 표본은 아니다. 간헐적 burst ACK 실패와
+전체 계획은 여전히 미완이다.

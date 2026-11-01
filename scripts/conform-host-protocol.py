@@ -131,12 +131,21 @@ def messaging(peer, sender, receiver, reopen, check, equal, events=False):
     resumed = operation(receiver, "xsm_inbox", limit=1)
     check("admitted original survives generation change", lambda: equal(len(resumed["claims"]) == 1 and
           resumed["claims"][0]["id"] == claim["id"] and body in resumed["messages"][0], True))
+    check("ordinary inbox omits current owned claims", lambda: equal(
+          operation(receiver, "xsm_inbox")["claims"], []))
+    check("targeted inbox returns current owned token", lambda: equal(
+          operation(receiver, "xsm_inbox", message_ids=[claim["id"]])["claims"], resumed["claims"]))
+    check("targeted inbox cannot read another conversation", lambda: equal(
+          operation(sender, "xsm_inbox", message_ids=[claim["id"]])["claims"], []))
     token = resumed["claims"][0]["token"]
     check("explicit consumer ACK commits", lambda: equal(
           operation(receiver, "xsm_ack", tokens=[token])["acked"], [claim["id"]]))
     consumed = operation(receiver, "xsm_inbox")
     check("consumed original is absent from inbox", lambda: equal(
           consumed["claims"] == [] and consumed["messages"] == [], True))
+
+    check("acknowledged targeted original stays absent", lambda: equal(
+          operation(receiver, "xsm_inbox", message_ids=[claim["id"]])["claims"], []))
 
     if events:
         peer.call("events.subscribe", {"session": receiver["session"]})

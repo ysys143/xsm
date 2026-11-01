@@ -47,7 +47,12 @@ class ExternalConformanceTest(unittest.TestCase):
     def test_actual_server_delivery_contract(self):
         result = checker.run(self.delivery_candidate('none'), suite='messaging')
         self.assertEqual(result['status'], 'passed', {k: v for k, v in result.items() if k != 'observations'})
-        self.assertEqual(len(result['checks']), 29)
+        self.assertEqual(len(result['checks']), 33)
+
+    def test_ignored_targeted_inbox_filter_is_detected(self):
+        result = checker.run(self.delivery_candidate('ignore-inbox-filter'), suite='messaging')
+        self.assertEqual(result['status'], 'failed', result)
+        self.assertEqual(result['activeCheck'], 'targeted inbox returns current owned token')
 
     def test_automatic_consumption_on_admission_is_detected(self):
         result = checker.run(self.delivery_candidate('auto-consume-admitted'), suite='messaging')
@@ -67,7 +72,7 @@ class ExternalConformanceTest(unittest.TestCase):
     def test_actual_notification_is_captured_and_preserves_original(self):
         result = checker.run(self.delivery_candidate('none'), suite='events', capture=True)
         self.assertEqual(result['status'], 'passed', {k: v for k, v in result.items() if k != 'observations'})
-        self.assertEqual(len(result['checks']), 32)
+        self.assertEqual(len(result['checks']), 36)
         events = [entry['frame'] for entry in result['observations'] if 'method' in entry['frame']]
         self.assertTrue(events, result)
         self.assertEqual(events[0]['method'], 'events/available')

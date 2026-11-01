@@ -75,7 +75,7 @@ python3 scripts/conform-host-protocol.py --suite messaging \
   --command /absolute/path/to/xsm/bin/xsm protocol serve --stdio
 ```
 
-The messaging suite includes the 16 lifecycle checks, then exercises 13 more
+The messaging suite includes the 16 lifecycle checks, then exercises 17 more
 contracts through `operation.call`, `delivery.report` and `inbox.release`:
 
 1. A stored Unicode original is returned whole with one claim.
@@ -89,8 +89,12 @@ contracts through `operation.call`, `delivery.report` and `inbox.release`:
 9. An admitted report with the exact current token returns `acknowledged: false`.
 10. A resumed receiver cannot use its previous generation's token (`-32602`).
 11. The admitted original remains recoverable after that generation change.
-12. The new consumer's explicit ACK commits that message ID.
-13. The consumed original is absent from the inbox.
+12. An ordinary inbox read omits the current consumer's owned claims.
+13. A targeted `message_ids` read returns the current owned token.
+14. A targeted read cannot read another conversation's original.
+15. The new consumer's explicit ACK commits that message ID.
+16. The consumed original is absent from the inbox.
+17. A targeted read also omits that acknowledged original.
 
 The isolated sender uses `wake: never`; this suite does not certify the native
 queue, event timing, idle wake, priority, remote delivery or a human consumer.
@@ -149,3 +153,16 @@ permission effect. Expiry, decline/cancel semantics, full native UI trust,
 all domain operation effects, remote requester identity and complete independent
 implementations remain outside this suite's current certification scope and
 remain required by the overall plan.
+
+## Targeted inbox recovery coverage
+
+The messaging suite now has 33 checks; the events suite has 36. Both include
+current owned-token recovery through `message_ids`, conversation isolation,
+and exclusion after ACK. The wire proxy that silently removes this filter
+fails at `targeted inbox returns current owned token`. These checks use only
+the public stdio boundary, without importing xsm or reading server storage.
+Captured runs are `inbox-owned-token-external-messaging.json` and
+`inbox-owned-token-external-events.json` under `deliverables/protocol-foundation/`.
+Earlier 29-check messaging results above describe the earlier suite. These
+checks do not prove lease preservation; the canonical-state regression covers
+that invariant separately.
