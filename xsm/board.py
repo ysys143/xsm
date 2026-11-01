@@ -348,7 +348,7 @@ def record_decision(me: dict, team_name: str, question: str, answer: str, *, via
             raise BoardError(str(exc))
     else:
         team = _require_member(me, team_name)
-    if via not in ("mcp-elicitation", "native-user", "terminal"):
+    if via not in ("mcp-elicitation", "native-user", "host-user", "terminal"):
         raise BoardError("a decision is your user's own answer, from the form or the terminal")
     if item is not None and not doc.ITEM_RE.match(item):
         # Before anything is kept: a refusal here must mean nothing was recorded.

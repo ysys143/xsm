@@ -22,7 +22,7 @@ hooks; it does not authenticate against malicious processes under that uid.
 No listener, login, cloud service or orchestration wrapper is required.
 
 `session.open` takes `runtime`, `profile`, `conversation`, an existing absolute
-`cwd`, and optional `capabilities` (`messaging`, `inbox`, `events`). Runtime is a
+`cwd`, and optional `capabilities` (`messaging`, `inbox`, `events`, `user-decisions`). Runtime is a
 lowercase slug; `claude` and `codex` are reserved until verified native bindings
 exist. Profile and conversation are nonempty opaque host identifiers. Local
 profile namespaces and addresses are derived without putting raw routing keys
@@ -36,7 +36,9 @@ may own a conversation. A lifetime file lock arbitrates concurrent owners.
 `session.update` accepts `state` (`idle`/`busy`) and `name`; identity is immutable.
 `session.close` unregisters this execution without deleting message originals.
 EOF also closes sessions; crash recovery uses process generation and existing
-claim leases. Reopening the same profile/conversation keeps its address.
+claim leases. Reopening the same profile/conversation keeps its address, but
+gets a new participation generation, even inside one shared host process.
+Previous approvals and consumer claim tokens are not inherited.
 
 ## Operations and delivery
 
@@ -45,7 +47,7 @@ and descriptions. `operation.call` takes `session`, `operation` and `arguments`.
 This uses the existing policy/decision dispatcher; it does not invoke arbitrary
 Python functions or shell commands. Existing enum, type and required-field
 checks are applied. A listed operation is **not proof of feature support** in
-this experimental host. The native runtime/worker/UI paths are not generalized
+this experimental host. Native runtime and worker paths are not generalized
 yet. Explicit blocking `wait`/`wait_secs` are rejected. Omitted `wait` is set
 to zero on this transport, without changing CLI/MCP defaults.
 
@@ -68,12 +70,47 @@ Codex or manufacturing a native queue success.
 FYI (`wake: "never"`) produces no unsolicited event. It is read at the next
 natural tool/prompt boundary. Claimed messages retain their recoverable originals.
 
+## Host user questions
+
+Only a trusted host UI bridge opens a session with `user-decisions`. Ordinary
+model-facing clients keep `decision.response` blocked. The host handle and
+challenge are private transport data and must never be included in model tool
+results or peer messages.
+
+An operation requiring a human answer returns
+`{"status":"waiting-for-user","decision_id":"..."}` without applying its effect.
+The host then receives `decision/request` containing `session`, `decisionId`,
+`questionId`, a one-use `challenge`, the exact `question` and `requestedSchema`.
+This event is independent of message subscriptions and never claims the person
+has seen the question.
+
+After actually displaying the question and collecting that question's response,
+the host-only `XsmHostClient` reports `decision.response`: the same session,
+question ID and challenge, exact `displayed` text, `action`, `answer`, and a
+question-specific native callback `source_id`. A peer's or model's statement
+that a person approved is not a host callback. This contract trusts the installed
+host extension within the same local uid boundary as existing hooks; it does
+not authenticate against malicious local plugin code.
+
+The server checks the active owner, participation generation, display, choices,
+expiry and single-use source before storing the answer as `host-user`.
+It does **not** relabel it `native-user` transcript evidence. A duplicate exact
+response is idempotent; a different response cannot overwrite it or answer
+another pending question. Closing a host discards its pending response routes.
+
+The host must explicitly retry the **same** operation and arguments after an
+answer; the existing durable decision lifecycle revalidates scope before
+applying the effect. Do not poll by repeatedly asking the person. The same
+pending invocation returns its existing ID without emitting another question.
+The response callback itself never applies the operation. Native UI behavior
+still needs each runtime's separate certification.
+
 ## Unsupported boundaries
 
-`decision.response` and interactive user requests currently return `-32004`.
-No claimed answer becomes a human approval. UI display, exact question-response
-binding, asynchronous waits, generic remote identities and native worker
-launches remain open acceptance items, not fallback successes.
+Hosts without the UI capability return `-32004` for interactive operations.
+Explicit native transcript `answer_request` recovery, blocking waits, generic
+remote identities and native worker launches remain open acceptance items.
+They are not silently substituted with another approval or launch path.
 
 Protocol errors: `-32700` JSON parse, `-32600` invalid frame/lifecycle,
 `-32601` unknown method/operation, `-32602` invalid arguments, `-32001` unknown

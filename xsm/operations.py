@@ -689,7 +689,7 @@ class OperationService:
             return "agent-supplied" if receipt.get("via") == "flag" else receipt["source"]
         record = decisions.read(call["key"]) if call else None
         source = ((record or {}).get("answer") or {}).get("source")
-        return "native-user" if source == "native-user" else "mcp-elicitation"
+        return source if source in ("native-user", "host-user") else "mcp-elicitation"
 
     def decide(self, me: dict, args: dict) -> str:
         self.refuse_unattended(me, "Recording a decision")

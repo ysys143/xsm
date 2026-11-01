@@ -146,3 +146,21 @@ tsc --noEmit --strict --module NodeNext --moduleResolution NodeNext --target ES2
 `echo_peer.py`는 전송 검사만을 위한 느슨한 피어이며 실제 서버의 인자 검증을 증명하지 않는다. [`test_python_protocol.py`](../../clients/tests/test_python_protocol.py)와 [`test_node_protocol.mjs`](../../clients/tests/test_node_protocol.mjs)는 실제 서버를 실행해 같은 저장소의 서로 다른 두 세션, `xsm_send`의 `wait: 0`, `events/available`, `xsm_inbox`의 메시지/claim, `xsm_ack` 후 정본의 `acknowledged` 상태와 빈 inbox를 검사한다. 세 가지 배달 보고가 ACK하지 않는 것, `received`와 `session.update.cwd`의 거부도 확인한다. 상태 파일은 임시 XSM_HOME 아래에만 저장되며 사용자 세션·원격·네이티브 런타임을 사용하지 않는다.
 
 응답 ID 연결을 요청 순서에 따른 연결로 바꾸는 변이를 두 구현에 각각 메모리에서 적용했고, 역순 응답 검사의 단언이 실패하는 것을 확인했다. 원본 파일은 변형하지 않았다.
+
+## 호스트 전용 사용자 질문 연결
+
+`XsmHostClient`는 Python과 Node 양쪽에 있다. 이 객체는 설치된 호스트 확장의
+UI 코드만 소유한다. 모델 도구에는 일반 `XsmClient`의 협업 작업만 노출한다.
+호스트 클라이언트도 일반 `request("decision.response", ...)`는 차단한다.
+
+1. 세션을 열 때 `capabilities`에 `user-decisions`를 명시한다.
+2. 작업이 `waiting-for-user`를 반환하면 `decision/request` 알림을 받는다.
+3. 런타임의 실제 사용자 UI에서 원문·선택지를 표시하고 답을 수집한다.
+4. Python은 `respond_to_decision(event, displayed=실제_표시_원문,
+   source_id=실제_질문별_응답_ID, answer=실제_답)`를 호출한다. Node는
+   `respondToDecision(event, { displayed, sourceId, answer })`를 사용한다.
+5. `answered` 뒤 원 작업과 인자를 그대로 다시 호출한다. 새 질문이나 새
+   `decision_key`를 만들어 기존 거부·미확인 결과를 우회하지 않는다.
+
+응답 콜백 시험은 UI 대신 명시적인 시험 호스트를 사용했다. 실제 사용자
+표시·답 수집과 네이티브 런타임 인증이 끝났다는 의미는 아니다.

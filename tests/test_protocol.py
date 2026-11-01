@@ -9,13 +9,17 @@ from unittest import mock
 from tests.test_xsm import TempState
 
 
-class ProtocolTest(TempState):
+class ProtocolFixture(TempState):
     def setUp(self):
         super().setUp()
         from xsm.protocol import Connection
         self.connection = Connection()
         self.addCleanup(self.connection.close)
         self.connection.dispatch("initialize", {"protocolVersion": "1"})
+
+    def tearDown(self):
+        self.connection.close()
+        super().tearDown()
 
     def open(self, conversation="a", profile="p", runtime="fixture"):
         return self.connection.dispatch("session.open", {
@@ -27,6 +31,8 @@ class ProtocolTest(TempState):
         return self.connection.dispatch("operation.call", {
             "session": session["session"], "operation": name, "arguments": args})
 
+
+class ProtocolTest(ProtocolFixture):
     def test_open_separates_profiles_and_opaque_handles(self):
         a, b = self.open(), self.open(profile="second")
         self.assertNotEqual(a["session"], b["session"])
@@ -69,6 +75,7 @@ class ProtocolTest(TempState):
         b = self.open()
         self.assertEqual(a["ref"], b["ref"])
         self.assertNotEqual(a["session"], b["session"])
+        self.assertNotEqual(a["generation"], b["generation"])
 
     def test_user_answer_cannot_be_fabricated(self):
         from xsm.protocol import ProtocolError

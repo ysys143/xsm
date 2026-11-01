@@ -39,7 +39,7 @@ export class RpcError extends Error {
   constructor(code: number, message: string, data?: JsonValue);
 }
 export class XsmClient {
-  private constructor();
+  protected constructor();
   static readonly DEFAULT_COMMAND: readonly string[];
   static connect(options?: ConnectOptions): Promise<XsmClient>;
   readonly initialization: JsonValue;
@@ -52,4 +52,11 @@ export class XsmClient {
   deliveryReport(session: SessionHandle, id: string, state: string): Promise<JsonValue>;
   nextNotification(): Promise<Notification>;
   close(): Promise<void>;
+}
+export class XsmHostClient extends XsmClient {
+  static connect(options?: ConnectOptions): Promise<XsmHostClient>;
+  respondToDecision(event: Notification, response: {
+    displayed: string; sourceId: string; answer?: string | null;
+    action?: 'accept' | 'decline' | 'cancel';
+  }): Promise<JsonValue>;
 }

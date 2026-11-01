@@ -301,7 +301,7 @@ class PersonDecisionTest(AskHelpers, TempState):
                    # `--dir` speaks for another folder: only a person at a terminal, and
                    # the refusal says so (the agent runs from its own folder).
                    ("xsm/cli.py", "only a person at a terminal may use it with"),
-                   ("xsm/mcp.py", "--dir is taken only from a person at a terminal"),
+                   ("xsm/operations.py", "--dir is taken only from a person at a terminal"),
                    # Who can answer for a worker no session started, and who wrote a record.
                    ("xsm/cli.py", "so only a person at a terminal can answer"),
                    ("xsm/doc.py", "a person at a terminal, or a session asking its user"),

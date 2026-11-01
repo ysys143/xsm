@@ -93,6 +93,9 @@ class XsmClient:
         """
         if method == "decision.response":
             raise PermissionError("decision.response requires a trusted host client")
+        return await self._request(method, params)
+
+    async def _request(self, method, params=None):
         if not isinstance(method, str) or not method:
             raise ValueError("method must be a nonempty string")
         if params is not None and not isinstance(params, dict):
@@ -289,3 +292,16 @@ class XsmClient:
 
     async def __aexit__(self, *exc):
         await self.close()
+
+
+class XsmHostClient(XsmClient):
+    """Trusted host UI bridge. Do not expose this object to model tool calls."""
+
+    async def respond_to_decision(self, event, *, displayed, source_id, answer=None, action="accept"):
+        if not isinstance(event, dict) or event.get("method") != "decision/request":
+            raise ValueError("an actual host decision/request event is required")
+        params = event.get("params") or {}
+        return await self._request("decision.response", {
+            "session": params.get("session"), "questionId": params.get("questionId"),
+            "challenge": params.get("challenge"), "displayed": displayed,
+            "source_id": source_id, "action": action, "answer": answer})

@@ -1040,6 +1040,8 @@ def consumer_for(me):
     """
     from . import handoff
     handoff._identity(me)
+    if me.get("protocol_version") == "1" and me.get("protocol_generation"):
+        return {"type": "native", "id": "protocol:%s:%s" % (me["runtime"], me["session_id"])}, me["protocol_generation"]
     pid, start = me.get("pid"), me.get("lstart")
     if isinstance(pid, bool) or not isinstance(pid, (int, str)):
         raise ValueError("native runtime pid and lstart required")
@@ -1063,6 +1065,12 @@ def _consumer(me, owner=None, generation=None):
 
 
 def _consumer_alive(owner, generation):
+    if owner.get("id", "").startswith("protocol:"):
+        parts = owner["id"].split(":")
+        if len(parts) != 3 or not re.fullmatch(r"[a-z][a-z0-9-]{0,63}", parts[1]) or not re.fullmatch(r"[a-f0-9]{64}", parts[2]):
+            return None
+        rec = registry.by_session(parts[1], parts[2])
+        return bool(rec and rec.get("protocol_generation") == generation and rec.get("state") == "live")
     if not owner.get("id", "").startswith("process:"):
         return None
     try:

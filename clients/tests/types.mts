@@ -1,6 +1,6 @@
 // Compile-only coverage: .mjs imports must resolve the adjacent .d.mts.
-import { XsmClient, RpcError, TransportError } from '../typescript/xsm-client.mjs';
-import type { EventsAvailable, JsonValue, SessionHandle } from '../typescript/xsm-client.mjs';
+import { XsmClient, XsmHostClient, RpcError, TransportError } from '../typescript/xsm-client.mjs';
+import type { EventsAvailable, JsonValue, SessionHandle, Notification } from '../typescript/xsm-client.mjs';
 
 export async function example(operation: string, args: { text: string }): Promise<JsonValue> {
   const client = await XsmClient.connect({ onStderr: text => console.error(text) });
@@ -38,3 +38,14 @@ function invalid(client: XsmClient) {
   client.sessionOpen({ capabilities: [] });
 }
 void invalid;
+
+export async function hostExample(event: Notification): Promise<JsonValue> {
+  const host = await XsmHostClient.connect();
+  try {
+    // @ts-expect-error actual display and native source ID are mandatory
+    host.respondToDecision(event, { answer: 'blue' });
+    return await host.respondToDecision(event, {
+      displayed: 'The text shown by the host UI', sourceId: 'native-question-1', answer: 'blue',
+    });
+  } finally { await host.close(); }
+}

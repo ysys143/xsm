@@ -6,6 +6,7 @@ Session handles are connection-local; model-facing tools never receive them.
 from __future__ import annotations
 
 import hashlib
+import hmac
 import fcntl
 import json
 import os
@@ -30,6 +31,12 @@ class ProtocolError(Exception):
     def __init__(self, code, message):
         self.code, self.message = code, message
         super().__init__(message)
+
+
+class QuestionPending(Exception):
+    def __init__(self, decision_id):
+        self.decision_id = decision_id
+        super().__init__(decision_id)
 
 
 def validate(value, schema, path="arguments"):
@@ -72,10 +79,14 @@ def _object(pairs):
 
 
 class BoundHost(OperationService):
-    def __init__(self, record):
+    def __init__(self, record, connection, token, capabilities):
         self.initialize_service()
         self._closed = False
         self.record = record
+        self.connection, self.token = connection, token
+        self.client_name = "xsm-protocol-host"
+        if "user-decisions" in capabilities:
+            self.client_caps = {"elicitation": {}}
 
     def session(self):
         self.ctx = context.of_record(self.record, context.BASIS_HOOK,
@@ -83,8 +94,40 @@ class BoundHost(OperationService):
         return self.record
 
     def ask_client(self, method, params):
-        # No generic peer or model response may become a person's answer.
-        raise ProtocolError(-32004, "host user-interface binding is not implemented; no approval recorded")
+        from . import decisions
+        if method != "elicitation/create" or "elicitation" not in self.client_caps:
+            raise ProtocolError(-32004, "host has no user-interface capability; no approval recorded")
+        call = self.decision_calls.get(self.active_request)
+        if not call:
+            raise ProtocolError(-32004, "question has no scoped decision invocation")
+        if not isinstance(params.get("message"), str) or not params["message"].strip():
+            raise ProtocolError(-32602, "a nonempty user question is required")
+        choices = params.get("requestedSchema", {}).get("properties", {}).get("answer", {}).get("enum")
+        record = decisions.begin(call["key"], call["me"], call["scope"], call["generation"],
+            params.get("message", ""), waiter=self.active_request, choices=choices)
+        record = decisions.recover_display(record["id"])
+        if not self._decision_current(call):
+            raise ProtocolError(-32003, "decision caller or scope changed")
+        if record.get("answer"):
+            if record["status"] not in ("answered", "denied", "dismissed", "unshown-or-declined"):
+                raise ProtocolError(-32003, "decision is not applicable: " + record["status"])
+            if record["status"] == "answered":
+                decisions.start_application(record["id"], call["generation"], call["scope"],
+                                            reader=self.reader_identity)
+            return record["answer"]["reply"]
+        if record["status"] != "pending":
+            raise ProtocolError(-32003, "decision is " + record["status"])
+        if record["id"] not in self.connection.ui_requests:
+            if not decisions.display(record["id"], self.active_request, params["message"],
+                    "host-user", reader=self.reader_identity):
+                raise ProtocolError(-32003, "question already belongs to another display owner")
+            self.connection.ui_requests[record["id"]] = {
+                "host": self, "call": call, "notified": False,
+                "event": {"session": self.token, "decisionId": record["id"],
+                    "questionId": uuid.uuid4().hex, "challenge": uuid.uuid4().hex,
+                    "question": params["message"], "requestedSchema": params["requestedSchema"],
+                    "expiresAt": record["expires_at"]}}
+        raise QuestionPending(record["id"])
 
 
 class Connection:
@@ -94,6 +137,8 @@ class Connection:
         self.subscriptions = set()
         self.notified = {}
         self.locks = {}
+        self.ui_requests = {}
+        self.ui_answers = {}
 
     def bound(self, params):
         token = params.get("session")
@@ -109,7 +154,7 @@ class Connection:
                 raise ProtocolError(-32002, "unsupported protocol version")
             self.initialized = True
             return {"protocolVersion": VERSION, "experimental": True,
-                    "capabilities": ["messaging", "inbox", "events"],
+                    "capabilities": ["messaging", "inbox", "events", "user-decisions"],
                     "operations": [t["name"] for t in TOOLS]}
         if not self.initialized:
             raise ProtocolError(-32002, "initialize first")
@@ -150,7 +195,7 @@ class Connection:
                 "id": mid, "receiver": host.record["ref"], "state": state})
             return {"recorded": state, "acknowledged": False}
         if method == "decision.response":
-            raise ProtocolError(-32004, "verified host decision binding not implemented; no approval recorded")
+            return self.decision_response(token, host, params)
         if method != "operation.call":
             raise ProtocolError(-32601, "unknown method")
         name, args = params.get("operation"), params.get("arguments", {})
@@ -159,6 +204,8 @@ class Connection:
             raise ProtocolError(-32601, "unknown operation")
         validate(args, tool["inputSchema"])
         args = dict(args)
+        if args.get("answer_request"):
+            raise ProtocolError(-32004, "native transcript answer recovery requires a verified native binding")
         # These waits require the MCP transport's re-entrant request pump.
         if args.get("wait") or args.get("wait_secs"):
             raise ProtocolError(-32004, "blocking waits not implemented; subscribe and query status")
@@ -172,6 +219,8 @@ class Connection:
                 return json.loads(result)
             except (TypeError, ValueError):
                 return {"text": result}
+        except QuestionPending as pending:
+            return {"status": "waiting-for-user", "decision_id": pending.decision_id}
         finally:
             # Never acknowledge on output flush. Original claims remain durable.
             host.handoff_calls.pop(host.active_request, None)
@@ -191,7 +240,7 @@ class Connection:
         if not os.path.isabs(cwd) or not os.path.isdir(cwd):
             raise ProtocolError(-32602, "cwd must be an existing absolute directory")
         caps = params.get("capabilities", [])
-        if not isinstance(caps, list) or not all(c in ("messaging", "inbox", "events") for c in caps):
+        if not isinstance(caps, list) or not all(c in ("messaging", "inbox", "events", "user-decisions") for c in caps):
             raise ProtocolError(-32004, "unsupported participant capability")
         profile = hashlib.sha256(params["profile"].encode()).hexdigest()
         sid = hashlib.sha256(json.dumps([profile, params["conversation"]]).encode()).hexdigest()
@@ -211,7 +260,8 @@ class Connection:
         record = {"runtime": runtime, "home": home, "session_id": sid,
                   "pid": pid, "lstart": start, "cwd": os.path.realpath(cwd),
                   "ref": identity.ref_of(runtime, home, sid), "name": runtime + "-" + sid[:8],
-                  "protocol_version": VERSION, "registered": True, "activity": "idle"}
+                  "protocol_version": VERSION, "protocol_generation": uuid.uuid4().hex,
+                  "registered": True, "activity": "idle"}
         token = uuid.uuid4().hex
         filename = registry._record_path(runtime, sid)
         os.makedirs(os.path.dirname(filename), mode=0o700, exist_ok=True)
@@ -225,12 +275,12 @@ class Connection:
             if previous and not previous.get("ended_at") and identity.state_of(previous) == "live":
                 raise ProtocolError(-32003, "conversation already has a live owner")
             self.save(record)
-            self.sessions[token] = BoundHost(record)
+            self.sessions[token] = BoundHost(record, self, token, caps)
             self.locks[token] = fd
         except BaseException:
             os.close(fd)
             raise
-        return {"session": token, "generation": context.generation(pid, start),
+        return {"session": token, "generation": record["protocol_generation"],
                 "ref": record["ref"], "capabilities": caps}
 
     @staticmethod
@@ -241,7 +291,13 @@ class Connection:
         host = self.sessions.pop(token)
         self.subscriptions.discard(token)
         self.notified.pop(token, None)
+        from . import decisions
         try:
+            for key, item in list(self.ui_requests.items()):
+                if item["host"] is host:
+                    if decisions.read(key):
+                        decisions.abandon_display(key, host.instance_id)
+                    del self.ui_requests[key]
             registry.mark_ended(host.record["runtime"], host.record["session_id"], "protocol-close",
                                 home=host.record["home"])
         finally:
@@ -253,6 +309,10 @@ class Connection:
 
     def events(self):
         from . import receive
+        for item in self.ui_requests.values():
+            if not item["notified"]:
+                item["notified"] = True
+                yield {"jsonrpc": "2.0", "method": "decision/request", "params": item["event"]}
         for token in sorted(self.subscriptions):
             rec = self.sessions[token].record
             ids = handoff.pending_ids(rec, owner_alive=receive._consumer_alive)
@@ -263,6 +323,66 @@ class Connection:
                 yield {"jsonrpc": "2.0", "method": "events/available",
                        "params": {"session": token, "ids": list(current)}}
             self.notified[token] = current
+
+    def decision_response(self, token, host, params):
+        from . import consent, decisions
+        if "elicitation" not in host.client_caps:
+            raise ProtocolError(-32004, "host has no user-interface capability; no approval recorded")
+        if set(params) != {"session", "questionId", "challenge", "displayed", "action", "answer", "source_id"}:
+            raise ProtocolError(-32602, "exact host question response fields required")
+        for key in ("questionId", "challenge", "displayed", "action", "source_id"):
+            if not isinstance(params[key], str) or not params[key] or len(params[key]) > MAX_LINE:
+                raise ProtocolError(-32602, "invalid host response " + key)
+        fingerprint = decisions.digest(params)
+        prior = self.ui_answers.get(params["questionId"])
+        if prior:
+            if prior["session"] != token or prior["fingerprint"] != fingerprint:
+                raise ProtocolError(-32003, "question response already consumed")
+            return {"status": decisions.read(prior["decision"])["status"], "decision_id": prior["decision"]}
+        selected = next(((key, item) for key, item in self.ui_requests.items()
+                         if item["event"]["questionId"] == params["questionId"]), None)
+        if not selected:
+            raise ProtocolError(-32003, "question does not belong to a pending host display")
+        key, item = selected
+        event = item["event"]
+        if (item["host"] is not host or event["session"] != token or
+                not hmac.compare_digest(event["challenge"].encode(), params["challenge"].encode()) or
+                params["displayed"] != event["question"]):
+            raise ProtocolError(-32003, "question, display, or host identity mismatch")
+        record = decisions.read(key)
+        if (record["status"] != "pending" or time.time() < record["created_at"] or
+                time.time() > record["expires_at"] or not host._decision_current(item["call"])):
+            raise ProtocolError(-32003, "question is closed, expired or superseded")
+        action, answer = params["action"], params["answer"]
+        if (
+            action not in ("accept", "decline", "cancel")
+            or (answer is not None and not isinstance(answer, str))
+            or (
+                action == "accept"
+                and (
+                    not isinstance(answer, str)
+                    or not answer.strip()
+                    or (record.get("choices") and answer.strip() not in record["choices"])
+                )
+            )
+        ):
+            raise ProtocolError(-32602, "invalid displayed answer")
+        marker = consent.claim_answer(host.record, "host:" + params["source_id"], None, "decision:" + key)
+        if not marker:
+            raise ProtocolError(-32003, "host answer already belongs to another question")
+        # Retain the existing answer-consumption marker lifecycle without
+        # relabeling this host callback as verified native transcript evidence.
+        with decisions.locked(key) as filename:
+            current = paths.read_json(filename)
+            current["native_marker"] = marker
+            paths.write_json(filename, current)
+        reply = {"result": {"action": action, "content": {"answer": answer},
+                            "_meta": {"approvals_reviewer": "user"}}}
+        record = decisions.response(key, reply, "host-user", source_id=params["source_id"],
+                                    displayed=params["displayed"])
+        self.ui_answers[params["questionId"]] = {"session": token, "fingerprint": fingerprint, "decision": key}
+        del self.ui_requests[key]
+        return {"status": record["status"], "decision_id": key}
 
 
 def serve(inp=None, out=None):

@@ -68,12 +68,107 @@
             "enum": [
               "messaging",
               "inbox",
-              "events"
+              "events",
+              "user-decisions"
             ]
           }
         }
       },
       "additionalProperties": false
+    },
+    "decisionResponse": {
+      "type": "object",
+      "properties": {
+        "session": {
+          "type": "string",
+          "minLength": 1
+        },
+        "questionId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "challenge": {
+          "type": "string",
+          "minLength": 1
+        },
+        "displayed": {
+          "type": "string",
+          "minLength": 1
+        },
+        "action": {
+          "enum": [
+            "accept",
+            "decline",
+            "cancel"
+          ]
+        },
+        "answer": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "source_id": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "session",
+        "questionId",
+        "challenge",
+        "displayed",
+        "action",
+        "answer",
+        "source_id"
+      ],
+      "additionalProperties": false
     }
-  }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "method": {
+            "const": "session.open"
+          }
+        },
+        "required": [
+          "method"
+        ]
+      },
+      "then": {
+        "required": [
+          "params"
+        ],
+        "properties": {
+          "params": {
+            "$ref": "#/$defs/sessionOpen"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "method": {
+            "const": "decision.response"
+          }
+        },
+        "required": [
+          "method"
+        ]
+      },
+      "then": {
+        "required": [
+          "params"
+        ],
+        "properties": {
+          "params": {
+            "$ref": "#/$defs/decisionResponse"
+          }
+        }
+      }
+    }
+  ]
 }

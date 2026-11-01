@@ -140,7 +140,7 @@ def response(key, reply, source, source_id=None, displayed=None, now=None):
         content = result.get("content") if isinstance(result, dict) else None
         answer = content.get("answer") if isinstance(content, dict) else None
         reviewer = (result.get("_meta") or {}).get("approvals_reviewer") if isinstance(result, dict) and isinstance(result.get("_meta") or {}, dict) else "unknown"
-        if source not in ("mcp-elicitation", "native-user", "human-terminal") or reviewer not in (None, "user"):
+        if source not in ("mcp-elicitation", "native-user", "human-terminal", "host-user") or reviewer not in (None, "user"):
             state = "unknown"
         elif now < record["created_at"]:
             state = "unknown"  # clock rollback is not an extended approval

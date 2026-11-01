@@ -40,7 +40,7 @@ export class XsmClient {
       throw new TypeError('command must be nonempty and closeTimeout positive');
     }
     const child = spawn(command[0], command.slice(1), { cwd, env, stdio: ['pipe', 'pipe', 'pipe'], shell: false });
-    const client = new XsmClient(child, onStderr, closeTimeout);
+    const client = new this(child, onStderr, closeTimeout);
     try {
       client.initialization = await client.request('initialize', { protocolVersion: '1' });
       return client;
@@ -94,6 +94,10 @@ export class XsmClient {
 
   async request(method, params = {}) {
     if (method === 'decision.response') throw new Error('decision.response requires a trusted host client');
+    return this._request(method, params);
+  }
+
+  async _request(method, params = {}) {
     if (typeof method !== 'string' || !method) throw new TypeError('method must be a nonempty string');
     if (!object(params)) throw new TypeError('params must be an object');
     if ((method.startsWith('session.') && method !== 'session.open') ||
@@ -200,5 +204,18 @@ export class XsmClient {
   async close() {
     this.#fail(new TransportError('client closed'));
     await this.#closePromise;
+  }
+}
+
+/** Trusted UI bridge; never expose this object as a model-callable tool. */
+export class XsmHostClient extends XsmClient {
+  respondToDecision(event, { displayed, sourceId, answer = null, action = 'accept' }) {
+    if (!object(event) || event.method !== 'decision/request' || !object(event.params)) {
+      throw new TypeError('an actual host decision/request event is required');
+    }
+    const { session, questionId, challenge } = event.params;
+    return this._request('decision.response', {
+      session, questionId, challenge, displayed, source_id: sourceId, action, answer,
+    });
   }
 }

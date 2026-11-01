@@ -11,6 +11,7 @@ import time
 
 ROOT = Path(__file__).resolve().parents[1]
 MODULES = ["tests.test_protocol", "tests.test_handoff", "tests.test_handoff_consumer",
+           "tests.test_protocol_decisions",
            "tests.test_handoff_crash", "tests.test_handoff_pending_ids",
            "tests.test_mcp_dispatch", "tests.test_subagent_transport",
            "tests.test_mcp_identity", "tests.test_mcp_shared_process"]
@@ -21,12 +22,13 @@ def main():
     with tempfile.TemporaryDirectory(prefix="xsm-protocol-check-") as temp:
         env = {k: os.environ[k] for k in ("PATH", "LANG", "TMPDIR", "SYSTEMROOT") if k in os.environ}
         env.update(HOME=temp, XSM_HOME=temp + "/state", CODEX_HOME=temp + "/codex",
-                   CLAUDE_CONFIG_DIR=temp + "/claude", PYTHONDONTWRITEBYTECODE="1")
+                   CLAUDE_CONFIG_DIR=temp + "/claude", PYTHONDONTWRITEBYTECODE="1",
+                   PYTHON=sys.executable)
         commands = [[sys.executable, "-B", "-m", "unittest", *MODULES, "-q"],
                     [sys.executable, "-B", "-m", "unittest", "discover", "-s", "clients/tests",
                      "-p", "test_python*.py", "-q"],
                     ["node", "--test", "clients/tests/test_node_client.mjs",
-                     "clients/tests/test_node_protocol.mjs"]]
+                     "clients/tests/test_node_protocol.mjs", "clients/tests/test_node_host.mjs"]]
         if not shutil.which("node", path=env.get("PATH")):
             print(json.dumps({"passed": False, "reason": "Node.js is required for client conformance"}))
             return 1
@@ -42,6 +44,7 @@ def main():
             elapsed = time.monotonic() - started
             passed = result.returncode == 0 and elapsed <= 120
             print(json.dumps({"passed": passed, "seconds": round(elapsed, 3),
+                              "python": sys.version.split()[0], "nodePython": env["PYTHON"],
                               "budgetSeconds": 120, "modules": MODULES}))
             return 0 if passed else 1
         except subprocess.TimeoutExpired:

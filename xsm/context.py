@@ -139,7 +139,8 @@ def of_record(record: dict | None, basis: str = BASIS_NONE, origin: str | None =
         runtime=rec.get("runtime"), home=rec.get("home"),
         conversation=rec.get("session_id"), thread=rec.get("session_id")
         if rec.get("runtime") == "codex" else None,
-        generation_value=generation(rec.get("pid"), rec.get("lstart")),
+        generation_value=(rec.get("protocol_generation") if rec.get("protocol_version") == "1" else None)
+                         or generation(rec.get("pid"), rec.get("lstart")),
         cwd=rec.get("cwd") or None, origin=origin, basis=basis if record else BASIS_NONE,
         evidence=evidence, record=record)
 
