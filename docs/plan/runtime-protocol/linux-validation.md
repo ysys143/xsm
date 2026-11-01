@@ -211,3 +211,14 @@ source archive SHA-256이 같고 tracked dirty는 false다. `summary.json`에
 이를 대조한 집계를 남겼다. 기존 간헐적 실패는 이 표본에서 재현되지
 않았으며 해결 판정은 계속 미결이다. 검사 전용 VM은 다시 Stopped로
 확인했다(`vm-stopped.json`). 모델·실제 사람·메신저 호출은 0회다.
+
+## SDK initialize 기한의 Linux 검증
+
+변경 없는 `1c90ac7`을 대상으로 격리 Linux arm64/Python 3.11.2/
+Node 24.22.2에서 공통 gate 401개(핵심 238/Python 47/Node 116)가
+71.523초에 통과했다. 120초 기준을 충족했다. 결과는
+`linux-initialize-timeout-core/result.json`과 `protocol.log`에 있고 source
+archive SHA-256·image ID·network none·tracked dirty false도 기록했다.
+무응답 initialize의 timeout·자식 회수와 native host 옵션 전달 검사까지
+실행한 결과이며, 일반 작업 전체 기한이나 Hermes native 실행의 증거는
+아니다. 이 변경의 Mac gate는 66.503초였다. 전체 P0–P5는 미완이다.

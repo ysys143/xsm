@@ -1564,3 +1564,8 @@ Python 3.14.6). 초기 기한을 무력화한 Python·Node 임시 변이도 외�
 오류로 실패했다(`initialize-timeout-disabled-mutant.log`,
 `initialize-timeout-node-disabled-mutant.log`). 즉 timeout 설정의 존재만
 검사한 결과가 아니다. 이 SDK 변경의 Linux 검증은 아직 미실행이다.
+
+이어 변경 없는 `1c90ac7`의 Linux arm64/Python 3.11.2에서도 동일한
+401개가 71.523초에 통과했다
+(`linux-initialize-timeout-core/result.json`). 위 Linux 미실행 기록의
+후속 검증이며, 일반 setup 전체 기한·operation 기한은 계속 미완이다.
