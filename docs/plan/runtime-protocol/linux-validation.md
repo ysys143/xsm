@@ -182,3 +182,24 @@ consumer가 큐를 비우면 producer의 재조회가 수락을 놓치고 claim�
 `deliverables/protocol-foundation/` 아래 있다. Burst 지연은 소비를 고의로
 미룬 표본이므로 정상 부하 p95 인증에서 제외한다. Hermes Linux native,
 x86_64, 실제 모델/사람 UI, worker, 원격·전체 방향·메신저 및 P0–P5는 미완이다.
+
+### Burst 추가 재현과 진단 보강
+
+`928e82c`의 제품 구현을 사용한 macOS arm64 32건 burst를 5회 반복해
+160/160 원문 소비·ACK가 통과했다
+(`openclaw-burst-repeat-928e82c/run-1.json`부터 `run-5.json`). 앞선 Linux
+실패를 해소하는 증거는 아니다. 1–4회는 기존 프로브, 5회는 아래 진단
+변경을 포함한 프로브이며 제품 구현은 같다.
+
+프로브는 이제 native logger의 전달 오류를 `nativeDeliveryErrors`에 보존한다.
+ACK 실패 뒤 정본에서 읽은 상태는 `claimAuditAfterAckFailure`로 기록한다.
+다중 token ACK는 일부 token을 먼저 처리했을 수 있으므로 이 조회를
+ACK 이전 상태나 원자적 실패의 증거로 해석하지 않는다. 성공 경로에는
+정본 진단 읽기를 넣지 않는다.
+
+`openclaw-error-capture-injected.json`에서는 임시 프로브에만 native commit
+실패를 주입했다. 실행은 의도대로 exit 1/status failed였고
+`nativeDeliveryErrors`에 `xsm: injected-native-commit-failure`가 남았다.
+임시 주입 스크립트는 제거했다. 정책 거부 회귀
+(`openclaw-native-error-capture.json`)와 최종 burst는 정상 통과하고
+해당 오류 배열은 비어 있었다. 제품·사용자 설정은 이 주입으로 바꾸지 않았다.

@@ -61,7 +61,12 @@ if (mode === '--queue') {
   const source = `import { register } from ${JSON.stringify(pathToFileURL(join(root, 'integrations/openclaw/xsm.mjs')).href)};
     export default { id: 'xsm', register(api) {
       globalThis[Symbol.for('xsm.native.queue.probe')] = api;
-      register(api, { command: ${JSON.stringify(command)} });
+      const errors = globalThis[Symbol.for('xsm.native.queue.errors')] = [];
+      const logger = { ...api.logger, error(...args) {
+        errors.push(args.map(value => String(value)));
+        return api.logger.error(...args);
+      } };
+      register({ ...api, logger }, { command: ${JSON.stringify(command)} });
     } };`;
   const entry = join(directory, 'entry.mjs');
   await writeFile(entry, source);
@@ -80,7 +85,8 @@ const result = { status: 'incomplete', runtimeVersion: pkg.version, node: proces
   largeContext,
   nativeLoader: true, nativeTools: tools.length, metadataCreatedNoParticipant: true,
   nativeToolExecution: false, nativeUnloadTested: false, modelCalls: 0,
-  physicalHumanUiTested: false, diagnostics: registry.diagnostics, root: temp };
+  physicalHumanUiTested: false, diagnostics: registry.diagnostics, root: temp,
+  nativeDeliveryErrors: globalThis[Symbol.for('xsm.native.queue.errors')] ?? [] };
 if (mode) {
   // Resolve pinned host-internal exports by their original names, not guessed minified aliases.
   async function nativeFunction(prefix, name) {
@@ -218,22 +224,22 @@ if (mode) {
         let ack;
         try { ack = await second.find(tool => tool.name === 'xsm_ack').execute('burst-consume-' + seen.size, { tokens }); }
         catch (error) {
-        const claimAudit = [];
-        const requestedIDs = new Set(prompt.queuedInjections.flatMap(item => item.metadata.messageIds));
-        for (const folder of await readdir(join(temp, 'xsm/handoffs'), { withFileTypes: true })) {
-          if (!folder.isDirectory()) continue;
-          for (const id of requestedIDs) {
-            const path = join(temp, 'xsm/handoffs', folder.name, id + '.json');
-            let original;
-            try { original = JSON.parse(await readFile(path, 'utf8')); }
-            catch (error) { if (error.code === 'ENOENT') continue; throw error; }
-            claimAudit.push({ id, state: original.state, token: original.claim?.token,
-              previousToken: original.previous_claim?.token, deliveryState: original.delivery_state });
+          // This snapshot is collected only after the failed ACK. Earlier tokens
+          // in a multi-token ACK may already have been acknowledged.
+          const claimAudit = [];
+          const requestedIDs = new Set(prompt.queuedInjections.flatMap(item => item.metadata.messageIds));
+          for (const folder of await readdir(join(temp, 'xsm/handoffs'), { withFileTypes: true })) {
+            if (!folder.isDirectory()) continue;
+            for (const id of requestedIDs) {
+              const path = join(temp, 'xsm/handoffs', folder.name, id + '.json');
+              let original;
+              try { original = JSON.parse(await readFile(path, 'utf8')); }
+              catch (readError) { if (readError.code === 'ENOENT') continue; throw readError; }
+              claimAudit.push({ id, state: original.state, token: original.claim?.token,
+                previousToken: original.previous_claim?.token, deliveryState: original.delivery_state });
+            }
           }
-        }
-        result.burst.claimAuditBeforeAck = { tokens, originals: claimAudit };
-
-
+          result.burst.claimAuditAfterAckFailure = { tokens, originals: claimAudit };
           throw error;
         }
         assert.equal(ack.details.acked.length, originals);
