@@ -1059,3 +1059,26 @@ Challenge 필수 조건을 제거하거나 admission에서 acknowledged=true를 
 통과했다(`output-schema-gate-final.log`). 공개 사용법·표본 범위는
 `docs/protocol/output-contract.md`에 있다. 전체 작업별 스키마·결정 의미의
 외부 적합성·독립 전체 구현과 P0–P5의 나머지는 미완이다.
+
+## 외부 호스트 결정 의미 검사
+
+`--suite decisions`는 수명 16개와 호스트 질문 결속 19개를 stdio로 검사한다.
+다른 호스트·challenge·표시 원문·선택지 거부, 거부 뒤 pending 유지,
+host-user 출처의 답 저장과 원 작업 재호출 전 미적용, 같은 응답 재전달의
+멱등성·덮어쓰기 거부, 적용된 답의 출처 ID 재사용 거부, abandon의 미응답
+유지·새 표시 재시도, 종료 뒤 늦은 답과 새 세대의 이전 답 상속 거부를
+확인했다. 실제 서버가 35개 모두 통과했다(`decisions-wire-final.json`).
+
+질문 알림 4개를 포함한 실제 frame 45개가 출력 스키마를 통과했다
+(`decisions-output-final-validation.json`). 앞선 이벤트 표본 38개와 합치면
+frame 83개에서 11개 메서드의 정상 결과와 알림 2종을 모두 실제 관측했다
+(`combined-output-validation.json`). 스키마 검사기에 반복 --wire-trace를
+지원한다. 이는 dummy 색상 질문에 대한 명시적 호스트 답 fixture이며,
+사람 UI·native-user 증거·실제 권한/가입 효과 인증으로 부르지 않는다.
+
+표시 원문 검사를 우회하거나 답 저장 직후 원 작업을 자동 적용하는 시험
+서버 결함을 넣으면 각각 해당 검사에 실패한다. Python 3.9.6 -O의 검사기
+검사 12개도 통과했다(`decisions-conformance-optimized-final.log`). 공통
+345개(핵심 224, Python 39, Node 82)는 Python 3.14.6에서 57.185초에 통과했다
+(`decisions-conformance-gate.log`). 만료·decline/cancel·모든 domain 효과의
+외부 검증, 실제 native UI·독립 전체 구현과 P0–P5 나머지는 미완이다.

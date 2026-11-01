@@ -71,3 +71,24 @@ class ExternalConformanceTest(unittest.TestCase):
         events = [entry['frame'] for entry in result['observations'] if 'method' in entry['frame']]
         self.assertTrue(events, result)
         self.assertEqual(events[0]['method'], 'events/available')
+
+    def test_actual_host_decision_contract(self):
+        result = checker.run(self.delivery_candidate('none'), suite='decisions', capture=True)
+        self.assertEqual(result['status'], 'passed', {k: v for k, v in result.items() if k != 'observations'})
+        self.assertEqual(len(result['checks']), 35)
+        methods = {e.get('method') for e in result['observations'] if 'result' in e['frame']}
+        self.assertIn('decision.response', methods)
+        self.assertIn('decision.abandon', methods)
+        self.assertTrue(any(e['frame'].get('method') == 'decision/request' for e in result['observations']))
+
+    def test_changed_display_acceptance_is_detected(self):
+        command = [sys.executable, '-B', str(ROOT / 'tests/fixtures/protocol_decision_fault.py'), 'ignore-display']
+        result = checker.run(command, suite='decisions')
+        self.assertEqual(result['status'], 'failed', result)
+        self.assertEqual(result['activeCheck'], 'changed display cannot answer')
+
+    def test_automatic_decision_application_is_detected(self):
+        command = [sys.executable, '-B', str(ROOT / 'tests/fixtures/protocol_decision_fault.py'), 'auto-apply']
+        result = checker.run(command, suite='decisions')
+        self.assertEqual(result['status'], 'failed', result)
+        self.assertEqual(result['activeCheck'], 'stored answer has host source and no applied effect')

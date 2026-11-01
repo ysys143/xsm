@@ -110,3 +110,42 @@ resumption, so changing a report field alone cannot satisfy that check. The
 proxy is a test fixture and is not used by the external runner. These checks
 still cover only this defined contract subset, not the full operations or
 user-decision protocol.
+
+## Host decision binding fixture suite
+
+```sh
+python3 scripts/conform-host-protocol.py --suite decisions --capture \
+  --output /tmp/xsm-decisions.json \
+  --command /absolute/path/to/xsm/bin/xsm protocol serve --stdio
+```
+
+This suite includes the 16 lifecycle checks and 19 decision checks. It opens
+isolated `user-decisions` participants and acts as an explicit host-answer
+fixture. It does not ask a human, exercise native UI, or authorize real project
+membership, permissions or deployment.
+
+The public wire checks cover:
+
+- A pending operation, question notification and host route refer to one question;
+  the model-facing result excludes the private challenge.
+- A foreign host, wrong challenge, changed display or unlisted choice cannot
+  answer, and refused answers leave the decision pending.
+- A valid answer is recorded with `host-user` source without applying the effect.
+  Identical replay is idempotent and a changed answer cannot overwrite it.
+- Retrying the original operation applies that recorded answer. Its answer-source
+  ID cannot subsequently answer another question.
+- Abandoning the display leaves a pending, unanswered decision; retry creates a
+  fresh display, and the abandoned route cannot answer later.
+- A closed host rejects a late answer, and a new participation generation cannot
+  inherit the old answered decision.
+
+The actual server passed all 35 checks (`decisions-wire-final.json`). Two isolated
+fault servers skip the exact-display check or automatically apply the operation
+after answer storage. The suite rejects each at its relevant invariant.
+The fault servers are test-only and are not imported by the external checker.
+
+The fixture checks application of the color decision record, not a domain
+permission effect. Expiry, decline/cancel semantics, full native UI trust,
+all domain operation effects, remote requester identity and complete independent
+implementations remain outside this suite's current certification scope and
+remain required by the overall plan.

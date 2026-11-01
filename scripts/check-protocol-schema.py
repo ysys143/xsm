@@ -47,7 +47,9 @@ def output_contract(trace=None):
     delivery = Draft202012Validator({'$ref': schema['x-methodResults']['delivery.report'], '$defs': schema['$defs']})
     if delivery.is_valid({'recorded': 'admitted', 'acknowledged': True}):
         raise ValueError('admission incorrectly permits acknowledged=true')
-    observations = [] if trace is None else json.loads(trace.read_text())['observations']
+    traces = [] if trace is None else [trace] if isinstance(trace, Path) else trace
+    observations = [observation for filename in traces
+                    for observation in json.loads(filename.read_text())['observations']]
     for observation in observations:
         validate(observation)
     return dict(examples=len(examples), rejected=len(invalid) + 1, observed=len(observations),
@@ -102,7 +104,7 @@ def run(trace=None):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--output', type=Path, required=True)
-    parser.add_argument('--wire-trace', type=Path)
+    parser.add_argument('--wire-trace', type=Path, action='append')
     args = parser.parse_args()
     result = run(args.wire_trace)
     args.output.parent.mkdir(parents=True, exist_ok=True)

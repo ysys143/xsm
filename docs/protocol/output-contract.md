@@ -58,3 +58,18 @@ Weakening the required question challenge or permitting acknowledged=true on
 admission in isolated schema copies makes the checker fail in both cases
 (`output-schema-mutants.json`). Full operation results and independent complete
 implementations remain required by the overall plan.
+
+## Actual decision-route observations
+
+The later decision fixture suite observes `decision/request` and successful
+`decision.response`/`decision.abandon` responses through the actual stdio server.
+It adds 45 validated frames including four question notifications
+(`decisions-output-final-validation.json`). It supplies explicit synthetic host
+answers; it is not human UI evidence.
+
+The schema checker accepts repeated `--wire-trace` arguments. Combining the
+38-frame events run and the 45-frame decisions run validates 83 frames, successful
+responses for all 11 public methods and both notification types
+(`combined-output-validation.json`). This supersedes the earlier example-only
+coverage of decision routes, without completing operation-specific results,
+all decision semantics or native UI certification.

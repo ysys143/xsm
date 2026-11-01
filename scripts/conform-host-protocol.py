@@ -153,6 +153,68 @@ def messaging(peer, sender, receiver, reopen, check, equal, events=False):
               tokens=[pending["claims"][0]["token"]])["acked"], event["params"]["ids"]))
 
 
+def decisions(peer, params, check, equal):
+    ui_params = dict(params, conversation="decision-owner", capabilities=["user-decisions"])
+    owner = peer.call("session.open", ui_params)
+    foreign = peer.call("session.open", dict(ui_params, conversation="decision-foreign"))
+    def operation(name, **arguments):
+        return peer.call("operation.call", {"session": owner["session"], "operation": name, "arguments": arguments})
+    args = {"question": "Fixture: choose a color", "options": ["blue", "green"], "decision_key": "wire-first"}
+    pending = operation("xsm_decide", **args)
+    event_frame = peer.notification()
+    event = event_frame["params"]
+    check("host question binds waiting operation", lambda: equal(event_frame["method"] == "decision/request" and
+          pending["status"] == "waiting-for-user" and pending["decision_id"] == event["decisionId"] and
+          pending["question_id"] == event["questionId"] and event["session"] == owner["session"], True))
+    check("model result excludes private challenge", lambda: equal("challenge" not in pending and
+          event["challenge"] not in json.dumps(pending), True))
+    answer = dict(session=owner["session"], questionId=event["questionId"], challenge=event["challenge"],
+                  displayed=event["question"], action="accept", answer="blue", source_id="conformance-fixture-answer")
+    for name, changes, code in (
+            ("foreign host cannot answer", {"session": foreign["session"]}, -32003),
+            ("wrong challenge cannot answer", {"challenge": "forged"}, -32003),
+            ("changed display cannot answer", {"displayed": "altered question"}, -32003),
+            ("unlisted option cannot answer", {"answer": "red"}, -32602)):
+        check(name, lambda changes=changes, code=code: peer.call("decision.response", dict(answer, **changes), error=code))
+    status = operation("xsm_decision_status", id=pending["decision_id"])
+    check("refused answers leave decision pending", lambda: equal(status["status"] == "pending" and status["answer"] is None, True))
+    stored = peer.call("decision.response", answer)
+    check("valid host answer is stored", lambda: equal(stored["status"], "answered"))
+    status = operation("xsm_decision_status", id=pending["decision_id"])
+    check("stored answer has host source and no applied effect", lambda: equal(status["status"] == "answered" and
+          status["answer"]["source"] == "host-user" and not status["application"], True))
+    check("identical answer replay is idempotent", lambda: equal(peer.call("decision.response", answer), stored))
+    check("stored answer cannot be overwritten", lambda: peer.call("decision.response", dict(answer, answer="green"), error=-32003))
+    applied = operation("xsm_decide", **args)
+    check("original operation retry applies stored answer", lambda: equal("blue" in json.dumps(applied) and
+          operation("xsm_decision_status", id=pending["decision_id"])["status"] == "applied", True))
+    second_args = dict(args, question="Fixture: another color", decision_key="wire-second")
+    second = operation("xsm_decide", **second_args)
+    abandoned = peer.notification()["params"]
+    reused = dict(answer, questionId=abandoned["questionId"], challenge=abandoned["challenge"], displayed=abandoned["question"])
+    check("applied answer source cannot answer another question", lambda:
+          peer.call("decision.response", reused, error=-32003))
+    route = {key: abandoned[key] for key in ("session", "questionId", "challenge")}
+    check("abandon display does not decline decision", lambda: equal(peer.call("decision.abandon", route)["status"], "pending"))
+    status = operation("xsm_decision_status", id=second["decision_id"])
+    check("abandon leaves answer and application empty", lambda: equal(status["answer"] is None and not status["application"], True))
+    retried = operation("xsm_decide", **second_args)
+    fresh = peer.notification()["params"]
+    check("abandoned decision retries with fresh display", lambda: equal(retried["decision_id"] == second["decision_id"] and
+          fresh["questionId"] != abandoned["questionId"] and fresh["challenge"] != abandoned["challenge"], True))
+    late = dict(answer, questionId=abandoned["questionId"], challenge=abandoned["challenge"], displayed=abandoned["question"])
+    check("abandoned display cannot answer later", lambda: peer.call("decision.response", late, error=-32003))
+    old_owner = owner
+    peer.call("session.close", {"session": owner["session"]})
+    check("closed host rejects late answer", lambda: peer.call("decision.response", answer, error=-32001))
+    owner = peer.call("session.open", ui_params)
+    renewed = operation("xsm_decide", **args)
+    check("new generation cannot inherit prior answer", lambda: equal(owner["ref"] == old_owner["ref"] and
+          owner["generation"] != old_owner["generation"] and renewed["status"] == "waiting-for-user" and
+          renewed["decision_id"] != pending["decision_id"], True))
+    peer.notification()
+
+
 def run(command, suite="lifecycle", capture=False):
     result = {"suite": "xsm-host-" + suite + "-v1", "status": "running", "checks": [],
               "scope": "stdio negotiation and participation only; no operations, delivery or UI certification"}
@@ -208,6 +270,9 @@ def run(command, suite="lifecycle", capture=False):
             if suite in ("messaging", "events"):
                 result["scope"] = "lifecycle and claim/queue/ACK recovery; no native delivery, UI or complete operations certification"
                 messaging(b, reopened, resumed, dict(params, profile="other"), check, equal, events=suite == "events")
+            if suite == "decisions":
+                result["scope"] = "lifecycle and host decision binding fixture; no human UI or domain authorization certification"
+                decisions(b, params, check, equal)
             result.update(status="passed", activeCheck=None)
         except Exception as error:
             result.update(status="failed", error=repr(error))
@@ -219,7 +284,7 @@ def run(command, suite="lifecycle", capture=False):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--capture", action="store_true", help="include isolated wire observations in the report")
-    parser.add_argument("--suite", choices=("lifecycle", "messaging", "events"), default="lifecycle")
+    parser.add_argument("--suite", choices=("lifecycle", "messaging", "events", "decisions"), default="lifecycle")
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--command", nargs=argparse.REMAINDER, required=True)
     args = parser.parse_args()
