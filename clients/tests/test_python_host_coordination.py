@@ -104,6 +104,30 @@ class HostCoordinationTest(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(shown, ["Choose"])
         self.assertEqual(self.errors, [])
 
+    async def test_last_waiter_cancellation_does_not_log_a_shielded_future_error(self):
+        loop = asyncio.get_running_loop()
+        prior = loop.get_exception_handler()
+        logged, shown = [], asyncio.Event()
+        loop.set_exception_handler(lambda _loop, context: logged.append(context))
+        self.addCleanup(loop.set_exception_handler, prior)
+        async def present(_event, cancelled):
+            shown.set()
+            await cancelled.wait()
+        host = await self.host(present=present)
+        task = asyncio.create_task(host.call('xsm_decide', {'question': 'Cancel fixture', 'options': ['blue', 'green']}))
+        await asyncio.wait_for(shown.wait(), 3)
+        while not any(state['waiters'] == 1 for state in host.questions.values()):
+            await asyncio.sleep(0)
+        task.cancel()
+        with self.assertRaises(asyncio.CancelledError):
+            await task
+        for _ in range(3):
+            await asyncio.sleep(0)
+        self.assertEqual([context.get('message') for context in logged], [])
+        state = next(iter(host.questions.values()))
+        self.assertTrue(state['cancelled'].is_set())
+        self.assertEqual(state['waiters'], 0)
+
     async def test_one_cancelled_waiter_keeps_another_question_waiter(self):
         shown, reply = asyncio.Event(), asyncio.Event()
         async def present(event, cancelled):

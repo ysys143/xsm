@@ -731,8 +731,23 @@ notice-only 비진행 검사 두 개가 아직 없었으므로 구분한다.
 건수 제한 전달, CLI 전달, 두 SDK의 연속 읽기/비진행 중지, 숫자 범위/큰 정수,
 MCP null 처리를 제거한 9개 변이는 모두 실패했다
 (`inbox-batch-verified-mutations.json`). 첫 변이 하네스는 치환 위치가 두 곳이라
-4개 실행 뒤 중단됐고, 이 실패와 부분 로그도 보존했다. Python 3.14의 UI 취소 검사에는
-`CancelledError exception in shielded future` 경고가 남아 있으며 P2 미완으로
-기록한다. Notice-only pack에 빈 ACK 안내를 붙이는 코드 경로는 Pi/OpenCode/
+4개 실행 뒤 중단됐고, 이 실패와 부분 로그도 보존했다. 이 시점의 Python 3.14 UI 취소 검사에는
+`CancelledError exception in shielded future` 경고가 남았으며, 아래 후속 수정으로
+해결했다. Notice-only pack에 빈 ACK 안내를 붙이는 코드 경로는 Pi/OpenCode/
 OpenClaw 세 연결부에서 확인했다. 담당 구현 세션이 native 배치 연결 단계에서
 수정·실행 검증해야 하며, 해결 완료로 세지 않는다.
+
+## Python 마지막 질문 대기자의 취소
+
+마지막 대기자를 취소할 때 질문 Future에 CancelledError를 예외로 저장하고
+있었다. Python 3.14 shield가 이를 오류로 기록하는 경로를 실제 서버 subprocess
+검사에서 event-loop exception handler로 포착했고, 수정 전 실패를 확인했다
+(`python-question-cancel-red.log`). Future.cancel로 실제 취소 처리하도록 바꿨다.
+로그를 숨기는 예외 handler를 제품에 추가하지 않았다.
+
+호스트 조정 검사 13개가 Python 3.9.6에서 10.858초, 3.14.6에서 6.277초에
+경고 없이 통과했다(`python-question-cancel-green-{py39,py314}.log`). 다른 대기자
+유지, 마지막 취소 후 서버 질문 pending/무응답, 새로운 질문 표시와 재시도를
+포함한다. 공통 286개(핵심 187, Python 31, Node 68)가 Python 3.14.6에서
+36.404초에 통과했다(`python-question-cancel-gate.log`).
+이는 SDK 취소 경고의 해결이며 전체 P2나 native UI 인증 완료를 뜻하지 않는다.

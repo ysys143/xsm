@@ -82,7 +82,7 @@ class XsmHost:
             state["cancelled"].set()
             if state.get("task"):
                 state["task"].cancel()
-            state["done"].set_exception(asyncio.CancelledError())
+            state["done"].cancel()
             try:
                 await self._abandon(state)
             except Exception as error:
