@@ -68,3 +68,28 @@ test('claim release failure preserves original admission error', async () => {
     assert.deepEqual(calls, ['xsm_inbox', 'inbox.release']);
   }
 });
+
+test('host rejects nonfinite or nonnumeric initial leases', async t => {
+  const { XsmHost } = await import('../typescript/xsm-host.mjs');
+  for (const lease of [true, '120', NaN, Infinity, 0]) {
+    let closed = 0;
+    const client = { initialization: { capabilities: ['messaging', 'inbox'], limits: { claimLeaseSeconds: lease } },
+      async close() { closed++; } };
+    const mocked = t.mock.method(XsmHostClient, 'connect', async () => client);
+    try {
+      await assert.rejects(XsmHost.open({ runtime: 'fixture', profile: 'p', conversation: 'c', cwd: '.' }), /claim lease/);
+      assert.equal(closed, 1);
+    } finally { mocked.mock.restore(); }
+  }
+});
+
+test('host initialization retains primary failure when close fails', async t => {
+  const { XsmHost } = await import('../typescript/xsm-host.mjs');
+  const primary = new Error('session registration failed'), cleanup = new Error('cleanup failed'), diagnostics = [];
+  const client = { initialization: { capabilities: ['messaging', 'inbox'], limits: { claimLeaseSeconds: 120 } },
+    async sessionOpen() { throw primary; }, async close() { throw cleanup; } };
+  t.mock.method(XsmHostClient, 'connect', async () => client);
+  await assert.rejects(XsmHost.open({ runtime: 'fixture', profile: 'p', conversation: 'c', cwd: '.',
+    onError: error => diagnostics.push(error) }), error => error === primary);
+  assert.deepEqual(diagnostics, [cleanup]);
+});

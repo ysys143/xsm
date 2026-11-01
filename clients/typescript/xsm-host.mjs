@@ -68,7 +68,7 @@ export class XsmHost {
       const required = ['messaging', 'inbox', ...(options.deliver ? ['events'] : []),
         ...(options.present ? ['user-decisions'] : [])];
       if (!Array.isArray(available) || required.some(capability => !available.includes(capability)) ||
-          !(client.initialization.limits?.claimLeaseSeconds > 0)) {
+          (!Number.isFinite(client.initialization.limits?.claimLeaseSeconds) || client.initialization.limits.claimLeaseSeconds <= 0)) {
         throw new Error('server does not expose the required host protocol capabilities and claim lease');
       }
       const capabilities = ['messaging', 'inbox', ...(options.deliver ? ['events'] : [])];
@@ -83,7 +83,14 @@ export class XsmHost {
       if (options.deliver) await client.eventsSubscribe(session.session);
       host.pumpTask = host.pump();
       return host;
-    } catch (error) { await client.close(); throw error; }
+    } catch (error) {
+      try { await client.close(); }
+      catch (cleanupError) {
+        try { (options.onError ?? (failure => console.error('xsm:', failure.message)))(cleanupError); }
+        catch {}
+      }
+      throw error;
+    }
   }
 
   constructor(client, session, operations, options) {

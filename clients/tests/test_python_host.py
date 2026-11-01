@@ -81,3 +81,34 @@ class DeliveryFailureTest(unittest.IsolatedAsyncioTestCase):
                 self.assertIs(refused.exception, primary)
                 self.assertEqual(diagnostics, [cleanup])
                 self.assertEqual(calls, ['xsm_inbox', 'inbox.release'])
+
+    async def test_invalid_initial_lease_is_refused_even_when_cleanup_fails(self):
+        from types import SimpleNamespace
+        from unittest.mock import AsyncMock, patch
+        from xsm_host import XsmHost
+        from xsm_client import TransportError
+        for lease in (True, '120', float('nan'), float('inf'), 0, 2 ** 2048):
+            diagnostics = []
+            cleanup = RuntimeError('bootstrap cleanup failed')
+            client = SimpleNamespace(initialization={'capabilities': ['messaging', 'inbox'],
+                'limits': {'claimLeaseSeconds': lease}}, close=AsyncMock(side_effect=cleanup))
+            with patch.object(XsmHostClient, 'connect', new=AsyncMock(return_value=client)):
+                with self.assertRaises(TransportError):
+                    await XsmHost.open(runtime='fixture', profile='p', conversation='c', cwd=str(ROOT),
+                                       on_error=diagnostics.append)
+            client.close.assert_awaited_once()
+            self.assertEqual(diagnostics, [cleanup])
+
+    async def test_initialization_cancellation_survives_cleanup_failure(self):
+        from types import SimpleNamespace
+        from unittest.mock import AsyncMock, patch
+        from xsm_host import XsmHost
+        primary, cleanup, diagnostics = asyncio.CancelledError(), RuntimeError('cleanup failed'), []
+        client = SimpleNamespace(initialization={'capabilities': ['messaging', 'inbox'],
+            'limits': {'claimLeaseSeconds': 120}}, close=AsyncMock(side_effect=cleanup),
+            session_open=AsyncMock(return_value={'session': 's'}), request=AsyncMock(side_effect=primary))
+        with patch.object(XsmHostClient, 'connect', new=AsyncMock(return_value=client)):
+            with self.assertRaises(asyncio.CancelledError) as refused:
+                await XsmHost.open(runtime='fixture', profile='p', conversation='c', cwd=str(ROOT), on_error=diagnostics.append)
+        self.assertIs(refused.exception, primary)
+        self.assertEqual(diagnostics, [cleanup])

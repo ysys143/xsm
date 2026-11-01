@@ -35,8 +35,12 @@ class XsmHost:
             capabilities = ["messaging", "inbox"] + (["events"] if deliver else []) + (["user-decisions"] if present else [])
             available = client.initialization.get("capabilities", [])
             lease = client.initialization.get("limits", {}).get("claimLeaseSeconds", 0)
-            if any(value not in available for value in capabilities) or not isinstance(lease, (int, float)) or lease <= 0:
-                raise TransportError("server lacks required host capabilities or a claim lease")
+            try:
+                valid_lease = type(lease) in (int, float) and math.isfinite(lease) and lease > 0
+            except OverflowError:
+                valid_lease = False
+            if not isinstance(available, list) or any(value not in available for value in capabilities) or not valid_lease:
+                raise TransportError("server lacks required host capabilities or a finite positive claim lease")
             session = await client.session_open(runtime=runtime, profile=profile, conversation=conversation,
                                                 cwd=cwd, capabilities=capabilities)
             operations = (await client.request("operations/list"))["operations"]
@@ -51,7 +55,16 @@ class XsmHost:
             host.pump = asyncio.create_task(host._pump())
             return host
         except BaseException:
-            await client.close()
+            try:
+                await client.close()
+            except Exception as cleanup_error:
+                try:
+                    if on_error:
+                        on_error(cleanup_error)
+                    else:
+                        print("xsm:", str(cleanup_error), file=sys.stderr)
+                except Exception:
+                    pass
             raise
 
     def __init__(self, client, session, operations, deliver, present, on_error):

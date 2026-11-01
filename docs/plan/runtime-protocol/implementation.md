@@ -1291,3 +1291,23 @@ scripted assistant fixture이며 모델/사람 UI나 100개 p95 기준의 인증
 공통 363개(핵심 231, Python 40, Node 92)는 Python 3.14.6에서 58.657초에
 통과했다(`opencode-initial-update-gate.log`). Plugin 자체 최초 descriptor 조회
 실패·자동 idle 재접속·worker·Linux·원격·전체 방향 조합과 P0–P5는 미완이다.
+
+## SDK host 초기화 계약과 정리 오류
+
+두 SDK의 XsmHost.open에서 초기화 실패 뒤 client.close도 실패하면 정리 오류가
+원래 오류/취소를 덮어썼다. Close를 시도한 뒤 그 실패를 별도 진단으로 보고하고
+원래 예외를 유지하도록 수정했다. Close 실패까지 자원 회수가 보장된 것으로
+보고하지 않는다. 실제 프로세스·정본 참여·lease 복구는 별도 근거가 필요하다.
+
+Claim lease 검증도 두 언어를 맞췄다. 유한한 양수 숫자만 허용하며 boolean,
+문자열, NaN/무한대와 Python에서 유한한 native 수치로 변환할 수 없는 큰 정수를
+거부한다. Python capability 목록도 배열인지 확인한다. 정상 서버의 120초
+기본값이나 실제 claim lease를 바꾸지는 않았다.
+
+수정 전 Python/Node 검사는 모두 실패했다(`sdk-initialize-{python,node}-red.log`).
+수정 후 Python 3.9.6 관련 5개와 Node 관련 4개가 통과했다
+(`sdk-initialize-{python,node}-green.log`). 잘못된 lease의 초기화 거부와 정리
+시도·진단, 원래 취소/등록 오류 유지 경로를 확인한다. 공통 367개(핵심 231,
+Python 42, Node 94)는 Python 3.14.6에서 58.621초에 통과했다
+(`sdk-initialize-gate.log`). 이 결과는 SDK host 초기화 경로이며 전체 native
+초기화/재접속·모델/사람 UI·worker·Linux와 P0–P5 나머지는 미완이다.

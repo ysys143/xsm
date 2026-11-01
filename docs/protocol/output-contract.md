@@ -73,3 +73,9 @@ responses for all 11 public methods and both notification types
 (`combined-output-validation.json`). This supersedes the earlier example-only
 coverage of decision routes, without completing operation-specific results,
 all decision semantics or native UI certification.
+
+The SDK handshake additionally requires claimLeaseSeconds to be a finite,
+positive native numeric value, excluding booleans and numeric strings. Python
+integers too large for a finite native numeric representation are refused. The
+JSON Schema number definition alone does not establish that representation or
+the full host initialization contract.
