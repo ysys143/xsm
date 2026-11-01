@@ -55,6 +55,7 @@ export class XsmHost {
     this.closed = false;
     this.deliverySuspended = false;
     this.pendingWake = false;
+    this.invocationTail = Promise.resolve();
   }
 
   question(id) {
@@ -79,11 +80,21 @@ export class XsmHost {
     return state.abandonTask;
   }
 
+  serializeInvocation(callback) {
+    const pending = this.invocationTail.then(callback);
+    this.invocationTail = pending.catch(() => {});
+    return pending;
+  }
+
   cancelUnused(state) {
-    if (state.waiters.size || state.result || this.closed) return;
-    state.cancelled = true;
-    state.controller.abort();
-    this.abandon(state)?.catch(error => this.error(error));
+    const cleanup = this.serializeInvocation(async () => {
+      if (state.waiters.size || state.result || this.closed) return;
+      state.cancelled = true;
+      state.controller.abort();
+      await this.abandon(state);
+    });
+    cleanup.catch(error => this.error(error));
+    return cleanup;
   }
 
   async pump() {
@@ -162,10 +173,20 @@ export class XsmHost {
 
   async call(operation, args = {}, { signal } = {}) {
     if (signal?.aborted || this.closed) throw aborted();
-    let result = await this.client.operationCall(this.session.session, operation, args);
-    if (result?.status === 'waiting-for-user') {
+    const invoked = await this.serializeInvocation(async () => {
+      if (signal?.aborted || this.closed) throw aborted();
+      const result = await this.client.operationCall(this.session.session, operation, args);
+      if (result?.status !== 'waiting-for-user') return { result };
       if (!result.question_id) throw new Error('server does not identify its host question');
-      await this.waitForQuestion(result.question_id, signal);
+      // Reserve the waiter inside the response-registration barrier. Returning
+      // it in an object releases the barrier before waiting for a human.
+      const waiting = this.waitForQuestion(result.question_id, signal);
+      waiting.catch(() => {});
+      return { result, waiting };
+    });
+    let result = invoked.result;
+    if (invoked.waiting) {
+      await invoked.waiting;
       if (signal?.aborted || this.closed) throw aborted();
       result = await this.client.operationCall(this.session.session, operation, args);
       if (result?.status === 'waiting-for-user') throw new Error('operation still waiting; inspect its decision status');

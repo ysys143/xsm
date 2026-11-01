@@ -72,6 +72,43 @@ test('one cancelled waiter does not cancel another waiter or forge denial', { ti
   assert.deepEqual(errors, []);
 });
 
+test('a pending decision RPC is registered before another caller abandons the display', { timeout: 10000 }, async t => {
+  const shown = deferred(), reply = deferred(), pending = deferred(), release = deferred();
+  let uiSignal;
+  const { host } = await fixture(t, { present: async (event, { signal }) => {
+    uiSignal = signal; shown.resolve(); await reply.promise;
+    return { displayed: event.params.question, sourceId: event.params.questionId, answer: 'blue' };
+  } });
+  const original = host.client.operationCall.bind(host.client);
+  let requests = 0;
+  host.client.operationCall = async (...args) => {
+    const number = ++requests;
+    const result = await original(...args);
+    if (number === 2) { pending.resolve(); await release.promise; }
+    return result;
+  };
+  const args = { question: 'Choose', options: ['blue', 'green'] };
+  const controller = new AbortController();
+  const first = host.call('xsm_decide', args, { signal: controller.signal });
+  const rejected = assert.rejects(first, error => error.name === 'AbortError');
+  await shown.promise;
+  const second = host.call('xsm_decide', args);
+  try {
+    await pending.promise;
+    controller.abort();
+    await new Promise(resolve => setImmediate(resolve));
+    assert.equal(uiSignal.aborted, false, 'pending RPC caller must keep its display');
+    release.resolve();
+    await rejected;
+    reply.resolve();
+    assert.match(JSON.stringify(await second), /your user answered: blue/);
+  } finally {
+    release.resolve(); reply.resolve();
+    await host.close();
+    await Promise.allSettled([first, second, rejected]);
+  }
+});
+
 test('all cancelled waiters abandon the display and a deliberate retry gets a fresh question', { timeout: 10000 }, async t => {
   const shown = deferred();
   let number = 0;
