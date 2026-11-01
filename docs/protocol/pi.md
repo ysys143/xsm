@@ -97,3 +97,37 @@ Python도 설치기의 기존 pin/현재 실행 파일로 고정하며 `PYTHONPA
 `PYTHONPATH`, interpreter env 오버라이드 없이 실제 자동 발견·스냅샷 실행과
 설치 당시 Python 버전을 확인한다. `probe-pi-install-lifecycle.py`는 명시적인
 대화 fixture로 기존 대화·문맥 보존과 갱신/재개/제거를 검사한다.
+
+## 등록된 세션의 backend 복구
+
+다음 도구·명령·chat 경계·상태 갱신에서 실패하거나 닫힌 host를 감지하면
+기존 참여를 정리하고 같은 native 대화의 새 세대를 연다. 복구 Promise를
+공유하므로 동시 진입이 중복 backend를 만들지 않는다. 실패한 작업 자체를
+이 경로가 자동 재실행하지 않는다. Native 대화/workspace를 확인한 뒤에만
+host를 사용하며 명령도 확인된 host를 붙잡는다.
+
+세션 시작/종료의 epoch로 아직 끝나지 않은 복구를 무효화한다. Backend open
+직후와 초기 상태 갱신 뒤에도 검사해, 그 사이 shutdown이 발생하면 새 host를
+닫는다. 제어된 API/backend fixture는 동시 복구·open 중 종료·상태 갱신 중
+종료·다른 native 대화 거부의 4개를 통과했다
+(`pi-recovery-lifecycle-verified.log`). Epoch/등록 수명 검사를 제거한 변이는
+종료 검사에 실패했다(`pi-recovery-epoch-mutant-verified.log`). 이는 제어된
+fixture이며 실제 Pi queue 시험과는 구분한다.
+
+실제 Pi 1.4.0 SDK는 원문을 claim한 backend를 종료하고 다음 native 도구 호출로
+같은 주소의 새 세대에서 원문 회수·이전 claim 거부·native 도구 ACK를 확인했다
+(`pi-sdk-recovery-verified.json`). 이전 commit의 연결 본문은 같은 SDK 시험에서
+EOF 오류로 실패했다(`pi-backend-recovery-baseline.json`). 모델 호출은 0회다.
+
+실제 설치 snapshot의 RPC 프로브도 `--crash`를 지원한다. 자체 backend를
+종료하고 /xsm status 명령으로 재등록한 뒤 native 수락 100/100개와 RPC 명령
+ACK 100/100개를 확인했다. macOS/protocol Python 3.14.6 p95 상한은 421.134ms다
+(`pi-backend-recovery-verified-100/result.json`). 정본 ACK 수와 실행 코드의 해시
+일치는 `pi-backend-recovery-ack-audit.json`에 별도로 기록했다. RPC 명령 ACK를
+모델이 원문을 읽은 증거로 부르지 않는다. SDK 도구 ACK 표본과도 구분한다.
+복구 후 native select 프로토콜의 답도 fixture가 주었으며 실제 사람 응답이 아니다.
+
+공통 359개는 57.057초에 통과했다(`pi-backend-recovery-gate-final.log`). 이번
+복구는 정상 등록된 세션의 backend 종료를 대상으로 한다. 최초 등록 자체의
+실패 재시도·유휴 중 선제 재접속·실제 모델/사람 UI·worker·Linux와 전체
+P3/P5는 미완이다.

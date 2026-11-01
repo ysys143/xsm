@@ -1,13 +1,14 @@
 /** Exercise registered Pi tools through the native execution/validation kernel, without a model. */
 import assert from 'node:assert/strict';
+import { execFileSync } from 'node:child_process';
 import { mkdtemp, mkdir, writeFile, readdir, readFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import { pathToFileURL, fileURLToPath } from 'node:url';
 import { XsmClient } from '../clients/typescript/xsm-client.mjs';
 
-const [packageRoot, output, mode] = process.argv.slice(2);
-assert.ok(!mode || ['--notice', '--batch'].includes(mode));
+const [packageRoot, output, mode, entryOverride] = process.argv.slice(2);
+assert.ok(!mode || ['--notice', '--batch', '--recover'].includes(mode));
 if (!packageRoot || !output) throw new Error('usage: node probe-pi-sdk.mjs <Pi package root> <output.json>');
 const root = fileURLToPath(new URL('../', import.meta.url));
 const temp = await mkdtemp(join(tmpdir(), 'xsm-pi-sdk-'));
@@ -25,7 +26,7 @@ const result = { status: 'incomplete', root: temp, runtimeVersion: sdk.VERSION,
 let session;
 let sender;
 try {
-  let entry = join(root, 'integrations/pi/xsm.mjs');
+  let entry = entryOverride ?? join(root, 'integrations/pi/xsm.mjs');
   if (mode === '--notice') {
     const code = "import runpy,sys;sys.path.insert(0,sys.argv.pop(1));from xsm import receive;check=receive.check;receive.check=lambda p,m:('block','P2P admission temporarily unavailable: fixture') if p.body.startswith('defer-fixture') else check(p,m);runpy.run_module('xsm',run_name='__main__')";
     entry = join(temp, 'notice-extension.mjs');
@@ -71,6 +72,47 @@ try {
   assert.equal(question.isError, false);
   assert.match(JSON.stringify(question.result.content), /your user answered: blue/);
   assert.deepEqual(displayed, [{ title: 'Native SDK choose', options: ['blue', 'green'] }]);
+  if (mode === '--recover') {
+    const records = async () => (await Promise.all((await readdir(join(process.env.XSM_HOME, 'sessions')))
+      .filter(name => name.endsWith('.json')).map(async name => JSON.parse(await readFile(join(process.env.XSM_HOME, 'sessions', name), 'utf8')))))
+      .filter(record => record.runtime === 'pi');
+    const [before] = await records();
+    sender = await XsmClient.connect({ command: [join(root, 'bin/xsm'), 'protocol', 'serve', '--stdio'],
+      cwd: join(temp, 'project'), env: process.env });
+    const origin = await sender.sessionOpen({ runtime: 'recovery-fixture', profile: temp,
+      conversation: 'sender', cwd: join(temp, 'project') });
+    await sender.operationCall(origin.session, 'xsm_send', { target: 'ref:' + before.ref,
+      text: 'Pi original survives backend crash', wake: 'never', wait: 0 });
+    const packet = await context.executeTool('xsm_inbox', {});
+    assert.equal(packet.isError, false);
+    const original = JSON.parse(packet.result.content[0].text).claims[0];
+    assert.equal(Number(execFileSync('ps', ['-o', 'ppid=', '-p', String(before.pid)], { encoding: 'utf8' }).trim()),
+      process.pid, 'refuse to kill a backend not created by this probe');
+    process.kill(before.pid, 'SIGKILL');
+    const deadline = Date.now() + 5000;
+    while (true) {
+      try { process.kill(before.pid, 0); }
+      catch (error) { if (error.code === 'ESRCH') break; throw error; }
+      assert.ok(Date.now() < deadline, 'backend was not reaped');
+      await new Promise(resolve => setTimeout(resolve, 10));
+    }
+    const recovered = await context.executeTool('xsm_inbox', {});
+    assert.equal(recovered.isError, false, JSON.stringify(recovered));
+    const claim = JSON.parse(recovered.result.content[0].text).claims[0];
+    const [after] = await records();
+    assert.equal(after.ref, before.ref);
+    assert.notEqual(after.pid, before.pid);
+    assert.notEqual(after.protocol_generation, before.protocol_generation);
+    assert.equal(claim.id, original.id);
+    assert.notEqual(claim.token, original.token);
+    const stale = await context.executeTool('xsm_ack', { tokens: [original.token] });
+    assert.equal(stale.isError, true);
+    const ack = await context.executeTool('xsm_ack', { tokens: [claim.token] });
+    assert.equal(ack.isError, false);
+    assert.deepEqual(JSON.parse(ack.result.content[0].text).acked, [claim.id]);
+    result.backendRecovery = { sameRef: true, generationChanged: true, oldClaimRejected: true,
+      originalRecovered: true, nativeAck: true, oldPid: before.pid, newPid: after.pid };
+  }
   if (mode === '--notice') {
     const folder = join(process.env.XSM_HOME, 'sessions');
     const records = await Promise.all((await readdir(folder)).filter(name => name.endsWith('.json'))

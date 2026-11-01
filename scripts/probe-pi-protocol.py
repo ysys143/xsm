@@ -130,6 +130,27 @@ async def run(args):
             assert actual["protocol_root"] == os.path.realpath(installation["runtime_root"]), actual
             assert actual["protocol_python_version"] == sys.version.split()[0], actual
             result["snapshotRuntimeVerified"] = True
+        if getattr(args, "crash", False):
+            native_records = [json.loads(p.read_text()) for p in (state / "sessions").glob("*.json")]
+            previous = next(item for item in native_records if item["runtime"] == "pi")
+            assert previous["pid"] != process.pid and os.getpgid(previous["pid"]) == process.pid, "backend is not in the probe process group"
+            os.kill(previous["pid"], signal.SIGKILL)
+            deadline = time.monotonic() + 5
+            while True:
+                try:
+                    os.kill(previous["pid"], 0)
+                except ProcessLookupError:
+                    break
+                assert time.monotonic() < deadline, "backend was not reaped"
+                await asyncio.sleep(.01)
+            await native.command("recovered-status", "/xsm status")
+            current_records = [json.loads(p.read_text()) for p in (state / "sessions").glob("*.json")]
+            recovered = next(item for item in current_records if item["runtime"] == "pi")
+            assert recovered["ref"] == previous["ref"] and recovered["pid"] != previous["pid"]
+            assert recovered["protocol_generation"] != previous["protocol_generation"]
+            result["backendRecovery"] = {"sameRef": True, "generationChanged": True,
+                "oldPid": previous["pid"], "newPid": recovered["pid"], "trigger": "native /xsm status; no failed operation replay"}
+            checkpoint()
         # Exercise the real native select dialog protocol. The driver supplies
         # the answer; this is not attributed to a physical human.
         await native.send({"type": "prompt", "id": "question", "message": "/xsm xsm_decide " +
@@ -209,6 +230,7 @@ if __name__ == "__main__":
     parser.add_argument("--pi-cli", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--samples", type=int, default=2)
+    parser.add_argument("--crash", action="store_true")
     parser.add_argument("--installed", action="store_true", help="test profile autoload from an owned runtime snapshot")
     options = parser.parse_args()
     if options.samples < 0:

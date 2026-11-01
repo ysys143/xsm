@@ -1220,3 +1220,31 @@ scripted assistant fixture이며 모델 추론이나 사람 UI 인증이 아니�
 공통 355개(핵심 231, Python 40, Node 84)는 Python 3.14.6에서 59.428초에
 통과했다(`opencode-backend-recovery-gate.log`). 유휴 중 자동 재접속·Pi/다른
 runtime의 복구·worker·Linux·원격·전체 방향 조합과 P0–P5 나머지는 미완이다.
+
+## Pi 다음 native 진입의 backend 복구
+
+Pi의 도구·명령·chat/status 경계에서 닫히거나 실패한 host를 재등록하는 경로를
+추가했다. 대화/workspace와 세션 epoch를 비동기 확인 뒤 다시 검사하고, 실제
+작업은 그 호출이 확인한 host로 보낸다. 복구 Promise를 공유하고 native 세션
+시작/종료는 이전 복구를 무효화한다. Backend open 및 초기 상태 갱신 중 종료가
+겹쳐도 새 host를 닫는다. 실패한 작업을 자동 재실행하지 않는다.
+
+제어된 API/backend 검사 4개가 통과했고 등록 수명 검사를 무력화한 변이는
+실패했다(`pi-recovery-lifecycle-verified.log`, `pi-recovery-epoch-mutant-verified.log`).
+실제 Pi 1.4.0 SDK도 claim을 남긴 backend를 종료한 뒤 같은 주소의 새 세대·
+원문 회수·이전 claim 거부·native 도구 ACK를 통과했다
+(`pi-sdk-recovery-verified.json`). 이전 연결 본문의 같은 SDK 시험은 EOF로
+실패했다(`pi-backend-recovery-baseline.json`). 정상 batch 회귀도 별도 통과했다
+(`pi-backend-batch-verified.json`).
+
+추가 shutdown 상태 갱신 경계를 보완한 최종 코드의 설치 snapshot에서 다시
+RPC 수신 100/100개와 RPC 명령 ACK 100/100개를 확인했다. macOS/protocol Python
+3.14.6 p95 상한은 421.134ms다(`pi-backend-recovery-verified-100/result.json`).
+`pi-backend-recovery-ack-audit.json`은 정본 ACK 100개와 현재 코드 해시 일치를
+대조한다. SDK 도구 ACK와 RPC 명령 ACK, 모델 소비를 구분한다. Native UI
+프로토콜은 fixture 답으로 확인했으며 사람의 응답 인증은 아니다. 앞선 중간
+코드의 100개 표본도 보존하고 최종 판정에는 최종 해시 표본을 사용한다.
+
+공통 359개(핵심 231, Python 40, Node 88)는 Python 3.14.6에서 57.057초에
+통과했다(`pi-backend-recovery-gate-final.log`). 최초 등록 실패 재시도·자동 idle
+재접속·실제 모델/사람 UI·worker·Linux·전체 방향 조합과 P0–P5 나머지는 미완이다.

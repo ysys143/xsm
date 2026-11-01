@@ -35,7 +35,7 @@ def main():
                      "-p", "test_python*.py", "-q"],
                     ["node", "--test", "clients/tests/test_node_client.mjs",
                      "clients/tests/test_node_protocol.mjs", "clients/tests/test_node_host.mjs",
-                     "clients/tests/test_node_host_binding.mjs", "clients/tests/test_opencode_binding.mjs",
+                     "clients/tests/test_node_host_binding.mjs", "clients/tests/test_opencode_binding.mjs", "clients/tests/test_pi_binding.mjs",
                      "clients/tests/test_opencode_question_ui.mjs", "clients/tests/test_opencode_ui_channel.mjs",
                      "clients/tests/test_openclaw_binding.mjs", "clients/tests/test_openclaw_context_queue.mjs"]]
         if not shutil.which("node", path=env.get("PATH")):
