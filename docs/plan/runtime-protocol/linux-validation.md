@@ -370,3 +370,22 @@ turn·사람 UI·메신저는 0회이며 record-missing 경고는 유지한다.
 변경 없는 프로브 검증이므로 기존 공통 gate를 새 결과로 재집계하지
 않았다. Owned queue의 오류/정책 전체·UI·간헐적 burst ACK 실패와
 전체 계획은 계속 미완이다.
+
+## Owned OpenClaw의 정책·용량·FYI·burst
+
+변경 없는 `ce9b250`으로 고정 Linux arm64 SDK에서 네 실행을 각각
+격리했다(`linux-openclaw-owned-policy-regressions/{deny,capacity,fyi,burst}/
+output/result.json`). Native 설치 loader/manifest는 그대로 두고 별도
+SDK runtime으로 fixture 세션과 용량 예약 행을 준비했다. Injection
+거부의 pull/ACK와 비어 있는 큐, 용량/FYI의 claim 반환 후 새 메시지
+없는 재수락/ACK, 32건 burst의 32/32 소비/ACK가 모두 통과했다.
+Burst는 16묶음/96조각이며 지연을 의도한 표본이므로 정상 p95 인증이
+아니다. 앞선 간헐적 ACK 실패가 이번에는 재현되지 않았을 뿐, 해결
+판정은 하지 않는다.
+
+네 source archive hash가 같고 tracked dirty는 모두 false다. 검사
+network는 none, 모델·실제 agent turn·사람 UI·메신저는 0회다. 각
+실행의 source/image 증거와 summary.json을 보존했다. 테스트 VM은
+다시 Stopped로 확인했다(`vm-stopped.json`). 제품 변경이 없는 프로브
+검증이므로 공통 gate는 재실행하지 않았다. 오류/정책 전체·UI·나머지
+전체 계획은 미완이다.

@@ -547,3 +547,10 @@ RetryAdmission 뒤 재시도를 끈 복사본은 claim 반환까지는 진행됐
 재수락되지 않아 검사에서 실패했다
 (`openclaw-owned-capacity-no-retry-mutant.json`). Linux의 이 네 경로,
 정책/오류 전체·UI·간헐적 burst ACK 실패 해결은 아직 미완이다.
+
+후속 Linux arm64 고정 SDK에서도 네 경로가 모두 통과했다
+(`linux-openclaw-owned-policy-regressions/`). 변경 없는 `ce9b250`의
+같은 source archive로 실행했으며 burst는 32/32 소비·ACK,
+16묶음/96조각이다. 위 Linux 미실행 기록의 후속 표본이고, 지연을
+의도한 burst를 정상 p95나 간헐적 실패 해결의 증거로 쓰지 않는다.
+정책/오류 전체·실제 agent/UI/메신저와 전체 지원은 미완이다.

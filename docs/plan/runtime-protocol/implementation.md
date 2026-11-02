@@ -1870,3 +1870,12 @@ Burst는 소비 지연을 의도한 회복 표본이며 정상 p95 인증이 아
 이번에는 재현되지 않았으며 해결됐다고 판정하지 않는다. 제품 코드
 변경이 없으므로 공통 gate는 재실행하지 않았다. Linux의 이 네 경로와
 오류/정책 전체·UI·나머지 계획은 미완이다.
+
+Owned 정책 회귀 네 실행의 Linux 후속 검증도 변경 없는 `ce9b250`으로
+통과했다(`linux-openclaw-owned-policy-regressions/`). Injection 거부의
+pull/ACK·큐 비어 있음, capacity/FYI의 claim 반환 뒤 새 메시지 없는
+재수락/ACK, burst 32/32 소비·ACK(16묶음/96조각)를 확인했다. 네
+archive hash가 같고 tracked dirty false이며 모델·실제 turn·사람 UI·
+메신저는 0회다. 테스트 VM은 중지했다. 공통 gate를 재실행한 결과로
+보고하지 않으며, 간헐적 ACK 실패 해결·정책/오류 전체·UI·나머지
+계획은 계속 미완이다.
