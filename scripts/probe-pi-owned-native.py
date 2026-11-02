@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate the public owned journal against the pinned native Pi CLI, model0."""
+"""Validate native owned Pi execution and public cancellation with a loopback fixture, model0."""
 import asyncio,hashlib,json,os,sqlite3,subprocess,sys,tempfile,time,urllib.request
 from pathlib import Path
 repo=Path(__file__).resolve().parents[1];sys.path.insert(0,str(repo));sys.path.insert(0,str(repo/'clients/python'))
@@ -18,6 +18,15 @@ env={key:os.environ[key] for key in ('PATH','LANG','TMPDIR') if key in os.enviro
 import importlib.util
 spec=importlib.util.spec_from_file_location('opencode_probe',repo/'scripts/probe-opencode-protocol.py');module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module)
 assistant=module.AssistantFixture(out)
+import threading
+blocking={'enabled':False};entered=threading.Event();release=threading.Event();http_calls=[]
+original_post=assistant.server.RequestHandlerClass.do_POST
+def controlled_post(handler):
+ if blocking['enabled']:
+  http_calls.append(time.monotonic());entered.set();release.wait(20)
+ try:original_post(handler)
+ except (BrokenPipeError,ConnectionResetError):pass
+assistant.server.RequestHandlerClass.do_POST=controlled_post
 (profile/'models.json').write_text(json.dumps({'providers':{'xsm-fixture':{'baseUrl':'http://127.0.0.1:'+str(assistant.server.server_port)+'/v1','api':'openai-completions','apiKey':'explicit-no-network-fixture','models':[{'id':'fixture','name':'fixture','reasoning':False,'input':['text'],'contextWindow':32000,'maxTokens':1000,'cost':{'input':0,'output':0,'cacheRead':0,'cacheWrite':0}}]}}}))
 (profile/'settings.json').write_text(json.dumps({'defaultProvider':'xsm-fixture','defaultModel':'fixture','compaction':{'enabled':False},'retry':{'enabled':False}}))
 
@@ -82,11 +91,39 @@ async def main():
   check('cached request performs no provider calls',(out/'assistant-fixture.jsonl').read_text().splitlines()==before)
   check('context bound before both native turns',all(row.get('native_binding',{}).get('native_session_id')==first['result']['native_session_id'] for row in (first,second)))
   report['providerFixtureRequests']=len(before)
+  blocking['enabled']=True
+  cancel_id='cancel-'+nonce
+  await op('xsm_owned',{'action':'run','name':'native-pi','text':'Pending explicit provider fixture.','work_context':'cancel-native','request_id':cancel_id})
+  check('actual native request reached blocking HTTP fixture',await asyncio.to_thread(entered.wait,15))
+  from xsm import owned_requests
+  states=[json.loads(p.read_text()) for p in (state/'owned-requests').glob('*.json')]
+  saved=[value['requests'][cancel_id] for value in states if cancel_id in value.get('requests',{})]
+  check('actual cancel target has one durable native request',len(saved)==1 and bool(saved[0].get('native_binding')))
+  original=saved[0]
+  from xsm_client import RpcError
+  intruder=await client.session_open(runtime='owned-reference',profile='different-profile',conversation=nonce+'-intruder',cwd=str(workspace),capabilities=['messaging','inbox','events'])
+  try:await client.operation_call(intruder['session'],'xsm_owned',{'action':'cancel','name':'native-pi','request_id':cancel_id})
+  except RpcError:check('different native sender cannot cancel this request',True)
+  else:raise AssertionError('foreign cancellation accepted')
+  cancel_started=time.monotonic()
+  pending=await op('xsm_owned',{'action':'cancel','name':'native-pi','request_id':cancel_id})
+  check('admitted provider advertises native cancellation',pending['cancellation']['native_supported'] is True)
+  check('intent alone does not claim native stop',pending['cancellation']['native_state']=='unverified')
+  deadline=time.monotonic()+15
+  while True:
+   current=await op('xsm_owned',{'action':'status','name':'native-pi','request_id':cancel_id})
+   if current.get('cancellation',{}).get('native_state')=='stopped' and type(current.get('child',{}).get('returncode')) is int:break
+   if time.monotonic()>deadline:raise TimeoutError('native cancellation confirmation')
+   await asyncio.sleep(.05)
+  check('actual native aborted settle is recorded',current['cancellation']['status']=='native-stopped' and current['cancellation']['native_session_id']==current['native_binding']['native_session_id'])
+  check('cancelled native turn is no invented answer',current['status']=='unknown' and current['result'] is None and current['reply_id'] is None)
+  (out/'cancelled-request.json').write_text(json.dumps(current,indent=2)+'\n')
+  report['cancelHTTPRequests']=len(http_calls);report['cancel_observation_seconds']=round(time.monotonic()-cancel_started,3)
   report['status']='passed'
  except BaseException as error:report.update(status='failed',failure_type=type(error).__name__)
  finally:
   if client:await client.close()
-  assistant.server.shutdown();assistant.server.server_close()
+  release.set();assistant.server.shutdown();assistant.server.server_close()
   report['finished_at']=time.time();save();print(json.dumps(report),flush=True)
  return 0 if report['status']=='passed' else 1
 raise SystemExit(asyncio.run(main()))

@@ -395,6 +395,12 @@ xsm owned run reviewer --work pr-42 --text "review the diff"     # --fresh for a
 xsm owned status reviewer                                        # your requests and their answers
 ```
 
+The development version also accepts `xsm owned cancel reviewer --request-id <id>`.
+It records this sender's cancellation intent; pre-launch work can be cancelled immediately.
+Running-turn confirmation is currently implemented for newly admitted Pi 1.4.0 workers.
+Other providers' running cancellation and recovery remain unfinished. Inspect the
+[`cancellation` status](docs/protocol/native-workers.md#cancellation); intent or CLI exit alone does not prove a native task stopped.
+
 An ordinary running session is never taken over as an owned worker. Inside an Orca or herdr terminal, xsm
 leaves starting workers to that tool unless you tell it otherwise (`xsm frameworks`).
 

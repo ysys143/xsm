@@ -2369,6 +2369,9 @@ def cmd_owned(args) -> int:
         if args.action in ('retry', 'reconcile') and not args.request_id:
             print("reply recovery requires --request-id", file=sys.stderr)
             return USAGE
+        if args.action == 'cancel' and not args.request_id:
+            print('cancel requires --request-id', file=sys.stderr)
+            return USAGE
         result = owned_service.execute(me, {"action": args.action, "name": args.name,
             "runtime": args.runtime, "dir": args.dir, "home": args.home, "model": args.model,
             "effort": args.effort, "grant": args.grant, "text": args.text, "work_context": args.work,
@@ -2377,7 +2380,8 @@ def cmd_owned(args) -> int:
         print(str(exc),file=sys.stderr)
         return REFUSED
     print(_readable_json(result))
-    return OK if result.get("status") in (None,"published","requests") else UNCONFIRMED
+    return OK if result.get("status") in (None,"published","requests") or (
+        args.action == 'cancel' and result.get('status') == 'cancelled') else UNCONFIRMED
 
 
 def cmd_spawn(args) -> int:
@@ -2830,7 +2834,7 @@ def build_parser() -> argparse.ArgumentParser:
     ho.add_argument("--show", action="store_true", help="show the handovers made to this session")
     ho.set_defaults(func=cmd_handover)
     service=sub.add_parser("owned",help="journal requests to an explicitly owned headless worker")
-    service.add_argument("action",choices=["create","run","status","retry","reconcile"])
+    service.add_argument("action",choices=["create","run","status","retry","reconcile","cancel"])
     service.add_argument("name")
     from .native_workers import runtimes as owned_runtimes
     service.add_argument("--runtime",choices=owned_runtimes())

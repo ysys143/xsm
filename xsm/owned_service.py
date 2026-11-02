@@ -19,6 +19,10 @@ def execute(me, arguments, *, run=None):
     if action == 'status':
         return (workers.owned_status(name, me, args['request_id']) if args.get('request_id') else
                 {'status': 'requests', 'requests': workers.owned_history(name, me)})
+    if action == 'cancel':
+        if not args.get('request_id'):
+            raise ActionError('request_id required for cancellation')
+        return workers.cancel_owned(name, me, args['request_id'])
     if action in ('retry', 'reconcile'):
         if not args.get('request_id'):
             raise ActionError('request_id required for reply recovery')

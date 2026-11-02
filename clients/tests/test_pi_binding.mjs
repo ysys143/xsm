@@ -44,6 +44,39 @@ test('Pi owned input refusal uses the native handled short-circuit', async t => 
   assert.deepEqual(await f.hooks.get('input')({}, f.ctx), { action: 'handled' });
 });
 
+test('Pi confirms cancellation only after its matching native aborted settle', async t => {
+  let aborts = 0, reports = 0;
+  const f = await fixture(t, { workerControl: { nativeID: 'native', bind: async () => {}, close() {},
+    cancellationRequested: async () => true, reportStopped: async () => { reports++; } } });
+  f.ctx.abort = () => { aborts++; };
+  await f.hooks.get('agent_start')({}, f.ctx);
+  assert.equal(aborts, 1); assert.equal(reports, 0);
+  await f.hooks.get('agent_settled')({ aborted: true }, f.ctx);
+  assert.equal(reports, 1);
+});
+
+test('Pi does not claim cancellation when the native turn completed normally', async t => {
+  let reports = 0;
+  const f = await fixture(t, { workerControl: { nativeID: 'native', bind: async () => {}, close() {},
+    cancellationRequested: async () => true, reportStopped: async () => { reports++; } } });
+  f.ctx.abort = () => {};
+  await f.hooks.get('agent_start')({}, f.ctx);
+  await f.hooks.get('agent_settled')({ aborted: false }, f.ctx);
+  assert.equal(reports, 0);
+});
+
+test('Pi cancellation cannot abort a different conversation while a query is pending', async t => {
+  const gate = deferred(), entered = deferred(); let aborts = 0;
+  const f = await fixture(t, { workerControl: { nativeID: 'native', bind: async () => {}, close() {},
+    cancellationRequested: async () => { entered.resolve(); await gate.promise; return true; }, reportStopped: async () => {} } });
+  f.ctx.abort = () => { aborts++; };
+  const starting = f.hooks.get('agent_start')({}, f.ctx);
+  await entered.promise;
+  f.ctx.sessionManager.getSessionId = () => 'different';
+  gate.resolve(); await starting;
+  assert.equal(aborts, 0);
+});
+
 async function fixture(t, options = {}) {
   const temp = await mkdtemp(join(tmpdir(), 'xsm-pi-lifetime-'));
   const key = 'xsmPiFixture' + randomUUID();
@@ -80,6 +113,11 @@ async function fixture(t, options = {}) {
   }
   if (process.env.XSM_PI_LIFETIME_MUTANT === 'auto') {
     const changed = code.replace('function scheduleReconnect() {', 'function scheduleReconnect() { return;');
+    assert.notEqual(changed, code);
+    code = changed;
+  }
+  if (process.env.XSM_PI_LIFETIME_MUTANT === 'cancel-settle') {
+    const changed = code.replace('if (aborted === true && monitor.requested', 'if (monitor.requested');
     assert.notEqual(changed, code);
     code = changed;
   }

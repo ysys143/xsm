@@ -13,6 +13,7 @@ from .worker_cli import NativeCliError, build_command, parse_result
 RUNTIME = 'pi'
 VERSION = '1.4.0'
 CONTROL_PROTOCOL = 1
+CANCELLATION_PROTOCOL = 1
 
 
 def default_home(caller):
@@ -53,6 +54,7 @@ def prepare(home):
     executable = os.path.realpath(selected)
     _version(executable)
     return {'executable': executable, 'version': VERSION, 'control_protocol': CONTROL_PROTOCOL,
+            'cancellation_protocol': CANCELLATION_PROTOCOL,
             'runtime_root': str(root), 'frontend': str(frontend), 'frontend_sha256': digest}
 
 

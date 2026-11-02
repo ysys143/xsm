@@ -133,17 +133,46 @@ cyclic ancestry refuses worker operations. Hermes native children have macOS
 execution evidence; root-worker evidence must not be generalized to every native
 delegation path or operating system. See the linked evidence for exact limits.
 
-## Cancellation work in progress
+## Cancellation
 
-The internal journal can record sender- and worker-specific cancellation intent.
+`xsm_owned` with `action: "cancel"`, `name` and `request_id`, or
+`xsm owned cancel <name> --request-id <id>`, records sender- and worker-specific
+cancellation intent. Only the request's original native sender may cancel it;
+repository scope alone does not authorize cancelling someone else's request.
 Queued/reserved work can be proven `cancelled` before execution. Process creation
 and its durable child record share a journal lock; cancellation cannot pass
 between them. An execution-side observer of prior intent records `not-started`
 without creating the child. A private native binding also refuses pending intent.
 
-Running work remains unconfirmed: recording intent does not signal a process,
-prove native quiescence, roll back effects or synthesize a reply. No public
-`xsm_owned` / CLI cancel action is exposed yet. Native stop confirmation and
-transport integration remain required. Cancelling a waiting transport still does
-not cancel its saved owned task, and service removal still refuses active or
-uncertain work.
+Recording intent alone does not prove native quiescence, roll back effects or
+synthesize a reply. Inspect the returned `cancellation` and subsequent status:
+
+- `status: requested`, `native_state: unverified`: intent is durable; no stop claim.
+- `status: not-started`, `native_state: not-started`: execution was prevented;
+  the request itself is `cancelled`.
+- `status: native-stopped`, `native_state: stopped`: the bound frontend observed
+  native quiescence. The request can still be `unknown`, with no result or reply,
+  because interruption does not resolve possible side effects.
+
+`native_supported` describes the admitted execution plan's running-turn support.
+Pi 1.4.0 newly admitted bindings support this confirmation. Other current providers
+can record intent and cancel pre-launch work, but their running native stop paths
+remain unfinished. Do not treat an unsupported pending request as stopped.
+
+The private descriptor adds `native.cancellation` with empty parameters and a
+strict boolean `requested` result. `native.cancelled` reports only its bound
+`native_session_id`; the engine verifies a pending request, reservation, live PID
+and start generation before durably acknowledging it. These are not model-facing
+methods or a human decision channel.
+
+Pi polls the private state while its native turn runs, calls its native abort API,
+and reports only a matching `agent_settled(aborted=true)`. Normal completion and a
+changed conversation do not produce a stop confirmation. CLI exit alone cannot
+confirm a detached gateway stopped; an unknown cancelled request retains capacity
+until native confirmation. A completed stored result is preserved if completion
+won the race with cancellation.
+
+Cancelling a waiting transport still does not cancel its saved owned task, and
+service removal still refuses active or uncertain work. Native stop/recovery for
+the other runtimes and lost-confirmation recovery remain incomplete parts of the
+full plan.

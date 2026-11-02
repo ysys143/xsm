@@ -20,6 +20,7 @@ export default function xsm(pi, options = {}) {
   let componentLease;
   let reconnectTimer;
   let reconnectDelay = 250;
+  let cancellationMonitor;
   const admissions = new Map();
 
   const notify = error => { try { nativeContext?.ui.notify('xsm: ' + error.message, 'error'); } catch {} };
@@ -27,6 +28,42 @@ export default function xsm(pi, options = {}) {
     notify(error);
     if (error instanceof TransportError && active && host?.controller.signal.aborted) scheduleReconnect();
   };
+  function monitorCancellation(ctx) {
+    if (typeof workerControl?.cancellationRequested !== 'function') return;
+    const monitor = { epoch, requested: false, stopped: false };
+    cancellationMonitor = monitor;
+    async function poll() {
+      if (monitor.stopped || !active || monitor.epoch !== epoch) return;
+      try {
+        const requested = await workerControl.cancellationRequested();
+        if (monitor.stopped || !active || monitor.epoch !== epoch) return;
+        if (ctx.sessionManager.getSessionId() !== workerControl.nativeID) {
+          throw new Error('native conversation changed during cancellation');
+        }
+        if (requested) {
+          monitor.requested = true;
+          ctx.abort();
+          return;
+        }
+        monitor.timer = setTimeout(() => { monitor.task = poll(); }, 200);
+        monitor.timer.unref?.();
+      } catch (error) { monitor.stopped = true; notify(error); }
+    }
+    monitor.task = poll();
+    return monitor.task;
+  }
+  async function finishCancellationMonitor(aborted = false, ctx) {
+    const monitor = cancellationMonitor;
+    cancellationMonitor = undefined;
+    if (!monitor) return;
+    monitor.stopped = true;
+    clearTimeout(monitor.timer);
+    await monitor.task;
+    if (aborted === true && monitor.requested && monitor.epoch === epoch &&
+        ctx?.sessionManager.getSessionId() === workerControl.nativeID) {
+      await workerControl.reportStopped();
+    }
+  }
   function cancelReconnect() {
     clearTimeout(reconnectTimer);
     reconnectTimer = undefined;
@@ -173,6 +210,7 @@ export default function xsm(pi, options = {}) {
   }
 
   pi.on('session_start', async (_event, ctx) => {
+    await finishCancellationMonitor();
     cancelReconnect();
     const token = ++epoch, previous = host, pending = recovering;
     host = undefined;
@@ -215,10 +253,18 @@ export default function xsm(pi, options = {}) {
     }
     if (active) await (await ensure(ctx)).naturalBoundary().catch(error => { if (!(error instanceof RetryAdmission)) throw error; });
   });
-  pi.on('agent_start', (_event, ctx) => active && ensure(ctx).then(current => current.update('busy')).catch(fail));
-  pi.on('agent_settled', (_event, ctx) => active && ensure(ctx).then(current => current.update('idle')).catch(fail));
+  pi.on('agent_start', async (_event, ctx) => {
+    if (!active) return;
+    await monitorCancellation(ctx);
+    await ensure(ctx).then(current => current.update('busy')).catch(fail);
+  });
+  pi.on('agent_settled', async (event, ctx) => {
+    await finishCancellationMonitor(event.aborted, ctx);
+    if (active) await ensure(ctx).then(current => current.update('idle')).catch(fail);
+  });
   pi.on('session_info_changed', (event, ctx) => active && ensure(ctx).then(current => current.update(ctx.isIdle() ? 'idle' : 'busy', event.name ?? '')).catch(fail));
   pi.on('session_shutdown', async (event = {}) => {
+    await finishCancellationMonitor();
     cancelReconnect();
     active = false;
     ++epoch;

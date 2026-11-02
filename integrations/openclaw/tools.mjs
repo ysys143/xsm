@@ -2,7 +2,7 @@
 export default [
   {
     "name": "xsm_owned",
-    "description": "Manage explicitly owned headless workers. create defines an owned service; run journals a request before starting a native subscribed turn. Contexts are separate per sender/work_context; independent=true uses a fresh context. wait defaults to zero; recover by the same request_id with status/reconcile/retry. retry republishes a stored answer without rerunning the model. Ordinary sessions cannot be adopted.",
+    "description": "Manage explicitly owned headless workers. create defines an owned service; run journals a request before starting a native subscribed turn. Contexts are separate per sender/work_context; independent=true uses a fresh context. wait defaults to zero; recover by the same request_id with status/reconcile/retry. retry republishes a stored answer without rerunning the model. cancel records this sender's cancellation intent; native stop confirmation is separate from task outcome. Ordinary sessions cannot be adopted.",
     "inputSchema": {
       "type": "object",
       "properties": {
@@ -13,7 +13,8 @@ export default [
             "run",
             "status",
             "retry",
-            "reconcile"
+            "reconcile",
+            "cancel"
           ]
         },
         "name": {

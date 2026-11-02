@@ -55,9 +55,11 @@ def _write(stream, value):
 
 
 class WorkerControl:
-    def __init__(self, bind):
+    def __init__(self, bind, *, cancellation=None, stopped=None):
         self.parent, self.child = socket.socketpair()
         self.bind = bind
+        self.cancellation = cancellation
+        self.stopped = stopped
         self.native_id = None
         self.failure = None
         self.thread = None
@@ -78,17 +80,39 @@ class WorkerControl:
                     if type(ident) is not int:
                         raise ControlError('native control requires an integer request ID')
                     try:
-                        if set(request) != {'jsonrpc', 'id', 'method', 'params'} or request['method'] != 'native.bind':
+                        if set(request) != {'jsonrpc', 'id', 'method', 'params'}:
                             raise ControlError('unknown native control method')
                         params = request['params']
-                        if not isinstance(params, dict) or set(params) != {'native_session_id'}:
-                            raise ControlError('invalid native binding fields')
-                        native_id = params['native_session_id']
-                        if not isinstance(native_id, str) or not native_id or len(native_id) > 4096:
-                            raise ControlError('invalid native conversation ID')
-                        self.bind(native_id)
-                        self.native_id = native_id
-                        _write(stream, {'jsonrpc': '2.0', 'id': ident, 'result': {'bound': True}})
+                        if not isinstance(params, dict):
+                            raise ControlError('invalid native control fields')
+                        if request['method'] == 'native.bind':
+                            if set(params) != {'native_session_id'}:
+                                raise ControlError('invalid native binding fields')
+                            native_id = params['native_session_id']
+                            if not isinstance(native_id, str) or not native_id or len(native_id) > 4096:
+                                raise ControlError('invalid native conversation ID')
+                            if self.native_id not in (None, native_id):
+                                raise ControlError('native conversation changed')
+                            self.bind(native_id)
+                            self.native_id = native_id
+                            result = {'bound': True}
+                        elif request['method'] == 'native.cancellation':
+                            if params or self.native_id is None:
+                                raise ControlError('cancellation query requires a bound context')
+                            pending = self.cancellation() if self.cancellation else False
+                            if type(pending) is not bool:
+                                raise ControlError('invalid cancellation state')
+                            result = {'requested': pending}
+                        elif request['method'] == 'native.cancelled':
+                            if (set(params) != {'native_session_id'} or self.native_id is None
+                                    or params['native_session_id'] != self.native_id or not self.stopped
+                                    or not self.cancellation or self.cancellation() is not True):
+                                raise ControlError('native stop report has no matching cancellation')
+                            self.stopped(self.native_id)
+                            result = {'recorded': True}
+                        else:
+                            raise ControlError('unknown native control method')
+                        _write(stream, {'jsonrpc': '2.0', 'id': ident, 'result': result})
                     except Exception as error:
                         self.failure = type(error).__name__
                         _write(stream, {'jsonrpc': '2.0', 'id': ident,
@@ -120,6 +144,8 @@ class WorkerControlClient:
         self.socket.set_inheritable(False)
         self.stream = self.socket.makefile('rwb', buffering=0)
         self.serial = 0
+        self.native_id = None
+        self.lock = threading.Lock()
 
     @classmethod
     def from_environment(cls):
@@ -129,16 +155,38 @@ class WorkerControlClient:
         return cls(int(value))
 
     def bind(self, native_id):
-        self.serial += 1
-        _write(self.stream, {'jsonrpc': '2.0', 'id': self.serial, 'method': 'native.bind',
-                             'params': {'native_session_id': native_id}})
-        reply = _read(self.stream)
-        result = reply.get('result') if reply else None
-        if (not reply or set(reply) != {'jsonrpc', 'id', 'result'} or type(reply.get('id')) is not int
-                or reply['id'] != self.serial or not isinstance(result, dict)
-                or set(result) != {'bound'} or result['bound'] is not True):
-            raise ControlError('native context was not accepted')
+        if self.native_id not in (None, native_id):
+            raise ControlError('native conversation changed')
+        self._rpc('native.bind', {'native_session_id': native_id}, 'bound')
+        self.native_id = native_id
+
+    def _rpc(self, method, params, field):
+        with self.lock:
+            self.serial += 1
+            _write(self.stream, {'jsonrpc': '2.0', 'id': self.serial, 'method': method, 'params': params})
+            reply = _read(self.stream)
+            result = reply.get('result') if reply else None
+            if (not reply or set(reply) != {'jsonrpc', 'id', 'result'} or type(reply.get('id')) is not int
+                    or reply['id'] != self.serial or not isinstance(result, dict)
+                    or set(result) != {field} or type(result[field]) is not bool
+                    or (field != 'requested' and result[field] is not True)):
+                raise ControlError('native control request was not accepted')
+            return result[field]
+
+    def cancellation_requested(self):
+        if self.native_id is None:
+            raise ControlError('native context is not bound')
+        return self._rpc('native.cancellation', {}, 'requested')
+
+    def report_stopped(self):
+        if self.native_id is None:
+            raise ControlError('native context is not bound')
+        self._rpc('native.cancelled', {'native_session_id': self.native_id}, 'recorded')
 
     def close(self):
+        try:
+            self.socket.shutdown(socket.SHUT_RDWR)
+        except OSError:
+            pass
         self.stream.close()
         self.socket.close()

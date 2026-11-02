@@ -9,6 +9,32 @@ from xsm.native_worker_control import WorkerControl, WorkerControlClient, Contro
 
 
 class NativeWorkerControlTest(unittest.TestCase):
+    def test_cancellation_query_and_stop_report_require_the_bound_pending_request(self):
+        state = {'requested': False}; stops = []
+        control = WorkerControl(lambda sid: None, cancellation=lambda: state['requested'], stopped=stops.append)
+        client = WorkerControlClient(os.dup(control.child.fileno())); control.start()
+        try:
+            with self.assertRaises(ControlError): client.cancellation_requested()
+            client.bind('owned-native')
+            self.assertFalse(client.cancellation_requested())
+            with self.assertRaises(ControlError): client.report_stopped()
+            self.assertEqual(stops, [])
+            state['requested'] = True
+            self.assertTrue(client.cancellation_requested())
+            with self.assertRaises(ControlError):
+                client._rpc('native.cancelled', {'native_session_id': 'different'}, 'recorded')
+            client.report_stopped()
+            self.assertEqual(stops, ['owned-native'])
+        finally: client.close(); control.close()
+
+    def test_non_boolean_cancellation_state_is_not_a_positive_request(self):
+        control = WorkerControl(lambda sid: None, cancellation=lambda: 1)
+        client = WorkerControlClient(os.dup(control.child.fileno())); control.start()
+        try:
+            client.bind('owned-native')
+            with self.assertRaises(ControlError): client.cancellation_requested()
+        finally: client.close(); control.close()
+
     def test_only_bound_native_identity_is_confirmed_and_channel_is_closed(self):
         calls=[]
         control=WorkerControl(calls.append)

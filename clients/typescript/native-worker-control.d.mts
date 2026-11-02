@@ -5,5 +5,7 @@ export class NativeWorkerControl {
   constructor(fd: number);
   nativeID?: string;
   bind(nativeID: string): Promise<void>;
+  cancellationRequested(): Promise<boolean>;
+  reportStopped(): Promise<void>;
   close(): void;
 }

@@ -112,7 +112,7 @@ def _view(state, request):
         result['status'] == 'cancelled' and request.get('reservation') is None))
     result['side_effects_exactly_once'] = False
     execution = _unknown_child_state(request) if request['state'] == 'unknown' else None
-    result['slot_occupied'] = request['state'] in ACTIVE and execution != 'exited'
+    result['slot_occupied'] = _occupies_slot(request)
     if execution is not None:
         result['execution_state'] = execution
     return result
@@ -243,6 +243,9 @@ def _unknown_child_state(request):
 
 
 def _occupies_slot(request):
+    if (request['state'] == 'unknown' and request.get('cancellation')
+            and request['cancellation'].get('native_state') != 'stopped'):
+        return True  # A detached client exit does not prove its native gateway stopped.
     return (request['state'] in ACTIVE and
             (request['state'] != 'unknown' or _unknown_child_state(request) != 'exited'))
 
@@ -359,7 +362,9 @@ def request_cancellation(owner, request_id, sender, worker_id):
         if request.get('cancellation') or request['state'] not in ('queued', 'reserved', 'acknowledged', 'running', 'unknown'):
             return _view(state, request)
         request['cancellation'] = {'requested_by': _native(sender), 'requested_at': time.time(),
-                                   'status': 'requested', 'native_state': 'unverified'}
+                                   'status': 'requested', 'native_state': 'unverified',
+                                   'native_supported': type((request['worker'].get('native_provider') or {}).get('cancellation_protocol')) is int
+                                   and request['worker']['native_provider']['cancellation_protocol'] == 1}
         if request['state'] in ('queued', 'reserved', 'acknowledged'):
             request['cancellation'].update(status='not-started', native_state='not-started')
             _event(request, 'cancelled')
@@ -447,6 +452,35 @@ def bind_native_context(owner, request_id, token, native_id):
         context['native_session_id'] = native_id
         request['native_binding'] = {'native_session_id': native_id, 'child_pid': request['child']['pid'],
                                      'child_lstart': request['child']['lstart'], 'bound_at': time.time()}
+        return _view(state, request)
+
+
+def cancellation_pending(owner, request_id, token):
+    state = _load(owner)
+    if state is None:
+        raise OwnedError('owned request journal is unavailable')
+    request = _get(state, request_id)
+    _token(request, token)
+    if request['state'] not in ('running', 'unknown') or _alive(request.get('child')) is not True:
+        raise OwnedError('cancellation query requires the current live child')
+    return bool(request.get('cancellation'))
+
+
+def confirm_native_stop(owner, request_id, token, native_id):
+    """Record a trusted frontend's observation, not a task outcome or rollback."""
+    with _locked(owner) as state:
+        request = _get(state, request_id)
+        _token(request, token)
+        binding = request.get('native_binding') or {}
+        child = request.get('child') or {}
+        if (request['state'] not in ('running', 'unknown') or not request.get('cancellation')
+                or _alive(child) is not True or binding.get('native_session_id') != native_id
+                or binding.get('child_pid') != child.get('pid')
+                or binding.get('child_lstart') != child.get('lstart')):
+            raise OwnedError('native stop has no current bound cancellation')
+        request['cancellation'].update(status='native-stopped', native_state='stopped',
+                                        observed_at=time.time(), native_session_id=native_id,
+                                        child_pid=child['pid'], child_lstart=child['lstart'])
         return _view(state, request)
 
 

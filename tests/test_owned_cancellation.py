@@ -149,3 +149,71 @@ class OwnedCancellationTest(TempState):
                 owned_requests.bind_native_context(self.owner, 'request', row['reservation']['token'], 'observed-native')
         finally:
             child.stdin.close(); child.wait(timeout=3)
+
+    def test_native_stop_report_requires_current_bound_child_and_request(self):
+        from xsm import owned_requests, identity
+        row = self.running(); token = row['reservation']['token']
+        child = subprocess.Popen([sys.executable, '-B', '-c', 'import sys;sys.stdin.read()'], stdin=subprocess.PIPE)
+        try:
+            owned_requests.note_child(self.owner, 'request', token, child.pid, identity.lstart(child.pid))
+            owned_requests.bind_native_context(self.owner, 'request', token, 'observed-native')
+            self.assertFalse(owned_requests.cancellation_pending(self.owner, 'request', token))
+            with self.assertRaises(owned_requests.OwnedError):
+                owned_requests.confirm_native_stop(self.owner, 'request', token, 'observed-native')
+            self.cancel()
+            self.assertTrue(owned_requests.cancellation_pending(self.owner, 'request', token))
+            with self.assertRaises(owned_requests.OwnedError):
+                owned_requests.confirm_native_stop(self.owner, 'request', token, 'another-native')
+            reported = owned_requests.confirm_native_stop(self.owner, 'request', token, 'observed-native')
+            self.assertEqual(reported['cancellation']['child_pid'], child.pid)
+            self.assertEqual(reported['cancellation']['native_state'], 'stopped')
+            # This process is a frontend fixture, not proof of a native model stop.
+            # Recording its explicit observation must not kill the frontend itself.
+            self.assertIsNone(child.poll())
+        finally:
+            child.stdin.close(); child.wait(timeout=3)
+        with self.assertRaises(owned_requests.OwnedError):
+            owned_requests.confirm_native_stop(self.owner, 'request', token, 'observed-native')
+        owned_requests.note_exit(self.owner, 'request', token, child.returncode)
+        finished = owned_requests.mark_unknown(self.owner, 'request', token, 'aborted native turn has unknown effects')
+        self.assertFalse(finished['slot_occupied'])
+
+    def test_client_exit_does_not_release_capacity_without_native_stop_confirmation(self):
+        from xsm import owned_requests, identity
+        row = self.running(); token = row['reservation']['token']
+        child = subprocess.Popen([sys.executable, '-B', '-c', 'import sys;sys.stdin.read()'], stdin=subprocess.PIPE)
+        try:
+            owned_requests.note_child(self.owner, 'request', token, child.pid, identity.lstart(child.pid))
+            self.cancel()
+        finally:
+            child.stdin.close(); child.wait(timeout=3)
+        owned_requests.note_exit(self.owner, 'request', token, child.returncode)
+        unverified = owned_requests.mark_unknown(self.owner, 'request', token, 'client detached')
+        self.assertEqual(unverified['execution_state'], 'exited')
+        self.assertTrue(unverified['slot_occupied'])
+        self.assertEqual(owned_requests.active_count(self.owner), 1)
+
+    def test_shared_action_and_cli_cancel_the_exact_queued_request(self):
+        import contextlib
+        import io
+        from xsm import cli, owned_service
+        self.submit()
+        result = owned_service.execute(self.owner, dict(action='cancel', name='service', request_id='request'))
+        self.assertEqual(result['status'], 'cancelled')
+        self.assertFalse(result['cancellation']['native_supported'])
+        args = cli.build_parser().parse_args(['owned', 'cancel', 'service', '--request-id', 'request'])
+        with mock.patch.object(cli, '_unsure_caller', return_value=(self.owner, None)), contextlib.redirect_stdout(io.StringIO()):
+            self.assertEqual(cli.cmd_owned(args), cli.OK)
+        with self.assertRaises(owned_service.ActionError):
+            owned_service.execute(self.owner, dict(action='cancel', name='service'))
+
+    def test_cancel_does_not_discard_a_completed_native_result(self):
+        from xsm import owned_requests
+        row = self.running()
+        ready = owned_requests.save_result(self.owner, 'request', row['reservation']['token'],
+            dict(body='observed result', outcome=None, native_session_id=row['context']['session_seed']))
+        cancelled = self.cancel()
+        self.assertEqual(cancelled['status'], 'result-ready')
+        self.assertEqual(cancelled['result'], ready['result'])
+        self.assertEqual(cancelled['reply_id'], ready['reply_id'])
+        self.assertNotIn('cancellation', cancelled)

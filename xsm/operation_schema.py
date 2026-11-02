@@ -53,9 +53,11 @@ TOOLS = [
      "create defines an owned service; run journals a request before starting a native subscribed turn. "
      "Contexts are separate per sender/work_context; independent=true uses a fresh context. "
      "wait defaults to zero; recover by the same request_id with status/reconcile/retry. "
-     "retry republishes a stored answer without rerunning the model. Ordinary sessions cannot be adopted.",
+     "retry republishes a stored answer without rerunning the model. "
+     "cancel records this sender's cancellation intent; native stop confirmation is separate from task outcome. "
+     "Ordinary sessions cannot be adopted.",
      "inputSchema": {"type": "object", "properties": {
-         "action": {"type": "string", "enum": ["create", "run", "status", "retry", "reconcile"]},
+         "action": {"type": "string", "enum": ["create", "run", "status", "retry", "reconcile", "cancel"]},
          "name": {"type": "string"}, "runtime": {"type": "string", "enum": owned_runtimes()},
          "dir": {"type": "string"}, "home": {"type": "string"}, "model": {"type": "string"},
          "effort": {"type": "string"}, "grant": {"type": "string"}, "text": {"type": "string"},

@@ -1729,7 +1729,9 @@ def _execute_owned(worker, context, body, request):
         if native and getattr(native, 'CONTROL_PROTOCOL', None) == 1:
             from .native_worker_control import WorkerControl, ENV_FD
             before = {(r.get('runtime'), r.get('session_id')) for r in registry.raw_records()}
-            control = WorkerControl(lambda sid: _bind_owned_native(worker, request, sid, before))
+            control = WorkerControl(lambda sid: _bind_owned_native(worker, request, sid, before),
+                cancellation=lambda: owned_requests.cancellation_pending(worker['owner'], request['id'], request['reservation']['token']),
+                stopped=lambda sid: owned_requests.confirm_native_stop(worker['owner'], request['id'], request['reservation']['token'], sid))
             env[ENV_FD] = str(control.child.fileno())
             options['pass_fds'] = (control.child.fileno(),)
         process = None
@@ -1946,6 +1948,13 @@ def run_owned(name, sender, body, *, work_context, request_id=None, independent=
             {"id": request["reply_id"], "status": "unknown", "reason": "publisher interrupted"})
         raise
     return owned_requests.finish_send(owner, request_id, request["send_token"], evidence)
+
+
+def cancel_owned(name, sender, request_id):
+    """Request cancellation of this sender's exact task, never another service's PID."""
+    from . import owned_requests
+    worker = _owned_worker(name)
+    return owned_requests.request_cancellation(worker['owner'], request_id, sender, worker['id'])
 
 
 def owned_status(name, sender, request_id):

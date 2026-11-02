@@ -495,3 +495,46 @@ native52+Node145=740개 및 독립 mock39/변이14개를85.793초에 통과했�
 Hermes CLI client 종료는 별도 gateway 작업 중단의 증거가 아니므로 실제 native
 cancel/상태 확인을 연결해야 한다. Transport waiter 취소와 저장된 작업 취소,
 서비스 제거는 계속 별개다. 이 항목 전체를 완료로 표시하지 않는다.
+
+## 공개 cancel 작업과 Pi native 중단 확인
+
+CLI·공통 owned service·모델 도구의 action에 cancel을 연결했다. name/request_id가
+필요하며 실제 sender와 worker ID가 맞아야 한다. 완료된 결과는 취소로 덮어쓰지
+않는다. Native 실행 지원 여부는 동결된 provider descriptor의
+cancellation_protocol=1에서 native_supported로 표시한다. 현재 새 Pi1.4.0 계획이
+이 능력을 선언하며 다른 런타임의 실행 중 취소까지 지원한다고 표시하지 않는다.
+
+Private 채널에 native.cancellation 조회와 native.cancelled 관측 보고를 추가했다.
+조회는 이미 결속된 문맥만 사용하고 caller가 owner/request/PID를 선택하지 못한다.
+보고는 같은 native ID, 요청/예약, 실제 live child PID/lstart와 이미 기록된 취소
+의도를 검증한다. Python client는 직렬화하며 Node client는 응답별 정확한 boolean
+필드를 검사한다. 이 경로는 사용자 답이나 업무 outcome을 만들지 않는다.
+
+Pi binding은 실행 중200ms 간격으로 private 상태를 조회하고 native ctx.abort를
+호출한다. 같은 epoch/conversation에서 요청한 중단의 agent_settled(aborted=true)만
+보고한다. Normal settled나 조회 도중 대화가 바뀐 경우에는 보고/abort하지 않는다.
+정상 완료를 취소로 보고하도록 변이를 넣자 시험이 assertion으로 실패했다
+(native-cancel-settle-mutant.log). CLI client만 종료되고 native 확인이 없는 unknown
+취소는 슬롯을 계속 점유한다. 확인된 native stop와 실제 child exit가 모두 있는
+경우에만 해당 unknown의 슬롯이 해제된다.
+
+실제 Pi1.4.0 CLI가 HTTP 응답을 기다리는 중 공개 operation으로 취소했다. 다른
+native sender의 취소가 거부되는 것, 최초 intent의 unverified 상태, native aborted
+보고와 child exit, 결과/회신을 조작하지 않는 것까지 최초20개 항목이 통과했다
+(pi-owned-native-public-cancel/result.json). 재현 스크립트
+scripts/probe-pi-owned-native.py도 선언된 능력 검사를 포함한21개를 통과했다
+(pi-owned-public-cancel-script/result.json). 관측된 취소 시간은0.241초의 단일
+표본이며 p95/성능 보증이 아니다. Pending 요청은 실제 native HTTP 경로를 거쳤지만
+응답은 명시적 local fixture이고 실제 LLM 추론/과금/메신저는 사용하지 않았다.
+
+취소된 실행은 result/reply_id가 없고 상태 unknown을 유지했다. Native stopped는
+side effect rollback이나 업무 성공이 아니다. 관련28개 단위/인터페이스 검사가
+통과했고(native-cancel-public-unit-final.log), macOS core는 Python491+SDK52+
+native58+Node149=750개 및 독립 mock39/변이14개를84.956초에 통과했다
+(native-cancel-public-core-final.log). 공개 schema 검사도 통과했다
+(native-cancel-public-schema.json).
+
+Hermes의 session.interrupt가 execution_generation을 요구하는 것을 native 소스로
+확인했으나 이번에 그 연결을 구현한 것은 아니다. Hermes/OpenCode/Claude/Codex의
+실행 중 native 취소, 확인 유실 복구, 이번 변경의 Linux 전체 검사와 실제 모델
+검증은 여전히 미완이다. 공개 API의 pending을 전체 취소 완료로 계산하지 않는다.

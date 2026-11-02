@@ -57,9 +57,11 @@ export class NativeWorkerControl {
           continue;
         }
         if (Object.keys(frame).sort().join(',') !== 'id,jsonrpc,result' || !frame.result ||
-            Array.isArray(frame.result) || Object.keys(frame.result).join(',') !== 'bound' || frame.result.bound !== true) throw new Error('confirmation');
+            Array.isArray(frame.result) || Object.keys(frame.result).join(',') !== pending.field ||
+            typeof frame.result[pending.field] !== 'boolean' ||
+            (pending.field !== 'requested' && frame.result[pending.field] !== true)) throw new Error('confirmation');
         this.#pending.delete(frame.id);
-        pending.resolve();
+        pending.resolve(frame.result[pending.field]);
       }
       if (this.#buffer.length > 16384) throw new Error('frame size');
     } catch { this.#fail('invalid native worker control response'); }
@@ -68,16 +70,30 @@ export class NativeWorkerControl {
   async bind(nativeID) {
     if (typeof nativeID !== 'string' || !nativeID || nativeID.length > 4096) throw new WorkerControlError('invalid native conversation ID');
     if (this.nativeID !== undefined && this.nativeID !== nativeID) throw new WorkerControlError('native worker conversation changed');
+    await this.#request('native.bind', { native_session_id: nativeID }, 'bound');
+    this.nativeID = nativeID;
+  }
+
+  async #request(method, params, field) {
     if (this.#failure) throw this.#failure;
     const id = ++this.#serial;
-    const frame = Buffer.from(JSON.stringify({ jsonrpc: '2.0', id, method: 'native.bind', params: { native_session_id: nativeID } }) + '\n');
+    const frame = Buffer.from(JSON.stringify({ jsonrpc: '2.0', id, method, params }) + '\n');
     if (frame.length > 16384) throw new WorkerControlError('native binding frame is too large');
-    await new Promise((resolve, reject) => {
-      this.#pending.set(id, { resolve, reject });
+    return await new Promise((resolve, reject) => {
+      this.#pending.set(id, { resolve, reject, field });
       this.socket.write(frame, error => { if (error) this.#fail('native binding write failed (' +
         (typeof error.code === 'string' && /^[A-Z0-9_]+$/.test(error.code) ? error.code : typeof error) + ')'); });
     });
-    this.nativeID = nativeID;
+  }
+
+  async cancellationRequested() {
+    if (this.nativeID === undefined) throw new WorkerControlError('native context is not bound');
+    return await this.#request('native.cancellation', {}, 'requested');
+  }
+
+  async reportStopped() {
+    if (this.nativeID === undefined) throw new WorkerControlError('native context is not bound');
+    await this.#request('native.cancelled', { native_session_id: this.nativeID }, 'recorded');
   }
 
   close() { this.#fail('native worker control closed'); }

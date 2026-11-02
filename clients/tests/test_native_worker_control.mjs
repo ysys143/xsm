@@ -7,6 +7,14 @@ import { NativeWorkerControl, WorkerControlError, WORKER_CONTROL_FD } from '../t
 const run = promisify(execFile);
 const peer = fileURLToPath(new URL('./native_worker_control_peer.py', import.meta.url));
 
+test('Node cancellation query preserves false and reports only its bound native stop', async () => {
+  const { stdout } = await run(process.env.PYTHON ?? 'python3', ['-B', peer, 'cancel', process.execPath], { timeout: 6000 });
+  const result = JSON.parse(stdout);
+  assert.equal(result.exit, 0);
+  assert.deepEqual(result.node.cancellation, [false, true]);
+  assert.deepEqual(result.stops, ['native-한글']);
+});
+
 test('private descriptor is absent ordinarily and invalid hints are removed/refused', () => {
   assert.equal(NativeWorkerControl.fromEnvironment({}), undefined);
   for (const value of ['2', 'bad', '-1', '9007199254740993']) {
