@@ -51,3 +51,13 @@ class OpenClawWorkerCancellationTest(unittest.TestCase):
                       dict(self.value,abort=dict(ok=True,aborted=False,runIds=[])),
                       dict(self.value,terminal=dict(status='error',stopReason='provider-error',runId='run-1'))):
             with self.subTest(value=value), self.assertRaises(session.NativeSessionError):self.parse(value)
+
+    def test_accepted_queued_stop_is_distinct_from_never_submitted(self):
+        value = copy.deepcopy(self.value)
+        value['terminal'].pop('startedAt');value['terminal']['providerStarted']=False
+        for field in ('lastRunId','status','abortedLastRun','startedAt','endedAt'):
+            value['stop_observation'].pop(field)
+        result = self.parse(value)
+        self.assertTrue(result['native_evidence']['native_provider_not_started'])
+        with self.assertRaises(session.NativeSessionError):
+            self.parse(dict(value,native_not_started=True))

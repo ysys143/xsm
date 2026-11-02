@@ -96,3 +96,20 @@ class OpenClawWorkerSessionTest(unittest.TestCase):
                 session.stopped_run(changed, dict(sessions=[row]), locator, 'run-1', abort)
         with self.assertRaises(session.NativeSessionError):
             session.stopped_run(terminal, dict(sessions=[row]), locator, 'run-1', dict(abort,aborted=False))
+
+    def test_queued_stop_requires_explicit_native_nonexecution_and_stable_identity(self):
+        locator = session.created_locator(self.created, 'main', self.cwd)
+        terminal = dict(runId='run-1',status='error',stopReason='rpc',endedAt=200,providerStarted=False)
+        abort = dict(ok=True,aborted=True,runIds=['run-1'])
+        row = dict(key=locator['native_session_key'],sessionId='native-id',agentId='main',
+                   lifecycleRevision='revision-1',hasActiveRun=False,activeRunIds=[],abortedLastRun=False)
+        proof = session.stopped_run(terminal,dict(sessions=[row]),locator,'run-1',abort)
+        self.assertTrue(proof['native_provider_not_started'])
+        self.assertNotIn('lastRunId',proof)
+        for changed in (dict(terminal,providerStarted=True),dict(terminal,providerStarted=0),
+                        dict(terminal,startedAt=100),dict(terminal,runId='other'),dict(terminal,endedAt=None)):
+            with self.subTest(terminal=changed), self.assertRaises(session.NativeSessionError):
+                session.stopped_run(changed,dict(sessions=[row]),locator,'run-1',abort)
+        for field,value in (('sessionId','other'),('lifecycleRevision','other'),('hasActiveRun',True),('activeRunIds',['other'])):
+            with self.subTest(field=field), self.assertRaises(session.NativeSessionError):
+                session.stopped_run(terminal,dict(sessions=[dict(row,**{field:value})]),locator,'run-1',abort)

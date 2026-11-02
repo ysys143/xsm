@@ -2,8 +2,8 @@
 
 현재 상태: OpenClaw2026.10.9 제공자를 catalog에 등록했고 실제 owned journal에서
 정상 실행·같은 문맥의 재개·다른 문맥 분리·결과 저장·요청 replay를 확인했다.
-실행 중 native 취소와 확인 유실 readback을 macOS에서 확인했다. Native 대기열의
-취소·일반 재시작 복구와 전체 OS/모드 행렬은 미완이다. 아래 초기 시험과 거부 기록도
+실행 전·native 대기열·실행 중 취소와 확인 유실 readback을 macOS에서 확인했다.
+일반 재시작 복구와 전체 OS/모드 행렬은 미완이다. 아래 초기 시험과 거부 기록도
 보존하며, 현재 통합 증거는 마지막 절을 따른다.
 
 OpenClaw2026.10.9의 실제 gateway에서 모델 실행 없이 세션 생성·재조회를
@@ -295,7 +295,7 @@ epoch·이미 시작된 실행을 미시작으로 표시한 경우를 거부한�
 (openclaw-cancel-generation-mutant.log). 현재 readback 코드로 위 두 실제 보존
 출력을 다시 검증했다(openclaw-cancel-current-readback.log).
 
-Native가 수락했지만 아직 실행하지 않은 대기열 취소는 실제 검증·보강이 남아
+이 실행 중 취소 시험 시점에는 native 대기열 취소의 실제 검증·보강이 남아
 있다. Terminal rpc stop reason이 있는 timeout을 단순 관측 timeout으로 무한
 재관측하지 않지만, 실행 중 정지 증거를 충족하지 않으면 unknown으로 남긴다.
 미시작 marker의 실제 child 경로, native 재시작 뒤 상태 조회, Linux/공개 operation/
@@ -304,3 +304,46 @@ UI·메신저 전체 검증도 미완이다.
 최종 macOS core는 Python494+SDK52+native116+Node152=814개와 독립 mock39/
 변이14개를80.348초에 통과했다(openclaw-owned-cancellation-core-final.log).
 앞선811개 표본82.582초에는 마지막 readback unit3개가 없었으므로 별도 보존했다.
+
+## Native 대기열과 결속 직후 취소
+
+고정 native gateway에서 maxConcurrent=1로 독립적인 model0 요청 하나를 막고,
+다른 세션의 요청이 수락된 뒤 provider에 진입하기 전에 취소했다
+(openclaw-queued-cancel-shape-native). 이 경우 native는 status=error,
+stopReason=rpc, endedAt과 providerStarted=false를 반환했으며 startedAt은 없었다.
+세션 row에는 lastRunId나 killed 상태가 없고 abortedLastRun도 false였다.
+실행 중 정지의 필드를 추측해 적용하지 않는다.
+
+stopped_run은 이 명시적 providerStarted=false를 별도 경계로 검증한다. 정확한
+run ID의 abort acceptance·최종 rpc stop·종료 시각과 변하지 않은 native 세션
+ID/agent/revision, hasActiveRun=false, activeRunIds=[]를 요구한다. 명시적
+비실행 증거가 없거나 startedAt이 함께 있으면 이 경계를 수락하지 않는다.
+보존 marker에는 native_provider_not_started=true를 남긴다. 이는 agent RPC 자체를
+호출하지 않았다는 native_not_started=true와 구분한다.
+
+scripts/probe-openclaw-owned-native.py의 추가 mode와 실제 결과는 다음과 같다.
+
+| mode | artifact | 검사 수 | 결과 |
+|---|---|---:|---|
+| --before-admission | openclaw-pre-admission-native | 28 | 결속 후 모델 요청 전 취소·정지 확인 |
+| --before-admission --lose-cancel-confirmation | openclaw-pre-admission-native-lost | 30 | 미시작 child의 보존 출력으로 확인 유실 복구 |
+| --cancel --queued-native | openclaw-owned-queued-cancel-first | 35 | native 대기열 취소, 독립 실행 보존 |
+| --cancel --queued-native --lose-cancel-confirmation | openclaw-owned-queued-cancel-lost | 38 | 대기열 취소의 정확한 출력으로 확인 유실 복구 |
+
+실행 전 mode는 시험 프로세스에서 durable bind 직후 취소를 주입한다. 실제 native
+세션 생성과 child/control/journal은 실행하고 agent 요청은 내보내지 않았다.
+정상 fixture 요청3회는 변하지 않았으며 실제 child marker와 exit130 또는 확인
+유실 시 exit1을 검증했다. 기본 비실행 결과를 모델 답이나 업무 성공으로 만들지 않는다.
+
+대기열 mode는 독립 native 요청 하나만 provider에 들어가도록 막는다. Owned
+대상은 native가 수락했으나 provider 호출이 없었다. 대상 취소 후에도 독립 요청의
+wait는 계속 timeout이었고, 대상의 providerStarted=false와 별도 정지를 확인했다.
+확인 유실 표본도 재실행 없이 native-output으로 복구하고 슬롯을 해제했다.
+정상 fixture3회와 독립 queue holder1회로 진입을 구분하며, 대상의 추가 provider
+진입은0회다. 모든 gateway는 종료했고 실제 모델 추론은0회다.
+
+명시적 provider 비실행 검사를 제거한 변이는 assertion2개로 검출됐다
+(openclaw-queued-cancel-mutant.log). Core는 Python494+SDK52+native118+Node152=
+816개와 독립 mock39/변이14개를80.745초에 통과했다
+(openclaw-queued-cancel-core.log). Native 일반 재시작 복구와 Linux/UI/메신저/
+공개 operation 및 전체 런타임 행렬은 계속 미완이다.

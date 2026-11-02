@@ -12,10 +12,13 @@ parser=argparse.ArgumentParser(description='Pinned OpenClaw native backend run, 
 parser.add_argument('--native-cli',type=Path,required=True)
 parser.add_argument('--node',type=Path,required=True)
 parser.add_argument('--output',type=Path,required=True)
+parser.add_argument('--queued-native',action='store_true',help='Hold an independent native run so the owned target waits before provider execution')
+parser.add_argument('--before-admission',action='store_true',help='Inject cancellation after durable bind but before native model admission')
 parser.add_argument('--cancel',action='store_true',help='Cancel an exact running native request against the blocking provider fixture')
 parser.add_argument('--lose-cancel-confirmation',action='store_true',help='Inject private confirmation loss and reconcile retained native stop evidence')
 options=parser.parse_args()
-if options.lose_cancel_confirmation and not options.cancel:parser.error('--lose-cancel-confirmation requires --cancel')
+if options.lose_cancel_confirmation and not (options.cancel or options.before_admission):parser.error('--lose-cancel-confirmation requires --cancel or --before-admission')
+if options.queued_native and not options.cancel:parser.error('--queued-native requires --cancel')
 if not options.native_cli.is_absolute() or not options.node.is_absolute():parser.error('absolute native CLI and Node paths required')
 if json.loads((options.native_cli.parent/'package.json').read_text()).get('version')!='2026.10.9':parser.error('OpenClaw2026.10.9 package required')
 root=Path(tempfile.mkdtemp(prefix='xsm-openclaw-owned-create-')).resolve();out=options.output.absolute();out.mkdir(parents=True,exist_ok=False)
@@ -25,6 +28,7 @@ import importlib.util
 spec=importlib.util.spec_from_file_location('fixture',repo/'scripts/probe-opencode-protocol.py');helper=importlib.util.module_from_spec(spec);spec.loader.exec_module(helper)
 assistant=helper.AssistantFixture(out)
 config={'gateway':{'mode':'local','bind':'loopback','port':port,'auth':{'mode':'token','token':secrets.token_hex(32)}},'agents':{'defaults':{'workspace':str(root/'workspace'),'heartbeat':{'every':'0m'}}},'cron':{'enabled':False},'plugins':{'enabled':False}}
+if options.queued_native:config['agents']['defaults']['maxConcurrent']=1
 config['agents']['defaults']['model']={'primary':'xsm-fixture/fixture','fallbacks':[]}
 config['models']={'providers':{'xsm-fixture':{'api':'openai-completions','baseUrl':'http://127.0.0.1:'+str(assistant.server.server_port)+'/v1','apiKey':'explicit-no-network-fixture','agentRuntime':{'id':'openclaw'},'models':[{'id':'fixture','name':'fixture','reasoning':False,'input':['text'],'contextWindow':32000,'maxTokens':1000,'cost':{'input':0,'output':0,'cacheRead':0,'cacheWrite':0}}]}}}
 path=root/'state/openclaw.json';path.write_text(json.dumps(config));path.chmod(0o600)
@@ -39,7 +43,7 @@ def check(name,value):
  if not value:raise AssertionError(name)
  report['checks'].append(name);save()
 import threading,concurrent.futures
-blocking=threading.Event();entered=threading.Event();release=threading.Event()
+blocking=threading.Event();entered=threading.Event();release=threading.Event();external_blocker=threading.Event();external_entries=[]
 original_post=assistant.server.RequestHandlerClass.do_POST
 def observed_post(handler):
  rows=[]
@@ -51,7 +55,9 @@ def observed_post(handler):
   binding=row.get('native_binding',{});child=row.get('child',{})
   valid.append(bool(binding.get('native_session_id')) and binding.get('child_pid')==child.get('pid')
     and binding.get('child_lstart')==child.get('lstart')==identity.lstart(child.get('pid')))
- report['preProviderBindingObservations'].append(len(valid)==1 and all(valid));save()
+ if external_blocker.is_set() and not rows:external_entries.append(time.monotonic())
+ else:report['preProviderBindingObservations'].append(len(valid)==1 and all(valid))
+ save()
  if blocking.is_set():entered.set();release.wait(45)
  try:return original_post(handler)
  except (BrokenPipeError,ConnectionResetError):pass
@@ -90,6 +96,40 @@ try:
  check('provider saw durable exact live child binding',len(report['preProviderBindingObservations'])==3 and all(report['preProviderBindingObservations']))
  check('logical worker indexes exact native IDs',set(workers.load('native-openclaw')['owned_sessions'])=={first['result']['native_session_id'],separate['result']['native_session_id']})
  report['providerFixtureRequests']=len(before)
+ if options.before_admission:
+  from xsm import owned_requests
+  original_bind=owned_requests.bind_native_context
+  pre_original_confirm=owned_requests.confirm_native_stop
+  if options.lose_cancel_confirmation:
+   def pre_lost_confirm(*args,**kwargs):raise OSError('explicit pre-admission confirmation loss fixture')
+   owned_requests.confirm_native_stop=pre_lost_confirm
+  def cancel_after_binding(owner_arg,request_id,token,native_id):
+   result=original_bind(owner_arg,request_id,token,native_id)
+   if request_id=='before-admission':workers.cancel_owned('native-openclaw',owner,'before-admission')
+   return result
+  owned_requests.bind_native_context=cancel_after_binding
+  try:
+   before_admission=workers.run_owned('native-openclaw',owner,'Must not reach native model.',
+      work_context='pre-admission-work',request_id='before-admission',
+      reply_sender=lambda worker,row:workers.publish_owned(worker,row,wake=False))
+  finally:
+   owned_requests.bind_native_context=original_bind
+   owned_requests.confirm_native_stop=pre_original_confirm
+  if options.lose_cancel_confirmation:
+   check('unstarted child with lost confirmation retains uncertainty',before_admission['cancellation']['native_state']=='unverified' and before_admission['slot_occupied'] is True)
+   before_admission=workers.reconcile_owned('native-openclaw',owner,'before-admission')
+   check('unstarted exact child output recovers native stop',before_admission['cancellation'].get('recovered_from')=='native-output')
+  check('pre-admission cancel retains unknown task effects',before_admission['status']=='unknown' and before_admission['result'] is None and before_admission['reply_id'] is None)
+  check('pre-admission cancellation confirms stopped native child',before_admission['cancellation']['native_state']=='stopped' and before_admission['slot_occupied'] is False)
+  check('pre-admission cancel performs no provider call',(out/'assistant-fixture.jsonl').read_text().splitlines()==before)
+  from integrations.openclaw.worker_cli import parse_cancellation
+  output=Path(before_admission['child']['stdout']).read_text()
+  evidence=parse_cancellation(output,before_admission['context'],agent_id='main',cwd=str(root/'workspace'))
+  check('actual child emits strictly validated unstarted marker',evidence['native_evidence'].get('native_not_started') is True)
+  check('unstarted child return code observed',before_admission['child']['returncode']==(1 if options.lose_cancel_confirmation else 130))
+  (out/'pre-admission-journal.json').write_text(json.dumps(before_admission,indent=2)+'\n')
+  report['preAdmissionCancellation']=before_admission['cancellation']
+
  if options.cancel:
   from xsm import owned_requests
   original_confirm=owned_requests.confirm_native_stop
@@ -97,11 +137,33 @@ try:
    def lost_confirm(*args,**kwargs):raise OSError('explicit lost private confirmation fixture')
    owned_requests.confirm_native_stop=lost_confirm
   blocking.set()
+  blocker_rpc=None;blocker_locator=None;blocker_run=None
+  if options.queued_native:
+   blocker_rpc=NativeRpc(str(options.node),str(options.native_cli),cwd=str(root/'workspace'),env=env)
+   blocker_created=blocker_rpc('sessions.create',worker_session.creation_params('main',str(root/'workspace')))
+   blocker_locator=worker_session.created_locator(blocker_created,'main',str(root/'workspace'))
+   external_blocker.set()
+   blocker_run=blocker_rpc('agent',worker_session.agent_params(blocker_locator,'Explicit native queue holder.','fixture-native-queue-holder'))
+   check('independent native queue holder entered provider',entered.wait(20) and len(external_entries)==1)
+   external_blocker.clear();entered.clear()
   with concurrent.futures.ThreadPoolExecutor(max_workers=1) as pool:
    future=pool.submit(workers.run_owned,'native-openclaw',owner,'Blocking native cancellation fixture.',
       work_context='cancel-work',request_id='cancel',reply_sender=lambda worker,row:workers.publish_owned(worker,row,wake=False))
    try:
-    check('native cancellation target entered provider',entered.wait(20))
+    if options.queued_native:
+     deadline=time.monotonic()+20
+     while True:
+      candidate=workers.owned_status('native-openclaw',owner,'cancel')
+      binding=candidate.get('native_binding',{})
+      listing=blocker_rpc('sessions.list',{})
+      target_rows=[row for row in listing.get('sessions',[]) if row.get('sessionId')==binding.get('native_session_id')]
+      if len(target_rows)==1 and target_rows[0].get('hasActiveRun') is True:break
+      if time.monotonic()>deadline:
+       (out/'queue-before-cancel.json').write_text(json.dumps({'request':candidate,'native':listing},indent=2)+'\n')
+       raise TimeoutError('native target was not observed in admitted queue')
+      time.sleep(.1)
+     check('owned target admitted while no provider request starts',len(report['preProviderBindingObservations'])==3 and not entered.is_set())
+    else:check('native cancellation target entered provider',entered.wait(20))
     intruder=registry.upsert('codex',str(root/'intruder'),'different-native-sender',os.getpid(),str(root/'workspace'))
     try:workers.cancel_owned('native-openclaw',intruder,'cancel')
     except (workers.WorkerError,owned_requests.OwnedError):check('different sender cannot cancel native request',True)
@@ -125,7 +187,15 @@ try:
   check('native stop separately confirmed',stopped['cancellation']['native_state']=='stopped')
   check('native stopped child releases occupied slot',stopped['slot_occupied'] is False)
   check('actual stopped child return code retained',stopped['child']['returncode'] in (1,130))
-  check('cancel provider saw exact durable child binding',len(report['preProviderBindingObservations'])==4 and all(report['preProviderBindingObservations']))
+  expected_entries=3 if options.queued_native else 4
+  check('cancel path preserves exact durable child binding',len(report['preProviderBindingObservations'])==expected_entries and all(report['preProviderBindingObservations']))
+  if options.queued_native:
+   stopped_output=json.loads(Path(stopped['child']['stdout']).read_text())
+   check('native queue stop explicitly reports provider not started',stopped_output['terminal'].get('providerStarted') is False and stopped_output['stop_observation'].get('native_provider_not_started') is True)
+   other=blocker_rpc('agent.wait',{'runId':blocker_run['runId'],'timeoutMs':100})
+   check('cancelling queued task leaves independent native run active',other.get('status')=='timeout' and other.get('stopReason') is None)
+   blocker_rpc('chat.abort',worker_session.cancellation_params(blocker_locator,blocker_run['runId']))
+   report['nativeQueueHolderHttpEntries']=len(external_entries)
   (out/'cancel-journal.json').write_text(json.dumps(stopped,indent=2)+'\n')
   report['cancellation']=stopped['cancellation'];report['providerHttpEntries']=len(report['preProviderBindingObservations'])
   release.set()

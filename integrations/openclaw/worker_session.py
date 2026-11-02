@@ -150,8 +150,13 @@ def stopped_run(terminal, listing, locator, run_id, abort):
             or terminal.get('stopReason') != 'rpc'):
         raise NativeSessionError('native abort has no stopped terminal observation')
     start, end = terminal.get('startedAt'), terminal.get('endedAt')
-    if (any(type(value) not in (int, float) or not math.isfinite(value) or value <= 0 for value in (start, end))
-            or end < start):
+    queued = terminal.get('providerStarted') is False
+    if type(end) not in (int, float) or not math.isfinite(end) or end <= 0:
+        raise NativeSessionError('native abort has no execution settlement times')
+    if queued:
+        if start is not None:
+            raise NativeSessionError('native unstarted run contains a start time')
+    elif type(start) not in (int, float) or not math.isfinite(start) or start <= 0 or end < start:
         raise NativeSessionError('native abort has no execution settlement times')
     rows = listing.get('sessions')
     if not isinstance(rows, list):
@@ -162,10 +167,14 @@ def stopped_run(terminal, listing, locator, run_id, abort):
     row = matches[0]
     if (row.get('sessionId') != locator.get('native_session_id') or row.get('agentId') != locator.get('agent_id')
             or row.get('lifecycleRevision') != locator.get('native_lifecycle_revision')
-            or row.get('lastRunId') != run_id or row.get('status') != 'killed'
-            or row.get('abortedLastRun') is not True or row.get('hasActiveRun') is not False
-            or row.get('activeRunIds') != [] or row.get('startedAt') != start or row.get('endedAt') != end):
+            or row.get('hasActiveRun') is not False or row.get('activeRunIds') != []):
         raise NativeSessionError('native abort session identity or settlement changed')
+    if queued:
+        fields = ('key', 'sessionId', 'agentId', 'lifecycleRevision', 'hasActiveRun', 'activeRunIds')
+        return {**{name: row[name] for name in fields}, 'native_provider_not_started': True}
+    if (row.get('lastRunId') != run_id or row.get('status') != 'killed' or row.get('abortedLastRun') is not True
+            or row.get('startedAt') != start or row.get('endedAt') != end):
+        raise NativeSessionError('native abort run settlement changed')
     fields = ('key', 'sessionId', 'agentId', 'lifecycleRevision', 'lastRunId', 'status',
               'abortedLastRun', 'hasActiveRun', 'activeRunIds', 'startedAt', 'endedAt')
     return {name: row[name] for name in fields}
