@@ -92,6 +92,13 @@ try:
   value=workers.run_owned('native-openclaw',owner,'Explicit fixture task '+request,work_context=work,request_id=request,
     reply_sender=lambda worker,row:workers.publish_owned(worker,row,wake=False))
   (out/(request+'-journal.json')).write_text(json.dumps(value,indent=2)+'\n')
+  if value['status'] not in ('sent','reply-stored'):
+   record=next((row for row in registry.raw_records() if row.get('runtime')==owner['runtime'] and row.get('session_id')==owner['session_id']),{})
+   report['receiverLivenessDiagnostic']={'saved_pid':owner.get('pid'),'saved_lstart':owner.get('lstart'),
+     'record_pid':record.get('pid'),'record_lstart':record.get('lstart'),'current_pid':os.getpid(),
+     'current_lstart':identity.lstart(os.getpid()),'current_pid_alive':identity.pid_alive(os.getpid()),
+     'record_state_reason':identity.state_reason(record),'original_state_reason':identity.state_reason(owner)}
+   save()
   check('actual owned result published '+request,value['status'] in ('sent','reply-stored'))
   check('native answer retained '+request,value['result']['body']=='Explicit assistant fixture; no model inference.')
   check('native completion did not invent task outcome '+request,value['result']['outcome'] is None)
