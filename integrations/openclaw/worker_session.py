@@ -77,10 +77,26 @@ def resolution_params(native_id, agent_id):
     return {'sessionId': _text(native_id, 'session ID'), 'agentId': _text(agent_id, 'agent ID')}
 
 
-def resolved_locator(reply, listing, native_id, agent_id, cwd):
+def resolved_key(reply, agent_id):
     if reply.get('ok') is not True or reply.get('agentId') != agent_id:
         raise NativeSessionError('native session resolution is missing or belongs to another agent')
-    key = _text(reply.get('key'), 'session key')
+    return _text(reply.get('key'), 'session key')
+
+
+def description_params(key, agent_id):
+    return {'key': _text(key, 'session key'), 'agentId': _text(agent_id, 'agent ID')}
+
+
+def described_listing(reply, key, agent_id):
+    """Normalize exactly one native description for the shared identity checks."""
+    row = reply.get('session')
+    if not isinstance(row, dict) or row.get('key') != key or row.get('agentId') != agent_id:
+        raise NativeSessionError('native session description is missing or changed identity')
+    return {'sessions': [row]}
+
+
+def resolved_locator(reply, listing, native_id, agent_id, cwd):
+    key = resolved_key(reply, agent_id)
     rows = listing.get('sessions')
     if not isinstance(rows, list): raise NativeSessionError('native session listing unavailable')
     matches = [row for row in rows if isinstance(row, dict) and row.get('key') == key]

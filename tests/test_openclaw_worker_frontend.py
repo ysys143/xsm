@@ -32,6 +32,10 @@ class OpenClawWorkerFrontendTest(unittest.TestCase):
         if method == 'sessions.list':
             return dict(sessions=[dict(key='agent:main:dashboard:host-key', sessionId='host-id',
                                        agentId='main', lifecycleRevision='host-revision')])
+        if method == 'sessions.describe':
+            self.assertEqual(params,dict(key='agent:main:dashboard:host-key',agentId='main'))
+            return dict(session=dict(key='agent:main:dashboard:host-key',sessionId='host-id',
+                                     agentId='main',lifecycleRevision='host-revision'))
         if method == 'agent':
             self.assertEqual(self.binds, ['host-id'], 'no model admission before private binding ACK')
             self.assertEqual(params['expectedExistingSessionId'], 'host-id')
@@ -57,7 +61,31 @@ class OpenClawWorkerFrontendTest(unittest.TestCase):
 
     def test_resume_resolves_exact_id_and_revision_before_binding(self):
         self.run_turn(native_session_id='host-id')
-        self.assertEqual([m for m, _ in self.calls], ['sessions.resolve', 'sessions.list', 'agent', 'agent.wait'])
+        self.assertEqual([m for m, _ in self.calls], ['sessions.resolve', 'sessions.describe', 'agent', 'agent.wait'])
+
+    def test_resume_finds_exact_session_outside_default_list_page(self):
+        def rpc(method, params):
+            if method == 'sessions.list':
+                self.calls.append((method,params))
+                return dict(sessions=[],hasMore=True,nextOffset=100)
+            if method == 'sessions.describe':
+                self.calls.append((method,params))
+                self.assertEqual(params,dict(key='agent:main:dashboard:host-key',agentId='main'))
+                return dict(session=dict(key='agent:main:dashboard:host-key',sessionId='host-id',
+                                         agentId='main',lifecycleRevision='host-revision'))
+            return self.rpc(method,params)
+        result = self.run_turn(rpc,native_session_id='host-id')
+        self.assertEqual(result['locator']['native_session_id'],'host-id')
+        self.assertNotIn('sessions.list',[m for m,_ in self.calls])
+
+    def test_failed_native_resolution_does_not_query_or_bind_another_session(self):
+        def rpc(method, params):
+            self.calls.append((method,params))
+            self.assertEqual(method,'sessions.resolve')
+            return dict(ok=False)
+        with self.assertRaises(NativeSessionError):self.run_turn(rpc,native_session_id='missing-id')
+        self.assertEqual(self.binds,[])
+        self.assertEqual(len(self.calls),1)
 
     def test_binding_refusal_never_submits_a_model_turn(self):
         def refuse(_sid):
@@ -104,8 +132,8 @@ class OpenClawWorkerFrontendTest(unittest.TestCase):
                                              runId='request-1',preserveSideRuns=True))
                 return dict(ok=True,aborted=True,runIds=['request-1'])
             result = self.rpc(method,params)
-            if method == 'sessions.list':
-                result['sessions'][0].update(lastRunId='request-1',status='killed',abortedLastRun=True,
+            if method == 'sessions.describe':
+                result['session'].update(lastRunId='request-1',status='killed',abortedLastRun=True,
                     hasActiveRun=False,activeRunIds=[],startedAt=100,endedAt=200)
             return result
         result = self.run_turn(rpc)

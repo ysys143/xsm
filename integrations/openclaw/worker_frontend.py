@@ -24,7 +24,9 @@ def run_turn(rpc, control, *, agent_id, cwd, message, request_id,
         locator = session.created_locator(created, agent_id, cwd)
     else:
         resolved = rpc('sessions.resolve', session.resolution_params(native_session_id, agent_id))
-        listing = rpc('sessions.list', {})
+        key = session.resolved_key(resolved, agent_id)
+        described = rpc('sessions.describe', session.description_params(key, agent_id))
+        listing = session.described_listing(described, key, agent_id)
         locator = session.resolved_locator(resolved, listing, native_session_id, agent_id, cwd)
     params = session.agent_params(locator, message, request_id)
     if model is not None:
@@ -54,7 +56,9 @@ def run_turn(rpc, control, *, agent_id, cwd, message, request_id,
         if terminal['status'] == 'pending':
             time.sleep(.2)
     if abort is not None and terminal.get('status') == 'error':
-        proof = session.stopped_run(terminal, rpc('sessions.list', {}), locator, run_id, abort)
+        key = locator['native_session_key']
+        described = rpc('sessions.describe', session.description_params(key, agent_id))
+        proof = session.stopped_run(terminal, session.described_listing(described, key, agent_id), locator, run_id, abort)
         return {'locator': locator, 'admission': admission, 'terminal': terminal, 'abort': abort,
                 'stop_observation': proof, 'cancelled': True, 'native_not_started': False}
     reply = session.completed_run(terminal, locator, run_id)

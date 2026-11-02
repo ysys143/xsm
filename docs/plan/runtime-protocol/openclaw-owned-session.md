@@ -429,3 +429,34 @@ openclaw-owned-linux-ready에서8/8 mode, 총257개 검사가 통과했다.
 mode별 output/ 아래 있다. 이 결과는 Linux arm64 owned/native gateway의 경계다.
 실제 모델·native UI·메신저, 일반 gateway 재시작 복구, 전체 런타임 행렬과 다른
 아키텍처의 지원 완료를 뜻하지 않는다.
+
+## 기본 목록의 첫 페이지 밖에 있는 owned 세션
+
+기존 frontend의 재개·정지 확인은 인수 없는 sessions.list 결과에 의존했다.
+Native의 기본 목록은100개로 제한되므로 오래된 owned 세션이 빠질 수 있었다.
+페이지 밖의 세션을 찾는 unit을 먼저 추가했을 때 기존 코드에서
+NativeSessionError로 실패했다(openclaw-exact-description-before.log).
+
+재개는 정확한 sessionId의 sessions.resolve가 반환한 canonical key로
+sessions.describe를 호출한다. 정지 확인도 결속한 key의 단건 description을 읽는다.
+Key/agent 불일치·없는 description·다른 native ID/revision은 기존 검증으로
+거부하며 다른 대화나 최근 목록으로 대체하지 않는다. Agent 요청의 ID/revision
+검사는 유지한다. Resolve 실패 시 다른 세션을 조회하거나 private bind하지 않는다.
+
+실제 재현은 owned script에 --crowded-profile을 지정한다. 시험용 공개 native
+client로 빈 세션101개를 만들되 각 생성의 runStarted=false를 확인한다.
+openclaw-exact-crowded-native의26개 검사가 통과했다. 실제 기본 목록은
+count=100/limitApplied=100/hasMore=true였고 첫 owned 문맥은 없었다. 기존
+resolve/list helper의 실패를 같은 실제 응답으로 재현한 후 새 frontend가 정확한
+문맥을 재개했다. Native 문맥 두 개의 분리·reply 저장·request replay와 provider
+fixture3회 유지도 확인했다. 빈 세션 생성에 모델 추론은 없었다.
+
+새 조회의 실제 대기열 취소·확인 유실 복구38개는
+openclaw-description-queued-native에서, 공개 protocol의 실행 중 취소·확인 유실
+복구31개는 openclaw-description-protocol-native에서 통과했다. Gateway는 모두
+종료했다. Description의 key 검사를 제거한 변이는 assertion1개로 검출됐다
+(openclaw-description-key-mutant.log). 이 변경의 Linux 재검증은 앞선 f472d32
+행렬과 구분해야 하며 아직 완료 근거로 가져오지 않는다.
+
+이번 macOS core는 Python494+SDK52+native121+Node152=819개와 독립 mock39/
+변이14개를80.638초에 통과했다(openclaw-exact-description-core.log).

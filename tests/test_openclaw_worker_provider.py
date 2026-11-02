@@ -33,6 +33,7 @@ export async function callGatewayFromCli(method,options,p,extra) {
   const row=s.sessions.find(r=>r.sessionId===p.sessionId);
   result=row?{ok:true,key:row.key,agentId:row.agentId}:{ok:false};
  } else if(method==='sessions.list')result={sessions:s.sessions};
+ else if(method==='sessions.describe')result={session:s.sessions.find(r=>r.key===p.key)};
  else if(method==='agent') {
   const row=s.sessions.find(r=>r.sessionId===p.sessionId);
   if(!row || row.lifecycleRevision!==p.expectedExistingSessionLifecycleRevision)throw Error('fixture native identity changed');

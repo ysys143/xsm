@@ -37,6 +37,20 @@ class OpenClawWorkerSessionTest(unittest.TestCase):
             with self.assertRaises(session.NativeSessionError):
                 session.resolved_locator(reply, listing, 'native-id', 'main', self.cwd)
 
+    def test_description_requires_exact_native_key_agent_and_session(self):
+        key = self.created['key']
+        self.assertEqual(session.description_params(key,'main'),dict(key=key,agentId='main'))
+        row = dict(key=key,agentId='main',sessionId='native-id',lifecycleRevision='revision-1')
+        listing = session.described_listing(dict(session=row),key,'main')
+        resolved = dict(ok=True,key=key,agentId='main')
+        self.assertEqual(session.resolved_locator(resolved,listing,'native-id','main',self.cwd)['native_session_id'],'native-id')
+        for reply in ({},dict(session=None),dict(session=dict(row,key='other')),dict(session=dict(row,agentId='other'))):
+            with self.subTest(reply=reply), self.assertRaises(session.NativeSessionError):
+                session.described_listing(reply,key,'main')
+        changed = session.described_listing(dict(session=dict(row,sessionId='other')),key,'main')
+        with self.assertRaises(session.NativeSessionError):
+            session.resolved_locator(resolved,changed,'native-id','main',self.cwd)
+
     def test_agent_run_requires_existing_native_id_and_lifecycle_revision(self):
         locator = session.created_locator(self.created, 'main', self.cwd)
         params = session.agent_params(locator, 'work', 'request-1')

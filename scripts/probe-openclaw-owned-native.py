@@ -12,6 +12,7 @@ parser=argparse.ArgumentParser(description='Pinned OpenClaw native backend run, 
 parser.add_argument('--native-cli',type=Path,required=True)
 parser.add_argument('--node',type=Path,required=True)
 parser.add_argument('--output',type=Path,required=True)
+parser.add_argument('--crowded-profile',action='store_true',help='Seed 101 empty native sessions and verify an older owned context outside the default page')
 parser.add_argument('--queued-native',action='store_true',help='Hold an independent native run so the owned target waits before provider execution')
 parser.add_argument('--before-admission',action='store_true',help='Inject cancellation after durable bind but before native model admission')
 parser.add_argument('--cancel',action='store_true',help='Cancel an exact running native request against the blocking provider fixture')
@@ -86,7 +87,38 @@ try:
   check('native completion did not invent task outcome '+request,value['result']['outcome'] is None)
   check('private child bound before result '+request,value['native_binding']['native_session_id']==value['result']['native_session_id'])
   return value
- first=run('first');second=run('second');separate=run('separate',work='separate-work')
+ first=run('first')
+ if options.crowded_profile:
+  seed=root/'seed-empty-sessions.mjs'
+  seed.write_text("""import {readFileSync} from 'node:fs';import {createRequire} from 'node:module';import {pathToFileURL} from 'node:url';
+const require=createRequire(process.argv[2]+'/package.json');
+const {GatewayClient}=await import(pathToFileURL(require.resolve('openclaw/plugin-sdk/gateway-runtime')).href);
+const config=JSON.parse(readFileSync(process.env.OPENCLAW_CONFIG_PATH,'utf8'));let client;
+const ready=new Promise((resolve,reject)=>{client=new GatewayClient({url:'ws://127.0.0.1:'+config.gateway.port,
+ token:config.gateway.auth.token,clientName:'gateway-client',clientDisplayName:'XSM isolated empty-session fixture',
+ clientVersion:'0.0.0',mode:'backend',role:'operator',scopes:['operator.admin'],
+ onHelloOk:resolve,onConnectError:()=>reject(new Error('native seed connection refused'))});});
+const timer=setTimeout(()=>{client.stop();process.exitCode=1;},60000);
+try {client.start();await ready;let count=0;
+ for(;count<101;count++){const r=await client.request('sessions.create',{agentId:'main',cwd:process.argv[3],message:''});
+ if(r.ok!==true || r.runStarted!==false)throw Error('empty native session unexpectedly started');}
+ console.log(JSON.stringify({created:count}));
+} catch {console.error('native empty-session fixture failed');process.exitCode=1;}
+finally {clearTimeout(timer);client.stop();}
+""")
+  seeded=subprocess.run([str(options.node),str(seed),str(options.native_cli.parent),str(root/'workspace')],env=env,cwd=root/'workspace',capture_output=True,text=True,timeout=90)
+  (out/'empty-session-seed.stdout').write_text(seeded.stdout);(out/'empty-session-seed.stderr').write_text(seeded.stderr)
+  check('101 empty native sessions seeded without model execution',seeded.returncode==0 and json.loads(seeded.stdout)['created']==101)
+  lookup=NativeRpc(str(options.node),str(options.native_cli),cwd=str(root/'workspace'),env=env)
+  old_id=first['result']['native_session_id']
+  resolved=lookup('sessions.resolve',worker_session.resolution_params(old_id,'main'))
+  default_page=lookup('sessions.list',{})
+  check('older native context is outside actual default page',default_page.get('hasMore') is True and all(row.get('sessionId')!=old_id for row in default_page['sessions']))
+  try:worker_session.resolved_locator(resolved,default_page,old_id,'main',str(root/'workspace'))
+  except worker_session.NativeSessionError:check('legacy first-page-only lookup reproduces failure',True)
+  else:raise AssertionError('legacy lookup unexpectedly found truncated context')
+  report['defaultPageEvidence']={'count':default_page.get('count'),'limitApplied':default_page.get('limitApplied'),'hasMore':default_page.get('hasMore')}
+ second=run('second');separate=run('separate',work='separate-work')
  check('same work resumed exact native conversation',first['result']['native_session_id']==second['result']['native_session_id'])
  check('separate work allocated another native conversation',first['result']['native_session_id']!=separate['result']['native_session_id'])
  before=(out/'assistant-fixture.jsonl').read_text().splitlines()
