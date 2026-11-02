@@ -291,3 +291,14 @@ Telegram 표본의7개 검사는 통과했지만, 모델이 처음 xsm_send에 �
 UI·worker·다중 대화·Discord·Linux Telegram 또는 전체30방향 조합의 통과를
 뜻하지 않는다. 앞선 API fixture의21개 도구 수치와 이번 실제 agent 표본도
 서로 다른 시점의 관측으로 구분한다.
+
+## Native child worker API의 실제 표본
+
+고정 버전의 공개 PluginContext.subagent_lifecycle을 실제 native 부모 모델의
+도구 호출에서 실행했다. Launch/status/wait/result·같은 프로세스 내 reconnect·
+correlation 중복 거부의9개와 별도 cancellation/미지원 옵션 거부의10개를
+확인했다. Cancellation 표본은 자식 모델 호출 전에 종료됐으므로 공급자 요청
+도중 중단의 증거는 아니다. 이 경로는 아직 xsm_owned provider에 연결되지 않았다.
+작업 폴더 지정·실행별 timeout·개별 도구 차단 등 기존 기능의 제약과 실패 기록은
+[native worker 연결 기록](../plan/runtime-protocol/native-worker-boundary.md)에 있다.
+기존 worker 입력 enum이나 지원 상태는 이 API 표본만으로 확장하지 않는다.

@@ -2451,3 +2451,18 @@ claim, 두 번째 잘못된 token 뒤에도 첫 ACK 영속, 중복 valid token �
 핵심 gate는 Python468+SDK50+Node127=645개, 독립 mock39/변이14개를
 82.716초에 통과했다(owned-runtime-fallback-core.log). 새 runtime provider를
 구현한 것은 아니며, 네 신규 runtime의 worker/start/stop/resume는 계속 미완이다.
+
+## Hermes native worker 실행 경계 (2026-11-02)
+
+실제 native 부모 모델이 plugin 도구에서 public subagent_lifecycle을 호출해
+자식 실행/결과·중복 거부·동일 process reconnect를 확인했다. 별도 cancellation도
+실제 RUNNING→CANCELLED로 확인했다. 통합된 개발용 시험기는 complete9개,
+cancel10개를 각각15.432/19.272초에 통과했다. 자식의 공급자 호출 중단이나
+프로세스 재시작 후 재개, XSM owned provider 연결 완료는 아니다.
+[Native worker 연결 경계](native-worker-boundary.md)에 미지원 native 옵션과
+실패했던 시험기 실행, 범위 및 원시 결과 경로를 함께 기록했다.
+
+모델 없는 callback preflight2개를 핵심 gate에 추가했다. 최신 macOS gate는
+Python470+SDK50+Node127=647개와 독립 mock39/변이14개가83.232초에 통과했다
+(hermes-worker-harness-core.log). Linux의 앞선 전체643/관련70개 표본과 구분한다.
+전체 목표는 계속 active이며 native provider/UI·전체 matrix 등의 미완을 유지한다.
