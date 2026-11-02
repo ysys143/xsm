@@ -668,3 +668,35 @@ XSM_HOME을 사용하고 실제 사용자 설정·권한·메신저를 변경하
 앞선d9b774c의 Linux766개는 양쪽에서 통과했지만 이번 Hermes 변경을 포함하지
 않는다. 이번 변경의 Linux 검사, 실제 구독 모델·모든 UI/도구/자식 취소 행렬,
 Claude/Codex/OpenClaw 등 전체 runtime 계획의 남은 항목은 계속 미완이다.
+
+## 중단이 확인된 owned 서비스의 안전한 제거
+
+기존 stop은 unknown이면 항상 제거를 거부했지만 queued/result-ready/sending은
+idle로 계산해 서비스 포인터를 없앨 수 있었다. 재현3개는 수정 전2개 assertion
+실패와1개 제거 거부 오류였다(owned-service-removal-red.log). 확인된 native stop와
+실제 child 종료가 함께 있는 unknown만 제거할 수 있도록 변경했다. 같은 bound
+native ID, PID/lstart, context epoch도 검사한다. 여전히 살아 있는 frontend,
+queued/active/미발행 결과와 확인되지 않은 실행은 제거하지 않는다.
+
+제출·예약·제거는 worker generation lock을 먼저 취한 뒤 owner journal lock을
+취한다. Lock 뒤 현재 worker ID/owner를 재확인해 삭제된 서비스에 뒤늦게 queued
+요청을 쓰거나 교체된 동명 서비스를 지우지 못한다. Guard는 journal을 읽기 전용으로
+잠그므로 서비스 제거가 업무 상태나 저널 바이트/mtime을 갱신하지 않는다.
+Unknown의 부작용·결과는 그대로 남으며 native profile과 원본 출력도 삭제하지 않는다.
+
+포인터가 사라지거나 다른 owner가 이름을 재사용해도 원래 sender의 exact request
+조회는 retained journal로 복구한다. 다른 서비스의 요청을 잘못 반환하지 않으며
+모호한 retained 요청은 거부한다. Native 실행·publication을 다시 시작하지 않는다.
+
+관련44개가 통과했다(owned-service-removal-readonly-unit.log). 실제 Pi1.4.0 CLI의
+취소 확인 유실 복구 뒤 제거까지29개도 통과했다
+(owned-service-removal-readonly-native/result.json). 포인터 제거, unknown 조회,
+profile/output 보존, journal 바이트와mtime 불변을 실제 경로에서 확인했다. 모델은
+loopback fixture이며 실제 LLM 추론은 아니다. Queued 제거 허용, live-child 검사
+생략, worker generation 재검사 생략의 변이3개를 assertion 실패로 검출했다
+(owned-service-removal-final-mutants.log).
+
+macOS core는 Python494+SDK52+native88+Node152=786개 및 독립 mock39/변이14개를
+81.224초에 통과했다(owned-service-removal-readonly-core.log). 전수표도 실제
+parser/catalog73/22/16과 cancel action으로 갱신했다. 이번 변경의 Linux 검사와
+전체 runtime/worker/UI/remote/messenger 행렬은 계속 미완이다.

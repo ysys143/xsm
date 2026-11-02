@@ -327,3 +327,89 @@ class OwnedCancellationTest(TempState):
             state['requests']['request']['child']['returncode'] = 7
         output.write_text(json.dumps(dict(type='error', sessionID='ses_fixturecancelled', error={'name': 'MessageAbortedError'})))
         self.assertEqual(workers.reconcile_owned('service', self.owner, 'request')['cancellation']['native_state'], 'unverified')
+
+    def test_confirmed_stopped_service_removal_keeps_unknown_request_and_native_profile(self):
+        from xsm import workers, owned_requests
+        self.readback_fixture()
+        recovered = workers.reconcile_owned('service', self.owner, 'request')
+        journal = Path(owned_requests._path(self.owner))
+        before = journal.read_bytes(); modified = journal.stat().st_mtime_ns
+        workers.stop('service')
+        self.assertIsNone(workers.load('service'))
+        self.assertTrue(Path(self.worker['home']).is_dir())
+        self.assertEqual(journal.read_bytes(), before)
+        self.assertEqual(journal.stat().st_mtime_ns, modified)
+        retained = workers.owned_status('service', self.owner, 'request')
+        self.assertEqual(retained['status'], 'unknown')
+        self.assertFalse(retained['worker_record_present'])
+        self.assertEqual(retained['cancellation'], recovered['cancellation'])
+
+    def test_service_removal_cannot_drop_a_queued_request(self):
+        from xsm import workers
+        self.submit()
+        with self.assertRaises(workers.WorkerError): workers.stop('service')
+        self.assertIsNotNone(workers.load('service'))
+
+    def test_service_removal_cannot_drop_an_unpublished_result(self):
+        from xsm import workers, owned_requests
+        row = self.running()
+        owned_requests.save_result(self.owner, 'request', row['reservation']['token'],
+            dict(body='stored answer', outcome=None, native_session_id=row['context']['session_seed']))
+        with self.assertRaises(workers.WorkerError): workers.stop('service')
+        self.assertIsNotNone(workers.load('service'))
+
+    def test_service_removal_rechecks_worker_generation_before_cleanup(self):
+        import contextlib
+        from xsm import workers
+        replacement = dict(self.worker, id='b' * 32)
+        @contextlib.contextmanager
+        def swapped(_worker):
+            workers.save(replacement)
+            yield
+        with mock.patch.object(workers, '_owned_record_lock', side_effect=swapped):
+            with self.assertRaisesRegex(workers.WorkerError, 'service changed'): workers.stop('service')
+        self.assertEqual(workers.load('service')['id'], replacement['id'])
+
+    def test_submission_cannot_create_orphan_request_after_service_removal(self):
+        from xsm import workers, owned_requests
+        original_cleanup, original_lookup = workers._cleanup, workers._owned_worker
+        removing, loaded, release = threading.Event(), threading.Event(), threading.Event()
+        def cleanup(worker):
+            removing.set()
+            if not release.wait(3): raise RuntimeError('test cleanup release deadline')
+            return original_cleanup(worker)
+        def lookup(name):
+            worker = original_lookup(name); loaded.set(); return worker
+        with mock.patch.object(workers, '_cleanup', side_effect=cleanup), \
+                mock.patch.object(workers, '_owned_worker', side_effect=lookup), \
+                concurrent.futures.ThreadPoolExecutor(2) as pool:
+            stopping = pool.submit(workers.stop, 'service')
+            try:
+                self.assertTrue(removing.wait(3))
+                submission = pool.submit(workers.submit_owned, 'service', self.owner, 'body',
+                                         work_context='work', request_id='request')
+                self.assertTrue(loaded.wait(3))
+                self.assertFalse(submission.done())
+            finally: release.set()
+            stopping.result(5)
+            with self.assertRaises(workers.WorkerError): submission.result(5)
+        self.assertEqual(owned_requests.status(self.owner, 'request')['status'], 'not-found')
+
+    def test_confirmed_native_stop_cannot_remove_a_still_live_frontend(self):
+        from xsm import workers, owned_requests
+        self.readback_fixture(alive=True)
+        row = owned_requests.status(self.owner, 'request')
+        owned_requests.confirm_native_stop(self.owner, 'request', row['reservation']['token'],
+                                           row['context']['native_session_id'])
+        with self.assertRaises(workers.WorkerError): workers.stop('service')
+        self.assertIsNotNone(workers.load('service'))
+
+    def test_retained_status_survives_service_name_reuse_by_another_owner(self):
+        from xsm import workers
+        self.readback_fixture(); workers.reconcile_owned('service', self.owner, 'request'); workers.stop('service')
+        replacement = dict(self.worker, id='b' * 32, owner=dict(self.owner, session_id='another-owner'))
+        workers.save(replacement)
+        retained = workers.owned_status('service', self.owner, 'request')
+        self.assertEqual(retained['worker']['id'], self.worker['id'])
+        self.assertFalse(retained['worker_record_present'])
+        self.assertEqual(retained['status'], 'unknown')

@@ -625,3 +625,17 @@ deliverables/protocol-foundation/opencode-cancel-linux/의 result.json,
 
 이는 OpenCode 관측 프레임과 취소 전용 exit1 readback의 core 증거다. 실제 Linux
 OpenCode CLI/model 중단은 별도 미완이며, 뒤의 Hermes observer/779개는 포함하지 않는다.
+
+## Hermes admission/generation 취소 core (02854c0)
+
+02854c0 고정 번들의 SHA-256은
+faf3dc95e991c8c260876c68630b037156ddbefe6c2a89c238bcedd0e905e47b다.
+Python494+SDK52+native81+Node152=779개 및 독립 mock39/변이14개가 두 Linux
+arm64 이미지에서 통과했다. Python3.11.2는63.640초,3.14.10은80.615초였다.
+Model0/network none/cpu2/memory3g와120초 기한을 유지했다. 원시는
+deliverables/protocol-foundation/hermes-cancel-linux/의 result.json,
+{311,314}/protocol.log와 start/stop.log다. VM stopExit은0이며 종료됐다.
+
+이 표본은 Hermes의 exact receipt generation·actual interrupted-result 검사를
+포함한다. 실제 Linux Hermes gateway/model 취소 인증은 아니며, 이후의 안전한
+service removal과786개 core는 포함하지 않는다.

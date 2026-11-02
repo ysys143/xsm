@@ -7,6 +7,7 @@ import argparse
 parser=argparse.ArgumentParser(description='Pi1.4.0 native owned lifecycle with an explicit loopback assistant fixture; no LLM or credentials.')
 parser.add_argument('--native-cli',type=Path,required=True)
 parser.add_argument('--output',type=Path,required=True)
+parser.add_argument('--remove-stopped-service',action='store_true',help='Verify safe metadata removal while retaining unknown effects and native data')
 parser.add_argument('--lose-cancel-confirmation',action='store_true',help='Inject a stop-report failure and verify native-output recovery')
 options=parser.parse_args()
 if not options.native_cli.is_absolute() or not options.native_cli.is_file():parser.error('an existing absolute Pi1.4.0 CLI path is required')
@@ -139,6 +140,16 @@ async def main():
     check('actual native aborted settle is recorded',current['cancellation']['status']=='native-stopped' and current['cancellation']['native_session_id']==current['native_binding']['native_session_id'])
     check('cancelled native turn is no invented answer',current['status']=='unknown' and current['result'] is None and current['reply_id'] is None)
   (out/'cancelled-request.json').write_text(json.dumps(current,indent=2)+'\n')
+  if options.remove_stopped_service:
+   from xsm import workers
+   journal_files=list((state/'owned-requests').glob('*.json'))
+   before_journals={str(path):(path.read_bytes(),path.stat().st_mtime_ns) for path in journal_files}
+   workers.stop('native-pi')
+   check('confirmed stopped service metadata removed',workers.load('native-pi') is None)
+   retained=await op('xsm_owned',{'action':'status','name':'native-pi','request_id':cancel_id})
+   check('unknown cancellation remains readable after removal',retained['status']=='unknown' and retained['worker_record_present'] is False and retained['cancellation']==current['cancellation'])
+   check('native profile and original output retained',profile.is_dir() and Path(current['child']['stdout']).is_file())
+   check('service removal does not rewrite request journals',all(Path(path).read_bytes()==value[0] and Path(path).stat().st_mtime_ns==value[1] for path,value in before_journals.items()))
   report['cancelHTTPRequests']=len(http_calls);report['cancel_observation_seconds']=round(time.monotonic()-cancel_started,3)
   report['status']='passed'
  except BaseException as error:report.update(status='failed',failure_type=type(error).__name__)

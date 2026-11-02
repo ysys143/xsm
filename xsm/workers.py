@@ -1250,10 +1250,14 @@ def stop(name: str, reason: str = "stopped") -> dict:
     if not worker:
         raise WorkerError("no worker named %s" % name)
     if worker.get("mode") == "owned":
+        from . import owned_requests
         with _owned_record_lock(worker):
-            if state(worker) in ("busy", "unknown"):
-                raise WorkerError("owned work is active or uncertain; recover before removing its service")
-            _cleanup(worker)
+            worker = _current_owned_record(worker)
+            try:
+                with owned_requests.service_removal(worker['owner'], worker['id']):
+                    _cleanup(worker)
+            except owned_requests.OwnedError as error:
+                raise WorkerError(str(error)) from error
         return dict(worker, stopped=reason)
     try:
         from . import telemetry
@@ -1460,6 +1464,16 @@ def _owned_record_lock(worker):
         yield
     finally:
         os.close(fd)
+
+
+def _current_owned_record(worker):
+    from . import owned_requests
+    current = load(worker['name'])
+    if (not current or current.get('id') != worker['id'] or current.get('mode') != 'owned'
+            or current.get('owned') is not True
+            or owned_requests._native(current.get('owner')) != owned_requests._native(worker['owner'])):
+        raise WorkerError('owned service changed during operation')
+    return current
 
 
 def _owned_foreign_busy(owner, ticket_names=()):
@@ -1864,14 +1878,16 @@ def submit_owned(name, sender, body, *, work_context, request_id=None, independe
     from . import owned_requests
     config.require_valid_policy()
     worker = _owned_worker(name)
-    _require_owned_native(worker.get("runtime"))
-    owner = worker["owner"]
-    owned_requests._native(sender)
-    if (owned_requests._native(sender) != owned_requests._native(owner)
-            and not config.scope_for(sender, {"cwd": worker["cwd"]})[0]):
-        raise WorkerError("sender has no scope for this owned service")
-    return owned_requests.submit(owner, worker, sender, work_context, body,
-                                 request_id=request_id, independent=independent)
+    with _owned_record_lock(worker):
+        worker = _current_owned_record(worker)
+        _require_owned_native(worker.get('runtime'))
+        owner = worker['owner']
+        owned_requests._native(sender)
+        if (owned_requests._native(sender) != owned_requests._native(owner)
+                and not config.scope_for(sender, {'cwd': worker['cwd']})[0]):
+            raise WorkerError('sender has no scope for this owned service')
+        return owned_requests.submit(owner, worker, sender, work_context, body,
+                                     request_id=request_id, independent=independent)
 
 
 def run_owned(name, sender, body, *, work_context, request_id=None, independent=False,
@@ -1894,9 +1910,14 @@ def run_owned(name, sender, body, *, work_context, request_id=None, independent=
     request = owned_requests.status(owner, request_id)
     if request["status"] == "queued":
         refuse_inside_framework()
-        request = owned_requests.reserve(owner, request_id,
-                    _limit("max_workers", "XSM_MAX_WORKERS", 4),
-                    extra_busy=lambda names: _owned_foreign_busy(owner, names))
+        with _owned_record_lock(worker):
+            request = owned_requests.status(owner, request_id)
+            if request['status'] != 'queued':
+                return request
+            _current_owned_record(worker)
+            request = owned_requests.reserve(owner, request_id,
+                        _limit('max_workers', 'XSM_MAX_WORKERS', 4),
+                        extra_busy=lambda names: _owned_foreign_busy(owner, names))
         if not request.get("reservation_acquired"):
             return request
         token = request["reservation"]["token"]
@@ -1965,7 +1986,16 @@ def owned_status(name, sender, request_id):
         if len(saved)!=1:
             raise WorkerError('no unique retained request for this native sender and worker name')
         return saved[0]
-    return owned_requests.status(worker["owner"], request_id, sender=sender)
+    current = owned_requests.status(worker['owner'], request_id, sender=sender)
+    if current.get('worker', {}).get('id') == worker['id']:
+        return current
+    # A reused display name does not change the author or hide a retained task.
+    saved = owned_requests.retained_requests(sender, request_id=request_id, worker_name=name)
+    if len(saved) > 1:
+        raise WorkerError('no unique retained request for this native sender and worker name')
+    if saved:
+        return saved[0]
+    return current if current['status'] in ('not-found', 'refused') else {'status': 'not-found', 'id': request_id}
 
 
 def owned_history(name,sender):

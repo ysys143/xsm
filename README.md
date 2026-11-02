@@ -402,6 +402,8 @@ Other providers' running cancellation and recovery remain unfinished. Inspect th
 [`cancellation` status](docs/protocol/native-workers.md#cancellation); intent or CLI exit alone does not prove a native task stopped.
 For these providers, `xsm owned reconcile reviewer --request-id <id>` can recover a lost stop
 confirmation from retained native output without rerunning the task; possible side effects remain unknown.
+After confirmed native stop and CLI exit, `xsm stop reviewer` can remove the logical
+service while preserving its journal and native profile. Queued, unpublished or unconfirmed work blocks removal.
 
 An ordinary running session is never taken over as an owned worker. Inside an Orca or herdr terminal, xsm
 leaves starting workers to that tool unless you tell it otherwise (`xsm frameworks`).

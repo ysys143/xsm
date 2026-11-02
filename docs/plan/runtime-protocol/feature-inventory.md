@@ -4,7 +4,12 @@
 `scripts/inventory-protocol-features.py --output <새 JSON 경로>`로 HOME/XSM_HOME을
 격리해 parser와 공개 catalog를 직접 읽었다. 결과는 CLI 말단 명령 **73개**,
 공개 operation **22개**(초기 21개에서 xsm_doc 추가), host method **16개**(초기 11개에서 업로드 준비 5개 추가)다. positional action의 여러 값은
-별도 명령으로 중복 계산하지 않았다. 전체 옵션은 원시 JSON에 있다.
+별도 명령으로 중복 계산하지 않았다. 옵션 이름은 원시 JSON에 있다. 전체 인수의
+타입·기본값·검증 규칙을 완전하게 인증한 표는 아니다.
+
+2026-11-03에02854c0의 parser/catalog를 다시 읽은 결과도73/22/16이었다
+(deliverables/protocol-foundation/feature-inventory-02854c0.json). Owned의 cancel
+action 추가를 아래에 반영했다. 이 수치는 native 기능/전체 행렬 완료를 뜻하지 않는다.
 
 명령이 공개 operation과 겹친다는 사실만으로 CLI 공통화·native 실행·원격·
 UI 호환이 확인된 것은 아니다. 아래 대응 미확정 항목은 이번 작업자가
@@ -45,7 +50,7 @@ UI 호환이 확인된 것은 아니다. 아래 대응 미확정 항목은 이�
 | `xsm team` | action: create, add, remove, lead, leave, list, show, mute | xsm_team |
 | `xsm board` | action: show, set, log, sync, decisions, decide, mute | xsm_board |
 | `xsm handover` | — | xsm_handover |
-| `xsm owned` | action: create, run, status, retry, reconcile | xsm_owned |
+| `xsm owned` | action: create, run, status, retry, reconcile, cancel | xsm_owned |
 | `xsm spawn` | runtime: claude, codex | 대응 미확정; 기존 CLI 경로 보존 필요 |
 | `xsm workers` | action: list, read | 대응 미확정; 기존 CLI 경로 보존 필요 |
 | `xsm reap` | — | 대응 미확정; 기존 CLI 경로 보존 필요 |
@@ -93,7 +98,7 @@ UI 호환이 확인된 것은 아니다. 아래 대응 미확정 항목은 이�
 
 | Operation | action 값 |
 |---|---|
-| `xsm_owned` | create, run, status, retry, reconcile |
+| `xsm_owned` | create, run, status, retry, reconcile, cancel |
 | `xsm_files` | 별도 action enum 없음 |
 | `xsm_decision_status` | 별도 action enum 없음 |
 | `xsm_ask` | 별도 action enum 없음 |

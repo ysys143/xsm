@@ -194,8 +194,14 @@ result to say `interrupted=true`. Administrative resolution of unknown work is
 not sufficient. A queued cancellation with no execution generation is recorded
 separately as native not-started. No shared gateway process is killed.
 
-Cancelling a waiting transport still does not cancel its saved owned task, and
-service removal still refuses active or uncertain work. Native stop/recovery for
+Cancelling a waiting transport still does not cancel its saved owned task.
+Service removal refuses queued, active, unpublished or unconfirmed work. An
+explicit stop may remove only the logical service metadata after native cancellation
+is confirmed and the child has exited, while retaining unknown task effects,
+journals, native profiles and original output. Submission/reservation and removal
+share the service lock; a stale worker generation cannot launch after removal.
+Retained status is authorized by the original sender even when another owner
+later reuses the display name. Native stop/recovery for
 the other runtimes remains an incomplete part of the full plan.
 
 For Pi, OpenCode and Hermes, `reconcile` can recover a lost stop confirmation after the execution child

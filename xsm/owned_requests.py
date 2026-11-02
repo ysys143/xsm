@@ -42,7 +42,7 @@ def _path(owner):
 
 
 @contextmanager
-def _locked(owner):
+def _locked(owner, *, persist=True):
     filename = _path(owner)
     os.makedirs(os.path.dirname(filename), mode=0o700, exist_ok=True)
     fd = os.open(filename + '.lock', os.O_CREAT | os.O_RDWR, 0o600)
@@ -58,7 +58,8 @@ def _locked(owner):
                 any(not isinstance(state.get(k), dict) for k in ('requests', 'contexts', 'slots'))):
             raise OwnedError('invalid owned journal; never reset silently')
         yield state
-        handoff._write(filename, state)
+        if persist:
+            handoff._write(filename, state)
     finally:
         os.close(fd)
 
@@ -101,6 +102,30 @@ def _get(state, request_id):
     if request is None:
         raise OwnedError('no owned request ' + request_id)
     return request
+
+
+@contextmanager
+def service_removal(owner, worker_id):
+    """Fence metadata removal; preserve journals and unresolved business effects."""
+    with _locked(owner, persist=False) as state:
+        for request in state['requests'].values():
+            if request['worker']['id'] != worker_id:
+                continue
+            phase = request['state']
+            if phase in ('sent', 'reply-stored', 'error', 'cancelled'):
+                continue
+            if phase == 'unknown' and request.get('result') is None:
+                cancel, binding, child = (request.get(key) or {} for key in ('cancellation', 'native_binding', 'child'))
+                context = state['contexts'][request['context_id']]
+                if (cancel.get('native_state') == 'stopped' and _alive(child) is False
+                        and binding.get('native_session_id') and cancel.get('native_session_id') == binding['native_session_id']
+                        and cancel.get('child_pid') == binding.get('child_pid') == child.get('pid')
+                        and cancel.get('child_lstart') == binding.get('child_lstart') == child.get('lstart')
+                        and context.get('epoch') == request.get('context_epoch')
+                        and context.get('native_session_id') == binding['native_session_id']):
+                    continue
+            raise OwnedError('owned work is queued, active, unpublished or unconfirmed; recover before removing its service')
+        yield
 
 
 def _view(state, request):
