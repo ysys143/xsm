@@ -33,6 +33,50 @@ class ProtocolFixture(TempState):
 
 
 class ProtocolTest(ProtocolFixture):
+    def test_string_length_bounds_use_unicode_characters(self):
+        from xsm.protocol import ProtocolError, validate
+        schema = {'type': 'string', 'minLength': 1, 'maxLength': 1}
+        validate('\U0001f30a', schema)
+        validate('한', schema)
+        for value in ('', '한글', 'e\u0301'):
+            with self.subTest(value=value), self.assertRaises(ProtocolError) as refused:
+                validate(value, schema)
+            self.assertEqual(refused.exception.code, -32602)
+
+    def test_empty_document_path_is_rejected_before_service_dispatch(self):
+        from xsm.protocol import ProtocolError
+        opened = self.open('empty-document-path')
+        host = self.connection.sessions[opened['session']]
+        with mock.patch.object(host, 'call', side_effect=AssertionError('invalid path reached service')) as call:
+            with self.assertRaises(ProtocolError) as refused:
+                self.operation(opened, 'xsm_doc', action='render', doc='')
+            self.assertEqual(refused.exception.code, -32602)
+        call.assert_not_called()
+
+    def test_public_bundle_requires_discovery_contract_and_examples(self):
+        import shutil
+        from pathlib import Path
+        from xsm import protocol_contract
+        root = Path(self.tmp, 'contract-copy')
+        source = Path(__file__).resolve().parents[1]
+        for name in protocol_contract.REQUIRED:
+            target = root / name
+            target.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copyfile(source / name, target)
+        for name in ('discovery-result.schema.json', 'discovery-result-examples.json'):
+            target = root / 'docs/protocol' / name
+            target.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copyfile(source / 'docs/protocol' / name, target)
+        for name in ('discovery-result.schema.json', 'discovery-result-examples.json'):
+            target = root / 'docs/protocol' / name
+            data = target.read_bytes()
+            target.unlink()
+            try:
+                with self.subTest(artifact=name), self.assertRaisesRegex(ValueError, 'artifacts missing'):
+                    protocol_contract.bundle(root)
+            finally:
+                target.write_bytes(data)
+
     def test_close_marker_failure_does_not_leave_a_live_pid_ghost_owner(self):
         from xsm import registry
         opened = self.open('close-marker-failure')

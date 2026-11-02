@@ -56,3 +56,22 @@ VM stopExit=0이다(discovery-contract-linux/result.json 및 환경별 protocol.
 사용자 설정은 변경하지 않았다. 원격 예제는 구조 fixture이며 실제 원격 전달
 성공으로 계산하지 않는다. 원격 발견·전체 런타임·다른 operation의 결과 계약과
 전체 지원 판정은 승인된 전체 계획의 남은 필수 조건이다.
+
+## 배포 누락과 입력 길이 계약 보완
+
+후속 감사에서 발견 스키마/예제2개가 필수 bundle 목록에 빠진 것을 재현했다.
+각 파일을 임시 bundle에서 제거해도 describe용 bundle 생성이 성공했다.
+또한 공개 operation 입력의 minLength는 xsm_doc.doc 한 필드에 선언돼 있었으나
+서버 validator가 검사하지 않아 빈 경로가 service 호출까지 도달했다.
+이는 문서 작업이 성공했다는 뜻이 아니라 구조 검사가 service 전에 작동하지
+않았다는 뜻이다. 변경 전 검사2개에서 assertion3건이 실패했다
+(protocol-contract-guards-before.log).
+
+두 필수 산출물을 REQUIRED에 넣고 문자열 minLength/maxLength를 service 호출
+전에 검사하도록 수정했다. 재현 검사2개는 통과했다
+(protocol-contract-guards-after.log). 문자 수는 UTF-8 byte가 아닌 Unicode
+문자 수로 세며 한글·비 BMP 문자·결합 문자 경계도 검사했다.
+
+새 core837개(Python500+SDK52+native133+Node152)가 macOS/Python3.14.6에서
+82.289초에 통과했다(protocol-contract-guards-core.log). 독립 mock39/변이14는
+별도 수치다. 앞 절의834개 Linux 증거는 이 후속 source의 검증으로 소급하지 않는다.

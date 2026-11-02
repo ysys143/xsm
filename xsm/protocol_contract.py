@@ -12,6 +12,7 @@ REQUIRED = ('docs/protocol/README.md', 'docs/protocol/request.schema.json',
             'docs/protocol/request-examples.json', 'docs/protocol/output.schema.json',
             'docs/protocol/output-examples.json', 'docs/protocol/inbox-result.schema.json',
             'docs/protocol/file-result.schema.json', 'docs/protocol/ack-result.schema.json', 'docs/protocol/operations.schema.json',
+            'docs/protocol/discovery-result.schema.json', 'docs/protocol/discovery-result-examples.json',
             'docs/protocol/operation-examples.json', 'scripts/conform-host-protocol.py', 'scripts/check-protocol-schema.py')
 
 
