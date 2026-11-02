@@ -3,6 +3,7 @@
 현재 상태: OpenClaw2026.10.9 제공자를 catalog에 등록했고 실제 owned journal에서
 정상 실행·같은 문맥의 재개·다른 문맥 분리·결과 저장·요청 replay를 확인했다.
 실행 전·native 대기열·실행 중 취소와 확인 유실 readback을 macOS에서 확인했다.
+Linux arm64에서도 실제 gateway를 통한 같은 native 행렬과 공개 protocol 취소를 확인했다.
 일반 재시작 복구와 전체 OS/모드 행렬은 미완이다. 아래 초기 시험과 거부 기록도
 보존하며, 현재 통합 증거는 마지막 절을 따른다.
 
@@ -393,3 +394,38 @@ openclaw-owned-protocol-cancel의28개, openclaw-owned-protocol-cancel-lost의31
 수집한 사용자 답이나 메신저 권한 검증을 대신하지 않는다. 제품 코드는 변경하지
 않았으므로 이번 변경에서 core를 반복 실행하지 않았다. 직전 고정 커밋의816개
 macOS/Linux 결과는 위 절에 따로 기록했다.
+
+## 실제 Linux arm64 gateway 행렬
+
+f472d32의 소스를 고정하고 기존 Linux용2026.10.9 설치를 재사용했다. 첫8개
+시도는 SDK/prompt helper용 설치의 package lifecycle이 미완이어서 gateway
+시작 전에 모두 실패했다(openclaw-owned-linux). 이 표본을 성공으로 세지 않는다.
+
+별도 private Docker volume으로 설치를 복사해 공식 npm rebuild와 native CLI
+bootstrap으로 lifecycle을 완료했다. 기존 cache는 읽기 전용으로 보존했고 guard나
+패키지 코드를 고치지 않았다. CLI가2026.10.9를 반환한 뒤 실행에서도 설치를 읽기
+전용으로 마운트했다. 설치·실행 모두 network none, CPU2/memory3g를 유지했다.
+
+openclaw-owned-linux-ready에서8/8 mode, 총257개 검사가 통과했다.
+
+| Linux mode | 검사 수 |
+|---|---:|
+| 실행 중 취소 | 32 |
+| 실행 중 확인 유실 복구 | 35 |
+| native 대기열 취소 | 35 |
+| native 대기열 확인 유실 복구 | 38 |
+| native 요청 전 취소 | 28 |
+| native 요청 전 확인 유실 복구 | 30 |
+| 공개 protocol 취소·reply claim/ACK | 28 |
+| 공개 protocol 확인 유실 복구·reply claim/ACK | 31 |
+
+각 mode는 정상 실행·같은 문맥 재개·별도 문맥 분리·request replay도 먼저
+검사한다. 확인 유실은 정확한 보존 출력으로 복구했고 native를 재실행하지 않았다.
+모든 gatewayStopped=true, VM stopExit=0, 미실행 mode0이다. 실제 모델 추론은
+0회이며 local SSE fixture만 사용했다. Native auth/config 파일은 산출물로 옮기지
+않고 child의 stdout/stderr만 별도로 보존했다.
+
+원시는 deliverables/protocol-foundation/openclaw-owned-linux-ready/의 result.json과
+mode별 output/ 아래 있다. 이 결과는 Linux arm64 owned/native gateway의 경계다.
+실제 모델·native UI·메신저, 일반 gateway 재시작 복구, 전체 런타임 행렬과 다른
+아키텍처의 지원 완료를 뜻하지 않는다.

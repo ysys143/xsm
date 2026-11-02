@@ -668,3 +668,27 @@ deliverables/protocol-foundation/openclaw-queued-cancel-linux/의 result.json,
 이 core는 OpenClaw native package를 fixture로 둔 실제 child/SDK loader/소켓/
 journal과 명세 검사를 포함한다. 실제 Linux OpenClaw gateway·모델·native UI·
 메신저나 p95 전달 지연을 검증한 것으로 확대하지 않는다.
+
+## 실제 OpenClaw owned gateway와 공개 operation
+
+f472d32ba9a4f958e4a95854042411dea16c6bfc를 고정했다. Source archive SHA256은
+65a744a9ab7eb5daad5a428971f04f5f7fa01d5531fa0cf5a349288602ff5cfe다.
+Linux용 native2026.10.9/Node24.22.2/Python3.11.2의 실제 gateway를 실행했다.
+위 core의 SDK package fixture와 구분한다.
+
+최초8개 mode는 기존 SDK 검사용 설치의 package lifecycle 미완과 읽기 전용
+마운트 때문에 모두 시작 단계에서 실패했다(openclaw-owned-linux). 원시 실패와
+0개 검사 실행을 보존했다. 별도 private volume에 설치를 복사하고 공식 npm
+rebuild/CLI bootstrap으로 lifecycle을 완료했다. 기존 cache나 guard를 수정하지
+않았으며 준비가 끝난 설치도 runtime에서는 읽기 전용으로 마운트했다.
+
+openclaw-owned-linux-ready에서8/8 mode, 총257개 검사가 통과했다. 실행 전,
+native 대기열, 실행 중 취소와 각각의 private 확인 유실 복구, 공개 operation의
+취소·복구·실제 inbox claim/ACK를 포함한다. 모든 mode가 정상 문맥 재개·분리와
+중복 request 비실행도 검사했다. mode별 수치와 경계는 openclaw-owned-session.md의
+마지막 절을 따른다. 미실행 mode0, 모든 gatewayStopped=true, VM stopExit=0이다.
+
+설치와 실행의 network none, CPU2/memory3g를 유지했고 실제 모델 추론은0회다.
+Native profile의 auth/config 파일은 복사하지 않고 child 출력만 추가 보존했다.
+실제 모델·사람 UI·메신저·일반 gateway 재시작과 전체 런타임/아키텍처 행렬은
+여전히 미완이다.
