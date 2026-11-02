@@ -460,3 +460,10 @@ openclaw-description-queued-native에서, 공개 protocol의 실행 중 취소·
 
 이번 macOS core는 Python494+SDK52+native121+Node152=819개와 독립 mock39/
 변이14개를80.638초에 통과했다(openclaw-exact-description-core.log).
+
+9a0b086을 고정한 Linux arm64 실제 gateway 재검증도9/9 mode, 총283개
+검사를 통과했다(openclaw-exact-description-linux). 빈 세션101개와 오래된 문맥의
+재개26개를 추가하고 기존8개 native/public protocol 경로257개를 다시 실행했다.
+모든 gatewayStopped=true, VM stopExit=0, 미실행 mode0이다. 공식 lifecycle을
+완료한2026.10.9 캐시를 읽기 전용으로 재사용했으며 실제 모델 추론은0회다.
+이는819개 Linux core 재실행과 구분한다.

@@ -692,3 +692,17 @@ native 대기열, 실행 중 취소와 각각의 private 확인 유실 복구, �
 Native profile의 auth/config 파일은 복사하지 않고 child 출력만 추가 보존했다.
 실제 모델·사람 UI·메신저·일반 gateway 재시작과 전체 런타임/아키텍처 행렬은
 여전히 미완이다.
+
+## 정확한 OpenClaw 단건 조회의 Linux 재검증
+
+9a0b086을 고정한 openclaw-exact-description-linux에서 실제 gateway9개 mode,
+총283개 검사가 통과했다. 기존8개 경로257개에 빈 native 세션101개를 추가한
+오래된 owned 문맥 재개26개를 포함한다. 실제 기본 목록100개에서 대상이 빠진
+상태와 이전 helper의 실패를 확인한 뒤 단건 description으로 재개했다.
+취소·확인 유실 readback·공개 reply claim/ACK도 같은 source로 재검증했다.
+
+공식 lifecycle을 완료한 native2026.10.9 캐시를 읽기 전용으로 재사용했다.
+모든 gatewayStopped=true, 미실행 mode0, VM stopExit=0이다. Model0/network
+none/cpu2/memory3g를 유지했다. 이번 표본은 native 경로이며819개 core를 새로
+실행한 것으로 계산하지 않는다. 원시는 deliverables/protocol-foundation/
+openclaw-exact-description-linux/ 아래에 있다.
