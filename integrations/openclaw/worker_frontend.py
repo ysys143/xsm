@@ -12,7 +12,7 @@ from . import worker_session as session
 
 
 def run_turn(rpc, control, *, agent_id, cwd, message, request_id,
-             native_session_id=None, wait_timeout_ms=500, model=None, thinking=None):
+             native_session_id=None, wait_timeout_ms=500, model=None, thinking=None, on_bound=None):
     if type(wait_timeout_ms) is not int or not 1 <= wait_timeout_ms <= 30000:
         raise session.NativeSessionError('invalid native observation timeout')
     # Validate task fields before any mutation or native context allocation.
@@ -34,6 +34,8 @@ def run_turn(rpc, control, *, agent_id, cwd, message, request_id,
     if thinking is not None:
         params['thinking'] = session._text(thinking, 'thinking')
     control.bind(locator['native_session_id'])
+    if on_bound is not None:
+        on_bound(dict(locator))
     if control.cancellation_requested():
         return {'locator': locator, 'cancelled': True, 'native_not_started': True,
                 'admission': None, 'terminal': None}

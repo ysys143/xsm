@@ -12,6 +12,7 @@ parser=argparse.ArgumentParser(description='Pinned OpenClaw native backend run, 
 parser.add_argument('--native-cli',type=Path,required=True)
 parser.add_argument('--node',type=Path,required=True)
 parser.add_argument('--output',type=Path,required=True)
+parser.add_argument('--interrupt-frontend',action='store_true',help='Kill the owned frontend after native provider entry and recover by read-only status')
 parser.add_argument('--crowded-profile',action='store_true',help='Seed 101 empty native sessions and verify an older owned context outside the default page')
 parser.add_argument('--queued-native',action='store_true',help='Hold an independent native run so the owned target waits before provider execution')
 parser.add_argument('--before-admission',action='store_true',help='Inject cancellation after durable bind but before native model admission')
@@ -20,6 +21,7 @@ parser.add_argument('--lose-cancel-confirmation',action='store_true',help='Injec
 options=parser.parse_args()
 if options.lose_cancel_confirmation and not (options.cancel or options.before_admission):parser.error('--lose-cancel-confirmation requires --cancel or --before-admission')
 if options.queued_native and not options.cancel:parser.error('--queued-native requires --cancel')
+if options.interrupt_frontend and (options.cancel or options.before_admission):parser.error('--interrupt-frontend is a separate recovery mode')
 if not options.native_cli.is_absolute() or not options.node.is_absolute():parser.error('absolute native CLI and Node paths required')
 if json.loads((options.native_cli.parent/'package.json').read_text()).get('version')!='2026.10.9':parser.error('OpenClaw2026.10.9 package required')
 root=Path(tempfile.mkdtemp(prefix='xsm-openclaw-owned-create-')).resolve();out=options.output.absolute();out.mkdir(parents=True,exist_ok=False)
@@ -128,6 +130,45 @@ finally {clearTimeout(timer);client.stop();}
  check('provider saw durable exact live child binding',len(report['preProviderBindingObservations'])==3 and all(report['preProviderBindingObservations']))
  check('logical worker indexes exact native IDs',set(workers.load('native-openclaw')['owned_sessions'])=={first['result']['native_session_id'],separate['result']['native_session_id']})
  report['providerFixtureRequests']=len(before)
+ if options.interrupt_frontend:
+  blocking.set();interrupted_text='Explicit interrupted frontend task.'
+  with concurrent.futures.ThreadPoolExecutor(max_workers=1) as pool:
+   future=pool.submit(workers.run_owned,'native-openclaw',owner,interrupted_text,
+      work_context='interrupted-work',request_id='interrupted',
+      reply_sender=lambda worker,row:workers.publish_owned(worker,row,wake=False))
+   try:
+    check('interrupted task actually entered native provider',entered.wait(20))
+    current=workers.owned_status('native-openclaw',owner,'interrupted');child=current['child']
+    check('only exact owned child is selected for interruption',identity.lstart(child['pid'])==child['lstart'])
+    os.killpg(child['pid'],signal.SIGKILL)
+    unknown=future.result(timeout=10)
+   except BaseException:release.set();raise
+  check('frontend death retains unknown effects and occupied slot',unknown['status']=='unknown' and unknown['slot_occupied'] is True and unknown['result'] is None)
+  from integrations.openclaw.worker_cli import output_records
+  bound,final=output_records(Path(unknown['child']['stdout']).read_text())
+  check('actual bound record survives without final stdout',bound is not None and final is None and bound['locator']['native_session_id']==unknown['native_binding']['native_session_id'])
+  pending=workers.reconcile_owned('native-openclaw',owner,'interrupted',reply_sender=lambda worker,row:workers.publish_owned(worker,row,wake=False))
+  check('native task still running does not manufacture result',pending['status']=='unknown' and pending['result'] is None and pending['slot_occupied'] is True)
+  check('pending reconciliation does not start another native task',len(report['preProviderBindingObservations'])==4)
+  release.set();deadline=time.monotonic()+20
+  while True:
+   recovered=workers.reconcile_owned('native-openclaw',owner,'interrupted',reply_sender=lambda worker,row:workers.publish_owned(worker,row,wake=False))
+   if recovered['status'] in ('sent','reply-stored'):break
+   if time.monotonic()>deadline:
+    (out/'interrupted-unrecovered.json').write_text(json.dumps(recovered,indent=2)+'\n')
+    raise TimeoutError('native interrupted frontend recovery')
+   time.sleep(.1)
+  check('native host receipt recovers actual answer',recovered['result']['body']=='Explicit assistant fixture; no model inference.')
+  check('native recovery retains original context identity',recovered['result']['native_session_id']==unknown['native_binding']['native_session_id'])
+  check('native recovery preserves nonzero child exit',recovered['child']['returncode']==-signal.SIGKILL and recovered['result']['execution']['returncode']==-signal.SIGKILL)
+  check('native status query provenance is retained',recovered['result']['execution']['recovered_from']=='native-host-status' and recovered['result']['native_evidence']['source']=='native-agent.wait')
+  check('native recovery releases slot without declaring task success',recovered['slot_occupied'] is False and recovered['result']['outcome'] is None)
+  replay=workers.run_owned('native-openclaw',owner,interrupted_text,work_context='interrupted-work',request_id='interrupted',reply_sender=lambda worker,row:workers.publish_owned(worker,row,wake=False))
+  check('recovered request replay retains exact reply ID',replay['reply_id']==recovered['reply_id'])
+  check('native host recovery and replay perform no inference resubmission',len(report['preProviderBindingObservations'])==4)
+  (out/'interrupted-journal.json').write_text(json.dumps(recovered,indent=2)+'\n')
+  report['frontendRecovery']=recovered['result']['execution'];report['providerHttpEntries']=len(report['preProviderBindingObservations'])
+
  if options.before_admission:
   from xsm import owned_requests
   original_bind=owned_requests.bind_native_context
@@ -222,7 +263,8 @@ finally {clearTimeout(timer);client.stop();}
   expected_entries=3 if options.queued_native else 4
   check('cancel path preserves exact durable child binding',len(report['preProviderBindingObservations'])==expected_entries and all(report['preProviderBindingObservations']))
   if options.queued_native:
-   stopped_output=json.loads(Path(stopped['child']['stdout']).read_text())
+   from integrations.openclaw.worker_cli import final_frame
+   stopped_output=final_frame(Path(stopped['child']['stdout']).read_text())
    check('native queue stop explicitly reports provider not started',stopped_output['terminal'].get('providerStarted') is False and stopped_output['stop_observation'].get('native_provider_not_started') is True)
    other=blocker_rpc('agent.wait',{'runId':blocker_run['runId'],'timeoutMs':100})
    check('cancelling queued task leaves independent native run active',other.get('status')=='timeout' and other.get('stopReason') is None)

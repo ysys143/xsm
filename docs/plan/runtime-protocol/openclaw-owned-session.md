@@ -4,7 +4,8 @@
 정상 실행·같은 문맥의 재개·다른 문맥 분리·결과 저장·요청 replay를 확인했다.
 실행 전·native 대기열·실행 중 취소와 확인 유실 readback을 macOS에서 확인했다.
 Linux arm64에서도 실제 gateway를 통한 같은 native 행렬과 공개 protocol 취소를 확인했다.
-일반 재시작 복구와 전체 OS/모드 행렬은 미완이다. 아래 초기 시험과 거부 기록도
+Frontend 종료 뒤 살아 있는 native host의 완료 결과 회수도 macOS에서 확인했다.
+Gateway 자체 재시작과 전체 OS/모드 행렬은 미완이다. 아래 초기 시험과 거부 기록도
 보존하며, 현재 통합 증거는 마지막 절을 따른다.
 
 OpenClaw2026.10.9의 실제 gateway에서 모델 실행 없이 세션 생성·재조회를
@@ -467,3 +468,58 @@ openclaw-description-queued-native에서, 공개 protocol의 실행 중 취소·
 모든 gatewayStopped=true, VM stopExit=0, 미실행 mode0이다. 공식 lifecycle을
 완료한2026.10.9 캐시를 읽기 전용으로 재사용했으며 실제 모델 추론은0회다.
 이는819개 Linux core 재실행과 구분한다.
+
+## Frontend 종료 뒤 native 완료 결과 회수
+
+CLI는 private bind ACK 직후 context ID/epoch, native locator와 run ID를
+xsm_openclaw_bound JSONL로 기록한다. Regular stdout 파일이면 fsync한 뒤에만
+agent 요청을 보낸다. 이 header는 native 실행 수락이나 완료의 증거가 아니다.
+최종 결과 또는 정지 marker를 두 번째 record로 남기며, 기존 한 JSON 객체의
+보존 결과도 읽는다. Header/final의 문맥·locator·run이 다르거나 frame이 중복되면
+거부한다. Header에는 프롬프트·인증 값·private control capability가 없다.
+
+공통 reconcile은 optional result recovery capability를 선언한 제공자에만
+recover_result를 호출한다. 정확한 owned child의 종료와 PID/lstart 결속, owner가
+보존한 예상 stdout 경로·no-follow regular file·UID를 먼저 확인한다. 제공자는
+header의 문맥/세대/run과 immutable argv의 CLI·Node·agent·cwd·문맥/세대를
+대조한다. 다른 세대·다른 run·살아 있는 child 또는 잘못된 binding은 native RPC
+전에 거부한다. 일반 실행과 같은 공통 환경 정리·billing key 제외 정책을 사용한다.
+
+Native 조회는 원래 run의 agent.wait와 원래 key의 sessions.describe뿐이다.
+완료 receipt의 run/turn/session, 원래 lifecycle revision과 workspace가 일치해야
+실제 reply text를 회수한다. Pending/timeout이나 유효한 최종 receipt가 없으면
+unknown을 유지하며 agent 요청을 다시 보내지 않는다. 원래 child의 비정상 종료
+코드는 보존하고 execution.recovered_from=native-host-status와 실제 receipt를
+남긴다. Nonzero exit나 오류 문자열을 업무 답변으로 만드는 경로는 아니다.
+
+OpenClaw 제공자는 execution_lifetime=native-host를 선언한다. 결속 후 frontend가
+죽어도 host가 계속 실행할 수 있으므로 unknown 작업의 슬롯을 완료·정지 확인
+전까지 유지한다. Child가 직접 실행을 소유하는 기존 제공자의 죽은 프로세스
+슬롯 회수는 유지한다. 새 서비스의 선언이며 이전 기록에 이 능력을 소급하지 않는다.
+
+실제 재현은 owned script의 --interrupt-frontend다. Native provider에 진입한
+뒤 정확한 새 child process group만 SIGKILL했다. 살아 있는 gateway의 작업은
+계속 막아 두고 reconcile이 결과를 만들지 않으며 슬롯을 유지함을 확인했다.
+Fixture 응답을 푼 뒤 같은 native run의 완료 receipt로 답변을 회수했다.
+원래 native ID와 exit=-9를 보존하고 outcome=None, 같은 request/reply ID의
+replay를 확인했으며 native 재제출은 없었다. Gateway도 종료했다.
+
+openclaw-frontend-native-recovery-final의36개 검사가 통과했다. 최초 native 표본은
+frontend 종료만으로 슬롯이 풀리는 기존 문제 때문에 실패했다(first). Host 수명
+선언을 추가한 second와 공통 환경 정리 후 final에서 각각36개가 통과했다.
+기존 header 없는 종료 fixture도 먼저 unknown에 머무는 실패를 확인했다
+(openclaw-native-recovery-before.log).
+
+Slot guard를 제거한 변이는 assertion1개로 검출됐다
+(openclaw-native-host-slot-mutant-final.log). 첫 변이 러너는 TempState의 module
+격리 뒤 패치가 사라져 검출하지 못했으므로 성공으로 세지 않고 로그를 보존했다.
+두 record 출력의 실제 공개 protocol 취소·확인 유실31개와 native 대기열
+취소·확인 유실38개도 통과했다(openclaw-bound-output-{protocol,queued}-native).
+실제 모델 추론은 모두0회다.
+
+최종 macOS core는 Python494+SDK52+native125+Node152=823개와 독립 mock39/
+변이14개를81.610초에 통과했다(openclaw-native-host-recovery-core-final.log).
+앞선81.006초 표본은 최종 공통 환경 정리·guard 보강 전 결과다. 이 변경의 Linux,
+공개 protocol의 frontend 강제 종료, gateway 자체 재시작, header가 없는 불명
+실행과 성공 reply 없는 native 종료의 수명 정리, 전체 UI/모델/메신저 행렬은
+계속 미완이다. 오류를 업무 실패로 합성하거나 기존 unknown 기록을 지우지 않는다.

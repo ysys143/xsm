@@ -2,9 +2,9 @@
 
 `xsm_owned` and `xsm owned` share the durable owned-request service. The installed
 catalog currently contains the legacy Claude/Codex paths and experimental
-Hermes 0.22.5, OpenCode 1.19.5 and Pi 1.4.0 providers. This does not extend the
-classic `xsm spawn` pane/TUI path or certify every runtime's workers. OpenClaw's
-provider and the full runtime lifecycle matrix remain unfinished.
+Hermes 0.22.5, OpenCode 1.19.5, Pi 1.4.0 and OpenClaw 2026.10.9 providers. This
+does not extend the classic `xsm spawn` pane/TUI path or certify every runtime's
+workers. The full runtime lifecycle matrix remains unfinished.
 
 ## Admission and launch
 
@@ -36,6 +36,15 @@ runtime root are retained. OpenCode resumes the exact `ses_...` ID with
 `run --format json --session`; Pi uses an exact UUID with `--session-id` and a
 worker-specific native session directory. Neither selects the most recent
 conversation or adds automatic permission/trust approval flags.
+
+OpenClaw requires a managed profile and operator-selected `XSM_OPENCLAW` and
+`XSM_OPENCLAW_NODE` paths, or their PATH equivalents. Native `agents.list` supplies
+the default agent; explicit `XSM_OPENCLAW_AGENT_ID` must match a native roster row.
+A selection-required roster is not silently replaced. The public native SDK owns
+profile/auth/transport policy. Fresh sessions use an empty `sessions.create` and
+native-assigned key/ID before private binding; resumes resolve the exact saved ID
+then describe that key. No default-list page or most-recent selection is used.
+Agent admission retains exact native ID and lifecycle revision constraints.
 
 ## Pre-turn identity binding
 
@@ -75,6 +84,11 @@ reason is `stop`. Pi requires the exact session header, a final assistant `stop`
 answer, `agent_end(willRetry=false)` and `agent_settled(aborted=false)`. In
 particular, Pi can exit zero after an input was handled without a model turn;
 process exit alone is insufficient.
+OpenClaw validates the bound native admission and completed run/turn/session
+receipt with its actual terminal reply. Its stdout can have a bound-context JSONL
+record followed by one final record; their context, epoch, locator and run must
+agree. A bound record alone is neither model admission nor an answer. Legacy
+single-object final output remains readable.
 Invalid JSON, duplicate keys, non-JSON numbers, changed IDs, failed/incomplete
 results and valid-looking output without pre-turn binding are not answers.
 JSON inside the model's text cannot choose native execution metadata. Only the
@@ -155,7 +169,7 @@ synthesize a reply. Inspect the returned `cancellation` and subsequent status:
   because interruption does not resolve possible side effects.
 
 `native_supported` describes the admitted execution plan's running-turn support.
-Pi 1.4.0, OpenCode 1.19.5 and Hermes 0.22.5 newly admitted bindings support this confirmation. Other current providers
+Pi 1.4.0, OpenCode 1.19.5, Hermes 0.22.5 and OpenClaw 2026.10.9 newly admitted bindings support this confirmation. Other current providers
 can record intent and cancel pre-launch work, but their running native stop paths
 remain unfinished. Do not treat an unsupported pending request as stopped.
 
@@ -194,6 +208,14 @@ result to say `interrupted=true`. Administrative resolution of unknown work is
 not sufficient. A queued cancellation with no execution generation is recorded
 separately as native not-started. No shared gateway process is killed.
 
+OpenClaw uses `chat.abort` with the exact native run and canonical key. Started
+work requires its final `rpc` stop, matching session/revision/last-run identity,
+settlement times and native inactivity. Accepted queued work instead requires
+explicit native `providerStarted=false`, no start time, an accepted exact abort
+and the unchanged session incarnation with no active run. Before agent submission,
+the controlled frontend can record that it did not submit the task. These phases
+remain distinct. Acceptance alone or a generic provider error proves no stop.
+
 Cancelling a waiting transport still does not cancel its saved owned task.
 Service removal refuses queued, active, unpublished or unconfirmed work. An
 explicit stop may remove only the logical service metadata after native cancellation
@@ -204,7 +226,7 @@ Retained status is authorized by the original sender even when another owner
 later reuses the display name. Native stop/recovery for
 the other runtimes remains an incomplete part of the full plan.
 
-For Pi, OpenCode and Hermes, `reconcile` can recover a lost stop confirmation after the execution child
+For Pi, OpenCode, Hermes and OpenClaw, `reconcile` can recover a lost stop confirmation after the execution child
 has exited. Pi parses the retained native session header and final
 `agent_end` / `agent_settled(aborted=true)` pair; OpenCode parses its typed abort
 error or validated xsm observation. Hermes uses its typed admission/generation
@@ -212,12 +234,16 @@ observation and actual interrupted-result or queued-withdrawal proof. The engine
 owned output through no-follow directory/file descriptors, checks the file owner,
 reservation, bound PID/start identity and context generation, and records
 `cancellation.recovered_from: "native-output"`. Running children, symlinked
-files/directories and mismatched native IDs are refused. Normal result recovery
-still requires a successful exit. Cancellation-only parsers may declare
+files/directories and mismatched native IDs are refused. File-only normal result
+recovery still requires a successful exit. Cancellation-only parsers may declare
 `CANCELLATION_EXIT_CODES`: OpenCode's observed abort exits are 0 and 1, but an
 arbitrary exit-1 API error is not stop evidence. Hermes permits its native 0/130
 exits only with receipt evidence; Pi retains its exit-zero requirement. These
 codes never authorize a business answer.
+
+OpenClaw permits 1/130 only with its validated native stop observation. Its bound
+header and final marker must agree; neither an exit code nor a partial header
+substitutes for that proof.
 
 This does not execute another native turn, manufacture an answer, or clear unknown
 side effects. The task can remain `unknown` with null result/reply while its native
@@ -225,3 +251,37 @@ stop is confirmed and its physical execution slot is released. Repeated readback
 preserves the same confirmation. Providers may implement the optional
 `cancellation_result(worker, context, output)` parser; common ownership and safe
 output access remain in the engine.
+
+## Native host result recovery after frontend loss
+
+An admitted provider can declare `execution_lifetime: "native-host"` in its frozen
+descriptor. For a bound unknown request, frontend exit then does not release its
+execution lease before completion or native stop is confirmed. Child-owned
+providers retain the existing dead-child slot behavior. Unknown effects and the
+recorded child execution state remain separate from native-host activity.
+
+OpenClaw fsyncs its bound context/epoch, native locator and intended run ID before
+submitting the native task. On explicit `reconcile`, the engine can invoke the
+optional installation-local `recover_result(worker, context, output, execution,
+env)` hook when both the provider and frozen descriptor declare result recovery
+protocol 1. This is not a public host method or a model-controlled code path.
+`RESULT_RECOVERY_EXIT_CODES` selects eligible observed frontend exits for the
+query; a nonzero exit itself still proves no answer.
+
+The engine first verifies the original native binding, exact PID/start identity,
+proven child exit and anchored owned stdout file. The provider checks the bound
+record against the immutable execution argv and original context generation.
+Environment handling uses the common admitted-profile and billing-key policy.
+No original task body is resubmitted.
+
+OpenClaw queries only the original `agent.wait` and exact `sessions.describe`.
+Recovery requires a completed native receipt for the same run/turn/session, the
+original lifecycle revision and workspace, and actual reply text. Pending or
+unconfirmed observations retain unknown state. Successful recovery preserves the
+original child exit and records `execution.recovered_from: "native-host-status"`
+before normal durable publication. The native turn's completion alone does not
+declare task success. Missing historical run/revision evidence is not fabricated.
+
+Frontend-loss recovery while the native host remains alive has model0 native
+evidence. Gateway restart, non-success native settlement and all runtime/UI/
+messenger combinations remain unfinished; see the evidence notes for exact scope.

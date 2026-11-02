@@ -10,7 +10,8 @@ import sys
 import uuid
 
 from xsm.native_workers import ProviderError
-from .worker_cli import parse_result, parse_cancellation
+from .worker_cli import parse_result, parse_cancellation, output_records
+from . import worker_session as session
 from .worker_session import NativeSessionError
 from .worker_transport import NativeRpc
 
@@ -19,6 +20,9 @@ VERSION = '2026.10.9'
 CONTROL_PROTOCOL = 1
 CANCELLATION_PROTOCOL = 1
 CANCELLATION_EXIT_CODES = (1, 130)
+RESULT_RECOVERY_PROTOCOL = 1
+RESULT_RECOVERY_EXIT_CODES = tuple(range(-128,256))
+EXECUTION_LIFETIME = 'native-host'
 FILES = ('xsm.mjs', 'worker_cli.py', 'worker_frontend.py', 'worker_rpc.mjs',
          'worker_transport.py', 'worker_session.py')
 
@@ -84,7 +88,8 @@ def prepare(home):
     except NativeSessionError as error:
         raise ProviderError('native OpenClaw agent roster unavailable') from error
     return {'executable': executable, 'node': node, 'python': sys.executable,
-            'version': VERSION, 'control_protocol': CONTROL_PROTOCOL, 'cancellation_protocol': CANCELLATION_PROTOCOL, 'agent_id': selected,
+            'version': VERSION, 'control_protocol': CONTROL_PROTOCOL, 'cancellation_protocol': CANCELLATION_PROTOCOL,
+            'result_recovery_protocol': RESULT_RECOVERY_PROTOCOL, 'execution_lifetime': EXECUTION_LIFETIME, 'agent_id': selected,
             'runtime_root': str(root), 'frontend': str(frontend),
             'frontend_sha256': hashes['worker_cli.py'], 'binding_hashes': hashes}
 
@@ -137,3 +142,52 @@ def cancellation_result(worker, context, output):
         return parse_cancellation(output, context, agent_id=descriptor['agent_id'], cwd=worker['cwd'])
     except NativeSessionError as error:
         raise ProviderError(str(error)) from error
+
+
+def recover_result(worker, context, output, execution, env):
+    """Explicit native status readback, never native agent resubmission."""
+    descriptor = _admitted(worker)
+    try:
+        bound, _final = output_records(output)
+        if bound is None:
+            return None  # Legacy output has no original lifecycle fence.
+        args = execution.get('argv')
+        if not isinstance(args,list) or args[:3] != [descriptor['python'],'-B',descriptor['frontend']]:
+            raise NativeSessionError('native recovery execution path changed')
+        def argument(flag):
+            if args.count(flag) != 1 or args.index(flag)+1 >= len(args):
+                raise NativeSessionError('native recovery argument unavailable')
+            return session._text(args[args.index(flag)+1], 'recovery argument')
+        for flag,expected in (('--node',descriptor['node']),('--native-cli',descriptor['executable']),
+                              ('--agent-id',descriptor['agent_id']),('--cwd',worker['cwd']),
+                              ('--context-id',context['id']),('--context-epoch',context['epoch'])):
+            if argument(flag) != expected:
+                raise NativeSessionError('native recovery argument changed')
+        run_id = argument('--run-id')
+        locator = bound.get('locator')
+        if (bound.get('context_id') != context['id'] or bound.get('context_epoch') != context['epoch']
+                or bound.get('run_id') != run_id or not isinstance(locator,dict)
+                or locator.get('native_session_id') != context.get('native_session_id')
+                or locator.get('agent_id') != descriptor['agent_id']
+                or session._workspace(locator.get('cwd')) != session._workspace(worker['cwd'])):
+            raise NativeSessionError('native recovery bound context changed')
+        rpc = NativeRpc(descriptor['node'],descriptor['executable'],cwd=worker['cwd'],
+                        env=env)
+        terminal = rpc('agent.wait',{'runId':run_id,'timeoutMs':100})
+        if terminal.get('status') in ('timeout','pending'):
+            return None
+        reply = session.completed_run(terminal,locator,run_id)
+        key = session._text(locator.get('native_session_key'),'session key')
+        described = rpc('sessions.describe',session.description_params(key,descriptor['agent_id']))
+        row = session.described_listing(described,key,descriptor['agent_id'])['sessions'][0]
+        if (row.get('sessionId') != locator['native_session_id']
+                or row.get('lifecycleRevision') != locator.get('native_lifecycle_revision')
+                or session._workspace(row.get('workspaceDir') or row.get('spawnedCwd') or row.get('sessionRoot')) != session._workspace(worker['cwd'])):
+            raise NativeSessionError('native recovery lifecycle or workspace changed')
+        if reply['disposition'] != 'visible' or not reply['text'].strip():
+            raise NativeSessionError('native recovery has no actual reply text')
+        return {'native_session_id':locator['native_session_id'],'body':reply['text'],
+                'native_evidence':{'run_id':run_id,'terminal_receipt':terminal['terminalReceipt'],
+                                   'source':'native-agent.wait'}}
+    except (NativeSessionError,KeyError,TypeError,ValueError) as error:
+        raise ProviderError('native host result remains unconfirmed') from error

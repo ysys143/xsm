@@ -6,6 +6,7 @@ import json
 import os
 from pathlib import Path
 import sys
+import stat
 
 if __package__ in (None, ''):
     sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
@@ -19,8 +20,41 @@ else:
 from xsm.native_worker_control import WorkerControlClient
 
 
+def output_records(output):
+    """Read legacy final JSON or a bound record followed by one final record."""
+    if not isinstance(output,str):
+        raise session.NativeSessionError('native output must be text')
+    try:
+        value = session.decode_reply(output)
+        values = [value]
+    except session.NativeSessionError:
+        values = [session.decode_reply(line) for line in output.splitlines() if line.strip()]
+    if not values or len(values) > 2:
+        raise session.NativeSessionError('native output framing is ambiguous')
+    bound = values[0] if values[0].get('type') == 'xsm_openclaw_bound' else None
+    if bound is None:
+        if len(values) != 1:
+            raise session.NativeSessionError('native output lacks its bound header')
+        return None, values[0]
+    if set(bound) != {'type','context_id','context_epoch','run_id','locator'}:
+        raise session.NativeSessionError('invalid native bound header')
+    final = values[1] if len(values) == 2 else None
+    if final is not None:
+        if (final.get('type') not in ('xsm_openclaw_result','xsm_openclaw_cancelled')
+                or any(final.get(key) != bound.get(key) for key in ('context_id','context_epoch','run_id','locator'))):
+            raise session.NativeSessionError('native final output changed its bound execution')
+    return bound, final
+
+
+def final_frame(output):
+    _bound, value = output_records(output)
+    if value is None:
+        raise session.NativeSessionError('native output has no final observation')
+    return value
+
+
 def parse_result(output, context, *, agent_id=None, cwd=None):
-    value = session.decode_reply(output)
+    value = final_frame(output)
     if (value.get('type') != 'xsm_openclaw_result'
             or value.get('context_id') != context.get('id')
             or value.get('context_epoch') != context.get('epoch')):
@@ -47,7 +81,7 @@ def parse_result(output, context, *, agent_id=None, cwd=None):
 
 
 def parse_cancellation(output, context, *, agent_id=None, cwd=None):
-    value = session.decode_reply(output)
+    value = final_frame(output)
     locator = value.get('locator')
     if (value.get('type') != 'xsm_openclaw_cancelled' or value.get('cancelled') is not True
             or value.get('context_id') != context.get('id') or value.get('context_epoch') != context.get('epoch')
@@ -84,9 +118,15 @@ def main():
     control = WorkerControlClient.from_environment()
     try:
         rpc = NativeRpc(args.node, args.native_cli, cwd=args.cwd, env=os.environ)
+        def bound_record(locator):
+            print(json.dumps(dict(type='xsm_openclaw_bound',context_id=args.context_id,
+                                  context_epoch=args.context_epoch,run_id=args.run_id,locator=locator),
+                             ensure_ascii=False,allow_nan=False),flush=True)
+            if stat.S_ISREG(os.fstat(sys.stdout.fileno()).st_mode):
+                os.fsync(sys.stdout.fileno())
         result = run_turn(rpc, control, agent_id=args.agent_id, cwd=args.cwd, message=sys.stdin.read(),
                           request_id=args.run_id, native_session_id=args.native_session_id,
-                          model=args.model, thinking=args.thinking)
+                          model=args.model, thinking=args.thinking,on_bound=bound_record)
         result.update(type='xsm_openclaw_cancelled' if result.get('cancelled') else 'xsm_openclaw_result', context_id=args.context_id,
                       context_epoch=args.context_epoch, run_id=args.run_id)
         print(json.dumps(result, ensure_ascii=False, allow_nan=False), flush=True)

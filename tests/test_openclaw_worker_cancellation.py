@@ -61,3 +61,17 @@ class OpenClawWorkerCancellationTest(unittest.TestCase):
         self.assertTrue(result['native_evidence']['native_provider_not_started'])
         with self.assertRaises(session.NativeSessionError):
             self.parse(dict(value,native_not_started=True))
+
+    def test_bound_record_and_final_must_share_one_execution(self):
+        bound = {key:self.value[key] for key in ('context_id','context_epoch','run_id','locator')}
+        bound['type']='xsm_openclaw_bound'
+        output=json.dumps(bound)+'\n'+json.dumps(self.value)+'\n'
+        self.assertEqual(worker_cli.parse_cancellation(output,self.context)['native_evidence']['native_state'],'stopped')
+        for field in ('context_id','context_epoch','run_id'):
+            changed=dict(bound,**{field:'other'})
+            with self.subTest(field=field),self.assertRaises(session.NativeSessionError):
+                worker_cli.parse_cancellation(json.dumps(changed)+'\n'+json.dumps(self.value),self.context)
+        for text in (json.dumps(bound),json.dumps(bound)+'\n'+json.dumps(bound),
+                     output+json.dumps(self.value),'noise\n'+output):
+            with self.subTest(text=text),self.assertRaises(session.NativeSessionError):
+                worker_cli.parse_cancellation(text,self.context)

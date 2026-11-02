@@ -1716,6 +1716,15 @@ def _bind_owned_native(worker, request, native_id, existing_native):
     return bound
 
 
+def _owned_turn_environment(worker, native):
+    env = (_native_owned_call(native,'environment',worker,_base_worker_env(worker))
+           if native else _env(worker))
+    env['XSM_HOME'] = paths.HOME
+    for key in ('ANTHROPIC_API_KEY','OPENAI_API_KEY','CODEX_API_KEY'):
+        env.pop(key,None)
+    return env
+
+
 def _execute_owned(worker, context, body, request):
     """Run one subscribed native turn, keeping stdout for readback after a crash."""
     from . import owned_requests
@@ -1726,12 +1735,7 @@ def _execute_owned(worker, context, body, request):
     error_path = os.path.join(folder, request["id"] + ".stderr")
     try:
         native = _require_owned_native(worker.get('runtime'))
-        env = (_native_owned_call(native, 'environment', worker, _base_worker_env(worker))
-               if native else _env(worker))
-        env["XSM_HOME"] = paths.HOME
-        # Do not silently route subscription work onto API-key billing.
-        for key in ("ANTHROPIC_API_KEY", "OPENAI_API_KEY", "CODEX_API_KEY"):
-            env.pop(key, None)
+        env = _owned_turn_environment(worker,native)
         argv = _owned_argv(worker, context)
     except WorkerError as error:
         raise OwnedLaunchError('owned native turn was not started: ' + str(error)) from error
@@ -2029,10 +2033,11 @@ def reconcile_owned(name, sender, request_id, readback=None, *, reply_sender=Non
             return owned_requests.confirm_native_stop(worker['owner'], request_id,
                 request['reservation']['token'], evidence['native_session_id'],
                 readback=True, evidence=evidence['native_evidence'], exit_codes=evidence['allowed_exit_codes'])
-    if (request.get("child") or {}).get("returncode") not in (None, 0):
-        return request  # nonzero cancellation evidence never becomes a business answer
-    result = (readback(request) if readback is not None else
-              _readback_owned(request["worker"], request))
+    successful_exit = (request.get("child") or {}).get("returncode") in (None, 0)
+    result = ((readback(request) if readback is not None else _readback_owned(request["worker"], request))
+              if successful_exit else None)
+    if result is None and readback is None:
+        result = _readback_owned_host(request['worker'],request)
     if result is None:
         return request
     owned_requests.save_result(worker["owner"], request_id, request["reservation"]["token"], result)
@@ -2113,6 +2118,45 @@ def _readback_owned(worker, request):
     result["execution"] = dict(child, recovered_from="completed-native-output")
     result["execution"].setdefault("returncode", None)  # older logs have no observed exit status
     return result
+
+
+def _readback_owned_host(worker, request):
+    """Optional provider status query after a proven owned child exit; never rerun."""
+    try:
+        native = _require_owned_native(worker.get('runtime'))
+        descriptor = worker.get('native_provider') or {}
+        if not isinstance(descriptor,dict):
+            return None
+        protocol = getattr(native,'RESULT_RECOVERY_PROTOCOL',None)
+        if (native is None or type(protocol) is not int or protocol != 1
+                or type(descriptor.get('result_recovery_protocol')) is not int
+                or descriptor['result_recovery_protocol'] != 1
+                or not callable(getattr(native,'recover_result',None))):
+            return None
+        codes = getattr(native,'RESULT_RECOVERY_EXIT_CODES',())
+        if not isinstance(codes,tuple) or not codes or any(type(code) is not int or not -128 <= code <= 255 for code in codes):
+            return None
+        child = request.get('child') or {}
+        binding = request.get('native_binding') or {}
+        if (type(child.get('pid')) is not int or child['pid'] <= 0
+                or not isinstance(child.get('lstart'),str) or not child['lstart']
+                or not binding.get('native_session_id') or binding['native_session_id'] != request['context'].get('native_session_id')
+                or binding.get('child_pid') != child.get('pid') or binding.get('child_lstart') != child.get('lstart')):
+            return None
+        output = _read_owned_output(worker,request,allowed_exits=codes)
+        if output is None:
+            return None
+        value = _native_owned_call(native,'recover_result',worker,request['context'],output,child,
+                                   _owned_turn_environment(worker,native))
+        if (not isinstance(value,dict) or value.get('native_session_id') != binding['native_session_id']
+                or not isinstance(value.get('body'),str) or not value['body'].strip()
+                or not isinstance(value.get('native_evidence'),dict)):
+            return None
+        result = _owned_model_result(value['native_session_id'],value['body'],value['native_evidence'])
+        result['execution'] = dict(child,recovered_from='native-host-status')
+        return result
+    except WorkerError:
+        return None
 
 
 def resend_owned(name, sender, request_id, *, reply_sender=None, checkpoint=None):

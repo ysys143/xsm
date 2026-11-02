@@ -257,7 +257,7 @@ def retained_requests(sender, *, request_id=None, worker_name=None):
 
 
 def _unknown_child_state(request):
-    """Separate uncertain effects from whether an actual child still occupies a slot."""
+    """Observe the recorded frontend; a native-host lease can outlive this child."""
     child = request.get('child')
     if not isinstance(child, dict) or not child.get('pid'):
         return 'unverified'
@@ -268,6 +268,11 @@ def _unknown_child_state(request):
 
 
 def _occupies_slot(request):
+    provider = request.get('worker',{}).get('native_provider')
+    if (request['state'] == 'unknown' and request.get('native_binding')
+            and isinstance(provider,dict) and provider.get('execution_lifetime') == 'native-host'
+            and (request.get('cancellation') or {}).get('native_state') != 'stopped'):
+        return True  # The frontend can exit while the admitted native host still runs.
     if (request['state'] == 'unknown' and request.get('cancellation')
             and request['cancellation'].get('native_state') != 'stopped'):
         return True  # A detached client exit does not prove its native gateway stopped.
@@ -276,8 +281,8 @@ def _occupies_slot(request):
 
 
 def _busy(state):
-    # unknown remains ACTIVE for context fencing/retirement. A confirmed exited
-    # child cannot consume execution capacity; no-child uncertainty still does.
+    # Unknown fences the context. Child-owned execution releases an exited
+    # process slot; an unconfirmed native-host execution retains its lease.
     return sum(_occupies_slot(r) for r in state['requests'].values()) + len(state['slots'])
 
 
