@@ -373,3 +373,23 @@ native 세션을 재개했고 별도 문맥은 다른 세션이었다. 세 답�
 원시는 openclaw-queued-cancel-linux이며 source archive hash와 재현 경계는
 linux-validation.md의 마지막 절에 기록했다. macOS native 실행 증거와 Linux
 fixture core를 섞어 실제 Linux gateway 지원 완료로 표시하지 않는다.
+
+## 공개 operation의 실행 중 취소와 확인 유실
+
+공개 시험 script에 --cancel과 --lose-cancel-confirmation을 추가했다. 격리
+protocol serve 프로세스에서 native provider에 실제 진입한 작업을 xsm_owned
+cancel로 취소하고 status/reconcile로 확인했다. 다른 public session의 취소는
+RpcError로 거부됐으며 취소 의도만 있을 때 native_state는 unverified였다.
+
+openclaw-owned-protocol-cancel의28개, openclaw-owned-protocol-cancel-lost의31개
+검사가 통과했다. 유실 mode는 격리 server bootstrap에서 private 확인에만 오류를
+주입한다. Native child 종료 뒤 슬롯 점유와 불명 상태를 확인하고, 공개 reconcile이
+정확한 보존 출력으로 stop을 복구했다. 이 과정에서 provider 재호출은 없었다.
+두 mode 모두 slot을 해제하되 업무 unknown/result=None/reply=None을 유지했고,
+같은 불명 요청을 공개 run으로 재제출해도 native 실행은 늘지 않았다.
+
+각 mode의 정상 fixture3회와 취소 대상 HTTP 진입1회를 구분했다. 실제 모델
+추론0회이며 gatewayStopped=true다. 공개 취소 경로의 증거이며 native UI에서
+수집한 사용자 답이나 메신저 권한 검증을 대신하지 않는다. 제품 코드는 변경하지
+않았으므로 이번 변경에서 core를 반복 실행하지 않았다. 직전 고정 커밋의816개
+macOS/Linux 결과는 위 절에 따로 기록했다.
