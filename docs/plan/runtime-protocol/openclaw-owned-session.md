@@ -118,3 +118,37 @@ macOS 핵심 검사는 Python494+SDK52+native95+Node152=793개와 독립 mock39/
 변이14개를81.067초에 통과했다(openclaw-agent-receipt-core.log). 앞선 Linux791개는
 이번 receipt 검사2개를 포함하지 않는다. 실제 owned journal과 backend client의
 결속, 취소·복구·native UI 및 전체 OS/런타임 행렬 검증은 남아 있다.
+
+## 실행 순서를 보장하는 frontend
+
+integrations/openclaw/worker_frontend.py는 실제 backend RPC와 inherited private
+control client를 받아 create 또는 정확한 ID의 resolve/list를 수행한다. Native가
+반환한 ID의 private bind ACK 이후에만 agent를 호출한다. Agent 응답이 유실되면
+재실행하지 않는다. agent.wait의 timeout/pending은 같은 run ID를 계속 관측하며,
+다른 run의 늦은 응답은 거부한다. 모델·권한·도구 정책을 대체하지 않는다.
+
+Frontend의 unit6개는 실제 private socket과 명시적 native RPC fixture를 사용한다.
+정상 fresh/resume, 결속 거부, agent 응답 유실, 관측 timeout, 다른 run 응답을
+검사했다. Private bind 호출을 제거한 변이는 테스트의 순서 assertion으로 검출됐다
+(openclaw-ordered-frontend-mutant.log). 이 테스트가 native gateway 실행을 대신하지
+않으며, 별도 native 시험은 다음 명령의 --owned-frontend 경로다.
+
+```sh
+python3 -B scripts/probe-openclaw-agent-native.py --owned-frontend \
+  --native-cli <고정 openclaw.mjs> --node <지정 Node> --output <새 경로>
+```
+
+첫 실제 실행(openclaw-ordered-frontend-native)은 create→bind ACK→agent→wait와
+같은 ID의 resolve/list→bind ACK→agent→wait를 통과했다. Native receipt의
+세션·요청 ID도 일치했으며 fixture 요청2회, 실제 모델 추론0회,
+gatewayStopped=true다. Controller는 실제 private socket의 callback fixture다.
+실제 owned journal reservation이나 실행 child PID의 인증으로 계산하지 않는다.
+아직 제공자 catalog에 연결하지 않았으며 취소·복구 경로도 미완이다.
+
+추가 실제 시험(openclaw-ordered-frontend-refusal-native)에서도 두 실행은 완료됐고,
+세 번째 fresh 세션의 private bind를 callback에서 거부하자 agent를 호출하지
+않았다. Fixture 요청은2회로 유지됐고 gateway도 종료됐다.
+
+이번 macOS 핵심 검사는 Python494+SDK52+native101+Node152=799개와 독립 mock39/
+변이14개를80.499초에 통과했다(openclaw-ordered-frontend-core.log). Linux의 앞선
+791개 결과에는 이번 frontend6개와 receipt2개가 포함되지 않는다.

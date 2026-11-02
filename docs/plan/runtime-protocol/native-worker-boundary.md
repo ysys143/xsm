@@ -1,6 +1,8 @@
 # Native worker 연결 경계와 확인 결과
 
-상태: 미완. xsm_owned의 구현된 실행 provider는 아직 Claude/Codex뿐이다.
+상태: 미완. xsm_owned의 실행 provider는 Claude/Codex와 catalog에 등록된
+Hermes/OpenCode/Pi다. OpenClaw는 아직 catalog에 등록하지 않았다. 아래 초기
+조사 기록과 뒤의 구현·검증 기록을 구분하며 전체 지원 완료로 읽지 않는다.
 이 문서는 승인된 전체 계획의 worker 연결에 필요한 실제 native 증거와
 제약을 기록한다. 런타임·기능·운영체제 범위를 제외하지 않는다.
 

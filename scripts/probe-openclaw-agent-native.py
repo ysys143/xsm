@@ -4,13 +4,14 @@ import json,os,secrets,signal,socket,subprocess,tempfile,time
 from pathlib import Path
 import sys
 repo=Path(__file__).resolve().parents[1];sys.path.insert(0,str(repo))
-from integrations.openclaw import worker_session
-from xsm.native_worker_control import WorkerControl,WorkerControlClient
+from integrations.openclaw import worker_session, worker_frontend
+from xsm.native_worker_control import WorkerControl,WorkerControlClient,ControlError
 import argparse
 parser=argparse.ArgumentParser(description='Pinned OpenClaw native backend run, exact identity checks, local model0 fixture.')
 parser.add_argument('--native-cli',type=Path,required=True)
 parser.add_argument('--node',type=Path,required=True)
 parser.add_argument('--output',type=Path,required=True)
+parser.add_argument('--owned-frontend',action='store_true',help='Exercise ordered frontend with actual private sockets and fixture controller, not full owned journal.')
 options=parser.parse_args()
 if not options.native_cli.is_absolute() or not options.node.is_absolute():parser.error('absolute native CLI and Node paths required')
 if json.loads((options.native_cli.parent/'package.json').read_text()).get('version')!='2026.10.9':parser.error('OpenClaw2026.10.9 package required')
@@ -81,31 +82,66 @@ try:
    if refusal.get('expectedSessionChanged') is not True:raise RuntimeError('stale native refusal was not an identity check')
    if (out/'assistant-fixture.jsonl').exists():raise RuntimeError('stale native revision reached provider')
    report['staleRevisionRefusedBeforeProvider']=True;save()
-   run=backend_call('agent',params)
-   (out/'agent.stdout').write_text(run.stdout);(out/'agent.stderr').write_text(run.stderr)
-   if run.returncode:raise RuntimeError('native agent admission failed')
-   admitted=worker_session.decode_reply(run.stdout);run_id=worker_session.accepted_run(admitted,locator,params['idempotencyKey']);report['admission']=admitted;save()
-   waited=backend_call('agent.wait',{'runId':admitted['runId'],'timeoutMs':15000})
-   (out/'agent.wait.stdout').write_text(waited.stdout);(out/'agent.wait.stderr').write_text(waited.stderr)
-   if waited.returncode:raise RuntimeError('native agent wait failed')
-   report['terminal']=worker_session.decode_reply(waited.stdout)
-   worker_session.completed_run(report['terminal'],locator,run_id)
-   report['actualAgentCompleted']=True
-   resume_params=worker_session.agent_params(resumed,'Return the explicit fixture reply again.','fixture-native-resume')
-   resumed_run=backend_call('agent',resume_params)
-   (out/'resume-agent.stdout').write_text(resumed_run.stdout);(out/'resume-agent.stderr').write_text(resumed_run.stderr)
-   if resumed_run.returncode:raise RuntimeError('native same-session resume failed')
-   resume_admission=worker_session.decode_reply(resumed_run.stdout)
-   resume_id=worker_session.accepted_run(resume_admission,resumed,resume_params['idempotencyKey'])
-   resume_wait=backend_call('agent.wait',{'runId':resume_id,'timeoutMs':15000})
-   (out/'resume-agent.wait.stdout').write_text(resume_wait.stdout);(out/'resume-agent.wait.stderr').write_text(resume_wait.stderr)
-   if resume_wait.returncode:raise RuntimeError('native same-session resume wait failed')
-   resume_terminal=worker_session.decode_reply(resume_wait.stdout)
-   worker_session.completed_run(resume_terminal,resumed,resume_id)
-   report['resumeAdmission']=resume_admission;report['resumeTerminal']=resume_terminal
-   report['sameNativeSessionResumed']=True
-   report['providerFixtureRequests']=len((out/'assistant-fixture.jsonl').read_text().splitlines()) if (out/'assistant-fixture.jsonl').exists() else 0
-
+   if options.owned_frontend:
+    observations=[]
+    def frontend_turn(native_id,request_id,refuse=False):
+     binds=[]
+     def bind(native_id):
+      if refuse:raise ValueError('explicit fixture owner journal refusal')
+      binds.append(native_id)
+     controller=WorkerControl(bind)
+     client=WorkerControlClient(os.dup(controller.child.fileno()));controller.start()
+     def rpc(method,arguments):
+      if method=='agent' and binds!=[arguments['sessionId']]:raise AssertionError('model admitted before private bind ACK')
+      response=backend_call(method,arguments)
+      stem='frontend-'+str(len(observations))+'-'+method
+      (out/(stem+'.stdout')).write_text(response.stdout);(out/(stem+'.stderr')).write_text(response.stderr)
+      observations.append(method)
+      if response.returncode:raise RuntimeError('native frontend RPC failed: '+method)
+      return worker_session.decode_reply(response.stdout)
+     try:
+      return worker_frontend.run_turn(rpc,client,agent_id='main',cwd=str(root/'workspace'),
+          message='Return the explicit local fixture reply.',request_id=request_id,native_session_id=native_id)
+     finally:client.close();controller.close()
+    first=frontend_turn(None,'fixture-frontend-first')
+    second=frontend_turn(first['locator']['native_session_id'],'fixture-frontend-resume')
+    try:frontend_turn(None,'fixture-frontend-denied',refuse=True)
+    except ControlError:pass
+    else:raise AssertionError('private binding refusal did not stop execution')
+    assert observations[-1]=='sessions.create'
+    assert len((out/'assistant-fixture.jsonl').read_text().splitlines())==2
+    report['privateBindingRefusalStoppedBeforeProvider']=True
+    assert first['locator']['native_session_id']!=created['sessionId']
+    assert second['locator']['native_session_id']==first['locator']['native_session_id']
+    report.update(frontendFirst=first,frontendResume=second,frontendRpcOrder=observations,
+                  actualAgentCompleted=True,sameNativeSessionResumed=True,
+                  controllerScope='actual private socket, explicit callback fixture; not owned journal reservation')
+    report['providerFixtureRequests']=len((out/'assistant-fixture.jsonl').read_text().splitlines())
+   else:
+    run=backend_call('agent',params)
+    (out/'agent.stdout').write_text(run.stdout);(out/'agent.stderr').write_text(run.stderr)
+    if run.returncode:raise RuntimeError('native agent admission failed')
+    admitted=worker_session.decode_reply(run.stdout);run_id=worker_session.accepted_run(admitted,locator,params['idempotencyKey']);report['admission']=admitted;save()
+    waited=backend_call('agent.wait',{'runId':admitted['runId'],'timeoutMs':15000})
+    (out/'agent.wait.stdout').write_text(waited.stdout);(out/'agent.wait.stderr').write_text(waited.stderr)
+    if waited.returncode:raise RuntimeError('native agent wait failed')
+    report['terminal']=worker_session.decode_reply(waited.stdout)
+    worker_session.completed_run(report['terminal'],locator,run_id)
+    report['actualAgentCompleted']=True
+    resume_params=worker_session.agent_params(resumed,'Return the explicit fixture reply again.','fixture-native-resume')
+    resumed_run=backend_call('agent',resume_params)
+    (out/'resume-agent.stdout').write_text(resumed_run.stdout);(out/'resume-agent.stderr').write_text(resumed_run.stderr)
+    if resumed_run.returncode:raise RuntimeError('native same-session resume failed')
+    resume_admission=worker_session.decode_reply(resumed_run.stdout)
+    resume_id=worker_session.accepted_run(resume_admission,resumed,resume_params['idempotencyKey'])
+    resume_wait=backend_call('agent.wait',{'runId':resume_id,'timeoutMs':15000})
+    (out/'resume-agent.wait.stdout').write_text(resume_wait.stdout);(out/'resume-agent.wait.stderr').write_text(resume_wait.stderr)
+    if resume_wait.returncode:raise RuntimeError('native same-session resume wait failed')
+    resume_terminal=worker_session.decode_reply(resume_wait.stdout)
+    worker_session.completed_run(resume_terminal,resumed,resume_id)
+    report['resumeAdmission']=resume_admission;report['resumeTerminal']=resume_terminal
+    report['sameNativeSessionResumed']=True
+    report['providerFixtureRequests']=len((out/'assistant-fixture.jsonl').read_text().splitlines()) if (out/'assistant-fixture.jsonl').exists() else 0
   if name=='sessions.create':
    created=worker_session.decode_reply(r.stdout)
    locator=worker_session.created_locator(created,'main',str(root/'workspace'))
