@@ -17,6 +17,7 @@ MODULES = ["tests.test_question_service", "tests.test_send_service", "tests.test
            "tests.test_file_contract",
            "tests.test_protocol_gate",
            "tests.test_protocol_directory",
+           "tests.test_handover_service", "tests.test_handover",
            "tests.test_handoff_read_cache",
            "tests.test_hermes_binding",
            "tests.test_openclaw_schema",

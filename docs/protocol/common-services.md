@@ -93,3 +93,14 @@ callers are refused before document reads or writes.
 next. Passive inbox fields may also be present. Render writes the generated
 file; it is not a read-only preview. These are local file operations, not proof
 of remote document replication or every native runtime's validation.
+
+## Handover selection and mutation
+
+`xsm.handover_service.execute` shares show, target selection, validation and mutation.
+CLI and model frontends retain their own real user-verdict collection and display.
+An absent/empty/non-string approval source cannot move a place. After the user UI
+returns, the service rechecks the exact selected opaque conversation address; it
+neither follows a reassigned name nor transfers to a successor that has stopped.
+Existing teams, board ownership, questions and unread-original migration still use
+the established handover engine. This does not implement remote handover or certify
+native UI collection.

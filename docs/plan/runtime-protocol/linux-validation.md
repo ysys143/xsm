@@ -445,3 +445,20 @@ linux-python-314-portable-files-core/result.json). CPU 2·memory 3g·network non
 조건은 이전 실패 표본과 같다. 검사를 제거하거나 120초 상한을 늘리지 않았다.
 VM 종료는 linux-portable-files-batch.json의 stopExitCode 0과 Stopped 로그로 확인했다.
 뒤따른 일반 참여자 discovery/remote 수정은 이 표본에 포함되지 않는다.
+
+## 일반 참여자와 파일 lookup 오류의 Linux 검증
+
+동결 fac8e10의 공통 578개(401/Python 50/Node 127), 독립 mock 39개/변이
+14개는 Python 3.11.2에서 85.513초, 3.14.10에서 104.946초에 통과했다
+(linux-participant-domain-v3-core/result.json,
+linux-python-314-participant-domain-v3-core/result.json). 두 실행은 같은 clean
+source archive이며 CPU2/memory3g/network none 조건을 유지했다. stopExitCode0을
+확인했다. 뒤의 handover 공통화는 이 표본에 포함되지 않는다.
+
+첫 batch는 시작 완료 전 Docker 검사를 시작해 실패 후 정리가 시작 중인 VM을
+종료했다. 다음 시작 실패는 VZ disk가 Stopped인 같은 instance의 점유 표식을
+유지한 데서 발생했다. 실패 로그와 private ha.stderr.log의 disk-in-use 진단을
+보존했고, private LIMA_HOME의 instance가 하나이며 Stopped임을 확인한 뒤
+`limactl disk unlock colima-p`로 표식만 복구했다. 디스크·이미지를 삭제하거나
+사용자의 default VM/context를 바꾸지 않았다. 그 뒤 시작 성공을 확인하고 위의
+두 검사를 순차 실행했다.

@@ -2339,3 +2339,18 @@ git archive가 tests를 제외해 처음 재실행 입력이 import 실패한 �
 테스트 파일은 같은 commit의 git show에서 복원해 동결했다. 이 표본은 model 0,
 로컬 private 실제 relay/QUIC이며 최신 missing-copy 수정이나 실제 native/물리
 머신/외부 messenger 검증으로 확대하지 않는다.
+
+## Handover 공통 서비스
+
+CLI와 MCP의 show/선택/검증/이동 orchestration을 handover_service로 모았다.
+실제 사용자 verdict 수집과 표시 방식은 frontend에 남겼고, 승인 출처가 없거나
+비어 있거나 문자열이 아니면 이동하지 않는다. 승인 뒤에는 원래 이름 대신
+선택한 불투명 주소로 같은 대화를 다시 검증한다. 후임이 종료되었으면 이동 전에
+거부한다. 기존 unread 원문·질문·팀·보드 소유권 이동 엔진은 그대로 사용한다.
+
+초기 missing-service 실패 4개를 보존했다(shared-handover-red.log). 신규 4개와
+기존 handover/decision 회귀를 포함한 38개가 3.356초에 통과했다. 이름 재지정과
+stale 후임 snapshot을 다시 넣은 두 변이가 각각 실패했다
+(shared-handover-mutations.log). 최종 공통 600개(423/Python 50/Node 127),
+독립 mock 39개·변이 14개는 65.793초에 통과했다(shared-handover-core.log).
+실제 native UI나 원격 handover의 검증으로 확대하지 않는다.

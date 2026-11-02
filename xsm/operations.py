@@ -802,39 +802,31 @@ class OperationService:
                 "to see them" % ("linked" if added else "already linked", root, other))
 
     def handover(self, me: dict, args: dict) -> str:
-        """xsm_handover: the same as `xsm handover`; the user confirms in a form."""
-        from . import handover, resolve
-        if args.get("action") == "show":
-            rows = handover.received(me)
-            return "\n\n".join(r["letter"] for r in rows) if rows else \
-                "no session handed its place over to this one"
+        from . import handover, handover_service
         word = (args.get("target") or "").strip()
-        summary = (args.get("summary") or "").strip()
-        if not word or not summary:
-            raise ToolError("target (the session that takes over) and summary (what it "
-                                       "needs to continue) are both required")
-        target = (self.decision_calls.get(self.active_request) or {}).get("resolved_handover")
-        if target is None:
-            with probe.quick():
-                found = resolve.resolve(word)
-            if not found.ok:
-                raise ToolError(found.reason)
-            target = found.record
-        try:
-            handover._check(me, target)
+        def authorize(target):
             ok, refusal = self.allowed(
                 me, "%s@%s asks to hand its xsm place over to %s: its teams and lead's seat, its "
                 "board items, unread DMs and pending questions move there, and DMs to it reach "
-                "that session from now on.\nAllow it?" % (me.get("name"), me.get("alias"),
-                                                          handover.label(target)),
+                "that session from now on.\nAllow it?" % (me.get("name"), me.get("alias"), handover.label(target)),
                 "xsm handover %s --summary-file <file>" % shlex.quote(word),
                 ("handover", target.get("name") or word))
             if not ok:
-                return refusal + "; nothing moved"
-            rec = handover.hand_over(me, target, summary, "your user approved in the form")
+                raise handover_service.DecisionRefused(refusal + "; nothing moved")
+            return "your user approved in the form"
+        try:
+            value = handover_service.execute(me, dict(args, summary=(args.get('summary') or '').strip()),
+                resolved_target=(self.decision_calls.get(self.active_request) or {}).get('resolved_handover'),
+                authorize=authorize)
+        except handover_service.DecisionRefused as exc:
+            return str(exc)
         except handover.HandoverError as exc:
-            raise ToolError(str(exc))
-        return "\n".join([handover.summary_line(rec)] + (rec.get("notes") or []))
+            raise ToolError(str(exc)) from exc
+        if value['action'] == 'show':
+            rows = value['received']
+            return "\n\n".join(row['letter'] for row in rows) if rows else "no session handed its place over to this one"
+        rec = value['record']
+        return "\n".join([handover.summary_line(rec)] + (rec.get('notes') or []))
 
     def team(self, me: dict, args: dict) -> str:
         from . import team_service, teams

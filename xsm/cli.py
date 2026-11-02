@@ -1134,7 +1134,8 @@ def cmd_handover(args) -> int:
         print(why or "this session is not registered", file=sys.stderr)
         return REFUSED
     if args.show:
-        rows = handover.received(me)
+        from . import handover_service
+        rows = handover_service.execute(me, {"action": "show"})["received"]
         print("\n\n".join(r["letter"] for r in rows) if rows else "no session handed its place over to this one")
         return OK
     if not args.target:
@@ -1147,24 +1148,16 @@ def cmd_handover(args) -> int:
         print("refused: write the context summary the successor needs (--summary-file), "
               "as the skill's handover section describes", file=sys.stderr)
         return USAGE
-    with probe.quick():
-        found = resolve.resolve(args.target)
-    if not found.ok:
-        print("refused: %s" % found.reason, file=sys.stderr)
-        return REFUSED
-    target = found.record
+    from . import handover_service
+    def authorize(target):
+        why = _person_or_refuse("handing this session's xsm place over to %s" % handover.label(target),
+                                "xsm_handover", ask=("handover", target.get("name") or args.target))
+        if why:
+            raise handover_service.DecisionRefused(why)
+        return _verdict or "person at the terminal"
     try:
-        handover._check(me, target)
-    except handover.HandoverError as exc:
-        print("refused: %s" % exc, file=sys.stderr)
-        return REFUSED
-    why = _person_or_refuse("handing this session's xsm place over to %s" % handover.label(target),
-                            "xsm_handover", ask=("handover", target.get("name") or args.target))
-    if why:
-        print("refused: %s" % why, file=sys.stderr)
-        return REFUSED
-    try:
-        rec = handover.hand_over(me, target, summary, _verdict or "person at the terminal")
+        rec = handover_service.execute(me, {"target": args.target, "summary": summary},
+                                       authorize=authorize)['record']
     except handover.HandoverError as exc:
         print("refused: %s" % exc, file=sys.stderr)
         return REFUSED
