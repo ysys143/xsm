@@ -11,7 +11,7 @@ const [nativeRoot, output, mode, countText, policyFlag] = process.argv.slice(2);
 assert.ok(!mode || ['--execute', '--queue', '--install', '--installed-queue'].includes(mode));
 const queueMode = mode === '--queue' || mode === '--installed-queue';
 const installedMode = mode === '--install' || mode === '--installed-queue';
-assert.ok(!policyFlag || (mode === '--installed-queue' && policyFlag === '--large-context') || (mode === '--queue' && ['--deny-injection', '--large-context', '--deferred-notice', '--capacity-retry', '--capacity-fyi', '--burst-context', '--recover-context', '--auto-recover-context', '--recover-claimed-context', '--recover-boundary-context'].includes(policyFlag)));
+assert.ok(!policyFlag || (mode === '--installed-queue' && ['--large-context', '--deny-injection', '--capacity-retry', '--capacity-fyi', '--burst-context'].includes(policyFlag)) || (mode === '--queue' && ['--deny-injection', '--large-context', '--deferred-notice', '--capacity-retry', '--capacity-fyi', '--burst-context', '--recover-context', '--auto-recover-context', '--recover-claimed-context', '--recover-boundary-context'].includes(policyFlag)));
 const denied = policyFlag === '--deny-injection';
 const burstContext = policyFlag === '--burst-context';
 const recoverClaimedContext = policyFlag === '--recover-claimed-context';
@@ -61,9 +61,11 @@ if (installedMode) {
   // The fixed SDK discovers extensions/xsm itself. Permission is fixture-only.
   delete config.plugins.load;
 }
-if (mode === '--queue') {
+if (queueMode) {
   if (capacityBoundary || recoverBoundaryContext) config.plugins.entries.xsm.hooks = { allowConversationAccess: true };
   if (denied) config.plugins.entries.xsm.hooks = { allowPromptInjection: false };
+}
+if (mode === '--queue') {
   // This fixture exposes the real API proxy to the probe, without a production global.
   const directory = join(temp, 'probe-plugin');
   await mkdir(directory);

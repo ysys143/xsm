@@ -1851,3 +1851,22 @@ SDK의 원본 설치 loader·manifest를 유지한 global 발견으로 큰 원�
 메신저는 0회다. 제품 코드 변경이 없으므로 공통 gate는 재실행하지
 않았다. Owned queue 오류/정책 전체·UI·간헐적 burst ACK 실패와
 나머지 P0–P5는 계속 미완이다.
+
+## OpenClaw owned 경로의 정책·backpressure 회귀
+
+프로브의 설치 모드에 injection 거부·capacity retry·FYI 경계·32건
+burst를 연결했다. 생산 loader·manifest·binding API는 교체하지 않는다.
+별도 SDK runtime은 fixture 세션/용량 예약 행 준비와 큐 관측을 맡고
+원문 주입은 설치된 binding이 수행한다.
+
+고정 macOS SDK에서 네 실행이 통과했다
+(`openclaw-owned-policy-regressions/{deny,capacity,fyi,burst}.json`).
+Deny는 큐 비어 있음과 pull/ACK, capacity/FYI는 claim 반환과 새 메시지
+없는 재수락/ACK, burst는 32/32 소비·ACK(16묶음/96조각)다. Native
+RetryAdmission 재시도를 중지한 변이는 claim 반환 뒤 actual queue
+수락 검사에서 실패했다(`openclaw-owned-capacity-no-retry-mutant.json`).
+Burst는 소비 지연을 의도한 회복 표본이며 정상 p95 인증이 아니다.
+모델·실제 agent turn·사람 UI·메신저는 0회다. 앞선 간헐적 ACK 실패가
+이번에는 재현되지 않았으며 해결됐다고 판정하지 않는다. 제품 코드
+변경이 없으므로 공통 gate는 재실행하지 않았다. Linux의 이 네 경로와
+오류/정책 전체·UI·나머지 계획은 미완이다.

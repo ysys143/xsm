@@ -527,3 +527,23 @@ p95 상한 403.083ms가 통과했다
 Source는 변경 없는 `8bfc698`이며 snapshot 보존/회수도 함께 통과했다.
 위 Linux 미실행 기록의 후속 표본이고, owned queue의 오류/정책 전체·
 UI·실제 agent/model/메신저·전체 지원 인증은 아니다.
+
+## Owned loader의 정책·용량·FYI·burst 회귀
+
+`--installed-queue`는 `--deny-injection`, `--capacity-retry`,
+`--capacity-fyi`, `--burst-context`도 지원한다. 설정은 격리 fixture에만
+적용한다. 용량 검사에서는 별도 SDK runtime으로 예약 행 32개를
+준비하고 제거하지만, 원문 주입은 설치된 plugin이 수행한다.
+
+macOS 고정 SDK의 `openclaw-owned-policy-regressions/`에서 네 경로가
+통과했다. 거부 시 queue는 비어 있고 native pull/ACK가 가능하다.
+용량 초과의 claim 반환 후 예약 행 제거만으로 새 메시지 없이 재수락·
+ACK됐고, FYI도 실제 hook runner의 자연 경계에서 같은 회복이 됐다.
+Burst는 32개 원문을 미리 저장한 뒤 2개씩 16묶음/96조각을 소비하고
+32/32 명시적 ACK했다. 고의로 소비를 늦춘 표본이므로 정상 p95 인증이
+아니다. 모델·실제 agent turn·사람 UI·메신저는 0회다.
+
+RetryAdmission 뒤 재시도를 끈 복사본은 claim 반환까지는 진행됐지만
+재수락되지 않아 검사에서 실패했다
+(`openclaw-owned-capacity-no-retry-mutant.json`). Linux의 이 네 경로,
+정책/오류 전체·UI·간헐적 burst ACK 실패 해결은 아직 미완이다.
