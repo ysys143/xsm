@@ -4,13 +4,16 @@
 명시적 caller fixture에서 실제 native 도구와 xsm 서버의 왕복·수명 정리를
 확인했다. Guarded native 대기열과 prompt 소비 helper도 연결했다.
 소유권 기반 설치·업데이트·제거와 로드된 snapshot 보존을 연결했다.
-설치의 macOS/Linux native 수명을 검증했다. 일반 plugin 세션의 실제 agent turn·idle wake·
-사용자 UI와 owned loader의 queue 오류/정책 전체 검증은 미완이다. 전체 계획은 미완이다.
+설치의 macOS/Linux native 수명을 검증했다. 실제 구독 모델이 native plugin의
+xsm_send를 호출하고 별도 reference 참여자가 원문을 읽어 ACK하는 macOS 표본도
+확인했다. Native 도구 전체·idle wake·사용자 UI와 owned loader의 queue 오류/
+정책 전체 검증은 미완이다. 전체 계획은 미완이다.
 
 별도 owned frontend는 실제 구독 모델의 정상 실행·문맥 재개/분리와
 frontend 종료 뒤 warm/cold 결과 회수를 macOS에서 확인했다.
 [실제 모델 표본](../plan/runtime-protocol/openclaw-subscription-model.md)은
-generic reference 부모의 공개 operation 경로이며 일반 plugin/UI 인증이 아니다.
+generic reference 부모의 공개 operation 경로와 별도의 plugin 송신 표본을
+구분하며 전체 plugin/UI 인증이 아니다.
 
 ## 고정 버전과 격리 환경
 

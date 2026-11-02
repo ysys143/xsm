@@ -10,6 +10,7 @@ parser.add_argument('--native-cli',type=Path,required=True)
 parser.add_argument('--node',type=Path,required=True)
 parser.add_argument('--output',type=Path,required=True)
 parser.add_argument('--subscription-model',help='Exact live direct Anthropic OAuth model; uses real inference instead of the model0 fixture')
+parser.add_argument('--native-tools',action='store_true',help='Activate the installed plugin in this private profile and verify a real model xsm_send call; requires ordinary subscription mode')
 parser.add_argument('--restart-gateway',action='store_true',help='Restart only the isolated gateway before public result recovery')
 parser.add_argument('--native-silent',action='store_true',help='Use native NO_REPLY and keep its failed occurrence separate from an answer')
 parser.add_argument('--native-error',action='store_true',help='Verify public reconciliation closes a failed native lease without a reply')
@@ -23,6 +24,8 @@ if sum((options.cancel,options.native_error,options.interrupt_frontend))>1:parse
 if options.restart_gateway and not (options.interrupt_frontend or options.native_error):parser.error('--restart-gateway requires an interruption or native failure mode')
 if options.subscription_model and any((options.cancel,options.native_error,options.lose_cancel_confirmation)):
  parser.error('subscription mode supports ordinary turns and frontend/cold result recovery; cancellation and failure fixtures are separate')
+if options.native_tools and (not options.subscription_model or options.interrupt_frontend):
+ parser.error('--native-tools requires --subscription-model and is a separate mode from frontend recovery')
 if not options.native_cli.is_absolute() or not options.node.is_absolute():parser.error('absolute native CLI and Node paths required')
 if json.loads((options.native_cli.parent/'package.json').read_text()).get('version')!='2026.10.9':parser.error('OpenClaw2026.10.9 package required')
 root=Path(tempfile.mkdtemp(prefix='xsm-openclaw-owned-create-')).resolve();out=options.output.absolute();out.mkdir(parents=True,exist_ok=False)
@@ -44,6 +47,7 @@ if options.subscription_model:
   'baseUrl':'http://127.0.0.1:'+str(assistant.server.server_port)+'/v1','apiKey':'local-proxy-placeholder',
   'agentRuntime':{'id':'openclaw'},'models':[{'id':options.subscription_model,'name':options.subscription_model,
   'reasoning':False,'input':['text'],'contextWindow':200000,'maxTokens':1000}]}}}
+if options.native_tools:config['plugins']={'enabled':True,'allow':['xsm'],'entries':{'xsm':{'enabled':True}}}
 path=root/'state/openclaw.json';path.write_text(json.dumps(config));path.chmod(0o600)
 env={k:os.environ[k] for k in ('PATH','LANG','TMPDIR') if k in os.environ};env.update(HOME=str(root/'home'),OPENCLAW_STATE_DIR=str(root/'state'),OPENCLAW_CONFIG_PATH=str(path),OPENCLAW_NO_RESPAWN='1')
 command=[str(options.node),str(options.native_cli)]
@@ -124,8 +128,8 @@ async def public_roundtrip():
   created=await op('xsm_owned',{'action':'create','name':'protocol-openclaw','runtime':'openclaw','home':str(root/'state')})
   check('public create admits OpenClaw provider',created['runtime']=='openclaw' and created['native_provider']['agent_id']=='main')
   if options.subscription_model:report['nativeBindingHashes']=created['native_provider']['binding_hashes'];save()
-  async def run(request,work='same'):
-   result=await op('xsm_owned',{'action':'run','name':'protocol-openclaw','text':prompt(request),'work_context':work,'request_id':request})
+  async def run(request,work='same',text=None):
+   result=await op('xsm_owned',{'action':'run','name':'protocol-openclaw','text':prompt(request) if text is None else text,'work_context':work,'request_id':request})
    deadline=time.monotonic()+(180 if options.subscription_model else 90)
    while result['status'] not in ('sent','reply-stored','unknown','error'):
     if time.monotonic()>deadline:raise TimeoutError('public owned native execution')
@@ -145,6 +149,23 @@ async def public_roundtrip():
   check('public replay retained exact reply ID',replay['reply_id']==first['reply_id'])
   check('public replay did not execute native model',provider_log.read_bytes()==before)
   report['providerRequests' if options.subscription_model else 'providerFixtureRequests']=len(before.splitlines())
+  if options.native_tools:
+   note='XSM_NATIVE_TOOL_NOTE_'+nonce
+   args={'target':parent['address'],'text':note,'kind':'note','wake':'never','wait':0}
+   task='Call the native xsm_send tool exactly once with these arguments: '+json.dumps(args)+'. Do not call any other tool. After the actual tool returns, reply exactly '+expected('native-tools')+'.'
+   tool_result=await run('native-tools','native-tools',task)
+   fresh=await op('xsm_inbox',{})
+   notes={}
+   for packet in list(packets)+[fresh]:
+    for claim,text in zip(packet.get('claims',[]),packet.get('messages',[])):
+     if note in text:notes[claim['id']]=claim
+   check('actual model native xsm_send produced one canonical original',len(notes)==1)
+   note_id,claim=next(iter(notes.items()))
+   ack=await op('xsm_ack',{'tokens':[claim['token']]})
+   check('actual model tool original explicitly ACKed',ack['acked']==[note_id])
+   await read_reply(tool_result['reply_id'],expected('native-tools'))
+   report['nativeModelToolMessageId']=note_id
+   report['nativeModelToolSessionId']=tool_result['result']['native_session_id']
   async def exited_request(request_id):
    deadline=time.monotonic()+35
    while True:
@@ -286,6 +307,7 @@ async def public_roundtrip():
 
  finally:
   if client is not None:await client.close()
+if options.native_tools:host_install.apply('openclaw',str(root/'state'))
 log=(out/'gateway.log').open('w');process=None
 try:
  process=subprocess.Popen(command+['gateway','run'],cwd=root/'workspace',env=env,stdout=log,stderr=log,start_new_session=True)

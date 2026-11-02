@@ -804,3 +804,18 @@ Network none/model0/cpu2/memory3g, 미실행 core0, VM stopExit=0을 확인했�
 원시는 deliverables/protocol-foundation/protocol-contract-guards-linux/ 아래의
 result.json과 core{311,314}/output/protocol.log다. Native gateway·UI·모델·
 메신저·원격 행렬을 새로 실행한 것은 아니다.
+
+## 구독 relay 검사의 Linux core
+
+61147f32b4741e522023e43e0c621910f8f2b5eb를 고정한 subscription-probe-linux에서
+840개(Python503+SDK52+native133+Node152)가 Python3.11.2에서69.427초,
+Python3.14.10에서88.626초에 통과했다. Archive SHA256은
+eeee59ac78bfeee31fbd6b7f7458508a3d7ad86966f1c1d0703cadd6c22247bd다.
+독립 mock39/변이14는 별도 수치다. Network none/model0/cpu2/memory3g,
+미실행 core0, VM stopExit=0이다. 원시는 deliverables/protocol-foundation/
+subscription-probe-linux/의 result.json과 환경별 protocol.log다.
+
+실제 구독 모델 호출은 macOS의 별도 native 표본이며 이 gate에 넣지 않았다.
+Linux gate의 relay upstream은 명시적 loopback fixture다. 결과 byte 보존,
+credential redaction·한도·모델 제한·non-OAuth 거부를 검증했으며 실제 Linux
+모델·native UI·메신저 증거로 확대하지 않는다.

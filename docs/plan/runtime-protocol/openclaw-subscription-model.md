@@ -37,7 +37,7 @@ message ID와 source=native-chat.history를 기록하며 terminal receipt를 만
 않았다. 모든 gatewayStopped=true다.
 
 첫19개는 probe source hash 필드를 추가하기 전 표본이다. 후속 warm/cold의
-probeSourceSha256은 현재 두 probe 파일과 일치하며 native binding hash도
+probeSourceSha256은61147f3의 두 probe 파일과 일치하며 native binding hash도
 보존한다. 처음 relay 단위 검사에는 HTTPError 정리를 빠뜨린 ResourceWarning이
 있어 test error response를 닫도록 수정했다. 실패 assertion은 없었다.
 
@@ -60,10 +60,35 @@ redaction·한도·다른 모델 거부·non-OAuth 사전 거부 검사3개를 �
 85.890초에 통과했다(subscription-probe-core-final.log). 독립 mock39/변이14는
 별도 수치다. 실제 구독 모델 시험은120초 gate 밖에서 실행했다.
 
+61147f32b4741e522023e43e0c621910f8f2b5eb를 고정한 Linux core도840개씩
+Python3.11.2에서69.427초, Python3.14.10에서88.626초에 통과했다.
+Archive SHA256은eeee59ac78bfeee31fbd6b7f7458508a3d7ad86966f1c1d0703cadd6c22247bd다.
+Network none/model0/cpu2/memory3g, 미실행 core0, VM stopExit=0이다.
+원시는 subscription-probe-linux/ 아래다. Linux 실제 모델 실행 증거가 아니다.
+
+## 실제 모델의 native plugin 도구 송신
+
+별도 새 profile에서 managed plugin을 gateway 시작 전에 설치하고 그 profile의
+plugins.enabled/allow/entries.xsm만 명시적으로 활성화했다. 모델이 native
+xsm_send를 한 번 호출해 같은 임시 workspace의 reference 참여자에게 note를
+보내도록 했다. 시험기는 직접 그 note를 생성하지 않았다. 공개 inbox에서 exact
+표식 원문1개를 읽고 claim token으로 ACK했으며 owned 최종 회신도 별도로 ACK했다.
+
+초기 prototype25/25개(openclaw-subscription-native-tools)와 재현 옵션으로
+정리한25/25개(openclaw-subscription-native-tools-script)가 각각 통과했다.
+각 provider 요청은5회였고 gatewayStopped=true다. Prototype의 별도 source hash와
+최종 script의 probeSourceSha256/nativeBindingHashes를 각 결과에 보존했다.
+두 실행은 별개 표본이며 검사 수를 합쳐 유일한50개 계약으로 주장하지 않는다.
+
+재현은 위 명령에서 --interrupt-frontend/--restart-gateway 대신 --native-tools를
+사용한다. 이 도구 표본은 frontend recovery와 별도 mode다. 실제 plugin factory,
+native model tool call, 공통 송신과 canonical claim/ACK의 연결을 확인했지만
+나머지21개 도구·사용자 UI·수신 push·다른 runtime/OS 행렬은 미완이다.
+
 원시는 deliverables/protocol-foundation/의 표본별 result.json, *-journal.json,
 subscription-relay.jsonl과 subscription-relay-{tests,mutants}.*에 있다.
 Native auth/config 파일은 추가 수집하지 않았다.
 
-입력 큐 p95·native plugin의 모델 도구 사용·사람 UI·메신저·실제 모델 실행 중
+입력 큐 p95·native plugin 도구 전체·사람 UI·메신저·실제 모델 실행 중
 취소·진행 중 gateway restart lineage·Linux 실제 모델·전체 런타임/방향 행렬은
 이 표본의 범위가 아니며 원래 계획의 미완 조건으로 남아 있다.
