@@ -363,3 +363,19 @@ macOS Python3.14.6 core는491+SDK52+native38+Node141=722개와 독립 mock39/
 검사로 유지했다. 불완전 finish를 수락하는 변이는 assertion2개로 검출했다
 (opencode-worker-cli-mutant.log). 공개 스키마도 통과했다(opencode-owned-schema.json).
 이번 제공자의 Linux 재검증, 실제 모델·자식·승인 UI·전체 설치 행렬은 미완이다.
+
+후속으로 종료 시 상태 갱신 경합을 수정했다. native event가 기다리던
+session.update를 dispose가 종료하면 예상된 TransportError가 native handler로
+다시 전파됐다. 종료 중인 transport 거부만 정리하고 live 오류는 계속 전파한다.
+결정적으로 abort를 주입한 시험은 수정 전 unwanted rejection으로 실패했다
+(opencode-shutdown-red.log). 수정 후 연결 시험22개가 통과했고
+(opencode-shutdown-green.log), 실제 CLI v4 수락/거부4개도 통과했다.
+정상 CLI stderr의 client-closed 진단은0건이며 두 native process 모두 종료됐다.
+이 수정의 전체 core와 Linux 근거는 해당 후속 실행 기록을 따른다.
+
+종료 경합 수정을 포함한 macOS 전체 core는 Python491+SDK52+native38+Node142=
+723개와 독립 mock39/변이14개를86.119초에 통과했다
+(opencode-owned-core-third.log). d553fc2의 Linux722개는3.11/3.14에서 각각
+64.558/85.031초로 통과했으며 VM도 종료됐다(linux-validation.md). Linux 표본에
+종료 경합 수정은 포함되지 않았다. 실제 구독 모델 실패나 native UI/자식/전체
+설치 미완 상태는 이 core 결과로 해소된 것으로 간주하지 않는다.

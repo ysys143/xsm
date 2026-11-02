@@ -19,6 +19,34 @@ if (process.env.XSM_OPENCODE_RECONNECT_MUTANT === 'disabled') {
 }
 
 const root = fileURLToPath(new URL('../../', import.meta.url));
+
+test('OpenCode shutdown settles an in-flight native state update without hiding live failures',
+  { timeout: 10000 }, async t => {
+    const f = await fixture(t);
+    await f.invoke('closing-native', 'xsm_inbox');
+    const original = XsmHost.prototype.update;
+    try {
+      XsmHost.prototype.update = async () => { throw new TransportError('live state failure'); };
+      const event = { event: { type: 'session.status', properties: {
+        sessionID: 'closing-native', status: { type: 'busy' } } } };
+      await assert.rejects(f.hooks.event(event), /live state failure/);
+      let entered;
+      const started = new Promise(resolve => { entered = resolve; });
+      XsmHost.prototype.update = function () {
+        return new Promise((_resolve, reject) => {
+          this.controller.signal.addEventListener('abort', () => reject(new TransportError('client closed')), { once: true });
+          entered();
+        });
+      };
+      const updating = f.hooks.event(event);
+      // Attach the observer before disposal triggers rejection.
+      const settled = assert.doesNotReject(updating);
+      await started;
+      await f.hooks.dispose();
+      await settled;
+      assert.deepEqual(f.errors, []);
+    } finally { XsmHost.prototype.update = original; }
+  });
 // Native schema objects are inspected here; the pinned native CLI separately checks real Zod schemas.
 function node(type, value) {
   return { type, value, optional() { return { ...this, optionalField: true }; },

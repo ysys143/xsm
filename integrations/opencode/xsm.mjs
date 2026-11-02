@@ -244,16 +244,23 @@ async function attach(api, options, release) {
       await (await open(input.sessionID)).naturalBoundary().catch(error => { if (!(error instanceof RetryAdmission)) throw error; });
     },
     event: async ({ event }) => {
+      if (disposed) return;
       const { type, properties } = event;
-      if (type === 'session.created') await open(properties.info.id);
-      else if (type === 'session.deleted') await close(properties.info.id);
-      else if (type === 'session.updated' && sessions.has(properties.info.id)) {
-        const host = await open(properties.info.id);
-        await host.update(states.get(properties.info.id) ?? 'idle', properties.info.title);
-      } else if (type === 'session.status') {
-        const state = properties.status.type === 'idle' ? 'idle' : 'busy';
-        states.set(properties.sessionID, state);
-        if (sessions.has(properties.sessionID)) await (await open(properties.sessionID)).update(state);
+      try {
+        if (type === 'session.created') await open(properties.info.id);
+        else if (type === 'session.deleted') await close(properties.info.id);
+        else if (type === 'session.updated' && sessions.has(properties.info.id)) {
+          const host = await open(properties.info.id);
+          await host.update(states.get(properties.info.id) ?? 'idle', properties.info.title);
+        } else if (type === 'session.status') {
+          const state = properties.status.type === 'idle' ? 'idle' : 'busy';
+          states.set(properties.sessionID, state);
+          if (sessions.has(properties.sessionID)) await (await open(properties.sessionID)).update(state);
+        }
+      } catch (error) {
+        // Disposing intentionally rejects outstanding protocol requests. A live
+        // transport failure still belongs to the native host's error handling.
+        if (!(disposed && error instanceof TransportError)) throw error;
       }
     },
     dispose: async () => {

@@ -555,3 +555,18 @@ a2cf4ef의 node-control-linux 표본은 Python3.11에서704개가98.441초에
 cpu2/memory3g로 실행했고 시작과 종료 모두 exit0이다. 모델 호출은0회다.
 실제 native 하위 에이전트·UI·메신저 전체 인증은 이 검사 범위에 없다.
 후속 SDK 시험 추가 커밋048a3f2는 이 고정 번들에 포함되지 않았다.
+
+## OpenCode owned provider 회귀 (d553fc2)
+
+d553fc2의 고정 번들은 SHA-256
+5b30334b305803b278d7e54978519192f7ee1e909c71d7dc2c513994c41cab23다.
+두 Linux arm64 이미지에서 Python491+SDK52+native38+Node141=722개와 독립
+mock39/변이14개가 통과했다. Python3.11.2는64.558초, Python3.14.10은
+85.031초이며120초 기한을 유지했다. 실제 native 모델은 호출하지 않았다.
+원시는 deliverables/protocol-foundation/opencode-owned-linux/ 아래 result.json,
+{311,314}/protocol.log, start.log와 stop.log다. 기존 private VM만 사용했고
+컨테이너는 network none/cpu2/memory3g였다. VM stopExit은0이다.
+
+이 표본은 OpenCode native CLI/provider의 공통 core 회귀다. Linux에서 실제
+OpenCode CLI·모델을 실행한 증거는 아니며 후속 종료 경합 수정도 포함하지
+않는다. 해당 두 범위는 별도 검증이 남아 있다.
