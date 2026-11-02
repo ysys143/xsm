@@ -113,3 +113,19 @@ remain frontend responsibilities. The MCP path submits the durable request befor
 starting its existing background execution; a cancelled waiter still does not stop
 that request. CLI/MCP replay the same journaled ID and recover the same saved reply.
 This refactor does not add native runtime providers beyond the existing ones.
+
+## Project membership, links and session reach
+
+`xsm.scope_service` prepares a frozen project root before the frontend collects
+its existing typed consent or real user decision. CLI join/leave and xsm_join
+share membership application. CLI link/unlink and xsm_link share link writes;
+CLI reach and xsm_reach share session-bound reach writes and removals. A widened
+scope is still authorized by the frontend's existing decision controller, not
+by a model argument or a service-generated approval.
+
+Before applying an approved join, leave, link or reach, the service checks the
+prepared folder's current project root again. A changed root requires a fresh
+decision. Reach preparation copies the selected holder fields so frontend
+mutation cannot redirect the stored grant to a different conversation. Existing
+config policy validation and session-bound reach storage remain authoritative.
+This extraction does not add native runtime UI or worker providers.

@@ -510,7 +510,7 @@ def _memberships(here: str) -> list:
 
 def cmd_reach(args) -> int:
     """Let one running session talk with the sessions of one other folder."""
-    from . import probe
+    from . import probe, scope_service
     registry.forget_identity()
     if args.session:
         found = resolve.resolve(args.session)
@@ -539,7 +539,7 @@ def cmd_reach(args) -> int:
     folder = os.path.join(me.get("cwd") or os.getcwd(), os.path.expanduser(args.folder)) \
         if args.folder else None
     if args.drop:
-        n = config.drop_reach(me["ref"], folder, session=me)
+        n = scope_service.drop_reach(me, folder)
         print("dropped %d reach(es) of ref:%s" % (n, me["ref"]))
         return OK
     # A reach widens who may talk to whom, so the shell that asks must know
@@ -551,7 +551,7 @@ def cmd_reach(args) -> int:
             print("refused: %s" % why, file=sys.stderr)
             return REFUSED
     try:
-        config.check_reach(folder)              # before the typed consent is used up
+        plan = scope_service.prepare_reach(me, folder)
     except ValueError as exc:
         print("refused: %s" % exc, file=sys.stderr)
         return USAGE
@@ -563,8 +563,8 @@ def cmd_reach(args) -> int:
         print("refused: %s" % why, file=sys.stderr)
         return REFUSED
     try:
-        entry, added = config.add_reach(me["ref"], folder, _by(),
-                                        session=me)
+        result = scope_service.apply_reach(plan, _by())
+        entry, added = result["entry"], result["added"]
     except ValueError as exc:
         print("refused: %s" % exc, file=sys.stderr)
         return USAGE
@@ -583,6 +583,7 @@ def _links_here(root: str) -> list:
 
 def cmd_link(args) -> int:
     """Link this project folder with another one, both ways, until unlinked."""
+    from . import scope_service
     registry.forget_identity()
     here = _here(args)
     root = config.project_root(here)
@@ -600,7 +601,7 @@ def cmd_link(args) -> int:
     other = config.project_root(os.path.join(here, os.path.expanduser(args.folder)))
     if args.command == "unlink":
         # Narrowing: anyone may.
-        if config.drop_link(here, other):
+        if scope_service.drop_link(here, other):
             print("unlinked: %s and %s" % (_home_tilde(root), _home_tilde(other)))
             return OK
         # The link that applies may be a folder above this one's (review,
@@ -615,7 +616,7 @@ def cmd_link(args) -> int:
         print("no link between %s and %s" % (_home_tilde(root), args.folder), file=sys.stderr)
         return REFUSED
     try:
-        config.check_link(here, other)          # before the typed consent is used up
+        plan = scope_service.prepare_link(here, os.path.join(here, os.path.expanduser(args.folder)))
     except ValueError as exc:
         print("refused: %s" % exc, file=sys.stderr)
         return USAGE
@@ -630,7 +631,8 @@ def cmd_link(args) -> int:
         print("refused: %s" % why, file=sys.stderr)
         return REFUSED
     try:
-        entry, added = config.add_link(here, other, _by())
+        result = scope_service.apply_link(plan, _by())
+        entry, added = result["entry"], result["added"]
     except ValueError as exc:
         print("refused: %s" % exc, file=sys.stderr)
         return USAGE

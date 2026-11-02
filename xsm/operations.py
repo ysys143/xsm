@@ -751,7 +751,7 @@ class OperationService:
         return False, "your user did not answer (%s). %s" % (why, self.in_words(me, command, key))
 
     def link(self, me: dict, args: dict) -> str:
-        from . import config
+        from . import config, scope_service
         if not args.get("dir"):
             raise ToolError("dir: the folder to link with")
         here = me.get("cwd") or os.getcwd()
@@ -760,13 +760,13 @@ class OperationService:
         # link all name the same absolute root.
         other = config.project_root(os.path.join(here, os.path.expanduser(args["dir"])))
         if args.get("drop"):
-            return ("unlinked %s and %s" % (root, other)) if config.drop_link(root, other) \
+            return ("unlinked %s and %s" % (root, other)) if scope_service.drop_link(root, other) \
                 else "%s and %s were not linked" % (root, other)
         # What can be checked is checked before the consent is used up: a
         # folder not created yet used it, and the retry asked with a form
         # (review, 2026-09-28).
         try:
-            config.check_link(root, other)
+            plan = scope_service.prepare_link(here, os.path.join(here, os.path.expanduser(args["dir"])))
         except ValueError as exc:
             raise ToolError(str(exc))
         if not self.typed_permission(me, "link", other, here):
@@ -782,7 +782,8 @@ class OperationService:
             if not ok:
                 return refusal
         try:
-            entry, added = config.add_link(root, other, os.environ.get("USER") or "person")
+            result = scope_service.apply_link(plan, os.environ.get("USER") or "person")
+            entry, added = result["entry"], result["added"]
         except ValueError as exc:
             raise ToolError(str(exc))
         return ("%s: the sessions in %s and %s can talk, both ways, until unlinked; run `xsm list` "
@@ -900,7 +901,7 @@ class OperationService:
                                              ", ".join(others) or "none yet")
 
     def reach(self, me: dict, args: dict) -> str:
-        from . import config
+        from . import config, scope_service
         if not args.get("dir"):
             raise ToolError("dir: the folder to reach")
         # A relative dir is the session's, and the person's terminal may be
@@ -910,11 +911,11 @@ class OperationService:
         folder = os.path.join(me.get("cwd") or os.getcwd(), os.path.expanduser(args["dir"]))
         root = config.project_root(folder)
         if args.get("drop"):
-            return "dropped %d reach(es)" % config.drop_reach(me.get("ref"), root, session=me)
+            return "dropped %d reach(es)" % scope_service.drop_reach(me, root)
         command = "xsm reach %s --session %s" % (shlex.quote(root),
                                                  shlex.quote("ref:%s" % me.get("ref")))
         try:
-            config.check_reach(root)            # before the consent is used up, as for link
+            plan = scope_service.prepare_reach(me, folder)
         except ValueError as exc:
             raise ToolError(str(exc))
         if not self.typed_permission(me, "reach", root):        # the person typed /xsm reach <dir>
@@ -926,8 +927,8 @@ class OperationService:
             if not ok:
                 return refusal
         try:
-            entry, added = config.add_reach(me.get("ref"), root,
-                                            os.environ.get("USER") or "person", session=me)
+            result = scope_service.apply_reach(plan, os.environ.get("USER") or "person")
+            entry, added = result["entry"], result["added"]
         except ValueError as exc:
             raise ToolError(str(exc))
         return "%s: this session can now talk with the sessions in %s; run `xsm list` to see them" % (

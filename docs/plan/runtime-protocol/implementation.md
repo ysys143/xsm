@@ -2392,3 +2392,16 @@ scope-service-root-guard-mutation.json에 있다.
 120초 기한을 유지했고 새 서비스 검사5개를 포함했다. 원시 출력은
 scope-service-core.log에 있다. 이 결과는 macOS 핵심 회귀이며 Linux 또는
 실제 native queue·UI·worker 검증을 뜻하지 않는다.
+
+## 프로젝트 link/reach 변경 공통 서비스 (2026-11-02)
+
+CLI link/unlink/reach와 모델 xsm_link/xsm_reach도 scope_service의 준비·적용·제거
+경로를 호출한다. 권한을 넓히는 답 수집과 typed consent는 기존 frontend에
+남긴다. 승인 전후 루트가 다르면 적용을 거부하고, reach의 소유 대화 필드는
+준비 시 복사해 frontend가 이후 전달한 dict 변경을 따르지 않는다.
+
+관련 회귀는74개가9.560초에 통과했다. 임시 복사본에서 link/reach 루트 재검증을
+제거하면 관련 검사2개가 모두 실패했다. 핵심 gate는 Python466+SDK50+Node127,
+총643개와 독립 mock39개/변이14개를77.709초에 통과했다. 명령은 앞 절과 같고
+로그 접두어는 deliverables/protocol-foundation/scope-links-reach-다.
+이 결과로 전체 CLI 추출이나 native 런타임 지원을 완료 처리하지 않는다.
