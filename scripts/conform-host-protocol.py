@@ -18,6 +18,12 @@ def require(condition, details):
 
 class Peer:
     def __init__(self, command, cwd, env, observations=None):
+        root = Path(cwd).resolve()
+        for key in ('HOME', 'XSM_HOME'):
+            value = env.get(key)
+            if (not isinstance(value, str) or not value or not Path(value).is_absolute()
+                    or not Path(value).resolve().is_relative_to(root)):
+                raise ValueError('candidate requires isolated HOME and XSM_HOME within its fixture directory')
         self.observations = observations
         self.notifications = []
         self.frames = queue.Queue(maxsize=128)
@@ -59,7 +65,13 @@ class Peer:
             require(type(value["id"]) is int and value["id"] == self.serial, value)
             require(("result" in value) != ("error" in value), value)
             if self.observations is not None:
-                self.observations.append({"method": method, "frame": value})
+                observation = {"method": method, "frame": value}
+                if method == 'operation.call' and isinstance(params, dict):
+                    observation['operation'] = params.get('operation')
+                    arguments = params.get('arguments')
+                    if isinstance(arguments, dict):
+                        observation['action'] = arguments.get('action')
+                self.observations.append(observation)
             if error is not None:
                 require(isinstance(value.get("error"), dict) and type(value["error"].get("code")) is int and value["error"]["code"] == error, value)
                 return value["error"]

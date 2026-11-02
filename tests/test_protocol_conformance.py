@@ -4,6 +4,7 @@ import os
 from pathlib import Path
 import sys
 import unittest
+import tempfile
 from unittest import mock
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -13,6 +14,18 @@ spec.loader.exec_module(checker)
 
 
 class ExternalConformanceTest(unittest.TestCase):
+    def test_peer_rejects_unisolated_environment_before_starting_candidate(self):
+        with tempfile.TemporaryDirectory(prefix='xsm-conformance-guard-') as folder:
+            variants = ({}, {'HOME': folder}, {'XSM_HOME': folder + '/state'},
+                        {'HOME': str(Path.home()), 'XSM_HOME': folder + '/state'},
+                        {'HOME': folder, 'XSM_HOME': str(Path.home() / '.xsm')})
+            with mock.patch.object(checker.subprocess, 'Popen', side_effect=AssertionError('unsafe process launch reached')) as spawn:
+                for environment in variants:
+                    with self.subTest(keys=sorted(environment)):
+                        with self.assertRaisesRegex(ValueError, 'isolated HOME and XSM_HOME'):
+                            checker.Peer(['must-not-start'], folder, environment)
+                self.assertFalse(spawn.called)
+
     def candidate(self, fault=""):
         return [sys.executable, "-B", str(ROOT / "tests/fixtures/minimal_protocol_host.py"), fault]
 
