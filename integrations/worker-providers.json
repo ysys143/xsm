@@ -1,3 +1,4 @@
 {
-  "hermes": "integrations/hermes/worker_provider.py"
+  "hermes": "integrations/hermes/worker_provider.py",
+  "opencode": "integrations/opencode/worker_provider.py"
 }

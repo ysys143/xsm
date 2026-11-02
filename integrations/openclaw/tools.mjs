@@ -24,7 +24,8 @@ export default [
           "enum": [
             "claude",
             "codex",
-            "hermes"
+            "hermes",
+            "opencode"
           ]
         },
         "dir": {

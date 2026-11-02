@@ -322,3 +322,44 @@ runtime의 owned 자식 실행은 여전히 미완이다.
 격리 홈에서 실행한다. 고정 모델명을 기본값으로 넣지 않으며 기존 결과 경로를
 덮어쓰지 않는다. 이 명령은 실제 구독 모델을 호출하므로120초 model0 core
 검사에는 포함하지 않는다. 반복 실행도 시험 gateway 종료를 확인했다.
+
+## OpenCode owned 제공자: native CLI와 공통 저널
+
+OpenCode1.19.5 제공자를 고정 catalog에 추가했다. 공통 엔진에 runtime 분기를
+추가하지 않고 managed profile·operator executable·버전·설치된 binding hash를
+확인한다. stdin으로 요청하고 명시적인 native session ID로 재개한다.
+--auto/--continue/--fork/권한 덮어쓰기는 넣지 않는다. 기존 native plugin의
+awaited chat.message가 private descriptor로 모델 전에 문맥을 결속한다.
+
+결과는 실제 step_start/text/step_finish 이벤트를 읽는다. 같은 대화와 마지막
+stop, 실제 답변이 있어야 수락하며 길이 제한·도구 호출만 끝난 결과·오류·다른
+대화·중복 JSON 키·잘린 결과는 거부한다. 업무 outcome 판정은 기존 공통
+함수로 유지한다. 공개 operation schema와 OpenClaw 생성 catalog도 갱신했다.
+
+실제 native CLI 수락/거부4개 검사가 통과했다
+(opencode-worker-control-cli-v3/result.json). 수락의 provider fixture 요청2회는
+대화와 보조 제목 요청을 포함하며 실제 모델 호출이 아니다. 거부는 provider0회다.
+첫 실행은 text 모드 누락으로 시험이 실패했고, 두 번째는 보조 요청을 세지 않은
+기대값으로 실패했다. 원시 실패를 보존했다. 새 CLI/provider 단위7개와 관련
+owned 시험을 합한22개가 통과했다(opencode-owned-targeted.log).
+
+공개 xsm_owned 생성/실행을 실제 CLI에 연결한 model0 표본은10개가 통과했다
+(opencode-owned-native-fixture-v2/result.json). 정본 회신2개의 실제 읽기/ACK,
+같은 native 대화 재개, 같은 요청의 reply/execution 재사용과 추가 provider
+호출 없음, 각 turn의 사전 결속을 확인했다. 초기 표본의 검사 이름에 남은
+Hermes 표기를 고쳐 별도 v2로 실행했으며 초기 기록을 덮어쓰지 않았다.
+
+실제 구독 모델 표본은 실패했다(opencode-owned-native-subscription/result.json).
+기존 OAuth loopback proxy를 통한 공급자가 extra usage 소진 오류를 반환했고
+native CLI가 exit1로 끝났다. 요청은 unknown으로 보존하며 자동으로 재실행하거나
+추가 과금하지 않았다. stdout/stderr는 같은 디렉터리의 native-run에 복사했다.
+따라서 OpenCode 실제 모델의 문맥 재사용은 아직 미검증이다. native CLI 종료 시
+TransportError: client closed 진단도 관측됐으며 원인 해결은 미완이다.
+
+macOS Python3.14.6 core는491+SDK52+native38+Node141=722개와 독립 mock39/
+변이14개를86.696초에 통과했다(opencode-owned-core-second.log). 첫 전체
+실행은 OpenCode를 미지원으로 기대한 기존 assertion2개가 실패했으며, 이제
+제공자 승인 메타데이터 없는 retained worker가 Codex 결과를 채택하지 못하는
+검사로 유지했다. 불완전 finish를 수락하는 변이는 assertion2개로 검출했다
+(opencode-worker-cli-mutant.log). 공개 스키마도 통과했다(opencode-owned-schema.json).
+이번 제공자의 Linux 재검증, 실제 모델·자식·승인 UI·전체 설치 행렬은 미완이다.

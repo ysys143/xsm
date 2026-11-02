@@ -34,7 +34,7 @@ MODULES = ["tests.test_question_service", "tests.test_send_service", "tests.test
            "tests.test_mcp_identity", "tests.test_mcp_shared_process"]
 NATIVE_MODULES = ["tests.test_native_worker_catalog", "tests.test_native_worker_control",
                   "tests.test_native_worker_provider", "tests.test_native_worker_retention",
-                  "tests.test_native_worker_lineage"]
+                  "tests.test_native_worker_lineage", "tests.test_opencode_worker_cli"]
 
 
 def run_phase(commands, env, root, deadline, offset):
