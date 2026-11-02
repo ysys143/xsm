@@ -397,13 +397,19 @@ xsm owned status reviewer                                        # your requests
 
 The development version also accepts `xsm owned cancel reviewer --request-id <id>`.
 It records this sender's cancellation intent; pre-launch work can be cancelled immediately.
-Running-turn confirmation is currently implemented for newly admitted Pi 1.4.0, OpenCode 1.19.5 and Hermes 0.22.5 workers.
+Running-turn confirmation is currently implemented for newly admitted Pi 1.4.0, OpenCode 1.19.5,
+Hermes 0.22.5 and OpenClaw 2026.10.9 workers.
 Other providers' running cancellation and recovery remain unfinished. Inspect the
 [`cancellation` status](docs/protocol/native-workers.md#cancellation); intent or CLI exit alone does not prove a native task stopped.
 For these providers, `xsm owned reconcile reviewer --request-id <id>` can recover a lost stop
 confirmation from retained native output without rerunning the task; possible side effects remain unknown.
 After confirmed native stop and CLI exit, `xsm stop reviewer` can remove the logical
 service while preserving its journal and native profile. Queued, unpublished or unconfirmed work blocks removal.
+
+OpenClaw can also recover an owned answer after frontend loss, including a gateway restart after native
+completion. [Isolated macOS subscription-model tests](docs/plan/runtime-protocol/openclaw-subscription-model.md)
+cover resume, separate contexts, exact reply ACK and recovery without rerunning the model.
+This does not certify native UI, messengers, an interrupted gateway run or the full runtime matrix.
 
 An ordinary running session is never taken over as an owned worker. Inside an Orca or herdr terminal, xsm
 leaves starting workers to that tool unless you tell it otherwise (`xsm frameworks`).

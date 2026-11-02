@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Public owned operation and exact reply claims against native OpenClaw; model0."""
-import json,os,secrets,signal,socket,subprocess,tempfile,time
+import hashlib,json,os,secrets,signal,socket,subprocess,tempfile,time
 from pathlib import Path
 import sys
 repo=Path(__file__).resolve().parents[1];sys.path.insert(0,str(repo))
@@ -9,6 +9,7 @@ parser=argparse.ArgumentParser(description='Public owned OpenClaw native roundtr
 parser.add_argument('--native-cli',type=Path,required=True)
 parser.add_argument('--node',type=Path,required=True)
 parser.add_argument('--output',type=Path,required=True)
+parser.add_argument('--subscription-model',help='Exact live direct Anthropic OAuth model; uses real inference instead of the model0 fixture')
 parser.add_argument('--restart-gateway',action='store_true',help='Restart only the isolated gateway before public result recovery')
 parser.add_argument('--native-silent',action='store_true',help='Use native NO_REPLY and keep its failed occurrence separate from an answer')
 parser.add_argument('--native-error',action='store_true',help='Verify public reconciliation closes a failed native lease without a reply')
@@ -20,6 +21,8 @@ if options.native_silent:options.native_error=True
 if options.lose_cancel_confirmation and not options.cancel:parser.error('--lose-cancel-confirmation requires --cancel')
 if sum((options.cancel,options.native_error,options.interrupt_frontend))>1:parser.error('choose one mutation mode')
 if options.restart_gateway and not (options.interrupt_frontend or options.native_error):parser.error('--restart-gateway requires an interruption or native failure mode')
+if options.subscription_model and any((options.cancel,options.native_error,options.lose_cancel_confirmation)):
+ parser.error('subscription mode supports ordinary turns and frontend/cold result recovery; cancellation and failure fixtures are separate')
 if not options.native_cli.is_absolute() or not options.node.is_absolute():parser.error('absolute native CLI and Node paths required')
 if json.loads((options.native_cli.parent/'package.json').read_text()).get('version')!='2026.10.9':parser.error('OpenClaw2026.10.9 package required')
 root=Path(tempfile.mkdtemp(prefix='xsm-openclaw-owned-create-')).resolve();out=options.output.absolute();out.mkdir(parents=True,exist_ok=False)
@@ -27,10 +30,20 @@ for name in ('home','state','workspace'):(root/name).mkdir()
 with socket.socket() as listener:listener.bind(('127.0.0.1',0));port=listener.getsockname()[1]
 import importlib.util
 spec=importlib.util.spec_from_file_location('fixture',repo/'scripts/probe-opencode-protocol.py');helper=importlib.util.module_from_spec(spec);spec.loader.exec_module(helper)
-assistant=helper.AssistantFixture(out)
+if options.subscription_model:
+ sys.path.insert(0,str(repo/'scripts'))
+ from probe_subscription_relay import SubscriptionRelay
+ assistant=SubscriptionRelay(out,options.subscription_model)
+else:assistant=helper.AssistantFixture(out)
 config={'gateway':{'mode':'local','bind':'loopback','port':port,'auth':{'mode':'token','token':secrets.token_hex(32)}},'agents':{'defaults':{'workspace':str(root/'workspace'),'heartbeat':{'every':'0m'}}},'cron':{'enabled':False},'plugins':{'enabled':False}}
 config['agents']['defaults']['model']={'primary':'xsm-fixture/fixture','fallbacks':[]}
 config['models']={'providers':{'xsm-fixture':{'api':'openai-completions','baseUrl':'http://127.0.0.1:'+str(assistant.server.server_port)+'/v1','apiKey':'explicit-no-network-fixture','agentRuntime':{'id':'openclaw'},'models':[{'id':'fixture','name':'fixture','reasoning':False,'input':['text'],'contextWindow':32000,'maxTokens':1000,'cost':{'input':0,'output':0,'cacheRead':0,'cacheWrite':0}}]}}}
+if options.subscription_model:
+ config['agents']['defaults']['model']={'primary':'xsm-subscription/'+options.subscription_model,'fallbacks':[]}
+ config['models']={'providers':{'xsm-subscription':{'api':'openai-completions',
+  'baseUrl':'http://127.0.0.1:'+str(assistant.server.server_port)+'/v1','apiKey':'local-proxy-placeholder',
+  'agentRuntime':{'id':'openclaw'},'models':[{'id':options.subscription_model,'name':options.subscription_model,
+  'reasoning':False,'input':['text'],'contextWindow':200000,'maxTokens':1000}]}}}
 path=root/'state/openclaw.json';path.write_text(json.dumps(config));path.chmod(0o600)
 env={k:os.environ[k] for k in ('PATH','LANG','TMPDIR') if k in os.environ};env.update(HOME=str(root/'home'),OPENCLAW_STATE_DIR=str(root/'state'),OPENCLAW_CONFIG_PATH=str(path),OPENCLAW_NO_RESPAWN='1')
 command=[str(options.node),str(options.native_cli)]
@@ -41,7 +54,26 @@ sys.path.insert(0,str(repo/'clients/python'))
 from xsm import host_install
 from xsm_client import XsmClient, RpcError
 report={'status':'starting','root':str(root),'scope':'actual public protocol owned operation, native OpenClaw gateway and claimed replies; model0 fixture','checks':[],'modelCalls':0}
-def save():(out/'result.json').write_text(json.dumps(report,indent=2)+'\n')
+nonce=secrets.token_hex(12)
+if options.subscription_model:
+ report.pop('modelCalls')
+ report.update(scope='public owned operation and actual OpenClaw/subscription-model normal/resumed/independent turns; generic reference parent, no native UI or messenger',
+               requestedModel=options.subscription_model,subscriptionAuthMode='oauth',
+               nativeVersion='2026.10.9',pythonVersion=sys.version.split()[0],
+               nodeVersion=subprocess.check_output([str(options.node),'--version'],text=True).strip(),
+               probeSourceSha256={name:hashlib.sha256((repo/name).read_bytes()).hexdigest() for name in (
+                'scripts/probe-openclaw-owned-protocol.py','scripts/probe_subscription_relay.py')})
+def expected(request):
+ if not options.subscription_model:return 'Explicit assistant fixture; no model inference.'
+ return nonce if request=='second' else 'XSM_REAL_'+nonce+'_'+request
+def prompt(request):
+ if not options.subscription_model:return 'Explicit fixture task '+request
+ if request=='second':return 'Return only the private memory token from the previous user turn. Do not use tools or add other text.'
+ return ('Remember this private memory token: '+nonce+'. ' if request=='first' else '')+'Reply exactly '+expected(request)+'. Do not use tools or add other text.'
+def save():
+ if options.subscription_model:
+  report.update(providerRequests=assistant.forwarded,responseModelLabels=sorted(assistant.response_models))
+ (out/'result.json').write_text(json.dumps(report,indent=2)+'\n')
 def check(name,value):
  if not value:raise AssertionError(name)
  report['checks'].append(name);save()
@@ -79,38 +111,40 @@ async def public_roundtrip():
    result=await client.operation_call(parent['session'],name,arguments)
    if isinstance(result.get('incoming'),dict) and result['incoming'].get('claims'):packets.append(result['incoming'])
    return result
-  async def read_reply(reply_id):
+  async def read_reply(reply_id,expected_body='Explicit assistant fixture; no model inference.'):
    packet=None
    for index,value in enumerate(packets):
     if any(claim['id']==reply_id for claim in value.get('claims',[])):
      packet=packets.pop(index);break
    if packet is None:packet=await op('xsm_inbox',{'message_ids':[reply_id]})
    claims=[claim for claim in packet.get('claims',[]) if claim['id']==reply_id]
-   check('native reply claimed '+reply_id,len(claims)==1 and any('Explicit assistant fixture; no model inference.' in text for text in packet['messages']))
+   check('native reply claimed '+reply_id,len(claims)==1 and any(expected_body in text for text in packet['messages']))
    ack=await op('xsm_ack',{'tokens':[claims[0]['token']]})
    check('native reply explicitly ACKed '+reply_id,ack['acked']==[reply_id])
   created=await op('xsm_owned',{'action':'create','name':'protocol-openclaw','runtime':'openclaw','home':str(root/'state')})
   check('public create admits OpenClaw provider',created['runtime']=='openclaw' and created['native_provider']['agent_id']=='main')
+  if options.subscription_model:report['nativeBindingHashes']=created['native_provider']['binding_hashes'];save()
   async def run(request,work='same'):
-   result=await op('xsm_owned',{'action':'run','name':'protocol-openclaw','text':'Explicit fixture task '+request,'work_context':work,'request_id':request})
-   deadline=time.monotonic()+90
+   result=await op('xsm_owned',{'action':'run','name':'protocol-openclaw','text':prompt(request),'work_context':work,'request_id':request})
+   deadline=time.monotonic()+(180 if options.subscription_model else 90)
    while result['status'] not in ('sent','reply-stored','unknown','error'):
     if time.monotonic()>deadline:raise TimeoutError('public owned native execution')
     await asyncio.sleep(.1);result=await op('xsm_owned',{'action':'status','name':'protocol-openclaw','request_id':request})
    (out/(request+'-journal.json')).write_text(json.dumps(result,indent=2)+'\n')
-   check('public run retained native reply '+request,result['status'] in ('sent','reply-stored') and result['result']['body']=='Explicit assistant fixture; no model inference.')
+   check('public run retained native reply '+request,result['status'] in ('sent','reply-stored') and result['result']['body']==expected(request))
    check('public run did not invent task success '+request,result['result']['outcome'] is None)
    return result
-  first=await run('first');await read_reply(first['reply_id'])
-  second=await run('second');await read_reply(second['reply_id'])
-  separate=await run('separate','separate');await read_reply(separate['reply_id'])
+  first=await run('first');await read_reply(first['reply_id'],expected('first'))
+  second=await run('second');await read_reply(second['reply_id'],expected('second'))
+  separate=await run('separate','separate');await read_reply(separate['reply_id'],expected('separate'))
   check('public same-work native identity retained',first['result']['native_session_id']==second['result']['native_session_id'])
   check('public separate work native identity differs',first['result']['native_session_id']!=separate['result']['native_session_id'])
-  before=(out/'assistant-fixture.jsonl').read_bytes()
+  provider_log=out/('subscription-relay.jsonl' if options.subscription_model else 'assistant-fixture.jsonl')
+  before=provider_log.read_bytes()
   replay=await run('first')
   check('public replay retained exact reply ID',replay['reply_id']==first['reply_id'])
-  check('public replay did not execute native model',(out/'assistant-fixture.jsonl').read_bytes()==before)
-  report['providerFixtureRequests']=len(before.splitlines())
+  check('public replay did not execute native model',provider_log.read_bytes()==before)
+  report['providerRequests' if options.subscription_model else 'providerFixtureRequests']=len(before.splitlines())
   async def exited_request(request_id):
    deadline=time.monotonic()+35
    while True:
@@ -157,7 +191,7 @@ async def public_roundtrip():
    report['nativeErrorSettlement']=settled['native_execution'];report['providerHttpEntries']=len(http_entries)
   if options.interrupt_frontend:
    from xsm import identity
-   blocking.set();text='Explicit interrupted public native task.'
+   blocking.set();text=prompt('interrupted') if options.subscription_model else 'Explicit interrupted public native task.'
    work='same' if options.restart_gateway else 'public-interrupted'
    await op('xsm_owned',{'action':'run','name':'protocol-openclaw','text':text,'work_context':work,'request_id':'interrupted'})
    check('public interrupted target reached native provider',await asyncio.to_thread(entered.wait,20))
@@ -175,7 +209,7 @@ async def public_roundtrip():
     bound,final=output_records(Path(unknown['child']['stdout']).read_text())
     check('public cold recovery has bound metadata without final stdout',bound is not None and final is None)
     query=NativeRpc(str(options.node),str(options.native_cli),cwd=str(root/'workspace'),env=env)
-    deadline=time.monotonic()+20
+    deadline=time.monotonic()+(180 if options.subscription_model else 20)
     while True:
      native=await asyncio.to_thread(query,'agent.wait',{'runId':bound['run_id'],'timeoutMs':100})
      if native.get('status')=='ok':break
@@ -199,12 +233,12 @@ async def public_roundtrip():
     if recovered['status'] in ('sent','reply-stored'):break
     if time.monotonic()>deadline:raise TimeoutError('public native host result recovery')
     await asyncio.sleep(.1)
-   check('public recovery returns actual native answer',recovered['result']['body']=='Explicit assistant fixture; no model inference.')
+   check('public recovery returns actual native answer',recovered['result']['body']==expected('interrupted'))
    check('public recovery retains native context identity',recovered['result']['native_session_id']==unknown['native_binding']['native_session_id'])
    check('public native recovery retains child SIGKILL exit',recovered['child']['returncode']==-signal.SIGKILL and recovered['result']['execution']['returncode']==-signal.SIGKILL)
    check('public recovery records host query provenance',recovered['result']['execution']['recovered_from']=='native-host-status')
    if options.restart_gateway:check('public cold recovery records actual transcript identity without fake receipt',recovered['result']['native_evidence']['source']=='native-chat.history' and bool(recovered['result']['native_evidence'].get('assistant_message_id')) and 'terminal_receipt' not in recovered['result']['native_evidence'])
-   await read_reply(recovered['reply_id'])
+   await read_reply(recovered['reply_id'],expected('interrupted'))
    replay=await op('xsm_owned',{'action':'run','name':'protocol-openclaw','text':text,'work_context':work,'request_id':'interrupted'})
    check('public recovered replay reuses original reply',replay['reply_id']==recovered['reply_id'])
    check('public recovery and replay do not resubmit inference',len(http_entries)==4)

@@ -283,7 +283,8 @@ before normal durable publication. The native turn's completion alone does not
 declare task success. Missing historical run/revision evidence is not fabricated.
 
 Frontend-loss recovery while the native host remains alive has model0 native
-evidence. The full runtime/UI/model/messenger matrix remains unfinished; see the
+and [macOS subscription-model evidence](../plan/runtime-protocol/openclaw-subscription-model.md).
+The full runtime/UI/model/messenger matrix remains unfinished; see the
 following sections and evidence notes for exact restart and settlement scope.
 
 ### Persisted transcript recovery after gateway restart
@@ -305,7 +306,8 @@ The provider rechecks the original closed session after the read. Evidence names
 the native input/assistant message IDs and transcript source with
 `source: "native-chat.history"`; it does not fabricate a terminal receipt or pick
 the latest unrelated assistant text. The original task is not resubmitted.
-Gateway restart after completed native execution has model0 evidence. Interrupted
+Gateway restart after completed native execution has model0 and macOS
+subscription-model evidence. Interrupted
 native work during restart and the full UI/model/messenger matrix remain unfinished.
 
 Persisted failed runs can close only their lease after restart. The original

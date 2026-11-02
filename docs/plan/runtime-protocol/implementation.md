@@ -40,7 +40,8 @@
   Claude/Codex legacy 경로와 공통 journal·동시성·범위 정책을 공유하며 native
   binding/control, 실행 중 취소와 보존 출력 readback을 구현했다. OpenClaw는
   별도 native host 수명과 frontend 종료 뒤 조회·gateway 재시작 후 run별 history
-  회수, 답변 없는 종료의 execution lease 정리까지 model0 증거가 있다.
+  회수에 model0 및 macOS 실제 구독 모델 증거가 있다. 답변 없는 종료의 execution
+  lease 정리는 model0 증거다. [실제 모델 표본](openclaw-subscription-model.md)을 구분한다.
   [Native worker 경계](native-worker-boundary.md), [OpenClaw 상세](openclaw-owned-session.md),
   [Linux 검증](linux-validation.md)의 source별 범위를 따른다. Classic spawn/pane는
   여전히 Claude/Codex이며 worker 전체 UI/실제 모델/원격 행렬 인증은 미완이다.

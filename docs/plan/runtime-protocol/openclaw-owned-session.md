@@ -10,6 +10,10 @@ Frontend 종료 뒤 살아 있는 native host의 완료 결과 회수도 macOS�
 실행 도중 gateway 재시작과 전체 OS/모드 행렬은 미완이다. 아래 초기 시험과 거부 기록도
 보존하며, 현재 통합 증거는 마지막 절을 따른다.
 
+macOS의 실제 구독 모델에서도 정상/문맥 재사용/독립 문맥과 frontend 종료 뒤
+warm/cold 결과 회수를 확인했다. [실제 모델 검증](openclaw-subscription-model.md)은
+model0·Linux·사람 UI·메신저 표본과 구분한다.
+
 OpenClaw2026.10.9의 실제 gateway에서 모델 실행 없이 세션 생성·재조회를
 확인했다. 이 기록은 owned 제공자 전체 완료나 모델/워커 실행 인증이 아니다.
 

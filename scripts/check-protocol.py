@@ -18,6 +18,7 @@ MODULES = ["tests.test_question_service", "tests.test_send_service", "tests.test
            "tests.test_file_uploads",
            "tests.test_file_contract",
            "tests.test_protocol_gate",
+           "tests.test_subscription_probe",
            "tests.test_protocol_directory",
            "tests.test_handover_service", "tests.test_handover",
            "tests.test_owned_interfaces", "tests.test_owned_workers", "tests.test_owned_native", "tests.test_owned_requests", "tests.test_owned_review_fixes",
