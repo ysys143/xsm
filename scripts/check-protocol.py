@@ -37,7 +37,7 @@ NATIVE_MODULES = ["tests.test_native_worker_catalog", "tests.test_native_worker_
                   "tests.test_native_worker_lineage", "tests.test_opencode_worker_cli", "tests.test_pi_worker_cli",
                   "tests.test_owned_cancellation"]
 NATIVE_MODULES += ["tests.test_hermes_cancel_observer"]
-NATIVE_MODULES += ["tests.test_openclaw_worker_session", "tests.test_openclaw_worker_frontend"]
+NATIVE_MODULES += ["tests.test_openclaw_worker_session", "tests.test_openclaw_worker_frontend", "tests.test_openclaw_worker_transport"]
 
 
 def run_phase(commands, env, root, deadline, offset):

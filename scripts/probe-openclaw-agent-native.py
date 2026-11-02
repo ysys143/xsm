@@ -5,12 +5,14 @@ from pathlib import Path
 import sys
 repo=Path(__file__).resolve().parents[1];sys.path.insert(0,str(repo))
 from integrations.openclaw import worker_session, worker_frontend
+from integrations.openclaw.worker_transport import NativeRpc
 from xsm.native_worker_control import WorkerControl,WorkerControlClient,ControlError
 import argparse
 parser=argparse.ArgumentParser(description='Pinned OpenClaw native backend run, exact identity checks, local model0 fixture.')
 parser.add_argument('--native-cli',type=Path,required=True)
 parser.add_argument('--node',type=Path,required=True)
 parser.add_argument('--output',type=Path,required=True)
+parser.add_argument('--sdk-transport',action='store_true',help='Use product native SDK transport and its native auth resolution.')
 parser.add_argument('--owned-frontend',action='store_true',help='Exercise ordered frontend with actual private sockets and fixture controller, not full owned journal.')
 options=parser.parse_args()
 if not options.native_cli.is_absolute() or not options.node.is_absolute():parser.error('absolute native CLI and Node paths required')
@@ -49,7 +51,10 @@ try {client.start();await connected;
 } catch(error) {console.error(JSON.stringify({nativeError:true,expectedSessionChanged:/changed (while starting expected work|before expected work could start)/.test(String(error?.message))}));process.exitCode=1;}
 finally {clearTimeout(deadline);client.stop();}
 """)
-def backend_call(method,params,timeout=30):
+def backend_call(method,params,timeout=50):
+ if options.sdk_transport:
+  return subprocess.run([str(options.node),str(repo/'integrations/openclaw/worker_rpc.mjs'),str(options.native_cli)],
+    input=json.dumps({'method':method,'params':params}),cwd=root/'workspace',env=env,capture_output=True,text=True,timeout=timeout)
  return subprocess.run([str(options.node),str(backend),str(options.native_cli.parent),method,json.dumps(params)],cwd=root/'workspace',env=env,capture_output=True,text=True,timeout=timeout)
 report={'status':'starting','root':str(root),'modelCalls':0,'scope':'actual native gateway agent turn; explicit scripted provider, no LLM inference'}
 def save():(out/'result.json').write_text(json.dumps(report,indent=2)+'\n')
@@ -84,6 +89,7 @@ try:
    report['staleRevisionRefusedBeforeProvider']=True;save()
    if options.owned_frontend:
     observations=[]
+    native_transport=NativeRpc(str(options.node),str(options.native_cli),cwd=str(root/'workspace'),env=env)
     def frontend_turn(native_id,request_id,refuse=False):
      binds=[]
      def bind(native_id):
@@ -93,7 +99,10 @@ try:
      client=WorkerControlClient(os.dup(controller.child.fileno()));controller.start()
      def rpc(method,arguments):
       if method=='agent' and binds!=[arguments['sessionId']]:raise AssertionError('model admitted before private bind ACK')
-      response=backend_call(method,arguments)
+      if options.sdk_transport:
+       result=native_transport(method,arguments)
+       response=subprocess.CompletedProcess([],0,json.dumps(result),'')
+      else:response=backend_call(method,arguments)
       stem='frontend-'+str(len(observations))+'-'+method
       (out/(stem+'.stdout')).write_text(response.stdout);(out/(stem+'.stderr')).write_text(response.stderr)
       observations.append(method)
@@ -111,6 +120,21 @@ try:
     assert observations[-1]=='sessions.create'
     assert len((out/'assistant-fixture.jsonl').read_text().splitlines())==2
     report['privateBindingRefusalStoppedBeforeProvider']=True
+    if options.sdk_transport:
+     blocked_env=dict(env,OPENCLAW_SHELL='exec')
+     blocked=NativeRpc(str(options.node),str(options.native_cli),cwd=str(root/'workspace'),env=blocked_env)
+     blocked_params=worker_session.agent_params(second['locator'],'Must be rejected before provider.','fixture-exec-refused')
+     try:blocked('agent',blocked_params)
+     except worker_session.NativeSessionError:pass
+     else:raise AssertionError('native exec attribution guard was bypassed')
+     guard_check=subprocess.run([str(options.node),str(repo/'integrations/openclaw/worker_rpc.mjs'),str(options.native_cli)],
+       input=json.dumps({'method':'agent','params':blocked_params}),cwd=root/'workspace',env=blocked_env,
+       capture_output=True,text=True,timeout=50)
+     guard_facts=json.loads(guard_check.stderr.strip().splitlines()[-1])
+     assert guard_check.returncode and guard_facts.get('operatorExecRefused') is True
+     (out/'native-exec-guard-facts.json').write_text(json.dumps(guard_facts)+'\n')
+     assert len((out/'assistant-fixture.jsonl').read_text().splitlines())==2
+     report['nativeExecMarkerRefusedBeforeProvider']=True
     assert first['locator']['native_session_id']!=created['sessionId']
     assert second['locator']['native_session_id']==first['locator']['native_session_id']
     report.update(frontendFirst=first,frontendResume=second,frontendRpcOrder=observations,
@@ -153,6 +177,7 @@ try:
    rr=subprocess.run(command+['gateway','call','sessions.resolve','--params',json.dumps(params2),'--json'],cwd=root/'workspace',env=env,capture_output=True,text=True,timeout=30)
    (out/'sessions.resolve.stdout').write_text(rr.stdout);(out/'sessions.resolve.stderr').write_text(rr.stderr);report['resolveExit']=rr.returncode
    if rr.returncode:raise RuntimeError('native resolve refused')
+ report['nativeSdkTransport']=options.sdk_transport
  report['status']='passed'
 except BaseException as error:report.update(status='failed',failure_type=type(error).__name__)
 finally:

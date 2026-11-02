@@ -152,3 +152,36 @@ gatewayStopped=true다. Controller는 실제 private socket의 callback fixture�
 이번 macOS 핵심 검사는 Python494+SDK52+native101+Node152=799개와 독립 mock39/
 변이14개를80.499초에 통과했다(openclaw-ordered-frontend-core.log). Linux의 앞선
 791개 결과에는 이번 frontend6개와 receipt2개가 포함되지 않는다.
+
+## Native 인증·전송 정책을 재사용하는 RPC 경로
+
+worker_rpc.mjs는 공개 SDK의 callGatewayFromCli를 backend 모드로 호출한다.
+Native가 profile/config·인증·연결 정책을 해석하며 XSM은 토큰이나 config 형식을
+재구현하지 않는다. Native package 이름과2026.10.9 버전을 확인하고 공개 export를
+resolve한다. 허용한 native method만 받으며 요청은 argv 대신 stdin으로 전달한다.
+
+worker_transport.py는 이 모듈을 별도 프로세스로 호출한다. Private control FD의
+환경 힌트와 worker label은 넘기지 않으며 native의 agent exec 표식은 유지한다.
+실패·timeout이면 불명확한 실행으로 보고 재시도하지 않는다. Native 오류 원문은
+출력하지 않고, probe에 필요한 특정 거부 사실만 boolean으로 내보낸다.
+
+명시적 SDK package fixture의 unit4개는 실제 Node 자식에서 backend 인수, 정확한
+요청, private hint 제거, 다른 버전·미허용 method 거부와 오류 내용 비노출을
+검사했다. Hint 제거를 생략한 변이는 assertion1개로 검출됐다
+(openclaw-sdk-transport-mutant.log). 이는 native 실행 인증과 구분한다.
+
+실제 native 시험은 위 명령에 --sdk-transport를 추가한다.
+openclaw-sdk-transport-native-guard-final에서 제품 transport를 통해 신규 실행과
+동일 세션 재개, stale revision 거부, private bind 거부를 확인했다. 또한
+OPENCLAW_SHELL=exec인 호출은 native의 출처 보존 규칙으로 거부됐다. Boolean
+거부 사실은 native-exec-guard-facts.json으로 따로 확인했다. Fixture 요청2회,
+실제 모델 추론0회, gatewayStopped=true다. 앞선 guard 표본은 일반 오류만 보고
+실패를 판정했으므로 특정 native 규칙의 근거는 이 final 표본으로 한정한다.
+
+이 transport와 frontend는 아직 provider catalog와 실제 owned journal에 연결하지
+않았다. 전체 지원이나 취소·복구 완료로 계산하지 않는다.
+
+최종 macOS 핵심 검사는 Python494+SDK52+native105+Node152=803개와 독립 mock39/
+변이14개를80.708초에 통과했다(openclaw-sdk-transport-core-final.log). 앞선
+79.948초 표본은 특정 exec 거부 boolean을 추가하기 전 결과로 따로 보존했다.
+이번 native transport4개를 포함한 Linux 검증은 아직 미실행이다.
