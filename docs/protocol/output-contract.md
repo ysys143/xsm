@@ -79,3 +79,21 @@ positive native numeric value, excluding booleans and numeric strings. Python
 integers too large for a finite native numeric representation are refused. The
 JSON Schema number definition alone does not establish that representation or
 the full host initialization contract.
+
+## Unexpected request failures
+
+An unexpected request exception, including backend `OSError` or `KeyError`,
+returns the original request ID with `error.code: -32603` and the generic
+message `internal server error`. A non-JSON backend result also produces this
+error instead of blaming the client's arguments. Backend exception text and
+tracebacks are not included in this response; stderr diagnostics identify only
+the exception class. A failing diagnostic writer does not replace the response.
+The server can process subsequent requests on the same connection. Broken
+transport output still ends the transport.
+
+This error does not prove rollback. A durable claim or another effect may have
+committed before the exception. The server does not retry the operation or
+implicitly ACK it. Reconcile the original operation's state before repeating
+work. Known message IDs can be used with `xsm_inbox(message_ids=[...])` to
+recover the current owned token, then acknowledge explicitly. This contract
+does not yet cover every notification-loop failure or domain-specific error.

@@ -534,11 +534,24 @@ def serve(inp=None, out=None):
                 if not isinstance(method, str) or not isinstance(params, dict):
                     raise ProtocolError(-32600, "method and object params required")
                 result = connection.dispatch(method, params)
-                emit({"jsonrpc": "2.0", "id": mid, "result": result})
+                try:
+                    emit({"jsonrpc": "2.0", "id": mid, "result": result})
+                except (ValueError, TypeError, RecursionError):
+                    # Invalid backend output is not an invalid client request.
+                    raise ProtocolError(-32603, "internal server error") from None
             except ProtocolError as exc:
                 emit({"jsonrpc": "2.0", "id": mid, "error": {"code": exc.code, "message": exc.message}})
-            except (ValueError, TypeError, KeyError, ToolError) as exc:
+            except (ValueError, TypeError, ToolError) as exc:
                 emit({"jsonrpc": "2.0", "id": mid, "error": {"code": -32602, "message": str(exc)}})
+            except Exception as exc:
+                # A request can fail after a durable effect. Do not retry, ACK,
+                # or expose backend details; the caller must reconcile state.
+                emit({"jsonrpc": "2.0", "id": mid,
+                      "error": {"code": -32603, "message": "internal server error"}})
+                try:
+                    sys.stderr.write("xsm protocol: internal request error (" + type(exc).__name__ + ")\n")
+                except Exception:
+                    pass
     except (BrokenPipeError, OSError):
         return 1
     finally:

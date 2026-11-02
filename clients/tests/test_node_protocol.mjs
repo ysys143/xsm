@@ -85,3 +85,30 @@ test('real server: two sessions in same repo, wait=0 send, notification, inbox a
       await rm(temp, { recursive: true, force: true });
     }
   });
+
+test('internal RPC error preserves the current claim and connection', { timeout: 10000 }, async () => {
+  const root = await realpath(fileURLToPath(new URL('../../', import.meta.url)));
+  const temp = await mkdtemp(join(tmpdir(), 'xsm-node-internal-error-'));
+  const diagnostics = [];
+  let client;
+  try {
+    client = await XsmClient.connect({ command: [process.env.PYTHON ?? 'python3', '-B',
+      join(root, 'tests/fixtures/protocol_internal_fault.py')], cwd: root,
+      env: { PATH: process.env.PATH, HOME: temp, XSM_HOME: join(temp, 'state'),
+        PYTHONPATH: root, PYTHONDONTWRITEBYTECODE: '1' }, onStderr: text => diagnostics.push(text) });
+    const [a, b] = await Promise.all(['a', 'b'].map(conversation => client.sessionOpen({
+      runtime: 'node-error', profile: 'fixture', conversation, cwd: root, capabilities: ['messaging', 'inbox', 'events'] })));
+    await client.eventsSubscribe(b.session);
+    await client.operationCall(a.session, 'xsm_send', { target: 'ref:' + b.ref, text: 'retain after internal error', wait: 0 });
+    const event = await client.nextNotification();
+    await assert.rejects(client.operationCall(b.session, 'xsm_inbox', {}), error =>
+      error instanceof RpcError && error.code === -32603 && error.message === 'internal server error');
+    const pack = await client.operationCall(b.session, 'xsm_inbox', { message_ids: event.params.ids });
+    assert.deepEqual(pack.claims.map(claim => claim.id), event.params.ids);
+    const ack = await client.operationCall(b.session, 'xsm_ack', { tokens: pack.claims.map(claim => claim.token) });
+    assert.deepEqual(ack.acked, event.params.ids);
+    assert.deepEqual(await client.sessionUpdate(b.session, { state: 'idle' }), { state: 'idle' });
+  } finally { if (client) await client.close(); await rm(temp, { recursive: true, force: true }); }
+  assert.ok(!diagnostics.join('').includes('private-post-claim-fixture'));
+  assert.ok(!diagnostics.join('').includes('Traceback'));
+});

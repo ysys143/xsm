@@ -13,6 +13,33 @@ from xsm_client import RpcError, XsmClient
 
 
 class RealProtocolTests(unittest.IsolatedAsyncioTestCase):
+    async def test_internal_rpc_error_preserves_claim_and_connection(self):
+        with tempfile.TemporaryDirectory(prefix='xsm-python-internal-error-') as temp:
+            diagnostics = []
+            env = {"PATH": os.environ.get("PATH", os.defpath), "HOME": temp,
+                "XSM_HOME": temp + '/state', "PYTHONPATH": str(ROOT), "PYTHONDONTWRITEBYTECODE": '1'}
+            async with await XsmClient.connect([sys.executable, '-B',
+                str(ROOT / 'tests/fixtures/protocol_internal_fault.py')], env=env,
+                cwd=str(ROOT), on_stderr=diagnostics.append) as client:
+                a, b = [await client.session_open(runtime='python-error', profile='fixture',
+                    conversation=value, cwd=str(ROOT), capabilities=['messaging', 'inbox', 'events'])
+                    for value in ('a', 'b')]
+                await client.events_subscribe(b['session'])
+                await client.operation_call(a['session'], 'xsm_send', {
+                    'target': 'ref:' + b['ref'], 'text': 'retain after internal error', 'wait': 0})
+                event = await asyncio.wait_for(client.next_notification(), 3)
+                with self.assertRaises(RpcError) as caught:
+                    await client.operation_call(b['session'], 'xsm_inbox', {})
+                self.assertEqual(caught.exception.code, -32603)
+                self.assertEqual(str(caught.exception), 'internal server error')
+                pack = await client.operation_call(b['session'], 'xsm_inbox', {'message_ids': event['params']['ids']})
+                self.assertEqual([claim['id'] for claim in pack['claims']], event['params']['ids'])
+                ack = await client.operation_call(b['session'], 'xsm_ack', {'tokens': [c['token'] for c in pack['claims']]})
+                self.assertEqual(ack['acked'], event['params']['ids'])
+                self.assertEqual(await client.session_update(b['session'], {'state': 'idle'}), {'state': 'idle'})
+            self.assertNotIn('private-post-claim-fixture', ''.join(diagnostics))
+            self.assertNotIn('Traceback', ''.join(diagnostics))
+
     async def test_real_server_two_sessions_send_inbox_ack(self):
         await asyncio.wait_for(self.roundtrip(), 30)
 

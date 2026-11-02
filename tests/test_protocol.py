@@ -341,6 +341,85 @@ class ProtocolTest(ProtocolFixture):
             serve(io.StringIO((request + "\n") * 12), out)
         self.assertGreater(events.call_count, 1)
 
+    def test_internal_request_errors_have_generic_wire_errors_and_keep_connection(self):
+        from xsm.protocol import Connection, serve
+        for index, kind in enumerate((RuntimeError, OSError, KeyError)):
+            with self.subTest(kind=kind.__name__):
+                connection = Connection()
+                connection.dispatch('initialize', {'protocolVersion': '1'})
+                opened = connection.dispatch('session.open', {'runtime': 'fixture', 'profile': 'fault',
+                    'conversation': str(index), 'cwd': self.tmp, 'capabilities': ['messaging', 'inbox']})
+                host = connection.sessions[opened['session']]
+                original, calls = host.call, []
+                def fault_then_healthy(name, args):
+                    calls.append(name)
+                    if len(calls) == 1:
+                        raise kind('private-fixture-detail')
+                    return original(name, args)
+                request = lambda mid: {'jsonrpc': '2.0', 'id': mid, 'method': 'operation.call',
+                    'params': {'session': opened['session'], 'operation': 'xsm_inbox', 'arguments': {}}}
+                class BrokenReporter(io.StringIO):
+                    def write(self, value):
+                        raise OSError('private-diagnostic-detail')
+                out = io.StringIO()
+                errors = BrokenReporter() if kind is OSError else io.StringIO()
+                with mock.patch('xsm.protocol.Connection', return_value=connection), \
+                        mock.patch.object(host, 'call', side_effect=fault_then_healthy), \
+                        mock.patch('sys.stderr', errors):
+                    status = serve(io.StringIO('\n'.join(json.dumps(request(mid)) for mid in (1, 2)) + '\n'), out)
+                self.assertEqual(status, 0)
+                frames = [json.loads(line) for line in out.getvalue().splitlines()]
+                self.assertEqual(frames[0], {'jsonrpc': '2.0', 'id': 1,
+                    'error': {'code': -32603, 'message': 'internal server error'}})
+                self.assertEqual(frames[1]['result']['claims'], [])
+                self.assertNotIn('private-fixture-detail', out.getvalue() + errors.getvalue())
+                self.assertNotIn('Traceback', out.getvalue() + errors.getvalue())
+
+    def test_invalid_internal_result_is_not_reported_as_bad_arguments(self):
+        from xsm.protocol import serve
+        original, called = self.connection.dispatch, []
+        def invalid_once(method, params):
+            called.append(method)
+            if len(called) == 1:
+                return {'internal_nonfinite': float('nan')}
+            return original(method, params)
+        requests = [{'jsonrpc': '2.0', 'id': mid, 'method': 'operations/list', 'params': {}}
+                    for mid in (1, 2)]
+        out = io.StringIO()
+        with mock.patch('xsm.protocol.Connection', return_value=self.connection), \
+                mock.patch.object(self.connection, 'dispatch', side_effect=invalid_once):
+            self.assertEqual(serve(io.StringIO('\n'.join(map(json.dumps, requests)) + '\n'), out), 0)
+        frames = [json.loads(line) for line in out.getvalue().splitlines()]
+        self.assertEqual(frames[0]['error'], {'code': -32603, 'message': 'internal server error'})
+        self.assertTrue(frames[1]['result']['operations'])
+
+    def test_internal_error_after_claim_keeps_original_for_explicit_token_recovery(self):
+        from xsm import handoff
+        from xsm.protocol import serve
+        sender, receiver = self.open('error-sender'), self.open('error-receiver')
+        self.operation(sender, 'xsm_send', target='ref:' + receiver['ref'], text='retain after error', wait=0)
+        host = self.connection.sessions[receiver['session']]
+        mid = handoff.pending_ids(host.record)[0]
+        original, claimed = host.call, []
+        def after_claim(name, args):
+            result = original(name, args)
+            if not claimed:
+                claimed.extend(json.loads(result)['claims'])
+                raise RuntimeError('private-post-effect-detail')
+            return result
+        requests = [{'jsonrpc': '2.0', 'id': index, 'method': 'operation.call', 'params': {
+            'session': receiver['session'], 'operation': 'xsm_inbox', 'arguments': args}}
+            for index, args in enumerate(({}, {'message_ids': [mid]}), 1)]
+        out, errors = io.StringIO(), io.StringIO()
+        with mock.patch('xsm.protocol.Connection', return_value=self.connection), \
+                mock.patch.object(host, 'call', side_effect=after_claim), mock.patch('sys.stderr', errors):
+            self.assertEqual(serve(io.StringIO('\n'.join(map(json.dumps, requests)) + '\n'), out), 0)
+        frames = [json.loads(line) for line in out.getvalue().splitlines()]
+        self.assertEqual(frames[0]['error']['code'], -32603)
+        self.assertEqual(frames[1]['result']['claims'][0]['token'], claimed[0]['token'])
+        self.assertNotEqual(handoff.status(host.record, mid)['status'], 'acknowledged')
+        self.assertNotIn('private-post-effect-detail', out.getvalue() + errors.getvalue())
+
     def test_stdio_recovers_after_bad_json_and_unknown_method(self):
         from xsm.protocol import serve
         inp = io.StringIO('broken\n' + json.dumps({"jsonrpc": "2.0", "id": 1,

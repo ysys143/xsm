@@ -1879,3 +1879,33 @@ archive hash가 같고 tracked dirty false이며 모델·실제 turn·사람 UI�
 메신저는 0회다. 테스트 VM은 중지했다. 공통 gate를 재실행한 결과로
 보고하지 않으며, 간헐적 ACK 실패 해결·정책/오류 전체·UI·나머지
 계획은 계속 미완이다.
+
+## 요청별 내부 오류 응답과 효과 보존
+
+예상하지 못한 RuntimeError/OSError가 응답 없이 연결을 끝내고 KeyError는
+잘못된 인자로 분류되던 경로를 수정했다. 원 request ID의 -32603/
+internal server error를 반환하고 다음 요청을 처리한다. 비직렬화 내부
+결과도 -32602로 잘못 분류하지 않는다. 내부 상세·traceback은 노출하지
+않고 stderr에는 exception class만 기록하며, diagnostic 쓰기 실패도
+원 응답을 바꾸지 않는다. 이미 발생한 효과를 rollback했다고 주장하지
+않고 자동 retry/ACK를 하지 않는다. Broken transport는 기존처럼 닫는다.
+
+변경 전 세 exception 분기와 claim 후 실패 검사는 실패했다
+(`protocol-internal-error-red.log`). 내부 NaN 결과의 오류 분류도 별도
+red에서 실패했다(`protocol-result-serialization-red.log`). 실제 정본
+claim을 만든 뒤 오류를 주고 같은 연결의 targeted token 조회에서
+복구되는 경로와 원문 보존·ACK 분리를 검사했다. 실제 Python/Node SDK와
+서버 subprocess도 post-claim fault fixture로 원문 회수·명시적 ACK·
+같은 session handle 유지·내부 상세 비노출을 통과했다
+(`protocol-internal-error-{python,node}-sdk.log`). 이 fixture는 별도 테스트
+프로세스에서만 오류를 주입한다.
+
+SDK 회귀 추가 전 공통 427개는 76.534초에 통과했다
+(`protocol-internal-error-core.log`). 이후 추가한 SDK 2개를 이 개수에
+섞지 않는다. Domain-specific 오류·notification loop 전체·Linux 및
+나머지 P0–P5는 미완이다.
+
+SDK 2개를 포함한 최종 공통 gate 429개(핵심 254/Python 49/Node
+126)는 76.330초에 통과했다
+(`protocol-internal-error-core-final.log`). 앞선 427개 표본과 구분한다.
+Linux의 이 변경 검증과 전체 오류 계약·나머지 계획은 계속 미완이다.
