@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 from .instructions import MESSAGING_GUIDE
+from .native_workers import runtimes as owned_runtimes
 
 class ToolError(Exception):
     """A refusal the tool returns to the agent as its result (isError), with
@@ -55,7 +56,7 @@ TOOLS = [
      "retry republishes a stored answer without rerunning the model. Ordinary sessions cannot be adopted.",
      "inputSchema": {"type": "object", "properties": {
          "action": {"type": "string", "enum": ["create", "run", "status", "retry", "reconcile"]},
-         "name": {"type": "string"}, "runtime": {"type": "string", "enum": ["claude", "codex"]},
+         "name": {"type": "string"}, "runtime": {"type": "string", "enum": owned_runtimes()},
          "dir": {"type": "string"}, "home": {"type": "string"}, "model": {"type": "string"},
          "effort": {"type": "string"}, "grant": {"type": "string"}, "text": {"type": "string"},
          "work_context": {"type": "string"}, "request_id": {"type": "string"},

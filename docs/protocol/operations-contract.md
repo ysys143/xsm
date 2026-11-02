@@ -20,8 +20,10 @@ used by the server, with the host transport's restrictions made explicit:
 
 Structural validity does not establish repository policy, directory existence,
 peer reachability, membership, permission, claim ownership or native support.
-For example, xsm_owned still declares only its implemented native worker runtimes;
-listing it does not generalize workers to Pi, OpenCode, Hermes or OpenClaw.
+For example, xsm_owned includes the experimental admitted Hermes 0.22.5 CLI
+provider beside Claude/Codex. Its presence does not generalize workers to Pi,
+OpenCode/OpenClaw or certify every Hermes lifecycle/UI mode. See the
+[native worker boundary](native-workers.md).
 Operation-specific results remain outside the completed schema coverage.
 
 ## Generation and consistency

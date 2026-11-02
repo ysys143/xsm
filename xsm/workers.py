@@ -167,19 +167,22 @@ def all_workers() -> list:
 _INDEX = {"key": None, "rows": []}
 
 
-def for_session(session_id: str | None) -> dict | None:
-    """Called for every Codex record on every lookup, so the worker files are
-    read again only when the directory changed (records are written by
-    rename, which changes it)."""
-    if not session_id:
-        return None
+def _indexed_workers():
+    folder = paths.path(WORKERS)
     try:
-        key = os.stat(paths.path(WORKERS)).st_mtime_ns
+        key = (os.path.realpath(folder), os.stat(folder).st_mtime_ns)
     except OSError:
-        return None
+        return []
     if _INDEX["key"] != key:
         _INDEX.update(key=key, rows=all_workers())
-    for worker in _INDEX["rows"]:
+    return _INDEX['rows']
+
+
+def for_session(session_id: str | None) -> dict | None:
+    """Legacy SID lookup; native callers with full identity use for_record."""
+    if not session_id:
+        return None
+    for worker in _indexed_workers():
         if worker.get("session_id") == session_id:
             return worker
         if worker.get("mode") == "owned" and session_id in worker.get("owned_sessions", []):
@@ -188,6 +191,27 @@ def for_session(session_id: str | None) -> dict | None:
                     known[0].get("home") == worker.get("home"):
                 return worker
     return None
+
+
+def for_record(record):
+    """Match raw or protocol-projected owned actors without borrowing another profile."""
+    if not isinstance(record, dict) or not all(isinstance(record.get(key), str) and record[key]
+                                               for key in ('runtime', 'home', 'session_id')):
+        return None
+    wanted = (record['runtime'], os.path.realpath(record['home']), record['session_id'])
+    matches = []
+    for worker in _indexed_workers():
+        native_ids = ([worker['session_id']] if worker.get('session_id') else [])
+        if worker.get('mode') == 'owned':
+            native_ids += worker.get('owned_sessions', [])
+        for native_id in native_ids:
+            projected = identity.protocol_key(worker['runtime'], worker['home'], native_id)
+            keys = ((worker['runtime'], os.path.realpath(worker['home']), native_id),
+                    (projected['runtime'], os.path.realpath(projected['home']), projected['session_id']))
+            if wanted in keys:
+                matches.append(worker)
+                break
+    return matches[0] if len(matches) == 1 else None
 
 
 def state(worker: dict) -> str:
@@ -425,13 +449,20 @@ CALLER_IDENTITY = ("CLAUDE_CODE_SESSION_ID", "CLAUDE_CODE_MESSAGING_SOCKET", "CL
                    "XSM_SANDBOXED")
 
 
-def _env(worker: dict) -> dict:
+def _base_worker_env(worker: dict) -> dict:
     env = dict(os.environ)
     # A worker is not part of the framework or tmux client it was started from.
     for _, keys in FRAMEWORKS:
         for k in keys:
             env.pop(k, None)
     env["XSM_WORKER"] = worker["name"]
+    for k in CALLER_IDENTITY:
+        env.pop(k, None)
+    return env
+
+
+def _env(worker: dict) -> dict:
+    env = _base_worker_env(worker)
     if worker["runtime"] == "claude" and os.path.realpath(worker["home"]) == \
             os.path.realpath(os.path.expanduser("~/.claude")):
         # The default home is not named. Claude Code reads folder trust from
@@ -441,8 +472,6 @@ def _env(worker: dict) -> dict:
         env.pop("CLAUDE_CONFIG_DIR", None)
     else:
         env["CLAUDE_CONFIG_DIR" if worker["runtime"] == "claude" else "CODEX_HOME"] = worker["home"]
-    for k in CALLER_IDENTITY:
-        env.pop(k, None)                # the caller's identity must not leak in
     return env
 
 
@@ -486,10 +515,10 @@ def depth_budget(caller: dict | None, requested: int | None = None) -> tuple:
     config `max_depth` (default 1). A worker's limit is the one it was given,
     and a worker can only narrow it for what it starts: the budget lives in the
     worker's record, not in an environment variable the worker could reset."""
-    parent = None
-    if os.environ.get("XSM_WORKER"):
+    parent = for_record(caller) if caller else None
+    if not parent and os.environ.get("XSM_WORKER"):
         parent = load(os.environ["XSM_WORKER"])
-    if not parent and caller:
+    if not parent and caller and not all(caller.get(key) for key in ('runtime', 'home', 'session_id')):
         parent = for_session(caller.get("session_id"))
     if parent:
         inherited = int(parent.get("max_depth", 1))
@@ -1431,14 +1460,18 @@ def create_owned(runtime, *, caller, name=None, cwd=None, home=None, model=None,
     refuse_inside_framework()
     owned_requests._native(caller)
     depth, depth_limit = depth_budget(caller)
-    if runtime not in ("claude", "codex"):
-        raise WorkerError("runtime must be claude or codex")
+    native = _require_owned_native(runtime)
     name = name or "owned-" + uuid.uuid4().hex[:8]
     if not NAME_RE.fullmatch(name) or load(name):
         raise WorkerError("invalid or existing owned worker name")
     cwd = os.path.realpath(os.path.expanduser(cwd or caller.get("cwd") or os.getcwd()))
-    home = os.path.realpath(os.path.expanduser(home or _default_home(runtime, caller)))
-    _check_installed(home, runtime)
+    home = os.path.realpath(os.path.expanduser(home or (
+        _native_owned_call(native, 'default_home', caller) if native else _default_home(runtime, caller))))
+    descriptor = None
+    if native:
+        descriptor = _native_owned_call(native, 'prepare', home)
+    else:
+        _check_installed(home, runtime)
     if not config.scope_for(caller, {"cwd": cwd})[0] and not human_terminal():
         use_grant(grant, caller, runtime, cwd, ["outside_scope"])
     worker = {"id": uuid.uuid4().hex, "name": name, "mode": "owned", "owned": True,
@@ -1447,6 +1480,8 @@ def create_owned(runtime, *, caller, name=None, cwd=None, home=None, model=None,
               "parent_ref": caller.get("ref"), "created": time.time(),
               "depth": depth, "max_depth": depth_limit,
               "session_id": None, "owned_sessions": []}
+    if descriptor is not None:
+        worker['native_provider'] = descriptor
     save(worker)
     return worker
 
@@ -1461,13 +1496,26 @@ def _owned_worker(name):
 
 
 def _require_owned_native(runtime):
-    if runtime not in ("claude", "codex"):
-        raise WorkerError("unsupported owned native runtime: %s" % runtime)
+    from . import native_workers
+    try:
+        return native_workers.provider(runtime)
+    except native_workers.ProviderError as error:
+        raise WorkerError(str(error)) from error
+
+
+def _native_owned_call(provider, method, *args):
+    from . import native_workers
+    try:
+        return getattr(provider, method)(*args)
+    except native_workers.ProviderError as error:
+        raise WorkerError(str(error)) from error
 
 
 def _owned_argv(worker, context):
     """Subscription CLIs only. First turns create a new context; followups resume it."""
-    _require_owned_native(worker.get("runtime"))
+    native = _require_owned_native(worker.get("runtime"))
+    if native:
+        return _native_owned_call(native, 'argv', worker, context)
     if context.get("native_session_id"):
         try:
             uuid.UUID(context["native_session_id"])
@@ -1500,7 +1548,10 @@ def _owned_argv(worker, context):
 
 def _owned_native_result(worker, context, output):
     """Only actual final CLI results become answers; error strings never do."""
-    _require_owned_native(worker.get("runtime"))
+    native = _require_owned_native(worker.get("runtime"))
+    if native:
+        result = _native_owned_call(native, 'result', worker, context, output)
+        return _owned_model_result(result['native_session_id'], result['body'], result['native_evidence'])
     native_evidence = {}
     if worker["runtime"] == "claude":
         try:
@@ -1576,6 +1627,10 @@ def _owned_native_result(worker, context, output):
         uuid.UUID(native_id)
     except ValueError as exc:
         raise WorkerError("native CLI returned an invalid conversation UUID") from exc
+    return _owned_model_result(native_id, body, native_evidence)
+
+
+def _owned_model_result(native_id, body, native_evidence):
     # A completed model turn is an answer, not proof of task success. Honor only
     # an explicit structured outcome; plain prose keeps task outcome unknown.
     outcome = None
@@ -1591,7 +1646,30 @@ def _owned_native_result(worker, context, output):
 
 
 class OwnedLaunchError(WorkerError):
-    """No child process was created; no model execution is claimed."""
+    """No native execution process was created; no model execution is claimed."""
+
+
+def _bind_owned_native(worker, request, native_id, existing_native):
+    from . import owned_requests
+    projected = identity.protocol_key(worker['runtime'], worker['home'], native_id)
+    expected = request['context'].get('native_session_id')
+    if expected not in (None, native_id):
+        raise WorkerError('native frontend changed the owned conversation')
+    if expected is None and ((worker['runtime'], native_id) in existing_native or
+                             (worker['runtime'], projected['session_id']) in existing_native):
+        raise WorkerError('native frontend selected an existing ordinary conversation')
+    actor = for_record({'runtime': worker['runtime'], 'home': worker['home'], 'session_id': native_id})
+    if actor and actor['id'] != worker['id']:
+        raise WorkerError('native conversation belongs to another owned service')
+    bound = owned_requests.bind_native_context(worker['owner'], request['id'],
+        request['reservation']['token'], native_id)
+    with _owned_record_lock(worker):
+        current = load(worker['name'])
+        if not current or current['id'] != worker['id']:
+            raise WorkerError('owned service changed before native binding')
+        current['owned_sessions'] = sorted(set(current.get('owned_sessions', [])) | {native_id})
+        save(current)
+    return bound
 
 
 def _execute_owned(worker, context, body, request):
@@ -1602,24 +1680,41 @@ def _execute_owned(worker, context, body, request):
     os.makedirs(folder, mode=0o700, exist_ok=True)
     output_path = os.path.join(folder, request["id"] + ".jsonl")
     error_path = os.path.join(folder, request["id"] + ".stderr")
-    env = _env(worker)
-    env["XSM_HOME"] = paths.HOME
-    # Do not silently route subscription work onto API-key billing.
-    for key in ("ANTHROPIC_API_KEY", "OPENAI_API_KEY", "CODEX_API_KEY"):
-        env.pop(key, None)
-    argv = _owned_argv(worker, context)
+    try:
+        native = _require_owned_native(worker.get('runtime'))
+        env = (_native_owned_call(native, 'environment', worker, _base_worker_env(worker))
+               if native else _env(worker))
+        env["XSM_HOME"] = paths.HOME
+        # Do not silently route subscription work onto API-key billing.
+        for key in ("ANTHROPIC_API_KEY", "OPENAI_API_KEY", "CODEX_API_KEY"):
+            env.pop(key, None)
+        argv = _owned_argv(worker, context)
+    except WorkerError as error:
+        raise OwnedLaunchError('owned native turn was not started: ' + str(error)) from error
     with open(output_path, "w", encoding="utf-8") as output, open(error_path, "w", encoding="utf-8") as errors:
         os.chmod(output_path, 0o600)
         os.chmod(error_path, 0o600)
+        control = None
+        options = {}
+        if native and getattr(native, 'CONTROL_PROTOCOL', None) == 1:
+            from .native_worker_control import WorkerControl, ENV_FD
+            before = {(r.get('runtime'), r.get('session_id')) for r in registry.raw_records()}
+            control = WorkerControl(lambda sid: _bind_owned_native(worker, request, sid, before))
+            env[ENV_FD] = str(control.child.fileno())
+            options['pass_fds'] = (control.child.fileno(),)
         try:
             process = subprocess.Popen(argv, stdin=subprocess.PIPE, stdout=output, stderr=errors,
-                                       cwd=worker["cwd"], env=env, text=True, start_new_session=True)
+                                       cwd=worker["cwd"], env=env, text=True, start_new_session=True, **options)
         except OSError as exc:
+            if control:
+                control.close()
             raise OwnedLaunchError("owned native process was not started: " + str(exc)) from exc
         start = identity.lstart(process.pid)
         try:
             owned_requests.note_child(worker["owner"], request["id"], request["reservation"]["token"],
                                       process.pid, start, argv=argv, stdout=output_path, stderr=error_path)
+            if control:
+                control.start()
             process.communicate(body)
         except BaseException:
             # Only this newly created owned child is ours to stop. Keep its
@@ -1634,14 +1729,21 @@ def _execute_owned(worker, context, body, request):
             if process.stdin is not None and not process.stdin.closed:
                 process.stdin.close()
             raise
+        finally:
+            if control:
+                control.close()
         output.flush()
         os.fsync(output.fileno())
     owned_requests.note_exit(worker["owner"], request["id"], request["reservation"]["token"],
                              process.returncode)
     if process.returncode != 0:
         raise WorkerError("owned native CLI exited %s; inspect retained run evidence" % process.returncode)
+    if control and control.native_id is None:
+        raise WorkerError('native frontend did not bind its owned context; result not accepted')
+    selected_context = (owned_requests.status(worker['owner'], request['id'])['context']
+                        if control else context)
     with open(output_path, encoding="utf-8") as output:
-        result = _owned_native_result(worker, context, output.read())
+        result = _owned_native_result(worker, selected_context, output.read())
     result["execution"] = {"pid": process.pid, "lstart": start, "argv": argv,
                            "stdout": output_path, "stderr": error_path, "returncode": process.returncode}
     return result
@@ -1770,11 +1872,14 @@ def run_owned(name, sender, body, *, work_context, request_id=None, independent=
             existing_native = {(r.get("runtime"), r.get("session_id")) for r in registry.raw_records()}
             result = executor(worker, request["context"], request["body"], request)
             native_id = result.get("native_session_id") if isinstance(result, dict) else None
+            projected_id = (identity.protocol_key(worker['runtime'], worker['home'], native_id)['session_id']
+                            if isinstance(native_id, str) else None)
             if (worker["runtime"] == "claude" and not request["context"].get("native_session_id")
                     and native_id != request["context"]["session_seed"]):
                 raise WorkerError("Claude did not use the fresh owned context")
             if (not request["context"].get("native_session_id") and
-                    (worker["runtime"], native_id) in existing_native):
+                    ((worker["runtime"], native_id) in existing_native or
+                     (worker["runtime"], projected_id) in existing_native)):
                 raise WorkerError("native runner selected an existing ordinary conversation")
             checkpoint("after-execution", request)
             request = owned_requests.save_result(owner, request_id, token, result)

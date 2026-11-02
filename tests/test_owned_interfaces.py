@@ -54,6 +54,15 @@ class OwnedInterfacesTest(TempState):
     def create(self):
         return self.invoke(action='create',name='service',runtime='codex')
 
+    def test_known_native_admission_refusal_is_a_tool_error(self):
+        with mock.patch.object(self.workers,'depth_budget',side_effect=self.workers.WorkerError('max_depth refused')):
+            with self.assertRaisesRegex(self.mcp.ToolError,'max_depth'):
+                self.create()
+
+    def test_unexpected_create_io_failure_is_not_reported_as_an_argument_refusal(self):
+        with mock.patch.object(self.workers,'create_owned',side_effect=OSError('fixture backend failure')):
+            with self.assertRaises(OSError):self.create()
+
     def test_mcp_create_run_same_id_replay_and_collision(self):
         self.create()
         args={'action':'run','name':'service','text':'work','work_context':'topic','request_id':'owned-public','wait':1}
@@ -123,7 +132,7 @@ class OwnedInterfacesTest(TempState):
         self.assertEqual(self.invoke(action='status',name='service')['requests'][0]['id'],'retained-answer')
         other=self.registry.upsert('codex',self.tmp+'/other-profile','other',os.getpid(),self.tmp,name='other')
         server=self.mcp.Server(io.StringIO(),io.StringIO());server.session=lambda:other
-        with self.assertRaises(self.workers.WorkerError):
+        with self.assertRaises(self.mcp.ToolError):
             server.call('xsm_owned',{'action':'status','name':'service','request_id':'retained-answer'})
 
     def test_mcp_overloaded_request_resumes_with_the_same_id_after_capacity_frees(self):

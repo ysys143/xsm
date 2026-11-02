@@ -191,7 +191,7 @@ class OwnedWorkerTest(test_xsm.TempState):
             {'type': 'thread.started', 'thread_id': context['session_seed']},
             {'type': 'item.completed', 'item': {'type': 'agent_message', 'text': 'a Codex result'}},
             {'type': 'turn.completed'}])
-        for runtime in ('pi', 'opencode', 'hermes', 'openclaw'):
+        for runtime in ('pi', 'opencode', 'openclaw', 'future-runtime'):
             worker = dict(self.worker, runtime=runtime)
             with self.subTest(runtime=runtime, stage='argv'), \
                     self.assertRaisesRegex(workers.WorkerError, 'unsupported owned native runtime'):

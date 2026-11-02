@@ -132,6 +132,8 @@ def submit(owner, worker, sender, work_context, body, *, request_id=None, indepe
     plan = {'worker': {k: worker.get(k) for k in ('id', 'runtime', 'home', 'cwd', 'model', 'effort')},
             'sender': sender_id, 'work_context': work_context, 'independent': independent,
             'body': envelope.request_identity(request_id, sender, None, body, kind='task')['body']}
+    if 'native_provider' in worker:
+        plan['worker']['native_provider'] = copy.deepcopy(worker['native_provider'])
     digest = _hash(plan)
     context_id = _hash([worker['id'], sender_id, work_context, request_id if independent else None])
     with _locked(owner) as state:
@@ -379,6 +381,29 @@ def note_exit(owner, request_id, token, returncode):
         if request['state'] != 'running' or not request.get('child'):
             raise OwnedError('no recorded owned child')
         request['child']['returncode'] = returncode
+
+
+def bind_native_context(owner, request_id, token, native_id):
+    """A private native frontend's observed creation, before any model turn."""
+    if not isinstance(native_id, str) or not native_id or len(native_id) > 4096:
+        raise OwnedError('actual native conversation ID required')
+    with _locked(owner) as state:
+        request = _get(state, request_id)
+        _token(request, token)
+        if request['state'] != 'running' or _alive(request.get('child') or {}) is not True:
+            raise OwnedError('native binding requires the current live execution child')
+        context = state['contexts'][request['context_id']]
+        if context['epoch'] != request['context_epoch'] or context.get('retired'):
+            raise OwnedError('native context generation changed')
+        if context['native_session_id'] not in (None, native_id):
+            raise OwnedError('native conversation changed before execution')
+        if any(other['id'] != context['id'] and other['worker_id'] == context['worker_id']
+               and other.get('native_session_id') == native_id for other in state['contexts'].values()):
+            raise OwnedError('native conversation already belongs to another owned context')
+        context['native_session_id'] = native_id
+        request['native_binding'] = {'native_session_id': native_id, 'child_pid': request['child']['pid'],
+                                     'child_lstart': request['child']['lstart'], 'bound_at': time.time()}
+        return _view(state, request)
 
 
 def save_result(owner, request_id, token, result):

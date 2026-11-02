@@ -328,7 +328,8 @@
           "type": "string",
           "enum": [
             "claude",
-            "codex"
+            "codex",
+            "hermes"
           ]
         },
         "dir": {

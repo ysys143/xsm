@@ -19,6 +19,15 @@ from . import probe
 RUNTIME_SLUG = re.compile(r'[a-z][a-z0-9-]{0,63}\Z')
 
 
+def protocol_key(runtime, profile, conversation):
+    """Existing v1 key projection only; it proves neither registration nor ownership."""
+    from . import paths
+    fingerprint = hashlib.sha256(profile.encode()).hexdigest()
+    sid = hashlib.sha256(json.dumps([fingerprint, conversation]).encode()).hexdigest()
+    return {'runtime': runtime, 'home': paths.path('protocol-profiles', runtime, fingerprint),
+            'session_id': sid}
+
+
 def lstart(pid: int) -> str | None:
     def ask():
         out = probe.command(["ps", "-o", "lstart=", "-p", str(pid)])

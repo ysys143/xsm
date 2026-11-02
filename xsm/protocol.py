@@ -340,9 +340,8 @@ class Connection:
         caps = params.get("capabilities", [])
         if not isinstance(caps, list) or not all(c in ("messaging", "inbox", "events", "user-decisions") for c in caps):
             raise ProtocolError(-32004, "unsupported participant capability")
-        profile = hashlib.sha256(params["profile"].encode()).hexdigest()
-        sid = hashlib.sha256(json.dumps([profile, params["conversation"]]).encode()).hexdigest()
-        home = paths.path("protocol-profiles", runtime, profile)
+        key = identity.protocol_key(runtime, params['profile'], params['conversation'])
+        sid, home = key['session_id'], key['home']
         previous = paths.read_json(registry._record_path(runtime, sid), {})
         if previous and not previous.get("ended_at") and identity.state_of(previous) == "live":
             from . import participants

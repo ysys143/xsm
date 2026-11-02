@@ -160,3 +160,82 @@ custom/127.0.0.1 경로도 확인했다(native-db-audit.json). Served model은 �
 84.859초에 통과했다(hermes-worker-cli-contract-core.log). 일반 provider 등록,
 profile/binary admission, XSM owned journal/실제 회신 연결은 다음 필수 구현으로
 남는다. 이 모듈과 CLI 표본만으로 Hermes worker 지원 완료를 표시하지 않는다.
+
+## Owned 실행 연결과 모델 전 결속 (2026-11-02)
+
+설치본의 고정 provider catalog와 공통 dispatch를 추가했다. Hermes CLI provider는
+xsm_owned create/run/status/retry/reconcile와 같은 owned journal·publisher를
+사용한다. Classic spawn 경로는 확장하지 않았다. 이전 섹션의 '아직 연결하지
+않았다'는 당시 단계이며, 후속 연결의 현재 경계는 native-workers.md에 있다.
+
+첫 직접 native 표본은 실제 모델 결과/회신 저장까지 성공했지만 status의
+incoming claim을 시험기가 무시하고 다시 inbox를 읽어 실패했다. 다음 표본은
+result-ready를 송신 완료로 해석해 controller를 너무 일찍 닫았다. Sending은
+그 자체로 종료 증거가 아니다. 두 실패 파일은 그대로 두고 같은 owned owner와
+요청을 재개해, 저장된 결과/동일 reply ID의 전송을 복구했다. 첫 모델 작업은
+재실행하지 않았다.
+
+재개한 실제 경로는19개 검사가39.280초에 통과했다
+(hermes-owned-native-recovered/result.json). 세 회신의 원문 읽기/명시적 ACK,
+70자 native ID의 실제 문맥 재사용, 동일 요청의 idempotent result 재사용,
+workspace 보존을 확인했다. Native DB에서 첫 작업+recall은2 calls/tool0,
+추가 depth 검사 후 누적5 calls/tool2였다. 실제 native model이 xsm_owned create를
+시도했고 상속된 max_depth 거부가 tool transcript에 남았으며 새 서비스는
+만들어지지 않았다. Configured model은 live catalog의 anthropic/claude-sonnet-5-5,
+served model은 미확인이다. 기존 local proxy의 anthropic authMode=oauth도
+읽기 전용으로 다시 확인했다. 시험 gateway는 소유권을 확인한 PID만 종료했다.
+
+단순 프로세스 env의 XSM_WORKER는 공유 gateway의 다른 세션에 섞일 수 있어,
+private descriptor로 native 생성 관측을 journal에 먼저 결속했다. 원래 native
+CLI 정책/실행을 사용하며 frontend process의 formatter binding 관측만 추가한다.
+Ordinary CID는 모델 전에 거부하며, 실제 callback의 PID/generation을 확인하고
+새 context ID를 고정한다. Native actor의 raw/protocol-projected 신원을 같은
+worker budget으로 찾으며, 다른 profile의 ordinary actor는 worker가 되지 않는다.
+이 결속은 입력 큐 수락·원문 ACK·사용자 승인과 별개다.
+
+모델 없는 실제 frontend/process/socket/journal 검사와 기존 회귀를 확대했다.
+임시 소스에서 결속 없는 결과 허용, actor budget 무시, ordinary CID의 거부를
+모델 후로 지연, idle worker의 snapshot 참조 누락을 각각 주입하자 관련 검사가
+모두 assertion 실패했다(native-provider-mutants.json 및 각 mutant log).
+출력에 callback PID나 native ID를 정의만 한 검사가 아니라 실행 순서와
+결과/중복/회수의 실제 경로를 검사했다. Native SDK를 stub한 검사는 model0이며
+실제 모델 인증과 구분한다.
+
+초기 확대 검사에서는 새 provider 지원 목록을 반영하지 않은 기존 assertion과
+CLI parser 함수명 오기가 각각 실패했다. 모델 없는 Hermes lifecycle fixture는
+native 환경 factory가 없는 모의 문맥에 대해 explicit 격리 env를 제공하도록
+맞췄고, 별도 검사로 native profile secret-scoping 호출을 확인했다. Loader의
+동시 초기화 경합도 제어된 검사에서 실패한 뒤 직렬화했다. 알려진 native
+admission 거부가 internal error로 빠지던 경로는 ToolError로 보존하고,
+예상치 못한 IO 예외는 그대로 내부 오류 경계로 남겼다. 각 실패/수정 로그는
+native-provider-* 접두어로 보존했다.
+
+전체 core 첫 실행은 OpenClaw의 정적 catalog가 공통 runtime enum과 달라
+490개 중1개가 실패했다. 공통 operation generator가 OpenClaw catalog도 갱신하게
+수정했다. 당시 전체692개와 독립 mock39/변이14개는96.253초에 통과했다.
+이후 추가한 interpreter 고정·참조 손상 검사 등의 최종 수치는 후속 기록을 따른다.
+
+## 최종 관련 회귀와 설치 참조
+
+마지막 core는 Python490+SDK50+native provider26+Node127=693개와 독립 mock39 /
+변이14개를96.319초에 통과했다(native-provider-core-release-check.log).
+Native provider26개는 다른 검사와 분리된 HOME/XSM_HOME에서 병렬 실행한다.
+기존 항목을 제거하거나120초 기한을 늘리지 않았다. Python/console이 다른
+버전이 되는 경우도 모델 전에 거부하며, 실제로 사용한 native venv interpreter의
+0.22.5 확인도 모델 호출0으로 통과했다(native-provider-actual-interpreter.json).
+
+논리 service가 남아 있으면 PID가 없는 idle 상태에도 frontend의 runtime root를
+참조로 보존한다. 참조 metadata나 worker pointer가 손상·symlink·판독 불가인
+경우 snapshot 정리는 보수적으로 모든 후보를 유지한다. 해당 검사는 임시
+cache만 사용했다. Runtime root 참조가 명시적 service 제거 뒤 풀리는 것도
+확인했다. 원시 로그는 native-provider-retention-final.log와 core 출력에 있다.
+
+첫 uncontrolled native 표본에서 놓친 회신도 원래 owner/request로 별도 읽기·ACK를
+복구했다.4개 검사가 통과했고 DB의 API calls는1로 유지됐다
+(hermes-owned-native-first-reply-recovery.json). 기존 failed 파일의 판정은 바꾸지
+않았다. 이 기록은 read/recovery이며 그 작업을 다시 실행한 결과가 아니다.
+
+현재 macOS에서 owned 정상 실행·문맥 재사용·저장 결과/전송 회수·중복 방지·
+상속 depth를 실제 native 모델로 확인했다. Linux native model/worker, 실시간
+중단/unknown native turn의 gateway readback, classic spawn/pane, native 사용자
+승인 UI 및 나머지 runtime/provider/전체 matrix는 계속 미완이다.

@@ -1,7 +1,7 @@
 """Hermes 0.22.5 CLI framing; admission, ownership and journaling remain in xsm.
 
-These helpers do not enable an owned runtime provider or choose credentials.
-The caller must supply an admitted native executable, profile and workspace.
+The installed provider and owned journal perform admission and identity binding.
+The caller supplies an admitted native executable, profile and workspace.
 """
 from __future__ import annotations
 

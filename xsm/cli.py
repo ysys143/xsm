@@ -2832,7 +2832,8 @@ def build_parser() -> argparse.ArgumentParser:
     service=sub.add_parser("owned",help="journal requests to an explicitly owned headless worker")
     service.add_argument("action",choices=["create","run","status","retry","reconcile"])
     service.add_argument("name")
-    service.add_argument("--runtime",choices=["claude","codex"])
+    from .native_workers import runtimes as owned_runtimes
+    service.add_argument("--runtime",choices=owned_runtimes())
     service.add_argument("--dir")
     service.add_argument("--home")
     service.add_argument("--model")

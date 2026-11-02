@@ -7,6 +7,7 @@ import sys
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from xsm.protocol_contract import operation_schema
+from xsm.operation_schema import TOOLS
 
 
 def sample(schema):
@@ -34,3 +35,6 @@ if __name__ == '__main__':
                 for name, arguments in schema['$defs'].items()]
     for name, value in (('operations.schema.json', schema), ('operation-examples.json', examples)):
         (ROOT / 'docs/protocol' / name).write_text(json.dumps(value, indent=2) + '\n')
+    (ROOT / 'integrations/openclaw/tools.mjs').write_text(
+        '// Generated from xsm.operation_schema.TOOLS; checked by tests.test_openclaw_schema.\n'
+        + 'export default ' + json.dumps(TOOLS, indent=2) + ';\n')

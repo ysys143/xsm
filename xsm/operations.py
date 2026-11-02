@@ -435,7 +435,7 @@ class OperationService:
         try:
             return owned_service.execute(me, args, run=lambda name, caller, text, **arguments:
                 self._owned_run(caller, args, name, text, arguments))
-        except owned_service.ActionError as exc:
+        except (owned_service.ActionError, workers.WorkerError, owned_requests.OwnedError) as exc:
             raise ToolError(str(exc)) from exc
 
     def _owned_run(self, me, args, name, text, arguments):

@@ -93,6 +93,16 @@ class HermesBinding:
     def _host_lock(self, sid):
         return self.host_locks.setdefault(sid, asyncio.Lock())
 
+    def _backend_environment(self):
+        base = dict(os.environ if self.env is None else self.env)
+        if self.env is None:
+            from tools.environments.local import served_profile_child_env
+            base = served_profile_child_env(base=base, target_home=self.profile, inherit_credentials=False)
+        base.pop('XSM_WORKER', None)
+        base.pop('XSM_OWNED_CONTROL_FD', None)
+        base['HERMES_HOME'] = self.profile
+        return base
+
     async def _host(self, sid, cwd, *, rebind=False):
         async with self._host_lock(sid):
             if self.closed or self.closing or sid in self.finalizing:
@@ -120,7 +130,7 @@ class HermesBinding:
             raise RuntimeError("native participation is closing")
         if sid not in self.hosts:
             pending = asyncio.create_task(self.sdk.XsmHost.open(runtime="hermes", profile=self.profile,
-                conversation=sid, cwd=cwd, command=self.command, env=self.env))
+                conversation=sid, cwd=cwd, command=self.command, env=self._backend_environment()))
             self.hosts[sid] = (cwd, pending)
             try:
                 await pending

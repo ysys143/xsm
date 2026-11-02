@@ -2498,3 +2498,30 @@ ID를 UUID로 취급하지 않으며, 빈 resume/실패 result/본문의 metadat
 명시적으로 거부한다. Framing7개와 의도적 변이3개가 검증됐고, 전체 핵심663개가
 84.859초에 통과했다. Provider/profile admission과 owned journal·회신 연결은
 계속 구현할 조건이다.
+
+## 고정 provider와 pre-turn native identity (2026-11-02)
+
+신규 native 실행은 설치본의 고정 catalog로 dispatch하며 공통 엔진에 새로운
+runtime 이름 분기를 추가하지 않았다. Hermes 0.22.5를 owned 경로에 연결해
+관리된 profile·operator native binary/interpreter·frontend hash를 검증한다.
+Native provider metadata도 frozen 요청 plan에 포함하며 legacy plan bytes는
+그대로 둔다. Root snapshot 보존과 알려진 admission 거부의 typed ToolError도
+연결했다. Profile별 native backend secret scope를 사용하고 공유 gateway의
+ambient worker/control hint를 제거했다.
+
+모델 전에 native ID를 private descriptor로 journal에 고정하고 실제 native
+actor의 raw/protocol-projected full identity를 worker budget에 연결한다.
+기존 ordinary conversation은 모델 전에 거부한다. Metadata 정의만 검사하지
+않고 실제 frontend/process/socket 경로와 일반 actor의 budget 분리를 검사했다.
+
+같은 native 결과의 전송을 재실행 없이 복구하고, 실제 native 문맥 재사용과
+회신3건의 명시적 ACK, idempotent request, 실제 max_depth 거부까지19개가
+39.280초에 통과했다. DB는 첫 작업/recall2 calls, depth 도구 검사 포함 누적
+5 calls/tool2였다. Source native gateway는 소유권을 확인한 PID만 종료했다.
+원시 결과는 hermes-owned-native-recovered/result.json이며 실패/후속 회수는
+[native worker 연결 기록](native-worker-boundary.md)에 구분했다.
+
+최신 macOS model-free core는693개와 독립 mock39/변이14개가96.319초에
+통과했다. 새 부정 경로 변이4개도 실제 assertion 실패를 확인했다. 이전 Linux
+gate를 이693개 검증으로 소급하지 않는다. Linux 신규 회귀·다른 provider·native
+UI/전체 lifecycle·30방향/remote/messenger 및 나머지 계획 조건은 미완이다.

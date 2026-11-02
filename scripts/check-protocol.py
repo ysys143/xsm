@@ -32,6 +32,8 @@ MODULES = ["tests.test_question_service", "tests.test_send_service", "tests.test
            "tests.test_handoff_crash", "tests.test_handoff_pending_ids",
            "tests.test_mcp_dispatch", "tests.test_subagent_transport",
            "tests.test_mcp_identity", "tests.test_mcp_shared_process"]
+NATIVE_MODULES = ["tests.test_native_worker_catalog", "tests.test_native_worker_control",
+                  "tests.test_native_worker_provider", "tests.test_native_worker_retention"]
 
 
 def run_phase(commands, env, root, deadline, offset):
@@ -87,6 +89,7 @@ def main():
                      "-p", "test_python*.py", "-q"],
                     [sys.executable, "-B", "examples/independent-participant/local_v3_fixtures.py",
                      "--bundle", "docs/protocol", "--output", temp + "/independent-local.json"],
+                    [sys.executable, "-B", "-m", "unittest", *NATIVE_MODULES, "-q"],
                     [sys.executable, "-B", "examples/independent-participant/local_v5_fixtures.py",
                      "--output", temp + "/independent-v5-local.json"],
                     [sys.executable, "-B", "examples/independent-participant/local_v6_fixtures.py",
@@ -100,7 +103,7 @@ def main():
             print(json.dumps({"passed": False, "reason": "Node.js is required for client conformance"}))
             return 1
         try:
-            for offset, phase in ((0, commands[:3]), (3, commands[3:])):
+            for offset, phase in ((0, commands[:4]), (4, commands[4:])):
                 failed = run_phase(phase, env, temp, started + 120, offset)
                 if failed is not None:
                     print(json.dumps({"passed": False, "command": failed}))
@@ -109,7 +112,7 @@ def main():
             passed = elapsed <= 120
             print(json.dumps({"passed": passed, "seconds": round(elapsed, 3),
                               "python": sys.version.split()[0], "nodePython": env["PYTHON"],
-                              "budgetSeconds": 120, "modules": MODULES}))
+                              "budgetSeconds": 120, "modules": MODULES + NATIVE_MODULES}))
             return 0 if passed else 1
         except subprocess.TimeoutExpired:
             print(json.dumps({"passed": False, "reason": "120-second budget exceeded"}))

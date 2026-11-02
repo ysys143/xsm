@@ -23,7 +23,8 @@ export default [
           "type": "string",
           "enum": [
             "claude",
-            "codex"
+            "codex",
+            "hermes"
           ]
         },
         "dir": {
@@ -400,7 +401,7 @@ export default [
   },
   {
     "name": "xsm_send",
-    "description": "Send a message to another session through xsm, the same as `xsm send`. Use it when your shell cannot run xsm (a sandboxed Codex cannot: xsm needs the process table, and a remote needs the network). Targets: name, name@home, ref:xxxxxx, and …@<paired machine>.",
+    "description": "Send a message to another session through xsm, the same as `xsm send`. Use it when your shell cannot run xsm (a sandboxed Codex cannot: xsm needs the process table, and a remote needs the network). Targets: name, name@home, ref:xxxxxx, and \u2026@<paired machine>.",
     "inputSchema": {
       "type": "object",
       "properties": {
@@ -437,7 +438,7 @@ export default [
             "succeeded",
             "failed"
           ],
-          "description": "only on a reply that closes a task you were given: how it ended. Say a failure here, not only in the words — the flag is what the sender can act on."
+          "description": "only on a reply that closes a task you were given: how it ended. Say a failure here, not only in the words \u2014 the flag is what the sender can act on."
         },
         "priority": {
           "type": "string",

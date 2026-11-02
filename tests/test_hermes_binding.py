@@ -3,7 +3,7 @@ import asyncio
 import importlib.util
 import os
 from pathlib import Path
-from types import SimpleNamespace
+from types import SimpleNamespace, ModuleType
 import unittest
 
 
@@ -21,6 +21,31 @@ else:
 
 
 class HermesLifecycleTest(unittest.IsolatedAsyncioTestCase):
+    async def test_default_backend_uses_native_profile_secret_scoping_without_ambient_worker(self):
+        binding=module.HermesBinding.__new__(module.HermesBinding)
+        binding.env=None;binding.profile='/native/profile-b'
+        native=ModuleType('tools.environments.local')
+        native.served_profile_child_env=mock.Mock(side_effect=lambda **kwargs:
+            {key:value for key,value in kwargs['base'].items() if key!='FIXTURE_API_KEY'})
+        source={'HOME':'/fixture-home','XSM_HOME':'/fixture-state','XSM_WORKER':'different-worker',
+                'XSM_OWNED_CONTROL_FD':'9','HERMES_HOME':'/native/profile-a','FIXTURE_API_KEY':'fixture'}
+        with mock.patch.dict(sys.modules,{'tools.environments.local':native}),mock.patch.object(module.os,'environ',source):
+            environment=binding._backend_environment()
+        self.assertEqual(environment['HERMES_HOME'],'/native/profile-b')
+        self.assertEqual(environment['XSM_HOME'],'/fixture-state')
+        self.assertNotIn('XSM_WORKER',environment)
+        self.assertNotIn('XSM_OWNED_CONTROL_FD',environment)
+        self.assertNotIn('FIXTURE_API_KEY',environment)
+        self.assertEqual(native.served_profile_child_env.call_args.kwargs['target_home'],'/native/profile-b')
+        self.assertIs(native.served_profile_child_env.call_args.kwargs['inherit_credentials'],False)
+
+    async def test_explicit_backend_environment_is_copied_and_profile_bound(self):
+        binding=module.HermesBinding.__new__(module.HermesBinding)
+        binding.env={'XSM_WORKER':'other','HERMES_HOME':'/wrong','XSM_HOME':'/state'}
+        binding.profile='/native/own-profile'
+        environment=binding._backend_environment()
+        self.assertEqual(environment,{'HERMES_HOME':'/native/own-profile','XSM_HOME':'/state'})
+        self.assertEqual(binding.env['XSM_WORKER'],'other')
     async def test_finalize_waits_for_inflight_open_before_removing_participation(self):
         entered, release = asyncio.Event(), asyncio.Event()
         closed = []
@@ -210,7 +235,8 @@ class HermesRegistrationTest(TempState):
     def test_next_native_call_recovers_dead_backend_without_inheriting_claim(self):
         constants = SimpleNamespace(get_hermes_home=lambda: Path(self.user_home, 'hermes'))
         with mock.patch.dict(sys.modules, hermes_constants=constants):
-            binding = module.register(self.context())
+            binding = module.register(self.context(), env={key: os.environ[key] for key in
+                ('PATH', 'LANG', 'TMPDIR', 'HOME', 'XSM_HOME') if key in os.environ})
         def invoke(sid, operation, arguments=None):
             return json.loads(self.tools[operation]['handler'](arguments or {}, session_id=sid))
         async def host(sid):
@@ -249,7 +275,8 @@ class HermesRegistrationTest(TempState):
     def test_registered_backend_reconnects_without_native_call_and_restores_state(self):
         constants = SimpleNamespace(get_hermes_home=lambda: Path(self.user_home, 'hermes'))
         with mock.patch.dict(sys.modules, hermes_constants=constants):
-            binding = module.register(self.context())
+            binding = module.register(self.context(), env={key: os.environ[key] for key in
+                ('PATH', 'LANG', 'TMPDIR', 'HOME', 'XSM_HOME') if key in os.environ})
         async def crash_and_wait():
             before = await binding.hosts['automatic'][1]
             before.client.process.kill()
@@ -285,7 +312,8 @@ class HermesRegistrationTest(TempState):
         import threading
         constants = SimpleNamespace(get_hermes_home=lambda: Path(self.user_home, 'hermes'))
         with mock.patch.dict(sys.modules, hermes_constants=constants):
-            binding = module.HermesBinding(self.context())
+            binding = module.HermesBinding(self.context(), env={key: os.environ[key] for key in
+                ('PATH', 'LANG', 'TMPDIR', 'HOME', 'XSM_HOME') if key in os.environ})
         entered = threading.Event()
         release = binding._run(self.make_event())
         async def close():

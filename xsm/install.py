@@ -715,6 +715,7 @@ def xsm_on_path() -> list:
 # What makes xsm run, relative to its folder: the package, the hooks, the skill
 # and the launcher. A copy that cannot name its commit is compared by these.
 RUNTIME_FILES = ("xsm/*.py", "hooks/*", "skills/**", "bin/xsm",
+                 "integrations/worker-providers.json",
                  "clients/typescript/*.mjs", "clients/typescript/*.d.mts", "clients/python/*.py",
                  "integrations/*/*.mjs", "integrations/*/*.py", "integrations/*/plugin.yaml",
                  "integrations/openclaw/openclaw.plugin.json",
@@ -1091,10 +1092,11 @@ def _configured_for() -> set:
     for link in links:
         texts.append(os.readlink(link) + "/" if os.path.islink(link) else "")
     found = set()
-    from . import host_install, component_leases
+    from . import host_install, component_leases, native_workers
     try:
         texts += [root + "/" for root in host_install.configured_roots()]
         texts += [root + "/" for root in component_leases.configured_roots()]
+        texts += [root + "/" for root in native_workers.configured_roots()]
     except (OSError, ValueError):
         return {name for name in os.listdir(runtime_dir()) if _ID.fullmatch(name)}
     for text in texts:
