@@ -1,11 +1,13 @@
 # Hermes 0.22.5 실험 연결
 
-상태: 초기 구현. 실제 PluginContext/도구 registry에 연결했으며, 실제 agent turn·
+상태: 실험 구현. 실제 PluginContext/도구 registry와 native agent turn,
+macOS Telegram 개인 대화의 pull/ACK/reply 왕복을 확인했다.
 CLI/TUI 전체 수명·자동 주입·사용자 UI·worker는 미완이다.
 명시한 프로필에 대한 소유권 기반 파일 설치·업데이트·제거는 지원한다.
 
 [`integrations/hermes/xsm.py`](../../integrations/hermes/xsm.py)의 `register(context)`는
-공통 서버의 스키마로 native 도구 21개를 등록한다. 도구 dispatcher가 제공한
+공통 서버의 현재 스키마로 native 도구 22개를 등록한다. 아래 초기 표본의
+21개는 xsm_doc 추가 전 수치다. 도구 dispatcher가 제공한
 `session_id`와 native `session_cwd()`를 사용하고 기존 참여의 폴더 일치를 확인한다.
 모델 인자로 발신자를 고르거나 gateway 프로세스의 cwd를 대신 쓰지 않는다.
 프로필은 등록 시 실제 Hermes home으로 고정한다.
@@ -268,3 +270,24 @@ fixture 경계는 [Linux 검증 기록](../plan/runtime-protocol/linux-validatio
 backend 등록이 정상 세션 도구를 막지 않는 것을 확인했다
 (`linux-hermes-slow-registration/output/result/result.json`). 앞선
 13개와 중복되는 항목은 별도 표본으로 구분한다.
+
+## macOS 실제 agent 및 Telegram pull 왕복
+
+이후 전용 시험 프로필에서 실제 AIAgent와 GatewayRunner를 실행했다. 기존 구독
+프록시의 live catalog 모델을 사용했으며 API 키 과금 경로를 만들지 않았다.
+모델의 native tool_search→xsm_inbox→xsm_ack→xsm_send 호출과 sender의 reply
+수신/ACK를 실제로 확인했다. Telegram 개인 대화에서도 사용자가 보낸 지시로
+생성된 native 세션이 같은 pull/ACK/reply를 수행하고, 확인 nonce의 최종 외부
+전달이 native delivery ledger의 delivered로 기록됐다. 시험용 gateway는 종료됐다.
+
+Telegram 표본의7개 검사는 통과했지만, 모델이 처음 xsm_send에 잘못된 `to` 인수를
+전달한 실패1회와 이후 성공을 모두 보존했다. 첫 대기 timeout도 별도 실패로
+기록했다. configured/requested model과 실제 served model을 구분하며, 후자는
+이 표본에서 확인하지 못했다. 전용 프로필·수신자 식별자·비밀 token은 저장소에
+포함하지 않는다.
+
+상세 경계와 실행 기록은 [Telegram 시험 기록](../plan/runtime-protocol/hermes-telegram-live.md)에
+있다. 이 증거는 wake=never인 FYI의 pull 경로다. native push/idle p95·사용자 승인
+UI·worker·다중 대화·Discord·Linux Telegram 또는 전체30방향 조합의 통과를
+뜻하지 않는다. 앞선 API fixture의21개 도구 수치와 이번 실제 agent 표본도
+서로 다른 시점의 관측으로 구분한다.

@@ -15,8 +15,11 @@
 
 - `xsm protocol serve --stdio`: 버전 협상, 연결별 불투명 세션 핸들,
   프로필/대화 분리, 수명 락, 상태 갱신·종료, 세션별 이벤트 구독.
-- 작업 처리 메서드 26개와 공개 스키마를 MCP 모듈 밖의 공통 서비스로 이동했다.
+- 초기 작업 처리 메서드 26개와 공개 스키마를 MCP 모듈 밖의 공통 서비스로 이동했다.
   일반 프로토콜은 MCP transport를 import/상속하지 않는다. CLI 전체 서비스 추출은 아직 미완이다.
+- CLI와 모델 frontend가 팀·보드·send·질문/handshake·doc·handover·owned dispatch와
+  프로젝트 join/leave/link/reach의 공통 서비스를 사용한다. Inbox/ACK 정본 처리도
+  기존 receive를 공유한다. 각 frontend의 caller 확인·실제 답 수집·출력은 유지한다.
 - 일반 참여자 DM은 기존 정책과 정본 handoff 저장소를 사용한다.
   알려지지 않은 런타임을 Codex 전송으로 보내지 않는다.
 - 수신 알림·네이티브 큐 보고·최종 소비 ACK 분리. FYI는 알림을 발생시키지 않는다.
@@ -30,17 +33,20 @@
   OpenClaw의 guarded native context queue prototype이 있다. 런타임 전체 지원
   인증이나 모든 표면의 연결 완료를 뜻하지 않는다.
 - 실험 명세·요청 스키마·README 연결. 안정된 호환성 보장은 아직 아니다.
+- Hermes의 실제 native agent와 macOS Telegram 개인 대화에서 pull→명시적 ACK→
+  reply→Telegram 전달을 확인했다. [별도 기록](hermes-telegram-live.md)의 표본이며
+  native push/UI/worker나 전체 메신저 지원 완료를 뜻하지 않는다.
 
 ## 단계별 판정
 
 | 단계 | 상태 | 남은 조건 |
 |---|---|---|
 | P0 계약·현황 | 부분 구현 | 전체 기능별 normative 스키마, 독립 구현 적합성, 안정판 API 감사 |
-| P1 공통 서비스 | 부분 구현 | CLI 추출, 일반 원격 신원, 네이티브 UI 연결, 비동기 작업 수명 |
-| P2 SDK·검사기 | 부분 구현 | 독립 구현 적합성, 전체 오류/취소 계약 (Python↔Node 교차 시험 통과) |
+| P1 공통 서비스 | 부분 구현 | 남은 CLI 추출·native worker 확장·비동기 작업 수명. 일반 참여자의 원격 신원은 별도 실제 QUIC 표본으로 검증했으나 전체 runtime 행렬은 미완 |
+| P2 SDK·검사기 | 부분 구현 | 독립 구현의 전체 계약 적합성·전체 오류/취소 계약. Python↔Node 교차 시험 및 고정 공개 입력에 대한 독립 구현 표본은 통과 |
 | P3 Pi·OpenCode | 부분 구현 | 연결·수신·설치·대화 수명·자동 재접속의 native fixture 검증. 실제 사용자 UI·native worker·busy/now의 실제 우선순위 등 미완 |
-| P4 Hermes·OpenClaw | 부분 구현 | Hermes native 도구·격리 설치·주입 및 대화별 자동 복구 fixture, OpenClaw guarded queue prototype. 실제 agent turn·idle wake·UI·worker, OpenClaw owned queue/UI 검증과 다양한 장애의 claim 회수 미완 |
-| P5 통합·배포 | 부분 검증 | Mac native SDK/CLI fixture와 Linux arm64 공통 gate·Pi/OpenCode/OpenClaw native fixture와 Hermes plugin/API fixture 통과. Hermes native queue p95·idle wake, OpenClaw 간헐적 burst ACK 실패, 30개 방향 조합, 동종 세션, 원격, 버전·플랫폼별 전체 native p95, 실제 모델·메신저·전체 회귀 미완 |
+| P4 Hermes·OpenClaw | 부분 구현 | Hermes native 도구·격리 설치·자동 복구 fixture 및 macOS 실제 agent/Telegram pull 왕복 통과. native push·idle wake·UI·worker, OpenClaw owned queue/UI 검증과 다양한 장애의 claim 회수 미완 |
+| P5 통합·배포 | 부분 검증 | Mac/Linux 핵심 gate와 여러 native fixture 통과. Hermes queue p95·idle wake, OpenClaw 간헐적 burst ACK 실패, 30방향 조합·물리 원격·전체 native p95·실제 UI/worker/모델 행렬·Discord·전체 회귀 미완. Telegram은 macOS의 단일 승인 개인 대화 pull 표본으로 한정 |
 
 ## 초기 실제 검사
 
@@ -63,7 +69,7 @@ Python 3.9 SDK 타입 주석 import 실패를 수정했다.
 별도 검토가 찾은 종료 판정·연속 요청 알림 기아·기본 15초 대기도 수정하고
 회귀 검사를 추가했다.
 
-## 확인된 선행 조건과 미실행 항목
+## 초기 확인의 선행 조건과 당시 미실행 항목
 
 Reason의 Hermes 통합은 다음 API를 요구한다:
 `session_key`, `session_cwd`, `session_surface`, `session_supports_async_delivery`,
@@ -76,7 +82,7 @@ Hermes v0.22.5의 `hermes_cli/plugins.py`에는 이 중 `session_key`,
 근거: [고정 안정판](https://github.com/NousResearch/hermes-agent/blob/v0.22.5/hermes_cli/plugins.py),
 [Reason 고정 통합](https://github.com/reason-machines/reason-network/tree/bcf045cf7eadcbff25965fd6b12afeb88ab819ea/integrations/hermes).
 
-현재 머신에서 실행 파일은 Pi만 발견했다. OpenCode/Hermes/OpenClaw 설치,
+초기 조사 당시 이 머신에서 실행 파일은 Pi만 발견했다. OpenCode/Hermes/OpenClaw 설치,
 실제 로그인·네이티브 모델 실행, Linux, 메신저 계정 연결과 발송은 수행하지 않았다.
 사용자 설정·권한·실제 프로필은 수정하지 않았다. 네이티브 인증과 30개 조합은
 선행 연결부가 미구현이므로 전제 미충족이다.

@@ -683,7 +683,7 @@ Principles:
 
 ## Documents
 
-- **[Experimental host protocol](docs/protocol/README.md)**: unreleased development path. Pi, OpenCode, Hermes and OpenClaw bindings and installation lifecycle are under isolated testing; native UI, full runtime and messenger support are incomplete.
+- **[Experimental host protocol](docs/protocol/README.md)**: unreleased development path. Pi, OpenCode, Hermes and OpenClaw bindings and installation lifecycle are under isolated testing. A [macOS Hermes/Telegram pull roundtrip](docs/plan/runtime-protocol/hermes-telegram-live.md) is verified; native UI, full runtime and messenger support remain incomplete.
 
 Most documents under `docs/` are written in Korean.
 

@@ -501,3 +501,20 @@ share를 shared로 잘못 지정해 Docker exit125로 실패했다. 검사 본�
 전체 batch 결과와 시작·종료 로그는 scope-linux-batch[-v2]/에 있다.
 사용자 Docker context·공유 프로필·호스트 설정은 변경하지 않았다. 이 결과는
 Linux 핵심 gate이며 native UI·model·messenger·queue p95 인증은 아니다.
+
+## 미지원 worker 거부와 ACK 계약의 관련 회귀 (2026-11-02)
+
+`3afd873`의 깨끗한 커밋 소스를 git archive로 만들고 export-ignore된 tests도
+같은 커밋에서 복원했다. 두 이미지가 사용한 source archive SHA-256은
+bea85a5ff45d3453ac7f700d0ea193a8794be2d477e724ab000f70a35d860d9c다.
+네트워크 none, model0이며 private VM의 start/stop은 exit0이다.
+
+기존 owned worker/native event/review 및 public contract snapshot 설치 경로를
+합쳐 각각72개를 실행했다. Python3.11은70개 통과/2개 skip(검사 본문8.218초),
+Python3.14도70개 통과/2개 skip(9.978초)이었다. Skip은 과거 coordinator의 private
+native log와 capacity log가 컨테이너에 없어 기존 조건으로 미실행된 항목이다.
+기록 주체는 이번 구현 세션이며, 사용자에게 해당 원시 fixture가 제공되면 다시
+확인할 항목으로 남긴다. Skip을 승인된 범위 제외나 전체 native 완료로
+처리하지 않는다. 결과/전체 verbose log는 owned-runtime-linux/{311,314}/와
+owned-runtime-linux/result.json에 있다. 이 검사는 관련 경로의 표본이며 앞선
+643개 Linux gate를 최신 코드 전체 gate로 소급 갱신하지 않는다.
