@@ -53,3 +53,20 @@ the server's `REQUEST_FIELDS` table. Runtime regression tests demonstrate that
 unknown parameters cannot initialize, close a session or subscribe to events.
 Before the server fix, the close request actually closed the participation;
 that failure is preserved in `request-fields-red.log`.
+
+## Error precedence in this implementation
+
+Framing/JSON errors precede method dispatch. Before initialization, non-initialize
+requests fail with -32002; repeated initialize is -32600. Unknown fields of a
+known method are refused with -32602 before its state change. Global
+operations/list and session.open do not need a session handle. Other dispatch
+paths validate the connection-local handle first: an unknown method without a
+valid session can therefore return -32001 before method-not-found. With a valid
+handle, unknown methods and unknown operation names return -32601.
+
+Known operation argument types/ranges are validated before recognized host
+transport restrictions. A negative wait is invalid parameters (-32602); a valid
+positive blocking wait is unsupported here (-32004). Nonempty native transcript
+answer recovery is also -32004. The structural schema describes accepted input,
+not the precise error code for every rejected combination. Unexpected request
+or output failures are -32603 and do not establish rollback.

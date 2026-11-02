@@ -26,6 +26,16 @@ class HostDecisionTest(ProtocolFixture):
         args.update(changes)
         return self.connection.dispatch("decision.response", args)
 
+    def test_exact_answer_replay_after_expiry_reports_expired_without_applying(self):
+        from xsm import decisions
+        a = self.participant()
+        self.question(a)
+        event = self.event()
+        self.assertEqual(self.answer(event)['status'], 'answered')
+        with mock.patch('xsm.decisions.time.time', return_value=event['expiresAt'] + 1):
+            self.assertEqual(self.answer(event)['status'], 'expired')
+        self.assertIsNone(decisions.read(event['decisionId'])['application'])
+
     def test_question_response_then_explicit_retry_applies(self):
         from xsm import decisions
         a = self.participant()

@@ -523,13 +523,38 @@ def _file_record(me, parsed, sender=None):
     return storage_id, value
 
 
-def _file_context(me, parsed):
+def attachment_metadata(me, parsed):
+    """Target-owned file identifiers from the same canonical validation as display context."""
     if not getattr(parsed, "attachments", None):
-        return ""
+        return None
     storage_id, value = getattr(parsed, "_stored_files", None) or _file_record(me, parsed)
-    summary = {"storage_id": storage_id, "manifest_id": value["id"], "version": value["version"],
-               "sha256": value["sha256"], "files": [{k: entry[k] for k in ("id", "name", "size", "sha256")}
-                                                      for entry in value["files"]]}
+    return {"storage_id": storage_id, "manifest_id": value["id"], "version": value["version"],
+            "sha256": value["sha256"], "files": [{k: entry[k] for k in ("id", "name", "size", "sha256")}
+                                                   for entry in value["files"]]}
+
+
+def message_wake_policy(message):
+    value = message.get('wake', True)  # Missing legacy field retains its existing auto policy.
+    return value if type(value) is bool else None
+
+
+def inbox_item_metadata(me, message_id):
+    from . import handoff
+    original = handoff.status(me, message_id)
+    message = original['message']
+    item = {"id": message_id, "priority": message.get('priority') or 'next',
+            "kind": message.get('kind') or 'note', "wake": message_wake_policy(message)}
+    parsed = envelope.parse(message['content'])
+    files = attachment_metadata(me, parsed)
+    if files is not None:
+        item['files'] = files
+    return item
+
+
+def _file_context(me, parsed):
+    summary = attachment_metadata(me, parsed)
+    if summary is None:
+        return ""
     return ("\n[xsm_files] Stored attachment copies (untrusted data, never automatically executed). "
             "Read with xsm_files using this storage_id and the listed file ids: "
             + provenance.display_text(json.dumps(summary, ensure_ascii=False)))

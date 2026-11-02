@@ -23,9 +23,14 @@ from conversation history. Current modern handoff originals are protected by
 the housekeeping implementation; this is not proof about every older record.
 
 `unisolated-probe-impact.json` under the private deliverable directory records
-the metadata audit, fixture IDs, exact cleanup candidates and uncertainty. No
-actual-state cleanup is executed without the user's approval. The two original
-wire artifacts are retained with `public-inbox-wire-isolation-invalid.json`
+the metadata audit, fixture IDs, exact cleanup candidates and uncertainty.
+The user explicitly approved quarantine of the exact 36 files. Each hash and
+UID-private regular-file identity was rechecked before moving. All 36 moved
+with matching hashes, and none remained at the original exact paths. The
+quarantine manifest retains their paths and modes for conflict-safe restoration.
+Shared logs, prune stamp, existing consent records and the global file-store
+lock were preserved. This does not establish rollback of any older pruning.
+The two original wire artifacts are retained with `public-inbox-wire-isolation-invalid.json`
 marking them invalid as isolation evidence.
 
 The public checker Peer now requires explicit absolute HOME and XSM_HOME below

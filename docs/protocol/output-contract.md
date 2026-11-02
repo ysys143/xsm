@@ -119,3 +119,10 @@ are attached. The pending counter and optional `incoming` packet are JSON fields
 they do not turn the whole result into display text. Incoming claim tokens still
 require explicit ACK after reading. This object-envelope contract does not fill
 in all operation-specific domain schemas.
+
+The [inbox result schema](inbox-result.schema.json) additionally specifies the
+claimed items and target-owned file metadata. Wire observations tagged with
+operation=xsm_inbox are checked against it, including item/claim ID correlation.
+[Inbox semantics](inbox-contract.md) also defines sender metadata and structured
+attachment preparation recovery. This adds one domain result contract; other
+operation-specific schemas are still incomplete.

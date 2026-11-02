@@ -16,7 +16,7 @@ import threading
 import time
 from . import consent, context, identity, paths, probe, registry, workers
 from .instructions import HANDSHAKE_TEXT
-from .operation_schema import ToolError, TOOLS, WIDENING, FILE_READING, DECLINED, unanswered, who_answered, person_answer, operation_returns_json
+from .operation_schema import ToolError, TOOLS, WIDENING, FILE_READING, DECLINED, unanswered, who_answered, person_answer, operation_returns_json, OperationDisplay
 
 
 def invoke(host, name, arguments):
@@ -177,6 +177,7 @@ class OperationService:
             self.decision_calls[self.active_request] = decision_call
         try:
             text = self._call(name, args, me)
+            producer_metadata = text.metadata if isinstance(text, OperationDisplay) else None
             if decision_call:
                 record = decisions.read(decision_call["key"])
                 if record and (record["status"] == "answered" or (record.get("application") or {}).get("phase") == "started"):
@@ -225,7 +226,7 @@ class OperationService:
         held = bounce.notice(me.get("session_id"))     # issue #8
         if held:
             text += "\n\n" + held
-        return text
+        return OperationDisplay(text, producer_metadata) if producer_metadata is not None else text
 
     def _call(self, name: str, args: dict, me: dict) -> str:
         if name == "xsm_owned":
@@ -398,13 +399,16 @@ class OperationService:
                 value = send_service.execute(args, caller=me, call=self.ctx)
             except files.FileError as exc:
                 from .provenance import readable
-                raise ToolError(readable(materials.failure(exc))) from exc
+                failure = materials.failure(exc)
+                raise ToolError(readable(failure), data={"attachment_error": failure}) from exc
             except (send_service.SendError, multisend.MultiError) as exc:
                 raise ToolError(str(exc)) from exc
             text = "\n".join(value["result"].lines())
+            metadata = {"send": value["result"].as_dict(), "grouped": value["grouped"]}
             if value["materials"]:
-                text += "\nMaterials: " + json.dumps(materials.public(value["materials"]), ensure_ascii=False)
-            return text
+                metadata["materials"] = materials.public(value["materials"])
+                text += "\nMaterials: " + json.dumps(metadata["materials"], ensure_ascii=False)
+            return OperationDisplay(text, metadata)
         if name == "xsm_doc_endorse":
             return self.endorse(me, args)
         if name == "xsm_team":
@@ -576,7 +580,8 @@ class OperationService:
             return send_service.prepare_materials(me, args, body, request_id, call=self.ctx)
         except files.FileError as exc:
             from .provenance import readable
-            raise ToolError(readable(materials.failure(exc))) from exc
+            failure = materials.failure(exc)
+            raise ToolError(readable(failure), data={"attachment_error": failure}) from exc
 
     def permission_closed(self):
         from . import decisions

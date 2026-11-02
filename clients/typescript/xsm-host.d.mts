@@ -10,7 +10,9 @@ export interface InboxClaim extends JsonObject { id: string; token: string; }
 export interface InboxPacket extends JsonObject {
   messages: string[];
   claims: InboxClaim[];
-  items: { id: string; priority: string; kind: string; wake: boolean }[];
+  items: { id: string; priority: string; kind: string; wake: boolean | null;
+    files?: { storage_id: string; manifest_id: string; version: number; sha256: string;
+      files: { id: string; name: string; size: number; sha256: string }[] } }[];
 }
 export interface HostOptions extends ConnectOptions {
   runtime: string;

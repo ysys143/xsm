@@ -16,6 +16,7 @@ Start `python3 -m xsm protocol serve --stdio` from an installed checkout.
 Frames are UTF-8 JSON Lines, JSON-RPC 2.0 objects, at most 1 MiB characters per
 input frame. Stdout is protocol only. Diagnostics belong on stderr. Requests
 require string/integer/null IDs; state-changing notifications are ignored.
+Non-finite JSON numbers and duplicate object keys are rejected.
 JSON batches are unsupported. `initialize` must precede other methods:
 
 ```json
@@ -250,3 +251,8 @@ state directory's `extensions/xsm` and preserves configuration and native trust
 records. Activation remains operator opt-in; a local discovery warning is not
 removed by manufacturing native provenance. See [OpenClaw installation](openclaw.md)
 for the verified scope and remaining native checks.
+
+Detailed [inbox/file/wake semantics](inbox-contract.md) and the
+[inbox result schema](inbox-result.schema.json) define machine-readable copy
+identifiers without parsing display prose. [Decision lifecycle](decision-lifecycle.md)
+distinguishes form decline/dismissal, withdrawal, expiry and effect application.

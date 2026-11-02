@@ -18,7 +18,7 @@ import time
 import uuid
 
 from . import context, handoff, identity, paths, registry
-from .operation_schema import TOOLS, ToolError, operation_returns_json
+from .operation_schema import TOOLS, ToolError, operation_returns_json, OperationDisplay
 from .operations import OperationService
 
 VERSION = "1"
@@ -275,7 +275,8 @@ class Connection:
             if not isinstance(result, str):
                 raise ProtocolError(-32603, "internal server error")
             if not operation_returns_json(name, args):
-                return {"text": result}
+                metadata = result.metadata if isinstance(result, OperationDisplay) else {}
+                return dict(metadata, text=str(result))
             try:
                 value = json.loads(result)
             except (TypeError, ValueError, RecursionError):
@@ -283,11 +284,9 @@ class Connection:
             if not isinstance(value, dict):
                 raise ProtocolError(-32603, "internal server error")
             if name == "xsm_inbox":
-                value["items"] = []
-                for claim in value.get("claims", []):
-                    message = handoff.status(host.record, claim["id"])["message"]
-                    value["items"].append({"id": claim["id"], "priority": message.get("priority") or "next",
-                        "kind": message.get("kind") or "note", "wake": message.get("wake", True)})
+                from . import receive
+                value["items"] = [receive.inbox_item_metadata(host.record, claim['id'])
+                                  for claim in value.get('claims', [])]
             return value
         except QuestionPending as pending:
             return {"status": "waiting-for-user", "decision_id": pending.decision_id,
@@ -391,7 +390,7 @@ class Connection:
             rec = self.sessions[token].record
             ids = handoff.pending_ids(rec, owner_alive=receive._consumer_alive)
             # A passive FYI never emits an unsolicited notification.
-            ids = [mid for mid in ids if handoff.status(rec, mid)["message"].get("wake", True)]
+            ids = [mid for mid in ids if receive.message_wake_policy(handoff.status(rec, mid)["message"]) is True]
             current = tuple(sorted(ids))
             if current and self.notified.get(token) != current:
                 yield {"jsonrpc": "2.0", "method": "events/available",
@@ -412,7 +411,8 @@ class Connection:
         if prior:
             if prior["session"] != token or prior["fingerprint"] != fingerprint:
                 raise ProtocolError(-32003, "question response already consumed")
-            return {"status": decisions.read(prior["decision"])["status"], "decision_id": prior["decision"]}
+            return {"status": decisions.public_status(host.record, prior["decision"])["status"],
+                    "decision_id": prior["decision"]}
         selected = next(((key, item) for key, item in self.ui_requests.items()
                          if item["event"]["questionId"] == params["questionId"]), None)
         if not selected:
@@ -548,7 +548,10 @@ def serve(inp=None, out=None):
             except ProtocolError as exc:
                 emit({"jsonrpc": "2.0", "id": mid, "error": {"code": exc.code, "message": exc.message}})
             except (ValueError, TypeError, ToolError) as exc:
-                emit({"jsonrpc": "2.0", "id": mid, "error": {"code": -32602, "message": str(exc)}})
+                error = {"code": -32602, "message": str(exc)}
+                if isinstance(exc, ToolError) and exc.data is not None:
+                    error['data'] = exc.data
+                emit({"jsonrpc": "2.0", "id": mid, "error": error})
             except Exception as exc:
                 # A request can fail after a durable effect. Do not retry, ACK,
                 # or expose backend details; the caller must reconcile state.

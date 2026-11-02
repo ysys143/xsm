@@ -77,6 +77,95 @@ class ProtocolTest(ProtocolFixture):
                 with self.assertRaises(ProtocolError):
                     self.operation(a, 'xsm_inbox', message_ids=value)
 
+    def test_send_metadata_stays_request_local_when_passive_text_is_appended(self):
+        from xsm import handoff
+        a, b = self.open('meta-a'), self.open('meta-b')
+        incoming = self.operation(b, 'xsm_send', target='ref:' + a['ref'], text='passive to a', wake='never', wait=0)
+        value = self.operation(a, 'xsm_send', target='ref:' + b['ref'], text='a sends', wake='never', wait=0, request_id='send-with-passive')
+        self.assertEqual(value['send']['id'], 'send-with-passive')
+        self.assertIn('passive to a', value['text'])
+        self.assertIs(value['grouped'], False)
+        record = self.connection.sessions[a['session']].record
+        self.assertNotEqual(handoff.status(record, incoming['send']['id'])['status'], 'acknowledged')
+        self.assertNotIn('send', self.operation(a, 'xsm_team', action='list'))
+
+    def test_send_provides_producer_metadata_without_parsing_display_text(self):
+        sender, receiver = self.open('send-meta-sender'), self.open('send-meta-receiver')
+        self.operation(receiver, 'xsm_inbox')
+        value = self.operation(sender, 'xsm_send', target='ref:' + receiver['ref'], text='source metadata', wait=0,
+            request_id='source-metadata', wake='never', attachments=[{'name': 'owned.txt', 'text': 'outgoing bytes'}])
+        self.assertEqual(value['send']['id'], 'source-metadata')
+        self.assertEqual(value['send']['status'], 'stored')
+        self.assertIs(value['grouped'], False)
+        manifest = self.operation(sender, 'xsm_files', storage_id=value['materials']['manifest_id'], outgoing=True)['manifest']
+        content = self.operation(sender, 'xsm_files', storage_id=value['materials']['manifest_id'],
+            entry_id=manifest['files'][0]['id'], outgoing=True)['content']
+        self.assertEqual(content, 'outgoing bytes')
+        self.assertIn('stored', value['text'])
+
+    def test_attachment_prepare_failure_has_structured_recovery_data(self):
+        from xsm.operation_schema import ToolError
+        sender, receiver = self.open('prepare-error-sender'), self.open('prepare-error-new-reader')
+        with self.assertRaises(ToolError) as caught:
+            self.operation(sender, 'xsm_send', target='ref:' + receiver['ref'], text='preserve request', wait=0,
+                request_id='file-recovery-data', attachments=[{'name': 'memo.txt', 'text': 'frozen bytes'}])
+        data = caught.exception.data['attachment_error']
+        self.assertEqual(data['request_id'], 'file-recovery-data')
+        self.assertTrue(data['manifest_id'])
+        self.assertIs(data['body_sent'], False)
+        value = self.operation(sender, 'xsm_send', target='ref:' + receiver['ref'], text='preserve request', wait=0,
+            request_id=data['request_id'], manifest_id=data['manifest_id'], attachment_fallback='inline', wake='never')
+        self.assertEqual(value['send']['id'], data['request_id'])
+        self.assertEqual(value['materials']['mode'], 'inline')
+
+    def test_inbox_file_metadata_drives_copy_read_without_parsing_prose(self):
+        import base64, hashlib
+        from xsm import handoff
+        from xsm.files import FileError
+        sender, receiver = self.open('file-meta-sender'), self.open('file-meta-receiver')
+        self.operation(receiver, 'xsm_inbox')  # establish a live file reader observation
+        data = b'fixture bytes\x00\xff\n'
+        self.operation(sender, 'xsm_send', target='ref:' + receiver['ref'], text='file payload', wait=0,
+                       request_id='metadata-file', wake='never', attachments=[{'name': 'fixture.bin', 'base64': base64.b64encode(data).decode()}])
+        packet = self.operation(receiver, 'xsm_inbox')
+        metadata = packet['items'][0]['files']
+        entry = metadata['files'][0]
+        self.assertEqual(entry['name'], 'fixture.bin')
+        self.assertEqual(entry['size'], len(data))
+        self.assertEqual(entry['sha256'], hashlib.sha256(data).hexdigest())
+        value = self.operation(receiver, 'xsm_files', storage_id=metadata['storage_id'],
+                               entry_id=entry['id'], encoding='base64')
+        self.assertEqual(base64.b64decode(value['content']), data)
+        with self.assertRaises(FileError):
+            self.operation(sender, 'xsm_files', storage_id=metadata['storage_id'], entry_id=entry['id'])
+        record = self.connection.sessions[receiver['session']].record
+        self.assertNotEqual(handoff.status(record, packet['claims'][0]['id'])['status'], 'acknowledged')
+        self.operation(receiver, 'xsm_ack', tokens=[packet['claims'][0]['token']])
+
+    def test_fresh_unobserved_reader_can_request_explicit_inline_fallback(self):
+        sender, receiver = self.open('fallback-sender'), self.open('fallback-new-reader')
+        self.operation(sender, 'xsm_send', target='ref:' + receiver['ref'], text='fallback payload', wait=0,
+                       request_id='metadata-inline', wake='never', attachment_fallback='inline',
+                       attachments=[{'name': 'fixture.txt', 'text': 'fallback-content-sentinel'}])
+        packet = self.operation(receiver, 'xsm_inbox')
+        self.assertIn('fallback-content-sentinel', '\n'.join(packet['messages']))
+        self.assertNotIn('files', packet['items'][0])
+        self.assertIs(packet['items'][0]['wake'], False)
+
+    def test_unknown_stored_wake_policy_does_not_emit_a_wake_event(self):
+        from pathlib import Path
+        from xsm import handoff
+        sender, receiver = self.open('wake-sender'), self.open('wake-receiver')
+        self.operation(sender, 'xsm_send', target='ref:' + receiver['ref'], text='retain unknown policy', wait=0, request_id='unknown-wake')
+        record = self.connection.sessions[receiver['session']].record
+        path = Path(handoff._folder(record), 'unknown-wake.json')
+        stored = json.loads(path.read_text()); stored['message']['wake'] = 'not-a-boolean'; path.write_text(json.dumps(stored))
+        self.connection.dispatch('events.subscribe', {'session': receiver['session']})
+        self.assertEqual(list(self.connection.events()), [])
+        packet = self.operation(receiver, 'xsm_inbox')
+        self.assertIsNone(packet['items'][0]['wake'])
+        self.assertEqual(len(packet['claims']), 1)
+
     def test_text_operation_results_are_not_guessed_from_json_looking_content(self):
         actor = self.open('text-result')
         host = self.connection.sessions[actor['session']]

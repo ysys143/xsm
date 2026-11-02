@@ -6,6 +6,17 @@ from .instructions import MESSAGING_GUIDE
 class ToolError(Exception):
     """A refusal the tool returns to the agent as its result (isError), with
     this text: what was wrong and what to do instead, never a traceback."""
+    def __init__(self, message="", *, data=None):
+        super().__init__(message)
+        self.data = data
+
+
+class OperationDisplay(str):
+    """Legacy display string with request-local producer metadata for wire adapters."""
+    def __new__(cls, text, metadata=None):
+        value = super().__new__(cls, text)
+        value.metadata = dict(metadata or {})
+        return value
 
 
 # MCP tool annotations (spec 2025-06-18, ToolAnnotations). Codex under

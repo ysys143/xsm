@@ -2014,3 +2014,42 @@ Frontend 공통 경로·질문 helper·frozen bytes·source 권한의 새 5개�
 (`shared-send-service-core.log`). 오래 대기하는 기존 question interface
 회귀는 별도 57개 실행 결과이며 120초 gate에 억지로 합치지 않는다.
 다른 CLI 가족과 독립 참여자·전체 계획은 이어서 구현한다.
+
+## 독립 구현 피드백에 따른 파일·wake·결정 계약 보완
+
+명세만 제공한 별도 구현이 첨부 식별자/내용 재조회·fallback 조건·wake
+타입·오류 순서·decline/cancel/만료 의미를 완결할 수 없다고 보고했다.
+공통 receive 검증에서 얻은 수신자 소유 files metadata를 inbox items에
+제공하고, input의 xsm_files(storage_id/entry_id/outgoing/encoding)와
+직접 연결했다. Sender에도 request-local producer metadata(send/grouped/
+materials), preparation 실패에는 error.data.attachment_error를 제공한다.
+표시 문자열을 파싱해 id나 의미를 추측하지 않는다. CLI/MCP의 기존
+표시 문자열은 유지하며 metadata는 전역/호스트 공유 변수에 두지 않는다.
+
+Wake는 true/false/unknown(null) 정책 값이며 수락/소비 증거가 아니다.
+알 수 없는 저장 값은 unsolicited event를 만들지 않고, 누락된 legacy
+값의 auto 의미는 유지한다. 만료 전에 받은 답의 exact replay가 만료 뒤
+answered를 돌려주던 경로도 visible expired를 반환하도록 바로잡았다.
+신규 callback의 만료 거부와 실제 적용 전 검증은 기존처럼 유지한다.
+
+변경 전 missing files·unknown wake·expired replay의 실패를 보존했다
+(`public-inbox-contract-red.log`). 처음 file 검증에서 없는 action/incoming
+인자를 쓴 두 실행 실패도 보존했고, 공개 input에 맞춰 수정했다
+(`public-inbox-contract-{green,verified}.log`). Sender metadata/error.data의
+red도 남겼다(`public-send-metadata-red.log`). Sender outgoing read·recipient
+copy read·변경 요청 복구·metadata의 request-local 유지·명시적 ACK·
+원문 보존과 기존 회귀를 포함한 최종 공통 519개(핵심 344/Python 49/
+Node 126)는 82.042초에 통과했다(`public-file-contract-core-final.log`).
+추가 공개 경로/결정/검사기 77개가 통과했다
+(`public-file-contract-verification.log`). TypeScript 선언도 tsc strict
+검사를 통과했다(`public-inbox-contract-types.log`).
+
+격리된 실제 stdio 15개 frame과 inbox 3개는 새 schema를 통과했다
+(`public-file-contract-isolated-wire.json`, `public-file-contract-schema-final.json`).
+Schema의 정상 inbox 2개/거부 7개와 input/output/operation 기존 검증을
+함께 실행했다. 초기 standalone wire probe는 격리 누락으로 실제 상태를
+썼으므로 유효 증거에서 제외했고 사건 기록과 승인된 36개 quarantine
+절차를 보존했다([사건 기록](incidents/2026-11-02-probe-isolation.md)).
+
+파일 입력 frame보다 큰 engine-limit bundle의 streaming upload API, 다른
+operation-specific 결과 schema와 native UI/worker/행렬은 이어서 구현한다.

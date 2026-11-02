@@ -22,12 +22,41 @@ def output_contract(trace=None):
     example_methods = {entry['method'] for entry in examples if 'result' in entry['frame']}
     if example_methods != set(request_methods):
         raise ValueError('output examples omit a method result')
+    inbox_schema = json.loads((ROOT / 'docs/protocol/inbox-result.schema.json').read_text())
+    Draft202012Validator.check_schema(inbox_schema)
+    inbox_validator = Draft202012Validator(inbox_schema)
+    inbox_observed = 0
+    inbox_empty = dict(messages=[], claims=[], items=[], inbox_pending=0)
+    inbox_file = dict(messages=['fixture'], claims=[dict(id='original', token='opaque-token',
+        owner=dict(type='native', id='opaque-owner'), generation='opaque-generation', digest='0' * 64)],
+        items=[dict(id='original', kind='note', priority='next', wake=False, files=dict(
+            storage_id='receiver-copy', manifest_id='source-manifest', version=1, sha256='0' * 64,
+            files=[dict(id='entry', name='fixture.txt', size=0, sha256='0' * 64)]))], inbox_pending=0)
+    for value in (inbox_empty, inbox_file):
+        inbox_validator.validate(value)
+    invalid_inbox = []
+    bad = copy.deepcopy(inbox_file); del bad['items']; invalid_inbox.append(bad)
+    bad = copy.deepcopy(inbox_file); bad['items'][0]['wake'] = 'never'; invalid_inbox.append(bad)
+    bad = copy.deepcopy(inbox_file); del bad['items'][0]['files']['storage_id']; invalid_inbox.append(bad)
+    bad = copy.deepcopy(inbox_file); bad['items'][0]['files']['files'][0]['size'] = '0'; invalid_inbox.append(bad)
+    bad = copy.deepcopy(inbox_file); bad['items'][0]['files']['sha256'] = 'not-a-checksum'; invalid_inbox.append(bad)
+    bad = copy.deepcopy(inbox_file); bad['claims'][0]['token'] = None; invalid_inbox.append(bad)
+    bad = copy.deepcopy(inbox_empty); bad['inbox_pending'] = '0'; invalid_inbox.append(bad)
+    for value in invalid_inbox:
+        if inbox_validator.is_valid(value):
+            raise ValueError('invalid inbox contract accepted: ' + repr(value))
     def validate(observation):
+        nonlocal inbox_observed
         frame = observation['frame']
         validator.validate(frame)
         if 'result' in frame:
             definition = schema['x-methodResults'][observation['method']]
             Draft202012Validator({'$ref': definition, '$defs': schema['$defs']}).validate(frame['result'])
+            if observation.get('operation') == 'xsm_inbox':
+                inbox_validator.validate(frame['result'])
+                if [item['id'] for item in frame['result']['items']] != [claim['id'] for claim in frame['result']['claims']]:
+                    raise ValueError('inbox item IDs differ from claimed originals')
+                inbox_observed += 1
     for example in examples:
         validate(example)
     error = next(copy.deepcopy(e['frame']) for e in examples if 'error' in e['frame'])
@@ -58,7 +87,7 @@ def output_contract(trace=None):
     for observation in observations:
         validate(observation)
     return dict(examples=len(examples), rejected=len(invalid) + 1 + len(bad_operation_results), observed=len(observations),
-                observedSuccessfulMethods=sorted({o['method'] for o in observations if 'result' in o['frame']}),
+                inboxExamples=2, inboxRejected=len(invalid_inbox), observedInboxResults=inbox_observed, observedSuccessfulMethods=sorted({o['method'] for o in observations if 'result' in o['frame']}),
                 observedNotifications=sum('method' in o['frame'] for o in observations))
 
 
