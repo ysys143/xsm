@@ -289,3 +289,36 @@ native 디스패처의 subagent_start 호출에서 실제 stdio session.open까�
 확인했다(hermes-native-lineage-dispatch/run.log). 격리 HOME/HERMES_HOME/
 XSM_HOME과 설치된 venv interpreter를 사용했으며 모델 호출은0회다.
 이 증거는 native 플러그인 디스패치와 등록 경로이며 실제 child 실행은 아니다.
+
+## 실제 Hermes 자식의 한도 상속
+
+macOS의 Hermes0.22.5에서 공개 owned 생성·실행부터 실제 native 자식까지
+실행했다(hermes-owned-native-lineage/result.json). Generic reference parent가
+xsm_owned create/run을 호출하고, 격리 프로필의 시험 플러그인이 공개 native
+subagent_lifecycle로 자식 하나를 시작했다. 자식이 실제 xsm_owned create를
+호출하자 공통 서비스가 부모의 max_depth로 거부했다. 여기서는 worker 기록을
+시험에서 심지 않았으며 실제 공개 생성 경로의 기록을 사용했다.
+
+부모의 실제 결과, 정본 회신 읽기·ACK, DB의 자식1개, 자식 tool 원문의 한도
+거부, 미생성된 서비스, 호스트의 부모 결속과 같은 owned ID의 한도 상속까지
+9개를 확인했다. 부모와 자식 각각 model calls3/tool calls2였으며 configured
+model은 live catalog의 anthropic/claude-sonnet-5-5, served model은 미확인이다.
+기존 loopback proxy의 anthropic authMode=oauth와 API key 미설정을 확인했고
+메신저는 사용하지 않았다. 해당 owned gateway는 PID 소유권을 확인해 종료했다.
+원문은 child-tool-results.json, lineage-records.json, native-usage.json에 보존했다.
+
+선행 seeded-budget 시험은 별도 표본이다. 첫 실행에서는 macOS의 /var와
+/private/var 표기가 달라 시험이 서로 다른 opaque profile로 한도를 심었고
+실패했다(hermes-native-lineage/result.json). 부모 프로필 표기를 맞추고 native
+SessionDB를 열어 도구 원문을 보존한 v2는14개를 통과했다. 이 표본을 공개
+owned 생성의 증거로 쓰지 않으며 실패 로그도 유지했다. 공개 생성까지 포함한
+뒤의9개 표본이 해당 빈칸을 확인한다. Linux의 실제 native child/model 및 다른
+runtime의 owned 자식 실행은 여전히 미완이다.
+
+재현 명령은 `scripts/probe-hermes-owned-lineage.py --native-source <고정 소스>
+--native-cli <설치된 hermes 절대 경로> --model <live catalog ID> --output <새 경로>`다.
+실제 스크립트로도9개 항목을 다시 통과했다(hermes-owned-lineage-script/result.json).
+0.22.5 tag와 clean tracked source, 현재 loopback proxy catalog를 확인하고
+격리 홈에서 실행한다. 고정 모델명을 기본값으로 넣지 않으며 기존 결과 경로를
+덮어쓰지 않는다. 이 명령은 실제 구독 모델을 호출하므로120초 model0 core
+검사에는 포함하지 않는다. 반복 실행도 시험 gateway 종료를 확인했다.
