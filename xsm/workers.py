@@ -193,7 +193,7 @@ def for_session(session_id: str | None) -> dict | None:
     return None
 
 
-def for_record(record):
+def _direct_worker(record):
     """Match raw or protocol-projected owned actors without borrowing another profile."""
     if not isinstance(record, dict) or not all(isinstance(record.get(key), str) and record[key]
                                                for key in ('runtime', 'home', 'session_id')):
@@ -212,6 +212,36 @@ def for_record(record):
                 matches.append(worker)
                 break
     return matches[0] if len(matches) == 1 else None
+
+
+def for_record(record):
+    """Native host lineage inherits only an owned budget, never collaboration policy."""
+    current, visited = record, set()
+    while isinstance(current, dict):
+        key = (current.get('runtime'), os.path.realpath(current.get('home') or ''), current.get('session_id'))
+        if key in visited:
+            raise WorkerError('native worker budget lineage contains a cycle')
+        visited.add(key)
+        worker = _direct_worker(current)
+        if worker:
+            return worker
+        parent = current.get('protocol_parent')
+        if parent is None:
+            return None
+        if (not isinstance(parent, dict) or parent.get('runtime') != key[0]
+                or os.path.realpath(parent.get('home') or '') != key[1]
+                or not isinstance(parent.get('session_id'), str) or not parent['session_id']):
+            raise WorkerError('native worker parent identity is unavailable')
+        worker = _direct_worker(parent)
+        if worker:
+            return worker
+        rows = [row for row in registry.raw_records() if row.get('runtime') == parent['runtime']
+                and row.get('session_id') == parent['session_id']
+                and os.path.realpath(row.get('home') or '') == key[1]]
+        if len(rows) != 1:
+            raise WorkerError('native worker parent budget is unavailable')
+        current = rows[0]
+    return None
 
 
 def state(worker: dict) -> str:

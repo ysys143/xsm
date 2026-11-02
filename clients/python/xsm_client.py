@@ -159,11 +159,18 @@ class XsmClient:
 
     async def session_open(self, *, runtime: str, profile: str,
                            conversation: str, cwd: str,
-                           capabilities: Sequence[str] = ()) -> dict:
-        result = await self.request("session.open", {
+                           capabilities: Sequence[str] = (), parent_conversation=None) -> dict:
+        fields = {
             "runtime": runtime, "profile": profile, "conversation": conversation,
             "cwd": cwd, "capabilities": list(capabilities),
-        })
+        }
+        if parent_conversation is not None:
+            if 'native-lineage' not in self.initialization.get('capabilities', []):
+                raise TransportError('server does not support native parent lineage')
+            fields['parent_conversation'] = parent_conversation
+            if 'native-lineage' not in fields['capabilities']:
+                fields['capabilities'].append('native-lineage')
+        result = await self.request("session.open", fields)
         if (not isinstance(result, dict) or not isinstance(result.get("session"), str)
                 or not result["session"] or "generation" not in result):
             error = TransportError("session.open must return session and generation")

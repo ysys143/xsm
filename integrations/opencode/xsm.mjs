@@ -107,6 +107,20 @@ async function attach(api, options, release) {
     send: async (id, frame) => {
       unwrap(await api.client.session.prompt({ path: { id }, body: { noReply: true, parts: uiParts(frame) } }));
     } }) : undefined;
+  async function assertOwnedDescendant(id) {
+    const root = options.workerControl.nativeID;
+    const seen = new Set();
+    let current = id;
+    while (current !== root) {
+      if (seen.has(current)) throw new Error('native worker ancestry contains a cycle');
+      seen.add(current);
+      const native = unwrap(await api.client.session.get({ path: { id: current } }));
+      if (native.id !== current || typeof native.parentID !== 'string' || !native.parentID) {
+        throw new Error('native input does not belong to the owned conversation tree');
+      }
+      current = native.parentID;
+    }
+  }
   async function open(id, cwd) {
     if (disposed) throw new Error('xsm OpenCode binding disposed');
     const token = versions.get(id) ?? 0;
@@ -147,7 +161,7 @@ async function attach(api, options, release) {
         let observed;
         const host = await XsmHost.open({ command, env: options.env, runtime: 'opencode',
           inboxBatchSize: 16, inboxMaxBytes: 524288,
-          profile, conversation: id, cwd: api.directory,
+          profile, conversation: id, cwd: api.directory, parentConversation: native.parentID ?? undefined,
           onError: error => {
             try { fail(error); }
             finally {
@@ -221,7 +235,10 @@ async function attach(api, options, release) {
       },
     }])),
     'chat.message': async (input, output) => {
-      if (options.workerControl) await options.workerControl.bind(input.sessionID);
+      if (options.workerControl) {
+        if (options.workerControl.nativeID !== undefined && options.workerControl.nativeID !== input.sessionID) await assertOwnedDescendant(input.sessionID);
+        else await options.workerControl.bind(input.sessionID);
+      }
       if (ui && await ui.receive(input.sessionID, output.parts)) return;
       if (output.parts.some(part => part.metadata?.xsmDelivery)) return;
       await (await open(input.sessionID)).naturalBoundary().catch(error => { if (!(error instanceof RetryAdmission)) throw error; });

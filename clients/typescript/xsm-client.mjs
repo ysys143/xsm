@@ -134,8 +134,14 @@ export class XsmClient {
     });
   }
 
-  async sessionOpen({ runtime, profile, conversation, cwd, capabilities = [] }) {
-    const result = await this.request('session.open', { runtime, profile, conversation, cwd, capabilities });
+  async sessionOpen({ runtime, profile, conversation, cwd, capabilities = [], parentConversation }) {
+    const fields = { runtime, profile, conversation, cwd, capabilities: [...capabilities] };
+    if (parentConversation !== undefined) {
+      if (!this.initialization.capabilities?.includes('native-lineage')) throw new TransportError('server does not support native parent lineage');
+      fields.parent_conversation = parentConversation;
+      if (!fields.capabilities.includes('native-lineage')) fields.capabilities.push('native-lineage');
+    }
+    const result = await this.request('session.open', fields);
     if (!object(result) || typeof result.session !== 'string' || !result.session || !Object.hasOwn(result, 'generation')) {
       const error = new TransportError('session.open must return session and generation');
       this.#fail(error);

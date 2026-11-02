@@ -32,7 +32,7 @@ RUNTIME = identity.RUNTIME_SLUG
 REQUEST_FIELDS = {
     "initialize": {"protocolVersion"},
     "operations/list": set(),
-    "session.open": {"runtime", "profile", "conversation", "cwd", "capabilities"},
+    "session.open": {"runtime", "profile", "conversation", "cwd", "capabilities", "parent_conversation"},
     "session.update": {"session", "state", "name"},
     "session.close": {"session"},
     "events.subscribe": {"session"},
@@ -196,7 +196,7 @@ class Connection:
                 raise ProtocolError(-32002, "unsupported protocol version")
             self.initialized = True
             return {"protocolVersion": VERSION, "experimental": True,
-                    "capabilities": ["messaging", "inbox", "events", "user-decisions"],
+                    "capabilities": ["messaging", "inbox", "events", "user-decisions", "native-lineage"],
                     "limits": {"claimLeaseSeconds": handoff.CLAIM_LEASE,
                                "fileUploadChunkBytes": Uploads.CHUNK_BYTES,
                                "fileUploadBudgetBytes": 4 * 1024 * 1024,
@@ -325,7 +325,7 @@ class Connection:
             host.active_request = None
 
     def open(self, params):
-        if set(params) - {"runtime", "profile", "conversation", "cwd", "capabilities"}:
+        if set(params) - {"runtime", "profile", "conversation", "cwd", "capabilities", "parent_conversation"}:
             raise ProtocolError(-32602, "unknown registration field")
         runtime = params.get("runtime")
         if not isinstance(runtime, str) or not RUNTIME.fullmatch(runtime) or runtime in ("claude", "codex"):
@@ -338,11 +338,23 @@ class Connection:
         if not os.path.isabs(cwd) or not os.path.isdir(cwd):
             raise ProtocolError(-32602, "cwd must be an existing absolute directory")
         caps = params.get("capabilities", [])
-        if not isinstance(caps, list) or not all(c in ("messaging", "inbox", "events", "user-decisions") for c in caps):
+        if not isinstance(caps, list) or not all(c in ("messaging", "inbox", "events", "user-decisions", "native-lineage") for c in caps):
             raise ProtocolError(-32004, "unsupported participant capability")
+        parent = params.get('parent_conversation')
+        if 'parent_conversation' in params:
+            if not isinstance(parent, str) or not parent or len(parent) > 4096 or parent == params['conversation']:
+                raise ProtocolError(-32602, 'native parent must be a distinct nonempty conversation')
+            if 'native-lineage' not in caps:
+                raise ProtocolError(-32004, 'native parent requires native-lineage capability')
         key = identity.protocol_key(runtime, params['profile'], params['conversation'])
         sid, home = key['session_id'], key['home']
         previous = paths.read_json(registry._record_path(runtime, sid), {})
+        parent_key = identity.protocol_key(runtime, params['profile'], parent) if parent is not None else None
+        retained_parent = previous.get('protocol_parent') if isinstance(previous, dict) else None
+        if retained_parent is not None:
+            if parent_key is not None and parent_key != retained_parent:
+                raise ProtocolError(-32003, 'native parent identity changed on resume')
+            parent_key = retained_parent
         if previous and not previous.get("ended_at") and identity.state_of(previous) == "live":
             from . import participants
             if previous.get('protocol_version') != VERSION or participants.live_binding(previous):
@@ -362,6 +374,8 @@ class Connection:
                   "protocol_version": VERSION, "protocol_generation": uuid.uuid4().hex,
                   "registered": True, "activity": "idle"}
         record["protocol_root"] = os.path.realpath(os.path.join(os.path.dirname(__file__), ".."))
+        if parent_key is not None:
+            record['protocol_parent'] = parent_key
         record["protocol_python"] = sys.executable
         record["protocol_python_version"] = sys.version.split()[0]
         token = uuid.uuid4().hex

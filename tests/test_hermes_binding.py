@@ -21,6 +21,28 @@ else:
 
 
 class HermesLifecycleTest(unittest.IsolatedAsyncioTestCase):
+    async def test_native_subagent_hook_supplies_parent_when_child_opens(self):
+        binding = module.HermesBinding.__new__(module.HermesBinding)
+        binding.parents, binding.hosts = {}, {}
+        binding.monitors = {'native-child': None}
+        binding.closed, binding.closing, binding.finalizing = False, False, set()
+        binding.profile, binding.command, binding.env = 'isolated', [], {}
+        calls, scheduled = [], []
+        async def open_host(**kwargs):
+            calls.append(kwargs)
+            return SimpleNamespace()
+        binding.sdk = SimpleNamespace(XsmHost=SimpleNamespace(open=open_host))
+        binding._run = lambda coroutine: scheduled.append(asyncio.create_task(coroutine))
+        binding.subagent_start(parent_session_id='native-root', child_session_id='native-child')
+        await asyncio.gather(*scheduled)
+        await binding._open_host('native-child', '/workspace')
+        self.assertEqual(calls[0]['parent_conversation'], 'native-root')
+        self.assertEqual(calls[0]['conversation'], 'native-child')
+        binding.subagent_start(parent_session_id='unrelated', child_session_id='native-child')
+        with self.assertRaisesRegex(RuntimeError, 'changed its parent'):
+            await scheduled[-1]
+        self.assertEqual(binding.parents['native-child'], 'native-root')
+
     async def test_default_backend_uses_native_profile_secret_scoping_without_ambient_worker(self):
         binding=module.HermesBinding.__new__(module.HermesBinding)
         binding.env=None;binding.profile='/native/profile-b'
@@ -211,7 +233,7 @@ class HermesRegistrationTest(TempState):
             binding = module.register(self.context(), command=command, env=env)
         try:
             self.assertEqual(len(self.tools), 22)
-            self.assertEqual(len(self.hooks), 5)
+            self.assertEqual(len(self.hooks), 6)
             self.assertEqual(marker.read_text().splitlines(), ["start"])
             result = json.loads(self.tools["xsm_inbox"]["handler"]({}, session_id="pinned-native"))
             self.assertIsInstance(result, dict)

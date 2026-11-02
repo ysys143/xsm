@@ -6,6 +6,7 @@ export interface OpenSessionParams {
   runtime: string;
   profile: string;
   conversation: string;
+  parentConversation?: string;
   cwd: string;
   capabilities?: string[];
 }

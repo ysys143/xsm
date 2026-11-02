@@ -44,7 +44,7 @@ async function fixture(t, options = {}) {
   const native = new Map(), statuses = {}, errors = [], wakes = [];
   let corrupt = false;
   const api = { directory: temp, client: { session: {
-    get: async ({ path: { id } }) => ({ data: { id, title: 'Native ' + id,
+    get: async ({ path: { id } }) => ({ data: { id, title: 'Native ' + id, parentID: options.parents?.[id],
       directory: options.nativeDirectory === undefined ? temp : options.nativeDirectory } }),
     prompt: async ({ path: { id }, body }) => {
       assert.equal(body.messageID, undefined, 'native host must allocate its ordered message ID');
@@ -304,4 +304,16 @@ test('owned native binding refusal stops the awaited input hook', { timeout: 100
   const f = await fixture(t, { workerControl: { bind: async () => { throw new Error('private binding refused'); }, close() {} } });
   await assert.rejects(f.hooks['chat.message']({ sessionID: 'not-owned' }, { parts: [] }), /binding refused/);
   assert.equal((await f.records()).length, 0);
+});
+
+test('native descendant keeps its observed parent and does not rebind the owned root', { timeout: 10000 }, async t => {
+  const f = await fixture(t, { parents: { child: 'owned-root' }, workerControl: {
+    nativeID: 'owned-root', bind: async () => { throw new Error('must not rebind root'); }, close() {} } });
+  await f.invoke('owned-root', 'xsm_inbox');
+  await f.hooks['chat.message']({ sessionID: 'child' }, { parts: [] });
+  const rows = await f.records();
+  const child = rows.find(row => row.protocol_parent);
+  assert.ok(child);
+  assert.equal(child.protocol_parent.session_id, rows.find(row => !row.protocol_parent).session_id);
+  await assert.rejects(f.hooks['chat.message']({ sessionID: 'unrelated' }, { parts: [] }), /owned conversation tree/);
 });

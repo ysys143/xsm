@@ -70,6 +70,7 @@ class HermesBinding:
         self.finalizing = set()
         self.monitors = {}
         self.states = {}
+        self.parents = {}
         self.release_component = None
         self.loop = asyncio.new_event_loop()
         self.thread = threading.Thread(target=self.loop.run_forever, name="xsm-hermes", daemon=True)
@@ -130,7 +131,8 @@ class HermesBinding:
             raise RuntimeError("native participation is closing")
         if sid not in self.hosts:
             pending = asyncio.create_task(self.sdk.XsmHost.open(runtime="hermes", profile=self.profile,
-                conversation=sid, cwd=cwd, command=self.command, env=self._backend_environment()))
+                conversation=sid, cwd=cwd, command=self.command, env=self._backend_environment(),
+                parent_conversation=getattr(self, 'parents', {}).get(sid)))
             self.hosts[sid] = (cwd, pending)
             try:
                 await pending
@@ -197,6 +199,16 @@ class HermesBinding:
             self.states[sid] = "busy"
             await (await self._host(sid, cwd, rebind=True)).update("busy")
         self._run(update())
+
+    def subagent_start(self, parent_session_id='', child_session_id='', **_native):
+        if not parent_session_id or not child_session_id or parent_session_id == child_session_id:
+            return
+        async def remember():
+            prior = self.parents.get(child_session_id)
+            if prior not in (None, parent_session_id):
+                raise RuntimeError('native child changed its parent conversation')
+            self.parents[child_session_id] = parent_session_id
+        self._run(remember())
 
     def settled(self, session_id="", **_native):
         async def update():
@@ -281,6 +293,7 @@ def register(context, *, command=None, env=None):
                         "parameters": operation["inputSchema"]}, handler=binding.handler(operation["name"]),
                 description=operation["description"])
         for name, callback in (("on_session_start", binding.start), ("on_session_end", binding.settled),
+                ("subagent_start", binding.subagent_start),
                 ("on_session_finalize", binding.finalize), ("on_session_delete", binding.finalize),
                 ("on_session_reset", binding.reset)):
             context.register_hook(name, callback)

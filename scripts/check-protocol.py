@@ -33,7 +33,8 @@ MODULES = ["tests.test_question_service", "tests.test_send_service", "tests.test
            "tests.test_mcp_dispatch", "tests.test_subagent_transport",
            "tests.test_mcp_identity", "tests.test_mcp_shared_process"]
 NATIVE_MODULES = ["tests.test_native_worker_catalog", "tests.test_native_worker_control",
-                  "tests.test_native_worker_provider", "tests.test_native_worker_retention"]
+                  "tests.test_native_worker_provider", "tests.test_native_worker_retention",
+                  "tests.test_native_worker_lineage"]
 
 
 def run_phase(commands, env, root, deadline, offset):
@@ -104,7 +105,9 @@ def main():
             print(json.dumps({"passed": False, "reason": "Node.js is required for client conformance"}))
             return 1
         try:
-            for offset, phase in ((0, commands[:4]), (4, commands[4:])):
+            # Node/native fixtures have independent homes and overlap Python I/O waits.
+            first_phase = commands[:4] + [commands[-1]]
+            for offset, phase in ((0, first_phase), (5, commands[4:-1])):
                 failed = run_phase(phase, env, temp, started + 120, offset)
                 if failed is not None:
                     print(json.dumps({"passed": False, "command": failed}))

@@ -87,9 +87,15 @@
               "messaging",
               "inbox",
               "events",
-              "user-decisions"
+              "user-decisions",
+              "native-lineage"
             ]
           }
+        },
+        "parent_conversation": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096
         }
       },
       "additionalProperties": false

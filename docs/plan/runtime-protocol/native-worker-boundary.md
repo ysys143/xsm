@@ -239,3 +239,33 @@ cache만 사용했다. Runtime root 참조가 명시적 service 제거 뒤 풀�
 상속 depth를 실제 native 모델로 확인했다. Linux native model/worker, 실시간
 중단/unknown native turn의 gateway readback, classic spawn/pane, native 사용자
 승인 UI 및 나머지 runtime/provider/전체 matrix는 계속 미완이다.
+
+## 네이티브 하위 대화의 한도 상속
+
+공개 `native-lineage` 능력과 `session.open.parent_conversation`을 추가했다.
+부모 식별자는 같은 runtime/profile 안에서 투영하며 재접속에서 생략해도
+유지한다. 다른 부모로 교체하는 요청은 거부한다. 한도 조회는 native 조상을
+따라 owned worker를 찾고, 누락된 조상이나 순환은 무제한 루트로 처리하지
+않는다. 이 경로는 범위·팀·사용자 승인을 상속하지 않는다.
+
+OpenCode 연결부는 실제 session.get의 parentID를 확인한다. Owned 루트에
+도달한 자식은 루트 문맥을 다시 결속하지 않고 참여한다. Hermes 연결부는
+0.22.5의 공개 subagent_start(parent_session_id, child_session_id) 훅을 받아
+자식의 최초 등록에 부모를 넘긴다. 현재 증거는 모의 호스트와 실제 공통
+서비스 경로이며, 실제 native 하위 에이전트 전체 실행의 인증은 미완이다.
+
+macOS Python3.14.6 핵심 검사에서 Python491+SDK50+native31+Node139=711개가
+85.371초에 통과했다(native-lineage-core-second.log). 기존 검사를 유지하면서
+독립 Node 그룹을 Python 그룹과 함께 실행하도록 순서만 조정했다.
+120초 기한은 유지했다. 이전 a2cf4ef의 Linux3.14 검사는 실제로120초를
+초과했으며(node-control-linux/314/protocol.log), 이 변경의 Linux 재검증은
+아직 미완이다. Linux3.11 이전 표본의 성공을 이번 변경의 증거로 쓰지 않는다.
+
+새 훅 시험은 최초에 monitors를 초기화하지 않은 시험 구성 오류로 실패했다.
+수정 후 관련17개가 통과했다(native-lineage-binding-second.log).
+부모 추적을 끊는 변이는 시험 초기화 뒤 적용한 실행에서 검출됐다
+(native-lineage-mutant-second.log). 최초 변이 시도는 시험의 모듈 재로딩으로
+변이가 사라져 무효였으며 해당 로그도 보존했다. 공개 스키마 검사는16개
+메서드 구조를 통과했으나 실제 wire capture는 제공하지 않았다
+(native-lineage-schema.json의 observed=0). SDK의 구서버 협상 거부와 실제
+native 하위 대화 시험, 두 Linux 버전의120초 재검증은 계속 남아 있다.

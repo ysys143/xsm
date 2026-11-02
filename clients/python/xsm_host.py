@@ -22,7 +22,7 @@ class RetryAdmission(RuntimeError):
 
 class XsmHost:
     @classmethod
-    async def open(cls, *, runtime, profile, conversation, cwd, deliver=None, present=None,
+    async def open(cls, *, runtime, profile, conversation, cwd, deliver=None, present=None, parent_conversation=None,
                    command=None, env=None, on_error=None, inbox_batch_size=None, inbox_max_bytes=None,
                    initialize_timeout=10.0, setup_timeout=10.0):
         if inbox_max_bytes is not None and (type(inbox_max_bytes) is not int or not 1 <= inbox_max_bytes <= 1048576):
@@ -55,7 +55,7 @@ class XsmHost:
             if not isinstance(available, list) or any(value not in available for value in capabilities) or not valid_lease:
                 raise TransportError("server lacks required host capabilities or a finite positive claim lease")
             session = await setup("session.open", client.session_open(runtime=runtime, profile=profile, conversation=conversation,
-                                                cwd=cwd, capabilities=capabilities))
+                                                cwd=cwd, capabilities=capabilities, parent_conversation=parent_conversation))
             operations = (await setup("operations/list", client.request("operations/list")))["operations"]
             if inbox_max_bytes is not None and not any(item['name'] == 'xsm_inbox' and
                     'max_bytes' in item['inputSchema'].get('properties', {}) for item in operations):

@@ -18,6 +18,7 @@ export interface HostOptions extends ConnectOptions {
   runtime: string;
   profile: string;
   conversation: string;
+  parentConversation?: string;
   cwd: string;
   /** Combined post-initialize bootstrap deadline in milliseconds. Default 10000. */
   setupTimeout?: number;

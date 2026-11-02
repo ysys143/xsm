@@ -121,7 +121,8 @@
               "messaging",
               "inbox",
               "events",
-              "user-decisions"
+              "user-decisions",
+              "native-lineage"
             ]
           }
         },
@@ -226,7 +227,8 @@
               "messaging",
               "inbox",
               "events",
-              "user-decisions"
+              "user-decisions",
+              "native-lineage"
             ]
           }
         }

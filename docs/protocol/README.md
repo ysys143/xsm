@@ -36,12 +36,23 @@ hooks; it does not authenticate against malicious processes under that uid.
 No listener, login, cloud service or orchestration wrapper is required.
 
 `session.open` takes `runtime`, `profile`, `conversation`, an existing absolute
-`cwd`, and optional `capabilities` (`messaging`, `inbox`, `events`, `user-decisions`). Runtime is a
+`cwd`, and optional `capabilities` (`messaging`, `inbox`, `events`, `user-decisions`, `native-lineage`). Runtime is a
 lowercase slug; `claude` and `codex` are reserved until verified native bindings
 exist. Profile and conversation are nonempty opaque host identifiers. Local
 profile namespaces and addresses are derived without putting raw routing keys
 or private configuration directories in responses. Registration is explicit
 participation, not consent to widen repository policy.
+
+Hosts that observe native subagent creation may supply `parent_conversation`
+when opening the child, after negotiating `native-lineage`. This is a native
+host observation, never a model-supplied parent claim. The parent belongs to
+the same runtime and profile and must differ from the child. Its worker budget
+applies transitively to descendants; repository scope, team membership, and
+approvals do not transfer. Missing or cyclic ancestry refuses worker operations
+instead of treating the child as an unrestricted root. Reopening a child keeps
+its recorded parent even when the optional field is omitted; changing that
+parent is refused. Clients refuse this option when an older server does not
+advertise the capability.
 
 The response contains connection-local `session`, `generation`, stable `ref`,
 and an opaque `address` (`peer:` followed by a full SHA-256 digest). Prefer the

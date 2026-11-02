@@ -91,7 +91,7 @@ export class XsmHost {
       const capabilities = ['messaging', 'inbox', ...(options.deliver ? ['events'] : [])];
       if (options.present) capabilities.push('user-decisions');
       const session = await setup('session.open', client.sessionOpen({ runtime: options.runtime, profile: options.profile,
-        conversation: options.conversation, cwd: options.cwd, capabilities }));
+        conversation: options.conversation, cwd: options.cwd, capabilities, parentConversation: options.parentConversation }));
       const { operations } = await setup('operations/list', client.request('operations/list'));
       if (options.inboxMaxBytes !== undefined && !operations.find(item => item.name === 'xsm_inbox')?.inputSchema?.properties?.max_bytes) {
         throw new Error('server does not advertise inbox byte budgets');
