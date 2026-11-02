@@ -117,6 +117,9 @@ def service_removal(owner, worker_id):
             if phase == 'unknown' and request.get('result') is None:
                 cancel, binding, child = (request.get(key) or {} for key in ('cancellation', 'native_binding', 'child'))
                 context = state['contexts'][request['context_id']]
+                if (_native_execution_settled(request) and context.get('epoch') == request.get('context_epoch')
+                        and context.get('native_session_id') == binding.get('native_session_id')):
+                    continue
                 if (cancel.get('native_state') == 'stopped' and _alive(child) is False
                         and binding.get('native_session_id') and cancel.get('native_session_id') == binding['native_session_id']
                         and cancel.get('child_pid') == binding.get('child_pid') == child.get('pid')
@@ -268,6 +271,8 @@ def _unknown_child_state(request):
 
 
 def _occupies_slot(request):
+    if request['state'] == 'unknown' and _native_execution_settled(request):
+        return False
     provider = request.get('worker',{}).get('native_provider')
     if (request['state'] == 'unknown' and request.get('native_binding')
             and isinstance(provider,dict) and provider.get('execution_lifetime') == 'native-host'
@@ -284,6 +289,19 @@ def _busy(state):
     # Unknown fences the context. Child-owned execution releases an exited
     # process slot; an unconfirmed native-host execution retains its lease.
     return sum(_occupies_slot(r) for r in state['requests'].values()) + len(state['slots'])
+
+
+def _native_execution_settled(request):
+    observation = request.get('native_execution') or {}
+    binding,child = request.get('native_binding') or {},request.get('child') or {}
+    return (isinstance(observation,dict) and observation.get('state') == 'settled'
+            and isinstance(observation.get('evidence'),dict) and observation['evidence'].get('native_state') == 'settled'
+            and bool(binding.get('native_session_id'))
+            and observation.get('native_session_id') == binding['native_session_id']
+            and observation.get('child_pid') == binding.get('child_pid') == child.get('pid')
+            and observation.get('child_lstart') == binding.get('child_lstart') == child.get('lstart')
+            and observation.get('context_epoch') == request.get('context_epoch')
+            and _alive(child) is False)
 
 
 def _foreign(extra_busy, state):
@@ -529,6 +547,29 @@ def confirm_native_stop(owner, request_id, token, native_id, *, readback=False, 
         if readback:
             request['cancellation'].update(recovered_from='native-output', native_evidence=copy.deepcopy(evidence))
         return _view(state, request)
+
+
+def confirm_native_settlement(owner, request_id, token, native_id, evidence):
+    """Close an execution lease without resolving its unknown business effects."""
+    with _locked(owner) as state:
+        request=_get(state,request_id);_token(request,token)
+        binding,child=request.get('native_binding') or {},request.get('child') or {}
+        context=state['contexts'][request['context_id']]
+        if (request['state'] != 'unknown' or request.get('result') is not None
+                or context.get('epoch') != request.get('context_epoch')
+                or context.get('native_session_id') != native_id
+                or binding.get('native_session_id') != native_id
+                or binding.get('child_pid') != child.get('pid')
+                or binding.get('child_lstart') != child.get('lstart') or _alive(child) is not False
+                or not isinstance(evidence,dict) or evidence.get('native_state') != 'settled'):
+            raise OwnedError('native settlement lacks an exact exited bound execution')
+        if _native_execution_settled(request):
+            return _view(state,request)
+        request['native_execution']={'state':'settled','observed_at':time.time(),
+            'native_session_id':native_id,'context_epoch':request['context_epoch'],
+            'child_pid':child['pid'],'child_lstart':child['lstart'],'evidence':copy.deepcopy(evidence)}
+        _event(request,'unknown')
+        return _view(state,request)
 
 
 def save_result(owner, request_id, token, result):

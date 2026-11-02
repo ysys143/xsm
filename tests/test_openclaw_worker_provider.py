@@ -49,7 +49,13 @@ export async function callGatewayFromCli(method,options,p,extra) {
   terminalReceipt:{runId:p.runId,turnId:p.runId,sessionId:s.runs[p.runId],terminalDisposition:'visible'},
   terminalReply:{disposition:'visible',text:'Explicit owned SDK fixture answer.'}};
  else throw Error('unexpected fixture method');
- fs.writeFileSync(path,JSON.stringify(s));return result;
+ if(method==='agent.wait' && fs.existsSync(process.env.OPENCLAW_STATE_DIR+'/terminal-error')) {
+  const row=s.sessions.find(r=>r.sessionId===s.runs[p.runId]);
+  row.lastRunId=p.runId;row.status='failed';row.hasActiveRun=false;row.activeRunIds=[];row.startedAt=100;row.endedAt=190;
+  result={status:'error',runId:p.runId,startedAt:100,endedAt:200,error:'explicit fixture provider refusal'};
+ }
+ const temporary=path+'.tmp-'+process.pid;
+ fs.writeFileSync(temporary,JSON.stringify(s));fs.renameSync(temporary,path);return result;
 }
 ''')
         env = {key: '' for _, keys in workers.FRAMEWORKS for key in keys}
@@ -169,3 +175,29 @@ export async function callGatewayFromCli(method,options,p,extra) {
                 provider.recover_result(first['worker'],first['context'],json.dumps(dict(bound,**{field:'other'})),first['child'],
                     self.workers._owned_turn_environment(first['worker'],provider))
             self.assertEqual(memory.read_bytes(),before)
+
+    def test_native_error_settlement_releases_lease_without_task_answer(self):
+        Path(self.home,'terminal-error').touch()
+        unknown=self.run_turn()
+        self.assertEqual(unknown['status'],'unknown')
+        self.assertTrue(unknown['slot_occupied'])
+        memory=Path(self.home,'fixture-memory.json');calls=json.loads(memory.read_text())['calls'].count('agent')
+        settled=self.workers.reconcile_owned('native-openclaw',self.owner,'one')
+        self.assertEqual(settled['status'],'unknown')
+        self.assertFalse(settled['slot_occupied'])
+        self.assertIsNone(settled['result']);self.assertIsNone(settled['reply_id'])
+        self.assertIsNone(settled.get('cancellation'))
+        self.assertEqual(settled['native_execution']['state'],'settled')
+        again=self.workers.reconcile_owned('native-openclaw',self.owner,'one')
+        self.assertEqual(again['native_execution'],settled['native_execution'])
+        self.assertEqual(json.loads(memory.read_text())['calls'].count('agent'),calls)
+
+    def test_settlement_journal_refuses_wrong_reservation_or_native_identity(self):
+        from xsm import owned_requests
+        Path(self.home,'terminal-error').touch();unknown=self.run_turn()
+        path=Path(owned_requests._path(self.owner));before=path.read_bytes()
+        token=unknown['reservation']['token'];sid=unknown['context']['native_session_id']
+        for selected_token,selected_id in (('wrong',sid),(token,'other')):
+            with self.subTest(native_id=selected_id),self.assertRaises(owned_requests.OwnedError):
+                owned_requests.confirm_native_settlement(self.owner,'one',selected_token,selected_id,{'native_state':'settled'})
+            self.assertEqual(path.read_bytes(),before)

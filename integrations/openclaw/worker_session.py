@@ -194,3 +194,35 @@ def stopped_run(terminal, listing, locator, run_id, abort):
     fields = ('key', 'sessionId', 'agentId', 'lifecycleRevision', 'lastRunId', 'status',
               'abortedLastRun', 'hasActiveRun', 'activeRunIds', 'startedAt', 'endedAt')
     return {name: row[name] for name in fields}
+
+
+def failed_run_settlement(terminal, row, locator, run_id):
+    """Observe a closed native execution without turning its error into an answer."""
+    def positive(value):
+        try:
+            return type(value) in (int,float) and math.isfinite(value) and value > 0
+        except OverflowError:
+            return False
+    if (terminal.get('runId') != run_id or terminal.get('status') != 'error'
+            or not positive(terminal.get('endedAt')) or terminal.get('pendingError') is not None
+            or any(terminal.get(key) is not None and terminal.get(key) is not False
+                   for key in ('yielded','retryableTransportError'))):
+        raise NativeSessionError('native failure has no final execution observation')
+    if (row.get('key') != locator.get('native_session_key') or row.get('sessionId') != locator.get('native_session_id')
+            or row.get('agentId') != locator.get('agent_id') or row.get('lifecycleRevision') != locator.get('native_lifecycle_revision')
+            or row.get('hasActiveRun') is not False or row.get('activeRunIds') != []):
+        raise NativeSessionError('native failure identity or activity changed')
+    queued = terminal.get('providerStarted') is False
+    start,end = terminal.get('startedAt'),terminal['endedAt']
+    if queued:
+        if start is not None:
+            raise NativeSessionError('native unstarted failure contains a start time')
+    elif (not positive(start) or not positive(row.get('startedAt')) or row['startedAt'] != start
+            or row.get('lastRunId') != run_id or row.get('status') not in ('failed','blocked','killed','error','done')
+            or not positive(row.get('endedAt')) or not start <= row['endedAt'] <= end):
+        raise NativeSessionError('native failure has no matching closed run interval')
+    return {'native_state':'settled','source':'native-agent.wait','run_id':_text(run_id,'run ID'),
+            'terminal_status':'error','native_status':None if queued else row['status'],
+            'key':locator['native_session_key'],'lifecycle_revision':locator['native_lifecycle_revision'],
+            'started_at':start,'ended_at':end,'native_ended_at':None if queued else row['endedAt'],
+            'native_provider_not_started':queued}

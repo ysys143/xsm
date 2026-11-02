@@ -5,6 +5,7 @@
 실행 전·native 대기열·실행 중 취소와 확인 유실 readback을 macOS에서 확인했다.
 Linux arm64에서도 실제 gateway를 통한 같은 native 행렬과 공개 protocol 취소를 확인했다.
 Frontend 종료 뒤 살아 있는 native host의 완료 결과 회수도 macOS에서 확인했다.
+성공 답변 없는 provider 오류 종료는 실행 lease만 정리하는 경로를 macOS에서 확인했다.
 Gateway 자체 재시작과 전체 OS/모드 행렬은 미완이다. 아래 초기 시험과 거부 기록도
 보존하며, 현재 통합 증거는 마지막 절을 따른다.
 
@@ -523,3 +524,46 @@ Slot guard를 제거한 변이는 assertion1개로 검출됐다
 공개 protocol의 frontend 강제 종료, gateway 자체 재시작, header가 없는 불명
 실행과 성공 reply 없는 native 종료의 수명 정리, 전체 UI/모델/메신저 행렬은
 계속 미완이다. 오류를 업무 실패로 합성하거나 기존 unknown 기록을 지우지 않는다.
+
+## Native 오류 종료의 실행 lease 정리
+
+기존 host readback은 실제 답변이 없는 오류 종료를 계속 unknown으로 유지했지만,
+host 수명 lease도 계속 점유했다. 이 상태를 unit으로 먼저 재현했다
+(openclaw-error-lease-before.log). Task의 불명 효과와 실행 중 여부를 분리해
+정리하는 관측을 추가했다.
+
+Native gateway에 로컬 HTTP401 거부 fixture를 연결해 실제 응답을 확인했다
+(openclaw-error-settlement-shape). 같은 run의 status=error와 세션 status=failed,
+lastRunId 및 inactive를 확인했지만 세션 종료와 최종 job 종료 시각은47ms 달랐다.
+새 helper는 같은 시작 시각과 session_end <= final_end의 닫힌 구간을 요구하며
+임의의 ms 허용 오차를 두지 않는다. ID/revision·lastRun·비활성 상태가 함께
+일치해야 한다. Pending/yielded/retryable 관측은 종료 증거로 수락하지 않는다.
+
+Provider는 body 없이 native_state=settled 관측을 반환한다. Common journal은
+원래 reservation·PID/lstart·native ID·context epoch와 child 종료를 다시 확인해
+native_execution.state=settled를 기록한다. 슬롯만 해제하며 task status=unknown,
+result=None, reply=None과 문맥 fence는 유지한다. 취소 의도나 업무 실패를
+합성하지 않는다. 오류 원문도 관측·reply에 싣지 않는다. 동일 관측의 reconcile은
+idempotent다. 이 증거가 있으면 명시적 service stop은 metadata만 제거할 수
+있고 원본 journal·native profile과 불명 효과는 보존한다.
+
+실제 재현은 owned script의 --native-error다.
+openclaw-native-error-settlement-first의35개 검사가 통과했다. 정상 fixture3회와
+오류 요청의 HTTP 진입1회를 구분했다. 오류 후 lease 점유, native 종료 관측 후
+lease 해제, reply·취소 의도 없음, replay의 비재실행, metadata 제거 후 journal
+bytes 보존과 원래 sender의 retained status 접근을 확인했다. Gateway는 종료했고
+실제 모델 추론은0회다.
+
+처음 구현한 journal 호출은 _event의 지원하지 않는 keyword 때문에 unit1개가
+오류였으며 기존 positional 서명으로 수정했다. 첫 core 실행에서는 별개로 SDK
+fixture가 JSON을 갱신 중 읽히는 경합1개가 발생했다
+(openclaw-error-settlement-core.log). Fixture 저장을 임시 파일의 atomic rename으로
+바꿔 수정했으며 이를 실제 native journal 문제로 계산하지 않는다. 실패 로그는
+보존했다. Native lastRun 검사를 제거한 변이는 assertion1개로 검출됐다
+(openclaw-failed-settlement-mutant.log).
+
+최종 macOS core는 Python494+SDK52+native128+Node152=826개와 독립 mock39/
+변이14개를80.423초에 통과했다(openclaw-error-settlement-core-final.log).
+이번 변경의 Linux·공개 protocol 오류 종료 검증과 gateway 자체 재시작,
+성공 reply 없는 정상 종료·header가 없는 불명 실행 및 전체 UI/모델/메신저
+행렬은 계속 미완이다.

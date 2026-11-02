@@ -171,19 +171,23 @@ def recover_result(worker, context, output, execution, env):
                 or locator.get('agent_id') != descriptor['agent_id']
                 or session._workspace(locator.get('cwd')) != session._workspace(worker['cwd'])):
             raise NativeSessionError('native recovery bound context changed')
+        key = session._text(locator.get('native_session_key'),'session key')
+        session._text(locator.get('native_lifecycle_revision'),'lifecycle revision')
         rpc = NativeRpc(descriptor['node'],descriptor['executable'],cwd=worker['cwd'],
                         env=env)
         terminal = rpc('agent.wait',{'runId':run_id,'timeoutMs':100})
         if terminal.get('status') in ('timeout','pending'):
             return None
-        reply = session.completed_run(terminal,locator,run_id)
-        key = session._text(locator.get('native_session_key'),'session key')
         described = rpc('sessions.describe',session.description_params(key,descriptor['agent_id']))
         row = session.described_listing(described,key,descriptor['agent_id'])['sessions'][0]
         if (row.get('sessionId') != locator['native_session_id']
                 or row.get('lifecycleRevision') != locator.get('native_lifecycle_revision')
                 or session._workspace(row.get('workspaceDir') or row.get('spawnedCwd') or row.get('sessionRoot')) != session._workspace(worker['cwd'])):
             raise NativeSessionError('native recovery lifecycle or workspace changed')
+        if terminal.get('status') == 'error':
+            evidence = session.failed_run_settlement(terminal,row,locator,run_id)
+            return {'native_session_id':locator['native_session_id'],'native_evidence':evidence}
+        reply = session.completed_run(terminal,locator,run_id)
         if reply['disposition'] != 'visible' or not reply['text'].strip():
             raise NativeSessionError('native recovery has no actual reply text')
         return {'native_session_id':locator['native_session_id'],'body':reply['text'],

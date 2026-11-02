@@ -2027,6 +2027,8 @@ def reconcile_owned(name, sender, request_id, readback=None, *, reply_sender=Non
     request = owned_requests.status(worker["owner"], request_id, sender=sender)
     if request["status"] != "unknown":
         return request
+    if owned_requests._native_execution_settled(request):
+        return request
     if request.get('cancellation') and request['cancellation'].get('native_state') != 'stopped':
         evidence = _readback_owned_cancellation(request['worker'], request)
         if evidence is not None:
@@ -2040,6 +2042,9 @@ def reconcile_owned(name, sender, request_id, readback=None, *, reply_sender=Non
         result = _readback_owned_host(request['worker'],request)
     if result is None:
         return request
+    if result.get('native_execution_observation') is True:
+        return owned_requests.confirm_native_settlement(worker['owner'],request_id,request['reservation']['token'],
+            result['native_session_id'],result['native_evidence'])
     owned_requests.save_result(worker["owner"], request_id, request["reservation"]["token"], result)
     return resend_owned(name, sender, request_id, reply_sender=reply_sender)
 
@@ -2149,8 +2154,11 @@ def _readback_owned_host(worker, request):
         value = _native_owned_call(native,'recover_result',worker,request['context'],output,child,
                                    _owned_turn_environment(worker,native))
         if (not isinstance(value,dict) or value.get('native_session_id') != binding['native_session_id']
-                or not isinstance(value.get('body'),str) or not value['body'].strip()
                 or not isinstance(value.get('native_evidence'),dict)):
+            return None
+        if 'body' not in value and value['native_evidence'].get('native_state') == 'settled':
+            return {**value,'native_execution_observation':True}
+        if not isinstance(value.get('body'),str) or not value['body'].strip():
             return None
         result = _owned_model_result(value['native_session_id'],value['body'],value['native_evidence'])
         result['execution'] = dict(child,recovered_from='native-host-status')

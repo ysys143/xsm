@@ -285,3 +285,24 @@ declare task success. Missing historical run/revision evidence is not fabricated
 Frontend-loss recovery while the native host remains alive has model0 native
 evidence. Gateway restart, non-success native settlement and all runtime/UI/
 messenger combinations remain unfinished; see the evidence notes for exact scope.
+
+## Native execution settlement without an answer
+
+A result-recovery provider can instead return an observation with
+`native_evidence.native_state: "settled"` and no `body` field. This closes only
+the execution lease. The engine verifies the original reservation, exited bound
+child and current context generation again before storing `native_execution`.
+It does not create a cancellation request, model answer or task outcome.
+
+For OpenClaw native failures, an exact final error observation must agree with
+the session identity/revision, last run, inactive state and closed execution
+interval. Native session end and final job settlement can have different times:
+the session interval must be contained within that run's final interval, without
+an arbitrary time tolerance. Retryable/yielded/pending observations do not qualify.
+Provider error text is not retained in the observation or published as a reply.
+
+The request remains `unknown` with null result/reply, and its work context stays
+fenced. Its execution slot can be released. Repeated reconciliation retains the
+same observation. Explicit service removal may then remove only metadata while
+preserving journals, native profiles and unknown effects. Missing or changed
+binding/generation evidence cannot authorize this transition.

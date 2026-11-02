@@ -127,3 +127,20 @@ class OpenClawWorkerSessionTest(unittest.TestCase):
         for field,value in (('sessionId','other'),('lifecycleRevision','other'),('hasActiveRun',True),('activeRunIds',['other'])):
             with self.subTest(field=field), self.assertRaises(session.NativeSessionError):
                 session.stopped_run(terminal,dict(sessions=[dict(row,**{field:value})]),locator,'run-1',abort)
+
+    def test_failed_settlement_requires_closed_native_interval_without_error_text(self):
+        locator=session.created_locator(self.created,'main',self.cwd)
+        terminal=dict(runId='run-1',status='error',startedAt=100,endedAt=200,error='private provider detail')
+        row=dict(key=locator['native_session_key'],sessionId='native-id',agentId='main',lifecycleRevision='revision-1',
+                 lastRunId='run-1',status='failed',startedAt=100,endedAt=190,hasActiveRun=False,activeRunIds=[])
+        evidence=session.failed_run_settlement(terminal,row,locator,'run-1')
+        self.assertEqual(evidence['native_state'],'settled')
+        self.assertNotIn('private provider detail',str(evidence))
+        for changed in (dict(terminal,status='timeout'),dict(terminal,runId='other'),dict(terminal,endedAt=None),
+                        dict(terminal,retryableTransportError=True),dict(terminal,yielded=True),dict(terminal,pendingError={})):
+            with self.subTest(terminal=changed),self.assertRaises(session.NativeSessionError):
+                session.failed_run_settlement(changed,row,locator,'run-1')
+        for field,value in (('sessionId','other'),('lifecycleRevision','other'),('lastRunId','other'),('status','running'),
+                            ('hasActiveRun',True),('activeRunIds',['other']),('startedAt',101),('endedAt',99),('endedAt',201)):
+            with self.subTest(field=field),self.assertRaises(session.NativeSessionError):
+                session.failed_run_settlement(terminal,dict(row,**{field:value}),locator,'run-1')

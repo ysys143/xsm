@@ -12,6 +12,7 @@ parser=argparse.ArgumentParser(description='Pinned OpenClaw native backend run, 
 parser.add_argument('--native-cli',type=Path,required=True)
 parser.add_argument('--node',type=Path,required=True)
 parser.add_argument('--output',type=Path,required=True)
+parser.add_argument('--native-error',action='store_true',help='Return a local provider refusal and reconcile execution closure without a task answer')
 parser.add_argument('--interrupt-frontend',action='store_true',help='Kill the owned frontend after native provider entry and recover by read-only status')
 parser.add_argument('--crowded-profile',action='store_true',help='Seed 101 empty native sessions and verify an older owned context outside the default page')
 parser.add_argument('--queued-native',action='store_true',help='Hold an independent native run so the owned target waits before provider execution')
@@ -22,6 +23,7 @@ options=parser.parse_args()
 if options.lose_cancel_confirmation and not (options.cancel or options.before_admission):parser.error('--lose-cancel-confirmation requires --cancel or --before-admission')
 if options.queued_native and not options.cancel:parser.error('--queued-native requires --cancel')
 if options.interrupt_frontend and (options.cancel or options.before_admission):parser.error('--interrupt-frontend is a separate recovery mode')
+if options.native_error and (options.cancel or options.before_admission or options.interrupt_frontend):parser.error('--native-error is a separate settlement mode')
 if not options.native_cli.is_absolute() or not options.node.is_absolute():parser.error('absolute native CLI and Node paths required')
 if json.loads((options.native_cli.parent/'package.json').read_text()).get('version')!='2026.10.9':parser.error('OpenClaw2026.10.9 package required')
 root=Path(tempfile.mkdtemp(prefix='xsm-openclaw-owned-create-')).resolve();out=options.output.absolute();out.mkdir(parents=True,exist_ok=False)
@@ -46,7 +48,7 @@ def check(name,value):
  if not value:raise AssertionError(name)
  report['checks'].append(name);save()
 import threading,concurrent.futures
-blocking=threading.Event();entered=threading.Event();release=threading.Event();external_blocker=threading.Event();external_entries=[]
+blocking=threading.Event();entered=threading.Event();release=threading.Event();external_blocker=threading.Event();external_entries=[];refusing=threading.Event()
 original_post=assistant.server.RequestHandlerClass.do_POST
 def observed_post(handler):
  rows=[]
@@ -61,6 +63,10 @@ def observed_post(handler):
  if external_blocker.is_set() and not rows:external_entries.append(time.monotonic())
  else:report['preProviderBindingObservations'].append(len(valid)==1 and all(valid))
  save()
+ if refusing.is_set():
+  handler.rfile.read(int(handler.headers.get('Content-Length','0')))
+  body=json.dumps({'error':{'message':'Explicit local refusal fixture','type':'authentication_error','code':'fixture_refused'}}).encode()
+  handler.send_response(401);handler.send_header('Content-Type','application/json');handler.send_header('Content-Length',str(len(body)));handler.end_headers();handler.wfile.write(body);return
  if blocking.is_set():entered.set();release.wait(45)
  try:return original_post(handler)
  except (BrokenPipeError,ConnectionResetError):pass
@@ -130,6 +136,32 @@ finally {clearTimeout(timer);client.stop();}
  check('provider saw durable exact live child binding',len(report['preProviderBindingObservations'])==3 and all(report['preProviderBindingObservations']))
  check('logical worker indexes exact native IDs',set(workers.load('native-openclaw')['owned_sessions'])=={first['result']['native_session_id'],separate['result']['native_session_id']})
  report['providerFixtureRequests']=len(before)
+ if options.native_error:
+  refusing.set();error_text='Explicit local provider refusal task.'
+  unknown=workers.run_owned('native-openclaw',owner,error_text,work_context='native-error-work',request_id='native-error')
+  check('provider refusal remains unknown with no task answer',unknown['status']=='unknown' and unknown['result'] is None and unknown['reply_id'] is None)
+  check('provider refusal holds lease before host confirmation',unknown['slot_occupied'] is True)
+  settled=workers.reconcile_owned('native-openclaw',owner,'native-error')
+  (out/'native-error-journal.json').write_text(json.dumps(settled,indent=2)+'\n')
+  check('native failed execution is separately confirmed',settled.get('native_execution',{}).get('state')=='settled')
+  check('native settlement releases execution lease',settled['slot_occupied'] is False)
+  check('native error text never becomes task result',settled['status']=='unknown' and settled['result'] is None and settled['reply_id'] is None)
+  check('natural error settlement does not manufacture cancellation',settled.get('cancellation') is None)
+  evidence=settled['native_execution']['evidence']
+  check('settlement retains no arbitrary provider error text','fixture_refused' not in json.dumps(evidence) and 'lastRunError' not in evidence)
+  again=workers.reconcile_owned('native-openclaw',owner,'native-error')
+  check('native settlement is idempotent',again['native_execution']==settled['native_execution'])
+  replay=workers.run_owned('native-openclaw',owner,error_text,work_context='native-error-work',request_id='native-error')
+  check('settled unknown task is not inferred again',replay['status']=='unknown' and len(report['preProviderBindingObservations'])==4)
+  from xsm import owned_requests
+  journal=Path(owned_requests._path(owner));journal_before=journal.read_bytes()
+  workers.stop('native-openclaw')
+  check('settled service metadata can be removed',workers.load('native-openclaw') is None)
+  check('settled service removal preserves original journal',journal.read_bytes()==journal_before)
+  retained=workers.owned_status('native-openclaw',owner,'native-error')
+  check('original sender can read retained unknown error',retained['status']=='unknown' and retained['native_execution']['state']=='settled')
+  report['nativeErrorSettlement']=settled['native_execution'];report['providerHttpEntries']=len(report['preProviderBindingObservations'])
+
  if options.interrupt_frontend:
   blocking.set();interrupted_text='Explicit interrupted frontend task.'
   with concurrent.futures.ThreadPoolExecutor(max_workers=1) as pool:
