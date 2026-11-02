@@ -480,3 +480,24 @@ linux-generic-network-314/tests.log/result.json). source archive SHA-256은 둘 
 network none의 loopback 안에서 요청/회신·claim/ACK와 같은 대화 재개 후 원문을
 확인했다. 물리 머신·실제 model/native UI·메신저 검증은 아니다. 마지막 VM stop은
 linux-generic-network-batch.json의 stopExitCode0으로 확인했다.
+
+## Scope service integration (2026-11-02)
+
+join/leave/link/reach 공통화의 `2d867b4` 소스를 양쪽 Linux arm64 이미지에
+동일 archive SHA-256 d7a0324ecf53cb0c81d6d724dc0cb0bb18ab22a89ed7df45d51ad43a52dd5f3e로
+전달했다. 추적 파일의 기존 사용자 문서 수정이 포함돼 dirty=true이며 소스
+검증 결과를 clean checkout이라고 부르지 않는다. 이후 ACK 계약 변경 전의
+표본이다.
+
+- Python3.11.2: Python466+SDK50+Node127=643개, 독립 mock39/변이14,
+  전체92.064초, 통과.
+- Python3.14.10: 같은643개와 독립 mock39/변이14, 전체113.962초, 통과.
+
+명령은 scripts/check-protocol-linux.py의 명시적 private Docker endpoint와
+이미지 선택을 사용했다. 최초 scope-linux-311/314 실행은 시험기가 공유 경로
+share를 shared로 잘못 지정해 Docker exit125로 실패했다. 검사 본문은 실행되지
+않았다. 실패 로그를 보존하고 경로를 고친 scope-linux-v2-311/314로 재실행했다.
+각 결과의 gate.passed=true, exit=0을 확인했으며 VM start/stop도 모두 exit0이다.
+전체 batch 결과와 시작·종료 로그는 scope-linux-batch[-v2]/에 있다.
+사용자 Docker context·공유 프로필·호스트 설정은 변경하지 않았다. 이 결과는
+Linux 핵심 gate이며 native UI·model·messenger·queue p95 인증은 아니다.
