@@ -2156,3 +2156,20 @@ leaves/next→render와 없는 parent 무기여, CLI/MCP 공통 경로 및 위�
 별도 확인했다(`doc-service-cli-final.log`). 공개 schema 검사도 통과했다
 (`doc-service-schema-final.json`). 실제 전체 native 행렬과 문서 결과의
 완전한 operation-specific JSON Schema는 미완이다.
+
+## 첨부 사본 조회의 공통 경로
+
+CLI files와 xsm_files의 manifest/entry 선택·owner 검사·text/base64 응답을
+files.read_result로 모았다. frontend의 인증된 caller와 기존 표시·오류
+처리는 유지한다. 파일 경로나 이름이 조회 주소가 되지 않는다.
+
+같은 binary outgoing copy를 실제 CLI와 MCP로 조회해 bytes와 결과 필드를
+대조하고, 다른 owner의 조회를 거부하는 검사를 추가했다. 초기 missing
+read_result 실패와 MCP의 passive inbox_pending 추가를 놓친 fixture 실패는
+각각 보존했다(`file-read-service-{red,green}.log`). 해당 필드를 명시적으로
+0으로 대조한 뒤 나머지 결과·실제 bytes를 비교했다. 기존 files/material/
+protocol 회귀 123개가 9.582초에 통과했다
+(`file-read-service-regression.log`). 공통 542개(핵심 367/Python 49/Node
+126)와 독립 mock 16개·변이 4개는 79.239초에 통과했다
+(`file-read-service-core.log`). 큰 첨부의 프레임 분할 문제는 이 조회
+공통화로 해결됐다고 계산하지 않는다.

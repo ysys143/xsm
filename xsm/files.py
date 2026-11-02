@@ -864,6 +864,18 @@ def read_copy(caller, storage_id, entry_id, *, incoming=False):
         return data[entry_id]
 
 
+def read_result(caller, storage_id, entry_id=None, *, outgoing=False, encoding='text'):
+    """Common owned manifest/byte response; frontends authenticate and render."""
+    incoming = not outgoing
+    if not entry_id:
+        return {'storage_id': storage_id, 'manifest': manifest(caller, storage_id, incoming=incoming)}
+    if encoding not in ('text', 'base64'):
+        raise FileError('invalid-encoding', 'encoding must be text or base64')
+    data = read_copy(caller, storage_id, entry_id, incoming=incoming)
+    content = base64.b64encode(data).decode('ascii') if encoding == 'base64' else data.decode('utf-8')
+    return {'storage_id': storage_id, 'entry_id': entry_id, 'encoding': encoding, 'content': content}
+
+
 def negotiate(packet, *, request_id, body, capability, limits, fallback=None, body_limit=None):
     """No automatic fallback. Explicit inline changes body: coordinator must rebind."""
     value, contents = _packet(packet, request_id, body, limits)

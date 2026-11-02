@@ -7,6 +7,31 @@ from tests.test_xsm import TempState
 
 
 class MaterialPreparationTest(TempState):
+    def test_cli_and_model_read_the_same_owned_copy_via_shared_result(self):
+        import base64
+        import io
+        import json
+        from contextlib import redirect_stdout
+        from xsm import cli, mcp
+        self.capable()
+        prepared = self.prepare([{'name': 'binary.bin', 'base64': base64.b64encode(b'\xff\x00exact').decode()}])
+        manifest = self.f.manifest(self.a, prepared['manifest_id'])
+        entry = manifest['files'][0]['id']
+        server = mcp.Server(io.StringIO(), io.StringIO())
+        server.session = lambda: self.a
+        out = io.StringIO()
+        with mock.patch.object(self.f, 'read_result', wraps=self.f.read_result) as common:
+            with mock.patch.object(self.r, 'me', return_value=self.a), mock.patch.object(self.r, 'last_identity', return_value=self.call), redirect_stdout(out):
+                code = cli.main(['files', manifest['id'], '--entry', entry, '--outgoing', '--encoding', 'base64'])
+            result = json.loads(server.call('xsm_files', {'storage_id': manifest['id'], 'entry_id': entry, 'outgoing': True, 'encoding': 'base64'}))
+            self.assertEqual(code, 0)
+            self.assertEqual(result.pop('inbox_pending'), 0)
+            self.assertEqual(json.loads(out.getvalue()), result)
+            self.assertEqual(base64.b64decode(result['content']), b'\xff\x00exact')
+            self.assertEqual(common.call_count, 2)
+        with self.assertRaises(self.f.FileError):
+            self.f.read_result(self.b, manifest['id'], entry, outgoing=True, encoding='base64')
+
     def setUp(self):
         super().setUp()
         from xsm import context,files,materials,registry

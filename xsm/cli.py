@@ -7,7 +7,6 @@ prose: 0 ok, 2 refused (scope, liveness, ambiguity), 3 sent but unconfirmed,
 from __future__ import annotations
 
 import argparse
-import base64
 import glob
 import json
 import os
@@ -1249,12 +1248,8 @@ def cmd_files(args) -> int:
         print(why or "this session is not registered",file=sys.stderr)
         return REFUSED
     try:
-        if not args.entry:
-            result={"storage_id":args.storage_id,"manifest":files.manifest(me,args.storage_id,incoming=not args.outgoing)}
-        else:
-            data=files.read_copy(me,args.storage_id,args.entry,incoming=not args.outgoing)
-            content=base64.b64encode(data).decode("ascii") if args.encoding=="base64" else data.decode("utf-8")
-            result={"storage_id":args.storage_id,"entry_id":args.entry,"encoding":args.encoding,"content":content}
+        result = files.read_result(me, args.storage_id, args.entry,
+                                   outgoing=args.outgoing, encoding=args.encoding)
     except (files.FileError,UnicodeError) as exc:
         print(str(exc),file=sys.stderr)
         return REFUSED

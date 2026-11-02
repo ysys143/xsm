@@ -5,7 +5,6 @@ Policy, human decisions, file preparation and canonical handoffs live here.
 """
 from __future__ import annotations
 
-import base64
 import copy
 import json
 import math
@@ -233,19 +232,12 @@ class OperationService:
             return json.dumps(self.owned(me,args),ensure_ascii=False)
         if name == "xsm_files":
             from . import files
-            storage, entry = args.get("storage_id"), args.get("entry_id")
-            incoming = not args.get("outgoing", False)
-            if not entry:
-                return json.dumps({"storage_id": storage, "manifest": files.manifest(me, storage, incoming=incoming)}, ensure_ascii=False)
-            data = files.read_copy(me, storage, entry, incoming=incoming)
-            encoding = args.get("encoding", "text")
-            if encoding not in ("text", "base64"):
-                raise ToolError("encoding must be text or base64")
             try:
-                content = base64.b64encode(data).decode("ascii") if encoding == "base64" else data.decode("utf-8")
+                result = files.read_result(me, args.get('storage_id'), args.get('entry_id'),
+                    outgoing=args.get('outgoing', False), encoding=args.get('encoding', 'text'))
             except UnicodeError as exc:
                 raise ToolError("binary copy: request encoding=base64") from exc
-            return json.dumps({"storage_id": storage, "entry_id": entry, "encoding": encoding, "content": content}, ensure_ascii=False)
+            return json.dumps(result, ensure_ascii=False)
         if name == "xsm_decision_status":
             from . import decisions
             if args.get("pending_consent"):
