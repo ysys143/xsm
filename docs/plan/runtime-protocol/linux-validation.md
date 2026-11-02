@@ -639,3 +639,16 @@ deliverables/protocol-foundation/hermes-cancel-linux/의 result.json,
 이 표본은 Hermes의 exact receipt generation·actual interrupted-result 검사를
 포함한다. 실제 Linux Hermes gateway/model 취소 인증은 아니며, 이후의 안전한
 service removal과786개 core는 포함하지 않는다.
+
+## 안전한 service removal core (59c59b3)
+
+59c59b3 고정 번들의 SHA-256은
+4893c5a4d99a235a0b678ce04e2389eafb72ee3ab33dfbf8d2bf942a22ba6697다.
+Python494+SDK52+native88+Node152=786개 및 독립 mock39/변이14개가 두 Linux
+arm64 이미지에서 통과했다. Python3.11.2는64.210초,3.14.10은82.135초였다.
+Model0/network none/cpu2/memory3g와120초 기한을 유지했다. 원시는
+deliverables/protocol-foundation/owned-service-removal-linux/의 result.json,
+{311,314}/protocol.log와 start/stop.log다. VM stopExit은0이며 종료됐다.
+
+이는 service 제거의 lock/generation/미발행 보호와 journal 보존의 core 증거다.
+이후 OpenClaw 세션 계약/791개와 실제 Linux native worker 실행은 포함하지 않는다.

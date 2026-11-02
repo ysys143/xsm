@@ -700,3 +700,15 @@ macOS core는 Python494+SDK52+native88+Node152=786개 및 독립 mock39/변이14
 81.224초에 통과했다(owned-service-removal-readonly-core.log). 전수표도 실제
 parser/catalog73/22/16과 cancel action으로 갱신했다. 이번 변경의 Linux 검사와
 전체 runtime/worker/UI/remote/messenger 행렬은 계속 미완이다.
+
+## OpenClaw native 세션 준비 경계
+
+새 key/session ID를 native sessions.create로 생성하고, 모델 turn 전에 private
+socket fixture에 actual ID를 결속했다. 정확한 native ID의 resolve/list 재조회와
+native lifecycle revision도 확인했다. Agent 실행 인수는 기존 ID/revision을
+명시하지만 실제 agent 호출은 아직 하지 않았다. Plugin harness 소유권을
+가장하지 않고 native operator RPC를 사용하며 runtime/권한 설정을 바꾸지 않는다.
+
+계약 helper5개와 실제 gateway 재현은 통과했다. Core791개는80.427초에 통과했다.
+상세 출처·경계는 openclaw-owned-session.md를 따른다. 제공자 catalog 등록,
+owned journal과 실제 native 실행/결과/중단/복구 연결은 계속 미완이다.
