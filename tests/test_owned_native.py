@@ -78,6 +78,28 @@ print(json.dumps({'type': 'result', 'is_error': False,
         workers.stop('native-service')
         self.assertNotIn('ended_at', registry.by_session('codex', self.owner['session_id']))
 
+    def test_owned_reply_reaches_a_generic_protocol_parent_by_its_full_address(self):
+        from xsm import protocol, registry, workers
+        connection = protocol.Connection()
+        self.addCleanup(connection.close)
+        connection.dispatch('initialize', {'protocolVersion': '1'})
+        parent = connection.dispatch('session.open', {'runtime': 'fixture', 'profile': 'owned-parent',
+            'conversation': 'generic', 'cwd': self.tmp, 'capabilities': ['messaging', 'inbox']})
+        caller = connection.sessions[parent['session']].record
+        workers.create_owned('claude', caller=caller, name='generic-service', home=self.tmp + '/generic-owned')
+        result = workers.run_owned('generic-service', caller, 'remember:generic-native-result',
+            work_context='generic-work', request_id='generic-owned-request',
+            reply_sender=lambda worker, request: workers.publish_owned(worker, request, wake=False))
+        self.assertEqual(result['status'], 'reply-stored', result.get('send_evidence'))
+        packet = connection.dispatch('operation.call', {'session': parent['session'],
+            'operation': 'xsm_inbox', 'arguments': {}})
+        self.assertEqual(len(packet['claims']), 1)
+        self.assertIn('generic-native-result', packet['messages'][0])
+        ack = connection.dispatch('operation.call', {'session': parent['session'], 'operation': 'xsm_ack',
+            'arguments': {'tokens': [packet['claims'][0]['token']]}})
+        self.assertEqual(ack['acked'], [result['reply_id']])
+        self.assertNotIn('ended_at', registry.by_session('codex', self.owner['session_id']))
+
     def test_subscription_child_does_not_inherit_api_billing_keys_or_parent_native_id(self):
         from xsm import workers
         with mock.patch.dict(os.environ, {'ANTHROPIC_API_KEY': 'dummy', 'OPENAI_API_KEY': 'dummy',

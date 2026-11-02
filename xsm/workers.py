@@ -1676,8 +1676,14 @@ def _reply_owned(worker, request, *, wake=True):
             save(current)
     wanted = owned_requests._native(request["sender"])
     with probe.quick():
-        targets = [r for r in registry.records() if all(
-            r.get(key) == value for key, value in wanted.items())]
+        targets = []
+        for record in registry.records():
+            try:
+                same = owned_requests._native(record) == wanted
+            except owned_requests.OwnedError:
+                continue
+            if same:
+                targets.append(record)
     if len(targets) != 1:
         return {"id": request["reply_id"], "status": "refused",
                 "reason": "original reply target's full native identity is unavailable or ambiguous"}
@@ -1697,7 +1703,7 @@ def _reply_owned(worker, request, *, wake=True):
         ledger.queued(request["reply_id"], sender, target, scope, "reply", result["body"],
                       reply_to=request["id"], outcome=result.get("outcome"), priority="next")
         ledger.step(request["reply_id"], "accepted", True, "owned reply intent; transport not attempted")
-    spec = "%s:%s" % (target["runtime"], target["session_id"])
+    spec = identity.address(target)
     return send_mod.send(spec, result["body"], sender=sender, kind="reply", reply_to=request["id"],
                          outcome=result.get("outcome"), msg_id=request["reply_id"],
                          resend=True, wake=wake).as_dict()

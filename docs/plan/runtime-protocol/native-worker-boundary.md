@@ -104,3 +104,24 @@ chat --format stream-json, --query-file, --resume, --in 경로도 있으므로,
 facade가 지원하지 않는 기존 worker 기능을 보존할 수 있는지 구현 담당자가
 그 실제 경로를 추가 확인해야 한다. 이를 조사했다는 사실만으로 현재 provider의
 cwd/재개 제약을 해결했다고 처리하지 않는다.
+
+## 실제 native CLI의 cwd와 재개
+
+동일 고정 버전에서 python -m hermes_cli.main chat --format stream-json
+--query-file - 경로도 직접 실행했다. 새 private HOME/HERMES_HOME/XSM_HOME과
+기존 구독 프록시 설정만 사용했다. 첫 CLI는 다른 프로세스 cwd에서 --in으로
+지정한 workspace-a에 새 native 세션을 만들었다. 두 번째 CLI는 --resume으로
+같은 실제 SID를 재개했고 첫 턴에서만 제시한 확인 token을 기억했다. 프로세스
+cwd는 workspace-b였지만 native DB의 frozen cwd는 workspace-a로 유지됐다.
+
+터미널 result의 session_id는70자이며 UUID가 아니었다. CLI 출력을 기존
+Claude/Codex UUID 검사에 그대로 넣으면 안 된다. 두 turn 모두 stdout은
+system/init→text→단일 terminal result였고 process/result exit0이었다.
+총8개 검사를23.426초에 통과했다(hermes-native-cli-first/result.json 및
+first/resume-events.json). 전체 stderr는 private profile에0600으로 보관했다.
+
+이 시험이 만든 profile의 native 소유권 검사로 gateway PID를 확인한 뒤
+그 PID만 종료했고, native process 생존 검사에서도 종료를 확인했다. 다른
+프로필의 gateway를 찾거나 종료하지 않았다. 이 표본은 정상 생성/재개 경로며
+gateway 재시작 뒤 재개, 프로세스 중단 후 unknown readback, 실제 XSM owned
+provider 또는 worker 도구 송수신의 증거는 아니다.

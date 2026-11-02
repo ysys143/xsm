@@ -2466,3 +2466,22 @@ cancel10개를 각각15.432/19.272초에 통과했다. 자식의 공급자 호�
 Python470+SDK50+Node127=647개와 독립 mock39/변이14개가83.232초에 통과했다
 (hermes-worker-harness-core.log). Linux의 앞선 전체643/관련70개 표본과 구분한다.
 전체 목표는 계속 active이며 native provider/UI·전체 matrix 등의 미완을 유지한다.
+
+## Owned reply와 일반 프로토콜 부모 (2026-11-02)
+
+일반 참여자를 부모로 한 실제 fake CLI process·정본 저장 검사에서 owned reply가
+부모를 찾지 못했다. _native가 canonical home을 반환하는데 registry의 raw home과
+필드별로 비교했기 때문이다. 이를 고친 뒤에는 fixture:<sid>를 세션 이름으로
+해석해 다시 거부하는 별도 실패가 드러났다. 두 실패는 owned-generic-reply-before.log와
+owned-generic-reply-canonical-only.log로 보존했다.
+
+변경은 _reply_owned의 수신자 선택 한 곳과 주소 생성 한 곳이다. 양쪽 native
+identity를 같은 규칙으로 정규화해 비교하고, 선택한 정확한 부모의 opaque address로
+회신한다. 잘못된 registry 행은 건너뛰며 현재 scope/blocked 검사와 journal 예약
+검증은 유지한다. 이 검사에서 CLI는 fake이고 모델 호출0이므로 실제 native
+모델 지원 증거로 쓰지 않는다.
+
+관련32개는5.270초에 통과했고, generic 부모 inbox의 원문 수신과 명시적 ACK도
+실제 저장 경로로 확인했다(owned-generic-reply-after.log). 기존 native fake CLI
+검사9개를 핵심 gate에 넣은 뒤 총656개(Python479+SDK50+Node127), 독립 mock39 /
+변이14개가85.046초에 통과했다(owned-generic-reply-core.log).
