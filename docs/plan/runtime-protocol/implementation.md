@@ -2371,3 +2371,24 @@ non-run의 WorkerError를 ToolError로 일괄 포장해 기존 예외 계약 1�
 최종 공통 633개(핵심 456/Python 50/Node 127), 독립 mock 39개·변이 14개가
 70.744초에 통과했다(shared-owned-core.log). 신규 native worker provider 4종을
 구현·검증했다는 뜻은 아니다. 그 목표는 여전히 남아 있다.
+
+## 프로젝트 참여 변경 공통 서비스 (2026-11-02)
+
+CLI join/leave와 모델 도구 xsm_join의 변경 적용을 scope_service로 통합했다.
+사용자 답 수집과 typed consent 처리는 각 frontend에 유지하고, 승인 전의
+프로젝트 루트를 고정해 승인 후 달라졌으면 정책을 쓰기 전에 거부한다.
+이 단계는 join/leave에 한정된 구현 기록이며 reach/link 등 전체 CLI 추출은
+아직 완료하지 않았다.
+
+`python3 -B -m unittest tests.test_scope_service tests.test_link tests.test_mcp_forms`
+69개가8.572초에 통과했다. 첫 실행에서는 /var와 /private/var 경로 별칭을
+비교하던 새 검사1개가 실패했고, 시험 폴더를 realpath로 정규화했다.
+임시 소스 복사본에서 루트 재검증을 제거하자 join/leave/승인 경로 검사3개가
+모두 실패했다. 원본 코드는 변이하지 않았다. 로그와 변이 결과는
+deliverables/protocol-foundation/scope-service-{regression,root-guard-mutation}.log와
+scope-service-root-guard-mutation.json에 있다.
+
+공통 핵심 gate(`python3 -B scripts/check-protocol.py`)도77.072초에 통과했다.
+120초 기한을 유지했고 새 서비스 검사5개를 포함했다. 원시 출력은
+scope-service-core.log에 있다. 이 결과는 macOS 핵심 회귀이며 Linux 또는
+실제 native queue·UI·worker 검증을 뜻하지 않는다.

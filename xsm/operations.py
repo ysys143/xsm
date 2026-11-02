@@ -868,18 +868,17 @@ class OperationService:
         return "%s is the lead of team %s" % (member, name)
 
     def join(self, me: dict, args: dict) -> str:
-        from . import config
+        from . import scope_service
         project, leaving = (args.get("project") or "").strip(), bool(args.get("leave"))
-        root = config.project_root(me.get("cwd") or os.getcwd())
+        try:
+            plan = scope_service.prepare_membership(project, me.get("cwd") or os.getcwd(), leaving=leaving)
+        except ValueError as exc:
+            raise ToolError(str(exc))
+        root = plan.root
         verb = "leave" if leaving else "join"
         # What the agent runs instead, from this session's own folder: --dir is
         # taken only from a person at a terminal (issue #9).
         command = "xsm %s %s" % (verb, shlex.quote(project))
-        if not leaving:
-            try:
-                config.check_join(project)      # before the consent is used up, as for link
-            except ValueError as exc:
-                raise ToolError(str(exc))
         if not self.typed_permission(me, verb, project):       # the person typed /xsm join <project>
             ok, refusal = self.allowed(
                 me, "%s@%s asks to let %s %s the xsm project %r.%s\nAllow it?" % (
@@ -889,10 +888,11 @@ class OperationService:
             if not ok:
                 return refusal + "; the folder's projects are unchanged"
         try:
+            result = scope_service.apply_membership(plan)
             if leaving:
-                changed = config.leave(project, me.get("cwd") or os.getcwd())
+                changed = result["changed"]
                 return ("left %s" % project) if changed else "this folder was not in %s" % project
-            scope, added = config.join(project, me.get("cwd") or os.getcwd())
+            scope, added = result["scope"], result["added"]
         except ValueError as exc:
             raise ToolError(str(exc))
         others = [m["root"] for m in scope["members"] if os.path.realpath(m["root"]) != root]

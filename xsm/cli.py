@@ -424,6 +424,7 @@ def _person_or_refuse(what: str, mcp_tool: str, typed: tuple | None = None,
 
 
 def cmd_join(args) -> int:
+    from . import scope_service
     try:
         config.check_join(args.project)         # before the typed consent is used up
     except ValueError as exc:
@@ -440,16 +441,22 @@ def cmd_join(args) -> int:
     # refuses an agent's --dir, before the reply is used; the guard's own lookup
     # is reused, so one join asks the process table once (#17).
     here = _here(args, me=me)
+    try:
+        plan = scope_service.prepare_membership(args.project, here)
+    except ValueError as exc:
+        print("refused: %s" % exc, file=sys.stderr)
+        return USAGE
     why = _person_or_refuse("joining a project", "xsm_join", ("join", args.project))
     if why:
         print("refused: %s" % why, file=sys.stderr)
         return REFUSED
     try:
-        scope, added = config.join(args.project, here)
+        result = scope_service.apply_membership(plan)
+        scope, added = result["scope"], result["added"]
     except ValueError as exc:
         print("refused: %s" % exc, file=sys.stderr)
         return USAGE
-    root = config.project_root(here)
+    root = result["root"]
     print("%s project %s: %s" % ("joined" if added else "already in", args.project,
                                  _home_tilde(root)))
     print("this folder is in: %s" % ", ".join(_memberships(here)))
@@ -472,13 +479,20 @@ def cmd_join(args) -> int:
 
 
 def cmd_leave(args) -> int:
+    from . import scope_service
     here = _here(args)                          # as in join
+    plan = scope_service.prepare_membership(args.project, here, leaving=True)
     why = _person_or_refuse("leaving a project", "xsm_join (with leave)", ("leave", args.project))
     if why:
         print("refused: %s" % why, file=sys.stderr)
         return REFUSED
-    if config.leave(args.project, here):
-        print("left project %s: %s" % (args.project, _home_tilde(config.project_root(here))))
+    try:
+        result = scope_service.apply_membership(plan)
+    except ValueError as exc:
+        print("refused: %s" % exc, file=sys.stderr)
+        return USAGE
+    if result["changed"]:
+        print("left project %s: %s" % (args.project, _home_tilde(result["root"])))
         return OK
     print("this project is not in %s" % args.project, file=sys.stderr)
     return REFUSED
