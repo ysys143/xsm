@@ -82,6 +82,13 @@ session_key를 검사하기 전에 현재 REPL 큐로 들어간다. 이를 동�
 별도 inline 실행 경로를 쓰므로 registry.dispatch만으로 UI를 대신하지 않는다.
 Native UI 결속과 messaging requester 신원은 미완으로 유지한다.
 
+고정 SDK의 일반 모델 dispatcher는 optional parent_agent를 전달하지 않았고,
+직접 registry 호출에 이를 넣은 표본과 구분했다. Native MCP elicitation의
+accept도 선택 필드 없이 content={}를 반환했다. 따라서 이를 실제 answer로
+보충하지 않는다. [UI 경계 재검증](../plan/runtime-protocol/hermes-ui-boundary.md)은
+의존성 누락으로 실패한 초회와 MCP extra를 격리 설치한8개 확인을 구분하며,
+실제 agent나 사용자 UI 지원 완료를 뜻하지 않는다.
+
 ## Workspace 전환과 동시 종료
 
 후속 discovery 검사는 native session-start의 폴더 전환, 같은 주소의 세대 교체,
