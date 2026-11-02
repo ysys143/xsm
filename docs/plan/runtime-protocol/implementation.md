@@ -1934,3 +1934,26 @@ Python 49/Node 126)는 79.966초에 통과했다
 통과했다(`linux-protocol-internal-error-core/result.json`,
 `linux-python-314-internal-error-core/result.json`). 이 결과는 팀 서비스
 변경 전 표본이며 현재 449개와 섞지 않는다. 테스트 VM은 중지했다.
+
+## CLI·model host의 보드 공통화와 미관측 버전 보존
+
+Show/set/log/decisions/mute/unmute/sync를 board_service에 모았다. CLI와
+OperationService가 이를 공유하고, 모델용 xsm_board에 기존 CLI의
+decisions/sync를 연결했다. 실제 사용자 decide는 모델 인자에 열지
+않고 기존 질문 결속 경로로 유지했다. 공개 입력 schema·native catalog와
+외부 schema 검사도 갱신했다.
+
+기존 CLI decisions는 membership 확인에 board.show를 호출해 출력하지
+않은 보드 버전까지 읽음 처리했다. 그 뒤 set이 미관측 v2를 덮는 red를
+재현했다(`shared-board-service-red.log`). 새 경로는 authorization만
+확인하고 cursor를 바꾸지 않아 v2/v3가 함께 남는다. 같은 잘못된 read를
+되살린 변이는 CLI/model 두 검사에서 실패했다
+(`shared-board-unshown-read-mutant.log`).
+
+기존 보드/팀 회귀와 새 서비스 48개는 green이었다
+(`shared-board-service-green.log`). 이후 비회원의 새 action 거부와
+public protocol의 decisions/sync 경로를 추가한 최종 공통 gate 479개
+(핵심 304/Python 49/Node 126)는 82.461초에 통과했다
+(`shared-board-service-core.log`). 외부 schema 검사는 board 정상 2개와
+모델 decide 거부를 포함해 통과했다(`shared-board-service-schema.json`).
+다른 CLI 가족의 추출·Linux 후속과 전체 계획은 계속 진행한다.

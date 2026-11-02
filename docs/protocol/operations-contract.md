@@ -66,3 +66,13 @@ lease를 회수하지 않는다. 만료/이전 generation의 회수는 일반 in
 원문을 이미 읽었지만 ACK token이 바뀌었다면 현재 token만 재조회해
 ACK하고 작업은 반복하지 않는다. Byte budget으로 반환되지 않은 기존
 소유 claim도 해제하지 않는다.
+
+## Board parity with CLI
+
+`xsm_board` supports show, set, log, decisions, mute, unmute and sync. Decisions
+returns the member-visible decision list without marking other board items as
+read. Sync republishes retained board nodes to the team's existing remote
+members; sync notes are observations, not proof that a remote consumer read
+them. Both require membership. `decide` remains outside this model operation: a
+user answer must come through the scoped decision flow, not a supplied answer
+argument. CLI and model hosts use the same board service for these effects.

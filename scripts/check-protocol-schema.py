@@ -92,6 +92,9 @@ def operations_contract():
             bad = copy.deepcopy(example)
             bad['arguments']['answer_request'] = 'unverified-transcript'
             invalid(bad)
+    for action in ('decisions', 'sync'):
+        validator.validate(dict(session='opaque-session', operation='xsm_board', arguments={'action': action, 'team': 'fixture'}))
+    invalid(dict(session='opaque-session', operation='xsm_board', arguments={'action': 'decide', 'team': 'fixture'}))
     targeted = dict(session='opaque-session', operation='xsm_inbox', arguments={'message_ids': ['original-1']})
     validator.validate(targeted)
     for ids in (None, [], 'original-1', [True], ['../bad'], ['bad\n'], ['x' * 161], ['x'] * 101):
@@ -102,7 +105,7 @@ def operations_contract():
         bad = copy.deepcopy(next(e for e in examples if e['operation'] == name))
         bad['arguments']['attachments'] = [{'name': 'x', 'text': 'copied', 'unrecognized': True}]
         invalid(bad)
-    return dict(operations=len(names), examples=len(examples), targetedInboxExamples=1, rejected=rejected,
+    return dict(operations=len(names), examples=len(examples), targetedInboxExamples=1, boardExtensionExamples=2, rejected=rejected,
                 scope='structural inputs and transport restrictions; no domain effects or result certification')
 
 

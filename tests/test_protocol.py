@@ -77,6 +77,14 @@ class ProtocolTest(ProtocolFixture):
                 with self.assertRaises(ProtocolError):
                     self.operation(a, 'xsm_inbox', message_ids=value)
 
+    def test_public_board_decisions_and_sync_use_member_scoped_service(self):
+        actor = self.open('board-extension')
+        self.operation(actor, 'xsm_team', action='create', team='extension')
+        self.assertEqual(self.operation(actor, 'xsm_board', action='decisions', team='extension'), {'decisions': []})
+        with mock.patch('xsm.board_sync.sync', return_value=['fixture sync']) as sync:
+            self.assertEqual(self.operation(actor, 'xsm_board', action='sync', team='extension'), {'text': 'fixture sync'})
+        self.assertEqual(sync.call_args.args[0]['name'], 'extension')
+
     def test_inbox_byte_budget_counts_rendered_utf8_and_retains_the_remainder(self):
         a, b = self.open(), self.open('byte-budget')
         for index in range(3):

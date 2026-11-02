@@ -448,26 +448,24 @@ class OperationService:
         if name == "xsm_handover":
             return self.handover(me, args)
         if name == "xsm_board":
-            from . import board
+            from . import board, board_service, teams
             try:
-                if args.get("action") == "show":
-                    return board.show(me, args.get("team") or "")
-                if args.get("action") == "log":
-                    return json.dumps({"nodes": board.log(me, args.get("team") or "", args.get("item"))},
-                                      ensure_ascii=False)
-                if args.get("action") == "set":
-                    node = board.set_item(me, args.get("team") or "", args.get("item") or "",
-                                          args.get("text") or "", tag=args.get("tag"))
-                    return "\n".join(["set %s (node %s)" % (args.get("item"), node["id"])]
-                                     + (node.get("sync_notes") or []))
-                if args.get("action") in ("mute", "unmute"):
-                    from . import board_notice
-                    team = board._require_member(me, args.get("team") or "")
-                    board_notice.mute(me, team["name"], on=args["action"] == "mute")
-                    return "%sd board %s's change lines for this session" % (args["action"], team["name"])
-            except board.BoardError as exc:
+                result = board_service.execute(me, args)
+            except (board.BoardError, teams.TeamError) as exc:
                 raise ToolError(str(exc))
-            raise ToolError("action is show, set, log, mute or unmute")
+            action = result["action"]
+            if action == "show":
+                return result["text"]
+            if action == "log":
+                return json.dumps({"nodes": result["nodes"]}, ensure_ascii=False)
+            if action == "decisions":
+                return json.dumps({"decisions": result["decisions"]}, ensure_ascii=False)
+            if action == "set":
+                return "\n".join(["set %s (node %s)" % (args.get("item"), result["node"]["id"])] + result["sync_notes"])
+            if action == "sync":
+                return "\n".join(result["sync_notes"]) if result["sync_notes"] else \
+                    "sent every node of %s's board to its other machines" % result["team"]["name"]
+            return "%sd board %s's change lines for this session" % (action, result["team"]["name"])
         if name == "xsm_ack":
             from . import receive
             tokens = args.get("tokens")

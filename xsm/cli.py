@@ -1101,7 +1101,7 @@ CONTENT_HASH_NOTE = (" (by the hook hash; Codex also keeps a content hash xsm ca
 
 def cmd_board(args) -> int:
     """A team's board (ADR-0026): show, set an item, log, sync to other machines."""
-    from . import board, board_sync, teams
+    from . import board, teams
     if args.action == "decide":
         # Your user's own answer, from the person themselves: not a session,
         # so no membership is needed; a session asks with xsm_decide.
@@ -1124,54 +1124,48 @@ def cmd_board(args) -> int:
     if why or not me:
         print(why or "this session is not registered", file=sys.stderr)
         return REFUSED
-    try:
-        if args.action == "show":
-            print(board.show(me, args.team), end="")
-            return OK
-        if args.action == "log":
-            rows = board.log(me, args.team, args.item)
-            if args.json:
-                print(_readable_json({"nodes": rows}))
-            else:
-                for n in rows:
-                    print("%s %s [%s] %s: %s" % (n["id"], n["t"], n.get("item"), n["author"],
-                                                 (n["body"].splitlines() or [""])[0][:100]))
-            return OK
-        if args.action == "decisions":
-            board.show(me, args.team)                 # a member only
-            rows = board.decisions(args.team)
-            print(_readable_json({"decisions": rows}) if args.json else "\n".join(
-                "%s %s -> %s%s" % (r["id"], r["question"], r["answer"],
-                                   (" (item %s)" % r["item"]) if r.get("item") else "") for r in rows)
-                or "no decisions recorded beside %s's board" % args.team)
-            return OK
-        if args.action == "mute":
-            from . import board_notice
-            team = board._require_member(me, args.team)
-            board_notice.mute(me, team["name"], on=not args.off)
-            print("%s board %s's change lines for this session" % ("unmuted" if args.off else "muted",
-                                                                   team["name"]))
-            return OK
-        if args.action == "sync":
-            team = board._require_member(me, args.team)
-            notes = board_sync.sync(team)
-            print("\n".join(notes) if notes else "sent every node of %s's board to its other machines"
-                  % team["name"])
-            return OK
+    from . import board_service
+    text = getattr(args, "text", None)
+    if args.action == "set":
         if not args.item:
             print("usage: xsm board set <team> <item> --text ...", file=sys.stderr)
             return USAGE
-        text = args.text
         if args.text_file:
             text = sys.stdin.read() if args.text_file == "-" else open(args.text_file).read()
-        node = board.set_item(me, args.team, args.item, text or "", tag=args.tag)
-        for note in node.get("sync_notes") or []:
-            print(note, file=sys.stderr)
-        print("set %s on %s's board (node %s)" % (args.item, args.team, node["id"]))
-        return OK
+    try:
+        result = board_service.execute(me, {"action": "unmute" if args.action == "mute" and args.off else args.action,
+            "team": args.team, "item": getattr(args, "item", None), "text": text,
+            "tag": getattr(args, "tag", None)})
     except (board.BoardError, teams.TeamError) as exc:
         print("refused: %s" % exc, file=sys.stderr)
         return REFUSED
+    action = result["action"]
+    if action == "show":
+        print(result["text"], end="")
+    elif action == "log":
+        rows = result["nodes"]
+        if args.json:
+            print(_readable_json({"nodes": rows}))
+        else:
+            for n in rows:
+                print("%s %s [%s] %s: %s" % (n["id"], n["t"], n.get("item"), n["author"],
+                    (n["body"].splitlines() or [""])[0][:100]))
+    elif action == "decisions":
+        rows = result["decisions"]
+        print(_readable_json({"decisions": rows}) if args.json else "\n".join(
+            "%s %s -> %s%s" % (r["id"], r["question"], r["answer"],
+                (" (item %s)" % r["item"]) if r.get("item") else "") for r in rows)
+            or "no decisions recorded beside %s's board" % args.team)
+    elif action in ("mute", "unmute"):
+        print("%s board %s's change lines for this session" % ("unmuted" if action == "unmute" else "muted", result["team"]["name"]))
+    elif action == "sync":
+        notes = result["sync_notes"]
+        print("\n".join(notes) if notes else "sent every node of %s's board to its other machines" % result["team"]["name"])
+    elif action == "set":
+        for note in result["sync_notes"]:
+            print(note, file=sys.stderr)
+        print("set %s on %s's board (node %s)" % (args.item, args.team, result["node"]["id"]))
+    return OK
 
 
 def cmd_handover(args) -> int:

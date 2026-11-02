@@ -21,3 +21,17 @@ proof of remote receipt.
 
 Other operation families still need their corresponding CLI service extraction.
 This shared team path does not establish completion of that larger requirement.
+
+## Board actions
+
+CLI and model hosts use `xsm.board_service.execute` for show, set, log,
+decisions, mute/unmute and sync. Membership is checked before reading decisions
+or publishing nodes. The model interface now exposes decisions and sync as
+well as the existing actions; it does not expose the terminal-only human
+`board decide` route. Actual user answers still use the decision controller.
+
+A decisions listing checks membership without rendering the whole board. The
+old CLI used `board.show` only as an authorization check, which marked unseen
+item versions as read. A following set could then replace another member's
+version that the caller had never seen. The common path preserves that unread
+version beside the new one until it is actually read and reconciled.
