@@ -5,7 +5,7 @@
 확인했다. Guarded native 대기열과 prompt 소비 helper도 연결했다.
 소유권 기반 설치·업데이트·제거와 로드된 snapshot 보존을 연결했다.
 설치의 macOS/Linux native 수명을 검증했다. 실제 agent turn·idle wake·
-사용자 UI와 owned loader의 queue/UI 검증은 미완이다. 전체 계획은 미완이다.
+사용자 UI와 owned loader의 Linux queue/UI 검증은 미완이다. 전체 계획은 미완이다.
 
 ## 고정 버전과 격리 환경
 
@@ -499,3 +499,24 @@ Linux arm64의 같은 고정 SDK에서도 자동 발견·DM pull/ACK·업데이�
 공통 gate 424개는 82.964초에 통과했다
 (`linux-openclaw-owned-install-core/result.json`). 위 Linux 미실행 기록의
 후속 표본이며 owned queue/UI·실제 agent/model·전체 지원 인증은 아니다.
+
+## Owned loader의 native queue
+
+`--installed-queue`는 설치된 loader·manifest를 계측 wrapper로 바꾸지
+않고 실제 native discovery로 로드한다. 고정 SDK의 별도 runtime은
+fixture 세션 준비와 큐 관측에만 사용하고, 주입은 설치된 plugin의
+실제 API·명령·guard가 수행한다. 설치 업데이트·제거 뒤에도 로드된
+snapshot으로 도구를 실행하고, backend 없는 prune 보존과 unload 후
+회수까지 함께 확인한다.
+
+```sh
+/isolated/node scripts/probe-openclaw-loader.mjs /isolated/node_modules/openclaw deliverables/openclaw-owned-queue.json --installed-queue 100 --large-context
+```
+
+고정 macOS arm64 SDK에서 큰 원문 100/100 수락·prompt 소비·명시적
+ACK와 p95 상한 513.012ms가 통과했다(`openclaw-owned-queue-native-100.json`).
+별도 관측 runtime은 큐를 대신 쓰지 않는다. 실제 binding 전달을 끈
+변이는 큐 수락 검사에서 실패했다
+(`openclaw-owned-queue-no-delivery-mutant.json`). Record-missing 경고는
+유지하며 모델·실제 agent turn·사람 UI·메신저는 0회다. Linux의 이
+queue 경로와 owned UI·전체 지원은 아직 미완이다.

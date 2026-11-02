@@ -8,8 +8,10 @@ import { fileURLToPath, pathToFileURL } from 'node:url';
 import operations from '../integrations/openclaw/tools.mjs';
 
 const [nativeRoot, output, mode, countText, policyFlag] = process.argv.slice(2);
-assert.ok(!mode || ['--execute', '--queue', '--install'].includes(mode));
-assert.ok(!policyFlag || (mode === '--queue' && ['--deny-injection', '--large-context', '--deferred-notice', '--capacity-retry', '--capacity-fyi', '--burst-context', '--recover-context', '--auto-recover-context', '--recover-claimed-context', '--recover-boundary-context'].includes(policyFlag)));
+assert.ok(!mode || ['--execute', '--queue', '--install', '--installed-queue'].includes(mode));
+const queueMode = mode === '--queue' || mode === '--installed-queue';
+const installedMode = mode === '--install' || mode === '--installed-queue';
+assert.ok(!policyFlag || (mode === '--installed-queue' && policyFlag === '--large-context') || (mode === '--queue' && ['--deny-injection', '--large-context', '--deferred-notice', '--capacity-retry', '--capacity-fyi', '--burst-context', '--recover-context', '--auto-recover-context', '--recover-claimed-context', '--recover-boundary-context'].includes(policyFlag)));
 const denied = policyFlag === '--deny-injection';
 const burstContext = policyFlag === '--burst-context';
 const recoverClaimedContext = policyFlag === '--recover-claimed-context';
@@ -22,7 +24,7 @@ const capacityBoundary = policyFlag === '--capacity-fyi';
 const capacityRetry = policyFlag === '--capacity-retry' || capacityBoundary;
 const samples = Number(countText ?? 1);
 assert.ok(Number.isInteger(samples) && samples >= 1 && samples <= 1000);
-assert.ok(!countText || mode === '--queue');
+assert.ok(!countText || queueMode);
 if (!nativeRoot || !output) throw new Error('usage: node probe-openclaw-loader.mjs <native package root> <output.json> [--execute|--queue [samples]]');
 const root = fileURLToPath(new URL('../', import.meta.url));
 const destination = resolve(output);
@@ -53,7 +55,7 @@ const config = {
     entries: { xsm: { enabled: true } } }, agents: { defaults: { workspace: temp } },
 };
 let installation;
-if (mode === '--install') {
+if (installedMode) {
   const code = "import sys,json;sys.path.insert(0,sys.argv[1]);from xsm import host_install;print(json.dumps(host_install.apply('openclaw',sys.argv[2])))";
   installation = JSON.parse(execFileSync('python3', ['-B', '-c', code, root, process.env.OPENCLAW_STATE_DIR], { encoding: 'utf8' }));
   // The fixed SDK discovers extensions/xsm itself. Permission is fixture-only.
@@ -121,10 +123,17 @@ if (mode) {
   try {
     const resolveTools = await nativeFunction('tools-', 'resolvePluginTools');
     const context = id => ({ config, workspaceDir: temp,
-      sessionId: id, sessionKey: mode === '--queue' ? 'agent:main:' + id : 'agent:main:fixture',
-      ...(mode === '--queue' ? { agentId: 'main' } : {}) });
-    const api = mode === '--queue' ? globalThis[Symbol.for('xsm.native.queue.probe')] : undefined;
-    if (mode === '--queue') assert.ok(api?.runtime?.agent?.session);
+      sessionId: id, sessionKey: queueMode ? 'agent:main:' + id : 'agent:main:fixture',
+      ...(queueMode ? { agentId: 'main' } : {}) });
+    let api = mode === '--queue' ? globalThis[Symbol.for('xsm.native.queue.probe')] : undefined;
+    if (mode === '--installed-queue') {
+      // Independent native store setup/observation. The installed plugin's API,
+      // loader, command, queue guards and ownership files are not replaced.
+      const createPluginRuntime = await nativeFunction('runtime-', 'createPluginRuntime');
+      api = { runtime: createPluginRuntime(), config };
+      result.queueObserver = 'separate pinned native runtime; installed plugin remains unmodified';
+    }
+    if (queueMode) assert.ok(api?.runtime?.agent?.session);
     if (api) {
       for (const id of ['native-fixture-a', 'native-fixture-b']) {
         await api.runtime.agent.session.upsertSessionEntry({ agentId: 'main', sessionKey: context(id).sessionKey,

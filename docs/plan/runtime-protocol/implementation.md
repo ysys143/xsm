@@ -1822,3 +1822,22 @@ record-missing 경고는 그대로 보존했으며 신뢰 기록을 위조하지
 (`linux-openclaw-owned-install-core/result.json`). 테스트 VM은 중지했다.
 모델·실제 turn·사람 UI·메신저는 0회이며 owned queue/UI와 간헐적
 burst ACK 실패·나머지 P0–P5는 계속 미완이다.
+
+## 계측 wrapper 없는 OpenClaw owned queue 검증
+
+설치한 index.mjs/manifest를 그대로 native global discovery에 맡기는
+`--installed-queue` 프로브를 추가했다. 고정 SDK의 별도 runtime은 fixture
+세션 upsert·queue 관측에만 사용하고 생산 binding의 API·명령·guard를
+교체하지 않는다. Snapshot 업데이트·설치 파일 제거 뒤 old loaded
+plugin으로 원문을 전달하고, backend 없는 prune 보존·unload 회수도
+함께 검사한다.
+
+macOS arm64/Node 24.22.2/OpenClaw 2026.10.9에서 큰 원문 100/100
+수락·소비·ACK, p95 상한 513.012ms가 통과했다
+(`openclaw-owned-queue-native-100.json`). Native 전달을 끈 복사본은
+정상 fixture 준비 뒤 actual queue 수락 검사에서 실패했다
+(`openclaw-owned-queue-no-delivery-mutant.json`). 즉 별도 observer가
+주입을 대신한 결과가 아니다. 모델·실제 agent turn·사람 UI·메신저는
+0회이며 native record-missing 경고는 유지한다. 제품 코드는 바꾸지
+않은 프로브 변경이므로 기존 공통 gate를 재실행 결과로 보고하지 않는다.
+Linux의 이 경로·owned UI·간헐적 burst ACK 실패와 전체 계획은 미완이다.
