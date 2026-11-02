@@ -140,7 +140,8 @@ def excluded(path, exclusions=None):
 
 
 def _endpoint(record):
-    if not isinstance(record, dict) or record.get("runtime") not in ("codex", "claude"):
+    if (not isinstance(record, dict) or not isinstance(record.get('runtime'), str)
+            or not identity.RUNTIME_SLUG.fullmatch(record['runtime'])):
         return None
     if record.get("certainty") == "provisional" or record.get("basis") in ("cwd", "neighbor", "none"):
         return None
@@ -165,6 +166,21 @@ def _owned_home(home):
     return stat.S_ISDIR(info.st_mode) and info.st_uid == os.getuid()
 
 
+def _home_allowed(record, endpoint, homes, *, fresh=False):
+    if endpoint is None or not isinstance(homes, list):
+        return False
+    if endpoint['runtime'] not in ('claude', 'codex'):
+        from . import participants
+        return participants.live_binding(record, fresh=fresh)
+    real = (lambda path: probe.bounded(_canonical, path, folder=path)) if fresh else _real
+    if not any(isinstance(home, dict) and home.get('runtime') == endpoint['runtime']
+               and home.get('enabled', True) is not False and real(home.get('path')) == endpoint['home']
+               for home in homes):
+        return False
+    check = lambda: probe.bounded(_owned_home, endpoint['home'], folder=endpoint['home'], default=False)
+    return check() is True if fresh else probe.remember(('directory-owner', endpoint['home']), check) is True
+
+
 def _allowed(record, endpoint):
     if endpoint is None or record.get("registered") is False \
             or record.get("remote") or not _local_machine(record.get("machine")) \
@@ -172,13 +188,7 @@ def _allowed(record, endpoint):
             or record.get("uid", os.getuid()) != os.getuid():
         return False
     homes = probe.remember(("directory-homes",), lambda: probe.bounded(config.homes))
-    if not isinstance(homes, list) or not any(
-            isinstance(h, dict) and h.get("runtime") == endpoint["runtime"]
-            and h.get("enabled", True) is not False and _real(h.get("path")) == endpoint["home"]
-            for h in homes):
-        return False
-    return probe.remember(("directory-owner", endpoint["home"]), lambda: probe.bounded(
-        _owned_home, endpoint["home"], folder=endpoint["home"], default=False))
+    return _home_allowed(record, endpoint, homes)
 
 
 def _signature(info):
@@ -343,6 +353,8 @@ def _plan(items, key):
 
 def _native(record, endpoint):
     sid, runtime, home = endpoint["session_id"], endpoint["runtime"], endpoint["home"]
+    if runtime not in ('claude', 'codex'):
+        return {'activity': _observation(record.get('activity'), 'protocol:session.activity', record.get('updated'))}
     path = registry.codex_rollout(home, sid) if runtime == "codex" else record.get("transcript_path")
     if not path:
         return {}
@@ -407,6 +419,8 @@ def _claude_session(record, endpoint, refresh=False):
 
 
 def _title(record, endpoint):
+    if endpoint['runtime'] not in ('claude', 'codex'):
+        return _observation(_text(record.get('name')), 'protocol:session.name', record.get('updated'))
     if endpoint["runtime"] == "codex":
         name = registry._codex_thread_name(endpoint["home"], endpoint["session_id"])
         return _observation(_text(name), "codex:registry:current_name", time.time())
@@ -437,6 +451,9 @@ def _native_identity(record, endpoint):
     A missing title/transcript is not permission denial. Registry exact identity
     is still usable; a contradictory native conversation is never usable.
     """
+    if endpoint['runtime'] not in ('claude', 'codex'):
+        from . import participants
+        return participants.live_binding(record, fresh=True)
     if endpoint["runtime"] == "claude":
         result = _claude_session(record, endpoint, refresh=True)
         sid = result[0].get("sessionId") if result else None
@@ -663,16 +680,14 @@ def resolve_candidate(caller, key):
         if not isinstance(latest, list):
             return None
         fresh = [row for row in latest if _endpoint(row) == endpoint]
-        generation_fields = ("pid", "lstart", "mcp_pid", "mcp_lstart", "cwd", "ended_at", "end_reason")
+        generation_fields = ("pid", "lstart", "mcp_pid", "mcp_lstart", "cwd", "ended_at", "end_reason",
+                             "protocol_version", "protocol_generation")
         if len(fresh) != 1 or any(raw.get(field) != fresh[0].get(field) for field in generation_fields):
             return None
         # Bypass the configuration memo for this final policy observation.
         cfg = probe.bounded(_read_settings)
         homes = probe.bounded(config.homes)
-        if not isinstance(cfg, dict) or not isinstance(homes, list) \
-                or not any(isinstance(h, dict) and h.get("runtime") == endpoint["runtime"]
-                           and h.get("enabled", True) is not False and _real(h.get("path")) == endpoint["home"]
-                           for h in homes) \
+        if not isinstance(cfg, dict) or not _home_allowed(fresh[0], endpoint, homes, fresh=True) \
                 or excluded(fresh[0].get("cwd"), cfg.get(EXCLUSIONS_KEY, [])) \
                 or excluded(caller.get("cwd"), cfg.get(EXCLUSIONS_KEY, [])) \
                 or not isinstance(cfg.get("deny", []), list) or raw.get("ref") in cfg.get("deny", []):

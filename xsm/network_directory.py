@@ -28,7 +28,8 @@ MAX_PEERS = 128
 _KEY = re.compile(r"[0-9a-f]{64}\Z")
 _REPOSITORY = re.compile(r"[A-Za-z0-9][A-Za-z0-9._:-]{0,255}\Z")
 _HANDLE = {"machine", "runtime", "home_id", "session_id", "generation"}
-_GENERATION_FIELDS = ("pid", "lstart", "mcp_pid", "mcp_lstart", "native_start", "app_server")
+_PROTOCOL_FIELDS = ('protocol_version', 'protocol_generation')
+_GENERATION_FIELDS = ("pid", "lstart", "mcp_pid", "mcp_lstart", "native_start", "app_server") + _PROTOCOL_FIELDS
 _RESOLVE_FIELDS = _GENERATION_FIELDS + ("cwd", "ended_at", "end_reason", "excluded", "registered",
                                         "uid", "machine", "origin", "certainty", "identity_certainty",
                                         "basis", "identity_basis", "ref")
@@ -74,7 +75,8 @@ def public_endpoint(record, machine_id):
             return None
         try:
             generation = _digest({"endpoint": endpoint,
-                                  "execution": {k: record.get(k) for k in _GENERATION_FIELDS}})
+                                  "execution": {k: record.get(k) for k in _GENERATION_FIELDS
+                                                if k not in _PROTOCOL_FIELDS or record.get('protocol_version') == '1'}})
         except (ValueError, TypeError, RecursionError):
             return None
         return {"machine": machine_id, "runtime": endpoint["runtime"],
@@ -292,9 +294,7 @@ def _fresh_privacy(record, endpoint, cfg, homes, original_cwd):
     canonical_roots = [real(root) if isinstance(root, str) and not any(c in root for c in "*?[")
                        else None for root in roots]
     return bool(directory.exclusion_status(cwd, canonical_roots) == "included"
-                and any(isinstance(h, dict) and h.get("runtime") == endpoint["runtime"]
-                        and h.get("enabled", True) is not False and real(h.get("path")) == home for h in homes)
-                and probe.bounded(directory._owned_home, home, folder=home, default=False) is True)
+                and directory._home_allowed(record, endpoint, homes, fresh=True))
 
 
 def local_candidates(origin_machine, caller_repository_id, mappings, local_machine_id,

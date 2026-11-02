@@ -9,6 +9,7 @@ Native binding notes: [Pi 1.4.0](pi.md), [OpenCode 1.19.5](opencode.md),
 Host coordination: [Python](python-host.md).
 Large caller-read copies: [bounded file preparation](file-uploads.md).
 Owned copies and exact checksum bytes: [file result contract](files-contract.md).
+Participant privacy and selection: [discovery contract](discovery.md).
 Request definitions: [envelope contract and examples](request-contract.md).
 Operation inputs: [structural catalog and transport restrictions](operations-contract.md).
 Output definitions: [responses, notifications and observed validation](output-contract.md).

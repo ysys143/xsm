@@ -13,6 +13,7 @@ import os
 import queue
 import re
 import sys
+import stat
 import threading
 import time
 import uuid
@@ -25,7 +26,7 @@ from .file_uploads import Uploads, UPLOAD_SCHEMAS
 VERSION = "1"
 POLL_INTERVAL = 0.2
 MAX_LINE = 1024 * 1024
-RUNTIME = re.compile(r"[a-z][a-z0-9-]{0,63}\Z")
+RUNTIME = identity.RUNTIME_SLUG
 
 
 REQUEST_FIELDS = {
@@ -344,7 +345,9 @@ class Connection:
         home = paths.path("protocol-profiles", runtime, profile)
         previous = paths.read_json(registry._record_path(runtime, sid), {})
         if previous and not previous.get("ended_at") and identity.state_of(previous) == "live":
-            raise ProtocolError(-32003, "conversation already has a live owner")
+            from . import participants
+            if previous.get('protocol_version') != VERSION or participants.live_binding(previous):
+                raise ProtocolError(-32003, "conversation already has a live owner")
         from . import config
         config.require_valid_policy()
         status = registry._exclusion_status(cwd, config.load().get("directory_excluded_paths", []))
@@ -365,14 +368,18 @@ class Connection:
         token = uuid.uuid4().hex
         filename = registry._record_path(runtime, sid)
         os.makedirs(os.path.dirname(filename), mode=0o700, exist_ok=True)
-        fd = os.open(filename + ".protocol-lock", os.O_CREAT | os.O_RDWR, 0o600)
+        fd = os.open(filename + ".protocol-lock", os.O_CREAT | os.O_RDWR | os.O_NOFOLLOW | os.O_NONBLOCK, 0o600)
         try:
+            info = os.fstat(fd)
+            if not stat.S_ISREG(info.st_mode) or info.st_uid != os.getuid():
+                raise ProtocolError(-32003, 'invalid conversation ownership lock')
             try:
                 fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
             except BlockingIOError:
                 raise ProtocolError(-32003, "conversation already has a live owner")
             previous = paths.read_json(filename, {})
-            if previous and not previous.get("ended_at") and identity.state_of(previous) == "live":
+            if (previous and previous.get('protocol_version') != VERSION
+                    and not previous.get("ended_at") and identity.state_of(previous) == "live"):
                 raise ProtocolError(-32003, "conversation already has a live owner")
             self.save(record)
             self.sessions[token] = BoundHost(record, self, token, caps)
@@ -385,6 +392,7 @@ class Connection:
 
     @staticmethod
     def save(record):
+        record['updated'] = time.time()
         paths.write_json(registry._record_path(record["runtime"], record["session_id"]), record)
 
     def close_session(self, token):

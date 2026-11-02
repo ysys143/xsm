@@ -2260,3 +2260,53 @@ reference 전체 필드, passive claim metadata를 기술한다. upload 결과�
 병렬 구성으로 바꿨다. 최종 macOS 공통 565개(핵심 388/Python 50/Node 127),
 독립 mock 25개·변이 8개가 63.192초에 통과했다(file-contract-verified-core.log).
 Linux의 새 구성은 다시 확인해야 한다. 상세는 linux-validation.md에 구분했다.
+
+## 일반 참여자의 발견·원격 신원·lease 복구
+
+일반 참여자의 DM 주소는 동작해도 directory와 remote identity는 Claude/Codex
+목록에 묶여 있어 새 런타임이 제외되는 경로를 확인했다. runtime slug를 공통화하고,
+등록된 protocol 참여자는 가상 profile namespace·현재 pointer·PID/start·실행
+generation·실제로 유지 중인 lease로 검증한다. native 두 하네스의 기존 configured
+home/owner 검사는 유지한다. 새 참여자 때문에 homes.json을 추가·수정하지 않는다.
+등록은 publication이나 통신 권한이 아니다. 현행 deny/exclusion과 최종 선택 검사를
+적용하며, 동명 새 대화나 같은 PID의 다른 실행으로 대체하지 않는다.
+
+P2P 공개 execution generation에 protocol nonce를 포함하되, 기존 native record의
+hash 입력 bytes는 그대로 유지했다. accepted 원문은 같은 대화의 재시작 뒤 회수할
+수 있다. broker는 protocol 수신자를 낯선 runtime이라는 이유로 Codex adapter에
+넘기지 않고 정본 event/inbox를 맡긴다. native 입력 큐 인계·소비는 해당 호스트가
+보고한다. name/activity는 protocol 관측 출처로 표시하고 save 때 갱신 시각을 기록한다.
+
+초기 local discovery/remote endpoint 실패를 보존했다(generic-directory-red.log).
+현재 9개 fixture는 실제 등록 peer 선택, homes 무변경, 미보유 lock 위조 거부,
+publication과 permission 분리, deny 재검사, 같은 PID 재개와 old handle 거부,
+legacy adapter 미호출 및 기존 native hash 호환을 확인한다. registration proof,
+legacy wake, protocol generation을 각각 제거한 3개 변이는 실패했다
+(generic-directory-mutations.log). Native directory/network identity 기존 83개가
+6.249초에 통과했다. fixture 초회에는 없는 config.save를 호출한 오류 1개가 있어
+기존 private JSON fixture 방식으로 고친 뒤 통과했다.
+
+두 실제 private QUIC service에 protocol actor를 등록한 2개 추가 검사는 요청/
+회신·claim/ACK, 같은 대화 새 실행 뒤 accepted 원문 회수를 확인했다. 해당 local
+9개와 합쳐 11개가 7.445초에 통과했다(generic-directory-network-first.log).
+네트워크 기존 suite는 237개 중 236개 실행 통과·1개 skip으로 148.964초에 끝났다
+(generic-network-full-regression.log). skip은 official relay binary를 명시하지 않은
+기존 self-host fixture 조건이다. 이 작업자가 이번 실행에서 기록했으며 scope
+제외 승인은 없다. private relay executable과 Mac UDP profile 조건을 갖춘 뒤
+재실행해야 하므로 전체 suite 완료로 세지 않는다.
+
+session.close의 종료 표식 쓰기가 실패해도 lease는 해제되는데, 살아 있는 공유
+PID를 옛 소유자로 읽어 재접속을 막던 경로도 실제 OSError로 재현했다. protocol
+소유권은 보유 lease로 판단해 복구하고, non-protocol 기존 pointer의 보수적 검사는
+유지한다(protocol-close-marker-{red,green}.log). lock symlink 수락도 red 뒤
+O_NOFOLLOW/regular-file/UID 검사로 거부했다(protocol-owner-lock-red.log).
+후속 protocol/local 63개가 7.776초에 통과했다. 일반 runtime 경로가 열린 것이지
+실제 native UI/모델/물리 원격/외부 메신저 전체 인증이 완료된 것은 아니다.
+
+같은 PID에서 선택 도중 대화가 재등록되는 local race도 추가했다. 최종 local
+10개가 1.292초에 통과했고, 해당 generation 비교를 제거한 네 번째 변이가
+실패했다(generic-directory-race-mutant.log). 최종 공통 577개(핵심 400/Python
+50/Node 127)와 독립 mock 25개·변이 8개는 64.628초에 통과했다
+(generic-participant-final-core.log). 두 private-service 검사는 이 공통 수에
+합치지 않았다. 이번 변경의 Linux 재검증과 물리 머신·실제 native model/UI
+검증은 별도 미완이며, 이전 4ccc745 Linux 통과를 가져다 쓰지 않는다.

@@ -1,13 +1,15 @@
 """Opaque remote conversation identities; never invent local filesystem homes."""
 import re
+from . import identity
 
 _HEX = re.compile(r"[0-9a-f]{64}\Z")
 _CID = re.compile(r"[A-Za-z0-9_-]{1,160}\Z")
 
 
 def endpoint(record):
-    if not isinstance(record, dict) or record.get("runtime") not in ("codex", "claude"):
-        raise ValueError("remote native endpoint required")
+    if (not isinstance(record, dict) or not isinstance(record.get('runtime'), str)
+            or not identity.RUNTIME_SLUG.fullmatch(record['runtime'])):
+        raise ValueError("remote conversation endpoint required")
     if record.get("home") is not None:
         raise ValueError("remote endpoint must not carry a private home")
     if not all(isinstance(record.get(k), str) and _HEX.fullmatch(record[k])

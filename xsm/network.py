@@ -676,6 +676,8 @@ class Daemon:
         from . import adapters, handoff
         from .network_directory import resolve_local
         local = resolve_local(packet["receiver"], self.transport.endpoint_id)
+        if local and local.get('protocol_version') == '1':
+            return  # Its host observes canonical events and performs its own native admission.
         if not local or not packet["wake"] or not native_reader_ready(local):
             return
         current = handoff.status(local, packet["id"])

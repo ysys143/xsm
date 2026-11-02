@@ -33,6 +33,31 @@ class ProtocolFixture(TempState):
 
 
 class ProtocolTest(ProtocolFixture):
+    def test_close_marker_failure_does_not_leave_a_live_pid_ghost_owner(self):
+        from xsm import registry
+        opened = self.open('close-marker-failure')
+        with mock.patch.object(registry, 'mark_ended', side_effect=OSError('fixture marker failure')):
+            with self.assertRaises(OSError):
+                self.connection.dispatch('session.close', {'session': opened['session']})
+        resumed = self.open('close-marker-failure')
+        self.assertEqual(resumed['address'], opened['address'])
+        self.assertNotEqual(resumed['generation'], opened['generation'])
+
+    def test_conversation_owner_lock_cannot_follow_a_symlink(self):
+        from pathlib import Path
+        from xsm import registry
+        from xsm.protocol import ProtocolError
+        opened = self.open('unsafe-owner-lock')
+        record = self.connection.sessions[opened['session']].record
+        self.connection.dispatch('session.close', {'session': opened['session']})
+        target = Path(self.tmp) / 'unchanged-fixture'
+        target.write_text('not a conversation lease')
+        lock = Path(registry._record_path(record['runtime'], record['session_id']) + '.protocol-lock')
+        lock.unlink(); lock.symlink_to(target)
+        with self.assertRaises((ProtocolError, OSError)):
+            self.open('unsafe-owner-lock')
+        self.assertEqual(target.read_text(), 'not a conversation lease')
+
     def test_wire_input_requires_utf8_and_preserves_character_limit(self):
         from xsm import protocol
         multibyte = (json.dumps({'jsonrpc': '2.0', 'id': 1, 'method': 'initialize',

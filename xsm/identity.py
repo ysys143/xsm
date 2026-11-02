@@ -16,6 +16,8 @@ import socket
 
 from . import probe
 
+RUNTIME_SLUG = re.compile(r'[a-z][a-z0-9-]{0,63}\Z')
+
 
 def lstart(pid: int) -> str | None:
     def ask():

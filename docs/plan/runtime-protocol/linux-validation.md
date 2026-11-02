@@ -434,3 +434,14 @@ Node 그룹은 다음 단계에 실행한다. 전체 120초 deadline과 실패 �
 새 파일 계약·검사 7개를 더한 macOS 최종 공통 565개(388/Python 50/Node 127),
 독립 mock 25개·변이 8개는 63.192초에 통과했다(file-contract-verified-core.log).
 이는 위 Linux 실패를 통과로 덮는 증거가 아니다. 새 구성의 Linux 재검증은 미완이다.
+
+## 병렬 구성의 새 Linux 검증
+
+변경 없는 4ccc745의 같은 archive(061c912174298a5ed8a568b5d85172bf3b5d76a72c7cb9bf4b1b64d752112542,
+두 실행 모두 tracked dirty false)에서 공통 565개(388/Python 50/Node 127),
+독립 mock 25개·변이 8개가 Python 3.11.2는 83.049초, 3.14.10은 102.191초에
+통과했다(linux-portable-files-core/result.json,
+linux-python-314-portable-files-core/result.json). CPU 2·memory 3g·network none
+조건은 이전 실패 표본과 같다. 검사를 제거하거나 120초 상한을 늘리지 않았다.
+VM 종료는 linux-portable-files-batch.json의 stopExitCode 0과 Stopped 로그로 확인했다.
+뒤따른 일반 참여자 discovery/remote 수정은 이 표본에 포함되지 않는다.
