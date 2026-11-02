@@ -1,5 +1,6 @@
 """Verify the external checker with an independent fixture and deliberate faults."""
 import importlib.util
+import io
 import os
 from pathlib import Path
 import sys
@@ -14,6 +15,24 @@ spec.loader.exec_module(checker)
 
 
 class ExternalConformanceTest(unittest.TestCase):
+    def test_peer_rejects_non_utf8_duplicate_keys_and_non_json_constants(self):
+        frame = '{"jsonrpc":"2.0","id":1,"result":{}}\n'
+        invalid = [frame.encode('utf-16-be'), frame.encode('utf-32-be'),
+                   b'{"jsonrpc":"2.0","id":1,"result":{},"result":{}}\n',
+                   b'{"jsonrpc":"2.0","id":1,"result":{"value":NaN}}\n']
+        with tempfile.TemporaryDirectory(prefix='xsm-checker-wire-') as folder:
+            env = {'HOME': folder, 'XSM_HOME': folder + '/state'}
+            for wire in invalid:
+                with self.subTest(wire=wire[:30]):
+                    process = mock.Mock(stdin=io.BytesIO(), stdout=io.BytesIO(wire))
+                    with mock.patch.object(checker.subprocess, 'Popen', return_value=process):
+                        peer = checker.Peer(['fixture-only'], folder, env)
+                    try:
+                        with self.assertRaises((ValueError, RuntimeError)):
+                            peer.call('initialize', {'protocolVersion': '1'})
+                    finally:
+                        peer.close()
+
     def test_peer_rejects_unisolated_environment_before_starting_candidate(self):
         with tempfile.TemporaryDirectory(prefix='xsm-conformance-guard-') as folder:
             variants = ({}, {'HOME': folder}, {'XSM_HOME': folder + '/state'},

@@ -166,3 +166,11 @@ Captured runs are `inbox-owned-token-external-messaging.json` and
 Earlier 29-check messaging results above describe the earlier suite. These
 checks do not prove lease preservation; the canonical-state regression covers
 that invariant separately.
+
+## Upload preparation extension
+
+`--suite uploads` adds the bounded preparation/copy/ACK checks described in
+[file-uploads.md](file-uploads.md), including an actual 4 MiB bundle over public
+stdio. It requires the advertised upload extension; the default lifecycle suite
+does not certify it. Capture includes received base64 copy data, so keep fixture
+artifacts local and use only generated, non-sensitive test bytes.

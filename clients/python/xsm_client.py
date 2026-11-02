@@ -3,9 +3,11 @@
 from __future__ import annotations
 
 import asyncio
+import base64
 import codecs
 import json
 import math
+import hashlib
 import sys
 from collections.abc import Callable, Mapping, Sequence
 from typing import Any
@@ -183,6 +185,55 @@ class XsmClient:
             "session": self._session(session), "operation": operation,
             "arguments": arguments,
         })
+
+    async def prepare_files(self, session: str, *, target: str, request_id: str,
+                            text: str, entries: Sequence[Mapping], previous_manifest=None,
+                            attachment_fallback=None) -> dict:
+        """Prepare caller-read bytes only. No body send, ACK, retry or source-path read."""
+        limit = self.initialization.get('limits', {}).get('fileUploadChunkBytes')
+        if type(limit) is not int or not 0 < limit <= 192 * 1024:
+            raise ValueError('server does not advertise supported chunk preparation')
+        if not isinstance(entries, (list, tuple)) or not 1 <= len(entries) <= 16:
+            raise ValueError('1 to 16 caller-read entries required')
+        frozen, specs, total = [], [], 0
+        for entry in entries:
+            if not isinstance(entry, Mapping) or set(entry) - {'name', 'data', 'source_version'}:
+                raise ValueError('entries accept name, data and optional source_version only')
+            data = entry.get('data')
+            if not isinstance(data, (bytes, bytearray, memoryview)):
+                raise ValueError('entry data must be caller-read bytes')
+            size = data.nbytes if isinstance(data, memoryview) else len(data)
+            total += size
+            if size > 1048576 or total > 4194304:
+                raise ValueError('entry or bundle exceeds 1MiB/4MiB limit')
+            data = bytes(data)
+            spec = {'name': entry.get('name'), 'size': len(data), 'sha256': hashlib.sha256(data).hexdigest()}
+            if 'source_version' in entry:
+                spec['source_version'] = entry['source_version']
+            specs.append(spec)
+            frozen.append(data)
+        params = {'session': self._session(session), 'target': target, 'request_id': request_id,
+                  'text': text, 'entries': specs}
+        if previous_manifest is not None:
+            params['previous_manifest'] = previous_manifest
+        if attachment_fallback is not None:
+            params['attachment_fallback'] = attachment_fallback
+        opened = await self.request('files.upload.open', params)
+        if not isinstance(opened, dict):
+            raise TransportError('invalid upload open response')
+        if opened.get('state') == 'frozen':
+            return dict(opened, body_sent=False)
+        chunk = opened.get('chunk_bytes')
+        offsets = opened.get('offsets')
+        if (opened.get('state') != 'uploading' or type(chunk) is not int or not 0 < chunk <= limit or not isinstance(offsets, list)
+                or len(offsets) != len(frozen) or any(type(offset) is not int or not 0 <= offset <= len(data)
+                                                    for offset, data in zip(offsets, frozen))):
+            raise TransportError('invalid upload progress response')
+        for index, (data, offset) in enumerate(zip(frozen, offsets)):
+            for start in range(offset, len(data), chunk):
+                await self.request('files.upload.write', {'session': session, 'upload': opened['upload'],
+                    'entry': index, 'offset': start, 'base64': base64.b64encode(data[start:start + chunk]).decode('ascii')})
+        return await self.request('files.upload.commit', {'session': session, 'upload': opened['upload']})
 
     async def events_subscribe(self, session: str) -> Any:
         return await self.request("events.subscribe", {"session": self._session(session)})

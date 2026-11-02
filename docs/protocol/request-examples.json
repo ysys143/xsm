@@ -104,5 +104,62 @@
       "questionId": "opaque-question",
       "challenge": "opaque-challenge"
     }
+  },
+  {
+    "jsonrpc": "2.0",
+    "id": 12,
+    "method": "files.upload.open",
+    "params": {
+      "session": "fixture-session",
+      "target": "peer:0000000000000000000000000000000000000000000000000000000000000000",
+      "request_id": "upload-fixture",
+      "text": "body",
+      "entries": [
+        {
+          "name": "copy.bin",
+          "size": 1,
+          "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+        }
+      ]
+    }
+  },
+  {
+    "jsonrpc": "2.0",
+    "id": 13,
+    "method": "files.upload.write",
+    "params": {
+      "session": "fixture-session",
+      "upload": "00000000000000000000000000000000",
+      "entry": 0,
+      "offset": 0,
+      "base64": "YQ=="
+    }
+  },
+  {
+    "jsonrpc": "2.0",
+    "id": 14,
+    "method": "files.upload.commit",
+    "params": {
+      "session": "fixture-session",
+      "upload": "00000000000000000000000000000000"
+    }
+  },
+  {
+    "jsonrpc": "2.0",
+    "id": 15,
+    "method": "files.upload.status",
+    "params": {
+      "session": "fixture-session",
+      "request_id": "upload-fixture"
+    }
+  },
+  {
+    "jsonrpc": "2.0",
+    "id": 16,
+    "method": "files.upload.abort",
+    "params": {
+      "session": "fixture-session",
+      "upload": "00000000000000000000000000000000"
+    }
   }
 ]

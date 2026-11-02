@@ -10,6 +10,8 @@ export async function example(operation: string, args: { text: string }): Promis
       runtime: 'node', profile: 'example', conversation: 'example', cwd: '/tmp', capabilities: [],
     });
     const session: SessionHandle = opened.session;
+    await client.prepareFiles(session, { target: 'opaque-peer', request_id: 'copy', text: 'copy',
+      entries: [{ name: 'copy.bin', data: new Uint8Array([0, 255]) }] });
     await client.sessionUpdate(session, { state: 'busy' });
     await client.eventsSubscribe(session);
     const notification = await client.nextNotification();

@@ -1,6 +1,6 @@
 # Request envelope contract
 
-The experimental [request schema](request.schema.json) binds all 11 currently
+The experimental [request schema](request.schema.json) binds all 16 currently
 exposed methods to parameter definitions. [Request examples](request-examples.json)
 contain one structural example per method. The `cwd` example is a placeholder;
 `session.open` requires an existing absolute directory at execution time. Opaque
@@ -70,3 +70,9 @@ positive blocking wait is unsupported here (-32004). Nonempty native transcript
 answer recovery is also -32004. The structural schema describes accepted input,
 not the precise error code for every rejected combination. Unexpected request
 or output failures are -32603 and do not establish rollback.
+
+The five [bounded upload methods](file-uploads.md) prepare caller-read copies,
+without sending a body or acknowledging consumption. Their input schemas also
+limit indices, sizes, hashes, base64 chunks and unknown fields. UTF-8 input is
+decoded strictly; the existing frame limit counts characters. A bounded raw
+read allows up to four UTF-8 bytes per character without shrinking that limit.

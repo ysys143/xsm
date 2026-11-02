@@ -51,6 +51,11 @@ export class XsmClient {
   sessionUpdate(session: SessionHandle, updates: JsonObject): Promise<JsonValue>;
   sessionClose(session: SessionHandle): Promise<JsonValue>;
   operationCall(session: SessionHandle, operation: string, args: JsonObject): Promise<JsonValue>;
+  prepareFiles(session: SessionHandle, params: {
+    target: string; request_id: string; text: string;
+    entries: Array<{ name: string; data: Uint8Array; source_version?: string }>;
+    previous_manifest?: string; attachment_fallback?: 'inline';
+  }): Promise<JsonObject>;
   eventsSubscribe(session: SessionHandle): Promise<JsonValue>;
   deliveryReport(session: SessionHandle, id: string, state: string, token?: string): Promise<JsonValue>;
   nextNotification(): Promise<Notification>;

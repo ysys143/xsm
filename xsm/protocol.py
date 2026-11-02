@@ -20,6 +20,7 @@ import uuid
 from . import context, handoff, identity, paths, registry
 from .operation_schema import TOOLS, ToolError, operation_returns_json, OperationDisplay
 from .operations import OperationService
+from .file_uploads import Uploads, UPLOAD_SCHEMAS
 
 VERSION = "1"
 POLL_INTERVAL = 0.2
@@ -40,6 +41,7 @@ REQUEST_FIELDS = {
     "decision.response": {"session", "questionId", "challenge", "displayed", "action", "answer", "source_id"},
     "decision.abandon": {"session", "questionId", "challenge"},
 }
+REQUEST_FIELDS.update({method: set(schema['properties']) for method, schema in UPLOAD_SCHEMAS.items()})
 
 
 def request_fields(method, params):
@@ -176,6 +178,7 @@ class Connection:
         self.locks = {}
         self.ui_requests = {}
         self.ui_answers = {}
+        self.uploads = Uploads()
 
     def bound(self, params):
         token = params.get("session")
@@ -193,7 +196,10 @@ class Connection:
             self.initialized = True
             return {"protocolVersion": VERSION, "experimental": True,
                     "capabilities": ["messaging", "inbox", "events", "user-decisions"],
-                    "limits": {"claimLeaseSeconds": handoff.CLAIM_LEASE},
+                    "limits": {"claimLeaseSeconds": handoff.CLAIM_LEASE,
+                               "fileUploadChunkBytes": Uploads.CHUNK_BYTES,
+                               "fileUploadBudgetBytes": 4 * 1024 * 1024,
+                               "fileUploadSlots": Uploads.MAX_UPLOADS},
                     "operations": [t["name"] for t in TOOLS]}
         if not self.initialized:
             raise ProtocolError(-32002, "initialize first")
@@ -203,6 +209,23 @@ class Connection:
         if method == "session.open":
             return self.open(params)
         token, host = self.bound(params)
+        if method in UPLOAD_SCHEMAS:
+            validate(params, UPLOAD_SCHEMAS[method])
+            caller = host.session()
+            args = {key: value for key, value in params.items() if key != 'session'}
+            from . import files, materials
+            try:
+                if method == 'files.upload.open':
+                    return self.uploads.open(caller, args, call=host.ctx)
+                if method == 'files.upload.write':
+                    return self.uploads.write(caller, args['upload'], args['entry'], args['offset'], args['base64'])
+                if method == 'files.upload.commit':
+                    return self.uploads.commit(caller, args['upload'], call=host.ctx)
+                if method == 'files.upload.abort':
+                    return self.uploads.abort(caller, args['upload'])
+                return self.uploads.status(caller, args['request_id'])
+            except files.FileError as exc:
+                raise ToolError(str(exc), data={'attachment_error': materials.failure(exc)}) from exc
         if method == "session.close":
             self.close_session(token)
             return {"closed": True}
@@ -366,6 +389,7 @@ class Connection:
 
     def close_session(self, token):
         host = self.sessions.pop(token)
+        self.uploads.close(host.record)
         self.subscriptions.discard(token)
         self.notified.pop(token, None)
         from . import decisions
@@ -488,15 +512,23 @@ def serve(inp=None, out=None):
     inp, out = inp or sys.stdin, out or sys.stdout
     incoming = queue.Queue(maxsize=64)
     connection = Connection()
+    wire_input = getattr(inp, 'buffer', inp)
 
     def read():
         try:
             while True:
-                line = inp.readline(MAX_LINE + 1)
+                # Legacy public limit counts Unicode characters. Strict UTF-8 has
+                # at most four bytes per scalar; bound raw reads without reducing it.
+                line = wire_input.readline(MAX_LINE * 4 + 1)
                 if not line:
                     break
+                if isinstance(line, bytes) and len(line) <= MAX_LINE * 4:
+                    try:
+                        line = line.decode('utf-8', errors='strict')
+                    except UnicodeError:
+                        pass  # Main loop emits a correlated parse error for raw invalid bytes.
                 incoming.put(line)
-                if len(line) > MAX_LINE:
+                if len(line) > (MAX_LINE * 4 if isinstance(line, bytes) else MAX_LINE):
                     break
         finally:
             incoming.put(None)
@@ -522,8 +554,17 @@ def serve(inp=None, out=None):
                 break
             mid, request = None, None
             try:
-                if len(line) > MAX_LINE:
+                if len(line) > (MAX_LINE * 4 if isinstance(line, bytes) else MAX_LINE):
                     raise ProtocolError(-32600, "frame exceeds limit")
+                try:
+                    if isinstance(line, bytes):
+                        line = line.decode('utf-8', errors='strict')
+                    else:
+                        line.encode('utf-8', errors='strict')
+                except UnicodeError:
+                    raise ProtocolError(-32700, 'invalid UTF-8 JSON') from None
+                if len(line) > MAX_LINE:
+                    raise ProtocolError(-32600, 'frame exceeds limit')
                 try:
                     request = json.loads(line, object_pairs_hook=_object,
                         parse_constant=lambda _: (_ for _ in ()).throw(ValueError()))

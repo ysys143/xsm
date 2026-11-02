@@ -3,7 +3,7 @@
 초기 조사 기준은 `a1e4804`이며 기능 지원 인증이 아닌 진입점 대조표다.
 `scripts/inventory-protocol-features.py --output <새 JSON 경로>`로 HOME/XSM_HOME을
 격리해 parser와 공개 catalog를 직접 읽었다. 결과는 CLI 말단 명령 **73개**,
-공개 operation **22개**(초기 21개에서 xsm_doc 추가), host method **11개**다. positional action의 여러 값은
+공개 operation **22개**(초기 21개에서 xsm_doc 추가), host method **16개**(초기 11개에서 업로드 준비 5개 추가)다. positional action의 여러 값은
 별도 명령으로 중복 계산하지 않았다. 전체 옵션은 원시 JSON에 있다.
 
 명령이 공개 operation과 겹친다는 사실만으로 CLI 공통화·native 실행·원격·
@@ -116,7 +116,7 @@ UI 호환이 확인된 것은 아니다. 아래 대응 미확정 항목은 이�
 | `xsm_approve` | 별도 action enum 없음 |
 | `xsm_decide` | 별도 action enum 없음 |
 
-## 호스트 메서드 11개
+## 호스트 메서드 16개
 
 - `initialize`
 - `operations/list`
@@ -129,6 +129,12 @@ UI 호환이 확인된 것은 아니다. 아래 대응 미확정 항목은 이�
 - `delivery.report`
 - `decision.response`
 - `decision.abandon`
+
+- `files.upload.open`
+- `files.upload.write`
+- `files.upload.commit`
+- `files.upload.status`
+- `files.upload.abort`
 
 ## 이미 드러난 차이와 후속 확인
 

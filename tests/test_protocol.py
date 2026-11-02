@@ -33,6 +33,20 @@ class ProtocolFixture(TempState):
 
 
 class ProtocolTest(ProtocolFixture):
+    def test_wire_input_requires_utf8_and_preserves_character_limit(self):
+        from xsm import protocol
+        multibyte = (json.dumps({'jsonrpc': '2.0', 'id': 1, 'method': 'initialize',
+                      'params': {'protocolVersion': '한' * 400000}}, ensure_ascii=False) + '\n').encode('utf-8')
+        oversized = (json.dumps({'jsonrpc': '2.0', 'id': 1, 'method': 'initialize',
+                      'params': {'protocolVersion': '한' * protocol.MAX_LINE}}, ensure_ascii=False) + '\n').encode('utf-8')
+        invalid = b'{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"\xff"}}\n'
+        for payload, expected in ((multibyte, -32002), (oversized, -32600), (invalid, -32700)):
+            with self.subTest(expected=expected):
+                out = io.StringIO()
+                inp = io.TextIOWrapper(io.BytesIO(payload), encoding='utf-8', errors='surrogateescape')
+                protocol.serve(inp, out)
+                self.assertEqual(json.loads(out.getvalue())['error']['code'], expected)
+
     def test_generic_runtime_question_reaches_canonical_receiver(self):
         from xsm import handoff
         sender, receiver = self.open('generic-sender'), self.open('generic-receiver')

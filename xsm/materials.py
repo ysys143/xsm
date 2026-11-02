@@ -124,6 +124,27 @@ def public(prepared):
             "references": prepared["attachments"]}
 
 
+def frozen_status(caller, request_id):
+    """Recover an indexed preparation, never infer that an absent index rolled back."""
+    owner = handoff._identity(caller)
+    handoff._id(request_id)
+    filename = paths.path('material-intents', _digest([owner, request_id]) + '.json')
+    try:
+        with open(filename, encoding='utf-8') as stream:
+            memo = json.load(stream)
+    except FileNotFoundError:
+        return {'state': 'unknown', 'request_id': request_id}
+    except (OSError, ValueError) as exc:
+        raise files.FileError('intent-unavailable', 'attachment intent cannot be read', request_id) from exc
+    if not isinstance(memo, dict) or memo.get('owner') != owner or memo.get('request_id') != request_id:
+        raise files.FileError('intent-conflict', 'invalid owned material intent', request_id)
+    value = files.manifest(caller, memo.get('manifest_id'))
+    if value['binding']['request_id'] != request_id:
+        raise files.FileError('intent-conflict', 'manifest belongs to another request', request_id)
+    return {'state': 'frozen', 'request_id': request_id, 'manifest_id': value['id'],
+            'body_digest': memo['body_digest'], 'manifest': value}
+
+
 def failure(exc):
     return {"status":"attachment-error","code":exc.code,"reason":str(exc),
             "request_id":exc.request_id,"manifest_id":getattr(exc,"manifest_id",None),

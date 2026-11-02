@@ -6,6 +6,41 @@ import { tmpdir } from 'node:os';
 import { join, relative, isAbsolute } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { XsmClient, RpcError } from '../typescript/xsm-client.mjs';
+import { createHash } from 'node:crypto';
+
+test('chunk preparation resumes exact bytes and never sends the body implicitly', { timeout: 30000 }, async () => {
+  const root = await realpath(fileURLToPath(new URL('../../', import.meta.url)));
+  const temp = await mkdtemp(join(tmpdir(), 'xsm-node-upload-'));
+  let client;
+  try {
+    client = await XsmClient.connect({ command: [process.env.PYTHON ?? 'python3', '-B', '-m', 'xsm', 'protocol', 'serve', '--stdio'],
+      cwd: root, env: { PATH: process.env.PATH ?? '/usr/bin:/bin', HOME: temp, XSM_HOME: join(temp, 'state'), PYTHONDONTWRITEBYTECODE: '1' } });
+    const a = await client.sessionOpen({ runtime: 'upload-fixture', profile: 'private', conversation: 'a', cwd: temp });
+    const b = await client.sessionOpen({ runtime: 'upload-fixture', profile: 'private', conversation: 'b', cwd: temp });
+    await client.operationCall(b.session, 'xsm_inbox', {});
+    const data = Buffer.alloc(1048576, 255);
+    const params = { session: a.session, target: b.address, request_id: 'node-upload', text: 'exact binary',
+      entries: [{ name: 'binary.bin', size: data.length, sha256: createHash('sha256').update(data).digest('hex') }] };
+    const opened = await client.request('files.upload.open', params);
+    await client.request('files.upload.write', { session: a.session, upload: opened.upload, entry: 0, offset: 0,
+      base64: data.subarray(0, 13).toString('base64') });
+    const prepared = await client.prepareFiles(a.session, { target: b.address, request_id: 'node-upload', text: 'exact binary',
+      entries: [{ name: 'binary.bin', data }] });
+    assert.equal(prepared.body_sent, false);
+    assert.deepEqual((await client.operationCall(b.session, 'xsm_inbox', {})).items, []);
+    const replay = await client.prepareFiles(a.session, { target: b.address, request_id: 'node-upload', text: 'exact binary',
+      entries: [{ name: 'binary.bin', data }] });
+    assert.equal(replay.manifest_id, prepared.manifest_id);
+    await client.operationCall(a.session, 'xsm_send', { target: b.address, request_id: 'node-upload', text: 'exact binary',
+      manifest_id: prepared.manifest_id, wake: 'never', wait: 0 });
+    const pack = await client.operationCall(b.session, 'xsm_inbox', {});
+    const copy = pack.items[0].files;
+    const read = await client.operationCall(b.session, 'xsm_files', {
+      storage_id: copy.storage_id, entry_id: copy.files[0].id, encoding: 'base64' });
+    assert.deepEqual(Buffer.from(read.content, 'base64'), data);
+    assert.equal((await client.operationCall(b.session, 'xsm_ack', { tokens: pack.claims.map(c => c.token) })).acked[0], 'node-upload');
+  } finally { await client?.close(); await rm(temp, { recursive: true, force: true }); }
+});
 
 test('real server: two sessions in same repo, wait=0 send, notification, inbox and ack',
   { timeout: 30000 }, async () => {

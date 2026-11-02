@@ -13,6 +13,41 @@ from xsm_client import RpcError, XsmClient
 
 
 class RealProtocolTests(unittest.IsolatedAsyncioTestCase):
+    async def test_four_mib_bundle_is_prepared_in_chunks_then_explicitly_sent(self):
+        import base64
+        import hashlib
+        with tempfile.TemporaryDirectory(prefix='xsm-upload-wire-') as temp:
+            env = {'PATH': os.environ.get('PATH', os.defpath), 'HOME': temp,
+                   'XSM_HOME': temp + '/state', 'PYTHONDONTWRITEBYTECODE': '1'}
+            async with await XsmClient.connect(
+                    [sys.executable, '-B', '-m', 'xsm', 'protocol', 'serve', '--stdio'],
+                    cwd=str(ROOT), env=env) as client:
+                a, b = [await client.session_open(runtime='upload-fixture', profile='private',
+                         conversation=name, cwd=temp) for name in ('sender', 'receiver')]
+                await client.operation_call(b['session'], 'xsm_inbox', {})
+                entries = [{'name': 'file%d.bin' % index, 'data': bytes([index]) * 1048576}
+                           for index in range(4)]
+                prepared = await client.prepare_files(a['session'], target=b['address'],
+                    request_id='four-mib', text='four exact copies', entries=entries)
+                self.assertFalse(prepared['body_sent'])
+                self.assertEqual((await client.operation_call(b['session'], 'xsm_inbox', {}))['items'], [])
+                result = await client.operation_call(a['session'], 'xsm_send', {
+                    'target': b['address'], 'request_id': 'four-mib', 'text': 'four exact copies',
+                    'manifest_id': prepared['manifest_id'], 'wake': 'never', 'wait': 0})
+                self.assertNotEqual(result['send']['status'], 'refused')
+                pack = await client.operation_call(b['session'], 'xsm_inbox', {})
+                copy = pack['items'][0]['files']
+                self.assertEqual(len(copy['files']), 4)
+                for original, metadata in zip(entries, copy['files']):
+                    result = await client.operation_call(b['session'], 'xsm_files', {
+                        'storage_id': copy['storage_id'], 'entry_id': metadata['id'], 'encoding': 'base64'})
+                    data = base64.b64decode(result['content'], validate=True)
+                    self.assertEqual(data, original['data'])
+                    self.assertEqual(hashlib.sha256(data).hexdigest(), metadata['sha256'])
+                ack = await client.operation_call(b['session'], 'xsm_ack', {
+                    'tokens': [claim['token'] for claim in pack['claims']]})
+                self.assertEqual(ack['acked'], ['four-mib'])
+
     async def test_internal_rpc_error_preserves_claim_and_connection(self):
         with tempfile.TemporaryDirectory(prefix='xsm-python-internal-error-') as temp:
             diagnostics = []

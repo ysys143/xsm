@@ -1,5 +1,6 @@
 /** Dependency-free xsm v1 stdio JSON-RPC client. See xsm-client.d.mts. */
 import { spawn } from 'node:child_process';
+import { createHash } from 'node:crypto';
 import { TextDecoder } from 'node:util';
 import { StringDecoder } from 'node:string_decoder';
 
@@ -151,6 +152,43 @@ export class XsmClient {
   sessionClose(session) { return this.request('session.close', { session: handle(session) }); }
   operationCall(session, operation, args) {
     return this.request('operation.call', { session: handle(session), operation, arguments: args });
+  }
+  async prepareFiles(session, { target, request_id, text, entries, previous_manifest, attachment_fallback }) {
+    handle(session);
+    const limit = this.initialization?.limits?.fileUploadChunkBytes;
+    if (!Number.isInteger(limit) || limit <= 0 || limit > 192 * 1024) throw new Error('server does not advertise supported chunk preparation');
+    if (!Array.isArray(entries) || !entries.length || entries.length > 16) throw new TypeError('1 to 16 caller-read entries required');
+    let total = 0;
+    const frozen = [], specs = [];
+    for (const entry of entries) {
+      if (!object(entry) || Object.keys(entry).some(key => !['name', 'data', 'source_version'].includes(key)) || !(entry.data instanceof Uint8Array)) {
+        throw new TypeError('entries accept name, caller-read Uint8Array data and optional source_version only');
+      }
+      total += entry.data.byteLength;
+      if (entry.data.byteLength > 1048576 || total > 4194304) throw new RangeError('entry or bundle exceeds 1MiB/4MiB limit');
+      const data = Buffer.from(entry.data);
+      frozen.push(data);
+      specs.push({ name: entry.name, size: data.length, sha256: createHash('sha256').update(data).digest('hex'),
+        ...(entry.source_version !== undefined ? { source_version: entry.source_version } : {}) });
+    }
+    const opened = await this.request('files.upload.open', { session, target, request_id, text, entries: specs,
+      ...(previous_manifest !== undefined ? { previous_manifest } : {}),
+      ...(attachment_fallback !== undefined ? { attachment_fallback } : {}) });
+    if (!object(opened)) throw new TransportError('invalid upload open response');
+    if (opened.state === 'frozen') return { ...opened, body_sent: false };
+    const chunk = opened.chunk_bytes, offsets = opened.offsets;
+    if (opened.state !== 'uploading' || !Number.isInteger(chunk) || chunk <= 0 || chunk > limit || !Array.isArray(offsets) || offsets.length !== frozen.length ||
+        offsets.some((offset, index) => !Number.isInteger(offset) || offset < 0 || offset > frozen[index].length)) {
+      throw new TransportError('invalid upload progress response');
+    }
+    for (let index = 0; index < frozen.length; index++) {
+      const data = frozen[index];
+      for (let offset = offsets[index]; offset < data.length; offset += chunk) {
+        await this.request('files.upload.write', { session, upload: opened.upload, entry: index, offset,
+          base64: data.subarray(offset, offset + chunk).toString('base64') });
+      }
+    }
+    return this.request('files.upload.commit', { session, upload: opened.upload });
   }
   eventsSubscribe(session) { return this.request('events.subscribe', { session: handle(session) }); }
   deliveryReport(session, id, state, token) {

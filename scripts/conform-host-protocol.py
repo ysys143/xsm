@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 """Black-box stdio lifecycle and delivery checks; no xsm imports or storage inspection."""
 import argparse
+import base64
+import hashlib
 import json
 import os
 from pathlib import Path
@@ -14,6 +16,19 @@ import time
 def require(condition, details):
     if not condition:
         raise AssertionError(details)
+
+
+def unique_object(pairs):
+    result = {}
+    for key, value in pairs:
+        if key in result:
+            raise ValueError('duplicate JSON key')
+        result[key] = value
+    return result
+
+
+def reject_constant(value):
+    raise ValueError('non-JSON numeric constant: ' + value)
 
 
 class Peer:
@@ -39,7 +54,8 @@ class Peer:
                         raise RuntimeError("candidate closed stdout")
                     if len(line) > 4 * 1048576 or not line.endswith(b"\n"):
                         raise RuntimeError("candidate emitted an invalid or oversized frame")
-                    self.frames.put(json.loads(line))
+                    self.frames.put(json.loads(line.decode('utf-8', errors='strict'),
+                        object_pairs_hook=unique_object, parse_constant=reject_constant))
             except Exception as error:
                 self.frames.put(error)
         self.reader = threading.Thread(target=read, daemon=True)
@@ -105,6 +121,75 @@ class Peer:
         diagnostics = self.errors.read(8192).decode(errors="replace")
         self.errors.close()
         return diagnostics
+
+
+def uploads(peer, sender, receiver, reopen, limits, check, equal):
+    """Public bytes-only preparation, canonical delivery, and explicit consumption."""
+    def operation(session, name, **arguments):
+        return peer.call('operation.call', {'session': session['session'], 'operation': name, 'arguments': arguments})
+    chunk = limits.get('fileUploadChunkBytes')
+    check('bounded upload extension advertised', lambda: equal(type(chunk) is int and 0 < chunk <= 196608, True))
+    operation(receiver, 'xsm_inbox')  # Actual reader observation, not a claimed file capability.
+    entries = [bytes([index]) * 1048576 for index in range(4)]
+    specs = [{'name': 'copy%d.bin' % index, 'size': len(data), 'sha256': hashlib.sha256(data).hexdigest()}
+             for index, data in enumerate(entries)]
+    target = receiver.get('address') or 'ref:' + receiver['ref']
+    args = dict(session=sender['session'], target=target, request_id='upload-four-mib', text='four exact copies', entries=specs)
+    bad = dict(args, request_id='oversized', entries=[dict(specs[0], size=1048577)])
+    check('oversized entry refused before upload', lambda: peer.call('files.upload.open', bad, error=-32602))
+    opened = peer.call('files.upload.open', args)
+    handle = opened['upload']
+    def write(index, offset, data, session=sender, error=None):
+        return peer.call('files.upload.write', dict(session=session['session'], upload=handle,
+            entry=index, offset=offset, base64=base64.b64encode(data).decode('ascii')), error=error)
+    check('foreign session cannot write upload', lambda: write(0, 0, entries[0][:13], receiver, -32602))
+    write(0, 0, entries[0][:13])
+    check('exact chunk replay is idempotent', lambda: equal(write(0, 0, entries[0][:13])['offset'], 13))
+    check('changed chunk replay refused', lambda: write(0, 0, b'changed bytes', error=-32602))
+    for index, data in enumerate(entries):
+        for offset in range(13 if index == 0 else 0, len(data), chunk):
+            write(index, offset, data[offset:offset + chunk])
+    committed = peer.call('files.upload.commit', dict(session=sender['session'], upload=handle))
+    check('four MiB frozen without body send', lambda: equal(committed.get('body_sent'), False))
+    check('prepared bytes do not populate receiver inbox', lambda: equal(operation(receiver, 'xsm_inbox')['items'], []))
+    check('foreign session cannot recover material intent', lambda: equal(peer.call('files.upload.status',
+        dict(session=receiver['session'], request_id=args['request_id']))['state'], 'unknown'))
+    peer.call('session.close', {'session': sender['session']})
+    sender = peer.call('session.open', reopen)
+    status = peer.call('files.upload.status', dict(session=sender['session'], request_id=args['request_id']))
+    check('new execution recovers frozen manifest by request ID', lambda: equal(status['manifest_id'], committed['manifest_id']))
+    check('closed upload handle cannot be written', lambda: peer.call('files.upload.write', dict(
+        session=sender['session'], upload=handle, entry=0, offset=0, base64=''), error=-32602))
+    check('changed reopened preparation refused', lambda: peer.call('files.upload.open', dict(args,
+        session=sender['session'], text='changed original'), error=-32602))
+    operation(sender, 'xsm_send', target=target, request_id=args['request_id'], text=args['text'],
+              manifest_id=committed['manifest_id'], wait=0, wake='never')
+    packet = operation(receiver, 'xsm_inbox')
+    check('explicit send creates one original', lambda: equal([c['id'] for c in packet['claims']], [args['request_id']]))
+    copied = packet['items'][0]['files']
+    check('all four copied entries retained', lambda: equal(len(copied['files']), 4))
+    for index, metadata in enumerate(copied['files']):
+        result = operation(receiver, 'xsm_files', storage_id=copied['storage_id'], entry_id=metadata['id'], encoding='base64')
+        data = base64.b64decode(result['content'], validate=True)
+        check('copy %d exact bytes and digest' % index, lambda data=data, metadata=metadata, index=index:
+            equal(data == entries[index] and hashlib.sha256(data).hexdigest() == metadata['sha256'], True))
+    temporary = peer.call('files.upload.open', dict(args, session=sender['session'], request_id='abort-buffer', entries=[specs[0]]))
+    check('abort frees volatile preparation only', lambda: equal(peer.call('files.upload.abort', {
+        'session': sender['session'], 'upload': temporary['upload']})['aborted'], True))
+    check('abort does not acknowledge existing original', lambda: equal(
+        [c['id'] for c in operation(receiver, 'xsm_inbox', message_ids=[args['request_id']])['claims']], [args['request_id']]))
+    check('explicit ACK consumes copied original', lambda: equal(operation(receiver, 'xsm_ack',
+        tokens=[c['token'] for c in packet['claims']])['acked'], [args['request_id']]))
+    corrupt = peer.call('files.upload.open', dict(args, session=sender['session'], request_id='bad-digest',
+        entries=[{'name': 'bad.bin', 'size': 1, 'sha256': '0' * 64}]))
+    peer.call('files.upload.write', dict(session=sender['session'], upload=corrupt['upload'],
+        entry=0, offset=0, base64='YQ=='))
+    check('declared digest mismatch refuses commit', lambda: peer.call('files.upload.commit',
+        dict(session=sender['session'], upload=corrupt['upload']), error=-32602))
+    peer.call('files.upload.abort', dict(session=sender['session'], upload=corrupt['upload']))
+    check('aborted corrupt upload has no indexed preparation', lambda: equal(peer.call('files.upload.status',
+        dict(session=sender['session'], request_id='bad-digest'))['state'], 'unknown'))
+    check('digest refusal does not send a body', lambda: equal(operation(receiver, 'xsm_inbox')['items'], []))
 
 
 def messaging(peer, sender, receiver, reopen, check, equal, events=False):
@@ -273,7 +358,7 @@ def run(command, suite="lifecycle", capture=False):
             check("state update", lambda: equal(a.call("session.update", {"session": first["session"], "state": "busy"})["state"], "busy"))
             b = Peer(command, folder, env, observations)
             peers.append(b)
-            b.call("initialize", {"protocolVersion": "1"})
+            initialization = b.call("initialize", {"protocolVersion": "1"})
             check("connection-local handles", lambda: b.call("session.update", {"session": first["session"], "state": "idle"}, error=-32001))
             check("single live conversation owner", lambda: b.call("session.open", params, error=-32003))
             other = a.call("session.open", dict(params, profile="other"))
@@ -294,6 +379,9 @@ def run(command, suite="lifecycle", capture=False):
             if suite == "decisions":
                 result["scope"] = "lifecycle and host decision binding fixture; no human UI or domain authorization certification"
                 decisions(b, params, check, equal)
+            if suite == 'uploads':
+                result['scope'] = 'lifecycle and 4MiB public preparation/copy/ACK; no native UI, models or messenger certification'
+                uploads(b, reopened, resumed, params, initialization['limits'], check, equal)
             result.update(status="passed", activeCheck=None)
         except Exception as error:
             result.update(status="failed", error=repr(error))
@@ -305,7 +393,7 @@ def run(command, suite="lifecycle", capture=False):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--capture", action="store_true", help="include isolated wire observations in the report")
-    parser.add_argument("--suite", choices=("lifecycle", "messaging", "events", "decisions"), default="lifecycle")
+    parser.add_argument("--suite", choices=("lifecycle", "messaging", "events", "decisions", "uploads"), default="lifecycle")
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--command", nargs=argparse.REMAINDER, required=True)
     args = parser.parse_args()

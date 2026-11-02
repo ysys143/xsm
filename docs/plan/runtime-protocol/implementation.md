@@ -2173,3 +2173,61 @@ protocol 회귀 123개가 9.582초에 통과했다
 126)와 독립 mock 16개·변이 4개는 79.239초에 통과했다
 (`file-read-service-core.log`). 큰 첨부의 프레임 분할 문제는 이 조회
 공통화로 해결됐다고 계산하지 않는다.
+
+## 프레임보다 큰 첨부 묶음 준비와 UTF-8 경계
+
+files.upload.open/write/commit/status/abort를 추가했다. 192KiB decoded chunk,
+1MiB/file·4MiB/bundle·연결 전체 4MiB raw buffer 예약·16개 handle을 제한한다.
+파일 경로는 받지 않는다. 각 entry의 크기/hash와 exact replay를 검사한 뒤
+기존 materials.prepare에 넘기며, frozen manifest·request/body binding·quota·
+capability·fallback은 기존 엔진을 쓴다. 준비는 body 송신이나 ACK가 아니다.
+세션 종료/abort는 volatile buffer만 해제하며 영속 사본과 상대 업무는 남긴다.
+프로세스 PID가 같아도 protocol_generation이 달라지면 옛 handle을 쓸 수 없다.
+
+영속 준비는 기존 material-intents index로 request ID에 따라 회수한다.
+index 부재는 unknown이며 모든 storage 단계의 rollback 증거가 아니다.
+완료 전 buffer는 연결 종료 뒤 재개하지 못한다. 완료 뒤에는 frozen manifest를
+일반 xsm_send/xsm_ask로 전달한다. SDK 두 종에 caller-read bytes 준비 helper를
+추가했다. Python은 실제 stdio에서 1MiB 파일 4개, 총 4MiB를 준비→명시 송신→
+수신 bytes/SHA 대조→ACK했다. TypeScript는 1MiB binary의 부분 chunk 재개와
+같은 frozen manifest 재조회·송수신을 확인했다. 준비 직후 수신 inbox가 비어
+있음도 두 경로에서 확인했다. 큰 본문 자체의 streaming을 검증한 것은 아니다.
+
+초기 6개 missing-module red와 SDK missing-helper red를 보존했다
+(`file-upload-red-six.log`, `file-upload-python-wire-red.log`). 추가 한계/세대/
+abort/준비 실패 복구까지 현재 unit은 12개다. 동일 PID·다른 protocol generation
+결속 검사는 실제 red 뒤 수정했다(`file-upload-generation-red.log`). digest와
+연결 공통 예약 한도를 무시한 두 변이도 실패했다(`file-upload-mutations.log`).
+각각 16 active slot과 4MiB aggregate 한도를 실제 채운 뒤 다음 요청 거부와
+abort 후 회수를 검사했다. capability 거부 뒤 buffer 해제·frozen ID 보존과
+동일 commit 복구도 확인했다.
+
+공개 검사기에 uploads suite를 추가했다. 기존 lifecycle 16개가 포함된 39개
+검사가 실제 stdio에서 통과했다(`file-upload-compatible-wire.json`). 관찰한
+응답 72개와 공개 input/output/operation schema 검사가 통과했다
+(`file-upload-compatible-schema.json`). 초회 36개 통과 뒤 hash 거부 검사를
+넣으면서 active buffer의 상태를 unknown으로 가정해 한 번 실패했다
+(`file-upload-public-wire-final.json`). uploading과 영속 index를 구분하고
+abort 뒤 index 부재를 확인하도록 fixture를 수정했다. 실패는 보존했다.
+
+UTF-8 경계를 조사한 대상은 서버 입력 reader와 공개 checker reader 두 곳이다.
+서버는 잘못된 UTF-8 byte가 surrogateescape를 통해 JSON 문자열로 들어오던
+경로를 엄격히 거부한다. checker도 UTF-16BE/UTF-32BE 자동 판별, 중복 JSON key,
+NaN 수락을 거부한다. 초기 byte-limit 검사에서 기존 명세의 문자 수 계약을
+놓쳤다. 그 초회 multibyte 초과 기대값 실패를 제품 결함으로 세지 않는다.
+1MiB 문자 수 제한을 유지하고 raw UTF-8 read만 그 네 배 이내로 제한했다.
+한글 400000자 입력은 frame 오류가 아닌 원래의 version 오류를 유지하며,
+실제 문자 수 초과와 malformed UTF-8은 거부한다
+(`utf8-character-{contract-green,regression}.log`).
+
+최종 공통 gate 558개(핵심 381/Python 50/Node 127)와 독립 mock 16개·변이
+4개가 83.67초에 통과했다(`file-upload-compatible-core.log`). tsc strict와
+schema 생성기의 재실행 동일성도 확인했다. method는 11개에서 16개, 모델
+작업은 22개를 유지한다. nested manifest/reference와 모든 operation-specific
+결과 schema, 전체 native 행렬·실제 UI/worker/remote/messenger는 미완이다.
+
+실제 서버 시계의 30분 만료 검사를 별도로 시작했다. 서버 동결본은 a1e4804,
+사용자 답은 합성 host callback이며 실제 사람/UI로 계산하지 않는다. 첫 실행은
+일반 SDK의 decision.response 차단으로 실패했고, 지원되는 trusted host helper로
+수정한 두 번째 실행은 대기 중이다(`real-decision-expiry-run2/progress.json`).
+만료 뒤 replay·늦은 답·기존 invocation 적용 거부를 확인하기 전 완료로 세지 않는다.

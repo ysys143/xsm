@@ -32,7 +32,12 @@
         "inbox.release",
         "delivery.report",
         "decision.response",
-        "decision.abandon"
+        "decision.abandon",
+        "files.upload.open",
+        "files.upload.write",
+        "files.upload.commit",
+        "files.upload.status",
+        "files.upload.abort"
       ]
     },
     "params": {
@@ -306,6 +311,166 @@
         "operation"
       ],
       "additionalProperties": false
+    },
+    "uploadOpen": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "session": {
+          "type": "string",
+          "minLength": 1
+        },
+        "target": {
+          "type": "string",
+          "minLength": 1
+        },
+        "request_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_-]{1,160}$"
+        },
+        "text": {
+          "type": "string"
+        },
+        "entries": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 16,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "name",
+              "size",
+              "sha256"
+            ],
+            "properties": {
+              "name": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 4096
+              },
+              "size": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 1048576
+              },
+              "sha256": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{64}$"
+              },
+              "source_version": {
+                "type": "string",
+                "maxLength": 4096
+              }
+            }
+          }
+        },
+        "previous_manifest": {
+          "type": "string"
+        },
+        "attachment_fallback": {
+          "type": "string",
+          "enum": [
+            "inline"
+          ]
+        }
+      },
+      "required": [
+        "session",
+        "target",
+        "request_id",
+        "text",
+        "entries"
+      ]
+    },
+    "uploadWrite": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "session": {
+          "type": "string",
+          "minLength": 1
+        },
+        "upload": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{32}$"
+        },
+        "entry": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 15
+        },
+        "offset": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 1048576
+        },
+        "base64": {
+          "type": "string",
+          "maxLength": 262144
+        }
+      },
+      "required": [
+        "session",
+        "upload",
+        "entry",
+        "offset",
+        "base64"
+      ]
+    },
+    "uploadCommit": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "session": {
+          "type": "string",
+          "minLength": 1
+        },
+        "upload": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{32}$"
+        }
+      },
+      "required": [
+        "session",
+        "upload"
+      ]
+    },
+    "uploadStatus": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "session": {
+          "type": "string",
+          "minLength": 1
+        },
+        "request_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_-]{1,160}$"
+        }
+      },
+      "required": [
+        "session",
+        "request_id"
+      ]
+    },
+    "uploadAbort": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "session": {
+          "type": "string",
+          "minLength": 1
+        },
+        "upload": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{32}$"
+        }
+      },
+      "required": [
+        "session",
+        "upload"
+      ]
     }
   },
   "allOf": [
@@ -541,6 +706,116 @@
         "properties": {
           "params": {
             "$ref": "#/$defs/decisionAbandon"
+          }
+        },
+        "required": [
+          "params"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "method": {
+            "const": "files.upload.open"
+          }
+        },
+        "required": [
+          "method"
+        ]
+      },
+      "then": {
+        "properties": {
+          "params": {
+            "$ref": "#/$defs/uploadOpen"
+          }
+        },
+        "required": [
+          "params"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "method": {
+            "const": "files.upload.write"
+          }
+        },
+        "required": [
+          "method"
+        ]
+      },
+      "then": {
+        "properties": {
+          "params": {
+            "$ref": "#/$defs/uploadWrite"
+          }
+        },
+        "required": [
+          "params"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "method": {
+            "const": "files.upload.commit"
+          }
+        },
+        "required": [
+          "method"
+        ]
+      },
+      "then": {
+        "properties": {
+          "params": {
+            "$ref": "#/$defs/uploadCommit"
+          }
+        },
+        "required": [
+          "params"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "method": {
+            "const": "files.upload.status"
+          }
+        },
+        "required": [
+          "method"
+        ]
+      },
+      "then": {
+        "properties": {
+          "params": {
+            "$ref": "#/$defs/uploadStatus"
+          }
+        },
+        "required": [
+          "params"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "method": {
+            "const": "files.upload.abort"
+          }
+        },
+        "required": [
+          "method"
+        ]
+      },
+      "then": {
+        "properties": {
+          "params": {
+            "$ref": "#/$defs/uploadAbort"
           }
         },
         "required": [

@@ -553,7 +553,7 @@ class HostInstallTest(TempState):
         bundle = json.loads(process.stdout)
         self.assertEqual(bundle["protocolVersion"], "1")
         self.assertTrue(bundle["experimental"])
-        self.assertEqual(len(bundle["methods"]), 11)
+        self.assertEqual(len(bundle["methods"]), 16)
         self.assertEqual(len(bundle["operations"]), 22)
         for name, artifact in bundle["artifacts"].items():
             content = (root / name).read_bytes()

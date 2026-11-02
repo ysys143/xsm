@@ -131,6 +131,15 @@
             "claimLeaseSeconds": {
               "type": "number",
               "exclusiveMinimum": 0
+            },
+            "fileUploadChunkBytes": {
+              "const": 196608
+            },
+            "fileUploadBudgetBytes": {
+              "const": 4194304
+            },
+            "fileUploadSlots": {
+              "const": 16
             }
           },
           "required": [
@@ -390,6 +399,229 @@
         "expiresAt"
       ],
       "additionalProperties": false
+    },
+    "uploadProgress": {
+      "type": "object",
+      "properties": {
+        "state": {
+          "const": "uploading"
+        },
+        "upload": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{32}$"
+        },
+        "request_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "offsets": {
+          "type": "array",
+          "maxItems": 16,
+          "items": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        "chunk_bytes": {
+          "const": 196608
+        }
+      },
+      "required": [
+        "state",
+        "upload",
+        "request_id",
+        "offsets",
+        "chunk_bytes"
+      ],
+      "additionalProperties": false
+    },
+    "uploadFrozen": {
+      "type": "object",
+      "properties": {
+        "state": {
+          "const": "frozen"
+        },
+        "request_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "manifest_id": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{32}$"
+        },
+        "body_digest": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "manifest": {
+          "type": "object"
+        },
+        "mode": {
+          "enum": [
+            "files",
+            "inline"
+          ]
+        },
+        "references": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        },
+        "body_sent": {
+          "const": false
+        }
+      },
+      "required": [
+        "state",
+        "request_id",
+        "manifest_id"
+      ],
+      "additionalProperties": false
+    },
+    "uploadStatus": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "state": {
+              "const": "uploading"
+            },
+            "upload": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{32}$"
+            },
+            "request_id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "offsets": {
+              "type": "array",
+              "maxItems": 16,
+              "items": {
+                "type": "integer",
+                "minimum": 0
+              }
+            },
+            "chunk_bytes": {
+              "const": 196608
+            }
+          },
+          "required": [
+            "state",
+            "upload",
+            "request_id",
+            "offsets",
+            "chunk_bytes"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "state": {
+              "const": "frozen"
+            },
+            "request_id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "manifest_id": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{32}$"
+            },
+            "body_digest": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            "manifest": {
+              "type": "object"
+            },
+            "mode": {
+              "enum": [
+                "files",
+                "inline"
+              ]
+            },
+            "references": {
+              "type": "array",
+              "items": {
+                "type": "object"
+              }
+            },
+            "body_sent": {
+              "const": false
+            }
+          },
+          "required": [
+            "state",
+            "request_id",
+            "manifest_id"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "state": {
+              "const": "unknown"
+            },
+            "request_id": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "required": [
+            "state",
+            "request_id"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "uploadWrite": {
+      "type": "object",
+      "properties": {
+        "upload": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{32}$"
+        },
+        "entry": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "offset": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "required": [
+        "upload",
+        "entry",
+        "offset"
+      ],
+      "additionalProperties": false
+    },
+    "uploadAbort": {
+      "type": "object",
+      "properties": {
+        "aborted": {
+          "const": true
+        },
+        "request_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "body_sent": {
+          "const": false
+        }
+      },
+      "required": [
+        "aborted",
+        "request_id",
+        "body_sent"
+      ],
+      "additionalProperties": false
     }
   },
   "x-methodResults": {
@@ -403,6 +635,11 @@
     "inbox.release": "#/$defs/releaseResult",
     "delivery.report": "#/$defs/deliveryResult",
     "decision.response": "#/$defs/decisionResult",
-    "decision.abandon": "#/$defs/decisionResult"
+    "decision.abandon": "#/$defs/decisionResult",
+    "files.upload.open": "#/$defs/uploadStatus",
+    "files.upload.write": "#/$defs/uploadWrite",
+    "files.upload.commit": "#/$defs/uploadFrozen",
+    "files.upload.status": "#/$defs/uploadStatus",
+    "files.upload.abort": "#/$defs/uploadAbort"
   }
 }

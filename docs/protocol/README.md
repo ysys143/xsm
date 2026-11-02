@@ -7,6 +7,7 @@ envelope. A successful protocol test does not certify a native runtime.
 Native binding notes: [Pi 1.4.0](pi.md), [OpenCode 1.19.5](opencode.md),
 [Hermes 0.22.5 API prototype](hermes.md), [OpenClaw 2026.10.9 prototype](openclaw.md).
 Host coordination: [Python](python-host.md).
+Large caller-read copies: [bounded file preparation](file-uploads.md).
 Request definitions: [envelope contract and examples](request-contract.md).
 Operation inputs: [structural catalog and transport restrictions](operations-contract.md).
 Output definitions: [responses, notifications and observed validation](output-contract.md).

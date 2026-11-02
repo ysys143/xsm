@@ -177,5 +177,71 @@
         "expiresAt": 1900000000
       }
     }
+  },
+  {
+    "method": "files.upload.open",
+    "frame": {
+      "jsonrpc": "2.0",
+      "id": 15,
+      "result": {
+        "state": "uploading",
+        "upload": "00000000000000000000000000000000",
+        "request_id": "upload-fixture",
+        "offsets": [
+          0
+        ],
+        "chunk_bytes": 196608
+      }
+    }
+  },
+  {
+    "method": "files.upload.write",
+    "frame": {
+      "jsonrpc": "2.0",
+      "id": 16,
+      "result": {
+        "upload": "00000000000000000000000000000000",
+        "entry": 0,
+        "offset": 1
+      }
+    }
+  },
+  {
+    "method": "files.upload.commit",
+    "frame": {
+      "jsonrpc": "2.0",
+      "id": 17,
+      "result": {
+        "state": "frozen",
+        "request_id": "upload-fixture",
+        "manifest_id": "11111111111111111111111111111111",
+        "mode": "files",
+        "references": [],
+        "body_sent": false
+      }
+    }
+  },
+  {
+    "method": "files.upload.status",
+    "frame": {
+      "jsonrpc": "2.0",
+      "id": 18,
+      "result": {
+        "state": "unknown",
+        "request_id": "upload-fixture"
+      }
+    }
+  },
+  {
+    "method": "files.upload.abort",
+    "frame": {
+      "jsonrpc": "2.0",
+      "id": 19,
+      "result": {
+        "aborted": true,
+        "request_id": "upload-fixture",
+        "body_sent": false
+      }
+    }
   }
 ]
