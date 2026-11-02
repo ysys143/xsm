@@ -1,4 +1,9 @@
-# OpenClaw owned 실행 전 native 세션 결속
+# OpenClaw owned native 실행과 세션 결속
+
+현재 상태: OpenClaw2026.10.9 제공자를 catalog에 등록했고 실제 owned journal에서
+정상 실행·같은 문맥의 재개·다른 문맥 분리·결과 저장·요청 replay를 확인했다.
+Native 취소·복구와 전체 OS/모드 행렬은 미완이다. 아래 초기 시험과 거부 기록도
+보존하며, 현재 통합 증거는 마지막 절을 따른다.
 
 OpenClaw2026.10.9의 실제 gateway에서 모델 실행 없이 세션 생성·재조회를
 확인했다. 이 기록은 owned 제공자 전체 완료나 모델/워커 실행 인증이 아니다.
@@ -56,8 +61,9 @@ ID·모호한 재조회·없는 revision을 거부한다. Unit5개가 통과했�
 
 다음 필수 단계는 실제 owned frontend와 공통 journal의 결속, native agent 실행과
 run ID에 결속된 결과/중단/복구, profile의 원래 harness/model 정책, native UI와
-local/messenger 경계 검증이다. 제공자 catalog에는 아직 OpenClaw를 등록하지
-않았다. 이 범위를 줄이거나 지원 완료로 표시하지 않는다.
+local/messenger 경계 검증이다. 이 초기 준비 시험 시점에는 제공자 catalog에
+OpenClaw를 등록하지 않았다. 이후 정상 실행 연결은 마지막 절을 따른다.
+이 범위를 줄이거나 지원 완료로 표시하지 않는다.
 
 이 변경의 macOS core는 Python494+SDK52+native93+Node152=791개와 독립
 mock39/변이14개를80.427초에 통과했다(openclaw-session-contract-core-final.log).
@@ -178,10 +184,67 @@ OPENCLAW_SHELL=exec인 호출은 native의 출처 보존 규칙으로 거부됐�
 실제 모델 추론0회, gatewayStopped=true다. 앞선 guard 표본은 일반 오류만 보고
 실패를 판정했으므로 특정 native 규칙의 근거는 이 final 표본으로 한정한다.
 
-이 transport와 frontend는 아직 provider catalog와 실제 owned journal에 연결하지
-않았다. 전체 지원이나 취소·복구 완료로 계산하지 않는다.
+이 SDK 전송 시험 시점에는 provider catalog와 실제 owned journal에 연결하지
+않았다. 아래 후속 연결도 전체 지원이나 취소·복구 완료로 계산하지 않는다.
 
 최종 macOS 핵심 검사는 Python494+SDK52+native105+Node152=803개와 독립 mock39/
 변이14개를80.708초에 통과했다(openclaw-sdk-transport-core-final.log). 앞선
 79.948초 표본은 특정 exec 거부 boolean을 추가하기 전 결과로 따로 보존했다.
 이번 native transport4개를 포함한 Linux 검증은 아직 미실행이다.
+
+## 실제 owned journal과 native 제공자 연결
+
+worker_provider.py를 고정 catalog에 등록했다. Managed native 설치의 실제 파일
+hash, native package 이름·버전과 operator가 선택한 CLI/Node 경로를 확인한다.
+Agent는 native agents.list의 defaultId 또는 명시한 XSM_OPENCLAW_AGENT_ID로
+선택하며, selectionRequired이거나 선택한 ID가 없으면 임의 대체하지 않는다.
+설치된 연결 파일이 달라지면 실행을 거부한다. 공통 엔진에 OpenClaw 분기를
+추가하지 않았다.
+
+CLI는 상속된 private control FD로 실제 세션을 결속한 뒤 backend를 호출한다.
+요청별 native run ID는 worker ID와 새 난수로 분리하며 실제 실행 argv에 보존한다.
+출력에는 context ID/epoch와 native admission/terminal receipt를 함께 남긴다.
+공통 readback에서 다른 context/epoch/세션이나 선택한 agent/workspace와 다른
+결과를 수락하지 않는다. 답변의
+실제 text만 공통 결과로 반환하며 native turn 완료를 업무 성공으로 만들지 않는다.
+Model/thinking을 지정한 경우 native 인수로 전달하며 미지정이면 원래 정책을 따른다.
+
+실제 재현 명령은 다음과 같다. 사용자 profile이나 전역 설정을 바꾸지 않는다.
+
+```sh
+python3 -B scripts/probe-openclaw-owned-native.py \
+  --native-cli <고정 openclaw.mjs> --node <지정 Node> --output <새 경로>
+```
+
+openclaw-owned-native-final의23개 검사가 통과했다. 세 번의 실제 provider 요청
+직전에 공통 journal의 running 요청 하나에 native session ID와 살아 있는 정확한
+child PID/lstart 결속이 이미 저장돼 있었다. 같은 작업의 두 요청은 같은 native
+세션을, 별도 작업은 다른 세션을 썼다. 세 결과는 실제 저장·게시됐고 outcome은
+None으로 유지됐다. 동일 요청 replay는 원래 reply ID를 반환하고 provider를
+다시 호출하지 않았다. 논리 worker의 두 native ID 인덱스도 일치했다.
+Provider fixture3회, 실제 모델 추론0회, gatewayStopped=true다.
+
+이 시험은 공통 workers API·실제 child/소켓·journal·gateway·로컬 답변 저장을
+연결했다. 공개 protocol operation/UI/메신저 왕복을 대신하지 않는다. 최초 native
+표본도 성공했으며 최종 표본은 설치별 Python import를 분리한 후 다시 실행했다.
+SDK package fixture의 별도 unit4개는 common journal 재개/replay, 잘못된 결과
+세대·receipt, 존재하지 않는 agent 선택과 변경된 설치 파일 거부를 검사한다.
+Context epoch 검사를 제거한 변이는 assertion1개로 검출됐다
+(openclaw-owned-provider-mutant.log).
+
+Native 취소 지원 flag는 아직 선언하지 않았다. 취소 의도를 native 중단으로
+승격하지 않으며, native 미확인 상태를 확인된 정지나 업무 결과로 만들지 않는다.
+취소·native 상태 조회를 통한 복구·전체 Linux/모드/프로토콜 행렬은 남아 있다.
+
+첫 core 실행에서는 공개 operation schema와 OpenClaw tools.mjs의 runtime enum을
+재생성하지 않아 schema 비교2개와 설치본 계약2개, 총4개가 실패했다
+(openclaw-owned-provider-core.log). 격리 HOME/XSM_HOME에서 기존 generator를
+실행해 두 산출물을 갱신한 뒤, 실패한 경로4개는 모두 통과했다. 실패 로그는
+보존했으며 첫 core 실행을 성공으로 계산하지 않는다.
+
+Admitted agent/workspace 결과 검사를 추가한 뒤의 실제 재현은
+openclaw-owned-native-admitted-result다. 같은23개 검사를 통과했고 결속 선행
+관측3회, provider fixture3회, gatewayStopped=true였다. 최종 core는
+Python494+SDK52+native109+Node152=807개와 독립 mock39/변이14개를81.593초에
+통과했다(openclaw-owned-provider-core-final.log). 이번 제공자 연결을 포함한
+Linux/native UI/공개 operation 왕복 검증은 아직 미실행이다.

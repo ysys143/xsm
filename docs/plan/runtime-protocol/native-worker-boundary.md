@@ -1,7 +1,8 @@
 # Native worker 연결 경계와 확인 결과
 
 상태: 미완. xsm_owned의 실행 provider는 Claude/Codex와 catalog에 등록된
-Hermes/OpenCode/Pi다. OpenClaw는 아직 catalog에 등록하지 않았다. 아래 초기
+Hermes/OpenCode/Pi/OpenClaw다. OpenClaw는 정상 실행·재개·결과 저장을 실제
+owned journal에서 확인했으며 native 취소·복구는 미완이다. 아래 초기
 조사 기록과 뒤의 구현·검증 기록을 구분하며 전체 지원 완료로 읽지 않는다.
 이 문서는 승인된 전체 계획의 worker 연결에 필요한 실제 native 증거와
 제약을 기록한다. 런타임·기능·운영체제 범위를 제외하지 않는다.
@@ -704,6 +705,9 @@ parser/catalog73/22/16과 cancel action으로 갱신했다. 이번 변경의 Lin
 전체 runtime/worker/UI/remote/messenger 행렬은 계속 미완이다.
 
 ## OpenClaw native 세션 준비 경계
+
+이 절은 최초 준비 시험 기록이다. 이후 agent 실행과 owned journal 연결의
+최신 증거·미완 경계는 openclaw-owned-session.md의 마지막 절을 따른다.
 
 새 key/session ID를 native sessions.create로 생성하고, 모델 turn 전에 private
 socket fixture에 actual ID를 결속했다. 정확한 native ID의 resolve/list 재조회와

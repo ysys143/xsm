@@ -12,7 +12,7 @@ from . import worker_session as session
 
 
 def run_turn(rpc, control, *, agent_id, cwd, message, request_id,
-             native_session_id=None, wait_timeout_ms=20000):
+             native_session_id=None, wait_timeout_ms=20000, model=None, thinking=None):
     if type(wait_timeout_ms) is not int or not 1 <= wait_timeout_ms <= 30000:
         raise session.NativeSessionError('invalid native observation timeout')
     # Validate task fields before any mutation or native context allocation.
@@ -20,13 +20,17 @@ def run_turn(rpc, control, *, agent_id, cwd, message, request_id,
     if not isinstance(message, str) or not message.strip():
         raise session.NativeSessionError('native task body required')
     if native_session_id is None:
-        created = rpc('sessions.create', session.creation_params(agent_id, cwd))
+        created = rpc('sessions.create', session.creation_params(agent_id, cwd, model=model))
         locator = session.created_locator(created, agent_id, cwd)
     else:
         resolved = rpc('sessions.resolve', session.resolution_params(native_session_id, agent_id))
         listing = rpc('sessions.list', {})
         locator = session.resolved_locator(resolved, listing, native_session_id, agent_id, cwd)
     params = session.agent_params(locator, message, request_id)
+    if model is not None:
+        params['model'] = session._text(model, 'model')
+    if thinking is not None:
+        params['thinking'] = session._text(thinking, 'thinking')
     control.bind(locator['native_session_id'])
     admission = rpc('agent', params)
     run_id = session.accepted_run(admission, locator, request_id)

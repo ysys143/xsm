@@ -26,6 +26,7 @@ export default [
             "claude",
             "codex",
             "hermes",
+            "openclaw",
             "opencode",
             "pi"
           ]

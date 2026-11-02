@@ -331,6 +331,7 @@
             "claude",
             "codex",
             "hermes",
+            "openclaw",
             "opencode",
             "pi"
           ]
