@@ -14,6 +14,22 @@ async function connect(t, mode = 'normal', options = {}) {
 }
 const settings = { timeout: 5000 };
 
+test('native parent refuses an old server before registration', settings, async t => {
+  const client = await connect(t);
+  await assert.rejects(client.sessionOpen({runtime:'test',profile:'local',conversation:'child',
+    cwd:'/tmp',parentConversation:'native-parent'}), /native parent lineage/);
+  assert.deepEqual(await client.request('echo', {alive:true}), {alive:true});
+});
+
+test('native parent negotiation preserves caller capabilities', settings, async t => {
+  const client = await connect(t, 'lineage');
+  const capabilities = ['messaging'];
+  const opened = await client.sessionOpen({runtime:'test',profile:'local',conversation:'child',
+    cwd:'/tmp',parentConversation:'native-parent',capabilities});
+  assert.equal(opened.generation, 7);
+  assert.deepEqual(capabilities, ['messaging']);
+});
+
 test('default command', settings, () => {
   assert.deepEqual(XsmClient.DEFAULT_COMMAND, ['python3', '-m', 'xsm', 'protocol', 'serve', '--stdio']);
 });

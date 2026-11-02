@@ -267,5 +267,12 @@ macOS Python3.14.6 핵심 검사에서 Python491+SDK50+native31+Node139=711개�
 (native-lineage-mutant-second.log). 최초 변이 시도는 시험의 모듈 재로딩으로
 변이가 사라져 무효였으며 해당 로그도 보존했다. 공개 스키마 검사는16개
 메서드 구조를 통과했으나 실제 wire capture는 제공하지 않았다
-(native-lineage-schema.json의 observed=0). SDK의 구서버 협상 거부와 실제
-native 하위 대화 시험, 두 Linux 버전의120초 재검증은 계속 남아 있다.
+(native-lineage-schema.json의 observed=0). 실제 native 하위 대화 시험과 두
+Linux 버전의120초 재검증은 계속 남아 있다.
+
+후속 SDK 시험에서는 Python21개와 Node26개가 통과했다
+(native-lineage-sdk-python.log, native-lineage-sdk-node.log). 양쪽 모두 능력이
+없는 서버에 부모 등록을 보내기 전에 거부하며 기존 연결은 계속 사용할 수
+있었다. 능력이 있는 서버에는 정확한 부모와 native-lineage 능력을 전송했고,
+호출자가 넘긴 capabilities 목록을 변경하지 않았다. 이 수치는 각 클라이언트
+시험 파일만의 결과이며 앞의711개 전체 검사와 별도다.

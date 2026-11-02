@@ -55,6 +55,8 @@ for line in sys.stdin.buffer:
             reply(request, {})
         elif MODE == "init-nonobject":
             reply(request, ["1"])
+        elif MODE == "lineage":
+            reply(request, {"protocolVersion": "1", "capabilities": ["native-lineage"]})
         else:
             reply(request, {"protocolVersion": "1", **({"capabilities": ["messaging", "inbox", "events"], "limits": {"claimLeaseSeconds": 120}} if MODE.startswith("host-") else {})})
         initialized = True
@@ -105,7 +107,12 @@ for line in sys.stdin.buffer:
         reply(request, {"final": True})
         break
     elif method == "session.open":
-        assert set(params) == {"runtime", "profile", "conversation", "cwd", "capabilities"}
+        expected = {"runtime", "profile", "conversation", "cwd", "capabilities"}
+        if MODE == "lineage":
+            expected.add('parent_conversation')
+            assert params['parent_conversation'] == 'native-parent'
+            assert params['capabilities'] == ['messaging', 'native-lineage']
+        assert set(params) == expected
         assert isinstance(params["capabilities"], list)
         reply(request, {"session": HANDLE, "generation": 7, "extra": "preserved"})
     elif method in {"session.update", "session.close", "operation.call", "events.subscribe", "delivery.report"}:

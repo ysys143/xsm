@@ -21,6 +21,21 @@ class ClientTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(XsmClient.DEFAULT_COMMAND,
                          ("python3", "-m", "xsm", "protocol", "serve", "--stdio"))
 
+    async def test_native_parent_is_refused_before_registration_on_old_server(self):
+        client = await self.connect()
+        with self.assertRaisesRegex(TransportError, 'native parent lineage'):
+            await client.session_open(runtime='test', profile='local', conversation='child',
+                                      cwd='/tmp', parent_conversation='native-parent')
+        self.assertEqual(await client.request('echo', {'alive': True}), {'alive': True})
+
+    async def test_negotiated_native_parent_is_sent_without_mutating_capabilities(self):
+        client = await self.connect('lineage')
+        capabilities = ['messaging']
+        opened = await client.session_open(runtime='test', profile='local', conversation='child',
+            cwd='/tmp', capabilities=capabilities, parent_conversation='native-parent')
+        self.assertEqual(opened['generation'], 7)
+        self.assertEqual(capabilities, ['messaging'])
+
     async def test_concurrent_reversed_responses(self):
         client = await self.connect()
         results = await asyncio.wait_for(asyncio.gather(
