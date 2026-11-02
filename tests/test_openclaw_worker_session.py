@@ -43,6 +43,7 @@ class OpenClawWorkerSessionTest(unittest.TestCase):
         self.assertEqual(params['expectedExistingSessionId'], 'native-id')
         self.assertEqual(params['expectedExistingSessionLifecycleRevision'], 'revision-1')
         self.assertFalse(params['deliver'])
+        self.assertNotIn('cwd', params, 'operator runs retain their native-created workspace')
         with self.assertRaises(session.NativeSessionError): session.agent_params(dict(locator, native_lifecycle_revision=None), 'work', 'request-1')
 
     def test_rpc_noise_duplicates_and_non_json_values_are_refused(self):

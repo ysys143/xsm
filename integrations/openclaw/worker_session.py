@@ -92,10 +92,17 @@ def resolved_locator(reply, listing, native_id, agent_id, cwd):
 
 
 def agent_params(locator, message, request_id):
+    """Build backend-only constraints, not an operator gateway-call payload.
+
+    Native operator clients cannot dispatch these identity fences. Do not drop
+    them to permit a reset between binding and admission to change context.
+    Workspace is inherited from native creation; agent.cwd is plugin-only.
+    """
     if not isinstance(message, str) or not message.strip(): raise NativeSessionError('native task body required')
+    _workspace(locator.get('cwd'))
     return {'agentId': _text(locator.get('agent_id'), 'agent ID'), 'sessionId': _text(locator.get('native_session_id'), 'session ID'),
             'sessionKey': _text(locator.get('native_session_key'), 'session key'),
             'expectedExistingSessionId': locator['native_session_id'],
             'expectedExistingSessionLifecycleRevision': _text(locator.get('native_lifecycle_revision'), 'lifecycle revision'),
-            'cwd': _workspace(locator.get('cwd')), 'message': message,
+            'message': message,
             'idempotencyKey': _text(request_id, 'request ID'), 'deliver': False}

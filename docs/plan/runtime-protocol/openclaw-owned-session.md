@@ -18,9 +18,11 @@ sessions.resolve를 호출하고, 실제 목록의 같은 key/ID/agentId/revisio
 
 후속 agent 요청용 인수는 expectedExistingSessionId와
 expectedExistingSessionLifecycleRevision을 포함한다. 결속과 실행 사이의 native
-reset/교체가 다른 모델 문맥으로 이어지지 않도록 native 검증에 맡긴다. Cwd는
-명시적으로 유지하고 permissionMode/toolOverrides/agentRuntime을 임의로 설정하지
-않는다. 실제 agent RPC는 아직 이 시험에서 호출하지 않았다.
+reset/교체가 다른 모델 문맥으로 이어지지 않도록 하는 backend 전용 계약이다.
+실제 operator agent RPC 시험에서는 이 인수의 사용이 거부됐다. 따라서 이 helper의
+인수를 만들었다는 사실은 실행 경로를 확보했다는 증거가 아니다. 실행 시 cwd는
+생성한 세션에서 상속하며, agent 요청에는 넣지 않는다. PermissionMode와
+toolOverrides는 임의로 설정하지 않는다.
 
 ## 실행한 증거
 
@@ -59,4 +61,27 @@ local/messenger 경계 검증이다. 제공자 catalog에는 아직 OpenClaw를 
 
 이 변경의 macOS core는 Python494+SDK52+native93+Node152=791개와 독립
 mock39/변이14개를80.427초에 통과했다(openclaw-session-contract-core-final.log).
-별도의 Linux 결과는59c59b3의786개이며 이번 계약/791개를 포함하지 않는다.
+Linux에서도4c92db2의 계약을 포함한791개가 Python3.11.2에서64.191초,
+Python3.14.10에서81.899초로 통과했다. 격리 VM 종료 코드도0이다
+(openclaw-session-contract-linux). 이 결과는 아래 실제 실행 거부를 해결했다는
+의미가 아니다.
+
+## 실제 agent 실행에서 확인한 거부와 미완 경계
+
+격리된 loopback gateway와 명시적 로컬 SSE model0 fixture로 agent RPC를
+시험했다. 첫 실행은 `cwd is reserved for plugin-owned subagent runs`로 거부됐다
+(openclaw-agent-run-first). Agent 인수에서 cwd를 제거한 두 번째 실행은
+`expectedExistingSessionId is reserved for backend callers.`로 거부됐다
+(openclaw-agent-run-second). 두 gateway 모두 종료됐으며 모델 실행 성공으로
+계산하지 않는다. 생성 시 workspace 검증은 유지한다.
+
+고정 소스의 agent-request-preflight.ts는 실제 client mode가 BACKEND인지 검사한다.
+ChatSendParamsSchema에는 expectedLeafEntryId와 routing 계약이 있지만, 기대하는
+session ID와 lifecycle revision을 함께 고정하는 필드는 없다. 이것만으로 owned
+세션 결속을 대체했다는 판정을 내리지 않는다. 또한 runtime.gateway.request는
+server-plugins.ts에서 bundled 또는 trusted official plugin만 허용하므로 일반
+xsm 플러그인의 우회 실행 경로로 사용하지 않는다.
+
+실제 신원과 revision을 보존하는 지원된 native 실행 경로는 아직 미확보다.
+이 제약을 제거하거나 backend/official plugin 신원을 가장하지 않고 후속 경로를
+조사해야 한다. OpenClaw owned 제공자와 전체 계획은 미완이다.
