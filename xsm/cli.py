@@ -1030,19 +1030,16 @@ def _send_many(args, targets: list) -> int:
 
 
 def cmd_team(args) -> int:
-    """Teams of sessions working together (ADR-0025): create, add, remove,
-    lead, leave, list, show, mute. Adding a session outside this project's
-    scope, and naming the lead, are your user's decisions."""
-    from . import teams
+    """Render the shared team service and collect terminal user decisions."""
+    from . import teams, team_service
     if args.action == "list":
-        teams.adopt_pairs()
-        rows = teams.all_teams()
+        rows = team_service.execute(None, {"action": "list"})["teams"]
         if args.json:
             print(_readable_json({"teams": [_team_view(t) for t in rows]}))
         else:
             for t in rows:
                 print("%s: %s%s" % (t["name"], ", ".join(teams.label(m) for m in t["members"]),
-                                    "  lead %s" % teams.label(t["lead"]) if t.get("lead") else ""))
+                    "  lead %s" % teams.label(t["lead"]) if t.get("lead") else ""))
             if not rows:
                 print("no teams. To start one: xsm team create <name>")
         return OK
@@ -1053,83 +1050,49 @@ def cmd_team(args) -> int:
     if why or not me:
         print(why or "this session is not registered", file=sys.stderr)
         return REFUSED
+    if args.action in ("add", "remove", "lead") and not args.member:
+        print("usage: xsm team %s <team> <session>" % args.action, file=sys.stderr)
+        return USAGE
+    def authorize(action, team, subject):
+        member = teams.member_of(subject) if action == "add" else subject
+        label = teams.label(member)
+        verb = {"add": "adding", "remove": "removing", "lead": "making"}[action]
+        what = ("making %s the lead of team %s" % (label, team["name"])) if action == "lead" else \
+               ("%s %s %s team %s" % (verb, label, "to" if action == "add" else "from", team["name"]))
+        why = _person_or_refuse(what, "xsm_team", ask=("team-%s-%s" % (action, team["name"]), subject.get("name") or args.member))
+        if why:
+            raise team_service.DecisionRefused(why)
+        return _verdict or "person at the terminal"
+    action = "unmute" if args.action == "mute" and args.off else args.action
     try:
-        if args.action == "show":
-            team = teams.require(args.name)
-            print(_readable_json(_team_view(team)))
-            return OK
-        if args.action == "create":
-            team = teams.create(me, args.name)
-            print("created team %s with %s; add members with `xsm team add %s <session>`"
-                  % (team["name"], teams.label(team["members"][0]), team["name"]))
-            return OK
-        if args.action == "mute":
-            team = teams.require(args.name)
-            if not teams.is_member(team, me):
-                raise teams.TeamError("you are not in team %s" % team["name"])
-            teams.mute(team["name"], me, on=not args.off)
-            print("%s team %s's DMs: %s" % ("unmuted" if args.off else "muted", team["name"],
-                  "they wake this session again" if args.off else
-                  "they are stored for this session's next turn, without a wake"))
-            return OK
-        if args.action == "leave":
-            team = teams.remove(me, args.name, teams.member_of(me), None)
-            print("left team %s" % team["name"])
-            return OK
-        if not args.member:
-            print("usage: xsm team %s <team> <session>" % args.action, file=sys.stderr)
-            return USAGE
-        team = teams.require(args.name)
-        if args.action == "add":
-            with probe.quick():
-                found = resolve.resolve(args.member, caller=me) if args.member.startswith(("net:", "candidate:")) \
-                    else resolve.resolve(args.member)
-            if not found.ok:
-                print("refused: %s" % found.reason, file=sys.stderr)
-                return REFUSED
-            target = found.record
-            rule = teams.add_rule(me, team, target)
-            approval = "lead"
-            if rule == "user":
-                why = _person_or_refuse("adding %s to team %s" % (teams.label(teams.member_of(target)), team["name"]),
-                                        "xsm_team", ask=("team-add-" + team["name"], target.get("name") or args.member))
-                if why:
-                    print("refused: %s" % why, file=sys.stderr)
-                    return REFUSED
-                approval = _verdict or "person at the terminal"
-            team = teams.add(me, team["name"], target, approval)
-            _team_sync(team)
-            print("added %s to team %s (%s)" % (teams.label(teams.member_of(target)), team["name"],
-                  "the lead's own project" if approval == "lead" else "your user approved"))
-            return OK
-        member = teams.find_member(team, args.member)
-        if args.action == "remove":
-            approval = None
-            if not (teams.matches(member, me) or teams.is_lead(team, me)):
-                why = _person_or_refuse("removing %s from team %s" % (teams.label(member), team["name"]),
-                                        "xsm_team", ask=("team-remove-" + team["name"], member.get("name") or args.member))
-                if why:
-                    print("refused: %s" % why, file=sys.stderr)
-                    return REFUSED
-                approval = _verdict or "person at the terminal"
-            team = teams.remove(me, team["name"], member, approval)
-            _team_sync(team)
-            print("removed %s from team %s" % (teams.label(member), team["name"]))
-            return OK
-        if args.action == "lead":
-            why = _person_or_refuse("making %s the lead of team %s" % (teams.label(member), team["name"]),
-                                    "xsm_team", ask=("team-lead-" + team["name"], member.get("name") or args.member))
-            if why:
-                print("refused: %s" % why, file=sys.stderr)
-                return REFUSED
-            team = teams.set_lead(me, team["name"], member, _verdict or "person at the terminal")
-            _team_sync(team)
-            print("%s is the lead of team %s" % (teams.label(member), team["name"]))
-            return OK
+        result = team_service.execute(me, {"action": action, "team": args.name,
+            "member": getattr(args, "member", None)}, authorize=authorize)
     except teams.TeamError as exc:
         print("refused: %s" % exc, file=sys.stderr)
         return REFUSED
-    return USAGE
+    team = result["team"]
+    for note in result["sync_notes"]:
+        print(note, file=sys.stderr)
+    if action == "show":
+        print(_readable_json(_team_view(team)))
+    elif action == "create":
+        print("created team %s with %s; add members with `xsm team add %s <session>`" % (
+            team["name"], teams.label(team["members"][0]), team["name"]))
+    elif action in ("mute", "unmute"):
+        print("%s team %s's DMs: %s" % ("unmuted" if action == "unmute" else "muted", team["name"],
+            "they wake this session again" if action == "unmute" else "they are stored for this session's next turn, without a wake"))
+    elif action == "leave":
+        print("left team %s" % team["name"])
+    elif action == "add":
+        print("added %s to team %s (%s)" % (teams.label(result["member"]), team["name"],
+            "the lead's own project" if result["approval"] == "lead" else "your user approved"))
+    elif action == "remove":
+        print("removed %s from team %s" % (teams.label(result["member"]), team["name"]))
+    elif action == "lead":
+        print("%s is the lead of team %s" % (teams.label(result["member"]), team["name"]))
+    else:
+        return USAGE
+    return OK
 
 
 CONTENT_HASH_NOTE = (" (by the hook hash; Codex also keeps a content hash xsm cannot check, so "
@@ -1267,14 +1230,6 @@ def _team_view(team: dict) -> dict:
             "members": [{"member": teams.label(m), "running": teams.address(m) is not None,
                          "remote": bool(m.get("machine"))} for m in team["members"]],
             "generation": team.get("generation"), "log": team.get("log", [])[-10:]}
-
-
-def _team_sync(team: dict) -> None:
-    """Send the changed team record to the machines of its remote members, so
-    each can check a member's DM against the same record (ADR-0025, D22)."""
-    from . import team_sync
-    for note in team_sync.publish(team):
-        print(note, file=sys.stderr)
 
 
 def cmd_inbox(args) -> int:

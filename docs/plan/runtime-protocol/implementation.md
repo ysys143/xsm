@@ -1910,3 +1910,27 @@ SDK 2개를 포함한 최종 공통 gate 429개(핵심 254/Python 49/Node
 126)는 76.330초에 통과했다
 (`protocol-internal-error-core-final.log`). 앞선 427개 표본과 구분한다.
 Linux의 이 변경 검증과 전체 오류 계약·나머지 계획은 계속 미완이다.
+
+## CLI·MCP·host protocol의 팀 공통 서비스
+
+팀의 list/create/show/mute/unmute/leave/add/remove/lead orchestration을
+`xsm.team_service.execute`에 모았다. CLI와 OperationService는 실제 caller,
+사용자 질문 callback과 기존 출력 형식을 제공하고, target 해석·정책 판단·
+변경·동기화는 같은 서비스를 사용한다. 모델 인자로 승인 source를 받을
+수 없고 callback이 없거나 거부하면 변경하지 않는다.
+
+두 frontend의 실제 공통 서비스 경로, 거부 후 무변경/무발행, CLI/MCP
+leave의 같은 publish를 검사했다. CLI leave가 publish하지 않던 기존
+차이도 바로잡았다. 기존 leave 경로를 되살린 변이는 실패했다
+(`shared-team-service-legacy-leave-mutant.log`). 새 검사 초회 red와
+기존 팀 회귀를 포함한 20개 green을 보존했다
+(`shared-team-service-{red,green}.log`). 공통 gate 449개(핵심 274/
+Python 49/Node 126)는 79.966초에 통과했다
+(`shared-team-service-core.log`). 다른 CLI 가족의 추출과 Linux 후속
+검증은 계속 남아 있다. 중간 커밋은 전체 완료 지점이 아니다.
+
+직전 내부 오류 변경의 Linux 검증도 완료했다. 변경 없는 `b08463e`의
+429개가 Python 3.11.2에서 85.369초, Python 3.14.10에서 102.503초에
+통과했다(`linux-protocol-internal-error-core/result.json`,
+`linux-python-314-internal-error-core/result.json`). 이 결과는 팀 서비스
+변경 전 표본이며 현재 449개와 섞지 않는다. 테스트 VM은 중지했다.

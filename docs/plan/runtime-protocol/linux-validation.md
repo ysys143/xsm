@@ -389,3 +389,14 @@ network는 none, 모델·실제 agent turn·사람 UI·메신저는 0회다. 각
 다시 Stopped로 확인했다(`vm-stopped.json`). 제품 변경이 없는 프로브
 검증이므로 공통 gate는 재실행하지 않았다. 오류/정책 전체·UI·나머지
 전체 계획은 미완이다.
+
+## 내부 요청 오류의 두 Python 검증
+
+변경 없는 `b08463e`의 공통 gate 429개(핵심 254/Python 49/Node
+126)가 Linux arm64의 Python 3.11.2에서 85.369초, Python 3.14.10에서
+102.503초에 통과했다(`linux-protocol-internal-error-core/result.json`,
+`linux-python-314-internal-error-core/result.json`). 두 source archive
+hash가 같고 tracked dirty false이며 network none이다. 실제 SDK와
+stdio 서버의 claim 후 오류·현재 token 회수·명시적 ACK·같은 연결
+유지 검사도 포함했다. 뒤따른 팀 서비스 추출 전 표본으로 구분한다.
+테스트 VM은 Stopped로 확인했다.

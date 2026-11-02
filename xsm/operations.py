@@ -947,91 +947,56 @@ class OperationService:
         return "\n".join([handover.summary_line(rec)] + (rec.get("notes") or []))
 
     def team(self, me: dict, args: dict) -> str:
-        """xsm_team: the same rules as `xsm team`; a decision that is the
-        user's is asked with a form (self.allowed)."""
-        from . import resolve, team_sync, teams
+        from . import team_service, teams
         action = args.get("action")
-        try:
-            if action == "list":
-                teams.adopt_pairs()
-                return json.dumps({"teams": [{"name": t["name"], "lead": teams.label(t["lead"]) if t.get("lead") else None,
-                                              "members": [teams.label(m) for m in t["members"]]}
-                                             for t in teams.all_teams()]}, ensure_ascii=False)
-            name = (args.get("team") or "").strip()
-            if not name:
-                raise ToolError("team: the team's name")
-            if action == "create":
-                team = teams.create(me, name)
-                return "created team %s with %s" % (team["name"], teams.label(team["members"][0]))
-            team = teams.require(name)
-            if action == "show":
-                return json.dumps({"name": team["name"], "lead": teams.label(team["lead"]) if team.get("lead") else None,
-                                   "members": [{"member": teams.label(m), "running": teams.address(m) is not None}
-                                               for m in team["members"]]}, ensure_ascii=False)
-            if action in ("mute", "unmute"):
-                if not teams.is_member(team, me):
-                    raise teams.TeamError("you are not in team %s" % team["name"])
-                teams.mute(team["name"], me, on=action == "mute")
-                return "%sd team %s's DMs for this session" % (action, team["name"])
-            if action == "leave":
-                team = teams.remove(me, name, teams.member_of(me), None)
-                team_sync.publish(team)
-                return "left team %s" % team["name"]
-            word = (args.get("member") or "").strip()
-            if not word:
-                raise ToolError("member: the session to %s" % action)
-            reason = ("\nReason: " + args["reason"]) if args.get("reason") else ""
+        name = (args.get("team") or "").strip()
+        word = (args.get("member") or "").strip()
+        reason = ("\nReason: " + args["reason"]) if args.get("reason") else ""
+        def authorize(action, team, subject):
+            member = teams.member_of(subject) if action == "add" else subject
+            label = teams.label(member)
             if action == "add":
-                with probe.quick():
-                    found = resolve.resolve(word, caller=me) if word.startswith(("net:", "candidate:")) \
-                        else resolve.resolve(word)
-                if not found.ok:
-                    raise ToolError(found.reason)
-                target = found.record
-                approval = "lead"
-                if teams.add_rule(me, team, target) == "user":
-                    who = teams.label(teams.member_of(target))
-                    ok, refusal = self.allowed(
-                        me, "%s@%s asks to add %s to team %s, so the team's members and it can DM "
-                        "each other.%s\nAllow it?" % (me.get("name"), me.get("alias"), who, name, reason),
-                        "xsm team add %s %s" % (shlex.quote(name), shlex.quote(word)),
-                        ("team-add-" + name, target.get("name") or word))
-                    if not ok:
-                        return refusal + "; the team is unchanged"
-                    approval = "your user approved in the form"
-                team = teams.add(me, name, target, approval)
-                notes = team_sync.publish(team)
-                return "\n".join(["added %s to team %s" % (teams.label(teams.member_of(target)), name)] + notes)
-            member = teams.find_member(team, word)
-            if action == "remove":
-                approval = None
-                if not (teams.matches(member, me) or teams.is_lead(team, me)):
-                    ok, refusal = self.allowed(
-                        me, "%s@%s asks to remove %s from team %s.%s\nAllow it?" % (
-                            me.get("name"), me.get("alias"), teams.label(member), name, reason),
-                        "xsm team remove %s %s" % (shlex.quote(name), shlex.quote(word)),
-                        ("team-remove-" + name, member.get("name") or word))
-                    if not ok:
-                        return refusal + "; the team is unchanged"
-                    approval = "your user approved in the form"
-                team = teams.remove(me, name, member, approval)
-                team_sync.publish(team)
-                return "removed %s from team %s" % (teams.label(member), name)
-            if action == "lead":
-                ok, refusal = self.allowed(
-                    me, "%s@%s asks to make %s the lead of team %s: the session that faces you, "
-                    "takes your approvals and adds or removes this project's sessions.%s\nAllow it?" % (
-                        me.get("name"), me.get("alias"), teams.label(member), name, reason),
-                    "xsm team lead %s %s" % (shlex.quote(name), shlex.quote(word)),
-                    ("team-lead-" + name, member.get("name") or word))
-                if not ok:
-                    return refusal + "; the lead is unchanged"
-                team = teams.set_lead(me, name, member, "your user approved in the form")
-                team_sync.publish(team)
-                return "%s is the lead of team %s" % (teams.label(member), name)
+                question = "%s@%s asks to add %s to team %s, so the team's members and it can DM each other.%s\nAllow it?" % (
+                    me.get("name"), me.get("alias"), label, name, reason)
+                key = ("team-add-" + name, subject.get("name") or word)
+            elif action == "remove":
+                question = "%s@%s asks to remove %s from team %s.%s\nAllow it?" % (
+                    me.get("name"), me.get("alias"), label, name, reason)
+                key = ("team-remove-" + name, member.get("name") or word)
+            else:
+                question = "%s@%s asks to make %s the lead of team %s: the session that faces you, takes your approvals and adds or removes this project's sessions.%s\nAllow it?" % (
+                    me.get("name"), me.get("alias"), label, name, reason)
+                key = ("team-lead-" + name, member.get("name") or word)
+            ok, refusal = self.allowed(me, question,
+                "xsm team %s %s %s" % (action, shlex.quote(name), shlex.quote(word)), key)
+            if not ok:
+                raise team_service.DecisionRefused(refusal + ("; the lead is unchanged" if action == "lead" else "; the team is unchanged"))
+            return "your user approved in the form"
+        try:
+            result = team_service.execute(me, args, authorize=authorize)
+        except team_service.DecisionRefused as exc:
+            return str(exc)
         except teams.TeamError as exc:
             raise ToolError(str(exc))
-        raise ToolError("unknown action %r" % action)
+        if action == "list":
+            return json.dumps({"teams": [{"name": t["name"], "lead": teams.label(t["lead"]) if t.get("lead") else None,
+                "members": [teams.label(m) for m in t["members"]]} for t in result["teams"]]}, ensure_ascii=False)
+        team = result["team"]
+        if action == "show":
+            return json.dumps({"name": team["name"], "lead": teams.label(team["lead"]) if team.get("lead") else None,
+                "members": [{"member": teams.label(m), "running": teams.address(m) is not None} for m in team["members"]]}, ensure_ascii=False)
+        if action == "create":
+            return "created team %s with %s" % (team["name"], teams.label(team["members"][0]))
+        if action in ("mute", "unmute"):
+            return "%sd team %s's DMs for this session" % (action, team["name"])
+        if action == "leave":
+            return "left team %s" % team["name"]
+        member = teams.label(result["member"])
+        if action == "add":
+            return "\n".join(["added %s to team %s" % (member, name)] + result["sync_notes"])
+        if action == "remove":
+            return "removed %s from team %s" % (member, name)
+        return "%s is the lead of team %s" % (member, name)
 
     def join(self, me: dict, args: dict) -> str:
         from . import config
