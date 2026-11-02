@@ -33,6 +33,16 @@ class ProtocolFixture(TempState):
 
 
 class ProtocolTest(ProtocolFixture):
+    def test_negative_wait_precedes_transport_capability_refusal(self):
+        from xsm.protocol import ProtocolError
+        session = self.open()
+        for operation in ('xsm_send', 'xsm_inbox', 'xsm_question_status'):
+            for value, code in ((-1, -32602), (1, -32004)):
+                with self.subTest(operation=operation, wait=value):
+                    with self.assertRaises(ProtocolError) as raised:
+                        self.operation(session, operation, wait=value)
+                    self.assertEqual(raised.exception.code, code)
+
     def test_targeted_inbox_recovers_current_owned_tokens_without_renewing(self):
         from xsm import handoff
         a, b = self.open(), self.open('owned-token')

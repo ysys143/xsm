@@ -776,115 +776,73 @@ def _print_question_result(me, result, claimed=False):
 
 
 def cmd_connect(args) -> int:
-    from . import connect, questions
+    from . import question_service
     me, why = _unsure_caller("connect the selected session")
     if why or not me:
         print(why or "this session is not registered", file=sys.stderr)
         return REFUSED
-    with probe.quick():
-        found = resolve.resolve(args.target, caller=me)
-    if not found.ok:
-        print(found.reason, file=sys.stderr)
+    try:
+        value = question_service.connect(me, {"target": args.target, "request_id": args.request_id},
+            call=registry.last_identity(), wait=args.wait, pump_factory=lambda ident: _question_pump(me, ident))
+    except question_service.QuestionError as exc:
+        prefix = "refused: " if str(exc).startswith("request ID does not belong") else ""
+        print(prefix + str(exc), file=sys.stderr)
         return REFUSED
-    if args.request_id and (not questions.expects_reply(me, found.record, args.request_id)
-                            or questions.status(me, args.request_id).get("purpose") != "handshake"):
-        print("refused: request ID does not belong to this selected handshake", file=sys.stderr)
-        return REFUSED
-    result = connect.select(me, found.record, call=registry.last_identity())
-    if result["status"] == "permitted":
-        request_id = args.request_id or envelope.new_id()
-        if args.request_id:
-            receive.poll_replies(me, request_id)
-            result = questions.wait_for(me, request_id, wait=args.wait,
-                                         pump=_question_pump(me, request_id))
-        else:
-            result = questions.ask(me, args.target, HANDSHAKE_TEXT, wait=args.wait,
-                                   request_id=request_id, purpose="handshake",
-                                   pump=_question_pump(me, request_id))
-    result = _print_question_result(me, result)
+    result = _print_question_result(me, value["result"])
     if result.get("handshake") == "declined":
         return REFUSED
-    return OK if result.get("handshake") == "completed" else UNCONFIRMED \
-        if result.get("id") else REFUSED
-
-
+    return OK if result.get("handshake") == "completed" else UNCONFIRMED if result.get("id") else REFUSED
 
 
 def cmd_ask(args) -> int:
-    from . import questions, materials, files
+    from . import question_service, question_groups, materials, files, teams
     me, why = _unsure_caller("bind a question to this conversation")
     if why or not me:
         print(why or "this session is not registered", file=sys.stderr)
         return REFUSED
-    if args.wake not in ("auto", "never"):
-        print("unsupported wake mode; use auto or never", file=sys.stderr)
-        return REFUSED
-    from . import teams
     targets = list(args.target)
-    if len(targets) > 1 or any(teams.is_address(t) for t in targets):
-        from . import question_groups
-        if args.request_id or args.attachment or args.manifest:
-            print("refused: --request-id and attachments take one recipient", file=sys.stderr)
-            return USAGE
-        try:
-            result = question_groups.ask_many(me, targets, args.text, wait=args.wait,
-                                              priority=args.priority, wake=args.wake,
-                                              poll=lambda child: receive.poll_replies(me, child))
-        except question_groups.GroupError as exc:
-            print("refused: %s" % exc, file=sys.stderr)
-            return REFUSED
-        return _group_exit(_print_group_result(me, result))
-    args.target = targets[0]
-    request_id = args.request_id or envelope.new_id()
+    grouped = len(targets) > 1 or any(teams.is_address(t) for t in targets)
+    if grouped and (args.request_id or args.attachment or args.manifest):
+        print("refused: --request-id and attachments take one recipient", file=sys.stderr)
+        return USAGE
+    arguments = {"text": args.text, "priority": args.priority, "wake": args.wake,
+        "request_id": args.request_id, "attachments": args.attachment, "manifest_id": args.manifest,
+        "previous_manifest": args.previous_manifest, "attachment_fallback": args.attachment_fallback}
+    arguments["targets" if grouped else "target"] = targets if grouped else targets[0]
     try:
-        prepared=materials.prepare(me,args.target,args.text,request_id,args.attachment,source="cli",
-            manifest_id=args.manifest,previous=args.previous_manifest,fallback=args.attachment_fallback,
-            call=registry.last_identity())
+        value = question_service.ask(me, arguments, call=registry.last_identity(), material_source="cli", wait=args.wait,
+            pump_factory=lambda ident: _question_pump(me, ident), poll=lambda child: receive.poll_replies(me, child))
     except files.FileError as exc:
-        print(_readable_json(materials.failure(exc)),file=sys.stderr)
+        print(_readable_json(materials.failure(exc)), file=sys.stderr)
         return REFUSED
-    result = questions.ask(me, args.target, prepared["body"], wait=args.wait, request_id=request_id,
-                           priority=args.priority, pump=_question_pump(me, request_id),wake=args.wake,
-                           attachments=prepared["attachments"],file_packet=prepared["file_packet"],
-                           file_limits=prepared["file_limits"])
-    if prepared["manifest_id"]:
-        result["materials"]=materials.public(prepared)
-    result = _print_question_result(me, result)
-    return OK if result.get("replies") else UNCONFIRMED \
-        if result.get("status") == "pending" else REFUSED
+    except (question_service.QuestionError, question_groups.GroupError) as exc:
+        print("refused: %s" % exc, file=sys.stderr)
+        return REFUSED
+    if value["grouped"]:
+        return _group_exit(_print_group_result(me, value["result"]))
+    result = _print_question_result(me, value["result"])
+    return OK if result.get("replies") else UNCONFIRMED if result.get("status") == "pending" else REFUSED
 
 
 def cmd_question_status(args) -> int:
-    from . import questions
+    from . import question_service
     me, why = _unsure_caller("read this conversation's answer")
     if why or not me:
         print(why or "this session is not registered", file=sys.stderr)
         return REFUSED
+    try:
+        value = question_service.status(me, args.id, wait=args.wait,
+            pump_factory=lambda ident: _question_pump(me, ident), poll=lambda child: receive.poll_replies(me, child))
+    except question_service.QuestionError as exc:
+        print(str(exc).replace("omit wait", "omit --wait"), file=sys.stderr)
+        return REFUSED
     if args.id is None:
-        if args.wait:
-            print("an id is required to wait; omit --wait to list your requests", file=sys.stderr)
-            return REFUSED
-        print(_readable_json({"status": "requests", "requests": questions.list_requests(me)}))
+        print(_readable_json(value["result"]))
         return OK
-    network_state = None
-    if str(ledger.status(args.id).get("scope") or "").startswith("network:"):
-        from . import network
-        network_state = network.reconcile(args.id, caller=me)
-    from . import question_groups
-    if question_groups.is_group(args.id):
-        result = question_groups.wait_for(me, args.id, wait=args.wait,
-                                          poll=lambda child: receive.poll_replies(me, child))
-        return _group_exit(_print_group_result(me, result))
-    receive.poll_replies(me, args.id)
-    result = questions.wait_for(me, args.id, wait=args.wait,
-                                pump=_question_pump(me, args.id))
-    if network_state is not None:
-        for key in ("network_status", "network_delivery"):
-            if key in network_state:
-                result[key] = network_state[key]
-    result = _print_question_result(me, result)
-    return OK if result.get("replies") else UNCONFIRMED \
-        if result.get("status") == "pending" else REFUSED
+    if value["grouped"]:
+        return _group_exit(_print_group_result(me, value["result"]))
+    result = _print_question_result(me, value["result"])
+    return OK if result.get("replies") else UNCONFIRMED if result.get("status") == "pending" else REFUSED
 
 
 def cmd_decision_status(args) -> int:

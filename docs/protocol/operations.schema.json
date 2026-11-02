@@ -699,6 +699,7 @@
         "wait": {
           "type": "number",
           "default": 0,
+          "minimum": 0,
           "const": 0
         },
         "attachments": {
@@ -901,6 +902,7 @@
         "wait": {
           "type": "number",
           "default": 0,
+          "minimum": 0,
           "description": "seconds to block until a message arrives (max 60 here; the shell `xsm inbox --wait` allows longer)",
           "const": 0
         },

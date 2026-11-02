@@ -163,7 +163,7 @@ TOOLS = [
                   "description": "the id of a message a refused send kept (out of scope: it "
                                  "waits for your user's yes to connect, then goes with it): "
                                  "sends it as it was kept, so target and text are not needed."},
-         "wait": {"type": "number", "default": 15}}, "required": []},
+         "wait": {"type": "number", "default": 15, "minimum": 0}}, "required": []},
      "annotations": MESSAGING},
     {"name": "xsm_team",
      "description": ("Teams of sessions working together (a team is a list of members with an "
@@ -221,7 +221,7 @@ TOOLS = [
                      "originals stay pending. The host protocol supports nonblocking reads; "
                      "MCP and CLI may support bounded waits."),
      "inputSchema": {"type": "object", "properties": {
-         "wait": {"type": "number", "default": 0,
+         "wait": {"type": "number", "default": 0, "minimum": 0,
                   "description": "seconds to block until a message arrives (max 60 here; the "
                                  "shell `xsm inbox --wait` allows longer)"},
          "limit": {"type": "integer", "minimum": 1, "maximum": 100,

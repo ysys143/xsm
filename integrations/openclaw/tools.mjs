@@ -395,7 +395,7 @@ export default [
   },
   {
     "name": "xsm_send",
-    "description": "Send a message to another session through xsm, the same as `xsm send`. Use it when your shell cannot run xsm (a sandboxed Codex cannot: xsm needs the process table, and a remote needs the network). Targets: name, name@home, ref:xxxxxx, and \u2026@<paired machine>.",
+    "description": "Send a message to another session through xsm, the same as `xsm send`. Use it when your shell cannot run xsm (a sandboxed Codex cannot: xsm needs the process table, and a remote needs the network). Targets: name, name@home, ref:xxxxxx, and …@<paired machine>.",
     "inputSchema": {
       "type": "object",
       "properties": {
@@ -432,7 +432,7 @@ export default [
             "succeeded",
             "failed"
           ],
-          "description": "only on a reply that closes a task you were given: how it ended. Say a failure here, not only in the words \u2014 the flag is what the sender can act on."
+          "description": "only on a reply that closes a task you were given: how it ended. Say a failure here, not only in the words — the flag is what the sender can act on."
         },
         "priority": {
           "type": "string",
@@ -461,7 +461,8 @@ export default [
         },
         "wait": {
           "type": "number",
-          "default": 15
+          "default": 15,
+          "minimum": 0
         },
         "attachments": {
           "type": "array",
@@ -696,6 +697,7 @@ export default [
         "wait": {
           "type": "number",
           "default": 0,
+          "minimum": 0,
           "description": "seconds to block until a message arrives (max 60 here; the shell `xsm inbox --wait` allows longer)"
         },
         "limit": {

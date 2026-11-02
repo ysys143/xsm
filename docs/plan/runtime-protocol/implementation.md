@@ -2053,3 +2053,30 @@ Schema의 정상 inbox 2개/거부 7개와 input/output/operation 기존 검증�
 
 파일 입력 frame보다 큰 engine-limit bundle의 streaming upload API, 다른
 operation-specific 결과 schema와 native UI/worker/행렬은 이어서 구현한다.
+
+## 질문·연결·상태 조회 공통화와 독립 구현 오류 재현
+
+CLI와 MCP의 ask/connect/question-status를 question_service로 모았다.
+질문 그룹 확장, 자료 준비, 기존 요청 복구와 네트워크 상태 합성은
+공통 함수가 처리한다. 호출자 증명·대기 상한·입력 pump·표시·claim은
+각 frontend가 맡는다. 대기 취소가 상대 질문 취소나 ACK가 되지 않는
+경로도 확인했다. 기존 회귀와 신규 검사는 122개가 40.725초에 통과했다
+(`shared-question-service-current.log`). CLI가 공통 ask 경로를 우회하는
+변이는 호출 횟수 검사에서 실패했다
+(`shared-question-route-mutant-fixed.log`). 첫 변이 실행은 TempState의
+모듈 재로딩 전에 패치해 변이가 적용되지 않았다. 그 실행은 탐지
+증거로 쓰지 않고 실패 로그를 보존했다.
+
+독립 참여자의 v3 검증은 공개 suite 120회(중복 lifecycle 포함)와 추가
+checkpoint 88개를 통과했지만 음수 wait 오류 불일치 2개로 종료 코드
+1이었다. 실제 UI·만료나 전체 기능 인증으로 계산하지 않는다.
+부모 작업자가 send/inbox의 음수 wait가 -32004를 반환하는 경로를
+새 검사로 재현했다(`negative-wait-red.log`, 실패 2개). 해당 입력
+schema에 minimum=0을 추가해 먼저 -32602를 반환하도록 수정했다.
+유효한 양수 wait는 기존 -32004를 유지한다. 생성된 공개 schema와
+OpenClaw 도구 목록도 맞췄다. 새 경로 3개와 native catalog 검사가
+통과했다(`question-wait-green.log`, `question-catalog-green.log`).
+독립 동결 서버 재실행은 이 수정 뒤 별도로 수행해야 한다.
+
+공통 gate는 522개(핵심 347/Python 49/Node 126)가 78.834초에 통과했다
+(`shared-question-service-core.log`). 전체 승인 계획은 계속 미완이다.

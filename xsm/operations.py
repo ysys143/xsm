@@ -273,113 +273,46 @@ class OperationService:
             return json.dumps(directory.discover(me, machine=args.get("machine"),
                               work=args.get("work"), branch=args.get("branch")), ensure_ascii=False)
         if name in ("xsm_ask", "xsm_question_status", "xsm_connect"):
-            from . import envelope, questions, receive
+            from . import question_service, question_groups, materials, files, receive, inbox
             requested_wait = float(args.get("wait", 0) or 0)
             if not math.isfinite(requested_wait) or requested_wait < 0:
                 raise ToolError("wait must be finite and nonnegative")
             wait = min(requested_wait, 60.0)
             if args.get("wake", "auto") not in ("auto", "never"):
                 raise ToolError("unsupported wake mode; use auto or never")
-            if name == "xsm_question_status" and args.get("id") is None:
-                if requested_wait:
-                    raise ToolError("an id is required to wait; omit wait to list your requests")
-                return json.dumps({"status": "requests", "requests": questions.list_requests(me)}, ensure_ascii=False)
-            request_id = args.get("id") if name == "xsm_question_status" else \
-                (args.get("request_id") or envelope.new_id())
             owner = self.active_request
-            last_scan = [float("-inf")]
-
-            def pump():
-                live = self.pump()
-                now = time.monotonic()
-                if now - last_scan[0] >= .2:
-                    last_scan[0] = now
-                    receive.poll_replies(me, request_id)
-                return live
-
-            kwargs = {"wait": wait, "pump": pump,
-                      "cancelled": lambda: owner in self.cancelled}
-            from . import inbox, question_groups
-            group_poll = lambda child: receive.poll_replies(me, child)  # noqa: E731
-            from . import teams as teams_mod
-            if name == "xsm_ask" and args.get("targets") is None and teams_mod.is_address(args.get("target") or ""):
-                args = dict(args, targets=[args["target"]], target=None)
-            if name == "xsm_ask" and args.get("targets") is not None:
-                targets = args.get("targets")
-                if not isinstance(targets, list) or not all(isinstance(t, str) for t in targets) \
-                        or args.get("target") or args.get("request_id") \
-                        or args.get("attachments") or args.get("manifest_id"):
-                    raise ToolError("targets is a list of recipients, used instead of "
-                                               "target, request_id and attachments")
-                try:
-                    result = question_groups.ask_many(
-                        me, targets, args.get("text") or "", wait=wait,
-                        priority=args.get("priority", "next"), wake=args.get("wake", "auto"),
-                        pump=self.pump, cancelled=lambda: owner in self.cancelled, poll=group_poll)
-                except question_groups.GroupError as exc:
-                    raise ToolError(str(exc))
-                result = question_groups.with_claims(me, result)
-                result.update(inbox.pending_fields(me, owner_alive=receive._consumer_alive))
-                result["wait_budget"] = {"requested": requested_wait, "effective": wait, "cap": 60}
-                return json.dumps(result, ensure_ascii=False)
-            if name == "xsm_question_status" and question_groups.is_group(request_id):
-                result = question_groups.wait_for(me, request_id, wait=wait, pump=self.pump,
-                                                  cancelled=lambda: owner in self.cancelled,
-                                                  poll=group_poll)
-                result = question_groups.with_claims(me, result)
-                result.update(inbox.pending_fields(me, owner_alive=receive._consumer_alive))
-                result["wait_budget"] = {"requested": requested_wait, "effective": wait, "cap": 60}
-                return json.dumps(result, ensure_ascii=False)
-            if name == "xsm_ask" and not args.get("target"):
-                raise ToolError("target (or targets) is required")
-            if name == "xsm_question_status":
-                from . import ledger
-                network_state = None
-                if str(ledger.status(request_id).get("scope") or "").startswith("network:"):
-                    from . import network
-                    network_state = network.reconcile(request_id, caller=me)
-                receive.poll_replies(me, request_id)
-                result = questions.wait_for(me, request_id, **kwargs)
-                if network_state is not None:
-                    for key in ("network_status", "network_delivery"):
-                        if key in network_state:
-                            result[key] = network_state[key]
-            else:
-                purpose = "question"
-                body = args.get("text") or ""
-                prepared = None
-                if name == "xsm_ask":
-                    from . import materials
-                    prepared = self.prepare_materials(me,args,body,request_id)
-                    body = prepared["body"]
-                if name == "xsm_connect":
-                    from . import connect, resolve
-                    with probe.quick():
-                        found = resolve.resolve(args.get("target", ""), caller=me)
-                    if not found.ok:
-                        raise ToolError(found.reason)
-                    if args.get("request_id") and (
-                            not questions.expects_reply(me, found.record, request_id) or
-                            questions.status(me, request_id).get("purpose") != "handshake"):
-                        raise ToolError("request ID does not belong to this selected handshake")
-                    result = connect.select(me, found.record, call=self.ctx)
-                    if result["status"] != "permitted":
-                        return json.dumps(result, ensure_ascii=False)
-                    if args.get("request_id"):
+            def pump_factory(request_id):
+                last_scan = [float("-inf")]
+                def pump():
+                    live = self.pump()
+                    now = time.monotonic()
+                    if now - last_scan[0] >= .2:
+                        last_scan[0] = now
                         receive.poll_replies(me, request_id)
-                        result = questions.wait_for(me, request_id, **kwargs)
-                        result["wait_budget"] = {"requested": requested_wait, "effective": wait, "cap": 60}
-                        return json.dumps(result, ensure_ascii=False)
-                    purpose, body = "handshake", HANDSHAKE_TEXT
-                result = questions.ask(me, args.get("target", ""), body,
-                                       request_id=request_id, priority=args.get("priority", "next"),
-                                       purpose=purpose, wake=args.get("wake", "auto"),
-                                       attachments=prepared["attachments"] if prepared else None,
-                                       file_packet=prepared["file_packet"] if prepared else None,
-                                       file_limits=prepared["file_limits"] if prepared else None, **kwargs)
-                if prepared and prepared["manifest_id"]:
-                    result["materials"] = materials.public(prepared)
-            result["wait_budget"] = {"requested": requested_wait, "effective": wait, "cap": 60}
+                    return live
+                return pump
+            common = {"wait": wait, "pump": self.pump, "pump_factory": pump_factory,
+                      "cancelled": lambda: owner in self.cancelled}
+            poll = lambda child: receive.poll_replies(me, child)
+            try:
+                if name == "xsm_ask":
+                    value = question_service.ask(me, args, call=self.ctx, poll=poll, **common)
+                elif name == "xsm_connect":
+                    value = question_service.connect(me, args, call=self.ctx, **common)
+                else:
+                    value = question_service.status(me, args.get("id"), poll=poll, **common)
+            except files.FileError as exc:
+                from .provenance import readable
+                failure = materials.failure(exc)
+                raise ToolError(readable(failure), data={"attachment_error": failure}) from exc
+            except (question_service.QuestionError, question_groups.GroupError) as exc:
+                raise ToolError(str(exc)) from exc
+            result = value["result"]
+            if value["grouped"]:
+                result = question_groups.with_claims(me, result)
+                result.update(inbox.pending_fields(me, owner_alive=receive._consumer_alive))
+            if value["wait_applies"]:
+                result["wait_budget"] = {"requested": requested_wait, "effective": wait, "cap": 60}
             return json.dumps(result, ensure_ascii=False)
         if name == "xsm_decide":
             return self.decide(me, args)
@@ -573,15 +506,6 @@ class OperationService:
         if not job['thread'].is_alive():
             self.owned_jobs.pop(key,None)
         return value
-
-    def prepare_materials(self, me, args, body, request_id):
-        from . import send_service, materials, files
-        try:
-            return send_service.prepare_materials(me, args, body, request_id, call=self.ctx)
-        except files.FileError as exc:
-            from .provenance import readable
-            failure = materials.failure(exc)
-            raise ToolError(readable(failure), data={"attachment_error": failure}) from exc
 
     def permission_closed(self):
         from . import decisions
