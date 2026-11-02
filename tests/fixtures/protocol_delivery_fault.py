@@ -33,6 +33,12 @@ try:
             params.get('arguments', {}).pop('message_ids', None)
         reply = exchange(request)
         if request['method'] == 'operation.call':
+            if params.get('operation') == 'xsm_discover' and 'result' in reply:
+                for candidate in reply['result'].get('candidates', []):
+                    if fault == 'discovery-private-home':
+                        candidate['home'] = '/synthetic/private-profile'
+                    if fault == 'discovery-missing-source':
+                        candidate.get('title', {}).pop('source', None)
             if params.get('operation') == 'xsm_inbox' and 'result' in reply:
                 claims = reply['result'].get('claims', [])
                 if claims:

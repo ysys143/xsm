@@ -31,6 +31,9 @@ def output_contract(trace=None):
     ack_schema = json.loads((ROOT / 'docs/protocol/ack-result.schema.json').read_text())
     Draft202012Validator.check_schema(ack_schema)
     ack_validator = Draft202012Validator(ack_schema)
+    discovery_schema = json.loads((ROOT / 'docs/protocol/discovery-result.schema.json').read_text())
+    Draft202012Validator.check_schema(discovery_schema)
+    discovery_validator = Draft202012Validator(discovery_schema)
     inbox_observed = 0
     inbox_empty = dict(messages=[], claims=[], items=[], inbox_pending=0)
     inbox_file = dict(messages=['fixture'], claims=[dict(id='original', token='opaque-token',
@@ -67,6 +70,8 @@ def output_contract(trace=None):
                 file_validator.validate(frame['result'])
             if observation.get('operation') == 'xsm_ack':
                 ack_validator.validate(frame['result'])
+            if observation.get('operation') == 'xsm_discover':
+                discovery_validator.validate(frame['result'])
     for example in examples:
         validate(example)
     error = next(copy.deepcopy(e['frame']) for e in examples if 'error' in e['frame'])
@@ -120,6 +125,44 @@ def ack_contract():
             raise ValueError('invalid ACK result accepted: ' + repr(value))
     return dict(examples=len(examples), rejected=len(invalid),
                 scope='successful result structure; batch errors may follow earlier durable acknowledgements')
+
+
+def discovery_contract():
+    schema = json.loads((ROOT / 'docs/protocol/discovery-result.schema.json').read_text())
+    examples = json.loads((ROOT / 'docs/protocol/discovery-result-examples.json').read_text())
+    Draft202012Validator.check_schema(schema)
+    validator = Draft202012Validator(schema)
+    for value in examples:
+        validator.validate(value)
+    invalid = []
+    def changed(path, value):
+        candidate = copy.deepcopy(examples[1])
+        target = candidate
+        for part in path[:-1]:
+            target = target[part]
+        target[path[-1]] = value
+        invalid.append(candidate)
+    for path, value in (
+        (['status'], 'complete'), (['unanswered'], {'read': True}),
+        (['unanswered'], {'read': 0}), (['candidates', 0, 'home'], '/private/profile'),
+        (['candidates', 0, 'handle', 'home'], '/private/profile'),
+        (['candidates', 0, 'id'], 'not-an-opaque-id'),
+        (['candidates', 0, 'runtime'], 'runtime\n'),
+        (['candidates', 0, 'title', 'status'], 'certain'),
+        (['candidates', 0, 'title', 'value'], 'claimed-known-without-known-status'),
+        (['candidates', 0, 'title', 'freshness'], 'current'),
+        (['candidates', 0, 'todo', 'value'], 'not-a-plan'),
+        (['candidates', 1, 'handle', 'generation'], None),
+        (['candidates', 1, 'origin_assurance'], 'unverified'),
+        (['candidates', 1, 'is_self'], True)):
+        changed(path, value)
+    bad = copy.deepcopy(examples[1]); del bad['candidates'][1]['handle']['generation']; invalid.append(bad)
+    bad = copy.deepcopy(examples[1]); del bad['candidates'][0]['receive']['source']; invalid.append(bad)
+    for value in invalid:
+        if validator.is_valid(value):
+            raise ValueError('invalid discovery result accepted: ' + repr(value))
+    return dict(examples=len(examples), rejected=len(invalid),
+                scope='local/remote result structure; visibility and current selection require runtime revalidation')
 
 
 def files_contract():
@@ -244,7 +287,8 @@ def run(trace=None):
     return dict(passed=True, methods=len(methods), accepted=accepted, rejected=rejected,
                 validator='jsonschema', validatorVersion=importlib.metadata.version('jsonschema'),
                 scope='request and output structures; no full operation results or semantic certification',
-                output=output_contract(trace), operations=operations_contract(), files=files_contract(), ack=ack_contract())
+                output=output_contract(trace), operations=operations_contract(), files=files_contract(), ack=ack_contract(),
+                discovery=discovery_contract())
 
 
 if __name__ == '__main__':

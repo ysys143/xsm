@@ -81,6 +81,24 @@ class ExternalConformanceTest(unittest.TestCase):
         self.assertEqual(result['status'], 'passed', {k: v for k, v in result.items() if k != 'observations'})
         self.assertEqual(len(result['checks']), 33)
 
+    def test_actual_server_discovery_contract(self):
+        result = checker.run(self.delivery_candidate('none'), suite='discovery', capture=True)
+        self.assertEqual(result['status'], 'passed', {k: v for k, v in result.items() if k != 'observations'})
+        self.assertEqual(len(result['checks']), 24)
+        discovered = [row['frame']['result'] for row in result['observations']
+                      if row.get('operation') == 'xsm_discover' and 'result' in row['frame']]
+        self.assertEqual(len(discovered), 4)
+
+    def test_discovery_private_home_leak_is_detected(self):
+        result = checker.run(self.delivery_candidate('discovery-private-home'), suite='discovery')
+        self.assertEqual(result['status'], 'failed', result)
+        self.assertEqual(result['activeCheck'], 'discovery exposes no local home or process identity')
+
+    def test_discovery_missing_observation_source_is_detected(self):
+        result = checker.run(self.delivery_candidate('discovery-missing-source'), suite='discovery')
+        self.assertEqual(result['status'], 'failed', result)
+        self.assertEqual(result['activeCheck'], 'discovery observations retain source and freshness')
+
     def test_ignored_targeted_inbox_filter_is_detected(self):
         result = checker.run(self.delivery_candidate('ignore-inbox-filter'), suite='messaging')
         self.assertEqual(result['status'], 'failed', result)

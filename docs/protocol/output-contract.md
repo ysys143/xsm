@@ -25,6 +25,12 @@ schemas are still outstanding. Decision result status
 is structurally a string; pending-display and effect-application invariants are
 additional runtime requirements. These artifacts do not certify those semantics.
 
+For `xsm_discover`, additionally validate the result using
+[discovery-result.schema.json](discovery-result.schema.json). Its contract
+distinguishes local and authenticated remote candidate handles, observations
+and partial failures. See [discovery](discovery.md) for semantic limits and the
+public stdio conformance command.
+
 ## Examples and observations
 
 [Output examples](output-examples.json) include all 11 method results, one error

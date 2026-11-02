@@ -67,6 +67,15 @@ Full normative method/result/error schemas, decision and delivery contracts,
 independently authored complete implementations and the complete P0/P2
 conformance matrix remain outstanding.
 
+`--suite discovery` runs the sixteen lifecycle checks and eight local directory
+checks through the public stdio interface. It creates an isolated Git repository
+and checks two participants, target/privacy metadata, observation provenance,
+work/branch filtering and close visibility. See the [discovery contract](discovery.md)
+for the result schema and capture-validation command. Tests inject private home
+disclosure and missing observation provenance into actual server responses;
+each must fail its corresponding check. This does not certify remote or native
+runtime discovery.
+
 ## Claim and delivery recovery suite
 
 ```sh

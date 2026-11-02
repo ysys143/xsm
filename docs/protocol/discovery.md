@@ -34,3 +34,58 @@ The new fixture coverage includes two private services using actual QUIC and pub
 protocol actors: body/reply, explicit claims/ACK and accepted originals after same-
 conversation resume. This is process/transport integration, not physical-machine,
 real model, native UI, messenger or the full six-runtime matrix certification.
+
+## Result structure and independent readers
+
+[discovery-result.schema.json](discovery-result.schema.json) defines successful
+`operation.call` results for `xsm_discover`. Correlate the response ID with the
+operation request, validate the JSON-RPC envelope, then validate its `result`
+against this schema. JSON-RPC errors use the separate output error envelope.
+[Examples](discovery-result-examples.json) cover an empty result, mixed local
+and authenticated remote candidates, and partial observations. Remote examples
+are structures, not evidence of a physical-machine test.
+
+The required top-level fields are `candidates`, `status`, `reason` and
+`unanswered`. Status is `ok` or `unknown`. Unknown can contain usable candidates;
+it must not be interpreted as a complete listing or proof that absent sessions
+do not exist. `unanswered` values are positive probe counts or diagnostic
+strings from the network boundary. Optional `inbox_pending`, `inbox_notice`,
+`inbox_pending_known` and `inbox_pending_diagnostics` retain the common operation
+diagnostics; they do not change discovery or consume messages.
+
+Each candidate has an opaque `id`, selectable `target`, `handle`, runtime,
+machine, display metadata and discovery basis. Local handles contain runtime,
+session ID, opaque home ID and `machine: "local"`. Remote handles additionally
+require the authenticated machine ID and execution `generation`; remote
+candidates identify their authenticated-member origin and repository mapping
+status. These IDs are not local paths. Use the returned target for selection
+instead of inventing an address from a display name or short ref. Selection
+still rechecks the current identity and policy; schema validity grants nothing.
+
+`title`, `branch`, `summary`, `todo`, `activity`, `state` and `receive` are
+observations with `value`, `status`, `source`, `timestamp`, `observed_at` and
+`freshness`. An unknown observation has a null value. Source time can be a
+native timestamp string, numeric time or null; `observed_at` is numeric sampling
+time. Freshness is `fresh`, `stale` or `unknown`, separate from whether a value
+is known. A cached name does not prove a current task. `receive: available`
+is an observation, not proof of native queue admission or consumption. Todo
+values are null or up to eight step/status objects, with optional `truncated`.
+
+## Public discovery conformance
+
+```sh
+python3 scripts/conform-host-protocol.py --suite discovery --capture \
+  --output /tmp/xsm-discovery-wire.json \
+  --command /absolute/path/to/xsm/bin/xsm protocol serve --stdio
+python3 scripts/check-protocol-schema.py \
+  --wire-trace /tmp/xsm-discovery-wire.json \
+  --output /tmp/xsm-discovery-schema.json
+```
+
+The discovery suite adds eight checks to the sixteen lifecycle checks. It uses
+a private Git repository and two actual protocol participants, checks exact
+local targets, privacy, observation provenance, work/branch filters and removal
+after close. It does not publish sessions, connect repositories or send messages.
+The schema checker validates captured discovery results and rejects missing
+remote generations, private home fields and malformed observations. Physical
+remote discovery, all native runtimes and native UI remain separate requirements.

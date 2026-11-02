@@ -330,6 +330,45 @@ def decisions(peer, params, check, equal):
     peer.notification()
 
 
+def discovery(peer, first, second, check, equal):
+    """Public directory observations only; never publish, connect or send."""
+    def discover(**arguments):
+        return peer.call('operation.call', {'session': first['session'],
+            'operation': 'xsm_discover', 'arguments': arguments})
+    peer.call('session.update', {'session': second['session'], 'state': 'idle',
+                                'name': 'Independent discovery fixture'})
+    result = discover()
+    check('discovery status and partial observations', lambda: equal(
+        result.get('status') in ('ok', 'unknown') and 'reason' in result
+        and isinstance(result.get('unanswered'), dict), True))
+    candidates = result.get('candidates')
+    require(isinstance(candidates, list), result)
+    selected = [row for row in candidates if row.get('ref') == second['ref']]
+    check('same repository participant discovered', lambda: equal(len(selected), 1))
+    row = selected[0]
+    check('local candidate target and opaque identity', lambda: equal(
+        row.get('target') == 'candidate:' + row.get('id', '')
+        and len(row.get('id', '')) == 64 and row.get('machine') == 'local'
+        and row.get('handle', {}).get('machine') == 'local'
+        and row.get('handle', {}).get('runtime') == row.get('runtime')
+        and row.get('is_self') is False, True))
+    check('discovery exposes no local home or process identity', lambda: equal(
+        not ({'home', 'cwd', 'pid', 'lstart'} & set(row))
+        and set(row['handle']) == {'machine', 'runtime', 'home_id', 'session_id'}, True))
+    check('discovery observations retain source and freshness', lambda: equal(all(
+        isinstance(row.get(key), dict)
+        and {'value', 'status', 'source', 'timestamp', 'observed_at', 'freshness'} <= set(row[key])
+        for key in ('title', 'branch', 'summary', 'todo', 'activity', 'state', 'receive')), True))
+    check('work filter selects named participant', lambda: equal(
+        [candidate['ref'] for candidate in discover(work='Independent discovery fixture')['candidates']],
+        [second['ref']]))
+    check('unmatched branch returns no candidates', lambda: equal(
+        discover(branch='unmatched-fixture-branch')['candidates'], []))
+    peer.call('session.close', {'session': second['session']})
+    check('closed participant leaves discovery', lambda: equal(
+        second['ref'] not in [candidate['ref'] for candidate in discover()['candidates']], True))
+
+
 def run(command, suite="lifecycle", capture=False):
     result = {"suite": "xsm-host-" + suite + "-v1", "status": "running", "checks": [],
               "scope": "stdio negotiation and participation only; no operations, delivery or UI certification"}
@@ -348,6 +387,9 @@ def run(command, suite="lifecycle", capture=False):
         def equal(actual, expected):
             require(actual == expected, {"actual": actual, "expected": expected})
         try:
+            if suite == 'discovery':
+                subprocess.run(['git', 'init', '-q', '-b', 'main', folder], env=env,
+                               check=True, capture_output=True, timeout=5)
             a = Peer(command, folder, env, observations)
             peers.append(a)
             check("initialize required", lambda: a.call("operations/list", error=-32002))
@@ -391,6 +433,9 @@ def run(command, suite="lifecycle", capture=False):
             if suite == 'uploads':
                 result['scope'] = 'lifecycle and 4MiB public preparation/copy/ACK; no native UI, models or messenger certification'
                 uploads(b, reopened, resumed, params, initialization['limits'], check, equal)
+            if suite == 'discovery':
+                result['scope'] = 'lifecycle and local public discovery; no physical remote, native UI or messenger certification'
+                discovery(b, reopened, resumed, check, equal)
             result.update(status="passed", activeCheck=None)
         except Exception as error:
             result.update(status="failed", error=repr(error))
@@ -402,7 +447,7 @@ def run(command, suite="lifecycle", capture=False):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--capture", action="store_true", help="include isolated wire observations in the report")
-    parser.add_argument("--suite", choices=("lifecycle", "messaging", "events", "decisions", "uploads"), default="lifecycle")
+    parser.add_argument("--suite", choices=("lifecycle", "messaging", "events", "decisions", "uploads", "discovery"), default="lifecycle")
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--command", nargs=argparse.REMAINDER, required=True)
     args = parser.parse_args()

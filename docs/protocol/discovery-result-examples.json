@@ -1,0 +1,270 @@
+[
+  {
+    "candidates": [],
+    "status": "ok",
+    "reason": null,
+    "unanswered": {}
+  },
+  {
+    "candidates": [
+      {
+        "id": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "target": "candidate:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "is_self": false,
+        "handle": {
+          "runtime": "independent",
+          "session_id": "opaque",
+          "home_id": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "machine": "local"
+        },
+        "ref": "123abc",
+        "machine": "local",
+        "runtime": "independent",
+        "name": null,
+        "title": {
+          "value": null,
+          "status": "unknown",
+          "source": null,
+          "timestamp": null,
+          "observed_at": 1,
+          "freshness": "unknown"
+        },
+        "name_source": "registry:cached_name",
+        "name_freshness": "unknown",
+        "discovery_basis": [
+          "same_repo"
+        ],
+        "repository": "fixture",
+        "branch": {
+          "value": null,
+          "status": "unknown",
+          "source": null,
+          "timestamp": null,
+          "observed_at": 1,
+          "freshness": "unknown"
+        },
+        "summary": {
+          "value": null,
+          "status": "unknown",
+          "source": null,
+          "timestamp": null,
+          "observed_at": 1,
+          "freshness": "unknown"
+        },
+        "todo": {
+          "value": null,
+          "status": "unknown",
+          "source": null,
+          "timestamp": null,
+          "observed_at": 1,
+          "freshness": "unknown"
+        },
+        "activity": {
+          "value": null,
+          "status": "unknown",
+          "source": null,
+          "timestamp": null,
+          "observed_at": 1,
+          "freshness": "unknown"
+        },
+        "state": {
+          "value": null,
+          "status": "unknown",
+          "source": null,
+          "timestamp": null,
+          "observed_at": 1,
+          "freshness": "unknown"
+        },
+        "receive": {
+          "value": null,
+          "status": "unknown",
+          "source": null,
+          "timestamp": null,
+          "observed_at": 1,
+          "freshness": "unknown"
+        }
+      },
+      {
+        "id": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+        "target": "net:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd:independent:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb:opaque",
+        "is_self": false,
+        "handle": {
+          "runtime": "independent",
+          "session_id": "opaque",
+          "home_id": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "machine": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+          "generation": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+        },
+        "ref": "123abc",
+        "machine": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+        "runtime": "independent",
+        "name": null,
+        "title": {
+          "value": null,
+          "status": "unknown",
+          "source": null,
+          "timestamp": null,
+          "observed_at": 1,
+          "freshness": "unknown"
+        },
+        "name_source": "registry:cached_name",
+        "name_freshness": "unknown",
+        "discovery_basis": [
+          "same_repository"
+        ],
+        "repository": "repo:fixture",
+        "branch": {
+          "value": null,
+          "status": "unknown",
+          "source": null,
+          "timestamp": null,
+          "observed_at": 1,
+          "freshness": "unknown"
+        },
+        "summary": {
+          "value": null,
+          "status": "unknown",
+          "source": null,
+          "timestamp": null,
+          "observed_at": 1,
+          "freshness": "unknown"
+        },
+        "todo": {
+          "value": null,
+          "status": "unknown",
+          "source": null,
+          "timestamp": null,
+          "observed_at": 1,
+          "freshness": "unknown"
+        },
+        "activity": {
+          "value": null,
+          "status": "unknown",
+          "source": null,
+          "timestamp": null,
+          "observed_at": 1,
+          "freshness": "unknown"
+        },
+        "state": {
+          "value": null,
+          "status": "unknown",
+          "source": null,
+          "timestamp": null,
+          "observed_at": 1,
+          "freshness": "unknown"
+        },
+        "receive": {
+          "value": null,
+          "status": "unknown",
+          "source": null,
+          "timestamp": null,
+          "observed_at": 1,
+          "freshness": "unknown"
+        },
+        "repository_id": "repo:fixture",
+        "same_repository": true,
+        "repository_status": "verified",
+        "doing": {
+          "value": null,
+          "status": "unknown",
+          "source": null,
+          "timestamp": null,
+          "observed_at": 1,
+          "freshness": "unknown"
+        },
+        "machine_name": "fixture-machine",
+        "origin_assurance": "authenticated-member"
+      }
+    ],
+    "status": "ok",
+    "reason": null,
+    "unanswered": {}
+  },
+  {
+    "candidates": [
+      {
+        "id": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "target": "candidate:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "is_self": false,
+        "handle": {
+          "runtime": "independent",
+          "session_id": "opaque",
+          "home_id": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "machine": "local"
+        },
+        "ref": "123abc",
+        "machine": "local",
+        "runtime": "independent",
+        "name": null,
+        "title": {
+          "value": null,
+          "status": "unknown",
+          "source": null,
+          "timestamp": null,
+          "observed_at": 1,
+          "freshness": "unknown"
+        },
+        "name_source": "registry:cached_name",
+        "name_freshness": "unknown",
+        "discovery_basis": [
+          "same_repo"
+        ],
+        "repository": "fixture",
+        "branch": {
+          "value": null,
+          "status": "unknown",
+          "source": null,
+          "timestamp": null,
+          "observed_at": 1,
+          "freshness": "unknown"
+        },
+        "summary": {
+          "value": null,
+          "status": "unknown",
+          "source": null,
+          "timestamp": null,
+          "observed_at": 1,
+          "freshness": "unknown"
+        },
+        "todo": {
+          "value": null,
+          "status": "unknown",
+          "source": null,
+          "timestamp": null,
+          "observed_at": 1,
+          "freshness": "unknown"
+        },
+        "activity": {
+          "value": null,
+          "status": "unknown",
+          "source": null,
+          "timestamp": null,
+          "observed_at": 1,
+          "freshness": "unknown"
+        },
+        "state": {
+          "value": null,
+          "status": "unknown",
+          "source": null,
+          "timestamp": null,
+          "observed_at": 1,
+          "freshness": "unknown"
+        },
+        "receive": {
+          "value": null,
+          "status": "unknown",
+          "source": null,
+          "timestamp": null,
+          "observed_at": 1,
+          "freshness": "unknown"
+        }
+      }
+    ],
+    "status": "unknown",
+    "reason": "probe_incomplete",
+    "unanswered": {
+      "read": 1,
+      "network": "unavailable"
+    }
+  }
+]

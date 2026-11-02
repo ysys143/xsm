@@ -20,11 +20,13 @@ used by the server, with the host transport's restrictions made explicit:
 
 Structural validity does not establish repository policy, directory existence,
 peer reachability, membership, permission, claim ownership or native support.
-For example, xsm_owned includes the experimental admitted Hermes 0.22.5 CLI
-provider beside Claude/Codex. Its presence does not generalize workers to Pi,
-OpenCode/OpenClaw or certify every Hermes lifecycle/UI mode. See the
+For example, xsm_owned includes admitted native providers for Hermes, Pi,
+OpenCode and OpenClaw beside Claude/Codex. Catalog presence does not certify
+every provider's lifecycle/UI mode. See the
 [native worker boundary](native-workers.md).
-Operation-specific results remain outside the completed schema coverage.
+Operation-specific result schemas cover inbox, explicit ACK, received files
+and [discovery](discovery.md). The other operation result contracts remain
+incomplete; input validity does not certify their results.
 
 ## Generation and consistency
 
