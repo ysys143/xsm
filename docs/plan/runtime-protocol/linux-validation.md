@@ -752,3 +752,26 @@ crowded26개는 통과했다. Gateway와 VM은 종료됐다. 원래 stale 판정
 birth/state reason을 실제로 포착하고 원인을 검증한 뒤 이 조건을 다시 판정한다.
 그 전까지 직접 cold 경로의 간헐적 receiver 판정과 전체 계획은 미완이다. 사용자에게
 scope 제외 승인을 받은 기록은 없다.
+
+## Cold 실패 정리까지 포함한 Linux 재검증
+
+fa71983b37143c7c13719979abc541bad0970eb2를 고정한
+openclaw-cold-failure-linux에서19/19 native mode, 총625개 검사가 통과했다.
+Source archive SHA256은
+fc8f9adffadc90832162f4c61144d3fedff35b38a7a8588fec5323f9848fdb00이다.
+기존 정상·실행 전/대기열/실행 중 취소·확인 유실·frontend 종료·cold 결과
+회수에 더해, gateway 재시작 뒤 native 오류와 silent 종료의 lease 정리를
+직접 경로와 공개 protocol 경로에서 확인했다. 답변 없는 종료는 task unknown과
+result/reply 없음 상태를 유지하며 실행 종료 증거로 lease만 정리했다.
+
+같은 frozen source의830개 core(Python494+SDK52+native132+Node152)는
+Python3.11.2에서65.813초, Python3.14.10에서84.067초로 각각 통과했다.
+독립 mock39개/변이14개는 별도 수치다. 두 core 모두120초 기한 안이다.
+모든 native gatewayStopped=true, 미실행 mode0, VM stopExit=0이다.
+원시는 deliverables/protocol-foundation/openclaw-cold-failure-linux/result.json과
+mode별 출력에 보존했다. Network none/model0 조건이며 실제 모델·UI·메신저
+검증으로 계산하지 않는다.
+
+이번 batch에서 수신자 stale가 재현되지 않았다는 사실은 최초 실패의 원인을
+밝히지 않는다. 위 미해결 판정은 유지한다. 진행 중 gateway 재시작의 새 native
+run과 원 요청 사이 lineage, 전체 런타임 행렬도 아직 미완이다.
