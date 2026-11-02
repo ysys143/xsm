@@ -462,3 +462,21 @@ source archive이며 CPU2/memory3g/network none 조건을 유지했다. stopExit
 `limactl disk unlock colima-p`로 표식만 복구했다. 디스크·이미지를 삭제하거나
 사용자의 default VM/context를 바꾸지 않았다. 그 뒤 시작 성공을 확인하고 위의
 두 검사를 순차 실행했다.
+
+## Linux 실제 QUIC와 일반 protocol actor
+
+고정 official Rust 1.95.0 arm64 builder digest
+8e45ae5b178fa788bbbd818b42a1f93a6e2c03e7144badd5e0a37087537177e1에서 기존 locked
+transport source를 컴파일했다. source c388f5c, ELF SHA-256은
+4a716219d8c7307c8c9d4a18d42399a5055113159583819d050975993bed9fb3이다.
+컴파일은 성공했지만 초기 smoke에 지원되지 않는 --help를 써 준비 exit1을 기록했다.
+그 실패는 linux-network-binary-prepare.json/log에 그대로 보존했다.
+
+같은 ELF를 두 Linux 이미지에 readonly로 제공하고, 같은 동결 c388f5c source에서
+일반 참여자 directory 10개와 실제 private QUIC service 2개, 총 12개를 각각
+실행해 통과했다(linux-generic-network-311/tests.log/result.json,
+linux-generic-network-314/tests.log/result.json). source archive SHA-256은 둘 다
+5d6d530a39eb38ff1cf35041cfb001a356f88f1e562d3fded14301ff76134443이다.
+network none의 loopback 안에서 요청/회신·claim/ACK와 같은 대화 재개 후 원문을
+확인했다. 물리 머신·실제 model/native UI·메신저 검증은 아니다. 마지막 VM stop은
+linux-generic-network-batch.json의 stopExitCode0으로 확인했다.

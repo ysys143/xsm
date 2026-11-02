@@ -2346,24 +2346,17 @@ def cmd_owned(args) -> int:
         print(why or "owned workers require a registered native conversation",file=sys.stderr)
         return REFUSED
     try:
-        if args.action=="create":
-            result=workers.create_owned(args.runtime,caller=me,name=args.name,cwd=args.dir,home=args.home,
-                model=args.model,effort=args.effort,grant=args.grant)
-        elif args.action=="run":
-            if not args.text or not args.work:
-                print("run requires --text and --work",file=sys.stderr)
-                return USAGE
-            result=workers.run_owned(args.name,me,args.text,work_context=args.work,
-                request_id=args.request_id,independent=args.fresh)
-        elif args.action=="status":
-            result=(workers.owned_status(args.name,me,args.request_id) if args.request_id else
-                {"status":"requests","requests":workers.owned_history(args.name,me)})
-        else:
-            if not args.request_id:
-                print("reply recovery requires --request-id",file=sys.stderr)
-                return USAGE
-            recover=workers.resend_owned if args.action=="retry" else workers.reconcile_owned
-            result=recover(args.name,me,args.request_id)
+        from . import owned_service
+        if args.action == 'run' and (not args.text or not args.work):
+            print("run requires --text and --work", file=sys.stderr)
+            return USAGE
+        if args.action in ('retry', 'reconcile') and not args.request_id:
+            print("reply recovery requires --request-id", file=sys.stderr)
+            return USAGE
+        result = owned_service.execute(me, {"action": args.action, "name": args.name,
+            "runtime": args.runtime, "dir": args.dir, "home": args.home, "model": args.model,
+            "effort": args.effort, "grant": args.grant, "text": args.text, "work_context": args.work,
+            "request_id": args.request_id, "independent": args.fresh})
     except (workers.WorkerError,owned_requests.OwnedError,ValueError) as exc:
         print(str(exc),file=sys.stderr)
         return REFUSED

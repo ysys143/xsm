@@ -104,3 +104,12 @@ neither follows a reassigned name nor transfers to a successor that has stopped.
 Existing teams, board ownership, questions and unread-original migration still use
 the established handover engine. This does not implement remote handover or certify
 native UI collection.
+
+## Owned worker actions
+
+`xsm.owned_service.execute` shares create/status/retry/reconcile dispatch and run
+request-ID selection. CLI synchronous execution and MCP wait/cancellation pumping
+remain frontend responsibilities. The MCP path submits the durable request before
+starting its existing background execution; a cancelled waiter still does not stop
+that request. CLI/MCP replay the same journaled ID and recover the same saved reply.
+This refactor does not add native runtime providers beyond the existing ones.

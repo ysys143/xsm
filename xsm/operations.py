@@ -430,34 +430,21 @@ class OperationService:
             "Code: /mcp, then xsm) or start a new session; meanwhile run the same `xsm` command "
             "in the shell" % name)
 
-    def owned(self,me,args):
-        from . import workers,owned_requests,envelope,decisions
-        action,name=args.get("action"),args.get("name")
-        if not isinstance(name,str) or not name:
-            raise ToolError("owned worker name required")
-        if action=="create":
-            return workers.create_owned(args.get("runtime"),caller=me,name=name,cwd=args.get("dir"),
-                home=args.get("home"),model=args.get("model"),effort=args.get("effort"),grant=args.get("grant"))
-        if action=="status":
-            if args.get("request_id"):
-                return workers.owned_status(name,me,args["request_id"])
-            return {"status":"requests","requests":workers.owned_history(name,me)}
-        if action in ("retry","reconcile"):
-            if not args.get("request_id"):
-                raise ToolError("request_id required for reply recovery")
-            fn=workers.resend_owned if action=="retry" else workers.reconcile_owned
-            return fn(name,me,args["request_id"])
-        if action!="run":
-            raise ToolError("unknown owned action")
+    def owned(self, me, args):
+        from . import owned_service, workers, owned_requests
+        try:
+            return owned_service.execute(me, args, run=lambda name, caller, text, **arguments:
+                self._owned_run(caller, args, name, text, arguments))
+        except owned_service.ActionError as exc:
+            raise ToolError(str(exc)) from exc
+
+    def _owned_run(self, me, args, name, text, arguments):
+        from . import workers, owned_requests
         wait=float(args.get("wait",0) or 0)
         if not math.isfinite(wait) or wait<0:
             raise ToolError("wait must be finite and nonnegative")
         wait=min(wait,60)
-        request_id=args.get("request_id") or envelope.new_id()
-        from . import handoff
-        handoff._id(request_id)
-        arguments={"work_context":args.get("work_context"),"request_id":request_id,
-                   "independent":args.get("independent",False)}
+        request_id = arguments['request_id']
         try:
             verified=workers.submit_owned(name,me,args.get('text') or '',**arguments)
         except (workers.WorkerError,owned_requests.OwnedError) as exc:

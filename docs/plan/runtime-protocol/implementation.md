@@ -2354,3 +2354,20 @@ stale 후임 snapshot을 다시 넣은 두 변이가 각각 실패했다
 (shared-handover-mutations.log). 최종 공통 600개(423/Python 50/Node 127),
 독립 mock 39개·변이 14개는 65.793초에 통과했다(shared-handover-core.log).
 실제 native UI나 원격 handover의 검증으로 확대하지 않는다.
+
+## Owned worker 공통 dispatch
+
+create/status/retry/reconcile과 run의 request ID 선택을 owned_service로 모았다.
+CLI의 동기 실행과 MCP의 비동기 대기·취소 pump는 frontend에 유지했다. 같은
+request ID를 CLI→MCP로 재호출해 실행 횟수 1과 동일 reply_id를 확인했다. CLI가
+공통 dispatch를 우회하는 변이도 실패했다(shared-owned-route-mutant.log).
+
+초기 공통 경로 검사 실패를 보존했고(shared-owned-service-red.log), 초회 회귀는
+non-run의 WorkerError를 ToolError로 일괄 포장해 기존 예외 계약 1개가 실패했다.
+공통 입력 ActionError만 frontend에서 변환하고 기존 worker 예외는 유지해 기존
+회귀 33개가 3.636초에 통과했다. 실제 fake CLI process/강제 종료 경계의 추가
+13개도 2.383초에 통과했다. 모델을 호출한 검사는 아니다.
+
+최종 공통 633개(핵심 456/Python 50/Node 127), 독립 mock 39개·변이 14개가
+70.744초에 통과했다(shared-owned-core.log). 신규 native worker provider 4종을
+구현·검증했다는 뜻은 아니다. 그 목표는 여전히 남아 있다.

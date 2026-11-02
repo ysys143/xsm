@@ -11,6 +11,21 @@ from tests.test_xsm import TempState
 
 
 class OwnedInterfacesTest(TempState):
+    def test_cli_and_model_owned_dispatch_share_the_same_journal(self):
+        from xsm import cli, owned_service
+        self.create()
+        args = ['owned', 'run', 'service', '--text', 'work', '--work', 'topic', '--request-id', 'shared-owned']
+        out = io.StringIO()
+        with mock.patch.object(owned_service, 'execute', wraps=owned_service.execute) as shared:
+            with mock.patch.object(self.registry, 'me', return_value=self.me), \
+                    mock.patch.object(self.registry, 'last_identity', return_value=self.call), contextlib.redirect_stdout(out):
+                cli.main(args)
+            first = json.loads(out.getvalue())
+            second = self.invoke(action='run', name='service', text='work', work_context='topic', request_id='shared-owned', wait=1)
+            self.assertEqual(first['reply_id'], second['reply_id'])
+            self.assertEqual(self.count, 1)
+            self.assertEqual(shared.call_count, 2)
+
     def setUp(self):
         super().setUp()
         from xsm import context,identity,mcp,registry,workers
