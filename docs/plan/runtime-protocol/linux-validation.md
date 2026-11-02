@@ -728,3 +728,27 @@ Native와 core 모두 network none/cpu2/memory3g/model0이다. 모든 gateway가
 protocol-foundation/openclaw-host-recovery-linux/의 result.json과 mode별 output에
 있다. Gateway 자체 재시작·실제 모델·사람 UI·메신저와 전체 런타임/아키텍처
 행렬은 이 결과로 완료 처리하지 않는다.
+
+## Cold recovery의 Linux batch와 미해결 수신자 판정
+
+6780cf8을 고정한 openclaw-cold-recovery-linux에서15개 native mode를 모두
+실행했다.14개는 통과했지만 첫 직접 cold mode는 별도 문맥 답변 게시 단계에서
+실패했다. 결과는 result-ready였고 실제 native 답변/receipt/exit0은 저장됐으나,
+합성 Codex 수신자가 stale로 판정돼 전송이 거부됐다. Cold 재시작 단계에 아직
+도달하지 않은 표본이며 native 조회 실패로 합치지 않는다. 전체 batch status는
+failed, 미실행 mode0, VM stopExit=0이다.
+
+공개 protocol cold mode36개는 이 batch에서 통과했다. 같은 source의828개 core도
+Python3.11.2에서64.990초,3.14.10에서83.444초로 통과했다. Core 성공을 실패한
+native mode의 성공 근거로 사용하지 않는다.
+
+시험기495b647은 실패 때 저장/현재/registry PID·lstart와 state reason을 기록한다.
+이 소스를 고정한 openclaw-cold-recovery-linux-diagnostic에서 직접 cold43개와
+crowded26개는 통과했다. Gateway와 VM은 종료됐다. 원래 stale 판정이 재현되지
+않았고 원인도 미확정이므로 반복 통과를 해결로 쓰지 않는다. 최초 batch 실패와
+진단 재실행을 모두 보존한다.
+
+2026-11-03 구현 담당자가 기록했다. 같은 담당자가 해당 수신자의 거부 시점 PID/
+birth/state reason을 실제로 포착하고 원인을 검증한 뒤 이 조건을 다시 판정한다.
+그 전까지 직접 cold 경로의 간헐적 receiver 판정과 전체 계획은 미완이다. 사용자에게
+scope 제외 승인을 받은 기록은 없다.

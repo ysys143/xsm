@@ -675,3 +675,30 @@ native 추론을 재제출하지 않았다. 정상 fixture3회와 별도 요청 
 실제 모델 추론0회, gatewayStopped=true다. 시험기와 문서만 바뀌었으므로 직전
 828개 core를 반복한 결과로 계산하지 않는다. Linux 재검증은 별도 frozen source로
 수행하며 아직 이 macOS 표본에 합치지 않는다.
+
+## Linux cold batch의 통과와 실패 분리
+
+6780cf8의15개 native mode는14개 통과·1개 실패였다
+(openclaw-cold-recovery-linux). 첫 직접 cold 시험은 native 답변을 정상 저장한
+뒤 수신자 stale 판정으로 result-ready에 머물러 실패했다. 재시작 단계 전의
+게시 실패이며 전체 batch를 성공으로 표시하지 않는다. 공개 cold36개와 나머지
+기존 native 경로는 통과했다. 같은 source의828개 core는 Linux Python3.11.2에서
+64.990초,3.14.10에서83.444초로 통과했다. 미실행 mode0, VM stopExit=0이다.
+
+실패 시 PID/lstart/state reason을 추가한495b647 진단 시험에서는 직접 cold43개와
+crowded26개가 통과했다(openclaw-cold-recovery-linux-diagnostic). 최초 거부가
+재현되지 않아 원인은 아직 미확정이다. 이 재실행으로 간헐적 receiver 문제를
+고쳤다고 판단하지 않는다. 상세 재판정 조건은 linux-validation.md 마지막 절에 있다.
+
+## Silent response의 공개 history 관측
+
+별도 로컬 SSE fixture가 NO_REPLY만 반환한 표본을 조사했다. 최초 시험기는
+정상 status=ok를 기대해 실패했다(openclaw-silent-history-shape). 실제 native
+응답은 status=error, terminalReply.disposition=silent, terminalDisposition=
+not-visible이고 세션은 failed였다. 이를 정상 답변으로 바꾸지 않는다.
+
+후속 관측(v2)은 gateway 재시작 전후의 상태와 공개 history를 읽었다. History에는
+원래 user input과 같은 run ID의 custom run-failed-before-reply 관측이 있었고,
+assistant 답변은 없었다. 원래 run을 찾는 history_result는 이를 assistant
+답변으로 선택하지 않는다. 이 표본은 조사 성공이지 silent worker의 전체 복구
+구현 완료가 아니다. Model0이고 gateway는 종료됐다.
