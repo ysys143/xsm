@@ -50,6 +50,7 @@ print(json.dumps({'type':'result','session_id':sid,'exit_code':0,'text':json.dum
         root=Path(self.tmp,'native-api');package=root/'hermes_cli';package.mkdir(parents=True)
         (package/'__init__.py').write_text('')
         (package/'gateway_client.py').write_text('class GatewayClientError(Exception): pass\n')
+        (package/'gateway_chat_view.py').write_text('class GatewayChatView: pass\n')
         (package/'stream_json.py').write_text('''import json
 class StreamJsonEmitter:
  def __init__(self):

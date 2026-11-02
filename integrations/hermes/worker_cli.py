@@ -56,7 +56,7 @@ def _constant(value):
     raise NativeCliError('Hermes returned a non-JSON numeric value')
 
 
-def parse_result(output, context):
+def _events(output):
     if not isinstance(output, str):
         raise NativeCliError('Hermes native output must be text')
     try:
@@ -69,6 +69,48 @@ def parse_result(output, context):
     initial = events[0]
     if initial.get('type') != 'system' or initial.get('subtype') != 'init':
         raise NativeCliError('Hermes native initialization event is missing')
+    return events, initial
+
+
+def parse_cancellation(output, context):
+    events, initial = _events(output)
+    native_id = _native_id(context.get('native_session_id'))
+    if sum(event.get('type') == 'system' and event.get('subtype') == 'init' for event in events) != 1:
+        raise NativeCliError('Hermes cancellation initialization is ambiguous')
+    if any(event.get('session_id') not in (None, '', native_id) for event in events):
+        raise NativeCliError('Hermes cancellation output changed conversation')
+    if initial.get('session_id') not in (None, '', native_id):
+        raise NativeCliError('Hermes cancellation initialization changed conversation')
+    markers = [event for event in events if event.get('type') == 'xsm_native_cancelled']
+    if len(markers) != 1:
+        raise NativeCliError('Hermes cancellation observation is missing or ambiguous')
+    marker = markers[0]
+    if (marker.get('source') != 'hermes/0.22.5' or marker.get('session_id') != native_id
+            or not isinstance(marker.get('admission_id'), str) or not marker['admission_id']
+            or type(marker.get('authority_epoch')) is not int or marker['authority_epoch'] < 0
+            or marker.get('native_status') != 'terminal'
+            or marker.get('native_outcome') not in ('cancelled', 'interrupted')):
+        raise NativeCliError('Hermes cancellation has no matching terminal native receipt')
+    generation = marker.get('execution_generation')
+    if generation is None:
+        if marker['native_outcome'] != 'cancelled' or marker.get('native_not_started') is not True:
+            raise NativeCliError('Hermes interrupted admission has no generation')
+    elif type(generation) is not int or generation <= 0:
+        raise NativeCliError('Hermes cancellation generation is invalid')
+    elif marker.get('native_interrupted') is not True:
+        raise NativeCliError('Hermes terminal receipt has no actual interrupted execution result')
+    finals = [event for event in events if event.get('type') == 'result']
+    if len(finals) > 1 or any(final.get('session_id') != native_id or type(final.get('exit_code')) is not int
+                             or final['exit_code'] not in (0, 130) for final in finals):
+        raise NativeCliError('Hermes cancellation result contradicts its native receipt')
+    return {'native_session_id': native_id, 'native_evidence': {
+        'native_state': 'stopped', 'terminal_event': 'xsm_native_cancelled', 'event_count': len(events),
+        'admission_id': marker['admission_id'], 'authority_epoch': marker['authority_epoch'],
+        'execution_generation': generation, 'native_outcome': marker['native_outcome']}}
+
+
+def parse_result(output, context):
+    events, initial = _events(output)
     finals = [event for event in events if event.get('type') == 'result']
     if len(finals) != 1 or events[-1] is not finals[0]:
         raise NativeCliError('Hermes requires exactly one terminal native result')

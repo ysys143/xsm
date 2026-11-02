@@ -155,7 +155,7 @@ synthesize a reply. Inspect the returned `cancellation` and subsequent status:
   because interruption does not resolve possible side effects.
 
 `native_supported` describes the admitted execution plan's running-turn support.
-Pi 1.4.0 and OpenCode 1.19.5 newly admitted bindings support this confirmation. Other current providers
+Pi 1.4.0, OpenCode 1.19.5 and Hermes 0.22.5 newly admitted bindings support this confirmation. Other current providers
 can record intent and cancel pre-launch work, but their running native stop paths
 remain unfinished. Do not treat an unsupported pending request as stopped.
 
@@ -185,22 +185,33 @@ observation, not a synthesized OpenCode error or model answer. Its source, bound
 session, native input/assistant IDs, completion time and idle flag are validated
 by the cancellation parser.
 
+Hermes records the admission returned by its original finite submission. The
+observer pins that receipt's authority epoch/ref and uses the exact admission's
+`execution_generation`, never the view's latest generation, for `session.interrupt`.
+Queued work uses `prompt.cancel`. Confirmation requires that same admission's
+terminal receipt; started work additionally requires its stored native execution
+result to say `interrupted=true`. Administrative resolution of unknown work is
+not sufficient. A queued cancellation with no execution generation is recorded
+separately as native not-started. No shared gateway process is killed.
+
 Cancelling a waiting transport still does not cancel its saved owned task, and
 service removal still refuses active or uncertain work. Native stop/recovery for
 the other runtimes remains an incomplete part of the full plan.
 
-For Pi and OpenCode, `reconcile` can recover a lost stop confirmation after the execution child
+For Pi, OpenCode and Hermes, `reconcile` can recover a lost stop confirmation after the execution child
 has exited. Pi parses the retained native session header and final
 `agent_end` / `agent_settled(aborted=true)` pair; OpenCode parses its typed abort
-error or validated xsm observation. The engine reads only its exact
+error or validated xsm observation. Hermes uses its typed admission/generation
+observation and actual interrupted-result or queued-withdrawal proof. The engine reads only its exact
 owned output through no-follow directory/file descriptors, checks the file owner,
 reservation, bound PID/start identity and context generation, and records
 `cancellation.recovered_from: "native-output"`. Running children, symlinked
 files/directories and mismatched native IDs are refused. Normal result recovery
 still requires a successful exit. Cancellation-only parsers may declare
 `CANCELLATION_EXIT_CODES`: OpenCode's observed abort exits are 0 and 1, but an
-arbitrary exit-1 API error is not stop evidence. Pi retains its exit-zero
-requirement. These codes never authorize a business answer.
+arbitrary exit-1 API error is not stop evidence. Hermes permits its native 0/130
+exits only with receipt evidence; Pi retains its exit-zero requirement. These
+codes never authorize a business answer.
 
 This does not execute another native turn, manufacture an answer, or clear unknown
 side effects. The task can remain `unknown` with null result/reply while its native

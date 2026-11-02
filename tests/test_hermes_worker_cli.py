@@ -62,3 +62,33 @@ class HermesWorkerCliTest(unittest.TestCase):
         self.assertEqual(parsed['native_session_id'], NATIVE)
         self.assertEqual(parsed['body'], body)
         self.assertNotIn('outcome', parsed)
+
+    def cancellation(self, **changes):
+        marker = dict(type='xsm_native_cancelled', source='hermes/0.22.5', session_id=NATIVE,
+                      admission_id='admission-owned', authority_epoch=1, execution_generation=7,
+                      native_status='terminal', native_outcome='interrupted', native_interrupted=True)
+        marker.update(changes)
+        return '\n'.join(json.dumps(event) for event in [dict(type='system', subtype='init', session_id=''),
+            marker, dict(type='result', session_id=NATIVE, exit_code=130, text='')])
+
+    def test_cancel_receipt_recovers_native_stop_without_business_answer(self):
+        parsed = cli.parse_cancellation(self.cancellation(), {'native_session_id': NATIVE})
+        self.assertEqual(parsed['native_evidence']['native_state'], 'stopped')
+        self.assertEqual(parsed['native_evidence']['execution_generation'], 7)
+        self.assertNotIn('body', parsed)
+        with self.assertRaises(cli.NativeCliError): cli.parse_result(self.cancellation(), {'native_session_id': NATIVE})
+
+    def test_queued_native_cancellation_does_not_invent_an_execution_generation(self):
+        parsed = cli.parse_cancellation(self.cancellation(native_outcome='cancelled', execution_generation=None, native_not_started=True),
+                                         {'native_session_id': NATIVE})
+        self.assertIsNone(parsed['native_evidence']['execution_generation'])
+
+    def test_other_receipt_source_outcome_or_generation_cannot_confirm_stop(self):
+        for changes in ({'source': 'model'}, {'session_id': 'other'}, {'authority_epoch': True},
+                        {'execution_generation': True}, {'execution_generation': None},
+                        {'native_status': 'started'}, {'native_outcome': 'completed'}, {'native_interrupted': False}):
+            with self.subTest(changes=changes), self.assertRaises(cli.NativeCliError):
+                cli.parse_cancellation(self.cancellation(**changes), {'native_session_id': NATIVE})
+        for extra in (dict(type='system', subtype='init', session_id=''), dict(type='text', session_id='foreign', text='x')):
+            with self.subTest(extra=extra), self.assertRaises(cli.NativeCliError):
+                cli.parse_cancellation(self.cancellation() + '\n' + json.dumps(extra), {'native_session_id': NATIVE})

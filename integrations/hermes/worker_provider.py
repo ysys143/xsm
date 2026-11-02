@@ -10,11 +10,13 @@ import shutil
 import subprocess
 
 from xsm.native_workers import ProviderError
-from .worker_cli import NativeCliError, build_command, parse_result
+from .worker_cli import NativeCliError, build_command, parse_result, parse_cancellation
 
 RUNTIME = 'hermes'
 VERSION = '0.22.5'
 CONTROL_PROTOCOL = 1
+CANCELLATION_PROTOCOL = 1
+CANCELLATION_EXIT_CODES = (0, 130)
 
 
 def default_home(caller):
@@ -77,7 +79,7 @@ def prepare(home):
     python = _python_for_cli(executable, home)
     frontend = Path(__file__).with_name('worker_frontend.py').resolve()
     return {'executable': executable, 'version': VERSION, 'python': python,
-            'control_protocol': CONTROL_PROTOCOL, 'frontend': str(frontend),
+            'control_protocol': CONTROL_PROTOCOL, 'cancellation_protocol': CANCELLATION_PROTOCOL, 'frontend': str(frontend),
             'runtime_root': str(frontend.parents[2]),
             'frontend_sha256': hashlib.sha256(frontend.read_bytes()).hexdigest()}
 
@@ -125,5 +127,13 @@ def result(worker, context, output):
     _admitted(worker)
     try:
         return parse_result(output, context)
+    except NativeCliError as error:
+        raise ProviderError(str(error)) from error
+
+
+def cancellation_result(worker, context, output):
+    _admitted(worker)
+    try:
+        return parse_cancellation(output, context)
     except NativeCliError as error:
         raise ProviderError(str(error)) from error

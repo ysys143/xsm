@@ -620,3 +620,51 @@ Python491+SDK52+native71+Node152=766개 및 독립 mock39/변이14개를94.066�
 앞선1f9de1c의 Linux758개도 통과했지만 이번 OpenCode 변경은 포함하지 않는다.
 이번 변경의 Linux 검사, 실제 구독 모델·모든 native tool/자식/UI 중단 행렬,
 Hermes/Claude/Codex의 실행 중 취소와 전체 runtime 계획은 계속 미완이다.
+
+## Hermes의 admission/generation 취소와 native 결과 확인
+
+Hermes0.22.5 frontend가 원래 GatewayChatView의 submit/run을 감싸도록 연결했다.
+원래 CLI의 입력·정책·권한·모델 실행을 유지하고, 제출 RPC가 반환한 admission과
+authority epoch/ref를 고정한다. 취소는 이 admission의 prompt.receipt로만 조회한다.
+Queued면 native prompt.cancel을, started면 그 영수증의 execution_generation을
+사용한 session.interrupt를 호출한다. View의 최신 generation이나 다른 admission을
+대입하지 않는다. Gateway daemon 자체를 중단하는 구현이 아니다.
+
+Receipt의 terminal/interrupted만으로 확인하지 않는다. Native 소스를 조사해
+unknown의 관리적 정리도 terminal이 될 수 있음을 확인했고, 실행된 admission은
+저장된 실제 native result의 interrupted=true까지 요구한다. Generation 없는
+queued/cancelled는 native_not_started로 구분한다. Source/ref/epoch/generation이
+바뀌면 확인하지 않으며, stale interrupt가 거부돼도 최신 세대로 재시도하지 않는다.
+최종 증거는 xsm_native_cancelled 관측 프레임으로 private ACK 전에 flush한다.
+이 프레임은 모델 답변이나 사용자 승인이 아니다.
+
+새 제공자는 cancellation_protocol=1과 취소 전용 exit codes0/130을 선언한다.
+일반 답변 parser는 계속 성공 종료만 수락한다. 취소 parser는 정확한 bound SID,
+단일 초기화/관측, actual interrupted-result 또는 queued-withdrawal 표시를 검사한다.
+원래 native class들은 frontend 종료 시 복원하고, finite view 종료 시 observer도
+종료한다. Shared gateway에는 worker hint/control descriptor를 전달하지 않는다.
+
+실제 public owned/CLI/gateway에서 정상21개가 통과했다
+(hermes-owned-cancel-native-first/result.json). 확인 저장 실패를 주입한25개와
+엄격한 interrupted-result 조건 뒤 최종 스크립트25개도 통과했다
+(hermes-owned-cancel-lost-first/result.json,
+hermes-cancel-strict-result-native/result.json). Native CLI는 exit130이었으며 task는
+unknown/result=null/reply_id=null이었다. Native 출력으로만 stop을 복구하고
+모델/작업을 다시 실행하지 않았다. HTTP는 명시적 loopback 응답 fixture이며
+실제 LLM 추론·과금은 없다. Private 시험 gateway는 종료를 확인했다.
+
+재현은 scripts/probe-hermes-owned-native.py에 --native-cli, --native-source,
+--output을 지정하며 확인 유실에는 --lose-cancel-confirmation을 더한다.
+Native source가 clean v0.22.5 tag인지 검사한다. 테스트는 격리 HOME/HERMES_HOME/
+XSM_HOME을 사용하고 실제 사용자 설정·권한·메신저를 변경하지 않는다.
+
+관련33개가 통과했다(hermes-cancel-strict-result-unit.log). Native contract fixture와
+실제 gateway 표본은 구분한다. 최신 view generation 대입, 실제 interrupted result
+검사 생략의 변이2개를 각각 assertion 실패로 검출했다
+(hermes-cancel-generation-final-mutant.log, hermes-cancel-result-mutant.log).
+최신 macOS core는 Python494+SDK52+native81+Node152=779개 및 독립 mock39/
+변이14개를90.255초에 통과했다(hermes-cancel-core-strict.log).
+
+앞선d9b774c의 Linux766개는 양쪽에서 통과했지만 이번 Hermes 변경을 포함하지
+않는다. 이번 변경의 Linux 검사, 실제 구독 모델·모든 UI/도구/자식 취소 행렬,
+Claude/Codex/OpenClaw 등 전체 runtime 계획의 남은 항목은 계속 미완이다.

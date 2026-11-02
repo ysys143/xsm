@@ -612,3 +612,16 @@ deliverables/protocol-foundation/pi-cancel-readback-linux/ 아래 result.json,
 이 번들은 Pi의 출력 기반 중단 확인 복구와 파일/directory no-follow 검사를
 포함한다. 그 뒤 OpenCode native 취소·관측 프레임·취소 전용 exit1 readback과
 766개 core는 포함하지 않는다. 실제 Linux native 모델/취소 실행도 별도 미완이다.
+
+## OpenCode native 취소/관측/readback core (d9b774c)
+
+d9b774c 고정 번들의 SHA-256은
+bbd3a71dec3e839122fdda90c14cef85516844db65c84e705560dd416a82926e다.
+Python491+SDK52+native71+Node152=766개 및 독립 mock39/변이14개가 두 Linux
+arm64 이미지에서 통과했다. Python3.11.2는68.402초,3.14.10은85.978초였다.
+Model0/network none/cpu2/memory3g 및120초 기한을 유지했다. 원시는
+deliverables/protocol-foundation/opencode-cancel-linux/의 result.json,
+{311,314}/protocol.log와 start/stop.log다. VM stopExit은0이며 종료됐다.
+
+이는 OpenCode 관측 프레임과 취소 전용 exit1 readback의 core 증거다. 실제 Linux
+OpenCode CLI/model 중단은 별도 미완이며, 뒤의 Hermes observer/779개는 포함하지 않는다.
