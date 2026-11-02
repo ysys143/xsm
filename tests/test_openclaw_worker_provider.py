@@ -57,6 +57,8 @@ export async function callGatewayFromCli(method,options,p,extra) {
   const row=s.sessions.find(r=>r.sessionId===s.runs[p.runId]);
   row.lastRunId=p.runId;row.status='failed';row.hasActiveRun=false;row.activeRunIds=[];row.startedAt=100;row.endedAt=190;
   result={status:'error',runId:p.runId,startedAt:100,endedAt:200,error:'explicit fixture provider refusal'};
+  const h=s.history[row.sessionId];s.history[row.sessionId]=h.filter(m=>m.__openclaw?.runId!==p.runId);
+  const f=s.history[row.sessionId];f.push({role:'custom',customType:'run-failed-before-reply',content:'private fixture error',timestamp:195,__openclaw:{id:p.runId+':failure',runId:p.runId,seq:f.length+1,recordTimestampMs:195,transcriptPosition:{source:'fixture-source',rawSeq:f.length+1}}});
  }
  if(method==='agent.wait' && fs.existsSync(process.env.OPENCLAW_STATE_DIR+'/lost-wait-cache'))result={status:'timeout',runId:p.runId};
  if(method==='chat.history') {
@@ -233,3 +235,15 @@ export async function callGatewayFromCli(method,options,p,extra) {
             with self.subTest(native_id=selected_id),self.assertRaises(owned_requests.OwnedError):
                 owned_requests.confirm_native_settlement(self.owner,'one',selected_token,selected_id,{'native_state':'settled'})
             self.assertEqual(path.read_bytes(),before)
+
+    def test_cold_failed_run_releases_only_execution_lease(self):
+        Path(self.home,'terminal-error').touch();unknown=self.run_turn()
+        self.assertEqual(unknown['status'],'unknown');self.assertTrue(unknown['slot_occupied'])
+        Path(self.home,'lost-wait-cache').touch()
+        memory=Path(self.home,'fixture-memory.json');calls=json.loads(memory.read_text())['calls'].count('agent')
+        closed=self.workers.reconcile_owned('native-openclaw',self.owner,'one')
+        self.assertFalse(closed['slot_occupied']);self.assertEqual(closed['status'],'unknown')
+        self.assertIsNone(closed['result']);self.assertIsNone(closed['reply_id']);self.assertIsNone(closed.get('cancellation'))
+        self.assertEqual(closed['native_execution']['evidence']['source'],'native-chat.history')
+        self.assertNotIn('private fixture error',json.dumps(closed['native_execution']))
+        self.assertEqual(json.loads(memory.read_text())['calls'].count('agent'),calls)

@@ -230,11 +230,16 @@ def failed_run_settlement(terminal, row, locator, run_id):
 
 def closed_success(row, locator, run_id):
     """A persisted closed session run, not a synthesized terminal receipt."""
+    return closed_history_run(row,locator,run_id,success=True)
+
+
+def closed_history_run(row, locator, run_id, *, success):
     if (row.get('key') != locator.get('native_session_key') or row.get('agentId') != locator.get('agent_id')
             or row.get('sessionId') != locator.get('native_session_id')
             or row.get('lifecycleRevision') != locator.get('native_lifecycle_revision')
-            or row.get('lastRunId') != run_id or row.get('status') != 'done'
-            or row.get('abortedLastRun') is not False or row.get('hasActiveRun') is not False
+            or row.get('lastRunId') != run_id
+            or row.get('status') not in (('done',) if success else ('failed','blocked','killed','error'))
+            or (success and row.get('abortedLastRun') is not False) or row.get('hasActiveRun') is not False
             or row.get('activeRunIds') != []):
         raise NativeSessionError('native persisted run is not the bound closed execution')
     start,end=row.get('startedAt'),row.get('endedAt')
@@ -242,6 +247,47 @@ def closed_success(row, locator, run_id):
             or end < start):
         raise NativeSessionError('native persisted run has no closed interval')
     return start,end
+
+
+def history_failure(history, locator, run_id):
+    """Use native failure occurrence identity, never its arbitrary error text."""
+    if (history.get('sessionKey') != locator['native_session_key'] or history.get('sessionId') != locator['native_session_id']
+            or not isinstance(history.get('sessionInfo'),dict) or not isinstance(history.get('messages'),list)):
+        raise NativeSessionError('native failed history changed conversation identity')
+    start,end=closed_history_run(history['sessionInfo'],locator,run_id,success=False)
+    pending=history.get('pendingInputs')
+    if not isinstance(pending,dict) or type(pending.get('total')) is not int or pending['total'] != 0 or pending.get('items') != []:
+        raise NativeSessionError('native failed history has pending input')
+    inputs=[];failures=[]
+    for message in history['messages']:
+        if not isinstance(message,dict):raise NativeSessionError('invalid native failed history message')
+        meta=message.get('__openclaw')
+        if not isinstance(meta,dict):continue
+        if (message.get('role')=='user' and message.get('idempotencyKey')==run_id+':user'
+                and meta.get('idempotencyKey')==run_id+':user'):inputs.append(meta)
+        custom=message.get('role')=='custom' and message.get('customType')=='run-failed-before-reply'
+        terminal_error=(message.get('role')=='assistant' and message.get('idempotencyKey')==run_id+':terminal-error'
+                        and meta.get('idempotencyKey')==run_id+':terminal-error')
+        if (custom or terminal_error) and meta.get('runId')==run_id:
+            failures.append((meta,'run-failed-before-reply' if custom else 'assistant-terminal-error'))
+    if len(inputs)!=1 or len(failures)!=1:
+        raise NativeSessionError('native failed history lacks an unambiguous bound occurrence')
+    user=inputs[0];failed,kind=failures[0]
+    upos,fpos=user.get('transcriptPosition'),failed.get('transcriptPosition')
+    stamp=failed.get('recordTimestampMs')
+    if (not isinstance(upos,dict) or not isinstance(fpos,dict) or not isinstance(upos.get('source'),str)
+            or not upos['source'] or upos['source']!=fpos.get('source')
+            or any(type(value) is not int or value<=0 for value in (user.get('seq'),failed.get('seq'),upos.get('rawSeq'),fpos.get('rawSeq')))
+            or user['seq']>=failed['seq'] or upos['rawSeq']>=fpos['rawSeq']
+            or type(stamp) not in (int,float) or not math.isfinite(stamp)
+            or (kind=='run-failed-before-reply' and stamp<end)
+            or (kind=='assistant-terminal-error' and not start<=stamp<=end)):
+        raise NativeSessionError('native failure occurrence has no matching order or settlement')
+    return {'native_session_id':locator['native_session_id'],
+            'native_evidence':{'native_state':'settled','source':'native-chat.history','run_id':_text(run_id,'run ID'),
+                'input_message_id':_text(user.get('id'),'input message ID'),'failure_message_id':_text(failed.get('id'),'failure message ID'),
+                'transcript_source':fpos['source'],'native_status':history['sessionInfo']['status'],'failure_kind':kind,
+                'started_at':start,'ended_at':end,'failure_recorded_at':stamp}}
 
 
 def history_result(history, locator, run_id):

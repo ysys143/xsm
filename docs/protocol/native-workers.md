@@ -308,6 +308,20 @@ the latest unrelated assistant text. The original task is not resubmitted.
 Gateway restart after completed native execution has model0 evidence. Interrupted
 native work during restart and the full UI/model/messenger matrix remain unfinished.
 
+Persisted failed runs can close only their lease after restart. The original
+input must precede one native-owned failure occurrence on the same transcript
+source and with increasing native sequence positions. Supported occurrences are
+the native custom `run-failed-before-reply` and the host-generated assistant
+`:terminal-error` idempotency record, each bound to the original run. An error
+sentence or an ordinary assistant message is not sufficient.
+
+The closed failed session identity/revision, last run and inactive state must
+remain unchanged before and after reading. Occurrence ordering is checked against
+its native lifecycle: the custom notice follows the failed interval; the terminal
+assistant error is persisted within that interval. No arbitrary clock tolerance
+is used. The observation retains IDs and kind, not error text; task state stays
+unknown with no result/reply and no manufactured cancellation.
+
 ## Native execution settlement without an answer
 
 A result-recovery provider can instead return an observation with

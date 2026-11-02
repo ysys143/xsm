@@ -702,3 +702,44 @@ not-visible이고 세션은 failed였다. 이를 정상 답변으로 바꾸지 �
 assistant 답변은 없었다. 원래 run을 찾는 history_result는 이를 assistant
 답변으로 선택하지 않는다. 이 표본은 조사 성공이지 silent worker의 전체 복구
 구현 완료가 아니다. Model0이고 gateway는 종료됐다.
+
+## 재시작 후 오류·silent 종료의 lease 회수
+
+Wait cache가 사라진 실패 run을 회수하는 unit을 먼저 실패로 확인했다
+(openclaw-cold-failure-before.log). 성공 답변의 history와 오류 occurrence를
+분리하는 경로를 추가했다. Failed/blocked/killed/error 상태의 원래 run이 닫혔고
+세션/agent/revision·workspace·inactive가 변하지 않아야 한다.
+
+공개 history의 원래 input을 기준으로 같은 native run의 실패 occurrence 하나를
+확인한다. Source는 두 형식이다. Custom run-failed-before-reply는 native 실패
+구간 뒤에 기록되고, assistant의 원래 :terminal-error idempotency record는
+실패 구간 안에 기록된다. 각 형식의 message ID와 같은 transcript source의
+증가하는 sequence를 검증한다. 오류 문장의 내용이나 일반 assistant라는 이유로
+실패를 판단하지 않는다. 조회 후 원래 세션의 닫힌 구간을 다시 확인한다.
+
+실제 --native-error --restart-gateway의 첫 두 표본은 assistant terminal-error를
+지원하지 못해 실패했다(first/second). Native source의
+agents/assistant-error-transcript.ts가 settle(failed)에서 원래 run의
+:terminal-error 키를 기록하는 것을 확인해 추가했다. Custom notice와 시각 순서가
+달라 단일 허용 오차로 처리하지 않았다.
+
+Silent 첫 표본도 HTTP 진입4회를 고정 기대해 실패했다. Journal에는 원래
+request의 running 전이가 한 번뿐이었고 추가 HTTP 진입은 그 native run 처리 중
+발생했다. 시험기는 원래 run의 HTTP 횟수를 캡처한 뒤 reconcile/replay 전후의
+불변을 검사하도록 수정했다. Native 내부 시도와 XSM의 재제출을 합치지 않는다.
+
+openclaw-cold-error-settlement-third와 openclaw-cold-silent-settlement-final에서
+각각38개 검사가 통과했다. 전자는 HTTP 진입4회(정상3+오류1), 후자는5회
+(정상3+silent 처리2)였다. XSM은 추론을 재제출하지 않았다. Gateway 재시작 후
+원래 failure message ID로 execution lease만 해제하고 task unknown/result=None/
+reply=None을 보존했다. 취소 의도와 terminal receipt를 만들지 않았으며 오류
+원문도 관측에 싣지 않았다. Metadata 제거 후 journal bytes와 원래 sender의
+retained status도 보존했다. Gateway는 종료했고 실제 모델 추론은0회다.
+
+Failure occurrence 종류 검사를 제거한 변이는 assertion1개로 검출됐다
+(openclaw-cold-failure-mutant-final.log). 최종 macOS core는
+Python494+SDK52+native132+Node152=830개와 독립 mock39/변이14개를79.187초에
+통과했다(openclaw-cold-failure-core-final.log). 앞선80.301초 표본은 두 failure
+형식을 모두 처리하기 전 결과다. 이번 변경의 Linux·공개 protocol cold failure,
+실행 중 gateway 종료와 기존 간헐적 receiver stale 판정·전체 UI/모델/메신저
+행렬은 계속 미완이다.

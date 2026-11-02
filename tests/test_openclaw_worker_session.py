@@ -166,3 +166,31 @@ class OpenClawWorkerSessionTest(unittest.TestCase):
         changed=copy.deepcopy(answer);changed['__openclaw']['transcriptPosition']['source']='other';variants.append(dict(history,messages=[user,changed]))
         for value in variants:
             with self.subTest(history=value),self.assertRaises(session.NativeSessionError):session.history_result(value,locator,'run-1')
+
+    def test_cold_failure_requires_native_occurrence_not_error_sentence(self):
+        locator=session.created_locator(self.created,'main',self.cwd)
+        row=dict(key=locator['native_session_key'],sessionId='native-id',agentId='main',lifecycleRevision='revision-1',
+                 lastRunId='run-1',status='failed',startedAt=100,endedAt=190,hasActiveRun=False,activeRunIds=[])
+        user=dict(role='user',content='task',idempotencyKey='run-1:user',
+                  __openclaw=dict(id='input',idempotencyKey='run-1:user',seq=1,transcriptPosition=dict(source='branch',rawSeq=4)))
+        failed=dict(role='custom',customType='run-failed-before-reply',content='private error body',
+                    __openclaw=dict(id='failure',runId='run-1',seq=2,recordTimestampMs=200,transcriptPosition=dict(source='branch',rawSeq=5)))
+        history=dict(sessionKey=locator['native_session_key'],sessionId='native-id',sessionInfo=row,
+                     messages=[user,failed],pendingInputs=dict(items=[],total=0))
+        result=session.history_failure(history,locator,'run-1')
+        self.assertNotIn('body',result);self.assertNotIn('private error body',str(result))
+        self.assertEqual(result['native_evidence']['native_state'],'settled')
+        assistant=copy.deepcopy(failed);assistant.update(role='assistant',idempotencyKey='run-1:terminal-error')
+        assistant.pop('customType');assistant['__openclaw'].update(idempotencyKey='run-1:terminal-error',recordTimestampMs=180)
+        error_result=session.history_failure(dict(history,messages=[user,assistant]),locator,'run-1')
+        self.assertEqual(error_result['native_evidence']['failure_kind'],'assistant-terminal-error')
+        variants=[dict(history,sessionInfo=dict(row,lifecycleRevision='other')),
+                  dict(history,sessionInfo=dict(row,hasActiveRun=True)),dict(history,messages=[user]),
+                  dict(history,messages=[user,failed,copy.deepcopy(failed)])]
+        for field,value in (('runId','other'),('seq',1),('recordTimestampMs',189)):
+            changed=copy.deepcopy(failed);changed['__openclaw'][field]=value;variants.append(dict(history,messages=[user,changed]))
+        changed=copy.deepcopy(failed);changed['customType']='untrusted-note';variants.append(dict(history,messages=[user,changed]))
+        changed=copy.deepcopy(assistant);changed['idempotencyKey']='other:terminal-error';variants.append(dict(history,messages=[user,changed]))
+        changed=copy.deepcopy(assistant);changed['__openclaw']['recordTimestampMs']=200;variants.append(dict(history,messages=[user,changed]))
+        for value in variants:
+            with self.subTest(history=value),self.assertRaises(session.NativeSessionError):session.history_failure(value,locator,'run-1')

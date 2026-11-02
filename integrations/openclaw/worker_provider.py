@@ -185,14 +185,15 @@ def recover_result(worker, context, output, execution, env):
                 or session._workspace(row.get('workspaceDir') or row.get('spawnedCwd') or row.get('sessionRoot')) != session._workspace(worker['cwd'])):
             raise NativeSessionError('native recovery lifecycle or workspace changed')
         if terminal.get('status') == 'timeout':
-            interval=session.closed_success(row,locator,run_id)
+            success=row.get('status')=='done'
+            interval=session.closed_history_run(row,locator,run_id,success=success)
             messages=[];offset=0;total=None
             while True:
                 page=rpc('chat.history',{'sessionKey':key,'agentId':descriptor['agent_id'],'limit':1,'offset':offset,
                     'maxBytes':4194304,'maxChars':500000,'toolResultMaxChars':1000})
                 if (page.get('sessionId') != locator['native_session_id'] or page.get('sessionKey') != key
                         or not isinstance(page.get('sessionInfo'),dict)
-                        or session.closed_success(page['sessionInfo'],locator,run_id) != interval
+                        or session.closed_history_run(page['sessionInfo'],locator,run_id,success=success) != interval
                         or not isinstance(page.get('messages'),list) or type(page.get('hasMore')) is not bool
                         or type(page.get('totalMessages')) is not int or page['totalMessages'] < 0):
                     raise NativeSessionError('native history page changed identity or shape')
@@ -203,10 +204,11 @@ def recover_result(worker, context, output, execution, env):
                 if found or page['hasMore'] is False:break
                 offset+=1
                 if offset >= total:raise NativeSessionError('native history pagination did not converge')
-            value=session.history_result({**page,'messages':messages},locator,run_id)
+            reader=session.history_result if success else session.history_failure
+            value=reader({**page,'messages':messages},locator,run_id)
             after=rpc('sessions.describe',session.description_params(key,descriptor['agent_id']))
             after_row=session.described_listing(after,key,descriptor['agent_id'])['sessions'][0]
-            if (session.closed_success(after_row,locator,run_id) != interval
+            if (session.closed_history_run(after_row,locator,run_id,success=success) != interval
                     or session._workspace(after_row.get('workspaceDir') or after_row.get('spawnedCwd') or after_row.get('sessionRoot')) != session._workspace(worker['cwd'])):
                 raise NativeSessionError('native history execution changed before recovery')
             return value

@@ -13,6 +13,7 @@ parser.add_argument('--native-cli',type=Path,required=True)
 parser.add_argument('--node',type=Path,required=True)
 parser.add_argument('--output',type=Path,required=True)
 parser.add_argument('--restart-gateway',action='store_true',help='Restart the isolated gateway after native completion but before XSM result recovery')
+parser.add_argument('--native-silent',action='store_true',help='Return native NO_REPLY instead of text and verify no task answer is manufactured')
 parser.add_argument('--native-error',action='store_true',help='Return a local provider refusal and reconcile execution closure without a task answer')
 parser.add_argument('--interrupt-frontend',action='store_true',help='Kill the owned frontend after native provider entry and recover by read-only status')
 parser.add_argument('--crowded-profile',action='store_true',help='Seed 101 empty native sessions and verify an older owned context outside the default page')
@@ -21,10 +22,11 @@ parser.add_argument('--before-admission',action='store_true',help='Inject cancel
 parser.add_argument('--cancel',action='store_true',help='Cancel an exact running native request against the blocking provider fixture')
 parser.add_argument('--lose-cancel-confirmation',action='store_true',help='Inject private confirmation loss and reconcile retained native stop evidence')
 options=parser.parse_args()
+if options.native_silent:options.native_error=True
 if options.lose_cancel_confirmation and not (options.cancel or options.before_admission):parser.error('--lose-cancel-confirmation requires --cancel or --before-admission')
 if options.queued_native and not options.cancel:parser.error('--queued-native requires --cancel')
 if options.interrupt_frontend and (options.cancel or options.before_admission):parser.error('--interrupt-frontend is a separate recovery mode')
-if options.restart_gateway and not options.interrupt_frontend:parser.error('--restart-gateway requires --interrupt-frontend')
+if options.restart_gateway and not (options.interrupt_frontend or options.native_error):parser.error('--restart-gateway requires an interruption or native error mode')
 if options.native_error and (options.cancel or options.before_admission or options.interrupt_frontend):parser.error('--native-error is a separate settlement mode')
 if not options.native_cli.is_absolute() or not options.node.is_absolute():parser.error('absolute native CLI and Node paths required')
 if json.loads((options.native_cli.parent/'package.json').read_text()).get('version')!='2026.10.9':parser.error('OpenClaw2026.10.9 package required')
@@ -67,6 +69,11 @@ def observed_post(handler):
  save()
  if refusing.is_set():
   handler.rfile.read(int(handler.headers.get('Content-Length','0')))
+  if options.native_silent:
+   packet={'id':'silent-fixture','object':'chat.completion.chunk','created':int(time.time()),'model':'fixture','choices':[{'index':0,'delta':{'content':'NO_REPLY'},'finish_reason':None}]}
+   final={'id':'silent-fixture','object':'chat.completion.chunk','created':int(time.time()),'model':'fixture','choices':[{'index':0,'delta':{},'finish_reason':'stop'}]}
+   body=('data: '+json.dumps(packet)+'\n\ndata: '+json.dumps(final)+'\n\ndata: [DONE]\n\n').encode()
+   handler.send_response(200);handler.send_header('Content-Type','text/event-stream');handler.send_header('Content-Length',str(len(body)));handler.end_headers();handler.wfile.write(body);return
   body=json.dumps({'error':{'message':'Explicit local refusal fixture','type':'authentication_error','code':'fixture_refused'}}).encode()
   handler.send_response(401);handler.send_header('Content-Type','application/json');handler.send_header('Content-Length',str(len(body)));handler.end_headers();handler.wfile.write(body);return
  if blocking.is_set():entered.set();release.wait(45)
@@ -150,18 +157,42 @@ finally {clearTimeout(timer);client.stop();}
   unknown=workers.run_owned('native-openclaw',owner,error_text,work_context='native-error-work',request_id='native-error')
   check('provider refusal remains unknown with no task answer',unknown['status']=='unknown' and unknown['result'] is None and unknown['reply_id'] is None)
   check('provider refusal holds lease before host confirmation',unknown['slot_occupied'] is True)
+  error_http_entries=len(report['preProviderBindingObservations'])
+  if options.restart_gateway:
+   from integrations.openclaw.worker_cli import output_records
+   bound,final=output_records(Path(unknown['child']['stdout']).read_text())
+   query=NativeRpc(str(options.node),str(options.native_cli),cwd=str(root/'workspace'),env=env)
+   before_restart=query('agent.wait',{'runId':bound['run_id'],'timeoutMs':100})
+   check('native error ended before gateway restart',before_restart.get('status')=='error')
+   os.killpg(process.pid,signal.SIGTERM);process.wait(timeout=15)
+   process=subprocess.Popen(command+['gateway','run'],cwd=root/'workspace',env=env,stdout=log,stderr=log,start_new_session=True)
+   deadline=time.monotonic()+45
+   while True:
+    with socket.socket() as test:
+     if test.connect_ex(('127.0.0.1',port))==0:break
+    if process.poll() is not None or time.monotonic()>deadline:raise RuntimeError('gateway restart after native error failed')
+    time.sleep(.1)
+   after_restart=query('agent.wait',{'runId':bound['run_id'],'timeoutMs':100})
+   check('native error wait receipt is absent after restart',after_restart.get('status')=='timeout')
+   report['gatewayRestarted']=True
   settled=workers.reconcile_owned('native-openclaw',owner,'native-error')
   (out/'native-error-journal.json').write_text(json.dumps(settled,indent=2)+'\n')
+  if options.restart_gateway and settled.get('native_execution',{}).get('state')!='settled':
+   report['coldFailureDescription']=query('sessions.describe',worker_session.description_params(bound['locator']['native_session_key'],'main'))
+   history=query('chat.history',{'sessionKey':bound['locator']['native_session_key'],'agentId':'main','limit':20})
+   report['coldFailureHistoryMetadata']=[{k:m.get(k) for k in ('role','customType','idempotencyKey','__openclaw')} for m in history.get('messages',[])]
+   save()
   check('native failed execution is separately confirmed',settled.get('native_execution',{}).get('state')=='settled')
   check('native settlement releases execution lease',settled['slot_occupied'] is False)
   check('native error text never becomes task result',settled['status']=='unknown' and settled['result'] is None and settled['reply_id'] is None)
   check('natural error settlement does not manufacture cancellation',settled.get('cancellation') is None)
   evidence=settled['native_execution']['evidence']
+  if options.restart_gateway:check('cold failed lease uses original native failure occurrence',evidence.get('source')=='native-chat.history' and bool(evidence.get('failure_message_id')))
   check('settlement retains no arbitrary provider error text','fixture_refused' not in json.dumps(evidence) and 'lastRunError' not in evidence)
   again=workers.reconcile_owned('native-openclaw',owner,'native-error')
   check('native settlement is idempotent',again['native_execution']==settled['native_execution'])
   replay=workers.run_owned('native-openclaw',owner,error_text,work_context='native-error-work',request_id='native-error')
-  check('settled unknown task is not inferred again',replay['status']=='unknown' and len(report['preProviderBindingObservations'])==4)
+  check('settled unknown task is not inferred again',replay['status']=='unknown' and len(report['preProviderBindingObservations'])==error_http_entries)
   from xsm import owned_requests
   journal=Path(owned_requests._path(owner));journal_before=journal.read_bytes()
   workers.stop('native-openclaw')
