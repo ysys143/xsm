@@ -569,6 +569,20 @@ fixture가 JSON을 갱신 중 읽히는 경합1개가 발생했다
 성공 reply 없는 정상 종료·header가 없는 불명 실행 및 전체 UI/모델/메신저
 행렬은 계속 미완이다.
 
+## 공개 protocol의 오류·silent cold lease 정리
+
+공개 시험기의 --native-error --restart-gateway와
+--native-silent --restart-gateway를 각각 실행했다.
+openclaw-public-cold-error-first와 openclaw-public-cold-silent-first에서 각각29개
+검사가 통과했다. Native 종료를 확인한 뒤 gateway만 재시작해 wait cache 소실을
+확인하고, 공개 reconcile이 원래 native failure occurrence ID로 lease만 정리했다.
+
+Task unknown/result=None/reply=None과 취소 의도 없음을 유지했다. 원래 request의
+replay는 추론을 재제출하지 않았고 inbox에도 오류·silent 답변이 게시되지 않았다.
+HTTP 진입은 전자4회, 후자5회로 원래 native 시도 안의 처리와 XSM 재제출을
+구분했다. 실제 모델 추론0회이며 모든 gateway는 종료했다. 제품 코드는 dc554db와
+같고 시험기·문서만 바뀌었으므로830개 core의 추가 실행으로 계산하지 않는다.
+
 ## 공개 protocol의 frontend 종료와 native 오류 정리
 
 공개 시험기의 --interrupt-frontend는 실제 provider 진입 뒤 정확한 child의
