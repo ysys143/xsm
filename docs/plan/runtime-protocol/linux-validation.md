@@ -538,3 +538,20 @@ model/worker 또는 native UI/messenger 인증으로 해석하지 않는다.
 결과는 deliverables/protocol-foundation/native-provider-linux-v2/{311,314}/protocol.log,
 전체 result.json과 start/stop.log에 있다. 컨테이너는 network none/cpu2/memory3g였고
 기존 private VM만 사용했다. Start/stop은 모두 exit0이며 현재 VM은 종료됐다.
+
+## Native lineage 및 검사 순서 재검증 (77de8dc)
+
+a2cf4ef의 node-control-linux 표본은 Python3.11에서704개가98.441초에
+통과했으나 Python3.14에서는120초를 초과했다. 실패 로그를 보존했다.
+후속 구현77de8dc는 기존 검사를 유지하고 독립 Node 그룹을 Python 그룹과
+동시에 실행한다. 한도와 검사 내용은 축소하지 않았다.
+
+같은77de8dc의 archive SHA-256은
+35e753e0ff848f12b890ded4062b3a9f3a1db96ce23301c87cc7e560cbaf3274다.
+양쪽에서 Python491+SDK50+native31+Node139=711개 및 독립 mock39/변이14개가
+통과했다. Python3.11.2는64.574초, Python3.14.10은83.092초였다.
+원시는 deliverables/protocol-foundation/native-lineage-linux/ 아래 result.json과
+{311,314}/protocol.log다. 동일한 private Linux arm64 VM에서 network none,
+cpu2/memory3g로 실행했고 시작과 종료 모두 exit0이다. 모델 호출은0회다.
+실제 native 하위 에이전트·UI·메신저 전체 인증은 이 검사 범위에 없다.
+후속 SDK 시험 추가 커밋048a3f2는 이 고정 번들에 포함되지 않았다.

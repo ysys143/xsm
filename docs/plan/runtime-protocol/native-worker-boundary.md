@@ -276,3 +276,16 @@ Linux 버전의120초 재검증은 계속 남아 있다.
 있었다. 능력이 있는 서버에는 정확한 부모와 native-lineage 능력을 전송했고,
 호출자가 넘긴 capabilities 목록을 변경하지 않았다. 이 수치는 각 클라이언트
 시험 파일만의 결과이며 앞의711개 전체 검사와 별도다.
+
+이후77de8dc 고정 번들로 Linux 재검증도 끝났다. 같은711개와 독립 mock39/
+변이14개가 Python3.11.2에서64.574초, Python3.14.10에서83.092초에 통과했다.
+앞서 적은 Linux 재검증 미완 상태는 이 표본에서 해소됐으며 실제 native
+모델/하위 에이전트 전체 검증은 여전히 남는다. VM은 stopExit0으로 종료됐다.
+번들 해시와 범위는 linux-validation.md의77de8dc 기록을 따른다.
+
+Hermes0.22.5의 실제 PluginManager/PluginContext에도 연결부를 등록하고,
+native 디스패처의 subagent_start 호출에서 실제 stdio session.open까지
+실행했다. 부모 정보 유지·자식 등록·부모 runtime·서로 다른 투영 신원4개를
+확인했다(hermes-native-lineage-dispatch/run.log). 격리 HOME/HERMES_HOME/
+XSM_HOME과 설치된 venv interpreter를 사용했으며 모델 호출은0회다.
+이 증거는 native 플러그인 디스패치와 등록 경로이며 실제 child 실행은 아니다.
