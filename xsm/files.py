@@ -584,6 +584,13 @@ def _check_manifest(value, request_id=None, body=None):
 
 
 def _load(root, kind, storage_id, expected_owner=None):
+    try:
+        return _load_existing(root, kind, storage_id, expected_owner)
+    except FileNotFoundError as exc:
+        raise FileError('copy-not-found', 'no retained copy for this identifier') from exc
+
+
+def _load_existing(root, kind, storage_id, expected_owner=None):
     _id(storage_id)
     with _folder(root, kind) as parent, _folder(parent, storage_id) as folder:
         record = _document(folder)

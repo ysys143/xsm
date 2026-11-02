@@ -217,8 +217,10 @@ class ProtocolTest(ProtocolFixture):
         value = self.operation(receiver, 'xsm_files', storage_id=metadata['storage_id'],
                                entry_id=entry['id'], encoding='base64')
         self.assertEqual(base64.b64decode(value['content']), data)
-        with self.assertRaises(FileError):
+        from xsm.operation_schema import ToolError
+        with self.assertRaises(ToolError) as denied:
             self.operation(sender, 'xsm_files', storage_id=metadata['storage_id'], entry_id=entry['id'])
+        self.assertEqual(denied.exception.data['file_error']['code'], 'owner-mismatch')
         record = self.connection.sessions[receiver['session']].record
         self.assertNotEqual(handoff.status(record, packet['claims'][0]['id'])['status'], 'acknowledged')
         self.operation(receiver, 'xsm_ack', tokens=[packet['claims'][0]['token']])

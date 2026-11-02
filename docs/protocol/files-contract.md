@@ -49,3 +49,13 @@ or null. Neither is a new permission. source paths remain private metadata outsi
 the wire manifest. Readable retained copies are distinct from permission to resend
 an expired frozen packet. Canonical-byte lookup performs the same copy ownership
 and integrity checks as the existing manifest read.
+
+## Lookup failures
+
+A missing retained copy is an operation-domain refusal, returned as -32602 with
+`error.data.file_error.code="copy-not-found"`. Other known file failures keep their
+machine-readable FileError code in the same field, for example owner-mismatch or
+digest-mismatch. They do not expose server paths and do not acknowledge an inbox
+original. A truly unexpected storage/IO exception still follows the generic internal
+error contract. Missing-copy refusal does not establish rollback, permission to
+replace a frozen intent, or permission to resend the body automatically.

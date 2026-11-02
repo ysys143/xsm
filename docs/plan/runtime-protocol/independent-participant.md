@@ -90,3 +90,19 @@ quota/retention 전수와 backend fault 전체도 이 표본의 통과 범위가
 
 이는 v3/v5 독립 구현자가 수행한 검사가 아니다. clock rollback·application 경합·
 실제 native 질문 수집까지 검증한 것으로 확대하지 않는다.
+
+## v6 manifest bytes의 독립 소비
+
+4ccc745 동결본과 새 공개 file result 계약만 제공한 독립 구현자가 세 결과 종류,
+공급된 bytes의 SHA-256과 manifest 전체 값·entry bytes·reference 결속을 검증했다.
+새 v6 파일 4개만 추가했고 기존 14개 소스와 이전 실패 증거는 보존했다. 부모도
+같은 동결본에서 public uploads 42회와 자체 2개 시나리오·48 checkpoint를 재실행해
+통과했다(independent-parent-results-v6/summary.json). 자체 decoder 14개와 변이
+6개도 부모가 재실행했다(independent-parent-local-v6.json). 공통 명령은 기존
+mock 25개/변이 8개에 v6의 14개/변이 6개를 더한다.
+
+v6가 관찰한 없는 storage 조회의 -32603은 그 동결본의 관찰이며 전용 domain
+코드는 당시 명세에 없었다. 이후 부모가 현재 코드에서 missing-copy를 별도
+도메인 오류로 고친 사실과 구분한다. v6 검증 결과·기대값을 새 서버에 맞춰
+과거 통과로 바꾸지 않았다. 실제 저장소 손상 주입과 모든 domain·native runtime
+인증은 독립 구현의 통과 범위가 아니다.

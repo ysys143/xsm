@@ -2310,3 +2310,32 @@ O_NOFOLLOW/regular-file/UID 검사로 거부했다(protocol-owner-lock-red.log).
 (generic-participant-final-core.log). 두 private-service 검사는 이 공통 수에
 합치지 않았다. 이번 변경의 Linux 재검증과 물리 머신·실제 native model/UI
 검증은 별도 미완이며, 이전 4ccc745 Linux 통과를 가져다 쓰지 않는다.
+
+## 없는 사본 조회의 도메인 오류
+
+독립 v6가 유효한 모양의 없는 storage ID 조회에서 FileNotFoundError가 -32603으로
+돌아오는 것을 관찰했다. 파일 load 경계의 ENOENT를 copy-not-found FileError로
+바꾸고, xsm_files는 알려진 file error를 ToolError.data.file_error.code로 보낸다.
+오류 시 사본 경로나 원문을 반환하지 않는다. 예상 밖 IO 오류의 내부 오류 경로는
+유지하며, 조회 거부가 rollback/자동 재전송의 근거가 되지는 않는다.
+
+라이브러리와 실제 wire의 red를 보존했다(file-missing-copy-{red,wire-red}.log).
+새 wire 검사는 -32602와 machine code를 확인한 뒤 같은 연결에서 원래 claim을
+ACK해 조회 실패가 소비나 연결 종료가 되지 않음을 확인한다. 파일/material 계약
+회귀 77개와 실제 stdio 3개가 통과했다(file-missing-copy-{green,wire-green}.log).
+초회 공통 검사는 owner-mismatch의 옛 raw FileError 기대값 1개로 실패했다
+(file-domain-error-final-core.log). 이를 실제 frontend ToolError와 구조화된 기존
+owner-mismatch code로 대조하도록 바꿨으며, 새 최종 공통 결과는 별도 기록한다.
+
+최종 공통 578개(핵심 401/Python 50/Node 127), 독립 mock 39개·변이 14개가
+63.035초에 통과했다(file-domain-error-verified-core.log). 독립 v6의 새 decoder와
+현재 서버의 domain 오류 수정은 버전별로 분리해 보존했다.
+
+앞서 skip했던 self-host relay 표본은 Cargo.lock의 official iroh-relay 1.4.1을
+private HOME/CARGO_HOME/target에서 준비한 뒤 실제 1개가 15.847초에 통과했다.
+그 후 동결 3a1cdf5의 전체 network suite 237개를 relay 활성 조건으로 다시 실행해
+skip 없이 257.036초에 통과했다(generic-network-with-relay-v2.log/json). 릴리즈용
+git archive가 tests를 제외해 처음 재실행 입력이 import 실패한 것도 보존했고,
+테스트 파일은 같은 commit의 git show에서 복원해 동결했다. 이 표본은 model 0,
+로컬 private 실제 relay/QUIC이며 최신 missing-copy 수정이나 실제 native/물리
+머신/외부 messenger 검증으로 확대하지 않는다.

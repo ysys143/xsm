@@ -238,6 +238,8 @@ class OperationService:
                     manifest_bytes=args.get('manifest_bytes', False))
             except UnicodeError as exc:
                 raise ToolError("binary copy: request encoding=base64") from exc
+            except files.FileError as exc:
+                raise ToolError(str(exc), data={'file_error': {'code': exc.code}}) from exc
             return json.dumps(result, ensure_ascii=False)
         if name == "xsm_decision_status":
             from . import decisions

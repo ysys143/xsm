@@ -47,6 +47,10 @@ class RealProtocolTests(unittest.IsolatedAsyncioTestCase):
                 canonical = await client.operation_call(b['session'], 'xsm_files', {
                     'storage_id': copy['storage_id'], 'manifest_bytes': True})
                 self.assertEqual(hashlib.sha256(base64.b64decode(canonical['content'], validate=True)).hexdigest(), copy['sha256'])
+                with self.assertRaises(RpcError) as missing:
+                    await client.operation_call(b['session'], 'xsm_files', {'storage_id': '0' * 32})
+                self.assertEqual(missing.exception.code, -32602)
+                self.assertEqual(missing.exception.data['file_error']['code'], 'copy-not-found')
                 ack = await client.operation_call(b['session'], 'xsm_ack', {
                     'tokens': [claim['token'] for claim in pack['claims']]})
                 self.assertEqual(ack['acked'], ['four-mib'])

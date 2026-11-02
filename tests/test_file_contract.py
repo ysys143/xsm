@@ -56,3 +56,9 @@ class FileContractTest(TempState):
         with self.assertRaises(self.f.FileError):
             self.f.read_result(self.me, self.manifest['id'], self.manifest['files'][0]['id'],
                                outgoing=True, manifest_bytes=True)
+
+    def test_missing_copy_is_a_typed_domain_failure(self):
+        for outgoing in (False, True):
+            with self.subTest(outgoing=outgoing), self.assertRaises(self.f.FileError) as error:
+                self.f.read_result(self.me, '0' * 32, outgoing=outgoing)
+            self.assertEqual(error.exception.code, 'copy-not-found')
