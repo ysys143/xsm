@@ -191,7 +191,7 @@ class OwnedWorkerTest(test_xsm.TempState):
             {'type': 'thread.started', 'thread_id': context['session_seed']},
             {'type': 'item.completed', 'item': {'type': 'agent_message', 'text': 'a Codex result'}},
             {'type': 'turn.completed'}])
-        for runtime in ('pi', 'openclaw', 'future-runtime'):
+        for runtime in ('openclaw', 'future-runtime'):
             worker = dict(self.worker, runtime=runtime)
             with self.subTest(runtime=runtime, stage='argv'), \
                     self.assertRaisesRegex(workers.WorkerError, 'unsupported owned native runtime'):
@@ -201,11 +201,12 @@ class OwnedWorkerTest(test_xsm.TempState):
                 workers._owned_native_result(worker, context, output)
         # A supported provider still cannot adopt a retained legacy descriptor or
         # parse another runtime's successful output as its own native result.
-        worker = dict(self.worker, runtime='opencode')
-        with self.assertRaisesRegex(workers.WorkerError, 'OpenCode.*admitted'):
-            workers._owned_argv(worker, context)
-        with self.assertRaisesRegex(workers.WorkerError, 'OpenCode.*admitted'):
-            workers._owned_native_result(worker, context, output)
+        for runtime, label in (('opencode', 'OpenCode'), ('pi', 'Pi')):
+            worker = dict(self.worker, runtime=runtime)
+            with self.subTest(runtime=runtime), self.assertRaisesRegex(workers.WorkerError, label + '.*admitted'):
+                workers._owned_argv(worker, context)
+            with self.subTest(runtime=runtime), self.assertRaisesRegex(workers.WorkerError, label + '.*admitted'):
+                workers._owned_native_result(worker, context, output)
 
     def test_unsupported_retained_worker_cannot_accept_a_new_execution(self):
         from xsm import workers

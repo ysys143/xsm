@@ -25,7 +25,8 @@ export default [
             "claude",
             "codex",
             "hermes",
-            "opencode"
+            "opencode",
+            "pi"
           ]
         },
         "dir": {

@@ -417,3 +417,46 @@ Pi 단위15개가 통과했고, macOS 전체는 Python491+SDK52+native38+Node145
 726개 및 독립 mock39/변이14개를85.034초에 통과했다
 (pi-worker-control-core-first.log). 이 변경의 Linux와 native CLI/owned 제공자,
 실제 모델·워커 재개/중단/하위 대화 검증은 여전히 미완이다.
+
+## Pi owned CLI 제공자와 문맥 분리
+
+Pi1.4.0 제공자를 고정 catalog에 추가했다. Managed 설치와 frontend hash,
+operator PATH 또는 절대 XSM_PI의 실제 버전을 확인한다. 기존0.58.1을
+대체 표본으로 사용하지 않는다. 공통 엔진에 runtime 이름별 분기를 넣지 않고
+기존 journal·사전 결속·결과 공개 경로를 사용한다.
+
+CLI는 --print --mode json과 정확한 --session-id UUID를 사용한다. 작업의
+session_seed 또는 이미 결속된 native ID만 전달하며 부분 ID·최근 세션 선택·
+--continue·--resume·--approve·도구/권한 덮어쓰기는 넣지 않는다. Native 저장은
+프로필의 owned-sessions/<worker ID>로 구분한다. stdin은 기존 엔진이 전달한다.
+
+실제 Pi CLI의 수락은 local provider fixture 요청1회, 거부는0회였다
+(pi-worker-cli-native/result.json). 거부 시 native CLI도 exit0이므로 종료 코드만
+성공 근거로 삼지 않는다. 같은 session header와 실제 assistant stop 답변,
+agent_end(willRetry=false), 마지막 agent_settled(aborted=false)가 필요하다.
+절단·오류·도구 호출·취소·재시도·다른 cwd/ID와 비어 있는 답변은 거부한다.
+
+공개 xsm_owned부터 실제 CLI까지의 첫10개 표본이 통과했고, 다른 work context
+분리를 추가한 v2는14개가 통과했다(pi-owned-native-fixture-v2/result.json).
+동일 문맥은 같은 ID로 재개되고 다른 문맥은 다른 ID를 사용했다. 두 ID는
+같은 논리 worker에 결속됐다. 정본 회신3개를 실제로 읽고 ACK했으며 같은
+request 재사용에는 provider 요청이 추가되지 않았다. Native 프로세스는
+각 turn마다 종료됐고 scripted provider 요청은 총3회다. 실제 LLM 추론이나
+기억력을 증명하는 표본이 아니며 API 키 과금 경로는 사용하지 않았다.
+
+재현 명령은 `python3 -B scripts/probe-pi-owned-native.py --native-cli <설치된
+Pi1.4.0 절대 경로> --output <새 경로>`다. 이 실제 스크립트로도14개를 통과했다
+(pi-owned-native-script/result.json). Local scripted assistant와 격리 홈만 쓰고
+기존 native 설정·권한을 변경하지 않는다. Unit7개와 기존 owned 검사를 합한
+22개도 통과했다. Aborted 상태를 수락하는 변이는 assertion2개로 검출했다
+(pi-owned-settled-mutant.log). 공개 스키마 검사도 통과했다(pi-owned-schema.json).
+
+macOS Python3.14.6 core는491+SDK52+native45+Node145=733개와 독립 mock39/
+변이14개를81.156초에 통과했다(pi-owned-core-first.log). 앞선448927c의
+Linux726개는 별도 표본이며 이 제공자의 Linux 검증으로 소급하지 않는다.
+
+실행 중 취소 검사는 미실행이다. 조사 결과 공통 owned API에는 cancel/stop
+action이 없고 workers.stop은 busy/unknown owned 서비스 제거를 거부한다.
+따라서 Pi 전용 kill로 이를 우회하지 않았으며 공통 owned 실행 취소 구현과
+각 runtime의 실제 중단 검증은 미완이다. 이 미결사항은 범위 제외가 아니다.
+Pi 실제 구독 모델·Linux native CLI·하위 대화·승인 UI와 전체 설치 행렬도 남는다.

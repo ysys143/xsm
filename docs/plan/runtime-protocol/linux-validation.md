@@ -570,3 +570,17 @@ mock39/변이14개가 통과했다. Python3.11.2는64.558초, Python3.14.10은
 이 표본은 OpenCode native CLI/provider의 공통 core 회귀다. Linux에서 실제
 OpenCode CLI·모델을 실행한 증거는 아니며 후속 종료 경합 수정도 포함하지
 않는다. 해당 두 범위는 별도 검증이 남아 있다.
+
+## Pi input gate 및 OpenCode 종료 경합 포함 (448927c)
+
+448927c 고정 번들의 SHA-256은
+2e92c62cbbb370ba50732c669dd6cfb38a7f43b44470642e2aecac9bb2ae1fc8다.
+Python491+SDK52+native38+Node145=726개와 독립 mock39/변이14개가 양쪽 Linux
+arm64 이미지에서 통과했다. Python3.11.2는67.297초,3.14.10은82.960초였다.
+컨테이너는 network none/cpu2/memory3g이며 모델 호출은0이다. 원시는
+deliverables/protocol-foundation/pi-input-gate-linux/ 아래 result.json 및
+{311,314}/protocol.log다. VM stopExit은0이며 종료를 확인했다.
+
+이 표본은88dda45의 OpenCode 종료 경합 수정을 포함하므로 앞 절에서 남은
+그 수정의 Linux core 검증을 보완한다. 실제 Linux native CLI 검증은 아니다.
+이번 표본 뒤에 추가된 Pi owned 제공자와733개 core는 포함하지 않는다.
