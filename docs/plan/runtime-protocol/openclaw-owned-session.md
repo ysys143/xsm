@@ -347,3 +347,29 @@ wait는 계속 timeout이었고, 대상의 providerStarted=false와 별도 정�
 816개와 독립 mock39/변이14개를80.745초에 통과했다
 (openclaw-queued-cancel-core.log). Native 일반 재시작 복구와 Linux/UI/메신저/
 공개 operation 및 전체 런타임 행렬은 계속 미완이다.
+
+## 공개 operation과 실제 inbox claim/ACK
+
+scripts/probe-openclaw-owned-protocol.py는 격리된 protocol serve 자식에 Python
+SDK로 연결하고 실제 session.open/events.subscribe/operation.call을 사용한다.
+xsm_owned의 create/run/status를 통해 native OpenClaw gateway를 실행했다.
+이 parent는 시험용 일반 프로토콜 참여자이며 native UI나 사람 답을 가장하지 않는다.
+
+openclaw-owned-protocol-first에서19개 검사가 통과했다. 같은 work_context는 같은
+native 세션을 재개했고 별도 문맥은 다른 세션이었다. 세 답변을 실제 xsm_inbox에서
+읽고 각각의 claim token을 xsm_ack에 전달해 소비했다. 정상 모델 turn을 task 성공으로
+승격하지 않았으며 request replay는 같은 reply ID를 반환하고 provider를 호출하지
+않았다. Fixture 요청3회, 실제 모델 추론0회, gatewayStopped=true다.
+
+재현은 위 owned 시험과 같은 --native-cli/--node/--output 인수로 새 script를
+실행한다. 이 결과는 공개 operation의 owned 정상 경로와 로컬 답변 소비를
+검증한다. 공개 operation의 전체 취소·오류 행렬, native UI·메신저와 전체
+런타임 조합을 검증한 것으로 확대하지 않는다.
+
+## 고정 커밋의 Linux 핵심 회귀
+
+1246d22의816개 core와 독립 mock39/변이14개가 Linux arm64 Python3.11.2에서
+64.549초,3.14.10에서82.391초로 통과했다. 시험 VM 종료 코드도0이다.
+원시는 openclaw-queued-cancel-linux이며 source archive hash와 재현 경계는
+linux-validation.md의 마지막 절에 기록했다. macOS native 실행 증거와 Linux
+fixture core를 섞어 실제 Linux gateway 지원 완료로 표시하지 않는다.

@@ -652,3 +652,19 @@ deliverables/protocol-foundation/owned-service-removal-linux/의 result.json,
 
 이는 service 제거의 lock/generation/미발행 보호와 journal 보존의 core 증거다.
 이후 OpenClaw 세션 계약/791개와 실제 Linux native worker 실행은 포함하지 않는다.
+
+## OpenClaw 제공자·취소·대기열 계약의 Linux core
+
+1246d22를 고정해 git archive와 같은 커밋의 root/SDK tests를 묶었다. 이전
+테스트 파일이나 현재 worktree를 섞지 않았다. Archive SHA256은
+2641f8da75c9050c96ba248c779660e7563d28eb7cc427102202e10e303a8b46이다.
+
+Python494+SDK52+native118+Node152=816개와 독립 mock39/변이14개가 두 Linux
+arm64 이미지에서 통과했다. Python3.11.2는64.549초,3.14.10은82.391초였다.
+Model0/network none/cpu2/memory3g와120초 기한을 유지했다. 원시는
+deliverables/protocol-foundation/openclaw-queued-cancel-linux/의 result.json,
+{311,314}/protocol.log와 start/stop.log다. VM stopExit은0이며 종료됐다.
+
+이 core는 OpenClaw native package를 fixture로 둔 실제 child/SDK loader/소켓/
+journal과 명세 검사를 포함한다. 실제 Linux OpenClaw gateway·모델·native UI·
+메신저나 p95 전달 지연을 검증한 것으로 확대하지 않는다.
