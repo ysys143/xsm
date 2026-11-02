@@ -12,7 +12,10 @@ parser=argparse.ArgumentParser(description='Pinned OpenClaw native backend run, 
 parser.add_argument('--native-cli',type=Path,required=True)
 parser.add_argument('--node',type=Path,required=True)
 parser.add_argument('--output',type=Path,required=True)
+parser.add_argument('--cancel',action='store_true',help='Cancel an exact running native request against the blocking provider fixture')
+parser.add_argument('--lose-cancel-confirmation',action='store_true',help='Inject private confirmation loss and reconcile retained native stop evidence')
 options=parser.parse_args()
+if options.lose_cancel_confirmation and not options.cancel:parser.error('--lose-cancel-confirmation requires --cancel')
 if not options.native_cli.is_absolute() or not options.node.is_absolute():parser.error('absolute native CLI and Node paths required')
 if json.loads((options.native_cli.parent/'package.json').read_text()).get('version')!='2026.10.9':parser.error('OpenClaw2026.10.9 package required')
 root=Path(tempfile.mkdtemp(prefix='xsm-openclaw-owned-create-')).resolve();out=options.output.absolute();out.mkdir(parents=True,exist_ok=False)
@@ -35,6 +38,8 @@ def save():(out/'result.json').write_text(json.dumps(report,indent=2)+'\n')
 def check(name,value):
  if not value:raise AssertionError(name)
  report['checks'].append(name);save()
+import threading,concurrent.futures
+blocking=threading.Event();entered=threading.Event();release=threading.Event()
 original_post=assistant.server.RequestHandlerClass.do_POST
 def observed_post(handler):
  rows=[]
@@ -47,7 +52,9 @@ def observed_post(handler):
   valid.append(bool(binding.get('native_session_id')) and binding.get('child_pid')==child.get('pid')
     and binding.get('child_lstart')==child.get('lstart')==identity.lstart(child.get('pid')))
  report['preProviderBindingObservations'].append(len(valid)==1 and all(valid));save()
- return original_post(handler)
+ if blocking.is_set():entered.set();release.wait(45)
+ try:return original_post(handler)
+ except (BrokenPipeError,ConnectionResetError):pass
 assistant.server.RequestHandlerClass.do_POST=observed_post
 log=(out/'gateway.log').open('w');process=None
 try:
@@ -83,10 +90,51 @@ try:
  check('provider saw durable exact live child binding',len(report['preProviderBindingObservations'])==3 and all(report['preProviderBindingObservations']))
  check('logical worker indexes exact native IDs',set(workers.load('native-openclaw')['owned_sessions'])=={first['result']['native_session_id'],separate['result']['native_session_id']})
  report['providerFixtureRequests']=len(before)
+ if options.cancel:
+  from xsm import owned_requests
+  original_confirm=owned_requests.confirm_native_stop
+  if options.lose_cancel_confirmation:
+   def lost_confirm(*args,**kwargs):raise OSError('explicit lost private confirmation fixture')
+   owned_requests.confirm_native_stop=lost_confirm
+  blocking.set()
+  with concurrent.futures.ThreadPoolExecutor(max_workers=1) as pool:
+   future=pool.submit(workers.run_owned,'native-openclaw',owner,'Blocking native cancellation fixture.',
+      work_context='cancel-work',request_id='cancel',reply_sender=lambda worker,row:workers.publish_owned(worker,row,wake=False))
+   try:
+    check('native cancellation target entered provider',entered.wait(20))
+    intruder=registry.upsert('codex',str(root/'intruder'),'different-native-sender',os.getpid(),str(root/'workspace'))
+    try:workers.cancel_owned('native-openclaw',intruder,'cancel')
+    except (workers.WorkerError,owned_requests.OwnedError):check('different sender cannot cancel native request',True)
+    else:raise AssertionError('foreign sender cancellation accepted')
+    started=time.monotonic()
+    intent=workers.cancel_owned('native-openclaw',owner,'cancel')
+    check('provider advertises exact native cancellation',intent['cancellation']['native_supported'] is True)
+    check('intent is not a native stop',intent['cancellation']['native_state']=='unverified')
+    stopped=future.result(timeout=35)
+    report['nativeCancelSeconds']=round(time.monotonic()-started,3)
+   except BaseException:
+    release.set();raise
+  owned_requests.confirm_native_stop=original_confirm
+  check('stopped native turn does not create task result',stopped['status']=='unknown' and stopped['result'] is None and stopped['reply_id'] is None)
+  if options.lose_cancel_confirmation:
+   check('lost private confirmation retains native uncertainty',stopped['cancellation']['native_state']=='unverified' and stopped['slot_occupied'] is True)
+   count=len(report['preProviderBindingObservations'])
+   stopped=workers.reconcile_owned('native-openclaw',owner,'cancel')
+   check('retained exact native evidence recovers stop',stopped['cancellation']['recovered_from']=='native-output')
+   check('reconciliation does not execute another turn',len(report['preProviderBindingObservations'])==count)
+  check('native stop separately confirmed',stopped['cancellation']['native_state']=='stopped')
+  check('native stopped child releases occupied slot',stopped['slot_occupied'] is False)
+  check('actual stopped child return code retained',stopped['child']['returncode'] in (1,130))
+  check('cancel provider saw exact durable child binding',len(report['preProviderBindingObservations'])==4 and all(report['preProviderBindingObservations']))
+  (out/'cancel-journal.json').write_text(json.dumps(stopped,indent=2)+'\n')
+  report['cancellation']=stopped['cancellation'];report['providerHttpEntries']=len(report['preProviderBindingObservations'])
+  release.set()
+
  report['status']='passed'
 except BaseException as error:
  report.update(status='failed',failure_type=type(error).__name__,failure=str(error));save()
 finally:
+ release.set()
  if process and process.poll() is None:
   os.killpg(process.pid,signal.SIGTERM)
   try:process.wait(timeout=10)

@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import json
 import os
+import math
 
 
 class NativeSessionError(ValueError):
@@ -120,7 +121,7 @@ def accepted_run(reply, locator, request_id):
 def completed_run(reply, locator, run_id):
     """Accept only a completed native receipt for this bound session and turn."""
     receipt = reply.get('terminalReceipt')
-    if (reply.get('status') != 'ok' or reply.get('runId') != run_id
+    if (reply.get('status') != 'ok' or reply.get('stopReason') in ('rpc', 'aborted') or reply.get('runId') != run_id
             or not isinstance(receipt, dict) or receipt.get('runId') != run_id
             or receipt.get('turnId') != run_id
             or receipt.get('sessionId') != locator.get('native_session_id')):
@@ -132,3 +133,39 @@ def completed_run(reply, locator, run_id):
             or (terminal['disposition'] == 'visible' and not isinstance(terminal.get('text'), str))):
         raise NativeSessionError('native terminal reply conflicts with receipt')
     return dict(terminal)
+
+
+def cancellation_params(locator, run_id):
+    return {'agentId': _text(locator.get('agent_id'), 'agent ID'),
+            'sessionKey': _text(locator.get('native_session_key'), 'session key'),
+            'runId': _text(run_id, 'run ID'), 'preserveSideRuns': True}
+
+
+def stopped_run(terminal, listing, locator, run_id, abort):
+    """Abort acceptance alone is insufficient; require exact native settlement."""
+    if (not isinstance(abort, dict) or abort.get('ok') is not True or abort.get('aborted') is not True
+            or not isinstance(abort.get('runIds'), list) or run_id not in abort['runIds']):
+        raise NativeSessionError('native abort was not accepted for this run')
+    if (terminal.get('runId') != run_id or terminal.get('status') != 'error'
+            or terminal.get('stopReason') != 'rpc'):
+        raise NativeSessionError('native abort has no stopped terminal observation')
+    start, end = terminal.get('startedAt'), terminal.get('endedAt')
+    if (any(type(value) not in (int, float) or not math.isfinite(value) or value <= 0 for value in (start, end))
+            or end < start):
+        raise NativeSessionError('native abort has no execution settlement times')
+    rows = listing.get('sessions')
+    if not isinstance(rows, list):
+        raise NativeSessionError('native abort session observation unavailable')
+    matches = [row for row in rows if isinstance(row, dict) and row.get('key') == locator.get('native_session_key')]
+    if len(matches) != 1:
+        raise NativeSessionError('native abort session observation is ambiguous')
+    row = matches[0]
+    if (row.get('sessionId') != locator.get('native_session_id') or row.get('agentId') != locator.get('agent_id')
+            or row.get('lifecycleRevision') != locator.get('native_lifecycle_revision')
+            or row.get('lastRunId') != run_id or row.get('status') != 'killed'
+            or row.get('abortedLastRun') is not True or row.get('hasActiveRun') is not False
+            or row.get('activeRunIds') != [] or row.get('startedAt') != start or row.get('endedAt') != end):
+        raise NativeSessionError('native abort session identity or settlement changed')
+    fields = ('key', 'sessionId', 'agentId', 'lifecycleRevision', 'lastRunId', 'status',
+              'abortedLastRun', 'hasActiveRun', 'activeRunIds', 'startedAt', 'endedAt')
+    return {name: row[name] for name in fields}

@@ -2,7 +2,8 @@
 
 상태: 미완. xsm_owned의 실행 provider는 Claude/Codex와 catalog에 등록된
 Hermes/OpenCode/Pi/OpenClaw다. OpenClaw는 정상 실행·재개·결과 저장을 실제
-owned journal에서 확인했으며 native 취소·복구는 미완이다. 아래 초기
+owned journal에서 확인했다. macOS 실행 중 native 취소와 확인 유실 readback도
+통과했으며 native 대기열·일반 재시작 복구·전체 행렬은 미완이다. 아래 초기
 조사 기록과 뒤의 구현·검증 기록을 구분하며 전체 지원 완료로 읽지 않는다.
 이 문서는 승인된 전체 계획의 worker 연결에 필요한 실제 native 증거와
 제약을 기록한다. 런타임·기능·운영체제 범위를 제외하지 않는다.

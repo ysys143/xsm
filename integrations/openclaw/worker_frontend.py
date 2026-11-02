@@ -12,7 +12,7 @@ from . import worker_session as session
 
 
 def run_turn(rpc, control, *, agent_id, cwd, message, request_id,
-             native_session_id=None, wait_timeout_ms=20000, model=None, thinking=None):
+             native_session_id=None, wait_timeout_ms=500, model=None, thinking=None):
     if type(wait_timeout_ms) is not int or not 1 <= wait_timeout_ms <= 30000:
         raise session.NativeSessionError('invalid native observation timeout')
     # Validate task fields before any mutation or native context allocation.
@@ -32,17 +32,30 @@ def run_turn(rpc, control, *, agent_id, cwd, message, request_id,
     if thinking is not None:
         params['thinking'] = session._text(thinking, 'thinking')
     control.bind(locator['native_session_id'])
+    if control.cancellation_requested():
+        return {'locator': locator, 'cancelled': True, 'native_not_started': True,
+                'admission': None, 'terminal': None}
     admission = rpc('agent', params)
     run_id = session.accepted_run(admission, locator, request_id)
+    abort = None
     while True:
+        if control.cancellation_requested() and abort is None:
+            observed = rpc('chat.abort', session.cancellation_params(locator, run_id))
+            if observed.get('ok') is True and observed.get('aborted') is True:
+                abort = observed
         terminal = rpc('agent.wait', {'runId': run_id, 'timeoutMs': wait_timeout_ms})
         if terminal.get('runId') != run_id:
             raise session.NativeSessionError('native observation changed run identity')
-        if terminal.get('status') not in ('timeout', 'pending'):
+        if (terminal.get('status') not in ('timeout', 'pending')
+                or (terminal.get('stopReason') == 'rpc' and 'endedAt' in terminal)):
             break
         # An observation timeout is not a terminal run or a reason to resubmit.
         # Pending approval may return immediately; bound the observation rate.
         if terminal['status'] == 'pending':
             time.sleep(.2)
+    if abort is not None and terminal.get('status') == 'error':
+        proof = session.stopped_run(terminal, rpc('sessions.list', {}), locator, run_id, abort)
+        return {'locator': locator, 'admission': admission, 'terminal': terminal, 'abort': abort,
+                'stop_observation': proof, 'cancelled': True, 'native_not_started': False}
     reply = session.completed_run(terminal, locator, run_id)
     return {'locator': locator, 'admission': admission, 'terminal': terminal, 'reply': reply}

@@ -2,7 +2,8 @@
 
 현재 상태: OpenClaw2026.10.9 제공자를 catalog에 등록했고 실제 owned journal에서
 정상 실행·같은 문맥의 재개·다른 문맥 분리·결과 저장·요청 replay를 확인했다.
-Native 취소·복구와 전체 OS/모드 행렬은 미완이다. 아래 초기 시험과 거부 기록도
+실행 중 native 취소와 확인 유실 readback을 macOS에서 확인했다. Native 대기열의
+취소·일반 재시작 복구와 전체 OS/모드 행렬은 미완이다. 아래 초기 시험과 거부 기록도
 보존하며, 현재 통합 증거는 마지막 절을 따른다.
 
 OpenClaw2026.10.9의 실제 gateway에서 모델 실행 없이 세션 생성·재조회를
@@ -232,7 +233,7 @@ SDK package fixture의 별도 unit4개는 common journal 재개/replay, 잘못�
 Context epoch 검사를 제거한 변이는 assertion1개로 검출됐다
 (openclaw-owned-provider-mutant.log).
 
-Native 취소 지원 flag는 아직 선언하지 않았다. 취소 의도를 native 중단으로
+이 정상 실행 연결 시점에는 native 취소 지원 flag를 선언하지 않았다. 취소 의도를 native 중단으로
 승격하지 않으며, native 미확인 상태를 확인된 정지나 업무 결과로 만들지 않는다.
 취소·native 상태 조회를 통한 복구·전체 Linux/모드/프로토콜 행렬은 남아 있다.
 
@@ -248,3 +249,58 @@ openclaw-owned-native-admitted-result다. 같은23개 검사를 통과했고 결
 Python494+SDK52+native109+Node152=807개와 독립 mock39/변이14개를81.593초에
 통과했다(openclaw-owned-provider-core-final.log). 이번 제공자 연결을 포함한
 Linux/native UI/공개 operation 왕복 검증은 아직 미실행이다.
+
+## 실행 중 native 취소와 확인 유실 복구
+
+고정 native gateway의 chat.abort에 정확한 runId와 canonical sessionKey/agentId를
+보내고 preserveSideRuns=true로 요청한다. Abort acceptance만으로 중단을 보고하지
+않는다. 실제 agent.wait의 같은 runId, status=error, stopReason=rpc와 종료 시각,
+native 세션 row의 같은 ID/revision/lastRunId, status=killed, abortedLastRun=true,
+hasActiveRun=false, activeRunIds=[] 및 같은 시작·종료 시각을 함께 요구한다.
+정지 증거에는 해당 row의 필요한 필드만 남기며 다른 대화의 목록은 저장하지 않는다.
+Native stop shape는 openclaw-cancel-shape-native에서 직접 확인했다.
+
+Frontend는 같은 run의 wait를 관측하면서 취소 의도를 확인한다. Native 실행 전
+private intent를 확인하면 agent를 호출하지 않은 사실을 별도로 남긴다. 실제
+native 실행 중이면 위 정지 증거가 모인 후 marker를 먼저 stdout에 남기고 private
+report_stopped를 보낸다. CLI exit1/130만으로 정지를 판단하지 않는다. 정상 완료가
+취소와 경쟁해 이기면 실제 native reply를 유지한다. RPC/aborted stop reason의
+응답은 성공 답변으로 승격하지 않는다.
+
+Native cancellation capability를 제공자 descriptor에 추가했다. Common engine의
+intent·소유 발신자·child PID/lstart·context epoch·retained-output readback 검증을
+그대로 사용하며 runtime 분기는 추가하지 않았다. 정지됐어도 이미 일어난 업무
+효과는 unknown으로 유지하고 task result/reply를 만들지 않는다.
+
+실제 재현은 위 owned 시험 명령에 --cancel을, 확인 유실은 추가로
+--lose-cancel-confirmation을 지정한다. 두 표본 모두 격리 profile과 로컬 차단형
+SSE fixture만 썼다. 실제 모델 추론0회이며 gateway는 종료했다.
+
+- openclaw-owned-cancel-native-second:32개 검사 통과. Native provider 요청이
+  실제 시작된 뒤 취소했고2.628초에 정지 확인·child 종료를 관측했다. 슬롯을
+  해제하고 업무 unknown/result=None/reply=None을 유지했다.
+- openclaw-owned-cancel-native-lost:35개 검사 통과. Private 확인에 오류를 주입한
+  뒤 native_state=unverified와 슬롯 점유를 확인했다. 같은 child의 보존 출력에서
+  정확한 native 정지 증거를 읽어 복구했고 새 native 실행은 없었다.
+
+각 표본의 정상 완료 fixture 요청은3회, 차단된 취소 대상까지 HTTP 진입은4회다.
+첫 취소 표본은 다른 발신자의 요청이 실제 OwnedError로 거부됐지만 시험기가 이를
+잘못 처리해 실패했다(openclaw-owned-cancel-native-first). 소유자의 취소까지
+실행하지 못했으며 성공으로 계산하지 않는다. 실제 오류형을 처리하고 실패 시
+차단 fixture를 먼저 풀도록 고친 뒤 위 새 표본을 실행했다.
+
+별도 unit은 잘못된 run/session/revision·계속 실행 중인 row·일반 오류·다른
+epoch·이미 시작된 실행을 미시작으로 표시한 경우를 거부한다. 마지막 run ID
+검사를 제거한 변이는 assertion1개로 검출됐다
+(openclaw-cancel-generation-mutant.log). 현재 readback 코드로 위 두 실제 보존
+출력을 다시 검증했다(openclaw-cancel-current-readback.log).
+
+Native가 수락했지만 아직 실행하지 않은 대기열 취소는 실제 검증·보강이 남아
+있다. Terminal rpc stop reason이 있는 timeout을 단순 관측 timeout으로 무한
+재관측하지 않지만, 실행 중 정지 증거를 충족하지 않으면 unknown으로 남긴다.
+미시작 marker의 실제 child 경로, native 재시작 뒤 상태 조회, Linux/공개 operation/
+UI·메신저 전체 검증도 미완이다.
+
+최종 macOS core는 Python494+SDK52+native116+Node152=814개와 독립 mock39/
+변이14개를80.348초에 통과했다(openclaw-owned-cancellation-core-final.log).
+앞선811개 표본82.582초에는 마지막 readback unit3개가 없었으므로 별도 보존했다.

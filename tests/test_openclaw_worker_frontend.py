@@ -87,3 +87,38 @@ class OpenClawWorkerFrontendTest(unittest.TestCase):
         with self.assertRaises(NativeSessionError):
             self.run_turn()
         self.assertEqual(sum(m == 'agent' for m, _ in self.calls), 1)
+
+    def test_pending_intent_before_admission_never_submits_model(self):
+        self.control.cancellation = lambda: True
+        result = self.run_turn()
+        self.assertTrue(result['native_not_started'])
+        self.assertEqual([m for m, _ in self.calls], ['sessions.create'])
+
+    def test_running_cancel_requires_exact_native_settlement(self):
+        self.control.cancellation = lambda: any(m == 'agent' for m, _ in self.calls)
+        self.waits = [dict(runId='request-1',status='error',stopReason='rpc',startedAt=100,endedAt=200)]
+        def rpc(method, params):
+            if method == 'chat.abort':
+                self.calls.append((method,params))
+                self.assertEqual(params,dict(agentId='main',sessionKey='agent:main:dashboard:host-key',
+                                             runId='request-1',preserveSideRuns=True))
+                return dict(ok=True,aborted=True,runIds=['request-1'])
+            result = self.rpc(method,params)
+            if method == 'sessions.list':
+                result['sessions'][0].update(lastRunId='request-1',status='killed',abortedLastRun=True,
+                    hasActiveRun=False,activeRunIds=[],startedAt=100,endedAt=200)
+            return result
+        result = self.run_turn(rpc)
+        self.assertTrue(result['cancelled'])
+        self.assertFalse(result['native_not_started'])
+        self.assertNotIn('reply',result)
+
+    def test_completion_wins_over_accepted_abort_intent(self):
+        self.control.cancellation = lambda: any(m == 'agent' for m, _ in self.calls)
+        def rpc(method, params):
+            if method == 'chat.abort':
+                return dict(ok=True,aborted=True,runIds=['request-1'])
+            return self.rpc(method,params)
+        result = self.run_turn(rpc)
+        self.assertNotIn('cancelled',result)
+        self.assertEqual(result['reply']['text'],'fixture native result')

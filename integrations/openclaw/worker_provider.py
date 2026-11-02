@@ -10,13 +10,15 @@ import sys
 import uuid
 
 from xsm.native_workers import ProviderError
-from .worker_cli import parse_result
+from .worker_cli import parse_result, parse_cancellation
 from .worker_session import NativeSessionError
 from .worker_transport import NativeRpc
 
 RUNTIME = 'openclaw'
 VERSION = '2026.10.9'
 CONTROL_PROTOCOL = 1
+CANCELLATION_PROTOCOL = 1
+CANCELLATION_EXIT_CODES = (1, 130)
 FILES = ('xsm.mjs', 'worker_cli.py', 'worker_frontend.py', 'worker_rpc.mjs',
          'worker_transport.py', 'worker_session.py')
 
@@ -82,7 +84,7 @@ def prepare(home):
     except NativeSessionError as error:
         raise ProviderError('native OpenClaw agent roster unavailable') from error
     return {'executable': executable, 'node': node, 'python': sys.executable,
-            'version': VERSION, 'control_protocol': CONTROL_PROTOCOL, 'agent_id': selected,
+            'version': VERSION, 'control_protocol': CONTROL_PROTOCOL, 'cancellation_protocol': CANCELLATION_PROTOCOL, 'agent_id': selected,
             'runtime_root': str(root), 'frontend': str(frontend),
             'frontend_sha256': hashes['worker_cli.py'], 'binding_hashes': hashes}
 
@@ -125,5 +127,13 @@ def result(worker, context, output):
     descriptor = _admitted(worker)
     try:
         return parse_result(output, context, agent_id=descriptor['agent_id'], cwd=worker['cwd'])
+    except NativeSessionError as error:
+        raise ProviderError(str(error)) from error
+
+
+def cancellation_result(worker, context, output):
+    descriptor = _admitted(worker)
+    try:
+        return parse_cancellation(output, context, agent_id=descriptor['agent_id'], cwd=worker['cwd'])
     except NativeSessionError as error:
         raise ProviderError(str(error)) from error

@@ -65,6 +65,7 @@ class OpenClawWorkerSessionTest(unittest.TestCase):
                      terminalReply=dict(disposition='visible', text='native result'))
         self.assertEqual(session.completed_run(reply, locator, 'request-1'), reply['terminalReply'])
         variants = [dict(reply, status='timeout'), dict(reply, runId='other'),
+                    dict(reply, stopReason='rpc'), dict(reply, stopReason='aborted'),
                     dict(reply, terminalReceipt=None), dict(reply, terminalReply=None),
                     dict(reply, terminalReply=dict(disposition='visible', text=1)),
                     dict(reply, terminalReply=dict(disposition='silent'))]
@@ -73,3 +74,25 @@ class OpenClawWorkerSessionTest(unittest.TestCase):
         for variant in variants:
             with self.subTest(reply=variant), self.assertRaises(session.NativeSessionError):
                 session.completed_run(variant, locator, 'request-1')
+
+    def test_native_stop_requires_exact_settled_run_and_unchanged_session(self):
+        locator = session.created_locator(self.created, 'main', self.cwd)
+        terminal = dict(runId='run-1', status='error', stopReason='rpc', startedAt=100, endedAt=200)
+        abort = dict(ok=True, aborted=True, runIds=['run-1'])
+        row = dict(key=locator['native_session_key'], sessionId='native-id', agentId='main',
+                   lifecycleRevision='revision-1', lastRunId='run-1', status='killed',
+                   abortedLastRun=True, hasActiveRun=False, activeRunIds=[], startedAt=100, endedAt=200,
+                   unrelatedPrivateData='must not be retained')
+        proof = session.stopped_run(terminal, dict(sessions=[row]), locator, 'run-1', abort)
+        self.assertNotIn('unrelatedPrivateData', proof)
+        for field, value in (('sessionId','other'), ('agentId','other'), ('lifecycleRevision','other'),
+                             ('lastRunId','other'), ('status','idle'), ('abortedLastRun',False),
+                             ('hasActiveRun',True), ('activeRunIds',['other']), ('endedAt',201)):
+            with self.subTest(field=field), self.assertRaises(session.NativeSessionError):
+                session.stopped_run(terminal, dict(sessions=[dict(row, **{field:value})]), locator, 'run-1', abort)
+        for changed in (dict(terminal,status='ok'), dict(terminal,stopReason='error'),
+                        dict(terminal,runId='other'), dict(terminal,endedAt=None), dict(terminal,endedAt=True)):
+            with self.subTest(terminal=changed), self.assertRaises(session.NativeSessionError):
+                session.stopped_run(changed, dict(sessions=[row]), locator, 'run-1', abort)
+        with self.assertRaises(session.NativeSessionError):
+            session.stopped_run(terminal, dict(sessions=[row]), locator, 'run-1', dict(abort,aborted=False))
