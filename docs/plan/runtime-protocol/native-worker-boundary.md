@@ -125,3 +125,38 @@ first/resume-events.json). 전체 stderr는 private profile에0600으로 보관�
 프로필의 gateway를 찾거나 종료하지 않았다. 이 표본은 정상 생성/재개 경로며
 gateway 재시작 뒤 재개, 프로세스 중단 후 unknown readback, 실제 XSM owned
 provider 또는 worker 도구 송수신의 증거는 아니다.
+
+## Native CLI 명령/결과 연결 모듈
+
+integrations/hermes/worker_cli.py에 native CLI 명령 생성과 엄격한 terminal 결과
+해석을 추가했다. 이는 권한·신원·journal을 대신하지 않는 transport 코드이며
+아직 xsm_owned runtime 선택에 연결하지 않았다. 첫 실행은 admitted executable과
+workspace를 받고 query는 stdin으로만 전달한다. Resume는 소유한 opaque native
+ID만 사용하며 새 cwd/model/permission 옵션으로 기존 native launch를 덮지 않는다.
+빈 resume ID나 잘못된 ID를 새 세션 생성으로 바꾸지 않는다.
+
+결과는 실제 system/init과 마지막의 단일 result, native exit0, 비어 있지 않은
+실제 answer, 동일한 native ID를 요구한다. 중복 JSON key·NaN·실패·불완전한
+출력은 거부하고 본문의 JSON은 실행 metadata로 해석하지 않는다. Native UUID를
+강제하지 않는다. Task outcome 해석과 provider admission은 공통 서비스의 별도
+책임이며 이 모듈은 현재 provider 활성화를 뜻하지 않는다.
+
+순수 framing 검사7개와 임시 소스 변이3개(native ID 교체 허용, 실패 result 허용,
+빈 resume를 새 launch로 변환)를 확인했다. 세 변이 모두 assertion 실패로
+검출됐고 원본은 변경하지 않았다. 증거는 hermes-worker-cli-contract-unit.log와
+hermes-worker-cli-mutants.json 및 각 mutant log다.
+
+이 모듈이 실제 첫 CLI 출력도 읽게 하고, build_command가 만든 native 명령으로
+앞서 종료한 private gateway를 다시 시작해 같은 SID를 재개했다. 이전 turn에만
+제시한 token을 실제 모델이 기억했다. 새 terminal 결과도 같은 모듈로 해석했고
+4개 검사가14.022초에 통과했다(hermes-cli-adapter-resume/result.json).
+별도 read-only native DB audit에서 cwd 보존, 누적 API calls3/tool0,
+custom/127.0.0.1 경로도 확인했다(native-db-audit.json). Served model은 미확인이다.
+시험 gateway는 native 소유권을 확인한 PID만 종료해 실제 생존 검사로 종료를
+확인했다. 최초 임시 probe의 package import 실패는 모델/하위 프로세스 시작 전
+발생했으며 hermes-cli-adapter-resume-preflight.log로 보존했다.
+
+새 core gate는 Python486+SDK50+Node127=663개 및 독립 mock39/변이14를
+84.859초에 통과했다(hermes-worker-cli-contract-core.log). 일반 provider 등록,
+profile/binary admission, XSM owned journal/실제 회신 연결은 다음 필수 구현으로
+남는다. 이 모듈과 CLI 표본만으로 Hermes worker 지원 완료를 표시하지 않는다.

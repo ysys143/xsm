@@ -2485,3 +2485,16 @@ identity를 같은 규칙으로 정규화해 비교하고, 선택한 정확한 �
 실제 저장 경로로 확인했다(owned-generic-reply-after.log). 기존 native fake CLI
 검사9개를 핵심 gate에 넣은 뒤 총656개(Python479+SDK50+Node127), 독립 mock39 /
 변이14개가85.046초에 통과했다(owned-generic-reply-core.log).
+
+## Hermes native CLI framing 연결 (2026-11-02)
+
+Native CLI의 workspace/재개8개 실제 검사에 이어, 명령 생성·결과 해석 모듈을
+구현하고 그 모듈이 만든 실제 CLI 명령으로 gateway 재시작 뒤 같은 대화의
+문맥을 복구했다. 후속4개 검사와 read-only DB audit에서 같은 native SID와
+cwd 보존을 확인했다. 자세한 경계·실패 기록은 native-worker-boundary.md에 있다.
+
+모듈은 아직 owned runtime catalog나 실행에 연결하지 않았다. CLI의70자 native
+ID를 UUID로 취급하지 않으며, 빈 resume/실패 result/본문의 metadata 위조를
+명시적으로 거부한다. Framing7개와 의도적 변이3개가 검증됐고, 전체 핵심663개가
+84.859초에 통과했다. Provider/profile admission과 owned journal·회신 연결은
+계속 구현할 조건이다.

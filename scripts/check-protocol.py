@@ -23,6 +23,7 @@ MODULES = ["tests.test_question_service", "tests.test_send_service", "tests.test
            "tests.test_owned_interfaces", "tests.test_owned_workers", "tests.test_owned_native", "tests.test_owned_requests", "tests.test_owned_review_fixes",
            "tests.test_handoff_read_cache",
            "tests.test_hermes_binding",
+           "tests.test_hermes_worker_cli",
            "tests.test_openclaw_schema",
            "tests.test_host_install",
            "tests.test_host_ui_config", "tests.test_component_leases",
