@@ -775,3 +775,18 @@ mode별 출력에 보존했다. Network none/model0 조건이며 실제 모델·
 이번 batch에서 수신자 stale가 재현되지 않았다는 사실은 최초 실패의 원인을
 밝히지 않는다. 위 미해결 판정은 유지한다. 진행 중 gateway 재시작의 새 native
 run과 원 요청 사이 lineage, 전체 런타임 행렬도 아직 미완이다.
+
+## 공개 발견 결과 계약의 Linux core
+
+6e9af13b540aa96c5e42408f47b2051ad676493e를 고정한 discovery-contract-linux에서
+834개(Python497+SDK52+native133+Node152)가 Python3.11.2에서68.216초,
+Python3.14.10에서86.147초에 통과했다. Source archive SHA256은
+2d1938fda6a3f88ef1e816fb6cb2555dded5920ebdf581285a6c24d30fcfd043이다.
+독립 mock39/변이14는 별도 수치다. 두 환경 모두120초 기한을 지켰다.
+
+공개 stdio discovery suite의 정상·비공개 홈 노출·관측 출처 누락 검사를
+포함한다. Network none/model0/cpu2/memory3g를 유지했고 미실행 core0,
+VM stopExit=0이다. 원시는 deliverables/protocol-foundation/
+discovery-contract-linux/result.json과 core{311,314}/output/protocol.log다.
+Native runtime queue·UI·실제 모델·메신저·물리 원격 표본은 추가 실행하지
+않았으며 이 core 결과로 해당 미완 조건을 충족했다고 표시하지 않는다.

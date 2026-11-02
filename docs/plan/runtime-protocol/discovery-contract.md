@@ -41,8 +41,16 @@ repository mapping도 포함한다. Broker의 machine_name/origin_assurance 표�
 
 `python3 scripts/check-protocol.py`는834개(Python497+SDK52+native133+Node152)를
 82.957초에 통과했다(discovery-contract-core.log). 독립 mock39/변이14개는
-별도 수치다. 실행한 core는 macOS/Python3.14.6이며 이 변경의 Linux 실행이나
-전체 런타임 인증을 대신하지 않는다.
+별도 수치다. 실행한 core는 macOS/Python3.14.6이다.
+
+6e9af13b540aa96c5e42408f47b2051ad676493e를 고정한 Linux에서도 같은834개를
+Python3.11.2에서68.216초, Python3.14.10에서86.147초로 통과했다.
+Source archive SHA256은
+2d1938fda6a3f88ef1e816fb6cb2555dded5920ebdf581285a6c24d30fcfd043이다.
+두 core 모두 network none/model0/cpu2/memory3g이며 미실행 core0,
+VM stopExit=0이다(discovery-contract-linux/result.json 및 환경별 protocol.log).
+이는 공개 stdio 발견 검사를 포함한 core이며 native runtime 전체 행렬이나
+실제 원격/메신저 검증을 대신하지 않는다.
 
 원시 파일은 모두 deliverables/protocol-foundation/ 아래에 있다. Native profile과
 사용자 설정은 변경하지 않았다. 원격 예제는 구조 fixture이며 실제 원격 전달
