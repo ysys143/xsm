@@ -7,6 +7,7 @@ import argparse
 parser=argparse.ArgumentParser(description='Pi1.4.0 native owned lifecycle with an explicit loopback assistant fixture; no LLM or credentials.')
 parser.add_argument('--native-cli',type=Path,required=True)
 parser.add_argument('--output',type=Path,required=True)
+parser.add_argument('--lose-cancel-confirmation',action='store_true',help='Inject a stop-report failure and verify native-output recovery')
 options=parser.parse_args()
 if not options.native_cli.is_absolute() or not options.native_cli.is_file():parser.error('an existing absolute Pi1.4.0 CLI path is required')
 if options.output.exists():parser.error('output must be new; preserve prior evidence')
@@ -31,6 +32,7 @@ assistant.server.RequestHandlerClass.do_POST=controlled_post
 (profile/'settings.json').write_text(json.dumps({'defaultProvider':'xsm-fixture','defaultModel':'fixture','compaction':{'enabled':False},'retry':{'enabled':False}}))
 
 report={'status':'starting','scope':'actual public owned journal and Pi1.4.0 native CLI/control; scripted provider, model0','root':str(root),'started_at':time.time(),'checks':[],'served_model':None};
+report['lost_confirmation_injected']=options.lose_cancel_confirmation
 def save():(out/'result.json').write_text(json.dumps(report,indent=2)+'\n')
 def check(name,value):
  if not value:raise AssertionError(name)
@@ -42,6 +44,7 @@ async def main():
  try:
   installed=host_install.apply('pi',str(profile));report['runtime_root']=installed['runtime_root'];save()
   command=[sys.executable,'-B','-c',"import runpy,sys;sys.path.insert(0,sys.argv.pop(1));runpy.run_module('xsm',run_name='__main__')",str(repo),'protocol','serve','--stdio']
+  if options.lose_cancel_confirmation:command[3]="import runpy,sys\nsys.path.insert(0,sys.argv.pop(1))\nfrom xsm import owned_requests\noriginal=owned_requests.confirm_native_stop\ndef confirm(*args,**kwargs):\n if not kwargs.get('readback'):raise OSError('explicit lost-confirmation fixture')\n return original(*args,**kwargs)\nowned_requests.confirm_native_stop=confirm\nrunpy.run_module('xsm',run_name='__main__')\n"
   client=await XsmClient.connect(command,cwd=str(workspace),env=dict(os.environ))
   parent=await client.session_open(runtime='owned-reference',profile='private-owned-probe',conversation=nonce,cwd=str(workspace),capabilities=['messaging','inbox','events'])
   await client.events_subscribe(parent['session'])
@@ -109,14 +112,32 @@ async def main():
   pending=await op('xsm_owned',{'action':'cancel','name':'native-pi','request_id':cancel_id})
   check('admitted provider advertises native cancellation',pending['cancellation']['native_supported'] is True)
   check('intent alone does not claim native stop',pending['cancellation']['native_state']=='unverified')
-  deadline=time.monotonic()+15
-  while True:
-   current=await op('xsm_owned',{'action':'status','name':'native-pi','request_id':cancel_id})
-   if current.get('cancellation',{}).get('native_state')=='stopped' and type(current.get('child',{}).get('returncode')) is int:break
-   if time.monotonic()>deadline:raise TimeoutError('native cancellation confirmation')
-   await asyncio.sleep(.05)
-  check('actual native aborted settle is recorded',current['cancellation']['status']=='native-stopped' and current['cancellation']['native_session_id']==current['native_binding']['native_session_id'])
-  check('cancelled native turn is no invented answer',current['status']=='unknown' and current['result'] is None and current['reply_id'] is None)
+  if options.lose_cancel_confirmation:
+    deadline=time.monotonic()+15
+    while True:
+     current=await op('xsm_owned',{'action':'status','name':'native-pi','request_id':cancel_id})
+     if current['status']=='unknown' and type(current.get('child',{}).get('returncode')) is int:break
+     if time.monotonic()>deadline:raise TimeoutError('native CLI exit after lost confirmation')
+     await asyncio.sleep(.05)
+    (out/'native-cancel-output.jsonl').write_bytes(Path(current['child']['stdout']).read_bytes())
+    check('failed confirmation keeps native state unverified',current['cancellation']['native_state']=='unverified' and current['slot_occupied'] is True)
+    before=len(http_calls)
+    current=await op('xsm_owned',{'action':'reconcile','name':'native-pi','request_id':cancel_id})
+    check('native stop recovered from exact retained output',current['cancellation']['native_state']=='stopped' and current['cancellation']['recovered_from']=='native-output')
+    check('readback releases only the verified native slot',current['slot_occupied'] is False)
+    check('readback does not manufacture task answer',current['status']=='unknown' and current['result'] is None and current['reply_id'] is None)
+    check('readback does not run another native request',len(http_calls)==before)
+    again=await op('xsm_owned',{'action':'reconcile','name':'native-pi','request_id':cancel_id})
+    check('repeated readback preserves same stop evidence',again['cancellation']==current['cancellation'])
+  else:
+    deadline=time.monotonic()+15
+    while True:
+     current=await op('xsm_owned',{'action':'status','name':'native-pi','request_id':cancel_id})
+     if current.get('cancellation',{}).get('native_state')=='stopped' and type(current.get('child',{}).get('returncode')) is int:break
+     if time.monotonic()>deadline:raise TimeoutError('native cancellation confirmation')
+     await asyncio.sleep(.05)
+    check('actual native aborted settle is recorded',current['cancellation']['status']=='native-stopped' and current['cancellation']['native_session_id']==current['native_binding']['native_session_id'])
+    check('cancelled native turn is no invented answer',current['status']=='unknown' and current['result'] is None and current['reply_id'] is None)
   (out/'cancelled-request.json').write_text(json.dumps(current,indent=2)+'\n')
   report['cancelHTTPRequests']=len(http_calls);report['cancel_observation_seconds']=round(time.monotonic()-cancel_started,3)
   report['status']='passed'

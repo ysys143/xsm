@@ -466,21 +466,35 @@ def cancellation_pending(owner, request_id, token):
     return bool(request.get('cancellation'))
 
 
-def confirm_native_stop(owner, request_id, token, native_id):
+def confirm_native_stop(owner, request_id, token, native_id, *, readback=False, evidence=None):
     """Record a trusted frontend's observation, not a task outcome or rollback."""
     with _locked(owner) as state:
         request = _get(state, request_id)
         _token(request, token)
         binding = request.get('native_binding') or {}
         child = request.get('child') or {}
+        context = state['contexts'][request['context_id']]
+        if (context['epoch'] != request['context_epoch'] or context.get('retired')
+                or context.get('native_session_id') != native_id):
+            raise OwnedError('native stop context generation changed')
+        alive = _alive(child)
+        valid_exit = child.get('returncode') is None or (type(child.get('returncode')) is int and child['returncode'] == 0)
+        if readback and (request['state'] not in ('running', 'unknown') or not request.get('cancellation')
+                         or alive is not False or not valid_exit or not isinstance(evidence, dict)
+                         or evidence.get('native_state') != 'stopped'):
+            raise OwnedError('native stop readback requires an exited execution child')
         if (request['state'] not in ('running', 'unknown') or not request.get('cancellation')
-                or _alive(child) is not True or binding.get('native_session_id') != native_id
+                or (not readback and alive is not True) or binding.get('native_session_id') != native_id
                 or binding.get('child_pid') != child.get('pid')
                 or binding.get('child_lstart') != child.get('lstart')):
             raise OwnedError('native stop has no current bound cancellation')
+        if request['cancellation'].get('native_state') == 'stopped':
+            return _view(state, request)
         request['cancellation'].update(status='native-stopped', native_state='stopped',
                                         observed_at=time.time(), native_session_id=native_id,
                                         child_pid=child['pid'], child_lstart=child['lstart'])
+        if readback:
+            request['cancellation'].update(recovered_from='native-output', native_evidence=copy.deepcopy(evidence))
         return _view(state, request)
 
 

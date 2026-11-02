@@ -584,3 +584,17 @@ deliverables/protocol-foundation/pi-input-gate-linux/ 아래 result.json 및
 이 표본은88dda45의 OpenCode 종료 경합 수정을 포함하므로 앞 절에서 남은
 그 수정의 Linux core 검증을 보완한다. 실제 Linux native CLI 검증은 아니다.
 이번 표본 뒤에 추가된 Pi owned 제공자와733개 core는 포함하지 않는다.
+
+## 공개 취소와 Pi native 확인 core (d1bfecb)
+
+d1bfecb 고정 번들의 SHA-256은
+14489bff036d2e2f7dea973c40bbf1377b7347fc4a1bc581241dc53457932c77다.
+Python491+SDK52+native58+Node149=750개와 독립 mock39/변이14개가 Linux arm64
+두 이미지에서 통과했다. Python3.11.2는66.123초, Python3.14.10은86.774초다.
+120초 기한을 유지했고 model0/network none/cpu2/memory3g 조건이었다.
+원시는 deliverables/protocol-foundation/native-cancel-public-linux/의 result.json,
+{311,314}/protocol.log와 start/stop.log다. VM stopExit은0이며 종료됐다.
+
+이 결과는 f52fb6c의 Pi provider와33fbe7b의 launch fence 및 공개 cancel까지
+포함한다. 그 뒤의 native-output 중단 복구와758개 core는 포함하지 않는다.
+Linux의 실제 Pi native CLI/model 취소를 증명하는 표본도 아니다.

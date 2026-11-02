@@ -33,6 +33,23 @@ class PiWorkerTest(TempState):
         self.assertEqual((result['body'], result['native_session_id']), ('native answer', SID))
         self.assertEqual(result['native_evidence']['terminal_event'], 'agent_settled')
 
+    def test_abort_readback_is_separate_from_an_actual_answer(self):
+        events = self.events(); events[-1]['aborted'] = True
+        output = '\n'.join(json.dumps(row) for row in events)
+        evidence = self.cli.parse_cancellation(output, {'session_seed': SID}, self.tmp)
+        self.assertEqual(evidence['native_evidence']['native_state'], 'stopped')
+        self.assertNotIn('body', evidence)
+        with self.assertRaises(self.cli.NativeCliError): self.parse(events)
+
+    def test_abort_readback_refuses_normal_truncated_or_wrong_native_output(self):
+        events = self.events()
+        for variant in (events, events[:-1]):
+            with self.assertRaises(self.cli.NativeCliError):
+                self.cli.parse_cancellation('\n'.join(json.dumps(row) for row in variant), {'session_seed': SID})
+        events[-1]['aborted'] = True; events[0]['id'] = '22345678-1234-4234-8234-123456789abc'
+        with self.assertRaises(self.cli.NativeCliError):
+            self.cli.parse_cancellation('\n'.join(json.dumps(row) for row in events), {'session_seed': SID})
+
     def test_abort_retry_truncation_or_changed_identity_never_becomes_success(self):
         original = self.events()
         variants = [original[:-1], original[1:], original + [dict(type='agent_start')]]

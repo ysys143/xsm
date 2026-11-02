@@ -1995,6 +1995,12 @@ def reconcile_owned(name, sender, request_id, readback=None, *, reply_sender=Non
         return request
     if (request.get("child") or {}).get("returncode") not in (None, 0):
         return request  # even a custom readback cannot relabel a known failed native exit
+    if request.get('cancellation') and request['cancellation'].get('native_state') != 'stopped':
+        evidence = _readback_owned_cancellation(request['worker'], request)
+        if evidence is not None:
+            return owned_requests.confirm_native_stop(worker['owner'], request_id,
+                request['reservation']['token'], evidence['native_session_id'],
+                readback=True, evidence=evidence['native_evidence'])
     result = (readback(request) if readback is not None else
               _readback_owned(request["worker"], request))
     if result is None:
@@ -2003,21 +2009,67 @@ def reconcile_owned(name, sender, request_id, readback=None, *, reply_sender=Non
     return resend_owned(name, sender, request_id, reply_sender=reply_sender)
 
 
-def _readback_owned(worker, request):
-    """Read a completed owned CLI log after proven child exit; never execute."""
+def _read_owned_output(worker, request):
+    """Read the exact owned output through no-follow directory descriptors."""
     from . import owned_requests
+    import stat
     child = request.get("child") or {}
     if owned_requests._alive(child) is not False:
         return None
-    if child.get("returncode") not in (None, 0):
+    if child.get('returncode') is not None and (type(child['returncode']) is not int or child['returncode'] != 0):
         return None  # a valid-looking body never overrides a known failed exit
-    expected = paths.path("owned-runs", worker["id"], request["id"] + ".jsonl")
-    if child.get("stdout") != expected:
+    worker_id = worker.get('id')
+    if not isinstance(worker_id, str) or worker_id in ('', '.', '..') or os.path.basename(worker_id) != worker_id:
+        return None
+    request_id = request.get('id')
+    if not isinstance(request_id, str) or os.path.basename(request_id) != request_id:
+        return None
+    expected = paths.path('owned-runs', worker_id, request_id + '.jsonl')
+    if child.get('stdout') != expected:
+        return None
+    descriptors = []
+    try:
+        directory = os.open(os.path.normpath(paths.HOME), os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW)
+        descriptors.append(directory)
+        for name in ('owned-runs', worker_id):
+            directory = os.open(name, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW, dir_fd=directory)
+            descriptors.append(directory)
+        fd = os.open(request['id'] + '.jsonl', os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK, dir_fd=directory)
+        descriptors.append(fd)
+        info = os.fstat(fd)
+        if not stat.S_ISREG(info.st_mode) or info.st_uid != os.getuid():
+            return None
+        with os.fdopen(fd, encoding='utf-8', closefd=False) as output:
+            return output.read()
+    except (OSError, ValueError, UnicodeError):
+        return None
+    finally:
+        for descriptor in reversed(descriptors):
+            os.close(descriptor)
+
+
+def _readback_owned_cancellation(worker, request):
+    output = _read_owned_output(worker, request)
+    if output is None:
         return None
     try:
-        with open(expected, encoding="utf-8") as output:
-            result = _owned_native_result(worker, request["context"], output.read())
-    except (OSError, WorkerError):
+        native = _require_owned_native(worker.get('runtime'))
+        if native is None or not callable(getattr(native, 'cancellation_result', None)):
+            return None
+        return _native_owned_call(native, 'cancellation_result', worker, request['context'], output)
+    except WorkerError:
+        return None
+
+
+def _readback_owned(worker, request):
+    """Read a completed owned CLI log after proven child exit; never execute."""
+    child = request.get('child') or {}
+    output = _read_owned_output(worker, request)
+    if output is None:
+        return None
+    try:
+        result = _owned_native_result(worker, request['context'], output)
+    except WorkerError:
         return None
     result["execution"] = dict(child, recovered_from="completed-native-output")
     result["execution"].setdefault("returncode", None)  # older logs have no observed exit status

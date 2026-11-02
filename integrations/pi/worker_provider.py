@@ -8,7 +8,7 @@ import shutil
 import subprocess
 
 from xsm.native_workers import ProviderError
-from .worker_cli import NativeCliError, build_command, parse_result
+from .worker_cli import NativeCliError, build_command, parse_result, parse_cancellation
 
 RUNTIME = 'pi'
 VERSION = '1.4.0'
@@ -92,5 +92,13 @@ def result(worker, context, output):
     _admitted(worker)
     try:
         return parse_result(output, context, worker['cwd'])
+    except NativeCliError as error:
+        raise ProviderError(str(error)) from error
+
+
+def cancellation_result(worker, context, output):
+    _admitted(worker)
+    try:
+        return parse_cancellation(output, context, worker['cwd'])
     except NativeCliError as error:
         raise ProviderError(str(error)) from error

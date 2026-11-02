@@ -51,7 +51,7 @@ def _constant(value):
     raise NativeCliError('Pi returned a non-JSON numeric value')
 
 
-def parse_result(output, context, cwd=None):
+def _events(output, context, cwd):
     if not isinstance(output, str):
         raise NativeCliError('Pi native output must be text')
     try:
@@ -71,6 +71,22 @@ def parse_result(output, context, cwd=None):
     if cwd is not None and (not isinstance(header.get('cwd'), str)
                             or os.path.realpath(header['cwd']) != os.path.realpath(cwd)):
         raise NativeCliError('Pi changed the selected native workspace')
+    return events, native_id
+
+
+def parse_cancellation(output, context, cwd=None):
+    events, native_id = _events(output, context, cwd)
+    end, settled = events[-2:]
+    if (end.get('type') != 'agent_end' or end.get('willRetry') is not False
+            or settled.get('type') != 'agent_settled' or settled.get('aborted') is not True):
+        raise NativeCliError('Pi returned no confirmed aborted native turn')
+    return {'native_session_id': native_id,
+            'native_evidence': {'event_count': len(events), 'terminal_event': 'agent_settled',
+                                'aborted': True, 'native_state': 'stopped'}}
+
+
+def parse_result(output, context, cwd=None):
+    events, native_id = _events(output, context, cwd)
     end, settled = events[-2:]
     if (end.get('type') != 'agent_end' or end.get('willRetry') is not False
             or settled.get('type') != 'agent_settled' or settled.get('aborted') is not False):

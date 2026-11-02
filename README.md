@@ -400,6 +400,8 @@ It records this sender's cancellation intent; pre-launch work can be cancelled i
 Running-turn confirmation is currently implemented for newly admitted Pi 1.4.0 workers.
 Other providers' running cancellation and recovery remain unfinished. Inspect the
 [`cancellation` status](docs/protocol/native-workers.md#cancellation); intent or CLI exit alone does not prove a native task stopped.
+For Pi, `xsm owned reconcile reviewer --request-id <id>` can recover a lost stop
+confirmation from retained native output without rerunning the task; possible side effects remain unknown.
 
 An ordinary running session is never taken over as an owned worker. Inside an Orca or herdr terminal, xsm
 leaves starting workers to that tool unless you tell it otherwise (`xsm frameworks`).

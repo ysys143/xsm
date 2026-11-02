@@ -217,3 +217,91 @@ class OwnedCancellationTest(TempState):
         self.assertEqual(cancelled['result'], ready['result'])
         self.assertEqual(cancelled['reply_id'], ready['reply_id'])
         self.assertNotIn('cancellation', cancelled)
+
+    def readback_fixture(self, *, alive=False, exit_code=0):
+        """Version/output fixtures, not an actual Pi run; the native probe is separate."""
+        from xsm import workers, owned_requests, native_workers, host_install, identity
+        self.worker['runtime'] = 'pi'
+        host_install.apply('pi', self.worker['home'])
+        binary = Path(self.tmp, 'version-fixture')
+        binary.write_text('#!' + sys.executable + '\nprint("1.4.0")\n'); binary.chmod(0o700)
+        with mock.patch.dict(os.environ, {'XSM_PI': str(binary)}):
+            provider = native_workers.provider('pi')
+            self.worker['native_provider'] = provider.prepare(self.worker['home'])
+        workers.save(self.worker); row = self.running(); token = row['reservation']['token']
+        output = Path(self.tmp, 'owned-runs', self.worker['id'], 'request.jsonl')
+        output.parent.mkdir(parents=True)
+        output.write_text('\n'.join(json.dumps(event) for event in [
+            dict(type='session', id=row['context']['session_seed'], cwd=self.tmp),
+            dict(type='agent_end', willRetry=False, messages=[]), dict(type='agent_settled', aborted=True)]) + '\n')
+        child = subprocess.Popen([sys.executable, '-B', '-c',
+            'import sys;sys.stdin.read();sys.exit(' + str(exit_code) + ')'], stdin=subprocess.PIPE)
+        def cleanup():
+            if not child.stdin.closed: child.stdin.close()
+            child.wait(timeout=3)
+        self.addCleanup(cleanup)
+        owned_requests.note_child(self.owner, 'request', token, child.pid, identity.lstart(child.pid), stdout=str(output))
+        owned_requests.bind_native_context(self.owner, 'request', token, row['context']['session_seed'])
+        self.cancel()
+        if not alive:
+            cleanup(); owned_requests.note_exit(self.owner, 'request', token, child.returncode)
+        owned_requests.mark_unknown(self.owner, 'request', token, 'lost native stop confirmation')
+        return output, provider
+
+    def test_reconcile_recovers_stop_without_executing_or_creating_an_answer(self):
+        from xsm import workers
+        output, provider = self.readback_fixture()
+        with mock.patch.object(provider, 'argv', side_effect=AssertionError('must not execute native CLI')):
+            recovered = workers.reconcile_owned('service', self.owner, 'request')
+            repeated = workers.reconcile_owned('service', self.owner, 'request')
+        self.assertEqual(recovered['status'], 'unknown')
+        self.assertEqual(recovered['cancellation']['recovered_from'], 'native-output')
+        self.assertEqual(recovered['cancellation']['native_state'], 'stopped')
+        self.assertEqual(recovered['cancellation'], repeated['cancellation'])
+        self.assertFalse(recovered['slot_occupied'])
+        self.assertIsNone(recovered['result']); self.assertIsNone(recovered['reply_id'])
+
+    def test_reconcile_refuses_symlinked_output_file_and_directory(self):
+        from xsm import workers
+        output, _ = self.readback_fixture(); text = output.read_text()
+        other = Path(self.tmp, 'other-output.jsonl'); other.write_text(text)
+        output.unlink(); output.symlink_to(other)
+        self.assertEqual(workers.reconcile_owned('service', self.owner, 'request')['cancellation']['native_state'], 'unverified')
+        output.unlink(); output.write_text(text)
+        directory = output.parent; relocated = Path(self.tmp, 'relocated-output'); directory.rename(relocated)
+        directory.symlink_to(relocated, target_is_directory=True)
+        self.assertEqual(workers.reconcile_owned('service', self.owner, 'request')['cancellation']['native_state'], 'unverified')
+
+    def test_reconcile_refuses_output_while_execution_child_is_live(self):
+        from xsm import workers
+        self.readback_fixture(alive=True)
+        result = workers.reconcile_owned('service', self.owner, 'request')
+        self.assertEqual(result['cancellation']['native_state'], 'unverified')
+        self.assertTrue(result['slot_occupied'])
+
+    def test_reconcile_refuses_known_failed_exit_even_with_abort_output(self):
+        from xsm import workers
+        self.readback_fixture(exit_code=7)
+        result = workers.reconcile_owned('service', self.owner, 'request')
+        self.assertEqual(result['cancellation']['native_state'], 'unverified')
+        self.assertTrue(result['slot_occupied'])
+
+    def test_reconcile_refuses_another_native_conversation_output(self):
+        from xsm import workers
+        output, _ = self.readback_fixture()
+        events = [json.loads(line) for line in output.read_text().splitlines()]
+        events[0]['id'] = '22345678-1234-4234-8234-123456789abc'
+        output.write_text('\n'.join(json.dumps(event) for event in events))
+        result = workers.reconcile_owned('service', self.owner, 'request')
+        self.assertEqual(result['cancellation']['native_state'], 'unverified')
+        self.assertIsNone(result['result'])
+
+    def test_reconcile_cannot_apply_old_stop_evidence_to_a_new_context_generation(self):
+        from xsm import workers, owned_requests
+        self.readback_fixture()
+        with owned_requests._locked(self.owner) as state:
+            request = state['requests']['request']
+            state['contexts'][request['context_id']]['epoch'] = 'different-generation'
+        with self.assertRaisesRegex(owned_requests.OwnedError, 'generation changed'):
+            workers.reconcile_owned('service', self.owner, 'request')
+        self.assertEqual(owned_requests.status(self.owner, 'request')['cancellation']['native_state'], 'unverified')

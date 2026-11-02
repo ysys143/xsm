@@ -174,5 +174,19 @@ won the race with cancellation.
 
 Cancelling a waiting transport still does not cancel its saved owned task, and
 service removal still refuses active or uncertain work. Native stop/recovery for
-the other runtimes and lost-confirmation recovery remain incomplete parts of the
-full plan.
+the other runtimes remains an incomplete part of the full plan.
+
+For Pi, `reconcile` can recover a lost stop confirmation after the execution child
+has exited. The provider parses the retained native session header and final
+`agent_end` / `agent_settled(aborted=true)` pair. The engine reads only its exact
+owned output through no-follow directory/file descriptors, checks the file owner,
+reservation, bound PID/start identity and context generation, and records
+`cancellation.recovered_from: "native-output"`. Running children, known failed
+exits, symlinked files/directories and mismatched native IDs are refused.
+
+This does not execute another native turn, manufacture an answer, or clear unknown
+side effects. The task can remain `unknown` with null result/reply while its native
+stop is confirmed and its physical execution slot is released. Repeated readback
+preserves the same confirmation. Providers may implement the optional
+`cancellation_result(worker, context, output)` parser; common ownership and safe
+output access remain in the engine.

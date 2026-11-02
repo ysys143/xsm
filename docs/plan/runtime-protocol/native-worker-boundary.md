@@ -538,3 +538,41 @@ Hermes의 session.interrupt가 execution_generation을 요구하는 것을 nativ
 확인했으나 이번에 그 연결을 구현한 것은 아니다. Hermes/OpenCode/Claude/Codex의
 실행 중 native 취소, 확인 유실 복구, 이번 변경의 Linux 전체 검사와 실제 모델
 검증은 여전히 미완이다. 공개 API의 pending을 전체 취소 완료로 계산하지 않는다.
+
+## Pi 중단 확인 유실의 출력 기반 복구
+
+Pi 제공자에 cancellation_result parser를 추가하고 공통 reconcile에 연결했다.
+동결된 native session ID/cwd와 최종 agent_end(willRetry=false),
+agent_settled(aborted=true)를 검사한다. 모델 본문을 중단 증거로 쓰지 않는다.
+프로세스가 실제 종료됐고 알려진 실패 종료가 아니어야 하며, 원래의 예약·
+binding PID/lstart와 context epoch를 다시 확인한다. retired/다른 세대로 옮겨
+옛 증거를 적용할 수 없다. 복구 관측은 native-output 출처로 기록하며 반복해도
+같은 확인을 유지한다. 업무 result/reply_id나 성공 outcome은 만들지 않는다.
+
+공통 출력 readback도 고정 owned-runs/<worker ID>/<request ID>.jsonl만 읽도록
+통합했다. Directory/file descriptor의 no-follow, 일반 파일·현재 UID 확인으로
+파일과 상위 worker directory symlink를 거부한다. 살아 있는 child, 다른 native
+ID, 잘린/정상 완료 출력, 알려진 nonzero exit는 중단 확인으로 받아들이지 않는다.
+임의의 모델 제공 경로나 stdout 내용으로 실행을 재시작하지 않는다.
+
+실제 Pi1.4.0 CLI에서 private stop-report 저장만 실패시키고, native abort와 CLI
+종료는 그대로 수행했다. 최초25개와 재현 스크립트의 최종25개가 통과했다
+(pi-cancel-readback-native-first/result.json,
+pi-cancel-readback-script-final/result.json). 유실 직후 unknown/unverified 및
+슬롯 점유를 확인하고 공개 reconcile로만 native stop을 복구했다. 그 뒤 슬롯이
+해제됐으나 task는 unknown/result=null/reply_id=null이었다. Reconcile 전후
+추가 HTTP/native 요청이 없었고 반복 복구가 같은 증거를 유지했다. 실제 native
+경로의 HTTP 응답은 명시적 local fixture이며 실제 LLM 호출은 아니다.
+
+재현은 scripts/probe-pi-owned-native.py의 기존 인수에
+--lose-cancel-confirmation을 추가한다. 실패 주입은 격리된 시험 backend에만
+적용하며 실제 runtime source·사용자 설정·권한을 수정하지 않는다. 관련29개
+시험이 통과했다(cancel-readback-unit-final.log). Symlink 허용, context epoch
+무시, 정상 settled를 abort로 수락하는 변이3개를 각각 assertion 실패로 검출했다
+(cancel-readback-{symlink,epoch,abort}-mutant.log).
+
+최신 macOS core는 Python491+SDK52+native66+Node149=758개 및 독립 mock39/
+변이14개를88.208초에 통과했다(cancel-readback-core-final.log). 앞선
+공개 취소 커밋d1bfecb의 Linux750개도 양쪽에서 통과했으나 이 복구 변경은
+그 번들에 포함되지 않았다. 이번 복구의 Linux 검사와 다른 runtime의 native
+취소/복구는 계속 미완이다.
