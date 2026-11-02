@@ -5,7 +5,7 @@
 확인했다. Guarded native 대기열과 prompt 소비 helper도 연결했다.
 소유권 기반 설치·업데이트·제거와 로드된 snapshot 보존을 연결했다.
 설치의 macOS/Linux native 수명을 검증했다. 실제 agent turn·idle wake·
-사용자 UI와 owned loader의 Linux queue/UI 검증은 미완이다. 전체 계획은 미완이다.
+사용자 UI와 owned loader의 queue 오류/정책 전체 검증은 미완이다. 전체 계획은 미완이다.
 
 ## 고정 버전과 격리 환경
 
@@ -520,3 +520,10 @@ ACK와 p95 상한 513.012ms가 통과했다(`openclaw-owned-queue-native-100.jso
 (`openclaw-owned-queue-no-delivery-mutant.json`). Record-missing 경고는
 유지하며 모델·실제 agent turn·사람 UI·메신저는 0회다. Linux의 이
 queue 경로와 owned UI·전체 지원은 아직 미완이다.
+
+후속 Linux arm64의 같은 고정 SDK에서도 100/100 수락·소비·ACK와
+p95 상한 403.083ms가 통과했다
+(`linux-openclaw-owned-queue-native-100/output/owned-queue-100.json`).
+Source는 변경 없는 `8bfc698`이며 snapshot 보존/회수도 함께 통과했다.
+위 Linux 미실행 기록의 후속 표본이고, owned queue의 오류/정책 전체·
+UI·실제 agent/model/메신저·전체 지원 인증은 아니다.

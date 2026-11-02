@@ -351,3 +351,22 @@ lease 제거와 old root 회수까지 통과했다
 Source archive hash·image ID·tracked dirty false·network none을 기록했다.
 테스트 VM은 다시 Stopped로 확인했다(`vm-stopped.json`). Owned queue/UI·
 간헐적 burst ACK 실패와 전체 계획은 계속 미완이다.
+
+## 설치 loader를 통한 native queue
+
+변경 없는 `8bfc698`의 `--installed-queue 100 --large-context`를 고정
+OpenClaw 2026.10.9/Linux arm64/Node 24.22.2/Python 3.11.2에서 실행했다.
+실제 설치 loader와 manifest는 바꾸지 않고 global discovery로 로드했다.
+별도 SDK runtime은 fixture 세션 준비·queue 관측에만 사용했다.
+
+큰 원문 100/100 수락·prompt 소비·명시적 ACK와 p95 상한 403.083ms가
+통과했다(`linux-openclaw-owned-queue-native-100/output/owned-queue-100.json`).
+업데이트·설치 파일 제거 후에도 로드된 plugin이 전달을 계속했고,
+backend 없는 snapshot 보존과 unload 뒤 회수도 통과했다. Source hash·
+commit·tracked dirty false·network none을 보존했다. 모델·실제 agent
+turn·사람 UI·메신저는 0회이며 record-missing 경고는 유지한다.
+
+테스트 VM은 다시 Stopped로 확인했다(`vm-stopped.json`). 제품 코드
+변경 없는 프로브 검증이므로 기존 공통 gate를 새 결과로 재집계하지
+않았다. Owned queue의 오류/정책 전체·UI·간헐적 burst ACK 실패와
+전체 계획은 계속 미완이다.

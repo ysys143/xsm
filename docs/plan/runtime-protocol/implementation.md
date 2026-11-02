@@ -1841,3 +1841,13 @@ macOS arm64/Node 24.22.2/OpenClaw 2026.10.9에서 큰 원문 100/100
 0회이며 native record-missing 경고는 유지한다. 제품 코드는 바꾸지
 않은 프로브 변경이므로 기존 공통 gate를 재실행 결과로 보고하지 않는다.
 Linux의 이 경로·owned UI·간헐적 burst ACK 실패와 전체 계획은 미완이다.
+
+Linux owned queue 후속 표본도 변경 없는 `8bfc698`으로 통과했다. 고정
+SDK의 원본 설치 loader·manifest를 유지한 global 발견으로 큰 원문
+100/100 수락·소비·ACK, p95 상한 403.083ms를 확인했다
+(`linux-openclaw-owned-queue-native-100/output/owned-queue-100.json`).
+설치 업데이트/제거 후 전달, backend 없는 snapshot 보존, unload 뒤
+회수도 함께 통과했다. VM은 중지했다. 모델·실제 agent turn·사람 UI·
+메신저는 0회다. 제품 코드 변경이 없으므로 공통 gate는 재실행하지
+않았다. Owned queue 오류/정책 전체·UI·간헐적 burst ACK 실패와
+나머지 P0–P5는 계속 미완이다.
