@@ -518,3 +518,23 @@ native log와 capacity log가 컨테이너에 없어 기존 조건으로 미실�
 처리하지 않는다. 결과/전체 verbose log는 owned-runtime-linux/{311,314}/와
 owned-runtime-linux/result.json에 있다. 이 검사는 관련 경로의 표본이며 앞선
 643개 Linux gate를 최신 코드 전체 gate로 소급 갱신하지 않는다.
+
+## Native owned provider/control 회귀 (a338ca9)
+
+같은 clean commit a338ca9에서 release archive를 만들고 export-ignore된 최상위와
+SDK test tree를 같은 commit으로 복원했다. 두 Linux arm64 이미지가 사용한
+archive SHA-256은9d94ac6e8387c66e3ba3de6e68abce7f79978173e710d730b94e1395342c8c53다.
+사용자의 미커밋 reference 문서는 이 번들에 포함하지 않았다.
+
+각각 Python core490+SDK50+native provider26+Node127=693개 및 독립 mock39 /
+변이14개가 통과했다. Python3.11.2는95.112초, Python3.14.10은117.182초였다.
+양쪽 모두120초 기한을 유지했다. Native provider 검사는 native API를 명시적으로
+stub한 실제 process/socket/journal 검사이며 model0이다. Linux의 실제 Hermes
+model/worker 또는 native UI/messenger 인증으로 해석하지 않는다.
+
+최초 native-provider-linux 번들은 tests/의 export-ignore가 clients/tests에도
+적용되는 것을 놓쳐 SDK discovery 전에 실패했다. 첫 실행 로그와 stopExit0을
+보존했다. 복원 경로와 사전 파일 검사를 고친 v2가 위 통과 표본이다.
+결과는 deliverables/protocol-foundation/native-provider-linux-v2/{311,314}/protocol.log,
+전체 result.json과 start/stop.log에 있다. 컨테이너는 network none/cpu2/memory3g였고
+기존 private VM만 사용했다. Start/stop은 모두 exit0이며 현재 VM은 종료됐다.
