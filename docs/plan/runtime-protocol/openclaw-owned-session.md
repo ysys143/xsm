@@ -567,3 +567,22 @@ fixture가 JSON을 갱신 중 읽히는 경합1개가 발생했다
 이번 변경의 Linux·공개 protocol 오류 종료 검증과 gateway 자체 재시작,
 성공 reply 없는 정상 종료·header가 없는 불명 실행 및 전체 UI/모델/메신저
 행렬은 계속 미완이다.
+
+## 공개 protocol의 frontend 종료와 native 오류 정리
+
+공개 시험기의 --interrupt-frontend는 실제 provider 진입 뒤 정확한 child의
+PID/lstart를 확인해 해당 process group만 종료한다. Native가 막힌 동안 공개
+reconcile은 unknown과 lease를 유지했다. 응답을 푼 뒤 같은 native 완료 receipt로
+원래 답변을 회수하고 실제 inbox claim token을 ACK했다. Exit=-9와 native ID를
+보존하고 replay도 같은 reply ID를 반환했으며 native 추론 재제출은 없었다.
+openclaw-public-frontend-recovery에서32개 검사가 통과했다.
+
+--native-error는 로컬 HTTP401 거부를 사용한다. 공개 run/status에서 먼저 unknown과
+lease 점유를 확인하고 공개 reconcile이 native_execution=settled만 기록했다.
+Result/reply와 취소 의도는 없었으며 inbox에도 오류 답변이 없었다. Idempotent
+reconcile과 request replay 비재실행을 확인했다.
+openclaw-public-error-settlement에서26개 검사가 통과했다.
+
+두 표본은 정상 fixture3회와 별도 요청의 HTTP 진입1회를 구분했고 실제 모델
+추론0회, gatewayStopped=true다. 이번 변경은 시험기와 문서만이며 제품 코드는
+0760bd0과 같다. 직전826개 core 결과를 재실행한 것으로 계산하지 않는다.

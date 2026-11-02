@@ -9,10 +9,13 @@ parser=argparse.ArgumentParser(description='Public owned OpenClaw native roundtr
 parser.add_argument('--native-cli',type=Path,required=True)
 parser.add_argument('--node',type=Path,required=True)
 parser.add_argument('--output',type=Path,required=True)
+parser.add_argument('--native-error',action='store_true',help='Verify public reconciliation closes a failed native lease without a reply')
+parser.add_argument('--interrupt-frontend',action='store_true',help='Kill only the controlled frontend and recover its native answer through public operations')
 parser.add_argument('--cancel',action='store_true',help='Exercise public exact-request cancellation after native provider entry')
 parser.add_argument('--lose-cancel-confirmation',action='store_true',help='Inject private stop-report loss in the isolated protocol server and reconcile via public operation')
 options=parser.parse_args()
 if options.lose_cancel_confirmation and not options.cancel:parser.error('--lose-cancel-confirmation requires --cancel')
+if sum((options.cancel,options.native_error,options.interrupt_frontend))>1:parser.error('choose one mutation mode')
 if not options.native_cli.is_absolute() or not options.node.is_absolute():parser.error('absolute native CLI and Node paths required')
 if json.loads((options.native_cli.parent/'package.json').read_text()).get('version')!='2026.10.9':parser.error('OpenClaw2026.10.9 package required')
 root=Path(tempfile.mkdtemp(prefix='xsm-openclaw-owned-create-')).resolve();out=options.output.absolute();out.mkdir(parents=True,exist_ok=False)
@@ -39,10 +42,14 @@ def check(name,value):
  if not value:raise AssertionError(name)
  report['checks'].append(name);save()
 import threading
-blocking=threading.Event();entered=threading.Event();release=threading.Event();http_entries=[]
+blocking=threading.Event();entered=threading.Event();release=threading.Event();http_entries=[];refusing=threading.Event()
 original_post=assistant.server.RequestHandlerClass.do_POST
 def observed_post(handler):
  http_entries.append(time.monotonic())
+ if refusing.is_set():
+  handler.rfile.read(int(handler.headers.get('Content-Length','0')))
+  body=json.dumps({'error':{'message':'Explicit local refusal fixture','type':'authentication_error','code':'fixture_refused'}}).encode()
+  handler.send_response(401);handler.send_header('Content-Type','application/json');handler.send_header('Content-Length',str(len(body)));handler.end_headers();handler.wfile.write(body);return
  if blocking.is_set():entered.set();release.wait(45)
  try:return original_post(handler)
  except (BrokenPipeError,ConnectionResetError):pass
@@ -94,6 +101,60 @@ async def public_roundtrip():
   check('public replay retained exact reply ID',replay['reply_id']==first['reply_id'])
   check('public replay did not execute native model',(out/'assistant-fixture.jsonl').read_bytes()==before)
   report['providerFixtureRequests']=len(before.splitlines())
+  async def exited_request(request_id):
+   deadline=time.monotonic()+35
+   while True:
+    current=await op('xsm_owned',{'action':'status','name':'protocol-openclaw','request_id':request_id})
+    if current['status']=='unknown' and type(current.get('child',{}).get('returncode')) is int:return current
+    if time.monotonic()>deadline:raise TimeoutError('public native child exit')
+    await asyncio.sleep(.1)
+  if options.native_error:
+   refusing.set();text='Explicit public native refusal.'
+   await op('xsm_owned',{'action':'run','name':'protocol-openclaw','text':text,'work_context':'public-error','request_id':'native-error'})
+   unknown=await exited_request('native-error')
+   check('public native error retains unknown execution before proof',unknown['slot_occupied'] is True and unknown['result'] is None and unknown['reply_id'] is None)
+   settled=await op('xsm_owned',{'action':'reconcile','name':'protocol-openclaw','request_id':'native-error'})
+   check('public native error has separate settlement observation',settled.get('native_execution',{}).get('state')=='settled')
+   check('public native error frees only execution lease',settled['slot_occupied'] is False and settled['status']=='unknown')
+   check('public native error creates neither answer nor cancellation',settled['result'] is None and settled['reply_id'] is None and settled.get('cancellation') is None)
+   again=await op('xsm_owned',{'action':'reconcile','name':'protocol-openclaw','request_id':'native-error'})
+   check('public native settlement is idempotent',again['native_execution']==settled['native_execution'])
+   replay=await op('xsm_owned',{'action':'run','name':'protocol-openclaw','text':text,'work_context':'public-error','request_id':'native-error'})
+   check('public failed task replay does not submit another native turn',replay['status']=='unknown' and len(http_entries)==4)
+   inbox=await op('xsm_inbox',{})
+   check('provider error was not published to the inbox',not inbox.get('messages') and not inbox.get('claims'))
+   (out/'native-error-journal.json').write_text(json.dumps(settled,indent=2)+'\n')
+   report['nativeErrorSettlement']=settled['native_execution'];report['providerHttpEntries']=len(http_entries)
+  if options.interrupt_frontend:
+   from xsm import identity
+   blocking.set();text='Explicit interrupted public native task.'
+   await op('xsm_owned',{'action':'run','name':'protocol-openclaw','text':text,'work_context':'public-interrupted','request_id':'interrupted'})
+   check('public interrupted target reached native provider',await asyncio.to_thread(entered.wait,20))
+   active=await op('xsm_owned',{'action':'status','name':'protocol-openclaw','request_id':'interrupted'});child=active['child']
+   check('public interruption selects exact owned child',identity.lstart(child['pid'])==child['lstart'])
+   os.killpg(child['pid'],signal.SIGKILL)
+   unknown=await exited_request('interrupted')
+   check('public frontend loss retains unknown effects and lease',unknown['slot_occupied'] is True and unknown['result'] is None)
+   pending=await op('xsm_owned',{'action':'reconcile','name':'protocol-openclaw','request_id':'interrupted'})
+   check('public pending native work is not a recovered answer',pending['status']=='unknown' and pending['slot_occupied'] is True and pending['result'] is None)
+   release.set();deadline=time.monotonic()+20
+   while True:
+    recovered=await op('xsm_owned',{'action':'reconcile','name':'protocol-openclaw','request_id':'interrupted'})
+    if recovered['status'] in ('sent','reply-stored'):break
+    if time.monotonic()>deadline:raise TimeoutError('public native host result recovery')
+    await asyncio.sleep(.1)
+   check('public recovery returns actual native answer',recovered['result']['body']=='Explicit assistant fixture; no model inference.')
+   check('public recovery retains native context identity',recovered['result']['native_session_id']==unknown['native_binding']['native_session_id'])
+   check('public native recovery retains child SIGKILL exit',recovered['child']['returncode']==-signal.SIGKILL and recovered['result']['execution']['returncode']==-signal.SIGKILL)
+   check('public recovery records host query provenance',recovered['result']['execution']['recovered_from']=='native-host-status')
+   await read_reply(recovered['reply_id'])
+   replay=await op('xsm_owned',{'action':'run','name':'protocol-openclaw','text':text,'work_context':'public-interrupted','request_id':'interrupted'})
+   check('public recovered replay reuses original reply',replay['reply_id']==recovered['reply_id'])
+   check('public recovery and replay do not resubmit inference',len(http_entries)==4)
+   check('public recovery releases execution without task-success claim',recovered['slot_occupied'] is False and recovered['result']['outcome'] is None)
+   (out/'interrupted-journal.json').write_text(json.dumps(recovered,indent=2)+'\n')
+   report['frontendRecovery']=recovered['result']['execution'];report['providerHttpEntries']=len(http_entries)
+
   if options.cancel:
    blocking.set();cancel_text='Explicit blocked public native task.'
    await op('xsm_owned',{'action':'run','name':'protocol-openclaw','text':cancel_text,'work_context':'public-cancel','request_id':'cancel'})
