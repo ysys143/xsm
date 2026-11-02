@@ -106,3 +106,29 @@ def agent_params(locator, message, request_id):
             'expectedExistingSessionLifecycleRevision': _text(locator.get('native_lifecycle_revision'), 'lifecycle revision'),
             'message': message,
             'idempotencyKey': _text(request_id, 'request ID'), 'deliver': False}
+
+
+def accepted_run(reply, locator, request_id):
+    """A native acceptance is not a terminal result or a delivery ACK."""
+    if (reply.get('status') != 'accepted' or reply.get('runId') != request_id
+            or reply.get('sessionKey') != locator.get('native_session_key')
+            or reply.get('agentId') != locator.get('agent_id')):
+        raise NativeSessionError('native admission changed run or session identity')
+    return _text(reply.get('runId'), 'run ID')
+
+
+def completed_run(reply, locator, run_id):
+    """Accept only a completed native receipt for this bound session and turn."""
+    receipt = reply.get('terminalReceipt')
+    if (reply.get('status') != 'ok' or reply.get('runId') != run_id
+            or not isinstance(receipt, dict) or receipt.get('runId') != run_id
+            or receipt.get('turnId') != run_id
+            or receipt.get('sessionId') != locator.get('native_session_id')):
+        raise NativeSessionError('native terminal receipt is missing or changed identity')
+    terminal = reply.get('terminalReply')
+    if not isinstance(terminal, dict) or terminal.get('disposition') not in ('visible', 'silent', 'empty'):
+        raise NativeSessionError('native terminal reply is missing')
+    if (receipt.get('terminalDisposition') != terminal['disposition']
+            or (terminal['disposition'] == 'visible' and not isinstance(terminal.get('text'), str))):
+        raise NativeSessionError('native terminal reply conflicts with receipt')
+    return dict(terminal)

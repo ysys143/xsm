@@ -49,3 +49,27 @@ class OpenClawWorkerSessionTest(unittest.TestCase):
     def test_rpc_noise_duplicates_and_non_json_values_are_refused(self):
         for output in ('noise\n{}', '[]', '{"ok":false,"ok":true}', '{"n":NaN}'):
             with self.subTest(output=output), self.assertRaises(session.NativeSessionError): session.decode_reply(output)
+
+    def test_admission_is_bound_to_request_agent_and_native_key(self):
+        locator = session.created_locator(self.created, 'main', self.cwd)
+        reply = dict(status='accepted', runId='request-1', agentId='main', sessionKey=self.created['key'])
+        self.assertEqual(session.accepted_run(reply, locator, 'request-1'), 'request-1')
+        for field in ('status', 'runId', 'agentId', 'sessionKey'):
+            with self.subTest(field=field), self.assertRaises(session.NativeSessionError):
+                session.accepted_run(dict(reply, **{field: 'other'}), locator, 'request-1')
+
+    def test_terminal_requires_matching_run_turn_session_and_reply(self):
+        locator = session.created_locator(self.created, 'main', self.cwd)
+        receipt = dict(runId='request-1', turnId='request-1', sessionId='native-id', terminalDisposition='visible')
+        reply = dict(status='ok', runId='request-1', terminalReceipt=receipt,
+                     terminalReply=dict(disposition='visible', text='native result'))
+        self.assertEqual(session.completed_run(reply, locator, 'request-1'), reply['terminalReply'])
+        variants = [dict(reply, status='timeout'), dict(reply, runId='other'),
+                    dict(reply, terminalReceipt=None), dict(reply, terminalReply=None),
+                    dict(reply, terminalReply=dict(disposition='visible', text=1)),
+                    dict(reply, terminalReply=dict(disposition='silent'))]
+        for field in ('runId', 'turnId', 'sessionId', 'terminalDisposition'):
+            variants.append(dict(reply, terminalReceipt=dict(receipt, **{field: 'other'})))
+        for variant in variants:
+            with self.subTest(reply=variant), self.assertRaises(session.NativeSessionError):
+                session.completed_run(variant, locator, 'request-1')

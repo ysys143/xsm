@@ -82,6 +82,39 @@ session ID와 lifecycle revision을 함께 고정하는 필드는 없다. 이것
 server-plugins.ts에서 bundled 또는 trusted official plugin만 허용하므로 일반
 xsm 플러그인의 우회 실행 경로로 사용하지 않는다.
 
-실제 신원과 revision을 보존하는 지원된 native 실행 경로는 아직 미확보다.
-이 제약을 제거하거나 backend/official plugin 신원을 가장하지 않고 후속 경로를
-조사해야 한다. OpenClaw owned 제공자와 전체 계획은 미완이다.
+일반 operator CLI 경로는 위 이유로 실행에 사용하지 않는다. 아래 SDK 경로의
+실행은 확인했지만, OpenClaw owned 제공자와 전체 계획은 여전히 미완이다.
+
+## 공개 SDK backend 실행과 동일 세션 재개
+
+고정 소스의 commands/agent-via-gateway.ts는 모델 변경·reset 요청에 인증된
+BACKEND 연결을 사용한다. 공개 export인 openclaw/plugin-sdk/gateway-runtime의
+GatewayClient도 이 연결 방식을 제공한다. 일반 xsm 플러그인이 official 신원을
+취득하는 것과 달리, 이 시험은 격리 gateway의 시험용 operator 토큰으로 인증한
+외부 backend client다. Client display name에도 XSM 시험임을 명시했다.
+
+scripts/probe-openclaw-agent-native.py는 native package의 공개 export를 resolve해
+이 client를 사용한다. 내부 hashed export나 trusted-plugin runtime은 쓰지 않는다.
+인증 값은 격리된0600 config에서 프로세스 내부로만 읽고 argv·산출물에 넣지 않는다.
+로컬 SSE fixture를 명시했으며 유료 모델이나 메신저를 호출하지 않는다.
+
+openclaw-agent-native-resume/result.json에서 다음을 확인했다.
+
+- 오래된 lifecycle revision의 agent 요청은 native의 세션 변경 검사에서 거부됐다.
+  그 시점에 provider 요청 로그는 없었다.
+- 올바른 revision의 첫 요청은 accepted였고, agent.wait의 terminal receipt에 같은
+  runId/turnId와 생성한 native sessionId가 있었다.
+- 두 번째 요청도 같은 native sessionId에서 완료됐다. 두 실행의 요청 ID는 다르다.
+- 전체 fixture 요청은2회이고, gatewayStopped=true다. 실제 모델 추론은0회다.
+
+accepted_run은 request ID·native key·agent ID를 검사한다. completed_run은 최종
+상태와 run/turn/session ID 및 receipt/reply disposition의 일치를 검사한다.
+Acceptance를 업무 결과나 전달 ACK로 승격하지 않는다. Terminal session ID 검사를
+제거한 변이는 의도한 assertion1개로 검출됐다
+(openclaw-agent-receipt-mutant-final.log). 첫 변이 러너는 예외 클래스가 달라
+오류9개가 섞였으므로 검증 성공으로 계산하지 않았다. 실패 로그도 보존했다.
+
+macOS 핵심 검사는 Python494+SDK52+native95+Node152=793개와 독립 mock39/
+변이14개를81.067초에 통과했다(openclaw-agent-receipt-core.log). 앞선 Linux791개는
+이번 receipt 검사2개를 포함하지 않는다. 실제 owned journal과 backend client의
+결속, 취소·복구·native UI 및 전체 OS/런타임 행렬 검증은 남아 있다.
