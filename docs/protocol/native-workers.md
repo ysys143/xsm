@@ -1,10 +1,10 @@
 # Experimental owned native worker providers
 
 `xsm_owned` and `xsm owned` share the durable owned-request service. The installed
-catalog currently contains the legacy Claude/Codex paths and an experimental
-Hermes 0.22.5 provider. This does not extend the classic `xsm spawn` pane/TUI path
-or certify every runtime's workers. Pi/OpenCode/OpenClaw worker providers remain
-unfinished parts of the full runtime plan.
+catalog currently contains the legacy Claude/Codex paths and experimental
+Hermes 0.22.5, OpenCode 1.19.5 and Pi 1.4.0 providers. This does not extend the
+classic `xsm spawn` pane/TUI path or certify every runtime's workers. OpenClaw's
+provider and the full runtime lifecycle matrix remain unfinished.
 
 ## Admission and launch
 
@@ -29,6 +29,13 @@ native conversation ID; Hermes IDs are not required to be UUIDs. Resume does not
 override the native frozen cwd, route or model. No permission/trust bypass flags
 are introduced. Native account/route configuration stays in the selected profile;
 verification in this repository uses isolated subscription-proxy profiles.
+
+OpenCode and Pi likewise require a managed profile and an operator executable
+from PATH or absolute `XSM_OPENCODE` / `XSM_PI`. Their admitted binding hash and
+runtime root are retained. OpenCode resumes the exact `ses_...` ID with
+`run --format json --session`; Pi uses an exact UUID with `--session-id` and a
+worker-specific native session directory. Neither selects the most recent
+conversation or adds automatic permission/trust approval flags.
 
 ## Pre-turn identity binding
 
@@ -61,8 +68,13 @@ not a user approval, native input admission or consumption ACK.
 
 ## Results and recovery
 
-The native stdout must contain an initialization event and one final terminal
+Hermes stdout must contain an initialization event and one final terminal
 result with integer exit zero, actual answer text and the bound conversation ID.
+OpenCode requires the bound session, actual text and a final `step_finish` whose
+reason is `stop`. Pi requires the exact session header, a final assistant `stop`
+answer, `agent_end(willRetry=false)` and `agent_settled(aborted=false)`. In
+particular, Pi can exit zero after an input was handled without a model turn;
+process exit alone is insufficient.
 Invalid JSON, duplicate keys, non-JSON numbers, changed IDs, failed/incomplete
 results and valid-looking output without pre-turn binding are not answers.
 JSON inside the model's text cannot choose native execution metadata. Only the
@@ -108,9 +120,30 @@ which is illustrated in [Bun's descriptor documentation](https://bun.sh/referenc
 the pinned runtime test is the evidence for this integration, rather than a claim
 about every Bun release.
 
-OpenCode is not yet registered as an owned execution provider. The current private
-channel selects one owned native conversation. Native subagent lineage, admission,
-launch/result/recovery and full worker/UI behavior must be completed before its
-worker support is certified. Native descendant budget inheritance is also a
-remaining explicit audit item across the new runtime providers; root owned-worker
-budget evidence must not be generalized to every native delegation path.
+Pi binds at its native `input` boundary and returns `{action: "handled"}` when
+binding fails. A hook exception alone is insufficient because Pi logs it and
+continues. Its additional `before_agent_start` check requests `ctx.abort()` on
+refusal. Actual SDK/CLI counter fixtures verify acceptance reaches the provider
+boundary and refusal does not. These are not real model-inference results.
+
+Hosts may negotiate `native-lineage` and provide their observed
+`parent_conversation` when opening a native child. This retains an owned budget
+without transferring repository scope, team membership or approvals. Missing or
+cyclic ancestry refuses worker operations. Hermes native children have macOS
+execution evidence; root-worker evidence must not be generalized to every native
+delegation path or operating system. See the linked evidence for exact limits.
+
+## Cancellation work in progress
+
+The internal journal can record sender- and worker-specific cancellation intent.
+Queued/reserved work can be proven `cancelled` before execution. Process creation
+and its durable child record share a journal lock; cancellation cannot pass
+between them. An execution-side observer of prior intent records `not-started`
+without creating the child. A private native binding also refuses pending intent.
+
+Running work remains unconfirmed: recording intent does not signal a process,
+prove native quiescence, roll back effects or synthesize a reply. No public
+`xsm_owned` / CLI cancel action is exposed yet. Native stop confirmation and
+transport integration remain required. Cancelling a waiting transport still does
+not cancel its saved owned task, and service removal still refuses active or
+uncertain work.

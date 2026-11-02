@@ -1732,31 +1732,34 @@ def _execute_owned(worker, context, body, request):
             control = WorkerControl(lambda sid: _bind_owned_native(worker, request, sid, before))
             env[ENV_FD] = str(control.child.fileno())
             options['pass_fds'] = (control.child.fileno(),)
+        process = None
         try:
-            process = subprocess.Popen(argv, stdin=subprocess.PIPE, stdout=output, stderr=errors,
-                                       cwd=worker["cwd"], env=env, text=True, start_new_session=True, **options)
-        except OSError as exc:
-            if control:
-                control.close()
-            raise OwnedLaunchError("owned native process was not started: " + str(exc)) from exc
-        start = identity.lstart(process.pid)
-        try:
-            owned_requests.note_child(worker["owner"], request["id"], request["reservation"]["token"],
-                                      process.pid, start, argv=argv, stdout=output_path, stderr=error_path)
+            with owned_requests.launch_gate(worker['owner'], request['id'], request['reservation']['token']) as launch:
+                if launch is not None:
+                    try:
+                        process = subprocess.Popen(argv, stdin=subprocess.PIPE, stdout=output, stderr=errors,
+                                                   cwd=worker['cwd'], env=env, text=True, start_new_session=True, **options)
+                    except OSError as exc:
+                        raise OwnedLaunchError('owned native process was not started: ' + str(exc)) from exc
+                    start = identity.lstart(process.pid)
+                    launch['child'] = {'pid': process.pid, 'lstart': start, 'argv': list(argv),
+                                       'stdout': output_path, 'stderr': error_path}
+            if process is None:
+                raise OwnedLaunchError('owned execution cancelled before native process creation')
             if control:
                 control.start()
             process.communicate(body)
         except BaseException:
             # Only this newly created owned child is ours to stop. Keep its
             # partial output and uncertain effects for readback, never rerun.
-            if process.poll() is None:
+            if process is not None and process.poll() is None:
                 process.terminate()
                 try:
                     process.wait(timeout=2)
                 except subprocess.TimeoutExpired:
                     process.kill()
                     process.wait()
-            if process.stdin is not None and not process.stdin.closed:
+            if process is not None and process.stdin is not None and not process.stdin.closed:
                 process.stdin.close()
             raise
         finally:

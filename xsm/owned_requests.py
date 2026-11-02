@@ -108,7 +108,8 @@ def _view(state, request):
     result['status'] = result.pop('state')
     result['context'] = copy.deepcopy(state['contexts'][request['context_id']])
     result['persisted'] = True
-    result['accepted'] = result['status'] != 'queued'  # admission, never task success
+    result['accepted'] = (result['status'] != 'queued' and not (
+        result['status'] == 'cancelled' and request.get('reservation') is None))
     result['side_effects_exactly_once'] = False
     execution = _unknown_child_state(request) if request['state'] == 'unknown' else None
     result['slot_occupied'] = request['state'] in ACTIVE and execution != 'exited'
@@ -349,11 +350,52 @@ def begin(owner, request_id, token):
         return _view(state, request)
 
 
+def request_cancellation(owner, request_id, sender, worker_id):
+    """Record one sender's intent; a running native effect is not declared stopped."""
+    with _locked(owner) as state:
+        request = _get(state, request_id)
+        if (_native(request['sender']) != _native(sender) or request['worker']['id'] != worker_id):
+            raise OwnedError('no matching owned request for this sender and service')
+        if request.get('cancellation') or request['state'] not in ('queued', 'reserved', 'acknowledged', 'running', 'unknown'):
+            return _view(state, request)
+        request['cancellation'] = {'requested_by': _native(sender), 'requested_at': time.time(),
+                                   'status': 'requested', 'native_state': 'unverified'}
+        if request['state'] in ('queued', 'reserved', 'acknowledged'):
+            request['cancellation'].update(status='not-started', native_state='not-started')
+            _event(request, 'cancelled')
+        return _view(state, request)
+
+
+@contextmanager
+def launch_gate(owner, request_id, token):
+    """Fence cancellation against process creation AND its durable child record.
+
+    Yield the locked request for recording a newly created child, or None when
+    cancellation won. The caller must leave the context normally in that case
+    so the proof of non-execution is committed before reporting it.
+    """
+    with _locked(owner) as state:
+        request = _get(state, request_id)
+        _token(request, token)
+        if request['state'] == 'cancelled':
+            yield None
+        elif request['state'] != 'running' or request.get('child'):
+            raise OwnedError('native launch requires an unlaunched running reservation')
+        elif request.get('cancellation'):
+            request['cancellation'].update(status='not-started', native_state='not-started')
+            _event(request, 'cancelled')
+            yield None
+        else:
+            yield request
+
+
 def release_reservation(owner, request_id, token):
     """Cancel before execution only; a begun effect requires unknown/readback."""
     with _locked(owner) as state:
         request = _get(state, request_id)
         _token(request, token)
+        if request['state'] == 'cancelled':
+            return _view(state, request)
         if request['state'] not in ('reserved', 'acknowledged'):
             raise OwnedError('cannot release an execution that may have effects')
         request['reservation'] = None
@@ -392,6 +434,8 @@ def bind_native_context(owner, request_id, token, native_id):
         _token(request, token)
         if request['state'] != 'running' or _alive(request.get('child') or {}) is not True:
             raise OwnedError('native binding requires the current live execution child')
+        if request.get('cancellation'):
+            raise OwnedError('owned cancellation requested before native model admission')
         context = state['contexts'][request['context_id']]
         if context['epoch'] != request['context_epoch'] or context.get('retired'):
             raise OwnedError('native context generation changed')
@@ -441,6 +485,8 @@ def mark_unknown(owner, request_id, token, reason):
     with _locked(owner) as state:
         request = _get(state, request_id)
         _token(request, token)
+        if request['state'] == 'cancelled':
+            return _view(state, request)
         if request['result'] is None:
             _event(request, 'unknown')
             request['error'] = str(reason)
@@ -453,6 +499,8 @@ def fail_not_started(owner, request_id, token, reason):
     with _locked(owner) as state:
         request = _get(state, request_id)
         _token(request, token)
+        if request['state'] == 'cancelled':
+            return _view(state, request)
         if request['state'] != 'running' or request.get('child'):
             raise OwnedError('cannot prove execution never started')
         _event(request, 'error')

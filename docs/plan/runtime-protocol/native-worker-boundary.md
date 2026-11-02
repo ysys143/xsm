@@ -460,3 +460,38 @@ action이 없고 workers.stop은 busy/unknown owned 서비스 제거를 거부�
 따라서 Pi 전용 kill로 이를 우회하지 않았으며 공통 owned 실행 취소 구현과
 각 runtime의 실제 중단 검증은 미완이다. 이 미결사항은 범위 제외가 아니다.
 Pi 실제 구독 모델·Linux native CLI·하위 대화·승인 UI와 전체 설치 행렬도 남는다.
+
+## 공통 취소 저널과 프로세스 생성 경합 방지
+
+공개 cancel action을 추가하기 전의 내부 기반을 구현했다. 요청의 실제 sender와
+worker ID가 일치할 때만 취소 의도를 기록한다. Queued/reserved/acknowledged는
+실행 전 cancelled로 보존하며 동일 request를 다시 submit/reserve해도 재실행하지
+않는다. Queued 취소는 accepted=false를 유지한다. Running/unknown에는 요청됨과
+native_state=unverified만 기록하며 중단이나 부작용 취소로 표시하지 않는다.
+
+기존 Popen과 note_child 사이에는 journal lock이 없는 구간이 있었다. 현재는
+launch_gate 안에서 실제 프로세스 생성과 PID/lstart/argv/output 경로를 함께
+기록한다. 취소가 먼저 이기면 프로세스를 만들지 않고 not-started를 확정한다.
+생성이 먼저 이기면 취소 조회는 child 기록의 commit을 기다린다. 생성 뒤 기록
+저장 실패 시에는 새로 만든 Popen 객체만 종료하고 결과를 unknown으로 남긴다.
+이 unknown은 자동 재실행하지 않는다. 취소된 요청을 뒤늦은 예외 처리가 queued나
+unknown으로 되돌리지 않으며 private native binding도 취소 요청을 거부한다.
+
+관련35개 및 최종 단위7개가 통과했다(owned-cancellation-fence-second.log,
+owned-cancellation-fence-final.log). 실제 임시 Python 자식을 생성한 경합,
+child-record 쓰기 실패 후 종료·unknown 유지, sender/service 불일치 거부,
+queued/ACK 뒤 취소, 생성 전 미실행과 native binding 거부를 검사했다.
+이 Python process fixture를 실제 Claude/Codex 모델 실행으로 계산하지 않는다.
+생성 전 취소 분기를 제거한 변이는 Popen 시도를 잡는 assertion으로 실패했다
+(owned-cancellation-mutant.log).
+
+변경 뒤 실제 Pi1.4.0 CLI/public owned model0 회귀14개도 통과했다
+(pi-owned-native-cancel-fence/result.json). 최신 macOS core는 Python491+SDK52+
+native52+Node145=740개 및 독립 mock39/변이14개를85.793초에 통과했다
+(owned-cancellation-core-final.log). 이 변경의 Linux 전체 검사는 아직 미완이다.
+
+이 내부 helper는 CLI/MCP/public operation의 cancel action으로 노출하지 않았다.
+실행 중 native 요청에 신호를 보내거나 종료를 확정하는 구현은 남는다. 특히
+Hermes CLI client 종료는 별도 gateway 작업 중단의 증거가 아니므로 실제 native
+cancel/상태 확인을 연결해야 한다. Transport waiter 취소와 저장된 작업 취소,
+서비스 제거는 계속 별개다. 이 항목 전체를 완료로 표시하지 않는다.
