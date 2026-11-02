@@ -11,6 +11,8 @@ against operations.schema.json. Definitions derive from the same tool schemas
 used by the server, with the host transport's restrictions made explicit:
 
 - Unknown arguments are refused, including nested attachment-object fields.
+- Declared string length bounds count Unicode code points, not UTF-8 bytes,
+  and are checked before service dispatch. An empty `xsm_doc.doc` is invalid.
 - When a tool has required arguments, the arguments object and those fields must
   be present. Omitting arguments otherwise means an empty object.
 - Blocking waits are unsupported on this transport: supplied wait/wait_secs must

@@ -75,3 +75,11 @@ VM stopExit=0이다(discovery-contract-linux/result.json 및 환경별 protocol.
 새 core837개(Python500+SDK52+native133+Node152)가 macOS/Python3.14.6에서
 82.289초에 통과했다(protocol-contract-guards-core.log). 독립 mock39/변이14는
 별도 수치다. 앞 절의834개 Linux 증거는 이 후속 source의 검증으로 소급하지 않는다.
+
+후속 source71fc77a6912fb7c39ac6cd488577f5bb6e25ba4b를 별도로 고정해 Linux
+core837개도 검증했다. Python3.11.2에서67.578초, Python3.14.10에서86.748초에
+통과했으며 archive SHA256은
+02da558d3d9d48329c564504554d8a4243333ef02d6fbce0d9a9b03482433a00이다.
+Network none/model0/cpu2/memory3g, 미실행 core0, VM stopExit=0이다.
+원시는 protocol-contract-guards-linux/result.json과 환경별 protocol.log에 있다.
+이 실행도 core의 범위이며 native UI나 실제 원격 표본을 추가하지 않았다.

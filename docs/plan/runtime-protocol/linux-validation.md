@@ -790,3 +790,17 @@ VM stopExit=0이다. 원시는 deliverables/protocol-foundation/
 discovery-contract-linux/result.json과 core{311,314}/output/protocol.log다.
 Native runtime queue·UI·실제 모델·메신저·물리 원격 표본은 추가 실행하지
 않았으며 이 core 결과로 해당 미완 조건을 충족했다고 표시하지 않는다.
+
+## 필수 bundle과 문자열 길이 검사의 Linux core
+
+71fc77a6912fb7c39ac6cd488577f5bb6e25ba4b를 고정한
+protocol-contract-guards-linux에서837개(Python500+SDK52+native133+Node152)가
+Python3.11.2에서67.578초, Python3.14.10에서86.748초에 통과했다. Archive
+SHA256은02da558d3d9d48329c564504554d8a4243333ef02d6fbce0d9a9b03482433a00이다.
+빈 doc 경로의 service 전 거부, Unicode 문자열 길이 경계, 발견 스키마/예제
+누락 bundle 거부를 포함한다. 독립 mock39/변이14는 별도 수치다.
+
+Network none/model0/cpu2/memory3g, 미실행 core0, VM stopExit=0을 확인했다.
+원시는 deliverables/protocol-foundation/protocol-contract-guards-linux/ 아래의
+result.json과 core{311,314}/output/protocol.log다. Native gateway·UI·모델·
+메신저·원격 행렬을 새로 실행한 것은 아니다.

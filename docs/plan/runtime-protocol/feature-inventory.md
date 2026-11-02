@@ -11,6 +11,12 @@
 (deliverables/protocol-foundation/feature-inventory-02854c0.json). Owned의 cancel
 action 추가를 아래에 반영했다. 이 수치는 native 기능/전체 행렬 완료를 뜻하지 않는다.
 
+같은 날71fc77a에서도 격리 inventory 명령의 결과는73/22/16이었다
+(feature-inventory-71fc77a.json). 기존에 미확정으로 표시했던 leave/unlink는
+operation_schema.py, operations.py와 cli.py에서 각각 leave=true/drop=true의
+기존 공개 경로와 공통 scope_service 호출을 확인해 아래 표를 정정했다.
+새 operation을 추가한 것이 아니며 native UI나 전체 행렬 인증을 뜻하지 않는다.
+
 명령이 공개 operation과 겹친다는 사실만으로 CLI 공통화·native 실행·원격·
 UI 호환이 확인된 것은 아니다. 아래 대응 미확정 항목은 이번 작업자가
 2026-11-02에 기록했으며 범위 제외 승인이 없다. 공통 서비스 추출과
@@ -46,7 +52,7 @@ UI 호환이 확인된 것은 아니다. 아래 대응 미확정 항목은 이�
 | `xsm list` | action: clear | 대응 미확정; 기존 CLI 경로 보존 필요 |
 | `xsm who` | — | 대응 미확정; 기존 CLI 경로 보존 필요 |
 | `xsm join` | — | xsm_join |
-| `xsm leave` | — | 대응 미확정; 기존 CLI 경로 보존 필요 |
+| `xsm leave` | — | xsm_join(leave=true); scope_service의 frozen membership 변경 공유. 사용자 답 수집/표시는 각 frontend에 남음 |
 | `xsm team` | action: create, add, remove, lead, leave, list, show, mute | xsm_team |
 | `xsm board` | action: show, set, log, sync, decisions, decide, mute | xsm_board |
 | `xsm handover` | — | xsm_handover |
@@ -64,7 +70,7 @@ UI 호환이 확인된 것은 아니다. 아래 대응 미확정 항목은 이�
 | `xsm approve` | — | xsm_approve와 이름 유사; terminal 사용자 답 경로와 동등하지 않음 |
 | `xsm deny` | — | 사용자 decision.response; 모델 명령으로 대신할 수 없음 |
 | `xsm link` | — | xsm_link |
-| `xsm unlink` | — | 대응 미확정; 기존 CLI 경로 보존 필요 |
+| `xsm unlink` | — | xsm_link(drop=true); CLI와 모델 frontend가 scope_service.drop_link 공유 |
 | `xsm reach` | — | xsm_reach |
 | `xsm block` | — | 대응 미확정; 기존 CLI 경로 보존 필요 |
 | `xsm unblock` | — | 대응 미확정; 기존 CLI 경로 보존 필요 |
