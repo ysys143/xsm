@@ -33,6 +33,8 @@ def main():
         commands = [[sys.executable, "-B", "-m", "unittest", *MODULES, "-q"],
                     [sys.executable, "-B", "-m", "unittest", "discover", "-s", "clients/tests",
                      "-p", "test_python*.py", "-q"],
+                    [sys.executable, "-B", "examples/independent-participant/local_v3_fixtures.py",
+                     "--bundle", "docs/protocol", "--output", temp + "/independent-local.json"],
                     ["node", "--test", "clients/tests/test_node_client.mjs",
                      "clients/tests/test_node_protocol.mjs", "clients/tests/test_node_host.mjs",
                      "clients/tests/test_node_host_binding.mjs", "clients/tests/test_opencode_binding.mjs", "clients/tests/test_pi_binding.mjs",

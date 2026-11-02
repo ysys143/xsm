@@ -57,3 +57,18 @@ arguments cannot choose that authority. Attachment preparation is also shared
 with question sending. Frozen material intent conflicts are detected before a
 second send, and CLI group resend continues through the owned group recovery
 path. Full legacy CLI extraction beyond these families remains in progress.
+
+## Questions, handshakes and status
+
+`xsm.question_service` shares ask/connect/status orchestration across the CLI,
+MCP and host protocol. It normalizes group targets, prepares frozen materials,
+selects the handshake peer, and reconciles existing question/network state.
+Frontends supply their authenticated caller, wait budget, cancellation observer
+and input pump; rendering and consumption claims remain frontend responsibilities.
+Cancelling a wait does not cancel the peer task or acknowledge its original.
+
+The selected local handshake is addressed by its complete opaque conversation
+address. A name reassigned during selection cannot redirect the subsequent
+question. Teams still follow their name membership when choosing the current
+member, then address that exact conversation. Legacy short refs remain accepted
+with collision refusal. These addresses are selectors, not authorization.

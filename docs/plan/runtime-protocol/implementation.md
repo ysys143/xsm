@@ -2103,3 +2103,24 @@ red와 혼동하지 않는다. 질문의 runtime-only 주소와 connect의 이�
 (핵심 351/Python 49/Node 126)는 79.443초에 통과했다
 (`generic-peer-core.log`). 공개 schema 검사도 통과했다
 (`generic-peer-schema.json`). 원격 신원과 native UI 전체 검증은 미완이다.
+
+## 독립 참조 참여자 통합과 기능 전수표
+
+명세·checker만 제공한 별도 구현을 examples/independent-participant/에
+추가했다. 부모 작업자는 a1e4804의 새 git archive 서버에서 독립 v3 검증기를
+그대로 재실행해 공개 suite 120회(중복 포함), 후속 시나리오 8개와 checkpoint
+90개 통과·종료 코드 0을 확인했다. 이전 음수 wait 불일치 2개는 이 동결본에서
+-32602로 통과했다. 이전 실패 증거는 보존했다. 자체 transport mock 검사
+16개와 결함 변이 4개 탐지도 별도로 재실행했다. 세부 경계와 미완은
+[독립 참여자 기록](independent-participant.md)에 적었다.
+
+자체 mock 검사를 120초 공통 명령에 통합했다. 기존 526개(351/49/126)와
+독립 mock 16개·변이 4개가 77.268초에 통과했다
+(`independent-integrated-core.log`). 이것은 실제 네이티브 UI·사람 승인·
+만료·메신저나 독립 구현의 전체 기능 인증이 아니다.
+
+새 inventory 명령이 HOME/XSM_HOME을 격리해 CLI 말단 명령 73개·공개 작업
+21개·host method 11개를 재현했다. [전수표](feature-inventory.md)는 각
+CLI의 positional 선택값과 공개 작업 대응·미확정을 기록한다. doc의 노드
+작업과 기존 endorsement가 동등하지 않다는 차이, Claude/Codex 한정 worker
+parser도 포함했다. 미확정 항목을 범위 제외나 통과로 바꾸지 않았다.
