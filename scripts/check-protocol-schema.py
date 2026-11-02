@@ -28,6 +28,9 @@ def output_contract(trace=None):
     file_schema = json.loads((ROOT / 'docs/protocol/file-result.schema.json').read_text())
     Draft202012Validator.check_schema(file_schema)
     file_validator = Draft202012Validator(file_schema)
+    ack_schema = json.loads((ROOT / 'docs/protocol/ack-result.schema.json').read_text())
+    Draft202012Validator.check_schema(ack_schema)
+    ack_validator = Draft202012Validator(ack_schema)
     inbox_observed = 0
     inbox_empty = dict(messages=[], claims=[], items=[], inbox_pending=0)
     inbox_file = dict(messages=['fixture'], claims=[dict(id='original', token='opaque-token',
@@ -62,6 +65,8 @@ def output_contract(trace=None):
                 inbox_observed += 1
             if observation.get('operation') == 'xsm_files':
                 file_validator.validate(frame['result'])
+            if observation.get('operation') == 'xsm_ack':
+                ack_validator.validate(frame['result'])
     for example in examples:
         validate(example)
     error = next(copy.deepcopy(e['frame']) for e in examples if 'error' in e['frame'])
@@ -94,6 +99,27 @@ def output_contract(trace=None):
     return dict(examples=len(examples), rejected=len(invalid) + 1 + len(bad_operation_results), observed=len(observations),
                 inboxExamples=2, inboxRejected=len(invalid_inbox), observedInboxResults=inbox_observed, observedSuccessfulMethods=sorted({o['method'] for o in observations if 'result' in o['frame']}),
                 observedNotifications=sum('method' in o['frame'] for o in observations))
+
+
+def ack_contract():
+    schema = json.loads((ROOT / 'docs/protocol/ack-result.schema.json').read_text())
+    Draft202012Validator.check_schema(schema)
+    validator = Draft202012Validator(schema)
+    examples = [dict(acked=[], inbox_pending=0),
+                dict(acked=['original', 'original'], inbox_pending=1, inbox_notice='one pending'),
+                dict(acked=['original'], inbox_pending=None, inbox_pending_known=0,
+                     inbox_pending_diagnostics=['pending-unavailable:OSError'])]
+    for value in examples:
+        validator.validate(value)
+    invalid = [dict(inbox_pending=0), dict(acked=[], inbox_pending=-1),
+               dict(acked=['original\n'], inbox_pending=0),
+               dict(acked=[True], inbox_pending=0), dict(acked=['a' * 161], inbox_pending=0),
+               dict(acked=[], inbox_pending=True), dict(acked=[], inbox_pending=0, consumed=True)]
+    for value in invalid:
+        if validator.is_valid(value):
+            raise ValueError('invalid ACK result accepted: ' + repr(value))
+    return dict(examples=len(examples), rejected=len(invalid),
+                scope='successful result structure; batch errors may follow earlier durable acknowledgements')
 
 
 def files_contract():
@@ -218,7 +244,7 @@ def run(trace=None):
     return dict(passed=True, methods=len(methods), accepted=accepted, rejected=rejected,
                 validator='jsonschema', validatorVersion=importlib.metadata.version('jsonschema'),
                 scope='request and output structures; no full operation results or semantic certification',
-                output=output_contract(trace), operations=operations_contract(), files=files_contract())
+                output=output_contract(trace), operations=operations_contract(), files=files_contract(), ack=ack_contract())
 
 
 if __name__ == '__main__':

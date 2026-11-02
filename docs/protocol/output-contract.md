@@ -133,3 +133,9 @@ upload status/results. [Checksum semantics](files-contract.md) require actual
 byte/hash and value comparison in addition to JSON Schema. Other operation-domain
 result schemas remain incomplete; the generic object envelope is not their full
 contract.
+
+The [ACK result schema](ack-result.schema.json) specifies canonical acknowledged
+IDs and pending-count diagnostics. [ACK semantics](ack-contract.md) preserves
+ordered idempotent tokens and makes partial durable effects on a failed batch
+explicit. Captured successful `xsm_ack` results are checked against this schema;
+its presence does not complete the remaining operation result families.

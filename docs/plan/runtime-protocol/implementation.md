@@ -2405,3 +2405,22 @@ CLI link/unlink/reach와 모델 xsm_link/xsm_reach도 scope_service의 준비·�
 총643개와 독립 mock39개/변이14개를77.709초에 통과했다. 명령은 앞 절과 같고
 로그 접두어는 deliverables/protocol-foundation/scope-links-reach-다.
 이 결과로 전체 CLI 추출이나 native 런타임 지원을 완료 처리하지 않는다.
+
+## ACK 결과 계약 보강 (2026-11-02)
+
+공개 ack-result.schema.json과 ack-contract.md를 추가하고 protocol describe의
+필수 산출물 및 schema checker의 실제 ACK 응답 검증에 연결했다. ACK 결과의
+canonical ID 배열·순서·중복 token idempotence와 pending count의 unknown을
+문서화했다. 다른 결과 family 전체 스키마는 아직 미완이다.
+
+검사 명령 scripts/check-protocol-schema.py는 정상 예제3개와 거부 예제7개를
+확인했다. 임시 스키마에서 acked 필수 조건 제거·ID 타입 제거·임의 효과 필드
+허용의 변이3개를 모두 검출했다(ack-schema-mutants.json).
+
+현재 서버의 새 stdio events 표본과 별도 batch 표본에서52개 wire 관측을
+검증했다(ack-result-schema-final.json). Batch의 실제 검사4개는 정상 원문2개
+claim, 두 번째 잘못된 token 뒤에도 첫 ACK 영속, 중복 valid token 순서 보존,
+남은 원문 최종 ACK다. 배치 오류가 앞선 ACK를 rollback하지 않는 기존 의미를
+그대로 기록했다. 로그와 wire는 ack-current-wire, ack-batch-current-wire로
+분리돼 있다. public export·격리 snapshot 설치 관련41개 검사도9.715초에
+통과했다(ack-contract-export-install.log). 실제 사용자 승인/UI 증거는 아니다.

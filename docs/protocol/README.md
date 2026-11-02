@@ -13,6 +13,7 @@ Participant privacy and selection: [discovery contract](discovery.md).
 Request definitions: [envelope contract and examples](request-contract.md).
 Operation inputs: [structural catalog and transport restrictions](operations-contract.md).
 Output definitions: [responses, notifications and observed validation](output-contract.md).
+Explicit consumption: [ACK results, idempotence and batch recovery](ack-contract.md).
 External verification: [stdio lifecycle and delivery conformance](conformance.md) (partial contract coverage).
 
 Start `python3 -m xsm protocol serve --stdio` from an installed checkout.

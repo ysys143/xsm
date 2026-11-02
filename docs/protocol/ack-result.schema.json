@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:xsm:host-protocol:1:ack-result",
+  "title": "xsm_ack successful result; canonical message IDs, not claim tokens",
+  "type": "object",
+  "required": [
+    "acked",
+    "inbox_pending"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "acked": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^[A-Za-z0-9_-]{1,160}(?![\\s\\S])"
+      }
+    },
+    "inbox_pending": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 0
+    },
+    "inbox_notice": {
+      "type": "string"
+    },
+    "inbox_pending_known": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "inbox_pending_diagnostics": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  }
+}
