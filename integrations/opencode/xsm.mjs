@@ -8,6 +8,7 @@ import { XsmClient, TransportError } from '../../clients/typescript/xsm-client.m
 import { XsmHost, RetryAdmission, renderInboxPacket } from '../../clients/typescript/xsm-host.mjs';
 import { NativeUiServer, uiParts } from './ui-channel.mjs';
 import { holdComponent } from './component-lease.mjs';
+import { NativeWorkerControl } from '../../clients/typescript/native-worker-control.mjs';
 
 function unwrap(result) {
   if (result.error) throw new Error('OpenCode: ' + JSON.stringify(result.error));
@@ -23,9 +24,12 @@ export default async function xsm(api, options = {}) {
     join(process.env.XDG_CONFIG_HOME ?? join(homedir(), '.config'), 'opencode');
   await mkdir(profilePath, { recursive: true, mode: 0o700 });
   const profile = await realpath(profilePath);
-  const release = await holdComponent(profile, 'opencode-server');
-  try { return await attach(api, { ...options, command, profile }, release); }
-  catch (error) { await release(); throw error; }
+  const workerControl = options.workerControl ?? NativeWorkerControl.fromEnvironment();
+  let release;
+  try {
+    release = await holdComponent(profile, 'opencode-server');
+    return await attach(api, { ...options, command, profile, workerControl }, release);
+  } catch (error) { workerControl?.close(); if (release) await release(); throw error; }
 }
 
 async function attach(api, options, release) {
@@ -217,6 +221,7 @@ async function attach(api, options, release) {
       },
     }])),
     'chat.message': async (input, output) => {
+      if (options.workerControl) await options.workerControl.bind(input.sessionID);
       if (ui && await ui.receive(input.sessionID, output.parts)) return;
       if (output.parts.some(part => part.metadata?.xsmDelivery)) return;
       await (await open(input.sessionID)).naturalBoundary().catch(error => { if (!(error instanceof RetryAdmission)) throw error; });
@@ -240,8 +245,10 @@ async function attach(api, options, release) {
       intents.clear();
       ui?.close();
       const closing = await Promise.allSettled([...sessions.keys()].map(close));
-      await release();
-      for (const result of closing) if (result.status === 'rejected') fail(result.reason);
+      try {
+        await release();
+        for (const result of closing) if (result.status === 'rejected') fail(result.reason);
+      } finally { options.workerControl?.close(); }
     },
   };
 }

@@ -91,3 +91,26 @@ The macOS native run, failure/recovery boundaries and remaining criteria are in
 This is experimental installed-provider dispatch. Complete public third-party
 worker extensibility, all native workers/UI/lifecycle modes, Linux native-model
 runs and the full runtime/remote/messenger matrix remain unfinished.
+
+## Node/Bun frontend control
+
+The shared TypeScript control client uses the same inherited-descriptor protocol
+as the Python frontend. The environment hint is removed on adoption; a changed
+conversation, malformed confirmation, boolean ID, duplicate JSON member or closed
+channel cannot establish ownership. The SDK and private client share strict JSON
+member parsing while retaining ordinary JSON values and independent object keys.
+
+The OpenCode binding awaits private control before its `chat.message` input hook
+continues. Ordinary launches with no private descriptor retain their existing
+path. Actual OpenCode 1.19.5 tests confirmed one scripted provider request after
+acceptance and zero after refusal. The Bun descriptor path uses `net.connect({fd})`,
+which is illustrated in [Bun's descriptor documentation](https://bun.sh/reference/bun/Spawn/BaseOptions/stdio);
+the pinned runtime test is the evidence for this integration, rather than a claim
+about every Bun release.
+
+OpenCode is not yet registered as an owned execution provider. The current private
+channel selects one owned native conversation. Native subagent lineage, admission,
+launch/result/recovery and full worker/UI behavior must be completed before its
+worker support is certified. Native descendant budget inheritance is also a
+remaining explicit audit item across the new runtime providers; root owned-worker
+budget evidence must not be generalized to every native delegation path.

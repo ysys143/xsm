@@ -243,3 +243,21 @@ macOS/protocol Python 3.14.6 p95 상한은 343.080ms다
 실제 모델/사람 UI 인증이 아니다. 공통 386개는 62.647초에 통과했다
 (`opencode-workspace-gate.log`). 전체 다중 프로젝트/원격/플랫폼 행렬과
 P0–P5의 나머지 조건은 미완이다.
+
+## Native worker의 모델 전 control hook
+
+선택적 private descriptor가 있는 실행에서 chat.message hook은 실제 native
+session ID의 결속을 await한다. Descriptor 없는 기존 실행은 같은 경로를
+유지한다. Native tool/backend 진행 전에 거부가 전파되는 fixture 검사와
+Python/Node 실제 descriptor 상호운용을 추가했다.
+
+실제 고정1.19.5에서도 수락 시 scripted provider1회, 거부 시0회를 확인했다.
+모델 endpoint는 명시적 fixture였으며 실제 LLM·소유 journal·사용자 UI 증거가
+아니다. 최초 native Bun의 new Socket({fd}) 쓰기는 ERR_SOCKET_CLOSED로 실패했고,
+같은 native binary에서 net.connect({fd}) 경로로6개 검사가 통과했다.
+실패와 성공은 opencode-worker-control-native[-v2/-v3/-v4/-v5]/에 구분했다.
+양쪽 시험 process group은 종료됐다.
+
+OpenCode owned provider 자체는 아직 catalog에 등록하지 않았다. Native child의
+parent 관계와 상속 budget, native 실행/재개/회수 등 남은 조건은 유지한다.
+상세 공통 경계는 native-workers.md를 따른다.

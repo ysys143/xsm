@@ -2525,3 +2525,31 @@ actor의 raw/protocol-projected full identity를 worker budget에 연결한다.
 통과했다. 새 부정 경로 변이4개도 실제 assertion 실패를 확인했다. 이전 Linux
 gate를 이693개 검증으로 소급하지 않는다. Linux 신규 회귀·다른 provider·native
 UI/전체 lifecycle·30방향/remote/messenger 및 나머지 계획 조건은 미완이다.
+
+## Node control client와 OpenCode awaited hook (2026-11-02)
+
+공통 Node private-control client와 엄격한 JSON member decoder를 추가했다.
+Native descriptor에서 Python controller와 실제 통신해 동일 SID/idempotent bind,
+다른 SID 거부와 boolean ID·integer confirmation·duplicate member 거부를
+확인했다. OpenCode input hook은 control을 await한다. 이것만으로 OpenCode
+runtime을 owned catalog에 등록하거나 전체 worker 지원을 완료 처리하지 않았다.
+
+Node SDK가 중복 protocolVersion 필드를 받아들이던 문제도 실제 peer 응답으로
+수정 전 실패를 확인하고 공통 decoder에 연결했다. 첫 임시 peer는 문법 오류로
+닫혀 검사가 잘못 통과했으므로 성공 근거에서 제외했다. Peer를 올바른 JSON
+응답으로 고치고 정확한 duplicate 진단을 요구하자 수정 전 'Missing expected
+rejection'으로 실패했다. 로그는 node-json-duplicate-before[-fixed-peer].log와
+after.log에 구분돼 있다.
+
+실제 OpenCode1.19.5/native Bun에서 초기 Socket fd 쓰기가 ERR_SOCKET_CLOSED로
+실패했고, native 소스의 awaited hook이 provider를 부르기 전에500을 반환했다.
+Bun의 connect fd 경로를 사용한 v5에서는6개 검사가 통과했다. 수락은 native
+session callback1회+fixture provider1회였고, 거부는 callback1회+provider0회였다.
+모델은 scripted fixture/model0이며 실제 LLM/owned journal/lineage 증거가 아니다.
+과거 native 실패4개 실행과 최종 결과를 보존하고 각 native process를 종료했다.
+
+SDK duplicate 허용·private integer confirmation 허용·native gate 생략의 임시
+source 변이3개를 모두 assertion 실패로 검출했다(node-control-mutants.json).
+704개(Python490+SDK50+provider26+Node138), 독립 mock39/변이14개를
+100.825초에 통과했다(opencode-worker-control-core.log). 이 수치의 Linux 전체
+실행은 아직 미실행이며, 앞선693개 Linux 결과와 구분한다.

@@ -284,3 +284,24 @@ for (const directory of [root, null, '', '.', join(root, 'not-an-existing-native
   await assert.rejects(invoke('foreign', 'xsm_inbox'), /native session workspace/);
   assert.deepEqual(await records(), []);
 });
+
+test('owned native input waits for its private context binding', { timeout: 10000 }, async t => {
+  let release;
+  let entered = false;
+  const gate = new Promise(resolve => { release = resolve; });
+  const workerControl = { bind: async id => { assert.equal(id, 'owned-native'); entered = true; await gate; }, close() {} };
+  const f = await fixture(t, { workerControl });
+  const pending = f.hooks['chat.message']({ sessionID: 'owned-native' }, { parts: [] });
+  try {
+    await until(() => entered);
+    assert.equal((await f.records()).length, 0, 'native host input must not proceed before binding');
+  } finally { release(); }
+  await pending;
+  assert.equal((await f.records()).length, 1);
+});
+
+test('owned native binding refusal stops the awaited input hook', { timeout: 10000 }, async t => {
+  const f = await fixture(t, { workerControl: { bind: async () => { throw new Error('private binding refused'); }, close() {} } });
+  await assert.rejects(f.hooks['chat.message']({ sessionID: 'not-owned' }, { parts: [] }), /binding refused/);
+  assert.equal((await f.records()).length, 0);
+});

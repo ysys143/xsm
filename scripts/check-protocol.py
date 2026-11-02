@@ -95,6 +95,7 @@ def main():
                     [sys.executable, "-B", "examples/independent-participant/local_v6_fixtures.py",
                      "--bundle", "docs/protocol", "--output", temp + "/independent-v6-local.json"],
                     ["node", "--test", "clients/tests/test_node_client.mjs",
+                     "clients/tests/test_json_wire.mjs", "clients/tests/test_native_worker_control.mjs",
                      "clients/tests/test_node_protocol.mjs", "clients/tests/test_node_host.mjs",
                      "clients/tests/test_node_host_binding.mjs", "clients/tests/test_opencode_binding.mjs", "clients/tests/test_pi_binding.mjs",
                      "clients/tests/test_opencode_question_ui.mjs", "clients/tests/test_opencode_ui_channel.mjs",

@@ -3,6 +3,7 @@ import { spawn } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import { TextDecoder } from 'node:util';
 import { StringDecoder } from 'node:string_decoder';
+import { parseWireJson } from './json-wire.mjs';
 
 export class TransportError extends Error {
   constructor(message) { super(message); this.name = 'TransportError'; }
@@ -97,7 +98,7 @@ export class XsmClient {
         while ((newline = buffered.indexOf('\n')) !== -1) {
           const line = buffered.slice(0, newline);
           buffered = buffered.slice(newline + 1);
-          this.#dispatch(JSON.parse(line));
+          this.#dispatch(parseWireJson(line));
         }
       } catch (error) { this.#fail(new TransportError(`invalid RPC stream: ${error.message}`)); }
     });
