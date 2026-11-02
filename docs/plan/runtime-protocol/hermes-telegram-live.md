@@ -94,3 +94,34 @@ anthropic/claude-sonnet-5-5이며 served_model은 응답에 없어 null로 기�
 wake=never/pull이다. Telegram gateway의 agent→platform 전달 표본과 합쳐 하나의
 xsm→Telegram end-to-end로 주장하지 않는다. Native push/idle p95, actual UI와
 다른 runtime/platform/worker/remote matrix의 미완 기준도 그대로 남아 있다.
+
+## 실제 Telegram 세션에서 XSM 왕복
+
+같은 승인된 개인 대화에서 사용자가 보낸 시험 지시를 실제 GatewayRunner가
+수신했다. 첫 실행은 사용자 메시지 도착 전에 대기 시간이 만료돼 종료됐고,
+그 실패 결과를 보존했다. 두 번째 실행은 pending update를 버리지 않고 재시작해
+같은 지시를 처리했다. 시험기는 gateway의 실제 참여 등록을 기다린 뒤 별도
+공개 프로토콜 sender로 FYI task를 저장했다(wake=never).
+
+실제 Telegram 대화의 model이 xsm_inbox로 원문을 읽고 xsm_ack로 명시적 ACK를
+기록했으며, xsm_send로 sender에게 reply/outcome=succeeded를 보냈다. 이후
+확인 nonce를 포함한 Telegram 최종 회신이 native delivery ledger에 delivered로
+기록됐다. sender도 실제 reply를 읽고 ACK했다. 저장 직후 미ACK였던 상태부터
+최종 전달까지 7개 검사 전부 통과했고, gateway stop까지 36.333초였다.
+
+증거는 deliverables/protocol-foundation/hermes-telegram-xsm-gateway-second/의
+result.json과 native-audit.json이며, 첫 timeout과 각 실행 로그도 보존했다.
+이번 도구 trace는 tool_search, xsm_inbox 2회, xsm_ack, tool_search,
+xsm_send 실패 후 재시도 성공이다. 실패 원인은 모델이 지원하지 않는 `to` 인수를
+사용한 것으로 `arguments.to is unknown`이 반환됐다. 이를 도구 무오류 표본으로
+계산하지 않는다. native session의 누적 API calls는8, tool calls는7이며 이 API
+수치는 앞선 단순 Telegram 확인 턴도 포함한다. configured model은
+anthropic/claude-sonnet-5-5, billing host는 기존 구독 프록시 127.0.0.1이었다.
+실제 served model은 이 증거에서 확인하지 못했다.
+
+이 표본은 실제 Telegram→native session/model→XSM pull/ACK/reply→Telegram의
+연결 증거다. FYI를 깨우거나 synthetic user answer를 주입하지 않았다.
+idle push·100회 p95·사용자 승인 UI·worker·Discord·Linux 및 전체 행렬은 여전히
+미완이며, 앞 절의 별도 native agent 표본과도 구분한다. 시험 프로필에만 모델
+출력 한도를1536, 최대 turn을8로 설정했고 공유 프록시·일반 사용자 프로필은
+수정하지 않았다. 시험용 gateway는 종료됐다.
