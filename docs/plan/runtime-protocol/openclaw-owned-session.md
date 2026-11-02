@@ -757,3 +757,24 @@ Python494+SDK52+native132+Node152=830개와 독립 mock39/변이14개를79.187�
 형식을 모두 처리하기 전 결과다. 이번 변경의 Linux·공개 protocol cold failure,
 실행 중 gateway 종료와 기존 간헐적 receiver stale 판정·전체 UI/모델/메신저
 행렬은 계속 미완이다.
+
+## 실행 중 gateway 강제 종료의 native 관측
+
+openclaw-active-restart-shape는 원래 provider HTTP 요청을 막아 둔 채 test gateway의
+process group만 SIGKILL하고 같은 profile로 재시작했다. 원래 run의 wait는 전후
+모두 timeout이었다. 재시작한 native는 다른 run ID로 자체 recovery turn을 시작했다.
+History pending input에는 internal_system/sourceTool=main_session_restart_recovery와
+같은 sourceSessionKey가 있었고 activeRunIds도 새 ID였다. HTTP 진입은2회였다.
+이 두 번째 native 동작은 XSM의 agent 재제출로 집계하지 않는다.
+
+새 recovery prompt의 지시 문구는 관측 자료일 뿐 XSM의 권한이나 완료 증거가
+아니다. 원래 run과 새 run의 구조화된 연결이 검증되지 않았으므로 새 run의
+답변·최신 문구를 원래 결과로 합치지 않는다. 관측 script의 성공은 이 상태를
+읽었다는 뜻이며 실행 중 restart 복구 성공이 아니다. Gateway는 종료됐고 실제
+모델 추론은0회였다.
+
+고정 native source에는 restartRecoveryDeliverySourceRunId 등 내부 lineage가
+있지만 현재 공개 sessions.describe/history에서 검증 가능한 연결을 확인한
+것은 아니다. 2026-11-03 구현 담당자가 기록했으며 같은 담당자가 공개 native
+API 또는 권한을 보존하는 SDK 경로에서 원래 run과 continuation의 연결을
+입증한 뒤 이 조건을 재판정한다. 그 전까지 전체 목표의 미완 조건으로 유지한다.

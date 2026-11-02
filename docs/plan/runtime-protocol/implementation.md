@@ -33,6 +33,14 @@
   OpenClaw의 guarded native context queue prototype이 있다. 런타임 전체 지원
   인증이나 모든 표면의 연결 완료를 뜻하지 않는다.
 - 실험 명세·요청 스키마·README 연결. 안정된 호환성 보장은 아직 아니다.
+- 고정 native provider catalog에 Hermes/OpenCode/Pi/OpenClaw owned 실행을 연결했다.
+  Claude/Codex legacy 경로와 공통 journal·동시성·범위 정책을 공유하며 native
+  binding/control, 실행 중 취소와 보존 출력 readback을 구현했다. OpenClaw는
+  별도 native host 수명과 frontend 종료 뒤 조회·gateway 재시작 후 run별 history
+  회수, 답변 없는 종료의 execution lease 정리까지 model0 증거가 있다.
+  [Native worker 경계](native-worker-boundary.md), [OpenClaw 상세](openclaw-owned-session.md),
+  [Linux 검증](linux-validation.md)의 source별 범위를 따른다. Classic spawn/pane는
+  여전히 Claude/Codex이며 worker 전체 UI/실제 모델/원격 행렬 인증은 미완이다.
 - Hermes의 실제 native agent와 macOS Telegram 개인 대화에서 pull→명시적 ACK→
   reply→Telegram 전달을 확인했다. [별도 기록](hermes-telegram-live.md)의 표본이며
   native push/UI/worker나 전체 메신저 지원 완료를 뜻하지 않는다.
@@ -42,11 +50,11 @@
 | 단계 | 상태 | 남은 조건 |
 |---|---|---|
 | P0 계약·현황 | 부분 구현 | 전체 기능별 normative 스키마, 독립 구현 적합성, 안정판 API 감사 |
-| P1 공통 서비스 | 부분 구현 | 남은 CLI 추출·native worker 확장·비동기 작업 수명. 일반 참여자의 원격 신원은 별도 실제 QUIC 표본으로 검증했으나 전체 runtime 행렬은 미완 |
+| P1 공통 서비스 | 부분 구현 | 남은 CLI 추출·전체 작업 수명/오류 계약. Owned native provider/control은 연결했으나 classic/TUI 등 실행 모드 전체는 미완. 일반 참여자 실제 QUIC 표본과 전체 runtime 행렬을 구분 |
 | P2 SDK·검사기 | 부분 구현 | 독립 구현의 전체 계약 적합성·전체 오류/취소 계약. Python↔Node 교차 시험 및 고정 공개 입력에 대한 독립 구현 표본은 통과 |
-| P3 Pi·OpenCode | 부분 구현 | 연결·수신·설치·대화 수명·자동 재접속의 native fixture 검증. 실제 사용자 UI·native worker·busy/now의 실제 우선순위 등 미완 |
-| P4 Hermes·OpenClaw | 부분 구현 | Hermes native 도구·격리 설치·자동 복구 fixture 및 macOS 실제 agent/Telegram pull 왕복 통과. native push·idle wake·UI·worker, OpenClaw owned queue/UI 검증과 다양한 장애의 claim 회수 미완 |
-| P5 통합·배포 | 부분 검증 | Mac/Linux 핵심 gate와 여러 native fixture 통과. Hermes queue p95·idle wake, OpenClaw 간헐적 burst ACK 실패, 30방향 조합·물리 원격·전체 native p95·실제 UI/worker/모델 행렬·Discord·전체 회귀 미완. Telegram은 macOS의 단일 승인 개인 대화 pull 표본으로 한정 |
+| P3 Pi·OpenCode | 부분 구현 | 연결·수신·설치·대화 수명·자동 재접속과 owned worker 정상/취소/readback의 native 증거가 있음. 실제 사용자 UI·classic/TUI worker와 전체 실행 모드·busy/now 우선순위 등 미완 |
+| P4 Hermes·OpenClaw | 부분 구현 | Hermes macOS 실제 agent/Telegram pull과 native owned admission/generation 취소 증거. OpenClaw native owned·공개 protocol·Linux/model0와 cold history 회수 증거. Native push/idle wake·전체 UI/모델/작업 모드와 진행 중 restart lineage는 미완 |
+| P5 통합·배포 | 부분 검증 | Mac/Linux core와 source별 native 표본 통과. 최근 Linux cold batch의 receiver stale 1건은 재현·원인 미확정.30방향·동종·물리 원격·전체 p95·UI/실제 모델/메신저·설치/rollback 전체 행렬 미완. Telegram 단일 승인 개인 대화와 Discord 미실행을 구분 |
 
 ## 초기 실제 검사
 
