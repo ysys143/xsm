@@ -60,3 +60,37 @@ hermes-telegram-gateway-first/second의 실패·종료 기록도 그대로 보�
 검증하지 않았다. 실제 user decision UI·worker·재개·p95 100회·다른 런타임과
 30방향·Discord·Linux Telegram gateway도 미완이다. 새로운 봇이 만들어졌거나
 확인 문구가 도착했다는 사실만으로 이 기준을 완료 처리하지 않는다.
+
+## 실제 native xsm 도구와 FYI 왕복
+
+전용 프로필에만 xsm installer를 적용하고 plugin/toolset을 명시적으로 활성화했다.
+기존 config는 같은 private 프로필에 백업했다. 일반 사용자 프로필과 공유 프록시는
+변경하지 않았다. 소유 snapshot은 57154f82f91a이며 실제 profile에 연결됐다.
+
+실제 Hermes agent는 도구를 세 개의 검색/호출 bridge로 접어 노출한다. 최상위에
+xsm_inbox가 있어야 한다던 초기 assertion은 모델 호출 전에 실패했다. Native
+검색을 사용한 후속 호출은 실제 xsm_inbox를 찾았으나 terminal cwd가 없는 문맥을
+거부했다. profile의 native terminal.cwd를 실제 작업 디렉터리로 제공한 세 번째
+표본은 tool_search→xsm_inbox를 실제 호출하고 정상 확인 문구를 반환했다. Gateway
+프로세스 cwd를 caller로 위장하거나 바인딩의 identity 검사를 제거하지 않았다.
+실행들은 hermes-native-xsm-tools-probe[-v2,-v3].log에 분리돼 있다.
+
+같은 실제 agent 대화의 다음 turn에서, 별도 protocol sender가 같은 격리 xsm state에
+FYI task를 저장했다. 원문은 native 읽기 전에 unacknowledged였다. 실제 model이
+xsm_inbox→xsm_ack→xsm_send(reply/outcome=succeeded)를 호출했고 sender도 실제
+reply를 읽고 ACK했다. 최초 표본은 이 데이터 왕복 7개 항목은 통과했지만 이후
+출력 제한/continuation과 provider thinking 옵션 오류를 남겼다. 그 결과를 깨끗한
+모델 턴 성공으로 계산하지 않는다.
+
+두 번째 표본은 같은 model/provider/runtime에서 max output을 256→1536으로
+보완하고 새 request ID/nonce로 실행했다. 기존 7개에 completed=true/failed=false를
+더한 8개 검사가 통과했다(hermes-native-xsm-roundtrip-second/result.json/log).
+최종 turn의 API calls는4, 종료는 text_response(finish_reason=stop)였다. 중간의
+실패한 tool_describe 시도도 trace에 남겼다. requested model은 live catalog의
+anthropic/claude-sonnet-5-5이며 served_model은 응답에 없어 null로 기록했다.
+모델명을 확인했다고 실제 served identity까지 증명한 것으로 확대하지 않는다.
+
+이 왕복은 실제 native agent/model/tool이지만 Telegram send는 하지 않았으며
+wake=never/pull이다. Telegram gateway의 agent→platform 전달 표본과 합쳐 하나의
+xsm→Telegram end-to-end로 주장하지 않는다. Native push/idle p95, actual UI와
+다른 runtime/platform/worker/remote matrix의 미완 기준도 그대로 남아 있다.
