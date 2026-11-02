@@ -706,3 +706,25 @@ Native profile의 auth/config 파일은 복사하지 않고 child 출력만 추�
 none/cpu2/memory3g를 유지했다. 이번 표본은 native 경로이며819개 core를 새로
 실행한 것으로 계산하지 않는다. 원시는 deliverables/protocol-foundation/
 openclaw-exact-description-linux/ 아래에 있다.
+
+## Frontend 결과 회수·native 오류 종료의 Linux 검증
+
+56c1126cd091f7f137e3a80a6bc8437fe0a1f8aa를 고정했다. Source archive SHA256은
+fae72bd85e2b029c9a3a12f53dd63d00f3a91f090f408bca21bccbd3228f5e98이다.
+공식 lifecycle을 완료한2026.10.9 native cache를 읽기 전용으로 재사용했다.
+
+openclaw-host-recovery-linux에서13/13 native mode, 총412개 검사가 통과했다.
+기존9개 경로에 직접 frontend 종료 후 결과 회수36개, 직접 native 오류 정리35개,
+공개 protocol 오류 정리26개와 frontend 종료 후 reply claim/ACK32개를 더했다.
+실제 gateway를 사용하며 원래 native run의 결과를 조회했고 추론을 재제출하지
+않았다. 오류 종료는 task unknown/result=None/reply=None을 보존했다.
+
+같은 frozen source의 core도 Python3.11.2에서65.352초,3.14.10에서83.236초에
+통과했다. 두 환경 모두 Python494+SDK52+native128+Node152=826개, 독립
+mock39/변이14개이며120초 기한을 유지했다. 실패·skip은 없었다.
+
+Native와 core 모두 network none/cpu2/memory3g/model0이다. 모든 gateway가
+종료됐고 VM stopExit=0, 미실행 native mode0이다. 원시는 deliverables/
+protocol-foundation/openclaw-host-recovery-linux/의 result.json과 mode별 output에
+있다. Gateway 자체 재시작·실제 모델·사람 UI·메신저와 전체 런타임/아키텍처
+행렬은 이 결과로 완료 처리하지 않는다.

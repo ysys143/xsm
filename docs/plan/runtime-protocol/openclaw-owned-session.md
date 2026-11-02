@@ -586,3 +586,31 @@ openclaw-public-error-settlement에서26개 검사가 통과했다.
 두 표본은 정상 fixture3회와 별도 요청의 HTTP 진입1회를 구분했고 실제 모델
 추론0회, gatewayStopped=true다. 이번 변경은 시험기와 문서만이며 제품 코드는
 0760bd0과 같다. 직전826개 core 결과를 재실행한 것으로 계산하지 않는다.
+
+## 같은 소스의 Linux native·core 재검증
+
+56c1126을 고정해 Linux arm64에서13/13 native mode, 총412개 검사가 통과했다
+(openclaw-host-recovery-linux). 기존9개 경로와 직접 frontend 결과 회수36개,
+직접 native 오류 정리35개, 공개 오류 정리26개·frontend 결과 회수/ACK32개를
+포함한다. 같은 source의826개 core는 Python3.11.2에서65.352초,3.14.10에서
+83.236초로 통과했다. 모든 gateway와 VM이 종료됐고 미실행 native mode0이다.
+실제 모델 추론0회이며 archive hash와 상세 경계는 linux-validation.md에 기록했다.
+
+## Gateway 자체 재시작의 확인된 미완 경계
+
+2026-11-03 구현 담당 세션이 별도 profile에서 실제 native run을 완료한 뒤
+gateway만 정상 종료·재시작했다(openclaw-gateway-restart-shape). 재시작 전에는
+같은 run의 실제 reply와 terminal receipt가 있었으나 재시작 후 agent.wait는
+status=timeout만 반환했다. 세션 description에는 같은 sessionId/lastRunId와
+status=done이 남았다. Provider fixture는1회로 유지돼 native 재추론은 없었다.
+Gateway는 종료했다. 이 표본은 실패로 보존하며 cold recovery 성공으로 세지 않는다.
+
+고정 source의 agent-wait.ts도 context dedupe와 agent job snapshot 관측을
+사용한다. 세션의 lastRunId/done만으로 실제 답변이나 완료 receipt를 만들지
+않으며 최근 transcript를 원래 run의 결과로 추측하지 않는다. 현재 host 상태
+조회 방식만으로는 이 재시작 경계를 완료하지 못했다.
+
+같은 구현 담당자가 원래 run에 결속된 durable completion을 공개 native API에서
+검증하거나, native 권한 경계를 지키는 host 관측 저장 경로를 구현한 뒤 이 표본을
+재검사한다. 버전·하네스·모델을 임의 대체하거나 이 조건을 제외하는 사용자
+승인은 없으므로 전체 계획과 gateway 재시작 복구는 계속 미완이다.
