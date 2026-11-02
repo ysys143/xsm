@@ -44,6 +44,9 @@ class RealProtocolTests(unittest.IsolatedAsyncioTestCase):
                     data = base64.b64decode(result['content'], validate=True)
                     self.assertEqual(data, original['data'])
                     self.assertEqual(hashlib.sha256(data).hexdigest(), metadata['sha256'])
+                canonical = await client.operation_call(b['session'], 'xsm_files', {
+                    'storage_id': copy['storage_id'], 'manifest_bytes': True})
+                self.assertEqual(hashlib.sha256(base64.b64decode(canonical['content'], validate=True)).hexdigest(), copy['sha256'])
                 ack = await client.operation_call(b['session'], 'xsm_ack', {
                     'tokens': [claim['token'] for claim in pack['claims']]})
                 self.assertEqual(ack['acked'], ['four-mib'])

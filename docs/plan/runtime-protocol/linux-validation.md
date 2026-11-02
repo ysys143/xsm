@@ -412,3 +412,25 @@ Python 3.11.2에서 96.662초, Python 3.14.10에서 117.593초에 통과했다.
 이 표본은 뒤의 독립 mock gate 통합과 xsm_doc 추가 전이며 그 변경의 Linux
 통과 근거로 확대하지 않는다. 3.14 실행은 120초 상한에 가까우므로 새로운
 실패나 변경 없이 반복 실행해 더 빠른 표본으로 교체하지 않는다.
+
+## 큰 사본 준비의 120초 실패와 검사 구성 수정
+
+동일한 aafd6dc archive(54e20da7efce5a8dbffa9833bb2acfd4c1e7ba561337d5741b2ec8d81112e83b,
+tracked dirty false)의 공통 558개와 독립 mock 16개/변이 4개는 Python 3.11.2에서
+103.294초에 통과했다(`linux-file-upload-core/result.json`). Python 3.14.10은
+120초를 넘겨 실패했다(`linux-python-314-file-upload-core/result.json`). 그 표본의
+핵심 381개는 58.242초, Python SDK 50개는 23.173초에 통과했고 Node 검사 진행
+중 총 시간이 끝났다. Node 127개 전체 통과로 기록하지 않는다. 실패 로그는
+보존했고 VM 종료는 linux-file-upload-batch.json의 stopExitCode 0으로 확인했다.
+
+검사를 빼거나 상한을 늘리지 않고, 서로 독립인 핵심 Python·SDK·참여자 mock을
+각각 다른 HOME/XSM_HOME/네이티브 profile 경로에서 병렬 실행하도록 바꿨다.
+Node 그룹은 다음 단계에 실행한다. 전체 120초 deadline과 실패 시 process group
+종료·부분 출력 보존을 유지한다. 2개 실제 프로세스 barrier·별도 홈·deadline
+종료·실패 출력의 3개 검사를 추가했고, 옛 순차 실행 변이는 barrier 검사에서
+실패했다(`parallel-gate-{green,serial-mutant}.log`). 완료된 PID를 다시 signal하지
+않고 실행 중인 시험 process group만 종료한다.
+
+새 파일 계약·검사 7개를 더한 macOS 최종 공통 565개(388/Python 50/Node 127),
+독립 mock 25개·변이 8개는 63.192초에 통과했다(file-contract-verified-core.log).
+이는 위 Linux 실패를 통과로 덮는 증거가 아니다. 새 구성의 Linux 재검증은 미완이다.

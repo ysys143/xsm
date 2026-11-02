@@ -10,7 +10,8 @@ import sys
 PATTERNS = ('docs/protocol/*.json', 'docs/protocol/*.md', 'scripts/conform-host-protocol.py', 'scripts/check-protocol-schema.py')
 REQUIRED = ('docs/protocol/README.md', 'docs/protocol/request.schema.json',
             'docs/protocol/request-examples.json', 'docs/protocol/output.schema.json',
-            'docs/protocol/output-examples.json', 'docs/protocol/inbox-result.schema.json', 'docs/protocol/operations.schema.json',
+            'docs/protocol/output-examples.json', 'docs/protocol/inbox-result.schema.json',
+            'docs/protocol/file-result.schema.json', 'docs/protocol/operations.schema.json',
             'docs/protocol/operation-examples.json', 'scripts/conform-host-protocol.py', 'scripts/check-protocol-schema.py')
 
 

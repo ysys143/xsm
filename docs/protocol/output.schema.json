@@ -205,7 +205,7 @@
       "properties": {
         "address": {
           "type": "string",
-          "pattern": "^peer:[0-9a-f]{64}$"
+          "pattern": "^peer:[0-9a-f]{64}(?![\\s\\S])"
         },
         "session": {
           "type": "string",
@@ -408,7 +408,7 @@
         },
         "upload": {
           "type": "string",
-          "pattern": "^[0-9a-f]{32}$"
+          "pattern": "^[0-9a-f]{32}(?![\\s\\S])"
         },
         "request_id": {
           "type": "string",
@@ -447,14 +447,14 @@
         },
         "manifest_id": {
           "type": "string",
-          "pattern": "^[0-9a-f]{32}$"
+          "pattern": "^[0-9a-f]{32}(?![\\s\\S])"
         },
         "body_digest": {
           "type": "string",
-          "pattern": "^[0-9a-f]{64}$"
+          "pattern": "^[0-9a-f]{64}(?![\\s\\S])"
         },
         "manifest": {
-          "type": "object"
+          "$ref": "#/$defs/fileManifest"
         },
         "mode": {
           "enum": [
@@ -464,8 +464,9 @@
         },
         "references": {
           "type": "array",
+          "maxItems": 1,
           "items": {
-            "type": "object"
+            "$ref": "#/$defs/fileReference"
           }
         },
         "body_sent": {
@@ -489,7 +490,7 @@
             },
             "upload": {
               "type": "string",
-              "pattern": "^[0-9a-f]{32}$"
+              "pattern": "^[0-9a-f]{32}(?![\\s\\S])"
             },
             "request_id": {
               "type": "string",
@@ -528,14 +529,14 @@
             },
             "manifest_id": {
               "type": "string",
-              "pattern": "^[0-9a-f]{32}$"
+              "pattern": "^[0-9a-f]{32}(?![\\s\\S])"
             },
             "body_digest": {
               "type": "string",
-              "pattern": "^[0-9a-f]{64}$"
+              "pattern": "^[0-9a-f]{64}(?![\\s\\S])"
             },
             "manifest": {
-              "type": "object"
+              "$ref": "#/$defs/fileManifest"
             },
             "mode": {
               "enum": [
@@ -545,8 +546,9 @@
             },
             "references": {
               "type": "array",
+              "maxItems": 1,
               "items": {
-                "type": "object"
+                "$ref": "#/$defs/fileReference"
               }
             },
             "body_sent": {
@@ -584,7 +586,7 @@
       "properties": {
         "upload": {
           "type": "string",
-          "pattern": "^[0-9a-f]{32}$"
+          "pattern": "^[0-9a-f]{32}(?![\\s\\S])"
         },
         "entry": {
           "type": "integer",
@@ -622,6 +624,504 @@
         "body_sent"
       ],
       "additionalProperties": false
+    },
+    "fileClaim": {
+      "type": "object",
+      "required": [
+        "id",
+        "token",
+        "owner",
+        "generation",
+        "digest"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "token": {
+          "type": "string",
+          "minLength": 1
+        },
+        "generation": {
+          "type": "string",
+          "minLength": 1
+        },
+        "digest": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}(?![\\s\\S])"
+        },
+        "owner": {
+          "type": "object",
+          "required": [
+            "type",
+            "id"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "type": {
+              "type": "string",
+              "minLength": 1
+            },
+            "id": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        }
+      }
+    },
+    "fileManifestEntry": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{32}(?![\\s\\S])"
+        },
+        "version": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "original_name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "source_version": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "size": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 1048576
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}(?![\\s\\S])"
+        },
+        "copy": {
+          "const": true
+        },
+        "input_source": {
+          "enum": [
+            "cli-os-read",
+            "caller-inline"
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "version",
+        "name",
+        "original_name",
+        "source_version",
+        "size",
+        "sha256",
+        "copy",
+        "input_source"
+      ],
+      "additionalProperties": false
+    },
+    "fileManifest": {
+      "type": "object",
+      "properties": {
+        "schema": {
+          "const": "xsm.files/v1"
+        },
+        "id": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{32}(?![\\s\\S])"
+        },
+        "version": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "previous": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[0-9a-f]{32}(?![\\s\\S])"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "owner": {
+          "type": "object",
+          "properties": {
+            "runtime": {
+              "type": "string",
+              "minLength": 1
+            },
+            "home_id": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}(?![\\s\\S])"
+            },
+            "session_id": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "required": [
+            "runtime",
+            "home_id",
+            "session_id"
+          ],
+          "additionalProperties": false
+        },
+        "binding": {
+          "type": "object",
+          "properties": {
+            "request_id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "body_sha256": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}(?![\\s\\S])"
+            }
+          },
+          "required": [
+            "request_id",
+            "body_sha256"
+          ],
+          "additionalProperties": false
+        },
+        "created_at": {
+          "type": "number",
+          "minimum": 0
+        },
+        "expires_at": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "files": {
+          "type": "array",
+          "maxItems": 16,
+          "items": {
+            "$ref": "#/$defs/fileManifestEntry"
+          }
+        },
+        "size": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 4194304
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}(?![\\s\\S])"
+        }
+      },
+      "required": [
+        "schema",
+        "id",
+        "version",
+        "previous",
+        "owner",
+        "binding",
+        "created_at",
+        "expires_at",
+        "files",
+        "size",
+        "sha256"
+      ],
+      "additionalProperties": false
+    },
+    "fileReference": {
+      "type": "object",
+      "properties": {
+        "path": {
+          "type": "string",
+          "pattern": "^manifest:[0-9a-f]{32}(?![\\s\\S])"
+        },
+        "id": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{32}(?![\\s\\S])"
+        },
+        "version": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}(?![\\s\\S])"
+        },
+        "size": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 4194304
+        }
+      },
+      "required": [
+        "path",
+        "id",
+        "version",
+        "sha256",
+        "size"
+      ],
+      "additionalProperties": false
+    },
+    "fileManifestResult": {
+      "type": "object",
+      "properties": {
+        "storage_id": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{32}(?![\\s\\S])"
+        },
+        "manifest": {
+          "$ref": "#/$defs/fileManifest"
+        },
+        "inbox_pending": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "inbox_notice": {
+          "type": "string"
+        },
+        "inbox_pending_known": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "inbox_pending_diagnostics": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "incoming": {
+          "type": "object",
+          "properties": {
+            "messages": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "claims": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/fileClaim"
+              }
+            },
+            "batch_limited": {
+              "type": "boolean"
+            },
+            "next_after": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "rendered_bytes": {
+              "type": "integer",
+              "minimum": 0
+            }
+          },
+          "required": [
+            "messages",
+            "claims"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "storage_id",
+        "manifest"
+      ],
+      "additionalProperties": false
+    },
+    "fileEntryResult": {
+      "type": "object",
+      "properties": {
+        "storage_id": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{32}(?![\\s\\S])"
+        },
+        "entry_id": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{32}(?![\\s\\S])"
+        },
+        "encoding": {
+          "enum": [
+            "text",
+            "base64"
+          ]
+        },
+        "content": {
+          "type": "string"
+        },
+        "inbox_pending": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "inbox_notice": {
+          "type": "string"
+        },
+        "inbox_pending_known": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "inbox_pending_diagnostics": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "incoming": {
+          "type": "object",
+          "properties": {
+            "messages": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "claims": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/fileClaim"
+              }
+            },
+            "batch_limited": {
+              "type": "boolean"
+            },
+            "next_after": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "rendered_bytes": {
+              "type": "integer",
+              "minimum": 0
+            }
+          },
+          "required": [
+            "messages",
+            "claims"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "storage_id",
+        "entry_id",
+        "encoding",
+        "content"
+      ],
+      "additionalProperties": false
+    },
+    "fileCanonicalResult": {
+      "type": "object",
+      "properties": {
+        "storage_id": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{32}(?![\\s\\S])"
+        },
+        "canonical_format": {
+          "const": "xsm.files/v1"
+        },
+        "manifest_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}(?![\\s\\S])"
+        },
+        "encoding": {
+          "const": "base64"
+        },
+        "content": {
+          "type": "string"
+        },
+        "inbox_pending": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "inbox_notice": {
+          "type": "string"
+        },
+        "inbox_pending_known": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "inbox_pending_diagnostics": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "incoming": {
+          "type": "object",
+          "properties": {
+            "messages": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "claims": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/fileClaim"
+              }
+            },
+            "batch_limited": {
+              "type": "boolean"
+            },
+            "next_after": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "rendered_bytes": {
+              "type": "integer",
+              "minimum": 0
+            }
+          },
+          "required": [
+            "messages",
+            "claims"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "storage_id",
+        "canonical_format",
+        "manifest_sha256",
+        "encoding",
+        "content"
+      ],
+      "additionalProperties": false
+    },
+    "fileResult": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/fileManifestResult"
+        },
+        {
+          "$ref": "#/$defs/fileEntryResult"
+        },
+        {
+          "$ref": "#/$defs/fileCanonicalResult"
+        }
+      ]
     }
   },
   "x-methodResults": {

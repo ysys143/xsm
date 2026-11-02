@@ -20,26 +20,26 @@ def _schema(properties, required):
 UPLOAD_SCHEMAS = {
     'files.upload.open': _schema({
         'target': {'type': 'string', 'minLength': 1},
-        'request_id': {'type': 'string', 'pattern': '^[A-Za-z0-9_-]{1,160}$'},
+        'request_id': {'type': 'string', 'pattern': '^[A-Za-z0-9_-]{1,160}(?![\\s\\S])'},
         'text': {'type': 'string'},
         'entries': {'type': 'array', 'minItems': 1, 'maxItems': 16, 'items': {
             'type': 'object', 'additionalProperties': False, 'required': ['name', 'size', 'sha256'],
             'properties': {'name': {'type': 'string', 'minLength': 1, 'maxLength': 4096},
                            'size': {'type': 'integer', 'minimum': 0, 'maximum': 1048576},
-                           'sha256': {'type': 'string', 'pattern': '^[0-9a-f]{64}$'},
+                           'sha256': {'type': 'string', 'pattern': '^[0-9a-f]{64}(?![\\s\\S])'},
                            'source_version': {'type': 'string', 'maxLength': 4096}}}},
         'previous_manifest': {'type': 'string'},
         'attachment_fallback': {'type': 'string', 'enum': ['inline']},
     }, ['target', 'request_id', 'text', 'entries']),
     'files.upload.write': _schema({
-        'upload': {'type': 'string', 'pattern': '^[0-9a-f]{32}$'},
+        'upload': {'type': 'string', 'pattern': '^[0-9a-f]{32}(?![\\s\\S])'},
         'entry': {'type': 'integer', 'minimum': 0, 'maximum': 15},
         'offset': {'type': 'integer', 'minimum': 0, 'maximum': 1048576},
         'base64': {'type': 'string', 'maxLength': 262144},
     }, ['upload', 'entry', 'offset', 'base64']),
-    'files.upload.commit': _schema({'upload': {'type': 'string', 'pattern': '^[0-9a-f]{32}$'}}, ['upload']),
-    'files.upload.status': _schema({'request_id': {'type': 'string', 'pattern': '^[A-Za-z0-9_-]{1,160}$'}}, ['request_id']),
-    'files.upload.abort': _schema({'upload': {'type': 'string', 'pattern': '^[0-9a-f]{32}$'}}, ['upload']),
+    'files.upload.commit': _schema({'upload': {'type': 'string', 'pattern': '^[0-9a-f]{32}(?![\\s\\S])'}}, ['upload']),
+    'files.upload.status': _schema({'request_id': {'type': 'string', 'pattern': '^[A-Za-z0-9_-]{1,160}(?![\\s\\S])'}}, ['request_id']),
+    'files.upload.abort': _schema({'upload': {'type': 'string', 'pattern': '^[0-9a-f]{32}(?![\\s\\S])'}}, ['upload']),
 }
 
 

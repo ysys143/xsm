@@ -126,3 +126,10 @@ operation=xsm_inbox are checked against it, including item/claim ID correlation.
 [Inbox semantics](inbox-contract.md) also defines sender metadata and structured
 attachment preparation recovery. This adds one domain result contract; other
 operation-specific schemas are still incomplete.
+
+The [file result schema](file-result.schema.json) covers owned manifest, entry
+and exact digest-preimage replies. It also types manifests/references inside
+upload status/results. [Checksum semantics](files-contract.md) require actual
+byte/hash and value comparison in addition to JSON Schema. Other operation-domain
+result schemas remain incomplete; the generic object envelope is not their full
+contract.

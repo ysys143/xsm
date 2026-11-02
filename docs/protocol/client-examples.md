@@ -178,3 +178,7 @@ does not replace the original failure. Cleanup failure is not itself evidence
 that every resource was recovered. The independent echo-peer tests check actual
 process termination after malformed negotiation, including a close override
 that raises only after reaping the process.
+
+## 독립 참조 참여자와 큰 사본
+
+공통 SDK를 import하지 않는 [독립 v5 참여자](../../examples/independent-participant/README-v5.md)는 공개 명세와 checker로 구현했다. v2/v3와 실패 증거는 별도 보존했다. [큰 사본 준비](file-uploads.md)는 prepare_files/prepareFiles 뒤 명시적인 송신을 요구하고, [파일 결과·해시 bytes](files-contract.md)는 byte-level 검증을 설명한다. 이 예제들의 통과는 전체 native runtime 인증이 아니다.

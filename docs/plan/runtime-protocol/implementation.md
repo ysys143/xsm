@@ -2231,3 +2231,32 @@ schema 생성기의 재실행 동일성도 확인했다. method는 11개에서 1
 일반 SDK의 decision.response 차단으로 실패했고, 지원되는 trusted host helper로
 수정한 두 번째 실행은 대기 중이다(`real-decision-expiry-run2/progress.json`).
 만료 뒤 replay·늦은 답·기존 invocation 적용 거부를 확인하기 전 완료로 세지 않는다.
+
+## Manifest 해시 입력 바이트와 파일 결과 구조
+
+xsm_files의 manifest_bytes=true와 CLI --manifest-bytes를 추가했다. 기존 v1
+compact UTF-8 serialization을 바꾸지 않고 그 해시 입력 bytes를 base64로 돌려준다.
+caller는 bytes의 SHA-256과 bound digest를 대조하고, UTF-8 JSON을 파싱해 sha256만
+뺀 원래 manifest 전체와 비교한다. 다른 언어의 float formatter로 재직렬화하지
+않아도 검증할 수 있다. entry_id와는 함께 쓰지 않고 같은 copy owner 검사를 거친다.
+서버 원본 경로나 새 권한을 노출하지 않는다.
+
+초회 flag 부재 실패 3개를 보존했다(file-manifest-bytes-red.log). 기존 파일/
+material과 새 query 회귀 75개가 통과했다. 고정된 Unicode·지수 표기 직렬화
+vector를 추가해 v1 바이트를 보존하며, 공백을 추가하는 변이가 실패하는 것도
+확인했다(file-manifest-format-mutant.log). 실제 Python/TypeScript stdio 사본
+검사도 반환 preimage의 SHA를 bound metadata와 대조한다.
+
+file-result.schema.json은 manifest/entry/preimage의 세 형태, v1 manifest와
+reference 전체 필드, passive claim metadata를 기술한다. upload 결과의 nested
+객체도 같은 정의를 쓴다. 공개 checksum/byte 동작 42개(기존 lifecycle 포함)와
+관찰 응답 74개가 schema를 통과했다(file-canonical-public-{wire,schema}.json).
+구조 검사 정상 3개·거부 8개와 실제 bytes/hash 검증을 구분한다. newline이 붙은
+해시/ID를 JSON Schema의 $ anchor가 받던 red도 보존한 뒤 엄격한 끝 조건으로
+고쳤다(file-result-schema-{red,green}.log). 다른 domain의 전체 결과 계약이
+완료됐다는 뜻은 아니다.
+
+같은 작업에서 Linux 3.14의 120초 실패를 보존하고 검사 그룹의 격리를 유지한
+병렬 구성으로 바꿨다. 최종 macOS 공통 565개(핵심 388/Python 50/Node 127),
+독립 mock 25개·변이 8개가 63.192초에 통과했다(file-contract-verified-core.log).
+Linux의 새 구성은 다시 확인해야 한다. 상세는 linux-validation.md에 구분했다.

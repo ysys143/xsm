@@ -234,7 +234,8 @@ class OperationService:
             from . import files
             try:
                 result = files.read_result(me, args.get('storage_id'), args.get('entry_id'),
-                    outgoing=args.get('outgoing', False), encoding=args.get('encoding', 'text'))
+                    outgoing=args.get('outgoing', False), encoding=args.get('encoding', 'text'),
+                    manifest_bytes=args.get('manifest_bytes', False))
             except UnicodeError as exc:
                 raise ToolError("binary copy: request encoding=base64") from exc
             return json.dumps(result, ensure_ascii=False)

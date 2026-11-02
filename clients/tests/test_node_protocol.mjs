@@ -38,6 +38,8 @@ test('chunk preparation resumes exact bytes and never sends the body implicitly'
     const read = await client.operationCall(b.session, 'xsm_files', {
       storage_id: copy.storage_id, entry_id: copy.files[0].id, encoding: 'base64' });
     assert.deepEqual(Buffer.from(read.content, 'base64'), data);
+    const canonical = await client.operationCall(b.session, 'xsm_files', { storage_id: copy.storage_id, manifest_bytes: true });
+    assert.equal(createHash('sha256').update(Buffer.from(canonical.content, 'base64')).digest('hex'), copy.sha256);
     assert.equal((await client.operationCall(b.session, 'xsm_ack', { tokens: pack.claims.map(c => c.token) })).acked[0], 'node-upload');
   } finally { await client?.close(); await rm(temp, { recursive: true, force: true }); }
 });

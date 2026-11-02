@@ -521,7 +521,12 @@ def _persist(root, kind, storage_id, record, blobs, limits, diagnostics=None):
 
 
 def _manifest_digest(value):
-    return _sha(_json({k: v for k, v in value.items() if k != "sha256"}))
+    return _sha(canonical_manifest_bytes(value))
+
+
+def canonical_manifest_bytes(value):
+    """Exact v1 digest preimage; preserve the existing on-disk serialization."""
+    return _json({k: v for k, v in value.items() if k != 'sha256'})
 
 
 def _check_manifest(value, request_id=None, body=None):
@@ -864,9 +869,16 @@ def read_copy(caller, storage_id, entry_id, *, incoming=False):
         return data[entry_id]
 
 
-def read_result(caller, storage_id, entry_id=None, *, outgoing=False, encoding='text'):
+def read_result(caller, storage_id, entry_id=None, *, outgoing=False, encoding='text', manifest_bytes=False):
     """Common owned manifest/byte response; frontends authenticate and render."""
     incoming = not outgoing
+    if manifest_bytes:
+        if entry_id:
+            raise FileError('ambiguous-file-read', 'manifest bytes cannot select a file entry')
+        value = manifest(caller, storage_id, incoming=incoming)
+        return {'storage_id': storage_id, 'canonical_format': SCHEMA,
+                'manifest_sha256': value['sha256'], 'encoding': 'base64',
+                'content': base64.b64encode(canonical_manifest_bytes(value)).decode('ascii')}
     if not entry_id:
         return {'storage_id': storage_id, 'manifest': manifest(caller, storage_id, incoming=incoming)}
     if encoding not in ('text', 'base64'):

@@ -25,6 +25,9 @@ def output_contract(trace=None):
     inbox_schema = json.loads((ROOT / 'docs/protocol/inbox-result.schema.json').read_text())
     Draft202012Validator.check_schema(inbox_schema)
     inbox_validator = Draft202012Validator(inbox_schema)
+    file_schema = json.loads((ROOT / 'docs/protocol/file-result.schema.json').read_text())
+    Draft202012Validator.check_schema(file_schema)
+    file_validator = Draft202012Validator(file_schema)
     inbox_observed = 0
     inbox_empty = dict(messages=[], claims=[], items=[], inbox_pending=0)
     inbox_file = dict(messages=['fixture'], claims=[dict(id='original', token='opaque-token',
@@ -57,6 +60,8 @@ def output_contract(trace=None):
                 if [item['id'] for item in frame['result']['items']] != [claim['id'] for claim in frame['result']['claims']]:
                     raise ValueError('inbox item IDs differ from claimed originals')
                 inbox_observed += 1
+            if observation.get('operation') == 'xsm_files':
+                file_validator.validate(frame['result'])
     for example in examples:
         validate(example)
     error = next(copy.deepcopy(e['frame']) for e in examples if 'error' in e['frame'])
@@ -89,6 +94,35 @@ def output_contract(trace=None):
     return dict(examples=len(examples), rejected=len(invalid) + 1 + len(bad_operation_results), observed=len(observations),
                 inboxExamples=2, inboxRejected=len(invalid_inbox), observedInboxResults=inbox_observed, observedSuccessfulMethods=sorted({o['method'] for o in observations if 'result' in o['frame']}),
                 observedNotifications=sum('method' in o['frame'] for o in observations))
+
+
+def files_contract():
+    schema = json.loads((ROOT / 'docs/protocol/file-result.schema.json').read_text())
+    validator = Draft202012Validator(schema)
+    manifest = dict(schema='xsm.files/v1', id='0' * 32, version=1, previous=None,
+        owner=dict(runtime='fixture', home_id='0' * 64, session_id='opaque'),
+        binding=dict(request_id='fixture', body_sha256='0' * 64), created_at=1, expires_at=2,
+        files=[dict(id='1' * 32, version=1, name='copy', original_name='copy', source_version=None,
+                    size=1, sha256='0' * 64, copy=True, input_source='caller-inline')], size=1, sha256='0' * 64)
+    examples = [dict(storage_id='0' * 32, manifest=manifest),
+                dict(storage_id='0' * 32, entry_id='1' * 32, encoding='text', content='a'),
+                dict(storage_id='0' * 32, canonical_format='xsm.files/v1', manifest_sha256='0' * 64,
+                     encoding='base64', content='e30=')]
+    for value in examples:
+        validator.validate(value)
+    invalid = []
+    bad = copy.deepcopy(examples[0]); bad['manifest']['files'][0]['path'] = '/not-an-owned-id'; invalid.append(bad)
+    bad = copy.deepcopy(examples[0]); bad['manifest']['owner']['home_id'] += '\n'; invalid.append(bad)
+    bad = copy.deepcopy(examples[0]); del bad['manifest']['binding']; invalid.append(bad)
+    bad = copy.deepcopy(examples[0]); bad['manifest']['files'][0]['copy'] = False; invalid.append(bad)
+    bad = copy.deepcopy(examples[1]); bad['entry_id'] += '\n'; invalid.append(bad)
+    bad = copy.deepcopy(examples[1]); bad['content'] = 1; invalid.append(bad)
+    bad = copy.deepcopy(examples[2]); bad['encoding'] = 'text'; invalid.append(bad)
+    bad = copy.deepcopy(examples[2]); bad['entry_id'] = '1' * 32; invalid.append(bad)
+    for value in invalid:
+        if validator.is_valid(value):
+            raise ValueError('invalid file result accepted: ' + repr(value))
+    return dict(examples=len(examples), rejected=len(invalid), scope='structure only; fixture digests are not semantic checksum evidence')
 
 
 def operations_contract():
@@ -184,7 +218,7 @@ def run(trace=None):
     return dict(passed=True, methods=len(methods), accepted=accepted, rejected=rejected,
                 validator='jsonschema', validatorVersion=importlib.metadata.version('jsonschema'),
                 scope='request and output structures; no full operation results or semantic certification',
-                output=output_contract(trace), operations=operations_contract())
+                output=output_contract(trace), operations=operations_contract(), files=files_contract())
 
 
 if __name__ == '__main__':

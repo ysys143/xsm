@@ -44,7 +44,9 @@ or closed; this state is separate from the durable frozen-intent lookup.
 Commit checks every declared size and digest before invoking the existing owned
 material preparation. Incomplete/corrupt uploads do not create a new indexed
 preparation. A successful commit frees the raw buffer and retains small completion
-metadata for exact replay. Frozen material intent, request/body binding, version,
+metadata for exact replay. Completed handles may be evicted first when a new
+upload needs a slot; no time-based completion-token retention is promised. Recover
+the durable preparation by request ID after token eviction. Frozen material intent, request/body binding, version,
 quota, capability negotiation and explicit fallback use the same engine as CLI/MCP.
 The returned references are manifest references, not local paths or permissions.
 
@@ -78,9 +80,10 @@ it does not assert that another invocation never sent the same request.
 ## Structural artifacts and evidence
 
 request.schema.json includes the five methods. output.schema.json describes progress,
-write/abort responses, and frozen/unknown status shapes. The nested legacy manifest
-and reference objects still need their complete independent result schema; the
-extension's structural schema is not full file/operation certification.
+write/abort responses, and frozen/unknown status shapes. Nested v1 manifests and references use the complete field structures in
+[file-result.schema.json](file-result.schema.json). Digest preimages and checksum
+verification are described in [files-contract.md](files-contract.md). Structural
+validation is not semantic checksum, ownership or full operation certification.
 
 The public checker has an uploads suite: lifecycle plus a four-file 4 MiB transfer,
 exact replay, wrong owner, changed metadata, generation recovery, no implicit send,

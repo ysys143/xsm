@@ -5,6 +5,7 @@ import os
 from pathlib import Path
 import subprocess
 import shutil
+import signal
 import sys
 import tempfile
 import time
@@ -13,6 +14,8 @@ ROOT = Path(__file__).resolve().parents[1]
 MODULES = ["tests.test_question_service", "tests.test_send_service", "tests.test_materials", "tests.test_multisend", "tests.test_question_groups", "tests.test_board_service", "tests.test_board", "tests.test_team_service", "tests.test_teams", "tests.test_native_probe_platform", "tests.test_protocol_conformance", "tests.test_protocol", "tests.test_handoff", "tests.test_handoff_consumer",
            "tests.test_doc_service", "tests.test_doc",
            "tests.test_file_uploads",
+           "tests.test_file_contract",
+           "tests.test_protocol_gate",
            "tests.test_handoff_read_cache",
            "tests.test_hermes_binding",
            "tests.test_openclaw_schema",
@@ -23,6 +26,47 @@ MODULES = ["tests.test_question_service", "tests.test_send_service", "tests.test
            "tests.test_handoff_crash", "tests.test_handoff_pending_ids",
            "tests.test_mcp_dispatch", "tests.test_subagent_transport",
            "tests.test_mcp_identity", "tests.test_mcp_shared_process"]
+
+
+def run_phase(commands, env, root, deadline, offset):
+    """Independent Python groups overlap waits; each has its own state and profiles."""
+    jobs = []
+    try:
+        for index, command in enumerate(commands, offset):
+            folder = Path(root) / ('group-%d' % index)
+            folder.mkdir()
+            group_env = dict(env, HOME=str(folder / 'home'), XSM_HOME=str(folder / 'state'),
+                             CODEX_HOME=str(folder / 'codex'), CLAUDE_CONFIG_DIR=str(folder / 'claude'))
+            Path(group_env['HOME']).mkdir()
+            stream = (folder / 'output.log').open('w+')
+            try:
+                process = subprocess.Popen(command, cwd=ROOT, env=group_env, stdout=stream,
+                                           stderr=subprocess.STDOUT, start_new_session=True)
+            except BaseException:
+                stream.close()
+                raise
+            jobs.append((process, stream, command))
+        while any(process.poll() is None for process, _, _ in jobs):
+            if time.monotonic() >= deadline:
+                raise subprocess.TimeoutExpired(commands, 120)
+            if any(process.poll() not in (None, 0) for process, _, _ in jobs):
+                return next(command for process, _, command in jobs if process.poll() not in (None, 0))
+            time.sleep(.02)
+        return next((command for process, _, command in jobs if process.returncode), None)
+    finally:
+        # Also reap descendants if a test failed or the shared deadline expired.
+        for process, _, _ in jobs:
+            if process.poll() is None:
+                try:
+                    os.killpg(process.pid, signal.SIGKILL)
+                except ProcessLookupError:
+                    pass
+            process.wait()
+        for _, stream, _ in jobs:
+            stream.seek(0)
+            shutil.copyfileobj(stream, sys.stdout)
+            stream.close()
+        sys.stdout.flush()
 
 
 def main():
@@ -37,6 +81,8 @@ def main():
                      "-p", "test_python*.py", "-q"],
                     [sys.executable, "-B", "examples/independent-participant/local_v3_fixtures.py",
                      "--bundle", "docs/protocol", "--output", temp + "/independent-local.json"],
+                    [sys.executable, "-B", "examples/independent-participant/local_v5_fixtures.py",
+                     "--output", temp + "/independent-v5-local.json"],
                     ["node", "--test", "clients/tests/test_node_client.mjs",
                      "clients/tests/test_node_protocol.mjs", "clients/tests/test_node_host.mjs",
                      "clients/tests/test_node_host_binding.mjs", "clients/tests/test_opencode_binding.mjs", "clients/tests/test_pi_binding.mjs",
@@ -46,16 +92,13 @@ def main():
             print(json.dumps({"passed": False, "reason": "Node.js is required for client conformance"}))
             return 1
         try:
-            for command in commands:
-                remaining = 120 - (time.monotonic() - started)
-                if remaining <= 0:
-                    raise subprocess.TimeoutExpired(command, 120)
-                result = subprocess.run(command, cwd=ROOT, env=env, timeout=remaining)
-                if result.returncode:
-                    print(json.dumps({"passed": False, "command": command, "exit": result.returncode}))
+            for offset, phase in ((0, commands[:3]), (3, commands[3:])):
+                failed = run_phase(phase, env, temp, started + 120, offset)
+                if failed is not None:
+                    print(json.dumps({"passed": False, "command": failed}))
                     return 1
             elapsed = time.monotonic() - started
-            passed = result.returncode == 0 and elapsed <= 120
+            passed = elapsed <= 120
             print(json.dumps({"passed": passed, "seconds": round(elapsed, 3),
                               "python": sys.version.split()[0], "nodePython": env["PYTHON"],
                               "budgetSeconds": 120, "modules": MODULES}))

@@ -8,6 +8,7 @@ import sys
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from xsm.file_uploads import UPLOAD_SCHEMAS, Uploads
+from xsm.file_schema import definitions, result_schema
 
 
 def write(name, value):
@@ -21,13 +22,16 @@ def read(name):
 def generate():
     request, examples = read('request.schema.json'), read('request-examples.json')
     outputs, output_examples = read('output.schema.json'), read('output-examples.json')
+    claim = read('inbox-result.schema.json')['$defs']['claim']
+    outputs['$defs'].update(definitions(claim))
+    write('file-result.schema.json', result_schema(claim))
     methods = set(UPLOAD_SCHEMAS)
     request['properties']['method']['enum'] = [m for m in request['properties']['method']['enum'] if m not in methods]
     request['allOf'] = [rule for rule in request['allOf'] if rule['if']['properties']['method']['const'] not in methods]
     examples = [value for value in examples if value['method'] not in methods]
     output_examples = [value for value in output_examples if value.get('method') not in methods]
     string = {'type': 'string', 'minLength': 1}
-    upload_id = {'type': 'string', 'pattern': '^[0-9a-f]{32}$'}
+    upload_id = {'type': 'string', 'pattern': '^[0-9a-f]{32}(?![\\s\\S])'}
     integer = {'type': 'integer', 'minimum': 0}
     def closed(properties, required):
         return {'type': 'object', 'properties': properties, 'required': required, 'additionalProperties': False}
@@ -35,9 +39,9 @@ def generate():
         'request_id': string, 'offsets': {'type': 'array', 'maxItems': 16, 'items': integer},
         'chunk_bytes': {'const': Uploads.CHUNK_BYTES}}, ['state', 'upload', 'request_id', 'offsets', 'chunk_bytes'])
     frozen = closed({'state': {'const': 'frozen'}, 'request_id': string, 'manifest_id': upload_id,
-        'body_digest': {'type': 'string', 'pattern': '^[0-9a-f]{64}$'},
-        'manifest': {'type': 'object'}, 'mode': {'enum': ['files', 'inline']},
-        'references': {'type': 'array', 'items': {'type': 'object'}},
+        'body_digest': {'type': 'string', 'pattern': '^[0-9a-f]{64}(?![\\s\\S])'},
+        'manifest': {'$ref': '#/$defs/fileManifest'}, 'mode': {'enum': ['files', 'inline']},
+        'references': {'type': 'array', 'maxItems': 1, 'items': {'$ref': '#/$defs/fileReference'}},
         'body_sent': {'const': False}}, ['state', 'request_id', 'manifest_id'])
     unknown = closed({'state': {'const': 'unknown'}, 'request_id': string}, ['state', 'request_id'])
     outputs['$defs']['uploadProgress'] = progress

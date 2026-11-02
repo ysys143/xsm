@@ -1249,7 +1249,8 @@ def cmd_files(args) -> int:
         return REFUSED
     try:
         result = files.read_result(me, args.storage_id, args.entry,
-                                   outgoing=args.outgoing, encoding=args.encoding)
+                                   outgoing=args.outgoing, encoding=args.encoding,
+                                   manifest_bytes=args.manifest_bytes)
     except (files.FileError,UnicodeError) as exc:
         print(str(exc),file=sys.stderr)
         return REFUSED
@@ -3058,6 +3059,7 @@ def build_parser() -> argparse.ArgumentParser:
     copies.add_argument("storage_id")
     copies.add_argument("--entry",help="one copied entry ID; omit to read the manifest")
     copies.add_argument("--outgoing",action="store_true",help="read your own outgoing snapshot")
+    copies.add_argument('--manifest-bytes', action='store_true', help='read exact manifest digest bytes as base64; omit --entry')
     copies.add_argument("--encoding",choices=["text","base64"],default="text")
     copies.set_defaults(func=cmd_files)
 

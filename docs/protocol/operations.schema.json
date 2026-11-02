@@ -387,6 +387,11 @@
           "type": "boolean",
           "default": false
         },
+        "manifest_bytes": {
+          "type": "boolean",
+          "default": false,
+          "description": "Return the exact v1 manifest SHA-256 preimage as base64; omit entry_id. This is owned metadata, never a source path."
+        },
         "encoding": {
           "type": "string",
           "enum": [

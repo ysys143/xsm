@@ -173,6 +173,15 @@ def uploads(peer, sender, receiver, reopen, limits, check, equal):
         data = base64.b64decode(result['content'], validate=True)
         check('copy %d exact bytes and digest' % index, lambda data=data, metadata=metadata, index=index:
             equal(data == entries[index] and hashlib.sha256(data).hexdigest() == metadata['sha256'], True))
+    manifest_result = operation(receiver, 'xsm_files', storage_id=copied['storage_id'])
+    canonical = operation(receiver, 'xsm_files', storage_id=copied['storage_id'], manifest_bytes=True)
+    preimage = base64.b64decode(canonical['content'], validate=True)
+    check('manifest digest verifies exact exported bytes', lambda: equal(
+        hashlib.sha256(preimage).hexdigest() == canonical['manifest_sha256'] == copied['sha256'], True))
+    check('digest preimage binds the complete manifest', lambda: equal(json.loads(preimage.decode('utf-8')),
+        {key: value for key, value in manifest_result['manifest'].items() if key != 'sha256'}))
+    check('manifest bytes are a distinct response kind', lambda: equal(
+        canonical['canonical_format'] == 'xsm.files/v1' and canonical['encoding'] == 'base64' and 'entry_id' not in canonical, True))
     temporary = peer.call('files.upload.open', dict(args, session=sender['session'], request_id='abort-buffer', entries=[specs[0]]))
     check('abort frees volatile preparation only', lambda: equal(peer.call('files.upload.abort', {
         'session': sender['session'], 'upload': temporary['upload']})['aborted'], True))
