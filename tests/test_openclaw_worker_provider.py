@@ -247,3 +247,26 @@ export async function callGatewayFromCli(method,options,p,extra) {
         self.assertEqual(closed['native_execution']['evidence']['source'],'native-chat.history')
         self.assertNotIn('private fixture error',json.dumps(closed['native_execution']))
         self.assertEqual(json.loads(memory.read_text())['calls'].count('agent'),calls)
+
+    def test_cold_recovery_does_not_adopt_unlinked_restart_run(self):
+        Path(self.home,'terminal-error').touch();unknown=self.run_turn()
+        Path(self.home,'terminal-error').unlink()
+        Path(self.home,'lost-wait-cache').touch()
+        memory=Path(self.home,'fixture-memory.json');state=json.loads(memory.read_text())
+        calls=state['calls'].count('agent')
+        sid=unknown['context']['native_session_id']
+        row=next(row for row in state['sessions'] if row['sessionId']==sid)
+        # Same native conversation and revision do not prove continuation lineage.
+        # Preserve the original failure occurrence to make the row fence decisive.
+        row.update(lastRunId='native-restart-recovery-run',status='failed',abortedLastRun=False)
+        state['history'][sid].append({'role':'assistant','stopReason':'stop',
+            'content':[{'type':'text','text':'Unlinked recovery answer.'}],
+            '__openclaw':{'id':'recovery-answer','runId':'native-restart-recovery-run',
+                'seq':3,'transcriptPosition':{'source':'fixture-source','rawSeq':3}}})
+        memory.write_text(json.dumps(state))
+        observed=self.workers.reconcile_owned('native-openclaw',self.owner,'one')
+        self.assertEqual(observed['status'],'unknown')
+        self.assertTrue(observed['slot_occupied'])
+        self.assertIsNone(observed['result']);self.assertIsNone(observed['reply_id'])
+        self.assertIsNone(observed.get('native_execution'))
+        self.assertEqual(json.loads(memory.read_text())['calls'].count('agent'),calls)

@@ -778,3 +778,20 @@ History pending input에는 internal_system/sourceTool=main_session_restart_reco
 것은 아니다. 2026-11-03 구현 담당자가 기록했으며 같은 담당자가 공개 native
 API 또는 권한을 보존하는 SDK 경로에서 원래 run과 continuation의 연결을
 입증한 뒤 이 조건을 재판정한다. 그 전까지 전체 목표의 미완 조건으로 유지한다.
+
+동일 native 세션·revision에 새 recovery run이 나타났을 때 원래 run의 실패
+기록이 남아 있어도 실행 lease를 풀거나 새 답변을 채택하지 않는 공통 engine
+회귀 검사를 추가했다(test_cold_recovery_does_not_adopt_unlinked_restart_run).
+격리 SDK fixture에서 통과했으며 실제 provider loader의 closed_history_run에서
+lastRunId 검사를 제거한 변이는 slot_occupied 검사에서 실패했다. 최초 변이는
+별도 import 인스턴스만 바꿔 유효하지 않았으며 그 통과를 검증 근거로 쓰지 않는다.
+원시 baseline·최초 변이·수정한 loader 변이 로그는 deliverables/protocol-foundation/
+openclaw-unlinked-restart-{test,mutant,mutant-correct-loader}.log에 있다.
+이는 잘못된 결과 결속을 거부하는 증거이며 진행 중 restart 복구 구현 완료가 아니다.
+
+같은 고정 source의 packages/gateway-protocol/src/schema/sessions-row.ts는
+lastRunId와 restartRecoveryStatus=tombstoned를 공개하지만 source/recovery run
+쌍을 선언하지 않는다. sessions-read-by-key.ts의 describe는 이 공개 row
+projection을 반환하며 sessions.get은 메시지를 반환한다. 이 조사만으로 다른
+공개 SDK 경로까지 없다고 결론 내리지 않는다. 내부 SessionEntry 필드를 직접
+읽어 공개 API의 권한 경계를 대신하는 구현은 추가하지 않았다.
