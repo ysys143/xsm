@@ -13,6 +13,37 @@ function deferred() {
   return { promise, resolve };
 }
 
+test('Pi owned boundary waits for native binding before consuming inbox input', async t => {
+  const gate = deferred(), entered = deferred();
+  const f = await fixture(t, { workerControl: { bind: async id => {
+    assert.equal(id, 'native'); entered.resolve(); await gate.promise;
+  }, close() {} } });
+  let boundaries = 0;
+  f.opened[0].naturalBoundary = async () => { boundaries++; };
+  const pending = f.hooks.get('before_agent_start')({}, f.ctx);
+  await entered.promise;
+  assert.equal(boundaries, 0);
+  gate.resolve(); await pending;
+  assert.equal(boundaries, 1);
+});
+
+test('Pi owned binding refusal explicitly aborts instead of relying on a hook exception', async t => {
+  let aborts = 0, boundaries = 0;
+  const f = await fixture(t, { workerControl: {
+    bind: async () => { throw new Error('private binding refused'); }, close() {} } });
+  f.ctx.abort = () => { aborts++; };
+  f.opened[0].naturalBoundary = async () => { boundaries++; };
+  await assert.rejects(f.hooks.get('before_agent_start')({}, f.ctx), /private binding refused/);
+  assert.equal(aborts, 1);
+  assert.equal(boundaries, 0);
+});
+
+test('Pi owned input refusal uses the native handled short-circuit', async t => {
+  const f = await fixture(t, { workerControl: {
+    bind: async () => { throw new Error('private binding refused'); }, close() {} } });
+  assert.deepEqual(await f.hooks.get('input')({}, f.ctx), { action: 'handled' });
+});
+
 async function fixture(t, options = {}) {
   const temp = await mkdtemp(join(tmpdir(), 'xsm-pi-lifetime-'));
   const key = 'xsmPiFixture' + randomUUID();
@@ -59,9 +90,11 @@ async function fixture(t, options = {}) {
     code = changed;
   }
   code = code.replace("'../../clients/typescript/xsm-client.mjs'", JSON.stringify(new URL('../typescript/xsm-client.mjs', import.meta.url).href));
+  code = code.replace("'../../clients/typescript/native-worker-control.mjs'", JSON.stringify(new URL('../typescript/native-worker-control.mjs', import.meta.url).href));
   const { default: binding } = await import('data:text/javascript;base64,' + Buffer.from(code).toString('base64'));
   binding({ on: (name, callback) => hooks.set(name, callback), registerTool: tool => tools.set(tool.name, tool),
-    registerCommand: (name, command) => commands.set(name, command), getAllTools: () => [] });
+    registerCommand: (name, command) => commands.set(name, command), getAllTools: () => [] },
+    { workerControl: options.workerControl });
   const ctx = { cwd: temp, hasUI: false, isIdle: () => true,
     sessionManager: { getSessionId: () => 'native', getSessionName: () => '', getBranch: () => [] },
     ui: { notify() {}, setStatus() {} } };

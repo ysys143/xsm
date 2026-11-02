@@ -47,7 +47,7 @@ try {
     select: async (title, options) => { displayed.push({ title, options }); return options[0]; },
     input: async title => { displayed.push({ title }); return 'blue'; },
   } });
-  session.agent.streamFn = () => { result.modelCalls += 1; throw new Error('model execution forbidden in native SDK probe'); };
+  session.agent.streamFunction = () => { result.modelCalls += 1; throw new Error('model execution forbidden in native SDK probe'); };
   // The native nested-tool kernel requires an issuing assistant message.
   // This is an explicit fixture, not a model-produced response or human approval.
   session.agent.state.messages = [...session.agent.state.messages, {
@@ -60,7 +60,7 @@ try {
   const context = session.extensionRunner.createToolContext('native-tool-probe', new AbortController().signal);
   const declared = session.getAllTools().filter(tool => tool.name.startsWith('xsm_'));
   result.nativeToolCount = declared.length;
-  assert.equal(declared.length, 21);
+  assert.equal(declared.length, 22);
   const invalid = await context.executeTool('xsm_inbox', { wait: 5 });
   result.invalidWait = invalid;
   assert.equal(invalid.isError, true, 'unsupported capability must be an actual native tool error');

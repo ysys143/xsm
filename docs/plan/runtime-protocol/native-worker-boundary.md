@@ -379,3 +379,41 @@ session.update를 dispose가 종료하면 예상된 TransportError가 native han
 64.558/85.031초로 통과했으며 VM도 종료됐다(linux-validation.md). Linux 표본에
 종료 경합 수정은 포함되지 않았다. 실제 구독 모델 실패나 native UI/자식/전체
 설치 미완 상태는 이 core 결과로 해소된 것으로 간주하지 않는다.
+
+## Pi의 native 입력 결속 경계
+
+Pi1.4.0 binding에도 private worker descriptor를 연결했다. 일반 참여자는
+descriptor가 없으면 기존 동작을 유지한다. Owned 입력은 native input 훅에서
+실제 session ID를 먼저 결속하며, 실패하면 공개 handled 계약으로 입력을
+차단한다. before_agent_start에서도 같은 결속을 확인하고 실패 시 ctx.abort를
+요청한다. Native new/resume/fork 전환에는 descriptor를 유지하고 최종 종료에
+닫는다. Pi owned 제공자는 아직 catalog에 등록하지 않았다.
+
+Pi의 hook 예외는 native runner가 기록하고 계속 실행한다. ctx.abort만 넣은
+초기 표본에서는 custom stream 함수가 이미 중단된 signal을 받고도 진입했다.
+따라서 이 경로를 입력 차단의 증거로 채택하지 않았다. input handled를 추가한
+native v5에서는 수락 시 stream 진입1회, 거부 시0회였다. 수락은 입력/시작의
+두 경계에서 같은 실제 ID로 결속2회, 거부는1회였다. 앞선 v4는 수락 결속을
+1회만 기대한 시험 드라이버 때문에 실패했으며 로그를 보존했다.
+
+재현 명령은 `python3 -B scripts/probe-pi-owned-gate.py --native-package <Pi1.4.0
+package root> --output <새 경로>`다. 실제 native SDK/extension loader와 private
+socket을 사용하고, streamFunction은 명시적인 호출 계수 fixture로 바꾼다.
+이 명령도 수락/거부 양쪽 통과했다(pi-worker-control-script/result.json).
+모델 추론·업무 결과·owned journal 인증은 아니며 provider API는 호출하지 않는다.
+별도 임시 소스에서 handled를 제거하자 거부 뒤 stream 진입1회로 실제 SDK
+검사가 실패했다(pi-worker-control-mutant/refuse.json). 중단 signal=true도
+함께 보존했다. 단순히 오류를 출력했는지 보는 검사가 아니다.
+
+초기 계측에서는 streamFn이라는 읽히지 않는 필드를 사용했다. 추적 파일
+전수 조사에서 scripts/probe-pi-sdk.mjs1개와 이번 초기 원시 시험 파일1개를
+확인했다. 설치된 native agent가 사용하는 streamFunction으로 수정했다.
+과거 modelCalls=0 필드만으로는 해당 계측의 무호출을 증명할 수 없으며 이번
+수정 결과를 과거 표본에 소급하지 않는다. 기존 SDK 도구 실행 시험도 잘못된
+21개 기대값을 현재22개에 맞춰 다시 실행해 통과했다
+(pi-sdk-counter-corrected.json). Native 버전은1.4.0을 유지했다.
+
+Pi 단위15개가 통과했고, macOS 전체는 Python491+SDK52+native38+Node145=
+726개 및 독립 mock39/변이14개를85.034초에 통과했다
+(pi-worker-control-core-first.log). 이 변경의 Linux와 native CLI/owned 제공자,
+실제 모델·워커 재개/중단/하위 대화 검증은 여전히 미완이다.

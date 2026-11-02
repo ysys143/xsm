@@ -3,10 +3,12 @@ import { randomUUID } from 'node:crypto';
 import { mkdir, realpath } from 'node:fs/promises';
 import { holdComponent } from '../../clients/typescript/component-lease.mjs';
 import { TransportError } from '../../clients/typescript/xsm-client.mjs';
+import { NativeWorkerControl } from '../../clients/typescript/native-worker-control.mjs';
 import { getAgentDir } from '@earendil-works/pi-coding-agent';
 import { XsmHost, RetryAdmission, parseHostCommand, renderInboxPacket } from '../../clients/typescript/xsm-host.mjs';
 
 export default function xsm(pi, options = {}) {
+  const workerControl = options.workerControl ?? NativeWorkerControl.fromEnvironment();
   let host;
   let nativeContext;
   let conversation;
@@ -190,7 +192,27 @@ export default function xsm(pi, options = {}) {
     finally { if (recovering === opening) recovering = undefined; }
   });
 
+  pi.on('input', async (_event, ctx) => {
+    if (!workerControl) return;
+    try { await workerControl.bind(ctx.sessionManager.getSessionId()); }
+    catch (error) {
+      // An input result is the native short-circuit contract; throwing alone
+      // would only log an extension error and let Pi continue the prompt.
+      notify(error);
+      return { action: 'handled' };
+    }
+  });
+
   pi.on('before_agent_start', async (_event, ctx) => {
+    if (workerControl) {
+      try { await workerControl.bind(ctx.sessionManager.getSessionId()); }
+      catch (error) {
+        // Pi reports hook exceptions and continues; abort explicitly before its
+        // awaited agent_start boundary can issue the first model request.
+        ctx.abort();
+        throw error;
+      }
+    }
     if (active) await (await ensure(ctx)).naturalBoundary().catch(error => { if (!(error instanceof RetryAdmission)) throw error; });
   });
   pi.on('agent_start', (_event, ctx) => active && ensure(ctx).then(current => current.update('busy')).catch(fail));
@@ -209,6 +231,7 @@ export default function xsm(pi, options = {}) {
       const lease = componentLease;
       componentLease = undefined;
       if (lease) await (await lease)();
+      workerControl?.close();
     }
   });
 
