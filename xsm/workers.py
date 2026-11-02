@@ -1460,8 +1460,14 @@ def _owned_worker(name):
     return worker
 
 
+def _require_owned_native(runtime):
+    if runtime not in ("claude", "codex"):
+        raise WorkerError("unsupported owned native runtime: %s" % runtime)
+
+
 def _owned_argv(worker, context):
     """Subscription CLIs only. First turns create a new context; followups resume it."""
+    _require_owned_native(worker.get("runtime"))
     if context.get("native_session_id"):
         try:
             uuid.UUID(context["native_session_id"])
@@ -1494,6 +1500,7 @@ def _owned_argv(worker, context):
 
 def _owned_native_result(worker, context, output):
     """Only actual final CLI results become answers; error strings never do."""
+    _require_owned_native(worker.get("runtime"))
     native_evidence = {}
     if worker["runtime"] == "claude":
         try:
@@ -1714,6 +1721,7 @@ def submit_owned(name, sender, body, *, work_context, request_id=None, independe
     from . import owned_requests
     config.require_valid_policy()
     worker = _owned_worker(name)
+    _require_owned_native(worker.get("runtime"))
     owner = worker["owner"]
     owned_requests._native(sender)
     if (owned_requests._native(sender) != owned_requests._native(owner)

@@ -184,6 +184,29 @@ class OwnedWorkerTest(test_xsm.TempState):
             workers._owned_native_result(dict(self.worker, runtime='codex'), context,
                 '{"type":"thread.started","thread_id":"x"}\n{"type":"turn.failed"}')
 
+    def test_unsupported_owned_runtime_does_not_fall_through_to_codex(self):
+        from xsm import workers
+        context = {'native_session_id': None, 'session_seed': '12345678-1234-4234-8234-123456789abc'}
+        output = '\n'.join(json.dumps(row) for row in [
+            {'type': 'thread.started', 'thread_id': context['session_seed']},
+            {'type': 'item.completed', 'item': {'type': 'agent_message', 'text': 'a Codex result'}},
+            {'type': 'turn.completed'}])
+        for runtime in ('pi', 'opencode', 'hermes', 'openclaw'):
+            worker = dict(self.worker, runtime=runtime)
+            with self.subTest(runtime=runtime, stage='argv'), \
+                    self.assertRaisesRegex(workers.WorkerError, 'unsupported owned native runtime'):
+                workers._owned_argv(worker, context)
+            with self.subTest(runtime=runtime, stage='result'), \
+                    self.assertRaisesRegex(workers.WorkerError, 'unsupported owned native runtime'):
+                workers._owned_native_result(worker, context, output)
+
+    def test_unsupported_retained_worker_cannot_accept_a_new_execution(self):
+        from xsm import workers
+        workers.save(dict(self.worker, runtime='future-runtime'))
+        with self.assertRaisesRegex(workers.WorkerError, 'unsupported owned native runtime'):
+            workers.submit_owned('service', self.a, 'task', work_context='job', request_id='unknown-runtime')
+        self.assertEqual(workers.owned_history('service', self.a), [])
+
     def test_controller_cancel_releases_pre_run_and_preserves_post_run_result(self):
         from xsm import owned_requests, workers
         def cancel_ack(stage, request):

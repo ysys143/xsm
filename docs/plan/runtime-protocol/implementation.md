@@ -2424,3 +2424,24 @@ claim, 두 번째 잘못된 token 뒤에도 첫 ACK 영속, 중복 valid token �
 그대로 기록했다. 로그와 wire는 ack-current-wire, ack-batch-current-wire로
 분리돼 있다. public export·격리 snapshot 설치 관련41개 검사도9.715초에
 통과했다(ack-contract-export-install.log). 실제 사용자 승인/UI 증거는 아니다.
+
+## 미지원 owned runtime의 Codex fallback 거부 (2026-11-02)
+
+신규 owned 서비스 생성은 Claude/Codex로 제한돼 있으나, 저장된 worker의 runtime이
+다를 때 명령 생성과 결과 파서 두 곳이 Codex로 fall through했다. 같은 레코드로
+새 요청을 제출하는 경로도 별도 native 지원 검사가 없었다. 신규 provider 연결이나
+이전 버전의 retained record를 다룰 때 다른 하네스를 대신 실행하면 안 되므로,
+명령 생성·결과 해석·새 실행 제출의 세 경계에서 미지원 runtime을 명시적으로
+거부한다. 기존 history/status 읽기와 저장된 reply 재전송 경로는 변경하지 않았다.
+
+새 검사2개에서 Pi/OpenCode/Hermes/OpenClaw의 argv/결과 해석8건과 미지원
+저장 레코드의 제출1건, 총9개 assertion이 수정 전 실패했다
+(owned-runtime-fallback-before.log). 실제 모델/네이티브 실행은 없었다.
+수정 후 관련34개 중33개가 통과하고1개는 과거 private Claude 원시 로그가
+없어 기존 skip 조건으로 미실행이었다(owned-runtime-fallback-after.log).
+이 미실행 검사는 사용자에게 그 fixture가 제공되는 경우 구현 담당자가 재확인할
+항목이며, skip 자체를 승인이나 전체 회귀 완료로 해석하지 않는다.
+
+핵심 gate는 Python468+SDK50+Node127=645개, 독립 mock39/변이14개를
+82.716초에 통과했다(owned-runtime-fallback-core.log). 새 runtime provider를
+구현한 것은 아니며, 네 신규 runtime의 worker/start/stop/resume는 계속 미완이다.
