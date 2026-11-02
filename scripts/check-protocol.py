@@ -10,7 +10,7 @@ import tempfile
 import time
 
 ROOT = Path(__file__).resolve().parents[1]
-MODULES = ["tests.test_board_service", "tests.test_board", "tests.test_team_service", "tests.test_teams", "tests.test_native_probe_platform", "tests.test_protocol_conformance", "tests.test_protocol", "tests.test_handoff", "tests.test_handoff_consumer",
+MODULES = ["tests.test_send_service", "tests.test_materials", "tests.test_multisend", "tests.test_question_groups", "tests.test_board_service", "tests.test_board", "tests.test_team_service", "tests.test_teams", "tests.test_native_probe_platform", "tests.test_protocol_conformance", "tests.test_protocol", "tests.test_handoff", "tests.test_handoff_consumer",
            "tests.test_handoff_read_cache",
            "tests.test_hermes_binding",
            "tests.test_openclaw_schema",

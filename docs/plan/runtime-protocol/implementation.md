@@ -1988,3 +1988,29 @@ Node 126)는 83.930초에 통과했다(`operation-result-envelope-core.log`).
 삭제가 아니라 후속 render의 활성 버전에서 가려지는 문제였다. 실제
 사용자 데이터의 과거 cursor 영향은 이 fixture로 확정하지 않으며
 소급 수정을 하지 않는다.
+
+## 단일/다중 송신의 공통 서비스
+
+CLI와 모델 host의 single/multi send를 send_service.execute로 모았다.
+호출자 증거·원문 파일 입력·출력은 frontend에 남기고 요청 ID 선택,
+attachment 준비, 송신과 group 복구를 같은 orchestration으로 연결했다.
+CLI path 읽기 권한은 adapter 인자로만 고르며 모델 data의 source 값이
+이를 고를 수 없다. 같은 요청 ID의 바뀐 attachment는 실제 송신 전에
+충돌로 거부한다.
+
+초회 추출에서 질문 송신이 쓰는 helper의 남은 호출자 한 곳을 확인했다.
+실제 질문 회귀가 AttributeError로 실패한 것을 보존했고
+(`shared-send-question-helper-red.log`), 공통 prepare 함수에 다시 연결한
+뒤 질문/질문그룹/첨부/다중 송신 57개가 35.652초에 통과했다
+(`shared-send-question-materials-green.log`). 그 전 송신 중심 99개
+통과만으로 질문 경로까지 확인했다고 계산하지 않는다.
+
+Frontend 공통 경로·질문 helper·frozen bytes·source 권한의 새 5개가
+통과했다(`shared-send-service-final.log`). CLI를 옛 직접 송신 경로로
+되돌린 변이, 모델 data에서 CLI 파일 권한을 고르게 한 변이는 각각
+실패했다(`shared-send-{legacy-cli-route,source-authority}-mutant.log`).
+변경된 핵심과 기존 material/multisend/question-group 회귀를 포함한
+공통 gate 511개(핵심 336/Python 49/Node 126)는 90.232초에 통과했다
+(`shared-send-service-core.log`). 오래 대기하는 기존 question interface
+회귀는 별도 57개 실행 결과이며 120초 gate에 억지로 합치지 않는다.
+다른 CLI 가족과 독립 참여자·전체 계획은 이어서 구현한다.

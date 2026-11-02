@@ -393,53 +393,17 @@ class OperationService:
         if name == "xsm_link":
             return self.link(me, args)
         if name == "xsm_send":
-            from . import send as send_mod
-            if args.get("outcome") and (args.get("kind") or "note") != "reply":
-                raise ToolError("outcome belongs only to a reply that closes a task")
-            if args.get("wake", "auto") not in ("auto", "never"):
-                raise ToolError("unsupported wake mode; use auto or never")
-            targets = args.get("targets")
-            from . import teams as teams_mod
-            if targets is None and teams_mod.is_address(args.get("target") or ""):
-                args = dict(args, targets=[args["target"]], target=None)
-                targets = args["targets"]
-            if targets is not None:
-                from . import multisend
-                if not isinstance(targets, list) or not all(isinstance(t, str) for t in targets) \
-                        or args.get("target") or args.get("held") or args.get("resend") \
-                        or args.get("attachments") or args.get("manifest_id"):
-                    raise ToolError("targets is a list of recipients, used instead of "
-                                               "target, held, resend and attachments")
-                wait = args.get("wait", 15)
-                try:
-                    result = multisend.send_many(
-                        targets, args.get("text") or "", sender=me, call=self.ctx,
-                        kind=args.get("kind") or "note", reply_to=args.get("reply_to"),
-                        priority=args.get("priority") or "next", wait=float(15 if wait is None else wait),
-                        outcome=args.get("outcome") if args.get("kind") == "reply" else None,
-                        wake=args.get("wake", "auto") != "never")
-                except multisend.MultiError as exc:
-                    raise ToolError(str(exc))
-                return "\n".join(result.lines())
-            from . import envelope, materials
-            request_id = args.get("resend") or args.get("request_id") or envelope.new_id()
-            if args.get("held") and (args.get("attachments") or args.get("manifest_id")):
-                raise ToolError("held sends reuse their stored material; do not supply new attachments")
-            prepared = self.prepare_materials(me,args,args.get("text") or "",request_id)
-            wait = args.get("wait", 15)             # the schema's default
-            r = send_mod.send(args.get("target") or "", prepared["body"], sender=me,
-                              kind=args.get("kind") or "note", reply_to=args.get("reply_to"),
-                              priority=args.get("priority") or "next",
-                              wait=float(15 if wait is None else wait),
-                              outcome=args.get("outcome") if args.get("kind") == "reply" else None,
-                              msg_id=request_id if (args.get('resend') or args.get('request_id') or prepared['manifest_id']) else None,
-                              resend=bool(args.get("resend")), held=args.get("held") or None,
-                              call=self.ctx, wake=args.get("wake", "auto") != "never",
-                              attachments=prepared["attachments"], file_packet=prepared["file_packet"],
-                              file_limits=prepared["file_limits"])
-            text = "\n".join(r.lines())
-            if prepared["manifest_id"]:
-                text += "\nMaterials: " + json.dumps(materials.public(prepared), ensure_ascii=False)
+            from . import send_service, materials, files, multisend
+            try:
+                value = send_service.execute(args, caller=me, call=self.ctx)
+            except files.FileError as exc:
+                from .provenance import readable
+                raise ToolError(readable(materials.failure(exc))) from exc
+            except (send_service.SendError, multisend.MultiError) as exc:
+                raise ToolError(str(exc)) from exc
+            text = "\n".join(value["result"].lines())
+            if value["materials"]:
+                text += "\nMaterials: " + json.dumps(materials.public(value["materials"]), ensure_ascii=False)
             return text
         if name == "xsm_doc_endorse":
             return self.endorse(me, args)
@@ -606,12 +570,10 @@ class OperationService:
             self.owned_jobs.pop(key,None)
         return value
 
-    def prepare_materials(self,me,args,body,request_id):
-        from . import materials,files
+    def prepare_materials(self, me, args, body, request_id):
+        from . import send_service, materials, files
         try:
-            return materials.prepare(me,args.get("target") or "",body,request_id,args.get("attachments"),
-                manifest_id=args.get("manifest_id"),previous=args.get("previous_manifest"),
-                fallback=args.get("attachment_fallback"),call=self.ctx)
+            return send_service.prepare_materials(me, args, body, request_id, call=self.ctx)
         except files.FileError as exc:
             from .provenance import readable
             raise ToolError(readable(materials.failure(exc))) from exc

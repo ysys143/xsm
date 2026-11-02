@@ -43,3 +43,17 @@ Structured team and board reads carry passive inbox annotations as JSON fields.
 The host protocol preserves a text operation verbatim in a text envelope instead
 of interpreting JSON-looking display content as machine result fields. CLI and
 MCP display behavior remains in their adapters.
+
+## Send and attachment preparation
+
+`xsm.send_service.execute` now orchestrates single-recipient and group sends for
+CLI and model hosts. The CLI still reads its own stdin/text-file arguments and
+renders its existing exit codes; the model host still supplies its exact caller
+context and structured inline attachment data. Neither transport duplicates the
+send policy, request-ID selection, material preparation or multi-send dispatch.
+
+CLI path reads are selected by a trusted adapter parameter. A field in model
+arguments cannot choose that authority. Attachment preparation is also shared
+with question sending. Frozen material intent conflicts are detected before a
+second send, and CLI group resend continues through the owned group recovery
+path. Full legacy CLI extraction beyond these families remains in progress.

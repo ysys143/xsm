@@ -955,32 +955,31 @@ def cmd_send(args) -> int:
             print("refused: --outcome belongs to the reply that closes a task, not to %s"
                   % args.kind, file=sys.stderr)
             return REFUSED
-    from . import files, materials
-    prepared=None;me=None;call=None
-    request_id=args.resend or args.request_id or envelope.new_id()
+    from . import files, materials, send_service
+    me = call = None
     if args.attachment or args.manifest:
         if args.held:
-            print("held sends reuse their stored material; do not supply new attachments",file=sys.stderr)
+            print("held sends reuse their stored material; do not supply new attachments", file=sys.stderr)
             return REFUSED
-        me,why=_unsure_caller("prepare attachments")
+        me, why = _unsure_caller("prepare attachments")
         if why or not me:
-            print(why or "this session is not registered",file=sys.stderr)
+            print(why or "this session is not registered", file=sys.stderr)
             return REFUSED
-        call=registry.last_identity()
-        try:
-            prepared=materials.prepare(me,args.target,body,request_id,args.attachment,source="cli",
-                manifest_id=args.manifest,previous=args.previous_manifest,fallback=args.attachment_fallback,call=call)
-        except files.FileError as exc:
-            print(_readable_json(materials.failure(exc)),file=sys.stderr)
-            return REFUSED
-        body=prepared["body"]
-    result = send.send(args.target or "", body or "", sender=me,call=call,kind=args.kind, reply_to=args.reply_to,
-                       priority=args.priority, wait=args.wait, outcome=args.outcome,
-                       msg_id=request_id if (args.resend or args.request_id or prepared) else None,
-                       resend=bool(args.resend),held=args.held,
-                       wake=args.wake != "never",attachments=prepared["attachments"] if prepared else None,
-                       file_packet=prepared["file_packet"] if prepared else None,
-                       file_limits=prepared["file_limits"] if prepared else None)
+        call = registry.last_identity()
+    try:
+        value = send_service.execute({"target": args.target, "text": body, "kind": args.kind,
+            "reply_to": args.reply_to, "priority": args.priority, "wait": args.wait,
+            "outcome": args.outcome, "resend": args.resend, "request_id": args.request_id,
+            "held": args.held, "wake": args.wake, "attachments": args.attachment,
+            "manifest_id": args.manifest, "previous_manifest": args.previous_manifest,
+            "attachment_fallback": args.attachment_fallback}, caller=me, call=call, material_source="cli")
+    except files.FileError as exc:
+        print(_readable_json(materials.failure(exc)), file=sys.stderr)
+        return REFUSED
+    except send_service.SendError as exc:
+        print("refused: %s" % exc, file=sys.stderr)
+        return REFUSED
+    result, prepared = value["result"], value["materials"]
     if args.json:
         value=result.as_dict()
         if prepared:value["materials"]=materials.public(prepared)
@@ -1000,14 +999,14 @@ def _group_resend(ident: str) -> bool:
 def _send_many(args, targets: list) -> int:
     """One DM to several recipients (ADR-0025): `xsm send A B C --text ...`,
     or `--resend <group id>` to send again to the ones still open."""
-    from . import multisend
+    from . import multisend, send_service
     if args.held or args.attachment or args.manifest or args.request_id:
         print("refused: --held, --attachment, --manifest and --request-id take one recipient",
               file=sys.stderr)
         return USAGE
     try:
         if args.resend:
-            result = multisend.resend_group(args.resend, wait=args.wait)
+            result = send_service.execute({"resend": args.resend, "wait": args.wait}, group_retry=True)["result"]
         else:
             body = args.text
             if args.text_file:
@@ -1019,10 +1018,10 @@ def _send_many(args, targets: list) -> int:
                 print("refused: --outcome belongs to the reply that closes a task, not to %s"
                       % args.kind, file=sys.stderr)
                 return REFUSED
-            result = multisend.send_many(targets, body, kind=args.kind, reply_to=args.reply_to,
-                                         priority=args.priority, wait=args.wait,
-                                         outcome=args.outcome, wake=args.wake != "never")
-    except multisend.MultiError as exc:
+            result = send_service.execute({"targets": targets, "text": body, "kind": args.kind,
+                "reply_to": args.reply_to, "priority": args.priority, "wait": args.wait,
+                "outcome": args.outcome, "wake": args.wake})["result"]
+    except (multisend.MultiError, send_service.SendError) as exc:
         print("refused: %s" % exc, file=sys.stderr)
         return REFUSED
     print(_readable_json(result.as_dict()) if args.json else "\n".join(result.lines()))
