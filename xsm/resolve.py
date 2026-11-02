@@ -104,10 +104,20 @@ def resolve(target: str, include_offline: bool = False, caller=None) -> Resoluti
                           scope=current.get("scope") if current.get("remote") else None,
                           scope_basis=current.get("scope_basis") if current.get("remote") else None)
 
-    for prefix in ("claude:", "codex:", "ref:"):
+    for prefix in ("claude:", "codex:", "ref:", "peer:"):
         if target.startswith(prefix):
             key, value = prefix[:-1], target[len(prefix):]
-            if key == "ref":
+            if key == 'peer':
+                if not re.fullmatch(r'[0-9a-f]{64}', value):
+                    return Resolution('not-found', reason='invalid opaque peer address')
+                hits = []
+                for rec in registry.raw_records():
+                    try:
+                        if identity.address(rec) == target:
+                            hits.append(rec)
+                    except (ValueError, TypeError):
+                        continue  # An incomplete old pointer cannot shadow a full address.
+            elif key == "ref":
                 hits = [rec for rec in registry.raw_records() if rec.get("ref") == value]
             else:
                 hits = [rec for rec in registry.raw_records() if rec.get("runtime") == key
@@ -127,7 +137,7 @@ def resolve(target: str, include_offline: bool = False, caller=None) -> Resoluti
                 # Any state: an address names one session exactly, and the
                 # caller decides what a stopped one means (send refuses it).
                 return Resolution("resolved", hits[0])
-            waiting = [r for r in registry.unregistered()
+            waiting = [] if key == 'peer' else [r for r in registry.unregistered()
                        if (r.get("ref") == value if key == "ref"
                            else r.get("runtime") == key and r.get("session_id") == value)
                        and r.get("state") not in ("stale", "ended")]

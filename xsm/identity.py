@@ -9,6 +9,7 @@ roster uses.
 from __future__ import annotations
 
 import hashlib
+import json
 import os
 import re
 import socket
@@ -85,6 +86,16 @@ def ref_of(runtime: str, home: str, session_id: str) -> str:
     Claude prints its own [ref] the same way: sha256 of an identifying string."""
     raw = "%s:%s:%s" % (runtime, os.path.realpath(home), session_id)
     return hashlib.sha256(raw.encode()).hexdigest()[:6]
+
+
+def address(record: dict) -> str:
+    """Opaque local conversation address, including profile and runtime."""
+    endpoint = {key: record.get(key) for key in ('runtime', 'home', 'session_id')}
+    if any(not isinstance(value, str) or not value.strip() for value in endpoint.values()):
+        raise ValueError('full local conversation identity required')
+    endpoint['home'] = os.path.realpath(os.path.expanduser(endpoint['home']))
+    raw = json.dumps(endpoint, sort_keys=True, ensure_ascii=False, separators=(',', ':'))
+    return 'peer:' + hashlib.sha256(raw.encode('utf-8')).hexdigest()
 
 
 def normalize(name: str) -> str:

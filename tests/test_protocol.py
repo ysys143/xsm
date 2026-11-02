@@ -33,6 +33,38 @@ class ProtocolFixture(TempState):
 
 
 class ProtocolTest(ProtocolFixture):
+    def test_generic_runtime_question_reaches_canonical_receiver(self):
+        from xsm import handoff
+        sender, receiver = self.open('generic-sender'), self.open('generic-receiver')
+        result = self.operation(sender, 'xsm_ask', target='ref:' + receiver['ref'],
+                                text='generic question', wake='never')
+        record = self.connection.sessions[receiver['session']].record
+        self.assertIn(result['id'], handoff.pending_ids(record))
+
+    def test_generic_team_address_and_session_address_resolve_full_identity(self):
+        from xsm import resolve, teams
+        session = self.open('generic-team-peer')
+        record = self.connection.sessions[session['session']].record
+        address = teams.address(teams.member_of(record))
+        found = resolve.resolve(address)
+        self.assertTrue(found.ok, found.reason)
+        self.assertEqual(found.record['home'], record['home'])
+        self.assertEqual(session['address'], address)
+
+    def test_opaque_peer_address_separates_profiles_and_ignores_incomplete_pointers(self):
+        from xsm import identity, registry, resolve
+        session = self.open('same-conversation')
+        first = self.connection.sessions[session['session']].record
+        second = dict(first, home=os.path.join(self.tmp, 'other-profile'))
+        with mock.patch.object(registry, 'raw_records', return_value=[
+                {'session_id': 'incomplete'}, first, second]):
+            self.assertFalse(resolve.resolve('ref:' + first['ref']).ok)
+            for record in (first, second):
+                found = resolve.resolve(identity.address(record))
+                self.assertTrue(found.ok, found.reason)
+                self.assertEqual(found.record['home'], record['home'])
+            self.assertFalse(resolve.resolve('peer:invalid').ok)
+
     def test_negative_wait_precedes_transport_capability_refusal(self):
         from xsm.protocol import ProtocolError
         session = self.open()

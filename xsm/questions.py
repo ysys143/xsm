@@ -275,8 +275,8 @@ def ask(sender, target_spec, body, wait=0, request_id=None, priority="next",
             # Only the claimant dispatches the prepared intent. resend=True is
             # used for its no-widening revalidation, never for a second dispatch.
             try:
-                address = target_spec if candidate or remote else "%s:%s" % (
-                    target["runtime"], target["session_id"])
+                from . import identity as session_identity
+                address = target_spec if candidate or remote else session_identity.address(target)
                 sent = send.send(address, body, sender=sender, kind="task",
                                  priority=priority, msg_id=request_id,
                                  resend=True, wake=wake != "never", attachments=attachments,

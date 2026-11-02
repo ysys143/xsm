@@ -38,8 +38,13 @@ profile namespaces and addresses are derived without putting raw routing keys
 or private configuration directories in responses. Registration is explicit
 participation, not consent to widen repository policy.
 
-The response contains connection-local `session`, `generation`, and stable `ref`.
-Use `ref:<ref>` to address a peer. Every subsequent session-bound request carries
+The response contains connection-local `session`, `generation`, stable `ref`,
+and an opaque `address` (`peer:` followed by a full SHA-256 digest). Prefer the
+address to select that exact runtime/profile/conversation. It does not contain
+the profile path, grant permission, or bind an execution generation. A resumed
+conversation retains its address; a different profile or conversation does not.
+Older servers may omit it; `ref:<ref>` remains supported but refuses collisions.
+Every subsequent session-bound request carries
 `session`. Another connection cannot reuse the handle. Only one live connection
 may own a conversation. A lifetime file lock arbitrates concurrent owners.
 `session.update` accepts `state` (`idle`/`busy`) and `name`; identity is immutable.

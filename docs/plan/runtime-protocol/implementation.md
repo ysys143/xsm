@@ -2080,3 +2080,26 @@ OpenClaw 도구 목록도 맞췄다. 새 경로 3개와 native catalog 검사가
 
 공통 gate는 522개(핵심 347/Python 49/Node 126)가 78.834초에 통과했다
 (`shared-question-service-core.log`). 전체 승인 계획은 계속 미완이다.
+
+## 일반 런타임의 불투명 로컬 주소
+
+일반 참여자의 질문 송신과 팀 구성원 확장이 runtime:session_id를 만들지만,
+해석기는 claude/codex 접두사만 받으므로 정본에 도착하지 않는 경로가 있었다.
+로컬 runtime·canonical profile home·conversation을 모호한 구분자 없이
+JSON으로 인코딩해 hash한 peer:<64 hex>를 추가했다. 팀은 이름으로 현재
+구성원을 선택한 뒤 완전한 대화 주소를 쓴다. 질문도 같은 주소를 사용하고,
+connect는 선택 뒤 원래 이름을 다시 해석하지 않는다. 기존 ref/claude/codex는
+유지하며, 프로필이 다른 같은 세션 ID와 짧은 ref 충돌을 구분한다. 주소는
+권한이나 실행 세대의 증거가 아니다. session.open의 추가 address는 옛 서버
+호환을 위해 schema/SDK에서 optional로 두었다.
+
+새 실제 경로 검사는 직전 질문 서비스 추출이 BoundHost에 없는 pump를
+즉시 참조하는 회귀도 잡았다. 비차단 프로토콜 호스트의 pump를 명시해
+수정했다. 첫 generic question red는 이 AttributeError이므로 주소 결함의
+red와 혼동하지 않는다. 질문의 runtime-only 주소와 connect의 이름 재해석을
+다시 넣은 변이는 각각 새 검사에서 실패했다(`selected-peer-mutants.log`).
+프로필 분리·불완전 pointer·팀 재시작·기존 질문 회귀를 포함한 133개는
+40.233초에 통과했다(`generic-peer-regression.log`). 공통 gate 526개
+(핵심 351/Python 49/Node 126)는 79.443초에 통과했다
+(`generic-peer-core.log`). 공개 schema 검사도 통과했다
+(`generic-peer-schema.json`). 원격 신원과 native UI 전체 검증은 미완이다.

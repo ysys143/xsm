@@ -96,16 +96,17 @@ class TeamTest(test_xsm.TempState):
         self.assertEqual([e['action'] for e in team['log']][:2], ['create', 'add'])
 
     def test_name_membership_follows_a_restarted_session(self):
-        from xsm import registry, teams
+        from xsm import identity, registry, teams
         teams.create(self.me, 'core')
         teams.add(self.me, 'core', self.b, 'x')
         first = teams.address(teams.find_member(teams.require('core'), 'bee'))
-        self.assertEqual(first, 'codex:bee')
+        self.assertEqual(first, identity.address(self.b))
         registry.upsert('codex', self.home, 'bee-2', os.getpid(), self.tmp, name='bee')
         with mock.patch.object(registry, 'records', return_value=[
                 dict(registry.by_session('codex', 'bee-2'), state='live', updated=9e9),
                 dict(registry.by_session('codex', 'bee'), state='ended')]):
-            self.assertEqual(teams.address(teams.find_member(teams.require('core'), 'bee')), 'codex:bee-2')
+            self.assertEqual(teams.address(teams.find_member(teams.require('core'), 'bee')),
+                             identity.address(registry.by_session('codex', 'bee-2')))
         self.assertTrue(teams.is_member(teams.require('core'), registry.by_session('codex', 'bee-2')))
 
     # -- addressing ------------------------------------------------------------------

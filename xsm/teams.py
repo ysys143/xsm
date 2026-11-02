@@ -165,7 +165,8 @@ def address(member: dict) -> str | None:
         except (KeyError, ValueError, TypeError):
             return None
     rec = live_session(member)
-    return "%s:%s" % (rec["runtime"], rec["session_id"]) if rec else None
+    from . import identity
+    return identity.address(rec) if rec else None
 
 
 # --- permission (D19) -------------------------------------------------------------

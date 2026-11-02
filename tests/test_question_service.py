@@ -65,3 +65,18 @@ class SharedQuestionServiceTest(TempState):
         self.assertEqual(result['wait_end_reason'], 'cancelled')
         self.assertEqual(questions.status(self.me, result['id'])['status'], 'pending')
         self.assertIn(result['id'], handoff.pending_ids(self.peer))
+
+    def test_selected_handshake_does_not_follow_a_reassigned_name(self):
+        from xsm import connect, handoff, question_service, registry
+        select = connect.select
+        replacement = []
+        def move_name(me, target, **kwargs):
+            result = select(me, target, **kwargs)
+            registry.upsert('codex', self.peer['home'], 'peer', os.getpid(), self.tmp, name='renamed')
+            replacement.append(registry.upsert('codex', self.peer['home'], 'replacement',
+                                               os.getpid(), self.tmp, name='peer'))
+            return result
+        with mock.patch.object(connect, 'select', side_effect=move_name):
+            value = question_service.connect(self.me, {'target': 'peer'}, call=self.call)['result']
+        self.assertIn(value['id'], handoff.pending_ids(self.peer))
+        self.assertNotIn(value['id'], handoff.pending_ids(replacement[0]))

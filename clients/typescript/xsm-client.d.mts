@@ -9,10 +9,11 @@ export interface OpenSessionParams {
   cwd: string;
   capabilities?: string[];
 }
-export interface OpenSessionResult extends JsonObject {
+export type OpenSessionResult = JsonObject & {
+  address?: string;
   session: SessionHandle;
   generation: JsonValue;
-}
+};
 export interface Notification {
   jsonrpc: '2.0';
   method: string;

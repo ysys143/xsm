@@ -126,6 +126,10 @@ class BoundHost(OperationService):
                                     evidence=("protocol host opened this conversation",))
         return self.record
 
+    def pump(self):
+        # Protocol calls are nonblocking; unlike MCP they cannot read re-entrantly.
+        return not self._closed
+
     def ask_client(self, method, params):
         from . import decisions
         if method != "elicitation/create" or "elicitation" not in self.client_caps:
@@ -354,7 +358,7 @@ class Connection:
             os.close(fd)
             raise
         return {"session": token, "generation": record["protocol_generation"],
-                "ref": record["ref"], "capabilities": caps}
+                "ref": record["ref"], "address": identity.address(record), "capabilities": caps}
 
     @staticmethod
     def save(record):

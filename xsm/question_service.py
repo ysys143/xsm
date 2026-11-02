@@ -57,7 +57,9 @@ def connect(me, arguments, *, call=None, wait=0, pump=None, pump_factory=None, c
         receive.poll_replies(me, request_id)
         result = questions.wait_for(me, request_id, wait=wait, pump=active_pump, cancelled=cancelled)
     else:
-        result = questions.ask(me, arguments.get('target', ''), HANDSHAKE_TEXT, wait=wait,
+        from . import identity
+        selected = found.record.get('target') if found.record.get('remote') else identity.address(found.record)
+        result = questions.ask(me, selected, HANDSHAKE_TEXT, wait=wait,
             request_id=current_id, purpose='handshake', priority=arguments.get('priority', 'next'),
             wake=arguments.get('wake', 'auto'), pump=active_pump, cancelled=cancelled)
     return {'result': result, 'grouped': False, 'wait_applies': True}
