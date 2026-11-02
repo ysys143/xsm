@@ -660,3 +660,18 @@ Mac core는 Python494+SDK52+native130+Node152=828개와 독립 mock39/변이14�
 80.533초에 통과했다(openclaw-cold-history-core.log). 이번 변경의 Linux·공개
 protocol cold recovery, 실행 도중 gateway 종료, 없는 bound header·잘린/모호한
 history·성공 reply 없는 정상 종료와 전체 UI/모델/메신저 행렬은 미완이다.
+
+## 공개 protocol의 gateway 재시작 회수
+
+공개 시험기의 --interrupt-frontend --restart-gateway를 실행했다.
+openclaw-public-cold-recovery-first에서36개 검사가 통과했다. 같은 여러-turn
+문맥에서 원래 frontend를 종료하고, native 완료 뒤 XSM에 결과를 저장하기 전에
+gateway를 재시작했다. 원래 wait receipt가 사라진 상태를 실제 확인한 뒤 공개
+reconcile이 원래 run의 persisted message ID로 답변을 회수했다.
+
+실제 reply를 inbox에서 읽고 해당 claim을 ACK했다. 원래 native ID, exit=-9,
+outcome=None과 replay의 같은 reply ID를 유지했다. Terminal receipt를 만들거나
+native 추론을 재제출하지 않았다. 정상 fixture3회와 별도 요청 HTTP 진입1회,
+실제 모델 추론0회, gatewayStopped=true다. 시험기와 문서만 바뀌었으므로 직전
+828개 core를 반복한 결과로 계산하지 않는다. Linux 재검증은 별도 frozen source로
+수행하며 아직 이 macOS 표본에 합치지 않는다.

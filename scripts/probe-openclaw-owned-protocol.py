@@ -9,6 +9,7 @@ parser=argparse.ArgumentParser(description='Public owned OpenClaw native roundtr
 parser.add_argument('--native-cli',type=Path,required=True)
 parser.add_argument('--node',type=Path,required=True)
 parser.add_argument('--output',type=Path,required=True)
+parser.add_argument('--restart-gateway',action='store_true',help='Restart only the isolated gateway before public result recovery')
 parser.add_argument('--native-error',action='store_true',help='Verify public reconciliation closes a failed native lease without a reply')
 parser.add_argument('--interrupt-frontend',action='store_true',help='Kill only the controlled frontend and recover its native answer through public operations')
 parser.add_argument('--cancel',action='store_true',help='Exercise public exact-request cancellation after native provider entry')
@@ -16,6 +17,7 @@ parser.add_argument('--lose-cancel-confirmation',action='store_true',help='Injec
 options=parser.parse_args()
 if options.lose_cancel_confirmation and not options.cancel:parser.error('--lose-cancel-confirmation requires --cancel')
 if sum((options.cancel,options.native_error,options.interrupt_frontend))>1:parser.error('choose one mutation mode')
+if options.restart_gateway and not options.interrupt_frontend:parser.error('--restart-gateway requires --interrupt-frontend')
 if not options.native_cli.is_absolute() or not options.node.is_absolute():parser.error('absolute native CLI and Node paths required')
 if json.loads((options.native_cli.parent/'package.json').read_text()).get('version')!='2026.10.9':parser.error('OpenClaw2026.10.9 package required')
 root=Path(tempfile.mkdtemp(prefix='xsm-openclaw-owned-create-')).resolve();out=options.output.absolute();out.mkdir(parents=True,exist_ok=False)
@@ -55,6 +57,7 @@ def observed_post(handler):
  except (BrokenPipeError,ConnectionResetError):pass
 assistant.server.RequestHandlerClass.do_POST=observed_post
 async def public_roundtrip():
+ global process
  client=None
  try:
   host_install.apply('openclaw',str(root/'state'))
@@ -128,7 +131,8 @@ async def public_roundtrip():
   if options.interrupt_frontend:
    from xsm import identity
    blocking.set();text='Explicit interrupted public native task.'
-   await op('xsm_owned',{'action':'run','name':'protocol-openclaw','text':text,'work_context':'public-interrupted','request_id':'interrupted'})
+   work='same' if options.restart_gateway else 'public-interrupted'
+   await op('xsm_owned',{'action':'run','name':'protocol-openclaw','text':text,'work_context':work,'request_id':'interrupted'})
    check('public interrupted target reached native provider',await asyncio.to_thread(entered.wait,20))
    active=await op('xsm_owned',{'action':'status','name':'protocol-openclaw','request_id':'interrupted'});child=active['child']
    check('public interruption selects exact owned child',identity.lstart(child['pid'])==child['lstart'])
@@ -137,7 +141,32 @@ async def public_roundtrip():
    check('public frontend loss retains unknown effects and lease',unknown['slot_occupied'] is True and unknown['result'] is None)
    pending=await op('xsm_owned',{'action':'reconcile','name':'protocol-openclaw','request_id':'interrupted'})
    check('public pending native work is not a recovered answer',pending['status']=='unknown' and pending['slot_occupied'] is True and pending['result'] is None)
-   release.set();deadline=time.monotonic()+20
+   release.set()
+   if options.restart_gateway:
+    from integrations.openclaw.worker_cli import output_records
+    from integrations.openclaw.worker_transport import NativeRpc
+    bound,final=output_records(Path(unknown['child']['stdout']).read_text())
+    check('public cold recovery has bound metadata without final stdout',bound is not None and final is None)
+    query=NativeRpc(str(options.node),str(options.native_cli),cwd=str(root/'workspace'),env=env)
+    deadline=time.monotonic()+20
+    while True:
+     native=await asyncio.to_thread(query,'agent.wait',{'runId':bound['run_id'],'timeoutMs':100})
+     if native.get('status')=='ok':break
+     if time.monotonic()>deadline:raise TimeoutError('native completion before public cold recovery')
+     await asyncio.sleep(.1)
+    check('public XSM request still lacks native result before restart',(await op('xsm_owned',{'action':'status','name':'protocol-openclaw','request_id':'interrupted'}))['result'] is None)
+    os.killpg(process.pid,signal.SIGTERM);await asyncio.to_thread(process.wait,15)
+    process=subprocess.Popen(command+['gateway','run'],cwd=root/'workspace',env=env,stdout=log,stderr=log,start_new_session=True)
+    deadline=time.monotonic()+45
+    while True:
+     with socket.socket() as test:
+      if test.connect_ex(('127.0.0.1',port))==0:break
+     if process.poll() is not None or time.monotonic()>deadline:raise RuntimeError('gateway restart for public recovery failed')
+     await asyncio.sleep(.1)
+    lost=await asyncio.to_thread(query,'agent.wait',{'runId':bound['run_id'],'timeoutMs':100})
+    check('public cold recovery observes actual wait receipt loss',lost.get('status')=='timeout' and lost.get('terminalReceipt') is None)
+    report['gatewayRestarted']=True
+   deadline=time.monotonic()+20
    while True:
     recovered=await op('xsm_owned',{'action':'reconcile','name':'protocol-openclaw','request_id':'interrupted'})
     if recovered['status'] in ('sent','reply-stored'):break
@@ -147,8 +176,9 @@ async def public_roundtrip():
    check('public recovery retains native context identity',recovered['result']['native_session_id']==unknown['native_binding']['native_session_id'])
    check('public native recovery retains child SIGKILL exit',recovered['child']['returncode']==-signal.SIGKILL and recovered['result']['execution']['returncode']==-signal.SIGKILL)
    check('public recovery records host query provenance',recovered['result']['execution']['recovered_from']=='native-host-status')
+   if options.restart_gateway:check('public cold recovery records actual transcript identity without fake receipt',recovered['result']['native_evidence']['source']=='native-chat.history' and bool(recovered['result']['native_evidence'].get('assistant_message_id')) and 'terminal_receipt' not in recovered['result']['native_evidence'])
    await read_reply(recovered['reply_id'])
-   replay=await op('xsm_owned',{'action':'run','name':'protocol-openclaw','text':text,'work_context':'public-interrupted','request_id':'interrupted'})
+   replay=await op('xsm_owned',{'action':'run','name':'protocol-openclaw','text':text,'work_context':work,'request_id':'interrupted'})
    check('public recovered replay reuses original reply',replay['reply_id']==recovered['reply_id'])
    check('public recovery and replay do not resubmit inference',len(http_entries)==4)
    check('public recovery releases execution without task-success claim',recovered['slot_occupied'] is False and recovered['result']['outcome'] is None)
