@@ -6,7 +6,8 @@
 Linux arm64에서도 실제 gateway를 통한 같은 native 행렬과 공개 protocol 취소를 확인했다.
 Frontend 종료 뒤 살아 있는 native host의 완료 결과 회수도 macOS에서 확인했다.
 성공 답변 없는 provider 오류 종료는 실행 lease만 정리하는 경로를 macOS에서 확인했다.
-Gateway 자체 재시작과 전체 OS/모드 행렬은 미완이다. 아래 초기 시험과 거부 기록도
+완료된 native run은 gateway 재시작 뒤 원래 transcript로 회수한 macOS 증거가 있다.
+실행 도중 gateway 재시작과 전체 OS/모드 행렬은 미완이다. 아래 초기 시험과 거부 기록도
 보존하며, 현재 통합 증거는 마지막 절을 따른다.
 
 OpenClaw2026.10.9의 실제 gateway에서 모델 실행 없이 세션 생성·재조회를
@@ -614,3 +615,48 @@ Gateway는 종료했다. 이 표본은 실패로 보존하며 cold recovery 성�
 검증하거나, native 권한 경계를 지키는 host 관측 저장 경로를 구현한 뒤 이 표본을
 재검사한다. 버전·하네스·모델을 임의 대체하거나 이 조건을 제외하는 사용자
 승인은 없으므로 전체 계획과 gateway 재시작 복구는 계속 미완이다.
+
+## Run에 결속된 durable history로 완료 결과 회수
+
+권한을 우회하지 않고 공개 chat.history를 조회했다. 첫 조회는 sessionId를
+messageId 없이 지정해 native가 거부했다(openclaw-durable-history-shape). 해당
+조합을 강제하지 않고 API 서명에 맞춰 canonical key로 조회하되 결과의 sessionId와
+sessionInfo의 identity/revision을 검증했다(v2). 이 API 읽기 성공을 cold recovery
+성공으로 계산하지 않는다. Wait receipt는 여전히 timeout이었다.
+
+실제 assistant record에는 __openclaw.runId와 고유 message ID·transcript source/
+sequence가 남아 있었다. 고정 source의 sessions/transcript-events.ts는
+attachSessionTranscriptRunId에서 assistant/tool-result의 원래 run 소유권을
+붙인다. User input의 native idempotencyKey는 같은 run의 :user 키다. 모델이
+본문에 쓴 run ID나 최근 assistant라는 이유로 연결하지 않는다.
+
+Wait가 timeout이면 원래 native ID/key/agent/revision/workspace, lastRunId,
+status=done, abortedLastRun=false와 inactive를 먼저 요구한다. 공개 history를
+1개 단위로 역방향 조회해 해당 input까지 읽고, 같은 run의 완전한 final assistant
+하나와 같은 source의 증가하는 native sequence를 확인한다. 원래 세션·실행의
+닫힌 구간을 조회 후 다시 검증한다. Pending input, 다른 run/분기·중복 final·
+truncated/partial 메시지는 회수하지 않는다. Terminal receipt를 합성하지 않고
+native-chat.history 출처와 실제 input/assistant message ID를 보존한다.
+
+Fixture에서 wait cache를 잃은 경우를 먼저 실패로 확인했다
+(openclaw-cold-history-before.log). 최신 문구가 다른 run에 속한 canary와 원래
+run ID의 답변을 구분하는 unit도 포함했다. Truncated 검사를 제거한 변이는
+assertion1개로 검출됐다(openclaw-cold-history-mutant.log).
+
+실제 재현은 --interrupt-frontend --restart-gateway이며 추가로
+--crowded-profile을 지정했다. openclaw-cold-native-recovery-final의43개 검사가
+통과했다. 여러 turn을 가진 같은 native 문맥에서 실제 provider 진입 후 frontend를
+SIGKILL하고, native 완료 뒤 XSM에 결과를 저장하기 전에 gateway를 재시작했다.
+Wait receipt 소실을 확인한 뒤 persisted run metadata로 원래 답변을 회수했다.
+101개 빈 세션으로 기본 목록에서 오래된 문맥이 제외된 조건도 함께 확인했다.
+
+원래 native ID와 exit=-9, outcome=None, request/reply ID replay를 보존했다.
+Input/assistant message ID는 실제 기록이며 terminal_receipt 필드는 만들지 않았다.
+정상 fixture3회와 별도 요청의 HTTP 진입1회가 전부이고 추론 재제출은 없었다.
+Gateway는 종료했으며 실제 모델 추론0회다. 첫 cold recovery 표본도38개 검사를
+통과했으나 초기 label의 receipt 표현은 history 출처와 구분해 최종 표본에서 고쳤다.
+
+Mac core는 Python494+SDK52+native130+Node152=828개와 독립 mock39/변이14개를
+80.533초에 통과했다(openclaw-cold-history-core.log). 이번 변경의 Linux·공개
+protocol cold recovery, 실행 도중 gateway 종료, 없는 bound header·잘린/모호한
+history·성공 reply 없는 정상 종료와 전체 UI/모델/메신저 행렬은 미완이다.

@@ -44,15 +44,24 @@ export async function callGatewayFromCli(method,options,p,extra) {
   const row=s.sessions.find(r=>r.sessionId===p.sessionId);
   if(!row || row.lifecycleRevision!==p.expectedExistingSessionLifecycleRevision)throw Error('fixture native identity changed');
   s.runs[p.idempotencyKey]=row.sessionId;
+  row.lastRunId=p.idempotencyKey;row.status='done';row.abortedLastRun=false;row.hasActiveRun=false;row.activeRunIds=[];row.startedAt=100;row.endedAt=200;
+  s.history ||= {};s.history[row.sessionId] ||= [];const h=s.history[row.sessionId];
+  h.push({role:'user',idempotencyKey:p.idempotencyKey+':user',content:'fixture task',__openclaw:{id:p.idempotencyKey+':input',idempotencyKey:p.idempotencyKey+':user',seq:h.length+1,transcriptPosition:{source:'fixture-source',rawSeq:h.length+1}}});
+  h.push({role:'assistant',stopReason:'stop',content:[{type:'text',text:'Explicit owned SDK fixture answer.'}],__openclaw:{id:p.idempotencyKey+':answer',runId:p.idempotencyKey,seq:h.length+1,transcriptPosition:{source:'fixture-source',rawSeq:h.length+1}}});
   result={status:'accepted',runId:p.idempotencyKey,sessionKey:row.key,agentId:row.agentId};
  } else if(method==='agent.wait')result={status:'ok',runId:p.runId,
   terminalReceipt:{runId:p.runId,turnId:p.runId,sessionId:s.runs[p.runId],terminalDisposition:'visible'},
   terminalReply:{disposition:'visible',text:'Explicit owned SDK fixture answer.'}};
- else throw Error('unexpected fixture method');
+ else if(method!=='chat.history')throw Error('unexpected fixture method');
  if(method==='agent.wait' && fs.existsSync(process.env.OPENCLAW_STATE_DIR+'/terminal-error')) {
   const row=s.sessions.find(r=>r.sessionId===s.runs[p.runId]);
   row.lastRunId=p.runId;row.status='failed';row.hasActiveRun=false;row.activeRunIds=[];row.startedAt=100;row.endedAt=190;
   result={status:'error',runId:p.runId,startedAt:100,endedAt:200,error:'explicit fixture provider refusal'};
+ }
+ if(method==='agent.wait' && fs.existsSync(process.env.OPENCLAW_STATE_DIR+'/lost-wait-cache'))result={status:'timeout',runId:p.runId};
+ if(method==='chat.history') {
+  const row=s.sessions.find(r=>r.key===p.sessionKey);const h=s.history[row.sessionId];const end=h.length-(p.offset||0);
+  result={sessionKey:row.key,sessionId:row.sessionId,sessionInfo:row,messages:h.slice(Math.max(0,end-1),end),hasMore:end>1,totalMessages:h.length,pendingInputs:{items:[],total:0}};
  }
  const temporary=path+'.tmp-'+process.pid;
  fs.writeFileSync(temporary,JSON.stringify(s));fs.renameSync(temporary,path);return result;
@@ -190,6 +199,29 @@ export async function callGatewayFromCli(method,options,p,extra) {
         self.assertEqual(settled['native_execution']['state'],'settled')
         again=self.workers.reconcile_owned('native-openclaw',self.owner,'one')
         self.assertEqual(again['native_execution'],settled['native_execution'])
+        self.assertEqual(json.loads(memory.read_text())['calls'].count('agent'),calls)
+
+    def test_lost_native_wait_cache_uses_exact_run_history_without_replay(self):
+        from xsm import identity
+        Path(self.home,'pause-wait').touch();memory=Path(self.home,'fixture-memory.json')
+        with concurrent.futures.ThreadPoolExecutor(max_workers=1) as pool:
+            future=pool.submit(self.run_turn)
+            deadline=time.monotonic()+10
+            while True:
+                state=json.loads(memory.read_text());request=self.workers.owned_status('native-openclaw',self.owner,'one')
+                if state.get('runs') and request.get('native_binding'):break
+                if time.monotonic()>deadline:raise AssertionError('fixture admission unavailable')
+                time.sleep(.02)
+            child=request['child'];self.assertEqual(identity.lstart(child['pid']),child['lstart'])
+            os.killpg(child['pid'],signal.SIGKILL);unknown=future.result(timeout=10)
+        Path(self.home,'pause-wait').unlink();Path(self.home,'lost-wait-cache').touch()
+        calls=json.loads(memory.read_text())['calls'].count('agent')
+        recovered=self.workers.reconcile_owned('native-openclaw',self.owner,'one',
+            reply_sender=lambda worker,row:self.workers.publish_owned(worker,row,wake=False))
+        self.assertEqual(recovered['status'],'reply-stored')
+        self.assertEqual(recovered['result']['body'],'Explicit owned SDK fixture answer.')
+        self.assertEqual(recovered['result']['native_evidence']['source'],'native-chat.history')
+        self.assertNotIn('terminal_receipt',recovered['result']['native_evidence'])
         self.assertEqual(json.loads(memory.read_text())['calls'].count('agent'),calls)
 
     def test_settlement_journal_refuses_wrong_reservation_or_native_identity(self):

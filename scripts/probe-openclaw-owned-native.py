@@ -12,6 +12,7 @@ parser=argparse.ArgumentParser(description='Pinned OpenClaw native backend run, 
 parser.add_argument('--native-cli',type=Path,required=True)
 parser.add_argument('--node',type=Path,required=True)
 parser.add_argument('--output',type=Path,required=True)
+parser.add_argument('--restart-gateway',action='store_true',help='Restart the isolated gateway after native completion but before XSM result recovery')
 parser.add_argument('--native-error',action='store_true',help='Return a local provider refusal and reconcile execution closure without a task answer')
 parser.add_argument('--interrupt-frontend',action='store_true',help='Kill the owned frontend after native provider entry and recover by read-only status')
 parser.add_argument('--crowded-profile',action='store_true',help='Seed 101 empty native sessions and verify an older owned context outside the default page')
@@ -23,6 +24,7 @@ options=parser.parse_args()
 if options.lose_cancel_confirmation and not (options.cancel or options.before_admission):parser.error('--lose-cancel-confirmation requires --cancel or --before-admission')
 if options.queued_native and not options.cancel:parser.error('--queued-native requires --cancel')
 if options.interrupt_frontend and (options.cancel or options.before_admission):parser.error('--interrupt-frontend is a separate recovery mode')
+if options.restart_gateway and not options.interrupt_frontend:parser.error('--restart-gateway requires --interrupt-frontend')
 if options.native_error and (options.cancel or options.before_admission or options.interrupt_frontend):parser.error('--native-error is a separate settlement mode')
 if not options.native_cli.is_absolute() or not options.node.is_absolute():parser.error('absolute native CLI and Node paths required')
 if json.loads((options.native_cli.parent/'package.json').read_text()).get('version')!='2026.10.9':parser.error('OpenClaw2026.10.9 package required')
@@ -164,9 +166,10 @@ finally {clearTimeout(timer);client.stop();}
 
  if options.interrupt_frontend:
   blocking.set();interrupted_text='Explicit interrupted frontend task.'
+  interrupted_work='same-work' if options.restart_gateway else 'interrupted-work'
   with concurrent.futures.ThreadPoolExecutor(max_workers=1) as pool:
    future=pool.submit(workers.run_owned,'native-openclaw',owner,interrupted_text,
-      work_context='interrupted-work',request_id='interrupted',
+      work_context=interrupted_work,request_id='interrupted',
       reply_sender=lambda worker,row:workers.publish_owned(worker,row,wake=False))
    try:
     check('interrupted task actually entered native provider',entered.wait(20))
@@ -179,10 +182,32 @@ finally {clearTimeout(timer);client.stop();}
   from integrations.openclaw.worker_cli import output_records
   bound,final=output_records(Path(unknown['child']['stdout']).read_text())
   check('actual bound record survives without final stdout',bound is not None and final is None and bound['locator']['native_session_id']==unknown['native_binding']['native_session_id'])
+  if options.restart_gateway:check('cold recovery targets existing multi-turn native context',unknown['native_binding']['native_session_id']==first['result']['native_session_id'])
   pending=workers.reconcile_owned('native-openclaw',owner,'interrupted',reply_sender=lambda worker,row:workers.publish_owned(worker,row,wake=False))
   check('native task still running does not manufacture result',pending['status']=='unknown' and pending['result'] is None and pending['slot_occupied'] is True)
   check('pending reconciliation does not start another native task',len(report['preProviderBindingObservations'])==4)
-  release.set();deadline=time.monotonic()+20
+  release.set()
+  if options.restart_gateway:
+   query=NativeRpc(str(options.node),str(options.native_cli),cwd=str(root/'workspace'),env=env)
+   native_deadline=time.monotonic()+20
+   while True:
+    native_done=query('agent.wait',{'runId':bound['run_id'],'timeoutMs':100})
+    if native_done.get('status')=='ok':break
+    if time.monotonic()>native_deadline:raise TimeoutError('native completion before restart')
+    time.sleep(.1)
+   check('native result not yet stored in XSM before restart',workers.owned_status('native-openclaw',owner,'interrupted')['result'] is None)
+   os.killpg(process.pid,signal.SIGTERM);process.wait(timeout=15)
+   process=subprocess.Popen(command+['gateway','run'],cwd=root/'workspace',env=env,stdout=log,stderr=log,start_new_session=True)
+   native_deadline=time.monotonic()+45
+   while True:
+    with socket.socket() as test:
+     if test.connect_ex(('127.0.0.1',port))==0:break
+    if process.poll() is not None or time.monotonic()>native_deadline:raise RuntimeError('native gateway restart failed')
+    time.sleep(.1)
+   lost=query('agent.wait',{'runId':bound['run_id'],'timeoutMs':100})
+   check('actual gateway restart lost in-memory wait receipt',lost.get('status')=='timeout' and lost.get('terminalReceipt') is None)
+   report['gatewayRestarted']=True
+  deadline=time.monotonic()+20
   while True:
    recovered=workers.reconcile_owned('native-openclaw',owner,'interrupted',reply_sender=lambda worker,row:workers.publish_owned(worker,row,wake=False))
    if recovered['status'] in ('sent','reply-stored'):break
@@ -190,12 +215,14 @@ finally {clearTimeout(timer);client.stop();}
     (out/'interrupted-unrecovered.json').write_text(json.dumps(recovered,indent=2)+'\n')
     raise TimeoutError('native interrupted frontend recovery')
    time.sleep(.1)
-  check('native host receipt recovers actual answer',recovered['result']['body']=='Explicit assistant fixture; no model inference.')
+  check('native persisted evidence recovers actual answer',recovered['result']['body']=='Explicit assistant fixture; no model inference.')
+  if options.restart_gateway:
+   check('cold recovery retains genuine message IDs without fabricating receipt',bool(recovered['result']['native_evidence'].get('input_message_id')) and bool(recovered['result']['native_evidence'].get('assistant_message_id')) and 'terminal_receipt' not in recovered['result']['native_evidence'])
   check('native recovery retains original context identity',recovered['result']['native_session_id']==unknown['native_binding']['native_session_id'])
   check('native recovery preserves nonzero child exit',recovered['child']['returncode']==-signal.SIGKILL and recovered['result']['execution']['returncode']==-signal.SIGKILL)
-  check('native status query provenance is retained',recovered['result']['execution']['recovered_from']=='native-host-status' and recovered['result']['native_evidence']['source']=='native-agent.wait')
+  check('native status query provenance is retained',recovered['result']['execution']['recovered_from']=='native-host-status' and recovered['result']['native_evidence']['source']==('native-chat.history' if options.restart_gateway else 'native-agent.wait'))
   check('native recovery releases slot without declaring task success',recovered['slot_occupied'] is False and recovered['result']['outcome'] is None)
-  replay=workers.run_owned('native-openclaw',owner,interrupted_text,work_context='interrupted-work',request_id='interrupted',reply_sender=lambda worker,row:workers.publish_owned(worker,row,wake=False))
+  replay=workers.run_owned('native-openclaw',owner,interrupted_text,work_context=interrupted_work,request_id='interrupted',reply_sender=lambda worker,row:workers.publish_owned(worker,row,wake=False))
   check('recovered request replay retains exact reply ID',replay['reply_id']==recovered['reply_id'])
   check('native host recovery and replay perform no inference resubmission',len(report['preProviderBindingObservations'])==4)
   (out/'interrupted-journal.json').write_text(json.dumps(recovered,indent=2)+'\n')

@@ -144,3 +144,25 @@ class OpenClawWorkerSessionTest(unittest.TestCase):
                             ('hasActiveRun',True),('activeRunIds',['other']),('startedAt',101),('endedAt',99),('endedAt',201)):
             with self.subTest(field=field),self.assertRaises(session.NativeSessionError):
                 session.failed_run_settlement(terminal,dict(row,**{field:value}),locator,'run-1')
+
+    def test_cold_history_uses_native_run_metadata_not_latest_message_text(self):
+        locator=session.created_locator(self.created,'main',self.cwd)
+        row=dict(key=locator['native_session_key'],sessionId='native-id',agentId='main',lifecycleRevision='revision-1',
+                 lastRunId='run-1',status='done',startedAt=100,endedAt=200,hasActiveRun=False,activeRunIds=[],abortedLastRun=False)
+        user=dict(role='user',content='task',idempotencyKey='run-1:user',
+                  __openclaw=dict(id='input',idempotencyKey='run-1:user',seq=1,transcriptPosition=dict(source='branch',rawSeq=4)))
+        answer=dict(role='assistant',stopReason='stop',content=[dict(type='text',text='original answer')],
+                    __openclaw=dict(id='answer',runId='run-1',seq=2,transcriptPosition=dict(source='branch',rawSeq=5)))
+        foreign=copy.deepcopy(answer);foreign['content'][0]['text']='wrong latest answer';foreign['__openclaw'].update(id='foreign',runId='other',seq=3)
+        history=dict(sessionKey=locator['native_session_key'],sessionId='native-id',sessionInfo=row,
+                     messages=[user,answer,foreign],pendingInputs=dict(items=[],total=0))
+        result=session.history_result(history,locator,'run-1')
+        self.assertEqual(result['body'],'original answer');self.assertNotIn('terminal_receipt',result['native_evidence'])
+        variants=[dict(history,sessionId='other'),dict(history,sessionInfo=dict(row,lifecycleRevision='other')),
+                  dict(history,sessionInfo=dict(row,hasActiveRun=True)),dict(history,messages=[user,foreign]),
+                  dict(history,messages=[user,answer,copy.deepcopy(answer)]),dict(history,pendingInputs=dict(items=[{}],total=1))]
+        for field,value in (('truncated',True),('seq',1),('runId','other')):
+            changed=copy.deepcopy(answer);changed['__openclaw'][field]=value;variants.append(dict(history,messages=[user,changed]))
+        changed=copy.deepcopy(answer);changed['__openclaw']['transcriptPosition']['source']='other';variants.append(dict(history,messages=[user,changed]))
+        for value in variants:
+            with self.subTest(history=value),self.assertRaises(session.NativeSessionError):session.history_result(value,locator,'run-1')

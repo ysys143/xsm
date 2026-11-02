@@ -5,7 +5,7 @@ import { dirname, isAbsolute, join } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { parseWireJson } from '../../clients/typescript/json-wire.mjs';
 
-const methods = new Set(['health', 'agents.list', 'sessions.create', 'sessions.resolve', 'sessions.describe', 'sessions.list', 'agent', 'agent.wait', 'chat.abort']);
+const methods = new Set(['health', 'agents.list', 'sessions.create', 'sessions.resolve', 'sessions.describe', 'sessions.list', 'agent', 'agent.wait', 'chat.abort', 'chat.history']);
 
 export async function nativeRpc(nativeCli, request) {
   if (typeof nativeCli !== 'string' || !isAbsolute(nativeCli)) throw new Error('absolute native CLI required');

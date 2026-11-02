@@ -283,8 +283,30 @@ before normal durable publication. The native turn's completion alone does not
 declare task success. Missing historical run/revision evidence is not fabricated.
 
 Frontend-loss recovery while the native host remains alive has model0 native
-evidence. Gateway restart, non-success native settlement and all runtime/UI/
-messenger combinations remain unfinished; see the evidence notes for exact scope.
+evidence. The full runtime/UI/model/messenger matrix remains unfinished; see the
+following sections and evidence notes for exact restart and settlement scope.
+
+### Persisted transcript recovery after gateway restart
+
+The pinned OpenClaw gateway can lose `agent.wait` receipts on restart while its
+session and canonical transcript remain durable. A timeout is never itself
+completion. Recovery first requires the original session/key/agent/revision and
+workspace with the same last run, `done`, no aborted run and no active work.
+
+It then reads public `chat.history` pages back to that run's canonical input.
+Native input idempotency metadata and the assistant's persisted
+`__openclaw.runId` must identify the original run; message text cannot supply that
+identity. Exactly one complete final assistant message must follow the input on
+the same transcript source with increasing native sequence positions. Truncated,
+ambiguous, partial or different-run messages are refused. Pending input or a
+changed execution/history snapshot also prevents recovery.
+
+The provider rechecks the original closed session after the read. Evidence names
+the native input/assistant message IDs and transcript source with
+`source: "native-chat.history"`; it does not fabricate a terminal receipt or pick
+the latest unrelated assistant text. The original task is not resubmitted.
+Gateway restart after completed native execution has model0 evidence. Interrupted
+native work during restart and the full UI/model/messenger matrix remain unfinished.
 
 ## Native execution settlement without an answer
 

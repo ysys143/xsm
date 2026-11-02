@@ -226,3 +226,64 @@ def failed_run_settlement(terminal, row, locator, run_id):
             'key':locator['native_session_key'],'lifecycle_revision':locator['native_lifecycle_revision'],
             'started_at':start,'ended_at':end,'native_ended_at':None if queued else row['endedAt'],
             'native_provider_not_started':queued}
+
+
+def closed_success(row, locator, run_id):
+    """A persisted closed session run, not a synthesized terminal receipt."""
+    if (row.get('key') != locator.get('native_session_key') or row.get('agentId') != locator.get('agent_id')
+            or row.get('sessionId') != locator.get('native_session_id')
+            or row.get('lifecycleRevision') != locator.get('native_lifecycle_revision')
+            or row.get('lastRunId') != run_id or row.get('status') != 'done'
+            or row.get('abortedLastRun') is not False or row.get('hasActiveRun') is not False
+            or row.get('activeRunIds') != []):
+        raise NativeSessionError('native persisted run is not the bound closed execution')
+    start,end=row.get('startedAt'),row.get('endedAt')
+    if (any(type(value) not in (int,float) or not math.isfinite(value) or value <= 0 for value in (start,end))
+            or end < start):
+        raise NativeSessionError('native persisted run has no closed interval')
+    return start,end
+
+
+def history_result(history, locator, run_id):
+    """Read one final model message by native run ownership, never by latest text."""
+    if (history.get('sessionKey') != locator['native_session_key'] or history.get('sessionId') != locator['native_session_id']
+            or not isinstance(history.get('sessionInfo'),dict) or not isinstance(history.get('messages'),list)):
+        raise NativeSessionError('native history changed conversation identity')
+    start,end=closed_success(history['sessionInfo'],locator,run_id)
+    pending=history.get('pendingInputs')
+    if not isinstance(pending,dict) or type(pending.get('total')) is not int or pending['total'] != 0 or pending.get('items') != []:
+        raise NativeSessionError('native history has pending input')
+    inputs=[];answers=[]
+    for message in history['messages']:
+        if not isinstance(message,dict):raise NativeSessionError('invalid native history message')
+        meta=message.get('__openclaw')
+        if not isinstance(meta,dict):continue
+        if (message.get('role') == 'user' and message.get('idempotencyKey') == run_id+':user'
+                and meta.get('idempotencyKey') == run_id+':user'):
+            inputs.append((message,meta))
+        if message.get('role') == 'assistant' and meta.get('runId') == run_id and message.get('stopReason') == 'stop':
+            answers.append((message,meta))
+    if len(inputs) != 1 or len(answers) != 1:
+        raise NativeSessionError('native history has no unambiguous bound input and final answer')
+    _input,user=inputs[0];answer,meta=answers[0]
+    upos,apos=user.get('transcriptPosition'),meta.get('transcriptPosition')
+    if (answer.get('phase') not in (None,'final') or answer.get('openclawStreamFallback') is not None
+            or any(value is not None and value is not False for value in (meta.get('truncated'),answer.get('truncated')))
+            or not isinstance(upos,dict) or not isinstance(apos,dict)
+            or not isinstance(upos.get('source'),str) or not upos['source'] or upos['source'] != apos.get('source')
+            or any(type(value) is not int or value <= 0 for value in (user.get('seq'),meta.get('seq'),upos.get('rawSeq'),apos.get('rawSeq')))
+            or user['seq'] >= meta['seq'] or upos['rawSeq'] >= apos['rawSeq']):
+        raise NativeSessionError('native history answer is partial or changed transcript branch')
+    content=answer.get('content')
+    if isinstance(content,str):text=content
+    elif isinstance(content,list) and all(isinstance(part,dict) and part.get('type') in ('text','thinking','redactedThinking') for part in content):
+        texts=[part.get('text') for part in content if part.get('type') == 'text']
+        if any(not isinstance(value,str) for value in texts):raise NativeSessionError('invalid native answer text')
+        text=''.join(texts)
+    else:raise NativeSessionError('native history has no complete text answer')
+    if not text.strip():raise NativeSessionError('native history answer is empty')
+    return {'native_session_id':locator['native_session_id'],'body':text,
+            'native_evidence':{'source':'native-chat.history','run_id':_text(run_id,'run ID'),
+                'input_message_id':_text(user.get('id'),'input message ID'),
+                'assistant_message_id':_text(meta.get('id'),'assistant message ID'),
+                'transcript_source':apos['source'],'started_at':start,'ended_at':end}}

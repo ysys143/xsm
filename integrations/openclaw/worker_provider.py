@@ -176,7 +176,7 @@ def recover_result(worker, context, output, execution, env):
         rpc = NativeRpc(descriptor['node'],descriptor['executable'],cwd=worker['cwd'],
                         env=env)
         terminal = rpc('agent.wait',{'runId':run_id,'timeoutMs':100})
-        if terminal.get('status') in ('timeout','pending'):
+        if terminal.get('status') == 'pending':
             return None
         described = rpc('sessions.describe',session.description_params(key,descriptor['agent_id']))
         row = session.described_listing(described,key,descriptor['agent_id'])['sessions'][0]
@@ -184,6 +184,32 @@ def recover_result(worker, context, output, execution, env):
                 or row.get('lifecycleRevision') != locator.get('native_lifecycle_revision')
                 or session._workspace(row.get('workspaceDir') or row.get('spawnedCwd') or row.get('sessionRoot')) != session._workspace(worker['cwd'])):
             raise NativeSessionError('native recovery lifecycle or workspace changed')
+        if terminal.get('status') == 'timeout':
+            interval=session.closed_success(row,locator,run_id)
+            messages=[];offset=0;total=None
+            while True:
+                page=rpc('chat.history',{'sessionKey':key,'agentId':descriptor['agent_id'],'limit':1,'offset':offset,
+                    'maxBytes':4194304,'maxChars':500000,'toolResultMaxChars':1000})
+                if (page.get('sessionId') != locator['native_session_id'] or page.get('sessionKey') != key
+                        or not isinstance(page.get('sessionInfo'),dict)
+                        or session.closed_success(page['sessionInfo'],locator,run_id) != interval
+                        or not isinstance(page.get('messages'),list) or type(page.get('hasMore')) is not bool
+                        or type(page.get('totalMessages')) is not int or page['totalMessages'] < 0):
+                    raise NativeSessionError('native history page changed identity or shape')
+                if total is None:total=page['totalMessages']
+                elif total != page['totalMessages']:raise NativeSessionError('native history changed during readback')
+                messages=page['messages']+messages
+                found=any(isinstance(m,dict) and m.get('role')=='user' and m.get('idempotencyKey')==run_id+':user' for m in page['messages'])
+                if found or page['hasMore'] is False:break
+                offset+=1
+                if offset >= total:raise NativeSessionError('native history pagination did not converge')
+            value=session.history_result({**page,'messages':messages},locator,run_id)
+            after=rpc('sessions.describe',session.description_params(key,descriptor['agent_id']))
+            after_row=session.described_listing(after,key,descriptor['agent_id'])['sessions'][0]
+            if (session.closed_success(after_row,locator,run_id) != interval
+                    or session._workspace(after_row.get('workspaceDir') or after_row.get('spawnedCwd') or after_row.get('sessionRoot')) != session._workspace(worker['cwd'])):
+                raise NativeSessionError('native history execution changed before recovery')
+            return value
         if terminal.get('status') == 'error':
             evidence = session.failed_run_settlement(terminal,row,locator,run_id)
             return {'native_session_id':locator['native_session_id'],'native_evidence':evidence}
