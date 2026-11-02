@@ -576,3 +576,47 @@ pi-cancel-readback-script-final/result.json). 유실 직후 unknown/unverified �
 공개 취소 커밋d1bfecb의 Linux750개도 양쪽에서 통과했으나 이 복구 변경은
 그 번들에 포함되지 않았다. 이번 복구의 Linux 검사와 다른 runtime의 native
 취소/복구는 계속 미완이다.
+
+## OpenCode native 취소와 확인 유실 복구
+
+OpenCode1.19.5 binding의 private 취소 조회를 native session.abort에 연결했다.
+Owned 입력의 실제 native message ID를 기억하고, 같은 parent를 가진 최신
+assistant만 선택한다. 최신 assistant가 다른 입력의 자식이면 abort하지 않는다.
+MessageAbortedError, native completed 시각, idle을 모두 관측한 뒤에만 확인한다.
+Native dispose는 진행 중인 abort/report에 최대2초의 grace를 주고 private 채널을
+닫는다. 일반 실행에는 private descriptor가 없으면 이 경로를 사용하지 않는다.
+
+실제 native CLI의 abort는 exit1/error 이벤트인 경우와 exit0/빈 stdout인 경우가
+모두 관측됐다. 최초 확인 유실 표본은 후자 때문에 복구되지 않아 실패했다
+(opencode-cancel-lost-native/result.json). Native 오류를 합성하는 대신, 위 native
+조건을 확인한 binding이 private 보고 전에 xsm_native_cancelled 관측 프레임을
+stdout에 기록한다. 이는 모델 답변이나 OpenCode 원본 error 이벤트가 아니다.
+Source 버전, 결속된 session, native input/assistant ID, 완료 시각과 idle을 검증한다.
+단위 fixture의 ses_fixture_cancelled도 현재 파서 문법에 맞지 않아 실패했으며
+fixture를 수정했다. Native 실패와 이 단위 구성 실패를 같은 원인으로 세지 않는다.
+
+제공자의 cancellation_result와 선언된 CANCELLATION_EXIT_CODES=(0,1)을 공통
+readback에 연결했다. 이 코드는 취소 증거에만 적용하며 일반 결과/답변 readback은
+계속 성공 종료만 허용한다. APIError의 Aborted 문자열, 잘못된 source/ID, 모호한
+관측과 이후 재실행 이벤트는 중단 증거가 아니다. 기존 PID/lstart/epoch와 고정
+출력 경로·no-follow 검사를 그대로 사용한다.
+
+실제 public cancel 정상21개, 확인 저장을0.5초 지연한21개, 확인 유실 후 복구25개가
+통과했다. 재현 스크립트 scripts/probe-opencode-owned-native.py의 --native-cli,
+--native-deps-root, --output으로 고정된 private native package를 지정하고
+--confirmation normal/lost/delayed를 고른다. 최종 스크립트의 lost25개와 delayed21개도
+통과했다(opencode-cancel-readback-script/result.json,
+opencode-cancel-delayed-script/result.json). 모델은 명시적 loopback 응답 fixture다.
+제목 생성 등 보조 요청을 주 작업 수로 세지 않으며 실제 LLM 추론/과금은 없다.
+
+취소/복구 후 task는 unknown, result/reply_id는 null이었다. Native stop만 확인하며
+부작용이나 업무 성공을 만들어내지 않는다. 다른 입력을 선택하거나 정상 idle을
+abort로 오인하도록 바꾼 변이2개가 assertion으로 검출됐다
+(opencode-cancel-{parent,idle}-mutant.log). 초기 readback 단위 실패와 native 실패
+로그를 보존했고, 수정 뒤 관련31개 단위도 통과했다. 최종 macOS core는
+Python491+SDK52+native71+Node152=766개 및 독립 mock39/변이14개를94.066초에
+통과했다(opencode-cancel-core-final.log).
+
+앞선1f9de1c의 Linux758개도 통과했지만 이번 OpenCode 변경은 포함하지 않는다.
+이번 변경의 Linux 검사, 실제 구독 모델·모든 native tool/자식/UI 중단 행렬,
+Hermes/Claude/Codex의 실행 중 취소와 전체 runtime 계획은 계속 미완이다.

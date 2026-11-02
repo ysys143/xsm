@@ -466,7 +466,7 @@ def cancellation_pending(owner, request_id, token):
     return bool(request.get('cancellation'))
 
 
-def confirm_native_stop(owner, request_id, token, native_id, *, readback=False, evidence=None):
+def confirm_native_stop(owner, request_id, token, native_id, *, readback=False, evidence=None, exit_codes=(0,)):
     """Record a trusted frontend's observation, not a task outcome or rollback."""
     with _locked(owner) as state:
         request = _get(state, request_id)
@@ -478,9 +478,12 @@ def confirm_native_stop(owner, request_id, token, native_id, *, readback=False, 
                 or context.get('native_session_id') != native_id):
             raise OwnedError('native stop context generation changed')
         alive = _alive(child)
-        valid_exit = child.get('returncode') is None or (type(child.get('returncode')) is int and child['returncode'] == 0)
+        valid_codes = (isinstance(exit_codes, tuple) and bool(exit_codes)
+                       and all(type(code) is int and 0 <= code <= 255 for code in exit_codes))
+        valid_exit = child.get('returncode') is None or (valid_codes and type(child.get('returncode')) is int
+                                                       and child['returncode'] in exit_codes)
         if readback and (request['state'] not in ('running', 'unknown') or not request.get('cancellation')
-                         or alive is not False or not valid_exit or not isinstance(evidence, dict)
+                         or alive is not False or not valid_codes or not valid_exit or not isinstance(evidence, dict)
                          or evidence.get('native_state') != 'stopped'):
             raise OwnedError('native stop readback requires an exited execution child')
         if (request['state'] not in ('running', 'unknown') or not request.get('cancellation')

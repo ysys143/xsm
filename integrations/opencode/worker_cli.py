@@ -44,7 +44,7 @@ def _constant(value):
     raise NativeCliError('OpenCode returned a non-JSON numeric value')
 
 
-def parse_result(output, context):
+def _events(output, context):
     if not isinstance(output, str):
         raise NativeCliError('OpenCode native output must be text')
     try:
@@ -57,6 +57,47 @@ def parse_result(output, context):
     native_id = _native_id(events[0].get('sessionID'))
     if context.get('native_session_id') not in (None, native_id):
         raise NativeCliError('OpenCode changed the selected owned conversation')
+    if any(event.get('sessionID') != native_id for event in events):
+        raise NativeCliError('OpenCode changed conversations within one turn')
+    return events, native_id
+
+
+def parse_cancellation(output, context):
+    if context.get('native_session_id') is None:
+        raise NativeCliError('OpenCode cancellation requires a bound native conversation')
+    events, native_id = _events(output, context)
+    observations = [event for event in events if event.get('type') == 'xsm_native_cancelled']
+    if observations:
+        if len(observations) != 1:
+            raise NativeCliError('OpenCode cancellation observation is ambiguous')
+        observed = observations[0]
+        if (observed.get('source') != 'opencode/1.19.5' or observed.get('native_idle') is not True
+                or observed.get('native_error') != 'MessageAbortedError'
+                or type(observed.get('native_completed')) is not int or observed['native_completed'] <= 0
+                or any(not isinstance(observed.get(field), str) or not re.fullmatch(r'msg_[A-Za-z0-9]+', observed[field])
+                       for field in ('native_input_message_id', 'native_assistant_message_id'))):
+            raise NativeCliError('OpenCode cancellation observation lacks native evidence')
+        trailing = events[events.index(observed) + 1:]
+        if any(event.get('type') != 'error' or not isinstance(event.get('error'), dict)
+               or event['error'].get('name') != 'MessageAbortedError'
+               for event in trailing):
+            raise NativeCliError('OpenCode continued after its cancellation observation')
+        return {'native_session_id': native_id, 'native_evidence': {
+            'native_state': 'stopped', 'terminal_event': 'xsm_native_cancelled',
+            'native_error': 'MessageAbortedError', 'event_count': len(events),
+            'native_input_message_id': observed['native_input_message_id'],
+            'native_assistant_message_id': observed['native_assistant_message_id']}}
+    terminal = events[-1]
+    if (terminal.get('type') != 'error' or not isinstance(terminal.get('error'), dict)
+            or terminal['error'].get('name') != 'MessageAbortedError'):
+        raise NativeCliError('OpenCode returned no native aborted error')
+    return {'native_session_id': native_id,
+            'native_evidence': {'native_state': 'stopped', 'terminal_event': 'error',
+                                'native_error': 'MessageAbortedError', 'event_count': len(events)}}
+
+
+def parse_result(output, context):
+    events, native_id = _events(output, context)
     body, active, complete = [], False, False
     for event in events:
         if event.get('sessionID') != native_id:

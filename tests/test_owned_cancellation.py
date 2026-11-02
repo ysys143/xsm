@@ -218,22 +218,25 @@ class OwnedCancellationTest(TempState):
         self.assertEqual(cancelled['reply_id'], ready['reply_id'])
         self.assertNotIn('cancellation', cancelled)
 
-    def readback_fixture(self, *, alive=False, exit_code=0):
-        """Version/output fixtures, not an actual Pi run; the native probe is separate."""
+    def readback_fixture(self, *, alive=False, exit_code=0, runtime='pi'):
+        """Version/output fixtures, not actual native runs; the native probes are separate."""
         from xsm import workers, owned_requests, native_workers, host_install, identity
-        self.worker['runtime'] = 'pi'
-        host_install.apply('pi', self.worker['home'])
+        self.worker['runtime'] = runtime
+        host_install.apply(runtime, self.worker['home'])
         binary = Path(self.tmp, 'version-fixture')
-        binary.write_text('#!' + sys.executable + '\nprint("1.4.0")\n'); binary.chmod(0o700)
-        with mock.patch.dict(os.environ, {'XSM_PI': str(binary)}):
-            provider = native_workers.provider('pi')
+        version = '1.19.5' if runtime == 'opencode' else '1.4.0'
+        binary.write_text('#!' + sys.executable + '\nprint(' + repr(version) + ')\n'); binary.chmod(0o700)
+        with mock.patch.dict(os.environ, {'XSM_OPENCODE' if runtime == 'opencode' else 'XSM_PI': str(binary)}):
+            provider = native_workers.provider(runtime)
             self.worker['native_provider'] = provider.prepare(self.worker['home'])
         workers.save(self.worker); row = self.running(); token = row['reservation']['token']
         output = Path(self.tmp, 'owned-runs', self.worker['id'], 'request.jsonl')
         output.parent.mkdir(parents=True)
-        output.write_text('\n'.join(json.dumps(event) for event in [
-            dict(type='session', id=row['context']['session_seed'], cwd=self.tmp),
-            dict(type='agent_end', willRetry=False, messages=[]), dict(type='agent_settled', aborted=True)]) + '\n')
+        native_id = 'ses_fixturecancelled' if runtime == 'opencode' else row['context']['session_seed']
+        events = ([dict(type='error', sessionID=native_id, error={'name': 'MessageAbortedError'})]
+                  if runtime == 'opencode' else [dict(type='session', id=native_id, cwd=self.tmp),
+                    dict(type='agent_end', willRetry=False, messages=[]), dict(type='agent_settled', aborted=True)])
+        output.write_text('\n'.join(json.dumps(event) for event in events) + '\n')
         child = subprocess.Popen([sys.executable, '-B', '-c',
             'import sys;sys.stdin.read();sys.exit(' + str(exit_code) + ')'], stdin=subprocess.PIPE)
         def cleanup():
@@ -241,7 +244,7 @@ class OwnedCancellationTest(TempState):
             child.wait(timeout=3)
         self.addCleanup(cleanup)
         owned_requests.note_child(self.owner, 'request', token, child.pid, identity.lstart(child.pid), stdout=str(output))
-        owned_requests.bind_native_context(self.owner, 'request', token, row['context']['session_seed'])
+        owned_requests.bind_native_context(self.owner, 'request', token, native_id)
         self.cancel()
         if not alive:
             cleanup(); owned_requests.note_exit(self.owner, 'request', token, child.returncode)
@@ -305,3 +308,22 @@ class OwnedCancellationTest(TempState):
         with self.assertRaisesRegex(owned_requests.OwnedError, 'generation changed'):
             workers.reconcile_owned('service', self.owner, 'request')
         self.assertEqual(owned_requests.status(self.owner, 'request')['cancellation']['native_state'], 'unverified')
+
+    def test_opencode_abort_exit_one_recovers_stop_without_a_business_answer(self):
+        from xsm import workers
+        self.readback_fixture(runtime='opencode', exit_code=1)
+        result = workers.reconcile_owned('service', self.owner, 'request')
+        self.assertEqual(result['cancellation']['native_state'], 'stopped')
+        self.assertEqual(result['status'], 'unknown')
+        self.assertIsNone(result['result']); self.assertIsNone(result['reply_id'])
+
+    def test_opencode_other_exit_or_other_error_does_not_recover_stop(self):
+        from xsm import workers, owned_requests
+        output, _ = self.readback_fixture(runtime='opencode', exit_code=1)
+        output.write_text(json.dumps(dict(type='error', sessionID='ses_fixturecancelled',
+                                          error={'name': 'APIError', 'data': {'message': 'Aborted'}})))
+        self.assertEqual(workers.reconcile_owned('service', self.owner, 'request')['cancellation']['native_state'], 'unverified')
+        with owned_requests._locked(self.owner) as state:
+            state['requests']['request']['child']['returncode'] = 7
+        output.write_text(json.dumps(dict(type='error', sessionID='ses_fixturecancelled', error={'name': 'MessageAbortedError'})))
+        self.assertEqual(workers.reconcile_owned('service', self.owner, 'request')['cancellation']['native_state'], 'unverified')

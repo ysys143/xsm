@@ -1993,14 +1993,14 @@ def reconcile_owned(name, sender, request_id, readback=None, *, reply_sender=Non
     request = owned_requests.status(worker["owner"], request_id, sender=sender)
     if request["status"] != "unknown":
         return request
-    if (request.get("child") or {}).get("returncode") not in (None, 0):
-        return request  # even a custom readback cannot relabel a known failed native exit
     if request.get('cancellation') and request['cancellation'].get('native_state') != 'stopped':
         evidence = _readback_owned_cancellation(request['worker'], request)
         if evidence is not None:
             return owned_requests.confirm_native_stop(worker['owner'], request_id,
                 request['reservation']['token'], evidence['native_session_id'],
-                readback=True, evidence=evidence['native_evidence'])
+                readback=True, evidence=evidence['native_evidence'], exit_codes=evidence['allowed_exit_codes'])
+    if (request.get("child") or {}).get("returncode") not in (None, 0):
+        return request  # nonzero cancellation evidence never becomes a business answer
     result = (readback(request) if readback is not None else
               _readback_owned(request["worker"], request))
     if result is None:
@@ -2009,15 +2009,15 @@ def reconcile_owned(name, sender, request_id, readback=None, *, reply_sender=Non
     return resend_owned(name, sender, request_id, reply_sender=reply_sender)
 
 
-def _read_owned_output(worker, request):
+def _read_owned_output(worker, request, *, allowed_exits=(0,)):
     """Read the exact owned output through no-follow directory descriptors."""
     from . import owned_requests
     import stat
     child = request.get("child") or {}
     if owned_requests._alive(child) is not False:
         return None
-    if child.get('returncode') is not None and (type(child['returncode']) is not int or child['returncode'] != 0):
-        return None  # a valid-looking body never overrides a known failed exit
+    if child.get('returncode') is not None and (type(child['returncode']) is not int or child['returncode'] not in allowed_exits):
+        return None  # Only the selected parser's declared exit statuses are eligible.
     worker_id = worker.get('id')
     if not isinstance(worker_id, str) or worker_id in ('', '.', '..') or os.path.basename(worker_id) != worker_id:
         return None
@@ -2049,14 +2049,23 @@ def _read_owned_output(worker, request):
 
 
 def _readback_owned_cancellation(worker, request):
-    output = _read_owned_output(worker, request)
-    if output is None:
-        return None
     try:
         native = _require_owned_native(worker.get('runtime'))
         if native is None or not callable(getattr(native, 'cancellation_result', None)):
             return None
-        return _native_owned_call(native, 'cancellation_result', worker, request['context'], output)
+        codes = getattr(native, 'CANCELLATION_EXIT_CODES', (0,))
+        if not isinstance(codes, tuple) or not codes or any(type(code) is not int or not 0 <= code <= 255 for code in codes):
+            return None
+        output = _read_owned_output(worker, request, allowed_exits=codes)
+        if output is None:
+            return None
+        result = _native_owned_call(native, 'cancellation_result', worker, request['context'], output)
+        if (not isinstance(result, dict) or not isinstance(result.get('native_session_id'), str)
+                or not isinstance(result.get('native_evidence'), dict)
+                or result['native_evidence'].get('native_state') != 'stopped'):
+            return None
+        result['allowed_exit_codes'] = codes
+        return result
     except WorkerError:
         return None
 

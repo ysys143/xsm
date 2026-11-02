@@ -155,7 +155,7 @@ synthesize a reply. Inspect the returned `cancellation` and subsequent status:
   because interruption does not resolve possible side effects.
 
 `native_supported` describes the admitted execution plan's running-turn support.
-Pi 1.4.0 newly admitted bindings support this confirmation. Other current providers
+Pi 1.4.0 and OpenCode 1.19.5 newly admitted bindings support this confirmation. Other current providers
 can record intent and cancel pre-launch work, but their running native stop paths
 remain unfinished. Do not treat an unsupported pending request as stopped.
 
@@ -172,17 +172,35 @@ confirm a detached gateway stopped; an unknown cancelled request retains capacit
 until native confirmation. A completed stored result is preserved if completion
 won the race with cancellation.
 
+OpenCode uses the bound input message ID and the latest native assistant with that
+same parent. It aborts through the native session API and confirms only a completed
+`MessageAbortedError` together with native idle. A newer assistant for another
+input is not selected. Disposal gives an in-flight abort/report a bounded grace
+period before closing the private channel.
+
+OpenCode can exit zero without printing its own abort error. After observing the
+native conditions, the binding therefore writes a distinct `xsm_native_cancelled`
+observation before requesting the private acknowledgement. This is an xsm host
+observation, not a synthesized OpenCode error or model answer. Its source, bound
+session, native input/assistant IDs, completion time and idle flag are validated
+by the cancellation parser.
+
 Cancelling a waiting transport still does not cancel its saved owned task, and
 service removal still refuses active or uncertain work. Native stop/recovery for
 the other runtimes remains an incomplete part of the full plan.
 
-For Pi, `reconcile` can recover a lost stop confirmation after the execution child
-has exited. The provider parses the retained native session header and final
-`agent_end` / `agent_settled(aborted=true)` pair. The engine reads only its exact
+For Pi and OpenCode, `reconcile` can recover a lost stop confirmation after the execution child
+has exited. Pi parses the retained native session header and final
+`agent_end` / `agent_settled(aborted=true)` pair; OpenCode parses its typed abort
+error or validated xsm observation. The engine reads only its exact
 owned output through no-follow directory/file descriptors, checks the file owner,
 reservation, bound PID/start identity and context generation, and records
-`cancellation.recovered_from: "native-output"`. Running children, known failed
-exits, symlinked files/directories and mismatched native IDs are refused.
+`cancellation.recovered_from: "native-output"`. Running children, symlinked
+files/directories and mismatched native IDs are refused. Normal result recovery
+still requires a successful exit. Cancellation-only parsers may declare
+`CANCELLATION_EXIT_CODES`: OpenCode's observed abort exits are 0 and 1, but an
+arbitrary exit-1 API error is not stop evidence. Pi retains its exit-zero
+requirement. These codes never authorize a business answer.
 
 This does not execute another native turn, manufacture an answer, or clear unknown
 side effects. The task can remain `unknown` with null result/reply while its native

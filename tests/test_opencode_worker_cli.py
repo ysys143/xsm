@@ -29,6 +29,39 @@ class OpenCodeWorkerTest(TempState):
         self.assertEqual(result['body'], 'actual answer')
         self.assertEqual(result['native_evidence']['finish_reason'], 'stop')
 
+    def test_native_abort_readback_has_no_business_answer(self):
+        output = json.dumps(dict(type='error', sessionID='ses_native', error={'name': 'MessageAbortedError'}))
+        result = self.cli.parse_cancellation(output, {'native_session_id': 'ses_native'})
+        self.assertEqual(result['native_evidence']['native_state'], 'stopped')
+        self.assertNotIn('body', result)
+        with self.assertRaises(self.cli.NativeCliError): self.cli.parse_result(output, {'native_session_id': 'ses_native'})
+
+    def test_error_text_or_another_session_is_not_native_abort_proof(self):
+        for error in ({'name': 'APIError', 'data': {'message': 'Aborted'}}, {'message': 'MessageAbortedError'}):
+            with self.assertRaises(self.cli.NativeCliError):
+                self.cli.parse_cancellation(json.dumps(dict(type='error', sessionID='ses_native', error=error)),
+                                            {'native_session_id': 'ses_native'})
+        output = json.dumps(dict(type='error', sessionID='ses_other', error={'name': 'MessageAbortedError'}))
+        for context in ({}, {'native_session_id': 'ses_native'}):
+            with self.assertRaises(self.cli.NativeCliError): self.cli.parse_cancellation(output, context)
+
+    def test_frontend_observation_covers_native_cli_without_an_error_event(self):
+        observed = dict(type='xsm_native_cancelled', source='opencode/1.19.5', sessionID='ses_native',
+                        native_input_message_id='msg_input', native_assistant_message_id='msg_assistant',
+                        native_error='MessageAbortedError', native_completed=123, native_idle=True)
+        context = {'native_session_id': 'ses_native'}
+        result = self.cli.parse_cancellation(json.dumps(observed), context)
+        self.assertEqual(result['native_evidence']['terminal_event'], 'xsm_native_cancelled')
+        self.assertNotIn('body', result)
+        for changes in ({'native_idle': 1}, {'native_error': 'APIError'}, {'source': 'model'},
+                        {'native_completed': True}, {'native_input_message_id': None}):
+            with self.subTest(changes=changes), self.assertRaises(self.cli.NativeCliError):
+                self.cli.parse_cancellation(json.dumps(dict(observed, **changes)), context)
+        for trailing in (observed, dict(type='step_start', sessionID='ses_native'),
+                         dict(type='error', sessionID='ses_native', error=[])):
+            with self.subTest(trailing=trailing), self.assertRaises(self.cli.NativeCliError):
+                self.cli.parse_cancellation(json.dumps(observed) + '\n' + json.dumps(trailing), context)
+
     def test_failed_incomplete_or_changed_native_turn_is_refused(self):
         baseline = self.events()
         variants = [baseline[:-1], baseline[1:], baseline + [baseline[1]],

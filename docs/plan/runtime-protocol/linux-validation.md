@@ -598,3 +598,17 @@ Python491+SDK52+native58+Node149=750개와 독립 mock39/변이14개가 Linux ar
 이 결과는 f52fb6c의 Pi provider와33fbe7b의 launch fence 및 공개 cancel까지
 포함한다. 그 뒤의 native-output 중단 복구와758개 core는 포함하지 않는다.
 Linux의 실제 Pi native CLI/model 취소를 증명하는 표본도 아니다.
+
+## Pi 중단 확인 readback 및 no-follow core (1f9de1c)
+
+1f9de1c 고정 번들의 SHA-256은
+8e15d988910f62de543fc7f60cadab4d30c1472154ac9a14fa2010cbd6f0a1cb다.
+Python491+SDK52+native66+Node149=758개와 독립 mock39/변이14개가 두 Linux
+arm64 이미지에서 통과했다. Python3.11.2는67.162초,3.14.10은84.455초였다.
+Model0/network none/cpu2/memory3g와120초 기한을 유지했다. 원시는
+deliverables/protocol-foundation/pi-cancel-readback-linux/ 아래 result.json,
+{311,314}/protocol.log와 start/stop.log다. VM stopExit은0이며 종료됐다.
+
+이 번들은 Pi의 출력 기반 중단 확인 복구와 파일/directory no-follow 검사를
+포함한다. 그 뒤 OpenCode native 취소·관측 프레임·취소 전용 exit1 readback과
+766개 core는 포함하지 않는다. 실제 Linux native 모델/취소 실행도 별도 미완이다.

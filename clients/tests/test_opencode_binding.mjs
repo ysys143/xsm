@@ -9,16 +9,65 @@ import { XsmClient, TransportError } from '../typescript/xsm-client.mjs';
 import { XsmHost } from '../typescript/xsm-host.mjs';
 
 let selectedBinding = binding;
-if (process.env.XSM_OPENCODE_RECONNECT_MUTANT === 'disabled') {
+if (process.env.XSM_OPENCODE_RECONNECT_MUTANT === 'disabled' || process.env.XSM_OPENCODE_CANCEL_MUTANT) {
   const url = new URL('../../integrations/opencode/xsm.mjs', import.meta.url);
   let code = await readFile(url, 'utf8');
   code = code.replace(/from '([^']+)'/g, (_whole, source) => `from ${JSON.stringify(new URL(source, url).href)}`);
-  const changed = code.replace('function scheduleRetry(id, token, delay = 250) {', 'function scheduleRetry(id, token, delay = 250) { return;');
+  const mutation = process.env.XSM_OPENCODE_CANCEL_MUTANT;
+  const changed = mutation === 'parent'
+    ? code.replace('return latest?.parentID === parentID ? latest : undefined;', 'return latest;')
+    : mutation === 'idle'
+      ? code.replace("info?.error?.name === 'MessageAbortedError' &&", 'true &&')
+      : code.replace('function scheduleRetry(id, token, delay = 250) {', 'function scheduleRetry(id, token, delay = 250) { return;');
   assert.notEqual(changed, code);
   selectedBinding = (await import('data:text/javascript;base64,' + Buffer.from(changed).toString('base64'))).default;
 }
 
 const root = fileURLToPath(new URL('../../', import.meta.url));
+
+test('OpenCode cancellation confirms only the bound input assistant abort and native idle',
+  { timeout: 10000 }, async t => {
+    const id = 'owned-cancel'; let reports = 0, f;
+    const info = { id: 'msg_b', sessionID: id, parentID: 'msg_a', role: 'assistant', time: { created: 1 } };
+    f = await fixture(t, { nativeMessages: [{ info }], workerControl: { nativeID: id,
+      bind: async () => {}, close() {}, cancellationRequested: async () => true,
+      reportStopped: async () => { assert.equal(f.cancellationEvidence.length, 1); reports++; } }, abort: async nativeID => {
+        assert.equal(nativeID, id);
+        info.error = { name: 'MessageAbortedError' }; info.time.completed = 2;
+        f.statuses[id] = { type: 'idle' };
+      } });
+    f.statuses[id] = { type: 'busy' };
+    await f.hooks['chat.message']({ sessionID: id }, { parts: [], message: { id: 'msg_a' } });
+    await until(() => reports === 1);
+    assert.deepEqual(f.aborts, [id]); assert.deepEqual(f.errors, []);
+  });
+
+test('OpenCode normal completed idle is not a cancelled native turn', { timeout: 10000 }, async t => {
+  const id = 'owned-complete'; let reports = 0, statuses = 0;
+  const f = await fixture(t, { onStatus: () => { statuses++; }, nativeMessages: [{ info: {
+    id: 'msg_b', sessionID: id, parentID: 'msg_a', role: 'assistant', time: { created: 1, completed: 2 } } }],
+    workerControl: { nativeID: id, bind: async () => {}, close() {},
+      cancellationRequested: async () => true, reportStopped: async () => { reports++; } } });
+  f.statuses[id] = { type: 'idle' };
+  await f.hooks['chat.message']({ sessionID: id }, { parts: [], message: { id: 'msg_a' } });
+  await until(() => statuses >= 2);
+  assert.deepEqual(f.aborts, []); assert.equal(reports, 0);
+});
+
+test('OpenCode cancellation cannot abort a newer assistant with another input parent',
+  { timeout: 10000 }, async t => {
+    const id = 'owned-other-parent'; let reads = 0, reports = 0;
+    const f = await fixture(t, { nativeMessages: () => { reads++; return [
+      { info: { id: 'msg_b', sessionID: id, parentID: 'msg_a', role: 'assistant',
+        time: { completed: 2 }, error: { name: 'MessageAbortedError' } } },
+      { info: { id: 'msg_c', sessionID: id, parentID: 'another-input', role: 'assistant', time: { created: 3 } } },
+    ]; }, workerControl: { nativeID: id, bind: async () => {}, close() {},
+      cancellationRequested: async () => true, reportStopped: async () => { reports++; } } });
+    f.statuses[id] = { type: 'busy' };
+    await f.hooks['chat.message']({ sessionID: id }, { parts: [], message: { id: 'msg_a' } });
+    await until(() => reads >= 2);
+    assert.deepEqual(f.aborts, []); assert.equal(reports, 0);
+  });
 
 test('OpenCode shutdown settles an in-flight native state update without hiding live failures',
   { timeout: 10000 }, async t => {
@@ -69,7 +118,7 @@ async function fixture(t, options = {}) {
   const command = [process.env.PYTHON ?? 'python3', '-B', '-m', 'xsm', 'protocol', 'serve', '--stdio'];
   const env = { PATH: process.env.PATH, HOME: temp, XSM_HOME: join(temp, 'state'), PYTHONPATH: root,
     PYTHONDONTWRITEBYTECODE: '1' };
-  const native = new Map(), statuses = {}, errors = [], wakes = [];
+  const native = new Map(), statuses = {}, errors = [], wakes = [], aborts = [], cancellationEvidence = [];
   let corrupt = false;
   const api = { directory: temp, client: { session: {
     get: async ({ path: { id } }) => ({ data: { id, title: 'Native ' + id, parentID: options.parents?.[id],
@@ -82,10 +131,14 @@ async function fixture(t, options = {}) {
     },
     message: async ({ path: { messageID } }) => ({ data: corrupt
       ? { ...native.get(messageID), parts: [] } : native.get(messageID) }),
-    status: async () => ({ data: statuses }),
+    status: async () => { options.onStatus?.(); return { data: statuses }; },
+    messages: async ({ path: { id } }) => ({ data: typeof options.nativeMessages === 'function'
+      ? options.nativeMessages(id) : options.nativeMessages ?? [] }),
+    abort: async ({ path: { id } }) => { aborts.push(id); await options.abort?.(id); return { data: true }; },
     promptAsync: async ({ path: { id } }) => { wakes.push(id); return { data: undefined }; },
   } } };
   const hooks = await selectedBinding(api, { schema, command, env, profile,
+    writeCancellationEvidence: async value => { cancellationEvidence.push(value); },
     onError: error => errors.push(error), ...options });
   const invoke = async (id, name, args = {}, extra = {}) => JSON.parse(await hooks.tool[name].execute(args,
     { sessionID: id, directory: temp, abort: new AbortController().signal, ...extra }));
@@ -100,7 +153,7 @@ async function fixture(t, options = {}) {
   const send = (record, text, options = {}) => sender.operationCall(origin.session, 'xsm_send',
     { target: 'ref:' + record.ref, text, wait: 0, ...options });
   t.after(async () => { await hooks.dispose(); await sender.close(); await rm(temp, { recursive: true, force: true }); });
-  return { hooks, invoke, records, native, errors, wakes, statuses, send,
+  return { hooks, invoke, records, native, errors, wakes, statuses, aborts, cancellationEvidence, send,
     corrupt: value => { corrupt = value; } };
 }
 

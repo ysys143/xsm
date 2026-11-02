@@ -71,12 +71,94 @@ async function attach(api, options, release) {
   const sessions = new Map();
   const states = new Map();
   const intents = new Set(), versions = new Map(), retries = new Map();
+  const cancellationMonitors = new Map();
   let disposed = false;
   const fail = error => {
     if (options.onError) options.onError(error);
     else void api.client.app.log({ body: { service: 'xsm', level: 'error',
       message: error.message } }).catch(() => {});
   };
+  function stopCancellationMonitor(id) {
+    const monitor = cancellationMonitors.get(id);
+    if (!monitor) return;
+    cancellationMonitors.delete(id);
+    monitor.closed = true;
+    clearTimeout(monitor.timer);
+    monitor.controller.abort();
+    monitor.resolveDone();
+  }
+  function monitorCancellation(id, parentID) {
+    const control = options.workerControl;
+    if (typeof control?.cancellationRequested !== 'function' || control.nativeID !== id) return;
+    if (typeof parentID !== 'string' || !parentID) throw new Error('native cancellation requires the actual input message ID');
+    if (cancellationMonitors.has(id)) return;
+    const monitor = { version: versions.get(id) ?? 0, controller: new AbortController(), closed: false };
+    monitor.done = new Promise(resolve => { monitor.resolveDone = resolve; });
+    cancellationMonitors.set(id, monitor);
+    const current = () => !disposed && !monitor.closed && cancellationMonitors.get(id) === monitor &&
+      control.nativeID === id && (versions.get(id) ?? 0) === monitor.version;
+    const requestOptions = { signal: monitor.controller.signal };
+    const messages = async () => {
+      const rows = unwrap(await api.client.session.messages({ path: { id }, query: { limit: 20 }, ...requestOptions }));
+      if (!Array.isArray(rows)) throw new Error('native cancellation transcript is unavailable');
+      const latest = rows.filter(row => row.info?.role === 'assistant' && row.info.sessionID === id &&
+        typeof row.info.id === 'string')
+        .sort((a, b) => a.info.id < b.info.id ? -1 : a.info.id > b.info.id ? 1 : 0).at(-1)?.info;
+      return latest?.parentID === parentID ? latest : undefined;
+    };
+    async function poll() {
+      if (!current()) return;
+      try {
+        const requested = await control.cancellationRequested();
+        if (!current()) return;
+        if (requested) {
+          let info = await messages();
+          if (!current()) return;
+          if (info) {
+            const statuses = unwrap(await api.client.session.status(requestOptions));
+            if (!current()) return;
+            const busy = statuses[id] && statuses[id].type !== 'idle';
+            if (busy && !monitor.abortRequested) {
+              // This CLI process owns one input generation. Never select a
+              // different parent message or an arbitrary native conversation.
+              monitor.abortRequested = true;
+              unwrap(await api.client.session.abort({ path: { id }, ...requestOptions }));
+              if (!current()) return;
+              info = await messages();
+              if (!current()) return;
+            }
+            const after = unwrap(await api.client.session.status(requestOptions));
+            if (!current()) return;
+            if ((!after[id] || after[id].type === 'idle') && info?.error?.name === 'MessageAbortedError' &&
+                typeof info.time?.completed === 'number') {
+              monitor.reporting = true;
+              const evidence = { type: 'xsm_native_cancelled', source: 'opencode/1.19.5', sessionID: id,
+                native_input_message_id: parentID, native_assistant_message_id: info.id,
+                native_error: 'MessageAbortedError', native_completed: info.time.completed, native_idle: true };
+              if (options.writeCancellationEvidence) await options.writeCancellationEvidence(evidence);
+              else await new Promise((resolve, reject) => process.stdout.write(JSON.stringify(evidence) + '\n',
+                error => error ? reject(error) : resolve()));
+              if (!current()) return;
+              await control.reportStopped();
+              stopCancellationMonitor(id);
+              return;
+            }
+            if ((!after[id] || after[id].type === 'idle') && typeof info?.time?.completed === 'number' && !info.error) {
+              stopCancellationMonitor(id); // Completion won; preserve its actual result.
+              return;
+            }
+          }
+        }
+        if (current()) {
+          monitor.timer = setTimeout(() => { void poll(); }, 200);
+          monitor.timer.unref?.();
+        }
+      } catch (error) {
+        if (current()) { stopCancellationMonitor(id); fail(error); }
+      }
+    }
+    void poll();
+  }
   function cancelRetry(id) {
     const pending = retries.get(id);
     if (pending) clearTimeout(pending.timer);
@@ -217,6 +299,7 @@ async function attach(api, options, release) {
     return sessions.get(id);
   }
   async function close(id) {
+    stopCancellationMonitor(id);
     intents.delete(id);
     versions.set(id, (versions.get(id) ?? 0) + 1);
     cancelRetry(id);
@@ -242,6 +325,7 @@ async function attach(api, options, release) {
       if (ui && await ui.receive(input.sessionID, output.parts)) return;
       if (output.parts.some(part => part.metadata?.xsmDelivery)) return;
       await (await open(input.sessionID)).naturalBoundary().catch(error => { if (!(error instanceof RetryAdmission)) throw error; });
+      monitorCancellation(input.sessionID, output.message?.id);
     },
     event: async ({ event }) => {
       if (disposed) return;
@@ -264,7 +348,16 @@ async function attach(api, options, release) {
       }
     },
     dispose: async () => {
+      const stopping = [...cancellationMonitors.values()].filter(monitor => monitor.abortRequested || monitor.reporting);
+      if (stopping.length) {
+        let timer;
+        try {
+          await Promise.race([Promise.allSettled(stopping.map(monitor => monitor.done)),
+            new Promise(resolve => { timer = setTimeout(resolve, 2000); })]);
+        } finally { clearTimeout(timer); }
+      }
       disposed = true;
+      for (const id of cancellationMonitors.keys()) stopCancellationMonitor(id);
       for (const id of retries.keys()) cancelRetry(id);
       intents.clear();
       ui?.close();
