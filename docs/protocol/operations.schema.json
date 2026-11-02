@@ -33,6 +33,7 @@
         "xsm_link",
         "xsm_join",
         "xsm_reach",
+        "xsm_doc",
         "xsm_doc_endorse",
         "xsm_approve",
         "xsm_decide"
@@ -250,6 +251,19 @@
         },
         "arguments": {
           "$ref": "#/$defs/xsm_reach"
+        }
+      },
+      "required": [
+        "arguments"
+      ]
+    },
+    {
+      "properties": {
+        "operation": {
+          "const": "xsm_doc"
+        },
+        "arguments": {
+          "$ref": "#/$defs/xsm_doc"
         }
       },
       "required": [
@@ -1051,6 +1065,64 @@
       ],
       "additionalProperties": false,
       "description": "Ask your user to let this session talk with the sessions of one other folder (both ways, while this session runs), when a send is refused as out of scope. Narrower than joining a project: nothing else changes. This shows them a form; drop=true takes it back without asking."
+    },
+    "xsm_doc": {
+      "type": "object",
+      "properties": {
+        "action": {
+          "type": "string",
+          "enum": [
+            "add",
+            "render",
+            "log",
+            "next",
+            "leaves",
+            "show"
+          ]
+        },
+        "doc": {
+          "type": "string",
+          "minLength": 1
+        },
+        "text": {
+          "type": "string"
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "setup",
+              "result",
+              "insight",
+              "hypothesis",
+              "verification",
+              "report",
+              "wip",
+              "update"
+            ]
+          }
+        },
+        "parents": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "node": {
+          "type": "string"
+        },
+        "limit": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "required": [
+        "action",
+        "doc"
+      ],
+      "additionalProperties": false,
+      "description": "Contribute immutable document nodes and read/render their graph. Authors come from this conversation. Endorsement requires xsm_doc_endorse and an actual user answer."
     },
     "xsm_doc_endorse": {
       "type": "object",

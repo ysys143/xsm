@@ -342,6 +342,12 @@ class OperationService:
                 metadata["materials"] = materials.public(value["materials"])
                 text += "\nMaterials: " + json.dumps(metadata["materials"], ensure_ascii=False)
             return OperationDisplay(text, metadata)
+        if name == 'xsm_doc':
+            from . import doc, doc_service
+            try:
+                return json.dumps(doc_service.execute(me, args), ensure_ascii=False)
+            except (doc.DocError, OSError) as exc:
+                raise ToolError(str(exc)) from exc
         if name == "xsm_doc_endorse":
             return self.endorse(me, args)
         if name == "xsm_team":

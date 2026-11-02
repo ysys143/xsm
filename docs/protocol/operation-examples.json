@@ -119,6 +119,14 @@
   },
   {
     "session": "opaque-session",
+    "operation": "xsm_doc",
+    "arguments": {
+      "action": "show",
+      "doc": "structural-fixture"
+    }
+  },
+  {
+    "session": "opaque-session",
     "operation": "xsm_doc_endorse",
     "arguments": {
       "doc": "structural-fixture",

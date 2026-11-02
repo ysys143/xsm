@@ -2,8 +2,8 @@
 
 [operations.schema.json](operations.schema.json) defines `operation.call` params:
 `session`, `operation` and optional `arguments`. It contains a separate definition
-for each of the 21 advertised operations. [Validation-only examples](operation-examples.json)
-cover all 21; their opaque handles and placeholder arguments are not executable
+for each of the 22 advertised operations. [Validation-only examples](operation-examples.json)
+cover all 22; their opaque handles and placeholder arguments are not executable
 requests or authorization to perform effects.
 
 Validate the JSON-RPC envelope with request.schema.json, then validate its params

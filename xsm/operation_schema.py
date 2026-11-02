@@ -39,7 +39,7 @@ WIDENING = ("xsm_publish", "xsm_connect", "xsm_grant", "xsm_approve", "xsm_link"
 # files read for it -- the second thing spec P01 item 2 puts behind an exact
 # identity (IC01). Whether that folder is authority for the file itself is the
 # separate question D07 decides; this only stops the identity from being a guess.
-FILE_READING = ("xsm_doc_endorse", "xsm_ask", "xsm_question_status", "xsm_discover", "xsm_decision_status", "xsm_decide", "xsm_inbox", "xsm_ack", "xsm_files", "xsm_owned")
+FILE_READING = ("xsm_doc", "xsm_doc_endorse", "xsm_ask", "xsm_question_status", "xsm_discover", "xsm_decision_status", "xsm_decide", "xsm_inbox", "xsm_ack", "xsm_files", "xsm_owned")
 MESSAGE_TEXT_DESCRIPTION = (
     "The receiver and your user will read this message. Use ordinary "
     "sentences with normal word spacing in the language of the conversation. "
@@ -259,6 +259,17 @@ TOOLS = [
          "dir": {"type": "string", "description": "the other folder, e.g. ~/src/other-repo"},
          "drop": {"type": "boolean", "default": False},
          "reason": {"type": "string"}}, "required": ["dir"]}},
+    {"name": "xsm_doc",
+     "description": "Contribute immutable document nodes and read/render their graph. "
+                    "Authors come from this conversation. Endorsement requires xsm_doc_endorse and an actual user answer.",
+     "inputSchema": {"type": "object", "properties": {
+         "action": {"type": "string", "enum": ["add", "render", "log", "next", "leaves", "show"]},
+         "doc": {"type": "string", "minLength": 1}, "text": {"type": "string"},
+         "tags": {"type": "array", "items": {"type": "string", "enum": [
+             "setup", "result", "insight", "hypothesis", "verification", "report", "wip", "update"]}},
+         "parents": {"type": "array", "items": {"type": "string"}},
+         "node": {"type": "string"}, "limit": {"type": "integer", "minimum": 0}},
+         "required": ["action", "doc"]}, "annotations": MESSAGING},
     {"name": "xsm_doc_endorse",
      "description": ("Ask your user to endorse a node of a shared document (xsm doc), making it "
                      "the document's canonical text when rendered. They see the node and decide."),
@@ -413,6 +424,7 @@ def who_answered(reply, client=None) -> str:
 
 
 JSON_RESULT_OPERATIONS = frozenset({
+    'xsm_doc',
     'xsm_ask', 'xsm_question_status', 'xsm_connect', 'xsm_discover', 'xsm_publish',
     'xsm_decision_status', 'xsm_inbox', 'xsm_ack', 'xsm_files', 'xsm_owned',
 })

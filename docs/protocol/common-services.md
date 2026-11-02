@@ -72,3 +72,24 @@ address. A name reassigned during selection cannot redirect the subsequent
 question. Teams still follow their name membership when choosing the current
 member, then address that exact conversation. Legacy short refs remain accepted
 with collision refusal. These addresses are selectors, not authorization.
+
+## Document nodes
+
+`xsm.doc_service.execute` handles add/render/log/next/leaves/show for CLI and
+`xsm_doc`. Relative model paths use the authenticated conversation's working
+folder; CLI paths retain the shell's folder. Nodes are immutable and parents
+must exist in that document. Next is informational, ordered by creation; it
+does not assign work. Its text and structured fields use one node snapshot.
+
+A model host derives an agent author from its authenticated session, even if the
+host process is attached to a human terminal. Neither arguments nor a missing
+runtime environment marker can make it a human author. The CLI may provide its
+own verified human/verdict author through an internal parameter. Endorsed nodes
+still require the existing `xsm_doc_endorse` user-decision route. Guessed model
+callers are refused before document reads or writes.
+
+`xsm_doc` returns `{node}` for add/show, `{nodes:[...]}` for log/leaves,
+`{text,nodes:<count>}` for render, and the existing next fields plus `text` for
+next. Passive inbox fields may also be present. Render writes the generated
+file; it is not a read-only preview. These are local file operations, not proof
+of remote document replication or every native runtime's validation.

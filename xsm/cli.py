@@ -2645,11 +2645,13 @@ def _decided_by_reply(me: dict | None, what: str, mcp_tool: str, ask: tuple) -> 
 
 
 def cmd_doc(args) -> int:
-    from . import doc
+    from . import doc, doc_service
     try:
+        me = registry.me() if args.action == 'add' else None
+        author = None
+        arguments = {"action": args.action, "doc": args.doc}
         if args.action == "add":
             body = open(args.file, encoding="utf-8").read() if args.file else (args.text or "")
-            me = registry.me()
             author = doc.author_here(me)
             if "endorsed" in (args.tag or []) and author.get("kind") != "human":
                 author = _decided_by_reply(me, "endorsing in %s: %s" % (args.doc, body[:120]),
@@ -2657,28 +2659,29 @@ def cmd_doc(args) -> int:
                                            ("endorse", consent.digest(args.doc, body, args.parent)))
                 if author is None:
                     return REFUSED
-            node = doc.add(args.doc, author, body, args.tag or ["result"], args.parent or [],
-                           approved=("verdict: %s" % author["verdict"])
-                           if author.get("via") == "verdict" else None)
+            arguments.update(text=body, tags=args.tag or ["result"], parents=args.parent or [])
+        elif args.action == "next":
+            arguments['limit'] = args.limit
+        elif args.action == "show":
+            arguments['node'] = args.node
+        result = doc_service.execute(me, arguments, author=author, base=os.getcwd())
+        if args.action == "add":
+            node = result['node']
             print("added node %s [%s] to %s" % (node["id"], ", ".join(node["tags"]),
                                                  os.path.basename(doc.nodes_dir(args.doc))))
         elif args.action == "render":
-            doc.render(args.doc)
-            print("rendered %s from %d node(s)" % (args.doc, len(doc.read(args.doc))))
+            print("rendered %s from %d node(s)" % (args.doc, result['nodes']))
         elif args.action == "log":
-            print(doc.log(doc.read(args.doc)) or "(no nodes)")
+            print(doc.log(result['nodes']) or "(no nodes)")
         elif args.action == "next":
             if args.json:
-                print(json.dumps(doc.next_json(args.doc, args.limit), ensure_ascii=False, indent=1))
+                print(json.dumps({k: v for k, v in result.items() if k != 'text'}, ensure_ascii=False, indent=1))
             else:
-                print(doc.next_text(args.doc, args.limit))
+                print(result['text'])
         elif args.action == "leaves":
-            print("\n".join(doc._one_line(n) for n in doc.leaves(doc.read(args.doc))) or "(no nodes)")
+            print("\n".join(doc._one_line(n) for n in result['nodes']) or "(no nodes)")
         elif args.action == "show":
-            node = next((n for n in doc.read(args.doc) if n["id"] == args.node), None)
-            if not node:
-                raise doc.DocError("no node %s" % args.node)
-            print(doc._serialize(node))
+            print(doc._serialize(result['node']))
     except (doc.DocError, OSError) as exc:
         print("refused: %s" % exc, file=sys.stderr)
         return REFUSED

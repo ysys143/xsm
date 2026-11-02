@@ -869,6 +869,71 @@ export default [
     }
   },
   {
+    "name": "xsm_doc",
+    "description": "Contribute immutable document nodes and read/render their graph. Authors come from this conversation. Endorsement requires xsm_doc_endorse and an actual user answer.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "action": {
+          "type": "string",
+          "enum": [
+            "add",
+            "render",
+            "log",
+            "next",
+            "leaves",
+            "show"
+          ]
+        },
+        "doc": {
+          "type": "string",
+          "minLength": 1
+        },
+        "text": {
+          "type": "string"
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "setup",
+              "result",
+              "insight",
+              "hypothesis",
+              "verification",
+              "report",
+              "wip",
+              "update"
+            ]
+          }
+        },
+        "parents": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "node": {
+          "type": "string"
+        },
+        "limit": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "required": [
+        "action",
+        "doc"
+      ]
+    },
+    "annotations": {
+      "readOnlyHint": false,
+      "destructiveHint": false,
+      "openWorldHint": false
+    }
+  },
+  {
     "name": "xsm_doc_endorse",
     "description": "Ask your user to endorse a node of a shared document (xsm doc), making it the document's canonical text when rendered. They see the node and decide.",
     "inputSchema": {

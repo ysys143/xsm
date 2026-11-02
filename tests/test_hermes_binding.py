@@ -185,7 +185,7 @@ class HermesRegistrationTest(TempState):
         with mock.patch.dict(sys.modules, hermes_constants=constants):
             binding = module.register(self.context(), command=command, env=env)
         try:
-            self.assertEqual(len(self.tools), 21)
+            self.assertEqual(len(self.tools), 22)
             self.assertEqual(len(self.hooks), 5)
             self.assertEqual(marker.read_text().splitlines(), ["start"])
             result = json.loads(self.tools["xsm_inbox"]["handler"]({}, session_id="pinned-native"))

@@ -674,7 +674,7 @@ class ProtocolRequestFieldsTest(ProtocolFixture):
         artifact = json.loads((Path(__file__).resolve().parents[1] / 'docs/protocol/operations.schema.json').read_text())
         self.assertEqual(artifact, actual)
         self.assertEqual(TOOLS, before)
-        self.assertEqual(len(actual['$defs']), 21)
+        self.assertEqual(len(actual['$defs']), 22)
         for tool in TOOLS:
             arguments = actual['$defs'][tool['name']]
             self.assertIs(arguments['additionalProperties'], False)

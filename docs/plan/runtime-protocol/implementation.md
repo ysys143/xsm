@@ -2124,3 +2124,35 @@ red와 혼동하지 않는다. 질문의 runtime-only 주소와 connect의 이�
 CLI의 positional 선택값과 공개 작업 대응·미확정을 기록한다. doc의 노드
 작업과 기존 endorsement가 동등하지 않다는 차이, Claude/Codex 한정 worker
 parser도 포함했다. 미확정 항목을 범위 제외나 통과로 바꾸지 않았다.
+
+## 문서 노드 작업의 공통 서비스와 공개 경로
+
+CLI doc의 add/render/log/next/leaves/show를 doc_service로 모으고 공개
+xsm_doc 작업으로 연결했다. 공개 작업 수는 21개에서 22개가 됐다.
+생성 schema·예제·OpenClaw 정적 catalog와 Hermes manifest도 갱신했다.
+모델 상대 경로는 인증된 대화 cwd를 쓰고 CLI는 기존 셸 cwd를 유지한다.
+next의 표시와 JSON은 같은 노드 표본에서 만들고, CLI 기존 JSON에는
+추가 text를 넣지 않는다. 기존 파일/노드 포맷은 바꾸지 않았다.
+
+모델 author는 반드시 세션에서 만든 agent이며 호스트의 터미널 감지나
+모델 데이터로 human을 만들지 않는다. endorsed는 기존 사용자 결정
+경로에 남겼다. 사람 터미널 감지를 강제로 켠 변이가 endorsement를
+만들면 새 검사가 실패했다(`doc-human-author-mutant-final.log`). 첫 변이는
+비 tty 표본에서 위험 분기를 실행하지 못해 탐지하지 못했으므로 성공
+근거로 쓰지 않는다. 추정 caller의 파일 접근 6개 동작도 red를 기록한 뒤
+FILE_READING guard에 포함해 막았다(`doc-caller-{red,green}.log`).
+
+초기 구현 전 3개 실패는 doc_service가 없는 상태였다
+(`doc-service-red.log`). 실제 protocol add→parent revision→show/log/
+leaves/next→render와 없는 parent 무기여, CLI/MCP 공통 경로 및 위의
+작성자/호출자 검사를 실행했다. 기존 문서·프로토콜·네이티브 catalog 회귀
+75개, identity 회귀 포함 52개, 설치 회귀 38개가 각각 통과했다.
+
+첫 공통 실행은 Node 두 검사의 옛 21개 기대값 때문에 실패했다
+(`doc-service-core.log`). 22개로 갱신한 최종 공통 실행은 기존 핵심
+541개(366/Python 49/Node 126)와 독립 mock 16개·변이 4개가 79.577초에
+통과했다(`doc-service-core-final.log`). 그 뒤 CLI 읽기에서 registry.me를
+불필요하게 호출하지 않도록 기존 동작을 보존한 변경은 문서/CLI 15개로
+별도 확인했다(`doc-service-cli-final.log`). 공개 schema 검사도 통과했다
+(`doc-service-schema-final.json`). 실제 전체 native 행렬과 문서 결과의
+완전한 operation-specific JSON Schema는 미완이다.

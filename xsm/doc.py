@@ -254,8 +254,8 @@ def _next_line(n: dict, wips: dict) -> str:
     return line + ("\n    " + "; ".join(why) if why else "")
 
 
-def next_text(doc: str, limit: int = 0) -> str:
-    nodes = read(doc)
+def next_text(doc: str, limit: int = 0, *, nodes=None) -> str:
+    nodes = read(doc) if nodes is None else nodes
     picked = next_candidates(nodes)
     if not picked:
         return "(nothing open: no loose ends and no unverified hypotheses)"
@@ -270,8 +270,8 @@ def next_text(doc: str, limit: int = 0) -> str:
     return "\n".join(out)
 
 
-def next_json(doc: str, limit: int = 0) -> dict:
-    nodes = read(doc)
+def next_json(doc: str, limit: int = 0, *, nodes=None) -> dict:
+    nodes = read(doc) if nodes is None else nodes
     picked = next_candidates(nodes)
     wips = wip_children(nodes)
     ends = {n["id"] for n in leaves(nodes)}

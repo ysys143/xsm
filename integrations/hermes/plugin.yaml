@@ -23,6 +23,7 @@
     "xsm_link",
     "xsm_join",
     "xsm_reach",
+    "xsm_doc",
     "xsm_doc_endorse",
     "xsm_approve",
     "xsm_decide"

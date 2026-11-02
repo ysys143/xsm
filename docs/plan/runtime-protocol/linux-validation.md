@@ -400,3 +400,15 @@ hash가 같고 tracked dirty false이며 network none이다. 실제 SDK와
 stdio 서버의 claim 후 오류·현재 token 회수·명시적 ACK·같은 연결
 유지 검사도 포함했다. 뒤따른 팀 서비스 추출 전 표본으로 구분한다.
 테스트 VM은 Stopped로 확인했다.
+
+## 공통 질문·일반 참여자 주소의 두 Python 검증
+
+변경 없는 a1e4804의 공통 526개(핵심 351/Python 49/Node 126)는
+Python 3.11.2에서 96.662초, Python 3.14.10에서 117.593초에 통과했다.
+`linux-generic-peer-core/result.json`과
+`linux-python-314-generic-peer-core/result.json`의 archive SHA-256이 같고,
+둘 다 tracked dirty false·network none이다. 테스트 VM 종료도
+`linux-generic-peer-batch.json`의 stopExitCode 0과 실제 Stopped 로그로 확인했다.
+이 표본은 뒤의 독립 mock gate 통합과 xsm_doc 추가 전이며 그 변경의 Linux
+통과 근거로 확대하지 않는다. 3.14 실행은 120초 상한에 가까우므로 새로운
+실패나 변경 없이 반복 실행해 더 빠른 표본으로 교체하지 않는다.

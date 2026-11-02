@@ -554,7 +554,7 @@ class HostInstallTest(TempState):
         self.assertEqual(bundle["protocolVersion"], "1")
         self.assertTrue(bundle["experimental"])
         self.assertEqual(len(bundle["methods"]), 11)
-        self.assertEqual(len(bundle["operations"]), 21)
+        self.assertEqual(len(bundle["operations"]), 22)
         for name, artifact in bundle["artifacts"].items():
             content = (root / name).read_bytes()
             self.assertEqual(artifact["text"].encode(), content)

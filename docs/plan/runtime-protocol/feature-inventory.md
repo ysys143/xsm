@@ -1,9 +1,9 @@
 # 기존 기능과 공개 프로토콜 전수표
 
-조사 기준은 `a1e4804`이며 기능 지원 인증이 아닌 진입점 대조표다.
+초기 조사 기준은 `a1e4804`이며 기능 지원 인증이 아닌 진입점 대조표다.
 `scripts/inventory-protocol-features.py --output <새 JSON 경로>`로 HOME/XSM_HOME을
 격리해 parser와 공개 catalog를 직접 읽었다. 결과는 CLI 말단 명령 **73개**,
-공개 operation **21개**, host method **11개**다. positional action의 여러 값은
+공개 operation **22개**(초기 21개에서 xsm_doc 추가), host method **11개**다. positional action의 여러 값은
 별도 명령으로 중복 계산하지 않았다. 전체 옵션은 원시 JSON에 있다.
 
 명령이 공개 operation과 겹친다는 사실만으로 CLI 공통화·native 실행·원격·
@@ -52,7 +52,7 @@ UI 호환이 확인된 것은 아니다. 아래 대응 미확정 항목은 이�
 | `xsm stop` | — | 대응 미확정; 기존 CLI 경로 보존 필요 |
 | `xsm attach` | — | 대응 미확정; 기존 CLI 경로 보존 필요 |
 | `xsm worker-finish` | — | 대응 미확정; 기존 CLI 경로 보존 필요 |
-| `xsm doc` | action: add, render, log, next, leaves, show | xsm_doc_endorse(사람 검토·endorsement만; add/render/log/next/leaves/show 대응 미완) |
+| `xsm doc` | action: add, render, log, next, leaves, show | xsm_doc(add/render/log/next/leaves/show 공통 서비스); xsm_doc_endorse(사용자 endorsement) |
 | `xsm remote` | action: add, accept, list, remove, sessions | 대응 미확정; 기존 CLI 경로 보존 필요 |
 | `xsm mcp` | — | 대응 미확정; 기존 CLI 경로 보존 필요 |
 | `xsm approvals` | — | 대응 미확정; 기존 CLI 경로 보존 필요 |
@@ -89,7 +89,7 @@ UI 호환이 확인된 것은 아니다. 아래 대응 미확정 항목은 이�
 | `xsm statusline` | — | 대응 미확정; 기존 CLI 경로 보존 필요 |
 | `xsm selftest` | — | 대응 미확정; 기존 CLI 경로 보존 필요 |
 
-## 공개 operation 21개
+## 공개 operation 22개
 
 | Operation | action 값 |
 |---|---|
@@ -111,6 +111,7 @@ UI 호환이 확인된 것은 아니다. 아래 대응 미확정 항목은 이�
 | `xsm_link` | 별도 action enum 없음 |
 | `xsm_join` | 별도 action enum 없음 |
 | `xsm_reach` | 별도 action enum 없음 |
+| `xsm_doc` | add, render, log, next, leaves, show |
 | `xsm_doc_endorse` | 별도 action enum 없음 |
 | `xsm_approve` | 별도 action enum 없음 |
 | `xsm_decide` | 별도 action enum 없음 |
@@ -131,7 +132,7 @@ UI 호환이 확인된 것은 아니다. 아래 대응 미확정 항목은 이�
 
 ## 이미 드러난 차이와 후속 확인
 
-- CLI doc add/render/log/next/leaves/show와 공개 xsm_doc_endorse는 같은 기능 집합이 아니다. 노드 기반 협업 문서 API의 대응이 남았다.
+- 초기 표에서 빠졌던 doc add/render/log/next/leaves/show는 xsm_doc으로 연결했다. endorsement는 별도 사용자 결정 경로로 유지한다. 실제 전체 런타임 행렬의 통과는 미완이다.
 - spawn/stop/attach/reap/workers와 owned의 runtime 지원·생명주기는 전체 검증이 남았다. 현재 spawn parser는 Claude/Codex만 선언한다.
 - 디렉터리·범위·승인·handover·files·owned 계열의 CLI orchestration 공통화와 결과 계약 전수 검증이 남았다.
 - team/board/send/question은 공통 서비스로 이동했지만 실제 6개 런타임 전체 행렬 통과를 의미하지 않는다.
