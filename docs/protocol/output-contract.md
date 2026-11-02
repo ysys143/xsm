@@ -19,8 +19,9 @@ method's referenced definition. Method names do not occur in response frames.
 For example, `delivery.report` returns its recorded state and always
 `acknowledged: false`; `session.close` returns `closed: true`.
 
-`operation.call` deliberately has an unconstrained JSON result in this artifact.
-Full operation-specific result schemas are outstanding. Decision result status
+`operation.call` returns an object: a declared structured operation result, a
+`text` envelope, or a waiting-for-user object. Full operation-specific field
+schemas are still outstanding. Decision result status
 is structurally a string; pending-display and effect-application invariants are
 additional runtime requirements. These artifacts do not certify those semantics.
 
@@ -28,7 +29,7 @@ additional runtime requirements. These artifacts do not certify those semantics.
 
 [Output examples](output-examples.json) include all 11 method results, one error
 and the two notification types: 14 positive structures. The schema checker also
-rejects nine invalid structures, including a mixed success/error, boolean ID,
+rejects invalid structures, including a mixed success/error, boolean ID,
 malformed errors, notification IDs, empty available-message IDs, a missing
 question challenge and an admission reporting consumption.
 
@@ -97,3 +98,24 @@ implicitly ACK it. Reconcile the original operation's state before repeating
 work. Known message IDs can be used with `xsm_inbox(message_ids=[...])` to
 recover the current owned token, then acknowledge explicitly. This contract
 does not yet cover every notification-loop failure or domain-specific error.
+
+## Operation result encoding
+
+The result encoding is declared by operation and action, never guessed from
+whether display text happens to parse as JSON. Text operations return
+`{"text":"the exact display text"}` even when that text is `true`, a number, an
+array, or a JSON-looking object. A malformed or non-object result from a declared
+JSON operation is an internal server error, not a fallback text result.
+
+| Encoding | Operations/actions |
+|---|---|
+| JSON object | xsm_ask, xsm_question_status, xsm_connect, xsm_discover, xsm_publish, xsm_decision_status, xsm_inbox, xsm_ack, xsm_files, xsm_owned |
+| JSON object | xsm_team list/show; xsm_board log/decisions |
+| Text envelope | Other actions and xsm_send, xsm_grant, xsm_approve, xsm_join, xsm_reach, xsm_link, xsm_handover, xsm_doc_endorse, xsm_decide |
+| Waiting-for-user object | A scoped host question can suspend an operation and return status, decision_id and question_id |
+
+Structured team/board queries retain their fields when passive incoming messages
+are attached. The pending counter and optional `incoming` packet are JSON fields;
+they do not turn the whole result into display text. Incoming claim tokens still
+require explicit ACK after reading. This object-envelope contract does not fill
+in all operation-specific domain schemas.

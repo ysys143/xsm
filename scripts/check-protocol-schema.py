@@ -47,12 +47,17 @@ def output_contract(trace=None):
     delivery = Draft202012Validator({'$ref': schema['x-methodResults']['delivery.report'], '$defs': schema['$defs']})
     if delivery.is_valid({'recorded': 'admitted', 'acknowledged': True}):
         raise ValueError('admission incorrectly permits acknowledged=true')
+    operation = Draft202012Validator({'$ref': schema['x-methodResults']['operation.call'], '$defs': schema['$defs']})
+    bad_operation_results = (True, 17, ['not-an-object'], 'unwrapped text', None)
+    for value in bad_operation_results:
+        if operation.is_valid(value):
+            raise ValueError('non-object operation result accepted: ' + repr(value))
     traces = [] if trace is None else [trace] if isinstance(trace, Path) else trace
     observations = [observation for filename in traces
                     for observation in json.loads(filename.read_text())['observations']]
     for observation in observations:
         validate(observation)
-    return dict(examples=len(examples), rejected=len(invalid) + 1, observed=len(observations),
+    return dict(examples=len(examples), rejected=len(invalid) + 1 + len(bad_operation_results), observed=len(observations),
                 observedSuccessfulMethods=sorted({o['method'] for o in observations if 'result' in o['frame']}),
                 observedNotifications=sum('method' in o['frame'] for o in observations))
 

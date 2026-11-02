@@ -18,7 +18,7 @@ import time
 import uuid
 
 from . import context, handoff, identity, paths, registry
-from .operation_schema import TOOLS, ToolError
+from .operation_schema import TOOLS, ToolError, operation_returns_json
 from .operations import OperationService
 
 VERSION = "1"
@@ -272,17 +272,23 @@ class Connection:
         host.active_request = uuid.uuid4().hex
         try:
             result = host.call(name, args)
+            if not isinstance(result, str):
+                raise ProtocolError(-32603, "internal server error")
+            if not operation_returns_json(name, args):
+                return {"text": result}
             try:
                 value = json.loads(result)
-                if name == "xsm_inbox":
-                    value["items"] = []
-                    for claim in value.get("claims", []):
-                        message = handoff.status(host.record, claim["id"])["message"]
-                        value["items"].append({"id": claim["id"], "priority": message.get("priority") or "next",
-                            "kind": message.get("kind") or "note", "wake": message.get("wake", True)})
-                return value
-            except (TypeError, ValueError):
-                return {"text": result}
+            except (TypeError, ValueError, RecursionError):
+                raise ProtocolError(-32603, "internal server error") from None
+            if not isinstance(value, dict):
+                raise ProtocolError(-32603, "internal server error")
+            if name == "xsm_inbox":
+                value["items"] = []
+                for claim in value.get("claims", []):
+                    message = handoff.status(host.record, claim["id"])["message"]
+                    value["items"].append({"id": claim["id"], "priority": message.get("priority") or "next",
+                        "kind": message.get("kind") or "note", "wake": message.get("wake", True)})
+            return value
         except QuestionPending as pending:
             return {"status": "waiting-for-user", "decision_id": pending.decision_id,
                     "question_id": pending.question_id}

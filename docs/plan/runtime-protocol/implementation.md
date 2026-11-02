@@ -1957,3 +1957,34 @@ public protocol의 decisions/sync 경로를 추가한 최종 공통 gate 479개
 (`shared-board-service-core.log`). 외부 schema 검사는 board 정상 2개와
 모델 decide 거부를 포함해 통과했다(`shared-board-service-schema.json`).
 다른 CLI 가족의 추출·Linux 후속과 전체 계획은 계속 진행한다.
+
+## Operation 결과 인코딩과 passive FYI의 구조 보존
+
+Team list/show와 board log/decisions가 passive FYI를 붙이면서 JSON 뒤에
+문장을 이어 전체 결과가 text로 바뀌던 경로를 재현했다
+(`structured-team-board-red.log`, 네 분기 실패). 공통 인코딩 선언을
+사용해 pending/incoming을 JSON 필드로 유지하고 읽은 claim은 별도
+ACK하도록 했다. 새 pending metadata를 반영하기 전 두 exact-object
+검사 실패도 보존했다(`structured-team-board-green.log`).
+
+Host protocol은 같은 선언에 따라 text를 그대로 text envelope에 넣고,
+JSON처럼 보인다고 임의 해석하지 않는다. 선언된 JSON 작업의 비객체/
+깨진 JSON은 -32603이다. 두 동작의 변경 전 red도 보존했다
+(`operation-result-envelope-red.log`). Public 출력 schema는 이제
+operation result 객체를 요구한다. 전체 operation-specific 필드 schema는
+여전히 남아 있다.
+
+Protocol·공통 서비스·기존 team/board 회귀 90개가 통과했다
+(`operation-result-envelope-green.log`). 외부 출력 검증은 정상 14개/
+거부 14개와 기존 wire 79개를 통과했다
+(`operation-result-envelope-wire-schema.json`). 앞선 FYI 구조 보존
+단계의 공통 480개는 82.952초에 통과했으며
+(`structured-team-board-core.log`), 이후 두 encoding 검사를 이 표본에
+섞지 않는다.
+
+인코딩 선언까지 포함한 최종 공통 gate 482개(핵심 307/Python 49/
+Node 126)는 83.930초에 통과했다(`operation-result-envelope-core.log`).
+앞선 480개와 구분한다. 보드 미관측 버전 문제는 불변 노드 자체의
+삭제가 아니라 후속 render의 활성 버전에서 가려지는 문제였다. 실제
+사용자 데이터의 과거 cursor 영향은 이 fixture로 확정하지 않으며
+소급 수정을 하지 않는다.

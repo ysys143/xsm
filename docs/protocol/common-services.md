@@ -35,3 +35,11 @@ old CLI used `board.show` only as an authorization check, which marked unseen
 item versions as read. A following set could then replace another member's
 version that the caller had never seen. The common path preserves that unread
 version beside the new one until it is actually read and reconciled.
+
+## Result framing
+
+The shared operation catalog also declares which operation/actions return JSON.
+Structured team and board reads carry passive inbox annotations as JSON fields.
+The host protocol preserves a text operation verbatim in a text envelope instead
+of interpreting JSON-looking display content as machine result fields. CLI and
+MCP display behavior remains in their adapters.

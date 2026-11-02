@@ -265,7 +265,10 @@
       ],
       "additionalProperties": false
     },
-    "operationResult": true,
+    "operationResult": {
+      "type": "object",
+      "description": "A declared structured operation object, a text envelope, or waiting-for-user. Per-operation domain schemas remain incomplete."
+    },
     "releaseResult": {
       "type": "object",
       "properties": {

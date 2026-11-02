@@ -399,3 +399,16 @@ def unanswered(why: str) -> str:
 def who_answered(reply, client=None) -> str:
     """Who answered a form, in words for the tool's result."""
     return person_answer(reply, client=client)[1]
+
+
+JSON_RESULT_OPERATIONS = frozenset({
+    'xsm_ask', 'xsm_question_status', 'xsm_connect', 'xsm_discover', 'xsm_publish',
+    'xsm_decision_status', 'xsm_inbox', 'xsm_ack', 'xsm_files', 'xsm_owned',
+})
+
+
+def operation_returns_json(name, arguments):
+    """Declare result encoding; display text must never be guessed as machine metadata."""
+    return (name in JSON_RESULT_OPERATIONS
+            or (name == 'xsm_team' and arguments.get('action') in ('list', 'show'))
+            or (name == 'xsm_board' and arguments.get('action') in ('log', 'decisions')))

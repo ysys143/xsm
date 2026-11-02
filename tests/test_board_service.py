@@ -46,7 +46,7 @@ class SharedBoardServiceTest(TempState):
         server = mcp.Server(io.StringIO(), io.StringIO())
         with mock.patch.object(server, 'session', return_value=self.me):
             result = json.loads(server.call('xsm_board', {'action': 'decisions', 'team': 'core'}))
-        self.assertEqual(result, {'decisions': []})
+        self.assertEqual(result, {'decisions': [], 'inbox_pending': 0})
         self.assert_unread_survives()
 
     def test_cli_and_model_sync_share_membership_check_and_sync_effect(self):

@@ -16,7 +16,7 @@ import threading
 import time
 from . import consent, context, identity, paths, probe, registry, workers
 from .instructions import HANDSHAKE_TEXT
-from .operation_schema import ToolError, TOOLS, WIDENING, FILE_READING, DECLINED, unanswered, who_answered, person_answer
+from .operation_schema import ToolError, TOOLS, WIDENING, FILE_READING, DECLINED, unanswered, who_answered, person_answer, operation_returns_json
 
 
 def invoke(host, name, arguments):
@@ -197,7 +197,7 @@ class OperationService:
                 incoming = receive.take_inbox_claims(me, owner=owner, generation=generation, passive_only=True)
             if incoming["claims"]:
                 self.handoff_calls.setdefault(self.active_request, []).append((me, incoming, owner, generation))
-        if name in ("xsm_ask", "xsm_question_status", "xsm_connect", "xsm_discover", "xsm_publish", "xsm_decision_status", "xsm_inbox", "xsm_ack", "xsm_files", "xsm_owned"):
+        if operation_returns_json(name, args):
             from . import inbox
             value = json.loads(text)
             if name in ("xsm_ask", "xsm_question_status", "xsm_connect"):
