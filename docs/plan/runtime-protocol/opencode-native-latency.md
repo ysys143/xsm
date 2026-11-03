@@ -1,6 +1,6 @@
 # OpenCode canonical store→native readback 지연
 
-상태: Mac100개와 관측 제거 변이를 검증했다. Linux100개는 실행 중이다. 실제 모델/UI와 전체 기능 행렬은 미완이다.
+상태: Mac·Linux에서 각각100개와 Mac의 관측 제거 변이를 검증했다. 실제 모델/UI와 전체 기능 행렬은 미완이다.
 
 `probe-opencode-protocol.py --canonical-latency`는 실제 설치 binding과 native
 OpenCode1.19.5 server를 쓴다. 원래 SDK session.message를 호출한 뒤 반환된
@@ -39,3 +39,14 @@ Native server 정상 종료를 확인했다. 측정 소스는34dd439 위 probe �
 뒤의5510257에는 같은 측정 코드가 들어 있으며 이를 pristine551 실행으로
 소급 표시하지 않는다. Scripted provider·임시 observer 모드의 결과이며 실제
 모델·UI·일반 설치 ownership/전체 기능 행렬은 미완이다.
+
+## Linux100 결과
+
+고정5510257의 Linux100개도100/0/0, p95 253.259917ms/max287.576001ms였다.
+Raw source/end100개와 고유 native message/part 각100개, 샘플별 실제 native ACK의
+정확한 ID100개를 독립 대조하고 raw ns p95를 재계산했다. MONOTONIC의
+Python/native 정렬5회와 nativeStopped=true/container exit0/VM stopExit0을
+확인했다. Docker network none, 준비된 native 패키지는 read-only였다.
+원시는 `deliverables/protocol-foundation/opencode-canonical-latency-linux/`다.
+해당 server/scripted-provider 모드의 두 OS 결과이며 실제 모델·UI·전체 기능
+행렬과 일반 설치 ownership 인증은 미완이다.

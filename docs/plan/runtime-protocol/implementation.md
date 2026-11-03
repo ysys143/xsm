@@ -3049,3 +3049,9 @@ Raw source/end100개와 고유 native message/part 각100개, 정본 ACK100개�
 독립 대조했다. 기본 모드2smoke와 관측 제거 변이도 검증했다. Native server가
 정상 종료됐다. 임시 설치 loader 관측으로 일반 ownership 인증을 대체하지
 않으며 실제 모델/UI·Linux100 및 전체 기능 행렬은 미완이다.
+
+고정5510257 Linux100개도253.259917ms p95/287.576001ms max/실패·미실행0으로
+통과했다. Raw source/end100개, 고유 native message/part100개와 native ACK의
+정확한 ID100개 및 clock 정렬5회를 독립 대조했다. Native server/container/VM
+정상 종료를 확인했다. 두 OS의 해당 server/scripted-provider 모드 표본이며
+실제 모델/UI와 전체 기능 행렬은 여전히 미완이다.
