@@ -1,7 +1,7 @@
 # Pi SDK의 보드·문서·첨부 native 경로
 
-상태: Mac에서25개 검사가 통과했다. Linux는 미실행이며 실제 모델·사람 UI·
-설치된 CLI·전체 기능 행렬은 미완이다.
+상태: Mac·Linux에서 각각25개 검사가 통과했다. 실제 모델·사람 UI·설치된
+CLI·전체 기능 행렬은 미완이다.
 
 `probe-pi-sdk.mjs <Pi package root> <새 result.json> --collaboration`은
 고정 Pi1.4.0의 실제 SDK/extension/도구 등록·검증·실행 커널을 사용한다.
@@ -44,3 +44,14 @@ snapshot/SHA manifest는 `pi-native-collaboration-source/`에 있다. 모든 경
 Wrapper·실패 result는 `pi-native-collaboration-mutants/`에 보존했다. 제품 engine은
 변경하지 않았다. 구문 검사와 실제 native 정상/기본/변이를 실행했고 이번 test-only
 추가 때문에 전체 core가 다시 통과했다고 표시하지 않는다.
+
+## Linux 고정 source 검증
+
+7218dde를 고정해 Linux arm64/Node24.22.2/Pi1.4.0에서 같은25개 검사와
+36개 native 도구 호출/9개 operation을 통과했다. 정상 Mac의 검사 이름25개와
+일치했고, 예상된 native 오류3개(없는 parent·node, 타 대화 파일 storage)를
+원시 packet에서 별도 확인했다. ModelCalls=0/network none이며 native 패키지는
+read-only로 연결했다. Container exit0/VM stopExit0을 확인했다.
+원시는 `pi-native-collaboration-linux/result.json`과 `output/result.json`이다.
+이는 SDK 직접 실행 경로이며 CLI 설치·실제 모델/UI나 전체 runtime 행렬의
+성공으로 확대하지 않는다. 변이3개는 Mac에서 실행한 별도 표본이다.

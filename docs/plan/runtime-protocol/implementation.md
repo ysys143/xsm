@@ -3055,3 +3055,21 @@ Raw source/end100개와 고유 native message/part 각100개, 정본 ACK100개�
 정확한 ID100개 및 clock 정렬5회를 독립 대조했다. Native server/container/VM
 정상 종료를 확인했다. 두 OS의 해당 server/scripted-provider 모드 표본이며
 실제 모델/UI와 전체 기능 행렬은 여전히 미완이다.
+
+
+## Pi SDK 보드·문서·첨부 — 2026-11-04
+
+[Native 협업 경로](pi-native-collaboration.md)는 실제 Pi SDK 도구 커널의
+9개 operation/36개 호출을 실행한다. 팀·보드 predecessor·문서6개 action과
+synthetic native 결정/endorsement·파일 송수신/바이트·hash·owner 거부25개를
+Mac·고정7218dde Linux에서 각각 통과했다. Raw packet의 예상 오류3개와
+두 OS의 검사 이름25개를 대조했다. Mac의 parent 제거·후보 숨김·파일 변조
+3개는 각 표적 검사에서 실패했다. 기본 SDK probe도 통과했고 Linux VM은
+stopExit0이었다. 실제 모델 호출0이며 synthetic UI 답을 실제 사용자 승인으로
+세지 않는다. SDK 직접 실행 결과이고 설치된 CLI/모든 operation/실제 모델·UI와
+원래 전체 행렬은 미완이다.
+
+실제 구독 모델은 같은 날 같은 OAuth/model로 새 Pi 시험을 실행했지만 provider
+1요청/1응답 HTTP400(extra usage 소진)으로 첫 답 저장에서 실패했다. 원 요청은
+unknown/result=None, 자식은 모두 종료됐다. 모델 교체나 유료 경로로 대신하지
+않았다. [구독 시험 기록](pi-opencode-subscription-model.md)에 새 실패를 보존했다.
