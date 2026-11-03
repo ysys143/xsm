@@ -90,6 +90,8 @@ validator 실행으로 소급하지 않는다.
 거부14개를 확인했다. Wip 후보 은폐와 limit total 변조를 검사하며, 실제
 사람 endorsement나 native runtime 전체 행렬을 뜻하지 않는다. Mac core866개는
 103.779초에 통과했고 작성자의 실제 session ref 검사도 공개 경로에서 확인했다.
+고정891dae3의 Linux core866개도3.11에서87.832초,3.14에서109.868초에
+통과했으며 격리 VM 종료를 확인했다.
 
 ## 단계별 판정
 

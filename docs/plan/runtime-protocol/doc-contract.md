@@ -45,9 +45,28 @@ python3 -B scripts/check-protocol-schema.py \
 세션 ref 포함까지 보강한 뒤 public suite28개와 frame32개를 다시 통과했다
 (wire-final.json/schema-final.json). 서버·SDK 실행 코드는 이 보강에서 바꾸지 않았다.
 
+## 실제 관측 기록으로 검사 경로 확인
+
+실제 wire에서 action을 지운 경우와 render의 nodes를 문자열로 바꾼 경우2건도
+CLI checker가 exit1로 거부했다. 각각 declared action 부족과 integer 타입
+위반으로 실패했음을 로그에서 확인했다. 일반 실행 실패를 검출로 세지 않았다.
+원시는 wire-mutants.json 및 각 wire/log다. 관측 자료의 합성 변이이며 서버
+코드나 저장 노드를 변경한 시험이 아니다.
+
 ## 남은 필수 조건
 
 이 실행은 공개 stdio 서버의 문서 경로이며 native runtime/실제 사용자 endorsement/
-원격 doc/메신저/설치 행렬 인증이 아니다. Linux의 이번 source, 남은 operation
-결과 계약과 독립 구현의 전체 적합성도 미완이다. 구현 담당 세션이 각 표면을
+원격 doc/메신저/설치 행렬 인증이 아니다. 남은 operation 결과 계약과 독립 구현의
+전체 적합성도 미완이다. 구현 담당 세션이 각 표면을
 실행하고 근거를 확인한 뒤 갱신한다. 승인된 전체 계획의 조건을 생략하지 않는다.
+
+## 고정 source Linux 핵심 검사
+
+891dae3c4459fc0c4c4433aa336aa5252c838616의 archive를 두 환경에 동일하게 넣었다.
+Archive SHA256은
+6aeb4e3d801bd021ccd7cf58aaf1fa17df5a15c0ba07a3d08eada6e28e8882e5다.
+Python3.11.2에서87.832초, Python3.14.10에서109.868초로 각각866개
+(Python525+SDK56+native133+Node152)를 통과했다. 독립 mock39/변이14는
+별도 수치다. Model0/network none/cpu2/memory3g, 미실행 case0,
+VM stopExit0이다. 원시는 doc-contract-linux/result.json과 환경별
+output/protocol.log에 있다. 실제 native/runtime/UI/remote 행렬의 대체가 아니다.
