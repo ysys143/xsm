@@ -833,3 +833,18 @@ de29b4fca20be154d9d83a9d872debcb3714acff26518266fbec37d9cb6f0dfd다.
 미실행 core0, VM stopExit=0이다. 원시는 deliverables/protocol-foundation/
 subscription-observer-linux/ 아래에 있다. Pi/OpenCode 실제 모델 시도는 macOS에서
 quota 거부로 실패했으며 이 core의 성공으로 대체하지 않는다.
+
+## Native 작업 경계 사이 질문 보류의 Linux core
+
+e52b39b248c3a6f1e6723b5c23561811ea6c3047를 고정한 deferred-host-linux에서
+846개(Python505+SDK56+native133+Node152)가 Python3.11.2에서74.499초,
+Python3.14.10에서92.673초에 통과했다. Archive SHA256은
+d581338c51f8fe855c6683b028938df6dc9e0c4d2dbb1dc558ffb3b6ff60f4f6다.
+독립 mock39/변이14는 별도 수치다. 두 환경 모두120초 기한을 지켰다.
+
+보류 질문의 즉시 반환·답 저장 후 원 작업의 명시적 재호출, 외부 UI hold와
+다른 대기자의 취소 분리, 보류 RPC 취소, 해제 호출자 취소 뒤 정리 완료를
+실제 stdio 서버와 UI fixture에서 확인했다. Network none/model0/cpu2/memory3g,
+미실행 core0, VM stopExit=0이다. 원시는 deliverables/protocol-foundation/
+deferred-host-linux/ 아래다. Hermes native UI/질문 결속을 구현·검증한 결과가
+아니며 전체 계획은 미완이다.

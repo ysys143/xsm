@@ -25,6 +25,13 @@ Wire method·승인 source·runtime 이름별 엔진 분기는 추가하지 않�
 Mac/Python3.14.6의 core846개(Python505+SDK56+native133+Node152)가88.346초에
 통과했다(deferred-host-core.log). 독립 mock39/변이14는 별도 수치다.
 
+e52b39b248c3a6f1e6723b5c23561811ea6c3047를 고정한 Linux core도846개씩
+Python3.11.2에서74.499초, Python3.14.10에서92.673초에 통과했다.
+Archive SHA256은d581338c51f8fe855c6683b028938df6dc9e0c4d2dbb1dc558ffb3b6ff60f4f6다.
+Network none/model0/cpu2/memory3g, 미실행 core0, VM stopExit=0이다.
+원시는 deferred-host-linux/result.json과 환경별 protocol.log에 있다.
+이 core는 native UI·모델·메신저나 전체 runtime 행렬 인증이 아니다.
+
 ## Hermes native 관측의 추가 증거
 
 고정 v0.22.5/bf0203a794a07aac3ff764972ab9087baa4e4f4e의 실제 clarify executor와
