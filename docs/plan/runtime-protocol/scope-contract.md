@@ -31,4 +31,15 @@ wire-final.json/schema.json이 최종 검사다. 최초 checker 실행의 scope 
 Mac/Python3.14.6 core911개(Python527+외부 적합성43+SDK56+native133+Node152)는
 78.509초에 통과했다(core.log, exit0). Wire 결함3종이 모두 의도한 검사에서
 실패했고 changed에 정수를 허용한 schema 변이도 검출했다(mutant.json).
-독립 mock39/변이14는 별도 수치다. Linux는 후속 고정 source 검증이다.
+독립 mock39/변이14는 별도 수치다. Linux 검증은 아래에 기록한다.
+
+## 고정 source Linux 검증
+
+1020dd17acf5b74560d725f64a2522b7a849ce3a의 archive SHA256은
+9e781ca5b71459c70c4bbc3ea1c1a03d5b7bfbd32179f5fffb55c528e435cfc3다.
+Python3.11.2에서91.827초, Python3.14.10에서116.427초로 core911개를 각각
+통과했다. 두 환경에서 새 scopes41개/frame58개를 수집하고 offline
+jsonschema4.26.0으로 검증했다. 예제11개·거부12개도 검사했다.
+Model0/network none/cpu2/memory3g, 미실행 case0, 미실행 wire/schema0,
+VM stopExit0이다. 원시는 `scope-contract-linux/result.json`과 환경별 output이다.
+실제 사람/native UI 및 전체 runtime 행렬은 미완이다.
