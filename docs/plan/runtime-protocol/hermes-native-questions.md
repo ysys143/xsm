@@ -1,7 +1,9 @@
 # Hermes native 질문 bridge
 
 상태: 실험적 opt-in 구현. Native AIAgent의 model0와 합성 UI callback은 통과했다.
-실제 모델·사람 UI·Telegram/Discord 질문·전체 계획은 미완이다.
+실제 모델·Gateway/TUI 전체 UI·Discord 질문·전체 계획은 미완이다.
+[별도 Telegram 실제 사용자 표본](hermes-telegram-ui-live.md)은 standalone adapter와
+AIAgent의 단일 질문 경로이며 GatewayRunner 전체 UI 인증이 아니다.
 
 ## 구현
 

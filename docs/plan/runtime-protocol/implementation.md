@@ -30,7 +30,9 @@
   Python coordinator는 [명시적 UI 보류/해제](deferred-host-ui.md)를 지원하지만
   Hermes native 질문 결속과 사람 UI 검증을 완료한 것은 아니다.
   후속 [Hermes opt-in 질문 bridge](hermes-native-questions.md)는 native AIAgent의
-  model0/합성 callback까지 연결했다. 실제 사람·모델·메신저 UI는 여전히 미완이다.
+  model0/합성 callback까지 연결했다. 실제 사람·모델·메신저 UI 전체 행렬은 미완이다.
+  별도 [Telegram 실제 사용자 선택](hermes-telegram-ui-live.md)은 standalone
+  adapter/AIAgent 단일 질문에서 확인했다. GatewayRunner 전체 UI는 미완이다.
 - Python 3.9+ 클라이언트, 실행 가능한 Node 모듈과 TypeScript 타입,
   전송 fixture 및 실제 서버 subprocess 검사.
 - Pi/OpenCode native 연결·설치·UI fixture, Hermes native 도구·격리 설치·대화별 복구,

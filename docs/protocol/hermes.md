@@ -5,6 +5,10 @@ macOS Telegram 개인 대화의 pull/ACK/reply 왕복을 확인했다.
 CLI/TUI 전체 수명·자동 주입·실제 사용자 UI·worker 전체 행렬은 미완이다.
 명시적 opt-in의 native clarify 질문 bridge를 추가했으며 native AIAgent의
 model0/합성 UI callback으로 검증했다. 사람 UI나 실제 모델의 질문 경로 인증은 아니다.
+
+후속 [Telegram 실제 사용자 질문 표본](../plan/runtime-protocol/hermes-telegram-ui-live.md)은
+native adapter/AIAgent에서 실제 선택을 받아 적용했다. Provider는 scripted였고
+GatewayRunner 전체 UI나 다른 표면의 인증으로 확대하지 않는다.
 명시한 프로필에 대한 소유권 기반 파일 설치·업데이트·제거는 지원한다.
 
 [`integrations/hermes/xsm.py`](../../integrations/hermes/xsm.py)의 `register(context)`는
