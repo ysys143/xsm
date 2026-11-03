@@ -94,6 +94,11 @@ generation이 갱신됐고, 진행 중인 scripted consumer가 실제 inbox의 �
 191개 scripted request/실패 로그를 보존한다. 이 실패를 native 취소 결함이나
 실제 모델의 실패로 세지 않는다. 원래 승인 불안정성 역시 별도로 미확정이다.
 
-원시는 `deliverables/protocol-foundation/openclaw-native-wake*`에 있다. Mac transport/기타 native 오류,
+96bfa8b 고정 Mac transport16개도 통과했고 gatewayStopped=true였다. 같은 고정 소스의
+Linux 기본12/reset18/transport16과 전체974개/schema/v7도 통과했다(3.11 86.458초,
+3.14 112.015초, stopExit=0). 이 조건 밖의 모델·경로를 포함한 인증은 아니다.
+다음100표본의 공통 clock은 [별도 조사](openclaw-latency-clock.md)로 구분했다.
+
+원시는 `deliverables/protocol-foundation/openclaw-native-wake*`에 있다. 기타 native 오류,
 실제 구독 모델/서비스/UI, capacity/fragment·재연결·실패 전체, configuration reload와
 100표본 p95 및 전체 조합은 미완이며 기존 Linux 승인 실패도 해결로 표시하지 않는다.

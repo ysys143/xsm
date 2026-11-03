@@ -2998,3 +2998,8 @@ stdio 신호로 native 턴을 취소하던 경로를 red로 재현해 lifecycle 
 실제 Linux broker 자식 종료/새 generation/실제 inbox claim 갱신·ACK16개와
 Mac974개/schema/v7 63.057초를 확인했다. Token 표현을 안정 ID로 오인한 fixture의
 191개 request 실패도 보존했다. Mac transport와 전체 오류·UI·서비스 검증은 미완이다.
+
+96bfa8b 고정 Mac transport16개도 통과했다. 같은 source의 Linux native12/18/16과
+974개/schema/v7 86.458초·112.015초/VM stopExit=0을 확인했다. 원래 전체 계획과
+기타 오류/UI/서비스는 미완이다. OpenClaw100표본에 필요한 Node/Python clock은
+[별도 경계 조사](openclaw-latency-clock.md)에 기록했으며 아직 지연 통과로 세지 않는다.

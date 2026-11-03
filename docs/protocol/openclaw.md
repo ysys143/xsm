@@ -587,9 +587,9 @@ FYI는 유휴 turn을 시작하지 않는다. 실제 자연 턴 준비 hook이 �
 실제 설치 plugin/gateway/native agent와 scripted provider의 Mac/Linux 기본 경로12개,
 model 요청 중 실제 reset 경로18개가 통과했다. Same-SID reset은 주소를 유지하고
 protocol generation을 교체했으며 미확인 원문을 새 자연 턴에서만 소비했다.
-Protocol stdio 재연결만으로 진행 중인 native 턴을 취소하지 않으며, Linux의 실제
+Protocol stdio 재연결만으로 진행 중인 native 턴을 취소하지 않으며, 두 OS의 실제
 broker 종료→새 generation→inbox 재조회/ACK 표본도 확인했다. Native reset/plugin
-종료의 취소와 구분한다. UI·실제 서비스·구독 모델 wake, Mac transport 오류,
+종료의 취소와 구분한다. UI·실제 서비스·구독 모델 wake,
 대용량/오류/재시작 전체와
 정상100표본 지연은 이 표본으로 인증하지 않는다. 자세한 결과와 실패는
 [native wake 기록](../plan/runtime-protocol/openclaw-native-wake.md)에 구분한다.
