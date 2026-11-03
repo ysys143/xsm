@@ -40,3 +40,8 @@ Mac/Python3.14.6 core920개(Python529+외부 적합성50+SDK56+native133+Node152
 wire 결함2종과 일반 서버의 fixture 실행 거부도 통과했다. Internal journal
 필드 허용 schema 변이를 검출했다(mutant.json). 독립 mock39/변이14는 별도다.
 Linux는 후속 고정 source 검증이다.
+
+초기 Linux source489e7ac의3.11 core는 별도 OpenClaw process generation 비교에서
+실패했고 wire/schema는 전제 미충족이다.3.14는920개/117.256초와 wire/schema를
+통과했다. 실패 원인·영향 범위와 후속 검증은 [프로세스 세대 복구](owned-process-generation.md)를
+따른다. 이 초기 Linux batch 전체는 통과로 표시하지 않는다.

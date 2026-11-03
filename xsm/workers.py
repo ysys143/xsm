@@ -1789,7 +1789,7 @@ def _execute_owned(worker, context, body, request):
                                                    cwd=worker['cwd'], env=env, text=True, start_new_session=True, **options)
                     except OSError as exc:
                         raise OwnedLaunchError('owned native process was not started: ' + str(exc)) from exc
-                    start = identity.lstart(process.pid)
+                    start = identity.process_start(process.pid)
                     launch['child'] = {'pid': process.pid, 'lstart': start, 'argv': list(argv),
                                        'stdout': output_path, 'stderr': error_path}
             if process is None:

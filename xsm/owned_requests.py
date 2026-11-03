@@ -81,7 +81,7 @@ def _event(request, phase):
 
 def _process():
     pid = os.getpid()
-    start = identity.lstart(pid)
+    start = identity.process_start(pid)
     if not start:
         raise OwnedError('cannot reserve without actual controller generation')
     return {'pid': pid, 'lstart': start}
@@ -92,8 +92,7 @@ def _alive(process):
         return None
     if not identity.pid_alive(process['pid']):
         return False
-    start = identity.lstart(process['pid'])
-    return start == process['lstart'] if start else None
+    return identity.process_matches(process['pid'], process['lstart'])
 
 
 def _get(state, request_id):

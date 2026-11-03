@@ -13,6 +13,8 @@ import json
 import os
 import re
 import socket
+import sys
+from pathlib import Path
 
 from . import probe
 
@@ -33,6 +35,35 @@ def lstart(pid: int) -> str | None:
         out = probe.command(["ps", "-o", "lstart=", "-p", str(pid)])
         return (out or "").strip() or None
     return probe.remember(("lstart", pid), ask)
+
+
+def process_start(pid: int) -> str | None:
+    """Stable generation for new owned journals; legacy registry lstart is unchanged.
+
+    Linux ps lstart is a wall-clock rendering, not a stable kernel generation.
+    Kernel boot id plus start ticks distinguish reboot and PID reuse directly.
+    Inaccessible/malformed kernel data remains unknown, never a guessed match.
+    """
+    if not sys.platform.startswith('linux'):
+        return lstart(pid)
+    if type(pid) is not int or pid <= 0:
+        return None
+    try:
+        boot = Path('/proc/sys/kernel/random/boot_id').read_text().strip()
+        raw = Path('/proc/%d/stat' % pid).read_text()
+        # comm may contain spaces and parentheses; fields after its last ')' start at field 3.
+        ticks = raw[raw.rindex(')') + 1:].split()[19]
+        if not re.fullmatch(r'[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}', boot) or not ticks.isdecimal():
+            return None
+        return 'linux-start:' + boot + ':' + str(int(ticks))
+    except (OSError, ValueError, IndexError):
+        return None
+
+
+def process_matches(pid: int, recorded: str) -> bool | None:
+    """New kernel keys are exact; older retained records keep their old comparison."""
+    current = process_start(pid) if isinstance(recorded, str) and recorded.startswith('linux-start:') else lstart(pid)
+    return current == recorded if current else None
 
 
 def comm(pid) -> str | None:

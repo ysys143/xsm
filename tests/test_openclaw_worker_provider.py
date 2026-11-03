@@ -139,7 +139,7 @@ export async function callGatewayFromCli(method,options,p,extra) {
                 if time.monotonic()>deadline:raise AssertionError('fixture native admission not observed')
                 time.sleep(.02)
             child = request['child']
-            self.assertEqual(identity.lstart(child['pid']),child['lstart'])
+            self.assertTrue(identity.process_matches(child['pid'],child['lstart']))
             os.killpg(child['pid'],signal.SIGKILL)
             unknown = future.result(timeout=10)
         self.assertEqual(unknown['status'],'unknown')
@@ -214,7 +214,7 @@ export async function callGatewayFromCli(method,options,p,extra) {
                 if state.get('runs') and request.get('native_binding'):break
                 if time.monotonic()>deadline:raise AssertionError('fixture admission unavailable')
                 time.sleep(.02)
-            child=request['child'];self.assertEqual(identity.lstart(child['pid']),child['lstart'])
+            child=request['child'];self.assertTrue(identity.process_matches(child['pid'],child['lstart']))
             os.killpg(child['pid'],signal.SIGKILL);unknown=future.result(timeout=10)
         Path(self.home,'pause-wait').unlink();Path(self.home,'lost-wait-cache').touch()
         calls=json.loads(memory.read_text())['calls'].count('agent')
