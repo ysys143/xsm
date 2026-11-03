@@ -25,9 +25,23 @@ worker 시작, full-access/trust-hooks의 실제 적용, remote pairing을 실�
 권한이 있는 OS 사용자/런타임의 실제 동작은 전체 계획의 별도 실행 조건이다.
 
 원시는 deliverables/protocol-foundation/grant-schema/다. 최신 core와 고정 source
-Linux 새 stdio/schema 검증은 결과 확인 전까지 미완이다. 남은 계약과 native/UI/
+Linux 새 stdio/schema는 아래에서 확인했다. 남은 계약과 native/UI/
 원격/설치/p95 전체 행렬도 미완이며 구현 담당 세션이 각 표면을 실행해 갱신한다.
 
 Mac/Python3.14.6 core898개(Python519+외부 적합성38+SDK56+native133+Node152)는
 74.697초에 통과했다(core.log, exit0). 독립 mock39/변이14는 별도 수치다.
 정상 wire·결함2종·bundle 검사의4개도2.019초에 통과했다(focused.log).
+
+## 고정 source Linux 실행
+
+baf9c17371c1d777e4a0558c0207acf0e6f0ae85의 archive SHA256은
+d8e416a98e95f9de46c7f600296443f133d0689384e27c89d216ab4ae4ba3d80다.
+Python3.11.2에서89.472초, Python3.14.10에서113.382초로 core898개
+(Python519+외부 적합성38+SDK56+native133+Node152)를 각각 통과했다.
+두 환경에서 새 stdio24개/frame30개를 수집해 offline jsonschema4.26.0으로
+검증했고, grant 예제3개/거부10개도 통과했다. 독립 mock39/변이14는 별도 수치다.
+
+Model0/network none/cpu2/memory3g, 미실행 case0, 미실행 wire/schema0,
+VM stopExit0이다. 원시는 grant-schema-linux/result.json과 환경별
+output/protocol/wire/schema 파일이다. 고정 개발 의존성304개 파일의 SHA256도
+같음을 확인했다(validator-audit.json). 실제 사람/worker/native/원격 인증은 아니다.

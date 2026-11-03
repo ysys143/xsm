@@ -176,8 +176,9 @@ Mac core895개가75.611초에 통과했다. 결과 schema와 실제 worker 전�
 [발급 결과 계약](grant-schema.md)은 발급 snapshot/host question/기존 text-only를
 정의한다. Stdio24개/frame30개, 예제3개/거부10개 및 schema 변이1개를 확인했다.
 Mac core898개가74.697초에 통과했다. Structured snapshot은 실제 worker 실행이나
-현재 유효성을 인증하지 않는다.
-전체 계획은 계속 미완이다.
+현재 유효성을 인증하지 않는다. 고정baf9c17의 Linux core898개도
+3.11에서89.472초,3.14에서113.382초에 통과했고 새30개 frame의 schema 검증과
+VM 종료를 확인했다. 전체 계획은 계속 미완이다.
 
 ## 단계별 판정
 
