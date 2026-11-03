@@ -33,3 +33,9 @@ Mac core930개(Python536+외부 적합성53+SDK56+native133+Node152)는86.030초
 
 전체 operation별 error.data, 실제 취소/UI/native/메신저/원격·설치·독립 적합성
 행렬과 원래 전체 계획은 미완이다.
+
+초기 Linux sourcecf01df5의3.11은931개/94.911초와 오류 stdio/schema를
+통과했다.3.14는 큰 Python 그룹의120초 예산 초과로 실패했고 해당 wire/schema는
+전제 미충족이다. 두 환경은 실행됐고 VM stopExit0이다. 이 batch 전체는 failed다.
+[Core 그룹 분할](core-partition.md)은 시험 누락/예산 증가 없이 critical path를
+분할하며 후속 고정 source에서 Linux를 재검증한다.

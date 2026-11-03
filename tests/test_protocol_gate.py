@@ -33,6 +33,13 @@ class ProtocolGateTest(unittest.TestCase):
                    if command[1:4] == ['-B', '-m', 'unittest'] and command[4] != 'discover']
         self.assertCountEqual([name for group in modules for name in group], gate.MODULES + gate.NATIVE_MODULES)
         self.assertIn(['tests.test_protocol_conformance'], modules)
+        core = set(gate.MODULES) - set(gate.CONFORMANCE_MODULES)
+        core_groups = [set(group) for group in modules if set(group) & core]
+        self.assertGreaterEqual(len(core_groups), 2)
+        self.assertEqual(set.union(*core_groups), core)
+        for index, group in enumerate(core_groups):
+            for other in core_groups[index + 1:]:
+                self.assertFalse(group & other)
         self.assertEqual(sum(command[1:5] == ['-B', '-m', 'unittest', 'discover'] for command in commands), 1)
         self.assertEqual(sum(command[:2] == ['node', '--test'] for command in commands), 1)
         for version in (3, 5, 6):

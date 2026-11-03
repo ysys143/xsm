@@ -114,7 +114,13 @@ def main():
             # Black-box subprocess checks have no shared test state with the other groups.
             # Keep the full module inventory while overlapping their process/I/O waits.
             external = [sys.executable, "-B", "-m", "unittest", *CONFORMANCE_MODULES, "-q"]
-            first_phase = commands[:4] + [commands[-1], external]
+            # The full core inventory had become the >120s serial critical path
+            # on Linux/Python 3.14. Partition modules, never individual tests or
+            # acceptance requirements; each command receives a distinct home.
+            core_partitions = [core_modules[::2], core_modules[1::2]]
+            core_commands = [[sys.executable, "-B", "-m", "unittest", *part, "-q"]
+                             for part in core_partitions if part]
+            first_phase = core_commands + commands[1:4] + [commands[-1], external]
             for offset, phase in ((0, first_phase), (len(first_phase), commands[4:-1])):
                 failed = run_phase(phase, env, temp, started + 120, offset)
                 if failed is not None:

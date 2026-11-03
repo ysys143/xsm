@@ -2782,3 +2782,11 @@ method allowlist를 bound lookup 전에 연결했다. Stdio27개/frame29개, 예
 node1개가 남는 것을 확인했다. Mac core930개는86.030초, 별도 focused2개는
 0.440초에 통과했다. 최신 전체931개와 Linux 고정 source 재실행은 구분한다.
 전체 domain error payload/native/독립 구현/원래 행렬은 미완이다.
+
+## Core serial critical path 분할 — 2026-11-03
+
+[Core 분할](core-partition.md)은 Linux3.14의120초 초과를 보존하고 가장 큰
+Python 목록을 두 격리 프로세스로 분할했다. 전체 module/test와120초 deadline을
+유지한다. Exact inventory·비중첩·격리/reaping4개와 serial mutant 실패를 확인했다.
+Mac931개 전체는50.353초에 통과했다. Linux는 고정 source 후속 실행 전까지
+초기cf01df5의3.14 실패가 해결됐다고 판정하지 않는다. 전체 계획은 미완이다.
