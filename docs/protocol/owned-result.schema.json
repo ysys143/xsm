@@ -588,6 +588,11 @@
             },
             "observed_at": {
               "type": "number"
+            },
+            "recovered_from": {
+              "enum": [
+                "native-output"
+              ]
             }
           }
         },
@@ -688,6 +693,32 @@
               "items": {
                 "$ref": "#/$defs/claim"
               }
+            }
+          }
+        },
+        "native_execution": {
+          "type": "object",
+          "required": [
+            "state",
+            "observed_at",
+            "native_session_id",
+            "context_epoch"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "state": {
+              "const": "settled"
+            },
+            "observed_at": {
+              "type": "number"
+            },
+            "native_session_id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "context_epoch": {
+              "type": "string",
+              "minLength": 1
             }
           }
         }

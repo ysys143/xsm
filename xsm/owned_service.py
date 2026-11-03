@@ -64,7 +64,8 @@ def public_result(value):
     for key, keys in (
         ('result', ('body','outcome','native_session_id')),
         ('send_evidence', ('id','status','reason','runtime_reached')),
-        ('cancellation', ('requested_at','status','native_state','native_supported','observed_at')),
+        ('cancellation', ('requested_at','status','native_state','native_supported','observed_at','recovered_from')),
+        ('native_execution', ('state','observed_at','native_session_id','context_epoch')),
         ('capacity', ('limit','busy','available'))):
         if key in value:
             out[key] = fields(value[key], keys) if isinstance(value[key], dict) else None

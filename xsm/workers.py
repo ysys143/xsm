@@ -1322,9 +1322,9 @@ def stop(name: str, reason: str = "stopped") -> dict:
 
 
 def _terminate(pid: int, lstart: str) -> None:
-    if not identity.pid_alive(pid) or identity.lstart(pid) != lstart:
-        return                              # gone, or the pid now belongs to someone else
     for sig, wait in ((signal.SIGTERM, 5.0), (signal.SIGKILL, 2.0)):
+        if not identity.pid_alive(pid) or identity.process_matches(pid, lstart) is not True:
+            return                          # gone, replaced, or unverified: never signal it
         try:
             os.killpg(pid, sig)             # a tmux pane's process leads its own group
         except OSError:
@@ -1334,7 +1334,7 @@ def _terminate(pid: int, lstart: str) -> None:
                 return
         deadline = time.time() + wait
         while time.time() < deadline:
-            if not identity.pid_alive(pid):
+            if not identity.pid_alive(pid) or identity.process_matches(pid, lstart) is not True:
                 return
             time.sleep(0.2)
 

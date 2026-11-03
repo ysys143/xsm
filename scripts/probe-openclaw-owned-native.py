@@ -30,7 +30,7 @@ if options.restart_gateway and not (options.interrupt_frontend or options.native
 if options.native_error and (options.cancel or options.before_admission or options.interrupt_frontend):parser.error('--native-error is a separate settlement mode')
 if not options.native_cli.is_absolute() or not options.node.is_absolute():parser.error('absolute native CLI and Node paths required')
 if json.loads((options.native_cli.parent/'package.json').read_text()).get('version')!='2026.10.9':parser.error('OpenClaw2026.10.9 package required')
-root=Path(tempfile.mkdtemp(prefix='xsm-openclaw-owned-create-')).resolve();out=options.output.absolute();out.mkdir(parents=True,exist_ok=False)
+root=Path(tempfile.mkdtemp(prefix='xsm-openclaw-owned-create-')).resolve();out=options.output.absolute();out.mkdir(parents=True,exist_ok=False);out.chmod(0o700)
 for name in ('home','state','workspace'):(root/name).mkdir()
 with socket.socket() as listener:listener.bind(('127.0.0.1',0));port=listener.getsockname()[1]
 import importlib.util
@@ -63,7 +63,7 @@ def observed_post(handler):
  for row in rows:
   binding=row.get('native_binding',{});child=row.get('child',{})
   valid.append(bool(binding.get('native_session_id')) and binding.get('child_pid')==child.get('pid')
-    and binding.get('child_lstart')==child.get('lstart')==identity.lstart(child.get('pid')))
+    and binding.get('child_lstart')==child.get('lstart') and identity.process_matches(child.get('pid'),child.get('lstart')) is True)
  if external_blocker.is_set() and not rows:external_entries.append(time.monotonic())
  else:report['preProviderBindingObservations'].append(len(valid)==1 and all(valid))
  save()
@@ -80,7 +80,7 @@ def observed_post(handler):
  try:return original_post(handler)
  except (BrokenPipeError,ConnectionResetError):pass
 assistant.server.RequestHandlerClass.do_POST=observed_post
-log=(out/'gateway.log').open('w');process=None
+log=(out/'gateway.log').open('w');process=None;observer=None
 try:
  process=subprocess.Popen(command+['gateway','run'],cwd=root/'workspace',env=env,stdout=log,stderr=log,start_new_session=True)
  deadline=time.monotonic()+45
@@ -93,7 +93,10 @@ try:
  installed=host_install.apply('openclaw',str(root/'state'))
  report['runtime_root']=installed['runtime_root'];save()
  owner=registry.upsert('codex',str(root/'owner'),'owned-openclaw-probe',os.getpid(),str(root/'workspace'))
+ owner_generation=identity.process_start(os.getpid())
  worker=workers.create_owned('openclaw',caller=owner,name='native-openclaw',home=str(root/'state'))
+ from probe_owned_observer import OwnedProbeObserver
+ observer=OwnedProbeObserver(root/'xsm',owner['ref'],'native-openclaw',worker['id'])
  check('native provider selected exact roster agent',worker['native_provider']['agent_id']=='main')
  def run(request,work='same-work'):
   value=workers.run_owned('native-openclaw',owner,'Explicit fixture task '+request,work_context=work,request_id=request,
@@ -104,6 +107,7 @@ try:
    report['receiverLivenessDiagnostic']={'saved_pid':owner.get('pid'),'saved_lstart':owner.get('lstart'),
      'record_pid':record.get('pid'),'record_lstart':record.get('lstart'),'current_pid':os.getpid(),
      'current_lstart':identity.lstart(os.getpid()),'current_pid_alive':identity.pid_alive(os.getpid()),
+     'saved_process_generation':owner_generation,'current_process_generation':identity.process_start(os.getpid()),
      'record_state_reason':identity.state_reason(record),'original_state_reason':identity.state_reason(owner)}
    save()
   check('actual owned result published '+request,value['status'] in ('sent','reply-stored'))
@@ -212,7 +216,7 @@ finally {clearTimeout(timer);client.stop();}
    try:
     check('interrupted task actually entered native provider',entered.wait(20))
     current=workers.owned_status('native-openclaw',owner,'interrupted');child=current['child']
-    check('only exact owned child is selected for interruption',identity.lstart(child['pid'])==child['lstart'])
+    check('only exact owned child is selected for interruption',identity.process_matches(child['pid'],child['lstart']) is True)
     os.killpg(child['pid'],signal.SIGKILL)
     unknown=future.result(timeout=10)
    except BaseException:release.set();raise
@@ -376,6 +380,10 @@ except BaseException as error:
  report.update(status='failed',failure_type=type(error).__name__,failure=str(error));save()
 finally:
  release.set()
+ if observer is not None:
+  try:report['ownedChildrenExited']=observer.stop_children()
+  except Exception as error:report['ownedChildrenExited']=False;report['cleanupFailure']=type(error).__name__
+  if not report['ownedChildrenExited']:report['status']='failed'
  if process and process.poll() is None:
   os.killpg(process.pid,signal.SIGTERM)
   try:process.wait(timeout=10)

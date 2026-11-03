@@ -13,6 +13,13 @@ def proc_stat(ticks):
 
 
 class ProcessStartTest(unittest.TestCase):
+    def setUp(self):
+        # TempState-based neighbors reload xsm modules. Patch the same identity
+        # instance the current worker module actually uses, never a stale import.
+        global identity, owned_requests
+        from xsm import identity as current_identity, owned_requests as current_owned
+        identity, owned_requests = current_identity, current_owned
+
     def test_linux_generation_ignores_ps_wall_clock_changes(self):
         def read(path, *args, **kwargs):
             return BOOT if str(path).endswith('boot_id') else proc_stat(123)
@@ -61,3 +68,16 @@ class ProcessStartTest(unittest.TestCase):
         key=identity.process_start(os.getpid())
         self.assertIsInstance(key,str)
         self.assertTrue(identity.process_matches(os.getpid(),key))
+
+    def test_termination_accepts_exact_kernel_key_without_legacy_ps(self):
+        from xsm import workers
+        with mock.patch.object(identity,'pid_alive',side_effect=[True,False]),                 mock.patch.object(identity,'process_matches',return_value=True),                 mock.patch.object(identity,'lstart',side_effect=AssertionError('legacy ps queried')),                 mock.patch.object(workers.os,'killpg') as signal:
+            workers._terminate(321,'linux-start:'+BOOT+':123')
+        signal.assert_called_once()
+
+    def test_termination_rechecks_generation_before_escalation(self):
+        from xsm import workers
+        for matches,expected in (([True,False],1),([None],0),([False],0)):
+            with self.subTest(matches=matches),mock.patch.object(identity,'pid_alive',return_value=True),                     mock.patch.object(identity,'process_matches',side_effect=matches),                     mock.patch.object(workers.os,'killpg') as signal:
+                workers._terminate(321,'linux-start:'+BOOT+':123')
+                self.assertEqual(signal.call_count,expected)

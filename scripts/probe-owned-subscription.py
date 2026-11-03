@@ -92,7 +92,7 @@ async def run(args, root, out, relay, report):
             raise AssertionError(name)
         report['checks'].append(name); save()
     client = None
-    children = {}
+    observer = None
     try:
         installation = host_install.apply(args.runtime, str(profile))
         report['runtimeRoot'] = installation['runtime_root']
@@ -107,16 +107,17 @@ async def run(args, root, out, relay, report):
             value = await client.operation_call(parent['session'], name, arguments)
             if isinstance(value.get('incoming'), dict) and value['incoming'].get('claims'):
                 packets.append(value['incoming'])
-            child = value.get('child') or {}
-            if type(child.get('pid')) is int and child.get('lstart'):
-                children[child['pid']] = child['lstart']
             return value
         service = 'native-' + args.runtime
         created = await op('xsm_owned', {'action':'create','name':service,'runtime':args.runtime,
             'home':str(profile),'model':model})
-        check('public operation admits pinned native provider', created['native_provider']['version'] ==
+        check('public operation admits owned native runtime',created['owned'] is True and created['runtime']==args.runtime)
+        from probe_owned_observer import OwnedProbeObserver
+        observer=OwnedProbeObserver(root/'state',parent['ref'],service,created['id'])
+        provider=observer.worker()['native_provider']
+        check('operator observes pinned native provider', provider['version'] ==
               ('1.4.0' if args.runtime == 'pi' else '1.19.5'))
-        report['nativeProvider'] = created['native_provider']; save()
+        report['nativeProvider'] = provider; save()
         async def turn(request, text, work='shared'):
             value = await op('xsm_owned', {'action':'run','name':service,'request_id':request,
                 'text':text,'work_context':work})
@@ -174,11 +175,11 @@ async def run(args, root, out, relay, report):
     except BaseException as error:
         report.update(status='failed', failureType=type(error).__name__, failure=str(error))
     finally:
-        for pid, birth in children.items():
-            if identity.pid_alive(pid) and identity.lstart(pid) == birth:
-                workers._terminate(pid, birth)
-        report['ownedChildrenExited'] = all(not identity.pid_alive(pid) or identity.lstart(pid) != birth
-                                            for pid,birth in children.items())
+        try:
+            report['ownedChildrenExited'] = await asyncio.to_thread(observer.stop_children) if observer else True
+        except Exception as error:
+            report['ownedChildrenExited'] = False
+            report['cleanupFailure'] = type(error).__name__
         if not report['ownedChildrenExited']:
             report.update(status='failed', cleanupFailure='owned child remains live')
         if client:
@@ -193,7 +194,7 @@ async def run(args, root, out, relay, report):
 
 if __name__ == '__main__':
     args = options()
-    out = args.output.absolute(); out.mkdir(parents=True)
+    out = args.output.absolute(); out.mkdir(parents=True); out.chmod(0o700)
     root = Path(tempfile.mkdtemp(prefix='xsm-owned-subscription-')).resolve(); root.chmod(0o700)
     for name in ('home','workspace','state'):
         (root / name).mkdir(mode=0o700)

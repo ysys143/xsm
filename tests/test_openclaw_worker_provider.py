@@ -199,6 +199,15 @@ export async function callGatewayFromCli(method,options,p,extra) {
         self.assertIsNone(settled['result']);self.assertIsNone(settled['reply_id'])
         self.assertIsNone(settled.get('cancellation'))
         self.assertEqual(settled['native_execution']['state'],'settled')
+        from xsm import mcp
+        import io
+        server=mcp.Server(io.StringIO(),io.StringIO());server.session=lambda:self.owner
+        observed=json.loads(server.call('xsm_owned',{'action':'status','name':'native-openclaw','request_id':'one'}))
+        self.assertEqual(observed['native_execution']['state'],'settled')
+        self.assertIsNone(observed['result']);self.assertIsNone(observed['reply_id'])
+        self.assertNotIn('child',observed)
+        self.assertNotIn('child_pid',observed['native_execution'])
+        self.assertNotIn('evidence',observed['native_execution'])
         again=self.workers.reconcile_owned('native-openclaw',self.owner,'one')
         self.assertEqual(again['native_execution'],settled['native_execution'])
         self.assertEqual(json.loads(memory.read_text())['calls'].count('agent'),calls)

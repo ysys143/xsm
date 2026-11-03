@@ -2832,3 +2832,13 @@ catalog와 대조한다. 합성 잘못된 trace2개를 수정 후 거부하고 s
 공개19suite584개/751RPC, 예제132개·기존 mutant188개, 추가 양성17개·음성23개·
 annotation42개·구현 변이 검출2개를 통과했다.742 observation 교차 검사도 통과했다.
 새 public native summary와 실제 native/원래 전체 행렬은 별도 미완이다.
+
+## Native probe 관측/진단 분리 — 2026-11-03
+
+[Operator observer](native-probe-observer.md)는 public projection 변경의 영향 probe
+3개를 수정하고 private 정보를 모델 응답에 복원하지 않았다. Native settlement의
+요약만 public status로 보존하고 exact child 제어는 격리 operator로 제한했다.
+신호마다 generation을 재확인한다. SDK public settlement 수정 전 실패·수정 후 통과,
+focused13개/0.150초와 related37개/11.064초, Mac943개+schema/v7 local은54.723초에
+통과했다. 실제 upstream native19 mode는 다음 고정 source에서 재실행해야 하며
+최초 receiver stale·native/UI/원격 등 원래 전체 계획은 미완이다.

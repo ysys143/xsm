@@ -28,7 +28,7 @@ if options.native_tools and (not options.subscription_model or options.interrupt
  parser.error('--native-tools requires --subscription-model and is a separate mode from frontend recovery')
 if not options.native_cli.is_absolute() or not options.node.is_absolute():parser.error('absolute native CLI and Node paths required')
 if json.loads((options.native_cli.parent/'package.json').read_text()).get('version')!='2026.10.9':parser.error('OpenClaw2026.10.9 package required')
-root=Path(tempfile.mkdtemp(prefix='xsm-openclaw-owned-create-')).resolve();out=options.output.absolute();out.mkdir(parents=True,exist_ok=False)
+root=Path(tempfile.mkdtemp(prefix='xsm-openclaw-owned-create-')).resolve();out=options.output.absolute();out.mkdir(parents=True,exist_ok=False);out.chmod(0o700)
 for name in ('home','state','workspace'):(root/name).mkdir()
 with socket.socket() as listener:listener.bind(('127.0.0.1',0));port=listener.getsockname()[1]
 import importlib.util
@@ -101,7 +101,7 @@ def observed_post(handler):
 assistant.server.RequestHandlerClass.do_POST=observed_post
 async def public_roundtrip():
  global process
- client=None
+ client=None;observer=None
  try:
   host_install.apply('openclaw',str(root/'state'))
   server=[sys.executable,'-B','-c',"import runpy,sys;sys.path.insert(0,sys.argv.pop(1));runpy.run_module('xsm',run_name='__main__')",str(repo),'protocol','serve','--stdio']
@@ -126,8 +126,12 @@ async def public_roundtrip():
    ack=await op('xsm_ack',{'tokens':[claims[0]['token']]})
    check('native reply explicitly ACKed '+reply_id,ack['acked']==[reply_id])
   created=await op('xsm_owned',{'action':'create','name':'protocol-openclaw','runtime':'openclaw','home':str(root/'state')})
-  check('public create admits OpenClaw provider',created['runtime']=='openclaw' and created['native_provider']['agent_id']=='main')
-  if options.subscription_model:report['nativeBindingHashes']=created['native_provider']['binding_hashes'];save()
+  check('public create admits owned OpenClaw service',created['runtime']=='openclaw' and created['owned'] is True)
+  from probe_owned_observer import OwnedProbeObserver
+  observer=OwnedProbeObserver(root/'xsm',parent['ref'],'protocol-openclaw',created['id'])
+  provider=observer.worker()['native_provider']
+  check('operator observes exact pinned native provider',provider['agent_id']=='main')
+  if options.subscription_model:report['nativeBindingHashes']=provider['binding_hashes'];save()
   async def run(request,work='same',text=None):
    result=await op('xsm_owned',{'action':'run','name':'protocol-openclaw','text':prompt(request) if text is None else text,'work_context':work,'request_id':request})
    deadline=time.monotonic()+(180 if options.subscription_model else 90)
@@ -171,7 +175,7 @@ async def public_roundtrip():
    deadline=time.monotonic()+35
    while True:
     current=await op('xsm_owned',{'action':'status','name':'protocol-openclaw','request_id':request_id})
-    if current['status']=='unknown' and type(current.get('child',{}).get('returncode')) is int:return current
+    if current['status']=='unknown' and current.get('execution_state')=='exited':return current
     if time.monotonic()>deadline:raise TimeoutError('public native child exit')
     await asyncio.sleep(.1)
   if options.native_error:
@@ -183,7 +187,7 @@ async def public_roundtrip():
    if options.restart_gateway:
     from integrations.openclaw.worker_cli import output_records
     from integrations.openclaw.worker_transport import NativeRpc
-    bound,final=output_records(Path(unknown['child']['stdout']).read_text())
+    bound,final=output_records(Path(observer.request('native-error')['child']['stdout']).read_text())
     query=NativeRpc(str(options.node),str(options.native_cli),cwd=str(root/'workspace'),env=env)
     native=await asyncio.to_thread(query,'agent.wait',{'runId':bound['run_id'],'timeoutMs':100})
     check('public native failure is closed before restart',native.get('status')=='error')
@@ -200,7 +204,9 @@ async def public_roundtrip():
     report['gatewayRestarted']=True
    settled=await op('xsm_owned',{'action':'reconcile','name':'protocol-openclaw','request_id':'native-error'})
    check('public native error has separate settlement observation',settled.get('native_execution',{}).get('state')=='settled')
-   if options.restart_gateway:check('public cold failure uses actual occurrence identity',settled['native_execution']['evidence'].get('source')=='native-chat.history' and bool(settled['native_execution']['evidence'].get('failure_message_id')))
+   if options.restart_gateway:
+    evidence=observer.request('native-error')['native_execution']['evidence']
+    check('operator cold failure uses actual occurrence identity',evidence.get('source')=='native-chat.history' and bool(evidence.get('failure_message_id')))
    check('public native error frees only execution lease',settled['slot_occupied'] is False and settled['status']=='unknown')
    check('public native error creates neither answer nor cancellation',settled['result'] is None and settled['reply_id'] is None and settled.get('cancellation') is None)
    again=await op('xsm_owned',{'action':'reconcile','name':'protocol-openclaw','request_id':'native-error'})
@@ -217,8 +223,8 @@ async def public_roundtrip():
    work='same' if options.restart_gateway else 'public-interrupted'
    await op('xsm_owned',{'action':'run','name':'protocol-openclaw','text':text,'work_context':work,'request_id':'interrupted'})
    check('public interrupted target reached native provider',await asyncio.to_thread(entered.wait,20))
-   active=await op('xsm_owned',{'action':'status','name':'protocol-openclaw','request_id':'interrupted'});child=active['child']
-   check('public interruption selects exact owned child',identity.lstart(child['pid'])==child['lstart'])
+   active=await op('xsm_owned',{'action':'status','name':'protocol-openclaw','request_id':'interrupted'});child=observer.request('interrupted')['child']
+   check('public interruption selects exact owned child',identity.process_matches(child['pid'],child['lstart']) is True)
    os.killpg(child['pid'],signal.SIGKILL)
    unknown=await exited_request('interrupted')
    check('public frontend loss retains unknown effects and lease',unknown['slot_occupied'] is True and unknown['result'] is None)
@@ -228,7 +234,7 @@ async def public_roundtrip():
    if options.restart_gateway:
     from integrations.openclaw.worker_cli import output_records
     from integrations.openclaw.worker_transport import NativeRpc
-    bound,final=output_records(Path(unknown['child']['stdout']).read_text())
+    bound,final=output_records(Path(observer.request('interrupted')['child']['stdout']).read_text())
     check('public cold recovery has bound metadata without final stdout',bound is not None and final is None)
     query=NativeRpc(str(options.node),str(options.native_cli),cwd=str(root/'workspace'),env=env)
     deadline=time.monotonic()+(180 if options.subscription_model else 20)
@@ -256,17 +262,20 @@ async def public_roundtrip():
     if time.monotonic()>deadline:raise TimeoutError('public native host result recovery')
     await asyncio.sleep(.1)
    check('public recovery returns actual native answer',recovered['result']['body']==expected('interrupted'))
-   check('public recovery retains native context identity',recovered['result']['native_session_id']==unknown['native_binding']['native_session_id'])
-   check('public native recovery retains child SIGKILL exit',recovered['child']['returncode']==-signal.SIGKILL and recovered['result']['execution']['returncode']==-signal.SIGKILL)
-   check('public recovery records host query provenance',recovered['result']['execution']['recovered_from']=='native-host-status')
-   if options.restart_gateway:check('public cold recovery records actual transcript identity without fake receipt',recovered['result']['native_evidence']['source']=='native-chat.history' and bool(recovered['result']['native_evidence'].get('assistant_message_id')) and 'terminal_receipt' not in recovered['result']['native_evidence'])
+   check('public recovery retains native context identity',recovered['result']['native_session_id']==unknown['context']['native_session_id'])
+   private_recovered=observer.request('interrupted')
+   check('operator native recovery retains child SIGKILL exit',private_recovered['child']['returncode']==-signal.SIGKILL and private_recovered['result']['execution']['returncode']==-signal.SIGKILL)
+   check('operator recovery records host query provenance',private_recovered['result']['execution']['recovered_from']=='native-host-status')
+   if options.restart_gateway:
+    evidence=private_recovered['result']['native_evidence']
+    check('operator cold recovery records actual transcript identity without fake receipt',evidence['source']=='native-chat.history' and bool(evidence.get('assistant_message_id')) and 'terminal_receipt' not in evidence)
    await read_reply(recovered['reply_id'],expected('interrupted'))
    replay=await op('xsm_owned',{'action':'run','name':'protocol-openclaw','text':text,'work_context':work,'request_id':'interrupted'})
    check('public recovered replay reuses original reply',replay['reply_id']==recovered['reply_id'])
    check('public recovery and replay do not resubmit inference',len(http_entries)==4)
    check('public recovery releases execution without task-success claim',recovered['slot_occupied'] is False and recovered['result']['outcome'] is None)
    (out/'interrupted-journal.json').write_text(json.dumps(recovered,indent=2)+'\n')
-   report['frontendRecovery']=recovered['result']['execution'];report['providerHttpEntries']=len(http_entries)
+   report['frontendRecovery']={key:private_recovered['result']['execution'].get(key) for key in ('returncode','recovered_from')};report['providerHttpEntries']=len(http_entries)
 
   if options.cancel:
    blocking.set();cancel_text='Explicit blocked public native task.'
@@ -283,7 +292,7 @@ async def public_roundtrip():
    deadline=time.monotonic()+35
    while True:
     stopped=await op('xsm_owned',{'action':'status','name':'protocol-openclaw','request_id':'cancel'})
-    if stopped['status']=='unknown' and type(stopped.get('child',{}).get('returncode')) is int:break
+    if stopped['status']=='unknown' and stopped.get('execution_state')=='exited':break
     if time.monotonic()>deadline:
      (out/'cancel-timeout.json').write_text(json.dumps(stopped,indent=2)+'\n')
      raise TimeoutError('public native stop observation')
@@ -307,6 +316,9 @@ async def public_roundtrip():
    release.set()
 
  finally:
+  if observer is not None:
+   try:report['ownedChildrenExited']=await asyncio.to_thread(observer.stop_children)
+   except Exception as error:report['ownedChildrenExited']=False;report['cleanupFailure']=type(error).__name__
   if client is not None:await client.close()
 if options.native_tools:host_install.apply('openclaw',str(root/'state'))
 log=(out/'gateway.log').open('w');process=None
@@ -318,7 +330,9 @@ try:
    if test.connect_ex(('127.0.0.1',port))==0:break
   if process.poll() is not None or time.monotonic()>deadline:raise RuntimeError('native gateway startup')
   time.sleep(.1)
- asyncio.run(public_roundtrip());report['status']='passed'
+ asyncio.run(public_roundtrip())
+ if report.get('ownedChildrenExited') is False:raise RuntimeError('controlled owned child exit unconfirmed')
+ report['status']='passed'
 except BaseException as error:report.update(status='failed',failure_type=type(error).__name__,failure=str(error))
 finally:
  release.set()

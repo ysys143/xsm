@@ -344,3 +344,20 @@ fenced. Its execution slot can be released. Repeated reconciliation retains the
 same observation. Explicit service removal may then remove only metadata while
 preserving journals, native profiles and unknown effects. Missing or changed
 binding/generation evidence cannot authorize this transition.
+
+## Public observations and operator-only process control
+
+Model-facing owned results expose task/context/reply facts, not the backend
+journal. A native execution that settles without a task answer may return
+`native_execution` with only state, observed_at, native_session_id and
+context_epoch. State `settled` releases the execution lease while task status
+remains unknown with null result/reply. Cancellation readback may identify
+`recovered_from: "native-output"` without exposing its raw process evidence.
+
+Child PIDs, process start keys, argv/output paths, reservation tokens, provider
+configuration and raw native evidence remain private. Native test operators
+read those only through an observer bound to their isolated state root, parent
+ref and immutable service id. The model result cannot select an OS process.
+Linux owned process keys use boot identity/start ticks; termination rechecks the
+recorded generation before each signal and while waiting. Unknown/reused PIDs
+are not signalled. Legacy process records keep their supported comparison path.
