@@ -1,5 +1,6 @@
 /** Exercise registered Pi tools through the native execution/validation kernel, without a model. */
 import assert from 'node:assert/strict';
+import { createHash } from 'node:crypto';
 import { execFileSync } from 'node:child_process';
 import { mkdtemp, mkdir, writeFile, readdir, readFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
@@ -8,7 +9,7 @@ import { pathToFileURL, fileURLToPath } from 'node:url';
 import { XsmClient } from '../clients/typescript/xsm-client.mjs';
 
 const [packageRoot, output, mode, entryOverride] = process.argv.slice(2);
-assert.ok(!mode || ['--notice', '--batch', '--recover'].includes(mode));
+assert.ok(!mode || ['--notice', '--batch', '--recover', '--collaboration'].includes(mode));
 if (!packageRoot || !output) throw new Error('usage: node probe-pi-sdk.mjs <Pi package root> <output.json>');
 const root = fileURLToPath(new URL('../', import.meta.url));
 const temp = await mkdtemp(join(tmpdir(), 'xsm-pi-sdk-'));
@@ -16,6 +17,7 @@ for (const key of Object.keys(process.env)) {
   if (!['PATH', 'LANG', 'TMPDIR', 'XSM_PYTHON'].includes(key)) delete process.env[key];
 }
 await mkdir(join(temp, 'project'));
+if (mode === '--collaboration') execFileSync('git', ['init', '-q', join(temp, 'project')]);
 process.env.HOME = join(temp, 'home');
 process.env.PI_CODING_AGENT_DIR = join(temp, 'pi');
 process.env.XSM_HOME = join(temp, 'state');
@@ -72,6 +74,128 @@ try {
   assert.equal(question.isError, false);
   assert.match(JSON.stringify(question.result.content), /your user answered: blue/);
   assert.deepEqual(displayed, [{ title: 'Native SDK choose', options: ['blue', 'green'] }]);
+  if (mode === '--collaboration') {
+    const checks = [], observations = [];
+    result.collaboration = { checks, observations,
+      scope: 'actual Pi SDK native tool kernel; synthetic issuing assistant and UI answers; no model or physical user' };
+    const check = (name, test) => { result.collaboration.activeCheck = name; test(); checks.push(name); };
+    const call = async (name, args, error = false) => {
+      const packet = await context.executeTool(name, args);
+      observations.push({ operation: name, arguments: args, packet });
+      assert.equal(Boolean(packet.isError), error, JSON.stringify(packet));
+      if (error) return packet;
+      return JSON.parse(packet.result.content[0].text);
+    };
+    const team = 'native-collaboration';
+    await call('xsm_team', { action: 'create', team });
+    const listed = await call('xsm_team', { action: 'list' });
+    check('native team list contains created team', () => assert.ok(listed.teams.some(t => t.name === team)));
+    const shown = await call('xsm_team', { action: 'show', team });
+    check('native team member is running', () => assert.equal(shown.members[0].running, true));
+    const board = (action, args = {}) => call('xsm_board', { action, team, ...args });
+    const emptyBoard = await board('log');
+    check('native empty board', () => assert.deepEqual(emptyBoard.nodes, []));
+    const item = 'decision: cache', body = 'Native contribution: 한글 preserved';
+    await board('set', { item, text: body });
+    const first = (await board('log')).nodes[0];
+    check('native board first body and root', () => {
+      assert.equal(first.body, body); assert.deepEqual(first.parents, []); assert.equal(first.item, item);
+    });
+    await board('set', { item, text: 'Native revision' });
+    const revised = (await board('log', { item })).nodes;
+    check('native board links observed predecessor', () => {
+      assert.equal(revised.length, 2); assert.deepEqual(revised.find(n => n.body === 'Native revision').parents, [first.id]);
+    });
+    const filtered = await board('log', { item: 'absent' });
+    check('native board item filter', () => assert.deepEqual(filtered.nodes, []));
+    const decided = await call('xsm_decide', { question: 'Native SDK cache strategy', options: ['bounded', 'none'], team, item });
+    const decisions = (await board('decisions')).decisions;
+    check('synthetic native UI answer persisted once', () => {
+      assert.equal(decisions.length, 1); assert.equal(decisions[0].answer, 'bounded'); assert.equal(decisions[0].via, 'host-user');
+      assert.equal(decided.decision.recorded, true);
+    });
+    const decisionNodes = (await board('log', { item })).nodes;
+    check('native board decision has human node reference', () => assert.equal(
+      decisionNodes.filter(n => n.decision === decisions[0].id && n.author_kind === 'human').length, 1));
+    const doc = (action, args = {}, error = false) => call('xsm_doc', { action, doc: 'BOARD.md', ...args }, error);
+    const report = (await doc('add', { text: 'Native document report: 한글', tags: ['report'] })).node;
+    const read = await doc('show', { node: report.id });
+    check('native document immutable readback', () => assert.deepEqual(read.node, report));
+    check('native document author belongs to agent', () => assert.equal(report.author_kind, 'agent'));
+    const hypothesis = (await doc('add', { text: 'Native hypothesis', tags: ['hypothesis'], parents: [report.id] })).node;
+    const frontier = await doc('leaves');
+    check('native document frontier links predecessor', () => {
+      assert.deepEqual(hypothesis.parents, [report.id]); assert.deepEqual(frontier.nodes.map(n => n.id), [hypothesis.id]);
+    });
+    await doc('add', { text: 'Native working declaration', tags: ['wip'], parents: [hypothesis.id] });
+    const next = await doc('next');
+    check('native wip does not allocate or hide hypothesis', () => {
+      assert.equal(next.assigns, false); assert.equal(next.total, 1); assert.equal(next.candidates[0].id, hypothesis.id);
+    });
+    await doc('add', { text: 'Native independent insight', tags: ['insight'] });
+    const all = await doc('next'), limited = await doc('next', { limit: 1 });
+    check('native document limit preserves total', () => {
+      assert.equal(all.total, 2); assert.equal(limited.total, 2); assert.deepEqual(limited.candidates, all.candidates.slice(0, 1));
+    });
+    await doc('add', { text: 'orphan', parents: ['f'.repeat(12)] }, true);
+    const logged = await doc('log'), rendered = await doc('render');
+    check('native missing parent leaves graph unchanged', () => assert.equal(logged.nodes.length, 4));
+    check('native render includes all contributions', () => {
+      assert.equal(rendered.nodes, 4); assert.ok(rendered.text.includes(report.body));
+    });
+    await doc('show', { node: 'f'.repeat(12) }, true);
+    check('native unknown node rejected', () => assert.equal(observations.at(-1).packet.isError, true));
+    const endorsementArgs = { doc: 'BOARD.md', node: report.id };
+    const endorsed = await call('xsm_doc_endorse', endorsementArgs);
+    const human = (await doc('show', { node: endorsed.endorsement.node })).node;
+    check('synthetic native endorsement binds original', () => {
+      assert.equal(endorsed.endorsement.parent, report.id); assert.equal(endorsed.endorsement.via, 'host-user');
+      assert.deepEqual(human.parents, [report.id]); assert.equal(human.author_kind, 'human'); assert.equal(human.body, report.body);
+    });
+    const replay = await call('xsm_doc_endorse', endorsementArgs);
+    const afterEndorsement = await doc('log');
+    check('native endorsement replay preserves receipt and node count', () => {
+      assert.deepEqual(replay, endorsed); assert.equal(afterEndorsement.nodes.length, 5);
+    });
+
+    sender = await XsmClient.connect({ command: [join(root, 'bin/xsm'), 'protocol', 'serve', '--stdio'],
+      cwd: join(temp, 'project'), env: process.env });
+    const origin = await sender.sessionOpen({ runtime: 'collaboration-fixture', profile: temp,
+      conversation: 'sender', cwd: join(temp, 'project') });
+    await sender.operationCall(origin.session, 'xsm_inbox', {});
+    const records = await Promise.all((await readdir(join(process.env.XSM_HOME, 'sessions')))
+      .filter(n => n.endsWith('.json')).map(async n => JSON.parse(await readFile(join(process.env.XSM_HOME, 'sessions', n), 'utf8'))));
+    const receiver = records.find(r => r.runtime === 'pi'); assert.ok(receiver);
+    check('native document author matches actual Pi conversation', () => assert.ok(report.author.includes('[' + receiver.ref + ']')));
+    const bytes = Buffer.from([0, 255, 65, 10]);
+    const sent = await sender.operationCall(origin.session, 'xsm_send', { target: 'ref:' + receiver.ref,
+      text: 'Native binary attachment', request_id: 'native-incoming-file', wake: 'never', wait: 0,
+      attachments: [{ name: 'fixture.bin', base64: bytes.toString('base64') }] });
+    const packet = await call('xsm_inbox', { message_ids: [sent.send.id] });
+    const metadata = packet.items.find(i => i.id === sent.send.id).files;
+    const file = metadata.files[0];
+    const content = await call('xsm_files', { storage_id: metadata.storage_id, entry_id: file.id, encoding: 'base64' });
+    check('native binary attachment preserves bytes', () => assert.deepEqual(Buffer.from(content.content, 'base64'), bytes));
+    check('native attachment metadata preserves size name and hash', () => {
+      assert.equal(file.size, bytes.length); assert.equal(file.name, 'fixture.bin');
+      assert.equal(file.sha256, createHash('sha256').update(bytes).digest('hex'));
+    });
+    const ack = await call('xsm_ack', { tokens: packet.claims.filter(c => c.id === sent.send.id).map(c => c.token) });
+    check('native attachment original explicitly ACKed', () => assert.deepEqual(ack.acked, [sent.send.id]));
+    const outgoing = await call('xsm_send', { target: 'ref:' + origin.ref, text: 'Native outbound attachment',
+      request_id: 'native-outgoing-file', wake: 'never', wait: 0, attachments: [{ name: 'owned.txt', text: 'Native outgoing 한글' }] });
+    const manifest = await call('xsm_files', { storage_id: outgoing.materials.manifest_id, outgoing: true });
+    const original = await call('xsm_files', { storage_id: outgoing.materials.manifest_id, entry_id: manifest.manifest.files[0].id, outgoing: true });
+    check('native outgoing manifest retains original text', () => assert.equal(original.content, 'Native outgoing 한글'));
+    const incoming = await sender.operationCall(origin.session, 'xsm_inbox', {});
+    const ownFile = incoming.items.find(i => i.id === outgoing.send.id).files;
+    const copied = await sender.operationCall(origin.session, 'xsm_files', { storage_id: ownFile.storage_id, entry_id: ownFile.files[0].id });
+    check('native sent attachment available to real reference receiver', () => assert.equal(copied.content, 'Native outgoing 한글'));
+    const denied = await call('xsm_files', { storage_id: ownFile.storage_id, entry_id: ownFile.files[0].id }, true);
+    check('native file reader rejects another conversation storage', () => assert.match(JSON.stringify(denied), /owner|another|session/i));
+    await sender.operationCall(origin.session, 'xsm_ack', { tokens: incoming.claims.filter(c => c.id === outgoing.send.id).map(c => c.token) });
+    delete result.collaboration.activeCheck;
+  }
   if (mode === '--recover') {
     const records = async () => (await Promise.all((await readdir(join(process.env.XSM_HOME, 'sessions')))
       .filter(name => name.endsWith('.json')).map(async name => JSON.parse(await readFile(join(process.env.XSM_HOME, 'sessions', name), 'utf8')))))

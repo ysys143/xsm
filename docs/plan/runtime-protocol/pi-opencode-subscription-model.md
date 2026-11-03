@@ -78,3 +78,26 @@ native CLI 행렬의 성공 증거가 아니다.
 기록했으며 같은 담당자가 해당 구독 경로의 가용성을 확인한 뒤 새 profile/새
 request로 실제 모델 표본을 다시 실행한다. 기존 unknown 작업을 자동 재실행하지
 않는다. 모델·버전 변경이나 범위 제외에 대한 사용자 승인은 없다.
+
+
+## 2026-11-04 같은 구독 경로 재확인
+
+OpenCodeX2.67.0의 실행 중 프록시와 직접 Anthropic OAuth mode를 읽기 전용으로
+확인했다. Live 목록에 기존 anthropic/claude-sonnet-5-5가 disabled=false로
+존재했다. 공급자·모델·결제·사용자 설정을 바꾸지 않고 새 격리 홈에서 Pi1.4.0을
+재실행했다(`pi-owned-subscription-20261104-retry`). 이전 unknown 작업의 재실행이
+아니며 새 시험 저장소다.
+
+실제 provider 요청1개/응답1개가 HTTP400이었다. Native 원본 이벤트에서 다시
+extra usage 소진 오류를 확인했다. 공개 owned 등록과 고정 provider 확인2개는
+통과했지만 첫 실제 답 저장 검사에서 실패했다. 원 요청은 unknown/result=None,
+response model label은 없었다. Recall·독립 context·replay·native model tool은
+선행 답 전제 미충족으로 미실행이다. OwnedChildrenExited=true를 확인했다.
+Catalog의 이름만으로 실제 모델 응답을 인증하지 않는다.
+
+실패 journal·relay 시작/응답·native stdout/stderr와 catalog metadata를 보존했다.
+2026-11-04 구현 담당 세션은 같은 공급자 거부를 확인한 뒤 추가 inference와
+OpenCode 재시도를 실행하지 않았다. OpenCode 재시도와 두 런타임의 실제 모델
+정상 경로는 미완이다. 같은 구독 경로 가용성을 다시 확인한 뒤 새 격리 홈으로
+검증해야 하며 모델 교체·유료 경로·범위 제외 승인은 없다. 다른 native 기능
+검증은 계속 진행했다.
