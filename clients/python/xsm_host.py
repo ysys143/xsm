@@ -24,7 +24,9 @@ class XsmHost:
     @classmethod
     async def open(cls, *, runtime, profile, conversation, cwd, deliver=None, present=None, parent_conversation=None,
                    command=None, env=None, on_error=None, inbox_batch_size=None, inbox_max_bytes=None,
-                   initialize_timeout=10.0, setup_timeout=10.0):
+                   initialize_timeout=10.0, setup_timeout=10.0, automatic_delivery=True):
+        if type(automatic_delivery) is not bool:
+            raise ValueError('automatic_delivery must be a boolean')
         if inbox_max_bytes is not None and (type(inbox_max_bytes) is not int or not 1 <= inbox_max_bytes <= 1048576):
             raise ValueError("inbox_max_bytes must be an integer from 1 to 1048576")
         if inbox_batch_size is not None and (type(inbox_batch_size) is not int or not 1 <= inbox_batch_size <= 100):
@@ -45,7 +47,7 @@ class XsmHost:
             except asyncio.TimeoutError as error:
                 raise TransportError("host setup timed out at " + method) from error
         try:
-            capabilities = ["messaging", "inbox"] + (["events"] if deliver else []) + (["user-decisions"] if present else [])
+            capabilities = ["messaging", "inbox"] + (["events"] if deliver and automatic_delivery else []) + (["user-decisions"] if present else [])
             available = client.initialization.get("capabilities", [])
             lease = client.initialization.get("limits", {}).get("claimLeaseSeconds", 0)
             try:
@@ -60,9 +62,10 @@ class XsmHost:
             if inbox_max_bytes is not None and not any(item['name'] == 'xsm_inbox' and
                     'max_bytes' in item['inputSchema'].get('properties', {}) for item in operations):
                 raise TransportError('server does not advertise inbox byte budgets')
-            if deliver:
+            if deliver and automatic_delivery:
                 await setup("events.subscribe", client.events_subscribe(session["session"]))
             host = cls(client, session, operations, deliver, present, on_error)
+            host.automatic_delivery = bool(deliver) and automatic_delivery
             host.inbox_batch_size = inbox_batch_size
             host.inbox_max_bytes = inbox_max_bytes
             host.pump = asyncio.create_task(host._pump())
@@ -83,6 +86,7 @@ class XsmHost:
     def __init__(self, client, session, operations, deliver, present, on_error):
         self.client, self.session, self.operations = client, session, operations
         self.deliver, self.present, self.on_error = deliver, present, on_error
+        self.automatic_delivery = bool(deliver)
         self.questions = {}
         self.cancelled = asyncio.Event()
         self.delivery_lock = asyncio.Lock()
@@ -163,7 +167,7 @@ class XsmHost:
                     if not state.get("event"):
                         state["event"] = event
                         state["task"] = asyncio.create_task(self._show(state, event))
-                elif event["method"] == "events/available" and not self.delivery_suspended:
+                elif event["method"] == "events/available" and self.automatic_delivery and not self.delivery_suspended:
                     self.pending_wake = True
                     self._schedule_delivery()
         except Exception as error:
@@ -277,7 +281,7 @@ class XsmHost:
             return packet
 
     def _schedule_delivery(self, delay=0, after_id=None):
-        if self.closed or self.cancelled.is_set() or self.delivery_suspended:
+        if self.closed or self.cancelled.is_set() or self.delivery_suspended or not self.automatic_delivery:
             return
         if self.delivery_task and not self.delivery_task.done():
             return
@@ -325,13 +329,14 @@ class XsmHost:
         self.delivery_suspended = False
         try:
             packet = await self._deliver_inbox(False)
-            if packet.get('batch_limited') and packet.get('next_after'):
+            if self.automatic_delivery and packet.get('batch_limited') and packet.get('next_after'):
                 self.pending_wake = True
                 self._schedule_delivery(after_id=packet['next_after'])
             return packet
         except RetryAdmission as error:
-            self.pending_wake = True
-            self._schedule_delivery(error.delay_seconds)
+            if self.automatic_delivery:
+                self.pending_wake = True
+                self._schedule_delivery(error.delay_seconds)
             raise
 
     async def update(self, state, name=None):

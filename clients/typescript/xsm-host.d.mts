@@ -22,6 +22,8 @@ export interface HostOptions extends ConnectOptions {
   cwd: string;
   /** Combined post-initialize bootstrap deadline in milliseconds. Default 10000. */
   setupTimeout?: number;
+  /** Deliver at explicit natural boundaries without subscribing/waking when false. */
+  automaticDelivery?: boolean;
   inboxBatchSize?: number;
   inboxMaxBytes?: number;
   deliver?: (packet: InboxPacket, options: { wake: boolean; signal: AbortSignal; leaseSeconds: number }) => Promise<void | boolean>;

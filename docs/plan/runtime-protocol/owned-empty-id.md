@@ -23,3 +23,14 @@ Mac core946개(Python551+외부 적합성54+SDK56+native133+Node152)와 canonica
 56.514초에 통과했다(core-final.log). 원시는
 `deliverables/protocol-foundation/owned-empty-id/`다. Linux는 후속 고정 source
 검증이며 실제 native/UI/모델·원격·메신저·설치와 전체 계획은 미완이다.
+
+## 고정 source Linux 검증
+
+c68259e8569ac48f125ece329b425176d8005b6c의 archive SHA256은
+739c38e7798ebaff7644dc177c75d3258ffa5a0d1ecff6672d5d875247aa0393다.
+Python3.11.2에서81.482초, Python3.14.10에서106.565초로946개 core와 canonical
+schema/v7 local을 같은120초 내에 통과했다. 두 환경에서 새 owned-fixture32개와
+wire/schema도 통과했다. Model0/network none/cpu2/memory3g,
+미실행 case0/미실행 wire-schema0/VM stopExit0이다.
+원시는 `owned-empty-id-linux/result.json`과 환경별 output이다.
+전체 원래 행렬은 미완이다.

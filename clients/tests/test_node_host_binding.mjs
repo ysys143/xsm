@@ -454,3 +454,47 @@ test('transport death rejects a pending host question without accepting its late
   await uiCancelled.promise;
   assert.equal(host.client.process.exitCode, null); // terminated by a signal, not a normal result
 });
+
+test('natural-boundary-only delivers without background wake or automatic ACK', { timeout: 10000 }, async t => {
+  const packets=[];
+  const {host,command,env,errors}=await fixture(t,{automaticDelivery:false,
+    deliver:async (packet,options)=>{packets.push([packet,options.wake]);}});
+  assert.equal(host.session.capabilities.includes('events'),false);
+  await host.client.eventsSubscribe(host.session.session);
+  const sender=await XsmClient.connect({command,env,cwd:root});t.after(()=>sender.close());
+  const origin=await sender.sessionOpen({runtime:'sender-fixture',profile:'isolated',conversation:'b',cwd:root});
+  await sender.operationCall(origin.session,'xsm_send',{target:'ref:'+host.session.ref,text:'natural-only original',wait:0});
+  await new Promise(resolve=>setTimeout(resolve,350));
+  assert.deepEqual(packets,[]);
+  await host.naturalBoundary();
+  assert.equal(packets.length,1);assert.equal(packets[0][1],false);
+  const claims=packets[0][0].claims;assert.equal(claims.length,1);
+  assert.match(packets[0][0].messages[0],/natural-only original/);
+  const current=await host.call('xsm_inbox',{message_ids:[claims[0].id]});
+  assert.equal(current.claims[0].token,claims[0].token);
+  const ack=await host.call('xsm_ack',{tokens:[claims[0].token]});
+  assert.deepEqual(ack.acked,[claims[0].id]);assert.deepEqual(errors,[]);
+});
+
+test('natural-only retries and batches wait for an explicit boundary', { timeout: 10000 }, async t => {
+  const calls=[];
+  const {host,command,env}=await fixture(t,{automaticDelivery:false,inboxBatchSize:1,
+    deliver:async (packet,options)=>{calls.push([packet,options.wake]);if(calls.length===1)throw new RetryAdmission('context not ready',10);}});
+  const sender=await XsmClient.connect({command,env,cwd:root});t.after(()=>sender.close());
+  const origin=await sender.sessionOpen({runtime:'sender-fixture',profile:'isolated',conversation:'b',cwd:root});
+  for(let index=0;index<2;index++)await sender.operationCall(origin.session,'xsm_send',
+    {target:'ref:'+host.session.ref,text:'natural-batch-'+index,wake:'never',wait:0});
+  await assert.rejects(host.naturalBoundary(),RetryAdmission);
+  await new Promise(resolve=>setTimeout(resolve,50));assert.equal(calls.length,1);
+  await host.naturalBoundary();
+  await new Promise(resolve=>setTimeout(resolve,50));assert.equal(calls.length,2);
+  assert.notEqual(calls[0][0].claims[0].token,calls[1][0].claims[0].token);
+  await host.naturalBoundary();assert.equal(calls.length,3);
+  assert.ok(calls.every(([,wake])=>wake===false));
+  assert.notEqual(calls[1][0].claims[0].id,calls[2][0].claims[0].id);
+});
+
+test('natural delivery mode rejects non-booleans before spawn', async () => {
+  for(const value of [null,0,1,'false'])await assert.rejects(XsmHost.open({runtime:'fixture',profile:'p',
+    conversation:'c',cwd:root,command:['must-not-spawn'],automaticDelivery:value}),/automaticDelivery/);
+});

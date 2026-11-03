@@ -308,3 +308,18 @@ Detailed [inbox/file/wake semantics](inbox-contract.md) and the
 [inbox result schema](inbox-result.schema.json) define machine-readable copy
 identifiers without parsing display prose. [Decision lifecycle](decision-lifecycle.md)
 distinguishes form decline/dismissal, withdrawal, expiry and effect application.
+
+## Natural-boundary-only host delivery
+
+A host with a native context callback but no safe background wake path can set
+`automaticDelivery: false` (Python: `automatic_delivery=False`). It keeps the
+callback for explicit `naturalBoundary()` / `natural_boundary()` calls but omits
+event delivery capability/subscription. Even a late or manually subscribed
+availability event does not start delivery. Deferred admission and batch
+continuations wait for another explicit natural boundary instead of scheduling
+background work. Defaults remain unchanged for active native bindings.
+
+This mode neither ACKs consumption nor claims idle wake support. It lets native
+turn hooks hand the original into the current context while the separate native
+wake adapter is implemented and verified. A missing delivery callback still
+rejects a natural-boundary call before claiming messages.

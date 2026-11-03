@@ -2864,3 +2864,11 @@ Native cleanup85718b2도 실제 OpenClaw19mode/632개 checkpoint와 모든 child
 종료를 통과했다.945개 core는 Linux3.11에서80.356초/3.14에서104.900초였다.
 모델0과 native SDK/gateway 경계의 증거이며 실제 모델/UI·최초 receiver stale 및
 나머지 runtime/원격·메신저·설치 전체 계획은 미완이다.
+
+## 자연 경계 전용 SDK 모드 — 2026-11-03
+
+[자연 경계 모드](natural-boundary-mode.md)는 callback을 유지하면서 background
+events/wake/retry/batch continuation을 끄는 명시적 옵션을 양쪽 SDK에 추가했다.
+수정 전 실제 실패와 focused각4개를 확인했고 Mac952개+schema/v7 local은56.991초에
+통과했다. Hermes 실제 context hook은 다음 구현이며 idle wake/실제 UI/전체 계획은 미완이다.
+빈 IDc68259e의 Linux946개도81.482초/106.565초와 새32개 wire/schema를 통과했다.

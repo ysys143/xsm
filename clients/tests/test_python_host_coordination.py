@@ -57,6 +57,51 @@ class HostCoordinationTest(unittest.IsolatedAsyncioTestCase):
         with self.assertRaisesRegex(RuntimeError, "not connected"):
             await host.natural_boundary()
 
+    async def test_natural_boundary_only_delivers_without_background_wake_or_auto_ack(self):
+        packets=[]
+        async def deliver(packet,options):packets.append((packet,options['wake']))
+        host=await self.host(deliver=deliver,automatic_delivery=False)
+        self.assertNotIn('events',host.session['capabilities'])
+        # Even an explicitly subscribed/late event cannot turn this mode into a wake.
+        await host.client.events_subscribe(host.session['session'])
+        await self.send(host,'natural-only original')
+        await asyncio.sleep(.35)
+        self.assertEqual(packets,[])
+        await host.natural_boundary()
+        self.assertEqual(len(packets),1);self.assertIs(packets[0][1],False)
+        claims=packets[0][0]['claims'];self.assertEqual(len(claims),1)
+        self.assertIn('natural-only original',packets[0][0]['messages'][0])
+        current=await host.call('xsm_inbox',{'message_ids':[claims[0]['id']]})
+        self.assertEqual(current['claims'][0]['token'],claims[0]['token'])
+        ack=await host.call('xsm_ack',{'tokens':[claims[0]['token']]})
+        self.assertEqual(ack['acked'],[claims[0]['id']])
+        self.assertEqual(self.errors,[])
+
+    async def test_natural_only_retries_and_batches_wait_for_an_explicit_boundary(self):
+        calls=[]
+        async def deliver(packet,options):
+            calls.append((packet,options['wake']))
+            if len(calls)==1:raise RetryAdmission('native context not ready',.01)
+        host=await self.host(deliver=deliver,automatic_delivery=False,inbox_batch_size=1)
+        sender,origin=await self.sender()
+        for index in range(2):
+            await sender.operation_call(origin['session'],'xsm_send',{'target':'ref:'+host.session['ref'],
+                'text':'natural-batch-'+str(index),'wake':'never','wait':0})
+        with self.assertRaises(RetryAdmission):await host.natural_boundary()
+        await asyncio.sleep(.05);self.assertEqual(len(calls),1)
+        await host.natural_boundary()
+        await asyncio.sleep(.05);self.assertEqual(len(calls),2)
+        self.assertNotEqual(calls[0][0]['claims'][0]['token'],calls[1][0]['claims'][0]['token'])
+        await host.natural_boundary();self.assertEqual(len(calls),3)
+        self.assertTrue(all(wake is False for _,wake in calls))
+        self.assertNotEqual(calls[1][0]['claims'][0]['id'],calls[2][0]['claims'][0]['id'])
+
+    async def test_natural_delivery_mode_rejects_non_boolean_before_spawn(self):
+        for value in (None,0,1,'false'):
+            with self.subTest(value=value),self.assertRaisesRegex(ValueError,'automatic_delivery'):
+                await XsmHost.open(runtime='fixture',profile='p',conversation='c',cwd=str(ROOT),
+                    command=['must-not-spawn'],automatic_delivery=value)
+
     async def test_one_coalesced_wake_drains_bounded_batches_without_auto_ack(self):
         packets = []
         async def deliver(packet, _options):

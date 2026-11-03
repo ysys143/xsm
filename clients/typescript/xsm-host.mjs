@@ -53,6 +53,8 @@ export function parseHostCommand(text) {
 
 export class XsmHost {
   static async open(options) {
+    const automaticDelivery = options.automaticDelivery === undefined ? true : options.automaticDelivery;
+    if (typeof automaticDelivery !== 'boolean') throw new TypeError('automaticDelivery must be a boolean');
     if (options.inboxMaxBytes !== undefined && (!Number.isInteger(options.inboxMaxBytes) ||
         options.inboxMaxBytes < 1 || options.inboxMaxBytes > 1048576)) {
       throw new TypeError('inboxMaxBytes must be an integer from 1 to 1048576');
@@ -82,13 +84,13 @@ export class XsmHost {
     };
     try {
       const available = client.initialization.capabilities;
-      const required = ['messaging', 'inbox', ...(options.deliver ? ['events'] : []),
+      const required = ['messaging', 'inbox', ...(options.deliver && automaticDelivery ? ['events'] : []),
         ...(options.present ? ['user-decisions'] : [])];
       if (!Array.isArray(available) || required.some(capability => !available.includes(capability)) ||
           (!Number.isFinite(client.initialization.limits?.claimLeaseSeconds) || client.initialization.limits.claimLeaseSeconds <= 0)) {
         throw new Error('server does not expose the required host protocol capabilities and claim lease');
       }
-      const capabilities = ['messaging', 'inbox', ...(options.deliver ? ['events'] : [])];
+      const capabilities = ['messaging', 'inbox', ...(options.deliver && automaticDelivery ? ['events'] : [])];
       if (options.present) capabilities.push('user-decisions');
       const session = await setup('session.open', client.sessionOpen({ runtime: options.runtime, profile: options.profile,
         conversation: options.conversation, cwd: options.cwd, capabilities, parentConversation: options.parentConversation }));
@@ -96,7 +98,7 @@ export class XsmHost {
       if (options.inboxMaxBytes !== undefined && !operations.find(item => item.name === 'xsm_inbox')?.inputSchema?.properties?.max_bytes) {
         throw new Error('server does not advertise inbox byte budgets');
       }
-      if (options.deliver) await setup('events.subscribe', client.eventsSubscribe(session.session));
+      if (options.deliver && automaticDelivery) await setup('events.subscribe', client.eventsSubscribe(session.session));
       const host = new XsmHost(client, session, operations, options);
       host.pumpTask = host.pump();
       return host;
@@ -115,6 +117,7 @@ export class XsmHost {
     this.session = session;
     this.operations = operations;
     this.options = options;
+    this.automaticDelivery = Boolean(options.deliver) && options.automaticDelivery !== false;
     this.questions = new Map();
     this.controller = new AbortController();
     this.closed = false;
@@ -133,6 +136,7 @@ export class XsmHost {
   }
 
   scheduleDelivery(delayMs = 0, afterId) {
+    if (!this.automaticDelivery) return;
     if (this.closed || this.controller.signal.aborted || this.deliverySuspended || this.deliveryTask) return;
     this.deliveryTask = (async () => {
       if (delayMs && !await retryPause(this.controller.signal, delayMs)) return;
@@ -179,7 +183,7 @@ export class XsmHost {
         const event = await this.client.nextNotification();
         if (event.params?.session !== this.session.session) continue;
         if (event.method === 'decision/request') this.present(event);
-        else if (event.method === 'events/available' && !this.deliverySuspended) {
+        else if (event.method === 'events/available' && this.automaticDelivery && !this.deliverySuspended) {
           this.pendingWake = true;
           this.scheduleDelivery();
         }
@@ -320,14 +324,14 @@ export class XsmHost {
     this.deliverySuspended = false;
     try {
       const pack = await this.deliverInbox(false);
-      if (pack.batch_limited && pack.next_after) {
+      if (this.automaticDelivery && pack.batch_limited && pack.next_after) {
         this.pendingWake = true;
         this.scheduleDelivery(0, pack.next_after);
       }
       return pack;
     }
     catch (error) {
-      if (error instanceof RetryAdmission) {
+      if (error instanceof RetryAdmission && this.automaticDelivery) {
         this.pendingWake = true;
         this.scheduleDelivery(error.delayMs);
       }
