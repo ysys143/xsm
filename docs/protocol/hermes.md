@@ -2,7 +2,9 @@
 
 상태: 실험 구현. 실제 PluginContext/도구 registry와 native agent turn,
 macOS Telegram 개인 대화의 pull/ACK/reply 왕복을 확인했다.
-CLI/TUI 전체 수명·자동 주입·사용자 UI·worker는 미완이다.
+CLI/TUI 전체 수명·자동 주입·실제 사용자 UI·worker 전체 행렬은 미완이다.
+명시적 opt-in의 native clarify 질문 bridge를 추가했으며 native AIAgent의
+model0/합성 UI callback으로 검증했다. 사람 UI나 실제 모델의 질문 경로 인증은 아니다.
 명시한 프로필에 대한 소유권 기반 파일 설치·업데이트·제거는 지원한다.
 
 [`integrations/hermes/xsm.py`](../../integrations/hermes/xsm.py)의 `register(context)`는
@@ -36,9 +38,35 @@ native API 계약대로 허용하며 충돌 처리는 native registry에 맡긴�
 실행에서는 도구 21개가 실제 등록됨을 별도로 확인했다. Private session 모듈
 import는 제거했다. 초기 validator 실패도 `hermes-validator-first.log`에 남겼다.
 
-기본 연결은 pull 방식이다. Native push callback이나 사용자 UI를 연결하지
-않았으므로 events/user-decisions를 광고하지 않는다. 읽기는 `xsm_inbox`, 소비는
-명시적 `xsm_ack`로 구분한다. 질문/승인이 필요한 작업은 답을 만들지 않고 거부한다.
+기본 연결은 pull 방식이다. Native push가 없어 events를 광고하지 않으며 기본값은
+user-decisions도 광고하지 않는다. 읽기는 `xsm_inbox`, 소비는 명시적 `xsm_ack`로
+구분한다. 질문/승인이 필요한 작업은 답을 만들지 않고 거부한다.
+
+## Native 질문 bridge (실험적 opt-in)
+
+프로필의 `plugins.entries.xsm.settings.native_questions: true`를 명시하고 plugin을
+다시 로드하면 user-decisions를 연결한다. 설치기가 이 설정을 바꾸지는 않는다.
+기존 native toolset 목록에는 `xsm`과 `clarify`가 있어야 한다. Native UI를 제공하지
+않는 실행 모드나 도구 정책을 이 bridge가 우회하지 않는다.
+
+XSM 작업은 waiting-for-user와 native_ui 지시를 반환한다. 모델은 그 인수 그대로
+native clarify를 호출하고 원 XSM 작업을 동일 인자로 다시 호출한다. 실제 답은
+모델의 본문/인용에서 받지 않고 native post_tool_call 관측에서 수집한다. SDK는
+답 저장 영수증을 기다리지만 원 작업 적용은 자동으로 하지 않는다.
+
+Native 질문에는 표시 ID/nonce heading과 원 질문 본문이 있다. Protocol의 displayed는
+이 본문을 정확히 attestation한다. Bridge는 heading·본문·선택지 모두를 검증한다.
+긴 canonical 선택값은 본문 legend에 온전히 두고 짧은 Value 번호로 매핑한다.
+Native의4개 선택지 제한에는 값2개+이전/다음 페이지를 사용하며 선택값을 자르지 않는다.
+자유 입력도 native callback에서 실제 반환된 값만 받는다.
+선택지 질문의 Other 입력도 canonical 값과 정확히 일치하면 받으며, UI 번호나
+현재 제공된 navigation label과 충돌하면 표시된 UI 동작을 우선한다.
+
+현재 profile, session, protocol 실행 세대, 질문 표시, native turn/API request/
+tool occurrence/질문 index를 결속한다. 이미 사용한 occurrence, 늦은 이전 표시,
+변경된 본문/선택지와 중복 질문의 상충 응답은 승인으로 적용하지 않는다.
+UI 미제공·timeout은 답을 만들지 않고 표시 포기로 처리한다. 취소도 허용이나
+거부로 바꾸지 않는다. [구현 증거와 미완 조건](../plan/runtime-protocol/hermes-native-questions.md)을 따른다.
 
 `scripts/probe-hermes-tools.py`는 실제 고정 SDK의 PluginContext, registry.dispatch,
 hook dispatcher에서 등록·세션/폴더 분리·전송/pull/ACK·caller 불일치 거부·

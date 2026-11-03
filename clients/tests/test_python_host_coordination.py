@@ -282,7 +282,7 @@ class HostCoordinationTest(unittest.IsolatedAsyncioTestCase):
         status = await host.call('xsm_decision_status', {'id':result['decision_id']})
         self.assertEqual(status['status'], 'pending')
         reply.set()
-        await asyncio.wait_for(asyncio.shield(state['done']), 3)
+        await asyncio.wait_for(host.wait_decision(result['question_id']), 3)
         status = await host.call('xsm_decision_status', {'id':result['decision_id']})
         self.assertEqual(status['status'], 'answered')
         self.assertEqual(event['params']['questionId'], result['question_id'])

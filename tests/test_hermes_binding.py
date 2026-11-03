@@ -233,7 +233,7 @@ class HermesRegistrationTest(TempState):
             binding = module.register(self.context(), command=command, env=env)
         try:
             self.assertEqual(len(self.tools), 22)
-            self.assertEqual(len(self.hooks), 6)
+            self.assertEqual(len(self.hooks), 7)
             self.assertEqual(marker.read_text().splitlines(), ["start"])
             result = json.loads(self.tools["xsm_inbox"]["handler"]({}, session_id="pinned-native"))
             self.assertIsInstance(result, dict)
@@ -367,3 +367,162 @@ class HermesRegistrationTest(TempState):
 
     async def make_event(self):
         return asyncio.Event()
+
+
+class HermesNativeQuestionsTest(TempState):
+    def setUp(self):
+        super().setUp()
+        context = HermesRegistrationTest.context(self)
+        context.get_config = lambda key, default=None: True if key == 'native_questions' else default
+        constants = SimpleNamespace(get_hermes_home=lambda: Path(self.user_home, 'hermes'))
+        environment = {key: os.environ[key] for key in ('PATH','LANG','TMPDIR','HOME','XSM_HOME') if key in os.environ}
+        with mock.patch.dict(sys.modules, hermes_constants=constants):
+            self.binding = module.register(context, env=environment)
+        self.args = {'question':'Choose','options':['blue','green']}
+
+    def tearDown(self):
+        self.binding.close()
+        super().tearDown()
+
+    def invoke(self, operation='xsm_decide', arguments=None, sid='native-ui-a'):
+        return json.loads(self.tools[operation]['handler'](self.args if arguments is None else arguments, session_id=sid))
+
+    def native_reply(self, pending, selected='Value 1', sid='native-ui-a', call_id='native-clarify-1', outcome='submitted', rewrite=None, turn_id='turn-fixture', api_request_id='request-fixture'):
+        question = json.loads(json.dumps(pending['native_ui']['arguments']['questions'][0]))
+        if rewrite:
+            rewrite(question)
+        response = {'question':question['question'],'choices_offered':question.get('choices'),
+                    'status':'answered' if selected is not None else 'unanswered','user_response':selected}
+        self.hooks['post_tool_call'](tool_name='clarify', args={'questions':[question]},
+            result=json.dumps({'outcome':outcome,'responses':[response]}), session_id=sid, tool_call_id=call_id,
+            turn_id=turn_id, api_request_id=api_request_id)
+
+    def status(self, pending, sid='native-ui-a'):
+        return self.invoke('xsm_decision_status', {'id':pending['decision_id']}, sid=sid)
+
+    def test_native_hook_answer_requires_original_operation_retry(self):
+        pending = self.invoke()
+        self.assertEqual(pending['status'], 'waiting-for-user')
+        self.assertEqual(set(pending['native_ui']), {'tool','arguments','after'})
+        self.assertEqual(self.status(pending)['status'], 'pending')
+        self.native_reply(pending)
+        self.assertEqual(self.status(pending)['status'], 'answered')
+        self.assertIn('your user answered: blue', self.invoke()['text'])
+
+    def test_other_session_or_changed_native_form_cannot_answer(self):
+        pending = self.invoke()
+        self.native_reply(pending, sid='native-ui-b')
+        self.assertNotIn('native-ui-b', self.binding.hosts)
+        self.invoke(sid='native-ui-b')
+        self.native_reply(pending, sid='native-ui-b', call_id='foreign-active-session')
+        self.native_reply(pending, call_id='rewritten-body', rewrite=lambda q:q.update(question=q['question']+' changed'))
+        self.native_reply(pending, call_id='rewritten-choices', rewrite=lambda q:q.update(choices=list(reversed(q['choices']))))
+        self.assertIsNone(self.status(pending)['answer'])
+        self.native_reply(pending, call_id='genuine')
+        self.assertEqual(self.status(pending)['status'], 'answered')
+
+    def test_reset_fences_late_answer_even_for_identical_question(self):
+        old = self.invoke()
+        self.binding.finalize(session_id='native-ui-a')
+        fresh = self.invoke()
+        self.assertNotEqual(fresh['question_id'], old['question_id'])
+        self.native_reply(old, call_id='late-old')
+        self.assertIsNone(self.status(fresh)['answer'])
+        self.native_reply(fresh, call_id='fresh')
+        self.assertEqual(self.status(fresh)['status'], 'answered')
+
+    def test_native_occurrence_cannot_answer_a_second_question(self):
+        first = self.invoke()
+        self.native_reply(first, call_id='single-use')
+        self.invoke()
+        changed = dict(self.args, decision_key='second-distinct-question')
+        second = self.invoke(arguments=changed)
+        self.native_reply(second, call_id='single-use')
+        self.assertIsNone(self.status(second)['answer'])
+        self.native_reply(second, call_id='second-occurrence')
+        self.assertEqual(self.status(second)['status'], 'answered')
+
+    def test_native_pages_preserve_all_canonical_values(self):
+        values = ['first','second','third','fourth','  '+('long value '*1000)+'  ']
+        canonical = [value.strip() for value in values]
+        arguments = {'question':'Paged choice','options':values}
+        pending = self.invoke(arguments=arguments)
+        views = [pending['native_ui']['arguments']['questions'][0]['question']]
+        self.native_reply(pending, selected='Next choices', call_id='page-next-1')
+        pending = self.invoke(arguments=arguments)
+        views.append(pending['native_ui']['arguments']['questions'][0]['question'])
+        self.native_reply(pending, selected='Next choices', call_id='page-next-2')
+        pending = self.invoke(arguments=arguments)
+        views.append(pending['native_ui']['arguments']['questions'][0]['question'])
+        for value in canonical:
+            self.assertIn(json.dumps(value, ensure_ascii=False), '\n'.join(views))
+        self.native_reply(pending, selected='Value 5', call_id='final-value')
+        applied = self.invoke(arguments=arguments)
+        self.assertIn(canonical[-1], applied['text'])
+
+    def test_native_cancel_does_not_become_an_approval(self):
+        pending = self.invoke()
+        self.native_reply(pending, selected=None, outcome='cancelled')
+        status = self.status(pending)
+        self.assertNotEqual(status['status'], 'answered')
+        self.assertNotIn('blue', json.dumps(status.get('answer')))
+
+    def test_native_free_text_uses_actual_observed_value(self):
+        arguments = {'question':'Free text  \n '}
+        pending = self.invoke(arguments=arguments)
+        self.assertNotIn('choices', pending['native_ui']['arguments']['questions'][0])
+        self.native_reply(pending, selected='actual free answer')
+        self.assertIn('your user answered: actual free answer', self.invoke(arguments=arguments)['text'])
+
+    def test_duplicate_native_questions_do_not_select_one_conflicting_answer(self):
+        pending = self.invoke()
+        question = pending['native_ui']['arguments']['questions'][0]
+        responses = [{'question':question['question'],'choices_offered':question['choices'],
+                      'status':'answered','user_response':value} for value in ('Value 1','Value 2')]
+        self.hooks['post_tool_call'](tool_name='clarify', args={'questions':[question,question]},
+            result=json.dumps({'outcome':'submitted','responses':responses}), session_id='native-ui-a',
+            tool_call_id='duplicated-native-question', turn_id='turn-fixture', api_request_id='request-fixture')
+        self.assertIsNone(self.status(pending)['answer'])
+        fresh = self.invoke()
+        self.assertNotEqual(fresh['native_ui'], pending['native_ui'])
+        self.native_reply(fresh, call_id='fresh-single-question')
+        self.assertEqual(self.status(fresh)['status'], 'answered')
+
+    def test_distinct_native_turn_disambiguates_reused_provider_call_id(self):
+        first = self.invoke()
+        self.native_reply(first, call_id='provider-call-id')
+        self.invoke()
+        second = self.invoke(arguments=dict(self.args, decision_key='later-turn'))
+        self.native_reply(second, call_id='provider-call-id', turn_id='later-native-turn', api_request_id='later-request')
+        self.assertEqual(self.status(second)['status'], 'answered')
+
+    def test_native_profile_context_cannot_answer_another_profile_question(self):
+        pending = self.invoke()
+        current = self.binding.profile_current
+        self.binding.profile_current = lambda: Path(self.user_home, 'other-hermes-profile')
+        try:
+            self.native_reply(pending, call_id='foreign-profile-native')
+        finally:
+            self.binding.profile_current = current
+        self.assertIsNone(self.status(pending)['answer'])
+        self.native_reply(pending, call_id='genuine-profile-native')
+        self.assertEqual(self.status(pending)['status'], 'answered')
+
+    def test_native_unavailable_is_not_a_user_answer(self):
+        pending = self.invoke()
+        self.hooks['post_tool_call'](tool_name='clarify', args=pending['native_ui']['arguments'],
+            result=json.dumps({'error':'Native UI callback unavailable'}), session_id='native-ui-a',
+            tool_call_id='unavailable-native')
+        self.assertIsNone(self.status(pending)['answer'])
+
+    def test_native_typed_canonical_value_is_valid_but_other_text_is_not(self):
+        pending = self.invoke()
+        self.native_reply(pending, selected='not-an-option', call_id='invalid-typed-value')
+        self.assertIsNone(self.status(pending)['answer'])
+        fresh = self.invoke()
+        self.native_reply(fresh, selected='green', call_id='typed-canonical-value')
+        self.assertIn('your user answered: green', self.invoke()['text'])
+        literal = {'question':'A literal navigation name','options':['Next choices']}
+        pending = self.invoke(arguments=literal)
+        self.native_reply(pending, selected='Next choices', call_id='literal-navigation-value')
+        self.assertIn('your user answered: Next choices', self.invoke(arguments=literal)['text'])

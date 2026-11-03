@@ -1,4 +1,4 @@
-"""Hermes 0.22.5 plugin entry. Experimental pull tools; native push/UI are not yet wired."""
+"""Hermes 0.22.5 pull tools and opt-in native clarify observations."""
 from __future__ import annotations
 
 import asyncio
@@ -7,6 +7,7 @@ import importlib.util
 import json
 import os
 import re
+import secrets
 import subprocess
 from pathlib import Path
 import sys
@@ -52,17 +53,170 @@ def _component_lease(root, python, env=None):
     return lambda: request(record)
 
 
+class NativeQuestions:
+    """Correlate native clarify observations with one live host presentation.
+
+    The native display has a correlation heading and a verbatim canonical body.
+    Only the body is attested as `displayed` to the protocol. Choice legends map
+    short native UI labels to the original values without truncating those values.
+    """
+    def __init__(self):
+        self.pending = {}
+        self.used = set()
+
+    def key(self, sid, host, question_id):
+        return sid, host.session['generation'], question_id
+
+    async def present(self, sid, host, event, cancelled):
+        params = event['params']
+        if params['session'] != host.session['session']:
+            raise RuntimeError('native question belongs to another participation')
+        schema = params['requestedSchema']
+        props = schema.get('properties', {})
+        if set(props) != {'answer'} or props['answer'].get('type') != 'string':
+            raise RuntimeError('native questions require one string answer')
+        choices = props['answer'].get('enum')
+        if choices is not None and (not isinstance(choices, list) or not choices or
+                any(not isinstance(value, str) for value in choices)):
+            raise RuntimeError('invalid native question choices')
+        key = self.key(sid, host, params['questionId'])
+        future = asyncio.get_running_loop().create_future()
+        state = dict(host=host, params=params, cancelled=cancelled, future=future,
+                     choices=choices, page=0, nonce=secrets.token_hex(8))
+        self.pending[key] = state
+        try:
+            return await future
+        finally:
+            if self.pending.get(key) is state:
+                self.pending.pop(key, None)
+
+    def render(self, state):
+        params = state['params']
+        heading = '[XSM question %s / %s]' % (params['questionId'], state['nonce'])
+        question = heading + '\n\n' + params['question']
+        choices = state['choices']
+        if choices is None:
+            return {'question': question + '\n\nEnter your answer below.'}, {}
+        start = state['page'] * 2
+        values = choices[start:start+2]
+        labels = {'Value %d' % (start+index+1): value for index,value in enumerate(values)}
+        question += '\n\nValues on this page:\n' + '\n'.join(
+            '%s: %s' % (label, json.dumps(value, ensure_ascii=False)) for label,value in labels.items())
+        offered = list(labels)
+        if start:
+            offered.append('Previous choices')
+        if start + 2 < len(choices):
+            offered.append('Next choices')
+        return {'question': question, 'choices': offered}, labels
+
+    async def describe(self, sid, host, question_id):
+        key = self.key(sid, host, question_id)
+        deadline = asyncio.get_running_loop().time() + 10
+        while key not in self.pending:
+            if host.closed or host.failure or asyncio.get_running_loop().time() >= deadline:
+                raise RuntimeError('native question presentation unavailable')
+            await asyncio.sleep(.01)
+        state = self.pending[key]
+        if state['cancelled'].is_set() or state['future'].done():
+            raise RuntimeError('native question presentation ended')
+        question, _labels = self.render(state)
+        return {'tool':'clarify','arguments':{'questions':[question]},
+                'after':'After native clarify finishes, retry the original XSM operation with identical arguments.'}
+
+    def observe(self, sid, host, call_id, arguments, result, *, turn_id='', api_request_id=''):
+        ids = (call_id, turn_id, api_request_id)
+        if (any(not isinstance(value, str) or len(value) > 4096 or any(ord(c) < 32 for c in value) for value in ids)
+                or not call_id.strip() or not isinstance(arguments, dict)):
+            return []
+        try:
+            value = json.loads(result) if isinstance(result, str) else result
+        except (ValueError, TypeError):
+            return []
+        questions = arguments.get('questions')
+        if not isinstance(value, dict) or not isinstance(questions, list):
+            return []
+        responses = value.get('responses')
+        resolved = []
+        for index, raw in enumerate(questions):
+            if not isinstance(raw, dict) or raw.get('multi_select', False) is not False:
+                continue
+            for key, state in list(self.pending.items()):
+                if key[0] != sid or state['host'] is not host or state['cancelled'].is_set() or state['future'].done():
+                    continue
+                expected, labels = self.render(state)
+                if raw.get('question') != expected['question'] or raw.get('choices') != expected.get('choices'):
+                    continue
+                base = (sid, key[1], turn_id, api_request_id, call_id)
+                matching = [i for i,q in enumerate(questions) if isinstance(q, dict) and q.get('question') == expected['question']]
+                if len(matching) != 1:
+                    self.used.update(base + (i,) for i in matching)
+                    state['nonce'] = secrets.token_hex(8)
+                    continue
+                receipt = base + (index,)
+                if receipt in self.used:
+                    continue
+                if value.get('error') is not None:
+                    self.used.add(receipt)
+                    state['future'].set_exception(RuntimeError('native clarify is unavailable'))
+                    resolved.append(key[2]); continue
+                response = responses[index] if isinstance(responses, list) and len(responses) == len(questions) else None
+                if (not isinstance(response, dict) or response.get('question') != expected['question'] or
+                        response.get('choices_offered') != expected.get('choices')):
+                    continue
+                self.used.add(receipt)
+                outcome = value.get('outcome')
+                source = 'hermes-clarify-' + hashlib.sha256(json.dumps(receipt).encode()).hexdigest()
+                if outcome == 'cancelled':
+                    answer = {'displayed':state['params']['question'],'source_id':source,'action':'cancel'}
+                elif outcome in ('timed_out','undelivered'):
+                    state['future'].set_exception(RuntimeError('native question was not answered'))
+                    resolved.append(key[2]); continue
+                elif outcome == 'submitted' and response.get('status') in ('skipped','unanswered'):
+                    state['future'].set_exception(RuntimeError('native question was not answered'))
+                    resolved.append(key[2]); continue
+                elif outcome == 'submitted' and response.get('status') == 'answered' and isinstance(response.get('user_response'), str):
+                    selected = response['user_response']
+                    if (state['choices'] is not None and selected in ('Previous choices','Next choices')
+                            and selected in expected['choices']):
+                        state['page'] += -1 if selected == 'Previous choices' else 1
+                        state['nonce'] = secrets.token_hex(8)
+                        continue
+                    if state['choices'] is not None:
+                        if selected in labels:
+                            selected = labels[selected]
+                        elif selected not in state['choices']:
+                            state['nonce'] = secrets.token_hex(8)
+                            continue
+                    answer = {'displayed':state['params']['question'],'source_id':source,'answer':selected}
+                else:
+                    continue
+                state['future'].set_result(answer)
+                resolved.append(key[2])
+        return resolved
+
+    def close_host(self, sid, host):
+        for key,state in list(self.pending.items()):
+            if key[0] == sid and state['host'] is host:
+                state['future'].cancel()
+
+
 class HermesBinding:
     def __init__(self, context, *, command=None, env=None):
         from hermes_constants import get_hermes_home
         self.context = context
         self.root = Path(__file__).resolve().parents[2]
         self.profile = str(get_hermes_home().resolve())
+        self.profile_current = get_hermes_home
         self.sdk = _sdk(self.root)
         self.command = command or [sys.executable, "-B", "-c",
             "import runpy,sys;sys.path.insert(0,sys.argv.pop(1));runpy.run_module('xsm',run_name='__main__')",
             str(self.root), "protocol", "serve", "--stdio"]
         self.env = env
+        get_config = getattr(context, 'get_config', None)
+        native_questions = get_config('native_questions', False) if callable(get_config) else False
+        if type(native_questions) is not bool:
+            raise ValueError('native_questions must be a boolean')
+        self.native_questions = NativeQuestions() if native_questions else None
         self.hosts = {}
         self.host_locks = {}
         self.closed = False
@@ -83,6 +237,8 @@ class HermesBinding:
         return asyncio.run_coroutine_threadsafe(coroutine, self.loop).result()
 
     def _identity(self, session_id):
+        if str(self.profile_current().resolve()) != self.profile:
+            raise RuntimeError('native caller belongs to another Hermes profile')
         sid = str(session_id or "")
         if not sid:
             raise RuntimeError("native dispatcher session identity is missing")
@@ -116,13 +272,13 @@ class HermesBinding:
                     monitor.cancel()
                     await asyncio.gather(monitor, return_exceptions=True)
                 _, previous = self.hosts.pop(sid)
-                await (await previous).close()
+                await self._close_host(sid, await previous)
             if sid in self.hosts:
                 _, previous = self.hosts[sid]
                 existing = await previous
                 if getattr(existing, "failure", None) is not None or getattr(existing, "closed", False):
                     # Replace participation without replaying a failed operation.
-                    await existing.close()
+                    await self._close_host(sid, existing)
                     self.hosts.pop(sid)
             return await self._open_host(sid, cwd)
 
@@ -130,9 +286,18 @@ class HermesBinding:
         if self.closed or self.closing or sid in self.finalizing:
             raise RuntimeError("native participation is closing")
         if sid not in self.hosts:
-            pending = asyncio.create_task(self.sdk.XsmHost.open(runtime="hermes", profile=self.profile,
-                conversation=sid, cwd=cwd, command=self.command, env=self._backend_environment(),
-                parent_conversation=getattr(self, 'parents', {}).get(sid)))
+            async def opened():
+                holder = {}
+                ui = getattr(self, 'native_questions', None)
+                async def present(event, cancelled):
+                    return await ui.present(sid, holder['host'], event, cancelled)
+                host = await self.sdk.XsmHost.open(runtime="hermes", profile=self.profile,
+                    conversation=sid, cwd=cwd, command=self.command, env=self._backend_environment(),
+                    parent_conversation=getattr(self, 'parents', {}).get(sid),
+                    present=present if ui is not None else None)
+                holder['host'] = host
+                return host
+            pending = asyncio.create_task(opened())
             self.hosts[sid] = (cwd, pending)
             try:
                 await pending
@@ -145,11 +310,17 @@ class HermesBinding:
         if self.closed or self.closing or sid in self.finalizing:
             if self.hosts.get(sid, (None, None))[1] is pending:
                 self.hosts.pop(sid, None)
-            await host.close()
+            await self._close_host(sid, host)
             raise RuntimeError("native participation is closing")
         if not self.closing and sid not in self.finalizing and sid not in self.monitors:
             self.monitors[sid] = asyncio.create_task(self._monitor(sid, cwd))
         return host
+
+    async def _close_host(self, sid, host):
+        ui = getattr(self, 'native_questions', None)
+        if ui is not None:
+            ui.close_host(sid, host)
+        await host.close()
 
     async def _monitor(self, sid, cwd):
         delay = .25
@@ -185,7 +356,43 @@ class HermesBinding:
                 self.monitors.pop(sid, None)
 
     async def _call(self, sid, cwd, operation, args):
-        return await (await self._host(sid, cwd)).call(operation, args)
+        host = await self._host(sid, cwd)
+        ui = getattr(self, 'native_questions', None)
+        if ui is None:
+            return await host.call(operation, args)
+        result = await host.call(operation, args, wait_for_decision=False)
+        if result.get('status') == 'waiting-for-user':
+            try:
+                native = await ui.describe(sid, host, result['question_id'])
+            except BaseException:
+                try:
+                    await host.abandon_deferred(result['question_id'])
+                except Exception:
+                    pass
+                raise
+            return dict(result, native_ui=native)
+        return result
+
+    def observe_question(self, tool_name='', args=None, result=None, session_id='', tool_call_id='', turn_id='', api_request_id='', **_native):
+        if tool_name != 'clarify' or getattr(self, 'native_questions', None) is None or self.closed or self.closing:
+            return
+        if str(self.profile_current().resolve()) != self.profile:
+            return
+        async def observe():
+            pair = self.hosts.get(session_id)
+            if not pair or not pair[1].done() or session_id in self.finalizing:
+                return
+            host = pair[1].result()
+            if host.closed or host.failure:
+                return
+            resolved = self.native_questions.observe(session_id, host, tool_call_id, args, result,
+                turn_id=turn_id, api_request_id=api_request_id)
+            for question_id in resolved:
+                try:
+                    await host.wait_decision(question_id)
+                except Exception:
+                    pass
+        self._run(observe())
 
     def handler(self, operation):
         def call(args, *, session_id="", **_native):
@@ -230,7 +437,7 @@ class HermesBinding:
                     pair = self.hosts.pop(session_id, None)
                     self.states.pop(session_id, None)
                     if pair:
-                        await (await pair[1]).close()
+                        await self._close_host(session_id, await pair[1])
             finally:
                 self.finalizing.discard(session_id)
         self._run(close())
@@ -261,11 +468,12 @@ class HermesBinding:
             for lock in list(self.host_locks.values()):
                 async with lock:
                     pass
-            pairs = list(self.hosts.values())
+            pairs = list(self.hosts.items())
             self.hosts.clear()
             self.states.clear()
-            hosts = await asyncio.gather(*(pair[1] for pair in pairs), return_exceptions=True)
-            await asyncio.gather(*(host.close() for host in hosts if not isinstance(host, BaseException)))
+            hosts = await asyncio.gather(*(pair[1] for _sid,pair in pairs), return_exceptions=True)
+            await asyncio.gather(*(self._close_host(sid, host) for (sid,_pair),host in zip(pairs,hosts)
+                                  if not isinstance(host, BaseException)))
         self._run(shutdown())
         self.closed = True
         self.loop.call_soon_threadsafe(self.loop.stop)
@@ -297,6 +505,7 @@ def register(context, *, command=None, env=None):
                 ("on_session_finalize", binding.finalize), ("on_session_delete", binding.finalize),
                 ("on_session_reset", binding.reset)):
             context.register_hook(name, callback)
+        context.register_hook('post_tool_call', binding.observe_question)
     except BaseException:
         binding.close()
         raise

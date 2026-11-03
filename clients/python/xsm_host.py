@@ -239,6 +239,14 @@ class XsmHost:
             await asyncio.shield(task)
         return held
 
+    async def wait_decision(self, question_id):
+        """Wait for this host's UI receipt, without applying its original operation."""
+        if self.closed or self.failure:
+            raise self.failure or TransportError("host closed")
+        if not isinstance(question_id, str) or question_id not in self.questions:
+            raise ValueError("unknown host question")
+        return await asyncio.shield(self.questions[question_id]["done"])
+
     async def _deliver_inbox(self, wake, after_id=None):
         async with self.delivery_lock:
             args = {} if self.inbox_batch_size is None else {"limit": self.inbox_batch_size}
