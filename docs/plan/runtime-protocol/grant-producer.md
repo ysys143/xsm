@@ -28,9 +28,20 @@ Hardening 로그에는 기존 worker 시험의 unclosed-file/subprocess Resource
 있어 보존했다. 경고의 PID25038은 후속 ps 조회에서 존재하지 않았다. 이 경고들을
 고쳤다고 주장하지 않는다. 원시는 deliverables/protocol-foundation/grant-result-contract/다.
 
-고정 source Linux 검증은 결과 확인 전까지 미완이다. 실제 native
+고정 source Linux core는 아래에서 확인했다. 실제 native
 worker 모든 모드·사용자 UI·원격·설치/p95 행렬과 결과 schema 등 원래 계획은 남아 있다.
 
 Mac/Python3.14.6의 core895개(Python519+외부 적합성35+SDK56+native133+Node152)는
 75.611초에 통과했다(core.log, exit0). 독립 mock39/변이14는 별도 수치다.
 이 단일 실행을 이전 source와의 통계적 성능 비교로 쓰지 않는다.
+
+## 고정 source Linux core
+
+e93fac15fbec3076d8ece1d152171c42c3996cd7의 archive SHA256은
+41062ab1ec3e377c947173a3c593f80b895b29312814b2e002bf17135db56ff9다.
+Python3.11.2에서88.522초, Python3.14.10에서110.004초로895개
+(Python519+외부 적합성35+SDK56+native133+Node152)를 각각 통과했다.
+독립 mock39/변이14는 별도 수치다. Model0/network none/cpu2/memory3g,
+미실행 case0, VM stopExit0이다. 원시는 grant-producer-linux/result.json과
+환경별 output/protocol.log다. 실제 worker 위험 옵션/remote 연결을 실행한
+인증은 아니며 전체 계획과 grant schema는 여전히 미완이다.
