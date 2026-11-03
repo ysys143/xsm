@@ -184,7 +184,9 @@ that all stored files are valid. Manually corrupted files can fail validation.
 
 `decisions` returns records containing numeric time, team, question, answer,
 nullable options, display attribution, source channel, nullable asking-session
-ref and nullable item. Native recovery can also include `asked_question`.
+ref and nullable item. Native recovery can also include `asked_question`. Remote member-machine
+records include `from_machine` (64 lowercase hexadecimal characters); these
+are that machine's testimony, never this user's local approval.
 Transient write results `node` and `sync_notes` are absent from persisted query
 records. A record's `via` label alone is not proof of a verified human answer;
 the decision binding and host receipt remain separate runtime requirements.

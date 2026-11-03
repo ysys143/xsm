@@ -62,6 +62,23 @@ Proxy stdout reader가 알림을 즉시 전달하고 응답을 별도 queue에 �
 collaboration·두 wire 결함·launch 실패 처리와 bundle 누락 거부도 core에 포함된다.
 초기84개 focused 실행의 실패를 이 최종 결과로 지우거나 성공으로 계산하지 않는다.
 
+## 원격 수신 기록 필드 보완
+
+후속 board_sync.receive 감사에서 수신 기록에 from_machine을 붙이는 경로를
+확인했다. 기존 원격 수신 fixture가 실제로 저장한 기록1개를 초기 스키마가
+additionalProperties 오류로 거부함을 재현했다(remote-record-before.json).
+재현 driver 초회는 fixture 초기화 전 import한 모듈을 재사용해 빈 목록을 읽고
+assertion에서 실패했다. 이를 정상 표본으로 세지 않았고, 초기화 후 import와
+record 수1개 확인을 거쳐 재현했다. 시험은 합성 원격 입력의 로컬 수신 경로다.
+
+옵션 from_machine을 계약에 포함했고 다른 머신의 증언과 로컬 승인을 문서에서
+구분했다. 실제 저장 기록1개와 전체 wire36개가 보완된 스키마를 통과했다.
+필드를 다시 제거한 변이도 검출했다(remote-record-after.json).
+보드 예제는5개·거부16개로 늘었다(schema-remote-final.json).
+이는 물리 네트워크 수신이나 원격 승인 신뢰 검증 성공을 뜻하지 않는다.
+진행 중 Linux batch는 보완 전5239fe0에 고정되어 이 스키마 변경의 Linux
+인증으로 소급하지 않는다. 서버/core 실행 코드는 이 보완에서 바꾸지 않았다.
+
 ## 남은 필수 조건
 
 이 표본은 macOS의 실제 stdio 서버와 synthetic host answer다. 사용자 UI·모델·

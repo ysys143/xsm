@@ -203,6 +203,10 @@
         },
         "asked_question": {
           "type": "string"
+        },
+        "from_machine": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}(?![\\s\\S])"
         }
       }
     }

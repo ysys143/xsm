@@ -157,7 +157,8 @@ def board_contract():
             (3, ['decisions', 0, 'options'], [True]),
             (3, ['decisions', 0, 'answer'], None),
             (3, ['decisions', 0, 'node'], 'b' * 12),
-            (3, ['inbox_pending'], -1)):
+            (3, ['inbox_pending'], -1),
+            (4, ['decisions', 0, 'from_machine'], 'unverified-origin')):
         bad = copy.deepcopy(examples[index]['result'])
         target = bad
         for part in path[:-1]:

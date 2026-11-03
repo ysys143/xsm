@@ -73,5 +73,26 @@
         "pending-unavailable:OSError"
       ]
     }
+  },
+  {
+    "action": "decisions",
+    "result": {
+      "decisions": [
+        {
+          "t": 1.0,
+          "team": "core",
+          "question": "q",
+          "answer": "their answer",
+          "options": null,
+          "decided_by": "them (person via terminal)",
+          "via": "terminal",
+          "asked_by": null,
+          "item": null,
+          "id": "969cff005577",
+          "from_machine": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        }
+      ],
+      "inbox_pending": 0
+    }
   }
 ]
