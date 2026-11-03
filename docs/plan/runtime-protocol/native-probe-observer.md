@@ -41,3 +41,8 @@ focused-final13개로 확인했다. 실제 upstream native CLI/gateway mode의 �
 확인해야 한다. Source별 예전 성공/실패를 덮어쓰지 않는다. 이전 receiver stale의
 원인은 아직 미확정이며 새 direct probe는 저장/현재 ps 값과 kernel generation을
 함께 기록해 재발 시 진단한다. 실제 모델/UI·원격·메신저·설치와 전체 계획은 미완이다.
+
+고정e1f58f7의 실제19개 mode 재실행에서3개는 service metadata 제거 뒤 observer
+teardown에서 실패했다. 원인과 원본 신원 snapshot을 유지하는 후속 수정은
+[retained cleanup](native-probe-retained-cleanup.md)에 기록했다. 이 첫 batch는
+failed로 보존하며 기존38개 기능 checkpoint의 통과를 teardown 통과로 대체하지 않는다.

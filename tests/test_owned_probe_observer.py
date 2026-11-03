@@ -23,9 +23,8 @@ class OwnedProbeObserverTest(TempState):
 
     def test_wrong_state_root_refuses_before_loading_worker(self):
         from xsm import workers
-        observer=OwnedProbeObserver(Path(self.tmp)/'other-state',self.owner['ref'],self.worker['name'],self.worker['id'])
         with mock.patch.object(workers,'load') as load, self.assertRaisesRegex(RuntimeError,'state root'):
-            observer.worker()
+            OwnedProbeObserver(Path(self.tmp)/'other-state',self.owner['ref'],self.worker['name'],self.worker['id'])
         load.assert_not_called()
 
     def test_replaced_service_and_other_service_request_are_refused(self):
@@ -76,3 +75,11 @@ class OwnedProbeObserverTest(TempState):
                     mock.patch.object(workers,'_terminate') as stop:
                 self.assertIs(self.observer.stop_children(),exited)
                 stop.assert_not_called()
+
+    def test_removed_service_retains_exact_operator_cleanup_authority(self):
+        from xsm import workers
+        self.submit()
+        self.journal.request_cancellation(self.owner,'probe-task',self.owner,self.worker['id'])
+        workers.stop(self.worker['name'])
+        self.assertEqual(self.observer.request('probe-task')['status'],'cancelled')
+        self.assertTrue(self.observer.stop_children())

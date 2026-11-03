@@ -81,3 +81,9 @@ class ProcessStartTest(unittest.TestCase):
             with self.subTest(matches=matches),mock.patch.object(identity,'pid_alive',return_value=True),                     mock.patch.object(identity,'process_matches',side_effect=matches),                     mock.patch.object(workers.os,'killpg') as signal:
                 workers._terminate(321,'linux-start:'+BOOT+':123')
                 self.assertEqual(signal.call_count,expected)
+
+    def test_termination_rechecks_generation_before_pid_fallback(self):
+        from xsm import workers
+        with mock.patch.object(identity,'pid_alive',return_value=True),                 mock.patch.object(identity,'process_matches',side_effect=[True,False]),                 mock.patch.object(workers.os,'killpg',side_effect=OSError),                 mock.patch.object(workers.os,'kill') as fallback:
+            workers._terminate(321,'linux-start:'+BOOT+':123')
+        fallback.assert_not_called()

@@ -224,7 +224,7 @@ async def public_roundtrip():
    await op('xsm_owned',{'action':'run','name':'protocol-openclaw','text':text,'work_context':work,'request_id':'interrupted'})
    check('public interrupted target reached native provider',await asyncio.to_thread(entered.wait,20))
    active=await op('xsm_owned',{'action':'status','name':'protocol-openclaw','request_id':'interrupted'});child=observer.request('interrupted')['child']
-   check('public interruption selects exact owned child',identity.process_matches(child['pid'],child['lstart']) is True)
+   check('operator interruption selects exact owned child',identity.process_matches(child['pid'],child['lstart']) is True)
    os.killpg(child['pid'],signal.SIGKILL)
    unknown=await exited_request('interrupted')
    check('public frontend loss retains unknown effects and lease',unknown['slot_occupied'] is True and unknown['result'] is None)

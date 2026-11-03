@@ -2842,3 +2842,12 @@ annotation42개·구현 변이 검출2개를 통과했다.742 observation 교차
 focused13개/0.150초와 related37개/11.064초, Mac943개+schema/v7 local은54.723초에
 통과했다. 실제 upstream native19 mode는 다음 고정 source에서 재실행해야 하며
 최초 receiver stale·native/UI/원격 등 원래 전체 계획은 미완이다.
+
+## Native retained cleanup — 2026-11-03
+
+[Retained cleanup](native-probe-retained-cleanup.md)은 실제19개 mode 중 metadata
+제거 뒤 teardown3개 실패를 보존했다. 처음 검증한 owner/worker id를 cache해
+retained journal을 제어하고 이름 재사용을 채택하지 않는다. PID fallback 직전도
+generation을 재검사한다. 수정 전 실패2경로와 focused15개/0.284초를 확인했고
+Mac945개+schema/v7 local은56.249초에 통과했다. 실제19 mode는 새 고정 source로
+다시 검증해야 하며 최초 receiver stale 및 원래 전체 계획은 미완이다.

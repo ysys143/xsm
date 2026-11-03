@@ -3,6 +3,7 @@
 Never expose these records through public/model operations. Imports are lazy so
 probe programs can set isolated roots before loading any backend module.
 """
+import copy
 from pathlib import Path
 
 
@@ -10,21 +11,34 @@ class OwnedProbeObserver:
     def __init__(self, state_root, parent_ref, name, worker_id):
         self.state_root = Path(state_root).resolve()
         self.parent_ref, self.name, self.worker_id = parent_ref, name, worker_id
+        self._snapshot = None
+        self.worker()  # Capture before a successful removal can erase metadata.
 
-    def worker(self):
+    def state(self):
         from xsm import paths
         if Path(paths.HOME).resolve() != self.state_root:
             raise RuntimeError('probe observer refuses a different state root')
-        from xsm import workers
+
+    def worker(self):
+        self.state()
+        from xsm import workers, owned_requests
         value = workers.load(self.name)
         if (not value or value.get('mode') != 'owned' or value.get('owned') is not True or value.get('id') != self.worker_id
                 or value.get('parent_ref') != self.parent_ref
                 or (value.get('owner') or {}).get('ref') != self.parent_ref):
             raise RuntimeError('probe owned service identity changed')
+        if self._snapshot is None:
+            self._snapshot = copy.deepcopy(value)
+        elif owned_requests._native(value['owner']) != owned_requests._native(self._snapshot['owner']):
+            raise RuntimeError('probe owned service identity changed')
         return value
 
+    def original(self):
+        self.state()
+        return self._snapshot
+
     def request(self, request_id):
-        worker = self.worker()
+        worker = self.original()
         from xsm import owned_requests
         value = owned_requests.status(worker['owner'], request_id, sender=worker['owner'])
         if value.get('worker', {}).get('id') != self.worker_id:
@@ -32,7 +46,7 @@ class OwnedProbeObserver:
         return value
 
     def stop_children(self):
-        worker = self.worker()
+        worker = self.original()
         from xsm import owned_requests, workers, identity
         requests = []
         for row in owned_requests.list_requests(worker['owner'], worker['owner']):
@@ -43,7 +57,7 @@ class OwnedProbeObserver:
         # whose response was lost before the probe could collect its child.
         for value in requests:
             if value['status'] in ('queued','reserved','acknowledged','running') or (value['status']=='unknown' and value['slot_occupied']):
-                workers.cancel_owned(self.name, worker['owner'], value['id'])
+                owned_requests.request_cancellation(worker['owner'], value['id'], worker['owner'], self.worker_id)
         children = set()
         for value in requests:
             child = self.request(value['id']).get('child') or {}

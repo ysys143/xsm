@@ -1328,6 +1328,8 @@ def _terminate(pid: int, lstart: str) -> None:
         try:
             os.killpg(pid, sig)             # a tmux pane's process leads its own group
         except OSError:
+            if not identity.pid_alive(pid) or identity.process_matches(pid, lstart) is not True:
+                return
             try:
                 os.kill(pid, sig)
             except OSError:
