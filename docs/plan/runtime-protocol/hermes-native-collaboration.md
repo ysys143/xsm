@@ -1,7 +1,7 @@
 # Hermes AIAgent의 보드·문서·첨부 native 경로
 
-상태: Mac21개 검사가 통과했다. Linux·실제 모델·사용자 UI와 전체 기능 행렬은
-미완이다. 결정·endorsement의 실제 UI 검증은 이번 표본에 포함하지 않았다.
+상태: Mac·Linux에서 각각21개 검사가 통과했다. 실제 모델·사용자 UI와 전체
+기능 행렬은 미완이다. 결정·endorsement의 실제 UI 검증은 이번 표본에 포함하지 않았다.
 
 `probe-hermes-collaboration.py`는 고정 v0.22.5의 clean source와 실제 AIAgent,
 설치 plugin, native Tool Hub의 search/call을 실행한다. Registry 직접 호출을
@@ -47,3 +47,27 @@ wrapper를 사용했다. 제품·native source나 원본 노드를 변경하지 
 audit.json을 보존했다. 제품 engine은 바꾸지 않았다. 이번 test-only 변경으로
 전체 core를 다시 통과했다고 표시하지 않는다. 다른 operation/action, UI·모델·
 메신저·전체 runtime 행렬은 별도 증거가 필요하다.
+
+## Linux 고정 source와 원시 대조
+
+고정ecaf9f6의 Linux arm64/Python3.14에서도21개/29 XSM 호출/7개 operation,
+native receipt58개와 HTTP89개가 통과했다. Mac과 native source commit 및
+검사 이름21개가 같았다. 실제 turn에서 추린 native receipt ID58개가 모두
+고유하고 provider 발급ID58개와 정확히 일치했다. 같은 native session과
+예상 오류3개를 별도 대조해 audit.json에 남겼다. Plugin unload 뒤 도구 제거와
+참여 종료를 확인했으며 container exit0/VM stopExit0이었다. Network none/model0
+표본이다. 원시는 `hermes-native-collaboration-linux/output/artifacts/`와
+상위 result.json이다. 변이3개는 Mac의 별도 표본이다.
+
+## 기존 native API probe의 stale 기대값 수정
+
+`probe-hermes-tools.py --installed --auto-reconnect`의 기존 기대값21은 현재
+등록22개와 달랐다. 실제 실행이 그 assertion에서 실패함을 먼저 확인하고22로
+고쳤다. 후속 Mac13개가 통과했다. 실제 설치 snapshot의 lease/제거, backend
+재연결·세대 교체·옛 claim 거부, workspace 신원/전환, finalize/resume, UI 없는
+승인 거부와 unload도 포함한다. stderr의 EOF·옛 claim·없는 UI 오류는 각 주입/
+거부 검사에서 관찰한 예상 결과다. 실제 agent 시험과 API caller fixture는
+구분하며 이 추가13개를 AIAgent21개에 합쳐 표시하지 않는다.
+원시는 `hermes-tools-current-count-before`/`hermes-tools-current-count-final`이다.
+이 두 줄 수정은 ecaf9f6의 Linux AIAgent 시험 이후이며 Linux API probe의 새
+실행으로 소급하지 않는다.

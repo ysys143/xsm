@@ -3090,3 +3090,23 @@ parent/node와 owner-mismatch의 실제 원인도 확인했다. 실제 모델/�
 세션/도구명을 독립 대조했다. 각 HTTP58개와 검사 이름21개가 일치했고
 native server/container/VM이 정상 종료됐다. Network none/model0/read-only
 native 패키지이며 UI·실제 모델과 전체 기능 행렬은 계속 미완이다.
+
+
+## Hermes 실제 AIAgent 협업 도구 — 2026-11-04
+
+[Hermes native 협업](hermes-native-collaboration.md)은 registry 직접 호출 대신
+실제 설치 plugin/AIAgent/Tool Hub search·call을 실행한다. OpenCode와 같은
+동작 검사를 공유하되 실제 native message 형식은 보존했다. Mac21개/29 XSM
+호출/7개 operation과 예상 오류3개, discovery 포함58개 native receipt가 통과했다.
+Provider 발급ID58개와 native ID58개의 일치·고유성을 독립 대조했다. 실제 모델
+호출0이며 provider는 loopback scripted fixture다. Parent·후보·bytes 변이3개는
+각 표적 assertion으로 실패했다. 초기 하네스 인자 중복 실패도 보존했다.
+최종 unload 뒤 native 도구 제거와 참여 종료를 확인했다. 공유 변경 후
+OpenCode 정상21개와 parent 변이도 재검증했다. UI·결정·endorsement·실제 모델과 원래 전체 기능 행렬은 미완이다.
+
+고정ecaf9f6 Linux도 같은21개/29 XSM 호출/7개 operation과 native receipt58개/
+HTTP89개를 통과했다. Mac과 source commit·검사 이름을 대조했고 원시 발급 ID와
+native ID58개의 고유성·일치를 독립 확인했다. 도구 제거·참여 종료와 container/
+VM 정상 종료도 확인했다. 기존 API probe의 stale21 기대값은 실제 red 후22로
+수정했고 Mac13개 설치/재연결/신원/세대·옛 claim/없는 UI 거부 경로가 통과했다.
+이는 별도 caller fixture 결과이며 actual AIAgent21개에 합치지 않는다.

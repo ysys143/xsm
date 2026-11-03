@@ -112,8 +112,8 @@ def run(args):
             assert str(Path(installed["runtime_root"]).resolve()) in component_leases.configured_roots()
             result["checks"].append("loaded native plugin retains its snapshot after owned files are removed")
         names = [name for name in manager._plugin_tool_names if name.startswith("xsm_")]
-        assert len(names) == 21, names
-        result["checks"].append("21 tools registered by actual PluginContext")
+        assert len(names) == 22, names
+        result["checks"].append("22 tools registered by actual PluginContext")
         for sid, cwd in (("native-a", temp / "a"), ("native-b", temp / "b")):
             tokens = set_session_vars(platform="tui", session_key=sid, session_id=sid, cwd=str(cwd))
             try:
