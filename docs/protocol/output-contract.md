@@ -370,7 +370,9 @@ Explicit grant IDs are eight lowercase hexadecimal characters, not paths.
 An answered `xsm_approve` returns the legacy text and an `approval` snapshot:
 id, worker, approved/denied status, summary, nullable tool, answered_at, via and
 nullable reason. The snapshot reports the answer written to that exact request;
-it does not prove the worker executed it. A dedicated result schema remains pending.
+it does not prove the worker executed it. The [approval result schema](approval-result.schema.json)
+covers answer snapshots, pending questions and legacy text-only results.
+[Examples](approval-result-examples.json) distinguish approval, denial, no request and pending.
 
 Omitted IDs select the current first request before decision identity/caching.
 A different request or immutable input/worker scope requires a distinct decision,

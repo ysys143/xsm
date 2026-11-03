@@ -111,7 +111,8 @@ class ProtocolTest(ProtocolFixture):
                      'question-result.schema.json', 'question-result-examples.json',
                      'question-results.md', 'publication-result.schema.json', 'publication-result-examples.json',
                      'decision-status-result.schema.json', 'decision-status-result-examples.json',
-                     'grant-result.schema.json', 'grant-result-examples.json'):
+                     'grant-result.schema.json', 'grant-result-examples.json',
+                     'approval-result.schema.json', 'approval-result-examples.json'):
             target = root / 'docs/protocol' / name
             target.parent.mkdir(parents=True, exist_ok=True)
             shutil.copyfile(source / 'docs/protocol' / name, target)
@@ -123,7 +124,8 @@ class ProtocolTest(ProtocolFixture):
                      'question-result.schema.json', 'question-result-examples.json',
                      'question-results.md', 'publication-result.schema.json', 'publication-result-examples.json',
                      'decision-status-result.schema.json', 'decision-status-result-examples.json',
-                     'grant-result.schema.json', 'grant-result-examples.json'):
+                     'grant-result.schema.json', 'grant-result-examples.json',
+                     'approval-result.schema.json', 'approval-result-examples.json'):
             target = root / 'docs/protocol' / name
             data = target.read_bytes()
             target.unlink()

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Black-box stdio lifecycle and delivery checks; no xsm imports or storage inspection."""
+"""Stdio conformance checks without xsm imports; approval suite seeds and inspects synthetic worker state."""
 import argparse
 import base64
 import hashlib
@@ -270,6 +270,40 @@ def messaging(peer, sender, receiver, reopen, check, equal, events=False):
               "event-bound original" in pending["messages"][0], True))
         check("event original requires explicit ACK", lambda: equal(operation(receiver, "xsm_ack",
               tokens=[pending["claims"][0]["token"]])["acked"], event["params"]["ids"]))
+
+
+def approvals(peer, params, env, check, equal):
+    """Seed synthetic worker requests; exercise answers through public stdio only."""
+    owner = peer.call('session.open', dict(params, conversation='approval-contract-owner', capabilities=['user-decisions']))
+    def operation(**arguments):
+        return peer.call('operation.call', dict(session=owner['session'], operation='xsm_approve', arguments=arguments))
+    state = Path(env['XSM_HOME'])
+    def seed(ident):
+        # This fixture does not launch a worker or execute a requested command.
+        for relative, value in (
+            ('workers/approval-fixture.json', dict(name='approval-fixture', parent_ref=owner['ref'], created=1)),
+            ('approvals/' + ident + '.json', dict(id=ident, worker='approval-fixture', status='pending',
+                summary='fixture summary', t=1, runtime='codex', tool='Bash', input=dict(command='fixture only')))):
+            target = state / relative
+            target.parent.mkdir(parents=True, exist_ok=True)
+            target.write_text(json.dumps(value))
+    check('no worker request returns text only', lambda: equal(set(operation()), {'text'}))
+    for ident, answer, status in (('approval-allow', 'allow', 'approved'), ('approval-deny', 'deny', 'denied')):
+        seed(ident)
+        pending = operation(id=ident)
+        check(status + ' requires host question', lambda: equal(pending.get('status'), 'waiting-for-user'))
+        event = peer.notification()['params']
+        check(status + ' hides host challenge', lambda: equal('challenge' not in pending, True))
+        peer.call('decision.response', dict(session=owner['session'], questionId=event['questionId'], challenge=event['challenge'],
+            displayed=event['question'], action='accept', answer=answer, source_id='synthetic-' + ident))
+        result = operation(id=ident)
+        check(status + ' snapshot binds exact request', lambda: equal(
+            result['approval']['id'] == ident and result['approval']['status'] == status and
+            result['approval']['worker'] == 'approval-fixture' and result['approval']['via'] == 'host-user', True))
+        stored = json.loads((state / 'approvals' / (ident + '.json')).read_text())
+        check(status + ' persists exact worker answer', lambda: equal(stored['status'], status))
+        if status == 'approved':
+            check('allow replay preserves producer snapshot', lambda: equal(operation(id=ident), result))
 
 
 def grants(peer, params, check, equal):
@@ -792,6 +826,9 @@ def run(command, suite="lifecycle", capture=False):
             if suite == 'discovery':
                 result['scope'] = 'lifecycle and local public discovery; no physical remote, native UI or messenger certification'
                 discovery(b, reopened, resumed, check, equal)
+            if suite == 'approvals':
+                result['scope'] = 'synthetic worker request answers through stdio; no worker execution or actual human/native UI certification'
+                approvals(b, params, env, check, equal)
             if suite == 'grants':
                 result['scope'] = 'lifecycle and synthetic host worker grant issuance/readback; no worker launch or actual dangerous mode'
                 grants(b, params, check, equal)
@@ -821,7 +858,7 @@ def run(command, suite="lifecycle", capture=False):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--capture", action="store_true", help="include isolated wire observations in the report")
-    parser.add_argument("--suite", choices=("lifecycle", "messaging", "events", "decisions", "uploads", "discovery", "collaboration", "documents", "sending", "questions", "selection", "grants"), default="lifecycle")
+    parser.add_argument("--suite", choices=("lifecycle", "messaging", "events", "decisions", "uploads", "discovery", "collaboration", "documents", "sending", "questions", "selection", "grants", "approvals"), default="lifecycle")
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--command", nargs=argparse.REMAINDER, required=True)
     args = parser.parse_args()

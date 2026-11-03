@@ -1,8 +1,8 @@
 # Operation 결과 계약 범위 — 2026-11-03
 
 상태: 전체 결과 계약은 미완이다. 공개 catalog22개를 실제 encoding 선언과
-개발 checker의 operation별 분기에 대조했다. Domain schema가 있는 operation 이름은14개,
-없는 이름은8개다. 14개 중 team/board는 일부 action만 정의한다. 이 수는
+개발 checker의 operation별 분기에 대조했다. Domain schema가 있는 operation 이름은15개,
+없는 이름은7개다. 15개 중 team/board는 일부 action만 정의한다. 이 수는
 완료율·독립 구현 인증·native 지원률이 아니다.
 
 | Operation | 현재 result encoding | Domain 구조 정의와 남은 범위 |
@@ -27,7 +27,7 @@
 | `xsm_reach` | text envelope | 미완: 공통 result object 검사만 있음 |
 | `xsm_doc` | JSON object | [doc-result.schema.json](../../protocol/doc-result.schema.json) — 6개 action 구조 |
 | `xsm_doc_endorse` | text envelope | 미완: 공통 result object 검사만 있음 |
-| `xsm_approve` | text envelope | 미완: 공통 result object 검사만 있음 |
+| `xsm_approve` | text envelope + producer metadata | [approval-result.schema.json](../../protocol/approval-result.schema.json) — 승인/거부 snapshot·대기·기존 text |
 | `xsm_decide` | text envelope | 미완: 공통 result object 검사만 있음 |
 
 공통 output schema는 JSON-RPC 성공/오류와 method별 큰 구조를 검사하며, 이
@@ -49,3 +49,5 @@ scripts/check-protocol-schema.py의 operation별 validator 분기다. 이번 표
 후속 [그룹 질문 복구](question-group-owner.md)는 ask/status/connect의 실제
 공개 경로32개와 소유자·reply claim 결함 수정을 기록한다. 그 복구 커밋 자체는 normative schema를 추가하지 않았다. 이후
 [질문 결과 계약](question-contract.md)이 세 operation의 구조를 정의해 본 표에 반영했다.
+
+후속 [개별 worker 승인 결과 계약](approval-contract.md)은 `xsm_approve`의 구조와 합성 worker 요청의 실제 stdio 검사를 추가한다. 실제 사용자/native UI 검증은 별도 미완이다.

@@ -265,3 +265,15 @@ class ExternalConformanceTest(unittest.TestCase):
         result = checker.run(command, suite='decisions')
         self.assertEqual(result['status'], 'failed', result)
         self.assertEqual(result['activeCheck'], 'stored answer has host source and no applied effect')
+
+    def test_actual_worker_approval_contract(self):
+        result = checker.run(self.delivery_candidate('none'), suite='approvals', capture=True)
+        self.assertEqual(result['status'], 'passed', {k:v for k,v in result.items() if k != 'observations'})
+        self.assertEqual(len(result['checks']), 26)
+
+    def test_worker_approval_wire_defects_are_detected(self):
+        for fault in ('approval-missing-producer', 'approval-wrong-id'):
+            with self.subTest(fault=fault):
+                result = checker.run(self.delivery_candidate(fault), suite='approvals')
+                self.assertEqual(result['status'], 'failed', result)
+                self.assertEqual(result['activeCheck'], 'approved snapshot binds exact request')

@@ -245,3 +245,13 @@ not current usability or runtime capability. Actual consumption must validate
 the stored grant and remains one-use. Removing producer data or changing an ID
 on replay fails the public suite. Text-only legacy outcomes do not establish an
 issuance receipt for a structured client.
+
+### Individual worker permission answers
+
+`--suite approvals --capture` checks pending questions, allow/deny snapshots,
+exact request persistence and allow replay through real stdio. It seeds synthetic
+worker records in the isolated state directory and inspects their answer status;
+this suite is not storage-independent participant certification. It launches no
+worker and certifies no native UI, actual person, or execution effect.
+The offline [approval schema](approval-result.schema.json) validates these wire
+results and rejects unknown/private fields and malformed request identifiers.

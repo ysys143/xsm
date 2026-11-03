@@ -1,0 +1,48 @@
+[
+  {
+    "source": "isolated stdio synthetic host; request id, summary and timestamps normalized",
+    "result": {
+      "approval": {
+        "id": "approval-1",
+        "worker": "approval-fixture",
+        "status": "approved",
+        "summary": "fixture summary",
+        "tool": "Bash",
+        "answered_at": 1793686116.532394,
+        "via": "host-user",
+        "reason": null
+      },
+      "text": "allowed: worker approval-fixture's request [approval-1] fixture summary"
+    }
+  },
+  {
+    "source": "isolated stdio synthetic host denial; request id, summary and timestamps normalized",
+    "result": {
+      "approval": {
+        "id": "approval-1",
+        "worker": "approval-fixture",
+        "status": "denied",
+        "summary": "fixture summary",
+        "tool": "Bash",
+        "answered_at": 1793686116.532394,
+        "via": "host-user",
+        "reason": "your user said no"
+      },
+      "text": "denied: worker approval-fixture's request [approval-1] fixture summary"
+    }
+  },
+  {
+    "source": "isolated stdio synthetic host; no waiting worker request",
+    "result": {
+      "text": "no waiting request from your workers"
+    }
+  },
+  {
+    "source": "synthetic pending envelope; challenge omitted",
+    "result": {
+      "status": "waiting-for-user",
+      "decision_id": "6b606559306e7e7820841b339527e1fd7b23e29ddbfc61c932c863f99ce8f34e",
+      "question_id": "3859fc86ee6d4dd7b6a3291c786015ab"
+    }
+  }
+]

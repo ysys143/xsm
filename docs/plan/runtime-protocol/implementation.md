@@ -2706,3 +2706,11 @@ source 변이3개를 모두 assertion 실패로 검출했다(node-control-mutant
 704개(Python490+SDK50+provider26+Node138), 독립 mock39/변이14개를
 100.825초에 통과했다(opencode-worker-control-core.log). 이 수치의 Linux 전체
 실행은 아직 미실행이며, 앞선693개 Linux 결과와 구분한다.
+
+## 개별 worker 승인 결과 계약 — 2026-11-03
+
+[승인 결과 계약](approval-contract.md)에 `xsm_approve`의 snapshot·pending·legacy
+구조를 정의했다. 실제 격리 stdio26개 검사와 frame28개, 예제4개·거부12개,
+ID 제약 제거 변이1개와 wire 결함2종을 검증했다. Mac core908개는76.030초에
+통과했다. 합성 worker 상태를 사용하는 검사이며 실제 사람/native UI 검증은 미완이다.
+Domain schema가 없는 operation은7개이며 team/board의 일부 action도 남아 있다.
