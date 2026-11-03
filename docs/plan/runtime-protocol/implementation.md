@@ -2962,3 +2962,10 @@ provider 모드이고 실제 서비스·UI·전체 runtime/OS 행렬을 인증�
 실제 queue 관측을 뺀 변이는 실패했다. 보조 API 요청의 불필요한 identity 조회도
 red 후 pending-host guard로 수정했고31개 focused와 Mac963개/schema/v7은
 59.780초였다. 최초100개/2개 smoke/변이와 보존 source hashes도 구분했다.
+
+3cc635a 고정 Linux100개도214.999167ms p95/221.388584ms max/실패0·미실행0이었다.
+Raw100개와 고유 native admission ID100개를 독립 대조했다. 같은 소스의963개/
+schema/v7도3.11 84.026초/3.14 108.802초로 통과했고 VM stopExit=0이다.
+이는 Hermes gateway/Telegram local transport 모드의 두 OS 표본이며 실제 서비스나
+전체 runtime/OS/mode 행렬 완료가 아니다. OpenClaw의 다음 미완 경로는
+[고정 SDK wake 조사](openclaw-idle-wake.md)에 실행해야 할 경계와 함께 구분했다.

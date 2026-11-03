@@ -1,6 +1,6 @@
 # Hermes native queue 전달 지연
 
-상태: Hermes0.22.5 gateway/TelegramAdapter + local platform transport의 Mac100표본이다.
+상태: Hermes0.22.5 gateway/TelegramAdapter + local platform transport의 Mac/Linux 각100표본이다.
 실제 외부 Telegram·구독 모델·UI나6런타임/2OS 전체 지연 행렬의 인증은 아니다.
 이전 Linux 승인 불안정성도 미해결이므로 전체 지원 완료의 전제는 충족하지 않았다.
 
@@ -29,6 +29,7 @@ unexecuted를 구분한다. 실제 queue 관측만 제거한 변이는 native tu
 | 표본 | OS/Python | 완료/실패/미실행 | p95 | 최댓값 |
 |---|---|---|---|---|
 | mac100-final | macOS26.5 arm64/Python3.14.6 |100/0/0|253.082ms|326.893ms|
+| hermes-latency-linux | Linux arm64/Python3.14.10 |100/0/0|214.999167ms|221.388584ms|
 
 Nearest-rank p95는 정렬한100개 중95번째 값이다. 저장 trace100개, 표본100개,
 서로 다른 native admission ID100개와 raw ns 차이의 p95를 별도 재계산해 대조했다.
@@ -47,5 +48,13 @@ SID에 불필요한 신원 조회를 해 경고를 냈다. 이 경고가 측정 
 
 Raw HTTP는 요청 수를 제한하고 gzip으로 보존한다. 무제한 trace나 삭제한
 실패는 없다. 최초2표본 smoke와 의도한 missing-queue 변이도 별도 경로에 남긴다.
-원시는 `deliverables/protocol-foundation/hermes-latency/`다. Linux100개, 다른
-runtime/mode·실제 서비스/UI·원래 전체 행렬은 미완이다.
+Mac 원시는 `deliverables/protocol-foundation/hermes-latency/`에 보존한다.
+
+Linux 후속 결과는 고정3cc635a이며 동일 native image의 Python은3.14.10이다.
+Native729개 checkpoint/453 HTTP와 raw100개 ns 차이·100개 고유 admission ID를
+대조했다. 설치 plugin unload와 warning 부재를 확인했고, 같은 소스의 전체963개/
+schema/v7도3.11 84.026초/3.14 108.802초에 통과했다. 최종 status=passed/stopExit=0이다.
+Mac 보존 source manifest의6개 측정 관련 파일 hash도3cc635a blob과 일치한다.
+Linux 원시는 `deliverables/protocol-foundation/hermes-latency-linux/`에 있다.
+두 OS의 이 모드는 목표를 통과했으나, 다른 runtime/mode·실제 서비스/UI와 원래
+전체 행렬은 미완이며 이전 Linux 승인 실패의 원인도 미확정이다.
