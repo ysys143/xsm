@@ -76,7 +76,7 @@ record 수1개 확인을 거쳐 재현했다. 시험은 합성 원격 입력의 
 필드를 다시 제거한 변이도 검출했다(remote-record-after.json).
 보드 예제는5개·거부16개로 늘었다(schema-remote-final.json).
 이는 물리 네트워크 수신이나 원격 승인 신뢰 검증 성공을 뜻하지 않는다.
-진행 중 Linux batch는 보완 전5239fe0에 고정되어 이 스키마 변경의 Linux
+별도 Linux batch는 보완 전5239fe0에 고정되어 이 스키마 변경의 Linux
 인증으로 소급하지 않는다. 서버/core 실행 코드는 이 보완에서 바꾸지 않았다.
 
 ## 남은 필수 조건
@@ -86,3 +86,21 @@ record 수1개 확인을 거쳐 재현했다. 시험은 합성 원격 입력의 
 다른 operation 결과 계약, 독립 구현의 전체 적합성과 승인된 전체 행렬은 미완이다.
 구현 담당 세션이 이 계약을 포함한 고정 source의 Linux/core와 나머지 표면을
 실행한 뒤 갱신한다. 범위를 생략하거나 전체 계획을 완료한 것으로 판정하지 않는다.
+
+## 고정 source Linux 핵심 검사
+
+5239fe0b7ef8c40528744f319073a83b7f4e957c의 archive를 두 Linux 환경에
+똑같이 넣었다. Archive SHA256은
+5f0d6175e9da4c990f823f9fcdd732144d10b5fb0fd7d45207fca82b37f734e9다.
+Python3.11.2에서84.129초, Python3.14.10에서105.672초로 각각863개
+(Python522+SDK56+native133+Node152)를 통과했다. 독립 mock39/변이14는
+별도 수치다. Model0/network none/cpu2/memory3g이며 미실행 case0,
+VM stopExit0이다. 원시는 board-contract-linux/result.json 및 환경별
+output/protocol.log에 있다.
+
+이 고정 source는 위 from_machine 보완 전이다. 후속7d99b5e의 변경은
+스키마·예제·개발 checker·문서뿐이며 서버나 core 실행 코드를 바꾸지 않았다.
+최종 스키마와 실제 원격 수신 fixture는 macOS checker로 검증했다. Linux
+image에 jsonschema가 있는지 읽기 전용으로 확인했으나 없었으므로, 이번
+Linux core를 최종 스키마의 Linux jsonschema 실행으로 세지 않는다.
+전체 native/remote/UI/설치 행렬과 독립 전체 구현은 여전히 미완이다.
