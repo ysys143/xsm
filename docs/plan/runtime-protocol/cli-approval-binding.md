@@ -27,3 +27,14 @@ worker_approval binding을 붙이고 backend의 request lock 안에서 같은 fi
 
 실제 사용자/native permission UI와 원래 전체 runtime 행렬은 미완이다. Linux는
 후속 고정 source 재실행이다. 이 복구가 전체 P1이나 원래 계획의 완료는 아니다.
+
+## 고정 source Linux 검증
+
+4d92d14feafd78e7c0f7531c4752fcfa01ec2e4f의 archive SHA256은
+ffca6c75185d156d24c2fcf367238eaeab2eb5651c71a06586678a135245579c다.
+Python3.11.2에서78.294초, Python3.14.10에서102.161초로 core935개를 각각
+통과했다. 새 CLI4개와 실제 consent 저장 경로, 기존 native/approval 검사를 포함한다.
+두 환경에서 새 errors-fixture27개/frame29개와 offline jsonschema4.26.0 검증도
+통과했다. Model0/network none/cpu2/memory3g, 미실행 case0,
+미실행 wire/schema0, VM stopExit0이다. 원시는 `cli-approval-binding-linux/result.json`과
+환경별 output이다. 실제 사람/native UI와 전체 계획은 미완이다.
