@@ -2934,3 +2934,11 @@ hooks/Tool Hub로 awake·FYI·native ACK·회신과 권한 철회/connector 교�
 확인했다.27개 checkpoint/11 HTTP, 실제 local21개 회귀와 Mac960개/schema/v7
 59.136초가 통과했다. Platform auth guard 변이는 의도한 assertion으로 실패했다.
 플랫폼 서비스에는 접속하지 않았으며 외부 Discord·Telegram과 전체 계획은 미완이다.
+
+후속 실제 TelegramAdapter도Mac27개/11 HTTP와 같은 권한·provenance 거부를
+통과했다.9d1f5bb Linux Telegram27개도 통과했으나, 전체3.11 scope 승인은
+caller/scope 변경 또는 response 시간·상태 검사에서 실패했다. b2086dd/9d1f5bb의
+전체 Linux는 failed로 유지한다.3.14는 각각108.162초/108.532초 통과, stopExit=0이다.
+Mac9d1f5bb core961개/schema/v7은59.673초였다. 단독 scope20회 성공은 원인
+해결 증거가 아니다. Failure-only 관측과 별도 표시한 인위적 start/clock 시뮬레이션을
+추가했고, 실제 원인은 후속 부하 표본에서 확인해야 한다.

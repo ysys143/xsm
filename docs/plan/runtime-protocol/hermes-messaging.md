@@ -72,3 +72,16 @@ Actual conformance candidate에 반환값을 바꾸지 않는 failure-only 관�
 generation, cwd 일치 여부와 decision 시간·상태를 stderr에 남긴다. 질문·토큰·경로는
 기록하지 않는다. 명시적 start-drift 시뮬레이션을 구분해 관측기 자체를 확인하며,
 이 인위적 실패를 원래 Linux 실패의 원인 증거로 사용하지 않는다. 원인은 미해결이다.
+
+9d1f5bb 단독 scope 반복20회는33.952초에 모두 통과했으나, 같은 소스의 전체
+Linux3.11 부하에서는 첫 link의 decision.response가
+`question is closed, expired or superseded`로 실패했다. 이 분기는 caller 관측
+이전에 short-circuit하므로 추가 clock/status 관측을 연결했다. 실제 반환 시각을
+바꾸지 않고 판정에 사용된 time.time 값과 코드 위치를 기록하며, 명시적 clock
+rollback 시뮬레이션은 별도로 표시한다. 정상·start drift·clock rollback 세 검사는
+5.304초에 통과했다. 이 단계까지 원래 실패의 원인은 확정하지 않았다.
+
+9d1f5bb의 실제 Linux Telegram 경로27개/11 HTTP와 Python3.14 core961개는
+통과했다(108.532초).3.11 실패로 전체 결과는 failed이고 stopExit=0이다.
+같은 소스의 Mac961개/schema/v7은59.673초였다. 단독 반복 성공을 전체 부하
+실패의 복구 증거로 대체하지 않는다.

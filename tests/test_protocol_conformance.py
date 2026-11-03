@@ -304,6 +304,18 @@ class ExternalConformanceTest(unittest.TestCase):
         self.assertNotEqual(observed['savedStart'], observed['observedStart'])
         self.assertEqual(observed['generation'], observed['expectedGeneration'])
 
+    def test_scope_failure_observer_records_the_clock_that_refused_a_response(self):
+        import json
+        result = checker.run(self.delivery_candidate('none') + ['--simulate-clock-rollback'], suite='scopes')
+        self.assertEqual(result['status'], 'failed', result)
+        observations = [json.loads(line) for log in result['diagnostics'] for line in log.splitlines()
+                        if line.startswith('{')]
+        observed = observations[-1]
+        self.assertEqual(observed['event'], 'decision-response-refused')
+        self.assertTrue(observed['simulatedClockRollback'])
+        self.assertEqual(observed['decisionState'], 'pending')
+        self.assertTrue(any(row['value'] < observed['created'] for row in observed['clocks']))
+
     def test_scope_wire_defects_are_detected(self):
         for fault, check in (('scope-missing-producer', 'link snapshot names canonical roots'),
                              ('scope-wrong-root', 'link snapshot names canonical roots'),

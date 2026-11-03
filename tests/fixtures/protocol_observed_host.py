@@ -12,15 +12,19 @@ ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
 from xsm import context, decisions, identity
 from xsm.operations import OperationService
+from xsm.protocol import Connection, ProtocolError
 
 starts, states = {}, {}
 simulate = sys.argv[1:] == ['--simulate-start-drift']
-if sys.argv[1:] and not simulate:
+simulate_clock = sys.argv[1:] == ['--simulate-clock-rollback']
+if sys.argv[1:] and not (simulate or simulate_clock):
     raise SystemExit('unknown observation fixture argument')
 drift_pid = None
 original_start = identity.lstart
 original_state = identity.state_reason
 original_current = OperationService._decision_current
+original_response = Connection.decision_response
+original_clock = time.time
 
 
 def observed_start(pid):
@@ -61,8 +65,37 @@ def observed_current(self, decision):
     return value
 
 
+def observed_response(self, token, host, params):
+    item = next(((key, item) for key, item in self.ui_requests.items()
+                 if item['event']['questionId'] == params.get('questionId')), None)
+    snapshot = decisions.read(item[0]) if item else {}
+    clocks = []
+    def observed_clock():
+        value = original_clock()
+        frame = sys._getframe(1)
+        module = frame.f_globals.get('__name__')
+        if simulate_clock and module == 'xsm.protocol' and snapshot:
+            value = snapshot['created_at'] - 1
+        if module in ('xsm.protocol', 'xsm.decisions'):
+            clocks.append(dict(module=module, line=frame.f_lineno, value=value))
+        return value
+    try:
+        time.time = observed_clock
+        return original_response(self, token, host, params)
+    except ProtocolError as error:
+        observation = dict(event='decision-response-refused', code=error.code,
+            message=error.message, decisionState=snapshot.get('status'),
+            created=snapshot.get('created_at'), expires=snapshot.get('expires_at'),
+            clocks=clocks, simulatedClockRollback=simulate_clock)
+        print(json.dumps(observation), file=sys.stderr, flush=True)
+        raise
+    finally:
+        time.time = original_clock
+
+
 identity.lstart = observed_start
 identity.state_reason = observed_state
 OperationService._decision_current = observed_current
+Connection.decision_response = observed_response
 sys.argv = [str(ROOT / 'xsm'), 'protocol', 'serve', '--stdio']
 runpy.run_module('xsm', run_name='__main__')
