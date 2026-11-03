@@ -2797,3 +2797,12 @@ Mac931개 전체는50.353초에 통과했다. Linux는 고정 source 후속 실�
 legacy unbound ask 승격을 실제 실패로 재현하고, 보존 질문과 request lock의
 최종 답을 같은 fingerprint로 묶었다. 새4개와 기존 focused62개/4.303초를
 확인했고 Mac core935개는54.641초에 통과했다. 실제 사람/native UI/전체 계획은 미완이다.
+
+## V7 독립 참여자·결과 소비자 — 2026-11-03
+
+[독립 v7](independent-v7.md)은 공개 입력만으로 만든 새 transport/consumer를 부모가
+수정 없이 재실행했다.22개 operation/30개 action/16개 method 소비, RPC751회,
+독립3개 시나리오·공개 예제132개·mutant188개, 공개19개 suite/584개 검사와
+별도 schema742개 observation이 통과했다. Raw challenge는 host 전용 결과에만
+보존했다. Method 수·owned 조건·action mapping의 명세 피드백과 실제 native/Linux/
+원격·메신저·설치 전체 행렬은 미완으로 구분한다.
