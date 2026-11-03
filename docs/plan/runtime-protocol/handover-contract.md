@@ -26,3 +26,14 @@ Mac/Python3.14.6 core915개(Python527+외부 적합성47+SDK56+native133+Node152
 ref가 있다고 가정한 것이며 보존했다. 최종 wire-final/schema-final을 사용한다.
 모델/실제 사람/native UI/원격을 실행하지 않았다. 마지막 owned 결과 계약과
 team/board의 남은 action, 전체 행렬은 계속 미완이다.
+
+## 고정 source Linux 검증
+
+8142f4b16ef9108e96126e00418ec3242f5a3b69의 archive SHA256은
+4d776f04e2b6e3f4f55e8a9ef84455a1271572d1d10d356a058a8a40c0e60de4다.
+Python3.11.2에서91.664초, Python3.14.10에서117.245초로 core915개를 각각
+통과했다. 두 환경에서 handovers28개/frame39개와 endorsements25개/frame35개를
+새로 실행하고 합계 frame74개를 offline jsonschema4.26.0으로 검증했다.
+Model0/network none/cpu2/memory3g, 미실행 case0, 미실행 wire/schema0,
+VM stopExit0이다. 원시는 `handover-contract-linux/result.json`과 환경별 output이다.
+실제 사람/native UI·모델·원격 행렬은 미완이다.

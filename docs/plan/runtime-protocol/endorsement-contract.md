@@ -23,3 +23,14 @@ Mac/Python3.14.6 core913개(Python527+외부 적합성45+SDK56+native133+Node152
 77.295초에 통과했다(core.log, exit0). Wire 결함2종은 의도한 원본 결속 검사에서
 실패했고 node ID 제약 제거 변이도 검출했다(mutant.json). 독립 mock39/변이14는
 별도 수치다. Linux는 후속 고정 source 검증이다.
+
+## 고정 source Linux 검증
+
+8142f4b16ef9108e96126e00418ec3242f5a3b69의 archive SHA256은
+4d776f04e2b6e3f4f55e8a9ef84455a1271572d1d10d356a058a8a40c0e60de4다.
+Python3.11.2에서91.664초, Python3.14.10에서117.245초로 core915개를 각각
+통과했다. 두 환경에서 handovers28개/frame39개와 endorsements25개/frame35개를
+새로 실행하고 합계 frame74개를 offline jsonschema4.26.0으로 검증했다.
+Model0/network none/cpu2/memory3g, 미실행 case0, 미실행 wire/schema0,
+VM stopExit0이다. 원시는 `handover-contract-linux/result.json`과 환경별 output이다.
+실제 사람/native UI·모델·원격 행렬은 미완이다.
