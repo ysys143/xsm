@@ -187,7 +187,8 @@ VM 종료를 확인했다. 전체 계획은 계속 미완이다.
 다른 요청이나 변경 input에 이전 답을 쓰지 않는다. 요청 id의 경로 해석도 막았으며
 답변 snapshot metadata를 추가했다. 명시적 host deny의 worker 전달도 보완했고
 최종 관련129개/11.792초와 Mac core906개/78.316초를 확인했다. 실제 native worker
-실행 및 approve 결과 schema와 전체 계획은 미완이다.
+실행 및 approve 결과 schema와 전체 계획은 미완이다. 고정fd5229d의 Linux
+core906개도3.11에서89.581초,3.14에서112.965초에 통과했고 VM 종료를 확인했다.
 
 ## 단계별 판정
 

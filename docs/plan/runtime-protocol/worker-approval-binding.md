@@ -42,8 +42,8 @@ worker·사람·native permission 화면을 실행하지 않았다.
 시험 ResourceWarning은 보존했고 PID41907은 ps 후속 조회에서 존재하지 않았다.
 이 warning을 고쳤다고 주장하지 않는다.
 
-원시는 deliverables/protocol-foundation/worker-approval-binding/다. 고정 Linux source 검증, approve 결과 schema 및 실제 native/runtime/원격/설치/p95
-행렬은 확인 전까지 미완이다. 구현 담당 세션이 각 근거를 실행해 갱신한다.
+원시는 deliverables/protocol-foundation/worker-approval-binding/다. 고정 Linux core는 아래에서 확인했다. Approve 결과 schema 및 실제
+native/runtime/원격/설치/p95 행렬은 확인 전까지 미완이다. 구현 담당 세션이 각 근거를 실행해 갱신한다.
 
 ## 명시적 host deny 전달
 
@@ -59,3 +59,14 @@ negative 답을 읽어 해당 worker 요청에 반영한다. Allow는 기존 엄
 
 Mac/Python3.14.6 최종 core906개(Python527+외부 적합성38+SDK56+native133+Node152)가
 78.316초에 통과했다(core-complete.log, exit0). 독립 mock39/변이14는 별도 수치다.
+
+## 고정 source Linux core
+
+fd5229dd37a1b717693336abd863317ee09f162f의 archive SHA256은
+e84ba7437dbd1dd543b59f05b4e2d9120e08ec50816ffac792c20340dff6b355다.
+Python3.11.2에서89.581초, Python3.14.10에서112.965초로 core906개
+(Python527+외부 적합성38+SDK56+native133+Node152)를 각각 통과했다.
+독립 mock39/변이14는 별도 수치다. Model0/network none/cpu2/memory3g,
+미실행 case0, VM stopExit0이다. 원시는 worker-approval-binding-linux의
+result.json과 환경별 output/protocol.log다. 실제 사람/native worker 권한 UI나
+원격 전체를 검증한 표본은 아니다.
