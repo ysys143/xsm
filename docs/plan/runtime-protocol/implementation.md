@@ -115,7 +115,9 @@ domain schema8개(그중 team/board는 일부 action)와 미정의14개를 구�
 격리 프로세스로 실행한다. 전체 MODULES와 SDK/Node/독립 participant를 유지하며
 공통120초 deadline도 바꾸지 않았다. 누락/offset 충돌 변이2개를 회귀 검사가
 검출했고 Mac core871개는88.867초에 통과했다. 통계적 성능이나 native p95
-측정이 아니며 Linux 및 원래 전체 계획의 검증은 별도다.
+측정이 아니다. 고정e5fec62의 Linux core871개도3.11에서82.197초,
+3.14에서102.236초에 통과했고 VM 종료를 확인했다. 원래 전체 계획의
+나머지 조건은 계속 미완이다.
 
 ## 단계별 판정
 

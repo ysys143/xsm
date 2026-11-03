@@ -33,9 +33,8 @@ deadline/failure 검사는 자식 종료와 부분 출력 보존을 확인한다
 
 ## 남은 조건
 
-Linux 고정 source의 재검증 전에는 두 OS의120초 조건 검증을 완료했다고
-판정하지 않는다. 구현 담당 세션이 각 실행 결과를
-확인해 갱신한다. Native p95/전체 runtime/UI/remote/설치 및 미완 계약들은
+이번 변경의 core는 아래 고정 source에서 두 OS의120초 조건을 확인했다.
+전체 목표의 나머지 조건은 구현 담당 세션이 각 실행 결과를 확인해 갱신한다. Native p95/전체 runtime/UI/remote/설치 및 미완 계약들은
 이 변경으로 완료되지 않는다. 승인된 전체 계획은 그대로 남아 있다.
 
 ## macOS 전체 실행
@@ -48,3 +47,19 @@ Linux 고정 source의 재검증 전에는 두 OS의120초 조건 검증을 완�
 직전 송신 계약 source의 macOS 표본은870개/107.777초였다. 두 기록은 source와
 검사 수가 다르고 각각 단일 실행이므로 통계적 속도 배율/p95 증거로 쓰지 않는다.
 이번 전체 실행이120초 이내이고 모든 기존 검사 묶음을 유지한 사실을 확인한다.
+
+## 정본 목록 비교와 Linux 전체 실행
+
+64fb8fbe88492fb73509ef07ba2973f3553ca019와
+e5fec62f4459fc390ca4cea04fe1a175968df18b의 정본 MODULES45개 및
+NATIVE_MODULES14개가 순서까지 같음을 AST 비교로 확인했다
+(inventory-comparison.json). 실행 계획의 분리이며 기존 검사를 삭제하지 않았다.
+
+e5fec62f4459fc390ca4cea04fe1a175968df18b을 고정한 Linux archive SHA256은
+688bed7adc53df9749e5db4efb605e4a3b26f3a75a6cd705d200f5c303664dd6다.
+Python3.11.2에서82.197초, Python3.14.10에서102.236초로 각각871개
+(Python501+외부 적합성29+SDK56+native133+Node152)를 통과했다. 독립
+mock39/변이14는 별도 수치다. Model0/network none/cpu2/memory3g,
+미실행 case0, VM stopExit0이다. 원시는 core-conformance-parallel-linux의
+result.json과 환경별 output/protocol.log다. 앞선 단일 실행과의 차이는
+관측값이며 통계적 성능 배율이나 native queue p95로 확대하지 않는다.
