@@ -59,6 +59,13 @@ try:
             params.get('arguments', {}).pop('message_ids', None)
         reply = exchange(request)
         if request['method'] == 'operation.call':
+            if params.get('operation') == 'xsm_question_status' and reply.get('result', {}).get('group'):
+                value = reply['result']
+                if fault == 'questions-foreign-internal' and value.get('status') == 'refused':
+                    reply.pop('result')
+                    reply['error'] = {'code': -32603, 'message': 'synthetic internal error'}
+                if fault == 'questions-erases-acked-answer' and value.get('status') == 'replied' and value.get('claims') == []:
+                    value['replies'] = []
             if params.get('operation') == 'xsm_send':
                 value = reply.get('result', {})
                 if fault == 'send-storage-as-arrival' and not value.get('grouped') and value.get('send', {}).get('status') == 'stored':

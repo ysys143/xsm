@@ -84,3 +84,17 @@ members; sync notes are observations, not proof that a remote consumer read
 them. Both require membership. `decide` remains outside this model operation: a
 user answer must come through the scoped decision flow, not a supplied answer
 argument. CLI and model hosts use the same board service for these effects.
+
+## Question groups and explicit consumption
+
+`xsm_question_status` refuses a foreign group before child polling. A group
+result's top-level `claims` aggregates the available reply claims from its
+recipient rows, each bound to the child request ID. ACK those exact tokens
+after reading the replies. Previously indexed replies remain visible after
+ACK, without issuing a new claim for the acknowledged original. Group history
+is not a new permission grant or evidence that every recipient finished.
+
+The public `questions` conformance suite observes these paths, including late
+and partial replies and a selected-peer handshake. Ask/status/connect domain
+result schemas remain outstanding; the generic object envelope does not fully
+validate their fields. See [conformance](conformance.md).

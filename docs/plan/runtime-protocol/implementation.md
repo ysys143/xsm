@@ -119,6 +119,16 @@ domain schema8개(그중 team/board는 일부 action)와 미정의14개를 구�
 3.14에서102.236초에 통과했고 VM 종료를 확인했다. 원래 전체 계획의
 나머지 조건은 계속 미완이다.
 
+## 그룹 질문 소유자·claim 복구 — 2026-11-03
+
+[그룹 질문 복구](question-group-owner.md)는 외부 그룹의 자식을 poll한 뒤
+waiting_on 내부 오류가 나던 공통 경로와, MCP/protocol 출력이 그룹 reply claim을
+다시 단일 질문으로 처리해 root aggregate를 비우던 경로를 수정했다. 기존 CLI
+및 단일 질문 의미를 유지하며 늦은 답·정본 ACK·이력 보존을 검사한다.
+Public questions suite32개와 frame42개를 확인했다. 실패한 재현/시험 driver
+표본도 보존했다. Mac core881개는91.310초에 통과했다. Ask/status/connect의
+normative 결과 schema는 계속 미완이다.
+
 ## 단계별 판정
 
 | 단계 | 상태 | 남은 조건 |

@@ -45,3 +45,7 @@ scripts/check-protocol-schema.py의 operation별 validator 분기다. 작성 시
 00ad234이며 docs-only 변경 이후에도 본 표는 이 source 시점의 조사 기록이다.
 후속 구현 담당 세션이 새 결과 계약을 추가할 때 해당 operation/action과
 실제 wire 검사 근거를 함께 갱신한다.
+
+후속 [그룹 질문 복구](question-group-owner.md)는 ask/status/connect의 실제
+공개 경로32개와 소유자·reply claim 결함 수정을 기록한다. Normative domain
+schema를 추가한 것은 아니므로 이 표의8개/14개 구분을 완료로 바꾸지 않는다.

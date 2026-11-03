@@ -57,6 +57,47 @@ class SharedQuestionServiceTest(TempState):
             self.assertEqual(second['handshake'], 'pending')
             self.assertEqual(shared.call_count, 2)
 
+    def test_foreign_group_status_refuses_through_service_cli_and_model(self):
+        from xsm import cli, mcp, question_groups, question_service, receive
+        group = question_service.ask(self.me, {'targets': ['ref:' + self.peer['ref']],
+            'text': 'retained owner question', 'wake': 'never'}, call=self.call)['result']
+        server = mcp.Server(io.StringIO(), io.StringIO())
+        server.session = lambda: self.peer
+        poll = mock.Mock(side_effect=AssertionError('foreign group child was polled'))
+        with mock.patch.object(receive, 'poll_replies', poll):
+            for frontend in ('service', 'cli', 'model'):
+                with self.subTest(frontend=frontend):
+                    if frontend == 'service':
+                        result = question_service.status(self.peer, group['id'], poll=poll)['result']
+                    elif frontend == 'cli':
+                        with mock.patch.object(cli, '_unsure_caller', return_value=(self.peer, None)):
+                            code, result = self.cli(['question-status', group['id']])
+                        self.assertEqual(code, cli.REFUSED)
+                    else:
+                        result = json.loads(server.call('xsm_question_status', {'id': group['id']}))
+                    self.assertEqual(result['status'], 'refused')
+                    self.assertEqual(result['replies'], [])
+                    self.assertEqual(result['recipients'], [])
+        poll.assert_not_called()
+        self.assertEqual(question_groups.status(self.me, group['id'])['status'], 'pending')
+
+    def test_model_group_reply_claims_survive_common_result_projection(self):
+        from xsm import send
+        server = self.server()
+        group = json.loads(server.call('xsm_ask', {'targets': ['ref:' + self.peer['ref']],
+            'text': 'group claim projection', 'wake': 'never'}))
+        child = group['recipients'][0]['id']
+        reply = send.send('ref:' + self.me['ref'], 'selected reply', sender=self.peer,
+            kind='reply', reply_to=child, msg_id='model-group-claim-reply', wake=False)
+        self.assertEqual(reply.status, 'stored')
+        answer = json.loads(server.call('xsm_question_status', {'id': group['id']}))
+        self.assertEqual([claim['id'] for claim in answer['claims']], ['model-group-claim-reply'])
+        self.assertEqual(answer['claims'], answer['recipients'][0]['claims'])
+        server.call('xsm_ack', {'tokens': [claim['token'] for claim in answer['claims']]})
+        retained = json.loads(server.call('xsm_question_status', {'id': group['id']}))
+        self.assertEqual(retained['replies'][0]['body'], 'selected reply')
+        self.assertEqual(retained['claims'], [])
+
     def test_cancelled_wait_does_not_cancel_or_ack_the_peer_request(self):
         from xsm import handoff, question_service, questions
         value = question_service.ask(self.me, {'target': 'ref:' + self.peer['ref'], 'text': 'retain work',

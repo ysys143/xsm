@@ -101,6 +101,46 @@ class QuestionGroupTest(test_xsm.TempState):
         with self.assertRaises(question_groups.GroupError):
             self._ask(())
 
+    def test_wait_refuses_foreign_group_before_polling_its_children(self):
+        from xsm import question_groups
+        result = self._ask(('codex:bee', 'codex:cee'), wake='never')
+        poll = mock.Mock(side_effect=AssertionError('foreign child was polled'))
+        denied = question_groups.wait_for(self.b, result['id'], poll=poll)
+        self.assertEqual(denied['status'], 'refused')
+        self.assertEqual(denied['replies'], [])
+        self.assertEqual(denied['recipients'], [])
+        poll.assert_not_called()
+
+    def test_wait_returns_not_found_for_absent_or_disappearing_group(self):
+        from pathlib import Path
+        from xsm import question_groups, questions
+        poll = mock.Mock(side_effect=AssertionError('absent group was polled'))
+        self.assertEqual(question_groups.wait_for(self.me, 'absent-group', poll=poll)['status'], 'not-found')
+        poll.assert_not_called()
+        result = self._ask(('codex:bee', 'codex:cee'), wake='never')
+        children = question_groups.child_ids(result['id'])
+        def disappear(child):
+            Path(question_groups._path(result['id'])).unlink(missing_ok=True)
+        missing = question_groups.wait_for(self.me, result['id'], poll=disappear)
+        self.assertEqual(missing['status'], 'not-found')
+        self.assertEqual(missing['replies'], [])
+        self.assertTrue(all(questions.status(self.me, child)['status'] == 'pending' for child in children))
+
+    def test_owned_terminal_group_still_polls_late_replies(self):
+        from xsm import ledger, question_groups
+        result = self._ask(('codex:bee',), wake='never')
+        child = question_groups.child_ids(result['id'])[0]
+        ledger.receipt(child, 'blocked', self.b, 'fixture transport ended')
+        self.assertEqual(question_groups.status(self.me, result['id'])['status'], 'refused')
+        def reply(ident):
+            self.assertEqual(ident, child)
+            self.assertTrue(self._reply(self.b, child, 'late-owned-reply', 'late final answer', 'succeeded'))
+        poll = mock.Mock(side_effect=reply)
+        late = question_groups.wait_for(self.me, result['id'], poll=poll)
+        self.assertEqual(late['status'], 'final')
+        self.assertEqual(late['replies'][0]['body'], 'late final answer')
+        poll.assert_called_once_with(child)
+
     def test_cli_group_ask_and_question_status(self):
         from xsm import cli
         with mock.patch.object(cli, '_unsure_caller', return_value=(self.me, None)):

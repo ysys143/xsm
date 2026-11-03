@@ -53,6 +53,32 @@ class ProtocolTest(ProtocolFixture):
             self.assertEqual(refused.exception.code, -32602)
         call.assert_not_called()
 
+    def test_foreign_question_group_refuses_without_losing_owner_state(self):
+        owner, other = self.open('group-owner'), self.open('group-other')
+        group = self.operation(owner, 'xsm_ask', targets=['ref:' + other['ref']],
+                               text='retain owner question', wake='never')
+        denied = self.operation(other, 'xsm_question_status', id=group['id'])
+        self.assertEqual(denied['status'], 'refused')
+        self.assertEqual(denied['replies'], [])
+        self.assertEqual(denied['recipients'], [])
+        self.assertEqual(denied['claims'], [])
+        self.assertEqual(self.operation(owner, 'xsm_question_status', id=group['id'])['status'], 'pending')
+
+    def test_group_reply_claims_remain_aggregated_for_explicit_ack(self):
+        owner, peer = self.open('group-claims-owner'), self.open('group-claims-peer')
+        group = self.operation(owner, 'xsm_ask', targets=['ref:' + peer['ref']],
+                               text='group claims question', wake='never')
+        child = group['recipients'][0]['id']
+        self.operation(peer, 'xsm_send', target='ref:' + owner['ref'], text='partial selected answer',
+                       kind='reply', reply_to=child, request_id='group-claims-reply', wake='never')
+        answer = self.operation(owner, 'xsm_question_status', id=group['id'])
+        self.assertEqual([claim['id'] for claim in answer['claims']], ['group-claims-reply'])
+        self.assertEqual(answer['claims'], answer['recipients'][0]['claims'])
+        self.operation(owner, 'xsm_ack', tokens=[claim['token'] for claim in answer['claims']])
+        retained = self.operation(owner, 'xsm_question_status', id=group['id'])
+        self.assertEqual(retained['replies'][0]['body'], 'partial selected answer')
+        self.assertEqual(retained['claims'], [])
+
     def test_team_queries_project_public_labels_and_running_state(self):
         opened = self.open('team-result-contract')
         self.assertEqual(self.operation(opened, 'xsm_team', action='list')['teams'], [])

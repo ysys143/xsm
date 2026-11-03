@@ -87,6 +87,24 @@ class ExternalConformanceTest(unittest.TestCase):
         self.assertIsNone(result['activeCheck'])
         self.assertIn('FileNotFoundError', result['error'])
 
+    def test_actual_server_correlated_questions(self):
+        result = checker.run(self.delivery_candidate('none'), suite='questions', capture=True)
+        self.assertEqual(result['status'], 'passed', result)
+        self.assertEqual(len(result['checks']), 32)
+        queried = [row['frame']['result'] for row in result['observations']
+                   if row.get('operation') == 'xsm_question_status' and 'result' in row['frame']]
+        self.assertEqual(sum(value.get('group') is True and value.get('status') == 'refused' for value in queried), 2)
+
+    def test_question_foreign_group_internal_error_is_detected(self):
+        result = checker.run(self.delivery_candidate('questions-foreign-internal'), suite='questions')
+        self.assertEqual(result['status'], 'failed', result)
+        self.assertEqual(result['activeCheck'], 'foreign group status is a scoped refusal')
+
+    def test_question_ack_erasing_answer_history_is_detected(self):
+        result = checker.run(self.delivery_candidate('questions-erases-acked-answer'), suite='questions')
+        self.assertEqual(result['status'], 'failed', result)
+        self.assertEqual(result['activeCheck'], 'ACK retains indexed group answer without a new claim')
+
     def test_actual_server_send_contract(self):
         result = checker.run(self.delivery_candidate('none'), suite='sending', capture=True)
         self.assertEqual(result['status'], 'passed', result)

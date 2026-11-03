@@ -202,7 +202,10 @@ class OperationService:
             value = json.loads(text)
             if name in ("xsm_ask", "xsm_question_status", "xsm_connect"):
                 from . import receive
-                value = receive.claim_question_replies(me, value)
+                # Group children were claimed against their own request IDs in _call.
+                # Reinterpreting the aggregate under the group ID loses those tokens.
+                if not value.get("group"):
+                    value = receive.claim_question_replies(me, value)
                 if value['claims']:
                     first = value['claims'][0]
                     self.handoff_calls.setdefault(self.active_request, []).append(

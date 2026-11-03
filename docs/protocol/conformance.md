@@ -183,3 +183,29 @@ that invariant separately.
 stdio. It requires the advertised upload extension; the default lifecycle suite
 does not certify it. Capture includes received base64 copy data, so keep fixture
 artifacts local and use only generated, non-sensitive test bytes.
+
+## Correlated questions and group ownership
+
+`--suite questions --capture` exercises 32 checks: lifecycle plus correlated
+single/group questions, scoped foreign-group refusal, partial/final answers,
+explicit reply ACK, retained answer history, private-handle projection and an
+existing-scope handshake. The participants are isolated protocol fixtures,
+not people, native agents or a physical remote deployment.
+
+A group's owner is checked before polling its child requests. Foreign queries
+return a scoped refusal with no recipient/reply/claim data. Missing or vanished
+groups return not-found without cancelling their child requests. An owned group
+can still poll late answers after a terminal transport result.
+
+Group reply claims are collected under each child's request ID and returned
+both on that row and in the top-level aggregate. The common output path must
+not claim them again under the group ID. Read the actual replies and explicitly
+ACK the returned tokens; ACK does not erase the indexed history. A partial
+answer or `replied` aggregate is not a final successful task outcome. Permission
+or an existing collaboration scope does not complete a handshake without the
+selected peer's correlated final reply.
+
+The output schema checker validates generic question frames and other supplied
+domain schemas in this capture. Dedicated result schemas for ask/status/connect
+remain incomplete; passing this suite is not their normative schema completion
+or certification of human approval, native delivery or whole runtime support.

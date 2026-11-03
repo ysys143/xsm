@@ -272,6 +272,79 @@ def messaging(peer, sender, receiver, reopen, check, equal, events=False):
               tokens=[pending["claims"][0]["token"]])["acked"], event["params"]["ids"]))
 
 
+def correlated_questions(peer, owner, recipient, check, equal):
+    def operation(session, name, **arguments):
+        return peer.call('operation.call', dict(session=session['session'], operation=name, arguments=arguments))
+    def status(session, ident):
+        return operation(session, 'xsm_question_status', id=ident)
+    check('question request listing starts empty', lambda: equal(operation(owner, 'xsm_question_status')['requests'], []))
+    asked = operation(owner, 'xsm_ask', targets=['ref:' + recipient['ref'], 'ref:000000'],
+                      text='Fixture private group question', wake='never', wait=0)
+    check('group question preserves pending and skipped recipients', lambda: equal(asked['group'] is True and
+          asked['status'] == 'pending' and asked['asked'] == 1 and asked['skipped'] == 1 and
+          len(asked['waiting_on']) == 1, True))
+    child = next(row['id'] for row in asked['recipients'] if row['status'] != 'skipped')
+    def foreign_refusal():
+        denied = status(recipient, asked['id'])
+        equal(denied['status'] == 'refused' and denied['replies'] == [] and
+              denied['recipients'] == [] and denied['claims'] == [], True)
+    check('foreign group status is a scoped refusal', foreign_refusal)
+    original = operation(recipient, 'xsm_inbox', message_ids=[child])
+    check('foreign status does not consume original question', lambda: equal(
+          [claim['id'] for claim in original['claims']], [child]))
+    operation(recipient, 'xsm_ack', tokens=[claim['token'] for claim in original['claims']])
+    partial_body = 'Fixture private progress without final outcome'
+    operation(recipient, 'xsm_send', target='ref:' + owner['ref'], text=partial_body, kind='reply',
+              reply_to=child, request_id='question-partial-reply', wake='never', wait=0)
+    partial = status(owner, asked['id'])
+    check('partial group answer is not a final task outcome', lambda: equal(partial['status'] == 'replied' and
+          partial['recipients'][0]['final'] is False and partial['replies'][0]['body'] == partial_body, True))
+    check('question status returns exact reply ACK claims', lambda: equal(
+          [claim['id'] for claim in partial['claims']], ['question-partial-reply']))
+    operation(owner, 'xsm_ack', tokens=[claim['token'] for claim in partial['claims']])
+    retained = status(owner, asked['id'])
+    check('ACK retains indexed group answer without a new claim', lambda: equal(
+          [reply['body'] for reply in retained['replies']] == [partial_body] and retained['claims'] == [], True))
+    operation(recipient, 'xsm_send', target='ref:' + owner['ref'], text='Fixture private final answer',
+              kind='reply', reply_to=child, outcome='succeeded', request_id='question-final-reply', wake='never', wait=0)
+    final = status(owner, asked['id'])
+    check('final group answer retains partial history and exact new claim', lambda: equal(final['status'] == 'final' and
+          len(final['replies']) == 2 and final['recipients'][0]['final_outcome'] == 'succeeded' and
+          [claim['id'] for claim in final['claims']] == ['question-final-reply'], True))
+    def no_private_home(value):
+        if isinstance(value, dict):
+            return 'home' not in value and all(no_private_home(v) for v in value.values())
+        return not isinstance(value, list) or all(no_private_home(v) for v in value)
+    check('question reply handles expose opaque homes only', lambda: equal(no_private_home(final) and
+          len(final['replies'][0]['sender']['home_id']) == 64, True))
+    check('foreign group remains unreadable after private answers', foreign_refusal)
+    operation(owner, 'xsm_ack', tokens=[claim['token'] for claim in final['claims']])
+    check('absent single request has no replies or claims', lambda: equal(
+          status(owner, 'absent-request')['status'] == 'not-found' and status(owner, 'absent-request')['claims'] == [], True))
+    listed = operation(owner, 'xsm_question_status')['requests']
+    check('request listing recovers owned child IDs without reply bodies', lambda: equal(
+          child in [row['id'] for row in listed] and all('replies' not in row for row in listed), True))
+    single = operation(owner, 'xsm_ask', target='ref:' + recipient['ref'], text='Fixture single timeout',
+                       request_id='question-single-timeout', wake='never', wait=0)
+    check('zero wait retains pending single question', lambda: equal(single['status'] == 'pending' and
+          single['wait_end_reason'] == 'timeout' and single['wait_budget']['effective'] == 0, True))
+    single_packet = operation(recipient, 'xsm_inbox', message_ids=[single['id']])
+    check('question timeout does not cancel peer original', lambda: equal(
+          [claim['id'] for claim in single_packet['claims']], [single['id']]))
+    operation(recipient, 'xsm_ack', tokens=[claim['token'] for claim in single_packet['claims']])
+    handshake = operation(owner, 'xsm_connect', target='ref:' + recipient['ref'], wait=0)
+    check('existing scope alone does not complete handshake', lambda: equal(handshake['handshake'] == 'pending' and
+          handshake['purpose'] == 'handshake', True))
+    task = operation(recipient, 'xsm_inbox', message_ids=[handshake['id']])
+    operation(recipient, 'xsm_ack', tokens=[claim['token'] for claim in task['claims']])
+    operation(recipient, 'xsm_send', target='ref:' + owner['ref'], text='Fixture handshake reply', kind='reply',
+              reply_to=handshake['id'], outcome='succeeded', request_id='question-handshake-reply', wake='never', wait=0)
+    completed = operation(owner, 'xsm_connect', target='ref:' + recipient['ref'], request_id=handshake['id'], wait=0)
+    check('selected peer reply completes the same handshake', lambda: equal(completed['handshake'] == 'completed' and
+          [claim['id'] for claim in completed['claims']] == ['question-handshake-reply'], True))
+    operation(owner, 'xsm_ack', tokens=[claim['token'] for claim in completed['claims']])
+
+
 def sending(peer, sender, receiver, params, check, equal):
     def operation(owner, name, error=None, **arguments):
         return peer.call('operation.call', dict(session=owner['session'], operation=name,
@@ -606,6 +679,9 @@ def run(command, suite="lifecycle", capture=False):
             if suite == 'discovery':
                 result['scope'] = 'lifecycle and local public discovery; no physical remote, native UI or messenger certification'
                 discovery(b, reopened, resumed, check, equal)
+            if suite == 'questions':
+                result['scope'] = 'lifecycle and correlated question/group/handshake replies; no human approval or native runtime certification'
+                correlated_questions(b, reopened, resumed, check, equal)
             if suite == 'sending':
                 result['scope'] = 'lifecycle and send producer/group/material metadata; no native wake, human UI or physical remote certification'
                 sending(b, reopened, resumed, params, check, equal)
@@ -626,7 +702,7 @@ def run(command, suite="lifecycle", capture=False):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--capture", action="store_true", help="include isolated wire observations in the report")
-    parser.add_argument("--suite", choices=("lifecycle", "messaging", "events", "decisions", "uploads", "discovery", "collaboration", "documents", "sending"), default="lifecycle")
+    parser.add_argument("--suite", choices=("lifecycle", "messaging", "events", "decisions", "uploads", "discovery", "collaboration", "documents", "sending", "questions"), default="lifecycle")
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--command", nargs=argparse.REMAINDER, required=True)
     args = parser.parse_args()

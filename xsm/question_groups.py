@@ -120,6 +120,10 @@ def wait_for(sender: dict, group_id: str, wait: float = 0, pump=None, cancelled=
     """Until every recipient has answered or ended, the deadline, or a cancel.
     `poll(child_id)` reads one recipient's reply copies (receive.poll_replies)."""
     deadline = time.monotonic() + questions._duration(wait)
+    # Do not inspect/poll another conversation's children, even for a refused read.
+    record = load(group_id)
+    if not record or questions._native(sender) != record.get("sender"):
+        return dict(status(sender, group_id), wait_end_reason="all-answered-or-ended")
     last_poll = float("-inf")
     while True:
         if poll is not None and time.monotonic() - last_poll >= 0.2:
@@ -127,7 +131,7 @@ def wait_for(sender: dict, group_id: str, wait: float = 0, pump=None, cancelled=
             for child in child_ids(group_id):
                 poll(child)
         result = status(sender, group_id)
-        if not result["waiting_on"] or result["status"] in ("not-found", "refused"):
+        if result["status"] in ("not-found", "refused") or not result["waiting_on"]:
             result["wait_end_reason"] = "all-answered-or-ended"
             return result
         if cancelled is not None and cancelled():
