@@ -819,3 +819,17 @@ subscription-probe-linux/의 result.json과 환경별 protocol.log다.
 Linux gate의 relay upstream은 명시적 loopback fixture다. 결과 byte 보존,
 credential redaction·한도·모델 제한·non-OAuth 거부를 검증했으며 실제 Linux
 모델·native UI·메신저 증거로 확대하지 않는다.
+
+## 미관측 구독 요청과 응답 수명의 Linux core
+
+1a384ec8dadd84222ca072c49845e41cd17279c2를 고정한 subscription-observer-linux에서
+842개(Python505+SDK52+native133+Node152)가 Python3.11.2에서74.117초,
+Python3.14.10에서93.889초에 통과했다. Archive SHA256은
+de29b4fca20be154d9d83a9d872debcb3714acff26518266fbec37d9cb6f0dfd다.
+독립 mock39/변이14는 별도 수치다. 두 환경 모두120초 기한을 지켰다.
+
+요청 시작 기록, 관측자 종료 때 미관측 upstream의 unknown 보존, 이미 관측한
+응답의 잘못된 unknown 표시 방지를 포함한다. Network none/model0/cpu2/memory3g,
+미실행 core0, VM stopExit=0이다. 원시는 deliverables/protocol-foundation/
+subscription-observer-linux/ 아래에 있다. Pi/OpenCode 실제 모델 시도는 macOS에서
+quota 거부로 실패했으며 이 core의 성공으로 대체하지 않는다.

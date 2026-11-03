@@ -66,6 +66,13 @@ subscription-relay-missing-start-mutant.log다. Model-free core842개
 (Python505+SDK52+native133+Node152)는 macOS에서88.215초에 통과했다
 (subscription-observer-core-final.log). 독립 mock39/변이14는 별도 수치다.
 
+1a384ec8dadd84222ca072c49845e41cd17279c2를 고정한 Linux에서도842개씩
+Python3.11.2에서74.117초, Python3.14.10에서93.889초에 통과했다.
+Archive SHA256은de29b4fca20be154d9d83a9d872debcb3714acff26518266fbec37d9cb6f0dfd다.
+Network none/model0/cpu2/memory3g, 미실행 core0, VM stopExit=0이다.
+원시는 subscription-observer-linux/ 아래다. 이 core는 실제 모델이나 새
+native CLI 행렬의 성공 증거가 아니다.
+
 모든 원시는 deliverables/protocol-foundation/ 아래에 있다. 실제 모델 정상 경로,
 사람 UI·메신저·전체 행렬·p95 조건은 계속 미완이다. 2026-11-03 구현 담당자가
 기록했으며 같은 담당자가 해당 구독 경로의 가용성을 확인한 뒤 새 profile/새
