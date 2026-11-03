@@ -3019,3 +3019,16 @@ assertion으로 실패했다. 시험용 loader 관측과 합성 context capacity
 raw ns에서 p95를 재계산했다. Clock 정렬5회/313개 checkpoint와 gateway 정상 종료,
 VM stopExit=0을 확인했다. 두 OS의 해당 scripted-provider wake 모드 결과이며
 실제 모델/UI/서비스와 원래 전체 행렬은 미완이다.
+
+
+## Pi SDK wake100 native 수락 지연 — 2026-11-04
+
+[Pi 측정 경계](pi-native-latency-boundary.md)는 actual agent message_end 처리 뒤
+agent state의 동일 원문과 실제 branch entry를 함께 확인한다. SDK의 원래
+_startRun/agent.prompt와 native Tool Hub ACK가 실행되며 provider stream만
+명시적인 로컬 scripted fixture다. Mac100개가378.53825ms p95/403.141208ms max,
+실패·미실행0이었다. Raw source/end100개와 고유 native item100개, clock bracket5개,
+독립 p95 재계산을 확인했다. 관측만 뺀 변이는 실제 ACK 후에도 실패했다.
+첫 handoff path 가정 오류(0완료/1실패/1미실행)와 후속2smoke도 보존했다.
+이는 SDK 직접 로드 표본이며 설치된 CLI·물리 UI·실제 모델이나 전체 기능 지원
+인증이 아니다. Linux100 실행과 전체 계획은 아직 미완이다.
