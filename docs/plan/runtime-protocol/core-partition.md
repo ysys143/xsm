@@ -24,3 +24,14 @@ serial core930개/86.030초와 별도focused2개 표본을 덮어쓰지 않았�
 원시는 `deliverables/protocol-foundation/core-partition/`다. Linux는 후속 고정
 source에서 같은 전체 gate를 다시 실행해야 한다. 범위를 줄이거나 예산을 늘린
 변경이 아니며, native/실제 UI/원격 전체 행렬 완료는 아니다.
+
+## 후속 고정 source Linux 검증
+
+249c755e45f003a65c6b4e3bf0a770fd34d9193d의 archive SHA256은
+3a067434bf6daa55d28fc0e3a3fd892e8d230d700dd0c7fe7fe7b74cdf5c009d다.
+Python3.11.2에서78.737초, Python3.14.10에서102.866초로 core931개를 각각
+통과했다. 두 환경에서 새 errors-fixture27개/frame29개와 offline jsonschema4.26.0
+검증도 통과했다. Model0/network none/cpu2/memory3g, 미실행 case0,
+미실행 wire/schema0, VM stopExit0이다. 원시는 `core-partition-linux/result.json`과
+환경별 output이다. 이전cf01df5의3.14 timeout은 실패 증거로 보존한다.
+전체 native/UI/원격·메신저·설치 행렬과 전체 계획은 미완이다.

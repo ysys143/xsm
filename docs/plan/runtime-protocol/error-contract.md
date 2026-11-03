@@ -39,3 +39,14 @@ Mac core930개(Python536+외부 적합성53+SDK56+native133+Node152)는86.030초
 전제 미충족이다. 두 환경은 실행됐고 VM stopExit0이다. 이 batch 전체는 failed다.
 [Core 그룹 분할](core-partition.md)은 시험 누락/예산 증가 없이 critical path를
 분할하며 후속 고정 source에서 Linux를 재검증한다.
+
+## 후속 고정 source Linux 검증
+
+249c755e45f003a65c6b4e3bf0a770fd34d9193d의 archive SHA256은
+3a067434bf6daa55d28fc0e3a3fd892e8d230d700dd0c7fe7fe7b74cdf5c009d다.
+Python3.11.2에서78.737초, Python3.14.10에서102.866초로 core931개를 각각
+통과했다. 두 환경에서 새 errors-fixture27개/frame29개와 offline jsonschema4.26.0
+검증도 통과했다. Model0/network none/cpu2/memory3g, 미실행 case0,
+미실행 wire/schema0, VM stopExit0이다. 원시는 `core-partition-linux/result.json`과
+환경별 output이다. 이전cf01df5의3.14 timeout은 실패 증거로 보존한다.
+전체 native/UI/원격·메신저·설치 행렬과 전체 계획은 미완이다.
