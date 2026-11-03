@@ -137,7 +137,9 @@ normative 결과 schema는 계속 미완이다. 고정2ad7a23의 Linux core881�
 선택 거부와 원격 Gateway·file 증거를 정의한다. 실제 stdio42개 frame, 예제22개와
 거부20개를 확인했다. Private 경로 필드 금지 및 집계 결속을 약화한 변이3개도
 검출했다. Mac core881개는90.946초에 통과했다. 구조와 내부 결속의 검증이며
-실제 원격/사용자 승인/native 지원 인증은 별도다.
+실제 원격/사용자 승인/native 지원 인증은 별도다. 고정d785f8e의 Linux
+core881개도3.11에서83.571초,3.14에서106.231초에 통과했다. 각 환경의
+새 stdio42개 frame을 offline 개발 validator로 검증했고 VM 종료를 확인했다.
 
 ## 단계별 판정
 

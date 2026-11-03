@@ -57,6 +57,27 @@ linux-validator-deps.json에 보존했다. 격리 HOME/cache와 공개 PyPI를 �
 사용자 Python/런타임/SDK 환경은 변경하지 않았다.
 
 고정 source의 Linux core, 새 Linux stdio capture 및 offline schema 검증은
-실행 결과 확인 전까지 미완이다. 실제 native/runtime/원격/사용자 UI/전체 설치
+아래에서 확인했다. 실제 native/runtime/원격/사용자 UI/전체 설치
 행렬과 나머지 operation 계약도 미완이다. 구현 담당 세션이 각 표면을 실행한 뒤
 근거와 함께 갱신한다. 이 부분 계약을 전체 계획 완료로 대체하지 않는다.
+
+## 고정 source Linux core와 schema 실행
+
+d785f8ecd083ec543fdfef02dca4a230262ea17d의 archive SHA256은
+27dae374066258bacb2d09ff84268a3b500d9eefb02de403d9483b2f44d7bb58다.
+Python3.11.2에서83.571초, Python3.14.10에서106.231초로 core881개를
+각각 통과했다. 각 환경에서 추가로 실제 stdio questions32개를 실행해 새로운
+42개 frame을 수집했고, 고정 jsonschema4.26.0이 그 frame과 예제22개를
+검증하며 잘못된 결과20개를 거부했다. 이전 Mac wire를 Linux 성공으로 복사한
+것이 아니다. 독립 mock39/변이14는 core와 별도 수치다.
+
+Source/core/추가 stdio/schema는 모두 model0/network none/cpu2/memory3g에서
+실행했다. 미실행 case0, 미실행 wire/schema0, VM stopExit0이다. 원시는
+question-contract-linux/result.json과 환경별 output의 protocol/wire/schema
+파일이다. Schema 의존성 파일은 준비 전후 SHA256이 같음을 재확인했다
+(linux-validator-audit.json). Production/runtime/SDK에는 의존성을 추가하지 않았다.
+
+이 결과는 Linux의 Gateway 자체·물리 네트워크·실제 사람 승인·native queue
+p95·전체 런타임/설치 행렬을 인증하지 않는다. 공개22개 operation 중 구조가
+정의된 이름은11개(팀/보드는 일부 action), 미정의 이름도11개이며 전체 계획은
+미완이다. Schema 내부55개 reference는 모두 같은 파일의 정의를 가리킨다.
