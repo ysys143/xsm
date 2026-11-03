@@ -1,7 +1,6 @@
 # OpenCode canonical store→native readback 지연
 
-상태: Mac smoke2개와 관측 제거 변이를 검증했다. Mac100개는 실행 중이며 Linux는
-아직 미실행이다. 실제 모델/UI와 전체 기능 행렬은 미완이다.
+상태: Mac100개와 관측 제거 변이를 검증했다. Linux100개는 실행 중이다. 실제 모델/UI와 전체 기능 행렬은 미완이다.
 
 `probe-opencode-protocol.py --canonical-latency`는 실제 설치 binding과 native
 OpenCode1.19.5 server를 쓴다. 원래 SDK session.message를 호출한 뒤 반환된
@@ -29,3 +28,14 @@ Provider는 loopback scripted assistant이고 실제 native xsm_ack 도구가 �
 각 표본의 유휴 상태·native transcript·실제 도구 ACK를 확인하며, source/end
 원시값과 native item ID를 보존한다. p95는 정렬한 값의 ceil(0.95*n)번째다.
 원시는 `deliverables/protocol-foundation/opencode-canonical-latency/`에 있다.
+
+## Mac100 결과
+
+Mac100-first는 완료100/실패0/미실행0, p95 295.158084ms/max336.70725ms였다.
+Raw source/end 각100개, 고유 native message/part 각100개와 raw ns 재계산이
+일치했다. 실제 정본 handoff100개의 acknowledged도 별도로 대조해 보존했다.
+Native server 정상 종료를 확인했다. 측정 소스는34dd439 위 probe 변경이며
+5개 source snapshot/SHA manifest와 native binary/lock hash를 보존했다.
+뒤의5510257에는 같은 측정 코드가 들어 있으며 이를 pristine551 실행으로
+소급 표시하지 않는다. Scripted provider·임시 observer 모드의 결과이며 실제
+모델·UI·일반 설치 ownership/전체 기능 행렬은 미완이다.

@@ -3037,3 +3037,15 @@ _startRun/agent.prompt와 native Tool Hub ACK가 실행되며 provider stream만
 통과했다. 원시 source/end100개와 고유 native item100개, clock5개를 대조하고
 p95를 독립 재계산했다. Container exit0/VM stopExit0을 확인했다. 설치된 CLI와
 실제 모델/UI 및 전체 기능 행렬은 여전히 미완이다.
+
+
+## OpenCode Mac100 canonical 지연 — 2026-11-04
+
+[OpenCode 관측](opencode-native-latency.md)은 실제 store 반환과 SDK message
+readback을 측정한다. Native Bun의 process.hrtime 도메인 불일치를 발견해
+첫 표본0 실패를 보존했고, libc clock_gettime의 Python/native 정렬5회를
+확인한 뒤100개를 실행했다. p95 295.158084ms/max336.70725ms/실패·미실행0이다.
+Raw source/end100개와 고유 native message/part 각100개, 정본 ACK100개를
+독립 대조했다. 기본 모드2smoke와 관측 제거 변이도 검증했다. Native server가
+정상 종료됐다. 임시 설치 loader 관측으로 일반 ownership 인증을 대체하지
+않으며 실제 모델/UI·Linux100 및 전체 기능 행렬은 미완이다.
