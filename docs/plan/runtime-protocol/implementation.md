@@ -2824,3 +2824,11 @@ legacy unbound ask 승격을 실제 실패로 재현하고, 보존 질문과 req
 catalog와 대조한다. 합성 잘못된 trace2개를 수정 후 거부하고 selector 무시 변이2개를
 검출했다. 기존 실제 observation70개는 새 checker로 통과했다. 최신 metadata의
 독립 소비자 재검증과 전체 native/원래 행렬은 미완이다.
+
+## V7 action/default 후속 독립 검증 — 2026-11-03
+
+[후속 v7](independent-v7-followup.md)은 새 공개 입력595d784만으로 selector/default와
+원 request_id의 status 모드를 구분했다. 부모 재실행도 독립3개 시나리오·
+공개19suite584개/751RPC, 예제132개·기존 mutant188개, 추가 양성17개·음성23개·
+annotation42개·구현 변이 검출2개를 통과했다.742 observation 교차 검사도 통과했다.
+새 public native summary와 실제 native/원래 전체 행렬은 별도 미완이다.

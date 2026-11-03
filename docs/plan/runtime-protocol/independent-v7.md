@@ -41,3 +41,6 @@ parent-schema.log에 따로 남겼다. 작성자 초기 실패는 validator 입�
 이 피드백은 후속 공개 계약에서 반영하며 현재 기록만으로 해결됐다고 하지 않는다.
 실제 native 모델/UI/lifecycle, Linux 독립 구현, 물리 원격·메신저·설치 전수와
 원래 전체 계획은 미완이다. 이 독립 검증을 native 인증으로 승격하지 않는다.
+
+후속 공개 action/default 소비와 부모 재실행은 [별도 기록](independent-v7-followup.md)에
+추가했다. 원래cf01 source/hash/실패 증거는 유지하며 후속 수치를 합치지 않는다.

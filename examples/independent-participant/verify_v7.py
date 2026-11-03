@@ -12,6 +12,7 @@ import time
 import traceback
 from jsonschema import Draft202012Validator
 from participant_v7 import Consumer, Transport, ContractError, strict_json
+from local_v7_fixtures import action_cases
 
 
 def validation(schema, value):
@@ -60,7 +61,7 @@ class Verification:
     def record(self, method, params, frame):
         self.rpcs += 1
         if method == 'operation.call' and 'result' in frame:
-            op = params['operation']; action = params.get('arguments', {}).get('action', 'hand_over' if op == 'xsm_handover' else '(none)')
+            op = params['operation']; action = self.consumer.action(op, params.get('arguments', {})) or '(none)'
             self.coverage.setdefault(op, {})[action] = self.coverage.setdefault(op, {}).get(action, 0)+1
 
     def independent(self):
@@ -204,13 +205,80 @@ class Verification:
             for index, item in enumerate(strict_json(file.read_text())):
                 value = item.get('result', item)
                 op = item.get('operation', ops[0])
-                arguments = {'action': item['action']} if 'action' in item else {}
-                if op == 'xsm_owned': arguments['action'] = 'create' if value.get('owned') else 'status'
-                if op == 'xsm_handover': arguments['action'] = value.get('handover',{}).get('action','hand_over')
+                arguments = copy.deepcopy(item.get('arguments', {}))
+                if 'action' in item:
+                    if 'action' in arguments and arguments['action'] != item['action']:
+                        raise ContractError('conflicting explicit example action annotations')
+                    arguments['action'] = item['action']
+                # Published examples annotate action but omit original request_id.
+                # Supply a labelled validation-only context for exact status forms;
+                # never change their annotated action or claim an original request.
+                inferred_context = {}
+                if op == 'xsm_owned' and arguments.get('action') == 'status' and value.get('status') != 'requests' and 'request_id' not in arguments:
+                    arguments['request_id'] = value['id']
+                    inferred_context['request_id'] = 'validation-only context from example result id'
+
                 self.check(f'{file.name}:{index}', lambda op=op,arguments=arguments,value=value,item=item,family=family:self.consumer.fragment(family,item['definition'],value) if 'definition' in item else self.consumer.operation(op, arguments, value), 'published-example')
-                results.append(dict(file=file.name,index=index,operation=op,arguments=arguments,value=value))
+                results.append(dict(file=file.name,index=index,operation=op,arguments=arguments,value=value,annotation={k:item[k] for k in ('action','arguments','definition') if k in item},inferred_context=inferred_context))
         dump(self.output/'examples-inputs.json', results)
         return results
+
+    def action_fixtures(self, examples):
+        cases = action_cases(examples)
+        dump(self.output/'action-fixture-inputs.json',cases)
+        observations=[]
+        for case in cases:
+            def exercise(case=case):
+                schema=self.consumer.schemas[self.consumer.names[case['operation'][4:]]+'-result.schema.json']
+                self.consumer.check(schema,case['value'])  # prove root-valid first
+                try:
+                    facts=self.consumer.operation(case['operation'],case['arguments'],case['value'])
+                except Exception as exc:
+                    observations.append(dict(name=case['name'],accepted=False,error=repr(exc)))
+                    if case['accept']: raise
+                else:
+                    observations.append(dict(name=case['name'],accepted=True,facts=facts))
+                    self.require(case['accept'])
+            self.check(case['name'],exercise,'action-positive' if case['accept'] else 'action-negative')
+        for item in examples:
+            if 'action' in item['annotation']:
+                self.check('preserve-annotation-'+item['file']+':'+str(item['index']),
+                           lambda item=item:self.require(item['arguments']['action']==item['annotation']['action']),
+                           'example-annotation')
+        # Verify both independently declared default sources on the real consumer.
+        applied=next(c['value'] for c in cases if c['name']=='handover-default-applied')
+        for source in ('catalog-only','result-schema-only'):
+            mutant=Consumer(self.operator['input'],validation)
+            if source=='catalog-only': del mutant.schemas['handover-result.schema.json']['x-defaultAction']
+            else: del mutant.schemas['operations.schema.json']['$defs']['xsm_handover']['properties']['action']['default']
+            self.check('declared-default-'+source,
+                       lambda mutant=mutant:self.require(mutant.operation('xsm_handover',{},applied)['action']=='hand_over'),
+                       'action-positive')
+        conflict=Consumer(self.operator['input'],validation)
+        conflict.schemas['handover-result.schema.json']['x-defaultAction']='show'
+        def reject_conflict():
+            try: conflict.operation('xsm_handover',{},applied)
+            except ContractError: return
+            raise AssertionError('contradictory defaults accepted')
+        self.check('contradictory-public-defaults-refused',reject_conflict,'action-negative')
+        # A root-only validator reproduces the former run/listing hole. The same
+        # negative test must fail under that implementation mutation.
+        mutant=Consumer(self.operator['input'],validation)
+        original_check=mutant.check
+        def root_only(schema,value,ref=None):
+            return original_check(schema,value) if 'x-actionResults' in schema else original_check(schema,value,ref)
+        mutant.check=root_only
+        target=next(c for c in cases if c['name']=='owned-run-listing')
+        def kill_root_only():
+            facts=mutant.operation(target['operation'],target['arguments'],target['value'])
+            try:
+                self.require(target['accept'])
+            except AssertionError as exc:
+                dump(self.output/'deliberate-root-only-failure.json',dict(expected=True,error=repr(exc),facts=facts,traceback=traceback.format_exc()))
+                return
+            raise AssertionError('root-only mutation was not killed')
+        self.check('test-kills-root-only-selector',kill_root_only,'test-mutation-sensitivity')
+        dump(self.output/'action-fixture-observations.json',observations)
 
     def mutants(self, examples):
         trials = []
@@ -289,7 +357,7 @@ def main():
     dump(args.output/'input-provenance.json',dict(operator=operator,manifest=manifest,verified=hashes,manifestSha256=hashlib.sha256((Path(operator['input'])/'manifest.json').read_bytes()).hexdigest()))
     if not all(hashes.values()) or operator['sourceCommit'] != manifest['sourceCommit']: raise ContractError('input provenance mismatch')
     v = Verification(operator,args.output)
-    examples = v.examples(); v.mutants(examples); v.independent(); v.independent_fixtures(); reports = v.public_suites()
+    examples = v.examples(); v.mutants(examples); v.action_fixtures(examples); v.independent(); v.independent_fixtures(); reports = v.public_suites()
     declared = {op:s.get('properties',{}).get('action',{}).get('enum',[]) for op,s in v.consumer.schemas['operations.schema.json']['$defs'].items()}
     missing = {op:[a for a in actions if a not in v.coverage.get(op,{})] for op,actions in declared.items() if actions}
     missing = {k:x for k,x in missing.items() if x}

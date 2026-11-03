@@ -21,6 +21,7 @@ def main():
         verification = Verification({'input': str(args.public_root.resolve())}, Path(temp))
         examples = verification.examples()
         verification.mutants(examples)
+        verification.action_fixtures(examples)
         counts = Counter(item['category'] for item in verification.checks if item['passed'])
         failures = [item for item in verification.checks if not item['passed']]
         result = dict(passed=not failures, counts=dict(counts), failures=failures,

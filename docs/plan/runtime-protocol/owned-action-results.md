@@ -24,3 +24,8 @@ exact request 선택 조건은 원 request_id에 따른 별도 문서 규칙도 
 result producer와 wire payload는 바꾸지 않았다. 독립 v7의 frozen 입력 검증은
 원래 source를 유지하며 최신 selector/default에 대한 독립 소비자 재검증은 후속이다.
 전체 operation 의미·오류 data·native/UI/원격·메신저·설치 행렬은 미완이다.
+
+후속 독립 참여자가 새 packet595d784만 읽고 action/default 소비를 수정했다. 부모도
+수정 없이751RPC/공개19suite584개와742 observation을 재검증했다. 추가 양성17개/
+음성23개 및 annotation42개가 통과했다. [후속 기록](independent-v7-followup.md)을
+참조하며 실제 native/UI/원래 행렬 완료로 일반화하지 않는다.

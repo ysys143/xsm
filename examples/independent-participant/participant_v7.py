@@ -81,23 +81,49 @@ class Consumer:
             return self.operation(params['operation'], params.get('arguments', {}), frame['result'])
         return {'state': 'wire-result', 'value': copy.deepcopy(frame['result'])}
 
+    def action(self, operation, arguments):
+        """Resolve only known original arguments; never infer action from a result.
+
+        An empty dict means the caller actually omitted action. Missing original
+        argument context must not be represented as an empty dict by a collector.
+        """
+        if not isinstance(arguments, dict):
+            raise ContractError('original operation arguments required')
+        catalog = self.schemas['operations.schema.json']['$defs'][operation]
+        action_schema = catalog.get('properties', {}).get('action')
+        result_schema = self.schemas[self.names[operation[4:]] + '-result.schema.json']
+        if action_schema is None:
+            return None
+        defaults = [value for value in (action_schema.get('default'), result_schema.get('x-defaultAction')) if value is not None]
+        if len(set(defaults)) > 1:
+            raise ContractError('public action defaults disagree')
+        action = arguments['action'] if 'action' in arguments else defaults[0] if defaults else None
+        if action not in action_schema.get('enum', []):
+            raise ContractError('missing or undeclared action')
+        return action
+
     def operation(self, operation, arguments, value):
         if operation not in self.inventory:
             raise ContractError('unknown operation')
-        declared = self.schemas['operations.schema.json']['$defs'][operation].get('properties', {}).get('action', {}).get('enum')
-        if declared and arguments.get('action', 'hand_over' if operation == 'xsm_handover' else None) not in declared:
-            raise ContractError('undeclared action')
+        action = self.action(operation, arguments)
         schema = self.schemas[self.names[operation[4:]] + '-result.schema.json']
         if 'x-actionResults' in schema:
-            action = arguments.get('action')
             if action not in schema['x-actionResults']:
-                raise ContractError('missing action context')
+                raise ContractError('missing action result selector')
             self.check(schema, value, schema['x-actionResults'][action])
         elif 'x-operationResults' in schema:
             binding = {'anyOf': [{'$ref': '#/$defs/' + n} for n in schema['x-operationResults'][operation]], '$defs': schema['$defs']}
             self.check(binding, value)
         else:
             self.check(schema, value)
+        if operation == 'xsm_owned':
+            if action == 'status':
+                # statusResult is intentionally a union; original request selects
+                # history versus an exact retained task, even if root-valid.
+                definition = 'taskResult' if 'request_id' in arguments else 'requestListing'
+                self.check(schema, value, '#/$defs/' + definition)
+            if action != 'create' and 'request_id' in arguments and value.get('id') != arguments['request_id']:
+                raise ContractError('owned result belongs to another request')
         if operation in ('xsm_link', 'xsm_join', 'xsm_reach') and 'scope' in value:
             scope = value['scope']
             if scope['kind'] != {'xsm_link': 'link', 'xsm_join': 'membership', 'xsm_reach': 'reach'}[operation]:
@@ -123,11 +149,13 @@ class Consumer:
                 raise ContractError('native question mismatch')
             if value['status'] == 'applied' and (not value['application'] or value['application'].get('phase') == 'started' or 'observed_at' not in value['application']):
                 raise ContractError('applied without observation')
-        if operation == 'xsm_handover' and 'handover' in value and value['handover']['action'] != arguments.get('action', 'hand_over'):
+        if operation == 'xsm_handover' and 'handover' in value and value['handover']['action'] != action:
             raise ContractError('handover action mismatch')
         # Never infer authority from prose. Facts preserve distinct state dimensions.
         facts = {'state': 'structured-observation', 'operation': operation, 'retry': False,
                  'permission': 'not-established', 'business_success': None, 'acknowledged': None}
+        if action is not None:
+            facts['action'] = action
         if value.get('status') == 'waiting-for-user':
             return dict(facts, state='pending-human', decision_id=value['decision_id'], question_id=value['question_id'])
         if set(value) == {'text'}:
@@ -139,11 +167,11 @@ class Consumer:
             facts['answer_storage'] = value.get('answer')
             facts['application'] = value.get('application')
         if operation == 'xsm_owned':
-            action = arguments['action']
             if action == 'create' and value.get('owned') is not True:
                 raise ContractError('owned creation lacks service metadata')
             if action != 'create' and value.get('owned') is True:
                 raise ContractError('owned service metadata substituted for task')
+            facts['result_kind'] = 'service' if action == 'create' else 'history' if action == 'status' and 'request_id' not in arguments else 'task'
             facts.update(task_state=value.get('status'), outcome=(value.get('result') or {}).get('outcome'),
                          reply_id=value.get('reply_id'), reply_transport=value.get('send_evidence'), cancellation=value.get('cancellation'))
         if operation == 'xsm_send' and not value.get('grouped'):
