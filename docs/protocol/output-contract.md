@@ -364,3 +364,22 @@ keep their existing envelopes. The [grant result schema](grant-result.schema.jso
 questions and legacy text-only envelopes. Text alone is not a machine-readable
 issuance receipt; clients must not infer a usable grant by parsing it.
 Explicit grant IDs are eight lowercase hexadecimal characters, not paths.
+
+## Individual worker permission result metadata
+
+An answered `xsm_approve` returns the legacy text and an `approval` snapshot:
+id, worker, approved/denied status, summary, nullable tool, answered_at, via and
+nullable reason. The snapshot reports the answer written to that exact request;
+it does not prove the worker executed it. A dedicated result schema remains pending.
+
+Omitted IDs select the current first request before decision identity/caching.
+A different request or immutable input/worker scope requires a distinct decision,
+even when summaries match. The backend rechecks the fingerprint under its request
+lock before answering. Applied allow replay by explicit ID preserves its original snapshot while
+the authoritative request/worker remains available. Legacy text-only/no-request
+and host-pending/error envelopes retain their existing meanings.
+
+A recorded host `deny` for the same complete display/scope is relayed to the
+exact pending worker request on retry; it is not permission to perform the
+operation. Closing the human decision alone must not strand a worker waiting
+for its negative answer. A later call can report no-waiting after denial.

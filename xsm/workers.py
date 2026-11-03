@@ -39,6 +39,7 @@ forbids — but asking its user and acting on their words is the person deciding
 from __future__ import annotations
 
 import glob
+import hashlib
 import json
 import os
 import re
@@ -984,7 +985,30 @@ def _wait_for_registration(worker: dict, wait: float) -> None:
 # --- approvals --------------------------------------------------------------------
 
 def _approval_path(req_id: str) -> str:
+    if not isinstance(req_id, str) or not re.fullmatch(r"[A-Za-z0-9_-]{1,160}", req_id):
+        raise WorkerError("invalid approval request ID")
     return paths.path(APPROVALS, req_id + ".json")
+
+
+def approval_fingerprint(request, worker):
+    """Immutable invocation/worker fields, excluding answer and progress fields."""
+    value = {'request': {k: request.get(k) for k in (
+        'id', 'worker', 'runtime', 't', 'tool', 'input', 'expires_at', 'native_identity')},
+        'worker': {k: worker.get(k) for k in (
+            'name', 'parent_ref', 'runtime', 'home', 'session_id', 'created', 'pid', 'lstart')}}
+    return hashlib.sha256(json.dumps(value, sort_keys=True, ensure_ascii=False,
+        separators=(',', ':'), allow_nan=False).encode('utf-8')).hexdigest()
+
+
+def select_approval(parent_ref, req_id=None):
+    for request in approvals(pending_only=not bool(req_id)):
+        worker = load(request.get('worker') or '') or {}
+        if worker.get('parent_ref') != parent_ref:
+            continue
+        if req_id and request.get('id') != req_id:
+            continue
+        return request, worker
+    return None, None
 
 
 def approvals(pending_only: bool = True) -> list:
@@ -1176,17 +1200,17 @@ def _check_native_deadline(req_id, req, approve):
 
 
 def answer_asked(req_id: str, approve: bool, asked_by: str | None, reason: str | None = None,
-                 via: str = "mcp-elicitation") -> dict:
+                 via: str = "mcp-elicitation", expected_fingerprint=None) -> dict:
     from . import consent
     try:
         with consent._strict_locked(_approval_path(req_id)):
-            return _answer_asked_locked(req_id, approve, asked_by, reason, via)
+            return _answer_asked_locked(req_id, approve, asked_by, reason, via, expected_fingerprint)
     except OSError as exc:
         raise WorkerError("could not lock the permission request; nothing approved") from exc
 
 
 def _answer_asked_locked(req_id: str, approve: bool, asked_by: str | None, reason: str | None = None,
-                         via: str = "mcp-elicitation") -> dict:
+                         via: str = "mcp-elicitation", expected_fingerprint=None) -> dict:
     """A user answer verified by xsm_approve's decision controller.
     The source is retained without requiring a terminal; only the session that
     started the worker may ask. Native invocation deadlines still apply.
@@ -1203,6 +1227,8 @@ def _answer_asked_locked(req_id: str, approve: bool, asked_by: str | None, reaso
                           "the person who started it" % req_id)
     if worker.get("parent_ref") != asked_by:
         raise WorkerError("request %s belongs to a worker another session started" % req_id)
+    if expected_fingerprint is not None and approval_fingerprint(req, worker) != expected_fingerprint:
+        raise WorkerError("worker permission request identity or scope changed; nothing approved")
     req.update({"status": "approved" if approve else "denied", "answered": time.time(),
                 "reason": reason, "via": via})
     paths.write_json(_approval_path(req_id), req)

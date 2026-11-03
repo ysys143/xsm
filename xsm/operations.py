@@ -133,6 +133,15 @@ class OperationService:
                 args = dict(args, team=names[0])
                 inferred_team = True
         resolved_handover = None
+        approval_fingerprint = None
+        resolved_approval_request = None
+        if name == 'xsm_approve':
+            from . import workers
+            request, worker = workers.select_approval(me.get('ref'), args.get('id'))
+            if request:
+                resolved_approval_request = copy.deepcopy(request)
+                args = dict(args, id=request['id'])
+                approval_fingerprint = workers.approval_fingerprint(request, worker)
         if name in ("xsm_link", "xsm_reach", "xsm_grant") and args.get("dir"):
             directory = os.path.expanduser(args["dir"])
             if not os.path.isabs(directory):
@@ -154,6 +163,8 @@ class OperationService:
             scope = {"tool": name, "arguments": {k: v for k, v in args.items()
                      if k not in ("answer_request", "original_question", "notify")}, "cwd": os.path.realpath(me["cwd"]) if me.get("cwd") else None}
             resource = {k: resolved_handover.get(k) for k in ("runtime", "home", "session_id", "machine")} if resolved_handover else None
+            if approval_fingerprint is not None:
+                resource = {'worker_approval_digest': approval_fingerprint}
             if resource:
                 scope["resource"] = resource
             key = decisions.invocation(me, name, args, generation, resource=resource)
@@ -177,7 +188,9 @@ class OperationService:
                              "notify": args.get("notify") is True,
                              "native_request": args.get("answer_request"),
                              "native_question": args.get("original_question"), "team_inferred": inferred_team,
-                             "resolved_handover": resolved_handover}
+                             "resolved_handover": resolved_handover,
+                             "approval_fingerprint": approval_fingerprint,
+                             "resolved_approval_request": resolved_approval_request}
             self.decision_calls[self.active_request] = decision_call
         try:
             text = self._call(name, args, me)
@@ -1002,31 +1015,51 @@ class OperationService:
 
     def approve(self, me: dict, args: dict) -> str:
         from . import workers
-        mine = [r for r in workers.approvals()
-                if (workers.load(r.get("worker") or "") or {}).get("parent_ref") == me.get("ref")]
-        req = next((r for r in mine if r["id"] == args.get("id")), None) if args.get("id") \
-            else (mine[0] if mine else None)
+        call = self.decision_calls.get(self.active_request)
+        if call and 'resolved_approval_request' in call:
+            req = call['resolved_approval_request']
+        else:
+            req, _ = workers.select_approval(me.get('ref'), args.get('id'))
+        if req and req.get('status') != 'pending':
+            req = None
         if not req:
             return "no waiting request from your workers" + (
                 " with id %s" % args["id"] if args.get("id") else "")
         command, key = "xsm approve %s" % shlex.quote(req["id"]), ("approve", req["id"])
         allow, deny = "allow", "deny"
-        answer, why = self.permission_form(me, command, key, {
-            "message": "Worker %s is waiting for your permission:\n%s\nAllow it?"
-                       % (req["worker"], req["summary"]),
-            "requestedSchema": {"type": "object", "properties": {"answer": {
-                "type": "string", "title": "Permission", "enum": [allow, deny]}},
-                "required": ["answer"]}}, accept=allow)
+        from . import decisions
+        recorded = decisions.read(call['key']) if call else None
+        verified_denial = (recorded and recorded['status'] == 'denied' and
+            recorded['display'].get('complete') is True and self._decision_current(call) and
+            self.answer((recorded.get('answer') or {}).get('reply'), [allow, deny])[0] == deny)
+        if verified_denial:
+            answer, why = deny, 'verified-host-denial'
+        else:
+            answer, why = self.permission_form(me, command, key, {
+                "message": "Worker %s request [%s] is waiting for your permission:\n%s\nAllow it?"
+                           % (req["worker"], req["id"], req["summary"]),
+                "requestedSchema": {"type": "object", "properties": {"answer": {
+                    "type": "string", "title": "Permission", "enum": [allow, deny]}},
+                    "required": ["answer"]}}, accept=allow)
         if why == DECLINED:
             answer = deny               # they said no to the form: the request is answered
         if answer is None:
             return ("your user did not answer (%s); the request is still waiting and the worker "
                     "is blocked until it is answered. %s" % (why, self.in_words(me, command, key)))
         self.clear_permission(me, key)
-        workers.answer_asked(req["id"], answer == allow, me.get("ref"),
-                             None if answer == allow else "your user said no", via=self.answer_source())
-        return "%s: worker %s's request [%s] %s" % (
+        try:
+            observed = workers.answer_asked(req["id"], answer == allow, me.get("ref"),
+                None if answer == allow else "your user said no", via=self.answer_source(),
+                expected_fingerprint=(self.decision_calls.get(self.active_request) or {}).get('approval_fingerprint'))
+        except workers.WorkerError as exc:
+            raise ToolError(str(exc)) from exc
+        text = "%s: worker %s's request [%s] %s" % (
             "allowed" if answer == allow else "denied", req["worker"], req["id"], req["summary"])
+        return OperationDisplay(text, {'approval': {
+            'id': observed['id'], 'worker': observed['worker'], 'status': observed['status'],
+            'summary': observed['summary'], 'tool': observed.get('tool'),
+            'answered_at': observed['answered'], 'via': observed['via'], 'reason': observed.get('reason')}})
+
 
     def grant(self, me: dict, args: dict) -> str:
         from . import config, workers

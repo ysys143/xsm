@@ -180,6 +180,15 @@ Mac core898개가74.697초에 통과했다. Structured snapshot은 실제 worker
 3.11에서89.472초,3.14에서113.382초에 통과했고 새30개 frame의 schema 검증과
 VM 종료를 확인했다. 전체 계획은 계속 미완이다.
 
+## Worker 개별 승인 요청 결속 — 2026-11-03
+
+[개별 요청 결속](worker-approval-binding.md)은 id 없는 호출의 cache/질문 대상을
+미리 고정하고 request+worker fingerprint를 반영 잠금 안에서 검증한다. 같은 요약의
+다른 요청이나 변경 input에 이전 답을 쓰지 않는다. 요청 id의 경로 해석도 막았으며
+답변 snapshot metadata를 추가했다. 명시적 host deny의 worker 전달도 보완했고
+최종 관련129개/11.792초와 Mac core906개/78.316초를 확인했다. 실제 native worker
+실행 및 approve 결과 schema와 전체 계획은 미완이다.
+
 ## 단계별 판정
 
 | 단계 | 상태 | 남은 조건 |

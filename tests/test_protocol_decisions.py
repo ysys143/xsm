@@ -209,6 +209,101 @@ class HostDecisionTest(ProtocolFixture):
         self.assertTrue(victim.is_file())
         self.assertFalse(Path(str(victim) + '.used').exists())
 
+    def approval_fixture(self, owner, ident='approval-1', when=1, command='fixture first'):
+        from xsm import paths, workers
+        parent = self.connection.sessions[owner['session']].record
+        workers.save({'name':'approval-fixture','parent_ref':parent['ref'],'created':1})
+        request = {'id':ident,'worker':'approval-fixture','status':'pending','summary':'same fixture summary',
+                   't':when,'runtime':'codex','tool':'Bash','input':{'command':command}}
+        paths.write_json(paths.path(workers.APPROVALS, ident+'.json'), request)
+        return request
+
+    def test_idless_worker_approval_selects_each_request_before_cache_lookup(self):
+        a = self.participant('approval-selection')
+        self.approval_fixture(a)
+        self.operation(a, 'xsm_approve'); first = self.event(); self.answer(first, answer='allow')
+        self.operation(a, 'xsm_approve')
+        self.approval_fixture(a, 'approval-2', 2)
+        result = self.operation(a, 'xsm_approve')
+        self.assertEqual(result.get('status'), 'waiting-for-user')
+        self.assertNotEqual(self.event()['decisionId'], first['decisionId'])
+
+    def test_old_worker_answer_cannot_approve_next_identical_summary(self):
+        from xsm import paths, workers
+        a = self.participant('approval-queue-change')
+        self.approval_fixture(a)
+        self.operation(a, 'xsm_approve'); old = self.event(); self.answer(old, answer='allow')
+        parent = self.connection.sessions[a['session']].record
+        workers.answer_asked('approval-1', False, parent['ref'], 'synthetic external refusal')
+        self.approval_fixture(a, 'approval-2', 2)
+        result = self.operation(a, 'xsm_approve')
+        self.assertEqual(result.get('status'), 'waiting-for-user')
+        self.assertEqual(paths.read_json(paths.path(workers.APPROVALS,'approval-2.json'))['status'], 'pending')
+
+    def test_worker_approval_changed_input_requires_a_fresh_answer(self):
+        a = self.participant('approval-input-change')
+        self.approval_fixture(a)
+        self.operation(a, 'xsm_approve', id='approval-1'); old = self.event(); self.answer(old, answer='allow')
+        self.approval_fixture(a, command='fixture changed input')
+        result = self.operation(a, 'xsm_approve', id='approval-1')
+        self.assertEqual(result.get('status'), 'waiting-for-user')
+        self.assertNotEqual(self.event()['decisionId'], old['decisionId'])
+
+    def test_worker_approval_id_is_not_a_state_file_path(self):
+        from xsm import paths, workers
+        a = self.participant('approval-invalid-path')
+        request = self.approval_fixture(a)
+        paths.write_json(paths.path('victim.json'), request)
+        parent = self.connection.sessions[a['session']].record
+        with self.assertRaises(workers.WorkerError):
+            workers.answer_asked('../victim', True, parent['ref'])
+        self.assertEqual(paths.read_json(paths.path('victim.json'))['status'], 'pending')
+
+    def test_worker_approval_metadata_and_replay_preserve_exact_request(self):
+        a = self.participant('approval-producer')
+        self.approval_fixture(a)
+        self.operation(a, 'xsm_approve', id='approval-1'); event = self.event(); self.answer(event, answer='allow')
+        result = self.operation(a, 'xsm_approve', id='approval-1')
+        self.assertEqual(result['approval']['id'], 'approval-1')
+        self.assertEqual(result['approval']['status'], 'approved')
+        self.assertEqual(result['approval']['via'], 'host-user')
+        self.assertEqual(self.operation(a, 'xsm_approve', id='approval-1'), result)
+
+    def test_worker_approval_rechecks_input_while_holding_request_lock(self):
+        from xsm import paths, workers
+        a = self.participant('approval-lock-check')
+        original = self.approval_fixture(a)
+        expected = workers.approval_fingerprint(original, workers.load(original['worker']))
+        self.approval_fixture(a, command='changed under the same ID')
+        parent = self.connection.sessions[a['session']].record
+        with self.assertRaisesRegex(workers.WorkerError, 'scope changed'):
+            workers.answer_asked(original['id'], True, parent['ref'], expected_fingerprint=expected)
+        self.assertEqual(paths.read_json(paths.path(workers.APPROVALS,original['id']+'.json'))['status'], 'pending')
+
+    def test_worker_scope_change_at_commit_is_refused_without_answering_request(self):
+        from xsm import paths, workers
+        from xsm.operation_schema import ToolError
+        a = self.participant('approval-commit-race')
+        self.approval_fixture(a)
+        self.operation(a, 'xsm_approve', id='approval-1'); event = self.event(); self.answer(event, answer='allow')
+        original = workers.answer_asked
+        def change_scope(*args, **kwargs):
+            self.approval_fixture(a, command='changed immediately before lock')
+            return original(*args, **kwargs)
+        with mock.patch.object(workers, 'answer_asked', side_effect=change_scope):
+            with self.assertRaisesRegex(ToolError, 'scope changed'):
+                self.operation(a, 'xsm_approve', id='approval-1')
+        self.assertEqual(paths.read_json(paths.path(workers.APPROVALS,'approval-1.json'))['status'], 'pending')
+
+    def test_explicit_host_denial_is_relayed_to_exact_worker_request(self):
+        from xsm import paths, workers
+        a = self.participant('approval-explicit-denial')
+        self.approval_fixture(a)
+        self.operation(a, 'xsm_approve', id='approval-1'); event = self.event(); self.answer(event, answer='deny')
+        result = self.operation(a, 'xsm_approve', id='approval-1')
+        self.assertEqual(result['approval']['status'], 'denied')
+        self.assertEqual(paths.read_json(paths.path(workers.APPROVALS,'approval-1.json'))['status'], 'denied')
+
     def test_exact_answer_replay_after_expiry_reports_expired_without_applying(self):
         from xsm import decisions
         a = self.participant()
