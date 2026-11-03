@@ -213,8 +213,17 @@ partial effects, rollback, ACK or automatic retry safety.
 ## Verification
 
 Run `python3 scripts/check-protocol.py` for the credential-free, isolated-home
-core gate with a 120-second deadline. Native runtime, Linux and external
-messenger certification are separate gates in the implementation record.
+core gate with a 120-second deadline. Development validation requires
+[`requirements-protocol-dev.txt`](../../requirements-protocol-dev.txt) in an
+operator-selected isolated Python environment. The gate now runs the public
+schema checker and independent v7 local result/transport negatives within the
+same deadline. The server and SDK runtime do not import jsonschema.
+
+For offline dependencies, `--validator-path /absolute/dependency-root` scopes that
+root to the two development validation commands. Otherwise the gate locates the
+installed jsonschema root before HOME isolation. It never forwards ambient
+PYTHONPATH, credentials or native profile configuration. Native runtime, Linux
+and external messenger certification remain separate gates in the implementation record.
 
 ## Runtime host helper
 
@@ -268,7 +277,7 @@ the retry actually observes native acceptance.
 ## Contract from an installed snapshot
 
 `xsm protocol describe` prints a JSON bundle of this installation's experimental
-protocol version, 11 wire methods, current operation descriptors, public schema/
+protocol version, 16 wire methods, current operation descriptors, public schema/
 example/documentation files and the two verification scripts. Each artifact
 contains its UTF-8 text and SHA-256 digest. The hashes describe the installed
 bytes; they do not independently authenticate the publisher.

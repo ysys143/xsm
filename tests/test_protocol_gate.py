@@ -42,11 +42,29 @@ class ProtocolGateTest(unittest.TestCase):
                 self.assertFalse(group & other)
         self.assertEqual(sum(command[1:5] == ['-B', '-m', 'unittest', 'discover'] for command in commands), 1)
         self.assertEqual(sum(command[:2] == ['node', '--test'] for command in commands), 1)
+        for script in ('scripts/check-protocol-schema.py', 'scripts/check-independent-v7.py'):
+            self.assertEqual(sum(script in command for command in commands), 1)
         for version in (3, 5, 6):
             path = 'examples/independent-participant/local_v%d_fixtures.py' % version
             self.assertEqual(sum(path in command for command in commands), 1)
         self.assertEqual(calls[1][2], len(calls[0][0]))
         self.assertEqual(calls[0][1], calls[1][1])
+
+    def test_validator_dependency_is_scoped_without_forwarding_parent_credentials(self):
+        commands, environments = [], []
+        def phase(items, env, root, deadline, offset):
+            commands.extend(items); environments.append(set(env))
+            return None
+        with mock.patch.dict(os.environ, {'ANTHROPIC_API_KEY':'fixture-only', 'OPENAI_API_KEY':'fixture-only',
+                                          'PYTHONPATH':'/fixture/ambient-libraries'}),                 mock.patch.object(gate, 'run_phase', side_effect=phase),                 mock.patch.object(gate.shutil, 'which', return_value='/fixture/node'),                 redirect_stdout(io.StringIO()):
+            self.assertEqual(gate.main(validator_path=Path('/fixture/validator')),0)
+        for keys in environments:
+            self.assertFalse({'ANTHROPIC_API_KEY','OPENAI_API_KEY','PYTHONPATH'} & keys,
+                             'ambient credentials or Python paths were forwarded')
+        scoped = [item for item in commands if '/fixture/validator' in item]
+        self.assertEqual(len(scoped),2)
+        self.assertTrue(all(any(script in item for script in ('scripts/check-protocol-schema.py',
+            'scripts/check-independent-v7.py')) for item in scoped))
 
     def test_groups_reach_a_barrier_with_distinct_private_homes(self):
         with tempfile.TemporaryDirectory(prefix='xsm-gate-barrier-') as folder:

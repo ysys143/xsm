@@ -108,3 +108,29 @@ The public `questions` conformance suite observes these paths, including late
 and partial replies and a selected-peer handshake. Ask/status/connect now have a dedicated
 [result schema](question-result.schema.json); select its operation definition
 using the original request. Structure is not authorization or native certification. See [conformance](conformance.md).
+
+## Owned action conditions
+
+The catalog describes base syntax. These domain conditions are mandatory even
+when a property is optional in the shared structural object:
+
+| `xsm_owned` action | Additional required arguments | Result family |
+|---|---|---|
+| create | supported runtime | logical service metadata |
+| run | nonempty text and explicit nonempty work_context | durable task snapshot or transient unknown recovery |
+| status without request_id | none | caller-owned request listing |
+| status with request_id | request_id | exact task, not-found or refused |
+| cancel | request_id | that sender's exact task/cancellation snapshot |
+| retry | request_id | retained task/reply-publication state; no model rerun |
+| reconcile | request_id | retained task/native readback state; no automatic model replay |
+
+Run may choose its request_id if omitted and returns it for recovery. An empty or
+missing work_context is not an implicit shared/default work unit. An overloaded
+request remains queued under its original id and immutable body. A caller's
+status request cannot substitute another sender's work or recreate a service.
+
+`xsm_handover` defaults to `action: "hand_over"`. That action requires a nonempty
+target and summary and returns a transfer receipt only after the verified answer
+is applied. `action: "show"` returns this conversation's received transfers and
+letters; it neither moves a place nor requires a target/summary. Pending and
+legacy text results remain distinguishable from those structured receipts.

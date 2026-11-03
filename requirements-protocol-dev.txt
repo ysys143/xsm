@@ -1,0 +1,2 @@
+# Development validation only; the server and SDK runtime do not import this.
+jsonschema==4.26.0

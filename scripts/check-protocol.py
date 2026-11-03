@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 """Run the fast protocol gate in isolated homes, without models or credentials."""
+import argparse
+import importlib.util
 import json
 import os
 from pathlib import Path
@@ -83,14 +85,27 @@ def run_phase(commands, env, root, deadline, offset):
         sys.stdout.flush()
 
 
-def main():
+def main(*, validator_path=None):
     started = time.monotonic()
+    if validator_path is None:
+        # Resolve only the installed development library before HOME isolation;
+        # never copy credentials or the parent's full Python/environment paths.
+        spec = importlib.util.find_spec('jsonschema')
+        if spec is not None and spec.origin:
+            validator_path = Path(spec.origin).resolve().parent.parent
     with tempfile.TemporaryDirectory(prefix="xsm-protocol-check-") as temp:
         env = {k: os.environ[k] for k in ("PATH", "LANG", "TMPDIR", "SYSTEMROOT") if k in os.environ}
         env.update(HOME=temp, XSM_HOME=temp + "/state", CODEX_HOME=temp + "/codex",
                    CLAUDE_CONFIG_DIR=temp + "/claude", PYTHONDONTWRITEBYTECODE="1",
                    PYTHON=sys.executable)
         core_modules = [module for module in MODULES if module not in CONFORMANCE_MODULES]
+        def validation_command(script, output):
+            if validator_path is None:
+                return [sys.executable, "-B", script, "--output", output]
+            # Trusted development-only dependency root, scoped to these two
+            # commands. Do not forward ambient PYTHONPATH to protocol children.
+            bootstrap = "import runpy,sys;sys.path.insert(0,sys.argv.pop(1));runpy.run_path(sys.argv.pop(1),run_name='__main__')"
+            return [sys.executable, "-B", "-c", bootstrap, str(validator_path), script, "--output", output]
         commands = [[sys.executable, "-B", "-m", "unittest", *core_modules, "-q"],
                     [sys.executable, "-B", "-m", "unittest", "discover", "-s", "clients/tests",
                      "-p", "test_python*.py", "-q"],
@@ -101,6 +116,8 @@ def main():
                      "--output", temp + "/independent-v5-local.json"],
                     [sys.executable, "-B", "examples/independent-participant/local_v6_fixtures.py",
                      "--bundle", "docs/protocol", "--output", temp + "/independent-v6-local.json"],
+                    validation_command("scripts/check-protocol-schema.py", temp + "/schema.json"),
+                    validation_command("scripts/check-independent-v7.py", temp + "/independent-v7-local.json"),
                     ["node", "--test", "clients/tests/test_node_client.mjs",
                      "clients/tests/test_json_wire.mjs", "clients/tests/test_native_worker_control.mjs",
                      "clients/tests/test_node_protocol.mjs", "clients/tests/test_node_host.mjs",
@@ -138,4 +155,10 @@ def main():
 
 
 if __name__ == "__main__":
-    raise SystemExit(main())
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--validator-path', type=Path,
+                        help='absolute development dependency root for offline jsonschema validation only')
+    args = parser.parse_args()
+    if args.validator_path is not None and (not args.validator_path.is_absolute() or not args.validator_path.is_dir()):
+        parser.error('--validator-path must be an existing absolute directory')
+    raise SystemExit(main(validator_path=args.validator_path))

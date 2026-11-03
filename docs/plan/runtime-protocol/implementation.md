@@ -2806,3 +2806,13 @@ legacy unbound ask 승격을 실제 실패로 재현하고, 보존 질문과 req
 별도 schema742개 observation이 통과했다. Raw challenge는 host 전용 결과에만
 보존했다. Method 수·owned 조건·action mapping의 명세 피드백과 실제 native/Linux/
 원격·메신저·설치 전체 행렬은 미완으로 구분한다.
+
+## 빠른 schema·독립 v7 gate — 2026-11-03
+
+[Fast schema/v7](fast-schema-v7.md)은 공개 schema와 v7 local 예제132개·mutant188개·
+감지1개를 기존120초 deadline 안에 연결했다. 최초 개발 dependency 탐색 실패를
+보존하고 validation2개 명령에만 library root를 전달한다. 부모 credential/PYTHONPATH
+전달 mutant는 실패했다. Mac935개+기존 mock+새 validation은57.899초, 이후 추가한
+격리를 포함한 focused5개는0.628초에 통과했다. 최신936개와 Linux는 후속 실행이다.
+독립 검토의16 method 수와 owned run work_context 조건도 공개 문서에 보완했다.
+전체 native/오류 data/독립 행렬/원래 계획은 미완이다.
