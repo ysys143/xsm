@@ -26,6 +26,153 @@ class HostDecisionTest(ProtocolFixture):
         args.update(changes)
         return self.connection.dispatch("decision.response", args)
 
+    def test_publication_host_answer_requires_retry_and_withdrawal_needs_fresh_approval(self):
+        from xsm import directory
+        a = self.participant('publisher')
+        record = self.connection.sessions[a['session']].record
+        pending = self.operation(a, 'xsm_publish')
+        self.assertEqual(pending['status'], 'waiting-for-user')
+        event = self.event()
+        self.assertFalse(directory.is_published(record))
+        self.answer(event, answer='allow')
+        self.assertFalse(directory.is_published(record))
+        self.assertEqual(self.operation(a, 'xsm_publish')['status'], 'published')
+        self.assertTrue(directory.is_published(record))
+        self.assertEqual(self.operation(a, 'xsm_publish', visible=False)['status'], 'hidden')
+        again = self.operation(a, 'xsm_publish')
+        self.assertEqual(again['status'], 'waiting-for-user')
+        second = self.event()
+        self.assertNotEqual(second['decisionId'], event['decisionId'])
+        self.answer(second, answer='deny')
+        self.assertEqual(self.operation(a, 'xsm_publish')['status'], 'refused')
+        self.assertFalse(directory.is_published(record))
+
+    def test_connect_host_answer_grants_only_pair_then_reads_live_handshake(self):
+        from xsm import config
+        a = self.participant('selector')
+        outside = tempfile.TemporaryDirectory(prefix='xsm-host-selected-peer-')
+        self.addCleanup(outside.cleanup)
+        b = self.connection.dispatch('session.open', {'runtime':'ui-fixture', 'profile':'peer',
+            'conversation':'outside', 'cwd':outside.name, 'capabilities':['messaging','inbox']})
+        ar, br = (self.connection.sessions[x['session']].record for x in (a,b))
+        self.assertIsNone(config.scope_for(ar, br)[0])
+        pending = self.operation(a, 'xsm_connect', target='ref:' + b['ref'])
+        self.assertEqual(pending['status'], 'waiting-for-user')
+        event = self.event()
+        self.answer(event, answer='allow')
+        self.assertIsNone(config.scope_for(ar, br)[0])
+        handshake = self.operation(a, 'xsm_connect', target='ref:' + b['ref'])
+        self.assertIsNotNone(config.scope_for(ar, br)[0])
+        self.assertEqual(handshake['handshake'], 'pending')
+        self.operation(b, 'xsm_send', target='ref:' + a['ref'], text='actual selected reply',
+            kind='reply', reply_to=handshake['id'], outcome='succeeded', wake='never', request_id='selected-peer-reply')
+        completed = self.operation(a, 'xsm_connect', target='ref:' + b['ref'], request_id=handshake['id'])
+        self.assertEqual(completed['handshake'], 'completed')
+        self.assertEqual([c['id'] for c in completed['claims']], ['selected-peer-reply'])
+
+    def test_publication_without_ui_keeps_selection_required(self):
+        from xsm import directory
+        a = self.open('publisher-no-ui')
+        result = self.operation(a, 'xsm_publish')
+        self.assertEqual(result['status'], 'selection-required')
+        self.assertFalse(directory.is_published(self.connection.sessions[a['session']].record))
+        self.assertEqual(list(self.connection.events()), [])
+
+    def test_publication_mcp_uses_actual_elicitation_reader(self):
+        import io, json
+        from xsm import directory, mcp
+        for reviewer in (None, 'auto_review', 'fake_native'):
+            with self.subTest(reviewer=reviewer):
+                a = self.participant('mcp-publisher-' + str(reviewer))
+                record = self.connection.sessions[a['session']].record
+                answer = {'action':'accept','content':{'answer':'allow'}}
+                if reviewer == 'auto_review':
+                    answer['_meta'] = {'approvals_reviewer': reviewer}
+                messages = [
+                    {'jsonrpc':'2.0','id':1,'method':'initialize','params':{'protocolVersion':'2025-06-18','capabilities':{'elicitation':{}},'clientInfo':{'name':'fixture-user-ui'}}},
+                    {'jsonrpc':'2.0','id':2,'method':'tools/call','params':{'name':'xsm_publish','arguments':{}}},
+                    {'jsonrpc':'2.0','id':'xsm-1','result':answer}]
+                if reviewer == 'fake_native':
+                    messages[1]['params']['arguments'] = {'answer_request':'invented-native-id','original_question':'invented question'}
+                output = io.StringIO()
+                server = mcp.Server(io.StringIO(''.join(json.dumps(x)+'\n' for x in messages)), output)
+                server.session = lambda: record
+                server.serve()
+                frames = [json.loads(line) for line in output.getvalue().splitlines()]
+                self.assertEqual(any(frame.get('method') == 'elicitation/create' for frame in frames), reviewer != 'fake_native')
+                reply = next(frame for frame in frames if frame.get('id') == 2)
+                self.assertNotIn('error', reply)
+                self.assertFalse(reply['result'].get('isError', False), reply)
+                self.assertEqual(directory.is_published(record), reviewer is None)
+
+    def test_publication_unknown_application_is_not_replayed(self):
+        from xsm import decisions, directory
+        a = self.participant('publisher-error')
+        self.operation(a, 'xsm_publish'); event = self.event(); self.answer(event, answer='allow')
+        with mock.patch.object(directory, 'publish', side_effect=OSError('fixture persistence failure')) as apply:
+            with self.assertRaises(OSError):
+                self.operation(a, 'xsm_publish')
+            self.assertEqual(decisions.read(event['decisionId'])['status'], 'unknown')
+            self.assertEqual(self.operation(a, 'xsm_publish')['status'], 'refused')
+            self.assertEqual(apply.call_count, 1)
+
+    def test_connect_approval_does_not_follow_reassigned_target_name(self):
+        from xsm import config, paths, registry
+        a = self.participant('selector-name')
+        outside = tempfile.TemporaryDirectory(prefix='xsm-host-name-peer-'); self.addCleanup(outside.cleanup)
+        def peer(conversation):
+            opened = self.connection.dispatch('session.open', {'runtime':'ui-fixture','profile':'peer',
+                'conversation':conversation,'cwd':outside.name,'capabilities':['inbox']})
+            return self.connection.sessions[opened['session']].record
+        old = peer('old-target'); old['name']='picked'
+        paths.write_json(registry._record_path(old['runtime'], old['session_id']), old)
+        self.assertEqual(self.operation(a, 'xsm_connect', target='picked')['status'], 'waiting-for-user')
+        event = self.event(); self.answer(event, answer='allow')
+        old['name']='renamed'; paths.write_json(registry._record_path(old['runtime'], old['session_id']), old)
+        new = peer('new-target'); new['name']='picked'
+        paths.write_json(registry._record_path(new['runtime'], new['session_id']), new)
+        self.assertEqual(self.operation(a, 'xsm_connect', target='picked')['status'], 'waiting-for-user')
+        second = self.event(); self.assertNotEqual(event['decisionId'], second['decisionId'])
+        caller = self.connection.sessions[a['session']].record
+        self.assertIsNone(config.scope_for(caller, old)[0]); self.assertIsNone(config.scope_for(caller, new)[0])
+
+    def test_noop_withdrawal_does_not_renew_denied_publication(self):
+        from xsm import connect
+        with self.assertRaises(ValueError):
+            connect.publication(None, visible=False)
+        a = self.participant('denied-noop-withdrawal')
+        self.operation(a, 'xsm_publish'); event = self.event(); self.answer(event, answer='deny')
+        self.assertEqual(self.operation(a, 'xsm_publish')['status'], 'refused')
+        self.assertEqual(self.operation(a, 'xsm_publish', visible=False)['status'], 'hidden')
+        self.assertEqual(self.operation(a, 'xsm_publish')['status'], 'refused')
+        self.assertEqual(list(self.connection.events()), [])
+
+    def test_display_rename_does_not_renew_denied_publication(self):
+        from xsm import paths, registry
+        a = self.participant('denied-renamed-publisher')
+        self.operation(a, 'xsm_publish'); event = self.event(); self.answer(event, answer='deny')
+        self.assertEqual(self.operation(a, 'xsm_publish')['status'], 'refused')
+        record = self.connection.sessions[a['session']].record
+        record['name'] = 'new display name'
+        paths.write_json(registry._record_path(record['runtime'], record['session_id']), record)
+        self.assertEqual(self.operation(a, 'xsm_publish')['status'], 'refused')
+        self.assertEqual(list(self.connection.events()), [])
+
+    def test_connect_same_identity_rename_preserves_answered_display(self):
+        from xsm import paths, registry
+        a = self.participant('selector-same-identity')
+        outside = tempfile.TemporaryDirectory(prefix='xsm-host-renamed-peer-'); self.addCleanup(outside.cleanup)
+        b = self.connection.dispatch('session.open', {'runtime':'ui-fixture','profile':'peer',
+            'conversation':'same-target','cwd':outside.name,'capabilities':['inbox']})
+        self.operation(a, 'xsm_connect', target='ref:' + b['ref']); event = self.event()
+        self.answer(event, answer='allow')
+        record = self.connection.sessions[b['session']].record
+        record['name'] = 'renamed same conversation'
+        paths.write_json(registry._record_path(record['runtime'], record['session_id']), record)
+        result = self.operation(a, 'xsm_connect', target='ref:' + b['ref'])
+        self.assertEqual(result['handshake'], 'pending')
+        self.assertEqual(list(self.connection.events()), [])
+
     def test_exact_answer_replay_after_expiry_reports_expired_without_applying(self):
         from xsm import decisions
         a = self.participant()

@@ -202,7 +202,24 @@ def _selection_reason(sender: dict, name: str, verdict, kept) -> str:
         else consent.cannot_keep(what, None, sender)
 
 
-def _select_network(sender: dict, target: dict) -> dict:
+def _selected_consent(me, verb, target, *, binding, apply, authorize=None):
+    """Keep CLI input consent; UI frontends supply the existing scoped coordinator."""
+    if authorize is None:
+        return consent.take_or_request(me, verb, target, binding=binding, apply=apply)
+    from . import collaboration, directory
+    if verb == 'publish':
+        filename = paths.path(directory.PUBLICATIONS, directory._key(directory._endpoint(me)) + '.json')
+    else:
+        filename = paths.path(collaboration.DIRECTORY, collaboration._pair(*binding['pair'])[1] + '.json')
+    try:
+        info = os.stat(filename, follow_symlinks=False)
+        revision = [info.st_dev, info.st_ino, info.st_size, info.st_mtime_ns, info.st_ctime_ns]
+    except FileNotFoundError:
+        revision = None
+    return authorize(me, verb, target, binding, apply, revision)
+
+
+def _select_network(sender: dict, target: dict, authorize=None) -> dict:
     from . import collaboration, network, network_identity, resolve, team_sync, teams
     try:
         address = network_identity.target(target)
@@ -256,10 +273,10 @@ def _select_network(sender: dict, target: dict) -> dict:
 
         pair = []
 
-        verdict, go, kept = consent.take_or_request(
+        verdict, go, kept = _selected_consent(
             sender, "collaborate", name,
             binding={"pair": proposal["endpoints"], "generation": target["generation"]},
-            apply=apply_selection)
+            apply=apply_selection, authorize=authorize)
         if not go:
             reason = _selection_reason(sender, name, verdict, kept)
             return {"status": "selection-required", "reason": reason,
@@ -274,7 +291,7 @@ def _select_network(sender: dict, target: dict) -> dict:
         return {"status": "refused", "reason": str(exc), "handshake": "not-started"}
 
 
-def select(sender: dict, target: dict, call=None) -> dict:
+def select(sender: dict, target: dict, call=None, authorize=None) -> dict:
     """Apply the user's selection to exactly two native conversations.
 
     This is permission to attempt the handshake, never evidence that the peer
@@ -285,7 +302,7 @@ def select(sender: dict, target: dict, call=None) -> dict:
     if why:
         return {"status": "refused", "reason": why}
     if "home_id" in target or target.get("remote"):
-        return _select_network(sender, target)
+        return _select_network(sender, target, authorize=authorize)
     current = [r for r in registry.records() if
                r.get("runtime") == target.get("runtime") and
                r.get("home") == target.get("home") and
@@ -314,9 +331,9 @@ def select(sender: dict, target: dict, call=None) -> dict:
         applied.append(record)
 
     try:
-        verdict, go, kept = consent.take_or_request(
+        verdict, go, kept = _selected_consent(
             sender, "collaborate", name, binding={"pair": proposal["endpoints"]},
-            apply=apply_selection)
+            apply=apply_selection, authorize=authorize)
     except ValueError as exc:
         return {"status": "refused", "reason": str(exc), "handshake": "not-started"}
     if not go:
@@ -329,23 +346,29 @@ def select(sender: dict, target: dict, call=None) -> dict:
             "target": target.get("ref"), "handshake": "not-started"}
 
 
-def publication(me: dict, visible=True, call=None) -> dict:
+def publication(me: dict, visible=True, call=None, authorize=None) -> dict:
     """Publish this conversation only, without granting communication scope."""
     from . import context, directory
     why = context.require_sure(call, "publish this conversation") if call else None
     if why:
         return {"status": "refused", "reason": why}
     if not visible:
-        directory.publish(me, visible=False, user_source="explicit unpublish request")
+        # Only an actual visibility transition renews the next approval scope.
+        # Repeating a no-op withdrawal must not bypass an earlier denial.
+        endpoint = directory._endpoint(me)
+        if not directory._allowed(me, endpoint):
+            raise ValueError('publication requires an allowed exact local conversation')
+        if directory._publication(endpoint) is not None:
+            directory.publish(me, visible=False, user_source="explicit unpublish request")
         return {"status": "hidden", "visible": False}
     if directory.is_published(me):
         return {"status": "published", "visible": True}
     applied = []
     try:
-        verdict, go, kept = consent.take_or_request(
+        verdict, go, kept = _selected_consent(
             me, "publish", me.get("name") or me["ref"],
             binding={"conversation": {k: me.get(k) for k in ("runtime", "home", "session_id")}},
-            apply=lambda words: applied.append(directory.publish(me, user_source=words)))
+            apply=lambda words: applied.append(directory.publish(me, user_source=words)), authorize=authorize)
     except ValueError as exc:
         return {"status": "refused", "reason": str(exc)}
     if not go:

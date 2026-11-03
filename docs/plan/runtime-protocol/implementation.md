@@ -106,8 +106,8 @@ runtime 도달로 오인하는 등 wire 결함3종을 검출했다. ACK 후 rese
 통과했으며 격리 VM 종료를 확인했다.
 
 [결과 계약 범위 전수표](result-contract-coverage.md)는 공개22개 operation 중
-domain schema가 있는 operation11개(그중 team/board는 일부 action)와
-미정의11개를 구분한다.
+domain schema가 있는 operation12개(그중 team/board는 일부 action)와
+미정의10개를 구분한다.
 이는 완료율이나 native 지원률이 아니다.
 
 ## 핵심 검사 적합성 묶음 분리 — 2026-11-03
@@ -140,6 +140,15 @@ normative 결과 schema는 계속 미완이다. 고정2ad7a23의 Linux core881�
 실제 원격/사용자 승인/native 지원 인증은 별도다. 고정d785f8e의 Linux
 core881개도3.11에서83.571초,3.14에서106.231초에 통과했다. 각 환경의
 새 stdio42개 frame을 offline 개발 validator로 검증했고 VM 종료를 확인했다.
+
+## 공개·선택 호스트 UI 승인 — 2026-11-03
+
+[호스트 승인 연결](selection-host-ui.md)은 publish/범위 밖 connect를 공통
+user-decisions/MCP elicitation에 연결했다. 답 저장과 적용을 분리하며, permission
+효과만 journal하고 handshake는 live 조회한다. 표시 이름/no-op 철회로 거부를
+새 승인으로 바꾸지 않고, 실제 철회 뒤 재공개는 새 승인이 필요하다. 합성 host
+stdio28개/frame46개와 Mac core893개(96.634초)를 확인했다. Publication 결과
+schema6개 예제/거부8개도 추가했다. 실제 사람/native/remote 전체 인증은 별도다.
 
 ## 단계별 판정
 

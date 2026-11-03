@@ -1,0 +1,230 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:xsm:host-protocol:1:publication-result",
+  "title": "Conversation visibility results; publication is not permission",
+  "oneOf": [
+    {
+      "$ref": "#/$defs/normal"
+    },
+    {
+      "$ref": "#/$defs/awaiting"
+    }
+  ],
+  "$defs": {
+    "claim": {
+      "type": "object",
+      "required": [
+        "id",
+        "token",
+        "owner",
+        "generation",
+        "digest"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "token": {
+          "type": "string",
+          "minLength": 1
+        },
+        "generation": {
+          "type": "string",
+          "minLength": 1
+        },
+        "digest": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}(?![\\s\\S])"
+        },
+        "owner": {
+          "type": "object",
+          "required": [
+            "type",
+            "id"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "type": {
+              "type": "string",
+              "minLength": 1
+            },
+            "id": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        }
+      }
+    },
+    "normal": {
+      "type": "object",
+      "required": [
+        "status",
+        "inbox_pending"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "inbox_pending": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "inbox_notice": {
+          "type": "string"
+        },
+        "inbox_pending_known": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "inbox_pending_diagnostics": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "status": {
+          "enum": [
+            "published",
+            "hidden",
+            "selection-required",
+            "refused"
+          ]
+        },
+        "visible": {
+          "type": "boolean"
+        },
+        "reason": {
+          "type": "string"
+        },
+        "incoming": {
+          "type": "object",
+          "required": [
+            "messages",
+            "claims"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "messages": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "string"
+              }
+            },
+            "claims": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/claim"
+              }
+            }
+          }
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "published"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "visible"
+            ],
+            "properties": {
+              "visible": {
+                "const": true
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "hidden"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "visible"
+            ],
+            "properties": {
+              "visible": {
+                "const": false
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "selection-required"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "visible",
+              "reason"
+            ],
+            "properties": {
+              "visible": {
+                "const": false
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "refused"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "reason"
+            ],
+            "not": {
+              "required": [
+                "visible"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "awaiting": {
+      "type": "object",
+      "required": [
+        "status",
+        "decision_id",
+        "question_id"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "status": {
+          "const": "waiting-for-user"
+        },
+        "decision_id": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}(?![\\s\\S])"
+        },
+        "question_id": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    }
+  }
+}

@@ -2018,5 +2018,14 @@
         "cap": 60
       }
     }
+  },
+  {
+    "operation": "xsm_connect",
+    "source": "synthetic scoped host selection pending; no approval applied",
+    "result": {
+      "status": "waiting-for-user",
+      "decision_id": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+      "question_id": "opaque-host-question"
+    }
   }
 ]

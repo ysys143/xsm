@@ -10,6 +10,8 @@ Host coordination: [Python](python-host.md).
 Large caller-read copies: [bounded file preparation](file-uploads.md).
 Owned copies and exact checksum bytes: [file result contract](files-contract.md).
 Participant privacy and selection: [discovery contract](discovery.md).
+Conversation visibility: [publication results](publication-result.schema.json) and
+[host selection conformance](conformance.md).
 Request definitions: [envelope contract and examples](request-contract.md).
 Operation inputs: [structural catalog and transport restrictions](operations-contract.md).
 Output definitions: [responses, notifications and observed validation](output-contract.md).

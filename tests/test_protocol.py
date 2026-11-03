@@ -109,7 +109,7 @@ class ProtocolTest(ProtocolFixture):
                      'doc-result.schema.json', 'doc-result-examples.json',
                      'send-result.schema.json', 'send-result-examples.json',
                      'question-result.schema.json', 'question-result-examples.json',
-                     'question-results.md'):
+                     'question-results.md', 'publication-result.schema.json', 'publication-result-examples.json'):
             target = root / 'docs/protocol' / name
             target.parent.mkdir(parents=True, exist_ok=True)
             shutil.copyfile(source / 'docs/protocol' / name, target)
@@ -119,7 +119,7 @@ class ProtocolTest(ProtocolFixture):
                      'doc-result.schema.json', 'doc-result-examples.json',
                      'send-result.schema.json', 'send-result-examples.json',
                      'question-result.schema.json', 'question-result-examples.json',
-                     'question-results.md'):
+                     'question-results.md', 'publication-result.schema.json', 'publication-result-examples.json'):
             target = root / 'docs/protocol' / name
             data = target.read_bytes()
             target.unlink()

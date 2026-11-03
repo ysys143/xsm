@@ -13,6 +13,7 @@ command = [sys.executable, '-B', '-c',
            str(root), 'protocol', 'serve', '--stdio']
 process = subprocess.Popen(command, stdin=subprocess.PIPE, stdout=subprocess.PIPE, text=True)
 first_token = None
+pending_publication = None
 
 
 replies = queue.Queue()
@@ -58,7 +59,16 @@ try:
         if fault == 'ignore-inbox-filter' and params.get('operation') == 'xsm_inbox':
             params.get('arguments', {}).pop('message_ids', None)
         reply = exchange(request)
+        if fault == 'selection-auto-apply-publication' and request['method'] == 'decision.response' and pending_publication:
+            saved, question_id = pending_publication
+            if params.get('questionId') == question_id and params.get('answer') == 'allow' and reply.get('result', {}).get('status') == 'answered':
+                exchange({'jsonrpc':'2.0','id':'fault-auto-publication','method':'operation.call','params':saved})
+                pending_publication = None
         if request['method'] == 'operation.call':
+            if fault == 'selection-auto-apply-publication' and params.get('operation') == 'xsm_publish' and reply.get('result', {}).get('status') == 'waiting-for-user':
+                pending_publication = (params, reply['result']['question_id'])
+            if fault == 'selection-stale-handshake' and params.get('operation') == 'xsm_connect' and params.get('arguments', {}).get('request_id') and reply.get('result', {}).get('handshake') == 'completed':
+                reply['result']['handshake'] = 'pending'
             if params.get('operation') == 'xsm_question_status' and reply.get('result', {}).get('group'):
                 value = reply['result']
                 if fault == 'questions-foreign-internal' and value.get('status') == 'refused':

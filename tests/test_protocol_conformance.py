@@ -87,6 +87,22 @@ class ExternalConformanceTest(unittest.TestCase):
         self.assertIsNone(result['activeCheck'])
         self.assertIn('FileNotFoundError', result['error'])
 
+    def test_actual_server_host_selection_approval(self):
+        result = checker.run(self.delivery_candidate('none'), suite='selection', capture=True)
+        self.assertEqual(result['status'], 'passed', result)
+        self.assertEqual(len(result['checks']), 28)
+        self.assertEqual(sum(row['frame'].get('method') == 'decision/request' for row in result['observations']), 3)
+
+    def test_host_selection_automatic_publication_is_detected(self):
+        result = checker.run(self.delivery_candidate('selection-auto-apply-publication'), suite='selection')
+        self.assertEqual(result['status'], 'failed', result)
+        self.assertEqual(result['activeCheck'], 'host answer does not publish before retry')
+
+    def test_host_selection_cached_handshake_is_detected(self):
+        result = checker.run(self.delivery_candidate('selection-stale-handshake'), suite='selection')
+        self.assertEqual(result['status'], 'failed', result)
+        self.assertEqual(result['activeCheck'], 'handshake recovery is live rather than cached approval output')
+
     def test_actual_server_correlated_questions(self):
         result = checker.run(self.delivery_candidate('none'), suite='questions', capture=True)
         self.assertEqual(result['status'], 'passed', result)

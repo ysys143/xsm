@@ -17,6 +17,9 @@
     },
     {
       "$ref": "#/$defs/qSelection"
+    },
+    {
+      "$ref": "#/$defs/qAwaiting"
     }
   ],
   "x-operationResults": {
@@ -33,7 +36,8 @@
     ],
     "xsm_connect": [
       "qSingle",
-      "qSelection"
+      "qSelection",
+      "qAwaiting"
     ]
   },
   "$defs": {
@@ -2874,6 +2878,28 @@
           }
         }
       ]
+    },
+    "qAwaiting": {
+      "type": "object",
+      "required": [
+        "status",
+        "decision_id",
+        "question_id"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "status": {
+          "const": "waiting-for-user"
+        },
+        "decision_id": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}(?![\\s\\S])"
+        },
+        "question_id": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
     }
   }
 }

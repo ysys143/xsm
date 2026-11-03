@@ -302,3 +302,14 @@ results, opaque reply handles, claims, partial/final outcomes and remote
 Gateway/file evidence are distinct definitions. Validation of these structures
 and internal associations does not certify a human answer, network membership,
 current authority or native queue admission.
+
+## Conversation publication results
+
+Use [publication-result.schema.json](publication-result.schema.json) for
+`xsm_publish`. Published/hidden results carry a visibility boolean, selection
+required/refused results explain why no publication happened, and a UI-capable
+host can first receive waiting-for-user with decision/question IDs. Neither
+publication nor its visibility flag grants a communication scope. A pending
+result contains no host challenge. [Examples](publication-result-examples.json)
+include all states and unconfirmed incoming display data with separate claims.
+The shared claim/waiting structures must match the existing contracts.

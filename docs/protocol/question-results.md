@@ -41,6 +41,13 @@ answers and otherwise pending. An ordinary question remains not-started on the
 handshake axis. None of these peer replies is a human approval for another
 operation.
 
+Hosts with `user-decisions` can receive `qAwaiting` from connect before a pair
+permission is created. The host displays the sealed `decision/request`, sends
+the real answer through `decision.response`, and explicitly retries the original
+operation. Answer receipt alone changes no collaboration scope. The approval
+journal records the permission effect; it never caches the live handshake
+response. UI-less hosts retain the existing selection-required/input route.
+
 ## Claims, identity and evidence
 
 Each claim identifies an actually returned reply. A group's root claims are the

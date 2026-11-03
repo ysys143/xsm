@@ -39,7 +39,7 @@ def ask(me, arguments, *, call=None, material_source='inline', wait=0, pump=None
     return {'result': result, 'grouped': False, 'wait_applies': True}
 
 
-def connect(me, arguments, *, call=None, wait=0, pump=None, pump_factory=None, cancelled=None):
+def connect(me, arguments, *, call=None, wait=0, pump=None, pump_factory=None, cancelled=None, authorize=None):
     with probe.quick():
         found = resolve.resolve(arguments.get('target', ''), caller=me)
     if not found.ok:
@@ -48,7 +48,8 @@ def connect(me, arguments, *, call=None, wait=0, pump=None, pump_factory=None, c
     if request_id and (not questions.expects_reply(me, found.record, request_id)
                        or questions.status(me, request_id).get('purpose') != 'handshake'):
         raise QuestionError('request ID does not belong to this selected handshake')
-    result = connection.select(me, found.record, call=call)
+    result = (connection.select(me, found.record, call=call, authorize=authorize) if authorize is not None
+              else connection.select(me, found.record, call=call))
     if result['status'] != 'permitted':
         return {'result': result, 'grouped': False, 'wait_applies': False}
     current_id = request_id or envelope.new_id()

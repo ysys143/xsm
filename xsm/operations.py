@@ -6,6 +6,7 @@ Policy, human decisions, file preparation and canonical handoffs live here.
 from __future__ import annotations
 
 import copy
+from functools import partial
 import json
 import math
 import os
@@ -265,7 +266,8 @@ class OperationService:
             visible = args.get("visible", True)
             if not isinstance(visible, bool):
                 raise ToolError("visible must be a boolean")
-            return json.dumps(connect.publication(me, visible=visible, call=self.ctx), ensure_ascii=False)
+            return json.dumps(connect.publication(me, visible=visible, call=self.ctx,
+                authorize=self.selection_authorizer(args)), ensure_ascii=False)
         if name == "xsm_discover":
             from . import directory
             return json.dumps(directory.discover(me, machine=args.get("machine"),
@@ -296,7 +298,8 @@ class OperationService:
                 if name == "xsm_ask":
                     value = question_service.ask(me, args, call=self.ctx, poll=poll, **common)
                 elif name == "xsm_connect":
-                    value = question_service.connect(me, args, call=self.ctx, **common)
+                    value = question_service.connect(me, args, call=self.ctx,
+                        authorize=self.selection_authorizer(args), **common)
                 else:
                     value = question_service.status(me, args.get("id"), poll=poll, **common)
             except files.FileError as exc:
@@ -549,7 +552,7 @@ class OperationService:
             raise ToolError(closed)
         if not key:
             return None
-        binding = {"mcp_decision": call["key"]} if call else None
+        binding = dict(call.get("permission_binding") or {}, mcp_decision=call["key"]) if call else None
         verdict, go, kept = consent.take_or_request(me, *key, binding=binding)
         if call:
             call["permission_key"], call["permission_kept"] = key, bool(kept)
@@ -726,6 +729,60 @@ class OperationService:
                     "answer_request and original_question. Shell equivalent: `%s`." %
                     (consent.how(me.get("runtime")), consent.ask_hint(), call["key"], command))
         return consent.in_words(command, bool(key) and consent.ask(me, *key), me.get("runtime"))
+
+    def selection_authorizer(self, arguments):
+        if "elicitation" not in (self.client_caps or {}):
+            return None
+        return partial(self.selected_consent, native_request=arguments.get('answer_request'),
+                       native_question=arguments.get('original_question'))
+
+    def selected_consent(self, me, verb, target, binding, apply, revision, *, native_request=None, native_question=None):
+        """Journal only the permission effect, never a cached handshake/status result."""
+        from . import decisions
+        tool = 'xsm_publish' if verb == 'publish' else 'xsm_connect'
+        generation = self.ctx.generation or {'server': self.instance_id}
+        arguments = {'verb': verb}
+        resource = {'binding_digest': decisions.digest(binding), 'revision': revision}
+        scope = {'tool': tool, 'arguments': arguments, 'resource': resource,
+                 'cwd': os.path.realpath(me['cwd']) if me.get('cwd') else None}
+        key = decisions.invocation(me, tool, arguments, generation, resource)
+        call = {'key': key, 'me': copy.deepcopy(me), 'scope': scope, 'generation': generation,
+                'permission_binding': binding, 'native_request': native_request, 'native_question': native_question}
+        owner = self.active_request
+        previous = self.decision_calls.get(owner)
+        self.decision_calls[owner] = call
+        if verb == 'publish':
+            question = ('Make this conversation [%s] discoverable to your other agents? '
+                        'This does not link folders or grant messaging access.' % me['ref'])
+            command = 'xsm publish'
+        else:
+            question = ('Allow this conversation [%s] to collaborate with %s as this exact pair? '
+                        'This does not link their folders. The peer still must answer the handshake.' % (me['ref'], target))
+            command = 'xsm connect ' + shlex.quote(target)
+        prior = decisions.read(key)
+        if prior and prior.get('question'):
+            question = prior['question']  # The identity-bound display remains immutable across renames.
+        try:
+            allowed, refusal = self.allowed(me, question, command, (verb, target))
+            if not allowed:
+                raise ValueError(refusal)
+            record = decisions.read(key)
+            if not record or (record.get('application') or {}).get('phase') != 'started':
+                raise ValueError('no scoped user permission was recorded for applying')
+            if not self._decision_current(call):
+                raise ValueError('decision caller or scope changed before applying')
+            words = self.permission_words('user allowed via %s decision %s' % (self.answer_source(), key))
+            apply(words)
+            decisions.applied(key, 'applied ' + verb, generation, scope)
+            return words, True, True
+        except ToolError as exc:
+            consent.cancel_bound_requests(me, key)
+            raise ValueError(str(exc)) from exc
+        finally:
+            if previous is None:
+                self.decision_calls.pop(owner, None)
+            else:
+                self.decision_calls[owner] = previous
 
     def allowed(self, me: dict, question: str, command: str, key: tuple | None = None) -> tuple:
         """Ask the person allow/deny. Returns (True, None) on their allow, else

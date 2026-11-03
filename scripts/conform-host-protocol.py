@@ -272,6 +272,54 @@ def messaging(peer, sender, receiver, reopen, check, equal, events=False):
               tokens=[pending["claims"][0]["token"]])["acked"], event["params"]["ids"]))
 
 
+def selection_ui(peer, params, env, check, equal):
+    owner = peer.call('session.open', dict(params, conversation='selection-owner', capabilities=['user-decisions','inbox']))
+    outside = Path(params['cwd']) / 'selection-repository'; outside.mkdir()
+    subprocess.run(['git','init','-q','-b','main',str(outside)],env=env,check=True,capture_output=True,timeout=5)
+    other = peer.call('session.open', dict(params, conversation='selection-peer', cwd=str(outside), capabilities=['messaging','inbox','user-decisions']))
+    def operation(session, name, error=None, **arguments):
+        return peer.call('operation.call',dict(session=session['session'],operation=name,arguments=arguments),error=error)
+    def visible():
+        return owner['ref'] in [row['ref'] for row in operation(other,'xsm_discover')['candidates']]
+    def answer(event, word, error=None, session=owner):
+        return peer.call('decision.response',dict(session=session['session'],questionId=event['questionId'],
+            challenge=event['challenge'],displayed=event['question'],action='accept',answer=word,
+            source_id='synthetic-selection-' + event['questionId']),error=error)
+    pending = {}
+    def publication_question():
+        pending.update(operation(owner,'xsm_publish'))
+        equal(pending['status']=='waiting-for-user' and not visible() and 'challenge' not in pending,True)
+    check('publication asks host before effect',publication_question)
+    event = peer.notification()['params']
+    check('foreign host cannot approve publication',lambda:answer(event,'allow',error=-32003,session=other))
+    answer(event,'allow')
+    check('host answer does not publish before retry',lambda:equal(visible(),False))
+    check('explicit retry publishes selected conversation',lambda:equal(operation(owner,'xsm_publish')['status']=='published' and visible(),True))
+    selected = operation(owner,'xsm_connect',target='ref:' + other['ref'])
+    check('publication alone grants no pair permission',lambda:equal(selected['status'],'waiting-for-user'))
+    selection = peer.notification()['params']
+    answer(selection,'allow')
+    check('selection answer does not dispatch handshake before retry',lambda:equal(operation(other,'xsm_inbox')['claims'],[]))
+    handshake = operation(owner,'xsm_connect',target='ref:' + other['ref'])
+    check('pair approval starts a pending handshake',lambda:equal(handshake['handshake']=='pending' and handshake['purpose']=='handshake',True))
+    task = operation(other,'xsm_inbox',message_ids=[handshake['id']])
+    operation(other,'xsm_ack',tokens=[c['token'] for c in task['claims']])
+    operation(other,'xsm_send',target='ref:' + owner['ref'],text='Fixture selected peer handshake',kind='reply',
+        reply_to=handshake['id'],outcome='succeeded',request_id='selection-handshake-reply',wake='never',wait=0)
+    recovered = operation(owner,'xsm_connect',target='ref:' + other['ref'],request_id=handshake['id'])
+    check('handshake recovery is live rather than cached approval output',lambda:equal(recovered['handshake']=='completed' and
+        [c['id'] for c in recovered['claims']]==['selection-handshake-reply'],True))
+    operation(owner,'xsm_ack',tokens=[c['token'] for c in recovered['claims']])
+    check('withdrawal hides publication without revoking pair',lambda:equal(operation(owner,'xsm_publish',visible=False)['status']=='hidden' and
+        operation(owner,'xsm_connect',target='ref:' + other['ref'],request_id=handshake['id'])['handshake']=='completed',True))
+    renewed = operation(owner,'xsm_publish')
+    check('republish requires a fresh host question',lambda:equal(renewed['status']=='waiting-for-user' and renewed['decision_id']!=pending['decision_id'],True))
+    denied = peer.notification()['params'];answer(denied,'deny')
+    check('publication denial cannot reapply old allow',lambda:equal(operation(owner,'xsm_publish')['status']=='refused' and not visible(),True))
+    no_ui = peer.call('session.open',dict(params,conversation='selection-no-ui'))
+    check('host without UI retains selection required',lambda:equal(operation(no_ui,'xsm_publish')['status'],'selection-required'))
+
+
 def correlated_questions(peer, owner, recipient, check, equal):
     def operation(session, name, **arguments):
         return peer.call('operation.call', dict(session=session['session'], operation=name, arguments=arguments))
@@ -679,6 +727,9 @@ def run(command, suite="lifecycle", capture=False):
             if suite == 'discovery':
                 result['scope'] = 'lifecycle and local public discovery; no physical remote, native UI or messenger certification'
                 discovery(b, reopened, resumed, check, equal)
+            if suite == 'selection':
+                result['scope'] = 'lifecycle and synthetic host publication/selection approval; no actual human, native runtime or physical network certification'
+                selection_ui(b, params, env, check, equal)
             if suite == 'questions':
                 result['scope'] = 'lifecycle and correlated question/group/handshake replies; no human approval or native runtime certification'
                 correlated_questions(b, reopened, resumed, check, equal)
@@ -702,7 +753,7 @@ def run(command, suite="lifecycle", capture=False):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--capture", action="store_true", help="include isolated wire observations in the report")
-    parser.add_argument("--suite", choices=("lifecycle", "messaging", "events", "decisions", "uploads", "discovery", "collaboration", "documents", "sending", "questions"), default="lifecycle")
+    parser.add_argument("--suite", choices=("lifecycle", "messaging", "events", "decisions", "uploads", "discovery", "collaboration", "documents", "sending", "questions", "selection"), default="lifecycle")
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--command", nargs=argparse.REMAINDER, required=True)
     args = parser.parse_args()

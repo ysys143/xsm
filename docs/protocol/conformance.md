@@ -209,3 +209,18 @@ The output schema checker validates the per-operation
 [question result schema](question-result.schema.json) and its association checks
 in this capture. See [question semantics](question-results.md). Passing the suite
 does not certify human approval, physical remote/native delivery or whole runtime support.
+
+## Host publication and selected-pair permission
+
+`--suite selection --capture` runs 28 lifecycle/selection checks with synthetic
+host answers. It verifies publication versus messaging permission, sealed foreign
+host refusal, answer storage before explicit retry, a live selected-peer handshake,
+withdrawal and fresh publication approval, denial and UI-less fallback. This is
+not a real person or a native UI certificate.
+
+MCP elicitation and host user-decisions share the coordinator. CLI callers keep
+the existing input-consent path. The permission scope binds exact native endpoints
+and the domain revision; display names do not renew denial or retarget approval.
+Repeated hidden withdrawals are no-ops and do not renew permission. A real
+published-to-hidden transition requires fresh approval before publishing again.
+An unknown started application requires inspection rather than replay.

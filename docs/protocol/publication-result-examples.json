@@ -1,0 +1,57 @@
+[
+  {
+    "source": "isolated stdio synthetic host decisions",
+    "result": {
+      "status": "waiting-for-user",
+      "decision_id": "3f3dafe535cf84f5c4e59ffcfb5a8da9929f7edbb69fcaa190d3f3449496d767",
+      "question_id": "4f53364ec7cb4320854a8770c98921c2"
+    }
+  },
+  {
+    "source": "isolated stdio synthetic host decisions",
+    "result": {
+      "status": "published",
+      "visible": true,
+      "inbox_pending": 0
+    }
+  },
+  {
+    "source": "isolated stdio synthetic host decisions",
+    "result": {
+      "status": "hidden",
+      "visible": false,
+      "inbox_pending": 0
+    }
+  },
+  {
+    "source": "isolated stdio synthetic host decisions",
+    "result": {
+      "status": "refused",
+      "reason": "decision closed, expired or outcome unknown; inspect xsm_decision_status; a renewed user request needs a new decision_key",
+      "inbox_pending": 0
+    }
+  },
+  {
+    "source": "isolated stdio synthetic host decisions",
+    "result": {
+      "status": "selection-required",
+      "visible": false,
+      "reason": "Making this session discoverable needs your user's yes. First ask them, in plain words, whether to go ahead, and wait for their answer. After they answer, run this same command again: xsm keeps their latest answer in this session as the verdict, and this run shows you that reply without acting on it. If it is a yes, run the command once more to go ahead; if it is a no or a question, leave it and answer them. Use --reply only when they have answered the question you asked them and this run still shows no reply (xsm's hook did not record it): run it again with --reply \"<their answer, exactly as they wrote it>\". Never use it before you have asked, or with what they said earlier, such as their original request. Start the question with [xsm:ae1ecca523114998], exactly as written: it ties their answer to this request and no other. Unmatched answers are reported with --pending-consent on xsm decision-status and never approve another request.",
+      "inbox_pending": 0
+    }
+  },
+  {
+    "source": "synthetic incoming display structure",
+    "result": {
+      "status": "published",
+      "visible": true,
+      "inbox_pending": 0,
+      "incoming": {
+        "messages": [
+          "Synthetic unconfirmed peer data; not approval"
+        ],
+        "claims": []
+      }
+    }
+  }
+]

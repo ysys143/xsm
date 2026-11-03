@@ -1,8 +1,8 @@
 # Operation 결과 계약 범위 — 2026-11-03
 
 상태: 전체 결과 계약은 미완이다. 공개 catalog22개를 실제 encoding 선언과
-개발 checker의 operation별 분기에 대조했다. Domain schema가 있는 operation 이름은11개,
-없는 이름은11개다. 11개 중 team/board는 일부 action만 정의한다. 이 수는
+개발 checker의 operation별 분기에 대조했다. Domain schema가 있는 operation 이름은12개,
+없는 이름은10개다. 12개 중 team/board는 일부 action만 정의한다. 이 수는
 완료율·독립 구현 인증·native 지원률이 아니다.
 
 | Operation | 현재 result encoding | Domain 구조 정의와 남은 범위 |
@@ -13,8 +13,8 @@
 | `xsm_ask` | JSON object | [question-result.schema.json](../../protocol/question-result.schema.json) — 단일/그룹 질문·회신 구조 |
 | `xsm_question_status` | JSON object | [question-result.schema.json](../../protocol/question-result.schema.json) — 개별/그룹/소유 요청 목록 구조 |
 | `xsm_discover` | JSON object | [discovery-result.schema.json](../../protocol/discovery-result.schema.json) — 후보/관측/부분 실패 구조 |
-| `xsm_publish` | JSON object | 미완: 공통 result object 검사만 있음 |
-| `xsm_connect` | JSON object | [question-result.schema.json](../../protocol/question-result.schema.json) — 선택 거부와 handshake 진행/완료 구조 |
+| `xsm_publish` | JSON object | [publication-result.schema.json](../../protocol/publication-result.schema.json) — 승인 대기·가시성·거부 |
+| `xsm_connect` | JSON object | [question-result.schema.json](../../protocol/question-result.schema.json) — 호스트 승인 대기·선택 거부와 handshake 진행/완료 구조 |
 | `xsm_grant` | text envelope | 미완: 공통 result object 검사만 있음 |
 | `xsm_send` | text envelope + producer metadata | [send-result.schema.json](../../protocol/send-result.schema.json) — 단일/그룹 metadata와 첨부 오류 |
 | `xsm_team` | 조회 JSON / 그 밖 text envelope | [team-result.schema.json](../../protocol/team-result.schema.json) — list/show만; 나머지 action 미완 |

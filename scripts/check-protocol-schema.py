@@ -123,6 +123,8 @@ def output_contract(trace=None):
     Draft202012Validator.check_schema(send_schema)
     question_schema = json.loads((ROOT / 'docs/protocol/question-result.schema.json').read_text())
     Draft202012Validator.check_schema(question_schema)
+    publication_schema = json.loads((ROOT / 'docs/protocol/publication-result.schema.json').read_text())
+    Draft202012Validator.check_schema(publication_schema)
     inbox_observed = 0
     inbox_empty = dict(messages=[], claims=[], items=[], inbox_pending=0)
     inbox_file = dict(messages=['fixture'], claims=[dict(id='original', token='opaque-token',
@@ -155,6 +157,8 @@ def output_contract(trace=None):
         if 'result' in frame:
             definition = schema['x-methodResults'][observation['method']]
             Draft202012Validator({'$ref': definition, '$defs': schema['$defs']}).validate(frame['result'])
+            if observation.get('operation') == 'xsm_publish':
+                Draft202012Validator(publication_schema).validate(frame['result'])
             if observation.get('operation') in question_schema['x-operationResults']:
                 validate_question_result(frame['result'], question_schema, operation=observation['operation'])
             if observation.get('operation') == 'xsm_send':
@@ -235,6 +239,30 @@ def ack_contract():
             raise ValueError('invalid ACK result accepted: ' + repr(value))
     return dict(examples=len(examples), rejected=len(invalid),
                 scope='successful result structure; batch errors may follow earlier durable acknowledgements')
+
+
+def publication_contract():
+    schema = json.loads((ROOT / 'docs/protocol/publication-result.schema.json').read_text())
+    examples = json.loads((ROOT / 'docs/protocol/publication-result-examples.json').read_text())
+    Draft202012Validator.check_schema(schema)
+    validator = Draft202012Validator(schema)
+    inbox = json.loads((ROOT / 'docs/protocol/inbox-result.schema.json').read_text())
+    question = json.loads((ROOT / 'docs/protocol/question-result.schema.json').read_text())
+    if schema['$defs']['claim'] != inbox['$defs']['claim'] or schema['$defs']['awaiting'] != question['$defs']['qAwaiting']:
+        raise ValueError('publication shared claim/waiting definitions differ')
+    for example in examples:
+        validator.validate(example['result'])
+    results = {e['result']['status']: e['result'] for e in examples}
+    invalid = [dict(results['published'], visible=False), dict(results['hidden'], visible=True),
+               dict(results['selection-required'], visible=True), dict(results['refused'], visible=True),
+               dict(results['published'], scope='invented grant'),
+               dict(results['waiting-for-user'], challenge='must remain host-only')]
+    bad = copy.deepcopy(results['waiting-for-user']); del bad['decision_id']; invalid.append(bad)
+    bad = copy.deepcopy(results['refused']); del bad['reason']; invalid.append(bad)
+    for value in invalid:
+        if validator.is_valid(value):
+            raise ValueError('invalid publication result accepted')
+    return dict(examples=len(examples), rejected=len(invalid))
 
 
 def question_contract():
@@ -610,7 +638,7 @@ def run(trace=None):
                 validator='jsonschema', validatorVersion=importlib.metadata.version('jsonschema'),
                 scope='request and output structures; no full operation results or semantic certification',
                 output=output_contract(trace), operations=operations_contract(), files=files_contract(), ack=ack_contract(),
-                discovery=discovery_contract(), team=team_contract(), board=board_contract(), doc=doc_contract(), send=send_contract(), question=question_contract())
+                discovery=discovery_contract(), team=team_contract(), board=board_contract(), doc=doc_contract(), send=send_contract(), question=question_contract(), publication=publication_contract())
 
 
 if __name__ == '__main__':
