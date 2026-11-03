@@ -233,7 +233,9 @@ class HermesRegistrationTest(TempState):
             binding = module.register(self.context(), command=command, env=env)
         try:
             self.assertEqual(len(self.tools), 22)
-            self.assertEqual(len(self.hooks), 7)
+            self.assertEqual(len(self.hooks), 9)
+            self.assertIn('pre_llm_call', self.hooks)
+            self.assertIn('pre_api_request', self.hooks)
             self.assertEqual(marker.read_text().splitlines(), ["start"])
             result = json.loads(self.tools["xsm_inbox"]["handler"]({}, session_id="pinned-native"))
             self.assertIsInstance(result, dict)

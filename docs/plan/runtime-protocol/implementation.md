@@ -2872,3 +2872,12 @@ events/wake/retry/batch continuation을 끄는 명시적 옵션을 양쪽 SDK에
 수정 전 실제 실패와 focused각4개를 확인했고 Mac952개+schema/v7 local은56.991초에
 통과했다. Hermes 실제 context hook은 다음 구현이며 idle wake/실제 UI/전체 계획은 미완이다.
 빈 IDc68259e의 Linux946개도81.482초/106.565초와 새32개 wire/schema를 통과했다.
+
+## Hermes native natural context — 2026-11-03
+
+[Hermes 자연 context](hermes-natural-context.md)는 실제 pre_llm/pre_api hook을
+2단계 admission으로 연결했다. Idle FYI는 깨우지 않고 정확한 native context 관측
+뒤에도 소비 ACK는 별도다. Protocol/binding28개, guard mutant2개와 Mac958개/
+58.475초를 통과했다. 실제 설치 plugin/AIAgent/local model0 provider13개 checkpoint/
+6HTTP request도 원문→native tool ACK→미재전달/unload를 확인했다. Import/CWD/fixture
+인수 오류와 반복3370개 원시도 보존했다. Linux/idle wake/실제 UI·모델 등 전체는 미완이다.

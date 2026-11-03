@@ -341,3 +341,17 @@ correlation 중복 거부의9개와 별도 cancellation/미지원 옵션 거부�
 작업 폴더 지정·실행별 timeout·개별 도구 차단 등 기존 기능의 제약과 실패 기록은
 [native worker 연결 기록](../plan/runtime-protocol/native-worker-boundary.md)에 있다.
 기존 worker 입력 enum이나 지원 상태는 이 API 표본만으로 확장하지 않는다.
+
+## Opt-in natural-turn FYI context
+
+`plugins.entries.xsm.settings.native_context: true` connects `pre_llm_call` and
+`pre_api_request` in Hermes0.22.5. The first hook stages unread peer context for
+that exact native session/turn. The second verifies the complete nonce-tagged
+text in the actual native user-context messages before recording admission.
+Private question display, profile and host-generation checks remain separate.
+
+The host uses natural-boundary-only SDK delivery: an idle FYI starts no model
+turn, and retries/batches do not escape into background delivery. Closing a turn
+before observation releases its original claims; consumption still requires an
+explicit xsm_ack. The default remains off until enabled by the profile operator.
+This does not connect idle push/wake or certify actual user UI.

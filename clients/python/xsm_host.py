@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import asyncio
+import json
 import math
 from pathlib import Path
 import sys
@@ -10,6 +11,20 @@ if __package__:
     from .xsm_client import XsmHostClient, TransportError
 else:
     from xsm_client import XsmHostClient, TransportError
+
+
+def inbox_acknowledgement(claims):
+    if not claims:
+        return ''
+    text = '\n\nAfter reading, call xsm_ack with tokens: ' + json.dumps([claim['token'] for claim in claims])
+    text += '. If expired, read xsm_inbox for current tokens'
+    if all(isinstance(claim.get('id'), str) for claim in claims):
+        text += ' with message_ids: ' + json.dumps([claim['id'] for claim in claims])
+    return text + '; do not repeat the work.'
+
+
+def render_inbox_packet(packet):
+    return '\n\n'.join(packet['messages']) + inbox_acknowledgement(packet['claims'])
 
 
 class RetryAdmission(RuntimeError):

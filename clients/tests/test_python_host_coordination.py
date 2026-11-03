@@ -46,6 +46,19 @@ class HostCoordinationTest(unittest.IsolatedAsyncioTestCase):
         return await client.operation_call(session["session"], "xsm_send",
             {"target": "ref:" + host.session["ref"], "text": text, "wait": 0, **options})
 
+    async def test_shared_notice_rendering_does_not_invent_an_ack(self):
+        from xsm_host import render_inbox_packet
+        self.assertEqual(render_inbox_packet({'messages':['first notice','second notice'],'claims':[]}),
+                         'first notice\n\nsecond notice')
+
+    async def test_shared_original_rendering_preserves_ack_token_and_recovery_id(self):
+        from xsm_host import render_inbox_packet
+        text=render_inbox_packet({'messages':['original 한글'],'claims':[{'id':'message-one','token':'opaque-token'}]})
+        self.assertIn('original 한글',text)
+        self.assertIn('tokens: ["opaque-token"]',text)
+        self.assertIn('message_ids: ["message-one"]',text)
+        self.assertIn('do not repeat the work',text)
+
     async def test_pull_only_host_does_not_claim_a_native_delivery(self):
         host = await self.host()
         self.assertNotIn("events", host.session["capabilities"])

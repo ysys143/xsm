@@ -1,7 +1,7 @@
 {
   "name": "xsm",
   "version": "0.0.0",
-  "description": "Experimental xsm pull tools and opt-in deferred native questions.",
+  "description": "Experimental xsm pull tools, opt-in natural-turn context and deferred native questions.",
   "license": "MIT",
   "kind": "standalone",
   "provides_tools": [
@@ -35,6 +35,8 @@
     "on_session_delete",
     "on_session_reset",
     "subagent_start",
-    "post_tool_call"
+    "post_tool_call",
+    "pre_llm_call",
+    "pre_api_request"
   ]
 }

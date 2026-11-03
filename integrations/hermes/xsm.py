@@ -200,6 +200,92 @@ class NativeQuestions:
                 state['future'].cancel()
 
 
+class NativeContext:
+    """Stage a natural-turn context; admit only after the native API hook sees it."""
+    def __init__(self, render):
+        self.render = render
+        self.pending = {}
+
+    async def begin(self, sid, host, turn_id):
+        if not isinstance(turn_id, str) or not turn_id:
+            raise RuntimeError('native turn identity unavailable')
+        await self.close_host(sid, host)
+        loop = asyncio.get_running_loop()
+        key = (sid, id(host))
+        state = dict(host=host, turn=turn_id, staged=asyncio.Event(), accepted=loop.create_future(),
+                     nonce=secrets.token_hex(16), text=None)
+        self.pending[key] = state
+        state['task'] = asyncio.create_task(host.natural_boundary())
+        staged = asyncio.create_task(state['staged'].wait())
+        try:
+            done, _ = await asyncio.wait((state['task'], staged), timeout=10,
+                                         return_when=asyncio.FIRST_COMPLETED)
+            if not done:
+                raise RuntimeError('native context staging timed out')
+            if state['staged'].is_set():
+                return state['text']
+            await state['task']
+            self.pending.pop(key, None)
+            return ''
+        except BaseException:
+            await self.close_host(sid, host)
+            raise
+        finally:
+            staged.cancel()
+            await asyncio.gather(staged, return_exceptions=True)
+
+    async def deliver(self, sid, host, packet, options):
+        state = self.pending.get((sid, id(host)))
+        if state is None or state['host'] is not host or state['accepted'].done():
+            raise RuntimeError('native natural-turn context is not open')
+        if options['wake']:
+            raise RuntimeError('native context handoff cannot wake a turn')
+        state['text'] = '[XSM peer context %s]\n%s' % (state['nonce'], self.render(packet))
+        state['staged'].set()
+        return await asyncio.wait_for(asyncio.shield(state['accepted']),
+                                      max(1, options['lease_seconds'] - 1))
+
+    async def observe(self, sid, host, turn_id, api_request_id, messages):
+        state = self.pending.get((sid, id(host)))
+        if (state is None or state['host'] is not host or state['turn'] != turn_id
+                or not isinstance(api_request_id, str) or not api_request_id or state['accepted'].done()
+                or not isinstance(messages, list) or state['text'] is None):
+            return False
+        observed = False
+        for message in messages:
+            if not isinstance(message, dict) or message.get('role') != 'user':
+                continue
+            content = message.get('content')
+            texts = [content] if isinstance(content, str) else [part.get('text') for part in content
+                if isinstance(part, dict) and part.get('type') in ('text','input_text')] if isinstance(content,list) else []
+            if any(isinstance(text, str) and state['text'] in text for text in texts):
+                observed = True
+                break
+        if not observed:
+            return False
+        state['accepted'].set_result(True)
+        try:
+            await state['task']
+        finally:
+            if self.pending.get((sid,id(host))) is state:
+                self.pending.pop((sid,id(host)),None)
+        return True
+
+    async def close_host(self, sid, host):
+        state = self.pending.pop((sid, id(host)), None)
+        if state is not None:
+            state['accepted'].cancel()
+            # Let an in-flight inbox RPC return so the SDK can release exact
+            # newly acquired claims instead of orphaning an unseen response.
+            try:
+                await asyncio.wait_for(asyncio.shield(state['task']), 10)
+            except asyncio.TimeoutError:
+                state['task'].cancel()
+                await asyncio.gather(state['task'], return_exceptions=True)
+            except BaseException:
+                pass
+
+
 class HermesBinding:
     def __init__(self, context, *, command=None, env=None):
         from hermes_constants import get_hermes_home
@@ -217,6 +303,10 @@ class HermesBinding:
         if type(native_questions) is not bool:
             raise ValueError('native_questions must be a boolean')
         self.native_questions = NativeQuestions() if native_questions else None
+        native_context = get_config('native_context', False) if callable(get_config) else False
+        if type(native_context) is not bool:
+            raise ValueError('native_context must be a boolean')
+        self.native_context = NativeContext(self.sdk.render_inbox_packet) if native_context else None
         self.hosts = {}
         self.host_locks = {}
         self.closed = False
@@ -291,10 +381,14 @@ class HermesBinding:
                 ui = getattr(self, 'native_questions', None)
                 async def present(event, cancelled):
                     return await ui.present(sid, holder['host'], event, cancelled)
+                native_context = getattr(self, 'native_context', None)
+                async def deliver(packet, options):
+                    return await native_context.deliver(sid, holder['host'], packet, options)
+                delivery = {'deliver': deliver, 'automatic_delivery': False} if native_context is not None else {}
                 host = await self.sdk.XsmHost.open(runtime="hermes", profile=self.profile,
                     conversation=sid, cwd=cwd, command=self.command, env=self._backend_environment(),
                     parent_conversation=getattr(self, 'parents', {}).get(sid),
-                    present=present if ui is not None else None)
+                    present=present if ui is not None else None, **delivery)
                 holder['host'] = host
                 return host
             pending = asyncio.create_task(opened())
@@ -317,6 +411,9 @@ class HermesBinding:
         return host
 
     async def _close_host(self, sid, host):
+        native_context = getattr(self, 'native_context', None)
+        if native_context is not None:
+            await native_context.close_host(sid, host)
         ui = getattr(self, 'native_questions', None)
         if ui is not None:
             ui.close_host(sid, host)
@@ -400,6 +497,28 @@ class HermesBinding:
             return json.dumps(self._run(self._call(sid, cwd, operation, args)), ensure_ascii=False)
         return call
 
+    def before_model(self, session_id='', turn_id='', **_native):
+        if getattr(self, 'native_context', None) is None or self.closed or self.closing:
+            return None
+        sid, cwd = self._identity(session_id)
+        async def stage():
+            host = await self._host(sid, cwd)
+            return await self.native_context.begin(sid, host, turn_id)
+        text = self._run(stage())
+        return {'context': text} if text else None
+
+    def observe_context(self, session_id='', turn_id='', api_request_id='', request_messages=None, **_native):
+        if getattr(self, 'native_context', None) is None or self.closed or self.closing:
+            return
+        sid, _cwd = self._identity(session_id)
+        async def observed():
+            pair = self.hosts.get(sid)
+            if pair and pair[1].done() and sid not in self.finalizing:
+                host = pair[1].result()
+                if not host.closed and not host.failure:
+                    return await self.native_context.observe(sid, host, turn_id, api_request_id, request_messages)
+        self._run(observed())
+
     def start(self, session_id="", **_native):
         sid, cwd = self._identity(session_id)
         async def update():
@@ -419,6 +538,8 @@ class HermesBinding:
 
     def settled(self, session_id="", **_native):
         async def update():
+            if getattr(self,'native_context',None) is not None and session_id in self.hosts:
+                await self.native_context.close_host(session_id, await self.hosts[session_id][1])
             if session_id in self.hosts or session_id in self.monitors:
                 self.states[session_id] = "idle"
             if session_id in self.hosts:
@@ -506,6 +627,8 @@ def register(context, *, command=None, env=None):
                 ("on_session_reset", binding.reset)):
             context.register_hook(name, callback)
         context.register_hook('post_tool_call', binding.observe_question)
+        context.register_hook('pre_llm_call', binding.before_model)
+        context.register_hook('pre_api_request', binding.observe_context)
     except BaseException:
         binding.close()
         raise
