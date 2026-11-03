@@ -1,7 +1,7 @@
 # Pi native 지연 관측 경계
 
-상태: Mac의 실제 Pi SDK wake/ACK100개를 측정했다. Linux와 설치된 CLI 경로는
-미실행이다.
+상태: Mac·Linux의 실제 Pi SDK wake/ACK를 각각100개 측정했다. 설치된 CLI
+경로는 이번 측정에서 미실행이다.
 기존 Pi/OpenCode probe의 상한 값은 보존하며 이번 측정의 결과로 바꾸지 않는다.
 
 `probe-pi-protocol.py`는 operation.call 전 perf_counter부터 RPC message_start 수신까지,
@@ -61,3 +61,10 @@ raw ns에서 재계산한95번째 값이 일치했다. Python RAW/Node hrtime �
 원본 실패 기록을 보존했다. Native 수락 관측만 생략한 변이는 실제 native ACK 뒤에도
 `exact native acceptance observation`으로 exit1이었다(0/1/0).
 측정 script/binding/timed-host/host snapshot4개와 SHA manifest를 함께 보존했다.
+
+고정ea1582d의 Linux도100/0/0, scripted response200개로 통과했다.
+p95 191.397ms/max381.12775ms이고 raw source/end 각100개와 고유 entry100개,
+raw ns에서 재계산한 p95가 일치했다. Clock 정렬5회와 container exit0/VM stopExit0을
+확인했다. Docker network none/read-only 준비 패키지를 사용했다. 원시는
+`deliverables/protocol-foundation/pi-native-latency-linux/`다. 두 OS의 해당 SDK 모드
+결과이며 CLI·실제 모델/UI와 전체 기능 행렬은 미완이다.

@@ -3032,3 +3032,8 @@ _startRun/agent.prompt와 native Tool Hub ACK가 실행되며 provider stream만
 첫 handoff path 가정 오류(0완료/1실패/1미실행)와 후속2smoke도 보존했다.
 이는 SDK 직접 로드 표본이며 설치된 CLI·물리 UI·실제 모델이나 전체 기능 지원
 인증이 아니다. Linux100 실행과 전체 계획은 아직 미완이다.
+
+고정ea1582d Linux SDK100개도191.397ms p95/381.12775ms max/실패·미실행0으로
+통과했다. 원시 source/end100개와 고유 native item100개, clock5개를 대조하고
+p95를 독립 재계산했다. Container exit0/VM stopExit0을 확인했다. 설치된 CLI와
+실제 모델/UI 및 전체 기능 행렬은 여전히 미완이다.
