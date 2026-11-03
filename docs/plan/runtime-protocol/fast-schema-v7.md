@@ -29,3 +29,16 @@ v7 예제132/mutant188/감지1을57.899초에 통과했다(core-final.log, exit0
 원시는 `deliverables/protocol-foundation/fast-schema-v7/`다. Linux는 고정 source에서
 전체936개와 dev validator 경로를 다시 실행해야 한다. 전체 native/UI/원격·메신저·
 설치 행렬과 원래 계획은 미완이다.
+
+## 고정 source Linux 검증
+
+95484cfa79d0f546da8c0e6e872ef3d0f3b5f779의 archive SHA256은
+9aea5e057d419236897d91197cba5057ae30d1616384f6b0970cc6f22643d321다.
+Python3.11.2에서81.339초, Python3.14.10에서103.845초로936개 unittest와 기존
+mock39/변이14, canonical schema, 독립 v7 예제132/mutant188/감지1을 모두 같은
+120초 기한 안에 통과했다. Offline --validator-path /deps는 해당 validation2개
+명령에만 전달했다. 두 환경에서 errors-fixture27개/frame29개도 새로 검증했다.
+Model0/network none/cpu2/memory3g, 미실행 case0, 미실행 wire/schema0,
+VM stopExit0이다. 원시는 `fast-schema-v7-linux/result.json`과 환경별 output이다.
+후속 v7 action/default 추가 검사나 더 최신 source의 native 검증은 이 수에
+소급 합산하지 않는다. 전체 원래 행렬은 미완이다.
