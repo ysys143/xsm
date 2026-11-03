@@ -354,4 +354,27 @@ The host uses natural-boundary-only SDK delivery: an idle FYI starts no model
 turn, and retries/batches do not escape into background delivery. Closing a turn
 before observation releases its original claims; consumption still requires an
 explicit xsm_ack. The default remains off until enabled by the profile operator.
-This does not connect idle push/wake or certify actual user UI.
+This mode alone does not connect idle push/wake or certify actual user UI.
+
+## Opt-in local gateway FIFO delivery
+
+On the pinned Hermes0.22.5 gateway local-session path, setting all three profile
+settings `native_context: true`, `native_wake: true`, and
+`allow_gateway_injection: true` enables native FIFO admission for wakeable messages.
+The plugin does not change these settings. A non-boolean native_wake or missing
+dependency is rejected. Classic standalone CLI and messaging routes are not yet
+connected through this mode; enabling it there returns an explicit error.
+
+The binding captures the native manager's published gateway owner and the calling
+turn's actual session key and SID. It pins the profile authority and epoch, checks
+the exact conversation again on the native loop, and submits an internal bot-authored
+automation input. It checks the durable admission receipt and full original before
+reporting queue acceptance. A reused name/route, replaced owner, revoked injection
+permission or differing receipt cannot become acceptance. Claim IDs/tokens form the
+stable producer identity for an exact retry. FIFO acceptance never calls xsm_ack.
+
+FYI still uses the next natural-turn context boundary. The actual local FIFO probe
+disables native drain scheduling and uses a recording context facade around the
+real binding; it proves protocol-to-native-queue integration, not actual native
+hook dispatch, model execution, interactive wake, messaging or UI certification.
+Evidence and remaining work: [local gateway delivery](../plan/runtime-protocol/hermes-gateway-wake.md).

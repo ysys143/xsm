@@ -286,6 +286,98 @@ class NativeContext:
                 pass
 
 
+class NativeGateway:
+    """One native conversation and authority generation, never a route alias."""
+    def __init__(self, context, profile, sid):
+        from gateway.session_authorities import authority_for_home
+        from gateway.session_context import get_session_env
+        from hermes_cli.plugin_session import session_key
+        manager = getattr(context, '_manager', None)
+        registered = getattr(manager, '_gateway_message_injector', None)
+        if (manager is None or str(Path(manager.home_path).resolve()) != profile or
+                not registered or not context._gateway_injection_allowed()):
+            raise RuntimeError('native gateway injection is not authorized for this profile')
+        self.context, self.profile, self.sid = context, profile, sid
+        self.runner, self.route = registered[0], session_key()
+        if not self.route or get_session_env('HERMES_SESSION_ID', '') != sid:
+            raise RuntimeError('native gateway conversation context is unavailable')
+        self.loop = getattr(self.runner, '_gateway_loop', None)
+        if self.loop is None or not self.loop.is_running():
+            raise RuntimeError('native gateway loop is unavailable')
+        self.authority = authority_for_home(self.runner, Path(profile))
+        if self.authority is None:
+            raise RuntimeError('native profile authority is unavailable')
+        self.epoch = self.authority.epoch
+
+    def same_target(self, other):
+        return (self.runner is other.runner and self.authority is other.authority and
+                (self.profile, self.sid, self.route, self.epoch) ==
+                (other.profile, other.sid, other.route, other.epoch))
+
+    def _validate(self):
+        from gateway.config import Platform
+        from gateway.session_authorities import authority_for_home
+        registered = getattr(self.context._manager, '_gateway_message_injector', None)
+        if (not registered or registered[0] is not self.runner or
+                getattr(self.runner, '_gateway_loop', None) is not self.loop or
+                str(Path(self.context._manager.home_path).resolve()) != self.profile or
+                not self.context._gateway_injection_allowed() or
+                authority_for_home(self.runner, Path(self.profile)) is not self.authority or
+                self.authority.epoch != self.epoch or self.authority.retiring or
+                getattr(self.authority, 'retired', False) or
+                not self.runner._running or self.runner._draining):
+            raise RuntimeError('native gateway owner or permission changed')
+        entry = self.runner.session_store.lookup_by_session_key(self.route)
+        if entry is None or entry.suspended or entry.session_id != self.sid:
+            raise RuntimeError('native gateway conversation changed')
+        source = self.runner._restored_source(entry)
+        if source.platform != Platform.LOCAL:
+            raise RuntimeError('native messaging queue delivery is not connected')
+        live = self.runner._plugin_local_session(source, self.route,
+            plugin_home=Path(self.profile), plugin_id='xsm')
+        if live is None:
+            raise RuntimeError('native gateway local session is unavailable')
+        return live.source, self.runner._adapter_for_source(live.source)
+
+    async def _execute(self, text=None, identity=None):
+        from gateway.run import _profile_runtime_scope
+        with _profile_runtime_scope(Path(self.profile), hydrate_secrets=False):
+            source, adapter = self._validate()
+            if text is None:
+                return True
+            from gateway.platforms.event import MessageEvent, MessageType
+            from hermes_state_runtime import get_session_admission
+            author = {'id': 'bot:xsm-peer', 'name': 'XSM peer', 'is_bot': True}
+            event = MessageEvent(text=text, message_type=MessageType.TEXT, source=source,
+                internal=True, allow_gateway_control=False, message_id=identity,
+                metadata={'gateway_session_key': self.route, 'gateway_session_id': self.sid,
+                          'turn_author': author})
+            receipt = await self.authority.admit_automation(adapter, event, identity)
+            row = get_session_admission(self.authority.db, admission_id=receipt.admission_id)
+            descriptor = row['payload'].get('local_automation_v1', {}) if row else {}
+            if (not row or receipt.ref.profile_id != self.authority.profile_id or
+                    receipt.authority_epoch != self.epoch or
+                    row['target_session_id'] != receipt.ref.session_id or
+                    row['principal_id'] != 'automation:' + self.route or row['request_id'] != identity or
+                    row['payload']['text'] != text or descriptor.get('target') != self.sid or
+                    descriptor.get('turn_author') != author):
+                raise RuntimeError('native gateway admission receipt differs')
+            return True
+
+    async def prepare(self):
+        return await asyncio.wrap_future(asyncio.run_coroutine_threadsafe(self._execute(), self.loop))
+
+    async def deliver(self, packet, options, render):
+        if options['cancelled'].is_set():
+            raise RuntimeError('native gateway participation closed')
+        identity = json.dumps(['plugin', 'xsm', self.route,
+            hashlib.sha256(json.dumps(sorted((claim['id'], claim['token'])
+                for claim in packet['claims'])).encode()).hexdigest()], separators=(',', ':'))
+        future = asyncio.wrap_future(asyncio.run_coroutine_threadsafe(
+            self._execute(render(packet), identity), self.loop))
+        return await asyncio.shield(future)
+
+
 class HermesBinding:
     def __init__(self, context, *, command=None, env=None):
         from hermes_constants import get_hermes_home
@@ -307,6 +399,13 @@ class HermesBinding:
         if type(native_context) is not bool:
             raise ValueError('native_context must be a boolean')
         self.native_context = NativeContext(self.sdk.render_inbox_packet) if native_context else None
+        native_wake = get_config('native_wake', False) if callable(get_config) else False
+        if type(native_wake) is not bool:
+            raise ValueError('native_wake must be a boolean')
+        if native_wake and (not native_context or get_config('allow_gateway_injection', False) is not True):
+            raise ValueError('native_wake requires native_context and allow_gateway_injection')
+        self.native_wake = native_wake
+        self.gateway_targets = {}
         self.hosts = {}
         self.host_locks = {}
         self.closed = False
@@ -335,6 +434,12 @@ class HermesBinding:
         cwd = self.context.session_cwd()
         if not cwd or not Path(cwd).is_absolute() or not Path(cwd).is_dir():
             raise RuntimeError("native caller has no existing absolute workspace")
+        if getattr(self, 'native_wake', False):
+            target = NativeGateway(self.context, self.profile, sid)
+            previous = self.gateway_targets.get(sid)
+            if previous is not None and not previous.same_target(target):
+                raise RuntimeError('native gateway target changed; finalize previous participation')
+            self.gateway_targets.setdefault(sid, target)
         return sid, str(Path(cwd).resolve())
 
     def _host_lock(self, sid):
@@ -382,9 +487,14 @@ class HermesBinding:
                 async def present(event, cancelled):
                     return await ui.present(sid, holder['host'], event, cancelled)
                 native_context = getattr(self, 'native_context', None)
+                gateway = getattr(self, 'gateway_targets', {}).get(sid)
+                if gateway is not None:
+                    await gateway.prepare()
                 async def deliver(packet, options):
+                    if gateway is not None and options['wake']:
+                        return await gateway.deliver(packet, options, self.sdk.render_inbox_packet)
                     return await native_context.deliver(sid, holder['host'], packet, options)
-                delivery = {'deliver': deliver, 'automatic_delivery': False} if native_context is not None else {}
+                delivery = {'deliver': deliver, 'automatic_delivery': gateway is not None} if native_context is not None else {}
                 host = await self.sdk.XsmHost.open(runtime="hermes", profile=self.profile,
                     conversation=sid, cwd=cwd, command=self.command, env=self._backend_environment(),
                     parent_conversation=getattr(self, 'parents', {}).get(sid),
@@ -560,6 +670,7 @@ class HermesBinding:
                     if pair:
                         await self._close_host(session_id, await pair[1])
             finally:
+                getattr(self, 'gateway_targets', {}).pop(session_id, None)
                 self.finalizing.discard(session_id)
         self._run(close())
 
@@ -595,6 +706,7 @@ class HermesBinding:
             hosts = await asyncio.gather(*(pair[1] for _sid,pair in pairs), return_exceptions=True)
             await asyncio.gather(*(self._close_host(sid, host) for (sid,_pair),host in zip(pairs,hosts)
                                   if not isinstance(host, BaseException)))
+            getattr(self, 'gateway_targets', {}).clear()
         self._run(shutdown())
         self.closed = True
         self.loop.call_soon_threadsafe(self.loop.stop)

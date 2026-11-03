@@ -2893,3 +2893,13 @@ True를 반환하고 route의 교체된 SID를 선택하는 경쟁을 재현했�
 local SQLite FIFO에서는 pinned SID 수락과 stale SID 거부, 명시적 bot author,
 receipt·동일 identity replay·다른 본문 충돌을 확인했다. 이 조사 결과는 native
 authority receipt 경로를 선택하는 근거이며 아직 SDK idle wake 연결 증거는 아니다.
+
+## Hermes local gateway FIFO callback — 2026-11-03
+
+[Local FIFO 연결](hermes-gateway-wake.md)은 명시적 native_wake opt-in으로
+XSM SDK의 awake callback을 pinned native authority admission에 연결했다.
+실제 stdio 저장소→binding→native SQLite FIFO→SDK admitted 보고와 미ACK까지
+31개 checkpoint를 통과했다. Native hook 실행은 context facade로 대체했고
+drain/model/UI는 실행하지 않았다. 권한/owner/대화/profile/receipt guard와
+변이2개를 확인했다. Config 의존 검사를 포함한 Mac959개+schema/v7은58.849초였다.
+Linux 고정 source와 실제 interactive wake·messaging 및 원래 전체 계획은 미완이다.

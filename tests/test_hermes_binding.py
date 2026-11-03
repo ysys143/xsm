@@ -209,6 +209,18 @@ import sys
 
 
 class HermesRegistrationTest(TempState):
+    def test_native_wake_requires_explicit_context_and_native_permission(self):
+        constants = SimpleNamespace(get_hermes_home=lambda: Path(self.user_home, 'hermes'))
+        for config in ({'native_wake': True},
+                       {'native_wake': True, 'native_context': True},
+                       {'native_wake': True, 'allow_gateway_injection': True},
+                       {'native_wake': 'true'}):
+            with self.subTest(config=config), mock.patch.dict(sys.modules, hermes_constants=constants):
+                context = self.context()
+                context.get_config = lambda name, default=None: config.get(name, default)
+                with self.assertRaises(ValueError):
+                    module.HermesBinding(context)
+
     def context(self):
         self.tools, self.hooks, self.unload = {}, {}, []
         return SimpleNamespace(

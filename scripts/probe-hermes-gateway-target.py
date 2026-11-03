@@ -3,6 +3,8 @@
 import argparse
 import asyncio
 import contextlib
+import contextvars
+import importlib.util
 import inspect
 import json
 import os
@@ -19,7 +21,9 @@ def main():
     parser.add_argument('--native-source', type=Path, required=True)
     parser.add_argument('--output', type=Path, required=True)
     parser.add_argument('--mutant', choices=['ignore-stale-sid'])
+    parser.add_argument('--binding-mutant', choices=['ignore-conversation', 'ignore-receipt'])
     args = parser.parse_args()
+    repo = Path(__file__).resolve().parents[1]
     source = args.native_source.resolve()
     output = args.output.resolve()
     output.mkdir(parents=True, exist_ok=False, mode=0o700)
@@ -55,6 +59,7 @@ def main():
         _owner = automation._owner = namespace['_owner']
 
     report = dict(status='starting', nativeSourceCommit=commit, modelCalls=0, mutant=args.mutant,
+                  bindingMutant=args.binding_mutant,
                   network='none', root=str(root), checks=[], observations={},
                   scope='actual pinned scheduler race with controlled store, followed by real local authority and durable SQLite FIFO; no drain/model/UI')
 
@@ -224,6 +229,121 @@ def main():
                     raise AssertionError('changed immutable producer payload was admitted')
                 check('conflicting retry leaves durable row count unchanged',
                       len(list_session_admissions(db, session_id=ref.session_id, pending_only=False)) == len(rows))
+                if not args.mutant:
+                    spec = importlib.util.spec_from_file_location('xsm_gateway_probe', repo / 'integrations/hermes/xsm.py')
+                    plugin = importlib.util.module_from_spec(spec)
+                    if args.binding_mutant:
+                        code = Path(spec.origin).read_text()
+                        before = ('entry.session_id != self.sid' if args.binding_mutant == 'ignore-conversation'
+                                  else "row['payload']['text'] != text")
+                        changed = code.replace(before, 'False', 1)
+                        if changed == code:
+                            raise RuntimeError('binding guard moved; revise deliberate mutation')
+                        exec(compile(changed, spec.origin, 'exec'), plugin.__dict__)
+                    else:
+                        spec.loader.exec_module(plugin)
+                    from gateway.session_context import set_session_vars
+                    from gateway.session_policy import _ACTIVE_POLICY
+                    from hermes_cli.plugin_session import session_cwd
+                    set_session_vars(platform='local', session_key=live.route, session_id=pinned)
+                    policy_token = _ACTIVE_POLICY.set(SimpleNamespace(platform='cli', cwd=str(root)))
+                    live_runner._gateway_loop = asyncio.get_running_loop()
+                    live_runner._running = True
+                    context = SimpleNamespace(session_cwd=session_cwd,
+                        _manager=SimpleNamespace(home_path=root / 'hermes',
+                            _gateway_message_injector=(live_runner, live_runner._schedule_plugin_message_injection)),
+                        get_config=lambda name, default=None: True if name in
+                            ('native_context', 'native_wake', 'allow_gateway_injection') else default,
+                        _gateway_injection_allowed=lambda: True)
+                    binding = plugin.HermesBinding(context, env=environment)
+                    queued = asyncio.Event()
+                    original_admitted = local._admitted
+                    def observed_admission(ref, event, row):
+                        result = original_admitted(ref, event, row)
+                        if 'XSM_CALLBACK_ORIGINAL' in row['payload']['text']:
+                            queued.set()
+                        return result
+                    local._admitted = observed_admission
+                    try:
+                        await asyncio.to_thread(binding.start, session_id=pinned)
+                        async def current_host():
+                            return await binding.hosts[pinned][1]
+                        host = await asyncio.to_thread(binding._run, current_host())
+                        check('opt-in native host advertises automatic gateway delivery', host.automatic_delivery is True)
+                        await asyncio.to_thread(binding.settled, session_id=pinned)
+                        client_module = __import__(binding.sdk.XsmHost.__module__.replace('xsm_host', 'xsm_client'),
+                                                   fromlist=['XsmClient'])
+                        async with await client_module.XsmClient.connect(binding.command, cwd=str(root), env=environment) as sender:
+                            sender_session = await sender.session_open(runtime='gateway-probe-sender', profile='isolated',
+                                conversation='sender', cwd=str(root))
+                            await sender.operation_call(sender_session['session'], 'xsm_send',
+                                dict(target='ref:' + host.session['ref'], text='XSM_CALLBACK_ORIGINAL',
+                                     wake='auto', request_id='gateway-callback-original'))
+                            await asyncio.wait_for(queued.wait(), 10)
+                            async def delivery_finished():
+                                await host.delivery_task
+                                return await host.call('xsm_inbox', {'message_ids': ['gateway-callback-original']})
+                            packet = await asyncio.to_thread(binding._run, delivery_finished())
+                            reports = [json.loads(line) for line in
+                                (root / 'state' / 'protocol-delivery.jsonl').read_text().splitlines()]
+                            check('SDK records admission only after native FIFO receipt', any(
+                                item['id'] == 'gateway-callback-original' and item['state'] == 'admitted'
+                                for item in reports))
+                            check('native queued delivery leaves original unacknowledged',
+                                  [claim['id'] for claim in packet['claims']] == ['gateway-callback-original'])
+                            callback_rows = list_session_admissions(db, session_id=ref.session_id, pending_only=False)
+                            callback_rows = [row for row in callback_rows if 'XSM_CALLBACK_ORIGINAL' in row['payload']['text']]
+                            check('XSM callback reaches exactly one pinned native FIFO row', len(callback_rows) == 1 and
+                                  callback_rows[0]['payload']['local_automation_v1']['target'] == pinned)
+                            check('XSM callback retains bot origin in native FIFO',
+                                  callback_rows[0]['payload']['local_automation_v1']['turn_author']['is_bot'] is True)
+                            gateway = binding.gateway_targets[pinned]
+                            async def refused_target(name, expected):
+                                try:
+                                    await gateway.prepare()
+                                except RuntimeError as error:
+                                    check(name, expected in str(error))
+                                else:
+                                    raise AssertionError(name + ': unexpectedly accepted')
+                            context._gateway_injection_allowed = lambda: False
+                            await refused_target('revoked native injection permission refuses existing host', 'permission changed')
+                            context._gateway_injection_allowed = lambda: True
+                            registration = context._manager._gateway_message_injector
+                            context._manager._gateway_message_injector = (object(), registration[1])
+                            await refused_target('replacement gateway owner refuses existing host', 'owner or permission changed')
+                            context._manager._gateway_message_injector = registration
+                            native_entry = live_runner.session_store.lookup_by_session_key(live.route)
+                            native_entry.session_id = 'replacement-conversation'
+                            await refused_target('changed native conversation refuses existing host', 'conversation changed')
+                            native_entry.session_id = pinned
+                            try:
+                                plugin.NativeGateway(context, str(root / 'other-profile'), pinned)
+                            except RuntimeError as error:
+                                check('different profile cannot capture native gateway', 'not authorized' in str(error))
+                            else:
+                                raise AssertionError('different profile captured gateway')
+                            await gateway.prepare()
+                            import hermes_state_runtime
+                            original_read = hermes_state_runtime.get_session_admission
+                            def wrong_receipt(*args, **kwargs):
+                                row = original_read(*args, **kwargs)
+                                row['payload']['text'] = 'CORRUPTED_READBACK'
+                                return row
+                            with patch.object(hermes_state_runtime, 'get_session_admission', wrong_receipt):
+                                try:
+                                    await gateway.deliver(packet, {'cancelled': asyncio.Event()}, binding.sdk.render_inbox_packet)
+                                except RuntimeError as error:
+                                    check('native receipt with different original is refused', 'receipt differs' in str(error))
+                                else:
+                                    raise AssertionError('corrupt native receipt accepted')
+                            check('target guard refusals added no native rows',
+                                  len(list_session_admissions(db, session_id=ref.session_id, pending_only=False)) ==
+                                  len([row for row in rows]) + 1)
+                    finally:
+                        await asyncio.to_thread(binding.close)
+                        local._admitted = original_admitted
+                        _ACTIVE_POLICY.reset(policy_token)
+                    rows = list_session_admissions(db, session_id=ref.session_id, pending_only=False)
                 from hermes_state_runtime import begin_runtime_epoch
                 next_epoch = begin_runtime_epoch(db, instance_id='replacement-owner')
                 check('replacement authority advances native epoch', next_epoch != local.epoch)
