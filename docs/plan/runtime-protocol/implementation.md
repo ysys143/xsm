@@ -33,6 +33,9 @@
   OpenClaw의 guarded native context queue prototype이 있다. 런타임 전체 지원
   인증이나 모든 표면의 연결 완료를 뜻하지 않는다.
 - 실험 명세·요청 스키마·README 연결. 안정된 호환성 보장은 아직 아니다.
+- Pi/OpenCode의 실제 구독 모델 정상 경로는 quota 거부로 미완이다.
+  [실제 실패와 별도 model0 검증](pi-opencode-subscription-model.md)을 구분하고
+  관측자 종료 시 미관측 요청을 unknown으로 남기는 relay 검사를 보강했다.
 - 발견 결과의 로컬/원격 후보·관측·부분 실패 스키마와 공개 stdio discovery
   suite를 추가했다. [발견 계약 검증](discovery-contract.md)의 표본이며 전체
   operation 결과 계약이나 물리 원격 행렬 완료를 뜻하지 않는다.

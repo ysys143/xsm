@@ -27,6 +27,7 @@ class SubscriptionRelay:
         self.calls = 0
         self.forwarded = 0
         self.response_models = set()
+        self.active = set()
         self.log = Path(output) / 'subscription-relay.jsonl'
         self.opener = urllib.request.build_opener(urllib.request.ProxyHandler({}))
         self.verify_subscription()
@@ -58,6 +59,8 @@ class SubscriptionRelay:
                         return
                     relay.forwarded += 1
                     serial = relay.forwarded
+                    relay.active.add(serial)
+                    relay._record_locked({'phase':'started','request':serial,'requestedModel':relay.model})
                 # Never forward an ambient credential or record request content.
                 request = urllib.request.Request(relay.UPSTREAM, body, method='POST', headers={
                     'Content-Type': 'application/json', 'Authorization': 'Bearer local-proxy-placeholder'})
@@ -84,26 +87,34 @@ class SubscriptionRelay:
                         model_id = value.get('model') if isinstance(value, dict) else None
                         if isinstance(model_id, str) and 0 < len(model_id) <= 256 and all(ord(c) >= 32 for c in model_id):
                             models.add(model_id)
-                    observation.update(httpStatus=status, responseModels=sorted(models), responseBytes=len(payload))
+                    observation.update(phase='response', httpStatus=status, responseModels=sorted(models), responseBytes=len(payload))
                     with relay.lock:
                         relay.response_models.update(models)
-                        with relay.log.open('a') as stream:
-                            stream.write(json.dumps(observation) + '\n')
+                        relay._record_locked(observation)
+                        relay.active.discard(serial)
                     self.send_response(status)
                     self.send_header('Content-Type', content_type)
                     self.send_header('Content-Length', str(len(payload)))
                     self.end_headers()
                     self.wfile.write(payload)
                 except (OSError, ValueError, TimeoutError) as error:
-                    observation['failureType'] = type(error).__name__
+                    observation.update(phase='relay-error', failureType=type(error).__name__)
+                    if 'httpStatus' not in observation:
+                        observation['upstreamState'] = 'unknown'
                     with relay.lock:
-                        with relay.log.open('a') as stream:
-                            stream.write(json.dumps(observation) + '\n')
+                        relay._record_locked(observation)
                     self.send_error(502, 'subscription probe upstream unavailable')
+                finally:
+                    with relay.lock:
+                        relay.active.discard(serial)
 
         self.server = ThreadingHTTPServer(('127.0.0.1', 0), Handler)
         self.thread = threading.Thread(target=self.server.serve_forever, daemon=True)
         self.thread.start()
+
+    def _record_locked(self, observation):
+        with self.log.open('a') as stream:
+            stream.write(json.dumps(observation) + '\n')
 
     def verify_subscription(self):
         # Read exactly the mode field; do not inspect credentials or change config.
@@ -120,3 +131,6 @@ class SubscriptionRelay:
         self.server.shutdown()
         self.server.server_close()
         self.thread.join(timeout=2)
+        with self.lock:
+            for serial in sorted(self.active):
+                self._record_locked({'phase':'observer-closed','request':serial,'upstreamState':'unknown'})

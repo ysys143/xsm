@@ -148,7 +148,8 @@ async def public_roundtrip():
   replay=await run('first')
   check('public replay retained exact reply ID',replay['reply_id']==first['reply_id'])
   check('public replay did not execute native model',provider_log.read_bytes()==before)
-  report['providerRequests' if options.subscription_model else 'providerFixtureRequests']=len(before.splitlines())
+  if options.subscription_model:report['providerRequests']=assistant.forwarded
+  else:report['providerFixtureRequests']=len(before.splitlines())
   if options.native_tools:
    note='XSM_NATIVE_TOOL_NOTE_'+nonce
    args={'target':parent['address'],'text':note,'kind':'note','wake':'never','wait':0}
