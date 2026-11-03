@@ -2969,3 +2969,15 @@ schema/v7도3.11 84.026초/3.14 108.802초로 통과했고 VM stopExit=0이다.
 이는 Hermes gateway/Telegram local transport 모드의 두 OS 표본이며 실제 서비스나
 전체 runtime/OS/mode 행렬 완료가 아니다. OpenClaw의 다음 미완 경로는
 [고정 SDK wake 조사](openclaw-idle-wake.md)에 실행해야 할 경계와 함께 구분했다.
+
+## OpenClaw 실제 plugin 실행 fence — 2026-11-04
+
+실제 등록 plugin의 SDK run은 expectedLifecycleRevision 인수만으로 stale 실행을
+막지 못했다. 단독 표본에서 persistence/provider 도달을 확인해 이 경로를 단독
+wake fence로 채택하지 않았다. 공개 work-admission lease 안의 SID/revision guard와
+native 취소 신호를 결합한 표본은8개/20.641초에 통과했다. 실제 reset race에서
+plugin root 취소 없이 native admission signal이 SDK persistence/provider를 막았다.
+Gateway/VM 정상 종료를 확인했다. 제품 ordinary wake 연결·real model/UI는 미완이다.
+첫 syntax 실패와 실행기 중복 운영 오류·정리, 겹친 결과 제외와 단독 재검증도
+[조사 기록](openclaw-idle-wake.md)에 남겼다. 기존 전체 core는 이 SPI 때문에 다시
+통과했다고 표시하지 않는다.
