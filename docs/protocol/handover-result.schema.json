@@ -1,0 +1,283 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:xsm:host-protocol:1:handover-result",
+  "title": "Local handover transfer facts; not successor consumption or remote synchronization",
+  "oneOf": [
+    {
+      "type": "object",
+      "required": [
+        "text",
+        "handover"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "text": {
+          "type": "string"
+        },
+        "handover": {
+          "oneOf": [
+            {
+              "type": "object",
+              "required": [
+                "action",
+                "received"
+              ],
+              "additionalProperties": false,
+              "properties": {
+                "action": {
+                  "const": "show"
+                },
+                "received": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/$defs/received"
+                  }
+                }
+              }
+            },
+            {
+              "type": "object",
+              "required": [
+                "action",
+                "transfer",
+                "notes"
+              ],
+              "additionalProperties": false,
+              "properties": {
+                "action": {
+                  "const": "hand_over"
+                },
+                "transfer": {
+                  "$ref": "#/$defs/transfer"
+                },
+                "notes": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type": "object",
+      "required": [
+        "text"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "text": {
+          "type": "string"
+        }
+      }
+    },
+    {
+      "$ref": "#/$defs/awaiting"
+    }
+  ],
+  "$defs": {
+    "transfer": {
+      "type": "object",
+      "required": [
+        "at",
+        "from_ref",
+        "to_ref",
+        "teams",
+        "items",
+        "questions",
+        "groups",
+        "messages"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "at": {
+          "type": "number"
+        },
+        "from_ref": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "to_ref": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "teams": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "team",
+              "lead"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "team": {
+                "type": "string",
+                "minLength": 1
+              },
+              "lead": {
+                "type": "boolean"
+              }
+            }
+          },
+          "uniqueItems": true
+        },
+        "items": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "uniqueItems": true
+          }
+        },
+        "questions": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "groups": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "messages": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        }
+      }
+    },
+    "received": {
+      "type": "object",
+      "required": [
+        "at",
+        "from_ref",
+        "to_ref",
+        "teams",
+        "items",
+        "questions",
+        "groups",
+        "messages",
+        "letter"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "at": {
+          "type": "number"
+        },
+        "from_ref": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "to_ref": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "teams": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "team",
+              "lead"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "team": {
+                "type": "string",
+                "minLength": 1
+              },
+              "lead": {
+                "type": "boolean"
+              }
+            }
+          },
+          "uniqueItems": true
+        },
+        "items": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "uniqueItems": true
+          }
+        },
+        "questions": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "groups": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "messages": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "letter": {
+          "type": "string"
+        }
+      }
+    },
+    "awaiting": {
+      "type": "object",
+      "required": [
+        "status",
+        "decision_id",
+        "question_id"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "status": {
+          "const": "waiting-for-user"
+        },
+        "decision_id": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}(?![\\s\\S])"
+        },
+        "question_id": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    }
+  }
+}

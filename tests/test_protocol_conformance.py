@@ -310,3 +310,16 @@ class ExternalConformanceTest(unittest.TestCase):
                 result = checker.run(self.delivery_candidate(fault), suite='endorsements')
                 self.assertEqual(result['status'], 'failed', result)
                 self.assertEqual(result['activeCheck'], 'endorsement receipt binds original node')
+
+    def test_actual_handover_result_contract(self):
+        result = checker.run(self.delivery_candidate('none'), suite='handovers', capture=True)
+        self.assertEqual(result['status'], 'passed', {k:v for k,v in result.items() if k != 'observations'})
+        self.assertEqual(len(result['checks']), 28)
+
+    def test_handover_wire_defects_are_detected(self):
+        for fault, check in (('handover-missing-producer','applied handover returns transfer receipt'),
+                             ('handover-wrong-successor','transfer receipt binds source and successor')):
+            with self.subTest(fault=fault):
+                result = checker.run(self.delivery_candidate(fault), suite='handovers')
+                self.assertEqual(result['status'], 'failed', result)
+                self.assertEqual(result['activeCheck'], check)

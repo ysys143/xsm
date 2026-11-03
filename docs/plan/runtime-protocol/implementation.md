@@ -2740,3 +2740,11 @@ source의 수치를 구분한다. 원래 전체 계획은 미완이다.
 추가했다. Stdio25개/frame35개, 예제3개·거부7개, schema 변이1개·wire 결함2종을
 검증했다. Mac core913개는77.295초에 통과했다. 미정의 operation2개와
 team/board의 남은 action, 원래 전체 계획은 계속 미완이다.
+
+## 승계 결과 계약 — 2026-11-03
+
+[승계 결과 계약](handover-contract.md)에 내부 identity/home을 제외한 transfer와
+수신 letter projection을 추가했다. Stdio28개/frame39개, 예제5개·거부9개와
+wire 결함2종을 검증했다. 팀 lead·미독 편지·옛 주소로 보낸 새 DM의 claim/ACK를
+실행했고 Mac core915개는77.509초에 통과했다. 마지막 owned 결과 계약과
+team/board의 남은 action, 원래 전체 계획은 미완이다.

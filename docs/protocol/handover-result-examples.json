@@ -1,0 +1,86 @@
+[
+  {
+    "source": "isolated stdio synthetic host; identity/text normalized",
+    "result": {
+      "handover": {
+        "action": "show",
+        "received": []
+      },
+      "text": "fixture handover result"
+    }
+  },
+  {
+    "source": "isolated stdio synthetic host; identity/text normalized",
+    "result": {
+      "status": "waiting-for-user",
+      "decision_id": "0000000000000000000000000000000000000000000000000000000000000000",
+      "question_id": "fixture-question"
+    }
+  },
+  {
+    "source": "isolated stdio synthetic host; identity/text normalized",
+    "result": {
+      "handover": {
+        "action": "hand_over",
+        "transfer": {
+          "at": 1,
+          "from_ref": "fixture-source",
+          "to_ref": "fixture-successor",
+          "teams": [
+            {
+              "team": "handover-contract",
+              "lead": true
+            }
+          ],
+          "items": {
+            "handover-contract": []
+          },
+          "questions": [],
+          "groups": [],
+          "messages": [
+            "handover-unread"
+          ]
+        },
+        "notes": []
+      },
+      "text": "fixture handover result"
+    }
+  },
+  {
+    "source": "isolated stdio synthetic host; identity/text normalized",
+    "result": {
+      "handover": {
+        "action": "show",
+        "received": [
+          {
+            "at": 1,
+            "from_ref": "fixture-source",
+            "to_ref": "fixture-successor",
+            "teams": [
+              {
+                "team": "handover-contract",
+                "lead": true
+              }
+            ],
+            "items": {
+              "handover-contract": []
+            },
+            "questions": [],
+            "groups": [],
+            "messages": [
+              "handover-unread"
+            ],
+            "letter": "Fixture context and unread DM: handover-unread"
+          }
+        ]
+      },
+      "text": "fixture handover result"
+    }
+  },
+  {
+    "source": "legacy unanswered display fixture",
+    "result": {
+      "text": "your user did not answer; nothing moved"
+    }
+  }
+]

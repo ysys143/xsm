@@ -275,3 +275,11 @@ body/parent/tag and then renders it. Answer storage alone must add no node;
 replay must preserve the receipt without duplication, and denial must not add an
 endorsement. Missing receipts or wrong parent ids are deliberate failing proxies.
 No actual user UI, native model or remote synchronization is certified.
+
+`--suite handovers --capture` creates a team, explicitly grants its lead through
+a synthetic host answer, stores an unread DM and transfers the source's place.
+It verifies that answer storage alone has no effect, the transfer receipt names
+the exact successor, retry preserves it, and the successor's letter retains the
+original unread body. A new DM to the old address must arrive at the successor
+and accept its explicit ACK. Missing receipts and wrong successor refs must fail.
+These local tests do not certify actual user UI or remote synchronization.

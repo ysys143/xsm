@@ -434,3 +434,19 @@ and legacy text-only envelopes. This receipt means an immutable endorsement node
 was added; it does not assert that the document has been rendered, accepted by
 another agent, or acted on. An explicit retry of an applied request returns its
 original receipt and creates no duplicate node. A denial creates no endorsement.
+
+## Handover transfer receipts
+
+`xsm_handover` adds a `handover` receipt while preserving text. `hand_over` reports
+an explicit transfer projection: timestamp, source/successor refs, team/lead
+changes, board item names, question/group/message ids and synchronization notes.
+`show` returns received projections and their retained letters. Internal native
+identities, profile homes and approval records are excluded. The
+[handover schema](handover-result.schema.json) covers both actions, pending and
+legacy text. Nullable refs allow older retained records with missing refs.
+
+Unread DMs are included in the successor's retained letter; originals remain
+marked as moved. They are not newly claimed inbox copies. New DMs sent to the old
+address follow the successor and use normal claim/ACK handling. A transfer
+receipt does not prove that the successor read the letter or finished any task;
+notes do not prove remote synchronization. Applied retry preserves its receipt.

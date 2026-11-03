@@ -77,6 +77,9 @@ try:
                     reply['error'] = {'code': -32603, 'message': 'synthetic internal error'}
                 if fault == 'questions-erases-acked-answer' and value.get('status') == 'replied' and value.get('claims') == []:
                     value['replies'] = []
+            if params.get('operation') == 'xsm_handover' and reply.get('result', {}).get('handover', {}).get('action') == 'hand_over':
+                if fault == 'handover-missing-producer': reply['result'].pop('handover')
+                if fault == 'handover-wrong-successor': reply['result']['handover']['transfer']['to_ref']='unrelated-successor'
             if params.get('operation') == 'xsm_doc_endorse' and 'endorsement' in reply.get('result', {}):
                 if fault == 'endorsement-missing-producer': reply['result'].pop('endorsement')
                 if fault == 'endorsement-wrong-parent': reply['result']['endorsement']['parent']='000000000000'

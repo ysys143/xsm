@@ -272,6 +272,60 @@ def messaging(peer, sender, receiver, reopen, check, equal, events=False):
               tokens=[pending["claims"][0]["token"]])["acked"], event["params"]["ids"]))
 
 
+def handovers(peer, params, check, equal):
+    source, target, sender = [peer.call('session.open', dict(params, conversation='handover-' + name,
+        capabilities=['user-decisions', 'inbox'])) for name in ('source', 'target', 'sender')]
+    def operation(session, name, error=None, **arguments):
+        return peer.call('operation.call', dict(session=session['session'], operation=name,
+            arguments=arguments), error=error)
+    check('successor starts without transfers', lambda: equal(operation(target, 'xsm_handover', action='show')['handover'],
+        dict(action='show', received=[])))
+    operation(source, 'xsm_team', action='create', team='handover-contract')
+    lead_args = dict(action='lead', team='handover-contract', member='ref:' + source['ref'])
+    lead_pending = operation(source, 'xsm_team', **lead_args)
+    lead_event = peer.notification()['params']
+    peer.call('decision.response', dict(session=source['session'], questionId=lead_event['questionId'],
+        challenge=lead_event['challenge'], displayed=lead_event['question'], action='accept', answer='allow',
+        source_id='synthetic-handover-lead'))
+    operation(source, 'xsm_team', **lead_args)
+    operation(sender, 'xsm_send', target='ref:' + source['ref'], text='Fixture unread transfer body',
+        request_id='handover-unread', wake='never', wait=0)
+    args = dict(target='ref:' + target['ref'], summary='Fixture handover context', decision_key='handover-contract')
+    pending = operation(source, 'xsm_handover', **args)
+    check('handover asks host before transfer', lambda: equal(pending['status'], 'waiting-for-user'))
+    event = peer.notification()['params']
+    check('pending handover transfers nothing', lambda: equal(operation(target, 'xsm_handover', action='show')['handover']['received'], []))
+    peer.call('decision.response', dict(session=source['session'], questionId=event['questionId'],
+        challenge=event['challenge'], displayed=event['question'], action='accept', answer='allow',
+        source_id='synthetic-handover-answer'))
+    check('stored answer alone transfers nothing', lambda: equal(operation(target, 'xsm_handover', action='show')['handover']['received'], []))
+    applied = operation(source, 'xsm_handover', **args)
+    check('applied handover returns transfer receipt', lambda: equal('transfer' in applied.get('handover', {}), True))
+    transfer = applied['handover']['transfer']
+    check('handover replay preserves applied receipt', lambda: equal(operation(source, 'xsm_handover', **args), applied))
+    check('transfer receipt binds source and successor', lambda: equal(transfer['from_ref']==source['ref'] and
+        transfer['to_ref']==target['ref'] and transfer['messages']==['handover-unread'] and
+        transfer['teams']==[dict(team='handover-contract', lead=True)], True))
+    received = operation(target, 'xsm_handover', action='show')['handover']['received']
+    check('successor reads same public transfer and context', lambda: equal(len(received)==1 and
+        {k:v for k,v in received[0].items() if k!='letter'}==transfer and
+        'Fixture handover context' in received[0]['letter'], True))
+    check('handover receipt exposes no private identity records', lambda: equal(
+        all(key not in transfer for key in ('home','from_identity','to_identity','approval')), True))
+    check('successor letter preserves unread body and original id', lambda: equal(
+        'handover-unread' in received[0]['letter'] and 'Fixture unread transfer body' in received[0]['letter'], True))
+    operation(sender, 'xsm_send', target='ref:' + source['ref'], text='Fixture post-transfer body',
+        request_id='handover-followup', wake='never', wait=0)
+    packet = operation(target, 'xsm_inbox', message_ids=['handover-followup'])
+    check('old address forwards new original to successor', lambda: equal(
+        [claim['id'] for claim in packet['claims']], ['handover-followup']))
+    operation(target, 'xsm_ack', tokens=[claim['token'] for claim in packet['claims']])
+    team = operation(target, 'xsm_team', action='show', team='handover-contract')
+    check('handover retains transferred team lead', lambda: equal(
+        len(team['members'])==1 and team['lead']==team['members'][0]['member'] and
+        team['members'][0]['running'] is True, True))
+
+
 def endorsements(peer, params, check, equal):
     owner = peer.call('session.open', dict(params, conversation='endorsement-owner', capabilities=['user-decisions']))
     def operation(name, error=None, **arguments):
@@ -943,6 +997,9 @@ def run(command, suite="lifecycle", capture=False):
             if suite == 'discovery':
                 result['scope'] = 'lifecycle and local public discovery; no physical remote, native UI or messenger certification'
                 discovery(b, reopened, resumed, check, equal)
+            if suite == 'handovers':
+                result['scope'] = 'synthetic host handover, local unread claims and team transfer; no actual user or remote certification'
+                handovers(b, params, check, equal)
             if suite == 'endorsements':
                 result['scope'] = 'synthetic host immutable document endorsement and render; no actual user or native runtime certification'
                 endorsements(b, params, check, equal)
@@ -981,7 +1038,7 @@ def run(command, suite="lifecycle", capture=False):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--capture", action="store_true", help="include isolated wire observations in the report")
-    parser.add_argument("--suite", choices=("lifecycle", "messaging", "events", "decisions", "uploads", "discovery", "collaboration", "documents", "sending", "questions", "selection", "grants", "approvals", "scopes", "endorsements"), default="lifecycle")
+    parser.add_argument("--suite", choices=("lifecycle", "messaging", "events", "decisions", "uploads", "discovery", "collaboration", "documents", "sending", "questions", "selection", "grants", "approvals", "scopes", "endorsements", "handovers"), default="lifecycle")
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--command", nargs=argparse.REMAINDER, required=True)
     args = parser.parse_args()

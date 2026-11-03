@@ -904,11 +904,23 @@ class OperationService:
             return str(exc)
         except handover.HandoverError as exc:
             raise ToolError(str(exc)) from exc
+        def receipt(record):
+            # Public transfer facts, never the internal identity/home or approval record.
+            return {'at': record['t'], 'from_ref': record['from'].get('ref'),
+                'to_ref': record['to'].get('ref'),
+                'teams': [{'team': row['team'], 'lead': bool(row['lead'])} for row in record['teams']],
+                'items': {team: list(items) for team, items in record['items'].items()},
+                'questions': list(record['questions']), 'groups': list(record['groups']),
+                'messages': list(record['messages'])}
         if value['action'] == 'show':
             rows = value['received']
-            return "\n\n".join(row['letter'] for row in rows) if rows else "no session handed its place over to this one"
+            text = "\n\n".join(row['letter'] for row in rows) if rows else "no session handed its place over to this one"
+            return OperationDisplay(text, {'handover': {'action': 'show',
+                'received': [dict(receipt(row), letter=row['letter']) for row in rows]}})
         rec = value['record']
-        return "\n".join([handover.summary_line(rec)] + (rec.get('notes') or []))
+        text = "\n".join([handover.summary_line(rec)] + (rec.get('notes') or []))
+        return OperationDisplay(text, {'handover': {'action': 'hand_over',
+            'transfer': receipt(rec), 'notes': rec.get('notes') or []}})
 
     def team(self, me: dict, args: dict) -> str:
         from . import team_service, teams
