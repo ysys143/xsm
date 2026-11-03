@@ -12,6 +12,7 @@ parser.add_argument('--native-cli',type=Path,required=True)
 parser.add_argument('--node',type=Path,required=True)
 parser.add_argument('--output',type=Path,required=True)
 parser.add_argument('--reset-race',action='store_true')
+parser.add_argument('--transport-loss',action='store_true')
 options=parser.parse_args()
 if not options.native_cli.is_absolute() or not options.node.is_absolute():parser.error('absolute native CLI and Node paths required')
 if json.loads((options.native_cli.parent/'package.json').read_text()).get('version')!='2026.10.9':parser.error('OpenClaw2026.10.9 package required')
@@ -33,7 +34,7 @@ def controlled_post(handler):
   entered_model.set();release_model.wait(20)
  try:return original_post(handler)
  except (BrokenPipeError,ConnectionResetError):
-  if not options.reset_race:raise
+  if not (options.reset_race or options.transport_loss):raise
 assistant.server.RequestHandlerClass.do_POST=controlled_post
 config={'gateway':{'mode':'local','bind':'loopback','port':port,'auth':{'mode':'token','token':secrets.token_hex(32)}},'agents':{'defaults':{'workspace':str(root/'workspace'),'heartbeat':{'every':'0m'}}},'cron':{'enabled':False},'plugins':{'enabled':False}}
 config['agents']['defaults']['model']={'primary':'xsm-fixture/fixture','fallbacks':[]}
@@ -134,6 +135,30 @@ async def messaging(receiver,locator):
   check('FYI first natural provider input has full original and nonce context',user_prompt_contains(quiet_text) and user_prompt_contains('[XSM peer context '))
   check('exact native model input observation reports FYI admission',any(item['id']==quiet and item['state']=='admitted' for item in delivery_reports()))
   check('background wake honors the configured model route',all(row['request'].get('model')=='fixture' for row in provider_rows()))
+  if options.transport_loss:
+   from xsm import identity
+   transport_id='openclaw-transport-'+secrets.token_hex(8);blocked_marker='XSM_TRANSPORT_PENDING_'+transport_id
+   await sender.operation_call(me['session'],'xsm_send',dict(target='ref:'+receiver['ref'],text=blocked_marker,wake='auto',request_id=transport_id))
+   check('native work is in provider when only protocol transport fails',await asyncio.to_thread(entered_model.wait,10))
+   live=next(row for row in records() if row.get('ref')==receiver['ref'])
+   parent=subprocess.check_output(['ps','-o','ppid=','-p',str(live['pid'])],env=env,text=True).strip()
+   check('fault targets only this private gateway protocol child',int(parent)==process.pid and identity.lstart(live['pid'])==live['lstart'])
+   os.kill(live['pid'],signal.SIGTERM)
+   deadline=time.monotonic()+10
+   while True:
+    renewed=next(row for row in records() if row.get('ref')==receiver['ref'])
+    if renewed.get('protocol_generation')!=live['protocol_generation'] and identity.pid_alive(renewed['pid']):break
+    if time.monotonic()>deadline:raise TimeoutError('private protocol connection did not recover')
+    await asyncio.sleep(.02)
+   check('protocol reconnect keeps native conversation and replaces broker generation',renewed['ref']==receiver['ref'])
+   with assistant.lock:assistant.refresh_pending=True
+   release_model.set()
+   deadline=time.monotonic()+35
+   while handoff.status(renewed,transport_id)['status']!='acknowledged':
+    if time.monotonic()>deadline:raise TimeoutError('running native turn did not recover after transport loss')
+    await asyncio.sleep(.02)
+   check('running native turn continues and ACKs refreshed claim after stdio loss',True)
+   report['transportMessageId']=transport_id
   if options.reset_race:
    cancelled_id='openclaw-reset-'+secrets.token_hex(8);blocked_marker='XSM_RESET_PENDING_'+cancelled_id
    await sender.operation_call(me['session'],'xsm_send',dict(target='ref:'+receiver['ref'],text=blocked_marker,wake='auto',request_id=cancelled_id))

@@ -2991,3 +2991,10 @@ Same-SID reset은 stable address/new protocol generation과 원문 보존·새 �
 확인했다. Native 도구의 lazy schema 오인과 FYI 늦은 전달, reset SID 가정의 실패를
 모두 보존했다. Controlled guard2변이와 Mac core972개/schema/v7 60.292초를 확인했다.
 Actual Mac·구독 모델/UI/메신저·오류 전체·100p95와 원래 계획은 미완이다.
+
+고정cbdf064의 native 기본12/reset18은 두 OS 모두 통과했다. Core973개/schema/v7은
+Mac61.381초/Linux88.333초·111.646초, VM stopExit=0이었다. 후속 transport 검토에서
+stdio 신호로 native 턴을 취소하던 경로를 red로 재현해 lifecycle 신호와 분리했다.
+실제 Linux broker 자식 종료/새 generation/실제 inbox claim 갱신·ACK16개와
+Mac974개/schema/v7 63.057초를 확인했다. Token 표현을 안정 ID로 오인한 fixture의
+191개 request 실패도 보존했다. Mac transport와 전체 오류·UI·서비스 검증은 미완이다.

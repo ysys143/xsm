@@ -10,7 +10,8 @@ export function createNativeWake(api, onError) {
     guard(signal);
     if (runs.has(runId)) return;
     const controller = new AbortController();
-    const combined = AbortSignal.any([controller.signal, signal, api.lifecycle.signal].filter(Boolean));
+    // A broker connection can reconnect while this native conversation keeps working.
+    const combined = AbortSignal.any([controller.signal, api.lifecycle.signal].filter(Boolean));
     const record = { controller, sessionId: context.sessionId, settled: false };
     const execute = () => session.runWithWorkAdmission({ ...scope, signal: combined }, async admittedSignal => {
       record.admittedSignal = admittedSignal;

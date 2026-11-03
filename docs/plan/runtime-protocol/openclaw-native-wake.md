@@ -5,7 +5,7 @@
 
 `native-wake.mjs`는 context queue commit 뒤 등록 plugin의 background scope에서
 native work-admission lease를 사용한다. SID/revision/설정/epoch를 다시 확인하며
-native signal과 host/plugin 종료 signal을 실행까지 전달한다. SDK revision 인수만
+native signal과 native session/plugin 종료 signal을 실행까지 전달한다. SDK revision 인수만
 신뢰하지 않는다. Actual native config가 기본 모델·별칭을 해석하고, 세션 override는
 그대로 전달한다. Subscription-auth dispatch를 선택할 수 있는 native 경로를 유지한다.
 이 표본은 localhost 합성 provider이고 실제 과금 모델을 부르지 않았다.
@@ -65,6 +65,35 @@ protocol EOF 진단이 없다. 실패 시에는 소유 group만 강제 정리한
 binding/queue/wake/context 검사에 포함했으며 이 수정의 고정 Linux 실행과 전체
 core 후속 결과는 별도로 기록한다.
 
-원시는 `deliverables/protocol-foundation/openclaw-native-wake*`에 있다. Mac native,
+고정cbdf064에서 실제 설치본 기본12개/reset18개가 Mac과 Linux 모두 통과했다.
+Native reset은 SID 유지/revision 교체로 관측했고, 같은 주소의 참여 세대 교체와
+미확인 원문 보존·새 자연 턴 ACK를 확인했다. 전체973개/schema/v7도 Mac61.381초,
+Linux3.11 88.333초/3.14 111.646초에 통과했고 VM stopExit=0이다. Mac Node24.22.2는
+공식 archive SHA를 대조하고 archive 안의 실행 파일 hash와 선택한 binary hash도
+비교했다. Archive hash를 binary hash로 잘못 비교한 최초 precheck는 native 실행
+전에 실패했으며, 런타임 실패로 세지 않았다.
+
+## Stdio 실패와 업무 취소 분리
+
+후속 검토에서 broker controller signal이 native 실행 취소에도 연결된 경로를
+찾았다. 제어된 red는 protocol transport만 abort해도 이미 제출된 native signal이
+aborted가 되어 실패했다. Native lifetime controller와 native admission signal만
+실행에 연결하도록 고쳤다. Transport signal은 최초 queue/wake admission guard에
+쓰되, stdio 재연결 자체로 진행 중인 native 업무를 취소하지 않는다.
+
+실제 Linux transport 표본은 wake가 provider에 도달한 뒤, PID/start/parent를 확인한
+해당 private gateway의 protocol 자식만 종료했다. 같은 Native SID·주소에서 broker
+generation이 갱신됐고, 진행 중인 scripted consumer가 실제 inbox의 새 claim을
+읽어 ACK했다.16개/30.281초, gatewayStopped=true/VM stopExit=0이다. 모델의 자동
+판단 능력을 인증하지 않으며 새 claim을 읽는 모델 행동은 명시적 fixture다.
+이 수정의 Mac core974개/schema/v7은63.057초에 통과했다.
+
+첫 transport 표본은 그 주입 전에 fixture가 반복 refresh를 해 context limit에
+도달했다. 같은 message ID의 opaque token 표현144개를 매번 새 대상으로 취급한
+오류였다. 실제 inbox를 한 번 읽고 그 결과의 claim으로 ACK하도록 고쳤으며,
+191개 scripted request/실패 로그를 보존한다. 이 실패를 native 취소 결함이나
+실제 모델의 실패로 세지 않는다. 원래 승인 불안정성 역시 별도로 미확정이다.
+
+원시는 `deliverables/protocol-foundation/openclaw-native-wake*`에 있다. Mac transport/기타 native 오류,
 실제 구독 모델/서비스/UI, capacity/fragment·재연결·실패 전체, configuration reload와
 100표본 p95 및 전체 조합은 미완이며 기존 Linux 승인 실패도 해결로 표시하지 않는다.

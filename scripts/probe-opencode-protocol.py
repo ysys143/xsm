@@ -40,7 +40,7 @@ def native_binary(root, system=None, machine=None):
 
 class AssistantFixture:
     """Explicit scripted assistant packets, never a language model or human answer."""
-    def __init__(self, output, question=None, *, warmup_inbox=False):
+    def __init__(self, output, question=None, *, warmup_inbox=False, refresh_before_ack=False):
         self.calls = 0
         self.tokens = set()
         self.lock = threading.Lock()
@@ -48,6 +48,9 @@ class AssistantFixture:
         self.question_issued = False
         self.inbox_issued = False
         self.inbox_searched = False
+        self.refresh_pending = refresh_before_ack
+        self.read_refreshed_claims = False
+        self.superseded_tokens = set()
         fixture = self
 
         class Handler(BaseHTTPRequestHandler):
@@ -70,6 +73,19 @@ class AssistantFixture:
                     except ValueError:
                         continue
                 with fixture.lock:
+                    if fixture.read_refreshed_claims:
+                        for message in reversed(request.get('messages', [])):
+                            if message.get('role') != 'tool' or not isinstance(message.get('content'), str):
+                                continue
+                            try: result = json.loads(message['content'])
+                            except ValueError: continue
+                            if not isinstance(result, dict) or result.get('tool', {}).get('name') != 'xsm_inbox':
+                                continue
+                            claims = result.get('result', {}).get('details', {}).get('claims', [])
+                            observed = [claim['token'] for claim in claims if isinstance(claim, dict) and isinstance(claim.get('token'), str)]
+                            if any(token not in fixture.tokens for token in observed):
+                                tokens = observed
+                                break
                     fresh = [token for token in tokens if token not in fixture.tokens]
                     use_tool = bool(fresh) and ('xsm_ack' in available or lazy_native)
                     tool_name, tool_args = 'xsm_ack', {'tokens': fresh}
@@ -88,12 +104,21 @@ class AssistantFixture:
                         use_tool = True
                         tool_name, tool_args = 'xsm_decide', {'question': fixture.question, 'options': ['blue', 'green']}
                         fixture.question_issued = True
+                    if use_tool and tool_name == 'xsm_ack' and fixture.refresh_pending:
+                        fixture.refresh_pending = False
+                        fixture.read_refreshed_claims = True
+                        fixture.superseded_tokens.update(fresh)
+                        tool_name, tool_args = ('xsm_inbox', {}) if 'xsm_inbox' in available else ('tool_call', {'id': 'xsm_inbox', 'args': {}})
                     if use_tool and (tool_name == 'xsm_inbox' or tool_name == 'tool_call' and tool_args.get('id') == 'xsm_inbox'):
                         fixture.inbox_issued = True
                     if use_tool and tool_name == 'xsm_ack' and 'xsm_ack' not in available and lazy_native:
                         tool_name, tool_args = 'tool_call', {'id': 'xsm_ack', 'args': tool_args}
                     if use_tool:
-                        fixture.tokens.update(fresh)
+                        if tool_name == 'xsm_ack' or tool_name == 'tool_call' and tool_args.get('id') == 'xsm_ack':
+                            fixture.tokens.update(fresh)
+                            fixture.tokens.update(fixture.superseded_tokens)
+                            fixture.superseded_tokens.clear()
+                            fixture.read_refreshed_claims = False
                         fixture.calls += 1
                     with (output / 'assistant-fixture.jsonl').open('a') as stream:
                         stream.write(json.dumps({'request': request, 'ackFixture': use_tool and (tool_name == 'xsm_ack' or

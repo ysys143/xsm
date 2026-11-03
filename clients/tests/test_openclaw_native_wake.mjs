@@ -14,7 +14,7 @@ const { createNativeWake } = wakeModule;
 
 function fixture() {
   let row = { sessionId: 'native', lifecycleRevision: 'rev' }, beforeLease = () => {};
-  const calls = [], order = [], errors = [], root = new AbortController(), native = new AbortController();
+  const calls = [], order = [], errors = [], root = new AbortController(), native = new AbortController(), transport = new AbortController();
   let enteredResolve, errorResolve, finish;
   const entered = new Promise(resolve => { enteredResolve = resolve; });
   const failed = new Promise(resolve => { errorResolve = resolve; });
@@ -40,8 +40,8 @@ function fixture() {
   const options = { runId: 'wake-original', context: { agentId: 'main', sessionId: 'native',
     sessionKey: 'agent:main:route', workspaceDir: '/isolated/work' },
     scope: { agentId: 'main', sessionKey: 'agent:main:route', storePath: '/isolated/store' },
-    revision: 'rev', signal: root.signal, guard: signal => signal?.throwIfAborted() };
-  return { api, wake, options, calls, order, errors, root, native, entered, failed, finish,
+    revision: 'rev', signal: transport.signal, guard: signal => signal?.throwIfAborted() };
+  return { api, wake, options, calls, order, errors, root, native, transport, entered, failed, finish,
     beforeLease: callback => { beforeLease = callback; }, edit: patch => { row = { ...row, ...patch }; } };
 }
 
@@ -65,6 +65,14 @@ test('session selectors are forwarded without parsing aliases or guessing anothe
   f.wake.start(f.options); const params = await f.entered;
   assert.equal(params.provider, 'selected'); assert.equal(params.model, 'configured-alias');
   f.finish(); await f.wake.close();
+});
+
+test('protocol transport loss cannot cancel an already submitted native turn', async () => {
+  const f = fixture(); f.wake.start(f.options); const params = await f.entered;
+  try {
+    f.transport.abort();
+    assert.equal(params.abortSignal.aborted, false, 'stdio loss cancelled native work');
+  } finally { f.finish(); await f.wake.close(); }
 });
 
 test('revision and policy changes before native lease execution prevent model admission', async () => {
