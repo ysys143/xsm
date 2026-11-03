@@ -1,7 +1,7 @@
 # OpenCode 설치 경로의 보드·문서·첨부 native 검증
 
-상태: Mac 최종21개 검사가 통과했다. Linux·실제 모델·사용자 UI와 전체 기능
-행렬은 미완이다. 이번 시험은 사용자 판단이 필요한 결정·endorsement를
+상태: Mac·Linux에서 각각21개 검사가 통과했다. 실제 모델·사용자 UI와 전체
+기능 행렬은 미완이다. 이번 시험은 사용자 판단이 필요한 결정·endorsement를
 실행하지 않았으며 해당 native UI 검증을 대체하지 않는다.
 
 `probe-opencode-collaboration.py`는 새 git 저장소와 HOME/XSM_HOME/OpenCode
@@ -46,3 +46,15 @@ first/final 및 각 변이 폴더다. Native 도구 packet과 gzip HTTP 요청, 
 snapshot/SHA manifest를 보존했다. 테스트 전용 추가라 구문 검사와 실제 native
 정상/변이를 실행했으며 전체 core가 다시 통과했다고 표시하지 않는다.
 다른 operation·action·UI·실제 모델과 전체 행렬은 별도 증거가 필요하다.
+
+## Linux 고정 source와 원시 대조
+
+고정cddad51의 Linux arm64에서도21개 검사/29개 native 호출/7개 operation,
+예상 오류3개와 scripted HTTP58개가 통과했다. Mac과 검사 이름21개가 일치했다.
+두 OS 모두 raw provider 발급 ID29개와 native 도구 callID29개가 정확히 맞고,
+세션·도구명이 일치하며 ID가 모두 고유함을 별도 대조했다. 결과는 각 audit.json에
+보존했다. NativeStopped=true/container exit0/VM stopExit0이었다. Native 패키지는
+read-only, container network none/model0이었다. Linux 원시는
+`opencode-native-collaboration-linux/output/artifacts/`와 상위 result.json이다.
+변이3개는 Mac에서 실행했다. 실제 사용자 UI·결정·endorsement·모델과 전체
+runtime/기능 행렬을 이 표본으로 인증하지 않는다.

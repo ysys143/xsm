@@ -3073,3 +3073,20 @@ stopExit0이었다. 실제 모델 호출0이며 synthetic UI 답을 실제 사�
 1요청/1응답 HTTP400(extra usage 소진)으로 첫 답 저장에서 실패했다. 원 요청은
 unknown/result=None, 자식은 모두 종료됐다. 모델 교체나 유료 경로로 대신하지
 않았다. [구독 시험 기록](pi-opencode-subscription-model.md)에 새 실패를 보존했다.
+
+
+## OpenCode 설치 경로 보드·문서·첨부 — 2026-11-04
+
+[Native 협업 검사](opencode-native-collaboration.md)는 실제 설치 loader와
+OpenCode server/tool kernel을 실행한다. Scripted provider는 native 도구 호출을
+요청하며 실제 callID/tool/sessionID/완료 packet을 대조했다. Mac21개/29도구
+호출/7개 operation과 예상 오류3개가 통과했다. Parent 제거·후보 숨김·파일
+변조3개는 각 표적 검사에서 exit1이 됐고 native server도 종료됐다. 잘못된
+parent/node와 owner-mismatch의 실제 원인도 확인했다. 실제 모델/사용자 UI·결정·endorsement와 전체 행렬은
+미완이다. 제품 engine은 바꾸지 않은 test-only 추가다.
+
+고정cddad51 Linux도21개/29호출/7개 operation과 예상 오류3개를 통과했다.
+두 OS의 원시 provider 발급ID29개와 native callID29개의 일치·고유성 및
+세션/도구명을 독립 대조했다. 각 HTTP58개와 검사 이름21개가 일치했고
+native server/container/VM이 정상 종료됐다. Network none/model0/read-only
+native 패키지이며 UI·실제 모델과 전체 기능 행렬은 계속 미완이다.
