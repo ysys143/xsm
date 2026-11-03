@@ -848,3 +848,32 @@ d581338c51f8fe855c6683b028938df6dc9e0c4d2dbb1dc558ffb3b6ff60f4f6다.
 미실행 core0, VM stopExit=0이다. 원시는 deliverables/protocol-foundation/
 deferred-host-linux/ 아래다. Hermes native UI/질문 결속을 구현·검증한 결과가
 아니며 전체 계획은 미완이다.
+
+## Hermes native 질문 bridge의 Linux core
+
+6c1dd78e4b45f305eaeff6a28dce4288f088ddc1를 고정한 hermes-native-questions-linux에서
+858개(Python517+SDK56+native133+Node152)가 Python3.11.2에서83.635초,
+Python3.14.10에서104.607초에 통과했다. Archive SHA256은
+e1aa94d94b2af14e0d09750ab2d2c8cfdae1de6105b20b533ed3fed55b9cfff4다.
+독립 mock39/변이14는 별도 수치다. 두 환경 모두120초 기한을 지켰다.
+
+표시 ID/세션/실행 세대/profile fence, canonical 선택값 전체, 중복 질문과 native
+occurrence 재사용, timeout/미제공/취소의 비승격을 실제 stdio 서버와 fixture
+관측에서 검증했다. Network none/model0/cpu2/memory3g, 미실행 core0,
+VM stopExit=0이다. 원시는 deliverables/protocol-foundation/
+hermes-native-questions-linux/ 아래다. 이 core를 실제 native SDK/사람 UI나
+메신저 검증으로 확대하지 않는다.
+
+## 실제 Hermes native AIAgent 질문 bridge
+
+위 core와 별도로6c1dd78을 고정해 실제0.22.5 AIAgent/tool loop와 설치된 plugin을
+실행했다. Scripted provider와 UI callback을 사용한4개 확인이 통과했고 fixture
+요청7회, callback1회, plugin unload를 확인했다. Native source는
+bf0203a794a07aac3ff764972ab9087baa4e4f4e다. Native 결과의 XSM source hash도
+고정 커밋과 일치했다. 실제 모델·사람 UI·메신저 시험으로 계산하지 않는다.
+
+Source archive SHA256은1b5703172d4b6ef95b720dd1939df852725a45c103e3f399b3ffa7e654463fb1이다.
+Network none/model0/cpu2/memory3g, 미실행 native mode0, VM stopExit=0이다.
+원시는 deliverables/protocol-foundation/hermes-native-ui-agent-linux-linux/ 아래의
+result.json과 native-agent/output/native/result.json에 있다. 중복 linux는 실제
+원시 폴더명이며 core 원시와 혼동하지 않는다.

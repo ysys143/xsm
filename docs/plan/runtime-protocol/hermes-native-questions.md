@@ -41,6 +41,13 @@ hermes-native-question-tests-first/final/occurrences/complete/current.log를 구
 98.582초에 통과했다(hermes-native-question-core-shipping.log).
 독립 mock39/변이14는 별도 수치다.
 
+6c1dd78e4b45f305eaeff6a28dce4288f088ddc1를 고정한 Linux core도858개씩
+Python3.11.2에서83.635초, Python3.14.10에서104.607초에 통과했다.
+Archive SHA256은e1aa94d94b2af14e0d09750ab2d2c8cfdae1de6105b20b533ed3fed55b9cfff4다.
+Network none/model0/cpu2/memory3g, 미실행 core0, VM stopExit=0이다.
+원시는 hermes-native-questions-linux/ 아래다. Native SDK/사람 UI 실행 증거와
+이 core 결과를 구분한다.
+
 ## 실제 고정 Native SDK와 AIAgent
 
 v0.22.5/bf0203a794a07aac3ff764972ab9087baa4e4f4e의 native registry/clarify executor/
@@ -72,3 +79,16 @@ deliverables/protocol-foundation/ 아래에 있다. 실제 사용자 표시·선
 메신저 UI와 실제 모델 협력, 전체 기능/OS/세션 수명 행렬은 별도 필수 조건으로
 남아 있다. 2026-11-03 구현 담당자가 기록했으며 같은 담당자가 실제 native UI
 표면에서 이를 실행한 뒤 판정한다. 범위 제외나 대체 완료의 사용자 승인은 없다.
+
+## Linux native SDK/agent 검증
+
+같은6c1dd78을 고정한 별도 Linux 실행에서도 실제 Hermes0.22.5 AIAgent, managed
+plugin, native discovery/clarify/hook와 공통 protocol을 연결했다.4개 확인이
+통과했고 UI callback1회, fixture provider 요청7회, plugin unload를 확인했다.
+Network none/model0/cpu2/memory3g, 미실행 native mode0, VM stopExit=0이다.
+이는 합성 callback이며 실제 사용자 UI나 모델 inference가 아니다.
+
+Archive SHA256은1b5703172d4b6ef95b720dd1939df852725a45c103e3f399b3ffa7e654463fb1이다.
+원시는 deliverables/protocol-foundation/hermes-native-ui-agent-linux-linux/ 아래에
+보존했다. 마지막 linux-linux는 실제 실행 폴더명이다. Native 결과의 source hash가
+고정 커밋과 일치하는 것도 hermes-native-ui-linux-source-audit.json에서 확인했다.
