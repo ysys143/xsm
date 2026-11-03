@@ -155,13 +155,14 @@ class AssistantFixture:
 
 
 async def run(args):
+    canonical = getattr(args, "canonical_latency", False)
     args.output.mkdir(parents=True, exist_ok=True)
     temp = Path(tempfile.mkdtemp(prefix="xsm-opencode-probe-"))
     work, home, profile, state = [temp / name for name in ("work", "home", "config/opencode", "state")]
     for path in (work, home, profile):
         path.mkdir(parents=True)
     subprocess.run(["git", "init", "-q", str(work)], check=True)
-    assistant = AssistantFixture(args.output)
+    assistant = AssistantFixture(args.output, compress_requests=canonical)
     # Reuse only the explicitly supplied, privately installed pinned SDK dependencies.
     (profile / "node_modules").symlink_to(args.native_root / "node_modules", target_is_directory=True)
     # Native Config waits for dependency installation even when node_modules exists.
@@ -174,7 +175,7 @@ async def run(args):
         "enabled_providers": ["xsm-fixture"], "model": "xsm-fixture/fixture",
         "provider": {"xsm-fixture": {"npm": "@ai-sdk/openai-compatible", "name": "No model fixture",
             "options": {"baseURL": "http://127.0.0.1:" + str(assistant.server.server_port) + "/v1"},
-            "models": {"fixture": {"name": "fixture", "limit": {"context": 32000, "output": 1000}}}}},
+            "models": {"fixture": {"name": "fixture", "limit": {"context": 262144 if canonical else 32000, "output": 1000}}}}},
         "permission": {"*": "deny", "xsm_ack": "allow"},
     }))
     env = {key: os.environ[key] for key in ("PATH", "LANG", "TMPDIR") if key in os.environ}
@@ -193,6 +194,62 @@ async def run(args):
     (args.output / "installation.stderr").write_text(install.stderr)
     install.check_returncode()
     installation = json.loads(install.stdout)
+    if canonical:
+        loader = Path(installation['file'])
+        observer = r'''
+import { appendFileSync as traceAppend, writeFileSync as traceWrite } from 'node:fs';
+import { execFileSync as traceExec } from 'node:child_process';
+import { dlopen as traceDlopen, ptr as tracePtr } from 'bun:ffi';
+function observeApi(api) {
+  const libc = traceDlopen(process.platform === 'darwin' ? '/usr/lib/libSystem.B.dylib' : 'libc.so.6',
+    {clock_gettime:{args:['int','ptr'],returns:'int'}});
+  const nativeBuffer = new BigInt64Array(2);
+  const nativeTime = clockId => {
+    if (libc.symbols.clock_gettime(clockId, tracePtr(nativeBuffer)) !== 0) throw new Error('native clock_gettime failed');
+    return nativeBuffer[0] * 1000000000n + nativeBuffer[1];
+  };
+  const candidates = process.platform === 'darwin' ? ['CLOCK_MONOTONIC_RAW', 'CLOCK_MONOTONIC'] : ['CLOCK_MONOTONIC'];
+  const trials = candidates.map(clock => {
+    const clockId = Number(traceExec(TRACE_PYTHON, ['-c', 'import time;print(time.' + clock + ')'], {encoding:'utf8'}).trim());
+    return { clock, clockId, brackets: Array.from({length: 5}, () => {
+    const tick = () => BigInt(traceExec(TRACE_PYTHON, ['-c', 'import time;print(time.clock_gettime_ns(time.' + clock + '))'], {encoding:'utf8'}).trim());
+    const before = tick(), native = nativeTime(clockId), after = tick();
+    return { before: String(before), native: String(native), after: String(after), matches: before <= native && native <= after };
+  }) }; });
+  const selected = trials.find(t => t.brackets.every(b => b.matches));
+  traceWrite(TRACE_CLOCK, JSON.stringify({trials, selected: selected?.clock}));
+  if (!selected) throw new Error('no aligned Python/native clock domain');
+  const original = api.client.session.message.bind(api.client.session);
+  const session = new Proxy(api.client.session, {get(target, key) {
+    if (key !== 'message') { const value = Reflect.get(target,key); return typeof value === 'function' ? value.bind(target) : value; }
+    return async (...args) => {
+      const result = await original(...args), tick = nativeTime(selected.clockId);
+      const data = result.data;
+      if (!result.error && data?.info?.id && data.info.sessionID === args[0]?.path?.id) {
+        for (const part of data.parts ?? []) {
+          if (part.type !== 'text' || !part.metadata?.xsmDelivery) continue;
+          for (const match of part.text.matchAll(/Message id: (latency-[A-Za-z0-9_-]+)\./g)) {
+            if (!TRACE_DISABLED) traceAppend(TRACE_QUEUE, JSON.stringify({id:match[1], queuedMonotonicNs:String(tick),
+              nativeItemId:data.info.id, nativeSessionId:data.info.sessionID, nativePartId:part.id,
+              admissionId:part.metadata.xsmDelivery}) + '\n');
+          }
+        }
+      }
+      return result;
+    };
+  }});
+  const client = new Proxy(api.client, {get(target,key) {return key === 'session' ? session : Reflect.get(target,key);}});
+  return new Proxy(api, {get(target,key) {return key === 'client' ? client : Reflect.get(target,key);}});
+}
+'''
+        constants = {'TRACE_PYTHON': sys.executable, 'TRACE_CLOCK': str(args.output.resolve() / 'clock.json'),
+                     'TRACE_QUEUE': str(args.output.resolve() / 'queued.jsonl'),
+                     'TRACE_DISABLED': bool(getattr(args, 'missing_native_observation', False))}
+        prefix = '\n'.join('const ' + key + ' = ' + json.dumps(value) + ';' for key, value in constants.items())
+        original_loader = loader.read_text()
+        assert original_loader.count('binding(api,') == 1
+        loader.write_text(prefix + '\n' + observer + '\n' + original_loader.replace('binding(api,', 'binding(observeApi(api),'))
+        (args.output / 'observer-loader.mjs').write_bytes(loader.read_bytes())
     env.pop("XSM_PYTHON")
     if getattr(args, "initial_update_failure", False):
         flag = temp / "first-update-failed"
@@ -252,7 +309,7 @@ async def run(args):
                 await asyncio.sleep(.05)
         tools = await request("/experimental/tool/ids")
         result["nativeTools"] = [name for name in tools if name.startswith("xsm_")]
-        assert len(result["nativeTools"]) == 21, tools
+        assert len(result["nativeTools"]) == 22, tools
         schemas = await request("/experimental/tool?provider=xsm-fixture&model=fixture")
         (args.output / "native-tools.json").write_text(json.dumps(schemas, indent=2))
         native = await request("/session", {"title": "xsm model-free admission probe"})
@@ -330,7 +387,15 @@ async def run(args):
                 "sameRef": receiver["ref"] == previous["ref"], "generationChanged": True,
                 "trigger": "automatic transport recovery before native entry" if getattr(args, "auto_reconnect", False) else "real native chat.message boundary with noReply; no failed operation replay"}
             checkpoint()
-        sender = await XsmClient.connect([*command, "protocol", "serve", "--stdio"],
+        sender_command = [*command, "protocol", "serve", "--stdio"]
+        if canonical:
+            alignment = json.loads((args.output / 'clock.json').read_text())
+            assert alignment.get('selected'), alignment
+            result['clockAlignment'] = alignment
+            result['measurement'] = 'actual canonical store return to native SDK message readback; temporary installed loader observer; no ordinary ownership certification'
+            sender_command = [sys.executable, '-B', str(ROOT / 'tests/fixtures/protocol_timed_host.py'),
+                              str(args.output.resolve() / 'stored.jsonl'), alignment['selected']]
+        sender = await XsmClient.connect(sender_command,
                                          cwd=str(work), env=env)
         own = await sender.session_open(runtime="probe", profile="isolated", conversation="sender", cwd=str(work))
         for sample in range(args.samples):
@@ -342,9 +407,13 @@ async def run(args):
             else:
                 raise RuntimeError('native session did not return to idle before sample ' + str(sample))
             marker = "opencode-native-admission-" + str(sample)
+            message_id = 'latency-opencode-' + str(sample)
+            send_args = {"target": "ref:" + receiver["ref"], "text": marker, "wait": 0}
+            if canonical:
+                send_args['request_id'] = message_id
             started = time.monotonic()
             sent = await sender.operation_call(own["session"], "xsm_send",
-                                                {"target": "ref:" + receiver["ref"], "text": marker, "wait": 0})
+                                                send_args)
             messages = []
             for _ in range(150):
                 messages = await request("/session/" + native["id"] + "/message?limit=1000")
@@ -370,11 +439,29 @@ async def run(args):
             acked = json.loads(ack_output).get('acked', [])
             assert len(acked) == 1 and ('id ' + acked[0]) in sent['text'], ack_output
             result['samples'][-1]['nativeAckOutput'] = ack_output
+            if canonical:
+                starts = [json.loads(line) for line in (args.output / 'stored.jsonl').read_text().splitlines()
+                          if json.loads(line)['id'] == message_id]
+                queue_path = args.output / 'queued.jsonl'
+                ends = [json.loads(line) for line in queue_path.read_text().splitlines()
+                        if json.loads(line)['id'] == message_id] if queue_path.exists() else []
+                assert len(starts) == len(ends) == 1, 'exact canonical store and native readback observations'
+                assert ends[0]['nativeSessionId'] == native['id']
+                elapsed = (int(ends[0]['queuedMonotonicNs']) - starts[0]['storedMonotonicNs']) / 1e6
+                assert elapsed >= 0
+                result['samples'][-1].update(id=message_id, milliseconds=elapsed, nativeItemId=ends[0]['nativeItemId'])
             checkpoint()
         result["p95UpperSeconds"] = sorted(item["upperSeconds"] for item in result["samples"])[
             max(0, int(len(result["samples"]) * .95 + .999) - 1)]
         result["status"] = "passed"
         result["latencyAcceptanceMet"] = args.samples >= 100 and result["p95UpperSeconds"] <= 1
+        if canonical:
+            import math
+            values = sorted(row['milliseconds'] for row in result['samples'])
+            result['p95Milliseconds'] = values[math.ceil(len(values) * .95) - 1]
+            result['maxMilliseconds'] = values[-1]
+            result['latencyAcceptanceMet'] = args.samples >= 100 and result['p95Milliseconds'] <= 1000
+            assert result['p95Milliseconds'] <= 1000
         result["consumptionAckTested"] = True
         result["nativeToolExecutionTested"] = True
         result["assistantFixtureAckCalls"] = assistant.calls
@@ -396,6 +483,12 @@ async def run(args):
                 await asyncio.to_thread(process.wait)
         log.close()
         assistant.close()
+        result['nativeStopped'] = process.poll() is not None
+        if canonical:
+            result['completed'] = sum('milliseconds' in row for row in result['samples'])
+            result['failed'] = len(result['samples']) - result['completed']
+            result['unexecuted'] = args.samples - len(result['samples'])
+            checkpoint()
         for path in (temp / "data").rglob("*.log"):
             (args.output / ("runtime-" + path.name)).write_bytes(path.read_bytes())
 
@@ -408,7 +501,11 @@ if __name__ == "__main__":
     parser.add_argument("--initial-update-failure", action="store_true")
     parser.add_argument("--auto-reconnect", action="store_true")
     parser.add_argument("--crash", action="store_true")
+    parser.add_argument("--canonical-latency", action="store_true")
+    parser.add_argument("--missing-native-observation", action="store_true")
     args = parser.parse_args()
     if args.samples < 1:
         parser.error("samples must be positive")
-    asyncio.run(asyncio.wait_for(run(args), timeout=150))
+    if args.missing_native_observation and not args.canonical_latency:
+        parser.error('missing observation requires canonical latency')
+    asyncio.run(asyncio.wait_for(run(args), timeout=300 if args.canonical_latency else 150))
