@@ -33,6 +33,7 @@ MODULES = ["tests.test_question_service", "tests.test_send_service", "tests.test
            "tests.test_handoff_crash", "tests.test_handoff_pending_ids",
            "tests.test_mcp_dispatch", "tests.test_subagent_transport",
            "tests.test_mcp_identity", "tests.test_mcp_shared_process"]
+CONFORMANCE_MODULES = ["tests.test_protocol_conformance"]
 NATIVE_MODULES = ["tests.test_native_worker_catalog", "tests.test_native_worker_control",
                   "tests.test_native_worker_provider", "tests.test_native_worker_retention",
                   "tests.test_native_worker_lineage", "tests.test_opencode_worker_cli", "tests.test_pi_worker_cli",
@@ -89,7 +90,8 @@ def main():
         env.update(HOME=temp, XSM_HOME=temp + "/state", CODEX_HOME=temp + "/codex",
                    CLAUDE_CONFIG_DIR=temp + "/claude", PYTHONDONTWRITEBYTECODE="1",
                    PYTHON=sys.executable)
-        commands = [[sys.executable, "-B", "-m", "unittest", *MODULES, "-q"],
+        core_modules = [module for module in MODULES if module not in CONFORMANCE_MODULES]
+        commands = [[sys.executable, "-B", "-m", "unittest", *core_modules, "-q"],
                     [sys.executable, "-B", "-m", "unittest", "discover", "-s", "clients/tests",
                      "-p", "test_python*.py", "-q"],
                     [sys.executable, "-B", "examples/independent-participant/local_v3_fixtures.py",
@@ -109,9 +111,11 @@ def main():
             print(json.dumps({"passed": False, "reason": "Node.js is required for client conformance"}))
             return 1
         try:
-            # Node/native fixtures have independent homes and overlap Python I/O waits.
-            first_phase = commands[:4] + [commands[-1]]
-            for offset, phase in ((0, first_phase), (5, commands[4:-1])):
+            # Black-box subprocess checks have no shared test state with the other groups.
+            # Keep the full module inventory while overlapping their process/I/O waits.
+            external = [sys.executable, "-B", "-m", "unittest", *CONFORMANCE_MODULES, "-q"]
+            first_phase = commands[:4] + [commands[-1], external]
+            for offset, phase in ((0, first_phase), (len(first_phase), commands[4:-1])):
                 failed = run_phase(phase, env, temp, started + 120, offset)
                 if failed is not None:
                     print(json.dumps({"passed": False, "command": failed}))

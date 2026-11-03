@@ -109,6 +109,14 @@ runtime 도달로 오인하는 등 wire 결함3종을 검출했다. ACK 후 rese
 domain schema8개(그중 team/board는 일부 action)와 미정의14개를 구분한다.
 이는 완료율이나 native 지원률이 아니다.
 
+## 핵심 검사 적합성 묶음 분리 — 2026-11-03
+
+[핵심 검사 병렬화](core-conformance-parallel.md)는 외부 stdio 적합성을 별도
+격리 프로세스로 실행한다. 전체 MODULES와 SDK/Node/독립 participant를 유지하며
+공통120초 deadline도 바꾸지 않았다. 누락/offset 충돌 변이2개를 회귀 검사가
+검출했고 Mac core871개는88.867초에 통과했다. 통계적 성능이나 native p95
+측정이 아니며 Linux 및 원래 전체 계획의 검증은 별도다.
+
 ## 단계별 판정
 
 | 단계 | 상태 | 남은 조건 |

@@ -9,6 +9,7 @@ import sys
 import tempfile
 import time
 import unittest
+from unittest import mock
 from contextlib import redirect_stdout
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -18,6 +19,28 @@ spec.loader.exec_module(gate)
 
 
 class ProtocolGateTest(unittest.TestCase):
+    def test_main_separates_conformance_without_omitting_any_gate(self):
+        calls = []
+        def run_phase(commands, env, root, deadline, offset):
+            calls.append((commands, deadline, offset))
+            return None
+        with mock.patch.object(gate, 'run_phase', side_effect=run_phase), \
+                mock.patch.object(gate.shutil, 'which', return_value='/fixture/node'), \
+                redirect_stdout(io.StringIO()):
+            self.assertEqual(gate.main(), 0)
+        commands = [command for phase, _, _ in calls for command in phase]
+        modules = [command[4:-1] for command in commands
+                   if command[1:4] == ['-B', '-m', 'unittest'] and command[4] != 'discover']
+        self.assertCountEqual([name for group in modules for name in group], gate.MODULES + gate.NATIVE_MODULES)
+        self.assertIn(['tests.test_protocol_conformance'], modules)
+        self.assertEqual(sum(command[1:5] == ['-B', '-m', 'unittest', 'discover'] for command in commands), 1)
+        self.assertEqual(sum(command[:2] == ['node', '--test'] for command in commands), 1)
+        for version in (3, 5, 6):
+            path = 'examples/independent-participant/local_v%d_fixtures.py' % version
+            self.assertEqual(sum(path in command for command in commands), 1)
+        self.assertEqual(calls[1][2], len(calls[0][0]))
+        self.assertEqual(calls[0][1], calls[1][1])
+
     def test_groups_reach_a_barrier_with_distinct_private_homes(self):
         with tempfile.TemporaryDirectory(prefix='xsm-gate-barrier-') as folder:
             code = '''import json,os,pathlib,sys,time
