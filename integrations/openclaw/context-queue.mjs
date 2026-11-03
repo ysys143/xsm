@@ -62,7 +62,7 @@ export function nativeDelivery(api, context, assertBindingCurrent, startWake) {
       throw new Error('native context admission conversation changed');
     }
   }
-  return async (packet, { signal, leaseSeconds, wake = false }) => {
+  const deliver = async (packet, { signal, leaseSeconds, wake = false }) => {
     guard(signal);
     const ids = packet.claims.map(claim => claim.id);
     const body = packet.messages.join('\n\n');
@@ -135,4 +135,6 @@ export function nativeDelivery(api, context, assertBindingCurrent, startWake) {
     }
     if (wake && startWake) startWake({ runId: base, context, scope, revision, signal, guard });
   };
+  deliver.assertCurrent = guard;
+  return deliver;
 }

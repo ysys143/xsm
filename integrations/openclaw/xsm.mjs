@@ -29,6 +29,11 @@ export function register(api, options = {}) {
   const fail = error => api.logger.error('xsm: ' + error.message);
   const nativeWake = wakeEnabled ? createNativeWake(api, fail) : undefined;
   const naturalContext = wakeEnabled ? new NaturalContext() : undefined;
+  const contextAllowed = () => {
+    const cfg = api.runtime.config?.current?.() ?? api.config;
+    return cfg?.plugins?.entries?.xsm?.hooks?.allowConversationAccess === true &&
+      cfg?.plugins?.entries?.xsm?.hooks?.allowPromptInjection !== false;
+  };
   const componentLease = options.runtimeRoot
     ? holdComponent(profilePath, 'openclaw-plugin', 'openclaw', options.runtimeRoot)
     : Promise.resolve(async () => {});
@@ -108,6 +113,7 @@ export function register(api, options = {}) {
         const queued = nativeDelivery(api, context, () => {
           if (disposed || epoch !== entry.epoch) throw new Error('xsm native delivery is no longer current');
         }, nativeWake?.start);
+        entry.assertDeliveryCurrent = queued?.assertCurrent;
         let observed;
         const deliver = queued && (async (packet, deliveryOptions) => {
           if (!deliveryOptions.wake && naturalContext?.isBoundary()) return naturalContext.deliver(entry.id, observed, packet);
@@ -187,6 +193,7 @@ export function register(api, options = {}) {
     if (entry && (!event.sessionKey || event.sessionKey === entry.route)) await end(entry);
   });
   if (wakeEnabled) api.on('agent_turn_prepare', async (_event, context) => {
+    if (!contextAllowed()) return;
     const session = api.runtime.agent.session;
     if (!context.agentId || !context.sessionKey || !context.sessionId) return;
     const scope = { agentId: context.agentId, sessionKey: context.sessionKey,
@@ -196,13 +203,23 @@ export function register(api, options = {}) {
     const entry = state(context);
     if (!entry) return;
     entry.activity = 'busy';
-    const host = await open(entry, entry.epoch, context);
+    const epoch = entry.epoch;
+    const host = await open(entry, epoch, context);
+    const targetGuard = entry.assertDeliveryCurrent;
+    const valid = () => {
+      if (disposed || entry.epoch !== epoch || host.closed || host.controller.signal.aborted || !contextAllowed()) return false;
+      try { targetGuard(host.controller.signal); return true; } catch { return false; }
+    };
+    entry.contextGuard = valid;
     await host.update('busy');
-    return naturalContext.begin(entry.id, host, context.runId);
+    const result = await naturalContext.begin(entry.id, host, context.runId);
+    if (!valid()) { await naturalContext.cancel(entry.id); return; }
+    return result;
   });
   if (wakeEnabled) api.on('llm_input', async (event, context) => {
     const entry = sessions.get(event.sessionId);
     if (!entry?.pending || !naturalContext.pending.has(entry.id) || context.sessionId !== entry.id) return;
+    if (!entry.contextGuard?.()) { await naturalContext.cancel(entry.id); return; }
     await naturalContext.observe(entry.id, await entry.pending, event.runId, event.prompt);
   });
   if (observeTurns) api.on('agent_end', async (_event, context) => {

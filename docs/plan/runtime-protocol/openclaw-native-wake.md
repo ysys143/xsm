@@ -59,6 +59,12 @@ wake는 통과했지만 기존 agent_end 경계가 FYI를 너무 늦게 넣어 �
 보내 정상 plugin dispose를 거친 최종 경로에는 임의 process-group 종료로 인한
 protocol EOF 진단이 없다. 실패 시에는 소유 group만 강제 정리한다.
 
+후속 live policy guard는 conversation access가 철회되면 session metadata를 읽기
+전부터 준비를 중단한다. Inbox await 뒤 hook 반환 직전과 llm_input admission 직전에도
+같은 queue target fence/host/epoch/설정을 재확인한다. 이 조건은 제어된41개
+binding/queue/wake/context 검사에 포함했으며 이 수정의 고정 Linux 실행과 전체
+core 후속 결과는 별도로 기록한다.
+
 원시는 `deliverables/protocol-foundation/openclaw-native-wake*`에 있다. Mac native,
 실제 구독 모델/서비스/UI, capacity/fragment·재연결·실패 전체, configuration reload와
 100표본 p95 및 전체 조합은 미완이며 기존 Linux 승인 실패도 해결로 표시하지 않는다.

@@ -45,6 +45,27 @@ test('OpenClaw synchronous catalog and metadata discovery create no participant'
   for (const factory of tools.values()) assert.equal(factory({}), null);
 });
 
+test('revoked live conversation access prevents native preparation from reading a session', async () => {
+  const hooks = new Map(); let reads = 0;
+  const config = { plugins: { entries: { xsm: { config: { nativeWake: true },
+    hooks: { allowConversationAccess: true, allowPromptInjection: true } } } } };
+  const live = structuredClone(config); live.plugins.entries.xsm.hooks.allowConversationAccess = false;
+  const binding = register({ config, pluginConfig: { nativeWake: true },
+    runtime: { state: { resolveStateDir: () => '/isolated/profile' }, config: { current: () => live },
+      agent: { resolveAgentTimeoutMs: () => 10000, runEmbeddedAgent: async () => assert.fail('unexpected run'),
+        session: { runWithWorkAdmission: async () => assert.fail('unexpected lease'),
+          getSessionEntry: () => { reads++; assert.fail('revoked context read'); } } } },
+    logger: { error: message => assert.fail(message) },
+    lifecycle: { registerRuntimeLifecycle() {}, runInBackgroundContext: run => run() },
+    registerTool() {}, on: (name, callback) => hooks.set(name, callback),
+  }, { command: ['never-started'] });
+  try {
+    await hooks.get('agent_turn_prepare')({}, { agentId: 'main', sessionId: 'native',
+      sessionKey: 'agent:main:route', workspaceDir: '/isolated/work' });
+    assert.equal(reads, 0);
+  } finally { await binding.close(); }
+});
+
 test('native conversation UUID isolates two conversations sharing a route and supports DM pull ACK',
   { timeout: 10000 }, async t => {
     const { invoke, records, temp } = await fixture(t);
