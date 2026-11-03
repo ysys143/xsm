@@ -12,6 +12,13 @@ from jsonschema import Draft202012Validator, ValidationError
 ROOT = Path(__file__).resolve().parents[1]
 
 
+def validate_action_result(value, schema, action):
+    action = action if action is not None else schema.get('x-defaultAction')
+    if action not in schema['x-actionResults']:
+        raise ValueError('operation result lacks a declared action context')
+    Draft202012Validator({'$ref': schema['x-actionResults'][action], '$defs': schema['$defs']}).validate(value)
+
+
 def validate_scope_result(value, schema, operation):
     Draft202012Validator(schema).validate(value)
     receipt = value.get('scope')
@@ -219,9 +226,11 @@ def output_contract(trace=None):
             if observation.get('operation') == 'xsm_grant':
                 Draft202012Validator(grant_schema).validate(frame['result'])
             if observation.get('operation') == 'xsm_owned':
-                Draft202012Validator(owned_schema).validate(frame['result'])
+                if 'action' not in observation: raise ValueError('owned observation lacks original action context')
+                validate_action_result(frame['result'], owned_schema, observation['action'])
             if observation.get('operation') == 'xsm_handover':
-                Draft202012Validator(handover_schema).validate(frame['result'])
+                if 'action' not in observation: raise ValueError('handover observation lacks original action context')
+                validate_action_result(frame['result'], handover_schema, observation['action'])
             if observation.get('operation') == 'xsm_doc_endorse':
                 Draft202012Validator(endorsement_schema).validate(frame['result'])
             if observation.get('operation') in ('xsm_link', 'xsm_join', 'xsm_reach'):
@@ -366,8 +375,11 @@ def owned_contract():
     schema=json.loads((ROOT/'docs/protocol/owned-result.schema.json').read_text())
     examples=json.loads((ROOT/'docs/protocol/owned-result-examples.json').read_text())
     Draft202012Validator.check_schema(schema);validator=Draft202012Validator(schema)
-    for example in examples:validator.validate(example['result'])
+    for example in examples:validate_action_result(example['result'],schema,example['action'])
     request=next(e['result'] for e in examples if e['result'].get('status')=='reply-stored')
+    catalog=json.loads((ROOT/'docs/protocol/operations.schema.json').read_text())['$defs']['xsm_owned']['properties']['action']
+    if set(schema['x-actionResults']) != set(catalog['enum']):raise ValueError('owned result action inventory differs')
+    if schema.get('x-defaultAction') != catalog.get('default'):raise ValueError('owned default action differs')
     invalid=[]
     for path,value in ((['owner'],{'home':'/private-profile'}),(['reservation'],{'token':'internal'}),
                        (['worker','home'],'/private-profile'),(['context','sender'],{'home':'/private-profile'}),
@@ -381,15 +393,24 @@ def owned_contract():
     bad=copy.deepcopy(request);del bad['reply_id'];invalid.append(bad)
     for bad in invalid:
         if validator.is_valid(bad):raise ValueError('invalid owned result accepted: '+repr(bad))
-    return dict(examples=len(examples),rejected=len(invalid),scope='public projections only; no native execution or actual result publication certification')
+    listing=next(e['result'] for e in examples if e['result'].get('status')=='requests')
+    creation=next(e['result'] for e in examples if e['result'].get('owned'))
+    for action,value in [('run',listing),('run',creation),('create',request)]:
+        try:validate_action_result(value,schema,action)
+        except (ValueError,ValidationError):pass
+        else:raise ValueError('owned cross-action result accepted')
+    return dict(examples=len(examples),rejected=len(invalid),actions=6,actionRejected=3,scope='public projections only; no native execution or actual result publication certification')
 
 
 def handover_contract():
     schema=json.loads((ROOT/'docs/protocol/handover-result.schema.json').read_text())
     examples=json.loads((ROOT/'docs/protocol/handover-result-examples.json').read_text())
     Draft202012Validator.check_schema(schema);validator=Draft202012Validator(schema)
-    for example in examples:validator.validate(example['result'])
+    for example in examples:validate_action_result(example['result'],schema,example['action'])
     issued=next(e['result'] for e in examples if e['result'].get('handover',{}).get('action')=='hand_over')
+    catalog=json.loads((ROOT/'docs/protocol/operations.schema.json').read_text())['$defs']['xsm_handover']['properties']['action']
+    if set(schema['x-actionResults']) != set(catalog['enum']):raise ValueError('handover result action inventory differs')
+    if schema.get('x-defaultAction') != catalog.get('default'):raise ValueError('handover default action differs')
     invalid=[]
     for path,value in ((['transfer','at'],True),(['transfer','from_ref'],7),
                        (['transfer','messages'],[None]),(['transfer','home'],'/private-profile'),
@@ -404,7 +425,12 @@ def handover_contract():
         if validator.is_valid(bad):raise ValueError('invalid handover result accepted: '+repr(bad))
     question=json.loads((ROOT/'docs/protocol/question-result.schema.json').read_text())
     if schema['$defs']['awaiting']!=question['$defs']['qAwaiting']:raise ValueError('handover pending differs from question contract')
-    return dict(examples=len(examples),rejected=len(invalid))
+    for action,value in [('show',issued),('hand_over',shown)]:
+        try:validate_action_result(value,schema,action)
+        except (ValueError,ValidationError):pass
+        else:raise ValueError('handover cross-action result accepted')
+    validate_action_result(issued,schema,None)
+    return dict(examples=len(examples),rejected=len(invalid),actions=2,actionRejected=2)
 
 
 def endorsement_contract():

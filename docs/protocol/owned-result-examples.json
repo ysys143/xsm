@@ -16,7 +16,8 @@
       "parent_ref": "a78bde",
       "session_id": null,
       "inbox_pending": 0
-    }
+    },
+    "action": "create"
   },
   {
     "source": "actual isolated stdio with synthetic executor and publisher; cwd normalized",
@@ -72,7 +73,8 @@
         }
       },
       "inbox_pending": 0
-    }
+    },
+    "action": "run"
   },
   {
     "source": "actual isolated stdio with synthetic executor and publisher; cwd normalized",
@@ -92,7 +94,8 @@
         }
       ],
       "inbox_pending": 0
-    }
+    },
+    "action": "status"
   },
   {
     "source": "actual isolated stdio with synthetic executor and publisher; cwd normalized",
@@ -100,7 +103,8 @@
       "id": "owned-fixture-task",
       "status": "refused",
       "inbox_pending": 0
-    }
+    },
+    "action": "status"
   },
   {
     "source": "actual isolated stdio with synthetic executor and publisher; cwd normalized",
@@ -153,7 +157,8 @@
         "native_supported": false
       },
       "inbox_pending": 0
-    }
+    },
+    "action": "cancel"
   },
   {
     "source": "actual isolated stdio with synthetic executor and publisher; cwd normalized",
@@ -200,7 +205,8 @@
       "result": null,
       "send_evidence": null,
       "inbox_pending": 0
-    }
+    },
+    "action": "status"
   },
   {
     "source": "actual isolated stdio with synthetic executor and publisher; cwd normalized",
@@ -254,7 +260,8 @@
         "status": "stored"
       },
       "inbox_pending": 0
-    }
+    },
+    "action": "status"
   },
   {
     "source": "actual isolated stdio with synthetic executor and publisher; cwd normalized",
@@ -262,6 +269,7 @@
       "id": "absent-owned",
       "status": "not-found",
       "inbox_pending": 0
-    }
+    },
+    "action": "status"
   }
 ]

@@ -504,3 +504,19 @@ to the common JSON-RPC envelope and operation-specific attachment error data.
 See [recovery and cancellation boundaries](error-contract.md). The error fixture
 observes a real document write followed by -32603 and recovers the one saved node
 without automatically repeating the mutation. An error code is no rollback proof.
+
+## Owned and handover action selection
+
+Owned and handover results now declare `x-actionResults` as team/board/doc already
+do. Validate the result under the original operation action, not just the root
+union of all successful shapes. Owned create selects service metadata; run/cancel/
+retry/reconcile select task results; status permits its documented listing/exact
+request forms according to the original request_id. A listing is not a run result
+and service metadata is not a task result.
+
+Handover show selects received transfer letters. Hand_over selects an applied
+transfer, pending question or legacy text. `x-defaultAction: "hand_over"` matches
+the input catalog's default when the caller omitted action; it is not permission
+to assume an action when a trace collector lost the original arguments. Example
+records now label their action explicitly. Old traces lacking action context
+need a fresh capture or their original request record before action certification.

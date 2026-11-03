@@ -4,75 +4,13 @@
   "title": "Local handover transfer facts; not successor consumption or remote synchronization",
   "oneOf": [
     {
-      "type": "object",
-      "required": [
-        "text",
-        "handover"
-      ],
-      "additionalProperties": false,
-      "properties": {
-        "text": {
-          "type": "string"
-        },
-        "handover": {
-          "oneOf": [
-            {
-              "type": "object",
-              "required": [
-                "action",
-                "received"
-              ],
-              "additionalProperties": false,
-              "properties": {
-                "action": {
-                  "const": "show"
-                },
-                "received": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/$defs/received"
-                  }
-                }
-              }
-            },
-            {
-              "type": "object",
-              "required": [
-                "action",
-                "transfer",
-                "notes"
-              ],
-              "additionalProperties": false,
-              "properties": {
-                "action": {
-                  "const": "hand_over"
-                },
-                "transfer": {
-                  "$ref": "#/$defs/transfer"
-                },
-                "notes": {
-                  "type": "array",
-                  "items": {
-                    "type": "string"
-                  }
-                }
-              }
-            }
-          ]
-        }
-      }
+      "$ref": "#/$defs/showReceipt"
     },
     {
-      "type": "object",
-      "required": [
-        "text"
-      ],
-      "additionalProperties": false,
-      "properties": {
-        "text": {
-          "type": "string"
-        }
-      }
+      "$ref": "#/$defs/hand_overReceipt"
+    },
+    {
+      "$ref": "#/$defs/legacyText"
     },
     {
       "$ref": "#/$defs/awaiting"
@@ -278,6 +216,114 @@
           "minLength": 1
         }
       }
+    },
+    "legacyText": {
+      "type": "object",
+      "required": [
+        "text"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "text": {
+          "type": "string"
+        }
+      }
+    },
+    "showReceipt": {
+      "type": "object",
+      "required": [
+        "text",
+        "handover"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "text": {
+          "type": "string"
+        },
+        "handover": {
+          "type": "object",
+          "required": [
+            "action",
+            "received"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "action": {
+              "const": "show"
+            },
+            "received": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/received"
+              }
+            }
+          }
+        }
+      }
+    },
+    "showResult": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/showReceipt"
+        },
+        {
+          "$ref": "#/$defs/legacyText"
+        }
+      ]
+    },
+    "hand_overReceipt": {
+      "type": "object",
+      "required": [
+        "text",
+        "handover"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "text": {
+          "type": "string"
+        },
+        "handover": {
+          "type": "object",
+          "required": [
+            "action",
+            "transfer",
+            "notes"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "action": {
+              "const": "hand_over"
+            },
+            "transfer": {
+              "$ref": "#/$defs/transfer"
+            },
+            "notes": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "hand_overResult": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/hand_overReceipt"
+        },
+        {
+          "$ref": "#/$defs/legacyText"
+        },
+        {
+          "$ref": "#/$defs/awaiting"
+        }
+      ]
     }
-  }
+  },
+  "x-actionResults": {
+    "show": "#/$defs/showResult",
+    "hand_over": "#/$defs/hand_overResult"
+  },
+  "x-defaultAction": "hand_over"
 }

@@ -2816,3 +2816,11 @@ legacy unbound ask 승격을 실제 실패로 재현하고, 보존 질문과 req
 격리를 포함한 focused5개는0.628초에 통과했다. 최신936개와 Linux는 후속 실행이다.
 독립 검토의16 method 수와 owned run work_context 조건도 공개 문서에 보완했다.
 전체 native/오류 data/독립 행렬/원래 계획은 미완이다.
+
+## Owned/handover action selector — 2026-11-03
+
+[Action 결과 선택](owned-action-results.md)은 다른 action의 root-valid 결과를
+허용하던 checker를 수정했다. Owned6개/handover2개 selector와 handover 기본값을
+catalog와 대조한다. 합성 잘못된 trace2개를 수정 후 거부하고 selector 무시 변이2개를
+검출했다. 기존 실제 observation70개는 새 checker로 통과했다. 최신 metadata의
+독립 소비자 재검증과 전체 native/원래 행렬은 미완이다.

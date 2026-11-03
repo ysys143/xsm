@@ -7,7 +7,8 @@
         "received": []
       },
       "text": "fixture handover result"
-    }
+    },
+    "action": "show"
   },
   {
     "source": "isolated stdio synthetic host; identity/text normalized",
@@ -15,7 +16,8 @@
       "status": "waiting-for-user",
       "decision_id": "0000000000000000000000000000000000000000000000000000000000000000",
       "question_id": "fixture-question"
-    }
+    },
+    "action": "hand_over"
   },
   {
     "source": "isolated stdio synthetic host; identity/text normalized",
@@ -44,7 +46,8 @@
         "notes": []
       },
       "text": "fixture handover result"
-    }
+    },
+    "action": "hand_over"
   },
   {
     "source": "isolated stdio synthetic host; identity/text normalized",
@@ -75,12 +78,14 @@
         ]
       },
       "text": "fixture handover result"
-    }
+    },
+    "action": "show"
   },
   {
     "source": "legacy unanswered display fixture",
     "result": {
       "text": "your user did not answer; nothing moved"
-    }
+    },
+    "action": "hand_over"
   }
 ]
