@@ -30,3 +30,14 @@ wire-invalid-launch.json에 보존했고 성공 수치에 포함하지 않았다
 Linux와 실제 사용자/native UI, 나머지7개 operation 및 team/board의 남은 action,
 전체 런타임·원격·설치·p95 행렬은 이 변경만으로 완료되지 않는다.
 
+
+## 고정 source Linux 검증
+
+37d7f3fb539cc92830a47cac44540d6956dc2286의 archive SHA256은
+58e5a369b988927694bd1551292fb8c1137b8a83c9667291dc753c4cbae64972다.
+Python3.11.2에서88.629초, Python3.14.10에서116.479초로 각각 core908개를
+통과했다. 두 환경에서 새 stdio26개/frame28개를 수집하고 offline
+jsonschema4.26.0으로 검증했다. Approval 예제4개·거부12개도 통과했다.
+Model0/network none/cpu2/memory3g, 미실행 case0, 미실행 wire/schema0,
+VM stopExit0이다. 원시는 `approval-contract-linux/result.json`과 환경별
+output/protocol/wire/schema 파일이다. 실제 사람/native UI 검증은 미완이다.
