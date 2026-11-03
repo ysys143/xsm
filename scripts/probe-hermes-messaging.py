@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Actual Hermes Discord adapter gateway FIFO with local platform transport; no external Discord or real model."""
+"""Actual Hermes messaging adapter/FIFO with local platform transport; no service or real model."""
 import argparse
 import asyncio
 import hashlib
@@ -22,6 +22,7 @@ parser=argparse.ArgumentParser(description=__doc__)
 parser.add_argument('--native-source',type=Path,required=True)
 parser.add_argument('--output',type=Path,required=True)
 parser.add_argument('--mutant',choices=['ignore-platform-auth'])
+parser.add_argument('--platform',choices=['discord','telegram'],default='discord')
 args=parser.parse_args();repo=Path(__file__).resolve().parents[1];source=args.native_source.resolve()
 out=args.output.absolute();out.mkdir(parents=True,exist_ok=False);out.chmod(0o700)
 root=Path(tempfile.mkdtemp(prefix='xsm-hermes-messaging-')).resolve();root.chmod(0o700)
@@ -29,7 +30,8 @@ for name in ('home','hermes','state','workspace'):(root/name).mkdir(mode=0o700)
 env={k:os.environ[k] for k in ('PATH','LANG','TMPDIR') if k in os.environ}
 env.update(HOME=str(root/'home'),HERMES_HOME=str(root/'hermes'),XSM_HOME=str(root/'state'),
     TERMINAL_CWD=str(root/'workspace'),PYTHONDONTWRITEBYTECODE='1')
-env['DISCORD_ALLOWED_USERS']='42'
+platform_auth_key=args.platform.upper()+'_ALLOWED_USERS'
+env[platform_auth_key]='42'
 os.environ.clear();os.environ.update(env);os.chdir(root/'workspace');sys.path[:0]=[str(repo),str(source),str(repo/'clients/python')]
 commit=subprocess.check_output(['git','-C',str(source),'rev-parse','HEAD'],text=True).strip()
 assert commit==subprocess.check_output(['git','-C',str(source),'rev-parse','v0.22.5^{}'],text=True).strip()
@@ -38,7 +40,8 @@ logging.disable(logging.NOTSET)
 logging.basicConfig(filename=out/'native.log',level=logging.DEBUG)
 nonce=os.urandom(8).hex();original='XSM_NATIVE_WAKE_'+nonce;message_id='native-wake-'+nonce
 report=dict(status='starting',root=str(root),nativeSourceCommit=commit,modelCalls=0,checks=[],mutant=args.mutant,
-    scope='actual pinned Discord adapter with local platform transport, native messaging FIFO and installed plugin/AIAgent hooks; no real Discord service, inference or UI')
+    platform=args.platform,
+    scope='actual pinned '+args.platform+' adapter with local platform transport, native messaging FIFO and installed plugin/AIAgent hooks; no real platform service, inference or UI')
 requests=[];phase='warmup';acked=False
 
 def check(name,condition):
@@ -130,7 +133,10 @@ async def scenario():
     from gateway.config import GatewayConfig, Platform, PlatformConfig
     from gateway.platforms.event import MessageEvent
     from gateway.platforms.base import SendResult
-    from plugins.platforms.discord.adapter import DiscordAdapter
+    if args.platform=='discord':
+        from plugins.platforms.discord.adapter import DiscordAdapter as Adapter
+    else:
+        from plugins.platforms.telegram.adapter import TelegramAdapter as Adapter
     from gateway.run import GatewayRunner
     from gateway.session_authority import initialize_session_authority
     from gateway.session_contract import Principal, Submission
@@ -142,12 +148,12 @@ async def scenario():
     runner=GatewayRunner(GatewayConfig(sessions_dir=root/'hermes/sessions'))
     db=SessionDB(root/'hermes/state.db');runner.session_store._db=db;runner._session_db=db
     runner._gateway_loop=asyncio.get_running_loop();runner._running=True
-    adapter=DiscordAdapter(PlatformConfig(enabled=True,token='fixture-token',typing_indicator=False))
+    adapter=Adapter(PlatformConfig(enabled=True,token='fixture-token',typing_indicator=False))
     replies=[]
     async def send(chat_id,content,reply_to=None,metadata=None):
         replies.append(dict(chat_id=chat_id,text=content));return SendResult(success=True,message_id='local-transport')
     adapter.send=send;adapter.gateway_runner=runner
-    runner.adapters={Platform.DISCORD:adapter}
+    runner.adapters={Platform(args.platform):adapter}
     runner._install_plugin_message_injector()
     manager=get_plugin_manager();manager.discover_and_load()
     entry=registry.get_entry('xsm_inbox',scope=manager.scope_key)
@@ -234,7 +240,7 @@ async def scenario():
                 namespace=dict(type(gateway)._validate.__globals__)
                 exec(compile(changed,'<deliberate-platform-auth-mutation>','exec'),namespace)
                 type(gateway)._validate=namespace['_validate']
-            os.environ['DISCORD_ALLOWED_USERS']='7'
+            os.environ[platform_auth_key]='7'
             try:
                 await gateway.prepare()
             except RuntimeError as error:
@@ -242,7 +248,7 @@ async def scenario():
             else:
                 raise AssertionError('revoked platform authorization accepted')
             finally:
-                os.environ['DISCORD_ALLOWED_USERS']='42'
+                os.environ[platform_auth_key]='42'
             await gateway.prepare()
             guard_id='connector-guard-'+nonce
             await sender.operation_call(origin['session'],'xsm_send',dict(target='ref:'+recipient['ref'],

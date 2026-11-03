@@ -385,6 +385,6 @@ disables drain scheduling and uses a context facade. A subsequent
 the installed plugin with the real PluginContext, runs the FIFO and AIAgent hooks,
 and checks awake delivery and strict FYI through native tool ACK. Its provider is
 scripted localhost HTTP. A [messaging probe](../plan/runtime-protocol/hermes-messaging.md)
-also runs the real DiscordAdapter and native messaging FIFO with local platform
-transport. Real inference, interactive UI and external Discord delivery remain unverified.
+also runs the real DiscordAdapter or TelegramAdapter and native messaging FIFO with
+local platform transport. Real inference, interactive UI and external platform delivery remain unverified.
 Evidence and remaining work: [local gateway delivery](../plan/runtime-protocol/hermes-gateway-wake.md).

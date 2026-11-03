@@ -1,6 +1,6 @@
 # Hermes native messaging FIFO 연결
 
-상태: 실제 gateway/DiscordAdapter와 로컬 플랫폼 전송 경계 검증이다. 외부 Discord
+상태: 실제 gateway/DiscordAdapter/TelegramAdapter와 로컬 플랫폼 전송 경계 검증이다. 외부
 서비스·사용자 계정·메시지 발송은 실행하지 않았으며 전체 메신저 지원은 미완이다.
 
 NativeGateway는 local뿐 아니라 기존 messaging route의 현재 프로필 소유와
@@ -20,10 +20,11 @@ Native messaging snapshot은 기존 connector의 source를 빌리고 turn_author
 ## 실제 경로
 
 `scripts/probe-hermes-messaging.py`는 새 격리 홈에서 실제 설치 plugin,
-PluginContext/DiscordAdapter/GatewayRunner/SessionAuthority/native FIFO drain/
-AIAgent/native hooks/Tool Hub를 실행한다. Discord transport의 send만 로컬
+PluginContext와 실제 DiscordAdapter 또는 TelegramAdapter, GatewayRunner/SessionAuthority/
+native FIFO drain/AIAgent/native hooks/Tool Hub를 실행한다. 플랫폼 transport의 send만 로컬
 기록기로 바꾸고 localhost scripted provider를 사용한다. 계정·토큰은 합성 fixture이며
-외부 Discord에 connect하지 않는다. 모델 과금 호출은0이다.
+외부 플랫폼에 connect하지 않으며 SDK의 실제 webhook/update 수신 파싱은 실행하지 않는다.
+Native MessageEvent ingress부터 검증하며 모델 과금 호출은0이다.
 
 Native ingress warmup이 실제 connector provenance를 저장한 것을 확인한 뒤,
 XSM awake 원문→native messaging turn→정확한 native tool ACK→미재전달과
@@ -33,6 +34,7 @@ XSM awake 원문→native messaging turn→정확한 native tool ACK→미재전
 전달이 거부됐고 connector mismatch는 native queue row를 추가하지 않았다.
 
 최종 정상 실행은27개 checkpoint/11개 scripted HTTP request를 통과했다.
+`--platform telegram` 표본도 같은27개 checkpoint를 통과했다. 기본값은 discord다.
 Streaming/nonstreaming 응답을 구분해 auxiliary title 요청도 유효한 JSON을 받는다.
 Native 플랫폼 권한 guard를 적재된 메모리에서 제거하면
 `revoked platform authorization accepted`로 exit1이 됐다. Native 파일이나
@@ -54,5 +56,19 @@ provenance를 직접 조작해 성공시키지 않았다.
 위 assertion으로 실패했다. 모든 red/green/변이와 native logs는
 `deliverables/protocol-foundation/hermes-messaging/`에 분리해 보존한다.
 
-Linux 고정 source, Telegram 경로와 실제 외부 Telegram/Discord, busy/now·혼합·
+Linux 고정 source와 실제 외부 Telegram/Discord, busy/now·혼합·
 재시작·다중 프로필과 p95 100표본 및 원래 전체 행렬은 미완이다.
+
+## Linux 전체 회귀 실패
+
+b2086dd의 native Discord 경로27개는 통과했지만 Python3.11 전체 core의
+scope 가입 승인 검사가 `decision caller or scope changed`로 실패했다.
+Python3.14 core는 통과했고 VM stopExit=0이다. 전체 Linux 결과는 failed로 남긴다.
+해당 표본에는 caller의 구체적 state/generation 판정이 없어 원인을 단정할 수 없다.
+회귀가 성공한8f003bd와 실패한b2086dd를 섞어 완료로 표시하지 않는다.
+
+Actual conformance candidate에 반환값을 바꾸지 않는 failure-only 관측 wrapper를
+추가했다. 실패 시 saved/observed ps start, kernel start, state reason, 현재/기대
+generation, cwd 일치 여부와 decision 시간·상태를 stderr에 남긴다. 질문·토큰·경로는
+기록하지 않는다. 명시적 start-drift 시뮬레이션을 구분해 관측기 자체를 확인하며,
+이 인위적 실패를 원래 Linux 실패의 원인 증거로 사용하지 않는다. 원인은 미해결이다.

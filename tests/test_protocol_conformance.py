@@ -71,9 +71,7 @@ class ExternalConformanceTest(unittest.TestCase):
 
     def delivery_candidate(self, fault):
         if fault == 'none':
-            return [sys.executable, '-B', '-c',
-                "import runpy,sys;sys.path.insert(0,sys.argv.pop(1));runpy.run_module('xsm',run_name='__main__')",
-                str(ROOT), 'protocol', 'serve', '--stdio']
+            return [sys.executable, '-B', str(ROOT / 'tests/fixtures/protocol_observed_host.py')]
         return [sys.executable, '-B', str(ROOT / 'tests/fixtures/protocol_delivery_fault.py'), fault]
 
     def test_actual_server_delivery_contract(self):
@@ -289,6 +287,22 @@ class ExternalConformanceTest(unittest.TestCase):
         result = checker.run(self.delivery_candidate('none'), suite='scopes', capture=True)
         self.assertEqual(result['status'], 'passed', {k:v for k,v in result.items() if k != 'observations'})
         self.assertEqual(len(result['checks']), 41)
+
+    def test_scope_failure_observer_retains_a_deliberately_changed_start(self):
+        import json
+        command = self.delivery_candidate('none') + ['--simulate-start-drift']
+        result = checker.run(command, suite='scopes')
+        self.assertEqual(result['status'], 'failed', result)
+        observations = [json.loads(line) for log in result['diagnostics'] for line in log.splitlines()
+                        if line.startswith('{')]
+        self.assertTrue(observations, result)
+        observed = observations[-1]
+        self.assertEqual(observed['event'], 'decision-current-refused')
+        self.assertEqual(observed['reason'], 'lstart_changed')
+        self.assertEqual(observed['state'], 'stale')
+        self.assertTrue(observed['simulatedStartDrift'])
+        self.assertNotEqual(observed['savedStart'], observed['observedStart'])
+        self.assertEqual(observed['generation'], observed['expectedGeneration'])
 
     def test_scope_wire_defects_are_detected(self):
         for fault, check in (('scope-missing-producer', 'link snapshot names canonical roots'),
