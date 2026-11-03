@@ -2942,3 +2942,8 @@ caller/scope 변경 또는 response 시간·상태 검사에서 실패했다. b2
 Mac9d1f5bb core961개/schema/v7은59.673초였다. 단독 scope20회 성공은 원인
 해결 증거가 아니다. Failure-only 관측과 별도 표시한 인위적 start/clock 시뮬레이션을
 추가했고, 실제 원인은 후속 부하 표본에서 확인해야 한다.
+
+[Linux 승인 불안정성](linux-decision-instability.md)은455f426의962개/schema/v7
+후속 전체 통과를 원래 실패의 해결로 보지 않는다. Caller·response 거부 관측기를
+유지하고, wall/monotonic read 범위를 함께 기록하는 별도 read-only clock/자기 PID
+관측기를 추가했다. 실제 원인은 아직 미확정이며 승인·시스템 시각 정책은 수정하지 않았다.
