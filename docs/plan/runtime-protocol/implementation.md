@@ -2721,3 +2721,8 @@ Domain schema가 없는 operation은7개이며 team/board의 일부 action도 �
 structured receipt를 추가했다. 격리 stdio77개 검사와 frame95개, 예제4개·거부9개,
 ID 변이1개와 wire 결함2종을 검증했다. Mac core909개는77.157초에 통과했다.
 실제 사람/native UI 인증이 아니며 미정의 operation6개와 전체 계획이 남아 있다.
+
+위 결정 receipt의 고정4747823도 Linux3.11에서88.957초,3.14에서113.547초로
+core909개를 통과했다. 두 환경에서 새 wire77개/frame95개를 검증하고 VM 종료를
+확인했다. 승인 계약37d7f3f의 Linux core908개는88.629초/116.479초이며 각
+source의 수치를 구분한다. 원래 전체 계획은 미완이다.

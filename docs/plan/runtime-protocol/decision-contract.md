@@ -25,4 +25,16 @@ Receipt 제거와 recorded 반전의 wire 결함2종을 주입하는 회귀 검�
 
 Mac/Python3.14.6 core909개(Python527+외부 적합성41+SDK56+native133+Node152)는
 77.157초에 통과했다(core.log, exit0). Wire 결함2종도 의도한 recorded receipt
-검사에서 실패했다. 독립 mock39/변이14는 별도 수치다. Linux는 별도 후속 검증이다.
+검사에서 실패했다. 독립 mock39/변이14는 별도 수치다.
+
+## 고정 source Linux 검증
+
+4747823a7a9bd8c6ae2268e247ed4b1d5a33548a의 archive SHA256은
+facfc734becd178e7849e88b24b788096ce0338be0de71770b0f4a064eb4c60a다.
+Python3.11.2에서88.957초, Python3.14.10에서113.547초로 각각 core909개를
+통과했다. 두 환경에서 collaboration31개와 decisions46개를 다시 실행하고,
+두 trace의 frame95개를 offline jsonschema4.26.0으로 검증했다. Decide 예제4개와
+잘못된 구조9개도 검사했다. Model0/network none/cpu2/memory3g,
+미실행 case0, 미실행 wire/schema0, VM stopExit0이다.
+원시는 `decision-contract-linux/result.json`과 환경별 output 파일이다.
+이는 실제 사람/native UI 및 원래 전체 런타임 행렬의 완료를 의미하지 않는다.
