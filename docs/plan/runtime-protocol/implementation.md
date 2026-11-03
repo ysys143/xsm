@@ -3012,3 +3012,10 @@ committed row readback을 같은 clock으로 측정했다. Idle/native turn/ACK�
 각100개와 고유 native item100개를 대조했다. Missing commit 관측 변이는 의도한
 assertion으로 실패했다. 시험용 loader 관측과 합성 context capacity를 명시했으며
 기존 일반 설치/UI/실제 모델 인증으로 대체하지 않는다. Linux100과 전체 계획은 미완이다.
+
+
+고정c05104d의 Linux100표본도259.723542ms p95/308.266309ms max, 실패·미실행0으로
+통과했다. Source/end 원시100개씩과 고유 native item100개를 독립 대조하고
+raw ns에서 p95를 재계산했다. Clock 정렬5회/313개 checkpoint와 gateway 정상 종료,
+VM stopExit=0을 확인했다. 두 OS의 해당 scripted-provider wake 모드 결과이며
+실제 모델/UI/서비스와 원래 전체 행렬은 미완이다.
