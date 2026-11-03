@@ -249,12 +249,13 @@ def output_contract(trace=None):
                     raise ValueError('document observation lacks a declared action')
                 Draft202012Validator({'$ref': doc_schema['x-actionResults'][action],
                                       '$defs': doc_schema['$defs']}).validate(frame['result'])
-            if observation.get('operation') == 'xsm_board' and observation.get('action') in ('log', 'decisions'):
-                Draft202012Validator({'$ref': '#/$defs/' + observation['action'],
-                                      '$defs': board_schema['$defs']}).validate(frame['result'])
-            if observation.get('operation') == 'xsm_team' and observation.get('action') in ('list', 'show'):
-                Draft202012Validator({'$ref': '#/$defs/' + observation['action'],
-                                      '$defs': team_schema['$defs']}).validate(frame['result'])
+            for operation, action_schema in (('xsm_board', board_schema), ('xsm_team', team_schema)):
+                if observation.get('operation') == operation:
+                    action = observation.get('action')
+                    if action not in action_schema['x-actionResults']:
+                        raise ValueError(operation + ' observation lacks declared action')
+                    Draft202012Validator({'$ref': action_schema['x-actionResults'][action],
+                        '$defs': action_schema['$defs']}).validate(frame['result'])
             if observation.get('operation') == 'xsm_discover':
                 discovery_validator.validate(frame['result'])
     for example in examples:
@@ -721,10 +722,13 @@ def board_contract():
     schema = json.loads((ROOT / 'docs/protocol/board-result.schema.json').read_text())
     examples = json.loads((ROOT / 'docs/protocol/board-result-examples.json').read_text())
     Draft202012Validator.check_schema(schema)
-    validators = {action: Draft202012Validator({'$ref': '#/$defs/' + action,
-                  '$defs': schema['$defs']}) for action in ('log', 'decisions')}
+    validators = {action: Draft202012Validator({'$ref': ref, '$defs': schema['$defs']})
+                  for action, ref in schema['x-actionResults'].items()}
     for example in examples:
         validators[example['action']].validate(example['result'])
+    declared=json.loads((ROOT/'docs/protocol/operations.schema.json').read_text())['$defs']['xsm_board']['properties']['action']['enum']
+    if set(schema['x-actionResults']) != set(declared) or {e['action'] for e in examples} != set(declared):
+        raise ValueError('board action result coverage differs from public catalog')
     invalid = []
     for index, path, value in (
             (1, ['nodes', 0, 'id'], 'not-a-node'),
@@ -750,20 +754,28 @@ def board_contract():
         del bad[key][0][field]
         invalid.append((examples[index]['action'], bad))
     invalid.extend([('log', examples[2]['result']), ('decisions', examples[0]['result'])])
+    changed = next(e['result'] for e in examples if 'board' in e['result'] and e['action']=='set')
+    for key, value in (('action','invented'),('team',None),('home','/private-profile')):
+        bad=copy.deepcopy(changed);bad['board'][key]=value;invalid.append(('set',bad))
+    pending=json.loads((ROOT/'docs/protocol/question-result.schema.json').read_text())['$defs']['qAwaiting']
+    if schema['$defs']['awaiting'] != pending:raise ValueError('board pending differs from question contract')
     for action, value in invalid:
         if validators[action].is_valid(value):
             raise ValueError('invalid board result accepted: ' + repr(value))
-    return dict(examples=len(examples), rejected=len(invalid))
+    return dict(examples=len(examples), rejected=len(invalid), actions=len(validators))
 
 
 def team_contract():
     schema = json.loads((ROOT / 'docs/protocol/team-result.schema.json').read_text())
     examples = json.loads((ROOT / 'docs/protocol/team-result-examples.json').read_text())
     Draft202012Validator.check_schema(schema)
-    validators = {action: Draft202012Validator({'$ref': '#/$defs/' + action,
-                  '$defs': schema['$defs']}) for action in ('list', 'show')}
+    validators = {action: Draft202012Validator({'$ref': ref, '$defs': schema['$defs']})
+                  for action, ref in schema['x-actionResults'].items()}
     for example in examples:
         validators[example['action']].validate(example['result'])
+    declared=json.loads((ROOT/'docs/protocol/operations.schema.json').read_text())['$defs']['xsm_team']['properties']['action']['enum']
+    if set(schema['x-actionResults']) != set(declared) or {e['action'] for e in examples} != set(declared):
+        raise ValueError('team action result coverage differs from public catalog')
     invalid = []
     for path, value in ((['members', 0, 'running'], 'yes'),
                         (['members', 0, 'home'], '/private/profile'),
@@ -780,10 +792,15 @@ def team_contract():
     invalid.append(('show', bad))
     invalid.extend([('list', examples[2]['result']), ('show', examples[0]['result']),
                     ('list', {'teams': [{'name': 'probe', 'lead': None, 'members': [{}]}]})])
+    changed = next(e['result'] for e in examples if 'team_change' in e['result'] and e['action']=='add')
+    for key, value in (('action','invented'),('team',None),('home','/private-profile')):
+        bad=copy.deepcopy(changed);bad['team_change'][key]=value;invalid.append(('add',bad))
+    pending=json.loads((ROOT/'docs/protocol/question-result.schema.json').read_text())['$defs']['qAwaiting']
+    if schema['$defs']['awaiting'] != pending:raise ValueError('team_change pending differs from question contract')
     for action, value in invalid:
         if validators[action].is_valid(value):
             raise ValueError('invalid team result accepted: ' + repr(value))
-    return dict(examples=len(examples), rejected=len(invalid))
+    return dict(examples=len(examples), rejected=len(invalid), actions=len(validators))
 
 
 def discovery_contract():

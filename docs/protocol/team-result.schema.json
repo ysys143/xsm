@@ -1,13 +1,22 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "urn:xsm:host-protocol:1:team-result",
-  "title": "Successful xsm_team list/show result",
+  "title": "Public xsm_team action results",
   "oneOf": [
     {
       "$ref": "#/$defs/list"
     },
     {
       "$ref": "#/$defs/show"
+    },
+    {
+      "$ref": "#/$defs/actionResult"
+    },
+    {
+      "$ref": "#/$defs/legacyText"
+    },
+    {
+      "$ref": "#/$defs/awaiting"
     }
   ],
   "$defs": {
@@ -131,6 +140,369 @@
           }
         }
       }
+    },
+    "legacyText": {
+      "type": "object",
+      "required": [
+        "text"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "text": {
+          "type": "string"
+        }
+      }
+    },
+    "awaiting": {
+      "type": "object",
+      "required": [
+        "status",
+        "decision_id",
+        "question_id"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "status": {
+          "const": "waiting-for-user"
+        },
+        "decision_id": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}(?![\\s\\S])"
+        },
+        "question_id": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "actionResult": {
+      "type": "object",
+      "required": [
+        "text",
+        "team_change"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "text": {
+          "type": "string"
+        },
+        "team_change": {
+          "type": "object",
+          "required": [
+            "action",
+            "team",
+            "lead",
+            "members",
+            "sync_notes"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "action": {
+              "enum": [
+                "create",
+                "add",
+                "remove",
+                "lead",
+                "leave",
+                "mute",
+                "unmute"
+              ]
+            },
+            "team": {
+              "type": "string",
+              "minLength": 1
+            },
+            "lead": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "members": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "sync_notes": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "member": {
+              "type": "string"
+            },
+            "muted": {
+              "type": "boolean"
+            }
+          },
+          "allOf": [
+            {
+              "if": {
+                "properties": {
+                  "action": {
+                    "enum": [
+                      "add",
+                      "remove",
+                      "lead"
+                    ]
+                  }
+                }
+              },
+              "then": {
+                "required": [
+                  "member"
+                ]
+              },
+              "else": {
+                "not": {
+                  "required": [
+                    "member"
+                  ]
+                }
+              }
+            },
+            {
+              "if": {
+                "properties": {
+                  "action": {
+                    "enum": [
+                      "mute",
+                      "unmute"
+                    ]
+                  }
+                }
+              },
+              "then": {
+                "required": [
+                  "muted"
+                ]
+              },
+              "else": {
+                "not": {
+                  "required": [
+                    "muted"
+                  ]
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    "action_create": {
+      "oneOf": [
+        {
+          "allOf": [
+            {
+              "$ref": "#/$defs/actionResult"
+            },
+            {
+              "properties": {
+                "team_change": {
+                  "properties": {
+                    "action": {
+                      "const": "create"
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        },
+        {
+          "$ref": "#/$defs/legacyText"
+        },
+        {
+          "$ref": "#/$defs/awaiting"
+        }
+      ]
+    },
+    "action_add": {
+      "oneOf": [
+        {
+          "allOf": [
+            {
+              "$ref": "#/$defs/actionResult"
+            },
+            {
+              "properties": {
+                "team_change": {
+                  "properties": {
+                    "action": {
+                      "const": "add"
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        },
+        {
+          "$ref": "#/$defs/legacyText"
+        },
+        {
+          "$ref": "#/$defs/awaiting"
+        }
+      ]
+    },
+    "action_remove": {
+      "oneOf": [
+        {
+          "allOf": [
+            {
+              "$ref": "#/$defs/actionResult"
+            },
+            {
+              "properties": {
+                "team_change": {
+                  "properties": {
+                    "action": {
+                      "const": "remove"
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        },
+        {
+          "$ref": "#/$defs/legacyText"
+        },
+        {
+          "$ref": "#/$defs/awaiting"
+        }
+      ]
+    },
+    "action_lead": {
+      "oneOf": [
+        {
+          "allOf": [
+            {
+              "$ref": "#/$defs/actionResult"
+            },
+            {
+              "properties": {
+                "team_change": {
+                  "properties": {
+                    "action": {
+                      "const": "lead"
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        },
+        {
+          "$ref": "#/$defs/legacyText"
+        },
+        {
+          "$ref": "#/$defs/awaiting"
+        }
+      ]
+    },
+    "action_leave": {
+      "oneOf": [
+        {
+          "allOf": [
+            {
+              "$ref": "#/$defs/actionResult"
+            },
+            {
+              "properties": {
+                "team_change": {
+                  "properties": {
+                    "action": {
+                      "const": "leave"
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        },
+        {
+          "$ref": "#/$defs/legacyText"
+        },
+        {
+          "$ref": "#/$defs/awaiting"
+        }
+      ]
+    },
+    "action_mute": {
+      "oneOf": [
+        {
+          "allOf": [
+            {
+              "$ref": "#/$defs/actionResult"
+            },
+            {
+              "properties": {
+                "team_change": {
+                  "properties": {
+                    "action": {
+                      "const": "mute"
+                    },
+                    "muted": {
+                      "const": true
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        },
+        {
+          "$ref": "#/$defs/legacyText"
+        },
+        {
+          "$ref": "#/$defs/awaiting"
+        }
+      ]
+    },
+    "action_unmute": {
+      "oneOf": [
+        {
+          "allOf": [
+            {
+              "$ref": "#/$defs/actionResult"
+            },
+            {
+              "properties": {
+                "team_change": {
+                  "properties": {
+                    "action": {
+                      "const": "unmute"
+                    },
+                    "muted": {
+                      "const": false
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        },
+        {
+          "$ref": "#/$defs/legacyText"
+        },
+        {
+          "$ref": "#/$defs/awaiting"
+        }
+      ]
     }
+  },
+  "x-actionResults": {
+    "list": "#/$defs/list",
+    "show": "#/$defs/show",
+    "create": "#/$defs/action_create",
+    "add": "#/$defs/action_add",
+    "remove": "#/$defs/action_remove",
+    "lead": "#/$defs/action_lead",
+    "leave": "#/$defs/action_leave",
+    "mute": "#/$defs/action_mute",
+    "unmute": "#/$defs/action_unmute"
   }
 }

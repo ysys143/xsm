@@ -383,17 +383,24 @@ class OperationService:
                 raise ToolError(str(exc))
             action = result["action"]
             if action == "show":
-                return result["text"]
+                return OperationDisplay(result["text"], {'board': {'action': action, 'team': args['team']}})
             if action == "log":
                 return json.dumps({"nodes": result["nodes"]}, ensure_ascii=False)
             if action == "decisions":
                 return json.dumps({"decisions": result["decisions"]}, ensure_ascii=False)
             if action == "set":
-                return "\n".join(["set %s (node %s)" % (args.get("item"), result["node"]["id"])] + result["sync_notes"])
+                text = "\n".join(["set %s (node %s)" % (args.get("item"), result["node"]["id"])] + result["sync_notes"])
+                node = {key: value for key, value in result['node'].items() if key != 'sync_notes'}
+                return OperationDisplay(text, {'board': {'action': action, 'team': args['team'],
+                    'node': node, 'sync_notes': result['sync_notes']}})
             if action == "sync":
-                return "\n".join(result["sync_notes"]) if result["sync_notes"] else \
+                text = "\n".join(result["sync_notes"]) if result["sync_notes"] else \
                     "sent every node of %s's board to its other machines" % result["team"]["name"]
-            return "%sd board %s's change lines for this session" % (action, result["team"]["name"])
+                return OperationDisplay(text, {'board': {'action': action, 'team': result['team']['name'],
+                    'sync_notes': result['sync_notes']}})
+            text = "%sd board %s's change lines for this session" % (action, result["team"]["name"])
+            return OperationDisplay(text, {'board': {'action': action, 'team': result['team']['name'],
+                'muted': action == 'mute'}})
         if name == "xsm_ack":
             from . import receive
             tokens = args.get("tokens")
@@ -962,18 +969,24 @@ class OperationService:
         if action == "show":
             return json.dumps({"name": team["name"], "lead": teams.label(team["lead"]) if team.get("lead") else None,
                 "members": [{"member": teams.label(m), "running": teams.address(m) is not None} for m in team["members"]]}, ensure_ascii=False)
+        change = {'action': action, 'team': team['name'],
+            'lead': teams.label(team['lead']) if team.get('lead') else None,
+            'members': [teams.label(member) for member in team['members']]}
         if action == "create":
-            return "created team %s with %s" % (team["name"], teams.label(team["members"][0]))
-        if action in ("mute", "unmute"):
-            return "%sd team %s's DMs for this session" % (action, team["name"])
-        if action == "leave":
-            return "left team %s" % team["name"]
-        member = teams.label(result["member"])
-        if action == "add":
-            return "\n".join(["added %s to team %s" % (member, name)] + result["sync_notes"])
-        if action == "remove":
-            return "removed %s from team %s" % (member, name)
-        return "%s is the lead of team %s" % (member, name)
+            text = "created team %s with %s" % (team["name"], teams.label(team["members"][0]))
+        elif action in ("mute", "unmute"):
+            text = "%sd team %s's DMs for this session" % (action, team["name"])
+            change['muted'] = action == 'mute'
+        elif action == "leave":
+            text = "left team %s" % team["name"]
+        else:
+            member = teams.label(result["member"])
+            change['member'] = member
+            if action == "add": text = "added %s to team %s" % (member, name)
+            elif action == "remove": text = "removed %s from team %s" % (member, name)
+            else: text = "%s is the lead of team %s" % (member, name)
+        change['sync_notes'] = result['sync_notes']
+        return OperationDisplay(text, {'team_change': change})
 
     def join(self, me: dict, args: dict) -> str:
         from . import scope_service

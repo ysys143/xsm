@@ -474,3 +474,24 @@ outcome, native cancellation observation and reply transport status are separate
 `side_effects_exactly_once=false` is preserved: cancellation is no rollback, and
 unknown side effects must not be automatically rerun. Status after worker removal
 may recover the caller's retained task without recreating a worker.
+
+## Team and board action snapshots
+
+Team list/show keep their JSON query projections. Create/add/remove/lead/leave/
+mute/unmute preserve text and add `team_change`: action, team name, post-operation
+member labels, lead and sync notes. Add/remove/lead identify the selected member;
+mute/unmute identify the current caller's DM preference. A snapshot is not a live
+roster query or remote delivery receipt.
+
+Board log/decisions keep their JSON query projections. Show/set/mute/unmute/sync
+preserve text and add `board` with action/team. Set returns the complete public
+contribution node and sync notes, show returns rendered text, and mute/unmute
+report the caller's change-notice preference. Sync notes report an attempt, not
+acknowledged remote replication. Team DM muting and board notice muting remain
+separate preferences.
+
+The existing [team](team-result.schema.json) and [board](board-result.schema.json)
+schemas now declare `x-actionResults` for all nine and seven actions respectively.
+The checker selects the result definition by the original action; a valid result
+for another action is not interchangeable. Pending and legacy text-only envelopes
+remain explicit and do not prove that a mutation happened.

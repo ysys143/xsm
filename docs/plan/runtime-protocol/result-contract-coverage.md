@@ -2,7 +2,7 @@
 
 상태: 전체 결과 계약은 미완이다. 공개 catalog22개를 실제 encoding 선언과
 개발 checker의 operation별 분기에 대조했다. Domain schema가 있는 operation 이름은22개다. Domain schema가 전혀 없는 operation 이름은0개이며,
-team/board는 여전히 일부 action만 정의한다. 이 수는
+team9개·board7개 action의 성공/대기 구조를 정의한다. 이 수는
 완료율·독립 구현 인증·native 지원률이 아니다.
 
 | Operation | 현재 result encoding | Domain 구조 정의와 남은 범위 |
@@ -17,9 +17,9 @@ team/board는 여전히 일부 action만 정의한다. 이 수는
 | `xsm_connect` | JSON object | [question-result.schema.json](../../protocol/question-result.schema.json) — 호스트 승인 대기·선택 거부와 handshake 진행/완료 구조 |
 | `xsm_grant` | text envelope + producer metadata | [grant-result.schema.json](../../protocol/grant-result.schema.json) — 발급 snapshot·대기·기존 텍스트 |
 | `xsm_send` | text envelope + producer metadata | [send-result.schema.json](../../protocol/send-result.schema.json) — 단일/그룹 metadata와 첨부 오류 |
-| `xsm_team` | 조회 JSON / 그 밖 text envelope | [team-result.schema.json](../../protocol/team-result.schema.json) — list/show만; 나머지 action 미완 |
+| `xsm_team` | 조회 JSON / 그 밖 text envelope | [team-result.schema.json](../../protocol/team-result.schema.json) — 9개 action의 조회/변경 snapshot·대기·기존 text |
 | `xsm_handover` | text envelope + producer metadata | [handover-result.schema.json](../../protocol/handover-result.schema.json) — 승계 내역·수신 편지·대기·기존 text |
-| `xsm_board` | 조회 JSON / 그 밖 text envelope | [board-result.schema.json](../../protocol/board-result.schema.json) — log/decisions만; 나머지 action 미완 |
+| `xsm_board` | 조회 JSON / 그 밖 text envelope | [board-result.schema.json](../../protocol/board-result.schema.json) — 7개 action의 조회/변경 snapshot·기존 text |
 | `xsm_ack` | JSON object | [ack-result.schema.json](../../protocol/ack-result.schema.json) — 성공 ACK 구조 |
 | `xsm_inbox` | JSON object | [inbox-result.schema.json](../../protocol/inbox-result.schema.json) — 원문/claim/item 구조 |
 | `xsm_link` | text envelope + producer metadata | [scope-result.schema.json](../../protocol/scope-result.schema.json) — 프로젝트 연결/해제 snapshot·대기·기존 text |
@@ -61,3 +61,5 @@ scripts/check-protocol-schema.py의 operation별 validator 분기다. 이번 표
 후속 [승계 결과 계약](handover-contract.md)은 팀/lead·미독 편지·새 DM 주소 승계와 결과 projection을 실제 stdio로 검증한다.
 
 후속 [Owned 결과 계약](owned-contract.md)은 내부 journal 반환을 공개 projection으로 교체했다. 22개 이름에 schema가 있다는 수치로 전체 action·오류·native/독립 구현 인증 완료를 주장하지 않는다.
+
+후속 [Team/board 전체 action](team-board-actions.md)은 catalog의9+7개 action을 모두 실제 stdio로 호출하고 action별 구조를 검증한다. 오류 전체와 native/UI/원격 의미 인증은 별도다.

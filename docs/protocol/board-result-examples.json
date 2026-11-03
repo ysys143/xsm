@@ -94,5 +94,76 @@
       ],
       "inbox_pending": 0
     }
+  },
+  {
+    "action": "set",
+    "source": "isolated stdio synthetic host; generated local identities only",
+    "result": {
+      "board": {
+        "action": "set",
+        "team": "all-actions-contract",
+        "node": {
+          "t": "2026-11-03T18:00:41+0900",
+          "author": "conformance-134998ff@None [b94b6e]",
+          "author_kind": "agent",
+          "tags": [
+            "update"
+          ],
+          "parents": [],
+          "body": "Fixture action board",
+          "item": "decision: cache",
+          "id": "c44c2dcd36b5"
+        },
+        "sync_notes": []
+      },
+      "text": "set decision: cache (node c44c2dcd36b5)"
+    }
+  },
+  {
+    "action": "show",
+    "source": "isolated stdio synthetic host; generated local identities only",
+    "result": {
+      "board": {
+        "action": "show",
+        "team": "all-actions-contract"
+      },
+      "text": "<!-- xsm board for team all-actions-contract: rendered from its nodes. Change it with `xsm board set all-actions-contract <item> --text ...` (or xsm_board); a direct edit here is taken as a node at the next render. -->\n\n# all-actions-contract board\n\n## decision: cache\n\nFixture action board\n\n_by conformance-134998ff@None [b94b6e] \u00b7 2026-11-03T18:00:41+0900 \u00b7 node c44c2dcd36b5_\n"
+    }
+  },
+  {
+    "action": "mute",
+    "source": "isolated stdio synthetic host; generated local identities only",
+    "result": {
+      "board": {
+        "action": "mute",
+        "team": "all-actions-contract",
+        "muted": true
+      },
+      "text": "muted board all-actions-contract's change lines for this session"
+    }
+  },
+  {
+    "action": "unmute",
+    "source": "isolated stdio synthetic host; generated local identities only",
+    "result": {
+      "board": {
+        "action": "unmute",
+        "team": "all-actions-contract",
+        "muted": false
+      },
+      "text": "unmuted board all-actions-contract's change lines for this session"
+    }
+  },
+  {
+    "action": "sync",
+    "source": "isolated stdio synthetic host; generated local identities only",
+    "result": {
+      "board": {
+        "action": "sync",
+        "team": "all-actions-contract",
+        "sync_notes": []
+      },
+      "text": "sent every node of all-actions-contract's board to its other machines"
+    }
   }
 ]

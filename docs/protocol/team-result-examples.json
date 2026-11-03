@@ -41,5 +41,142 @@
         "pending-unavailable:OSError"
       ]
     }
+  },
+  {
+    "action": "create",
+    "source": "isolated stdio synthetic host; generated local identities only",
+    "result": {
+      "team_change": {
+        "action": "create",
+        "team": "all-actions-contract",
+        "lead": null,
+        "members": [
+          "conformance-134998ff@afed2f77cefe58d821f08e334aeb42e52facc63c4f97e9d5d18f53fd0e285953"
+        ],
+        "sync_notes": []
+      },
+      "text": "created team all-actions-contract with conformance-134998ff@afed2f77cefe58d821f08e334aeb42e52facc63c4f97e9d5d18f53fd0e285953"
+    }
+  },
+  {
+    "action": "mute",
+    "source": "isolated stdio synthetic host; generated local identities only",
+    "result": {
+      "team_change": {
+        "action": "mute",
+        "team": "all-actions-contract",
+        "lead": null,
+        "members": [
+          "conformance-134998ff@afed2f77cefe58d821f08e334aeb42e52facc63c4f97e9d5d18f53fd0e285953"
+        ],
+        "muted": true,
+        "sync_notes": []
+      },
+      "text": "muted team all-actions-contract's DMs for this session"
+    }
+  },
+  {
+    "action": "unmute",
+    "source": "isolated stdio synthetic host; generated local identities only",
+    "result": {
+      "team_change": {
+        "action": "unmute",
+        "team": "all-actions-contract",
+        "lead": null,
+        "members": [
+          "conformance-134998ff@afed2f77cefe58d821f08e334aeb42e52facc63c4f97e9d5d18f53fd0e285953"
+        ],
+        "muted": false,
+        "sync_notes": []
+      },
+      "text": "unmuted team all-actions-contract's DMs for this session"
+    }
+  },
+  {
+    "action": "add",
+    "source": "isolated stdio synthetic host; generated local identities only",
+    "result": {
+      "status": "waiting-for-user",
+      "decision_id": "9a4f01ce1dd1552633f9b2a0ef3a636c867e1ecbe343154b372193bd5c980199",
+      "question_id": "daf14fd270d6467f9458b017830179d3"
+    }
+  },
+  {
+    "action": "add",
+    "source": "isolated stdio synthetic host; generated local identities only",
+    "result": {
+      "team_change": {
+        "action": "add",
+        "team": "all-actions-contract",
+        "lead": null,
+        "members": [
+          "conformance-134998ff@afed2f77cefe58d821f08e334aeb42e52facc63c4f97e9d5d18f53fd0e285953",
+          "conformance-01458d32@afed2f77cefe58d821f08e334aeb42e52facc63c4f97e9d5d18f53fd0e285953"
+        ],
+        "member": "conformance-01458d32@afed2f77cefe58d821f08e334aeb42e52facc63c4f97e9d5d18f53fd0e285953",
+        "sync_notes": []
+      },
+      "text": "added conformance-01458d32@afed2f77cefe58d821f08e334aeb42e52facc63c4f97e9d5d18f53fd0e285953 to team all-actions-contract"
+    }
+  },
+  {
+    "action": "lead",
+    "source": "isolated stdio synthetic host; generated local identities only",
+    "result": {
+      "status": "waiting-for-user",
+      "decision_id": "19a5fda3bd744808ca149557bc1af68be2e6eb5ccafc45bd92f0f01e3bf068dd",
+      "question_id": "5baee00888f64c6c972bbc5698a3ddfc"
+    }
+  },
+  {
+    "action": "lead",
+    "source": "isolated stdio synthetic host; generated local identities only",
+    "result": {
+      "team_change": {
+        "action": "lead",
+        "team": "all-actions-contract",
+        "lead": "conformance-134998ff@afed2f77cefe58d821f08e334aeb42e52facc63c4f97e9d5d18f53fd0e285953",
+        "members": [
+          "conformance-134998ff@afed2f77cefe58d821f08e334aeb42e52facc63c4f97e9d5d18f53fd0e285953",
+          "conformance-01458d32@afed2f77cefe58d821f08e334aeb42e52facc63c4f97e9d5d18f53fd0e285953"
+        ],
+        "member": "conformance-134998ff@afed2f77cefe58d821f08e334aeb42e52facc63c4f97e9d5d18f53fd0e285953",
+        "sync_notes": []
+      },
+      "text": "conformance-134998ff@afed2f77cefe58d821f08e334aeb42e52facc63c4f97e9d5d18f53fd0e285953 is the lead of team all-actions-contract"
+    }
+  },
+  {
+    "action": "remove",
+    "source": "isolated stdio synthetic host; generated local identities only",
+    "result": {
+      "team_change": {
+        "action": "remove",
+        "team": "all-actions-contract",
+        "lead": "conformance-134998ff@afed2f77cefe58d821f08e334aeb42e52facc63c4f97e9d5d18f53fd0e285953",
+        "members": [
+          "conformance-134998ff@afed2f77cefe58d821f08e334aeb42e52facc63c4f97e9d5d18f53fd0e285953"
+        ],
+        "member": "conformance-01458d32@afed2f77cefe58d821f08e334aeb42e52facc63c4f97e9d5d18f53fd0e285953",
+        "sync_notes": []
+      },
+      "text": "removed conformance-01458d32@afed2f77cefe58d821f08e334aeb42e52facc63c4f97e9d5d18f53fd0e285953 from team all-actions-contract"
+    }
+  },
+  {
+    "action": "leave",
+    "source": "isolated stdio synthetic host; generated local identities only",
+    "result": {
+      "team_change": {
+        "action": "leave",
+        "team": "all-actions-contract",
+        "lead": "conformance-134998ff@afed2f77cefe58d821f08e334aeb42e52facc63c4f97e9d5d18f53fd0e285953",
+        "members": [
+          "conformance-134998ff@afed2f77cefe58d821f08e334aeb42e52facc63c4f97e9d5d18f53fd0e285953"
+        ],
+        "sync_notes": []
+      },
+      "text": "left team all-actions-contract"
+    }
   }
 ]

@@ -404,7 +404,8 @@ class ProtocolTest(ProtocolFixture):
         self.operation(actor, 'xsm_team', action='create', team='extension')
         self.assertEqual(self.operation(actor, 'xsm_board', action='decisions', team='extension'), {'decisions': [], 'inbox_pending': 0})
         with mock.patch('xsm.board_sync.sync', return_value=['fixture sync']) as sync:
-            self.assertEqual(self.operation(actor, 'xsm_board', action='sync', team='extension'), {'text': 'fixture sync'})
+            self.assertEqual(self.operation(actor, 'xsm_board', action='sync', team='extension'),
+                {'text':'fixture sync','board':{'action':'sync','team':'extension','sync_notes':['fixture sync']}})
         self.assertEqual(sync.call_args.args[0]['name'], 'extension')
 
     def test_inbox_byte_budget_counts_rendered_utf8_and_retains_the_remainder(self):

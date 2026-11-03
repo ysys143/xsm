@@ -1,13 +1,22 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "urn:xsm:host-protocol:1:board-result",
-  "title": "Successful xsm_board log/decisions results",
+  "title": "Public xsm_board action results",
   "oneOf": [
     {
       "$ref": "#/$defs/log"
     },
     {
       "$ref": "#/$defs/decisions"
+    },
+    {
+      "$ref": "#/$defs/actionResult"
+    },
+    {
+      "$ref": "#/$defs/legacyText"
+    },
+    {
+      "$ref": "#/$defs/awaiting"
     }
   ],
   "$defs": {
@@ -209,6 +218,315 @@
           "pattern": "^[0-9a-f]{64}(?![\\s\\S])"
         }
       }
+    },
+    "legacyText": {
+      "type": "object",
+      "required": [
+        "text"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "text": {
+          "type": "string"
+        }
+      }
+    },
+    "awaiting": {
+      "type": "object",
+      "required": [
+        "status",
+        "decision_id",
+        "question_id"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "status": {
+          "const": "waiting-for-user"
+        },
+        "decision_id": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}(?![\\s\\S])"
+        },
+        "question_id": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "actionResult": {
+      "type": "object",
+      "required": [
+        "text",
+        "board"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "text": {
+          "type": "string"
+        },
+        "board": {
+          "type": "object",
+          "required": [
+            "action",
+            "team"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "action": {
+              "enum": [
+                "show",
+                "set",
+                "mute",
+                "unmute",
+                "sync"
+              ]
+            },
+            "team": {
+              "type": "string",
+              "minLength": 1
+            },
+            "node": {
+              "$ref": "#/$defs/node"
+            },
+            "sync_notes": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "muted": {
+              "type": "boolean"
+            }
+          },
+          "allOf": [
+            {
+              "if": {
+                "properties": {
+                  "action": {
+                    "const": "set"
+                  }
+                }
+              },
+              "then": {
+                "required": [
+                  "node",
+                  "sync_notes"
+                ]
+              },
+              "else": {
+                "not": {
+                  "required": [
+                    "node"
+                  ]
+                }
+              }
+            },
+            {
+              "if": {
+                "properties": {
+                  "action": {
+                    "enum": [
+                      "set",
+                      "sync"
+                    ]
+                  }
+                }
+              },
+              "then": {
+                "required": [
+                  "sync_notes"
+                ]
+              },
+              "else": {
+                "not": {
+                  "required": [
+                    "sync_notes"
+                  ]
+                }
+              }
+            },
+            {
+              "if": {
+                "properties": {
+                  "action": {
+                    "enum": [
+                      "mute",
+                      "unmute"
+                    ]
+                  }
+                }
+              },
+              "then": {
+                "required": [
+                  "muted"
+                ]
+              },
+              "else": {
+                "not": {
+                  "required": [
+                    "muted"
+                  ]
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    "action_show": {
+      "oneOf": [
+        {
+          "allOf": [
+            {
+              "$ref": "#/$defs/actionResult"
+            },
+            {
+              "properties": {
+                "board": {
+                  "properties": {
+                    "action": {
+                      "const": "show"
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        },
+        {
+          "$ref": "#/$defs/legacyText"
+        },
+        {
+          "$ref": "#/$defs/awaiting"
+        }
+      ]
+    },
+    "action_set": {
+      "oneOf": [
+        {
+          "allOf": [
+            {
+              "$ref": "#/$defs/actionResult"
+            },
+            {
+              "properties": {
+                "board": {
+                  "properties": {
+                    "action": {
+                      "const": "set"
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        },
+        {
+          "$ref": "#/$defs/legacyText"
+        },
+        {
+          "$ref": "#/$defs/awaiting"
+        }
+      ]
+    },
+    "action_mute": {
+      "oneOf": [
+        {
+          "allOf": [
+            {
+              "$ref": "#/$defs/actionResult"
+            },
+            {
+              "properties": {
+                "board": {
+                  "properties": {
+                    "action": {
+                      "const": "mute"
+                    },
+                    "muted": {
+                      "const": true
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        },
+        {
+          "$ref": "#/$defs/legacyText"
+        },
+        {
+          "$ref": "#/$defs/awaiting"
+        }
+      ]
+    },
+    "action_unmute": {
+      "oneOf": [
+        {
+          "allOf": [
+            {
+              "$ref": "#/$defs/actionResult"
+            },
+            {
+              "properties": {
+                "board": {
+                  "properties": {
+                    "action": {
+                      "const": "unmute"
+                    },
+                    "muted": {
+                      "const": false
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        },
+        {
+          "$ref": "#/$defs/legacyText"
+        },
+        {
+          "$ref": "#/$defs/awaiting"
+        }
+      ]
+    },
+    "action_sync": {
+      "oneOf": [
+        {
+          "allOf": [
+            {
+              "$ref": "#/$defs/actionResult"
+            },
+            {
+              "properties": {
+                "board": {
+                  "properties": {
+                    "action": {
+                      "const": "sync"
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        },
+        {
+          "$ref": "#/$defs/legacyText"
+        },
+        {
+          "$ref": "#/$defs/awaiting"
+        }
+      ]
     }
+  },
+  "x-actionResults": {
+    "log": "#/$defs/log",
+    "decisions": "#/$defs/decisions",
+    "show": "#/$defs/action_show",
+    "set": "#/$defs/action_set",
+    "mute": "#/$defs/action_mute",
+    "unmute": "#/$defs/action_unmute",
+    "sync": "#/$defs/action_sync"
   }
 }

@@ -194,7 +194,7 @@ core906개도3.11에서89.581초,3.14에서112.965초에 통과했고 VM 종료�
 
 | 단계 | 상태 | 남은 조건 |
 |---|---|---|
-| P0 계약·현황 | 부분 구현 | 전체 기능별 normative 스키마, 독립 구현 적합성, 안정판 API 감사 |
+| P0 계약·현황 | 부분 구현 | 공통 오류·취소 의미 계약, 독립 구현 적합성, 안정판 API 감사. Catalog22개와 team9/board7 action의 성공 결과 구조는 정의 |
 | P1 공통 서비스 | 부분 구현 | 남은 CLI 추출·전체 작업 수명/오류 계약. Owned native provider/control은 연결했으나 classic/TUI 등 실행 모드 전체는 미완. 일반 참여자 실제 QUIC 표본과 전체 runtime 행렬을 구분 |
 | P2 SDK·검사기 | 부분 구현 | 독립 구현의 전체 계약 적합성·전체 오류/취소 계약. Python↔Node 교차 시험 및 고정 공개 입력에 대한 독립 구현 표본은 통과 |
 | P3 Pi·OpenCode | 부분 구현 | 연결·수신·설치·대화 수명·자동 재접속과 owned worker 정상/취소/readback의 native 증거가 있음. 실제 사용자 UI·classic/TUI worker와 전체 실행 모드·busy/now 우선순위 등 미완 |
@@ -2756,3 +2756,14 @@ team/board의 남은 action, 원래 전체 계획은 미완이다.
 통과와 합성 runtime의 실제 stdio30개/frame31개, 예제8개·거부15개를 확인했다.
 Mac core920개는78.582초에 통과했다. 22개 operation 이름 모두 domain schema가
 생겼지만 team/board의 남은 action, 전체 오류·native/독립 구현 행렬은 미완이다.
+
+## Team/board 전체 action과 owned process generation — 2026-11-03
+
+[전체 action 계약](team-board-actions.md)에 catalog의 team9개+board7개 action을
+연결했다. Stdio37개/frame42개, action 집합 일치, schema 변이2개·wire 결함4종을
+검증했다. [Owned process generation](owned-process-generation.md)은 Linux 초기
+3.11 실패를 보존하고 새 owned controller/child를 boot ID+start ticks로 결속했다.
+Legacy 기록과 registry/classic 형식은 유지한다. 새6개를 포함한 Mac core928개는
+84.435초에 통과했다. 초기 source489e7ac의 Linux는3.11 실패·3.14 통과이며,
+최종 고정 source Linux 재실행 전까지 이 실패의 복구를 완료 판정하지 않는다.
+성공 결과 구조가 추가된 것이며 전체 오류·native/독립 구현/원래 행렬은 미완이다.

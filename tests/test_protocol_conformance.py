@@ -343,3 +343,20 @@ class ExternalConformanceTest(unittest.TestCase):
                 result=checker.run(command,suite='owned-fixture')
                 self.assertEqual(result['status'],'failed',result)
                 self.assertEqual(result['activeCheck'],check)
+
+    def test_all_team_and_board_actions_return_contract_results(self):
+        result=checker.run(self.delivery_candidate('none'),suite='team-board-actions',capture=True)
+        self.assertEqual(result['status'],'passed',{k:v for k,v in result.items() if k!='observations'})
+        self.assertEqual(len(result['checks']),37)
+        observed={(row['operation'],row.get('action')) for row in result['observations'] if row.get('operation') in ('xsm_team','xsm_board')}
+        self.assertEqual(len(observed),16)
+
+    def test_team_board_mutation_wire_faults_are_detected(self):
+        for fault, check in (('team-missing-change','team create includes structured receipt'),
+                             ('team-empty-members','team create returns membership snapshot'),
+                             ('board-missing-change','board set includes structured receipt'),
+                             ('board-wrong-body','board set returns complete contribution receipt')):
+            with self.subTest(fault=fault):
+                result=checker.run(self.delivery_candidate(fault),suite='team-board-actions')
+                self.assertEqual(result['status'],'failed',result)
+                self.assertEqual(result['activeCheck'],check)

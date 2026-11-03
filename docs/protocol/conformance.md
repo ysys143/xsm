@@ -297,3 +297,10 @@ refusal, cancellation before execution, saved result, retry/reconcile and absent
 ids. Public records must exclude internal profiles, reservations and processes.
 Leaking a profile or removing the result body must fail. Separate native runtime
 and publisher evidence remains required by the overall plan.
+
+`--suite team-board-actions --capture` invokes all nine team and seven board
+actions. It verifies membership/lead mutations against later queries, board set
+nodes against log and rendered show, and the distinct DM/board-notice preference
+receipts. Synthetic host answers approve add/lead. Removing receipts, inventing
+an empty post-create membership, or changing a returned contribution body must
+fail. It does not certify native notification UI or remote replication.

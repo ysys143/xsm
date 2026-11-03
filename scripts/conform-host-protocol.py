@@ -272,6 +272,58 @@ def messaging(peer, sender, receiver, reopen, check, equal, events=False):
               tokens=[pending["claims"][0]["token"]])["acked"], event["params"]["ids"]))
 
 
+def team_board_actions(peer, params, check, equal):
+    owner, member = [peer.call('session.open',dict(params,conversation='action-'+label,capabilities=['user-decisions']))
+        for label in ('owner','member')]
+    name='all-actions-contract'
+    def operation(session, tool, **arguments):
+        return peer.call('operation.call',dict(session=session['session'],operation=tool,arguments=dict(team=name,**arguments)))
+    def team(action, session=owner, **arguments): return operation(session,'xsm_team',action=action,**arguments)
+    def board(action, **arguments): return operation(owner,'xsm_board',action=action,**arguments)
+    def approved(action, **arguments):
+        pending=team(action,**arguments)
+        check('team '+action+' awaits host',lambda:equal(pending['status'],'waiting-for-user'))
+        event=peer.notification()['params']
+        peer.call('decision.response',dict(session=owner['session'],questionId=event['questionId'],challenge=event['challenge'],
+            displayed=event['question'],action='accept',answer='allow',source_id='synthetic-action-'+event['questionId']))
+        return team(action,**arguments)
+    creation=team('create')
+    check('team create includes structured receipt',lambda:equal('team_change' in creation,True))
+    created=creation['team_change']
+    check('team create returns membership snapshot',lambda:equal(created['action']=='create' and created['team']==name and
+        len(created['members'])==1 and created['lead'] is None,True))
+    for action, expected in (('mute',True),('unmute',False)):
+        check('team '+action+' reports DM preference',lambda action=action,expected=expected:equal(team(action)['team_change']['muted'],expected))
+    added=approved('add',member='ref:'+member['ref'])['team_change']
+    check('team add returns exact added member in snapshot',lambda:equal(added['action']=='add' and
+        added['member'] in added['members'] and len(added['members'])==2,True))
+    led=approved('lead',member='ref:'+owner['ref'])['team_change']
+    check('team lead snapshot names selected member',lambda:equal(led['lead'],led['member']))
+    contribution=board('set',item='decision: cache',text='Fixture action board')
+    check('board set includes structured receipt',lambda:equal('board' in contribution,True))
+    first=contribution['board']
+    check('board set returns complete contribution receipt',lambda:equal(first['action']=='set' and first['team']==name and
+        first['node']['body']=='Fixture action board' and first['node']['item']=='decision: cache',True))
+    shown=board('show')
+    check('board show returns rendered text and action',lambda:equal(shown['board']==dict(action='show',team=name) and
+        'Fixture action board' in shown['text'],True))
+    check('board log retains returned set node',lambda:equal(board('log')['nodes'][0],first['node']))
+    check('board decisions starts empty',lambda:equal(board('decisions')['decisions'],[]))
+    for action,expected in (('mute',True),('unmute',False)):
+        check('board '+action+' reports change notice preference',lambda action=action,expected=expected:equal(board(action)['board']['muted'],expected))
+    synced=board('sync')['board']
+    check('board sync reports attempt notes without delivery claim',lambda:equal(synced['action']=='sync' and
+        synced['team']==name and isinstance(synced['sync_notes'],list) and 'delivered' not in synced,True))
+    removed=team('remove',member='ref:'+member['ref'])['team_change']
+    check('team remove snapshot excludes selected member',lambda:equal(removed['member'] not in removed['members'] and len(removed['members'])==1,True))
+    again=team('add',member='ref:'+member['ref'],decision_key='action-readd')['team_change']
+    check('lead can add member with snapshot',lambda:equal(len(again['members']),2))
+    left=team('leave',session=member)['team_change']
+    check('team leave returns remaining membership',lambda:equal(len(left['members'])==1 and left['lead']==led['lead'],True))
+    check('team show matches final mutation snapshot',lambda:equal(team('show')['lead'],left['lead']))
+    check('team list retains created team',lambda:equal(name in [r['name'] for r in team('list')['teams']],True))
+
+
 def owned_fixture(peer, params, env, check, equal):
     # Refuse a normal server before create/run. Only the explicit test candidate
     # declares this marker, preventing accidental native model execution.
@@ -1045,6 +1097,9 @@ def run(command, suite="lifecycle", capture=False):
             if suite == 'discovery':
                 result['scope'] = 'lifecycle and local public discovery; no physical remote, native UI or messenger certification'
                 discovery(b, reopened, resumed, check, equal)
+            if suite == 'team-board-actions':
+                result['scope'] = 'all team and board actions through stdio with synthetic host answers; no actual user or remote certification'
+                team_board_actions(b, params, check, equal)
             if suite == 'owned-fixture':
                 result['scope'] = 'synthetic runtime/executor/publisher, actual owned journal and stdio; no native runtime or model certification'
                 owned_fixture(b, params, env, check, equal)
@@ -1089,7 +1144,7 @@ def run(command, suite="lifecycle", capture=False):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--capture", action="store_true", help="include isolated wire observations in the report")
-    parser.add_argument("--suite", choices=("lifecycle", "messaging", "events", "decisions", "uploads", "discovery", "collaboration", "documents", "sending", "questions", "selection", "grants", "approvals", "scopes", "endorsements", "handovers", "owned-fixture"), default="lifecycle")
+    parser.add_argument("--suite", choices=("lifecycle", "messaging", "events", "decisions", "uploads", "discovery", "collaboration", "documents", "sending", "questions", "selection", "grants", "approvals", "scopes", "endorsements", "handovers", "owned-fixture", "team-board-actions"), default="lifecycle")
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--command", nargs=argparse.REMAINDER, required=True)
     args = parser.parse_args()
