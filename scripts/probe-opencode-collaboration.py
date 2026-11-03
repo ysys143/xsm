@@ -22,9 +22,12 @@ from xsm_client import XsmClient
 
 
 class ScriptedTools:
-    def __init__(self, output, *, lazy=False, native_dialect='hermes'):
+    def __init__(self, output, *, lazy=False, native_dialect='hermes', native_ui=False):
         assert native_dialect in ('hermes', 'openclaw')
+        assert not native_ui or lazy and native_dialect == 'hermes'
         self.native_dialect = native_dialect
+        self.before_ui_retry = None
+        self.observer_error = None
         self.lock = threading.Lock()
         self.pending = None
         self.requests = 0
@@ -62,6 +65,34 @@ class ScriptedTools:
                     elif issue:
                         planned['issued'] = True
                         emitted = planned
+                    elif native_ui and planned and planned['issued'] and 'tool_call' in available:
+                        def tool_result(ident):
+                            return next((m for m in reversed(request.get('messages', [])) if m.get('role') == 'tool'
+                                and m.get('tool_call_id') == ident), None)
+                        original = tool_result(planned['id'])
+                        try: value = json.loads(original['content']) if original else {}
+                        except (ValueError, TypeError): value = {}
+                        if not planned.get('ui_stage') and isinstance(value, dict) and value.get('native_ui'):
+                            assert 'clarify' in available, 'actual native clarify is required'
+                            planned['ui_stage'] = 'clarify'
+                            emitted = dict(id='clarify-' + planned['id'], name='clarify', args=value['native_ui']['arguments'])
+                            issue = True
+                        elif planned.get('ui_stage') == 'clarify' and tool_result('clarify-' + planned['id']):
+                            if fixture.before_ui_retry:
+                                try:
+                                    fixture.before_ui_retry(planned, value, tool_result('clarify-' + planned['id']))
+                                except Exception as error:
+                                    fixture.observer_error = {'type': type(error).__name__, 'message': str(error)[:1000]}
+                                    with gzip.open(output / 'scripted-requests.jsonl.gz', 'at') as stream:
+                                        stream.write(json.dumps({'request': request, 'issued': None,
+                                            'observerError': fixture.observer_error}) + '\n')
+                                    self.send_error(400, 'explicit local fixture observer failed')
+                                    return
+                            planned['ui_stage'] = 'retried'
+                            planned['final_id'] = 'retry-' + planned['id']
+                            emitted = dict(id=planned['final_id'], name='tool_call',
+                                args={'calls': [{'name': planned['name'], 'arguments': planned['args']}]})
+                            issue = True
                     with gzip.open(output / 'scripted-requests.jsonl.gz', 'at') as stream:
                         stream.write(json.dumps({'request': request, 'issued': emitted['id'] if issue else None}) + '\n')
                 delta, reason = {'content': 'Explicit local tool fixture; no model inference.'}, 'stop'
