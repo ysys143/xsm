@@ -1,5 +1,6 @@
 """Host-side question responses are scoped, single-use, and never self-apply."""
 from unittest import mock
+import os
 import tempfile
 
 from tests.test_protocol import ProtocolFixture
@@ -172,6 +173,41 @@ class HostDecisionTest(ProtocolFixture):
         result = self.operation(a, 'xsm_connect', target='ref:' + b['ref'])
         self.assertEqual(result['handshake'], 'pending')
         self.assertEqual(list(self.connection.events()), [])
+
+    def test_worker_grant_returns_structured_scope_and_preserves_it_on_retry(self):
+        from xsm import paths, workers
+        from pathlib import Path
+        a = self.participant('grant-producer')
+        arguments = dict(runtime='codex', options=['full_access'], reason='isolated grant contract fixture')
+        pending = self.operation(a, 'xsm_grant', **arguments)
+        self.assertEqual(pending['status'], 'waiting-for-user')
+        event = self.event(); self.answer(event, answer='allow once')
+        result = self.operation(a, 'xsm_grant', **arguments)
+        grant = result['grant']
+        self.assertEqual(grant['runtime'], 'codex')
+        self.assertEqual(grant['cwd'], os.path.realpath(self.tmp))
+        self.assertEqual(grant['options'], ['full_access'])
+        self.assertIs(grant['single_use'], True)
+        self.assertGreater(grant['expires_at'], grant['issued_at'])
+        self.assertEqual(self.operation(a, 'xsm_grant', **arguments), result)
+        self.assertEqual(len(list(Path(paths.path(workers.GRANTS)).glob('*.json'))), 1)
+        record = self.connection.sessions[a['session']].record
+        workers.use_grant(grant['id'], record, 'codex', self.tmp, ['full_access'])
+        with self.assertRaises(workers.WorkerError):
+            workers.use_grant(grant['id'], record, 'codex', self.tmp, ['full_access'])
+        self.assertEqual(self.operation(a, 'xsm_grant', **arguments)['grant']['id'], grant['id'])
+
+    def test_worker_grant_id_cannot_rename_another_state_file(self):
+        from pathlib import Path
+        from xsm import paths, workers
+        a = self.participant('grant-invalid-id')
+        Path(paths.path(workers.GRANTS)).mkdir(parents=True, exist_ok=True)
+        victim = Path(paths.path('victim.json')); victim.write_text('{"preserve":true}')
+        record = self.connection.sessions[a['session']].record
+        with self.assertRaises(workers.WorkerError):
+            workers.use_grant('../victim', record, 'codex', self.tmp, ['full_access'])
+        self.assertTrue(victim.is_file())
+        self.assertFalse(Path(str(victim) + '.used').exists())
 
     def test_exact_answer_replay_after_expiry_reports_expired_without_applying(self):
         from xsm import decisions

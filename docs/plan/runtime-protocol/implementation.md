@@ -162,6 +162,14 @@ schema6개 예제/거부8개도 추가했다. 고정9b81010의 Linux core893개�
 3.11에서86.700초,3.14에서109.477초에 통과했고, 새58개 frame의 offline schema
 검증과 VM 종료를 확인했다.
 
+## Worker grant producer metadata — 2026-11-03
+
+[승인 발급 metadata](grant-producer.md)는 표시 문장 대신 구조화된 발급 정보를
+제공하고 적용 결과 재조회에서도 같은 ID를 보존한다. Grant ID가 다른 상태 파일을
+.used로 이동시킬 수 있던 결함도 재현해 파일 작업 전 형식 검증으로 막았다.
+Mac core895개가75.611초에 통과했다. 결과 schema와 실제 worker 전체 인증은
+아직 미완이다.
+
 ## 단계별 판정
 
 | 단계 | 상태 | 남은 조건 |

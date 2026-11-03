@@ -166,7 +166,11 @@ class OperationService:
                 if old and old["owner"] == decisions.owner(me) and old["scope_digest"] == decisions.digest(scope):
                     key, prior = legacy, old
             if prior and prior["status"] == "applied":
-                return prior["application"]["result"]
+                saved = prior["application"]["result"]
+                if (isinstance(saved, dict) and saved.get('_xsm_display') == 1 and
+                        isinstance(saved.get('text'), str) and isinstance(saved.get('metadata'), dict)):
+                    return OperationDisplay(saved['text'], copy.deepcopy(saved['metadata']))
+                return saved
             if prior and (prior.get("application") or {}).get("phase") == "started":
                 raise ToolError("outcome unknown or still applying; inspect xsm_decision_status and domain state before retrying; no operation repeated")
             decision_call = {"key": key, "me": copy.deepcopy(me), "scope": scope, "generation": generation,
@@ -181,7 +185,9 @@ class OperationService:
             if decision_call:
                 record = decisions.read(decision_call["key"])
                 if record and (record["status"] == "answered" or (record.get("application") or {}).get("phase") == "started"):
-                    decisions.applied(record["id"], text, decision_call["generation"], scope)
+                    saved = ({'_xsm_display': 1, 'text': str(text), 'metadata': copy.deepcopy(producer_metadata)}
+                             if producer_metadata is not None else text)
+                    decisions.applied(record["id"], saved, decision_call["generation"], scope)
         finally:
             if decision_call:
                 self.decision_calls.pop(self.active_request, None)
@@ -1080,5 +1086,9 @@ class OperationService:
         g = workers.create_grant(me.get("ref"), runtime, cwd, options, self.permission_words(answer))
         use = command if remote else "xsm spawn %s --dir %s %s" % (
             runtime, cwd, " ".join("--" + o.replace("_", "-") for o in options))
-        return "granted %s: %s --grant %s   (one use, %d minutes)" % (
+        text = "granted %s: %s --grant %s   (one use, %d minutes)" % (
             g["id"], use, g["id"], workers.GRANT_TTL // 60)
+        return OperationDisplay(text, {'grant': {
+            'id': g['id'], 'runtime': g['runtime'], 'cwd': g['cwd'], 'options': list(g['options']),
+            'issued_at': g['t'], 'expires_at': g['expires'], 'single_use': True,
+            'asked_by': g['asked_by']}})

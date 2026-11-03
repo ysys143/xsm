@@ -350,3 +350,15 @@ association and consent marker/ID association. It does not authenticate an answe
 prove current reader liveness or recompute tool policy. Legacy receipts and
 scope/reply/result payloads must be interpreted through their actual runtime
 coordinator, never by trusting arbitrary quoted text.
+
+## Worker grant producer metadata
+
+An issued `xsm_grant` result now contains the legacy `text` plus a `grant`
+issuance snapshot: opaque id, runtime/cwd/options/asked_by, issued_at,
+expires_at and single_use=true. It exposes producer data without parsing the
+display sentence. The snapshot is not current availability or proof a runtime
+can execute those options; consumption still validates stored scope and expiry.
+Replay preserves the original metadata and never mints another grant, even
+after consumption. Pending host decisions and legacy denial/unanswered text
+keep their existing envelopes. A dedicated grant result schema remains pending.
+Explicit grant IDs are eight lowercase hexadecimal characters, not paths.

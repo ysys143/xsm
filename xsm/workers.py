@@ -332,6 +332,8 @@ def use_grant(grant_id: str | None, caller: dict | None, runtime: str, cwd: str,
         raise WorkerError(consent.asks(what, " (The xsm_grant MCP tool asks with a form "
                                              "instead; then pass --grant <id>.)",
                                        (caller or {}).get("runtime")))
+    if not isinstance(grant_id, str) or not re.fullmatch(r"[0-9a-f]{8}", grant_id):
+        raise WorkerError("invalid grant ID; use the exact issued opaque ID")
     p = paths.path(GRANTS, grant_id + ".json")
     claimed = p + ".used"
     try:
