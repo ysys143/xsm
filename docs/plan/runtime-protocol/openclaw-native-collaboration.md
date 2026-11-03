@@ -1,7 +1,7 @@
 # OpenClaw gateway·agent의 보드·문서·첨부 native 검증
 
-상태: Mac21개 검사가 통과했다. Linux·실제 모델·사용자 UI와 전체 기능 행렬은
-미완이다. 결정·endorsement의 실제 UI 검증은 이번 실행에 포함하지 않았다.
+상태: Mac·Linux에서 각각21개 검사가 통과했다. 실제 모델·사용자 UI와 전체
+기능 행렬은 미완이다. 결정·endorsement의 실제 UI 검증은 이번 실행에 포함하지 않았다.
 
 `probe-openclaw-collaboration.py`는 고정 OpenClaw2026.10.9/Node24.22.2의
 실제 gateway·agent·Tool Hub와 설치 plugin을 실행한다. Operator controller는
@@ -21,9 +21,8 @@ SSE provider를 사용한다. 임시 HOME/XSM_HOME/OpenClaw profile/git 저장�
 큰 input 요약의 후보를 생략하고 truncated=true로 표시했다. 고정 native source의
 compactBatchCandidate는 필수 metadata가2000자를 넘으면 후보를 생략한다.
 이를 도구 미등록으로 해석한 하네스가 잘못이었다. 제품 스키마·도구를 줄이지
-않고 truncated 후보를 단일 검색으로 다시 확인했다. Batch13개 응답은 둘째
-실행의 catalog 영수증13개(배치2개+단일11개)이며22개 native 이름을 모두 확인했다.
-본문의13개는 검색 호출 수이며 batch 호출이13개였다는 뜻은 아니다.
+않고 truncated 후보를 단일 검색으로 다시 확인했다. 둘째 실행은 배치검색2개와 단일검색11개, 총13개의 catalog 영수증으로
+22개 native 이름을 모두 확인했다.
 원시 실패와 native source excerpt/hash를 보존했다.
 
 ScriptedTools는 OpenClaw의 query/id+args와 Hermes의 queries/calls를 구분한다.
@@ -54,3 +53,14 @@ first/second 및 변이 폴더다. Provider gzip·native RPC stdout/stderr·nati
 영수증, source7개 snapshot/SHA manifest와 audit.json을 보존했다.
 제품 engine은 바꾸지 않았으며 test-only 추가로 전체 core가 다시 통과했다고
 표시하지 않는다. UI·모델·다른 operation/action과 전체 행렬은 별도 증거가 필요하다.
+
+## Linux 고정 source와 원시 대조
+
+고정e0a342a의 Linux arm64/Node24.22.2에서도21개/29 XSM 호출/7개 operation,
+13개 catalog 영수증과 native receipt71개/HTTP113개가 통과했다. Mac과 검사
+이름21개가 같았다. Catalog의22개 이름·openclaw:xsm ID와 native message/발급 ID
+71개의 고유성·일치를 독립 대조하고 오류3개도 확인했다. Native gateway·참여
+종료, container exit0/VM stopExit0이었다. Network none/read-only native volume/
+model0 표본이다. 원시는 `openclaw-native-collaboration-linux/output/artifacts/`와
+상위 result.json 및 audit.json이다. 변이3개는 Mac의 별도 표본이며 사용자 UI·
+결정·endorsement·실제 모델과 전체 기능 행렬은 계속 미완이다.

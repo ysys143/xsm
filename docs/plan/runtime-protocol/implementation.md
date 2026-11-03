@@ -3110,3 +3110,23 @@ native ID58개의 고유성·일치를 독립 확인했다. 도구 제거·참�
 VM 정상 종료도 확인했다. 기존 API probe의 stale21 기대값은 실제 red 후22로
 수정했고 Mac13개 설치/재연결/신원/세대·옛 claim/없는 UI 거부 경로가 통과했다.
 이는 별도 caller fixture 결과이며 actual AIAgent21개에 합치지 않는다.
+
+
+## OpenClaw 실제 agent 협업 도구 — 2026-11-04
+
+[OpenClaw native 협업](openclaw-native-collaboration.md)은 실제 설치 plugin/
+gateway/agent/Tool Hub를 쓰며 operator RPC의 SID/revision/run 수락·완료를
+대조했다. Mac21개/29 XSM 호출/7개 operation과 예상 오류3개가 통과했다.
+Catalog13개·search29개를 포함한 native receipt71개와 provider ID71개의
+일치·고유성을 독립 확인했다. 최초 catalog 실패는 native batch가 큰 input
+후보를 truncated로 생략하는 것을 미등록으로 해석한 하네스 오류였다.
+제품 스키마를 줄이지 않고 단일 검색으로 회복해 native22개를 확인했다.
+첫 실패와 source excerpt/hash를 보존했다. Parent/후보/bytes 변이3개는
+각 표적 검사에서 실패했고 gateway·참여가 종료됐다. 공유 provider의 direct/
+Hermes 회귀도 통과했다. 실제 모델0이며 결정·endorsement/UI·다른 action과
+전체 행렬은 미완이다. 고정e0a342a Linux 검증 결과는 다음과 같다.
+
+고정e0a342a Linux도21개/29 XSM 호출/7개 operation과 catalog13개, native
+receipt71개/HTTP113개를 통과했다. Catalog22개 이름과 native/발급ID71개 및
+Mac과 같은 검사 이름21개를 독립 대조했다. Native gateway·참여/container/VM
+종료를 확인했다. 실제 모델과 사용자 UI 및 전체 기능 행렬은 미완이다.
