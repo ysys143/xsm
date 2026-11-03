@@ -358,9 +358,11 @@ This mode alone does not connect idle push/wake or certify actual user UI.
 
 ## Opt-in local gateway FIFO delivery
 
-On the pinned Hermes0.22.5 gateway local-session path, setting all three profile
-settings `native_context: true`, `native_wake: true`, and
-`allow_gateway_injection: true` enables native FIFO admission for wakeable messages.
+On the pinned Hermes0.22.5 gateway local-session path, setting
+`plugins.entries.xsm.settings.native_context: true`,
+`plugins.entries.xsm.settings.native_wake: true`, and the native permission
+`plugins.entries.xsm.allow_gateway_injection: true` enables native FIFO admission
+for wakeable messages. The permission belongs to the entry itself, outside settings.
 The plugin does not change these settings. A non-boolean native_wake or missing
 dependency is rejected. Classic standalone CLI and messaging routes are not yet
 connected through this mode; enabling it there returns an explicit error.
@@ -373,8 +375,10 @@ reporting queue acceptance. A reused name/route, replaced owner, revoked injecti
 permission or differing receipt cannot become acceptance. Claim IDs/tokens form the
 stable producer identity for an exact retry. FIFO acceptance never calls xsm_ack.
 
-FYI still uses the next natural-turn context boundary. The actual local FIFO probe
-disables native drain scheduling and uses a recording context facade around the
-real binding; it proves protocol-to-native-queue integration, not actual native
-hook dispatch, model execution, interactive wake, messaging or UI certification.
+FYI still uses the next natural-turn context boundary. The initial local FIFO probe
+disables drain scheduling and uses a context facade. A subsequent
+[actual native drain probe](../plan/runtime-protocol/hermes-gateway-drain.md) loads
+the installed plugin with the real PluginContext, runs the FIFO and AIAgent hooks,
+and checks awake delivery and strict FYI through native tool ACK. Its provider is
+scripted localhost HTTP; real inference, interactive UI and messaging remain unverified.
 Evidence and remaining work: [local gateway delivery](../plan/runtime-protocol/hermes-gateway-wake.md).

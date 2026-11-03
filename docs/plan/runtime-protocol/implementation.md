@@ -2903,3 +2903,20 @@ XSM SDK의 awake callback을 pinned native authority admission에 연결했다.
 drain/model/UI는 실행하지 않았다. 권한/owner/대화/profile/receipt guard와
 변이2개를 확인했다. Config 의존 검사를 포함한 Mac959개+schema/v7은58.849초였다.
 Linux 고정 source와 실제 interactive wake·messaging 및 원래 전체 계획은 미완이다.
+
+207181d의 Linux31개 native checkpoint/959개 core+schema/v7도85.093초/109.656초로
+통과했고 VM stopExit=0을 확인했다. 이 facade 표본의 permission 검증 공백은 아래
+실제 PluginContext 표본과 구별한다.
+
+## 실제 Hermes native FIFO drain — 2026-11-03
+
+[실제 drain](hermes-gateway-drain.md)은 native plugin 로딩/PluginContext/handler/
+FIFO/AIAgent/hooks/Tool Hub를 대체하지 않고 XSM awake 전달→실제 user 입력→
+native ACK→미재전달을 확인했다. Strict FYI는300ms 관측 동안 깨어나지 않았고
+다음 실제 natural turn context→ACK를 통과했다.21개 checkpoint/13 scripted
+HTTP request이며 실제 구독 모델·화면·messaging 증거는 아니다.
+
+실제 schema에서 native permission이 entry root에 있는데 get_config는 settings만
+읽는 결함을 재현해 native permission API로 수정했다. 이전 facade 결과는 이
+결함을 가렸으며 사용자 profile·릴리즈 변경은 없다. Native load red와 fixture
+실패·SIGINT/unload도 보존했다. 수정된 Mac960개+schema/v7은58.678초였다.

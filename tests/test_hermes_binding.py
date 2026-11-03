@@ -213,6 +213,7 @@ class HermesRegistrationTest(TempState):
         constants = SimpleNamespace(get_hermes_home=lambda: Path(self.user_home, 'hermes'))
         for config in ({'native_wake': True},
                        {'native_wake': True, 'native_context': True},
+                       {'native_wake': True, 'native_context': True, 'allow_gateway_injection': True},
                        {'native_wake': True, 'allow_gateway_injection': True},
                        {'native_wake': 'true'}):
             with self.subTest(config=config), mock.patch.dict(sys.modules, hermes_constants=constants):
@@ -220,6 +221,19 @@ class HermesRegistrationTest(TempState):
                 context.get_config = lambda name, default=None: config.get(name, default)
                 with self.assertRaises(ValueError):
                     module.HermesBinding(context)
+
+    def test_native_wake_uses_native_permission_outside_plugin_settings(self):
+        constants = SimpleNamespace(get_hermes_home=lambda: Path(self.user_home, 'hermes'))
+        context = self.context()
+        context.get_config = lambda name, default=None: True if name in ('native_context', 'native_wake') else default
+        context._gateway_injection_allowed = lambda: True
+        with mock.patch.dict(sys.modules, hermes_constants=constants):
+            binding = module.HermesBinding(context)
+        try:
+            self.assertTrue(binding.native_wake)
+            self.assertIsNotNone(binding.native_context)
+        finally:
+            binding.close()
 
     def context(self):
         self.tools, self.hooks, self.unload = {}, {}, []

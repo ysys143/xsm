@@ -10,6 +10,10 @@ DB와 대조한 뒤에만 SDK delivery.report가 실행된다. ACK는 별도다.
 
 `native_wake`는 기본 off이고 bool만 허용한다. `native_context`와 native
 `allow_gateway_injection`도 true여야 한다. 사용자 설정을 자동으로 바꾸지 않는다.
+권한의 정확한 위치는 `plugins.entries.xsm.allow_gateway_injection`이며 두 옵션은
+settings 하위다.207181d는 위치 차이를 context facade로 가려 실제 schema의
+프로필에서 plugin이 로드되지 않았다. Native permission API 조회로 수정한
+[실제 drain 검사](hermes-gateway-drain.md)를 후속 증거로 구분한다.
 현재 연결된 것은 gateway의 local 세션이다. Classic standalone CLI와 messaging
 route는 이 모드에서 명시적으로 거부하며 지원 완료로 표시하지 않는다.
 
@@ -37,3 +41,7 @@ Binding의 conversation/receipt guard를 메모리에서 각각 제거한 변이
 원시는 `deliverables/protocol-foundation/hermes-gateway-wake/`에 red/green/변이와
 core.log를 분리해 보존한다. Linux 고정 source 실행, 실제 drain/model/hook/UI,
 busy/now·FYI 혼합·재시작과 p95 100표본 및 원래 전체 행렬은 미완이다.
+
+207181d 고정 Linux 후속 검사도 native31개 checkpoint와 전체959개/schema/v7을
+통과했다(3.11 85.093초,3.14 109.656초). 최종 status=passed/stopExit=0이다.
+이 표본도 context facade를 사용해 permission 설정 결함을 검출하지 못했다.

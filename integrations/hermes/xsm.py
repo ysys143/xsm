@@ -402,7 +402,8 @@ class HermesBinding:
         native_wake = get_config('native_wake', False) if callable(get_config) else False
         if type(native_wake) is not bool:
             raise ValueError('native_wake must be a boolean')
-        if native_wake and (not native_context or get_config('allow_gateway_injection', False) is not True):
+        native_permission = getattr(context, '_gateway_injection_allowed', None)
+        if native_wake and (not native_context or not callable(native_permission) or native_permission() is not True):
             raise ValueError('native_wake requires native_context and allow_gateway_injection')
         self.native_wake = native_wake
         self.gateway_targets = {}

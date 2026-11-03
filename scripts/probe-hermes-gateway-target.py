@@ -253,7 +253,7 @@ def main():
                         _manager=SimpleNamespace(home_path=root / 'hermes',
                             _gateway_message_injector=(live_runner, live_runner._schedule_plugin_message_injection)),
                         get_config=lambda name, default=None: True if name in
-                            ('native_context', 'native_wake', 'allow_gateway_injection') else default,
+                            ('native_context', 'native_wake') else default,
                         _gateway_injection_allowed=lambda: True)
                     binding = plugin.HermesBinding(context, env=environment)
                     queued = asyncio.Event()
