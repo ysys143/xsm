@@ -3003,3 +3003,12 @@ Mac974개/schema/v7 63.057초를 확인했다. Token 표현을 안정 ID로 오�
 974개/schema/v7 86.458초·112.015초/VM stopExit=0을 확인했다. 원래 전체 계획과
 기타 오류/UI/서비스는 미완이다. OpenClaw100표본에 필요한 Node/Python clock은
 [별도 경계 조사](openclaw-latency-clock.md)에 기록했으며 아직 지연 통과로 세지 않는다.
+
+## OpenClaw Mac100 실제 native queue 지연 — 2026-11-04
+
+[실제 wake 지연](openclaw-native-latency.md)은 canonical store 반환과 native
+committed row readback을 같은 clock으로 측정했다. Idle/native turn/ACK를 매번
+확인한100개가284.0855ms p95/385.990875ms max, 실패·미실행0이었다. Raw source/end
+각100개와 고유 native item100개를 대조했다. Missing commit 관측 변이는 의도한
+assertion으로 실패했다. 시험용 loader 관측과 합성 context capacity를 명시했으며
+기존 일반 설치/UI/실제 모델 인증으로 대체하지 않는다. Linux100과 전체 계획은 미완이다.

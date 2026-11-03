@@ -3,6 +3,7 @@
 import argparse
 import asyncio
 import hashlib
+import gzip
 import json
 import os
 import platform
@@ -40,7 +41,7 @@ def native_binary(root, system=None, machine=None):
 
 class AssistantFixture:
     """Explicit scripted assistant packets, never a language model or human answer."""
-    def __init__(self, output, question=None, *, warmup_inbox=False, refresh_before_ack=False):
+    def __init__(self, output, question=None, *, warmup_inbox=False, refresh_before_ack=False, compress_requests=False):
         self.calls = 0
         self.tokens = set()
         self.lock = threading.Lock()
@@ -51,6 +52,7 @@ class AssistantFixture:
         self.refresh_pending = refresh_before_ack
         self.read_refreshed_claims = False
         self.superseded_tokens = set()
+        self.request_log = output / ('assistant-fixture.jsonl.gz' if compress_requests else 'assistant-fixture.jsonl')
         fixture = self
 
         class Handler(BaseHTTPRequestHandler):
@@ -120,7 +122,7 @@ class AssistantFixture:
                             fixture.superseded_tokens.clear()
                             fixture.read_refreshed_claims = False
                         fixture.calls += 1
-                    with (output / 'assistant-fixture.jsonl').open('a') as stream:
+                    with (gzip.open(fixture.request_log, 'at') if compress_requests else fixture.request_log.open('a')) as stream:
                         stream.write(json.dumps({'request': request, 'ackFixture': use_tool and (tool_name == 'xsm_ack' or
                                                  tool_name == 'tool_call' and tool_args.get('id') == 'xsm_ack'),
                                                  'toolFixture': tool_name if use_tool else None}) + '\n')

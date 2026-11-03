@@ -11,15 +11,19 @@ sys.path.insert(0, str(ROOT))
 from xsm import handoff
 
 trace = Path(sys.argv[1])
+clock_name = sys.argv[2] if len(sys.argv) > 2 else 'CLOCK_MONOTONIC'
+if clock_name not in ('CLOCK_MONOTONIC', 'CLOCK_MONOTONIC_RAW') or not hasattr(time, clock_name):
+    raise ValueError('unsupported explicit probe clock')
+clock = getattr(time, clock_name)
 fd = os.open(trace, os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW, 0o600)
 original_store = handoff.store
 
 
 def observed_store(receiver, message, **kwargs):
     result = original_store(receiver, message, **kwargs)
-    completed = time.clock_gettime_ns(time.CLOCK_MONOTONIC)
+    completed = time.clock_gettime_ns(clock)
     if message['id'].startswith('latency-'):
-        os.write(fd, (json.dumps(dict(id=message['id'], storedMonotonicNs=completed)) + '\n').encode())
+        os.write(fd, (json.dumps(dict(id=message['id'], storedMonotonicNs=completed, clock=clock_name)) + '\n').encode())
     return result
 
 
