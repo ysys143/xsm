@@ -34,6 +34,8 @@ def output_contract(trace=None):
     discovery_schema = json.loads((ROOT / 'docs/protocol/discovery-result.schema.json').read_text())
     Draft202012Validator.check_schema(discovery_schema)
     discovery_validator = Draft202012Validator(discovery_schema)
+    team_schema = json.loads((ROOT / 'docs/protocol/team-result.schema.json').read_text())
+    Draft202012Validator.check_schema(team_schema)
     inbox_observed = 0
     inbox_empty = dict(messages=[], claims=[], items=[], inbox_pending=0)
     inbox_file = dict(messages=['fixture'], claims=[dict(id='original', token='opaque-token',
@@ -70,6 +72,9 @@ def output_contract(trace=None):
                 file_validator.validate(frame['result'])
             if observation.get('operation') == 'xsm_ack':
                 ack_validator.validate(frame['result'])
+            if observation.get('operation') == 'xsm_team' and observation.get('action') in ('list', 'show'):
+                Draft202012Validator({'$ref': '#/$defs/' + observation['action'],
+                                      '$defs': team_schema['$defs']}).validate(frame['result'])
             if observation.get('operation') == 'xsm_discover':
                 discovery_validator.validate(frame['result'])
     for example in examples:
@@ -125,6 +130,36 @@ def ack_contract():
             raise ValueError('invalid ACK result accepted: ' + repr(value))
     return dict(examples=len(examples), rejected=len(invalid),
                 scope='successful result structure; batch errors may follow earlier durable acknowledgements')
+
+
+def team_contract():
+    schema = json.loads((ROOT / 'docs/protocol/team-result.schema.json').read_text())
+    examples = json.loads((ROOT / 'docs/protocol/team-result-examples.json').read_text())
+    Draft202012Validator.check_schema(schema)
+    validators = {action: Draft202012Validator({'$ref': '#/$defs/' + action,
+                  '$defs': schema['$defs']}) for action in ('list', 'show')}
+    for example in examples:
+        validators[example['action']].validate(example['result'])
+    invalid = []
+    for path, value in ((['members', 0, 'running'], 'yes'),
+                        (['members', 0, 'home'], '/private/profile'),
+                        (['name'], 'probe\n'), (['lead'], True),
+                        (['inbox_pending'], -1)):
+        bad = copy.deepcopy(examples[2]['result'])
+        target = bad
+        for part in path[:-1]:
+            target = target[part]
+        target[path[-1]] = value
+        invalid.append(('show', bad))
+    bad = copy.deepcopy(examples[2]['result'])
+    del bad['members'][0]['running']
+    invalid.append(('show', bad))
+    invalid.extend([('list', examples[2]['result']), ('show', examples[0]['result']),
+                    ('list', {'teams': [{'name': 'probe', 'lead': None, 'members': [{}]}]})])
+    for action, value in invalid:
+        if validators[action].is_valid(value):
+            raise ValueError('invalid team result accepted: ' + repr(value))
+    return dict(examples=len(examples), rejected=len(invalid))
 
 
 def discovery_contract():
@@ -288,7 +323,7 @@ def run(trace=None):
                 validator='jsonschema', validatorVersion=importlib.metadata.version('jsonschema'),
                 scope='request and output structures; no full operation results or semantic certification',
                 output=output_contract(trace), operations=operations_contract(), files=files_contract(), ack=ack_contract(),
-                discovery=discovery_contract())
+                discovery=discovery_contract(), team=team_contract())
 
 
 if __name__ == '__main__':

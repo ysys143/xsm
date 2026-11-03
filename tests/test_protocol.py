@@ -53,6 +53,20 @@ class ProtocolTest(ProtocolFixture):
             self.assertEqual(refused.exception.code, -32602)
         call.assert_not_called()
 
+    def test_team_queries_project_public_labels_and_running_state(self):
+        opened = self.open('team-result-contract')
+        self.assertEqual(self.operation(opened, 'xsm_team', action='list')['teams'], [])
+        self.operation(opened, 'xsm_team', action='create', team='contract-probe')
+        listed = self.operation(opened, 'xsm_team', action='list')['teams']
+        shown = self.operation(opened, 'xsm_team', action='show', team='contract-probe')
+        self.assertEqual(len(listed), 1)
+        self.assertEqual(set(listed[0]), {'name', 'lead', 'members'})
+        self.assertEqual(listed[0]['name'], 'contract-probe')
+        self.assertIsNone(listed[0]['lead'])
+        self.assertEqual(len(shown['members']), 1)
+        self.assertEqual(shown['members'], [{'member': listed[0]['members'][0], 'running': True}])
+        self.assertEqual(set(shown), {'name', 'lead', 'members', 'inbox_pending'})
+
     def test_public_bundle_requires_discovery_contract_and_examples(self):
         import shutil
         from pathlib import Path
@@ -63,11 +77,13 @@ class ProtocolTest(ProtocolFixture):
             target = root / name
             target.parent.mkdir(parents=True, exist_ok=True)
             shutil.copyfile(source / name, target)
-        for name in ('discovery-result.schema.json', 'discovery-result-examples.json'):
+        for name in ('discovery-result.schema.json', 'discovery-result-examples.json',
+                     'team-result.schema.json', 'team-result-examples.json'):
             target = root / 'docs/protocol' / name
             target.parent.mkdir(parents=True, exist_ok=True)
             shutil.copyfile(source / 'docs/protocol' / name, target)
-        for name in ('discovery-result.schema.json', 'discovery-result-examples.json'):
+        for name in ('discovery-result.schema.json', 'discovery-result-examples.json',
+                     'team-result.schema.json', 'team-result-examples.json'):
             target = root / 'docs/protocol' / name
             data = target.read_bytes()
             target.unlink()

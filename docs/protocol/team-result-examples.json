@@ -1,0 +1,45 @@
+[
+  {
+    "action": "list",
+    "result": {
+      "teams": [],
+      "inbox_pending": 0
+    }
+  },
+  {
+    "action": "list",
+    "result": {
+      "teams": [
+        {
+          "name": "probe",
+          "lead": null,
+          "members": [
+            "worker@fixture"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "action": "show",
+    "result": {
+      "name": "probe",
+      "lead": "worker@fixture",
+      "members": [
+        {
+          "member": "worker@fixture",
+          "running": true
+        },
+        {
+          "member": "offline@fixture",
+          "running": false
+        }
+      ],
+      "inbox_pending": null,
+      "inbox_pending_known": 0,
+      "inbox_pending_diagnostics": [
+        "pending-unavailable:OSError"
+      ]
+    }
+  }
+]

@@ -58,6 +58,17 @@
   reply→Telegram 전달을 확인했다. [별도 기록](hermes-telegram-live.md)의 표본이며
   native push/UI/worker나 전체 메신저 지원 완료를 뜻하지 않는다.
 
+## 팀 조회 결과 계약 — 2026-11-03
+
+`xsm_team list/show`의 공개 projection 스키마와 예시를 추가했다. 요청 action으로
+정의를 선택하며 라벨과 내부 멤버 레코드를 구분한다. 정본 Connection dispatch에서
+빈 목록→create→목록→상세 4개 응답을 관측했고 checker가 모두 검증했다.
+예시 3개 통과·잘못된 구조 9개 거부를 확인했다. running 타입과 내부 home 필드
+허용 변이 2개도 checker가 검출했다. `python3 -B -m unittest tests.test_protocol`은
+58개를 9.854초에 통과했다. 원시는
+`deliverables/protocol-foundation/team-contract/`에 있다. 이는 stdio 또는 native
+행렬 인증이 아니며 보드 조회와 나머지 결과 계약은 미완이다.
+
 ## 단계별 판정
 
 | 단계 | 상태 | 남은 조건 |

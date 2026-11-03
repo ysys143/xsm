@@ -145,3 +145,24 @@ IDs and pending-count diagnostics. [ACK semantics](ack-contract.md) preserves
 ordered idempotent tokens and makes partial durable effects on a failed batch
 explicit. Captured successful `xsm_ack` results are checked against this schema;
 its presence does not complete the remaining operation result families.
+
+## Team query results
+
+For `xsm_team` actions `list` and `show`, validate against the matching
+`$defs/list` or `$defs/show` in [team-result.schema.json](team-result.schema.json).
+The request action selects the definition; the response carries no action tag.
+[Examples](team-result-examples.json) include an empty list, a team without a
+lead, and live/offline members with partial inbox diagnostics.
+
+List members are display-label strings. Show members are objects with a display
+label and a boolean `running` observation. Labels are not stable identities or
+routing addresses; `running` is not a delivery or authorization guarantee.
+Internal member records and home paths are not part of these projections.
+A null lead means no assigned lead. Create and other mutations retain their
+text or waiting-for-user envelopes and are outside this schema.
+
+The schema checker selects definitions from captured request operation/action,
+checks three positive examples, and rejects nine malformed structures. Isolated
+actual Connection dispatch observations cover empty list, create, populated
+list and show. These are not a stdio conformance or native-runtime certificate;
+board result schemas and remaining operation result contracts are still pending.

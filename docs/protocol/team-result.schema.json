@@ -1,0 +1,136 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:xsm:host-protocol:1:team-result",
+  "title": "Successful xsm_team list/show result",
+  "oneOf": [
+    {
+      "$ref": "#/$defs/list"
+    },
+    {
+      "$ref": "#/$defs/show"
+    }
+  ],
+  "$defs": {
+    "list": {
+      "type": "object",
+      "required": [
+        "teams"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "inbox_pending": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "inbox_notice": {
+          "type": "string"
+        },
+        "inbox_pending_known": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "inbox_pending_diagnostics": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "teams": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "name",
+              "lead",
+              "members"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "name": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,62}(?![\\s\\S])"
+              },
+              "lead": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "members": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "show": {
+      "type": "object",
+      "required": [
+        "name",
+        "lead",
+        "members"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,62}(?![\\s\\S])"
+        },
+        "lead": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "members": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "member",
+              "running"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "member": {
+                "type": "string",
+                "minLength": 1
+              },
+              "running": {
+                "type": "boolean"
+              }
+            }
+          }
+        },
+        "inbox_pending": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "inbox_notice": {
+          "type": "string"
+        },
+        "inbox_pending_known": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "inbox_pending_diagnostics": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}
