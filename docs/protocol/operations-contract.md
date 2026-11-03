@@ -31,7 +31,8 @@ Operation-specific result schemas cover inbox, explicit ACK, received files,
 [board queries](board-result.schema.json), [documents](doc-result.schema.json)
 [send producer results](send-result.schema.json) and
 [correlated questions](question-results.md) and
-[publication results](publication-result.schema.json). The other operation result contracts remain
+[publication results](publication-result.schema.json) and
+[human decision status](decision-status-result.schema.json). The other operation result contracts remain
 incomplete; input validity does not certify their results.
 
 ## Generation and consistency

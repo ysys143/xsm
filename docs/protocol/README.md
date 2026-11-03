@@ -24,6 +24,7 @@ cover local single/group/material response contracts; native delivery still
 requires its own evidence.
 Correlated questions: [result structures, reply claims and handshake semantics](question-results.md).
 Explicit consumption: [ACK results, idempotence and batch recovery](ack-contract.md).
+Human approval readback: [decision status results](decision-status-result.schema.json).
 Owned native execution: [provider admission, pre-turn binding and recovery](native-workers.md).
 External verification: [stdio lifecycle and delivery conformance](conformance.md) (partial contract coverage).
 

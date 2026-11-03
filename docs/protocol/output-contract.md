@@ -313,3 +313,40 @@ publication nor its visibility flag grants a communication scope. A pending
 result contains no host challenge. [Examples](publication-result-examples.json)
 include all states and unconfirmed incoming display data with separate claims.
 The shared claim/waiting structures must match the existing contracts.
+
+## Human decision status and consent diagnostics
+
+Validate `xsm_decision_status` with
+[decision-status-result.schema.json](decision-status-result.schema.json).
+[Examples](decision-status-result-examples.json) distinguish owned decision
+summaries, full lifecycle readback, foreign/not-found, refused cancellation of
+an application already started/applied, legacy pending/unbound input, and an
+exact closed consent marker.
+
+`answer` is a retained transport response; its reply is opaque JSON, including
+malformed or automatic-reviewer data. A source label or accept string is not a
+new permission. `answered` does not mean applied. Application can be absent,
+started with unknown outcome, completed with an observed result, or legacy
+result/observation metadata lacking the newer phase fields. The result is an
+opaque observation, not executable instructions or a replay template.
+
+`scope` is immutable tool-specific permission/effect metadata. It can differ
+from the original API parameters; retry the original caller request only when
+the lifecycle permits it. A not-found response hides foreign-owner data.
+Cancellation cannot stop an application already started or undo one applied;
+use domain readback/revocation. A closed legacy consent marker approves nothing
+and is separate from cancelling the host question.
+
+Display/attention `human_saw` and attention viewport range remain null: an OS
+call succeeding is not evidence that a person read the text. Display complete
+is an adapter report, not proof of human viewing. Attention delivery is opt-in
+and notification errors do not establish approval or rollback. Querying can
+also return this caller's unconfirmed incoming data with explicit ACK claims;
+that data is not a user verdict.
+
+The checker validates JSON-serialized question/display digests, native question
+association, observed application metadata for applied decisions, attention ID
+association and consent marker/ID association. It does not authenticate an answer,
+prove current reader liveness or recompute tool policy. Legacy receipts and
+scope/reply/result payloads must be interpreted through their actual runtime
+coordinator, never by trusting arbitrary quoted text.

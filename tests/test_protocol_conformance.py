@@ -229,7 +229,7 @@ class ExternalConformanceTest(unittest.TestCase):
     def test_actual_host_decision_contract(self):
         result = checker.run(self.delivery_candidate('none'), suite='decisions', capture=True)
         self.assertEqual(result['status'], 'passed', {k: v for k, v in result.items() if k != 'observations'})
-        self.assertEqual(len(result['checks']), 35)
+        self.assertEqual(len(result['checks']), 45)
         methods = {e.get('method') for e in result['observations'] if 'result' in e['frame']}
         self.assertIn('decision.response', methods)
         self.assertIn('decision.abandon', methods)

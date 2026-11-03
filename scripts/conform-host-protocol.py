@@ -618,7 +618,38 @@ def decisions(peer, params, check, equal):
     check("new generation cannot inherit prior answer", lambda: equal(owner["ref"] == old_owner["ref"] and
           owner["generation"] != old_owner["generation"] and renewed["status"] == "waiting-for-user" and
           renewed["decision_id"] != pending["decision_id"], True))
+    cancelled_event = peer.notification()['params']
+    check('applied decision cancellation does not undo effect', lambda: equal(
+          operation('xsm_decision_status', id=pending['decision_id'], cancel=True)['status'], 'already-applied'))
+    denied = peer.call('operation.call', dict(session=foreign['session'], operation='xsm_decision_status',
+                       arguments={'id': pending['decision_id']}))
+    check('foreign decision lookup reveals no record', lambda: equal(
+          set(denied) <= {'id','status','inbox_pending','inbox_notice','inbox_pending_known','inbox_pending_diagnostics'}
+          and denied['status'] == 'not-found', True))
+    listed = operation('xsm_decision_status')
+    check('decision listing retains own historical and current IDs', lambda: equal(
+          {pending['decision_id'], renewed['decision_id']} <= {r['id'] for r in listed['decisions']}, True))
+    check('pending cancellation leaves no answer or application', lambda: equal(
+          operation('xsm_decision_status', id=renewed['decision_id'], cancel=True)['status'], 'cancelled'))
+    check('cancelled display cannot accept a late answer', lambda: peer.call('decision.response',
+          dict(answer, session=owner['session'], questionId=cancelled_event['questionId'],
+               challenge=cancelled_event['challenge'], displayed=cancelled_event['question'],
+               source_id='cancelled-decision-source'), error=-32003))
+    foreign_list = peer.call('operation.call', dict(session=foreign['session'], operation='xsm_decision_status', arguments={}))
+    check('foreign decision listing excludes owner history', lambda: equal(foreign_list['decisions'], []))
+    publication = operation('xsm_publish')
     peer.notification()
+    legacy = operation('xsm_decision_status', pending_consent=True)
+    check('pending consent inspection is separate from approval', lambda: equal(
+          len(legacy['requests']) == 1 and legacy['requests'][0]['status'] == 'pending', True))
+    mark = legacy['requests'][0]['marker']
+    check('closing consent returns exact requested marker', lambda: equal(
+          operation('xsm_decision_status', drop_consent=mark)['closed'], mark))
+    check('closing consent does not approve the host decision', lambda: equal(
+          operation('xsm_decision_status', id=publication['decision_id'])['status'], 'pending'))
+    check('closed consent no longer appears in pending list', lambda: equal(
+          operation('xsm_decision_status', pending_consent=True)['requests'], []))
+    operation('xsm_decision_status', id=publication['decision_id'], cancel=True)
 
 
 def discovery(peer, first, second, check, equal):

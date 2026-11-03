@@ -1,0 +1,851 @@
+[
+  {
+    "source": "isolated stdio capture; scope cwd normalized for publication",
+    "result": {
+      "id": "9d6efa0b0099845900114971f1972a1670c249b93808fc3700d8f26176305261",
+      "status": "pending",
+      "question": "Fixture: choose a color",
+      "question_digest": "1cb80d307a414035bdcdef359db4eab1d7779249cdac851a549bb1ec3370f1d4",
+      "display": {
+        "status": "requested",
+        "owner": "f1108aeb0c414d24bb887ab02c0d1c9d",
+        "text": "Fixture: choose a color",
+        "digest": "1cb80d307a414035bdcdef359db4eab1d7779249cdac851a549bb1ec3370f1d4",
+        "complete": true,
+        "channel": "host-user",
+        "requested_at": 1793684225.855862,
+        "human_saw": null,
+        "reader": {
+          "instance": "98675a5473d07732fd5764f2",
+          "pid": 54989,
+          "generation": "eb3c4cb7e34f"
+        }
+      },
+      "answer": null,
+      "application": null,
+      "expires_at": 1793686025.84954,
+      "choices": [
+        "blue",
+        "green"
+      ],
+      "scope": {
+        "tool": "xsm_decide",
+        "arguments": {
+          "question": "Fixture: choose a color",
+          "options": [
+            "blue",
+            "green"
+          ],
+          "decision_key": "wire-first"
+        },
+        "cwd": "/fixture/workspace"
+      },
+      "native_question": "[xsm-decision:9d6efa0b00998459] Fixture: choose a color",
+      "attention": null,
+      "inbox_pending": 0
+    }
+  },
+  {
+    "source": "isolated stdio capture; scope cwd normalized for publication",
+    "result": {
+      "id": "9d6efa0b0099845900114971f1972a1670c249b93808fc3700d8f26176305261",
+      "status": "answered",
+      "question": "Fixture: choose a color",
+      "question_digest": "1cb80d307a414035bdcdef359db4eab1d7779249cdac851a549bb1ec3370f1d4",
+      "display": {
+        "status": "requested",
+        "owner": "f1108aeb0c414d24bb887ab02c0d1c9d",
+        "text": "Fixture: choose a color",
+        "digest": "1cb80d307a414035bdcdef359db4eab1d7779249cdac851a549bb1ec3370f1d4",
+        "complete": true,
+        "channel": "host-user",
+        "requested_at": 1793684225.855862,
+        "human_saw": null,
+        "reader": {
+          "instance": "98675a5473d07732fd5764f2",
+          "pid": 54989,
+          "generation": "eb3c4cb7e34f"
+        },
+        "reported_text": "Fixture: choose a color",
+        "reported_digest": "1cb80d307a414035bdcdef359db4eab1d7779249cdac851a549bb1ec3370f1d4"
+      },
+      "answer": {
+        "reply": {
+          "result": {
+            "action": "accept",
+            "content": {
+              "answer": "blue"
+            },
+            "_meta": {
+              "approvals_reviewer": "user"
+            }
+          }
+        },
+        "source": "host-user",
+        "source_id": "conformance-fixture-answer",
+        "recorded_at": 1793684225.9776042
+      },
+      "application": null,
+      "expires_at": 1793686025.84954,
+      "choices": [
+        "blue",
+        "green"
+      ],
+      "scope": {
+        "tool": "xsm_decide",
+        "arguments": {
+          "question": "Fixture: choose a color",
+          "options": [
+            "blue",
+            "green"
+          ],
+          "decision_key": "wire-first"
+        },
+        "cwd": "/fixture/workspace"
+      },
+      "native_question": "[xsm-decision:9d6efa0b00998459] Fixture: choose a color",
+      "attention": null,
+      "inbox_pending": 0
+    }
+  },
+  {
+    "source": "isolated stdio capture; scope cwd normalized for publication",
+    "result": {
+      "id": "9d6efa0b0099845900114971f1972a1670c249b93808fc3700d8f26176305261",
+      "status": "applied",
+      "question": "Fixture: choose a color",
+      "question_digest": "1cb80d307a414035bdcdef359db4eab1d7779249cdac851a549bb1ec3370f1d4",
+      "display": {
+        "status": "requested",
+        "owner": "f1108aeb0c414d24bb887ab02c0d1c9d",
+        "text": "Fixture: choose a color",
+        "digest": "1cb80d307a414035bdcdef359db4eab1d7779249cdac851a549bb1ec3370f1d4",
+        "complete": true,
+        "channel": "host-user",
+        "requested_at": 1793684225.855862,
+        "human_saw": null,
+        "reader": {
+          "instance": "98675a5473d07732fd5764f2",
+          "pid": 54989,
+          "generation": "eb3c4cb7e34f"
+        },
+        "reported_text": "Fixture: choose a color",
+        "reported_digest": "1cb80d307a414035bdcdef359db4eab1d7779249cdac851a549bb1ec3370f1d4"
+      },
+      "answer": {
+        "reply": {
+          "result": {
+            "action": "accept",
+            "content": {
+              "answer": "blue"
+            },
+            "_meta": {
+              "approvals_reviewer": "user"
+            }
+          }
+        },
+        "source": "host-user",
+        "source_id": "conformance-fixture-answer",
+        "recorded_at": 1793684225.9776042
+      },
+      "application": {
+        "phase": "completed",
+        "started_at": 1793684226.006598,
+        "reader": {
+          "instance": "98675a5473d07732fd5764f2",
+          "pid": 54989,
+          "generation": "eb3c4cb7e34f"
+        },
+        "source": "host-user",
+        "result": "your user answered: blue\nIt is not recorded as a decision: this session is in no team, and a decision is kept beside a team's board (`xsm team create <name>` makes one).",
+        "observed_at": 1793684226.0073972
+      },
+      "expires_at": 1793686025.84954,
+      "choices": [
+        "blue",
+        "green"
+      ],
+      "scope": {
+        "tool": "xsm_decide",
+        "arguments": {
+          "question": "Fixture: choose a color",
+          "options": [
+            "blue",
+            "green"
+          ],
+          "decision_key": "wire-first"
+        },
+        "cwd": "/fixture/workspace"
+      },
+      "native_question": "[xsm-decision:9d6efa0b00998459] Fixture: choose a color",
+      "attention": null,
+      "inbox_pending": 0
+    }
+  },
+  {
+    "source": "isolated stdio capture; scope cwd normalized for publication",
+    "result": {
+      "id": "7ca59895326feb63cf6d08e026f5279427e453b8b2abff99f0daa8d50676025f",
+      "status": "pending",
+      "question": "Fixture: another color",
+      "question_digest": "7b819cfc99ff190968e82d7f89d60a81d4cba425c866724b8473f2dad9406912",
+      "display": {
+        "status": "not-requested"
+      },
+      "answer": null,
+      "application": null,
+      "expires_at": 1793686026.0321012,
+      "choices": [
+        "blue",
+        "green"
+      ],
+      "scope": {
+        "tool": "xsm_decide",
+        "arguments": {
+          "question": "Fixture: another color",
+          "options": [
+            "blue",
+            "green"
+          ],
+          "decision_key": "wire-second"
+        },
+        "cwd": "/fixture/workspace"
+      },
+      "native_question": "[xsm-decision:7ca59895326feb63] Fixture: another color",
+      "attention": null,
+      "inbox_pending": 0
+    }
+  },
+  {
+    "source": "isolated stdio capture; scope cwd normalized for publication",
+    "result": {
+      "id": "9d6efa0b0099845900114971f1972a1670c249b93808fc3700d8f26176305261",
+      "status": "already-applied",
+      "reason": "cancel cannot undo an applied effect; use its domain revocation",
+      "inbox_pending": 0
+    }
+  },
+  {
+    "source": "isolated stdio capture; scope cwd normalized for publication",
+    "result": {
+      "id": "9d6efa0b0099845900114971f1972a1670c249b93808fc3700d8f26176305261",
+      "status": "not-found",
+      "inbox_pending": 0
+    }
+  },
+  {
+    "source": "isolated stdio capture; scope cwd normalized for publication",
+    "result": {
+      "status": "decisions",
+      "decisions": [
+        {
+          "id": "2a57a5c001443976c787db878a942c9a18e166111a3b4e3c068e5be4270413ec",
+          "status": "pending",
+          "question": "Fixture: choose a color",
+          "created_at": 1793684226.419397
+        },
+        {
+          "id": "9d6efa0b0099845900114971f1972a1670c249b93808fc3700d8f26176305261",
+          "status": "applied",
+          "question": "Fixture: choose a color",
+          "created_at": 1793684225.84954
+        },
+        {
+          "id": "7ca59895326feb63cf6d08e026f5279427e453b8b2abff99f0daa8d50676025f",
+          "status": "pending",
+          "question": "Fixture: another color",
+          "created_at": 1793684226.0321012
+        }
+      ],
+      "inbox_pending": 0
+    }
+  },
+  {
+    "source": "isolated stdio capture; scope cwd normalized for publication",
+    "result": {
+      "id": "2a57a5c001443976c787db878a942c9a18e166111a3b4e3c068e5be4270413ec",
+      "status": "cancelled",
+      "question": "Fixture: choose a color",
+      "question_digest": "1cb80d307a414035bdcdef359db4eab1d7779249cdac851a549bb1ec3370f1d4",
+      "display": {
+        "status": "requested",
+        "owner": "61123d0494cd43a1b8acebc82b1b20c7",
+        "text": "Fixture: choose a color",
+        "digest": "1cb80d307a414035bdcdef359db4eab1d7779249cdac851a549bb1ec3370f1d4",
+        "complete": true,
+        "channel": "host-user",
+        "requested_at": 1793684226.426263,
+        "human_saw": null,
+        "reader": {
+          "instance": "a7f45b5aa36fd85e8d1e51d2",
+          "pid": 54989,
+          "generation": "eb3c4cb7e34f"
+        }
+      },
+      "answer": null,
+      "application": null,
+      "expires_at": 1793686026.419397,
+      "choices": [
+        "blue",
+        "green"
+      ],
+      "scope": {
+        "tool": "xsm_decide",
+        "arguments": {
+          "question": "Fixture: choose a color",
+          "options": [
+            "blue",
+            "green"
+          ],
+          "decision_key": "wire-first"
+        },
+        "cwd": "/fixture/workspace"
+      },
+      "native_question": "[xsm-decision:2a57a5c001443976] Fixture: choose a color",
+      "attention": null,
+      "inbox_pending": 0
+    }
+  },
+  {
+    "source": "isolated stdio capture; scope cwd normalized for publication",
+    "result": {
+      "status": "decisions",
+      "decisions": [],
+      "inbox_pending": 0
+    }
+  },
+  {
+    "source": "isolated stdio capture; scope cwd normalized for publication",
+    "result": {
+      "requests": [
+        {
+          "id": "52aef25bcf8d44e6",
+          "marker": "[xsm:52aef25bcf8d44e6]",
+          "verb": "publish",
+          "target": "conformance-d509efcb",
+          "status": "pending"
+        }
+      ],
+      "unbound": [],
+      "inbox_pending": 0
+    }
+  },
+  {
+    "source": "isolated stdio capture; scope cwd normalized for publication",
+    "result": {
+      "closed": "[xsm:52aef25bcf8d44e6]",
+      "inbox_pending": 0
+    }
+  },
+  {
+    "source": "isolated decision-store API with synthetic inputs; no actual human or domain effect",
+    "result": {
+      "id": "ad1e5e5b0f17f203f0490e50c72e7deb0cb8808108f131aefb6a6f948c4caa3a",
+      "status": "denied",
+      "question": "Fixture denied",
+      "question_digest": "657f9f5d0c427937935b28e8e35bd54b630d1ff461b6a2db1587f1d53409754d",
+      "display": {
+        "status": "requested",
+        "owner": "fixture",
+        "text": "Fixture denied",
+        "digest": "657f9f5d0c427937935b28e8e35bd54b630d1ff461b6a2db1587f1d53409754d",
+        "complete": true,
+        "channel": "fixture-ui",
+        "requested_at": 1793684049.3248808,
+        "human_saw": null
+      },
+      "answer": {
+        "reply": {
+          "result": {
+            "action": "accept",
+            "content": {
+              "answer": "deny"
+            }
+          }
+        },
+        "source": "host-user",
+        "source_id": "fixture-denied",
+        "recorded_at": 1793684049.325284
+      },
+      "application": null,
+      "expires_at": 1793685849.323998,
+      "choices": null,
+      "scope": {
+        "tool": "xsm_publish",
+        "arguments": {
+          "visible": true
+        },
+        "cwd": null
+      },
+      "native_question": "[xsm-decision:ad1e5e5b0f17f203] Fixture denied",
+      "attention": null,
+      "inbox_pending": 0
+    }
+  },
+  {
+    "source": "isolated decision-store API with synthetic inputs; no actual human or domain effect",
+    "result": {
+      "id": "03d7ff1897dc7b0346960f7772695397b96e91c4d8860decf79fe69c79070ae7",
+      "status": "dismissed",
+      "question": "Fixture dismissed",
+      "question_digest": "f2dc46d9a7566d08cbb3dc43a24e8176fe4abca666c655725861405ded973be7",
+      "display": {
+        "status": "requested",
+        "owner": "fixture",
+        "text": "Fixture dismissed",
+        "digest": "f2dc46d9a7566d08cbb3dc43a24e8176fe4abca666c655725861405ded973be7",
+        "complete": true,
+        "channel": "fixture-ui",
+        "requested_at": 1793684049.326303,
+        "human_saw": null
+      },
+      "answer": {
+        "reply": {
+          "result": {
+            "action": "cancel",
+            "content": {
+              "answer": "deny"
+            }
+          }
+        },
+        "source": "host-user",
+        "source_id": "fixture-dismissed",
+        "recorded_at": 1793684049.326605
+      },
+      "application": null,
+      "expires_at": 1793685849.325835,
+      "choices": null,
+      "scope": {
+        "tool": "xsm_publish",
+        "arguments": {
+          "visible": true
+        },
+        "cwd": null
+      },
+      "native_question": "[xsm-decision:03d7ff1897dc7b03] Fixture dismissed",
+      "attention": null,
+      "inbox_pending": 0
+    }
+  },
+  {
+    "source": "isolated decision-store API with synthetic inputs; no actual human or domain effect",
+    "result": {
+      "id": "34c52d9bcf4803864523dfee5f3c240028e0fdae411bf3688e46779345fc7723",
+      "status": "unshown-or-declined",
+      "question": "Fixture unshown-or-declined",
+      "question_digest": "228896d5468600903c64d5d4150610e21e57ba7ec0eb51ef6a13e5e5b8efca44",
+      "display": {
+        "status": "requested",
+        "owner": "fixture",
+        "text": "Fixture unshown-or-declined",
+        "digest": "228896d5468600903c64d5d4150610e21e57ba7ec0eb51ef6a13e5e5b8efca44",
+        "complete": true,
+        "channel": "fixture-ui",
+        "requested_at": 1793684049.327549,
+        "human_saw": null
+      },
+      "answer": {
+        "reply": {
+          "result": {
+            "action": "decline",
+            "content": {
+              "answer": "deny"
+            }
+          }
+        },
+        "source": "mcp-elicitation",
+        "source_id": "fixture-unshown-or-declined",
+        "recorded_at": 1793684049.3278668
+      },
+      "application": null,
+      "expires_at": 1793685849.327095,
+      "choices": null,
+      "scope": {
+        "tool": "xsm_publish",
+        "arguments": {
+          "visible": true
+        },
+        "cwd": null
+      },
+      "native_question": "[xsm-decision:34c52d9bcf480386] Fixture unshown-or-declined",
+      "attention": null,
+      "inbox_pending": 0
+    }
+  },
+  {
+    "source": "isolated decision-store API with synthetic inputs; no actual human or domain effect",
+    "result": {
+      "id": "9f3b9d092fd7017a6f2bd3740c14672492acb958cf26a4bb97fafe0e16692b94",
+      "status": "unknown",
+      "question": "Fixture unknown",
+      "question_digest": "e677f0d3ec087b8b94a490bd332f0b4c77f8f4684aeb0cf2badf15bf5bfd3674",
+      "display": {
+        "status": "requested",
+        "owner": "fixture",
+        "text": "Fixture unknown",
+        "digest": "e677f0d3ec087b8b94a490bd332f0b4c77f8f4684aeb0cf2badf15bf5bfd3674",
+        "complete": true,
+        "channel": "fixture-ui",
+        "requested_at": 1793684049.328769,
+        "human_saw": null
+      },
+      "answer": {
+        "reply": null,
+        "source": "unverified-agent",
+        "source_id": "fixture-unknown",
+        "recorded_at": 1793684049.3290591
+      },
+      "application": null,
+      "expires_at": 1793685849.328342,
+      "choices": null,
+      "scope": {
+        "tool": "xsm_publish",
+        "arguments": {
+          "visible": true
+        },
+        "cwd": null
+      },
+      "native_question": "[xsm-decision:9f3b9d092fd7017a] Fixture unknown",
+      "attention": null,
+      "inbox_pending": 0
+    }
+  },
+  {
+    "source": "isolated decision-store API with synthetic inputs; no actual human or domain effect",
+    "result": {
+      "id": "47d991d05bea1b73c0903ee8fea30f24024ab57f6c800dd7c3db1a0c49c2409f",
+      "status": "expired",
+      "question": "Fixture expired",
+      "question_digest": "ce93cdf3bcc62e8646b2cb9da3e63076931bcd1f5baa0e3d50e2c03d977c16ed",
+      "display": {
+        "status": "not-requested"
+      },
+      "answer": null,
+      "application": null,
+      "expires_at": 1793680450.329503,
+      "choices": null,
+      "scope": {
+        "tool": "xsm_publish",
+        "arguments": {
+          "visible": true
+        },
+        "cwd": null
+      },
+      "native_question": "[xsm-decision:47d991d05bea1b73] Fixture expired",
+      "attention": null,
+      "inbox_pending": 0
+    }
+  },
+  {
+    "source": "isolated decision-store API with synthetic inputs; no actual human or domain effect",
+    "result": {
+      "id": "09c1af3efb29757945a88512407c2853fa653540cdcbc377129cfefa3c2a9a8a",
+      "status": "superseded",
+      "question": "Fixture superseded",
+      "question_digest": "c68ff308066f6cc5ad74257cf3701e4f56f801859b278a7fc206b9533de4bd3c",
+      "display": {
+        "status": "not-requested"
+      },
+      "answer": null,
+      "application": null,
+      "expires_at": 1793685849.329935,
+      "choices": null,
+      "scope": {
+        "tool": "xsm_publish",
+        "arguments": {
+          "visible": true
+        },
+        "cwd": null
+      },
+      "native_question": "[xsm-decision:09c1af3efb297579] Fixture superseded",
+      "attention": null,
+      "inbox_pending": 0
+    }
+  },
+  {
+    "source": "isolated decision-store API with synthetic inputs; no actual human or domain effect",
+    "result": {
+      "id": "4b5d7ce1b81ab640123bbc53f1b6e29fe2fbc6dee2a4aaaf47bd3f931336844c",
+      "status": "unknown",
+      "question": "Fixture typed",
+      "question_digest": "10b8dc3d8258fe0aadde7546d25b87527e5822b2df243166d5851a83d2fbe113",
+      "display": {
+        "status": "not-requested"
+      },
+      "answer": null,
+      "application": {
+        "phase": "started",
+        "started_at": 1793684049.331083,
+        "reader": null,
+        "source": "typed-command"
+      },
+      "expires_at": 1793685849.330732,
+      "choices": null,
+      "scope": {
+        "tool": "xsm_publish",
+        "arguments": {
+          "visible": true
+        },
+        "cwd": null
+      },
+      "native_question": "[xsm-decision:4b5d7ce1b81ab640] Fixture typed",
+      "permission_receipt": {
+        "source": "typed-command",
+        "verb": "publish",
+        "target": "fixture"
+      },
+      "attention": null,
+      "inbox_pending": 0
+    }
+  },
+  {
+    "source": "isolated decision-store API with synthetic inputs; no actual human or domain effect",
+    "result": {
+      "id": "4b5d7ce1b81ab640123bbc53f1b6e29fe2fbc6dee2a4aaaf47bd3f931336844c",
+      "status": "application-started",
+      "reason": "withdrawal cannot stop an operation already started; inspect domain state before retrying or revoking",
+      "inbox_pending": 0
+    }
+  },
+  {
+    "source": "isolated decision-store API with synthetic inputs; no actual human or domain effect",
+    "result": {
+      "id": "4b5d7ce1b81ab640123bbc53f1b6e29fe2fbc6dee2a4aaaf47bd3f931336844c",
+      "status": "applied",
+      "question": "Fixture typed",
+      "question_digest": "10b8dc3d8258fe0aadde7546d25b87527e5822b2df243166d5851a83d2fbe113",
+      "display": {
+        "status": "not-requested"
+      },
+      "answer": null,
+      "application": {
+        "phase": "completed",
+        "started_at": 1793684049.331083,
+        "reader": null,
+        "source": "typed-command",
+        "result": "synthetic observed effect",
+        "observed_at": 1793684049.331593
+      },
+      "expires_at": 1793685849.330732,
+      "choices": null,
+      "scope": {
+        "tool": "xsm_publish",
+        "arguments": {
+          "visible": true
+        },
+        "cwd": null
+      },
+      "native_question": "[xsm-decision:4b5d7ce1b81ab640] Fixture typed",
+      "permission_receipt": {
+        "source": "typed-command",
+        "verb": "publish",
+        "target": "fixture"
+      },
+      "attention": null,
+      "inbox_pending": 0
+    }
+  },
+  {
+    "source": "isolated decision-store API with synthetic inputs; no actual human or domain effect",
+    "result": {
+      "id": "ab871fd615848b35e7e9d26df7d5dbb7dabb08eccb98ed20b4f9c5952928224a",
+      "status": "unknown",
+      "question": "Fixture input",
+      "question_digest": "46659687e006c6df405865c0f1c505648093a76e3d79cb0074d0053e30ec5300",
+      "display": {
+        "status": "not-requested"
+      },
+      "answer": null,
+      "application": {
+        "phase": "started",
+        "started_at": 1793684049.332452,
+        "reader": null,
+        "source": "input-consent"
+      },
+      "expires_at": 1793685849.332078,
+      "choices": null,
+      "scope": {
+        "tool": "xsm_publish",
+        "arguments": {
+          "visible": true
+        },
+        "cwd": null
+      },
+      "native_question": "[xsm-decision:ab871fd615848b35] Fixture input",
+      "permission_receipt": {
+        "source": "input-consent",
+        "text": "synthetic input",
+        "via": "fixture",
+        "binding_note": null
+      },
+      "attention": null,
+      "inbox_pending": 0
+    }
+  },
+  {
+    "source": "isolated decision-store API with synthetic inputs; no actual human or domain effect",
+    "result": {
+      "id": "ab871fd615848b35e7e9d26df7d5dbb7dabb08eccb98ed20b4f9c5952928224a",
+      "status": "application-started",
+      "reason": "withdrawal cannot stop an operation already started; inspect domain state before retrying or revoking",
+      "inbox_pending": 0
+    }
+  },
+  {
+    "source": "isolated decision-store API with synthetic inputs; no actual human or domain effect",
+    "result": {
+      "id": "ab871fd615848b35e7e9d26df7d5dbb7dabb08eccb98ed20b4f9c5952928224a",
+      "status": "applied",
+      "question": "Fixture input",
+      "question_digest": "46659687e006c6df405865c0f1c505648093a76e3d79cb0074d0053e30ec5300",
+      "display": {
+        "status": "not-requested"
+      },
+      "answer": null,
+      "application": {
+        "phase": "completed",
+        "started_at": 1793684049.332452,
+        "reader": null,
+        "source": "input-consent",
+        "result": "synthetic observed effect",
+        "observed_at": 1793684049.3329659
+      },
+      "expires_at": 1793685849.332078,
+      "choices": null,
+      "scope": {
+        "tool": "xsm_publish",
+        "arguments": {
+          "visible": true
+        },
+        "cwd": null
+      },
+      "native_question": "[xsm-decision:ab871fd615848b35] Fixture input",
+      "permission_receipt": {
+        "source": "input-consent",
+        "text": "synthetic input",
+        "via": "fixture",
+        "binding_note": null
+      },
+      "attention": null,
+      "inbox_pending": 0
+    }
+  },
+  {
+    "source": "isolated decision-store API with synthetic inputs; no actual human or domain effect",
+    "result": {
+      "id": "3362f40d027e36eb2acba7ad0c58254bc0e59554b05edd118a3a810bfad8c480",
+      "status": "applied",
+      "question": "Fixture legacy-application",
+      "question_digest": "587c5cfeccfc507b71c8c6ddf10a0cc79b9a5b958454fb2e852da6a6c1b2f814",
+      "display": {
+        "status": "requested",
+        "owner": "fixture",
+        "text": "Fixture legacy-application",
+        "digest": "587c5cfeccfc507b71c8c6ddf10a0cc79b9a5b958454fb2e852da6a6c1b2f814",
+        "complete": true,
+        "channel": "fixture-ui",
+        "requested_at": 1793684049.333876,
+        "human_saw": null
+      },
+      "answer": {
+        "reply": {
+          "result": {
+            "action": "accept",
+            "content": {
+              "answer": "allow"
+            }
+          }
+        },
+        "source": "host-user",
+        "source_id": null,
+        "recorded_at": 1793684049.3341792
+      },
+      "application": {
+        "result": "synthetic legacy effect",
+        "observed_at": 1793684049.334599
+      },
+      "expires_at": 1793685849.3334541,
+      "choices": null,
+      "scope": {
+        "tool": "xsm_publish",
+        "arguments": {
+          "visible": true
+        },
+        "cwd": null
+      },
+      "native_question": "[xsm-decision:3362f40d027e36eb] Fixture legacy-application",
+      "attention": null,
+      "inbox_pending": 0
+    }
+  },
+  {
+    "source": "isolated decision-store API with synthetic inputs; no actual human or domain effect",
+    "result": {
+      "id": "2b08562204a42fe3670aba3ec1d31796a51efb62cd3cd05e5836bc6a09a269e6",
+      "status": "pending",
+      "question": "Fixture attention",
+      "question_digest": "ed6e0bc937823fc924fbf7e54bc4c78d904ed1481b1c023de104d099da0e61fd",
+      "display": {
+        "status": "not-requested"
+      },
+      "answer": null,
+      "application": null,
+      "expires_at": 1793685849.335055,
+      "choices": null,
+      "scope": {
+        "tool": "xsm_publish",
+        "arguments": {
+          "visible": true
+        },
+        "cwd": null
+      },
+      "native_question": "[xsm-decision:2b08562204a42fe3] Fixture attention",
+      "attention": {
+        "id": "2b08562204a42fe3670aba3ec1d31796a51efb62cd3cd05e5836bc6a09a269e6",
+        "requested_at": 1793684049.3354151,
+        "human_saw": null,
+        "title": "Fixture notification",
+        "body_digest": "ed6e0bc937823fc924fbf7e54bc4c78d904ed1481b1c023de104d099da0e61fd",
+        "requested_chars": 17,
+        "observed_display_range": null,
+        "status": "os-call-succeeded",
+        "os_called_at": 1793684049.3354151,
+        "exit_code": 0
+      },
+      "inbox_pending": 0
+    }
+  },
+  {
+    "source": "isolated Connection legacy consent inspection with synthetic unbound input",
+    "result": {
+      "requests": [
+        {
+          "id": "cbf9f8b5a4d648ee",
+          "marker": "[xsm:cbf9f8b5a4d648ee]",
+          "verb": "publish",
+          "target": "fixture-9c99ca71",
+          "status": "pending"
+        }
+      ],
+      "unbound": [
+        {
+          "t": 1793684049.364328,
+          "answer": "unmatched synthetic answer",
+          "question": "Fixture native question",
+          "request": null,
+          "reason": "synthetic unbound event",
+          "early": false,
+          "quiet": false
+        }
+      ],
+      "inbox_pending": 0
+    }
+  },
+  {
+    "source": "isolated Connection closed consent marker, not permission",
+    "result": {
+      "closed": "[xsm:cbf9f8b5a4d648ee]",
+      "inbox_pending": 0
+    }
+  }
+]

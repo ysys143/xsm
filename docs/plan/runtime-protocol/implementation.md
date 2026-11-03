@@ -106,8 +106,8 @@ runtime 도달로 오인하는 등 wire 결함3종을 검출했다. ACK 후 rese
 통과했으며 격리 VM 종료를 확인했다.
 
 [결과 계약 범위 전수표](result-contract-coverage.md)는 공개22개 operation 중
-domain schema가 있는 operation12개(그중 team/board는 일부 action)와
-미정의10개를 구분한다.
+domain schema가 있는 operation13개(그중 team/board는 일부 action)와
+미정의9개를 구분한다.
 이는 완료율이나 native 지원률이 아니다.
 
 ## 핵심 검사 적합성 묶음 분리 — 2026-11-03
@@ -151,6 +151,14 @@ stdio28개/frame46개와 Mac core893개(96.634초)를 확인했다. Publication 
 schema6개 예제/거부8개도 추가했다. 고정9b81010의 Linux core893개도
 3.11에서86.354초,3.14에서111.113초에 통과했고 새46개 frame의 offline schema
 검증 및 VM 종료를 확인했다. 실제 사람/native/remote 전체 인증은 별도다.
+
+## 사람 결정 상태 결과 계약 — 2026-11-03
+
+[결정 상태 계약](decision-status-contract.md)은 목록·상세·취소 거부와 기존 입력
+승인 진단을 정의한다. Stdio45개/frame58개, 예제27개와 잘못된 결과16개 거부를
+확인했다. 사람이 봤다고 잘못 주장하거나 관측 없는 applied를 허용하는 변이2개도
+검출했다. Mac core893개는94.949초에 통과했다. 사람·native·전체 원격 인증은
+아니며 원래 전체 계획은 계속 미완이다.
 
 ## 단계별 판정
 

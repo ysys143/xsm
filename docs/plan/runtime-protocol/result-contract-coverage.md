@@ -1,15 +1,15 @@
 # Operation 결과 계약 범위 — 2026-11-03
 
 상태: 전체 결과 계약은 미완이다. 공개 catalog22개를 실제 encoding 선언과
-개발 checker의 operation별 분기에 대조했다. Domain schema가 있는 operation 이름은12개,
-없는 이름은10개다. 12개 중 team/board는 일부 action만 정의한다. 이 수는
+개발 checker의 operation별 분기에 대조했다. Domain schema가 있는 operation 이름은13개,
+없는 이름은9개다. 13개 중 team/board는 일부 action만 정의한다. 이 수는
 완료율·독립 구현 인증·native 지원률이 아니다.
 
 | Operation | 현재 result encoding | Domain 구조 정의와 남은 범위 |
 |---|---|---|
 | `xsm_owned` | JSON object | 미완: 공통 result object 검사만 있음 |
 | `xsm_files` | JSON object | [file-result.schema.json](../../protocol/file-result.schema.json) — 파일 조회 구조 |
-| `xsm_decision_status` | JSON object | 미완: 공통 result object 검사만 있음 |
+| `xsm_decision_status` | JSON object | [decision-status-result.schema.json](../../protocol/decision-status-result.schema.json) — lifecycle·취소·입력 승인 진단 |
 | `xsm_ask` | JSON object | [question-result.schema.json](../../protocol/question-result.schema.json) — 단일/그룹 질문·회신 구조 |
 | `xsm_question_status` | JSON object | [question-result.schema.json](../../protocol/question-result.schema.json) — 개별/그룹/소유 요청 목록 구조 |
 | `xsm_discover` | JSON object | [discovery-result.schema.json](../../protocol/discovery-result.schema.json) — 후보/관측/부분 실패 구조 |

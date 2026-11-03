@@ -90,6 +90,34 @@ def validate_question_result(value, schema, operation=None, definition=None):
         check_network(value['network_delivery'])
 
 
+def validate_decision_status(value, schema):
+    Draft202012Validator(schema).validate(value)
+    if 'question_digest' in value:
+        def digest(text):
+            return hashlib.sha256(json.dumps(text, sort_keys=True, ensure_ascii=False,
+                separators=(',', ':')).encode('utf-8')).hexdigest()
+        if value['question_digest'] != digest(value['question']):
+            raise ValueError('decision question digest differs from text')
+        display = value['display']
+        for text, checksum in (('text', 'digest'), ('reported_text', 'reported_digest')):
+            if checksum in display and (text not in display or display[checksum] != digest(display[text])):
+                raise ValueError('decision display digest differs from text')
+        if value['native_question'] not in (value['question'], '[xsm-decision:%s] %s' % (value['id'][:16], value['question'])):
+            raise ValueError('decision native question differs from bound question')
+        if value['status'] == 'applied':
+            application = value['application']
+            if not application or application.get('phase') == 'started' or 'observed_at' not in application:
+                raise ValueError('applied decision has no observed application')
+            if not value.get('permission_receipt') and display.get('complete') is not True:
+                raise ValueError('applied decision has no complete display or permission receipt')
+        if value['attention'] and value['attention']['id'] != value['id']:
+            raise ValueError('decision attention belongs to a different decision')
+    if 'requests' in value:
+        for request in value['requests']:
+            if request['marker'] != '[xsm:%s]' % request['id']:
+                raise ValueError('consent marker differs from its request ID')
+
+
 def output_contract(trace=None):
     schema = json.loads((ROOT / 'docs/protocol/output.schema.json').read_text())
     examples = json.loads((ROOT / 'docs/protocol/output-examples.json').read_text())
@@ -125,6 +153,8 @@ def output_contract(trace=None):
     Draft202012Validator.check_schema(question_schema)
     publication_schema = json.loads((ROOT / 'docs/protocol/publication-result.schema.json').read_text())
     Draft202012Validator.check_schema(publication_schema)
+    decision_schema = json.loads((ROOT / 'docs/protocol/decision-status-result.schema.json').read_text())
+    Draft202012Validator.check_schema(decision_schema)
     inbox_observed = 0
     inbox_empty = dict(messages=[], claims=[], items=[], inbox_pending=0)
     inbox_file = dict(messages=['fixture'], claims=[dict(id='original', token='opaque-token',
@@ -157,6 +187,8 @@ def output_contract(trace=None):
         if 'result' in frame:
             definition = schema['x-methodResults'][observation['method']]
             Draft202012Validator({'$ref': definition, '$defs': schema['$defs']}).validate(frame['result'])
+            if observation.get('operation') == 'xsm_decision_status':
+                validate_decision_status(frame['result'], decision_schema)
             if observation.get('operation') == 'xsm_publish':
                 Draft202012Validator(publication_schema).validate(frame['result'])
             if observation.get('operation') in question_schema['x-operationResults']:
@@ -239,6 +271,56 @@ def ack_contract():
             raise ValueError('invalid ACK result accepted: ' + repr(value))
     return dict(examples=len(examples), rejected=len(invalid),
                 scope='successful result structure; batch errors may follow earlier durable acknowledgements')
+
+
+def decision_status_contract():
+    schema = json.loads((ROOT / 'docs/protocol/decision-status-result.schema.json').read_text())
+    examples = json.loads((ROOT / 'docs/protocol/decision-status-result-examples.json').read_text())
+    Draft202012Validator.check_schema(schema)
+    inbox = json.loads((ROOT / 'docs/protocol/inbox-result.schema.json').read_text())
+    if schema['$defs']['claim'] != inbox['$defs']['claim']:
+        raise ValueError('decision status claim structure differs from inbox')
+    for example in examples:
+        validate_decision_status(example['result'], schema)
+    def sample(predicate):
+        return next(e['result'] for e in examples if predicate(e['result']))
+    pending = sample(lambda v: v.get('status') == 'pending' and v.get('display', {}).get('status') == 'requested')
+    applied = sample(lambda v: v.get('status') == 'applied' and v.get('application', {}).get('phase') == 'completed')
+    attention = sample(lambda v: bool(v.get('attention')))
+    legacy = sample(lambda v: bool(v.get('requests')) and bool(v.get('unbound')))
+    blocked = sample(lambda v: v.get('status') == 'application-started')
+    invalid = []
+    for source, path, value in (
+            (pending, ['display', 'human_saw'], True),
+            (pending, ['question_digest'], '0' * 64),
+            (pending, ['native_question'], 'unbound question'),
+            (pending, ['display', 'digest'], '0' * 64),
+            (pending, ['status'], 'permission-granted'),
+            (applied, ['application'], None),
+            (applied, ['display', 'complete'], False),
+            (applied, ['application', 'observed_at'], 'now'),
+            (applied, ['answer', 'recorded_at'], True),
+            (attention, ['attention', 'human_saw'], True),
+            (attention, ['attention', 'id'], '0' * 64),
+            (attention, ['attention', 'observed_display_range'], [0, 100]),
+            (legacy, ['requests', 0, 'marker'], '[xsm:wrong]'),
+            (legacy, ['unbound', 0, 't'], 'now'),
+            (blocked, ['undo'], True)):
+        bad = copy.deepcopy(source)
+        target = bad
+        for key in path[:-1]:
+            target = target[key]
+        target[path[-1]] = value
+        invalid.append(bad)
+    bad = copy.deepcopy(pending); del bad['scope']; invalid.append(bad)
+    for value in invalid:
+        try:
+            validate_decision_status(value, schema)
+        except (ValueError, ValidationError):
+            pass
+        else:
+            raise ValueError('invalid decision status accepted')
+    return dict(examples=len(examples), rejected=len(invalid))
 
 
 def publication_contract():
@@ -638,7 +720,7 @@ def run(trace=None):
                 validator='jsonschema', validatorVersion=importlib.metadata.version('jsonschema'),
                 scope='request and output structures; no full operation results or semantic certification',
                 output=output_contract(trace), operations=operations_contract(), files=files_contract(), ack=ack_contract(),
-                discovery=discovery_contract(), team=team_contract(), board=board_contract(), doc=doc_contract(), send=send_contract(), question=question_contract(), publication=publication_contract())
+                discovery=discovery_contract(), team=team_contract(), board=board_contract(), doc=doc_contract(), send=send_contract(), question=question_contract(), publication=publication_contract(), decisionStatus=decision_status_contract())
 
 
 if __name__ == '__main__':

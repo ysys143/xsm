@@ -1,0 +1,1005 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:xsm:host-protocol:1:decision-status-result",
+  "title": "Readback/cancellation of scoped human decisions and legacy consent diagnostics",
+  "oneOf": [
+    {
+      "$ref": "#/$defs/full"
+    },
+    {
+      "$ref": "#/$defs/listing"
+    },
+    {
+      "$ref": "#/$defs/missing"
+    },
+    {
+      "$ref": "#/$defs/blockedCancellation"
+    },
+    {
+      "$ref": "#/$defs/pendingConsent"
+    },
+    {
+      "$ref": "#/$defs/closedConsent"
+    }
+  ],
+  "$defs": {
+    "claim": {
+      "type": "object",
+      "required": [
+        "id",
+        "token",
+        "owner",
+        "generation",
+        "digest"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "token": {
+          "type": "string",
+          "minLength": 1
+        },
+        "generation": {
+          "type": "string",
+          "minLength": 1
+        },
+        "digest": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}(?![\\s\\S])"
+        },
+        "owner": {
+          "type": "object",
+          "required": [
+            "type",
+            "id"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "type": {
+              "type": "string",
+              "minLength": 1
+            },
+            "id": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        }
+      }
+    },
+    "reader": {
+      "type": "object",
+      "properties": {
+        "instance": {
+          "type": "string"
+        },
+        "pid": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "generation": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "instance",
+        "pid",
+        "generation"
+      ],
+      "additionalProperties": false
+    },
+    "display": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "complete": {
+              "type": "boolean"
+            },
+            "reported_text": {
+              "type": "string"
+            },
+            "reported_digest": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}(?![\\s\\S])"
+            },
+            "status": {
+              "const": "not-requested"
+            }
+          },
+          "required": [
+            "status"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "complete": {
+              "type": "boolean"
+            },
+            "reported_text": {
+              "type": "string"
+            },
+            "reported_digest": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}(?![\\s\\S])"
+            },
+            "status": {
+              "const": "requested"
+            },
+            "owner": {
+              "type": "string"
+            },
+            "text": {
+              "type": "string"
+            },
+            "digest": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}(?![\\s\\S])"
+            },
+            "channel": {
+              "type": "string"
+            },
+            "requested_at": {
+              "type": "number"
+            },
+            "human_saw": {
+              "type": "null"
+            },
+            "reader": {
+              "$ref": "#/$defs/reader"
+            }
+          },
+          "required": [
+            "status",
+            "owner",
+            "text",
+            "digest",
+            "channel",
+            "requested_at",
+            "human_saw",
+            "complete"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "answer": {
+      "type": "object",
+      "properties": {
+        "reply": {
+          "description": "Verbatim untrusted transport response, including malformed JSON values; never executable approval."
+        },
+        "source": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "source_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "recorded_at": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "reply",
+        "source",
+        "source_id",
+        "recorded_at"
+      ],
+      "additionalProperties": false
+    },
+    "receipt": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "source": {
+              "const": "typed-command"
+            },
+            "verb": {
+              "type": "string"
+            },
+            "target": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "source",
+            "verb",
+            "target"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "source": {
+              "const": "input-consent"
+            },
+            "text": {
+              "type": "string"
+            },
+            "via": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "binding_note": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "required": [
+            "source",
+            "text",
+            "via",
+            "binding_note"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "application": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "phase": {
+              "const": "started"
+            },
+            "started_at": {
+              "type": "number"
+            },
+            "reader": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/reader"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "source": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "required": [
+            "phase",
+            "started_at",
+            "reader",
+            "source"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "phase": {
+              "const": "completed"
+            },
+            "started_at": {
+              "type": "number"
+            },
+            "reader": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/reader"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "source": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "result": {},
+            "observed_at": {
+              "type": "number"
+            },
+            "clock_rollback_after_start": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "phase",
+            "started_at",
+            "reader",
+            "source",
+            "result",
+            "observed_at"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "result": {},
+            "observed_at": {
+              "type": "number"
+            }
+          },
+          "required": [
+            "result",
+            "observed_at"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "attention": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}(?![\\s\\S])"
+        },
+        "requested_at": {
+          "type": "number"
+        },
+        "human_saw": {
+          "type": "null"
+        },
+        "title": {
+          "type": "string"
+        },
+        "body_digest": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}(?![\\s\\S])"
+        },
+        "requested_chars": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "observed_display_range": {
+          "type": "null"
+        },
+        "status": {
+          "enum": [
+            "suppressed",
+            "requested",
+            "os-call-succeeded",
+            "failed"
+          ]
+        },
+        "reason": {
+          "type": "string"
+        },
+        "os_called_at": {
+          "type": "number"
+        },
+        "exit_code": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "id",
+        "requested_at",
+        "human_saw",
+        "title",
+        "body_digest",
+        "requested_chars",
+        "observed_display_range",
+        "status"
+      ],
+      "additionalProperties": false
+    },
+    "summary": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}(?![\\s\\S])"
+        },
+        "status": {
+          "enum": [
+            "pending",
+            "answered",
+            "applied",
+            "denied",
+            "dismissed",
+            "unshown-or-declined",
+            "unknown",
+            "expired",
+            "cancelled",
+            "superseded"
+          ]
+        },
+        "question": {
+          "type": "string"
+        },
+        "created_at": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "id",
+        "status",
+        "question",
+        "created_at"
+      ],
+      "additionalProperties": false
+    },
+    "full": {
+      "type": "object",
+      "properties": {
+        "inbox_pending": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "inbox_notice": {
+          "type": "string"
+        },
+        "inbox_pending_known": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "inbox_pending_diagnostics": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "incoming": {
+          "type": "object",
+          "properties": {
+            "messages": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "claims": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/claim"
+              }
+            }
+          },
+          "required": [
+            "messages",
+            "claims"
+          ],
+          "additionalProperties": false
+        },
+        "id": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}(?![\\s\\S])"
+        },
+        "status": {
+          "enum": [
+            "pending",
+            "answered",
+            "applied",
+            "denied",
+            "dismissed",
+            "unshown-or-declined",
+            "unknown",
+            "expired",
+            "cancelled",
+            "superseded"
+          ]
+        },
+        "question": {
+          "type": "string"
+        },
+        "question_digest": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}(?![\\s\\S])"
+        },
+        "display": {
+          "$ref": "#/$defs/display"
+        },
+        "answer": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/answer"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "application": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/application"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "expires_at": {
+          "type": "number"
+        },
+        "choices": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "type": "string"
+          }
+        },
+        "scope": {
+          "type": "object",
+          "properties": {
+            "tool": {
+              "type": "string"
+            },
+            "arguments": {
+              "type": "object",
+              "description": "Opaque effect scope, not an API replay template."
+            },
+            "cwd": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "resource": {
+              "type": "object"
+            }
+          },
+          "required": [
+            "tool",
+            "arguments",
+            "cwd"
+          ],
+          "additionalProperties": false
+        },
+        "native_question": {
+          "type": "string"
+        },
+        "permission_receipt": {
+          "$ref": "#/$defs/receipt"
+        },
+        "attention": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/attention"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "status",
+        "question",
+        "question_digest",
+        "display",
+        "answer",
+        "application",
+        "expires_at",
+        "choices",
+        "scope",
+        "native_question",
+        "attention",
+        "inbox_pending"
+      ],
+      "additionalProperties": false
+    },
+    "listing": {
+      "type": "object",
+      "properties": {
+        "inbox_pending": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "inbox_notice": {
+          "type": "string"
+        },
+        "inbox_pending_known": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "inbox_pending_diagnostics": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "incoming": {
+          "type": "object",
+          "properties": {
+            "messages": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "claims": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/claim"
+              }
+            }
+          },
+          "required": [
+            "messages",
+            "claims"
+          ],
+          "additionalProperties": false
+        },
+        "status": {
+          "const": "decisions"
+        },
+        "decisions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/summary"
+          }
+        }
+      },
+      "required": [
+        "status",
+        "decisions",
+        "inbox_pending"
+      ],
+      "additionalProperties": false
+    },
+    "missing": {
+      "type": "object",
+      "properties": {
+        "inbox_pending": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "inbox_notice": {
+          "type": "string"
+        },
+        "inbox_pending_known": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "inbox_pending_diagnostics": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "incoming": {
+          "type": "object",
+          "properties": {
+            "messages": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "claims": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/claim"
+              }
+            }
+          },
+          "required": [
+            "messages",
+            "claims"
+          ],
+          "additionalProperties": false
+        },
+        "id": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}(?![\\s\\S])"
+        },
+        "status": {
+          "const": "not-found"
+        }
+      },
+      "required": [
+        "id",
+        "status",
+        "inbox_pending"
+      ],
+      "additionalProperties": false
+    },
+    "blockedCancellation": {
+      "type": "object",
+      "properties": {
+        "inbox_pending": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "inbox_notice": {
+          "type": "string"
+        },
+        "inbox_pending_known": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "inbox_pending_diagnostics": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "incoming": {
+          "type": "object",
+          "properties": {
+            "messages": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "claims": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/claim"
+              }
+            }
+          },
+          "required": [
+            "messages",
+            "claims"
+          ],
+          "additionalProperties": false
+        },
+        "id": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}(?![\\s\\S])"
+        },
+        "status": {
+          "enum": [
+            "application-started",
+            "already-applied"
+          ]
+        },
+        "reason": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "status",
+        "reason",
+        "inbox_pending"
+      ],
+      "additionalProperties": false
+    },
+    "consentRequest": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "marker": {
+          "type": "string"
+        },
+        "verb": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "target": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "status": {
+          "enum": [
+            "pending",
+            "answered",
+            "expired"
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "marker",
+        "verb",
+        "target",
+        "status"
+      ],
+      "additionalProperties": false
+    },
+    "unbound": {
+      "type": "object",
+      "properties": {
+        "t": {
+          "type": "number"
+        },
+        "answer": {
+          "type": "string"
+        },
+        "question": {
+          "type": "string"
+        },
+        "request": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "reason": {
+          "type": "string"
+        },
+        "early": {
+          "type": "boolean"
+        },
+        "quiet": {
+          "type": "boolean"
+        },
+        "told": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "t",
+        "answer",
+        "question",
+        "request",
+        "reason",
+        "early",
+        "quiet"
+      ],
+      "additionalProperties": false
+    },
+    "pendingConsent": {
+      "type": "object",
+      "properties": {
+        "inbox_pending": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "inbox_notice": {
+          "type": "string"
+        },
+        "inbox_pending_known": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "inbox_pending_diagnostics": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "incoming": {
+          "type": "object",
+          "properties": {
+            "messages": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "claims": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/claim"
+              }
+            }
+          },
+          "required": [
+            "messages",
+            "claims"
+          ],
+          "additionalProperties": false
+        },
+        "requests": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/consentRequest"
+          }
+        },
+        "unbound": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/unbound"
+          }
+        }
+      },
+      "required": [
+        "requests",
+        "unbound",
+        "inbox_pending"
+      ],
+      "additionalProperties": false
+    },
+    "closedConsent": {
+      "type": "object",
+      "properties": {
+        "inbox_pending": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "inbox_notice": {
+          "type": "string"
+        },
+        "inbox_pending_known": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "inbox_pending_diagnostics": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "incoming": {
+          "type": "object",
+          "properties": {
+            "messages": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "claims": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/claim"
+              }
+            }
+          },
+          "required": [
+            "messages",
+            "claims"
+          ],
+          "additionalProperties": false
+        },
+        "closed": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "closed",
+        "inbox_pending"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

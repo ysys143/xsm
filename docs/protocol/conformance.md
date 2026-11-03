@@ -224,3 +224,12 @@ and the domain revision; display names do not renew denial or retarget approval.
 Repeated hidden withdrawals are no-ops and do not renew permission. A real
 published-to-hidden transition requires fresh approval before publishing again.
 An unknown started application requires inspection rather than replay.
+
+## Decision status contract extension
+
+The current `decisions` suite has 45 checks, extending the earlier 35-check
+sample with owned history/listing, foreign read refusal, cancellation semantics
+and separate pending/closed legacy consent markers. The
+[decision status result schema](decision-status-result.schema.json) validates
+these observations. The checker does not turn source labels, display complete,
+OS-call success or a recorded result into fresh permission.
