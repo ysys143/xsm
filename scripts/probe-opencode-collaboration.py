@@ -22,7 +22,9 @@ from xsm_client import XsmClient
 
 
 class ScriptedTools:
-    def __init__(self, output, *, lazy=False):
+    def __init__(self, output, *, lazy=False, native_dialect='hermes'):
+        assert native_dialect in ('hermes', 'openclaw')
+        self.native_dialect = native_dialect
         self.lock = threading.Lock()
         self.pending = None
         self.requests = 0
@@ -45,14 +47,18 @@ class ScriptedTools:
                     planned = fixture.pending
                     issue = planned and not planned['issued'] and planned['name'] in available
                     emitted = None
-                    if lazy and planned and not planned['issued'] and 'tool_call' in available:
+                    if lazy and planned and not planned['issued'] and planned['name'] not in ('tool_search', 'tool_call') and 'tool_call' in available:
                         issue = True
                         if not planned.get('searched') and 'tool_search' in available:
                             planned['searched'] = True
-                            emitted = dict(id='search-' + planned['id'], name='tool_search', args={'queries': [planned['name']], 'limit': 1})
+                            search_args = {'queries': [planned['name']], 'limit': 1}
+                            if native_dialect == 'openclaw': search_args = {'query': planned['name'], 'limit': 1}
+                            emitted = dict(id=('search' if native_dialect == 'openclaw' else 'search-') + planned['id'], name='tool_search', args=search_args)
                         else:
                             planned['issued'] = True
-                            emitted = dict(id=planned['id'], name='tool_call', args={'calls': [{'name': planned['name'], 'arguments': planned['args']}]})
+                            call_args = {'calls': [{'name': planned['name'], 'arguments': planned['args']}]}
+                            if native_dialect == 'openclaw': call_args = {'id': planned['name'], 'args': planned['args']}
+                            emitted = dict(id=planned['id'], name='tool_call', args=call_args)
                     elif issue:
                         planned['issued'] = True
                         emitted = planned
@@ -77,7 +83,7 @@ class ScriptedTools:
     def plan(self, name, args):
         with self.lock:
             self.serial += 1
-            self.pending = dict(name=name, args=args, id='feature-' + str(self.serial), issued=False)
+            self.pending = dict(name=name, args=args, id=('feature' if self.native_dialect == 'openclaw' else 'feature-') + str(self.serial), issued=False)
             return self.pending['id']
 
     def close(self):
