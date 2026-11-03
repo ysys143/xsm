@@ -371,6 +371,9 @@ def owned_fixture(peer, params, env, check, equal):
         if isinstance(value, dict): return not forbidden.intersection(value) and all(public(v) for v in value.values())
         return not isinstance(value, list) or all(public(v) for v in value)
     check('owned creation exposes no profile or owner record', lambda: equal(public(created), True))
+    check('empty owned status id cannot become history', lambda: operation(action='status',request_id='',error=-32602))
+    check('empty owned run id cannot mint a new task', lambda: operation(action='run',request_id='',
+        text='fixture invalid ID work',work_context='fixture-context',error=-32602))
     args = dict(action='run', text='fixture work', work_context='fixture-context', request_id='owned-fixture-task')
     queued = operation(**args)
     check('owned capacity refusal retains queued request', lambda: equal(queued['status']=='queued' and queued['id']==args['request_id'], True))

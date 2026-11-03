@@ -134,3 +134,7 @@ target and summary and returns a transfer receipt only after the verified answer
 is applied. `action: "show"` returns this conversation's received transfers and
 letters; it neither moves a place nor requires a target/summary. Pending and
 legacy text results remain distinguishable from those structured receipts.
+
+An explicitly supplied owned request_id must be a nonempty valid message ID.
+An empty string is rejected; it cannot select history or generate a new run.
+Omitting request_id retains the documented optional-id/history behavior.

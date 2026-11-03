@@ -77,6 +77,14 @@ class OwnedInterfacesTest(TempState):
         self.assertEqual(result['result']['body'], 'actual adapter result')
         self.assert_public_owned(self.invoke(action='status',name='service',request_id='public-owned-projection'))
 
+    def test_empty_owned_id_cannot_become_history_or_a_new_run(self):
+        self.create()
+        for arguments in (dict(action='status'),dict(action='run',text='work',work_context='topic')):
+            with self.subTest(action=arguments['action']),self.assertRaises(self.mcp.ToolError):
+                self.invoke(name='service',request_id='',**arguments)
+        self.assertEqual(self.invoke(action='status',name='service')['requests'],[])
+        self.assertEqual(self.count,0)
+
     def test_known_native_admission_refusal_is_a_tool_error(self):
         with mock.patch.object(self.workers,'depth_budget',side_effect=self.workers.WorkerError('max_depth refused')):
             with self.assertRaisesRegex(self.mcp.ToolError,'max_depth'):

@@ -2851,3 +2851,16 @@ retained journal을 제어하고 이름 재사용을 채택하지 않는다. PID
 generation을 재검사한다. 수정 전 실패2경로와 focused15개/0.284초를 확인했고
 Mac945개+schema/v7 local은56.249초에 통과했다. 실제19 mode는 새 고정 source로
 다시 검증해야 하며 최초 receiver stale 및 원래 전체 계획은 미완이다.
+
+## 빈 owned ID 거부 — 2026-11-03
+
+[빈 ID 복구](owned-empty-id.md)는 status가 history로 바뀌고 run이 새 ID를 만들던
+경로를 수정 전3개 실패로 재현했다. 공통 서비스와 공개 schema에서 거부하며
+새 공개 owned suite32개가 phantom request가 없음을 검사한다. 파생 native catalog
+동기화 실패도 보존/수정했고 focused15개/2.706초와 Mac946개+schema/v7 local은
+56.514초에 통과했다. Linux 및 전체 원래 행렬은 미완이다.
+
+Native cleanup85718b2도 실제 OpenClaw19mode/632개 checkpoint와 모든 child/gateway
+종료를 통과했다.945개 core는 Linux3.11에서80.356초/3.14에서104.900초였다.
+모델0과 native SDK/gateway 경계의 증거이며 실제 모델/UI·최초 receiver stale 및
+나머지 runtime/원격·메신저·설치 전체 계획은 미완이다.

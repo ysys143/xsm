@@ -13,6 +13,11 @@ def execute(me, arguments, *, run=None):
     action, name = args.get('action'), args.get('name')
     if not isinstance(name, str) or not name:
         raise ActionError('owned worker name required')
+    if args.get('request_id') is not None:
+        try:
+            handoff._id(args['request_id'])
+        except ValueError as exc:
+            raise ActionError('invalid owned request ID') from exc
     if action == 'create':
         return workers.create_owned(args.get('runtime'), caller=me, name=name, cwd=args.get('dir'),
             home=args.get('home'), model=args.get('model'), effort=args.get('effort'), grant=args.get('grant'))

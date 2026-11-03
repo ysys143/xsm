@@ -61,7 +61,7 @@ TOOLS = [
          "name": {"type": "string"}, "runtime": {"type": "string", "enum": owned_runtimes()},
          "dir": {"type": "string"}, "home": {"type": "string"}, "model": {"type": "string"},
          "effort": {"type": "string"}, "grant": {"type": "string"}, "text": {"type": "string"},
-         "work_context": {"type": "string"}, "request_id": {"type": "string"},
+         "work_context": {"type": "string"}, "request_id": {"type": "string", "minLength": 1},
          "independent": {"type": "boolean", "default": False},
          "wait": {"type": "number", "default": 0, "minimum": 0, "maximum": 60}},
          "required": ["action", "name"]}, "annotations": MESSAGING},

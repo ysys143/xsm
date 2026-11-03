@@ -32,3 +32,22 @@ Mac core945개(Python550+외부 적합성54+SDK56+native133+Node152)와 canonica
 이전 receiver stale 사건은 이번 batch에서 재현되지 않았으며 원인은 미확정이다.
 그 상태를 이 cleanup 복구와 합쳐 해결됐다고 하지 않는다. 실제 모델/UI·원격·
 메신저·설치와 원래 전체 계획도 미완이다.
+
+## 고정 source 전체 native 재검증
+
+85718b2a74ce3ee2fe3ddcdf0bd70a2e88cf8d07의 archive SHA256은
+d110ba5b76b026f6eedc29fd8c51c03915e1aeecf351dc03066369e78b65dcd5다.
+동일한 고정 OpenClaw2026.10.9/Node24.22.2에서19/19개 native mode와632개
+checkpoint가 통과했다. 정상/분리 context/101개 session 뒤 cold lookup,
+frontend 종료·gateway 재시작 뒤 정상/오류/무응답 복구, 실행 전/queue/실행 중 취소와
+확인 유실, direct·public 경로를 모두 재실행했다. 모든 mode에서 gatewayStopped와
+ownedChildrenExited가 true였으며 미실행 mode0이다. 이전 cleanup 실패3개도
+이 source에서 통과했고 최초 실패 batch는 보존했다.
+
+같은 source의945개 core+schema/v7 local은 Python3.11.2에서80.356초,
+Python3.14.10에서104.900초로 각각 통과했다. Model0/network none/cpu2/memory3g,
+VM stopExit0이다. Prepared native volume은 읽기 전용으로 검증하고 사용했다.
+원시는 `native-probe-retained-cleanup-linux/result.json`과 mode별 output이다.
+이것은 OpenClaw owned 경계의 실제 native SDK/gateway 증거이며 실제 모델·사용자
+UI·일반 interactive 모든 모드·다른 runtime/원격/메신저 전체 인증은 아니다.
+최초 receiver stale의 미확정 상태도 별도로 유지한다.

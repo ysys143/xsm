@@ -53,7 +53,8 @@ export default [
           "type": "string"
         },
         "request_id": {
-          "type": "string"
+          "type": "string",
+          "minLength": 1
         },
         "independent": {
           "type": "boolean",

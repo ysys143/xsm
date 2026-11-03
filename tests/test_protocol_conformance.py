@@ -328,7 +328,7 @@ class ExternalConformanceTest(unittest.TestCase):
         command = [sys.executable, '-B', str(ROOT / 'tests/fixtures/protocol_owned_fixture.py')]
         result = checker.run(command, suite='owned-fixture', capture=True)
         self.assertEqual(result['status'], 'passed', {k:v for k,v in result.items() if k != 'observations'})
-        self.assertEqual(len(result['checks']), 30)
+        self.assertEqual(len(result['checks']), 32)
 
     def test_owned_fixture_suite_refuses_a_production_candidate_before_launch(self):
         result = checker.run(self.delivery_candidate('none'), suite='owned-fixture')
