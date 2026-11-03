@@ -2920,3 +2920,17 @@ HTTP request이며 실제 구독 모델·화면·messaging 증거는 아니다.
 읽는 결함을 재현해 native permission API로 수정했다. 이전 facade 결과는 이
 결함을 가렸으며 사용자 profile·릴리즈 변경은 없다. Native load red와 fixture
 실패·SIGINT/unload도 보존했다. 수정된 Mac960개+schema/v7은58.678초였다.
+
+8f003bd 고정 Linux 실제 drain21개/13 HTTP와960개 core/schema/v7도
+84.154초/107.991초에 통과했고 VM stopExit=0을 확인했다.
+
+## Hermes native messaging FIFO — 2026-11-03
+
+[Messaging FIFO](hermes-messaging.md)는 현재 profile/플랫폼 권한과 기존 native
+connector provenance에 결속해 원문을 native automation으로 저장한다. Receipt의
+logical owner/원문/identity/route와 복원된 internal·nonviewer 상태를 확인한다.
+Actual DiscordAdapter와 local platform transport, 설치 plugin/native drain/AIAgent/
+hooks/Tool Hub로 awake·FYI·native ACK·회신과 권한 철회/connector 교체 거부를
+확인했다.27개 checkpoint/11 HTTP, 실제 local21개 회귀와 Mac960개/schema/v7
+59.136초가 통과했다. Platform auth guard 변이는 의도한 assertion으로 실패했다.
+플랫폼 서비스에는 접속하지 않았으며 외부 Discord·Telegram과 전체 계획은 미완이다.

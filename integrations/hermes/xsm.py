@@ -331,13 +331,20 @@ class NativeGateway:
         if entry is None or entry.suspended or entry.session_id != self.sid:
             raise RuntimeError('native gateway conversation changed')
         source = self.runner._restored_source(entry)
-        if source.platform != Platform.LOCAL:
-            raise RuntimeError('native messaging queue delivery is not connected')
-        live = self.runner._plugin_local_session(source, self.route,
-            plugin_home=Path(self.profile), plugin_id='xsm')
-        if live is None:
-            raise RuntimeError('native gateway local session is unavailable')
-        return live.source, self.runner._adapter_for_source(live.source)
+        if source.platform == Platform.LOCAL:
+            live = self.runner._plugin_local_session(source, self.route,
+                plugin_home=Path(self.profile), plugin_id='xsm')
+            if live is None:
+                raise RuntimeError('native gateway local session is unavailable')
+            return live.source, self.runner._adapter_for_source(live.source)
+        if (not self.runner._plugin_messaging_session_owned(self.route,
+                plugin_home=Path(self.profile), plugin_id='xsm') or
+                not self.runner._plugin_injection_authorized(source, plugin_id='xsm', target=self.route)):
+            raise RuntimeError('native messaging route is not authorized for this profile')
+        adapter = self.runner._delivery_adapter_for(source)
+        if adapter is None:
+            raise RuntimeError('native messaging adapter is unavailable')
+        return source, adapter
 
     async def _execute(self, text=None, identity=None):
         from gateway.run import _profile_runtime_scope
@@ -354,13 +361,34 @@ class NativeGateway:
                           'turn_author': author})
             receipt = await self.authority.admit_automation(adapter, event, identity)
             row = get_session_admission(self.authority.db, admission_id=receipt.admission_id)
-            descriptor = row['payload'].get('local_automation_v1', {}) if row else {}
+            from gateway.config import Platform
+            from gateway.session_operator import is_viewer_input
+            expected_owner = (source.chat_id if source.platform == Platform.LOCAL
+                              else self.authority.logical_owner(self.sid))
             if (not row or receipt.ref.profile_id != self.authority.profile_id or
+                    receipt.ref.session_id != expected_owner or
                     receipt.authority_epoch != self.epoch or
                     row['target_session_id'] != receipt.ref.session_id or
                     row['principal_id'] != 'automation:' + self.route or row['request_id'] != identity or
-                    row['payload']['text'] != text or descriptor.get('target') != self.sid or
-                    descriptor.get('turn_author') != author):
+                    row['payload']['text'] != text or is_viewer_input(row)):
+                raise RuntimeError('native gateway admission receipt differs')
+            if source.platform == Platform.LOCAL:
+                descriptor = row['payload'].get('local_automation_v1', {})
+                valid = (descriptor.get('target') == self.sid and descriptor.get('turn_author') == author and
+                         descriptor.get('owner') == expected_owner and descriptor.get('route') == self.route and
+                         descriptor.get('identity') == identity)
+            else:
+                from gateway.session_envelope import restore_native
+                from gateway.session_automation import _route_identity
+                envelope = row['payload'].get('native_text_v1', {})
+                descriptor = envelope.get('automation', {})
+                valid = (envelope.get('route') == self.route and descriptor.get('owner') == expected_owner and
+                         descriptor.get('identity') == identity and isinstance(envelope.get('provenance'), dict))
+                if valid:
+                    restored = restore_native(row['payload'], self.runner)
+                    valid = (restored.internal and not restored.is_command() and
+                             _route_identity(restored.source) == _route_identity(source))
+            if not valid:
                 raise RuntimeError('native gateway admission receipt differs')
             return True
 

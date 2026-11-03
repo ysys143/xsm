@@ -356,21 +356,25 @@ before observation releases its original claims; consumption still requires an
 explicit xsm_ack. The default remains off until enabled by the profile operator.
 This mode alone does not connect idle push/wake or certify actual user UI.
 
-## Opt-in local gateway FIFO delivery
+## Opt-in gateway FIFO delivery
 
-On the pinned Hermes0.22.5 gateway local-session path, setting
+On the pinned Hermes0.22.5 gateway path, setting
 `plugins.entries.xsm.settings.native_context: true`,
 `plugins.entries.xsm.settings.native_wake: true`, and the native permission
 `plugins.entries.xsm.allow_gateway_injection: true` enables native FIFO admission
 for wakeable messages. The permission belongs to the entry itself, outside settings.
 The plugin does not change these settings. A non-boolean native_wake or missing
-dependency is rejected. Classic standalone CLI and messaging routes are not yet
-connected through this mode; enabling it there returns an explicit error.
+dependency is rejected. Classic standalone CLI is not connected through this mode.
+Messaging routes require a previously committed native connector envelope and current
+platform authorization; a named route alone cannot create that provenance.
 
 The binding captures the native manager's published gateway owner and the calling
 turn's actual session key and SID. It pins the profile authority and epoch, checks
-the exact conversation again on the native loop, and submits an internal bot-authored
-automation input. It checks the durable admission receipt and full original before
+the exact conversation again on the native loop, and submits an internal automation
+input. Local FIFO preserves an explicit bot author. Messaging FIFO uses native
+automation provenance without promoting the input to viewer authority; its borrowed
+source identifies the authorized connector route, not the peer's authorship. It
+checks the durable admission receipt and full original before
 reporting queue acceptance. A reused name/route, replaced owner, revoked injection
 permission or differing receipt cannot become acceptance. Claim IDs/tokens form the
 stable producer identity for an exact retry. FIFO acceptance never calls xsm_ack.
@@ -380,5 +384,7 @@ disables drain scheduling and uses a context facade. A subsequent
 [actual native drain probe](../plan/runtime-protocol/hermes-gateway-drain.md) loads
 the installed plugin with the real PluginContext, runs the FIFO and AIAgent hooks,
 and checks awake delivery and strict FYI through native tool ACK. Its provider is
-scripted localhost HTTP; real inference, interactive UI and messaging remain unverified.
+scripted localhost HTTP. A [messaging probe](../plan/runtime-protocol/hermes-messaging.md)
+also runs the real DiscordAdapter and native messaging FIFO with local platform
+transport. Real inference, interactive UI and external Discord delivery remain unverified.
 Evidence and remaining work: [local gateway delivery](../plan/runtime-protocol/hermes-gateway-wake.md).

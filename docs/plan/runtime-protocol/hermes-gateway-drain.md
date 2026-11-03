@@ -51,3 +51,6 @@ outer100초 상한과 첫 thread assertion 실패 시 중단을 적용한다. Aw
 
 원시는 `deliverables/protocol-foundation/hermes-gateway-drain/`다. Linux 고정 source,
 busy/now/혼합·취소/재시작, p95 100표본과 실제 모델/UI/messaging 행렬은 미완이다.
+
+8f003bd 고정 Linux 후속 검증도 native21개/13개 HTTP request와 core960개/
+schema/v7을 통과했다(3.11 84.154초,3.14 107.991초). 최종 status=passed/stopExit=0이다.

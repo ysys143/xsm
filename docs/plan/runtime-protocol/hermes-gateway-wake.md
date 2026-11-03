@@ -16,6 +16,8 @@ settings 하위다.207181d는 위치 차이를 context facade로 가려 실제 s
 [실제 drain 검사](hermes-gateway-drain.md)를 후속 증거로 구분한다.
 현재 연결된 것은 gateway의 local 세션이다. Classic standalone CLI와 messaging
 route는 이 모드에서 명시적으로 거부하며 지원 완료로 표시하지 않는다.
+이 문단은 초기 local 연결의 범위다. 후속 [messaging 연결](hermes-messaging.md)은
+기존 connector provenance를 이용하는 별도 실제 표본을 추가했다.
 
 실제 FIFO까지 실행한 이유는 일반 inject_message의 예약 bool로는 queue acceptance나
 정확한 SID를 증명할 수 없기 때문이다. `probe-hermes-gateway-target.py`는 실제

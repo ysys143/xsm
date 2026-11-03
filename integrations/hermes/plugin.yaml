@@ -1,7 +1,7 @@
 {
   "name": "xsm",
   "version": "0.0.0",
-  "description": "Experimental xsm pull tools, opt-in natural-turn context, local gateway FIFO delivery and deferred native questions.",
+  "description": "Experimental xsm pull tools, opt-in natural-turn context, gateway FIFO delivery and deferred native questions.",
   "license": "MIT",
   "kind": "standalone",
   "provides_tools": [
