@@ -424,3 +424,13 @@ must be observed through fresh scope policy, not a cached receipt. Actual sendin
 still checks current scope; a successful scope mutation proves neither peer
 liveness nor message delivery. Denied host operations may return the existing
 closed-decision JSON-RPC error and issue no scope receipt.
+
+## Document endorsement receipts
+
+`xsm_doc_endorse` preserves text and returns `endorsement` with the caller's doc
+path, the newly created node id, the exact parent id and answer source. The
+[endorsement schema](endorsement-result.schema.json) also covers pending questions
+and legacy text-only envelopes. This receipt means an immutable endorsement node
+was added; it does not assert that the document has been rendered, accepted by
+another agent, or acted on. An explicit retry of an applied request returns its
+original receipt and creates no duplicate node. A denial creates no endorsement.

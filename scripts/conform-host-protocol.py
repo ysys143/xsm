@@ -272,6 +272,43 @@ def messaging(peer, sender, receiver, reopen, check, equal, events=False):
               tokens=[pending["claims"][0]["token"]])["acked"], event["params"]["ids"]))
 
 
+def endorsements(peer, params, check, equal):
+    owner = peer.call('session.open', dict(params, conversation='endorsement-owner', capabilities=['user-decisions']))
+    def operation(name, error=None, **arguments):
+        return peer.call('operation.call', dict(session=owner['session'], operation=name,
+            arguments=arguments), error=error)
+    def document(action, **arguments):
+        return operation('xsm_doc', action=action, doc='ENDORSE.md', **arguments)
+    first = document('add', text='Fixture endorsed body', tags=['report'])['node']
+    args = dict(doc='ENDORSE.md', node=first['id'])
+    pending = operation('xsm_doc_endorse', **args)
+    check('endorsement awaits host answer', lambda: equal(pending['status'], 'waiting-for-user'))
+    event = peer.notification()['params']
+    check('pending endorsement adds no node', lambda: equal(len(document('log')['nodes']), 1))
+    peer.call('decision.response', dict(session=owner['session'], questionId=event['questionId'],
+        challenge=event['challenge'], displayed=event['question'], action='accept', answer='endorse',
+        source_id='synthetic-endorsement-allow'))
+    check('answer receipt alone creates no endorsement', lambda: equal(len(document('log')['nodes']), 1))
+    receipt = operation('xsm_doc_endorse', **args)
+    check('endorsement receipt binds original node', lambda: equal(receipt['endorsement']['parent']==first['id'] and
+        receipt['endorsement']['doc']=='ENDORSE.md' and receipt['endorsement']['via']=='host-user', True))
+    added = document('show', node=receipt['endorsement']['node'])['node']
+    check('endorsement creates human child with exact body', lambda: equal(added['parents']==[first['id']] and
+        added['author_kind']=='human' and added['tags']==['endorsed'] and added['body']==first['body'], True))
+    check('endorsement replay preserves receipt without another node', lambda: equal(
+        operation('xsm_doc_endorse', **args)==receipt and len(document('log')['nodes'])==2, True))
+    check('render uses endorsed text', lambda: equal(first['body'] in document('render')['text'], True))
+    second = document('add', text='Fixture denied body', tags=['report'])['node']
+    denied_args = dict(doc='ENDORSE.md', node=second['id'])
+    denied = operation('xsm_doc_endorse', **denied_args)
+    denied_event = peer.notification()['params']
+    peer.call('decision.response', dict(session=owner['session'], questionId=denied_event['questionId'],
+        challenge=denied_event['challenge'], displayed=denied_event['question'], action='accept', answer='not now',
+        source_id='synthetic-endorsement-deny'))
+    check('denied endorsement cannot issue receipt', lambda: operation('xsm_doc_endorse', error=-32602, **denied_args))
+    check('denied endorsement preserves node graph', lambda: equal(len(document('log')['nodes']), 3))
+
+
 def scopes(peer, params, env, check, equal):
     base = Path(params['cwd']).resolve()
     folders = [base / 'scope-owner', base / 'scope-other']
@@ -906,6 +943,9 @@ def run(command, suite="lifecycle", capture=False):
             if suite == 'discovery':
                 result['scope'] = 'lifecycle and local public discovery; no physical remote, native UI or messenger certification'
                 discovery(b, reopened, resumed, check, equal)
+            if suite == 'endorsements':
+                result['scope'] = 'synthetic host immutable document endorsement and render; no actual user or native runtime certification'
+                endorsements(b, params, check, equal)
             if suite == 'scopes':
                 result['scope'] = 'synthetic host scope approval/revocation and real local send policy; no actual user or native runtime certification'
                 scopes(b, params, env, check, equal)
@@ -941,7 +981,7 @@ def run(command, suite="lifecycle", capture=False):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--capture", action="store_true", help="include isolated wire observations in the report")
-    parser.add_argument("--suite", choices=("lifecycle", "messaging", "events", "decisions", "uploads", "discovery", "collaboration", "documents", "sending", "questions", "selection", "grants", "approvals", "scopes"), default="lifecycle")
+    parser.add_argument("--suite", choices=("lifecycle", "messaging", "events", "decisions", "uploads", "discovery", "collaboration", "documents", "sending", "questions", "selection", "grants", "approvals", "scopes", "endorsements"), default="lifecycle")
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--command", nargs=argparse.REMAINDER, required=True)
     args = parser.parse_args()

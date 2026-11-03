@@ -298,3 +298,15 @@ class ExternalConformanceTest(unittest.TestCase):
                 result = checker.run(self.delivery_candidate(fault), suite='scopes')
                 self.assertEqual(result['status'], 'failed', result)
                 self.assertEqual(result['activeCheck'], check)
+
+    def test_actual_document_endorsement_contract(self):
+        result = checker.run(self.delivery_candidate('none'), suite='endorsements', capture=True)
+        self.assertEqual(result['status'], 'passed', {k:v for k,v in result.items() if k != 'observations'})
+        self.assertEqual(len(result['checks']), 25)
+
+    def test_endorsement_wire_defects_are_detected(self):
+        for fault in ('endorsement-missing-producer', 'endorsement-wrong-parent'):
+            with self.subTest(fault=fault):
+                result = checker.run(self.delivery_candidate(fault), suite='endorsements')
+                self.assertEqual(result['status'], 'failed', result)
+                self.assertEqual(result['activeCheck'], 'endorsement receipt binds original node')

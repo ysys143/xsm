@@ -2733,3 +2733,10 @@ source의 수치를 구분한다. 원래 전체 계획은 미완이다.
 추가했다. Stdio41개/frame58개, 예제11개·거부12개, schema 변이1개·wire 결함3종을
 검증했다. Mac core911개는78.509초에 통과했다. 결과 계약 미정의 operation은
 3개이며 team/board의 남은 action과 전체 계획은 계속 미완이다.
+
+## 문서 endorsement receipt — 2026-11-03
+
+[문서 승인 결과 계약](endorsement-contract.md)에 생성 node와 원본 parent, 답 출처를
+추가했다. Stdio25개/frame35개, 예제3개·거부7개, schema 변이1개·wire 결함2종을
+검증했다. Mac core913개는77.295초에 통과했다. 미정의 operation2개와
+team/board의 남은 action, 원래 전체 계획은 계속 미완이다.

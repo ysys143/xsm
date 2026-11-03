@@ -1,0 +1,93 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:xsm:host-protocol:1:endorsement-result",
+  "title": "Immutable endorsement node receipt; not rendering or task completion",
+  "oneOf": [
+    {
+      "type": "object",
+      "required": [
+        "text",
+        "endorsement"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "text": {
+          "type": "string"
+        },
+        "endorsement": {
+          "type": "object",
+          "required": [
+            "doc",
+            "node",
+            "parent",
+            "via"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "doc": {
+              "type": "string",
+              "minLength": 1
+            },
+            "node": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{12}(?![\\s\\S])"
+            },
+            "parent": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{12}(?![\\s\\S])"
+            },
+            "via": {
+              "enum": [
+                "typed-command",
+                "input-consent",
+                "agent-supplied",
+                "native-user",
+                "host-user",
+                "mcp-elicitation"
+              ]
+            }
+          }
+        }
+      }
+    },
+    {
+      "type": "object",
+      "required": [
+        "text"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "text": {
+          "type": "string"
+        }
+      }
+    },
+    {
+      "$ref": "#/$defs/awaiting"
+    }
+  ],
+  "$defs": {
+    "awaiting": {
+      "type": "object",
+      "required": [
+        "status",
+        "decision_id",
+        "question_id"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "status": {
+          "const": "waiting-for-user"
+        },
+        "decision_id": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}(?![\\s\\S])"
+        },
+        "question_id": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    }
+  }
+}

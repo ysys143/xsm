@@ -29,6 +29,7 @@ Worker approval issuance: [grant result structures](grant-result.schema.json).
 Individual worker permission answers: [approval results](approval-result.schema.json).
 User answer and board recording: [decision receipts](decision-result.schema.json).
 Project and session scope changes: [scope results](scope-result.schema.json).
+Document endorsement: [endorsement receipts](endorsement-result.schema.json).
 Owned native execution: [provider admission, pre-turn binding and recovery](native-workers.md).
 External verification: [stdio lifecycle and delivery conformance](conformance.md) (partial contract coverage).
 

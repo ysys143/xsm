@@ -268,3 +268,10 @@ send operations must be refused before application and after revocation, and
 stored while the scope is active. The checker injects no global permissions,
 launches no model and uses synthetic host answers. Wire proxies that erase the
 scope receipt, replace its root, or report an active revoked link must fail.
+
+`--suite endorsements --capture` adds an agent-authored document node, collects a
+synthetic host answer, applies an immutable human endorsement child, verifies its
+body/parent/tag and then renders it. Answer storage alone must add no node;
+replay must preserve the receipt without duplication, and denial must not add an
+endorsement. Missing receipts or wrong parent ids are deliberate failing proxies.
+No actual user UI, native model or remote synchronization is certified.

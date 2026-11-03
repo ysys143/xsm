@@ -1,0 +1,28 @@
+[
+  {
+    "source": "isolated stdio synthetic host; identifiers/text normalized",
+    "result": {
+      "status": "waiting-for-user",
+      "decision_id": "0000000000000000000000000000000000000000000000000000000000000000",
+      "question_id": "fixture-question"
+    }
+  },
+  {
+    "source": "isolated stdio synthetic host; identifiers/text normalized",
+    "result": {
+      "endorsement": {
+        "doc": "ENDORSE.md",
+        "node": "0123456789ab",
+        "parent": "abcdef012345",
+        "via": "host-user"
+      },
+      "text": "fixture endorsement receipt"
+    }
+  },
+  {
+    "source": "legacy unanswered display fixture",
+    "result": {
+      "text": "your user did not endorse it; nothing was added"
+    }
+  }
+]

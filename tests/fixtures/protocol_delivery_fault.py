@@ -77,6 +77,9 @@ try:
                     reply['error'] = {'code': -32603, 'message': 'synthetic internal error'}
                 if fault == 'questions-erases-acked-answer' and value.get('status') == 'replied' and value.get('claims') == []:
                     value['replies'] = []
+            if params.get('operation') == 'xsm_doc_endorse' and 'endorsement' in reply.get('result', {}):
+                if fault == 'endorsement-missing-producer': reply['result'].pop('endorsement')
+                if fault == 'endorsement-wrong-parent': reply['result']['endorsement']['parent']='000000000000'
             if params.get('operation') in ('xsm_link', 'xsm_join', 'xsm_reach') and 'scope' in reply.get('result', {}):
                 value = reply['result']['scope']
                 if fault == 'scope-missing-producer':

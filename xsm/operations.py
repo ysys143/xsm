@@ -733,8 +733,10 @@ class OperationService:
                   "via": self.answer_source()}
         new = doc.add(path, author, node["body"], ["endorsed"], [node["id"]],
                       approved="asked by %s" % me.get("ref"))
-        return "endorsed: node %s now carries %s; run `xsm doc render %s`" % (
+        text = "endorsed: node %s now carries %s; run `xsm doc render %s`" % (
             new["id"], node["id"], args.get("doc"))
+        return OperationDisplay(text, {'endorsement': {'doc': args['doc'], 'node': new['id'],
+            'parent': node['id'], 'via': self.answer_source()}})
 
     def in_words(self, me: dict, command: str, key: tuple | None = None) -> str:
         """Describe the retained request and same-MCP reply recovery.
