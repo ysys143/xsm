@@ -48,7 +48,7 @@ Wire proxy가 저장을 native 도달로 오인하거나 그룹 수신 ID를 재
 ## 최초 실패
 
 초회는 ACK 뒤 resend가 delivered를 돌려줄 것으로 잘못 예상해19개 통과 뒤
-실패했다(wire-first.json). 기존 resend guard는 이미 delivered인 원문을 refused로
+실패했다(wire-first.json). 뒤의10개 검사는 선행 실패로 미실행이었다. 기존 resend guard는 이미 delivered인 원문을 refused로
 막고 evidence.ack=true를 유지한다. 원문은 다시 보내지지 않았다. 서버를 바꾸지
 않고 기대를 기존 의미에 맞춘 뒤 전체 suite30개를 통과했다. 초회 wire24개가
 구조 검사를 통과한 사실(schema-first.json)은 초회 suite 성공을 뜻하지 않는다.
@@ -69,6 +69,17 @@ manifest 결속 검사에서, 실제 error의 body_sent를 true로 바꿨을 때
 
 이 표본은 로컬 일반 protocol participant와 정본 저장/소비 경로다. Native wake,
 실제 입력 큐 p95, 사람 UI, 실제 모델, 물리 원격/P2P/SSH, 메신저, 설치 행렬의
-검증을 대신하지 않는다. 이번 source의 Linux/core와 다른 operation 결과 계약,
+검증을 대신하지 않는다. 다른 operation 결과 계약,
 독립 구현의 전체 적합성은 미완이다. 구현 담당 세션이 각 표면을 실행하고
 근거에 따라 갱신한다. 승인된 전체 계획의 조건을 생략하지 않는다.
+
+## 고정 source Linux 핵심 검사
+
+00ad2348f23eee3474830093b2a065808bf37972의 archive를 두 환경에 동일하게 넣었다.
+Archive SHA256은
+18e60cd9166e0cd8cc0ad878c57d1ebb568dd29d14c7c849fc1e99221cfdc2a3다.
+Python3.11.2에서88.334초, Python3.14.10에서112.987초로 각각870개
+(Python529+SDK56+native133+Node152)를 통과했다. 독립 mock39/변이14는
+별도 수치다. Model0/network none/cpu2/memory3g, 미실행 case0, VM stopExit0이다.
+원시는 send-contract-linux/result.json과 환경별 output/protocol.log다.
+이 결과는 native/runtime/UI/physical remote 전체 행렬을 대신하지 않는다.

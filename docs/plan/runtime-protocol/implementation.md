@@ -102,6 +102,12 @@ runtime 도달로 오인하는 등 wire 결함3종을 검출했다. ACK 후 rese
 틀린 최초 실패는 보존했고 기존 서버 의미를 유지했다. Native/remote/UI/전체
 계획 완료를 뜻하지 않는다. Mac core870개가107.777초에 통과했고
 실제 wire의 manifest 결속/오류 body_sent 변이2개도 검사기가 거부했다.
+고정00ad234의 Linux core870개도3.11에서88.334초,3.14에서112.987초에
+통과했으며 격리 VM 종료를 확인했다.
+
+[결과 계약 범위 전수표](result-contract-coverage.md)는 공개22개 operation 중
+domain schema8개(그중 team/board는 일부 action)와 미정의14개를 구분한다.
+이는 완료율이나 native 지원률이 아니다.
 
 ## 단계별 판정
 
