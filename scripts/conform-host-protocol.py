@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Stdio conformance checks without xsm imports; approval suite seeds and inspects synthetic worker state."""
+"""Stdio conformance checks without xsm imports; fixture suites may seed isolated test state."""
 import argparse
 import base64
 import hashlib
@@ -270,6 +270,54 @@ def messaging(peer, sender, receiver, reopen, check, equal, events=False):
               "event-bound original" in pending["messages"][0], True))
         check("event original requires explicit ACK", lambda: equal(operation(receiver, "xsm_ack",
               tokens=[pending["claims"][0]["token"]])["acked"], event["params"]["ids"]))
+
+
+def owned_fixture(peer, params, env, check, equal):
+    # Refuse a normal server before create/run. Only the explicit test candidate
+    # declares this marker, preventing accidental native model execution.
+    descriptor = next(t for t in peer.call('operations/list')['operations'] if t['name']=='xsm_owned')
+    check('owned fixture candidate declares model0', lambda: equal(
+        'XSM_CONFORMANCE_MODEL0_ONLY' in descriptor.get('description',''), True))
+    owner = peer.call('session.open', dict(params, conversation='owned-contract-owner'))
+    foreign = peer.call('session.open', dict(params, conversation='owned-contract-foreign'))
+    def operation(session=owner, error=None, **arguments):
+        return peer.call('operation.call', dict(session=session['session'], operation='xsm_owned',
+            arguments=dict(name='fixture-owned', **arguments)), error=error)
+    created = operation(action='create', runtime='codex')
+    check('owned creation returns logical service metadata', lambda: equal(created['owned'] is True and
+        created['runtime']=='codex' and created['name']=='fixture-owned', True))
+    forbidden = {'home','owner','sender','parent_native','native_provider','reservation','send_token',
+                 'child','events','execution','native_binding','requested_by'}
+    def public(value):
+        if isinstance(value, dict): return not forbidden.intersection(value) and all(public(v) for v in value.values())
+        return not isinstance(value, list) or all(public(v) for v in value)
+    check('owned creation exposes no profile or owner record', lambda: equal(public(created), True))
+    args = dict(action='run', text='fixture work', work_context='fixture-context', request_id='owned-fixture-task')
+    queued = operation(**args)
+    check('owned capacity refusal retains queued request', lambda: equal(queued['status']=='queued' and queued['id']==args['request_id'], True))
+    check('queued owned request exposes no internal tokens', lambda: equal(public(queued), True))
+    listed = operation(action='status')
+    check('owned history recovers caller request id', lambda: equal([r['id'] for r in listed['requests']], [args['request_id']]))
+    check('foreign sender cannot read owned request', lambda: equal(operation(foreign, action='status', request_id=args['request_id'])['status'], 'refused'))
+    cancelled = operation(action='cancel', request_id=args['request_id'])
+    check('queued owned cancellation reports not started', lambda: equal(cancelled['status']=='cancelled' and
+        cancelled['cancellation']['native_state']=='not-started' and cancelled['accepted'] is False, True))
+    check('owned cancellation exposes no native sender record', lambda: equal(public(cancelled), True))
+    (Path(env['XSM_HOME']) / 'owned-fixture-capacity').write_text('4')
+    ready_args = dict(args, request_id='owned-fixture-ready')
+    operation(**ready_args)
+    deadline = time.monotonic()+5
+    while True:
+        ready = operation(action='status', request_id=ready_args['request_id'])
+        if ready['status']=='reply-stored' or time.monotonic()>=deadline: break
+        time.sleep(.02)
+    check('owned result retains task outcome separately from reply storage', lambda: equal(ready['status']=='reply-stored' and
+        ready['result']['body']=='fixture owned result' and ready['result']['outcome']=='succeeded', True))
+    check('owned completed request exposes no internal process data', lambda: equal(public(ready), True))
+    reply_id = ready['reply_id']
+    check('owned retry preserves reply id', lambda: equal(operation(action='retry', request_id=ready_args['request_id'])['reply_id'], reply_id))
+    check('owned reconcile retains saved result', lambda: equal(operation(action='reconcile', request_id=ready_args['request_id'])['result'], ready['result']))
+    check('owned absent request is not found', lambda: equal(operation(action='status', request_id='absent-owned')['status'], 'not-found'))
 
 
 def handovers(peer, params, check, equal):
@@ -997,6 +1045,9 @@ def run(command, suite="lifecycle", capture=False):
             if suite == 'discovery':
                 result['scope'] = 'lifecycle and local public discovery; no physical remote, native UI or messenger certification'
                 discovery(b, reopened, resumed, check, equal)
+            if suite == 'owned-fixture':
+                result['scope'] = 'synthetic runtime/executor/publisher, actual owned journal and stdio; no native runtime or model certification'
+                owned_fixture(b, params, env, check, equal)
             if suite == 'handovers':
                 result['scope'] = 'synthetic host handover, local unread claims and team transfer; no actual user or remote certification'
                 handovers(b, params, check, equal)
@@ -1038,7 +1089,7 @@ def run(command, suite="lifecycle", capture=False):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--capture", action="store_true", help="include isolated wire observations in the report")
-    parser.add_argument("--suite", choices=("lifecycle", "messaging", "events", "decisions", "uploads", "discovery", "collaboration", "documents", "sending", "questions", "selection", "grants", "approvals", "scopes", "endorsements", "handovers"), default="lifecycle")
+    parser.add_argument("--suite", choices=("lifecycle", "messaging", "events", "decisions", "uploads", "discovery", "collaboration", "documents", "sending", "questions", "selection", "grants", "approvals", "scopes", "endorsements", "handovers", "owned-fixture"), default="lifecycle")
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--command", nargs=argparse.REMAINDER, required=True)
     args = parser.parse_args()

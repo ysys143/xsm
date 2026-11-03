@@ -38,7 +38,8 @@ Operation-specific result schemas cover inbox, explicit ACK, received files,
 [user answer receipts](decision-result.schema.json) and
 [scope mutation snapshots](scope-result.schema.json) and
 [document endorsements](endorsement-result.schema.json) and
-[handover transfer facts](handover-result.schema.json). The other operation result contracts remain
+[handover transfer facts](handover-result.schema.json) and
+[owned task projections](owned-result.schema.json). Some operation action and error contracts remain
 incomplete; input validity does not certify their results.
 
 ## Generation and consistency

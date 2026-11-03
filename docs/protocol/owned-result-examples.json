@@ -1,0 +1,267 @@
+[
+  {
+    "source": "actual isolated stdio with synthetic executor and publisher; cwd normalized",
+    "result": {
+      "id": "91c892fb39cb4616b33d5e7894bf8e07",
+      "name": "fixture-owned",
+      "mode": "owned",
+      "owned": true,
+      "runtime": "codex",
+      "cwd": "/fixture/project",
+      "model": null,
+      "effort": null,
+      "created": 1793696005.582815,
+      "depth": 1,
+      "max_depth": 1,
+      "parent_ref": "a78bde",
+      "session_id": null,
+      "inbox_pending": 0
+    }
+  },
+  {
+    "source": "actual isolated stdio with synthetic executor and publisher; cwd normalized",
+    "result": {
+      "id": "owned-fixture-task",
+      "status": "queued",
+      "created_at": 1793696005.5960672,
+      "work_context": "fixture-context",
+      "context_id": "a3d27c144cd7b133e286ecbd0765b73af83dbb4ee56fa06eee750e410d6234d2",
+      "context_epoch": "f710580bf28a46ae9fe515fd9abf9485",
+      "digest": "f2df0c2316a92bd8cbdc595d8673f3b14da67dc7c9f12ea05e3b5250e4aedad6",
+      "body": "fixture work",
+      "reply_id": null,
+      "persisted": true,
+      "accepted": false,
+      "side_effects_exactly_once": false,
+      "slot_occupied": false,
+      "waiter_cancelled": false,
+      "worker": {
+        "id": "91c892fb39cb4616b33d5e7894bf8e07",
+        "name": "fixture-owned",
+        "mode": "owned",
+        "owned": true,
+        "runtime": "codex",
+        "cwd": "/fixture/project",
+        "model": null,
+        "effort": null,
+        "created": 1793696005.582815,
+        "depth": 1,
+        "max_depth": 1,
+        "parent_ref": "a78bde",
+        "session_id": null
+      },
+      "context": {
+        "id": "a3d27c144cd7b133e286ecbd0765b73af83dbb4ee56fa06eee750e410d6234d2",
+        "epoch": "f710580bf28a46ae9fe515fd9abf9485",
+        "worker_id": "91c892fb39cb4616b33d5e7894bf8e07",
+        "work_context": "fixture-context",
+        "independent": false,
+        "native_session_id": null,
+        "retired": false,
+        "unknown_request": null,
+        "created_at": 1793696005.596024
+      },
+      "result": null,
+      "send_evidence": null,
+      "recover_at": {
+        "tool": "xsm_owned",
+        "arguments": {
+          "action": "status",
+          "name": "fixture-owned",
+          "request_id": "owned-fixture-task"
+        }
+      },
+      "inbox_pending": 0
+    }
+  },
+  {
+    "source": "actual isolated stdio with synthetic executor and publisher; cwd normalized",
+    "result": {
+      "status": "requests",
+      "requests": [
+        {
+          "id": "owned-fixture-task",
+          "status": "queued",
+          "created_at": 1793696005.5960672,
+          "work_context": "fixture-context",
+          "reply_id": null,
+          "worker": "fixture-owned",
+          "context_id": "a3d27c144cd7b133e286ecbd0765b73af83dbb4ee56fa06eee750e410d6234d2",
+          "digest": "f2df0c2316a92bd8cbdc595d8673f3b14da67dc7c9f12ea05e3b5250e4aedad6",
+          "preview": "fixture work"
+        }
+      ],
+      "inbox_pending": 0
+    }
+  },
+  {
+    "source": "actual isolated stdio with synthetic executor and publisher; cwd normalized",
+    "result": {
+      "id": "owned-fixture-task",
+      "status": "refused",
+      "inbox_pending": 0
+    }
+  },
+  {
+    "source": "actual isolated stdio with synthetic executor and publisher; cwd normalized",
+    "result": {
+      "id": "owned-fixture-task",
+      "status": "cancelled",
+      "created_at": 1793696005.5960672,
+      "work_context": "fixture-context",
+      "context_id": "a3d27c144cd7b133e286ecbd0765b73af83dbb4ee56fa06eee750e410d6234d2",
+      "context_epoch": "f710580bf28a46ae9fe515fd9abf9485",
+      "digest": "f2df0c2316a92bd8cbdc595d8673f3b14da67dc7c9f12ea05e3b5250e4aedad6",
+      "body": "fixture work",
+      "reply_id": null,
+      "persisted": true,
+      "accepted": false,
+      "side_effects_exactly_once": false,
+      "slot_occupied": false,
+      "worker": {
+        "id": "91c892fb39cb4616b33d5e7894bf8e07",
+        "name": "fixture-owned",
+        "mode": "owned",
+        "owned": true,
+        "runtime": "codex",
+        "cwd": "/fixture/project",
+        "model": null,
+        "effort": null,
+        "created": 1793696005.582815,
+        "depth": 1,
+        "max_depth": 1,
+        "parent_ref": "a78bde",
+        "session_id": null
+      },
+      "context": {
+        "id": "a3d27c144cd7b133e286ecbd0765b73af83dbb4ee56fa06eee750e410d6234d2",
+        "epoch": "f710580bf28a46ae9fe515fd9abf9485",
+        "worker_id": "91c892fb39cb4616b33d5e7894bf8e07",
+        "work_context": "fixture-context",
+        "independent": false,
+        "native_session_id": null,
+        "retired": false,
+        "unknown_request": null,
+        "created_at": 1793696005.596024
+      },
+      "result": null,
+      "send_evidence": null,
+      "cancellation": {
+        "requested_at": 1793696005.639227,
+        "status": "not-started",
+        "native_state": "not-started",
+        "native_supported": false
+      },
+      "inbox_pending": 0
+    }
+  },
+  {
+    "source": "actual isolated stdio with synthetic executor and publisher; cwd normalized",
+    "result": {
+      "id": "owned-fixture-ready",
+      "status": "acknowledged",
+      "created_at": 1793696005.653743,
+      "work_context": "fixture-context",
+      "context_id": "a3d27c144cd7b133e286ecbd0765b73af83dbb4ee56fa06eee750e410d6234d2",
+      "context_epoch": "f710580bf28a46ae9fe515fd9abf9485",
+      "digest": "f2df0c2316a92bd8cbdc595d8673f3b14da67dc7c9f12ea05e3b5250e4aedad6",
+      "body": "fixture work",
+      "reply_id": null,
+      "persisted": true,
+      "accepted": true,
+      "side_effects_exactly_once": false,
+      "slot_occupied": true,
+      "worker": {
+        "id": "91c892fb39cb4616b33d5e7894bf8e07",
+        "name": "fixture-owned",
+        "mode": "owned",
+        "owned": true,
+        "runtime": "codex",
+        "cwd": "/fixture/project",
+        "model": null,
+        "effort": null,
+        "created": 1793696005.582815,
+        "depth": 1,
+        "max_depth": 1,
+        "parent_ref": "a78bde",
+        "session_id": null
+      },
+      "context": {
+        "id": "a3d27c144cd7b133e286ecbd0765b73af83dbb4ee56fa06eee750e410d6234d2",
+        "epoch": "f710580bf28a46ae9fe515fd9abf9485",
+        "worker_id": "91c892fb39cb4616b33d5e7894bf8e07",
+        "work_context": "fixture-context",
+        "independent": false,
+        "native_session_id": null,
+        "retired": false,
+        "unknown_request": null,
+        "created_at": 1793696005.596024
+      },
+      "result": null,
+      "send_evidence": null,
+      "inbox_pending": 0
+    }
+  },
+  {
+    "source": "actual isolated stdio with synthetic executor and publisher; cwd normalized",
+    "result": {
+      "id": "owned-fixture-ready",
+      "status": "reply-stored",
+      "created_at": 1793696005.653743,
+      "work_context": "fixture-context",
+      "context_id": "a3d27c144cd7b133e286ecbd0765b73af83dbb4ee56fa06eee750e410d6234d2",
+      "context_epoch": "f710580bf28a46ae9fe515fd9abf9485",
+      "digest": "f2df0c2316a92bd8cbdc595d8673f3b14da67dc7c9f12ea05e3b5250e4aedad6",
+      "body": "fixture work",
+      "reply_id": "aeba8be957a94129",
+      "persisted": true,
+      "accepted": true,
+      "side_effects_exactly_once": false,
+      "slot_occupied": false,
+      "worker": {
+        "id": "91c892fb39cb4616b33d5e7894bf8e07",
+        "name": "fixture-owned",
+        "mode": "owned",
+        "owned": true,
+        "runtime": "codex",
+        "cwd": "/fixture/project",
+        "model": null,
+        "effort": null,
+        "created": 1793696005.582815,
+        "depth": 1,
+        "max_depth": 1,
+        "parent_ref": "a78bde",
+        "session_id": null
+      },
+      "context": {
+        "id": "a3d27c144cd7b133e286ecbd0765b73af83dbb4ee56fa06eee750e410d6234d2",
+        "epoch": "f710580bf28a46ae9fe515fd9abf9485",
+        "worker_id": "91c892fb39cb4616b33d5e7894bf8e07",
+        "work_context": "fixture-context",
+        "independent": false,
+        "native_session_id": "0ee506ab-f376-4b1e-82c2-dd7644347e87",
+        "retired": false,
+        "unknown_request": null,
+        "created_at": 1793696005.596024
+      },
+      "result": {
+        "body": "fixture owned result",
+        "outcome": "succeeded",
+        "native_session_id": "0ee506ab-f376-4b1e-82c2-dd7644347e87"
+      },
+      "send_evidence": {
+        "id": "aeba8be957a94129",
+        "status": "stored"
+      },
+      "inbox_pending": 0
+    }
+  },
+  {
+    "source": "actual isolated stdio with synthetic executor and publisher; cwd normalized",
+    "result": {
+      "id": "absent-owned",
+      "status": "not-found",
+      "inbox_pending": 0
+    }
+  }
+]

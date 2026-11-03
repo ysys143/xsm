@@ -1,0 +1,1074 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:xsm:host-protocol:1:owned-result",
+  "title": "Public owned service/task projections; no private journal leases or profile records",
+  "oneOf": [
+    {
+      "type": "object",
+      "required": [
+        "id",
+        "name",
+        "mode",
+        "owned",
+        "runtime",
+        "cwd",
+        "model",
+        "effort",
+        "created",
+        "depth",
+        "max_depth",
+        "parent_ref",
+        "session_id"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "mode": {
+          "const": "owned"
+        },
+        "owned": {
+          "const": true
+        },
+        "runtime": {
+          "type": "string",
+          "minLength": 1
+        },
+        "cwd": {
+          "type": "string",
+          "minLength": 1
+        },
+        "model": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "effort": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "created": {
+          "type": "number"
+        },
+        "depth": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "max_depth": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "parent_ref": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "session_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "inbox_pending": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "inbox_notice": {
+          "type": "string"
+        },
+        "inbox_pending_known": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "inbox_pending_diagnostics": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "incoming": {
+          "type": "object",
+          "required": [
+            "messages",
+            "claims"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "messages": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "claims": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/claim"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "type": "object",
+      "required": [
+        "id",
+        "status",
+        "created_at",
+        "work_context",
+        "context_id",
+        "context_epoch",
+        "digest",
+        "body",
+        "reply_id",
+        "persisted",
+        "accepted",
+        "side_effects_exactly_once",
+        "slot_occupied",
+        "worker",
+        "context",
+        "result",
+        "send_evidence"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "status": {
+          "enum": [
+            "queued",
+            "reserved",
+            "acknowledged",
+            "running",
+            "cancelled",
+            "unknown",
+            "result-ready",
+            "error",
+            "sending",
+            "sent",
+            "reply-stored"
+          ]
+        },
+        "created_at": {
+          "type": "number"
+        },
+        "updated_at": {
+          "type": "number"
+        },
+        "work_context": {
+          "type": "string",
+          "minLength": 1
+        },
+        "context_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "context_epoch": {
+          "type": "string",
+          "minLength": 1
+        },
+        "digest": {
+          "type": "string",
+          "minLength": 1
+        },
+        "body": {
+          "type": "string",
+          "minLength": 1
+        },
+        "reply_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "persisted": {
+          "const": true
+        },
+        "accepted": {
+          "type": "boolean"
+        },
+        "side_effects_exactly_once": {
+          "const": false
+        },
+        "slot_occupied": {
+          "type": "boolean"
+        },
+        "execution_state": {
+          "enum": [
+            "running",
+            "exited",
+            "unverified"
+          ]
+        },
+        "worker_record_present": {
+          "type": "boolean"
+        },
+        "admission": {
+          "type": "string"
+        },
+        "reason": {
+          "type": "string"
+        },
+        "waiter_cancelled": {
+          "type": "boolean"
+        },
+        "worker": {
+          "$ref": "#/$defs/worker"
+        },
+        "context": {
+          "$ref": "#/$defs/context"
+        },
+        "result": {
+          "anyOf": [
+            {
+              "type": "object",
+              "required": [
+                "body",
+                "native_session_id"
+              ],
+              "additionalProperties": false,
+              "properties": {
+                "body": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "outcome": {
+                  "enum": [
+                    null,
+                    "succeeded",
+                    "failed"
+                  ]
+                },
+                "native_session_id": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "send_evidence": {
+          "anyOf": [
+            {
+              "type": "object",
+              "required": [
+                "status"
+              ],
+              "additionalProperties": false,
+              "properties": {
+                "id": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "status": {
+                  "type": "string"
+                },
+                "reason": {
+                  "type": "string"
+                },
+                "runtime_reached": {
+                  "type": "boolean"
+                }
+              }
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "cancellation": {
+          "type": "object",
+          "required": [
+            "requested_at",
+            "status",
+            "native_state",
+            "native_supported"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "requested_at": {
+              "type": "number"
+            },
+            "status": {
+              "enum": [
+                "requested",
+                "not-started",
+                "native-stopped"
+              ]
+            },
+            "native_state": {
+              "enum": [
+                "unverified",
+                "not-started",
+                "stopped"
+              ]
+            },
+            "native_supported": {
+              "type": "boolean"
+            },
+            "observed_at": {
+              "type": "number"
+            }
+          }
+        },
+        "capacity": {
+          "type": "object",
+          "required": [
+            "limit",
+            "busy",
+            "available"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "limit": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "busy": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "available": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        },
+        "recover_at": {
+          "type": "object",
+          "required": [
+            "tool",
+            "arguments"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "tool": {
+              "const": "xsm_owned"
+            },
+            "arguments": {
+              "type": "object",
+              "required": [
+                "action",
+                "name",
+                "request_id"
+              ],
+              "additionalProperties": false,
+              "properties": {
+                "action": {
+                  "const": "status"
+                },
+                "name": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "request_id": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            }
+          }
+        },
+        "inbox_pending": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "inbox_notice": {
+          "type": "string"
+        },
+        "inbox_pending_known": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "inbox_pending_diagnostics": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "incoming": {
+          "type": "object",
+          "required": [
+            "messages",
+            "claims"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "messages": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "claims": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/claim"
+              }
+            }
+          }
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "queued"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "accepted": {
+                "const": false
+              },
+              "slot_occupied": {
+                "const": false
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "enum": [
+                  "result-ready",
+                  "sending",
+                  "sent",
+                  "reply-stored"
+                ]
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "result": {
+                "type": "object",
+                "required": [
+                  "body",
+                  "native_session_id"
+                ],
+                "additionalProperties": false,
+                "properties": {
+                  "body": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "outcome": {
+                    "enum": [
+                      null,
+                      "succeeded",
+                      "failed"
+                    ]
+                  },
+                  "native_session_id": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                }
+              },
+              "reply_id": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "reply-stored"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "send_evidence": {
+                "allOf": [
+                  {
+                    "type": "object",
+                    "required": [
+                      "status"
+                    ],
+                    "additionalProperties": false,
+                    "properties": {
+                      "id": {
+                        "type": [
+                          "string",
+                          "null"
+                        ]
+                      },
+                      "status": {
+                        "type": "string"
+                      },
+                      "reason": {
+                        "type": "string"
+                      },
+                      "runtime_reached": {
+                        "type": "boolean"
+                      }
+                    }
+                  },
+                  {
+                    "properties": {
+                      "status": {
+                        "const": "stored"
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "sent"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "send_evidence": {
+                "allOf": [
+                  {
+                    "type": "object",
+                    "required": [
+                      "status"
+                    ],
+                    "additionalProperties": false,
+                    "properties": {
+                      "id": {
+                        "type": [
+                          "string",
+                          "null"
+                        ]
+                      },
+                      "status": {
+                        "type": "string"
+                      },
+                      "reason": {
+                        "type": "string"
+                      },
+                      "runtime_reached": {
+                        "type": "boolean"
+                      }
+                    }
+                  },
+                  {
+                    "properties": {
+                      "status": {
+                        "enum": [
+                          "sent-unconfirmed",
+                          "delivered"
+                        ]
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "type": "object",
+      "required": [
+        "status",
+        "requests"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "status": {
+          "const": "requests"
+        },
+        "requests": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/row"
+          }
+        },
+        "inbox_pending": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "inbox_notice": {
+          "type": "string"
+        },
+        "inbox_pending_known": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "inbox_pending_diagnostics": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "incoming": {
+          "type": "object",
+          "required": [
+            "messages",
+            "claims"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "messages": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "claims": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/claim"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "type": "object",
+      "required": [
+        "id",
+        "status"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "status": {
+          "enum": [
+            "not-found",
+            "refused"
+          ]
+        },
+        "inbox_pending": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "inbox_notice": {
+          "type": "string"
+        },
+        "inbox_pending_known": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "inbox_pending_diagnostics": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "incoming": {
+          "type": "object",
+          "required": [
+            "messages",
+            "claims"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "messages": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "claims": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/claim"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "type": "object",
+      "required": [
+        "id",
+        "status",
+        "reason"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "status": {
+          "const": "unknown"
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 1
+        },
+        "recover_at": {
+          "type": "object",
+          "required": [
+            "tool",
+            "arguments"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "tool": {
+              "const": "xsm_owned"
+            },
+            "arguments": {
+              "type": "object",
+              "required": [
+                "action",
+                "name",
+                "request_id"
+              ],
+              "additionalProperties": false,
+              "properties": {
+                "action": {
+                  "const": "status"
+                },
+                "name": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "request_id": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            }
+          }
+        },
+        "waiter_cancelled": {
+          "type": "boolean"
+        },
+        "inbox_pending": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "inbox_notice": {
+          "type": "string"
+        },
+        "inbox_pending_known": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "inbox_pending_diagnostics": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "incoming": {
+          "type": "object",
+          "required": [
+            "messages",
+            "claims"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "messages": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "claims": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/claim"
+              }
+            }
+          }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "worker": {
+      "type": "object",
+      "required": [
+        "id",
+        "name",
+        "mode",
+        "owned",
+        "runtime",
+        "cwd",
+        "model",
+        "effort",
+        "created",
+        "depth",
+        "max_depth",
+        "parent_ref",
+        "session_id"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "mode": {
+          "const": "owned"
+        },
+        "owned": {
+          "const": true
+        },
+        "runtime": {
+          "type": "string",
+          "minLength": 1
+        },
+        "cwd": {
+          "type": "string",
+          "minLength": 1
+        },
+        "model": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "effort": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "created": {
+          "type": "number"
+        },
+        "depth": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "max_depth": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "parent_ref": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "session_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "context": {
+      "type": "object",
+      "required": [
+        "id",
+        "epoch",
+        "worker_id",
+        "work_context",
+        "independent",
+        "native_session_id",
+        "retired",
+        "unknown_request",
+        "created_at"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "epoch": {
+          "type": "string",
+          "minLength": 1
+        },
+        "worker_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "work_context": {
+          "type": "string",
+          "minLength": 1
+        },
+        "independent": {
+          "type": "boolean"
+        },
+        "native_session_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "retired": {
+          "type": "boolean"
+        },
+        "unknown_request": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "created_at": {
+          "type": "number"
+        }
+      }
+    },
+    "row": {
+      "type": "object",
+      "required": [
+        "id",
+        "status",
+        "created_at",
+        "work_context",
+        "reply_id"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "status": {
+          "enum": [
+            "queued",
+            "reserved",
+            "acknowledged",
+            "running",
+            "cancelled",
+            "unknown",
+            "result-ready",
+            "error",
+            "sending",
+            "sent",
+            "reply-stored"
+          ]
+        },
+        "created_at": {
+          "type": "number"
+        },
+        "work_context": {
+          "type": "string",
+          "minLength": 1
+        },
+        "reply_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "worker_record_present": {
+          "type": "boolean"
+        },
+        "worker": {
+          "type": "string",
+          "minLength": 1
+        },
+        "context_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "digest": {
+          "type": "string",
+          "minLength": 1
+        },
+        "preview": {
+          "type": "string"
+        }
+      }
+    },
+    "claim": {
+      "type": "object",
+      "required": [
+        "id",
+        "token",
+        "owner",
+        "generation",
+        "digest"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "token": {
+          "type": "string",
+          "minLength": 1
+        },
+        "generation": {
+          "type": "string",
+          "minLength": 1
+        },
+        "digest": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}(?![\\s\\S])"
+        },
+        "owner": {
+          "type": "object",
+          "required": [
+            "type",
+            "id"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "type": {
+              "type": "string",
+              "minLength": 1
+            },
+            "id": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        }
+      }
+    }
+  }
+}

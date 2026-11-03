@@ -1,13 +1,13 @@
 # Operation 결과 계약 범위 — 2026-11-03
 
 상태: 전체 결과 계약은 미완이다. 공개 catalog22개를 실제 encoding 선언과
-개발 checker의 operation별 분기에 대조했다. Domain schema가 있는 operation 이름은21개,
-없는 이름은1개다. 21개 중 team/board는 일부 action만 정의한다. 이 수는
+개발 checker의 operation별 분기에 대조했다. Domain schema가 있는 operation 이름은22개다. Domain schema가 전혀 없는 operation 이름은0개이며,
+team/board는 여전히 일부 action만 정의한다. 이 수는
 완료율·독립 구현 인증·native 지원률이 아니다.
 
 | Operation | 현재 result encoding | Domain 구조 정의와 남은 범위 |
 |---|---|---|
-| `xsm_owned` | JSON object | 미완: 공통 result object 검사만 있음 |
+| `xsm_owned` | JSON object | [owned-result.schema.json](../../protocol/owned-result.schema.json) — 생성/작업/목록/취소·복구 projection |
 | `xsm_files` | JSON object | [file-result.schema.json](../../protocol/file-result.schema.json) — 파일 조회 구조 |
 | `xsm_decision_status` | JSON object | [decision-status-result.schema.json](../../protocol/decision-status-result.schema.json) — lifecycle·취소·입력 승인 진단 |
 | `xsm_ask` | JSON object | [question-result.schema.json](../../protocol/question-result.schema.json) — 단일/그룹 질문·회신 구조 |
@@ -59,3 +59,5 @@ scripts/check-protocol-schema.py의 operation별 validator 분기다. 이번 표
 후속 [문서 승인 결과 계약](endorsement-contract.md)은 endorsement node의 생성과 원본 결속·재시도·거부를 실제 stdio로 검증한다.
 
 후속 [승계 결과 계약](handover-contract.md)은 팀/lead·미독 편지·새 DM 주소 승계와 결과 projection을 실제 stdio로 검증한다.
+
+후속 [Owned 결과 계약](owned-contract.md)은 내부 journal 반환을 공개 projection으로 교체했다. 22개 이름에 schema가 있다는 수치로 전체 action·오류·native/독립 구현 인증 완료를 주장하지 않는다.

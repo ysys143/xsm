@@ -323,3 +323,23 @@ class ExternalConformanceTest(unittest.TestCase):
                 result = checker.run(self.delivery_candidate(fault), suite='handovers')
                 self.assertEqual(result['status'], 'failed', result)
                 self.assertEqual(result['activeCheck'], check)
+
+    def test_actual_owned_public_projection_contract(self):
+        command = [sys.executable, '-B', str(ROOT / 'tests/fixtures/protocol_owned_fixture.py')]
+        result = checker.run(command, suite='owned-fixture', capture=True)
+        self.assertEqual(result['status'], 'passed', {k:v for k,v in result.items() if k != 'observations'})
+        self.assertEqual(len(result['checks']), 30)
+
+    def test_owned_fixture_suite_refuses_a_production_candidate_before_launch(self):
+        result = checker.run(self.delivery_candidate('none'), suite='owned-fixture')
+        self.assertEqual(result['status'], 'failed', result)
+        self.assertEqual(result['activeCheck'], 'owned fixture candidate declares model0')
+
+    def test_owned_public_projection_faults_are_detected(self):
+        for fault, check in (('private-leak','owned creation exposes no profile or owner record'),
+                             ('missing-result-body','owned result retains task outcome separately from reply storage')):
+            with self.subTest(fault=fault):
+                command=[sys.executable,'-B',str(ROOT/'tests/fixtures/protocol_owned_fixture.py'),fault]
+                result=checker.run(command,suite='owned-fixture')
+                self.assertEqual(result['status'],'failed',result)
+                self.assertEqual(result['activeCheck'],check)

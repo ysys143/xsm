@@ -283,3 +283,17 @@ the exact successor, retry preserves it, and the successor's letter retains the
 original unread body. A new DM to the old address must arrive at the successor
 and accept its explicit ACK. Missing receipts and wrong successor refs must fail.
 These local tests do not certify actual user UI or remote synchronization.
+
+`--suite owned-fixture --capture` is explicitly a model0 fixture suite. Before
+create/run, it requires the candidate's owned descriptor to declare
+`XSM_CONFORMANCE_MODEL0_ONLY`; a normal production candidate fails there without
+launching a worker. Use `tests/fixtures/protocol_owned_fixture.py` as the candidate.
+That fixture replaces the native executor and reply publisher, and controls
+capacity through an isolated marker file. It exercises actual stdio/journals and
+the model-facing projection, not a native runtime or real reply delivery.
+
+Checks include creation, queue persistence, caller history, foreign-sender
+refusal, cancellation before execution, saved result, retry/reconcile and absent
+ids. Public records must exclude internal profiles, reservations and processes.
+Leaking a profile or removing the result body must fail. Separate native runtime
+and publisher evidence remains required by the overall plan.

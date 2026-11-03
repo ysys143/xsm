@@ -35,3 +35,41 @@ def execute(me, arguments, *, run=None):
     execute_run = run or workers.run_owned
     return execute_run(name, me, args.get('text') or '', work_context=args.get('work_context'),
                        request_id=request_id, independent=args.get('independent', False))
+
+
+def public_result(value):
+    """Model-facing projection; journals, leases and native process data stay private.
+
+    The CLI/backend retain their diagnostic journal view. Model frontends share
+    this projection before serialization rather than teaching each host to scrub.
+    """
+    import copy
+    def fields(item, keys):
+        return {key: copy.deepcopy(item[key]) for key in keys if key in item}
+    def worker(item):
+        return fields(item, ('id','name','mode','owned','runtime','cwd','model','effort',
+            'created','depth','max_depth','parent_ref','session_id'))
+    if value.get('mode') == 'owned' and 'status' not in value:
+        return worker(value)
+    out = fields(value, ('id','status','created_at','updated_at','work_context','context_id',
+        'context_epoch','digest','body','reply_id','persisted','accepted','side_effects_exactly_once',
+        'slot_occupied','execution_state','worker_record_present','admission','reason','waiter_cancelled'))
+    if 'requests' in value:
+        out['requests'] = [fields(row, ('id','status','created_at','work_context','reply_id',
+            'worker_record_present','worker','context_id','digest','preview')) for row in value['requests']]
+    if isinstance(value.get('worker'), dict): out['worker'] = worker(value['worker'])
+    if isinstance(value.get('context'), dict):
+        out['context'] = fields(value['context'], ('id','epoch','worker_id','work_context',
+            'independent','native_session_id','retired','unknown_request','created_at'))
+    for key, keys in (
+        ('result', ('body','outcome','native_session_id')),
+        ('send_evidence', ('id','status','reason','runtime_reached')),
+        ('cancellation', ('requested_at','status','native_state','native_supported','observed_at')),
+        ('capacity', ('limit','busy','available'))):
+        if key in value:
+            out[key] = fields(value[key], keys) if isinstance(value[key], dict) else None
+    if isinstance(value.get('recover_at'), dict):
+        recovery = value['recover_at']
+        out['recover_at'] = {'tool': recovery['tool'],
+            'arguments': fields(recovery['arguments'], ('action','name','request_id'))}
+    return out

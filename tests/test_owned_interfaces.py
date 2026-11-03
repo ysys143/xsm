@@ -54,6 +54,29 @@ class OwnedInterfacesTest(TempState):
     def create(self):
         return self.invoke(action='create',name='service',runtime='codex')
 
+    def assert_public_owned(self, value):
+        forbidden = {'home','owner','sender','parent_native','native_provider','reservation',
+                     'send_token','child','events','execution','native_binding','requested_by'}
+        def visit(item):
+            if isinstance(item, dict):
+                self.assertFalse(forbidden.intersection(item), 'private owned fields: ' + repr(sorted(forbidden.intersection(item))))
+                for child in item.values(): visit(child)
+            elif isinstance(item, list):
+                for child in item: visit(child)
+        visit(value)
+
+    def test_owned_create_exposes_no_internal_profile_or_owner(self):
+        self.assert_public_owned(self.create())
+
+    def test_owned_run_and_status_expose_no_internal_tokens_or_processes(self):
+        self.create()
+        result = self.invoke(action='run', name='service', text='work', work_context='public-contract',
+            request_id='public-owned-projection', wait=1)
+        self.assertEqual(result['status'], 'reply-stored')
+        self.assert_public_owned(result)
+        self.assertEqual(result['result']['body'], 'actual adapter result')
+        self.assert_public_owned(self.invoke(action='status',name='service',request_id='public-owned-projection'))
+
     def test_known_native_admission_refusal_is_a_tool_error(self):
         with mock.patch.object(self.workers,'depth_budget',side_effect=self.workers.WorkerError('max_depth refused')):
             with self.assertRaisesRegex(self.mcp.ToolError,'max_depth'):

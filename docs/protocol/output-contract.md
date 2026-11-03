@@ -450,3 +450,27 @@ marked as moved. They are not newly claimed inbox copies. New DMs sent to the ol
 address follow the successor and use normal claim/ACK handling. A transfer
 receipt does not prove that the successor read the letter or finished any task;
 notes do not prove remote synchronization. Applied retry preserves its receipt.
+
+## Owned service and task projections
+
+`xsm_owned` returns an explicit model-facing projection described by the
+[owned result schema](owned-result.schema.json). Create returns logical service
+metadata; status without an id returns caller-owned history; run/status/cancel/
+retry/reconcile return task snapshots. Not-found/refused and the transient unknown
+recovery envelope are distinct. Backend journals and CLI diagnostic output retain
+their existing shape. Both MCP and the host protocol use the shared projection.
+
+The projection excludes native profile homes, owner/sender records, internal
+reservations/send tokens, process/argv/output paths and provider descriptors.
+It retains ids, work context, queue/acceptance state, result body/outcome/native
+session reference, reply id, cancellation observation and recovery instructions.
+Normal incoming inbox claims, if present, still expose their own intentional
+claim tokens for explicit ACK; these are not owned execution leases.
+
+Queued state is persisted, unaccepted and occupies no execution slot. Reply-ready
+states require a saved result and reply id. `reply-stored` requires stored reply
+transport evidence; `sent` requires delivered or sent-unconfirmed evidence. A task
+outcome, native cancellation observation and reply transport status are separate.
+`side_effects_exactly_once=false` is preserved: cancellation is no rollback, and
+unknown side effects must not be automatically rerun. Status after worker removal
+may recover the caller's retained task without recreating a worker.

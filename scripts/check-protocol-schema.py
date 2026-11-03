@@ -168,6 +168,8 @@ def output_contract(trace=None):
     Draft202012Validator.check_schema(decision_schema)
     grant_schema = json.loads((ROOT / 'docs/protocol/grant-result.schema.json').read_text())
     Draft202012Validator.check_schema(grant_schema)
+    owned_schema = json.loads((ROOT / 'docs/protocol/owned-result.schema.json').read_text())
+    Draft202012Validator.check_schema(owned_schema)
     handover_schema = json.loads((ROOT / 'docs/protocol/handover-result.schema.json').read_text())
     Draft202012Validator.check_schema(handover_schema)
     endorsement_schema = json.loads((ROOT / 'docs/protocol/endorsement-result.schema.json').read_text())
@@ -212,6 +214,8 @@ def output_contract(trace=None):
             Draft202012Validator({'$ref': definition, '$defs': schema['$defs']}).validate(frame['result'])
             if observation.get('operation') == 'xsm_grant':
                 Draft202012Validator(grant_schema).validate(frame['result'])
+            if observation.get('operation') == 'xsm_owned':
+                Draft202012Validator(owned_schema).validate(frame['result'])
             if observation.get('operation') == 'xsm_handover':
                 Draft202012Validator(handover_schema).validate(frame['result'])
             if observation.get('operation') == 'xsm_doc_endorse':
@@ -335,6 +339,28 @@ def grant_contract():
         if validator.is_valid(value):
             raise ValueError('invalid grant result accepted')
     return dict(examples=len(examples), rejected=len(invalid))
+
+
+def owned_contract():
+    schema=json.loads((ROOT/'docs/protocol/owned-result.schema.json').read_text())
+    examples=json.loads((ROOT/'docs/protocol/owned-result-examples.json').read_text())
+    Draft202012Validator.check_schema(schema);validator=Draft202012Validator(schema)
+    for example in examples:validator.validate(example['result'])
+    request=next(e['result'] for e in examples if e['result'].get('status')=='reply-stored')
+    invalid=[]
+    for path,value in ((['owner'],{'home':'/private-profile'}),(['reservation'],{'token':'internal'}),
+                       (['worker','home'],'/private-profile'),(['context','sender'],{'home':'/private-profile'}),
+                       (['result','execution'],{'pid':1}),(['result','outcome'],'maybe'),
+                       (['accepted'],'true'),(['persisted'],False),(['side_effects_exactly_once'],True),
+                       (['status'],'finished'),(['context','independent'],0),(['result'],None),
+                       (['reply_id'],None),(['send_evidence','status'],'error')):
+        bad=copy.deepcopy(request);target=bad
+        for key in path[:-1]:target=target[key]
+        target[path[-1]]=value;invalid.append(bad)
+    bad=copy.deepcopy(request);del bad['reply_id'];invalid.append(bad)
+    for bad in invalid:
+        if validator.is_valid(bad):raise ValueError('invalid owned result accepted: '+repr(bad))
+    return dict(examples=len(examples),rejected=len(invalid),scope='public projections only; no native execution or actual result publication certification')
 
 
 def handover_contract():
@@ -921,7 +947,7 @@ def run(trace=None):
                 validator='jsonschema', validatorVersion=importlib.metadata.version('jsonschema'),
                 scope='request and output structures; no full operation results or semantic certification',
                 output=output_contract(trace), operations=operations_contract(), files=files_contract(), ack=ack_contract(),
-                discovery=discovery_contract(), team=team_contract(), board=board_contract(), doc=doc_contract(), send=send_contract(), question=question_contract(), publication=publication_contract(), decisionStatus=decision_status_contract(), grant=grant_contract(), approval=approval_contract(), decide=decide_contract(), scopeResult=scope_contract(), endorsement=endorsement_contract(), handover=handover_contract())
+                discovery=discovery_contract(), team=team_contract(), board=board_contract(), doc=doc_contract(), send=send_contract(), question=question_contract(), publication=publication_contract(), decisionStatus=decision_status_contract(), grant=grant_contract(), approval=approval_contract(), decide=decide_contract(), scopeResult=scope_contract(), endorsement=endorsement_contract(), handover=handover_contract(), owned=owned_contract())
 
 
 if __name__ == '__main__':

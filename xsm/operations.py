@@ -252,7 +252,8 @@ class OperationService:
 
     def _call(self, name: str, args: dict, me: dict) -> str:
         if name == "xsm_owned":
-            return json.dumps(self.owned(me,args),ensure_ascii=False)
+            from .owned_service import public_result
+            return json.dumps(public_result(self.owned(me,args)),ensure_ascii=False)
         if name == "xsm_files":
             from . import files
             try:

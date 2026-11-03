@@ -2748,3 +2748,11 @@ team/board의 남은 action, 원래 전체 계획은 계속 미완이다.
 wire 결함2종을 검증했다. 팀 lead·미독 편지·옛 주소로 보낸 새 DM의 claim/ACK를
 실행했고 Mac core915개는77.509초에 통과했다. 마지막 owned 결과 계약과
 team/board의 남은 action, 원래 전체 계획은 미완이다.
+
+## Owned 공개 projection과 내부 기록 노출 복구 — 2026-11-03
+
+[Owned 결과 계약](owned-contract.md)에 create/run/status의 내부 home/owner/lease
+노출 재현과 공통 projection을 기록했다. 수정 전 재현2개 실패, 수정 후 관련12개
+통과와 합성 runtime의 실제 stdio30개/frame31개, 예제8개·거부15개를 확인했다.
+Mac core920개는78.582초에 통과했다. 22개 operation 이름 모두 domain schema가
+생겼지만 team/board의 남은 action, 전체 오류·native/독립 구현 행렬은 미완이다.
