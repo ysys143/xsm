@@ -1,7 +1,7 @@
 # OpenCode TUI의 보드 결정·문서 endorsement
 
-상태: Mac의 native TUI6개 정상 모드와 출처 변이2개를 검증했다. Linux·실제
-사용자·모델·메신저 및 전체 계획은 미완이다. 입력은 자동화한 PTY 키 입력
+상태: Mac·Linux의 native TUI에서 각각6개 정상 모드와 출처 변이2개를 검증했다.
+실제 사용자·모델·메신저와 전체 계획은 미완이다. 입력은 자동화한 PTY 키 입력
 fixture이며 실제 사용자가 답한 표본으로 부르지 않는다.
 
 `probe-opencode-question-ui.py --native-bridge --installed --workflow board|endorsement`는
@@ -46,6 +46,18 @@ provider request·native transcript와 source7개 snapshot/SHA manifest를 보�
 준비한 package/lock을 새 profile로 복사해 native dependency 대기가 외부 설치를
 다시 하지 않게 했다. 플랫폼 binary는 기존 pinned helper로 골라 Linux arm64를
 잘못 linux-x64로 고르던 하네스 분기를 바로잡았다. 새 출력 폴더만 허용해 이전
-실패를 덮지 않는다. 이 플랫폼 보완의 실제 Linux 실행은 아직 미완이다.
+실패를 덮지 않는다. 이 플랫폼 보완도 실제 Linux arm64 TUI 실행에서 확인했다.
 제품 engine·UI protocol은 바꾸지 않았다. 실제 native 정상/변이 경로와 구문을
 실행했으며 test-only 변경으로 전체 core 재통과를 주장하지 않는다.
+
+## Linux 고정 source 검증
+
+고정b7d34e5/Linux arm64에서 새 workflow4개와 기본 질문2개가 모두 통과했다.
+출처 변이2개도 각각 의도한 assertion/exit1이었다. Native terminal/도구/승인
+저장 경로를 모두 실행했으며 Mac과 같은 applied/dismissed·human 노드 유무를
+확인했다. 6개 정상 모드의 실제 control frame 각4개 이상이 ignored/synthetic
+빈 part였고, nonce와 xsmUi가 전체 provider request에 없음을 별도 대조했다.
+Network none/model0/read-only 준비 패키지, 미실행0, VM stopExit0이다.
+원시는 `opencode-native-ui-workflows-linux/`의 case별 output/artifacts와
+result.json/audit.json이다. 이는 자동 키 입력 fixture이며 실제 사용자의
+판단·모델 협력·메신저나 전체 기능 행렬의 인증은 아니다.

@@ -3149,3 +3149,15 @@ Mac30개/41 XSM 호출/9개 operation/native receipt88개·HTTP131개가 통과�
 commit 및 raw native/발급ID88개의 일치를 독립 확인했다. 정상 로그 누락과
 관측기 예외는 없었으며 도구/참여/container/VM 종료를 확인했다. 실제 사용자·
 모델·메신저와 전체 UI/기능 행렬은 계속 미완이다.
+
+
+## OpenCode native TUI 보드 결정·endorsement — 2026-11-04
+
+[Native TUI workflow](opencode-native-ui-workflows.md)는 설치된 서버·TUI·
+DialogSelect와 자동 PTY 키 입력을 사용한다. Mac·고정b7d34e5 Linux에서 각각
+보드/문서의 선택·취소4개와 기본 질문의 선택·취소2개, 정상6개를 통과했다.
+선택은 human node/host-user receipt와 정본을 대조하고, 취소는 효과0개를
+확인했다. 실제 native control frame/nonce가 model input에 없음을 독립
+대조했다. 출처 변이2개는 각각 표적 assertion에서 실패했다. Linux arm64
+binary 경로의 하네스 보완도 실제 실행했고 VM stopExit0을 확인했다. 제품
+engine은 바꾸지 않았다. 실제 사용자·모델·전체 UI/기능 행렬은 미완이다.
