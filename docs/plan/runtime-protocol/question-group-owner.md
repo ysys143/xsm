@@ -66,7 +66,7 @@ homes·임시 작업 폴더를 썼고 실제 모델/사람 UI/메신저/물리 �
 
 ## 남은 조건
 
-Linux 고정 source 검증을 확인한 뒤 두 OS의 core 조건을 판정한다.
+이번 변경의 두 OS core 조건은 아래 고정 source에서 확인했다.
 Ask/status/connect normative 결과 schema와 독립 구현의 전체 적합성, 실제
 native/runtime/p95/UI/remote/설치 행렬은 미완이다. 구현 담당 세션이 각 근거를
 추가 실행해 갱신한다. 승인된 전체 계획을 이 부분 결과로 축소하지 않는다.
@@ -77,3 +77,15 @@ native/runtime/p95/UI/remote/설치 행렬은 미완이다. 구현 담당 세션
 (Python508+외부 적합성32+SDK56+native133+Node152)가91.310초에 통과했다
 (core-r2.log, exit0). 독립 mock39/변이14는 별도 수치다. 이 최종 실행은
 최초 core의 미실행/실패 수치와 합산하지 않았다. 전체 계획은 여전히 미완이다.
+
+## 고정 source Linux 핵심 검사
+
+2ad7a23e4fa38da1e14886042415b3c8cbc5faa2을 두 환경에 동일하게 넣었다.
+Source archive SHA256은
+06779a1bb83f779e08d24739d128038cb3b9a54799f85adafbd0d1bdcafd38e2다.
+Python3.11.2에서83.346초, Python3.14.10에서104.917초로 각각881개
+(Python508+외부 적합성32+SDK56+native133+Node152)를 통과했다. 독립
+mock39/변이14는 별도 수치다. Model0/network none/cpu2/memory3g,
+미실행 case0, VM stopExit0이다. 원시는 question-group-owner-linux의
+result.json과 환경별 output/protocol.log다. Native runtime/UI/물리 원격/전체
+계획 인증으로 확대하지 않는다.
