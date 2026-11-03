@@ -6,7 +6,8 @@
 소유권 기반 설치·업데이트·제거와 로드된 snapshot 보존을 연결했다.
 설치의 macOS/Linux native 수명을 검증했다. 실제 구독 모델이 native plugin의
 xsm_send를 호출하고 별도 reference 참여자가 원문을 읽어 ACK하는 macOS 표본도
-확인했다. Native 도구 전체·idle wake·사용자 UI와 owned loader의 queue 오류/
+확인했다. Opt-in native wake/FYI의 Linux model0 기본·reset 경로도 확인했다.
+Native 도구 전체·실제 모델의 idle wake·사용자 UI와 owned loader의 queue 오류/
 정책 전체 검증은 미완이다. 전체 계획은 미완이다.
 
 별도 owned frontend는 실제 구독 모델의 정상 실행·문맥 재개/분리와
@@ -562,3 +563,30 @@ RetryAdmission 뒤 재시도를 끈 복사본은 claim 반환까지는 진행됐
 16묶음/96조각이다. 위 Linux 미실행 기록의 후속 표본이고, 지연을
 의도한 burst를 정상 p95나 간헐적 실패 해결의 증거로 쓰지 않는다.
 정책/오류 전체·실제 agent/UI/메신저와 전체 지원은 미완이다.
+
+## Opt-in native wake와 첫 자연 턴 FYI
+
+`plugins.entries.xsm.config.nativeWake: true`는 기본 off다. Native hook의
+`allowConversationAccess: true`가 필요하고 `allowPromptInjection: false`이면
+활성화된 wake 연결을 만들지 않는다. 설치기가 이 설정을 자동으로 바꾸지 않는다.
+실제 agent_turn_prepare 이벤트의 SID/key/workspace와 native store를 대조해
+참여를 열며 metadata-only 도구 발견은 참여를 만들지 않는다.
+
+일반 wake는 먼저 기존 guarded context queue의 commit/readback을 마치고,
+등록 plugin의 background context에서 native work-admission lease를 얻는다.
+그 안에서 SID/revision·현재 설정을 다시 확인하고 native signal을 실행에 전달한다.
+모델은 native config/default resolver와 세션의 명시적 override를 사용한다. 별칭을
+직접 파싱하거나 다른 provider를 추측하지 않는다. Inter-session provenance와
+tainted input을 유지하며 queue 수락으로 소비 ACK를 만들지 않는다.
+
+FYI는 유휴 turn을 시작하지 않는다. 실제 자연 턴 준비 hook이 원문을 stage하고
+해당 host/run의 llm_input에서 전체 nonce context를 확인한 뒤 admission을 보고한다.
+관측하지 못한 문맥은 취소·claim 반환되며, 명시적 native xsm_ack만 소비를 확정한다.
+실행 취소와 source 데이터의 삭제는 별개다.
+
+실제 설치 plugin/gateway/native agent와 scripted provider의 Linux 기본 경로12개,
+model 요청 중 실제 reset 경로18개가 통과했다. Same-SID reset은 주소를 유지하고
+protocol generation을 교체했으며 미확인 원문을 새 자연 턴에서만 소비했다.
+UI·실제 서비스·구독 모델 wake, Mac native wake, 대용량/오류/재시작 전체와
+정상100표본 지연은 이 표본으로 인증하지 않는다. 자세한 결과와 실패는
+[native wake 기록](../plan/runtime-protocol/openclaw-native-wake.md)에 구분한다.

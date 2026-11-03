@@ -1,4 +1,4 @@
-/** OpenClaw 2026.10.9 tools + guarded context queue. Wake/UI/v2 continuations remain open. */
+/** Pinned tools/context queue and opt-in native wake; UI/continuation certification remains open. */
 import { realpath } from 'node:fs/promises';
 import { dirname, isAbsolute, resolve } from 'node:path';
 import { XsmHost, RetryAdmission } from '../../clients/typescript/xsm-host.mjs';
@@ -6,6 +6,8 @@ import { TransportError } from '../../clients/typescript/xsm-client.mjs';
 import { holdComponent } from '../../clients/typescript/component-lease.mjs';
 import operations from './tools.mjs';
 import { nativeDelivery } from './context-queue.mjs';
+import { createNativeWake } from './native-wake.mjs';
+import { NaturalContext } from './natural-context.mjs';
 
 export function register(api, options = {}) {
   // Native capture relocates imported JS without copying bin/xsm. The host's
@@ -20,8 +22,13 @@ export function register(api, options = {}) {
   }
   const sessions = new Map();
   const observeTurns = api.config?.plugins?.entries?.xsm?.hooks?.allowConversationAccess === true;
+  const wakeEnabled = api.pluginConfig?.nativeWake ?? false;
+  if (typeof wakeEnabled !== 'boolean') throw new Error('nativeWake must be a boolean');
+  if (wakeEnabled && !observeTurns) throw new Error('nativeWake requires native conversation access');
   let disposed = false;
   const fail = error => api.logger.error('xsm: ' + error.message);
+  const nativeWake = wakeEnabled ? createNativeWake(api, fail) : undefined;
+  const naturalContext = wakeEnabled ? new NaturalContext() : undefined;
   const componentLease = options.runtimeRoot
     ? holdComponent(profilePath, 'openclaw-plugin', 'openclaw', options.runtimeRoot)
     : Promise.resolve(async () => {});
@@ -98,11 +105,16 @@ export function register(api, options = {}) {
       const pending = (async () => {
         const [profile, cwd] = await Promise.all([realpath(profilePath), realpath(entry.cwd)]);
         current(entry, epoch, context, signal);
-        const deliver = nativeDelivery(api, context, () => {
+        const queued = nativeDelivery(api, context, () => {
           if (disposed || epoch !== entry.epoch) throw new Error('xsm native delivery is no longer current');
-        });
-        entry.deliveryConnected = Boolean(deliver);
+        }, nativeWake?.start);
         let observed;
+        const deliver = queued && (async (packet, deliveryOptions) => {
+          if (!deliveryOptions.wake && naturalContext?.isBoundary()) return naturalContext.deliver(entry.id, observed, packet);
+          return queued(packet, deliveryOptions);
+        });
+        if (wakeEnabled && !deliver) throw new Error('native wake requires guarded native context delivery');
+        entry.deliveryConnected = Boolean(deliver);
         const connect = async () => {
           observed = await XsmHost.open({ command, env: options.env, runtime: 'openclaw',
             profile, conversation: entry.id, cwd, onError: error => {
@@ -134,6 +146,8 @@ export function register(api, options = {}) {
 
   async function end(entry) {
     entry.epoch++;
+    nativeWake?.cancelSession(entry.id);
+    await naturalContext?.cancel(entry.id);
     entry.registered = false;
     cancelReconnect(entry);
     entry.deliveryConnected = false;
@@ -150,6 +164,8 @@ export function register(api, options = {}) {
 
   async function close() {
     disposed = true;
+    await naturalContext?.close();
+    await nativeWake?.close();
     const results = await Promise.allSettled([...sessions.values()].map(end));
     const failed = results.find(result => result.status === 'rejected');
     try { if (failed) throw failed.reason; }
@@ -170,6 +186,25 @@ export function register(api, options = {}) {
     const entry = sessions.get(event.sessionId);
     if (entry && (!event.sessionKey || event.sessionKey === entry.route)) await end(entry);
   });
+  if (wakeEnabled) api.on('agent_turn_prepare', async (_event, context) => {
+    const session = api.runtime.agent.session;
+    if (!context.agentId || !context.sessionKey || !context.sessionId) return;
+    const scope = { agentId: context.agentId, sessionKey: context.sessionKey,
+      storePath: session.resolveStorePath(api.runtime.config?.current?.()?.session?.store ?? api.config?.session?.store,
+        { agentId: context.agentId }), readConsistency: 'latest' };
+    if (session.getSessionEntry(scope)?.sessionId !== context.sessionId) return;
+    const entry = state(context);
+    if (!entry) return;
+    entry.activity = 'busy';
+    const host = await open(entry, entry.epoch, context);
+    await host.update('busy');
+    return naturalContext.begin(entry.id, host, context.runId);
+  });
+  if (wakeEnabled) api.on('llm_input', async (event, context) => {
+    const entry = sessions.get(event.sessionId);
+    if (!entry?.pending || !naturalContext.pending.has(entry.id) || context.sessionId !== entry.id) return;
+    await naturalContext.observe(entry.id, await entry.pending, event.runId, event.prompt);
+  });
   if (observeTurns) api.on('agent_end', async (_event, context) => {
     const entry = sessions.get(context.sessionId);
     if ((entry?.pending || entry?.registered) && (!context.sessionKey || context.sessionKey === entry.route)) {
@@ -182,7 +217,8 @@ export function register(api, options = {}) {
       }
       const pending = entry.pending;
       if (entry.epoch !== epoch || !pending) return;
-      if (entry.deliveryConnected) await host.naturalBoundary().catch(error => { if (!(error instanceof RetryAdmission)) throw error; });
+      if (wakeEnabled) await naturalContext.cancel(entry.id);
+      else if (entry.deliveryConnected) await host.naturalBoundary().catch(error => { if (!(error instanceof RetryAdmission)) throw error; });
       if (entry.epoch === epoch && entry.pending === pending) { await host.update('idle'); entry.activity = 'idle'; }
     }
   });
@@ -208,4 +244,4 @@ export function register(api, options = {}) {
 }
 
 export default { id: 'xsm', name: 'xsm',
-  description: 'Experimental xsm tools and guarded context queue; turn wake/UI not connected', register };
+  description: 'Experimental xsm tools, guarded context and opt-in native wake; user UI remains unverified', register };

@@ -1,7 +1,7 @@
 {
   "id": "xsm",
   "name": "xsm",
-  "description": "Experimental protocol tools and guarded native context queue; turn wake and user UI remain unconnected.",
+  "description": "Experimental protocol tools, guarded native context and opt-in wake; user UI remains unverified.",
   "activation": {
     "onStartup": true
   },
@@ -34,6 +34,6 @@
   "configSchema": {
     "type": "object",
     "additionalProperties": false,
-    "properties": {}
+    "properties": { "nativeWake": { "type": "boolean", "default": false } }
   }
 }

@@ -2981,3 +2981,13 @@ Gateway/VM 정상 종료를 확인했다. 제품 ordinary wake 연결·real mode
 첫 syntax 실패와 실행기 중복 운영 오류·정리, 겹친 결과 제외와 단독 재검증도
 [조사 기록](openclaw-idle-wake.md)에 남겼다. 기존 전체 core는 이 SPI 때문에 다시
 통과했다고 표시하지 않는다.
+
+## OpenClaw 제품 native wake/FYI — 2026-11-04
+
+[제품 연결](openclaw-native-wake.md)은 queue commit 뒤 background/native lease로
+실행하고 FYI를 첫 자연 턴에서 두 단계로 인계한다. 실제 설치 plugin/agent/Tool Hub/
+localhost scripted provider의12개와 실제 provider 중 reset18개가 통과했다.
+Same-SID reset은 stable address/new protocol generation과 원문 보존·새 자연 턴 ACK를
+확인했다. Native 도구의 lazy schema 오인과 FYI 늦은 전달, reset SID 가정의 실패를
+모두 보존했다. Controlled guard2변이와 Mac core972개/schema/v7 60.292초를 확인했다.
+Actual Mac·구독 모델/UI/메신저·오류 전체·100p95와 원래 계획은 미완이다.

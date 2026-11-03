@@ -36,7 +36,7 @@ function fragments(body, acknowledgement) {
   });
 }
 
-export function nativeDelivery(api, context, assertBindingCurrent) {
+export function nativeDelivery(api, context, assertBindingCurrent, startWake) {
   const session = api.runtime.agent?.session;
   const config = () => api.runtime.config?.current?.() ?? api.config;
   const allowed = () => ![api.config, config()].some(value =>
@@ -62,7 +62,7 @@ export function nativeDelivery(api, context, assertBindingCurrent) {
       throw new Error('native context admission conversation changed');
     }
   }
-  return async (packet, { signal, leaseSeconds }) => {
+  return async (packet, { signal, leaseSeconds, wake = false }) => {
     guard(signal);
     const ids = packet.claims.map(claim => claim.id);
     const body = packet.messages.join('\n\n');
@@ -133,5 +133,6 @@ export function nativeDelivery(api, context, assertBindingCurrent) {
       guard(signal);
       throw new RetryAdmission('native xsm context queue is full');
     }
+    if (wake && startWake) startWake({ runId: base, context, scope, revision, signal, guard });
   };
 }

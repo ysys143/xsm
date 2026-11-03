@@ -40,12 +40,14 @@ def native_binary(root, system=None, machine=None):
 
 class AssistantFixture:
     """Explicit scripted assistant packets, never a language model or human answer."""
-    def __init__(self, output, question=None):
+    def __init__(self, output, question=None, *, warmup_inbox=False):
         self.calls = 0
         self.tokens = set()
         self.lock = threading.Lock()
         self.question = question
         self.question_issued = False
+        self.inbox_issued = False
+        self.inbox_searched = False
         fixture = self
 
         class Handler(BaseHTTPRequestHandler):
@@ -55,6 +57,9 @@ class AssistantFixture:
             def do_POST(self):
                 request = json.loads(self.rfile.read(int(self.headers['Content-Length'])))
                 available = {tool.get('function', {}).get('name') for tool in request.get('tools', [])}
+                call_schema = next((tool.get('function', {}).get('parameters', {}) for tool in request.get('tools', [])
+                                    if tool.get('function', {}).get('name') == 'tool_call'), {})
+                lazy_native = warmup_inbox and 'tool_call' in available and 'id' in call_schema.get('required', [])
                 matches = re.findall(r'tokens: (\[[^\n]+?\])', json.dumps(request.get('messages', []), ensure_ascii=False)
                                      .replace('\\"', '"').replace('\\n', '\n'))
                 tokens = []
@@ -66,17 +71,33 @@ class AssistantFixture:
                         continue
                 with fixture.lock:
                     fresh = [token for token in tokens if token not in fixture.tokens]
-                    use_tool = bool(fresh) and 'xsm_ack' in available
+                    use_tool = bool(fresh) and ('xsm_ack' in available or lazy_native)
                     tool_name, tool_args = 'xsm_ack', {'tokens': fresh}
+                    if warmup_inbox and not fixture.inbox_issued and 'xsm_inbox' in available:
+                        use_tool = True
+                        tool_name, tool_args = 'xsm_inbox', {}
+                    elif warmup_inbox and not fixture.inbox_issued and lazy_native:
+                        use_tool = True
+                        if not fixture.inbox_searched and 'tool_search' in available:
+                            tool_name, tool_args = 'tool_search', {'queries': [
+                                {'query': 'xsm_inbox', 'limit': 1}, {'query': 'xsm_ack', 'limit': 1}]}
+                            fixture.inbox_searched = True
+                        else:
+                            tool_name, tool_args = 'tool_call', {'id': 'xsm_inbox', 'args': {}}
                     if fixture.question and not fixture.question_issued and 'xsm_decide' in available:
                         use_tool = True
                         tool_name, tool_args = 'xsm_decide', {'question': fixture.question, 'options': ['blue', 'green']}
                         fixture.question_issued = True
+                    if use_tool and (tool_name == 'xsm_inbox' or tool_name == 'tool_call' and tool_args.get('id') == 'xsm_inbox'):
+                        fixture.inbox_issued = True
+                    if use_tool and tool_name == 'xsm_ack' and 'xsm_ack' not in available and lazy_native:
+                        tool_name, tool_args = 'tool_call', {'id': 'xsm_ack', 'args': tool_args}
                     if use_tool:
                         fixture.tokens.update(fresh)
                         fixture.calls += 1
                     with (output / 'assistant-fixture.jsonl').open('a') as stream:
-                        stream.write(json.dumps({'request': request, 'ackFixture': use_tool and tool_name == 'xsm_ack',
+                        stream.write(json.dumps({'request': request, 'ackFixture': use_tool and (tool_name == 'xsm_ack' or
+                                                 tool_name == 'tool_call' and tool_args.get('id') == 'xsm_ack'),
                                                  'toolFixture': tool_name if use_tool else None}) + '\n')
                 delta = {'content': 'Explicit assistant fixture; no model inference.'}
                 reason = 'stop'

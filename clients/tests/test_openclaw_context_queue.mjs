@@ -47,6 +47,20 @@ test('native context is observed after admission, preserves other plugins and de
   assert.equal(all.xsm[0].ttlMs, 120000);
 });
 
+test('wake callback follows committed context and FYI never invokes it', async () => {
+  const f = fixture(), calls = [];
+  const deliver = nativeDelivery(f.api, f.context, () => {}, value => {
+    assert.match(f.read().pluginNextTurnInjections.xsm[0].text, /exact original/);
+    calls.push(value);
+  });
+  await deliver(f.packet, { ...f.controls, wake: false });
+  assert.equal(calls.length, 0);
+  await deliver(f.packet, { ...f.controls, wake: true });
+  assert.equal(calls.length, 1);
+  assert.equal(calls[0].revision, 'generation-a');
+  assert.equal(calls[0].context.sessionId, 'a');
+});
+
 test('final native guard rejects a replaced conversation after update preparation', async () => {
   const f = fixture();
   f.beforeCommit(() => f.edit({ sessionId: 'replacement' }));
