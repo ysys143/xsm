@@ -1,0 +1,74 @@
+[
+  {
+    "source": "isolated stdio; synthetic internal failure after actual document write",
+    "method": "operations/list",
+    "error": {
+      "code": -32002,
+      "message": "initialize first"
+    }
+  },
+  {
+    "source": "isolated stdio; synthetic internal failure after actual document write",
+    "method": "initialize",
+    "error": {
+      "code": -32600,
+      "message": "connection already initialized"
+    }
+  },
+  {
+    "source": "isolated stdio; synthetic internal failure after actual document write",
+    "method": "session.open",
+    "error": {
+      "code": -32602,
+      "message": "runtime must be a new slug; native sessions require their verified bindings"
+    }
+  },
+  {
+    "source": "isolated stdio; synthetic internal failure after actual document write",
+    "method": "session.update",
+    "error": {
+      "code": -32001,
+      "message": "unknown or closed connection-local session"
+    }
+  },
+  {
+    "source": "isolated stdio; synthetic internal failure after actual document write",
+    "method": "session.open",
+    "error": {
+      "code": -32003,
+      "message": "conversation already has a live owner"
+    }
+  },
+  {
+    "source": "isolated stdio; synthetic internal failure after actual document write",
+    "method": "invalid-json",
+    "error": {
+      "code": -32700,
+      "message": "invalid JSON"
+    }
+  },
+  {
+    "source": "isolated stdio; synthetic internal failure after actual document write",
+    "method": "fixture.unknown",
+    "error": {
+      "code": -32601,
+      "message": "unknown method"
+    }
+  },
+  {
+    "source": "isolated stdio; synthetic internal failure after actual document write",
+    "method": "operation.call",
+    "error": {
+      "code": -32004,
+      "message": "blocking waits not implemented; subscribe and query status"
+    }
+  },
+  {
+    "source": "isolated stdio; synthetic internal failure after actual document write",
+    "method": "operation.call",
+    "error": {
+      "code": -32603,
+      "message": "internal server error"
+    }
+  }
+]

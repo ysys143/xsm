@@ -168,6 +168,8 @@ def output_contract(trace=None):
     Draft202012Validator.check_schema(decision_schema)
     grant_schema = json.loads((ROOT / 'docs/protocol/grant-result.schema.json').read_text())
     Draft202012Validator.check_schema(grant_schema)
+    error_schema = json.loads((ROOT / 'docs/protocol/error.schema.json').read_text())
+    Draft202012Validator.check_schema(error_schema)
     owned_schema = json.loads((ROOT / 'docs/protocol/owned-result.schema.json').read_text())
     Draft202012Validator.check_schema(owned_schema)
     handover_schema = json.loads((ROOT / 'docs/protocol/handover-result.schema.json').read_text())
@@ -204,6 +206,8 @@ def output_contract(trace=None):
         nonlocal inbox_observed
         frame = observation['frame']
         validator.validate(frame)
+        if 'error' in frame:
+            Draft202012Validator(error_schema).validate(frame['error'])
         if observation.get('operation') in ('xsm_send', 'xsm_ask', 'xsm_connect', 'xsm_question_status') and 'error' in frame:
             data = frame['error'].get('data')
             if isinstance(data, dict) and 'attachment_error' in data:
@@ -340,6 +344,22 @@ def grant_contract():
         if validator.is_valid(value):
             raise ValueError('invalid grant result accepted')
     return dict(examples=len(examples), rejected=len(invalid))
+
+
+def error_contract():
+    schema=json.loads((ROOT/'docs/protocol/error.schema.json').read_text())
+    examples=json.loads((ROOT/'docs/protocol/error-examples.json').read_text())
+    Draft202012Validator.check_schema(schema);validator=Draft202012Validator(schema)
+    for example in examples:validator.validate(example['error'])
+    if {e['error']['code'] for e in examples} != set(schema['properties']['code']['enum']):
+        raise ValueError('standard error examples omit a declared code')
+    invalid=[]
+    for key,value in (('code',True),('code',-32099),('code','-32602'),('message',None),('stack','private')):
+        bad=copy.deepcopy(examples[0]['error']);bad[key]=value;invalid.append(bad)
+    bad=copy.deepcopy(examples[0]['error']);del bad['code'];invalid.append(bad)
+    for bad in invalid:
+        if validator.is_valid(bad):raise ValueError('invalid standard error accepted: '+repr(bad))
+    return dict(examples=len(examples),rejected=len(invalid),codes=len(schema['properties']['code']['enum']),scope='error structure only; no code proves absence of effects or automatic retry safety')
 
 
 def owned_contract():
@@ -964,7 +984,7 @@ def run(trace=None):
                 validator='jsonschema', validatorVersion=importlib.metadata.version('jsonschema'),
                 scope='request and output structures; no full operation results or semantic certification',
                 output=output_contract(trace), operations=operations_contract(), files=files_contract(), ack=ack_contract(),
-                discovery=discovery_contract(), team=team_contract(), board=board_contract(), doc=doc_contract(), send=send_contract(), question=question_contract(), publication=publication_contract(), decisionStatus=decision_status_contract(), grant=grant_contract(), approval=approval_contract(), decide=decide_contract(), scopeResult=scope_contract(), endorsement=endorsement_contract(), handover=handover_contract(), owned=owned_contract())
+                discovery=discovery_contract(), team=team_contract(), board=board_contract(), doc=doc_contract(), send=send_contract(), question=question_contract(), publication=publication_contract(), decisionStatus=decision_status_contract(), grant=grant_contract(), approval=approval_contract(), decide=decide_contract(), scopeResult=scope_contract(), endorsement=endorsement_contract(), handover=handover_contract(), owned=owned_contract(), errors=error_contract())
 
 
 if __name__ == '__main__':

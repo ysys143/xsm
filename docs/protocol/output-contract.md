@@ -495,3 +495,12 @@ schemas now declare `x-actionResults` for all nine and seven actions respectivel
 The checker selects the result definition by the original action; a valid result
 for another action is not interchangeable. Pending and legacy text-only envelopes
 remain explicit and do not prove that a mutation happened.
+
+## Standard error objects and unknown outcomes
+
+The [error schema](error.schema.json) validates all nine current server codes,
+required message and optional data. Wire error objects are validated in addition
+to the common JSON-RPC envelope and operation-specific attachment error data.
+See [recovery and cancellation boundaries](error-contract.md). The error fixture
+observes a real document write followed by -32603 and recovers the one saved node
+without automatically repeating the mutation. An error code is no rollback proof.

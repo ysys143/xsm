@@ -360,3 +360,16 @@ class ExternalConformanceTest(unittest.TestCase):
                 result=checker.run(self.delivery_candidate(fault),suite='team-board-actions')
                 self.assertEqual(result['status'],'failed',result)
                 self.assertEqual(result['activeCheck'],check)
+
+    def test_standard_errors_and_post_effect_failure_contract(self):
+        command=[sys.executable,'-B',str(ROOT/'tests/fixtures/protocol_error_fixture.py')]
+        result=checker.run(command,suite='errors-fixture',capture=True)
+        self.assertEqual(result['status'],'passed',{k:v for k,v in result.items() if k!='observations'})
+        self.assertEqual(len(result['checks']),27)
+        codes={row['frame']['error']['code'] for row in result['observations'] if 'error' in row['frame']}
+        self.assertEqual(codes,{-32700,-32600,-32601,-32602,-32603,-32001,-32002,-32003,-32004})
+
+    def test_error_fault_suite_refuses_a_production_candidate(self):
+        result=checker.run(self.delivery_candidate('none'),suite='errors-fixture')
+        self.assertEqual(result['status'],'failed',result)
+        self.assertEqual(result['activeCheck'],'error candidate declares isolated fault fixture')

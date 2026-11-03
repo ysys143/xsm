@@ -32,6 +32,7 @@ Project and session scope changes: [scope results](scope-result.schema.json).
 Document endorsement: [endorsement receipts](endorsement-result.schema.json).
 Session handover: [transfer receipts](handover-result.schema.json).
 Owned services and tasks: [public projections](owned-result.schema.json).
+Errors and retry boundaries: [error contract](error-contract.md).
 Owned native execution: [provider admission, pre-turn binding and recovery](native-workers.md).
 External verification: [stdio lifecycle and delivery conformance](conformance.md) (partial contract coverage).
 
@@ -202,9 +203,12 @@ remote identities and native worker launches remain open acceptance items.
 They are not silently substituted with another approval or launch path.
 
 Protocol errors: `-32700` JSON parse, `-32600` invalid frame/lifecycle,
-`-32601` unknown method/operation, `-32602` invalid arguments, `-32001` unknown
+`-32601` unknown method/operation, `-32602` invalid arguments/domain refusal,
+`-32603` internal/unknown outcome, `-32001` unknown
 session, `-32002` version/initialization, `-32003` registration conflict/policy,
 `-32004` unsupported capability. Unknown version negotiation changes no state.
+See the [error contract](error-contract.md): an operation error does not prove no
+partial effects, rollback, ACK or automatic retry safety.
 
 ## Verification
 

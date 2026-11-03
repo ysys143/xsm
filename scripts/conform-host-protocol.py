@@ -272,6 +272,33 @@ def messaging(peer, sender, receiver, reopen, check, equal, events=False):
               tokens=[pending["claims"][0]["token"]])["acked"], event["params"]["ids"]))
 
 
+def error_fixture(peer, params, command, env, peers, check, equal):
+    descriptor=next(t for t in peer.call('operations/list')['operations'] if t['name']=='xsm_doc')
+    check('error candidate declares isolated fault fixture',lambda:equal(
+        'XSM_CONFORMANCE_ERROR_FIXTURE' in descriptor.get('description',''),True))
+    fresh=Peer(command,params['cwd'],env,peer.observations);peers.append(fresh)
+    check('unsupported initialization version is explicit',lambda:fresh.call('initialize',{'protocolVersion':'unsupported'},error=-32002))
+    peer.process.stdin.write(b'{invalid-json}\n');peer.process.stdin.flush()
+    malformed=peer.frames.get(timeout=5)
+    check('malformed JSON returns null correlation and parse error',lambda:equal(
+        malformed['id'] is None and malformed['error']['code']==-32700,True))
+    if peer.observations is not None:peer.observations.append(dict(method='invalid-json',frame=malformed))
+    check('duplicate initialization is refused',lambda:peer.call('initialize',{'protocolVersion':'1'},error=-32600))
+    check('unknown method is explicit',lambda:peer.call('fixture.unknown',error=-32601))
+    check('unknown session is explicit',lambda:peer.call('session.update',dict(session='unknown-session',state='idle'),error=-32001))
+    owner=peer.call('session.open',dict(params,conversation='errors-owner'))
+    check('registration conflict is explicit',lambda:peer.call('session.open',dict(params,conversation='errors-owner'),error=-32003))
+    def operation(name,error=None,**arguments):
+        return peer.call('operation.call',dict(session=owner['session'],operation=name,arguments=arguments),error=error)
+    check('invalid operation arguments are explicit',lambda:operation('xsm_doc',error=-32602))
+    check('unsupported blocking wait is explicit',lambda:operation('xsm_inbox',wait=1,error=-32004))
+    failed=operation('xsm_doc',action='add',doc='ERROR-FIXTURE.md',text='Fixture effect before error',tags=['report'],error=-32603)
+    check('internal failure exposes no backend detail',lambda:equal(failed['message'],'internal server error'))
+    retained=operation('xsm_doc',action='log',doc='ERROR-FIXTURE.md')
+    check('internal error can follow a durable effect without automatic replay',lambda:equal(
+        len(retained['nodes'])==1 and retained['nodes'][0]['body']=='Fixture effect before error',True))
+
+
 def team_board_actions(peer, params, check, equal):
     owner, member = [peer.call('session.open',dict(params,conversation='action-'+label,capabilities=['user-decisions']))
         for label in ('owner','member')]
@@ -1097,6 +1124,9 @@ def run(command, suite="lifecycle", capture=False):
             if suite == 'discovery':
                 result['scope'] = 'lifecycle and local public discovery; no physical remote, native UI or messenger certification'
                 discovery(b, reopened, resumed, check, equal)
+            if suite == 'errors-fixture':
+                result['scope'] = 'real stdio standard errors and injected failure after actual isolated write; no model or native certification'
+                error_fixture(b, params, command, env, peers, check, equal)
             if suite == 'team-board-actions':
                 result['scope'] = 'all team and board actions through stdio with synthetic host answers; no actual user or remote certification'
                 team_board_actions(b, params, check, equal)
@@ -1144,7 +1174,7 @@ def run(command, suite="lifecycle", capture=False):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--capture", action="store_true", help="include isolated wire observations in the report")
-    parser.add_argument("--suite", choices=("lifecycle", "messaging", "events", "decisions", "uploads", "discovery", "collaboration", "documents", "sending", "questions", "selection", "grants", "approvals", "scopes", "endorsements", "handovers", "owned-fixture", "team-board-actions"), default="lifecycle")
+    parser.add_argument("--suite", choices=("lifecycle", "messaging", "events", "decisions", "uploads", "discovery", "collaboration", "documents", "sending", "questions", "selection", "grants", "approvals", "scopes", "endorsements", "handovers", "owned-fixture", "team-board-actions", "errors-fixture"), default="lifecycle")
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--command", nargs=argparse.REMAINDER, required=True)
     args = parser.parse_args()

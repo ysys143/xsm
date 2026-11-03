@@ -76,3 +76,9 @@ without sending a body or acknowledging consumption. Their input schemas also
 limit indices, sizes, hashes, base64 chunks and unknown fields. UTF-8 input is
 decoded strictly; the existing frame limit counts characters. A bounded raw
 read allows up to four UTF-8 bytes per character without shrinking that limit.
+
+After initialization, unknown method names are rejected as -32601 before
+connection-local session lookup. Known methods still validate their session and
+arguments. Before initialization, -32002 remains the lifecycle boundary. The
+[error contract](error-contract.md) distinguishes these codes from effect and
+retry semantics; a rejected mutation may still require state inspection.

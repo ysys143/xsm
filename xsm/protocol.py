@@ -209,6 +209,8 @@ class Connection:
                     "operations": [t["name"] for t in TOOLS]}
         if not self.initialized:
             raise ProtocolError(-32002, "initialize first")
+        if method not in REQUEST_FIELDS:
+            raise ProtocolError(-32601, "unknown method")
         request_fields(method, params)
         if method == "operations/list":
             return {"operations": TOOLS}

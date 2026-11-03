@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:xsm:host-protocol:1:error",
+  "title": "Experimental v1 JSON-RPC error object; effect status is not implied by code",
+  "type": "object",
+  "required": [
+    "code",
+    "message"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "code": {
+      "type": "integer",
+      "enum": [
+        -32700,
+        -32603,
+        -32602,
+        -32601,
+        -32600,
+        -32004,
+        -32003,
+        -32002,
+        -32001
+      ]
+    },
+    "message": {
+      "type": "string"
+    },
+    "data": true
+  }
+}

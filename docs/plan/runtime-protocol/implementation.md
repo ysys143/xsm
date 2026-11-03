@@ -194,7 +194,7 @@ core906개도3.11에서89.581초,3.14에서112.965초에 통과했고 VM 종료�
 
 | 단계 | 상태 | 남은 조건 |
 |---|---|---|
-| P0 계약·현황 | 부분 구현 | 공통 오류·취소 의미 계약, 독립 구현 적합성, 안정판 API 감사. Catalog22개와 team9/board7 action의 성공 결과 구조는 정의 |
+| P0 계약·현황 | 부분 구현 | Operation별 오류 data·취소 의미 계약, 독립 구현 적합성, 안정판 API 감사. Catalog22개와 team9/board7 action의 성공 결과 구조는 정의 |
 | P1 공통 서비스 | 부분 구현 | 남은 CLI 추출·전체 작업 수명/오류 계약. Owned native provider/control은 연결했으나 classic/TUI 등 실행 모드 전체는 미완. 일반 참여자 실제 QUIC 표본과 전체 runtime 행렬을 구분 |
 | P2 SDK·검사기 | 부분 구현 | 독립 구현의 전체 계약 적합성·전체 오류/취소 계약. Python↔Node 교차 시험 및 고정 공개 입력에 대한 독립 구현 표본은 통과 |
 | P3 Pi·OpenCode | 부분 구현 | 연결·수신·설치·대화 수명·자동 재접속과 owned worker 정상/취소/readback의 native 증거가 있음. 실제 사용자 UI·classic/TUI worker와 전체 실행 모드·busy/now 우선순위 등 미완 |
@@ -2772,3 +2772,13 @@ Legacy 기록과 registry/classic 형식은 유지한다. 새6개를 포함한 M
 새 process generation6개와 실제 OpenClaw 복구를 포함했고 team/board 전체
 action·owned projection의 새 stdio/schema와 VM 종료를 확인했다. 초기489e7ac의
 3.11 실패는 보존했다. 표본별 성공/실패와 전체 계획 미완을 구분한다.
+
+## 표준 오류와 unknown method 분류 — 2026-11-03
+
+[오류 계약](error-contract.md)에9개 code와 효과/재시도/취소 경계를 정리했다.
+Unknown method가 unknown session으로 분류되던 결함을 수정 전 실패로 재현하고
+method allowlist를 bound lookup 전에 연결했다. Stdio27개/frame29개, 예제9개·
+거부6개와 schema 변이1개를 확인했다. 실제 write 뒤 internal error에서도 정본
+node1개가 남는 것을 확인했다. Mac core930개는86.030초, 별도 focused2개는
+0.440초에 통과했다. 최신 전체931개와 Linux 고정 source 재실행은 구분한다.
+전체 domain error payload/native/독립 구현/원래 행렬은 미완이다.

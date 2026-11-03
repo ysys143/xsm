@@ -304,3 +304,10 @@ nodes against log and rendered show, and the distinct DM/board-notice preference
 receipts. Synthetic host answers approve add/lead. Removing receipts, inventing
 an empty post-create membership, or changing a returned contribution body must
 fail. It does not certify native notification UI or remote replication.
+
+`--suite errors-fixture --capture` requires the explicit marker from
+`tests/fixtures/protocol_error_fixture.py`. It observes all nine error codes,
+recovers after malformed JSON, and injects an exception after one actual document
+write. Subsequent log inspection must retain exactly that node. A normal server
+is rejected before the injected-write scenario. This suite verifies the shared
+error boundary, not every domain error payload or cancellation surface.

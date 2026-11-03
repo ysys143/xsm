@@ -117,7 +117,8 @@ class ProtocolTest(ProtocolFixture):
                      'scope-result.schema.json', 'scope-result-examples.json',
                      'endorsement-result.schema.json', 'endorsement-result-examples.json',
                      'handover-result.schema.json', 'handover-result-examples.json',
-                     'owned-result.schema.json', 'owned-result-examples.json'):
+                     'owned-result.schema.json', 'owned-result-examples.json',
+                     'error-contract.md', 'error.schema.json', 'error-examples.json'):
             target = root / 'docs/protocol' / name
             target.parent.mkdir(parents=True, exist_ok=True)
             shutil.copyfile(source / 'docs/protocol' / name, target)
@@ -135,7 +136,8 @@ class ProtocolTest(ProtocolFixture):
                      'scope-result.schema.json', 'scope-result-examples.json',
                      'endorsement-result.schema.json', 'endorsement-result-examples.json',
                      'handover-result.schema.json', 'handover-result-examples.json',
-                     'owned-result.schema.json', 'owned-result-examples.json'):
+                     'owned-result.schema.json', 'owned-result-examples.json',
+                     'error-contract.md', 'error.schema.json', 'error-examples.json'):
             target = root / 'docs/protocol' / name
             data = target.read_bytes()
             target.unlink()
@@ -750,6 +752,13 @@ class ProtocolTest(ProtocolFixture):
         self.assertEqual(frames[1]['result']['claims'][0]['token'], claimed[0]['token'])
         self.assertNotEqual(handoff.status(host.record, mid)['status'], 'acknowledged')
         self.assertNotIn('private-post-effect-detail', out.getvalue() + errors.getvalue())
+
+    def test_unknown_method_is_not_misclassified_as_unknown_session(self):
+        from xsm.protocol import ProtocolError
+        with self.assertRaises(ProtocolError) as failure:
+            self.connection.dispatch('fixture.unknown', {})
+        self.assertEqual(failure.exception.code, -32601)
+        self.assertEqual(self.connection.sessions, {})
 
     def test_stdio_recovers_after_bad_json_and_unknown_method(self):
         from xsm.protocol import serve
