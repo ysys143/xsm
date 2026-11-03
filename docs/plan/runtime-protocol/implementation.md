@@ -2767,3 +2767,8 @@ Legacy 기록과 registry/classic 형식은 유지한다. 새6개를 포함한 M
 84.435초에 통과했다. 초기 source489e7ac의 Linux는3.11 실패·3.14 통과이며,
 최종 고정 source Linux 재실행 전까지 이 실패의 복구를 완료 판정하지 않는다.
 성공 결과 구조가 추가된 것이며 전체 오류·native/독립 구현/원래 행렬은 미완이다.
+
+고정20b7012의 Linux928개도3.11에서92.007초,3.14에서119.422초로 통과했다.
+새 process generation6개와 실제 OpenClaw 복구를 포함했고 team/board 전체
+action·owned projection의 새 stdio/schema와 VM 종료를 확인했다. 초기489e7ac의
+3.11 실패는 보존했다. 표본별 성공/실패와 전체 계획 미완을 구분한다.

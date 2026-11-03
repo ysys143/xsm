@@ -39,3 +39,16 @@ Process generation은 reboot/PID 재사용을 구분하고 kernel 정보가 없�
 84.435초에 통과했다(team-board-actions/core.log, exit0). 여기에는 새 process
 generation6개와 실제 OpenClaw 복구·native133개가 포함된다. Linux는 후속
 고정 source 실행 전까지 초기3.11 실패가 해결됐다고 판정하지 않는다.
+
+## 후속 고정 source Linux 검증
+
+20b70127505c5badb157e408b16fae6a63927fc0의 archive SHA256은
+dc455f9dd6d8958ce91372ea995703026d993f2ce6cd842220df7ec412024d51다.
+Python3.11.2에서92.007초, Python3.14.10에서119.422초로 core928개를 각각
+통과했다. 새 process generation6개와 실제 OpenClaw retained-history 복구를
+포함한다. 두 환경에서 team-board-actions37개/frame42개와 owned-fixture30개를
+새로 실행하고 두 trace를 offline jsonschema4.26.0으로 검증했다.
+Model0/network none/cpu2/memory3g, 미실행 case0, 미실행 wire/schema0,
+VM stopExit0이다. 원시는 `team-board-actions-linux/result.json`과 환경별 output이다.
+초기489e7ac의3.11 실패는 별도 보존되며 이 고정 source에서 재검증했다.
+실제 사용자/native 전체 행렬과 전체 계획은 계속 미완이다.
