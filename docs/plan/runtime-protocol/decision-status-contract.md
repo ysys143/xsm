@@ -52,8 +52,7 @@ result failure로 검출했다(mutants.json). Import/일반 실행 오류를 검
 
 ## 남은 조건
 
-현재 source의 전체 core와 Linux 고정 source·새 wire/schema 실행은 결과 확인 전까지
-미완이다. 실제 사람/native/물리 원격/설치/p95 전체 행렬과 미정의 계약은 별도다.
+현재 source의 전체 core와 Linux 고정 source·새 wire/schema는 아래에서 확인했다. 실제 사람/native/물리 원격/설치/p95 전체 행렬과 미정의 계약은 별도다.
 구현 담당 세션이 해당 표면을 실행해 갱신한다. 이 부분 계약을 전체 계획 완료로
 대체하지 않는다.
 
@@ -63,3 +62,19 @@ result failure로 검출했다(mutants.json). Import/일반 실행 오류를 검
 (Python517+외부 적합성35+SDK56+native133+Node152)를94.949초에 통과했다
 (core.log, exit0). Decisions suite의 check 수를35→45로 늘렸지만 unittest case
 수는 유지했다. 독립 mock39/변이14는 별도 수치다.
+
+## 고정 source Linux 실행
+
+66ba4ccf3ba92e999baaa038821aeb658b263de4의 archive SHA256은
+8de02ee47e714fb3a3cf3b0545f9bb86ad1faf6491de385954d661bba1bdd88f다.
+Python3.11.2에서86.700초, Python3.14.10에서109.477초로 core893개
+(Python517+외부 적합성35+SDK56+native133+Node152)를 각각 통과했다.
+각 환경에서 decisions suite45개/frame58개를 새로 수집해 offline
+jsonschema4.26.0으로 검증했다. 결정 상태 예제27개/거부16개도 통과했다.
+독립 mock39/변이14는 core와 별도 수치다.
+
+Model0/network none/cpu2/memory3g, 미실행 case0, 미실행 wire/schema0,
+VM stopExit0이다. 원시는 decision-status-contract-linux의 result.json과
+환경별 output/protocol/wire/schema 파일이다. 고정 개발 의존성304개 파일도
+SHA256이 같음을 확인했다(validator-audit.json). Production/runtime/SDK
+의존성을 추가하지 않았다. 실제 사람/native/원격 전체 인증으로 확대하지 않는다.
