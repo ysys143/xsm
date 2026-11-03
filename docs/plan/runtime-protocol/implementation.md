@@ -2726,3 +2726,10 @@ ID 변이1개와 wire 결함2종을 검증했다. Mac core909개는77.157초에 
 core909개를 통과했다. 두 환경에서 새 wire77개/frame95개를 검증하고 VM 종료를
 확인했다. 승인 계약37d7f3f의 Linux core908개는88.629초/116.479초이며 각
 source의 수치를 구분한다. 원래 전체 계획은 미완이다.
+
+## 범위 변경 결과 계약 — 2026-11-03
+
+[범위 계약](scope-contract.md)에 link/join/reach snapshot과 실제 송신 정책 검사를
+추가했다. Stdio41개/frame58개, 예제11개·거부12개, schema 변이1개·wire 결함3종을
+검증했다. Mac core911개는78.509초에 통과했다. 결과 계약 미정의 operation은
+3개이며 team/board의 남은 action과 전체 계획은 계속 미완이다.

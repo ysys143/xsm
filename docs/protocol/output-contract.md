@@ -401,3 +401,26 @@ unanswered text. Clients must not infer recorded state from display text.
 Retry of an applied operation preserves the original receipt. A changed request
 or scope still requires its own verified answer. Error responses retain the
 existing JSON-RPC error contract.
+
+## Project links, memberships and session reaches
+
+`xsm_link`, `xsm_join` and `xsm_reach` preserve legacy text and return a `scope`
+mutation snapshot on application. `kind` binds the result to link, membership or
+reach. `active` is the state immediately after that mutation; `changed` reports
+whether it changed storage. Cached replay preserves the original snapshot and
+is not a live permission query. The [scope result schema](scope-result.schema.json)
+and [examples](scope-result-examples.json) define these results, pending host
+questions and legacy text-only envelopes. Offline validation also binds kind to
+the observed operation and checks removal-count/change consistency.
+
+Link snapshots carry the two canonical project roots. Membership snapshots carry
+project/root and, while active, the other member roots. Reach snapshots carry the
+canonical root and owner ref; revocation includes the number removed. These are
+explicit project roots previously exposed by the command, not runtime profile
+homes. Snapshots expose no underlying permission record or session binding data.
+
+A host answer alone has no effect: retry applies the exact operation. Revocation
+must be observed through fresh scope policy, not a cached receipt. Actual sending
+still checks current scope; a successful scope mutation proves neither peer
+liveness nor message delivery. Denied host operations may return the existing
+closed-decision JSON-RPC error and issue no scope receipt.

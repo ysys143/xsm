@@ -848,8 +848,10 @@ class OperationService:
         # link all name the same absolute root.
         other = config.project_root(os.path.join(here, os.path.expanduser(args["dir"])))
         if args.get("drop"):
-            return ("unlinked %s and %s" % (root, other)) if scope_service.drop_link(root, other) \
-                else "%s and %s were not linked" % (root, other)
+            changed = bool(scope_service.drop_link(root, other))
+            text = ("unlinked %s and %s" % (root, other)) if changed else "%s and %s were not linked" % (root, other)
+            return OperationDisplay(text, {'scope': {'kind': 'link', 'root': root, 'other': other,
+                'active': False, 'changed': changed}})
         # What can be checked is checked before the consent is used up: a
         # folder not created yet used it, and the retry asked with a form
         # (review, 2026-09-28).
@@ -874,8 +876,10 @@ class OperationService:
             entry, added = result["entry"], result["added"]
         except ValueError as exc:
             raise ToolError(str(exc))
-        return ("%s: the sessions in %s and %s can talk, both ways, until unlinked; run `xsm list` "
+        text = ("%s: the sessions in %s and %s can talk, both ways, until unlinked; run `xsm list` "
                 "to see them" % ("linked" if added else "already linked", root, other))
+        return OperationDisplay(text, {'scope': {'kind': 'link', 'root': root, 'other': other,
+            'active': True, 'changed': bool(added)}})
 
     def handover(self, me: dict, args: dict) -> str:
         from . import handover, handover_service
@@ -980,13 +984,17 @@ class OperationService:
             result = scope_service.apply_membership(plan)
             if leaving:
                 changed = result["changed"]
-                return ("left %s" % project) if changed else "this folder was not in %s" % project
+                text = ("left %s" % project) if changed else "this folder was not in %s" % project
+                return OperationDisplay(text, {'scope': {'kind': 'membership', 'project': project,
+                    'root': root, 'active': False, 'changed': bool(changed)}})
             scope, added = result["scope"], result["added"]
         except ValueError as exc:
             raise ToolError(str(exc))
         others = [m["root"] for m in scope["members"] if os.path.realpath(m["root"]) != root]
-        return "%s %s; other members: %s" % ("joined" if added else "already in", project,
+        text = "%s %s; other members: %s" % ("joined" if added else "already in", project,
                                              ", ".join(others) or "none yet")
+        return OperationDisplay(text, {'scope': {'kind': 'membership', 'project': project,
+            'root': root, 'active': True, 'changed': bool(added), 'other_members': others}})
 
     def reach(self, me: dict, args: dict) -> str:
         from . import config, scope_service
@@ -999,7 +1007,10 @@ class OperationService:
         folder = os.path.join(me.get("cwd") or os.getcwd(), os.path.expanduser(args["dir"]))
         root = config.project_root(folder)
         if args.get("drop"):
-            return "dropped %d reach(es)" % scope_service.drop_reach(me, root)
+            removed = scope_service.drop_reach(me, root)
+            return OperationDisplay("dropped %d reach(es)" % removed, {'scope': {'kind': 'reach',
+                'root': root, 'owner_ref': me['ref'], 'active': False, 'changed': bool(removed),
+                'removed': removed}})
         command = "xsm reach %s --session %s" % (shlex.quote(root),
                                                  shlex.quote("ref:%s" % me.get("ref")))
         try:
@@ -1019,8 +1030,10 @@ class OperationService:
             entry, added = result["entry"], result["added"]
         except ValueError as exc:
             raise ToolError(str(exc))
-        return "%s: this session can now talk with the sessions in %s; run `xsm list` to see them" % (
+        text = "%s: this session can now talk with the sessions in %s; run `xsm list` to see them" % (
             "allowed" if added else "already allowed", entry["root"])
+        return OperationDisplay(text, {'scope': {'kind': 'reach', 'root': entry['root'],
+            'owner_ref': me['ref'], 'active': True, 'changed': bool(added)}})
 
     def approve(self, me: dict, args: dict) -> str:
         from . import workers

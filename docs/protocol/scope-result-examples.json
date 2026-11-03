@@ -1,0 +1,139 @@
+[
+  {
+    "operation": "xsm_link",
+    "source": "isolated synthetic host stdio; identities and text normalized",
+    "result": {
+      "status": "waiting-for-user",
+      "decision_id": "0000000000000000000000000000000000000000000000000000000000000000",
+      "question_id": "fixture-question"
+    }
+  },
+  {
+    "operation": "xsm_link",
+    "source": "isolated synthetic host stdio; identities and text normalized",
+    "result": {
+      "scope": {
+        "kind": "link",
+        "root": "/fixture/owner",
+        "other": "/fixture/other",
+        "active": true,
+        "changed": true
+      },
+      "text": "fixture scope result"
+    }
+  },
+  {
+    "operation": "xsm_link",
+    "source": "isolated synthetic host stdio; identities and text normalized",
+    "result": {
+      "scope": {
+        "kind": "link",
+        "root": "/fixture/owner",
+        "other": "/fixture/other",
+        "active": false,
+        "changed": true
+      },
+      "text": "fixture scope result"
+    }
+  },
+  {
+    "operation": "xsm_reach",
+    "source": "isolated synthetic host stdio; identities and text normalized",
+    "result": {
+      "status": "waiting-for-user",
+      "decision_id": "0000000000000000000000000000000000000000000000000000000000000000",
+      "question_id": "fixture-question"
+    }
+  },
+  {
+    "operation": "xsm_reach",
+    "source": "isolated synthetic host stdio; identities and text normalized",
+    "result": {
+      "scope": {
+        "kind": "reach",
+        "root": "/fixture/other",
+        "owner_ref": "fixture-owner",
+        "active": true,
+        "changed": true
+      },
+      "text": "fixture scope result"
+    }
+  },
+  {
+    "operation": "xsm_reach",
+    "source": "isolated synthetic host stdio; identities and text normalized",
+    "result": {
+      "scope": {
+        "kind": "reach",
+        "root": "/fixture/other",
+        "owner_ref": "fixture-owner",
+        "active": false,
+        "changed": true,
+        "removed": 1
+      },
+      "text": "fixture scope result"
+    }
+  },
+  {
+    "operation": "xsm_reach",
+    "source": "isolated synthetic host stdio; identities and text normalized",
+    "result": {
+      "scope": {
+        "kind": "reach",
+        "root": "/fixture/other",
+        "owner_ref": "fixture-owner",
+        "active": false,
+        "changed": false,
+        "removed": 0
+      },
+      "text": "fixture scope result"
+    }
+  },
+  {
+    "operation": "xsm_join",
+    "source": "isolated synthetic host stdio; identities and text normalized",
+    "result": {
+      "status": "waiting-for-user",
+      "decision_id": "0000000000000000000000000000000000000000000000000000000000000000",
+      "question_id": "fixture-question"
+    }
+  },
+  {
+    "operation": "xsm_join",
+    "source": "isolated synthetic host stdio; identities and text normalized",
+    "result": {
+      "scope": {
+        "kind": "membership",
+        "project": "scope-contract",
+        "root": "/fixture/owner",
+        "active": true,
+        "changed": true,
+        "other_members": [
+          "/fixture/other"
+        ]
+      },
+      "text": "fixture scope result"
+    }
+  },
+  {
+    "operation": "xsm_join",
+    "source": "isolated synthetic host stdio; identities and text normalized",
+    "result": {
+      "scope": {
+        "kind": "membership",
+        "project": "scope-contract",
+        "root": "/fixture/owner",
+        "active": false,
+        "changed": true
+      },
+      "text": "fixture scope result"
+    }
+  },
+  {
+    "operation": "xsm_link",
+    "source": "legacy unanswered display fixture",
+    "result": {
+      "text": "your user did not answer"
+    }
+  }
+]

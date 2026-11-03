@@ -12,6 +12,17 @@ from jsonschema import Draft202012Validator, ValidationError
 ROOT = Path(__file__).resolve().parents[1]
 
 
+def validate_scope_result(value, schema, operation):
+    Draft202012Validator(schema).validate(value)
+    receipt = value.get('scope')
+    if receipt:
+        expected = {'xsm_link': 'link', 'xsm_join': 'membership', 'xsm_reach': 'reach'}[operation]
+        if receipt['kind'] != expected:
+            raise ValueError('scope receipt belongs to a different operation')
+        if 'removed' in receipt and receipt['changed'] != bool(receipt['removed']):
+            raise ValueError('reach removal count and change flag differ')
+
+
 def validate_send_result(value, schema):
     Draft202012Validator(schema).validate(value)
     materials = value.get('materials')
@@ -157,6 +168,8 @@ def output_contract(trace=None):
     Draft202012Validator.check_schema(decision_schema)
     grant_schema = json.loads((ROOT / 'docs/protocol/grant-result.schema.json').read_text())
     Draft202012Validator.check_schema(grant_schema)
+    scope_schema = json.loads((ROOT / 'docs/protocol/scope-result.schema.json').read_text())
+    Draft202012Validator.check_schema(scope_schema)
     decide_schema = json.loads((ROOT / 'docs/protocol/decision-result.schema.json').read_text())
     Draft202012Validator.check_schema(decide_schema)
     approval_schema = json.loads((ROOT / 'docs/protocol/approval-result.schema.json').read_text())
@@ -195,6 +208,8 @@ def output_contract(trace=None):
             Draft202012Validator({'$ref': definition, '$defs': schema['$defs']}).validate(frame['result'])
             if observation.get('operation') == 'xsm_grant':
                 Draft202012Validator(grant_schema).validate(frame['result'])
+            if observation.get('operation') in ('xsm_link', 'xsm_join', 'xsm_reach'):
+                validate_scope_result(frame['result'], scope_schema, observation['operation'])
             if observation.get('operation') == 'xsm_decide':
                 Draft202012Validator(decide_schema).validate(frame['result'])
             if observation.get('operation') == 'xsm_approve':
@@ -312,6 +327,38 @@ def grant_contract():
         if validator.is_valid(value):
             raise ValueError('invalid grant result accepted')
     return dict(examples=len(examples), rejected=len(invalid))
+
+
+def scope_contract():
+    schema = json.loads((ROOT / 'docs/protocol/scope-result.schema.json').read_text())
+    examples = json.loads((ROOT / 'docs/protocol/scope-result-examples.json').read_text())
+    Draft202012Validator.check_schema(schema)
+    for example in examples:
+        validate_scope_result(example['result'], schema, example['operation'])
+    linked = next(e['result'] for e in examples if e['result'].get('scope', {}).get('kind') == 'link')
+    invalid = []
+    for path, value in ((['scope','active'],'true'),(['scope','changed'],1),
+                        (['scope','kind'],'global'),(['scope','root'],None),
+                        (['scope','other'],''),(['scope','home'],'/private-profile')):
+        bad = copy.deepcopy(linked); target = bad
+        for key in path[:-1]: target = target[key]
+        target[path[-1]] = value; invalid.append((bad,'xsm_link'))
+    invalid.append((copy.deepcopy(linked),'xsm_join'))
+    reach = next(e['result'] for e in examples if 'removed' in e['result'].get('scope', {}))
+    for removed in (-1, True):
+        bad = copy.deepcopy(reach);bad['scope']['removed']=removed;invalid.append((bad,'xsm_reach'))
+    bad = copy.deepcopy(reach);bad['scope']['changed']=not bad['scope']['changed'];invalid.append((bad,'xsm_reach'))
+    bad = copy.deepcopy(reach);del bad['scope']['removed'];invalid.append((bad,'xsm_reach'))
+    active = next(e['result'] for e in examples if e['result'].get('scope', {}).get('kind') == 'membership' and e['result']['scope']['active'])
+    bad = copy.deepcopy(active);del bad['scope']['other_members'];invalid.append((bad,'xsm_join'))
+    for bad, operation in invalid:
+        try: validate_scope_result(bad, schema, operation)
+        except (ValueError, ValidationError): pass
+        else: raise ValueError('invalid scope result accepted: ' + repr(bad))
+    question = json.loads((ROOT / 'docs/protocol/question-result.schema.json').read_text())
+    if schema['$defs']['awaiting'] != question['$defs']['qAwaiting']:
+        raise ValueError('scope pending differs from question contract')
+    return dict(examples=len(examples), rejected=len(invalid), operations=3)
 
 
 def decide_contract():
@@ -823,7 +870,7 @@ def run(trace=None):
                 validator='jsonschema', validatorVersion=importlib.metadata.version('jsonschema'),
                 scope='request and output structures; no full operation results or semantic certification',
                 output=output_contract(trace), operations=operations_contract(), files=files_contract(), ack=ack_contract(),
-                discovery=discovery_contract(), team=team_contract(), board=board_contract(), doc=doc_contract(), send=send_contract(), question=question_contract(), publication=publication_contract(), decisionStatus=decision_status_contract(), grant=grant_contract(), approval=approval_contract(), decide=decide_contract())
+                discovery=discovery_contract(), team=team_contract(), board=board_contract(), doc=doc_contract(), send=send_contract(), question=question_contract(), publication=publication_contract(), decisionStatus=decision_status_contract(), grant=grant_contract(), approval=approval_contract(), decide=decide_contract(), scopeResult=scope_contract())
 
 
 if __name__ == '__main__':

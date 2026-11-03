@@ -77,6 +77,14 @@ try:
                     reply['error'] = {'code': -32603, 'message': 'synthetic internal error'}
                 if fault == 'questions-erases-acked-answer' and value.get('status') == 'replied' and value.get('claims') == []:
                     value['replies'] = []
+            if params.get('operation') in ('xsm_link', 'xsm_join', 'xsm_reach') and 'scope' in reply.get('result', {}):
+                value = reply['result']['scope']
+                if fault == 'scope-missing-producer':
+                    reply['result'].pop('scope')
+                if fault == 'scope-wrong-root':
+                    value['root'] = '/unrelated-root'
+                if fault == 'scope-stale-active' and value['active'] is False:
+                    value['active'] = True
             if params.get('operation') == 'xsm_decide' and 'decision' in reply.get('result', {}):
                 if fault == 'decision-missing-producer':
                     reply['result'].pop('decision')

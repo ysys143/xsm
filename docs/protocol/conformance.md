@@ -261,3 +261,10 @@ is no team. The `collaboration` suite requires a recorded decision receipt equal
 to the persisted public board projection and unchanged on retry. Fault proxies
 that remove the receipt or flip `recorded` must fail the recorded-receipt check.
 These remain synthetic host answers, not real-user UI certification.
+
+`--suite scopes --capture` creates two isolated git roots. It checks link/unlink,
+session reach/revocation, project join/leave and host denial through stdio. Actual
+send operations must be refused before application and after revocation, and
+stored while the scope is active. The checker injects no global permissions,
+launches no model and uses synthetic host answers. Wire proxies that erase the
+scope receipt, replace its root, or report an active revoked link must fail.

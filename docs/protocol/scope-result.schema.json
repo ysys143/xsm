@@ -1,0 +1,211 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:xsm:host-protocol:1:scope-result",
+  "title": "Scope mutation snapshots, not continuing permission or delivery evidence",
+  "oneOf": [
+    {
+      "type": "object",
+      "required": [
+        "text",
+        "scope"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "text": {
+          "type": "string"
+        },
+        "scope": {
+          "oneOf": [
+            {
+              "type": "object",
+              "required": [
+                "kind",
+                "active",
+                "changed",
+                "root",
+                "other"
+              ],
+              "additionalProperties": false,
+              "properties": {
+                "kind": {
+                  "const": "link"
+                },
+                "active": {
+                  "type": "boolean"
+                },
+                "changed": {
+                  "type": "boolean"
+                },
+                "root": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "other": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            },
+            {
+              "type": "object",
+              "required": [
+                "kind",
+                "active",
+                "changed",
+                "root",
+                "project"
+              ],
+              "additionalProperties": false,
+              "properties": {
+                "kind": {
+                  "const": "membership"
+                },
+                "active": {
+                  "type": "boolean"
+                },
+                "changed": {
+                  "type": "boolean"
+                },
+                "root": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "project": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "other_members": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "uniqueItems": true
+                }
+              },
+              "allOf": [
+                {
+                  "if": {
+                    "properties": {
+                      "active": {
+                        "const": true
+                      }
+                    }
+                  },
+                  "then": {
+                    "required": [
+                      "other_members"
+                    ]
+                  },
+                  "else": {
+                    "not": {
+                      "required": [
+                        "other_members"
+                      ]
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "type": "object",
+              "required": [
+                "kind",
+                "active",
+                "changed",
+                "root",
+                "owner_ref"
+              ],
+              "additionalProperties": false,
+              "properties": {
+                "kind": {
+                  "const": "reach"
+                },
+                "active": {
+                  "type": "boolean"
+                },
+                "changed": {
+                  "type": "boolean"
+                },
+                "root": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "owner_ref": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "removed": {
+                  "type": "integer",
+                  "minimum": 0
+                }
+              },
+              "allOf": [
+                {
+                  "if": {
+                    "properties": {
+                      "active": {
+                        "const": false
+                      }
+                    }
+                  },
+                  "then": {
+                    "required": [
+                      "removed"
+                    ]
+                  },
+                  "else": {
+                    "not": {
+                      "required": [
+                        "removed"
+                      ]
+                    }
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type": "object",
+      "required": [
+        "text"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "text": {
+          "type": "string"
+        }
+      }
+    },
+    {
+      "$ref": "#/$defs/awaiting"
+    }
+  ],
+  "$defs": {
+    "awaiting": {
+      "type": "object",
+      "required": [
+        "status",
+        "decision_id",
+        "question_id"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "status": {
+          "const": "waiting-for-user"
+        },
+        "decision_id": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}(?![\\s\\S])"
+        },
+        "question_id": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    }
+  }
+}

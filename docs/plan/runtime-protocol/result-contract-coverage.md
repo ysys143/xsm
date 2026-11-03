@@ -1,8 +1,8 @@
 # Operation 결과 계약 범위 — 2026-11-03
 
 상태: 전체 결과 계약은 미완이다. 공개 catalog22개를 실제 encoding 선언과
-개발 checker의 operation별 분기에 대조했다. Domain schema가 있는 operation 이름은16개,
-없는 이름은6개다. 16개 중 team/board는 일부 action만 정의한다. 이 수는
+개발 checker의 operation별 분기에 대조했다. Domain schema가 있는 operation 이름은19개,
+없는 이름은3개다. 19개 중 team/board는 일부 action만 정의한다. 이 수는
 완료율·독립 구현 인증·native 지원률이 아니다.
 
 | Operation | 현재 result encoding | Domain 구조 정의와 남은 범위 |
@@ -22,9 +22,9 @@
 | `xsm_board` | 조회 JSON / 그 밖 text envelope | [board-result.schema.json](../../protocol/board-result.schema.json) — log/decisions만; 나머지 action 미완 |
 | `xsm_ack` | JSON object | [ack-result.schema.json](../../protocol/ack-result.schema.json) — 성공 ACK 구조 |
 | `xsm_inbox` | JSON object | [inbox-result.schema.json](../../protocol/inbox-result.schema.json) — 원문/claim/item 구조 |
-| `xsm_link` | text envelope | 미완: 공통 result object 검사만 있음 |
-| `xsm_join` | text envelope | 미완: 공통 result object 검사만 있음 |
-| `xsm_reach` | text envelope | 미완: 공통 result object 검사만 있음 |
+| `xsm_link` | text envelope + producer metadata | [scope-result.schema.json](../../protocol/scope-result.schema.json) — 프로젝트 연결/해제 snapshot·대기·기존 text |
+| `xsm_join` | text envelope + producer metadata | [scope-result.schema.json](../../protocol/scope-result.schema.json) — 프로젝트 가입/탈퇴 snapshot·대기·기존 text |
+| `xsm_reach` | text envelope + producer metadata | [scope-result.schema.json](../../protocol/scope-result.schema.json) — 세션 범위 부여/회수 snapshot·대기·기존 text |
 | `xsm_doc` | JSON object | [doc-result.schema.json](../../protocol/doc-result.schema.json) — 6개 action 구조 |
 | `xsm_doc_endorse` | text envelope | 미완: 공통 result object 검사만 있음 |
 | `xsm_approve` | text envelope + producer metadata | [approval-result.schema.json](../../protocol/approval-result.schema.json) — 승인/거부 snapshot·대기·기존 text |
@@ -53,3 +53,5 @@ scripts/check-protocol-schema.py의 operation별 validator 분기다. 이번 표
 후속 [개별 worker 승인 결과 계약](approval-contract.md)은 `xsm_approve`의 구조와 합성 worker 요청의 실제 stdio 검사를 추가한다. 실제 사용자/native UI 검증은 별도 미완이다.
 
 후속 [사용자 답 결과 계약](decision-contract.md)은 팀 기록과 팀 없는 답의 structured receipt를 추가한다.
+
+후속 [범위 변경 결과 계약](scope-contract.md)은 link/join/reach의 결과와 실제 송신 정책의 적용·회수 경로를 검증한다.

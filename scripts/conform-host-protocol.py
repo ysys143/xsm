@@ -272,6 +272,79 @@ def messaging(peer, sender, receiver, reopen, check, equal, events=False):
               tokens=[pending["claims"][0]["token"]])["acked"], event["params"]["ids"]))
 
 
+def scopes(peer, params, env, check, equal):
+    base = Path(params['cwd']).resolve()
+    folders = [base / 'scope-owner', base / 'scope-other']
+    for folder in folders:
+        folder.mkdir()
+        subprocess.run(['git', 'init', '-q', '-b', 'main', str(folder)], env=env,
+                       check=True, capture_output=True, timeout=5)
+    owner, other = [peer.call('session.open', dict(params, cwd=str(folder),
+        conversation=folder.name, capabilities=['user-decisions', 'inbox'])) for folder in folders]
+    def operation(session, name, error=None, **arguments):
+        return peer.call('operation.call', dict(session=session['session'], operation=name,
+            arguments=arguments), error=error)
+    counter = 0
+    def send(refused=False):
+        nonlocal counter
+        counter += 1
+        result = operation(owner, 'xsm_send', target='ref:' + other['ref'],
+            text='scope fixture', request_id='scope-message-' + str(counter), wake='never', wait=0)
+        if refused:
+            equal(result['send']['status'], 'refused')
+            equal(result['send']['id'], None)
+        else:
+            equal(result['send']['id'], 'scope-message-' + str(counter))
+            require(result['send']['status'] != 'refused', result)
+        return result
+    def approved(session, name, **arguments):
+        pending = operation(session, name, **arguments)
+        check(name + ' asks before widening', lambda: equal(pending['status'], 'waiting-for-user'))
+        event = peer.notification()['params']
+        peer.call('decision.response', dict(session=session['session'], questionId=event['questionId'],
+            challenge=event['challenge'], displayed=event['question'], action='accept', answer='allow',
+            source_id='synthetic-scope-' + event['questionId']))
+        if session == owner and not arguments.get('leave'):
+            check(name + ' answer alone does not widen scope', lambda: send(refused=True))
+        return operation(session, name, **arguments)
+    check('unrelated roots initially reject sending', lambda: send(refused=True))
+    linked = approved(owner, 'xsm_link', dir=str(folders[1]))
+    check('link snapshot names canonical roots', lambda: equal(linked['scope'], dict(kind='link',
+        root=str(folders[0]), other=str(folders[1]), active=True, changed=True)))
+    check('link replay retains original snapshot', lambda: equal(operation(owner, 'xsm_link', dir=str(folders[1])), linked))
+    check('link permits real sender path', send)
+    dropped = operation(owner, 'xsm_link', dir=str(folders[1]), drop=True)
+    check('unlink snapshot reports change', lambda: equal(dropped['scope']['active'] is False and dropped['scope']['changed'] is True, True))
+    check('unlink revokes sender path', lambda: send(refused=True))
+    reached = approved(owner, 'xsm_reach', dir=str(folders[1]))
+    check('reach snapshot binds exact session', lambda: equal(reached['scope'], dict(kind='reach',
+        root=str(folders[1]), owner_ref=owner['ref'], active=True, changed=True)))
+    check('reach permits real sender path', send)
+    revoked = operation(owner, 'xsm_reach', dir=str(folders[1]), drop=True)
+    check('reach drop reports count and inactive snapshot', lambda: equal(revoked['scope']['removed']==1 and
+        revoked['scope']['active'] is False and revoked['scope']['changed'] is True, True))
+    check('reach revocation rejects sender path', lambda: send(refused=True))
+    empty = operation(owner, 'xsm_reach', dir=str(folders[1]), drop=True)
+    check('repeated reach drop reports zero change', lambda: equal(empty['scope']['removed']==0 and empty['scope']['changed'] is False, True))
+    approved(other, 'xsm_join', project='scope-contract')
+    joined = approved(owner, 'xsm_join', project='scope-contract')
+    check('membership snapshot exposes public other roots', lambda: equal(joined['scope'], dict(kind='membership',
+        root=str(folders[0]), project='scope-contract', active=True, changed=True, other_members=[str(folders[1])])))
+    check('membership permits real sender path', send)
+    left = approved(owner, 'xsm_join', project='scope-contract', leave=True)
+    check('leave reports inactive membership', lambda: equal(left['scope']['active'] is False and left['scope']['changed'] is True, True))
+    check('leave rejects sender path', lambda: send(refused=True))
+
+    denied_args = dict(dir=str(folders[1]), reason='synthetic denial fixture')
+    denied = operation(owner, 'xsm_link', **denied_args)
+    event = peer.notification()['params']
+    peer.call('decision.response', dict(session=owner['session'], questionId=event['questionId'],
+        challenge=event['challenge'], displayed=event['question'], action='accept', answer='deny',
+        source_id='synthetic-scope-denial'))
+    check('denied link issues no scope receipt', lambda: operation(owner, 'xsm_link', error=-32602, **denied_args))
+    check('denied link does not restore sender permission', lambda: send(refused=True))
+
+
 def approvals(peer, params, env, check, equal):
     """Seed synthetic worker requests; exercise answers through public stdio only."""
     owner = peer.call('session.open', dict(params, conversation='approval-contract-owner', capabilities=['user-decisions']))
@@ -833,6 +906,9 @@ def run(command, suite="lifecycle", capture=False):
             if suite == 'discovery':
                 result['scope'] = 'lifecycle and local public discovery; no physical remote, native UI or messenger certification'
                 discovery(b, reopened, resumed, check, equal)
+            if suite == 'scopes':
+                result['scope'] = 'synthetic host scope approval/revocation and real local send policy; no actual user or native runtime certification'
+                scopes(b, params, env, check, equal)
             if suite == 'approvals':
                 result['scope'] = 'synthetic worker request answers through stdio; no worker execution or actual human/native UI certification'
                 approvals(b, params, env, check, equal)
@@ -865,7 +941,7 @@ def run(command, suite="lifecycle", capture=False):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--capture", action="store_true", help="include isolated wire observations in the report")
-    parser.add_argument("--suite", choices=("lifecycle", "messaging", "events", "decisions", "uploads", "discovery", "collaboration", "documents", "sending", "questions", "selection", "grants", "approvals"), default="lifecycle")
+    parser.add_argument("--suite", choices=("lifecycle", "messaging", "events", "decisions", "uploads", "discovery", "collaboration", "documents", "sending", "questions", "selection", "grants", "approvals", "scopes"), default="lifecycle")
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--command", nargs=argparse.REMAINDER, required=True)
     args = parser.parse_args()
