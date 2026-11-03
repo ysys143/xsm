@@ -148,7 +148,9 @@ user-decisions/MCP elicitation에 연결했다. 답 저장과 적용을 분리�
 효과만 journal하고 handshake는 live 조회한다. 표시 이름/no-op 철회로 거부를
 새 승인으로 바꾸지 않고, 실제 철회 뒤 재공개는 새 승인이 필요하다. 합성 host
 stdio28개/frame46개와 Mac core893개(96.634초)를 확인했다. Publication 결과
-schema6개 예제/거부8개도 추가했다. 실제 사람/native/remote 전체 인증은 별도다.
+schema6개 예제/거부8개도 추가했다. 고정9b81010의 Linux core893개도
+3.11에서86.354초,3.14에서111.113초에 통과했고 새46개 frame의 offline schema
+검증 및 VM 종료를 확인했다. 실제 사람/native/remote 전체 인증은 별도다.
 
 ## 단계별 판정
 

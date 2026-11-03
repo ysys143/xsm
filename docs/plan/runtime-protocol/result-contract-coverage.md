@@ -41,8 +41,8 @@ Domain 구조가 있는 operation도 error 전체·native/remote 표면·실제 
 
 근거는 operations.schema.json의22개 정의, operation_schema.py의
 JSON_RESULT_OPERATIONS/operation_returns_json, protocol.py의 결과 wrapper,
-scripts/check-protocol-schema.py의 operation별 validator 분기다. 이번 표는 question-result 산출물을 추가한 작업 트리 기준이며 고정 source와
-검증 실행은 [질문 계약 검증](question-contract.md)을 참조한다.
+scripts/check-protocol-schema.py의 operation별 validator 분기다. 이번 표는 publication-result와 host selection UI 산출물을 추가한 기준이며
+고정 source와 실행은 [호스트 승인 검증](selection-host-ui.md)을 참조한다.
 후속 구현 담당 세션이 새 결과 계약을 추가할 때 해당 operation/action과
 실제 wire 검사 근거를 함께 갱신한다.
 

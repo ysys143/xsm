@@ -68,8 +68,24 @@ selection-required/refused, host UI pending 및 unconfirmed incoming 구조를
 
 ## 남은 필수 조건
 
-고정 source의 Linux core/새 stdio/schema 검증은 실행 결과 확인 전까지 미완이다.
+고정 source의 Linux core/새 stdio/schema는 아래에서 확인했다.
 새 경로의 실제 사람 UI, native 런타임 전체, 물리 원격/게이트웨이·설치/p95 행렬과
 나머지 계약은 미완이다. Remote 서비스 callback은 연결됐으나 이번 host UI 표본은
 로컬 pair다. 구현 담당 세션이 각 표면을 실행해 갱신한다. 전체 계획을 이 부분
 결과로 대체하지 않는다.
+
+## 고정 source Linux 실행
+
+9b8101053845f5e73cbf59175e2b80645b372df1의 archive SHA256은
+37443d5ee5e2590b189c253fb905315d78835b4e18b26d87000219aefbdbdd97다.
+Python3.11.2에서86.354초, Python3.14.10에서111.113초로 core893개
+(Python517+외부 적합성35+SDK56+native133+Node152)를 각각 통과했다.
+추가로 각 환경에서 selection stdio28개/frame46개를 새로 수집하고 offline
+jsonschema4.26.0으로 검증했다. 질문 예제23개·거부20개, 공개 예제6개·거부8개도
+두 환경에서 통과했다. 독립 mock39/변이14는 별도 수치다.
+
+Model0/network none/cpu2/memory3g, 미실행 case0, 미실행 wire/schema0,
+VM stopExit0이다. 원시는 selection-host-ui-linux의 result.json과 환경별
+output/protocol/wire/schema 파일이다. 고정 개발 의존성304개 파일도 준비 후
+SHA256이 그대로임을 확인했다(validator-audit.json). Production/runtime/SDK
+의존성을 바꾸지 않았다. 실제 사람/native/P2P/게이트웨이 전체 인증은 아니다.
