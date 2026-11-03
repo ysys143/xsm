@@ -29,7 +29,8 @@ every provider's lifecycle/UI mode. See the
 Operation-specific result schemas cover inbox, explicit ACK, received files,
 [discovery](discovery.md), [team queries](team-result.schema.json),
 [board queries](board-result.schema.json), [documents](doc-result.schema.json)
-and [send producer results](send-result.schema.json). The other operation result contracts remain
+[send producer results](send-result.schema.json) and
+[correlated questions](question-results.md). The other operation result contracts remain
 incomplete; input validity does not certify their results.
 
 ## Generation and consistency
@@ -95,6 +96,6 @@ ACK, without issuing a new claim for the acknowledged original. Group history
 is not a new permission grant or evidence that every recipient finished.
 
 The public `questions` conformance suite observes these paths, including late
-and partial replies and a selected-peer handshake. Ask/status/connect domain
-result schemas remain outstanding; the generic object envelope does not fully
-validate their fields. See [conformance](conformance.md).
+and partial replies and a selected-peer handshake. Ask/status/connect now have a dedicated
+[result schema](question-result.schema.json); select its operation definition
+using the original request. Structure is not authorization or native certification. See [conformance](conformance.md).

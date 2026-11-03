@@ -292,3 +292,13 @@ group results, explicit ACK and duplicate prevention, attachment failure and
 frozen retry, private copy read and explicit inline fallback. It uses isolated
 protocol participants and local storage, with no native wake, model, human UI
 or physical remote delivery certification.
+
+## Correlated question and handshake results
+
+For `xsm_ask`, `xsm_question_status` and `xsm_connect`, use the per-operation
+mapping in [question-result.schema.json](question-result.schema.json), plus the
+[question result semantics](question-results.md). Single/group/list/selection
+results, opaque reply handles, claims, partial/final outcomes and remote
+Gateway/file evidence are distinct definitions. Validation of these structures
+and internal associations does not certify a human answer, network membership,
+current authority or native queue admission.

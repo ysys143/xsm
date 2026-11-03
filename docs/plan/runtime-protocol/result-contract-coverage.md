@@ -1,8 +1,8 @@
 # Operation 결과 계약 범위 — 2026-11-03
 
 상태: 전체 결과 계약은 미완이다. 공개 catalog22개를 실제 encoding 선언과
-개발 checker의 operation별 분기에 대조했다. Domain schema가 있는 이름은8개,
-없는 이름은14개다. 8개 중 team/board는 일부 action만 정의한다. 이 수는
+개발 checker의 operation별 분기에 대조했다. Domain schema가 있는 operation 이름은11개,
+없는 이름은11개다. 11개 중 team/board는 일부 action만 정의한다. 이 수는
 완료율·독립 구현 인증·native 지원률이 아니다.
 
 | Operation | 현재 result encoding | Domain 구조 정의와 남은 범위 |
@@ -10,11 +10,11 @@
 | `xsm_owned` | JSON object | 미완: 공통 result object 검사만 있음 |
 | `xsm_files` | JSON object | [file-result.schema.json](../../protocol/file-result.schema.json) — 파일 조회 구조 |
 | `xsm_decision_status` | JSON object | 미완: 공통 result object 검사만 있음 |
-| `xsm_ask` | JSON object | 미완: 공통 result object 검사만 있음 |
-| `xsm_question_status` | JSON object | 미완: 공통 result object 검사만 있음 |
+| `xsm_ask` | JSON object | [question-result.schema.json](../../protocol/question-result.schema.json) — 단일/그룹 질문·회신 구조 |
+| `xsm_question_status` | JSON object | [question-result.schema.json](../../protocol/question-result.schema.json) — 개별/그룹/소유 요청 목록 구조 |
 | `xsm_discover` | JSON object | [discovery-result.schema.json](../../protocol/discovery-result.schema.json) — 후보/관측/부분 실패 구조 |
 | `xsm_publish` | JSON object | 미완: 공통 result object 검사만 있음 |
-| `xsm_connect` | JSON object | 미완: 공통 result object 검사만 있음 |
+| `xsm_connect` | JSON object | [question-result.schema.json](../../protocol/question-result.schema.json) — 선택 거부와 handshake 진행/완료 구조 |
 | `xsm_grant` | text envelope | 미완: 공통 result object 검사만 있음 |
 | `xsm_send` | text envelope + producer metadata | [send-result.schema.json](../../protocol/send-result.schema.json) — 단일/그룹 metadata와 첨부 오류 |
 | `xsm_team` | 조회 JSON / 그 밖 text envelope | [team-result.schema.json](../../protocol/team-result.schema.json) — list/show만; 나머지 action 미완 |
@@ -41,11 +41,11 @@ Domain 구조가 있는 operation도 error 전체·native/remote 표면·실제 
 
 근거는 operations.schema.json의22개 정의, operation_schema.py의
 JSON_RESULT_OPERATIONS/operation_returns_json, protocol.py의 결과 wrapper,
-scripts/check-protocol-schema.py의 operation별 validator 분기다. 작성 시 HEAD는
-00ad234이며 docs-only 변경 이후에도 본 표는 이 source 시점의 조사 기록이다.
+scripts/check-protocol-schema.py의 operation별 validator 분기다. 이번 표는 question-result 산출물을 추가한 작업 트리 기준이며 고정 source와
+검증 실행은 [질문 계약 검증](question-contract.md)을 참조한다.
 후속 구현 담당 세션이 새 결과 계약을 추가할 때 해당 operation/action과
 실제 wire 검사 근거를 함께 갱신한다.
 
 후속 [그룹 질문 복구](question-group-owner.md)는 ask/status/connect의 실제
-공개 경로32개와 소유자·reply claim 결함 수정을 기록한다. Normative domain
-schema를 추가한 것은 아니므로 이 표의8개/14개 구분을 완료로 바꾸지 않는다.
+공개 경로32개와 소유자·reply claim 결함 수정을 기록한다. 그 복구 커밋 자체는 normative schema를 추가하지 않았다. 이후
+[질문 결과 계약](question-contract.md)이 세 operation의 구조를 정의해 본 표에 반영했다.

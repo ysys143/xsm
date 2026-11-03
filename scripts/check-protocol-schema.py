@@ -3,6 +3,7 @@
 import argparse
 import copy
 import importlib.metadata
+import hashlib
 import json
 from pathlib import Path
 
@@ -18,6 +19,75 @@ def validate_send_result(value, schema):
         ref = materials['references'][0]
         if ref['id'] != materials['manifest_id'] or ref['path'] != 'manifest:' + ref['id']:
             raise ValueError('send material reference differs from frozen manifest')
+
+
+def validate_question_result(value, schema, operation=None, definition=None):
+    binding = ({'$ref': '#/$defs/' + definition} if definition else
+               {'anyOf': [{'$ref': '#/$defs/' + key} for key in schema['x-operationResults'][operation]]})
+    Draft202012Validator(dict(binding, **{'$defs': schema['$defs']})).validate(value)
+    def check_network(network):
+        final = network.get('final_reply')
+        if not final:
+            return
+        metadata = {k: final[k] for k in ('id', 'fingerprint', 'status', 'reply_to', 'outcome')}
+        if metadata not in network['replies'] or final['reply_to'] != network['id']:
+            raise ValueError('network final reply differs from returned metadata/request')
+        packet = final.get('packet')
+        if not packet:
+            return
+        if (packet['id'] != final['id'] or packet['fingerprint'] != final['fingerprint'] or
+                packet['reply_to'] != final['reply_to'] or packet['outcome'] != final['outcome'] or
+                packet['scope'] != 'network:' + packet['network_id'] or
+                packet['reply_binding']['id'] != packet['reply_to']):
+            raise ValueError('network packet differs from final reply binding')
+        if packet['file_packet']:
+            manifest = packet['file_packet']['manifest']
+            ref = packet['attachments'][0]
+            if (ref != dict(path='manifest:' + manifest['id'], **{k: manifest[k] for k in ('id', 'version', 'sha256', 'size')}) or
+                    manifest['binding']['request_id'] != packet['id'] or
+                    manifest['binding']['body_sha256'] != hashlib.sha256(packet['body'].encode('utf-8')).hexdigest()):
+                raise ValueError('network file material differs from request binding')
+    if definition == 'qNetworkDelivery':
+        check_network(value)
+        return
+    singles = ([r for r in value['recipients'] if r['status'] != 'skipped'] if value.get('group')
+               else [value] if 'purpose' in value else [])
+    for row in singles:
+        replies = row['replies']
+        final = next((r['outcome'] for r in reversed(replies) if r['outcome'] in ('succeeded', 'failed')), None)
+        if row['final'] != (final is not None) or row['final_outcome'] != final:
+            raise ValueError('question final outcome differs from reply history')
+        expected = ('completed' if final == 'succeeded' else 'declined' if final == 'failed' else
+                    'reply_received' if replies else 'pending') if row['purpose'] == 'handshake' else 'not-started'
+        if row['handshake'] != expected:
+            raise ValueError('handshake status differs from correlated answers')
+        if len({r['id'] for r in replies}) != len(replies):
+            raise ValueError('question repeats a reply ID')
+        if any(c['id'] not in {r['id'] for r in replies} for c in row.get('claims', [])):
+            raise ValueError('question claim does not identify a returned reply')
+    if value.get('group') and 'asked' in value:
+        rows = value['recipients']
+        asked = [r for r in rows if r['status'] != 'skipped']
+        answered = [r for r in asked if r['replies']]
+        ended = [r for r in asked if r['final'] or r['status'] in ('refused', 'selection-required', 'held', 'blocked', 'error', 'not-found')]
+        waiting = [r for r in asked if r not in ended and not r['replies']]
+        expected = ('refused' if not asked else 'final' if all(r['final'] for r in asked) else
+                    ('reply_received' if waiting else 'replied') if answered else
+                    'refused' if all(r in ended for r in asked) else 'pending')
+        flattened = [dict(reply, request_id=r['id'], recipient=r['recipient']) for r in asked for reply in r['replies']]
+        if (len({r['id'] for r in asked}) != len(asked) or
+                len({r['id'] for r in flattened}) != len(flattened) or
+                value['asked'] != len(asked) or value['answered'] != len(answered) or
+                value['skipped'] != len(rows) - len(asked) or value['waiting_on'] != [r['recipient'] for r in waiting] or
+                value['status'] != expected or value['replies'] != flattened or
+                value['claims'] != [c for r in rows for c in r.get('claims', [])]):
+            raise ValueError('question group aggregate differs from recipient results')
+    if value.get('materials') and value['materials']['mode'] == 'files':
+        m = value['materials']; ref = m['references'][0]
+        if ref['id'] != m['manifest_id'] or ref['path'] != 'manifest:' + ref['id']:
+            raise ValueError('question material differs from frozen manifest')
+    if 'network_delivery' in value:
+        check_network(value['network_delivery'])
 
 
 def output_contract(trace=None):
@@ -51,6 +121,8 @@ def output_contract(trace=None):
     Draft202012Validator.check_schema(doc_schema)
     send_schema = json.loads((ROOT / 'docs/protocol/send-result.schema.json').read_text())
     Draft202012Validator.check_schema(send_schema)
+    question_schema = json.loads((ROOT / 'docs/protocol/question-result.schema.json').read_text())
+    Draft202012Validator.check_schema(question_schema)
     inbox_observed = 0
     inbox_empty = dict(messages=[], claims=[], items=[], inbox_pending=0)
     inbox_file = dict(messages=['fixture'], claims=[dict(id='original', token='opaque-token',
@@ -75,7 +147,7 @@ def output_contract(trace=None):
         nonlocal inbox_observed
         frame = observation['frame']
         validator.validate(frame)
-        if observation.get('operation') == 'xsm_send' and 'error' in frame:
+        if observation.get('operation') in ('xsm_send', 'xsm_ask', 'xsm_connect', 'xsm_question_status') and 'error' in frame:
             data = frame['error'].get('data')
             if isinstance(data, dict) and 'attachment_error' in data:
                 Draft202012Validator({'$ref': '#/$defs/attachmentError',
@@ -83,6 +155,8 @@ def output_contract(trace=None):
         if 'result' in frame:
             definition = schema['x-methodResults'][observation['method']]
             Draft202012Validator({'$ref': definition, '$defs': schema['$defs']}).validate(frame['result'])
+            if observation.get('operation') in question_schema['x-operationResults']:
+                validate_question_result(frame['result'], question_schema, operation=observation['operation'])
             if observation.get('operation') == 'xsm_send':
                 validate_send_result(frame['result'], send_schema)
             if observation.get('operation') == 'xsm_inbox':
@@ -161,6 +235,62 @@ def ack_contract():
             raise ValueError('invalid ACK result accepted: ' + repr(value))
     return dict(examples=len(examples), rejected=len(invalid),
                 scope='successful result structure; batch errors may follow earlier durable acknowledgements')
+
+
+def question_contract():
+    schema = json.loads((ROOT / 'docs/protocol/question-result.schema.json').read_text())
+    examples = json.loads((ROOT / 'docs/protocol/question-result-examples.json').read_text())
+    Draft202012Validator.check_schema(schema)
+    expected = {'xsm_ask', 'xsm_question_status', 'xsm_connect'}
+    if set(schema['x-operationResults']) != expected or {e['operation'] for e in examples if 'operation' in e} != expected:
+        raise ValueError('question operation inventory differs from declared examples')
+    for filename in ('inbox-result.schema.json', 'file-result.schema.json', 'send-result.schema.json'):
+        for name, definition in json.loads((ROOT / 'docs/protocol' / filename).read_text())['$defs'].items():
+            if schema['$defs'].get(name) != definition:
+                raise ValueError('question shared definition differs: ' + name)
+    for example in examples:
+        validate_question_result(example['result'], schema, operation=example.get('operation'), definition=example.get('definition'))
+    def sample(operation, predicate):
+        return next(e for e in examples if e.get('operation') == operation and predicate(e['result']))
+    final = sample('xsm_connect', lambda v: v.get('handshake') == 'completed')
+    group = sample('xsm_question_status', lambda v: v.get('group') and v['status'] == 'final')
+    listing = sample('xsm_question_status', lambda v: bool(v.get('requests')))
+    selection = sample('xsm_connect', lambda v: v['status'] == 'selection-required')
+    denied = sample('xsm_question_status', lambda v: v.get('group') and v['status'] == 'refused')
+    network = next(e for e in examples if e.get('definition') == 'qNetworkDelivery' and e['result'].get('final_reply'))
+    invalid = []
+    for example, path, value in (
+            (final, ['replies', 0, 'sender', 'home'], '/private/profile'),
+            (final, ['replies', 0, 'outcome'], 'approved'),
+            (final, ['claims', 0, 'token'], None),
+            (final, ['claims', 0, 'id'], 'not-the-reply'),
+            (final, ['handshake'], 'pending'),
+            (final, ['wait_budget', 'effective'], 1),
+            (group, ['claims'], []), (group, ['replies'], []),
+            (group, ['asked'], -1), (group, ['waiting_on'], ['stale name']),
+            (listing, ['requests', 0, 'target', 'home'], '/private/profile'),
+            (selection, ['status'], 'permitted'), (denied, ['recipients'], [{}]),
+            (network, ['final_reply', 'packet', 'sender', 'home'], '/private/profile'),
+            (network, ['final_reply', 'packet', 'reply_binding', 'id'], 'wrong-original'),
+            (network, ['final_reply', 'packet', 'file_packet', 'manifest', 'binding', 'request_id'], 'wrong-original'),
+            (network, ['final_reply', 'packet', 'body'], 'changed bytes')):
+        bad = copy.deepcopy(example)
+        target = bad['result']
+        for part in path[:-1]:
+            target = target[part]
+        target[path[-1]] = value
+        invalid.append(bad)
+    bad = copy.deepcopy(final); bad['result']['replies'].append(copy.deepcopy(bad['result']['replies'][0])); invalid.append(bad)
+    bad = copy.deepcopy(group); del bad['result']['claims']; invalid.append(bad)
+    bad = copy.deepcopy(listing); bad['operation'] = 'xsm_ask'; invalid.append(bad)
+    for example in invalid:
+        try:
+            validate_question_result(example['result'], schema, operation=example.get('operation'), definition=example.get('definition'))
+        except (ValueError, ValidationError):
+            pass
+        else:
+            raise ValueError('invalid question result accepted')
+    return dict(operations=len(schema['x-operationResults']), examples=len(examples), rejected=len(invalid))
 
 
 def send_contract():
@@ -480,7 +610,7 @@ def run(trace=None):
                 validator='jsonschema', validatorVersion=importlib.metadata.version('jsonschema'),
                 scope='request and output structures; no full operation results or semantic certification',
                 output=output_contract(trace), operations=operations_contract(), files=files_contract(), ack=ack_contract(),
-                discovery=discovery_contract(), team=team_contract(), board=board_contract(), doc=doc_contract(), send=send_contract())
+                discovery=discovery_contract(), team=team_contract(), board=board_contract(), doc=doc_contract(), send=send_contract(), question=question_contract())
 
 
 if __name__ == '__main__':

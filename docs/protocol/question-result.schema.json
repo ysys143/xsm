@@ -1,0 +1,2879 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:xsm:host-protocol:1:question-result",
+  "title": "Host-transport correlated question, group and handshake results",
+  "oneOf": [
+    {
+      "$ref": "#/$defs/qSingle"
+    },
+    {
+      "$ref": "#/$defs/qGroup"
+    },
+    {
+      "$ref": "#/$defs/qDeniedGroup"
+    },
+    {
+      "$ref": "#/$defs/qListing"
+    },
+    {
+      "$ref": "#/$defs/qSelection"
+    }
+  ],
+  "x-operationResults": {
+    "xsm_ask": [
+      "qSingle",
+      "qGroup",
+      "qDeniedGroup"
+    ],
+    "xsm_question_status": [
+      "qSingle",
+      "qGroup",
+      "qDeniedGroup",
+      "qListing"
+    ],
+    "xsm_connect": [
+      "qSingle",
+      "qSelection"
+    ]
+  },
+  "$defs": {
+    "claim": {
+      "type": "object",
+      "required": [
+        "id",
+        "token",
+        "owner",
+        "generation",
+        "digest"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "token": {
+          "type": "string",
+          "minLength": 1
+        },
+        "generation": {
+          "type": "string",
+          "minLength": 1
+        },
+        "digest": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}(?![\\s\\S])"
+        },
+        "owner": {
+          "type": "object",
+          "required": [
+            "type",
+            "id"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "type": {
+              "type": "string",
+              "minLength": 1
+            },
+            "id": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        }
+      }
+    },
+    "item": {
+      "type": "object",
+      "required": [
+        "id",
+        "priority",
+        "kind",
+        "wake"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "priority": {
+          "type": "string",
+          "minLength": 1
+        },
+        "kind": {
+          "type": "string",
+          "minLength": 1
+        },
+        "wake": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+        "files": {
+          "$ref": "#/$defs/files"
+        }
+      }
+    },
+    "files": {
+      "type": "object",
+      "required": [
+        "storage_id",
+        "manifest_id",
+        "version",
+        "sha256",
+        "files"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "storage_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "manifest_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "version": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}(?![\\s\\S])"
+        },
+        "files": {
+          "type": "array",
+          "minItems": 0,
+          "maxItems": 16,
+          "items": {
+            "$ref": "#/$defs/fileEntry"
+          }
+        }
+      }
+    },
+    "fileEntry": {
+      "type": "object",
+      "required": [
+        "id",
+        "name",
+        "size",
+        "sha256"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "size": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}(?![\\s\\S])"
+        }
+      }
+    },
+    "fileClaim": {
+      "type": "object",
+      "required": [
+        "id",
+        "token",
+        "owner",
+        "generation",
+        "digest"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "token": {
+          "type": "string",
+          "minLength": 1
+        },
+        "generation": {
+          "type": "string",
+          "minLength": 1
+        },
+        "digest": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}(?![\\s\\S])"
+        },
+        "owner": {
+          "type": "object",
+          "required": [
+            "type",
+            "id"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "type": {
+              "type": "string",
+              "minLength": 1
+            },
+            "id": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        }
+      }
+    },
+    "fileManifestEntry": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{32}(?![\\s\\S])"
+        },
+        "version": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "original_name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "source_version": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "size": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 1048576
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}(?![\\s\\S])"
+        },
+        "copy": {
+          "const": true
+        },
+        "input_source": {
+          "enum": [
+            "cli-os-read",
+            "caller-inline"
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "version",
+        "name",
+        "original_name",
+        "source_version",
+        "size",
+        "sha256",
+        "copy",
+        "input_source"
+      ],
+      "additionalProperties": false
+    },
+    "fileManifest": {
+      "type": "object",
+      "properties": {
+        "schema": {
+          "const": "xsm.files/v1"
+        },
+        "id": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{32}(?![\\s\\S])"
+        },
+        "version": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "previous": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[0-9a-f]{32}(?![\\s\\S])"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "owner": {
+          "type": "object",
+          "properties": {
+            "runtime": {
+              "type": "string",
+              "minLength": 1
+            },
+            "home_id": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}(?![\\s\\S])"
+            },
+            "session_id": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "required": [
+            "runtime",
+            "home_id",
+            "session_id"
+          ],
+          "additionalProperties": false
+        },
+        "binding": {
+          "type": "object",
+          "properties": {
+            "request_id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "body_sha256": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}(?![\\s\\S])"
+            }
+          },
+          "required": [
+            "request_id",
+            "body_sha256"
+          ],
+          "additionalProperties": false
+        },
+        "created_at": {
+          "type": "number",
+          "minimum": 0
+        },
+        "expires_at": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "files": {
+          "type": "array",
+          "maxItems": 16,
+          "items": {
+            "$ref": "#/$defs/fileManifestEntry"
+          }
+        },
+        "size": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 4194304
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}(?![\\s\\S])"
+        }
+      },
+      "required": [
+        "schema",
+        "id",
+        "version",
+        "previous",
+        "owner",
+        "binding",
+        "created_at",
+        "expires_at",
+        "files",
+        "size",
+        "sha256"
+      ],
+      "additionalProperties": false
+    },
+    "fileReference": {
+      "type": "object",
+      "properties": {
+        "path": {
+          "type": "string",
+          "pattern": "^manifest:[0-9a-f]{32}(?![\\s\\S])"
+        },
+        "id": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{32}(?![\\s\\S])"
+        },
+        "version": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}(?![\\s\\S])"
+        },
+        "size": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 4194304
+        }
+      },
+      "required": [
+        "path",
+        "id",
+        "version",
+        "sha256",
+        "size"
+      ],
+      "additionalProperties": false
+    },
+    "fileManifestResult": {
+      "type": "object",
+      "properties": {
+        "storage_id": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{32}(?![\\s\\S])"
+        },
+        "manifest": {
+          "$ref": "#/$defs/fileManifest"
+        },
+        "inbox_pending": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "inbox_notice": {
+          "type": "string"
+        },
+        "inbox_pending_known": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "inbox_pending_diagnostics": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "incoming": {
+          "type": "object",
+          "properties": {
+            "messages": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "claims": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/fileClaim"
+              }
+            },
+            "batch_limited": {
+              "type": "boolean"
+            },
+            "next_after": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "rendered_bytes": {
+              "type": "integer",
+              "minimum": 0
+            }
+          },
+          "required": [
+            "messages",
+            "claims"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "storage_id",
+        "manifest"
+      ],
+      "additionalProperties": false
+    },
+    "fileEntryResult": {
+      "type": "object",
+      "properties": {
+        "storage_id": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{32}(?![\\s\\S])"
+        },
+        "entry_id": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{32}(?![\\s\\S])"
+        },
+        "encoding": {
+          "enum": [
+            "text",
+            "base64"
+          ]
+        },
+        "content": {
+          "type": "string"
+        },
+        "inbox_pending": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "inbox_notice": {
+          "type": "string"
+        },
+        "inbox_pending_known": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "inbox_pending_diagnostics": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "incoming": {
+          "type": "object",
+          "properties": {
+            "messages": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "claims": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/fileClaim"
+              }
+            },
+            "batch_limited": {
+              "type": "boolean"
+            },
+            "next_after": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "rendered_bytes": {
+              "type": "integer",
+              "minimum": 0
+            }
+          },
+          "required": [
+            "messages",
+            "claims"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "storage_id",
+        "entry_id",
+        "encoding",
+        "content"
+      ],
+      "additionalProperties": false
+    },
+    "fileCanonicalResult": {
+      "type": "object",
+      "properties": {
+        "storage_id": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{32}(?![\\s\\S])"
+        },
+        "canonical_format": {
+          "const": "xsm.files/v1"
+        },
+        "manifest_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}(?![\\s\\S])"
+        },
+        "encoding": {
+          "const": "base64"
+        },
+        "content": {
+          "type": "string"
+        },
+        "inbox_pending": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "inbox_notice": {
+          "type": "string"
+        },
+        "inbox_pending_known": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "inbox_pending_diagnostics": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "incoming": {
+          "type": "object",
+          "properties": {
+            "messages": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "claims": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/fileClaim"
+              }
+            },
+            "batch_limited": {
+              "type": "boolean"
+            },
+            "next_after": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "rendered_bytes": {
+              "type": "integer",
+              "minimum": 0
+            }
+          },
+          "required": [
+            "messages",
+            "claims"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "storage_id",
+        "canonical_format",
+        "manifest_sha256",
+        "encoding",
+        "content"
+      ],
+      "additionalProperties": false
+    },
+    "fileResult": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/fileManifestResult"
+        },
+        {
+          "$ref": "#/$defs/fileEntryResult"
+        },
+        {
+          "$ref": "#/$defs/fileCanonicalResult"
+        }
+      ]
+    },
+    "single": {
+      "type": "object",
+      "required": [
+        "status",
+        "reason",
+        "id"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "status": {
+          "type": "string",
+          "minLength": 1
+        },
+        "reason": {
+          "type": "string"
+        },
+        "id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "notes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "to": {
+          "type": "string"
+        },
+        "candidates": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "runtime_reached": {
+          "type": "boolean"
+        },
+        "evidence": {
+          "type": "object",
+          "additionalProperties": {
+            "type": [
+              "boolean",
+              "null"
+            ]
+          }
+        }
+      },
+      "dependentRequired": {
+        "runtime_reached": [
+          "evidence"
+        ],
+        "evidence": [
+          "runtime_reached"
+        ]
+      },
+      "x-knownStatuses": [
+        "delivered",
+        "sent-unconfirmed",
+        "held",
+        "refused",
+        "error",
+        "blocked",
+        "stored",
+        "unknown"
+      ]
+    },
+    "recipient": {
+      "type": "object",
+      "required": [
+        "status",
+        "reason",
+        "id",
+        "spec",
+        "label"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "status": {
+          "type": "string",
+          "minLength": 1
+        },
+        "reason": {
+          "type": "string"
+        },
+        "id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "notes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "to": {
+          "type": "string"
+        },
+        "candidates": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "runtime_reached": {
+          "type": "boolean"
+        },
+        "evidence": {
+          "type": "object",
+          "additionalProperties": {
+            "type": [
+              "boolean",
+              "null"
+            ]
+          }
+        },
+        "spec": {
+          "type": "string"
+        },
+        "label": {
+          "type": "string"
+        }
+      },
+      "dependentRequired": {
+        "runtime_reached": [
+          "evidence"
+        ],
+        "evidence": [
+          "runtime_reached"
+        ]
+      },
+      "x-knownStatuses": [
+        "delivered",
+        "sent-unconfirmed",
+        "held",
+        "refused",
+        "error",
+        "blocked",
+        "stored",
+        "unknown"
+      ]
+    },
+    "group": {
+      "type": "object",
+      "required": [
+        "group",
+        "status",
+        "notes",
+        "recipients"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "group": {
+          "type": "string",
+          "minLength": 1
+        },
+        "status": {
+          "type": "string",
+          "minLength": 1
+        },
+        "notes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "recipients": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/recipient"
+          }
+        }
+      }
+    },
+    "reference": {
+      "type": "object",
+      "required": [
+        "path",
+        "id",
+        "version",
+        "sha256",
+        "size"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "path": {
+          "type": "string",
+          "pattern": "^manifest:[0-9a-f]{32}(?![\\s\\S])"
+        },
+        "id": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{32}(?![\\s\\S])"
+        },
+        "version": {
+          "const": 1
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}(?![\\s\\S])"
+        },
+        "size": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "materials": {
+      "type": "object",
+      "required": [
+        "manifest_id",
+        "mode",
+        "references"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "manifest_id": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{32}(?![\\s\\S])"
+        },
+        "mode": {
+          "enum": [
+            "files",
+            "inline"
+          ]
+        },
+        "references": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/reference"
+          },
+          "maxItems": 1
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "mode": {
+                "const": "files"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "references": {
+                "minItems": 1
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "references": {
+                "maxItems": 0
+              }
+            }
+          }
+        }
+      ]
+    },
+    "attachmentError": {
+      "type": "object",
+      "required": [
+        "status",
+        "code",
+        "reason",
+        "request_id",
+        "manifest_id",
+        "body_sent",
+        "recovery"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "status": {
+          "const": "attachment-error"
+        },
+        "code": {
+          "type": "string",
+          "minLength": 1
+        },
+        "reason": {
+          "type": "string"
+        },
+        "request_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "manifest_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "body_sent": {
+          "const": false
+        },
+        "recovery": {
+          "type": "string"
+        }
+      }
+    },
+    "singleResult": {
+      "type": "object",
+      "required": [
+        "text",
+        "send",
+        "grouped"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "text": {
+          "type": "string"
+        },
+        "send": {
+          "$ref": "#/$defs/single"
+        },
+        "grouped": {
+          "const": false
+        },
+        "materials": {
+          "$ref": "#/$defs/materials"
+        }
+      }
+    },
+    "groupResult": {
+      "type": "object",
+      "required": [
+        "text",
+        "send",
+        "grouped"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "text": {
+          "type": "string"
+        },
+        "send": {
+          "$ref": "#/$defs/group"
+        },
+        "grouped": {
+          "const": true
+        }
+      }
+    },
+    "qSendEvidence": {
+      "type": "object",
+      "required": [
+        "status",
+        "reason"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "status": {
+          "type": "string",
+          "minLength": 1
+        },
+        "reason": {
+          "type": "string"
+        },
+        "id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "notes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "to": {
+          "type": "string"
+        },
+        "candidates": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "runtime_reached": {
+          "type": "boolean"
+        },
+        "evidence": {
+          "type": "object",
+          "additionalProperties": {
+            "type": [
+              "boolean",
+              "null"
+            ]
+          }
+        }
+      },
+      "dependentRequired": {
+        "runtime_reached": [
+          "evidence"
+        ],
+        "evidence": [
+          "runtime_reached"
+        ]
+      },
+      "x-knownStatuses": [
+        "delivered",
+        "sent-unconfirmed",
+        "held",
+        "refused",
+        "error",
+        "blocked",
+        "stored",
+        "unknown"
+      ]
+    },
+    "qHandle": {
+      "type": "object",
+      "properties": {
+        "runtime": {
+          "type": "string",
+          "minLength": 1
+        },
+        "session_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "home_id": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}(?![\\s\\S])"
+        },
+        "machine": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}(?![\\s\\S])"
+        },
+        "ref": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "name": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "alias": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "runtime",
+        "session_id",
+        "home_id",
+        "ref",
+        "name",
+        "alias"
+      ],
+      "additionalProperties": false
+    },
+    "qPacketHandle": {
+      "type": "object",
+      "properties": {
+        "runtime": {
+          "type": "string",
+          "minLength": 1
+        },
+        "session_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_-]{1,160}(?![\\s\\S])"
+        },
+        "home_id": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}(?![\\s\\S])"
+        },
+        "machine": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}(?![\\s\\S])"
+        },
+        "generation": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}(?![\\s\\S])"
+        }
+      },
+      "required": [
+        "runtime",
+        "session_id",
+        "home_id",
+        "machine",
+        "generation"
+      ],
+      "additionalProperties": false
+    },
+    "qReply": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_-]{1,160}(?![\\s\\S])"
+        },
+        "body": {
+          "type": "string"
+        },
+        "outcome": {
+          "enum": [
+            null,
+            "succeeded",
+            "failed"
+          ]
+        },
+        "sender": {
+          "$ref": "#/$defs/qHandle"
+        },
+        "receiver": {
+          "$ref": "#/$defs/qHandle"
+        },
+        "received_at": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "id",
+        "body",
+        "outcome",
+        "sender",
+        "receiver",
+        "received_at"
+      ],
+      "additionalProperties": false
+    },
+    "qGroupReply": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_-]{1,160}(?![\\s\\S])"
+        },
+        "body": {
+          "type": "string"
+        },
+        "outcome": {
+          "enum": [
+            null,
+            "succeeded",
+            "failed"
+          ]
+        },
+        "sender": {
+          "$ref": "#/$defs/qHandle"
+        },
+        "receiver": {
+          "$ref": "#/$defs/qHandle"
+        },
+        "received_at": {
+          "type": "number"
+        },
+        "request_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_-]{1,160}(?![\\s\\S])"
+        },
+        "recipient": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "body",
+        "outcome",
+        "sender",
+        "receiver",
+        "received_at",
+        "request_id",
+        "recipient"
+      ],
+      "additionalProperties": false
+    },
+    "qRecover": {
+      "type": "object",
+      "properties": {
+        "cli": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "mcp": {
+          "type": "object",
+          "properties": {
+            "tool": {
+              "const": "xsm_question_status"
+            },
+            "arguments": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "id"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "tool",
+            "arguments"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "cli",
+        "mcp"
+      ],
+      "additionalProperties": false
+    },
+    "qStep": {
+      "type": "object",
+      "properties": {
+        "ok": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "t": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "detail": {
+          "type": "string"
+        },
+        "legacy": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "ok"
+      ],
+      "additionalProperties": false
+    },
+    "qDelivery": {
+      "type": "object",
+      "properties": {
+        "steps": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/qStep"
+          }
+        },
+        "runtime_reached": {
+          "type": "boolean"
+        },
+        "digest": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}(?![\\s\\S])"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "req_version": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "legacy": {
+          "type": "boolean"
+        },
+        "verified": {
+          "type": "boolean"
+        },
+        "upgraded_from_legacy": {
+          "type": "boolean"
+        },
+        "acknowledged": {
+          "type": "boolean"
+        },
+        "handoff_status": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "steps",
+        "runtime_reached",
+        "digest",
+        "req_version",
+        "legacy",
+        "verified",
+        "upgraded_from_legacy",
+        "acknowledged"
+      ],
+      "additionalProperties": false
+    },
+    "qNetworkReply": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_-]{1,160}(?![\\s\\S])"
+        },
+        "fingerprint": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}(?![\\s\\S])"
+        },
+        "status": {
+          "enum": [
+            "prepared",
+            "stored"
+          ]
+        },
+        "reply_to": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_-]{1,160}(?![\\s\\S])"
+        },
+        "outcome": {
+          "enum": [
+            null,
+            "succeeded",
+            "failed"
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "fingerprint",
+        "status",
+        "reply_to",
+        "outcome"
+      ],
+      "additionalProperties": false
+    },
+    "qNetworkFinal": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_-]{1,160}(?![\\s\\S])"
+        },
+        "fingerprint": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}(?![\\s\\S])"
+        },
+        "status": {
+          "enum": [
+            "prepared",
+            "stored"
+          ]
+        },
+        "reply_to": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_-]{1,160}(?![\\s\\S])"
+        },
+        "outcome": {
+          "enum": [
+            null,
+            "succeeded",
+            "failed"
+          ]
+        },
+        "packet": {
+          "$ref": "#/$defs/qFinalPacket"
+        },
+        "payload_available": {
+          "const": false
+        },
+        "payload_error": {
+          "const": "file-payload-unavailable"
+        }
+      },
+      "required": [
+        "id",
+        "fingerprint",
+        "status",
+        "reply_to",
+        "outcome"
+      ],
+      "additionalProperties": false,
+      "oneOf": [
+        {
+          "required": [
+            "packet"
+          ],
+          "not": {
+            "anyOf": [
+              {
+                "required": [
+                  "payload_available"
+                ]
+              },
+              {
+                "required": [
+                  "payload_error"
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "required": [
+            "payload_available",
+            "payload_error"
+          ],
+          "not": {
+            "required": [
+              "packet"
+            ]
+          }
+        }
+      ]
+    },
+    "qNetworkDelivery": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "status": {
+              "const": "not-found"
+            }
+          },
+          "required": [
+            "status"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_-]{1,160}(?![\\s\\S])"
+            },
+            "status": {
+              "enum": [
+                "unknown",
+                "queued",
+                "held",
+                "refused",
+                "offline",
+                "error",
+                "acknowledged",
+                "prepared"
+              ]
+            },
+            "stored": {
+              "type": "boolean"
+            },
+            "acknowledged": {
+              "type": "boolean"
+            },
+            "handoff_status": {
+              "type": "string"
+            },
+            "delivery_state": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "route": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "fingerprint": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}(?![\\s\\S])"
+            },
+            "replies": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/qNetworkReply"
+              }
+            },
+            "final_reply": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/qNetworkFinal"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "required": [
+            "id",
+            "status",
+            "acknowledged",
+            "replies",
+            "final_reply"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "qPacket": {
+      "type": "object",
+      "properties": {
+        "version": {
+          "const": 1
+        },
+        "id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_-]{1,160}(?![\\s\\S])"
+        },
+        "network_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sender": {
+          "$ref": "#/$defs/qPacketHandle"
+        },
+        "receiver": {
+          "$ref": "#/$defs/qPacketHandle"
+        },
+        "body": {
+          "type": "string"
+        },
+        "kind": {
+          "enum": [
+            "note",
+            "task",
+            "reply"
+          ]
+        },
+        "reply_to": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_-]{1,160}(?![\\s\\S])"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "outcome": {
+          "enum": [
+            null,
+            "succeeded",
+            "failed"
+          ]
+        },
+        "priority": {
+          "enum": [
+            "next",
+            "now"
+          ]
+        },
+        "wake": {
+          "type": "boolean"
+        },
+        "scope": {
+          "type": "string",
+          "minLength": 1
+        },
+        "attachments": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/reference"
+          },
+          "maxItems": 1
+        },
+        "file_packet": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/qFilePacket"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "fingerprint": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}(?![\\s\\S])"
+        },
+        "reply_binding": {
+          "anyOf": [
+            {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_-]{1,160}(?![\\s\\S])"
+                },
+                "fingerprint": {
+                  "type": "string",
+                  "pattern": "^[0-9a-f]{64}(?![\\s\\S])"
+                }
+              },
+              "required": [
+                "id",
+                "fingerprint"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "version",
+        "id",
+        "network_id",
+        "sender",
+        "receiver",
+        "body",
+        "kind",
+        "reply_to",
+        "outcome",
+        "priority",
+        "wake",
+        "scope",
+        "attachments",
+        "file_packet",
+        "fingerprint",
+        "reply_binding"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "const": "reply"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "reply_to": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9_-]{1,160}(?![\\s\\S])"
+              },
+              "reply_binding": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "pattern": "^[A-Za-z0-9_-]{1,160}(?![\\s\\S])"
+                  },
+                  "fingerprint": {
+                    "type": "string",
+                    "pattern": "^[0-9a-f]{64}(?![\\s\\S])"
+                  }
+                },
+                "required": [
+                  "id",
+                  "fingerprint"
+                ],
+                "additionalProperties": false
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "outcome": {
+                "type": "null"
+              },
+              "reply_binding": {
+                "type": "null"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "attachments": {
+                "minItems": 1
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "file_packet": {
+                "$ref": "#/$defs/qFilePacket"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "file_packet": {
+                "type": "null"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "wake": {
+                "const": false
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "priority": {
+                "const": "next"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "qFilePacket": {
+      "type": "object",
+      "properties": {
+        "manifest": {
+          "$ref": "#/$defs/fileManifest"
+        },
+        "data": {
+          "type": "object",
+          "propertyNames": {
+            "pattern": "^[0-9a-f]{32}(?![\\s\\S])"
+          },
+          "additionalProperties": {
+            "type": "string",
+            "contentEncoding": "base64"
+          }
+        }
+      },
+      "required": [
+        "manifest",
+        "data"
+      ],
+      "additionalProperties": false
+    },
+    "qCapabilities": {
+      "type": "object",
+      "properties": {
+        "attachments": {
+          "const": true
+        },
+        "wake_control": {
+          "const": true
+        },
+        "priority": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "array",
+            "items": {
+              "enum": [
+                "next",
+                "now"
+              ]
+            }
+          }
+        }
+      },
+      "required": [
+        "attachments",
+        "wake_control",
+        "priority"
+      ],
+      "additionalProperties": false
+    },
+    "qSingle": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "enum": [
+            "pending",
+            "reply_received",
+            "final",
+            "held",
+            "blocked",
+            "refused",
+            "error",
+            "not-found",
+            "selection-required"
+          ]
+        },
+        "id": {
+          "type": "string"
+        },
+        "purpose": {
+          "enum": [
+            null,
+            "question",
+            "handshake"
+          ]
+        },
+        "created_at": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "replies": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/qReply"
+          }
+        },
+        "final": {
+          "type": "boolean"
+        },
+        "final_outcome": {
+          "enum": [
+            null,
+            "succeeded",
+            "failed"
+          ]
+        },
+        "recover_at": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/qRecover"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "wait_end_reason": {
+          "enum": [
+            null,
+            "held",
+            "blocked",
+            "refused",
+            "error",
+            "not-found",
+            "selection-required",
+            "cancelled",
+            "timeout",
+            "client_closed",
+            "reply"
+          ]
+        },
+        "capabilities": {
+          "$ref": "#/$defs/qCapabilities"
+        },
+        "wake": {
+          "enum": [
+            "never",
+            "transport_policy"
+          ]
+        },
+        "send_evidence": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/qSendEvidence"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "delivery_evidence": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/qDelivery"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "handshake": {
+          "enum": [
+            "not-started",
+            "pending",
+            "completed",
+            "declined",
+            "reply_received"
+          ]
+        },
+        "reason": {
+          "type": "string"
+        },
+        "inbox_pending": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "inbox_notice": {
+          "type": "string"
+        },
+        "inbox_pending_known": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "inbox_pending_diagnostics": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "claims": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/claim"
+          }
+        },
+        "claim_messages": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "claim_diagnostics": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "status": {
+                "type": "string",
+                "minLength": 1
+              },
+              "error": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "status"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "wait_budget": {
+          "type": "object",
+          "properties": {
+            "requested": {
+              "const": 0
+            },
+            "effective": {
+              "const": 0
+            },
+            "cap": {
+              "const": 60
+            }
+          },
+          "required": [
+            "requested",
+            "effective",
+            "cap"
+          ],
+          "additionalProperties": false
+        },
+        "materials": {
+          "$ref": "#/$defs/materials"
+        },
+        "network_status": {
+          "type": "string"
+        },
+        "network_delivery": {
+          "$ref": "#/$defs/qNetworkDelivery"
+        }
+      },
+      "required": [
+        "status",
+        "id",
+        "purpose",
+        "created_at",
+        "replies",
+        "final",
+        "final_outcome",
+        "recover_at",
+        "wait_end_reason",
+        "capabilities",
+        "wake",
+        "send_evidence",
+        "delivery_evidence",
+        "handshake",
+        "claims",
+        "inbox_pending",
+        "wait_budget"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "final": {
+                "const": true
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "final_outcome": {
+                "enum": [
+                  "succeeded",
+                  "failed"
+                ]
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "final_outcome": {
+                "type": "null"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "qChild": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "enum": [
+            "pending",
+            "reply_received",
+            "final",
+            "held",
+            "blocked",
+            "refused",
+            "error",
+            "not-found",
+            "selection-required"
+          ]
+        },
+        "id": {
+          "type": "string"
+        },
+        "purpose": {
+          "enum": [
+            null,
+            "question",
+            "handshake"
+          ]
+        },
+        "created_at": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "replies": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/qReply"
+          }
+        },
+        "final": {
+          "type": "boolean"
+        },
+        "final_outcome": {
+          "enum": [
+            null,
+            "succeeded",
+            "failed"
+          ]
+        },
+        "recover_at": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/qRecover"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "wait_end_reason": {
+          "enum": [
+            null,
+            "held",
+            "blocked",
+            "refused",
+            "error",
+            "not-found",
+            "selection-required",
+            "cancelled",
+            "timeout",
+            "client_closed",
+            "reply"
+          ]
+        },
+        "capabilities": {
+          "$ref": "#/$defs/qCapabilities"
+        },
+        "wake": {
+          "enum": [
+            "never",
+            "transport_policy"
+          ]
+        },
+        "send_evidence": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/qSendEvidence"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "delivery_evidence": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/qDelivery"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "handshake": {
+          "enum": [
+            "not-started",
+            "pending",
+            "completed",
+            "declined",
+            "reply_received"
+          ]
+        },
+        "reason": {
+          "type": "string"
+        },
+        "recipient": {
+          "type": "string"
+        },
+        "spec": {
+          "type": "string"
+        },
+        "claims": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/claim"
+          }
+        },
+        "claim_messages": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "claim_diagnostics": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "status": {
+                "type": "string",
+                "minLength": 1
+              },
+              "error": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "status"
+            ],
+            "additionalProperties": false
+          }
+        }
+      },
+      "required": [
+        "status",
+        "id",
+        "purpose",
+        "created_at",
+        "replies",
+        "final",
+        "final_outcome",
+        "recover_at",
+        "wait_end_reason",
+        "capabilities",
+        "wake",
+        "send_evidence",
+        "delivery_evidence",
+        "handshake",
+        "recipient",
+        "spec"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "final": {
+                "const": true
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "final_outcome": {
+                "enum": [
+                  "succeeded",
+                  "failed"
+                ]
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "final_outcome": {
+                "type": "null"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "qSkipped": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "const": "skipped"
+        },
+        "recipient": {
+          "type": "string"
+        },
+        "spec": {
+          "type": "string"
+        },
+        "reason": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "status",
+        "recipient",
+        "spec",
+        "reason"
+      ],
+      "additionalProperties": false
+    },
+    "qGroup": {
+      "type": "object",
+      "properties": {
+        "inbox_pending": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "inbox_notice": {
+          "type": "string"
+        },
+        "inbox_pending_known": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "inbox_pending_diagnostics": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "claims": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/claim"
+          }
+        },
+        "claim_messages": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "claim_diagnostics": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "status": {
+                "type": "string",
+                "minLength": 1
+              },
+              "error": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "status"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "wait_budget": {
+          "type": "object",
+          "properties": {
+            "requested": {
+              "const": 0
+            },
+            "effective": {
+              "const": 0
+            },
+            "cap": {
+              "const": 60
+            }
+          },
+          "required": [
+            "requested",
+            "effective",
+            "cap"
+          ],
+          "additionalProperties": false
+        },
+        "status": {
+          "enum": [
+            "pending",
+            "reply_received",
+            "replied",
+            "final",
+            "refused"
+          ]
+        },
+        "id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_-]{1,120}(?![\\s\\S])"
+        },
+        "group": {
+          "const": true
+        },
+        "notes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "answered": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "asked": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "skipped": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "waiting_on": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "recipients": {
+          "type": "array",
+          "items": {
+            "oneOf": [
+              {
+                "$ref": "#/$defs/qChild"
+              },
+              {
+                "$ref": "#/$defs/qSkipped"
+              }
+            ]
+          }
+        },
+        "replies": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/qGroupReply"
+          }
+        },
+        "recover_at": {
+          "$ref": "#/$defs/qRecover"
+        },
+        "wait_end_reason": {
+          "enum": [
+            "all-answered-or-ended",
+            "cancelled",
+            "timeout"
+          ]
+        }
+      },
+      "required": [
+        "status",
+        "id",
+        "group",
+        "notes",
+        "answered",
+        "asked",
+        "skipped",
+        "waiting_on",
+        "recipients",
+        "replies",
+        "recover_at",
+        "wait_end_reason",
+        "claims",
+        "inbox_pending",
+        "wait_budget"
+      ],
+      "additionalProperties": false
+    },
+    "qDeniedGroup": {
+      "type": "object",
+      "properties": {
+        "inbox_pending": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "inbox_notice": {
+          "type": "string"
+        },
+        "inbox_pending_known": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "inbox_pending_diagnostics": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "claims": {
+          "type": "array",
+          "maxItems": 0
+        },
+        "claim_messages": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "claim_diagnostics": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "status": {
+                "type": "string",
+                "minLength": 1
+              },
+              "error": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "status"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "wait_budget": {
+          "type": "object",
+          "properties": {
+            "requested": {
+              "const": 0
+            },
+            "effective": {
+              "const": 0
+            },
+            "cap": {
+              "const": 60
+            }
+          },
+          "required": [
+            "requested",
+            "effective",
+            "cap"
+          ],
+          "additionalProperties": false
+        },
+        "status": {
+          "enum": [
+            "refused",
+            "not-found"
+          ]
+        },
+        "id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_-]{1,120}(?![\\s\\S])"
+        },
+        "group": {
+          "const": true
+        },
+        "recipients": {
+          "type": "array",
+          "maxItems": 0
+        },
+        "replies": {
+          "type": "array",
+          "maxItems": 0
+        },
+        "reason": {
+          "type": "string"
+        },
+        "wait_end_reason": {
+          "const": "all-answered-or-ended"
+        }
+      },
+      "required": [
+        "status",
+        "id",
+        "group",
+        "recipients",
+        "replies",
+        "wait_end_reason",
+        "claims",
+        "inbox_pending",
+        "wait_budget"
+      ],
+      "additionalProperties": false
+    },
+    "qListing": {
+      "type": "object",
+      "properties": {
+        "inbox_pending": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "inbox_notice": {
+          "type": "string"
+        },
+        "inbox_pending_known": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "inbox_pending_diagnostics": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "claims": {
+          "type": "array",
+          "maxItems": 0
+        },
+        "claim_messages": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "claim_diagnostics": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "status": {
+                "type": "string",
+                "minLength": 1
+              },
+              "error": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "status"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "wait_budget": {
+          "type": "object",
+          "properties": {
+            "requested": {
+              "const": 0
+            },
+            "effective": {
+              "const": 0
+            },
+            "cap": {
+              "const": 60
+            }
+          },
+          "required": [
+            "requested",
+            "effective",
+            "cap"
+          ],
+          "additionalProperties": false
+        },
+        "status": {
+          "const": "requests"
+        },
+        "requests": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9_-]{1,160}(?![\\s\\S])"
+              },
+              "purpose": {
+                "enum": [
+                  "question",
+                  "handshake"
+                ]
+              },
+              "target": {
+                "$ref": "#/$defs/qHandle"
+              },
+              "preview": {
+                "type": "string"
+              },
+              "digest": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{64}(?![\\s\\S])"
+              },
+              "created_at": {
+                "type": "number"
+              },
+              "status": {
+                "enum": [
+                  "pending",
+                  "reply_received",
+                  "final",
+                  "held",
+                  "blocked",
+                  "refused",
+                  "error",
+                  "not-found",
+                  "selection-required"
+                ]
+              }
+            },
+            "required": [
+              "id",
+              "purpose",
+              "target",
+              "preview",
+              "digest",
+              "created_at",
+              "status"
+            ],
+            "additionalProperties": false
+          }
+        }
+      },
+      "required": [
+        "status",
+        "requests",
+        "claims",
+        "inbox_pending"
+      ],
+      "additionalProperties": false
+    },
+    "qSelection": {
+      "type": "object",
+      "properties": {
+        "inbox_pending": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "inbox_notice": {
+          "type": "string"
+        },
+        "inbox_pending_known": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "inbox_pending_diagnostics": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "claims": {
+          "type": "array",
+          "maxItems": 0
+        },
+        "claim_messages": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "claim_diagnostics": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "status": {
+                "type": "string",
+                "minLength": 1
+              },
+              "error": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "status"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "wait_budget": {
+          "type": "object",
+          "properties": {
+            "requested": {
+              "const": 0
+            },
+            "effective": {
+              "const": 0
+            },
+            "cap": {
+              "const": 60
+            }
+          },
+          "required": [
+            "requested",
+            "effective",
+            "cap"
+          ],
+          "additionalProperties": false
+        },
+        "status": {
+          "enum": [
+            "refused",
+            "selection-required"
+          ]
+        },
+        "reason": {
+          "type": "string"
+        },
+        "handshake": {
+          "const": "not-started"
+        },
+        "target": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "status",
+        "reason",
+        "claims",
+        "inbox_pending"
+      ],
+      "additionalProperties": false
+    },
+    "qFinalPacket": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/qPacket"
+        },
+        {
+          "properties": {
+            "kind": {
+              "const": "reply"
+            }
+          }
+        }
+      ]
+    }
+  }
+}

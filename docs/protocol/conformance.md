@@ -205,7 +205,7 @@ answer or `replied` aggregate is not a final successful task outcome. Permission
 or an existing collaboration scope does not complete a handshake without the
 selected peer's correlated final reply.
 
-The output schema checker validates generic question frames and other supplied
-domain schemas in this capture. Dedicated result schemas for ask/status/connect
-remain incomplete; passing this suite is not their normative schema completion
-or certification of human approval, native delivery or whole runtime support.
+The output schema checker validates the per-operation
+[question result schema](question-result.schema.json) and its association checks
+in this capture. See [question semantics](question-results.md). Passing the suite
+does not certify human approval, physical remote/native delivery or whole runtime support.

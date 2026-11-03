@@ -1,0 +1,2022 @@
+[
+  {
+    "operation": "xsm_question_status",
+    "source": "isolated stdio fixture",
+    "result": {
+      "status": "requests",
+      "requests": [],
+      "claims": [],
+      "inbox_pending": 0
+    }
+  },
+  {
+    "operation": "xsm_ask",
+    "source": "isolated stdio fixture",
+    "result": {
+      "status": "pending",
+      "id": "1de516a65f6d48c4",
+      "group": true,
+      "notes": [],
+      "answered": 0,
+      "asked": 1,
+      "skipped": 1,
+      "waiting_on": [
+        "conformance-7ded6373@None [2ceabb]"
+      ],
+      "recipients": [
+        {
+          "status": "pending",
+          "id": "1de516a65f6d48c4-0",
+          "purpose": "question",
+          "created_at": 1793676655.709821,
+          "replies": [],
+          "final": false,
+          "final_outcome": null,
+          "recover_at": {
+            "cli": [
+              "xsm",
+              "question-status",
+              "1de516a65f6d48c4-0"
+            ],
+            "mcp": {
+              "tool": "xsm_question_status",
+              "arguments": {
+                "id": "1de516a65f6d48c4-0"
+              }
+            }
+          },
+          "wait_end_reason": null,
+          "capabilities": {
+            "attachments": true,
+            "wake_control": true,
+            "priority": {
+              "claude": [
+                "next",
+                "now"
+              ],
+              "codex": [
+                "next"
+              ]
+            }
+          },
+          "wake": "never",
+          "send_evidence": {
+            "status": "stored",
+            "reason": "strict FYI stored for the next natural consumer boundary",
+            "id": "1de516a65f6d48c4-0",
+            "to": "conformance-7ded6373@None",
+            "runtime_reached": false,
+            "evidence": {
+              "accepted": true,
+              "wake": false,
+              "stored": true
+            }
+          },
+          "delivery_evidence": {
+            "steps": {
+              "accepted": {
+                "ok": true,
+                "t": 1793676655.74078
+              },
+              "wake": {
+                "ok": false,
+                "t": 1793676655.741857,
+                "detail": "strict no-wake: transport not attempted"
+              },
+              "stored": {
+                "ok": true,
+                "t": 1793676655.7392871
+              }
+            },
+            "runtime_reached": false,
+            "digest": "927b87c657b0c4b77b180450bc34541052081a013f1c221d4bd4ae3a8a56f26e",
+            "req_version": 1,
+            "legacy": false,
+            "verified": true,
+            "upgraded_from_legacy": false,
+            "acknowledged": false,
+            "handoff_status": "pending"
+          },
+          "handshake": "not-started",
+          "recipient": "conformance-7ded6373@None [2ceabb]",
+          "spec": "ref:2ceabb"
+        },
+        {
+          "recipient": "ref:000000",
+          "spec": "ref:000000",
+          "status": "skipped",
+          "reason": "no session with ref:000000"
+        }
+      ],
+      "replies": [],
+      "recover_at": {
+        "cli": [
+          "xsm",
+          "question-status",
+          "1de516a65f6d48c4"
+        ],
+        "mcp": {
+          "tool": "xsm_question_status",
+          "arguments": {
+            "id": "1de516a65f6d48c4"
+          }
+        }
+      },
+      "wait_end_reason": "timeout",
+      "claims": [],
+      "inbox_pending": 0,
+      "wait_budget": {
+        "requested": 0.0,
+        "effective": 0.0,
+        "cap": 60
+      }
+    }
+  },
+  {
+    "operation": "xsm_question_status",
+    "source": "isolated stdio fixture",
+    "result": {
+      "status": "refused",
+      "id": "1de516a65f6d48c4",
+      "group": true,
+      "recipients": [],
+      "replies": [],
+      "reason": "request belongs to another conversation",
+      "wait_end_reason": "all-answered-or-ended",
+      "claims": [],
+      "inbox_pending": 1,
+      "inbox_notice": "[xsm] 1 message from other sessions waiting for you; read with `xsm inbox` (or the xsm_inbox MCP tool) before waiting again.",
+      "wait_budget": {
+        "requested": 0.0,
+        "effective": 0.0,
+        "cap": 60
+      }
+    }
+  },
+  {
+    "operation": "xsm_question_status",
+    "source": "isolated stdio fixture",
+    "result": {
+      "status": "replied",
+      "id": "1de516a65f6d48c4",
+      "group": true,
+      "notes": [],
+      "answered": 1,
+      "asked": 1,
+      "skipped": 1,
+      "waiting_on": [],
+      "recipients": [
+        {
+          "status": "reply_received",
+          "id": "1de516a65f6d48c4-0",
+          "purpose": "question",
+          "created_at": 1793676655.709821,
+          "replies": [
+            {
+              "id": "question-partial-reply",
+              "body": "Fixture private progress without final outcome",
+              "outcome": null,
+              "sender": {
+                "runtime": "conformance",
+                "session_id": "7ded6373212b909632243e24aaa2777db1ab1e3fecb4980337353f3589f20a36",
+                "ref": "2ceabb",
+                "name": "conformance-7ded6373",
+                "alias": null,
+                "home_id": "30ca079fb00e18d9dbc00829f164c8a12d35b232891fce1a6bf76f0f9c43887b"
+              },
+              "receiver": {
+                "runtime": "conformance",
+                "session_id": "e8ad5a1e645111fa86d13bf6747205c181a75a11c7321b7d381f4a4a015eaec3",
+                "ref": "b44fd2",
+                "name": "conformance-e8ad5a1e",
+                "alias": null,
+                "home_id": "8a758374794c51635b7bec2ddb952b7240576c19db9b013b8c0d900706b1deb5"
+              },
+              "received_at": 1793676655.91234
+            }
+          ],
+          "final": false,
+          "final_outcome": null,
+          "recover_at": {
+            "cli": [
+              "xsm",
+              "question-status",
+              "1de516a65f6d48c4-0"
+            ],
+            "mcp": {
+              "tool": "xsm_question_status",
+              "arguments": {
+                "id": "1de516a65f6d48c4-0"
+              }
+            }
+          },
+          "wait_end_reason": null,
+          "capabilities": {
+            "attachments": true,
+            "wake_control": true,
+            "priority": {
+              "claude": [
+                "next",
+                "now"
+              ],
+              "codex": [
+                "next"
+              ]
+            }
+          },
+          "wake": "never",
+          "send_evidence": {
+            "status": "stored",
+            "reason": "strict FYI stored for the next natural consumer boundary",
+            "id": "1de516a65f6d48c4-0",
+            "to": "conformance-7ded6373@None",
+            "runtime_reached": false,
+            "evidence": {
+              "accepted": true,
+              "wake": false,
+              "stored": true
+            }
+          },
+          "delivery_evidence": {
+            "steps": {
+              "accepted": {
+                "ok": true,
+                "t": 1793676655.74078
+              },
+              "wake": {
+                "ok": false,
+                "t": 1793676655.741857,
+                "detail": "strict no-wake: transport not attempted"
+              },
+              "hook_taken": {
+                "ok": true,
+                "t": 1793676655.8393972,
+                "detail": "delivered"
+              },
+              "stored": {
+                "ok": true,
+                "t": 1793676655.7392871
+              },
+              "claimed": {
+                "ok": true,
+                "t": 1793676655.7738628
+              },
+              "handoff": {
+                "ok": true,
+                "t": 1793676655.813306
+              },
+              "ack": {
+                "ok": true,
+                "t": 1793676655.838238
+              }
+            },
+            "runtime_reached": true,
+            "digest": "927b87c657b0c4b77b180450bc34541052081a013f1c221d4bd4ae3a8a56f26e",
+            "req_version": 1,
+            "legacy": false,
+            "verified": true,
+            "upgraded_from_legacy": false,
+            "acknowledged": true,
+            "handoff_status": "acknowledged"
+          },
+          "handshake": "not-started",
+          "recipient": "conformance-7ded6373@None [2ceabb]",
+          "spec": "ref:2ceabb",
+          "claims": [
+            {
+              "id": "question-partial-reply",
+              "token": "6fffa94e3de6406b9153f3cef282c2ba",
+              "owner": {
+                "type": "native",
+                "id": "protocol:conformance:e8ad5a1e645111fa86d13bf6747205c181a75a11c7321b7d381f4a4a015eaec3"
+              },
+              "generation": "e9840d81ff674d62a2fe5ae8ed709dae",
+              "digest": "cd5b29d53dd1f3c622926dfb17a181f1c5c4b625088049a80620518b866c9eec"
+            }
+          ]
+        },
+        {
+          "recipient": "ref:000000",
+          "spec": "ref:000000",
+          "status": "skipped",
+          "reason": "no session with ref:000000"
+        }
+      ],
+      "replies": [
+        {
+          "id": "question-partial-reply",
+          "body": "Fixture private progress without final outcome",
+          "outcome": null,
+          "sender": {
+            "runtime": "conformance",
+            "session_id": "7ded6373212b909632243e24aaa2777db1ab1e3fecb4980337353f3589f20a36",
+            "ref": "2ceabb",
+            "name": "conformance-7ded6373",
+            "alias": null,
+            "home_id": "30ca079fb00e18d9dbc00829f164c8a12d35b232891fce1a6bf76f0f9c43887b"
+          },
+          "receiver": {
+            "runtime": "conformance",
+            "session_id": "e8ad5a1e645111fa86d13bf6747205c181a75a11c7321b7d381f4a4a015eaec3",
+            "ref": "b44fd2",
+            "name": "conformance-e8ad5a1e",
+            "alias": null,
+            "home_id": "8a758374794c51635b7bec2ddb952b7240576c19db9b013b8c0d900706b1deb5"
+          },
+          "received_at": 1793676655.91234,
+          "request_id": "1de516a65f6d48c4-0",
+          "recipient": "conformance-7ded6373@None [2ceabb]"
+        }
+      ],
+      "recover_at": {
+        "cli": [
+          "xsm",
+          "question-status",
+          "1de516a65f6d48c4"
+        ],
+        "mcp": {
+          "tool": "xsm_question_status",
+          "arguments": {
+            "id": "1de516a65f6d48c4"
+          }
+        }
+      },
+      "wait_end_reason": "all-answered-or-ended",
+      "claims": [
+        {
+          "id": "question-partial-reply",
+          "token": "6fffa94e3de6406b9153f3cef282c2ba",
+          "owner": {
+            "type": "native",
+            "id": "protocol:conformance:e8ad5a1e645111fa86d13bf6747205c181a75a11c7321b7d381f4a4a015eaec3"
+          },
+          "generation": "e9840d81ff674d62a2fe5ae8ed709dae",
+          "digest": "cd5b29d53dd1f3c622926dfb17a181f1c5c4b625088049a80620518b866c9eec"
+        }
+      ],
+      "inbox_pending": 0,
+      "wait_budget": {
+        "requested": 0.0,
+        "effective": 0.0,
+        "cap": 60
+      }
+    }
+  },
+  {
+    "operation": "xsm_question_status",
+    "source": "isolated stdio fixture",
+    "result": {
+      "status": "replied",
+      "id": "1de516a65f6d48c4",
+      "group": true,
+      "notes": [],
+      "answered": 1,
+      "asked": 1,
+      "skipped": 1,
+      "waiting_on": [],
+      "recipients": [
+        {
+          "status": "reply_received",
+          "id": "1de516a65f6d48c4-0",
+          "purpose": "question",
+          "created_at": 1793676655.709821,
+          "replies": [
+            {
+              "id": "question-partial-reply",
+              "body": "Fixture private progress without final outcome",
+              "outcome": null,
+              "sender": {
+                "runtime": "conformance",
+                "session_id": "7ded6373212b909632243e24aaa2777db1ab1e3fecb4980337353f3589f20a36",
+                "ref": "2ceabb",
+                "name": "conformance-7ded6373",
+                "alias": null,
+                "home_id": "30ca079fb00e18d9dbc00829f164c8a12d35b232891fce1a6bf76f0f9c43887b"
+              },
+              "receiver": {
+                "runtime": "conformance",
+                "session_id": "e8ad5a1e645111fa86d13bf6747205c181a75a11c7321b7d381f4a4a015eaec3",
+                "ref": "b44fd2",
+                "name": "conformance-e8ad5a1e",
+                "alias": null,
+                "home_id": "8a758374794c51635b7bec2ddb952b7240576c19db9b013b8c0d900706b1deb5"
+              },
+              "received_at": 1793676655.91234
+            }
+          ],
+          "final": false,
+          "final_outcome": null,
+          "recover_at": {
+            "cli": [
+              "xsm",
+              "question-status",
+              "1de516a65f6d48c4-0"
+            ],
+            "mcp": {
+              "tool": "xsm_question_status",
+              "arguments": {
+                "id": "1de516a65f6d48c4-0"
+              }
+            }
+          },
+          "wait_end_reason": null,
+          "capabilities": {
+            "attachments": true,
+            "wake_control": true,
+            "priority": {
+              "claude": [
+                "next",
+                "now"
+              ],
+              "codex": [
+                "next"
+              ]
+            }
+          },
+          "wake": "never",
+          "send_evidence": {
+            "status": "stored",
+            "reason": "strict FYI stored for the next natural consumer boundary",
+            "id": "1de516a65f6d48c4-0",
+            "to": "conformance-7ded6373@None",
+            "runtime_reached": false,
+            "evidence": {
+              "accepted": true,
+              "wake": false,
+              "stored": true
+            }
+          },
+          "delivery_evidence": {
+            "steps": {
+              "accepted": {
+                "ok": true,
+                "t": 1793676655.74078
+              },
+              "wake": {
+                "ok": false,
+                "t": 1793676655.741857,
+                "detail": "strict no-wake: transport not attempted"
+              },
+              "hook_taken": {
+                "ok": true,
+                "t": 1793676655.8393972,
+                "detail": "delivered"
+              },
+              "stored": {
+                "ok": true,
+                "t": 1793676655.7392871
+              },
+              "claimed": {
+                "ok": true,
+                "t": 1793676655.7738628
+              },
+              "handoff": {
+                "ok": true,
+                "t": 1793676655.813306
+              },
+              "ack": {
+                "ok": true,
+                "t": 1793676655.838238
+              }
+            },
+            "runtime_reached": true,
+            "digest": "927b87c657b0c4b77b180450bc34541052081a013f1c221d4bd4ae3a8a56f26e",
+            "req_version": 1,
+            "legacy": false,
+            "verified": true,
+            "upgraded_from_legacy": false,
+            "acknowledged": true,
+            "handoff_status": "acknowledged"
+          },
+          "handshake": "not-started",
+          "recipient": "conformance-7ded6373@None [2ceabb]",
+          "spec": "ref:2ceabb",
+          "claims": []
+        },
+        {
+          "recipient": "ref:000000",
+          "spec": "ref:000000",
+          "status": "skipped",
+          "reason": "no session with ref:000000"
+        }
+      ],
+      "replies": [
+        {
+          "id": "question-partial-reply",
+          "body": "Fixture private progress without final outcome",
+          "outcome": null,
+          "sender": {
+            "runtime": "conformance",
+            "session_id": "7ded6373212b909632243e24aaa2777db1ab1e3fecb4980337353f3589f20a36",
+            "ref": "2ceabb",
+            "name": "conformance-7ded6373",
+            "alias": null,
+            "home_id": "30ca079fb00e18d9dbc00829f164c8a12d35b232891fce1a6bf76f0f9c43887b"
+          },
+          "receiver": {
+            "runtime": "conformance",
+            "session_id": "e8ad5a1e645111fa86d13bf6747205c181a75a11c7321b7d381f4a4a015eaec3",
+            "ref": "b44fd2",
+            "name": "conformance-e8ad5a1e",
+            "alias": null,
+            "home_id": "8a758374794c51635b7bec2ddb952b7240576c19db9b013b8c0d900706b1deb5"
+          },
+          "received_at": 1793676655.91234,
+          "request_id": "1de516a65f6d48c4-0",
+          "recipient": "conformance-7ded6373@None [2ceabb]"
+        }
+      ],
+      "recover_at": {
+        "cli": [
+          "xsm",
+          "question-status",
+          "1de516a65f6d48c4"
+        ],
+        "mcp": {
+          "tool": "xsm_question_status",
+          "arguments": {
+            "id": "1de516a65f6d48c4"
+          }
+        }
+      },
+      "wait_end_reason": "all-answered-or-ended",
+      "claims": [],
+      "inbox_pending": 0,
+      "wait_budget": {
+        "requested": 0.0,
+        "effective": 0.0,
+        "cap": 60
+      }
+    }
+  },
+  {
+    "operation": "xsm_question_status",
+    "source": "isolated stdio fixture",
+    "result": {
+      "status": "final",
+      "id": "1de516a65f6d48c4",
+      "group": true,
+      "notes": [],
+      "answered": 1,
+      "asked": 1,
+      "skipped": 1,
+      "waiting_on": [],
+      "recipients": [
+        {
+          "status": "final",
+          "id": "1de516a65f6d48c4-0",
+          "purpose": "question",
+          "created_at": 1793676655.709821,
+          "replies": [
+            {
+              "id": "question-partial-reply",
+              "body": "Fixture private progress without final outcome",
+              "outcome": null,
+              "sender": {
+                "runtime": "conformance",
+                "session_id": "7ded6373212b909632243e24aaa2777db1ab1e3fecb4980337353f3589f20a36",
+                "ref": "2ceabb",
+                "name": "conformance-7ded6373",
+                "alias": null,
+                "home_id": "30ca079fb00e18d9dbc00829f164c8a12d35b232891fce1a6bf76f0f9c43887b"
+              },
+              "receiver": {
+                "runtime": "conformance",
+                "session_id": "e8ad5a1e645111fa86d13bf6747205c181a75a11c7321b7d381f4a4a015eaec3",
+                "ref": "b44fd2",
+                "name": "conformance-e8ad5a1e",
+                "alias": null,
+                "home_id": "8a758374794c51635b7bec2ddb952b7240576c19db9b013b8c0d900706b1deb5"
+              },
+              "received_at": 1793676655.91234
+            },
+            {
+              "id": "question-final-reply",
+              "body": "Fixture private final answer",
+              "outcome": "succeeded",
+              "sender": {
+                "runtime": "conformance",
+                "session_id": "7ded6373212b909632243e24aaa2777db1ab1e3fecb4980337353f3589f20a36",
+                "ref": "2ceabb",
+                "name": "conformance-7ded6373",
+                "alias": null,
+                "home_id": "30ca079fb00e18d9dbc00829f164c8a12d35b232891fce1a6bf76f0f9c43887b"
+              },
+              "receiver": {
+                "runtime": "conformance",
+                "session_id": "e8ad5a1e645111fa86d13bf6747205c181a75a11c7321b7d381f4a4a015eaec3",
+                "ref": "b44fd2",
+                "name": "conformance-e8ad5a1e",
+                "alias": null,
+                "home_id": "8a758374794c51635b7bec2ddb952b7240576c19db9b013b8c0d900706b1deb5"
+              },
+              "received_at": 1793676656.104063
+            }
+          ],
+          "final": true,
+          "final_outcome": "succeeded",
+          "recover_at": {
+            "cli": [
+              "xsm",
+              "question-status",
+              "1de516a65f6d48c4-0"
+            ],
+            "mcp": {
+              "tool": "xsm_question_status",
+              "arguments": {
+                "id": "1de516a65f6d48c4-0"
+              }
+            }
+          },
+          "wait_end_reason": null,
+          "capabilities": {
+            "attachments": true,
+            "wake_control": true,
+            "priority": {
+              "claude": [
+                "next",
+                "now"
+              ],
+              "codex": [
+                "next"
+              ]
+            }
+          },
+          "wake": "never",
+          "send_evidence": {
+            "status": "stored",
+            "reason": "strict FYI stored for the next natural consumer boundary",
+            "id": "1de516a65f6d48c4-0",
+            "to": "conformance-7ded6373@None",
+            "runtime_reached": false,
+            "evidence": {
+              "accepted": true,
+              "wake": false,
+              "stored": true
+            }
+          },
+          "delivery_evidence": {
+            "steps": {
+              "accepted": {
+                "ok": true,
+                "t": 1793676655.74078
+              },
+              "wake": {
+                "ok": false,
+                "t": 1793676655.741857,
+                "detail": "strict no-wake: transport not attempted"
+              },
+              "hook_taken": {
+                "ok": true,
+                "t": 1793676655.8393972,
+                "detail": "delivered"
+              },
+              "stored": {
+                "ok": true,
+                "t": 1793676655.7392871
+              },
+              "claimed": {
+                "ok": true,
+                "t": 1793676655.7738628
+              },
+              "handoff": {
+                "ok": true,
+                "t": 1793676655.813306
+              },
+              "ack": {
+                "ok": true,
+                "t": 1793676655.838238
+              }
+            },
+            "runtime_reached": true,
+            "digest": "927b87c657b0c4b77b180450bc34541052081a013f1c221d4bd4ae3a8a56f26e",
+            "req_version": 1,
+            "legacy": false,
+            "verified": true,
+            "upgraded_from_legacy": false,
+            "acknowledged": true,
+            "handoff_status": "acknowledged"
+          },
+          "handshake": "not-started",
+          "recipient": "conformance-7ded6373@None [2ceabb]",
+          "spec": "ref:2ceabb",
+          "claims": [
+            {
+              "id": "question-final-reply",
+              "token": "b4b3beefbd0749388b2aea0fddbbd81f",
+              "owner": {
+                "type": "native",
+                "id": "protocol:conformance:e8ad5a1e645111fa86d13bf6747205c181a75a11c7321b7d381f4a4a015eaec3"
+              },
+              "generation": "e9840d81ff674d62a2fe5ae8ed709dae",
+              "digest": "1e50511cc428994c4643f4ea50649bb6a6c111448328be4efca55d05a19873fa"
+            }
+          ]
+        },
+        {
+          "recipient": "ref:000000",
+          "spec": "ref:000000",
+          "status": "skipped",
+          "reason": "no session with ref:000000"
+        }
+      ],
+      "replies": [
+        {
+          "id": "question-partial-reply",
+          "body": "Fixture private progress without final outcome",
+          "outcome": null,
+          "sender": {
+            "runtime": "conformance",
+            "session_id": "7ded6373212b909632243e24aaa2777db1ab1e3fecb4980337353f3589f20a36",
+            "ref": "2ceabb",
+            "name": "conformance-7ded6373",
+            "alias": null,
+            "home_id": "30ca079fb00e18d9dbc00829f164c8a12d35b232891fce1a6bf76f0f9c43887b"
+          },
+          "receiver": {
+            "runtime": "conformance",
+            "session_id": "e8ad5a1e645111fa86d13bf6747205c181a75a11c7321b7d381f4a4a015eaec3",
+            "ref": "b44fd2",
+            "name": "conformance-e8ad5a1e",
+            "alias": null,
+            "home_id": "8a758374794c51635b7bec2ddb952b7240576c19db9b013b8c0d900706b1deb5"
+          },
+          "received_at": 1793676655.91234,
+          "request_id": "1de516a65f6d48c4-0",
+          "recipient": "conformance-7ded6373@None [2ceabb]"
+        },
+        {
+          "id": "question-final-reply",
+          "body": "Fixture private final answer",
+          "outcome": "succeeded",
+          "sender": {
+            "runtime": "conformance",
+            "session_id": "7ded6373212b909632243e24aaa2777db1ab1e3fecb4980337353f3589f20a36",
+            "ref": "2ceabb",
+            "name": "conformance-7ded6373",
+            "alias": null,
+            "home_id": "30ca079fb00e18d9dbc00829f164c8a12d35b232891fce1a6bf76f0f9c43887b"
+          },
+          "receiver": {
+            "runtime": "conformance",
+            "session_id": "e8ad5a1e645111fa86d13bf6747205c181a75a11c7321b7d381f4a4a015eaec3",
+            "ref": "b44fd2",
+            "name": "conformance-e8ad5a1e",
+            "alias": null,
+            "home_id": "8a758374794c51635b7bec2ddb952b7240576c19db9b013b8c0d900706b1deb5"
+          },
+          "received_at": 1793676656.104063,
+          "request_id": "1de516a65f6d48c4-0",
+          "recipient": "conformance-7ded6373@None [2ceabb]"
+        }
+      ],
+      "recover_at": {
+        "cli": [
+          "xsm",
+          "question-status",
+          "1de516a65f6d48c4"
+        ],
+        "mcp": {
+          "tool": "xsm_question_status",
+          "arguments": {
+            "id": "1de516a65f6d48c4"
+          }
+        }
+      },
+      "wait_end_reason": "all-answered-or-ended",
+      "claims": [
+        {
+          "id": "question-final-reply",
+          "token": "b4b3beefbd0749388b2aea0fddbbd81f",
+          "owner": {
+            "type": "native",
+            "id": "protocol:conformance:e8ad5a1e645111fa86d13bf6747205c181a75a11c7321b7d381f4a4a015eaec3"
+          },
+          "generation": "e9840d81ff674d62a2fe5ae8ed709dae",
+          "digest": "1e50511cc428994c4643f4ea50649bb6a6c111448328be4efca55d05a19873fa"
+        }
+      ],
+      "inbox_pending": 0,
+      "wait_budget": {
+        "requested": 0.0,
+        "effective": 0.0,
+        "cap": 60
+      }
+    }
+  },
+  {
+    "operation": "xsm_question_status",
+    "source": "isolated stdio fixture",
+    "result": {
+      "status": "not-found",
+      "id": "absent-request",
+      "purpose": null,
+      "created_at": null,
+      "replies": [],
+      "final": false,
+      "final_outcome": null,
+      "recover_at": null,
+      "wait_end_reason": "not-found",
+      "capabilities": {
+        "attachments": true,
+        "wake_control": true,
+        "priority": {
+          "claude": [
+            "next",
+            "now"
+          ],
+          "codex": [
+            "next"
+          ]
+        }
+      },
+      "wake": "transport_policy",
+      "send_evidence": null,
+      "delivery_evidence": null,
+      "handshake": "not-started",
+      "wait_budget": {
+        "requested": 0.0,
+        "effective": 0.0,
+        "cap": 60
+      },
+      "claims": [],
+      "inbox_pending": 0
+    }
+  },
+  {
+    "operation": "xsm_question_status",
+    "source": "isolated stdio fixture",
+    "result": {
+      "status": "requests",
+      "requests": [
+        {
+          "id": "1de516a65f6d48c4-0",
+          "purpose": "question",
+          "target": {
+            "runtime": "conformance",
+            "session_id": "7ded6373212b909632243e24aaa2777db1ab1e3fecb4980337353f3589f20a36",
+            "ref": "2ceabb",
+            "name": "conformance-7ded6373",
+            "alias": null,
+            "home_id": "30ca079fb00e18d9dbc00829f164c8a12d35b232891fce1a6bf76f0f9c43887b"
+          },
+          "preview": "Fixture private group question",
+          "digest": "75e59a10125dae8d70db567edc87e7ae9662813eb13c4c68b069b2a0b188c645",
+          "created_at": 1793676655.709821,
+          "status": "final"
+        }
+      ],
+      "claims": [],
+      "inbox_pending": 0
+    }
+  },
+  {
+    "operation": "xsm_ask",
+    "source": "isolated stdio fixture",
+    "result": {
+      "status": "pending",
+      "id": "question-single-timeout",
+      "purpose": "question",
+      "created_at": 1793676656.2840478,
+      "replies": [],
+      "final": false,
+      "final_outcome": null,
+      "recover_at": {
+        "cli": [
+          "xsm",
+          "question-status",
+          "question-single-timeout"
+        ],
+        "mcp": {
+          "tool": "xsm_question_status",
+          "arguments": {
+            "id": "question-single-timeout"
+          }
+        }
+      },
+      "wait_end_reason": "timeout",
+      "capabilities": {
+        "attachments": true,
+        "wake_control": true,
+        "priority": {
+          "claude": [
+            "next",
+            "now"
+          ],
+          "codex": [
+            "next"
+          ]
+        }
+      },
+      "wake": "never",
+      "send_evidence": {
+        "status": "stored",
+        "reason": "strict FYI stored for the next natural consumer boundary",
+        "id": "question-single-timeout",
+        "to": "conformance-7ded6373@None",
+        "runtime_reached": false,
+        "evidence": {
+          "accepted": true,
+          "wake": false,
+          "stored": true
+        }
+      },
+      "delivery_evidence": {
+        "steps": {
+          "accepted": {
+            "ok": true,
+            "t": 1793676656.311019
+          },
+          "wake": {
+            "ok": false,
+            "t": 1793676656.312054,
+            "detail": "strict no-wake: transport not attempted"
+          },
+          "stored": {
+            "ok": true,
+            "t": 1793676656.3096378
+          }
+        },
+        "runtime_reached": false,
+        "digest": "6a10fb7335909eb8d1f85b7eefd3239f1c73606ba528af830200eaa4933e5b6e",
+        "req_version": 1,
+        "legacy": false,
+        "verified": true,
+        "upgraded_from_legacy": false,
+        "acknowledged": false,
+        "handoff_status": "pending"
+      },
+      "handshake": "not-started",
+      "wait_budget": {
+        "requested": 0.0,
+        "effective": 0.0,
+        "cap": 60
+      },
+      "claims": [],
+      "inbox_pending": 0
+    }
+  },
+  {
+    "operation": "xsm_connect",
+    "source": "isolated stdio fixture",
+    "result": {
+      "status": "pending",
+      "id": "2c04b3d094ba4124",
+      "purpose": "handshake",
+      "created_at": 1793676656.4482088,
+      "replies": [],
+      "final": false,
+      "final_outcome": null,
+      "recover_at": {
+        "cli": [
+          "xsm",
+          "question-status",
+          "2c04b3d094ba4124"
+        ],
+        "mcp": {
+          "tool": "xsm_question_status",
+          "arguments": {
+            "id": "2c04b3d094ba4124"
+          }
+        }
+      },
+      "wait_end_reason": "timeout",
+      "capabilities": {
+        "attachments": true,
+        "wake_control": true,
+        "priority": {
+          "claude": [
+            "next",
+            "now"
+          ],
+          "codex": [
+            "next"
+          ]
+        }
+      },
+      "wake": "transport_policy",
+      "send_evidence": {
+        "status": "stored",
+        "reason": "protocol participant inbox; awaiting actual consumption",
+        "id": "2c04b3d094ba4124",
+        "to": "conformance-7ded6373@None",
+        "runtime_reached": false,
+        "evidence": {
+          "accepted": true,
+          "queued": false,
+          "wake": false,
+          "stored": true
+        }
+      },
+      "delivery_evidence": {
+        "steps": {
+          "accepted": {
+            "ok": true,
+            "t": 1793676656.4750159
+          },
+          "queued": {
+            "ok": false,
+            "t": 1793676656.477238,
+            "detail": "protocol inbox stored; native queue acceptance not observed"
+          },
+          "wake": {
+            "ok": false,
+            "t": 1793676656.477576,
+            "detail": "participant notification pending"
+          },
+          "stored": {
+            "ok": true,
+            "t": 1793676656.473622
+          }
+        },
+        "runtime_reached": false,
+        "digest": "46af09932a56f064bbaea4c541bde6341a2cf695730150b4dffb325f1c07db6d",
+        "req_version": 1,
+        "legacy": false,
+        "verified": true,
+        "upgraded_from_legacy": false,
+        "acknowledged": false,
+        "handoff_status": "pending"
+      },
+      "handshake": "pending",
+      "wait_budget": {
+        "requested": 0.0,
+        "effective": 0.0,
+        "cap": 60
+      },
+      "claims": [],
+      "inbox_pending": 0
+    }
+  },
+  {
+    "operation": "xsm_connect",
+    "source": "isolated stdio fixture",
+    "result": {
+      "status": "final",
+      "id": "2c04b3d094ba4124",
+      "purpose": "handshake",
+      "created_at": 1793676656.4482088,
+      "replies": [
+        {
+          "id": "question-handshake-reply",
+          "body": "Fixture handshake reply",
+          "outcome": "succeeded",
+          "sender": {
+            "runtime": "conformance",
+            "session_id": "7ded6373212b909632243e24aaa2777db1ab1e3fecb4980337353f3589f20a36",
+            "ref": "2ceabb",
+            "name": "conformance-7ded6373",
+            "alias": null,
+            "home_id": "30ca079fb00e18d9dbc00829f164c8a12d35b232891fce1a6bf76f0f9c43887b"
+          },
+          "receiver": {
+            "runtime": "conformance",
+            "session_id": "e8ad5a1e645111fa86d13bf6747205c181a75a11c7321b7d381f4a4a015eaec3",
+            "ref": "b44fd2",
+            "name": "conformance-e8ad5a1e",
+            "alias": null,
+            "home_id": "8a758374794c51635b7bec2ddb952b7240576c19db9b013b8c0d900706b1deb5"
+          },
+          "received_at": 1793676656.660636
+        }
+      ],
+      "final": true,
+      "final_outcome": "succeeded",
+      "recover_at": {
+        "cli": [
+          "xsm",
+          "question-status",
+          "2c04b3d094ba4124"
+        ],
+        "mcp": {
+          "tool": "xsm_question_status",
+          "arguments": {
+            "id": "2c04b3d094ba4124"
+          }
+        }
+      },
+      "wait_end_reason": "reply",
+      "capabilities": {
+        "attachments": true,
+        "wake_control": true,
+        "priority": {
+          "claude": [
+            "next",
+            "now"
+          ],
+          "codex": [
+            "next"
+          ]
+        }
+      },
+      "wake": "transport_policy",
+      "send_evidence": {
+        "status": "stored",
+        "reason": "protocol participant inbox; awaiting actual consumption",
+        "id": "2c04b3d094ba4124",
+        "to": "conformance-7ded6373@None",
+        "runtime_reached": false,
+        "evidence": {
+          "accepted": true,
+          "queued": false,
+          "wake": false,
+          "stored": true
+        }
+      },
+      "delivery_evidence": {
+        "steps": {
+          "accepted": {
+            "ok": true,
+            "t": 1793676656.4750159
+          },
+          "queued": {
+            "ok": false,
+            "t": 1793676656.477238,
+            "detail": "protocol inbox stored; native queue acceptance not observed"
+          },
+          "wake": {
+            "ok": false,
+            "t": 1793676656.477576,
+            "detail": "participant notification pending"
+          },
+          "hook_taken": {
+            "ok": true,
+            "t": 1793676656.54685,
+            "detail": "delivered"
+          },
+          "stored": {
+            "ok": true,
+            "t": 1793676656.473622
+          },
+          "claimed": {
+            "ok": true,
+            "t": 1793676656.49359
+          },
+          "handoff": {
+            "ok": true,
+            "t": 1793676656.5257092
+          },
+          "ack": {
+            "ok": true,
+            "t": 1793676656.545687
+          }
+        },
+        "runtime_reached": true,
+        "digest": "46af09932a56f064bbaea4c541bde6341a2cf695730150b4dffb325f1c07db6d",
+        "req_version": 1,
+        "legacy": false,
+        "verified": true,
+        "upgraded_from_legacy": false,
+        "acknowledged": true,
+        "handoff_status": "acknowledged"
+      },
+      "handshake": "completed",
+      "wait_budget": {
+        "requested": 0.0,
+        "effective": 0.0,
+        "cap": 60
+      },
+      "claims": [
+        {
+          "id": "question-handshake-reply",
+          "token": "050b361ca85047999d952cdcd0498b4c",
+          "owner": {
+            "type": "native",
+            "id": "protocol:conformance:e8ad5a1e645111fa86d13bf6747205c181a75a11c7321b7d381f4a4a015eaec3"
+          },
+          "generation": "e9840d81ff674d62a2fe5ae8ed709dae",
+          "digest": "a1dccfdf9ea3d512cbdce0b3efe19afba88c10bceb70b65b99b018c41b57f0dc"
+        }
+      ],
+      "inbox_pending": 0
+    }
+  },
+  {
+    "definition": "qNetworkDelivery",
+    "source": "local Gateway fixture with synthetic permission, not physical network",
+    "result": {
+      "id": "request-1",
+      "status": "prepared",
+      "acknowledged": false,
+      "fingerprint": "7d114a16a2d65d0eec2714931abac023c3909c4a27cfe40c9cf1f15a35f8ebf6",
+      "replies": [
+        {
+          "id": "question-file-reply",
+          "fingerprint": "b0120417c65bf27fa2a8a337fe12d40a7a4cc652554dbe2ae838ac32060f6b6d",
+          "status": "stored",
+          "reply_to": "request-1",
+          "outcome": "succeeded"
+        }
+      ],
+      "final_reply": {
+        "id": "question-file-reply",
+        "fingerprint": "b0120417c65bf27fa2a8a337fe12d40a7a4cc652554dbe2ae838ac32060f6b6d",
+        "status": "stored",
+        "reply_to": "request-1",
+        "outcome": "succeeded",
+        "packet": {
+          "attachments": [
+            {
+              "id": "f4aeaa7a56b448d0b94613b5745de89e",
+              "path": "manifest:f4aeaa7a56b448d0b94613b5745de89e",
+              "sha256": "c2092ead8dd3c36f8c24d0b0b3e2463a9b8756cf225dde107b7a52bdc72ad65b",
+              "size": 13,
+              "version": 1
+            }
+          ],
+          "body": "Fixture reverse file reply",
+          "file_packet": {
+            "manifest": {
+              "binding": {
+                "body_sha256": "3deb57e3352506609be160830cf88975e7c5f918bb0fb1230e2fc9da74c6aba4",
+                "request_id": "question-file-reply"
+              },
+              "created_at": 1793677568.774394,
+              "expires_at": 1794282368.774394,
+              "files": [
+                {
+                  "copy": true,
+                  "id": "12bf193a9cdf4ef0beafe4739e20c332",
+                  "input_source": "caller-inline",
+                  "name": "memo.txt",
+                  "original_name": "memo.txt",
+                  "sha256": "1357cbbda15fd1bd4092a215a68366bca2f93ff016610b5ff44e877bae490bfd",
+                  "size": 13,
+                  "source_version": null,
+                  "version": 1
+                }
+              ],
+              "id": "f4aeaa7a56b448d0b94613b5745de89e",
+              "owner": {
+                "home_id": "b79890faa7579a5d2a3c4458cda9c260e64db8577490c250fcf00e8941876382",
+                "runtime": "codex",
+                "session_id": "receiver-b"
+              },
+              "previous": null,
+              "schema": "xsm.files/v1",
+              "sha256": "c2092ead8dd3c36f8c24d0b0b3e2463a9b8756cf225dde107b7a52bdc72ad65b",
+              "size": 13,
+              "version": 1
+            },
+            "data": {
+              "12bf193a9cdf4ef0beafe4739e20c332": "Rml4dHVyZSBieXRlcw=="
+            }
+          },
+          "fingerprint": "b0120417c65bf27fa2a8a337fe12d40a7a4cc652554dbe2ae838ac32060f6b6d",
+          "id": "question-file-reply",
+          "kind": "reply",
+          "network_id": "fixture-network",
+          "outcome": "succeeded",
+          "priority": "next",
+          "receiver": {
+            "generation": "827040bba93910e3cada6aa8cfdf19454a240eb04fc95b61842d25d861cce1e5",
+            "home_id": "7d79461ba6427730f7c8aeed10c79427fb182a7be5cf0196ffff2076e4ef0fa1",
+            "machine": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "runtime": "codex",
+            "session_id": "sender-a"
+          },
+          "reply_binding": {
+            "fingerprint": "7d114a16a2d65d0eec2714931abac023c3909c4a27cfe40c9cf1f15a35f8ebf6",
+            "id": "request-1"
+          },
+          "reply_to": "request-1",
+          "scope": "network:fixture-network",
+          "sender": {
+            "generation": "ac4b3f78171dce91386e6bac0c041a65e8e6651c75466f1f8b03fa393c21d7bb",
+            "home_id": "b79890faa7579a5d2a3c4458cda9c260e64db8577490c250fcf00e8941876382",
+            "machine": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+            "runtime": "codex",
+            "session_id": "receiver-b"
+          },
+          "version": 1,
+          "wake": true
+        }
+      }
+    }
+  },
+  {
+    "definition": "qNetworkDelivery",
+    "source": "local Gateway fixture with synthetic permission, not physical network",
+    "result": {
+      "id": "request-1",
+      "status": "queued",
+      "stored": true,
+      "handoff_status": "pending",
+      "delivery_state": "pending",
+      "route": "mcp-inbox",
+      "acknowledged": false,
+      "fingerprint": "7d114a16a2d65d0eec2714931abac023c3909c4a27cfe40c9cf1f15a35f8ebf6",
+      "replies": [
+        {
+          "id": "question-file-reply",
+          "fingerprint": "b0120417c65bf27fa2a8a337fe12d40a7a4cc652554dbe2ae838ac32060f6b6d",
+          "status": "prepared",
+          "reply_to": "request-1",
+          "outcome": "succeeded"
+        }
+      ],
+      "final_reply": {
+        "id": "question-file-reply",
+        "fingerprint": "b0120417c65bf27fa2a8a337fe12d40a7a4cc652554dbe2ae838ac32060f6b6d",
+        "status": "prepared",
+        "reply_to": "request-1",
+        "outcome": "succeeded",
+        "packet": {
+          "attachments": [
+            {
+              "id": "f4aeaa7a56b448d0b94613b5745de89e",
+              "path": "manifest:f4aeaa7a56b448d0b94613b5745de89e",
+              "sha256": "c2092ead8dd3c36f8c24d0b0b3e2463a9b8756cf225dde107b7a52bdc72ad65b",
+              "size": 13,
+              "version": 1
+            }
+          ],
+          "body": "Fixture reverse file reply",
+          "file_packet": {
+            "manifest": {
+              "binding": {
+                "body_sha256": "3deb57e3352506609be160830cf88975e7c5f918bb0fb1230e2fc9da74c6aba4",
+                "request_id": "question-file-reply"
+              },
+              "created_at": 1793677568.774394,
+              "expires_at": 1794282368.774394,
+              "files": [
+                {
+                  "copy": true,
+                  "id": "12bf193a9cdf4ef0beafe4739e20c332",
+                  "input_source": "caller-inline",
+                  "name": "memo.txt",
+                  "original_name": "memo.txt",
+                  "sha256": "1357cbbda15fd1bd4092a215a68366bca2f93ff016610b5ff44e877bae490bfd",
+                  "size": 13,
+                  "source_version": null,
+                  "version": 1
+                }
+              ],
+              "id": "f4aeaa7a56b448d0b94613b5745de89e",
+              "owner": {
+                "home_id": "b79890faa7579a5d2a3c4458cda9c260e64db8577490c250fcf00e8941876382",
+                "runtime": "codex",
+                "session_id": "receiver-b"
+              },
+              "previous": null,
+              "schema": "xsm.files/v1",
+              "sha256": "c2092ead8dd3c36f8c24d0b0b3e2463a9b8756cf225dde107b7a52bdc72ad65b",
+              "size": 13,
+              "version": 1
+            },
+            "data": {
+              "12bf193a9cdf4ef0beafe4739e20c332": "Rml4dHVyZSBieXRlcw=="
+            }
+          },
+          "fingerprint": "b0120417c65bf27fa2a8a337fe12d40a7a4cc652554dbe2ae838ac32060f6b6d",
+          "id": "question-file-reply",
+          "kind": "reply",
+          "network_id": "fixture-network",
+          "outcome": "succeeded",
+          "priority": "next",
+          "receiver": {
+            "generation": "827040bba93910e3cada6aa8cfdf19454a240eb04fc95b61842d25d861cce1e5",
+            "home_id": "7d79461ba6427730f7c8aeed10c79427fb182a7be5cf0196ffff2076e4ef0fa1",
+            "machine": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "runtime": "codex",
+            "session_id": "sender-a"
+          },
+          "reply_binding": {
+            "fingerprint": "7d114a16a2d65d0eec2714931abac023c3909c4a27cfe40c9cf1f15a35f8ebf6",
+            "id": "request-1"
+          },
+          "reply_to": "request-1",
+          "scope": "network:fixture-network",
+          "sender": {
+            "generation": "ac4b3f78171dce91386e6bac0c041a65e8e6651c75466f1f8b03fa393c21d7bb",
+            "home_id": "b79890faa7579a5d2a3c4458cda9c260e64db8577490c250fcf00e8941876382",
+            "machine": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+            "runtime": "codex",
+            "session_id": "receiver-b"
+          },
+          "version": 1,
+          "wake": true
+        }
+      }
+    }
+  },
+  {
+    "definition": "qNetworkDelivery",
+    "source": "local Gateway fixture with synthetic permission, not physical network",
+    "result": {
+      "status": "not-found"
+    }
+  },
+  {
+    "operation": "xsm_connect",
+    "source": "synthetic selection structure",
+    "result": {
+      "status": "selection-required",
+      "reason": "fixture exact user selection missing",
+      "target": "fixture-ref",
+      "handshake": "not-started",
+      "claims": [],
+      "inbox_pending": 0
+    }
+  },
+  {
+    "operation": "xsm_connect",
+    "source": "synthetic provisional caller refusal",
+    "result": {
+      "status": "refused",
+      "reason": "fixture caller not exact",
+      "claims": [],
+      "inbox_pending": 0
+    }
+  },
+  {
+    "operation": "xsm_question_status",
+    "source": "synthetic interrupted send-claim recovery",
+    "result": {
+      "status": "pending",
+      "id": "question-single-timeout",
+      "purpose": "question",
+      "created_at": 1793676656.2840478,
+      "replies": [],
+      "final": false,
+      "final_outcome": null,
+      "recover_at": {
+        "cli": [
+          "xsm",
+          "question-status",
+          "question-single-timeout"
+        ],
+        "mcp": {
+          "tool": "xsm_question_status",
+          "arguments": {
+            "id": "question-single-timeout"
+          }
+        }
+      },
+      "wait_end_reason": "timeout",
+      "capabilities": {
+        "attachments": true,
+        "wake_control": true,
+        "priority": {
+          "claude": [
+            "next",
+            "now"
+          ],
+          "codex": [
+            "next"
+          ]
+        }
+      },
+      "wake": "never",
+      "send_evidence": {
+        "status": "unknown",
+        "reason": "send claimed; not retried"
+      },
+      "delivery_evidence": {
+        "steps": {
+          "accepted": {
+            "ok": true,
+            "t": 1793676656.311019
+          },
+          "wake": {
+            "ok": false,
+            "t": 1793676656.312054,
+            "detail": "strict no-wake: transport not attempted"
+          },
+          "stored": {
+            "ok": true,
+            "t": 1793676656.3096378
+          }
+        },
+        "runtime_reached": false,
+        "digest": "6a10fb7335909eb8d1f85b7eefd3239f1c73606ba528af830200eaa4933e5b6e",
+        "req_version": 1,
+        "legacy": false,
+        "verified": true,
+        "upgraded_from_legacy": false,
+        "acknowledged": false,
+        "handoff_status": "pending"
+      },
+      "handshake": "not-started",
+      "wait_budget": {
+        "requested": 0.0,
+        "effective": 0.0,
+        "cap": 60
+      },
+      "claims": [],
+      "inbox_pending": 0
+    }
+  },
+  {
+    "operation": "xsm_question_status",
+    "source": "synthetic group vanished before wait",
+    "result": {
+      "group": true,
+      "status": "not-found",
+      "id": "vanished-group",
+      "replies": [],
+      "recipients": [],
+      "wait_end_reason": "all-answered-or-ended",
+      "claims": [],
+      "inbox_pending": 0,
+      "wait_budget": {
+        "requested": 0,
+        "effective": 0,
+        "cap": 60
+      }
+    }
+  },
+  {
+    "operation": "xsm_question_status",
+    "source": "synthetic partial group with another recipient still pending",
+    "result": {
+      "status": "reply_received",
+      "id": "1de516a65f6d48c4",
+      "group": true,
+      "notes": [],
+      "answered": 1,
+      "asked": 2,
+      "skipped": 1,
+      "waiting_on": [
+        "second@fixture"
+      ],
+      "recipients": [
+        {
+          "status": "reply_received",
+          "id": "1de516a65f6d48c4-0",
+          "purpose": "question",
+          "created_at": 1793676655.709821,
+          "replies": [
+            {
+              "id": "question-partial-reply",
+              "body": "Fixture private progress without final outcome",
+              "outcome": null,
+              "sender": {
+                "runtime": "conformance",
+                "session_id": "7ded6373212b909632243e24aaa2777db1ab1e3fecb4980337353f3589f20a36",
+                "ref": "2ceabb",
+                "name": "conformance-7ded6373",
+                "alias": null,
+                "home_id": "30ca079fb00e18d9dbc00829f164c8a12d35b232891fce1a6bf76f0f9c43887b"
+              },
+              "receiver": {
+                "runtime": "conformance",
+                "session_id": "e8ad5a1e645111fa86d13bf6747205c181a75a11c7321b7d381f4a4a015eaec3",
+                "ref": "b44fd2",
+                "name": "conformance-e8ad5a1e",
+                "alias": null,
+                "home_id": "8a758374794c51635b7bec2ddb952b7240576c19db9b013b8c0d900706b1deb5"
+              },
+              "received_at": 1793676655.91234
+            }
+          ],
+          "final": false,
+          "final_outcome": null,
+          "recover_at": {
+            "cli": [
+              "xsm",
+              "question-status",
+              "1de516a65f6d48c4-0"
+            ],
+            "mcp": {
+              "tool": "xsm_question_status",
+              "arguments": {
+                "id": "1de516a65f6d48c4-0"
+              }
+            }
+          },
+          "wait_end_reason": null,
+          "capabilities": {
+            "attachments": true,
+            "wake_control": true,
+            "priority": {
+              "claude": [
+                "next",
+                "now"
+              ],
+              "codex": [
+                "next"
+              ]
+            }
+          },
+          "wake": "never",
+          "send_evidence": {
+            "status": "stored",
+            "reason": "strict FYI stored for the next natural consumer boundary",
+            "id": "1de516a65f6d48c4-0",
+            "to": "conformance-7ded6373@None",
+            "runtime_reached": false,
+            "evidence": {
+              "accepted": true,
+              "wake": false,
+              "stored": true
+            }
+          },
+          "delivery_evidence": {
+            "steps": {
+              "accepted": {
+                "ok": true,
+                "t": 1793676655.74078
+              },
+              "wake": {
+                "ok": false,
+                "t": 1793676655.741857,
+                "detail": "strict no-wake: transport not attempted"
+              },
+              "hook_taken": {
+                "ok": true,
+                "t": 1793676655.8393972,
+                "detail": "delivered"
+              },
+              "stored": {
+                "ok": true,
+                "t": 1793676655.7392871
+              },
+              "claimed": {
+                "ok": true,
+                "t": 1793676655.7738628
+              },
+              "handoff": {
+                "ok": true,
+                "t": 1793676655.813306
+              },
+              "ack": {
+                "ok": true,
+                "t": 1793676655.838238
+              }
+            },
+            "runtime_reached": true,
+            "digest": "927b87c657b0c4b77b180450bc34541052081a013f1c221d4bd4ae3a8a56f26e",
+            "req_version": 1,
+            "legacy": false,
+            "verified": true,
+            "upgraded_from_legacy": false,
+            "acknowledged": true,
+            "handoff_status": "acknowledged"
+          },
+          "handshake": "not-started",
+          "recipient": "conformance-7ded6373@None [2ceabb]",
+          "spec": "ref:2ceabb",
+          "claims": [
+            {
+              "id": "question-partial-reply",
+              "token": "6fffa94e3de6406b9153f3cef282c2ba",
+              "owner": {
+                "type": "native",
+                "id": "protocol:conformance:e8ad5a1e645111fa86d13bf6747205c181a75a11c7321b7d381f4a4a015eaec3"
+              },
+              "generation": "e9840d81ff674d62a2fe5ae8ed709dae",
+              "digest": "cd5b29d53dd1f3c622926dfb17a181f1c5c4b625088049a80620518b866c9eec"
+            }
+          ]
+        },
+        {
+          "recipient": "ref:000000",
+          "spec": "ref:000000",
+          "status": "skipped",
+          "reason": "no session with ref:000000"
+        },
+        {
+          "status": "pending",
+          "id": "1de516a65f6d48c4-2",
+          "purpose": "question",
+          "created_at": 1793676655.709821,
+          "replies": [],
+          "final": false,
+          "final_outcome": null,
+          "recover_at": {
+            "cli": [
+              "xsm",
+              "question-status",
+              "1de516a65f6d48c4-2"
+            ],
+            "mcp": {
+              "tool": "xsm_question_status",
+              "arguments": {
+                "id": "1de516a65f6d48c4-2"
+              }
+            }
+          },
+          "wait_end_reason": null,
+          "capabilities": {
+            "attachments": true,
+            "wake_control": true,
+            "priority": {
+              "claude": [
+                "next",
+                "now"
+              ],
+              "codex": [
+                "next"
+              ]
+            }
+          },
+          "wake": "never",
+          "send_evidence": {
+            "status": "stored",
+            "reason": "strict FYI stored for the next natural consumer boundary",
+            "id": "1de516a65f6d48c4-2",
+            "to": "second@fixture",
+            "runtime_reached": false,
+            "evidence": {
+              "accepted": true,
+              "wake": false,
+              "stored": true
+            }
+          },
+          "delivery_evidence": {
+            "steps": {
+              "accepted": {
+                "ok": true,
+                "t": 1793676655.74078
+              },
+              "wake": {
+                "ok": false,
+                "t": 1793676655.741857,
+                "detail": "strict no-wake: transport not attempted"
+              },
+              "stored": {
+                "ok": true,
+                "t": 1793676655.7392871
+              }
+            },
+            "runtime_reached": false,
+            "digest": "927b87c657b0c4b77b180450bc34541052081a013f1c221d4bd4ae3a8a56f26e",
+            "req_version": 1,
+            "legacy": false,
+            "verified": true,
+            "upgraded_from_legacy": false,
+            "acknowledged": false,
+            "handoff_status": "pending"
+          },
+          "handshake": "not-started",
+          "recipient": "second@fixture",
+          "spec": "ref:synthetic-second"
+        }
+      ],
+      "replies": [
+        {
+          "id": "question-partial-reply",
+          "body": "Fixture private progress without final outcome",
+          "outcome": null,
+          "sender": {
+            "runtime": "conformance",
+            "session_id": "7ded6373212b909632243e24aaa2777db1ab1e3fecb4980337353f3589f20a36",
+            "ref": "2ceabb",
+            "name": "conformance-7ded6373",
+            "alias": null,
+            "home_id": "30ca079fb00e18d9dbc00829f164c8a12d35b232891fce1a6bf76f0f9c43887b"
+          },
+          "receiver": {
+            "runtime": "conformance",
+            "session_id": "e8ad5a1e645111fa86d13bf6747205c181a75a11c7321b7d381f4a4a015eaec3",
+            "ref": "b44fd2",
+            "name": "conformance-e8ad5a1e",
+            "alias": null,
+            "home_id": "8a758374794c51635b7bec2ddb952b7240576c19db9b013b8c0d900706b1deb5"
+          },
+          "received_at": 1793676655.91234,
+          "request_id": "1de516a65f6d48c4-0",
+          "recipient": "conformance-7ded6373@None [2ceabb]"
+        }
+      ],
+      "recover_at": {
+        "cli": [
+          "xsm",
+          "question-status",
+          "1de516a65f6d48c4"
+        ],
+        "mcp": {
+          "tool": "xsm_question_status",
+          "arguments": {
+            "id": "1de516a65f6d48c4"
+          }
+        }
+      },
+      "wait_end_reason": "all-answered-or-ended",
+      "claims": [
+        {
+          "id": "question-partial-reply",
+          "token": "6fffa94e3de6406b9153f3cef282c2ba",
+          "owner": {
+            "type": "native",
+            "id": "protocol:conformance:e8ad5a1e645111fa86d13bf6747205c181a75a11c7321b7d381f4a4a015eaec3"
+          },
+          "generation": "e9840d81ff674d62a2fe5ae8ed709dae",
+          "digest": "cd5b29d53dd1f3c622926dfb17a181f1c5c4b625088049a80620518b866c9eec"
+        }
+      ],
+      "inbox_pending": 0,
+      "wait_budget": {
+        "requested": 0.0,
+        "effective": 0.0,
+        "cap": 60
+      }
+    }
+  },
+  {
+    "definition": "qNetworkDelivery",
+    "source": "synthetic unavailable cached payload; metadata remains",
+    "result": {
+      "id": "request-1",
+      "status": "prepared",
+      "acknowledged": false,
+      "fingerprint": "7d114a16a2d65d0eec2714931abac023c3909c4a27cfe40c9cf1f15a35f8ebf6",
+      "replies": [
+        {
+          "id": "question-file-reply",
+          "fingerprint": "b0120417c65bf27fa2a8a337fe12d40a7a4cc652554dbe2ae838ac32060f6b6d",
+          "status": "stored",
+          "reply_to": "request-1",
+          "outcome": "succeeded"
+        }
+      ],
+      "final_reply": {
+        "id": "question-file-reply",
+        "fingerprint": "b0120417c65bf27fa2a8a337fe12d40a7a4cc652554dbe2ae838ac32060f6b6d",
+        "status": "stored",
+        "reply_to": "request-1",
+        "outcome": "succeeded",
+        "payload_available": false,
+        "payload_error": "file-payload-unavailable"
+      }
+    }
+  },
+  {
+    "operation": "xsm_connect",
+    "source": "synthetic declined cached answer with no active claim",
+    "result": {
+      "status": "final",
+      "id": "2c04b3d094ba4124",
+      "purpose": "handshake",
+      "created_at": 1793676656.4482088,
+      "replies": [
+        {
+          "id": "question-handshake-reply",
+          "body": "Synthetic declined answer",
+          "outcome": "failed",
+          "sender": {
+            "runtime": "conformance",
+            "session_id": "7ded6373212b909632243e24aaa2777db1ab1e3fecb4980337353f3589f20a36",
+            "ref": "2ceabb",
+            "name": "conformance-7ded6373",
+            "alias": null,
+            "home_id": "30ca079fb00e18d9dbc00829f164c8a12d35b232891fce1a6bf76f0f9c43887b"
+          },
+          "receiver": {
+            "runtime": "conformance",
+            "session_id": "e8ad5a1e645111fa86d13bf6747205c181a75a11c7321b7d381f4a4a015eaec3",
+            "ref": "b44fd2",
+            "name": "conformance-e8ad5a1e",
+            "alias": null,
+            "home_id": "8a758374794c51635b7bec2ddb952b7240576c19db9b013b8c0d900706b1deb5"
+          },
+          "received_at": 1793676656.660636
+        }
+      ],
+      "final": true,
+      "final_outcome": "failed",
+      "recover_at": {
+        "cli": [
+          "xsm",
+          "question-status",
+          "2c04b3d094ba4124"
+        ],
+        "mcp": {
+          "tool": "xsm_question_status",
+          "arguments": {
+            "id": "2c04b3d094ba4124"
+          }
+        }
+      },
+      "wait_end_reason": "reply",
+      "capabilities": {
+        "attachments": true,
+        "wake_control": true,
+        "priority": {
+          "claude": [
+            "next",
+            "now"
+          ],
+          "codex": [
+            "next"
+          ]
+        }
+      },
+      "wake": "transport_policy",
+      "send_evidence": {
+        "status": "stored",
+        "reason": "protocol participant inbox; awaiting actual consumption",
+        "id": "2c04b3d094ba4124",
+        "to": "conformance-7ded6373@None",
+        "runtime_reached": false,
+        "evidence": {
+          "accepted": true,
+          "queued": false,
+          "wake": false,
+          "stored": true
+        }
+      },
+      "delivery_evidence": {
+        "steps": {
+          "accepted": {
+            "ok": true,
+            "t": 1793676656.4750159
+          },
+          "queued": {
+            "ok": false,
+            "t": 1793676656.477238,
+            "detail": "protocol inbox stored; native queue acceptance not observed"
+          },
+          "wake": {
+            "ok": false,
+            "t": 1793676656.477576,
+            "detail": "participant notification pending"
+          },
+          "hook_taken": {
+            "ok": true,
+            "t": 1793676656.54685,
+            "detail": "delivered"
+          },
+          "stored": {
+            "ok": true,
+            "t": 1793676656.473622
+          },
+          "claimed": {
+            "ok": true,
+            "t": 1793676656.49359
+          },
+          "handoff": {
+            "ok": true,
+            "t": 1793676656.5257092
+          },
+          "ack": {
+            "ok": true,
+            "t": 1793676656.545687
+          }
+        },
+        "runtime_reached": true,
+        "digest": "46af09932a56f064bbaea4c541bde6341a2cf695730150b4dffb325f1c07db6d",
+        "req_version": 1,
+        "legacy": false,
+        "verified": true,
+        "upgraded_from_legacy": false,
+        "acknowledged": true,
+        "handoff_status": "acknowledged"
+      },
+      "handshake": "declined",
+      "wait_budget": {
+        "requested": 0.0,
+        "effective": 0.0,
+        "cap": 60
+      },
+      "claims": [],
+      "inbox_pending": 0
+    }
+  },
+  {
+    "operation": "xsm_ask",
+    "source": "synthetic owned group with every recipient skipped",
+    "result": {
+      "status": "refused",
+      "id": "1de516a65f6d48c4",
+      "group": true,
+      "notes": [],
+      "answered": 0,
+      "asked": 0,
+      "skipped": 1,
+      "waiting_on": [],
+      "recipients": [
+        {
+          "recipient": "ref:000000",
+          "spec": "ref:000000",
+          "status": "skipped",
+          "reason": "no session with ref:000000"
+        }
+      ],
+      "replies": [],
+      "recover_at": {
+        "cli": [
+          "xsm",
+          "question-status",
+          "1de516a65f6d48c4"
+        ],
+        "mcp": {
+          "tool": "xsm_question_status",
+          "arguments": {
+            "id": "1de516a65f6d48c4"
+          }
+        }
+      },
+      "wait_end_reason": "all-answered-or-ended",
+      "claims": [],
+      "inbox_pending": 0,
+      "wait_budget": {
+        "requested": 0.0,
+        "effective": 0.0,
+        "cap": 60
+      }
+    }
+  }
+]

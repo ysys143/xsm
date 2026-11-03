@@ -106,7 +106,8 @@ runtime 도달로 오인하는 등 wire 결함3종을 검출했다. ACK 후 rese
 통과했으며 격리 VM 종료를 확인했다.
 
 [결과 계약 범위 전수표](result-contract-coverage.md)는 공개22개 operation 중
-domain schema8개(그중 team/board는 일부 action)와 미정의14개를 구분한다.
+domain schema가 있는 operation11개(그중 team/board는 일부 action)와
+미정의11개를 구분한다.
 이는 완료율이나 native 지원률이 아니다.
 
 ## 핵심 검사 적합성 묶음 분리 — 2026-11-03
@@ -129,6 +130,14 @@ Public questions suite32개와 frame42개를 확인했다. 실패한 재현/시�
 표본도 보존했다. Mac core881개는91.310초에 통과했다. Ask/status/connect의
 normative 결과 schema는 계속 미완이다. 고정2ad7a23의 Linux core881개도
 3.11에서83.346초,3.14에서104.917초에 통과했고 VM 종료를 확인했다.
+
+## 질문·회신 결과 계약 — 2026-11-03
+
+[질문 계약 검증](question-contract.md)은 ask/status/connect의 단일/그룹/목록/
+선택 거부와 원격 Gateway·file 증거를 정의한다. 실제 stdio42개 frame, 예제22개와
+거부20개를 확인했다. Private 경로 필드 금지 및 집계 결속을 약화한 변이3개도
+검출했다. Mac core881개는90.946초에 통과했다. 구조와 내부 결속의 검증이며
+실제 원격/사용자 승인/native 지원 인증은 별도다.
 
 ## 단계별 판정
 
