@@ -14,7 +14,8 @@ Request definitions: [envelope contract and examples](request-contract.md).
 Operation inputs: [structural catalog and transport restrictions](operations-contract.md).
 Output definitions: [responses, notifications and observed validation](output-contract.md).
 Team and board query projections: [team results](team-result.schema.json),
-[board results](board-result.schema.json); public `collaboration` suite and
+[board results](board-result.schema.json),
+[document results](doc-result.schema.json); public `collaboration`/`documents` suites and
 semantic limits are described in the output contract.
 Explicit consumption: [ACK results, idempotence and batch recovery](ack-contract.md).
 Owned native execution: [provider admission, pre-turn binding and recovery](native-workers.md).

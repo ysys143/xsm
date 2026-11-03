@@ -87,6 +87,23 @@ class ExternalConformanceTest(unittest.TestCase):
         self.assertIsNone(result['activeCheck'])
         self.assertIn('FileNotFoundError', result['error'])
 
+    def test_actual_server_document_contract(self):
+        result = checker.run(self.delivery_candidate('none'), suite='documents', capture=True)
+        self.assertEqual(result['status'], 'passed', result)
+        self.assertEqual(len(result['checks']), 28)
+        actions = {row['action'] for row in result['observations'] if row.get('operation') == 'xsm_doc'}
+        self.assertEqual(actions, {'add', 'show', 'log', 'leaves', 'next', 'render'})
+
+    def test_document_wip_hiding_a_candidate_is_detected(self):
+        result = checker.run(self.delivery_candidate('doc-wip-hides-candidate'), suite='documents')
+        self.assertEqual(result['status'], 'failed', result)
+        self.assertEqual(result['activeCheck'], 'wip declaration neither hides nor becomes candidate')
+
+    def test_document_limit_changing_total_is_detected(self):
+        result = checker.run(self.delivery_candidate('doc-limit-changes-total'), suite='documents')
+        self.assertEqual(result['status'], 'failed', result)
+        self.assertEqual(result['activeCheck'], 'document next limit preserves total and prefix')
+
     def test_actual_server_collaboration_contract(self):
         result = checker.run(self.delivery_candidate('none'), suite='collaboration', capture=True)
         self.assertEqual(result['status'], 'passed', result)

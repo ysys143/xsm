@@ -202,3 +202,35 @@ answer receipt alone creates no board decision and the explicit retry creates
 a decision-linked human node. Run it with `--capture`, then pass its report to
 the schema checker as shown above. It is a server contract fixture, not a real
 person, model, native UI, remote board sync or messenger certification.
+
+## Document results
+
+For every `xsm_doc` action, select the result definition using `x-actionResults`
+in [doc-result.schema.json](doc-result.schema.json). `add`/`show` return `node`,
+`log`/`leaves` return a `nodes` array, `render` returns text and a numeric node
+count, and `next` returns the candidate view with explanatory text. The request
+action is required to distinguish these results; no action tag is added to the
+wire response. [Examples](doc-result-examples.json) cover all six actions and
+an empty next result with partial inbox diagnostics.
+
+The node definition matches the board node definition; the development checker
+rejects divergence. Unknown string-valued persisted header metadata is retained.
+Structural validation is not a digest check, parent-existence check, author
+attestation or proof that a node was endorsed by a human. Human endorsement is
+the separate `xsm_doc_endorse` operation and is outside this result schema.
+
+`next` explicitly reports `order: "created"` and `assigns: false`. The current
+order follows stored timestamp and ID, with stable arbitrary ID ordering for
+timestamps in the same second. A limit restricts the displayed prefix, while
+`total` remains the number before limiting. Reasons are `open end` and/or
+`unverified hypothesis`. `wip` lists display authors who declared work on that
+candidate; it is not a lease, assignment or reason to hide it. A wip declaration
+is not itself a candidate. Candidate total/prefix and graph relationships need
+runtime checks beyond the JSON structure.
+
+Run the public stdio checker with `--suite documents --capture` and feed its
+report to the schema checker. Its 28 checks cover lifecycle plus add/show/log,
+leaves, wip/next, limits, rendering, and refused unknown parents/nodes. The
+candidate is an isolated public protocol server; native runtimes, UI, models,
+remote sync, filesystem authorization and actual human endorsement need their
+own validation. These query/write checks do not ACK inbox claims.

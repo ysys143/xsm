@@ -59,6 +59,11 @@ try:
             params.get('arguments', {}).pop('message_ids', None)
         reply = exchange(request)
         if request['method'] == 'operation.call':
+            if params.get('operation') == 'xsm_doc' and params.get('arguments', {}).get('action') == 'next' and 'result' in reply:
+                if fault == 'doc-wip-hides-candidate':
+                    reply['result']['candidates'] = [c for c in reply['result']['candidates'] if not c.get('wip')]
+                if fault == 'doc-limit-changes-total':
+                    reply['result']['total'] = len(reply['result']['candidates'])
             if params.get('operation') == 'xsm_board' and 'result' in reply:
                 if fault == 'board-lost-parent' and len(reply['result'].get('nodes', [])) == 2:
                     for node in reply['result']['nodes']:

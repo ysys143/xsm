@@ -272,6 +272,44 @@ def messaging(peer, sender, receiver, reopen, check, equal, events=False):
               tokens=[pending["claims"][0]["token"]])["acked"], event["params"]["ids"]))
 
 
+def documents(peer, owner, check, equal):
+    def operation(action, error=None, **arguments):
+        return peer.call('operation.call', {'session': owner['session'], 'operation': 'xsm_doc',
+                         'arguments': dict(doc='BOARD.md', action=action, **arguments)}, error=error)
+    check('empty document log', lambda: equal(operation('log')['nodes'], []))
+    first = operation('add', text='Fixture report: 한글 preserved', tags=['report'])['node']
+    check('document add binds conversation author', lambda: equal(first['author_kind'] == 'agent' and
+          first['body'] == 'Fixture report: 한글 preserved' and first['parents'] == [] and
+          '[' + owner['ref'] + ']' in first['author'], True))
+    check('document show returns immutable node', lambda: equal(operation('show', node=first['id'])['node'], first))
+    hypothesis = operation('add', text='Fixture hypothesis', tags=['hypothesis'], parents=[first['id']])['node']
+    logged = operation('log')['nodes']
+    check('document log preserves predecessor and contributions', lambda: equal(len(logged) == 2 and
+          {n['id'] for n in logged} == {first['id'], hypothesis['id']} and
+          hypothesis['parents'] == [first['id']], True))
+    check('document leaves retain graph frontier', lambda: equal(
+          [n['id'] for n in operation('leaves')['nodes']], [hypothesis['id']]))
+    held = operation('add', text='Fixture working declaration', tags=['wip'], parents=[hypothesis['id']])['node']
+    candidates = operation('next')
+    check('document next states order and no assignment', lambda: equal(candidates['doc'] == 'BOARD.md' and
+          candidates['order'] == 'created' and candidates['assigns'] is False and candidates['total'] == 1, True))
+    check('wip declaration neither hides nor becomes candidate', lambda: equal(candidates['candidates'], [{
+          'id': hypothesis['id'], 'tags': hypothesis['tags'], 'author': hypothesis['author'], 't': hypothesis['t'],
+          'why': ['unverified hypothesis'], 'wip': [held['author']]}]))
+    operation('add', text='Fixture independent contribution', tags=['insight'])
+    all_candidates = operation('next')
+    limited = operation('next', limit=1)
+    check('document next limit preserves total and prefix', lambda: equal(all_candidates['total'] == 2 and
+          limited['total'] == 2 and len(all_candidates['candidates']) == 2 and
+          limited['candidates'] == all_candidates['candidates'][:1], True))
+    rendered = operation('render')
+    check('document render reports complete node count', lambda: equal(rendered['nodes'] == 4 and
+          first['body'] in rendered['text'], True))
+    check('document rejects missing parent', lambda: operation('add', text='orphan', parents=['f' * 12], error=-32602))
+    check('refused parent creates no contribution', lambda: equal(len(operation('log')['nodes']), 4))
+    check('document rejects missing show node', lambda: operation('show', node='f' * 12, error=-32602))
+
+
 def collaboration(peer, params, check, equal):
     """Public query projections and synthetic host decision, never a human UI test."""
     owner = peer.call('session.open', dict(params, conversation='board-owner', capabilities=['user-decisions']))
@@ -495,6 +533,9 @@ def run(command, suite="lifecycle", capture=False):
             if suite == 'discovery':
                 result['scope'] = 'lifecycle and local public discovery; no physical remote, native UI or messenger certification'
                 discovery(b, reopened, resumed, check, equal)
+            if suite == 'documents':
+                result['scope'] = 'lifecycle and document graph operations; no native runtime, human endorsement or remote certification'
+                documents(b, reopened, check, equal)
             if suite == 'collaboration':
                 result['scope'] = 'lifecycle, team/board queries and synthetic host decision; no human or native UI certification'
                 collaboration(b, params, check, equal)
@@ -509,7 +550,7 @@ def run(command, suite="lifecycle", capture=False):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--capture", action="store_true", help="include isolated wire observations in the report")
-    parser.add_argument("--suite", choices=("lifecycle", "messaging", "events", "decisions", "uploads", "discovery", "collaboration"), default="lifecycle")
+    parser.add_argument("--suite", choices=("lifecycle", "messaging", "events", "decisions", "uploads", "discovery", "collaboration", "documents"), default="lifecycle")
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--command", nargs=argparse.REMAINDER, required=True)
     args = parser.parse_args()

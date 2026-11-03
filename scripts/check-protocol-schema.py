@@ -38,6 +38,8 @@ def output_contract(trace=None):
     Draft202012Validator.check_schema(team_schema)
     board_schema = json.loads((ROOT / 'docs/protocol/board-result.schema.json').read_text())
     Draft202012Validator.check_schema(board_schema)
+    doc_schema = json.loads((ROOT / 'docs/protocol/doc-result.schema.json').read_text())
+    Draft202012Validator.check_schema(doc_schema)
     inbox_observed = 0
     inbox_empty = dict(messages=[], claims=[], items=[], inbox_pending=0)
     inbox_file = dict(messages=['fixture'], claims=[dict(id='original', token='opaque-token',
@@ -74,6 +76,12 @@ def output_contract(trace=None):
                 file_validator.validate(frame['result'])
             if observation.get('operation') == 'xsm_ack':
                 ack_validator.validate(frame['result'])
+            if observation.get('operation') == 'xsm_doc':
+                action = observation.get('action')
+                if action not in doc_schema['x-actionResults']:
+                    raise ValueError('document observation lacks a declared action')
+                Draft202012Validator({'$ref': doc_schema['x-actionResults'][action],
+                                      '$defs': doc_schema['$defs']}).validate(frame['result'])
             if observation.get('operation') == 'xsm_board' and observation.get('action') in ('log', 'decisions'):
                 Draft202012Validator({'$ref': '#/$defs/' + observation['action'],
                                       '$defs': board_schema['$defs']}).validate(frame['result'])
@@ -135,6 +143,48 @@ def ack_contract():
             raise ValueError('invalid ACK result accepted: ' + repr(value))
     return dict(examples=len(examples), rejected=len(invalid),
                 scope='successful result structure; batch errors may follow earlier durable acknowledgements')
+
+
+def doc_contract():
+    schema = json.loads((ROOT / 'docs/protocol/doc-result.schema.json').read_text())
+    examples = json.loads((ROOT / 'docs/protocol/doc-result-examples.json').read_text())
+    Draft202012Validator.check_schema(schema)
+    board = json.loads((ROOT / 'docs/protocol/board-result.schema.json').read_text())
+    if schema['$defs']['node'] != board['$defs']['node']:
+        raise ValueError('document and board node structures differ')
+    inputs = json.loads((ROOT / 'docs/protocol/operations.schema.json').read_text())
+    actions = inputs['$defs']['xsm_doc']['properties']['action']['enum']
+    if set(schema['x-actionResults']) != set(actions) or {e['action'] for e in examples} != set(actions):
+        raise ValueError('document result action inventory differs from requests/examples')
+    validators = {action: Draft202012Validator({'$ref': ref, '$defs': schema['$defs']})
+                  for action, ref in schema['x-actionResults'].items()}
+    for example in examples:
+        validators[example['action']].validate(example['result'])
+    invalid = []
+    for index, path, value in (
+            (0, ['node', 'id'], 'not-a-node'),
+            (0, ['node', 'parents'], [None]),
+            (2, ['nodes'], 1),
+            (4, ['nodes'], True),
+            (4, ['text'], None),
+            (5, ['order'], 'ranked'),
+            (5, ['assigns'], True),
+            (5, ['total'], -1),
+            (5, ['candidates', 0, 'why'], ['assigned']),
+            (5, ['candidates', 0, 'wip'], True),
+            (5, ['candidates', 0, 'id'], 'a' * 12 + '\n'),
+            (6, ['inbox_pending'], True)):
+        bad = copy.deepcopy(examples[index]['result'])
+        target = bad
+        for part in path[:-1]:
+            target = target[part]
+        target[path[-1]] = value
+        invalid.append((examples[index]['action'], bad))
+    invalid.extend([('render', examples[2]['result']), ('log', examples[4]['result'])])
+    for action, value in invalid:
+        if validators[action].is_valid(value):
+            raise ValueError('invalid document result accepted: ' + repr(value))
+    return dict(actions=len(actions), examples=len(examples), rejected=len(invalid))
 
 
 def board_contract():
@@ -367,7 +417,7 @@ def run(trace=None):
                 validator='jsonschema', validatorVersion=importlib.metadata.version('jsonschema'),
                 scope='request and output structures; no full operation results or semantic certification',
                 output=output_contract(trace), operations=operations_contract(), files=files_contract(), ack=ack_contract(),
-                discovery=discovery_contract(), team=team_contract(), board=board_contract())
+                discovery=discovery_contract(), team=team_contract(), board=board_contract(), doc=doc_contract())
 
 
 if __name__ == '__main__':

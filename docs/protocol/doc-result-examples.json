@@ -1,0 +1,109 @@
+[
+  {
+    "action": "add",
+    "result": {
+      "node": {
+        "id": "aaaaaaaaaaaa",
+        "t": "2026-11-03T12:00:00+0900",
+        "author": "fixture@profile [ref]",
+        "author_kind": "agent",
+        "tags": [
+          "hypothesis"
+        ],
+        "parents": [],
+        "body": "Fixture hypothesis"
+      }
+    }
+  },
+  {
+    "action": "show",
+    "result": {
+      "node": {
+        "id": "aaaaaaaaaaaa",
+        "t": "2026-11-03T12:00:00+0900",
+        "author": "fixture@profile [ref]",
+        "author_kind": "agent",
+        "tags": [
+          "hypothesis"
+        ],
+        "parents": [],
+        "body": "Fixture hypothesis"
+      },
+      "inbox_pending": 0
+    }
+  },
+  {
+    "action": "log",
+    "result": {
+      "nodes": [
+        {
+          "id": "aaaaaaaaaaaa",
+          "t": "2026-11-03T12:00:00+0900",
+          "author": "fixture@profile [ref]",
+          "author_kind": "agent",
+          "tags": [
+            "hypothesis"
+          ],
+          "parents": [],
+          "body": "Fixture hypothesis"
+        }
+      ]
+    }
+  },
+  {
+    "action": "leaves",
+    "result": {
+      "nodes": []
+    }
+  },
+  {
+    "action": "render",
+    "result": {
+      "text": "Fixture rendered content",
+      "nodes": 1
+    }
+  },
+  {
+    "action": "next",
+    "result": {
+      "doc": "BOARD.md",
+      "order": "created",
+      "assigns": false,
+      "total": 1,
+      "candidates": [
+        {
+          "id": "aaaaaaaaaaaa",
+          "tags": [
+            "hypothesis"
+          ],
+          "author": "fixture@profile [ref]",
+          "t": "2026-11-03T12:00:00+0900",
+          "why": [
+            "open end",
+            "unverified hypothesis"
+          ],
+          "wip": [
+            "other@profile [ref]"
+          ]
+        }
+      ],
+      "text": "Fixture open work"
+    }
+  },
+  {
+    "action": "next",
+    "result": {
+      "doc": "BOARD.md",
+      "order": "created",
+      "assigns": false,
+      "total": 0,
+      "candidates": [],
+      "text": "nothing open",
+      "inbox_pending": null,
+      "inbox_pending_known": 0,
+      "inbox_pending_diagnostics": [
+        "pending-unavailable:OSError"
+      ]
+    }
+  }
+]

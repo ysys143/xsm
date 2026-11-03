@@ -1,0 +1,289 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:xsm:host-protocol:1:doc-result",
+  "title": "Successful xsm_doc results selected by request action",
+  "oneOf": [
+    {
+      "$ref": "#/$defs/nodeResult"
+    },
+    {
+      "$ref": "#/$defs/nodesResult"
+    },
+    {
+      "$ref": "#/$defs/renderResult"
+    },
+    {
+      "$ref": "#/$defs/nextResult"
+    }
+  ],
+  "x-actionResults": {
+    "add": "#/$defs/nodeResult",
+    "show": "#/$defs/nodeResult",
+    "log": "#/$defs/nodesResult",
+    "leaves": "#/$defs/nodesResult",
+    "render": "#/$defs/renderResult",
+    "next": "#/$defs/nextResult"
+  },
+  "$defs": {
+    "node": {
+      "type": "object",
+      "required": [
+        "id",
+        "t",
+        "author",
+        "author_kind",
+        "tags",
+        "parents",
+        "body"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{12}(?![\\s\\S])"
+        },
+        "t": {
+          "type": "string"
+        },
+        "author": {
+          "type": "string"
+        },
+        "author_kind": {
+          "type": "string"
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "parents": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{12}(?![\\s\\S])"
+          }
+        },
+        "body": {
+          "type": "string"
+        },
+        "approved": {
+          "type": "string"
+        },
+        "item": {
+          "type": "string"
+        },
+        "decision": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{12}(?![\\s\\S])"
+        }
+      },
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "nodeResult": {
+      "type": "object",
+      "required": [
+        "node"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "node": {
+          "$ref": "#/$defs/node"
+        },
+        "inbox_pending": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "inbox_notice": {
+          "type": "string"
+        },
+        "inbox_pending_known": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "inbox_pending_diagnostics": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "nodesResult": {
+      "type": "object",
+      "required": [
+        "nodes"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "nodes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/node"
+          }
+        },
+        "inbox_pending": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "inbox_notice": {
+          "type": "string"
+        },
+        "inbox_pending_known": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "inbox_pending_diagnostics": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "renderResult": {
+      "type": "object",
+      "required": [
+        "text",
+        "nodes"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "text": {
+          "type": "string"
+        },
+        "nodes": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "inbox_pending": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "inbox_notice": {
+          "type": "string"
+        },
+        "inbox_pending_known": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "inbox_pending_diagnostics": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "nextResult": {
+      "type": "object",
+      "required": [
+        "doc",
+        "order",
+        "assigns",
+        "total",
+        "candidates",
+        "text"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "doc": {
+          "type": "string"
+        },
+        "order": {
+          "const": "created"
+        },
+        "assigns": {
+          "const": false
+        },
+        "total": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "candidates": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "id",
+              "tags",
+              "author",
+              "t",
+              "why",
+              "wip"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{12}(?![\\s\\S])"
+              },
+              "tags": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "author": {
+                "type": "string"
+              },
+              "t": {
+                "type": "string"
+              },
+              "why": {
+                "type": "array",
+                "items": {
+                  "enum": [
+                    "open end",
+                    "unverified hypothesis"
+                  ]
+                },
+                "uniqueItems": true,
+                "minItems": 1
+              },
+              "wip": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "text": {
+          "type": "string"
+        },
+        "inbox_pending": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "inbox_notice": {
+          "type": "string"
+        },
+        "inbox_pending_known": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "inbox_pending_diagnostics": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

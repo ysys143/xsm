@@ -83,6 +83,14 @@ fixture이며 실제 사람·native UI 인증이 아니다. 팀/보드 조회의
 105.672초에 통과했고 VM 종료를 확인했다. 후속 스키마의 Linux 개발
 validator 실행으로 소급하지 않는다.
 
+## 문서 작업 공개 계약 — 2026-11-03
+
+[문서 계약 검증](doc-contract.md)에6개 xsm_doc action의 result schema와
+공개 documents suite를 기록했다. Stdio28개·프레임32개·예제7개 통과와
+거부14개를 확인했다. Wip 후보 은폐와 limit total 변조를 검사하며, 실제
+사람 endorsement나 native runtime 전체 행렬을 뜻하지 않는다. Mac core866개는
+103.779초에 통과했고 작성자의 실제 session ref 검사도 공개 경로에서 확인했다.
+
 ## 단계별 판정
 
 | 단계 | 상태 | 남은 조건 |
