@@ -50,6 +50,9 @@ Native-fourth는 제 scripted fixture가 실제 Tool Hub의 queries 대신 tool_
 request16개 guard, outer120초 제한을 추가했다. 성공 run에는 그 반복이 없다.
 
 원시는 `deliverables/protocol-foundation/hermes-natural-context/`다. Dependency
-설치/실패/해결·native source metadata와 package versions도 남겼다. Linux 실제
-hook 및 최신 전체 source는 후속 검증이다. Idle push/wake, busy/now, 실제 모델/UI,
+설치/실패/해결·native source metadata와 package versions도 남겼다. 고정 source
+e9f9e8c의 Linux 실제 hook도13개 checkpoint/6개 HTTP request로 통과했다.
+전체958개와 schema/v7 검사는 Python3.11에서85.194초,3.14에서108.427초로
+통과했다. 실행 보고서의 status=passed/startExit=0/stopExit=0을 확인했다.
+근거는 `hermes-natural-context-linux/result.json`이다. Idle push/wake, busy/now, 실제 모델/UI,
 다중 profile·메신저·원격/설치 전체 행렬과 원래 계획은 미완이다.

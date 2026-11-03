@@ -2881,3 +2881,15 @@ events/wake/retry/batch continuation을 끄는 명시적 옵션을 양쪽 SDK에
 58.475초를 통과했다. 실제 설치 plugin/AIAgent/local model0 provider13개 checkpoint/
 6HTTP request도 원문→native tool ACK→미재전달/unload를 확인했다. Import/CWD/fixture
 인수 오류와 반복3370개 원시도 보존했다. Linux/idle wake/실제 UI·모델 등 전체는 미완이다.
+
+고정e9f9e8c의 Linux 후속 실행은 실제 Hermes13개 checkpoint/6개 HTTP request와
+전체958개+schema/v7 검사를 통과했다(Python3.11 85.194초,3.14 108.427초).
+최종 보고서 status=passed/startExit=0/stopExit=0을 확인했다. 실제 모델/UI 증거는 아니다.
+
+## Hermes gateway target 조사 — 2026-11-03
+
+[Gateway target](hermes-gateway-target.md)은 실제 scheduler가 admission 전에
+True를 반환하고 route의 교체된 SID를 선택하는 경쟁을 재현했다. 실제 native
+local SQLite FIFO에서는 pinned SID 수락과 stale SID 거부, 명시적 bot author,
+receipt·동일 identity replay·다른 본문 충돌을 확인했다. 이 조사 결과는 native
+authority receipt 경로를 선택하는 근거이며 아직 SDK idle wake 연결 증거는 아니다.
