@@ -27,6 +27,8 @@
   재호출해야 적용한다. Pi/OpenCode native UI fixture는 통과했으며, 실제 사용자
   응답 검증과 Hermes/OpenClaw UI 연결은 미완이다.
   UI 능력이 없는 호스트와 네이티브 transcript 복구 대체는 `-32004`로 거부한다.
+  Python coordinator는 [명시적 UI 보류/해제](deferred-host-ui.md)를 지원하지만
+  Hermes native 질문 결속과 사람 UI 검증을 완료한 것은 아니다.
 - Python 3.9+ 클라이언트, 실행 가능한 Node 모듈과 TypeScript 타입,
   전송 fixture 및 실제 서버 subprocess 검사.
 - Pi/OpenCode native 연결·설치·UI fixture, Hermes native 도구·격리 설치·대화별 복구,

@@ -262,6 +262,106 @@ class HostCoordinationTest(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(shown, ["Choose"])
         self.assertEqual(self.errors, [])
 
+    async def test_deferred_question_returns_before_ui_and_requires_explicit_retry(self):
+        shown, reply = asyncio.Queue(), asyncio.Event()
+        async def present(event, _cancelled):
+            await shown.put(event)
+            await reply.wait()
+            return {'displayed':event['params']['question'],'source_id':event['params']['questionId'],'answer':'blue'}
+        host = await self.host(present=present)
+        args = {'question':'Deferred choice','options':['blue','green']}
+        for invalid in (0, None, 'false'):
+            with self.subTest(value=invalid), self.assertRaises(ValueError):
+                await host.call('xsm_decide', args, wait_for_decision=invalid)
+        result = await asyncio.wait_for(host.call('xsm_decide', args, wait_for_decision=False), 3)
+        event = await asyncio.wait_for(shown.get(), 3)
+        self.assertEqual(result['status'], 'waiting-for-user')
+        self.assertNotIn('challenge', result)
+        state = host.questions[result['question_id']]
+        self.assertEqual(state['waiters'], 0)
+        status = await host.call('xsm_decision_status', {'id':result['decision_id']})
+        self.assertEqual(status['status'], 'pending')
+        reply.set()
+        await asyncio.wait_for(asyncio.shield(state['done']), 3)
+        status = await host.call('xsm_decision_status', {'id':result['decision_id']})
+        self.assertEqual(status['status'], 'answered')
+        self.assertEqual(event['params']['questionId'], result['question_id'])
+        applied = await host.call('xsm_decide', args)
+        self.assertIn('your user answered: blue', str(applied))
+
+    async def test_deferred_ui_survives_normal_waiter_cancel_until_explicit_abandon(self):
+        shown = asyncio.Queue()
+        async def present(event, cancelled):
+            await shown.put(event)
+            await cancelled.wait()
+        host = await self.host(present=present)
+        args = {'question':'Deferred cancellation','options':['blue','green']}
+        result = await host.call('xsm_decide', args, wait_for_decision=False)
+        await asyncio.wait_for(shown.get(), 3)
+        waiter = asyncio.create_task(host.call('xsm_decide', args))
+        state = host.questions[result['question_id']]
+        async def registered():
+            while state['waiters'] != 1:
+                await asyncio.sleep(.001)
+        await asyncio.wait_for(registered(), 3)
+        waiter.cancel()
+        with self.assertRaises(asyncio.CancelledError):
+            await waiter
+        self.assertFalse(state['cancelled'].is_set())
+        with self.assertRaises(ValueError):
+            await host.abandon_deferred('foreign-question')
+        self.assertTrue(await host.abandon_deferred(result['question_id']))
+        self.assertFalse(await host.abandon_deferred(result['question_id']))
+        self.assertTrue(state['cancelled'].is_set())
+        status = await host.call('xsm_decision_status', {'id':result['decision_id']})
+        self.assertEqual(status['status'], 'pending')
+        self.assertIsNone(status['answer'])
+
+    async def test_cancelled_deferred_rpc_abandons_unowned_presentation(self):
+        shown, ready, release = asyncio.Event(), asyncio.Event(), asyncio.Event()
+        async def present(_event, cancelled):
+            shown.set()
+            await cancelled.wait()
+        host = await self.host(present=present)
+        original = host.client.operation_call
+        async def delayed(*args, **kwargs):
+            value = await original(*args, **kwargs)
+            if args[1] == 'xsm_decide':
+                ready.set()
+                await release.wait()
+            return value
+        host.client.operation_call = delayed
+        task = asyncio.create_task(host.call('xsm_decide', {'question':'Cancelled deferred RPC'}, wait_for_decision=False))
+        await asyncio.wait_for(ready.wait(), 3)
+        await asyncio.wait_for(shown.wait(), 3)
+        task.cancel(); release.set()
+        with self.assertRaises(asyncio.CancelledError):
+            await task
+        self.assertTrue(next(iter(host.questions.values()))['cancelled'].is_set())
+
+    async def test_deferred_abandon_intent_survives_callers_cancellation(self):
+        shown, entered, release = asyncio.Event(), asyncio.Event(), asyncio.Event()
+        async def present(_event, cancelled):
+            shown.set()
+            await cancelled.wait()
+        host = await self.host(present=present)
+        pending = await host.call('xsm_decide', {'question':'Release cancellation'}, wait_for_decision=False)
+        await asyncio.wait_for(shown.wait(), 3)
+        original = host._cancel_unused
+        async def paused(state):
+            entered.set()
+            await release.wait()
+            await original(state)
+        host._cancel_unused = paused
+        task = asyncio.create_task(host.abandon_deferred(pending['question_id']))
+        await asyncio.wait_for(entered.wait(), 3)
+        task.cancel()
+        with self.assertRaises(asyncio.CancelledError):
+            await task
+        release.set()
+        state = host.questions[pending['question_id']]
+        await asyncio.wait_for(state['cancelled'].wait(), 3)
+
     async def test_last_waiter_cancellation_does_not_log_a_shielded_future_error(self):
         loop = asyncio.get_running_loop()
         prior = loop.get_exception_handler()

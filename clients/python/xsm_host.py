@@ -119,7 +119,7 @@ class XsmHost:
 
     async def _cancel_unused(self, state):
         async with self.invoke_lock:
-            if state["waiters"] or state["done"].done() or self.closed:
+            if state["waiters"] or state.get("deferred") or state["done"].done() or self.closed:
                 return
             state["cancelled"].set()
             if state.get("task"):
@@ -180,9 +180,11 @@ class XsmHost:
                     self.delivery_task.cancel()
                 self._error(error)
 
-    async def call(self, operation, arguments=None):
+    async def call(self, operation, arguments=None, *, wait_for_decision=True):
         if self.closed or self.failure:
             raise self.failure or TransportError("host closed")
+        if type(wait_for_decision) is not bool:
+            raise ValueError("wait_for_decision must be a boolean")
         arguments = {} if arguments is None else arguments
         state, cancelled_state = None, None
         try:
@@ -201,6 +203,9 @@ class XsmHost:
                     if not result.get("question_id"):
                         raise TransportError("server did not identify its host question")
                     state = self._question(result["question_id"])
+                    if not wait_for_decision:
+                        state["deferred"] = True
+                        return result
                     state["waiters"] += 1
         except asyncio.CancelledError:
             if cancelled_state:
@@ -218,6 +223,21 @@ class XsmHost:
             if isinstance(result, dict) and result.get("status") == "waiting-for-user":
                 raise RuntimeError("operation still waiting; inspect its decision status")
         return result
+
+    async def abandon_deferred(self, question_id):
+        """Release this host's external UI hold, without revoking a recorded answer."""
+        if self.closed or self.failure:
+            raise self.failure or TransportError("host closed")
+        if not isinstance(question_id, str) or question_id not in self.questions:
+            raise ValueError("unknown host question")
+        state = self.questions[question_id]
+        held = state.pop("deferred", False)
+        if held:
+            task = asyncio.create_task(self._cancel_unused(state))
+            task.add_done_callback(lambda future: future.exception() if not future.cancelled() else None)
+            state["release"] = task
+            await asyncio.shield(task)
+        return held
 
     async def _deliver_inbox(self, wake, after_id=None):
         async with self.delivery_lock:
@@ -325,6 +345,8 @@ class XsmHost:
                 tasks.append(state["task"])
             if state.get("abandon"):
                 tasks.append(state["abandon"])
+            if state.get("release"):
+                tasks.append(state["release"])
             if not state["done"].done():
                 state["done"].set_exception(TransportError("host closed"))
         if self.delivery_task:

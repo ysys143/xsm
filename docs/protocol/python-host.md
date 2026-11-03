@@ -41,6 +41,30 @@ UI는 async `present(event, cancelled)`를 제공한 경우에만 광고한다. 
 승인으로 취급하지 않는다. 취소는 대기자를 끝내며 이미 보낸 일반 작업을
 rollback한다는 뜻이 아니다.
 
+## Native 작업 경계 사이의 질문 보류
+
+`await host.call(operation, arguments, wait_for_decision=False)`는 실제 UI 답을
+기다려야 하는 경우 `waiting-for-user`와 decision_id/question_id를 바로 반환한다.
+이것은 Python coordinator의 옵션이며 operation arguments나 wire capability가
+아니다. Boolean만 허용한다. 기본값 True의 기존 대기/원 작업 재호출은 유지한다.
+`present`가 없거나 서버가 UI를 지원하지 않으면 이 옵션으로 권한을 우회할 수 없다.
+
+보류 중에도 기존 `present(event, cancelled)`가 실제 native 질문과 답을 처리한다.
+SDK는 질문마다 외부 UI hold 하나를 유지하므로 일반 대기자가 취소됐다는 이유로
+그 표시를 없애지 않는다. 답을 받으면 서버에 저장하지만 False 경로의 원 작업은
+자동 재실행하지 않는다. 호스트가 같은 작업과 인자를 다시 호출해야 적용한다.
+반환된 pending 객체나 모델이 인용한 답은 사용자 승인 증거가 아니다.
+
+`await host.abandon_deferred(question_id)`는 이 호스트의 외부 UI hold를 해제한다.
+알 수 없는 ID는 거부하고 이미 해제한 hold는 False를 반환한다. 다른 일반 대기자가
+있으면 표시를 유지한다. 대기자가 없으면 표시만 포기하며 거부·철회·업무 취소나
+rollback을 만들지 않는다. 이미 저장한 사용자 답도 되돌리지 않는다. 해제 호출의
+대기자가 취소돼도 시작한 정리는 마무리하며 `close()`도 관련 작업을 회수한다.
+
+이 API는 native UI 관측을 후속 작업 경계에서 처리하는 binding을 위한 공통 수명
+지원이다. Hermes의 native 질문 표시·답 수집·질문 ID 결속은 별도 구현/검증이
+남아 있으며 이 SDK 옵션만으로 지원 완료를 선언하지 않는다.
+
 질문 응답을 연결하는 동안 다른 대기자가 취소해도 아직 RPC를 마무리하는
 대기자를 잃지 않도록 응답 등록과 취소 판단을 직렬화한다. 일반 작업 자체를
 합치지 않으므로 같은 전송을 두 번 요청한 것을 한 번으로 바꾸지 않는다.

@@ -51,3 +51,9 @@ Slash-command의 공개 UI는 별도 연결 후보지만 모델 도구의 질문
 사용자가 승인한 generic upstream API 변경으로 세션·질문·실제 답 결속을
 실행한 뒤 재판정한다. 버전 변경이나 범위 제외에 대한 사용자 승인은 없으며
 P4/P5와 전체 목표의 미완 조건으로 유지한다.
+
+후속 [Python SDK 보류와 native hook 검증](deferred-host-ui.md)은 기존 일반
+registry의 callback 부재를 우회해 승인했다고 주장하지 않는다. 실제 clarify
+executor가 공개 post_tool_call hook에 질문·결과·세션/도구 발생 ID를 전달하는
+경로를 fixture에서 확인했고 SDK에 보류 수명을 추가했다. Native binding의
+질문 결속과 사람 UI는 아직 미완이다.
