@@ -4,6 +4,8 @@ import argparse
 import asyncio
 import fcntl
 import hashlib
+import gzip
+import io
 import importlib.util
 import json
 import os
@@ -26,6 +28,48 @@ import urllib.request
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / 'clients/python'))
 from xsm_client import XsmHostClient
+
+
+def workflow_fixture(assistant, workflow, question):
+    """Script native setup/UI/readback calls; never supplies an approval answer."""
+    team, document = 'native-ui-team', 'ENDORSE.md'
+    state = {'step': 'setup', 'results': {}, 'workflow': workflow}
+    if workflow == 'board': assistant.plan('xsm_team', {'action': 'create', 'team': team})
+    else: assistant.plan('xsm_doc', {'action': 'add', 'doc': document, 'text': question, 'tags': ['report']})
+    original = assistant.server.RequestHandlerClass.do_POST
+    def post(handler):
+        size = int(handler.headers.get('Content-Length', 0))
+        if not 0 < size <= 8 * 1048576: return original(handler)
+        data = handler.rfile.read(size); request = json.loads(data)
+        pending = assistant.pending
+        receipts = [m for m in request.get('messages', []) if m.get('role') == 'tool' and m.get('tool_call_id') == pending['id']]
+        if request.get('tools') and pending['issued'] and receipts:
+            try: value = json.loads(receipts[-1]['content'])
+            except ValueError: value = {'nativeError': receipts[-1]['content']}
+            state['results'][state['step']] = value
+            if state['step'] == 'setup':
+                if workflow == 'board':
+                    assistant.plan('xsm_decide', {'question': question, 'options': ['blue', 'green'], 'team': team, 'item': 'decision: cache'})
+                else:
+                    state['node'] = value['node']
+                    assistant.plan('xsm_doc_endorse', {'doc': document, 'node': value['node']['id']})
+                state['step'] = 'question'
+            elif state['step'] == 'question':
+                assistant.plan('xsm_board' if workflow == 'board' else 'xsm_doc',
+                    {'action': 'log', **({'team': team, 'item': 'decision: cache'} if workflow == 'board' else {'doc': document})})
+                state['step'] = 'log'
+            elif state['step'] == 'log':
+                assistant.plan('xsm_board' if workflow == 'board' else 'xsm_doc',
+                    {'action': 'decisions', 'team': team} if workflow == 'board' else {'action': 'render', 'doc': document})
+                state['step'] = 'readback'
+            elif state['step'] == 'readback': state['step'] = 'done'
+        handler.rfile = io.BytesIO(data)
+        result = original(handler)
+        if assistant.pending['name'] in ('xsm_decide', 'xsm_doc_endorse') and assistant.pending['issued']:
+            assistant.question_issued = True
+        return result
+    assistant.server.RequestHandlerClass.do_POST = post
+    return state
 
 
 class ProtocolQuestion:
@@ -98,20 +142,27 @@ class ProtocolQuestion:
 
 def run(args):
     args.output = args.output.resolve()
-    args.output.mkdir(parents=True, exist_ok=True)
+    args.output.mkdir(parents=True, exist_ok=False)
     temp = Path(tempfile.mkdtemp(prefix='xsm-opencode-tui-'))
     home, profile, work = [temp / name for name in ('home', 'config/opencode', 'work')]
     for path in (home, profile, work):
         path.mkdir(parents=True)
     (profile / 'node_modules').symlink_to(args.native_root.resolve() / 'node_modules', target_is_directory=True)
+    for name in ('package.json', 'package-lock.json'):
+        source = args.native_root / name
+        if source.is_file(): (profile / name).write_bytes(source.read_bytes())
     subprocess.run(['git', 'init', '-q', str(work)], check=True)
     assistant = None
     fixture_url = 'http://127.0.0.1:9/v1'
+    spec = importlib.util.spec_from_file_location('xsm_native_fixture', ROOT / 'scripts/probe-opencode-protocol.py')
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
     if args.native_bridge:
-        spec = importlib.util.spec_from_file_location('xsm_native_fixture', ROOT / 'scripts/probe-opencode-protocol.py')
-        module = importlib.util.module_from_spec(spec)
-        spec.loader.exec_module(module)
-        assistant = module.AssistantFixture(args.output)
+        if args.workflow:
+            workflow_spec = importlib.util.spec_from_file_location('xsm_workflow_fixture', ROOT / 'scripts/probe-opencode-collaboration.py')
+            workflow_module = importlib.util.module_from_spec(workflow_spec); workflow_spec.loader.exec_module(workflow_module)
+            assistant = workflow_module.ScriptedTools(args.output); assistant.question_issued = False
+        else: assistant = module.AssistantFixture(args.output)
         fixture_url = 'http://127.0.0.1:' + str(assistant.server.server_port) + '/v1'
         plugins = profile / 'plugins'
         command = [sys.executable, '-B', '-c',
@@ -128,7 +179,8 @@ def run(args):
         'provider': {'xsm-fixture': {'npm': '@ai-sdk/openai-compatible', 'name': 'No model fixture',
             'options': {'baseURL': fixture_url},
             'models': {'fixture': {'name': 'fixture', 'limit': {'context': 32000, 'output': 1000}}}}},
-        'permission': {'*': 'deny', 'xsm_decide': 'allow'},
+        'permission': {'*': 'deny', **{name: 'allow' for name in (
+            ['xsm_decide', 'xsm_team', 'xsm_board', 'xsm_doc', 'xsm_doc_endorse'] if args.workflow else ['xsm_decide'])}},
     }))
     env = {key: os.environ[key] for key in ('PATH', 'LANG', 'TMPDIR') if key in os.environ}
     env.update(HOME=str(home), XDG_CONFIG_HOME=str(temp / 'config'), XDG_DATA_HOME=str(temp / 'data'),
@@ -143,8 +195,22 @@ def run(args):
         (args.output / 'installation.stderr').write_text(done.stderr)
         done.check_returncode()
         installation = json.loads(done.stdout)
-    platform = 'darwin-arm64' if os.uname().sysname == 'Darwin' else 'linux-x64'
-    binary = args.native_root.resolve() / ('node_modules/opencode-' + platform + '/bin/opencode')
+        if args.workflow_mutant:
+            loader = Path(installation['file']); text = loader.read_text()
+            assert text.count('export default api => binding(') == 1
+            text = text.replace('export default api => binding(', 'const originalBinding = api => binding(')
+            text += '''\nexport default async api => {
+ const hooks=await originalBinding(api), name=TARGET, execute=hooks.tool[name].execute;
+ hooks.tool[name].execute=async(...args)=>{
+  const value=JSON.parse(await execute(...args));
+  if(value.decision?.record) value.decision.record.via='model';
+  if(value.endorsement) value.endorsement.via='model';
+  return JSON.stringify(value);
+ };
+ return hooks;
+};\n'''.replace('TARGET', json.dumps('xsm_doc_endorse' if args.workflow == 'endorsement' else 'xsm_decide'))
+            loader.write_text(text); (args.output / 'mutant-loader.mjs').write_text(text)
+    binary = module.native_binary(args.native_root.resolve())
     version = subprocess.run([str(binary), '--version'], env=env, capture_output=True,
                              text=True, check=True).stdout.strip()
     assert version == '1.19.5', version
@@ -189,7 +255,8 @@ def run(args):
         events = args.output / 'ui-events.jsonl'
         question = 'XSM runtime UI probe: choose a color\nScope: ' + native['id']
         if args.native_bridge:
-            assistant.question = question
+            if args.workflow: result['workflow'] = workflow_fixture(assistant, args.workflow, question)
+            else: assistant.question = question
             params = None
         else:
             protocol = ProtocolQuestion(env, work, profile, native['id'], question)
@@ -312,21 +379,46 @@ export default { id: 'xsm-readonly-ui-observer', tui: async api => {
                 entered = True
             if args.native_bridge and entered:
                 decisions = [json.loads(path.read_text()) for path in (temp / 'state/human-decisions').glob('*.json')]
-                decision = next((item for item in decisions if item['question'] == question), None)
+                decision = next((item for item in decisions if question in item['question']), None)
                 expected = 'applied' if args.action == 'choose' else 'dismissed'
                 if decision and decision['status'] == expected:
                     with urllib.request.urlopen(url + '/session/' + native['id'] + '/message?limit=1000', timeout=5) as response:
                         messages = json.load(response)
+                    operation = 'xsm_doc_endorse' if args.workflow == 'endorsement' else 'xsm_decide'
                     completed = [part for message in messages for part in message['parts']
-                                 if part.get('tool') == 'xsm_decide' and part.get('state', {}).get('status') == 'completed']
+                                 if part.get('tool') == operation and part.get('state', {}).get('status') in
+                                 (('completed', 'error') if args.action == 'cancel' else ('completed',))]
                     if completed:
+                        if args.workflow:
+                            state = result['workflow']
+                            if state['step'] != 'done': continue
+                            nodes = state['results']['log']['nodes']
+                            if args.workflow == 'board':
+                                recorded = state['results']['readback']['decisions']
+                                assert len(recorded) == (1 if args.action == 'choose' else 0)
+                                assert len(nodes) == (1 if args.action == 'choose' else 0)
+                                if args.action == 'choose':
+                                    assert recorded[0]['answer'] == 'blue' and recorded[0]['via'] == 'host-user'
+                                    assert nodes[0]['author_kind'] == 'human' and nodes[0]['decision'] == recorded[0]['id']
+                                    assert state['results']['question']['decision']['record'] == recorded[0], 'native board receipt matches persisted user decision'
+                            else:
+                                assert len(nodes) == (2 if args.action == 'choose' else 1)
+                                children = [n for n in nodes if state['node']['id'] in n['parents']]
+                                assert len(children) == (1 if args.action == 'choose' else 0)
+                                if args.action == 'choose':
+                                    assert children[0]['author_kind'] == 'human' and children[0]['body'] == question
+                                    assert children[0]['tags'] == ['endorsed']
+                                    assert state['results']['question']['endorsement']['via'] == 'host-user', 'native endorsement receipt is host-user'
+                                assert question in state['results']['readback']['text']
                         assert decision['answer']['source'] == 'host-user'
                         assert decision['display']['complete']
                         control = [part for message in messages for part in message['parts']
                                    if part.get('metadata', {}).get('xsmUi')]
                         assert len(control) >= 4, control
                         assert all(part['ignored'] and part['synthetic'] and not part['text'] for part in control)
-                        model_requests = (args.output / 'assistant-fixture.jsonl').read_text()
+                        if args.workflow:
+                            with gzip.open(args.output / 'scripted-requests.jsonl.gz', 'rt') as stream: model_requests = stream.read()
+                        else: model_requests = (args.output / 'assistant-fixture.jsonl').read_text()
                         observed_requests = [json.loads(line)['request'] for line in model_requests.splitlines()]
                         if not any(message.get('role') == 'tool' for req in observed_requests
                                    for message in req.get('messages', [])):
@@ -337,7 +429,7 @@ export default { id: 'xsm-readonly-ui-observer', tui: async api => {
                         result.update(status='passed', nativeSession=native['id'], nativeRenderObserved=True,
                             terminalTitleObserved=True, terminalScopeObserved=True,
                             protocolDecisionApplied=expected == 'applied', decision=decision,
-                            nativeToolOutput=completed[-1]['state']['output'], controlFrames=len(control),
+                            nativeToolOutput=completed[-1]['state'].get('output', completed[-1]['state'].get('error')), controlFrames=len(control),
                             uiFramesExcludedFromModelInput=True, assistantFixtureQuestionIssued=assistant.question_issued)
                         if installation:
                             actual = [json.loads(path.read_text()) for path in (temp / 'state/sessions').glob('*.json')]
@@ -411,7 +503,13 @@ if __name__ == '__main__':
     parser.add_argument('--action', choices=['choose', 'cancel'], default='choose')
     parser.add_argument('--native-bridge', action='store_true')
     parser.add_argument('--installed', action='store_true')
+    parser.add_argument('--workflow', choices=['board', 'endorsement'])
+    parser.add_argument('--workflow-mutant', choices=['receipt-via'])
     args = parser.parse_args()
     if args.installed and not args.native_bridge:
         parser.error('--installed requires --native-bridge')
+    if args.workflow and not (args.native_bridge and args.installed):
+        parser.error('--workflow requires --native-bridge --installed')
+    if args.workflow_mutant and (not args.workflow or args.action != 'choose'):
+        parser.error('--workflow-mutant requires a choose workflow')
     run(args)
