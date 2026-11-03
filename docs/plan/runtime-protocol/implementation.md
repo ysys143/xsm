@@ -3130,3 +3130,22 @@ Hermes 회귀도 통과했다. 실제 모델0이며 결정·endorsement/UI·다�
 receipt71개/HTTP113개를 통과했다. Catalog22개 이름과 native/발급ID71개 및
 Mac과 같은 검사 이름21개를 독립 대조했다. Native gateway·참여/container/VM
 종료를 확인했다. 실제 모델과 사용자 UI 및 전체 기능 행렬은 미완이다.
+
+
+## Hermes native UI 보드 결정·endorsement — 2026-11-04
+
+[Native UI 확장](hermes-native-collaboration-ui.md)은 실제 AIAgent/clarify와
+post_tool_call bridge로 보드 결정과 문서 endorsement/거절/replay를 검사했다.
+Mac30개/41 XSM 호출/9개 operation/native receipt88개·HTTP131개가 통과했다.
+세 synthetic callback의 답 저장 직후·원 작업 재호출 전 효과0개를 직접 관측했다.
+허용2개는 answered, 거절1개는 기존 계약대로 denied였다. 승인 출처 변이는
+표적 검사에서 실패했다. 공유 기본 모드와 OpenCode21개 회귀도 통과했다.
+관측기 경로 오류로 중단한 임시2회는 각각118요청 중 본문12개가 누락됐음을
+기록했고, 정상/변이 성공으로 세지 않았다. 경로·오류 기록을 고쳤고 별도 HTTP
+예외 경계도 실행했다. 실제 제품 engine은 바꾸지 않았다. 실제 사용자/모델/메신저와 전체 기능 행렬은 미완이다.
+
+고정516fc17 Linux도30개/41호출/9개 operation과 native receipt88개/HTTP131개를
+통과했다. Callback3개와 효과 적용 전 snapshot3개, Mac과 검사 이름30개·source
+commit 및 raw native/발급ID88개의 일치를 독립 확인했다. 정상 로그 누락과
+관측기 예외는 없었으며 도구/참여/container/VM 종료를 확인했다. 실제 사용자·
+모델·메신저와 전체 UI/기능 행렬은 계속 미완이다.

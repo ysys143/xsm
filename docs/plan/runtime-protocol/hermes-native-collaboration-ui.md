@@ -1,7 +1,7 @@
 # Hermes native UI의 보드 결정·문서 endorsement
 
-상태: Mac30개 검사가 통과했다. Linux와 실제 사용자·모델·메신저 UI 및 전체
-계획은 미완이다. UI 답은 명시적인 synthetic callback이며 host-user/human
+상태: Mac·Linux에서 각각30개 검사가 통과했다. 실제 사용자·모델·메신저 UI와
+전체 계획은 미완이다. UI 답은 명시적인 synthetic callback이며 host-user/human
 기록을 실제 사용자의 승인으로 계산하지 않는다.
 
 `probe-hermes-collaboration.py --native-ui`는 새 시험 프로필에서만
@@ -64,3 +64,14 @@ provider 변경 뒤 OpenCode21개/58HTTP가 다시 통과했다.
 observer-path-incident.json에 두 실패의 PID·정리·누락 수를 보존했다.
 실제 제품 engine은 바꾸지 않았으며 전체 core 재통과를 주장하지 않는다.
 실제 사용자 UI fidelity·모델·메신저와 전체 runtime/기능 행렬은 별도 필수 조건이다.
+
+## Linux 고정 source 대조
+
+고정516fc17의 Linux arm64/Python3.14에서도30개/41 XSM 호출/9개 operation과
+native receipt88개/HTTP131개가 통과했다. 실제 synthetic callback3회와
+답 저장→원 작업 재호출 전 snapshot3개의 효과0개를 확인했다. Mac과 검사
+이름30개와 native source commit이 같았다. Raw 발급/nativeID88개가 모두
+고유하고 일치했으며 로그 누락/관측기 예외는 없었다. 도구 제거·참여 종료,
+container exit0/VM stopExit0이었다. Network none/model0이다.
+원시는 `hermes-native-collaboration-ui-linux/output/artifacts/`와 상위 result.json,
+audit.json이다. 출처 변이는 Mac 표본이며 실제 사용자·모델·전체 UI 인증은 아니다.

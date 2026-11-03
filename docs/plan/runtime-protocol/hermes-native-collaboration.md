@@ -71,3 +71,7 @@ native receipt58개와 HTTP89개가 통과했다. Mac과 native source commit �
 원시는 `hermes-tools-current-count-before`/`hermes-tools-current-count-final`이다.
 이 두 줄 수정은 ecaf9f6의 Linux AIAgent 시험 이후이며 Linux API probe의 새
 실행으로 소급하지 않는다.
+
+보드 결정·문서 endorsement/거절과 답 저장→효과 적용의 native UI 검증은
+[별도 synthetic callback 표본](hermes-native-collaboration-ui.md)에 기록했다.
+기존21개와 합산하지 않으며 실제 사용자·모델 UI의 증거로 대체하지 않는다.
