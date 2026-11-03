@@ -360,5 +360,7 @@ display sentence. The snapshot is not current availability or proof a runtime
 can execute those options; consumption still validates stored scope and expiry.
 Replay preserves the original metadata and never mints another grant, even
 after consumption. Pending host decisions and legacy denial/unanswered text
-keep their existing envelopes. A dedicated grant result schema remains pending.
+keep their existing envelopes. The [grant result schema](grant-result.schema.json) covers issuance, pending
+questions and legacy text-only envelopes. Text alone is not a machine-readable
+issuance receipt; clients must not infer a usable grant by parsing it.
 Explicit grant IDs are eight lowercase hexadecimal characters, not paths.

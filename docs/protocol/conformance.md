@@ -233,3 +233,15 @@ and separate pending/closed legacy consent markers. The
 [decision status result schema](decision-status-result.schema.json) validates
 these observations. The checker does not turn source labels, display complete,
 OS-call success or a recorded result into fresh permission.
+
+## Worker grant issuance
+
+`--suite grants --capture` runs 24 checks including lifecycle and synthetic host
+approval. It observes no applied issuance before retry, structured scope,
+original snapshot preservation on replay, journal application and denial.
+It neither starts a worker nor applies full-access/trust-hooks to a runtime.
+[Grant result definitions](grant-result.schema.json) describe issuance metadata,
+not current usability or runtime capability. Actual consumption must validate
+the stored grant and remains one-use. Removing producer data or changing an ID
+on replay fails the public suite. Text-only legacy outcomes do not establish an
+issuance receipt for a structured client.

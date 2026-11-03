@@ -14,6 +14,7 @@ command = [sys.executable, '-B', '-c',
 process = subprocess.Popen(command, stdin=subprocess.PIPE, stdout=subprocess.PIPE, text=True)
 first_token = None
 pending_publication = None
+seen_grant = False
 
 
 replies = queue.Queue()
@@ -76,6 +77,13 @@ try:
                     reply['error'] = {'code': -32603, 'message': 'synthetic internal error'}
                 if fault == 'questions-erases-acked-answer' and value.get('status') == 'replied' and value.get('claims') == []:
                     value['replies'] = []
+            if params.get('operation') == 'xsm_grant' and 'grant' in reply.get('result', {}):
+                if fault == 'grant-missing-producer':
+                    reply['result'].pop('grant')
+                if fault == 'grant-replay-id' and seen_grant:
+                    current = reply['result']['grant']['id']
+                    reply['result']['grant']['id'] = '00000000' if current != '00000000' else '11111111'
+                seen_grant = True
             if params.get('operation') == 'xsm_send':
                 value = reply.get('result', {})
                 if fault == 'send-storage-as-arrival' and not value.get('grouped') and value.get('send', {}).get('status') == 'stored':

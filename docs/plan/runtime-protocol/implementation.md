@@ -106,8 +106,8 @@ runtime 도달로 오인하는 등 wire 결함3종을 검출했다. ACK 후 rese
 통과했으며 격리 VM 종료를 확인했다.
 
 [결과 계약 범위 전수표](result-contract-coverage.md)는 공개22개 operation 중
-domain schema가 있는 operation13개(그중 team/board는 일부 action)와
-미정의9개를 구분한다.
+domain schema가 있는 operation14개(그중 team/board는 일부 action)와
+미정의8개를 구분한다.
 이는 완료율이나 native 지원률이 아니다.
 
 ## 핵심 검사 적합성 묶음 분리 — 2026-11-03
@@ -170,6 +170,14 @@ schema6개 예제/거부8개도 추가했다. 고정9b81010의 Linux core893개�
 Mac core895개가75.611초에 통과했다. 결과 schema와 실제 worker 전체 인증은
 아직 미완이다. 고정e93fac1의 Linux core895개도3.11에서88.522초,
 3.14에서110.004초에 통과했고 VM 종료를 확인했다.
+
+## Worker grant 결과 계약 — 2026-11-03
+
+[발급 결과 계약](grant-schema.md)은 발급 snapshot/host question/기존 text-only를
+정의한다. Stdio24개/frame30개, 예제3개/거부10개 및 schema 변이1개를 확인했다.
+Mac core898개가74.697초에 통과했다. Structured snapshot은 실제 worker 실행이나
+현재 유효성을 인증하지 않는다.
+전체 계획은 계속 미완이다.
 
 ## 단계별 판정
 

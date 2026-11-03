@@ -1,0 +1,34 @@
+[
+  {
+    "source": "isolated stdio synthetic host; cwd normalized",
+    "result": {
+      "status": "waiting-for-user",
+      "decision_id": "6b606559306e7e7820841b339527e1fd7b23e29ddbfc61c932c863f99ce8f34e",
+      "question_id": "3859fc86ee6d4dd7b6a3291c786015ab"
+    }
+  },
+  {
+    "source": "isolated stdio synthetic host; cwd normalized",
+    "result": {
+      "grant": {
+        "id": "6849c19c",
+        "runtime": "codex",
+        "cwd": "/fixture/workspace",
+        "options": [
+          "full_access"
+        ],
+        "issued_at": 1793686116.532394,
+        "expires_at": 1793686716.532394,
+        "single_use": true,
+        "asked_by": "70e7a9"
+      },
+      "text": "granted fixture snapshot; not an executable example"
+    }
+  },
+  {
+    "source": "synthetic legacy refusal text; no issuance snapshot",
+    "result": {
+      "text": "No worker grant was issued."
+    }
+  }
+]

@@ -87,6 +87,25 @@ class ExternalConformanceTest(unittest.TestCase):
         self.assertIsNone(result['activeCheck'])
         self.assertIn('FileNotFoundError', result['error'])
 
+    def test_actual_server_grant_producer(self):
+        result = checker.run(self.delivery_candidate('none'), suite='grants', capture=True)
+        self.assertEqual(result['status'], 'passed', result)
+        self.assertEqual(len(result['checks']), 24)
+        grants = [o['frame']['result']['grant'] for o in result['observations']
+                  if o.get('operation') == 'xsm_grant' and 'grant' in o['frame'].get('result', {})]
+        self.assertEqual(len(grants), 2)
+        self.assertEqual(grants[0], grants[1])
+
+    def test_grant_missing_producer_is_detected(self):
+        result = checker.run(self.delivery_candidate('grant-missing-producer'), suite='grants')
+        self.assertEqual(result['status'], 'failed', result)
+        self.assertEqual(result['activeCheck'], 'grant issuance returns producer scope')
+
+    def test_grant_replay_new_id_is_detected(self):
+        result = checker.run(self.delivery_candidate('grant-replay-id'), suite='grants')
+        self.assertEqual(result['status'], 'failed', result)
+        self.assertEqual(result['activeCheck'], 'grant retry preserves original producer snapshot')
+
     def test_actual_server_host_selection_approval(self):
         result = checker.run(self.delivery_candidate('none'), suite='selection', capture=True)
         self.assertEqual(result['status'], 'passed', result)

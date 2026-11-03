@@ -155,6 +155,8 @@ def output_contract(trace=None):
     Draft202012Validator.check_schema(publication_schema)
     decision_schema = json.loads((ROOT / 'docs/protocol/decision-status-result.schema.json').read_text())
     Draft202012Validator.check_schema(decision_schema)
+    grant_schema = json.loads((ROOT / 'docs/protocol/grant-result.schema.json').read_text())
+    Draft202012Validator.check_schema(grant_schema)
     inbox_observed = 0
     inbox_empty = dict(messages=[], claims=[], items=[], inbox_pending=0)
     inbox_file = dict(messages=['fixture'], claims=[dict(id='original', token='opaque-token',
@@ -187,6 +189,8 @@ def output_contract(trace=None):
         if 'result' in frame:
             definition = schema['x-methodResults'][observation['method']]
             Draft202012Validator({'$ref': definition, '$defs': schema['$defs']}).validate(frame['result'])
+            if observation.get('operation') == 'xsm_grant':
+                Draft202012Validator(grant_schema).validate(frame['result'])
             if observation.get('operation') == 'xsm_decision_status':
                 validate_decision_status(frame['result'], decision_schema)
             if observation.get('operation') == 'xsm_publish':
@@ -271,6 +275,35 @@ def ack_contract():
             raise ValueError('invalid ACK result accepted: ' + repr(value))
     return dict(examples=len(examples), rejected=len(invalid),
                 scope='successful result structure; batch errors may follow earlier durable acknowledgements')
+
+
+def grant_contract():
+    schema = json.loads((ROOT / 'docs/protocol/grant-result.schema.json').read_text())
+    examples = json.loads((ROOT / 'docs/protocol/grant-result-examples.json').read_text())
+    Draft202012Validator.check_schema(schema)
+    question = json.loads((ROOT / 'docs/protocol/question-result.schema.json').read_text())
+    if schema['$defs']['awaiting'] != question['$defs']['qAwaiting']:
+        raise ValueError('grant pending structure differs from question contract')
+    validator = Draft202012Validator(schema)
+    for example in examples:
+        validator.validate(example['result'])
+    issued = next(e['result'] for e in examples if 'grant' in e['result'])
+    pending = next(e['result'] for e in examples if e['result'].get('status') == 'waiting-for-user')
+    invalid = []
+    for path, value in ((['grant','id'],'../victim'),(['grant','id'],'a'*8+'\n'),
+                        (['grant','single_use'],False),(['grant','options'],[]),
+                        (['grant','options'],['invented_mode']),(['grant','expires_at'],True),
+                        (['grant','answer'],'must not leak private verdict'),(['extra'],'unknown')):
+        bad = copy.deepcopy(issued);target = bad
+        for key in path[:-1]:
+            target = target[key]
+        target[path[-1]] = value;invalid.append(bad)
+    bad = copy.deepcopy(pending); bad['challenge']='host-only'; invalid.append(bad)
+    bad = copy.deepcopy(issued); del bad['grant']['asked_by']; invalid.append(bad)
+    for value in invalid:
+        if validator.is_valid(value):
+            raise ValueError('invalid grant result accepted')
+    return dict(examples=len(examples), rejected=len(invalid))
 
 
 def decision_status_contract():
@@ -720,7 +753,7 @@ def run(trace=None):
                 validator='jsonschema', validatorVersion=importlib.metadata.version('jsonschema'),
                 scope='request and output structures; no full operation results or semantic certification',
                 output=output_contract(trace), operations=operations_contract(), files=files_contract(), ack=ack_contract(),
-                discovery=discovery_contract(), team=team_contract(), board=board_contract(), doc=doc_contract(), send=send_contract(), question=question_contract(), publication=publication_contract(), decisionStatus=decision_status_contract())
+                discovery=discovery_contract(), team=team_contract(), board=board_contract(), doc=doc_contract(), send=send_contract(), question=question_contract(), publication=publication_contract(), decisionStatus=decision_status_contract(), grant=grant_contract())
 
 
 if __name__ == '__main__':

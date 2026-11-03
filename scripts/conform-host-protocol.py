@@ -272,6 +272,40 @@ def messaging(peer, sender, receiver, reopen, check, equal, events=False):
               tokens=[pending["claims"][0]["token"]])["acked"], event["params"]["ids"]))
 
 
+def grants(peer, params, check, equal):
+    owner = peer.call('session.open', dict(params, conversation='grant-contract-owner', capabilities=['user-decisions']))
+    def operation(name, error=None, **arguments):
+        return peer.call('operation.call', dict(session=owner['session'], operation=name, arguments=arguments), error=error)
+    args = dict(runtime='codex', options=['full_access'], reason='isolated grant producer fixture')
+    pending = operation('xsm_grant', **args)
+    check('worker grant requires a host question', lambda: equal(pending['status'], 'waiting-for-user'))
+    event = peer.notification()['params']
+    check('grant model result has no private challenge', lambda: equal('challenge' not in pending, True))
+    peer.call('decision.response', dict(session=owner['session'], questionId=event['questionId'], challenge=event['challenge'],
+        displayed=event['question'], action='accept', answer='allow once', source_id='synthetic-grant-answer'))
+    before = operation('xsm_decision_status', id=pending['decision_id'])
+    check('grant answer is not an applied issuance', lambda: equal(before['status']=='answered' and before['application'] is None, True))
+    issued = {}
+    def issue():
+        value = operation('xsm_grant', **args)
+        equal('grant' in value, True)
+        issued.update(value['grant'])
+        equal(issued['runtime']=='codex' and issued['cwd']==str(Path(params['cwd']).resolve()) and
+              issued['options']==['full_access'] and issued['asked_by']==owner['ref'] and
+              issued['single_use'] is True and len(issued['id'])==8 and
+              all(c in '0123456789abcdef' for c in issued['id']),True)
+    check('grant issuance returns producer scope', issue)
+    check('grant retry preserves original producer snapshot', lambda: equal(operation('xsm_grant', **args)['grant'], issued))
+    check('grant issuance is observed in decision journal', lambda: equal(operation('xsm_decision_status', id=pending['decision_id'])['status'],'applied'))
+    denied_args = dict(args, reason='isolated denied grant fixture')
+    denied = operation('xsm_grant', **denied_args)
+    deny_event = peer.notification()['params']
+    peer.call('decision.response', dict(session=owner['session'], questionId=deny_event['questionId'], challenge=deny_event['challenge'],
+        displayed=deny_event['question'], action='accept', answer='deny', source_id='synthetic-denied-grant'))
+    check('denied grant retry cannot issue a worker grant', lambda: operation('xsm_grant', error=-32602, **denied_args))
+    check('denied grant stays denied', lambda: equal(operation('xsm_decision_status', id=denied['decision_id'])['status'],'denied'))
+
+
 def selection_ui(peer, params, env, check, equal):
     owner = peer.call('session.open', dict(params, conversation='selection-owner', capabilities=['user-decisions','inbox']))
     outside = Path(params['cwd']) / 'selection-repository'; outside.mkdir()
@@ -758,6 +792,9 @@ def run(command, suite="lifecycle", capture=False):
             if suite == 'discovery':
                 result['scope'] = 'lifecycle and local public discovery; no physical remote, native UI or messenger certification'
                 discovery(b, reopened, resumed, check, equal)
+            if suite == 'grants':
+                result['scope'] = 'lifecycle and synthetic host worker grant issuance/readback; no worker launch or actual dangerous mode'
+                grants(b, params, check, equal)
             if suite == 'selection':
                 result['scope'] = 'lifecycle and synthetic host publication/selection approval; no actual human, native runtime or physical network certification'
                 selection_ui(b, params, env, check, equal)
@@ -784,7 +821,7 @@ def run(command, suite="lifecycle", capture=False):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--capture", action="store_true", help="include isolated wire observations in the report")
-    parser.add_argument("--suite", choices=("lifecycle", "messaging", "events", "decisions", "uploads", "discovery", "collaboration", "documents", "sending", "questions", "selection"), default="lifecycle")
+    parser.add_argument("--suite", choices=("lifecycle", "messaging", "events", "decisions", "uploads", "discovery", "collaboration", "documents", "sending", "questions", "selection", "grants"), default="lifecycle")
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--command", nargs=argparse.REMAINDER, required=True)
     args = parser.parse_args()
