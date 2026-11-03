@@ -3,6 +3,7 @@
 import argparse
 import asyncio
 import hashlib
+import gzip
 import inspect
 from http.server import BaseHTTPRequestHandler,ThreadingHTTPServer
 import json
@@ -23,7 +24,11 @@ parser.add_argument('--native-source',type=Path,required=True)
 parser.add_argument('--output',type=Path,required=True)
 parser.add_argument('--mutant',choices=['ignore-platform-auth'])
 parser.add_argument('--platform',choices=['discord','telegram'],default='discord')
+parser.add_argument('--latency-samples',type=int,default=0)
+parser.add_argument('--latency-mutant',choices=['missing-queue-observation'])
 args=parser.parse_args();repo=Path(__file__).resolve().parents[1];source=args.native_source.resolve()
+if not 0<=args.latency_samples<=100:parser.error('--latency-samples must be between 0 and 100')
+if args.latency_mutant and not args.latency_samples:parser.error('--latency-mutant requires positive samples')
 out=args.output.absolute();out.mkdir(parents=True,exist_ok=False);out.chmod(0o700)
 root=Path(tempfile.mkdtemp(prefix='xsm-hermes-messaging-')).resolve();root.chmod(0o700)
 for name in ('home','hermes','state','workspace'):(root/name).mkdir(mode=0o700)
@@ -40,6 +45,7 @@ logging.disable(logging.NOTSET)
 logging.basicConfig(filename=out/'native.log',level=logging.DEBUG)
 nonce=os.urandom(8).hex();original='XSM_NATIVE_WAKE_'+nonce;message_id='native-wake-'+nonce
 report=dict(status='starting',root=str(root),nativeSourceCommit=commit,modelCalls=0,checks=[],mutant=args.mutant,
+    latencyMutant=args.latency_mutant,
     platform=args.platform,
     scope='actual pinned '+args.platform+' adapter with local platform transport, native messaging FIFO and installed plugin/AIAgent hooks; no real platform service, inference or UI')
 requests=[];phase='warmup';acked=False
@@ -56,18 +62,25 @@ class Handler(BaseHTTPRequestHandler):
     def log_message(self,*args):pass
     def do_POST(self):
         global acked
-        if len(requests)>=16:
-            report['fixtureFailure']='scripted provider exceeded sixteen requests'
+        if len(requests)>=16+6*args.latency_samples:
+            report['fixtureFailure']='scripted provider exceeded bounded request budget'
             os.kill(os.getpid(),signal.SIGINT)
             return
         value=json.loads(self.rfile.read(int(self.headers['Content-Length'])))
         available={tool.get('function',{}).get('name') for tool in value.get('tools',[])}
+        user_messages=[message for message in value.get('messages',[]) if message.get('role')=='user']
+        review=bool(user_messages and str(user_messages[-1].get('content','')).startswith(
+            'Review the conversation above and update'))
         requests.append(dict(phase=phase,tools=sorted(name for name in available if name),
-            originalObserved=original in json.dumps(value,ensure_ascii=False)))
-        (out/('request-%d.json'%len(requests))).write_text(json.dumps(value,indent=2)+'\n')
+            originalObserved=original in json.dumps(value,ensure_ascii=False),auxiliaryReview=review))
+        raw=json.dumps(value,indent=2)+'\n'
+        if args.latency_samples:
+            with gzip.open(out/('request-%d.json.gz'%len(requests)),'wt') as wire:wire.write(raw)
+        else:
+            (out/('request-%d.json'%len(requests))).write_text(raw)
         # Only a primary tool-enabled call drives this fixture; auxiliaries stay separate.
         text='Explicit auxiliary fixture';name=None;arguments=None
-        if available:
+        if available and not review:
             messages=value.get('messages',[])
             wire=json.dumps(messages,ensure_ascii=False)
             if phase=='warmup':text='XSM_CONTEXT_WARMUP'
@@ -199,6 +212,8 @@ async def scenario():
         check('native hook opened exact gateway host with events','events' in recipient['capabilities'])
         from xsm_client import XsmClient
         command=[sys.executable,'-B','-c',"import runpy,sys;sys.path.insert(0,sys.argv.pop(1));runpy.run_module('xsm',run_name='__main__')",str(repo),'protocol','serve','--stdio']
+        if args.latency_samples:
+            command=[sys.executable,'-B',str(repo/'tests/fixtures/protocol_timed_host.py'),str(out/'stored.jsonl')]
         async with await XsmClient.connect(command,cwd=str(root/'workspace'),env=env) as sender:
             origin=await sender.session_open(runtime='gateway-drain-sender',profile='isolated',conversation='sender',cwd=str(root/'workspace'))
             phase='awake'
@@ -230,6 +245,62 @@ async def scenario():
             check('actual natural FIFO turn consumes quiet context and completes',quiet['outcome']=='completed' and acked)
             packet=await asyncio.to_thread(binding._run,inbox())
             check('actual FYI native ACK suppresses canonical redelivery',packet['claims']==[])
+            if args.latency_samples:
+                latency=dict(requested=args.latency_samples,samples=[],clock='CLOCK_MONOTONIC',
+                    start='successful canonical handoff.store return in sender protocol process',
+                    end='actual authority post-commit _admitted callback',
+                    scope='this pinned gateway/platform mode; scripted provider completes turns between samples, inference and platform transit excluded')
+                report['latency']=latency;queue_ticks={}
+                original_admitted=authority._admitted
+                def timed_admission(target,event,native_row):
+                    tick=time.clock_gettime_ns(time.CLOCK_MONOTONIC)
+                    if not args.latency_mutant and phase=='latency' and original in native_row['payload'].get('text',''):
+                        queue_ticks.setdefault(message_id,tick)
+                    return original_admitted(target,event,native_row)
+                authority._admitted=timed_admission
+                try:
+                    for index in range(args.latency_samples):
+                        phase='latency';original='XSM_LATENCY_'+nonce+'_'+str(index)
+                        message_id='latency-'+nonce+'-'+str(index);acked=False
+                        sample=dict(index=index,id=message_id,status='starting')
+                        latency['samples'].append(sample)
+                        async def idle():return binding.states.get(sid)=='idle'
+                        sample['idle']=await asyncio.to_thread(binding._run,idle())
+                        check('latency sample begins at actual native idle',sample['idle'])
+                        await sender.operation_call(origin['session'],'xsm_send',dict(target='ref:'+recipient['ref'],
+                            text=original,wake='auto',request_id=message_id))
+                        measured=await terminal(lambda candidate:original in candidate['payload'].get('text',''))
+                        sample['acknowledged']=acked
+                        check('latency sample finishes actual native turn and ACK',measured['outcome']=='completed' and acked)
+                        stored=[json.loads(line) for line in (out/'stored.jsonl').read_text().splitlines()]
+                        starts=[item['storedMonotonicNs'] for item in stored if item['id']==message_id]
+                        check('latency sample has one real storage timestamp and native commit',len(starts)==1 and message_id in queue_ticks)
+                        delay=queue_ticks[message_id]-starts[0]
+                        check('monotonic queue admission follows canonical store',delay>=0)
+                        sample.update(status='passed',storedMonotonicNs=starts[0],
+                            queuedMonotonicNs=queue_ticks[message_id],milliseconds=delay/1e6,
+                            admissionId=measured['admission_id'])
+                        (out/'result.json').write_text(json.dumps(report,indent=2)+'\n')
+                    values=sorted(sample['milliseconds'] for sample in latency['samples'])
+                    counts={'XSM_LATENCY_'+nonce+'_'+str(index):0 for index in range(args.latency_samples)}
+                    for native_row in list_session_admissions(db,session_id=ref.session_id,pending_only=False):
+                        for line in native_row['payload'].get('text','').splitlines():
+                            if line in counts:counts[line]+=1
+                    check('each idle latency sample creates exactly one native FIFO admission',all(count==1 for count in counts.values()))
+                    import math
+                    latency.update(completed=len(values),p95Milliseconds=values[math.ceil(.95*len(values))-1],
+                        maxMilliseconds=max(values),thresholdPassed=values[math.ceil(.95*len(values))-1]<=1000)
+                    check('observed latency p95 is within one second',latency['p95Milliseconds']<=1000)
+                except BaseException as error:
+                    if latency['samples'] and latency['samples'][-1]['status']!='passed':
+                        latency['samples'][-1].update(status='failed',errorType=type(error).__name__,error=str(error))
+                    raise
+                finally:
+                    authority._admitted=original_admitted
+                    latency.update(attempted=len(latency['samples']),
+                        completed=sum(sample['status']=='passed' for sample in latency['samples']),
+                        failed=sum(sample['status']=='failed' for sample in latency['samples']),
+                        unexecuted=args.latency_samples-len(latency['samples']))
             check('local platform transport receives native awake confirmation',any(item['chat_id']=='42' and 'XSM_CONTEXT_COMPLETE' in item['text'] for item in replies))
             gateway=binding.gateway_targets[sid]
             if args.mutant:
@@ -285,7 +356,7 @@ async def scenario():
 try:
     import asyncio
     def deadline(*_):raise TimeoutError('gateway drain probe exceeded outer deadline')
-    signal.signal(signal.SIGALRM,deadline);signal.alarm(100)
+    signal.signal(signal.SIGALRM,deadline);signal.alarm(100+5*args.latency_samples)
     asyncio.run(scenario());report['status']='passed'
 except BaseException as error:
     report.update(status='failed',failureType=type(error).__name__,failure=str(error));raise
@@ -299,4 +370,6 @@ finally:
             report.update(status='failed',unloadFailure=type(error).__name__)
     server.shutdown();server.server_close();thread.join(timeout=2)
     (out/'result.json').write_text(json.dumps(report,indent=2)+'\n')
-    print(json.dumps({key:report.get(key) for key in ('status','checks','failure','pluginUnloaded')}))
+    print(json.dumps(dict(status=report['status'],checkCount=len(report['checks']),
+        failure=report.get('failure'),pluginUnloaded=report.get('pluginUnloaded'),
+        latency={key:value for key,value in report.get('latency',{}).items() if key!='samples'})))

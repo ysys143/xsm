@@ -2947,3 +2947,18 @@ Mac9d1f5bb core961개/schema/v7은59.673초였다. 단독 scope20회 성공은 �
 후속 전체 통과를 원래 실패의 해결로 보지 않는다. Caller·response 거부 관측기를
 유지하고, wall/monotonic read 범위를 함께 기록하는 별도 read-only clock/자기 PID
 관측기를 추가했다. 실제 원인은 아직 미확정이며 승인·시스템 시각 정책은 수정하지 않았다.
+
+0f3e3c2의 native Telegram27개와 Linux3.11 core962/schema/v7도85.302초에
+통과했고 VM stopExit=0이었다.105초 독립 clock/start 관측43,017개에 변동은 없었다.
+이를 원래 승인 실패의 해결로 대체하지 않는다.
+
+## Hermes Mac100 native queue 지연 — 2026-11-04
+
+[지연 측정](hermes-latency.md)은 실제 canonical store 반환과 native FIFO
+commit callback을 같은 CLOCK_MONOTONIC으로 측정한다. Native idle/turn/ACK를
+표본마다 확인한100개가253.082ms p95/326.893ms max였다. 미실행·실패0이며
+단일 admission/표본과 독립 재계산을 확인했다. Local Telegram transport/scripted
+provider 모드이고 실제 서비스·UI·전체 runtime/OS 행렬을 인증하지 않는다.
+실제 queue 관측을 뺀 변이는 실패했다. 보조 API 요청의 불필요한 identity 조회도
+red 후 pending-host guard로 수정했고31개 focused와 Mac963개/schema/v7은
+59.780초였다. 최초100개/2개 smoke/변이와 보존 source hashes도 구분했다.

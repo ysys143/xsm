@@ -31,3 +31,8 @@ Mac1초 경로 실행은243개 표본/역행0이었다. 이는 Linux나 과거 �
 보존한다. 원시는 `deliverables/protocol-foundation/`의 hermes-messaging-linux,
 hermes-messaging-observed-linux, scope-repeat-linux, scope-clock-full-linux 및
 hermes-messaging의 로그로 구분한다.
+
+0f3e3c2의 실제 Telegram 경로27개/11 HTTP 뒤 부하 검사도962개/schema/v7을
+85.302초에 통과했고 stopExit=0이었다. 별도105초 관측은43,017표본/역행0/
+start observation 변화0이었다. 그 실행에 과거의 결함이 재현되지 않았다는
+증거이며, 이전 실패의 원인 또는 해결을 증명하지 않는다.

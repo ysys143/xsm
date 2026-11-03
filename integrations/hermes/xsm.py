@@ -649,6 +649,15 @@ class HermesBinding:
     def observe_context(self, session_id='', turn_id='', api_request_id='', request_messages=None, **_native):
         if getattr(self, 'native_context', None) is None or self.closed or self.closing:
             return
+        pair = self.hosts.get(session_id)
+        if not pair or not pair[1].done() or pair[1].cancelled():
+            return
+        try:
+            host = pair[1].result()
+        except Exception:
+            return
+        if (session_id, id(host)) not in self.native_context.pending:
+            return
         sid, _cwd = self._identity(session_id)
         async def observed():
             pair = self.hosts.get(sid)

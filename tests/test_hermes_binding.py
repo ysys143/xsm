@@ -21,6 +21,15 @@ else:
 
 
 class HermesLifecycleTest(unittest.IsolatedAsyncioTestCase):
+    async def test_auxiliary_api_observation_cannot_open_another_native_participation(self):
+        binding = module.HermesBinding.__new__(module.HermesBinding)
+        binding.closed, binding.closing = False, False
+        binding.native_context = SimpleNamespace(pending={('primary', 1): object()})
+        binding.hosts = {}
+        binding._identity = mock.Mock(side_effect=AssertionError('unrelated API observation resolved identity'))
+        binding.observe_context(session_id='background-review', turn_id='aux-turn', api_request_id='aux-api', request_messages=[])
+        binding._identity.assert_not_called()
+
     async def test_native_subagent_hook_supplies_parent_when_child_opens(self):
         binding = module.HermesBinding.__new__(module.HermesBinding)
         binding.parents, binding.hosts = {}, {}
