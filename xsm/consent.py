@@ -1401,8 +1401,10 @@ def take_or_request(me: dict | None, verb: str, target: str, here: str | None = 
         # An explicit folder command asked for this connection independent of
         # any particular peer. Its answer also covers sending into that folder.
         _, folder_ask = _fresh_pending(me, base_path)
-        if folder_ask and not folder_ask.get("binding"):
+        if verb != 'approve' and folder_ask and not folder_ask.get("binding"):
             p = base_path
+        # An old worker-approval ask identifies only its ID, not the invocation
+        # now bound to that ID. Never upgrade its answer to a new snapshot.
     else:
         p = _ask_path(me, verb, want, want_here, base_path)
     if answer_request and question_text is not None:

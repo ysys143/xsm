@@ -990,12 +990,14 @@ def _approval_path(req_id: str) -> str:
     return paths.path(APPROVALS, req_id + ".json")
 
 
-def approval_fingerprint(request, worker):
+def approval_fingerprint(request, worker, *, include_display=False):
     """Immutable invocation/worker fields, excluding answer and progress fields."""
     value = {'request': {k: request.get(k) for k in (
         'id', 'worker', 'runtime', 't', 'tool', 'input', 'expires_at', 'native_identity')},
         'worker': {k: worker.get(k) for k in (
             'name', 'parent_ref', 'runtime', 'home', 'session_id', 'created', 'pid', 'lstart')}}
+    if include_display:
+        value['summary'] = request.get('summary')
     return hashlib.sha256(json.dumps(value, sort_keys=True, ensure_ascii=False,
         separators=(',', ':'), allow_nan=False).encode('utf-8')).hexdigest()
 
@@ -1236,17 +1238,17 @@ def _answer_asked_locked(req_id: str, approve: bool, asked_by: str | None, reaso
 
 
 def answer(req_id: str, approve: bool, reason: str | None = None,
-           approver: str | None = None) -> dict:
+           approver: str | None = None, *, expected_fingerprint=None) -> dict:
     from . import consent
     try:
         with consent._strict_locked(_approval_path(req_id)):
-            return _answer_locked(req_id, approve, reason, approver)
+            return _answer_locked(req_id, approve, reason, approver, expected_fingerprint=expected_fingerprint)
     except OSError as exc:
         raise WorkerError("could not lock the permission request; nothing approved") from exc
 
 
 def _answer_locked(req_id: str, approve: bool, reason: str | None = None,
-           approver: str | None = None) -> dict:
+           approver: str | None = None, *, expected_fingerprint=None) -> dict:
     """Answer a worker's request. Approving is a person's: at a terminal, or
     through `approver`, the person's own reply the agent asked for and the
     CLI checked (user decision, 2026-10-01)."""
@@ -1258,6 +1260,10 @@ def _answer_locked(req_id: str, approve: bool, reason: str | None = None,
     if req.get("status") != "pending":
         raise WorkerError("request %s is already %s" % (req_id, req.get("status")))
     _check_native_deadline(req_id, req, approve)
+    if approve and expected_fingerprint is not None:
+        worker = load(req.get('worker') or '') or {}
+        if approval_fingerprint(req, worker, include_display=True) != expected_fingerprint:
+            raise WorkerError('worker permission request identity or scope changed; nothing approved')
     if approve and not human_terminal() and not approver:
         from . import consent
         raise WorkerError("approving is your user's decision: ask them %s and run `xsm approve %s` "

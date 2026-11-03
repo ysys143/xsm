@@ -384,7 +384,7 @@ def _by() -> str:
 
 
 def _person_or_refuse(what: str, mcp_tool: str, typed: tuple | None = None,
-                      ask: tuple | None = None) -> str | None:
+                      ask: tuple | None = None, binding: dict | None = None) -> str | None:
     """Changing who may talk to whom is the user's decision (ADR-0009). A
     person at this terminal decides; so does the command the person typed
     into the session running this (`typed` = (verb, target[, here]), see
@@ -409,7 +409,8 @@ def _person_or_refuse(what: str, mcp_tool: str, typed: tuple | None = None,
     if not key:
         return ("%s is your user's decision: ask them %s, then run this again"
                 % (what, consent.how((me or {}).get("runtime"))))
-    verdict, go, kept = consent.take_or_request(me, *key)
+    verdict, go, kept = (consent.take_or_request(me, *key, binding=binding) if binding is not None
+                         else consent.take_or_request(me, *key))
     if verdict is not None and not go:
         return consent.shown_refusal(verdict, what, kept)
     if verdict is not None:
@@ -2591,8 +2592,14 @@ def cmd_approvals(args) -> int:
 def cmd_answer(args) -> int:
     approve = args.command == "approve"
     approver = None
+    expected_fingerprint = None
     if approve:
         req = next((r for r in workers.approvals() if r["id"] == args.id), None)
+        if req is None:
+            print('refused: no pending approval request %s' % args.id, file=sys.stderr)
+            return REFUSED
+        expected_fingerprint = workers.approval_fingerprint(
+            req, workers.load(req.get('worker') or '') or {}, include_display=True)
         if req and not workers.human_terminal():
             # The agent asks and runs it; their reply is the decision (user
             # decision, 2026-10-01). Denying narrows, so anyone may. Only the
@@ -2610,7 +2617,7 @@ def cmd_answer(args) -> int:
                 return REFUSED
             why = _person_or_refuse("approving worker %s's request [%s]: %s" % (
                 req["worker"], req["id"], req["summary"]), "xsm_approve",
-                ask=("approve", req["id"]))
+                ask=("approve", req["id"]), binding={'worker_approval': expected_fingerprint})
             if why:
                 print("refused: %s" % why, file=sys.stderr)
                 return REFUSED
@@ -2625,7 +2632,8 @@ def cmd_answer(args) -> int:
                     print("not approved")
                     return REFUSED
     try:
-        req = workers.answer(args.id, approve, args.reason, approver=approver)
+        req = workers.answer(args.id, approve, args.reason, approver=approver,
+                             expected_fingerprint=expected_fingerprint)
     except workers.WorkerError as exc:
         print("refused: %s" % exc, file=sys.stderr)
         return REFUSED

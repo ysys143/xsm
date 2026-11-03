@@ -2790,3 +2790,10 @@ Python 목록을 두 격리 프로세스로 분할했다. 전체 module/test와1
 유지한다. Exact inventory·비중첩·격리/reaping4개와 serial mutant 실패를 확인했다.
 Mac931개 전체는50.353초에 통과했다. Linux는 고정 source 후속 실행 전까지
 초기cf01df5의3.14 실패가 해결됐다고 판정하지 않는다. 전체 계획은 미완이다.
+
+## CLI worker 승인 결속 — 2026-11-03
+
+[CLI 승인 결속](cli-approval-binding.md)은 표시 뒤 input/worker/display 변경과
+legacy unbound ask 승격을 실제 실패로 재현하고, 보존 질문과 request lock의
+최종 답을 같은 fingerprint로 묶었다. 새4개와 기존 focused62개/4.303초를
+확인했고 Mac core935개는54.641초에 통과했다. 실제 사람/native UI/전체 계획은 미완이다.

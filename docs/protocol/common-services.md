@@ -13,8 +13,8 @@ change. A pending host question unwinds before the mutation and is retried only
 through its existing scoped decision controller. CLI terminal consent and MCP/
 host decision binding remain their own frontend contracts.
 
-The team result is internal structured data; CLI and MCP output shapes are
-preserved. CLI team leave now publishes the changed record as MCP already did,
+The team service result is internal structured data. CLI and model display text
+is preserved; model mutations also carry explicit public team/board snapshots. CLI team leave now publishes the changed record as MCP already did,
 so remote members do not keep the old membership solely because of the entry
 point. Publication failures remain explicit sync notes; local mutation is not
 proof of remote receipt.
@@ -129,3 +129,19 @@ decision. Reach preparation copies the selected holder fields so frontend
 mutation cannot redirect the stored grant to a different conversation. Existing
 config policy validation and session-bound reach storage remain authoritative.
 This extraction does not add native runtime UI or worker providers.
+
+## Owned public projection and CLI worker approval
+
+Backend/CLI owned diagnostics retain their journal view. MCP and public host
+operations serialize `owned_service.public_result`, an explicit projection that
+excludes profile homes, owner/sender records, reservations and process controls.
+See [owned results](owned-result.schema.json) for the preserved public facts.
+
+CLI worker approval binds the retained user question to an invocation/worker/
+display fingerprint, then supplies that same fingerprint to the locked backend
+answer operation. Changes after display are refused before approval is written.
+An older unbound worker-approval ask cannot be upgraded to a new snapshot; it
+remains separately inspectable/closable. Explicit folder-command consent keeps
+its existing behavior. A denial remains a narrowing action and does not acquire
+a new permission. CLI terminal, retained input, MCP and host UI still collect
+their own real user evidence rather than trusting an agent-supplied yes.
