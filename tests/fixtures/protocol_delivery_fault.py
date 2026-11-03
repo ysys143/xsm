@@ -77,6 +77,12 @@ try:
                     reply['error'] = {'code': -32603, 'message': 'synthetic internal error'}
                 if fault == 'questions-erases-acked-answer' and value.get('status') == 'replied' and value.get('claims') == []:
                     value['replies'] = []
+            if params.get('operation') == 'xsm_decide' and 'decision' in reply.get('result', {}):
+                if fault == 'decision-missing-producer':
+                    reply['result'].pop('decision')
+                if fault == 'decision-recorded-flipped':
+                    value = reply['result']['decision']
+                    value['recorded'] = not value['recorded']
             if params.get('operation') == 'xsm_approve' and 'approval' in reply.get('result', {}):
                 if fault == 'approval-missing-producer':
                     reply['result'].pop('approval')

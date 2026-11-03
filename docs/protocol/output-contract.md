@@ -385,3 +385,19 @@ A recorded host `deny` for the same complete display/scope is relayed to the
 exact pending worker request on retry; it is not permission to perform the
 operation. Closing the human decision alone must not strand a worker waiting
 for its negative answer. A later call can report no-waiting after denial.
+
+## User answer and board decision receipts
+
+`xsm_decide` preserves its display text and returns a `decision` receipt when a
+verified answer is available. Without a team, `recorded=false` carries question,
+answer, options and via; it records no team decision. With a team,
+`recorded=true` carries the explicit public board `record` projection, optional
+node id and sync notes. A recorded answer is neither general permission nor
+proof that the selected strategy or task was executed. Sync notes do not prove
+remote delivery. The [decision result schema](decision-result.schema.json)
+and [examples](decision-result-examples.json) also cover pending and legacy
+unanswered text. Clients must not infer recorded state from display text.
+
+Retry of an applied operation preserves the original receipt. A changed request
+or scope still requires its own verified answer. Error responses retain the
+existing JSON-RPC error contract.

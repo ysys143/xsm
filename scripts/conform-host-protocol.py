@@ -614,13 +614,17 @@ def collaboration(peer, params, check, equal):
               answer='bounded', source_id='synthetic-board-conformance-answer'))
     check('answer receipt does not write board decision', lambda: equal(
           operation('xsm_board', action='decisions', team=name)['decisions'], []))
-    operation('xsm_decide', **args)
+    receipt = operation('xsm_decide', **args)
+    check('board decision returns structured recorded receipt', lambda: equal(
+          receipt['decision']['recorded'] is True and receipt['decision']['record']['answer'] == 'bounded', True))
+    check('board decision replay preserves receipt', lambda: equal(operation('xsm_decide', **args), receipt))
     records = operation('xsm_board', action='decisions', team=name)['decisions']
     check('retry persists host sourced board decision', lambda: equal(len(records) == 1 and
           records[0]['answer'] == 'bounded' and records[0]['via'] == 'host-user' and
           records[0]['team'] == name and records[0]['item'] == item and
           records[0]['options'] == ['bounded', 'none'] and 'node' not in records[0] and
           'sync_notes' not in records[0], True))
+    check('board receipt matches persisted projection', lambda: equal(receipt['decision']['record'], records[0]))
     final = operation('xsm_board', action='log', team=name, item=item)['nodes']
     check('decision reference resolves to persisted record', lambda: equal(len(final) == 3 and
           len([n for n in final if n.get('decision') == records[0]['id'] and n['author_kind'] == 'human']) == 1,
@@ -660,6 +664,9 @@ def decisions(peer, params, check, equal):
     check("identical answer replay is idempotent", lambda: equal(peer.call("decision.response", answer), stored))
     check("stored answer cannot be overwritten", lambda: peer.call("decision.response", dict(answer, answer="green"), error=-32003))
     applied = operation("xsm_decide", **args)
+    check("no team answer has an explicit unrecorded receipt", lambda: equal(
+          applied['decision'] == dict(recorded=False, question=args['question'], answer='blue',
+              options=args['options'], via='host-user'), True))
     check("original operation retry applies stored answer", lambda: equal("blue" in json.dumps(applied) and
           operation("xsm_decision_status", id=pending["decision_id"])["status"] == "applied", True))
     second_args = dict(args, question="Fixture: another color", decision_key="wire-second")

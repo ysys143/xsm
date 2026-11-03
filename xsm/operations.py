@@ -676,9 +676,11 @@ class OperationService:
         if not team:
             # The answer is the person's and goes back to the agent; the record
             # lives beside a team's board, and there is none (T11).
-            return ("your user answered: %s\nIt is not recorded as a decision: this session is in "
+            return OperationDisplay("your user answered: %s\nIt is not recorded as a decision: this session is in "
                     "no team, and a decision is kept beside a team's board (`xsm team create "
-                    "<name>` makes one)." % answer)
+                    "<name>` makes one)." % answer, {'decision': {
+                        'recorded': False, 'question': question, 'answer': answer,
+                        'options': options or None, 'via': self.answer_source()}})
         summary = (args.get("summary") or "").strip()
         from . import board
         try:
@@ -687,10 +689,17 @@ class OperationService:
                                         asked_question=args.get("original_question") if self.answer_source() == "native-user" else None)
         except board.BoardError as exc:
             raise ToolError("%s; the answer was %r and is not recorded" % (exc, answer))
-        return "\n".join(["recorded decision %s beside team %s's board%s: %s%s" % (
+        text = "\n".join(["recorded decision %s beside team %s's board%s: %s%s" % (
             rec["id"], team, " (the one team this session is in)" if inferred else "", answer,
             " (item %s set)" % item if rec.get("node") else "")]
             + (rec.get("sync_notes") or []))
+        # Explicit projection: never expose future backend-only record fields.
+        receipt = {key: rec[key] for key in ('id', 't', 'team', 'question', 'answer',
+                   'options', 'decided_by', 'via', 'asked_by', 'item')}
+        if 'asked_question' in rec:
+            receipt['asked_question'] = rec['asked_question']
+        return OperationDisplay(text, {'decision': {'recorded': True, 'record': receipt,
+            'node': rec.get('node'), 'sync_notes': rec.get('sync_notes') or []}})
 
     def endorse(self, me: dict, args: dict) -> str:
         from . import doc

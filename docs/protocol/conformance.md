@@ -255,3 +255,9 @@ this suite is not storage-independent participant certification. It launches no
 worker and certifies no native UI, actual person, or execution effect.
 The offline [approval schema](approval-result.schema.json) validates these wire
 results and rejects unknown/private fields and malformed request identifiers.
+
+The `decisions` suite requires an explicit unrecorded answer receipt when there
+is no team. The `collaboration` suite requires a recorded decision receipt equal
+to the persisted public board projection and unchanged on retry. Fault proxies
+that remove the receipt or flip `recorded` must fail the recorded-receipt check.
+These remain synthetic host answers, not real-user UI certification.

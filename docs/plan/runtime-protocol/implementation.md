@@ -2714,3 +2714,10 @@ source 변이3개를 모두 assertion 실패로 검출했다(node-control-mutant
 ID 제약 제거 변이1개와 wire 결함2종을 검증했다. Mac core908개는76.030초에
 통과했다. 합성 worker 상태를 사용하는 검사이며 실제 사람/native UI 검증은 미완이다.
 Domain schema가 없는 operation은7개이며 team/board의 일부 action도 남아 있다.
+
+## 사용자 답·팀 결정 receipt — 2026-11-03
+
+[결정 결과 계약](decision-contract.md)에 팀에 기록한 답과 팀 없이 받은 답의
+structured receipt를 추가했다. 격리 stdio77개 검사와 frame95개, 예제4개·거부9개,
+ID 변이1개와 wire 결함2종을 검증했다. Mac core909개는77.157초에 통과했다.
+실제 사람/native UI 인증이 아니며 미정의 operation6개와 전체 계획이 남아 있다.

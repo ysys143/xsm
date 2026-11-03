@@ -1,0 +1,202 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:xsm:host-protocol:1:decision-result",
+  "title": "User answer receipt and optional board decision snapshot; not permission or task completion",
+  "oneOf": [
+    {
+      "type": "object",
+      "required": [
+        "text",
+        "decision"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "text": {
+          "type": "string"
+        },
+        "decision": {
+          "oneOf": [
+            {
+              "type": "object",
+              "required": [
+                "recorded",
+                "record",
+                "node",
+                "sync_notes"
+              ],
+              "additionalProperties": false,
+              "properties": {
+                "recorded": {
+                  "const": true
+                },
+                "record": {
+                  "$ref": "#/$defs/record"
+                },
+                "node": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "pattern": "^[0-9a-f]{12}(?![\\s\\S])"
+                },
+                "sync_notes": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            {
+              "type": "object",
+              "required": [
+                "recorded",
+                "question",
+                "answer",
+                "options",
+                "via"
+              ],
+              "additionalProperties": false,
+              "properties": {
+                "recorded": {
+                  "const": false
+                },
+                "question": {
+                  "type": "string"
+                },
+                "answer": {
+                  "type": "string"
+                },
+                "options": {
+                  "type": [
+                    "array",
+                    "null"
+                  ],
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "via": {
+                  "enum": [
+                    "mcp-elicitation",
+                    "native-user",
+                    "host-user",
+                    "terminal"
+                  ]
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type": "object",
+      "required": [
+        "text"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "text": {
+          "type": "string"
+        }
+      }
+    },
+    {
+      "$ref": "#/$defs/awaiting"
+    }
+  ],
+  "$defs": {
+    "record": {
+      "type": "object",
+      "required": [
+        "id",
+        "t",
+        "team",
+        "question",
+        "answer",
+        "options",
+        "decided_by",
+        "via",
+        "asked_by",
+        "item"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{12}(?![\\s\\S])"
+        },
+        "t": {
+          "type": "number"
+        },
+        "team": {
+          "type": "string"
+        },
+        "question": {
+          "type": "string"
+        },
+        "answer": {
+          "type": "string"
+        },
+        "options": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "type": "string"
+          }
+        },
+        "decided_by": {
+          "type": "string"
+        },
+        "via": {
+          "enum": [
+            "mcp-elicitation",
+            "native-user",
+            "host-user",
+            "terminal"
+          ]
+        },
+        "asked_by": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "item": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "asked_question": {
+          "type": "string"
+        }
+      }
+    },
+    "awaiting": {
+      "type": "object",
+      "required": [
+        "status",
+        "decision_id",
+        "question_id"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "status": {
+          "const": "waiting-for-user"
+        },
+        "decision_id": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}(?![\\s\\S])"
+        },
+        "question_id": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    }
+  }
+}

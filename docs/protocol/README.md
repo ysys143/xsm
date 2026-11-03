@@ -27,6 +27,7 @@ Explicit consumption: [ACK results, idempotence and batch recovery](ack-contract
 Human approval readback: [decision status results](decision-status-result.schema.json).
 Worker approval issuance: [grant result structures](grant-result.schema.json).
 Individual worker permission answers: [approval results](approval-result.schema.json).
+User answer and board recording: [decision receipts](decision-result.schema.json).
 Owned native execution: [provider admission, pre-turn binding and recovery](native-workers.md).
 External verification: [stdio lifecycle and delivery conformance](conformance.md) (partial contract coverage).
 

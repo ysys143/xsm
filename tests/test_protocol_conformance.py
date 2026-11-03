@@ -183,7 +183,7 @@ class ExternalConformanceTest(unittest.TestCase):
     def test_actual_server_collaboration_contract(self):
         result = checker.run(self.delivery_candidate('none'), suite='collaboration', capture=True)
         self.assertEqual(result['status'], 'passed', result)
-        self.assertEqual(len(result['checks']), 28)
+        self.assertEqual(len(result['checks']), 31)
         records = [r['frame']['result']['decisions'] for r in result['observations']
                    if r.get('operation') == 'xsm_board' and r.get('action') == 'decisions'
                    and 'result' in r['frame']]
@@ -248,7 +248,7 @@ class ExternalConformanceTest(unittest.TestCase):
     def test_actual_host_decision_contract(self):
         result = checker.run(self.delivery_candidate('none'), suite='decisions', capture=True)
         self.assertEqual(result['status'], 'passed', {k: v for k, v in result.items() if k != 'observations'})
-        self.assertEqual(len(result['checks']), 45)
+        self.assertEqual(len(result['checks']), 46)
         methods = {e.get('method') for e in result['observations'] if 'result' in e['frame']}
         self.assertIn('decision.response', methods)
         self.assertIn('decision.abandon', methods)
@@ -277,3 +277,10 @@ class ExternalConformanceTest(unittest.TestCase):
                 result = checker.run(self.delivery_candidate(fault), suite='approvals')
                 self.assertEqual(result['status'], 'failed', result)
                 self.assertEqual(result['activeCheck'], 'approved snapshot binds exact request')
+
+    def test_worker_board_decision_wire_defects_are_detected(self):
+        for fault in ('decision-missing-producer', 'decision-recorded-flipped'):
+            with self.subTest(fault=fault):
+                result = checker.run(self.delivery_candidate(fault), suite='collaboration')
+                self.assertEqual(result['status'], 'failed', result)
+                self.assertEqual(result['activeCheck'], 'board decision returns structured recorded receipt')

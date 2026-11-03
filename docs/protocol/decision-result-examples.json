@@ -1,0 +1,58 @@
+[
+  {
+    "source": "isolated stdio synthetic host: board-wire",
+    "result": {
+      "status": "waiting-for-user",
+      "decision_id": "0000000000000000000000000000000000000000000000000000000000000000",
+      "question_id": "fixture-question"
+    }
+  },
+  {
+    "source": "isolated stdio synthetic host: board-wire",
+    "result": {
+      "decision": {
+        "recorded": true,
+        "record": {
+          "id": "0123456789ab",
+          "t": 1,
+          "team": "contract-probe",
+          "question": "Fixture: cache strategy",
+          "answer": "bounded",
+          "options": [
+            "bounded",
+            "none"
+          ],
+          "decided_by": "person (person via host-user)",
+          "via": "host-user",
+          "asked_by": "fixture-owner",
+          "item": "decision: cache"
+        },
+        "node": "abcdef012345",
+        "sync_notes": []
+      },
+      "text": "fixture recorded decision"
+    }
+  },
+  {
+    "source": "isolated stdio synthetic host: no-team-wire",
+    "result": {
+      "decision": {
+        "recorded": false,
+        "question": "Fixture: choose a color",
+        "answer": "blue",
+        "options": [
+          "blue",
+          "green"
+        ],
+        "via": "host-user"
+      },
+      "text": "fixture answer without team"
+    }
+  },
+  {
+    "source": "legacy unanswered text envelope fixture",
+    "result": {
+      "text": "user did not answer; nothing was recorded"
+    }
+  }
+]
