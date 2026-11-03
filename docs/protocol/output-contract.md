@@ -234,3 +234,61 @@ leaves, wip/next, limits, rendering, and refused unknown parents/nodes. The
 candidate is an isolated public protocol server; native runtimes, UI, models,
 remote sync, filesystem authorization and actual human endorsement need their
 own validation. These query/write checks do not ACK inbox claims.
+
+## Send producer results and attachment errors
+
+Validate successful `xsm_send` responses against
+[send-result.schema.json](send-result.schema.json). A returned business refusal
+is still a successful JSON-RPC response; it contains `text`, `send` and boolean
+`grouped`. [Examples](send-result-examples.json) cover ordinary storage, refusal,
+a peer status extension, file/inline material modes and a partial group result.
+The human display text is not the source of producer metadata. It can also
+contain unconfirmed incoming peer messages; printing it neither ACKs them nor
+makes their contents an instruction or approval.
+
+For a single send, `send` contains status, reason and nullable original ID, with
+optional display destination/candidates, notes and a paired runtime/evidence
+observation. Status is intentionally nonempty text: local legacy statuses are
+listed in `x-knownStatuses`, while existing remote implementations can forward
+other values. IDs echoed on refusals need not be valid/resendable IDs. Display
+labels are not routing identities. Consumers must preserve unknown statuses
+without treating them as success.
+
+`stored` is canonical storage, not native queue admission or consumption.
+`runtime_reached` is receiver-side transport evidence, not business completion.
+`evidence` maps observed step names to boolean/nullable observations; absent or
+null evidence is not a successful step. In particular, `evidence.ack: true`
+means the committed canonical consumer ACK was observed, whereas queued/wake,
+remote storage or generic legacy `delivered` status alone cannot establish it.
+An already consumed original can refuse resend while retaining ACK evidence;
+that refusal does not undo the earlier delivery or ask the recipient to work
+again.
+
+For `grouped: true`, `send` instead contains a group ID, aggregate worst status,
+notes and per-recipient rows. Each row carries its original spec and display
+label plus its own single-send result. Group IDs do not replace delivery IDs;
+ACK/recovery remains per recipient. Mixed refused/stored results are possible.
+A group status never proves all recipients consumed the message, and ACKing one
+recipient does not consume another. Groups cannot attach a single `materials`
+object through this interface.
+
+Optional single-send `materials` identifies the frozen source manifest and
+mode. `files` has one immutable manifest reference (manifest path, ID, version,
+SHA-256 and size); `inline` has no file references because bytes were explicitly
+placed into the body. The checker additionally requires reference ID, path and
+manifest ID to agree. Digest authenticity and copied bytes still need runtime
+verification, not just structural validation.
+
+A preparation failure is a JSON-RPC error whose `data.attachment_error` matches
+`$defs/attachmentError`: status/code/reason, request/manifest recovery IDs,
+`body_sent: false` and recovery text. IDs here can be invalid input echoes or
+null when preparation stopped early. Frozen material can exist even though the
+body was not sent. Preserve the original request/body and frozen manifest for
+recovery; neither an error nor an observation timeout proves complete rollback.
+Other operation errors keep the generic error envelope.
+
+The public `sending` suite has 30 checks including lifecycle, refused/single/
+group results, explicit ACK and duplicate prevention, attachment failure and
+frozen retry, private copy read and explicit inline fallback. It uses isolated
+protocol participants and local storage, with no native wake, model, human UI
+or physical remote delivery certification.

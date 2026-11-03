@@ -272,6 +272,79 @@ def messaging(peer, sender, receiver, reopen, check, equal, events=False):
               tokens=[pending["claims"][0]["token"]])["acked"], event["params"]["ids"]))
 
 
+def sending(peer, sender, receiver, params, check, equal):
+    def operation(owner, name, error=None, **arguments):
+        return peer.call('operation.call', dict(session=owner['session'], operation=name,
+                         arguments=arguments), error=error)
+    def send(owner=sender, **arguments):
+        return operation(owner, 'xsm_send', wait=0, wake='never', **arguments)
+    target = 'ref:' + receiver['ref']
+    refused = send(target='ref:000000', text='refused fixture')
+    check('send refusal retains producer result', lambda: equal(refused['grouped'] is False and
+          refused['send']['status'] == 'refused' and isinstance(refused['text'], str), True))
+    body = 'Fixture stored before explicit consumption'
+    original = send(target=target, text=body, request_id='send-contract-original')
+    check('send storage is not native arrival or ACK', lambda: equal(original['grouped'] is False and
+          original['send']['id'] == 'send-contract-original' and original['send']['status'] == 'stored' and
+          original['send']['runtime_reached'] is False and original['send']['evidence']['stored'] is True and
+          original['send']['evidence'].get('ack') is not True, True))
+    packet = operation(receiver, 'xsm_inbox', message_ids=[original['send']['id']])
+    claim = packet['claims'][0]
+    peer.call('delivery.report', dict(session=receiver['session'], id=claim['id'],
+              state='admitted', token=claim['token']))
+    check('admission keeps original claim available', lambda: equal(operation(receiver, 'xsm_inbox',
+          message_ids=[claim['id']])['claims'], packet['claims']))
+    operation(receiver, 'xsm_ack', tokens=[claim['token']])
+    replay = send(target=target, text=body, resend=claim['id'])
+    check('consumed original refuses resend and retains ACK evidence', lambda: equal(replay['send']['id'] == claim['id'] and
+          replay['send']['status'] == 'refused' and replay['send']['evidence']['ack'] is True and
+          operation(receiver, 'xsm_inbox', message_ids=[claim['id']])['claims'] == [], True))
+    other = peer.call('session.open', dict(params, conversation='send-contract-other'))
+    other_target = 'ref:' + other['ref']
+    group = send(targets=[target, other_target, 'ref:000000'], text='Fixture group body')
+    rows = group['send']['recipients']
+    check('group result keeps partial per recipient outcomes', lambda: equal(group['grouped'] is True and
+          group['send']['status'] == 'refused' and len(rows) == 3 and
+          [r['status'] for r in rows] == ['stored', 'stored', 'refused'] and rows[2]['id'] is None, True))
+    check('group delivery IDs are independent of group ID', lambda: equal(len({
+          group['send']['group'], rows[0]['id'], rows[1]['id']}) == 3, True))
+    first_packet = operation(receiver, 'xsm_inbox', message_ids=[rows[0]['id']])
+    check('group recipient sees its own original and other recipient note', lambda: equal(
+          [c['id'] for c in first_packet['claims']] == [rows[0]['id']] and
+          'also sent to:' in first_packet['messages'][0] and 'Fixture group body' in first_packet['messages'][0], True))
+    operation(receiver, 'xsm_ack', tokens=[c['token'] for c in first_packet['claims']])
+    other_packet = operation(other, 'xsm_inbox', message_ids=[rows[1]['id']])
+    check('one group ACK does not consume another recipient', lambda: equal(
+          [c['id'] for c in other_packet['claims']], [rows[1]['id']]))
+    operation(other, 'xsm_ack', tokens=[c['token'] for c in other_packet['claims']])
+    fresh = peer.call('session.open', dict(params, conversation='send-contract-fresh'))
+    fresh_target = 'ref:' + fresh['ref']
+    args = dict(target=fresh_target, text='Fixture frozen body', request_id='send-contract-files',
+                attachments=[{'name': 'fixture.txt', 'text': 'Fixture frozen bytes'}])
+    failure = operation(sender, 'xsm_send', error=-32602, wake='never', wait=0, **args)['data']['attachment_error']
+    check('attachment refusal retains frozen recovery identity', lambda: equal(failure['body_sent'] is False and
+          failure['request_id'] == args['request_id'] and isinstance(failure['manifest_id'], str), True))
+    check('attachment refusal did not send a body', lambda: equal(operation(fresh, 'xsm_inbox')['claims'], []))
+    copied = send(target=fresh_target, text=args['text'], request_id=args['request_id'], manifest_id=failure['manifest_id'])
+    check('retry reuses frozen manifest as structured material', lambda: equal(copied['send']['id'] == args['request_id'] and
+          copied['materials']['manifest_id'] == failure['manifest_id'] and copied['materials']['mode'] == 'files' and
+          len(copied['materials']['references']) == 1 and copied['materials']['references'][0]['id'] == failure['manifest_id'], True))
+    copied_packet = operation(fresh, 'xsm_inbox', message_ids=[copied['send']['id']])
+    metadata = copied_packet['items'][0]['files']
+    content = operation(fresh, 'xsm_files', storage_id=metadata['storage_id'], entry_id=metadata['files'][0]['id'])
+    check('structured material drives receiver private copy read', lambda: equal(content['content'], 'Fixture frozen bytes'))
+    operation(fresh, 'xsm_ack', tokens=[c['token'] for c in copied_packet['claims']])
+    inline_owner = peer.call('session.open', dict(params, conversation='send-contract-inline'))
+    inline = send(target='ref:' + inline_owner['ref'], text='Fixture inline body', request_id='send-contract-inline',
+                  attachments=[{'name': 'inline.txt', 'text': 'Fixture inline bytes'}], attachment_fallback='inline')
+    check('explicit inline fallback has no file references', lambda: equal(inline['materials']['mode'] == 'inline' and
+          inline['materials']['references'] == [], True))
+    inline_packet = operation(inline_owner, 'xsm_inbox', message_ids=[inline['send']['id']])
+    check('inline fallback arrives as body rather than invented attachment', lambda: equal(
+          'Fixture inline bytes' in inline_packet['messages'][0] and 'files' not in inline_packet['items'][0], True))
+    operation(inline_owner, 'xsm_ack', tokens=[c['token'] for c in inline_packet['claims']])
+
+
 def documents(peer, owner, check, equal):
     def operation(action, error=None, **arguments):
         return peer.call('operation.call', {'session': owner['session'], 'operation': 'xsm_doc',
@@ -533,6 +606,9 @@ def run(command, suite="lifecycle", capture=False):
             if suite == 'discovery':
                 result['scope'] = 'lifecycle and local public discovery; no physical remote, native UI or messenger certification'
                 discovery(b, reopened, resumed, check, equal)
+            if suite == 'sending':
+                result['scope'] = 'lifecycle and send producer/group/material metadata; no native wake, human UI or physical remote certification'
+                sending(b, reopened, resumed, params, check, equal)
             if suite == 'documents':
                 result['scope'] = 'lifecycle and document graph operations; no native runtime, human endorsement or remote certification'
                 documents(b, reopened, check, equal)
@@ -550,7 +626,7 @@ def run(command, suite="lifecycle", capture=False):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--capture", action="store_true", help="include isolated wire observations in the report")
-    parser.add_argument("--suite", choices=("lifecycle", "messaging", "events", "decisions", "uploads", "discovery", "collaboration", "documents"), default="lifecycle")
+    parser.add_argument("--suite", choices=("lifecycle", "messaging", "events", "decisions", "uploads", "discovery", "collaboration", "documents", "sending"), default="lifecycle")
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--command", nargs=argparse.REMAINDER, required=True)
     args = parser.parse_args()

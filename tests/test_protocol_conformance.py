@@ -87,6 +87,29 @@ class ExternalConformanceTest(unittest.TestCase):
         self.assertIsNone(result['activeCheck'])
         self.assertIn('FileNotFoundError', result['error'])
 
+    def test_actual_server_send_contract(self):
+        result = checker.run(self.delivery_candidate('none'), suite='sending', capture=True)
+        self.assertEqual(result['status'], 'passed', result)
+        self.assertEqual(len(result['checks']), 30)
+        sent = [row['frame'] for row in result['observations'] if row.get('operation') == 'xsm_send']
+        self.assertEqual(len(sent), 7)
+        self.assertEqual(sum('error' in frame for frame in sent), 1)
+
+    def test_send_storage_claiming_native_arrival_is_detected(self):
+        result = checker.run(self.delivery_candidate('send-storage-as-arrival'), suite='sending')
+        self.assertEqual(result['status'], 'failed', result)
+        self.assertEqual(result['activeCheck'], 'send storage is not native arrival or ACK')
+
+    def test_send_group_reusing_a_recipient_id_is_detected(self):
+        result = checker.run(self.delivery_candidate('send-group-shared-id'), suite='sending')
+        self.assertEqual(result['status'], 'failed', result)
+        self.assertEqual(result['activeCheck'], 'group delivery IDs are independent of group ID')
+
+    def test_send_attachment_failure_claiming_body_sent_is_detected(self):
+        result = checker.run(self.delivery_candidate('send-failure-body-sent'), suite='sending')
+        self.assertEqual(result['status'], 'failed', result)
+        self.assertEqual(result['activeCheck'], 'attachment refusal retains frozen recovery identity')
+
     def test_actual_server_document_contract(self):
         result = checker.run(self.delivery_candidate('none'), suite='documents', capture=True)
         self.assertEqual(result['status'], 'passed', result)

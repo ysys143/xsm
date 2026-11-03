@@ -59,6 +59,14 @@ try:
             params.get('arguments', {}).pop('message_ids', None)
         reply = exchange(request)
         if request['method'] == 'operation.call':
+            if params.get('operation') == 'xsm_send':
+                value = reply.get('result', {})
+                if fault == 'send-storage-as-arrival' and not value.get('grouped') and value.get('send', {}).get('status') == 'stored':
+                    value['send']['runtime_reached'] = True
+                if fault == 'send-group-shared-id' and value.get('grouped') and len(value['send']['recipients']) >= 2:
+                    value['send']['recipients'][1]['id'] = value['send']['recipients'][0]['id']
+                if fault == 'send-failure-body-sent' and 'attachment_error' in reply.get('error', {}).get('data', {}):
+                    reply['error']['data']['attachment_error']['body_sent'] = True
             if params.get('operation') == 'xsm_doc' and params.get('arguments', {}).get('action') == 'next' and 'result' in reply:
                 if fault == 'doc-wip-hides-candidate':
                     reply['result']['candidates'] = [c for c in reply['result']['candidates'] if not c.get('wip')]

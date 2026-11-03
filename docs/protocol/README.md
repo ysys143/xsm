@@ -17,6 +17,9 @@ Team and board query projections: [team results](team-result.schema.json),
 [board results](board-result.schema.json),
 [document results](doc-result.schema.json); public `collaboration`/`documents` suites and
 semantic limits are described in the output contract.
+[Send producer results](send-result.schema.json) and the public `sending` suite
+cover local single/group/material response contracts; native delivery still
+requires its own evidence.
 Explicit consumption: [ACK results, idempotence and batch recovery](ack-contract.md).
 Owned native execution: [provider admission, pre-turn binding and recovery](native-workers.md).
 External verification: [stdio lifecycle and delivery conformance](conformance.md) (partial contract coverage).

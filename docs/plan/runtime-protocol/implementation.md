@@ -93,6 +93,16 @@ validator 실행으로 소급하지 않는다.
 고정891dae3의 Linux core866개도3.11에서87.832초,3.14에서109.868초에
 통과했으며 격리 VM 종료를 확인했다.
 
+## 송신 결과 공개 계약 — 2026-11-03
+
+[송신 계약 검증](send-contract.md)에 단일/그룹 producer metadata와
+file/inline material, 첨부 오류의 계약을 추가했다. 공개 stdio30개와 frame42개를
+검증했고 구조 예제6개·거부15개 및 오류 예제1개·거부2개를 확인했다. 저장을
+runtime 도달로 오인하는 등 wire 결함3종을 검출했다. ACK 후 resend 기대가
+틀린 최초 실패는 보존했고 기존 서버 의미를 유지했다. Native/remote/UI/전체
+계획 완료를 뜻하지 않는다. Mac core870개가107.777초에 통과했고
+실제 wire의 manifest 결속/오류 body_sent 변이2개도 검사기가 거부했다.
+
 ## 단계별 판정
 
 | 단계 | 상태 | 남은 조건 |

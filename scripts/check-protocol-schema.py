@@ -6,9 +6,18 @@ import importlib.metadata
 import json
 from pathlib import Path
 
-from jsonschema import Draft202012Validator
+from jsonschema import Draft202012Validator, ValidationError
 
 ROOT = Path(__file__).resolve().parents[1]
+
+
+def validate_send_result(value, schema):
+    Draft202012Validator(schema).validate(value)
+    materials = value.get('materials')
+    if materials and materials['mode'] == 'files':
+        ref = materials['references'][0]
+        if ref['id'] != materials['manifest_id'] or ref['path'] != 'manifest:' + ref['id']:
+            raise ValueError('send material reference differs from frozen manifest')
 
 
 def output_contract(trace=None):
@@ -40,6 +49,8 @@ def output_contract(trace=None):
     Draft202012Validator.check_schema(board_schema)
     doc_schema = json.loads((ROOT / 'docs/protocol/doc-result.schema.json').read_text())
     Draft202012Validator.check_schema(doc_schema)
+    send_schema = json.loads((ROOT / 'docs/protocol/send-result.schema.json').read_text())
+    Draft202012Validator.check_schema(send_schema)
     inbox_observed = 0
     inbox_empty = dict(messages=[], claims=[], items=[], inbox_pending=0)
     inbox_file = dict(messages=['fixture'], claims=[dict(id='original', token='opaque-token',
@@ -64,9 +75,16 @@ def output_contract(trace=None):
         nonlocal inbox_observed
         frame = observation['frame']
         validator.validate(frame)
+        if observation.get('operation') == 'xsm_send' and 'error' in frame:
+            data = frame['error'].get('data')
+            if isinstance(data, dict) and 'attachment_error' in data:
+                Draft202012Validator({'$ref': '#/$defs/attachmentError',
+                                      '$defs': send_schema['$defs']}).validate(data['attachment_error'])
         if 'result' in frame:
             definition = schema['x-methodResults'][observation['method']]
             Draft202012Validator({'$ref': definition, '$defs': schema['$defs']}).validate(frame['result'])
+            if observation.get('operation') == 'xsm_send':
+                validate_send_result(frame['result'], send_schema)
             if observation.get('operation') == 'xsm_inbox':
                 inbox_validator.validate(frame['result'])
                 if [item['id'] for item in frame['result']['items']] != [claim['id'] for claim in frame['result']['claims']]:
@@ -143,6 +161,51 @@ def ack_contract():
             raise ValueError('invalid ACK result accepted: ' + repr(value))
     return dict(examples=len(examples), rejected=len(invalid),
                 scope='successful result structure; batch errors may follow earlier durable acknowledgements')
+
+
+def send_contract():
+    schema = json.loads((ROOT / 'docs/protocol/send-result.schema.json').read_text())
+    examples = json.loads((ROOT / 'docs/protocol/send-result-examples.json').read_text())
+    Draft202012Validator.check_schema(schema)
+    for value in examples:
+        validate_send_result(value, schema)
+    invalid = []
+    for index, path, value in (
+            (0, ['grouped'], True), (0, ['send', 'runtime_reached'], 'yes'),
+            (0, ['send', 'evidence', 'ack'], 'true'), (0, ['send', 'id'], True),
+            (0, ['send', 'acknowledged'], True), (0, ['send', 'status'], ''),
+            (3, ['materials', 'references'], []),
+            (3, ['materials', 'references', 0, 'size'], -1),
+            (3, ['materials', 'references', 0, 'sha256'], 'not-a-digest'),
+            (3, ['materials', 'references', 0, 'id'], 'c' * 32),
+            (3, ['materials', 'references', 0, 'path'], 'manifest:' + 'c' * 32),
+            (5, ['send', 'recipients', 0, 'spec'], None),
+            (5, ['materials'], examples[3]['materials'])):
+        bad = copy.deepcopy(examples[index])
+        target = bad
+        for part in path[:-1]:
+            target = target[part]
+        target[path[-1]] = value
+        invalid.append(bad)
+    bad = copy.deepcopy(examples[0]); del bad['send']['evidence']; invalid.append(bad)
+    bad = copy.deepcopy(examples[0]); del bad['send']; invalid.append(bad)
+    for value in invalid:
+        try:
+            validate_send_result(value, schema)
+        except (ValueError, ValidationError):
+            pass
+        else:
+            raise ValueError('invalid send result accepted: ' + repr(value))
+    error = dict(status='attachment-error', code='reader-unknown', reason='fixture',
+                 request_id='original', manifest_id='a' * 32, body_sent=False, recovery='reuse original')
+    validator = Draft202012Validator({'$ref': '#/$defs/attachmentError', '$defs': schema['$defs']})
+    validator.validate(error)
+    rejected_errors = [dict(error, body_sent=True), dict(error, manifest_id=True)]
+    for value in rejected_errors:
+        if validator.is_valid(value):
+            raise ValueError('invalid attachment failure accepted')
+    return dict(examples=len(examples), rejected=len(invalid), attachmentErrors=1,
+                rejectedAttachmentErrors=len(rejected_errors))
 
 
 def doc_contract():
@@ -417,7 +480,7 @@ def run(trace=None):
                 validator='jsonschema', validatorVersion=importlib.metadata.version('jsonschema'),
                 scope='request and output structures; no full operation results or semantic certification',
                 output=output_contract(trace), operations=operations_contract(), files=files_contract(), ack=ack_contract(),
-                discovery=discovery_contract(), team=team_contract(), board=board_contract(), doc=doc_contract())
+                discovery=discovery_contract(), team=team_contract(), board=board_contract(), doc=doc_contract(), send=send_contract())
 
 
 if __name__ == '__main__':

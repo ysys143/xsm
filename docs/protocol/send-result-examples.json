@@ -1,0 +1,113 @@
+[
+  {
+    "text": "stored: fixture",
+    "send": {
+      "status": "stored",
+      "reason": "strict FYI stored",
+      "id": "single-fyi",
+      "runtime_reached": false,
+      "evidence": {
+        "accepted": true,
+        "stored": true
+      }
+    },
+    "grouped": false
+  },
+  {
+    "text": "refused: unknown recipient",
+    "send": {
+      "status": "refused",
+      "reason": "unknown recipient",
+      "id": null,
+      "candidates": [
+        "fixture@host [ref]"
+      ]
+    },
+    "grouped": false
+  },
+  {
+    "text": "unknown: fixture",
+    "send": {
+      "status": "future-peer-status",
+      "reason": "opaque peer extension",
+      "id": "peer-original"
+    },
+    "grouped": false
+  },
+  {
+    "text": "stored: fixture",
+    "send": {
+      "status": "stored",
+      "reason": "strict FYI stored",
+      "id": "single-fyi",
+      "runtime_reached": false,
+      "evidence": {
+        "accepted": true,
+        "stored": true
+      }
+    },
+    "grouped": false,
+    "materials": {
+      "manifest_id": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "mode": "files",
+      "references": [
+        {
+          "path": "manifest:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "id": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "version": 1,
+          "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "size": 10
+        }
+      ]
+    }
+  },
+  {
+    "text": "stored: fixture",
+    "send": {
+      "status": "stored",
+      "reason": "strict FYI stored",
+      "id": "single-fyi",
+      "runtime_reached": false,
+      "evidence": {
+        "accepted": true,
+        "stored": true
+      }
+    },
+    "grouped": false,
+    "materials": {
+      "manifest_id": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "mode": "inline",
+      "references": []
+    }
+  },
+  {
+    "text": "group fixture: partial result",
+    "grouped": true,
+    "send": {
+      "group": "fixture-group",
+      "status": "refused",
+      "notes": [],
+      "recipients": [
+        {
+          "status": "stored",
+          "reason": "strict FYI stored",
+          "id": "single-fyi",
+          "runtime_reached": false,
+          "evidence": {
+            "accepted": true,
+            "stored": true
+          },
+          "spec": "ref:one",
+          "label": "one@fixture"
+        },
+        {
+          "spec": "ref:missing",
+          "label": "ref:missing",
+          "status": "refused",
+          "reason": "unknown recipient",
+          "id": null
+        }
+      ]
+    }
+  }
+]

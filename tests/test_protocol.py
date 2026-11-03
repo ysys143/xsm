@@ -80,14 +80,16 @@ class ProtocolTest(ProtocolFixture):
         for name in ('discovery-result.schema.json', 'discovery-result-examples.json',
                      'team-result.schema.json', 'team-result-examples.json',
                      'board-result.schema.json', 'board-result-examples.json',
-                     'doc-result.schema.json', 'doc-result-examples.json'):
+                     'doc-result.schema.json', 'doc-result-examples.json',
+                     'send-result.schema.json', 'send-result-examples.json'):
             target = root / 'docs/protocol' / name
             target.parent.mkdir(parents=True, exist_ok=True)
             shutil.copyfile(source / 'docs/protocol' / name, target)
         for name in ('discovery-result.schema.json', 'discovery-result-examples.json',
                      'team-result.schema.json', 'team-result-examples.json',
                      'board-result.schema.json', 'board-result-examples.json',
-                     'doc-result.schema.json', 'doc-result-examples.json'):
+                     'doc-result.schema.json', 'doc-result-examples.json',
+                     'send-result.schema.json', 'send-result-examples.json'):
             target = root / 'docs/protocol' / name
             data = target.read_bytes()
             target.unlink()

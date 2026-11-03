@@ -26,8 +26,10 @@ For example, xsm_owned includes admitted native providers for Hermes, Pi,
 OpenCode and OpenClaw beside Claude/Codex. Catalog presence does not certify
 every provider's lifecycle/UI mode. See the
 [native worker boundary](native-workers.md).
-Operation-specific result schemas cover inbox, explicit ACK, received files
-and [discovery](discovery.md). The other operation result contracts remain
+Operation-specific result schemas cover inbox, explicit ACK, received files,
+[discovery](discovery.md), [team queries](team-result.schema.json),
+[board queries](board-result.schema.json), [documents](doc-result.schema.json)
+and [send producer results](send-result.schema.json). The other operation result contracts remain
 incomplete; input validity does not certify their results.
 
 ## Generation and consistency

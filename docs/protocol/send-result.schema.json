@@ -1,0 +1,364 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:xsm:host-protocol:1:send-result",
+  "title": "xsm_send returned producer metadata; business refusal is a result",
+  "oneOf": [
+    {
+      "$ref": "#/$defs/singleResult"
+    },
+    {
+      "$ref": "#/$defs/groupResult"
+    }
+  ],
+  "$defs": {
+    "single": {
+      "type": "object",
+      "required": [
+        "status",
+        "reason",
+        "id"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "status": {
+          "type": "string",
+          "minLength": 1
+        },
+        "reason": {
+          "type": "string"
+        },
+        "id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "notes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "to": {
+          "type": "string"
+        },
+        "candidates": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "runtime_reached": {
+          "type": "boolean"
+        },
+        "evidence": {
+          "type": "object",
+          "additionalProperties": {
+            "type": [
+              "boolean",
+              "null"
+            ]
+          }
+        }
+      },
+      "dependentRequired": {
+        "runtime_reached": [
+          "evidence"
+        ],
+        "evidence": [
+          "runtime_reached"
+        ]
+      },
+      "x-knownStatuses": [
+        "delivered",
+        "sent-unconfirmed",
+        "held",
+        "refused",
+        "error",
+        "blocked",
+        "stored",
+        "unknown"
+      ]
+    },
+    "recipient": {
+      "type": "object",
+      "required": [
+        "status",
+        "reason",
+        "id",
+        "spec",
+        "label"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "status": {
+          "type": "string",
+          "minLength": 1
+        },
+        "reason": {
+          "type": "string"
+        },
+        "id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "notes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "to": {
+          "type": "string"
+        },
+        "candidates": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "runtime_reached": {
+          "type": "boolean"
+        },
+        "evidence": {
+          "type": "object",
+          "additionalProperties": {
+            "type": [
+              "boolean",
+              "null"
+            ]
+          }
+        },
+        "spec": {
+          "type": "string"
+        },
+        "label": {
+          "type": "string"
+        }
+      },
+      "dependentRequired": {
+        "runtime_reached": [
+          "evidence"
+        ],
+        "evidence": [
+          "runtime_reached"
+        ]
+      },
+      "x-knownStatuses": [
+        "delivered",
+        "sent-unconfirmed",
+        "held",
+        "refused",
+        "error",
+        "blocked",
+        "stored",
+        "unknown"
+      ]
+    },
+    "group": {
+      "type": "object",
+      "required": [
+        "group",
+        "status",
+        "notes",
+        "recipients"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "group": {
+          "type": "string",
+          "minLength": 1
+        },
+        "status": {
+          "type": "string",
+          "minLength": 1
+        },
+        "notes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "recipients": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/recipient"
+          }
+        }
+      }
+    },
+    "reference": {
+      "type": "object",
+      "required": [
+        "path",
+        "id",
+        "version",
+        "sha256",
+        "size"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "path": {
+          "type": "string",
+          "pattern": "^manifest:[0-9a-f]{32}(?![\\s\\S])"
+        },
+        "id": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{32}(?![\\s\\S])"
+        },
+        "version": {
+          "const": 1
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}(?![\\s\\S])"
+        },
+        "size": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "materials": {
+      "type": "object",
+      "required": [
+        "manifest_id",
+        "mode",
+        "references"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "manifest_id": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{32}(?![\\s\\S])"
+        },
+        "mode": {
+          "enum": [
+            "files",
+            "inline"
+          ]
+        },
+        "references": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/reference"
+          },
+          "maxItems": 1
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "mode": {
+                "const": "files"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "references": {
+                "minItems": 1
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "references": {
+                "maxItems": 0
+              }
+            }
+          }
+        }
+      ]
+    },
+    "attachmentError": {
+      "type": "object",
+      "required": [
+        "status",
+        "code",
+        "reason",
+        "request_id",
+        "manifest_id",
+        "body_sent",
+        "recovery"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "status": {
+          "const": "attachment-error"
+        },
+        "code": {
+          "type": "string",
+          "minLength": 1
+        },
+        "reason": {
+          "type": "string"
+        },
+        "request_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "manifest_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "body_sent": {
+          "const": false
+        },
+        "recovery": {
+          "type": "string"
+        }
+      }
+    },
+    "singleResult": {
+      "type": "object",
+      "required": [
+        "text",
+        "send",
+        "grouped"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "text": {
+          "type": "string"
+        },
+        "send": {
+          "$ref": "#/$defs/single"
+        },
+        "grouped": {
+          "const": false
+        },
+        "materials": {
+          "$ref": "#/$defs/materials"
+        }
+      }
+    },
+    "groupResult": {
+      "type": "object",
+      "required": [
+        "text",
+        "send",
+        "grouped"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "text": {
+          "type": "string"
+        },
+        "send": {
+          "$ref": "#/$defs/group"
+        },
+        "grouped": {
+          "const": true
+        }
+      }
+    }
+  }
+}
