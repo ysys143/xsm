@@ -81,6 +81,31 @@ class ExternalConformanceTest(unittest.TestCase):
         self.assertEqual(result['status'], 'passed', {k: v for k, v in result.items() if k != 'observations'})
         self.assertEqual(len(result['checks']), 33)
 
+    def test_launch_failure_retains_a_reportable_check_state(self):
+        result = checker.run(['/nonexistent/xsm-conformance-candidate'])
+        self.assertEqual(result['status'], 'failed')
+        self.assertIsNone(result['activeCheck'])
+        self.assertIn('FileNotFoundError', result['error'])
+
+    def test_actual_server_collaboration_contract(self):
+        result = checker.run(self.delivery_candidate('none'), suite='collaboration', capture=True)
+        self.assertEqual(result['status'], 'passed', result)
+        self.assertEqual(len(result['checks']), 28)
+        records = [r['frame']['result']['decisions'] for r in result['observations']
+                   if r.get('operation') == 'xsm_board' and r.get('action') == 'decisions'
+                   and 'result' in r['frame']]
+        self.assertEqual([len(rows) for rows in records], [0, 0, 1])
+
+    def test_collaboration_lost_parent_is_detected(self):
+        result = checker.run(self.delivery_candidate('board-lost-parent'), suite='collaboration')
+        self.assertEqual(result['status'], 'failed', result)
+        self.assertEqual(result['activeCheck'], 'board update links observed predecessor')
+
+    def test_collaboration_wrong_decision_source_is_detected(self):
+        result = checker.run(self.delivery_candidate('board-wrong-source'), suite='collaboration')
+        self.assertEqual(result['status'], 'failed', result)
+        self.assertEqual(result['activeCheck'], 'retry persists host sourced board decision')
+
     def test_actual_server_discovery_contract(self):
         result = checker.run(self.delivery_candidate('none'), suite='discovery', capture=True)
         self.assertEqual(result['status'], 'passed', {k: v for k, v in result.items() if k != 'observations'})

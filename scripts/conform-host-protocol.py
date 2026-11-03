@@ -43,8 +43,12 @@ class Peer:
         self.notifications = []
         self.frames = queue.Queue(maxsize=128)
         self.errors = tempfile.TemporaryFile()
-        self.process = subprocess.Popen(command, cwd=cwd, env=env, stdin=subprocess.PIPE,
-            stdout=subprocess.PIPE, stderr=self.errors)
+        try:
+            self.process = subprocess.Popen(command, cwd=cwd, env=env, stdin=subprocess.PIPE,
+                stdout=subprocess.PIPE, stderr=self.errors)
+        except BaseException:
+            self.errors.close()
+            raise
         self.serial = 0
         def read():
             try:
@@ -268,6 +272,61 @@ def messaging(peer, sender, receiver, reopen, check, equal, events=False):
               tokens=[pending["claims"][0]["token"]])["acked"], event["params"]["ids"]))
 
 
+def collaboration(peer, params, check, equal):
+    """Public query projections and synthetic host decision, never a human UI test."""
+    owner = peer.call('session.open', dict(params, conversation='board-owner', capabilities=['user-decisions']))
+    def operation(name, **arguments):
+        return peer.call('operation.call', {'session': owner['session'], 'operation': name, 'arguments': arguments})
+    name = 'contract-probe'
+    operation('xsm_team', action='create', team=name)
+    listed = operation('xsm_team', action='list')['teams']
+    check('team list contains public labels only', lambda: equal(len(listed) == 1 and
+          set(listed[0]) == {'name', 'lead', 'members'} and listed[0]['name'] == name and
+          listed[0]['lead'] is None and len(listed[0]['members']) == 1 and
+          isinstance(listed[0]['members'][0], str), True))
+    shown = operation('xsm_team', action='show', team=name)
+    check('team show observes current member running', lambda: equal(shown['members'],
+          [{'member': listed[0]['members'][0], 'running': True}]))
+    check('empty board log', lambda: equal(operation('xsm_board', action='log', team=name)['nodes'], []))
+    check('empty board decisions', lambda: equal(operation('xsm_board', action='decisions', team=name)['decisions'], []))
+    item = 'decision: cache'
+    body = 'Fixture contribution: 한글 preserved'
+    operation('xsm_board', action='set', team=name, item=item, text=body)
+    first = operation('xsm_board', action='log', team=name)['nodes']
+    check('board log preserves item body and root', lambda: equal(len(first) == 1 and
+          first[0]['body'] == body and first[0]['item'] == item and first[0]['parents'] == [], True))
+    operation('xsm_board', action='set', team=name, item=item, text='Fixture revision')
+    nodes = operation('xsm_board', action='log', team=name, item=item)['nodes']
+    check('board update links observed predecessor', lambda: equal(len(nodes) == 2 and
+          next(n for n in nodes if n['body'] == 'Fixture revision')['parents'] == [first[0]['id']], True))
+    check('board item filter excludes other items', lambda: equal(
+          operation('xsm_board', action='log', team=name, item='absent')['nodes'], []))
+    args = dict(question='Fixture: cache strategy', options=['bounded', 'none'],
+                decision_key='board-contract-answer', team=name, item=item)
+    pending = operation('xsm_decide', **args)
+    check('board decision status remains pending', lambda: equal(
+          operation('xsm_decision_status', id=pending['decision_id'])['status'], 'pending'))
+    event = peer.notification()['params']
+    check('board decision waits for host answer', lambda: equal(pending['status'] == 'waiting-for-user' and
+          pending['question_id'] == event['questionId'], True))
+    peer.call('decision.response', dict(session=owner['session'], questionId=event['questionId'],
+              challenge=event['challenge'], displayed=event['question'], action='accept',
+              answer='bounded', source_id='synthetic-board-conformance-answer'))
+    check('answer receipt does not write board decision', lambda: equal(
+          operation('xsm_board', action='decisions', team=name)['decisions'], []))
+    operation('xsm_decide', **args)
+    records = operation('xsm_board', action='decisions', team=name)['decisions']
+    check('retry persists host sourced board decision', lambda: equal(len(records) == 1 and
+          records[0]['answer'] == 'bounded' and records[0]['via'] == 'host-user' and
+          records[0]['team'] == name and records[0]['item'] == item and
+          records[0]['options'] == ['bounded', 'none'] and 'node' not in records[0] and
+          'sync_notes' not in records[0], True))
+    final = operation('xsm_board', action='log', team=name, item=item)['nodes']
+    check('decision reference resolves to persisted record', lambda: equal(len(final) == 3 and
+          len([n for n in final if n.get('decision') == records[0]['id'] and n['author_kind'] == 'human']) == 1,
+          True))
+
+
 def decisions(peer, params, check, equal):
     ui_params = dict(params, conversation="decision-owner", capabilities=["user-decisions"])
     owner = peer.call("session.open", ui_params)
@@ -370,7 +429,7 @@ def discovery(peer, first, second, check, equal):
 
 
 def run(command, suite="lifecycle", capture=False):
-    result = {"suite": "xsm-host-" + suite + "-v1", "status": "running", "checks": [],
+    result = {"suite": "xsm-host-" + suite + "-v1", "status": "running", "checks": [], "activeCheck": None,
               "scope": "stdio negotiation and participation only; no operations, delivery or UI certification"}
     peers = []
     observations = [] if capture else None
@@ -436,6 +495,9 @@ def run(command, suite="lifecycle", capture=False):
             if suite == 'discovery':
                 result['scope'] = 'lifecycle and local public discovery; no physical remote, native UI or messenger certification'
                 discovery(b, reopened, resumed, check, equal)
+            if suite == 'collaboration':
+                result['scope'] = 'lifecycle, team/board queries and synthetic host decision; no human or native UI certification'
+                collaboration(b, params, check, equal)
             result.update(status="passed", activeCheck=None)
         except Exception as error:
             result.update(status="failed", error=repr(error))
@@ -447,7 +509,7 @@ def run(command, suite="lifecycle", capture=False):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--capture", action="store_true", help="include isolated wire observations in the report")
-    parser.add_argument("--suite", choices=("lifecycle", "messaging", "events", "decisions", "uploads", "discovery"), default="lifecycle")
+    parser.add_argument("--suite", choices=("lifecycle", "messaging", "events", "decisions", "uploads", "discovery", "collaboration"), default="lifecycle")
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--command", nargs=argparse.REMAINDER, required=True)
     args = parser.parse_args()

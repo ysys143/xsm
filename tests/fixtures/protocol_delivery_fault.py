@@ -2,6 +2,8 @@
 import json
 from pathlib import Path
 import subprocess
+import queue
+import threading
 import sys
 
 root = Path(__file__).resolve().parents[2]
@@ -13,16 +15,40 @@ process = subprocess.Popen(command, stdin=subprocess.PIPE, stdout=subprocess.PIP
 first_token = None
 
 
+replies = queue.Queue()
+output_lock = threading.Lock()
+
+
+def emit(value):
+    with output_lock:
+        print(json.dumps(value), flush=True)
+
+
+def read_output():
+    try:
+        for line in process.stdout:
+            value = json.loads(line)
+            if 'id' not in value:
+                emit(value)
+            else:
+                replies.put(value)
+    finally:
+        replies.put(None)
+
+
+reader = threading.Thread(target=read_output, daemon=True)
+reader.start()
+
+
 def exchange(request, notifications=True):
     process.stdin.write(json.dumps(request) + '\n')
     process.stdin.flush()
-    for line in process.stdout:
-        reply = json.loads(line)
-        if reply.get('id') == request['id'] and 'id' in reply:
-            return reply
-        if notifications:
-            print(line, end='', flush=True)
-    raise RuntimeError('candidate closed during proxy call')
+    reply = replies.get(timeout=5)
+    if reply is None:
+        raise RuntimeError('candidate closed during proxy call')
+    if reply.get('id') != request['id']:
+        raise RuntimeError('candidate returned an unrelated response')
+    return reply
 
 
 try:
@@ -33,6 +59,13 @@ try:
             params.get('arguments', {}).pop('message_ids', None)
         reply = exchange(request)
         if request['method'] == 'operation.call':
+            if params.get('operation') == 'xsm_board' and 'result' in reply:
+                if fault == 'board-lost-parent' and len(reply['result'].get('nodes', [])) == 2:
+                    for node in reply['result']['nodes']:
+                        node['parents'] = []
+                if fault == 'board-wrong-source':
+                    for record in reply['result'].get('decisions', []):
+                        record['via'] = 'model'
             if params.get('operation') == 'xsm_discover' and 'result' in reply:
                 for candidate in reply['result'].get('candidates', []):
                     if fault == 'discovery-private-home':
@@ -55,7 +88,7 @@ try:
                            'arguments': {'tokens': [params['token']]}}}, notifications=False)
             if 'error' in consumed:
                 raise RuntimeError(consumed)
-        print(json.dumps(reply), flush=True)
+        emit(reply)
 finally:
     process.stdin.close()
     try:
@@ -63,4 +96,5 @@ finally:
     except subprocess.TimeoutExpired:
         process.kill()
         process.wait(timeout=3)
+    reader.join(timeout=1)
     process.stdout.close()

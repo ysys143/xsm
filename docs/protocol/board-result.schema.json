@@ -1,0 +1,210 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:xsm:host-protocol:1:board-result",
+  "title": "Successful xsm_board log/decisions results",
+  "oneOf": [
+    {
+      "$ref": "#/$defs/log"
+    },
+    {
+      "$ref": "#/$defs/decisions"
+    }
+  ],
+  "$defs": {
+    "log": {
+      "type": "object",
+      "required": [
+        "nodes"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "inbox_pending": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "inbox_notice": {
+          "type": "string"
+        },
+        "inbox_pending_known": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "inbox_pending_diagnostics": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "nodes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/node"
+          }
+        }
+      }
+    },
+    "decisions": {
+      "type": "object",
+      "required": [
+        "decisions"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "inbox_pending": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "inbox_notice": {
+          "type": "string"
+        },
+        "inbox_pending_known": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "inbox_pending_diagnostics": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "decisions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/decision"
+          }
+        }
+      }
+    },
+    "node": {
+      "type": "object",
+      "required": [
+        "id",
+        "t",
+        "author",
+        "author_kind",
+        "tags",
+        "parents",
+        "body"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{12}(?![\\s\\S])"
+        },
+        "t": {
+          "type": "string"
+        },
+        "author": {
+          "type": "string"
+        },
+        "author_kind": {
+          "type": "string"
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "parents": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{12}(?![\\s\\S])"
+          }
+        },
+        "body": {
+          "type": "string"
+        },
+        "approved": {
+          "type": "string"
+        },
+        "item": {
+          "type": "string"
+        },
+        "decision": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{12}(?![\\s\\S])"
+        }
+      },
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "decision": {
+      "type": "object",
+      "required": [
+        "id",
+        "t",
+        "team",
+        "question",
+        "answer",
+        "options",
+        "decided_by",
+        "via",
+        "asked_by",
+        "item"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{12}(?![\\s\\S])"
+        },
+        "t": {
+          "type": "number"
+        },
+        "team": {
+          "type": "string"
+        },
+        "question": {
+          "type": "string"
+        },
+        "answer": {
+          "type": "string"
+        },
+        "options": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "type": "string"
+          }
+        },
+        "decided_by": {
+          "type": "string"
+        },
+        "via": {
+          "enum": [
+            "mcp-elicitation",
+            "native-user",
+            "host-user",
+            "terminal"
+          ]
+        },
+        "asked_by": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "item": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "asked_question": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}

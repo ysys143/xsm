@@ -67,7 +67,7 @@ class ProtocolTest(ProtocolFixture):
         self.assertEqual(shown['members'], [{'member': listed[0]['members'][0], 'running': True}])
         self.assertEqual(set(shown), {'name', 'lead', 'members', 'inbox_pending'})
 
-    def test_public_bundle_requires_discovery_contract_and_examples(self):
+    def test_public_bundle_requires_query_contracts_and_examples(self):
         import shutil
         from pathlib import Path
         from xsm import protocol_contract
@@ -78,12 +78,14 @@ class ProtocolTest(ProtocolFixture):
             target.parent.mkdir(parents=True, exist_ok=True)
             shutil.copyfile(source / name, target)
         for name in ('discovery-result.schema.json', 'discovery-result-examples.json',
-                     'team-result.schema.json', 'team-result-examples.json'):
+                     'team-result.schema.json', 'team-result-examples.json',
+                     'board-result.schema.json', 'board-result-examples.json'):
             target = root / 'docs/protocol' / name
             target.parent.mkdir(parents=True, exist_ok=True)
             shutil.copyfile(source / 'docs/protocol' / name, target)
         for name in ('discovery-result.schema.json', 'discovery-result-examples.json',
-                     'team-result.schema.json', 'team-result-examples.json'):
+                     'team-result.schema.json', 'team-result-examples.json',
+                     'board-result.schema.json', 'board-result-examples.json'):
             target = root / 'docs/protocol' / name
             data = target.read_bytes()
             target.unlink()

@@ -69,6 +69,15 @@
 `deliverables/protocol-foundation/team-contract/`에 있다. 이는 stdio 또는 native
 행렬 인증이 아니며 보드 조회와 나머지 결과 계약은 미완이다.
 
+## 보드 조회·공개 stdio 협업 계약 — 2026-11-03
+
+[보드 계약 검증](board-contract.md)에 xsm_board log/decisions의 스키마와
+공개 collaboration suite를 기록했다. Stdio28개 검사와 실제 프레임36개 검증,
+보드 예제4개·거부15개 및 schema 변이2개를 확인했다. Mac core863개는
+100.880초에 통과했다. 질문은 synthetic host
+fixture이며 실제 사람·native UI 인증이 아니다. 팀/보드 조회의 공개 요청 경로를
+함께 검사하지만 나머지 operation 계약과 전체 계획은 미완이다.
+
 ## 단계별 판정
 
 | 단계 | 상태 | 남은 조건 |

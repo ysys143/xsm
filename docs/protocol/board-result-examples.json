@@ -1,0 +1,77 @@
+[
+  {
+    "action": "log",
+    "result": {
+      "nodes": [],
+      "inbox_pending": 0
+    }
+  },
+  {
+    "action": "log",
+    "result": {
+      "nodes": [
+        {
+          "id": "aaaaaaaaaaaa",
+          "t": "2026-11-03T12:00:00+0900",
+          "author": "fixture@host [ref]",
+          "author_kind": "agent",
+          "tags": [
+            "update"
+          ],
+          "parents": [],
+          "body": "Use bounded cache",
+          "item": "decision: cache"
+        },
+        {
+          "id": "bbbbbbbbbbbb",
+          "t": "2026-11-03T12:00:01+0900",
+          "author": "fixture (person via host-user)",
+          "author_kind": "human",
+          "tags": [
+            "update"
+          ],
+          "parents": [
+            "aaaaaaaaaaaa"
+          ],
+          "body": "cache strategy -> bounded",
+          "item": "decision: cache",
+          "decision": "cccccccccccc"
+        }
+      ]
+    }
+  },
+  {
+    "action": "decisions",
+    "result": {
+      "decisions": [],
+      "inbox_pending": 0
+    }
+  },
+  {
+    "action": "decisions",
+    "result": {
+      "decisions": [
+        {
+          "id": "cccccccccccc",
+          "t": 1793674801.0,
+          "team": "probe",
+          "question": "Fixture: cache strategy",
+          "answer": "bounded",
+          "options": [
+            "bounded",
+            "none"
+          ],
+          "decided_by": "fixture (person via host-user)",
+          "via": "host-user",
+          "asked_by": "fixture-ref",
+          "item": "decision: cache"
+        }
+      ],
+      "inbox_pending": null,
+      "inbox_pending_known": 0,
+      "inbox_pending_diagnostics": [
+        "pending-unavailable:OSError"
+      ]
+    }
+  }
+]

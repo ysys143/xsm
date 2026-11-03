@@ -166,3 +166,37 @@ checks three positive examples, and rejects nine malformed structures. Isolated
 actual Connection dispatch observations cover empty list, create, populated
 list and show. These are not a stdio conformance or native-runtime certificate;
 board result schemas and remaining operation result contracts are still pending.
+
+## Board query results
+
+For `xsm_board` actions `log` and `decisions`, select `$defs/log` or
+`$defs/decisions` in [board-result.schema.json](board-result.schema.json) using
+the request action. [Examples](board-result-examples.json) cover empty results,
+a linked contribution/decision node, and persisted host-user records.
+
+`log` returns `nodes`: id, timestamp string, author display text, author kind,
+tags, parent IDs and body, with optional item, approval text and decision ID.
+The persisted header parser also preserves unknown string-valued metadata;
+clients must tolerate these extensions. Node IDs and decision references are
+12 lowercase hexadecimal characters. This structural validation does not
+recompute digests, prove parent existence, authenticate authors or establish
+that all stored files are valid. Manually corrupted files can fail validation.
+
+`decisions` returns records containing numeric time, team, question, answer,
+nullable options, display attribution, source channel, nullable asking-session
+ref and nullable item. Native recovery can also include `asked_question`.
+Transient write results `node` and `sync_notes` are absent from persisted query
+records. A record's `via` label alone is not proof of a verified human answer;
+the decision binding and host receipt remain separate runtime requirements.
+
+Both results accept common inbox pending diagnostics. Listing decisions does
+not mark unrelated board nodes as observed; log does mark the board read.
+Neither query sends a message, ACKs an inbox claim or grants authorization.
+Other board actions retain text/waiting/error envelopes outside this schema.
+
+The public `collaboration` suite executes isolated team create/list/show,
+board set/log/filter and a synthetic host question/answer/retry. It checks that
+answer receipt alone creates no board decision and the explicit retry creates
+a decision-linked human node. Run it with `--capture`, then pass its report to
+the schema checker as shown above. It is a server contract fixture, not a real
+person, model, native UI, remote board sync or messenger certification.
