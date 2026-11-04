@@ -3,6 +3,13 @@
 What changed in xsm, newest first. Each released version's full notes, with its verification and upgrade
 steps, are on [GitHub Releases](https://github.com/ysys143/xsm/releases) (in Korean).
 
+## Unreleased
+
+- Add experimental native bindings for Pi, OpenCode, Hermes and OpenClaw through the shared host protocol.
+- Provide TypeScript/Python host clients and profile-scoped native installation, inspection and removal.
+- Document basic runtime setup and optional wake/UI capabilities in the English and Korean READMEs.
+- Keep live Linux component snapshots across wall-clock corrections using kernel process start markers.
+
 ## [0.5.2](https://github.com/ysys143/xsm/releases/tag/v0.5.2) - 2026-11-01
 
 

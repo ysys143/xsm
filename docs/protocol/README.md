@@ -1,11 +1,12 @@
 # Experimental xsm host protocol
 
-Status: implementation in progress, **not a stable public compatibility promise**.
+Status: experimental basic bindings for Pi, OpenCode, Hermes and OpenClaw are available.
+The host protocol is **not a stable public compatibility promise**.
 This is a local host protocol, separate from the existing `[xsm v1 ...]` message
 envelope. A successful protocol test does not certify a native runtime.
 
 Native binding notes: [Pi 1.4.0](pi.md), [OpenCode 1.19.5](opencode.md),
-[Hermes 0.22.5 API prototype](hermes.md), [OpenClaw 2026.10.9 prototype](openclaw.md).
+[Hermes 0.22.5](hermes.md), [OpenClaw 2026.10.9](openclaw.md).
 Host coordination: [Python](python-host.md).
 Large caller-read copies: [bounded file preparation](file-uploads.md).
 Owned copies and exact checksum bytes: [file result contract](files-contract.md).

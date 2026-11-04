@@ -4,7 +4,7 @@ English | [한국어](README_ko.md)
 
 > **All you need is a message channel. The rest is done by agents.**
 
-xsm lets the Claude Code and Codex sessions you already run find each other and work together: on one
+xsm lets the Claude Code, Codex, Pi, OpenCode, Hermes and OpenClaw sessions you run find each other and work together: on one
 machine, across config homes and runtimes, and across your machines. An agent finds a peer by what it is
 working on, connects to the one you pick, asks it a question and gets the actual answer back, and can tell
 you at each step what has and has not happened.
@@ -18,6 +18,32 @@ you at each step what has and has not happened.
 > handover remain available; the old channel was removed in 0.5.1. The earlier collaboration plan's
 > [full acceptance criteria](https://github.com/ysys143/xsm/blob/a124b22782d68c1541f6dd5893a57bbe6797b926/docs/plan/collaboration/completion-ledger.md)
 > remain incomplete. Open a new session after updating to use the new hooks and MCP server.
+
+## Additional runtimes (experimental)
+
+This checkout includes basic Pi, OpenCode, Hermes and OpenClaw support through native bindings and a
+shared host protocol. Sessions can use XSM messaging, inbox/ACK and collaboration tools. Wake-up,
+questions and gateway behavior depend on the runtime and its configuration.
+
+| Runtime | Tested baseline | Integration and setup |
+|---|---|---|
+| Pi | 1.4.0 | [Native extension](docs/protocol/pi.md) |
+| OpenCode | 1.19.5 | [Server plugin and TUI companion](docs/protocol/opencode.md) |
+| Hermes | 0.22.5 | [Plugin; pull inbox by default](docs/protocol/hermes.md) |
+| OpenClaw | 2026.10.9 | [Plugin; optional native wake](docs/protocol/openclaw.md) |
+
+From this checkout, install into the native profile you choose:
+
+```sh
+bin/xsm protocol install pi --home <pi-agent-dir>
+bin/xsm protocol install opencode --home <opencode-config-dir>
+bin/xsm protocol install hermes --home <hermes-home>
+bin/xsm protocol install openclaw --home <openclaw-state-dir>
+```
+
+Restart/reload that runtime afterward. See its setup guide for activation and optional capabilities.
+These are experimental bindings in the current source; the published 0.5.2 plugin remains the earlier
+release. Full feature parity across all runtimes and messenger platforms is not claimed.
 
 ## Philosophy
 
@@ -35,10 +61,10 @@ network.
 What xsm does not have:
 
 - no prescribed orchestrator or task graph: a team groups members; it does not schedule their work
-- no runtime of its own and no wrapper around `claude` or `codex`: you start your sessions as you always do
-- no server between sessions on one machine: local messaging is hooks, files and one-shot commands. The only
-  resident process is the opt-in P2P network service, which runs only after you create or join a network
-  and stops with `xsm network stop`
+- no runtime of its own and no wrapper around your agent CLI: you start your sessions as you always do
+- no shared local daemon: Claude/Codex use hooks, files and one-shot commands; additional native bindings
+  keep a stdio helper for the lifetime of their host. The optional P2P network service runs after you
+  create or join a network and stops with `xsm network stop`
 
 Because the work is left to the agents, communication itself has to be dependable. That is where xsm puts
 its effort:
@@ -47,7 +73,7 @@ its effort:
   through each runtime's own path (the Claude inbox socket, `codex queue`), not by typing into a terminal, so an
   idle session picks it up, and the message arrives marked with its sender instead of looking like something
   you typed. A message that should not interrupt can wait for the session's next natural turn instead
-  (`--wake never`).
+  (`--wake never`). Additional runtimes follow the capabilities and setup listed above.
 - **The sender knows what happened.** Stored, handed to the runtime, acknowledged after reading, and actually
   answered are four separate facts, and each result says which ones hold. A lost response is recovered by its
   request ID, never resent under a new one, and a task counts as done only when the peer says so.
@@ -699,7 +725,7 @@ Principles:
 
 ## Documents
 
-- **[Experimental host protocol](docs/protocol/README.md)**: unreleased development path. Pi, OpenCode, Hermes and OpenClaw bindings and installation lifecycle are under isolated testing. A [macOS Hermes/Telegram pull roundtrip](docs/plan/runtime-protocol/hermes-telegram-live.md) is verified; native UI, full runtime and messenger support remain incomplete.
+- **[Host protocol and additional runtimes](docs/protocol/README.md)**: experimental Pi, OpenCode, Hermes and OpenClaw bindings, with native setup guides. Advanced UI, gateway and messenger capabilities are documented per runtime.
 
 Most documents under `docs/` are written in Korean.
 

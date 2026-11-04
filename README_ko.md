@@ -5,7 +5,7 @@
 > **All you need is a message channel. The rest is done by agents.**
 > 필요한 것은 메시지 채널 하나뿐입니다. 나머지는 에이전트가 합니다.
 
-xsm은 이미 쓰고 있는 Claude Code와 Codex 세션이 서로를 찾아 함께 일하게 합니다. 한 머신 안에서, 설정 홈과
+xsm은 Claude Code·Codex·Pi·OpenCode·Hermes·OpenClaw 세션이 서로를 찾아 함께 일하게 합니다. 한 머신 안에서, 설정 홈과
 런타임이 달라도, 그리고 사용자의 다른 머신 사이에서도 그렇습니다. 에이전트는 하는 일로 상대를 찾고, 사용자가
 고른 상대와 연결하고, 질문을 보내 실제 답을 돌려받습니다. 단계마다 무엇이 일어났고 무엇이 아직인지도 알려 줍니다.
 
@@ -18,6 +18,32 @@ xsm은 이미 쓰고 있는 Claude Code와 Codex 세션이 서로를 찾아 함�
 > 팀·다중 수신 DM·팀 보드·인수인계는 계속 제공하며, 기존 channel은 0.5.1에서 제거했습니다.
 > 이전 협업 계획의 [전체 수용 조건](https://github.com/ysys143/xsm/blob/a124b22782d68c1541f6dd5893a57bbe6797b926/docs/plan/collaboration/completion-ledger.md)은
 > 아직 완료되지 않았습니다. 갱신 후 새 세션을 열어야 새 훅과 MCP 서버를 사용합니다.
+
+## 추가 런타임 기본 지원 (실험적)
+
+현재 소스에는 Pi·OpenCode·Hermes·OpenClaw 연결이 포함돼 있습니다. 네이티브 연결과 공통 호스트
+프로토콜로 메시지 송신·inbox/ACK·협업 도구를 사용합니다. 깨우기·질문 UI·게이트웨이 동작은
+각 런타임과 설정에 따라 다릅니다.
+
+| 런타임 | 확인한 기준 버전 | 연결·설치 안내 |
+|---|---|---|
+| Pi | 1.4.0 | [네이티브 확장](docs/protocol/pi.md) |
+| OpenCode | 1.19.5 | [서버 플러그인·TUI companion](docs/protocol/opencode.md) |
+| Hermes | 0.22.5 | [플러그인, 기본 pull inbox](docs/protocol/hermes.md) |
+| OpenClaw | 2026.10.9 | [플러그인, 선택적 native wake](docs/protocol/openclaw.md) |
+
+이 checkout에서 사용할 네이티브 프로필을 지정해 설치합니다.
+
+```sh
+bin/xsm protocol install pi --home <pi-agent-dir>
+bin/xsm protocol install opencode --home <opencode-config-dir>
+bin/xsm protocol install hermes --home <hermes-home>
+bin/xsm protocol install openclaw --home <openclaw-state-dir>
+```
+
+설치 뒤 해당 런타임을 재시작/재로딩합니다. 활성화와 선택 기능은 각 설치 안내를 따릅니다.
+현재 소스의 실험적 연결이며, 공개된 0.5.2 플러그인은 이전 릴리스입니다. 모든 런타임·메신저의
+전체 기능이 동일하게 지원된다는 뜻은 아닙니다.
 
 ## 철학
 
@@ -33,15 +59,16 @@ P2P 네트워크를 통해 머신 사이에서도 동작합니다.
 xsm에 없는 것:
 
 - 일을 배정하는 오케스트레이터나 작업 그래프를 강제하지 않습니다. 팀은 구성원을 묶고, 일의 분담은 대화에서 정합니다
-- 자체 런타임도, `claude`·`codex`를 감싸는 래퍼도 없습니다. 세션은 늘 하던 대로 띄웁니다
-- 한 머신 안의 세션 사이에 서버가 없습니다. 로컬 메시징은 훅·파일·일회성 명령입니다. 계속 떠 있는 프로세스는
-  선택적 P2P 네트워크 서비스 하나뿐이며, 네트워크를 만들거나 가입한 뒤에만 돌고 `xsm network stop`으로 멈춥니다
+- 자체 런타임이나 에이전트 CLI를 감싸는 래퍼 없이 세션을 늘 하던 대로 띄웁니다
+- 공용 로컬 데몬이 없습니다. Claude·Codex는 훅·파일·일회성 명령을 쓰고, 추가 런타임 연결은 호스트 수명에
+  묶인 stdio helper를 둡니다. 선택적 P2P 서비스는 네트워크를 만들거나 가입한 뒤에만 실행합니다
 
 일을 에이전트에게 맡기는 만큼, 소통 경로는 믿을 수 있어야 합니다. xsm은 노력을 여기에 씁니다.
 
 - **메시지가 세션을 깨웁니다.** 메시지는 보내는 쪽이 지정한 세션 앞으로 가는 DM입니다. 터미널에 타이핑해
   넣지 않고 각 런타임의 고유 경로(Claude inbox 소켓, `codex queue`)로 넣습니다. 그래서 쉬고 있는 세션도
-  메시지를 받고, 메시지는 사용자가 친 입력처럼 보이지 않고 발신자 표시를 달고 도착합니다. 끼어들 필요가 없는
+  메시지를 받고, 메시지는 사용자가 친 입력처럼 보이지 않고 발신자 표시를 달고 도착합니다. 추가 런타임의
+  깨우기는 해당 연결의 설정을 따릅니다. 끼어들 필요가 없는
   메시지는 상대의 다음 자연스러운 턴까지 기다리게 할 수도 있습니다(`--wake never`).
 - **보낸 쪽이 결과를 압니다.** 저장, 런타임 전달, 읽은 뒤의 수신 확인, 실제 답변은 서로 다른 네 가지 사실이며,
   결과마다 어느 것이 성립했는지 알려 줍니다. 응답을 잃어도 같은 요청 ID로 회수하고 새 ID로 다시 보내지 않으며,
@@ -654,7 +681,7 @@ Machine A -> SSH -> Machine B                             양쪽 다 xsm 설치 
 
 ## 주요 문서
 
-- **[실험적 호스트 프로토콜](docs/protocol/README.md)**: 미출시 개발 경로. Pi·OpenCode·Hermes·OpenClaw 연결과 설치 경로를 격리 환경에서 검증 중이며, 네이티브 UI·전체 런타임·메신저 지원은 미완입니다.
+- **[호스트 프로토콜과 추가 런타임](docs/protocol/README.md)**: Pi·OpenCode·Hermes·OpenClaw의 실험적 기본 연결과 설치 안내입니다. 고급 UI·게이트웨이·메신저 기능은 각 런타임 문서에 구분합니다.
 
 - **[CHANGELOG.md](CHANGELOG.md)**: 릴리스별 변경 기록
 - **[INTENT.md](INTENT.md)**: 프로젝트 목표 및 비전

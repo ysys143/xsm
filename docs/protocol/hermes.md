@@ -1,5 +1,7 @@
 # Hermes 0.22.5 실험 연결
 
+기본 지원: Hermes plugin으로 XSM 도구와 pull inbox/ACK를 사용한다. Native wake와 질문 bridge는 별도 opt-in이다.
+
 상태: 실험 구현. 실제 PluginContext/도구 registry와 native agent turn,
 macOS Telegram 개인 대화의 pull/ACK/reply 왕복을 확인했다.
 CLI/TUI 전체 수명·자동 주입·실제 사용자 UI·worker 전체 행렬은 미완이다.

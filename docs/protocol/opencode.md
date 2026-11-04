@@ -1,5 +1,7 @@
 # OpenCode 1.19.5 실험 연결
 
+기본 지원: 서버 plugin과 TUI companion으로 XSM 도구·메시징·질문 UI를 사용한다. 명시적 프로필 설치 방법은 아래에 있다.
+
 상태: 개발 중. 전체 OpenCode 지원이나 릴리즈 인증을 뜻하지 않는다.
 
 [`integrations/opencode/xsm.mjs`](../../integrations/opencode/xsm.mjs)는 서버

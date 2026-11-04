@@ -1,5 +1,7 @@
 # Pi 1.4.0 실험 연결
 
+기본 지원: Pi의 native 확장으로 XSM 도구·송수신·inbox/ACK를 사용한다. 명시적 프로필 설치는 아래 설치 절을 따른다.
+
 상태: 개발 중. 전체 Pi 지원·릴리즈 완료를 뜻하지 않는다.
 
 [`integrations/pi/xsm.mjs`](../../integrations/pi/xsm.mjs)는 공통 호스트 API를

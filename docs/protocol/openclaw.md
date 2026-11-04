@@ -1,5 +1,7 @@
 # OpenClaw 2026.10.9 연결 경계
 
+기본 지원: OpenClaw plugin으로 XSM 도구와 메시징을 사용한다. Native wake는 별도 opt-in이며 사용자 UI 기능은 아래 제한을 따른다.
+
 상태: 실험적 direct-turn 도구 연결. 실제 고정 로더의 등록·metadata 발견과,
 명시적 caller fixture에서 실제 native 도구와 xsm 서버의 왕복·수명 정리를
 확인했다. Guarded native 대기열과 prompt 소비 helper도 연결했다.
