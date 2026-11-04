@@ -890,6 +890,19 @@ def _finish_detached(worker: dict) -> None:
                      stderr=subprocess.DEVNULL, env=env, start_new_session=True)
 
 
+def send_task(worker: dict, task: dict, sender: dict, *, wait=0):
+    """Record the exact task before either startup path hands it to transport."""
+    from . import send as send_mod
+    worker.pop("pending_task", None)
+    worker["task_id"] = task["id"]
+    save(worker)
+    if worker.get("attempt_key"):
+        attempts.start(worker["attempt_key"], task["text"], worker["cwd"],
+                       worker["name"], task["id"])
+    return send_mod.send("ref:%s" % worker["ref"], task["text"], sender=sender,
+                         kind="task", wait=wait, msg_id=task["id"])
+
+
 def finish(name: str) -> int:
     """Wait for a person's answer to a trust screen, answer the screen, and
     finish what spawn could not: registration, then the pending task. Runs
@@ -937,16 +950,7 @@ def finish(name: str) -> int:
         parent = next((r for r in registry.records() if r.get("ref") == worker.get("parent_ref")),
                       None)
         if parent:
-            from . import send as send_mod
-            worker["task_id"] = task["id"]
-            save(worker)
-            # The try opens when the task is really on its way, not when spawn
-            # was called: a worker that never came up was never a try.
-            if worker.get("attempt_key"):
-                attempts.start(worker["attempt_key"], task["text"], worker["cwd"],
-                               worker["name"], task["id"])
-            send_mod.send("ref:%s" % worker["ref"], task["text"], sender=parent, kind="task",
-                          msg_id=task["id"])
+            send_task(worker, task, parent)
     else:
         save(worker)
     return 0
@@ -1303,7 +1307,7 @@ def stop(name: str, reason: str = "stopped", *, user_requested: bool = False) ->
         telemetry.histogram("xsm.worker.lifetime", time.time() - (worker.get("created") or
                                                                   time.time()),
                             {"xsm.worker.runtime": worker.get("runtime")})
-    if worker.get("attempt_key"):
+    if worker.get("attempt_key") and worker.get("task_id"):
         # A requested interruption has no task outcome. Automatic stops retain
         # their existing classification; a recorded reply always wins.
         outcome = None if user_requested else "failed"

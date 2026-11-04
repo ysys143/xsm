@@ -2433,11 +2433,7 @@ def cmd_spawn(args) -> int:
     if worker.get("waiting"):
         return _spawn_waiting_for_trust(worker)
     if task:
-        worker.pop("pending_task", None)
-        worker["task_id"] = task["id"]
-        workers.save(worker)
-        result = send.send("ref:%s" % worker["ref"], task["text"], sender=caller, kind="task",
-                           wait=args.task_wait, msg_id=task["id"])
+        result = workers.send_task(worker, task, caller, wait=args.task_wait)
         print("task %s: %s%s" % (result.msg_id or "-", result.status,
                                  ": " + result.reason if result.reason else ""))
     print("stop it: xsm stop %s" % worker["name"])

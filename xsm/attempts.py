@@ -13,6 +13,8 @@ process: an attempt is opened by `spawn` and closed by whatever happens next
 from __future__ import annotations
 
 import glob
+from contextlib import contextmanager
+import fcntl
 import hashlib
 import os
 import re
@@ -21,7 +23,7 @@ import time
 from . import paths
 
 ATTEMPTS = "attempts"
-KEEP = 20                   # a lineage is a handful of tries; keep the recent ones
+KEEP = 20                   # recent history; an older open attempt delays trimming
 KEY_LEN = 12
 SPACE_RE = re.compile(r"\s+")
 
@@ -51,6 +53,35 @@ def read(key: str) -> dict:
     return paths.read_json(_path(key), {}) or {}
 
 
+@contextmanager
+def _locked(key):
+    os.makedirs(paths.path(ATTEMPTS), exist_ok=True)
+    fd = os.open(_path(key) + ".lock", os.O_CREAT | os.O_RDWR, 0o600)
+    try:
+        fcntl.flock(fd, fcntl.LOCK_EX)
+        yield
+    finally:
+        os.close(fd)
+
+
+def _compact(rec):
+    """Fold only a closed prefix; retain the order around an unfinished task."""
+    tries = rec.get("tries") or []
+    removed = 0
+    earlier = rec.get("earlier_failures", 0)
+    for row in tries[:max(0, len(tries) - KEEP)]:
+        if not row.get("ended_t"):
+            break
+        if row.get("outcome") == "succeeded":
+            earlier = 0
+        elif row.get("outcome") == "failed":
+            earlier += 1
+        removed += 1
+    if removed:
+        rec["earlier_failures"] = earlier
+        rec["tries"] = tries[removed:]
+
+
 def all_records() -> list:
     out = [paths.read_json(p, {}) or {} for p in glob.glob(paths.path(ATTEMPTS, "*.json"))]
     return sorted([r for r in out if r.get("key")],
@@ -72,40 +103,44 @@ def failures(key: str) -> int:
 
     An attempt that ended without saying how does not count and does not clear
     the count: xsm never reads a worker's prose to decide whether it worked."""
+    rec = read(key)
     count = 0
-    for try_ in reversed(read(key).get("tries") or []):
+    for try_ in reversed(rec.get("tries") or []):
         if try_.get("outcome") == "succeeded":
             return count
         if try_.get("outcome") == "failed":
             count += 1
-    return count
+    return count + rec.get("earlier_failures", 0)
 
 
 def start(key: str, text: str, cwd: str, worker: str, task_id: str | None) -> dict:
-    rec = read(key) or {"key": key, "text": (text or "")[:200], "cwd": cwd, "first_t": time.time(),
-                        "tries": []}
-    rec["tries"] = (rec.get("tries") or [])[-(KEEP - 1):]
-    rec["tries"].append({"t": time.time(), "worker": worker, "task_id": task_id})
-    paths.write_json(_path(key), rec)
-    return rec
+    with _locked(key):
+        rec = read(key) or {"key": key, "text": (text or "")[:200], "cwd": cwd, "first_t": time.time(),
+                            "tries": []}
+        rec.setdefault("tries", []).append({"t": time.time(), "worker": worker, "task_id": task_id})
+        _compact(rec)
+        paths.write_json(_path(key), rec)
+        return rec
 
 
 def finish(key: str, outcome: str | None, why: str = "", task_id: str | None = None) -> None:
     """Close the most recent open try. Idempotent: the first close wins, so a
     `stop` that follows a reply cannot paint over what the reply said."""
-    rec = read(key)
-    tries = rec.get("tries") or []
-    for try_ in reversed(tries):
-        if try_.get("ended_t"):
-            continue
-        if task_id and try_.get("task_id") and try_["task_id"] != task_id:
-            continue
-        try_["ended_t"] = time.time()
-        try_["outcome"] = outcome
-        if why:
-            try_["why"] = why
-        paths.write_json(_path(key), rec)
-        return
+    with _locked(key):
+        rec = read(key)
+        tries = rec.get("tries") or []
+        for try_ in reversed(tries):
+            if try_.get("ended_t"):
+                continue
+            if task_id is not None and try_.get("task_id") != task_id:
+                continue
+            try_["ended_t"] = time.time()
+            try_["outcome"] = outcome
+            if why:
+                try_["why"] = why
+            _compact(rec)
+            paths.write_json(_path(key), rec)
+            return
 
 
 def check(key: str, limit: int) -> None:
@@ -119,6 +154,8 @@ def check(key: str, limit: int) -> None:
     history = "; ".join(
         "%s %s" % (t.get("worker") or "?", t.get("outcome") or "no answer")
         for t in (rec.get("tries") or [])[-limit:])
+    if rec.get("earlier_failures"):
+        history += "; %d earlier failure(s) retained" % rec["earlier_failures"]
     raise AttemptsError(
         "task-attempts-exhausted: this task has failed %d times in this folder (%s). "
         "Sending it again the same way gets the same answer. Tell your user what failed and "
@@ -128,20 +165,29 @@ def check(key: str, limit: int) -> None:
 
 
 def clear(key: str) -> bool:
-    try:
-        os.unlink(_path(key))
-        return True
-    except OSError:
-        return False
+    with _locked(key):
+        try:
+            os.unlink(_path(key))
+            return True
+        except OSError:
+            return False
 
 
 def prune(cutoff: float, dry_run: bool = False) -> list:
     """Forget lineages nothing has touched since `cutoff`."""
     gone = []
     for rec in all_records():
-        last = (rec.get("tries") or [{}])[-1].get("t") or rec.get("first_t") or 0
-        if last < cutoff:
-            gone.append(rec["key"])
-            if not dry_run:
-                clear(rec["key"])
+        if dry_run:
+            last = (rec.get("tries") or [{}])[-1].get("t") or rec.get("first_t") or 0
+            if last < cutoff:
+                gone.append(rec["key"])
+            continue
+        with _locked(rec["key"]):
+            current = read(rec["key"])
+            if not current:
+                continue
+            last = (current.get("tries") or [{}])[-1].get("t") or current.get("first_t") or 0
+            if last < cutoff:
+                gone.append(rec["key"])
+                os.unlink(_path(rec["key"]))
     return gone

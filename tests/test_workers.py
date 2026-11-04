@@ -924,7 +924,7 @@ class NoIdleWorkerTest(TempState):
         self.assertEqual(paths.read_json(paths.path(workers.APPROVALS, "r1.json"))["status"],
                          "approved")
 
-    def test_mcp_approve_unanswered_points_to_the_terminal_not_another_call(self):
+    def test_mcp_approve_unanswered_keeps_native_recovery_in_the_same_operation(self):
         import io
         from xsm import mcp, paths, workers
         me = {"ref": "pppppp", "name": "boss", "alias": "claude-4", "runtime": "claude",
@@ -944,8 +944,9 @@ class NoIdleWorkerTest(TempState):
         server.serve()
         text = next(json.loads(l) for l in out.getvalue().splitlines()
                     if json.loads(l).get("id") == 2)["result"]["content"][0]["text"]
-        self.assertIn("`xsm approve r1`", text)
-        self.assertNotIn("ask again", text)
+        self.assertIn("[xsm-decision:", text)
+        self.assertIn("retry this same MCP tool with the same arguments", text)
+        self.assertIn("Do not switch to a shell", text)
         self.assertEqual(paths.read_json(paths.path(workers.APPROVALS, "r1.json"))["status"],
                          "pending")
 
