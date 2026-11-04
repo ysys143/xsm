@@ -79,6 +79,58 @@ class WorkerProjectFlowTest(ProtocolFixture):
         self.assertEqual(list(self.connection.events()), [])
         self.assertFalse(any(p['id'] == 'extra' for p in config.projects()))
 
+    def test_worker_ending_while_form_is_open_never_starts_application(self):
+        from xsm import config, context, decisions, mcp
+        from xsm.operation_schema import ToolError
+        leader, child, _ = self.group()
+        me = self.connection.sessions[leader['session']].record
+        server = mcp.Server(io.StringIO(), io.StringIO())
+        server.active_request = 'held-join'
+        server.client_caps = {'elicitation': {}}
+        def session():
+            server.ctx = context.of_record(me, context.BASIS_HOOK)
+            return me
+        server.session = session
+        def close_worker_then_answer(*_args):
+            self.connection.dispatch('session.close', {'session': child['session']})
+            return {'id': 'xsm-1', 'result': {'action': 'accept', 'content': {'answer': 'allow'}}}
+        server.read = close_worker_then_answer
+        try:
+            text = str(server.call('xsm_join', {'project': 'extra', 'workers': ['ref:'+child['ref']]}))
+        except ToolError as error:
+            text = str(error)
+        records = [decisions.read(r['id']) for r in decisions.public_status(me)['decisions']]
+        record = next(r for r in records if r['scope']['arguments'].get('project') == 'extra')
+        self.assertIsNone(record.get('application'), record)
+        self.assertEqual(record['status'], 'superseded')
+        self.assertNotIn('Ask your user once using this exact question', text)
+        self.assertNotIn('your user did not answer', text)
+        self.assertFalse(any(p['id'] == 'extra' for p in config.projects()))
+
+    def test_new_conversation_in_joined_folder_confirms_coordinator_only(self):
+        from xsm import config, delegation
+        leader, previous, _ = self.group()
+        folder = self.connection.sessions[previous['session']].record['cwd']
+        later = self.connection.dispatch('session.open', {'runtime': 'flow-fixture',
+            'profile': 'later', 'conversation': 'later', 'cwd': folder,
+            'capabilities': ['messaging', 'inbox']})
+        worker = self.connection.sessions[later['session']].record
+        before = config.projects()
+        pending = self.operation(leader, 'xsm_join', project='demo', workers=['ref:'+later['ref']])
+        event = next(iter(self.connection.events()))['params']
+        self.assertIn('coordinator', event['question'])
+        self.assertEqual(pending['status'], 'waiting-for-user')
+        self.assertIsNone(delegation.parent(worker))
+        self.assertEqual(config.projects(), before)
+        self.connection.dispatch('decision.response', {'session': leader['session'],
+            'questionId': event['questionId'], 'challenge': event['challenge'],
+            'displayed': event['question'], 'action': 'accept', 'answer': 'allow',
+            'source_id': 'new-conversation-coordinator'})
+        linked = self.operation(leader, 'xsm_join', project='demo', workers=['ref:'+later['ref']])
+        self.assertFalse(linked['scope']['changed'])
+        self.assertEqual(delegation.parent(worker)['ref'], leader['ref'])
+        self.assertEqual(config.projects(), before)
+
     def test_new_worker_project_request_is_sent_to_parent_only_once(self):
         leader,a,_=self.group()
         with mock.patch('xsm.send.send') as send:

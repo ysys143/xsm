@@ -66,6 +66,12 @@ class OperationService:
                     context.of_record(current, context.BASIS_SESSION).generation != decision["generation"]):
                 decisions.supersede(decision["key"])
                 return False
+        for member in decision.get('resolved_members') or []:
+            current = registry.by_session(member['runtime'], member['session_id'])
+            if (not current or current.get('state') in ('ended', 'stale') or current.get('ended_at') or
+                    any(current.get(k) != member.get(k) for k in ('home', 'cwd'))):
+                decisions.supersede(decision['key'])
+                return False
         return True
 
     def _deny_current_decision(self):
@@ -779,6 +785,9 @@ class OperationService:
         if call:
             from . import decisions
             record = decisions.read(call['key'])
+            if record and record['status'] in decisions.TERMINAL:
+                return ('This decision is %s. Inspect status and the current target; a renewed user request '
+                        'needs a new decision_key. Do not ask the closed question again.' % record['status'])
             if record and record.get('native_question'):
                 return ('Ask your user once using this exact question, without paraphrasing: %s\n'
                         'Choices: %s. After the native question tool returns, retry this same MCP tool '
@@ -877,6 +886,12 @@ class OperationService:
                 self.clear_permission(me, key)
             self._deny_current_decision()
             return False, unanswered(why)
+        call = self.decision_calls.get(self.active_request)
+        if call:
+            from . import decisions
+            record = decisions.read(call['key'])
+            if record and record['status'] in decisions.TERMINAL:
+                return False, self.in_words(me, command, key)
         return False, "your user did not answer (%s). %s" % (why, self.in_words(me, command, key))
 
     def link(self, me: dict, args: dict) -> str:
@@ -1048,6 +1063,11 @@ class OperationService:
             if needs_question:
                 question = '%s project %r for these selected folders?\n%s' % ('Leave' if leaving else 'Join', project,
                     '\n'.join('%s: %s' % (r.get('name') or r['ref'], config.project_root(r['cwd'])) for r in (members if leaving else [me] + members)))
+                if not leaving and joined and not linked:
+                    question = ('Use this session as coordinator for these workers in project %r? '
+                                'Future project requests will come here.\n%s' % (project,
+                        '\n'.join('%s: %s' % (r.get('name') or r['ref'], config.project_root(r['cwd']))
+                                  for r in [me] + members)))
                 ok, refusal = self.allowed(me, question, 'xsm join ' + shlex.quote(project), ('leave-workers' if leaving else 'join-workers', project))
                 if not ok:
                     return refusal + '; worker memberships are unchanged'
@@ -1068,7 +1088,9 @@ class OperationService:
             for child in members:
                 delegation.attach(me, child, project)
                 delegation.resolve_requests(child, me, project)
-            return OperationDisplay('joined %s for coordinator and %d workers' % (project, len(members)),
+            text = ('linked coordinator and %d workers for %s' % (len(members), project)
+                    if not changed and not linked else 'joined %s for coordinator and %d workers' % (project, len(members)))
+            return OperationDisplay(text,
                 {'scope': {'kind': 'membership', 'project': project, 'root': root, 'active': True,
                            'changed': changed, 'other_members': [r['root'] for r in scope['members'] if r['root'] != root]}})
         routed = scope_service.route_membership(plan, me)
