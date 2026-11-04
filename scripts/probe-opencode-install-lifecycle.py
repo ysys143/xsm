@@ -319,7 +319,7 @@ print(json.dumps({'removed':install.prune_snapshots(),'configured':sorted(instal
             'installBaselineSha256': hashlib.sha256(observed).hexdigest()}
         before_native = observed  # Baseline immediately before xsm's first mutation.
         assert tui_config.read_bytes() == before_tui
-        first = setup(ROOT, 'install')
+        first = setup(args.baseline_source.resolve() if args.baseline_source else ROOT, 'install')
         assert first['requires_reload']
         assert not any(name.startswith('xsm_') for name in server.request('/experimental/tool/ids'))
         phase('existing native conversation survives install; backend reload is required', conversation=conversation)
@@ -455,4 +455,5 @@ if __name__ == '__main__':
     parser.add_argument('--output', type=Path, required=True)
     parser.add_argument('--mutate-omit-ui', action='store_true', help='deliberately omit UI pins in this isolated trial')
     parser.add_argument('--user-edit', action='store_true', help='add a user plugin and reject an active loader conflict')
+    parser.add_argument('--baseline-source', type=Path, help='install an older isolated source first, then upgrade to this checkout')
     raise SystemExit(run(parser.parse_args()))
