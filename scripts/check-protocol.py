@@ -135,7 +135,7 @@ def main(*, validator_path=None):
             # The full core inventory had become the >120s serial critical path
             # on Linux/Python 3.14. Partition modules, never individual tests or
             # acceptance requirements; each command receives a distinct home.
-            core_partitions = [core_modules[::2], core_modules[1::2]]
+            core_partitions = [core_modules[index::3] for index in range(3)]
             core_commands = [[sys.executable, "-B", "-m", "unittest", *part, "-q"]
                              for part in core_partitions if part]
             first_phase = core_commands + commands[1:4] + [commands[-1], external]
