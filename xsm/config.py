@@ -735,7 +735,8 @@ def _worker_link(a: dict, b: dict) -> str | None:
     for w in workers.all_workers():
         if {w.get("ref"), w.get("parent_ref")} == refs:
             return "worker:%s" % w.get("name")
-    return None
+    from . import delegation
+    return delegation.related(a, b)
 
 
 def joined_projects(session: dict, cfg: dict | None = None) -> set:
@@ -928,6 +929,38 @@ def join(name: str, cwd: str):
     scope["members"].append({"root": root})
     _save(raw)
     return scope, True
+
+
+def join_many(name: str, folders):
+    """Publish one membership change for a parent and its selected worker folders."""
+    roots = list(dict.fromkeys(project_root(folder) for folder in folders))
+    raw = _raw()
+    scope = check_join(name, raw)
+    if scope is None:
+        scope = {'id': name, 'members': []}
+        raw.setdefault('scopes', []).append(scope)
+    existing = {os.path.realpath(m.get('root', '')) for m in scope['members']}
+    added = [root for root in roots if root not in existing]
+    scope['members'].extend({'root': root} for root in added)
+    if added:
+        _save(raw)
+    return scope, bool(added)
+
+
+def leave_many(name: str, folders):
+    roots = {project_root(folder) for folder in folders}
+    raw = _raw()
+    scope = next((item for item in raw.get('scopes', []) if item.get('id') == name), None)
+    if scope is None:
+        return False
+    kept = [m for m in scope['members'] if os.path.realpath(m.get('root', '')) not in roots]
+    if len(kept) == len(scope['members']):
+        return False
+    scope['members'] = kept
+    if not kept:
+        raw['scopes'] = [item for item in raw['scopes'] if item is not scope]
+    _save(raw)
+    return True
 
 
 def leave(name: str, cwd: str) -> bool:

@@ -211,7 +211,9 @@ def read_answer(me, request=None, since=None, *, tail_bytes=TAIL_BYTES, latest_o
                     return None
             user, text = _user_text(row)
             if user:
-                users.append((row, text))
+                from . import delegation
+                if not delegation.peer_directive(me, text):
+                    users.append((row, text))
         if not users:
             return None
         candidates = reversed(users) if request is not None else users[-1:]

@@ -155,6 +155,20 @@ class OperationService:
                 raise ToolError(selected.reason)
             resolved_handover = selected.record
             args = dict(args, target="ref:" + resolved_handover["ref"])
+        resolved_members = None
+        if name == 'xsm_join' and args.get('workers'):
+            from . import delegation
+            resolved_members = []
+            for target in args['workers']:
+                try:
+                    child = delegation.select_worker(target)
+                except ValueError as exc:
+                    raise ToolError(str(exc))
+                if child.get('ref') == me.get('ref'):
+                    raise ToolError('select workers, not the coordinator itself')
+                if not any(r['ref'] == child['ref'] for r in resolved_members):
+                    resolved_members.append(copy.deepcopy(child))
+            args = dict(args, workers=sorted(set('ref:' + r['ref'] for r in resolved_members)))
         if name in form_tools:
             if not me.get("ref"):
                 raise ToolError("this session is not registered for user decisions; use a registered foreground session")
@@ -165,6 +179,8 @@ class OperationService:
             resource = {k: resolved_handover.get(k) for k in ("runtime", "home", "session_id", "machine")} if resolved_handover else None
             if approval_fingerprint is not None:
                 resource = {'worker_approval_digest': approval_fingerprint}
+            if resolved_members is not None:
+                resource = {'worker_members': [{k: r.get(k) for k in ('runtime','home','session_id','cwd')} for r in sorted(resolved_members, key=lambda r:r['ref'])]}
             if resource:
                 scope["resource"] = resource
             key = decisions.invocation(me, name, args, generation, resource=resource)
@@ -177,6 +193,11 @@ class OperationService:
                 if old and old["owner"] == decisions.owner(me) and old["scope_digest"] == decisions.digest(scope):
                     key, prior = legacy, old
             if prior and prior["status"] == "applied":
+                if name == 'xsm_join':
+                    targets = (resolved_members or []) if args.get('leave') and resolved_members else [me] + (resolved_members or [])
+                    expected = not args.get('leave', False)
+                    if any((args['project'].strip() in config.joined_projects(r)) != expected for r in targets):
+                        raise ToolError('project membership changed after this decision; start a new user request with a new decision_key')
                 saved = prior["application"]["result"]
                 if (isinstance(saved, dict) and saved.get('_xsm_display') == 1 and
                         isinstance(saved.get('text'), str) and isinstance(saved.get('metadata'), dict)):
@@ -190,7 +211,7 @@ class OperationService:
                              "native_question": args.get("original_question"), "team_inferred": inferred_team,
                              "resolved_handover": resolved_handover,
                              "approval_fingerprint": approval_fingerprint,
-                             "resolved_approval_request": resolved_approval_request}
+                             "resolved_approval_request": resolved_approval_request, "resolved_members": resolved_members}
             self.decision_calls[self.active_request] = decision_call
         try:
             text = self._call(name, args, me)
@@ -602,10 +623,11 @@ class OperationService:
             return accept, "input-consent"
         reply = self.ask_client("elicitation/create", params)
         call = self.decision_calls.get(self.active_request) or {}
-        if "elicitation" not in (self.client_caps or {}) and not call.get("native_request"):
-            raise ToolError("this client cannot show a form. " + self.in_words(me, command, key))
         choices = params["requestedSchema"]["properties"]["answer"].get("enum")
-        return self.answer(reply, choices)
+        answer = self.answer(reply, choices)
+        if "elicitation" not in (self.client_caps or {}) and not call.get("native_request") and answer[0] is None:
+            raise ToolError("this client cannot show a form. " + self.in_words(me, command, key))
+        return answer
 
     def clear_permission(self, me, key):
         call = self.decision_calls.get(self.active_request)
@@ -754,6 +776,15 @@ class OperationService:
         if worker:
             return consent.no_person(command, worker)
         call = self.decision_calls.get(self.active_request)
+        if call:
+            from . import decisions
+            record = decisions.read(call['key'])
+            if record and record.get('native_question'):
+                return ('Ask your user once using this exact question, without paraphrasing: %s\n'
+                        'Choices: %s. After the native question tool returns, retry this same MCP tool '
+                        'with the same arguments; the verified answer is recovered and applied in that call. '
+                        'Do not switch to a shell or supply recovery IDs manually.' %
+                        (record['native_question'], ', '.join(record.get('choices') or ['allow','deny'])))
         if call and key == call.get("permission_key"):
             if not call.get("permission_kept"):
                 return ("the input reply cannot be retained here; nothing was approved. Inspect "
@@ -996,6 +1027,58 @@ class OperationService:
         except ValueError as exc:
             raise ToolError(str(exc))
         root = plan.root
+        from . import config, delegation
+        members = (self.decision_calls.get(self.active_request) or {}).get('resolved_members')
+        if args.get('workers') and members is None:
+            members = []
+            for target in args['workers']:
+                try:
+                    child = delegation.select_worker(target)
+                except ValueError as exc:
+                    raise ToolError(str(exc))
+                if child.get('ref') == me.get('ref'):
+                    raise ToolError('select workers, not the coordinator itself')
+                if not any(r['ref'] == child['ref'] for r in members):
+                    members.append(child)
+        if members:
+            plans = ([] if leaving else [plan]) + [scope_service.prepare_membership(project, r['cwd'], leaving=leaving) for r in members]
+            linked = all((delegation.parent(r) or {}).get('ref') == me.get('ref') for r in members)
+            joined = all(project in config.joined_projects(r) for r in [me] + members)
+            needs_question = any(project in config.joined_projects(r) for r in members) if leaving else not (joined and linked)
+            if needs_question:
+                question = '%s project %r for these selected folders?\n%s' % ('Leave' if leaving else 'Join', project,
+                    '\n'.join('%s: %s' % (r.get('name') or r['ref'], config.project_root(r['cwd'])) for r in (members if leaving else [me] + members)))
+                ok, refusal = self.allowed(me, question, 'xsm join ' + shlex.quote(project), ('leave-workers' if leaving else 'join-workers', project))
+                if not ok:
+                    return refusal + '; worker memberships are unchanged'
+            for frozen in plans:
+                if config.project_root(frozen.here) != frozen.root:
+                    raise ToolError('worker folder changed; select the workers again')
+            for child in members:
+                current = registry.by_session(child['runtime'], child['session_id'])
+                if not current or current.get('state') in ('ended','stale') or any(current.get(k) != child.get(k) for k in ('home','cwd')):
+                    raise ToolError('worker session changed; select the workers again')
+            if leaving:
+                changed = config.leave_many(project, [p.here for p in plans])
+                for child in members:
+                    delegation.resolve_requests(child, me, project, leaving=True)
+                return OperationDisplay('left %s for %d workers' % (project, len(members)),
+                    {'scope': {'kind':'membership','project':project,'root':root,'active':False,'changed':changed}})
+            scope, changed = config.join_many(project, [p.here for p in plans])
+            for child in members:
+                delegation.attach(me, child, project)
+                delegation.resolve_requests(child, me, project)
+            return OperationDisplay('joined %s for coordinator and %d workers' % (project, len(members)),
+                {'scope': {'kind': 'membership', 'project': project, 'root': root, 'active': True,
+                           'changed': changed, 'other_members': [r['root'] for r in scope['members'] if r['root'] != root]}})
+        already_joined = project in config.joined_projects(me)
+        if (not leaving and not already_joined) or (leaving and already_joined):
+            owner = delegation.parent(me)
+            if owner:
+                return delegation.request_join(me, owner, project, leaving=leaving)
+        if not leaving and already_joined:
+            return OperationDisplay('already in ' + project, {'scope': {'kind': 'membership', 'project': project,
+                'root': root, 'active': True, 'changed': False}})
         verb = "leave" if leaving else "join"
         # What the agent runs instead, from this session's own folder: --dir is
         # taken only from a person at a terminal (issue #9).

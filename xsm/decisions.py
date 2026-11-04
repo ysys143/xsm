@@ -324,3 +324,27 @@ def public_status(me, key=None, cancel=False):
     result['status']=_visible_status(record)
     result["attention"] = paths.read_json(paths.path("attention", key + ".json"))
     return result
+
+
+def capture_native_answer(me, question, answer, request):
+    """Record an exact marked question from the native completion hook; do not apply it."""
+    if not me or not request or not isinstance(question, str) or not question.startswith('[xsm-decision:'):
+        return False
+    import glob
+    from .operation_schema import person_answer
+    matches = [paths.read_json(p) for p in glob.glob(paths.path('human-decisions', '*.json'))]
+    matches = [r for r in matches if r and r.get('owner') == owner(me) and r.get('native_question') == question
+               and r.get('status') in ('pending', 'unshown-or-declined') and not r.get('answer')]
+    if len(matches) != 1:
+        return False
+    record = matches[0]
+    reply = {'result': {'action': 'accept', 'content': {'answer': answer}, '_meta': {'approvals_reviewer': 'user'}}}
+    value, _ = person_answer(reply, record.get('choices'))
+    if value is None:
+        return False
+    reply['result']['content']['answer'] = value
+    claim_native(me, str(request), record['id'])
+    if record['display']['status'] == 'not-requested':
+        display(record['id'], 'native-hook:' + str(request), question, 'native-user')
+    response(record['id'], reply, 'native-user', source_id=str(request), displayed=question)
+    return True

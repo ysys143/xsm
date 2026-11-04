@@ -124,6 +124,14 @@ class Server(OperationService):
                                      waiter=owner,
                                      choices=(((params.get("requestedSchema") or {}).get("properties") or {}).get("answer") or {}).get("enum"))
             record = decisions.recover_display(record["id"])
+            if not decision.get('native_request') and not record.get('answer') and record['status'] in ('pending', 'unshown-or-declined', 'unknown'):
+                from . import user_answers
+                original = record.get('native_question', record['question'])
+                evidence = user_answers.read_answer(decision['me'], since=record['created_at'],
+                    latest_only=True, question=original, tail_bytes=user_answers.MAX_TAIL_BYTES)
+                if evidence and evidence.get('question') == original:
+                    decision['native_request'] = evidence['questionItemId']
+                    decision['native_question'] = original
             if decision.get("native_request"):
                 if (record["status"] not in ("pending", "unshown-or-declined", "unknown") or
                         (record.get("answer") and self.answer(record["answer"]["reply"], record.get("choices"))[1] == DECLINED) or

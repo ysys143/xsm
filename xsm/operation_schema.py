@@ -254,6 +254,7 @@ TOOLS = [
                      "with this one. Joining is their decision; this shows them a form."),
      "inputSchema": {"type": "object", "properties": {
          "project": {"type": "string"}, "leave": {"type": "boolean", "default": False},
+         "workers": {"type": "array", "items": {"type": "string"}, "minItems": 1, "description": "Leader only: selected registered worker refs or Orca term_ handles. Collect one approval here for their folders; do not ask workers to join individually."},
          "reason": {"type": "string"}}, "required": ["project"]}},
     {"name": "xsm_reach",
      "description": ("Ask your user to let this session talk with the sessions of one other "

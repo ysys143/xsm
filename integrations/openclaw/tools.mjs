@@ -803,6 +803,14 @@ export default [
           "type": "boolean",
           "default": false
         },
+        "workers": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "description": "Leader only: selected registered worker refs or Orca term_ handles. Collect one approval here for their folders; do not ask workers to join individually."
+        },
         "reason": {
           "type": "string"
         },

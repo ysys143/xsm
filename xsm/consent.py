@@ -477,7 +477,9 @@ def record(me: dict | None, data: dict) -> dict | None:
                 one = dict(data, tool_response=dict(out, answers={question: answer}))
                 text = answers_text(one)
                 if text:
-                    note_verdict(me, text, request=data.get("tool_use_id"), question=str(question))
+                    from . import decisions
+                    if not decisions.capture_native_answer(me, str(question), answer, data.get('tool_use_id')):
+                        note_verdict(me, text, request=data.get("tool_use_id"), question=str(question))
         elif data.get("tool_name") == "AskUserQuestion":
             _unbound_alone(me, answers_text(data) or "unreadable question response", None,
                            data.get("tool_use_id"), "missing structured question identity; not applied")
@@ -490,6 +492,9 @@ def record(me: dict | None, data: dict) -> dict | None:
     elif event == "UserPromptSubmit":
         text = data.get("prompt") or ""
         if envelope.parse(text).peer or envelope.looks_like_peer(text):
+            return None
+        from . import delegation
+        if delegation.peer_directive(me, text):
             return None
         # A question tool's answer tag: the person's own choice, wrapped the
         # harness way. Keep the answer as the verdict, and the request id it
@@ -1491,7 +1496,10 @@ def unattended(me: dict | None) -> dict | None:
     XSM_WORKER: Codex does not pass that to its MCP servers. A pane worker's person is
     right there, and a person who resumed a finished worker's session is that session's
     person now."""
-    from . import workers
+    from . import workers, delegation
+    linked = delegation.binding(me) if me else None
+    if linked:
+        return {'name': (me or {}).get('name') or 'worker', 'parent_ref': linked['parent']['ref'], 'mode': 'delegated'}
     name = os.environ.get("XSM_WORKER")
     worker = dict({"name": name}, **(workers.load(name) or {})) if name \
         else workers.for_session((me or {}).get("session_id"))

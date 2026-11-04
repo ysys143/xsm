@@ -306,6 +306,13 @@ def cmd_who(args) -> int:
     if not me:
         print(registry.unregistered_reason(), file=sys.stderr)
         return REFUSED
+    extra = getattr(args, 'command', '') == 'whoami'
+    if extra:
+        from . import delegation
+        me = dict(me, projects=sorted(config.joined_projects(me)))
+        owner = delegation.parent(me)
+        if owner:
+            me['coordinator'] = {'ref': owner.get('ref'), 'name': owner.get('name'), 'state': owner.get('state')}
     if args.json:
         print(_readable_json(me))
         return OK
@@ -315,10 +322,18 @@ def cmd_who(args) -> int:
                 ("address", "`%s@%s`, or stable: `ref:%s`" % (me["name"], me["alias"], me["ref"])),
                 ("runtime", "%s, home %s" % (me["runtime"], _home_tilde(me.get("home") or ""))),
                 ("folder", _home_tilde(me.get("cwd") or ""))]
+        if extra:
+            rows.append(('projects', ', '.join(me['projects']) or '(none)'))
+            if me.get('coordinator'):
+                rows.append(('coordinator', 'ref:' + me['coordinator']['ref']))
         print("\n".join(_md_table(["this session", ""], rows)))
         return OK
     print("%s@%s [%s] %s %s" % tuple(_display_text(v) for v in (me["name"], me["alias"], me["ref"],
                                 me["runtime"], me.get("cwd") or "")))
+    if extra:
+        print('projects: ' + (', '.join(me['projects']) or '(none)'))
+        if me.get('coordinator'):
+            print('coordinator: ref:' + me['coordinator']['ref'])
     if me.get("name_source") and me["name_source"] != "user":
         print("this name was %s, not chosen by your user; it can change. "
               "The stable address is ref:%s" % (me["name_source"], me["ref"]))
@@ -2777,6 +2792,11 @@ class _Version(argparse.Action):
         parser.exit()
 
 
+def _short_help():
+    print("xsm list        — find sessions\nxsm whoami      — this session and folder\nxsm help        — this guide\n\nAsk your agent in ordinary language to message a peer or group its workers.\nAdvanced commands: xsm --help")
+    return OK
+
+
 def build_parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(prog="xsm", description="cross-session messaging")
     p.add_argument("--version", action=_Version)
@@ -2802,10 +2822,13 @@ def build_parser() -> argparse.ArgumentParser:
                     help="a Markdown table, for a session's TUI to draw (`/xsm <command>` uses it)")
     ls.set_defaults(func=cmd_list)
 
-    who = sub.add_parser("who", help="identity of the session running this command")
+    who = sub.add_parser("who", aliases=["whoami"], help="identity of the session running this command")
     who.add_argument("--table", action="store_true", help="a Markdown table (for a session's TUI)")
     who.add_argument("--json", action="store_true")
     who.set_defaults(func=cmd_who)
+
+    short_help = sub.add_parser("help", help="short getting-started guide")
+    short_help.set_defaults(func=lambda _args: _short_help())
 
     for verb, helptext, func in (
             ("join", "put this project in a named xsm project (both sides must join)", cmd_join),
@@ -3180,6 +3203,8 @@ ASKING = ("join", "leave", "spawn", "doc", "remote", "approve", "link", "reach",
 
 def main(argv=None) -> int:
     args = build_parser().parse_args(argv)
+    if args.command == 'help':
+        return _short_help()
     if args.xsm_home:
         os.environ["XSM_HOME"] = os.path.expanduser(args.xsm_home)
         paths.HOME = os.environ["XSM_HOME"]

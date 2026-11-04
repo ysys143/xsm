@@ -71,6 +71,13 @@ def upsert(runtime: str, home: str, session_id: str, pid: int, cwd: str,
         "ref": identity.ref_of(runtime, home, session_id),
         "updated": time.time(),
     })
+    terminal = os.environ.get('ORCA_TERMINAL_HANDLE') or os.environ.get('ORCA_PANE_KEY')
+    if terminal:
+        record['framework_terminal'] = terminal
+        record['framework'] = 'orca'
+    elif previous_pid != int(pid):
+        record.pop('framework_terminal', None)
+        record.pop('framework', None)
     # A session that registers again is alive again: `claude --resume` comes
     # back with the same session id, so an earlier goodbye no longer applies.
     record.pop("ended_at", None)
