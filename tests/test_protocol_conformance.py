@@ -385,7 +385,7 @@ class ExternalConformanceTest(unittest.TestCase):
             with self.subTest(fault=fault):
                 result=checker.run(self.delivery_candidate(fault),suite='team-board-actions')
                 self.assertEqual(result['status'],'failed',result)
-                self.assertEqual(result['activeCheck'],check)
+                self.assertEqual(result['activeCheck'],check,result)
 
     def test_standard_errors_and_post_effect_failure_contract(self):
         command=[sys.executable,'-B',str(ROOT/'tests/fixtures/protocol_error_fixture.py')]
