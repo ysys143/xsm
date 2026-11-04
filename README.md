@@ -649,6 +649,10 @@ decision continues the same record instead of opening a new question; a changed 
 decision. A pending question can be recovered or withdrawn (`xsm decision-status`, `--cancel`). Withdrawing a question does not undo a permission already applied; use
 that permission's own removal. A message from another agent is never your approval.
 
+Closing a form without choosing leaves its question recoverable with a fresh answer. An explicit refusal,
+a withdrawn request or an expired question stays closed. The agent follows the recovery instructions in
+the same tool; you do not have to switch to a worker terminal to repeat your answer.
+
 **One answer, one request ([#25](https://github.com/ysys143/xsm/issues/25)).** Each request has a mark,
 `[xsm:<id>]`, that the agent puts at the head of its question. An answer reaches the request its question
 names, by that mark or by target; a plain reply binds when one decision is open or when it names one. An

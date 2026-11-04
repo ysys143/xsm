@@ -124,23 +124,23 @@ class Server(OperationService):
                                      waiter=owner,
                                      choices=(((params.get("requestedSchema") or {}).get("properties") or {}).get("answer") or {}).get("enum"))
             record = decisions.recover_display(record["id"])
-            if not decision.get('native_request') and not record.get('answer') and record['status'] in ('pending', 'unshown-or-declined', 'unknown'):
+            if not decision.get('native_request') and decisions.native_recoverable(record):
                 from . import user_answers
                 original = record.get('native_question', record['question'])
-                evidence = user_answers.read_answer(decision['me'], since=record['created_at'],
+                evidence = user_answers.read_answer(decision['me'], since=decisions.native_since(record),
                     latest_only=True, question=original, tail_bytes=user_answers.MAX_TAIL_BYTES)
                 if evidence and evidence.get('question') == original:
                     decision['native_request'] = evidence['questionItemId']
                     decision['native_question'] = original
             if decision.get("native_request"):
-                if (record["status"] not in ("pending", "unshown-or-declined", "unknown") or
+                if (not decisions.native_recoverable(record) or
                         (record.get("answer") and self.answer(record["answer"]["reply"], record.get("choices"))[1] == DECLINED) or
                         time.time() > record["expires_at"] or not self._decision_current(decision)):
                     self.pending_client.pop(rid, None)
                     return {"id": rid, "error": {"code": -32000, "message": "decision is closed or expired; native answer not imported"}}
                 from . import user_answers
                 evidence = user_answers.read_answer(decision["me"], request=decision["native_request"],
-                            since=max(record["created_at"], time.time() - consent.TTL), latest_only=True,
+                            since=max(decisions.native_since(record), time.time() - consent.TTL), latest_only=True,
                             question=decision.get("native_question"),
                             tail_bytes=user_answers.MAX_TAIL_BYTES)
                 original = decision.get("native_question")

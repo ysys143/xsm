@@ -790,10 +790,11 @@ class OperationService:
                         'needs a new decision_key. Do not ask the closed question again.' % record['status'])
             if record and record.get('native_question'):
                 return ('Ask your user once using this exact question, without paraphrasing: %s\n'
-                        'Choices: %s. After the native question tool returns, retry this same MCP tool '
+                        'Choices: %s. %s After the native question tool returns, retry this same MCP tool '
                         'with the same arguments; the verified answer is recovered and applied in that call. '
                         'Do not switch to a shell or supply recovery IDs manually.' %
-                        (record['native_question'], ', '.join(record.get('choices') or ['allow','deny'])))
+                        (record['native_question'], ', '.join(record.get('choices') or ['allow','deny']),
+                         consent.how(me.get('runtime'), native_only=True)))
         if call and key == call.get("permission_key"):
             if not call.get("permission_kept"):
                 return ("the input reply cannot be retained here; nothing was approved. Inspect "
@@ -1224,6 +1225,8 @@ class OperationService:
         # its grant is keyed by that folder, so `dir` cannot move a pairing.
         cwd = os.path.realpath(os.path.expanduser(
             (None if remote else args.get("dir")) or me.get("cwd") or os.getcwd()))
+        if not remote and not config.scope_for(me, {'cwd': cwd})[0]:
+            options = sorted(set(options) | {'outside_scope'})
         reason = (args.get("reason") or "").strip() or "(no reason given)"
         words = {"remote": "PAIRING with another machine over SSH: sessions there in the paired "
                            "project can message this project",

@@ -35,6 +35,10 @@ MODULES = ["tests.test_hermes_native_context", "tests.test_owned_probe_observer"
            "tests.test_handoff_crash", "tests.test_handoff_pending_ids",
            "tests.test_mcp_dispatch", "tests.test_subagent_transport",
            "tests.test_mcp_identity", "tests.test_mcp_shared_process"]
+MODULES += ["tests.test_registry_profiles", "tests.test_person_decisions", "tests.test_mcp_forms",
+            "tests.test_native_permission_recovery", "tests.test_decisions", "tests.test_native_consent",
+            "tests.test_user_answers", "tests.test_answer_binding", "tests.test_open_consent",
+            "tests.test_worker_project_flow"]
 CONFORMANCE_MODULES = ["tests.test_protocol_conformance"]
 NATIVE_MODULES = ["tests.test_native_worker_catalog", "tests.test_native_worker_control",
                   "tests.test_native_worker_provider", "tests.test_native_worker_retention",

@@ -1,0 +1,50 @@
+{
+  "cases": [
+    {
+      "case": "native-answer-not-imported",
+      "source": "xsm/decisions.py",
+      "test": "tests.test_native_permission_recovery.NativePermissionRecoveryTest.test_allow_join",
+      "exit_code": 1,
+      "detected": true
+    },
+    {
+      "case": "negative-choice-applies",
+      "source": "xsm/operation_schema.py",
+      "test": "tests.test_native_permission_recovery.NativePermissionRecoveryTest.test_deny_join",
+      "exit_code": 1,
+      "detected": true
+    },
+    {
+      "case": "wrong-question-captured",
+      "source": "xsm/decisions.py",
+      "test": "tests.test_native_permission_recovery.NativePermissionRecoveryTest.test_a_different_native_question_cannot_capture_the_pending_choice",
+      "exit_code": 1,
+      "detected": true
+    },
+    {
+      "case": "applied-receipt-not-replayed",
+      "source": "xsm/operations.py",
+      "test": "tests.test_native_permission_recovery.NativePermissionRecoveryTest.test_allow_join",
+      "exit_code": 1,
+      "detected": true
+    },
+    {
+      "case": "permission-suite-omitted",
+      "source": "scripts/check-protocol.py",
+      "test": "tests.test_protocol_gate.ProtocolGateTest.test_approval_and_profile_regressions_are_required_gate_members",
+      "exit_code": 1,
+      "detected": true
+    }
+  ],
+  "source_hashes": {
+    "scripts/check-protocol.py": "84ab6ff05b5aeb98613466114cdfb27e055c0e8ac4309bdac06f19690fbe2efb",
+    "tests/permission_harness.py": "7fbf6bc619629d1a3a62e18c791702c70a5f7580103dbfc6dd7745c4d53700f0",
+    "tests/test_native_permission_recovery.py": "68e8b121c53e728357b3c0da509e59385daa66387a4629ef9b1ae5c5ca48534a",
+    "tests/test_protocol_gate.py": "205b2744ec7583695ff5c3948993099c61eb2c88f643be6ffd3cd21301f09b14",
+    "xsm/consent.py": "c05489438146e2ac1bb0d4a28d8cc66969c83417172d7d4f968687595940d12c",
+    "xsm/decisions.py": "82d0115e9a8b2287da73cc5984782ed7401accf4bfc7ae9ccea0c0107c65c93e",
+    "xsm/mcp.py": "4aebd9d64487618ab78eb88db604aa4625afe4e4543011af8ff84d84af41e63b",
+    "xsm/operation_schema.py": "4475c2e6d467a3126ab31445399fa87d0bc9b4ff30af35b391fca6ba88659d22",
+    "xsm/operations.py": "1c12d27a8800d6589975c6624672c6ec8b14a73a55b0ec6ffcafb874ccbe1490"
+  }
+}

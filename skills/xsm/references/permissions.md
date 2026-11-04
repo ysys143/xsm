@@ -11,17 +11,18 @@ Take the first that fits.
 2. No person is at this session (a background worker): DM your parent or team lead. No form, no question tool.
 3. The runtime is asking about your own tool call: leave it to the runtime. A worker of yours waits: `xsm_approve`.
 4. What remains is a decision record (`xsm_decide`): a form or verified native-answer recovery. Without one, say nothing was recorded.
-5. What remains is a permission: the form tool if it shows. If not, run the command first so the ask exists, then
-   ask that one thing with its mark, then run it twice more: Claude Code AskUserQuestion; Codex
-   `request_user_input_async` (`title` and `options`); in Plan mode, plain words. Never the synchronous
-   `request_user_input`: its answer comes back in the tool output and xsm does not see it.
+5. What remains is a permission: use its form tool and follow its recovery instructions if the form cannot show.
+   An MCP request stays in MCP: copy its complete native question and choices into Claude Code AskUserQuestion
+   or Codex `request_user_input_async` (`title` and `options`), then retry the same tool and arguments once.
+   A CLI request records its ask first, then shows the reply on the next command and applies on a separate
+   retry after you read a yes. Never use the synchronous `request_user_input`: xsm cannot see that answer.
 6. You only need to know something: ask, in any way. An answer that names no request approves nothing.
 
 A permission ends when it is used. A decision record is read later as what your user decided, so it requires the form or verified native evidence.
 
 ## How an answer binds
 
-Every refusal gives the ask's mark, `[xsm:<id>]`. Start the question with it, exactly as written: Codex shortens a
+CLI asks carry a mark, `[xsm:<id>]`. Start the question with it, exactly as written: Codex shortens a
 long question from the end. Ask one thing per question. The answer reaches the ask its question names: by the mark,
 by an exact question id, or by naming one target ("Join alpha?"). Several questions at once bind one by one. A plain
 reply binds when one decision is open or when it names one or carries the mark.
@@ -57,16 +58,18 @@ recorded as `native-user`, separately from `mcp-elicitation`; an agent's quotati
 of approval is not evidence. Multiple questions in the same native item have
 separate claims. Closed, expired or explicitly denied decisions cannot be revived.
 
+A form dismissed without a choice can recover from a fresh native answer to its exact question.
+The earlier dismissal stays in its history. An answer from before that dismissal cannot approve it.
+An explicit refusal, a withdrawn request or an expired question stays closed; do not ask it again.
+
 A standalone `다시`, `계속`, `재개`, `continue` or `resume` after interruption
 preserves the exact earlier native question answer. It supplies no new approval.
 A changed request or cancellation still blocks recovery; expiry, consumption,
 conversation and question binding checks remain in force.
 
-When an MCP permission form receives no usable answer, retry that same MCP
-operation after the user's reply. The server shows the words first; after
-reading a yes, the next separate call applies once. This path covers permission
-tools; a team decision still requires a form or verified native evidence.
-There is no need to bounce to a sandboxed shell.
+Verified native recovery applies on one retry of the same MCP operation. If a permission tool explicitly
+shows input-consent words instead, read them before the next separate call applies a yes.
+A team decision requires a form or verified native evidence. Keep the same transport throughout.
 
 If status reports an application that started with an unknown outcome, inspect
 the decision and domain state. Do not repeat the operation or choose a new key

@@ -1,0 +1,20 @@
+======================================================================
+FAIL: test_allow_join (tests.test_native_permission_recovery.NativePermissionRecoveryTest.test_allow_join)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-permission-oracles-32k91ztq/tests/test_native_permission_recovery.py", line 88, in test_allow_join
+    def test_allow_join(self): self.exercise('join', True)
+                               ~~~~~~~~~~~~~^^^^^^^^^^^^^^
+  File "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-permission-oracles-32k91ztq/tests/test_native_permission_recovery.py", line 83, in exercise
+    self.assertEqual(again, result, 'retry returns the original applied receipt')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: {'con[29 chars]t': 'already in project-join'}], 'isError': False} != {'con[29 chars]t': 'joined project-join; other members: none [20 chars]alse}
+- {'content': [{'text': 'already in project-join', 'type': 'text'}],
++ {'content': [{'text': 'joined project-join; other members: none yet',
++               'type': 'text'}],
+   'isError': False} : retry returns the original applied receipt
+
+----------------------------------------------------------------------
+Ran 1 test in 0.241s
+
+FAILED (failures=1)

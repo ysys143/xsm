@@ -19,6 +19,14 @@ spec.loader.exec_module(gate)
 
 
 class ProtocolGateTest(unittest.TestCase):
+    def test_approval_and_profile_regressions_are_required_gate_members(self):
+        required = {'tests.test_registry_profiles', 'tests.test_person_decisions',
+                    'tests.test_mcp_forms', 'tests.test_native_permission_recovery',
+                    'tests.test_decisions', 'tests.test_native_consent', 'tests.test_user_answers',
+                    'tests.test_answer_binding', 'tests.test_open_consent', 'tests.test_worker_project_flow'}
+        self.assertFalse(required - set(gate.MODULES), required - set(gate.MODULES))
+        self.assertEqual(len(gate.MODULES), len(set(gate.MODULES)))
+
     def test_main_separates_conformance_without_omitting_any_gate(self):
         calls = []
         def run_phase(commands, env, root, deadline, offset):

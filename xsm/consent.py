@@ -1833,10 +1833,18 @@ def prune(now: float | None = None, dry_run: bool = False) -> list:
     return removed
 
 
-def how(runtime: str | None) -> str:
+def how(runtime: str | None, *, native_only=False) -> str:
     """How the agent may ask, runtime by runtime; `ask_hint` says what the question
     has to carry. Codex's question tool is named exactly: the synchronous
     request_user_input answers in its tool output, where no hook of xsm's sees it."""
+    if native_only:
+        if runtime == 'claude':
+            return 'Ask with AskUserQuestion.'
+        if runtime == 'codex':
+            return ('Ask with request_user_input_async if your harness permits it; never use '
+                    'the synchronous request_user_input. If no supported native question tool '
+                    'is available, report that this request cannot be answered from here.')
+        return "Ask with your harness's supported native question tool."
     if runtime == "claude":
         return "in plain words, or with your question tool (AskUserQuestion), one thing at a time"
     if runtime == "codex":

@@ -17,6 +17,7 @@ from . import paths
 
 DIRECTORY = "human-decisions"
 TERMINAL = ("denied", "cancelled", "expired", "superseded", "applied")
+NATIVE_RECOVERABLE = ('pending', 'dismissed', 'unshown-or-declined', 'unknown')
 
 
 def digest(value):
@@ -128,12 +129,26 @@ def recover_display(key):
     return record
 
 
+def native_recoverable(record, now=None):
+    """An unanswered form may be completed natively; an actual no stays closed."""
+    now = time.time() if now is None else now
+    return bool(record and record['status'] in NATIVE_RECOVERABLE
+                and not record.get('application') and record['created_at'] <= now <= record['expires_at'])
+
+
+def native_since(record):
+    """A choice predating dismissal/rejection is not a new answer to that form."""
+    return max(record['created_at'], (record.get('answer') or {}).get('recorded_at', record['created_at']))
+
+
 def response(key, reply, source, source_id=None, displayed=None, now=None):
     """Only internal transport adapters call this; never expose it as a grant RPC."""
     now = time.time() if now is None else now
     with locked(key) as path:
         record = paths.read_json(path)
         if record["status"] in ("applied", "cancelled", "superseded"):
+            return record
+        if source == 'native-user' and (record['status'] not in NATIVE_RECOVERABLE or record.get('application')):
             return record
         result = reply.get("result") if isinstance(reply, dict) else None
         action = result.get("action") if isinstance(result, dict) else None
@@ -160,6 +175,8 @@ def response(key, reply, source, source_id=None, displayed=None, now=None):
                 state = "denied" if negative and record["scope"].get("tool") != "xsm_decide" else "answered"
         else:
             state = "unknown"
+        if source == 'native-user' and record.get('answer'):
+            record.setdefault('answer_history', []).append(record['answer'])
         record.update(status=state, answer={"reply": reply, "source": source,
                       "source_id": source_id, "recorded_at": now})
         if displayed is not None:
@@ -334,7 +351,7 @@ def capture_native_answer(me, question, answer, request):
     from .operation_schema import person_answer
     matches = [paths.read_json(p) for p in glob.glob(paths.path('human-decisions', '*.json'))]
     matches = [r for r in matches if r and r.get('owner') == owner(me) and r.get('native_question') == question
-               and r.get('status') in ('pending', 'unshown-or-declined') and not r.get('answer')]
+               and native_recoverable(r)]
     if len(matches) != 1:
         return False
     record = matches[0]
@@ -346,5 +363,5 @@ def capture_native_answer(me, question, answer, request):
     claim_native(me, str(request), record['id'])
     if record['display']['status'] == 'not-requested':
         display(record['id'], 'native-hook:' + str(request), question, 'native-user')
-    response(record['id'], reply, 'native-user', source_id=str(request), displayed=question)
-    return True
+    saved = response(record['id'], reply, 'native-user', source_id=str(request), displayed=question)
+    return (saved.get('answer') or {}).get('source_id') == str(request)

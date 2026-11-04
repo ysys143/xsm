@@ -1,0 +1,13 @@
+======================================================================
+FAIL: test_a_different_native_question_cannot_capture_the_pending_choice (tests.test_native_permission_recovery.NativePermissionRecoveryTest.test_a_different_native_question_cannot_capture_the_pending_choice)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-permission-oracles-32k91ztq/tests/test_native_permission_recovery.py", line 191, in test_a_different_native_question_cannot_capture_the_pending_choice
+    self.assertIsNone(decisions.read(record['id'])['answer'])
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: {'reply': {'result': {'action': 'accept', 'content': {'answer': 'allow'}, '_meta': {'approvals_reviewer': 'user'}}}, 'source': 'native-user', 'source_id': 'fixture-native-09bec5155de22c23f5725a11e19dba4d3e46714ec419e5fce5100a678d22cd0e', 'recorded_at': 1793821218.058594} is not None
+
+----------------------------------------------------------------------
+Ran 1 test in 0.155s
+
+FAILED (failures=1)

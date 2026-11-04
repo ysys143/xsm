@@ -1,0 +1,16 @@
+======================================================================
+FAIL: test_allow_join (tests.test_native_permission_recovery.NativePermissionRecoveryTest.test_allow_join)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-permission-oracles-32k91ztq/tests/test_native_permission_recovery.py", line 88, in test_allow_join
+    def test_allow_join(self): self.exercise('join', True)
+                               ~~~~~~~~~~~~~^^^^^^^^^^^^^^
+  File "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-permission-oracles-32k91ztq/tests/test_native_permission_recovery.py", line 72, in exercise
+    self.assertFalse(result.get('isError'), result)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: True is not false : {'content': [{'type': 'text', 'text': "this client cannot show a form. Ask your user once using this exact question, without paraphrasing: [xsm-decision:6bec7ae0156cc112] owner@fixture asks to let /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-test-e0agml__ join the xsm project 'project-join'.\nAllow it?\nChoices: allow, deny. Ask with AskUserQuestion. After the native question tool returns, retry this same MCP tool with the same arguments; the verified answer is recovered and applied in that call. Do not switch to a shell or supply recovery IDs manually."}], 'isError': True}
+
+----------------------------------------------------------------------
+Ran 1 test in 0.176s
+
+FAILED (failures=1)

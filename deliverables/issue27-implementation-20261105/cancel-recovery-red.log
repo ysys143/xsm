@@ -1,0 +1,22 @@
+======================================================================
+FAIL: test_dismissed_claude_form_can_recover_from_a_fresh_native_answer (tests.test_native_permission_recovery.NativePermissionRecoveryTest.test_dismissed_claude_form_can_recover_from_a_fresh_native_answer)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/tests/test_native_permission_recovery.py", line 110, in test_dismissed_claude_form_can_recover_from_a_fresh_native_answer
+    self.assertFalse(result.get('isError'), result)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: True is not false : {'content': [{'type': 'text', 'text': "this client cannot show a form. Ask your user once using this exact question, without paraphrasing: [xsm-decision:e67a67050da70eb5] owner@fixture asks to let /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-test-gccsm4ib join the xsm project 'cancel-recovery'.\nAllow it?\nChoices: allow, deny. Ask with AskUserQuestion. After the native question tool returns, retry this same MCP tool with the same arguments; the verified answer is recovered and applied in that call. Do not switch to a shell or supply recovery IDs manually."}], 'isError': True}
+
+======================================================================
+FAIL: test_dismissed_codex_form_recovers_from_its_actual_native_record_format (tests.test_native_permission_recovery.NativePermissionRecoveryTest.test_dismissed_codex_form_recovers_from_its_actual_native_record_format)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/tests/test_native_permission_recovery.py", line 122, in test_dismissed_codex_form_recovers_from_its_actual_native_record_format
+    self.assertFalse(result.get('isError'), result)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: True is not false : {'content': [{'type': 'text', 'text': "this client cannot show a form. Ask your user once using this exact question, without paraphrasing: [xsm-decision:8e6aad1cd8452035] owner@fixture asks to let /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-test-99k_ophw join the xsm project 'codex-cancel-recovery'.\nAllow it?\nChoices: allow, deny. Ask with request_user_input_async if your harness permits it; never use the synchronous request_user_input. If no supported native question tool is available, report that this request cannot be answered from here. After the native question tool returns, retry this same MCP tool with the same arguments; the verified answer is recovered and applied in that call. Do not switch to a shell or supply recovery IDs manually."}], 'isError': True}
+
+----------------------------------------------------------------------
+Ran 2 tests in 0.173s
+
+FAILED (failures=2)

@@ -24,6 +24,10 @@ class AskHelpers:
         super().setUp()
         self.me = {"ref": "abc123", "session_id": "s-agent", "runtime": "claude",
                    "cwd": self.tmp, "name": "agent", "alias": "claude-3"}
+        from xsm import identity
+        self.me.update(home=os.path.join(self.tmp, 'native-home'), pid=os.getpid(),
+                       lstart=identity.lstart(os.getpid()))
+        os.makedirs(self.me['home'])
 
     def _cli(self, argv):
         from xsm import cli, registry, workers
@@ -295,7 +299,7 @@ class PersonDecisionTest(AskHelpers, TempState):
                  "typing `$xsm", "at a terminal")
         # (file, text around the phrase): a person typing at a terminal is the point.
         genuine = (("xsm/otlp_export.py", "A person runs this in a terminal"),
-                   ("README.md", "The same commands work in a terminal as"),
+                   ("README.md", "These examples also work in a terminal as"),
                    ("xsm/install.py", "told the person to type /xsm link instead"),   # history
                    ("skills/xsm/references/workers.md", "Never ask them to type shell commands"),
                    # `--dir` speaks for another folder: only a person at a terminal, and
@@ -997,41 +1001,38 @@ class PersonDecisionTest(AskHelpers, TempState):
 
     DISMISSED = {"result": {"action": "cancel"}}
 
-    def _one_yes_is_enough(self, name, args, run, reply=None):
-        """The form got no answer, so the agent is told to ask now; the person
-        says yes once, in words; the command it was given shows that yes the
-        first time it runs. Returns what that run printed."""
+    def _one_yes_is_enough(self, name, args, reply=None):
+        """Native completion records the choice; the same MCP call applies once."""
+        from tests import permission_harness as harness
+        from xsm import decisions
         text = self._form(name, args, reply)
-        self.assertIn("Ask your user now", text)
-        self.assertNotIn("first:", text, "the ask is on record, so no command comes before it")
-        entry = self._pending()
-        self.assertIsNotNone(entry, "the MCP server recorded the ask")
-        self.assertIsNone(entry["verdict"])
-        from xsm import consent
-        self.assertTrue(consent.note_verdict(self.me, "응", question="[xsm:%s]" % entry["ask_id"]),
-                        "this exact fixture question has its own ask, even with other asks pending")
-        shown = run()
-        self.assertIn('your user replied: "응"', shown)
+        self.assertIn("retry this same MCP tool", text)
+        self.assertNotIn("Shell equivalent:", text)
+        record = harness.pending(self.me, text)
+        if record.get('answer'):
+            from xsm import operation_schema
+            self.assertIsNone(operation_schema.person_answer(record['answer']['reply'])[0])
+        self.assertIsNone(record['application'])
+        self.form_question = record['question']
+        choice = 'endorse' if name == 'xsm_doc_endorse' else 'allow once' if name == 'xsm_grant' else 'allow'
+        self.assertIn(choice, record['choices'])
+        harness.answer(self.me, record, choice)
+        self.assertIsNone(decisions.read(record['id'])['application'])
+        shown = self._form(name, args)
+        self.assertEqual(decisions.read(record['id'])['status'], 'applied', shown)
+        self.assertEqual(self._form(name, args), shown, 'a repeated call returns the first effect')
         return shown
 
     def test_a_link_form_that_cannot_show_is_asked_for_in_words_and_one_yes_does(self):
-        import shlex
         from xsm import config
         self.me["runtime"] = "codex"
         other = os.path.join(self.tmp, "other")
         os.makedirs(other)
         root, here = config.project_root(other), config.project_root(self.tmp)
-        text = self._form("xsm_link", {"dir": other})
-        self.assertIn("`xsm link %s`" % shlex.quote(root), text)
+        text = self._one_yes_is_enough("xsm_link", {"dir": other})
         self.assertNotIn("AskUserQuestion", text, "Codex has no such tool")
-        self.assertEqual(
-            {k: self._pending()[k] for k in ("verb", "target", "here", "verdict")},
-            {"verb": "link", "target": root, "here": here, "verdict": None})
-        self._reply("응")
-        self._shows(["link", root], "응")
-        code, text = self._cli(["link", root])
-        self.assertEqual(code, 0, text)
-        self.assertIn("응", config.links()[0]["by"])
+        self.assertEqual(config.links()[0]['a'], here)
+        self.assertEqual(config.links()[0]['b'], root)
 
     def test_a_claude_agent_is_offered_its_question_tool_in_that_text(self):
         text = self._form("xsm_join", {"project": "demo"})
@@ -1042,83 +1043,58 @@ class PersonDecisionTest(AskHelpers, TempState):
         other = os.path.join(self.tmp, "other")
         os.makedirs(other)
         with self.subTest("join"):
-            self._one_yes_is_enough("xsm_join", {"project": "demo"},
-                                    lambda: self._cli(["join", "demo"])[1], self.DISMISSED)
+            self._one_yes_is_enough("xsm_join", {"project": "demo"}, self.DISMISSED)
+            self.assertIn('demo', config.joined_projects(self.me))
         with self.subTest("leave"):
-            self._one_yes_is_enough("xsm_join", {"project": "demo", "leave": True},
-                                    lambda: self._cli(["leave", "demo"])[1])
+            self._one_yes_is_enough("xsm_join", {"project": "demo", "leave": True})
+            self.assertNotIn('demo', config.joined_projects(self.me))
         with self.subTest("reach"):
-            self._one_yes_is_enough("xsm_reach", {"dir": other},
-                                    lambda: self._cli(["reach", other])[1], self.DISMISSED)
+            self._one_yes_is_enough("xsm_reach", {"dir": other}, self.DISMISSED)
+            self.assertTrue(config.reaches())
         with self.subTest("approve"):
             workers.save({"name": "w1", "runtime": "claude", "mode": "background", "pane": "%1",
                           "cwd": self.tmp, "created": 0, "parent_ref": "abc123"})
             paths.write_json(workers._approval_path("r1"), {
                 "id": "r1", "worker": "w1", "summary": "Bash: rm -rf build", "status": "pending",
                 "t": 0, "tool": "Bash"})
-            self._one_yes_is_enough("xsm_approve", {"id": "r1"},
-                                    lambda: self._cli(["approve", "r1"])[1], self.DISMISSED)
+            self._one_yes_is_enough("xsm_approve", {"id": "r1"}, self.DISMISSED)
+            self.assertEqual(paths.read_json(workers._approval_path('r1'))['status'], 'approved')
         with self.subTest("grant"):
-            def grant():
-                with self.assertRaises(workers.WorkerError) as cm:
-                    workers.use_grant(None, self.me, "codex", self.tmp, ["full_access"])
-                return str(cm.exception)
-            text = self._one_yes_is_enough(
-                "xsm_grant", {"runtime": "codex", "options": ["full_access"], "reason": "r",
-                              "dir": self.tmp}, grant, self.DISMISSED)
-            self.assertIn("FULL ACCESS", text)
+            self._one_yes_is_enough("xsm_grant", {"runtime": "codex", "options": ["full_access"],
+                "reason": "r", "dir": self.tmp}, self.DISMISSED)
+            self.assertIn("FULL ACCESS", self.form_question)
         with self.subTest("grant outside this session's scope"):
             import shutil
             import tempfile
             elsewhere = tempfile.mkdtemp(prefix="xsm-test-elsewhere-")
             self.addCleanup(shutil.rmtree, elsewhere, True)
             self.assertIsNone(config.scope_for(self.me, {"cwd": elsewhere})[0])
-
-            def grant_there():
-                # spawn adds outside_scope itself for a folder outside the scope
-                with self.assertRaises(workers.WorkerError) as cm:
-                    workers.use_grant(None, self.me, "codex", elsewhere,
-                                      ["full_access", "outside_scope"])
-                return str(cm.exception)
-            self._one_yes_is_enough(
-                "xsm_grant", {"runtime": "codex", "options": ["full_access"], "reason": "r",
-                              "dir": elsewhere}, grant_there, self.DISMISSED)
+            self._one_yes_is_enough("xsm_grant", {"runtime": "codex", "options": ["full_access"],
+                "reason": "r", "dir": elsewhere}, self.DISMISSED)
+            self.assertIn(elsewhere, self.form_question)
         with self.subTest("endorse"):
             path = os.path.join(self.tmp, "d.md")
             node = doc.add(path, {"kind": "agent", "name": "w", "alias": "a", "ref": "zzzzzz"},
                            "the report", ["report"])
-            body = next(n for n in doc.read(path) if n["id"] == node["id"])["body"]
-            self._one_yes_is_enough(
-                "xsm_doc_endorse", {"doc": path, "node": node["id"]},
-                lambda: self._cli(["doc", "add", path, "--tag", "endorsed", "--parent",
-                                   node["id"], "--text", body])[1])
+            self._one_yes_is_enough("xsm_doc_endorse", {"doc": path, "node": node['id']})
+            self.assertEqual(len([n for n in doc.read(path) if 'endorsed' in n['tags']]), 1)
 
     def test_a_remote_pairing_is_asked_for_by_the_session_folder_its_command_uses(self):
-        """`xsm remote add` takes no --dir: it pairs the session's own folder.
-        The ask was keyed by the tool's `dir`, so a dir that was not the
-        session's folder recorded an ask the command never found (2026-10-01)."""
-        from xsm import consent, workers
+        """Pairing grants are for the caller's folder even if dir names another."""
+        from xsm import workers
         other = os.path.join(self.tmp, "other")
         os.makedirs(other)
         args = {"runtime": "remote:box", "options": ["remote"], "reason": "pair", "dir": other}
-        text = self._form("xsm_grant", args)
-        self.assertIn("Ask your user now", text)
-        self.assertIn("`xsm remote add box --project <project>`", text)
-        self.assertEqual(self._pending()["target"], workers.grant_target(
-            "remote:box", os.path.realpath(self.tmp), ["remote"]), "the session's folder")
-        self.assertNotIn(os.path.realpath(other), self._pending()["target"])
-        self.assertTrue(consent.note_verdict(self.me, "응"))
-        code, text = self._cli(["remote", "add", "box", "--project", "demo"])
-        self.assertEqual(code, 2, text)
-        self.assertIn('your user replied: "응"', text, "the command found the ask")
-        # A form they accept grants for that same folder, and names the command to run
-        granted = self._form("xsm_grant", args, {"result": {
-            "action": "accept", "content": {"answer": "allow once"}}})
-        gid = granted.split()[1].rstrip(":")
-        self.assertEqual(granted.split(":", 1)[1].split("--grant")[0].strip(),
-                         "xsm remote add box --project <project>")
-        grant = workers.use_grant(gid, self.me, "remote:box", self.tmp, ["remote"])
-        self.assertEqual(grant["id"], gid, "a grant for the session's folder covers the command")
+        granted = self._one_yes_is_enough('xsm_grant', args)
+        self.assertIn(os.path.realpath(self.tmp), self.form_question)
+        self.assertNotIn(os.path.realpath(other), self.form_question)
+        gid = granted.split()[1].rstrip(':')
+        self.assertEqual(granted.split(':', 1)[1].split('--grant')[0].strip(),
+                         'xsm remote add box --project <project>')
+        grant = workers.use_grant(gid, self.me, 'remote:box', self.tmp, ['remote'])
+        self.assertEqual(grant['id'], gid)
+        with self.assertRaises(workers.WorkerError):
+            workers.use_grant(gid, self.me, 'remote:box', self.tmp, ['remote'])
 
     def test_a_decision_without_a_form_names_no_command_and_records_no_ask(self):
         """T11: `xsm post --tag decision` was the road round a missing form; with
@@ -1144,7 +1120,7 @@ class PersonDecisionTest(AskHelpers, TempState):
         from xsm import mcp
         text = self._form("xsm_join", {"project": "demo"}, {"result": {"action": "decline"}})
         self.assertIn("approval_policy", text, "a client that did not say who it is: unsure")
-        self.assertIn("Ask your user now", text)
+        self.assertIn("retry this same MCP tool", text)
         self.assertEqual(mcp.person_answer({"result": {"action": "decline"}}, client="claude-code"),
                          (None, mcp.DECLINED))
 

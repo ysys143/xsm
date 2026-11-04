@@ -159,7 +159,9 @@ class McpServerTest(TempState):
         out, _ = self._run(self.INIT, call, auto)
         text = next(m for m in out if m.get("id") == 2)["result"]["content"][0]["text"]
         self.assertIn("automatic reviewer", text)
-        self.assertIn("xsm join demo", text)            # what the person can do instead
+        self.assertIn('retry this same MCP tool', text)
+        self.assertIn('AskUserQuestion', text)
+        self.assertNotIn('Shell equivalent:', text)
         self.assertEqual(config.projects(), [])
 
     def test_reach_asks_the_person_and_records_only_an_allow(self):
@@ -310,43 +312,44 @@ class McpServerTest(TempState):
         self.assertEqual(config.projects(), [])
 
     def test_the_shell_command_is_one_the_agent_can_run_and_is_quoted(self):
-        """Issue #9: the fallback is run by the agent from its own folder, and
-        --dir is taken only from a person at a terminal, so it carries none."""
-        import shlex
+        """Recovery stays in MCP; exact questions carry paths, not shell arguments."""
         from xsm import config
         here = os.path.join(self.tmp, "my proj")
         text = self._ask("xsm_join", {"project": "demo"}, {"result": {"action": "decline"}},
                          cwd=here)
-        self.assertIn("Shell equivalent: `xsm join demo`", text)
+        self.assertNotIn('Shell equivalent:', text)
+        self.assertIn("project 'demo'", text)
         self.assertIn("retry this same MCP tool", text)
         self.assertNotIn("--dir", text)
         self.assertIn("approval_policy", text)
         other = os.path.join(self.tmp, "other folder")
         os.makedirs(other)
         text = self._ask("xsm_reach", {"dir": other}, {"result": {"action": "cancel"}})
-        self.assertIn("`xsm reach %s --session ref:%s`" % (
-            shlex.quote(config.project_root(other)), AGENT["ref"]), text)
+        self.assertIn(config.project_root(other), text)
+        self.assertIn('retry this same MCP tool', text)
+        self.assertNotIn('--session', text)
 
     def test_the_reach_command_names_the_absolute_root_of_a_relative_dir(self):
         # The person's terminal may be anywhere, so "../other folder" is named
         # as the root the form showed, taken from the asking session's folder.
-        import shlex
         from xsm import config
         here = os.path.join(self.tmp, "proj")
         other = os.path.join(self.tmp, "other folder")
         os.makedirs(other)
-        command = "`xsm reach %s --session ref:%s`" % (
-            shlex.quote(config.project_root(other)), AGENT["ref"])
+        root = config.project_root(other)
         text = self._ask("xsm_reach", {"dir": "../other folder"},
                          {"result": {"action": "decline"}}, cwd=here)
-        self.assertIn(command, text)
+        self.assertIn(root, text)
+        self.assertIn('retry this same MCP tool', text)
         self.assertNotIn("..", text)
         init = dict(self.INIT, params={"protocolVersion": "2025-06-18", "capabilities": {}})
         call = {"jsonrpc": "2.0", "id": 2, "method": "tools/call", "params": {
             "name": "xsm_reach", "arguments": {"dir": "../other folder"}}}
         out, _ = self._run(init, call, cwd=here)
-        self.assertIn(command, next(m for m in out if m.get("id") == 2)
-                      ["result"]["content"][0]["text"])
+        text = next(m for m in out if m.get('id') == 2)['result']['content'][0]['text']
+        self.assertIn(root, text)
+        self.assertIn('retry this same MCP tool', text)
+        self.assertNotIn('--session', text)
 
     def test_a_bare_decline_is_unsure_only_for_codex_or_an_unnamed_client(self):
         init = lambda name: dict(self.INIT, params=dict(self.INIT["params"],
@@ -373,7 +376,8 @@ class McpServerTest(TempState):
         text = self._ask("xsm_join", {"project": "demo"}, cancel, init=init)
         self.assertIn("did not answer", text)
         self.assertIn("dismissed", text)
-        self.assertIn("xsm join demo", text, "no answer: the agent may ask in words")
+        self.assertIn('retry this same MCP tool', text)
+        self.assertIn('AskUserQuestion', text)
         self.assertEqual(mcp.person_answer({"result": {"action": "decline"}}, client="claude-code"),
                          (None, mcp.DECLINED))
         call = {"jsonrpc": "2.0", "id": 2, "method": "tools/call", "params": {

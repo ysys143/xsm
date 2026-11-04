@@ -1,0 +1,13 @@
+======================================================================
+FAIL: test_an_outside_scope_grant_covers_the_worker_that_was_approved (tests.test_native_permission_recovery.NativePermissionRecoveryTest.test_an_outside_scope_grant_covers_the_worker_that_was_approved)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/tests/test_native_permission_recovery.py", line 184, in test_an_outside_scope_grant_covers_the_worker_that_was_approved
+    self.assertIn('outside_scope', granted['options'])
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'outside_scope' not found in ['full_access']
+
+----------------------------------------------------------------------
+Ran 1 test in 0.190s
+
+FAILED (failures=1)
