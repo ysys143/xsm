@@ -132,3 +132,11 @@ Do not send a join instruction to each worker or ask the user to visit worker te
 Already approved folders automatically cover later sessions in the same folders. A linked worker's
 new project request is returned to its parent; handle it there with the same group operation.
 New roots need one parent-side confirmation. A folder move or a new conversation requires a new link.
+For a new conversation in an approved folder, the parent confirmation names
+the coordinator relationship; it does not ask to join the folder again.
+
+The worker's `xsm join PROJECT` CLI follows the same routing as `xsm_join`:
+an approved folder returns immediately without another question. A new project
+produces one parent request and returns its pending ID; repeating it preserves
+that ID and does not open a worker-local question. Wait for the coordinator's
+result rather than switching to a second approval path.

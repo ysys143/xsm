@@ -57,6 +57,11 @@ recorded as `native-user`, separately from `mcp-elicitation`; an agent's quotati
 of approval is not evidence. Multiple questions in the same native item have
 separate claims. Closed, expired or explicitly denied decisions cannot be revived.
 
+A standalone `다시`, `계속`, `재개`, `continue` or `resume` after interruption
+preserves the exact earlier native question answer. It supplies no new approval.
+A changed request or cancellation still blocks recovery; expiry, consumption,
+conversation and question binding checks remain in force.
+
 When an MCP permission form receives no usable answer, retry that same MCP
 operation after the user's reply. The server shows the words first; after
 reading a yes, the next separate call applies once. This path covers permission
