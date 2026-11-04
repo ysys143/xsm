@@ -266,10 +266,13 @@ class ProtocolTest(ProtocolFixture):
 
     def test_targeted_inbox_rejects_invalid_ids(self):
         from xsm.protocol import ProtocolError
+        from xsm.operation_schema import ToolError
         a = self.open()
         for value in (None, [], 'id', [True], ['../bad'], ['bad\n'], ['x' * 161], ['x'] * 101):
             with self.subTest(value=repr(value)):
-                with self.assertRaises(ProtocolError):
+                # Provider-portable schema hints can reach the exact service
+                # validator, whose ToolError becomes -32602 on the wire too.
+                with self.assertRaises((ProtocolError, ToolError)):
                     self.operation(a, 'xsm_inbox', message_ids=value)
 
     def test_send_metadata_stays_request_local_when_passive_text_is_appended(self):

@@ -733,7 +733,9 @@ export default [
           "maxItems": 100,
           "items": {
             "type": "string",
-            "pattern": "^[A-Za-z0-9_-]{1,160}(?![\\s\\S])"
+            "pattern": "^[A-Za-z0-9_-]{1,160}$",
+            "minLength": 1,
+            "maxLength": 160
           },
           "description": "Read only these canonical originals in this conversation, including this host's active claims to retrieve current tokens without renewing leases or repeating work."
         },

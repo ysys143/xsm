@@ -13,6 +13,14 @@ not emit unsolicited wake events. Missing legacy wake fields retain their
 existing auto policy. FYI may be read at a natural boundary or alongside other
 work, but must not independently wake the agent.
 
+`message_ids` selects 1–100 exact originals in this conversation. Each ID has
+1–160 ASCII letters, digits, underscores or dashes. The model-facing schema
+uses a portable anchored pattern without lookaround because some model
+providers reject lookaround before starting a turn. The operation's exact
+full-string validator remains authoritative: trailing newlines are invalid,
+including with schema readers whose `$` anchor accepts a final newline.
+Structural schema acceptance never grants access to an original.
+
 ## File metadata
 
 A file-bearing item additionally contains `files`:

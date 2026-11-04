@@ -956,8 +956,11 @@ def operations_contract():
     invalid(dict(session='opaque-session', operation='xsm_board', arguments={'action': 'decide', 'team': 'fixture'}))
     targeted = dict(session='opaque-session', operation='xsm_inbox', arguments={'message_ids': ['original-1']})
     validator.validate(targeted)
-    for ids in (None, [], 'original-1', [True], ['../bad'], ['bad\n'], ['x' * 161], ['x'] * 101):
+    for ids in (None, [], 'original-1', [True], ['../bad'], ['x' * 161], ['x'] * 101):
         invalid(dict(targeted, arguments={'message_ids': ids}))
+    # Provider-portable $ may match before a final newline in a JSON Schema
+    # reader. Exact ID validation belongs to the operation, covered by
+    # ProtocolTest.test_targeted_inbox_rejects_invalid_ids.
     invalid(dict(examples[0], operation='unlisted-operation'))
     invalid(dict(examples[0], arguments=True))
     for name in ('xsm_send', 'xsm_ask'):

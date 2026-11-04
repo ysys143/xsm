@@ -235,7 +235,12 @@ TOOLS = [
          "max_bytes": {"type": "integer", "minimum": 1, "maximum": 1048576,
                        "description": "UTF-8 budget for joined rendered messages. The first oversized item is returned alone for progress; originals are never truncated."},
          "message_ids": {"type": "array", "minItems": 1, "maxItems": 100,
-                         "items": {"type": "string", "pattern": r"^[A-Za-z0-9_-]{1,160}(?![\s\S])"},
+                         # Provider tool schemas reject lookaround. The service
+                         # still uses handoff._id's fullmatch, including rejection
+                         # of a final newline (some schema validators accept it
+                         # before $). This is an input hint, not the ID validator.
+                         "items": {"type": "string", "pattern": r"^[A-Za-z0-9_-]{1,160}$",
+                                   "minLength": 1, "maxLength": 160},
                          "description": "Read only these canonical originals in this conversation, including this host's active claims to retrieve current tokens without renewing leases or repeating work."},
          "after_id": {"type": "string", "description": "Continue after next_after from this conversation's previous bounded read. Omit to restart."}}},
      "annotations": MESSAGING},
