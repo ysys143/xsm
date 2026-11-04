@@ -1026,6 +1026,97 @@ class Adr0009FixesTest(TempState):
         self.assertIn("needs your user's yes", str(cm.exception))
 
 
+class RequestedStopTest(TempState):
+    """The normal stop command interrupts a task without fabricating a failure."""
+
+    def setUp(self):
+        super().setUp()
+        from unittest import mock
+        from xsm import cli, housekeeping, workers
+        for patch in (mock.patch.object(workers, "refuse_inside_framework"),
+                      mock.patch.object(housekeeping, "maybe_prune"),
+                      mock.patch.object(cli, "_inbox_notice")):
+            patch.start()
+            self.addCleanup(patch.stop)
+
+    def worker(self, name, key, once=False):
+        from xsm import attempts, workers
+        attempts.start(key, "task", self.tmp, name, name)
+        workers.save({"name": name, "runtime": "claude", "mode": "background",
+                      "attempt_key": key, "task_id": name, "created": time.time(),
+                      "ref": name, "parent_ref": "parent", "once": once})
+
+    def stop(self, name, internal=False):
+        from xsm import cli, workers
+        with contextlib.redirect_stdout(io.StringIO()):
+            self.assertEqual(cli.main(["stop", name] + (["--internal"] if internal else [])), 0)
+        self.assertIsNone(workers.load(name))
+
+    def test_three_requested_stops_do_not_exhaust_task_attempts(self):
+        from xsm import attempts
+        key = attempts.key_for("task", self.tmp)
+        for i in range(3):
+            name = "requested-%d" % i
+            self.worker(name, key)
+            self.stop(name)
+        self.assertEqual(attempts.failures(key), 0)
+        attempts.check(key, 3)
+        for row in attempts.read(key)["tries"]:
+            self.assertIsNone(row["outcome"])
+            self.assertTrue(row["ended_t"])
+            self.assertIn("user", row["why"])
+
+    def test_requested_stop_preserves_prior_failures_and_later_failure_still_counts(self):
+        from xsm import attempts
+        key = attempts.key_for("task", self.tmp)
+        for i in range(2):
+            attempts.start(key, "task", self.tmp, "failed", "failed-%d" % i)
+            attempts.finish(key, "failed")
+        self.worker("requested", key)
+        self.stop("requested")
+        self.assertEqual(attempts.failures(key), 2)
+        attempts.start(key, "task", self.tmp, "failed", "last-failure")
+        attempts.finish(key, "failed")
+        with self.assertRaises(attempts.AttemptsError):
+            attempts.check(key, 3)
+
+    def test_requested_stop_does_not_replace_a_recorded_reply_outcome(self):
+        from xsm import attempts, workers
+        for outcome in ("succeeded", "failed"):
+            with self.subTest(outcome=outcome):
+                key = attempts.key_for(outcome, self.tmp)
+                self.worker(outcome, key)
+                workers.on_reply(outcome, outcome, {"ref": "parent"}, outcome)
+                before = attempts.read(key)
+                self.stop(outcome)
+                self.assertEqual(attempts.read(key), before)
+
+    def test_automatic_and_unanswered_internal_stops_keep_existing_failure_classification(self):
+        from xsm import attempts, workers
+        for source in ("automatic", "internal"):
+            with self.subTest(source=source):
+                key = attempts.key_for(source, self.tmp)
+                self.worker(source, key)
+                if source == "automatic":
+                    workers.stop(source, reason="its process is gone")
+                else:
+                    self.stop(source, internal=True)
+                self.assertEqual(attempts.failures(key), 1)
+
+    def test_once_internal_cleanup_keeps_the_reply_without_an_outcome(self):
+        from unittest import mock
+        from xsm import attempts, workers
+        key = attempts.key_for("once", self.tmp)
+        self.worker("once", key, once=True)
+        with mock.patch.object(workers.subprocess, "Popen") as launch:
+            workers.on_reply("once", "once", {"ref": "parent"}, None)
+        self.assertEqual(launch.call_count, 1)
+        before = attempts.read(key)
+        self.stop("once", internal=True)
+        self.assertEqual(attempts.read(key), before)
+        self.assertIsNone(before["tries"][0]["outcome"])
+
+
 class AttemptsTest(TempState):
     TEXT = "Run the tests in ./pkg and report failures"
 

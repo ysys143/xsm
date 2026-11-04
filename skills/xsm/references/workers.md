@@ -84,6 +84,10 @@ xsm stop <worker>           # stop it and remove its records
   clear it; on their yes run `xsm attempts clear <key>` (it keeps their reply
   as the verdict). `xsm attempts` and
   `xsm attempts show <key>` show what has been tried.
+- An explicit `xsm stop <worker>` closes an unanswered attempt without a final
+  outcome. It neither adds a failure nor clears earlier failures, and it is not
+  success. A recorded reply keeps its outcome. Automatic stops keep their
+  existing classification; `--once` cleanup preserves the reply it follows.
 - Workers cannot start workers unless the depth limit allows it (`max_depth`,
   default 1), and one session runs at most `max_workers` (default 4) at once.
   If spawn refuses for either, report it; do not raise the limit. Workers stop

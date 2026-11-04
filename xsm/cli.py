@@ -2577,7 +2577,7 @@ def cmd_stop(args) -> int:
     try:
         if not args.internal:           # the hook's own once-stop is not a framework's call
             workers.refuse_inside_framework()
-        worker = workers.stop(args.name)
+        worker = workers.stop(args.name, user_requested=not args.internal)
     except workers.WorkerError as exc:
         print("refused: %s" % exc, file=sys.stderr)
         return REFUSED

@@ -1,5 +1,7 @@
 """Real owned service lifecycle with fake model/reply boundaries, no LLM costs."""
 import concurrent.futures
+from contextlib import redirect_stdout
+import io
 import json
 import os
 import sys
@@ -157,14 +159,15 @@ class OwnedWorkerTest(test_xsm.TempState):
         self.assertEqual(self.replies, [])
 
     def test_idle_context_retirement_fresh_session_and_worker_removal_keeps_journal(self):
-        from xsm import owned_requests, workers
+        from xsm import cli, owned_requests, workers
         original = self._run('remember')
         workers.retire_owned_context('service', self.a, original['context_id'])
         fresh = self._run('new memory', request_id='new')
         self.assertNotEqual(fresh['context_id'], original['context_id'])
         self.assertNotIn('remember', fresh['result']['body'])
         self.assertEqual(owned_requests.status(self.a, 'r1')['result'], original['result'])
-        workers.stop('service')
+        with redirect_stdout(io.StringIO()):
+            self.assertEqual(cli.cmd_stop(cli.build_parser().parse_args(['stop', 'service'])), 0)
         self.assertIsNone(workers.load('service'))
         self.assertEqual(owned_requests.status(self.a, 'r1')['result'], original['result'])
 

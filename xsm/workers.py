@@ -1279,7 +1279,7 @@ def _answer_locked(req_id: str, approve: bool, reason: str | None = None,
 
 # --- stopping ---------------------------------------------------------------------
 
-def stop(name: str, reason: str = "stopped") -> dict:
+def stop(name: str, reason: str = "stopped", *, user_requested: bool = False) -> dict:
     worker = load(name)
     if not worker:
         raise WorkerError("no worker named %s" % name)
@@ -1304,10 +1304,11 @@ def stop(name: str, reason: str = "stopped") -> dict:
                                                                   time.time()),
                             {"xsm.worker.runtime": worker.get("runtime")})
     if worker.get("attempt_key"):
-        # No answer is not a success. Idempotent, so a `stop` that follows the
-        # worker's own reply leaves what the reply said alone.
-        attempts.finish(worker["attempt_key"], "failed", "stopped without answering",
-                        worker.get("task_id"))
+        # A requested interruption has no task outcome. Automatic stops retain
+        # their existing classification; a recorded reply always wins.
+        outcome = None if user_requested else "failed"
+        why = "stopped by user without a final outcome" if user_requested else "stopped without answering"
+        attempts.finish(worker["attempt_key"], outcome, why, worker.get("task_id"))
     if worker.get("pane"):
         subprocess.run(["tmux", "kill-pane", "-t", worker["pane"]], capture_output=True, timeout=5)
     if worker.get("pid") and worker.get("lstart"):
