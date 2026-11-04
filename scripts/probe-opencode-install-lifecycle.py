@@ -260,23 +260,45 @@ export default {id:'xsm-lifetime-observer', tui:async api => {
         code = '''import sys,json
 sys.path.insert(0,sys.argv[1])
 from pathlib import Path
+import os,subprocess,time
 from xsm import install,registry,identity,component_leases
 from unittest import mock
 install._running_from=lambda:{Path(r['protocol_root']).name for r in registry.raw_records()
  if r.get('protocol_root') and identity.state_of(r)=='live'}
 with mock.patch.object(component_leases,'configured_roots',return_value=[]):
  other=sorted(install._configured_for())
+folder=Path(component_leases.paths.path('component-leases'))
+def lease_files():return [json.loads(p.read_text()) for p in folder.glob('*.json')]
+before=lease_files();registered={r['pid'] for r in before};samples=[];original_run=subprocess.run
+def observe(command,*args,**kwargs):
+ result=original_run(command,*args,**kwargs)
+ if isinstance(command,list) and command[:3]==['ps','-o','lstart='] and int(command[-1]) in registered:
+  pid=int(command[-1]);kernel=None
+  try:kernel=Path('/proc/%d/stat'%pid).read_text().rsplit(')',1)[1].split()[19]
+  except (OSError,IndexError):pass
+  btime=None
+  try:btime=next(line.split()[1] for line in Path('/proc/stat').read_text().splitlines() if line.startswith('btime '))
+  except (OSError,StopIteration):pass
+  samples.append(dict(pid=pid,observed=result.stdout.strip(),returncode=result.returncode,kernelStartTicks=kernel,bootWallSeconds=btime,monotonic=time.monotonic(),wall=time.time(),pidAlive=identity.pid_alive(pid)))
+ return result
+subprocess.run=observe
 active=component_leases.active_records()
 if sys.argv[2]=='omit-ui':
  component_leases.configured_roots=lambda:[r['root'] for r in component_leases.active_records()
   if r['component']!='opencode-tui']
 print(json.dumps({'removed':install.prune_snapshots(),'configured':sorted(install._configured_for()),
- 'withoutComponents':other,'activeComponents':active}))
+ 'withoutComponents':other,'activeComponents':active,'leaseFilesBefore':before,
+ 'leaseFilesAfter':lease_files(),'pidSamples':samples}))
 '''
         done = subprocess.run([sys.executable, '-B', '-c', code, str(ROOT),
                                'omit-ui' if args.mutate_omit_ui else 'normal'], env=env, cwd=work,
                               capture_output=True, text=True, check=True, timeout=12)
-        return json.loads(done.stdout)
+        value = json.loads(done.stdout)
+        observations = result.setdefault('pruneObservations', [])
+        observations.append(value)
+        (args.output / ('prune-%d.json' % len(observations))).write_text(json.dumps(value, indent=2))
+        checkpoint()
+        return value
 
     checkpoint()
     try:

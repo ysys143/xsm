@@ -108,4 +108,17 @@ native 대화의 설치 전/후 재개, 실행 중 구 snapshot 보존, backend 
 xsm 미로딩을 확인했다. 최종 UI exit0이었다. 원시는
 `deliverables/protocol-foundation/opencode-lifecycle-current/final`과 `user-edit`다.
 이 재실행의 Linux와 기존 stable 배포로의 데이터 보존 rollback은 아직 미완이다.
-보안 감사가 아닌 설치·갱신·재개·제거의 기능 호환성 검사다.
+
+
+고정b064f4e의 Linux 재실행은 기본 조건이3단계 뒤 실패했고 --user-edit는
+8단계를 통과했다. 기본 조건은 backend 교체 직후 실제 prune 결과에서
+구 UI snapshot이 제거돼 다음 보존 검사에 실패했다. 그 직전 TUI alive와
+lease 파일 존재는 통과했으나 active component 목록에는 구 UI가 없었다.
+이 표본만으로 원인을 확정하지 않는다. 두 실행은 정리됐고 VM stopExit0이었다.
+원시는 `opencode-lifecycle-current-linux/`에 보존한다.
+
+실제 원인 관측을 위해 등록된 component PID에 한해 ps 시작 시각, Linux kernel
+start ticks와 boot wall 기준, lease 파일의 전후 상태를 보존하도록 하네스에
+관측을 추가했다. 기존 Mac8단계는 관측 추가 뒤에도 통과했다. 관측은 읽기
+전용이며 process/snapshot 보존 판정이나 제품 코드는 아직 바꾸지 않았다.
+Linux 기본 조건의 실패는 미해결이며 추가 성공 표본만으로 해결 처리하지 않는다.
