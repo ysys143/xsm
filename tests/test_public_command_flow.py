@@ -106,6 +106,24 @@ class PublicCommandFlowTest(TempState):
             'tool_use_id': 'later-question', 'tool_response': {'answers': {'Publish this conversation?': 'No'}}})
         self.assertEqual(self.cli(self.a, 'publish')[0], 2)
 
+    def test_native_question_answer_also_supersedes_a_natural_contact_request(self):
+        from xsm import collaboration, consent, directory
+        self.user_command(self.a, 'publish'); self.assertEqual(self.cli(self.a, 'publish')[0], 0)
+        binding = {'pair': collaboration.propose(self.b, self.a)['endpoints']}
+        consent.record(self.b, {'hook_event_name': 'UserPromptSubmit', 'prompt': 'jstack 세션에 연락해줘.'})
+        consent.record(self.b, {'hook_event_name': 'UserPromptSubmit', 'prompt':
+            '<send_user_message_question_reply>'+json.dumps([{'answer': 'No',
+                'question': 'Contact jstack?', 'questionItemId': 'native-question'}])+
+            '</send_user_message_question_reply>'})
+        with mock.patch.object(directory, '_liveness', return_value=('live', 'live')):
+            self.assertIsNone(consent.take_contact_selection(self.b, binding))
+        self.user_command(self.b, 'publish'); self.assertEqual(self.cli(self.b, 'publish')[0], 0)
+        consent.record(self.a, {'hook_event_name': 'UserPromptSubmit', 'prompt': 'wdl 세션에 연락해줘.'})
+        consent.record(self.a, {'hook_event_name': 'PostToolUse', 'tool_name': 'AskUserQuestion',
+            'tool_use_id': 'native-question', 'tool_response': {'answers': {'Contact wdl?': 'No'}}})
+        with mock.patch.object(directory, '_liveness', return_value=('live', 'live')):
+            self.assertIsNone(consent.take_contact_selection(self.a, binding))
+
     def test_contact_does_not_select_a_different_named_person_or_a_question(self):
         from xsm import collaboration, consent, directory
         self.user_command(self.a, 'publish'); self.assertEqual(self.cli(self.a, 'publish')[0], 0)

@@ -388,6 +388,22 @@ def discard_selection_command(me, verb):
         pass
 
 
+def discard_contact_selection(me):
+    """A native question answer cannot leave an older request reusable."""
+    from . import collaboration
+    if not me or not me.get('ref'):
+        return
+    p = _recent_path(me['ref'])
+    try:
+        with _strict_locked(p):
+            entry = paths.read_json(p) or {}
+            if entry.get('native_owner') == collaboration._identity(me) and entry.get('prompts'):
+                entry['prompts'][-1]['used'] = True
+                paths.write_json(p, entry, mode=0o600)
+    except (ValueError, OSError, TypeError, KeyError):
+        pass
+
+
 def take_contact_selection(me, binding):
     """A clear native contact instruction may select the sole live repo peer."""
     from . import collaboration, config, directory, registry
@@ -606,6 +622,7 @@ def record(me: dict | None, data: dict) -> dict | None:
         if data.get("tool_name") == "AskUserQuestion":
             discard_selection_command(me, "publish")
             discard_selection_command(me, "collaborate")
+            discard_contact_selection(me)
         if data.get("tool_name") == "AskUserQuestion" and isinstance(out, dict) and isinstance(out.get("answers"), dict):
             for question, answer in out["answers"].items():
                 one = dict(data, tool_response=dict(out, answers={question: answer}))
@@ -652,6 +669,7 @@ def record(me: dict | None, data: dict) -> dict | None:
         # names as the tool call it answers (G00/S5, P02 item 3).
         match = ANSWER_RE.match(text.strip())
         if match:
+            discard_contact_selection(me)
             try:
                 payload = json.loads(match.group(1))
             except ValueError:
