@@ -35,6 +35,19 @@ class SharedQuestionServiceTest(TempState):
         server.session = lambda: self.me
         return server
 
+    def test_target_end_reason_is_shared_by_cli_and_mcp_without_new_delivery(self):
+        from xsm import question_service, registry
+        question = question_service.ask(self.me, {'target': 'ref:' + self.peer['ref'],
+            'text': 'retain pending task', 'wake': 'never'}, call=self.call)['result']
+        registry.mark_ended('codex', 'peer', 'fixture-ended', home=self.peer['home'])
+        _, cli_result = self.cli(['question-status', question['id']])
+        model_result = json.loads(self.server().call('xsm_question_status', {'id': question['id']}))
+        for result in (cli_result, model_result):
+            self.assertEqual(result['status'], 'pending')
+            self.assertFalse(result['final'])
+            self.assertIn('ended', result.get('reason', ''))
+        self.assertEqual(cli_result['reason'], model_result['reason'])
+
     def test_cli_and_model_ask_status_and_connect_use_common_services(self):
         from xsm import cli, question_service
         target = 'ref:' + self.peer['ref']

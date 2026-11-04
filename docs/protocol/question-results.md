@@ -41,6 +41,14 @@ answers and otherwise pending. An ordinary question remains not-started on the
 handshake axis. None of these peer replies is a human approval for another
 operation.
 
+For a pending local question, `reason` can explain that the exact target has an
+explicit end marker in its registration. This is an observation, not a failed
+task or a terminal reply: the question stays pending and accepts late replies.
+Resuming the same conversation clears that explanation. Stale, missing, remote
+or mismatched registrations are not treated as explicit exits. The lookup reads
+one registration file without querying a native runtime or scanning transcripts.
+Group results carry the explanation on the affected recipient's child result.
+
 Hosts with `user-decisions` can receive `qAwaiting` from connect before a pair
 permission is created. The host displays the sealed `decision/request`, sends
 the real answer through `decision.response`, and explicitly retries the original

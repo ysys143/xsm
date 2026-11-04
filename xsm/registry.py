@@ -886,6 +886,23 @@ def by_session(runtime: str, session_id: str) -> dict | None:
     return _enrich(rec) if rec else None
 
 
+def explicitly_ended(session: dict | None) -> bool:
+    """Read one exact local registration's exit marker, without runtime probes."""
+    if not isinstance(session, dict) or session.get("remote") or \
+            "home_id" in session or "machine" in session:
+        return False
+    if any(not isinstance(session.get(k), str) or not session[k]
+           for k in ("runtime", "home", "session_id")):
+        return False
+    rec = paths.read_json(_record_path(session["runtime"], session["session_id"]))
+    if not _registered_pointer(rec) or not rec.get("ended_at") or \
+            not isinstance(rec.get("home"), str) or not rec["home"]:
+        return False
+    return (all(rec.get(k) == session[k] for k in ("runtime", "session_id")) and
+            os.path.realpath(os.path.expanduser(rec["home"])) ==
+            os.path.realpath(os.path.expanduser(session["home"])))
+
+
 def me(session_id: str | None = None, cwd: str | None = None):
     """The record for the session running the command.
 

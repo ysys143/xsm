@@ -43,6 +43,18 @@ class QuestionGroupTest(test_xsm.TempState):
     def _child(self, result, label_part):
         return next(r for r in result['recipients'] if label_part in r['recipient'])
 
+    def test_ended_recipient_keeps_group_pending_with_a_child_explanation(self):
+        from xsm import question_groups, registry
+        result = self._ask(('codex:bee', 'codex:cee'))
+        registry.mark_ended('codex', 'bee', 'fixture-ended', home=self.b['home'])
+        pending = question_groups.status(self.me, result['id'])
+        child = self._child(pending, 'bee@')
+        self.assertEqual(pending['status'], 'pending')
+        self.assertEqual(child['status'], 'pending')
+        self.assertFalse(child['final'])
+        self.assertIn('ended', child.get('reason', ''))
+        self.assertEqual(len(pending['waiting_on']), 2)
+
     def test_each_in_scope_recipient_gets_its_own_question_and_far_is_skipped(self):
         res = self._ask()
         self.assertTrue(res['group'])

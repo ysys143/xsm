@@ -104,6 +104,11 @@ def _result(request_id, record=None, state=None, reason=None):
         result["reason"] = ((current.get("receipt") or {}).get("reason") or
                             current.get("error") or
                             (record.get("send_evidence") or {}).get("reason") or pending_state)
+    elif result["status"] == "pending" and record:
+        from . import registry
+        if registry.explicitly_ended(record.get("target")):
+            result["reason"] = ("The target session explicitly ended without a final reply; "
+                                "this question remains pending and can receive a late reply.")
     return result
 
 

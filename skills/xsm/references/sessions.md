@@ -160,6 +160,11 @@ the moment it does. **Do not sleep-poll** — a loop that never ends your turn i
 why six messages once went unread for fifteen minutes. An expiry is not an
 error: it exits 0 and says nothing arrived.
 
+A pending question can explain in `reason` that its exact target session explicitly
+ended without a final reply. Keep the original request and recovery ID: this is
+not task failure and does not authorize a resend or reassignment. A late reply
+can still arrive, and resuming that conversation clears the end explanation.
+
 If you are a Codex session, messages sent to you wait while your turn runs.
 Every xsm command and MCP tool result tells you when some are waiting; read
 them with `xsm inbox` (or the `xsm_inbox` MCP tool) — do that before you wait

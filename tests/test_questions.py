@@ -27,6 +27,102 @@ class QuestionsTest(test_xsm.TempState):
                                       {'kind': 'reply', 'id': reply_id,
                                        'reply-to': kwargs.get('reply_to', 'q1'), 'outcome': outcome}, body)
 
+    def test_explicit_target_end_is_explained_without_closing_or_mutating_question(self):
+        from pathlib import Path
+        from xsm import questions, registry
+        before = self._ask()
+        stored = Path(questions._filename('q1')).read_bytes()
+        registry.mark_ended('codex', 'b', 'fixture-ended', home=self.b['home'])
+        with mock.patch.object(registry, '_enrich', side_effect=AssertionError('status enriched a runtime')):
+            result = questions.status(self.a, 'q1')
+        self.assertEqual(result['status'], 'pending')
+        self.assertFalse(result['final'])
+        self.assertEqual(result['recover_at'], before['recover_at'])
+        self.assertIn('ended', result.get('reason', ''))
+        self.assertIn('pending', result['reason'])
+        self.assertEqual(Path(questions._filename('q1')).read_bytes(), stored)
+        self.assertEqual(self.queue.call_count, 1)
+
+    def test_resume_clears_end_explanation_and_late_final_reply_is_retained(self):
+        from xsm import questions, registry
+        self._ask()
+        registry.mark_ended('codex', 'b', 'fixture-ended', home=self.b['home'])
+        self.assertIn('ended', questions.status(self.a, 'q1').get('reason', ''))
+        registry.upsert('codex', self.b['home'], 'b', os.getpid(), self.tmp, name='b')
+        self.assertNotIn('reason', questions.status(self.a, 'q1'))
+        registry.mark_ended('codex', 'b', 'fixture-ended', home=self.b['home'])
+        self.assertTrue(self._reply(outcome='succeeded'))
+        result = questions.status(self.a, 'q1')
+        self.assertEqual(result['status'], 'final')
+        self.assertEqual(result['final_outcome'], 'succeeded')
+        self.assertNotIn('reason', result)
+
+    def test_unknown_and_other_identity_pointers_are_not_reported_as_ended(self):
+        import copy
+        from pathlib import Path
+        from xsm import paths, questions, registry
+        self._ask()
+        filename = registry._record_path('codex', 'b')
+        original = paths.read_json(filename)
+        ended = dict(original, ended_at=1, end_reason='fixture-ended')
+        cases = {'live': original, 'stale': dict(original, pid=999999999),
+                 'missing': None, 'other-home': dict(ended, home=self.tmp + '/other-home'),
+                 'other-conversation': dict(ended, session_id='successor'),
+                 'other-runtime': dict(ended, runtime='claude'),
+                 'unregistered': dict(ended, registered=False),
+                 'excluded': dict(ended, excluded=True)}
+        for name, pointer in cases.items():
+            with self.subTest(pointer=name):
+                if pointer is None:
+                    Path(filename).unlink()
+                else:
+                    paths.write_json(filename, copy.deepcopy(pointer))
+                with mock.patch.object(registry, '_enrich', side_effect=AssertionError('runtime probe')):
+                    result = questions.status(self.a, 'q1')
+                self.assertEqual(result['status'], 'pending')
+                self.assertFalse(result['final'])
+                self.assertNotIn('reason', result)
+        self.assertEqual(self.queue.call_count, 1)
+
+    def test_remote_pending_and_partial_reply_are_not_reclassified_by_local_end(self):
+        from xsm import paths, questions, registry
+        self._ask()
+        registry.mark_ended('codex', 'b', 'fixture-ended', home=self.b['home'])
+        filename = questions._filename('q1')
+        record = paths.read_json(filename)
+        for remote in (dict(record['target'], remote=True),
+                       {'runtime': 'codex', 'session_id': 'b', 'home_id': 'remote-home', 'machine': 'remote'}):
+            with self.subTest(target=remote):
+                paths.write_json(filename, dict(record, target=remote))
+                self.assertNotIn('reason', questions.status(self.a, 'q1'))
+        paths.write_json(filename, record)
+        self.assertTrue(self._reply())
+        partial = questions.status(self.a, 'q1')
+        self.assertEqual(partial['status'], 'reply_received')
+        self.assertNotIn('reason', partial)
+
+    def test_additional_runtime_exit_metadata_uses_the_same_read_only_path(self):
+        """Registration fixtures only: no adapter, native process or model runs."""
+        from xsm import paths, questions, registry
+        for runtime in ('opencode', 'pi', 'openclaw', 'hermes'):
+            with self.subTest(runtime=runtime):
+                home = self.tmp + '/' + runtime
+                peer = registry.upsert(runtime, home, 'fixture', os.getpid(), self.tmp)
+                request_id = 'fixture-' + runtime
+                paths.write_json(questions._filename(request_id), {
+                    'id': request_id, 'sender': questions._handle(self.a),
+                    'target': questions._handle(peer), 'replies': [],
+                    'send_evidence': {'status': 'delivered'}})
+                registry.mark_ended(runtime, 'fixture', 'fixture-ended', home=home)
+                with mock.patch.object(registry, '_enrich', side_effect=AssertionError('native probe')):
+                    result = questions.status(self.a, request_id)
+                self.assertEqual(result['status'], 'pending')
+                self.assertFalse(result['final'])
+                self.assertIn('ended', result.get('reason', ''))
+                registry.upsert(runtime, home, 'fixture', os.getpid(), self.tmp)
+                self.assertNotIn('reason', questions.status(self.a, request_id))
+        self.assertEqual(self.queue.call_count, 0)
+
     def test_receipt_is_not_answer_and_late_reply_is_recovered(self):
         from xsm import inbox, ledger, questions, receive
         result = self._ask()
