@@ -19,12 +19,24 @@ class ProfileMigrationTest(TempState):
         return migration.execute(plan, authorize=authorize or (lambda _: 'fixture user approval'), **kwargs)
 
     def test_permission_is_required_and_a_no_changes_nothing(self):
-        from xsm import migration, registry
+        from tests import permission_harness
+        from xsm import decisions, handoff, migration, registry, send
         plan = migration.prepare(self.b, 'ref:' + self.a['ref'])
         with self.assertRaises(migration.MigrationError):
             migration.execute(plan, authorize=lambda _: None)
         self.assertIsNone(migration.retirement(self.a))
         self.assertEqual(len(registry.raw_records()), 3)
+        sent = send.send('ref:' + self.a['ref'], 'retained on denial', sender=self.peer, wake=False)
+        arguments = {'source': 'ref:' + self.a['ref']}
+        first, _ = permission_harness.invoke(self.b, 'xsm_migrate', arguments)
+        request = permission_harness.pending(self.b, first['content'][0]['text'])
+        permission_harness.answer(self.b, request, 'deny')
+        refused, _ = permission_harness.invoke(self.b, 'xsm_migrate', arguments)
+        self.assertTrue(refused.get('isError'), refused)
+        self.assertEqual(decisions.read(request['id'])['status'], 'denied')
+        self.assertIsNone(migration.retirement(self.a))
+        self.assertEqual(handoff.status(self.a, sent.msg_id)['message']['body'], 'retained on denial')
+        self.assertEqual(handoff.status(self.b, sent.msg_id)['status'], 'not-found')
 
     def test_source_cannot_reclaim_registration_or_send_after_transfer(self):
         from xsm import migration, registry, send
@@ -223,10 +235,15 @@ class ProfileMigrationTest(TempState):
         self.assertEqual(sent.target['home'], updated['home'])
 
     def test_question_effect_crash_keeps_the_ids_and_successor_can_answer_old_tasks(self):
-        from xsm import migration, paths, questions
+        from xsm import migration, paths, question_groups, questions, registry
         paths.write_json(questions._filename('pending-question'), {
             'id': 'pending-question', 'sender': questions._handle(self.a), 'target': questions._handle(self.peer),
             'body': 'question', 'replies': [], 'purpose': 'question', 'created_at': 1.0})
+        peer2 = registry.upsert('codex', self.tmp + '/peer2', 'peer2', os.getpid(), self.tmp, name='peer2')
+        group = question_groups.ask_many(self.a, ['ref:' + self.peer['ref'], 'ref:' + peer2['ref']],
+                                         'retained group question', wake='never')
+        children = question_groups.child_ids(group['id'])
+        self.assertEqual(len(children), 2)
         plan = migration.prepare(self.b, 'ref:' + self.a['ref'])
         def crash(step):
             if step == 'effect:questions':
@@ -234,11 +251,19 @@ class ProfileMigrationTest(TempState):
         with self.assertRaises(RuntimeError):
             migration.execute(plan, authorize=lambda _: 'fixture approval', fault=crash)
         result = migration.execute(plan, authorize=lambda _: self.fail('asked twice'))
-        self.assertEqual(result['steps']['questions']['questions'], ['pending-question'])
+        self.assertCountEqual(result['steps']['questions']['questions'], ['pending-question', *children])
+        self.assertEqual(result['steps']['questions']['groups'], [group['id']])
         self.assertEqual(questions._native(paths.read_json(questions._filename('pending-question'))['sender']),
                          questions._native(self.b))
         from xsm import handover
         self.assertTrue(handover.succeeds(self.b, self.a))
+        self.assertEqual(question_groups.status(self.a, group['id'])['status'], 'refused')
+        self.assertTrue(questions.record_reply(self.b, self.peer,
+            {'kind': 'reply', 'reply-to': children[0], 'id': 'late-group-reply', 'outcome': 'succeeded'},
+            'late actual group result'))
+        readback = question_groups.status(self.b, group['id'])
+        self.assertEqual(len(readback['recipients']), 2)
+        self.assertEqual(readback['replies'][0]['request_id'], children[0])
 
     def test_forwarding_does_not_reopen_after_expiry_then_clock_rollback(self):
         from xsm import migration

@@ -90,12 +90,17 @@ class RegistryProfilesTest(TempState):
         self.assertEqual(handoff.status(b, result.msg_id)['status'], 'not-found')
 
     def test_session_end_in_one_home_does_not_end_the_other_copy(self):
-        from xsm import registry
+        import time
+        from xsm import housekeeping, identity, registry
         self.register(self.a)
         self.register(self.b, 202)
         registry.mark_ended('claude', 'copied-id', 'test-exit', home=self.a)
         self.assertIn('ended_at', registry.by_session('claude', 'copied-id', home=self.a))
         self.assertNotIn('ended_at', registry.by_session('claude', 'copied-id', home=self.b))
+        with mock.patch.object(identity, 'state_of', side_effect=lambda row: 'ended' if row.get('ended_at') else 'live'):
+            housekeeping.prune(now=time.time() + 365 * 86400)
+        self.assertIsNone(registry.by_session('claude', 'copied-id', home=self.a))
+        self.assertEqual(registry.by_session('claude', 'copied-id', home=self.b)['pid'], 202)
 
     def test_resume_in_the_same_home_preserves_metadata(self):
         from xsm import paths, registry
