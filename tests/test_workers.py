@@ -434,9 +434,14 @@ class SafetyTest(TempState):
         rec = registry.upsert("claude", self.tmp, "s1", os.getpid(), self.tmp)
         workers.save({"name": "b", "parent_ref": rec["ref"], "created": 0})
         started = []
+        popen = workers.subprocess.Popen
+        def launch(argv, **kw):
+            if 'reap' in argv:
+                started.append(argv[4:])
+                return mock.Mock()
+            return popen(argv, **kw)
         with mock.patch.dict(os.environ, {"CLAUDE_CONFIG_DIR": self.tmp}), \
-                mock.patch.object(workers.subprocess, "Popen",
-                               lambda argv, **kw: started.append(argv[4:])):
+                mock.patch.object(workers.subprocess, "Popen", launch):
             receive.handle({"hook_event_name": "SessionEnd", "session_id": "s1",
                             "session_title": "boss", "reason": "exit"})
         self.assertEqual(started, [["reap", "--after-pid", str(os.getpid())]],

@@ -33,6 +33,7 @@ class DiscoveryTest(test_xsm.TempState):
                        ref="%06x" % n, name="elsewhere-%d" % n)
             paths.write_json(registry._record_path("codex", row["session_id"]), row)
         os.environ["CODEX_THREAD_ID"] = "mine"
+        os.environ["CODEX_HOME"] = self.home
         self.addCleanup(os.environ.pop, "CODEX_THREAD_ID", None)
 
     def _cli(self, *args):

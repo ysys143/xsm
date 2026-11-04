@@ -240,6 +240,7 @@ class Machine(test_xsm.TempState):
         environ.update(PATH=self.path, HOME=self.user_home, XSM_HOME=self.tmp)
         if thread:
             environ["CODEX_THREAD_ID"] = thread
+            environ["CODEX_HOME"] = self.codex_homes[0]
         environ.update(env)
         start = time.monotonic()
         proc = subprocess.Popen([LAUNCHER, *args], cwd=self.folders[0], env=environ, text=True,

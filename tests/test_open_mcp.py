@@ -236,7 +236,7 @@ class SandboxTest(TempState):
         self.assertEqual(result.status, "error")
         self.assertTrue(result.reason.startswith("sandbox-blocked: "), result.reason)
         self.assertIn("xsm_send", result.reason)
-        self.assertEqual(result.lines()[-1], "error: " + result.reason)
+        self.assertEqual(result.lines()[-1], 'error: %s (id %s)' % (result.reason, result.msg_id))
 
     def test_a_write_that_is_not_a_permission_problem_still_raises(self):
         from xsm import registry, send

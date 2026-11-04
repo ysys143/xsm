@@ -66,7 +66,7 @@ def fixture_cli():
 class InstallCliFlowTest(unittest.TestCase):
     def source(self, root):
         source = root / 'source'
-        for part in ('xsm', 'hooks', 'skills', 'bin', '.claude-plugin', '.codex-plugin'):
+        for part in ('xsm', 'hooks', 'skills', 'bin', 'integrations', 'clients', 'docs/protocol', '.claude-plugin', '.codex-plugin'):
             shutil.copytree(REPO / part, source / part, ignore=shutil.ignore_patterns('__pycache__'))
         shutil.copy2(REPO / 'LICENSE', source / 'LICENSE')
         return source

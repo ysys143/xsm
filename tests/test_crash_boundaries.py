@@ -109,10 +109,10 @@ class _Harness(TempState):
                    XSM_NO_CODEX_WAKE="1")
         if runtime == "claude":
             env["CLAUDE_CODE_SESSION_ID"] = "s-sender"
+            env["CLAUDE_CONFIG_DIR"] = self.me['home']
         else:
             env["CODEX_THREAD_ID"] = "s-target"
-        env.pop("CODEX_HOME", None)
-        env.pop("CLAUDE_CONFIG_DIR", None)
+            env["CODEX_HOME"] = self.you['home']
         env.pop("CLAUDE_CODE_MESSAGING_SOCKET", None)
         env.update(extra)
         return env

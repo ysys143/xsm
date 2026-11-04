@@ -63,12 +63,12 @@ class FileInterfacesTest(TempState):
         self.assertEqual(result['materials']['mode'],'files')
 
     def test_received_copy_cannot_be_read_by_another_home(self):
-        from xsm import files,handoff
+        from xsm import files,handoff,operation_schema
         self.server(self.a).call('xsm_send',{'target':'codex:b','text':'body','request_id':'private-file',
                  'attachments':[{'name':'private.txt','text':'private copy'}],'wake':'never','wait':0})
         storage=handoff.status(self.b,'private-file')['message']['file_storage']
         other=self.registry.upsert('codex',self.tmp+'/other-profile','other',os.getpid(),self.tmp,name='other')
-        with self.assertRaises(files.FileError):
+        with self.assertRaisesRegex(operation_schema.ToolError, 'owner-mismatch'):
             self.server(other).call('xsm_files',{'storage_id':storage})
 
     def test_housekeeping_removes_only_expired_copies_and_keeps_original_file_and_message(self):

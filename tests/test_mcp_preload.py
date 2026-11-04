@@ -34,6 +34,7 @@ class PreloadTest(unittest.TestCase):
             root = os.path.join(tmp, "0.4.7")
             shutil.copytree(REPO / "xsm", os.path.join(root, "xsm"),
                             ignore=shutil.ignore_patterns("__pycache__"))
+            shutil.copytree(REPO / "integrations", os.path.join(root, "integrations"))
             env = dict(os.environ, PYTHONDONTWRITEBYTECODE="1")
             env.pop("PYTHONPATH", None)
             return subprocess.run([sys.executable, "-c", PROBE, root, mode], cwd=tmp, env=env,

@@ -132,6 +132,13 @@ class CodexNativeEventsTest(test_xsm.TempState):
         if not os.path.isdir(root):
             self.skipTest('coordinator private capacity fixture is local-only')
         wanted = {'capacity-3879b3ac-0', 'capacity-3879b3ac-1', 'capacity-3879b3ac-3'}
+        available = set()
+        for filename in os.listdir(root):
+            if filename.endswith('.json'):
+                with open(os.path.join(root, filename)) as stream:
+                    available.update(json.load(stream).get('requests', {}))
+        if not wanted <= available:
+            self.skipTest('historical native capacity samples unavailable: %d/3 retained; restore the original logs to replay' % len(wanted & available))
         tested = set()
         for filename in os.listdir(root):
             if not filename.endswith('.json'):

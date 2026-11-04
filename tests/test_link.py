@@ -458,13 +458,13 @@ class CliWideningNeedsSureIdentityTest(_Session, TempState):
         self.assertEqual(config.reaches(), [])
         self.assertEqual(config.projects(), [])
 
-    def test_leaving_a_project_is_still_allowed(self):
-        # Narrowing never needs an exact identity.
+    def test_leaving_a_project_rejects_a_guessed_identity(self):
+        # Changing shared membership requires the exact caller, including leave.
         a, _ = self._dirs()
         me = self._me(a)
         code, text = self._cli(["leave", "demo"], me, self._weak(me))
-        self.assertEqual(code, 2, text)          # not in the project: the ordinary refusal
-        self.assertNotIn("guess at which session is asking", text)
+        self.assertEqual(code, 2, text)
+        self.assertIn("guess at which session is asking", text)
 
     def test_an_unregistered_shell_keeps_its_own_message(self):
         from xsm import context
@@ -608,7 +608,7 @@ class LinkMcpTest(_Folders, TempState):
         a, b = self._dirs()
         forms, text = self._call({"dir": b}, {"result": {"action": "decline"}}, cwd=a)
         self.assertEqual(len(forms), 1)
-        self.assertIn("Shell equivalent: `xsm link %s`" % shlex.quote(b), text)
+        self.assertIn('Ask your user once using this exact question', text)
         self.assertIn("retry this same MCP tool", text)
         self.assertEqual(config.links(), [])
         forms, text = self._call({"dir": b}, {"result": {"action": "accept", "content": {

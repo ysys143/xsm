@@ -40,7 +40,7 @@ class _Checkout(TempState):
         super().setUp()
         from xsm import install
         self.checkout = os.path.join(self.tmp, "checkout")
-        for part in ("xsm", "hooks", "bin", "skills"):
+        for part in ("xsm", "hooks", "bin", "skills", "integrations", "clients", "docs/protocol"):
             shutil.copytree(os.path.join(REPO, part), os.path.join(self.checkout, part),
                             ignore=shutil.ignore_patterns("__pycache__"))
         for manifest in (".claude-plugin", ".codex-plugin"):

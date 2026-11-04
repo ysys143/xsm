@@ -669,7 +669,8 @@ class DirectoryTest(unittest.TestCase):
             adopted = registry.adopt_open_codex()
         self.assertEqual({r["session_id"] for r in adopted}, {"open-allowed", "fresh-allowed"})
         self.assertEqual(set(os.listdir(paths.path(paths.SESSIONS))),
-                         {"codex-open-allowed.json", "codex-fresh-allowed.json"})
+                         {os.path.basename(registry._record_path('codex', sid, self.home))
+                          for sid in ('open-allowed', 'fresh-allowed')})
 
     def test_excluded_child_cannot_inherit_parent_as_authoritative_adoption(self):
         registry.upsert("codex", self.home, "parent", os.getpid(), self.repo)
