@@ -88,7 +88,7 @@ A background worker has no person at its terminal. Ask its parent, or the
 team lead, in a DM when a user decision is needed; do not open an unattended
 question or form. A runtime PermissionRequest to allow AskUserQuestion is
 permission to invoke that tool, not an answer to its question. A pane worker
-with a person in the pane can still use forms. Registration failures in a
+with a person in the pane can still use forms unless linked to a coordinator; linked workers route decisions to that coordinator. Registration failures in a
 Claude background job are separate: another message is not a promised fix.
 
 A background AskUserQuestion PermissionRequest is denied with
@@ -100,3 +100,15 @@ Older workers can use a bounded native transcript fallback.
 Identical inputs from different invocations stay separate. Missing or ambiguous
 identity fails closed. Duplicate callbacks keep the original deadline and cannot
 reopen an answered or expired request. These changes preserve worker permissions.
+
+## Project membership for coordinator-created workers
+
+After starting workers (including through Orca), the creator resolves their actual registered
+refs with `list` and calls `xsm_join` once with `project` and `workers` (registered refs or
+Orca `term_` launch handles). If registration is pending, retry after the first prompt; do not
+start replacement workers. The folder-list approval
+is collected in the creator session. This also registers the coordinator/worker relationship.
+Do not send a join instruction to each worker or ask the user to visit worker terminals.
+Already approved folders automatically cover later sessions in the same folders. A linked worker's
+new project request is returned to its parent; handle it there with the same group operation.
+New roots need one parent-side confirmation. A folder move or a new conversation requires a new link.

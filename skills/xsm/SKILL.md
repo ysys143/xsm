@@ -1,14 +1,13 @@
 ---
 name: xsm
 description: Talk to other Claude Code or Codex sessions on this machine or on your user's other machines — find one by its work, list them, send a message or a task, ask and get the answer back, start workers, and see what was delivered. Use when the user asks to contact, hand off to, or coordinate with another session or agent. Your user calls it as `/xsm <command>` in Claude Code and `$xsm <command>` in Codex (discover, ask, list, who, log, projects, doctor, send, link, join, leave, reach, network); you run the `xsm` shell command (`xsm list`, `xsm send <name|ref:xxxxxx> --text "..."`). Load this skill before naming any other xsm command or address, or before acting on an xsm refusal — a made-up address is a message nobody receives. From a sandboxed shell, reach a Codex session with the `xsm_send` MCP tool instead; a row whose ref is `[-]` has no address yet.
-argument-hint: "discover | publish | connect <target> | ask <target> | question-status <id> | list | who | log | projects | doctor | send <target> <message> | link <folder> | join <project> | leave <project> | reach <folder> | team <subcommand> | board <team> | handover <session> | network <subcommand>"
-allowed-tools: Bash(xsm send:*), Bash(xsm list --table), Bash(xsm who --table), Bash(xsm projects --table), Bash(xsm doctor --table), Bash(xsm ledger --table --mine --last 5), Bash(xsm held list --table)
+argument-hint: "<request or command>"
+allowed-tools: Bash(xsm send:*), Bash(xsm list --table), Bash(xsm who --table), Bash(xsm whoami --table), Bash(xsm help), Bash(xsm projects --table), Bash(xsm doctor --table), Bash(xsm ledger --table --mine --last 5), Bash(xsm held list --table)
 ---
 
 # xsm
 
-`xsm` delivers a message into another session's own input. Everything it does
-is a shell command, `xsm …`.
+`xsm` delivers messages into ordinary sessions through native tools or the CLI.
 
 ## Called with a command
 
@@ -16,14 +15,11 @@ When your user typed `/xsm <command>` (Claude Code) or `$xsm <command>` (Codex),
 the command is the first word after it; in Claude Code it is also passed to
 you as `ARGUMENTS:` below. For a command listed here, do exactly what its row says.
 
-**Display commands** — `list`, `who`, `projects`, `doctor`. There is nothing to
-decide. Run this one shell command, exactly as written:
+**Display commands** — `list`, `whoami`, `who`, `projects`, `doctor`. Run:
 
     xsm <command> --table
 
-Then reply with its output, copied exactly, as it is — not in a code block, so
-the tables show as tables. Nothing before it, nothing after it. Do not
-translate, reword, summarise or explain it, and run nothing else.
+Reply with the unchanged table, outside a code block. Run nothing else.
 
 **`log`** — a display command too. Run these two shell commands, exactly as written:
 
@@ -56,16 +52,19 @@ inside one code block. If it fails with `sandbox-blocked`, call the MCP tool
 
 **`reach <folder>`** — call `xsm_reach` with `dir` set to the folder (this session alone, until it ends).
 
-For these four: call the tool once and reply with its result, copied exactly, inside one code block. Say
-your user refused only if it says they chose `deny` or declined. If the tool is missing or fails, run
-the same `xsm <command>` in the shell; if its result says the form got no answer, do what it says. When
-xsm says it needs their yes, ask the way it says, with the mark it gives at the head of the question, run
-it again to see their reply, and again only on a yes; their own earlier request naming it is shown as that reply.
-Never ask your user to type a command.
+For these four, use MCP and keep the same operation and arguments through retries.
+When a question is needed, ask its exact returned native question once, including its marker.
+After the native question tool returns, retry the same MCP operation; do not alternate shell/MCP,
+request manual recovery IDs, or send the user to another terminal.
+For worker project membership, use the creator-side group flow in
+[the workers guide](references/workers.md); never send the user to worker terminals.
 
 **Words that are not a command** (`/xsm tell plugin-worker what I did`): a
-request in words, see "Called without one". **Nothing, or nonsense** — reply with exactly:
-usage: /xsm discover | publish | connect <target> | ask <target> | question-status <id> | list | who | log | projects | doctor | send <target> <message> | link <folder> | join <project> | leave <project> | reach <folder> | team <subcommand> | board <team> | handover <session> | network <subcommand>
+request in words, see "Called without one". **Nothing** — give a short guide: `list` finds sessions, `whoami` shows this session
+(`who` still works), and `help` shows the short guide. Ordinary language is welcome:
+"message the reviewer" or "put my workers in this project". Never print the full command inventory.
+**`help`** — run `xsm help` and show its short output.
+**Unrecognized input** — treat it as natural language; clarify briefly if necessary.
 
 For `discover`, `publish`, `connect`, `ask`, and `question-status`, follow the [common messaging
 guide](references/messaging.md). Use MCP first in a sandboxed Codex; existing `send --wait` remains

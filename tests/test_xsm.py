@@ -4300,15 +4300,13 @@ class SkillLayoutTest(unittest.TestCase):
         self.assertNotIn("/xsm-", open(guide, encoding="utf-8").read())
         self.assertLess(len(self.skill.splitlines()), 90, "the reference text belongs in the guide")
 
-    def test_the_usage_line_names_the_commands_the_hint_names(self):
-        """The usage reply is what an unknown command gets back: a command the
-        hint offers but the usage line lacks reads as nonsense (2026-10-30)."""
+    def test_short_entry_hint_preserves_identity_and_discovery(self):
         head = self.skill.split("\n---\n", 1)[0]
-        hint = [l for l in head.splitlines() if l.startswith("argument-hint:")][0]
-        hint = hint.split(":", 1)[1].strip().strip('"')
-        usage = [l for l in self.skill.splitlines() if l.startswith("usage: /xsm ")][0]
-        self.assertEqual(usage[len("usage: /xsm "):], hint)
-        self.assertIn("network", hint)
+        hint = next(l for l in head.splitlines() if l.startswith('argument-hint:'))
+        self.assertLess(len(hint), 70)
+        for word in ('list', 'whoami', 'help'):
+            self.assertIn('`' + word + '`', self.skill)
+        self.assertNotIn('usage: /xsm discover |', self.skill)
 
     def test_every_reference_is_reachable_and_every_link_exists(self):
         """Progressive disclosure: SKILL.md and the guide's table name each file

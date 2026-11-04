@@ -517,7 +517,10 @@ xsm unlink ~/src/other-repo          # anyone may remove it
 ```
 
 - `join`: to group several folders, ask the agent in a session in each folder to join `<name>` (typing
-  `/xsm join <name>` works too).
+  `/xsm join <name>` works too). For coordinator-created workers, the coordinator calls
+  `xsm_join` with `project` and `workers` (registered refs or Orca terminal handles). One confirmation
+  lists all selected folders in the coordinator session; workers do not ask separately. Already joined
+  folders apply to later sessions too. A linked worker sends new project requests to its coordinator.
 - `reach`: to connect a single session for as long as it runs, ask that session's agent to reach the folder
   (typing `/xsm reach <folder>` works too).
 
