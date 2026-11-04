@@ -75,7 +75,7 @@ def failures(key: str) -> int:
     count = 0
     for try_ in reversed(read(key).get("tries") or []):
         if try_.get("outcome") == "succeeded":
-            return 0
+            return count
         if try_.get("outcome") == "failed":
             count += 1
     return count

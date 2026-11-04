@@ -1066,6 +1066,25 @@ class AttemptsTest(TempState):
         self.assertEqual(attempts.failures(key), 0,
                          "the stop that follows a reply must not paint over the reply")
 
+    def test_failures_after_latest_success_still_exhaust_the_limit(self):
+        from xsm import attempts
+        key = attempts.key_for(self.TEXT, self.tmp)
+        self._fail(key, "old-failure")
+        attempts.start(key, self.TEXT, self.tmp, "success", "success-task")
+        attempts.finish(key, "succeeded")
+        self.assertEqual(attempts.failures(key), 0)
+        for i in range(3):
+            self._fail(key, "after-success-%d" % i)
+        attempts.start(key, self.TEXT, self.tmp, "unknown", "unknown-task")
+        attempts.finish(key, None)
+        self.assertEqual(attempts.failures(key), 3)
+        with self.assertRaises(attempts.AttemptsError):
+            attempts.check(key, 3)
+        attempts.start(key, self.TEXT, self.tmp, "new-success", "new-success-task")
+        attempts.finish(key, "succeeded")
+        self.assertEqual(attempts.failures(key), 0)
+        attempts.check(key, 3)
+
     def test_check_refuses_after_the_limit_with_a_token_to_branch_on(self):
         from xsm import attempts
         key = attempts.key_for(self.TEXT, self.tmp)
