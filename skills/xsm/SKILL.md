@@ -67,7 +67,7 @@ Guide team, board and inbox requests through ordinary language or contextual hel
 Show identity, history and diagnostics when requested or relevant; ordinary language is welcome.
 **Unrecognized input** — treat it as natural language; clarify briefly if necessary.
 
-For `discover`, `publish`, `connect`, `ask`, and `question-status`, follow the [common messaging
+For `discover [words] [--table]`, `publish`, `connect`, `ask`, and `question-status`, follow the [common messaging
 guide](references/messaging.md). Use MCP first in a sandboxed Codex; existing `send --wait` remains
 delivery-only. For `network`, follow the [other machines guide](references/network.md); create, join,
 remove or leave only on your user's word. For `team`, `board` and `handover`, the [teams guide](references/teams.md).

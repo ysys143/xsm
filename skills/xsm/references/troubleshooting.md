@@ -68,6 +68,13 @@ and xsm on another machine. After an update an open session keeps its old
 hooks and server until it restarts. Not every mix works, so recognize it and
 handle it instead of retrying.
 
+If `xsm discover WORDS --table` is rejected as unrecognized arguments, record
+the CLI version and installed/runtime path from doctor. A source checkout
+change does not update an already installed command, hook or MCP process.
+Use plain `xsm discover` to inspect the older JSON result if needed; do not
+turn that argument error, an empty result or unknown metadata into a request
+for reach/link/join. Keep the selected conversation and pending request IDs.
+
 **Signs.** Text from xsm that disagrees with this guide or with what just
 happened: a refusal that sends your user to a terminal or hands you `--dir`; a reply
 xsm shows you that is not the latest thing your user said; a `this session's

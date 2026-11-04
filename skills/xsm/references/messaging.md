@@ -1,12 +1,23 @@
 # Discovery and correlated messaging
 
-Use `xsm discover` / `xsm_discover` to find explicitly published or same-repository
-conversations. Filter by machine, work and branch, show the candidates, and use
-the returned `candidate:` target after the user selects one. Publishing is not
-permission to collaborate. `xsm publish` / `xsm_publish` publishes this conversation
-only after the user's instruction; `--off` / `visible=false` stops publishing.
+Use `xsm discover WORDS --table` / `xsm_discover(query="WORDS")` to find published
+or same-repository conversations by repository, session name, title or task.
+Omit `--table` for JSON. `--work` filters native title/task fields specifically;
+missing metadata can return `unknown`. That does not mean out of scope. Never
+open `reach`, `link` or `join` just because discovery is empty or unknown.
+Filter further by machine or branch when requested; use the returned `candidate:` target.
+
+`xsm publish` / `xsm_publish` publishes this conversation; `--off` / `visible=false`
+withdraws it. A native `/xsm publish` or `$xsm publish` is the user's publication
+instruction: call once, without asking again. An agent's unsolicited publication
+still needs the user's answer. Publishing alone grants no messaging permission.
 
 Use `xsm connect TARGET` / `xsm_connect` for the user's selected conversation.
+A native `connect TARGET` command selects that exact conversation. A clear
+instruction to contact a repository also selects its sole live discovered peer;
+with several possible peers, show them and ask which one. Do not substitute a
+folder permission for a conversation selection. A pending selection question
+keeps its own answer binding; a later cancellation supersedes an earlier instruction.
 A permitted scope is not a completed handshake: only the correlated peer's actual
 reply with outcome=succeeded completes it. An explicit failed outcome is a decline;
 without an outcome, readiness remains unconfirmed. The other candidates and their folders are not connected.
@@ -19,6 +30,13 @@ After timeout or cancellation, recover with `xsm question-status ID` /
 before you learned the ID, call question-status / xsm_question_status without an ID
 to list only your own requests, then recover the matching one. Reuse its request
 ID; do not resend with a new ID.
+For a deferred answer ("tell me when finished"), send once and end the turn or
+continue other work. Replies arrive through the runtime's native input. Do not
+start a background sleep/poll loop. Use question-status to recover an answer
+after interruption or when checking it explicitly; inspect JSON fields, not a
+grep pattern dependent on JSON spacing. A pending result with `replies: []`
+means no answer was recorded. `queued` / `sent-unconfirmed` proves neither
+that the peer is busy nor that it has or has not read the message.
 Partial replies remain available. Only an explicit outcome marks task finality.
 A delivery receipt alone is not an answer. Answer responses from ask,
 question-status and connect include standard `claims` for exactly their returned

@@ -329,6 +329,7 @@ shown as unknown, not guessed. Underneath, the agent runs:
 ```bash
 xsm publish                                    # make this conversation discoverable, only on your word
 xsm publish --off                              # withdraw it
+xsm discover jstack --table                    # repository, name, title or task
 xsm discover --machine macmini --work config   # candidates (JSON for the agent), each with a target
 xsm connect candidate:<id> --wait 30           # handshake with the one you picked
 ```
@@ -338,6 +339,16 @@ two conversations, not their folders, and the other candidates stay where they w
 only when the selected peer itself replies with `outcome=succeeded`. A failed outcome is a decline, and no
 reply leaves readiness unconfirmed (`--request-id` resumes the same handshake after a timeout). A resumed
 conversation is checked again; a new conversation with the same name inherits nothing.
+
+Typing `/xsm publish` (Claude Code) or `$xsm publish` (Codex) already supplies the publication
+instruction; the agent runs it once without another approval question. Likewise, an explicit
+`connect TARGET` selects that conversation. A clear instruction such as “tell the session working in
+jstack to notify me when it finishes” can select the sole live discovered jstack peer. Several peers
+require a choice. None of these selections opens a folder-wide `reach`, `link` or `join`.
+
+The positional discovery query searches repository, session name, title and task. `--work` searches
+native title/task metadata specifically. `unknown` means some metadata could not be established;
+it does not mean a messaging boundary must be widened.
 
 ### 3. Asking and getting the answer back
 
@@ -356,6 +367,13 @@ xsm ack <token>...                                             # after actually 
 A delivery receipt is not an answer, and printing an answer is not reading it: after reading, the agent
 acknowledges it with `ack` (MCP `xsm_ack`), and until then the original stays recoverable. Only an explicit
 `outcome` from the peer marks a task finished.
+
+For “notify me when finished”, the agent sends once and ends its turn or continues other work.
+The runtime receives the peer's reply through its native input. No background sleep/poll loop is
+needed. `question-status` recovers answers after an interruption or on an explicit status check.
+A pending request with an empty replies array still has no recorded answer; JSON formatting does
+not change that. `queued` or `sent-unconfirmed` does not establish whether the peer is busy or has
+read the message.
 
 In the current development source, a pending local question can explain in `reason` that its exact
 target session explicitly ended. It stays pending and accepts late replies; that observation is not task

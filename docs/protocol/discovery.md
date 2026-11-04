@@ -37,6 +37,15 @@ real model, native UI, messenger or the full six-runtime matrix certification.
 
 ## Result structure and independent readers
 
+`xsm_discover` accepts an optional `query` string that searches repository,
+session name, native title and native task summary. The CLI passes positional
+words as this same query: `xsm discover jstack --table`. Without `--table`, it
+returns JSON. The existing `work` filter searches native title/task metadata;
+it does not serve as a repository filter. A match in a known field survives
+unknown metadata elsewhere. A non-match with unknown searchable metadata
+remains uncertain for local and remote candidates alike. Neither an empty
+result nor `unknown` requests a folder-wide permission change.
+
 [discovery-result.schema.json](discovery-result.schema.json) defines successful
 `operation.call` results for `xsm_discover`. Correlate the response ID with the
 operation request, validate the JSON-RPC envelope, then validate its `result`
