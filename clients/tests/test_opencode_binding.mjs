@@ -159,7 +159,7 @@ async function fixture(t, options = {}) {
 
 test('OpenCode uses native conversation identity and preserves optional tool arguments', { timeout: 10000 }, async t => {
   const { hooks, invoke, records } = await fixture(t);
-  assert.equal(Object.keys(hooks.tool).length, 22);
+  assert.equal(Object.keys(hooks.tool).length, 23);
   assert.equal(hooks.tool.xsm_decide.args.question.optionalField, undefined);
   assert.equal(hooks.tool.xsm_send.args.wait.optionalField, true);
   await Promise.all([invoke('a', 'xsm_inbox'), invoke('a', 'xsm_inbox'), invoke('b', 'xsm_inbox')]);

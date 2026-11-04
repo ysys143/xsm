@@ -41,7 +41,7 @@ async function fixture(t, { allowErrors = false } = {}) {
 
 test('OpenClaw synchronous catalog and metadata discovery create no participant', async t => {
   const { tools } = await fixture(t);
-  assert.equal(tools.size, 22);
+  assert.equal(tools.size, 23);
   for (const factory of tools.values()) assert.equal(factory({}), null);
 });
 

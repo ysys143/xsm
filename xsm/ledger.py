@@ -194,6 +194,11 @@ def handoff_step(msg_id, name, receiver):
             record['steps'] = {}
             record['migration'] = lineage[-1]['id']
         record.update(id=msg_id, receiver=endpoint)
+        if lineage:
+            from . import migration
+            if not migration.proves_copy(original, receiver):
+                raise ValueError('unverified migration handoff evidence')
+            record['migration'] = lineage[-1]['id']
         if name is not None:
             record.setdefault("steps", {})[name] = {"ok": True, "t": time.time()}
         paths.write_json(filename, record)

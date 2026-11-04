@@ -16,6 +16,13 @@ from . import config, identity, probe, registry
 QUALIFIED_RE = re.compile(r"^(?P<name>.+?)(?:@(?P<alias>[^@\s]+))?(?:\s*\[(?P<ref>[0-9a-f]{6})\])?$")
 
 
+def _address(record):
+    try:
+        return identity.address(record)
+    except (ValueError, TypeError):
+        return None
+
+
 class Resolution:
     def __init__(self, status: str, record=None, candidates=None, reason: str = "",
                  scope=None, scope_basis=None):
@@ -37,7 +44,15 @@ def _records() -> list:
     and a sqlite read per pointer, and the later passes met a spent budget and
     returned degraded names: "no session named ..." for a session that was there
     (#17). Stopped sessions stay in: their names are the offline-only answer."""
-    return probe.remember(("resolve_records",), registry.records)
+    def gather():
+        from . import migration
+        rows = registry.records()
+        for alias in migration.aliases():
+            if not any(_address(r) == identity.address(alias) and r.get('name') == alias.get('name')
+                       and r.get('alias') == alias.get('alias') for r in rows):
+                rows.append(alias)
+        return rows
+    return probe.remember(("resolve_records",), gather)
 
 
 def _pool(include_offline: bool) -> list:
@@ -107,20 +122,25 @@ def resolve(target: str, include_offline: bool = False, caller=None) -> Resoluti
     for prefix in ("claude:", "codex:", "ref:", "peer:"):
         if target.startswith(prefix):
             key, value = prefix[:-1], target[len(prefix):]
+            from . import migration
+            pointers = list(registry.raw_records())
+            for retired in migration.aliases():
+                if not any(_address(r) == identity.address(retired) for r in pointers):
+                    pointers.append(retired)
             if key == 'peer':
                 if not re.fullmatch(r'[0-9a-f]{64}', value):
                     return Resolution('not-found', reason='invalid opaque peer address')
                 hits = []
-                for rec in registry.raw_records():
+                for rec in pointers:
                     try:
                         if identity.address(rec) == target:
                             hits.append(rec)
                     except (ValueError, TypeError):
                         continue  # An incomplete old pointer cannot shadow a full address.
             elif key == "ref":
-                hits = [rec for rec in registry.raw_records() if rec.get("ref") == value]
+                hits = [rec for rec in pointers if rec.get("ref") == value]
             else:
-                hits = [rec for rec in registry.raw_records() if rec.get("runtime") == key
+                hits = [rec for rec in pointers if rec.get("runtime") == key
                         and rec.get("session_id") == value]
             hits = [registry._enrich(rec) for rec in hits]
             if len(hits) > 1:

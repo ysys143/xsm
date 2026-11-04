@@ -279,7 +279,7 @@ def notify(record):
 
 
 def view(record, since=None):
-    from . import decisions, identity, ledger, network_identity
+    from . import decisions, delivery_attempts, identity, ledger, network_identity
     messages = []
     history = {item['id']: item for item in record['snapshot']['history']}
     retained = set(history) | set(record['steps'].get('messages', []))
@@ -318,4 +318,6 @@ def view(record, since=None):
             'permissions': permissions,
             'legacy_permissions': [{k: item.get(k) for k in ('ask_id', 'verb', 'target', 'here')}
                                    for item in record['snapshot']['legacy_consent_history']],
+            'incoming_failures': delivery_attempts.incoming(record['source'], epoch=record['source'].get('profile_epoch', 0)),
+            'outgoing_failures': delivery_attempts.outgoing(record['source'], epoch=record['source'].get('profile_epoch', 0)),
             'notices': record['notices'], 'notes': record['notes']}

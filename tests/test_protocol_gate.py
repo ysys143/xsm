@@ -24,6 +24,7 @@ class ProtocolGateTest(unittest.TestCase):
                     'tests.test_mcp_forms', 'tests.test_native_permission_recovery',
                     'tests.test_decisions', 'tests.test_native_consent', 'tests.test_user_answers',
                     'tests.test_answer_binding', 'tests.test_open_consent', 'tests.test_worker_project_flow'}
+        required.update({'tests.test_migration_diagnostics', 'tests.test_migration_network'})
         self.assertFalse(required - set(gate.MODULES), required - set(gate.MODULES))
         self.assertEqual(len(gate.MODULES), len(set(gate.MODULES)))
 

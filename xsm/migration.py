@@ -413,12 +413,13 @@ def file_source(me, storage_id):
 def status(me, *, since=None):
     if since is not None and (type(since) not in (int, float) or not math.isfinite(since) or since < 0):
         raise MigrationError('since must be a nonnegative finite timestamp')
-    from . import migration_state
+    from . import delivery_attempts, migration_state
     retired = retirement(me)
     owner = current_owner(me)
     return {'migrations': [migration_state.view(r, since=since) for r in received(me)],
             'retired': retired is not None, 'retired_by': retired['id'] if retired else None,
-            'current_owner': identity.address(owner) if owner else None}
+            'current_owner': identity.address(owner) if owner else None,
+            'outgoing_failures': delivery_attempts.outgoing(me)}
 
 
 def receipt(record):
@@ -430,15 +431,53 @@ def receipt(record):
 
 
 def diagnostics(rows):
+    rows = list(rows)
+    for filename in _json_files(DIRECTORY):
+        transfer = paths.read_json(filename)
+        if not transfer:
+            continue
+        for role in ('source', 'target'):
+            saved = transfer[role]
+            if not any(endpoint(row) == endpoint(saved) for row in rows):
+                rows.append(dict(saved, state='unknown', registered=False))
     groups = {}
     for record in rows:
         native = record.get('native_conversation') or record['session_id']
         groups.setdefault((record['runtime'], native), []).append(record)
-    return [{'runtime': runtime, 'conversation': native,
-             'copies': [{'address': identity.address(r), 'home': r['home'], 'state': r.get('state'),
-                         'retired': retirement(r) is not None,
-                         'migration': (retirement(r) or {}).get('id')} for r in copies]}
-            for (runtime, native), copies in groups.items() if len(copies) > 1]
+
+    def describe(record):
+        transfer = retirement(record)
+        owner = current_owner(record)
+        current = _current(owner) if owner else None
+        forwarding = None
+        if transfer:
+            if transfer['status'] != 'committed':
+                forwarding = 'incomplete'
+            else:
+                try:
+                    _check_lease(transfer, time.time())
+                    forwarding = 'active'
+                except MigrationError as exc:
+                    forwarding = 'expired' if 'expired' in str(exc) else 'clock-unknown'
+        return {'address': identity.address(record), 'home': record['home'], 'state': record.get('state'),
+                'generation': generation(record), 'retired': transfer is not None,
+                'migration': transfer['id'] if transfer else None, 'forwarding': forwarding,
+                'forward_until': transfer.get('forward_until') if transfer else None,
+                'current_owner': identity.address(owner) if owner else None,
+                'owner_state': current.get('state', 'unknown') if current else 'unknown'}
+
+    return [{'runtime': runtime, 'conversation': native, 'copies': [describe(r) for r in copies]}
+            for (runtime, native), copies in groups.items() if len(copies) > 1 or any(retirement(r) for r in copies)]
+
+
+def aliases():
+    """Retired addresses survive pointer cleanup; no alias becomes a caller."""
+    result = []
+    for filename in _json_files(DIRECTORY):
+        record = paths.read_json(filename)
+        if record and (retirement(record['source']) or {}).get('id') == record['id']:
+            result.append(dict(record['source'], registered=True, state='ended', retired=True))
+    return result
 
 
 def cli_inactive():

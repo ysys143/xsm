@@ -263,6 +263,12 @@
         },
         "inbox_notice": {
           "type": "string"
+        },
+        "outgoing_failures": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
         }
       },
       "required": [
@@ -617,6 +623,18 @@
               "here"
             ],
             "additionalProperties": false
+          }
+        },
+        "outgoing_failures": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        },
+        "incoming_failures": {
+          "type": "array",
+          "items": {
+            "type": "object"
           }
         }
       },

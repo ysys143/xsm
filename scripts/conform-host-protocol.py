@@ -514,7 +514,7 @@ def scopes(peer, params, env, check, equal):
             text='scope fixture', request_id='scope-message-' + str(counter), wake='never', wait=0)
         if refused:
             equal(result['send']['status'], 'refused')
-            equal(result['send']['id'], None)
+            equal(result['send']['id'], 'scope-message-' + str(counter))
         else:
             equal(result['send']['id'], 'scope-message-' + str(counter))
             require(result['send']['status'] != 'refused', result)

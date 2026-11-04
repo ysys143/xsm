@@ -384,8 +384,13 @@ class Gateway:
     @staticmethod
     def _same(record, packet, local):
         old = record["packet"]
+        same_owner = _owner(record['local']) == _owner(local)
+        if not same_owner:
+            from . import migration
+            copy_record = handoff.status(local, packet['id'])
+            same_owner = migration.proves_copy(copy_record, local) if copy_record.get('migration_history') else False
         if record["fingerprint"] != packet["fingerprint"] or record["body_sha256"] != _body_hash(packet) \
-                or _owner(record["local"]) != _owner(local) or old["wake"] != packet["wake"] \
+                or not same_owner or old["wake"] != packet["wake"] \
                 or old["file_packet"] != _semantic_packet(packet)["file_packet"] or old["reply_binding"] != packet["reply_binding"]:
             raise GatewayError("message-id-conflict")
 
@@ -518,6 +523,10 @@ class Gateway:
 
     def _global(self, message_id, record=None, *, outbound_intent_digest=None):
         # Existing core namespaces are read only. No ledger mutation is performed.
+        current = self._ingress(record) if record else None
+        owners = [_owner(record['local'])] if record else []
+        if current:
+            owners += [hop['target'] for hop in current.get('migration_history', [])]
         for suffix in (".json", ".recv.json", ".handoff.json"):
             existing = _read(Path(paths.path(paths.LEDGER, message_id + suffix)))
             if existing is not None:
@@ -530,9 +539,11 @@ class Gateway:
                     and existing.get("digest") in (record["fingerprint"], self._handoff_digest(record["packet"], record["local"])))
                 if record is not None and suffix == ".recv.json" and self._ingress(record) is not None:
                     parsed = envelope.parse(self._message(record["packet"], record["local"])["content"])
-                    exact_receiver = (isinstance(receiver, dict)
-                        and receiver.get("runtime") == record["local"]["runtime"]
-                        and receiver.get("ref") == record["local"].get("ref"))
+                    from . import identity
+                    exact_receiver = (isinstance(receiver, dict) and (
+                        receiver.get('runtime') == record['local']['runtime'] and receiver.get('ref') == record['local'].get('ref')
+                        or any(receiver.get('runtime') == owner['runtime'] and receiver.get('ref') ==
+                               identity.ref_of(owner['runtime'], owner['home'], owner['session_id']) for owner in owners)))
                     full_digest = (existing.get("req_version") == envelope.CANON_VERSION
                         and existing.get("req_digest") == envelope.received_digest(parsed.header, parsed.body, parsed.attrs)
                         and existing.get("body_sha") == _body_hash(record["packet"])[:16]
@@ -543,9 +554,9 @@ class Gateway:
                     reservation = _read(Path(paths.path(paths.LEDGER, message_id + ".handoff.json")))
                     legacy_held = (existing.get("decision") in ("held", "blocked")
                         and not existing.get("req_digest") and isinstance(reservation, dict)
-                        and reservation.get("receiver") == _owner(record["local"]))
+                        and reservation.get("receiver") in owners)
                     own_receipt = existing.get("id") == message_id and exact_receiver and (full_digest or legacy_held)
-                if not prepared_entry and not own_entry and not own_receipt and (record is None or suffix != ".handoff.json" or receiver != _owner(record["local"])):
+                if not prepared_entry and not own_entry and not own_receipt and (suffix != '.handoff.json' or receiver not in owners):
                     raise GatewayError("message-id-conflict")
         if _read(Path(paths.path("outbox", message_id + ".json"))) is not None:
             raise GatewayError("message-id-conflict")
@@ -560,9 +571,13 @@ class Gateway:
                 if not child.is_dir():
                     continue
                 existing = _read(child / (message_id + ".json"))
-                if existing is not None and (record is None or existing.get("receiver") != _owner(record["local"])
-                        or existing.get("digest") != self._handoff_digest(record["packet"], record["local"])):
-                    raise GatewayError("message-id-conflict")
+                if existing is not None:
+                    from . import migration
+                    if (not current or existing.get('receiver') not in owners
+                            or existing.get('digest') != current['digest']
+                            or existing.get('receiver') != _owner(record['local'])
+                            and not migration.proves_copy(existing, existing['receiver'])):
+                        raise GatewayError('message-id-conflict')
 
     def _route(self, local, message_id):
         # handoff.delivery also writes delivery_state; its pre-lock snapshot
@@ -706,70 +721,99 @@ class Gateway:
             raise GatewayError("tls-origin-or-receiver-mismatch")
         # Even an ACKed duplicate must present authentic, complete wire bytes.
         self._files(packet)
+        from . import registry
         with self._locked():
-            local, allowed = self._checked_target(origin, packet)
-            original = self._load("outbound", packet["reply_to"]) if packet["kind"] == "reply" else None
-            reverse = packet["kind"] == "reply" and self._reverse(original, packet) \
-                and (_owner(original["local"]) == _owner(local)
-                     or _handed_to(original["local"], local))
-            if not allowed and not reverse:
-                raise GatewayError("local-permission-denied")
-            if packet["kind"] == "reply" and not reverse:
-                raise GatewayError("reply-original-unverified")
-            record = self._load("inbound", packet["id"])
-            if record:
-                self._same(record, packet, local)
-            elif self._load("outbound", packet["id"]):
-                raise GatewayError("message-id-conflict")
-            self._global(packet["id"], record)
-            committed = self._ingress(record) if record else None
-            if committed is not None:
-                if packet["file_packet"] is not None:
-                    try:
-                        files.received_manifest(local, record["files"]["storage_id"],
-                            request_id=packet["id"], body=packet["body"],
-                            expected_reference=packet["attachments"][0])
-                    except (ValueError, OSError, KeyError, TypeError):
-                        raise GatewayError("file-payload-unavailable") from None
-                if committed.get("delivery_route") != "mcp-inbox" and committed["status"] != "acknowledged":
-                    self._route(local, packet["id"])
-                if record["phase"] != "stored":
-                    record["phase"] = "stored"
-                    _write(self._path("inbound", packet["id"]), record)
-                return self._delivery(record)
-            if original:
-                self._index_reply("outbound", original, packet["id"])
-            if record is None:
-                record = self._record("inbound", packet, local)
-                _write(self._path("inbound", packet["id"]), record)
-            receipt = record.get("files")
-            if packet["file_packet"] is not None and receipt is None:
+            selected = self._receiving(packet['receiver'])
+            if selected is None:
+                raise GatewayError('local-target-unverified')
+            with registry.lock_records([selected]):
+                return self._receive_locked(origin, packet, selected)
+
+    def _receive_locked(self, origin, packet, selected):
+        local, allowed = self._checked_target(origin, packet)
+        if _owner(local) != _owner(selected):
+            raise GatewayError('local-target-changed-during-permission')
+        original = self._load("outbound", packet["reply_to"]) if packet["kind"] == "reply" else None
+        reverse = packet["kind"] == "reply" and self._reverse(original, packet) \
+            and (_owner(original["local"]) == _owner(local)
+                 or _handed_to(original["local"], local))
+        if not allowed and not reverse:
+            raise GatewayError("local-permission-denied")
+        if packet["kind"] == "reply" and not reverse:
+            raise GatewayError("reply-original-unverified")
+        record = self._load("inbound", packet["id"])
+        if record:
+            self._same(record, packet, local)
+        elif self._load("outbound", packet["id"]):
+            raise GatewayError("message-id-conflict")
+        self._global(packet["id"], record)
+        committed = self._ingress(record) if record else None
+        if committed is not None:
+            if packet["file_packet"] is not None:
                 try:
-                    receipt = files.receive(local, packet["file_packet"], request_id=packet["id"], body=packet["body"],
-                        expected_reference=packet["attachments"][0], limits=files.product_limits())
-                except (ValueError, OSError):
-                    raise GatewayError("file-storage-unconfirmed") from None
-                record["files"] = receipt
-                _write(self._path("inbound", packet["id"]), record)
-            local, current_permission = self._checked_target(origin, packet)
-            if not current_permission and not reverse:
-                raise GatewayError("local-permission-denied")
-            message = self._message(packet, local, receipt)
-            try:
-                handoff.store(_owner(local), message)
+                    files.received_manifest(local, record["files"]["storage_id"],
+                        request_id=packet["id"], body=packet["body"],
+                        expected_reference=packet["attachments"][0])
+                except (ValueError, OSError, KeyError, TypeError):
+                    raise GatewayError("file-payload-unavailable") from None
+            if committed.get("delivery_route") != "mcp-inbox" and committed["status"] != "acknowledged":
                 self._route(local, packet["id"])
-            except (ValueError, OSError):
-                raise GatewayError("handoff-storage-unconfirmed") from None
-            record["phase"] = "stored"
-            _write(self._path("inbound", packet["id"]), record)
+            if record["phase"] != "stored":
+                record["phase"] = "stored"
+                _write(self._path("inbound", packet["id"]), record)
             return self._delivery(record)
+        if original:
+            self._index_reply("outbound", original, packet["id"])
+        if record is None:
+            record = self._record("inbound", packet, local)
+            _write(self._path("inbound", packet["id"]), record)
+        receipt = record.get("files")
+        if packet["file_packet"] is not None and receipt is None:
+            try:
+                receipt = files.receive(local, packet["file_packet"], request_id=packet["id"], body=packet["body"],
+                    expected_reference=packet["attachments"][0], limits=files.product_limits())
+            except (ValueError, OSError):
+                raise GatewayError("file-storage-unconfirmed") from None
+            record["files"] = receipt
+            _write(self._path("inbound", packet["id"]), record)
+        local, current_permission = self._checked_target(origin, packet)
+        if not current_permission and not reverse:
+            raise GatewayError("local-permission-denied")
+        message = self._message(packet, local, receipt)
+        from . import handover, migration
+        for alias in migration.aliases():
+            if handover._names(handover._identity(alias), packet['receiver']):
+                message['profile_forwarding'] = migration.forwarding_metadata(alias, local)
+                break
+        try:
+            handoff.store(_owner(local), message)
+            self._route(local, packet["id"])
+        except (ValueError, OSError):
+            raise GatewayError("handoff-storage-unconfirmed") from None
+        record["phase"] = "stored"
+        _write(self._path("inbound", packet["id"]), record)
+        return self._delivery(record)
 
     def _ingress(self, record):
         current = handoff.status(record["local"], record["id"])
         message = current.get("message")
+        if message and message.get('profile_forwarding'):
+            message = {k: v for k, v in message.items() if k != 'profile_forwarding'}
         if current.get("digest") != self._handoff_digest(record["packet"], record["local"]) \
                 or message != self._message(record["packet"], record["local"], record.get("files")):
             return None
+        seen = set()
+        while current.get('moved_to'):
+            from . import migration
+            target = current['moved_to']
+            marker = migration.key(target)
+            if marker in seen:
+                return None
+            seen.add(marker)
+            moved = handoff.status(target, record['id'])
+            if moved.get('digest') != current['digest'] or not migration.proves_copy(moved, target):
+                return None
+            current = moved
         return current
 
     @_api
@@ -777,9 +821,15 @@ class Gateway:
         """Private verified binding for the current gate; no queue/claim/ACK mutation."""
         _private(self.root.lstat(), directory=True)
         record = self._load("inbound", _id(msg_id))
-        if not record or self._ingress(record) is None:
+        current = self._ingress(record) if record else None
+        if current is None:
             return None
-        return copy.deepcopy(dict(record, verified=True, target_local=record["local"],
+        local = record['local']
+        if _owner(local) != current['receiver']:
+            from . import registry
+            owner = current['receiver']
+            local = registry.by_session(owner['runtime'], owner['session_id'], home=owner['home']) or owner
+        return copy.deepcopy(dict(record, verified=True, target_local=local,
                                   sender=network_identity.endpoint(record["packet"]["sender"])))
 
     def _delivery(self, record):

@@ -43,7 +43,7 @@ class Consumer:
         'owned': 'owned', 'files': 'file', 'decision_status': 'decision-status',
         'ask': 'question', 'question_status': 'question', 'connect': 'question',
         'discover': 'discovery', 'publish': 'publication', 'grant': 'grant',
-        'send': 'send', 'team': 'team', 'handover': 'handover', 'board': 'board',
+        'send': 'send', 'team': 'team', 'handover': 'handover', 'migrate': 'profile-migration', 'board': 'board',
         'ack': 'ack', 'inbox': 'inbox', 'link': 'scope', 'join': 'scope',
         'reach': 'scope', 'doc': 'doc', 'doc_endorse': 'endorsement',
         'approve': 'approval', 'decide': 'decision'}

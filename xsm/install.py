@@ -2346,7 +2346,7 @@ def stuck(now: float | None = None, sessions: list | None = None) -> dict:
 
 def doctor() -> dict:
     """Facts a person can act on, not a verdict."""
-    from . import adapters, housekeeping, registry   # imported here to keep hook startup lean
+    from . import adapters, housekeeping, migration, registry   # imported here to keep hook startup lean
 
     # Enriched once and shared, under one budget: every session was enriched three
     # times, and the process table rescanned per Codex home with a five-second lsof
@@ -2370,6 +2370,7 @@ def doctor() -> dict:
     roots = {h["path"]: plugin_root(h["path"]) for h in homes if plugins[h["path"]]}
     revisions = {home: plugin_revision(root) for home, root in roots.items()}
     report = {
+        'session_profiles': migration.diagnostics(rows),
         "xsm_home": paths.HOME,
         "runtime": runtime_status(),
         "policy": policy.report(),

@@ -120,6 +120,21 @@ def send(target_spec: str, body: str, *, sender: dict | None = None, kind: str =
                 raise
             result = SendResult("error", paths.sandbox_blocked(err))
         result.notes = ctx["notes"]
+        if result.status in ('refused', 'error', 'unknown') and ctx.get('sender'):
+            from . import delivery_attempts
+            result.msg_id = result.msg_id or msg_id or envelope.new_id()
+            try:
+                from . import handoff
+                handoff._id(result.msg_id)
+            except ValueError:
+                result.msg_id = envelope.new_id()
+            try:
+                intent = ctx.get('audit_intent', (target_spec, body, kind, reply_to, outcome))
+                delivery_attempts.record(ctx['sender'], intent[0], intent[1], result,
+                                         target=result.target or ctx.get('target'), kind=intent[2],
+                                         reply_to=intent[3], outcome=intent[4])
+            except OSError:
+                result.notes.append('delivery attempt audit unavailable; original send result is unchanged')
         # The CLI resolves its own caller inside `_send`; that context has to
         # come back out, or the provisional note below never fires for a shell
         # (P01 item 2: the basis must be visible in the result, not only in the
@@ -215,6 +230,7 @@ def _send(target_spec: str, body: str, *, sender: dict | None = None, kind: str 
     if not sender:
         return SendResult("refused", "this session is not registered; run `xsm doctor`")
     sender = _full_endpoint(sender) or sender
+    ctx['sender'] = sender
     from . import migration
     inactive = migration.active_error(sender)
     if inactive:
@@ -234,6 +250,8 @@ def _send(target_spec: str, body: str, *, sender: dict | None = None, kind: str 
         if attachments is not None and envelope.attachment_refs(attachments) != envelope.attachment_refs(stored_refs):
             return SendResult("refused", "held attachment refs differ; original request retained", msg_id)
         attachments = stored_refs
+
+    ctx['audit_intent'] = (target_spec, body, kind, reply_to, outcome)
 
     if resend and attachments is None and msg_id:
         attachments = ledger.status(msg_id).get("attachments") or []
@@ -363,6 +381,7 @@ def _send(target_spec: str, body: str, *, sender: dict | None = None, kind: str 
             found = resolve.Resolution("resolved", nxt)
     if not found.ok:
         return SendResult("refused", found.reason, candidates=found.candidates)
+    ctx['target'] = found.record
     from . import migration, handover
     selected, _ = handover.follow(found.record or {})
     if selected and selected.get('remote'):

@@ -181,7 +181,7 @@ def inbound_record(parsed, receiver=None):
             return None
         packet = record["packet"]
         canonical = envelope.parse(message_gateway()._message(
-            packet, record["target_local"], record.get("files"))["content"])
+            packet, record["local"], record.get("files"))["content"])
         if parsed.header != canonical.header:
             return None
         if receiver is not None and handoff._identity(receiver) != handoff._identity(record["target_local"]):

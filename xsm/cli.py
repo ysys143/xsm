@@ -1349,6 +1349,13 @@ def cmd_files(args) -> int:
 
 
 def cmd_status(args) -> int:
+    from . import delivery_attempts
+    if not os.path.exists(ledger._entry_path(args.msg_id)):
+        me = registry.me()
+        attempt = delivery_attempts.get_owned(me, args.msg_id) if me else None
+        if attempt:
+            print(json.dumps(delivery_attempts.public(attempt), ensure_ascii=False, indent=1))
+            return UNCONFIRMED
     scope = ledger.status(args.msg_id).get("scope") or ""
     if scope.startswith("network:"):
         from . import network
@@ -1976,7 +1983,7 @@ def cmd_doctor(args) -> int:
     if report["policy_health"]["health"] != "healthy":
         print("policy     %s (new grants disabled): %s" % (report["policy_health"]["source"], report["policy_health"]["error"]))
     for check, result in _doctor_rows(report):
-        if check in ("setup", "setup flow", "readback", "ownership", "supply"):
+        if check in ("setup", "setup flow", "readback", "ownership", "supply", "profile copies"):
             print("%-10s %s" % (check, result))
     print("python     %s%s" % (report["interpreter"], "" if report["interpreter_ok"] else "  TOO OLD"))
     versions = report.get("codex_binaries") or []
@@ -2241,6 +2248,11 @@ def _doctor_rows(report: dict) -> list:
             ("python", report["interpreter"] + ("" if report["interpreter_ok"] else " **TOO OLD**")),
             ("codex", report["codex_binary"] or "not found on PATH"),
             ("sessions", _sessions_note(report["sessions"]))]
+    for group in report.get('session_profiles', []):
+        copies = ['%s (%s%s%s)' % (item['address'], item['state'], ', retired' if item['retired'] else '',
+                  ', forwarding %s; owner %s (%s)' % (item['forwarding'], item['current_owner'], item['owner_state'])
+                  if item.get('forwarding') else '') for item in group['copies']]
+        rows.append(('profile copies', group['runtime'] + ': ' + '; '.join(copies)))
     if report.get("probes"):
         rows.append(("probes", _probes_note(report["probes"])))
     rows += [("hooks", "%d decision(s) recorded, %d internal error(s)"

@@ -267,7 +267,7 @@ class HermesRegistrationTest(TempState):
         with mock.patch.dict(sys.modules, hermes_constants=constants):
             binding = module.register(self.context(), command=command, env=env)
         try:
-            self.assertEqual(len(self.tools), 22)
+            self.assertEqual(len(self.tools), 23)
             self.assertEqual(len(self.hooks), 9)
             self.assertIn('pre_llm_call', self.hooks)
             self.assertIn('pre_api_request', self.hooks)
