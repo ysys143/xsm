@@ -122,3 +122,16 @@ start ticks와 boot wall 기준, lease 파일의 전후 상태를 보존하도�
 관측을 추가했다. 기존 Mac8단계는 관측 추가 뒤에도 통과했다. 관측은 읽기
 전용이며 process/snapshot 보존 판정이나 제품 코드는 아직 바꾸지 않았다.
 Linux 기본 조건의 실패는 미해결이며 추가 성공 표본만으로 해결 처리하지 않는다.
+
+
+후속 관측에서 Linux의 같은 UI PID/kernel start ticks와 동일 lease 파일은
+유지되는데 ps 시작 시각과 boot wall 기준이2초 변하는 것을 확인했다.
+[Component 수명 수정](component-process-lifetime.md)에 원시 관측과 수정·
+회귀 검사 결과를 기록했다. 제품은 Linux에서 안정적인 kernel 시작 표식을
+사용하고, 기존 기록은 프로세스가 살아 있는 동안 보존하도록 수정했다.
+
+수정 뒤 고정5617701 Linux의 기본/사용자 편집/구 UI 버전에서의 갱신은
+각각8단계를 통과했다. 실제 시각 보정 중에도 구 UI 코드를 보존하고 정상
+종료 뒤 정리했다. Core3.11은 통과했지만3.14 전체 검사는 별도 선행조건
+문제로 실패했으므로 전체 회귀 완료로 표시하지 않는다. 세부 결과와 원시는
+[수명 수정 기록](component-process-lifetime.md)에 있다.
