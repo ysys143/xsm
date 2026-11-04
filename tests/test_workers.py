@@ -1171,6 +1171,14 @@ class AttemptsTest(TempState):
         self.assertEqual(attempts.failures(key), 3)
         with self.assertRaises(attempts.AttemptsError):
             attempts.check(key, 3)
+        for text, folder in ((self.TEXT, os.path.join(self.tmp, "other-folder")),
+                             ("another task", self.tmp)):
+            other = attempts.key_for(text, folder)
+            attempts.start(other, text, folder, "other-success", "other-task")
+            attempts.finish(other, "succeeded")
+            self.assertEqual(attempts.failures(other), 0)
+            with self.assertRaises(attempts.AttemptsError):
+                attempts.check(key, 3)
         attempts.start(key, self.TEXT, self.tmp, "new-success", "new-success-task")
         attempts.finish(key, "succeeded")
         self.assertEqual(attempts.failures(key), 0)
