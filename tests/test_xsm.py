@@ -4275,16 +4275,19 @@ class SkillLayoutTest(unittest.TestCase):
         self.assertNotIn("!`", self.skill)
         self.assertNotIn("/xsm-", self.skill)
 
-    def test_read_only_commands_are_the_only_ones_pre_approved(self):
+    def test_only_documented_command_prefixes_are_pre_approved(self):
         head = self.skill.split("\n---\n", 1)[0]
         self.assertIn("name: xsm\n", head)
         allowed = [line for line in head.splitlines() if line.startswith("allowed-tools:")][0]
         # Exact commands, not prefixes: `xsm held:*` would also approve
-        # `xsm held drop`, and `xsm list:*` would approve `xsm list clear`. The one
-        # prefix is `send`, a person's own wish to message a session (user
-        # decision, 2026-10-01: messaging is never stopped by a permission).
+        # `xsm held drop`, and `xsm list:*` would approve `xsm list clear`.
+        # Discovery accepts query words; publishing still needs the native
+        # user's bound instruction in the service (test_public_command_flow).
         self.assertIn("Bash(xsm send:*)", allowed)
-        self.assertEqual(allowed.count(":*"), 1, allowed)
+        import re
+        self.assertEqual(set(re.findall(r'Bash\(xsm (\w+):\*\)', allowed)),
+                         {'send', 'publish', 'discover'})
+        self.assertEqual(allowed.count(":*"), 3, allowed)
         for command in ("list --table", "who --table", "projects --table", "doctor --table",
                         "ledger --table --mine --last 5", "held list --table"):
             self.assertIn("Bash(xsm %s)" % command, allowed)

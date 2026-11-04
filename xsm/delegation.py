@@ -102,6 +102,8 @@ def select_worker(target):
     selected = resolve.resolve(target)
     if not selected.ok or selected.record.get('remote'):
         raise ValueError(selected.reason if not selected.ok else 'select a local worker')
+    if selected.record.get('state') in ('ended', 'stale') or selected.record.get('ended_at'):
+        raise ValueError('selected worker is no longer running; select an active registered worker')
     return selected.record
 
 

@@ -69,6 +69,16 @@ class WorkerProjectFlowTest(ProtocolFixture):
         self.assertEqual(len(inbox['claims']), 1, inbox)
         self.assertIn('needs project extra', inbox['messages'][0])
 
+    def test_ended_worker_is_rejected_before_opening_a_parent_question(self):
+        from xsm import config
+        from xsm.operation_schema import ToolError
+        leader, child, _ = self.group()
+        self.connection.dispatch('session.close', {'session': child['session']})
+        with self.assertRaisesRegex(ToolError, 'worker.*(running|active|live)'):
+            self.operation(leader, 'xsm_join', project='extra', workers=['ref:'+child['ref']])
+        self.assertEqual(list(self.connection.events()), [])
+        self.assertFalse(any(p['id'] == 'extra' for p in config.projects()))
+
     def test_new_worker_project_request_is_sent_to_parent_only_once(self):
         leader,a,_=self.group()
         with mock.patch('xsm.send.send') as send:
