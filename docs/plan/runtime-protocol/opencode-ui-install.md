@@ -92,3 +92,20 @@ snapshot을 삭제해 실패했다. 정상 실행의 같은 단계에는 다른 
 27.866초에 통과했다. 설치·setup 회귀 117개는 64.868초에 통과했다.
 수치는 `*-lock-lifecycle-complete.log`, `lifecycle-install-setup-regression.log`에
 남겼으며 기존 기본 설치 선택·취소 표본과 별도 실행으로 구분한다.
+
+
+## 2026-11-04 현재 도구 목록으로 수명 검사 재실행
+
+기존 probe의 기대 도구 수21은 xsm_doc 추가 뒤 실제22개와 달랐다. 실제 기본
+시나리오가 첫 재로딩 뒤 해당 assertion에서 실패함을 확인했다
+(`opencode-lifecycle-current/before`,1단계 후 실패). 기대값 두 곳을22로 맞췄고
+제품 설치기나 런타임 코드는 바꾸지 않았다.
+
+후속 Mac의 기본 조건과 --user-edit 조건은 각각8단계를 모두 통과했다. 같은
+native 대화의 설치 전/후 재개, 실행 중 구 snapshot 보존, backend 교체 뒤
+구 UI만의 snapshot 보존, UI 정상 종료 뒤 실제 prune, 새 UI 재개, 제거 뒤
+실행 중 프로세스/사용자 설정·mode 보존, 제거 후 재시작의 대화 보존과
+xsm 미로딩을 확인했다. 최종 UI exit0이었다. 원시는
+`deliverables/protocol-foundation/opencode-lifecycle-current/final`과 `user-edit`다.
+이 재실행의 Linux와 기존 stable 배포로의 데이터 보존 rollback은 아직 미완이다.
+보안 감사가 아닌 설치·갱신·재개·제거의 기능 호환성 검사다.
