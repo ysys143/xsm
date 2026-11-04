@@ -35,3 +35,37 @@ Python3.11.2에서78.737초, Python3.14.10에서102.866초로 core931개를 각�
 미실행 wire/schema0, VM stopExit0이다. 원시는 `core-partition-linux/result.json`과
 환경별 output이다. 이전cf01df5의3.14 timeout은 실패 증거로 보존한다.
 전체 native/UI/원격·메신저·설치 행렬과 전체 계획은 미완이다.
+
+
+## 2026-11-04 Node 파일 실행 수 명시 측정
+
+Linux3.14의979개 전체 재실행은120초 예산을 초과했다. 완료된 Node166개는
+119.424초, 외부 적합성56개는118.160초였고 다른 그룹/phase2가 중단됐다.
+원시는 `participant-clock-continuity-linux/core314/output/core.log`다.
+
+Node 검사 명령에 --test-concurrency=2를 명시했다. MODULES·NATIVE_MODULES와
+Node 파일 목록 및 전체120초 deadline은 유지한다. Mac979개/schema/v7은
+111.212초로 통과했고 기존 gate5개도 통과했다. 통계적 속도 개선을 주장하지
+않으며 고정5fec4f0의 Linux 두 Python 환경을 같은 자원에서 측정 중이다.
+원시는 participant-clock-continuity/mac-core-node2.log 및 gate-node2.log다.
+
+
+Node2만 명시한 고정5fec4f0의 Linux 두 환경도120초를 초과했다.3.11에서
+Python303개116.770초, Node166개88.075초, 외부 적합성56개105.213초였고
+phase2를 다 끝내지 못했다.3.14는 진행 중인 묶음도 제한 시각에 중단됐다.
+둘 다 실패로 보존했다(`core-node2-linux/`, VM stopExit0).
+
+가장 오래 걸린 Python core module 목록을 같은 순서의3개 비중첩 묶음으로
+나눴다. 전체 목록/Node·SDK·native·적합성/독립 participant와 공통120초
+deadline은 그대로다. 기존 실행 계획/격리/종료 검사5개가0.638초에 통과했고,
+Mac979개(Python계열813+Node166)/schema/v7도98.801초에 통과했다.
+고정d655c59 Linux 두 환경 측정은 진행 중이다. 아직 Linux 시간 조건의
+해결로 표시하지 않는다. 원시는 mac-core-three-groups.log와 core-three-groups-linux다.
+
+고정d655c59 Linux의3.11/3.14는 각각979개/schema/v7을84.985초/107.743초에
+통과했다. Python core3개 묶음과 SDK/native/적합성·Node166개를 출력에서
+직접 세어979개를 대조했다. Network none/cpu2/memory3g, 미실행 case0,
+VM stopExit0이다. 각 검사의 정본 목록과120초 한도는 줄이거나 늘리지 않았다.
+원시는 `core-three-groups-linux/result.json`, case별 core.log와
+inventory-audit.json이다. 과거 시간 초과와 팀 추가 단계의 간헐 실패를
+이 성공으로 지우지 않는다. 전체 계획의 나머지 조건은 미완이다.
