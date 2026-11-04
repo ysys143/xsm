@@ -462,6 +462,14 @@ def cmd_join(args) -> int:
     except ValueError as exc:
         print("refused: %s" % exc, file=sys.stderr)
         return USAGE
+    if me and not getattr(args, 'dir', None):
+        routed = scope_service.route_membership(plan, me)
+        if routed['status'] == 'already-joined':
+            print('already in project %s: %s' % (args.project, _home_tilde(plan.root)))
+            return OK
+        if routed['status'] == 'parent-pending':
+            print(routed['text'])
+            return UNCONFIRMED
     why = _person_or_refuse("joining a project", "xsm_join", ("join", args.project))
     if why:
         print("refused: %s" % why, file=sys.stderr)
@@ -496,8 +504,17 @@ def cmd_join(args) -> int:
 
 def cmd_leave(args) -> int:
     from . import scope_service
-    here = _here(args)                          # as in join
+    me, why = _unsure_caller('leave a project')
+    if why:
+        print('refused: %s' % why, file=sys.stderr)
+        return REFUSED
+    here = _here(args, me=me)
     plan = scope_service.prepare_membership(args.project, here, leaving=True)
+    if me and not getattr(args, 'dir', None):
+        routed = scope_service.route_membership(plan, me)
+        if routed['status'] == 'parent-pending':
+            print(routed['text'])
+            return UNCONFIRMED
     why = _person_or_refuse("leaving a project", "xsm_join (with leave)", ("leave", args.project))
     if why:
         print("refused: %s" % why, file=sys.stderr)

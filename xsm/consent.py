@@ -380,6 +380,11 @@ def discard_selection_command(me, verb):
         return
     p = _path(me["ref"])
     try:
+        # Most replies have no unconsumed selection command. Avoid taking its
+        # unrelated file lock before the conversation's answer-binding lock.
+        current = paths.read_json(p) or {}
+        if not current.get('selection_binding') or current.get('verb') != verb:
+            return
         with _strict_locked(p):
             entry = paths.read_json(p) or {}
             if entry.get("verb") == verb and entry.get("owner") == collaboration._identity(me):
@@ -395,6 +400,9 @@ def discard_contact_selection(me):
         return
     p = _recent_path(me['ref'])
     try:
+        current = paths.read_json(p) or {}
+        if current.get('native_owner') != collaboration._identity(me) or not current.get('prompts'):
+            return
         with _strict_locked(p):
             entry = paths.read_json(p) or {}
             if entry.get('native_owner') == collaboration._identity(me) and entry.get('prompts'):

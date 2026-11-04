@@ -1071,14 +1071,11 @@ class OperationService:
             return OperationDisplay('joined %s for coordinator and %d workers' % (project, len(members)),
                 {'scope': {'kind': 'membership', 'project': project, 'root': root, 'active': True,
                            'changed': changed, 'other_members': [r['root'] for r in scope['members'] if r['root'] != root]}})
-        already_joined = project in config.joined_projects(me)
-        if (not leaving and not already_joined) or (leaving and already_joined):
-            owner = delegation.parent(me)
-            if owner:
-                return delegation.request_join(me, owner, project, leaving=leaving)
-        if not leaving and already_joined:
-            return OperationDisplay('already in ' + project, {'scope': {'kind': 'membership', 'project': project,
-                'root': root, 'active': True, 'changed': False}})
+        routed = scope_service.route_membership(plan, me)
+        if routed['status'] == 'parent-pending':
+            return routed['text']
+        if routed['status'] == 'already-joined':
+            return OperationDisplay(routed['text'], {'scope': routed['scope']})
         verb = "leave" if leaving else "join"
         # What the agent runs instead, from this session's own folder: --dir is
         # taken only from a person at a terminal (issue #9).

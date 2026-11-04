@@ -6,6 +6,17 @@ from tests.test_protocol import ProtocolFixture
 
 
 class WorkerProjectFlowTest(ProtocolFixture):
+    def cli_as(self, session, *args):
+        import contextlib
+        from xsm import cli, context, registry
+        me = self.connection.sessions[session['session']].record
+        out, err = io.StringIO(), io.StringIO()
+        with mock.patch.object(registry, 'me', return_value=me), \
+                mock.patch.object(registry, 'last_identity', return_value=context.of_record(me, context.BASIS_HOOK)), \
+                contextlib.redirect_stdout(out), contextlib.redirect_stderr(err):
+            code = cli.main(list(args))
+        return code, out.getvalue() + err.getvalue()
+
     def start(self, name, ui=False):
         folder = os.path.join(self.tmp, name); os.makedirs(folder, exist_ok=True)
         return self.connection.dispatch('session.open', {'runtime':'flow-fixture','profile':name,
@@ -34,6 +45,29 @@ class WorkerProjectFlowTest(ProtocolFixture):
         self.assertFalse(self.operation(a,'xsm_join',project='demo')['scope']['changed'])
         self.assertFalse(self.operation(b,'xsm_join',project='demo')['scope']['changed'])
         self.assertEqual(list(self.connection.events()),[])
+
+    def test_cli_worker_rejoining_approved_project_needs_no_new_question(self):
+        from xsm import consent
+        _, child, _ = self.group()
+        code, text = self.cli_as(child, 'join', 'demo')
+        self.assertEqual(code, 0, text)
+        self.assertIn('already', text)
+        self.assertEqual(consent.pending_files(child['ref']), [])
+        self.assertEqual(list(self.connection.events()), [])
+
+    def test_cli_worker_new_project_notifies_parent_once_without_local_question(self):
+        from xsm import consent
+        leader, child, _ = self.group()
+        first = self.cli_as(child, 'join', 'extra')
+        second = self.cli_as(child, 'join', 'extra')
+        self.assertEqual(first[0], 3, first)
+        self.assertEqual(first, second)
+        self.assertIn('Waiting for parent', first[1])
+        self.assertEqual(consent.pending_files(child['ref']), [])
+        self.assertEqual(list(self.connection.events()), [])
+        inbox = self.operation(leader, 'xsm_inbox')
+        self.assertEqual(len(inbox['claims']), 1, inbox)
+        self.assertIn('needs project extra', inbox['messages'][0])
 
     def test_new_worker_project_request_is_sent_to_parent_only_once(self):
         leader,a,_=self.group()

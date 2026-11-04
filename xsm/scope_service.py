@@ -21,6 +21,26 @@ def prepare_membership(project, here, *, leaving=False):
     return ProjectMembership(project, here, config.project_root(here), leaving)
 
 
+def route_membership(plan, session):
+    """Shared CLI/native behavior for inherited membership and parent requests."""
+    from . import consent, delegation
+    joined = plan.project in config.joined_projects(session)
+    if not plan.leaving and joined:
+        consent.take(session, 'join', plan.project)
+        consent.clear_request(session, 'join', plan.project)
+        return {'status': 'already-joined', 'text': 'already in ' + plan.project,
+                'scope': {'kind': 'membership', 'project': plan.project,
+                          'root': plan.root, 'active': True, 'changed': False}}
+    if (not plan.leaving and not joined) or (plan.leaving and joined):
+        owner = delegation.parent(session)
+        if owner:
+            verb = 'leave' if plan.leaving else 'join'
+            consent.clear_request(session, verb, plan.project)
+            return {'status': 'parent-pending', 'text': delegation.request_join(
+                session, owner, plan.project, leaving=plan.leaving)}
+    return {'status': 'direct'}
+
+
 def apply_membership(plan):
     if config.project_root(plan.here) != plan.root:
         raise ValueError('project root changed; request a fresh decision')
