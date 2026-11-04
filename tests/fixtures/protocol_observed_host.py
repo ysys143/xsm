@@ -15,6 +15,7 @@ from xsm.operations import OperationService
 from xsm.protocol import Connection, ProtocolError
 
 starts, states = {}, {}
+first_starts = {}
 simulate = sys.argv[1:] == ['--simulate-start-drift']
 simulate_clock = sys.argv[1:] == ['--simulate-clock-rollback']
 if sys.argv[1:] and not (simulate or simulate_clock):
@@ -29,6 +30,9 @@ original_clock = time.time
 
 def observed_start(pid):
     value = original_start(pid)
+    if pid not in first_starts and sys.platform.startswith('linux'):
+        first_starts[pid] = {'start': value, 'kernel': identity.process_start(pid),
+                            'wall': original_clock()}
     if simulate and pid == drift_pid and value:
         value += ' [deliberate diagnostic simulation]'
     starts[pid] = value
@@ -41,6 +45,19 @@ def observed_state(record):
         'state': value[0], 'reason': value[1], 'pid': record.get('pid'),
         'savedStart': record.get('lstart'), 'observedStart': starts.get(record.get('pid')),
         'generation': context.of_record(record).generation, 'cwd': record.get('cwd')}
+    if (value[1] == 'lstart_changed' and record.get('protocol_version') and
+            not record.get('ended_at')):
+        pid = record.get('pid')
+        observation = {'event': 'host-process-start-description-changed', 'pid': pid,
+            'savedStart': record.get('lstart'), 'observedStart': starts.get(pid),
+            'first': first_starts.get(pid), 'wall': original_clock(),
+            'kernelStart': identity.process_start(pid) if sys.platform.startswith('linux') else None}
+        try:
+            observation['bootWallSeconds'] = next(line.split()[1] for line in Path('/proc/stat').read_text().splitlines()
+                                                  if line.startswith('btime '))
+        except (OSError, StopIteration):
+            pass
+        print(json.dumps(observation), file=sys.stderr, flush=True)
     return value
 
 

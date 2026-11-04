@@ -309,7 +309,8 @@ def team_board_actions(peer, params, check, equal):
     def board(action, **arguments): return operation(owner,'xsm_board',action=action,**arguments)
     def approved(action, **arguments):
         pending=team(action,**arguments)
-        check('team '+action+' awaits host',lambda:equal(pending['status'],'waiting-for-user'))
+        check('team '+action+' awaits host',lambda:require(pending.get('status')=='waiting-for-user',
+              {'expected':'waiting-for-user','reply':pending}))
         event=peer.notification()['params']
         peer.call('decision.response',dict(session=owner['session'],questionId=event['questionId'],challenge=event['challenge'],
             displayed=event['question'],action='accept',answer='allow',source_id='synthetic-action-'+event['questionId']))

@@ -8,9 +8,7 @@ import sys
 
 root = Path(__file__).resolve().parents[2]
 fault = sys.argv[1]
-command = [sys.executable, '-B', '-c',
-           "import runpy,sys;sys.path.insert(0,sys.argv.pop(1));runpy.run_module('xsm',run_name='__main__')",
-           str(root), 'protocol', 'serve', '--stdio']
+command = [sys.executable, '-B', str(root / 'tests/fixtures/protocol_observed_host.py')]
 process = subprocess.Popen(command, stdin=subprocess.PIPE, stdout=subprocess.PIPE, text=True)
 first_token = None
 pending_publication = None
