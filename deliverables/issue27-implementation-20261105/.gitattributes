@@ -1,0 +1,2 @@
+# Preserve exact CLI output, including aligned profiler table padding.
+*.log -whitespace
