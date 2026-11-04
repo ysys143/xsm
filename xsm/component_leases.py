@@ -7,6 +7,7 @@ from pathlib import Path
 import re
 import stat
 import subprocess
+import sys
 import uuid
 
 from . import identity, install, paths
@@ -37,6 +38,10 @@ def hold(component="opencode-tui", expected_parent=None):
             raise install.InstallConflictError("component lease directory is not private")
         record = {"componentLease": 1, "id": uuid.uuid4().hex, "component": component,
                   "root": root, "pid": pid, "lstart": start, "clock": "utc-c"}
+        if sys.platform.startswith('linux'):
+            birth = identity.process_start(pid)
+            if birth is not None:
+                record['process_start'] = birth
         paths.write_json(str(folder / (record["id"] + ".json")), record)
         return record
 
@@ -69,11 +74,24 @@ def active_records():
                 not isinstance(value.get("lstart"), str) or not value["lstart"].strip() or
                 not isinstance(value.get("root"), str)):
             raise install.InstallConflictError("invalid component lease ownership")
+        if 'process_start' in value and (not isinstance(value['process_start'], str) or
+                not re.fullmatch(r'linux-start:[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}:[0-9]+', value['process_start'])):
+            raise install.InstallConflictError("invalid component process generation")
         root = Path(value["root"])
         if (not root.is_absolute() or not re.fullmatch(r"[0-9a-f]{12}", root.name) or
                 os.path.realpath(root.parent) != os.path.realpath(install.runtime_dir())):
             raise install.InstallConflictError("component lease root outside runtime directory")
         if not identity.pid_alive(value["pid"]):
+            continue
+        if value.get('process_start'):
+            observed = identity.process_start(value['pid'])
+            if observed is None or observed == value['process_start']:
+                records.append(value)
+            continue
+        if sys.platform.startswith('linux'):
+            # Older live leases have only a wall-clock rendering. A changed
+            # Linux boot-wall offset cannot prove that their PID was replaced.
+            records.append(value)
             continue
         if value.get("clock") is None:
             records.append(value)  # Legacy wall-clock zones cannot prove a live PID was reused.

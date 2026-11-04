@@ -282,6 +282,8 @@ def observe(command,*args,**kwargs):
   samples.append(dict(pid=pid,observed=result.stdout.strip(),returncode=result.returncode,kernelStartTicks=kernel,bootWallSeconds=btime,monotonic=time.monotonic(),wall=time.time(),pidAlive=identity.pid_alive(pid)))
  return result
 subprocess.run=observe
+for pid in registered:
+ observe(['ps','-o','lstart=','-p',str(pid)],env={**os.environ,'LC_ALL':'C','TZ':'UTC'},capture_output=True,text=True,timeout=2)
 active=component_leases.active_records()
 if sys.argv[2]=='omit-ui':
  component_leases.configured_roots=lambda:[r['root'] for r in component_leases.active_records()

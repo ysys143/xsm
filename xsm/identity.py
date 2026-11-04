@@ -38,7 +38,7 @@ def lstart(pid: int) -> str | None:
 
 
 def process_start(pid: int) -> str | None:
-    """Stable generation for new owned journals; legacy registry lstart is unchanged.
+    """Stable generation for owned journals and component leases; registry lstart is unchanged.
 
     Linux ps lstart is a wall-clock rendering, not a stable kernel generation.
     Kernel boot id plus start ticks distinguish reboot and PID reuse directly.

@@ -29,6 +29,7 @@ class ComponentLeaseTest(TempState):
         self.filename.write_text(json.dumps(self.lease))
         self.filename.chmod(0o600)
 
+    @mock.patch('sys.platform', 'darwin')
     def test_live_dead_reused_and_unobservable_processes(self):
         from xsm import component_leases as leases
         with mock.patch.object(leases.identity, 'pid_alive', return_value=True), \
@@ -109,6 +110,7 @@ class ComponentLeaseTest(TempState):
                 mock.patch.object(install, '_target_lock', side_effect=lock), \
                 mock.patch.object(leases.os, 'getppid', return_value=456), \
                 mock.patch.object(leases.identity, 'pid_alive', return_value=True), \
+                mock.patch.object(leases.identity, 'process_start', return_value=None), \
                 mock.patch.object(leases.subprocess, 'run', side_effect=ps):
             lease = leases.hold('opencode-server')
             with self.assertRaisesRegex(ValueError, 'parent changed'):
@@ -187,3 +189,59 @@ class ComponentLeaseTest(TempState):
                 mock.patch.object(install, '_live_session_starts', return_value=[]), \
                 mock.patch.object(leases.identity, 'pid_alive', return_value=False):
             self.assertIn(self.old.name, install.prune_snapshots())
+
+    def test_kernel_generation_keeps_loaded_ui_when_wall_start_text_changes(self):
+        from xsm import component_leases as leases, install
+        birth = 'linux-start:12345678-1234-1234-1234-123456789abc:3038'
+        self.lease['process_start'] = birth
+        self.save()
+        with mock.patch.object(leases.sys, 'platform', 'linux'), \
+                mock.patch.object(leases.identity, 'pid_alive', return_value=True), \
+                mock.patch.object(leases.identity, 'process_start', return_value=birth), \
+                mock.patch.object(leases.subprocess, 'run', return_value=SimpleNamespace(stdout='wall start shifted by two seconds')), \
+                mock.patch.object(install, '_running_from', return_value=set()), \
+                mock.patch.object(install, '_live_session_starts', return_value=[]):
+            self.assertEqual(install.prune_snapshots(), [])
+            self.assertTrue(self.old.is_dir())
+
+    def test_kernel_generation_replacement_releases_retired_snapshot(self):
+        from xsm import component_leases as leases, install
+        self.lease['process_start'] = 'linux-start:12345678-1234-1234-1234-123456789abc:3038'
+        self.save()
+        with mock.patch.object(leases.sys, 'platform', 'linux'), \
+                mock.patch.object(leases.identity, 'pid_alive', return_value=True), \
+                mock.patch.object(leases.identity, 'process_start', return_value='linux-start:12345678-1234-1234-1234-123456789abc:9999'), \
+                mock.patch.object(leases.subprocess, 'run', return_value=SimpleNamespace(stdout='fixture-generation')), \
+                mock.patch.object(install, '_running_from', return_value=set()), \
+                mock.patch.object(install, '_live_session_starts', return_value=[]):
+            self.assertIn(self.old.name, install.prune_snapshots())
+            self.assertFalse(self.old.exists())
+
+    def test_unavailable_kernel_generation_keeps_live_component(self):
+        from xsm import component_leases as leases
+        self.lease['process_start'] = 'linux-start:12345678-1234-1234-1234-123456789abc:3038'
+        self.save()
+        with mock.patch.object(leases.sys, 'platform', 'linux'), \
+                mock.patch.object(leases.identity, 'pid_alive', return_value=True), \
+                mock.patch.object(leases.identity, 'process_start', return_value=None), \
+                mock.patch.object(leases.subprocess, 'run', return_value=SimpleNamespace(stdout='different wall text')):
+            self.assertEqual(leases.configured_roots(), [str(self.old)])
+
+    def test_older_linux_lease_keeps_live_snapshot_when_wall_clock_changes(self):
+        from xsm import component_leases as leases
+        with mock.patch.object(leases.sys, 'platform', 'linux'), \
+                mock.patch.object(leases.identity, 'pid_alive', return_value=True), \
+                mock.patch.object(leases.subprocess, 'run', return_value=SimpleNamespace(stdout='different wall text')):
+            self.assertEqual(leases.configured_roots(), [str(self.old)])
+
+    def test_linux_registration_records_kernel_generation(self):
+        from xsm import component_leases as leases
+        birth = 'linux-start:12345678-1234-1234-1234-123456789abc:3038'
+        with mock.patch.object(leases.sys, 'platform', 'linux'), \
+                mock.patch.object(leases, '__file__', str(self.old / 'xsm/component_leases.py')), \
+                mock.patch.object(leases.os, 'getppid', return_value=456), \
+                mock.patch.object(leases.identity, 'pid_alive', return_value=True), \
+                mock.patch.object(leases.identity, 'process_start', return_value=birth), \
+                mock.patch.object(leases.subprocess, 'run', return_value=SimpleNamespace(stdout='native-parent-generation')):
+            record = leases.hold('opencode-tui', expected_parent=456)
+        self.assertEqual(record.get('process_start'), birth)
