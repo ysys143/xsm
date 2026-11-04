@@ -1413,6 +1413,19 @@ def _from_request(me: dict, p: str, verb: str, target: str, want: str,
     last = _latest_request(me)
     if last and not _free_for(last, paths.read_json(p), as_reply=False):
         return None
+    # Naming the operation while asking to see its question is not a decision.
+    # Keep ordinary direct requests (and explicit refusals) on the existing
+    # path, while letting an undecided user reach the actual permission UI.
+    undecided = re.compile(
+        r"(?:승인|동의)\s*질문[^.!?\n]{0,24}(?:표시|띄워|보여|물어)|"
+        r"(?:동의|승인|허락)(?:로|으로)\s*해석하지|"
+        r"(?:결정|동의|승인)(?:은|이)?\s*아직\s*(?:없|안|주어지지)|"
+        r"아직[^.!?\n]{0,24}(?:결정|동의|승인)[^.!?\n]{0,24}(?:없|않|안)|"
+        r"\b(?:have|has)\s+not\s+(?:yet\s+)?(?:decided|approved)\b|"
+        r"\b(?:show|display|present|ask)\b[^.!?\n]{0,80}\b(?:approval|permission|consent)\b"
+        r"[^.!?\n]{0,24}\b(?:question|first)\b", re.I)
+    if last and undecided.search(last['text']):
+        return None
     intent = re.compile(r"공개|노출|\bpublish\b|discoverable|make.+visible", re.I) \
         if verb == "publish" else INTENT_RE
     if not last or not intent.search(last["text"]):

@@ -123,6 +123,22 @@ class UserAnswersTest(unittest.TestCase):
                 self.assertIsNone(self.read(request="q1", latest_only=True, since=EPOCH))
                 self.assertEqual(self.read(request="q1")["answer"], "yes")
 
+    def test_resuming_after_interruption_keeps_the_exact_bound_answer(self):
+        for resume in ('다시', '계속', '재개', 'continue', 'resume'):
+            with self.subTest(resume=resume):
+                self.write(message(reply()), message('<turn_aborted>interrupted</turn_aborted>'),
+                           message(resume))
+                for request in ('q1', None):
+                    got = self.read(request=request, question='Connect to project B?',
+                                    latest_only=True, since=EPOCH)
+                    self.assertIsNotNone(got)
+                    self.assertEqual(got['answer'], 'yes')
+        for changed in ('다시 하지 마', '계속하지 마', 'resume without joining',
+                        '다른 프로젝트로 다시', 'cancel', reply('q2', 'no')):
+            with self.subTest(changed=changed):
+                self.write(message(reply()), message(changed))
+                self.assertIsNone(self.read(request='q1', latest_only=True, since=EPOCH))
+
     def test_latest_only_accepts_latest_q1_answer_ignoring_known_injections(self):
         suffixes = [[], [message("continuing", role="assistant")],
                     [message("tool output", role="tool")],

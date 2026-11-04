@@ -31,6 +31,7 @@ _CONTROL = re.compile(
     r"hook_prompt)>(?:(?!</(?P=tag)>).)*</(?P=tag)>\Z", re.S)
 _GOAL_CONTROL = re.compile(
     r'\A<codex_internal_context source="goal">(?:(?!</codex_internal_context>).)*</codex_internal_context>\Z', re.S)
+_RESUME = frozenset(('다시', '계속', '재개', 'continue', 'resume'))
 
 
 def _known_injection(text):
@@ -96,7 +97,7 @@ def _answer(text, request, question=None):
     match = _REPLY.fullmatch(text)
     if not match:
         # Harness wrappers and slash commands are not a person's free reply.
-        if request is not None or text.startswith(("<", "$xsm", "/")):
+        if request is not None or question is not None or text.startswith(("<", "$xsm", "/")):
             return None
         return {"text": text, "answer": text, "question": None,
                 "questionItemId": None, "answers": []}
@@ -133,11 +134,14 @@ def read_answer(me, request=None, since=None, *, tail_bytes=TAIL_BYTES, latest_o
     request is an exact questionItemId string. since is an inclusive Unix
     epoch or timezone-aware ISO timestamp. At least one bound is required;
     plain replies require since, structured replies must match request when
-    supplied. Without request, only the latest native user message is eligible.
+    supplied. Without request or an exact question, only the latest native
+    user message is eligible.
     With request, the newest matching structured answer in the bounded tail
     is eligible even if a newer user message exists (historical/research mode).
     Permission importers MUST use latest_only=True: with request, any subsequent
-    actual user message blocks readback. Assistant/tool records and complete
+    actual user message blocks readback, except a standalone request to resume
+    the interrupted work. Such a request preserves the exact earlier answer;
+    it never supplies an answer itself. Assistant/tool records and complete
     known peer/control envelopes do not supersede a user's answer; unknown or
     malformed user content blocks it conservatively. File order determines
     succession even when native timestamps are equal. The coordinator MUST
@@ -216,13 +220,17 @@ def read_answer(me, request=None, since=None, *, tail_bytes=TAIL_BYTES, latest_o
                     users.append((row, text))
         if not users:
             return None
-        candidates = reversed(users) if request is not None else users[-1:]
+        bound_question = request is not None or question is not None
+        candidates = reversed(users) if bound_question else users[-1:]
         for row, text in candidates:
-            if latest_only and request is not None and _known_injection(text):
+            if latest_only and bound_question and _known_injection(text):
+                continue
+            if (latest_only and bound_question and isinstance(text, str) and
+                    text.strip().casefold() in _RESUME):
                 continue
             answer = _answer(text, request, question)
             if answer is None:
-                if latest_only and request is not None:
+                if latest_only and bound_question:
                     return None
                 continue
             timestamp = row.get("timestamp")

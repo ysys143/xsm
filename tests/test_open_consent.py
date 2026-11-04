@@ -80,6 +80,17 @@ class RequestAsReplyTest(_Repos, TempState):
         self._reply("and run the tests too")
         self._asks(["link", "../repo-b"])
 
+    def test_request_to_show_an_approval_question_is_not_the_answer(self):
+        for prompt in ('repo-b 연결 승인 질문을 보여줘. 아직 결정은 없다.',
+                       'Please show the permission question to link repo-b first.',
+                       'I have not decided whether to link repo-b. Ask me first.'):
+            with self.subTest(prompt=prompt):
+                self._reply(prompt)
+                self._asks(['link', '../repo-b'])
+                self.assertIsNone(self._pending()['verdict'])
+                self.assertEqual(self._links(), [])
+                os.unlink(self._pending_file())
+
     def test_the_request_is_used_once(self):
         self._one_yes("repo-b 연결해줘")
         self.assertEqual(self._cli(["unlink", "../repo-b"])[0], 0)
