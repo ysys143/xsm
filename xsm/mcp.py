@@ -289,7 +289,7 @@ class Server(OperationService):
             # (`params._meta.threadId`; measured 2026-09-29 with two TUIs on one
             # daemon: one MCP server process per thread, all children of the
             # daemon, so the pid alone names all of them).
-            for r in codex:
+            for r in sorted(codex, key=lambda item: not in_this_home(item)):
                 if r.get("session_id") == self.call_thread:
                     if in_this_home(r):
                         return r, context.BASIS_THREAD, (

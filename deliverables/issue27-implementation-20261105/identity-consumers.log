@@ -1,0 +1,106 @@
+/Users/jaesolshin/Documents/GitHub/cross-session-messaging/tests/test_xsm.py:3721: ResourceWarning: unclosed file <_io.TextIOWrapper name='/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-test-g3e_1tkc/codex-adopt/config.toml' mode='w' encoding='UTF-8'>
+  open(os.path.join(home, "config.toml"), "w").write(body)
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+/Users/jaesolshin/Documents/GitHub/cross-session-messaging/tests/test_xsm.py:3721: ResourceWarning: unclosed file <_io.TextIOWrapper name='/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-test-yv87_ae6/codex-adopt/config.toml' mode='w' encoding='UTF-8'>
+  open(os.path.join(home, "config.toml"), "w").write(body)
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+/Users/jaesolshin/Documents/GitHub/cross-session-messaging/tests/test_xsm.py:3721: ResourceWarning: unclosed file <_io.TextIOWrapper name='/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-test-bozlm_6_/codex-adopt/config.toml' mode='w' encoding='UTF-8'>
+  open(os.path.join(home, "config.toml"), "w").write(body)
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+/Users/jaesolshin/Documents/GitHub/cross-session-messaging/tests/test_xsm.py:3721: ResourceWarning: unclosed file <_io.TextIOWrapper name='/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-test-90kzftrh/codex-adopt/config.toml' mode='w' encoding='UTF-8'>
+  open(os.path.join(home, "config.toml"), "w").write(body)
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+/Users/jaesolshin/Documents/GitHub/cross-session-messaging/tests/test_xsm.py:3721: ResourceWarning: unclosed file <_io.TextIOWrapper name='/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-test-mqu8kwfb/codex-adopt/config.toml' mode='w' encoding='UTF-8'>
+  open(os.path.join(home, "config.toml"), "w").write(body)
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+/Users/jaesolshin/Documents/GitHub/cross-session-messaging/tests/test_xsm.py:3721: ResourceWarning: unclosed file <_io.TextIOWrapper name='/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-test-embnrm29/codex-adopt/config.toml' mode='w' encoding='UTF-8'>
+  open(os.path.join(home, "config.toml"), "w").write(body)
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+/Users/jaesolshin/Documents/GitHub/cross-session-messaging/tests/test_xsm.py:3678: ResourceWarning: unclosed file <_io.TextIOWrapper name='/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-test-ivukls2v/codex-home/config.toml' mode='w' encoding='UTF-8'>
+  open(os.path.join(home, "config.toml"), "w").write(body)
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+/Users/jaesolshin/Documents/GitHub/cross-session-messaging/tests/test_xsm.py:3678: ResourceWarning: unclosed file <_io.TextIOWrapper name='/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-test-97kh36c4/codex-home/config.toml' mode='w' encoding='UTF-8'>
+  open(os.path.join(home, "config.toml"), "w").write(body)
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+/Users/jaesolshin/Documents/GitHub/cross-session-messaging/tests/test_xsm.py:3678: ResourceWarning: unclosed file <_io.TextIOWrapper name='/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-test-y1t3b5p1/codex-home/config.toml' mode='w' encoding='UTF-8'>
+  open(os.path.join(home, "config.toml"), "w").write(body)
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+/Users/jaesolshin/Documents/GitHub/cross-session-messaging/tests/test_xsm.py:3066: ResourceWarning: unclosed file <_io.TextIOWrapper name='/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-test-p_4yf5yn/claude-cmd/skills/xsm/references/guide.md' mode='a' encoding='UTF-8'>
+  open(guide, "a").write("\nstale line\n")
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+/Users/jaesolshin/Documents/GitHub/cross-session-messaging/tests/test_xsm.py:3216: ResourceWarning: unclosed file <_io.TextIOWrapper name='/Users/jaesolshin/Documents/GitHub/cross-session-messaging/skills/xsm/SKILL.md' mode='r' encoding='UTF-8'>
+  skill = open(os.path.join(REPO, "skills", "xsm", "SKILL.md")).read()
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+/Users/jaesolshin/Documents/GitHub/cross-session-messaging/tests/test_xsm.py:786: ResourceWarning: unclosed file <_io.TextIOWrapper name='/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-test-xoz6r4ml/claude-fmt/settings.json' mode='w' encoding='UTF-8'>
+  open(target, "w").write(original)
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+/Users/jaesolshin/Documents/GitHub/cross-session-messaging/tests/test_xsm.py:789: ResourceWarning: unclosed file <_io.TextIOWrapper name='/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-test-xoz6r4ml/claude-fmt/settings.json' mode='r' encoding='UTF-8'>
+  self.assertEqual(open(target).read(), original)
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+/Users/jaesolshin/Documents/GitHub/cross-session-messaging/tests/test_xsm.py:1693: ResourceWarning: unclosed file <_io.TextIOWrapper name='/Users/jaesolshin/Documents/GitHub/cross-session-messaging/.gitattributes' mode='r' encoding='UTF-8'>
+  rules = open(os.path.join(REPO, ".gitattributes")).read()
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+/Users/jaesolshin/Documents/GitHub/cross-session-messaging/tests/test_xsm.py:4258: ResourceWarning: unclosed file <_io.TextIOWrapper name='/Users/jaesolshin/Documents/GitHub/cross-session-messaging/skills/xsm/SKILL.md' mode='r' encoding='utf-8'>
+  self.skill = open(os.path.join(self.dir, "SKILL.md"), encoding="utf-8").read()
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+/Users/jaesolshin/Documents/GitHub/cross-session-messaging/tests/test_xsm.py:4331: ResourceWarning: unclosed file <_io.TextIOWrapper name='/Users/jaesolshin/Documents/GitHub/cross-session-messaging/skills/xsm/references/guide.md' mode='r' encoding='utf-8'>
+  guide = open(os.path.join(refs, "guide.md"), encoding="utf-8").read()
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+/Users/jaesolshin/Documents/GitHub/cross-session-messaging/tests/test_xsm.py:4303: ResourceWarning: unclosed file <_io.TextIOWrapper name='/Users/jaesolshin/Documents/GitHub/cross-session-messaging/skills/xsm/references/guide.md' mode='r' encoding='utf-8'>
+  self.assertNotIn("/xsm-", open(guide, encoding="utf-8").read())
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+/Users/jaesolshin/Documents/GitHub/cross-session-messaging/tests/test_xsm.py:3337: ResourceWarning: unclosed file <_io.TextIOWrapper name='/Users/jaesolshin/Documents/GitHub/cross-session-messaging/skills/xsm/SKILL.md' mode='r' encoding='UTF-8'>
+  skill = open(os.path.join(REPO, "skills", "xsm", "SKILL.md")).read()
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+/Users/jaesolshin/Documents/GitHub/cross-session-messaging/tests/test_xsm.py:1665: ResourceWarning: unclosed file <_io.TextIOWrapper name='/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-test-pr9we86x/workers/w/settings.json' mode='r' encoding='UTF-8'>
+  settings = _json.load(open(workers._claude_worker_settings(
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+======================================================================
+ERROR: test_injection_records_its_reply_address (tests.test_xsm.HeldRecordTest.test_injection_records_its_reply_address)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/tests/test_xsm.py", line 1878, in test_injection_records_its_reply_address
+    receive.handle({"hook_event_name": "UserPromptSubmit", "session_id": "r1",
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                    "cwd": self.tmp, "prompt": prompt, "session_title": "recv"})
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/xsm/receive.py", line 314, in handle
+    return _handle(data)
+  File "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/xsm/receive.py", line 379, in _handle
+    me = registry.by_session(runtime, me["session_id"], home=me['home']) or me
+                                                             ~~^^^^^^^^
+KeyError: 'home'
+
+======================================================================
+ERROR: test_nothing_to_tell_them_apart_is_no_record_not_another_session (tests.test_xsm.NestedRuntimeTest.test_nothing_to_tell_them_apart_is_no_record_not_another_session)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/tests/test_xsm.py", line 3999, in test_nothing_to_tell_them_apart_is_no_record_not_another_session
+    self.assertEqual(registry.me(cwd=self.tmp)["session_id"], "s-worker")
+                     ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^
+TypeError: 'NoneType' object is not subscriptable
+
+======================================================================
+ERROR: test_what_the_inner_sessions_hook_saw_outweighs_start_order (tests.test_xsm.NestedRuntimeTest.test_what_the_inner_sessions_hook_saw_outweighs_start_order)
+The outer Codex resumed, so its record started later than the Claude
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/tests/test_xsm.py", line 3972, in test_what_the_inner_sessions_hook_saw_outweighs_start_order
+    self.assertEqual(registry.me(cwd=self.tmp)["session_id"], "s-worker")
+                     ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^
+TypeError: 'NoneType' object is not subscriptable
+
+======================================================================
+ERROR: test_a_codex_carrying_a_claude_sessions_id_still_finds_itself (tests.test_xsm.SelfIdentityTest.test_a_codex_carrying_a_claude_sessions_id_still_finds_itself)
+A Codex started from a shell a Claude session made (a tmux server
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/tests/test_xsm.py", line 3453, in test_a_codex_carrying_a_claude_sessions_id_still_finds_itself
+    self.assertEqual(registry._me("s-claude", None)[0]["session_id"], "s-claude")
+                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^
+TypeError: 'NoneType' object is not subscriptable
+
+----------------------------------------------------------------------
+Ran 340 tests in 33.703s
+
+FAILED (errors=4)

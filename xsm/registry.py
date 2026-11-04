@@ -11,7 +11,10 @@ sessions behind their back (S9 conclusion 6).
 """
 from __future__ import annotations
 
+from contextlib import contextmanager
+import fcntl
 import glob
+import hashlib
 import json
 import os
 import sqlite3
@@ -20,9 +23,84 @@ import time
 from . import config, identity, paths, probe
 
 
-def _record_path(runtime: str, session_id: str) -> str:
+def _legacy_path(runtime: str, session_id: str) -> str:
     safe = session_id.replace("/", "_")
     return paths.path(paths.SESSIONS, "%s-%s.json" % (runtime, safe))
+
+
+def _home(home):
+    return os.path.realpath(os.path.expanduser(home))
+
+
+def _matching_paths(runtime, session_id):
+    found = {}
+    for filename in glob.glob(paths.path(paths.SESSIONS, '*.json')):
+        record = paths.read_json(filename)
+        if (not isinstance(record, dict) or record.get('runtime') != runtime
+                or record.get('session_id') != session_id):
+            continue
+        home = _home(record.get('home') or '')
+        if home not in found or filename == _record_path(runtime, session_id, home):
+            found[home] = filename
+    return list(found.values())
+
+
+def _record_path(runtime: str, session_id: str, home: str | None = None) -> str:
+    """Storage for one endpoint. An unqualified legacy caller must be unambiguous."""
+    if home is not None:
+        key = hashlib.sha256(json.dumps([runtime, _home(home), session_id]).encode()).hexdigest()
+        return paths.path(paths.SESSIONS, '%s-%s.json' % (runtime, key))
+    matches = _matching_paths(runtime, session_id)
+    if len(matches) > 1:
+        raise ValueError('session id exists in multiple homes; specify its home')
+    return matches[0] if matches else _legacy_path(runtime, session_id)
+
+
+def _existing_path(runtime, session_id, home=None):
+    if home is None:
+        matches = _matching_paths(runtime, session_id)
+        return matches[0] if len(matches) == 1 else None
+    filename = _record_path(runtime, session_id, home)
+    if os.path.exists(filename):
+        return filename
+    legacy = _legacy_path(runtime, session_id)
+    record = paths.read_json(legacy)
+    if isinstance(record, dict) and record.get('home') and _home(record['home']) == _home(home):
+        return legacy
+    return None
+
+
+def _read_pointer(runtime, session_id, home=None):
+    filename = _existing_path(runtime, session_id, home)
+    return paths.read_json(filename) if filename else None
+
+
+@contextmanager
+def _registration_lock(runtime, session_id):
+    """Serialize old-file import and updates across all copies of a native ID."""
+    key = hashlib.sha256(json.dumps([runtime, session_id]).encode()).hexdigest()
+    filename = paths.path('registration-locks', key + '.lock')
+    os.makedirs(os.path.dirname(filename), mode=0o700, exist_ok=True)
+    with open(filename, 'a') as stream:
+        fcntl.flock(stream, fcntl.LOCK_EX)
+        try:
+            yield
+        finally:
+            fcntl.flock(stream, fcntl.LOCK_UN)
+
+
+def _store_pointer(record):
+    runtime, sid, home = (record[k] for k in ('runtime', 'session_id', 'home'))
+    paths.write_json(_record_path(runtime, sid, home), record)
+    legacy = _legacy_path(runtime, sid)
+    old = paths.read_json(legacy)
+    if isinstance(old, dict) and old.get('home') and _home(old['home']) == _home(home):
+        os.unlink(legacy)
+
+
+def save(record):
+    with _registration_lock(record['runtime'], record['session_id']):
+        _store_pointer(record)
 
 
 def _registered_pointer(record) -> bool:
@@ -46,13 +124,20 @@ def upsert(runtime: str, home: str, session_id: str, pid: int, cwd: str,
            permission_mode: str | None = None, name: str | None = None,
            mcp_pid: int | None = None, socket: str | None = None,
            inside: str | None | bool = False, transcript_path: str | None = None) -> dict:
+    with _registration_lock(runtime, session_id):
+        return _upsert(runtime, home, session_id, pid, cwd, permission_mode, name,
+                       mcp_pid, socket, inside, transcript_path)
+
+
+def _upsert(runtime, home, session_id, pid, cwd, permission_mode=None, name=None,
+            mcp_pid=None, socket=None, inside=False, transcript_path=None):
     status = _exclusion_status(cwd, config.load().get("directory_excluded_paths", []))
     if status == "excluded":
         return {"runtime": runtime, "home": os.path.realpath(os.path.expanduser(home)),
                 "session_id": session_id, "cwd": os.path.realpath(cwd),
                 "registered": False, "excluded": True}
     home = os.path.realpath(os.path.expanduser(home))
-    record = paths.read_json(_record_path(runtime, session_id), {}) or {}
+    record = _read_pointer(runtime, session_id, home) or {}
     if not _registered_pointer(record):
         record = {}
     if status == "unknown":
@@ -123,7 +208,7 @@ def upsert(runtime: str, home: str, session_id: str, pid: int, cwd: str,
         canonical = os.path.realpath(os.path.expanduser(transcript_path))
         if os.path.commonpath((home, canonical)) == home:
             record["transcript_path"] = canonical
-    paths.write_json(_record_path(runtime, session_id), record)
+    _store_pointer(record)
     if not any(h.get("path") == home for h in config.homes()):
         config.add_home(home, runtime)
     return record
@@ -244,7 +329,7 @@ def _enrich(record: dict) -> dict | None:
         out["native_session_id"] = native["native_session_id"]
     elif record.get("runtime") == "codex":
         from . import workers           # lazy: workers imports this module
-        worker = workers.for_session(record.get("session_id"))
+        worker = workers.for_session(record.get("session_id"), home=record.get('home'), runtime='codex')
         out["name"] = (probe.bounded(_codex_thread_name, record.get("home", ""),
                                     str(record.get("session_id") or ""),
                                     folder=record.get("home", ""))
@@ -273,12 +358,14 @@ def _enrich(record: dict) -> dict | None:
 
 def raw_records() -> list:
     """Pointers, newest first, without process, socket or runtime database probes."""
-    out = []
-    for p in glob.glob(paths.path(paths.SESSIONS, "*.json")):
+    out = {}
+    for p in sorted(glob.glob(paths.path(paths.SESSIONS, "*.json"))):
         rec = paths.read_json(p)
         if _registered_pointer(rec) and rec.get("session_id"):
-            out.append(rec)
-    return sorted(out, key=lambda r: r.get("updated", 0), reverse=True)
+            key = (rec.get('runtime'), _home(rec.get('home') or ''), rec['session_id'])
+            if key not in out or p == _record_path(key[0], key[2], key[1]):
+                out[key] = rec
+    return sorted(out.values(), key=lambda r: r.get("updated", 0), reverse=True)
 
 
 def records() -> list:
@@ -481,14 +568,14 @@ def adopt_codex_thread(thread_id: str, pid: int, homes: list, mcp_pid: int | Non
         if parent:
             if _exclusion_status(cwd or "", config.load().get("directory_excluded_paths", [])) == "excluded":
                 return None
-            live = by_session("codex", parent)
+            live = by_session("codex", parent, home=home)
             if live and live.get("state") == "live" and live.get("pid") == pid:
                 return live
         rec = upsert("codex", home, thread_id, pid, cwd or "", name=name, mcp_pid=mcp_pid)
         if not _registered_pointer(rec):
             return None
         rec["adopted"] = True
-        paths.write_json(_record_path("codex", thread_id), rec)
+        save(rec)
         return _enrich(rec)
     return None
 
@@ -509,7 +596,7 @@ def adopt_open_codex(accept=None) -> list:
     Not called from hooks: reading the process table costs a few hundred ms.
     """
     adopted = []
-    known = {r.get("session_id") for r in raw_records()}
+    known = {(r.get("home"), r.get("session_id")) for r in raw_records() if r.get('runtime') == 'codex'}
     trusted = {h["path"] for h in config.homes()
                if h.get("runtime") == "codex" and _hooks_will_register(h["path"])}
     for home in config.homes():
@@ -518,7 +605,7 @@ def adopt_open_codex(accept=None) -> list:
         from . import codex_daemon               # lazy: keeps hook imports small
         for row in _open_codex_threads(home["path"]):
             thread_id, name, cwd, _rollout, _created, _updated, pid = row
-            if thread_id in known:
+            if (_home(home['path']), thread_id) in known:
                 continue
             if accept and not accept({"runtime": "codex", "home": home["path"],
                                       "alias": home.get("alias"), "cwd": cwd}):
@@ -536,13 +623,13 @@ def adopt_open_codex(accept=None) -> list:
             if not _registered_pointer(rec):
                 continue
             rec["adopted"] = True
-            paths.write_json(_record_path("codex", thread_id), rec)
+            save(rec)
             adopted.append(rec)
-            known.add(thread_id)
+            known.add((_home(home['path']), thread_id))
     # A thread with no prompt yet is in no Codex table; its beacon and Codex's
     # log name it. Its MCP server's pid keeps its liveness honest.
     for row in fresh_codex_threads():
-        if not row.get("session_id") or row["session_id"] in known or row["home"] not in trusted:
+        if not row.get("session_id") or (_home(row['home']), row["session_id"]) in known or row["home"] not in trusted:
             continue
         if accept and not accept(row):
             continue
@@ -552,9 +639,9 @@ def adopt_open_codex(accept=None) -> list:
             continue
         rec["adopted"] = True
         rec["unprompted"] = True
-        paths.write_json(_record_path("codex", row["session_id"]), rec)
+        save(rec)
         adopted.append(rec)
-        known.add(row["session_id"])
+        known.add((_home(row['home']), row["session_id"]))
     return adopted
 
 
@@ -661,10 +748,10 @@ def _adopt_claude(home: str, sid: str, pid, cwd: str, socket: str | None) -> dic
         if not _registered_pointer(rec):
             return None
         rec["adopted"] = True
-        paths.write_json(_record_path("claude", sid), rec)
+        save(rec)
     except OSError:
         return None                     # a state folder this shell cannot write: not registered
-    return by_session("claude", sid) or rec
+    return by_session("claude", sid, home=home) or rec
 
 
 def adopt_claude_process(pid: int) -> dict | None:
@@ -691,16 +778,17 @@ def adopt_codex_self() -> dict | None:
     thread = os.environ.get("CODEX_THREAD_ID")
     if not thread:
         return None
+    home = os.path.realpath(os.path.expanduser(os.environ.get('CODEX_HOME') or '~/.codex'))
     try:
         pid = identity.ancestor_pid({"codex"})
         if pid:
-            found = adopt_codex_thread(thread, pid, codex_homes())
+            found = adopt_codex_thread(thread, pid, [home])
             if found:
                 return found
         adopt_open_codex()
     except OSError:
         return None                     # a state folder this shell cannot write: not registered
-    return by_session("codex", thread)
+    return by_session("codex", thread, home=home)
 
 
 def mcp_beacons() -> list:
@@ -782,7 +870,7 @@ def unregistered() -> list:
     for diagnosis only — they have no pointer, so they are not addressable until
     the session registers itself."""
     pointers = raw_records()
-    known = {(r["runtime"], str(r.get("session_id"))) for r in pointers}
+    known = {(r["runtime"], _home(r.get('home') or ''), str(r.get("session_id"))) for r in pointers}
     known_pids = {(r["runtime"], str(r.get("pid"))) for r in pointers}
     out = []
     declared = config.homes()
@@ -801,7 +889,7 @@ def unregistered() -> list:
             trust = install.codex_trust(home["path"])
             trusted = not trust or all(trust.get(k) for k in ("SessionStart", "UserPromptSubmit"))
             for thread_id, name, cwd, rollout, _created, _updated, _pid in _open_codex_threads(home["path"]):
-                if ("codex", str(thread_id)) in known:
+                if ("codex", _home(home['path']), str(thread_id)) in known:
                     continue
                 if not trusted:
                     why = "the xsm hooks are not trusted in %s; start codex and choose " \
@@ -820,7 +908,7 @@ def unregistered() -> list:
         for p in glob.glob(os.path.join(home["path"], "sessions", "*.json")):
             data = paths.read_json(p, {}) or {}
             sid, pid = str(data.get("sessionId") or ""), str(data.get("pid") or "")
-            if not pid or ("claude", sid) in known or ("claude", pid) in known_pids:
+            if not pid or ("claude", _home(home['path']), sid) in known or ("claude", pid) in known_pids:
                 continue
             rec = {"runtime": "claude", "home": home["path"], "alias": home.get("alias"),
                    "session_id": sid, "pid": data.get("pid"), "cwd": data.get("cwd"),
@@ -844,26 +932,15 @@ def mark_ended(runtime: str, session_id: str, reason: str | None,
     stopping a worker (reason `worker-stopped`); a crash never does, which is
     exactly how `ended` and `stale` come apart.
 
-    `home` is where the ending session lives. Pointers are keyed on runtime
-    and session id alone, so a thread id that exists in two CODEX_HOMEs (a
-    copied home) names one pointer; a goodbye from the other home used to mark
-    it ended and drop its reaches while it ran on (2026-09-28). A goodbye whose
-    home is not the pointer's leaves the pointer alone."""
-    p = _record_path(runtime, session_id)
-    rec = paths.read_json(p)
-    if not _registered_pointer(rec):
-        return None
-    if home and os.path.realpath(os.path.expanduser(home)) != \
-            os.path.realpath(rec.get("home") or ""):
-        paths.append_jsonl("decisions.jsonl", {
-            "event": "SessionEnd", "runtime": runtime, "decision": "end-ignored",
-            "reason": "the goodbye came from %s, the pointer is for %s" % (home, rec.get("home")),
-            "session_id": session_id})
-        return None
-    rec["ended_at"] = time.time()
-    rec["end_reason"] = reason or "unknown"
-    paths.write_json(p, rec)
-    return rec
+    `home` names the exact copy. A home-less ambiguous goodbye changes neither."""
+    with _registration_lock(runtime, session_id):
+        rec = _read_pointer(runtime, session_id, home)
+        if not _registered_pointer(rec):
+            return None
+        rec["ended_at"] = time.time()
+        rec["end_reason"] = reason or "unknown"
+        _store_pointer(rec)
+        return rec
 
 
 def cheap_records() -> list:
@@ -874,15 +951,14 @@ def cheap_records() -> list:
     dead pid is enough to drop a row; a recycled pid may survive one render.
     """
     out = []
-    for p in glob.glob(paths.path(paths.SESSIONS, "*.json")):
-        rec = paths.read_json(p)
+    for rec in raw_records():
         if _registered_pointer(rec) and rec.get("pid") and identity.pid_alive(rec["pid"]):
             out.append(rec)
     return out
 
 
-def by_session(runtime: str, session_id: str) -> dict | None:
-    rec = paths.read_json(_record_path(runtime, session_id))
+def by_session(runtime: str, session_id: str, home: str | None = None) -> dict | None:
+    rec = _read_pointer(runtime, session_id, home)
     return _enrich(rec) if rec else None
 
 
@@ -894,7 +970,7 @@ def explicitly_ended(session: dict | None) -> bool:
     if any(not isinstance(session.get(k), str) or not session[k]
            for k in ("runtime", "home", "session_id")):
         return False
-    rec = paths.read_json(_record_path(session["runtime"], session["session_id"]))
+    rec = _read_pointer(session["runtime"], session["session_id"], session["home"])
     if not _registered_pointer(rec) or not rec.get("ended_at") or \
             not isinstance(rec.get("home"), str) or not rec["home"]:
         return False
@@ -1030,10 +1106,14 @@ def _nested_runtime(rows: list, own_session: str, thread: str) -> str:
     either way is the answer "ambiguous" — no record rather than another
     session's."""
     sock_pid = identity.pid_from_socket(os.environ.get("CLAUDE_CODE_MESSAGING_SOCKET") or "")
-    claude = next((r for r in rows if r.get("runtime") == "claude" and (
+    claude_home = _home(claude_home_here())
+    codex_home = _home(os.environ.get('CODEX_HOME') or os.path.expanduser('~/.codex'))
+    claude = next((r for r in rows if r.get("runtime") == "claude"
+        and _home(r.get('home') or '') == claude_home and (
         r.get("pid") == sock_pid if sock_pid else r.get("session_id") == own_session)), None)
     codex = next((r for r in rows if r.get("runtime") == "codex"
-                  and r.get("session_id") == thread), None)
+                  and r.get("session_id") == thread
+                  and _home(r.get('home') or '') == codex_home), None)
     claude_pid = sock_pid or (claude or {}).get("pid")
     if claude_pid and not identity.pid_alive(claude_pid):
         return "codex"
@@ -1074,7 +1154,15 @@ def _me(session_id: str | None, cwd: str | None) -> tuple:
     rows = raw_records()
     if session_id:
         # A hook names its session outright; that is not an inherited guess.
-        rec = next((r for r in rows if r.get("session_id") == session_id), None)
+        matches = []
+        for record in rows:
+            if record.get('session_id') != session_id:
+                continue
+            variable = 'CLAUDE_CONFIG_DIR' if record.get('runtime') == 'claude' else 'CODEX_HOME'
+            home = os.environ.get(variable)
+            if not home or _home(record.get('home') or '') == _home(home):
+                matches.append(record)
+        rec = matches[0] if len(matches) == 1 else None
         return (_enrich(rec), "session_id") if rec else (None, "none:unregistered-session")
     runtime = _runtime_here(rows)
     if runtime == "ambiguous":
@@ -1085,8 +1173,10 @@ def _me(session_id: str | None, cwd: str | None) -> tuple:
         # walk cannot run in the Codex sandbox, and where it can, a pid match
         # may be an older thread of the same TUI after /new.
         thread = os.environ.get("CODEX_THREAD_ID")
+        home = os.environ.get('CODEX_HOME') or os.path.expanduser('~/.codex')
         for rec in rows:
-            if rec.get("runtime") == "codex" and rec.get("session_id") == thread:
+            if (rec.get("runtime") == "codex" and rec.get("session_id") == thread
+                    and _home(rec.get('home') or '') == _home(home)):
                 return _enrich(rec), "codex_thread_id"
         # Its hook has not run (a thread started before xsm was trusted, or not
         # prompted yet): where xsm is installed with its hooks trusted, that is
@@ -1099,7 +1189,8 @@ def _me(session_id: str | None, cwd: str | None) -> tuple:
     own_session = os.environ.get("CLAUDE_CODE_SESSION_ID")
     if runtime == "claude":
         for rec in rows:
-            if rec.get("session_id") == own_session:
+            if (rec.get('runtime') == 'claude' and rec.get("session_id") == own_session
+                    and _home(rec.get('home') or '') == _home(claude_home_here())):
                 return _enrich(rec), "session_id"
     # /clear and --resume give the same Claude process a new session id before
     # its hook records it, so the rules that name the process still hold.
@@ -1210,7 +1301,7 @@ def _capability_endpoint(record):
         return None
     if any(not isinstance(record.get(k), str) or not record[k] for k in ("runtime", "home", "session_id", "lstart")):
         return None
-    current = paths.read_json(_record_path(record["runtime"], record["session_id"]))
+    current = _read_pointer(record["runtime"], record["session_id"], record["home"])
     if not _registered_pointer(current) or current.get("ended_at"):
         return None
     fields = ("runtime", "session_id", "pid", "lstart")

@@ -1,0 +1,71 @@
+/Users/jaesolshin/Documents/GitHub/cross-session-messaging/tests/test_xsm.py:3724: ResourceWarning: unclosed file <_io.TextIOWrapper name='/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-test-6zqt8ysu/codex-adopt/config.toml' mode='w' encoding='UTF-8'>
+  open(os.path.join(home, "config.toml"), "w").write(body)
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+/Users/jaesolshin/Documents/GitHub/cross-session-messaging/tests/test_xsm.py:3724: ResourceWarning: unclosed file <_io.TextIOWrapper name='/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-test-nmbzqh3y/codex-adopt/config.toml' mode='w' encoding='UTF-8'>
+  open(os.path.join(home, "config.toml"), "w").write(body)
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+/Users/jaesolshin/Documents/GitHub/cross-session-messaging/tests/test_xsm.py:3724: ResourceWarning: unclosed file <_io.TextIOWrapper name='/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-test-8s74vg88/codex-adopt/config.toml' mode='w' encoding='UTF-8'>
+  open(os.path.join(home, "config.toml"), "w").write(body)
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+/Users/jaesolshin/Documents/GitHub/cross-session-messaging/tests/test_xsm.py:3724: ResourceWarning: unclosed file <_io.TextIOWrapper name='/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-test-f32_9yya/codex-adopt/config.toml' mode='w' encoding='UTF-8'>
+  open(os.path.join(home, "config.toml"), "w").write(body)
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+/Users/jaesolshin/Documents/GitHub/cross-session-messaging/tests/test_xsm.py:3724: ResourceWarning: unclosed file <_io.TextIOWrapper name='/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-test-dak28xot/codex-adopt/config.toml' mode='w' encoding='UTF-8'>
+  open(os.path.join(home, "config.toml"), "w").write(body)
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+/Users/jaesolshin/Documents/GitHub/cross-session-messaging/tests/test_xsm.py:3724: ResourceWarning: unclosed file <_io.TextIOWrapper name='/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-test-z48uv5lo/codex-adopt/config.toml' mode='w' encoding='UTF-8'>
+  open(os.path.join(home, "config.toml"), "w").write(body)
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+/Users/jaesolshin/Documents/GitHub/cross-session-messaging/tests/test_xsm.py:3681: ResourceWarning: unclosed file <_io.TextIOWrapper name='/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-test-1gzbnv93/codex-home/config.toml' mode='w' encoding='UTF-8'>
+  open(os.path.join(home, "config.toml"), "w").write(body)
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+/Users/jaesolshin/Documents/GitHub/cross-session-messaging/tests/test_xsm.py:3681: ResourceWarning: unclosed file <_io.TextIOWrapper name='/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-test-80i9_sy4/codex-home/config.toml' mode='w' encoding='UTF-8'>
+  open(os.path.join(home, "config.toml"), "w").write(body)
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+/Users/jaesolshin/Documents/GitHub/cross-session-messaging/tests/test_xsm.py:3681: ResourceWarning: unclosed file <_io.TextIOWrapper name='/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-test-0ve_rrlx/codex-home/config.toml' mode='w' encoding='UTF-8'>
+  open(os.path.join(home, "config.toml"), "w").write(body)
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+/Users/jaesolshin/Documents/GitHub/cross-session-messaging/tests/test_xsm.py:3066: ResourceWarning: unclosed file <_io.TextIOWrapper name='/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-test-0h3_xx_g/claude-cmd/skills/xsm/references/guide.md' mode='a' encoding='UTF-8'>
+  open(guide, "a").write("\nstale line\n")
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+/Users/jaesolshin/Documents/GitHub/cross-session-messaging/tests/test_xsm.py:3216: ResourceWarning: unclosed file <_io.TextIOWrapper name='/Users/jaesolshin/Documents/GitHub/cross-session-messaging/skills/xsm/SKILL.md' mode='r' encoding='UTF-8'>
+  skill = open(os.path.join(REPO, "skills", "xsm", "SKILL.md")).read()
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+/Users/jaesolshin/Documents/GitHub/cross-session-messaging/tests/test_xsm.py:786: ResourceWarning: unclosed file <_io.TextIOWrapper name='/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-test-5zvm62ki/claude-fmt/settings.json' mode='w' encoding='UTF-8'>
+  open(target, "w").write(original)
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+/Users/jaesolshin/Documents/GitHub/cross-session-messaging/tests/test_xsm.py:789: ResourceWarning: unclosed file <_io.TextIOWrapper name='/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-test-5zvm62ki/claude-fmt/settings.json' mode='r' encoding='UTF-8'>
+  self.assertEqual(open(target).read(), original)
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+/Users/jaesolshin/Documents/GitHub/cross-session-messaging/tests/test_xsm.py:1693: ResourceWarning: unclosed file <_io.TextIOWrapper name='/Users/jaesolshin/Documents/GitHub/cross-session-messaging/.gitattributes' mode='r' encoding='UTF-8'>
+  rules = open(os.path.join(REPO, ".gitattributes")).read()
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+/Users/jaesolshin/Documents/GitHub/cross-session-messaging/tests/test_xsm.py:4263: ResourceWarning: unclosed file <_io.TextIOWrapper name='/Users/jaesolshin/Documents/GitHub/cross-session-messaging/skills/xsm/SKILL.md' mode='r' encoding='utf-8'>
+  self.skill = open(os.path.join(self.dir, "SKILL.md"), encoding="utf-8").read()
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+/Users/jaesolshin/Documents/GitHub/cross-session-messaging/tests/test_xsm.py:4336: ResourceWarning: unclosed file <_io.TextIOWrapper name='/Users/jaesolshin/Documents/GitHub/cross-session-messaging/skills/xsm/references/guide.md' mode='r' encoding='utf-8'>
+  guide = open(os.path.join(refs, "guide.md"), encoding="utf-8").read()
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+/Users/jaesolshin/Documents/GitHub/cross-session-messaging/tests/test_xsm.py:4308: ResourceWarning: unclosed file <_io.TextIOWrapper name='/Users/jaesolshin/Documents/GitHub/cross-session-messaging/skills/xsm/references/guide.md' mode='r' encoding='utf-8'>
+  self.assertNotIn("/xsm-", open(guide, encoding="utf-8").read())
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+/Users/jaesolshin/Documents/GitHub/cross-session-messaging/tests/test_xsm.py:3337: ResourceWarning: unclosed file <_io.TextIOWrapper name='/Users/jaesolshin/Documents/GitHub/cross-session-messaging/skills/xsm/SKILL.md' mode='r' encoding='UTF-8'>
+  skill = open(os.path.join(REPO, "skills", "xsm", "SKILL.md")).read()
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+/Users/jaesolshin/Documents/GitHub/cross-session-messaging/tests/test_xsm.py:1665: ResourceWarning: unclosed file <_io.TextIOWrapper name='/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-test-p7jf9onj/workers/w/settings.json' mode='r' encoding='UTF-8'>
+  settings = _json.load(open(workers._claude_worker_settings(
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+======================================================================
+FAIL: test_who_adopts_what_list_would (tests.test_xsm.WhoListAgreeTest.test_who_adopts_what_list_would)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/tests/test_xsm.py", line 4169, in test_who_adopts_what_list_would
+    self.assertEqual(code, 0, err.getvalue())
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 2 != 0 : this Codex thread (t-open) is not registered yet: xsm's hooks register a thread at its next prompt, so if they were just installed or trusted, send any message in this session and try again; if it persists, run `xsm doctor`
+
+
+----------------------------------------------------------------------
+Ran 342 tests in 31.182s
+
+FAILED (failures=1)

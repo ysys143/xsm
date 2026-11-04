@@ -179,19 +179,31 @@ def _indexed_workers():
     return _INDEX['rows']
 
 
-def for_session(session_id: str | None) -> dict | None:
+def for_session(session_id: str | None, *, home=None, runtime=None) -> dict | None:
     """Legacy SID lookup; native callers with full identity use for_record."""
     if not session_id:
         return None
+    matches = []
     for worker in _indexed_workers():
+        if runtime and worker.get('runtime') != runtime:
+            continue
+        if home:
+            native_home = worker.get('home')
+            if native_home and os.path.realpath(native_home) != os.path.realpath(home):
+                continue
+            if not native_home:
+                known = [r for r in registry.raw_records() if r.get('session_id') == session_id]
+                if len(known) != 1 or os.path.realpath(known[0].get('home') or '') != os.path.realpath(home):
+                    continue
         if worker.get("session_id") == session_id:
-            return worker
+            matches.append(worker)
+            continue
         if worker.get("mode") == "owned" and session_id in worker.get("owned_sessions", []):
             known = [r for r in registry.raw_records() if r.get("session_id") == session_id]
             if len(known) == 1 and known[0].get("runtime") == worker.get("runtime") and \
                     known[0].get("home") == worker.get("home"):
-                return worker
-    return None
+                matches.append(worker)
+    return matches[0] if len(matches) == 1 else None
 
 
 def _direct_worker(record):
@@ -838,7 +850,7 @@ def _register_named_thread(worker: dict) -> None:
         if not registry._registered_pointer(rec):
             return  # Keep the owned native thread ID, not a rejected public pointer.
         rec["adopted"] = True
-        paths.write_json(registry._record_path("codex", thread), rec)
+        registry.save(rec)
 
 
 class _WaitingForTrust(Exception):
@@ -1151,7 +1163,7 @@ def _notify_parent(worker: dict, req: dict, outcome: str | None = None) -> None:
     if not worker.get("parent_ref") or not worker.get("session_id"):
         return
     try:
-        me = registry.by_session(worker["runtime"], worker["session_id"])
+        me = registry.by_session(worker["runtime"], worker["session_id"], home=worker.get('home'))
         if not me:
             return
         from . import send as send_mod

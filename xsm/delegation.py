@@ -26,7 +26,7 @@ def parent(child):
     value = binding(child)
     if value:
         saved = value['parent']
-        current = registry.by_session(saved['runtime'], saved['session_id'])
+        current = registry.by_session(saved['runtime'], saved['session_id'], home=saved['home'])
         if current and all(current.get(k) == saved.get(k) for k in ('home', 'cwd')):
             return current
         return dict(saved, state='ended')

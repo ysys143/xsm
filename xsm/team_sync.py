@@ -103,9 +103,9 @@ def _back_to_local(member, own_machine):
         return None
     if member.get("machine") != own_machine:
         return {k: member.get(k) for k in ("machine", "runtime", "home_id", "session_id", "name")}
-    from . import registry
-    rec = registry.by_session(member.get("runtime") or "", member.get("session_id") or "") \
-        if member.get("session_id") else None
+    from . import handover, registry
+    matches = [r for r in registry.raw_records() if handover._names(r, member)]
+    rec = registry._enrich(matches[0]) if len(matches) == 1 else None
     if rec and rec.get("home") and rec.get("name"):
         return teams.member_of(rec)
     return None

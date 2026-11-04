@@ -59,7 +59,7 @@ class OperationService:
             return False
         original = decision["me"]
         if original.get("registered") and original.get("session_id"):
-            current = registry.by_session(original["runtime"], original["session_id"])
+            current = registry.by_session(original["runtime"], original["session_id"], home=original.get('home'))
             if (not current or current.get("state") in ("ended", "stale") or
                     decisions.owner(current) != decisions.owner(original) or
                     current.get("cwd") != original.get("cwd") or
@@ -67,7 +67,7 @@ class OperationService:
                 decisions.supersede(decision["key"])
                 return False
         for member in decision.get('resolved_members') or []:
-            current = registry.by_session(member['runtime'], member['session_id'])
+            current = registry.by_session(member['runtime'], member['session_id'], home=member['home'])
             if (not current or current.get('state') in ('ended', 'stale') or current.get('ended_at') or
                     any(current.get(k) != member.get(k) for k in ('home', 'cwd'))):
                 decisions.supersede(decision['key'])
@@ -1075,7 +1075,7 @@ class OperationService:
                 if config.project_root(frozen.here) != frozen.root:
                     raise ToolError('worker folder changed; select the workers again')
             for child in members:
-                current = registry.by_session(child['runtime'], child['session_id'])
+                current = registry.by_session(child['runtime'], child['session_id'], home=child['home'])
                 if not current or current.get('state') in ('ended','stale') or any(current.get(k) != child.get(k) for k in ('home','cwd')):
                     raise ToolError('worker session changed; select the workers again')
             if leaving:

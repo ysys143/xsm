@@ -1,0 +1,13 @@
+======================================================================
+FAIL: test_repeated_registration_keeps_both_homes_and_their_refs (tests.test_registry_profiles.RegistryProfilesTest.test_repeated_registration_keeps_both_homes_and_their_refs)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-identity-oracles-okf3qf8r/tests/test_registry_profiles.py", line 31, in test_repeated_registration_keeps_both_homes_and_their_refs
+    self.assertEqual(len(records), 2)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 2
+
+----------------------------------------------------------------------
+Ran 1 test in 0.034s
+
+FAILED (failures=1)

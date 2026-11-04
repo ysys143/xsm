@@ -32,8 +32,8 @@ def live_binding(record, *, fresh=False):
         pid = record.get('pid')
         if type(pid) is not int or pid <= 0 or not isinstance(record.get('lstart'), str) or not record['lstart']:
             return False
-        filename = registry._record_path(runtime, sid)
-        current = paths.read_json(filename)
+        filename = registry._existing_path(runtime, sid, home)
+        current = paths.read_json(filename) if filename else None
         fields = ('runtime', 'session_id', 'protocol_version', 'protocol_generation', 'pid', 'lstart')
         if (not isinstance(current, dict) or any(current.get(key) != record.get(key) for key in fields)
                 or current.get('registered') is not True or current.get('ended_at') or current.get('excluded')

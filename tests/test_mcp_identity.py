@@ -507,9 +507,10 @@ class AdoptUnknownThreadTest(unittest.TestCase):
                 mock.patch.object(registry.identity, "is_app_server", return_value=True), \
                 mock.patch.object(registry, "raw_records", return_value=records), \
                 mock.patch.object(registry, "_enrich", side_effect=lambda rec: rec), \
-                mock.patch.object(registry, "by_session", side_effect=lambda runtime, sid:
+                mock.patch.object(registry, "by_session", side_effect=lambda runtime, sid, home=None:
                     next((r for r in records if r.get("runtime") == runtime
-                          and r.get("session_id") == sid), None)):
+                          and r.get("session_id") == sid
+                          and (not home or r.get('home', self.home) == home)), None)):
             server.serve()
         return seen[0]
 

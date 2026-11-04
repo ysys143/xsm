@@ -113,7 +113,7 @@ def register(data: dict, runtime: str) -> dict | None:
     if session_id and not pid:
         # The session env vars are missing (an older runtime, an odd launcher).
         # If this session registered before, its own pointer still knows the pid.
-        known = registry.by_session(runtime, session_id)
+        known = registry.by_session(runtime, session_id, home=home)
         pid = known and known.get("pid")
     if not (session_id and home and pid):
         paths.append_jsonl("decisions.jsonl", {
@@ -142,7 +142,7 @@ def register(data: dict, runtime: str) -> dict | None:
         if _fail_closed():
             raise
         _write_failed("registry.upsert", err)
-        return registry.by_session(runtime, session_id)
+        return registry.by_session(runtime, session_id, home=home)
 
 
 def call_context(runtime: str, data: dict, me: dict | None = None) -> context.CallContext:
@@ -361,7 +361,7 @@ def _handle(data: dict) -> dict | None:
         # typed `/xsm link <folder>` as their consent; the expansion itself
         # goes on untouched, so nothing is printed.
         if data.get("session_id"):
-            _record_consent(registry.by_session(runtime, data["session_id"]), data)
+            _record_consent(registry.by_session(runtime, data["session_id"], home=home_of(runtime, data)), data)
         return None
     if data.get("hook_event_name") == "PostToolUse":
         # Foreground Claude installs only AskUserQuestion; worker-local hooks
@@ -369,14 +369,14 @@ def _handle(data: dict) -> dict | None:
         # answer comes back as the tool's result, which no prompt hook sees, so
         # it is kept here as the reply to an ask (consent.py). Nothing printed.
         if data.get("tool_name") == "AskUserQuestion" and data.get("session_id"):
-            _record_consent(registry.by_session(runtime, data["session_id"]), data)
+            _record_consent(registry.by_session(runtime, data["session_id"], home=home_of(runtime, data)), data)
         return None
     me = register(data, runtime)
     if me:
         # The pointer as written lacks what the runtime keeps elsewhere — a Codex
         # thread's name lives in its state DB — so read it back the way every
         # other lookup does, or receipts and decisions record no receiver name.
-        me = registry.by_session(runtime, me["session_id"]) or me
+        me = registry.by_session(runtime, me["session_id"], home=me.get('home')) or me
     # The hook's own caller identity, in the shape the CLI and MCP server use
     # (P01/IC01). Recorded on the decision log so a message carries how surely
     # the receiver was identified, not only its name.

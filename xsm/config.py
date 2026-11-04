@@ -704,7 +704,7 @@ def reach_holds(r: dict, session: dict) -> bool:
         # A probe that is not a registry record (a listing row, a test dict):
         # the pointer on disk says which run this session id is on now.
         from . import registry          # lazy: registry imports this module
-        session = registry.by_session(r["runtime"], str(r["session_id"])) or {}
+        session = registry.by_session(r["runtime"], str(r["session_id"]), home=r.get('home')) or {}
     return session.get("pid") == r.get("pid") and session.get("lstart") == r.get("lstart")
 
 

@@ -355,7 +355,7 @@ class Connection:
                 raise ProtocolError(-32004, 'native parent requires native-lineage capability')
         key = identity.protocol_key(runtime, params['profile'], params['conversation'])
         sid, home = key['session_id'], key['home']
-        previous = paths.read_json(registry._record_path(runtime, sid), {})
+        previous = registry._read_pointer(runtime, sid, home) or {}
         parent_key = identity.protocol_key(runtime, params['profile'], parent) if parent is not None else None
         retained_parent = previous.get('protocol_parent') if isinstance(previous, dict) else None
         if retained_parent is not None:
@@ -386,7 +386,7 @@ class Connection:
         record["protocol_python"] = sys.executable
         record["protocol_python_version"] = sys.version.split()[0]
         token = uuid.uuid4().hex
-        filename = registry._record_path(runtime, sid)
+        filename = registry._record_path(runtime, sid, home)
         os.makedirs(os.path.dirname(filename), mode=0o700, exist_ok=True)
         fd = os.open(filename + ".protocol-lock", os.O_CREAT | os.O_RDWR | os.O_NOFOLLOW | os.O_NONBLOCK, 0o600)
         try:
@@ -413,7 +413,7 @@ class Connection:
     @staticmethod
     def save(record):
         record['updated'] = time.time()
-        paths.write_json(registry._record_path(record["runtime"], record["session_id"]), record)
+        registry.save(record)
 
     def close_session(self, token):
         host = self.sessions.pop(token)

@@ -1,0 +1,13 @@
+======================================================================
+FAIL: test_mcp_thread_lookup_checks_its_own_home_before_adopting_a_copy (tests.test_registry_profiles.RegistryProfilesTest.test_mcp_thread_lookup_checks_its_own_home_before_adopting_a_copy)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-identity-oracles-okf3qf8r/tests/test_registry_profiles.py", line 47, in test_mcp_thread_lookup_checks_its_own_home_before_adopting_a_copy
+    self.assertIsNotNone(seen[0])
+    ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+AssertionError: unexpectedly None
+
+----------------------------------------------------------------------
+Ran 1 test in 0.122s
+
+FAILED (failures=1)

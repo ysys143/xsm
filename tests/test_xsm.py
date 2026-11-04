@@ -163,7 +163,7 @@ class ScopeTest(TempState):
     def _share_ref(self, sid, ref):
         """Force a ref collision: 24-bit refs collided within ~11k tries."""
         from xsm import paths, registry
-        p = paths.path(paths.SESSIONS, "codex-%s.json" % sid)
+        p = registry._record_path('codex', sid)
         rec = paths.read_json(p)
         rec["ref"] = ref
         paths.write_json(p, rec)
@@ -378,7 +378,7 @@ class RefCollisionTest(TempState):
 
     def _collide(self, sid, ref):
         from xsm import paths, registry
-        p = paths.path(paths.SESSIONS, "codex-%s.json" % sid)
+        p = registry._record_path('codex', sid)
         rec = paths.read_json(p)
         rec["ref"] = ref
         paths.write_json(p, rec)
@@ -3412,6 +3412,7 @@ class SelfIdentityTest(TempState):
         os.makedirs(home)
         registry.upsert("codex", home, "t-one", os.getpid(), self.tmp, name="one")
         registry.upsert("codex", home, "t-two", os.getpid(), self.tmp, name="two")
+        os.environ['CODEX_HOME'] = home
         identity.ancestor_pid = lambda names, max_hops=10: None      # what the sandbox does
         os.environ["CODEX_THREAD_ID"] = "t-two"
         self.assertEqual(registry.me()["session_id"], "t-two")
@@ -3431,6 +3432,8 @@ class SelfIdentityTest(TempState):
         xhome = os.path.join(self.tmp, "homes", "codex")
         os.makedirs(chome)
         os.makedirs(xhome)
+        os.environ['CLAUDE_CONFIG_DIR'] = chome
+        os.environ['CODEX_HOME'] = xhome
         identity.pid_alive = lambda pid: True
         identity.lstart = lambda pid: {1111: "Mon Sep 28 09:00:00 2026",
                                        2222: "Mon Sep 28 10:00:00 2026"}.get(pid)
@@ -3549,7 +3552,7 @@ class LifecycleTest(TempState):
         live = self._register("live")
         recent = self._register("recent", pid=self._dead_pid())
         old = self._register("old", pid=self._dead_pid())
-        p = os.path.join(self.tmp, "sessions", "codex-%s.json" % old["session_id"])
+        p = registry._record_path('codex', old['session_id'], home=old['home'])
         rec = paths.read_json(p)
         rec["updated"] = time.time() - 30 * 86400
         paths.write_json(p, rec)
@@ -3819,6 +3822,7 @@ class OwnRuntimeIdentityTest(_EnvMixin, TempState):
         self.xhome = os.path.join(self.tmp, "homes", "codex")
         os.makedirs(self.chome)
         os.makedirs(self.xhome)
+        self._env(CLAUDE_CONFIG_DIR=self.chome, CODEX_HOME=self.xhome)
 
     def test_an_unregistered_codex_thread_does_not_take_a_neighbour_by_cwd(self):
         from xsm import registry
@@ -3906,6 +3910,7 @@ class NestedRuntimeTest(_EnvMixin, TempState):
         self.xhome = os.path.join(self.tmp, "homes", "codex")
         os.makedirs(self.chome)
         os.makedirs(self.xhome)
+        self._env(CLAUDE_CONFIG_DIR=self.chome, CODEX_HOME=self.xhome)
         self.alive = {1111, 2222}
         identity.pid_alive = lambda pid: pid in self.alive
         self._walk(None)
@@ -4156,7 +4161,7 @@ class WhoListAgreeTest(_EnvMixin, TempState):
         registry._open_codex_threads = lambda h: [("t-open", "opened", self.tmp, None, 0, 0,
                                                    os.getpid())]
         self._env(CLAUDE_CODE_SESSION_ID=None, CLAUDE_CODE_MESSAGING_SOCKET=None,
-                  CODEX_THREAD_ID="t-open")
+                  CODEX_THREAD_ID="t-open", CODEX_HOME=home)
         self._walk(None)
         out, err = io.StringIO(), io.StringIO()
         with contextlib.redirect_stdout(out), contextlib.redirect_stderr(err):

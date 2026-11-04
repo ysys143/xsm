@@ -95,7 +95,7 @@ def follow(target: dict | None) -> tuple:
     if not nxt:
         return target, None
     from . import registry
-    rec = registry.by_session(nxt["runtime"], nxt["session_id"])
+    rec = registry.by_session(nxt["runtime"], nxt["session_id"], home=nxt["home"])
     if not rec:
         return target, None
     return rec, "%s handed its place over to %s, so this goes there" % (

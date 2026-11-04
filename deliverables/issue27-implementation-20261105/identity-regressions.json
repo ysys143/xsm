@@ -1,0 +1,31 @@
+{
+  "cases": [
+    {
+      "case": "registry-overwrite",
+      "baseline": "66a263c",
+      "files": [
+        "registry.py",
+        "workers.py"
+      ],
+      "test": "test_repeated_registration_keeps_both_homes_and_their_refs",
+      "exit_code": 1,
+      "detected": true
+    },
+    {
+      "case": "mcp-copy-preference",
+      "baseline": "66a263c",
+      "files": [
+        "mcp.py"
+      ],
+      "test": "test_mcp_thread_lookup_checks_its_own_home_before_adopting_a_copy",
+      "exit_code": 1,
+      "detected": true
+    }
+  ],
+  "source_hashes": {
+    "xsm/registry.py": "3e88d3bb95d55068d5b591e7b88cc457314cf5df7973510d33cddccd457470c8",
+    "xsm/mcp.py": "adb86e806ef14e942e3d9b4391fbc2cee4d588e5e033de15edfda735958be99a",
+    "xsm/workers.py": "042ac83fd50e7fe1686800de3ce4ab794c2d3bb9144c006bd8ba61a4b8466786",
+    "tests/test_registry_profiles.py": "c8c738c9ceb26e9b1a46b22b918e53c976f6bc49f879e5c0fb1b346e6c8d2351"
+  }
+}

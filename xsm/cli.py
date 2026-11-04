@@ -105,7 +105,9 @@ def cmd_list_clear(args, me) -> int:
     rows = [r for r in selected if r.get("state") in ("ended", "stale")]
     for r in rows:
         try:
-            os.unlink(registry._record_path(r["runtime"], r["session_id"]))
+            filename = registry._existing_path(r["runtime"], r["session_id"], r.get('home'))
+            if filename:
+                os.unlink(filename)
         except OSError:
             pass
     if not rows:
