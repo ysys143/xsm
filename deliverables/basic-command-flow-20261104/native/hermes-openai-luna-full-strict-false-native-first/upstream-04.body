@@ -1,0 +1,46 @@
+data: {"id":"chatcmpl-c6213f4eefa340ed8054504f","object":"chat.completion.chunk","created":1793791581,"model":"gpt-6-luna","choices":[{"index":0,"delta":{"role":"assistant","content":""},"finish_reason":null}],"service_tier":"auto"}
+
+data: {"id":"chatcmpl-c6213f4eefa340ed8054504f","object":"chat.completion.chunk","created":1793791581,"model":"gpt-6-luna","choices":[{"index":0,"delta":{"content":"X"},"finish_reason":null}],"service_tier":"auto"}
+
+data: {"id":"chatcmpl-c6213f4eefa340ed8054504f","object":"chat.completion.chunk","created":1793791581,"model":"gpt-6-luna","choices":[{"index":0,"delta":{"content":"SM"},"finish_reason":null}],"service_tier":"auto"}
+
+data: {"id":"chatcmpl-c6213f4eefa340ed8054504f","object":"chat.completion.chunk","created":1793791581,"model":"gpt-6-luna","choices":[{"index":0,"delta":{"content":"_BASIC"},"finish_reason":null}],"service_tier":"auto"}
+
+data: {"id":"chatcmpl-c6213f4eefa340ed8054504f","object":"chat.completion.chunk","created":1793791581,"model":"gpt-6-luna","choices":[{"index":0,"delta":{"content":"_REAL"},"finish_reason":null}],"service_tier":"auto"}
+
+data: {"id":"chatcmpl-c6213f4eefa340ed8054504f","object":"chat.completion.chunk","created":1793791581,"model":"gpt-6-luna","choices":[{"index":0,"delta":{"content":"_DONE"},"finish_reason":null}],"service_tier":"auto"}
+
+data: {"id":"chatcmpl-c6213f4eefa340ed8054504f","object":"chat.completion.chunk","created":1793791581,"model":"gpt-6-luna","choices":[{"index":0,"delta":{"content":"_c"},"finish_reason":null}],"service_tier":"auto"}
+
+data: {"id":"chatcmpl-c6213f4eefa340ed8054504f","object":"chat.completion.chunk","created":1793791581,"model":"gpt-6-luna","choices":[{"index":0,"delta":{"content":"0"},"finish_reason":null}],"service_tier":"auto"}
+
+data: {"id":"chatcmpl-c6213f4eefa340ed8054504f","object":"chat.completion.chunk","created":1793791581,"model":"gpt-6-luna","choices":[{"index":0,"delta":{"content":"d"},"finish_reason":null}],"service_tier":"auto"}
+
+data: {"id":"chatcmpl-c6213f4eefa340ed8054504f","object":"chat.completion.chunk","created":1793791581,"model":"gpt-6-luna","choices":[{"index":0,"delta":{"content":"8"},"finish_reason":null}],"service_tier":"auto"}
+
+data: {"id":"chatcmpl-c6213f4eefa340ed8054504f","object":"chat.completion.chunk","created":1793791581,"model":"gpt-6-luna","choices":[{"index":0,"delta":{"content":"e"},"finish_reason":null}],"service_tier":"auto"}
+
+data: {"id":"chatcmpl-c6213f4eefa340ed8054504f","object":"chat.completion.chunk","created":1793791581,"model":"gpt-6-luna","choices":[{"index":0,"delta":{"content":"20"},"finish_reason":null}],"service_tier":"auto"}
+
+data: {"id":"chatcmpl-c6213f4eefa340ed8054504f","object":"chat.completion.chunk","created":1793791581,"model":"gpt-6-luna","choices":[{"index":0,"delta":{"content":"c"},"finish_reason":null}],"service_tier":"auto"}
+
+data: {"id":"chatcmpl-c6213f4eefa340ed8054504f","object":"chat.completion.chunk","created":1793791581,"model":"gpt-6-luna","choices":[{"index":0,"delta":{"content":"373"},"finish_reason":null}],"service_tier":"auto"}
+
+data: {"id":"chatcmpl-c6213f4eefa340ed8054504f","object":"chat.completion.chunk","created":1793791581,"model":"gpt-6-luna","choices":[{"index":0,"delta":{"content":"031"},"finish_reason":null}],"service_tier":"auto"}
+
+data: {"id":"chatcmpl-c6213f4eefa340ed8054504f","object":"chat.completion.chunk","created":1793791581,"model":"gpt-6-luna","choices":[{"index":0,"delta":{"content":"61"},"finish_reason":null}],"service_tier":"auto"}
+
+data: {"id":"chatcmpl-c6213f4eefa340ed8054504f","object":"chat.completion.chunk","created":1793791581,"model":"gpt-6-luna","choices":[{"index":0,"delta":{"content":"c"},"finish_reason":null}],"service_tier":"auto"}
+
+data: {"id":"chatcmpl-c6213f4eefa340ed8054504f","object":"chat.completion.chunk","created":1793791581,"model":"gpt-6-luna","choices":[{"index":0,"delta":{"content":"63"},"finish_reason":null}],"service_tier":"auto"}
+
+data: {"id":"chatcmpl-c6213f4eefa340ed8054504f","object":"chat.completion.chunk","created":1793791581,"model":"gpt-6-luna","choices":[{"index":0,"delta":{"content":"f"},"finish_reason":null}],"service_tier":"auto"}
+
+data: {"id":"chatcmpl-c6213f4eefa340ed8054504f","object":"chat.completion.chunk","created":1793791581,"model":"gpt-6-luna","choices":[{"index":0,"delta":{"content":"326"},"finish_reason":null}],"service_tier":"auto"}
+
+data: {"id":"chatcmpl-c6213f4eefa340ed8054504f","object":"chat.completion.chunk","created":1793791581,"model":"gpt-6-luna","choices":[{"index":0,"delta":{"content":"9"},"finish_reason":null}],"service_tier":"auto"}
+
+data: {"id":"chatcmpl-c6213f4eefa340ed8054504f","object":"chat.completion.chunk","created":1793791581,"model":"gpt-6-luna","choices":[{"index":0,"delta":{},"finish_reason":"stop"}],"usage":{"prompt_tokens":13424,"completion_tokens":24,"total_tokens":13448,"prompt_tokens_details":{"cached_tokens":13056},"completion_tokens_details":{"reasoning_tokens":0}},"service_tier":"default"}
+
+data: [DONE]
+

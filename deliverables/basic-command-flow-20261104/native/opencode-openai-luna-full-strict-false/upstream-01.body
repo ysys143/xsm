@@ -1,0 +1,20 @@
+data: {"id":"chatcmpl-f2d3d17e7ab74980831f09b5","object":"chat.completion.chunk","created":1793790678,"model":"gpt-6-luna","choices":[{"index":0,"delta":{"role":"assistant","content":""},"finish_reason":null}],"service_tier":"auto"}
+
+data: {"id":"chatcmpl-f2d3d17e7ab74980831f09b5","object":"chat.completion.chunk","created":1793790678,"model":"gpt-6-luna","choices":[{"index":0,"delta":{"content":"Is"},"finish_reason":null}],"service_tier":"auto"}
+
+data: {"id":"chatcmpl-f2d3d17e7ab74980831f09b5","object":"chat.completion.chunk","created":1793790678,"model":"gpt-6-luna","choices":[{"index":0,"delta":{"content":"olated"},"finish_reason":null}],"service_tier":"auto"}
+
+data: {"id":"chatcmpl-f2d3d17e7ab74980831f09b5","object":"chat.completion.chunk","created":1793790678,"model":"gpt-6-luna","choices":[{"index":0,"delta":{"content":" X"},"finish_reason":null}],"service_tier":"auto"}
+
+data: {"id":"chatcmpl-f2d3d17e7ab74980831f09b5","object":"chat.completion.chunk","created":1793790678,"model":"gpt-6-luna","choices":[{"index":0,"delta":{"content":"SM"},"finish_reason":null}],"service_tier":"auto"}
+
+data: {"id":"chatcmpl-f2d3d17e7ab74980831f09b5","object":"chat.completion.chunk","created":1793790678,"model":"gpt-6-luna","choices":[{"index":0,"delta":{"content":" note"},"finish_reason":null}],"service_tier":"auto"}
+
+data: {"id":"chatcmpl-f2d3d17e7ab74980831f09b5","object":"chat.completion.chunk","created":1793790678,"model":"gpt-6-luna","choices":[{"index":0,"delta":{"content":" delivery"},"finish_reason":null}],"service_tier":"auto"}
+
+data: {"id":"chatcmpl-f2d3d17e7ab74980831f09b5","object":"chat.completion.chunk","created":1793790678,"model":"gpt-6-luna","choices":[{"index":0,"delta":{"content":" test"},"finish_reason":null}],"service_tier":"auto"}
+
+data: {"id":"chatcmpl-f2d3d17e7ab74980831f09b5","object":"chat.completion.chunk","created":1793790678,"model":"gpt-6-luna","choices":[{"index":0,"delta":{},"finish_reason":"stop"}],"usage":{"prompt_tokens":682,"completion_tokens":83,"total_tokens":765,"prompt_tokens_details":{"cached_tokens":0},"completion_tokens_details":{"reasoning_tokens":70}},"service_tier":"default"}
+
+data: [DONE]
+

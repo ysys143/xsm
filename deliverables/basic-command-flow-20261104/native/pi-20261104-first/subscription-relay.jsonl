@@ -1,0 +1,2 @@
+{"phase": "started", "request": 1, "requestedModel": "anthropic/claude-sonnet-5-5"}
+{"request": 1, "requestedModel": "anthropic/claude-sonnet-5-5", "phase": "response", "httpStatus": 400, "responseModels": [], "responseBytes": 330}

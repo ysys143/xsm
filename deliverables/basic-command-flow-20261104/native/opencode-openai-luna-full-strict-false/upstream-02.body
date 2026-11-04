@@ -1,0 +1,8 @@
+data: {"id":"chatcmpl-29659a6318e14631a2068b08","object":"chat.completion.chunk","created":1793790680,"model":"gpt-6-luna","choices":[{"index":0,"delta":{"role":"assistant","content":""},"finish_reason":null}],"service_tier":"auto"}
+
+data: {"id":"chatcmpl-29659a6318e14631a2068b08","object":"chat.completion.chunk","created":1793790680,"model":"gpt-6-luna","choices":[{"index":0,"delta":{"tool_calls":[{"index":0,"id":"call_22bf3858fcf84814924963221526b33c","type":"function","function":{"name":"xsm_send","arguments":"{\"target\":\"peer:7e0946e5988200f61b1b39cfb65198dcac5a0cd6e5c53c313daabad681f36b6e\",\"text\":\"XSM_BASIC_REAL_NOTE_87aceb60bed9e359f63c4529\",\"kind\":\"note\",\"wake\":\"never\",\"wait\":0}"}}]},"finish_reason":null}],"service_tier":"auto"}
+
+data: {"id":"chatcmpl-29659a6318e14631a2068b08","object":"chat.completion.chunk","created":1793790680,"model":"gpt-6-luna","choices":[{"index":0,"delta":{},"finish_reason":"tool_calls"}],"usage":{"prompt_tokens":7476,"completion_tokens":93,"total_tokens":7569,"prompt_tokens_details":{"cached_tokens":0},"completion_tokens_details":{"reasoning_tokens":0}},"service_tier":"default"}
+
+data: [DONE]
+

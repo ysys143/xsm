@@ -1,0 +1,44 @@
+======================================================================
+ERROR: test_contact_does_not_select_a_different_named_person_or_a_question (tests.test_public_command_flow.PublicCommandFlowTest.test_contact_does_not_select_a_different_named_person_or_a_question)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-basic-red-ha0ve92d/xsm/native_workers.py", line 43, in _catalog
+    value = json.loads(filename.read_text(), object_pairs_hook=_unique)
+                       ~~~~~~~~~~~~~~~~~~^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.6/Frameworks/Python.framework/Versions/3.14/lib/python3.14/pathlib/__init__.py", line 787, in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors, newline=newline) as f:
+         ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.6/Frameworks/Python.framework/Versions/3.14/lib/python3.14/pathlib/__init__.py", line 771, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-basic-red-ha0ve92d/integrations/worker-providers.json'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-basic-red-ha0ve92d/tests/test_public_command_flow.py", line 103, in test_contact_does_not_select_a_different_named_person_or_a_question
+    self.user_command(self.a, 'publish'); self.assertEqual(self.cli(self.a, 'publish')[0], 0)
+                                                           ~~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-basic-red-ha0ve92d/tests/test_public_command_flow.py", line 48, in cli
+    code = cli.main(list(args))
+  File "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-basic-red-ha0ve92d/xsm/cli.py", line 3222, in main
+    args = build_parser().parse_args(argv)
+           ~~~~~~~~~~~~^^
+  File "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-basic-red-ha0ve92d/xsm/cli.py", line 2822, in build_parser
+    from . import protocol
+  File "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-basic-red-ha0ve92d/xsm/protocol.py", line 22, in <module>
+    from .operation_schema import TOOLS, ToolError, operation_returns_json, OperationDisplay
+  File "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-basic-red-ha0ve92d/xsm/operation_schema.py", line 61, in <module>
+    "name": {"type": "string"}, "runtime": {"type": "string", "enum": owned_runtimes()},
+                                                                      ~~~~~~~~~~~~~~^^
+  File "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-basic-red-ha0ve92d/xsm/native_workers.py", line 61, in runtimes
+    return list(LEGACY) + sorted(_catalog())
+                                 ~~~~~~~~^^
+  File "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-basic-red-ha0ve92d/xsm/native_workers.py", line 45, in _catalog
+    raise ProviderError('invalid native worker catalog') from error
+xsm.native_workers.ProviderError: invalid native worker catalog
+
+----------------------------------------------------------------------
+Ran 1 test in 0.152s
+
+FAILED (errors=1)

@@ -1,0 +1,34 @@
+======================================================================
+FAIL: test_later_native_user_turn_supersedes_an_unconsumed_command (tests.test_public_command_flow.PublicCommandFlowTest.test_later_native_user_turn_supersedes_an_unconsumed_command) (runtime='claude')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-basic-red-5am5uc3e/tests/test_public_command_flow.py", line 96, in test_later_native_user_turn_supersedes_an_unconsumed_command
+    self.assertEqual(self.cli(who, 'publish')[0], 2)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 != 2
+
+======================================================================
+FAIL: test_later_native_user_turn_supersedes_an_unconsumed_command (tests.test_public_command_flow.PublicCommandFlowTest.test_later_native_user_turn_supersedes_an_unconsumed_command) (runtime='codex')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-basic-red-5am5uc3e/tests/test_public_command_flow.py", line 96, in test_later_native_user_turn_supersedes_an_unconsumed_command
+    self.assertEqual(self.cli(who, 'publish')[0], 2)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 != 2
+
+======================================================================
+FAIL: test_later_native_user_turn_supersedes_an_unconsumed_command (tests.test_public_command_flow.PublicCommandFlowTest.test_later_native_user_turn_supersedes_an_unconsumed_command)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-basic-red-5am5uc3e/tests/test_public_command_flow.py", line 99, in test_later_native_user_turn_supersedes_an_unconsumed_command
+    self.assertEqual(connect.select(self.b, self.a)['status'], 'selection-required')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'permitted' != 'selection-required'
+- permitted
++ selection-required
+
+
+----------------------------------------------------------------------
+Ran 1 test in 0.285s
+
+FAILED (failures=3)

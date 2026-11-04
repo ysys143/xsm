@@ -1,0 +1,207 @@
+{
+  "id": "one-native-turn",
+  "digest": "3ac4db27595f644c0f0b88af58185bebda1a030a2a93163b35b935c7190884b4",
+  "owner": {
+    "runtime": "basic-real-reference",
+    "home": "/private/tmp/xsm-basic-real/opencode-openai-luna-full-strict-false/state/protocol-profiles/basic-real-reference/67157f2cba2505adc4905142c0bf3bfe24f5710f9bf9de04c0e3c363da3b5fc4",
+    "session_id": "2f4fec8e96a8d1b111646534b8e3f90ba727e0e759b95f96a351f0bfbe8fa998"
+  },
+  "sender": {
+    "runtime": "basic-real-reference",
+    "home": "/private/tmp/xsm-basic-real/opencode-openai-luna-full-strict-false/state/protocol-profiles/basic-real-reference/67157f2cba2505adc4905142c0bf3bfe24f5710f9bf9de04c0e3c363da3b5fc4",
+    "session_id": "2f4fec8e96a8d1b111646534b8e3f90ba727e0e759b95f96a351f0bfbe8fa998",
+    "pid": 52679,
+    "lstart": "Wed Nov  4 20:11:07 2026",
+    "cwd": "/private/tmp/xsm-basic-real/opencode-openai-luna-full-strict-false/workspace",
+    "ref": "b5aef2",
+    "name": "basic-real-reference-2f4fec8e",
+    "protocol_version": "1",
+    "protocol_generation": "f761e9bd1f7e4aa9b8246e42661d4f29",
+    "registered": true,
+    "activity": "idle",
+    "protocol_root": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging",
+    "protocol_python": "/opt/homebrew/opt/python@3.14/bin/python3.14",
+    "protocol_python_version": "3.14.6",
+    "updated": 1793790667.9735382
+  },
+  "worker": {
+    "id": "8e600e454d31461b8ad41b555ed000e9",
+    "name": "basic-opencode",
+    "mode": "owned",
+    "owned": true,
+    "runtime": "opencode",
+    "home": "/private/tmp/xsm-basic-real/opencode-openai-luna-full-strict-false/opencode",
+    "cwd": "/private/tmp/xsm-basic-real/opencode-openai-luna-full-strict-false/workspace",
+    "model": "xsm-subscription/gpt-6-luna",
+    "effort": null,
+    "owner": {
+      "runtime": "basic-real-reference",
+      "home": "/private/tmp/xsm-basic-real/opencode-openai-luna-full-strict-false/state/protocol-profiles/basic-real-reference/67157f2cba2505adc4905142c0bf3bfe24f5710f9bf9de04c0e3c363da3b5fc4",
+      "session_id": "2f4fec8e96a8d1b111646534b8e3f90ba727e0e759b95f96a351f0bfbe8fa998",
+      "pid": 52679,
+      "lstart": "Wed Nov  4 20:11:07 2026",
+      "cwd": "/private/tmp/xsm-basic-real/opencode-openai-luna-full-strict-false/workspace",
+      "ref": "b5aef2",
+      "name": "basic-real-reference-2f4fec8e",
+      "protocol_version": "1",
+      "protocol_generation": "f761e9bd1f7e4aa9b8246e42661d4f29",
+      "registered": true,
+      "activity": "idle",
+      "protocol_root": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging",
+      "protocol_python": "/opt/homebrew/opt/python@3.14/bin/python3.14",
+      "protocol_python_version": "3.14.6",
+      "updated": 1793790667.9735382
+    },
+    "parent_native": {
+      "runtime": "basic-real-reference",
+      "home": "/private/tmp/xsm-basic-real/opencode-openai-luna-full-strict-false/state/protocol-profiles/basic-real-reference/67157f2cba2505adc4905142c0bf3bfe24f5710f9bf9de04c0e3c363da3b5fc4",
+      "session_id": "2f4fec8e96a8d1b111646534b8e3f90ba727e0e759b95f96a351f0bfbe8fa998"
+    },
+    "parent_ref": "b5aef2",
+    "created": 1793790668.2745879,
+    "depth": 1,
+    "max_depth": 1,
+    "session_id": null,
+    "owned_sessions": [],
+    "native_provider": {
+      "executable": "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-opencode-1195-_qt2ggap/node_modules/opencode-darwin-arm64/bin/opencode",
+      "version": "1.19.5",
+      "control_protocol": 1,
+      "cancellation_protocol": 1,
+      "runtime_root": "/private/tmp/xsm-basic-real/opencode-openai-luna-full-strict-false/state/runtime/f5d384df7db1",
+      "frontend": "/private/tmp/xsm-basic-real/opencode-openai-luna-full-strict-false/state/runtime/f5d384df7db1/integrations/opencode/xsm.mjs",
+      "frontend_sha256": "8bec3ac3d49ff926e273b89bae6484d0f2db6cf41d7c80ba4045c5acdd1763d2"
+    }
+  },
+  "work_context": "one-real-basic-turn",
+  "body": "This is the user-authorized isolated XSM test. Use the available native xsm_send tool exactly once with these arguments: {\"target\": \"peer:7e0946e5988200f61b1b39cfb65198dcac5a0cd6e5c53c313daabad681f36b6e\", \"text\": \"XSM_BASIC_REAL_NOTE_87aceb60bed9e359f63c4529\", \"kind\": \"note\", \"wake\": \"never\", \"wait\": 0}. After the tool returns, reply exactly XSM_BASIC_REAL_DONE_87aceb60bed9e359f63c4529. Do not use shell, write files, request approvals, publish, or call other tools.",
+  "context_id": "0134f5c0e22ce21e721b0906d10083b57e79d5a7cf6be7069d33489cd2dcb267",
+  "context_epoch": "635a324a6fd84365a89edce44bc69d06",
+  "created_at": 1793790668.28882,
+  "sequence": 0,
+  "result": {
+    "body": "XSM_BASIC_REAL_DONE_87aceb60bed9e359f63c4529",
+    "outcome": null,
+    "native_session_id": "ses_e59be733cffehMWEl2j1BSBqZE",
+    "native_evidence": {
+      "event_count": 6,
+      "terminal_event": "step_finish",
+      "finish_reason": "stop"
+    },
+    "execution": {
+      "pid": 52693,
+      "lstart": "Wed Nov  4 20:11:08 2026",
+      "argv": [
+        "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-opencode-1195-_qt2ggap/node_modules/opencode-darwin-arm64/bin/opencode",
+        "run",
+        "--format",
+        "json",
+        "--model=xsm-subscription/gpt-6-luna"
+      ],
+      "stdout": "/private/tmp/xsm-basic-real/opencode-openai-luna-full-strict-false/state/owned-runs/8e600e454d31461b8ad41b555ed000e9/one-native-turn.jsonl",
+      "stderr": "/private/tmp/xsm-basic-real/opencode-openai-luna-full-strict-false/state/owned-runs/8e600e454d31461b8ad41b555ed000e9/one-native-turn.stderr",
+      "returncode": 0
+    }
+  },
+  "reply_id": "e897de7d19484fa0",
+  "send_evidence": {
+    "status": "stored",
+    "reason": "protocol participant inbox; awaiting actual consumption",
+    "id": "e897de7d19484fa0",
+    "to": "basic-real-reference-2f4fec8e@None",
+    "runtime_reached": false,
+    "evidence": {
+      "accepted": true,
+      "queued": false,
+      "wake": false,
+      "stored": true
+    }
+  },
+  "reservation": {
+    "token": "9a31ea3e77fe4ee893f8c08412aef41a",
+    "controller": {
+      "pid": 52679,
+      "lstart": "Wed Nov  4 20:11:07 2026"
+    }
+  },
+  "events": [
+    {
+      "phase": "queued",
+      "at": 1793790668.288822
+    },
+    {
+      "phase": "reserved",
+      "at": 1793790668.2953012
+    },
+    {
+      "phase": "acknowledged",
+      "at": 1793790668.295978
+    },
+    {
+      "phase": "running",
+      "at": 1793790668.2965279
+    },
+    {
+      "phase": "result-ready",
+      "at": 1793790686.177172
+    },
+    {
+      "phase": "sending",
+      "at": 1793790686.182225
+    },
+    {
+      "phase": "reply-stored",
+      "at": 1793790686.225089
+    }
+  ],
+  "run_attempts": 1,
+  "child": {
+    "pid": 52693,
+    "lstart": "Wed Nov  4 20:11:08 2026",
+    "argv": [
+      "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-opencode-1195-_qt2ggap/node_modules/opencode-darwin-arm64/bin/opencode",
+      "run",
+      "--format",
+      "json",
+      "--model=xsm-subscription/gpt-6-luna"
+    ],
+    "stdout": "/private/tmp/xsm-basic-real/opencode-openai-luna-full-strict-false/state/owned-runs/8e600e454d31461b8ad41b555ed000e9/one-native-turn.jsonl",
+    "stderr": "/private/tmp/xsm-basic-real/opencode-openai-luna-full-strict-false/state/owned-runs/8e600e454d31461b8ad41b555ed000e9/one-native-turn.stderr",
+    "returncode": 0
+  },
+  "native_binding": {
+    "native_session_id": "ses_e59be733cffehMWEl2j1BSBqZE",
+    "child_pid": 52693,
+    "child_lstart": "Wed Nov  4 20:11:08 2026",
+    "bound_at": 1793790676.210619
+  },
+  "result_digest": "9a8758ac1b22d27857ed5c2791b4053ba4f2dc29251c99f29a7a724788daa571",
+  "send_owner": {
+    "pid": 52679,
+    "lstart": "Wed Nov  4 20:11:07 2026"
+  },
+  "send_token": "22a50820e7cf4cfdb2ffea03c810a564",
+  "status": "reply-stored",
+  "context": {
+    "id": "0134f5c0e22ce21e721b0906d10083b57e79d5a7cf6be7069d33489cd2dcb267",
+    "context_key": "0134f5c0e22ce21e721b0906d10083b57e79d5a7cf6be7069d33489cd2dcb267",
+    "epoch": "635a324a6fd84365a89edce44bc69d06",
+    "worker_id": "8e600e454d31461b8ad41b555ed000e9",
+    "sender": {
+      "runtime": "basic-real-reference",
+      "home": "/private/tmp/xsm-basic-real/opencode-openai-luna-full-strict-false/state/protocol-profiles/basic-real-reference/67157f2cba2505adc4905142c0bf3bfe24f5710f9bf9de04c0e3c363da3b5fc4",
+      "session_id": "2f4fec8e96a8d1b111646534b8e3f90ba727e0e759b95f96a351f0bfbe8fa998"
+    },
+    "work_context": "one-real-basic-turn",
+    "independent": false,
+    "native_session_id": "ses_e59be733cffehMWEl2j1BSBqZE",
+    "session_seed": "bd1da090-bdf9-44fa-b318-da31ffb0cf49",
+    "retired": false,
+    "unknown_request": null,
+    "created_at": 1793790668.288795
+  },
+  "persisted": true,
+  "accepted": true,
+  "side_effects_exactly_once": false,
+  "slot_occupied": false
+}

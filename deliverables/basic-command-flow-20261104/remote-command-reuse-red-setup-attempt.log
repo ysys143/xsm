@@ -1,0 +1,13 @@
+======================================================================
+FAIL: test_typed_remote_connect_is_consumed_even_when_scope_already_exists (tests.test_network_interfaces.NetworkInterfacesTest.test_typed_remote_connect_is_consumed_even_when_scope_already_exists)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-basic-red-ha0ve92d/tests/test_network_interfaces.py", line 288, in test_typed_remote_connect_is_consumed_even_when_scope_already_exists
+    self.assertIsNone(consent.take_selection_command(self.sender, 'collaborate', binding))
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'connect net:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa:codex:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb:remote-thread' is not None
+
+----------------------------------------------------------------------
+Ran 1 test in 0.094s
+
+FAILED (failures=1)

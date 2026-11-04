@@ -1,0 +1,20 @@
+{
+  "status": "starting",
+  "runtime": "openclaw",
+  "requestedModel": "gpt-6-luna",
+  "root": "/private/tmp/xsm-basic-real/openclaw-openai-luna-staged-readiness-once",
+  "checks": [],
+  "stages": [],
+  "prewarmProcessPids": [],
+  "maxTotalSeconds": 180,
+  "controllerWorkDeadlineSeconds": 160,
+  "maxNativeTurnSeconds": 120,
+  "maxProviderRequests": 8,
+  "automaticRetry": false,
+  "configurationChange": "readiness/snapshot/non-inference prewarm separated from new native turn; same policy/schema/model arguments",
+  "limits": [
+    "generic reference receiver; not native-native pair",
+    "publish/typed-consent not tested",
+    "previous failure root unchanged"
+  ]
+}

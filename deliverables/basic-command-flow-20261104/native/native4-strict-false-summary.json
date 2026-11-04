@@ -1,0 +1,266 @@
+{
+  "recordedAt": "2026-11-04T11:30:10.831391+00:00",
+  "status": "3 passed; OpenClaw incomplete",
+  "requestedModel": "gpt-6-luna",
+  "route": "existing OpenAI forward/openai-responses/ChatGPT subscription pool",
+  "runtimeCases": [
+    {
+      "status": "passed",
+      "providerRequests": 2,
+      "responseModelLabels": [
+        "gpt-6-luna"
+      ],
+      "elapsedSeconds": 12.737,
+      "requestStatus": "reply-stored",
+      "nativeSessionId": "0cd505fe-1c6e-4852-ab16-40d2c31e3f7e",
+      "nativeToolMessageIds": [
+        "8ecf24064fa04611"
+      ],
+      "finalReplyId": "10e5b432ba304d37",
+      "acked": [
+        "8ecf24064fa04611",
+        "10e5b432ba304d37"
+      ],
+      "ownedChildrenExited": true,
+      "gatewayStopped": null,
+      "isolatedGatewayStopExit": null,
+      "failureType": null,
+      "failure": null,
+      "nativeArtifacts": [
+        "/private/tmp/xsm-basic-real/pi-openai-luna-full-strict-false/state/owned-runs/bfecbcdd02ac4b84a13a79e0a08c4692/one-native-turn.jsonl",
+        "/private/tmp/xsm-basic-real/pi-openai-luna-full-strict-false/state/owned-runs/bfecbcdd02ac4b84a13a79e0a08c4692/one-native-turn.stderr"
+      ],
+      "runtime": "pi",
+      "root": "/private/tmp/xsm-basic-real/pi-openai-luna-full-strict-false",
+      "resultFile": "/private/tmp/xsm-basic-real/pi-openai-luna-full-strict-false/result.json",
+      "wireEvidence": [
+        {
+          "file": "/private/tmp/xsm-basic-real/pi-openai-luna-full-strict-false/request-01-tools.json",
+          "totalTools": 26,
+          "xsmTools": 22,
+          "allXsmStrictFalse": true,
+          "onlyExplicitStrictFalseTranslation": null
+        },
+        {
+          "file": "/private/tmp/xsm-basic-real/pi-openai-luna-full-strict-false/request-02-tools.json",
+          "totalTools": 26,
+          "xsmTools": 22,
+          "allXsmStrictFalse": true,
+          "onlyExplicitStrictFalseTranslation": null
+        }
+      ],
+      "selectedModelTools": [
+        {
+          "responseFile": "/private/tmp/xsm-basic-real/pi-openai-luna-full-strict-false/upstream-01.body",
+          "name": "xsm_send",
+          "id": "call_f266a46d0a834703a6f18dac23ba2026"
+        }
+      ]
+    },
+    {
+      "status": "passed",
+      "providerRequests": 3,
+      "responseModelLabels": [
+        "gpt-6-luna"
+      ],
+      "elapsedSeconds": 19.697,
+      "requestStatus": "reply-stored",
+      "nativeSessionId": "ses_e59be733cffehMWEl2j1BSBqZE",
+      "nativeToolMessageIds": [
+        "aee882e6a8bc4f37"
+      ],
+      "finalReplyId": "e897de7d19484fa0",
+      "acked": [
+        "aee882e6a8bc4f37",
+        "e897de7d19484fa0"
+      ],
+      "ownedChildrenExited": true,
+      "gatewayStopped": null,
+      "isolatedGatewayStopExit": null,
+      "failureType": null,
+      "failure": null,
+      "nativeArtifacts": [
+        "/private/tmp/xsm-basic-real/opencode-openai-luna-full-strict-false/state/owned-runs/8e600e454d31461b8ad41b555ed000e9/one-native-turn.jsonl",
+        "/private/tmp/xsm-basic-real/opencode-openai-luna-full-strict-false/state/owned-runs/8e600e454d31461b8ad41b555ed000e9/one-native-turn.stderr"
+      ],
+      "runtime": "opencode",
+      "root": "/private/tmp/xsm-basic-real/opencode-openai-luna-full-strict-false",
+      "resultFile": "/private/tmp/xsm-basic-real/opencode-openai-luna-full-strict-false/result.json",
+      "wireEvidence": [
+        {
+          "file": "/private/tmp/xsm-basic-real/opencode-openai-luna-full-strict-false/request-01-tools.json",
+          "totalTools": 0,
+          "xsmTools": 0,
+          "allXsmStrictFalse": null,
+          "onlyExplicitStrictFalseTranslation": true
+        },
+        {
+          "file": "/private/tmp/xsm-basic-real/opencode-openai-luna-full-strict-false/request-02-tools.json",
+          "totalTools": 22,
+          "xsmTools": 22,
+          "allXsmStrictFalse": true,
+          "onlyExplicitStrictFalseTranslation": true
+        },
+        {
+          "file": "/private/tmp/xsm-basic-real/opencode-openai-luna-full-strict-false/request-03-tools.json",
+          "totalTools": 22,
+          "xsmTools": 22,
+          "allXsmStrictFalse": true,
+          "onlyExplicitStrictFalseTranslation": true
+        }
+      ],
+      "selectedModelTools": [
+        {
+          "responseFile": "/private/tmp/xsm-basic-real/opencode-openai-luna-full-strict-false/upstream-02.body",
+          "name": "xsm_send",
+          "id": "call_22bf3858fcf84814924963221526b33c"
+        }
+      ]
+    },
+    {
+      "status": "failed",
+      "providerRequests": 0,
+      "responseModelLabels": [],
+      "elapsedSeconds": 104.251,
+      "requestStatus": null,
+      "nativeSessionId": null,
+      "nativeToolMessageIds": null,
+      "finalReplyId": null,
+      "acked": null,
+      "ownedChildrenExited": true,
+      "gatewayStopped": true,
+      "isolatedGatewayStopExit": null,
+      "failureType": "TimeoutError",
+      "failure": "",
+      "nativeArtifacts": [
+        "/private/tmp/xsm-basic-real/openclaw-openai-luna-full-strict-false/state/owned-runs/69b735d6588e4c0d94c5337756f54f8d/one-native-turn.jsonl",
+        "/private/tmp/xsm-basic-real/openclaw-openai-luna-full-strict-false/state/owned-runs/69b735d6588e4c0d94c5337756f54f8d/one-native-turn.stderr"
+      ],
+      "runtime": "openclaw",
+      "root": "/private/tmp/xsm-basic-real/openclaw-openai-luna-full-strict-false",
+      "resultFile": "/private/tmp/xsm-basic-real/openclaw-openai-luna-full-strict-false/result.json",
+      "wireEvidence": [],
+      "selectedModelTools": []
+    },
+    {
+      "status": "passed",
+      "providerRequests": 5,
+      "responseModelLabels": [
+        "gpt-6-luna"
+      ],
+      "elapsedSeconds": 34.561,
+      "requestStatus": "reply-stored",
+      "nativeSessionId": "local-d6c9aa74130dc093006b1da163ffb92c2fd0fb7c952cbc3d3152c41ddb16a089",
+      "nativeToolMessageIds": [
+        "f8ba147289eb478e"
+      ],
+      "finalReplyId": "a362f25578614ba6",
+      "acked": [
+        "f8ba147289eb478e",
+        "a362f25578614ba6"
+      ],
+      "ownedChildrenExited": true,
+      "gatewayStopped": null,
+      "isolatedGatewayStopExit": 0,
+      "failureType": null,
+      "failure": null,
+      "nativeArtifacts": [
+        "/private/tmp/xsm-basic-real/hermes-openai-luna-full-strict-false-native-first/state/owned-runs/a0026c67842947a8b7d643a452b2862e/one-native-turn.jsonl",
+        "/private/tmp/xsm-basic-real/hermes-openai-luna-full-strict-false-native-first/state/owned-runs/a0026c67842947a8b7d643a452b2862e/one-native-turn.stderr"
+      ],
+      "runtime": "hermes",
+      "root": "/private/tmp/xsm-basic-real/hermes-openai-luna-full-strict-false-native-first",
+      "resultFile": "/private/tmp/xsm-basic-real/hermes-openai-luna-full-strict-false-native-first/result.json",
+      "wireEvidence": [
+        {
+          "file": "/private/tmp/xsm-basic-real/hermes-openai-luna-full-strict-false-native-first/request-01-tools.json",
+          "totalTools": 20,
+          "xsmTools": 0,
+          "allXsmStrictFalse": null,
+          "onlyExplicitStrictFalseTranslation": true
+        },
+        {
+          "file": "/private/tmp/xsm-basic-real/hermes-openai-luna-full-strict-false-native-first/request-02-tools.json",
+          "totalTools": 20,
+          "xsmTools": 0,
+          "allXsmStrictFalse": null,
+          "onlyExplicitStrictFalseTranslation": true
+        },
+        {
+          "file": "/private/tmp/xsm-basic-real/hermes-openai-luna-full-strict-false-native-first/request-03-tools.json",
+          "totalTools": 20,
+          "xsmTools": 0,
+          "allXsmStrictFalse": null,
+          "onlyExplicitStrictFalseTranslation": true
+        },
+        {
+          "file": "/private/tmp/xsm-basic-real/hermes-openai-luna-full-strict-false-native-first/request-04-tools.json",
+          "totalTools": 20,
+          "xsmTools": 0,
+          "allXsmStrictFalse": null,
+          "onlyExplicitStrictFalseTranslation": true
+        },
+        {
+          "file": "/private/tmp/xsm-basic-real/hermes-openai-luna-full-strict-false-native-first/request-05-tools.json",
+          "totalTools": 0,
+          "xsmTools": 0,
+          "allXsmStrictFalse": null,
+          "onlyExplicitStrictFalseTranslation": true
+        }
+      ],
+      "selectedModelTools": [
+        {
+          "responseFile": "/private/tmp/xsm-basic-real/hermes-openai-luna-full-strict-false-native-first/upstream-01.body",
+          "name": "tool_search",
+          "id": "call_3863648153df464199d8c39442d792df"
+        },
+        {
+          "responseFile": "/private/tmp/xsm-basic-real/hermes-openai-luna-full-strict-false-native-first/upstream-02.body",
+          "name": "tool_describe",
+          "id": "call_61f2842685c3424ab39d3ee0d039f2cb"
+        },
+        {
+          "responseFile": "/private/tmp/xsm-basic-real/hermes-openai-luna-full-strict-false-native-first/upstream-03.body",
+          "name": "tool_call",
+          "id": "call_f13ab0da92b148dfa4507cb7bec7631e"
+        }
+      ],
+      "nativeToolDispatch": "Hermes native dynamic tool_search -> tool_describe -> tool_call selecting xsm_send; no tool filtering",
+      "modelToolSelectionFile": "/private/tmp/xsm-basic-real/hermes-openai-luna-full-strict-false-native-first/model-tool-selection.json"
+    }
+  ],
+  "openclawDiagnosis": {
+    "providerRequests": 0,
+    "nativeStderrBytes": 0,
+    "nativeStdoutBytes": 588,
+    "nativeStageObserved": "native xsm_openclaw_bound record; gateway session creation and agent RPC acknowledgement, no final native result",
+    "startupObservations": [
+      "sidecars.model-runtime completed at total 20588.1 ms",
+      "session lifecycle mutation run 10815 ms, elapsed 10820 ms",
+      "agent RPC acknowledgement 3561 ms",
+      "liveness heartbeat delayed 1252 ms"
+    ],
+    "timeout": "controller TimeoutError; 104.251 seconds including cleanup",
+    "cause": "unresolved: high local load observed by coordinator; no proven configuration defect or core defect",
+    "httpBoundaryLimit": "providerRequests counts forwarded upstream requests; malformed pre-forward native-to-relay requests were not fully logged",
+    "retry": "not performed; no demonstrated new configuration condition",
+    "gatewayLog": "/private/tmp/xsm-basic-real/openclaw-openai-luna-full-strict-false/gateway.log",
+    "journal": "/private/tmp/xsm-basic-real/openclaw-openai-luna-full-strict-false/operator-retained-journal.json"
+  },
+  "cleanup": {
+    "allSevenRecordedOwnedChildPidsAbsent": true,
+    "openclawGatewayPidAbsent": true,
+    "psExit": 1,
+    "psOutput": "",
+    "hermesIsolatedGatewayStopExit": 0,
+    "hermesProfilePidFiles": []
+  },
+  "limits": [
+    "generic reference receiver; no native-native pair certification",
+    "publish/typed-consent not tested",
+    "source core and global/user profiles not modified by this verification agent",
+    "no credentials read or logged; request Authorization used the fixed placeholder",
+    "no assistant fixture, schema filtering or model-argument rewriting",
+    "Pi earlier schema/argument failures and Hermes catalog-preflight failure preserved in separate roots"
+  ]
+}

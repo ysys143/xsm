@@ -1,0 +1,1 @@
+{"error":{"message":"Invalid JSON schema: regex lookaround is not supported. Found at $.properties.message_ids.items.pattern.","type":"invalid_request_error","param":null,"code":"invalid_request_error"}}

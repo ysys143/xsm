@@ -1,0 +1,82 @@
+{
+  "status": "blocked-by-subscription-quota",
+  "requestedOrder": [
+    "pi",
+    "opencode",
+    "openclaw",
+    "hermes"
+  ],
+  "pi": {
+    "attempted": true,
+    "nativeVersion": "1.4.0",
+    "providerRequests": 1,
+    "httpStatuses": [
+      400
+    ],
+    "requestedModel": "anthropic/claude-sonnet-5-5",
+    "actualResponseModelLabels": [],
+    "elapsedSeconds": 2.687,
+    "ownedChildrenExited": true,
+    "requestStatus": "unknown",
+    "actualModelAnswer": null,
+    "nativeBindingRecorded": true,
+    "observedNativeToolEvents": [],
+    "ACKs": [],
+    "root": "/private/tmp/xsm-basic-real/pi-20261104-first",
+    "nativeArtifacts": [
+      {
+        "path": "/private/tmp/xsm-basic-real/pi-20261104-first/state/owned-runs/2e6b7dcb55cb4d17a01fd9dc357046ab/one-native-turn.jsonl",
+        "bytes": 120912,
+        "sha256": "1928f8e58e40edaad4252b601bd3aa8c45f8bef9a32c1887cb942b3ebdd54da3",
+        "eventTypes": [
+          "session",
+          "agent_start",
+          "turn_start",
+          "message_start",
+          "message_end",
+          "message_start",
+          "message_end",
+          "message_start",
+          "message_end",
+          "turn_end",
+          "agent_end",
+          "agent_settled"
+        ]
+      },
+      {
+        "path": "/private/tmp/xsm-basic-real/pi-20261104-first/state/owned-runs/2e6b7dcb55cb4d17a01fd9dc357046ab/one-native-turn.stderr",
+        "bytes": 119,
+        "sha256": "d852d7aee2bad6eee602a60e450d2d20526465b968d4e4c1503a858529392a16"
+      }
+    ]
+  },
+  "notRun": [
+    {
+      "runtime": "opencode",
+      "nativeTurns": 0,
+      "providerRequests": 0,
+      "reason": "Pi first actual request returned quota HTTP400; user ordered no repeated calls against this block"
+    },
+    {
+      "runtime": "openclaw",
+      "nativeTurns": 0,
+      "providerRequests": 0,
+      "reason": "Pi first actual request returned quota HTTP400; user ordered no repeated calls against this block"
+    },
+    {
+      "runtime": "hermes",
+      "nativeTurns": 0,
+      "providerRequests": 0,
+      "reason": "Pi first actual request returned quota HTTP400; user ordered no repeated calls against this block"
+    }
+  ],
+  "limits": [
+    "No actual model answer, tool execution or end-to-end ACK was verified.",
+    "Generic reference participant was the intended receiver, not a second native participant.",
+    "Publication and typed consent were not invoked or synthesized.",
+    "Claude/Codex designated sessions were not contacted or terminated.",
+    "No user profile, source core, credential or payment route was changed."
+  ],
+  "probeScript": "/private/tmp/xsm-basic-real/probe_once.py",
+  "probeScriptSha256": "5381d320c91a28afa009743ad885633b1ca7bac68c79755edbfa4360df534323"
+}

@@ -1,0 +1,80 @@
+{
+  "expectedArguments": {
+    "target": "peer:cbe14ddcec1ef921aabc91d9879a81252898d64d420ad9be95d9f17c1760fed0",
+    "text": "XSM_BASIC_REAL_NOTE_e95e243324f5cdf09b8bbbc2",
+    "kind": "note",
+    "wake": "never",
+    "wait": 0
+  },
+  "nativeToolEvents": [
+    {
+      "type": "tool_execution_start",
+      "toolCallId": "call_a80f19c2e9be47b19cdd6c1129063688",
+      "toolName": "xsm_send",
+      "args": {
+        "attachment_fallback": "inline",
+        "target": "peer:cbe14ddcec1ef921aabc91d9879a81252898d64d420ad9be95d9f17c1760fed0",
+        "targets": [
+          "peer:cbe14ddcec1ef921aabc91d9879a81252898d64d420ad9be95d9f17c1760fed0"
+        ],
+        "text": "XSM_BASIC_REAL_NOTE_e95e243324f5cdf09b8bbbc2",
+        "kind": "note",
+        "reply_to": "",
+        "outcome": "succeeded",
+        "priority": "next",
+        "wake": "never",
+        "resend": "",
+        "held": "",
+        "wait": 0,
+        "attachments": [],
+        "manifest_id": "",
+        "previous_manifest": "",
+        "request_id": ""
+      }
+    },
+    {
+      "type": "tool_execution_end",
+      "toolCallId": "call_a80f19c2e9be47b19cdd6c1129063688",
+      "toolName": "xsm_send",
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "outcome belongs only to a reply that closes a task"
+          }
+        ],
+        "isError": true
+      },
+      "isError": true,
+      "durationMs": 25
+    }
+  ],
+  "verified": "actual native xsm_send invoked and rejected invalid note outcome before delivery",
+  "referenceToolNoteReceived": false,
+  "ACKs": [],
+  "finalAnswerReceived": true,
+  "actualResponseModelLabels": [
+    "gpt-6-luna"
+  ],
+  "upstreamToolArguments": {
+    "attachment_fallback": "inline",
+    "target": "peer:cbe14ddcec1ef921aabc91d9879a81252898d64d420ad9be95d9f17c1760fed0",
+    "targets": [
+      "peer:cbe14ddcec1ef921aabc91d9879a81252898d64d420ad9be95d9f17c1760fed0"
+    ],
+    "text": "XSM_BASIC_REAL_NOTE_e95e243324f5cdf09b8bbbc2",
+    "kind": "note",
+    "reply_to": "",
+    "outcome": "succeeded",
+    "priority": "next",
+    "wake": "never",
+    "resend": "",
+    "held": "",
+    "wait": 0,
+    "attachments": [],
+    "manifest_id": "",
+    "previous_manifest": "",
+    "request_id": ""
+  },
+  "upstreamArgumentsEqualNativeArguments": true
+}

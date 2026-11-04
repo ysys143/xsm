@@ -1,0 +1,4 @@
+{"phase": "started", "request": 1, "requestedModel": "gpt-6-luna"}
+{"request": 1, "requestedModel": "gpt-6-luna", "phase": "response", "httpStatus": 200, "responseModels": ["gpt-6-luna"], "responseBytes": 1468, "limitFailure": false}
+{"phase": "started", "request": 2, "requestedModel": "gpt-6-luna"}
+{"request": 2, "requestedModel": "gpt-6-luna", "phase": "response", "httpStatus": 200, "responseModels": ["gpt-6-luna"], "responseBytes": 4755, "limitFailure": false}

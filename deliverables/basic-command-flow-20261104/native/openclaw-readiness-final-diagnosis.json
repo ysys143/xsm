@@ -1,0 +1,121 @@
+{
+  "status": "readiness corrected; no model turn started",
+  "failedReadinessRoot": "/private/tmp/xsm-basic-real/openclaw-openai-luna-staged-readiness-once",
+  "correctedReadinessRoot": "/private/tmp/xsm-basic-real/openclaw-readiness-corrected-no-model",
+  "failureCode": "INVALID_REQUEST",
+  "failureMessage": "idempotent session creation requires an authenticated principal or device identity",
+  "failureArguments": {
+    "agentId": "main",
+    "cwd": "/private/tmp/xsm-basic-real/openclaw-openai-luna-staged-readiness-once/workspace",
+    "message": "",
+    "model": "xsm-subscription/gpt-6-luna",
+    "idempotencyKey": "prewarm-<random nonce; exact value not retained>"
+  },
+  "correctedActualRequest": {
+    "method": "sessions.create",
+    "params": {
+      "agentId": "main",
+      "cwd": "/private/tmp/xsm-basic-real/openclaw-readiness-corrected-no-model/workspace",
+      "message": "",
+      "model": "xsm-subscription/gpt-6-luna"
+    }
+  },
+  "sourceComparison": {
+    "worker_session.py:49-55": "creation_params omits idempotencyKey unless explicitly requested",
+    "worker_frontend.py:23": "normal worker call does not pass idempotency_key",
+    "native packages/gateway-protocol/src/schema/sessions-create.ts:19": "idempotencyKey is an optional NonEmptyString, not forbidden by schema",
+    "native src/gateway/server-methods/session-create-idempotency.ts:38-56": "present key requires authenticated principal or device identity; absent key enters ordinary create"
+  },
+  "configurationCorrection": "removed only the verification-only idempotencyKey by calling the shipped creation_params; no authentication/scope/schema changes",
+  "readiness": {
+    "status": "readiness-passed-model-not-started",
+    "checks": [
+      "main native agent present in ready roster",
+      "prewarm confirms no native inference was started",
+      "corrected readiness made zero provider requests"
+    ],
+    "stages": [
+      {
+        "name": "snapshot-install",
+        "startAfterSeconds": 1.043,
+        "durationSeconds": 0.172
+      },
+      {
+        "name": "gateway-listener-readiness",
+        "startAfterSeconds": 1.215,
+        "durationSeconds": 3.749
+      },
+      {
+        "name": "gateway-health-readiness",
+        "startAfterSeconds": 4.964,
+        "durationSeconds": 1.461
+      },
+      {
+        "name": "agents-list-readiness",
+        "startAfterSeconds": 6.425,
+        "durationSeconds": 0.451
+      },
+      {
+        "name": "non-inference-session-prewarm",
+        "startAfterSeconds": 6.876,
+        "durationSeconds": 1.924
+      }
+    ],
+    "setupSeconds": 8.801,
+    "cleanupSeconds": 2.237,
+    "elapsedSeconds": 11.038,
+    "providerRequests": 0,
+    "nativeHttpArrivals": 0,
+    "nativeStarted": false,
+    "gatewayStopped": true,
+    "ownedChildrenExited": true
+  },
+  "nativeReply": {
+    "ok": true,
+    "key": "agent:main:dashboard:1e2a976f-6988-4c67-aaaf-9f5f3cc0b179",
+    "sessionId": "f5949bee-50ad-492d-bd4e-d5270cfb02c4",
+    "entry": {
+      "sessionId": "f5949bee-50ad-492d-bd4e-d5270cfb02c4",
+      "lifecycleRevision": "69ea5ec2-d462-4af2-a449-5ce9163a2065",
+      "updatedAt": 1793792289873,
+      "sessionRoot": "/private/tmp/xsm-basic-real/openclaw-readiness-corrected-no-model/workspace",
+      "providerOverride": "xsm-subscription",
+      "modelOverride": "gpt-6-luna",
+      "modelOverrideSource": "user",
+      "modelOverrideRouteResolution": "resolved",
+      "delivery": {
+        "kind": "none"
+      },
+      "createdVia": "operator",
+      "createdAt": 1793792289873,
+      "spawnedCwd": "/private/tmp/xsm-basic-real/openclaw-readiness-corrected-no-model/workspace",
+      "spawnDepth": 0,
+      "parentSessionKey": "agent:main:main"
+    },
+    "runStarted": false,
+    "publicRead": false,
+    "resolved": {
+      "modelProvider": "xsm-subscription",
+      "model": "gpt-6-luna"
+    }
+  },
+  "cleanup": {
+    "checkedPids": [
+      14222,
+      14309,
+      14342,
+      13663,
+      20359,
+      20442,
+      20472,
+      20116
+    ],
+    "psExit": 1,
+    "remainingPidRows": ""
+  },
+  "limits": [
+    "OpenClaw actual subscribed model/tool/ACK still incomplete",
+    "no provider requests made during this diagnosis",
+    "prior failure roots preserved"
+  ]
+}

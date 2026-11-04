@@ -1,0 +1,81 @@
+{
+  "status": "failed",
+  "runtime": "pi",
+  "root": "/private/tmp/xsm-basic-real/pi-openai-luna-send-only",
+  "checks": [
+    "owned native service admitted",
+    "pinned native provider version",
+    "actual model answer saved",
+    "actual final reply matches nonce",
+    "native completion did not manufacture task outcome"
+  ],
+  "requestedModel": "gpt-6-luna",
+  "subscriptionAuthMode": "forward/OpenAI ChatGPT OAuth pool",
+  "maxProviderRequests": 8,
+  "maxRuntimeSeconds": 120,
+  "automaticRetry": false,
+  "scope": "one actual native model tool turn, generic reference receiver, real protocol inbox and ACK",
+  "limits": [
+    "generic reference parent; not two native participants",
+    "publish consent not exercised",
+    "Claude/Codex user sessions not touched",
+    "no fixtures, approval synthesis, or API keys"
+  ],
+  "sourceSha256": {
+    "scripts/probe-owned-subscription.py": "a1c70592ac074659813f05c508a584e6aef5bb3a4bebade6066045ece49d7659",
+    "scripts/probe_subscription_relay.py": "714fda6effd3fc3a66bb053b457d49c6984032b0fa3c25ce4dd7fce32671f28c",
+    "integrations/pi/xsm.mjs": "dd301415eb009dd5cb2ff8cc7fe3f72f49eaaa884788ce0d13f27c471d6da373",
+    "xsm/operations.py": "fef232ccc3e00ceab0b2788ef577806c770b03ca95b45be57a789351a804f0b7",
+    "xsm/operation_schema.py": "9fd4f3eb8ffd6070faa41965a82b0402fbc8954ff17c1e61a6111d61702bface"
+  },
+  "runtimeRoot": "/private/tmp/xsm-basic-real/pi-openai-luna-send-only/state/runtime/602550013297",
+  "referenceParticipant": {
+    "session": "d8b1851e0ee44fe99cd1981607fb4a5f",
+    "generation": "85f80dd477f246178002c2836f5fea89",
+    "ref": "4acce1",
+    "address": "peer:cbe14ddcec1ef921aabc91d9879a81252898d64d420ad9be95d9f17c1760fed0",
+    "capabilities": [
+      "messaging",
+      "inbox",
+      "events"
+    ]
+  },
+  "providerRequests": 2,
+  "responseModelLabels": [
+    "gpt-6-luna"
+  ],
+  "elapsedSeconds": 11.857,
+  "nativeProvider": {
+    "executable": "/private/tmp/xsm-basic-real/pi-send-only",
+    "version": "1.4.0",
+    "control_protocol": 1,
+    "cancellation_protocol": 1,
+    "runtime_root": "/private/tmp/xsm-basic-real/pi-openai-luna-send-only/state/runtime/602550013297",
+    "frontend": "/private/tmp/xsm-basic-real/pi-openai-luna-send-only/state/runtime/602550013297/integrations/pi/xsm.mjs",
+    "frontend_sha256": "dd301415eb009dd5cb2ff8cc7fe3f72f49eaaa884788ce0d13f27c471d6da373"
+  },
+  "upstreamResponses": [
+    {
+      "request": 1,
+      "httpStatus": 200,
+      "rawBody": "/private/tmp/xsm-basic-real/pi-openai-luna-send-only/upstream-01.body",
+      "responseBytes": 1468
+    },
+    {
+      "request": 2,
+      "httpStatus": 200,
+      "rawBody": "/private/tmp/xsm-basic-real/pi-openai-luna-send-only/upstream-02.body",
+      "responseBytes": 4755
+    }
+  ],
+  "requestStatus": "reply-stored",
+  "failureType": "AssertionError",
+  "failure": "native model tool sent one actual canonical note",
+  "ownedChildrenExited": true,
+  "quota400": false,
+  "limitFailure": false,
+  "nativeArtifacts": [
+    "/private/tmp/xsm-basic-real/pi-openai-luna-send-only/state/owned-runs/323d4d56aa71471fa9cab19f06271b5d/one-native-turn.jsonl",
+    "/private/tmp/xsm-basic-real/pi-openai-luna-send-only/state/owned-runs/323d4d56aa71471fa9cab19f06271b5d/one-native-turn.stderr"
+  ]
+}

@@ -1,0 +1,266 @@
+{
+  "id": "one-fresh-native-turn",
+  "digest": "e847e72630a968031a7986f4ac2248ce95796ff4c67183b17039c6b4f8c2cc28",
+  "owner": {
+    "runtime": "basic-real-reference",
+    "home": "/private/tmp/xsm-basic-real/openclaw-actual-once-after-readiness-fix/state/protocol-profiles/basic-real-reference/8a80a9e9ce6895cfc25b71af4266485a458a108e62f7b3f1f0e75724718f51ca",
+    "session_id": "a5091c1671936d8d2082c9615d804061d688967631ea92901e3c8789796acfef"
+  },
+  "sender": {
+    "runtime": "basic-real-reference",
+    "home": "/private/tmp/xsm-basic-real/openclaw-actual-once-after-readiness-fix/state/protocol-profiles/basic-real-reference/8a80a9e9ce6895cfc25b71af4266485a458a108e62f7b3f1f0e75724718f51ca",
+    "session_id": "a5091c1671936d8d2082c9615d804061d688967631ea92901e3c8789796acfef",
+    "pid": 28484,
+    "lstart": "Wed Nov  4 20:40:30 2026",
+    "cwd": "/private/tmp/xsm-basic-real/openclaw-actual-once-after-readiness-fix/workspace",
+    "ref": "aa5b73",
+    "name": "basic-real-reference-a5091c16",
+    "protocol_version": "1",
+    "protocol_generation": "fdfabd019c2540f587c7c9b28c912f5b",
+    "registered": true,
+    "activity": "idle",
+    "protocol_root": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging",
+    "protocol_python": "/opt/homebrew/opt/python@3.14/bin/python3.14",
+    "protocol_python_version": "3.14.6",
+    "updated": 1793792430.173206
+  },
+  "worker": {
+    "id": "958b5cf4f0e2450fa33cfb7d6adf7d21",
+    "name": "staged-openclaw",
+    "mode": "owned",
+    "owned": true,
+    "runtime": "openclaw",
+    "home": "/private/tmp/xsm-basic-real/openclaw-actual-once-after-readiness-fix/openclaw",
+    "cwd": "/private/tmp/xsm-basic-real/openclaw-actual-once-after-readiness-fix/workspace",
+    "model": "xsm-subscription/gpt-6-luna",
+    "effort": null,
+    "owner": {
+      "runtime": "basic-real-reference",
+      "home": "/private/tmp/xsm-basic-real/openclaw-actual-once-after-readiness-fix/state/protocol-profiles/basic-real-reference/8a80a9e9ce6895cfc25b71af4266485a458a108e62f7b3f1f0e75724718f51ca",
+      "session_id": "a5091c1671936d8d2082c9615d804061d688967631ea92901e3c8789796acfef",
+      "pid": 28484,
+      "lstart": "Wed Nov  4 20:40:30 2026",
+      "cwd": "/private/tmp/xsm-basic-real/openclaw-actual-once-after-readiness-fix/workspace",
+      "ref": "aa5b73",
+      "name": "basic-real-reference-a5091c16",
+      "protocol_version": "1",
+      "protocol_generation": "fdfabd019c2540f587c7c9b28c912f5b",
+      "registered": true,
+      "activity": "idle",
+      "protocol_root": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging",
+      "protocol_python": "/opt/homebrew/opt/python@3.14/bin/python3.14",
+      "protocol_python_version": "3.14.6",
+      "updated": 1793792430.173206
+    },
+    "parent_native": {
+      "runtime": "basic-real-reference",
+      "home": "/private/tmp/xsm-basic-real/openclaw-actual-once-after-readiness-fix/state/protocol-profiles/basic-real-reference/8a80a9e9ce6895cfc25b71af4266485a458a108e62f7b3f1f0e75724718f51ca",
+      "session_id": "a5091c1671936d8d2082c9615d804061d688967631ea92901e3c8789796acfef"
+    },
+    "parent_ref": "aa5b73",
+    "created": 1793792430.627695,
+    "depth": 1,
+    "max_depth": 1,
+    "session_id": null,
+    "owned_sessions": [],
+    "native_provider": {
+      "executable": "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-openclaw-2026109-ruwrjohz/native/node_modules/openclaw/openclaw.mjs",
+      "node": "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-openclaw-2026109-ruwrjohz/node-v24.22.2-darwin-arm64/bin/node",
+      "python": "/opt/homebrew/opt/python@3.14/bin/python3.14",
+      "version": "2026.10.9",
+      "control_protocol": 1,
+      "cancellation_protocol": 1,
+      "result_recovery_protocol": 1,
+      "execution_lifetime": "native-host",
+      "agent_id": "main",
+      "runtime_root": "/private/tmp/xsm-basic-real/openclaw-actual-once-after-readiness-fix/state/runtime/5866cfdfb56b",
+      "frontend": "/private/tmp/xsm-basic-real/openclaw-actual-once-after-readiness-fix/state/runtime/5866cfdfb56b/integrations/openclaw/worker_cli.py",
+      "frontend_sha256": "75d96ad3afdafba60191e7a6cc7cea776101b8bf824f75336eef067f95535ea7",
+      "binding_hashes": {
+        "xsm.mjs": "73a1b57ba799dfb4acf4cd359224091eeea554d6ac4f8b5ea490d115d781d901",
+        "worker_cli.py": "75d96ad3afdafba60191e7a6cc7cea776101b8bf824f75336eef067f95535ea7",
+        "worker_frontend.py": "346e9db0e5104ba3481b45e53b4f6e3434aabdf69729e3f247109dd7f3691091",
+        "worker_rpc.mjs": "e32f96063591c55b5f7d2fcf803465a495d285c4c4fb9a22b0a2f69d0cec2e2f",
+        "worker_transport.py": "c64c84cb3ff280f7c3685cc7404698e9b32eead348402a6089efa6d99152e809",
+        "worker_session.py": "247710f83127ec9008ebfb84f5fce13c7c3657b141664bb26953dfc637f2f75b"
+      }
+    }
+  },
+  "work_context": "one-new-nonce-staged-turn",
+  "body": "This is the user-authorized isolated XSM test. Use the available native xsm_send tool exactly once with these arguments: {\"target\": \"peer:569f1af094aada2767b8a6af43f144fc4810b10759a45835c993bc7c444629b4\", \"text\": \"XSM_BASIC_REAL_NOTE_af390f4f1dc6a2f453d21a58\", \"kind\": \"note\", \"wake\": \"never\", \"wait\": 0}. After the tool returns, reply exactly XSM_BASIC_REAL_DONE_af390f4f1dc6a2f453d21a58. Do not use shell, write files, request approvals, publish, or call other tools.",
+  "context_id": "0e068ac6e414b2ea9df6085846559e61b086950687d91e1e5a1a6f6c9cfc321a",
+  "context_epoch": "dbcdd486e9ab477782f0a0a6b244dc87",
+  "created_at": 1793792430.643581,
+  "sequence": 0,
+  "result": {
+    "body": "XSM_BASIC_REAL_DONE_af390f4f1dc6a2f453d21a58",
+    "outcome": null,
+    "native_session_id": "db05581f-ff79-46de-ab66-45278933ff39",
+    "native_evidence": {
+      "run_id": "xsm-owned-958b5cf4f0e2450fa33cfb7d6adf7d21-2412dcb6b6364197a0ce0cb1e98e4412",
+      "terminal_receipt": {
+        "runId": "xsm-owned-958b5cf4f0e2450fa33cfb7d6adf7d21-2412dcb6b6364197a0ce0cb1e98e4412",
+        "sessionId": "db05581f-ff79-46de-ab66-45278933ff39",
+        "turnId": "xsm-owned-958b5cf4f0e2450fa33cfb7d6adf7d21-2412dcb6b6364197a0ce0cb1e98e4412",
+        "requested": {
+          "provider": "xsm-subscription",
+          "model": "gpt-6-luna"
+        },
+        "effective": {
+          "provider": "xsm-subscription",
+          "model": "gpt-6-luna",
+          "responseModel": "gpt-6-luna"
+        },
+        "successfulToolNames": [
+          "tool_search",
+          "tool_describe",
+          "xsm_send",
+          "tool_call"
+        ],
+        "rerouted": false,
+        "terminalDisposition": "visible"
+      }
+    },
+    "execution": {
+      "pid": 28496,
+      "lstart": "Wed Nov  4 20:40:30 2026",
+      "argv": [
+        "/opt/homebrew/opt/python@3.14/bin/python3.14",
+        "-B",
+        "/private/tmp/xsm-basic-real/openclaw-actual-once-after-readiness-fix/state/runtime/5866cfdfb56b/integrations/openclaw/worker_cli.py",
+        "--node",
+        "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-openclaw-2026109-ruwrjohz/node-v24.22.2-darwin-arm64/bin/node",
+        "--native-cli",
+        "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-openclaw-2026109-ruwrjohz/native/node_modules/openclaw/openclaw.mjs",
+        "--agent-id",
+        "main",
+        "--cwd",
+        "/private/tmp/xsm-basic-real/openclaw-actual-once-after-readiness-fix/workspace",
+        "--context-id",
+        "0e068ac6e414b2ea9df6085846559e61b086950687d91e1e5a1a6f6c9cfc321a",
+        "--context-epoch",
+        "dbcdd486e9ab477782f0a0a6b244dc87",
+        "--run-id",
+        "xsm-owned-958b5cf4f0e2450fa33cfb7d6adf7d21-2412dcb6b6364197a0ce0cb1e98e4412",
+        "--model=xsm-subscription/gpt-6-luna"
+      ],
+      "stdout": "/private/tmp/xsm-basic-real/openclaw-actual-once-after-readiness-fix/state/owned-runs/958b5cf4f0e2450fa33cfb7d6adf7d21/one-fresh-native-turn.jsonl",
+      "stderr": "/private/tmp/xsm-basic-real/openclaw-actual-once-after-readiness-fix/state/owned-runs/958b5cf4f0e2450fa33cfb7d6adf7d21/one-fresh-native-turn.stderr",
+      "returncode": 0
+    }
+  },
+  "reply_id": "bcb6c1a9c25d4b8a",
+  "send_evidence": {
+    "status": "stored",
+    "reason": "protocol participant inbox; awaiting actual consumption",
+    "id": "bcb6c1a9c25d4b8a",
+    "to": "basic-real-reference-a5091c16@None",
+    "runtime_reached": false,
+    "evidence": {
+      "accepted": true,
+      "queued": false,
+      "wake": false,
+      "stored": true
+    }
+  },
+  "reservation": {
+    "token": "0eeedfe41fa44c1ea4a52089698eb87f",
+    "controller": {
+      "pid": 28484,
+      "lstart": "Wed Nov  4 20:40:30 2026"
+    }
+  },
+  "events": [
+    {
+      "phase": "queued",
+      "at": 1793792430.6435819
+    },
+    {
+      "phase": "reserved",
+      "at": 1793792430.651241
+    },
+    {
+      "phase": "acknowledged",
+      "at": 1793792430.651963
+    },
+    {
+      "phase": "running",
+      "at": 1793792430.652511
+    },
+    {
+      "phase": "result-ready",
+      "at": 1793792448.088803
+    },
+    {
+      "phase": "sending",
+      "at": 1793792448.094155
+    },
+    {
+      "phase": "reply-stored",
+      "at": 1793792448.14429
+    }
+  ],
+  "run_attempts": 1,
+  "child": {
+    "pid": 28496,
+    "lstart": "Wed Nov  4 20:40:30 2026",
+    "argv": [
+      "/opt/homebrew/opt/python@3.14/bin/python3.14",
+      "-B",
+      "/private/tmp/xsm-basic-real/openclaw-actual-once-after-readiness-fix/state/runtime/5866cfdfb56b/integrations/openclaw/worker_cli.py",
+      "--node",
+      "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-openclaw-2026109-ruwrjohz/node-v24.22.2-darwin-arm64/bin/node",
+      "--native-cli",
+      "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-openclaw-2026109-ruwrjohz/native/node_modules/openclaw/openclaw.mjs",
+      "--agent-id",
+      "main",
+      "--cwd",
+      "/private/tmp/xsm-basic-real/openclaw-actual-once-after-readiness-fix/workspace",
+      "--context-id",
+      "0e068ac6e414b2ea9df6085846559e61b086950687d91e1e5a1a6f6c9cfc321a",
+      "--context-epoch",
+      "dbcdd486e9ab477782f0a0a6b244dc87",
+      "--run-id",
+      "xsm-owned-958b5cf4f0e2450fa33cfb7d6adf7d21-2412dcb6b6364197a0ce0cb1e98e4412",
+      "--model=xsm-subscription/gpt-6-luna"
+    ],
+    "stdout": "/private/tmp/xsm-basic-real/openclaw-actual-once-after-readiness-fix/state/owned-runs/958b5cf4f0e2450fa33cfb7d6adf7d21/one-fresh-native-turn.jsonl",
+    "stderr": "/private/tmp/xsm-basic-real/openclaw-actual-once-after-readiness-fix/state/owned-runs/958b5cf4f0e2450fa33cfb7d6adf7d21/one-fresh-native-turn.stderr",
+    "returncode": 0
+  },
+  "native_binding": {
+    "native_session_id": "db05581f-ff79-46de-ab66-45278933ff39",
+    "child_pid": 28496,
+    "child_lstart": "Wed Nov  4 20:40:30 2026",
+    "bound_at": 1793792431.142184
+  },
+  "result_digest": "0c736e600c455f9d3a268ccb432e8c0d76f0828ad4d1b720e0de71fbff1015cb",
+  "send_owner": {
+    "pid": 28484,
+    "lstart": "Wed Nov  4 20:40:30 2026"
+  },
+  "send_token": "68f743f037624dd693e47385f3ea6db4",
+  "status": "reply-stored",
+  "context": {
+    "id": "0e068ac6e414b2ea9df6085846559e61b086950687d91e1e5a1a6f6c9cfc321a",
+    "context_key": "0e068ac6e414b2ea9df6085846559e61b086950687d91e1e5a1a6f6c9cfc321a",
+    "epoch": "dbcdd486e9ab477782f0a0a6b244dc87",
+    "worker_id": "958b5cf4f0e2450fa33cfb7d6adf7d21",
+    "sender": {
+      "runtime": "basic-real-reference",
+      "home": "/private/tmp/xsm-basic-real/openclaw-actual-once-after-readiness-fix/state/protocol-profiles/basic-real-reference/8a80a9e9ce6895cfc25b71af4266485a458a108e62f7b3f1f0e75724718f51ca",
+      "session_id": "a5091c1671936d8d2082c9615d804061d688967631ea92901e3c8789796acfef"
+    },
+    "work_context": "one-new-nonce-staged-turn",
+    "independent": false,
+    "native_session_id": "db05581f-ff79-46de-ab66-45278933ff39",
+    "session_seed": "53536ea2-26b0-41bc-abb7-1f8aa48e4066",
+    "retired": false,
+    "unknown_request": null,
+    "created_at": 1793792430.643553
+  },
+  "persisted": true,
+  "accepted": true,
+  "side_effects_exactly_once": false,
+  "slot_occupied": false
+}

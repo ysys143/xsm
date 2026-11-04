@@ -1,0 +1,26 @@
+[
+  {
+    "request": 1,
+    "httpStatus": 200,
+    "rawBody": "/private/tmp/xsm-basic-real/openclaw-actual-once-after-readiness-fix/upstream-01.body",
+    "responseBytes": 1032
+  },
+  {
+    "request": 2,
+    "httpStatus": 200,
+    "rawBody": "/private/tmp/xsm-basic-real/openclaw-actual-once-after-readiness-fix/upstream-02.body",
+    "responseBytes": 1010
+  },
+  {
+    "request": 3,
+    "httpStatus": 200,
+    "rawBody": "/private/tmp/xsm-basic-real/openclaw-actual-once-after-readiness-fix/upstream-03.body",
+    "responseBytes": 1209
+  },
+  {
+    "request": 4,
+    "httpStatus": 200,
+    "rawBody": "/private/tmp/xsm-basic-real/openclaw-actual-once-after-readiness-fix/upstream-04.body",
+    "responseBytes": 5186
+  }
+]

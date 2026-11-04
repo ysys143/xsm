@@ -1,0 +1,9 @@
+{
+  "id": "01a18b3b-1907-71e2-979d-30ae08e16c5b",
+  "status": {
+    "type": "notLoaded"
+  },
+  "cwd": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging",
+  "modelProvider": "openai",
+  "source": "vscode"
+}

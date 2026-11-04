@@ -1,0 +1,158 @@
+{
+  "status": "passed",
+  "runtime": "openclaw",
+  "requestedModel": "gpt-6-luna",
+  "root": "/private/tmp/xsm-basic-real/openclaw-actual-once-after-readiness-fix",
+  "checks": [
+    "main native agent present in ready roster",
+    "prewarm confirms no native inference was started",
+    "pinned OpenClaw 2026.10.9 admitted",
+    "readiness and prewarm made zero provider requests",
+    "actual native answer retained",
+    "actual final answer matches new nonce",
+    "actual native session differs from prewarm session",
+    "actual model xsm_send note received once",
+    "actual native final reply received",
+    "both actual messages explicitly ACKed"
+  ],
+  "stages": [
+    {
+      "name": "snapshot-install",
+      "startAfterSeconds": 1.069,
+      "durationSeconds": 0.179
+    },
+    {
+      "name": "gateway-listener-readiness",
+      "startAfterSeconds": 1.248,
+      "durationSeconds": 4.051
+    },
+    {
+      "name": "gateway-health-readiness",
+      "startAfterSeconds": 5.3,
+      "durationSeconds": 1.296
+    },
+    {
+      "name": "agents-list-readiness",
+      "startAfterSeconds": 6.596,
+      "durationSeconds": 0.485
+    },
+    {
+      "name": "non-inference-session-prewarm",
+      "startAfterSeconds": 7.081,
+      "durationSeconds": 1.942
+    },
+    {
+      "name": "owned-provider-admission-prewarm",
+      "startAfterSeconds": 9.123,
+      "durationSeconds": 0.451
+    }
+  ],
+  "prewarmProcessPids": [
+    28290,
+    28320,
+    28375
+  ],
+  "maxTotalSeconds": 180,
+  "controllerWorkDeadlineSeconds": 160,
+  "maxNativeTurnSeconds": 120,
+  "maxProviderRequests": 8,
+  "automaticRetry": false,
+  "configurationChange": "readiness uses shipped creation_params without idempotencyKey; one new original owned turn after gateway/session readiness; same model/policy/schema/assistant arguments",
+  "limits": [
+    "generic reference receiver; not native-native pair",
+    "publish/typed-consent not tested",
+    "previous failure root unchanged"
+  ],
+  "runtimeRoot": "/private/tmp/xsm-basic-real/openclaw-actual-once-after-readiness-fix/state/runtime/5866cfdfb56b",
+  "activeStage": "fresh-native-turn",
+  "providerRequests": 4,
+  "nativeHttpArrivals": 4,
+  "responseModelLabels": [
+    "gpt-6-luna"
+  ],
+  "elapsedSeconds": 29.179,
+  "firstProviderRequestAfterSeconds": 12.938,
+  "ownedGatewayPid": 28099,
+  "prewarmSessionId": "fc474a32-cfa5-4cd8-888a-99116a5123db",
+  "referenceParticipant": {
+    "session": "f9a266cdefe34c71b17d532627c3fe71",
+    "generation": "fdfabd019c2540f587c7c9b28c912f5b",
+    "ref": "aa5b73",
+    "address": "peer:569f1af094aada2767b8a6af43f144fc4810b10759a45835c993bc7c444629b4",
+    "capabilities": [
+      "messaging",
+      "inbox",
+      "events"
+    ]
+  },
+  "nativeProvider": {
+    "executable": "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-openclaw-2026109-ruwrjohz/native/node_modules/openclaw/openclaw.mjs",
+    "node": "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-openclaw-2026109-ruwrjohz/node-v24.22.2-darwin-arm64/bin/node",
+    "python": "/opt/homebrew/opt/python@3.14/bin/python3.14",
+    "version": "2026.10.9",
+    "control_protocol": 1,
+    "cancellation_protocol": 1,
+    "result_recovery_protocol": 1,
+    "execution_lifetime": "native-host",
+    "agent_id": "main",
+    "runtime_root": "/private/tmp/xsm-basic-real/openclaw-actual-once-after-readiness-fix/state/runtime/5866cfdfb56b",
+    "frontend": "/private/tmp/xsm-basic-real/openclaw-actual-once-after-readiness-fix/state/runtime/5866cfdfb56b/integrations/openclaw/worker_cli.py",
+    "frontend_sha256": "75d96ad3afdafba60191e7a6cc7cea776101b8bf824f75336eef067f95535ea7",
+    "binding_hashes": {
+      "xsm.mjs": "73a1b57ba799dfb4acf4cd359224091eeea554d6ac4f8b5ea490d115d781d901",
+      "worker_cli.py": "75d96ad3afdafba60191e7a6cc7cea776101b8bf824f75336eef067f95535ea7",
+      "worker_frontend.py": "346e9db0e5104ba3481b45e53b4f6e3434aabdf69729e3f247109dd7f3691091",
+      "worker_rpc.mjs": "e32f96063591c55b5f7d2fcf803465a495d285c4c4fb9a22b0a2f69d0cec2e2f",
+      "worker_transport.py": "c64c84cb3ff280f7c3685cc7404698e9b32eead348402a6089efa6d99152e809",
+      "worker_session.py": "247710f83127ec9008ebfb84f5fce13c7c3657b141664bb26953dfc637f2f75b"
+    }
+  },
+  "setupSeconds": 9.579,
+  "nativeSubmissionAfterSeconds": 9.579,
+  "upstreamResponses": [
+    {
+      "request": 1,
+      "httpStatus": 200,
+      "rawBody": "/private/tmp/xsm-basic-real/openclaw-actual-once-after-readiness-fix/upstream-01.body",
+      "responseBytes": 1032
+    },
+    {
+      "request": 2,
+      "httpStatus": 200,
+      "rawBody": "/private/tmp/xsm-basic-real/openclaw-actual-once-after-readiness-fix/upstream-02.body",
+      "responseBytes": 1010
+    },
+    {
+      "request": 3,
+      "httpStatus": 200,
+      "rawBody": "/private/tmp/xsm-basic-real/openclaw-actual-once-after-readiness-fix/upstream-03.body",
+      "responseBytes": 1209
+    },
+    {
+      "request": 4,
+      "httpStatus": 200,
+      "rawBody": "/private/tmp/xsm-basic-real/openclaw-actual-once-after-readiness-fix/upstream-04.body",
+      "responseBytes": 5186
+    }
+  ],
+  "nativeTurnSeconds": 14.204,
+  "nativeSubmissionToResultSeconds": 17.562,
+  "requestStatus": "reply-stored",
+  "acked": [
+    "fde13693c2ad4b77",
+    "bcb6c1a9c25d4b8a"
+  ],
+  "nativeToolMessageIds": [
+    "fde13693c2ad4b77"
+  ],
+  "nativeSessionId": "db05581f-ff79-46de-ab66-45278933ff39",
+  "finalReplyId": "bcb6c1a9c25d4b8a",
+  "ownedChildrenExited": true,
+  "gatewayStopped": true,
+  "cleanupSeconds": 2.003,
+  "limitFailure": false,
+  "nativeArtifacts": [
+    "/private/tmp/xsm-basic-real/openclaw-actual-once-after-readiness-fix/state/owned-runs/958b5cf4f0e2450fa33cfb7d6adf7d21/one-fresh-native-turn.jsonl",
+    "/private/tmp/xsm-basic-real/openclaw-actual-once-after-readiness-fix/state/owned-runs/958b5cf4f0e2450fa33cfb7d6adf7d21/one-fresh-native-turn.stderr"
+  ]
+}

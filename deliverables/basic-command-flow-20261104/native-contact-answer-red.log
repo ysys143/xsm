@@ -1,0 +1,13 @@
+======================================================================
+FAIL: test_native_question_answer_also_supersedes_a_natural_contact_request (tests.test_public_command_flow.PublicCommandFlowTest.test_native_question_answer_also_supersedes_a_natural_contact_request)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/tests/test_public_command_flow.py", line 119, in test_native_question_answer_also_supersedes_a_natural_contact_request
+    self.assertIsNone(consent.take_contact_selection(self.b, binding))
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'jstack 세션에 연락해줘.' is not None
+
+----------------------------------------------------------------------
+Ran 1 test in 0.141s
+
+FAILED (failures=1)

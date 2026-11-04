@@ -1,0 +1,16 @@
+======================================================================
+FAIL: test_remote_query_preserves_unknown_task_metadata_when_no_match_is_proven (tests.test_network_interfaces.NetworkInterfacesTest.test_remote_query_preserves_unknown_task_metadata_when_no_match_is_proven)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-basic-red-5am5uc3e/tests/test_network_interfaces.py", line 496, in test_remote_query_preserves_unknown_task_metadata_when_no_match_is_proven
+    self.assertEqual(result['status'], 'unknown')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'ok' != 'unknown'
+- ok
++ unknown
+
+
+----------------------------------------------------------------------
+Ran 1 test in 0.056s
+
+FAILED (failures=1)

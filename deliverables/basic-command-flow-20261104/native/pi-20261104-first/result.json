@@ -1,0 +1,75 @@
+{
+  "status": "failed",
+  "runtime": "pi",
+  "root": "/private/tmp/xsm-basic-real/pi-20261104-first",
+  "checks": [
+    "owned native service admitted",
+    "pinned native provider version"
+  ],
+  "requestedModel": "anthropic/claude-sonnet-5-5",
+  "subscriptionAuthMode": "oauth",
+  "maxProviderRequests": 8,
+  "maxRuntimeSeconds": 120,
+  "automaticRetry": false,
+  "scope": "one actual native model tool turn, generic reference receiver, real protocol inbox and ACK",
+  "limits": [
+    "generic reference parent; not two native participants",
+    "publish consent not exercised",
+    "Claude/Codex user sessions not touched",
+    "no fixtures, approval synthesis, or API keys"
+  ],
+  "sourceSha256": {
+    "scripts/probe-owned-subscription.py": "a1c70592ac074659813f05c508a584e6aef5bb3a4bebade6066045ece49d7659",
+    "scripts/probe_subscription_relay.py": "714fda6effd3fc3a66bb053b457d49c6984032b0fa3c25ce4dd7fce32671f28c",
+    "integrations/pi/xsm.mjs": "dd301415eb009dd5cb2ff8cc7fe3f72f49eaaa884788ce0d13f27c471d6da373",
+    "xsm/operations.py": "fef232ccc3e00ceab0b2788ef577806c770b03ca95b45be57a789351a804f0b7",
+    "xsm/operation_schema.py": "9fd4f3eb8ffd6070faa41965a82b0402fbc8954ff17c1e61a6111d61702bface"
+  },
+  "runtimeRoot": "/private/tmp/xsm-basic-real/pi-20261104-first/state/runtime/a4a46f5ca050",
+  "referenceParticipant": {
+    "session": "2b5fd5638d714732ac1a18cbe84e626c",
+    "generation": "8132fc2759044677a0b2285314c058c0",
+    "ref": "f56a1c",
+    "address": "peer:5bcc806f174ad4fc11e9095e06917f952fab5c209fcc243343d04d83b06e6aee",
+    "capabilities": [
+      "messaging",
+      "inbox",
+      "events"
+    ]
+  },
+  "providerRequests": 1,
+  "responseModelLabels": [],
+  "elapsedSeconds": 2.687,
+  "nativeProvider": {
+    "executable": "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-pi-140-eohrvh8q/node_modules/@earendil-works/pi-coding-agent/dist/bundle/cli.js",
+    "version": "1.4.0",
+    "control_protocol": 1,
+    "cancellation_protocol": 1,
+    "runtime_root": "/private/tmp/xsm-basic-real/pi-20261104-first/state/runtime/a4a46f5ca050",
+    "frontend": "/private/tmp/xsm-basic-real/pi-20261104-first/state/runtime/a4a46f5ca050/integrations/pi/xsm.mjs",
+    "frontend_sha256": "dd301415eb009dd5cb2ff8cc7fe3f72f49eaaa884788ce0d13f27c471d6da373"
+  },
+  "upstreamResponses": [
+    {
+      "request": 1,
+      "httpStatus": 400,
+      "rawBody": "/private/tmp/xsm-basic-real/pi-20261104-first/upstream-01.body",
+      "responseBytes": 330,
+      "error": {
+        "type": "invalid_request_error",
+        "code": "invalid_request_error",
+        "message": "Provider error 400: {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"You're out of extra usage. Add more at claude.ai/settings/usage and keep going.\"},\"request_id\":\"req_011Cghjm6k9ci6HtzmcGKkDY\"}"
+      },
+      "quota400": true
+    }
+  ],
+  "requestStatus": "unknown",
+  "failureType": "AssertionError",
+  "failure": "actual model answer saved",
+  "ownedChildrenExited": true,
+  "quota400": true,
+  "nativeArtifacts": [
+    "/private/tmp/xsm-basic-real/pi-20261104-first/state/owned-runs/2e6b7dcb55cb4d17a01fd9dc357046ab/one-native-turn.jsonl",
+    "/private/tmp/xsm-basic-real/pi-20261104-first/state/owned-runs/2e6b7dcb55cb4d17a01fd9dc357046ab/one-native-turn.stderr"
+  ]
+}

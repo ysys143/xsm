@@ -1,0 +1,9 @@
+{
+  "method": "sessions.create",
+  "params": {
+    "agentId": "main",
+    "cwd": "/private/tmp/xsm-basic-real/openclaw-readiness-corrected-no-model/workspace",
+    "message": "",
+    "model": "xsm-subscription/gpt-6-luna"
+  }
+}

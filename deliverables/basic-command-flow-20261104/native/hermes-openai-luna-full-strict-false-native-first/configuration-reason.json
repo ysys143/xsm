@@ -1,0 +1,4 @@
+{
+  "reason": "Correct explicit non-strict Chat/Responses semantics after schema portability fix",
+  "configuration": "complete XSM catalog; native Pi supportsStrictMode=true where applicable; relay adds only explicit function.strict=false; unchanged schema and model arguments; repeated identical requests refused"
+}

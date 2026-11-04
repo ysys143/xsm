@@ -1,0 +1,14 @@
+[
+  {
+    "request": 1,
+    "httpStatus": 200,
+    "rawBody": "/private/tmp/xsm-basic-real/pi-openai-luna-full-strict-false/upstream-01.body",
+    "responseBytes": 1161
+  },
+  {
+    "request": 2,
+    "httpStatus": 200,
+    "rawBody": "/private/tmp/xsm-basic-real/pi-openai-luna-full-strict-false/upstream-02.body",
+    "responseBytes": 4324
+  }
+]

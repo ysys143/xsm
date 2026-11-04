@@ -1,0 +1,179 @@
+{
+  "id": "one-native-turn",
+  "digest": "f3975a1c0b5422519ebb50e48d5f74eaf9f78969594993467270fba8906c4a50",
+  "owner": {
+    "runtime": "basic-real-reference",
+    "home": "/private/tmp/xsm-basic-real/openclaw-openai-luna-full-strict-false/state/protocol-profiles/basic-real-reference/67157f2cba2505adc4905142c0bf3bfe24f5710f9bf9de04c0e3c363da3b5fc4",
+    "session_id": "5b2250490c3d794ee077be056fb46dd0cf23f0b744d00490eb090be4eaaa4df5"
+  },
+  "sender": {
+    "runtime": "basic-real-reference",
+    "home": "/private/tmp/xsm-basic-real/openclaw-openai-luna-full-strict-false/state/protocol-profiles/basic-real-reference/67157f2cba2505adc4905142c0bf3bfe24f5710f9bf9de04c0e3c363da3b5fc4",
+    "session_id": "5b2250490c3d794ee077be056fb46dd0cf23f0b744d00490eb090be4eaaa4df5",
+    "pid": 60218,
+    "lstart": "Wed Nov  4 20:13:09 2026",
+    "cwd": "/private/tmp/xsm-basic-real/openclaw-openai-luna-full-strict-false/workspace",
+    "ref": "b3161c",
+    "name": "basic-real-reference-5b225049",
+    "protocol_version": "1",
+    "protocol_generation": "4fdec42559a3423d9cc411939fae15f5",
+    "registered": true,
+    "activity": "idle",
+    "protocol_root": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging",
+    "protocol_python": "/opt/homebrew/opt/python@3.14/bin/python3.14",
+    "protocol_python_version": "3.14.6",
+    "updated": 1793790792.3870258
+  },
+  "worker": {
+    "id": "69b735d6588e4c0d94c5337756f54f8d",
+    "name": "basic-openclaw",
+    "mode": "owned",
+    "owned": true,
+    "runtime": "openclaw",
+    "home": "/private/tmp/xsm-basic-real/openclaw-openai-luna-full-strict-false/openclaw",
+    "cwd": "/private/tmp/xsm-basic-real/openclaw-openai-luna-full-strict-false/workspace",
+    "model": "xsm-subscription/gpt-6-luna",
+    "effort": null,
+    "owner": {
+      "runtime": "basic-real-reference",
+      "home": "/private/tmp/xsm-basic-real/openclaw-openai-luna-full-strict-false/state/protocol-profiles/basic-real-reference/67157f2cba2505adc4905142c0bf3bfe24f5710f9bf9de04c0e3c363da3b5fc4",
+      "session_id": "5b2250490c3d794ee077be056fb46dd0cf23f0b744d00490eb090be4eaaa4df5",
+      "pid": 60218,
+      "lstart": "Wed Nov  4 20:13:09 2026",
+      "cwd": "/private/tmp/xsm-basic-real/openclaw-openai-luna-full-strict-false/workspace",
+      "ref": "b3161c",
+      "name": "basic-real-reference-5b225049",
+      "protocol_version": "1",
+      "protocol_generation": "4fdec42559a3423d9cc411939fae15f5",
+      "registered": true,
+      "activity": "idle",
+      "protocol_root": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging",
+      "protocol_python": "/opt/homebrew/opt/python@3.14/bin/python3.14",
+      "protocol_python_version": "3.14.6",
+      "updated": 1793790792.3870258
+    },
+    "parent_native": {
+      "runtime": "basic-real-reference",
+      "home": "/private/tmp/xsm-basic-real/openclaw-openai-luna-full-strict-false/state/protocol-profiles/basic-real-reference/67157f2cba2505adc4905142c0bf3bfe24f5710f9bf9de04c0e3c363da3b5fc4",
+      "session_id": "5b2250490c3d794ee077be056fb46dd0cf23f0b744d00490eb090be4eaaa4df5"
+    },
+    "parent_ref": "b3161c",
+    "created": 1793790800.0456672,
+    "depth": 1,
+    "max_depth": 1,
+    "session_id": null,
+    "owned_sessions": [],
+    "native_provider": {
+      "executable": "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-openclaw-2026109-ruwrjohz/native/node_modules/openclaw/openclaw.mjs",
+      "node": "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-openclaw-2026109-ruwrjohz/node-v24.22.2-darwin-arm64/bin/node",
+      "python": "/opt/homebrew/opt/python@3.14/bin/python3.14",
+      "version": "2026.10.9",
+      "control_protocol": 1,
+      "cancellation_protocol": 1,
+      "result_recovery_protocol": 1,
+      "execution_lifetime": "native-host",
+      "agent_id": "main",
+      "runtime_root": "/private/tmp/xsm-basic-real/openclaw-openai-luna-full-strict-false/state/runtime/8fc3b192d832",
+      "frontend": "/private/tmp/xsm-basic-real/openclaw-openai-luna-full-strict-false/state/runtime/8fc3b192d832/integrations/openclaw/worker_cli.py",
+      "frontend_sha256": "75d96ad3afdafba60191e7a6cc7cea776101b8bf824f75336eef067f95535ea7",
+      "binding_hashes": {
+        "xsm.mjs": "73a1b57ba799dfb4acf4cd359224091eeea554d6ac4f8b5ea490d115d781d901",
+        "worker_cli.py": "75d96ad3afdafba60191e7a6cc7cea776101b8bf824f75336eef067f95535ea7",
+        "worker_frontend.py": "346e9db0e5104ba3481b45e53b4f6e3434aabdf69729e3f247109dd7f3691091",
+        "worker_rpc.mjs": "e32f96063591c55b5f7d2fcf803465a495d285c4c4fb9a22b0a2f69d0cec2e2f",
+        "worker_transport.py": "c64c84cb3ff280f7c3685cc7404698e9b32eead348402a6089efa6d99152e809",
+        "worker_session.py": "247710f83127ec9008ebfb84f5fce13c7c3657b141664bb26953dfc637f2f75b"
+      }
+    }
+  },
+  "work_context": "one-real-basic-turn",
+  "body": "This is the user-authorized isolated XSM test. Use the available native xsm_send tool exactly once with these arguments: {\"target\": \"peer:f4b7780e496fd027781e3ba2d2b34f09b61ef0220e146972d11ce26bb04109ac\", \"text\": \"XSM_BASIC_REAL_NOTE_5c13584f1b43528f62029d57\", \"kind\": \"note\", \"wake\": \"never\", \"wait\": 0}. After the tool returns, reply exactly XSM_BASIC_REAL_DONE_5c13584f1b43528f62029d57. Do not use shell, write files, request approvals, publish, or call other tools.",
+  "context_id": "7187970e755adb602c15743a2a41a4cff72afe08ca76a95257938db0fc693304",
+  "context_epoch": "af94cf9f93b345888deb2abe78982f6a",
+  "created_at": 1793790800.494242,
+  "sequence": 0,
+  "result": null,
+  "reply_id": null,
+  "send_evidence": null,
+  "reservation": {
+    "token": "22501af7f9244357848d37b1b337aba1",
+    "controller": {
+      "pid": 60218,
+      "lstart": "Wed Nov  4 20:13:09 2026"
+    }
+  },
+  "events": [
+    {
+      "phase": "queued",
+      "at": 1793790800.49425
+    },
+    {
+      "phase": "reserved",
+      "at": 1793790801.013862
+    },
+    {
+      "phase": "acknowledged",
+      "at": 1793790801.058614
+    },
+    {
+      "phase": "running",
+      "at": 1793790801.0709498
+    }
+  ],
+  "run_attempts": 1,
+  "child": {
+    "pid": 60732,
+    "lstart": "Wed Nov  4 20:13:21 2026",
+    "argv": [
+      "/opt/homebrew/opt/python@3.14/bin/python3.14",
+      "-B",
+      "/private/tmp/xsm-basic-real/openclaw-openai-luna-full-strict-false/state/runtime/8fc3b192d832/integrations/openclaw/worker_cli.py",
+      "--node",
+      "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-openclaw-2026109-ruwrjohz/node-v24.22.2-darwin-arm64/bin/node",
+      "--native-cli",
+      "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-openclaw-2026109-ruwrjohz/native/node_modules/openclaw/openclaw.mjs",
+      "--agent-id",
+      "main",
+      "--cwd",
+      "/private/tmp/xsm-basic-real/openclaw-openai-luna-full-strict-false/workspace",
+      "--context-id",
+      "7187970e755adb602c15743a2a41a4cff72afe08ca76a95257938db0fc693304",
+      "--context-epoch",
+      "af94cf9f93b345888deb2abe78982f6a",
+      "--run-id",
+      "xsm-owned-69b735d6588e4c0d94c5337756f54f8d-b262525a6afb452aadd6207e5ca8c9a7",
+      "--model=xsm-subscription/gpt-6-luna"
+    ],
+    "stdout": "/private/tmp/xsm-basic-real/openclaw-openai-luna-full-strict-false/state/owned-runs/69b735d6588e4c0d94c5337756f54f8d/one-native-turn.jsonl",
+    "stderr": "/private/tmp/xsm-basic-real/openclaw-openai-luna-full-strict-false/state/owned-runs/69b735d6588e4c0d94c5337756f54f8d/one-native-turn.stderr"
+  },
+  "native_binding": {
+    "native_session_id": "673f24d6-38e9-4644-890c-97f88c6ac0a1",
+    "child_pid": 60732,
+    "child_lstart": "Wed Nov  4 20:13:21 2026",
+    "bound_at": 1793790829.78445
+  },
+  "status": "running",
+  "context": {
+    "id": "7187970e755adb602c15743a2a41a4cff72afe08ca76a95257938db0fc693304",
+    "context_key": "7187970e755adb602c15743a2a41a4cff72afe08ca76a95257938db0fc693304",
+    "epoch": "af94cf9f93b345888deb2abe78982f6a",
+    "worker_id": "69b735d6588e4c0d94c5337756f54f8d",
+    "sender": {
+      "runtime": "basic-real-reference",
+      "home": "/private/tmp/xsm-basic-real/openclaw-openai-luna-full-strict-false/state/protocol-profiles/basic-real-reference/67157f2cba2505adc4905142c0bf3bfe24f5710f9bf9de04c0e3c363da3b5fc4",
+      "session_id": "5b2250490c3d794ee077be056fb46dd0cf23f0b744d00490eb090be4eaaa4df5"
+    },
+    "work_context": "one-real-basic-turn",
+    "independent": false,
+    "native_session_id": "673f24d6-38e9-4644-890c-97f88c6ac0a1",
+    "session_seed": "b1867682-50d1-47c1-ac58-69b631ed235d",
+    "retired": false,
+    "unknown_request": null,
+    "created_at": 1793790800.4941099
+  },
+  "persisted": true,
+  "accepted": true,
+  "side_effects_exactly_once": false,
+  "slot_occupied": true
+}

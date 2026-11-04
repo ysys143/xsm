@@ -1,0 +1,842 @@
+[
+  {
+    "path": "final-regressions.log",
+    "bytes": 98,
+    "sha256": "99502baedc61b82e6bdcf0d159db37e127c714ac849e8490085e67985d3ab082"
+  },
+  {
+    "path": "wrong-person-red-setup-attempt.log",
+    "bytes": 3534,
+    "sha256": "c58af584982cb053a92903c6eeb520f79af9c114024e7dfe71035c9d30a692c1"
+  },
+  {
+    "path": "native-answer-red.log",
+    "bytes": 813,
+    "sha256": "e02154074542151ab0beeba749c353cf3b4b428ef381aac1a4abbd247440a0bb"
+  },
+  {
+    "path": "mutation-setup-attempt.json",
+    "bytes": 1109,
+    "sha256": "6c1cfc14fbbe1c573f68d63be2c0edddd0770acbac6dbb5778caa982e2501b71"
+  },
+  {
+    "path": "remote-command-reuse-red-setup-attempt.log",
+    "bytes": 1068,
+    "sha256": "02e11ba6afd09b6748624db096fab6e846da1e4c44e0fd8c732ea0aa06cfd94a"
+  },
+  {
+    "path": "later-cancel-red.log",
+    "bytes": 2338,
+    "sha256": "44a0998a7357004559265336f1390a7ea79072d4501d7f07a40abdf600a06464"
+  },
+  {
+    "path": "mutation-positive-setup-attempt.log",
+    "bytes": 9305,
+    "sha256": "964bd03a22092713205f568a8b0267d7d9e0a02b497cfd80800306b9832c65d9"
+  },
+  {
+    "path": "results.json",
+    "bytes": 2479,
+    "sha256": "68557138d360a6e406a811ae847e76b0eba70a8f54d9f5a9141e932ec078d3c8"
+  },
+  {
+    "path": "protocol-tests.log",
+    "bytes": 99,
+    "sha256": "b5b9a617739c917eac16b5d4ada0e55bc604f41bf02b847e140d766e7aade845"
+  },
+  {
+    "path": "wrong-person-red.log",
+    "bytes": 2628,
+    "sha256": "32aa4092690deacf245062e3e9f705c2da3c0c5d4b22a52c55da6cef6eef8d99"
+  },
+  {
+    "path": "native-answer-recheck.log",
+    "bytes": 97,
+    "sha256": "dcf9ee85341f52f00be9171cdcf0d9379eeaf9a961c58d20999c7c684d717450"
+  },
+  {
+    "path": "consent-recheck.log",
+    "bytes": 98,
+    "sha256": "b2eaa08acc3eeada04656ebb338f0467405cd92ee4e7062fac0e9524b1580ed3"
+  },
+  {
+    "path": "partial-discovery-red-setup-attempt.log",
+    "bytes": 3534,
+    "sha256": "aa6f1fab3717ef6226722fcd62a997e4634f06a5aa3e49f3ee3a8724f26efb01"
+  },
+  {
+    "path": "claude-reference-operations.json",
+    "bytes": 16131,
+    "sha256": "44e990b267b25b90b3340a9d2fee31ebff0864bc219d1f25939a158d4e75ccde"
+  },
+  {
+    "path": "README.md",
+    "bytes": 9507,
+    "sha256": "32b9c370d827ab7f7cddd879d30c8532f4bf2c450492c07efedfaa0d98ef18a0"
+  },
+  {
+    "path": "mutation-positive.log",
+    "bytes": 97,
+    "sha256": "2bf43878d6ce0eca9474a3377d392d3b9ad7d8404423334b1999fa9f962f5e03"
+  },
+  {
+    "path": "consent-tests.log",
+    "bytes": 1779,
+    "sha256": "6b1453a5783dbcbdf279a43beb2a35f097a261fcfdcc4b82a9c920f51804f1c8"
+  },
+  {
+    "path": "partial-discovery-red.log",
+    "bytes": 896,
+    "sha256": "56f458be7c3457a657ab1a9684d00fa24734564434a441326d14269d851db517"
+  },
+  {
+    "path": "remote-unknown-red-setup-attempt.log",
+    "bytes": 859,
+    "sha256": "86218290cb87cc8949b1f5580eaf84a1db2d5badfb5144bc424aa7973ae87bdd"
+  },
+  {
+    "path": "native-contact-answer-red.log",
+    "bytes": 881,
+    "sha256": "fdb4037b7ffd3f5022a729e153ed0e8e1fe30adb60ab01d4e25290bb585ee1e5"
+  },
+  {
+    "path": "later-cancel-red-setup-attempt.log",
+    "bytes": 7612,
+    "sha256": "95d334eebb1a3fbfaed42ab9e7c56e86262aa0be57bca8fb4ffc6ab53cba4810"
+  },
+  {
+    "path": "check-mutations.py",
+    "bytes": 4206,
+    "sha256": "027cfa20079b525b0c9f7161a6832097549daf9ba25f6d2778aca92f73dcdf33"
+  },
+  {
+    "path": ".gitattributes",
+    "bytes": 111,
+    "sha256": "bd82dcb3b90a06d80ba1247ff3322fd8bc2129a2b334e04358ac68cb752338ac"
+  },
+  {
+    "path": "protocol-schema-check.json",
+    "bytes": 2508,
+    "sha256": "62b9ecae66e50582130989185bce5f09d38bf50800ba5336be249f4c7a206a98"
+  },
+  {
+    "path": "mutations-check.log",
+    "bytes": 1320,
+    "sha256": "d541b0b05171c9ad43c762a90444d7ed3c090a2918e404439ac9d815326f39a8"
+  },
+  {
+    "path": "remote-unknown-red.log",
+    "bytes": 859,
+    "sha256": "1f1f24de339b9be9a0d6073a44e94045363502d1d32012ee79dfe1f22f8268a8"
+  },
+  {
+    "path": "remote-command-reuse-red.log",
+    "bytes": 1068,
+    "sha256": "6d4e458c1c01e8da4e1bdceaf9cbddd978cd439e3eeb162588426df01f73c4fc"
+  },
+  {
+    "path": "core-tests.log",
+    "bytes": 100,
+    "sha256": "7fbc8e5361fedf7eebba19ba59925bdf2521b2ed42fa937f74c6fe2dcaee1b1a"
+  },
+  {
+    "path": "mutation-results.json",
+    "bytes": 1320,
+    "sha256": "d541b0b05171c9ad43c762a90444d7ed3c090a2918e404439ac9d815326f39a8"
+  },
+  {
+    "path": "claude-native-evidence.json",
+    "bytes": 14658,
+    "sha256": "ab569923616379e625d791f6416e47d8211ed98558436b1552460a19ff75c0fb"
+  },
+  {
+    "path": "native/summary.json",
+    "bytes": 2732,
+    "sha256": "adb58deabf98fb913748433c7f1d0c15955711c55bf823f795edf4bc1221348c"
+  },
+  {
+    "path": "native/openai_wire_relay.py",
+    "bytes": 9612,
+    "sha256": "a397a417709c7f31db6d184a5e906e656104bce259aacf66bd6278f514bf4db2"
+  },
+  {
+    "path": "native/native4-strict-false-summary.json",
+    "bytes": 11048,
+    "sha256": "c60d0473c3f38200c466271da7e949bc931458f2af4c6b01f611aadc751c04e9"
+  },
+  {
+    "path": "native/probe_native4_once.py",
+    "bytes": 17072,
+    "sha256": "fc96061d35e4ad0516df5d0412ca04321dfd70aa578116e8439c7c91e0ad77e7"
+  },
+  {
+    "path": "native/probe_openai_once.py",
+    "bytes": 13010,
+    "sha256": "b7ee5517cddfe97b7f7a7ce4214722cff499eb06d859573312f88f242c961a59"
+  },
+  {
+    "path": "native/native4-final-summary.json",
+    "bytes": 12117,
+    "sha256": "1a008e3f7c5d2e4ceca8b386fb6fedeb23b94dcaf6e739ec1dfd3a6778709f08"
+  },
+  {
+    "path": "native/probe_once.py",
+    "bytes": 12914,
+    "sha256": "5381d320c91a28afa009743ad885633b1ca7bac68c79755edbfa4360df534323"
+  },
+  {
+    "path": "native/native_profiles.py",
+    "bytes": 2538,
+    "sha256": "7b1be83a9c8c11e5c8234fe895325241b8e84c9c1a9d15e118ca3d896c79bc9b"
+  },
+  {
+    "path": "native/openai_relay.py",
+    "bytes": 7696,
+    "sha256": "fd27da47072aa0aa4c9f5f0be0a9a395dc708b13a83c67561ce1f338b34b2ecb"
+  },
+  {
+    "path": "native/probe_openclaw_staged.py",
+    "bytes": 15059,
+    "sha256": "7b3d3a8be4499f724a45904288fbee61ac96a64cc9f0fa9f75909b041106682e"
+  },
+  {
+    "path": "native/manifest.json",
+    "bytes": 22502,
+    "sha256": "83b2579904f7802c9e3fb4af3b67162675cafaa348ff6bc84a3c53984f686404"
+  },
+  {
+    "path": "native/openai_staged_relay.py",
+    "bytes": 10285,
+    "sha256": "f40461abee7dc81e1661c3c85d5776d1963babc0811735c5ea6df82bd260d80d"
+  },
+  {
+    "path": "native/openai_strict_relay.py",
+    "bytes": 8235,
+    "sha256": "ce3b7abdbbb884db14817ed4a3c08bd2c77f9f3d5f44820042cddf532c31d7f1"
+  },
+  {
+    "path": "native/probe_openclaw_actual_once.py",
+    "bytes": 15318,
+    "sha256": "4be700dabcb49ec54ca79e12b9cadd5230aaa9293cdd3bb99099cfc65a583885"
+  },
+  {
+    "path": "native/probe_openclaw_readiness_diagnosis.py",
+    "bytes": 15559,
+    "sha256": "474838037a85cb137396ac4507f9f5784cbe2555e07c3145f56c17a56b48fcb8"
+  },
+  {
+    "path": "native/probe_openai_strict_once.py",
+    "bytes": 13644,
+    "sha256": "006b393e83b8bab803ad691d0409ade6905be8a7f6faff602752d8577f4ee794"
+  },
+  {
+    "path": "native/openclaw-readiness-final-diagnosis.json",
+    "bytes": 4230,
+    "sha256": "28437af092468341d41356f0f5121769e94f70dc1aa1e3ff59235cbc8a84cf37"
+  },
+  {
+    "path": "native/openai-summary.json",
+    "bytes": 2316,
+    "sha256": "e11a596b4e42339839845f20778de1c5ddc9a2cd2840712192e8c9c8f60ff33a"
+  },
+  {
+    "path": "codex/native-model-context.json",
+    "bytes": 341,
+    "sha256": "c171daf1baa16d81b1115092d1927ab18227bcbbd6b8dfabefc1ced3118ae4a5"
+  },
+  {
+    "path": "codex/native.jsonl",
+    "bytes": 12822,
+    "sha256": "81aecae91ac7b5216c9e81328e7830d1d0cb19b17a1b12d09dc3bb495083a29f"
+  },
+  {
+    "path": "codex/result.json",
+    "bytes": 10922,
+    "sha256": "82b3f6e8b42a750e86ff9c07de098f50c12de4494fab74252d3178bfdf8cfeed"
+  },
+  {
+    "path": "codex/cleanup.json",
+    "bytes": 176,
+    "sha256": "7f0ced0b9118e100e004e13f934ed9e8e71ee4ded8a8425f753c28d8d08811f6"
+  },
+  {
+    "path": "codex/process-result.json",
+    "bytes": 42,
+    "sha256": "92e61b02c672f26b0508f03c45d0f7e178a32b410e804f4c3f3f6b3eb047027d"
+  },
+  {
+    "path": "codex/identity-correction.json",
+    "bytes": 566,
+    "sha256": "23256e6fad1c38df207e7df3ae8a6f44b33a89e2d9dd157c8c0cf516420092b2"
+  },
+  {
+    "path": "codex/peer-operations.jsonl",
+    "bytes": 4489,
+    "sha256": "09f3344fd24ab3400e11dee0bc306ab8b93a985d19fbce5487bf99c07253cee4"
+  },
+  {
+    "path": "codex/before-native-status.json",
+    "bytes": 216,
+    "sha256": "e06f9a2fb5e1c3e95d6ca2fcca4d186b030e11f50d0f7027df3706ad2cc9efc3"
+  },
+  {
+    "path": "codex/run-selected-codex.py",
+    "bytes": 2806,
+    "sha256": "33e1ff5d350d11709e18805e36ba7c522541026ddae83a2714ecb88f15aa0af7"
+  },
+  {
+    "path": "codex/requested-prompt.txt",
+    "bytes": 1772,
+    "sha256": "28b58c2fc60ffb8847f237f09f1793d1d551198f23cbe3acbf89a20d87acc790"
+  },
+  {
+    "path": "codex/native.stderr",
+    "bytes": 131,
+    "sha256": "16876d6c944cacb360338d649a3ae762aa47c3fc9798ba6036ef9374f0adb86c"
+  },
+  {
+    "path": "native/pi-20261104-first/upstream-observations.json",
+    "bytes": 532,
+    "sha256": "e9e0e1238176513d8f5ec39f6a30edb29e2ed58e830682d6ef160091ad04137e"
+  },
+  {
+    "path": "native/pi-20261104-first/result.json",
+    "bytes": 3311,
+    "sha256": "d6cc446c813580f27e516ccd36fb79fb6aaca528529e6ac562b3b329902d8ab4"
+  },
+  {
+    "path": "native/pi-20261104-first/native-one-native-turn.stderr",
+    "bytes": 119,
+    "sha256": "d852d7aee2bad6eee602a60e450d2d20526465b968d4e4c1503a858529392a16"
+  },
+  {
+    "path": "native/pi-20261104-first/one-turn-journal.json",
+    "bytes": 1926,
+    "sha256": "dd81859e840b28d71be0d9a56414dac41e3f6776a6355f6827e50d9d40395792"
+  },
+  {
+    "path": "native/pi-20261104-first/subscription-relay.jsonl",
+    "bytes": 232,
+    "sha256": "89baeefed5140b90bfa6c9ed27ecad40900ced226fb2516ba4fd85850df58a3d"
+  },
+  {
+    "path": "native/pi-20261104-first/requested-turn.json",
+    "bytes": 835,
+    "sha256": "ed9e87ac067ffa642bd5b1bbce92a898e246841b6fd084419575a3efeaabc68f"
+  },
+  {
+    "path": "native/pi-20261104-first/upstream-01.body",
+    "bytes": 330,
+    "sha256": "ca96fe78a7d881e445efbf778d6e6d65a8f0cc33dc4ece89a37d8110bbd582a7"
+  },
+  {
+    "path": "native/pi-20261104-first/operator-retained-journal.json",
+    "bytes": 7171,
+    "sha256": "0a036a9b91b943e2c365934270615ca315353e424174c8fc575173b12054b4da"
+  },
+  {
+    "path": "native/pi-20261104-first/native-one-native-turn.jsonl",
+    "bytes": 120912,
+    "sha256": "1928f8e58e40edaad4252b601bd3aa8c45f8bef9a32c1887cb942b3ebdd54da3"
+  },
+  {
+    "path": "native/openclaw-openai-luna-full-strict-false/subscription-route-verification.json",
+    "bytes": 592,
+    "sha256": "422a2bb246e9f515925bbf692699ea51d8eae82bbbf0747b3dca80dc71f7b80c"
+  },
+  {
+    "path": "native/openclaw-openai-luna-full-strict-false/result.json",
+    "bytes": 4013,
+    "sha256": "dd0c944d49955740de24d4de553a4e631c9b1abdb49d9560b54882d92af00d8e"
+  },
+  {
+    "path": "native/openclaw-openai-luna-full-strict-false/native-one-native-turn.stderr",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "native/openclaw-openai-luna-full-strict-false/requested-turn.json",
+    "bytes": 835,
+    "sha256": "3989d55c81cb21ac143a8611c9398ee1e6709dba2d105e9a249b55ce448ab549"
+  },
+  {
+    "path": "native/openclaw-openai-luna-full-strict-false/operator-retained-journal.json",
+    "bytes": 8667,
+    "sha256": "d5d2df6b20684a36b0c867a7be14f8add27156ae6b7899a210f650a822ebd1d2"
+  },
+  {
+    "path": "native/openclaw-openai-luna-full-strict-false/gateway-filtered.log",
+    "bytes": 18829,
+    "sha256": "e04e789f25c46322aa66d702937ca53e5ef71642cd33c05e9e066175569bce96"
+  },
+  {
+    "path": "native/openclaw-openai-luna-full-strict-false/configuration-reason.json",
+    "bytes": 318,
+    "sha256": "da2a799234226579ca5a2cdc2204273927d360542e094d44a2f8d08828f2579c"
+  },
+  {
+    "path": "native/openclaw-openai-luna-full-strict-false/native-one-native-turn.jsonl",
+    "bytes": 588,
+    "sha256": "b34771e301d0a2b19f82b090e40c441bb7c089d3695dfb0cb4b61e00a98f3168"
+  },
+  {
+    "path": "native/openclaw-openai-luna-staged-readiness-once/subscription-route-verification.json",
+    "bytes": 592,
+    "sha256": "422a2bb246e9f515925bbf692699ea51d8eae82bbbf0747b3dca80dc71f7b80c"
+  },
+  {
+    "path": "native/openclaw-openai-luna-staged-readiness-once/result.json",
+    "bytes": 1901,
+    "sha256": "d69d2527d55282abaad6e4c6befeb8a9def23cd9dd95c7f4b6b957bb8f71b92a"
+  },
+  {
+    "path": "native/openclaw-openai-luna-staged-readiness-once/readiness-error-analysis.json",
+    "bytes": 733,
+    "sha256": "bbb3ccad92ef49f8ae5311e294860a3d4611342ec407956ae7b763f335b6d48c"
+  },
+  {
+    "path": "native/openclaw-openai-luna-staged-readiness-once/gateway-filtered.log",
+    "bytes": 17310,
+    "sha256": "8ac2c2391f965142c518566041cde916ae846055ae6f4f5e6d60a42bf69f5a74"
+  },
+  {
+    "path": "native/openclaw-openai-luna-staged-readiness-once/configuration-reason.json",
+    "bytes": 673,
+    "sha256": "40d2cc2aad91cc01ea0bd12ad2dde6bd44a4a83f93f5ff479d2fda446aa7fd97"
+  },
+  {
+    "path": "native/openclaw-readiness-corrected-no-model/subscription-route-verification.json",
+    "bytes": 592,
+    "sha256": "422a2bb246e9f515925bbf692699ea51d8eae82bbbf0747b3dca80dc71f7b80c"
+  },
+  {
+    "path": "native/openclaw-readiness-corrected-no-model/result.json",
+    "bytes": 2095,
+    "sha256": "3591fd6dbfc56800b3cacb5536de1d67463172175a9ded27f754482d7574917b"
+  },
+  {
+    "path": "native/openclaw-readiness-corrected-no-model/sessions-create.request.json",
+    "bytes": 228,
+    "sha256": "e35f433f0e73983d8a88f342b73c82593a8ace740216d9a006d08668b09337ef"
+  },
+  {
+    "path": "native/openclaw-readiness-corrected-no-model/gateway-filtered.log",
+    "bytes": 17725,
+    "sha256": "ab0935b74ce2fa06322a0258a17797f81f64c15d67818878ed2daa017fe3ab94"
+  },
+  {
+    "path": "native/openclaw-readiness-corrected-no-model/configuration-reason.json",
+    "bytes": 683,
+    "sha256": "c13a709bf3978a4349388c6b52952db40da15315d660b37b8171b83b903cf4dc"
+  },
+  {
+    "path": "native/pi-openai-luna-send-only/upstream-observations.json",
+    "bytes": 331,
+    "sha256": "f90a23815a6ca33fb2d6f103b2887c351faf9dcccd84afc3f51146ecb8f38d23"
+  },
+  {
+    "path": "native/pi-openai-luna-send-only/subscription-route-verification.json",
+    "bytes": 592,
+    "sha256": "422a2bb246e9f515925bbf692699ea51d8eae82bbbf0747b3dca80dc71f7b80c"
+  },
+  {
+    "path": "native/pi-openai-luna-send-only/result.json",
+    "bytes": 3269,
+    "sha256": "fd7bf299fb9fd20a0a73de1f3d9cc4bd59ea3754b9fdea9c043fd9a69786b710"
+  },
+  {
+    "path": "native/pi-openai-luna-send-only/native-one-native-turn.stderr",
+    "bytes": 119,
+    "sha256": "70b020f366242f519eacbbdd756d7105a9fc86710a64852e29361db1d46cccdc"
+  },
+  {
+    "path": "native/pi-openai-luna-send-only/one-turn-journal.json",
+    "bytes": 3447,
+    "sha256": "fc72291ba609a66350c9e7590142c23efbdd47742297a0d52029230239cfa3e0"
+  },
+  {
+    "path": "native/pi-openai-luna-send-only/upstream-02.body",
+    "bytes": 4755,
+    "sha256": "6370378472cdcdfdd5bf5b342f931270a55e26f30a0116431d5fb6256d096dc7"
+  },
+  {
+    "path": "native/pi-openai-luna-send-only/native-tool-error.json",
+    "bytes": 2302,
+    "sha256": "7f7197bef979572aeb8b077c13c47b9f9441b07d2cedebccfe7a9fb6c7936a88"
+  },
+  {
+    "path": "native/pi-openai-luna-send-only/subscription-relay.jsonl",
+    "bytes": 468,
+    "sha256": "812ffa94ff5b02003d7dcd0323e481b8725d5a587e932a2caf552aefe3dc78b5"
+  },
+  {
+    "path": "native/pi-openai-luna-send-only/requested-turn.json",
+    "bytes": 835,
+    "sha256": "14182817f8dfe71013d4ef802d4f849361ecd0c9b67c3c3a2ef3901f8ddb6040"
+  },
+  {
+    "path": "native/pi-openai-luna-send-only/upstream-01.body",
+    "bytes": 1468,
+    "sha256": "1df8676496ace7e3ccc87254a96a196a05fc24fdcd82bc507ec0038974d3f5f9"
+  },
+  {
+    "path": "native/pi-openai-luna-send-only/operator-retained-journal.json",
+    "bytes": 8741,
+    "sha256": "0675110409d2d16d1be90cfd24a52a0875bfba369265b19db3103ee777bd0f58"
+  },
+  {
+    "path": "native/pi-openai-luna-send-only/native-one-native-turn.jsonl",
+    "bytes": 31654,
+    "sha256": "4c051bd81256700ddca3aaa71ee61f6a02ebd0cdb55139bc00f21ba61725092f"
+  },
+  {
+    "path": "native/hermes-openai-luna-full-strict-false-native-first/upstream-05.body",
+    "bytes": 458,
+    "sha256": "82f93e925921b83ba86588682af73e44f09536ddf56869403d0423bfa94e8d3f"
+  },
+  {
+    "path": "native/hermes-openai-luna-full-strict-false-native-first/upstream-observations.json",
+    "bytes": 947,
+    "sha256": "4c09cb87973cf86855301139af00c9d759fe4b5cd6937edf1eb5655d42ef60a3"
+  },
+  {
+    "path": "native/hermes-openai-luna-full-strict-false-native-first/subscription-route-verification.json",
+    "bytes": 592,
+    "sha256": "422a2bb246e9f515925bbf692699ea51d8eae82bbbf0747b3dca80dc71f7b80c"
+  },
+  {
+    "path": "native/hermes-openai-luna-full-strict-false-native-first/result.json",
+    "bytes": 4735,
+    "sha256": "0304147dd038c5f69450727190662ecad595d686d3f24a7d4d332c4f2bf59384"
+  },
+  {
+    "path": "native/hermes-openai-luna-full-strict-false-native-first/upstream-04.body",
+    "bytes": 4975,
+    "sha256": "30d7bcb390869a8c14e8aebad9aef975e4fe462d8b328353fcaf523a863cb49e"
+  },
+  {
+    "path": "native/hermes-openai-luna-full-strict-false-native-first/native-one-native-turn.stderr",
+    "bytes": 164,
+    "sha256": "135880407aee48a2f01dfbc4ac395ac478bc2e5ea68d431c3d5342be9cbfd91f"
+  },
+  {
+    "path": "native/hermes-openai-luna-full-strict-false-native-first/upstream-03.body",
+    "bytes": 1217,
+    "sha256": "1346cc09f2f6274d3a10fbfc5d822173e57bddb3df67b9bcce35f40de5c5dd4b"
+  },
+  {
+    "path": "native/hermes-openai-luna-full-strict-false-native-first/one-turn-journal.json",
+    "bytes": 3565,
+    "sha256": "c9be7827553f8744d573cc428825c3bc19af23a5678e3e7327b987bb079b4519"
+  },
+  {
+    "path": "native/hermes-openai-luna-full-strict-false-native-first/model-tool-selection.json",
+    "bytes": 734,
+    "sha256": "68cfd17fb97342f4c9db0a045cd876077f153c300ace5144270f623cc4280b26"
+  },
+  {
+    "path": "native/hermes-openai-luna-full-strict-false-native-first/upstream-02.body",
+    "bytes": 1002,
+    "sha256": "e031be4ceb70f72560569d0c4faa78bd531d6f1bf4cc1b72d8c3f76bc3c9ab47"
+  },
+  {
+    "path": "native/hermes-openai-luna-full-strict-false-native-first/subscription-relay.jsonl",
+    "bytes": 1169,
+    "sha256": "100ac08493c13dfd350216c54f654910671a389ffb16de378e8891c698758a88"
+  },
+  {
+    "path": "native/hermes-openai-luna-full-strict-false-native-first/requested-turn.json",
+    "bytes": 835,
+    "sha256": "bf572e0297e3d42c61385272ad318f96b8f3d5ac81c477e5eab5b3bf4c5647b6"
+  },
+  {
+    "path": "native/hermes-openai-luna-full-strict-false-native-first/upstream-01.body",
+    "bytes": 1010,
+    "sha256": "750ebb6df44017e61a7b9425a1fadb083c88eaec35de4f31610101f76580899f"
+  },
+  {
+    "path": "native/hermes-openai-luna-full-strict-false-native-first/operator-retained-journal.json",
+    "bytes": 9444,
+    "sha256": "8c586971562324e4ac026394bee61e53ee13747e6ebf6b8363f0f6635f1830e1"
+  },
+  {
+    "path": "native/hermes-openai-luna-full-strict-false-native-first/configuration-reason.json",
+    "bytes": 318,
+    "sha256": "da2a799234226579ca5a2cdc2204273927d360542e094d44a2f8d08828f2579c"
+  },
+  {
+    "path": "native/hermes-openai-luna-full-strict-false-native-first/native-one-native-turn.jsonl",
+    "bytes": 8946,
+    "sha256": "f5849939869572a5af57f644fac0ca67d9a9796df296a1501996d5f066bbc03f"
+  },
+  {
+    "path": "native/opencode-openai-luna-full-strict-false/upstream-observations.json",
+    "bytes": 537,
+    "sha256": "088f2fffd4d91cbd50691938fe41118932fce2050220d1dbe79ffe0cadeda9ce"
+  },
+  {
+    "path": "native/opencode-openai-luna-full-strict-false/subscription-route-verification.json",
+    "bytes": 592,
+    "sha256": "422a2bb246e9f515925bbf692699ea51d8eae82bbbf0747b3dca80dc71f7b80c"
+  },
+  {
+    "path": "native/opencode-openai-luna-full-strict-false/result.json",
+    "bytes": 4177,
+    "sha256": "384e72966ddaf04a2f87671c865e2bc725c8206ec753b8f682069b4724ed8355"
+  },
+  {
+    "path": "native/opencode-openai-luna-full-strict-false/native-one-native-turn.stderr",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "native/opencode-openai-luna-full-strict-false/upstream-03.body",
+    "bytes": 4754,
+    "sha256": "a207a291722aeaa3fb457e3f21eee84c885eab40645474bfdd92647c7d4efa1a"
+  },
+  {
+    "path": "native/opencode-openai-luna-full-strict-false/one-turn-journal.json",
+    "bytes": 3487,
+    "sha256": "796e88f8c6f9f5b317cf8bca00cbbb4126f0df2fba6e8d5d8ce707f844b2bb3b"
+  },
+  {
+    "path": "native/opencode-openai-luna-full-strict-false/upstream-02.body",
+    "bytes": 1161,
+    "sha256": "5bb2a33dd632d93fd36b3d5ecc614b6d21c8c8649a4a22aa74f1e77753b5801a"
+  },
+  {
+    "path": "native/opencode-openai-luna-full-strict-false/subscription-relay.jsonl",
+    "bytes": 702,
+    "sha256": "7f1f5ea09742c8068cd085c25edfba536cd982326dcfc37960f157f86b27dc44"
+  },
+  {
+    "path": "native/opencode-openai-luna-full-strict-false/requested-turn.json",
+    "bytes": 835,
+    "sha256": "422e741e5bb682b3f979a7d26c0414be801737d054959e56a363707dd0ac71d5"
+  },
+  {
+    "path": "native/opencode-openai-luna-full-strict-false/upstream-01.body",
+    "bytes": 2160,
+    "sha256": "41b1bef165a8363b1886f457eadd1f75df4c4395c571d538e697b59f79b69e66"
+  },
+  {
+    "path": "native/opencode-openai-luna-full-strict-false/operator-retained-journal.json",
+    "bytes": 8767,
+    "sha256": "26d45ed5cd37f3eb0f875bb29f3eb54ca459cef13fabdf034ffe5402dd4ecf88"
+  },
+  {
+    "path": "native/opencode-openai-luna-full-strict-false/configuration-reason.json",
+    "bytes": 318,
+    "sha256": "da2a799234226579ca5a2cdc2204273927d360542e094d44a2f8d08828f2579c"
+  },
+  {
+    "path": "native/opencode-openai-luna-full-strict-false/native-one-native-turn.jsonl",
+    "bytes": 2603,
+    "sha256": "7694f3bea1e1608b534ea0e371da8f5f8e6b23e4ba8c3cbb4b9a3112129c2304"
+  },
+  {
+    "path": "native/pi-openai-luna-full-strict-false/upstream-observations.json",
+    "bytes": 347,
+    "sha256": "da3595df6417ce2a4442262b0c92da0663d3ecd93064329617a92f57e5845293"
+  },
+  {
+    "path": "native/pi-openai-luna-full-strict-false/subscription-route-verification.json",
+    "bytes": 592,
+    "sha256": "422a2bb246e9f515925bbf692699ea51d8eae82bbbf0747b3dca80dc71f7b80c"
+  },
+  {
+    "path": "native/pi-openai-luna-full-strict-false/result.json",
+    "bytes": 3866,
+    "sha256": "5afd334ebb9ad6a070b18249e48b8516083797c216c1a079d4b44594bc64f1e7"
+  },
+  {
+    "path": "native/pi-openai-luna-full-strict-false/native-one-native-turn.stderr",
+    "bytes": 119,
+    "sha256": "0823f3dcce6d2d7d130c2d21249a2bea3f0d99d3bd4c77c64d51a5c051ef74fa"
+  },
+  {
+    "path": "native/pi-openai-luna-full-strict-false/one-turn-journal.json",
+    "bytes": 3463,
+    "sha256": "96f0d15845114d08f9ac01395d1db7f4d8044fee65e57635bb1e50a1f923aa08"
+  },
+  {
+    "path": "native/pi-openai-luna-full-strict-false/upstream-02.body",
+    "bytes": 4324,
+    "sha256": "d3585b356a563f0eb430366cf9f0a87eeb572df8b80dc681ae07ea1ea71a9510"
+  },
+  {
+    "path": "native/pi-openai-luna-full-strict-false/subscription-relay.jsonl",
+    "bytes": 468,
+    "sha256": "1e9d2d267283f60ebfa7a7867c1f1c8d13edcce9273d4f9e1c67eeb135ce3e19"
+  },
+  {
+    "path": "native/pi-openai-luna-full-strict-false/requested-turn.json",
+    "bytes": 835,
+    "sha256": "e73a357e4bd1f75ee3a10d7e1b322dee9191f4dcefb499ac85f3f8e8554604b7"
+  },
+  {
+    "path": "native/pi-openai-luna-full-strict-false/upstream-01.body",
+    "bytes": 1161,
+    "sha256": "01b1ff95b411c1422a859a3f4e8bfaab3811a876aaa85f3754772f08f6c0a19b"
+  },
+  {
+    "path": "native/pi-openai-luna-full-strict-false/operator-retained-journal.json",
+    "bytes": 9176,
+    "sha256": "101bf9f901ded43a1c7b6f19e35ac0be1bb84740436c1cb6e0f7dc229dc7e07e"
+  },
+  {
+    "path": "native/pi-openai-luna-full-strict-false/configuration-reason.json",
+    "bytes": 243,
+    "sha256": "2e1f11bccf9620ffe22d0be2b68471d8a96da0fa4e8ddec329c6407bfe2a49f1"
+  },
+  {
+    "path": "native/pi-openai-luna-full-strict-false/native-one-native-turn.jsonl",
+    "bytes": 136199,
+    "sha256": "46fe914d88d9bb1818b9aa6754a2f1142ed6a284af9875ace679b6ca77bd1471"
+  },
+  {
+    "path": "native/hermes-openai-luna-full-strict-false/result.json",
+    "bytes": 1389,
+    "sha256": "19b7186e1ec16510144e5bddc8ffafa733104af41b4a402bf40eea9e0ae343d1"
+  },
+  {
+    "path": "native/pi-openai-luna-first/upstream-observations.json",
+    "bytes": 409,
+    "sha256": "058f1d6d0b797b81bfd8ad86fd4b5f15be7997e8285641573531890e4277a5bb"
+  },
+  {
+    "path": "native/pi-openai-luna-first/subscription-route-verification.json",
+    "bytes": 592,
+    "sha256": "422a2bb246e9f515925bbf692699ea51d8eae82bbbf0747b3dca80dc71f7b80c"
+  },
+  {
+    "path": "native/pi-openai-luna-first/result.json",
+    "bytes": 3243,
+    "sha256": "b515eea1932cbc800dd51992a6ba2c69fc7476df4fd54ef28e0394742293774c"
+  },
+  {
+    "path": "native/pi-openai-luna-first/native-one-native-turn.stderr",
+    "bytes": 119,
+    "sha256": "1e09fa6b1356812f50842f036a64c8a6877b81ebbf05f0f3534d10fd4f474658"
+  },
+  {
+    "path": "native/pi-openai-luna-first/one-turn-journal.json",
+    "bytes": 1911,
+    "sha256": "8403cacbda86ca9db4a6b9554280c233ff63ac4bd75fb1af9432adcc6483d428"
+  },
+  {
+    "path": "native/pi-openai-luna-first/subscription-relay.jsonl",
+    "bytes": 221,
+    "sha256": "c3b9afaf1df5fd64dcc0d5cb79d34b24cc79a1761ced2e1b17b0d79391bcad02"
+  },
+  {
+    "path": "native/pi-openai-luna-first/requested-turn.json",
+    "bytes": 835,
+    "sha256": "d9c7c3e3e3eb594431f0ad7f5486aa58395a2c629082336824f36bf4fc901052"
+  },
+  {
+    "path": "native/pi-openai-luna-first/upstream-01.body",
+    "bytes": 203,
+    "sha256": "c8fb007c7d582cede5079dd45d040c3478e6f7f8189e6dcf504eb1942fd083e9"
+  },
+  {
+    "path": "native/pi-openai-luna-first/operator-retained-journal.json",
+    "bytes": 7168,
+    "sha256": "d92935798957f3ca40ebe01632367b9712d172975300198fd61efbfc838c4390"
+  },
+  {
+    "path": "native/pi-openai-luna-first/native-one-native-turn.jsonl",
+    "bytes": 124273,
+    "sha256": "c59f64970b4634e745eabdf2587ba0a341b3c0aaa917f2943906ef1b8208f5de"
+  },
+  {
+    "path": "native/openclaw-actual-once-after-readiness-fix/upstream-observations.json",
+    "bytes": 723,
+    "sha256": "3665ed83fc85e64ec5d35548189495c3ea502be26ba32f3078dc9ade10e69818"
+  },
+  {
+    "path": "native/openclaw-actual-once-after-readiness-fix/subscription-route-verification.json",
+    "bytes": 592,
+    "sha256": "422a2bb246e9f515925bbf692699ea51d8eae82bbbf0747b3dca80dc71f7b80c"
+  },
+  {
+    "path": "native/openclaw-actual-once-after-readiness-fix/result.json",
+    "bytes": 5862,
+    "sha256": "3449173f59e4baa8b9673d1683cbb5fd39ec9343ca42ddd1dfa52df63dec6dda"
+  },
+  {
+    "path": "native/openclaw-actual-once-after-readiness-fix/upstream-04.body",
+    "bytes": 5186,
+    "sha256": "2612b1d3cea66e402d552738f643ec7f0644cfd31921199bb79f922c84c67e41"
+  },
+  {
+    "path": "native/openclaw-actual-once-after-readiness-fix/sessions-create.request.json",
+    "bytes": 231,
+    "sha256": "5496171e09e1f973d1bfc8fabafcabd8f249303c9b2d8801d2a05f1b607325e4"
+  },
+  {
+    "path": "native/openclaw-actual-once-after-readiness-fix/upstream-03.body",
+    "bytes": 1209,
+    "sha256": "63bbfbbc7629176d840e17477be11c5a4f28d18b2c7ac93fd2cbd1eec6016f90"
+  },
+  {
+    "path": "native/openclaw-actual-once-after-readiness-fix/one-turn-journal.json",
+    "bytes": 3530,
+    "sha256": "9dc4e587947056ff7edcd0dce7ba3a0aabc65e382a7986933b85d4ada3b15739"
+  },
+  {
+    "path": "native/openclaw-actual-once-after-readiness-fix/model-tool-selection.json",
+    "bytes": 1021,
+    "sha256": "c082243501063ad0d5360ce1f42ba85a3c92d84bb886fcf76ecb6d09508ef719"
+  },
+  {
+    "path": "native/openclaw-actual-once-after-readiness-fix/upstream-02.body",
+    "bytes": 1010,
+    "sha256": "b46b68676a613fd8495e5291a673e94b6da2e901a2a0ecc8f4798d2752290fca"
+  },
+  {
+    "path": "native/openclaw-actual-once-after-readiness-fix/subscription-relay.jsonl",
+    "bytes": 1491,
+    "sha256": "a8bae23a68b5e0f75383d4a088f1d56800ebad11b21e8e023ca890b98dab7e03"
+  },
+  {
+    "path": "native/openclaw-actual-once-after-readiness-fix/requested-turn.json",
+    "bytes": 805,
+    "sha256": "d24c5d0c62603ceb1bd73861921dcee4fd2aaec12365d4f2b6d16a804f245363"
+  },
+  {
+    "path": "native/openclaw-actual-once-after-readiness-fix/upstream-01.body",
+    "bytes": 1032,
+    "sha256": "3ca7abfd78abc377aacaa313550e31a2d02cb7aaf8a1d19899a5ac0de42867b1"
+  },
+  {
+    "path": "native/openclaw-actual-once-after-readiness-fix/operator-retained-journal.json",
+    "bytes": 12019,
+    "sha256": "8a946527c77701eb1cbebedc51c9246ee887d6ba1f8f73632d1c47a80a01800f"
+  },
+  {
+    "path": "native/openclaw-actual-once-after-readiness-fix/native-one-fresh-native-turn.jsonl",
+    "bytes": 2402,
+    "sha256": "2bc0fe413b1e1b605adf73c066cadad5c7bfab33f198171cbd728ff008099269"
+  },
+  {
+    "path": "native/openclaw-actual-once-after-readiness-fix/final-evidence.json",
+    "bytes": 3271,
+    "sha256": "c7aa7f2144449f222db116cce6fc8818458847d909fce190cf325c28f05c6fcf"
+  },
+  {
+    "path": "native/openclaw-actual-once-after-readiness-fix/gateway-filtered.log",
+    "bytes": 21967,
+    "sha256": "89e5105db7d5b5a82ac444b957a15251f4346bc7cd9b58292afc5dceb0a34f18"
+  },
+  {
+    "path": "native/openclaw-actual-once-after-readiness-fix/configuration-reason.json",
+    "bytes": 732,
+    "sha256": "e1c09f38b02764e4d82935ad2037e80dea9bb1ce9ece830481c323d1616d96c7"
+  },
+  {
+    "path": "native/openclaw-actual-once-after-readiness-fix/native-one-fresh-native-turn.stderr",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+]

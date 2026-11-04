@@ -1,0 +1,14 @@
+[
+  {
+    "request": 1,
+    "httpStatus": 400,
+    "rawBody": "/private/tmp/xsm-basic-real/pi-openai-luna-first/upstream-01.body",
+    "responseBytes": 203,
+    "error": {
+      "type": "invalid_request_error",
+      "code": "invalid_request_error",
+      "message": "Invalid JSON schema: regex lookaround is not supported. Found at $.properties.message_ids.items.pattern."
+    },
+    "quota400": false
+  }
+]

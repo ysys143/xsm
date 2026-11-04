@@ -1,0 +1,8 @@
+data: {"id":"chatcmpl-c1563756d8c94be58488b82e","object":"chat.completion.chunk","created":1793790022,"model":"gpt-6-luna","choices":[{"index":0,"delta":{"role":"assistant","content":""},"finish_reason":null}],"service_tier":"auto"}
+
+data: {"id":"chatcmpl-c1563756d8c94be58488b82e","object":"chat.completion.chunk","created":1793790022,"model":"gpt-6-luna","choices":[{"index":0,"delta":{"tool_calls":[{"index":0,"id":"call_a80f19c2e9be47b19cdd6c1129063688","type":"function","function":{"name":"xsm_send","arguments":"{\"attachment_fallback\":\"inline\",\"target\":\"peer:cbe14ddcec1ef921aabc91d9879a81252898d64d420ad9be95d9f17c1760fed0\",\"targets\":[\"peer:cbe14ddcec1ef921aabc91d9879a81252898d64d420ad9be95d9f17c1760fed0\"],\"text\":\"XSM_BASIC_REAL_NOTE_e95e243324f5cdf09b8bbbc2\",\"kind\":\"note\",\"reply_to\":\"\",\"outcome\":\"succeeded\",\"priority\":\"next\",\"wake\":\"never\",\"resend\":\"\",\"held\":\"\",\"wait\":0,\"attachments\":[],\"manifest_id\":\"\",\"previous_manifest\":\"\",\"request_id\":\"\"}"}}]},"finish_reason":null}],"service_tier":"auto"}
+
+data: {"id":"chatcmpl-c1563756d8c94be58488b82e","object":"chat.completion.chunk","created":1793790022,"model":"gpt-6-luna","choices":[{"index":0,"delta":{},"finish_reason":"tool_calls"}],"usage":{"prompt_tokens":1230,"completion_tokens":166,"total_tokens":1396,"prompt_tokens_details":{"cached_tokens":0},"completion_tokens_details":{"reasoning_tokens":0}},"service_tier":"default"}
+
+data: [DONE]
+

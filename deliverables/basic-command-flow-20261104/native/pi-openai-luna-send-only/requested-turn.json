@@ -1,0 +1,12 @@
+{
+  "prompt": "This is the user-authorized isolated XSM test. Use the available native xsm_send tool exactly once with these arguments: {\"target\": \"peer:cbe14ddcec1ef921aabc91d9879a81252898d64d420ad9be95d9f17c1760fed0\", \"text\": \"XSM_BASIC_REAL_NOTE_e95e243324f5cdf09b8bbbc2\", \"kind\": \"note\", \"wake\": \"never\", \"wait\": 0}. After the tool returns, reply exactly XSM_BASIC_REAL_DONE_e95e243324f5cdf09b8bbbc2. Do not use shell, write files, request approvals, publish, or call other tools.",
+  "expectedTool": "xsm_send",
+  "expectedArguments": {
+    "target": "peer:cbe14ddcec1ef921aabc91d9879a81252898d64d420ad9be95d9f17c1760fed0",
+    "text": "XSM_BASIC_REAL_NOTE_e95e243324f5cdf09b8bbbc2",
+    "kind": "note",
+    "wake": "never",
+    "wait": 0
+  },
+  "expectedFinal": "XSM_BASIC_REAL_DONE_e95e243324f5cdf09b8bbbc2"
+}

@@ -1,0 +1,8 @@
+data: {"id":"chatcmpl-a1963156da47467ca8875bc2","object":"chat.completion.chunk","created":1793791576,"model":"gpt-6-luna","choices":[{"index":0,"delta":{"role":"assistant","content":""},"finish_reason":null}],"service_tier":"auto"}
+
+data: {"id":"chatcmpl-a1963156da47467ca8875bc2","object":"chat.completion.chunk","created":1793791576,"model":"gpt-6-luna","choices":[{"index":0,"delta":{"tool_calls":[{"index":0,"id":"call_f13ab0da92b148dfa4507cb7bec7631e","type":"function","function":{"name":"tool_call","arguments":"{\"calls\":[{\"name\":\"xsm_send\",\"arguments\":{\"target\":\"peer:6226324367b4cbf7e3a7315e3c68daa2316a40db2e7333fcac5c4b82a00c0a4b\",\"text\":\"XSM_BASIC_REAL_NOTE_c0d8e20c37303161c63f3269\",\"kind\":\"note\",\"wake\":\"never\",\"wait\":0}}]}"}}]},"finish_reason":null}],"service_tier":"auto"}
+
+data: {"id":"chatcmpl-a1963156da47467ca8875bc2","object":"chat.completion.chunk","created":1793791576,"model":"gpt-6-luna","choices":[{"index":0,"delta":{},"finish_reason":"tool_calls"}],"usage":{"prompt_tokens":13192,"completion_tokens":108,"total_tokens":13300,"prompt_tokens_details":{"cached_tokens":0},"completion_tokens_details":{"reasoning_tokens":0}},"service_tier":"default"}
+
+data: [DONE]
+

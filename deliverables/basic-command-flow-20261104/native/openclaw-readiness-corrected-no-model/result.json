@@ -1,0 +1,70 @@
+{
+  "status": "readiness-passed-model-not-started",
+  "runtime": "openclaw",
+  "requestedModel": "gpt-6-luna",
+  "root": "/private/tmp/xsm-basic-real/openclaw-readiness-corrected-no-model",
+  "checks": [
+    "main native agent present in ready roster",
+    "prewarm confirms no native inference was started",
+    "corrected readiness made zero provider requests"
+  ],
+  "stages": [
+    {
+      "name": "snapshot-install",
+      "startAfterSeconds": 1.043,
+      "durationSeconds": 0.172
+    },
+    {
+      "name": "gateway-listener-readiness",
+      "startAfterSeconds": 1.215,
+      "durationSeconds": 3.749
+    },
+    {
+      "name": "gateway-health-readiness",
+      "startAfterSeconds": 4.964,
+      "durationSeconds": 1.461
+    },
+    {
+      "name": "agents-list-readiness",
+      "startAfterSeconds": 6.425,
+      "durationSeconds": 0.451
+    },
+    {
+      "name": "non-inference-session-prewarm",
+      "startAfterSeconds": 6.876,
+      "durationSeconds": 1.924
+    }
+  ],
+  "prewarmProcessPids": [
+    20359,
+    20442,
+    20472
+  ],
+  "maxTotalSeconds": 180,
+  "controllerWorkDeadlineSeconds": 160,
+  "maxNativeTurnSeconds": 120,
+  "maxProviderRequests": 8,
+  "automaticRetry": false,
+  "configurationChange": "readiness diagnostic only; use shipped creation_params without optional idempotencyKey, do not submit any agent/model turn",
+  "limits": [
+    "generic reference receiver; not native-native pair",
+    "publish/typed-consent not tested",
+    "previous failure root unchanged"
+  ],
+  "runtimeRoot": "/private/tmp/xsm-basic-real/openclaw-readiness-corrected-no-model/state/runtime/4ff497875167",
+  "activeStage": "non-inference-session-prewarm",
+  "providerRequests": 0,
+  "nativeHttpArrivals": 0,
+  "responseModelLabels": [],
+  "elapsedSeconds": 11.038,
+  "firstProviderRequestAfterSeconds": null,
+  "ownedGatewayPid": 20116,
+  "prewarmSessionId": "f5949bee-50ad-492d-bd4e-d5270cfb02c4",
+  "setupSeconds": 8.801,
+  "ownedChildrenExited": true,
+  "nativeStarted": false,
+  "gatewayStopped": true,
+  "cleanupSeconds": 2.237,
+  "limitFailure": false,
+  "nativeArtifacts": []
+}

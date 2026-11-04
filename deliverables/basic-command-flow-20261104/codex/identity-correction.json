@@ -1,0 +1,11 @@
+{
+  "shared_daemon_pid": 77343,
+  "selected_ref": "8e85bd",
+  "selected_thread_id": "01a18b3b-1907-71e2-979d-30ae08e16c5b",
+  "main_ref": "e6bd9e",
+  "main_thread_id": "01a18a2c-d6b0-7970-8420-7f7cbb29503c",
+  "incorrect_inference": "same daemon PID and terminal screen were mistaken for the same conversation",
+  "verification": "native thread/read includeTurns=false returned notLoaded for selected exact thread",
+  "messages_to_wrong_codex_thread": 0,
+  "resolution": "resumed exact user-selected existing thread once; no new conversation or busy-thread input"
+}

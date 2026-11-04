@@ -1,0 +1,6 @@
+{"phase": "started", "request": 1, "requestedModel": "gpt-6-luna"}
+{"phase": "started", "request": 2, "requestedModel": "gpt-6-luna"}
+{"request": 1, "requestedModel": "gpt-6-luna", "phase": "response", "httpStatus": 200, "responseModels": ["gpt-6-luna"], "responseBytes": 2160, "limitFailure": false}
+{"request": 2, "requestedModel": "gpt-6-luna", "phase": "response", "httpStatus": 200, "responseModels": ["gpt-6-luna"], "responseBytes": 1161, "limitFailure": false}
+{"phase": "started", "request": 3, "requestedModel": "gpt-6-luna"}
+{"request": 3, "requestedModel": "gpt-6-luna", "phase": "response", "httpStatus": 200, "responseModels": ["gpt-6-luna"], "responseBytes": 4754, "limitFailure": false}

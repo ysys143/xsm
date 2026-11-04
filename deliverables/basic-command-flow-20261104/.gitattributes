@@ -1,0 +1,2 @@
+# Keep upstream response bytes verbatim, including SSE frame separators.
+native/**/upstream-*.body -text -diff

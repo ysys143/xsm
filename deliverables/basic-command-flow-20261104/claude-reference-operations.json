@@ -1,0 +1,595 @@
+[
+  {
+    "op": "xsm_ask",
+    "args": {
+      "target": "ref:5f60ca",
+      "text": "사용자가 승인한 격리 기본 연동 시험입니다. 다른 저장소·작업·설정은 건드리지 마세요. 이 요청을 읽은 뒤 제공된 claim token을 xsm_ack로 확인하고, xsm_send로 kind=reply, reply_to=이 요청 ID, outcome=succeeded, text=XSM_CLAUDE_BASIC_REPLY_63fd92를 보내 주세요. 이 회신 외에는 작업하지 말고 턴을 끝내세요.",
+      "request_id": "basic-claude-idle-63fd92",
+      "wait": 0
+    },
+    "result": {
+      "status": "pending",
+      "id": "basic-claude-idle-63fd92",
+      "purpose": "question",
+      "created_at": 1793789485.131161,
+      "replies": [],
+      "final": false,
+      "final_outcome": null,
+      "recover_at": {
+        "cli": [
+          "xsm",
+          "question-status",
+          "basic-claude-idle-63fd92"
+        ],
+        "mcp": {
+          "tool": "xsm_question_status",
+          "arguments": {
+            "id": "basic-claude-idle-63fd92"
+          }
+        }
+      },
+      "wait_end_reason": "timeout",
+      "capabilities": {
+        "attachments": true,
+        "wake_control": true,
+        "priority": {
+          "claude": [
+            "next",
+            "now"
+          ],
+          "codex": [
+            "next"
+          ]
+        }
+      },
+      "wake": "transport_policy",
+      "send_evidence": {
+        "status": "sent-unconfirmed",
+        "reason": "queued",
+        "id": "basic-claude-idle-63fd92",
+        "to": "claude-worker@claude-3",
+        "runtime_reached": false,
+        "evidence": {
+          "accepted": true,
+          "queued": true,
+          "stored": true
+        }
+      },
+      "delivery_evidence": {
+        "steps": {
+          "accepted": {
+            "ok": true,
+            "t": 1793789485.155033
+          },
+          "queued": {
+            "ok": true,
+            "t": 1793789485.1567109,
+            "detail": "uds:/tmp/cc-socks/58220.sock"
+          },
+          "stored": {
+            "ok": true,
+            "t": 1793789485.153934
+          }
+        },
+        "runtime_reached": false,
+        "digest": "25b82cc37a2ab8dbf08b6fbbd9a96e5643946808c6986c1c2e3c91fed3aceb3d",
+        "req_version": 1,
+        "legacy": false,
+        "verified": true,
+        "upgraded_from_legacy": false,
+        "acknowledged": false,
+        "handoff_status": "pending"
+      },
+      "handshake": "not-started",
+      "wait_budget": {
+        "requested": 0.0,
+        "effective": 0.0,
+        "cap": 60
+      },
+      "claims": [],
+      "inbox_pending": 0
+    }
+  },
+  {
+    "op": "xsm_question_status",
+    "args": {
+      "id": "basic-claude-idle-63fd92"
+    },
+    "result": {
+      "status": "pending",
+      "id": "basic-claude-idle-63fd92",
+      "purpose": "question",
+      "created_at": 1793789485.131161,
+      "replies": [],
+      "final": false,
+      "final_outcome": null,
+      "recover_at": {
+        "cli": [
+          "xsm",
+          "question-status",
+          "basic-claude-idle-63fd92"
+        ],
+        "mcp": {
+          "tool": "xsm_question_status",
+          "arguments": {
+            "id": "basic-claude-idle-63fd92"
+          }
+        }
+      },
+      "wait_end_reason": "timeout",
+      "capabilities": {
+        "attachments": true,
+        "wake_control": true,
+        "priority": {
+          "claude": [
+            "next",
+            "now"
+          ],
+          "codex": [
+            "next"
+          ]
+        }
+      },
+      "wake": "transport_policy",
+      "send_evidence": {
+        "status": "sent-unconfirmed",
+        "reason": "queued",
+        "id": "basic-claude-idle-63fd92",
+        "to": "claude-worker@claude-3",
+        "runtime_reached": false,
+        "evidence": {
+          "accepted": true,
+          "queued": true,
+          "stored": true
+        }
+      },
+      "delivery_evidence": {
+        "steps": {
+          "accepted": {
+            "ok": true,
+            "t": 1793789485.155033
+          },
+          "queued": {
+            "ok": true,
+            "t": 1793789485.1567109,
+            "detail": "uds:/tmp/cc-socks/58220.sock"
+          },
+          "hook_taken": {
+            "ok": true,
+            "t": 1793789485.328257,
+            "detail": "delivered"
+          },
+          "stored": {
+            "ok": true,
+            "t": 1793789485.153934
+          },
+          "claimed": {
+            "ok": true,
+            "t": 1793789485.326637
+          },
+          "handoff": {
+            "ok": true,
+            "t": 1793789485.327557
+          },
+          "ack": {
+            "ok": true,
+            "t": 1793789588.5778391
+          }
+        },
+        "runtime_reached": true,
+        "digest": "25b82cc37a2ab8dbf08b6fbbd9a96e5643946808c6986c1c2e3c91fed3aceb3d",
+        "req_version": 1,
+        "legacy": false,
+        "verified": true,
+        "upgraded_from_legacy": false,
+        "acknowledged": true,
+        "handoff_status": "acknowledged"
+      },
+      "handshake": "not-started",
+      "wait_budget": {
+        "requested": 0.0,
+        "effective": 0.0,
+        "cap": 60
+      },
+      "claims": [],
+      "inbox_pending": 0
+    }
+  },
+  {
+    "op": "xsm_question_status",
+    "args": {
+      "id": "basic-claude-idle-63fd92"
+    },
+    "result": {
+      "status": "final",
+      "id": "basic-claude-idle-63fd92",
+      "purpose": "question",
+      "created_at": 1793789485.131161,
+      "replies": [
+        {
+          "id": "45f9fd252abc426b",
+          "body": "XSM_CLAUDE_BASIC_REPLY_63fd92",
+          "outcome": "succeeded",
+          "sender": {
+            "runtime": "claude",
+            "session_id": "7f62ac42-de46-4031-8bda-55e0dcff5245",
+            "ref": "5f60ca",
+            "name": "claude-worker",
+            "alias": "claude-3",
+            "home_id": "1f3efe9ffb9cf15ba352aa22f67362777ae05495d0bb84b9b5b8268090817da7"
+          },
+          "receiver": {
+            "runtime": "basic-reference",
+            "session_id": "a073cd7ea7d3db19a5c347a882b20405c470ccaee62287237d90b67ec8ac021f",
+            "ref": "2b37c8",
+            "name": "basic-reference-a073cd7e",
+            "alias": null,
+            "home_id": "bfab55cae6ccfb7dcfd943182d3d092b657944dabfc3002c9fef50dd01fffebd"
+          },
+          "received_at": 1793789741.40381
+        }
+      ],
+      "final": true,
+      "final_outcome": "succeeded",
+      "recover_at": {
+        "cli": [
+          "xsm",
+          "question-status",
+          "basic-claude-idle-63fd92"
+        ],
+        "mcp": {
+          "tool": "xsm_question_status",
+          "arguments": {
+            "id": "basic-claude-idle-63fd92"
+          }
+        }
+      },
+      "wait_end_reason": "reply",
+      "capabilities": {
+        "attachments": true,
+        "wake_control": true,
+        "priority": {
+          "claude": [
+            "next",
+            "now"
+          ],
+          "codex": [
+            "next"
+          ]
+        }
+      },
+      "wake": "transport_policy",
+      "send_evidence": {
+        "status": "sent-unconfirmed",
+        "reason": "queued",
+        "id": "basic-claude-idle-63fd92",
+        "to": "claude-worker@claude-3",
+        "runtime_reached": false,
+        "evidence": {
+          "accepted": true,
+          "queued": true,
+          "stored": true
+        }
+      },
+      "delivery_evidence": {
+        "steps": {
+          "accepted": {
+            "ok": true,
+            "t": 1793789485.155033
+          },
+          "queued": {
+            "ok": true,
+            "t": 1793789485.1567109,
+            "detail": "uds:/tmp/cc-socks/58220.sock"
+          },
+          "hook_taken": {
+            "ok": true,
+            "t": 1793789485.328257,
+            "detail": "delivered"
+          },
+          "stored": {
+            "ok": true,
+            "t": 1793789485.153934
+          },
+          "claimed": {
+            "ok": true,
+            "t": 1793789485.326637
+          },
+          "handoff": {
+            "ok": true,
+            "t": 1793789485.327557
+          },
+          "ack": {
+            "ok": true,
+            "t": 1793789588.5778391
+          }
+        },
+        "runtime_reached": true,
+        "digest": "25b82cc37a2ab8dbf08b6fbbd9a96e5643946808c6986c1c2e3c91fed3aceb3d",
+        "req_version": 1,
+        "legacy": false,
+        "verified": true,
+        "upgraded_from_legacy": false,
+        "acknowledged": true,
+        "handoff_status": "acknowledged"
+      },
+      "handshake": "not-started",
+      "wait_budget": {
+        "requested": 0.0,
+        "effective": 0.0,
+        "cap": 60
+      },
+      "claims": [
+        {
+          "id": "45f9fd252abc426b",
+          "token": "d66c1c8f2b484d9e9e6e793aae5e212f",
+          "owner": {
+            "type": "native",
+            "id": "protocol:basic-reference:a073cd7ea7d3db19a5c347a882b20405c470ccaee62287237d90b67ec8ac021f"
+          },
+          "generation": "dca0de5918624ffb93263ec047a0f47d",
+          "digest": "895f60161fff2ea8cb8de2bfa0d343524408f57c885906cccdc4899128319327"
+        }
+      ],
+      "inbox_pending": 0
+    }
+  },
+  {
+    "op": "xsm_ack",
+    "args": {
+      "tokens": [
+        "d66c1c8f2b484d9e9e6e793aae5e212f"
+      ]
+    },
+    "result": {
+      "acked": [
+        "45f9fd252abc426b"
+      ],
+      "inbox_pending": 0
+    }
+  },
+  {
+    "op": "xsm_ask",
+    "args": {
+      "target": "ref:5f60ca",
+      "text": "격리된 XSM 실제 MCP 왕복 시험입니다. 셸이나 파일 작업은 하지 마세요. ToolSearch로 xsm_ack와 xsm_send MCP 도구를 찾고, 이 메시지에서 받은 claim token을 실제 xsm_ack로 ACK한 다음, xsm_send(target=ref:2b37c8, kind=reply, reply_to=basic-claude-mcp-e41af0, outcome=succeeded, text=XSM_CLAUDE_MCP_REPLY_e41af0, wait=0)로 딱 한 번 회신하세요. MCP 도구를 사용할 수 없으면 그렇게 말하고 멈추세요. 백그라운드 루프를 띄우지 마세요.",
+      "request_id": "basic-claude-mcp-e41af0",
+      "wait": 0
+    },
+    "result": {
+      "status": "pending",
+      "id": "basic-claude-mcp-e41af0",
+      "purpose": "question",
+      "created_at": 1793790009.022837,
+      "replies": [],
+      "final": false,
+      "final_outcome": null,
+      "recover_at": {
+        "cli": [
+          "xsm",
+          "question-status",
+          "basic-claude-mcp-e41af0"
+        ],
+        "mcp": {
+          "tool": "xsm_question_status",
+          "arguments": {
+            "id": "basic-claude-mcp-e41af0"
+          }
+        }
+      },
+      "wait_end_reason": "timeout",
+      "capabilities": {
+        "attachments": true,
+        "wake_control": true,
+        "priority": {
+          "claude": [
+            "next",
+            "now"
+          ],
+          "codex": [
+            "next"
+          ]
+        }
+      },
+      "wake": "transport_policy",
+      "send_evidence": {
+        "status": "sent-unconfirmed",
+        "reason": "queued",
+        "id": "basic-claude-mcp-e41af0",
+        "to": "claude-worker@claude-3",
+        "runtime_reached": false,
+        "evidence": {
+          "accepted": true,
+          "queued": true,
+          "stored": true
+        }
+      },
+      "delivery_evidence": {
+        "steps": {
+          "accepted": {
+            "ok": true,
+            "t": 1793790009.041894
+          },
+          "queued": {
+            "ok": true,
+            "t": 1793790009.0431979,
+            "detail": "uds:/tmp/cc-socks/58220.sock"
+          },
+          "stored": {
+            "ok": true,
+            "t": 1793790009.04084
+          }
+        },
+        "runtime_reached": false,
+        "digest": "06bc0e8ca82774bf356fdca7e8f0d711df663243ab38bb08b37ab6c0fbb4cde6",
+        "req_version": 1,
+        "legacy": false,
+        "verified": true,
+        "upgraded_from_legacy": false,
+        "acknowledged": false,
+        "handoff_status": "pending"
+      },
+      "handshake": "not-started",
+      "wait_budget": {
+        "requested": 0.0,
+        "effective": 0.0,
+        "cap": 60
+      },
+      "claims": [],
+      "inbox_pending": 0
+    }
+  },
+  {
+    "op": "xsm_question_status",
+    "args": {
+      "id": "basic-claude-mcp-e41af0"
+    },
+    "result": {
+      "status": "final",
+      "id": "basic-claude-mcp-e41af0",
+      "purpose": "question",
+      "created_at": 1793790009.022837,
+      "replies": [
+        {
+          "id": "104c996f134e4fc9",
+          "body": "XSM_CLAUDE_MCP_REPLY_e41af0",
+          "outcome": "succeeded",
+          "sender": {
+            "runtime": "claude",
+            "session_id": "7f62ac42-de46-4031-8bda-55e0dcff5245",
+            "ref": "5f60ca",
+            "name": "claude-worker",
+            "alias": "claude-3",
+            "home_id": "1f3efe9ffb9cf15ba352aa22f67362777ae05495d0bb84b9b5b8268090817da7"
+          },
+          "receiver": {
+            "runtime": "basic-reference",
+            "session_id": "a073cd7ea7d3db19a5c347a882b20405c470ccaee62287237d90b67ec8ac021f",
+            "ref": "2b37c8",
+            "name": "basic-reference-a073cd7e",
+            "alias": null,
+            "home_id": "bfab55cae6ccfb7dcfd943182d3d092b657944dabfc3002c9fef50dd01fffebd"
+          },
+          "received_at": 1793790080.82527
+        }
+      ],
+      "final": true,
+      "final_outcome": "succeeded",
+      "recover_at": {
+        "cli": [
+          "xsm",
+          "question-status",
+          "basic-claude-mcp-e41af0"
+        ],
+        "mcp": {
+          "tool": "xsm_question_status",
+          "arguments": {
+            "id": "basic-claude-mcp-e41af0"
+          }
+        }
+      },
+      "wait_end_reason": "reply",
+      "capabilities": {
+        "attachments": true,
+        "wake_control": true,
+        "priority": {
+          "claude": [
+            "next",
+            "now"
+          ],
+          "codex": [
+            "next"
+          ]
+        }
+      },
+      "wake": "transport_policy",
+      "send_evidence": {
+        "status": "sent-unconfirmed",
+        "reason": "queued",
+        "id": "basic-claude-mcp-e41af0",
+        "to": "claude-worker@claude-3",
+        "runtime_reached": false,
+        "evidence": {
+          "accepted": true,
+          "queued": true,
+          "stored": true
+        }
+      },
+      "delivery_evidence": {
+        "steps": {
+          "accepted": {
+            "ok": true,
+            "t": 1793790009.041894
+          },
+          "queued": {
+            "ok": true,
+            "t": 1793790009.0431979,
+            "detail": "uds:/tmp/cc-socks/58220.sock"
+          },
+          "hook_taken": {
+            "ok": true,
+            "t": 1793790009.228244,
+            "detail": "delivered"
+          },
+          "stored": {
+            "ok": true,
+            "t": 1793790009.04084
+          },
+          "claimed": {
+            "ok": true,
+            "t": 1793790009.226558
+          },
+          "handoff": {
+            "ok": true,
+            "t": 1793790009.227545
+          },
+          "ack": {
+            "ok": true,
+            "t": 1793790022.693003
+          }
+        },
+        "runtime_reached": true,
+        "digest": "06bc0e8ca82774bf356fdca7e8f0d711df663243ab38bb08b37ab6c0fbb4cde6",
+        "req_version": 1,
+        "legacy": false,
+        "verified": true,
+        "upgraded_from_legacy": false,
+        "acknowledged": true,
+        "handoff_status": "acknowledged"
+      },
+      "handshake": "not-started",
+      "wait_budget": {
+        "requested": 0.0,
+        "effective": 0.0,
+        "cap": 60
+      },
+      "claims": [
+        {
+          "id": "104c996f134e4fc9",
+          "token": "a98389659ce84c66953a6d5d40b6f872",
+          "owner": {
+            "type": "native",
+            "id": "protocol:basic-reference:a073cd7ea7d3db19a5c347a882b20405c470ccaee62287237d90b67ec8ac021f"
+          },
+          "generation": "dca0de5918624ffb93263ec047a0f47d",
+          "digest": "084e05784b6eb530f80ad827d6e15c99df586fb1844c06287e8d77bd0631e3c6"
+        }
+      ],
+      "inbox_pending": 0
+    }
+  },
+  {
+    "op": "xsm_ack",
+    "args": {
+      "tokens": [
+        "a98389659ce84c66953a6d5d40b6f872"
+      ]
+    },
+    "result": {
+      "acked": [
+        "104c996f134e4fc9"
+      ],
+      "inbox_pending": 0
+    }
+  }
+]

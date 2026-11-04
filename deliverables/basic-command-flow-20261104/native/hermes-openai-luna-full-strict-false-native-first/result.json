@@ -1,0 +1,112 @@
+{
+  "status": "passed",
+  "runtime": "hermes",
+  "root": "/private/tmp/xsm-basic-real/hermes-openai-luna-full-strict-false-native-first",
+  "checks": [
+    "owned native service admitted",
+    "pinned native provider version",
+    "actual model answer saved",
+    "actual final reply matches nonce",
+    "native completion did not manufacture task outcome",
+    "native model tool sent one actual canonical note",
+    "actual native final reply read in protocol inbox",
+    "tool note and final reply explicitly ACKed"
+  ],
+  "requestedModel": "gpt-6-luna",
+  "subscriptionAuthMode": "forward/OpenAI ChatGPT OAuth pool",
+  "maxProviderRequests": 8,
+  "maxRuntimeSeconds": 120,
+  "automaticRetry": false,
+  "scope": "one actual native model tool turn, generic reference receiver, real protocol inbox and ACK",
+  "limits": [
+    "generic reference parent; not two native participants",
+    "publish consent not exercised",
+    "Claude/Codex user sessions not touched",
+    "no fixtures, approval synthesis, or API keys"
+  ],
+  "sourceSha256": {
+    "scripts/probe-owned-subscription.py": "a1c70592ac074659813f05c508a584e6aef5bb3a4bebade6066045ece49d7659",
+    "scripts/probe_subscription_relay.py": "714fda6effd3fc3a66bb053b457d49c6984032b0fa3c25ce4dd7fce32671f28c",
+    "integrations/pi/xsm.mjs": "dd301415eb009dd5cb2ff8cc7fe3f72f49eaaa884788ce0d13f27c471d6da373",
+    "xsm/operations.py": "fef232ccc3e00ceab0b2788ef577806c770b03ca95b45be57a789351a804f0b7",
+    "xsm/operation_schema.py": "4475c2e6d467a3126ab31445399fa87d0bc9b4ff30af35b391fca6ba88659d22"
+  },
+  "providerConfiguration": "complete XSM catalog; native Pi supportsStrictMode=true where applicable; relay adds only explicit function.strict=false; unchanged schema and model arguments; repeated identical requests refused",
+  "runtimeRoot": "/private/tmp/xsm-basic-real/hermes-openai-luna-full-strict-false-native-first/state/runtime/4606e73f9503",
+  "referenceParticipant": {
+    "session": "c281533b02194f66b0d47fe6606f305f",
+    "generation": "166e2b7b2de54737931833bb9e0f147f",
+    "ref": "c6255e",
+    "address": "peer:6226324367b4cbf7e3a7315e3c68daa2316a40db2e7333fcac5c4b82a00c0a4b",
+    "capabilities": [
+      "messaging",
+      "inbox",
+      "events"
+    ]
+  },
+  "providerRequests": 5,
+  "responseModelLabels": [
+    "gpt-6-luna"
+  ],
+  "elapsedSeconds": 34.561,
+  "nativeProvider": {
+    "executable": "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-hermes-0225-r0608vzd/env/bin/hermes",
+    "version": "0.22.5",
+    "python": "/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-hermes-0225-r0608vzd/env/bin/python",
+    "control_protocol": 1,
+    "cancellation_protocol": 1,
+    "frontend": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/integrations/hermes/worker_frontend.py",
+    "runtime_root": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging",
+    "frontend_sha256": "417b16585b8cc524431ff262b608f5ce4ef03e1f6da3777e9d48f25b545eaef6"
+  },
+  "upstreamResponses": [
+    {
+      "request": 1,
+      "httpStatus": 200,
+      "rawBody": "/private/tmp/xsm-basic-real/hermes-openai-luna-full-strict-false-native-first/upstream-01.body",
+      "responseBytes": 1010
+    },
+    {
+      "request": 2,
+      "httpStatus": 200,
+      "rawBody": "/private/tmp/xsm-basic-real/hermes-openai-luna-full-strict-false-native-first/upstream-02.body",
+      "responseBytes": 1002
+    },
+    {
+      "request": 3,
+      "httpStatus": 200,
+      "rawBody": "/private/tmp/xsm-basic-real/hermes-openai-luna-full-strict-false-native-first/upstream-03.body",
+      "responseBytes": 1217
+    },
+    {
+      "request": 4,
+      "httpStatus": 200,
+      "rawBody": "/private/tmp/xsm-basic-real/hermes-openai-luna-full-strict-false-native-first/upstream-04.body",
+      "responseBytes": 4975
+    },
+    {
+      "request": 5,
+      "httpStatus": 200,
+      "rawBody": "/private/tmp/xsm-basic-real/hermes-openai-luna-full-strict-false-native-first/upstream-05.body",
+      "responseBytes": 458
+    }
+  ],
+  "requestStatus": "reply-stored",
+  "nativeToolMessageIds": [
+    "f8ba147289eb478e"
+  ],
+  "finalReplyId": "a362f25578614ba6",
+  "acked": [
+    "f8ba147289eb478e",
+    "a362f25578614ba6"
+  ],
+  "nativeSessionId": "local-d6c9aa74130dc093006b1da163ffb92c2fd0fb7c952cbc3d3152c41ddb16a089",
+  "ownedChildrenExited": true,
+  "isolatedGatewayStopExit": 0,
+  "quota400": false,
+  "limitFailure": false,
+  "nativeArtifacts": [
+    "/private/tmp/xsm-basic-real/hermes-openai-luna-full-strict-false-native-first/state/owned-runs/a0026c67842947a8b7d643a452b2862e/one-native-turn.jsonl",
+    "/private/tmp/xsm-basic-real/hermes-openai-luna-full-strict-false-native-first/state/owned-runs/a0026c67842947a8b7d643a452b2862e/one-native-turn.stderr"
+  ]
+}

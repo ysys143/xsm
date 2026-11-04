@@ -1,0 +1,12 @@
+{"phase": "native-http-arrival", "arrival": 1, "secondsAfterRelayStart": 12.936427291948348}
+{"phase": "started", "request": 1, "requestedModel": "gpt-6-luna", "secondsAfterRelayStart": 12.938307374948636}
+{"request": 1, "requestedModel": "gpt-6-luna", "phase": "response", "httpStatus": 200, "responseModels": ["gpt-6-luna"], "responseBytes": 1032, "limitFailure": false}
+{"phase": "native-http-arrival", "arrival": 2, "secondsAfterRelayStart": 15.738877707975917}
+{"phase": "started", "request": 2, "requestedModel": "gpt-6-luna", "secondsAfterRelayStart": 15.741868749959394}
+{"request": 2, "requestedModel": "gpt-6-luna", "phase": "response", "httpStatus": 200, "responseModels": ["gpt-6-luna"], "responseBytes": 1010, "limitFailure": false}
+{"phase": "native-http-arrival", "arrival": 3, "secondsAfterRelayStart": 19.650045083020814}
+{"phase": "started", "request": 3, "requestedModel": "gpt-6-luna", "secondsAfterRelayStart": 19.651888874941505}
+{"request": 3, "requestedModel": "gpt-6-luna", "phase": "response", "httpStatus": 200, "responseModels": ["gpt-6-luna"], "responseBytes": 1209, "limitFailure": false}
+{"phase": "native-http-arrival", "arrival": 4, "secondsAfterRelayStart": 24.168413499952294}
+{"phase": "started", "request": 4, "requestedModel": "gpt-6-luna", "secondsAfterRelayStart": 24.17042500001844}
+{"request": 4, "requestedModel": "gpt-6-luna", "phase": "response", "httpStatus": 200, "responseModels": ["gpt-6-luna"], "responseBytes": 5186, "limitFailure": false}

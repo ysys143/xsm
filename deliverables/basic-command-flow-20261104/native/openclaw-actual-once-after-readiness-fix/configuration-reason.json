@@ -1,0 +1,20 @@
+{
+  "status": "starting",
+  "runtime": "openclaw",
+  "requestedModel": "gpt-6-luna",
+  "root": "/private/tmp/xsm-basic-real/openclaw-actual-once-after-readiness-fix",
+  "checks": [],
+  "stages": [],
+  "prewarmProcessPids": [],
+  "maxTotalSeconds": 180,
+  "controllerWorkDeadlineSeconds": 160,
+  "maxNativeTurnSeconds": 120,
+  "maxProviderRequests": 8,
+  "automaticRetry": false,
+  "configurationChange": "readiness uses shipped creation_params without idempotencyKey; one new original owned turn after gateway/session readiness; same model/policy/schema/assistant arguments",
+  "limits": [
+    "generic reference receiver; not native-native pair",
+    "publish/typed-consent not tested",
+    "previous failure root unchanged"
+  ]
+}

@@ -1,0 +1,31 @@
+======================================================================
+FAIL: test_contact_does_not_select_a_different_named_person_or_a_question (tests.test_public_command_flow.PublicCommandFlowTest.test_contact_does_not_select_a_different_named_person_or_a_question) (text='jstack의 bob에게 연락해줘')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-basic-red-5am5uc3e/tests/test_public_command_flow.py", line 137, in test_contact_does_not_select_a_different_named_person_or_a_question
+    self.assertIsNone(consent.take_contact_selection(self.b, binding))
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'jstack의 bob에게 연락해줘' is not None
+
+======================================================================
+FAIL: test_contact_does_not_select_a_different_named_person_or_a_question (tests.test_public_command_flow.PublicCommandFlowTest.test_contact_does_not_select_a_different_named_person_or_a_question) (text='jstack의 bob 세션에 연락해줘')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-basic-red-5am5uc3e/tests/test_public_command_flow.py", line 137, in test_contact_does_not_select_a_different_named_person_or_a_question
+    self.assertIsNone(consent.take_contact_selection(self.b, binding))
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'jstack의 bob 세션에 연락해줘' is not None
+
+======================================================================
+FAIL: test_contact_does_not_select_a_different_named_person_or_a_question (tests.test_public_command_flow.PublicCommandFlowTest.test_contact_does_not_select_a_different_named_person_or_a_question) (text='jstack에 연락해도 되는지 설명해줘')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-basic-red-5am5uc3e/tests/test_public_command_flow.py", line 137, in test_contact_does_not_select_a_different_named_person_or_a_question
+    self.assertIsNone(consent.take_contact_selection(self.b, binding))
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'jstack에 연락해도 되는지 설명해줘' is not None
+
+----------------------------------------------------------------------
+Ran 1 test in 0.351s
+
+FAILED (failures=3)

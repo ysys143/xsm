@@ -1,0 +1,32 @@
+[
+  {
+    "mutation": "later-cancel",
+    "test": "tests.test_public_command_flow.PublicCommandFlowTest.test_later_native_user_turn_supersedes_an_unconsumed_command",
+    "exit_code": 1,
+    "detected": false
+  },
+  {
+    "mutation": "wrong-person",
+    "test": "tests.test_public_command_flow.PublicCommandFlowTest.test_contact_does_not_select_a_different_named_person_or_a_question",
+    "exit_code": 1,
+    "detected": false
+  },
+  {
+    "mutation": "partial-discovery",
+    "test": "tests.test_public_command_flow.PublicCommandFlowTest.test_partial_discovery_never_establishes_a_unique_contact_selection",
+    "exit_code": 1,
+    "detected": false
+  },
+  {
+    "mutation": "remote-command-reuse",
+    "test": "tests.test_network_interfaces.NetworkInterfacesTest.test_typed_remote_connect_is_consumed_even_when_scope_already_exists",
+    "exit_code": 1,
+    "detected": true
+  },
+  {
+    "mutation": "remote-unknown",
+    "test": "tests.test_network_interfaces.NetworkInterfacesTest.test_remote_query_preserves_unknown_task_metadata_when_no_match_is_proven",
+    "exit_code": 1,
+    "detected": true
+  }
+]

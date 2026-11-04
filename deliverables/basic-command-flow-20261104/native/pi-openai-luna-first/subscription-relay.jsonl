@@ -1,0 +1,2 @@
+{"phase": "started", "request": 1, "requestedModel": "gpt-6-luna"}
+{"request": 1, "requestedModel": "gpt-6-luna", "phase": "response", "httpStatus": 400, "responseModels": [], "responseBytes": 203, "limitFailure": false}

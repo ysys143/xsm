@@ -1,0 +1,92 @@
+{
+  "status": "passed",
+  "runtime": "pi",
+  "root": "/private/tmp/xsm-basic-real/pi-openai-luna-full-strict-false",
+  "checks": [
+    "owned native service admitted",
+    "pinned native provider version",
+    "actual model answer saved",
+    "actual final reply matches nonce",
+    "native completion did not manufacture task outcome",
+    "native model tool sent one actual canonical note",
+    "actual native final reply read in protocol inbox",
+    "tool note and final reply explicitly ACKed"
+  ],
+  "requestedModel": "gpt-6-luna",
+  "subscriptionAuthMode": "forward/OpenAI ChatGPT OAuth pool",
+  "maxProviderRequests": 8,
+  "maxRuntimeSeconds": 120,
+  "automaticRetry": false,
+  "scope": "one actual native model tool turn, generic reference receiver, real protocol inbox and ACK",
+  "limits": [
+    "generic reference parent; not two native participants",
+    "publish consent not exercised",
+    "Claude/Codex user sessions not touched",
+    "no fixtures, approval synthesis, or API keys"
+  ],
+  "sourceSha256": {
+    "scripts/probe-owned-subscription.py": "a1c70592ac074659813f05c508a584e6aef5bb3a4bebade6066045ece49d7659",
+    "scripts/probe_subscription_relay.py": "714fda6effd3fc3a66bb053b457d49c6984032b0fa3c25ce4dd7fce32671f28c",
+    "integrations/pi/xsm.mjs": "dd301415eb009dd5cb2ff8cc7fe3f72f49eaaa884788ce0d13f27c471d6da373",
+    "xsm/operations.py": "fef232ccc3e00ceab0b2788ef577806c770b03ca95b45be57a789351a804f0b7",
+    "xsm/operation_schema.py": "4475c2e6d467a3126ab31445399fa87d0bc9b4ff30af35b391fca6ba88659d22"
+  },
+  "providerConfiguration": "native Pi compat.supportsStrictMode=true emits explicit strict=false; complete XSM catalog; no schema/argument filtering",
+  "runtimeRoot": "/private/tmp/xsm-basic-real/pi-openai-luna-full-strict-false/state/runtime/f5d384df7db1",
+  "referenceParticipant": {
+    "session": "6c3111fe7b5d4f519c54ffd8106c4fad",
+    "generation": "9ef0e67f5a4c45da91324b1b8d4dba05",
+    "ref": "5e636a",
+    "address": "peer:ff95148027dd270824892fbb55c6f535946b2a09ac8d12139f7405d054d2f84c",
+    "capabilities": [
+      "messaging",
+      "inbox",
+      "events"
+    ]
+  },
+  "providerRequests": 2,
+  "responseModelLabels": [
+    "gpt-6-luna"
+  ],
+  "elapsedSeconds": 12.737,
+  "nativeProvider": {
+    "executable": "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-pi-140-eohrvh8q/node_modules/@earendil-works/pi-coding-agent/dist/bundle/cli.js",
+    "version": "1.4.0",
+    "control_protocol": 1,
+    "cancellation_protocol": 1,
+    "runtime_root": "/private/tmp/xsm-basic-real/pi-openai-luna-full-strict-false/state/runtime/f5d384df7db1",
+    "frontend": "/private/tmp/xsm-basic-real/pi-openai-luna-full-strict-false/state/runtime/f5d384df7db1/integrations/pi/xsm.mjs",
+    "frontend_sha256": "dd301415eb009dd5cb2ff8cc7fe3f72f49eaaa884788ce0d13f27c471d6da373"
+  },
+  "upstreamResponses": [
+    {
+      "request": 1,
+      "httpStatus": 200,
+      "rawBody": "/private/tmp/xsm-basic-real/pi-openai-luna-full-strict-false/upstream-01.body",
+      "responseBytes": 1161
+    },
+    {
+      "request": 2,
+      "httpStatus": 200,
+      "rawBody": "/private/tmp/xsm-basic-real/pi-openai-luna-full-strict-false/upstream-02.body",
+      "responseBytes": 4324
+    }
+  ],
+  "requestStatus": "reply-stored",
+  "nativeToolMessageIds": [
+    "8ecf24064fa04611"
+  ],
+  "finalReplyId": "10e5b432ba304d37",
+  "acked": [
+    "8ecf24064fa04611",
+    "10e5b432ba304d37"
+  ],
+  "nativeSessionId": "0cd505fe-1c6e-4852-ab16-40d2c31e3f7e",
+  "ownedChildrenExited": true,
+  "quota400": false,
+  "limitFailure": false,
+  "nativeArtifacts": [
+    "/private/tmp/xsm-basic-real/pi-openai-luna-full-strict-false/state/owned-runs/bfecbcdd02ac4b84a13a79e0a08c4692/one-native-turn.jsonl",
+    "/private/tmp/xsm-basic-real/pi-openai-luna-full-strict-false/state/owned-runs/bfecbcdd02ac4b84a13a79e0a08c4692/one-native-turn.stderr"
+  ]
+}

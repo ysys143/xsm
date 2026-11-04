@@ -1,0 +1,17 @@
+{
+  "nativeErrorCode": "INVALID_REQUEST",
+  "nativeErrorMessage": "idempotent session creation requires an authenticated principal or device identity",
+  "method": "sessions.create",
+  "sentKnownArguments": {
+    "agentId": "main",
+    "cwd": "/private/tmp/xsm-basic-real/openclaw-openai-luna-staged-readiness-once/workspace",
+    "message": "",
+    "model": "xsm-subscription/gpt-6-luna"
+  },
+  "additionalArgumentPresent": "idempotencyKey",
+  "additionalArgumentValue": "prewarm-<random nonce; exact value not retained>",
+  "source": "probe_openclaw_staged.py supplied an optional idempotencyKey not used by the shipped worker_frontend creation path",
+  "providerRequests": 0,
+  "nativeHttpArrivals": 0,
+  "gatewayStopped": true
+}

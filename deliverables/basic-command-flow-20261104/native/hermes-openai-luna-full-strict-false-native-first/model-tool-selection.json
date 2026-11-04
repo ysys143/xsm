@@ -1,0 +1,38 @@
+[
+  {
+    "file": "upstream-01.body",
+    "name": "tool_search",
+    "arguments": {
+      "queries": [
+        "xsm send message"
+      ]
+    }
+  },
+  {
+    "file": "upstream-02.body",
+    "name": "tool_describe",
+    "arguments": {
+      "names": [
+        "xsm_send"
+      ]
+    }
+  },
+  {
+    "file": "upstream-03.body",
+    "name": "tool_call",
+    "arguments": {
+      "calls": [
+        {
+          "name": "xsm_send",
+          "arguments": {
+            "target": "peer:6226324367b4cbf7e3a7315e3c68daa2316a40db2e7333fcac5c4b82a00c0a4b",
+            "text": "XSM_BASIC_REAL_NOTE_c0d8e20c37303161c63f3269",
+            "kind": "note",
+            "wake": "never",
+            "wait": 0
+          }
+        }
+      ]
+    }
+  }
+]

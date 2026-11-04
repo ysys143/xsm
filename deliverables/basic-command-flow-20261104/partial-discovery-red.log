@@ -1,0 +1,13 @@
+======================================================================
+FAIL: test_partial_discovery_never_establishes_a_unique_contact_selection (tests.test_public_command_flow.PublicCommandFlowTest.test_partial_discovery_never_establishes_a_unique_contact_selection)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-basic-red-5am5uc3e/tests/test_public_command_flow.py", line 149, in test_partial_discovery_never_establishes_a_unique_contact_selection
+    self.assertIsNone(consent.take_contact_selection(self.b, binding))
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'jstack 세션에 연락해줘.' is not None
+
+----------------------------------------------------------------------
+Ran 1 test in 0.261s
+
+FAILED (failures=1)

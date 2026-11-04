@@ -1,0 +1,218 @@
+{
+  "id": "one-native-turn",
+  "digest": "050ea8f01e9d29c1b8a7f3fbe23e3f8212a4df30d7c2d1c89bd8435cfc4503af",
+  "owner": {
+    "runtime": "basic-real-reference",
+    "home": "/private/tmp/xsm-basic-real/pi-openai-luna-send-only/state/protocol-profiles/basic-real-reference/67157f2cba2505adc4905142c0bf3bfe24f5710f9bf9de04c0e3c363da3b5fc4",
+    "session_id": "ac2e227b57c8aaabad332cb3a744ed159bc8d5c58b928b891f475fe2c9f17a8a"
+  },
+  "sender": {
+    "runtime": "basic-real-reference",
+    "home": "/private/tmp/xsm-basic-real/pi-openai-luna-send-only/state/protocol-profiles/basic-real-reference/67157f2cba2505adc4905142c0bf3bfe24f5710f9bf9de04c0e3c363da3b5fc4",
+    "session_id": "ac2e227b57c8aaabad332cb3a744ed159bc8d5c58b928b891f475fe2c9f17a8a",
+    "pid": 13466,
+    "lstart": "Wed Nov  4 20:00:19 2026",
+    "cwd": "/private/tmp/xsm-basic-real/pi-openai-luna-send-only/workspace",
+    "ref": "4acce1",
+    "name": "basic-real-reference-ac2e227b",
+    "protocol_version": "1",
+    "protocol_generation": "85f80dd477f246178002c2836f5fea89",
+    "registered": true,
+    "activity": "idle",
+    "protocol_root": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging",
+    "protocol_python": "/opt/homebrew/opt/python@3.14/bin/python3.14",
+    "protocol_python_version": "3.14.6",
+    "updated": 1793790019.225782
+  },
+  "worker": {
+    "id": "323d4d56aa71471fa9cab19f06271b5d",
+    "name": "basic-pi",
+    "mode": "owned",
+    "owned": true,
+    "runtime": "pi",
+    "home": "/private/tmp/xsm-basic-real/pi-openai-luna-send-only/pi",
+    "cwd": "/private/tmp/xsm-basic-real/pi-openai-luna-send-only/workspace",
+    "model": "xsm-subscription/gpt-6-luna",
+    "effort": null,
+    "owner": {
+      "runtime": "basic-real-reference",
+      "home": "/private/tmp/xsm-basic-real/pi-openai-luna-send-only/state/protocol-profiles/basic-real-reference/67157f2cba2505adc4905142c0bf3bfe24f5710f9bf9de04c0e3c363da3b5fc4",
+      "session_id": "ac2e227b57c8aaabad332cb3a744ed159bc8d5c58b928b891f475fe2c9f17a8a",
+      "pid": 13466,
+      "lstart": "Wed Nov  4 20:00:19 2026",
+      "cwd": "/private/tmp/xsm-basic-real/pi-openai-luna-send-only/workspace",
+      "ref": "4acce1",
+      "name": "basic-real-reference-ac2e227b",
+      "protocol_version": "1",
+      "protocol_generation": "85f80dd477f246178002c2836f5fea89",
+      "registered": true,
+      "activity": "idle",
+      "protocol_root": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging",
+      "protocol_python": "/opt/homebrew/opt/python@3.14/bin/python3.14",
+      "protocol_python_version": "3.14.6",
+      "updated": 1793790019.225782
+    },
+    "parent_native": {
+      "runtime": "basic-real-reference",
+      "home": "/private/tmp/xsm-basic-real/pi-openai-luna-send-only/state/protocol-profiles/basic-real-reference/67157f2cba2505adc4905142c0bf3bfe24f5710f9bf9de04c0e3c363da3b5fc4",
+      "session_id": "ac2e227b57c8aaabad332cb3a744ed159bc8d5c58b928b891f475fe2c9f17a8a"
+    },
+    "parent_ref": "4acce1",
+    "created": 1793790019.943431,
+    "depth": 1,
+    "max_depth": 1,
+    "session_id": null,
+    "owned_sessions": [],
+    "native_provider": {
+      "executable": "/private/tmp/xsm-basic-real/pi-send-only",
+      "version": "1.4.0",
+      "control_protocol": 1,
+      "cancellation_protocol": 1,
+      "runtime_root": "/private/tmp/xsm-basic-real/pi-openai-luna-send-only/state/runtime/602550013297",
+      "frontend": "/private/tmp/xsm-basic-real/pi-openai-luna-send-only/state/runtime/602550013297/integrations/pi/xsm.mjs",
+      "frontend_sha256": "dd301415eb009dd5cb2ff8cc7fe3f72f49eaaa884788ce0d13f27c471d6da373"
+    }
+  },
+  "work_context": "one-real-basic-turn",
+  "body": "This is the user-authorized isolated XSM test. Use the available native xsm_send tool exactly once with these arguments: {\"target\": \"peer:cbe14ddcec1ef921aabc91d9879a81252898d64d420ad9be95d9f17c1760fed0\", \"text\": \"XSM_BASIC_REAL_NOTE_e95e243324f5cdf09b8bbbc2\", \"kind\": \"note\", \"wake\": \"never\", \"wait\": 0}. After the tool returns, reply exactly XSM_BASIC_REAL_DONE_e95e243324f5cdf09b8bbbc2. Do not use shell, write files, request approvals, publish, or call other tools.",
+  "context_id": "fbd82ebe8dccbeb75d85e96e97198f719a09dfa082141f93a782ab140086bbc8",
+  "context_epoch": "080826fb9e51410d919300c3d817b5b5",
+  "created_at": 1793790019.957545,
+  "sequence": 0,
+  "result": {
+    "body": "XSM_BASIC_REAL_DONE_e95e243324f5cdf09b8bbbc2",
+    "outcome": null,
+    "native_session_id": "cc060e29-a6bf-4dd8-b058-211d177a971b",
+    "native_evidence": {
+      "event_count": 44,
+      "terminal_event": "agent_settled",
+      "stop_reason": "stop",
+      "aborted": false
+    },
+    "execution": {
+      "pid": 13500,
+      "lstart": "Wed Nov  4 20:00:20 2026",
+      "argv": [
+        "/private/tmp/xsm-basic-real/pi-send-only",
+        "--print",
+        "--mode",
+        "json",
+        "--session-id",
+        "cc060e29-a6bf-4dd8-b058-211d177a971b",
+        "--session-dir",
+        "/private/tmp/xsm-basic-real/pi-openai-luna-send-only/pi/owned-sessions/323d4d56aa71471fa9cab19f06271b5d",
+        "--model",
+        "xsm-subscription/gpt-6-luna"
+      ],
+      "stdout": "/private/tmp/xsm-basic-real/pi-openai-luna-send-only/state/owned-runs/323d4d56aa71471fa9cab19f06271b5d/one-native-turn.jsonl",
+      "stderr": "/private/tmp/xsm-basic-real/pi-openai-luna-send-only/state/owned-runs/323d4d56aa71471fa9cab19f06271b5d/one-native-turn.stderr",
+      "returncode": 0
+    }
+  },
+  "reply_id": "dc82b16682064f20",
+  "send_evidence": {
+    "status": "stored",
+    "reason": "protocol participant inbox; awaiting actual consumption",
+    "id": "dc82b16682064f20",
+    "to": "basic-real-reference-ac2e227b@None",
+    "runtime_reached": false,
+    "evidence": {
+      "accepted": true,
+      "queued": false,
+      "wake": false,
+      "stored": true
+    }
+  },
+  "reservation": {
+    "token": "7d5b77042e61472ea7589d78d4d6df2e",
+    "controller": {
+      "pid": 13466,
+      "lstart": "Wed Nov  4 20:00:19 2026"
+    }
+  },
+  "events": [
+    {
+      "phase": "queued",
+      "at": 1793790019.957546
+    },
+    {
+      "phase": "reserved",
+      "at": 1793790019.9644601
+    },
+    {
+      "phase": "acknowledged",
+      "at": 1793790019.9650738
+    },
+    {
+      "phase": "running",
+      "at": 1793790019.965593
+    },
+    {
+      "phase": "result-ready",
+      "at": 1793790029.593477
+    },
+    {
+      "phase": "sending",
+      "at": 1793790029.600634
+    },
+    {
+      "phase": "reply-stored",
+      "at": 1793790029.654519
+    }
+  ],
+  "run_attempts": 1,
+  "child": {
+    "pid": 13500,
+    "lstart": "Wed Nov  4 20:00:20 2026",
+    "argv": [
+      "/private/tmp/xsm-basic-real/pi-send-only",
+      "--print",
+      "--mode",
+      "json",
+      "--session-id",
+      "cc060e29-a6bf-4dd8-b058-211d177a971b",
+      "--session-dir",
+      "/private/tmp/xsm-basic-real/pi-openai-luna-send-only/pi/owned-sessions/323d4d56aa71471fa9cab19f06271b5d",
+      "--model",
+      "xsm-subscription/gpt-6-luna"
+    ],
+    "stdout": "/private/tmp/xsm-basic-real/pi-openai-luna-send-only/state/owned-runs/323d4d56aa71471fa9cab19f06271b5d/one-native-turn.jsonl",
+    "stderr": "/private/tmp/xsm-basic-real/pi-openai-luna-send-only/state/owned-runs/323d4d56aa71471fa9cab19f06271b5d/one-native-turn.stderr",
+    "returncode": 0
+  },
+  "native_binding": {
+    "native_session_id": "cc060e29-a6bf-4dd8-b058-211d177a971b",
+    "child_pid": 13500,
+    "child_lstart": "Wed Nov  4 20:00:20 2026",
+    "bound_at": 1793790020.6449192
+  },
+  "result_digest": "bcf898c690384b48fe9426d14197f5876bf6adcf541fa537491cea8c3181600e",
+  "send_owner": {
+    "pid": 13466,
+    "lstart": "Wed Nov  4 20:00:19 2026"
+  },
+  "send_token": "443135e3270f43c48c9c11ed22f6a8e5",
+  "status": "reply-stored",
+  "context": {
+    "id": "fbd82ebe8dccbeb75d85e96e97198f719a09dfa082141f93a782ab140086bbc8",
+    "context_key": "fbd82ebe8dccbeb75d85e96e97198f719a09dfa082141f93a782ab140086bbc8",
+    "epoch": "080826fb9e51410d919300c3d817b5b5",
+    "worker_id": "323d4d56aa71471fa9cab19f06271b5d",
+    "sender": {
+      "runtime": "basic-real-reference",
+      "home": "/private/tmp/xsm-basic-real/pi-openai-luna-send-only/state/protocol-profiles/basic-real-reference/67157f2cba2505adc4905142c0bf3bfe24f5710f9bf9de04c0e3c363da3b5fc4",
+      "session_id": "ac2e227b57c8aaabad332cb3a744ed159bc8d5c58b928b891f475fe2c9f17a8a"
+    },
+    "work_context": "one-real-basic-turn",
+    "independent": false,
+    "native_session_id": "cc060e29-a6bf-4dd8-b058-211d177a971b",
+    "session_seed": "cc060e29-a6bf-4dd8-b058-211d177a971b",
+    "retired": false,
+    "unknown_request": null,
+    "created_at": 1793790019.957519
+  },
+  "persisted": true,
+  "accepted": true,
+  "side_effects_exactly_once": false,
+  "slot_occupied": false
+}

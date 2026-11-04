@@ -1,0 +1,13 @@
+======================================================================
+FAIL: test_later_claude_question_answer_supersedes_the_typed_command (tests.test_public_command_flow.PublicCommandFlowTest.test_later_claude_question_answer_supersedes_the_typed_command)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-basic-red-5am5uc3e/tests/test_public_command_flow.py", line 107, in test_later_claude_question_answer_supersedes_the_typed_command
+    self.assertEqual(self.cli(self.a, 'publish')[0], 2)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 != 2
+
+----------------------------------------------------------------------
+Ran 1 test in 0.237s
+
+FAILED (failures=1)

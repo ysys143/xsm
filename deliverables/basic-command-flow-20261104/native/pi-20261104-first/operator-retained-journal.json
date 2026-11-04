@@ -1,0 +1,165 @@
+{
+  "id": "one-native-turn",
+  "digest": "9c97c5d6e0ccce9144e21bab7ca284c2f232aa2245b6b1963f1acf2069630909",
+  "owner": {
+    "runtime": "basic-real-reference",
+    "home": "/private/tmp/xsm-basic-real/pi-20261104-first/state/protocol-profiles/basic-real-reference/67157f2cba2505adc4905142c0bf3bfe24f5710f9bf9de04c0e3c363da3b5fc4",
+    "session_id": "ce61aded7d2d509ba3afbad237cdc3aaa97132349901d362f936c8ad3757b4a7"
+  },
+  "sender": {
+    "runtime": "basic-real-reference",
+    "home": "/private/tmp/xsm-basic-real/pi-20261104-first/state/protocol-profiles/basic-real-reference/67157f2cba2505adc4905142c0bf3bfe24f5710f9bf9de04c0e3c363da3b5fc4",
+    "session_id": "ce61aded7d2d509ba3afbad237cdc3aaa97132349901d362f936c8ad3757b4a7",
+    "pid": 34209,
+    "lstart": "Wed Nov  4 19:34:22 2026",
+    "cwd": "/private/tmp/xsm-basic-real/pi-20261104-first/workspace",
+    "ref": "f56a1c",
+    "name": "basic-real-reference-ce61aded",
+    "protocol_version": "1",
+    "protocol_generation": "8132fc2759044677a0b2285314c058c0",
+    "registered": true,
+    "activity": "idle",
+    "protocol_root": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging",
+    "protocol_python": "/opt/homebrew/opt/python@3.14/bin/python3.14",
+    "protocol_python_version": "3.14.6",
+    "updated": 1793788462.191665
+  },
+  "worker": {
+    "id": "2e6b7dcb55cb4d17a01fd9dc357046ab",
+    "name": "basic-pi",
+    "mode": "owned",
+    "owned": true,
+    "runtime": "pi",
+    "home": "/private/tmp/xsm-basic-real/pi-20261104-first/pi",
+    "cwd": "/private/tmp/xsm-basic-real/pi-20261104-first/workspace",
+    "model": "xsm-subscription/anthropic/claude-sonnet-5-5",
+    "effort": null,
+    "owner": {
+      "runtime": "basic-real-reference",
+      "home": "/private/tmp/xsm-basic-real/pi-20261104-first/state/protocol-profiles/basic-real-reference/67157f2cba2505adc4905142c0bf3bfe24f5710f9bf9de04c0e3c363da3b5fc4",
+      "session_id": "ce61aded7d2d509ba3afbad237cdc3aaa97132349901d362f936c8ad3757b4a7",
+      "pid": 34209,
+      "lstart": "Wed Nov  4 19:34:22 2026",
+      "cwd": "/private/tmp/xsm-basic-real/pi-20261104-first/workspace",
+      "ref": "f56a1c",
+      "name": "basic-real-reference-ce61aded",
+      "protocol_version": "1",
+      "protocol_generation": "8132fc2759044677a0b2285314c058c0",
+      "registered": true,
+      "activity": "idle",
+      "protocol_root": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging",
+      "protocol_python": "/opt/homebrew/opt/python@3.14/bin/python3.14",
+      "protocol_python_version": "3.14.6",
+      "updated": 1793788462.191665
+    },
+    "parent_native": {
+      "runtime": "basic-real-reference",
+      "home": "/private/tmp/xsm-basic-real/pi-20261104-first/state/protocol-profiles/basic-real-reference/67157f2cba2505adc4905142c0bf3bfe24f5710f9bf9de04c0e3c363da3b5fc4",
+      "session_id": "ce61aded7d2d509ba3afbad237cdc3aaa97132349901d362f936c8ad3757b4a7"
+    },
+    "parent_ref": "f56a1c",
+    "created": 1793788462.4338958,
+    "depth": 1,
+    "max_depth": 1,
+    "session_id": null,
+    "owned_sessions": [],
+    "native_provider": {
+      "executable": "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-pi-140-eohrvh8q/node_modules/@earendil-works/pi-coding-agent/dist/bundle/cli.js",
+      "version": "1.4.0",
+      "control_protocol": 1,
+      "cancellation_protocol": 1,
+      "runtime_root": "/private/tmp/xsm-basic-real/pi-20261104-first/state/runtime/a4a46f5ca050",
+      "frontend": "/private/tmp/xsm-basic-real/pi-20261104-first/state/runtime/a4a46f5ca050/integrations/pi/xsm.mjs",
+      "frontend_sha256": "dd301415eb009dd5cb2ff8cc7fe3f72f49eaaa884788ce0d13f27c471d6da373"
+    }
+  },
+  "work_context": "one-real-basic-turn",
+  "body": "This is the user-authorized isolated XSM test. Use the available native xsm_send tool exactly once with these arguments: {\"target\": \"peer:5bcc806f174ad4fc11e9095e06917f952fab5c209fcc243343d04d83b06e6aee\", \"text\": \"XSM_BASIC_REAL_NOTE_6dcf31f8c647f1105a6b0536\", \"kind\": \"note\", \"wake\": \"never\", \"wait\": 0}. After the tool returns, reply exactly XSM_BASIC_REAL_DONE_6dcf31f8c647f1105a6b0536. Do not use shell, write files, request approvals, publish, or call other tools.",
+  "context_id": "76a17ce157f4f26d11c86f0c9bf03c03bcf6c16c8b2c54b8fdd62cfb132c25f3",
+  "context_epoch": "e29501e85a3e4744a01be765eaabe436",
+  "created_at": 1793788462.44964,
+  "sequence": 0,
+  "result": null,
+  "reply_id": null,
+  "send_evidence": null,
+  "reservation": {
+    "token": "16a81bb45fa64c26be4079b2aabc0aba",
+    "controller": {
+      "pid": 34209,
+      "lstart": "Wed Nov  4 19:34:22 2026"
+    }
+  },
+  "events": [
+    {
+      "phase": "queued",
+      "at": 1793788462.449641
+    },
+    {
+      "phase": "reserved",
+      "at": 1793788462.457535
+    },
+    {
+      "phase": "acknowledged",
+      "at": 1793788462.4582431
+    },
+    {
+      "phase": "running",
+      "at": 1793788462.4587588
+    },
+    {
+      "phase": "unknown",
+      "at": 1793788464.070236
+    }
+  ],
+  "run_attempts": 1,
+  "child": {
+    "pid": 34317,
+    "lstart": "Wed Nov  4 19:34:22 2026",
+    "argv": [
+      "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-pi-140-eohrvh8q/node_modules/@earendil-works/pi-coding-agent/dist/bundle/cli.js",
+      "--print",
+      "--mode",
+      "json",
+      "--session-id",
+      "9e74a04a-38e8-4572-9743-3912950f0303",
+      "--session-dir",
+      "/private/tmp/xsm-basic-real/pi-20261104-first/pi/owned-sessions/2e6b7dcb55cb4d17a01fd9dc357046ab",
+      "--model",
+      "xsm-subscription/anthropic/claude-sonnet-5-5"
+    ],
+    "stdout": "/private/tmp/xsm-basic-real/pi-20261104-first/state/owned-runs/2e6b7dcb55cb4d17a01fd9dc357046ab/one-native-turn.jsonl",
+    "stderr": "/private/tmp/xsm-basic-real/pi-20261104-first/state/owned-runs/2e6b7dcb55cb4d17a01fd9dc357046ab/one-native-turn.stderr",
+    "returncode": 0
+  },
+  "native_binding": {
+    "native_session_id": "9e74a04a-38e8-4572-9743-3912950f0303",
+    "child_pid": 34317,
+    "child_lstart": "Wed Nov  4 19:34:22 2026",
+    "bound_at": 1793788463.137505
+  },
+  "error": "Pi returned no successful native answer",
+  "status": "unknown",
+  "context": {
+    "id": "76a17ce157f4f26d11c86f0c9bf03c03bcf6c16c8b2c54b8fdd62cfb132c25f3",
+    "context_key": "76a17ce157f4f26d11c86f0c9bf03c03bcf6c16c8b2c54b8fdd62cfb132c25f3",
+    "epoch": "e29501e85a3e4744a01be765eaabe436",
+    "worker_id": "2e6b7dcb55cb4d17a01fd9dc357046ab",
+    "sender": {
+      "runtime": "basic-real-reference",
+      "home": "/private/tmp/xsm-basic-real/pi-20261104-first/state/protocol-profiles/basic-real-reference/67157f2cba2505adc4905142c0bf3bfe24f5710f9bf9de04c0e3c363da3b5fc4",
+      "session_id": "ce61aded7d2d509ba3afbad237cdc3aaa97132349901d362f936c8ad3757b4a7"
+    },
+    "work_context": "one-real-basic-turn",
+    "independent": false,
+    "native_session_id": "9e74a04a-38e8-4572-9743-3912950f0303",
+    "session_seed": "9e74a04a-38e8-4572-9743-3912950f0303",
+    "retired": false,
+    "unknown_request": "one-native-turn",
+    "created_at": 1793788462.449616
+  },
+  "persisted": true,
+  "accepted": true,
+  "side_effects_exactly_once": false,
+  "slot_occupied": false,
+  "execution_state": "exited"
+}

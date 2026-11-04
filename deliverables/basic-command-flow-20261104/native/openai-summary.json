@@ -1,0 +1,67 @@
+{
+  "status": "incomplete-native-tool-contract",
+  "route": "existing OpenAI ChatGPT OAuth passthrough pool",
+  "requestedModel": "gpt-6-luna",
+  "actualResponseModelLabels": [
+    "gpt-6-luna"
+  ],
+  "attempts": [
+    {
+      "root": "/private/tmp/xsm-basic-real/pi-openai-luna-first",
+      "status": "failed",
+      "providerRequests": 1,
+      "responseModelLabels": [],
+      "elapsedSeconds": 4.745,
+      "ownedChildrenExited": true,
+      "failure": "actual model answer saved"
+    },
+    {
+      "root": "/private/tmp/xsm-basic-real/pi-openai-luna-send-only",
+      "status": "failed",
+      "providerRequests": 2,
+      "responseModelLabels": [
+        "gpt-6-luna"
+      ],
+      "elapsedSeconds": 11.857,
+      "ownedChildrenExited": true,
+      "failure": "native model tool sent one actual canonical note"
+    }
+  ],
+  "totalOpenAiProviderRequests": 3,
+  "automaticRetries": 0,
+  "nativeToolCalls": 1,
+  "nativeToolErrors": 1,
+  "ACKs": 0,
+  "firstFailure": {
+    "httpStatus": 400,
+    "message": "Invalid JSON schema: regex lookaround is not supported. Found at $.properties.message_ids.items.pattern.",
+    "source": "xsm/operation_schema.py:238"
+  },
+  "secondFailure": {
+    "tool": "xsm_send",
+    "error": "outcome belongs only to a reply that closes a task",
+    "extraArguments": [
+      "outcome=succeeded with kind=note",
+      "target and targets both supplied"
+    ],
+    "source": "xsm/send_service.py:21-22"
+  },
+  "staticTransportFinding": {
+    "pi": "custom openai-completions provider defaults supportsStrictMode=false, so function.strict omitted",
+    "ocx": "Chat to Responses retains strict only if present",
+    "effect": "possible Responses strict normalization of optional fields; no final outgoing Responses wire capture, so not proven causally"
+  },
+  "notRun": [
+    "opencode",
+    "openclaw",
+    "hermes"
+  ],
+  "limits": [
+    "generic reference receiver, not native-native pair",
+    "full native tool catalog rejected before model response",
+    "send-only native tool catalog returned actual model answer but tool send/ACK failed",
+    "publish/typed-consent not tested",
+    "no core/global configuration/credential or designated Claude/Codex session changes"
+  ],
+  "rawToolEvidence": "/private/tmp/xsm-basic-real/pi-openai-luna-send-only/native-tool-error.json"
+}

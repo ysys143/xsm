@@ -1,0 +1,20 @@
+{
+  "status": "starting",
+  "runtime": "openclaw",
+  "requestedModel": "gpt-6-luna",
+  "root": "/private/tmp/xsm-basic-real/openclaw-readiness-corrected-no-model",
+  "checks": [],
+  "stages": [],
+  "prewarmProcessPids": [],
+  "maxTotalSeconds": 180,
+  "controllerWorkDeadlineSeconds": 160,
+  "maxNativeTurnSeconds": 120,
+  "maxProviderRequests": 8,
+  "automaticRetry": false,
+  "configurationChange": "readiness diagnostic only; use shipped creation_params without optional idempotencyKey, do not submit any agent/model turn",
+  "limits": [
+    "generic reference receiver; not native-native pair",
+    "publish/typed-consent not tested",
+    "previous failure root unchanged"
+  ]
+}

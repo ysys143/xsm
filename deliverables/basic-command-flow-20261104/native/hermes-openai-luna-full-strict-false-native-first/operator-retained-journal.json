@@ -1,0 +1,220 @@
+{
+  "id": "one-native-turn",
+  "digest": "96e9ba26d6e89448be5cbac78a4f768f4d5c97dcce959033e37c67eab82491f6",
+  "owner": {
+    "runtime": "basic-real-reference",
+    "home": "/private/tmp/xsm-basic-real/hermes-openai-luna-full-strict-false-native-first/state/protocol-profiles/basic-real-reference/67157f2cba2505adc4905142c0bf3bfe24f5710f9bf9de04c0e3c363da3b5fc4",
+    "session_id": "5bd74277c0a5c77bb5c681e6c567c9d34b9e872047a5a02d7a31e37f648d3158"
+  },
+  "sender": {
+    "runtime": "basic-real-reference",
+    "home": "/private/tmp/xsm-basic-real/hermes-openai-luna-full-strict-false-native-first/state/protocol-profiles/basic-real-reference/67157f2cba2505adc4905142c0bf3bfe24f5710f9bf9de04c0e3c363da3b5fc4",
+    "session_id": "5bd74277c0a5c77bb5c681e6c567c9d34b9e872047a5a02d7a31e37f648d3158",
+    "pid": 79861,
+    "lstart": "Wed Nov  4 20:25:53 2026",
+    "cwd": "/private/tmp/xsm-basic-real/hermes-openai-luna-full-strict-false-native-first/workspace",
+    "ref": "c6255e",
+    "name": "basic-real-reference-5bd74277",
+    "protocol_version": "1",
+    "protocol_generation": "166e2b7b2de54737931833bb9e0f147f",
+    "registered": true,
+    "activity": "idle",
+    "protocol_root": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging",
+    "protocol_python": "/opt/homebrew/opt/python@3.14/bin/python3.14",
+    "protocol_python_version": "3.14.6",
+    "updated": 1793791553.995069
+  },
+  "worker": {
+    "id": "a0026c67842947a8b7d643a452b2862e",
+    "name": "basic-hermes",
+    "mode": "owned",
+    "owned": true,
+    "runtime": "hermes",
+    "home": "/private/tmp/xsm-basic-real/hermes-openai-luna-full-strict-false-native-first/hermes",
+    "cwd": "/private/tmp/xsm-basic-real/hermes-openai-luna-full-strict-false-native-first/workspace",
+    "model": "gpt-6-luna",
+    "effort": null,
+    "owner": {
+      "runtime": "basic-real-reference",
+      "home": "/private/tmp/xsm-basic-real/hermes-openai-luna-full-strict-false-native-first/state/protocol-profiles/basic-real-reference/67157f2cba2505adc4905142c0bf3bfe24f5710f9bf9de04c0e3c363da3b5fc4",
+      "session_id": "5bd74277c0a5c77bb5c681e6c567c9d34b9e872047a5a02d7a31e37f648d3158",
+      "pid": 79861,
+      "lstart": "Wed Nov  4 20:25:53 2026",
+      "cwd": "/private/tmp/xsm-basic-real/hermes-openai-luna-full-strict-false-native-first/workspace",
+      "ref": "c6255e",
+      "name": "basic-real-reference-5bd74277",
+      "protocol_version": "1",
+      "protocol_generation": "166e2b7b2de54737931833bb9e0f147f",
+      "registered": true,
+      "activity": "idle",
+      "protocol_root": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging",
+      "protocol_python": "/opt/homebrew/opt/python@3.14/bin/python3.14",
+      "protocol_python_version": "3.14.6",
+      "updated": 1793791553.995069
+    },
+    "parent_native": {
+      "runtime": "basic-real-reference",
+      "home": "/private/tmp/xsm-basic-real/hermes-openai-luna-full-strict-false-native-first/state/protocol-profiles/basic-real-reference/67157f2cba2505adc4905142c0bf3bfe24f5710f9bf9de04c0e3c363da3b5fc4",
+      "session_id": "5bd74277c0a5c77bb5c681e6c567c9d34b9e872047a5a02d7a31e37f648d3158"
+    },
+    "parent_ref": "c6255e",
+    "created": 1793791557.778049,
+    "depth": 1,
+    "max_depth": 1,
+    "session_id": null,
+    "owned_sessions": [],
+    "native_provider": {
+      "executable": "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-hermes-0225-r0608vzd/env/bin/hermes",
+      "version": "0.22.5",
+      "python": "/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-hermes-0225-r0608vzd/env/bin/python",
+      "control_protocol": 1,
+      "cancellation_protocol": 1,
+      "frontend": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/integrations/hermes/worker_frontend.py",
+      "runtime_root": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging",
+      "frontend_sha256": "417b16585b8cc524431ff262b608f5ce4ef03e1f6da3777e9d48f25b545eaef6"
+    }
+  },
+  "work_context": "one-real-basic-turn",
+  "body": "This is the user-authorized isolated XSM test. Use the available native xsm_send tool exactly once with these arguments: {\"target\": \"peer:6226324367b4cbf7e3a7315e3c68daa2316a40db2e7333fcac5c4b82a00c0a4b\", \"text\": \"XSM_BASIC_REAL_NOTE_c0d8e20c37303161c63f3269\", \"kind\": \"note\", \"wake\": \"never\", \"wait\": 0}. After the tool returns, reply exactly XSM_BASIC_REAL_DONE_c0d8e20c37303161c63f3269. Do not use shell, write files, request approvals, publish, or call other tools.",
+  "context_id": "2e4175376d752c7fcabee216d82369d232dfa4ea9b10371ba6a9e76df2364c55",
+  "context_epoch": "c4e9bd2a24cd4415adc6b771883e4226",
+  "created_at": 1793791557.7950568,
+  "sequence": 0,
+  "result": {
+    "body": "XSM_BASIC_REAL_DONE_c0d8e20c37303161c63f3269",
+    "outcome": null,
+    "native_session_id": "local-d6c9aa74130dc093006b1da163ffb92c2fd0fb7c952cbc3d3152c41ddb16a089",
+    "native_evidence": {
+      "event_count": 28,
+      "terminal_event": "result",
+      "terminal_exit_code": 0
+    },
+    "execution": {
+      "pid": 80109,
+      "lstart": "Wed Nov  4 20:25:59 2026",
+      "argv": [
+        "/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-hermes-0225-r0608vzd/env/bin/python",
+        "-B",
+        "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/integrations/hermes/worker_frontend.py",
+        "chat",
+        "--format",
+        "stream-json",
+        "--query-file",
+        "-",
+        "--in",
+        "/private/tmp/xsm-basic-real/hermes-openai-luna-full-strict-false-native-first/workspace",
+        "--model=gpt-6-luna"
+      ],
+      "stdout": "/private/tmp/xsm-basic-real/hermes-openai-luna-full-strict-false-native-first/state/owned-runs/a0026c67842947a8b7d643a452b2862e/one-native-turn.jsonl",
+      "stderr": "/private/tmp/xsm-basic-real/hermes-openai-luna-full-strict-false-native-first/state/owned-runs/a0026c67842947a8b7d643a452b2862e/one-native-turn.stderr",
+      "returncode": 0
+    }
+  },
+  "reply_id": "a362f25578614ba6",
+  "send_evidence": {
+    "status": "stored",
+    "reason": "protocol participant inbox; awaiting actual consumption",
+    "id": "a362f25578614ba6",
+    "to": "basic-real-reference-5bd74277@None",
+    "runtime_reached": false,
+    "evidence": {
+      "accepted": true,
+      "queued": false,
+      "wake": false,
+      "stored": true
+    }
+  },
+  "reservation": {
+    "token": "4ea4ab1c67994d4aabd6347939cfc2b0",
+    "controller": {
+      "pid": 79861,
+      "lstart": "Wed Nov  4 20:25:53 2026"
+    }
+  },
+  "events": [
+    {
+      "phase": "queued",
+      "at": 1793791557.795058
+    },
+    {
+      "phase": "reserved",
+      "at": 1793791557.802361
+    },
+    {
+      "phase": "acknowledged",
+      "at": 1793791557.803094
+    },
+    {
+      "phase": "running",
+      "at": 1793791557.803641
+    },
+    {
+      "phase": "result-ready",
+      "at": 1793791584.895759
+    },
+    {
+      "phase": "sending",
+      "at": 1793791584.90034
+    },
+    {
+      "phase": "reply-stored",
+      "at": 1793791584.9489
+    }
+  ],
+  "run_attempts": 1,
+  "child": {
+    "pid": 80109,
+    "lstart": "Wed Nov  4 20:25:59 2026",
+    "argv": [
+      "/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-hermes-0225-r0608vzd/env/bin/python",
+      "-B",
+      "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/integrations/hermes/worker_frontend.py",
+      "chat",
+      "--format",
+      "stream-json",
+      "--query-file",
+      "-",
+      "--in",
+      "/private/tmp/xsm-basic-real/hermes-openai-luna-full-strict-false-native-first/workspace",
+      "--model=gpt-6-luna"
+    ],
+    "stdout": "/private/tmp/xsm-basic-real/hermes-openai-luna-full-strict-false-native-first/state/owned-runs/a0026c67842947a8b7d643a452b2862e/one-native-turn.jsonl",
+    "stderr": "/private/tmp/xsm-basic-real/hermes-openai-luna-full-strict-false-native-first/state/owned-runs/a0026c67842947a8b7d643a452b2862e/one-native-turn.stderr",
+    "returncode": 0
+  },
+  "native_binding": {
+    "native_session_id": "local-d6c9aa74130dc093006b1da163ffb92c2fd0fb7c952cbc3d3152c41ddb16a089",
+    "child_pid": 80109,
+    "child_lstart": "Wed Nov  4 20:25:59 2026",
+    "bound_at": 1793791566.2374341
+  },
+  "result_digest": "6bf11244f8c4d615a06896fcdea13b1773139475321f06c4cd645618d8582c39",
+  "send_owner": {
+    "pid": 79861,
+    "lstart": "Wed Nov  4 20:25:53 2026"
+  },
+  "send_token": "dd833ff9fea04ca2a4a0a30ae977018d",
+  "status": "reply-stored",
+  "context": {
+    "id": "2e4175376d752c7fcabee216d82369d232dfa4ea9b10371ba6a9e76df2364c55",
+    "context_key": "2e4175376d752c7fcabee216d82369d232dfa4ea9b10371ba6a9e76df2364c55",
+    "epoch": "c4e9bd2a24cd4415adc6b771883e4226",
+    "worker_id": "a0026c67842947a8b7d643a452b2862e",
+    "sender": {
+      "runtime": "basic-real-reference",
+      "home": "/private/tmp/xsm-basic-real/hermes-openai-luna-full-strict-false-native-first/state/protocol-profiles/basic-real-reference/67157f2cba2505adc4905142c0bf3bfe24f5710f9bf9de04c0e3c363da3b5fc4",
+      "session_id": "5bd74277c0a5c77bb5c681e6c567c9d34b9e872047a5a02d7a31e37f648d3158"
+    },
+    "work_context": "one-real-basic-turn",
+    "independent": false,
+    "native_session_id": "local-d6c9aa74130dc093006b1da163ffb92c2fd0fb7c952cbc3d3152c41ddb16a089",
+    "session_seed": "7e59c477-f5a0-4ae7-97c9-1a6384423e86",
+    "retired": false,
+    "unknown_request": null,
+    "created_at": 1793791557.795031
+  },
+  "persisted": true,
+  "accepted": true,
+  "side_effects_exactly_once": false,
+  "slot_occupied": false
+}

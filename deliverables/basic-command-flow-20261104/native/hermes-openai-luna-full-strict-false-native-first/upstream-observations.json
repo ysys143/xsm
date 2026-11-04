@@ -1,0 +1,32 @@
+[
+  {
+    "request": 1,
+    "httpStatus": 200,
+    "rawBody": "/private/tmp/xsm-basic-real/hermes-openai-luna-full-strict-false-native-first/upstream-01.body",
+    "responseBytes": 1010
+  },
+  {
+    "request": 2,
+    "httpStatus": 200,
+    "rawBody": "/private/tmp/xsm-basic-real/hermes-openai-luna-full-strict-false-native-first/upstream-02.body",
+    "responseBytes": 1002
+  },
+  {
+    "request": 3,
+    "httpStatus": 200,
+    "rawBody": "/private/tmp/xsm-basic-real/hermes-openai-luna-full-strict-false-native-first/upstream-03.body",
+    "responseBytes": 1217
+  },
+  {
+    "request": 4,
+    "httpStatus": 200,
+    "rawBody": "/private/tmp/xsm-basic-real/hermes-openai-luna-full-strict-false-native-first/upstream-04.body",
+    "responseBytes": 4975
+  },
+  {
+    "request": 5,
+    "httpStatus": 200,
+    "rawBody": "/private/tmp/xsm-basic-real/hermes-openai-luna-full-strict-false-native-first/upstream-05.body",
+    "responseBytes": 458
+  }
+]

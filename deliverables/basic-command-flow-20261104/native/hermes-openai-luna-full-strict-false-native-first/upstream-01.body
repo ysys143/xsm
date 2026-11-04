@@ -1,0 +1,8 @@
+data: {"id":"chatcmpl-43b4043000e4475387d5842a","object":"chat.completion.chunk","created":1793791569,"model":"gpt-6-luna","choices":[{"index":0,"delta":{"role":"assistant","content":""},"finish_reason":null}],"service_tier":"auto"}
+
+data: {"id":"chatcmpl-43b4043000e4475387d5842a","object":"chat.completion.chunk","created":1793791569,"model":"gpt-6-luna","choices":[{"index":0,"delta":{"tool_calls":[{"index":0,"id":"call_3863648153df464199d8c39442d792df","type":"function","function":{"name":"tool_search","arguments":"{\"queries\":[\"xsm send message\"]}"}}]},"finish_reason":null}],"service_tier":"auto"}
+
+data: {"id":"chatcmpl-43b4043000e4475387d5842a","object":"chat.completion.chunk","created":1793791569,"model":"gpt-6-luna","choices":[{"index":0,"delta":{},"finish_reason":"tool_calls"}],"usage":{"prompt_tokens":11777,"completion_tokens":22,"total_tokens":11799,"prompt_tokens_details":{"cached_tokens":0},"completion_tokens_details":{"reasoning_tokens":0}},"service_tier":"default"}
+
+data: [DONE]
+

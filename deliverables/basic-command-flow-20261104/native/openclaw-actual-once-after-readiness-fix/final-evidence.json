@@ -1,0 +1,113 @@
+{
+  "status": "passed",
+  "root": "/private/tmp/xsm-basic-real/openclaw-actual-once-after-readiness-fix",
+  "requestedModel": "gpt-6-luna",
+  "actualResponseModelLabels": [
+    "gpt-6-luna"
+  ],
+  "setupSeconds": 9.579,
+  "firstProviderRequestAfterSeconds": 12.938,
+  "nativeTurnSecondsAfterFirstProviderRequest": 14.204,
+  "nativeSubmissionToResultSeconds": 17.562,
+  "cleanupSeconds": 2.003,
+  "totalSeconds": 29.179,
+  "providerRequests": 4,
+  "nativeHttpArrivals": 4,
+  "toolSelections": [
+    {
+      "file": "/private/tmp/xsm-basic-real/openclaw-actual-once-after-readiness-fix/upstream-01.body",
+      "name": "tool_search",
+      "id": "call_e1345479b7684cbcbcc8e711c529826a",
+      "arguments": {
+        "query": "xsm_send send a message to another session"
+      }
+    },
+    {
+      "file": "/private/tmp/xsm-basic-real/openclaw-actual-once-after-readiness-fix/upstream-02.body",
+      "name": "tool_describe",
+      "id": "call_42008708a17842d8b7096516367d8ea6",
+      "arguments": {
+        "id": "openclaw:xsm:xsm_send"
+      }
+    },
+    {
+      "file": "/private/tmp/xsm-basic-real/openclaw-actual-once-after-readiness-fix/upstream-03.body",
+      "name": "tool_call",
+      "id": "call_37d68365082f43f59f00958731401daa",
+      "arguments": {
+        "id": "openclaw:xsm:xsm_send",
+        "args": {
+          "target": "peer:569f1af094aada2767b8a6af43f144fc4810b10759a45835c993bc7c444629b4",
+          "text": "XSM_BASIC_REAL_NOTE_af390f4f1dc6a2f453d21a58",
+          "kind": "note",
+          "wake": "never",
+          "wait": 0
+        }
+      }
+    }
+  ],
+  "wireEvidence": [
+    {
+      "request": "request-01",
+      "totalTools": 12,
+      "xsmTools": 0,
+      "allXsmStrictFalse": null,
+      "onlyStrictFalseChanged": true
+    },
+    {
+      "request": "request-02",
+      "totalTools": 12,
+      "xsmTools": 0,
+      "allXsmStrictFalse": null,
+      "onlyStrictFalseChanged": true
+    },
+    {
+      "request": "request-03",
+      "totalTools": 12,
+      "xsmTools": 0,
+      "allXsmStrictFalse": null,
+      "onlyStrictFalseChanged": true
+    },
+    {
+      "request": "request-04",
+      "totalTools": 12,
+      "xsmTools": 0,
+      "allXsmStrictFalse": null,
+      "onlyStrictFalseChanged": true
+    }
+  ],
+  "acked": [
+    "fde13693c2ad4b77",
+    "bcb6c1a9c25d4b8a"
+  ],
+  "nativeToolMessageIds": [
+    "fde13693c2ad4b77"
+  ],
+  "finalReplyId": "bcb6c1a9c25d4b8a",
+  "prewarmSessionId": "fc474a32-cfa5-4cd8-888a-99116a5123db",
+  "actualNativeSessionId": "db05581f-ff79-46de-ab66-45278933ff39",
+  "distinctFreshSession": true,
+  "ownedChildrenExited": true,
+  "gatewayStopped": true,
+  "cleanupPidCheck": {
+    "pids": [
+      28290,
+      28320,
+      28375,
+      28099,
+      28496
+    ],
+    "psExit": 1,
+    "remainingPidRows": ""
+  },
+  "scriptSha256": {
+    "probe_openclaw_actual_once.py": "4be700dabcb49ec54ca79e12b9cadd5230aaa9293cdd3bb99099cfc65a583885",
+    "openai_staged_relay.py": "f40461abee7dc81e1661c3c85d5776d1963babc0811735c5ea6df82bd260d80d",
+    "native_profiles.py": "7b1be83a9c8c11e5c8234fe895325241b8e84c9c1a9d15e118ca3d896c79bc9b"
+  },
+  "limits": [
+    "generic reference receiver, not native-native pairing",
+    "publish/typed-consent not exercised",
+    "previous failures and diagnosis roots preserved"
+  ]
+}

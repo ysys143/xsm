@@ -1,0 +1,73 @@
+{
+  "status": "completed-basic-scope",
+  "required_runtimes": 6,
+  "passed_runtimes": 6,
+  "runtimes": [
+    {
+      "runtime": "claude",
+      "status": "passed",
+      "model_evidence": "native assistant model=claude-opus-5-5",
+      "method": "native idle input -> MCP ACK/reply -> reference receive/ACK",
+      "evidence": "claude-native-evidence.json"
+    },
+    {
+      "runtime": "codex",
+      "status": "passed",
+      "model_evidence": "native turn_context model=gpt-6.1-sol; provider label not separately captured",
+      "method": "resume selected existing thread -> passive CLI inbox/ACK/reply -> reference receive/ACK",
+      "evidence": "codex/result.json"
+    },
+    {
+      "runtime": "pi",
+      "status": "passed",
+      "model_evidence": [
+        "gpt-6-luna"
+      ],
+      "provider_requests": 2,
+      "reference_acks": 2,
+      "method": "owned native model tool send and final reply -> reference receive/ACK",
+      "evidence": "native/pi-openai-luna-full-strict-false/result.json"
+    },
+    {
+      "runtime": "opencode",
+      "status": "passed",
+      "model_evidence": [
+        "gpt-6-luna"
+      ],
+      "provider_requests": 3,
+      "reference_acks": 2,
+      "method": "owned native model tool send and final reply -> reference receive/ACK",
+      "evidence": "native/opencode-openai-luna-full-strict-false/result.json"
+    },
+    {
+      "runtime": "openclaw",
+      "status": "passed",
+      "model_evidence": [
+        "gpt-6-luna"
+      ],
+      "provider_requests": 4,
+      "reference_acks": 2,
+      "method": "owned native model tool send and final reply -> reference receive/ACK",
+      "evidence": "native/openclaw-actual-once-after-readiness-fix/result.json"
+    },
+    {
+      "runtime": "hermes",
+      "status": "passed",
+      "model_evidence": [
+        "gpt-6-luna"
+      ],
+      "provider_requests": 5,
+      "reference_acks": 2,
+      "method": "owned native model tool send and final reply -> reference receive/ACK",
+      "evidence": "native/hermes-openai-luna-full-strict-false-native-first/result.json"
+    }
+  ],
+  "scope_limits": [
+    "all peers were protocol reference participants",
+    "not all native pairs or publication/consent UI were exercised",
+    "ordinary idle wake directly observed in Claude; Codex passive read and native4 owned turns differ",
+    "no messenger checks, global install or release"
+  ],
+  "final_regression_log": "final-regressions.log",
+  "mutation_results": "mutation-results.json"
+}

@@ -1,0 +1,40 @@
+data: {"id":"chatcmpl-86038704e16a4ea79e88a973","object":"chat.completion.chunk","created":1793790589,"model":"gpt-6-luna","choices":[{"index":0,"delta":{"role":"assistant","content":""},"finish_reason":null}],"service_tier":"auto"}
+
+data: {"id":"chatcmpl-86038704e16a4ea79e88a973","object":"chat.completion.chunk","created":1793790589,"model":"gpt-6-luna","choices":[{"index":0,"delta":{"content":"X"},"finish_reason":null}],"service_tier":"auto"}
+
+data: {"id":"chatcmpl-86038704e16a4ea79e88a973","object":"chat.completion.chunk","created":1793790589,"model":"gpt-6-luna","choices":[{"index":0,"delta":{"content":"SM"},"finish_reason":null}],"service_tier":"auto"}
+
+data: {"id":"chatcmpl-86038704e16a4ea79e88a973","object":"chat.completion.chunk","created":1793790589,"model":"gpt-6-luna","choices":[{"index":0,"delta":{"content":"_BASIC"},"finish_reason":null}],"service_tier":"auto"}
+
+data: {"id":"chatcmpl-86038704e16a4ea79e88a973","object":"chat.completion.chunk","created":1793790589,"model":"gpt-6-luna","choices":[{"index":0,"delta":{"content":"_REAL"},"finish_reason":null}],"service_tier":"auto"}
+
+data: {"id":"chatcmpl-86038704e16a4ea79e88a973","object":"chat.completion.chunk","created":1793790589,"model":"gpt-6-luna","choices":[{"index":0,"delta":{"content":"_DONE"},"finish_reason":null}],"service_tier":"auto"}
+
+data: {"id":"chatcmpl-86038704e16a4ea79e88a973","object":"chat.completion.chunk","created":1793790589,"model":"gpt-6-luna","choices":[{"index":0,"delta":{"content":"_"},"finish_reason":null}],"service_tier":"auto"}
+
+data: {"id":"chatcmpl-86038704e16a4ea79e88a973","object":"chat.completion.chunk","created":1793790589,"model":"gpt-6-luna","choices":[{"index":0,"delta":{"content":"97"},"finish_reason":null}],"service_tier":"auto"}
+
+data: {"id":"chatcmpl-86038704e16a4ea79e88a973","object":"chat.completion.chunk","created":1793790589,"model":"gpt-6-luna","choices":[{"index":0,"delta":{"content":"e"},"finish_reason":null}],"service_tier":"auto"}
+
+data: {"id":"chatcmpl-86038704e16a4ea79e88a973","object":"chat.completion.chunk","created":1793790589,"model":"gpt-6-luna","choices":[{"index":0,"delta":{"content":"06"},"finish_reason":null}],"service_tier":"auto"}
+
+data: {"id":"chatcmpl-86038704e16a4ea79e88a973","object":"chat.completion.chunk","created":1793790589,"model":"gpt-6-luna","choices":[{"index":0,"delta":{"content":"c"},"finish_reason":null}],"service_tier":"auto"}
+
+data: {"id":"chatcmpl-86038704e16a4ea79e88a973","object":"chat.completion.chunk","created":1793790589,"model":"gpt-6-luna","choices":[{"index":0,"delta":{"content":"081"},"finish_reason":null}],"service_tier":"auto"}
+
+data: {"id":"chatcmpl-86038704e16a4ea79e88a973","object":"chat.completion.chunk","created":1793790589,"model":"gpt-6-luna","choices":[{"index":0,"delta":{"content":"acd"},"finish_reason":null}],"service_tier":"auto"}
+
+data: {"id":"chatcmpl-86038704e16a4ea79e88a973","object":"chat.completion.chunk","created":1793790589,"model":"gpt-6-luna","choices":[{"index":0,"delta":{"content":"565"},"finish_reason":null}],"service_tier":"auto"}
+
+data: {"id":"chatcmpl-86038704e16a4ea79e88a973","object":"chat.completion.chunk","created":1793790589,"model":"gpt-6-luna","choices":[{"index":0,"delta":{"content":"ff"},"finish_reason":null}],"service_tier":"auto"}
+
+data: {"id":"chatcmpl-86038704e16a4ea79e88a973","object":"chat.completion.chunk","created":1793790589,"model":"gpt-6-luna","choices":[{"index":0,"delta":{"content":"fea"},"finish_reason":null}],"service_tier":"auto"}
+
+data: {"id":"chatcmpl-86038704e16a4ea79e88a973","object":"chat.completion.chunk","created":1793790589,"model":"gpt-6-luna","choices":[{"index":0,"delta":{"content":"754"},"finish_reason":null}],"service_tier":"auto"}
+
+data: {"id":"chatcmpl-86038704e16a4ea79e88a973","object":"chat.completion.chunk","created":1793790589,"model":"gpt-6-luna","choices":[{"index":0,"delta":{"content":"6"},"finish_reason":null}],"service_tier":"auto"}
+
+data: {"id":"chatcmpl-86038704e16a4ea79e88a973","object":"chat.completion.chunk","created":1793790589,"model":"gpt-6-luna","choices":[{"index":0,"delta":{},"finish_reason":"stop"}],"usage":{"prompt_tokens":8178,"completion_tokens":21,"total_tokens":8199,"prompt_tokens_details":{"cached_tokens":0},"completion_tokens_details":{"reasoning_tokens":0}},"service_tier":"default"}
+
+data: [DONE]
+

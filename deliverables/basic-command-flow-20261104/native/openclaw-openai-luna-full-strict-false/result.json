@@ -1,0 +1,77 @@
+{
+  "status": "failed",
+  "runtime": "openclaw",
+  "root": "/private/tmp/xsm-basic-real/openclaw-openai-luna-full-strict-false",
+  "checks": [
+    "owned native service admitted",
+    "pinned native provider version"
+  ],
+  "requestedModel": "gpt-6-luna",
+  "subscriptionAuthMode": "forward/OpenAI ChatGPT OAuth pool",
+  "maxProviderRequests": 8,
+  "maxRuntimeSeconds": 120,
+  "automaticRetry": false,
+  "scope": "one actual native model tool turn, generic reference receiver, real protocol inbox and ACK",
+  "limits": [
+    "generic reference parent; not two native participants",
+    "publish consent not exercised",
+    "Claude/Codex user sessions not touched",
+    "no fixtures, approval synthesis, or API keys"
+  ],
+  "sourceSha256": {
+    "scripts/probe-owned-subscription.py": "a1c70592ac074659813f05c508a584e6aef5bb3a4bebade6066045ece49d7659",
+    "scripts/probe_subscription_relay.py": "714fda6effd3fc3a66bb053b457d49c6984032b0fa3c25ce4dd7fce32671f28c",
+    "integrations/pi/xsm.mjs": "dd301415eb009dd5cb2ff8cc7fe3f72f49eaaa884788ce0d13f27c471d6da373",
+    "xsm/operations.py": "fef232ccc3e00ceab0b2788ef577806c770b03ca95b45be57a789351a804f0b7",
+    "xsm/operation_schema.py": "4475c2e6d467a3126ab31445399fa87d0bc9b4ff30af35b391fca6ba88659d22"
+  },
+  "providerConfiguration": "complete XSM catalog; native Pi supportsStrictMode=true where applicable; relay adds only explicit function.strict=false; unchanged schema and model arguments; repeated identical requests refused",
+  "runtimeRoot": "/private/tmp/xsm-basic-real/openclaw-openai-luna-full-strict-false/state/runtime/8fc3b192d832",
+  "ownedGatewayPid": 59556,
+  "referenceParticipant": {
+    "session": "0cefe8098dfe4b58a81e3a9683f96127",
+    "generation": "4fdec42559a3423d9cc411939fae15f5",
+    "ref": "b3161c",
+    "address": "peer:f4b7780e496fd027781e3ba2d2b34f09b61ef0220e146972d11ce26bb04109ac",
+    "capabilities": [
+      "messaging",
+      "inbox",
+      "events"
+    ]
+  },
+  "providerRequests": 0,
+  "responseModelLabels": [],
+  "elapsedSeconds": 104.251,
+  "nativeProvider": {
+    "executable": "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-openclaw-2026109-ruwrjohz/native/node_modules/openclaw/openclaw.mjs",
+    "node": "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-openclaw-2026109-ruwrjohz/node-v24.22.2-darwin-arm64/bin/node",
+    "python": "/opt/homebrew/opt/python@3.14/bin/python3.14",
+    "version": "2026.10.9",
+    "control_protocol": 1,
+    "cancellation_protocol": 1,
+    "result_recovery_protocol": 1,
+    "execution_lifetime": "native-host",
+    "agent_id": "main",
+    "runtime_root": "/private/tmp/xsm-basic-real/openclaw-openai-luna-full-strict-false/state/runtime/8fc3b192d832",
+    "frontend": "/private/tmp/xsm-basic-real/openclaw-openai-luna-full-strict-false/state/runtime/8fc3b192d832/integrations/openclaw/worker_cli.py",
+    "frontend_sha256": "75d96ad3afdafba60191e7a6cc7cea776101b8bf824f75336eef067f95535ea7",
+    "binding_hashes": {
+      "xsm.mjs": "73a1b57ba799dfb4acf4cd359224091eeea554d6ac4f8b5ea490d115d781d901",
+      "worker_cli.py": "75d96ad3afdafba60191e7a6cc7cea776101b8bf824f75336eef067f95535ea7",
+      "worker_frontend.py": "346e9db0e5104ba3481b45e53b4f6e3434aabdf69729e3f247109dd7f3691091",
+      "worker_rpc.mjs": "e32f96063591c55b5f7d2fcf803465a495d285c4c4fb9a22b0a2f69d0cec2e2f",
+      "worker_transport.py": "c64c84cb3ff280f7c3685cc7404698e9b32eead348402a6089efa6d99152e809",
+      "worker_session.py": "247710f83127ec9008ebfb84f5fce13c7c3657b141664bb26953dfc637f2f75b"
+    }
+  },
+  "failureType": "TimeoutError",
+  "failure": "",
+  "ownedChildrenExited": true,
+  "gatewayStopped": true,
+  "quota400": false,
+  "limitFailure": false,
+  "nativeArtifacts": [
+    "/private/tmp/xsm-basic-real/openclaw-openai-luna-full-strict-false/state/owned-runs/69b735d6588e4c0d94c5337756f54f8d/one-native-turn.jsonl",
+    "/private/tmp/xsm-basic-real/openclaw-openai-luna-full-strict-false/state/owned-runs/69b735d6588e4c0d94c5337756f54f8d/one-native-turn.stderr"
+  ]
+}
