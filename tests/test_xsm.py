@@ -4300,12 +4300,23 @@ class SkillLayoutTest(unittest.TestCase):
         self.assertNotIn("/xsm-", open(guide, encoding="utf-8").read())
         self.assertLess(len(self.skill.splitlines()), 90, "the reference text belongs in the guide")
 
-    def test_short_entry_hint_preserves_identity_and_discovery(self):
+    def test_short_entry_hint_matches_short_help_and_existing_commands(self):
+        import argparse
+        import contextlib
+        import io
+        from xsm import cli
         head = self.skill.split("\n---\n", 1)[0]
         hint = next(l for l in head.splitlines() if l.startswith('argument-hint:'))
         self.assertLess(len(hint), 70)
-        for word in ('list', 'whoami', 'help'):
-            self.assertIn('`' + word + '`', self.skill)
+        choices = hint.split(':', 1)[1].strip().strip('"').split(' | ')
+        self.assertEqual(choices, ['list', 'publish', 'discover', 'send', 'ask', '…'])
+        output = io.StringIO()
+        with contextlib.redirect_stdout(output):
+            self.assertEqual(cli.main(['help']), 0)
+        commands = [line.split()[1] for line in output.getvalue().splitlines() if line.startswith('xsm ')]
+        self.assertEqual(commands, choices[:-1])
+        parser = next(a for a in cli.build_parser()._actions if isinstance(a, argparse._SubParsersAction))
+        self.assertTrue(all(command in parser.choices for command in commands))
         self.assertNotIn('usage: /xsm discover |', self.skill)
 
     def test_every_reference_is_reachable_and_every_link_exists(self):

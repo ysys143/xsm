@@ -278,13 +278,12 @@ $xsm list                            # Codex
 /xsm send ref:a1b2c3 please take a look   # everything after the target is the message
 ```
 
-The same commands work in a terminal as `xsm list`, `xsm who`, `xsm send ...`. With no command, the skill
-prints a one-line usage. If you have a personal skill named `xsm`, call the plugin's as `/xsm:xsm list`.
+These examples also work in a terminal as `xsm list`, `xsm who`, `xsm send ...`. With no command or with
+`help`, the skill shows a short guide. If you have a personal skill named `xsm`, call the plugin's as `/xsm:xsm list`.
 
-The commands you will meet most: `discover`, `publish`, `connect`, `ask`, `question-status`, `send`,
-`inbox`, `ack`, `list`, `who`, `log`, `projects`, `doctor`, `link`, `join`, `leave`, `reach`, `team`,
-`board`, `handover` and `network`.
-`xsm --help` lists them all.
+The one-line hint is `list | publish | discover | send | ask | …`.
+Ask in ordinary language for teams, boards or your inbox; identity, history and diagnostics are introduced
+when relevant. Existing advanced commands remain available through contextual guidance and `xsm --help`.
 
 ## Use cases
 

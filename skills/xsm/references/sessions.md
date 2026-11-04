@@ -7,8 +7,12 @@ xsm list                 # live sessions this folder can talk to (its project)
 xsm list --dir <folder>  # the same for another folder's project
 xsm list -a              # every project, plus stopped and unregistered ones
 xsm list clear [-a]      # forget stopped sessions now (this project, or all)
-xsm who                  # how other sessions see this session
+xsm whoami               # this session, its projects and coordinator; who still works
 ```
+
+For a request to inspect recent message history, the skill's `log` shortcut shows
+recent ledger entries and held messages together. In the CLI, use `xsm ledger`
+and `xsm held list`; `log` is a skill shortcut, not a separate CLI command.
 
 If `xsm list` prints a line on stderr such as `xsm: lsof x1 did not answer in
 time, so this list may be incomplete`, a check on this machine did not answer

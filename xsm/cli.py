@@ -2789,7 +2789,14 @@ class _Version(argparse.Action):
 
 
 def _short_help():
-    print("xsm list        — find sessions\nxsm whoami      — this session and folder\nxsm help        — this guide\n\nAsk your agent in ordinary language to message a peer or group its workers.\nAdvanced commands: xsm --help")
+    print("xsm list        — find known sessions\n"
+          "xsm publish     — make this conversation discoverable\n"
+          "xsm discover    — find a collaborator by their work\n"
+          "xsm send        — send a message\n"
+          "xsm ask         — ask and collect the actual answer\n\n"
+          "Ask your agent in ordinary language for teams, boards or your inbox.\n"
+          "Identity, history and diagnostics are available when needed.\n"
+          "More commands: xsm --help")
     return OK
 
 

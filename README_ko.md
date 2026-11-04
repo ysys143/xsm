@@ -268,12 +268,12 @@ $xsm list                            # Codex
 /xsm send ref:a1b2c3 이것 좀 봐줘      # 대상 다음은 모두 메시지
 ```
 
-터미널에서는 같은 명령을 `xsm list`, `xsm who`, `xsm send ...`로 씁니다. 인자 없이 부르면 스킬이 사용법 한 줄을
-출력합니다. 같은 이름의 개인 스킬이 있다면 플러그인 쪽은 `/xsm:xsm list`로 부릅니다.
+터미널에서는 위 예시를 `xsm list`, `xsm who`, `xsm send ...`로 씁니다. 인자 없이 부르거나 `help`를 주면 스킬이 짧은
+안내를 보여 줍니다. 같은 이름의 개인 스킬이 있다면 플러그인 쪽은 `/xsm:xsm list`로 부릅니다.
 
-자주 쓰는 명령: `discover`, `publish`, `connect`, `ask`, `question-status`, `send`, `inbox`, `ack`, `list`,
-`who`, `log`, `projects`, `doctor`, `link`, `join`, `leave`, `reach`, `team`, `board`, `handover`, `network`. 전체 목록은 `xsm --help`가
-보여 줍니다.
+한 줄 힌트는 `list | publish | discover | send | ask | …`입니다.
+팀·보드·수신함은 자연어로 요청하고, 내 정보·기록·진단은 필요한 상황에 안내합니다.
+기존 고급 명령은 상황별 안내와 `xsm --help`에서 계속 사용할 수 있습니다.
 
 ## 사용 사례
 

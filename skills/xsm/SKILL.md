@@ -1,7 +1,7 @@
 ---
 name: xsm
-description: Talk to other Claude Code or Codex sessions on this machine or on your user's other machines — find one by its work, list them, send a message or a task, ask and get the answer back, start workers, and see what was delivered. Use when the user asks to contact, hand off to, or coordinate with another session or agent, or organize or participate in an agent team. Your user calls it as `/xsm <command>` in Claude Code and `$xsm <command>` in Codex (discover, ask, list, who, log, projects, doctor, send, link, join, leave, reach, network); you run the `xsm` shell command (`xsm list`, `xsm send <name|ref:xxxxxx> --text "..."`). Load this skill before naming any other xsm command or address, or before acting on an xsm refusal — a made-up address is a message nobody receives. From a sandboxed shell, reach a Codex session with the `xsm_send` MCP tool instead; a row whose ref is `[-]` has no address yet.
-argument-hint: "<request or command>"
+description: Connect agent sessions on this machine or your user's other machines. Use when the user wants to find a collaborator, publish a session, exchange messages or tasks, recover answers, hand over work, or communicate as an agent team. Your user invokes `/xsm` in Claude Code or `$xsm` in Codex with a request or command. Load this skill before choosing an xsm address or reacting to a refusal; a row whose ref is `[-]` is not addressable. In a sandboxed Codex, use MCP for messaging.
+argument-hint: "list | publish | discover | send | ask | …"
 allowed-tools: Bash(xsm send:*), Bash(xsm list --table), Bash(xsm who --table), Bash(xsm whoami --table), Bash(xsm help), Bash(xsm projects --table), Bash(xsm doctor --table), Bash(xsm ledger --table --mine --last 5), Bash(xsm held list --table)
 ---
 
@@ -61,10 +61,10 @@ For worker project membership, use the creator-side group flow in
 [the workers guide](references/workers.md); never send the user to worker terminals.
 
 **Words that are not a command** (`/xsm tell plugin-worker what I did`): a
-request in words, see "Called without one". **Nothing** — give a short guide: `list` finds sessions, `whoami` shows this session
-(`who` still works), and `help` shows the short guide. Ordinary language is welcome:
-"message the reviewer" or "put my workers in this project". Never print the full command inventory.
-**`help`** — run `xsm help` and show its short output.
+request in words, see "Called without one". **Nothing, or `help`** — run `xsm help`
+and show its short output. Introduce only the five hinted commands first; never print the full inventory.
+Guide team, board and inbox requests through ordinary language or contextual help.
+Show identity, history and diagnostics when requested or relevant; ordinary language is welcome.
 **Unrecognized input** — treat it as natural language; clarify briefly if necessary.
 
 For `discover`, `publish`, `connect`, `ask`, and `question-status`, follow the [common messaging

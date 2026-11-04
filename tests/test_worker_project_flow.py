@@ -133,7 +133,8 @@ class WorkerProjectFlowTest(ProtocolFixture):
         out=io.StringIO()
         with mock.patch.object(paths,'ensure_home',side_effect=AssertionError('help created state')),contextlib.redirect_stdout(out):
             self.assertEqual(cli.main(['help']),0)
-        self.assertIn('whoami',out.getvalue());self.assertIn('list',out.getvalue())
+        commands = [line.split()[1] for line in out.getvalue().splitlines() if line.startswith('xsm ')]
+        self.assertEqual(commands, ['list', 'publish', 'discover', 'send', 'ask'])
 
     def test_revoked_membership_does_not_replay_old_success(self):
         from xsm import config

@@ -13,7 +13,7 @@ purpose; open another only when it sends you there.
 |---|---|
 | organize, coordinate or take a role in a team, including a coordination team of leads | [organization](organization.md) |
 | find a collaborator by work, connect to the one your user selected, ask and recover an answer | [messaging](messaging.md) |
-| list sessions, address one, send, read what arrived, answer a task | [sessions](sessions.md) |
+| identify yourself, inspect message history, list or address sessions, send, read what arrived, answer a task | [sessions](sessions.md) |
 | connect another folder or session (link, join, reach, block), or xsm says it needs your user's yes | [permissions](permissions.md) |
 | work in a team: team DMs, the team board, putting your user's decision on record, a handover | [teams](teams.md) |
 | add to a shared document | [docs](docs.md) |
