@@ -1,13 +1,14 @@
 ---
 name: xsm
-description: Talk to other Claude Code or Codex sessions on this machine or on your user's other machines — find one by its work, list them, send a message or a task, ask and get the answer back, start workers, and see what was delivered. Use when the user asks to contact, hand off to, or coordinate with another session or agent. Your user calls it as `/xsm <command>` in Claude Code and `$xsm <command>` in Codex (discover, ask, list, who, log, projects, doctor, send, link, join, leave, reach, network); you run the `xsm` shell command (`xsm list`, `xsm send <name|ref:xxxxxx> --text "..."`). Load this skill before naming any other xsm command or address, or before acting on an xsm refusal — a made-up address is a message nobody receives. From a sandboxed shell, reach a Codex session with the `xsm_send` MCP tool instead; a row whose ref is `[-]` has no address yet.
+description: Talk to other Claude Code or Codex sessions on this machine or on your user's other machines — find one by its work, list them, send a message or a task, ask and get the answer back, start workers, and see what was delivered. Use when the user asks to contact, hand off to, or coordinate with another session or agent, or organize or participate in an agent team. Your user calls it as `/xsm <command>` in Claude Code and `$xsm <command>` in Codex (discover, ask, list, who, log, projects, doctor, send, link, join, leave, reach, network); you run the `xsm` shell command (`xsm list`, `xsm send <name|ref:xxxxxx> --text "..."`). Load this skill before naming any other xsm command or address, or before acting on an xsm refusal — a made-up address is a message nobody receives. From a sandboxed shell, reach a Codex session with the `xsm_send` MCP tool instead; a row whose ref is `[-]` has no address yet.
 argument-hint: "<request or command>"
 allowed-tools: Bash(xsm send:*), Bash(xsm list --table), Bash(xsm who --table), Bash(xsm whoami --table), Bash(xsm help), Bash(xsm projects --table), Bash(xsm doctor --table), Bash(xsm ledger --table --mine --last 5), Bash(xsm held list --table)
 ---
 
 # xsm
 
-`xsm` delivers messages into ordinary sessions through native tools or the CLI.
+`xsm` provides organization-neutral messaging between ordinary sessions through native tools or the CLI.
+For team setup or role-based work, read [organization](references/organization.md); follow your user's chosen structure.
 
 ## Called with a command
 

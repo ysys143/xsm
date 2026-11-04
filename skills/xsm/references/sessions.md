@@ -82,6 +82,12 @@ handed the exact command to report back, so it should not need its user to
 explain anything. Use `--kind reply --reply-to <id>` to answer, which tells the
 other side not to answer again.
 
+For a team task, follow [organization](organization.md): include the team and board,
+role, scope and inputs, completion criteria, reporting destination, collaborators
+and coordination conditions in the task text. On receipt, use this context to
+act in your role and read relevant board items. A standalone peer task does not
+require setting up a team or assuming a lead/worker hierarchy.
+
 **When you answer a task, say how it ended:** add `--outcome succeeded` or
 `--outcome failed` to that reply. Put it in the flag, not only in the words —
 the flag is what the sender can branch on, and `xsm status <task id>` keeps it

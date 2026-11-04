@@ -5,6 +5,10 @@ gets an answer; the **team board** holds what is true for the whole team now.
 A team is the name for both: its members, an optional lead, its board and the
 decisions recorded beside it.
 
+When forming, coordinating or taking a role in a team, first read
+[organization](organization.md) for the user's organization rules, recommended
+development roles and the context to give each worker.
+
 ## DM or board
 
 - To make someone act, or to get an answer: a DM, to them or to `team:<name>`.
@@ -44,6 +48,18 @@ runtime, config home and name: a new conversation with that name takes the
 place back. Unnamed local members, remote members and `connect` pair members
 are bound to conversations. Membership alone does not move unread DMs or
 pending questions; handover does.
+
+### A coordination team for leads
+
+Leads of independent work teams can also share a separate coordination team.
+For example, the API and storage leads each remain in their work team and also
+join a coordination team. Its team DMs are their communication channel and its
+board holds cross-team agreements, dependencies and integration dates. They may
+coordinate as peers; this does not add creation depth or require a higher lead.
+Each lead updates its own work team's plan with the consequences and references
+the coordination agreement. Select the intended team explicitly for board work
+and decisions, since these sessions belong to more than one team. Membership and
+lead selection follow the same approval rules as any other team.
 
 ## The board
 

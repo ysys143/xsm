@@ -11,6 +11,7 @@ purpose; open another only when it sends you there.
 
 | You are about to | Read |
 |---|---|
+| organize, coordinate or take a role in a team, including a coordination team of leads | [organization](organization.md) |
 | find a collaborator by work, connect to the one your user selected, ask and recover an answer | [messaging](messaging.md) |
 | list sessions, address one, send, read what arrived, answer a task | [sessions](sessions.md) |
 | connect another folder or session (link, join, reach, block), or xsm says it needs your user's yes | [permissions](permissions.md) |

@@ -1,5 +1,14 @@
 # Workers
 
+For a development team, read [organization](organization.md) before assigning roles.
+Strongly recommend a fable/astra-tier lead, opus/sol-tier primary workers and
+haiku max/luna max-tier supporting workers for large, long-running parallel work.
+Keep primary and supporting workers at the same creation depth when possible;
+specify their direct collaboration and reporting relationships in ordinary text.
+Use a harness subagent for a one-off task, or a persistent worker for ongoing
+context and repeated collaboration. Choose actual model IDs and reasoning settings
+from the runtime's available choices; these recommendations do not change defaults.
+
 ## Workers: starting a session to hand work to
 
 `xsm workers --policy` prints what a background worker does without asking:
@@ -9,8 +18,8 @@ If a worker reports that it was refused something, that list is what to check â€
 do not widen it yourself.
 
 ```bash
-xsm spawn claude --model haiku --once --task "Run the tests in ./pkg and report failures"
-xsm spawn codex --effort high --task "Review docs/plan.md for gaps"     # Codex default model: gpt-5.6-luna
+xsm spawn claude --model <primary-model> --task "You are core team's primary worker. Implement the agreed cache behavior; report checks and blockers to your requester."
+xsm spawn codex --model <support-model> --effort <effort> --once --task "You support core team's primary worker. Check ./pkg and return failures with evidence to your requester."
 xsm workers                 # what xsm started and whether it is running
 xsm workers read <worker>   # what its screen says â€” is it working or stuck?
 xsm attach <worker>         # go to its tmux pane (a person; read only looks)
@@ -24,7 +33,11 @@ xsm stop <worker>           # stop it and remove its records
   statusline shows each of your workers and whether one is waiting on a person.
 - `--task` sends the task as `--kind task` once the worker is up; the answer
   comes back to you as a reply. `--once` stops the worker when that answer
-  arrives. Put everything the worker needs in the task.
+  arrives. Put everything the worker needs in the task. For team work, include
+  its team and board, role, scope and inputs, completion criteria, reporting
+  destination and collaborators as described in [organization](organization.md).
+  Tell it which changes require coordination; creating a session alone does not
+  tell it how to participate in the organization.
 - **A worker must never sit idle on a permission.** When you are told a
   worker is waiting, call the `xsm_approve` MCP tool right away: it shows the
   request to your user, who allows or denies it in a form. When a worker
