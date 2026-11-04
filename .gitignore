@@ -17,3 +17,12 @@ node_modules/
 evals/results/
 CLAUDE.local.md
 .claude/pr-policy.json
+
+# Local Orca attachments; keep other Orca project files eligible for tracking.
+/.orca/drops/
+
+# Local runtime probes, isolated state, raw results and release archives.
+# Keep documentation reports and other deliverables eligible for tracking.
+/deliverables/issue-25-implementation/
+/deliverables/protocol-foundation/
+/deliverables/release-0.5.2/
