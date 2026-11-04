@@ -1,0 +1,21 @@
+test_accepted_original_has_successor_admission_and_ack_readback (tests.test_migration_network.MigrationNetworkTest.test_accepted_original_has_successor_admission_and_ack_readback) ... ERROR
+test_forwarding_expiry_does_not_erase_an_already_accepted_receipt (tests.test_migration_network.MigrationNetworkTest.test_forwarding_expiry_does_not_erase_an_already_accepted_receipt) ... ok
+test_new_packet_to_old_endpoint_resolves_to_current_successor (tests.test_migration_network.MigrationNetworkTest.test_new_packet_to_old_endpoint_resolves_to_current_successor) ... ok
+
+======================================================================
+ERROR: test_accepted_original_has_successor_admission_and_ack_readback (tests.test_migration_network.MigrationNetworkTest.test_accepted_original_has_successor_admission_and_ack_readback)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/tests/test_migration_network.py", line 41, in test_accepted_original_has_successor_admission_and_ack_readback
+    batch = receive.take_inbox_claims(self.new, owner={'type': 'native', 'id': 'successor'}, generation='new')
+  File "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/xsm/receive.py", line 1333, in take_inbox_claims
+    ledger.handoff_step(record["id"], "claimed", me)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/xsm/ledger.py", line 192, in handoff_step
+    raise ValueError('migration does not succeed the recorded handoff owner')
+ValueError: migration does not succeed the recorded handoff owner
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.583s
+
+FAILED (errors=1)

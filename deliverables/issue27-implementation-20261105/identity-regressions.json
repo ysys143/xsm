@@ -23,9 +23,9 @@
     }
   ],
   "source_hashes": {
-    "xsm/registry.py": "3e88d3bb95d55068d5b591e7b88cc457314cf5df7973510d33cddccd457470c8",
-    "xsm/mcp.py": "adb86e806ef14e942e3d9b4391fbc2cee4d588e5e033de15edfda735958be99a",
-    "xsm/workers.py": "042ac83fd50e7fe1686800de3ce4ab794c2d3bb9144c006bd8ba61a4b8466786",
-    "tests/test_registry_profiles.py": "c8c738c9ceb26e9b1a46b22b918e53c976f6bc49f879e5c0fb1b346e6c8d2351"
+    "xsm/registry.py": "da8ff746d12b51becd1c67bb2497155dda5b87823f91fe4e252a2738074e992c",
+    "xsm/mcp.py": "905a3943e276e6a29b08b3d0609f4adbd4994d9cdd05c9e560dcff4e81a1a8c8",
+    "xsm/workers.py": "7290a6492de9b8c19cb6dad807e1195a894ff7bf0c5923c9c5cdfc853dbbc10d",
+    "tests/test_registry_profiles.py": "70b92e850bd9f6ed058ed9381ec94fa949f729dabe88ae7d91022c7591fa96d8"
   }
 }

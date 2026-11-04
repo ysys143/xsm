@@ -1,0 +1,36 @@
+{
+  "source_commit": "66a263c",
+  "command": [
+    "/opt/homebrew/opt/python@3.14/bin/python3.14",
+    "-B",
+    "-m",
+    "unittest",
+    "tests.test_person_decisions.PersonDecisionTest",
+    "tests.test_mcp_forms",
+    "-q"
+  ],
+  "exit_code": 1,
+  "tests": 106,
+  "seconds": 9.3,
+  "failed_assertions": 16,
+  "errors": [],
+  "failures": [
+    "test_a_claude_agent_is_offered_its_question_tool_in_that_text (tests.test_person_decisions.PersonDecisionTest.test_a_claude_agent_is_offered_its_question_tool_in_that_text)",
+    "test_a_declined_form_is_a_no_and_records_no_ask (tests.test_person_decisions.PersonDecisionTest.test_a_declined_form_is_a_no_and_records_no_ask)",
+    "test_a_link_form_that_cannot_show_is_asked_for_in_words_and_one_yes_does (tests.test_person_decisions.PersonDecisionTest.test_a_link_form_that_cannot_show_is_asked_for_in_words_and_one_yes_does)",
+    "test_a_remote_pairing_is_asked_for_by_the_session_folder_its_command_uses (tests.test_person_decisions.PersonDecisionTest.test_a_remote_pairing_is_asked_for_by_the_session_folder_its_command_uses)",
+    "test_no_message_for_these_sends_the_person_to_a_terminal (tests.test_person_decisions.PersonDecisionTest.test_no_message_for_these_sends_the_person_to_a_terminal)",
+    "test_the_other_form_tools_name_the_ask_their_command_finds (tests.test_person_decisions.PersonDecisionTest.test_the_other_form_tools_name_the_ask_their_command_finds) [join]",
+    "test_the_other_form_tools_name_the_ask_their_command_finds (tests.test_person_decisions.PersonDecisionTest.test_the_other_form_tools_name_the_ask_their_command_finds) [leave]",
+    "test_the_other_form_tools_name_the_ask_their_command_finds (tests.test_person_decisions.PersonDecisionTest.test_the_other_form_tools_name_the_ask_their_command_finds) [reach]",
+    "test_the_other_form_tools_name_the_ask_their_command_finds (tests.test_person_decisions.PersonDecisionTest.test_the_other_form_tools_name_the_ask_their_command_finds) [approve]",
+    "test_the_other_form_tools_name_the_ask_their_command_finds (tests.test_person_decisions.PersonDecisionTest.test_the_other_form_tools_name_the_ask_their_command_finds) [grant]",
+    "test_the_other_form_tools_name_the_ask_their_command_finds (tests.test_person_decisions.PersonDecisionTest.test_the_other_form_tools_name_the_ask_their_command_finds) [grant outside this session's scope]",
+    "test_the_other_form_tools_name_the_ask_their_command_finds (tests.test_person_decisions.PersonDecisionTest.test_the_other_form_tools_name_the_ask_their_command_finds) [endorse]",
+    "test_a_decline_from_a_client_that_shows_forms_is_the_persons_no (tests.test_mcp_forms.McpServerTest.test_a_decline_from_a_client_that_shows_forms_is_the_persons_no)",
+    "test_a_join_answered_by_codex_itself_is_not_taken_for_the_user (tests.test_mcp_forms.McpServerTest.test_a_join_answered_by_codex_itself_is_not_taken_for_the_user)",
+    "test_the_reach_command_names_the_absolute_root_of_a_relative_dir (tests.test_mcp_forms.McpServerTest.test_the_reach_command_names_the_absolute_root_of_a_relative_dir)",
+    "test_the_shell_command_is_one_the_agent_can_run_and_is_quoted (tests.test_mcp_forms.McpServerTest.test_the_shell_command_is_one_the_agent_can_run_and_is_quoted)"
+  ],
+  "method": "isolated local tests; no model or live recipient"
+}

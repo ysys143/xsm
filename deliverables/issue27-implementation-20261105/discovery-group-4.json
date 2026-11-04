@@ -1,0 +1,12 @@
+{
+  "ran": 347,
+  "failures": [],
+  "errors": [],
+  "skipped": [
+    {
+      "test": "test_network_selfhost.NativeSelfHostedRelayTests.test_existing_product_cli_membership_rpc_restart_over_owned_relay",
+      "reason": "official_relay_binary_missing: explicit local opt-in required"
+    }
+  ],
+  "success": true
+}

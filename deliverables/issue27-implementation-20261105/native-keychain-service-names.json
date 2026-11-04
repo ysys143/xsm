@@ -1,0 +1,4 @@
+{
+  "used_service": "Claude Code-credentials-1f3efe9f",
+  "match": "sha256(canonical profile path) first 8 hex; no credential values stored"
+}

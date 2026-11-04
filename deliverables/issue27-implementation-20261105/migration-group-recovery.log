@@ -1,0 +1,6 @@
+test_question_effect_crash_keeps_the_ids_and_successor_can_answer_old_tasks (tests.test_profile_migration.ProfileMigrationTest.test_question_effect_crash_keeps_the_ids_and_successor_can_answer_old_tasks) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.430s
+
+OK

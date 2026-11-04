@@ -1,0 +1,35 @@
+{
+  "source_commit": "66a263c",
+  "method": "synthetic local registry reproduction; fixed fixture process identities; no native runtime or model",
+  "expected_independent_records": 2,
+  "observations": [
+    {
+      "step": "A",
+      "stored_record_count": 1,
+      "stored_home": "B",
+      "registered_ref": "401607",
+      "caller_from_B_home": "B",
+      "caller_ref": "401607"
+    },
+    {
+      "step": "B",
+      "stored_record_count": 1,
+      "stored_home": "B",
+      "registered_ref": "0750ef",
+      "caller_from_B_home": "B",
+      "caller_ref": "0750ef"
+    },
+    {
+      "step": "A-again",
+      "stored_record_count": 1,
+      "stored_home": "B",
+      "registered_ref": "401607",
+      "caller_from_B_home": "B",
+      "caller_ref": "401607"
+    }
+  ],
+  "cross_home_overwrite_reproduced": true,
+  "wrong_sender_identity_reproduced": false,
+  "real_profile_changes": false,
+  "probe_error": "A/B labels compared canonical /private path with noncanonical temporary path. Labels and wrong_sender_identity_reproduced in this first attempt are invalid."
+}

@@ -120,3 +120,50 @@ Keep failed runs and ineffective mutation attempts in the evidence. The first de
 mutator did not reach the faulty branch; final mutation changes actual answer decoding.
 The first raw profiler log triggered whitespace checking; its bytes are preserved and
 the exception is scoped to this artifact directory's logs.
+
+## Remote ingress and diagnostics checkpoint (third goal turn)
+
+- Added sender-owned failure audit (including unresolved refs), source-epoch scoped
+  catch-up, archived aliases after registry pruning, and doctor generations/expiry/owner state.
+- Real gateway fixtures caught P2P migrated ingress/admission/ACK/duplicate evidence issues.
+  Fixed verified copy traversal and preserved native generation metadata, global reservation
+  checks and profile locks. Initial failing network logs are retained.
+- Refused sends now keep a supplied request ID. Expanded gate exposed an owned reply
+  mismatch caused by allocating a fresh audit ID, then conformance's legacy null-ID
+  expectation. Fixed the former and aligned the latter with retained-ID behavior.
+- Migration mutation suite caught all five planned faults in temp source copies.
+- Current actual Claude 2.1.318 test uses isolated a/b homes with a copied transcript
+  and native ID f55ac2bc-7ee6-4e96-9ced-9b5b6fb0e775. Existing subscription OAuth is
+  injected only into the child; no API key, keychain or real-profile settings change.
+  First launch inherited CHILD_SESSION and disabled transcript; interrupted and not counted.
+  Corrected launcher strips inherited harness markers. Both native sessions registered
+  distinct refs/sockets, B resumed copied history, actual native MCP form accepted
+  the user's allow, and migration committed with an exact 86400-second lease.
+  Native A's xsm_send was refused as retired. SDK model0 peer sent to the old ref and
+  stored at B. B native read/ACK and final config/hash audit are still being checked.
+- First complete unittest discovery is still running (not final-source evidence).
+  Final gate has been rerun after compatibility fixes; read logs for the outcome.
+- README/KO and routed migration skill guide now cover explicit transfer, catch-up,
+  approval rebinding, 24h expiry and unknown outcomes. No push/release/issue posting.
+
+## Local implementation completion audit
+
+- See verification.md for all 14 migration criteria, 18 approval cases and raw evidence.
+- 148 discovered modules / 2774 tests: zero failures or errors, 3 documented conditional
+  skips. No test inventory omitted. Group 1 was rechecked after expanding MCP denial
+  and peer-group late-reply/crash assertions; final acceptance bundle is 77 tests.
+- Native Claude two-home test completed (real form/real user allow, source send refused,
+  old-ref delivery at B, native hook token ACK). Both processes exited; real config
+  hashes unchanged. Unused opaque credential copies removed from temporary profiles.
+- Latest full protocol gate: exit 0 in 57.856s, Python3.14.6. SDK/schema/independent
+  consumer and required native binding fixtures passed. No fresh model/messenger runs
+  on Pi/OpenCode/Hermes/OpenClaw. Historical cctrace observations are not our native test.
+- Identity2 + permission5 + migration5 deliberate regressions were detected.
+- Actual old capacity raw replay, supplied private log replay and opt-in official
+  relay test remain explicitly unexecuted; none is reported as passed.
+- Legacy full-discovery failures were catalogued before edits; fixture source/home,
+  API error/ID expectations and tool inventory were aligned without removing tests.
+- No .jstack task.json exists in this checkout; workflow status reported ENOENT,
+  so no separate workflow receipt is claimed. Protected oracle accepted with a
+  recorded explanation for the conditional historical fixture skip.
+- External publish/push/PR/merge/release/issue close remain unperformed.

@@ -1,0 +1,16 @@
+======================================================================
+FAIL: test_pending_user_permission_moves_as_a_request_not_an_old_allow (tests.test_profile_migration.ProfileMigrationTest.test_pending_user_permission_moves_as_a_request_not_an_old_allow)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-migration-oracles-2yjppfsx/tests/test_profile_migration.py", line 181, in test_pending_user_permission_moves_as_a_request_not_an_old_allow
+    self.assertEqual(decisions.read(original['id'])['status'], 'superseded')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'pending' != 'superseded'
+- pending
++ superseded
+
+
+----------------------------------------------------------------------
+Ran 1 test in 0.329s
+
+FAILED (failures=1)

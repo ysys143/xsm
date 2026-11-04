@@ -1,0 +1,33 @@
+install/setup failed: JSONDecodeError
+setup flow 7dcd5528338f4f659c1da15543ef1252 generation=3 status=failed error=JSONDecodeError
+/Users/jaesolshin/Documents/GitHub/cross-session-messaging/tests/test_workers.py:463: ResourceWarning: unclosed file <_io.TextIOWrapper name='/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-test-yy24j7v1/workers/sb/settings.json' mode='r' encoding='UTF-8'>
+  settings = json.load(open(workers._claude_worker_settings(w)))
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+/Users/jaesolshin/Documents/GitHub/cross-session-messaging/tests/test_workers.py:486: ResourceWarning: unclosed file <_io.TextIOWrapper name='/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-test-yy24j7v1/workers/sb/settings.json' mode='r' encoding='UTF-8'>
+  again = json.load(open(workers._claude_worker_settings(w)))
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+/Users/jaesolshin/Documents/GitHub/cross-session-messaging/tests/test_workers.py:499: ResourceWarning: unclosed file <_io.TextIOWrapper name='/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-test-yy24j7v1/workers/pn/settings.json' mode='r' encoding='UTF-8'>
+  self.assertNotIn("sandbox", json.load(open(workers._claude_worker_settings(pane))))
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+/Users/jaesolshin/Documents/GitHub/cross-session-messaging/tests/test_xsm.py:4263: ResourceWarning: unclosed file <_io.TextIOWrapper name='/Users/jaesolshin/Documents/GitHub/cross-session-messaging/skills/xsm/SKILL.md' mode='r' encoding='utf-8'>
+  self.skill = open(os.path.join(self.dir, "SKILL.md"), encoding="utf-8").read()
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+/Users/jaesolshin/Documents/GitHub/cross-session-messaging/tests/test_xsm.py:4336: ResourceWarning: unclosed file <_io.TextIOWrapper name='/Users/jaesolshin/Documents/GitHub/cross-session-messaging/skills/xsm/references/guide.md' mode='r' encoding='utf-8'>
+  guide = open(os.path.join(refs, "guide.md"), encoding="utf-8").read()
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+/Users/jaesolshin/Documents/GitHub/cross-session-messaging/tests/test_xsm.py:4308: ResourceWarning: unclosed file <_io.TextIOWrapper name='/Users/jaesolshin/Documents/GitHub/cross-session-messaging/skills/xsm/references/guide.md' mode='r' encoding='utf-8'>
+  self.assertNotIn("/xsm-", open(guide, encoding="utf-8").read())
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+======================================================================
+ERROR: test_both_open_codex_adoption_paths_skip_excluded_and_keep_allowed (tests.test_directory.DirectoryTest.test_both_open_codex_adoption_paths_skip_excluded_and_keep_allowed)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/tests/test_directory.py", line 672, in test_both_open_codex_adoption_paths_skip_excluded_and_keep_allowed
+    {os.path.basename(registry._record_path('codex', sid, self.home))
+                                                          ^^^^^^^^^^
+AttributeError: 'DirectoryTest' object has no attribute 'codex'
+
+----------------------------------------------------------------------
+Ran 219 tests in 78.323s
+
+FAILED (errors=1)

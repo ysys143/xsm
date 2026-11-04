@@ -1,0 +1,25 @@
+{
+  "runtime": "Claude Code 2.1.318",
+  "kind": "actual native processes, hooks, MCP and user-selected native form; SDK sender is model0",
+  "conversation": "f55ac2bc-7ee6-4e96-9ced-9b5b6fb0e775",
+  "source_ref": "a1a8a3",
+  "target_ref": "49aefc",
+  "different_pids": true,
+  "different_sockets": true,
+  "same_native_id": true,
+  "migration_id": "b5d4fa759c59296b7dba23aa1a846e2b350c614527c9eaa9e65e3874195806f3",
+  "status": "committed",
+  "lease_seconds": 86400.0,
+  "source_remains_retired": true,
+  "forwarded_message_status": "acknowledged",
+  "forwarded_message_original_digest": "355fe461756503931be5f95e12ebde352a97eedafdbb8b10ebe42a62bd6f3c94",
+  "source_send_seen_refused": true,
+  "real_configs_unchanged": {
+    "a": true,
+    "b": true
+  },
+  "models": [
+    "claude-sonnet-5-5"
+  ],
+  "native_terminal_claim": "B's model incorrectly said no form appeared; actual native terminal and real user choice show that it did. Client form visibility is outside the model's tool transcript."
+}

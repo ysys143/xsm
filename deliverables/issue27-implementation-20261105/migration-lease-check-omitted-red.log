@@ -1,0 +1,13 @@
+======================================================================
+FAIL: test_forwarding_expires_at_24_hours_but_retirement_does_not (tests.test_profile_migration.ProfileMigrationTest.test_forwarding_expires_at_24_hours_but_retirement_does_not)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-migration-oracles-2yjppfsx/tests/test_profile_migration.py", line 71, in test_forwarding_expires_at_24_hours_but_retirement_does_not
+    with self.assertRaisesRegex(migration.MigrationError, 'expired'):
+         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: MigrationError not raised
+
+----------------------------------------------------------------------
+Ran 1 test in 0.267s
+
+FAILED (failures=1)

@@ -2,10 +2,10 @@
 FAIL: test_deny_join (tests.test_native_permission_recovery.NativePermissionRecoveryTest.test_deny_join)
 ----------------------------------------------------------------------
 Traceback (most recent call last):
-  File "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-permission-oracles-32k91ztq/tests/test_native_permission_recovery.py", line 89, in test_deny_join
+  File "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-permission-oracles-yj2ugttv/tests/test_native_permission_recovery.py", line 89, in test_deny_join
     def test_deny_join(self): self.exercise('join', False)
                               ~~~~~~~~~~~~~^^^^^^^^^^^^^^^
-  File "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-permission-oracles-32k91ztq/tests/test_native_permission_recovery.py", line 76, in exercise
+  File "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-permission-oracles-yj2ugttv/tests/test_native_permission_recovery.py", line 76, in exercise
     self.assertEqual(effect(), 'denied' if kind == 'approve' else before,
     ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
                      'a refusal must not grant permission')
@@ -13,6 +13,6 @@ Traceback (most recent call last):
 AssertionError: True != False : a refusal must not grant permission
 
 ----------------------------------------------------------------------
-Ran 1 test in 0.222s
+Ran 1 test in 0.236s
 
 FAILED (failures=1)

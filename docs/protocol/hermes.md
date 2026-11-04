@@ -14,7 +14,7 @@ GatewayRunner 전체 UI나 다른 표면의 인증으로 확대하지 않는다.
 명시한 프로필에 대한 소유권 기반 파일 설치·업데이트·제거는 지원한다.
 
 [`integrations/hermes/xsm.py`](../../integrations/hermes/xsm.py)의 `register(context)`는
-공통 서버의 현재 스키마로 native 도구 22개를 등록한다. 아래 초기 표본의
+공통 서버의 현재 스키마로 `xsm_migrate`를 포함한 native 도구 23개를 등록한다. 아래 초기 표본의
 21개는 xsm_doc 추가 전 수치다. 도구 dispatcher가 제공한
 `session_id`와 native `session_cwd()`를 사용하고 기존 참여의 폴더 일치를 확인한다.
 모델 인자로 발신자를 고르거나 gateway 프로세스의 cwd를 대신 쓰지 않는다.

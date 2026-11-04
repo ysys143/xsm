@@ -1,0 +1,16 @@
+======================================================================
+FAIL: test_source_cannot_reclaim_registration_or_send_after_transfer (tests.test_profile_migration.ProfileMigrationTest.test_source_cannot_reclaim_registration_or_send_after_transfer)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-migration-oracles-2yjppfsx/tests/test_profile_migration.py", line 49, in test_source_cannot_reclaim_registration_or_send_after_transfer
+    self.assertEqual(result.status, 'refused')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'stored' != 'refused'
+- stored
++ refused
+
+
+----------------------------------------------------------------------
+Ran 1 test in 0.327s
+
+FAILED (failures=1)

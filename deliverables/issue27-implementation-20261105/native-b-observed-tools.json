@@ -1,0 +1,317 @@
+[
+  {
+    "type": "tool_use",
+    "id": "toolu_014W6GfYWNn8XVsxsMiA4PhE",
+    "name": "ToolSearch",
+    "input": {
+      "query": "xsm_inbox",
+      "max_results": 5
+    },
+    "caller": {
+      "type": "direct"
+    }
+  },
+  {
+    "type": "tool_result",
+    "tool_use_id": "toolu_014W6GfYWNn8XVsxsMiA4PhE",
+    "content": [
+      {
+        "type": "tool_reference",
+        "tool_name": "mcp__xsm__xsm_inbox"
+      }
+    ]
+  },
+  {
+    "type": "tool_use",
+    "id": "toolu_014W6GfYWNn8XVsxsMiA4PhE",
+    "name": "ToolSearch",
+    "input": {
+      "query": "xsm_inbox",
+      "max_results": 5
+    },
+    "caller": {
+      "type": "direct"
+    }
+  },
+  {
+    "type": "tool_result",
+    "tool_use_id": "toolu_014W6GfYWNn8XVsxsMiA4PhE",
+    "content": [
+      {
+        "type": "tool_reference",
+        "tool_name": "mcp__xsm__xsm_inbox"
+      }
+    ]
+  },
+  {
+    "type": "tool_use",
+    "id": "toolu_0179JN53DzwcQy39MWxNezAg",
+    "name": "mcp__xsm__xsm_inbox",
+    "input": {},
+    "caller": {
+      "type": "direct"
+    }
+  },
+  {
+    "tool_use_id": "toolu_0179JN53DzwcQy39MWxNezAg",
+    "type": "tool_result",
+    "content": [
+      {
+        "type": "text",
+        "text": "{\"messages\":[],\"claims\":[],\"inbox_pending\":0}"
+      }
+    ]
+  },
+  {
+    "type": "tool_use",
+    "id": "toolu_0179JN53DzwcQy39MWxNezAg",
+    "name": "mcp__xsm__xsm_inbox",
+    "input": {},
+    "caller": {
+      "type": "direct"
+    }
+  },
+  {
+    "tool_use_id": "toolu_0179JN53DzwcQy39MWxNezAg",
+    "type": "tool_result",
+    "content": [
+      {
+        "type": "text",
+        "text": "{\"messages\":[],\"claims\":[],\"inbox_pending\":0}"
+      }
+    ]
+  },
+  {
+    "type": "tool_use",
+    "id": "toolu_01FAYSRuHYCZQK1mPT7iLFDA",
+    "name": "ToolSearch",
+    "input": {
+      "query": "xsm_inbox",
+      "max_results": 5
+    },
+    "caller": {
+      "type": "direct"
+    }
+  },
+  {
+    "type": "tool_result",
+    "tool_use_id": "toolu_01FAYSRuHYCZQK1mPT7iLFDA",
+    "content": [
+      {
+        "type": "tool_reference",
+        "tool_name": "mcp__xsm__xsm_inbox"
+      }
+    ]
+  },
+  {
+    "type": "tool_use",
+    "id": "toolu_01FAYSRuHYCZQK1mPT7iLFDA",
+    "name": "ToolSearch",
+    "input": {
+      "query": "xsm_inbox",
+      "max_results": 5
+    },
+    "caller": {
+      "type": "direct"
+    }
+  },
+  {
+    "type": "tool_result",
+    "tool_use_id": "toolu_01FAYSRuHYCZQK1mPT7iLFDA",
+    "content": [
+      {
+        "type": "tool_reference",
+        "tool_name": "mcp__xsm__xsm_inbox"
+      }
+    ]
+  },
+  {
+    "type": "tool_use",
+    "id": "toolu_01V4fXkyYemUsJXzTtGjzYPv",
+    "name": "mcp__xsm__xsm_inbox",
+    "input": {},
+    "caller": {
+      "type": "direct"
+    }
+  },
+  {
+    "tool_use_id": "toolu_01V4fXkyYemUsJXzTtGjzYPv",
+    "type": "tool_result",
+    "content": [
+      {
+        "type": "text",
+        "text": "{\"messages\":[],\"claims\":[],\"inbox_pending\":0}"
+      }
+    ]
+  },
+  {
+    "type": "tool_use",
+    "id": "toolu_014wquXPWF6Ju1XUsrF2wbC5",
+    "name": "mcp__xsm__xsm_migrate",
+    "input": {
+      "source": "ref:a1a8a3"
+    },
+    "caller": {
+      "type": "direct"
+    }
+  },
+  {
+    "tool_use_id": "toolu_014wquXPWF6Ju1XUsrF2wbC5",
+    "type": "tool_result",
+    "content": [
+      {
+        "type": "text",
+        "text": "{\"id\":\"b5d4fa759c59296b7dba23aa1a846e2b350c614527c9eaa9e65e3874195806f3\",\"status\":\"committed\",\"created_at\":1793830540.427389,\"committed_at\":1793830540.434245,\"forward_until\":1793916940.434245,\"source\":\"peer:063558d565c9a98c4aaa91b3a63958ebae98dd743c2ae50fa11d8943b223f7e3\",\"target\":\"peer:fc7976bfeb11eaf25a99692cb20179fd4fbce5beeb73542ebadeb9782da74704\",\"steps\":{\"messages\":[],\"boards\":[],\"teams\":[],\"questions\":{\"questions\":[],\"groups\":[],\"completed_during_transfer\":[]},\"permissions\":{\"fresh_answers_required\":0,\"unresolved_outcomes\":0,\"legacy_requests\":0},\"links\":[],\"held\":[]},\"notices\":{},\"notes\":[],\"next\":\"Read migration status before continuing; inspect unknown previous outcomes instead of repeating them.\",\"inbox_pending\":0}"
+      }
+    ]
+  },
+  {
+    "type": "tool_use",
+    "id": "toolu_014wquXPWF6Ju1XUsrF2wbC5",
+    "name": "mcp__xsm__xsm_migrate",
+    "input": {
+      "source": "ref:a1a8a3"
+    },
+    "caller": {
+      "type": "direct"
+    }
+  },
+  {
+    "tool_use_id": "toolu_014wquXPWF6Ju1XUsrF2wbC5",
+    "type": "tool_result",
+    "content": [
+      {
+        "type": "text",
+        "text": "{\"id\":\"b5d4fa759c59296b7dba23aa1a846e2b350c614527c9eaa9e65e3874195806f3\",\"status\":\"committed\",\"created_at\":1793830540.427389,\"committed_at\":1793830540.434245,\"forward_until\":1793916940.434245,\"source\":\"peer:063558d565c9a98c4aaa91b3a63958ebae98dd743c2ae50fa11d8943b223f7e3\",\"target\":\"peer:fc7976bfeb11eaf25a99692cb20179fd4fbce5beeb73542ebadeb9782da74704\",\"steps\":{\"messages\":[],\"boards\":[],\"teams\":[],\"questions\":{\"questions\":[],\"groups\":[],\"completed_during_transfer\":[]},\"permissions\":{\"fresh_answers_required\":0,\"unresolved_outcomes\":0,\"legacy_requests\":0},\"links\":[],\"held\":[]},\"notices\":{},\"notes\":[],\"next\":\"Read migration status before continuing; inspect unknown previous outcomes instead of repeating them.\",\"inbox_pending\":0}"
+      }
+    ]
+  },
+  {
+    "type": "tool_use",
+    "id": "toolu_01HR8E1iqQeHSEAxUGBzvahj",
+    "name": "ToolSearch",
+    "input": {
+      "query": "select:mcp__xsm__xsm_ack",
+      "max_results": 1
+    },
+    "caller": {
+      "type": "direct"
+    }
+  },
+  {
+    "type": "tool_result",
+    "tool_use_id": "toolu_01HR8E1iqQeHSEAxUGBzvahj",
+    "content": [
+      {
+        "type": "tool_reference",
+        "tool_name": "mcp__xsm__xsm_ack"
+      }
+    ]
+  },
+  {
+    "type": "tool_use",
+    "id": "toolu_01HR8E1iqQeHSEAxUGBzvahj",
+    "name": "ToolSearch",
+    "input": {
+      "query": "select:mcp__xsm__xsm_ack",
+      "max_results": 1
+    },
+    "caller": {
+      "type": "direct"
+    }
+  },
+  {
+    "type": "tool_result",
+    "tool_use_id": "toolu_01HR8E1iqQeHSEAxUGBzvahj",
+    "content": [
+      {
+        "type": "tool_reference",
+        "tool_name": "mcp__xsm__xsm_ack"
+      }
+    ]
+  },
+  {
+    "type": "tool_use",
+    "id": "toolu_01CaRdicg9mxjHtjPoiH7Yke",
+    "name": "mcp__xsm__xsm_ack",
+    "input": {
+      "tokens": [
+        "61054d6ce04547e4a02b5836b26ea427"
+      ]
+    },
+    "caller": {
+      "type": "direct"
+    }
+  },
+  {
+    "tool_use_id": "toolu_01CaRdicg9mxjHtjPoiH7Yke",
+    "type": "tool_result",
+    "content": [
+      {
+        "type": "text",
+        "text": "{\"acked\":[\"native-old-address-probe\"],\"inbox_pending\":0}"
+      }
+    ]
+  },
+  {
+    "type": "tool_use",
+    "id": "toolu_01CaRdicg9mxjHtjPoiH7Yke",
+    "name": "mcp__xsm__xsm_ack",
+    "input": {
+      "tokens": [
+        "61054d6ce04547e4a02b5836b26ea427"
+      ]
+    },
+    "caller": {
+      "type": "direct"
+    }
+  },
+  {
+    "tool_use_id": "toolu_01CaRdicg9mxjHtjPoiH7Yke",
+    "type": "tool_result",
+    "content": [
+      {
+        "type": "text",
+        "text": "{\"acked\":[\"native-old-address-probe\"],\"inbox_pending\":0}"
+      }
+    ]
+  },
+  {
+    "type": "tool_use",
+    "id": "toolu_018BGsTxFdfh2rxiWUUaPcXY",
+    "name": "mcp__xsm__xsm_migrate",
+    "input": {},
+    "caller": {
+      "type": "direct"
+    }
+  },
+  {
+    "tool_use_id": "toolu_018BGsTxFdfh2rxiWUUaPcXY",
+    "type": "tool_result",
+    "content": [
+      {
+        "type": "text",
+        "text": "{\"migrations\":[{\"id\":\"b5d4fa759c59296b7dba23aa1a846e2b350c614527c9eaa9e65e3874195806f3\",\"status\":\"committed\",\"created_at\":1793830540.427389,\"committed_at\":1793830540.434245,\"forward_until\":1793916940.434245,\"source\":\"peer:063558d565c9a98c4aaa91b3a63958ebae98dd743c2ae50fa11d8943b223f7e3\",\"target\":\"peer:fc7976bfeb11eaf25a99692cb20179fd4fbce5beeb73542ebadeb9782da74704\",\"steps\":{\"messages\":[],\"boards\":[],\"teams\":[],\"questions\":{\"questions\":[],\"groups\":[],\"completed_during_transfer\":[]},\"permissions\":{\"fresh_answers_required\":0,\"unresolved_outcomes\":0,\"legacy_requests\":0},\"links\":[],\"held\":[]},\"messages\":[{\"id\":\"native-old-address-probe\",\"body\":\"XSM_NATIVE_OLD_ADDRESS_FORWARDED_20261105\",\"sender\":\"peer:3946ff06486818f6b0db702216d3d998a291a40ba35d267e2dde728c365c1ad3\",\"original_status\":null,\"successor_status\":\"acknowledged\",\"original_target\":\"peer:fc7976bfeb11eaf25a99692cb20179fd4fbce5beeb73542ebadeb9782da74704\",\"addressed_via\":\"peer:063558d565c9a98c4aaa91b3a63958ebae98dd743c2ae50fa11d8943b223f7e3\",\"processing_history\":[],\"stored_at\":1793830629.246491,\"delivery\":{\"steps\":{\"accepted\":{\"ok\":true,\"t\":1793830629.24829},\"wake\":{\"ok\":false,\"t\":1793830629.249451,\"detail\":\"strict no-wake: transport not attempted\"},\"hook_taken\":{\"ok\":true,\"t\":1793830678.270775,\"detail\":\"delivered\"},\"stored\":{\"ok\":true,\"t\":1793830629.246491},\"claimed\":{\"ok\":true,\"t\":1793830678.2266922},\"handoff\":{\"ok\":true,\"t\":1793830678.2725928},\"ack\":{\"ok\":true,\"t\":1793830683.157404}},\"runtime_reached\":true,\"digest\":\"355fe461756503931be5f95e12ebde352a97eedafdbb8b10ebe42a62bd6f3c94\",\"req_version\":1,\"legacy\":false,\"verified\":true,\"upgraded_from_legacy\":false,\"acknowledged\":true,\"handoff_status\":\"acknowledged\"}}],\"permissions\":[],\"legacy_permissions\":[],\"incoming_failures\":[],\"outgoing_failures\":[],\"notices\":{},\"notes\":[]}],\"retired\":false,\"retired_by\":null,\"current_owner\":\"peer:fc7976bfeb11eaf25a99692cb20179fd4fbce5beeb73542ebadeb9782da74704\",\"outgoing_failures\":[],\"inbox_pending\":0}"
+      }
+    ]
+  },
+  {
+    "type": "tool_use",
+    "id": "toolu_018BGsTxFdfh2rxiWUUaPcXY",
+    "name": "mcp__xsm__xsm_migrate",
+    "input": {},
+    "caller": {
+      "type": "direct"
+    }
+  },
+  {
+    "tool_use_id": "toolu_018BGsTxFdfh2rxiWUUaPcXY",
+    "type": "tool_result",
+    "content": [
+      {
+        "type": "text",
+        "text": "{\"migrations\":[{\"id\":\"b5d4fa759c59296b7dba23aa1a846e2b350c614527c9eaa9e65e3874195806f3\",\"status\":\"committed\",\"created_at\":1793830540.427389,\"committed_at\":1793830540.434245,\"forward_until\":1793916940.434245,\"source\":\"peer:063558d565c9a98c4aaa91b3a63958ebae98dd743c2ae50fa11d8943b223f7e3\",\"target\":\"peer:fc7976bfeb11eaf25a99692cb20179fd4fbce5beeb73542ebadeb9782da74704\",\"steps\":{\"messages\":[],\"boards\":[],\"teams\":[],\"questions\":{\"questions\":[],\"groups\":[],\"completed_during_transfer\":[]},\"permissions\":{\"fresh_answers_required\":0,\"unresolved_outcomes\":0,\"legacy_requests\":0},\"links\":[],\"held\":[]},\"messages\":[{\"id\":\"native-old-address-probe\",\"body\":\"XSM_NATIVE_OLD_ADDRESS_FORWARDED_20261105\",\"sender\":\"peer:3946ff06486818f6b0db702216d3d998a291a40ba35d267e2dde728c365c1ad3\",\"original_status\":null,\"successor_status\":\"acknowledged\",\"original_target\":\"peer:fc7976bfeb11eaf25a99692cb20179fd4fbce5beeb73542ebadeb9782da74704\",\"addressed_via\":\"peer:063558d565c9a98c4aaa91b3a63958ebae98dd743c2ae50fa11d8943b223f7e3\",\"processing_history\":[],\"stored_at\":1793830629.246491,\"delivery\":{\"steps\":{\"accepted\":{\"ok\":true,\"t\":1793830629.24829},\"wake\":{\"ok\":false,\"t\":1793830629.249451,\"detail\":\"strict no-wake: transport not attempted\"},\"hook_taken\":{\"ok\":true,\"t\":1793830678.270775,\"detail\":\"delivered\"},\"stored\":{\"ok\":true,\"t\":1793830629.246491},\"claimed\":{\"ok\":true,\"t\":1793830678.2266922},\"handoff\":{\"ok\":true,\"t\":1793830678.2725928},\"ack\":{\"ok\":true,\"t\":1793830683.157404}},\"runtime_reached\":true,\"digest\":\"355fe461756503931be5f95e12ebde352a97eedafdbb8b10ebe42a62bd6f3c94\",\"req_version\":1,\"legacy\":false,\"verified\":true,\"upgraded_from_legacy\":false,\"acknowledged\":true,\"handoff_status\":\"acknowledged\"}}],\"permissions\":[],\"legacy_permissions\":[],\"incoming_failures\":[],\"outgoing_failures\":[],\"notices\":{},\"notes\":[]}],\"retired\":false,\"retired_by\":null,\"current_owner\":\"peer:fc7976bfeb11eaf25a99692cb20179fd4fbce5beeb73542ebadeb9782da74704\",\"outgoing_failures\":[],\"inbox_pending\":0}"
+      }
+    ]
+  }
+]

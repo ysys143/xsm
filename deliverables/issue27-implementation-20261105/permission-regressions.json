@@ -37,14 +37,14 @@
     }
   ],
   "source_hashes": {
-    "scripts/check-protocol.py": "84ab6ff05b5aeb98613466114cdfb27e055c0e8ac4309bdac06f19690fbe2efb",
+    "scripts/check-protocol.py": "f2c7b6a8b4dde20e475d880d78b419b70a1d7cb150cab15bf78160ea8f30138e",
     "tests/permission_harness.py": "7fbf6bc619629d1a3a62e18c791702c70a5f7580103dbfc6dd7745c4d53700f0",
     "tests/test_native_permission_recovery.py": "68e8b121c53e728357b3c0da509e59385daa66387a4629ef9b1ae5c5ca48534a",
-    "tests/test_protocol_gate.py": "205b2744ec7583695ff5c3948993099c61eb2c88f643be6ffd3cd21301f09b14",
-    "xsm/consent.py": "c05489438146e2ac1bb0d4a28d8cc66969c83417172d7d4f968687595940d12c",
-    "xsm/decisions.py": "82d0115e9a8b2287da73cc5984782ed7401accf4bfc7ae9ccea0c0107c65c93e",
-    "xsm/mcp.py": "4aebd9d64487618ab78eb88db604aa4625afe4e4543011af8ff84d84af41e63b",
-    "xsm/operation_schema.py": "4475c2e6d467a3126ab31445399fa87d0bc9b4ff30af35b391fca6ba88659d22",
-    "xsm/operations.py": "1c12d27a8800d6589975c6624672c6ec8b14a73a55b0ec6ffcafb874ccbe1490"
+    "tests/test_protocol_gate.py": "cf89bf76d5f9779528e07927ba4de50e3aa3a14fb0dc5cc4667c21884e742821",
+    "xsm/consent.py": "593974d5aa83f591c2af0a55afda6cedf1895f47b70b041aed22b62127afca19",
+    "xsm/decisions.py": "ade71642b5e6b4a74790f04fbb2a5a92d56e341e0c92ffca8c8409d1288cae7b",
+    "xsm/mcp.py": "905a3943e276e6a29b08b3d0609f4adbd4994d9cdd05c9e560dcff4e81a1a8c8",
+    "xsm/operation_schema.py": "c9bce7b9d94624427467d43f2d7bd5746d11302672bc34dc980f2c730220f35c",
+    "xsm/operations.py": "5af22bac0504294bc084d95b980edea824643d1e26098bb14207accd876e8521"
   }
 }

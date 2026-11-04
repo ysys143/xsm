@@ -1,0 +1,171 @@
+{
+  "call_sites": 33,
+  "files": 11,
+  "hits": [
+    {
+      "file": "xsm/cli.py",
+      "line": 108,
+      "call": "registry._record_path"
+    },
+    {
+      "file": "xsm/config.py",
+      "line": 707,
+      "call": "registry.by_session"
+    },
+    {
+      "file": "xsm/delegation.py",
+      "line": 29,
+      "call": "registry.by_session"
+    },
+    {
+      "file": "xsm/handover.py",
+      "line": 98,
+      "call": "registry.by_session"
+    },
+    {
+      "file": "xsm/operations.py",
+      "line": 62,
+      "call": "registry.by_session"
+    },
+    {
+      "file": "xsm/operations.py",
+      "line": 70,
+      "call": "registry.by_session"
+    },
+    {
+      "file": "xsm/operations.py",
+      "line": 1078,
+      "call": "registry.by_session"
+    },
+    {
+      "file": "xsm/participants.py",
+      "line": 35,
+      "call": "registry._record_path"
+    },
+    {
+      "file": "xsm/protocol.py",
+      "line": 389,
+      "call": "registry._record_path"
+    },
+    {
+      "file": "xsm/protocol.py",
+      "line": 358,
+      "call": "registry._record_path"
+    },
+    {
+      "file": "xsm/protocol.py",
+      "line": 416,
+      "call": "registry._record_path"
+    },
+    {
+      "file": "xsm/receive.py",
+      "line": 116,
+      "call": "registry.by_session"
+    },
+    {
+      "file": "xsm/receive.py",
+      "line": 1097,
+      "call": "registry.by_session"
+    },
+    {
+      "file": "xsm/receive.py",
+      "line": 145,
+      "call": "registry.by_session"
+    },
+    {
+      "file": "xsm/receive.py",
+      "line": 379,
+      "call": "registry.by_session"
+    },
+    {
+      "file": "xsm/receive.py",
+      "line": 364,
+      "call": "registry.by_session"
+    },
+    {
+      "file": "xsm/receive.py",
+      "line": 372,
+      "call": "registry.by_session"
+    },
+    {
+      "file": "xsm/registry.py",
+      "line": 703,
+      "call": "by_session"
+    },
+    {
+      "file": "xsm/registry.py",
+      "line": 852,
+      "call": "_record_path"
+    },
+    {
+      "file": "xsm/registry.py",
+      "line": 126,
+      "call": "_record_path"
+    },
+    {
+      "file": "xsm/registry.py",
+      "line": 667,
+      "call": "by_session"
+    },
+    {
+      "file": "xsm/registry.py",
+      "line": 885,
+      "call": "_record_path"
+    },
+    {
+      "file": "xsm/registry.py",
+      "line": 897,
+      "call": "_record_path"
+    },
+    {
+      "file": "xsm/registry.py",
+      "line": 1213,
+      "call": "_record_path"
+    },
+    {
+      "file": "xsm/registry.py",
+      "line": 55,
+      "call": "_record_path"
+    },
+    {
+      "file": "xsm/registry.py",
+      "line": 484,
+      "call": "by_session"
+    },
+    {
+      "file": "xsm/registry.py",
+      "line": 491,
+      "call": "_record_path"
+    },
+    {
+      "file": "xsm/registry.py",
+      "line": 555,
+      "call": "_record_path"
+    },
+    {
+      "file": "xsm/registry.py",
+      "line": 664,
+      "call": "_record_path"
+    },
+    {
+      "file": "xsm/registry.py",
+      "line": 539,
+      "call": "_record_path"
+    },
+    {
+      "file": "xsm/team_sync.py",
+      "line": 107,
+      "call": "registry.by_session"
+    },
+    {
+      "file": "xsm/workers.py",
+      "line": 1154,
+      "call": "registry.by_session"
+    },
+    {
+      "file": "xsm/workers.py",
+      "line": 841,
+      "call": "registry._record_path"
+    }
+  ]
+}

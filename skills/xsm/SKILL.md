@@ -71,7 +71,7 @@ For `discover [words] [--table]`, `publish`, `connect`, `ask`, and `question-sta
 guide](references/messaging.md). Use MCP first in a sandboxed Codex; existing `send --wait` remains
 delivery-only. For `network`, follow the [other machines guide](references/network.md); create, join,
 remove or leave only on your user's word. For `team`, `board` and `handover`, the [teams guide](references/teams.md).
-
+For `migrate` or a copy in another config home, read [profile migration](references/migration.md).
 ## Called without one
 
 When loaded for a request in words, read the table in the [guide](references/guide.md) before choosing a

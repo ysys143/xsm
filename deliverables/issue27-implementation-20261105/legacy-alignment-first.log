@@ -1,0 +1,115 @@
+install/setup failed: JSONDecodeError
+setup flow 6313c5a37e5843e08279f5c76cb288c0 generation=3 status=failed error=JSONDecodeError
+/Users/jaesolshin/Documents/GitHub/cross-session-messaging/tests/test_workers.py:458: ResourceWarning: unclosed file <_io.TextIOWrapper name='/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-test-9rzi7p0q/workers/sb/settings.json' mode='r' encoding='UTF-8'>
+  settings = json.load(open(workers._claude_worker_settings(w)))
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+/Users/jaesolshin/Documents/GitHub/cross-session-messaging/tests/test_workers.py:481: ResourceWarning: unclosed file <_io.TextIOWrapper name='/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-test-9rzi7p0q/workers/sb/settings.json' mode='r' encoding='UTF-8'>
+  again = json.load(open(workers._claude_worker_settings(w)))
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+/Users/jaesolshin/Documents/GitHub/cross-session-messaging/tests/test_workers.py:494: ResourceWarning: unclosed file <_io.TextIOWrapper name='/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-test-9rzi7p0q/workers/pn/settings.json' mode='r' encoding='UTF-8'>
+  self.assertNotIn("sandbox", json.load(open(workers._claude_worker_settings(pane))))
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+======================================================================
+ERROR: test_both_open_codex_adoption_paths_skip_excluded_and_keep_allowed (tests.test_directory.DirectoryTest.test_both_open_codex_adoption_paths_skip_excluded_and_keep_allowed)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/tests/test_directory.py", line 672, in test_both_open_codex_adoption_paths_skip_excluded_and_keep_allowed
+    {os.path.basename(registry._record_path('codex', sid, self.codex))
+                                                          ^^^^^^^^^^
+AttributeError: 'DirectoryTest' object has no attribute 'codex'
+
+======================================================================
+ERROR: test_received_copy_cannot_be_read_by_another_home (tests.test_file_interfaces.FileInterfacesTest.test_received_copy_cannot_be_read_by_another_home)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/xsm/operations.py", line 321, in _call
+    result = files.read_result(me, args.get('storage_id'), args.get('entry_id'),
+        outgoing=args.get('outgoing', False), encoding=args.get('encoding', 'text'),
+        manifest_bytes=args.get('manifest_bytes', False))
+  File "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/xsm/files.py", line 900, in read_result
+    return {'storage_id': storage_id, 'manifest': manifest(caller, storage_id, incoming=incoming)}
+                                                  ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/xsm/files.py", line 877, in manifest
+    record, _ = _load_owned(root, 'incoming' if incoming else 'outgoing', storage_id, caller)
+                ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/xsm/files.py", line 853, in _load_owned
+    return _load(root, kind, storage_id, _owner(caller))
+  File "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/xsm/files.py", line 588, in _load
+    return _load_existing(root, kind, storage_id, expected_owner)
+  File "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/xsm/files.py", line 600, in _load_existing
+    raise FileError("owner-mismatch", "another caller owns these copies")
+xsm.files.FileError: owner-mismatch: another caller owns these copies
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/tests/test_file_interfaces.py", line 72, in test_received_copy_cannot_be_read_by_another_home
+    self.server(other).call('xsm_files',{'storage_id':storage})
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/xsm/operations.py", line 48, in call
+    return invoke(self, name, args)
+  File "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/xsm/operations.py", line 23, in invoke
+    return host._invoke_operation(name, arguments)
+           ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/xsm/operations.py", line 257, in _invoke_operation
+    text = self._call(name, args, me)
+  File "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/xsm/operations.py", line 327, in _call
+    raise ToolError(str(exc), data={'file_error': {'code': exc.code}}) from exc
+xsm.operation_schema.ToolError: owner-mismatch: another caller owns these copies
+
+======================================================================
+ERROR: test_a_parent_goodbye_reaps_once_its_process_is_gone (tests.test_workers.SafetyTest.test_a_parent_goodbye_reaps_once_its_process_is_gone)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/tests/test_workers.py", line 440, in test_a_parent_goodbye_reaps_once_its_process_is_gone
+    receive.handle({"hook_event_name": "SessionEnd", "session_id": "s1",
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                    "session_title": "boss", "reason": "exit"})
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/xsm/receive.py", line 330, in handle
+    return _handle(data)
+  File "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/xsm/receive.py", line 368, in _handle
+    home=stated_home(runtime, data), pid=pid_of(runtime))
+                                         ~~~~~~^^^^^^^^^
+  File "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/xsm/receive.py", line 93, in pid_of
+    return identity.ancestor_pid({"claude"})
+           ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+  File "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/xsm/identity.py", line 261, in ancestor_pid
+    out = probe.command(["ps", "-o", "ppid=,comm=", "-p", str(pid)])
+  File "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/xsm/probe.py", line 192, in command
+    out, _ = proc.communicate(timeout=wait)
+             ^^^^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'communicate'
+
+======================================================================
+FAIL: test_a_send_whose_ledger_cannot_be_written_is_an_error_that_says_so (tests.test_open_mcp.SandboxTest.test_a_send_whose_ledger_cannot_be_written_is_an_error_that_says_so)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/tests/test_open_mcp.py", line 239, in test_a_send_whose_ledger_cannot_be_written_is_an_error_that_says_so
+    self.assertEqual(result.lines()[-1], "error: " + result.reason)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'erro[192 chars]): their server runs outside the sandbox (id 4ddea7eba5fd4c73)' != 'erro[192 chars]): their server runs outside the sandbox'
+Diff is 762 characters long. Set self.maxDiff to None to see it.
+
+======================================================================
+FAIL: test_leaving_a_project_is_still_allowed (tests.test_link.CliWideningNeedsSureIdentityTest.test_leaving_a_project_is_still_allowed)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/tests/test_link.py", line 467, in test_leaving_a_project_is_still_allowed
+    self.assertNotIn("guess at which session is asking", text)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'guess at which session is asking' unexpectedly found in "refused: xsm cannot leave a project for this call: the caller was identified only as cwd, and that is a guess at which session is asking. Run it from the session's own shell (or name the session) so the identity is exact\n"
+
+======================================================================
+FAIL: test_without_one_it_asks_and_links_only_on_allow (tests.test_link.LinkMcpTest.test_without_one_it_asks_and_links_only_on_allow)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/tests/test_link.py", line 611, in test_without_one_it_asks_and_links_only_on_allow
+    self.assertIn("Shell equivalent: `xsm link %s`" % shlex.quote(b), text)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Shell equivalent: `xsm link /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-test-pey2ands/proj-b`' not found in 'your user did not answer (declined — by your user, or by the client without showing the form (Codex does this under approval_policy "never")). Ask your user once using this exact question, without paraphrasing: [xsm-decision:f71afe440360aafe] builder@claude-4 asks to link /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-test-pey2ands/proj-a with /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-test-pey2ands/proj-b: the sessions of both folders talk, both ways, until unlinked.\nAllow it?\nChoices: allow, deny. Ask with AskUserQuestion. After the native question tool returns, retry this same MCP tool with the same arguments; the verified answer is recovered and applied in that call. Do not switch to a shell or supply recovery IDs manually.'
+
+----------------------------------------------------------------------
+Ran 195 tests in 66.437s
+
+FAILED (failures=3, errors=3)

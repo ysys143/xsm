@@ -147,7 +147,7 @@ function mutatedApi(api) {
             result = await call('tool_search', {'query': query, 'limit': 1}, catalog=True)
             assert isinstance(result, list), 'single native search returns candidate list'
             candidates.extend(result)
-        check('native registration exposes22 tools', len(names) == 22 and {c['name'] for c in candidates} == set(names))
+        check('native registration exposes23 tools', len(names) == 23 and {c['name'] for c in candidates} == set(names))
         from probe_native_collaboration_cases import exercise_collaboration
         await exercise_collaboration(call, check, command=command, env=env, work=work, state=state, root=root,
             runtime='openclaw', observations=report['observations'], error_text=lambda row: row.get('errorText', ''))

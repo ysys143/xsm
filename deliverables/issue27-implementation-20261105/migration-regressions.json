@@ -1,0 +1,54 @@
+{
+  "python": "3.14.6",
+  "positive_exit": 0,
+  "cases": [
+    {
+      "case": "migration-home-key-omitted",
+      "source": "xsm/registry.py",
+      "test": "tests.test_registry_profiles.RegistryProfilesTest.test_repeated_registration_keeps_both_homes_and_their_refs",
+      "exit_code": 1,
+      "detected": true
+    },
+    {
+      "case": "migration-source-fence-omitted",
+      "source": "xsm/migration.py",
+      "test": "tests.test_profile_migration.ProfileMigrationTest.test_source_cannot_reclaim_registration_or_send_after_transfer",
+      "exit_code": 1,
+      "detected": true
+    },
+    {
+      "case": "migration-lease-check-omitted",
+      "source": "xsm/migration.py",
+      "test": "tests.test_profile_migration.ProfileMigrationTest.test_forwarding_expires_at_24_hours_but_retirement_does_not",
+      "exit_code": 1,
+      "detected": true
+    },
+    {
+      "case": "migration-old-allow-retained",
+      "source": "xsm/migration_state.py",
+      "test": "tests.test_profile_migration.ProfileMigrationTest.test_pending_user_permission_moves_as_a_request_not_an_old_allow",
+      "exit_code": 1,
+      "detected": true
+    },
+    {
+      "case": "migration-missing-transfer-falsely-completes",
+      "source": "xsm/migration.py",
+      "test": "tests.test_profile_migration.ProfileMigrationTest.test_missing_successor_copy_is_not_reported_as_a_completed_transfer",
+      "exit_code": 1,
+      "detected": true
+    }
+  ],
+  "source_hashes": {
+    "tests/test_migration_diagnostics.py": "d8e4038a7b16034865f3a9747f9c171c0df64000ae24c39f774502c4b98e1f0e",
+    "tests/test_migration_network.py": "f861f24587607b81c21dc6d3b9ebc60efa07c55a1764606b0f98982a1ebb7829",
+    "tests/test_profile_migration.py": "0a19d4f41b245b80f5bbb9d8400598d5dc03100cdcd4619cda7444cd14a40732",
+    "tests/test_registry_profiles.py": "70b92e850bd9f6ed058ed9381ec94fa949f729dabe88ae7d91022c7591fa96d8",
+    "xsm/handoff.py": "24d1a8f99a92bf5777fb0e0289fb9f724c5737dd83d3fc9e6cfac203b76f8340",
+    "xsm/mcp.py": "905a3943e276e6a29b08b3d0609f4adbd4994d9cdd05c9e560dcff4e81a1a8c8",
+    "xsm/migration.py": "5a83ef3ecdcf8d9eb097959282d842c35c4ac1a4c281ec2cab0a76045203bf92",
+    "xsm/migration_state.py": "c8a86b1af95f519de0a6d9db7d8e266e89cb7ca6da821d6dc9caa8125096b8fd",
+    "xsm/operations.py": "5af22bac0504294bc084d95b980edea824643d1e26098bb14207accd876e8521",
+    "xsm/registry.py": "da8ff746d12b51becd1c67bb2497155dda5b87823f91fe4e252a2738074e992c",
+    "xsm/send.py": "e54bc6032d88281ad58aa0299bab0cb3c798b2180abee3939aecb716958c187b"
+  }
+}

@@ -1,0 +1,61 @@
+{
+  "root": "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-profile-migration-live-dyi8ggi9",
+  "version": "2.1.318",
+  "status_exit": 1,
+  "auth": {
+    "loggedIn": false,
+    "authMethod": "none",
+    "apiProvider": "firstParty"
+  },
+  "credential_file_present": true,
+  "opaque_oauth_copy": true,
+  "isolated_auth": {
+    "loggedIn": false,
+    "authMethod": "none",
+    "apiProvider": "firstParty"
+  },
+  "scoped_subscription_auth": {
+    "loggedIn": true,
+    "authMethod": "oauth_token",
+    "apiProvider": "firstParty"
+  },
+  "keychain_service": "Claude Code-credentials-1f3efe9f",
+  "conversation": "f55ac2bc-7ee6-4e96-9ced-9b5b6fb0e775",
+  "source_hash": "da8ff746d12b51becd1c67bb2497155dda5b87823f91fe4e252a2738074e992c",
+  "copied_transcript_sha256": "ef8acd4a5d4566a5a1fb8f7ffa2456033f59bf87f41bb20d51f700f2514cda93",
+  "copied_transcript_bytes": 352320,
+  "native_records_before": [
+    {
+      "runtime": "claude",
+      "home": "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-profile-migration-live-dyi8ggi9/b",
+      "alias": "b",
+      "session_id": "f55ac2bc-7ee6-4e96-9ced-9b5b6fb0e775",
+      "pid": 29145,
+      "lstart": "Thu Nov  5 07:13:08 2026",
+      "cwd": "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-profile-migration-live-dyi8ggi9/work",
+      "ref": "49aefc",
+      "updated": 1793830389.488708,
+      "profile_migration": 1,
+      "socket": "/tmp/cc-socks/29145.sock",
+      "inside": "01a18a2c-d6b0-7970-8420-7f7cbb29503c",
+      "transcript_path": "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-profile-migration-live-dyi8ggi9/b/projects/-private-var-folders-hw-9m3g7fvn4-l3rp2y473km9sm0000gn-T-xsm-profile-migration-live-dyi8ggi9-work/f55ac2bc-7ee6-4e96-9ced-9b5b6fb0e775.jsonl",
+      "permission_mode": "default"
+    },
+    {
+      "runtime": "claude",
+      "home": "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-profile-migration-live-dyi8ggi9/a",
+      "alias": "a",
+      "session_id": "f55ac2bc-7ee6-4e96-9ced-9b5b6fb0e775",
+      "pid": 22194,
+      "lstart": "Thu Nov  5 07:12:27 2026",
+      "cwd": "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-profile-migration-live-dyi8ggi9/work",
+      "ref": "a1a8a3",
+      "updated": 1793830348.1334631,
+      "profile_migration": 1,
+      "socket": "/tmp/cc-socks/22194.sock",
+      "inside": "01a18a2c-d6b0-7970-8420-7f7cbb29503c",
+      "transcript_path": "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-profile-migration-live-dyi8ggi9/a/projects/-private-var-folders-hw-9m3g7fvn4-l3rp2y473km9sm0000gn-T-xsm-profile-migration-live-dyi8ggi9-work/f55ac2bc-7ee6-4e96-9ced-9b5b6fb0e775.jsonl",
+      "permission_mode": "default"
+    }
+  ]
+}

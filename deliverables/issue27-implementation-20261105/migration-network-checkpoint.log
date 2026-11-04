@@ -1,0 +1,29 @@
+======================================================================
+ERROR: test_accepted_original_has_successor_admission_and_ack_readback (tests.test_migration_network.MigrationNetworkTest.test_accepted_original_has_successor_admission_and_ack_readback)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/tests/test_migration_network.py", line 47, in test_accepted_original_has_successor_admission_and_ack_readback
+    self.assertEqual(f.gb.receive(fixture.A, packet)['status'], 'acknowledged')
+                     ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/xsm/network_messages.py", line 96, in call
+    return function(*args, **kwargs)
+  File "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/xsm/network_messages.py", line 729, in receive
+    self._global(packet["id"], record)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/xsm/network_messages.py", line 554, in _global
+    raise GatewayError("message-id-conflict")
+xsm.network_messages.GatewayError: message-id-conflict
+
+======================================================================
+FAIL: test_private_binding_retains_native_generation_for_broker_revalidation (tests.test_network_messages.NetworkMessagesTest.test_private_binding_retains_native_generation_for_broker_revalidation)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/tests/test_network_messages.py", line 746, in test_private_binding_retains_native_generation_for_broker_revalidation
+    self.assertEqual(network_directory.public_endpoint(binding["target_local"], B), packet["receiver"])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: None != {'machine': 'bbbbbbbbbbbbbbbbbbbbbbbbbbbb[242 chars]dad'}
+
+----------------------------------------------------------------------
+Ran 83 tests in 9.279s
+
+FAILED (failures=1, errors=1)

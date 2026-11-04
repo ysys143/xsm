@@ -1,0 +1,81 @@
+[Screen Reader Mode: on via flag]
+7[r8[?25h[?2004h[?2031h[?1004h[<u[>5u[>4;2m]0;✳ Claude Code]9;4;0;]0;◐ Claude Code]9;4;3;[>0q[?u]7501;?[c]133;A;redraw=0]0;◑ Claude Code]0;◑ XSM inbox check]0;◐ XSM inbox checkClaude Code v2.1.318
+Sonnet 5.5 with low effort · Claude API
+/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-profile-migration-l
+ive-dyi8ggi9/work
+Get to finished work sooner with Opus 5.5. Switch anytime with /model.
+you: Call xsm_inbox once, then reply exactly XSM_PROFILE_A_READY. Do not call
+other tools or change any files.
+Swirling…
+manual mode on  ·  esc to interrupt
+effort: low · /effort
+$[2G[2K[1A[2K[1A[2K[1A[2K[GTempering…
+manual mode on  ·  esc to interrupt
+effort: low · /effort
+$[2G]0;◑ XSM inbox check]0;◐ XSM inbox check[2K[1A[2K[1A[2K[1A[2K[Gtool: Calling xsm… (ctrl+o to expand)
+Tempering…
+manual mode on  ·  esc to interrupt
+effort: low · /effort
+$[2G]0;◑ XSM inbox check]0;◐ XSM inbox check]0;◑ XSM inbox check]0;◐ XSM inbox check]0;◑ XSM inbox check[2K[1A[2K[1A[2K[1A[2K[1A[2K[GCalled xsm (ctrl+o to expand)
+claude: XSM_PROFILE_A_READY
+Tempering…
+manual mode on  ·  esc to interrupt
+effort: low · /effort
+$[2G]133;C]133;D]0;✳ XSM inbox check]9;4;0;[2K[1A[2K[1A[2K[1A[2K[GSautéed for 9s · done 7:12 AM
+manual mode on
+effort: low · /effort
+$[2G[2K[1A[2K[G$[2G]777;notify;Claude Code;Claude is waiting for your input(B[?2004h[<u[>5u[>4;2m[2K[Gctrl+g to edit in Sublime Text
+$  Call xsm_send exactly with {"target":"ref:49aefc","text":"XSM_RETIRED_SOURCE
+_MUST_NOT_SEND","wake":"never"}. This tests that this source execution has
+been retired after the user-approved transfer. Do not change files or try
+another path. Report its result.
+[1G[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[G$  Call xsm_send exactly with {"target":"ref:49aefc","text":"XSM_RETIRED_SOURCE
+_MUST_NOT_SEND","wake":"never"}. This tests that this source execution has
+been retired after the user-approved transfer. Do not change files or try
+another path. Report its result.
+[1G(B[?2004h[<u[>5u[>4;2m]0;◑ XSM inbox check]9;4;3;[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[Gyou: Call xsm_send exactly with {"target":"ref:49aefc","text":"XSM_RETIRED_SOURC
+E_MUST_NOT_SEND","wake":"never"}. This tests that this source execution has been
+ retired after the user-approved transfer. Do not change files or try another
+path. Report its result.
+Misting…   ( running UserPromptSubmit hook )
+Tip: Start with small features or bug fixes, tell Claude to propose a plan, and
+verify its suggested edits
+manual mode on  ·  esc to interrupt
+$[2G]133;A;redraw=0[2K[1A[2K[1A[2K[1A[2K[1A[2K[GMisting…
+Tip: Start with small features or bug fixes, tell Claude to propose a plan, and
+verify its suggested edits
+manual mode on  ·  esc to interrupt
+$[2G]0;◐ XSM inbox check]0;◑ XSM inbox check]0;◐ XSM inbox check]0;◑ XSM inbox check[2K[1A[2K[1A[2K[1A[2K[1A[2K[Gtool: Calling xsm… (ctrl+o to expand)
+Misting…
+Tip: Start with small features or bug fixes, tell Claude to propose a plan, and
+verify its suggested edits
+manual mode on  ·  esc to interrupt
+$[2G[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[Gtool error: Calling xsm… (ctrl+o to expand)
+Misting…
+Tip: Start with small features or bug fixes, tell Claude to propose a plan, and
+verify its suggested edits
+manual mode on  ·  esc to interrupt
+$[2G]0;◐ XSM inbox check]0;◑ XSM inbox check]0;◐ XSM inbox check[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[GCalled xsm (ctrl+o to expand)
+claude: The send was refused. I called xsm_send with
+{"target":"ref:49aefc","text":"XSM_RETIRED_SOURCE_MUST_NOT_SEND","wake":"never"}
+ and got this error:
+this xsm session is retired by migration
+b5d4fa759c59296b7dba23aa1a846e2b350c614527c9eaa9e65e3874195806f3; its place
+belongs to
+peer:fc7976bfeb11eaf25a99692cb20179fd4fbce5beeb73542ebadeb9782da74704. It cannot
+ register, send or claim work. A new user decision is required to reclaim it.
+This confirms the source session is retired after the transfer and can't send. I
+ tried no other path and changed no files.
+Misting…
+Tip: Start with small features or bug fixes, tell Claude to propose a plan, and
+verify its suggested edits
+manual mode on  ·  esc to interrupt
+$[2G]133;C]133;D]0;✳ XSM inbox check]9;4;0;[2K[1A[2K[1A[2K[1A[2K[1A[2K[GBrewed for 7s · done 7:17 AM
+manual mode on
+$[2G]777;notify;Claude Code;Claude is waiting for your input(B[?2004h[<u[>5u[>4;2m[2K[Gctrl+g to edit in Sublime Text
+$  /exit
+[1G[2K[1A[2K[1A[2K[G$  /exit
+[1G(B[?2004h[<u[>5u[>4;2m[?1006l[?1003l[?1002l[?1000l[?1004l[>4m[<u[?2031l[?2004l(B[?1016l[?1006l[?1003l[?1002l[?1000l[?25h7[r8]9;4;0;]0;
+Resume this session with:
+claude --resume f55ac2bc-7ee6-4e96-9ced-9b5b6fb0e775
+]133;A;redraw=0]133;C]133;D

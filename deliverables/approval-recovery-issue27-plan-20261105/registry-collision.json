@@ -1,0 +1,35 @@
+{
+  "source_commit": "66a263c",
+  "method": "synthetic local registry reproduction; fixed fixture process identities; no native runtime or model",
+  "expected_independent_records": 2,
+  "observations": [
+    {
+      "step": "A",
+      "stored_record_count": 1,
+      "stored_home": "A",
+      "registered_ref": "95efde",
+      "caller_from_B_home": "A",
+      "caller_ref": "95efde"
+    },
+    {
+      "step": "B",
+      "stored_record_count": 1,
+      "stored_home": "B",
+      "registered_ref": "5ac776",
+      "caller_from_B_home": "B",
+      "caller_ref": "5ac776"
+    },
+    {
+      "step": "A-again",
+      "stored_record_count": 1,
+      "stored_home": "A",
+      "registered_ref": "95efde",
+      "caller_from_B_home": "A",
+      "caller_ref": "95efde"
+    }
+  ],
+  "cross_home_overwrite_reproduced": true,
+  "wrong_sender_identity_reproduced": true,
+  "real_profile_changes": false,
+  "first_attempt_error_retained": "registry-collision-path-label-error.json"
+}

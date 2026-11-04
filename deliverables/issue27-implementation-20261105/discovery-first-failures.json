@@ -1,0 +1,342 @@
+[
+  {
+    "case": "ERROR: test_received_copy_cannot_be_read_by_another_home (test_file_interfaces.FileInterfacesTest.test_received_copy_cannot_be_read_by_another_home)",
+    "detail": "xsm.operation_schema.ToolError: owner-mismatch: another caller owns these copies"
+  },
+  {
+    "case": "ERROR: test_mcp_registration_error_has_nonzero_result_failed_flow_and_redacted_output (test_install_cli_flow.InstallCliFlowTest.test_mcp_registration_error_has_nonzero_result_failed_flow_and_redacted_output)",
+    "detail": "IndexError: list index out of range"
+  },
+  {
+    "case": "ERROR: test_scope_failure_observer_records_the_clock_that_refused_a_response (test_protocol_conformance.ExternalConformanceTest.test_scope_failure_observer_records_the_clock_that_refused_a_response)",
+    "detail": "IndexError: list index out of range"
+  },
+  {
+    "case": "ERROR: test_a_parent_goodbye_reaps_once_its_process_is_gone (test_workers.SafetyTest.test_a_parent_goodbye_reaps_once_its_process_is_gone)",
+    "detail": "AttributeError: 'NoneType' object has no attribute 'communicate'"
+  },
+  {
+    "case": "ERROR: test_an_unknown_id_and_a_path_are_refused (test_xsm.ResendTest.test_an_unknown_id_and_a_path_are_refused)",
+    "detail": "ValueError: invalid message ID"
+  },
+  {
+    "case": "FAIL: test_the_link_survives_and_the_message_is_still_held (test_crash_boundaries.ConnectionThenCrashTest.test_the_link_survives_and_the_message_is_still_held)",
+    "detail": "AssertionError: 'out of scope' not found in 'refused: this session is not registered; run `xsm doctor`\\n'"
+  },
+  {
+    "case": "FAIL: test_the_retry_after_the_crash_sends_without_a_new_question (test_crash_boundaries.ConnectionThenCrashTest.test_the_retry_after_the_crash_sends_without_a_new_question)",
+    "detail": "AssertionError: 'out of scope' not found in 'refused: this session is not registered; run `xsm doctor`\\n'"
+  },
+  {
+    "case": "FAIL: test_a_later_inbox_run_recovers_the_original_after_lease_expiry (test_crash_boundaries.InboxClaimThenCrashTest.test_a_later_inbox_run_recovers_the_original_after_lease_expiry)",
+    "detail": "AssertionError: 2 != -9"
+  },
+  {
+    "case": "FAIL: test_the_claim_dies_between_the_rename_and_the_ack (test_crash_boundaries.InboxClaimThenCrashTest.test_the_claim_dies_between_the_rename_and_the_ack)",
+    "detail": "AssertionError: 2 != -9 : the claim must die at the ack"
+  },
+  {
+    "case": "FAIL: test_both_open_codex_adoption_paths_skip_excluded_and_keep_allowed (test_directory.DirectoryTest.test_both_open_codex_adoption_paths_skip_excluded_and_keep_allowed)",
+    "detail": "AssertionError: Items in the first set but not the second:"
+  },
+  {
+    "case": "FAIL: test_clear_does_not_discover_windows_and_only_checks_the_selected_project (test_discovery_latency.DiscoveryTest.test_clear_does_not_discover_windows_and_only_checks_the_selected_project)",
+    "detail": "AssertionError: Expected 'adopt_open_codex' to not have been called. Called 1 times."
+  },
+  {
+    "case": "FAIL: test_cli_send_reports_transport_failure_and_records_it (test_discovery_latency.DiscoveryTest.test_cli_send_reports_transport_failure_and_records_it)",
+    "detail": "AssertionError: 2 != 4"
+  },
+  {
+    "case": "FAIL: test_cli_send_to_known_ref_skips_discovery_and_reports_unconfirmed (test_discovery_latency.DiscoveryTest.test_cli_send_to_known_ref_skips_discovery_and_reports_unconfirmed)",
+    "detail": "AssertionError: 2 != 3 : refused: this session is not registered; run `xsm doctor`"
+  },
+  {
+    "case": "FAIL: test_runtime_and_home_filters_apply_before_peer_probes (test_discovery_latency.DiscoveryTest.test_runtime_and_home_filters_apply_before_peer_probes)",
+    "detail": "AssertionError: Items in the second set but not the first:"
+  },
+  {
+    "case": "FAIL: test_who_probes_only_itself_and_never_starts_global_discovery_or_prune (test_discovery_latency.DiscoveryTest.test_who_probes_only_itself_and_never_starts_global_discovery_or_prune)",
+    "detail": "AssertionError: 2 != 0 : "
+  },
+  {
+    "case": "FAIL: test_pinned_command_and_environment_reach_describe_and_tool_processes (test_hermes_binding.HermesRegistrationTest.test_pinned_command_and_environment_reach_describe_and_tool_processes)",
+    "detail": "AssertionError: 23 != 22"
+  },
+  {
+    "case": "FAIL: test_installed_snapshot_exports_its_public_protocol_contract_without_checkout (test_host_install.HostInstallTest.test_installed_snapshot_exports_its_public_protocol_contract_without_checkout)",
+    "detail": "AssertionError: 23 != 22"
+  },
+  {
+    "case": "FAIL: test_actual_cli_upgrade_preserves_live_reader_and_reports_only_passive_observations (test_install_cli_flow.InstallCliFlowTest.test_actual_cli_upgrade_preserves_live_reader_and_reports_only_passive_observations)",
+    "detail": "xsm.native_workers.ProviderError: invalid native worker catalog"
+  },
+  {
+    "case": "FAIL: test_actual_module_command_and_doctor_text_table_keep_flow_and_policy_health (test_install_cli_flow.InstallCliFlowTest.test_actual_module_command_and_doctor_text_table_keep_flow_and_policy_health)",
+    "detail": "xsm.native_workers.ProviderError: invalid native worker catalog"
+  },
+  {
+    "case": "FAIL: test_cli_cas_preserves_user_followup (test_install_cli_flow.InstallCliFlowTest.test_cli_cas_preserves_user_followup)",
+    "detail": "AssertionError: 'setup flow ' not found in 'Traceback (most recent call last):\\n  File \"/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-p10-cli-fault-si0ftoj7/source/xsm/native_workers.py\", line 43, in _catalog\\n    value = json.loads(filename.read_text(), object_pairs_hook=_unique)\\n                       ~~~~~~~~~~~~~~~~~~^^\\n  File \"/opt/homebrew/Cellar/python@3.14/3.14.6/Frameworks/Python.framework/Versions/3.14/lib/python3.14/pathlib/__init__.py\", line 787, in read_text\\n    with self.open(mode=\\'r\\', encoding=encoding, errors=errors, newline=newline) as f:\\n         ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\\n  File \"/opt/homebrew/Cellar/python@3.14/3.1"
+  },
+  {
+    "case": "FAIL: test_cli_failed_upgrade_keeps_old_snapshot_and_flow_id (test_install_cli_flow.InstallCliFlowTest.test_cli_failed_upgrade_keeps_old_snapshot_and_flow_id)",
+    "detail": "xsm.native_workers.ProviderError: invalid native worker catalog"
+  },
+  {
+    "case": "FAIL: test_cli_invalid_settings_have_failed_flow_without_overwrite (test_install_cli_flow.InstallCliFlowTest.test_cli_invalid_settings_have_failed_flow_without_overwrite)",
+    "detail": "AssertionError: 'setup flow ' not found in 'Traceback (most recent call last):\\n  File \"/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-p10-cli-fault-zxgx0i37/source/xsm/native_workers.py\", line 43, in _catalog\\n    value = json.loads(filename.read_text(), object_pairs_hook=_unique)\\n                       ~~~~~~~~~~~~~~~~~~^^\\n  File \"/opt/homebrew/Cellar/python@3.14/3.14.6/Frameworks/Python.framework/Versions/3.14/lib/python3.14/pathlib/__init__.py\", line 787, in read_text\\n    with self.open(mode=\\'r\\', encoding=encoding, errors=errors, newline=newline) as f:\\n         ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\\n  File \"/opt/homebrew/Cellar/python@3.14/3.1"
+  },
+  {
+    "case": "FAIL: test_cli_replaced_flow_cannot_write_old_settings_or_completion (test_install_cli_flow.InstallCliFlowTest.test_cli_replaced_flow_cannot_write_old_settings_or_completion)",
+    "detail": "AssertionError: 'setup flow ' not found in 'Traceback (most recent call last):\\n  File \"/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-p10-cli-fault-945spv05/source/xsm/native_workers.py\", line 43, in _catalog\\n    value = json.loads(filename.read_text(), object_pairs_hook=_unique)\\n                       ~~~~~~~~~~~~~~~~~~^^\\n  File \"/opt/homebrew/Cellar/python@3.14/3.14.6/Frameworks/Python.framework/Versions/3.14/lib/python3.14/pathlib/__init__.py\", line 787, in read_text\\n    with self.open(mode=\\'r\\', encoding=encoding, errors=errors, newline=newline) as f:\\n         ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\\n  File \"/opt/homebrew/Cellar/python@3.14/3.1"
+  },
+  {
+    "case": "FAIL: test_doctor_json_selects_metadata_and_fixed_failure_categories (test_install_cli_flow.InstallCliFlowTest.test_doctor_json_selects_metadata_and_fixed_failure_categories)",
+    "detail": "xsm.native_workers.ProviderError: invalid native worker catalog"
+  },
+  {
+    "case": "FAIL: test_doctor_table_does_not_disclose_stored_message_or_error (test_install_cli_flow.InstallCliFlowTest.test_doctor_table_does_not_disclose_stored_message_or_error)",
+    "detail": "xsm.native_workers.ProviderError: invalid native worker catalog"
+  },
+  {
+    "case": "FAIL: test_doctor_text_never_uses_private_errors_as_failure_labels (test_install_cli_flow.InstallCliFlowTest.test_doctor_text_never_uses_private_errors_as_failure_labels)",
+    "detail": "xsm.native_workers.ProviderError: invalid native worker catalog"
+  },
+  {
+    "case": "FAIL: test_named_install_matrix (test_install_cli_flow.InstallCliFlowTest.test_named_install_matrix) (cell='clean/single/claude/direct/snapshot')",
+    "detail": "xsm.native_workers.ProviderError: invalid native worker catalog"
+  },
+  {
+    "case": "FAIL: test_named_install_matrix (test_install_cli_flow.InstallCliFlowTest.test_named_install_matrix) (cell='clean/single/claude/direct/dev')",
+    "detail": "xsm.native_workers.ProviderError: invalid native worker catalog"
+  },
+  {
+    "case": "FAIL: test_named_install_matrix (test_install_cli_flow.InstallCliFlowTest.test_named_install_matrix) (cell='clean/single/claude/plugin/snapshot')",
+    "detail": "xsm.native_workers.ProviderError: invalid native worker catalog"
+  },
+  {
+    "case": "FAIL: test_named_install_matrix (test_install_cli_flow.InstallCliFlowTest.test_named_install_matrix) (cell='clean/single/claude/plugin/dev')",
+    "detail": "xsm.native_workers.ProviderError: invalid native worker catalog"
+  },
+  {
+    "case": "FAIL: test_named_install_matrix (test_install_cli_flow.InstallCliFlowTest.test_named_install_matrix) (cell='clean/single/codex/direct/snapshot')",
+    "detail": "xsm.native_workers.ProviderError: invalid native worker catalog"
+  },
+  {
+    "case": "FAIL: test_named_install_matrix (test_install_cli_flow.InstallCliFlowTest.test_named_install_matrix) (cell='clean/single/codex/direct/dev')",
+    "detail": "xsm.native_workers.ProviderError: invalid native worker catalog"
+  },
+  {
+    "case": "FAIL: test_named_install_matrix (test_install_cli_flow.InstallCliFlowTest.test_named_install_matrix) (cell='clean/single/codex/plugin/snapshot')",
+    "detail": "xsm.native_workers.ProviderError: invalid native worker catalog"
+  },
+  {
+    "case": "FAIL: test_named_install_matrix (test_install_cli_flow.InstallCliFlowTest.test_named_install_matrix) (cell='clean/single/codex/plugin/dev')",
+    "detail": "xsm.native_workers.ProviderError: invalid native worker catalog"
+  },
+  {
+    "case": "FAIL: test_named_install_matrix (test_install_cli_flow.InstallCliFlowTest.test_named_install_matrix) (cell='clean/multi/mixed/direct/snapshot')",
+    "detail": "xsm.native_workers.ProviderError: invalid native worker catalog"
+  },
+  {
+    "case": "FAIL: test_named_install_matrix (test_install_cli_flow.InstallCliFlowTest.test_named_install_matrix) (cell='clean/multi/mixed/direct/dev')",
+    "detail": "xsm.native_workers.ProviderError: invalid native worker catalog"
+  },
+  {
+    "case": "FAIL: test_named_install_matrix (test_install_cli_flow.InstallCliFlowTest.test_named_install_matrix) (cell='clean/multi/mixed/plugin/snapshot')",
+    "detail": "xsm.native_workers.ProviderError: invalid native worker catalog"
+  },
+  {
+    "case": "FAIL: test_named_install_matrix (test_install_cli_flow.InstallCliFlowTest.test_named_install_matrix) (cell='clean/multi/mixed/plugin/dev')",
+    "detail": "xsm.native_workers.ProviderError: invalid native worker catalog"
+  },
+  {
+    "case": "FAIL: test_named_install_matrix (test_install_cli_flow.InstallCliFlowTest.test_named_install_matrix) (cell='clean/nondefault/claude/direct/snapshot')",
+    "detail": "xsm.native_workers.ProviderError: invalid native worker catalog"
+  },
+  {
+    "case": "FAIL: test_named_install_matrix (test_install_cli_flow.InstallCliFlowTest.test_named_install_matrix) (cell='clean/nondefault/claude/direct/dev')",
+    "detail": "xsm.native_workers.ProviderError: invalid native worker catalog"
+  },
+  {
+    "case": "FAIL: test_named_install_matrix (test_install_cli_flow.InstallCliFlowTest.test_named_install_matrix) (cell='clean/nondefault/claude/plugin/snapshot')",
+    "detail": "xsm.native_workers.ProviderError: invalid native worker catalog"
+  },
+  {
+    "case": "FAIL: test_named_install_matrix (test_install_cli_flow.InstallCliFlowTest.test_named_install_matrix) (cell='clean/nondefault/claude/plugin/dev')",
+    "detail": "xsm.native_workers.ProviderError: invalid native worker catalog"
+  },
+  {
+    "case": "FAIL: test_named_install_matrix (test_install_cli_flow.InstallCliFlowTest.test_named_install_matrix) (cell='clean/nondefault/codex/direct/snapshot')",
+    "detail": "xsm.native_workers.ProviderError: invalid native worker catalog"
+  },
+  {
+    "case": "FAIL: test_named_install_matrix (test_install_cli_flow.InstallCliFlowTest.test_named_install_matrix) (cell='clean/nondefault/codex/direct/dev')",
+    "detail": "xsm.native_workers.ProviderError: invalid native worker catalog"
+  },
+  {
+    "case": "FAIL: test_named_install_matrix (test_install_cli_flow.InstallCliFlowTest.test_named_install_matrix) (cell='clean/nondefault/codex/plugin/snapshot')",
+    "detail": "xsm.native_workers.ProviderError: invalid native worker catalog"
+  },
+  {
+    "case": "FAIL: test_named_install_matrix (test_install_cli_flow.InstallCliFlowTest.test_named_install_matrix) (cell='clean/nondefault/codex/plugin/dev')",
+    "detail": "xsm.native_workers.ProviderError: invalid native worker catalog"
+  },
+  {
+    "case": "FAIL: test_named_install_matrix (test_install_cli_flow.InstallCliFlowTest.test_named_install_matrix) (cell='installed/single/claude/direct/snapshot')",
+    "detail": "xsm.native_workers.ProviderError: invalid native worker catalog"
+  },
+  {
+    "case": "FAIL: test_named_install_matrix (test_install_cli_flow.InstallCliFlowTest.test_named_install_matrix) (cell='installed/single/claude/direct/dev')",
+    "detail": "xsm.native_workers.ProviderError: invalid native worker catalog"
+  },
+  {
+    "case": "FAIL: test_named_install_matrix (test_install_cli_flow.InstallCliFlowTest.test_named_install_matrix) (cell='installed/single/claude/plugin/snapshot')",
+    "detail": "xsm.native_workers.ProviderError: invalid native worker catalog"
+  },
+  {
+    "case": "FAIL: test_named_install_matrix (test_install_cli_flow.InstallCliFlowTest.test_named_install_matrix) (cell='installed/single/claude/plugin/dev')",
+    "detail": "xsm.native_workers.ProviderError: invalid native worker catalog"
+  },
+  {
+    "case": "FAIL: test_named_install_matrix (test_install_cli_flow.InstallCliFlowTest.test_named_install_matrix) (cell='installed/single/codex/direct/snapshot')",
+    "detail": "xsm.native_workers.ProviderError: invalid native worker catalog"
+  },
+  {
+    "case": "FAIL: test_named_install_matrix (test_install_cli_flow.InstallCliFlowTest.test_named_install_matrix) (cell='installed/single/codex/direct/dev')",
+    "detail": "xsm.native_workers.ProviderError: invalid native worker catalog"
+  },
+  {
+    "case": "FAIL: test_named_install_matrix (test_install_cli_flow.InstallCliFlowTest.test_named_install_matrix) (cell='installed/single/codex/plugin/snapshot')",
+    "detail": "xsm.native_workers.ProviderError: invalid native worker catalog"
+  },
+  {
+    "case": "FAIL: test_named_install_matrix (test_install_cli_flow.InstallCliFlowTest.test_named_install_matrix) (cell='installed/single/codex/plugin/dev')",
+    "detail": "xsm.native_workers.ProviderError: invalid native worker catalog"
+  },
+  {
+    "case": "FAIL: test_named_install_matrix (test_install_cli_flow.InstallCliFlowTest.test_named_install_matrix) (cell='installed/multi/mixed/direct/snapshot')",
+    "detail": "xsm.native_workers.ProviderError: invalid native worker catalog"
+  },
+  {
+    "case": "FAIL: test_named_install_matrix (test_install_cli_flow.InstallCliFlowTest.test_named_install_matrix) (cell='installed/multi/mixed/direct/dev')",
+    "detail": "xsm.native_workers.ProviderError: invalid native worker catalog"
+  },
+  {
+    "case": "FAIL: test_named_install_matrix (test_install_cli_flow.InstallCliFlowTest.test_named_install_matrix) (cell='installed/multi/mixed/plugin/snapshot')",
+    "detail": "xsm.native_workers.ProviderError: invalid native worker catalog"
+  },
+  {
+    "case": "FAIL: test_named_install_matrix (test_install_cli_flow.InstallCliFlowTest.test_named_install_matrix) (cell='installed/multi/mixed/plugin/dev')",
+    "detail": "xsm.native_workers.ProviderError: invalid native worker catalog"
+  },
+  {
+    "case": "FAIL: test_named_install_matrix (test_install_cli_flow.InstallCliFlowTest.test_named_install_matrix) (cell='installed/nondefault/claude/direct/snapshot')",
+    "detail": "xsm.native_workers.ProviderError: invalid native worker catalog"
+  },
+  {
+    "case": "FAIL: test_named_install_matrix (test_install_cli_flow.InstallCliFlowTest.test_named_install_matrix) (cell='installed/nondefault/claude/direct/dev')",
+    "detail": "xsm.native_workers.ProviderError: invalid native worker catalog"
+  },
+  {
+    "case": "FAIL: test_named_install_matrix (test_install_cli_flow.InstallCliFlowTest.test_named_install_matrix) (cell='installed/nondefault/claude/plugin/snapshot')",
+    "detail": "xsm.native_workers.ProviderError: invalid native worker catalog"
+  },
+  {
+    "case": "FAIL: test_named_install_matrix (test_install_cli_flow.InstallCliFlowTest.test_named_install_matrix) (cell='installed/nondefault/claude/plugin/dev')",
+    "detail": "xsm.native_workers.ProviderError: invalid native worker catalog"
+  },
+  {
+    "case": "FAIL: test_named_install_matrix (test_install_cli_flow.InstallCliFlowTest.test_named_install_matrix) (cell='installed/nondefault/codex/direct/snapshot')",
+    "detail": "xsm.native_workers.ProviderError: invalid native worker catalog"
+  },
+  {
+    "case": "FAIL: test_named_install_matrix (test_install_cli_flow.InstallCliFlowTest.test_named_install_matrix) (cell='installed/nondefault/codex/direct/dev')",
+    "detail": "xsm.native_workers.ProviderError: invalid native worker catalog"
+  },
+  {
+    "case": "FAIL: test_named_install_matrix (test_install_cli_flow.InstallCliFlowTest.test_named_install_matrix) (cell='installed/nondefault/codex/plugin/snapshot')",
+    "detail": "xsm.native_workers.ProviderError: invalid native worker catalog"
+  },
+  {
+    "case": "FAIL: test_named_install_matrix (test_install_cli_flow.InstallCliFlowTest.test_named_install_matrix) (cell='installed/nondefault/codex/plugin/dev')",
+    "detail": "xsm.native_workers.ProviderError: invalid native worker catalog"
+  },
+  {
+    "case": "FAIL: test_the_snapshot_is_what_xsm_needs_at_run_time_and_runs_outside_the_checkout (test_install_runtime.SnapshotTest.test_the_snapshot_is_what_xsm_needs_at_run_time_and_runs_outside_the_checkout)",
+    "detail": "xsm.native_workers.ProviderError: invalid native worker catalog"
+  },
+  {
+    "case": "FAIL: test_leaving_a_project_is_still_allowed (test_link.CliWideningNeedsSureIdentityTest.test_leaving_a_project_is_still_allowed)",
+    "detail": "AssertionError: 'guess at which session is asking' unexpectedly found in \"refused: xsm cannot leave a project for this call: the caller was identified only as cwd, and that is a guess at which session is asking. Run it from the session's own shell (or name the session) so the identity is exact\\n\""
+  },
+  {
+    "case": "FAIL: test_without_one_it_asks_and_links_only_on_allow (test_link.LinkMcpTest.test_without_one_it_asks_and_links_only_on_allow)",
+    "detail": "AssertionError: 'Shell equivalent: `xsm link /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-test-fhyd961m/proj-b`' not found in 'your user did not answer (declined \u2014 by your user, or by the client without showing the form (Codex does this under approval_policy \"never\")). Ask your user once using this exact question, without paraphrasing: [xsm-decision:ab4e84a76eb8ed04] builder@claude-4 asks to link /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-test-fhyd961m/proj-a with /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-test-fhyd961m/proj-b: the sessions of both folders talk, both ways, until unlinked.\\nAllow it?\\nChoices: allow, deny. Ask with AskUserQu"
+  },
+  {
+    "case": "FAIL: test_a_preloaded_server_keeps_working_after_its_folder_is_deleted (test_mcp_preload.PreloadTest.test_a_preloaded_server_keeps_working_after_its_folder_is_deleted)",
+    "detail": "xsm.native_workers.ProviderError: invalid native worker catalog"
+  },
+  {
+    "case": "FAIL: test_without_preload_the_deleted_folder_breaks_the_first_tool (test_mcp_preload.PreloadTest.test_without_preload_the_deleted_folder_breaks_the_first_tool)",
+    "detail": "AssertionError: \"cannot import name 'inbox'\" not found in 'Traceback (most recent call last):\\n  File \"/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/tmpg6cn_rw6/0.4.7/xsm/native_workers.py\", line 43, in _catalog\\n    value = json.loads(filename.read_text(), object_pairs_hook=_unique)\\n                       ~~~~~~~~~~~~~~~~~~^^\\n  File \"/opt/homebrew/Cellar/python@3.14/3.14.6/Frameworks/Python.framework/Versions/3.14/lib/python3.14/pathlib/__init__.py\", line 787, in read_text\\n    with self.open(mode=\\'r\\', encoding=encoding, errors=errors, newline=newline) as f:\\n         ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\\n  File \"/opt/homebrew/Cellar/python@3.14/3.14"
+  },
+  {
+    "case": "FAIL: test_a_send_whose_ledger_cannot_be_written_is_an_error_that_says_so (test_open_mcp.SandboxTest.test_a_send_whose_ledger_cannot_be_written_is_an_error_that_says_so)",
+    "detail": "AssertionError: 'erro[192 chars]): their server runs outside the sandbox (id aa3b07845a164431)' != 'erro[192 chars]): their server runs outside the sandbox'"
+  },
+  {
+    "case": "FAIL: test_the_skill_allows_xsm_send_and_stays_short (test_open_messaging.AllowMessagingTest.test_the_skill_allows_xsm_send_and_stays_short)",
+    "detail": "AssertionError: 91 not less than 90"
+  },
+  {
+    "case": "FAIL: test_actual_capacity_logs_use_only_selected_event_structure (test_owned_native_events.CodexNativeEventsTest.test_actual_capacity_logs_use_only_selected_event_structure)",
+    "detail": "AssertionError: Items in the second set but not the first:"
+  },
+  {
+    "case": "FAIL: test_actual_scope_mutations_and_revocation_contract (test_protocol_conformance.ExternalConformanceTest.test_actual_scope_mutations_and_revocation_contract)",
+    "detail": "AssertionError: 'failed' != 'passed'"
+  },
+  {
+    "case": "FAIL: test_scope_failure_observer_retains_a_deliberately_changed_start (test_protocol_conformance.ExternalConformanceTest.test_scope_failure_observer_retains_a_deliberately_changed_start)",
+    "detail": "AssertionError: [] is not true : {'suite': 'xsm-host-scopes-v1', 'status': 'failed', 'checks': ['initialize required', 'unsupported version refused', 'version negotiated', 'duplicate initialize refused', 'operation descriptors', 'native impersonation refused', 'opaque participation fields', 'immutable session identity', 'state update', 'connection-local handles', 'single live conversation owner', 'profile isolation', 'explicit close', 'closed handle refused', 'stable address new generation', 'EOF releases conversation ownership'], 'activeCheck': 'unrelated roots initially reject sending', 'scope': 'synthetic host scope approval/revocation and real local send policy; no actual user or native "
+  },
+  {
+    "case": "FAIL: test_scope_wire_defects_are_detected (test_protocol_conformance.ExternalConformanceTest.test_scope_wire_defects_are_detected) (fault='scope-missing-producer')",
+    "detail": "AssertionError: 'unrelated roots initially reject sending' != 'link snapshot names canonical roots'"
+  },
+  {
+    "case": "FAIL: test_scope_wire_defects_are_detected (test_protocol_conformance.ExternalConformanceTest.test_scope_wire_defects_are_detected) (fault='scope-wrong-root')",
+    "detail": "AssertionError: 'unrelated roots initially reject sending' != 'link snapshot names canonical roots'"
+  },
+  {
+    "case": "FAIL: test_scope_wire_defects_are_detected (test_protocol_conformance.ExternalConformanceTest.test_scope_wire_defects_are_detected) (fault='scope-stale-active')",
+    "detail": "AssertionError: 'unrelated roots initially reject sending' != 'unlink snapshot reports change'"
+  },
+  {
+    "case": "FAIL: test_send_to_a_live_claude_session (test_stalled_probes.BlockedSendTest.test_send_to_a_live_claude_session)",
+    "detail": "AssertionError: 2 not found in (3,) : stdout: {\"status\":\"refused\",\"reason\":\"this session is not registered; run \\u0060xsm doctor\\u0060\",\"id\":null}"
+  },
+  {
+    "case": "FAIL: test_send_to_a_live_codex_session (test_stalled_probes.BlockedSendTest.test_send_to_a_live_codex_session)",
+    "detail": "AssertionError: 2 not found in (3,) : stdout: {\"status\":\"refused\",\"reason\":\"this session is not registered; run \\u0060xsm doctor\\u0060\",\"id\":null}"
+  },
+  {
+    "case": "FAIL: test_send_by_name (test_stalled_probes.ScaleTest.test_send_by_name)",
+    "detail": "AssertionError: 2 not found in (3,) : stdout: refused: this session is not registered; run `xsm doctor`"
+  },
+  {
+    "case": "FAIL: test_send_by_ref (test_stalled_probes.ScaleTest.test_send_by_ref)",
+    "detail": "AssertionError: 2 not found in (3,) : stdout: refused: this session is not registered; run `xsm doctor`"
+  },
+  {
+    "case": "FAIL: test_who (test_stalled_probes.ScaleTest.test_who)",
+    "detail": "AssertionError: 2 not found in (0,) : stdout: "
+  },
+  {
+    "case": "FAIL: test_the_guide_lives_under_references (test_xsm.SkillLayoutTest.test_the_guide_lives_under_references)",
+    "detail": "AssertionError: 91 not less than 90 : the reference text belongs in the guide"
+  }
+]

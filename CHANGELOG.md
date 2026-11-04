@@ -5,6 +5,10 @@ steps, are on [GitHub Releases](https://github.com/ysys143/xsm/releases) (in Kor
 
 ## Unreleased
 
+- Isolate copied native conversations by config home and add user-approved profile migration with source retirement, preserved pending work and 24-hour old-address forwarding.
+- Recover verified native permission answers through the original MCP operation; preserve explicit denial and prevent stale answers from applying to another profile.
+- Retain sender-owned failed delivery evidence and report profile generations, retirement and forwarding state in doctor.
+
 - Focus the one-line skill hint and short help on list, publish, discover, send and ask; route other features through contextual guidance.
 - Count task attempts on both immediate and trust-delayed worker starts; preserve failure counts after success and history compaction.
 - Exclude requested worker stops from failure counts without closing another worker's attempt; match recorded task IDs exactly.

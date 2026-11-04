@@ -1,0 +1,214 @@
+----------------------------------------------------------------------
+Ran 259 tests in 34.705s
+
+OK
+xsm: temporary transport failure
+xsm: temporary transport failure
+xsm: native clarify is unavailable
+xsm: peer closed stdout (EOF)
+xsm: peer closed stdout (EOF)
+xsm: --reply is ignored: it has to be your user's own words from this session, in answer to your question, and these match nothing they wrote here that has not already been used for, or said about, another request. Ask them in plain words, or with your question tool (AskUserQuestion), one thing at a time; xsm keeps their answer itself, so run the command again after they reply, without --reply.
+xsm: --reply is ignored: it has to be your user's own words from this session, in answer to your question, and these match nothing they wrote here that has not already been used for, or said about, another request. Ask them in plain words, or with your question tool (AskUserQuestion), one thing at a time; xsm keeps their answer itself, so run the command again after they reply, without --reply.
+xsm: --reply is ignored: it has to be your user's own words from this session, in answer to your question, and these match nothing they wrote here that has not already been used for, or said about, another request. Ask them in plain words, or with your question tool (AskUserQuestion), one thing at a time; xsm keeps their answer itself, so run the command again after they reply, without --reply.
+----------------------------------------------------------------------
+Ran 402 tests in 59.165s
+
+OK
+{"acked":["0c34fa402daf44a7"]}
+----------------------------------------------------------------------
+Ran 273 tests in 43.211s
+
+OK
+----------------------------------------------------------------------
+Ran 62 tests in 27.417s
+
+OK
+{"status": "passed", "baseline_tests": 16, "mutants_detected": 4}
+----------------------------------------------------------------------
+Ran 133 tests in 34.546s
+
+OK
+✔ wire JSON preserves values and independent object keys (1.387791ms)
+✔ duplicate and escaped-equivalent object members are refused at every level (0.484208ms)
+✔ SDK rejects a duplicate version supplied by an actual peer (52.377041ms)
+✔ Node cancellation query preserves false and reports only its bound native stop (130.210875ms)
+✔ private descriptor is absent ordinarily and invalid hints are removed/refused (1.099833ms)
+✔ Node frontend binds over the actual Python private control descriptor (142.841875ms)
+✔ private binding rejects refuse without confirmed native ownership (107.460292ms)
+✔ private binding rejects bad-duplicate without confirmed native ownership (110.039709ms)
+✔ private binding rejects bad-bool-id without confirmed native ownership (126.936125ms)
+✔ private binding rejects bad-int-confirmation without confirmed native ownership (114.517958ms)
+✔ native parent refuses an old server before registration (56.573584ms)
+✔ native parent negotiation preserves caller capabilities (51.402917ms)
+✔ default command (0.299667ms)
+✔ concurrent requests correlate reversed responses and split UTF-8 (51.25275ms)
+✔ session methods and events/available carry opaque handle (62.520208ms)
+✔ RPC error preserves code/data and leaves transport usable (39.006917ms)
+✔ stderr cannot be mistaken for an RPC response (37.304625ms)
+✔ large JSONL frame (44.898583ms)
+✔ stderr consumer failure still drains and reaps the peer (39.407958ms)
+✔ reject every pending request and notification consumer on eof (36.072583ms)
+✔ reject every pending request and notification consumer on malformed (50.374042ms)
+✔ reject every pending request and notification consumer on malformed-noisy (37.305042ms)
+✔ reject every pending request and notification consumer on truncated (37.073833ms)
+✔ reject every pending request and notification consumer on utf8 (36.177084ms)
+✔ reject every pending request and notification consumer on bad-response (36.680333ms)
+✔ reject every pending request and notification consumer on bad-error (53.277667ms)
+✔ reject every pending request and notification consumer on peer-request (34.149834ms)
+✔ close rejects pending calls, is idempotent, and kills a stubborn peer (236.576ms)
+✔ host decision and missing session guards; bad caller data leaves transport usable (33.144625ms)
+✔ initialize error, initialize EOF and spawn failure reject connect (68.586542ms)
+✔ final response before exit is delivered and graceful close reaps the peer (33.17975ms)
+✔ version negotiation rejects invalid results and reaps peer (106.799208ms)
+✔ negotiation error survives cleanup failure after reaping (34.010625ms)
+✔ silent initialize times out and reaps its peer (103.37425ms)
+✔ initialize deadline rejects invalid values before spawn (0.314042ms)
+✔ native host forwards initialize deadline (104.717625ms)
+✔ real host UI response is scoped and applies only on retry (411.069459ms)
+✔ claim release failure preserves original admission error (2.366333ms)
+✔ host rejects nonfinite or nonnumeric initial leases (1.464667ms)
+✔ host initialization retains primary failure when close fails (0.409333ms)
+✔ host setup stalls reap the backend at every bootstrap RPC (599.665209ms)
+✔ shared native notice rendering keeps claim-free content without inventing ACK tokens (0.730416ms)
+✔ shared native original rendering retains the exact ACK tokens and recovery hint (0.213958ms)
+✔ native command arguments preserve JSON string whitespace and Unicode (0.725667ms)
+✔ pull-only binding preserves explicit inbox claims without advertising delivery (566.261542ms)
+✔ one coalesced wake drains bounded batches without acknowledging originals (1323.464166ms)
+✔ a byte-limited batch keeps draining even below the message count limit (1114.616167ms)
+✔ notice-only cursor progress reaches a later original in one bounded drain (729.371041ms)
+✔ a full notice-only batch does not spin without acquiring any original (181.825334ms)
+✔ retryable native backpressure releases then reacquires the same original without another wake (830.612834ms)
+✔ closing during native backpressure cancels the retry timer and prevents a later admission (983.70675ms)
+✔ a stale normal wake does not wake passive originals found after retry (904.060291ms)
+✔ a deferred FYI boundary retries in the background without waking a turn (537.497583ms)
+✔ closing a deferred boundary cancels its initial retry delay (444.403875ms)
+✔ missing wake metadata cannot turn a boundary retry into an active wake (442.952042ms)
+✔ explicit false native admission releases claims without recording admission (582.400459ms)
+✔ pull-only binding presents a native callback once and retries original operation (393.799375ms)
+✔ one cancelled waiter does not cancel another waiter or forge denial (416.045375ms)
+✔ a pending decision RPC is registered before another caller abandons the display (405.985083ms)
+✔ all cancelled waiters abandon the display and a deliberate retry gets a fresh question (588.655917ms)
+✔ cancellation between request and waiter registration never opens an orphan dialog (377.944959ms)
+✔ native admission failure releases originals for a later natural boundary (782.637708ms)
+✔ transport death rejects a pending host question without accepting its late callback (353.054708ms)
+✔ natural-boundary-only delivers without background wake or automatic ACK (990.682ms)
+✔ natural-only retries and batches wait for an explicit boundary (807.998375ms)
+✔ natural delivery mode rejects non-booleans before spawn (0.560208ms)
+✔ chunk preparation resumes exact bytes and never sends the body implicitly (1111.037334ms)
+✔ real server: two sessions in same repo, wait=0 send, notification, inbox and ack (524.384709ms)
+✔ internal RPC error preserves the current claim and connection (574.589458ms)
+✔ OpenClaw synchronous catalog and metadata discovery create no participant (4.923584ms)
+✔ revoked live conversation access prevents native preparation from reading a session (0.548375ms)
+✔ native conversation UUID isolates two conversations sharing a route and supports DM pull ACK (584.149292ms)
+✔ session end invalidates retained tools and resume replaces participation generation (353.234792ms)
+✔ unbound UI, changed workspace, cancellation and retired plugin cannot manufacture effects (214.540167ms)
+✔ next native tool coalesces recovery after a real backend exit (381.412459ms)
+✔ dispose during recovery cannot reopen the native conversation (170.100583ms)
+✔ a failed native operation is not replayed during connection recovery (332.498958ms)
+✔ registered OpenClaw reconnects without another native call (637.530959ms)
+✔ session end cancels automatic OpenClaw reconnect (623.567208ms)
+✔ OpenClaw backs off failed automatic reconnects and restores activity (2094.897209ms)
+✔ agent_end recovers a failed backend and cannot revive ended participation (322.50925ms)
+✔ dispose during agent_end recovery does not revive participation (204.560542ms)
+✔ native context is observed after admission, preserves other plugins and deduplicates originals (2.242875ms)
+✔ wake callback follows committed context and FYI never invokes it (0.303708ms)
+✔ final native guard rejects a replaced conversation after update preparation (0.370916ms)
+✔ revision changes, retirement and policy changes cannot admit old native context (0.515208ms)
+✔ queue capacity, oversized context and cancellation retain unadmitted originals (2.710291ms)
+✔ missing native owner or disabled injection keeps the binding pull-only (0.176792ms)
+✔ a registration policy denial cannot be widened by a sparse runtime config (0.112667ms)
+✔ a claim-free native notice does not ask the agent to ACK an empty token array (0.205542ms)
+✔ fragmented claim-free notices have no acknowledgement fragment (0.48675ms)
+✔ an unobserved native write never reports successful admission (0.214583ms)
+✔ queue identity alone does not prove that the actual original text was admitted (0.145375ms)
+✔ large Unicode context survives native trim boundaries and ACK appears only after every fragment (1.024541ms)
+✔ a surrogate pair that straddles the observed native fragment boundary stays together (1.12475ms)
+✔ fragmented context reserves the entire batch before publishing any part (0.402459ms)
+✔ fragment retry deduplicates rotated tokens and refuses an incomplete prior group (1.178416ms)
+✔ missing observed fragment cannot report that the whole original was admitted (0.188167ms)
+✔ a complete pending single context stays reusable when rotated tokens require a larger encoding (0.368917ms)
+✔ native committed snapshot proves admission when consumer drains before readback (0.472042ms)
+✔ native commit snapshot from another conversation is refused (0.232708ms)
+✔ missing native return falls back to exact observed current queue (0.225291ms)
+✔ wake runs under native background lease and preserves untrusted input and native model selection (1.699375ms)
+✔ session selectors are forwarded without parsing aliases or guessing another provider (0.758416ms)
+✔ protocol transport loss cannot cancel an already submitted native turn (0.247458ms)
+✔ revision and policy changes before native lease execution prevent model admission (0.475166ms)
+✔ native reset and host disposal cancel actual submitted execution without logging native secrets (3.348292ms)
+✔ passive native context waits for exact run/host/full prompt before admission (1.940209ms)
+✔ ending an unobserved context releases it without admission (0.181875ms)
+✔ late inbox response stays bound to its cancelled boundary (1.970208ms)
+✔ empty native boundary and missing run identity manufacture no context (0.190208ms)
+✔ OpenCode cancellation confirms only the bound input assistant abort and native idle (473.021959ms)
+✔ OpenCode normal completed idle is not a cancelled native turn (427.142667ms)
+✔ OpenCode cancellation cannot abort a newer assistant with another input parent (611.38125ms)
+✔ OpenCode shutdown settles an in-flight native state update without hiding live failures (471.806333ms)
+✔ OpenCode uses native conversation identity and preserves optional tool arguments (500.08875ms)
+✔ OpenCode admits a real deferred inbox notice without an empty ACK instruction (656.115084ms)
+✔ OpenCode default byte budget splits a passive backlog across native admissions (1876.390709ms)
+✔ native deletion and resume preserve address but replace the host generation (673.083542ms)
+✔ an attached native UI receives the actual tool conversation and applies through the common host (641.562542ms)
+✔ stored native input keeps consumption explicit and does not wake an already busy conversation (717.259459ms)
+✔ unverified native storage releases a claim for a later natural boundary (883.490541ms)
+✔ concurrent native calls recover a dead backend with new claims (963.4145ms)
+✔ failed initial state update closes participation before retry (582.852875ms)
+✔ registered OpenCode session reconnects without a native entry (936.8525ms)
+✔ native deletion cancels pending automatic OpenCode retry (821.403125ms)
+✔ OpenCode dispose cancels pending automatic retry (803.180166ms)
+✔ OpenCode retries transport failures with increasing delay (2316.673083ms)
+✔ OpenCode rejects unverified native workspace /Users/jaesolshin/Documents/GitHub/cross-session-messaging/ (257.854542ms)
+✔ OpenCode rejects unverified native workspace null (271.849709ms)
+✔ OpenCode rejects unverified native workspace  (265.906542ms)
+✔ OpenCode rejects unverified native workspace . (301.791458ms)
+✔ OpenCode rejects unverified native workspace /Users/jaesolshin/Documents/GitHub/cross-session-messaging/not-an-existing-native-workspace (295.315791ms)
+✔ owned native input waits for its private context binding (420.431583ms)
+✔ owned native binding refusal stops the awaited input hook (270.062792ms)
+✔ native descendant keeps its observed parent and does not rebind the owned root (541.373125ms)
+✔ OpenCode native selection preserves the exact question and callback source (1.709833ms)
+✔ OpenCode free text and native cancel have distinct outcomes (0.286625ms)
+✔ a foreign native dialog is never replaced or cleared by an old question callback (1.285042ms)
+✔ native conversation switches reject both an open question and its late answer (0.26525ms)
+✔ abort, lifecycle shutdown and expired questions never return an accepted answer (50.355333ms)
+✔ native callbacks cannot submit a value outside the displayed options (0.575584ms)
+✔ native UI frames bind one conversation, one display and a private challenge without exposing host handles (2.789667ms)
+✔ wrong conversation, nonce, UI instance and non-control text cannot answer a pending question (0.740709ms)
+✔ only the first native UI claims a display and the other window releases its local state (4.581333ms)
+✔ UI disconnect and host cancellation reject a live display without accepting its late callback (1.242833ms)
+✔ an offline native TUI rejects without interpreting silence as an answer (10.555916ms)
+✔ a claimed UI that never renders cannot answer the question (21.751709ms)
+✔ Pi owned boundary waits for native binding before consuming inbox input (13.443708ms)
+✔ Pi owned binding refusal explicitly aborts instead of relying on a hook exception (5.628958ms)
+✔ Pi owned input refusal uses the native handled short-circuit (4.32475ms)
+✔ Pi confirms cancellation only after its matching native aborted settle (3.638292ms)
+✔ Pi does not claim cancellation when the native turn completed normally (3.722083ms)
+✔ Pi cancellation cannot abort a different conversation while a query is pending (2.821166ms)
+✔ Pi coalesces concurrent recovery entries (3.346875ms)
+✔ Pi shutdown during backend recovery closes the uncommitted host (3.841208ms)
+✔ Pi rejects a different native conversation before recovering (3.571959ms)
+✔ Pi shutdown during recovered state update closes the new host (3.26475ms)
+✔ Pi retries first registration after failOpen (4.010375ms)
+✔ Pi retries first registration after failUpdate (3.391458ms)
+✔ Pi shutdown prevents retrying a failed initial registration (3.35175ms)
+✔ Pi reconnects a registered transport failure without a native operation (257.359292ms)
+✔ Pi shutdown cancels pending automatic reconnect (355.703292ms)
+✔ Pi does not reconnect for an ordinary native error (353.9915ms)
+✔ Pi backs off failed reconnects then recovers without replay (1767.270291ms)
+✔ Pi keeps one runtime lease across native conversation changes (12.48575ms)
+✔ profile migration works through Node SDK without runtime-specific adapters (590.268041ms)
+ℹ tests 167
+ℹ suites 0
+ℹ pass 167
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 27367.419625
+----------------------------------------------------------------------
+Ran 56 tests in 51.621s
+
+OK
+{"status": "passed", "baseline_tests": 9, "mutants_detected": 4}
+{"status": "passed", "baseline_tests": 14, "mutants_detected": 6}
+{"passed": true, "methods": 16, "accepted": 16, "rejected": 62, "validator": "jsonschema", "validatorVersion": "4.26.0", "scope": "request and output structures; no full operation results or semantic certification", "output": {"examples": 19, "rejected": 14, "observed": 0, "inboxExamples": 2, "inboxRejected": 7, "observedInboxResults": 0, "observedSuccessfulMethods": [], "observedNotifications": 0}, "operations": {"operations": 23, "examples": 23, "targetedInboxExamples": 1, "boardExtensionExamples": 2, "rejected": 87, "scope": "structural inputs and transport restrictions; no domain effects or result certification"}, "profileMigration": {"examples": 5, "rejected": 11, "scope": "local transfer facts and catch-up only; no native consumption or remote delivery certification"}, "files": {"examples": 3, "rejected": 8, "scope": "structure only; fixture digests are not semantic checksum evidence"}, "ack": {"examples": 3, "rejected": 7, "scope": "successful result structure; batch errors may follow earlier durable acknowledgements"}, "discovery": {"examples": 3, "rejected": 16, "scope": "local/remote result structure; visibility and current selection require runtime revalidation"}, "team": {"examples": 12, "rejected": 12, "actions": 9}, "board": {"examples": 10, "rejected": 19, "actions": 7}, "doc": {"actions": 6, "examples": 7, "rejected": 14}, "send": {"examples": 6, "rejected": 15, "attachmentErrors": 1, "rejectedAttachmentErrors": 2}, "question": {"operations": 3, "examples": 23, "rejected": 20}, "publication": {"examples": 6, "rejected": 8}, "decisionStatus": {"examples": 27, "rejected": 16}, "grant": {"examples": 3, "rejected": 10}, "approval": {"examples": 4, "rejected": 12}, "decide": {"examples": 4, "rejected": 9}, "scopeResult": {"examples": 11, "rejected": 12, "operations": 3}, "endorsement": {"examples": 3, "rejected": 7}, "handover": {"examples": 5, "rejected": 9, "actions": 2, "actionRejected": 2}, "owned": {"examples": 8, "rejected": 15, "actions": 6, "actionRejected": 3, "scope": "public projections only; no native execution or actual result publication certification"}, "errors": {"examples": 9, "rejected": 6, "codes": 9, "scope": "error structure only; no code proves absence of effects or automatic retry safety"}}
+{"passed": true, "counts": {"published-example": 137, "deliberate-mutant": 193, "test-mutation-sensitivity": 2, "action-positive": 17, "action-negative": 23, "example-annotation": 42}, "failures": [], "scope": "independent public examples and deliberate local wire/result faults; no server, model, UI or network"}
+{"passed": true, "seconds": 62.492, "python": "3.14.6", "nodePython": "/opt/homebrew/opt/python@3.14/bin/python3.14", "budgetSeconds": 120, "modules": ["tests.test_hermes_native_context", "tests.test_owned_probe_observer", "tests.test_cli_worker_approval", "tests.test_process_start", "tests.test_question_service", "tests.test_send_service", "tests.test_materials", "tests.test_multisend", "tests.test_question_groups", "tests.test_board_service", "tests.test_board", "tests.test_team_service", "tests.test_teams", "tests.test_native_probe_platform", "tests.test_protocol_conformance", "tests.test_protocol", "tests.test_handoff", "tests.test_handoff_consumer", "tests.test_scope_service", "tests.test_native_worker_probe", "tests.test_doc_service", "tests.test_doc", "tests.test_file_uploads", "tests.test_file_contract", "tests.test_protocol_gate", "tests.test_subscription_probe", "tests.test_protocol_directory", "tests.test_handover_service", "tests.test_handover", "tests.test_owned_interfaces", "tests.test_owned_workers", "tests.test_owned_native", "tests.test_owned_requests", "tests.test_owned_review_fixes", "tests.test_handoff_read_cache", "tests.test_hermes_binding", "tests.test_hermes_worker_cli", "tests.test_openclaw_schema", "tests.test_host_install", "tests.test_host_ui_config", "tests.test_component_leases", "tests.test_install_lock_alias", "tests.test_protocol_decisions", "tests.test_handoff_crash", "tests.test_handoff_pending_ids", "tests.test_mcp_dispatch", "tests.test_subagent_transport", "tests.test_mcp_identity", "tests.test_mcp_shared_process", "tests.test_profile_migration", "tests.test_migration_diagnostics", "tests.test_migration_network", "tests.test_registry_profiles", "tests.test_person_decisions", "tests.test_mcp_forms", "tests.test_native_permission_recovery", "tests.test_decisions", "tests.test_native_consent", "tests.test_user_answers", "tests.test_answer_binding", "tests.test_open_consent", "tests.test_worker_project_flow", "tests.test_native_worker_catalog", "tests.test_native_worker_control", "tests.test_native_worker_provider", "tests.test_native_worker_retention", "tests.test_native_worker_lineage", "tests.test_opencode_worker_cli", "tests.test_pi_worker_cli", "tests.test_owned_cancellation", "tests.test_hermes_cancel_observer", "tests.test_openclaw_worker_session", "tests.test_openclaw_worker_frontend", "tests.test_openclaw_worker_transport", "tests.test_openclaw_worker_provider", "tests.test_openclaw_worker_cancellation"]}

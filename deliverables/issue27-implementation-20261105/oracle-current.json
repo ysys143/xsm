@@ -1,0 +1,46 @@
+{
+ "tests": [
+  "clients/tests/test_openclaw_binding.mjs",
+  "clients/tests/test_opencode_binding.mjs",
+  "clients/tests/test_profile_migration.mjs",
+  "clients/tests/test_python_migration.py",
+  "tests/permission_harness.py",
+  "tests/test_crash_boundaries.py",
+  "tests/test_directory.py",
+  "tests/test_discovery_latency.py",
+  "tests/test_file_interfaces.py",
+  "tests/test_hermes_binding.py",
+  "tests/test_host_install.py",
+  "tests/test_install_cli_flow.py",
+  "tests/test_install_runtime.py",
+  "tests/test_link.py",
+  "tests/test_mcp_forms.py",
+  "tests/test_mcp_identity.py",
+  "tests/test_mcp_preload.py",
+  "tests/test_migration_diagnostics.py",
+  "tests/test_migration_network.py",
+  "tests/test_native_permission_recovery.py",
+  "tests/test_open_mcp.py",
+  "tests/test_owned_native_events.py",
+  "tests/test_person_decisions.py",
+  "tests/test_profile_migration.py",
+  "tests/test_protocol.py",
+  "tests/test_protocol_gate.py",
+  "tests/test_registry_profiles.py",
+  "tests/test_stalled_probes.py",
+  "tests/test_workers.py",
+  "tests/test_xsm.py"
+ ],
+ "findings": [
+  {
+   "file": "tests/test_owned_native_events.py",
+   "kind": "skip-added",
+   "detail": "1 more skip marker(s)"
+  }
+ ],
+ "reasons": [
+  "Align old recovery and home/runtime fixtures with verified native MCP recovery; preserve effect/denial assertions. The optional historical capacity replay now checks all three required raw samples before running; current temporary folder exists but contains zero samples, and this replay remains unexecuted. Full discovery retains every test. Migration includes deliberate fault checks and an actual isolated two-home Claude trial.",
+  "Replace MCP-to-CLI recovery assumptions with same-MCP"
+ ],
+ "verdict": "accepted"
+}

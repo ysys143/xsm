@@ -1,0 +1,19 @@
+{
+  "send": {
+    "status": "stored",
+    "reason": "strict FYI stored for the next natural consumer boundary",
+    "id": "native-old-address-probe",
+    "notes": [
+      "profile migrated to peer:fc7976bfeb11eaf25a99692cb20179fd4fbce5beeb73542ebadeb9782da74704; old addresses forward for 24 hours"
+    ],
+    "to": "work-76@b",
+    "runtime_reached": false,
+    "evidence": {
+      "accepted": true,
+      "wake": false,
+      "stored": true
+    }
+  },
+  "grouped": false,
+  "text": "profile migrated to peer:fc7976bfeb11eaf25a99692cb20179fd4fbce5beeb73542ebadeb9782da74704; old addresses forward for 24 hours\nstored: strict FYI stored for the next natural consumer boundary (id native-old-address-probe)"
+}

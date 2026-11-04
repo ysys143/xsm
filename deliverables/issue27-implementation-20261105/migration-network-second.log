@@ -1,0 +1,44 @@
+======================================================================
+ERROR: test_actual_inbox_consumer_receipt_handoff_ack_do_not_break_duplicate (tests.test_network_messages.NetworkMessagesTest.test_actual_inbox_consumer_receipt_handoff_ack_do_not_break_duplicate)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/tests/test_network_messages.py", line 400, in test_actual_inbox_consumer_receipt_handoff_ack_do_not_break_duplicate
+    result = self.gb.receive(A, packet)
+  File "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/xsm/network_messages.py", line 96, in call
+    return function(*args, **kwargs)
+  File "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/xsm/network_messages.py", line 738, in receive
+    self._global(packet["id"], record)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/xsm/network_messages.py", line 559, in _global
+    raise GatewayError("message-id-conflict")
+xsm.network_messages.GatewayError: message-id-conflict
+
+======================================================================
+ERROR: test_legacy_held_receipt_requires_full_native_reservation_and_never_becomes_read (tests.test_network_messages.NetworkMessagesTest.test_legacy_held_receipt_requires_full_native_reservation_and_never_becomes_read)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/tests/test_network_messages.py", line 415, in test_legacy_held_receipt_requires_full_native_reservation_and_never_becomes_read
+    result = self.gb.receive(A, packet)
+  File "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/xsm/network_messages.py", line 96, in call
+    return function(*args, **kwargs)
+  File "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/xsm/network_messages.py", line 738, in receive
+    self._global(packet["id"], record)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/xsm/network_messages.py", line 559, in _global
+    raise GatewayError("message-id-conflict")
+xsm.network_messages.GatewayError: message-id-conflict
+
+======================================================================
+FAIL: test_accepted_original_has_successor_admission_and_ack_readback (tests.test_migration_network.MigrationNetworkTest.test_accepted_original_has_successor_admission_and_ack_readback)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/tests/test_migration_network.py", line 36, in test_accepted_original_has_successor_admission_and_ack_readback
+    self.assertEqual(admitted['target_local'], handoff._identity(self.new))
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: {'run[120 chars]r', 'alias': 'successor', 'session_id': 'recei[338 chars]True} != {'run[120 chars]r', 'session_id': 'receiver-b'}
+Diff is 775 characters long. Set self.maxDiff to None to see it.
+
+----------------------------------------------------------------------
+Ran 52 tests in 5.489s
+
+FAILED (failures=1, errors=2)

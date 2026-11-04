@@ -1,0 +1,268 @@
+----------------------------------------------------------------------
+Ran 259 tests in 35.382s
+
+OK
+xsm: temporary transport failure
+xsm: temporary transport failure
+xsm: native clarify is unavailable
+xsm: peer closed stdout (EOF)
+xsm: peer closed stdout (EOF)
+----------------------------------------------------------------------
+Ran 273 tests in 44.818s
+
+OK
+----------------------------------------------------------------------
+Ran 62 tests in 27.942s
+
+OK
+{"status": "passed", "baseline_tests": 16, "mutants_detected": 4}
+----------------------------------------------------------------------
+Ran 133 tests in 34.834s
+
+OK
+✔ wire JSON preserves values and independent object keys (0.955875ms)
+✔ duplicate and escaped-equivalent object members are refused at every level (0.323209ms)
+✔ SDK rejects a duplicate version supplied by an actual peer (57.373834ms)
+✔ Node cancellation query preserves false and reports only its bound native stop (138.662417ms)
+✔ private descriptor is absent ordinarily and invalid hints are removed/refused (0.539917ms)
+✔ Node frontend binds over the actual Python private control descriptor (117.230791ms)
+✔ private binding rejects refuse without confirmed native ownership (130.93375ms)
+✔ private binding rejects bad-duplicate without confirmed native ownership (126.595541ms)
+✔ private binding rejects bad-bool-id without confirmed native ownership (103.466167ms)
+✔ private binding rejects bad-int-confirmation without confirmed native ownership (94.932834ms)
+✔ native parent refuses an old server before registration (40.620292ms)
+✔ native parent negotiation preserves caller capabilities (44.071417ms)
+✔ default command (0.235167ms)
+✔ concurrent requests correlate reversed responses and split UTF-8 (42.056291ms)
+✔ session methods and events/available carry opaque handle (62.409166ms)
+✔ RPC error preserves code/data and leaves transport usable (49.381833ms)
+✔ stderr cannot be mistaken for an RPC response (40.186208ms)
+✔ large JSONL frame (55.441ms)
+✔ stderr consumer failure still drains and reaps the peer (39.979667ms)
+✔ reject every pending request and notification consumer on eof (37.365375ms)
+✔ reject every pending request and notification consumer on malformed (32.128875ms)
+✔ reject every pending request and notification consumer on malformed-noisy (32.311667ms)
+✔ reject every pending request and notification consumer on truncated (31.008542ms)
+✔ reject every pending request and notification consumer on utf8 (30.453208ms)
+✔ reject every pending request and notification consumer on bad-response (31.041292ms)
+✔ reject every pending request and notification consumer on bad-error (29.886791ms)
+✔ reject every pending request and notification consumer on peer-request (30.809375ms)
+✔ close rejects pending calls, is idempotent, and kills a stubborn peer (230.9365ms)
+✔ host decision and missing session guards; bad caller data leaves transport usable (31.917375ms)
+✔ initialize error, initialize EOF and spawn failure reject connect (61.198583ms)
+✔ final response before exit is delivered and graceful close reaps the peer (32.456334ms)
+✔ version negotiation rejects invalid results and reaps peer (93.274542ms)
+✔ negotiation error survives cleanup failure after reaping (32.386417ms)
+✔ silent initialize times out and reaps its peer (103.68775ms)
+✔ initialize deadline rejects invalid values before spawn (0.326834ms)
+✔ native host forwards initialize deadline (102.918833ms)
+✔ real host UI response is scoped and applies only on retry (393.528167ms)
+✔ claim release failure preserves original admission error (1.969958ms)
+✔ host rejects nonfinite or nonnumeric initial leases (1.238542ms)
+✔ host initialization retains primary failure when close fails (0.3475ms)
+✔ host setup stalls reap the backend at every bootstrap RPC (598.553958ms)
+✔ shared native notice rendering keeps claim-free content without inventing ACK tokens (0.724333ms)
+✔ shared native original rendering retains the exact ACK tokens and recovery hint (0.20275ms)
+✔ native command arguments preserve JSON string whitespace and Unicode (0.703916ms)
+✔ pull-only binding preserves explicit inbox claims without advertising delivery (530.829042ms)
+✔ one coalesced wake drains bounded batches without acknowledging originals (1374.276875ms)
+✔ a byte-limited batch keeps draining even below the message count limit (1098.850167ms)
+✔ notice-only cursor progress reaches a later original in one bounded drain (648.460333ms)
+✔ a full notice-only batch does not spin without acquiring any original (155.590959ms)
+✔ retryable native backpressure releases then reacquires the same original without another wake (667.221458ms)
+✔ closing during native backpressure cancels the retry timer and prevents a later admission (696.722042ms)
+✔ a stale normal wake does not wake passive originals found after retry (955.1405ms)
+✔ a deferred FYI boundary retries in the background without waking a turn (542.834791ms)
+✔ closing a deferred boundary cancels its initial retry delay (451.787042ms)
+✔ missing wake metadata cannot turn a boundary retry into an active wake (470.204334ms)
+✔ explicit false native admission releases claims without recording admission (552.845209ms)
+✔ pull-only binding presents a native callback once and retries original operation (376.752375ms)
+✔ one cancelled waiter does not cancel another waiter or forge denial (412.624375ms)
+✔ a pending decision RPC is registered before another caller abandons the display (456.553209ms)
+✔ all cancelled waiters abandon the display and a deliberate retry gets a fresh question (594.316416ms)
+✔ cancellation between request and waiter registration never opens an orphan dialog (337.537625ms)
+✔ native admission failure releases originals for a later natural boundary (797.87575ms)
+✔ transport death rejects a pending host question without accepting its late callback (368.812583ms)
+✔ natural-boundary-only delivers without background wake or automatic ACK (1011.216833ms)
+✔ natural-only retries and batches wait for an explicit boundary (943.440333ms)
+✔ natural delivery mode rejects non-booleans before spawn (0.643542ms)
+✔ chunk preparation resumes exact bytes and never sends the body implicitly (1133.78825ms)
+✔ real server: two sessions in same repo, wait=0 send, notification, inbox and ack (511.801334ms)
+✔ internal RPC error preserves the current claim and connection (578.165833ms)
+✔ OpenClaw synchronous catalog and metadata discovery create no participant (5.729708ms)
+✔ revoked live conversation access prevents native preparation from reading a session (0.655709ms)
+✔ native conversation UUID isolates two conversations sharing a route and supports DM pull ACK (568.255041ms)
+✔ session end invalidates retained tools and resume replaces participation generation (342.045042ms)
+✔ unbound UI, changed workspace, cancellation and retired plugin cannot manufacture effects (180.5125ms)
+✔ next native tool coalesces recovery after a real backend exit (332.485458ms)
+✔ dispose during recovery cannot reopen the native conversation (162.41175ms)
+✔ a failed native operation is not replayed during connection recovery (373.030916ms)
+✔ registered OpenClaw reconnects without another native call (596.299ms)
+✔ session end cancels automatic OpenClaw reconnect (519.618042ms)
+✔ OpenClaw backs off failed automatic reconnects and restores activity (2070.175083ms)
+✔ agent_end recovers a failed backend and cannot revive ended participation (323.742583ms)
+✔ dispose during agent_end recovery does not revive participation (159.378167ms)
+✔ native context is observed after admission, preserves other plugins and deduplicates originals (2.762125ms)
+✔ wake callback follows committed context and FYI never invokes it (0.378833ms)
+✔ final native guard rejects a replaced conversation after update preparation (0.447166ms)
+✔ revision changes, retirement and policy changes cannot admit old native context (0.625875ms)
+✔ queue capacity, oversized context and cancellation retain unadmitted originals (3.060167ms)
+✔ missing native owner or disabled injection keeps the binding pull-only (0.113292ms)
+✔ a registration policy denial cannot be widened by a sparse runtime config (0.095958ms)
+✔ a claim-free native notice does not ask the agent to ACK an empty token array (0.202625ms)
+✔ fragmented claim-free notices have no acknowledgement fragment (0.527166ms)
+✔ an unobserved native write never reports successful admission (0.230208ms)
+✔ queue identity alone does not prove that the actual original text was admitted (0.1795ms)
+✔ large Unicode context survives native trim boundaries and ACK appears only after every fragment (1.071292ms)
+✔ a surrogate pair that straddles the observed native fragment boundary stays together (1.305417ms)
+✔ fragmented context reserves the entire batch before publishing any part (0.612375ms)
+✔ fragment retry deduplicates rotated tokens and refuses an incomplete prior group (1.595083ms)
+✔ missing observed fragment cannot report that the whole original was admitted (0.315792ms)
+✔ a complete pending single context stays reusable when rotated tokens require a larger encoding (0.471709ms)
+✔ native committed snapshot proves admission when consumer drains before readback (0.261334ms)
+✔ native commit snapshot from another conversation is refused (0.15375ms)
+✔ missing native return falls back to exact observed current queue (0.145125ms)
+✔ wake runs under native background lease and preserves untrusted input and native model selection (2.589167ms)
+✔ session selectors are forwarded without parsing aliases or guessing another provider (0.924958ms)
+✔ protocol transport loss cannot cancel an already submitted native turn (0.318667ms)
+✔ revision and policy changes before native lease execution prevent model admission (0.572209ms)
+✔ native reset and host disposal cancel actual submitted execution without logging native secrets (4.141916ms)
+✔ passive native context waits for exact run/host/full prompt before admission (1.72675ms)
+✔ ending an unobserved context releases it without admission (0.165958ms)
+✔ late inbox response stays bound to its cancelled boundary (1.939291ms)
+✔ empty native boundary and missing run identity manufacture no context (0.182625ms)
+✔ OpenCode cancellation confirms only the bound input assistant abort and native idle (456.903166ms)
+✔ OpenCode normal completed idle is not a cancelled native turn (491.6545ms)
+✔ OpenCode cancellation cannot abort a newer assistant with another input parent (634.8865ms)
+✔ OpenCode shutdown settles an in-flight native state update without hiding live failures (467.445083ms)
+✔ OpenCode uses native conversation identity and preserves optional tool arguments (482.0785ms)
+✔ OpenCode admits a real deferred inbox notice without an empty ACK instruction (711.070541ms)
+✔ OpenCode default byte budget splits a passive backlog across native admissions (1985.892416ms)
+✔ native deletion and resume preserve address but replace the host generation (633.319792ms)
+✔ an attached native UI receives the actual tool conversation and applies through the common host (688.752666ms)
+✔ stored native input keeps consumption explicit and does not wake an already busy conversation (769.720666ms)
+✔ unverified native storage releases a claim for a later natural boundary (975.879917ms)
+✔ concurrent native calls recover a dead backend with new claims (894.167292ms)
+✔ failed initial state update closes participation before retry (578.298708ms)
+✔ registered OpenCode session reconnects without a native entry (799.366125ms)
+✔ native deletion cancels pending automatic OpenCode retry (834.392542ms)
+✔ OpenCode dispose cancels pending automatic retry (820.203666ms)
+✔ OpenCode retries transport failures with increasing delay (2398.197792ms)
+✔ OpenCode rejects unverified native workspace /Users/jaesolshin/Documents/GitHub/cross-session-messaging/ (282.115125ms)
+✔ OpenCode rejects unverified native workspace null (371.717333ms)
+✔ OpenCode rejects unverified native workspace  (305.969167ms)
+✔ OpenCode rejects unverified native workspace . (316.862958ms)
+✔ OpenCode rejects unverified native workspace /Users/jaesolshin/Documents/GitHub/cross-session-messaging/not-an-existing-native-workspace (295.053958ms)
+✔ owned native input waits for its private context binding (454.898708ms)
+✔ owned native binding refusal stops the awaited input hook (346.969917ms)
+✔ native descendant keeps its observed parent and does not rebind the owned root (661.565333ms)
+✔ OpenCode native selection preserves the exact question and callback source (1.409459ms)
+✔ OpenCode free text and native cancel have distinct outcomes (0.246583ms)
+✔ a foreign native dialog is never replaced or cleared by an old question callback (1.082708ms)
+✔ native conversation switches reject both an open question and its late answer (0.332ms)
+✔ abort, lifecycle shutdown and expired questions never return an accepted answer (50.576792ms)
+✔ native callbacks cannot submit a value outside the displayed options (0.303292ms)
+✔ native UI frames bind one conversation, one display and a private challenge without exposing host handles (2.399958ms)
+✔ wrong conversation, nonce, UI instance and non-control text cannot answer a pending question (0.648ms)
+✔ only the first native UI claims a display and the other window releases its local state (4.442666ms)
+✔ UI disconnect and host cancellation reject a live display without accepting its late callback (0.798333ms)
+✔ an offline native TUI rejects without interpreting silence as an answer (10.868292ms)
+✔ a claimed UI that never renders cannot answer the question (21.82575ms)
+✔ Pi owned boundary waits for native binding before consuming inbox input (11.453ms)
+✔ Pi owned binding refusal explicitly aborts instead of relying on a hook exception (4.670458ms)
+✔ Pi owned input refusal uses the native handled short-circuit (4.069708ms)
+✔ Pi confirms cancellation only after its matching native aborted settle (3.908458ms)
+✔ Pi does not claim cancellation when the native turn completed normally (4.798167ms)
+✔ Pi cancellation cannot abort a different conversation while a query is pending (5.187708ms)
+✔ Pi coalesces concurrent recovery entries (3.534125ms)
+✔ Pi shutdown during backend recovery closes the uncommitted host (4.262209ms)
+✔ Pi rejects a different native conversation before recovering (3.391416ms)
+✔ Pi shutdown during recovered state update closes the new host (3.296084ms)
+✔ Pi retries first registration after failOpen (3.527209ms)
+✔ Pi retries first registration after failUpdate (3.641958ms)
+✔ Pi shutdown prevents retrying a failed initial registration (3.071208ms)
+✔ Pi reconnects a registered transport failure without a native operation (257.699708ms)
+✔ Pi shutdown cancels pending automatic reconnect (354.148833ms)
+✔ Pi does not reconnect for an ordinary native error (354.8875ms)
+✔ Pi backs off failed reconnects then recovers without replay (1765.168667ms)
+✔ Pi keeps one runtime lease across native conversation changes (6.219334ms)
+✔ profile migration works through Node SDK without runtime-specific adapters (544.372083ms)
+ℹ tests 167
+ℹ suites 0
+ℹ pass 167
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 27740.518916
+======================================================================
+ERROR: test_scope_failure_observer_records_the_clock_that_refused_a_response (tests.test_protocol_conformance.ExternalConformanceTest.test_scope_failure_observer_records_the_clock_that_refused_a_response)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/tests/test_protocol_conformance.py", line 313, in test_scope_failure_observer_records_the_clock_that_refused_a_response
+    observed = observations[-1]
+               ~~~~~~~~~~~~^^^^
+IndexError: list index out of range
+
+======================================================================
+FAIL: test_actual_scope_mutations_and_revocation_contract (tests.test_protocol_conformance.ExternalConformanceTest.test_actual_scope_mutations_and_revocation_contract)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/tests/test_protocol_conformance.py", line 288, in test_actual_scope_mutations_and_revocation_contract
+    self.assertEqual(result['status'], 'passed', {k:v for k,v in result.items() if k != 'observations'})
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'failed' != 'passed'
+- failed
++ passed
+ : {'suite': 'xsm-host-scopes-v1', 'status': 'failed', 'checks': ['initialize required', 'unsupported version refused', 'version negotiated', 'duplicate initialize refused', 'operation descriptors', 'native impersonation refused', 'opaque participation fields', 'immutable session identity', 'state update', 'connection-local handles', 'single live conversation owner', 'profile isolation', 'explicit close', 'closed handle refused', 'stable address new generation', 'EOF releases conversation ownership'], 'activeCheck': 'unrelated roots initially reject sending', 'scope': 'synthetic host scope approval/revocation and real local send policy; no actual user or native runtime certification', 'error': "AssertionError({'actual': 'scope-message-1', 'expected': None})", 'diagnostics': ['']}
+
+======================================================================
+FAIL: test_scope_failure_observer_retains_a_deliberately_changed_start (tests.test_protocol_conformance.ExternalConformanceTest.test_scope_failure_observer_retains_a_deliberately_changed_start)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/tests/test_protocol_conformance.py", line 298, in test_scope_failure_observer_retains_a_deliberately_changed_start
+    self.assertTrue(observations, result)
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: [] is not true : {'suite': 'xsm-host-scopes-v1', 'status': 'failed', 'checks': ['initialize required', 'unsupported version refused', 'version negotiated', 'duplicate initialize refused', 'operation descriptors', 'native impersonation refused', 'opaque participation fields', 'immutable session identity', 'state update', 'connection-local handles', 'single live conversation owner', 'profile isolation', 'explicit close', 'closed handle refused', 'stable address new generation', 'EOF releases conversation ownership'], 'activeCheck': 'unrelated roots initially reject sending', 'scope': 'synthetic host scope approval/revocation and real local send policy; no actual user or native runtime certification', 'error': "AssertionError({'actual': 'scope-message-1', 'expected': None})", 'diagnostics': ['']}
+
+======================================================================
+FAIL: test_scope_wire_defects_are_detected (tests.test_protocol_conformance.ExternalConformanceTest.test_scope_wire_defects_are_detected) (fault='scope-missing-producer')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/tests/test_protocol_conformance.py", line 326, in test_scope_wire_defects_are_detected
+    self.assertEqual(result['activeCheck'], check)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'unrelated roots initially reject sending' != 'link snapshot names canonical roots'
+- unrelated roots initially reject sending
++ link snapshot names canonical roots
+
+
+======================================================================
+FAIL: test_scope_wire_defects_are_detected (tests.test_protocol_conformance.ExternalConformanceTest.test_scope_wire_defects_are_detected) (fault='scope-wrong-root')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/tests/test_protocol_conformance.py", line 326, in test_scope_wire_defects_are_detected
+    self.assertEqual(result['activeCheck'], check)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'unrelated roots initially reject sending' != 'link snapshot names canonical roots'
+- unrelated roots initially reject sending
++ link snapshot names canonical roots
+
+
+======================================================================
+FAIL: test_scope_wire_defects_are_detected (tests.test_protocol_conformance.ExternalConformanceTest.test_scope_wire_defects_are_detected) (fault='scope-stale-active')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/tests/test_protocol_conformance.py", line 326, in test_scope_wire_defects_are_detected
+    self.assertEqual(result['activeCheck'], check)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'unrelated roots initially reject sending' != 'unlink snapshot reports change'
+- unrelated roots initially reject sending
++ unlink snapshot reports change
+
+
+----------------------------------------------------------------------
+Ran 56 tests in 49.125s
+
+FAILED (failures=5, errors=1)
+{"passed": false, "command": ["/opt/homebrew/opt/python@3.14/bin/python3.14", "-B", "-m", "unittest", "tests.test_protocol_conformance", "-q"]}

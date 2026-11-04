@@ -2,7 +2,7 @@
 FAIL: test_approval_and_profile_regressions_are_required_gate_members (tests.test_protocol_gate.ProtocolGateTest.test_approval_and_profile_regressions_are_required_gate_members)
 ----------------------------------------------------------------------
 Traceback (most recent call last):
-  File "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-permission-oracles-32k91ztq/tests/test_protocol_gate.py", line 27, in test_approval_and_profile_regressions_are_required_gate_members
+  File "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-permission-oracles-yj2ugttv/tests/test_protocol_gate.py", line 28, in test_approval_and_profile_regressions_are_required_gate_members
     self.assertFalse(required - set(gate.MODULES), required - set(gate.MODULES))
     ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 AssertionError: {'tests.test_person_decisions'} is not false : {'tests.test_person_decisions'}

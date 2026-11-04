@@ -328,7 +328,7 @@ print(json.dumps({'removed':install.prune_snapshots(),'configured':sorted(instal
         tui = None
         server.stop()
         server = start_server()
-        assert len([name for name in server.request('/experimental/tool/ids') if name.startswith('xsm_')]) == 22
+        assert len([name for name in server.request('/experimental/tool/ids') if name.startswith('xsm_')]) == 23
         boundary('resume installed context')
         old = record()
         assert old['protocol_root'] == os.path.realpath(first['runtime_root'])
@@ -408,7 +408,7 @@ print(json.dumps({'removed':install.prune_snapshots(),'configured':sorted(instal
         uninstalled = setup(ROOT, 'uninstall')
         assert uninstalled['status'] == 'removed'
         assert tui.alive()
-        assert len([name for name in server.request('/experimental/tool/ids') if name.startswith('xsm_')]) == 22
+        assert len([name for name in server.request('/experimental/tool/ids') if name.startswith('xsm_')]) == 23
         assert native_config.read_bytes() == before_native
         if args.user_edit:
             text = tui_config.read_bytes().decode()

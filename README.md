@@ -45,6 +45,18 @@ Restart/reload that runtime afterward. See its setup guide for activation and op
 These are experimental bindings in the current source; the published 0.5.2 plugin remains the earlier
 release. Full feature parity across all runtimes and messenger platforms is not claimed.
 
+## Continuing in another config home (development)
+
+If you copy a native conversation to another profile, both copies keep separate
+xsm identities. In the new copy, ask the agent to run `xsm migrate ref:<old-ref>`
+and confirm the scoped transfer. This retires the original, preserves pending
+messages and team/worker connections, and forwards old addresses for 24 hours
+from commit. `xsm migrate` then shows catch-up history and unresolved outcomes.
+Pending human permissions need fresh answers; expiry never reactivates the old
+copy. Both sides need this development version. See the
+[migration guide](skills/xsm/references/migration.md); ordinary `handover` is
+for passing work to a different conversation.
+
 ## Philosophy
 
 Multi-agent tools such as Orca, herdr and OpenRig make coordination their product: a dispatcher, a task

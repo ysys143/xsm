@@ -1,0 +1,141 @@
+{
+  "at": "2026-11-04T22:42:20.686389+00:00",
+  "required_acceptance_tests": 77,
+  "required_acceptance_passed": true,
+  "approval_matrix_cases": 18,
+  "migration_acceptance_ids": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14
+  ],
+  "gate": {
+    "passed": true,
+    "seconds": 57.856,
+    "python": "3.14.6"
+  },
+  "discovery": {
+    "expected": 2774,
+    "ran": 2774,
+    "passed": true,
+    "complete_inventory": true
+  },
+  "conditional_skips": [
+    {
+      "test": "test_owned_native_events.CodexNativeEventsTest.test_actual_capacity_logs_use_only_selected_event_structure",
+      "reason": "historical native capacity samples unavailable: 0/3 retained; restore the original logs to replay"
+    },
+    {
+      "test": "test_owned_native_events.NativeEventsTest.test_supplied_actual_log_selected_protocol_fields_only",
+      "reason": "coordinator private native log is local-only"
+    },
+    {
+      "test": "test_network_selfhost.NativeSelfHostedRelayTests.test_existing_product_cli_membership_rpc_restart_over_owned_relay",
+      "reason": "official_relay_binary_missing: explicit local opt-in required"
+    }
+  ],
+  "native_trial_passed": true,
+  "regression_mutations": [
+    {
+      "case": "registry-overwrite",
+      "baseline": "66a263c",
+      "files": [
+        "registry.py",
+        "workers.py"
+      ],
+      "test": "test_repeated_registration_keeps_both_homes_and_their_refs",
+      "exit_code": 1,
+      "detected": true
+    },
+    {
+      "case": "mcp-copy-preference",
+      "baseline": "66a263c",
+      "files": [
+        "mcp.py"
+      ],
+      "test": "test_mcp_thread_lookup_checks_its_own_home_before_adopting_a_copy",
+      "exit_code": 1,
+      "detected": true
+    },
+    {
+      "case": "native-answer-not-imported",
+      "source": "xsm/decisions.py",
+      "test": "tests.test_native_permission_recovery.NativePermissionRecoveryTest.test_allow_join",
+      "exit_code": 1,
+      "detected": true
+    },
+    {
+      "case": "negative-choice-applies",
+      "source": "xsm/operation_schema.py",
+      "test": "tests.test_native_permission_recovery.NativePermissionRecoveryTest.test_deny_join",
+      "exit_code": 1,
+      "detected": true
+    },
+    {
+      "case": "wrong-question-captured",
+      "source": "xsm/decisions.py",
+      "test": "tests.test_native_permission_recovery.NativePermissionRecoveryTest.test_a_different_native_question_cannot_capture_the_pending_choice",
+      "exit_code": 1,
+      "detected": true
+    },
+    {
+      "case": "applied-receipt-not-replayed",
+      "source": "xsm/operations.py",
+      "test": "tests.test_native_permission_recovery.NativePermissionRecoveryTest.test_allow_join",
+      "exit_code": 1,
+      "detected": true
+    },
+    {
+      "case": "permission-suite-omitted",
+      "source": "scripts/check-protocol.py",
+      "test": "tests.test_protocol_gate.ProtocolGateTest.test_approval_and_profile_regressions_are_required_gate_members",
+      "exit_code": 1,
+      "detected": true
+    },
+    {
+      "case": "migration-home-key-omitted",
+      "source": "xsm/registry.py",
+      "test": "tests.test_registry_profiles.RegistryProfilesTest.test_repeated_registration_keeps_both_homes_and_their_refs",
+      "exit_code": 1,
+      "detected": true
+    },
+    {
+      "case": "migration-source-fence-omitted",
+      "source": "xsm/migration.py",
+      "test": "tests.test_profile_migration.ProfileMigrationTest.test_source_cannot_reclaim_registration_or_send_after_transfer",
+      "exit_code": 1,
+      "detected": true
+    },
+    {
+      "case": "migration-lease-check-omitted",
+      "source": "xsm/migration.py",
+      "test": "tests.test_profile_migration.ProfileMigrationTest.test_forwarding_expires_at_24_hours_but_retirement_does_not",
+      "exit_code": 1,
+      "detected": true
+    },
+    {
+      "case": "migration-old-allow-retained",
+      "source": "xsm/migration_state.py",
+      "test": "tests.test_profile_migration.ProfileMigrationTest.test_pending_user_permission_moves_as_a_request_not_an_old_allow",
+      "exit_code": 1,
+      "detected": true
+    },
+    {
+      "case": "migration-missing-transfer-falsely-completes",
+      "source": "xsm/migration.py",
+      "test": "tests.test_profile_migration.ProfileMigrationTest.test_missing_successor_copy_is_not_reported_as_a_completed_transfer",
+      "exit_code": 1,
+      "detected": true
+    }
+  ]
+}

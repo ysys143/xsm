@@ -1,5 +1,11 @@
 # Server output contract
 
+In this development version a refused send from an identified caller retains
+its supplied request ID, or allocates an audit ID if omitted. This identifies
+a sender-owned failed attempt; it is not delivery, ACK or permission evidence.
+Unresolved target bodies stay private to the sender. Migration catch-up may
+show a verified predecessor's failures, without treating them as incoming tasks.
+
 The experimental [output schema](output.schema.json) defines the success and
 error response envelopes and the two emitted notification types. A response
 contains its request ID and exactly one of `result` or `error`. Error objects

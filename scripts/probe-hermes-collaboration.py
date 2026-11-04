@@ -85,7 +85,7 @@ async def run(args):
         manager = get_plugin_manager()
         names = sorted(n for n in manager._plugin_tool_names if n.startswith('xsm_'))
         report['nativeTools'] = names
-        check('native registration exposes22 tools', len(names) == 22)
+        check('native registration exposes23 tools', len(names) == 23)
         if args.mutant:
             def wrap(name, original):
                 def handler(arguments, **native):

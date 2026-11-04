@@ -1,0 +1,16 @@
+{
+  "ran": 347,
+  "failures": [],
+  "errors": [],
+  "skipped": [
+    {
+      "test": "test_owned_native_events.CodexNativeEventsTest.test_actual_capacity_logs_use_only_selected_event_structure",
+      "reason": "historical native capacity samples unavailable: 0/3 retained; restore the original logs to replay"
+    },
+    {
+      "test": "test_owned_native_events.NativeEventsTest.test_supplied_actual_log_selected_protocol_fields_only",
+      "reason": "coordinator private native log is local-only"
+    }
+  ],
+  "success": true
+}

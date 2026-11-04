@@ -62,7 +62,7 @@ try {
   const context = session.extensionRunner.createToolContext('native-tool-probe', new AbortController().signal);
   const declared = session.getAllTools().filter(tool => tool.name.startsWith('xsm_'));
   result.nativeToolCount = declared.length;
-  assert.equal(declared.length, 22);
+  assert.equal(declared.length, 23);
   const invalid = await context.executeTool('xsm_inbox', { wait: 5 });
   result.invalidWait = invalid;
   assert.equal(invalid.isError, true, 'unsupported capability must be an actual native tool error');

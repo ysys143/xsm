@@ -194,7 +194,7 @@ async def run(args):
             assert process.poll() is None, 'native server stopped'
             try: await request('/global/health'); break
             except OSError: await asyncio.sleep(.05)
-        tools = await request('/experimental/tool/ids'); check('native registration exposes22 tools', len([t for t in tools if t.startswith('xsm_')]) == 22)
+        tools = await request('/experimental/tool/ids'); check('native registration exposes23 tools', len([t for t in tools if t.startswith('xsm_')]) == 23)
         native = await request('/session', {'title': 'Explicit native collaboration fixture'})
         report['nativeSession'] = native['id']
         async def call(name, arguments, error=False):

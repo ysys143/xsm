@@ -309,7 +309,7 @@ function observeApi(api) {
                 await asyncio.sleep(.05)
         tools = await request("/experimental/tool/ids")
         result["nativeTools"] = [name for name in tools if name.startswith("xsm_")]
-        assert len(result["nativeTools"]) == 22, tools
+        assert len(result["nativeTools"]) == 23, tools
         schemas = await request("/experimental/tool?provider=xsm-fixture&model=fixture")
         (args.output / "native-tools.json").write_text(json.dumps(schemas, indent=2))
         native = await request("/session", {"title": "xsm model-free admission probe"})

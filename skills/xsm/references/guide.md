@@ -16,6 +16,7 @@ purpose; open another only when it sends you there.
 | identify yourself, inspect message history, list or address sessions, send, read what arrived, answer a task | [sessions](sessions.md) |
 | connect another folder or session (link, join, reach, block), or xsm says it needs your user's yes | [permissions](permissions.md) |
 | work in a team: team DMs, the team board, putting your user's decision on record, a handover | [teams](teams.md) |
+| continue the same native conversation copied to another config home, or inspect its migrated work | [migration](migration.md) |
 | add to a shared document | [docs](docs.md) |
 | reach a session on another machine, join or manage an xsm network | [network](network.md) |
 | start a session to hand work to | [workers](workers.md) |

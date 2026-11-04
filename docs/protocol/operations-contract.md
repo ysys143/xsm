@@ -138,3 +138,22 @@ legacy text results remain distinguishable from those structured receipts.
 An explicitly supplied owned request_id must be a nonempty valid message ID.
 An empty string is rejected; it cannot select history or generate a new run.
 Omitting request_id retains the documented optional-id/history behavior.
+
+## Profile migration
+
+`xsm_migrate(source: "ref:<old-ref>")` selects the old copy; the caller is the
+successor. Both endpoints must be registered compatible versions of the same
+native conversation/runtime in the same working folder. The permission binds
+both full endpoints and execution generations. Without `source`, it is a
+read-only catch-up/status operation; optional `since` is a nonnegative Unix
+timestamp. Results follow [the migration schema](profile-migration-result.schema.json).
+
+Commit retires the source permanently until another explicit transfer, revokes
+its claims and forwards old addresses for 86400 seconds from commit. A durable
+lease rejects expiry or clock rollback. Immutable message identity/digest and
+original delivery evidence stay unchanged; consumption belongs to the verified
+successor. Unknown outcomes need inspection, and old human answers are never
+new permissions. Catch-up includes exact-endpoint failures, with unresolved
+bodies confined to their sender. Notices and remote publication have independent
+delivery evidence. A journal resumes interrupted steps without claiming success
+before state verification, or rerunning a previously completed permission.

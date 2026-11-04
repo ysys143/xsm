@@ -1,0 +1,1 @@
+{"passed": true, "counts": {"published-example": 137, "deliberate-mutant": 193, "test-mutation-sensitivity": 2, "action-positive": 17, "action-negative": 23, "example-annotation": 42}, "failures": [], "scope": "independent public examples and deliberate local wire/result faults; no server, model, UI or network"}

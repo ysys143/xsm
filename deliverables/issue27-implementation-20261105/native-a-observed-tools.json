@@ -1,0 +1,166 @@
+[
+  {
+    "type": "tool_use",
+    "id": "toolu_014W6GfYWNn8XVsxsMiA4PhE",
+    "name": "ToolSearch",
+    "input": {
+      "query": "xsm_inbox",
+      "max_results": 5
+    },
+    "caller": {
+      "type": "direct"
+    }
+  },
+  {
+    "type": "tool_result",
+    "tool_use_id": "toolu_014W6GfYWNn8XVsxsMiA4PhE",
+    "content": [
+      {
+        "type": "tool_reference",
+        "tool_name": "mcp__xsm__xsm_inbox"
+      }
+    ]
+  },
+  {
+    "type": "tool_use",
+    "id": "toolu_014W6GfYWNn8XVsxsMiA4PhE",
+    "name": "ToolSearch",
+    "input": {
+      "query": "xsm_inbox",
+      "max_results": 5
+    },
+    "caller": {
+      "type": "direct"
+    }
+  },
+  {
+    "type": "tool_result",
+    "tool_use_id": "toolu_014W6GfYWNn8XVsxsMiA4PhE",
+    "content": [
+      {
+        "type": "tool_reference",
+        "tool_name": "mcp__xsm__xsm_inbox"
+      }
+    ]
+  },
+  {
+    "type": "tool_use",
+    "id": "toolu_0179JN53DzwcQy39MWxNezAg",
+    "name": "mcp__xsm__xsm_inbox",
+    "input": {},
+    "caller": {
+      "type": "direct"
+    }
+  },
+  {
+    "tool_use_id": "toolu_0179JN53DzwcQy39MWxNezAg",
+    "type": "tool_result",
+    "content": [
+      {
+        "type": "text",
+        "text": "{\"messages\":[],\"claims\":[],\"inbox_pending\":0}"
+      }
+    ]
+  },
+  {
+    "type": "tool_use",
+    "id": "toolu_0179JN53DzwcQy39MWxNezAg",
+    "name": "mcp__xsm__xsm_inbox",
+    "input": {},
+    "caller": {
+      "type": "direct"
+    }
+  },
+  {
+    "tool_use_id": "toolu_0179JN53DzwcQy39MWxNezAg",
+    "type": "tool_result",
+    "content": [
+      {
+        "type": "text",
+        "text": "{\"messages\":[],\"claims\":[],\"inbox_pending\":0}"
+      }
+    ]
+  },
+  {
+    "type": "tool_use",
+    "id": "toolu_01MhumPjeXRiXkEUhhPisGet",
+    "name": "ToolSearch",
+    "input": {
+      "query": "select:mcp__xsm__xsm_send",
+      "max_results": 1
+    },
+    "caller": {
+      "type": "direct"
+    }
+  },
+  {
+    "type": "tool_result",
+    "tool_use_id": "toolu_01MhumPjeXRiXkEUhhPisGet",
+    "content": [
+      {
+        "type": "tool_reference",
+        "tool_name": "mcp__xsm__xsm_send"
+      }
+    ]
+  },
+  {
+    "type": "tool_use",
+    "id": "toolu_01MhumPjeXRiXkEUhhPisGet",
+    "name": "ToolSearch",
+    "input": {
+      "query": "select:mcp__xsm__xsm_send",
+      "max_results": 1
+    },
+    "caller": {
+      "type": "direct"
+    }
+  },
+  {
+    "type": "tool_result",
+    "tool_use_id": "toolu_01MhumPjeXRiXkEUhhPisGet",
+    "content": [
+      {
+        "type": "tool_reference",
+        "tool_name": "mcp__xsm__xsm_send"
+      }
+    ]
+  },
+  {
+    "type": "tool_use",
+    "id": "toolu_01Rpkh695fCh1bLAtJw33uTn",
+    "name": "mcp__xsm__xsm_send",
+    "input": {
+      "target": "ref:49aefc",
+      "text": "XSM_RETIRED_SOURCE_MUST_NOT_SEND",
+      "wake": "never"
+    },
+    "caller": {
+      "type": "direct"
+    }
+  },
+  {
+    "type": "tool_result",
+    "content": "this xsm session is retired by migration b5d4fa759c59296b7dba23aa1a846e2b350c614527c9eaa9e65e3874195806f3; its place belongs to peer:fc7976bfeb11eaf25a99692cb20179fd4fbce5beeb73542ebadeb9782da74704. It cannot register, send or claim work. A new user decision is required to reclaim it.",
+    "is_error": true,
+    "tool_use_id": "toolu_01Rpkh695fCh1bLAtJw33uTn"
+  },
+  {
+    "type": "tool_use",
+    "id": "toolu_01Rpkh695fCh1bLAtJw33uTn",
+    "name": "mcp__xsm__xsm_send",
+    "input": {
+      "target": "ref:49aefc",
+      "text": "XSM_RETIRED_SOURCE_MUST_NOT_SEND",
+      "wake": "never"
+    },
+    "caller": {
+      "type": "direct"
+    }
+  },
+  {
+    "type": "tool_result",
+    "content": "this xsm session is retired by migration b5d4fa759c59296b7dba23aa1a846e2b350c614527c9eaa9e65e3874195806f3; its place belongs to peer:fc7976bfeb11eaf25a99692cb20179fd4fbce5beeb73542ebadeb9782da74704. It cannot register, send or claim work. A new user decision is required to reclaim it.",
+    "is_error": true,
+    "tool_use_id": "toolu_01Rpkh695fCh1bLAtJw33uTn"
+  }
+]
