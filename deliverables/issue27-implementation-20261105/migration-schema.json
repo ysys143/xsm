@@ -1,0 +1,121 @@
+{
+  "passed": true,
+  "methods": 16,
+  "accepted": 16,
+  "rejected": 62,
+  "validator": "jsonschema",
+  "validatorVersion": "4.26.0",
+  "scope": "request and output structures; no full operation results or semantic certification",
+  "output": {
+    "examples": 19,
+    "rejected": 14,
+    "observed": 0,
+    "inboxExamples": 2,
+    "inboxRejected": 7,
+    "observedInboxResults": 0,
+    "observedSuccessfulMethods": [],
+    "observedNotifications": 0
+  },
+  "operations": {
+    "operations": 23,
+    "examples": 23,
+    "targetedInboxExamples": 1,
+    "boardExtensionExamples": 2,
+    "rejected": 87,
+    "scope": "structural inputs and transport restrictions; no domain effects or result certification"
+  },
+  "profileMigration": {
+    "examples": 5,
+    "rejected": 11,
+    "scope": "local transfer facts and catch-up only; no native consumption or remote delivery certification"
+  },
+  "files": {
+    "examples": 3,
+    "rejected": 8,
+    "scope": "structure only; fixture digests are not semantic checksum evidence"
+  },
+  "ack": {
+    "examples": 3,
+    "rejected": 7,
+    "scope": "successful result structure; batch errors may follow earlier durable acknowledgements"
+  },
+  "discovery": {
+    "examples": 3,
+    "rejected": 16,
+    "scope": "local/remote result structure; visibility and current selection require runtime revalidation"
+  },
+  "team": {
+    "examples": 12,
+    "rejected": 12,
+    "actions": 9
+  },
+  "board": {
+    "examples": 10,
+    "rejected": 19,
+    "actions": 7
+  },
+  "doc": {
+    "actions": 6,
+    "examples": 7,
+    "rejected": 14
+  },
+  "send": {
+    "examples": 6,
+    "rejected": 15,
+    "attachmentErrors": 1,
+    "rejectedAttachmentErrors": 2
+  },
+  "question": {
+    "operations": 3,
+    "examples": 23,
+    "rejected": 20
+  },
+  "publication": {
+    "examples": 6,
+    "rejected": 8
+  },
+  "decisionStatus": {
+    "examples": 27,
+    "rejected": 16
+  },
+  "grant": {
+    "examples": 3,
+    "rejected": 10
+  },
+  "approval": {
+    "examples": 4,
+    "rejected": 12
+  },
+  "decide": {
+    "examples": 4,
+    "rejected": 9
+  },
+  "scopeResult": {
+    "examples": 11,
+    "rejected": 12,
+    "operations": 3
+  },
+  "endorsement": {
+    "examples": 3,
+    "rejected": 7
+  },
+  "handover": {
+    "examples": 5,
+    "rejected": 9,
+    "actions": 2,
+    "actionRejected": 2
+  },
+  "owned": {
+    "examples": 8,
+    "rejected": 15,
+    "actions": 6,
+    "actionRejected": 3,
+    "scope": "public projections only; no native execution or actual result publication certification"
+  },
+  "errors": {
+    "examples": 9,
+    "rejected": 6,
+    "codes": 9,
+    "scope": "error structure only; no code proves absence of effects or automatic retry safety"
+  }
+}

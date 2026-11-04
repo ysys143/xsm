@@ -26,6 +26,56 @@ The final gate and full unittest discovery remain required after migration integ
 
 ## Next implementation work (not done)
 
+## Core migration checkpoint (second goal turn)
+
+Core service is now implemented in xsm/migration.py and xsm/migration_state.py.
+CLI: xsm migrate SOURCE, no source reads status. MCP/protocol: xsm_migrate.
+It journals prepare/fence/move/commit, freezes exact executions, forwards for
+24 hours, retains unread canonical bodies/digests, revokes old claims, transfers
+team/board/question/worker state and holds. Human permissions transfer as requests;
+an unknown already-started application stays inspect-outcome, never a new grant.
+Source registration is blocked, including old generations after restoring a newer
+execution. CLI narrowing writes and stale exit hooks are also fenced.
+
+Implemented source-history ID snapshots prevent an old receipt reading later work
+after the source was reclaimed. New inputs addressed through old refs carry internal
+profile_forwarding metadata and appear in catch-up. Incoming file bytes remain
+accessible only through verified migration ownership without renewing retention.
+
+Evidence: migration-core-final.log has 187 targeted tests OK under explicit
+Python 3.14. Python SDK real stdio migration/claim/ACK and Node SDK migration each
+pass. Schema examples5/invalid11 pass. This is not full-goal verification.
+Default python3 externally changed to 3.15.2 and lacks jsonschema; use
+/opt/homebrew/opt/python@3.14/bin/python3.14 for comparable gate/schema results.
+Several earlier unpinned logs cannot establish an exact interpreter version.
+
+Remaining before completion:
+
+- Finish diagnostic wiring: migration.diagnostics exists but doctor does not use it.
+- Preserve/look up retired name/ref aliases if their registry pointer is cleared.
+- Implement refusal/outgoing-attempt audit and its caller-scoped catch-up projection.
+- Test and finish P2P migration paths, especially already-admitted originals: the
+  gateway inbound record currently names its original local endpoint; successor
+  receive/admission must recognize the verified transferred canonical copy. Test
+  queue/store races and cross-profile protocol actors too.
+- Verify remaining crash/retry/notification edge cases and all 14 plan requirements;
+  add five scoped migration fault injections. Publication failures are retained as
+  pending and resumed on explicit same-transfer retry, not reported as delivered.
+- Add user README/skills migration guidance and docs; plan files remain untracked.
+- Full current gate and complete unittest discovery, then small actual isolated
+  Claude same-ID/two-home test. No real model or migration user UI has run yet.
+- Add/finalize contract/workflow receipts for the code task, then requirement-by-
+  requirement goal completion audit. Do not mark complete from this checkpoint.
+
+Native generation fences use the source index's blocked_generations. _caller_record
+keeps a retired CLI process from borrowing a restored pointer. Some APIs intentionally
+keep diagnostic access; migration status never grants old human permissions.
+If a user opens simultaneous processes for the same home/SID, an obsolete instance
+cannot replace a newer registered instance while retired; use the selected window.
+
+The original remaining-work outline follows; the implementation above supersedes
+its status, not its acceptance scope.
+
 1. Implement explicit profile migration in one shared service, CLI/MCP/native entry,
    with exact endpoint/generation approval and recoverable durable phases.
 2. Fence source registration/adoption/sending/claims/late ACK; ordinary handover and

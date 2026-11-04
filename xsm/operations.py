@@ -60,12 +60,21 @@ class OperationService:
         original = decision["me"]
         if original.get("registered") and original.get("session_id"):
             current = registry.by_session(original["runtime"], original["session_id"], home=original.get('home'))
-            if (not current or current.get("state") in ("ended", "stale") or
+            reclaiming = bool(decision.get('migration_plan') and current and current.get('retired'))
+            if (not current or current.get("state") in ("ended", "stale") and not reclaiming or
                     decisions.owner(current) != decisions.owner(original) or
                     current.get("cwd") != original.get("cwd") or
                     context.of_record(current, context.BASIS_SESSION).generation != decision["generation"]):
                 decisions.supersede(decision["key"])
                 return False
+        if decision.get('migration_plan'):
+            from . import migration
+            plan = decision['migration_plan']
+            if not plan.get('resume'):
+                source = migration._current(plan['source'])
+                if not source or migration.fingerprint(source) != migration.fingerprint(plan['source']):
+                    decisions.supersede(decision['key'])
+                    return False
         for member in decision.get('resolved_members') or []:
             current = registry.by_session(member['runtime'], member['session_id'], home=member['home'])
             if (not current or current.get('state') in ('ended', 'stale') or current.get('ended_at') or
@@ -101,6 +110,11 @@ class OperationService:
             # through `_resolve`: its identity is the record itself.
             self.ctx = context.of_record(me, context.BASIS_SESSION,
                                          evidence=("the caller was provided directly",))
+        from . import migration
+        if name not in ('xsm_migrate', 'xsm_decision_status'):
+            inactive = migration.active_error(me)
+            if inactive:
+                raise ToolError(inactive)
         # Widening a permission is the one thing a guessed neighbour must never
         # do (P01 item 2). Plain messaging does not come through here.
         if name in WIDENING:
@@ -125,7 +139,7 @@ class OperationService:
             registry.note_capabilities(me, {"files": {"version": 1, "status": "observed"}},
                                        reader_pid=os.getpid())
         form_tools = ("xsm_link", "xsm_join", "xsm_reach", "xsm_grant", "xsm_approve",
-                      "xsm_decide", "xsm_doc_endorse", "xsm_team", "xsm_handover")
+                      "xsm_decide", "xsm_doc_endorse", "xsm_team", "xsm_handover", "xsm_migrate")
         decision_call = None
         inferred_team = False
         if name == "xsm_decide" and not args.get("team"):
@@ -139,6 +153,12 @@ class OperationService:
                 args = dict(args, team=names[0])
                 inferred_team = True
         resolved_handover = None
+        migration_plan = None
+        if name == 'xsm_migrate' and args.get('source'):
+            try:
+                migration_plan = migration.prepare(me, args['source'])
+            except migration.MigrationError as exc:
+                raise ToolError(str(exc)) from exc
         approval_fingerprint = None
         resolved_approval_request = None
         if name == 'xsm_approve':
@@ -189,6 +209,11 @@ class OperationService:
                 resource = {'worker_members': [{k: r.get(k) for k in ('runtime','home','session_id','cwd')} for r in sorted(resolved_members, key=lambda r:r['ref'])]}
             if resource:
                 scope["resource"] = resource
+            if migration_plan:
+                resource = {'profile_migration': migration_plan['id'],
+                            'target': migration.fingerprint(migration_plan['target']),
+                            'source': migration.fingerprint(migration_plan['source'])}
+                scope['resource'] = resource
             key = decisions.invocation(me, name, args, generation, resource=resource)
             prior = decisions.read(key)
             if not prior:
@@ -208,9 +233,17 @@ class OperationService:
                 if (isinstance(saved, dict) and saved.get('_xsm_display') == 1 and
                         isinstance(saved.get('text'), str) and isinstance(saved.get('metadata'), dict)):
                     return OperationDisplay(saved['text'], copy.deepcopy(saved['metadata']))
+                if operation_returns_json(name, args):
+                    from . import inbox, receive
+                    from .provenance import readable
+                    value = json.loads(saved)
+                    value.update(inbox.pending_fields(me, owner_alive=receive._consumer_alive))
+                    return readable(value)
                 return saved
             if prior and (prior.get("application") or {}).get("phase") == "started":
-                raise ToolError("outcome unknown or still applying; inspect xsm_decision_status and domain state before retrying; no operation repeated")
+                journal = migration.read(migration_plan['id']) if migration_plan else None
+                if not journal or journal.get('decision') != key:
+                    raise ToolError("outcome unknown or still applying; inspect xsm_decision_status and domain state before retrying; no operation repeated")
             decision_call = {"key": key, "me": copy.deepcopy(me), "scope": scope, "generation": generation,
                              "notify": args.get("notify") is True,
                              "native_request": args.get("answer_request"),
@@ -218,6 +251,7 @@ class OperationService:
                              "resolved_handover": resolved_handover,
                              "approval_fingerprint": approval_fingerprint,
                              "resolved_approval_request": resolved_approval_request, "resolved_members": resolved_members}
+            decision_call['migration_plan'] = migration_plan
             self.decision_calls[self.active_request] = decision_call
         try:
             text = self._call(name, args, me)
@@ -232,7 +266,7 @@ class OperationService:
             if decision_call:
                 self.decision_calls.pop(self.active_request, None)
         incoming = None
-        if self.ctx.sure and name not in ("xsm_inbox", "xsm_ack", "xsm_ask", "xsm_question_status", "xsm_connect"):
+        if self.ctx.sure and name not in ("xsm_inbox", "xsm_ack", "xsm_ask", "xsm_question_status", "xsm_connect", "xsm_migrate"):
             from . import receive
             try:
                 owner, generation = receive.consumer_for(me)
@@ -402,6 +436,26 @@ class OperationService:
             return self.team(me, args)
         if name == "xsm_handover":
             return self.handover(me, args)
+        if name == 'xsm_migrate':
+            from . import migration
+            plan = (self.decision_calls.get(self.active_request) or {}).get('migration_plan')
+            if not args.get('source'):
+                since = args.get('since')
+                if since is not None and (type(since) not in (int, float) or not math.isfinite(since) or since < 0):
+                    raise ToolError('since must be a nonnegative finite timestamp')
+                return json.dumps(migration.status(me, since=since), ensure_ascii=False)
+            def authorize(_plan):
+                ok, refusal = self.allowed(me, migration.question(_plan),
+                    'xsm migrate ' + shlex.quote(args['source']), ('migrate', args['source']))
+                if not ok:
+                    raise migration.MigrationError(refusal + '; nothing moved')
+                return self.permission_words('user approved this exact profile transfer')
+            try:
+                record = migration.execute(plan, authorize=authorize,
+                    decision=(self.decision_calls.get(self.active_request) or {}).get('key'))
+            except migration.MigrationError as exc:
+                raise ToolError(str(exc)) from exc
+            return json.dumps(migration.receipt(record), ensure_ascii=False)
         if name == "xsm_board":
             from . import board, board_service, teams
             try:

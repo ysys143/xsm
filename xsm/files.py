@@ -846,10 +846,24 @@ def receive(receiver, packet, *, request_id, body, limits, expected_reference=No
         raise failure from exc
 
 
+def _load_owned(root, kind, storage_id, caller):
+    from . import migration
+    migration.assert_active(caller)
+    try:
+        return _load(root, kind, storage_id, _owner(caller))
+    except FileError as exc:
+        if kind != 'incoming' or exc.code != 'owner-mismatch':
+            raise
+        previous = migration.file_source(caller, storage_id)
+        if previous is None:
+            raise
+        return _load(root, kind, storage_id, _owner(previous))
+
+
 def received_manifest(caller, storage_id, *, request_id, body, expected_reference, now=None):
     """Active receive/readback proof; unlike audit reads, recheck both expiries."""
     with _store() as root:
-        record, _ = _load(root, "incoming", storage_id, _owner(caller))
+        record, _ = _load_owned(root, 'incoming', storage_id, caller)
         value = record["manifest"]
         _check_manifest(value, request_id, body)
         _expect_reference(value, expected_reference, request_id)
@@ -860,17 +874,13 @@ def received_manifest(caller, storage_id, *, request_id, body, expected_referenc
 
 def manifest(caller, storage_id, *, incoming=False):
     with _store() as root:
-        record, _ = _load(root, "incoming" if incoming else "outgoing", storage_id, _owner(caller))
-        if record["owner"] != _owner(caller):
-            raise FileError("owner-mismatch", "another caller owns these copies")
+        record, _ = _load_owned(root, 'incoming' if incoming else 'outgoing', storage_id, caller)
         return record["manifest"]
 
 
 def read_copy(caller, storage_id, entry_id, *, incoming=False):
     with _store() as root:
-        record, data = _load(root, "incoming" if incoming else "outgoing", storage_id, _owner(caller))
-        if record["owner"] != _owner(caller):
-            raise FileError("owner-mismatch", "another caller owns these copies")
+        record, data = _load_owned(root, 'incoming' if incoming else 'outgoing', storage_id, caller)
         if entry_id not in data:
             raise FileError("missing-file", "no such copied entry")
         return data[entry_id]

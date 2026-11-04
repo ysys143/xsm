@@ -181,8 +181,18 @@ def handoff_step(msg_id, name, receiver):
         fcntl.flock(fd, fcntl.LOCK_EX)
         record = paths.read_json(filename, {}) or {}
         endpoint = handoff._identity(receiver)
-        if record.get("receiver") and record["receiver"] != endpoint:
-            raise ValueError("handoff evidence belongs to another endpoint")
+        original = handoff.status(receiver, msg_id)
+        lineage = original.get('migration_history') or []
+        migrated = bool(lineage and lineage[-1]['id'] != record.get('migration'))
+        if record.get("receiver") and (record["receiver"] != endpoint or migrated):
+            from . import migration
+            if not migration.proves_copy(original, receiver):
+                raise ValueError("handoff evidence belongs to another endpoint")
+            if record['receiver'] not in [hop['source'] for hop in lineage]:
+                raise ValueError('migration does not succeed the recorded handoff owner')
+            record.setdefault('previous_handoffs', []).append({k: record.get(k) for k in ('receiver', 'steps', 'migration')})
+            record['steps'] = {}
+            record['migration'] = lineage[-1]['id']
         record.update(id=msg_id, receiver=endpoint)
         if name is not None:
             record.setdefault("steps", {})[name] = {"ok": True, "t": time.time()}

@@ -181,6 +181,8 @@ def output_contract(trace=None):
     Draft202012Validator.check_schema(owned_schema)
     handover_schema = json.loads((ROOT / 'docs/protocol/handover-result.schema.json').read_text())
     Draft202012Validator.check_schema(handover_schema)
+    migration_schema = json.loads((ROOT / 'docs/protocol/profile-migration-result.schema.json').read_text())
+    Draft202012Validator.check_schema(migration_schema)
     endorsement_schema = json.loads((ROOT / 'docs/protocol/endorsement-result.schema.json').read_text())
     Draft202012Validator.check_schema(endorsement_schema)
     scope_schema = json.loads((ROOT / 'docs/protocol/scope-result.schema.json').read_text())
@@ -231,6 +233,8 @@ def output_contract(trace=None):
             if observation.get('operation') == 'xsm_handover':
                 if 'action' not in observation: raise ValueError('handover observation lacks original action context')
                 validate_action_result(frame['result'], handover_schema, observation['action'])
+            if observation.get('operation') == 'xsm_migrate':
+                Draft202012Validator(migration_schema).validate(frame['result'])
             if observation.get('operation') == 'xsm_doc_endorse':
                 Draft202012Validator(endorsement_schema).validate(frame['result'])
             if observation.get('operation') in ('xsm_link', 'xsm_join', 'xsm_reach'):
@@ -400,6 +404,33 @@ def owned_contract():
         except (ValueError,ValidationError):pass
         else:raise ValueError('owned cross-action result accepted')
     return dict(examples=len(examples),rejected=len(invalid),actions=6,actionRejected=3,scope='public projections only; no native execution or actual result publication certification')
+
+
+def profile_migration_contract():
+    schema = json.loads((ROOT / 'docs/protocol/profile-migration-result.schema.json').read_text())
+    examples = json.loads((ROOT / 'docs/protocol/profile-migration-result-examples.json').read_text())
+    Draft202012Validator.check_schema(schema)
+    validator = Draft202012Validator(schema)
+    for example in examples:
+        validator.validate(example['result'])
+    pending = json.loads((ROOT / 'docs/protocol/question-result.schema.json').read_text())['$defs']['qAwaiting']
+    if schema['$defs']['awaiting'] != pending:
+        raise ValueError('profile migration pending result differs from the common question contract')
+    committed = next(item['result'] for item in examples if item['result'].get('status') == 'committed')
+    invalid = []
+    for field, value in (('id', '../victim'), ('id', 'a' * 64 + '\n'), ('source', '/private-profile'),
+                         ('target', 'peer:' + 'c' * 64 + '\n'), ('status', 'moved'),
+                         ('committed_at', True), ('forward_until', None), ('notes', [7]),
+                         ('home', '/private-profile'), ('steps', {'unknown': []})):
+        invalid.append(dict(committed, **{field: value}))
+    missing = copy.deepcopy(committed)
+    del missing['forward_until']
+    invalid.append(missing)
+    for result in invalid:
+        if validator.is_valid(result):
+            raise ValueError('invalid profile migration result accepted: ' + repr(result))
+    return dict(examples=len(examples), rejected=len(invalid),
+                scope='local transfer facts and catch-up only; no native consumption or remote delivery certification')
 
 
 def handover_contract():
@@ -1012,7 +1043,7 @@ def run(trace=None):
     return dict(passed=True, methods=len(methods), accepted=accepted, rejected=rejected,
                 validator='jsonschema', validatorVersion=importlib.metadata.version('jsonschema'),
                 scope='request and output structures; no full operation results or semantic certification',
-                output=output_contract(trace), operations=operations_contract(), files=files_contract(), ack=ack_contract(),
+                output=output_contract(trace), operations=operations_contract(), profileMigration=profile_migration_contract(), files=files_contract(), ack=ack_contract(),
                 discovery=discovery_contract(), team=team_contract(), board=board_contract(), doc=doc_contract(), send=send_contract(), question=question_contract(), publication=publication_contract(), decisionStatus=decision_status_contract(), grant=grant_contract(), approval=approval_contract(), decide=decide_contract(), scopeResult=scope_contract(), endorsement=endorsement_contract(), handover=handover_contract(), owned=owned_contract(), errors=error_contract())
 
 

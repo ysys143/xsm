@@ -38,3 +38,7 @@ if __name__ == '__main__':
     (ROOT / 'integrations/openclaw/tools.mjs').write_text(
         '// Generated from xsm.operation_schema.TOOLS; checked by tests.test_openclaw_schema.\n'
         + 'export default ' + json.dumps(TOOLS, indent=2) + ';\n')
+    manifest_path = ROOT / 'integrations/openclaw/openclaw.plugin.json'
+    manifest = json.loads(manifest_path.read_text())
+    manifest['contracts']['tools'] = [tool['name'] for tool in TOOLS]
+    manifest_path.write_text(json.dumps(manifest, indent=2) + '\n')

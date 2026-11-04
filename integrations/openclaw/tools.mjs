@@ -1,6 +1,46 @@
 // Generated from xsm.operation_schema.TOOLS; checked by tests.test_openclaw_schema.
 export default [
   {
+    "name": "xsm_migrate",
+    "description": "Explicitly take over the xsm place of a copy of this native conversation in another profile. Your user confirms the exact source and successor. The source is retired, pending work is moved, and old addresses forward for 24 hours. Pending permissions need fresh answers. With no source, show transfer status and catch-up messages. Retry the same source to resume an interrupted transfer.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "source": {
+          "type": "string",
+          "description": "exact source ref or peer address; successor is this conversation"
+        },
+        "since": {
+          "type": "number",
+          "description": "optional Unix timestamp for catch-up history"
+        },
+        "answer_request": {
+          "type": "string",
+          "description": "Exact native questionItemId of the user's answer; verified against this conversation's native record, single use."
+        },
+        "original_question": {
+          "type": "string",
+          "description": "Exact native_question from xsm_decision_status, including its decision marker; copy choices verbatim and do not paraphrase."
+        },
+        "decision_key": {
+          "type": "string",
+          "description": "Reuse for retries of one human decision; use a different label only for a genuinely new user request."
+        },
+        "notify": {
+          "type": "boolean",
+          "default": false,
+          "description": "Opt in to one frequency-limited OS notification. OS success is not proof of human viewing."
+        }
+      },
+      "required": []
+    },
+    "annotations": {
+      "readOnlyHint": false,
+      "destructiveHint": false,
+      "openWorldHint": false
+    }
+  },
+  {
     "name": "xsm_owned",
     "description": "Manage explicitly owned headless workers. create defines an owned service; run journals a request before starting a native subscribed turn. Contexts are separate per sender/work_context; independent=true uses a fresh context. wait defaults to zero; recover by the same request_id with status/reconcile/retry. retry republishes a stored answer without rerunning the model. cancel records this sender's cancellation intent; native stop confirmation is separate from task outcome. Ordinary sessions cannot be adopted.",
     "inputSchema": {

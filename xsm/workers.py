@@ -564,7 +564,7 @@ def depth_budget(caller: dict | None, requested: int | None = None) -> tuple:
     if not parent and os.environ.get("XSM_WORKER"):
         parent = load(os.environ["XSM_WORKER"])
     if not parent and caller and not all(caller.get(key) for key in ('runtime', 'home', 'session_id')):
-        parent = for_session(caller.get("session_id"))
+        parent = for_session(caller.get("session_id"), home=caller.get('home'), runtime=caller.get('runtime'))
     if parent:
         inherited = int(parent.get("max_depth", 1))
         if requested is not None and requested > inherited:
@@ -1366,7 +1366,7 @@ def _cleanup(worker: dict) -> None:
         # showed it live under that TUI's pid (issue #5). Housekeeping prunes
         # it like any other ended pointer.
         registry.mark_ended(worker["runtime"], worker["session_id"], "worker-stopped",
-                            home=worker.get("home"))
+                            home=worker.get("home"), pid=worker.get('pid'))
     shutil.rmtree(_dir(worker["name"]), ignore_errors=True)
     try:
         os.unlink(_record_path(worker["name"]))
@@ -1876,7 +1876,8 @@ def _reply_owned(worker, request, *, wake=True):
     # Register the actual ended headless turn, never the caller's live session.
     sender = registry.upsert(worker["runtime"], worker["home"], native_id,
                              execution["pid"], worker["cwd"], name=worker["name"])
-    registry.mark_ended(worker["runtime"], native_id, "owned-turn-exited", home=worker["home"])
+    registry.mark_ended(worker["runtime"], native_id, "owned-turn-exited", home=worker["home"],
+                        pid=execution['pid'], lstart=execution['lstart'])
     with _owned_record_lock(worker):
         current = load(worker["name"])
         if current and current.get("id") == worker["id"]:

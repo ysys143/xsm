@@ -20,7 +20,7 @@ spec.loader.exec_module(gate)
 
 class ProtocolGateTest(unittest.TestCase):
     def test_approval_and_profile_regressions_are_required_gate_members(self):
-        required = {'tests.test_registry_profiles', 'tests.test_person_decisions',
+        required = {'tests.test_profile_migration', 'tests.test_registry_profiles', 'tests.test_person_decisions',
                     'tests.test_mcp_forms', 'tests.test_native_permission_recovery',
                     'tests.test_decisions', 'tests.test_native_consent', 'tests.test_user_answers',
                     'tests.test_answer_binding', 'tests.test_open_consent', 'tests.test_worker_project_flow'}

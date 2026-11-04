@@ -217,6 +217,11 @@ class Connection:
         if method == "session.open":
             return self.open(params)
         token, host = self.bound(params)
+        from . import migration
+        if method not in ('operation.call', 'decision.response', 'decision.abandon', 'session.close', 'session.update'):
+            inactive = migration.active_error(host.record)
+            if inactive:
+                raise ProtocolError(-32003, inactive)
         if method in UPLOAD_SCHEMAS:
             validate(params, UPLOAD_SCHEMAS[method])
             caller = host.session()
@@ -380,6 +385,8 @@ class Connection:
                   "ref": identity.ref_of(runtime, home, sid), "name": runtime + "-" + sid[:8],
                   "protocol_version": VERSION, "protocol_generation": uuid.uuid4().hex,
                   "registered": True, "activity": "idle"}
+        from . import migration
+        record.update(profile_migration=migration.REVISION, native_conversation=params['conversation'])
         record["protocol_root"] = os.path.realpath(os.path.join(os.path.dirname(__file__), ".."))
         if parent_key is not None:
             record['protocol_parent'] = parent_key
@@ -428,7 +435,8 @@ class Connection:
                         decisions.abandon_display(key, host.instance_id)
                     del self.ui_requests[key]
             registry.mark_ended(host.record["runtime"], host.record["session_id"], "protocol-close",
-                                home=host.record["home"])
+                                home=host.record["home"], pid=host.record['pid'], lstart=host.record['lstart'],
+                                protocol_generation=host.record['protocol_generation'])
         finally:
             os.close(self.locks.pop(token))
 

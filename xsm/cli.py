@@ -308,6 +308,10 @@ def cmd_who(args) -> int:
     if not me:
         print(registry.unregistered_reason(), file=sys.stderr)
         return REFUSED
+    from . import migration, identity
+    if migration.retirement(me) or me.get('retired'):
+        owner = migration.current_owner(me)
+        me = dict(me, retired=True, current_owner=identity.address(owner) if owner else None)
     extra = getattr(args, 'command', '') == 'whoami'
     if extra:
         from . import delegation
@@ -324,6 +328,8 @@ def cmd_who(args) -> int:
                 ("address", "`%s@%s`, or stable: `ref:%s`" % (me["name"], me["alias"], me["ref"])),
                 ("runtime", "%s, home %s" % (me["runtime"], _home_tilde(me.get("home") or ""))),
                 ("folder", _home_tilde(me.get("cwd") or ""))]
+        if me.get('retired'):
+            rows.insert(0, ('state', 'retired; current owner: ' + (me['current_owner'] or 'transfer incomplete')))
         if extra:
             rows.append(('projects', ', '.join(me['projects']) or '(none)'))
             if me.get('coordinator'):
@@ -332,6 +338,8 @@ def cmd_who(args) -> int:
         return OK
     print("%s@%s [%s] %s %s" % tuple(_display_text(v) for v in (me["name"], me["alias"], me["ref"],
                                 me["runtime"], me.get("cwd") or "")))
+    if me.get('retired'):
+        print('retired; current owner: ' + (me['current_owner'] or 'transfer incomplete'))
     if extra:
         print('projects: ' + (', '.join(me['projects']) or '(none)'))
         if me.get('coordinator'):
@@ -379,7 +387,7 @@ def _unsure_ctx(ctx, what: str) -> str | None:
     return context.require_sure(ctx, what)
 
 
-def _unsure_caller(what: str):
+def _unsure_caller(what: str, *, allow_retired=False):
     """(record, why): the caller and, when its identity is only a guess, why it
     may not `what`. The lookup runs here so the caller can hand the record on
     (`_here(args, me=record)`) instead of asking again: a second `me()` would
@@ -392,7 +400,8 @@ def _unsure_caller(what: str):
         registry.forget_identity()
         me = registry.me()
         ctx = registry.last_identity()
-    return me, _unsure_ctx(ctx, what)
+    from . import migration
+    return me, _unsure_ctx(ctx, what) or (None if allow_retired else migration.active_error(me))
 
 
 def _by() -> str:
@@ -1185,6 +1194,31 @@ def cmd_board(args) -> int:
             print(note, file=sys.stderr)
         print("set %s on %s's board (node %s)" % (args.item, args.team, result["node"]["id"]))
     return OK
+
+
+def cmd_migrate(args) -> int:
+    from . import migration
+    me, why = _unsure_caller('transfer this conversation between profiles', allow_retired=True)
+    if why or not me:
+        print(why or 'this session is not registered', file=sys.stderr)
+        return REFUSED
+    try:
+        if not args.source:
+            print(json.dumps(migration.status(me, since=args.since), ensure_ascii=False, indent=1))
+            return OK
+        plan = migration.prepare(me, args.source)
+        def authorize(_plan):
+            refusal = _person_or_refuse(migration.question(_plan), 'xsm_migrate',
+                typed=('migrate', args.source), binding={'profile_migration': _plan['id']})
+            if refusal:
+                raise migration.MigrationError(refusal)
+            return _verdict or 'person at the terminal'
+        record = migration.execute(plan, authorize=authorize)
+        print(json.dumps(migration.receipt(record), ensure_ascii=False, indent=1))
+        return OK
+    except (migration.MigrationError, ValueError) as exc:
+        print('refused: ' + str(exc), file=sys.stderr)
+        return REFUSED
 
 
 def cmd_handover(args) -> int:
@@ -2891,6 +2925,10 @@ def build_parser() -> argparse.ArgumentParser:
     bd.add_argument("--json", action="store_true")
     bd.add_argument("--off", action="store_true", help="mute: show the change lines again")
     bd.set_defaults(func=cmd_board)
+    mi = sub.add_parser('migrate', help='take over this native conversation from another profile; no source shows status')
+    mi.add_argument('source', nargs='?', help='original ref or peer address; this session takes over')
+    mi.add_argument('--since', type=float, help='catch-up history since this Unix timestamp')
+    mi.set_defaults(func=cmd_migrate)
     ho = sub.add_parser("handover", help="hand this session's xsm place over to another session "
                                          "(your user's decision)")
     ho.add_argument("target", nargs="?", help="the session that takes over")
@@ -3247,6 +3285,17 @@ def main(argv=None) -> int:
     if args.command == "protocol" and args.protocol_action == "describe":
         # Contract inspection must not create state, prune snapshots, or emit telemetry.
         return args.func(args)
+    from . import migration
+    # Server/bootstrap and read-only diagnostics still work in a retired tab.
+    readonly = {'help', 'who', 'whoami', 'doctor', 'status', 'ledger', 'metrics', 'otlp-export',
+                'statusline', 'mcp', 'protocol', 'hook', 'migrate'}
+    if args.command == 'list' and not getattr(args, 'clear', False) and getattr(args, 'action', None) != 'clear':
+        readonly.add('list')
+    if args.command not in readonly and os.path.isdir(paths.path(migration.DIRECTORY)):
+        inactive = migration.cli_inactive()
+        if inactive:
+            print('refused: ' + inactive, file=sys.stderr)
+            return REFUSED
     try:
         paths.ensure_home()
     except OSError as err:

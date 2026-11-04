@@ -34,7 +34,7 @@ def parent(child):
     if old.get('parent'):
         return dict(old['parent'], state='needs-relink')
     from . import workers
-    worker = workers.for_session(child.get('session_id'))
+    worker = workers.for_session(child.get('session_id'), home=child.get('home'), runtime=child.get('runtime'))
     if worker and worker.get('parent_ref'):
         return next((r for r in registry.records() if r.get('ref') == worker['parent_ref']),
                     {'ref': worker['parent_ref'], 'state': 'ended'})
@@ -60,8 +60,12 @@ def related(a, b):
     return None
 
 
+def request_id(child, owner, project, leaving=False):
+    return hashlib.sha256(json.dumps([key(child), key(owner), project, child.get('cwd'), leaving]).encode()).hexdigest()[:24]
+
+
 def request_join(child, owner, project, leaving=False):
-    ident = hashlib.sha256(json.dumps([key(child), key(owner), project, child.get('cwd'), leaving]).encode()).hexdigest()[:24]
+    ident = request_id(child, owner, project, leaving)
     filename = paths.path('worker-project-requests', ident + '.json')
     value = paths.read_json(filename, {}) or {'id': ident, 'project': project, 'worker': child['ref'], 'parent': owner['ref']}
     if owner.get('state') in ('ended', 'stale', 'needs-relink'):
@@ -109,7 +113,7 @@ def select_worker(target):
 
 def resolve_requests(child, owner, project, leaving=False):
     """Close a delivered parent request when its requested membership takes effect."""
-    ident = hashlib.sha256(json.dumps([key(child), key(owner), project, child.get('cwd'), leaving]).encode()).hexdigest()[:24]
+    ident = request_id(child, owner, project, leaving)
     filename = paths.path('worker-project-requests', ident + '.json')
     value = paths.read_json(filename, {}) or {}
     if value:

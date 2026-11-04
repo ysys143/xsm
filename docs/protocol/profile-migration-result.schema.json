@@ -1,0 +1,641 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:xsm:host-protocol:1:profile-migration-result",
+  "title": "Explicit local profile transfer and catch-up; not native consumption, task completion or remote synchronization",
+  "oneOf": [
+    {
+      "$ref": "#/$defs/receipt"
+    },
+    {
+      "$ref": "#/$defs/status"
+    },
+    {
+      "$ref": "#/$defs/awaiting"
+    }
+  ],
+  "$defs": {
+    "receipt": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}(?![\\s\\S])"
+        },
+        "status": {
+          "const": "committed"
+        },
+        "created_at": {
+          "type": "number",
+          "minimum": 0
+        },
+        "committed_at": {
+          "type": "number",
+          "minimum": 0
+        },
+        "forward_until": {
+          "type": "number",
+          "minimum": 0
+        },
+        "source": {
+          "type": "string",
+          "pattern": "^peer:[0-9a-f]{64}(?![\\s\\S])"
+        },
+        "target": {
+          "type": "string",
+          "pattern": "^peer:[0-9a-f]{64}(?![\\s\\S])"
+        },
+        "steps": {
+          "type": "object",
+          "properties": {
+            "messages": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "boards": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "teams": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "links": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "held": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "questions": {
+              "type": "object",
+              "properties": {
+                "questions": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                },
+                "groups": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                },
+                "completed_during_transfer": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                }
+              },
+              "required": [
+                "questions",
+                "groups",
+                "completed_during_transfer"
+              ],
+              "additionalProperties": false
+            },
+            "permissions": {
+              "type": "object",
+              "properties": {
+                "fresh_answers_required": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "legacy_requests": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "unresolved_outcomes": {
+                  "type": "integer",
+                  "minimum": 0
+                }
+              },
+              "required": [
+                "fresh_answers_required",
+                "legacy_requests",
+                "unresolved_outcomes"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [],
+          "additionalProperties": false
+        },
+        "notices": {
+          "type": "object",
+          "propertyNames": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}(?![\\s\\S])"
+          },
+          "additionalProperties": {
+            "type": "object",
+            "properties": {
+              "status": {
+                "type": "string",
+                "minLength": 1
+              },
+              "id": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "reason": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "status"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "notes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "inbox_pending": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "inbox_pending_known": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "inbox_pending_diagnostics": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "inbox_notice": {
+          "type": "string"
+        },
+        "next": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "id",
+        "status",
+        "created_at",
+        "committed_at",
+        "forward_until",
+        "source",
+        "target",
+        "steps",
+        "notices",
+        "notes",
+        "next"
+      ],
+      "additionalProperties": false
+    },
+    "status": {
+      "type": "object",
+      "properties": {
+        "migrations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/view"
+          }
+        },
+        "retired": {
+          "type": "boolean"
+        },
+        "retired_by": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[0-9a-f]{64}(?![\\s\\S])"
+        },
+        "current_owner": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^peer:[0-9a-f]{64}(?![\\s\\S])"
+        },
+        "inbox_pending": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "inbox_pending_known": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "inbox_pending_diagnostics": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "inbox_notice": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "migrations",
+        "retired",
+        "retired_by",
+        "current_owner"
+      ],
+      "additionalProperties": false
+    },
+    "awaiting": {
+      "type": "object",
+      "required": [
+        "status",
+        "decision_id",
+        "question_id"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "status": {
+          "const": "waiting-for-user"
+        },
+        "decision_id": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}(?![\\s\\S])"
+        },
+        "question_id": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "view": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}(?![\\s\\S])"
+        },
+        "status": {
+          "enum": [
+            "prepared",
+            "fenced",
+            "moving",
+            "committed"
+          ]
+        },
+        "created_at": {
+          "type": "number",
+          "minimum": 0
+        },
+        "committed_at": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "forward_until": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "source": {
+          "type": "string",
+          "pattern": "^peer:[0-9a-f]{64}(?![\\s\\S])"
+        },
+        "target": {
+          "type": "string",
+          "pattern": "^peer:[0-9a-f]{64}(?![\\s\\S])"
+        },
+        "steps": {
+          "type": "object",
+          "properties": {
+            "messages": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "boards": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "teams": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "links": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "held": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "questions": {
+              "type": "object",
+              "properties": {
+                "questions": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                },
+                "groups": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                },
+                "completed_during_transfer": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                }
+              },
+              "required": [
+                "questions",
+                "groups",
+                "completed_during_transfer"
+              ],
+              "additionalProperties": false
+            },
+            "permissions": {
+              "type": "object",
+              "properties": {
+                "fresh_answers_required": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "legacy_requests": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "unresolved_outcomes": {
+                  "type": "integer",
+                  "minimum": 0
+                }
+              },
+              "required": [
+                "fresh_answers_required",
+                "legacy_requests",
+                "unresolved_outcomes"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [],
+          "additionalProperties": false
+        },
+        "notices": {
+          "type": "object",
+          "propertyNames": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}(?![\\s\\S])"
+          },
+          "additionalProperties": {
+            "type": "object",
+            "properties": {
+              "status": {
+                "type": "string",
+                "minLength": 1
+              },
+              "id": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "reason": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "status"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "notes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "messages": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "body": {
+                "type": "string"
+              },
+              "sender": {
+                "type": "string",
+                "minLength": 1
+              },
+              "original_status": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "successor_status": {
+                "type": "string",
+                "minLength": 1
+              },
+              "original_target": {
+                "type": "string",
+                "pattern": "^peer:[0-9a-f]{64}(?![\\s\\S])"
+              },
+              "addressed_via": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "pattern": "^peer:[0-9a-f]{64}(?![\\s\\S])"
+              },
+              "processing_history": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "stored_at": {
+                "type": "number",
+                "minimum": 0
+              },
+              "delivery": {
+                "type": "object"
+              }
+            },
+            "required": [
+              "id",
+              "body",
+              "sender",
+              "original_status",
+              "successor_status",
+              "original_target",
+              "addressed_via",
+              "processing_history",
+              "stored_at",
+              "delivery"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "permissions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{64}(?![\\s\\S])"
+              },
+              "tool": {
+                "type": "string",
+                "pattern": "^xsm_"
+              },
+              "arguments": {
+                "type": "object"
+              },
+              "question": {
+                "type": "string",
+                "minLength": 1
+              },
+              "previous_status": {
+                "type": "string",
+                "minLength": 1
+              },
+              "action": {
+                "enum": [
+                  "fresh-answer-required",
+                  "inspect-outcome",
+                  "effect-recorded",
+                  "wait-for-migration"
+                ]
+              },
+              "outcome_unknown": {
+                "type": "boolean"
+              },
+              "current_status": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "required": [
+              "id",
+              "tool",
+              "arguments",
+              "question",
+              "previous_status",
+              "action",
+              "outcome_unknown",
+              "current_status"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "legacy_permissions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "ask_id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "verb": {
+                "type": "string",
+                "minLength": 1
+              },
+              "target": {
+                "type": "string",
+                "minLength": 1
+              },
+              "here": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            },
+            "required": [
+              "ask_id",
+              "verb",
+              "target",
+              "here"
+            ],
+            "additionalProperties": false
+          }
+        }
+      },
+      "required": [
+        "id",
+        "status",
+        "created_at",
+        "committed_at",
+        "forward_until",
+        "source",
+        "target",
+        "steps",
+        "notices",
+        "notes",
+        "messages",
+        "permissions",
+        "legacy_permissions"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

@@ -134,7 +134,8 @@ def register(data: dict, runtime: str) -> dict | None:
                                **({"transcript_path": data["transcript_path"]}
                                   if data.get("transcript_path") else {}))
         from . import network
-        network.note_native_reader(current)
+        if registry._registered_pointer(current):
+            network.note_native_reader(current)
         return current
     except OSError as err:
         # A state folder that cannot be written must not make a session
@@ -161,6 +162,21 @@ def call_context(runtime: str, data: dict, me: dict | None = None) -> context.Ca
         return context.of_record(me, context.BASIS_HOOK,
                                  evidence=("the hook input named session %s" % session_id,))
     return context.for_hook(runtime, session_id, home, session_folder(runtime, data))
+
+
+def _consent_actor(runtime, data):
+    """Question/command hooks must not attribute a retired process to its replacement."""
+    from . import migration
+    actor = registry.by_session(runtime, data['session_id'], home=home_of(runtime, data))
+    if not actor or migration.active_error(actor):
+        return None
+    if migration.has_generation_fences(actor):
+        pid = pid_of(runtime)
+        if not pid or pid != actor.get('pid'):
+            return None
+        if migration.generation_blocked(dict(actor, pid=pid, lstart=identity.lstart(pid))):
+            return None
+    return actor
 
 
 def _write_failed(what: str, err: OSError) -> None:
@@ -349,7 +365,7 @@ def _handle(data: dict) -> dict | None:
         # Do not re-register on the way out; just note the goodbye.
         if data.get("session_id"):
             ended = registry.mark_ended(runtime, data["session_id"], data.get("reason"),
-                                        home=stated_home(runtime, data))
+                                        home=stated_home(runtime, data), pid=pid_of(runtime))
             workers.reap_detached(ended)    # its workers have nobody to report to now
             if ended and ended.get("ref"):
                 # A reach lasts until its session ends. Waiting for the hourly
@@ -361,7 +377,7 @@ def _handle(data: dict) -> dict | None:
         # typed `/xsm link <folder>` as their consent; the expansion itself
         # goes on untouched, so nothing is printed.
         if data.get("session_id"):
-            _record_consent(registry.by_session(runtime, data["session_id"], home=home_of(runtime, data)), data)
+            _record_consent(_consent_actor(runtime, data), data)
         return None
     if data.get("hook_event_name") == "PostToolUse":
         # Foreground Claude installs only AskUserQuestion; worker-local hooks
@@ -369,9 +385,17 @@ def _handle(data: dict) -> dict | None:
         # answer comes back as the tool's result, which no prompt hook sees, so
         # it is kept here as the reply to an ask (consent.py). Nothing printed.
         if data.get("tool_name") == "AskUserQuestion" and data.get("session_id"):
-            _record_consent(registry.by_session(runtime, data["session_id"], home=home_of(runtime, data)), data)
+            _record_consent(_consent_actor(runtime, data), data)
         return None
     me = register(data, runtime)
+    if me:
+        from . import migration
+        inactive = migration.active_error(me)
+        if inactive:
+            if envelope.parse(data.get('prompt') or '').peer:
+                return block(runtime, inactive + '; original xsm input is retained')
+            return {'hookSpecificOutput': {'hookEventName': data.get('hook_event_name'),
+                                          'additionalContext': '[xsm] ' + inactive}}
     if me:
         # The pointer as written lacks what the runtime keeps elsewhere — a Codex
         # thread's name lives in its state DB — so read it back the way every
@@ -512,7 +536,9 @@ def _file_record(me, parsed, sender=None):
     if not storage_id or envelope.attachment_refs(message.get("attachments")) != refs:
         raise ValueError("no exact target-owned stored copies for these refs")
     sender = sender or message.get("sender")
-    identity = envelope.request_identity(parsed.header["id"], sender, me, parsed.body,
+    from . import migration
+    original_target = message['target'] if original.get('migration_history') and migration.proves_copy(original, me) else me
+    identity = envelope.request_identity(parsed.header["id"], sender, original_target, parsed.body,
         kind=parsed.header.get("kind") or "note", reply_to=parsed.header.get("reply-to"),
         outcome=_outcome(parsed), scope=parsed.header.get("scope"),
         priority=message.get("priority"), attachments=refs)
@@ -1217,7 +1243,8 @@ def take_inbox_claims(me, *, owner=None, generation=None, lease=120, passive_onl
     cancel/output failure calls release_inbox, while a killed reader is recovered
     from its process generation or the approved lease. Tokens are not consent.
     """
-    from . import handoff
+    from . import handoff, migration
+    migration.assert_active(me)
     if limit is not None and (type(limit) is not int or not 1 <= limit <= 100):
         raise ValueError('inbox limit must be an integer from 1 to 100')
     if max_bytes is not None and (type(max_bytes) is not int or not 1 <= max_bytes <= 1048576):
@@ -1334,7 +1361,11 @@ def take_inbox_claims(me, *, owner=None, generation=None, lease=120, passive_onl
                     record["id"], provenance.display_text(reason), "; kept as %s" % stored if stored else "; original retained"))
                 continue
             def render_current():
-                return _context(decision, reason, parsed, me.get("runtime") or "codex",
+                moved = claimed.get('migration_history') or []
+                previous = ('[xsm migration %s] Taken over from another profile; prior processing state: %s. '
+                            'Delivery and ownership transfer do not prove the work finished. Inspect prior work before repeating it.\n' %
+                            (moved[-1]['id'], moved[-1].get('previous_state', 'unknown'))) if moved else ''
+                return previous + _context(decision, reason, parsed, me.get("runtime") or "codex",
                     worker=bool(os.environ.get("XSM_WORKER") and workers.load(os.environ["XSM_WORKER"])),
                     cwd=me.get("cwd")) + _file_context(me, parsed) + "\n\n" + provenance.display_body(parsed.body)
             if max_bytes is not None:

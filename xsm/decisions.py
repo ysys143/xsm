@@ -220,6 +220,16 @@ def claim_native(me, source_id, key):
 
 
 def start_application(key, generation, scope, receipt=None, reader=None):
+    from . import migration, registry
+    owner_record = read(key)['owner']
+    actor = dict(owner_record, session_id=owner_record.get('conversation'))
+    with registry.lock_records([actor]):
+        if scope.get('tool') != 'xsm_migrate':
+            migration.assert_active(actor)
+        return _start_application(key, generation, scope, receipt, reader)
+
+
+def _start_application(key, generation, scope, receipt=None, reader=None):
     """Persist acceptance before effects. A lost completion requires readback, not replay."""
     now = time.time()
     with locked(key) as path:

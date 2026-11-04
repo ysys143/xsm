@@ -11,7 +11,7 @@ sessions behind their back (S9 conclusion 6).
 """
 from __future__ import annotations
 
-from contextlib import contextmanager
+from contextlib import contextmanager, ExitStack
 import fcntl
 import glob
 import hashlib
@@ -19,8 +19,10 @@ import json
 import os
 import sqlite3
 import time
+import threading
 
 from . import config, identity, paths, probe
+_REGISTRATION_LOCKS = threading.local()
 
 
 def _legacy_path(runtime: str, session_id: str) -> str:
@@ -80,13 +82,31 @@ def _registration_lock(runtime, session_id):
     """Serialize old-file import and updates across all copies of a native ID."""
     key = hashlib.sha256(json.dumps([runtime, session_id]).encode()).hexdigest()
     filename = paths.path('registration-locks', key + '.lock')
+    held = getattr(_REGISTRATION_LOCKS, 'held', None)
+    if held is None:
+        held = _REGISTRATION_LOCKS.held = set()
+    if filename in held:
+        yield
+        return
     os.makedirs(os.path.dirname(filename), mode=0o700, exist_ok=True)
     with open(filename, 'a') as stream:
         fcntl.flock(stream, fcntl.LOCK_EX)
+        held.add(filename)
         try:
             yield
         finally:
+            held.remove(filename)
             fcntl.flock(stream, fcntl.LOCK_UN)
+
+
+@contextmanager
+def lock_records(records):
+    families = sorted({(r['runtime'], r['session_id']) for r in records
+                       if r and r.get('home') and r.get('runtime') and r.get('session_id')})
+    with ExitStack() as stack:
+        for runtime, sid in families:
+            stack.enter_context(_registration_lock(runtime, sid))
+        yield
 
 
 def _store_pointer(record):
@@ -145,16 +165,23 @@ def _upsert(runtime, home, session_id, pid, cwd, permission_mode=None, name=None
     else:
         record.pop("directory_exclusion_status", None)
     previous_pid = record.get("pid")
+    from . import migration
+    retired = migration.retirement(dict(runtime=runtime, home=home, session_id=session_id))
+    actual_start = identity.lstart(pid)
+    candidate = dict(record, runtime=runtime, home=home, session_id=session_id, pid=int(pid), lstart=actual_start)
+    if migration.registration_blocked(candidate, record):
+        return dict(candidate, registered=False, retired=True)
     record.update({
         "runtime": runtime,
         "home": home,
         "alias": config.alias_of(home),
         "session_id": session_id,
         "pid": int(pid),
-        "lstart": identity.lstart(pid),
+        "lstart": actual_start,
         "cwd": os.path.realpath(cwd) if cwd else record.get("cwd"),
         "ref": identity.ref_of(runtime, home, session_id),
         "updated": time.time(),
+        "profile_migration": migration.REVISION,
     })
     terminal = os.environ.get('ORCA_TERMINAL_HANDLE') or os.environ.get('ORCA_PANE_KEY')
     if terminal:
@@ -211,6 +238,8 @@ def _upsert(runtime, home, session_id, pid, cwd, permission_mode=None, name=None
     _store_pointer(record)
     if not any(h.get("path") == home for h in config.homes()):
         config.add_home(home, runtime)
+    if retired:
+        return dict(record, registered=False, retired=True, migration=retired['id'])
     return record
 
 
@@ -339,6 +368,8 @@ def _enrich(record: dict) -> dict | None:
         out["name"] = record.get("name") or "%s-%s" % (
             record.get("runtime"), str(record.get("session_id", ""))[:8])
     out["state"], why = identity.state_reason(out)
+    if why in ('profile_migrated', 'profile_generation_retired'):
+        out['retired'] = True
     if why == "thread_replaced":
         # The TUI is alive but opened another thread (Codex /new, resume);
         # this one is closed inside it and takes nothing from its queue.
@@ -746,6 +777,8 @@ def _adopt_claude(home: str, sid: str, pid, cwd: str, socket: str | None) -> dic
     try:
         rec = upsert("claude", home, sid, pid, cwd, socket=socket)
         if not _registered_pointer(rec):
+            if rec.get('retired'):
+                return _enrich(dict(rec, registered=True))
             return None
         rec["adopted"] = True
         save(rec)
@@ -927,7 +960,7 @@ def unregistered() -> list:
 
 
 def mark_ended(runtime: str, session_id: str, reason: str | None,
-               home: str | None = None) -> dict | None:
+               home: str | None = None, *, pid=None, lstart=None, protocol_generation=None) -> dict | None:
     """Record a clean exit. The SessionEnd hook calls this, and so does
     stopping a worker (reason `worker-stopped`); a crash never does, which is
     exactly how `ended` and `stale` come apart.
@@ -937,6 +970,12 @@ def mark_ended(runtime: str, session_id: str, reason: str | None,
         rec = _read_pointer(runtime, session_id, home)
         if not _registered_pointer(rec):
             return None
+        from . import migration
+        if protocol_generation is not None and rec.get('protocol_generation') != protocol_generation:
+            return None
+        if migration.has_generation_fences(rec):
+            if pid is None or rec.get('pid') != pid or lstart is not None and rec.get('lstart') != lstart:
+                return None
         rec["ended_at"] = time.time()
         rec["end_reason"] = reason or "unknown"
         _store_pointer(rec)
@@ -1140,6 +1179,21 @@ def _nested_runtime(rows: list, own_session: str, thread: str) -> str:
     return "ambiguous"
 
 
+def _caller_record(record):
+    """A retired process must not borrow a restored instance's pointer."""
+    from . import migration
+    if not migration.has_generation_fences(record):
+        return _enrich(record)
+    sock = os.environ.get('CLAUDE_CODE_MESSAGING_SOCKET') if record['runtime'] == 'claude' else None
+    pid = identity.pid_from_socket(sock or '') or identity.ancestor_pid({record['runtime']})
+    if not pid:
+        return None  # A sandbox without generation evidence uses the native MCP binding.
+    caller = dict(record, pid=pid, lstart=identity.lstart(pid))
+    if sock:
+        caller['socket'] = sock
+    return _enrich(caller)
+
+
 def _me(session_id: str | None, cwd: str | None) -> tuple:
     """(record or None, which rule found it) — the rule is what a span of a
     refused command needs, since "cannot tell who is writing" has one cause
@@ -1163,7 +1217,7 @@ def _me(session_id: str | None, cwd: str | None) -> tuple:
             if not home or _home(record.get('home') or '') == _home(home):
                 matches.append(record)
         rec = matches[0] if len(matches) == 1 else None
-        return (_enrich(rec), "session_id") if rec else (None, "none:unregistered-session")
+        return (_caller_record(rec), "session_id") if rec else (None, "none:unregistered-session")
     runtime = _runtime_here(rows)
     if runtime == "ambiguous":
         return None, "none:ambiguous-runtime"
@@ -1177,7 +1231,7 @@ def _me(session_id: str | None, cwd: str | None) -> tuple:
         for rec in rows:
             if (rec.get("runtime") == "codex" and rec.get("session_id") == thread
                     and _home(rec.get('home') or '') == _home(home)):
-                return _enrich(rec), "codex_thread_id"
+                return _caller_record(rec), "codex_thread_id"
         # Its hook has not run (a thread started before xsm was trusted, or not
         # prompted yet): where xsm is installed with its hooks trusted, that is
         # consent enough to register it now (user decision, 2026-09-30: prefer
@@ -1191,7 +1245,7 @@ def _me(session_id: str | None, cwd: str | None) -> tuple:
         for rec in rows:
             if (rec.get('runtime') == 'claude' and rec.get("session_id") == own_session
                     and _home(rec.get('home') or '') == _home(claude_home_here())):
-                return _enrich(rec), "session_id"
+                return _caller_record(rec), "session_id"
     # /clear and --resume give the same Claude process a new session id before
     # its hook records it, so the rules that name the process still hold.
     same_runtime = (lambda rec: rec.get("runtime") == "claude") if runtime else (lambda rec: True)

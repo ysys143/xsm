@@ -35,7 +35,7 @@ MODULES = ["tests.test_hermes_native_context", "tests.test_owned_probe_observer"
            "tests.test_handoff_crash", "tests.test_handoff_pending_ids",
            "tests.test_mcp_dispatch", "tests.test_subagent_transport",
            "tests.test_mcp_identity", "tests.test_mcp_shared_process"]
-MODULES += ["tests.test_registry_profiles", "tests.test_person_decisions", "tests.test_mcp_forms",
+MODULES += ["tests.test_profile_migration", "tests.test_registry_profiles", "tests.test_person_decisions", "tests.test_mcp_forms",
             "tests.test_native_permission_recovery", "tests.test_decisions", "tests.test_native_consent",
             "tests.test_user_answers", "tests.test_answer_binding", "tests.test_open_consent",
             "tests.test_worker_project_flow"]
@@ -122,7 +122,7 @@ def main(*, validator_path=None):
                      "--bundle", "docs/protocol", "--output", temp + "/independent-v6-local.json"],
                     validation_command("scripts/check-protocol-schema.py", temp + "/schema.json"),
                     validation_command("scripts/check-independent-v7.py", temp + "/independent-v7-local.json"),
-                    ["node", "--test", "--test-concurrency=2", "clients/tests/test_node_client.mjs",
+                    ["node", "--test", "--test-concurrency=2", "clients/tests/test_node_client.mjs", "clients/tests/test_profile_migration.mjs",
                      "clients/tests/test_json_wire.mjs", "clients/tests/test_native_worker_control.mjs",
                      "clients/tests/test_node_protocol.mjs", "clients/tests/test_node_host.mjs",
                      "clients/tests/test_node_host_binding.mjs", "clients/tests/test_opencode_binding.mjs", "clients/tests/test_pi_binding.mjs",

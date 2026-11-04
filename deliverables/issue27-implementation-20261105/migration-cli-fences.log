@@ -1,0 +1,26 @@
+======================================================================
+ERROR: test_replay_returns_the_same_transfer (tests.test_profile_migration.ProfileMigrationTest.test_replay_returns_the_same_transfer)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/tests/test_profile_migration.py", line 109, in test_replay_returns_the_same_transfer
+    second = self.migrate(authorize=lambda _: self.fail('repeated permission'))
+  File "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/tests/test_profile_migration.py", line 18, in migrate
+    plan = migration.prepare(self.b, 'ref:' + self.a['ref'])
+  File "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/xsm/migration.py", line 164, in prepare
+    raise MigrationError('this execution is not the selected registered instance; use its current window')
+xsm.migration.MigrationError: this execution is not the selected registered instance; use its current window
+
+======================================================================
+FAIL: test_mcp_native_permission_applies_once_and_retired_tools_refuse (tests.test_profile_migration.ProfileMigrationTest.test_mcp_native_permission_applies_once_and_retired_tools_refuse)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/tests/test_profile_migration.py", line 137, in test_mcp_native_permission_applies_once_and_retired_tools_refuse
+    self.assertEqual(result, second)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+AssertionError: {'con[29 chars]t': '{"id":"7d2fc91c85cdef4e8fb62d7dc400b2d131[710 chars]alse} != {'con[29 chars]t': 'this execution is not the selected regist[53 chars]True}
+Diff is 1090 characters long. Set self.maxDiff to None to see it.
+
+----------------------------------------------------------------------
+Ran 52 tests in 9.050s
+
+FAILED (failures=1, errors=1)

@@ -15,7 +15,7 @@ import os
 from contextlib import nullcontext
 
 from . import adapters, config, context, envelope, inbox, ledger, outbox, paths, probe, registry, \
-    resolve
+    resolve, migration
 
 
 PRIORITY_CAPABILITIES = {"claude": ["next", "now"], "codex": ["next"]}
@@ -109,6 +109,8 @@ def send(target_spec: str, body: str, *, sender: dict | None = None, kind: str =
                            priority=priority, wait=wait, msg_id=msg_id, outcome=outcome,
                            resend=resend, span=span, held=held, ctx=ctx, call=call, wake=wake,
                            attachments=attachments, file_packet=file_packet, file_limits=file_limits)
+        except migration.MigrationError as err:
+            result = SendResult('refused', str(err), msg_id)
         except OSError as err:
             # A sandboxed or read-only shell cannot write the ledger, and the send
             # crashed with a traceback (found in the audit of 2026-10-01). The
@@ -213,6 +215,10 @@ def _send(target_spec: str, body: str, *, sender: dict | None = None, kind: str 
     if not sender:
         return SendResult("refused", "this session is not registered; run `xsm doctor`")
     sender = _full_endpoint(sender) or sender
+    from . import migration
+    inactive = migration.active_error(sender)
+    if inactive:
+        return SendResult('refused', inactive)
     if resend and not msg_id:
         return SendResult("refused", "--resend needs the id of the message to send again")
     if held:
@@ -286,11 +292,13 @@ def _send(target_spec: str, body: str, *, sender: dict | None = None, kind: str 
                 return SendResult("refused", why, msg_id)
         msg_id = msg_id or envelope.new_id()
         try:
-            reply = network.call({"op": "send", "caller": sender, "target": target_spec,
-                                  "body": body, "id": msg_id, "kind": kind,
-                                  "reply_to": reply_to, "outcome": outcome,
-                                  "priority": priority, "wake": wake,
-                                  "attachments": attachments, "file_packet": file_packet})
+            with registry.lock_records([sender]):
+                migration.assert_active(sender)
+                reply = network.call({"op": "send", "caller": sender, "target": target_spec,
+                                      "body": body, "id": msg_id, "kind": kind,
+                                      "reply_to": reply_to, "outcome": outcome,
+                                      "priority": priority, "wake": wake,
+                                      "attachments": attachments, "file_packet": file_packet})
         except network.NetworkError as exc:
             status = "refused" if str(exc) in (
                 "caller-unverified", "target-unavailable", "selection-required",
@@ -355,287 +363,310 @@ def _send(target_spec: str, body: str, *, sender: dict | None = None, kind: str 
             found = resolve.Resolution("resolved", nxt)
     if not found.ok:
         return SendResult("refused", found.reason, candidates=found.candidates)
-    from . import handover
-    target, _ = handover.follow(found.record or {})
-    target = target or {}
-    if target.get("remote"):
-        return _send(target["target"], body, sender=sender, kind=kind, reply_to=reply_to,
+    from . import migration, handover
+    selected, _ = handover.follow(found.record or {})
+    if selected and selected.get('remote'):
+        return _send(selected['target'], body, sender=sender, kind=kind, reply_to=reply_to,
                      priority=priority, wait=wait, msg_id=msg_id, outcome=outcome,
                      resend=resend, span=span, ctx=ctx, call=call, wake=wake,
                      attachments=attachments, file_packet=file_packet, file_limits=file_limits)
+    participants = [sender, selected]
+    locked_families = {(r.get('runtime'), r.get('session_id')) for r in participants if r and r.get('home')}
+    gate = registry.lock_records(participants)
+    gate.__enter__()
+    try:
+        from . import handover
+        target, redirect_note = handover.follow(found.record or {})
+        family = (target.get('runtime'), target.get('session_id')) if target else None
+        if target and target.get('home') and family not in locked_families:
+            return SendResult('refused', 'target changed during selection; retry the same request')
+        migration.assert_active(sender)
+        if redirect_note:
+            ctx['notes'].append(redirect_note)
+        target = target or {}
+        if target.get("remote"):
+            return _send(target["target"], body, sender=sender, kind=kind, reply_to=reply_to,
+                         priority=priority, wait=wait, msg_id=msg_id, outcome=outcome,
+                         resend=resend, span=span, ctx=ctx, call=call, wake=wake,
+                         attachments=attachments, file_packet=file_packet, file_limits=file_limits)
 
-    if not target.get("registered"):
-        return SendResult("refused", "target has no hook record, so it cannot be addressed")
-    why_priority = priority_refusal(target, priority)
-    if why_priority:
-        return SendResult("refused", why_priority, target=target)
-    stopped = not_running(target)
-    if stopped:
-        return SendResult("refused", stopped + "\n" + resolve.resume_hint(target), target=target)
-    if target.get("ref") == sender.get("ref"):
-        return SendResult("refused", "refusing to send to yourself")
-    blocked = config.blocked()
-    if sender.get("ref") in blocked or target.get("ref") in blocked:
-        mine = sender.get("ref") in blocked
-        return SendResult("refused", "%s is blocked (xsm block); to lift it, ask your user and "
-                          "run `xsm unblock %s`" % (
-                              "this session" if mine else "the target",
-                              sender.get("ref") if mine else target.get("ref")), target=target)
+        if not target.get("registered"):
+            return SendResult("refused", "target has no hook record, so it cannot be addressed")
+        why_priority = priority_refusal(target, priority)
+        if why_priority:
+            return SendResult("refused", why_priority, target=target)
+        stopped = not_running(target)
+        if stopped:
+            return SendResult("refused", stopped + "\n" + resolve.resume_hint(target), target=target)
+        if target.get("ref") == sender.get("ref"):
+            return SendResult("refused", "refusing to send to yourself")
+        blocked = config.blocked()
+        if sender.get("ref") in blocked or target.get("ref") in blocked:
+            mine = sender.get("ref") in blocked
+            return SendResult("refused", "%s is blocked (xsm block); to lift it, ask your user and "
+                              "run `xsm unblock %s`" % (
+                                  "this session" if mine else "the target",
+                                  sender.get("ref") if mine else target.get("ref")), target=target)
 
-    scope, reason = config.scope_for(sender, target)
-    if attachments and not scope:
-        # Legacy outbox allocates a new ID and omits refs from its hold key.
-        # Never rewrite the bound manifest/request just to fit that older API.
-        return SendResult("refused", "out of scope: connect the exact target first, then retry "
-                          "request_id=%s with manifest_id=%s; the snapshot and refs are retained"
-                          % (msg_id, attachments[0]["id"]), msg_id, target)
-    if not scope and not wake:
-        return SendResult("refused", "out of scope: %s" % reason, target=target)
-    if not scope and not resend:
-        # Connecting the two folders is a widening, so a caller xsm only guessed
-        # must not do it: a neighbour of a shared daemon could otherwise consume
-        # another session's recorded yes and apply its link or reach (P01 item 2,
-        # G01 review F2b). A send that carries no context at all keeps the old
-        # behaviour: the CLI and the direct callers resolve their own identity.
-        # A person at this terminal deciding for themselves is not a guessed
-        # session identity, so their own typed send keeps connecting (the old
-        # one-yes flow). Only a caller xsm had to guess at is refused.
-        from . import workers
-        why_sure = context.require_sure(call, "connect this folder so the message can go") \
-            if call is not None and not workers.human_terminal() else None
-        if why_sure:
-            return SendResult("refused", why_sure, target=target)
-        from . import connect
-        step = connect.offer(sender, target, target_spec, {
-            "body": body, "kind": kind, "reply_to": reply_to, "outcome": outcome,
-            "priority": priority}, reason)
-        if step is not None:
-            ctx["held"] = step.id
-            ctx["notes"] += step.notes
-            if not step.go:
-                return SendResult("refused", step.text, step.id, target)
-            msg_id = step.id
-            scope, reason = config.scope_for(sender, target)    # connected: send it now
-    if not scope:
-        return SendResult("refused", "out of scope: %s" % reason, target=target)
-    if msg_id is None and not resend and not held:
-        # The connection already exists this time, so `connect.offer` was never
-        # reached -- but an earlier run may have applied the connection and died
-        # before sending, leaving the message held (P02 item 5, the crash
-        # boundary `tests/test_crash_boundaries.py` pins). Pick that copy up and
-        # send under *its* id, so the person's one yes and the message keep one
-        # identity across the crash; the held copy is dropped once it goes.
-        mine = outbox.find(sender, target_spec, {
-            "body": body, "kind": kind, "reply_to": reply_to, "outcome": outcome})
-        if mine is not None:
-            msg_id = mine["id"]
-            ctx["held"] = mine["id"]
-    if ctx["held"] and msg_id:
-        previous = ledger.status(msg_id)
-        if previous.get("from"):
-            # The process may have died after delivery but before dropping
-            # its held copy. Read back before ever rewriting the ledger.
-            ident = envelope.request_identity(
-                msg_id, sender, target, body, kind=kind, reply_to=reply_to,
-                outcome=outcome, scope=scope, priority=priority, attachments=attachments)
-            if (previous.get("req_version") != envelope.CANON_VERSION or
-                    not previous.get("digest") or
-                    previous["digest"] != envelope.request_digest(ident)):
-                return SendResult("refused", "held message no longer matches its recorded "
-                                  "request or target; it was not resent", msg_id, target)
-            if previous.get("status") in ("delivered", "held", "blocked"):
-                ctx["notes"].append("recovered the recorded result of held message %s" % msg_id)
-                return SendResult(previous["status"], "receiver result recovered; not resent",
-                                  msg_id, target)
-            why = resend_refusal(msg_id, sender, body, kind, target=target,
-                                 reply_to=reply_to, outcome=outcome, scope=scope,
-                                 priority=priority, attachments=attachments)
+        scope, reason = config.scope_for(sender, target)
+        if attachments and not scope:
+            # Legacy outbox allocates a new ID and omits refs from its hold key.
+            # Never rewrite the bound manifest/request just to fit that older API.
+            return SendResult("refused", "out of scope: connect the exact target first, then retry "
+                              "request_id=%s with manifest_id=%s; the snapshot and refs are retained"
+                              % (msg_id, attachments[0]["id"]), msg_id, target)
+        if not scope and not wake:
+            return SendResult("refused", "out of scope: %s" % reason, target=target)
+        if not scope and not resend:
+            # Connecting the two folders is a widening, so a caller xsm only guessed
+            # must not do it: a neighbour of a shared daemon could otherwise consume
+            # another session's recorded yes and apply its link or reach (P01 item 2,
+            # G01 review F2b). A send that carries no context at all keeps the old
+            # behaviour: the CLI and the direct callers resolve their own identity.
+            # A person at this terminal deciding for themselves is not a guessed
+            # session identity, so their own typed send keeps connecting (the old
+            # one-yes flow). Only a caller xsm had to guess at is refused.
+            from . import workers
+            why_sure = context.require_sure(call, "connect this folder so the message can go") \
+                if call is not None and not workers.human_terminal() else None
+            if why_sure:
+                return SendResult("refused", why_sure, target=target)
+            from . import connect
+            step = connect.offer(sender, target, target_spec, {
+                "body": body, "kind": kind, "reply_to": reply_to, "outcome": outcome,
+                "priority": priority}, reason)
+            if step is not None:
+                ctx["held"] = step.id
+                ctx["notes"] += step.notes
+                if not step.go:
+                    return SendResult("refused", step.text, step.id, target)
+                msg_id = step.id
+                scope, reason = config.scope_for(sender, target)    # connected: send it now
+        if not scope:
+            return SendResult("refused", "out of scope: %s" % reason, target=target)
+        if msg_id is None and not resend and not held:
+            # The connection already exists this time, so `connect.offer` was never
+            # reached -- but an earlier run may have applied the connection and died
+            # before sending, leaving the message held (P02 item 5, the crash
+            # boundary `tests/test_crash_boundaries.py` pins). Pick that copy up and
+            # send under *its* id, so the person's one yes and the message keep one
+            # identity across the crash; the held copy is dropped once it goes.
+            mine = outbox.find(sender, target_spec, {
+                "body": body, "kind": kind, "reply_to": reply_to, "outcome": outcome})
+            if mine is not None:
+                msg_id = mine["id"]
+                ctx["held"] = mine["id"]
+        if ctx["held"] and msg_id:
+            previous = ledger.status(msg_id)
+            if previous.get("from"):
+                # The process may have died after delivery but before dropping
+                # its held copy. Read back before ever rewriting the ledger.
+                ident = envelope.request_identity(
+                    msg_id, sender, target, body, kind=kind, reply_to=reply_to,
+                    outcome=outcome, scope=scope, priority=priority, attachments=attachments)
+                if (previous.get("req_version") != envelope.CANON_VERSION or
+                        not previous.get("digest") or
+                        previous["digest"] != envelope.request_digest(ident)):
+                    return SendResult("refused", "held message no longer matches its recorded "
+                                      "request or target; it was not resent", msg_id, target)
+                if previous.get("status") in ("delivered", "held", "blocked"):
+                    ctx["notes"].append("recovered the recorded result of held message %s" % msg_id)
+                    return SendResult(previous["status"], "receiver result recovered; not resent",
+                                      msg_id, target)
+                why = resend_refusal(msg_id, sender, body, kind, target=target,
+                                     reply_to=reply_to, outcome=outcome, scope=scope,
+                                     priority=priority, attachments=attachments)
+                if why:
+                    return SendResult("refused", why, msg_id, target)
+            if not ctx["notes"]:
+                ctx["notes"].append("resuming held message %s under its original id" % msg_id)
+        if wake and target.get("runtime") == "codex" and sandboxed():
+            # `codex queue` opens Codex's state DB for writing and starts an
+            # embedded app server; a Codex workspace-write sandbox or a Claude
+            # worker's OS sandbox blocks both, and every worker in S10 lost one
+            # attempt finding that out. Say it before trying.
+            return SendResult("refused", "this shell is sandboxed and cannot reach a Codex session "
+                              "(`codex queue` needs Codex's state DB and app server); send it with "
+                              "the xsm_send MCP tool: same target, kind and text", target=target)
+
+        forecast, why = native_forecast(sender, target)
+        if forecast in ("refuse",):
+            return SendResult("refused", "the receiver would drop this: %s" % why, target=target)
+
+        if resend:
+            why = resend_refusal(msg_id, sender, body, kind, target=target, reply_to=reply_to,
+                                 outcome=outcome, scope=scope, priority=priority, attachments=attachments)
             if why:
                 return SendResult("refused", why, msg_id, target)
-        if not ctx["notes"]:
-            ctx["notes"].append("resuming held message %s under its original id" % msg_id)
-    if wake and target.get("runtime") == "codex" and sandboxed():
-        # `codex queue` opens Codex's state DB for writing and starts an
-        # embedded app server; a Codex workspace-write sandbox or a Claude
-        # worker's OS sandbox blocks both, and every worker in S10 lost one
-        # attempt finding that out. Say it before trying.
-        return SendResult("refused", "this shell is sandboxed and cannot reach a Codex session "
-                          "(`codex queue` needs Codex's state DB and app server); send it with "
-                          "the xsm_send MCP tool: same target, kind and text", target=target)
-
-    forecast, why = native_forecast(sender, target)
-    if forecast in ("refuse",):
-        return SendResult("refused", "the receiver would drop this: %s" % why, target=target)
-
-    if resend:
-        why = resend_refusal(msg_id, sender, body, kind, target=target, reply_to=reply_to,
-                             outcome=outcome, scope=scope, priority=priority, attachments=attachments)
-        if why:
-            return SendResult("refused", why, msg_id, target)
-    msg_id = msg_id or envelope.new_id()
-    content = envelope.build(body, msg_id=msg_id, sender=sender, scope=scope, kind=kind,
-                             reply_to=reply_to, outcome=outcome,
-                             traceparent=span.traceparent() if span is not None else None,
-                             attachments=attachments)
-    previous = ledger.status(msg_id)
-    if previous.get("digest"):
-        identity = envelope.request_identity(msg_id, sender, target, body, kind=kind,
-                                             reply_to=reply_to, outcome=outcome,
-                                             scope=scope, priority=priority, attachments=attachments)
-        if previous["digest"] != envelope.request_digest(identity):
-            return SendResult("refused", "message ID differs from its full recorded request", msg_id, target)
-    # The original survives old hooks/export readers before any native write.
-    from . import handoff
-    exact_sender = _full_endpoint(sender)
-    exact_target = _full_endpoint(target)
-    file_storage = None
-    if attachments:
-        capability = registry.file_capability(target)
-        if capability.get("status") != "observed" or capability.get("version") != 1:
-            return SendResult("refused", "unsupported or unknown files capability: " + capability.get("reason", "no current reader"),
-                              msg_id, target)
-        if exact_sender is None or exact_target is None:
-            return SendResult("refused", "files require exact native sender and target handles", msg_id, target)
-        try:
-            # Reserve the global endpoint before any target copy side effect.
-            ledger.handoff_step(msg_id, None, exact_target)
-        except ValueError as exc:
-            return SendResult("refused", str(exc), msg_id, target)
-        try:
-            receipt = files.receive(exact_target, file_packet, request_id=msg_id, body=body,
-                                    expected_reference=attachments[0], limits=file_limits)
-            file_storage = receipt["storage_id"]
-        except (ValueError, OSError) as exc:
-            ledger.queued(msg_id, sender, target, scope, kind, body, forecast=forecast,
-                          reply_to=reply_to, outcome=outcome, priority=priority, attachments=attachments)
-            ledger.step(msg_id, "file-storage", False, str(exc))
-            if getattr(exc, "stored", False) is None:
-                ledger.unknown(msg_id, str(exc))
-                return SendResult("unknown", "file storage unknown; body was not dispatched: " + str(exc), msg_id, target)
-            ledger.failed(msg_id, "file storage failed; body was not dispatched: " + str(exc))
-            return SendResult("error", "file storage failed; body was not dispatched: " + str(exc), msg_id, target)
-    if exact_sender is not None and exact_target is not None:
-        try:
-            # Reserve the global ledger ID before creating an endpoint original.
-            ledger.handoff_step(msg_id, None, exact_target)
-            message = {
-                "id": msg_id, "sender": exact_sender, "target": exact_target,
-                "body": body, "kind": kind, "reply_to": reply_to, "outcome": outcome,
-                "scope": scope, "priority": priority, "content": content, "wake": wake}
-            if attachments:
-                message.update(attachments=attachments, file_storage=file_storage)
-            original = handoff.store(exact_target, message)
-            if original["message"].get("wake", True) != wake:
-                return SendResult("refused", "message ID has a different wake policy", msg_id, target)
-            ledger.handoff_step(msg_id, "stored", exact_target)
-            if original["status"] == "acknowledged":
-                return SendResult("delivered", "canonical consumption already acknowledged; not resent", msg_id, target)
-        except ValueError as exc:
-            return SendResult("refused", str(exc), msg_id, target)
-    elif not wake:
-        return SendResult("refused", "strict FYI requires full native sender and target identities", msg_id, target)
-    ledger.queued(msg_id, sender, target, scope, kind, body, forecast=forecast,
-                  reply_to=reply_to, outcome=outcome, priority=priority,
-                  basis=getattr(call, "basis", None),
-                  certainty=getattr(call, "certainty", None), attachments=attachments)
-    if attachments:
-        ledger.step(msg_id, "file-storage", True, file_storage)
-    ledger.step(msg_id, "accepted")
-    if exact_target is not None:
-        handoff.delivery(exact_target, msg_id, "pending",
-                         route="native" if wake else "mcp-inbox")
-
-    if not wake:
-        # No compatibility export, socket, queue command, daemon or wake call.
-        ledger.step(msg_id, "wake", False, "strict no-wake: transport not attempted")
-        return SendResult("stored", "strict FYI stored for the next natural consumer boundary", msg_id, target)
-
-    inbox.preserve({"id": msg_id, "content": content,
-                    "receiver": exact_target}, str(target.get("session_id")))
-    queued = None
-    stored_for_mcp = False
-    try:
-        if target.get("runtime") == "claude":
-            if not target.get("socket"):
-                # The row is already `queued`; left so, doctor reported it as a
-                # message nobody had received (#18).
-                ledger.step(msg_id, "queued", False, "no-inbox: target has no inbox socket")
-                ledger.failed(msg_id, "no-inbox: target has no inbox socket")
-                if exact_target is not None:
-                    handoff.delivery(exact_target, msg_id, "refused")
-                return SendResult("refused", "target has no inbox socket", msg_id, target)
-            if kind == "reply":
-                # A Claude caller can be blocked inside ask's CLI/MCP wait.
-                # Keep a reply copy for checked read-only polling; the native
-                # hook still performs its ordinary handover and removes it.
-                inbox.keep(str(target.get("session_id")), msg_id, content, receiver=exact_target)
-            adapters.to_claude(target["socket"], content, msg_id, priority=priority,
-                               reply_address=("uds:%s" % sender["socket"]) if sender.get("socket")
-                               else None)
-            # The socket write landed. That is `queued`: the runtime's own
-            # channel took the frame. It is not the receiver -- only a receipt
-            # is (A18-01).
-            ledger.step(msg_id, "queued", True, "uds:%s" % target["socket"])
-        elif target.get("protocol_version") == "1":
-            # The participant reads the canonical handoff through its bound
-            # connection. No Codex command, native wake or receipt is invented.
-            handoff.delivery(exact_target, msg_id, "pending", route="mcp-inbox")
-            ledger.step(msg_id, "queued", False, "protocol inbox stored; native queue acceptance not observed")
-            ledger.step(msg_id, "wake", False, "participant notification pending")
-            stored_for_mcp = True
-        elif target.get("runtime") == "codex":
-            # Codex takes its queue only between turns; the copy is what a
-            # session in the middle of one reads with `xsm inbox`.
-            inbox.keep(str(target.get("session_id")), msg_id, content, receiver=exact_target)
-            home = target.get("home", os.path.expanduser("~/.codex"))
-            queued = adapters.to_codex(home, str(target.get("session_id")), content)
-            inbox.note_queued(str(target.get("session_id")), msg_id, home,
-                              adapters.queued_id(queued))
-            # The queue command ran; and the daemon was or was not asked to
-            # start it. Two separate steps, neither one a delivery.
-            ledger.step(msg_id, "queued", True, adapters.queued_id(queued))
-            ledger.step(msg_id, "wake", getattr(queued, "wake", "skipped") == "started",
-                        getattr(queued, "wake", "skipped"))
-        else:
-            raise adapters.UnsupportedCapability("delivery", "runtime has no registered delivery path")
-    except adapters.DeliveryError as err:
-        if (isinstance(err, adapters.UnsupportedCapability) and
-                err.capability == adapters.UNLOADED_SUBAGENT_INPUT and
-                target.get("runtime") == "codex" and exact_target is not None and
-                exact_sender is not None):
-            # Scope/deny/full endpoint validation and canonical storage already
-            # succeeded. Native explicitly refused only direct subagent input;
-            # keep this exact request available to the permitted local reader.
-            # No native load/resume/steer, wake-policy change or queue success.
-            handoff.delivery(exact_target, msg_id, "pending", route="mcp-inbox")
-            # The auto request's already-written compatibility export is a
-            # local pull copy, not a native queue or wake. Keep it for older
-            # MCP readers; disappearance alone can never ACK the canonical.
-            ledger.step(msg_id, "queued", False, "%s: %s" % (err.reason, err.detail))
-            ledger.step(msg_id, "wake", False, "native capability unsupported; MCP inbox route")
-            paths.append_jsonl("decisions.jsonl", {
-                "decision": "send-stored", "id": msg_id, "route": "mcp-inbox",
-                "reason": err.reason, "capability": err.capability})
-            stored_for_mcp = True
-        else:
-            if exact_target is not None:
-                handoff.delivery(exact_target, msg_id, "error")
-            inbox.drop(str(target.get("session_id")), msg_id)
-            ledger.step(msg_id, "queued", False, "%s: %s" % (err.reason, err.detail))
-            ledger.failed(msg_id, "%s: %s" % (err.reason, err.detail))
-            paths.append_jsonl("decisions.jsonl", {"decision": "send-failed", "id": msg_id,
-                                                   "reason": err.reason, "detail": err.detail})
-            return SendResult("error", "%s: %s" % (err.reason, err.detail), msg_id, target)
-
-    if kind == "reply" and reply_to and (call is None or call.sure):
-        from . import questions
-        if questions.expects_reply(target, sender, reply_to):
-            # Preserve the full answer even if an older receiving hook consumes
-            # its native inbox copy without knowing the new question index.
+        msg_id = msg_id or envelope.new_id()
+        content = envelope.build(body, msg_id=msg_id, sender=sender, scope=scope, kind=kind,
+                                 reply_to=reply_to, outcome=outcome,
+                                 traceparent=span.traceparent() if span is not None else None,
+                                 attachments=attachments)
+        previous = ledger.status(msg_id)
+        if previous.get("digest"):
+            identity = envelope.request_identity(msg_id, sender, target, body, kind=kind,
+                                                 reply_to=reply_to, outcome=outcome,
+                                                 scope=scope, priority=priority, attachments=attachments)
+            if previous["digest"] != envelope.request_digest(identity):
+                return SendResult("refused", "message ID differs from its full recorded request", msg_id, target)
+        # The original survives old hooks/export readers before any native write.
+        from . import handoff
+        exact_sender = _full_endpoint(sender)
+        exact_target = _full_endpoint(target)
+        file_storage = None
+        if attachments:
+            capability = registry.file_capability(target)
+            if capability.get("status") != "observed" or capability.get("version") != 1:
+                return SendResult("refused", "unsupported or unknown files capability: " + capability.get("reason", "no current reader"),
+                                  msg_id, target)
+            if exact_sender is None or exact_target is None:
+                return SendResult("refused", "files require exact native sender and target handles", msg_id, target)
             try:
-                inbox.keep_reply(target, msg_id, reply_to, content)
-            except OSError:
-                ctx["notes"].append("the reply recovery copy could not be stored; the original is retained")
+                # Reserve the global endpoint before any target copy side effect.
+                ledger.handoff_step(msg_id, None, exact_target)
+            except ValueError as exc:
+                return SendResult("refused", str(exc), msg_id, target)
+            try:
+                receipt = files.receive(exact_target, file_packet, request_id=msg_id, body=body,
+                                        expected_reference=attachments[0], limits=file_limits)
+                file_storage = receipt["storage_id"]
+            except (ValueError, OSError) as exc:
+                ledger.queued(msg_id, sender, target, scope, kind, body, forecast=forecast,
+                              reply_to=reply_to, outcome=outcome, priority=priority, attachments=attachments)
+                ledger.step(msg_id, "file-storage", False, str(exc))
+                if getattr(exc, "stored", False) is None:
+                    ledger.unknown(msg_id, str(exc))
+                    return SendResult("unknown", "file storage unknown; body was not dispatched: " + str(exc), msg_id, target)
+                ledger.failed(msg_id, "file storage failed; body was not dispatched: " + str(exc))
+                return SendResult("error", "file storage failed; body was not dispatched: " + str(exc), msg_id, target)
+        if exact_sender is not None and exact_target is not None:
+            try:
+                # Reserve the global ledger ID before creating an endpoint original.
+                ledger.handoff_step(msg_id, None, exact_target)
+                message = {
+                    "id": msg_id, "sender": exact_sender, "target": exact_target,
+                    "body": body, "kind": kind, "reply_to": reply_to, "outcome": outcome,
+                    "scope": scope, "priority": priority, "content": content, "wake": wake}
+                forwarded = migration.forwarding_metadata(found.record, exact_target)
+                if forwarded:
+                    message['profile_forwarding'] = forwarded
+                if attachments:
+                    message.update(attachments=attachments, file_storage=file_storage)
+                original = handoff.store(exact_target, message)
+                if original["message"].get("wake", True) != wake:
+                    return SendResult("refused", "message ID has a different wake policy", msg_id, target)
+                ledger.handoff_step(msg_id, "stored", exact_target)
+                if original["status"] == "acknowledged":
+                    return SendResult("delivered", "canonical consumption already acknowledged; not resent", msg_id, target)
+            except ValueError as exc:
+                return SendResult("refused", str(exc), msg_id, target)
+        elif not wake:
+            return SendResult("refused", "strict FYI requires full native sender and target identities", msg_id, target)
+        ledger.queued(msg_id, sender, target, scope, kind, body, forecast=forecast,
+                      reply_to=reply_to, outcome=outcome, priority=priority,
+                      basis=getattr(call, "basis", None),
+                      certainty=getattr(call, "certainty", None), attachments=attachments)
+        if attachments:
+            ledger.step(msg_id, "file-storage", True, file_storage)
+        ledger.step(msg_id, "accepted")
+        if exact_target is not None:
+            handoff.delivery(exact_target, msg_id, "pending",
+                             route="native" if wake else "mcp-inbox")
+
+        if not wake:
+            # No compatibility export, socket, queue command, daemon or wake call.
+            ledger.step(msg_id, "wake", False, "strict no-wake: transport not attempted")
+            return SendResult("stored", "strict FYI stored for the next natural consumer boundary", msg_id, target)
+
+        inbox.preserve({"id": msg_id, "content": content,
+                        "receiver": exact_target}, str(target.get("session_id")))
+        queued = None
+        stored_for_mcp = False
+        try:
+            if target.get("runtime") == "claude":
+                if not target.get("socket"):
+                    # The row is already `queued`; left so, doctor reported it as a
+                    # message nobody had received (#18).
+                    ledger.step(msg_id, "queued", False, "no-inbox: target has no inbox socket")
+                    ledger.failed(msg_id, "no-inbox: target has no inbox socket")
+                    if exact_target is not None:
+                        handoff.delivery(exact_target, msg_id, "refused")
+                    return SendResult("refused", "target has no inbox socket", msg_id, target)
+                if kind == "reply":
+                    # A Claude caller can be blocked inside ask's CLI/MCP wait.
+                    # Keep a reply copy for checked read-only polling; the native
+                    # hook still performs its ordinary handover and removes it.
+                    inbox.keep(str(target.get("session_id")), msg_id, content, receiver=exact_target)
+                adapters.to_claude(target["socket"], content, msg_id, priority=priority,
+                                   reply_address=("uds:%s" % sender["socket"]) if sender.get("socket")
+                                   else None)
+                # The socket write landed. That is `queued`: the runtime's own
+                # channel took the frame. It is not the receiver -- only a receipt
+                # is (A18-01).
+                ledger.step(msg_id, "queued", True, "uds:%s" % target["socket"])
+            elif target.get("protocol_version") == "1":
+                # The participant reads the canonical handoff through its bound
+                # connection. No Codex command, native wake or receipt is invented.
+                handoff.delivery(exact_target, msg_id, "pending", route="mcp-inbox")
+                ledger.step(msg_id, "queued", False, "protocol inbox stored; native queue acceptance not observed")
+                ledger.step(msg_id, "wake", False, "participant notification pending")
+                stored_for_mcp = True
+            elif target.get("runtime") == "codex":
+                # Codex takes its queue only between turns; the copy is what a
+                # session in the middle of one reads with `xsm inbox`.
+                inbox.keep(str(target.get("session_id")), msg_id, content, receiver=exact_target)
+                home = target.get("home", os.path.expanduser("~/.codex"))
+                queued = adapters.to_codex(home, str(target.get("session_id")), content)
+                inbox.note_queued(str(target.get("session_id")), msg_id, home,
+                                  adapters.queued_id(queued))
+                # The queue command ran; and the daemon was or was not asked to
+                # start it. Two separate steps, neither one a delivery.
+                ledger.step(msg_id, "queued", True, adapters.queued_id(queued))
+                ledger.step(msg_id, "wake", getattr(queued, "wake", "skipped") == "started",
+                            getattr(queued, "wake", "skipped"))
+            else:
+                raise adapters.UnsupportedCapability("delivery", "runtime has no registered delivery path")
+        except adapters.DeliveryError as err:
+            if (isinstance(err, adapters.UnsupportedCapability) and
+                    err.capability == adapters.UNLOADED_SUBAGENT_INPUT and
+                    target.get("runtime") == "codex" and exact_target is not None and
+                    exact_sender is not None):
+                # Scope/deny/full endpoint validation and canonical storage already
+                # succeeded. Native explicitly refused only direct subagent input;
+                # keep this exact request available to the permitted local reader.
+                # No native load/resume/steer, wake-policy change or queue success.
+                handoff.delivery(exact_target, msg_id, "pending", route="mcp-inbox")
+                # The auto request's already-written compatibility export is a
+                # local pull copy, not a native queue or wake. Keep it for older
+                # MCP readers; disappearance alone can never ACK the canonical.
+                ledger.step(msg_id, "queued", False, "%s: %s" % (err.reason, err.detail))
+                ledger.step(msg_id, "wake", False, "native capability unsupported; MCP inbox route")
+                paths.append_jsonl("decisions.jsonl", {
+                    "decision": "send-stored", "id": msg_id, "route": "mcp-inbox",
+                    "reason": err.reason, "capability": err.capability})
+                stored_for_mcp = True
+            else:
+                if exact_target is not None:
+                    handoff.delivery(exact_target, msg_id, "error")
+                inbox.drop(str(target.get("session_id")), msg_id)
+                ledger.step(msg_id, "queued", False, "%s: %s" % (err.reason, err.detail))
+                ledger.failed(msg_id, "%s: %s" % (err.reason, err.detail))
+                paths.append_jsonl("decisions.jsonl", {"decision": "send-failed", "id": msg_id,
+                                                       "reason": err.reason, "detail": err.detail})
+                return SendResult("error", "%s: %s" % (err.reason, err.detail), msg_id, target)
+
+        if kind == "reply" and reply_to and (call is None or call.sure):
+            from . import questions
+            if questions.expects_reply(target, sender, reply_to):
+                # Preserve the full answer even if an older receiving hook consumes
+                # its native inbox copy without knowing the new question index.
+                try:
+                    inbox.keep_reply(target, msg_id, reply_to, content)
+                except OSError:
+                    ctx["notes"].append("the reply recovery copy could not be stored; the original is retained")
+    finally:
+        gate.__exit__(None, None, None)
     if wait > 0:
         state = ledger.wait_for(msg_id, wait)
         if state.get("status") == "delivered":

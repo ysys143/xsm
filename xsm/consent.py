@@ -163,7 +163,7 @@ HOOK_SEEN_MAX = 7 * 86400
 # A request is a sentence or two; a long paste that happens to mention a
 # folder and "send" is not one.
 REQUEST_MAX = 500
-VERBS = ("link", "join", "leave", "reach")
+VERBS = ("link", "join", "leave", "reach", "migrate")
 # What a consent given with --reply is called in the records (by, decisions.jsonl).
 AGENT_SUPPLIED = "agent-supplied"
 # What a person says when they want the thing done: to connect, send, let in.
@@ -1697,7 +1697,7 @@ def unattended(me: dict | None) -> dict | None:
         return {'name': (me or {}).get('name') or 'worker', 'parent_ref': linked['parent']['ref'], 'mode': 'delegated'}
     name = os.environ.get("XSM_WORKER")
     worker = dict({"name": name}, **(workers.load(name) or {})) if name \
-        else workers.for_session((me or {}).get("session_id"))
+        else workers.for_session((me or {}).get("session_id"), home=(me or {}).get('home'), runtime=(me or {}).get('runtime'))
     if not worker or worker.get("mode", "background") not in ("background", "owned"):
         return None
     if not name and worker.get("mode") != "owned" and workers.state(worker) != "running":

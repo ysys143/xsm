@@ -32,6 +32,11 @@ User answer and board recording: [decision receipts](decision-result.schema.json
 Project and session scope changes: [scope results](scope-result.schema.json).
 Document endorsement: [endorsement receipts](endorsement-result.schema.json).
 Session handover: [transfer receipts](handover-result.schema.json).
+Same-conversation profile migration: [receipt and catch-up results](profile-migration-result.schema.json).
+`xsm_migrate` retires the selected copy, keeps pending work and forwards old addresses
+for 24 hours. The successor is the authenticated calling conversation. With no source,
+it reads migration history; pending human permissions require fresh answers there.
+The local commit is separate from native consumption, ACK and remote notice delivery.
 Owned services and tasks: [public projections](owned-result.schema.json).
 Errors and retry boundaries: [error contract](error-contract.md).
 Owned native execution: [provider admission, pre-turn binding and recovery](native-workers.md).

@@ -1,0 +1,105 @@
+[
+  {
+    "case": "committed-local-transfer",
+    "result": {
+      "id": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "status": "committed",
+      "created_at": 100,
+      "committed_at": 101,
+      "forward_until": 86501,
+      "source": "peer:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "target": "peer:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+      "steps": {},
+      "notices": {},
+      "notes": [],
+      "inbox_pending": 0,
+      "next": "Read migration status and inspect previous outcomes."
+    }
+  },
+  {
+    "case": "waiting-for-user",
+    "result": {
+      "status": "waiting-for-user",
+      "decision_id": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+      "question_id": "human-one"
+    }
+  },
+  {
+    "case": "empty-history",
+    "result": {
+      "migrations": [],
+      "retired": false,
+      "retired_by": null,
+      "current_owner": "peer:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+      "inbox_pending": 0
+    }
+  },
+  {
+    "case": "interrupted-source-fenced",
+    "result": {
+      "migrations": [
+        {
+          "id": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "status": "fenced",
+          "created_at": 100,
+          "committed_at": null,
+          "forward_until": null,
+          "source": "peer:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "target": "peer:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+          "steps": {},
+          "notices": {},
+          "notes": [],
+          "messages": [],
+          "permissions": [],
+          "legacy_permissions": []
+        }
+      ],
+      "retired": false,
+      "retired_by": null,
+      "current_owner": "peer:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+    }
+  },
+  {
+    "case": "catch-up-not-an-ack",
+    "result": {
+      "migrations": [
+        {
+          "id": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "status": "committed",
+          "created_at": 100,
+          "committed_at": 101,
+          "forward_until": 86501,
+          "source": "peer:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "target": "peer:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+          "steps": {},
+          "notices": {},
+          "notes": [],
+          "messages": [
+            {
+              "id": "original-one",
+              "body": "retained original",
+              "sender": "peer:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+              "original_status": "pending",
+              "successor_status": "pending",
+              "original_target": "peer:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+              "addressed_via": null,
+              "processing_history": [
+                "claimed"
+              ],
+              "stored_at": 100,
+              "delivery": {
+                "acknowledged": false,
+                "handoff_status": "pending"
+              }
+            }
+          ],
+          "permissions": [],
+          "legacy_permissions": []
+        }
+      ],
+      "retired": false,
+      "retired_by": null,
+      "current_owner": "peer:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+    }
+  }
+]

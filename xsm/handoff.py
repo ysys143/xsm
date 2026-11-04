@@ -108,6 +108,14 @@ def _owner(owner, generation):
 
 @contextmanager
 def _locked(receiver):
+    from . import registry
+    with registry.lock_records([receiver]):
+        with _storage_locked(receiver) as folder:
+            yield folder
+
+
+@contextmanager
+def _storage_locked(receiver):
     folder = _folder(receiver)
     os.makedirs(folder, mode=0o700, exist_ok=True)
     fd = os.open(os.path.join(folder, '.lock'), os.O_CREAT | os.O_RDWR, 0o600)
@@ -155,6 +163,10 @@ def _read(folder, message_id, receiver):
     if (not isinstance(record, dict) or record.get('version') != 1 or
             record.get('id') != message_id or record.get('receiver') != _identity(receiver)):
         raise ValueError('invalid handoff record; original retained')
+    if record.get('migration_history'):
+        from . import migration
+        if not migration.proves_copy(record, receiver):
+            raise ValueError('invalid migration ownership proof; original retained')
     if not cached or cached[0] != before:
         try:
             after = _fingerprint(os.stat(filename))
@@ -311,6 +323,8 @@ def pending_ids(receiver, *, owner_alive=None):
     now, mono = time.time(), _monotonic()
     result = []
     for record in records:
+        if record.get('moved_to'):
+            continue
         if (record.get('delivery_state') not in DELIVERY_STATES or
                 record.get('state') not in ('pending', 'claimed', 'handoff-recorded', 'acknowledged')):
             raise ValueError('invalid handoff state; original retained')
@@ -395,10 +409,12 @@ def claim(receiver, owner, generation, lease=CLAIM_LEASE, *, message_id=None):
     owner, generation = _owner(owner, generation)
     lease = _number(lease, 'lease', positive=True)
     with _locked(receiver) as folder:
+        from . import migration
+        migration.assert_active(receiver)
         for record in _records(folder, receiver):
             if message_id is not None and record['id'] != _id(message_id):
                 continue
-            if (record['state'] != 'pending' or
+            if (record.get('moved_to') or record['state'] != 'pending' or
                     record['delivery_state'] not in ('pending', 'delivered') or
                     _expiry(record, time.time()) in ('expired', 'unknown')):
                 continue
@@ -419,6 +435,8 @@ def _transition(receiver, token, owner, generation, action, delivery_state=None)
     if delivery_state is not None and delivery_state not in DELIVERY_STATES:
         raise ValueError('invalid delivery state')
     with _locked(receiver) as folder:
+        from . import migration
+        migration.assert_active(receiver)
         for record in _records(folder, receiver):
             current = record.get('claim') or {}
             if current.get('token') != token:
@@ -509,6 +527,59 @@ def move_out(receiver, to):
             moved.append(copy.deepcopy(record))
             record.update(state='acknowledged', claim=None, moved_to=target, moved_at=time.time())
             _write(os.path.join(folder, record['id'] + '.json'), record)
+    return moved
+
+
+def records(receiver):
+    """Read-only ownership history, including transferred originals."""
+    with _locked(receiver) as folder:
+        return [_view(record) for record in _records(folder, receiver)]
+
+
+def transfer(source, target, migration_id):
+    """Move consumption ownership without inventing delivery or ACK evidence."""
+    from . import migration, registry
+    job = migration.read(migration_id)
+    if (not job or job['status'] not in ('fenced', 'moving', 'committed')
+            or _identity(job['source']) != _identity(source) or _identity(job['target']) != _identity(target)):
+        raise ValueError('no scoped migration authorizes this ownership transfer')
+    moved = []
+    with registry.lock_records([source, target]), _locked(source) as old_folder, _locked(target) as new_folder:
+        for original in _records(old_folder, source):
+            if original['state'] == 'acknowledged':
+                continue
+            if original.get('moved_to'):
+                if original['moved_to'] == _identity(target):
+                    retained = _read(new_folder, original['id'], target)
+                    if not retained or retained['digest'] != original['digest']:
+                        raise ValueError('successor migration copy is unavailable; original retained')
+                    moved.append(original['id'])
+                continue
+            existing = _read(new_folder, original['id'], target)
+            hop = {'id': migration_id, 'source': _identity(source), 'target': _identity(target),
+                   'previous_state': original['state'], 'at': time.time()}
+            previous_hop = (existing.get('migration_history') or [None])[-1] if existing else None
+            same_hop = previous_hop and previous_hop['id'] == migration_id
+            if existing and (existing['digest'] != original['digest'] or
+                             not same_hop
+                             and existing.get('moved_to') != _identity(source)):
+                raise ValueError('successor already owns a different request with this ID')
+            if not existing or not same_hop:
+                copy_record = copy.deepcopy(original)
+                copy_record.update(receiver=_identity(target), state='pending', claim=None,
+                                   migration_history=original.get('migration_history', []) + [hop])
+                for field in ('previous_claim', 'moved_to', 'moved_at', 'handoff-recorded_at'):
+                    copy_record.pop(field, None)
+                _write(os.path.join(new_folder, original['id'] + '.json'), copy_record)
+            from . import ledger
+            annotation = paths.read_json(paths.path(paths.LEDGER, original['id'] + '.handoff.json'), {})
+            if annotation.get('migration') != migration_id:
+                ledger.handoff_step(original['id'], 'stored', target)
+            if original.get('claim'):
+                original['previous_claim'] = original['claim']
+            original.update(state='pending', claim=None, moved_to=_identity(target), moved_at=time.time())
+            _write(os.path.join(old_folder, original['id'] + '.json'), original)
+            moved.append(original['id'])
     return moved
 
 

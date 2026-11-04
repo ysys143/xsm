@@ -1,6 +1,11 @@
 [
   {
     "session": "opaque-session",
+    "operation": "xsm_migrate",
+    "arguments": {}
+  },
+  {
+    "session": "opaque-session",
     "operation": "xsm_owned",
     "arguments": {
       "action": "status",

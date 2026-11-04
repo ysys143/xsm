@@ -76,6 +76,11 @@ def successor_identity(identity: dict) -> dict | None:
         if key in seen:
             break
         seen.add(key)
+        from . import migration
+        moved = migration.retirement(current)
+        if moved and moved['status'] == 'committed':
+            current = last = _identity(moved['target'])
+            continue
         rec = paths.read_json(_file(current))
         if not rec:
             break
@@ -88,6 +93,9 @@ def follow(target: dict | None) -> tuple:
     else (target, None)."""
     if not target or target.get("remote"):
         return target, None
+    from . import migration
+    if migration.retirement(target):
+        return migration.redirect(target)
     try:
         nxt = successor_identity(_identity(target))
     except (ValueError, TypeError):
@@ -140,6 +148,11 @@ def _names(identity: dict, endpoint: dict) -> bool:
 def for_handle(handle: dict) -> dict | None:
     """The local successor record for a P2P endpoint of a handed-over session
     (network_messages): the handle names runtime, home_id and session_id."""
+    from . import migration
+    for filename in migration._json_files(migration.DIRECTORY):
+        transfer = paths.read_json(filename)
+        if transfer and _names(_identity(transfer['source']), handle) and migration.retirement(transfer['source']):
+            return migration.redirect(transfer['source'])[0]
     for rec in _records():
         old = rec.get("from_identity") or {}
         if _names(old, handle):
@@ -201,6 +214,13 @@ def endpoint_succeeds(newer: dict, older: dict) -> bool:
         return True
     if newer["machine"] != older["machine"]:
         return False
+    from . import migration
+    for filename in migration._json_files(migration.DIRECTORY):
+        transfer = paths.read_json(filename)
+        if transfer and _names(_identity(transfer['source']), older):
+            nxt = successor_identity(_identity(transfer['source']))
+            if nxt and _names(nxt, newer):
+                return True
     current = older
     for _ in range(CHAIN):
         rec = paths.read_json(_remote_file(current))
@@ -238,6 +258,9 @@ def _publish(record: dict, teams_moved: list) -> list:
 # --- the handover itself ------------------------------------------------------------------
 
 def _check(me: dict, target: dict) -> None:
+    from . import migration
+    migration.assert_active(me)
+    migration.assert_active(target)
     if not me or not me.get("session_id") or not me.get("registered"):
         raise HandoverError("this session is not registered, so it has no xsm place to hand over")
     if not target or target.get("remote"):

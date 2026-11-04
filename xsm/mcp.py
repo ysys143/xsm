@@ -269,7 +269,7 @@ class Server(OperationService):
         # enriched. Every pointer was (ps, socket and sqlite each) and a registry of
         # hundreds cost seconds before the tool began (#17).
         mine = [registry._enrich(r) for r in registry.raw_records() if r.get("pid") == pid]
-        rows = [r for r in mine if r.get("state") == "live"]
+        rows = [r for r in mine if r.get("state") == "live" or r.get('retired')]
         codex = [r for r in rows if r.get("runtime") == "codex"]
         own_runtime = self.own_runtime(pid, rows)
         own_home = self.own_home(own_runtime)
@@ -551,7 +551,7 @@ def write_beacon() -> None:
     thread reads the newest beacon under its Codex pid."""
     paths.write_json(beacon_path(), {"pid": os.getpid(), "ppid": os.getppid(),
                                      "lstart": identity.lstart(os.getpid()),
-                                     "started": time.time(), "cwd": os.getcwd()})
+                                     "started": time.time(), "cwd": os.getcwd(), 'profile_migration': 1})
 
 
 def remove_beacon() -> None:

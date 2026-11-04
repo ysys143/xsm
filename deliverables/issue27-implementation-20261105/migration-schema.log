@@ -1,0 +1,4 @@
+Traceback (most recent call last):
+  File "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/scripts/check-protocol-schema.py", line 10, in <module>
+    from jsonschema import Draft202012Validator, ValidationError
+ModuleNotFoundError: No module named 'jsonschema'

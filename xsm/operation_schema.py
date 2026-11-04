@@ -34,7 +34,7 @@ MESSAGING = {"readOnlyHint": False, "destructiveHint": False, "openWorldHint": F
 # an exact caller identity, never a neighbour guessed from a shared daemon pid
 # (P01 item 2, A17-02, A23-03).
 WIDENING = ("xsm_publish", "xsm_connect", "xsm_grant", "xsm_approve", "xsm_link", "xsm_join", "xsm_reach",
-            "xsm_team", "xsm_handover")
+            "xsm_team", "xsm_handover", "xsm_migrate")
 # Tools that read a file on the caller's behalf. The path is taken relative to
 # the caller's own folder, so a guessed neighbour would have another session's
 # files read for it -- the second thing spec P01 item 2 puts behind an exact
@@ -49,6 +49,15 @@ MESSAGE_TEXT_DESCRIPTION = (
 )
 
 TOOLS = [
+    {"name": "xsm_migrate",
+     "description": "Explicitly take over the xsm place of a copy of this native conversation in another profile. "
+                    "Your user confirms the exact source and successor. The source is retired, pending work is moved, "
+                    "and old addresses forward for 24 hours. Pending permissions need fresh answers. "
+                    "With no source, show transfer status and catch-up messages. Retry the same source to resume an interrupted transfer.",
+     "inputSchema": {"type": "object", "properties": {
+         "source": {"type": "string", "description": "exact source ref or peer address; successor is this conversation"},
+         "since": {"type": "number", "description": "optional Unix timestamp for catch-up history"}},
+         "required": []}, "annotations": MESSAGING},
     {"name": "xsm_owned", "description": "Manage explicitly owned headless workers. "
      "create defines an owned service; run journals a request before starting a native subscribed turn. "
      "Contexts are separate per sender/work_context; independent=true uses a fresh context. "
@@ -342,7 +351,7 @@ for _tool in TOOLS:
     # reached the person. Each of these asks the person itself or only reads state.
     _tool.setdefault("annotations", MESSAGING)
     if _tool["name"] in ("xsm_link", "xsm_join", "xsm_reach", "xsm_grant", "xsm_approve", "xsm_decide", "xsm_doc_endorse",
-                         "xsm_team", "xsm_handover"):
+                         "xsm_team", "xsm_handover", "xsm_migrate"):
         _tool["inputSchema"]["properties"]["answer_request"] = {"type": "string", "description": "Exact native questionItemId of the user's answer; verified against this conversation's native record, single use."}
         _tool["inputSchema"]["properties"]["original_question"] = {"type": "string", "description": "Exact native_question from xsm_decision_status, including its decision marker; copy choices verbatim and do not paraphrase."}
         _tool["inputSchema"]["properties"]["decision_key"] = {
@@ -438,7 +447,7 @@ def who_answered(reply, client=None) -> str:
 JSON_RESULT_OPERATIONS = frozenset({
     'xsm_doc',
     'xsm_ask', 'xsm_question_status', 'xsm_connect', 'xsm_discover', 'xsm_publish',
-    'xsm_decision_status', 'xsm_inbox', 'xsm_ack', 'xsm_files', 'xsm_owned',
+    'xsm_decision_status', 'xsm_inbox', 'xsm_ack', 'xsm_files', 'xsm_owned', 'xsm_migrate',
 })
 
 

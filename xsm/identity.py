@@ -174,6 +174,11 @@ def _state_of(record: dict) -> tuple:
     """(state, reason). The reason is counted on the command's span: a list
     that shows no live peers has one cause per check below, and from inside a
     sandbox they are not the ones they look like from outside."""
+    from . import migration
+    if migration.retirement(record):
+        return 'ended', 'profile_migrated'
+    if migration.generation_blocked(record):
+        return 'ended', 'profile_generation_retired'
     pid = record.get("pid")
     if not pid:
         return "unknown", "no_pid"

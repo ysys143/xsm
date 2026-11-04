@@ -1,0 +1,76 @@
+======================================================================
+ERROR: test_forwarding_expires_at_24_hours_but_retirement_does_not (tests.test_profile_migration.ProfileMigrationTest.test_forwarding_expires_at_24_hours_but_retirement_does_not)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/tests/test_profile_migration.py", line 50, in test_forwarding_expires_at_24_hours_but_retirement_does_not
+    from xsm import migration
+ImportError: cannot import name 'migration' from 'xsm' (/Users/jaesolshin/Documents/GitHub/cross-session-messaging/xsm/__init__.py)
+
+======================================================================
+ERROR: test_generation_change_during_question_prevents_transfer (tests.test_profile_migration.ProfileMigrationTest.test_generation_change_during_question_prevents_transfer)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/tests/test_profile_migration.py", line 81, in test_generation_change_during_question_prevents_transfer
+    from xsm import migration, registry
+ImportError: cannot import name 'migration' from 'xsm' (/Users/jaesolshin/Documents/GitHub/cross-session-messaging/xsm/__init__.py)
+
+======================================================================
+ERROR: test_interrupted_fenced_transfer_resumes_without_another_permission (tests.test_profile_migration.ProfileMigrationTest.test_interrupted_fenced_transfer_resumes_without_another_permission)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/tests/test_profile_migration.py", line 92, in test_interrupted_fenced_transfer_resumes_without_another_permission
+    from xsm import migration
+ImportError: cannot import name 'migration' from 'xsm' (/Users/jaesolshin/Documents/GitHub/cross-session-messaging/xsm/__init__.py)
+
+======================================================================
+ERROR: test_old_ref_forwards_to_successor_without_changing_sender (tests.test_profile_migration.ProfileMigrationTest.test_old_ref_forwards_to_successor_without_changing_sender)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/tests/test_profile_migration.py", line 42, in test_old_ref_forwards_to_successor_without_changing_sender
+    self.migrate()
+    ~~~~~~~~~~~~^^
+  File "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/tests/test_profile_migration.py", line 17, in migrate
+    from xsm import migration
+ImportError: cannot import name 'migration' from 'xsm' (/Users/jaesolshin/Documents/GitHub/cross-session-messaging/xsm/__init__.py)
+
+======================================================================
+ERROR: test_permission_is_required_and_a_no_changes_nothing (tests.test_profile_migration.ProfileMigrationTest.test_permission_is_required_and_a_no_changes_nothing)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/tests/test_profile_migration.py", line 22, in test_permission_is_required_and_a_no_changes_nothing
+    from xsm import migration, registry
+ImportError: cannot import name 'migration' from 'xsm' (/Users/jaesolshin/Documents/GitHub/cross-session-messaging/xsm/__init__.py)
+
+======================================================================
+ERROR: test_replay_returns_the_same_transfer (tests.test_profile_migration.ProfileMigrationTest.test_replay_returns_the_same_transfer)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/tests/test_profile_migration.py", line 104, in test_replay_returns_the_same_transfer
+    first = self.migrate()
+  File "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/tests/test_profile_migration.py", line 17, in migrate
+    from xsm import migration
+ImportError: cannot import name 'migration' from 'xsm' (/Users/jaesolshin/Documents/GitHub/cross-session-messaging/xsm/__init__.py)
+
+======================================================================
+ERROR: test_source_cannot_reclaim_registration_or_send_after_transfer (tests.test_profile_migration.ProfileMigrationTest.test_source_cannot_reclaim_registration_or_send_after_transfer)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/tests/test_profile_migration.py", line 30, in test_source_cannot_reclaim_registration_or_send_after_transfer
+    from xsm import migration, registry, send
+ImportError: cannot import name 'migration' from 'xsm' (/Users/jaesolshin/Documents/GitHub/cross-session-messaging/xsm/__init__.py)
+
+======================================================================
+ERROR: test_unread_original_survives_and_old_claim_cannot_ack_it (tests.test_profile_migration.ProfileMigrationTest.test_unread_original_survives_and_old_claim_cannot_ack_it)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/tests/test_profile_migration.py", line 67, in test_unread_original_survives_and_old_claim_cannot_ack_it
+    self.migrate()
+    ~~~~~~~~~~~~^^
+  File "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/tests/test_profile_migration.py", line 17, in migrate
+    from xsm import migration
+ImportError: cannot import name 'migration' from 'xsm' (/Users/jaesolshin/Documents/GitHub/cross-session-messaging/xsm/__init__.py)
+
+----------------------------------------------------------------------
+Ran 8 tests in 0.804s
+
+FAILED (errors=8)
