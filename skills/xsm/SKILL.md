@@ -2,7 +2,7 @@
 name: xsm
 description: Connect agent sessions on this machine or your user's other machines. Use when the user wants to find a collaborator, publish a session, exchange messages or tasks, recover answers, hand over work, or communicate as an agent team. Your user invokes `/xsm` in Claude Code or `$xsm` in Codex with a request or command. Load this skill before choosing an xsm address or reacting to a refusal; a row whose ref is `[-]` is not addressable. In a sandboxed Codex, use MCP for messaging.
 argument-hint: "list | publish | discover | send | ask | …"
-allowed-tools: Bash(xsm send:*), Bash(xsm list --table), Bash(xsm who --table), Bash(xsm whoami --table), Bash(xsm help), Bash(xsm projects --table), Bash(xsm doctor --table), Bash(xsm ledger --table --mine --last 5), Bash(xsm held list --table)
+allowed-tools: Bash(xsm send:*), Bash(xsm publish:*), Bash(xsm discover:*), Bash(xsm list --table), Bash(xsm who --table), Bash(xsm whoami --table), Bash(xsm help), Bash(xsm projects --table), Bash(xsm doctor --table), Bash(xsm ledger --table --mine --last 5), Bash(xsm held list --table)
 ---
 
 # xsm

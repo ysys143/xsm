@@ -226,8 +226,10 @@ runtime's absolute path: `connect`, `ask`, `question-status`, `decision-status`,
 `ack`, `files`, `owned`, `list`, `who`, `held`, `ledger`, `status`, `doctor`, `board` and `--version`. It
 allows the matching MCP tools too: `xsm_connect`, `xsm_ask`, `xsm_question_status`, `xsm_decision_status`,
 `xsm_discover`, `xsm_send`, `xsm_inbox`, `xsm_ack`, `xsm_files`, `xsm_owned` and `xsm_board`. Auto and
-default modes then never stop a message. `publish`, `network`, `spawn` and `doc add` are not on the list and
-stay with the runtime's own permission check.
+default modes then never stop a message. `publish`, `network`, `spawn` and `doc add` are not on the global
+allow list. During a native `/xsm publish` invocation, the skill allows the shell step; xsm still checks
+the native user's exact publication instruction. Outside that skill context, publishing retains the
+runtime's own permission check.
 
 `xsm uninstall` takes out the hooks, MCP entry, skill link, statusLine and settings entries install added,
 and the `~/.local/bin/xsm` link when it points into the runtime copy and no other home keeps xsm. The copies
