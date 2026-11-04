@@ -5,6 +5,9 @@ steps, are on [GitHub Releases](https://github.com/ysys143/xsm/releases) (in Kor
 
 ## Unreleased
 
+- Count task attempts on both immediate and trust-delayed worker starts; preserve failure counts after success and history compaction.
+- Exclude requested worker stops from failure counts without closing another worker's attempt; match recorded task IDs exactly.
+- Explain an explicitly ended local question target in `reason`, retaining pending state, recovery and late replies.
 - Add experimental native bindings for Pi, OpenCode, Hermes and OpenClaw through the shared host protocol.
 - Provide TypeScript/Python host clients and profile-scoped native installation, inspection and removal.
 - Document basic runtime setup and optional wake/UI capabilities in the English and Korean READMEs.

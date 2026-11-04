@@ -8,6 +8,7 @@
 - XSM 비교 보정: 2026-11-04, `c61799f` 기준으로 조직 모델, 일반 세션과 owned worker의 결과 처리, 최종 outcome과 대기 상태, 승인 기록·스킬 안내를 정적으로 대조했다. 13~15절의 관련 비교와 검토 의견을 갱신했다. 상대 제품의 고정 소스·실행 동작을 새로 검증한 것은 아니다.
 - 효력: 이 노트는 레퍼런스 분석이며 ADR의 상태를 바꾸지 않는다.
 - 함께 볼 문서: [AgentTeams 조사](agentteams.md). 막힘·중단·실패, 완료 통지, 사람 대기 기록의 겹침을 함께 검토한다.
+- 후속 반영: [구현 기록](../plan/collaboration/reference-adoption/results.md)과 [경로 일관성 보정](../plan/collaboration/reference-adoption/followup.md)을 함께 본다. 아래 고정 버전 비교를 현행 전체 구현 상태로 읽지 않는다.
 
 ## 요약
 
@@ -473,7 +474,7 @@ Executor는 사람에게 직접 묻는 도구가 없다. `orchestrator_report`�
 | 사람 슬롯 | 상한 + 1 | worker capacity 예약 | 사람 입력 우선 슬롯은 xsm에서 찾지 못했다 |
 | 프롬프트 버전 | 불변 버전, base 추적 | 팀이 편집하는 프롬프트 없음 | 해당 없음 |
 
-처리 책임 축의 주의점: `xsm/question_groups.py:97-98`의 `ended`는 명시적 final, 또는 `refused`·`selection-required`·`held`·`blocked`·`error`·`not-found` 상태만 뜻한다. 수신 세션이 끝났다는 뜻이 아니다. 질문 상태 계산(`xsm/questions.py`의 결과 구성)은 registry나 directory를 참조하지 않는다. 대상 해석만 `resolve`를 거쳐 registry를 쓴다.
+처리 책임 축의 주의점: `xsm/question_groups.py:97-98`의 `ended`는 명시적 final, 또는 `refused`·`selection-required`·`held`·`blocked`·`error`·`not-found` 상태만 뜻한다. 수신 세션이 끝났다는 뜻이 아니다. 원조사 기준의 질문 상태 계산은 registry나 directory를 참조하지 않았다. 후속 P3는 정확한 로컬 등록의 명시적 종료를 reason에 설명하지만 pending·final의 의미를 바꾸지 않는다.
 
 세션 종료 자체는 xsm이 일부 안다. Claude는 `SessionEnd` 훅이 `registry.mark_ended`를 호출한다(`xsm/receive.py:351`, `xsm/registry.py:834`). 워커 정지, owned 턴 종료, 프로토콜 호스트 종료에서도 같은 기록이 남는다(`xsm/workers.py:1252`, `:1664`, `xsm/protocol.py:410`). Codex 훅에는 `SessionStart`와 `UserPromptSubmit`만 있어(`hooks/codex-hooks.json`) 일반 Codex 세션은 `stale`로 읽힌다(`xsm/install.py:43-44`). 충돌도 `mark_ended`를 호출하지 않으며, 그 차이가 `ended`와 `stale`을 가른다(`xsm/registry.py:836-838`).
 

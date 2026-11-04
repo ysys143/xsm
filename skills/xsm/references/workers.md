@@ -23,7 +23,7 @@ xsm spawn codex --model <support-model> --effort <effort> --once --task "You sup
 xsm workers                 # what xsm started and whether it is running
 xsm workers read <worker>   # what its screen says — is it working or stuck?
 xsm attach <worker>         # go to its tmux pane (a person; read only looks)
-xsm stop <worker>           # stop it and remove its records
+xsm stop <worker>           # stop it; task history remains
 ```
 
 - Inside tmux the worker opens as the real TUI in a pane next to yours; its
@@ -32,8 +32,9 @@ xsm stop <worker>           # stop it and remove its records
   session `xsm-workers`. A worker is never `claude -p` or `codex exec`. The
   statusline shows each of your workers and whether one is waiting on a person.
 - `--task` sends the task as `--kind task` once the worker is up; the answer
-  comes back to you as a reply. `--once` stops the worker when that answer
-  arrives. Put everything the worker needs in the task. For team work, include
+  comes back to you as a reply. The first correlated reply closes its attempt
+  record, including one without a final outcome; `--once` also stops the worker.
+  Use the board or a separate note for progress before that task answer. Put everything it needs in the task. For team work, include
   its team and board, role, scope and inputs, completion criteria, reporting
   destination and collaborators as described in [organization](organization.md).
   Tell it which changes require coordination; creating a session alone does not
@@ -56,10 +57,11 @@ xsm stop <worker>           # stop it and remove its records
   starts and its `--task` reaches it on its own. Never send your user to the
   tmux screen. You get a note saying what it is waiting for. **Never approve
   it on your own** — that is permission laundering. Ask your user, saying
-  what is waiting and why; if the form cannot reach them, run `xsm approve
-  <id>` from this session (only the session that started the worker may): it
-  tells you to ask, keeps their reply as the verdict, and approves once they
-  answered and you ran it again.
+  what is waiting and why. If the MCP form returns no usable answer, follow
+  [native recovery](permissions.md): ask its exact marked question once and
+  retry that same MCP call. Do not bounce to a shell or a worker terminal.
+  The CLI approval route remains available when the MCP tool itself is absent;
+  only the starting session may relay its own user's verified answer there.
 - `--full-access` and `--trust-hooks` remove your user's protections. Use them
   only when the work needs it, and only with their explicit permission: call
   the `xsm_grant` MCP tool with the reason, and pass the id it returns as
@@ -69,15 +71,14 @@ xsm stop <worker>           # stop it and remove its records
   question tool whether to request the permission, saying what the worker
   needs and why. If they agree, call `xsm_grant` again; their answer in the
   form it shows is the permission. Never ask them to type shell commands. If
-  no choice of theirs came back (see "When a form does not come back as your
-  user's answer" in [permissions](permissions.md)), run the same `xsm spawn` without `--grant`: it says what to
-  ask, keeps their reply as the verdict, and starts the worker on the rerun
-  once they agreed.
+  no choice came back from the form, follow [native recovery](permissions.md)
+  and retry the same `xsm_grant` call with the same arguments. Do not switch
+  to spawn as a second approval route for that pending MCP question.
 - If your user answers the grant form with deny, do not start that worker with
   those options; carry on without them or ask what they prefer.
-- **The same task three times is the end of it.** When a worker answers
+- **Count failures since the latest success.** When a worker answers
   `--outcome failed`, that failure is recorded against the task. After three
-  in a row, `spawn` refuses with `task-attempts-exhausted` and lists what was
+  counted failures, `spawn` refuses with `task-attempts-exhausted` and lists what was
   tried. Do not reword it and send it again — the lineage follows the task, and
   `--retry-of <task id>` is how you say a reworded try belongs to it. Tell your
   user what failed and what the worker said it needed, and ask whether to
@@ -88,6 +89,8 @@ xsm stop <worker>           # stop it and remove its records
   outcome. It neither adds a failure nor clears earlier failures, and it is not
   success. A recorded reply keeps its outcome. Automatic stops keep their
   existing classification; `--once` cleanup preserves the reply it follows.
+  A worker still waiting for trust has no dispatched attempt to close. Stopping
+  it must not close a peer's task. Compaction preserves counted older failures.
 - Workers cannot start workers unless the depth limit allows it (`max_depth`,
   default 1), and one session runs at most `max_workers` (default 4) at once.
   If spawn refuses for either, report it; do not raise the limit. Workers stop

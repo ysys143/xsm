@@ -8,6 +8,7 @@
 - XSM 비교 보정: 2026-11-04, `c61799f` 기준으로 조직 모델, 일반 세션·owned worker의 결과 처리, 최종 outcome·대기 상태, 결정 기록·스키마 검사를 대조했다. 9~12절의 관련 비교와 검토 의견을 갱신했다. AgentTeams 고정 소스·실행 동작을 새로 검증한 것은 아니다.
 - 효력: 이 노트는 레퍼런스 분석이며 ADR의 상태를 바꾸지 않는다.
 - 함께 볼 문서: [dsh-superagent 조사](dsh-superagent.md). 두 조사의 설계 참고 항목이 겹치는 곳은 11절에 표시했다.
+- 후속 반영: [구현 기록](../plan/collaboration/reference-adoption/results.md)과 [경로 일관성 보정](../plan/collaboration/reference-adoption/followup.md)을 함께 본다. 아래 고정 버전 비교를 현행 전체 구현 상태로 읽지 않는다.
 
 ## 요약
 

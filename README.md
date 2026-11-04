@@ -358,6 +358,10 @@ A delivery receipt is not an answer, and printing an answer is not reading it: a
 acknowledges it with `ack` (MCP `xsm_ack`), and until then the original stays recoverable. Only an explicit
 `outcome` from the peer marks a task finished.
 
+In the current development source, a pending local question can explain in `reason` that its exact
+target session explicitly ended. It stays pending and accepts late replies; that observation is not task
+failure or permission to resend. See the [question result contract](docs/protocol/question-results.md).
+
 For a notice or a handed-off task without collecting an answer, `send` works as before:
 
 ```bash
@@ -446,6 +450,11 @@ See [Communication scope](#communication-scope) for `link`, `join` and `reach`.
 xsm spawn codex --task "fix this test"         # start a worker in tmux, instruct it, get the result as a reply
 xsm workers                                    # worker state
 ```
+
+In the current development source, `xsm stop <worker>` does not count an unanswered task as failed or
+clear its earlier failures. Both immediate and trust-delayed starts enter the same task history. Counted
+failures since the latest success remain counted when recent history is compacted. Automatic stops keep
+their existing classification. These rules concern xsm-spawned workers; owned services use their own journal.
 
 For repeatable headless work, define an owned worker and send it requests. Each request is journaled before
 the worker starts, contexts are kept apart by sender and unit of work, and a stored answer can be recovered
