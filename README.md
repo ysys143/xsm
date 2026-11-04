@@ -50,8 +50,8 @@ release. Full feature parity across all runtimes and messenger platforms is not 
 Multi-agent tools such as Orca, herdr and OpenRig make coordination their product: a dispatcher, a task
 graph, a team defined in YAML, terminals the tool owns. xsm gives the sessions you already run a way to
 reach each other. Agents read and write plain language; they split the work, hand it off, review each
-other and report back. Who does what is decided in conversation. The better the models get, the less a
-fixed structure helps and the more it gets in the way.
+other and report back. Who does what is decided in conversation. You specify roles, relationships and
+decision rules in natural language and adapt the organization to the work.
 
 A **DM** addresses one or more sessions and asks someone to act or answer. A **team** is a list of sessions
 working together, with an optional lead. Its **board** holds the decisions, ownership and progress that
@@ -81,6 +81,40 @@ its effort:
   repository. Picking one connects you with that conversation alone, not its folder or the other candidates.
 - **People keep the boundaries.** Which sessions can talk is a scope you set. Widening it, publishing a
   session or joining a network takes your word, and a message from another agent never counts as your approval.
+
+## Recommended use: long-running parallel development
+
+For large, long-running parallel development, we **strongly recommend a capable lead with horizontal workers**.
+The lead maintains goals, the plan and progress, and integrates results. Workers execute their assigned
+scope autonomously and collaborate directly.
+
+| Role | Recommended model tier | Responsibility |
+|---|---|---|
+| Lead | fable/astra | Maintain the plan, assign and track work, coordinate decisions, integrate results and report to you |
+| Primary worker | opus/sol | Implementation, analysis, verification and integration of collaborators' results |
+| Supporting worker | haiku max/luna max | Bounded research, checks and repetitive work |
+
+Primary and supporting workers are work roles and may all be created at the same depth. A primary
+worker can request help directly from a supporting worker; the lead coordinates changes in ownership,
+priorities or shared assumptions. Use harness subagents for one-off tasks and persistent workers for
+ongoing context and repeated collaboration. Prefer shallow creation over deep recursive delegation.
+These model tiers are recommendations; select actual models and reasoning settings in the runtime.
+
+Split larger work into independent teams. Their leads can each belong to their work team and a separate
+coordination team. Its multi-recipient DMs and board form a channel for common interfaces, dependencies
+and integration dates. Each lead reflects agreements in its work team's plan. Leads may deliberate as
+peers; overlapping membership adds no creation depth.
+
+Specify the organization in ordinary language, for example:
+
+> Lead this development effort and maintain the plan and progress. Keep primary and supporting workers
+> at the same depth; tell each its role, scope, reporting destination and collaborators. Keep current
+> decisions and progress on the team board. Coordinate dependencies and integration dates with other
+> work teams through a separate team shared by their leads.
+
+XSM also supports peer councils, mutual review and other organizations. Follow the structure you choose.
+See [Organization and recommended development operations](docs/xsm/ORGANIZATION.md) (Korean) for roles
+and example instructions, and [Working as a team](#9-working-as-a-team) for team and board usage.
 
 ## TL;DR
 
@@ -449,6 +483,10 @@ xsm selftest                                   # whether the hooks actually run
 
 ### 9. Working as a team
 
+The [recommended development organization](#recommended-use-long-running-parallel-development) uses
+a lead, horizontal workers and a coordination team shared by work-team leads. Align the roles and
+collaboration instructions with actual team membership and lead registration.
+
 When several sessions work on one thing, make them a team. A team is a list of members with an optional
 lead; members may DM each other even across projects and machines, and a DM to `team:<name>` reaches every
 running member and tells each who else got it. Adding a session from outside your scope, and naming the lead,
@@ -734,6 +772,7 @@ Most documents under `docs/` are written in Korean.
 
 - **[CHANGELOG.md](CHANGELOG.md)**: what changed, release by release
 - **[INTENT.md](INTENT.md)**: project goals and vision
+- **[Organization and recommended development operations](docs/xsm/ORGANIZATION.md)**: organization choices, recommended roles, lead coordination teams and participation rules (Korean)
 - **[ADR (Architecture Decision Records)](docs/adr/)**: design decisions
   - [Session Registry](docs/adr/0001-session-registry.md)
   - [Communication Scope](docs/adr/0004-communication-scope.md)
