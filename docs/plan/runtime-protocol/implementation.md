@@ -3161,3 +3161,19 @@ DialogSelect와 자동 PTY 키 입력을 사용한다. Mac·고정b7d34e5 Linux�
 대조했다. 출처 변이2개는 각각 표적 assertion에서 실패했다. Linux arm64
 binary 경로의 하네스 보완도 실제 실행했고 VM stopExit0을 확인했다. 제품
 engine은 바꾸지 않았다. 실제 사용자·모델·전체 UI/기능 행렬은 미완이다.
+
+
+## Linux component 수명 시각 보정 수정 — 2026-11-04
+
+[실제 수명 문제](component-process-lifetime.md)는 같은 UI PID/kernel ticks가
+유지되는데 VM의 시각 기준과 ps 표시 시각이2초 변해 사용 중인 snapshot을
+삭제한 재현이다. 새 Linux lease에 안정적인 kernel 시작 표식을 기록하고
+그 표식으로 보존/정리를 판단한다. 기존 Linux 기록은 PID가 살아 있는 동안
+보존하며 Mac 동작·등록/정리 잠금·버전1 필드는 유지한다.
+
+유효한 회귀5개가 수정 전 실패/수정 뒤 관련15개 통과, Mac core979개
+102.521초와 native 수명8단계를 확인했다. Linux 기본/사용자 편집/구 UI에서의
+갱신도 각각8단계를 통과했고 실제2초 변화 중에도 root를 보존했다. Core3.11
+979개88.124초, 후속3.14 979개112.485초와 Pi 설치/재연결·Hermes13개·OpenClaw12개
+사용 경로가 통과했다. 각 VM stopExit0이다. 초기3.14의 팀 추가 선행조건
+간헐 실패1회는 원인 미해결로 보존했다. 전체 계획은 미완이다.

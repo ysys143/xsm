@@ -1,8 +1,8 @@
 # Linux 시각 보정 중 실행 중인 component 코드 보존
 
-상태: 제품 보존 판정을 수정했다. Mac focused15개·core979개·native8단계는
-통과했고 고정 source의 Linux native3개와 Python3.11 core는 통과했다. Python3.14 core의
-별도 선행조건 실패는 미해결이다. 전체 계획은 미완이다.
+상태: 제품 보존 판정을 수정했고 Mac·Linux native 수명과 두 Linux Python
+환경의 core를 검증했다. 후속 성공과 별개로 팀 추가 단계에서 발생한 간헐
+실패1회의 원인은 미해결이다. 전체 계획은 미완이다.
 
 ## 실제 기능 실패와 원인
 
@@ -71,3 +71,20 @@ Python3.14 core는 board-wrong-body 결과 검사의 선행 team add 대기 상�
 이 실패를 component 수정으로 해결했다고 쓰지 않는다. 실제 반환 진단을
 unittest 실패에 포함하도록 보완했고, 다른 native component 사용 경로와
 Python3.14 전체 검사를 별도로 다시 실행 중이다. 이전 실패도 보존한다.
+
+## 후속 component 사용 경로와 전체 회귀
+
+고정fb51361의 추가 Linux 실행에서 Pi의 실제 설치·자동 재연결·snapshot
+갱신/제거 중 보존과 RPC 표본2개, Hermes 설치 plugin API13개, OpenClaw 실제
+wake12개가 통과했다. 새 lease 필드가 이들 사용 경로와 정리를 깨뜨리지
+않음을 확인했다. Native 모델 추론이나 실제 사용자의 UI 결과는 아니다.
+
+같은 source의 Python3.14 core도979개/schema/v7을112.485초에 완주했다.
+네 case 모두 통과, network none, VM stopExit0이었다. 원시는
+`component-lifetime-followup-linux/`다. 앞서 실패한3.14 원인은 이 재실행의
+성공으로 해결 처리하지 않는다. 기능 사용 경로의 진단은 유지한다.
+
+Native 기본 조건의 시각 변화와 kernel 표식/실제 root 보존 대조는
+`opencode-lifecycle-kernel-linux/native-default/output/artifacts/clock-fix-audit.json`에
+남겼다. 기존 stable 배포로의 rollback·나머지 runtime 기능/세션 조합과
+실제 모델·메신저 조건은 여전히 별도 미완 항목이다.
