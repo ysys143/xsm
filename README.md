@@ -88,6 +88,8 @@ For large, long-running parallel development, we **strongly recommend a capable 
 The lead maintains goals, the plan and progress, and integrates results. Workers execute their assigned
 scope autonomously and collaborate directly.
 
+![Recommended XSM organization: independent work teams with horizontal workers, whose leads also share a coordination team](docs/assets/xsm-organization.svg)
+
 | Role | Recommended model tier | Responsibility |
 |---|---|---|
 | Lead | fable/astra | Maintain the plan, assign and track work, coordinate decisions, integrate results and report to you |

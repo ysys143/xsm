@@ -1,0 +1,98 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="864" viewBox="0 0 1200 864" role="img" aria-labelledby="xsm-org-title xsm-org-desc">
+  <title id="xsm-org-title">Independent teams, connected leads</title>
+  <desc id="xsm-org-desc">A recommended XSM organization for long-running parallel development. API and storage teams each have a fable or astra lead, an opus or sol primary worker, a haiku max or luna max supporting worker, and a team board. Primary and supporting workers are at the same creation depth and collaborate directly. The same two leads also belong to a coordination team, using peer DMs and a shared board for cross-team agreements. Roles and decision rules are defined in natural language; other organizational patterns are possible.</desc>
+  <defs>
+    <linearGradient id="xsm-org-background" x1="0" y1="0" x2="1200" y2="864" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F8FAFC"/>
+      <stop offset="1" stop-color="#EEF3F8"/>
+    </linearGradient>
+    <marker id="xsm-org-arrow" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto-start-reverse" markerUnits="userSpaceOnUse">
+      <path d="M2 1 L9 5 L2 9" fill="none" stroke="#748298" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+    <marker id="xsm-org-peer-arrow" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto-start-reverse" markerUnits="userSpaceOnUse">
+      <path d="M2 1 L9 5 L2 9" fill="none" stroke="#5268B4" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+    <style>
+      text { font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #1C2B40; }
+      .eyebrow { font-weight: 700; letter-spacing: 1.6px; fill: #52657B; }
+      .title { font-weight: 700; letter-spacing: -1px; }
+      .subtitle { fill: #52657B; }
+      .team-title { font-weight: 650; }
+      .coord-title { font-weight: 650; fill: #3F5293; }
+      .coord-note { fill: #3F5293; }
+      .lead-title { font-weight: 650; }
+      .worker-title { font-weight: 650; }
+      .model { fill: #435671; }
+      .support-model { fill: #435671; }
+      .detail { fill: #52657B; }
+      .board-title { font-weight: 650; }
+      .footer-title { font-weight: 600; }
+      .footer-note { fill: #52657B; }
+    </style>
+  </defs>
+
+  <!-- Containers paint first. The coordination zone contains the same lead nodes. -->
+  <rect width="1200" height="864" rx="24" fill="url(#xsm-org-background)"/>
+  <rect x="48" y="180" width="536" height="528" rx="22" fill="#FFFFFF" stroke="#D2DDE8" stroke-width="1.5"/>
+  <rect x="616" y="180" width="536" height="528" rx="22" fill="#FFFFFF" stroke="#D2DDE8" stroke-width="1.5"/>
+  <rect x="72" y="244" width="1056" height="164" rx="18" fill="#EEF2FF" stroke="#91A0D5" stroke-width="1.5" stroke-dasharray="7 6"/>
+
+  <!-- Orthogonal DM connectors paint before the role cards. -->
+  <path d="M496 343 H704" fill="none" stroke="#5268B4" stroke-width="2" marker-start="url(#xsm-org-peer-arrow)" marker-end="url(#xsm-org-peer-arrow)"/>
+  <path d="M256 384 V430 Q256 438 248 438 H196 Q188 438 188 446 V486" fill="none" stroke="#748298" stroke-width="1.7" marker-start="url(#xsm-org-arrow)" marker-end="url(#xsm-org-arrow)"/>
+  <path d="M376 384 V430 Q376 438 384 438 H436 Q444 438 444 446 V486" fill="none" stroke="#748298" stroke-width="1.7" marker-start="url(#xsm-org-arrow)" marker-end="url(#xsm-org-arrow)"/>
+  <path d="M824 384 V430 Q824 438 816 438 H764 Q756 438 756 446 V486" fill="none" stroke="#748298" stroke-width="1.7" marker-start="url(#xsm-org-arrow)" marker-end="url(#xsm-org-arrow)"/>
+  <path d="M944 384 V430 Q944 438 952 438 H1004 Q1012 438 1012 446 V486" fill="none" stroke="#748298" stroke-width="1.7" marker-start="url(#xsm-org-arrow)" marker-end="url(#xsm-org-arrow)"/>
+  <path d="M296 539 H336" fill="none" stroke="#748298" stroke-width="1.7" marker-start="url(#xsm-org-arrow)" marker-end="url(#xsm-org-arrow)"/>
+  <path d="M864 539 H904" fill="none" stroke="#748298" stroke-width="1.7" marker-start="url(#xsm-org-arrow)" marker-end="url(#xsm-org-arrow)"/>
+
+  <!-- Role and board nodes: leads appear once, inside both relevant team zones. -->
+  <rect x="136" y="302" width="360" height="82" rx="14" fill="#FFFFFF" stroke="#7185C6" stroke-width="1.7"/>
+  <rect x="704" y="302" width="360" height="82" rx="14" fill="#FFFFFF" stroke="#7185C6" stroke-width="1.7"/>
+  <rect x="80" y="486" width="216" height="106" rx="14" fill="#F2F7FD" stroke="#B7CBE2" stroke-width="1.5"/>
+  <rect x="336" y="486" width="216" height="106" rx="14" fill="#F2F8F5" stroke="#B5D3C7" stroke-width="1.5"/>
+  <rect x="648" y="486" width="216" height="106" rx="14" fill="#F2F7FD" stroke="#B7CBE2" stroke-width="1.5"/>
+  <rect x="904" y="486" width="216" height="106" rx="14" fill="#F2F8F5" stroke="#B5D3C7" stroke-width="1.5"/>
+  <rect x="80" y="632" width="472" height="50" rx="12" fill="#F5F7FA" stroke="#DEE5EE"/>
+  <rect x="648" y="632" width="472" height="50" rx="12" fill="#F5F7FA" stroke="#DEE5EE"/>
+
+  <text x="48" y="48" font-size="15" class="eyebrow">XSM / ORGANIZATIONAL PATTERN</text>
+  <text x="48" y="96" font-size="36" class="title">Independent teams. Connected leads.</text>
+  <text x="48" y="132" font-size="18" class="subtitle">A recommended pattern for long-running parallel development.</text>
+  <text x="80" y="220" font-size="23" class="team-title">API team</text>
+  <text x="648" y="220" font-size="23" class="team-title">Storage team</text>
+  <text x="96" y="276" font-size="19" class="coord-title">Coordination team</text>
+  <text x="1104" y="276" text-anchor="end" font-size="17" class="coord-note">Same leads · team DMs + shared board</text>
+  <text x="600" y="329" text-anchor="middle" font-size="16" class="detail">Peer DMs</text>
+
+  <text x="316" y="333" text-anchor="middle" font-size="23" class="lead-title">API lead</text>
+  <text x="316" y="361" text-anchor="middle" font-size="18" class="model">fable / astra</text>
+  <text x="884" y="333" text-anchor="middle" font-size="23" class="lead-title">Storage lead</text>
+  <text x="884" y="361" text-anchor="middle" font-size="18" class="model">fable / astra</text>
+  <text x="316" y="466" text-anchor="middle" font-size="16" class="detail">Assign / report</text>
+  <text x="884" y="466" text-anchor="middle" font-size="16" class="detail">Assign / report</text>
+
+  <text x="188" y="518" text-anchor="middle" font-size="19" class="worker-title">Primary worker</text>
+  <text x="188" y="546" text-anchor="middle" font-size="18" class="model">opus / sol</text>
+  <text x="188" y="572" text-anchor="middle" font-size="16" class="detail">Implement · verify</text>
+  <text x="444" y="518" text-anchor="middle" font-size="19" class="worker-title">Supporting worker</text>
+  <text x="444" y="546" text-anchor="middle" font-size="17" class="support-model">haiku max / luna max</text>
+  <text x="444" y="572" text-anchor="middle" font-size="16" class="detail">Research · checks</text>
+  <text x="756" y="518" text-anchor="middle" font-size="19" class="worker-title">Primary worker</text>
+  <text x="756" y="546" text-anchor="middle" font-size="18" class="model">opus / sol</text>
+  <text x="756" y="572" text-anchor="middle" font-size="16" class="detail">Implement · verify</text>
+  <text x="1012" y="518" text-anchor="middle" font-size="19" class="worker-title">Supporting worker</text>
+  <text x="1012" y="546" text-anchor="middle" font-size="17" class="support-model">haiku max / luna max</text>
+  <text x="1012" y="572" text-anchor="middle" font-size="16" class="detail">Research · checks</text>
+  <text x="316" y="617" text-anchor="middle" font-size="16" class="detail">Same depth · direct collaboration</text>
+  <text x="884" y="617" text-anchor="middle" font-size="16" class="detail">Same depth · direct collaboration</text>
+
+  <text x="104" y="663" font-size="18" class="board-title">API board</text>
+  <text x="528" y="663" text-anchor="end" font-size="16" class="detail">plan · decisions · progress</text>
+  <text x="672" y="663" font-size="18" class="board-title">Storage board</text>
+  <text x="1096" y="663" text-anchor="end" font-size="16" class="detail">plan · decisions · progress</text>
+
+  <text x="48" y="754" font-size="20" class="footer-title">Define roles and decision rules in natural language.</text>
+  <text x="48" y="785" font-size="17" class="footer-note">One-off tasks can use harness subagents. Persistent workers keep ongoing context.</text>
+  <text x="48" y="823" font-size="17" class="footer-note">Other patterns: peer councils · mutual review · independent teams</text>
+</svg>
