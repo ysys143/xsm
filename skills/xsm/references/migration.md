@@ -1,8 +1,8 @@
 # Continuing a copied conversation in another profile
 
 Use this when the user copied the native conversation to a different config
-home and wants this copy to take over its xsm work. This is a development
-feature; both sessions must run code that supports profile migration.
+home and wants this copy to take over its xsm work. This feature is available
+in 0.6.0; update both sessions before transferring.
 
 In the new copy, run `xsm migrate ref:<old-ref>`, or call `xsm_migrate` with
 `source: "ref:<old-ref>"`. The target is always this conversation. Both copies

@@ -1,7 +1,7 @@
 {
   "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
   "name": "xsm",
-  "description": "Cross-session messaging for Claude Code and Codex sessions",
+  "description": "Cross-session messaging for coding agents",
   "owner": {
     "name": "jaesolshin"
   },
@@ -9,10 +9,10 @@
     {
       "name": "xsm",
       "source": "./",
-      "version": "0.5.2",
-      "description": "Message the other Claude Code and Codex sessions on this machine: list them, send a task, answer one, start workers, and see what was delivered.",
+      "version": "0.6.0",
+      "description": "Connect Claude Code and Codex sessions for messaging and collaboration, with experimental Pi, OpenCode, Hermes and OpenClaw bindings.",
       "category": "productivity"
     }
   ],
-  "version": "0.5.2"
+  "version": "0.6.0"
 }

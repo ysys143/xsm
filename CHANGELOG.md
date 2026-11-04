@@ -5,6 +5,8 @@ steps, are on [GitHub Releases](https://github.com/ysys143/xsm/releases) (in Kor
 
 ## Unreleased
 
+## [0.6.0](https://github.com/ysys143/xsm/releases/tag/v0.6.0) - 2026-11-05
+
 - Isolate copied native conversations by config home and add user-approved profile migration with source retirement, preserved pending work and 24-hour old-address forwarding.
 - Recover verified native permission answers through the original MCP operation; preserve explicit denial and prevent stale answers from applying to another profile.
 - Retain sender-owned failed delivery evidence and report profile generations, retirement and forwarding state in doctor.

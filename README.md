@@ -11,17 +11,18 @@ you at each step what has and has not happened.
 
 ![How XSM connects agent sessions through native runtime paths and explicit communication scopes](docs/assets/xsm-overview.svg)
 
-> **Release status.** 0.5.2 fixes approval binding and answer recovery: one reply applies to the request it
-> identifies, and Codex can complete supported permission flows through MCP and verified native answers.
-> See the [changelog](CHANGELOG.md#052---2026-11-01), [approval verification](docs/xsm/TESTPLAN.md#15-승인-결속-25)
-> and [permission guide](skills/xsm/references/permissions.md). Teams, multi-recipient DMs, team boards and
-> handover remain available; the old channel was removed in 0.5.1. The earlier collaboration plan's
+> **Release status.** 0.6.0 adds experimental Pi, OpenCode, Hermes and OpenClaw bindings,
+> explicit profile migration with 24-hour forwarding, and consistent native permission recovery.
+> See the [changelog](CHANGELOG.md#060---2026-11-05),
+> [verification record](https://github.com/ysys143/xsm/blob/v0.6.0/deliverables/issue27-implementation-20261105/verification.md)
+> and [permission guide](skills/xsm/references/permissions.md). Full parity across runtimes and
+> messenger surfaces is not claimed. The earlier collaboration plan's
 > [full acceptance criteria](https://github.com/ysys143/xsm/blob/a124b22782d68c1541f6dd5893a57bbe6797b926/docs/plan/collaboration/completion-ledger.md)
-> remain incomplete. Open a new session after updating to use the new hooks and MCP server.
+> remain incomplete. Open a new session after updating to load the new hooks and MCP server.
 
 ## Additional runtimes (experimental)
 
-This checkout includes basic Pi, OpenCode, Hermes and OpenClaw support through native bindings and a
+Release 0.6.0 includes basic Pi, OpenCode, Hermes and OpenClaw support through native bindings and a
 shared host protocol. Sessions can use XSM messaging, inbox/ACK and collaboration tools. Wake-up,
 questions and gateway behavior depend on the runtime and its configuration.
 
@@ -42,10 +43,10 @@ bin/xsm protocol install openclaw --home <openclaw-state-dir>
 ```
 
 Restart/reload that runtime afterward. See its setup guide for activation and optional capabilities.
-These are experimental bindings in the current source; the published 0.5.2 plugin remains the earlier
-release. Full feature parity across all runtimes and messenger platforms is not claimed.
+These bindings are experimental in 0.6.0. Full feature parity across runtimes and messenger platforms
+is not claimed.
 
-## Continuing in another config home (development)
+## Continuing in another config home
 
 If you copy a native conversation to another profile, both copies keep separate
 xsm identities. In the new copy, ask the agent to run `xsm migrate ref:<old-ref>`
@@ -53,7 +54,7 @@ and confirm the scoped transfer. This retires the original, preserves pending
 messages and team/worker connections, and forwards old addresses for 24 hours
 from commit. `xsm migrate` then shows catch-up history and unresolved outcomes.
 Pending human permissions need fresh answers; expiry never reactivates the old
-copy. Both sides need this development version. See the
+copy. Update both sides to 0.6.0 or later. See the
 [migration guide](skills/xsm/references/migration.md); ordinary `handover` is
 for passing work to a different conversation.
 
@@ -389,7 +390,7 @@ A pending request with an empty replies array still has no recorded answer; JSON
 not change that. `queued` or `sent-unconfirmed` does not establish whether the peer is busy or has
 read the message.
 
-In the current development source, a pending local question can explain in `reason` that its exact
+In 0.6.0, a pending local question can explain in `reason` that its exact
 target session explicitly ended. It stays pending and accepts late replies; that observation is not task
 failure or permission to resend. See the [question result contract](docs/protocol/question-results.md).
 
@@ -482,7 +483,7 @@ xsm spawn codex --task "fix this test"         # start a worker in tmux, instruc
 xsm workers                                    # worker state
 ```
 
-In the current development source, `xsm stop <worker>` does not count an unanswered task as failed or
+In 0.6.0, `xsm stop <worker>` does not count an unanswered task as failed or
 clear its earlier failures. Both immediate and trust-delayed starts enter the same task history. Counted
 failures since the latest success remain counted when recent history is compacted. Automatic stops keep
 their existing classification. These rules concern xsm-spawned workers; owned services use their own journal.
@@ -497,7 +498,7 @@ xsm owned run reviewer --work pr-42 --text "review the diff"     # --fresh for a
 xsm owned status reviewer                                        # your requests and their answers
 ```
 
-The development version also accepts `xsm owned cancel reviewer --request-id <id>`.
+Version 0.6.0 also accepts `xsm owned cancel reviewer --request-id <id>`.
 It records this sender's cancellation intent; pre-launch work can be cancelled immediately.
 Running-turn confirmation is currently implemented for newly admitted Pi 1.4.0, OpenCode 1.19.5,
 Hermes 0.22.5 and OpenClaw 2026.10.9 workers.

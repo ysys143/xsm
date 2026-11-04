@@ -14,3 +14,5 @@ class OpenClawSchemaTest(unittest.TestCase):
         self.assertEqual(catalog, TOOLS)
         manifest = json.loads((root / 'openclaw.plugin.json').read_text())
         self.assertEqual(manifest['contracts']['tools'], [tool['name'] for tool in TOOLS])
+        hermes = json.loads((root.parent / 'hermes/plugin.yaml').read_text())
+        self.assertEqual(hermes['provides_tools'], [tool['name'] for tool in TOOLS])

@@ -11,17 +11,18 @@ xsm은 Claude Code·Codex·Pi·OpenCode·Hermes·OpenClaw 세션이 서로를 �
 
 ![XSM이 런타임의 네이티브 전달 경로와 명시적 통신 범위로 에이전트 세션을 연결하는 구조](docs/assets/xsm-overview.svg)
 
-> **릴리스 상태.** 0.5.2는 승인 결속과 답 복구를 수정했습니다. 답은 자신이 지목한 요청에만 적용되고,
-> Codex에서도 MCP와 검증된 네이티브 답으로 지원되는 승인 경로를 끝낼 수 있습니다.
-> [변경 기록](CHANGELOG.md#052---2026-11-01), [승인 경로 시험](docs/xsm/TESTPLAN.md#15-승인-결속-25),
-> [권한 안내](skills/xsm/references/permissions.md)에 계약과 검증 범위가 있습니다.
-> 팀·다중 수신 DM·팀 보드·인수인계는 계속 제공하며, 기존 channel은 0.5.1에서 제거했습니다.
-> 이전 협업 계획의 [전체 수용 조건](https://github.com/ysys143/xsm/blob/a124b22782d68c1541f6dd5893a57bbe6797b926/docs/plan/collaboration/completion-ledger.md)은
+> **릴리스 상태.** 0.6.0은 Pi·OpenCode·Hermes·OpenClaw의 실험적 연결, 24시간 전달을
+> 포함한 프로필 승계, 일관된 native 승인 복구를 제공합니다.
+> [변경 기록](CHANGELOG.md#060---2026-11-05),
+> [검증 기록](https://github.com/ysys143/xsm/blob/v0.6.0/deliverables/issue27-implementation-20261105/verification.md),
+> [권한 안내](skills/xsm/references/permissions.md)에 계약과 범위가 있습니다.
+> 런타임·메신저별 기능이 모두 동일하다는 뜻은 아닙니다. 이전 협업 계획의
+> [전체 수용 조건](https://github.com/ysys143/xsm/blob/a124b22782d68c1541f6dd5893a57bbe6797b926/docs/plan/collaboration/completion-ledger.md)은
 > 아직 완료되지 않았습니다. 갱신 후 새 세션을 열어야 새 훅과 MCP 서버를 사용합니다.
 
 ## 추가 런타임 기본 지원 (실험적)
 
-현재 소스에는 Pi·OpenCode·Hermes·OpenClaw 연결이 포함돼 있습니다. 네이티브 연결과 공통 호스트
+0.6.0에는 Pi·OpenCode·Hermes·OpenClaw 연결이 포함돼 있습니다. 네이티브 연결과 공통 호스트
 프로토콜로 메시지 송신·inbox/ACK·협업 도구를 사용합니다. 깨우기·질문 UI·게이트웨이 동작은
 각 런타임과 설정에 따라 다릅니다.
 
@@ -42,7 +43,7 @@ bin/xsm protocol install openclaw --home <openclaw-state-dir>
 ```
 
 설치 뒤 해당 런타임을 재시작/재로딩합니다. 활성화와 선택 기능은 각 설치 안내를 따릅니다.
-현재 소스의 실험적 연결이며, 공개된 0.5.2 플러그인은 이전 릴리스입니다. 모든 런타임·메신저의
+0.6.0의 실험적 연결입니다. 모든 런타임·메신저의
 전체 기능이 동일하게 지원된다는 뜻은 아닙니다.
 
 ## 철학
@@ -507,15 +508,15 @@ DM은 후임에게 갑니다.
 
 ## 참고
 
-### 다른 config home에서 같은 대화 이어가기 — 개발 버전
+### 다른 config home에서 같은 대화 이어가기
 
 native 대화를 다른 프로필에 복사해도 두 사본은 별도 xsm 정체를 유지합니다.
 새 사본에서 `xsm migrate ref:<이전-ref>`를 실행하고 양쪽 프로필과 이관 효과를 확인해
 승인하면, 원본은 은퇴하고 미처리 메시지와 팀·워커 연결이 이어집니다. 이전 주소는
 승계 완료 후 24시간 동안 전달되며 만료돼도 원본은 다시 활성화되지 않습니다.
 인자 없는 `xsm migrate`로 따라잡기 목록과 결과가 불명확한 기존 작업을 확인합니다.
-대기 중인 사용자 승인은 새 프로필에서 다시 결속합니다. 양쪽 모두 이 기능을 지원하는
-개발 버전이어야 합니다. [승계 안내](skills/xsm/references/migration.md)를 참고하세요.
+대기 중인 사용자 승인은 새 프로필에서 다시 결속합니다. 양쪽 모두 0.6.0 이상으로
+갱신해야 합니다. [승계 안내](skills/xsm/references/migration.md)를 참고하세요.
 다른 대화에 자리를 넘기는 기존 `handover`와는 별도 기능입니다.
 
 ### 통신 범위

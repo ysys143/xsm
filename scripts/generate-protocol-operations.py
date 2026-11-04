@@ -42,3 +42,7 @@ if __name__ == '__main__':
     manifest = json.loads(manifest_path.read_text())
     manifest['contracts']['tools'] = [tool['name'] for tool in TOOLS]
     manifest_path.write_text(json.dumps(manifest, indent=2) + '\n')
+    hermes_path = ROOT / 'integrations/hermes/plugin.yaml'
+    hermes = json.loads(hermes_path.read_text())
+    hermes['provides_tools'] = [tool['name'] for tool in TOOLS]
+    hermes_path.write_text(json.dumps(hermes, indent=2) + '\n')

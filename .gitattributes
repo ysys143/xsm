@@ -9,3 +9,4 @@ docs/reviews/   export-ignore
 docs/plan/      export-ignore
 docs/references/ export-ignore
 .gitattributes  export-ignore
+deliverables/  export-ignore
