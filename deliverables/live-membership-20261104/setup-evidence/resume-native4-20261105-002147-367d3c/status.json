@@ -1,0 +1,136 @@
+{
+  "status": "readiness-finished-model-join-wait",
+  "root": "/private/tmp/xsm-join-live/resume-native4-20261105-002147-367d3c",
+  "sharedXsmHome": "/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-claude-basic-ey1fwkh6/state",
+  "serviceCapUtc": "2026-11-04T15:45:00Z",
+  "cleanupStartsUtc": "2026-11-04T15:44:40+00:00",
+  "modelJoinCalls": 0,
+  "registryWrites": 0,
+  "approvalAnswers": 0,
+  "parentLinkWrites": 0,
+  "runtimes": {
+    "pi": {
+      "ref": "ref:ced637",
+      "nativeSessionId": "01a1a6f7-26ac-7649-ba84-291f79c22918",
+      "profile": "/private/tmp/xsm-join-live/idle-20261104-232936-24178c/pi/profile",
+      "workspace": "/private/tmp/xsm-join-live/idle-20261104-232936-24178c/pi/workspace",
+      "before": {
+        "ref": "ced637",
+        "protocol_generation": "abd536b579364771a45858beec154180",
+        "pid": 17912,
+        "ended_at": 1793804418.2099452
+      },
+      "status": "resume-failed",
+      "nativePid": 44712,
+      "failureType": "RuntimeError",
+      "failure": "official Pi resume changed native ID"
+    },
+    "opencode": {
+      "ref": "ref:4c7d17",
+      "nativeSessionId": "ses_e5908c34cffeKySu6Vn4TIfBEy",
+      "profile": "/private/tmp/xsm-join-live/idle-20261104-232936-24178c/opencode/profile",
+      "workspace": "/private/tmp/xsm-join-live/idle-20261104-232936-24178c/opencode/workspace",
+      "before": {
+        "ref": "4c7d17",
+        "protocol_generation": "e684b54065d84750b0d14e8e30cf64c2",
+        "pid": 18258,
+        "ended_at": null
+      },
+      "status": "live-idle-same-ref",
+      "nativePid": 44729,
+      "after": {
+        "ref": "4c7d17",
+        "protocol_generation": "799c8b6345dd4f3da8e3382892f91b83",
+        "pid": 45605,
+        "activity": "idle",
+        "home": "/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-claude-basic-ey1fwkh6/state/protocol-profiles/opencode/bd19394df112cef56a3c4351aebd72501335c9f3f0f55c59afe740a367ecaedf",
+        "session_id": "649a7121fa1ad22c6ac711c35ac66da07515970bf6c4a3cbea124e67aad02a8d",
+        "cwd": "/private/tmp/xsm-join-live/idle-20261104-232936-24178c/opencode/workspace"
+      },
+      "nativeIdPreserved": true,
+      "protocolGenerationChanged": true,
+      "group21Membership": true,
+      "parentRef": "5f60ca",
+      "liveBinding": true,
+      "currentPid": 45605,
+      "currentGeneration": "799c8b6345dd4f3da8e3382892f91b83",
+      "currentActivity": "idle"
+    },
+    "openclaw": {
+      "ref": "ref:bb683b",
+      "nativeSessionId": "9c23f439-fe3b-4ce5-a062-9a36bc3a9dec",
+      "profile": "/private/tmp/xsm-join-live/idle-20261104-232936-24178c/openclaw/profile",
+      "workspace": "/private/tmp/xsm-join-live/idle-20261104-232936-24178c/openclaw/workspace",
+      "before": {
+        "ref": "bb683b",
+        "protocol_generation": "e7d8017b132644bdbfae882c98752a3e",
+        "pid": 66796,
+        "ended_at": 1793804424.982283
+      },
+      "status": "live-idle-same-ref",
+      "nativePid": 45713,
+      "after": {
+        "ref": "bb683b",
+        "protocol_generation": "6952569b415d44d18361ba8a7367fac9",
+        "pid": 46555,
+        "activity": "idle",
+        "home": "/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-claude-basic-ey1fwkh6/state/protocol-profiles/openclaw/ed6e5b57b2644ab4c9112095f0da38d6afebfed584c6d234719fece8c227bd83",
+        "session_id": "9edb512812dc4611972513c3df5063b52f5cfd0a9182455792d68b8a329355e0",
+        "cwd": "/private/tmp/xsm-join-live/idle-20261104-232936-24178c/openclaw/workspace"
+      },
+      "nativeIdPreserved": true,
+      "protocolGenerationChanged": true,
+      "group21Membership": true,
+      "parentRef": "5f60ca",
+      "liveBinding": true,
+      "currentPid": 46555,
+      "currentGeneration": "6952569b415d44d18361ba8a7367fac9",
+      "currentActivity": "idle"
+    },
+    "hermes": {
+      "ref": "ref:9dfbd1",
+      "nativeSessionId": "local-b4e8a956c2fe68619b6d9a0bc829e1f7305a935c431782ee92b11b4a814ef18f",
+      "profile": "/private/tmp/xsm-join-live/hermes-readonly-bootstrap-20261104-234526-17820a/hermes",
+      "workspace": "/private/tmp/xsm-join-live/hermes-readonly-bootstrap-20261104-234526-17820a/workspace",
+      "before": {
+        "ref": "9dfbd1",
+        "protocol_generation": "620f3903daa24e78b1d974194dd473c8",
+        "pid": 86167,
+        "ended_at": 1793805289.174017
+      },
+      "status": "live-idle-same-ref",
+      "nativePid": 46561,
+      "nativePhase": {
+        "phase": "bootstrap-terminal",
+        "outcome": "completed"
+      },
+      "readonlyBootstrapStarted": true,
+      "readonlyBootstrapComplete": true,
+      "after": {
+        "ref": "9dfbd1",
+        "protocol_generation": "1ed81058cc484dea81fb949e17d09f9e",
+        "pid": 47136,
+        "activity": "idle",
+        "home": "/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-claude-basic-ey1fwkh6/state/protocol-profiles/hermes/f47164df4d7c2b866191311d41ed4af959f5da425b476648858c622a3713cb8e",
+        "session_id": "c08237bbd663ee2b65c590d70983d192158c7fc4bfb11e145c4485d6e254a121",
+        "cwd": "/private/tmp/xsm-join-live/hermes-readonly-bootstrap-20261104-234526-17820a/workspace"
+      },
+      "nativeIdPreserved": true,
+      "protocolGenerationChanged": true,
+      "group21Membership": false,
+      "parentRef": null,
+      "liveBinding": true,
+      "currentPid": 47136,
+      "currentGeneration": "1ed81058cc484dea81fb949e17d09f9e",
+      "currentActivity": "idle"
+    }
+  },
+  "heartbeatUtc": "2026-11-04T15:44:51.488657+00:00",
+  "providerRequests": {
+    "pi": 0,
+    "opencode": 4,
+    "openclaw": 5,
+    "hermes": 2
+  },
+  "stopped": true
+}

@@ -1,0 +1,14 @@
+{
+  "command": [
+    "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/bin/xsm",
+    "join",
+    "join-live-codex-deny-80d26f",
+    "--answer-request",
+    "[\"request_user_input_async\",\"call_6b21190ee9204a2caa6f586c03ec2bd6\",0]",
+    "--question",
+    "[xsm:7c4ba824604f4e10] 실제 Codex 가입 거절 경로 시험입니다. 이 대화의 /Users/jaesolshin/Documents/GitHub/cross-session-messaging 폴더를 격리된 시험 프로젝트 join-live-codex-deny-80d26f에 가입시킬까요? 거절 흐름을 확인하려면 deny를 선택하세요. 실제 프로젝트 설정은 바뀌지 않고 시험 XSM 상태에만 적용됩니다."
+  ],
+  "exit_code": 0,
+  "stdout": "approved on your user's reply: \"allow\"\njoined project join-live-codex-deny-80d26f: ~/Documents/GitHub/cross-session-messaging\nthis folder is in: repo:cross-session-messaging (default), join-live-codex-deny-80d26f\nmembers:\n  ~/Documents/GitHub/cross-session-messaging  (this project)\nno other project has joined join-live-codex-deny-80d26f yet. A session there asks its user and runs: xsm join join-live-codex-deny-80d26f\n",
+  "stderr": ""
+}

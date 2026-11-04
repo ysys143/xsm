@@ -1,0 +1,232 @@
+{
+  "status": "passed-model-contract-and-real-parent-ACK",
+  "attempt": "pi-parent-final-19c7-actual-v1",
+  "keeperRoot": "/private/tmp/xsm-join-live/pi-final-resume-20261105-013647-b962c7",
+  "ref": "ref:f05df5",
+  "project21": "join-live-group-21a8",
+  "newProject": "join-live-pi-parent-final-19c7",
+  "modelPromptSubmissions": 1,
+  "maxProviderRequests": 8,
+  "maxModelSeconds": 120,
+  "registryWrites": 0,
+  "parentLinkWrites": 0,
+  "approvalAnswers": 0,
+  "modelPausedAfterSingleTurn": true,
+  "nativeSessionId": "01a1a735-d9a2-7263-98d2-36e70617e884",
+  "protocolGeneration": "3973bdb139174e959dc2fa474b4a29db",
+  "parentRef": "5f60ca",
+  "roleApprovalArtifact": "/private/tmp/xsm-join-live/pi-final-role-applied.json",
+  "realParentLink": {
+    "parent": {
+      "runtime": "claude",
+      "home": "/Users/jaesolshin/.claude-3",
+      "session_id": "7f62ac42-de46-4031-8bda-55e0dcff5245",
+      "ref": "5f60ca",
+      "cwd": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging",
+      "pid": 8405,
+      "lstart": "Thu Nov  5 01:37:44 2026",
+      "name": "claude-worker"
+    },
+    "child": {
+      "runtime": "pi",
+      "home": "/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-claude-basic-ey1fwkh6/state/protocol-profiles/pi/465868888bda0df77c56cac626ddb29776582edd5189d8c6af494331e80819c9",
+      "session_id": "27627f9c9129e34b3b7300ad20448631e83d633a8d6729c01612de4e2a98ea6a",
+      "ref": "f05df5",
+      "cwd": "/private/tmp/xsm-join-live/idle-20261104-232936-24178c/pi/workspace",
+      "pid": 5687,
+      "lstart": "Thu Nov  5 01:36:47 2026",
+      "name": "pi-27627f9c"
+    },
+    "project": "join-live-group-21a8"
+  },
+  "requestsBefore": [],
+  "workerPendingBefore": [],
+  "workerDecisionsBefore": [],
+  "nativeAcceptance": {
+    "id": "pi-parent-19c7-final-once",
+    "type": "response",
+    "command": "prompt",
+    "success": true,
+    "data": {
+      "disposition": "started"
+    }
+  },
+  "observedAtUtc": "2026-11-04T16:53:21.548963+00:00",
+  "modelSeconds": 15.315,
+  "actualToolReturns": [
+    {
+      "scope": {
+        "kind": "membership",
+        "project": "join-live-group-21a8",
+        "root": "/private/tmp/xsm-join-live/idle-20261104-232936-24178c/pi/workspace",
+        "active": true,
+        "changed": false
+      },
+      "text": "already in join-live-group-21a8"
+    },
+    {
+      "text": "Waiting for parent [5f60ca] to handle project join-live-pi-parent-final-19c7 (request 08f8107a3259a0e40638ed07). No worker-local question was opened."
+    },
+    {
+      "text": "Waiting for parent [5f60ca] to handle project join-live-pi-parent-final-19c7 (request 08f8107a3259a0e40638ed07). No worker-local question was opened."
+    }
+  ],
+  "actualJoinToolCalls": 3,
+  "requestId": "08f8107a3259a0e40638ed07",
+  "parentCanonicalMessageId": "worker-project-08f8107a3259a0e40638ed07-0",
+  "parentCanonicalMessageCount": 1,
+  "workerUiQuestions": 0,
+  "newProjectJoined": false,
+  "providerRequests": 4,
+  "providerResponses": [
+    {
+      "request": 1,
+      "requestedModel": "gpt-6-luna",
+      "phase": "response",
+      "httpStatus": 200,
+      "responseModels": [
+        "gpt-6-luna"
+      ],
+      "responseBytes": 1007,
+      "limitFailure": false
+    },
+    {
+      "request": 2,
+      "requestedModel": "gpt-6-luna",
+      "phase": "response",
+      "httpStatus": 200,
+      "responseModels": [
+        "gpt-6-luna"
+      ],
+      "responseBytes": 1017,
+      "limitFailure": false
+    },
+    {
+      "request": 3,
+      "requestedModel": "gpt-6-luna",
+      "phase": "response",
+      "httpStatus": 200,
+      "responseModels": [
+        "gpt-6-luna"
+      ],
+      "responseBytes": 1017,
+      "limitFailure": false
+    },
+    {
+      "request": 4,
+      "requestedModel": "gpt-6-luna",
+      "phase": "response",
+      "httpStatus": 200,
+      "responseModels": [
+        "gpt-6-luna"
+      ],
+      "responseBytes": 4966,
+      "limitFailure": false
+    }
+  ],
+  "parentLedger": {
+    "id": "worker-project-08f8107a3259a0e40638ed07-0",
+    "status": "delivered",
+    "t": 1793811189.274741,
+    "kind": "task",
+    "scope": "join-live-group-21a8",
+    "from": {
+      "name": "pi-27627f9c",
+      "alias": null,
+      "ref": "f05df5",
+      "runtime": "pi"
+    },
+    "to": {
+      "name": "claude-worker",
+      "alias": "claude-3",
+      "ref": "5f60ca",
+      "runtime": "claude"
+    },
+    "preview": "Worker [f05df5] needs project join-live-pi-parent-final-19c7. Collect this request in your session: call xsm_join with project=join-live-pi-parent-final-19c7, workers=[\"ref:f05df5\"] and leave=false. A",
+    "req_version": 1,
+    "digest": "e32a55cdf171e9bd8d0afa31c6495eb539306ca6237762de10c2dfb34f505444",
+    "evidence": {
+      "accepted": {
+        "ok": true,
+        "t": 1793811189.27506
+      },
+      "queued": {
+        "ok": true,
+        "t": 1793811189.27772,
+        "detail": "uds:/tmp/cc-socks/8405.sock"
+      }
+    },
+    "runtime_reached": true,
+    "receipt": {
+      "id": "worker-project-08f8107a3259a0e40638ed07-0",
+      "decision": "delivered",
+      "reason": "read with xsm inbox",
+      "t": 1793811195.533482,
+      "receiver": {
+        "name": "claude-worker",
+        "alias": "claude-3",
+        "ref": "5f60ca",
+        "runtime": "claude"
+      },
+      "from_ref": "f05df5",
+      "body_sha": "02a7ea964603bed9",
+      "req_digest": "b248677d89f9189c8eacf7f7e9c34333749fa2a510496729469c7715ff31e817",
+      "req_version": 1
+    },
+    "delivery": {
+      "steps": {
+        "accepted": {
+          "ok": true,
+          "t": 1793811189.27506
+        },
+        "queued": {
+          "ok": true,
+          "t": 1793811189.27772,
+          "detail": "uds:/tmp/cc-socks/8405.sock"
+        },
+        "hook_taken": {
+          "ok": true,
+          "t": 1793811195.533482,
+          "detail": "delivered"
+        },
+        "stored": {
+          "ok": true,
+          "t": 1793811189.2735412
+        },
+        "claimed": {
+          "ok": true,
+          "t": 1793811189.5382211
+        },
+        "handoff": {
+          "ok": true,
+          "t": 1793811195.534994
+        },
+        "ack": {
+          "ok": true,
+          "t": 1793811198.8833249
+        }
+      },
+      "runtime_reached": true,
+      "digest": "e32a55cdf171e9bd8d0afa31c6495eb539306ca6237762de10c2dfb34f505444",
+      "req_version": 1,
+      "legacy": false,
+      "verified": true,
+      "upgraded_from_legacy": false,
+      "acknowledged": true,
+      "handoff_status": "acknowledged"
+    }
+  },
+  "parentAckWaitSeconds": 6.017,
+  "parentAckObserved": true,
+  "inFlightProviderBeforeCleanup": [],
+  "keeperStopped": true,
+  "cleanupPidCheck": {
+    "pids": [
+      5664,
+      5687
+    ],
+    "psExit": 1,
+    "remainingPidRows": ""
+  },
+  "finalProjectMembership": false
+}

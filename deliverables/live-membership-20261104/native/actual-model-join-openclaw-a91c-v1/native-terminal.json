@@ -1,0 +1,33 @@
+{
+  "runId": "actual-join-openclaw-a91c-v1",
+  "status": "ok",
+  "startedAt": 1793806597934,
+  "endedAt": 1793806619210,
+  "stopReason": "stop",
+  "livenessState": "working",
+  "terminalReceipt": {
+    "runId": "actual-join-openclaw-a91c-v1",
+    "sessionId": "9c23f439-fe3b-4ce5-a062-9a36bc3a9dec",
+    "turnId": "actual-join-openclaw-a91c-v1",
+    "requested": {
+      "provider": "xsm-subscription",
+      "model": "gpt-6-luna"
+    },
+    "effective": {
+      "provider": "xsm-subscription",
+      "model": "gpt-6-luna",
+      "responseModel": "gpt-6-luna"
+    },
+    "successfulToolNames": [
+      "tool_search",
+      "xsm_join",
+      "tool_call"
+    ],
+    "rerouted": false,
+    "terminalDisposition": "visible"
+  },
+  "terminalReply": {
+    "disposition": "visible",
+    "text": "XSM_JOIN_OPENCLAW_A91C_V1"
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "status": "in-progress",
+  "purpose": "actual project join questions, human decisions, membership, coordinator-worker routing",
+  "source_ref": "8b0345a",
+  "actual_user_answer": {
+    "question_item_id": "[\"request_user_input_async\",\"call_6b21190ee9204a2caa6f586c03ec2bd6\",0]",
+    "answer": "allow",
+    "project": "join-live-codex-deny-80d26f",
+    "classification": "allow despite deny in test label"
+  },
+  "discovered_failures": [
+    "Codex exact answer rejected after standalone resume message",
+    "Claude undecided test instruction shown as an answer instead of opening the question"
+  ],
+  "completed": [
+    "Codex original native answer readback and real join applied after fix"
+  ],
+  "not_completed": [
+    "Claude group human question",
+    "six-harness inherited membership and new scope parent-only routing",
+    "deny path"
+  ],
+  "no_synthetic_approval": true
+}

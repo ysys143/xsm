@@ -1,0 +1,5 @@
+{
+  "prompt": "This is the user-authorized actual Pi join test after the real coordinator parent link was approved. Call native xsm_join exactly THREE times SEQUENTIALLY, waiting for each real result. First {\"project\":\"join-live-group-21a8\"}; second {\"project\":\"join-live-pi-parent-final-19c7\"}; third identical {\"project\":\"join-live-pi-parent-final-19c7\"}. Do not pass workers, leave, or other arguments. Do not approve or actually join the new project: native xsm_join must only request the existing parent. Do not send any message yourself or answer any approval/question; do not use shell or other tools. After the three actual results, reply exactly XSM_PI_PARENT_FINAL_19C7_5eb99c0cf2941bd5.",
+  "nonce": "5eb99c0cf2941bd5",
+  "expectedFinal": "XSM_PI_PARENT_FINAL_19C7_5eb99c0cf2941bd5"
+}

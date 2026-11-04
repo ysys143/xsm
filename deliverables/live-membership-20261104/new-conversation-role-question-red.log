@@ -1,0 +1,13 @@
+======================================================================
+FAIL: test_new_conversation_in_joined_folder_confirms_coordinator_only (tests.test_worker_project_flow.WorkerProjectFlowTest.test_new_conversation_in_joined_folder_confirms_coordinator_only)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/tests/test_worker_project_flow.py", line 119, in test_new_conversation_in_joined_folder_confirms_coordinator_only
+    self.assertIn('coordinator', event['question'])
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'coordinator' not found in "Join project 'demo' for these selected folders?\nflow-fixture-98dffee4: /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-test-qitbm4ks/leader\nflow-fixture-b4efee07: /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-test-qitbm4ks/a"
+
+----------------------------------------------------------------------
+Ran 1 test in 0.467s
+
+FAILED (failures=1)

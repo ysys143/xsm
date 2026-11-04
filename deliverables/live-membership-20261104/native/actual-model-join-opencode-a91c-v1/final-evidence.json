@@ -1,0 +1,48 @@
+{
+  "status": "passed",
+  "runtime": "opencode",
+  "ref": "4c7d17",
+  "root": "/private/tmp/xsm-join-live/actual-model-join-opencode-a91c-v1",
+  "nativeJoinToolCallCount": 3,
+  "sequential": true,
+  "actualToolReturns": [
+    {
+      "text": "already in join-live-group-21a8",
+      "time": 1793806539154,
+      "raw": {
+        "scope": {
+          "kind": "membership",
+          "project": "join-live-group-21a8",
+          "root": "/private/tmp/xsm-join-live/idle-20261104-232936-24178c/opencode/workspace",
+          "active": true,
+          "changed": false
+        },
+        "text": "already in join-live-group-21a8"
+      }
+    },
+    {
+      "text": "Waiting for parent [5f60ca] to handle project join-live-native-request-a91c (request 6ff48d0e446851c1196635a4). No worker-local question was opened.",
+      "time": 1793806542310,
+      "raw": {
+        "text": "Waiting for parent [5f60ca] to handle project join-live-native-request-a91c (request 6ff48d0e446851c1196635a4). No worker-local question was opened."
+      }
+    },
+    {
+      "text": "Waiting for parent [5f60ca] to handle project join-live-native-request-a91c (request 6ff48d0e446851c1196635a4). No worker-local question was opened.",
+      "time": 1793806546061,
+      "raw": {
+        "text": "Waiting for parent [5f60ca] to handle project join-live-native-request-a91c (request 6ff48d0e446851c1196635a4). No worker-local question was opened."
+      }
+    }
+  ],
+  "sameNewProjectRequestId": "6ff48d0e446851c1196635a4",
+  "workerQuestionRecordsAdded": 0,
+  "newProjectJoined": false,
+  "providerRequests": 4,
+  "seconds": 16.786,
+  "parentCanonicalMessageCount": 1,
+  "parentMessageId": "worker-project-6ff48d0e446851c1196635a4-0",
+  "parentMessageStatus": "queued",
+  "parentRuntimeReached": false,
+  "parentAcknowledged": false
+}

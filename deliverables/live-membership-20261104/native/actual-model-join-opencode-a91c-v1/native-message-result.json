@@ -1,0 +1,69 @@
+{
+  "info": {
+    "parentID": "msg_1a7337d4c001A5Lk3EeFCOLh8o",
+    "role": "assistant",
+    "mode": "build",
+    "agent": "build",
+    "path": {
+      "cwd": "/private/tmp/xsm-join-live/idle-20261104-232936-24178c/opencode/workspace",
+      "root": "/"
+    },
+    "cost": 0,
+    "tokens": {
+      "total": 7794,
+      "input": 7779,
+      "output": 15,
+      "reasoning": 0,
+      "cache": {
+        "write": 0,
+        "read": 0
+      }
+    },
+    "modelID": "gpt-6-luna",
+    "providerID": "xsm-subscription",
+    "time": {
+      "created": 1793806546065,
+      "completed": 1793806548574
+    },
+    "finish": "stop",
+    "id": "msg_1a733b491001HBhPD8KCpIU6mQ",
+    "sessionID": "ses_e5908c34cffeKySu6Vn4TIfBEy"
+  },
+  "parts": [
+    {
+      "type": "step-start",
+      "id": "prt_1a733be4d001trtrZVnSOZnXVs",
+      "sessionID": "ses_e5908c34cffeKySu6Vn4TIfBEy",
+      "messageID": "msg_1a733b491001HBhPD8KCpIU6mQ"
+    },
+    {
+      "type": "text",
+      "text": "XSM_JOIN_OPENCODE_A91C_V1",
+      "time": {
+        "start": 1793806548560,
+        "end": 1793806548566
+      },
+      "id": "prt_1a733be50001paKVUoPN5cK9ol",
+      "sessionID": "ses_e5908c34cffeKySu6Vn4TIfBEy",
+      "messageID": "msg_1a733b491001HBhPD8KCpIU6mQ"
+    },
+    {
+      "reason": "stop",
+      "type": "step-finish",
+      "tokens": {
+        "total": 7794,
+        "input": 7779,
+        "output": 15,
+        "reasoning": 0,
+        "cache": {
+          "write": 0,
+          "read": 0
+        }
+      },
+      "cost": 0,
+      "id": "prt_1a733be5a001bYeMEZYwJACeXr",
+      "sessionID": "ses_e5908c34cffeKySu6Vn4TIfBEy",
+      "messageID": "msg_1a733b491001HBhPD8KCpIU6mQ"
+    }
+  ]
+}

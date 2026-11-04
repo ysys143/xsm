@@ -1,0 +1,16 @@
+{
+  "command": [
+    "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/bin/xsm",
+    "send",
+    "ref:5f60ca",
+    "--kind",
+    "note",
+    "--wake",
+    "never",
+    "--text",
+    "가입 시험 진행 정보를 공유합니다. 지금 표시된 Hermes 새 폴더 질문에는 아직 사용자 응답이 없습니다. 이후 join-live-native-request-a91c 요청들이 오면 새 프로젝트의 실제 승인을 얻기 전에 멤버십을 바꾸지 마세요. 동일 프로젝트를 요청하는 여러 워커의 요청은 가능한 한 모아 xsm_join의 workers 배열로 한 번에 사용자에게 물어 주세요. 이 메시지는 가입 승인이 아닙니다. 현재 진행 중인 질문이 끝난 후 남은 요청을 읽으세요. 응답이나 대기 루프는 필요 없습니다."
+  ],
+  "exit_code": 0,
+  "stdout": "stored: strict FYI stored for the next natural consumer boundary (id 2672c25e1745423a)\n",
+  "stderr": ""
+}

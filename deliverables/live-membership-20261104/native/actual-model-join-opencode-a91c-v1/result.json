@@ -1,0 +1,226 @@
+{
+  "status": "native-model-returned-audit-pending",
+  "runtime": "opencode",
+  "root": "/private/tmp/xsm-join-live/actual-model-join-opencode-a91c-v1",
+  "attemptId": "actual-model-join-opencode-a91c-v1",
+  "maxSeconds": 120,
+  "maxProviderRequests": 8,
+  "ref": "4c7d17",
+  "nativeSessionId": "ses_e5908c34cffeKySu6Vn4TIfBEy",
+  "registration": {
+    "runtime": "opencode",
+    "home": "/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-claude-basic-ey1fwkh6/state/protocol-profiles/opencode/bd19394df112cef56a3c4351aebd72501335c9f3f0f55c59afe740a367ecaedf",
+    "session_id": "649a7121fa1ad22c6ac711c35ac66da07515970bf6c4a3cbea124e67aad02a8d",
+    "pid": 45605,
+    "lstart": "Thu Nov  5 00:22:04 2026",
+    "cwd": "/private/tmp/xsm-join-live/idle-20261104-232936-24178c/opencode/workspace",
+    "ref": "4c7d17",
+    "name": "user-authorized join idle preparation",
+    "protocol_version": "1",
+    "protocol_generation": "799c8b6345dd4f3da8e3382892f91b83",
+    "registered": true,
+    "activity": "idle",
+    "protocol_root": "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-claude-basic-ey1fwkh6/state/runtime/5197f2e3e28f",
+    "protocol_python": "/opt/homebrew/opt/python@3.14/bin/python3.14",
+    "protocol_python_version": "3.14.6",
+    "updated": 1793805725.00267
+  },
+  "workerPendingBefore": [],
+  "workerDecisionsBefore": [],
+  "requestsBefore": [],
+  "nativeJoinToolResults": [
+    {
+      "id": "prt_1a733995c001KCiev07NKHrTiQ",
+      "sessionID": "ses_e5908c34cffeKySu6Vn4TIfBEy",
+      "messageID": "msg_1a7337f02001cOaaRGioWXJykW",
+      "type": "tool",
+      "callID": "call_1d0eb329ec8c4da78cc00c922774acaa",
+      "tool": "xsm_join",
+      "state": {
+        "status": "completed",
+        "input": {
+          "project": "join-live-group-21a8"
+        },
+        "output": "{\"scope\":{\"kind\":\"membership\",\"project\":\"join-live-group-21a8\",\"root\":\"/private/tmp/xsm-join-live/idle-20261104-232936-24178c/opencode/workspace\",\"active\":true,\"changed\":false},\"text\":\"already in join-live-group-21a8\"}",
+        "title": "",
+        "metadata": {
+          "truncated": false
+        },
+        "time": {
+          "start": 1793806539109,
+          "end": 1793806539154
+        }
+      }
+    },
+    {
+      "id": "prt_1a733a585001k8toPpVhsDxpCC",
+      "sessionID": "ses_e5908c34cffeKySu6Vn4TIfBEy",
+      "messageID": "msg_1a7339999001VB5XfDl7o2ct1H",
+      "type": "tool",
+      "callID": "call_eaa3a9ecd1304450bdc24823749224eb",
+      "tool": "xsm_join",
+      "state": {
+        "status": "completed",
+        "input": {
+          "project": "join-live-native-request-a91c"
+        },
+        "output": "{\"text\":\"Waiting for parent [5f60ca] to handle project join-live-native-request-a91c (request 6ff48d0e446851c1196635a4). No worker-local question was opened.\"}",
+        "title": "",
+        "metadata": {
+          "truncated": false
+        },
+        "time": {
+          "start": 1793806542218,
+          "end": 1793806542310
+        }
+      }
+    },
+    {
+      "id": "prt_1a733b46e001H7VswDRIOU9S16",
+      "sessionID": "ses_e5908c34cffeKySu6Vn4TIfBEy",
+      "messageID": "msg_1a733a5ea001jBRFMUIqE6PaTL",
+      "type": "tool",
+      "callID": "call_44255810e5f24513966f473760714d8d",
+      "tool": "xsm_join",
+      "state": {
+        "status": "completed",
+        "input": {
+          "project": "join-live-native-request-a91c"
+        },
+        "output": "{\"text\":\"Waiting for parent [5f60ca] to handle project join-live-native-request-a91c (request 6ff48d0e446851c1196635a4). No worker-local question was opened.\"}",
+        "title": "",
+        "metadata": {
+          "truncated": false
+        },
+        "time": {
+          "start": 1793806546032,
+          "end": 1793806546061
+        }
+      }
+    }
+  ],
+  "elapsedSeconds": 16.786,
+  "requestsAfter": [
+    {
+      "id": "6ff48d0e446851c1196635a4",
+      "project": "join-live-native-request-a91c",
+      "worker": "4c7d17",
+      "parent": "5f60ca",
+      "notified": true
+    }
+  ],
+  "workerPendingAfter": [],
+  "workerDecisionsAfter": [],
+  "newScopeJoined": false,
+  "parentMessages": [
+    {
+      "id": "worker-project-6ff48d0e446851c1196635a4-0",
+      "ledger": {
+        "id": "worker-project-6ff48d0e446851c1196635a4-0",
+        "status": "queued",
+        "t": 1793806542.304699,
+        "kind": "task",
+        "scope": "join-live-group-21a8",
+        "from": {
+          "name": "user-authorized join idle preparation",
+          "alias": null,
+          "ref": "4c7d17",
+          "runtime": "opencode"
+        },
+        "to": {
+          "name": "claude-worker",
+          "alias": "claude-3",
+          "ref": "5f60ca",
+          "runtime": "claude"
+        },
+        "preview": "Worker [4c7d17] needs project join-live-native-request-a91c. Collect this request in your session: call xsm_join with project=join-live-native-request-a91c, workers=[\"ref:4c7d17\"] and leave=false. Ask",
+        "req_version": 1,
+        "digest": "cceb803bb5a2fa2e01877a6b131cd9aee3454baf23ad5d59782d5f367ea88213",
+        "evidence": {
+          "accepted": {
+            "ok": true,
+            "t": 1793806542.3051462
+          },
+          "queued": {
+            "ok": true,
+            "t": 1793806542.308019,
+            "detail": "uds:/tmp/cc-socks/42682.sock"
+          }
+        },
+        "runtime_reached": false,
+        "delivery": {
+          "steps": {
+            "accepted": {
+              "ok": true,
+              "t": 1793806542.3051462
+            },
+            "queued": {
+              "ok": true,
+              "t": 1793806542.308019,
+              "detail": "uds:/tmp/cc-socks/42682.sock"
+            },
+            "stored": {
+              "ok": true,
+              "t": 1793806542.303481
+            }
+          },
+          "runtime_reached": false,
+          "digest": "cceb803bb5a2fa2e01877a6b131cd9aee3454baf23ad5d59782d5f367ea88213",
+          "req_version": 1,
+          "legacy": false,
+          "verified": true,
+          "upgraded_from_legacy": false,
+          "acknowledged": false,
+          "handoff_status": "pending"
+        }
+      }
+    }
+  ],
+  "providerRequests": 4,
+  "providerResponses": [
+    {
+      "request": 1,
+      "requestedModel": "gpt-6-luna",
+      "phase": "response",
+      "httpStatus": 200,
+      "responseModels": [
+        "gpt-6-luna"
+      ],
+      "responseBytes": 1007,
+      "limitFailure": false
+    },
+    {
+      "request": 2,
+      "requestedModel": "gpt-6-luna",
+      "phase": "response",
+      "httpStatus": 200,
+      "responseModels": [
+        "gpt-6-luna"
+      ],
+      "responseBytes": 1016,
+      "limitFailure": false
+    },
+    {
+      "request": 3,
+      "requestedModel": "gpt-6-luna",
+      "phase": "response",
+      "httpStatus": 200,
+      "responseModels": [
+        "gpt-6-luna"
+      ],
+      "responseBytes": 1016,
+      "limitFailure": false
+    },
+    {
+      "request": 4,
+      "requestedModel": "gpt-6-luna",
+      "phase": "response",
+      "httpStatus": 200,
+      "responseModels": [
+        "gpt-6-luna"
+      ],
+      "responseBytes": 3015,
+      "limitFailure": false
+    }
+  ]
+}

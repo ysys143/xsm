@@ -1,0 +1,106 @@
+[
+  {
+    "name": "read",
+    "strict": false
+  },
+  {
+    "name": "bash",
+    "strict": false
+  },
+  {
+    "name": "edit",
+    "strict": false
+  },
+  {
+    "name": "write",
+    "strict": false
+  },
+  {
+    "name": "xsm_owned",
+    "strict": false
+  },
+  {
+    "name": "xsm_files",
+    "strict": false
+  },
+  {
+    "name": "xsm_decision_status",
+    "strict": false
+  },
+  {
+    "name": "xsm_ask",
+    "strict": false
+  },
+  {
+    "name": "xsm_question_status",
+    "strict": false
+  },
+  {
+    "name": "xsm_discover",
+    "strict": false
+  },
+  {
+    "name": "xsm_publish",
+    "strict": false
+  },
+  {
+    "name": "xsm_connect",
+    "strict": false
+  },
+  {
+    "name": "xsm_grant",
+    "strict": false
+  },
+  {
+    "name": "xsm_send",
+    "strict": false
+  },
+  {
+    "name": "xsm_team",
+    "strict": false
+  },
+  {
+    "name": "xsm_handover",
+    "strict": false
+  },
+  {
+    "name": "xsm_board",
+    "strict": false
+  },
+  {
+    "name": "xsm_ack",
+    "strict": false
+  },
+  {
+    "name": "xsm_inbox",
+    "strict": false
+  },
+  {
+    "name": "xsm_link",
+    "strict": false
+  },
+  {
+    "name": "xsm_join",
+    "strict": false
+  },
+  {
+    "name": "xsm_reach",
+    "strict": false
+  },
+  {
+    "name": "xsm_doc",
+    "strict": false
+  },
+  {
+    "name": "xsm_doc_endorse",
+    "strict": false
+  },
+  {
+    "name": "xsm_approve",
+    "strict": false
+  },
+  {
+    "name": "xsm_decide",
+    "strict": false
+  }
+]

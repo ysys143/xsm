@@ -1,0 +1,187 @@
+======================================================================
+FAIL: test_a_claude_agent_is_offered_its_question_tool_in_that_text (tests.test_person_decisions.PersonDecisionTest.test_a_claude_agent_is_offered_its_question_tool_in_that_text)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/tests/test_person_decisions.py", line 1038, in test_a_claude_agent_is_offered_its_question_tool_in_that_text
+    self.assertIn("AskUserQuestion", text)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'AskUserQuestion' not found in "this client cannot show a form. Ask your user once using this exact question, without paraphrasing: [xsm-decision:e97ca195b1ac5da2] agent@claude-3 asks to let /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-test-69iz6yn7 join the xsm project 'demo'.\nAllow it?\nChoices: allow, deny. After the native question tool returns, retry this same MCP tool with the same arguments; the verified answer is recovered and applied in that call. Do not switch to a shell or supply recovery IDs manually."
+
+======================================================================
+FAIL: test_a_declined_form_is_a_no_and_records_no_ask (tests.test_person_decisions.PersonDecisionTest.test_a_declined_form_is_a_no_and_records_no_ask)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/tests/test_person_decisions.py", line 1147, in test_a_declined_form_is_a_no_and_records_no_ask
+    self.assertIn("Ask your user now", text)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Ask your user now' not found in 'your user did not answer (declined — by your user, or by the client without showing the form (Codex does this under approval_policy "never")). Ask your user once using this exact question, without paraphrasing: [xsm-decision:dda9ee643119757e] agent@claude-3 asks to let /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-test-1y0xze5x join the xsm project \'demo\'.\nAllow it?\nChoices: allow, deny. After the native question tool returns, retry this same MCP tool with the same arguments; the verified answer is recovered and applied in that call. Do not switch to a shell or supply recovery IDs manually.; the folder\'s projects are unchanged'
+
+======================================================================
+FAIL: test_a_link_form_that_cannot_show_is_asked_for_in_words_and_one_yes_does (tests.test_person_decisions.PersonDecisionTest.test_a_link_form_that_cannot_show_is_asked_for_in_words_and_one_yes_does)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/tests/test_person_decisions.py", line 1025, in test_a_link_form_that_cannot_show_is_asked_for_in_words_and_one_yes_does
+    self.assertIn("`xsm link %s`" % shlex.quote(root), text)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: '`xsm link /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-test-vw_2zlwq/other`' not found in 'this client cannot show a form. Ask your user once using this exact question, without paraphrasing: [xsm-decision:beb2be24a7452aec] agent@claude-3 asks to link /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-test-vw_2zlwq with /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-test-vw_2zlwq/other: the sessions of both folders talk, both ways, until unlinked.\nAllow it?\nChoices: allow, deny. After the native question tool returns, retry this same MCP tool with the same arguments; the verified answer is recovered and applied in that call. Do not switch to a shell or supply recovery IDs manually.'
+
+======================================================================
+FAIL: test_a_remote_pairing_is_asked_for_by_the_session_folder_its_command_uses (tests.test_person_decisions.PersonDecisionTest.test_a_remote_pairing_is_asked_for_by_the_session_folder_its_command_uses)
+`xsm remote add` takes no --dir: it pairs the session's own folder.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/tests/test_person_decisions.py", line 1105, in test_a_remote_pairing_is_asked_for_by_the_session_folder_its_command_uses
+    self.assertIn("Ask your user now", text)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Ask your user now' not found in 'this client cannot show a form. Ask your user once using this exact question, without paraphrasing: [xsm-decision:7e0e9bb6e34aed42] agent@claude-3 wants to start a remote:box worker in /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-test-kj0q6bzl with PAIRING with another machine over SSH: sessions there in the paired project can message this project.\nReason: pair\nAllow it once?\nChoices: deny, allow once. After the native question tool returns, retry this same MCP tool with the same arguments; the verified answer is recovered and applied in that call. Do not switch to a shell or supply recovery IDs manually.'
+
+======================================================================
+FAIL: test_an_answer_to_askuserquestion_is_the_reply_then_shown_then_passes (tests.test_person_decisions.PersonDecisionTest.test_an_answer_to_askuserquestion_is_the_reply_then_shown_then_passes)
+The agent asked with its question tool; the answer is a tool result no
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/tests/test_person_decisions.py", line 716, in test_an_answer_to_askuserquestion_is_the_reply_then_shown_then_passes
+    self.assertEqual(self._asked_files(), [])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['abc123.recent.json.lock'] != []
+
+First list contains 1 additional elements.
+First extra element 0:
+'abc123.recent.json.lock'
+
+- ['abc123.recent.json.lock']
++ []
+
+======================================================================
+FAIL: test_an_answer_with_no_ask_waiting_is_nothing (tests.test_person_decisions.PersonDecisionTest.test_an_answer_with_no_ask_waiting_is_nothing)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/tests/test_person_decisions.py", line 745, in test_an_answer_with_no_ask_waiting_is_nothing
+    self.assertEqual(self._asked_files(), [], "no ask, no file")
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['abc123.recent.json.lock'] != []
+
+First list contains 1 additional elements.
+First extra element 0:
+'abc123.recent.json.lock'
+
+- ['abc123.recent.json.lock']
++ [] : no ask, no file
+
+======================================================================
+FAIL: test_no_message_for_these_sends_the_person_to_a_terminal (tests.test_person_decisions.PersonDecisionTest.test_no_message_for_these_sends_the_person_to_a_terminal)
+User decision, 2026-10-01: the agent asks and runs the command; no
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/tests/test_person_decisions.py", line 321, in test_no_message_for_these_sends_the_person_to_a_terminal
+    self.fail("%s still says %r: ...%s..." % (name, phrase, around))
+    ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: README.md still says 'in a terminal': ...fter the target is the message ``` These examples also work in a terminal as `xsm list`, `xsm who`, `xsm send ...`. With no command o...
+
+======================================================================
+FAIL: test_the_other_form_tools_name_the_ask_their_command_finds (tests.test_person_decisions.PersonDecisionTest.test_the_other_form_tools_name_the_ask_their_command_finds) [join]
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/tests/test_person_decisions.py", line 1045, in test_the_other_form_tools_name_the_ask_their_command_finds
+    self._one_yes_is_enough("xsm_join", {"project": "demo"},
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                            lambda: self._cli(["join", "demo"])[1], self.DISMISSED)
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/tests/test_person_decisions.py", line 1005, in _one_yes_is_enough
+    self.assertIn("Ask your user now", text)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Ask your user now' not found in "your user did not answer (the form was dismissed). Ask your user once using this exact question, without paraphrasing: [xsm-decision:eb07235e7112ac74] agent@claude-3 asks to let /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-test-mwgqey84 join the xsm project 'demo'.\nAllow it?\nChoices: allow, deny. After the native question tool returns, retry this same MCP tool with the same arguments; the verified answer is recovered and applied in that call. Do not switch to a shell or supply recovery IDs manually.; the folder's projects are unchanged"
+
+======================================================================
+FAIL: test_the_other_form_tools_name_the_ask_their_command_finds (tests.test_person_decisions.PersonDecisionTest.test_the_other_form_tools_name_the_ask_their_command_finds) [leave]
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/tests/test_person_decisions.py", line 1048, in test_the_other_form_tools_name_the_ask_their_command_finds
+    self._one_yes_is_enough("xsm_join", {"project": "demo", "leave": True},
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                            lambda: self._cli(["leave", "demo"])[1])
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/tests/test_person_decisions.py", line 1005, in _one_yes_is_enough
+    self.assertIn("Ask your user now", text)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Ask your user now' not found in "this client cannot show a form. Ask your user once using this exact question, without paraphrasing: [xsm-decision:a6cdf70eca426794] agent@claude-3 asks to let /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-test-mwgqey84 leave the xsm project 'demo'.\nAllow it?\nChoices: allow, deny. After the native question tool returns, retry this same MCP tool with the same arguments; the verified answer is recovered and applied in that call. Do not switch to a shell or supply recovery IDs manually."
+
+======================================================================
+FAIL: test_the_other_form_tools_name_the_ask_their_command_finds (tests.test_person_decisions.PersonDecisionTest.test_the_other_form_tools_name_the_ask_their_command_finds) [reach]
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/tests/test_person_decisions.py", line 1051, in test_the_other_form_tools_name_the_ask_their_command_finds
+    self._one_yes_is_enough("xsm_reach", {"dir": other},
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                            lambda: self._cli(["reach", other])[1], self.DISMISSED)
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/tests/test_person_decisions.py", line 1005, in _one_yes_is_enough
+    self.assertIn("Ask your user now", text)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Ask your user now' not found in 'your user did not answer (the form was dismissed). Ask your user once using this exact question, without paraphrasing: [xsm-decision:20fbbcd5af5c80c0] agent@claude-3 (abc123) asks to talk with the sessions in /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-test-mwgqey84/other, both ways, until it ends.\nAllow it?\nChoices: allow, deny. After the native question tool returns, retry this same MCP tool with the same arguments; the verified answer is recovered and applied in that call. Do not switch to a shell or supply recovery IDs manually.'
+
+======================================================================
+FAIL: test_the_other_form_tools_name_the_ask_their_command_finds (tests.test_person_decisions.PersonDecisionTest.test_the_other_form_tools_name_the_ask_their_command_finds) [approve]
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/tests/test_person_decisions.py", line 1059, in test_the_other_form_tools_name_the_ask_their_command_finds
+    self._one_yes_is_enough("xsm_approve", {"id": "r1"},
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                            lambda: self._cli(["approve", "r1"])[1], self.DISMISSED)
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/tests/test_person_decisions.py", line 1005, in _one_yes_is_enough
+    self.assertIn("Ask your user now", text)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Ask your user now' not found in 'your user did not answer (the form was dismissed); the request is still waiting and the worker is blocked until it is answered. Ask your user once using this exact question, without paraphrasing: [xsm-decision:156c4c1bd8098f9f] Worker w1 request [r1] is waiting for your permission:\nBash: rm -rf build\nAllow it?\nChoices: allow, deny. After the native question tool returns, retry this same MCP tool with the same arguments; the verified answer is recovered and applied in that call. Do not switch to a shell or supply recovery IDs manually.'
+
+======================================================================
+FAIL: test_the_other_form_tools_name_the_ask_their_command_finds (tests.test_person_decisions.PersonDecisionTest.test_the_other_form_tools_name_the_ask_their_command_finds) [grant]
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/tests/test_person_decisions.py", line 1066, in test_the_other_form_tools_name_the_ask_their_command_finds
+    text = self._one_yes_is_enough(
+        "xsm_grant", {"runtime": "codex", "options": ["full_access"], "reason": "r",
+                      "dir": self.tmp}, grant, self.DISMISSED)
+  File "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/tests/test_person_decisions.py", line 1005, in _one_yes_is_enough
+    self.assertIn("Ask your user now", text)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Ask your user now' not found in 'your user did not answer (the form was dismissed); nothing was granted, so do not start that worker without their yes. Ask your user once using this exact question, without paraphrasing: [xsm-decision:df4c7481f75d2931] agent@claude-3 wants to start a codex worker in /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-test-mwgqey84 with FULL ACCESS: no sandbox and no approval prompts.\nReason: r\nAllow it once?\nChoices: deny, allow once. After the native question tool returns, retry this same MCP tool with the same arguments; the verified answer is recovered and applied in that call. Do not switch to a shell or supply recovery IDs manually.'
+
+======================================================================
+FAIL: test_the_other_form_tools_name_the_ask_their_command_finds (tests.test_person_decisions.PersonDecisionTest.test_the_other_form_tools_name_the_ask_their_command_finds) [grant outside this session's scope]
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/tests/test_person_decisions.py", line 1083, in test_the_other_form_tools_name_the_ask_their_command_finds
+    self._one_yes_is_enough(
+    ~~~~~~~~~~~~~~~~~~~~~~~^
+        "xsm_grant", {"runtime": "codex", "options": ["full_access"], "reason": "r",
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                      "dir": elsewhere}, grant_there, self.DISMISSED)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/tests/test_person_decisions.py", line 1005, in _one_yes_is_enough
+    self.assertIn("Ask your user now", text)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Ask your user now' not found in 'your user did not answer (the form was dismissed); nothing was granted, so do not start that worker without their yes. Ask your user once using this exact question, without paraphrasing: [xsm-decision:11b2f0f002c8f6b0] agent@claude-3 wants to start a codex worker in /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-test-elsewhere-1o2iyp6s with FULL ACCESS: no sandbox and no approval prompts.\nReason: r\nAllow it once?\nChoices: deny, allow once. After the native question tool returns, retry this same MCP tool with the same arguments; the verified answer is recovered and applied in that call. Do not switch to a shell or supply recovery IDs manually.'
+
+======================================================================
+FAIL: test_the_other_form_tools_name_the_ask_their_command_finds (tests.test_person_decisions.PersonDecisionTest.test_the_other_form_tools_name_the_ask_their_command_finds) [endorse]
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/tests/test_person_decisions.py", line 1091, in test_the_other_form_tools_name_the_ask_their_command_finds
+    self._one_yes_is_enough(
+    ~~~~~~~~~~~~~~~~~~~~~~~^
+        "xsm_doc_endorse", {"doc": path, "node": node["id"]},
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        lambda: self._cli(["doc", "add", path, "--tag", "endorsed", "--parent",
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                           node["id"], "--text", body])[1])
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/tests/test_person_decisions.py", line 1005, in _one_yes_is_enough
+    self.assertIn("Ask your user now", text)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Ask your user now' not found in "this client cannot show a form. Ask your user once using this exact question, without paraphrasing: [xsm-decision:c1dd5e0f838ddf27] Endorse this node of d.md as the document's text?\n[report] by w@a [zzzzzz]\n\nthe report\nChoices: endorse, not now. After the native question tool returns, retry this same MCP tool with the same arguments; the verified answer is recovered and applied in that call. Do not switch to a shell or supply recovery IDs manually."
+
+----------------------------------------------------------------------
+Ran 150 tests in 17.676s
+
+FAILED (failures=14)

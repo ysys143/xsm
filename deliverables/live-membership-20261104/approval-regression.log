@@ -1,0 +1,16 @@
+xsm: --reply is ignored: it has to be your user's own words from this session, in answer to your question, and these match nothing they wrote here that has not already been used for, or said about, another request. Ask them in plain words, or with your question tool (AskUserQuestion), one thing at a time; xsm keeps their answer itself, so run the command again after they reply, without --reply.
+xsm: --reply is ignored: it has to be your user's own words from this session, in answer to your question, and these match nothing they wrote here that has not already been used for, or said about, another request. Ask them in plain words, or with your question tool (AskUserQuestion), one thing at a time; xsm keeps their answer itself, so run the command again after they reply, without --reply.
+xsm: --reply is ignored: it has to be your user's own words from this session, in answer to your question, and these match nothing they wrote here that has not already been used for, or said about, another request. Ask them in plain words, or with your question tool (AskUserQuestion), one thing at a time; xsm keeps their answer itself, so run the command again after they reply, without --reply.
+======================================================================
+FAIL: test_answers_are_selected_under_the_conversations_lock (tests.test_answer_binding.NothingLostTest.test_answers_are_selected_under_the_conversations_lock)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/tests/test_answer_binding.py", line 288, in test_answers_are_selected_under_the_conversations_lock
+    self.assertIn("consent-bindings", taken[0])
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'consent-bindings' not found in '/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-test-2okibtx3/asked/abc123.json'
+
+----------------------------------------------------------------------
+Ran 103 tests in 13.791s
+
+FAILED (failures=1)

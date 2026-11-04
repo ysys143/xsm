@@ -1,0 +1,73 @@
+[
+  {
+    "case": "resume-answer",
+    "baseline": "f606349",
+    "files": [
+      "xsm/user_answers.py"
+    ],
+    "test": "tests.test_user_answers.UserAnswersTest.test_resuming_after_interruption_keeps_the_exact_bound_answer",
+    "exit_code": 1,
+    "detected": true
+  },
+  {
+    "case": "undecided-question",
+    "baseline": "f606349",
+    "files": [
+      "xsm/consent.py"
+    ],
+    "test": "tests.test_open_consent.RequestAsReplyTest.test_request_to_show_an_approval_question_is_not_the_answer",
+    "exit_code": 1,
+    "detected": true
+  },
+  {
+    "case": "cli-inherited-membership",
+    "baseline": "8b0345a",
+    "files": [
+      "xsm/cli.py"
+    ],
+    "test": "tests.test_worker_project_flow.WorkerProjectFlowTest.test_cli_worker_rejoining_approved_project_needs_no_new_question",
+    "exit_code": 1,
+    "detected": true
+  },
+  {
+    "case": "cli-parent-routing",
+    "baseline": "8b0345a",
+    "files": [
+      "xsm/cli.py"
+    ],
+    "test": "tests.test_worker_project_flow.WorkerProjectFlowTest.test_cli_worker_new_project_notifies_parent_once_without_local_question",
+    "exit_code": 1,
+    "detected": true
+  },
+  {
+    "case": "stopped-worker-before-question",
+    "baseline": "9b2d30c",
+    "files": [
+      "xsm/delegation.py",
+      "xsm/operations.py"
+    ],
+    "test": "tests.test_worker_project_flow.WorkerProjectFlowTest.test_ended_worker_is_rejected_before_opening_a_parent_question",
+    "exit_code": 1,
+    "detected": true
+  },
+  {
+    "case": "worker-ends-during-question",
+    "baseline": "cd6d6c0",
+    "files": [
+      "xsm/operations.py"
+    ],
+    "test": "tests.test_worker_project_flow.WorkerProjectFlowTest.test_worker_ending_while_form_is_open_never_starts_application",
+    "exit_code": 1,
+    "detected": true
+  },
+  {
+    "case": "coordinator-only-question",
+    "baseline": "cd6d6c0",
+    "files": [
+      "xsm/operations.py"
+    ],
+    "test": "tests.test_worker_project_flow.WorkerProjectFlowTest.test_new_conversation_in_joined_folder_confirms_coordinator_only",
+    "exit_code": 1,
+    "detected": true
+  }
+]

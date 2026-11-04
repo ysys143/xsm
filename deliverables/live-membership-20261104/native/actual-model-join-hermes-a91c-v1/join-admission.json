@@ -1,0 +1,12 @@
+{
+  "admission_id": "fb9fc0ab3db4490f8755727829c1ffd4",
+  "ref": {
+    "profile_id": "/private/tmp/xsm-join-live/hermes-readonly-bootstrap-20261104-234526-17820a/hermes",
+    "session_id": "local-b4e8a956c2fe68619b6d9a0bc829e1f7305a935c431782ee92b11b4a814ef18f"
+  },
+  "sequence": 3,
+  "status": "queued",
+  "outcome": null,
+  "authority_epoch": 3,
+  "execution_generation": null
+}

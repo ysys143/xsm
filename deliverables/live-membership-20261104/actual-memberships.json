@@ -1,0 +1,30 @@
+[
+  {
+    "id": "join-live-codex-deny-80d26f",
+    "members": [
+      {
+        "root": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging"
+      }
+    ]
+  },
+  {
+    "id": "join-live-group-21a8",
+    "members": [
+      {
+        "root": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging"
+      },
+      {
+        "root": "/private/tmp/xsm-join-live/idle-20261104-232936-24178c/pi/workspace"
+      },
+      {
+        "root": "/private/tmp/xsm-join-live/idle-20261104-232936-24178c/opencode/workspace"
+      },
+      {
+        "root": "/private/tmp/xsm-join-live/idle-20261104-232936-24178c/openclaw/workspace"
+      },
+      {
+        "root": "/private/tmp/xsm-join-live/hermes-readonly-bootstrap-20261104-234526-17820a/workspace"
+      }
+    ]
+  }
+]

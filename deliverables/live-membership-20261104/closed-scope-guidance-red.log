@@ -1,0 +1,13 @@
+======================================================================
+FAIL: test_worker_ending_while_form_is_open_never_starts_application (tests.test_worker_project_flow.WorkerProjectFlowTest.test_worker_ending_while_form_is_open_never_starts_application)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/tests/test_worker_project_flow.py", line 106, in test_worker_ending_while_form_is_open_never_starts_application
+    self.assertNotIn('Ask your user once using this exact question', text)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Ask your user once using this exact question' unexpectedly found in "your user did not answer (the client returned an error: decision caller or scope changed). Ask your user once using this exact question, without paraphrasing: [xsm-decision:166254dd6d4451d1] Join project 'extra' for these selected folders?\nflow-fixture-98dffee4: /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-test-yhft0rj7/leader\nflow-fixture-2d620e40: /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-test-yhft0rj7/a\nChoices: allow, deny. After the native question tool returns, retry this same MCP tool with the same arguments; the verified answer is recovered and applied in that call. Do not switch to a shell or supply recovery IDs manually.; worker memberships are unchanged"
+
+----------------------------------------------------------------------
+Ran 1 test in 0.436s
+
+FAILED (failures=1)

@@ -1,0 +1,5 @@
+{
+  "onlyChange": "isolated Pi profile local relay port; same native profile/workspace/provider model and authorization semantics",
+  "before": "http://127.0.0.1:58545/v1",
+  "after": "http://127.0.0.1:53293/v1"
+}

@@ -1,0 +1,148 @@
+{
+  "status": "native-model-returned-audit-pending",
+  "runtime": "hermes",
+  "root": "/private/tmp/xsm-join-live/actual-model-join-hermes-a91c-v1",
+  "fixedAttempt": "hermes-a91c-v1",
+  "nativeSessionId": "local-b4e8a956c2fe68619b6d9a0bc829e1f7305a935c431782ee92b11b4a814ef18f",
+  "ref": "ref:9dfbd1",
+  "maxProviderRequests": 8,
+  "maxModelSeconds": 120,
+  "serviceCapUtc": "2026-11-04T16:05:00Z",
+  "modelJoinToolCalls": 0,
+  "registryWrites": 0,
+  "parentLinkWrites": 0,
+  "approvalAnswers": 0,
+  "beforeGeneration": "1ed81058cc484dea81fb949e17d09f9e",
+  "requestsBefore": [],
+  "workerPendingBefore": [],
+  "workerDecisionsBefore": [],
+  "nativeClientPid": 44793,
+  "elapsedSeconds": 924.826,
+  "providerRequests": 6,
+  "responseModelLabels": [
+    "gpt-6-luna"
+  ],
+  "upstreamResponses": [
+    {
+      "request": 1,
+      "httpStatus": 200,
+      "rawBody": "/private/tmp/xsm-join-live/actual-model-join-hermes-a91c-v1/upstream-01.body",
+      "responseBytes": 1029
+    },
+    {
+      "request": 2,
+      "httpStatus": 200,
+      "rawBody": "/private/tmp/xsm-join-live/actual-model-join-hermes-a91c-v1/upstream-02.body",
+      "responseBytes": 1002
+    },
+    {
+      "request": 3,
+      "httpStatus": 200,
+      "rawBody": "/private/tmp/xsm-join-live/actual-model-join-hermes-a91c-v1/upstream-03.body",
+      "responseBytes": 1062
+    },
+    {
+      "request": 4,
+      "httpStatus": 200,
+      "rawBody": "/private/tmp/xsm-join-live/actual-model-join-hermes-a91c-v1/upstream-04.body",
+      "responseBytes": 1071
+    },
+    {
+      "request": 5,
+      "httpStatus": 200,
+      "rawBody": "/private/tmp/xsm-join-live/actual-model-join-hermes-a91c-v1/upstream-05.body",
+      "responseBytes": 1071
+    },
+    {
+      "request": 6,
+      "httpStatus": 200,
+      "rawBody": "/private/tmp/xsm-join-live/actual-model-join-hermes-a91c-v1/upstream-06.body",
+      "responseBytes": 3015
+    }
+  ],
+  "nativeOutcome": "completed",
+  "actualFinalResponse": "XSM_JOIN_HERMES_A91C_V1",
+  "testSeconds": 25.211,
+  "afterGeneration": "e21580d9ccfa47fb94523f9e745b0cb5",
+  "requestsAfter": [
+    {
+      "id": "897d4f16f8d938fa34774aeb",
+      "project": "join-live-native-request-a91c",
+      "worker": "9dfbd1",
+      "parent": "5f60ca",
+      "notified": true
+    }
+  ],
+  "newScopeJoined": false,
+  "workerPendingAfter": [],
+  "workerDecisionsAfter": [],
+  "parentRef": "5f60ca",
+  "parentMessages": [
+    {
+      "id": "worker-project-897d4f16f8d938fa34774aeb-0",
+      "ledger": {
+        "id": "worker-project-897d4f16f8d938fa34774aeb-0",
+        "status": "queued",
+        "t": 1793807378.2235909,
+        "kind": "task",
+        "scope": "join-live-group-21a8",
+        "from": {
+          "name": "hermes-c08237bb",
+          "alias": null,
+          "ref": "9dfbd1",
+          "runtime": "hermes"
+        },
+        "to": {
+          "name": "claude-worker",
+          "alias": "claude-3",
+          "ref": "5f60ca",
+          "runtime": "claude"
+        },
+        "preview": "Worker [9dfbd1] needs project join-live-native-request-a91c. Collect this request in your session: call xsm_join with project=join-live-native-request-a91c, workers=[\"ref:9dfbd1\"] and leave=false. Ask",
+        "req_version": 1,
+        "digest": "a0ebc2f92fe8ce0eec18b9eb0e5b2289f128b72752605bebc56b33c514a2b217",
+        "evidence": {
+          "accepted": {
+            "ok": true,
+            "t": 1793807378.223926
+          },
+          "queued": {
+            "ok": true,
+            "t": 1793807378.227196,
+            "detail": "uds:/tmp/cc-socks/42682.sock"
+          }
+        },
+        "runtime_reached": false,
+        "delivery": {
+          "steps": {
+            "accepted": {
+              "ok": true,
+              "t": 1793807378.223926
+            },
+            "queued": {
+              "ok": true,
+              "t": 1793807378.227196,
+              "detail": "uds:/tmp/cc-socks/42682.sock"
+            },
+            "stored": {
+              "ok": true,
+              "t": 1793807378.222579
+            }
+          },
+          "runtime_reached": false,
+          "digest": "a0ebc2f92fe8ce0eec18b9eb0e5b2289f128b72752605bebc56b33c514a2b217",
+          "req_version": 1,
+          "legacy": false,
+          "verified": true,
+          "upgraded_from_legacy": false,
+          "acknowledged": false,
+          "handoff_status": "pending"
+        }
+      }
+    }
+  ],
+  "heartbeatUtc": "2026-11-04T16:04:37.016163+00:00",
+  "liveBinding": true,
+  "activity": "idle",
+  "keeperStopped": true
+}

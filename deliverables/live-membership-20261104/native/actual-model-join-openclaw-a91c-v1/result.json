@@ -1,0 +1,170 @@
+{
+  "status": "native-model-returned-audit-pending",
+  "runtime": "openclaw",
+  "root": "/private/tmp/xsm-join-live/actual-model-join-openclaw-a91c-v1",
+  "attemptId": "actual-model-join-openclaw-a91c-v1",
+  "maxSeconds": 120,
+  "maxProviderRequests": 8,
+  "ref": "bb683b",
+  "nativeSessionId": "9c23f439-fe3b-4ce5-a062-9a36bc3a9dec",
+  "registration": {
+    "runtime": "openclaw",
+    "home": "/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-claude-basic-ey1fwkh6/state/protocol-profiles/openclaw/ed6e5b57b2644ab4c9112095f0da38d6afebfed584c6d234719fece8c227bd83",
+    "session_id": "9edb512812dc4611972513c3df5063b52f5cfd0a9182455792d68b8a329355e0",
+    "pid": 46555,
+    "lstart": "Thu Nov  5 00:22:18 2026",
+    "cwd": "/private/tmp/xsm-join-live/idle-20261104-232936-24178c/openclaw/workspace",
+    "ref": "bb683b",
+    "name": "openclaw-9edb5128",
+    "protocol_version": "1",
+    "protocol_generation": "6952569b415d44d18361ba8a7367fac9",
+    "registered": true,
+    "activity": "idle",
+    "protocol_root": "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-claude-basic-ey1fwkh6/state/runtime/5197f2e3e28f",
+    "protocol_python": "/opt/homebrew/opt/python@3.14/bin/python3.14",
+    "protocol_python_version": "3.14.6",
+    "updated": 1793805738.792576
+  },
+  "workerPendingBefore": [],
+  "workerDecisionsBefore": [],
+  "requestsBefore": [],
+  "nativeReply": {
+    "disposition": "visible",
+    "text": "XSM_JOIN_OPENCLAW_A91C_V1"
+  },
+  "elapsedSeconds": 27.39,
+  "requestsAfter": [
+    {
+      "id": "f3f2f7f46f25d09a7ed14c1b",
+      "project": "join-live-native-request-a91c",
+      "worker": "bb683b",
+      "parent": "5f60ca",
+      "notified": true
+    }
+  ],
+  "workerPendingAfter": [],
+  "workerDecisionsAfter": [],
+  "newScopeJoined": false,
+  "parentMessages": [
+    {
+      "id": "worker-project-f3f2f7f46f25d09a7ed14c1b-0",
+      "ledger": {
+        "id": "worker-project-f3f2f7f46f25d09a7ed14c1b-0",
+        "status": "queued",
+        "t": 1793806612.275224,
+        "kind": "task",
+        "scope": "join-live-group-21a8",
+        "from": {
+          "name": "openclaw-9edb5128",
+          "alias": null,
+          "ref": "bb683b",
+          "runtime": "openclaw"
+        },
+        "to": {
+          "name": "claude-worker",
+          "alias": "claude-3",
+          "ref": "5f60ca",
+          "runtime": "claude"
+        },
+        "preview": "Worker [bb683b] needs project join-live-native-request-a91c. Collect this request in your session: call xsm_join with project=join-live-native-request-a91c, workers=[\"ref:bb683b\"] and leave=false. Ask",
+        "req_version": 1,
+        "digest": "b64af9ce30e56738e1c25ed66272d1c7d64fbe628b3693f92c44d8f13691a53a",
+        "evidence": {
+          "accepted": {
+            "ok": true,
+            "t": 1793806612.2756228
+          },
+          "queued": {
+            "ok": true,
+            "t": 1793806612.2784908,
+            "detail": "uds:/tmp/cc-socks/42682.sock"
+          }
+        },
+        "runtime_reached": false,
+        "delivery": {
+          "steps": {
+            "accepted": {
+              "ok": true,
+              "t": 1793806612.2756228
+            },
+            "queued": {
+              "ok": true,
+              "t": 1793806612.2784908,
+              "detail": "uds:/tmp/cc-socks/42682.sock"
+            },
+            "stored": {
+              "ok": true,
+              "t": 1793806612.2740512
+            }
+          },
+          "runtime_reached": false,
+          "digest": "b64af9ce30e56738e1c25ed66272d1c7d64fbe628b3693f92c44d8f13691a53a",
+          "req_version": 1,
+          "legacy": false,
+          "verified": true,
+          "upgraded_from_legacy": false,
+          "acknowledged": false,
+          "handoff_status": "pending"
+        }
+      }
+    }
+  ],
+  "providerRequests": 5,
+  "providerResponses": [
+    {
+      "request": 1,
+      "requestedModel": "gpt-6-luna",
+      "phase": "response",
+      "httpStatus": 200,
+      "responseModels": [
+        "gpt-6-luna"
+      ],
+      "responseBytes": 1018,
+      "limitFailure": false
+    },
+    {
+      "request": 2,
+      "requestedModel": "gpt-6-luna",
+      "phase": "response",
+      "httpStatus": 200,
+      "responseModels": [
+        "gpt-6-luna"
+      ],
+      "responseBytes": 1054,
+      "limitFailure": false
+    },
+    {
+      "request": 3,
+      "requestedModel": "gpt-6-luna",
+      "phase": "response",
+      "httpStatus": 200,
+      "responseModels": [
+        "gpt-6-luna"
+      ],
+      "responseBytes": 1063,
+      "limitFailure": false
+    },
+    {
+      "request": 4,
+      "requestedModel": "gpt-6-luna",
+      "phase": "response",
+      "httpStatus": 200,
+      "responseModels": [
+        "gpt-6-luna"
+      ],
+      "responseBytes": 1063,
+      "limitFailure": false
+    },
+    {
+      "request": 5,
+      "requestedModel": "gpt-6-luna",
+      "phase": "response",
+      "httpStatus": 200,
+      "responseModels": [
+        "gpt-6-luna"
+      ],
+      "responseBytes": 3017,
+      "limitFailure": false
+    }
+  ]
+}

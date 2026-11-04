@@ -1,0 +1,58 @@
+{
+  "status": "completed-actual-membership-scenarios",
+  "runtime_membership_checks": {
+    "required": 6,
+    "passed": 6,
+    "runtimes": [
+      "claude",
+      "codex",
+      "pi",
+      "opencode",
+      "openclaw",
+      "hermes"
+    ]
+  },
+  "worker_routing_checks": {
+    "required": 5,
+    "passed": 5,
+    "canonical_messages_per_request": 1,
+    "parent_ACK_all": true,
+    "runtimes": [
+      "codex",
+      "pi",
+      "opencode",
+      "openclaw",
+      "hermes"
+    ]
+  },
+  "required_component_suite": {
+    "tests": 205,
+    "passed": true,
+    "log": "required-approval-suite-release-check.log"
+  },
+  "before_fix_regressions": {
+    "required": 7,
+    "detected": 7,
+    "file": "regressions.json"
+  },
+  "legacy_suite": {
+    "remaining_failed_assertions": 12,
+    "baseline_failed_assertions": 17,
+    "new_failing_cases": []
+  },
+  "human_choices": {
+    "codex_first": "allow",
+    "codex_second": "deny",
+    "group_workers": "allow via user-directed native UI input; first agent navigation error retained",
+    "hermes_new_folder": "allow via user-directed native UI input",
+    "new_pi_coordinator": "allow via user-directed native UI input",
+    "a91c_followup": "user confirmed direct native allow; workers ended so not applied; unknown/started record retained"
+  },
+  "no_global_install_or_release": true,
+  "scope_limits": [
+    "native4 worker paths, not every independent foreground question UI",
+    "guided model prompts, not autonomous Orca worker-creation coverage",
+    "classic Codex uses current real conversation for controller and CLI worker phase",
+    "new-project ACK is not a membership grant"
+  ]
+}

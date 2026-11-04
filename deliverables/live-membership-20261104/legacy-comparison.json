@@ -1,0 +1,20 @@
+{
+  "baseline": "f606349",
+  "baseline_failed_assertions": 17,
+  "current_failed_assertions": 12,
+  "new_failing_cases": [],
+  "remaining": [
+    "test_a_claude_agent_is_offered_its_question_tool_in_that_text (tests.test_person_decisions.PersonDecisionTest.test_a_claude_agent_is_offered_its_question_tool_in_that_text)",
+    "test_a_declined_form_is_a_no_and_records_no_ask (tests.test_person_decisions.PersonDecisionTest.test_a_declined_form_is_a_no_and_records_no_ask)",
+    "test_a_link_form_that_cannot_show_is_asked_for_in_words_and_one_yes_does (tests.test_person_decisions.PersonDecisionTest.test_a_link_form_that_cannot_show_is_asked_for_in_words_and_one_yes_does)",
+    "test_a_remote_pairing_is_asked_for_by_the_session_folder_its_command_uses (tests.test_person_decisions.PersonDecisionTest.test_a_remote_pairing_is_asked_for_by_the_session_folder_its_command_uses)",
+    "test_no_message_for_these_sends_the_person_to_a_terminal (tests.test_person_decisions.PersonDecisionTest.test_no_message_for_these_sends_the_person_to_a_terminal)",
+    "test_the_other_form_tools_name_the_ask_their_command_finds (tests.test_person_decisions.PersonDecisionTest.test_the_other_form_tools_name_the_ask_their_command_finds) [approve]",
+    "test_the_other_form_tools_name_the_ask_their_command_finds (tests.test_person_decisions.PersonDecisionTest.test_the_other_form_tools_name_the_ask_their_command_finds) [endorse]",
+    "test_the_other_form_tools_name_the_ask_their_command_finds (tests.test_person_decisions.PersonDecisionTest.test_the_other_form_tools_name_the_ask_their_command_finds) [grant outside this session's scope]",
+    "test_the_other_form_tools_name_the_ask_their_command_finds (tests.test_person_decisions.PersonDecisionTest.test_the_other_form_tools_name_the_ask_their_command_finds) [grant]",
+    "test_the_other_form_tools_name_the_ask_their_command_finds (tests.test_person_decisions.PersonDecisionTest.test_the_other_form_tools_name_the_ask_their_command_finds) [join]",
+    "test_the_other_form_tools_name_the_ask_their_command_finds (tests.test_person_decisions.PersonDecisionTest.test_the_other_form_tools_name_the_ask_their_command_finds) [leave]",
+    "test_the_other_form_tools_name_the_ask_their_command_finds (tests.test_person_decisions.PersonDecisionTest.test_the_other_form_tools_name_the_ask_their_command_finds) [reach]"
+  ]
+}

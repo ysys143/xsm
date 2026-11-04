@@ -1,0 +1,14 @@
+======================================================================
+FAIL: test_cli_worker_rejoining_approved_project_needs_no_new_question (tests.test_worker_project_flow.WorkerProjectFlowTest.test_cli_worker_rejoining_approved_project_needs_no_new_question)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-membership-red-fz3ilds3/tests/test_worker_project_flow.py", line 53, in test_cli_worker_rejoining_approved_project_needs_no_new_question
+    self.assertEqual(code, 0, text)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+AssertionError: 2 != 0 : refused: joining a project needs your user's yes, and xsm cannot keep their reply in a worker: no one answers here. Send the question in a DM to your parent (ref:0f3d03) or team lead; do not open a form or ask a question here. They ask their own user: a peer's message is never that yes.
+
+
+----------------------------------------------------------------------
+Ran 1 test in 0.649s
+
+FAILED (failures=1)

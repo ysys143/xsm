@@ -1,0 +1,50 @@
+{
+  "user_instruction": "너가 해줄 수 있어? (displayed allow selection)",
+  "agent_ui_error": "Native action=decline observed after field expansion, Return, ArrowDown, Return; focus movement was not observable",
+  "decision": {
+    "id": "caf2b53185fa4cf1485f1446982c48480ac8470a9272ba661b7eb7a9fdc327f3",
+    "status": "denied",
+    "answer": {
+      "reply": {
+        "result": {
+          "action": "decline"
+        },
+        "jsonrpc": "2.0",
+        "id": "xsm-1"
+      },
+      "source": "mcp-elicitation",
+      "source_id": "xsm-1",
+      "recorded_at": 1793804003.095563
+    },
+    "application": null
+  },
+  "sessions": [
+    {
+      "ref": "5f60ca",
+      "membership": false,
+      "parent": null
+    },
+    {
+      "ref": "ced637",
+      "membership": false,
+      "parent": null
+    },
+    {
+      "ref": "4c7d17",
+      "membership": false,
+      "parent": null
+    },
+    {
+      "ref": "bb683b",
+      "membership": false,
+      "parent": null
+    },
+    {
+      "ref": "e6bd9e",
+      "membership": false,
+      "parent": null
+    }
+  ],
+  "new_memberships": 0,
+  "worker_links_created": 0
+}

@@ -1,0 +1,9 @@
+{
+  "id": "join21-once",
+  "type": "response",
+  "command": "prompt",
+  "success": true,
+  "data": {
+    "disposition": "started"
+  }
+}

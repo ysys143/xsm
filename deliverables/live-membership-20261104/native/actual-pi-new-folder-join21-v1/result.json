@@ -1,0 +1,63 @@
+{
+  "status": "passed-new-conversation-folder-inheritance",
+  "test": "NEW native conversation approved-folder inheritance, not original-session resume",
+  "profile": "/private/tmp/xsm-join-live/idle-20261104-232936-24178c/pi/profile",
+  "cwd": "/private/tmp/xsm-join-live/idle-20261104-232936-24178c/pi/workspace",
+  "modelJoinCalls": 1,
+  "newScopeCalls": 0,
+  "parentLinkWrites": 0,
+  "approvalAnswers": 0,
+  "nativePid": 7407,
+  "nativeSessionId": "01a1a735-d9a2-7263-98d2-36e70617e884",
+  "ref": "ref:f05df5",
+  "registrationFile": "/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-claude-basic-ey1fwkh6/state/sessions/pi-27627f9c9129e34b3b7300ad20448631e83d633a8d6729c01612de4e2a98ea6a.json",
+  "membershipBefore": true,
+  "parentBefore": null,
+  "providerRequests": 2,
+  "responseModelLabels": [
+    "gpt-6-luna"
+  ],
+  "elapsedSeconds": 396.988,
+  "upstreamResponses": [
+    {
+      "request": 1,
+      "httpStatus": 200,
+      "rawBody": "/private/tmp/xsm-join-live/actual-pi-new-folder-join21-v1/upstream-01.body",
+      "responseBytes": 1007
+    },
+    {
+      "request": 2,
+      "httpStatus": 200,
+      "rawBody": "/private/tmp/xsm-join-live/actual-pi-new-folder-join21-v1/upstream-02.body",
+      "responseBytes": 2801
+    }
+  ],
+  "actualRegistration": {
+    "runtime": "pi",
+    "home": "/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-claude-basic-ey1fwkh6/state/protocol-profiles/pi/465868888bda0df77c56cac626ddb29776582edd5189d8c6af494331e80819c9",
+    "session_id": "27627f9c9129e34b3b7300ad20448631e83d633a8d6729c01612de4e2a98ea6a",
+    "pid": 7421,
+    "lstart": "Thu Nov  5 00:38:06 2026",
+    "cwd": "/private/tmp/xsm-join-live/idle-20261104-232936-24178c/pi/workspace",
+    "ref": "f05df5",
+    "name": "pi-27627f9c",
+    "protocol_version": "1",
+    "protocol_generation": "77f765fe5f3349d9ab5feaf0d7f7532f",
+    "registered": true,
+    "activity": "idle",
+    "protocol_root": "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-claude-basic-ey1fwkh6/state/runtime/5197f2e3e28f",
+    "protocol_python": "/opt/homebrew/opt/python@3.14/bin/python3.14",
+    "protocol_python_version": "3.14.6",
+    "updated": 1793806692.867179
+  },
+  "sessionFile": "/private/tmp/xsm-join-live/idle-20261104-232936-24178c/pi/sessions/2026-11-04T15-38-06-626Z_01a1a735-d9a2-7263-98d2-36e70617e884.jsonl",
+  "sessionFileExists": true,
+  "sessionFileBytes": 42856,
+  "workerUiQuestionCount": 0,
+  "parentAfter": null,
+  "group21Membership": true,
+  "testSeconds": 8.025,
+  "heartbeatUtc": "2026-11-04T15:44:39.619210+00:00",
+  "liveBinding": true,
+  "keeperStopped": true
+}

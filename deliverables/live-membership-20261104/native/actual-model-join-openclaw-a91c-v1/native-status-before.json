@@ -1,0 +1,76 @@
+{
+  "session": {
+    "key": "agent:main:dashboard:f08b47fe-f170-416d-a5f6-7abae1942df6",
+    "sessionModelRevision": "3mrCbLlrZtwvNA1cjgbms6_Q-xi9J7DZUfiqCHHp9G8",
+    "visibility": "shared",
+    "spawnedCwd": "/private/tmp/xsm-join-live/idle-20261104-232936-24178c/openclaw/workspace",
+    "workspaceDir": "/private/tmp/xsm-join-live/idle-20261104-232936-24178c/openclaw/workspace",
+    "permissionModePending": false,
+    "spawnDepth": 0,
+    "createdVia": "operator",
+    "createdAt": 1793802595526,
+    "kind": "direct",
+    "classification": "dashboard",
+    "agentId": "main",
+    "isMain": false,
+    "isDock": false,
+    "isBackground": false,
+    "updatedAt": 1793802595526,
+    "archived": false,
+    "pinned": false,
+    "unread": false,
+    "sessionId": "9c23f439-fe3b-4ce5-a062-9a36bc3a9dec",
+    "lifecycleRevision": "f9916003-74d2-4bb4-84aa-ee7a7146c0f2",
+    "thinkingLevels": [
+      {
+        "id": "off",
+        "label": "off"
+      },
+      {
+        "id": "ultra",
+        "label": "ultra"
+      }
+    ],
+    "thinkingOptions": [
+      "off",
+      "ultra"
+    ],
+    "thinkingDefault": "off",
+    "effectiveFastMode": false,
+    "effectiveFastModeSource": "default",
+    "fastAutoOnSeconds": 60,
+    "totalTokensFresh": false,
+    "parentSessionKey": "agent:main:main",
+    "effectiveResponseUsage": "off",
+    "effectiveQueueMode": "steer",
+    "modelProvider": "xsm-subscription",
+    "model": "gpt-6-luna",
+    "modelOverrideSource": "user",
+    "runtimeSelectionLocked": false,
+    "agentRuntime": {
+      "id": "openclaw",
+      "cloudPlacementSupported": true,
+      "cloudPlacementExecutionMode": "worker-turn",
+      "devicePlacement": {
+        "requiredNodeCommands": [],
+        "consumesWorkerSlot": true
+      },
+      "devicePlacementSupported": true,
+      "source": "provider"
+    },
+    "contextTokens": 200000,
+    "snapshotAt": 1793806594589,
+    "activitySummary": {
+      "state": "unavailable",
+      "canEnsure": true
+    },
+    "hasBoard": false,
+    "childOwnerSessionKeys": [
+      "agent:main:main"
+    ],
+    "hasActiveRun": false,
+    "activeRunIds": [],
+    "sharingRole": "admin",
+    "sendDisabledReason": null
+  }
+}

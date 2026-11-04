@@ -1,0 +1,22 @@
+{
+  "verifiedConditions": {
+    "providers.openai.authMode": "forward",
+    "providers.openai.adapter": "openai-responses",
+    "providers.openai.baseUrl": "https://chatgpt.com/backend-api/codex",
+    "providers.openai.codexAccountMode": "pool"
+  },
+  "liveOpenAiAllowlist": [
+    "gpt-6-astra",
+    "gpt-6-astra--fast",
+    "gpt-6.1-sol",
+    "gpt-6.1-sol--fast",
+    "gpt-6.1-terra",
+    "gpt-6.1-terra--fast",
+    "gpt-6-luna",
+    "gpt-6-luna--fast"
+  ],
+  "requestedModel": "gpt-6-luna",
+  "authorization": "fixed local placeholder only",
+  "maxRequests": 8,
+  "inferenceRetry": false
+}

@@ -1,0 +1,15 @@
+{
+  "command": [
+    "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/bin/xsm",
+    "join",
+    "join-live-reject-cfb2",
+    "--answer-request",
+    "[\"request_user_input_async\",\"call_ceb850257d4b4c4fa079162268756565\",0]",
+    "--question",
+    "[xsm:b10f9793c0ee4782] 이번에는 실제 가입 거절을 확인합니다. 이 대화의 cross-session-messaging 폴더를 격리 시험 프로젝트 join-live-reject-cfb2에 가입시킬까요? deny를 선택하면 가입되지 않는지 확인합니다. 앞서 허용한 시험 프로젝트와는 별개 요청입니다."
+  ],
+  "exit_code": 2,
+  "stdout": "",
+  "stderr": "refused: your user replied: \"deny\". If that is a yes to joining a project, run this same command again to go ahead; if it is a no or a question, do not: answer them, and their next message replaces it. Question answer [\"request_user_input_async\",\"call_ceb850257d4b4c4fa079162268756565\",0] (native-question-id). Asked: [xsm:b10f9793c0ee4782] 이번에는 실제 가입 거절을 확인합니다. 이 대화의 cross-session-messaging 폴더를 격리 시험 프로젝트 join-live-reject-cfb2에 가입시킬까요? deny를 선택하면 가입되지 않는지 확인합니다. 앞서 허용한 시험 프로젝트와는 별개 요청입니다.\n",
+  "membership_after": false
+}

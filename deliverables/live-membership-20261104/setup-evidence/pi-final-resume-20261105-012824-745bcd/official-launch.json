@@ -1,0 +1,13 @@
+{
+  "argv": [
+    "/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-pi-140-eohrvh8q/node_modules/.bin/pi",
+    "--mode",
+    "rpc",
+    "--session",
+    "/private/tmp/xsm-join-live/idle-20261104-232936-24178c/pi/sessions/2026-11-04T15-38-06-626Z_01a1a735-d9a2-7263-98d2-36e70617e884.jsonl",
+    "--model",
+    "xsm-subscription/gpt-6-luna"
+  ],
+  "cwd": "/private/tmp/xsm-join-live/idle-20261104-232936-24178c/pi/workspace",
+  "inferenceGateInitiallyClosed": true
+}

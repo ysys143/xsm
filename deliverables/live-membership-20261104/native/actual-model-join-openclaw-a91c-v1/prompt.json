@@ -1,0 +1,4 @@
+{
+  "prompt": "This is the user-authorized real join test. Perform EXACTLY these native xsm_join calls SEQUENTIALLY, waiting for each result. First call xsm_join with {\"project\":\"join-live-group-21a8\"}. Then call xsm_join with {\"project\":\"join-live-native-request-a91c\"}. Then call xsm_join again with the identical {\"project\":\"join-live-native-request-a91c\"}. Do not pass workers, leave, or any other arguments. Do not approve or actually join the new project; the native tool must only request the existing parent. Do not answer any UI or send any message yourself. Do not use shell or other tools except native tool search/describe if needed to find xsm_join. After reading all three results, reply exactly XSM_JOIN_OPENCLAW_A91C_V1.",
+  "expectedFinal": "XSM_JOIN_OPENCLAW_A91C_V1"
+}

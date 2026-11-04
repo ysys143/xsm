@@ -1,0 +1,12 @@
+{
+  "reason": "explicit user-authorized refresh of model0 parentless idle keeper before actual parent question",
+  "priorRoot": "/private/tmp/xsm-join-live/pi-final-resume-20261105-012824-745bcd",
+  "sameNativeSessionId": "01a1a735-d9a2-7263-98d2-36e70617e884",
+  "sameRef": "ref:f05df5",
+  "beforeGeneration": "a2845b646f8a49c3bf0467d464a0ea70",
+  "afterGeneration": "3973bdb139174e959dc2fa474b4a29db",
+  "modelCalls": 0,
+  "providerRequests": 0,
+  "parentRef": null,
+  "maximumExpiresAtUtc": "2026-11-04T17:11:48.208733+00:00"
+}

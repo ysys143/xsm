@@ -1,0 +1,53 @@
+{
+  "decision": {
+    "id": "45619355c0e1781bd9e84898c259129d6e3447dadbdfcc31e58ee5a4f0c2df4f",
+    "status": "applied",
+    "answer": {
+      "reply": {
+        "result": {
+          "action": "accept",
+          "content": {
+            "answer": "allow"
+          }
+        },
+        "jsonrpc": "2.0",
+        "id": "xsm-3"
+      },
+      "source": "mcp-elicitation",
+      "source_id": "xsm-3",
+      "recorded_at": 1793806991.594667
+    },
+    "application": {
+      "phase": "completed",
+      "started_at": 1793806991.6195369,
+      "reader": {
+        "instance": "75a6596aaec0c9f8261ea545",
+        "pid": 42993,
+        "generation": "26dfcae064df"
+      },
+      "source": "mcp-elicitation",
+      "result": {
+        "_xsm_display": 1,
+        "text": "joined join-live-group-21a8 for coordinator and 1 workers",
+        "metadata": {
+          "scope": {
+            "kind": "membership",
+            "project": "join-live-group-21a8",
+            "root": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging",
+            "active": true,
+            "changed": true,
+            "other_members": [
+              "/private/tmp/xsm-join-live/idle-20261104-232936-24178c/pi/workspace",
+              "/private/tmp/xsm-join-live/idle-20261104-232936-24178c/opencode/workspace",
+              "/private/tmp/xsm-join-live/idle-20261104-232936-24178c/openclaw/workspace",
+              "/private/tmp/xsm-join-live/hermes-readonly-bootstrap-20261104-234526-17820a/workspace"
+            ]
+          }
+        }
+      },
+      "observed_at": 1793806991.66859
+    }
+  },
+  "member": true,
+  "parent": "5f60ca"
+}

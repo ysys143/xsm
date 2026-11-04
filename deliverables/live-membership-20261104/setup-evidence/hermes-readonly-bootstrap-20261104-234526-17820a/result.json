@@ -1,0 +1,73 @@
+{
+  "status": "readonly-bootstrap-passed-idle-live",
+  "root": "/private/tmp/xsm-join-live/hermes-readonly-bootstrap-20261104-234526-17820a",
+  "purpose": "readonly actual initialization only, not a join pass",
+  "sharedXsmHome": "/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-claude-basic-ey1fwkh6/state",
+  "requestedModel": "gpt-6-luna",
+  "maxProviderRequests": 8,
+  "maxBootstrapSeconds": 120,
+  "joinCalls": 0,
+  "parentLinksWritten": 0,
+  "approvalResponsesSynthesized": 0,
+  "nativeClientPid": 84129,
+  "providerRequests": 5,
+  "responseModelLabels": [
+    "gpt-6-luna"
+  ],
+  "elapsedSeconds": 1763.569,
+  "upstreamResponses": [
+    {
+      "request": 1,
+      "httpStatus": 200,
+      "rawBody": "/private/tmp/xsm-join-live/hermes-readonly-bootstrap-20261104-234526-17820a/upstream-01.body",
+      "responseBytes": 1031
+    },
+    {
+      "request": 2,
+      "httpStatus": 200,
+      "rawBody": "/private/tmp/xsm-join-live/hermes-readonly-bootstrap-20261104-234526-17820a/upstream-02.body",
+      "responseBytes": 1003
+    },
+    {
+      "request": 3,
+      "httpStatus": 200,
+      "rawBody": "/private/tmp/xsm-join-live/hermes-readonly-bootstrap-20261104-234526-17820a/upstream-03.body",
+      "responseBytes": 1027
+    },
+    {
+      "request": 4,
+      "httpStatus": 200,
+      "rawBody": "/private/tmp/xsm-join-live/hermes-readonly-bootstrap-20261104-234526-17820a/upstream-04.body",
+      "responseBytes": 5399
+    },
+    {
+      "request": 5,
+      "httpStatus": 200,
+      "rawBody": "/private/tmp/xsm-join-live/hermes-readonly-bootstrap-20261104-234526-17820a/upstream-05.body",
+      "responseBytes": 470
+    }
+  ],
+  "nativeOutcome": "completed",
+  "actualFinalResponse": "XSM_HERMES_IDLE_READY_4c6a13f6560a97c12c18",
+  "bootstrapSeconds": 28.419,
+  "nativeSessionId": "local-b4e8a956c2fe68619b6d9a0bc829e1f7305a935c431782ee92b11b4a814ef18f",
+  "actualRegistration": {
+    "runtime": "hermes",
+    "home": "/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-claude-basic-ey1fwkh6/state/protocol-profiles/hermes/f47164df4d7c2b866191311d41ed4af959f5da425b476648858c622a3713cb8e",
+    "session_id": "c08237bbd663ee2b65c590d70983d192158c7fc4bfb11e145c4485d6e254a121",
+    "ref": "9dfbd1",
+    "pid": 86167,
+    "lstart": "Wed Nov  4 23:45:38 2026",
+    "protocol_generation": "620f3903daa24e78b1d974194dd473c8",
+    "activity": "idle",
+    "cwd": "/private/tmp/xsm-join-live/hermes-readonly-bootstrap-20261104-234526-17820a/workspace",
+    "ended_at": null
+  },
+  "registrationFile": "/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-claude-basic-ey1fwkh6/state/sessions/hermes-c08237bbd663ee2b65c590d70983d192158c7fc4bfb11e145c4485d6e254a121.json",
+  "liveBinding": true,
+  "registrationSource": "normal native on_session_start and settled hooks",
+  "heartbeat": 1793805283.84631,
+  "nativeClientExit": null,
+  "activity": "idle",
+  "keeperStopped": true
+}

@@ -1,0 +1,422 @@
+[
+  {
+    "path": "/private/tmp/xsm-join-live/actual-model-join-opencode-a91c-v1/result.json",
+    "bytes": 7130,
+    "sha256": "2d78719d33fd43762a41296658f5dcf660595128ef88629f7fdb85eda4f5f27f"
+  },
+  {
+    "path": "/private/tmp/xsm-join-live/actual-model-join-opencode-a91c-v1/native-status-before.json",
+    "bytes": 3,
+    "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+  },
+  {
+    "path": "/private/tmp/xsm-join-live/actual-model-join-opencode-a91c-v1/prompt.json",
+    "bytes": 800,
+    "sha256": "b321bccf72b6a84916183f8d021b2e0d4ee9ca3b15964091afb3b9a04e7bd5dc"
+  },
+  {
+    "path": "/private/tmp/xsm-join-live/actual-model-join-opencode-a91c-v1/submitted",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "/private/tmp/xsm-join-live/actual-model-join-opencode-a91c-v1/native-messages-before.json",
+    "bytes": 652,
+    "sha256": "fae5ec32fea50e4420e85b9be962af221da63733e8c7a726ffaf660bb71a3b0d"
+  },
+  {
+    "path": "/private/tmp/xsm-join-live/actual-model-join-opencode-a91c-v1/native-message-result.json",
+    "bytes": 1669,
+    "sha256": "57ca918302b7337c81e94b686e2e323ac4430a82d8427099f98b0e9c7341b254"
+  },
+  {
+    "path": "/private/tmp/xsm-join-live/actual-model-join-opencode-a91c-v1/native-messages-after.json",
+    "bytes": 10776,
+    "sha256": "67c36719aab132247a9602229309c14f19e70f6a307c790bf95abc71cab0f7d4"
+  },
+  {
+    "path": "/private/tmp/xsm-join-live/actual-model-join-opencode-a91c-v1/final-evidence.json",
+    "bytes": 1810,
+    "sha256": "fc200059d6d5dcaa11085c50e4129aa97feaea848bbaa3b1aa9e6e87c06c39e9"
+  },
+  {
+    "path": "/private/tmp/xsm-join-live/actual-model-join-openclaw-a91c-v1/result.json",
+    "bytes": 5018,
+    "sha256": "6dc237f0136d573e67d4dd342528b9f33ce2f3b837058f3ae353dbc86edf5e72"
+  },
+  {
+    "path": "/private/tmp/xsm-join-live/actual-model-join-openclaw-a91c-v1/native-status-before.json",
+    "bytes": 2172,
+    "sha256": "d019b62c9c4c1f7ab0a7c0ec7d50b592053cd64126f4034f750a292bb2b09d08"
+  },
+  {
+    "path": "/private/tmp/xsm-join-live/actual-model-join-openclaw-a91c-v1/prompt.json",
+    "bytes": 800,
+    "sha256": "e254b6f22fe44743099e96c6cd1b4e8e3ce99a705b535f19d692a04a7dc7b2cc"
+  },
+  {
+    "path": "/private/tmp/xsm-join-live/actual-model-join-openclaw-a91c-v1/submitted",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "/private/tmp/xsm-join-live/actual-model-join-openclaw-a91c-v1/native-chat-history.json",
+    "bytes": 34325,
+    "sha256": "1fd58b6dce11fb6c7b7694662ae2a81f49525007d56ae839a07b09afce9256e0"
+  },
+  {
+    "path": "/private/tmp/xsm-join-live/actual-model-join-openclaw-a91c-v1/native-rpc.jsonl",
+    "bytes": 39124,
+    "sha256": "6e696a07caf3885b39ecabfdf719446f5777911cef8b7e05a66c46c28c1bda7c"
+  },
+  {
+    "path": "/private/tmp/xsm-join-live/actual-model-join-openclaw-a91c-v1/native-terminal.json",
+    "bytes": 822,
+    "sha256": "743998b815fbb6ed61dd5d1e83113590d24b10b283f5ea494d60a4b8b10029ef"
+  },
+  {
+    "path": "/private/tmp/xsm-join-live/actual-model-join-openclaw-a91c-v1/final-evidence.json",
+    "bytes": 1881,
+    "sha256": "a130196e41ae6ee9567bb21f0453c4534057ac056b0e6e51e3e6c9bd40786508"
+  },
+  {
+    "path": "/private/tmp/xsm-join-live/actual-model-join-hermes-a91c-v1/upstream-05.body",
+    "bytes": 1071,
+    "sha256": "e5a5f54d2bde1b8193858243162cc63fea99205f956a3da37715a8fe59fd82ea"
+  },
+  {
+    "path": "/private/tmp/xsm-join-live/actual-model-join-hermes-a91c-v1/join-receipt.json",
+    "bytes": 13450,
+    "sha256": "8e1b4a2903346a4ff4369356eddfd3c43ac39209b5fbe90acdb27f04598b3805"
+  },
+  {
+    "path": "/private/tmp/xsm-join-live/actual-model-join-hermes-a91c-v1/request-04-strict-translation.json",
+    "bytes": 1574,
+    "sha256": "eb51c8a43fa22a9ae4f360925d6d04bf319f61c6752d659bc3103c202c0ca470"
+  },
+  {
+    "path": "/private/tmp/xsm-join-live/actual-model-join-hermes-a91c-v1/upstream-observations.json",
+    "bytes": 1029,
+    "sha256": "2a275ea0adf8e2ea210db8aaa2bce2e7f2902898e09dba01574ba2108fae65d9"
+  },
+  {
+    "path": "/private/tmp/xsm-join-live/actual-model-join-hermes-a91c-v1/resume-snapshot.json",
+    "bytes": 146,
+    "sha256": "fe9967316ee581e31eb10f5ccd91225338b2d2fa76f1aa87fc58b3beffae6f52"
+  },
+  {
+    "path": "/private/tmp/xsm-join-live/actual-model-join-hermes-a91c-v1/request-03-tools.json",
+    "bytes": 1175,
+    "sha256": "e3b063cf8dc52c98b48a0372141908a12b481238fa1fbd558047cef96a171899"
+  },
+  {
+    "path": "/private/tmp/xsm-join-live/actual-model-join-hermes-a91c-v1/subscription-route-verification.json",
+    "bytes": 592,
+    "sha256": "422a2bb246e9f515925bbf692699ea51d8eae82bbbf0747b3dca80dc71f7b80c"
+  },
+  {
+    "path": "/private/tmp/xsm-join-live/actual-model-join-hermes-a91c-v1/request-06-tools.json",
+    "bytes": 1175,
+    "sha256": "e3b063cf8dc52c98b48a0372141908a12b481238fa1fbd558047cef96a171899"
+  },
+  {
+    "path": "/private/tmp/xsm-join-live/actual-model-join-hermes-a91c-v1/deadline.json",
+    "bytes": 76,
+    "sha256": "a5655ad30cdf9c4dd686f1f8bd43b19a47dc7b0def998165c2e74682bc22c0a6"
+  },
+  {
+    "path": "/private/tmp/xsm-join-live/actual-model-join-hermes-a91c-v1/result.json",
+    "bytes": 4503,
+    "sha256": "28bf5089837268fa2818d0f1a6994dd6dd492cb7a3b7d467f4a7ef1ccc0b436b"
+  },
+  {
+    "path": "/private/tmp/xsm-join-live/actual-model-join-hermes-a91c-v1/gateway-stop.log",
+    "bytes": 37,
+    "sha256": "5c1e87d1f53592580e04116b87e0c38beed902b2d74922265d7ffad73d0fd261"
+  },
+  {
+    "path": "/private/tmp/xsm-join-live/actual-model-join-hermes-a91c-v1/native-events.jsonl",
+    "bytes": 64792,
+    "sha256": "b79a327509ab413f517d9c57c2d2cd6e11148dd032744cc2732f42c43a7f9e69"
+  },
+  {
+    "path": "/private/tmp/xsm-join-live/actual-model-join-hermes-a91c-v1/request-06.json",
+    "bytes": 89995,
+    "sha256": "e0b6084bd7c171ef272412c53062da84474801a4e154472d62fdb4683ef0465f"
+  },
+  {
+    "path": "/private/tmp/xsm-join-live/actual-model-join-hermes-a91c-v1/upstream-04.body",
+    "bytes": 1071,
+    "sha256": "a8186c767d9c96ae9cf8df85c4fe1b54be68fd52184edb9eb9baf013fa21ccb9"
+  },
+  {
+    "path": "/private/tmp/xsm-join-live/actual-model-join-hermes-a91c-v1/upstream-03.body",
+    "bytes": 1062,
+    "sha256": "3870f37c808480e9f94ba9ddaa6a376e91db1bb6c5f4a3f232d2cf26b8026e21"
+  },
+  {
+    "path": "/private/tmp/xsm-join-live/actual-model-join-hermes-a91c-v1/request-01.json",
+    "bytes": 83622,
+    "sha256": "c7d14f696c4a008636927d8b8c37d927e65f641d70520c22dd8d1d3b2d375d3a"
+  },
+  {
+    "path": "/private/tmp/xsm-join-live/actual-model-join-hermes-a91c-v1/request-01.original.json",
+    "bytes": 67278,
+    "sha256": "7ee7cf5df76e0ab9de4cccc389bd6a8acf69fe93eeddccc524cb6cde4a06d914"
+  },
+  {
+    "path": "/private/tmp/xsm-join-live/actual-model-join-hermes-a91c-v1/request-01-tools.json",
+    "bytes": 1175,
+    "sha256": "e3b063cf8dc52c98b48a0372141908a12b481238fa1fbd558047cef96a171899"
+  },
+  {
+    "path": "/private/tmp/xsm-join-live/actual-model-join-hermes-a91c-v1/prompt.json",
+    "bytes": 686,
+    "sha256": "9e9e5a17ac8c147779d97a8b9642aa1d7c60b2819df0532213bdadef713bb461"
+  },
+  {
+    "path": "/private/tmp/xsm-join-live/actual-model-join-hermes-a91c-v1/request-03-strict-translation.json",
+    "bytes": 1574,
+    "sha256": "eb51c8a43fa22a9ae4f360925d6d04bf319f61c6752d659bc3103c202c0ca470"
+  },
+  {
+    "path": "/private/tmp/xsm-join-live/actual-model-join-hermes-a91c-v1/request-05.original.json",
+    "bytes": 72303,
+    "sha256": "080d02ab39f707c99a8ad128d22b7bfa4ab292e8d09013158274d31a88b98e9e"
+  },
+  {
+    "path": "/private/tmp/xsm-join-live/actual-model-join-hermes-a91c-v1/request-04-tools.json",
+    "bytes": 1175,
+    "sha256": "e3b063cf8dc52c98b48a0372141908a12b481238fa1fbd558047cef96a171899"
+  },
+  {
+    "path": "/private/tmp/xsm-join-live/actual-model-join-hermes-a91c-v1/request-02.original.json",
+    "bytes": 69472,
+    "sha256": "fbd35243ef2a9146380a2f78c94fa65968a1f27132eba8e674f05816d19062f4"
+  },
+  {
+    "path": "/private/tmp/xsm-join-live/actual-model-join-hermes-a91c-v1/submitted",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "/private/tmp/xsm-join-live/actual-model-join-hermes-a91c-v1/request-06.original.json",
+    "bytes": 72811,
+    "sha256": "d8922edade4c5b68c82b89cc4b4b07a410e7f86a39300ac22b436613c6ef2910"
+  },
+  {
+    "path": "/private/tmp/xsm-join-live/actual-model-join-hermes-a91c-v1/upstream-02.body",
+    "bytes": 1002,
+    "sha256": "d8a07b4511b55679446db25f4230d1402ddfa0e56295f2e3fe6bedb8e60cccc4"
+  },
+  {
+    "path": "/private/tmp/xsm-join-live/actual-model-join-hermes-a91c-v1/subscription-relay.jsonl",
+    "bytes": 1404,
+    "sha256": "bdbd0c3e63ff0656958938f1dfe4f75e210bc00890bec66802e78aad01f0cdec"
+  },
+  {
+    "path": "/private/tmp/xsm-join-live/actual-model-join-hermes-a91c-v1/request-03.original.json",
+    "bytes": 71196,
+    "sha256": "184bb373ae9af6cd5811aad1a43c29308e34ce30408c4b8fd44fa22fd7f185f9"
+  },
+  {
+    "path": "/private/tmp/xsm-join-live/actual-model-join-hermes-a91c-v1/native.stdout",
+    "bytes": 165,
+    "sha256": "4af3e07860c62d8b63b7005e7b25354f4feee9ed378b03b3b843e5a22bf01473"
+  },
+  {
+    "path": "/private/tmp/xsm-join-live/actual-model-join-hermes-a91c-v1/request-01-strict-translation.json",
+    "bytes": 1574,
+    "sha256": "eb51c8a43fa22a9ae4f360925d6d04bf319f61c6752d659bc3103c202c0ca470"
+  },
+  {
+    "path": "/private/tmp/xsm-join-live/actual-model-join-hermes-a91c-v1/request-03.json",
+    "bytes": 87876,
+    "sha256": "3e5ff4a71b47c35e304ceaeb92a1b5f4dd5097d3e849fd6536a75e58344c0cc0"
+  },
+  {
+    "path": "/private/tmp/xsm-join-live/actual-model-join-hermes-a91c-v1/upstream-01.body",
+    "bytes": 1029,
+    "sha256": "d7da9d2f7d454f9ac8c16f83059b82652a000548259acfe35a1e35b165a08fce"
+  },
+  {
+    "path": "/private/tmp/xsm-join-live/actual-model-join-hermes-a91c-v1/request-02.json",
+    "bytes": 85984,
+    "sha256": "0535365277280ed86ca9f5bb52b5d62b31c1869e2fc5cdfb0b6665146d3969b9"
+  },
+  {
+    "path": "/private/tmp/xsm-join-live/actual-model-join-hermes-a91c-v1/request-04.original.json",
+    "bytes": 71795,
+    "sha256": "1593f18aeb8594ee8e0b2b640e8d769c5c9111781c61bde96436139316d62a69"
+  },
+  {
+    "path": "/private/tmp/xsm-join-live/actual-model-join-hermes-a91c-v1/request-02-tools.json",
+    "bytes": 1175,
+    "sha256": "e3b063cf8dc52c98b48a0372141908a12b481238fa1fbd558047cef96a171899"
+  },
+  {
+    "path": "/private/tmp/xsm-join-live/actual-model-join-hermes-a91c-v1/request-05-strict-translation.json",
+    "bytes": 1574,
+    "sha256": "eb51c8a43fa22a9ae4f360925d6d04bf319f61c6752d659bc3103c202c0ca470"
+  },
+  {
+    "path": "/private/tmp/xsm-join-live/actual-model-join-hermes-a91c-v1/join-admission.json",
+    "bytes": 382,
+    "sha256": "f546c39c4f4ca4acbd67a12dd232e491892f10ec8c8c0edaef26a7dd4fad9209"
+  },
+  {
+    "path": "/private/tmp/xsm-join-live/actual-model-join-hermes-a91c-v1/request-05-tools.json",
+    "bytes": 1175,
+    "sha256": "e3b063cf8dc52c98b48a0372141908a12b481238fa1fbd558047cef96a171899"
+  },
+  {
+    "path": "/private/tmp/xsm-join-live/actual-model-join-hermes-a91c-v1/request-06-strict-translation.json",
+    "bytes": 1574,
+    "sha256": "eb51c8a43fa22a9ae4f360925d6d04bf319f61c6752d659bc3103c202c0ca470"
+  },
+  {
+    "path": "/private/tmp/xsm-join-live/actual-model-join-hermes-a91c-v1/request-05.json",
+    "bytes": 89319,
+    "sha256": "8153c07c24b110f31c4070364786bd6ef9d66ed4ea21a54ca04a8a670bbe442e"
+  },
+  {
+    "path": "/private/tmp/xsm-join-live/actual-model-join-hermes-a91c-v1/final-evidence.json",
+    "bytes": 1632,
+    "sha256": "aac8ff824924ed40012d838b4ae0973494a5a8065a7892e0654947f27ce3e669"
+  },
+  {
+    "path": "/private/tmp/xsm-join-live/actual-model-join-hermes-a91c-v1/request-02-strict-translation.json",
+    "bytes": 1574,
+    "sha256": "eb51c8a43fa22a9ae4f360925d6d04bf319f61c6752d659bc3103c202c0ca470"
+  },
+  {
+    "path": "/private/tmp/xsm-join-live/actual-model-join-hermes-a91c-v1/upstream-06.body",
+    "bytes": 3015,
+    "sha256": "c4c871e2facad847a998db9fe3ec7ed3a3a0a18fe2e68312985574ccf5ea7ede"
+  },
+  {
+    "path": "/private/tmp/xsm-join-live/actual-model-join-hermes-a91c-v1/request-04.json",
+    "bytes": 88643,
+    "sha256": "f54eecd9472cebb7e5b594d62b1bc38898b44fd1ca47c76d0867ce8bb18e16dd"
+  },
+  {
+    "path": "/private/tmp/xsm-join-live/actual-model-join-hermes-a91c-v1/native.stderr",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "/private/tmp/xsm-join-live/actual-pi-new-folder-join21-v1/actual-tool-results.json",
+    "bytes": 818,
+    "sha256": "222c3a163374d004c0f922d73f9dd9774e922e4b787b58f1bd57f35276847bfd"
+  },
+  {
+    "path": "/private/tmp/xsm-join-live/actual-pi-new-folder-join21-v1/upstream-observations.json",
+    "bytes": 341,
+    "sha256": "53d9e4175043b7f717691d17ab46c449a741e3011159485ad373ce8018455f24"
+  },
+  {
+    "path": "/private/tmp/xsm-join-live/actual-pi-new-folder-join21-v1/subscription-route-verification.json",
+    "bytes": 592,
+    "sha256": "422a2bb246e9f515925bbf692699ea51d8eae82bbbf0747b3dca80dc71f7b80c"
+  },
+  {
+    "path": "/private/tmp/xsm-join-live/actual-pi-new-folder-join21-v1/deadline.json",
+    "bytes": 76,
+    "sha256": "5c109aa17b811473d96c19792b28e70b8fd59f023f16cc106f883eb39afb9e19"
+  },
+  {
+    "path": "/private/tmp/xsm-join-live/actual-pi-new-folder-join21-v1/result.json",
+    "bytes": 2599,
+    "sha256": "b8d21563d3eb13cd792fc7e50284f0dd2c9b408388309acf2245c1fcd0891c87"
+  },
+  {
+    "path": "/private/tmp/xsm-join-live/actual-pi-new-folder-join21-v1/native-events.jsonl",
+    "bytes": 133886,
+    "sha256": "aea67732a3fdad0fbe5b5d6d2677ac36dc5616cefbcea27da3234f18e61157ba"
+  },
+  {
+    "path": "/private/tmp/xsm-join-live/actual-pi-new-folder-join21-v1/transport-change.json",
+    "bytes": 214,
+    "sha256": "9315ad33d55f9c4fa191c7dec3d64d4f59d344187f5096b348b38d0ad13407e6"
+  },
+  {
+    "path": "/private/tmp/xsm-join-live/actual-pi-new-folder-join21-v1/request-01.json",
+    "bytes": 58102,
+    "sha256": "f65eec49c9b432d8866580262793d713d369f41a23ab7f7c03fdc69928878c15"
+  },
+  {
+    "path": "/private/tmp/xsm-join-live/actual-pi-new-folder-join21-v1/request-01.original.json",
+    "bytes": 41587,
+    "sha256": "895fec8d43b4b37febfe9600289dfabb1b0021b4b722998f1570e9fb36d94421"
+  },
+  {
+    "path": "/private/tmp/xsm-join-live/actual-pi-new-folder-join21-v1/request-01-tools.json",
+    "bytes": 1417,
+    "sha256": "fd8f7f9fc6042431bde0c5cad471191694a3f8cda4c403ed0cf9ac262171bd23"
+  },
+  {
+    "path": "/private/tmp/xsm-join-live/actual-pi-new-folder-join21-v1/prompt.json",
+    "bytes": 377,
+    "sha256": "77456eb2e8cd8799bcd24e8c3d77e36cd52e62721cb2e4d66993b84c4f195ae2"
+  },
+  {
+    "path": "/private/tmp/xsm-join-live/actual-pi-new-folder-join21-v1/request-02.original.json",
+    "bytes": 42105,
+    "sha256": "a985bf13a8760e6aa0162310f7d90eaea8ea15e735bb4704753c40432d66ba47"
+  },
+  {
+    "path": "/private/tmp/xsm-join-live/actual-pi-new-folder-join21-v1/upstream-02.body",
+    "bytes": 2801,
+    "sha256": "64aa8771036dfbe5fd9ac660c4576fed78b781ad47aec388f51095456e5b0851"
+  },
+  {
+    "path": "/private/tmp/xsm-join-live/actual-pi-new-folder-join21-v1/subscription-relay.jsonl",
+    "bytes": 468,
+    "sha256": "2685ff5123351141c44135bdcfa98aa31e3cab65bb7c8505e11d31df640c8335"
+  },
+  {
+    "path": "/private/tmp/xsm-join-live/actual-pi-new-folder-join21-v1/native-state-after.json",
+    "bytes": 1064,
+    "sha256": "bac6ad18fbfcdc78d4005479c16815ab8ddd1e00aa600c7dce579756df52d508"
+  },
+  {
+    "path": "/private/tmp/xsm-join-live/actual-pi-new-folder-join21-v1/native-prompt-accepted.json",
+    "bytes": 136,
+    "sha256": "f6fecfd6e80df0edf5c59cafaaba1008c223bfa96faafaf999b68a2bd2454e9e"
+  },
+  {
+    "path": "/private/tmp/xsm-join-live/actual-pi-new-folder-join21-v1/request-01-strict-translation.json",
+    "bytes": 276,
+    "sha256": "fc0c559c2f880edb8e7ffac822cb60b3f34fd92d8d914b1bec27ce9ee6869a03"
+  },
+  {
+    "path": "/private/tmp/xsm-join-live/actual-pi-new-folder-join21-v1/native-state-before.json",
+    "bytes": 1065,
+    "sha256": "1b028e6a1297e3f0da7cf5af9f9af6a60d422361c5eb9b372de666d114fdebf1"
+  },
+  {
+    "path": "/private/tmp/xsm-join-live/actual-pi-new-folder-join21-v1/upstream-01.body",
+    "bytes": 1007,
+    "sha256": "288fe4d2e6516acd6c1e9caaaa4bcb12dcb3a7f2a969a4598c16cd3b5e408c7d"
+  },
+  {
+    "path": "/private/tmp/xsm-join-live/actual-pi-new-folder-join21-v1/request-02.json",
+    "bytes": 58788,
+    "sha256": "f378b46883e43ca53a61ca5241c6a76c0c04cd68a16a8e1fe9eae86bae188396"
+  },
+  {
+    "path": "/private/tmp/xsm-join-live/actual-pi-new-folder-join21-v1/request-02-tools.json",
+    "bytes": 1417,
+    "sha256": "fd8f7f9fc6042431bde0c5cad471191694a3f8cda4c403ed0cf9ac262171bd23"
+  },
+  {
+    "path": "/private/tmp/xsm-join-live/actual-pi-new-folder-join21-v1/request-02-strict-translation.json",
+    "bytes": 276,
+    "sha256": "fc0c559c2f880edb8e7ffac822cb60b3f34fd92d8d914b1bec27ce9ee6869a03"
+  },
+  {
+    "path": "/private/tmp/xsm-join-live/actual-pi-new-folder-join21-v1/native.stderr",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+]

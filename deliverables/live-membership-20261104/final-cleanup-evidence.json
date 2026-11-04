@@ -1,0 +1,20 @@
+{
+  "observedAtUtc": "2026-11-04T16:08:42.318865+00:00",
+  "inFlightProviderRequests": [],
+  "recordedPidCount": 42,
+  "liveOwnedGenerationRows": [],
+  "reusedPidNumbers": [
+    {
+      "pid": 44712,
+      "currentStart": "Thu Nov 5 00:49:18 2026",
+      "currentExecutable": "/usr/bin/login",
+      "reason": "different process generation; not signaled"
+    }
+  ],
+  "unparsedPidRows": [],
+  "hermesGatewayPidFilesRemaining": [],
+  "hermesGatewayStopLog": "✓ Stopped gateway for this profile\n",
+  "hermesKeeperStopped": true,
+  "allRecordedOwnedGenerationsGone": true,
+  "sourceOrApprovalRecordChangedByCleanup": false
+}

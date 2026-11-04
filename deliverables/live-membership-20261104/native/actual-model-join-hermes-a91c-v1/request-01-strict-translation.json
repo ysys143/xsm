@@ -1,0 +1,107 @@
+[
+  {
+    "name": "browser_exec",
+    "before": null,
+    "after": false
+  },
+  {
+    "name": "clarify",
+    "before": null,
+    "after": false
+  },
+  {
+    "name": "delegate_task",
+    "before": null,
+    "after": false
+  },
+  {
+    "name": "execute_code",
+    "before": null,
+    "after": false
+  },
+  {
+    "name": "manage_connections",
+    "before": null,
+    "after": false
+  },
+  {
+    "name": "memory",
+    "before": null,
+    "after": false
+  },
+  {
+    "name": "patch",
+    "before": null,
+    "after": false
+  },
+  {
+    "name": "read_file",
+    "before": null,
+    "after": false
+  },
+  {
+    "name": "search_files",
+    "before": null,
+    "after": false
+  },
+  {
+    "name": "skill_manage",
+    "before": null,
+    "after": false
+  },
+  {
+    "name": "skill_view",
+    "before": null,
+    "after": false
+  },
+  {
+    "name": "skills_list",
+    "before": null,
+    "after": false
+  },
+  {
+    "name": "terminal",
+    "before": null,
+    "after": false
+  },
+  {
+    "name": "text_to_speech",
+    "before": null,
+    "after": false
+  },
+  {
+    "name": "vision_analyze",
+    "before": null,
+    "after": false
+  },
+  {
+    "name": "web_extract",
+    "before": null,
+    "after": false
+  },
+  {
+    "name": "web_search",
+    "before": null,
+    "after": false
+  },
+  {
+    "name": "write_file",
+    "before": null,
+    "after": false
+  },
+  {
+    "name": "tool_search",
+    "before": null,
+    "after": false
+  },
+  {
+    "name": "tool_describe",
+    "before": null,
+    "after": false
+  },
+  {
+    "name": "tool_call",
+    "before": null,
+    "after": false
+  }
+]

@@ -1,0 +1,22 @@
+[
+  {
+    "name": "read",
+    "before": true,
+    "after": false
+  },
+  {
+    "name": "bash",
+    "before": true,
+    "after": false
+  },
+  {
+    "name": "edit",
+    "before": true,
+    "after": false
+  },
+  {
+    "name": "write",
+    "before": true,
+    "after": false
+  }
+]

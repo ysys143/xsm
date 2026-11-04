@@ -1,0 +1,295 @@
+{
+  "observedAtUtc": "2026-11-04T15:52:42.464338+00:00",
+  "scope": "actual model-driven joins; no new-project approval or join",
+  "cases": [
+    {
+      "status": "passed",
+      "runtime": "opencode",
+      "ref": "4c7d17",
+      "root": "/private/tmp/xsm-join-live/actual-model-join-opencode-a91c-v1",
+      "nativeJoinToolCallCount": 3,
+      "sequential": true,
+      "actualToolReturns": [
+        {
+          "text": "already in join-live-group-21a8",
+          "time": 1793806539154,
+          "raw": {
+            "scope": {
+              "kind": "membership",
+              "project": "join-live-group-21a8",
+              "root": "/private/tmp/xsm-join-live/idle-20261104-232936-24178c/opencode/workspace",
+              "active": true,
+              "changed": false
+            },
+            "text": "already in join-live-group-21a8"
+          }
+        },
+        {
+          "text": "Waiting for parent [5f60ca] to handle project join-live-native-request-a91c (request 6ff48d0e446851c1196635a4). No worker-local question was opened.",
+          "time": 1793806542310,
+          "raw": {
+            "text": "Waiting for parent [5f60ca] to handle project join-live-native-request-a91c (request 6ff48d0e446851c1196635a4). No worker-local question was opened."
+          }
+        },
+        {
+          "text": "Waiting for parent [5f60ca] to handle project join-live-native-request-a91c (request 6ff48d0e446851c1196635a4). No worker-local question was opened.",
+          "time": 1793806546061,
+          "raw": {
+            "text": "Waiting for parent [5f60ca] to handle project join-live-native-request-a91c (request 6ff48d0e446851c1196635a4). No worker-local question was opened."
+          }
+        }
+      ],
+      "sameNewProjectRequestId": "6ff48d0e446851c1196635a4",
+      "workerQuestionRecordsAdded": 0,
+      "newProjectJoined": false,
+      "providerRequests": 4,
+      "seconds": 16.786,
+      "parentCanonicalMessageCount": 1,
+      "parentMessageId": "worker-project-6ff48d0e446851c1196635a4-0",
+      "parentMessageStatus": "delivered",
+      "parentRuntimeReached": true,
+      "parentAcknowledged": true,
+      "finalParentMessageState": {
+        "status": "delivered",
+        "runtimeReached": true,
+        "acknowledged": true
+      }
+    },
+    {
+      "status": "passed",
+      "runtime": "openclaw",
+      "ref": "bb683b",
+      "root": "/private/tmp/xsm-join-live/actual-model-join-openclaw-a91c-v1",
+      "nativeJoinToolCallCount": 3,
+      "sequential": true,
+      "actualToolReturns": [
+        {
+          "text": "already in join-live-group-21a8",
+          "time": 1793806607777,
+          "raw": {
+            "scope": {
+              "kind": "membership",
+              "project": "join-live-group-21a8",
+              "root": "/private/tmp/xsm-join-live/idle-20261104-232936-24178c/openclaw/workspace",
+              "active": true,
+              "changed": false
+            },
+            "text": "already in join-live-group-21a8"
+          },
+          "isError": false
+        },
+        {
+          "text": "Waiting for parent [5f60ca] to handle project join-live-native-request-a91c (request f3f2f7f46f25d09a7ed14c1b). No worker-local question was opened.",
+          "time": 1793806612283,
+          "raw": {
+            "text": "Waiting for parent [5f60ca] to handle project join-live-native-request-a91c (request f3f2f7f46f25d09a7ed14c1b). No worker-local question was opened."
+          },
+          "isError": false
+        },
+        {
+          "text": "Waiting for parent [5f60ca] to handle project join-live-native-request-a91c (request f3f2f7f46f25d09a7ed14c1b). No worker-local question was opened.",
+          "time": 1793806616082,
+          "raw": {
+            "text": "Waiting for parent [5f60ca] to handle project join-live-native-request-a91c (request f3f2f7f46f25d09a7ed14c1b). No worker-local question was opened."
+          },
+          "isError": false
+        }
+      ],
+      "sameNewProjectRequestId": "f3f2f7f46f25d09a7ed14c1b",
+      "workerQuestionRecordsAdded": 0,
+      "newProjectJoined": false,
+      "providerRequests": 5,
+      "seconds": 27.39,
+      "parentCanonicalMessageCount": 1,
+      "parentMessageId": "worker-project-f3f2f7f46f25d09a7ed14c1b-0",
+      "parentMessageStatus": "delivered",
+      "parentRuntimeReached": true,
+      "parentAcknowledged": true,
+      "finalParentMessageState": {
+        "status": "delivered",
+        "runtimeReached": true,
+        "acknowledged": true
+      }
+    },
+    {
+      "status": "passed",
+      "runtime": "hermes",
+      "ref": "ref:9dfbd1",
+      "root": "/private/tmp/xsm-join-live/actual-model-join-hermes-a91c-v1",
+      "nativeConversationIdPreserved": "local-b4e8a956c2fe68619b6d9a0bc829e1f7305a935c431782ee92b11b4a814ef18f",
+      "beforeProtocolGeneration": "1ed81058cc484dea81fb949e17d09f9e",
+      "afterProtocolGeneration": "e21580d9ccfa47fb94523f9e745b0cb5",
+      "nativeJoinToolCallCount": 3,
+      "actualToolReturns": [
+        {
+          "scope": {
+            "kind": "membership",
+            "project": "join-live-group-21a8",
+            "root": "/private/tmp/xsm-join-live/hermes-readonly-bootstrap-20261104-234526-17820a/workspace",
+            "active": true,
+            "changed": false
+          },
+          "text": "already in join-live-group-21a8"
+        },
+        {
+          "text": "Waiting for parent [5f60ca] to handle project join-live-native-request-a91c (request 897d4f16f8d938fa34774aeb). No worker-local question was opened."
+        },
+        {
+          "text": "Waiting for parent [5f60ca] to handle project join-live-native-request-a91c (request 897d4f16f8d938fa34774aeb). No worker-local question was opened."
+        }
+      ],
+      "sameNewProjectRequestId": "897d4f16f8d938fa34774aeb",
+      "parentCanonicalMessageCount": 1,
+      "parentMessageId": "worker-project-897d4f16f8d938fa34774aeb-0",
+      "parentMessageStatus": "queued",
+      "parentRuntimeReached": false,
+      "parentAcknowledged": false,
+      "workerQuestionEvents": 0,
+      "newScopeJoined": false,
+      "providerRequests": 6,
+      "responseModelLabels": [
+        "gpt-6-luna"
+      ],
+      "seconds": 25.211,
+      "scope": "actual model call, no approval answer synthesis or direct registry/parent/config grant writes",
+      "finalParentMessageState": {
+        "status": "delivered",
+        "runtimeReached": true,
+        "acknowledged": true
+      }
+    }
+  ],
+  "hermesJoinCalls": 3,
+  "pi": {
+    "status": "passed new-session folder inheritance only",
+    "ref": "ref:f05df5",
+    "nativeSessionId": "01a1a735-d9a2-7263-98d2-36e70617e884",
+    "root": "/private/tmp/xsm-join-live/actual-pi-new-folder-join21-v1",
+    "nativeJoinToolCallCount": 1,
+    "providerRequests": 2,
+    "seconds": 8.025,
+    "workerUiQuestionCount": 0,
+    "group21Membership": true,
+    "parentRef": null,
+    "newScopeCalls": 0,
+    "sessionFile": "/private/tmp/xsm-join-live/idle-20261104-232936-24178c/pi/sessions/2026-11-04T15-38-06-626Z_01a1a735-d9a2-7263-98d2-36e70617e884.jsonl",
+    "sessionFileExists": true,
+    "liveBinding": true
+  },
+  "hermes": {
+    "ref": "ref:9dfbd1",
+    "liveBinding": true,
+    "activity": "idle",
+    "group21MembershipNow": false,
+    "parentRefNow": null,
+    "modelJoinCalls": 3
+  },
+  "cleanupCapUtc": "2026-11-04T15:45:00Z",
+  "cleanupStartsUtc": "2026-11-04T15:44:40+00:00",
+  "serviceCapUtc": "2026-11-04T16:05:00Z",
+  "remainingScope": "Pi new-scope parent request intentionally excluded: new Pi conversation has no approved parent link.",
+  "cleanupState": {
+    "observedAtUtc": "2026-11-04T15:54:19.769350+00:00",
+    "originalNative3ResumeSupervisorStopped": true,
+    "newPiKeeperStopped": true,
+    "hermesModelDone": true,
+    "hermesInFlightProviderPosts": [],
+    "hermesKeeperStopped": false,
+    "hermesLiveBinding": true,
+    "hermesActivity": "idle",
+    "hermesCleanupStartsUtc": "2026-11-04T16:04:40Z",
+    "hermesServiceCapUtc": "2026-11-04T16:05:00Z"
+  },
+  "finalCleanup": {
+    "observedAtUtc": "2026-11-04T16:08:42.318865+00:00",
+    "inFlightProviderRequests": [],
+    "recordedPidCount": 42,
+    "liveOwnedGenerationRows": [],
+    "reusedPidNumbers": [
+      {
+        "pid": 44712,
+        "currentStart": "Thu Nov 5 00:49:18 2026",
+        "currentExecutable": "/usr/bin/login",
+        "reason": "different process generation; not signaled"
+      }
+    ],
+    "unparsedPidRows": [],
+    "hermesGatewayPidFilesRemaining": [],
+    "hermesGatewayStopLog": "✓ Stopped gateway for this profile\n",
+    "hermesKeeperStopped": true,
+    "allRecordedOwnedGenerationsGone": true,
+    "sourceOrApprovalRecordChangedByCleanup": false
+  },
+  "boundCallerRawArtifacts": [
+    {
+      "runtime": "opencode",
+      "ref": "4c7d17",
+      "rawEvidence": "/private/tmp/xsm-join-live/actual-model-join-opencode-a91c-v1/final-evidence.json"
+    },
+    {
+      "runtime": "openclaw",
+      "ref": "bb683b",
+      "rawEvidence": "/private/tmp/xsm-join-live/actual-model-join-openclaw-a91c-v1/final-evidence.json"
+    },
+    {
+      "runtime": "hermes",
+      "ref": "ref:9dfbd1",
+      "rawEvidence": "/private/tmp/xsm-join-live/actual-model-join-hermes-a91c-v1/final-evidence.json"
+    },
+    {
+      "runtime": "pi-new-conversation",
+      "ref": "ref:f05df5",
+      "rawEvidence": "/private/tmp/xsm-join-live/actual-pi-new-folder-join21-v1/actual-tool-results.json",
+      "sessionFile": "/private/tmp/xsm-join-live/idle-20261104-232936-24178c/pi/sessions/2026-11-04T15-38-06-626Z_01a1a735-d9a2-7263-98d2-36e70617e884.jsonl"
+    }
+  ],
+  "approvalBoundaryNotes": [
+    "Group21 and actual parent bindings came from the main agent actual user UI path; this worker did not answer or synthesize approvals.",
+    "The main-reported later a91c client allow with worker-session-changed and unknown/started application is not counted as an applied approval or repaired here.",
+    "New scope request/DM delivery/ACK and actual scope membership are reported separately.",
+    "No assertion is made that the later a91c client allow was a direct user click; main reported that provenance still needed confirmation. No repair/retry was performed."
+  ],
+  "finalFile": "/private/tmp/xsm-join-live/final-bound-caller-summary.json",
+  "finalBoundCallerState": [
+    {
+      "runtime": "opencode",
+      "ref": "4c7d17",
+      "group21Membership": true,
+      "a91cMembership": false,
+      "storedParentRef": "5f60ca",
+      "endedAt": null,
+      "parentMessageState": {
+        "status": "delivered",
+        "runtimeReached": true,
+        "acknowledged": true
+      }
+    },
+    {
+      "runtime": "openclaw",
+      "ref": "bb683b",
+      "group21Membership": true,
+      "a91cMembership": false,
+      "storedParentRef": "5f60ca",
+      "endedAt": null,
+      "parentMessageState": {
+        "status": "delivered",
+        "runtimeReached": true,
+        "acknowledged": true
+      }
+    },
+    {
+      "runtime": "hermes",
+      "ref": "ref:9dfbd1",
+      "group21Membership": true,
+      "a91cMembership": false,
+      "storedParentRef": "5f60ca",
+      "endedAt": 1793808281.7260401,
+      "parentMessageState": {
+        "status": "delivered",
+        "runtimeReached": true,
+        "acknowledged": true
+      }
+    }
+  ],
+  "finalizedAtUtc": "2026-11-04T16:09:34.621300+00:00"
+}

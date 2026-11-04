@@ -1,0 +1,86 @@
+[
+  {
+    "name": "browser_exec",
+    "strict": false
+  },
+  {
+    "name": "clarify",
+    "strict": false
+  },
+  {
+    "name": "delegate_task",
+    "strict": false
+  },
+  {
+    "name": "execute_code",
+    "strict": false
+  },
+  {
+    "name": "manage_connections",
+    "strict": false
+  },
+  {
+    "name": "memory",
+    "strict": false
+  },
+  {
+    "name": "patch",
+    "strict": false
+  },
+  {
+    "name": "read_file",
+    "strict": false
+  },
+  {
+    "name": "search_files",
+    "strict": false
+  },
+  {
+    "name": "skill_manage",
+    "strict": false
+  },
+  {
+    "name": "skill_view",
+    "strict": false
+  },
+  {
+    "name": "skills_list",
+    "strict": false
+  },
+  {
+    "name": "terminal",
+    "strict": false
+  },
+  {
+    "name": "text_to_speech",
+    "strict": false
+  },
+  {
+    "name": "vision_analyze",
+    "strict": false
+  },
+  {
+    "name": "web_extract",
+    "strict": false
+  },
+  {
+    "name": "web_search",
+    "strict": false
+  },
+  {
+    "name": "write_file",
+    "strict": false
+  },
+  {
+    "name": "tool_search",
+    "strict": false
+  },
+  {
+    "name": "tool_describe",
+    "strict": false
+  },
+  {
+    "name": "tool_call",
+    "strict": false
+  }
+]

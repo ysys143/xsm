@@ -1,0 +1,13 @@
+{
+  "classic_parent_ref": "5f60ca",
+  "classic_parent_pid": 8405,
+  "classic_parent_status": "idle",
+  "classic_parent_test_settings_retained": true,
+  "pi_final_native_pids": [
+    5664,
+    5687
+  ],
+  "pi_final_native_pids_alive": false,
+  "other_native_cleanup": "final-cleanup-evidence.json",
+  "unexpected_new_memberships": false
+}

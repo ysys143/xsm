@@ -1,0 +1,6 @@
+{
+  "a91c_user_confirmed_direct_allow": true,
+  "confirmation_item": "[\"request_user_input_async\",\"call_46f29e10da4440069d72be5fb8aa30a1\",0]",
+  "scope_was_not_applied_due_to_stopped_workers": true,
+  "unknown_record_left_intact": true
+}

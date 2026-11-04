@@ -1,0 +1,97 @@
+{
+  "scope": "native zero-inference idle registration feasibility only; no join/approval verification",
+  "observedAt": 1793802869.448771,
+  "root": "/private/tmp/xsm-join-live/idle-20261104-232936-24178c",
+  "sharedXsmHome": "/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-claude-basic-ey1fwkh6/state",
+  "specifiedParent": "ref:5f60ca",
+  "registrations": [
+    {
+      "runtime": "pi",
+      "nativePid": 17908,
+      "nativeSessionId": "01a1a6f7-26ac-7649-ba84-291f79c22918",
+      "ref": "ref:ced637",
+      "activity": "idle",
+      "endedAt": null,
+      "liveBinding": true,
+      "protocolGeneration": "abd536b579364771a45858beec154180",
+      "registrationFile": "/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-claude-basic-ey1fwkh6/state/sessions/pi-0ca33d1ecfda5ec7becff4aa62e537c6616f89fb8e24fecd924511db5653e28a.json",
+      "parentLinkFileExists": false
+    },
+    {
+      "runtime": "opencode",
+      "nativePid": 17937,
+      "nativeSessionId": "ses_e5908c34cffeKySu6Vn4TIfBEy",
+      "ref": "ref:4c7d17",
+      "activity": "idle",
+      "endedAt": null,
+      "liveBinding": true,
+      "protocolGeneration": "e684b54065d84750b0d14e8e30cf64c2",
+      "registrationFile": "/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-claude-basic-ey1fwkh6/state/sessions/opencode-649a7121fa1ad22c6ac711c35ac66da07515970bf6c4a3cbea124e67aad02a8d.json",
+      "parentLinkFileExists": false
+    },
+    {
+      "runtime": "openclaw",
+      "nativePid": 18257,
+      "nativeSessionId": "9c23f439-fe3b-4ce5-a062-9a36bc3a9dec",
+      "ref": "ref:bb683b",
+      "activity": "idle",
+      "endedAt": null,
+      "liveBinding": true,
+      "protocolGeneration": "dc5c51cf309c47fcb3cf1db1534a44e3",
+      "registrationFile": "/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-claude-basic-ey1fwkh6/state/sessions/openclaw-9edb512812dc4611972513c3df5063b52f5cfd0a9182455792d68b8a329355e0.json",
+      "parentLinkFileExists": false
+    },
+    {
+      "runtime": "hermes",
+      "nativePid": 19148,
+      "nativeSessionId": "local-38c69ff3501766ed37ee12bb1c1c55fc2f2088cccbfa31d6e395795f7bb05c38",
+      "ref": null,
+      "liveBinding": false,
+      "reason": "actual native session.create held, but no current XSM registration observed"
+    }
+  ],
+  "providerRequests": {
+    "pi": 0,
+    "opencode": 0,
+    "openclaw": 0,
+    "hermes": 0
+  },
+  "nativePostDenials": {
+    "pi": 0,
+    "opencode": 0,
+    "openclaw": 0,
+    "hermes": 3
+  },
+  "postDenialInterpretation": "generic gate counts every POST, not necessarily inference. Hermes native logs show context-length metadata autodetection. Original POST paths were not retained; do not classify these as model inference calls.",
+  "supervisorWrites": {
+    "registryRecords": 0,
+    "parentLinks": 0,
+    "approvalAnswers": 0
+  },
+  "actualApprovalGivenForNativeJoin": false,
+  "modelPromptsSubmitted": 0,
+  "maintained": true,
+  "control": {
+    "stopFile": "/private/tmp/xsm-join-live/idle-20261104-232936-24178c/stop",
+    "supervisorToolSession": 25332,
+    "idleHoldSeconds": 1800
+  },
+  "hermesGap": {
+    "nativeSessionCreated": true,
+    "executionGeneration": 0,
+    "xsmRegistration": false,
+    "adapterHook": "integrations/hermes/xsm.py on_session_start -> binding.start -> _host/open",
+    "nativeHook": "agent/conversation_loop.py:937 invokes on_session_start on conversation execution",
+    "limitation": "no official pre-inference native registration path established for this installed combination; no synthesized callbacks, provider or registry"
+  },
+  "openclawBootstrap": "actual sessions.create(runStarted=false), then official native HTTP /tools/invoke xsm_inbox on that exact session; no model-generated tool call claimed",
+  "rawFiles": [
+    "pi/get-state.json",
+    "opencode/native-session-created.json",
+    "openclaw/sessions-create.json",
+    "openclaw/tools-invoke.request.json",
+    "openclaw/tools-invoke.json",
+    "hermes/native-session-create.request.json",
+    "hermes/native-session-created.json"
+  ]
+}

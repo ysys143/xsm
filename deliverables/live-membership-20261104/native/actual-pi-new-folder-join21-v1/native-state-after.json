@@ -1,0 +1,40 @@
+{
+  "id": "post-turn-state",
+  "type": "response",
+  "command": "get_state",
+  "success": true,
+  "data": {
+    "model": {
+      "id": "gpt-6-luna",
+      "name": "gpt-6-luna",
+      "api": "openai-completions",
+      "provider": "xsm-subscription",
+      "baseUrl": "http://127.0.0.1:53293/v1",
+      "reasoning": false,
+      "input": [
+        "text"
+      ],
+      "cost": {
+        "input": 0,
+        "output": 0,
+        "cacheRead": 0,
+        "cacheWrite": 0
+      },
+      "contextWindow": 200000,
+      "maxTokens": 1200,
+      "compat": {
+        "supportsStrictMode": true
+      }
+    },
+    "thinkingLevel": "off",
+    "isStreaming": false,
+    "isCompacting": false,
+    "steeringMode": "one-at-a-time",
+    "followUpMode": "one-at-a-time",
+    "sessionFile": "/private/tmp/xsm-join-live/idle-20261104-232936-24178c/pi/sessions/2026-11-04T15-38-06-626Z_01a1a735-d9a2-7263-98d2-36e70617e884.jsonl",
+    "sessionId": "01a1a735-d9a2-7263-98d2-36e70617e884",
+    "autoCompactionEnabled": false,
+    "messageCount": 5,
+    "pendingMessageCount": 0
+  }
+}

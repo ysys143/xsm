@@ -1,0 +1,29 @@
+{
+  "status": "decisions",
+  "decisions": [
+    {
+      "id": "45619355c0e1781bd9e84898c259129d6e3447dadbdfcc31e58ee5a4f0c2df4f",
+      "status": "applied",
+      "question": "Join project 'join-live-group-21a8' for these selected folders?\nclaude-worker: /Users/jaesolshin/Documents/GitHub/cross-session-messaging\nhermes-c08237bb: /private/tmp/xsm-join-live/hermes-readonly-bootstrap-20261104-234526-17820a/workspace",
+      "created_at": 1793805204.536991
+    },
+    {
+      "id": "422e64b612e5fa96101ff97692bf7d56e665a5818c8e7d383d1c020dcf533a13",
+      "status": "unknown",
+      "question": "Join project 'join-live-native-request-a91c' for these selected folders?\nclaude-worker: /Users/jaesolshin/Documents/GitHub/cross-session-messaging\ncodex-worker: /Users/jaesolshin/Documents/GitHub/cross-session-messaging\nuser-authorized join idle preparation: /private/tmp/xsm-join-live/idle-20261104-232936-24178c/opencode/workspace\nopenclaw-9edb5128: /private/tmp/xsm-join-live/idle-20261104-232936-24178c/openclaw/workspace",
+      "created_at": 1793807202.6368809
+    },
+    {
+      "id": "d36c927337cd43ce89e0425a5322745d5c48ca3063e0bc7e7ad1dc91888ba888",
+      "status": "applied",
+      "question": "Join project 'join-live-group-21a8' for these selected folders?\nclaude-worker: /Users/jaesolshin/Documents/GitHub/cross-session-messaging\npi-0ca33d1e: /private/tmp/xsm-join-live/idle-20261104-232936-24178c/pi/workspace\nuser-authorized join idle preparation: /private/tmp/xsm-join-live/idle-20261104-232936-24178c/opencode/workspace\nopenclaw-9edb5128: /private/tmp/xsm-join-live/idle-20261104-232936-24178c/openclaw/workspace\ncodex-worker: /Users/jaesolshin/Documents/GitHub/cross-session-messaging",
+      "created_at": 1793804365.864695
+    },
+    {
+      "id": "caf2b53185fa4cf1485f1446982c48480ac8470a9272ba661b7eb7a9fdc327f3",
+      "status": "denied",
+      "question": "Join project 'join-live-group-21a8' for these selected folders?\nclaude-worker: /Users/jaesolshin/Documents/GitHub/cross-session-messaging\npi-0ca33d1e: /private/tmp/xsm-join-live/idle-20261104-232936-24178c/pi/workspace\nuser-authorized join idle preparation: /private/tmp/xsm-join-live/idle-20261104-232936-24178c/opencode/workspace\nopenclaw-9edb5128: /private/tmp/xsm-join-live/idle-20261104-232936-24178c/openclaw/workspace\ncodex-worker: /Users/jaesolshin/Documents/GitHub/cross-session-messaging",
+      "created_at": 1793803678.959948
+    }
+  ]
+}

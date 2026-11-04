@@ -1,0 +1,42 @@
+{
+  "status": "passed",
+  "runtime": "hermes",
+  "ref": "ref:9dfbd1",
+  "root": "/private/tmp/xsm-join-live/actual-model-join-hermes-a91c-v1",
+  "nativeConversationIdPreserved": "local-b4e8a956c2fe68619b6d9a0bc829e1f7305a935c431782ee92b11b4a814ef18f",
+  "beforeProtocolGeneration": "1ed81058cc484dea81fb949e17d09f9e",
+  "afterProtocolGeneration": "e21580d9ccfa47fb94523f9e745b0cb5",
+  "nativeJoinToolCallCount": 3,
+  "actualToolReturns": [
+    {
+      "scope": {
+        "kind": "membership",
+        "project": "join-live-group-21a8",
+        "root": "/private/tmp/xsm-join-live/hermes-readonly-bootstrap-20261104-234526-17820a/workspace",
+        "active": true,
+        "changed": false
+      },
+      "text": "already in join-live-group-21a8"
+    },
+    {
+      "text": "Waiting for parent [5f60ca] to handle project join-live-native-request-a91c (request 897d4f16f8d938fa34774aeb). No worker-local question was opened."
+    },
+    {
+      "text": "Waiting for parent [5f60ca] to handle project join-live-native-request-a91c (request 897d4f16f8d938fa34774aeb). No worker-local question was opened."
+    }
+  ],
+  "sameNewProjectRequestId": "897d4f16f8d938fa34774aeb",
+  "parentCanonicalMessageCount": 1,
+  "parentMessageId": "worker-project-897d4f16f8d938fa34774aeb-0",
+  "parentMessageStatus": "queued",
+  "parentRuntimeReached": false,
+  "parentAcknowledged": false,
+  "workerQuestionEvents": 0,
+  "newScopeJoined": false,
+  "providerRequests": 6,
+  "responseModelLabels": [
+    "gpt-6-luna"
+  ],
+  "seconds": 25.211,
+  "scope": "actual model call, no approval answer synthesis or direct registry/parent/config grant writes"
+}

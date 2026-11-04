@@ -1,0 +1,110 @@
+{
+  "observedAtUtc": "2026-11-04T15:25:47.093801+00:00",
+  "status": "3 actual conversations recovered; Pi original unavailable",
+  "root": "/private/tmp/xsm-join-live/resume-native4-20261105-002147-367d3c",
+  "deadlineControl": {
+    "expiresAtUtc": "2026-11-04T15:45:00Z",
+    "cleanupReserveSeconds": 20
+  },
+  "cleanupStartsUtc": "2026-11-04T15:44:40+00:00",
+  "runtimes": [
+    {
+      "runtime": "pi",
+      "ref": "ref:ced637",
+      "nativeSessionId": "01a1a6f7-26ac-7649-ba84-291f79c22918",
+      "resumeStatus": "resume-failed",
+      "beforeProtocolGeneration": "abd536b579364771a45858beec154180",
+      "currentProtocolGeneration": "abd536b579364771a45858beec154180",
+      "currentPid": 17912,
+      "liveBinding": false,
+      "activity": "idle",
+      "endedAt": 1793804418.2099452,
+      "group21Membership": true,
+      "parentRef": "5f60ca",
+      "profile": "/private/tmp/xsm-join-live/idle-20261104-232936-24178c/pi/profile",
+      "cwd": "/private/tmp/xsm-join-live/idle-20261104-232936-24178c/pi/workspace"
+    },
+    {
+      "runtime": "opencode",
+      "ref": "ref:4c7d17",
+      "nativeSessionId": "ses_e5908c34cffeKySu6Vn4TIfBEy",
+      "resumeStatus": "live-idle-same-ref",
+      "beforeProtocolGeneration": "e684b54065d84750b0d14e8e30cf64c2",
+      "currentProtocolGeneration": "799c8b6345dd4f3da8e3382892f91b83",
+      "currentPid": 45605,
+      "liveBinding": true,
+      "activity": "idle",
+      "endedAt": null,
+      "group21Membership": true,
+      "parentRef": "5f60ca",
+      "profile": "/private/tmp/xsm-join-live/idle-20261104-232936-24178c/opencode/profile",
+      "cwd": "/private/tmp/xsm-join-live/idle-20261104-232936-24178c/opencode/workspace"
+    },
+    {
+      "runtime": "openclaw",
+      "ref": "ref:bb683b",
+      "nativeSessionId": "9c23f439-fe3b-4ce5-a062-9a36bc3a9dec",
+      "resumeStatus": "live-idle-same-ref",
+      "beforeProtocolGeneration": "e7d8017b132644bdbfae882c98752a3e",
+      "currentProtocolGeneration": "6952569b415d44d18361ba8a7367fac9",
+      "currentPid": 46555,
+      "liveBinding": true,
+      "activity": "idle",
+      "endedAt": null,
+      "group21Membership": true,
+      "parentRef": "5f60ca",
+      "profile": "/private/tmp/xsm-join-live/idle-20261104-232936-24178c/openclaw/profile",
+      "cwd": "/private/tmp/xsm-join-live/idle-20261104-232936-24178c/openclaw/workspace"
+    },
+    {
+      "runtime": "hermes",
+      "ref": "ref:9dfbd1",
+      "nativeSessionId": "local-b4e8a956c2fe68619b6d9a0bc829e1f7305a935c431782ee92b11b4a814ef18f",
+      "resumeStatus": "live-idle-same-ref",
+      "beforeProtocolGeneration": "620f3903daa24e78b1d974194dd473c8",
+      "currentProtocolGeneration": "1ed81058cc484dea81fb949e17d09f9e",
+      "currentPid": 47136,
+      "liveBinding": true,
+      "activity": "idle",
+      "endedAt": null,
+      "group21Membership": false,
+      "parentRef": null,
+      "profile": "/private/tmp/xsm-join-live/hermes-readonly-bootstrap-20261104-234526-17820a/hermes",
+      "cwd": "/private/tmp/xsm-join-live/hermes-readonly-bootstrap-20261104-234526-17820a/workspace"
+    }
+  ],
+  "piFailure": {
+    "status": "same native conversation resume unavailable from absent idle-only storage",
+    "originalNativeId": "01a1a6f7-26ac-7649-ba84-291f79c22918",
+    "nativeResponseSuccess": true,
+    "nativeReturnedId": "01a1a726-e952-73e2-a235-a4c91e161b0f",
+    "actualApiRefusal": false,
+    "validationRefusedReplacementId": true,
+    "replacementProcessTerminated": true,
+    "sessionFileExists": false,
+    "notAttempted": "--session-id would explicitly create a new session with that id when storage is absent; no ID recreation/file edit used"
+  },
+  "providerRequests": {
+    "pi": 0,
+    "opencode": 0,
+    "openclaw": 0,
+    "hermes": 2
+  },
+  "modelJoinCalls": 0,
+  "bootstrapOnly": {
+    "runtime": "hermes",
+    "purpose": "explicit readonly resume initialization, not join",
+    "requests": 2
+  },
+  "directWrites": {
+    "registry": 0,
+    "parentLinks": 0,
+    "approvalAnswers": 0
+  },
+  "controls": {
+    "stopFile": "/private/tmp/xsm-join-live/resume-native4-20261105-002147-367d3c/stop",
+    "deadlineFile": "/private/tmp/xsm-join-live/resume-native4-20261105-002147-367d3c/deadline.json",
+    "hardMaximumUtc": "2026-11-04T15:45:00Z"
+  },
+  "pending": "actual model join tests paused until main confirms Hermes group approval"
+}

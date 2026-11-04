@@ -1,0 +1,61 @@
+{
+  "id": "45619355c0e1781bd9e84898c259129d6e3447dadbdfcc31e58ee5a4f0c2df4f",
+  "owner": {
+    "runtime": "claude",
+    "home": "/Users/jaesolshin/.claude-3",
+    "conversation": "7f62ac42-de46-4031-8bda-55e0dcff5245"
+  },
+  "scope": {
+    "tool": "xsm_join",
+    "arguments": {
+      "project": "join-live-group-21a8",
+      "workers": [
+        "ref:9dfbd1"
+      ],
+      "decision_key": "join-live-hermes-folder-21a8"
+    },
+    "cwd": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging",
+    "resource": {
+      "worker_members": [
+        {
+          "runtime": "hermes",
+          "home": "/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-claude-basic-ey1fwkh6/state/protocol-profiles/hermes/f47164df4d7c2b866191311d41ed4af959f5da425b476648858c622a3713cb8e",
+          "session_id": "c08237bbd663ee2b65c590d70983d192158c7fc4bfb11e145c4485d6e254a121",
+          "cwd": "/private/tmp/xsm-join-live/hermes-readonly-bootstrap-20261104-234526-17820a/workspace"
+        }
+      ]
+    }
+  },
+  "scope_digest": "8c94b4531adabe8ab72666150d473497af82bb8917064de65ad283d5cd4d8566",
+  "generation": "cdfe2719040d",
+  "question": "Join project 'join-live-group-21a8' for these selected folders?\nclaude-worker: /Users/jaesolshin/Documents/GitHub/cross-session-messaging\nhermes-c08237bb: /private/tmp/xsm-join-live/hermes-readonly-bootstrap-20261104-234526-17820a/workspace",
+  "question_digest": "cc854783fc091907251f8791477a297f499bd83ab8e441ec25d8646275a567a9",
+  "created_at": 1793805204.536991,
+  "expires_at": 1793807004.536991,
+  "status": "pending",
+  "display": {
+    "status": "requested",
+    "owner": "4",
+    "text": "Join project 'join-live-group-21a8' for these selected folders?\nclaude-worker: /Users/jaesolshin/Documents/GitHub/cross-session-messaging\nhermes-c08237bb: /private/tmp/xsm-join-live/hermes-readonly-bootstrap-20261104-234526-17820a/workspace",
+    "digest": "cc854783fc091907251f8791477a297f499bd83ab8e441ec25d8646275a567a9",
+    "complete": true,
+    "channel": "mcp-elicitation",
+    "requested_at": 1793805204.538048,
+    "human_saw": null,
+    "reader": {
+      "instance": "75a6596aaec0c9f8261ea545",
+      "pid": 42993,
+      "generation": "26dfcae064df"
+    }
+  },
+  "waiters": {
+    "4": "waiting"
+  },
+  "answer": null,
+  "application": null,
+  "choices": [
+    "allow",
+    "deny"
+  ],
+  "native_question": "[xsm-decision:45619355c0e1781b] Join project 'join-live-group-21a8' for these selected folders?\nclaude-worker: /Users/jaesolshin/Documents/GitHub/cross-session-messaging\nhermes-c08237bb: /private/tmp/xsm-join-live/hermes-readonly-bootstrap-20261104-234526-17820a/workspace"
+}

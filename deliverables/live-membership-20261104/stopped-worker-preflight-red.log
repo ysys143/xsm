@@ -1,0 +1,13 @@
+======================================================================
+FAIL: test_ended_worker_is_rejected_before_opening_a_parent_question (tests.test_worker_project_flow.WorkerProjectFlowTest.test_ended_worker_is_rejected_before_opening_a_parent_question)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/tests/test_worker_project_flow.py", line 77, in test_ended_worker_is_rejected_before_opening_a_parent_question
+    with self.assertRaisesRegex(ToolError, 'worker.*(running|active|live)'):
+         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ToolError not raised
+
+----------------------------------------------------------------------
+Ran 1 test in 0.436s
+
+FAILED (failures=1)

@@ -1,0 +1,40 @@
+======================================================================
+FAIL: test_request_to_show_an_approval_question_is_not_the_answer (tests.test_open_consent.RequestAsReplyTest.test_request_to_show_an_approval_question_is_not_the_answer) (prompt='repo-b 연결 승인 질문을 보여줘. 아직 결정은 없다.')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/tests/test_open_consent.py", line 89, in test_request_to_show_an_approval_question_is_not_the_answer
+    self._asks(['link', '../repo-b'])
+    ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/tests/test_person_decisions.py", line 44, in _asks
+    self.assertIn("needs your user's yes", text)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: "needs your user's yes" not found in 'refused: your user replied: "repo-b 연결 승인 질문을 보여줘. 아직 결정은 없다.". If that is a yes to linking two folders, run this same command again to go ahead; if it is a no or a question, do not: answer them, and their next message replaces it.\n'
+
+======================================================================
+FAIL: test_request_to_show_an_approval_question_is_not_the_answer (tests.test_open_consent.RequestAsReplyTest.test_request_to_show_an_approval_question_is_not_the_answer) (prompt='Please show the permission question to link repo-b first.')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/tests/test_open_consent.py", line 89, in test_request_to_show_an_approval_question_is_not_the_answer
+    self._asks(['link', '../repo-b'])
+    ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/tests/test_person_decisions.py", line 44, in _asks
+    self.assertIn("needs your user's yes", text)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: "needs your user's yes" not found in 'refused: your user replied: "Please show the permission question to link repo-b first.". If that is a yes to linking two folders, run this same command again to go ahead; if it is a no or a question, do not: answer them, and their next message replaces it.\n'
+
+======================================================================
+FAIL: test_request_to_show_an_approval_question_is_not_the_answer (tests.test_open_consent.RequestAsReplyTest.test_request_to_show_an_approval_question_is_not_the_answer) (prompt='I have not decided whether to link repo-b. Ask me first.')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/tests/test_open_consent.py", line 89, in test_request_to_show_an_approval_question_is_not_the_answer
+    self._asks(['link', '../repo-b'])
+    ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/jaesolshin/Documents/GitHub/cross-session-messaging/tests/test_person_decisions.py", line 44, in _asks
+    self.assertIn("needs your user's yes", text)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: "needs your user's yes" not found in 'refused: your user replied: "I have not decided whether to link repo-b. Ask me first.". If that is a yes to linking two folders, run this same command again to go ahead; if it is a no or a question, do not: answer them, and their next message replaces it.\n'
+
+----------------------------------------------------------------------
+Ran 1 test in 0.182s
+
+FAILED (failures=3)

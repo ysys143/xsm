@@ -1,0 +1,288 @@
+{
+  "admission_id": "fb9fc0ab3db4490f8755727829c1ffd4",
+  "ref": {
+    "profile_id": "/private/tmp/xsm-join-live/hermes-readonly-bootstrap-20261104-234526-17820a/hermes",
+    "session_id": "local-b4e8a956c2fe68619b6d9a0bc829e1f7305a935c431782ee92b11b4a814ef18f"
+  },
+  "sequence": 3,
+  "status": "terminal",
+  "outcome": "completed",
+  "authority_epoch": 3,
+  "execution_generation": 3,
+  "result": {
+    "_messages_are_turn_suffix": true,
+    "agent_persisted": true,
+    "api_calls": 6,
+    "cache_read_tokens": 0,
+    "cache_write_tokens": 0,
+    "compacted_in_place": false,
+    "completed": true,
+    "compression_deferred": false,
+    "compression_exhausted": false,
+    "context_length": 1050000,
+    "cost_source": "none",
+    "cost_status": "unknown",
+    "error": null,
+    "estimated_cost_usd": 0.0,
+    "failed": false,
+    "failure_reason": null,
+    "final_response": "XSM_JOIN_HERMES_A91C_V1",
+    "history_offset": 12,
+    "input_tokens": 86638,
+    "interrupt_message": null,
+    "interrupted": false,
+    "last_prompt_tokens": 14845,
+    "last_reasoning": null,
+    "local_viewer": true,
+    "messages": [
+      {
+        "_db_persisted": true,
+        "_db_row_snapshot": "9b1bd398cf3b17635a1cc6729ca10924",
+        "_row_id": 14,
+        "_tool_call_uids": {
+          "call_b46f735527e34cb38fa5506197f8cb7e": "f9994261474940c7a2239716fc511d9b"
+        },
+        "content": "",
+        "finish_reason": "tool_calls",
+        "message_uid": "5690670d7f03440abfd8c4c6543e4421",
+        "reasoning": null,
+        "role": "assistant",
+        "timestamp": 1793807371.782889,
+        "tool_calls": [
+          {
+            "call_id": "call_b46f735527e34cb38fa5506197f8cb7e",
+            "function": {
+              "arguments": "{\"queries\":[\"xsm_join project request join scope\"]}",
+              "name": "tool_search"
+            },
+            "id": "call_b46f735527e34cb38fa5506197f8cb7e",
+            "response_item_id": "fc_b46f735527e34cb38fa5506197f8cb7e",
+            "type": "function"
+          }
+        ]
+      },
+      {
+        "_db_persisted": true,
+        "_db_row_snapshot": "78002969cd1e1bf986b66527b553ee94",
+        "_row_id": 15,
+        "_tool_call_uid": "f9994261474940c7a2239716fc511d9b",
+        "content": "{\"queries\": [\"xsm_join project request join scope\"], \"total_available\": 27, \"results\": [{\"query\": \"xsm_join project request join scope\", \"matches\": [\"xsm_join\", \"xsm_reach\", \"xsm_ask\"]}], \"tools\": {\"xsm_join\": {\"source\": \"plugin\", \"source_name\": \"xsm\", \"description\": \"Ask your user to let this session's folder join (or leave) a named xsm project, so sessions in other repositories that also joined it can talk with this one. Joining is their decision; this shows them a form.\", \"required\": [\"project\"]}, \"xsm_reach\": {\"source\": \"plugin\", \"source_name\": \"xsm\", \"description\": \"Ask your user to let this session talk with the sessions of one other folder (both ways, while this session runs), when a send is refused as out of scope. Narrower than joining a project: nothing else changes. This shows them a form; drop=true takes it back without asking.\", \"required\": [\"dir\"]}, \"xsm_ask\": {\"source\": \"plugin\", \"source_name\": \"xsm\", \"description\": \"# Discovery and correlated messaging\\n\\nUse `xsm discover WORDS --table` / `xsm_discover(query=\\\"WORDS\\\")` to find published\\nor same-repository conversations by repository, session name, title or task.\\nOmit `--table` for JSON. `--work` filters native title/task fields specifically;\\nmissing metadata can return `unknown`. That does not mean out of scope. Never\\nopen `reach`, `link` or `join` just because discovery is empty or unknown.\\nFilter further by machine or branch when requested; use the returned…\", \"required\": [\"text\"]}}, \"connectors\": {\"status\": \"not_set_up\", \"hint\": \"Hosted connectors are not set up for this user yet. Call manage_connections to connect the app first; that sets them up. Hosted apps (Gmail, Calendar, Notion and more) are then searchable. If the request is better served by the tools above, use those instead.\"}}",
+        "message_uid": "2896b32ab0f746128df1b2a2666840fb",
+        "name": "tool_search",
+        "role": "tool",
+        "timestamp": 1793807371.859838,
+        "tool_call_id": "call_b46f735527e34cb38fa5506197f8cb7e",
+        "tool_name": "tool_search"
+      },
+      {
+        "_db_persisted": true,
+        "_db_row_snapshot": "eb0472789937d6fba1dbbd77684541f2",
+        "_row_id": 16,
+        "_tool_call_uids": {
+          "call_0a888d02dfb94776bc11966056f43406": "d08efc8aec3e4a14adddf99df3fccd46"
+        },
+        "content": "",
+        "finish_reason": "tool_calls",
+        "message_uid": "626acd7f8cb84ab38c5bde24d6a2178a",
+        "reasoning": null,
+        "role": "assistant",
+        "timestamp": 1793807373.599293,
+        "tool_calls": [
+          {
+            "call_id": "call_0a888d02dfb94776bc11966056f43406",
+            "function": {
+              "arguments": "{\"names\":[\"xsm_join\"]}",
+              "name": "tool_describe"
+            },
+            "id": "call_0a888d02dfb94776bc11966056f43406",
+            "response_item_id": "fc_0a888d02dfb94776bc11966056f43406",
+            "type": "function"
+          }
+        ]
+      },
+      {
+        "_db_persisted": true,
+        "_db_row_snapshot": "127e5bac0cea73b050a8e397340a23bb",
+        "_row_id": 17,
+        "_tool_call_uid": "d08efc8aec3e4a14adddf99df3fccd46",
+        "content": "{\"tools\": {\"xsm_join\": {\"description\": \"Ask your user to let this session's folder join (or leave) a named xsm project, so sessions in other repositories that also joined it can talk with this one. Joining is their decision; this shows them a form.\", \"parameters\": {\"type\": \"object\", \"properties\": {\"project\": {\"type\": \"string\"}, \"leave\": {\"type\": \"boolean\", \"default\": false}, \"workers\": {\"type\": \"array\", \"items\": {\"type\": \"string\"}, \"minItems\": 1, \"description\": \"Leader only: selected registered worker refs or Orca term_ handles. Collect one approval here for their folders; do not ask workers to join individually.\"}, \"reason\": {\"type\": \"string\"}, \"answer_request\": {\"type\": \"string\", \"description\": \"Exact native questionItemId of the user's answer; verified against this conversation's native record, single use.\"}, \"original_question\": {\"type\": \"string\", \"description\": \"Exact native_question from xsm_decision_status, including its decision marker; copy choices verbatim and do not paraphrase.\"}, \"decision_key\": {\"type\": \"string\", \"description\": \"Reuse for retries of one human decision; use a different label only for a genuinely new user request.\"}, \"notify\": {\"type\": \"boolean\", \"default\": false, \"description\": \"Opt in to one frequency-limited OS notification. OS success is not proof of human viewing.\"}}, \"required\": [\"project\"]}}}}",
+        "message_uid": "5e7169b1640b4eca8ff99d26b697a1b6",
+        "name": "tool_describe",
+        "role": "tool",
+        "timestamp": 1793807373.608149,
+        "tool_call_id": "call_0a888d02dfb94776bc11966056f43406",
+        "tool_name": "tool_describe"
+      },
+      {
+        "_db_persisted": true,
+        "_db_row_snapshot": "16b632374db4777183bd3ff87cb212ad",
+        "_row_id": 18,
+        "_tool_call_uids": {
+          "call_090d3132c55d4a37829ab0d7bd45e85e": "ebdbe73994a243cb8bd0a0c32ba72566"
+        },
+        "content": "",
+        "finish_reason": "tool_calls",
+        "message_uid": "8c3cff22ea3c4c70a2fa7938d891a988",
+        "reasoning": null,
+        "role": "assistant",
+        "timestamp": 1793807375.590888,
+        "tool_calls": [
+          {
+            "call_id": "call_090d3132c55d4a37829ab0d7bd45e85e",
+            "function": {
+              "arguments": "{\"calls\":[{\"name\":\"xsm_join\",\"arguments\":{\"project\":\"join-live-group-21a8\"}}]}",
+              "name": "tool_call"
+            },
+            "id": "call_090d3132c55d4a37829ab0d7bd45e85e",
+            "response_item_id": "fc_090d3132c55d4a37829ab0d7bd45e85e",
+            "type": "function"
+          }
+        ]
+      },
+      {
+        "_db_persisted": true,
+        "_db_row_snapshot": "092f2388fd1cb2374e2f194a7a0a55e4",
+        "_row_id": 19,
+        "_tool_call_uid": "ebdbe73994a243cb8bd0a0c32ba72566",
+        "content": "{\"scope\": {\"kind\": \"membership\", \"project\": \"join-live-group-21a8\", \"root\": \"/private/tmp/xsm-join-live/hermes-readonly-bootstrap-20261104-234526-17820a/workspace\", \"active\": true, \"changed\": false}, \"text\": \"already in join-live-group-21a8\"}",
+        "message_uid": "b87dc315d89e44b898bcc2f713430f7f",
+        "name": "xsm_join",
+        "role": "tool",
+        "timestamp": 1793807375.937995,
+        "tool_call_id": "call_090d3132c55d4a37829ab0d7bd45e85e",
+        "tool_name": "xsm_join"
+      },
+      {
+        "_db_persisted": true,
+        "_db_row_snapshot": "6f352dfe7de746c0fca087d3cf9990c6",
+        "_row_id": 20,
+        "_tool_call_uids": {
+          "call_7969b40a23f34a25a4266942958e3296": "e76bd2621aa1488a81a6e11837d7b664"
+        },
+        "content": "",
+        "finish_reason": "tool_calls",
+        "message_uid": "30c43d12ceb8495585837e612a9a5cbd",
+        "reasoning": null,
+        "role": "assistant",
+        "timestamp": 1793807378.139882,
+        "tool_calls": [
+          {
+            "call_id": "call_7969b40a23f34a25a4266942958e3296",
+            "function": {
+              "arguments": "{\"calls\":[{\"arguments\":{\"project\":\"join-live-native-request-a91c\"},\"name\":\"xsm_join\"}]}",
+              "name": "tool_call"
+            },
+            "id": "call_7969b40a23f34a25a4266942958e3296",
+            "response_item_id": "fc_7969b40a23f34a25a4266942958e3296",
+            "type": "function"
+          }
+        ]
+      },
+      {
+        "_db_persisted": true,
+        "_db_row_snapshot": "ab7344f3c815ed9ac6114002cd2edbf2",
+        "_row_id": 21,
+        "_tool_call_uid": "e76bd2621aa1488a81a6e11837d7b664",
+        "content": "{\"text\": \"Waiting for parent [5f60ca] to handle project join-live-native-request-a91c (request 897d4f16f8d938fa34774aeb). No worker-local question was opened.\"}",
+        "message_uid": "46311e66fafc4729af34ec7e1a61e6c0",
+        "name": "xsm_join",
+        "role": "tool",
+        "timestamp": 1793807378.230148,
+        "tool_call_id": "call_7969b40a23f34a25a4266942958e3296",
+        "tool_name": "xsm_join"
+      },
+      {
+        "_db_persisted": true,
+        "_db_row_snapshot": "c712acf498e42a22566f4694118eb2e5",
+        "_row_id": 22,
+        "_tool_call_uids": {
+          "call_a2f809703d934e1e8f903b13b99a392b": "da70b0a86f9e429ca9908fc08d73811f"
+        },
+        "content": "",
+        "finish_reason": "tool_calls",
+        "message_uid": "dbf2ef4323b54707b2a28a5f4818a0ac",
+        "reasoning": null,
+        "role": "assistant",
+        "timestamp": 1793807380.482826,
+        "tool_calls": [
+          {
+            "call_id": "call_a2f809703d934e1e8f903b13b99a392b",
+            "function": {
+              "arguments": "{\"calls\":[{\"arguments\":{\"project\":\"join-live-native-request-a91c\"},\"name\":\"xsm_join\"}]}",
+              "name": "tool_call"
+            },
+            "id": "call_a2f809703d934e1e8f903b13b99a392b",
+            "response_item_id": "fc_a2f809703d934e1e8f903b13b99a392b",
+            "type": "function"
+          }
+        ]
+      },
+      {
+        "_db_persisted": true,
+        "_db_row_snapshot": "0da4407fa86daabe9df6b732e730ae37",
+        "_row_id": 23,
+        "_tool_call_uid": "da70b0a86f9e429ca9908fc08d73811f",
+        "content": "{\"text\": \"Waiting for parent [5f60ca] to handle project join-live-native-request-a91c (request 897d4f16f8d938fa34774aeb). No worker-local question was opened.\"}",
+        "message_uid": "c490048262be45c1af1abbdc54ca8239",
+        "name": "xsm_join",
+        "role": "tool",
+        "timestamp": 1793807380.527731,
+        "tool_call_id": "call_a2f809703d934e1e8f903b13b99a392b",
+        "tool_name": "xsm_join"
+      },
+      {
+        "_db_persisted": true,
+        "_db_row_snapshot": "6d1a75d90ef8718b10b5dedce0a99a28",
+        "_row_id": 24,
+        "content": "XSM_JOIN_HERMES_A91C_V1",
+        "finish_reason": "stop",
+        "message_uid": "85c4b4de269d44ba95ef4b3fc58862d2",
+        "reasoning": null,
+        "role": "assistant",
+        "timestamp": 1793807382.3663201
+      }
+    ],
+    "model": "gpt-6-luna",
+    "output_tokens": 172,
+    "partial": false,
+    "pending_steer": null,
+    "persisted_turn": {
+      "complete": true,
+      "final_assistant_row_id": 24,
+      "row_ids": [
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24
+      ],
+      "user_row_id": 13,
+      "user_row_ids": [
+        13
+      ]
+    },
+    "pre_transform_response": null,
+    "provider": "custom",
+    "reasoning_tokens": 0,
+    "response_previewed": false,
+    "response_reused": false,
+    "response_transformed": false,
+    "service_tier": null,
+    "session_id": "local-b4e8a956c2fe68619b6d9a0bc829e1f7305a935c431782ee92b11b4a814ef18f",
+    "total_tokens": 86810,
+    "turn_exit_reason": "text_response(finish_reason=stop)",
+    "usage_limit": null
+  },
+  "usage": {
+    "input_tokens": 86638,
+    "output_tokens": 172,
+    "total_tokens": 86810
+  }
+}

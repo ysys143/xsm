@@ -1,0 +1,49 @@
+======================================================================
+FAIL: test_resuming_after_interruption_keeps_the_exact_bound_answer (tests.test_user_answers.UserAnswersTest.test_resuming_after_interruption_keeps_the_exact_bound_answer) (resume='다시')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-membership-red-fz3ilds3/tests/test_user_answers.py", line 134, in test_resuming_after_interruption_keeps_the_exact_bound_answer
+    self.assertIsNotNone(got)
+    ~~~~~~~~~~~~~~~~~~~~^^^^^
+AssertionError: unexpectedly None
+
+======================================================================
+FAIL: test_resuming_after_interruption_keeps_the_exact_bound_answer (tests.test_user_answers.UserAnswersTest.test_resuming_after_interruption_keeps_the_exact_bound_answer) (resume='계속')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-membership-red-fz3ilds3/tests/test_user_answers.py", line 134, in test_resuming_after_interruption_keeps_the_exact_bound_answer
+    self.assertIsNotNone(got)
+    ~~~~~~~~~~~~~~~~~~~~^^^^^
+AssertionError: unexpectedly None
+
+======================================================================
+FAIL: test_resuming_after_interruption_keeps_the_exact_bound_answer (tests.test_user_answers.UserAnswersTest.test_resuming_after_interruption_keeps_the_exact_bound_answer) (resume='재개')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-membership-red-fz3ilds3/tests/test_user_answers.py", line 134, in test_resuming_after_interruption_keeps_the_exact_bound_answer
+    self.assertIsNotNone(got)
+    ~~~~~~~~~~~~~~~~~~~~^^^^^
+AssertionError: unexpectedly None
+
+======================================================================
+FAIL: test_resuming_after_interruption_keeps_the_exact_bound_answer (tests.test_user_answers.UserAnswersTest.test_resuming_after_interruption_keeps_the_exact_bound_answer) (resume='continue')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-membership-red-fz3ilds3/tests/test_user_answers.py", line 134, in test_resuming_after_interruption_keeps_the_exact_bound_answer
+    self.assertIsNotNone(got)
+    ~~~~~~~~~~~~~~~~~~~~^^^^^
+AssertionError: unexpectedly None
+
+======================================================================
+FAIL: test_resuming_after_interruption_keeps_the_exact_bound_answer (tests.test_user_answers.UserAnswersTest.test_resuming_after_interruption_keeps_the_exact_bound_answer) (resume='resume')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-membership-red-fz3ilds3/tests/test_user_answers.py", line 134, in test_resuming_after_interruption_keeps_the_exact_bound_answer
+    self.assertIsNotNone(got)
+    ~~~~~~~~~~~~~~~~~~~~^^^^^
+AssertionError: unexpectedly None
+
+----------------------------------------------------------------------
+Ran 1 test in 0.049s
+
+FAILED (failures=5)

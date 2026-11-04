@@ -1,0 +1,27 @@
+[
+  {
+    "info": {
+      "id": "msg_1a7272bde00179Tjf1t3cVqOq2",
+      "sessionID": "ses_e5908c34cffeKySu6Vn4TIfBEy",
+      "role": "user",
+      "time": {
+        "created": 1793805724638
+      },
+      "agent": "build",
+      "model": {
+        "providerID": "xsm-subscription",
+        "modelID": "gpt-6-luna"
+      }
+    },
+    "parts": [
+      {
+        "id": "prt_1a7272be50017oY4k4SkXPd7gN",
+        "sessionID": "ses_e5908c34cffeKySu6Vn4TIfBEy",
+        "messageID": "msg_1a7272bde00179Tjf1t3cVqOq2",
+        "type": "text",
+        "text": "Native lifecycle readiness check. No task requested.",
+        "synthetic": true
+      }
+    ]
+  }
+]

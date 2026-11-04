@@ -1,0 +1,61 @@
+{
+  "id": "2b983e7bd8b1da125dca88763bc436312fecca3ba6740411fdcb2507eb933b50",
+  "owner": {
+    "runtime": "claude",
+    "home": "/Users/jaesolshin/.claude-3",
+    "conversation": "7f62ac42-de46-4031-8bda-55e0dcff5245"
+  },
+  "scope": {
+    "tool": "xsm_join",
+    "arguments": {
+      "project": "join-live-group-21a8",
+      "workers": [
+        "ref:f05df5"
+      ],
+      "decision_key": "join-live-pi-owner-final-0e84"
+    },
+    "cwd": "/Users/jaesolshin/Documents/GitHub/cross-session-messaging",
+    "resource": {
+      "worker_members": [
+        {
+          "runtime": "pi",
+          "home": "/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-claude-basic-ey1fwkh6/state/protocol-profiles/pi/465868888bda0df77c56cac626ddb29776582edd5189d8c6af494331e80819c9",
+          "session_id": "27627f9c9129e34b3b7300ad20448631e83d633a8d6729c01612de4e2a98ea6a",
+          "cwd": "/private/tmp/xsm-join-live/idle-20261104-232936-24178c/pi/workspace"
+        }
+      ]
+    }
+  },
+  "scope_digest": "c480a3a672ad07508596b19a389615b440bcd9f65ed6eb73772e83c1f07faabf",
+  "generation": "99f0d1cbaeb3",
+  "question": "Use this session as coordinator for these workers in project 'join-live-group-21a8'? Future project requests will come here.\nclaude-worker: /Users/jaesolshin/Documents/GitHub/cross-session-messaging\npi-27627f9c: /private/tmp/xsm-join-live/idle-20261104-232936-24178c/pi/workspace",
+  "question_digest": "514673ef6c6a8b971deac5ba4f916a7d56c3a743c2b344d4bc93da101a6cc4f4",
+  "created_at": 1793810565.906977,
+  "expires_at": 1793812365.906977,
+  "status": "pending",
+  "display": {
+    "status": "requested",
+    "owner": "2",
+    "text": "Use this session as coordinator for these workers in project 'join-live-group-21a8'? Future project requests will come here.\nclaude-worker: /Users/jaesolshin/Documents/GitHub/cross-session-messaging\npi-27627f9c: /private/tmp/xsm-join-live/idle-20261104-232936-24178c/pi/workspace",
+    "digest": "514673ef6c6a8b971deac5ba4f916a7d56c3a743c2b344d4bc93da101a6cc4f4",
+    "complete": true,
+    "channel": "mcp-elicitation",
+    "requested_at": 1793810565.90782,
+    "human_saw": null,
+    "reader": {
+      "instance": "5396894f22c0f7b546bc3473",
+      "pid": 8522,
+      "generation": "b33cb77b932a"
+    }
+  },
+  "waiters": {
+    "2": "waiting"
+  },
+  "answer": null,
+  "application": null,
+  "choices": [
+    "allow",
+    "deny"
+  ],
+  "native_question": "[xsm-decision:2b983e7bd8b1da12] Use this session as coordinator for these workers in project 'join-live-group-21a8'? Future project requests will come here.\nclaude-worker: /Users/jaesolshin/Documents/GitHub/cross-session-messaging\npi-27627f9c: /private/tmp/xsm-join-live/idle-20261104-232936-24178c/pi/workspace"
+}

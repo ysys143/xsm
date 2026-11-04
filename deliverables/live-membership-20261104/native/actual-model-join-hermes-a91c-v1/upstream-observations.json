@@ -1,0 +1,38 @@
+[
+  {
+    "request": 1,
+    "httpStatus": 200,
+    "rawBody": "/private/tmp/xsm-join-live/actual-model-join-hermes-a91c-v1/upstream-01.body",
+    "responseBytes": 1029
+  },
+  {
+    "request": 2,
+    "httpStatus": 200,
+    "rawBody": "/private/tmp/xsm-join-live/actual-model-join-hermes-a91c-v1/upstream-02.body",
+    "responseBytes": 1002
+  },
+  {
+    "request": 3,
+    "httpStatus": 200,
+    "rawBody": "/private/tmp/xsm-join-live/actual-model-join-hermes-a91c-v1/upstream-03.body",
+    "responseBytes": 1062
+  },
+  {
+    "request": 4,
+    "httpStatus": 200,
+    "rawBody": "/private/tmp/xsm-join-live/actual-model-join-hermes-a91c-v1/upstream-04.body",
+    "responseBytes": 1071
+  },
+  {
+    "request": 5,
+    "httpStatus": 200,
+    "rawBody": "/private/tmp/xsm-join-live/actual-model-join-hermes-a91c-v1/upstream-05.body",
+    "responseBytes": 1071
+  },
+  {
+    "request": 6,
+    "httpStatus": 200,
+    "rawBody": "/private/tmp/xsm-join-live/actual-model-join-hermes-a91c-v1/upstream-06.body",
+    "responseBytes": 3015
+  }
+]

@@ -1,0 +1,507 @@
+[
+  {
+    "runtime": "codex",
+    "ref": "e6bd9e",
+    "request_id": "8a910e6d15be35bc95ce5026",
+    "message_id": "worker-project-8a910e6d15be35bc95ce5026-0",
+    "status": "delivered",
+    "runtime_reached": true,
+    "acknowledged": true,
+    "ledger": {
+      "id": "worker-project-8a910e6d15be35bc95ce5026-0",
+      "status": "delivered",
+      "t": 1793806197.168201,
+      "kind": "task",
+      "scope": "repo:cross-session-messaging",
+      "from": {
+        "name": "codex-worker",
+        "alias": "codex-3",
+        "ref": "e6bd9e",
+        "runtime": "codex"
+      },
+      "to": {
+        "name": "claude-worker",
+        "alias": "claude-3",
+        "ref": "5f60ca",
+        "runtime": "claude"
+      },
+      "preview": "Worker [e6bd9e] needs project join-live-native-request-a91c. Collect this request in your session: call xsm_join with project=join-live-native-request-a91c, workers=[\"ref:e6bd9e\"] and leave=false. Ask",
+      "req_version": 1,
+      "digest": "44d318eea3959aab62a1851704cad5ed0e0bc9c4fbfbd22b5022d6249340d810",
+      "evidence": {
+        "accepted": {
+          "ok": true,
+          "t": 1793806197.168511
+        },
+        "queued": {
+          "ok": true,
+          "t": 1793806197.170578,
+          "detail": "uds:/tmp/cc-socks/42682.sock"
+        }
+      },
+      "runtime_reached": true,
+      "receipt": {
+        "id": "worker-project-8a910e6d15be35bc95ce5026-0",
+        "decision": "delivered",
+        "reason": "",
+        "t": 1793806992.049823,
+        "receiver": {
+          "name": "claude-worker",
+          "alias": "claude-3",
+          "ref": "5f60ca",
+          "runtime": "claude"
+        },
+        "from_ref": "e6bd9e",
+        "body_sha": "4e78423cf866832d",
+        "req_digest": "df4b39ef2ee8ab795caa8ddd9942531aa3412904332b4cfd57fd4177577b4a98",
+        "req_version": 1
+      },
+      "delivery": {
+        "steps": {
+          "accepted": {
+            "ok": true,
+            "t": 1793806197.168511
+          },
+          "queued": {
+            "ok": true,
+            "t": 1793806197.170578,
+            "detail": "uds:/tmp/cc-socks/42682.sock"
+          },
+          "hook_taken": {
+            "ok": true,
+            "t": 1793806992.049823,
+            "detail": "delivered"
+          },
+          "stored": {
+            "ok": true,
+            "t": 1793806197.167229
+          },
+          "claimed": {
+            "ok": true,
+            "t": 1793806992.046515
+          },
+          "handoff": {
+            "ok": true,
+            "t": 1793806992.048504
+          },
+          "ack": {
+            "ok": true,
+            "t": 1793806998.18464
+          }
+        },
+        "runtime_reached": true,
+        "digest": "44d318eea3959aab62a1851704cad5ed0e0bc9c4fbfbd22b5022d6249340d810",
+        "req_version": 1,
+        "legacy": false,
+        "verified": true,
+        "upgraded_from_legacy": false,
+        "acknowledged": true,
+        "handoff_status": "acknowledged"
+      }
+    }
+  },
+  {
+    "runtime": "opencode",
+    "ref": "4c7d17",
+    "request_id": "6ff48d0e446851c1196635a4",
+    "message_id": "worker-project-6ff48d0e446851c1196635a4-0",
+    "status": "delivered",
+    "runtime_reached": true,
+    "acknowledged": true,
+    "ledger": {
+      "id": "worker-project-6ff48d0e446851c1196635a4-0",
+      "status": "delivered",
+      "t": 1793806542.304699,
+      "kind": "task",
+      "scope": "join-live-group-21a8",
+      "from": {
+        "name": "user-authorized join idle preparation",
+        "alias": null,
+        "ref": "4c7d17",
+        "runtime": "opencode"
+      },
+      "to": {
+        "name": "claude-worker",
+        "alias": "claude-3",
+        "ref": "5f60ca",
+        "runtime": "claude"
+      },
+      "preview": "Worker [4c7d17] needs project join-live-native-request-a91c. Collect this request in your session: call xsm_join with project=join-live-native-request-a91c, workers=[\"ref:4c7d17\"] and leave=false. Ask",
+      "req_version": 1,
+      "digest": "cceb803bb5a2fa2e01877a6b131cd9aee3454baf23ad5d59782d5f367ea88213",
+      "evidence": {
+        "accepted": {
+          "ok": true,
+          "t": 1793806542.3051462
+        },
+        "queued": {
+          "ok": true,
+          "t": 1793806542.308019,
+          "detail": "uds:/tmp/cc-socks/42682.sock"
+        }
+      },
+      "runtime_reached": true,
+      "receipt": {
+        "id": "worker-project-6ff48d0e446851c1196635a4-0",
+        "decision": "delivered",
+        "reason": "",
+        "t": 1793806992.342876,
+        "receiver": {
+          "name": "claude-worker",
+          "alias": "claude-3",
+          "ref": "5f60ca",
+          "runtime": "claude"
+        },
+        "from_ref": "4c7d17",
+        "body_sha": "4e0ba8e47b274909",
+        "req_digest": "f6419c09a17be9b2dc57858b4cc23d022b15096ebd223fe6a0e3529d87aa6e0a",
+        "req_version": 1
+      },
+      "delivery": {
+        "steps": {
+          "accepted": {
+            "ok": true,
+            "t": 1793806542.3051462
+          },
+          "queued": {
+            "ok": true,
+            "t": 1793806542.308019,
+            "detail": "uds:/tmp/cc-socks/42682.sock"
+          },
+          "hook_taken": {
+            "ok": true,
+            "t": 1793806992.342876,
+            "detail": "delivered"
+          },
+          "stored": {
+            "ok": true,
+            "t": 1793806542.303481
+          },
+          "claimed": {
+            "ok": true,
+            "t": 1793806992.339734
+          },
+          "handoff": {
+            "ok": true,
+            "t": 1793806992.341603
+          },
+          "ack": {
+            "ok": true,
+            "t": 1793806998.185997
+          }
+        },
+        "runtime_reached": true,
+        "digest": "cceb803bb5a2fa2e01877a6b131cd9aee3454baf23ad5d59782d5f367ea88213",
+        "req_version": 1,
+        "legacy": false,
+        "verified": true,
+        "upgraded_from_legacy": false,
+        "acknowledged": true,
+        "handoff_status": "acknowledged"
+      }
+    }
+  },
+  {
+    "runtime": "openclaw",
+    "ref": "bb683b",
+    "request_id": "f3f2f7f46f25d09a7ed14c1b",
+    "message_id": "worker-project-f3f2f7f46f25d09a7ed14c1b-0",
+    "status": "delivered",
+    "runtime_reached": true,
+    "acknowledged": true,
+    "ledger": {
+      "id": "worker-project-f3f2f7f46f25d09a7ed14c1b-0",
+      "status": "delivered",
+      "t": 1793806612.275224,
+      "kind": "task",
+      "scope": "join-live-group-21a8",
+      "from": {
+        "name": "openclaw-9edb5128",
+        "alias": null,
+        "ref": "bb683b",
+        "runtime": "openclaw"
+      },
+      "to": {
+        "name": "claude-worker",
+        "alias": "claude-3",
+        "ref": "5f60ca",
+        "runtime": "claude"
+      },
+      "preview": "Worker [bb683b] needs project join-live-native-request-a91c. Collect this request in your session: call xsm_join with project=join-live-native-request-a91c, workers=[\"ref:bb683b\"] and leave=false. Ask",
+      "req_version": 1,
+      "digest": "b64af9ce30e56738e1c25ed66272d1c7d64fbe628b3693f92c44d8f13691a53a",
+      "evidence": {
+        "accepted": {
+          "ok": true,
+          "t": 1793806612.2756228
+        },
+        "queued": {
+          "ok": true,
+          "t": 1793806612.2784908,
+          "detail": "uds:/tmp/cc-socks/42682.sock"
+        }
+      },
+      "runtime_reached": true,
+      "receipt": {
+        "id": "worker-project-f3f2f7f46f25d09a7ed14c1b-0",
+        "decision": "delivered",
+        "reason": "",
+        "t": 1793806992.627541,
+        "receiver": {
+          "name": "claude-worker",
+          "alias": "claude-3",
+          "ref": "5f60ca",
+          "runtime": "claude"
+        },
+        "from_ref": "bb683b",
+        "body_sha": "a8d291041e9c5c4d",
+        "req_digest": "aec2029bfa0b07e38182396c688035992d1287fc512340bc7c5343cdf96d6e90",
+        "req_version": 1
+      },
+      "delivery": {
+        "steps": {
+          "accepted": {
+            "ok": true,
+            "t": 1793806612.2756228
+          },
+          "queued": {
+            "ok": true,
+            "t": 1793806612.2784908,
+            "detail": "uds:/tmp/cc-socks/42682.sock"
+          },
+          "hook_taken": {
+            "ok": true,
+            "t": 1793806992.627541,
+            "detail": "delivered"
+          },
+          "stored": {
+            "ok": true,
+            "t": 1793806612.2740512
+          },
+          "claimed": {
+            "ok": true,
+            "t": 1793806992.624289
+          },
+          "handoff": {
+            "ok": true,
+            "t": 1793806992.6261828
+          },
+          "ack": {
+            "ok": true,
+            "t": 1793806998.1873379
+          }
+        },
+        "runtime_reached": true,
+        "digest": "b64af9ce30e56738e1c25ed66272d1c7d64fbe628b3693f92c44d8f13691a53a",
+        "req_version": 1,
+        "legacy": false,
+        "verified": true,
+        "upgraded_from_legacy": false,
+        "acknowledged": true,
+        "handoff_status": "acknowledged"
+      }
+    }
+  },
+  {
+    "runtime": "hermes",
+    "ref": "9dfbd1",
+    "request_id": "897d4f16f8d938fa34774aeb",
+    "message_id": "worker-project-897d4f16f8d938fa34774aeb-0",
+    "status": "delivered",
+    "runtime_reached": true,
+    "acknowledged": true,
+    "ledger": {
+      "id": "worker-project-897d4f16f8d938fa34774aeb-0",
+      "status": "delivered",
+      "t": 1793807378.2235909,
+      "kind": "task",
+      "scope": "join-live-group-21a8",
+      "from": {
+        "name": "hermes-c08237bb",
+        "alias": null,
+        "ref": "9dfbd1",
+        "runtime": "hermes"
+      },
+      "to": {
+        "name": "claude-worker",
+        "alias": "claude-3",
+        "ref": "5f60ca",
+        "runtime": "claude"
+      },
+      "preview": "Worker [9dfbd1] needs project join-live-native-request-a91c. Collect this request in your session: call xsm_join with project=join-live-native-request-a91c, workers=[\"ref:9dfbd1\"] and leave=false. Ask",
+      "req_version": 1,
+      "digest": "a0ebc2f92fe8ce0eec18b9eb0e5b2289f128b72752605bebc56b33c514a2b217",
+      "evidence": {
+        "accepted": {
+          "ok": true,
+          "t": 1793807378.223926
+        },
+        "queued": {
+          "ok": true,
+          "t": 1793807378.227196,
+          "detail": "uds:/tmp/cc-socks/42682.sock"
+        }
+      },
+      "runtime_reached": true,
+      "receipt": {
+        "id": "worker-project-897d4f16f8d938fa34774aeb-0",
+        "decision": "delivered",
+        "reason": "",
+        "t": 1793808559.505994,
+        "receiver": {
+          "name": "claude-worker",
+          "alias": "claude-3",
+          "ref": "5f60ca",
+          "runtime": "claude"
+        },
+        "from_ref": "9dfbd1",
+        "body_sha": "41f33e56aaeeb142",
+        "req_digest": "70a7622dd8c3ae13a7c6fc8ecc1d34239cd74858d2aac73d1affeef99790aaf5",
+        "req_version": 1
+      },
+      "delivery": {
+        "steps": {
+          "accepted": {
+            "ok": true,
+            "t": 1793807378.223926
+          },
+          "queued": {
+            "ok": true,
+            "t": 1793807378.227196,
+            "detail": "uds:/tmp/cc-socks/42682.sock"
+          },
+          "hook_taken": {
+            "ok": true,
+            "t": 1793808559.505994,
+            "detail": "delivered"
+          },
+          "stored": {
+            "ok": true,
+            "t": 1793807378.222579
+          },
+          "claimed": {
+            "ok": true,
+            "t": 1793808559.503239
+          },
+          "handoff": {
+            "ok": true,
+            "t": 1793808559.5049531
+          },
+          "ack": {
+            "ok": true,
+            "t": 1793808564.478142
+          }
+        },
+        "runtime_reached": true,
+        "digest": "a0ebc2f92fe8ce0eec18b9eb0e5b2289f128b72752605bebc56b33c514a2b217",
+        "req_version": 1,
+        "legacy": false,
+        "verified": true,
+        "upgraded_from_legacy": false,
+        "acknowledged": true,
+        "handoff_status": "acknowledged"
+      }
+    }
+  },
+  {
+    "runtime": "pi",
+    "ref": "f05df5",
+    "request_id": "08f8107a3259a0e40638ed07",
+    "message_id": "worker-project-08f8107a3259a0e40638ed07-0",
+    "status": "delivered",
+    "runtime_reached": true,
+    "acknowledged": true,
+    "ledger": {
+      "id": "worker-project-08f8107a3259a0e40638ed07-0",
+      "status": "delivered",
+      "t": 1793811189.274741,
+      "kind": "task",
+      "scope": "join-live-group-21a8",
+      "from": {
+        "name": "pi-27627f9c",
+        "alias": null,
+        "ref": "f05df5",
+        "runtime": "pi"
+      },
+      "to": {
+        "name": "claude-worker",
+        "alias": "claude-3",
+        "ref": "5f60ca",
+        "runtime": "claude"
+      },
+      "preview": "Worker [f05df5] needs project join-live-pi-parent-final-19c7. Collect this request in your session: call xsm_join with project=join-live-pi-parent-final-19c7, workers=[\"ref:f05df5\"] and leave=false. A",
+      "req_version": 1,
+      "digest": "e32a55cdf171e9bd8d0afa31c6495eb539306ca6237762de10c2dfb34f505444",
+      "evidence": {
+        "accepted": {
+          "ok": true,
+          "t": 1793811189.27506
+        },
+        "queued": {
+          "ok": true,
+          "t": 1793811189.27772,
+          "detail": "uds:/tmp/cc-socks/8405.sock"
+        }
+      },
+      "runtime_reached": true,
+      "receipt": {
+        "id": "worker-project-08f8107a3259a0e40638ed07-0",
+        "decision": "delivered",
+        "reason": "read with xsm inbox",
+        "t": 1793811195.533482,
+        "receiver": {
+          "name": "claude-worker",
+          "alias": "claude-3",
+          "ref": "5f60ca",
+          "runtime": "claude"
+        },
+        "from_ref": "f05df5",
+        "body_sha": "02a7ea964603bed9",
+        "req_digest": "b248677d89f9189c8eacf7f7e9c34333749fa2a510496729469c7715ff31e817",
+        "req_version": 1
+      },
+      "delivery": {
+        "steps": {
+          "accepted": {
+            "ok": true,
+            "t": 1793811189.27506
+          },
+          "queued": {
+            "ok": true,
+            "t": 1793811189.27772,
+            "detail": "uds:/tmp/cc-socks/8405.sock"
+          },
+          "hook_taken": {
+            "ok": true,
+            "t": 1793811195.533482,
+            "detail": "delivered"
+          },
+          "stored": {
+            "ok": true,
+            "t": 1793811189.2735412
+          },
+          "claimed": {
+            "ok": true,
+            "t": 1793811189.5382211
+          },
+          "handoff": {
+            "ok": true,
+            "t": 1793811195.534994
+          },
+          "ack": {
+            "ok": true,
+            "t": 1793811198.8833249
+          }
+        },
+        "runtime_reached": true,
+        "digest": "e32a55cdf171e9bd8d0afa31c6495eb539306ca6237762de10c2dfb34f505444",
+        "req_version": 1,
+        "legacy": false,
+        "verified": true,
+        "upgraded_from_legacy": false,
+        "acknowledged": true,
+        "handoff_status": "acknowledged"
+      }
+    }
+  }
+]

@@ -1,0 +1,51 @@
+{
+  "status": "passed",
+  "runtime": "openclaw",
+  "ref": "bb683b",
+  "root": "/private/tmp/xsm-join-live/actual-model-join-openclaw-a91c-v1",
+  "nativeJoinToolCallCount": 3,
+  "sequential": true,
+  "actualToolReturns": [
+    {
+      "text": "already in join-live-group-21a8",
+      "time": 1793806607777,
+      "raw": {
+        "scope": {
+          "kind": "membership",
+          "project": "join-live-group-21a8",
+          "root": "/private/tmp/xsm-join-live/idle-20261104-232936-24178c/openclaw/workspace",
+          "active": true,
+          "changed": false
+        },
+        "text": "already in join-live-group-21a8"
+      },
+      "isError": false
+    },
+    {
+      "text": "Waiting for parent [5f60ca] to handle project join-live-native-request-a91c (request f3f2f7f46f25d09a7ed14c1b). No worker-local question was opened.",
+      "time": 1793806612283,
+      "raw": {
+        "text": "Waiting for parent [5f60ca] to handle project join-live-native-request-a91c (request f3f2f7f46f25d09a7ed14c1b). No worker-local question was opened."
+      },
+      "isError": false
+    },
+    {
+      "text": "Waiting for parent [5f60ca] to handle project join-live-native-request-a91c (request f3f2f7f46f25d09a7ed14c1b). No worker-local question was opened.",
+      "time": 1793806616082,
+      "raw": {
+        "text": "Waiting for parent [5f60ca] to handle project join-live-native-request-a91c (request f3f2f7f46f25d09a7ed14c1b). No worker-local question was opened."
+      },
+      "isError": false
+    }
+  ],
+  "sameNewProjectRequestId": "f3f2f7f46f25d09a7ed14c1b",
+  "workerQuestionRecordsAdded": 0,
+  "newProjectJoined": false,
+  "providerRequests": 5,
+  "seconds": 27.39,
+  "parentCanonicalMessageCount": 1,
+  "parentMessageId": "worker-project-f3f2f7f46f25d09a7ed14c1b-0",
+  "parentMessageStatus": "queued",
+  "parentRuntimeReached": false,
+  "parentAcknowledged": false
+}

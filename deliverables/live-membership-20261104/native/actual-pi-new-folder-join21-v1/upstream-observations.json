@@ -1,0 +1,14 @@
+[
+  {
+    "request": 1,
+    "httpStatus": 200,
+    "rawBody": "/private/tmp/xsm-join-live/actual-pi-new-folder-join21-v1/upstream-01.body",
+    "responseBytes": 1007
+  },
+  {
+    "request": 2,
+    "httpStatus": 200,
+    "rawBody": "/private/tmp/xsm-join-live/actual-pi-new-folder-join21-v1/upstream-02.body",
+    "responseBytes": 2801
+  }
+]

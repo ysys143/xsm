@@ -1,0 +1,4 @@
+{
+  "prompt": "This is the user-authorized actual join test. Call native xsm_join THREE times SEQUENTIALLY and wait for each result: first {\"project\":\"join-live-group-21a8\"}, second {\"project\":\"join-live-native-request-a91c\"}, third identical {\"project\":\"join-live-native-request-a91c\"}. Do not pass workers/leave or extra arguments. Do not approve or actually join the new scope; the native tool must only request existing parent 5f60ca. Do not answer any question, send messages yourself, or use shell. Native tool search/describe to find xsm_join is allowed. After all three real tool returns reply exactly XSM_JOIN_HERMES_A91C_V1.",
+  "fixedAttempt": "hermes-a91c-v1"
+}

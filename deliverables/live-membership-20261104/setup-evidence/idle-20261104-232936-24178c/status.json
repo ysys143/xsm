@@ -1,0 +1,152 @@
+{
+  "status": "idle-preparation-observed",
+  "root": "/private/tmp/xsm-join-live/idle-20261104-232936-24178c",
+  "sharedXsmHome": "/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-claude-basic-ey1fwkh6/state",
+  "specifiedParent": "ref:5f60ca",
+  "modelTurnsStarted": 0,
+  "registryWritesBySupervisor": 0,
+  "parentLinksWrittenBySupervisor": 0,
+  "approvalResponsesSynthesized": 0,
+  "runtimes": {
+    "pi": {
+      "profile": "/private/tmp/xsm-join-live/idle-20261104-232936-24178c/pi/profile",
+      "workspace": "/private/tmp/xsm-join-live/idle-20261104-232936-24178c/pi/workspace",
+      "installation": {
+        "runtime": "pi",
+        "home": "/private/tmp/xsm-join-live/idle-20261104-232936-24178c/pi/profile",
+        "file": "/private/tmp/xsm-join-live/idle-20261104-232936-24178c/pi/profile/extensions/xsm.js",
+        "runtime_root": "/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-claude-basic-ey1fwkh6/state/runtime/5197f2e3e28f",
+        "status": "installed",
+        "changed": true,
+        "requires_reload": true
+      },
+      "pid": 17908,
+      "nativeSessionId": "01a1a6f7-26ac-7649-ba84-291f79c22918",
+      "actualRegistration": {
+        "runtime": "pi",
+        "home": "/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-claude-basic-ey1fwkh6/state/protocol-profiles/pi/465868888bda0df77c56cac626ddb29776582edd5189d8c6af494331e80819c9",
+        "session_id": "0ca33d1ecfda5ec7becff4aa62e537c6616f89fb8e24fecd924511db5653e28a",
+        "ref": "ced637",
+        "pid": 17912,
+        "lstart": "Wed Nov  4 23:29:37 2026",
+        "protocol_version": "1",
+        "protocol_generation": "abd536b579364771a45858beec154180",
+        "activity": "idle",
+        "cwd": "/private/tmp/xsm-join-live/idle-20261104-232936-24178c/pi/workspace",
+        "ended_at": null
+      }
+    },
+    "opencode": {
+      "profile": "/private/tmp/xsm-join-live/idle-20261104-232936-24178c/opencode/profile",
+      "workspace": "/private/tmp/xsm-join-live/idle-20261104-232936-24178c/opencode/workspace",
+      "installation": {
+        "runtime": "opencode",
+        "home": "/private/tmp/xsm-join-live/idle-20261104-232936-24178c/opencode/profile",
+        "file": "/private/tmp/xsm-join-live/idle-20261104-232936-24178c/opencode/profile/plugins/xsm.js",
+        "runtime_root": "/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-claude-basic-ey1fwkh6/state/runtime/5197f2e3e28f",
+        "status": "installed",
+        "changed": true,
+        "requires_reload": true,
+        "ui": {
+          "file": "/private/tmp/xsm-join-live/idle-20261104-232936-24178c/opencode/profile/tui.json",
+          "uri": "file:///var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-claude-basic-ey1fwkh6/state/runtime/5197f2e3e28f/integrations/opencode/tui.mjs",
+          "status": "managed"
+        }
+      },
+      "port": 58554,
+      "pid": 17937,
+      "nativeSessionId": "ses_e5908c34cffeKySu6Vn4TIfBEy",
+      "actualRegistration": {
+        "runtime": "opencode",
+        "home": "/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-claude-basic-ey1fwkh6/state/protocol-profiles/opencode/bd19394df112cef56a3c4351aebd72501335c9f3f0f55c59afe740a367ecaedf",
+        "session_id": "649a7121fa1ad22c6ac711c35ac66da07515970bf6c4a3cbea124e67aad02a8d",
+        "ref": "4c7d17",
+        "pid": 18258,
+        "lstart": "Wed Nov  4 23:29:43 2026",
+        "protocol_version": "1",
+        "protocol_generation": "e684b54065d84750b0d14e8e30cf64c2",
+        "activity": "idle",
+        "cwd": "/private/tmp/xsm-join-live/idle-20261104-232936-24178c/opencode/workspace",
+        "ended_at": null
+      }
+    },
+    "openclaw": {
+      "port": 58551,
+      "profile": "/private/tmp/xsm-join-live/idle-20261104-232936-24178c/openclaw/profile",
+      "workspace": "/private/tmp/xsm-join-live/idle-20261104-232936-24178c/openclaw/workspace",
+      "installation": {
+        "runtime": "openclaw",
+        "home": "/private/tmp/xsm-join-live/idle-20261104-232936-24178c/openclaw/profile",
+        "file": "/private/tmp/xsm-join-live/idle-20261104-232936-24178c/openclaw/profile/extensions/xsm",
+        "status": "installed",
+        "requires_reload": true,
+        "activation": "operator-opt-in",
+        "runtime_root": "/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-claude-basic-ey1fwkh6/state/runtime/5197f2e3e28f",
+        "revisions": {
+          "index.mjs": "a4a3d1a17a41257a15932b5971c3bc7ec3b704581f4c28adb2dd2a330ab53273",
+          "openclaw.plugin.json": "0b5348a678c5bfd87fbf9c7982b9df217a1ac3fbaa85ab4a7f76cdf9bee916dc"
+        },
+        "changed": true
+      },
+      "pid": 18257,
+      "nativeSessionId": "9c23f439-fe3b-4ce5-a062-9a36bc3a9dec",
+      "nativeSessionKey": "agent:main:dashboard:f08b47fe-f170-416d-a5f6-7abae1942df6",
+      "actualRegistration": {
+        "runtime": "openclaw",
+        "home": "/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-claude-basic-ey1fwkh6/state/protocol-profiles/openclaw/ed6e5b57b2644ab4c9112095f0da38d6afebfed584c6d234719fece8c227bd83",
+        "session_id": "9edb512812dc4611972513c3df5063b52f5cfd0a9182455792d68b8a329355e0",
+        "ref": "bb683b",
+        "pid": 19111,
+        "lstart": "Wed Nov  4 23:29:56 2026",
+        "protocol_version": "1",
+        "protocol_generation": "dc5c51cf309c47fcb3cf1db1534a44e3",
+        "activity": "idle",
+        "cwd": "/private/tmp/xsm-join-live/idle-20261104-232936-24178c/openclaw/workspace",
+        "ended_at": null
+      }
+    },
+    "hermes": {
+      "profile": "/private/tmp/xsm-join-live/idle-20261104-232936-24178c/hermes/profile",
+      "workspace": "/private/tmp/xsm-join-live/idle-20261104-232936-24178c/hermes/workspace",
+      "installation": {
+        "runtime": "hermes",
+        "home": "/private/tmp/xsm-join-live/idle-20261104-232936-24178c/hermes/profile",
+        "file": "/private/tmp/xsm-join-live/idle-20261104-232936-24178c/hermes/profile/plugins/xsm",
+        "status": "installed",
+        "requires_reload": true,
+        "activation": "operator-opt-in",
+        "runtime_root": "/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/xsm-claude-basic-ey1fwkh6/state/runtime/5197f2e3e28f",
+        "revisions": {
+          "__init__.py": "e35bee539f083b2669372eb2fe2aeb1206f2b44aa4b0587daac0309f1c1cac52",
+          "plugin.yaml": "8b08ffc8ef84dfd4e63402e309759846ce07339d3f035b043ba5d3c8f2a0e86b"
+        },
+        "changed": true
+      },
+      "pid": 19148,
+      "runtime": "hermes",
+      "nativeSessionId": "local-38c69ff3501766ed37ee12bb1c1c55fc2f2088cccbfa31d6e395795f7bb05c38",
+      "created": true,
+      "promptSubmitted": false
+    }
+  },
+  "heartbeat": 1793804416.065969,
+  "providerRequests": {
+    "pi": 0,
+    "opencode": 0,
+    "openclaw": 0,
+    "hermes": 0
+  },
+  "deniedInferenceAttempts": {
+    "pi": 0,
+    "opencode": 0,
+    "openclaw": 0,
+    "hermes": 3
+  },
+  "nativeProcessExitCodes": {
+    "pi": null,
+    "opencode": null,
+    "openclaw": null,
+    "hermes": null
+  },
+  "stopped": true
+}
