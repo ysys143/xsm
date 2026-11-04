@@ -603,6 +603,9 @@ def record(me: dict | None, data: dict) -> dict | None:
         # Claude's AskUserQuestion: the answer is a tool result, which no
         # prompt hook sees. The harness reports an answer; hooks/SDKs can supply it too.
         out = data.get("tool_response")
+        if data.get("tool_name") == "AskUserQuestion":
+            discard_selection_command(me, "publish")
+            discard_selection_command(me, "collaborate")
         if data.get("tool_name") == "AskUserQuestion" and isinstance(out, dict) and isinstance(out.get("answers"), dict):
             for question, answer in out["answers"].items():
                 one = dict(data, tool_response=dict(out, answers={question: answer}))

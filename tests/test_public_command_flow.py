@@ -41,11 +41,12 @@ class PublicCommandFlowTest(TempState):
 
     def cli(self, who, *args):
         from xsm import cli, context, registry
-        out = io.StringIO()
+        out, err = io.StringIO(), io.StringIO()
         with mock.patch.object(registry, 'me', return_value=who), \
                 mock.patch.object(registry, 'last_identity', return_value=context.of_record(who, context.BASIS_SESSION)), \
-                contextlib.redirect_stdout(out), contextlib.redirect_stderr(io.StringIO()):
+                contextlib.redirect_stdout(out), contextlib.redirect_stderr(err):
             code = cli.main(list(args))
+        self.assertTrue(out.getvalue(), err.getvalue())
         return code, out.getvalue()
 
     def test_each_native_publish_command_publishes_on_first_cli_call_without_an_ask(self):
@@ -97,6 +98,13 @@ class PublicCommandFlowTest(TempState):
         consent.record(self.b, {'hook_event_name': 'UserPromptSubmit', 'prompt': '취소. 연결하지 마.'})
         self.assertEqual(connect.select(self.b, self.a)['status'], 'selection-required')
         self.assertIsNone(config.scope_for(self.a, self.b)[0])
+
+    def test_later_claude_question_answer_supersedes_the_typed_command(self):
+        from xsm import consent
+        self.user_command(self.a, 'publish')
+        consent.record(self.a, {'hook_event_name': 'PostToolUse', 'tool_name': 'AskUserQuestion',
+            'tool_use_id': 'later-question', 'tool_response': {'answers': {'Publish this conversation?': 'No'}}})
+        self.assertEqual(self.cli(self.a, 'publish')[0], 2)
 
     def test_contact_does_not_select_a_different_named_person_or_a_question(self):
         from xsm import collaboration, consent, directory
