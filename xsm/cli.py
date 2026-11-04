@@ -902,7 +902,19 @@ def cmd_discover(args) -> int:
     if why or not me:
         print(why or "this session is not registered", file=sys.stderr)
         return REFUSED
-    result = directory.discover(me, machine=args.machine, work=args.work, branch=args.branch)
+    result = directory.discover(me, machine=args.machine, work=args.work, branch=args.branch,
+                                query=" ".join(args.query) if args.query else None)
+    if args.table:
+        rows = []
+        for row in result["candidates"]:
+            rows.append([row.get("repository") or "unknown", row.get("name") or "unknown",
+                         row.get("runtime"), row.get("ref") or "[-]",
+                         (row.get("state") or {}).get("value") or "unknown",
+                         "you" if row.get("is_self") else "", row["target"]])
+        print("\n".join(_md_table(["repository", "session", "runtime", "ref", "state", "note", "target"], rows)))
+        if result.get("reason"):
+            print("Discovery %s: %s. This is not a communication-scope decision." % (result["status"], result["reason"]))
+        return OK
     print(_readable_json(result))
     return OK
 
@@ -3045,6 +3057,8 @@ def build_parser() -> argparse.ArgumentParser:
     decision.add_argument("--drop-consent", metavar="MARK", help="close one open consent request by its [xsm:<id>] mark; it approves nothing")
     decision.set_defaults(func=cmd_decision_status)
     ds = sub.add_parser("discover", help="find published or same-repository conversations")
+    ds.add_argument("query", nargs="*", help="words in a repository, session name, title or task")
+    ds.add_argument("--table", action="store_true", help="show candidates as a table")
     ds.add_argument("--machine")
     ds.add_argument("--work")
     ds.add_argument("--branch")

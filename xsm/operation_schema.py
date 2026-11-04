@@ -107,6 +107,7 @@ TOOLS = [
      "your user selects it. Discovery alone never grants collaboration.",
      "inputSchema": {"type": "object", "properties": {
          "machine": {"type": "string", "description": "Machine name or label to match."},
+         "query": {"type": "string", "description": "Search repository, session name, title and task summary. Unknown metadata is not a scope refusal."},
          "work": {"type": "string", "description": "Words in the agent's task summary, such as review; not a working-directory path. Omit to browse visible candidates."},
          "branch": {"type": "string", "description": "Git branch name to match."}}}, "annotations": READ_ONLY},
     {"name": "xsm_publish", "description": "Publish only this conversation for discovery after "

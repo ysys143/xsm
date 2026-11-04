@@ -12,7 +12,7 @@ Public API:
   including nonexistent ones, are excluded. Invalid/unreadable policy is unknown;
   discovery fails closed, while registry callers preserve basic communication.
   Registry/attachment callers can pass the same explicit list to this function.
-* discover(caller, records=None, machine=None, work=None, branch=None): returns
+* discover(caller, records=None, machine=None, work=None, branch=None, query=None): returns
   {candidates, status, reason, unanswered}. Only allowed same-uid local homes are
   read. Remote machine requests return unknown until P12 verifies remote origins.
   Candidates have an opaque exact id/handle, never a home/cwd/transcript path.
@@ -485,7 +485,7 @@ def _repo(cwd):
         config.git_repo, cwd, folder=cwd, default=(None, None)))
 
 
-def _discover_local(caller, records=None, machine=None, work=None, branch=None):
+def _discover_local(caller, records=None, machine=None, work=None, branch=None, query=None):
     """Return a sanitized candidate union. Does not adopt, connect, or send.
 
     records defaults to raw local registry pointers, not registry.records(), so
@@ -499,7 +499,7 @@ def _discover_local(caller, records=None, machine=None, work=None, branch=None):
     """
     result = {"candidates": [], "status": "ok", "reason": None, "unanswered": {}}
     if any(value is not None and (not isinstance(value, str) or not value.strip())
-           for value in (machine, work, branch)):
+           for value in (machine, work, branch, query)):
         result.update(status="unknown", reason="invalid_filter")
         return result
     if not _local_machine(machine):
@@ -564,6 +564,12 @@ def _discover_local(caller, records=None, machine=None, work=None, branch=None):
                 if title["value"] is None and summary["value"] is None:
                     result.update(status="unknown", reason="native_filter_unknown")
                 continue
+            repository = _text(config.repo_name(common)) if common else None
+            if query is not None and not any(query.casefold() in v.casefold() for v in
+                    (repository, _text(record.get("name")), title["value"], summary["value"]) if isinstance(v, str)):
+                if title["value"] is None or summary["value"] is None:
+                    result.update(status="unknown", reason="native_filter_unknown")
+                continue
             state = probe.bounded(_liveness, record, endpoint, default=("unknown", "probe_unavailable"))
             state_value, why = state
             receive = None
@@ -582,7 +588,7 @@ def _discover_local(caller, records=None, machine=None, work=None, branch=None):
                 "name_source": title["source"] if title["value"] is not None else "registry:cached_name",
                 "name_freshness": title["freshness"] if title["value"] is not None else "unknown",
                 "discovery_basis": basis,
-                "repository": _text(config.repo_name(common)) if common else None,
+                "repository": repository,
                 "branch": branch_obs, "summary": summary, "todo": native.get("todo", _observation()),
                 "activity": native.get("activity", _observation()),
                 "state": _observation(state_value if state_value != "unknown" else None,
@@ -595,15 +601,15 @@ def _discover_local(caller, records=None, machine=None, work=None, branch=None):
     return result
 
 
-def discover(caller, records=None, machine=None, work=None, branch=None):
+def discover(caller, records=None, machine=None, work=None, branch=None, query=None):
     """Local candidates plus authenticated, separately filtered P2P peers.
 
     An explicit records snapshot is a local projection, including projections
     produced for a remote caller. It must never recurse into network discovery.
     A stopped/unconfigured network neither starts a process nor blocks locals.
     """
-    result = _discover_local(caller, records=records, machine=machine, work=work, branch=branch)
-    if records is not None:
+    result = _discover_local(caller, records=records, machine=machine, work=work, branch=branch, query=query)
+    if records is not None or result.get("reason") == "invalid_filter":
         return result
     from . import network
     if not network.available():
@@ -618,7 +624,19 @@ def discover(caller, records=None, machine=None, work=None, branch=None):
         if not _local_machine(machine):
             result.update(status="unknown", reason="remote_discovery_unavailable")
         return result
-    result["candidates"].extend(remote.get("candidates", []))
+    peers = remote.get("candidates", [])
+    if query is not None:
+        matched = []
+        for row in peers:
+            title = (row.get("title") or {}).get("value")
+            summary = (row.get("summary") or {}).get("value")
+            if any(query.casefold() in value.casefold() for value in
+                   (row.get("repository"), row.get("name"), title, summary) if isinstance(value, str)):
+                matched.append(row)
+            elif title is None or summary is None:
+                result.update(status="unknown", reason="native_filter_unknown")
+        peers = matched
+    result["candidates"].extend(peers)
     result["unanswered"].update(remote.get("unanswered", {}))
     if result["reason"] == "remote_discovery_unverified":
         result.update(status=remote.get("status", "unknown"), reason=remote.get("reason"))

@@ -312,7 +312,7 @@ class OperationService:
         if name == "xsm_discover":
             from . import directory
             return json.dumps(directory.discover(me, machine=args.get("machine"),
-                              work=args.get("work"), branch=args.get("branch")), ensure_ascii=False)
+                              work=args.get("work"), branch=args.get("branch"), query=args.get("query")), ensure_ascii=False)
         if name in ("xsm_ask", "xsm_question_status", "xsm_connect"):
             from . import question_service, question_groups, materials, files, receive, inbox
             requested_wait = float(args.get("wait", 0) or 0)

@@ -204,6 +204,12 @@ def _selection_reason(sender: dict, name: str, verdict, kept) -> str:
 
 def _selected_consent(me, verb, target, *, binding, apply, authorize=None):
     """Keep CLI input consent; UI frontends supply the existing scoped coordinator."""
+    command = consent.take_selection_command(me, verb, binding)
+    if not command and verb == "collaborate":
+        command = consent.take_contact_selection(me, binding)
+    if command:
+        apply(command)
+        return command, True, True
     if authorize is None:
         return consent.take_or_request(me, verb, target, binding=binding, apply=apply)
     from . import collaboration, directory
@@ -254,13 +260,17 @@ def _select_network(sender: dict, target: dict, authorize=None) -> dict:
     try:
         found = fresh()
         target = found.record
+        binding = {"pair": collaboration.propose(sender, target)["endpoints"],
+                   "generation": target["generation"]}
         if found.scope:
+            consent.take_selection_command(sender, "collaborate", binding)
             return {"status": "permitted", "scope": found.scope,
                     "target": address, "handshake": "not-started"}
         record = collaboration.scope_for(sender, target)
         if record is not None:
             # Resume a consented selection whose broker response was lost.
             scope = synchronize()
+            consent.take_selection_command(sender, "collaborate", binding)
             return {"status": "permitted", "scope": scope,
                     "target": address, "handshake": "not-started"}
         proposal = collaboration.propose(sender, target)
@@ -275,7 +285,7 @@ def _select_network(sender: dict, target: dict, authorize=None) -> dict:
 
         verdict, go, kept = _selected_consent(
             sender, "collaborate", name,
-            binding={"pair": proposal["endpoints"], "generation": target["generation"]},
+            binding=binding,
             apply=apply_selection, authorize=authorize)
         if not go:
             reason = _selection_reason(sender, name, verdict, kept)
@@ -312,6 +322,7 @@ def select(sender: dict, target: dict, call=None, authorize=None) -> dict:
     target = current[0]
     existing = config.scope_for(sender, target)[0]
     if existing:
+        consent.take_selection_command(sender, "collaborate", {"pair": collaboration.propose(sender, target)["endpoints"]})
         return {"status": "permitted", "scope": existing, "handshake": "not-started"}
     proposal = collaboration.propose(sender, target)
     name = target.get("name") or target.get("ref")
@@ -353,6 +364,7 @@ def publication(me: dict, visible=True, call=None, authorize=None) -> dict:
     if why:
         return {"status": "refused", "reason": why}
     if not visible:
+        consent.discard_selection_command(me, "publish")
         # Only an actual visibility transition renews the next approval scope.
         # Repeating a no-op withdrawal must not bypass an earlier denial.
         endpoint = directory._endpoint(me)
@@ -362,6 +374,7 @@ def publication(me: dict, visible=True, call=None, authorize=None) -> dict:
             directory.publish(me, visible=False, user_source="explicit unpublish request")
         return {"status": "hidden", "visible": False}
     if directory.is_published(me):
+        consent.take_selection_command(me, "publish", {"conversation": {k: me.get(k) for k in ("runtime", "home", "session_id")}})
         return {"status": "published", "visible": True}
     applied = []
     try:

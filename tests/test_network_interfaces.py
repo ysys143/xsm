@@ -277,6 +277,16 @@ class NetworkInterfacesTest(TempState):
         self.assertEqual(consent.pending_files(self.sender["ref"]), [])
         self.assertEqual(config.load(), before)
 
+    def test_typed_remote_connect_is_consumed_even_when_scope_already_exists(self):
+        from xsm import collaboration, connect, consent, network
+        binding = {'pair': collaboration.propose(self.sender, self.target)['endpoints'],
+                   'generation': self.handle['generation']}
+        with mock.patch.object(network, 'call', return_value=self.resolved(self.scope, 'same-repository')):
+            self.assertIsNotNone(consent.record(self.sender, {
+                'hook_event_name': 'UserPromptSubmit', 'prompt': '$xsm connect '+self.address}))
+            self.assertEqual(connect.select(self.sender, self.target, call=self.call)['status'], 'permitted')
+        self.assertIsNone(consent.take_selection_command(self.sender, 'collaborate', binding))
+
     def test_changed_generation_during_consent_never_creates_pair_or_selection(self):
         from xsm import collaboration, connect, network
         self._record_selection()
@@ -473,6 +483,18 @@ class NetworkInterfacesTest(TempState):
         self.assertEqual(found.record["handle"], self.handle)
         self.assertEqual([c.args[0]["op"] for c in rpc.call_args_list], ["discover", "resolve"])
         self.assertEqual(found.record["target"], self.address)
+
+    def test_remote_query_preserves_unknown_task_metadata_when_no_match_is_proven(self):
+        from xsm import directory, network
+        candidate = dict(self.target, id=self.candidate_id, repository=None,
+                         title={'value': None}, summary={'value': None})
+        with mock.patch.object(network, 'available', return_value=True), \
+                mock.patch.object(network, 'call', return_value={
+                    'status': 'ok', 'candidates': [candidate], 'unanswered': {}}):
+            result = directory.discover(self.sender, machine='remote-device', query='jstack')
+        self.assertEqual(result['candidates'], [])
+        self.assertEqual(result['status'], 'unknown')
+        self.assertEqual(result['reason'], 'native_filter_unknown')
 
     def test_remote_candidate_rejects_stale_generation_duplicate_or_missing_discovery(self):
         from xsm import directory, network, resolve

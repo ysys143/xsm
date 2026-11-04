@@ -324,6 +324,137 @@ def _write(me: dict | None, verb: str, args: str) -> dict | None:
     return entry
 
 
+def record_selection_command(me, text):
+    """Capture a native command's exact conversation/pair, without granting it."""
+    import shlex
+    from . import collaboration, probe, resolve as resolver
+    if not me or not me.get("ref") or os.environ.get("XSM_WORKER") or "\n" in text.strip():
+        return None
+    try:
+        words = shlex.split(text)
+        if words == ["publish", "--off"]:
+            discard_selection_command(me, "publish")
+            return {"verb": "unpublish"}
+        if words == ["publish"]:
+            verb, binding = "publish", {"conversation": collaboration._identity(me)}
+        elif len(words) == 2 and words[0] == "connect":
+            with probe.quick():
+                found = resolver.resolve(words[1], caller=me)
+            if not found.ok:
+                return None
+            verb, binding = "collaborate", {"pair": collaboration.propose(me, found.record)["endpoints"]}
+            if found.record.get("remote") or "home_id" in found.record:
+                binding["generation"] = found.record.get("generation")
+        else:
+            return None
+        entry = {"verb": verb, "selection_binding": binding,
+                 "owner": collaboration._identity(me), "t": time.time(), "command": text.strip()}
+        paths.write_json(_path(me["ref"]), entry, mode=0o600)
+        return entry
+    except (ValueError, OSError, TypeError):
+        return None
+
+
+def take_selection_command(me, verb, binding):
+    """Consume only a fresh native command bound to this exact operation."""
+    from . import collaboration
+    if not me or not me.get("ref"):
+        return None
+    p = _path(me["ref"])
+    try:
+        with _strict_locked(p):
+            entry = paths.read_json(p) or {}
+            age = time.time() - entry.get("t", 0)
+            if (entry.get("verb") != verb or entry.get("selection_binding") != binding or
+                    entry.get("owner") != collaboration._identity(me) or not 0 <= age <= TTL):
+                return None
+            os.unlink(p)
+            return entry["command"]
+    except (ValueError, OSError, TypeError, KeyError):
+        return None
+
+
+def discard_selection_command(me, verb):
+    from . import collaboration
+    if not me or not me.get("ref"):
+        return
+    p = _path(me["ref"])
+    try:
+        with _strict_locked(p):
+            entry = paths.read_json(p) or {}
+            if entry.get("verb") == verb and entry.get("owner") == collaboration._identity(me):
+                os.unlink(p)
+    except (ValueError, OSError):
+        pass
+
+
+def take_contact_selection(me, binding):
+    """A clear native contact instruction may select the sole live repo peer."""
+    from . import collaboration, config, directory, registry
+    p = _recent_path(me["ref"])
+    entry = paths.read_json(p) or {}
+    try:
+        if entry.get("native_owner") != collaboration._identity(me):
+            return None
+        item = entry["prompts"][-1]
+        text = item["text"]
+        if (item.get("used") or item.get("bound_to") or not 0 <= time.time()-item["t"] <= TTL or
+                len(text) > REQUEST_MAX or re.search(r"[?？]|하지\s*마|취소|중단|\b(?:don't|do not|never|cancel)\b", text, re.I)):
+            return None
+        endpoints = binding["pair"]
+        # A later question/decision supersedes the earlier contact instruction.
+        for filename in pending_files(me["ref"]):
+            pending = paths.read_json(filename) or {}
+            if pending.get("verb") == "collaborate" and pending.get("binding") == binding and pending.get("t", 0) >= item["t"]:
+                return None
+        from . import decisions
+        for row in decisions.public_status(me).get("decisions", []):
+            decision = decisions.read(row["id"])
+            if (decision and decision.get("created_at", 0) >= item["t"] and
+                    decision.get("scope", {}).get("resource", {}).get("binding_digest") == decisions.digest(binding)):
+                return None
+        other = next(e for e in endpoints if e != collaboration._identity(me))
+        if "home_id" in other:
+            return None
+        targets = [r for r in registry.raw_records() if all(r.get(k) == v for k, v in other.items())]
+        if len(targets) != 1:
+            return None
+        repo = config.repo_name(config.project_root(targets[0]["cwd"]))
+        if not _mentions(text, repo):
+            return None
+        # Keep this inference deliberately narrow: an instruction about the
+        # repository's session, not an arbitrary person mentioned nearby or
+        # a request to explain whether contact is possible.
+        named = re.escape(repo)
+        korean = (rf"{named}(?:에서\s*(?:(?:일|작업)하(?:는|고\s*있는)\s*)?|의\s*|\s+)"
+                  rf"(?:세션|대화)(?:에|에게|과|랑|이랑|하고)?\s*"
+                  rf"(?:연락해(?:줘|주세요)?|물어봐(?:줘)?|(?:끝나면\s*)?알려\s*달라고\s*해(?:줘)?)[.!。\s]*$")
+        original = rf"{named}에서\s*(?:뭔가\s*)?하고\s*있는데\s*끝나면\s*알려\s*달라고\s*해[.!。\s]*$"
+        english = rf"(?:contact|message|tell|ask)\s+(?:the\s+)?(?:session|conversation)\s+(?:working\s+)?(?:in|on)\s+{named}(?:\s+to\s+(?:notify|tell)\s+me\s+when\s+(?:it\s+)?finishes)?[.!\s]*$"
+        first_sentence = re.split(r"(?<=[.!。])\s+", text, maxsplit=1)[0]
+        if not any(re.fullmatch(pattern, first_sentence, re.I) for pattern in (korean, original, english)):
+            return None
+        # Count repository peers in an unfiltered, complete snapshot. Missing
+        # task text in an unrelated repository must not affect this count.
+        discovery = directory.discover(me)
+        if discovery.get("status") != "ok" or discovery.get("unanswered"):
+            return None
+        candidates = discovery["candidates"]
+        peers = [r for r in candidates if not r.get("is_self") and r.get("repository") == repo]
+        if (len(peers) != 1 or peers[0]["id"] != directory._key(other) or
+                peers[0]["state"].get("value") != "live"):
+            return None
+        with _strict_locked(p):
+            current = paths.read_json(p) or {}
+            if current != entry:
+                return None
+            current["prompts"][-1]["used"] = True
+            paths.write_json(p, current, mode=0o600)
+        return text
+    except (ValueError, KeyError, IndexError, TypeError, OSError):
+        return None
+
+
 # The harness's answer to a question tool arrives as this tag wrapping a JSON
 # array (measured 2026-10-23: Codex request_user_input; the array carries
 # answer, question and questionItemId, the tool call's id). It is the person's
@@ -488,7 +619,11 @@ def record(me: dict | None, data: dict) -> dict | None:
         if data.get("expansion_type") != "slash_command" or \
                 data.get("command_name") not in CLAUDE_COMMANDS:
             return None
-        m = ARGS_RE.match(data.get("command_args") or "")
+        args = data.get("command_args") or ""
+        selected = record_selection_command(me, args)
+        if selected:
+            return selected
+        m = ARGS_RE.match(args)
     elif event == "UserPromptSubmit":
         text = data.get("prompt") or ""
         if envelope.parse(text).peer or envelope.looks_like_peer(text):
@@ -496,6 +631,19 @@ def record(me: dict | None, data: dict) -> dict | None:
         from . import delegation
         if delegation.peer_directive(me, text):
             return None
+        if (me or {}).get("runtime") == "codex":
+            command = re.fullmatch(r"\s*\$xsm(?:\:xsm)?[ \t]+([^\n]+)\s*", text)
+            if command:
+                selected = record_selection_command(me, command.group(1))
+                if selected:
+                    return selected
+        # A later native user turn supersedes an unconsumed command. Claude's
+        # raw slash line is followed by its authenticated expansion hook; do
+        # not erase that expansion if the two hooks are observed out of order.
+        if not ((me or {}).get("runtime") == "claude" and
+                re.fullmatch(r"\s*/xsm(?::xsm)?[ \t]+[^\n]+\s*", text)):
+            discard_selection_command(me, "publish")
+            discard_selection_command(me, "collaborate")
         # A question tool's answer tag: the person's own choice, wrapped the
         # harness way. Keep the answer as the verdict, and the request id it
         # names as the tool call it answers (G00/S5, P02 item 3).
@@ -873,8 +1021,13 @@ def remember(me: dict | None, text: str, noted=None) -> None:
     elif noted:
         item["bound_to"] = list(noted)
     kept.append(item)
-    paths.write_json(p, {"session_id": str(me.get("session_id") or ""), "t": now,
-                         "prompts": kept[-RECENT_KEEP:]}, mode=0o600)
+    value = {"session_id": str(me.get("session_id") or ""), "t": now, "prompts": kept[-RECENT_KEEP:]}
+    try:
+        from . import collaboration
+        value["native_owner"] = collaboration._identity(me)
+    except ValueError:
+        pass
+    paths.write_json(p, value, mode=0o600)
 
 
 def _free_for(prompt: dict, entry: dict | None, as_reply: bool = True) -> bool:
