@@ -5,6 +5,8 @@
 > **All you need is a message channel. The rest is done by agents.**
 > 필요한 것은 메시지 채널 하나뿐입니다. 나머지는 에이전트가 합니다.
 
+[인터랙티브 데모](https://ysys143.github.io/xsm/) · [사용 문서](https://ysys143.github.io/xsm/#guide/start)
+
 xsm은 Claude Code·Codex·Pi·OpenCode·Hermes·OpenClaw 세션이 서로를 찾아 함께 일하게 합니다. 한 머신 안에서, 설정 홈과
 런타임이 달라도, 그리고 사용자의 다른 머신 사이에서도 그렇습니다. 에이전트는 하는 일로 상대를 찾고, 사용자가
 고른 상대와 연결하고, 질문을 보내 실제 답을 돌려받습니다. 단계마다 무엇이 일어났고 무엇이 아직인지도 알려 줍니다.

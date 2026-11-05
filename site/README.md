@@ -1,5 +1,7 @@
 # XSM replay and documentation site
 
+[Live demo](https://ysys143.github.io/xsm/) · [Live documentation](https://ysys143.github.io/xsm/#guide/start)
+
 [Design brief](../docs/design/xsm-demo/spec.md) · [Implementation record](../docs/design/xsm-demo/implementation.md) · [Terminal and English revision](../docs/design/xsm-demo/terminal-en-revision.md)
 
 ## Run locally
@@ -54,6 +56,8 @@ The verifier starts and closes its own local server. It exercises the actual sit
 
 ## Static hosting
 
-Keep `index.html`, `styles.css`, `app.mjs`, `player.mjs`, `content.mjs`, `favicon.svg` and `assets/` in the same relative structure. Serve `.mjs` files with a JavaScript MIME type. `serve.mjs` and `tests/` are for local development and verification. Public deployment is a separate action.
+Keep `index.html`, `styles.css`, `app.mjs`, `player.mjs`, `content.mjs`, `favicon.svg` and `assets/` in the same relative structure. Serve `.mjs` files with a JavaScript MIME type. `serve.mjs` and `tests/` are for local development and verification.
+
+GitHub Pages deployment is managed by [pages.yml](../.github/workflows/pages.yml). A push to `main` that changes `site/` or the workflow runs the Node checks, packages the static assets, and deploys them. The workflow can also be started manually. Development tools and tests are excluded from the published artifact.
 
 Archivo is self-hosted. Its source and SHA-256 are in [fonts.json](assets/fonts.json); the license is [Archivo-OFL.txt](assets/Archivo-OFL.txt).

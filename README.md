@@ -4,6 +4,8 @@ English | [한국어](README_ko.md)
 
 > **All you need is a message channel. The rest is done by agents.**
 
+[Interactive demo](https://ysys143.github.io/xsm/) · [Documentation](https://ysys143.github.io/xsm/#guide/start)
+
 xsm lets the Claude Code, Codex, Pi, OpenCode, Hermes and OpenClaw sessions you run find each other and work together: on one
 machine, across config homes and runtimes, and across your machines. An agent finds a peer by what it is
 working on, connects to the one you pick, asks it a question and gets the actual answer back, and can tell
