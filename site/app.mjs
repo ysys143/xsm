@@ -314,6 +314,10 @@ document.addEventListener('click', event => {
 window.addEventListener('hashchange', () => readRoute());
 window.addEventListener('popstate', () => readRoute());
 window.addEventListener('languagechange', () => readRoute());
+$('.header-start').addEventListener('click', event => {
+  if (event.defaultPrevented || event.button !== 0 || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
+  if (event.currentTarget.hash === location.hash) { event.preventDefault(); readRoute(); }
+});
 $$('.language-switcher button').forEach(button => button.addEventListener('click', () => {
   const selected = resolveLocale({ requested: button.dataset.locale });
   saveLocalePreference(undefined, selected);

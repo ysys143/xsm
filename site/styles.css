@@ -221,6 +221,7 @@ dialog { background: var(--paper); color: var(--ink); border: 1px solid var(--li
 .guide-view #demo .board-window { height: 360px; min-height: 0; }
 .guide-intro { margin-bottom: 44px; }
 .article-section { margin-top: 64px; }
+.article-section:focus { outline: 2px solid var(--blue); outline-offset: 12px; }
 .article-section h2 { margin-bottom: 22px; }
 .article-section p { margin: 28px 0; font-size: 16px; line-height: 1.85; }
 .prompt-block { margin-top: 28px; margin-bottom: 32px; }

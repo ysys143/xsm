@@ -28,6 +28,8 @@ The interface, replay, guides and accessibility labels support English and Korea
 
 Header navigation stays in English in both locales: How it works, Docs, GitHub and Get started. This also applies to the mobile menu. The static translator respects `translate="no"` regions.
 
+Get started scrolls to and focuses the first installation step, outlining the instructions and copy request in blue. Activating it again restores the highlight even when the same step is already open.
+
 The conversations are scripted examples with abbreviated output, not live model calls or newly created XSM sessions. Claude Code and Codex appear in the main replay. Pi, OpenCode, Hermes and OpenClaw are listed with their experimental 0.6.0 support described in the runtime guide.
 
 Scene and guide state can be linked directly:
