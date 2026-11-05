@@ -1,0 +1,50 @@
+계약버전: 2
+작업ID: xsm-demo-web
+발동: 사용자
+위임: 불필요
+준비:
+  - 도구: node
+    확인명령: node --version
+  - 도구: ego-browser
+    확인명령: ego-browser --version
+산출:
+  - 경로: site/index.html
+    형식: HTML
+  - 경로: site/app.mjs
+    형식: JavaScript
+검증:
+  - 요구ID: WEB
+    사용자행동: 시연의 네 장면을 재생하고 정지한 뒤 관련 문서를 읽으며 모바일과 키보드로 조작한다
+    관련파일:
+      - site/index.html
+      - site/styles.css
+      - site/app.mjs
+      - site/player.mjs
+      - site/content.mjs
+      - site/serve.mjs
+      - site/favicon.svg
+      - site/assets/archivo-latin.woff2
+      - site/tests/player.test.mjs
+      - site/tests/site.test.mjs
+      - site/tests/browser.mjs
+      - site/tests/verify.mjs
+      - site/tests/red-pause.mjs
+      - README_ko.md
+      - docs/xsm/ORGANIZATION.md
+      - skills/xsm/references/teams.md
+      - skills/xsm/references/messaging.md
+      - skills/xsm/references/permissions.md
+      - skills/xsm/references/troubleshooting.md
+      - skills/xsm/references/migration.md
+      - docs/protocol/pi.md
+      - docs/protocol/opencode.md
+      - docs/protocol/hermes.md
+      - docs/protocol/openclaw.md
+    등급: 기계
+    명령:
+      실행: node site/tests/verify.mjs --space 45 --output deliverables/xsm-demo-web-20261105/verified
+      기대종료: 0
+    반증:
+      실행: node site/tests/red-pause.mjs {RED_ROOT}
+      기대종료: 0
+    인간검토: 불필요
