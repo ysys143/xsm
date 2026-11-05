@@ -30,6 +30,8 @@ export async function run({ spaceId, baseURL, outputDirectory }) {
   await mkdir(outputDirectory, { recursive: true });
   try {
     await page.cdp('Page.bringToFront');
+    const userAgent = await page.evaluate(() => navigator.userAgent);
+    await page.cdp('Emulation.setUserAgentOverride', { userAgent, acceptLanguage: 'en-US,en' });
     await page.cdp('Emulation.setTouchEmulationEnabled', { enabled: false });
     await page.cdp('Emulation.setEmulatedMedia', { features: [{ name: 'prefers-reduced-motion', value: 'no-preference' }] });
     await page.goto(baseURL);
@@ -89,7 +91,7 @@ export async function run({ spaceId, baseURL, outputDirectory }) {
       await page.waitForFunction(value => location.hash === `#guide/${value}`, topic);
       state = await read();
       check(`document ${topic} has content and the correct scene`, state.scene === scene && state.playing === 'false' && !state.overflow && await page.evaluate(() => document.querySelector('#guide-article').innerText.length > 200));
-      check(`document ${topic} interface is entirely English`, await page.evaluate(() => !/\p{Script=Hangul}/u.test(document.body.innerText) && document.documentElement.lang === 'en'));
+      check(`document ${topic} interface is entirely English`, await page.evaluate(() => { const copy = document.body.cloneNode(true); copy.querySelector('[data-language-control]')?.remove(); return !/\p{Script=Hangul}/u.test(copy.innerText || copy.textContent) && document.documentElement.lang === 'en'; }));
     }
     check('guide paragraphs and sections have generous spacing', await page.evaluate(() => Number.parseFloat(getComputedStyle(document.querySelector('.article-section')).marginTop) >= 40 && Number.parseFloat(getComputedStyle(document.querySelector('.article-section p')).marginBottom) >= 20));
     await page.evaluate(() => history.back());

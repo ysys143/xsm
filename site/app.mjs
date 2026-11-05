@@ -1,4 +1,4 @@
-import { scenes, topics, installPrompt } from './content.mjs';
+import { resolveLocale, getContent, translate, createStaticTranslator, readLocalePreference, saveLocalePreference, languageNames } from './i18n.mjs';
 import { createPlayer, advance, selectScene, togglePlayback, replay, setReducedMotion, sceneFrame } from './player.mjs';
 
 const $ = selector => document.querySelector(selector);
@@ -6,6 +6,13 @@ const $$ = selector => [...document.querySelectorAll(selector)];
 const escape = value => String(value).replace(/[&<>"']/g, character => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[character]);
 const motion = matchMedia('(prefers-reduced-motion: reduce)');
 const narrow = matchMedia('(max-width: 680px)');
+function preferredLocale() {
+  return resolveLocale({ requested: new URLSearchParams(location.search).get('lang'), saved: readLocalePreference(), languages: navigator.languages?.length ? navigator.languages : [navigator.language] });
+}
+let locale = preferredLocale();
+let { scenes, topics, installPrompt } = getContent(locale);
+const tr = (key, values) => translate(locale, key, values);
+const translateStatic = createStaticTranslator(document);
 let player = createPlayer({ reducedMotion: motion.matches });
 let route = { view: 'demo', id: 'team' };
 let renderedScene = -1;
@@ -32,8 +39,26 @@ function followOutput(target) {
   });
 }
 
-$('#chapters').innerHTML = scenes.map(scene => `<a class="chapter-link" href="#demo/${scene.id}" data-scene="${scene.id}"><span>${scene.number}</span><span>${escape(scene.short)}</span></a>`).join('');
-$('#guide-navigation').innerHTML = topics.map(topic => `<a href="#guide/${topic.id}" data-topic="${topic.id}">${escape(topic.label)}</a>`).join('');
+function applyLocale(next) {
+  locale = next;
+  ({ scenes, topics, installPrompt } = getContent(locale));
+  translateStatic(locale);
+  document.documentElement.lang = locale;
+  $('.hero h1').lang = locale;
+  $('.original-thesis').lang = locale;
+  $('#language-select').value = locale;
+  $('#full-reference-link').href = $('#full-reference-link').href.replace(/README(?:_ko)?\.md/, locale === 'ko' ? 'README_ko.md' : 'README.md');
+  for (const option of $('#language-select').options) option.textContent = languageNames[option.value];
+  $('#chapters').innerHTML = scenes.map(scene => `<a class="chapter-link" href="#demo/${scene.id}" data-scene="${scene.id}"><span>${scene.number}</span><span>${escape(scene.short)}</span></a>`).join('');
+  $('#guide-navigation').innerHTML = topics.map(topic => `<a href="#guide/${topic.id}" data-topic="${topic.id}">${escape(topic.label)}</a>`).join('');
+  prompts.clear();
+  prompts.set('install', installPrompt);
+  for (const topic of topics) topic.sections.forEach((section, index) => { if (section.prompt) prompts.set(`${topic.id}-${index}`, section.prompt); });
+  renderedScene = -1;
+  renderedBoard = null;
+  if ($('#transcript summary')) $('#transcript summary').textContent = tr('Read the full transcript');
+  if (!$('#toast').hidden) $('#toast').textContent = tr('Request copied. Paste it into your agent.');
+}
 
 function announce(text) { $('#announcement').textContent = text; }
 
@@ -97,7 +122,7 @@ function renderMessages(target, entries) {
 }
 
 function render() {
-  const frame = sceneFrame(player);
+  const frame = sceneFrame(player, scenes);
   const scene = frame.scene;
   if (renderedScene !== player.scene) {
     renderedScene = player.scene;
@@ -116,8 +141,8 @@ function render() {
     $('#board-label').textContent = `${team} / BOARD.md`;
     $('.board-command').textContent = `$ xsm board show ${team}`;
     $('#board-title').textContent = `# ${team} board`;
-    $('#team-relationship').textContent = player.scene === 3 ? 'API team · UI team · overlapping coordination team' : '1 coordinator · 3 peer workers · native sessions';
-    $('#caption-number').textContent = `${scene.number} / READ THE GUIDE`;
+    $('#team-relationship').textContent = tr(player.scene === 3 ? 'API team · UI team · overlapping coordination team' : '1 coordinator · 3 peer workers · native sessions');
+    $('#caption-number').textContent = `${scene.number} / ${tr('READ THE GUIDE')}`;
     $('#caption-title').textContent = scene.caption;
     $('#caption-description').textContent = scene.description;
     $('#scene-guide-link').href = `#guide/${scene.topic}`;
@@ -131,7 +156,7 @@ function render() {
       const params = new URLSearchParams(location.hash.split('?')[1]);
       history.replaceState(null, '', `#demo/${scene.id}${params.size ? `?${params}` : ''}`);
     }
-    announce(`Scene ${scene.number}. ${scene.title}`);
+    announce(tr('Scene {number}. {title}', { number: scene.number, title: scene.title }));
   }
   for (const actor of ['lead', 'api', 'ui']) renderMessages($(`#${actor}-messages`), frame.messages[actor]);
   renderMessages($('#qa-report'), frame.messages.qa);
@@ -151,8 +176,8 @@ function render() {
   const time = seconds => `${Math.floor(seconds / 60)}:${String(Math.floor(seconds % 60)).padStart(2, '0')}`;
   $('#playback-time').textContent = `${time(player.elapsed / 1000)} / ${time(scene.duration / 1000)}`;
   $('#play-button .play-icon').textContent = player.paused ? '▷' : 'Ⅱ';
-  $('#play-button .play-label').textContent = player.paused ? 'Play' : 'Pause';
-  $('#play-button').setAttribute('aria-label', player.paused ? 'Play replay' : 'Pause replay');
+  $('#play-button .play-label').textContent = tr(player.paused ? 'Play' : 'Pause');
+  $('#play-button').setAttribute('aria-label', tr(player.paused ? 'Play replay' : 'Pause replay'));
   $('#motion-note').hidden = !player.reducedMotion;
   demo.dataset.scene = scene.id;
   demo.dataset.playing = String(!player.paused);
@@ -177,25 +202,29 @@ function resetClock() {
 }
 
 function renderArticle(topic) {
-  $('#guide-article').innerHTML = `<span class="section-label">Docs / ${escape(topic.label)}</span><h1 tabindex="-1">${escape(topic.title)}</h1><p class="guide-intro">${escape(topic.intro)}</p>` + topic.sections.map((section, index) => {
+  $('#guide-article').innerHTML = `<span class="section-label">${tr('Docs')} / ${escape(topic.label)}</span><h1 tabindex="-1">${escape(topic.title)}</h1><p class="guide-intro">${escape(topic.intro)}</p>` + topic.sections.map((section, index) => {
     const copyId = `${topic.id}-${index}`;
     if (section.prompt) prompts.set(copyId, section.prompt);
-    return `<section class="article-section" id="${copyId}" tabindex="-1"><h2>${escape(section.title)}</h2>${section.paragraphs.map(paragraph => `<p>${escape(paragraph)}</p>`).join('')}${section.prompt ? `<div class="prompt-block"><div class="prompt-toolbar"><span>SEND TO YOUR AGENT</span><button class="copy-button" data-copy="${copyId}">${escape(section.copy)} ⧉</button></div><pre>${escape(section.prompt)}</pre></div>` : ''}${section.link ? `<a href="#guide/${section.link[0]}">${escape(section.link[1])} →</a>` : ''}</section>`;
-  }).join('') + `<div class="guide-references"><h2>Reference</h2>${topic.references.map(([name, url]) => `<a href="${escape(url)}" target="_blank" rel="noopener noreferrer">${escape(name)} ↗</a>`).join('')}</div>`;
+    return `<section class="article-section" id="${copyId}" tabindex="-1"><h2>${escape(section.title)}</h2>${section.paragraphs.map(paragraph => `<p>${escape(paragraph)}</p>`).join('')}${section.prompt ? `<div class="prompt-block"><div class="prompt-toolbar"><span>${tr('SEND TO YOUR AGENT')}</span><button class="copy-button" data-copy="${copyId}">${escape(section.copy)} ⧉</button></div><pre>${escape(section.prompt)}</pre></div>` : ''}${section.link ? `<a href="#guide/${section.link[0]}">${escape(section.link[1])} →</a>` : ''}</section>`;
+  }).join('') + `<div class="guide-references"><h2>${tr('Reference')}</h2>${topic.references.map(([name, url]) => `<a href="${escape(url)}" target="_blank" rel="noopener noreferrer">${escape(name)} ↗</a>`).join('')}</div>`;
   const index = topics.indexOf(topic);
   const previous = topics[index - 1];
   const next = topics[index + 1];
-  $('#guide-article').insertAdjacentHTML('beforeend', `<nav class="next-topic" aria-label="Previous and next guide">${previous ? `<a href="#guide/${previous.id}">← ${escape(previous.label)}</a>` : '<span></span>'}${next ? `<a href="#guide/${next.id}">${escape(next.label)} →</a>` : '<a href="#demo/team">Back to the replay →</a>'}</nav>`);
-  $('#page-contents').innerHTML = '<span>On this page</span>' + topic.sections.map((section, index) => `<a href="#guide/${topic.id}?section=${topic.id}-${index}">${escape(section.title)}</a>`).join('');
+  $('#guide-article').insertAdjacentHTML('beforeend', `<nav class="next-topic" aria-label="${tr('Previous and next guide')}">${previous ? `<a href="#guide/${previous.id}">← ${escape(previous.label)}</a>` : '<span></span>'}${next ? `<a href="#guide/${next.id}">${escape(next.label)} →</a>` : `<a href="#demo/team">${tr('Back to the replay')} →</a>`}</nav>`);
+  $('#page-contents').innerHTML = `<span>${tr('On this page')}</span>` + topic.sections.map((section, index) => `<a href="#guide/${topic.id}?section=${topic.id}-${index}">${escape(section.title)}</a>`).join('');
   $$('#guide-navigation a').forEach(link => {
     if (link.dataset.topic === topic.id) link.setAttribute('aria-current', 'page'); else link.removeAttribute('aria-current');
   });
 }
 
 function readRoute(initial = false) {
+  const nextLocale = preferredLocale();
+  const localeChanged = nextLocale !== locale;
+  if (initial || localeChanged) applyLocale(nextLocale);
   const hash = location.hash.slice(1);
-  if (!initial && ['main', 'show-stage'].includes(hash)) return;
-  const [path, query] = hash.split('?');
+  const anchorOnly = ['main', 'show-stage'].includes(hash);
+  if (!initial && anchorOnly && !localeChanged) return;
+  const [path, query] = anchorOnly ? [`${route.view}/${route.id}`] : hash.split('?');
   const [view, id] = path.split('/');
   const params = new URLSearchParams(query);
   const isGuide = view === 'guide' && topics.some(topic => topic.id === id);
@@ -210,15 +239,16 @@ function readRoute(initial = false) {
   const guide = route.view === 'guide';
   $('#show-view').hidden = guide;
   $('#guide-view').hidden = !guide;
-  (guide ? $('#guide-slot') : $('#show-slot')).append(demo);
-  if (guide && changed) renderArticle(topic);
-  document.title = guide ? `${topic.title} — xsm` : 'xsm — All you need is a message channel.';
+  const slot = guide ? $('#guide-slot') : $('#show-slot');
+  if (demo.parentElement !== slot) slot.append(demo);
+  if (guide && (changed || localeChanged)) renderArticle(topic);
+  document.title = guide ? `${topic.title} — xsm` : `xsm — ${tr('All you need is')} ${tr('a message channel.')}`;
   $$('[data-nav]').forEach(link => {
     if (link.dataset.nav === route.view) link.setAttribute('aria-current', 'page'); else link.removeAttribute('aria-current');
   });
   setFocus(params.get('focus'));
   closeMenu(); render(); resetClock();
-  if (params.has('section')) {
+  if (params.has('section') && !localeChanged) {
     requestAnimationFrame(() => {
       const target = document.getElementById(params.get('section'));
       if (target?.closest('#guide-article')) { target.scrollIntoView({ block: 'start' }); target.focus({ preventScroll: true }); }
@@ -232,7 +262,7 @@ function readRoute(initial = false) {
 function closeMenu() {
   $('#mobile-navigation').hidden = true;
   $('.mobile-menu').setAttribute('aria-expanded', 'false');
-  $('.mobile-menu').setAttribute('aria-label', 'Open menu');
+  $('.mobile-menu').setAttribute('aria-label', tr('Open menu'));
 }
 async function copyPrompt(button) {
   const text = prompts.get(button.dataset.copy);
@@ -240,7 +270,7 @@ async function copyPrompt(button) {
   try {
     await navigator.clipboard.writeText(text);
     const toast = $('#toast');
-    toast.textContent = 'Request copied. Paste it into your agent.';
+    toast.textContent = tr('Request copied. Paste it into your agent.');
     toast.hidden = false;
     clearTimeout(toastTimer);
     toastTimer = setTimeout(() => { toast.hidden = true; }, 3500);
@@ -253,7 +283,7 @@ async function copyPrompt(button) {
 
 $('#play-button').addEventListener('click', () => {
   player = togglePlayback(player);
-  announce(player.paused ? 'Replay paused.' : 'Playing the replay.');
+  announce(tr(player.paused ? 'Replay paused.' : 'Playing the replay.'));
   render(); resetClock();
 });
 $('#replay-button').addEventListener('click', () => { player = replay(player); render(); resetClock(); });
@@ -273,7 +303,7 @@ $('.mobile-menu').addEventListener('click', () => {
   const open = $('#mobile-navigation').hidden;
   $('#mobile-navigation').hidden = !open;
   $('.mobile-menu').setAttribute('aria-expanded', String(open));
-  $('.mobile-menu').setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+  $('.mobile-menu').setAttribute('aria-label', tr(open ? 'Close menu' : 'Open menu'));
 });
 document.addEventListener('keydown', event => {
   if (event.key === 'Escape' && !$('#mobile-navigation').hidden) { closeMenu(); $('.mobile-menu').focus(); }
@@ -283,6 +313,16 @@ document.addEventListener('click', event => {
   if (button) void copyPrompt(button);
 });
 window.addEventListener('hashchange', () => readRoute());
+window.addEventListener('popstate', () => readRoute());
+window.addEventListener('languagechange', () => readRoute());
+$('#language-select').addEventListener('change', event => {
+  const selected = resolveLocale({ requested: event.target.value });
+  saveLocalePreference(undefined, selected);
+  const url = new URL(location.href);
+  url.searchParams.set('lang', selected);
+  history.replaceState(null, '', url);
+  readRoute();
+});
 motion.addEventListener('change', event => { player = setReducedMotion(player, event.matches); render(); resetClock(); });
 narrow.addEventListener('change', () => setFocus(demo.dataset.focus));
 document.addEventListener('visibilitychange', resetClock);
@@ -290,7 +330,7 @@ const visibility = new IntersectionObserver(entries => { stageVisible = entries[
 visibility.observe(demo);
 const transcript = document.createElement('details');
 transcript.id = 'transcript'; transcript.className = 'transcript';
-transcript.innerHTML = '<summary>Read the full transcript</summary><ol id="transcript-content"></ol>';
+transcript.innerHTML = `<summary>${tr('Read the full transcript')}</summary><ol id="transcript-content"></ol>`;
 $('#demo .playback').append(transcript);
 readRoute(true); schedule();
 $$('.terminal-content, .board-output').forEach(node => node.addEventListener('scroll', () => {

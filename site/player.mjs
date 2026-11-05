@@ -41,8 +41,8 @@ export function setReducedMotion(player, reducedMotion) {
     : { ...player, reducedMotion };
 }
 
-export function sceneFrame(player) {
-  const scene = scenes[player.scene];
+export function sceneFrame(player, story = scenes) {
+  const scene = story[player.scene];
   const time = player.reducedMotion ? scene.duration : player.elapsed;
   const messages = Object.fromEntries(Object.entries(scene.messages).map(([actor, entries]) => [actor,
     entries.filter(entry => entry.at <= time).map(entry => {
@@ -54,7 +54,7 @@ export function sceneFrame(player) {
   const board = scene.boards.filter(entry => entry.at <= time).at(-1) ?? scene.boards[0];
   const flow = scene.flows.filter(entry => entry.at <= time).at(-1) ?? null;
   const status = scene.id === 'progress' && board.progress === undefined
-    ? 'Checking worker reports against acceptance criteria'
+    ? (scene.pendingStatus ?? 'Checking worker reports against acceptance criteria')
     : scene.status;
   return { scene, messages, board, flow, status };
 }

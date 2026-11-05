@@ -30,7 +30,7 @@ export const scenes = [
         tool(7900, 'xsm_send', { target: 'api-worker', kind: 'task', text: 'Implement the API. Coordinate the contract with ui-worker; report evidence and blockers.' }, 'sent-unconfirmed: queued (id 6d8f2a9b41e7c503)'),
       ],
       api: [
-        inbox(6500, 'lead', '6d8f2a9b41e7c503', 'Implement the API. Coordinate the contract with ui-worker; report evidence and blockers.', 'task'),
+        inbox(8600, 'lead', '6d8f2a9b41e7c503', 'Implement the API. Coordinate the contract with ui-worker; report evidence and blockers.', 'task'),
         message(9500, 'assistant', 'I will check the existing API and coordinate the event schema.'),
       ],
       ui: [inbox(9000, 'lead', '879ae5f48a10c2d3', 'Own the notification UI. Coordinate the API contract with api-worker.', 'task'), message(11500, 'assistant', 'I will build the notification list and read-state UI.')],

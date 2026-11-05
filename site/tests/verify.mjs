@@ -31,7 +31,7 @@ async function inputs() {
 }
 
 const before = await inputs();
-const unit = spawnSync(process.execPath, ['--test', 'site/tests/player.test.mjs', 'site/tests/site.test.mjs'], { cwd: root, encoding: 'utf8', timeout: 10000 });
+const unit = spawnSync(process.execPath, ['--test', 'site/tests/player.test.mjs', 'site/tests/site.test.mjs', 'site/tests/i18n.test.mjs'], { cwd: root, encoding: 'utf8', timeout: 10000 });
 await writeFile(join(output, 'unit.txt'), unit.stdout + unit.stderr);
 process.stdout.write(unit.stdout + unit.stderr);
 assert.equal(unit.status, 0, 'Node checks failed.');
@@ -52,7 +52,9 @@ await once(server, 'listening');
 const baseURL = `http://127.0.0.1:${server.address().port}/`;
 try {
   const moduleURL = pathToFileURL(join(root, 'site/tests/browser.mjs')).href;
-  const script = `await (await import(${JSON.stringify(moduleURL)})).run(${JSON.stringify({ spaceId: space, baseURL, outputDirectory: output })});`;
+  const localeModuleURL = pathToFileURL(join(root, 'site/tests/i18n-browser.mjs')).href;
+  const options = JSON.stringify({ spaceId: space, baseURL, outputDirectory: output });
+  const script = `await (await import(${JSON.stringify(moduleURL)})).run(${options}); await (await import(${JSON.stringify(localeModuleURL)})).run(${options});`;
   // Async spawn keeps the local server responsive while the browser checks run.
   const { spawn } = await import('node:child_process');
   const child = spawn('ego-browser', ['nodejs', '-e', script], { cwd: root, stdio: ['ignore', 'pipe', 'pipe'] });
@@ -66,8 +68,10 @@ try {
   assert.equal(code, 0, 'Browser checks failed; inspect the preserved failure report.');
   assert.deepEqual(await inputs(), before, 'Inputs changed during verification.');
   const browser = JSON.parse(await readFile(join(output, 'browser.json'), 'utf8'));
-  await writeFile(join(output, 'verified-inputs.json'), JSON.stringify({ inputs: before, node: process.version, browserChecks: browser.passed, result: 'passed' }, null, 2) + '\n');
-  console.log(`Verified: Node checks and ${browser.passed} real-browser checks.`);
+  const localized = JSON.parse(await readFile(join(output, 'i18n-browser.json'), 'utf8'));
+  const browserChecks = browser.passed + localized.passed;
+  await writeFile(join(output, 'verified-inputs.json'), JSON.stringify({ inputs: before, node: process.version, browserChecks, result: 'passed' }, null, 2) + '\n');
+  console.log(`Verified: Node checks and ${browserChecks} real-browser checks.`);
 } finally {
   server.closeAllConnections();
   await new Promise(resolve => server.close(resolve));

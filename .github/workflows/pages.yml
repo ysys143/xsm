@@ -33,13 +33,13 @@ jobs:
           node-version: '24'
           package-manager-cache: false
       - name: Verify the website
-        run: node --test site/tests/player.test.mjs site/tests/site.test.mjs
+        run: node --test site/tests/player.test.mjs site/tests/site.test.mjs site/tests/i18n.test.mjs
       - name: Configure Pages
         uses: actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d # v6.0.0
       - name: Prepare the static website
         run: |
           mkdir -p dist/pages
-          cp site/index.html site/styles.css site/app.mjs site/player.mjs site/content.mjs site/favicon.svg dist/pages/
+          cp site/index.html site/styles.css site/app.mjs site/player.mjs site/content.mjs site/content.ko.mjs site/i18n.mjs site/favicon.svg dist/pages/
           cp -R site/assets dist/pages/assets
           touch dist/pages/.nojekyll
       - name: Upload the website artifact

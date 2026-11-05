@@ -32,10 +32,25 @@ test('the static page and stylesheet only refer to packaged local assets', async
   assert.ok(!html.includes('hero-aside'));
 });
 
-test('all shipped interface, replay and guide copy is English', async () => {
+test('English fallback interface and story copy remain English', async () => {
   for (const file of ['index.html', 'app.mjs', 'player.mjs', 'content.mjs', 'styles.css']) {
     assert.doesNotMatch(await readFile(new URL(`../${file}`, import.meta.url), 'utf8'), /\p{Script=Hangul}/u, file);
   }
+});
+
+test('all browser module imports are present in the Pages artifact inputs', async () => {
+  const workflow = await readFile(new URL('../../.github/workflows/pages.yml', import.meta.url), 'utf8');
+  const seen = new Set();
+  async function visit(file) {
+    if (seen.has(file)) return;
+    seen.add(file);
+    const source = await readFile(new URL(`../${file}`, import.meta.url), 'utf8');
+    assert.ok(workflow.includes(`site/${file}`), `${file} must be copied to Pages`);
+    for (const match of source.matchAll(/from\s+['"]\.\/([^'"]+\.mjs)['"]/g)) await visit(match[1]);
+  }
+  await visit('app.mjs');
+  assert.ok(seen.has('content.ko.mjs'));
+  assert.ok(seen.has('i18n.mjs'));
 });
 
 test('the local server serves real HTML, JavaScript and fonts with usable MIME types', async () => {
