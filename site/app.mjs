@@ -16,6 +16,21 @@ let stageVisible = true;
 let toastTimer = 0;
 const prompts = new Map([['install', installPrompt]]);
 const demo = $('#demo');
+const follow = new WeakMap();
+const dirtyLogs = new Set();
+let scrollFrame = 0;
+
+function followOutput(target) {
+  const log = target.closest('.terminal-content') ?? target.closest('.board-output');
+  if (!log || follow.get(log) === false) return;
+  dirtyLogs.add(log);
+  if (!scrollFrame) scrollFrame = requestAnimationFrame(() => {
+    scrollFrame = 0;
+    const sizes = [...dirtyLogs].map(node => [node, node.scrollHeight]);
+    dirtyLogs.clear();
+    sizes.forEach(([node, height]) => { node.scrollTop = height; });
+  });
+}
 
 $('#chapters').innerHTML = scenes.map(scene => `<a class="chapter-link" href="#demo/${scene.id}" data-scene="${scene.id}"><span>${scene.number}</span><span>${escape(scene.short)}</span></a>`).join('');
 $('#guide-navigation').innerHTML = topics.map(topic => `<a href="#guide/${topic.id}" data-topic="${topic.id}">${escape(topic.label)}</a>`).join('');
@@ -51,22 +66,34 @@ function setFocus(focus, writeURL = false) {
 }
 
 function renderMessages(target, entries) {
+  let changed = false;
   while (target.children.length > entries.length) target.lastElementChild.remove();
   entries.forEach((entry, index) => {
     let node = target.children[index];
     if (!node) {
       node = document.createElement('div');
       node.className = 'message';
-      node.innerHTML = '<div class="message-from"></div><p class="message-text"></p>';
+      node.innerHTML = '<div class="message-from"></div><pre class="message-text"></pre><pre class="tool-result" hidden></pre>';
       target.append(node);
+      changed = true;
     }
     node.dataset.kind = entry.kind;
     const from = node.querySelector('.message-from');
     const text = node.querySelector('.message-text');
-    if (from.textContent !== entry.from) from.textContent = entry.from;
-    if (text.textContent !== entry.text) text.textContent = entry.text;
+    const runtime = target.closest('.terminal')?.dataset.runtime;
+    const label = entry.kind === 'tool'
+      ? (runtime === 'codex' ? `Called xsm.${entry.from}` : `xsm - ${entry.from} (MCP)`)
+      : entry.kind === 'inbox' ? `@ ${entry.from}` : entry.from;
+    if (from.textContent !== label) from.textContent = label;
+    from.hidden = entry.kind === 'reply' || entry.kind === 'user';
+    if (text.textContent !== entry.text) { text.textContent = entry.text; changed = true; }
     text.classList.toggle('typing', entry.typing && !player.paused && !player.reducedMotion);
+    const result = node.querySelector('.tool-result');
+    result.hidden = !entry.resultVisible;
+    if (entry.resultVisible && result.textContent !== entry.result) { result.textContent = entry.result; changed = true; }
+    node.dataset.complete = String(Boolean(entry.resultVisible));
   });
+  if (changed) followOutput(target);
 }
 
 function render() {
@@ -75,14 +102,22 @@ function render() {
   if (renderedScene !== player.scene) {
     renderedScene = player.scene;
     renderedBoard = null;
+    $$('.terminal-content, .board-output').forEach(node => { follow.set(node, true); });
     for (const actor of ['lead', 'api', 'ui']) $(`#${actor}-messages`).replaceChildren();
     $('#qa-report').replaceChildren();
     $('#scene-title').textContent = `${scene.number} / ${scene.title}`;
     $('#scene-day').textContent = scene.day;
-    $$('[data-actor-title]').forEach(node => { node.textContent = scene.actors[node.dataset.actorTitle].join(' · '); });
-    $('#board-label').textContent = player.scene === 3 ? 'COORDINATION BOARD / 팀장 간 공유' : 'TEAM BOARD / NOTIFICATIONS';
-    $('#team-relationship').textContent = player.scene === 3 ? 'API 팀 · UI 팀 · 팀장들이 함께 속한 조율 팀' : '팀장 1 · 수평적인 워커 3 · 각자의 네이티브 세션';
-    $('#caption-number').textContent = `${scene.number} / 이 장면의 사용법`;
+    $$('[data-actor-title]').forEach(node => {
+      const actor = scene.actors[node.dataset.actorTitle];
+      node.textContent = actor.join(' · ');
+      node.closest('.terminal').dataset.runtime = actor[0] === 'Codex' ? 'codex' : 'claude';
+    });
+    const team = player.scene === 3 ? 'coordination' : 'notifications';
+    $('#board-label').textContent = `${team} / BOARD.md`;
+    $('.board-command').textContent = `$ xsm board show ${team}`;
+    $('#board-title').textContent = `# ${team} board`;
+    $('#team-relationship').textContent = player.scene === 3 ? 'API team · UI team · overlapping coordination team' : '1 coordinator · 3 peer workers · native sessions';
+    $('#caption-number').textContent = `${scene.number} / READ THE GUIDE`;
     $('#caption-title').textContent = scene.caption;
     $('#caption-description').textContent = scene.description;
     $('#scene-guide-link').href = `#guide/${scene.topic}`;
@@ -96,18 +131,17 @@ function render() {
       const params = new URLSearchParams(location.hash.split('?')[1]);
       history.replaceState(null, '', `#demo/${scene.id}${params.size ? `?${params}` : ''}`);
     }
-    announce(`장면 ${scene.number}. ${scene.title}`);
+    announce(`Scene ${scene.number}. ${scene.title}`);
   }
   for (const actor of ['lead', 'api', 'ui']) renderMessages($(`#${actor}-messages`), frame.messages[actor]);
   renderMessages($('#qa-report'), frame.messages.qa);
   if ($('#scene-status').textContent !== frame.status) $('#scene-status').textContent = frame.status;
   if (renderedBoard !== frame.board) {
     renderedBoard = frame.board;
-    $('#board-title').textContent = frame.board.title;
-    const marks = { done: '+', active: '>', waiting: '-', blocked: '!' };
+    $('#board-summary').textContent = `## ${frame.board.title}`;
+    const marks = { done: '[x]', active: '[~]', waiting: '[ ]', blocked: '[!]' };
     $('#board-items').innerHTML = frame.board.items.map(item => `<li data-state="${item.state}"><span class="item-mark" aria-hidden="true">${marks[item.state]}</span><span>${escape(item.text)}</span></li>`).join('');
-    $('#completion').hidden = frame.board.progress === undefined;
-    if (frame.board.progress !== undefined) $('#completion .completion-track span').style.transform = `scaleX(${frame.board.progress})`;
+    followOutput($('#board-items'));
   }
   $('#message-flow').textContent = frame.flow?.text ?? '';
   $$('.chapter-timeline i').forEach((bar, index) => {
@@ -117,8 +151,8 @@ function render() {
   const time = seconds => `${Math.floor(seconds / 60)}:${String(Math.floor(seconds % 60)).padStart(2, '0')}`;
   $('#playback-time').textContent = `${time(player.elapsed / 1000)} / ${time(scene.duration / 1000)}`;
   $('#play-button .play-icon').textContent = player.paused ? '▷' : 'Ⅱ';
-  $('#play-button .play-label').textContent = player.paused ? '재생' : '일시정지';
-  $('#play-button').setAttribute('aria-label', player.paused ? '시연 재생' : '시연 일시정지');
+  $('#play-button .play-label').textContent = player.paused ? 'Play' : 'Pause';
+  $('#play-button').setAttribute('aria-label', player.paused ? 'Play replay' : 'Pause replay');
   $('#motion-note').hidden = !player.reducedMotion;
   demo.dataset.scene = scene.id;
   demo.dataset.playing = String(!player.paused);
@@ -143,16 +177,16 @@ function resetClock() {
 }
 
 function renderArticle(topic) {
-  $('#guide-article').innerHTML = `<span class="section-label">사용 문서 / ${escape(topic.label)}</span><h1 tabindex="-1">${escape(topic.title)}</h1><p class="guide-intro">${escape(topic.intro)}</p>` + topic.sections.map((section, index) => {
+  $('#guide-article').innerHTML = `<span class="section-label">Docs / ${escape(topic.label)}</span><h1 tabindex="-1">${escape(topic.title)}</h1><p class="guide-intro">${escape(topic.intro)}</p>` + topic.sections.map((section, index) => {
     const copyId = `${topic.id}-${index}`;
     if (section.prompt) prompts.set(copyId, section.prompt);
-    return `<section class="article-section" id="${copyId}" tabindex="-1"><h2>${escape(section.title)}</h2>${section.paragraphs.map(paragraph => `<p>${escape(paragraph)}</p>`).join('')}${section.prompt ? `<div class="prompt-block"><div class="prompt-toolbar"><span>내 에이전트에게 보내기</span><button class="copy-button" data-copy="${copyId}">${escape(section.copy)} ⧉</button></div><pre>${escape(section.prompt)}</pre></div>` : ''}${section.link ? `<a href="#guide/${section.link[0]}">${escape(section.link[1])} →</a>` : ''}</section>`;
-  }).join('') + `<div class="guide-references"><h2>상세 안내</h2>${topic.references.map(([name, url]) => `<a href="${escape(url)}" target="_blank" rel="noopener noreferrer">${escape(name)} ↗</a>`).join('')}</div>`;
+    return `<section class="article-section" id="${copyId}" tabindex="-1"><h2>${escape(section.title)}</h2>${section.paragraphs.map(paragraph => `<p>${escape(paragraph)}</p>`).join('')}${section.prompt ? `<div class="prompt-block"><div class="prompt-toolbar"><span>SEND TO YOUR AGENT</span><button class="copy-button" data-copy="${copyId}">${escape(section.copy)} ⧉</button></div><pre>${escape(section.prompt)}</pre></div>` : ''}${section.link ? `<a href="#guide/${section.link[0]}">${escape(section.link[1])} →</a>` : ''}</section>`;
+  }).join('') + `<div class="guide-references"><h2>Reference</h2>${topic.references.map(([name, url]) => `<a href="${escape(url)}" target="_blank" rel="noopener noreferrer">${escape(name)} ↗</a>`).join('')}</div>`;
   const index = topics.indexOf(topic);
   const previous = topics[index - 1];
   const next = topics[index + 1];
-  $('#guide-article').insertAdjacentHTML('beforeend', `<nav class="next-topic" aria-label="이전·다음 문서">${previous ? `<a href="#guide/${previous.id}">← ${escape(previous.label)}</a>` : '<span></span>'}${next ? `<a href="#guide/${next.id}">${escape(next.label)} →</a>` : '<a href="#demo/team">시연으로 돌아가기 →</a>'}</nav>`);
-  $('#page-contents').innerHTML = '<span>이 페이지에서</span>' + topic.sections.map((section, index) => `<a href="#guide/${topic.id}?section=${topic.id}-${index}">${escape(section.title)}</a>`).join('');
+  $('#guide-article').insertAdjacentHTML('beforeend', `<nav class="next-topic" aria-label="Previous and next guide">${previous ? `<a href="#guide/${previous.id}">← ${escape(previous.label)}</a>` : '<span></span>'}${next ? `<a href="#guide/${next.id}">${escape(next.label)} →</a>` : '<a href="#demo/team">Back to the replay →</a>'}</nav>`);
+  $('#page-contents').innerHTML = '<span>On this page</span>' + topic.sections.map((section, index) => `<a href="#guide/${topic.id}?section=${topic.id}-${index}">${escape(section.title)}</a>`).join('');
   $$('#guide-navigation a').forEach(link => {
     if (link.dataset.topic === topic.id) link.setAttribute('aria-current', 'page'); else link.removeAttribute('aria-current');
   });
@@ -198,7 +232,7 @@ function readRoute(initial = false) {
 function closeMenu() {
   $('#mobile-navigation').hidden = true;
   $('.mobile-menu').setAttribute('aria-expanded', 'false');
-  $('.mobile-menu').setAttribute('aria-label', '메뉴 열기');
+  $('.mobile-menu').setAttribute('aria-label', 'Open menu');
 }
 async function copyPrompt(button) {
   const text = prompts.get(button.dataset.copy);
@@ -206,7 +240,7 @@ async function copyPrompt(button) {
   try {
     await navigator.clipboard.writeText(text);
     const toast = $('#toast');
-    toast.textContent = '문장을 복사했습니다. 에이전트에게 붙여넣으세요.';
+    toast.textContent = 'Request copied. Paste it into your agent.';
     toast.hidden = false;
     clearTimeout(toastTimer);
     toastTimer = setTimeout(() => { toast.hidden = true; }, 3500);
@@ -219,7 +253,7 @@ async function copyPrompt(button) {
 
 $('#play-button').addEventListener('click', () => {
   player = togglePlayback(player);
-  announce(player.paused ? '시연을 일시정지했습니다.' : '시연을 재생합니다.');
+  announce(player.paused ? 'Replay paused.' : 'Playing the replay.');
   render(); resetClock();
 });
 $('#replay-button').addEventListener('click', () => { player = replay(player); render(); resetClock(); });
@@ -239,7 +273,7 @@ $('.mobile-menu').addEventListener('click', () => {
   const open = $('#mobile-navigation').hidden;
   $('#mobile-navigation').hidden = !open;
   $('.mobile-menu').setAttribute('aria-expanded', String(open));
-  $('.mobile-menu').setAttribute('aria-label', open ? '메뉴 닫기' : '메뉴 열기');
+  $('.mobile-menu').setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
 });
 document.addEventListener('keydown', event => {
   if (event.key === 'Escape' && !$('#mobile-navigation').hidden) { closeMenu(); $('.mobile-menu').focus(); }
@@ -256,6 +290,9 @@ const visibility = new IntersectionObserver(entries => { stageVisible = entries[
 visibility.observe(demo);
 const transcript = document.createElement('details');
 transcript.id = 'transcript'; transcript.className = 'transcript';
-transcript.innerHTML = '<summary>장면 전체 대화 읽기</summary><ol id="transcript-content"></ol>';
+transcript.innerHTML = '<summary>Read the full transcript</summary><ol id="transcript-content"></ol>';
 $('#demo .playback').append(transcript);
 readRoute(true); schedule();
+$$('.terminal-content, .board-output').forEach(node => node.addEventListener('scroll', () => {
+  follow.set(node, node.scrollHeight - node.clientHeight - node.scrollTop < 28);
+}, { passive: true }));

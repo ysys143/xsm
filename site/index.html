@@ -1,97 +1,98 @@
 <!doctype html>
-<html lang="ko">
+<html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#f3f1ea">
-  <meta name="description" content="Claude Code와 Codex를 연결하고, 역할을 정하고, 장기 작업을 운영하는 모습을 살펴보세요. XSM의 관람형 데모와 사용 문서입니다.">
+  <meta name="description" content="See how xsm connects agent sessions for long-running collaborative work. Interactive replay and documentation.">
   <title>xsm — All you need is a message channel.</title>
   <link rel="icon" href="./favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="./styles.css">
   <script type="module" src="./app.mjs"></script>
 </head>
 <body>
-  <a class="skip-link" href="#main">본문으로 건너뛰기</a>
+  <a class="skip-link" href="#main">Skip to content</a>
   <header class="site-header">
-    <a class="wordmark" href="#demo/team" aria-label="xsm 첫 화면" translate="no">xsm<span class="wordmark-dot" aria-hidden="true">.</span></a>
-    <nav aria-label="주 메뉴" class="main-nav">
-      <a href="#demo/team" data-nav="demo">작동 방식</a>
-      <a href="#guide/start" data-nav="guide">사용 문서</a>
+    <a class="wordmark" href="#demo/team" aria-label="xsm home" translate="no">xsm<span class="wordmark-dot" aria-hidden="true">.</span></a>
+    <nav aria-label="Main navigation" class="main-nav">
+      <a href="#demo/team" data-nav="demo">How it works</a>
+      <a href="#guide/start" data-nav="guide">Docs</a>
       <a class="github-link" href="https://github.com/ysys143/xsm" target="_blank" rel="noopener noreferrer">GitHub <span aria-hidden="true">↗</span></a>
-      <a class="button button-lime header-start" href="#guide/start">내 에이전트에 연결 <span aria-hidden="true">↗</span></a>
+      <a class="button button-lime header-start" href="#guide/start">Get started <span aria-hidden="true">↗</span></a>
     </nav>
-    <button class="mobile-menu" aria-expanded="false" aria-controls="mobile-navigation" aria-label="메뉴 열기">메뉴</button>
-    <nav id="mobile-navigation" class="mobile-navigation" aria-label="모바일 메뉴" hidden>
-      <a href="#demo/team">작동 방식</a><a href="#guide/start">사용 문서</a>
+    <button class="mobile-menu" aria-expanded="false" aria-controls="mobile-navigation" aria-label="Open menu">Menu</button>
+    <nav id="mobile-navigation" class="mobile-navigation" aria-label="Mobile navigation" hidden>
+      <a href="#demo/team">How it works</a><a href="#guide/start">Docs</a>
       <a href="https://github.com/ysys143/xsm" target="_blank" rel="noopener noreferrer">GitHub ↗</a>
     </nav>
   </header>
 
   <main id="main" tabindex="-1">
-    <section id="show-view" aria-label="XSM 작동 방식">
+    <section id="show-view" aria-label="How xsm works">
       <div class="hero">
-        <div class="eyebrow"><span>CROSS-SESSION MESSAGING <span class="release">/ 0.6.0</span></span><a class="runtime-list" href="#guide/runtimes" aria-label="지원 런타임과 연결 안내" translate="no">Claude Code · Codex · Pi · OpenCode · Hermes · OpenClaw</a></div>
+        <div class="eyebrow"><span>CROSS-SESSION MESSAGING <span class="release">/ 0.6.0</span></span><a class="runtime-list" href="#guide/runtimes" aria-label="Supported runtimes and setup" translate="no">Claude Code · Codex · Pi · OpenCode · Hermes · OpenClaw</a></div>
         <div class="hero-row">
           <h1 lang="en">All you need is<br>a message channel.</h1>
         </div>
         <p class="original-thesis" lang="en">The rest is done by agents.</p>
       </div>
       <div id="show-slot" class="show-slot">
-        <section id="demo" aria-label="에이전트 협업 시연" data-focus="lead">
+        <section id="demo" aria-label="Agent collaboration replay" data-focus="lead">
           <div id="show-stage" class="demo-stage">
-            <div class="stage-toolbar"><span id="scene-title"></span><span class="simulation-label">협업 과정을 재현한 시연 · 시간 압축</span></div>
-            <div class="focus-tabs" role="tablist" aria-label="시연에서 볼 대상">
-              <button id="focus-lead" role="tab" data-focus="lead" aria-controls="lead-window" aria-selected="true">팀장</button>
-              <button id="focus-workers" role="tab" data-focus="workers" aria-controls="worker-windows" aria-selected="false" tabindex="-1">워커</button>
-              <button id="focus-board" role="tab" data-focus="board" aria-controls="board-window" aria-selected="false" tabindex="-1">보드</button>
+            <div class="stage-toolbar"><span id="scene-title"></span><span class="simulation-label">Scripted replay · abbreviated output</span></div>
+            <div class="focus-tabs" role="tablist" aria-label="Session to display">
+              <button id="focus-lead" role="tab" data-focus="lead" aria-controls="lead-window" aria-selected="true">Lead</button>
+              <button id="focus-workers" role="tab" data-focus="workers" aria-controls="worker-windows" aria-selected="false" tabindex="-1">Workers</button>
+              <button id="focus-board" role="tab" data-focus="board" aria-controls="board-window" aria-selected="false" tabindex="-1">Board</button>
             </div>
             <div class="workspace">
-              <article id="lead-window" class="terminal lead-window" aria-label="팀장 세션">
+              <article id="lead-window" class="terminal lead-window" aria-label="Coordinator terminal">
                 <div class="terminal-bar"><span class="window-dots" aria-hidden="true"><i></i><i></i><i></i></span><span data-actor-title="lead"></span><span class="terminal-led" aria-hidden="true"></span></div>
-                <div class="terminal-content"><div id="lead-messages" class="message-list"></div><div class="lead-status"><span id="scene-day"></span><span id="scene-status"></span></div><div id="qa-report" class="qa-report"></div></div>
+                <div class="terminal-content"><div id="lead-messages" class="message-list"></div><div id="qa-report" class="qa-report"></div></div>
+                <div class="terminal-input" aria-hidden="true"><span>&gt;</span><span class="terminal-cursor"></span></div>
+                <div class="lead-status"><span id="scene-day"></span><span id="scene-status"></span></div>
               </article>
               <div class="right-workspace">
-                <div id="worker-windows" class="worker-windows" aria-label="워커 세션들">
-                  <article class="terminal" aria-label="API 담당 세션"><div class="terminal-bar"><span class="window-dots" aria-hidden="true"><i></i><i></i><i></i></span><span data-actor-title="api"></span></div><div id="api-messages" class="terminal-content message-list"></div></article>
-                  <article class="terminal" aria-label="UI 담당 세션"><div class="terminal-bar"><span class="window-dots" aria-hidden="true"><i></i><i></i><i></i></span><span data-actor-title="ui"></span></div><div id="ui-messages" class="terminal-content message-list"></div></article>
+                <div id="worker-windows" class="worker-windows" aria-label="Worker terminals">
+                  <article class="terminal" aria-label="API worker terminal"><div class="terminal-bar"><span class="window-dots" aria-hidden="true"><i></i><i></i><i></i></span><span data-actor-title="api"></span></div><div id="api-messages" class="terminal-content message-list"></div></article>
+                  <article class="terminal" aria-label="UI worker terminal"><div class="terminal-bar"><span class="window-dots" aria-hidden="true"><i></i><i></i><i></i></span><span data-actor-title="ui"></span></div><div id="ui-messages" class="terminal-content message-list"></div></article>
                 </div>
-                <article id="board-window" class="board-window" aria-label="공유 팀 보드">
-                  <div class="board-toolbar"><span id="board-label">TEAM BOARD / NOTIFICATIONS</span><span>Fable 갱신</span></div>
-                  <h3 id="board-title"></h3><ul id="board-items"></ul>
-                  <div id="completion" class="completion" hidden><div class="completion-track"><span></span></div><p>완료 기준과 검증 결과를 대조한 예시 수치</p></div>
+                <article id="board-window" class="board-window" aria-label="Shared team board">
+                  <div class="terminal-bar"><span class="window-dots" aria-hidden="true"><i></i><i></i><i></i></span><span id="board-label">notifications / BOARD.md</span></div>
+                  <div class="board-output"><p class="board-command">$ xsm board show notifications</p><h3 id="board-title"></h3><p id="board-summary"></p><ul id="board-items"></ul></div>
                 </article>
               </div>
             </div>
-            <div class="stage-footer"><span id="team-relationship">팀장 1 · 수평적인 워커 3 · 각자의 네이티브 세션</span><span id="message-flow"></span></div>
-            <p class="compact-simulation-label">협업 과정을 재현한 시연 · 시간 압축</p>
+            <div class="stage-footer"><span id="team-relationship">1 coordinator · 3 peer workers · native sessions</span><span id="message-flow"></span></div>
+            <p class="compact-simulation-label">Scripted replay · abbreviated output</p>
           </div>
           <div class="playback">
             <div class="chapter-timeline" aria-hidden="true"><span><i></i></span><span><i></i></span><span><i></i></span><span><i></i></span></div>
             <div class="playback-row">
-              <div class="transport-controls"><button id="play-button" class="button button-dark" aria-label="시연 일시정지"><span class="play-icon" aria-hidden="true">Ⅱ</span><span class="play-label">일시정지</span></button><button id="replay-button" class="replay-button" aria-label="현재 장면 처음부터 다시 보기"><span aria-hidden="true">↻</span><span class="replay-text">다시 보기</span></button></div>
-              <nav id="chapters" class="chapters" aria-label="시연 장면"></nav>
+              <div class="transport-controls"><button id="play-button" class="button button-dark" aria-label="Pause replay"><span class="play-icon" aria-hidden="true">Ⅱ</span><span class="play-label">Pause</span></button><button id="replay-button" class="replay-button" aria-label="Replay this scene"><span aria-hidden="true">↻</span><span class="replay-text">Replay</span></button></div>
+              <nav id="chapters" class="chapters" aria-label="Replay chapters"></nav>
               <span id="playback-time" class="playback-time"></span>
             </div>
-            <p id="motion-note" class="motion-note" hidden>동작 줄이기 설정에 따라 정지 화면을 표시합니다. 장면을 선택해 내용을 읽을 수 있습니다.</p>
+            <p id="motion-note" class="motion-note" hidden>Reduced motion is on. Choose a chapter to read the complete session output.</p>
           </div>
         </section>
       </div>
       <div class="documentation-bridge">
         <div><span id="caption-number" class="section-label"></span><h2 id="caption-title"></h2></div>
-        <div class="bridge-body"><p id="caption-description"></p><div class="bridge-links"><a id="scene-guide-link" href="#guide/team">이 장면의 사용법 ↗</a><a href="#guide/board">팀 보드에 상태 남기기 ↗</a></div></div>
+        <div class="bridge-body"><p id="caption-description"></p><div class="bridge-links"><a id="scene-guide-link" href="#guide/team">Read the guide ↗</a><a href="#guide/board">Using the team board ↗</a></div></div>
       </div>
-      <div class="start-strip"><div><span class="section-label">GET STARTED</span><h2>설치와 첫 협업</h2><p>사용 중인 에이전트에게 연결을 맡기세요.</p></div><div><button class="button button-lime" data-copy="install">설치 요청 문장 복사 <span aria-hidden="true">⧉</span></button><a href="#guide/start">단계별 안내 읽기 ↗</a></div></div>
+      <div class="start-strip"><div><span class="section-label">GET STARTED</span><h2>Install and start collaborating</h2><p>Ask the agent you already use to set up the connection.</p></div><div><button class="button button-lime" data-copy="install">Copy installation request <span aria-hidden="true">⧉</span></button><a href="#guide/start">Read the setup guide ↗</a></div></div>
     </section>
-    <section id="guide-view" class="guide-view" aria-label="사용 문서" hidden>
-      <aside class="guide-sidebar"><span class="section-label">사용 문서</span><nav id="guide-navigation" aria-label="문서 주제"></nav><div class="guide-extra"><span class="section-label">더 알아보기</span><a href="#guide/runtimes">런타임별 지원</a><a href="https://github.com/ysys143/xsm/blob/main/README_ko.md" target="_blank" rel="noopener noreferrer">전체 레퍼런스 ↗</a></div></aside>
+    <section id="guide-view" class="guide-view" aria-label="Docs" hidden>
+      <aside class="guide-sidebar"><span class="section-label">Docs</span><nav id="guide-navigation" aria-label="Documentation topics"></nav><div class="guide-extra"><span class="section-label">Reference</span><a href="#guide/runtimes">Supported runtimes</a><a href="https://github.com/ysys143/xsm/blob/main/README.md" target="_blank" rel="noopener noreferrer">Full reference ↗</a></div></aside>
       <article id="guide-article" class="guide-article"></article>
-      <aside class="guide-rail" aria-label="문서와 연결된 시연"><div class="rail-top"><span class="section-label">이 설명의 장면</span><a id="expand-show" href="#demo/team">크게 보기 ↗</a></div><div id="guide-slot"></div><p class="rail-note">설명의 주제를 따라 시연도 함께 바뀝니다. 재생을 멈춰두고 문서를 읽어도 괜찮습니다.</p><nav id="page-contents" class="page-contents" aria-label="이 페이지에서"></nav></aside>
+      <aside class="guide-rail" aria-label="Replay for this guide"><div class="rail-top"><span class="section-label">THIS GUIDE IN ACTION</span><a id="expand-show" href="#demo/team">Expand replay ↗</a></div><div id="guide-slot"></div><p class="rail-note">The replay follows the guide you are reading. Pause it to read at your own pace.</p><nav id="page-contents" class="page-contents" aria-label="On this page"></nav></aside>
     </section>
   </main>
-  <footer class="site-footer"><span translate="no">xsm / Cross-Session Messaging</span><div><span>메시지 전달과 공동 상태를 위한 도구</span><a href="https://github.com/ysys143/xsm" target="_blank" rel="noopener noreferrer">소스 코드 ↗</a></div></footer>
+  <footer class="site-footer"><span translate="no">xsm / Cross-Session Messaging</span><div><span>Messaging and shared state for agent sessions</span><a href="https://github.com/ysys143/xsm" target="_blank" rel="noopener noreferrer">Source ↗</a></div></footer>
   <p id="announcement" class="sr-only" role="status" aria-live="polite"></p>
   <div id="toast" class="toast" role="status" hidden></div>
-  <dialog id="copy-dialog"><form method="dialog"><div class="copy-dialog-heading"><h2>이 문장을 복사하세요</h2><button class="plain-button" aria-label="복사 창 닫기">×</button></div><p>브라우저가 자동 복사를 허용하지 않았습니다. 선택한 문장을 직접 복사할 수 있습니다.</p><textarea id="copy-fallback" aria-label="복사할 요청 문장" readonly></textarea><button class="button button-dark">닫기</button></form></dialog>
-  <noscript><p class="noscript">시연과 문서 탐색에는 JavaScript가 필요합니다. <a href="https://github.com/ysys143/xsm/blob/main/README_ko.md">설치·사용 문서는 GitHub에서도 읽을 수 있습니다.</a></p></noscript>
+  <dialog id="copy-dialog"><form method="dialog"><div class="copy-dialog-heading"><h2>Copy this request</h2><button class="plain-button" aria-label="Close copy dialog">×</button></div><p>Your browser did not allow automatic copying. Copy the selected request below.</p><textarea id="copy-fallback" aria-label="Request to copy" readonly></textarea><button class="button button-dark">Close</button></form></dialog>
+  <noscript><p class="noscript">The replay and documentation navigation require JavaScript. <a href="https://github.com/ysys143/xsm/blob/main/README.md">Read the installation and usage guide on GitHub.</a></p></noscript>
 </body>
 </html>

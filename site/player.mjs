@@ -47,13 +47,14 @@ export function sceneFrame(player) {
   const messages = Object.fromEntries(Object.entries(scene.messages).map(([actor, entries]) => [actor,
     entries.filter(entry => entry.at <= time).map(entry => {
       const count = player.reducedMotion ? entry.text.length : Math.max(1, Math.floor((time - entry.at) / 19));
-      return { ...entry, text: entry.text.slice(0, count), typing: count < entry.text.length };
+      const typed = !['tool', 'inbox'].includes(entry.kind);
+      return { ...entry, text: typed ? entry.text.slice(0, count) : entry.text, typing: typed && count < entry.text.length, resultVisible: entry.kind === 'tool' && time >= entry.resultAt };
     }),
   ]));
   const board = scene.boards.filter(entry => entry.at <= time).at(-1) ?? scene.boards[0];
   const flow = scene.flows.filter(entry => entry.at <= time).at(-1) ?? null;
   const status = scene.id === 'progress' && board.progress === undefined
-    ? '완료 기준과 워커 보고 대조 중'
+    ? 'Checking worker reports against acceptance criteria'
     : scene.status;
   return { scene, messages, board, flow, status };
 }

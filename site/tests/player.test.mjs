@@ -56,15 +56,27 @@ test('the progress scene has evidence of the blocker and planned next work', () 
   const player = selectScene(createPlayer({ reducedMotion: true }), 2);
   const frame = sceneFrame(player);
   assert.match(frame.board.title, /8\s*\/\s*12/);
-  assert.ok(frame.messages.lead.some(message => message.text.includes('검증')));
-  assert.ok(frame.messages.qa.some(message => message.text.includes('중복')));
+  assert.ok(frame.messages.lead.some(message => message.text.includes('verified')));
+  assert.ok(frame.messages.qa.some(message => message.text.includes('duplicate')));
   assert.ok(frame.board.items.some(item => item.state === 'blocked' || item.state === 'active'));
 });
 
 test('the progress count appears only after the coordinator checks the reports', () => {
   const player = selectScene(createPlayer(), 2);
   assert.doesNotMatch(sceneFrame(player).status, /8\s*\/\s*12/);
-  assert.match(sceneFrame(advance(player, 12000)).status, /8\s*\/\s*12/);
+  assert.doesNotMatch(sceneFrame(advance(player, 9000)).status, /8\s*\/\s*12/);
+  assert.match(sceneFrame(advance(player, scenes[2].duration - 1)).status, /8\s*\/\s*12/);
+});
+
+test('tool arguments arrive intact and the result appears after completion', () => {
+  const started = sceneFrame(advance(createPlayer(), 2500));
+  const call = started.messages.lead.find(message => message.kind === 'tool');
+  assert.equal(JSON.parse(call.text).action, 'show');
+  assert.equal(call.resultVisible, false);
+  assert.equal(call.typing, false);
+  const finished = sceneFrame(advance(createPlayer(), 3100)).messages.lead.find(message => message.kind === 'tool');
+  assert.equal(finished.resultVisible, true);
+  assert.equal(JSON.parse(finished.result).members.length, 4);
 });
 
 test('invalid scene selection cannot break the player or produce NaN time', () => {

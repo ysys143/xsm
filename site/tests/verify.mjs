@@ -42,7 +42,7 @@ server.on('request', (request, response) => {
   const url = new URL(request.url, 'http://localhost');
   if (url.pathname === '/__viewport') {
     const width = Number(url.searchParams.get('width'));
-    assert.ok([320, 390].includes(width));
+    assert.ok([320, 390, 900, 1440].includes(width));
     response.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
     response.end(`<!doctype html><html><head><meta name="viewport" content="width=device-width, initial-scale=1"><title>Responsive test viewport</title><style>html,body{margin:0;width:${width}px}iframe{display:block;width:${width}px;height:844px;border:0}</style></head><body><iframe id="responsive-frame" title="XSM responsive viewport" src="/index.html#demo/progress"></iframe></body></html>`);
   } else void staticHandler(request, response);

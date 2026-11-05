@@ -67,10 +67,13 @@ export async function run({ spaceId, baseURL, outputDirectory }) {
       const state = await read();
       check(`chapter ${scene} has readable paused content`, state.playing === 'false' && (await page.evaluate(() => document.querySelector('#lead-messages').textContent.length)) > 30);
       check(`chapter ${scene} paused messages are immediately visible`, await page.evaluate(() => [...document.querySelectorAll('.message')].every(node => Number(getComputedStyle(node).opacity) === 1)));
+      if (scene === 'direct') check('Claude and Codex use their respective tool-call formats', await page.evaluate(() => document.querySelector('#api-messages').textContent.includes('xsm - xsm_send (MCP)') && document.querySelector('#ui-messages').textContent.includes('Called xsm.xsm_send') && document.querySelector('#ui-messages').textContent.includes('[xsm v1')));
     }
     await page.click('#chapters a[data-scene="progress"]', { label: 'read progress management' });
     await waitScene('progress');
-    check('progress scene shows verified count and blocker', await page.evaluate(() => document.querySelector('#board-title').textContent.includes('8 / 12') && document.querySelector('#qa-report').textContent.includes('중복')));
+    check('progress scene shows verified count and blocker', await page.evaluate(() => document.querySelector('#board-summary').textContent.includes('8 / 12') && document.querySelector('#qa-report').textContent.includes('duplicate')));
+    check('terminal uses monospace output and real tool-call notation', await page.evaluate(() => getComputedStyle(document.querySelector('.message-text')).fontFamily.includes('Mono') && document.querySelector('#lead-messages').textContent.includes('xsm - xsm_board (MCP)') && document.querySelector('#lead-messages .tool-result:not([hidden])') !== null));
+    check('board is shown as a terminal command and Markdown output', await page.evaluate(() => document.querySelector('.board-command').textContent === '$ xsm board show notifications' && document.querySelector('#board-title').textContent === '# notifications board'));
     await page.evaluate(() => window.scrollTo({ top: 0, behavior: 'instant' }));
     await page.screenshot({ path: `${outputDirectory}/desktop.png`, fullPage: true });
     await page.click('#scene-guide-link', { label: 'open matching documentation' });
@@ -85,7 +88,9 @@ export async function run({ spaceId, baseURL, outputDirectory }) {
       await page.waitForFunction(value => location.hash === `#guide/${value}`, topic);
       state = await read();
       check(`document ${topic} has content and the correct scene`, state.scene === scene && state.playing === 'false' && !state.overflow && await page.evaluate(() => document.querySelector('#guide-article').innerText.length > 200));
+      check(`document ${topic} interface is entirely English`, await page.evaluate(() => !/\p{Script=Hangul}/u.test(document.body.innerText) && document.documentElement.lang === 'en'));
     }
+    check('guide paragraphs and sections have generous spacing', await page.evaluate(() => Number.parseFloat(getComputedStyle(document.querySelector('.article-section')).marginTop) >= 40 && Number.parseFloat(getComputedStyle(document.querySelector('.article-section p')).marginBottom) >= 20));
     await page.evaluate(() => history.back());
     await page.waitForFunction(() => location.hash === '#guide/handover');
     check('browser back restores the document and scene', (await read()).scene === 'progress');
@@ -99,7 +104,7 @@ export async function run({ spaceId, baseURL, outputDirectory }) {
     await page.cdp('Emulation.setEmulatedMedia', { features: [{ name: 'prefers-reduced-motion', value: 'reduce' }] });
     await page.reload();
     await waitScene('teams');
-    check('reduced motion starts stopped with all content', (await read()).playing === 'false' && await page.evaluate(() => document.querySelector('#lead-messages').textContent.includes('합의')));
+    check('reduced motion starts stopped with all content', (await read()).playing === 'false' && await page.evaluate(() => document.querySelector('#lead-messages').textContent.includes('Agreed')));
 
     for (const width of [390, 320]) {
       await page.goto(`${baseURL}__viewport?width=${width}`);
@@ -158,6 +163,18 @@ export async function run({ spaceId, baseURL, outputDirectory }) {
     check('clipboard denial opens a selected readable fallback', await page.evaluate(() => { const doc = document.querySelector('#responsive-frame').contentDocument; return doc.querySelector('#copy-dialog').open && doc.querySelector('#copy-fallback').selectionEnd === doc.querySelector('#copy-fallback').value.length; }));
     await page.press('#copy-fallback', 'Escape');
     await page.evaluate(() => { const scope = document.querySelector('#responsive-frame').contentWindow; scope.navigator.clipboard.writeText = scope.originalWriteText; delete scope.originalWriteText; delete scope.copiedPrompt; });
+    for (const width of [900, 1440]) {
+      await page.goto(`${baseURL}__viewport?width=${width}`);
+      await waitScene('progress');
+      state = await read();
+      check(`terminal layout ${width}px fits its viewport`, state.width === width && !state.overflow);
+      check(`terminal layout ${width}px does not overlap playback controls`, await page.evaluate(() => {
+        const doc = document.querySelector('#responsive-frame').contentDocument;
+        const workspace = doc.querySelector('.workspace').getBoundingClientRect();
+        const bottom = Math.max(...[...doc.querySelectorAll('.workspace .terminal,.workspace .board-window')].map(node => node.getBoundingClientRect().bottom));
+        return bottom <= workspace.bottom + 1 && doc.querySelector('.playback').getBoundingClientRect().top >= doc.querySelector('.demo-stage').getBoundingClientRect().bottom - 1;
+      }));
+    }
     await page.goto(`${baseURL}#guide/progress?section=progress-1`);
     await page.waitForSelector('#progress-1');
     await page.waitForFunction(() => document.activeElement.id === 'progress-1');

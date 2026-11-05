@@ -32,6 +32,12 @@ test('the static page and stylesheet only refer to packaged local assets', async
   assert.ok(!html.includes('hero-aside'));
 });
 
+test('all shipped interface, replay and guide copy is English', async () => {
+  for (const file of ['index.html', 'app.mjs', 'player.mjs', 'content.mjs', 'styles.css']) {
+    assert.doesNotMatch(await readFile(new URL(`../${file}`, import.meta.url), 'utf8'), /\p{Script=Hangul}/u, file);
+  }
+});
+
 test('the local server serves real HTML, JavaScript and fonts with usable MIME types', async () => {
   const server = createSiteServer();
   server.listen(0, '127.0.0.1');

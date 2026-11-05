@@ -32,3 +32,5 @@ CLAUDE.local.md
 # Local browser verification output and generated task execution state.
 /deliverables/xsm-demo-web-20261105/
 /.jstack/tasks/xsm-demo-web/
+/deliverables/xsm-terminal-en-20261105/
+/.jstack/tasks/xsm-terminal-en/
