@@ -17,13 +17,13 @@ export async function run({ spaceId, baseURL, outputDirectory }) {
     await page.cdp('Emulation.setEmulatedMedia', { features: [{ name: 'prefers-reduced-motion', value: 'reduce' }] });
     await page.goto(baseURL);
     await language('ko');
-    check('Korean browser selects Korean while header navigation stays English', await page.evaluate(() => navigator.languages[0].startsWith('ko') && document.querySelector('#language-select').value === 'ko' && document.querySelector('.site-header').lang === 'en' && ['.main-nav', '#mobile-navigation'].every(selector => { const nav = document.querySelector(selector); return nav.textContent.includes('How it works') && nav.textContent.includes('Docs') && !/\p{Script=Hangul}/u.test(nav.textContent); })));
+    check('Korean browser selects Korean while header navigation stays English', await page.evaluate(() => navigator.languages[0].startsWith('ko') && document.querySelector('.language-switcher [data-locale="ko"]').getAttribute('aria-pressed') === 'true' && document.querySelector('.site-header').lang === 'en' && ['.main-nav', '#mobile-navigation'].every(selector => { const nav = document.querySelector(selector); return nav.textContent.includes('How it works') && nav.textContent.includes('Docs') && !/\p{Script=Hangul}/u.test(nav.textContent); })));
     check('Korean headline uses the original message-channel meaning', await page.evaluate(() => document.querySelector('.hero h1').textContent.includes('메시지 채널')));
     await page.goto(`${baseURL}#guide/progress`);
     await page.waitForSelector('#guide-article h1');
     const before = await page.evaluate(() => ({ scene: document.querySelector('#demo').dataset.scene, elapsed: document.querySelector('#demo').dataset.elapsed, playing: document.querySelector('#demo').dataset.playing, hash: location.hash }));
     await page.snapshot();
-    await page.selectOption('#language-select', 'en');
+    await page.click('.language-switcher [data-locale="en"]', { label: 'switch to English' });
     await language('en');
     const after = await page.evaluate(() => ({ scene: document.querySelector('#demo').dataset.scene, elapsed: document.querySelector('#demo').dataset.elapsed, playing: document.querySelector('#demo').dataset.playing, hash: location.hash }));
     assert.deepEqual(after, before);
@@ -39,7 +39,7 @@ export async function run({ spaceId, baseURL, outputDirectory }) {
     for (const [topic, scene] of [['start', 'team'], ['team', 'team'], ['messages', 'direct'], ['board', 'direct'], ['progress', 'progress'], ['teams', 'teams'], ['handover', 'progress'], ['runtimes', 'team']]) {
       await page.click(`#guide-navigation a[data-topic="${topic}"]`, { label: 'read Korean documentation' });
       await page.waitForFunction(value => location.hash === `#guide/${value}`, topic);
-      check(`Korean guide ${topic} and its replay are localized`, await page.evaluate(value => document.querySelector('#demo').dataset.scene === value && /\p{Script=Hangul}/u.test(document.querySelector('#guide-article h1').textContent) && document.querySelector('#language-select').value === 'ko', scene));
+      check(`Korean guide ${topic} and its replay are localized`, await page.evaluate(value => document.querySelector('#demo').dataset.scene === value && /\p{Script=Hangul}/u.test(document.querySelector('#guide-article h1').textContent) && document.querySelector('.language-switcher [data-locale="ko"]').getAttribute('aria-pressed') === 'true', scene));
     }
     await page.click('#guide-navigation a[data-topic="start"]', { label: 'open translated setup guide' });
     await page.waitForFunction(() => location.hash === '#guide/start');
@@ -47,7 +47,7 @@ export async function run({ spaceId, baseURL, outputDirectory }) {
     await page.click('[data-copy="start-0"]', { label: 'copy Korean setup request' });
     await page.waitForFunction(() => Boolean(window.i18nCopied));
     check('Korean copy requests and feedback use the current locale', await page.evaluate(() => window.i18nCopied.includes('설치') && document.querySelector('#toast').textContent.includes('복사')));
-    await page.selectOption('#language-select', 'en'); await language('en');
+    await page.click('.language-switcher [data-locale="en"]', { label: 'switch to English' }); await language('en');
     await page.click('[data-copy="start-0"]', { label: 'copy English setup request' });
     await page.waitForFunction(() => window.i18nCopied.startsWith('Install'));
     check('switching back replaces cached copy requests with English', await page.evaluate(() => !/\p{Script=Hangul}/u.test(window.i18nCopied)));
@@ -63,7 +63,7 @@ export async function run({ spaceId, baseURL, outputDirectory }) {
       await page.waitForFunction(value => document.querySelector('#responsive-frame').contentDocument.documentElement.lang === value, locale);
       check(`${locale} guide and language control fit ${width}px`, await page.evaluate(({ width, locale }) => {
         const scope = document.querySelector('#responsive-frame').contentWindow, doc = scope.document;
-        return scope.innerWidth === width && doc.documentElement.scrollWidth <= width + 1 && doc.querySelector('#language-select').getBoundingClientRect().right <= width && doc.documentElement.lang === locale;
+        return scope.innerWidth === width && doc.documentElement.scrollWidth <= width + 1 && doc.querySelector('.language-switcher').getBoundingClientRect().right <= width && doc.documentElement.lang === locale;
       }, { width, locale }));
       check(`${locale} page boxes have more vertical padding at ${width}px`, await page.evaluate(() => {
         const doc = document.querySelector('#responsive-frame').contentDocument;

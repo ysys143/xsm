@@ -2,7 +2,6 @@ import * as en from './content.mjs';
 import * as ko from './content.ko.mjs';
 
 export const localePreferenceKey = 'xsm.locale';
-export const languageNames = { en: 'English', ko: '한국어' };
 
 function supported(value) {
   if (typeof value !== 'string') return null;

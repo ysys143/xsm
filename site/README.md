@@ -24,7 +24,7 @@ Open the local URL printed in the terminal. No package installation or build ste
 - The board is a CLI/Markdown output excerpt. It does not imply a separate XSM dashboard or automatic progress estimation.
 - Copyable requests include a manual-copy dialog when the Clipboard API is unavailable or denied.
 
-The interface, replay, guides and accessibility labels support English and Korean. Selection follows an explicit `?lang=en` or `?lang=ko` URL, then a saved manual choice, then the browser's first supported preferred language. Other languages fall back to English. The header language picker saves its choice locally and preserves the current chapter, time and pause state. Runtime identifiers, command names and machine-generated protocol output retain their native spelling.
+The interface, replay, guides and accessibility labels support English and Korean. Selection follows an explicit `?lang=en` or `?lang=ko` URL, then a saved manual choice, then the browser's first supported preferred language. Other languages fall back to English. The bordered EN / KO buttons in the header show the active language with a dark background, save the choice locally and preserve the current chapter, time and pause state. Runtime identifiers, command names and machine-generated protocol output retain their native spelling.
 
 Header navigation stays in English in both locales: How it works, Docs, GitHub and Get started. This also applies to the mobile menu. The static translator respects `translate="no"` regions.
 

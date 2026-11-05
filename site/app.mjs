@@ -1,4 +1,4 @@
-import { resolveLocale, getContent, translate, createStaticTranslator, readLocalePreference, saveLocalePreference, languageNames } from './i18n.mjs';
+import { resolveLocale, getContent, translate, createStaticTranslator, readLocalePreference, saveLocalePreference } from './i18n.mjs';
 import { createPlayer, advance, selectScene, togglePlayback, replay, setReducedMotion, sceneFrame } from './player.mjs';
 
 const $ = selector => document.querySelector(selector);
@@ -46,9 +46,8 @@ function applyLocale(next) {
   document.documentElement.lang = locale;
   $('.hero h1').lang = locale;
   $('.original-thesis').lang = locale;
-  $('#language-select').value = locale;
+  $$('.language-switcher button').forEach(button => button.setAttribute('aria-pressed', String(button.dataset.locale === locale)));
   $('#full-reference-link').href = $('#full-reference-link').href.replace(/README(?:_ko)?\.md/, locale === 'ko' ? 'README_ko.md' : 'README.md');
-  for (const option of $('#language-select').options) option.textContent = languageNames[option.value];
   $('#chapters').innerHTML = scenes.map(scene => `<a class="chapter-link" href="#demo/${scene.id}" data-scene="${scene.id}"><span>${scene.number}</span><span>${escape(scene.short)}</span></a>`).join('');
   $('#guide-navigation').innerHTML = topics.map(topic => `<a href="#guide/${topic.id}" data-topic="${topic.id}">${escape(topic.label)}</a>`).join('');
   prompts.clear();
@@ -315,14 +314,14 @@ document.addEventListener('click', event => {
 window.addEventListener('hashchange', () => readRoute());
 window.addEventListener('popstate', () => readRoute());
 window.addEventListener('languagechange', () => readRoute());
-$('#language-select').addEventListener('change', event => {
-  const selected = resolveLocale({ requested: event.target.value });
+$$('.language-switcher button').forEach(button => button.addEventListener('click', () => {
+  const selected = resolveLocale({ requested: button.dataset.locale });
   saveLocalePreference(undefined, selected);
   const url = new URL(location.href);
   url.searchParams.set('lang', selected);
   history.replaceState(null, '', url);
   readRoute();
-});
+}));
 motion.addEventListener('change', event => { player = setReducedMotion(player, event.matches); render(); resetClock(); });
 narrow.addEventListener('change', () => setFocus(demo.dataset.focus));
 document.addEventListener('visibilitychange', resetClock);

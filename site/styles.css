@@ -26,8 +26,11 @@ p { text-wrap: pretty; }
 .wordmark-dot { color: var(--blue); }
 .main-nav { display: flex; gap: 32px; align-items: center; font-size: 14px; }
 .main-nav [aria-current=page] { color: var(--blue); }
-.language-switcher { display: flex; flex: none; }
-.language-switcher select { width: 92px; min-height: 36px; border: 1px solid var(--line); border-radius: 0; background: var(--paper); color: var(--ink); padding: 7px 8px; font: 12px var(--mono); cursor: pointer; }
+.language-switcher { display: flex; flex: none; border: 1px solid var(--ink); }
+.language-switcher button { min-width: 44px; min-height: 36px; padding: 6px 10px; background: var(--paper); color: var(--ink); font: 650 14px/1 var(--mono); }
+.language-switcher button + button { border-left: 1px solid var(--ink); }
+.language-switcher button[aria-pressed=true] { background: var(--ink); color: var(--paper); }
+.language-switcher button:focus-visible { outline-offset: -3px; }
 .github-link { font: 12px var(--mono); }
 .button { display: inline-flex; align-items: center; justify-content: center; gap: 10px; padding: 13px 20px; font-size: 14px; font-weight: 650; min-height: 46px; white-space: nowrap; transition: background-color .16s, color .16s; }
 .button-lime { background: var(--lime); color: var(--ink); }
@@ -217,9 +220,9 @@ dialog { background: var(--paper); color: var(--ink); border: 1px solid var(--li
 .guide-view #demo .worker-windows .terminal { height: 250px; }
 .guide-view #demo .board-window { height: 360px; min-height: 0; }
 .guide-intro { margin-bottom: 44px; }
-.article-section { margin-top: 48px; }
+.article-section { margin-top: 64px; }
 .article-section h2 { margin-bottom: 22px; }
-.article-section p { margin: 20px 0; font-size: 16px; line-height: 1.85; }
+.article-section p { margin: 28px 0; font-size: 16px; line-height: 1.85; }
 .prompt-block { margin-top: 28px; margin-bottom: 32px; }
 .guide-references { margin-top: 48px; }
 @media(max-width: 680px) {
@@ -228,8 +231,8 @@ dialog { background: var(--paper); color: var(--ink); border: 1px solid var(--li
   #demo .worker-windows .terminal { height: 260px; min-height: 0; }
   #demo .board-window { height: 360px; min-height: 0; }
   #demo .message .message-text { font-size: 12px; }
-  .article-section { margin-top: 40px; }
-  .article-section p { margin: 20px 0; }
+  .article-section { margin-top: 48px; }
+  .article-section p { margin: 24px 0; }
 }
 @media(min-width: 681px) and (max-width: 960px) {
   #show-view #demo .workspace { height: 720px; }
@@ -261,7 +264,7 @@ html[lang=ko] { --body: 'Apple SD Gothic Neo', 'Noto Sans KR', -apple-system, sa
 }
 @media(max-width: 680px) {
   .site-header { gap: 12px; }
-  .language-switcher select { width: 84px; }
+  .language-switcher button { min-width: 36px; padding-inline: 8px; }
   .demo-stage { padding-top: 24px; padding-bottom: 20px; }
   .playback { padding-top: 24px; padding-bottom: 28px; }
   .documentation-bridge { padding-top: 36px; padding-bottom: 36px; }
