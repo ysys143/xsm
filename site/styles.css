@@ -117,6 +117,7 @@ h1 { font-family: Archivo, var(--body); font-size: clamp(56px,5.7vw,82px); font-
 .transcript ol { padding-left: 20px; margin: 16px 0 0; display: grid; gap: 14px; }
 .transcript li > span { font: 10px var(--mono); color: var(--blue); }
 .transcript li p { white-space: pre-wrap; margin-top: 6px; font-size: 14px; color: var(--ink); }
+.transcript-result { white-space: pre-wrap; overflow-wrap: anywhere; font: 12px/1.7 var(--mono); padding-left: 12px; border-left: 1px solid var(--line); }
 .documentation-bridge { border-block: 1px solid var(--line); padding: 30px 64px; display: grid; grid-template-columns: 300px minmax(0,1fr); gap: 48px; }
 .section-label { display: block; color: var(--muted); font: 11px/1.5 var(--mono); letter-spacing: .025em; margin-bottom: 16px; }
 .documentation-bridge .section-label { color: var(--blue); margin-bottom: 14px; }

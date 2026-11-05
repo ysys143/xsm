@@ -74,6 +74,7 @@ export async function run({ spaceId, baseURL, outputDirectory }) {
     check('progress scene shows verified count and blocker', await page.evaluate(() => document.querySelector('#board-summary').textContent.includes('8 / 12') && document.querySelector('#qa-report').textContent.includes('duplicate')));
     check('terminal uses monospace output and real tool-call notation', await page.evaluate(() => getComputedStyle(document.querySelector('.message-text')).fontFamily.includes('Mono') && document.querySelector('#lead-messages').textContent.includes('xsm - xsm_board (MCP)') && document.querySelector('#lead-messages .tool-result:not([hidden])') !== null));
     check('board is shown as a terminal command and Markdown output', await page.evaluate(() => document.querySelector('.board-command').textContent === '$ xsm board show notifications' && document.querySelector('#board-title').textContent === '# notifications board'));
+    check('the full transcript includes tool results', await page.evaluate(() => [...document.querySelectorAll('#transcript-content .transcript-result')].some(node => node.textContent.includes('set progress: notifications (node'))));
     await page.evaluate(() => window.scrollTo({ top: 0, behavior: 'instant' }));
     await page.screenshot({ path: `${outputDirectory}/desktop.png`, fullPage: true });
     await page.click('#scene-guide-link', { label: 'open matching documentation' });

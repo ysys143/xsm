@@ -125,7 +125,7 @@ function render() {
     $$('#chapters a').forEach(link => {
       if (link.dataset.scene === scene.id) link.setAttribute('aria-current', 'step'); else link.removeAttribute('aria-current');
     });
-    $('#transcript-content').innerHTML = Object.entries(scene.messages).flatMap(([actor, messages]) => messages.map(message => ({ ...message, actor }))).sort((a, b) => a.at - b.at).map(message => `<li><span>${escape(message.from)}</span><p>${escape(message.text)}</p></li>`).join('');
+    $('#transcript-content').innerHTML = Object.entries(scene.messages).flatMap(([actor, messages]) => messages.map(message => ({ ...message, actor }))).sort((a, b) => a.at - b.at).map(message => `<li><span>${escape(message.from)}</span><p>${escape(message.text)}</p>${message.result ? `<pre class="transcript-result">${escape(message.result)}</pre>` : ''}</li>`).join('');
     if (route.view === 'demo' && location.hash.startsWith('#demo/')) {
       route.id = scene.id;
       const params = new URLSearchParams(location.hash.split('?')[1]);
