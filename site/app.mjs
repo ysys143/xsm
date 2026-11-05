@@ -262,7 +262,7 @@ function readRoute(initial = false) {
 function closeMenu() {
   $('#mobile-navigation').hidden = true;
   $('.mobile-menu').setAttribute('aria-expanded', 'false');
-  $('.mobile-menu').setAttribute('aria-label', tr('Open menu'));
+  $('.mobile-menu').setAttribute('aria-label', 'Open menu');
 }
 async function copyPrompt(button) {
   const text = prompts.get(button.dataset.copy);
@@ -303,7 +303,7 @@ $('.mobile-menu').addEventListener('click', () => {
   const open = $('#mobile-navigation').hidden;
   $('#mobile-navigation').hidden = !open;
   $('.mobile-menu').setAttribute('aria-expanded', String(open));
-  $('.mobile-menu').setAttribute('aria-label', tr(open ? 'Close menu' : 'Open menu'));
+  $('.mobile-menu').setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
 });
 document.addEventListener('keydown', event => {
   if (event.key === 'Escape' && !$('#mobile-navigation').hidden) { closeMenu(); $('.mobile-menu').focus(); }

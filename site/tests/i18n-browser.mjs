@@ -17,7 +17,7 @@ export async function run({ spaceId, baseURL, outputDirectory }) {
     await page.cdp('Emulation.setEmulatedMedia', { features: [{ name: 'prefers-reduced-motion', value: 'reduce' }] });
     await page.goto(baseURL);
     await language('ko');
-    check('Korean browser selects Korean automatically on first visit', await page.evaluate(() => navigator.languages[0].startsWith('ko') && document.querySelector('#language-select').value === 'ko' && document.querySelector('.main-nav').textContent.includes('사용 문서')));
+    check('Korean browser selects Korean while header navigation stays English', await page.evaluate(() => navigator.languages[0].startsWith('ko') && document.querySelector('#language-select').value === 'ko' && document.querySelector('.site-header').lang === 'en' && ['.main-nav', '#mobile-navigation'].every(selector => { const nav = document.querySelector(selector); return nav.textContent.includes('How it works') && nav.textContent.includes('Docs') && !/\p{Script=Hangul}/u.test(nav.textContent); })));
     check('Korean headline uses the original message-channel meaning', await page.evaluate(() => document.querySelector('.hero h1').textContent.includes('메시지 채널')));
     await page.goto(`${baseURL}#guide/progress`);
     await page.waitForSelector('#guide-article h1');

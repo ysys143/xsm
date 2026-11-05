@@ -26,6 +26,8 @@ Open the local URL printed in the terminal. No package installation or build ste
 
 The interface, replay, guides and accessibility labels support English and Korean. Selection follows an explicit `?lang=en` or `?lang=ko` URL, then a saved manual choice, then the browser's first supported preferred language. Other languages fall back to English. The header language picker saves its choice locally and preserves the current chapter, time and pause state. Runtime identifiers, command names and machine-generated protocol output retain their native spelling.
 
+Header navigation stays in English in both locales: How it works, Docs, GitHub and Get started. This also applies to the mobile menu. The static translator respects `translate="no"` regions.
+
 The conversations are scripted examples with abbreviated output, not live model calls or newly created XSM sessions. Claude Code and Codex appear in the main replay. Pi, OpenCode, Hermes and OpenClaw are listed with their experimental 0.6.0 support described in the runtime guide.
 
 Scene and guide state can be linked directly:

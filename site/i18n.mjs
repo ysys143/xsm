@@ -116,12 +116,14 @@ export function createStaticTranslator(document) {
   const walker = document.createTreeWalker(document.body, 4);
   while (walker.nextNode()) {
     const node = walker.currentNode;
+    if (node.parentElement?.closest('[translate="no"]')) continue;
     const original = node.nodeValue;
     const key = original.trim();
     if (Object.hasOwn(korean, key)) texts.push({ node, original, key });
   }
   const attributes = [];
   document.querySelectorAll('[aria-label], [title], [placeholder], meta[name="description"]').forEach(node => {
+    if (node.closest('[translate="no"]')) return;
     for (const name of ['aria-label', 'title', 'placeholder', 'content']) {
       const original = node.getAttribute(name);
       if (original && Object.hasOwn(korean, original)) attributes.push({ node, name, original });
