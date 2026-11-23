@@ -89,14 +89,14 @@ def prune(now: float | None = None, dry_run: bool = False) -> dict:
                for suffix in (".json", ".recv.json", ".handoff.json")):
             continue
         entry = paths.read_json(p) or {}
-        if (entry.get("t") or os.path.getmtime(p)) < record_cutoff:
+        if _kept_at(entry, p) < record_cutoff:
             removed["ledger"].append(os.path.basename(p))
             if not dry_run:
                 _unlink(p)
 
     for p in glob.glob(paths.path(paths.HELD, "*.json")):
         entry = paths.read_json(p) or {}
-        if (entry.get("t") or os.path.getmtime(p)) < record_cutoff:
+        if _kept_at(entry, p) < record_cutoff:
             removed["held"].append(os.path.basename(p))
             if not dry_run:
                 drop_held(p, entry)
@@ -211,6 +211,14 @@ def prune_telemetry(now: float, dry_run: bool = False) -> dict:
 
 
 PRUNED = "held-pruned"
+
+
+def _kept_at(entry: dict, p: str) -> float:
+    """When a record was kept: its own `t`, else its file's time (also when `t` is not a number)."""
+    try:
+        return float(entry.get("t") or os.path.getmtime(p))
+    except (TypeError, ValueError):
+        return os.path.getmtime(p)
 
 
 def drop_held(p: str, entry: dict, *, restorable: bool = False) -> None:

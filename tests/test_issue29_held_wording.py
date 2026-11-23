@@ -156,7 +156,7 @@ class HeldListTest(_Sessions):
         code, text = self._cli("held", "restore", "gone")
         self.assertEqual(code, 2, text)
         self.assertIn("held for another session", text)
-        code, text = self._cli("held", "restore", "--all", "gone")
+        code, text = self._cli("held", "restore", "gone", "--all")
         self.assertEqual(code, 0, text)
         self.assertEqual(sorted(os.listdir(paths.path(paths.HELD))), ["gone.json", "keep.json"])
         back = paths.read_json(paths.path(paths.HELD, "gone.json"))
@@ -233,6 +233,12 @@ class HeldListTest(_Sessions):
         self._hold("odd", "ffffff", t="yesterday")
         code, text = self._cli("held", "prune", "--all")
         self.assertEqual(code, 0, text)
+
+    def test_the_retention_sweep_survives_a_record_whose_time_is_text(self):
+        from xsm import housekeeping, paths
+        self._hold("odd", "ffffff", t="yesterday")
+        paths.write_json(paths.path(paths.LEDGER, "odd.json"), {"t": "yesterday"})
+        housekeeping.prune(dry_run=True)
 
     def test_prune_without_all_leaves_other_sessions_alone(self):
         from xsm import paths

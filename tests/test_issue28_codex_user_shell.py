@@ -77,7 +77,7 @@ class CodexUserShellTest(TempState):
         self.assertEqual(code, 2, text)
 
     def test_a_codex_version_nobody_measured_is_asked_as_before(self):
-        for version in ("0.169.9", "0.172.0", "1.0.0", ""):
+        for version in ("0.169.9", "0.172.0", "1.0.0", "", "v0.170.0", "0.170.0-alpha.1", "0.170.0\n", "0.1700.0"):
             with self.subTest(version=version), mock.patch.dict(os.environ, {"CODEX_VERSION": version}):
                 code, text = self._join()
                 self.assertEqual(code, 2, text)
@@ -85,6 +85,22 @@ class CodexUserShellTest(TempState):
         with mock.patch.dict(os.environ, {"CODEX_VERSION": "0.171.3"}):
             code, text = self._join("proj28b")
         self.assertEqual(code, 0, text)
+
+    def test_leave_and_link_are_the_persons_own_too(self):
+        from xsm import cli, config
+        self.assertEqual(self._join()[0], 0)
+        out, err = io.StringIO(), io.StringIO()
+        with contextlib.redirect_stdout(out), contextlib.redirect_stderr(err):
+            code = cli.main(["leave", "proj28"])
+        self.assertEqual(code, 0, out.getvalue() + err.getvalue())
+        self.assertFalse(self._joined())
+        other = os.path.realpath(os.path.join(self.tmp, "repo-b"))
+        os.makedirs(other, exist_ok=True)
+        with contextlib.redirect_stdout(out), contextlib.redirect_stderr(err):
+            code = cli.main(["link", other])
+        self.assertEqual(code, 0, out.getvalue() + err.getvalue())
+        self.assertEqual(len(config.links()), 1)
+        self.assertIn("Codex shell box", config.links()[0]["by"], "a link records who decided, and how")
 
     def test_the_asks_that_name_an_id_or_a_plan_are_not_passed(self):
         """approve, unblock, handover, held deliver ... say nothing the person has seen."""

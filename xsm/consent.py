@@ -1999,8 +1999,9 @@ def codex_user_shell(me: dict | None) -> bool:
     thread = os.environ.get("CODEX_THREAD_ID")
     if not thread or thread != str(me["session_id"]):
         return False
-    if ".".join(os.environ.get("CODEX_VERSION", "").split(".")[:2]) not in CODEX_USER_SHELL_VERSIONS:
-        return False                    # not measured on this Codex: no markers to trust
+    if not re.fullmatch(r"(?:%s)\.\d+" % "|".join(re.escape(v) for v in CODEX_USER_SHELL_VERSIONS),
+                        os.environ.get("CODEX_VERSION", "")):
+        return False                    # not measured on this Codex (or a pre-release of it): no markers to trust
     if any(os.environ.get(key) for key in CODEX_TOOL_MARKERS):
         return False
     return not unattended(me)
