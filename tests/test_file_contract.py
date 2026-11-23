@@ -4,6 +4,7 @@ import hashlib
 import io
 import json
 import os
+import time
 from contextlib import redirect_stdout
 from unittest import mock
 from tests.test_xsm import TempState
@@ -26,7 +27,7 @@ class FileContractTest(TempState):
         self.call = context.of_record(self.me, context.BASIS_SESSION)
         self.manifest = files.prepare_inline(self.me, 'digest-request', 'body',
             [{'name': '한글.txt', 'text': 'exact copy', 'source_version': 'v1\n한글'}],
-            limits=files.product_limits(), now=1793591234.000001)
+            limits=files.product_limits(), now=int(time.time()) + 0.000001)   # not a fixed date: copies expire after 7 days
 
     def verify(self, result):
         raw = base64.b64decode(result['content'], validate=True)
