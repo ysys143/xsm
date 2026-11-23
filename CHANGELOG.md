@@ -5,6 +5,12 @@ steps, are on [GitHub Releases](https://github.com/ysys143/xsm/releases) (in Kor
 
 ## Unreleased
 
+## [0.6.1](https://github.com/ysys143/xsm/releases/tag/v0.6.1) - 2026-11-23
+
+- Treat a `join`, `leave`, `link` or `reach` the person runs in their Codex session's shell box as their own decision on the Codex versions measured (0.170, 0.171); other commands and unmeasured versions still ask.
+- Say "kept unsent" for a refused out-of-scope send, which waits in the sender's outbox, and point `xsm held deliver <outbox id>` to the same `xsm send`.
+- Name a replaced approval answer and the reason a session reads as stopped in refusals; `xsm held list` shows this session's holds, and `xsm held prune`/`restore` clean up and bring back holds.
+
 ## [0.6.0](https://github.com/ysys143/xsm/releases/tag/v0.6.0) - 2026-11-05
 
 - Isolate copied native conversations by config home and add user-approved profile migration with source retirement, preserved pending work and 24-hour old-address forwarding.

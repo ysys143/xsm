@@ -1,7 +1,7 @@
 {
   "name": "xsm",
   "displayName": "Cross-Session Messaging",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "description": "Connect Claude Code and Codex sessions for messaging and collaboration, with experimental Pi, OpenCode, Hermes and OpenClaw bindings.",
   "author": {
     "name": "jaesolshin"

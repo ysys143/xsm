@@ -9,10 +9,10 @@
     {
       "name": "xsm",
       "source": "./",
-      "version": "0.6.0",
+      "version": "0.6.1",
       "description": "Connect Claude Code and Codex sessions for messaging and collaboration, with experimental Pi, OpenCode, Hermes and OpenClaw bindings.",
       "category": "productivity"
     }
   ],
-  "version": "0.6.0"
+  "version": "0.6.1"
 }
