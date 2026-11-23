@@ -431,6 +431,16 @@ def _person_or_refuse(what: str, mcp_tool: str, typed: tuple | None = None,
     me = registry.me()
     if typed and consent.take(me, *typed):
         return None
+    if typed and binding is None and consent.codex_user_shell(me):
+        # The person ran this very command in their Codex session's shell box: no hook saw
+        # it, and the environment is the only witness (#28). Only the commands whose words
+        # are the decision (join, leave, link, reach), not the asks that name an id or a
+        # plan the person has not seen (approve, unblock, handover, held deliver, ...). The
+        # records say how it was known: by() carries the mark to what they write.
+        consent.used_via = consent.USER_SHELL
+        paths.append_jsonl("decisions.jsonl", {"event": "consent", "verb": typed[0], "target": typed[1],
+                                               "by": (me or {}).get("name"), "via": consent.USER_SHELL})
+        return None
     key = typed or ask
     if not key:
         return ("%s is your user's decision: ask them %s, then run this again"
@@ -1500,7 +1510,16 @@ def _held_deliver(args) -> int:
     p = paths.path(paths.HELD, "%s.json" % name)
     entry = paths.read_json(p) if name else None
     if not isinstance(entry, dict):
-        print("no such held message", file=sys.stderr)
+        from . import outbox
+        mine = registry.me()
+        if name and mine and outbox.get(name, mine):
+            # A refused send says "kept unsent as <id>": that is this session's outbox,
+            # not the held list `held deliver` reads (#29).
+            print("no such held message: %s is one of your own unsent messages (a send that was "
+                  "refused for want of a connection), not one a receiver held. Run the same "
+                  "`xsm send` again, or `xsm send --held %s`." % (name, name), file=sys.stderr)
+        else:
+            print("no such held message", file=sys.stderr)
         return REFUSED
     me = registry.me()
     if entry.get("receiver_ref") and me and me.get("ref") != entry["receiver_ref"] and \
@@ -1548,10 +1567,100 @@ def _held_deliver(args) -> int:
     return OK
 
 
+def _held_for(entry: dict, me: dict | None) -> bool:
+    """Whether a held message was kept for this session. Without a registered session
+    (a person typing it themselves) every one counts as theirs. An older hold has a receiver
+    name only."""
+    if not me:
+        return True
+    if entry.get("receiver_ref"):
+        return entry["receiver_ref"] == me.get("ref")
+    return entry.get("receiver") in (me.get("name"), "%s@%s" % (me.get("name"), me.get("alias")))
+
+
+HELD_PRUNE_AGE = 86400.0       # a session that stopped may come back (`claude --resume`): its holds wait a day
+
+
+def _held_prune(entries: list, args, me: dict | None) -> int:
+    """Drop the held messages that have waited a day (HELD_PRUNE_AGE) and nobody can or
+    should take: kept for a session with no record or a stopped one, or kept because they
+    came from a socket that is not their claimed sender's. This session's own unless
+    --all. A session agent needs its user's yes first (a person typing it themselves does not);
+    the original of each goes to legacy-held-originals and, by its id, to held-pruned/
+    for `xsm held restore <id>`."""
+    from . import receive
+    now = time.time()
+    records = {r.get("ref"): r for r in registry.raw_records() if r.get("ref")}
+    gone = []
+    for p in entries:
+        entry = paths.read_json(p, {}) or {}
+        if not getattr(args, "all", False) and not _held_for(entry, me):
+            continue
+        try:
+            kept_at = float(entry.get("t") or os.path.getmtime(p))
+        except (TypeError, ValueError):
+            kept_at = os.path.getmtime(p)
+        if now - kept_at < HELD_PRUNE_AGE:
+            continue
+        ref = entry.get("receiver_ref")
+        row = records.get(ref)
+        row = registry._enrich(row) if row else None
+        if receive.SOCKET_MISMATCH in str(entry.get("reason") or ""):
+            gone.append((p, entry, "it came from a socket that is not its sender's"))
+        elif ref and (row is None or row.get("state") in ("ended", "stale")):
+            gone.append((p, entry, "its session has no live process"))
+    if not gone:
+        print("nothing to prune (only holds older than a day are dropped)")
+        return OK
+    if not args.dry_run:
+        why = _person_or_refuse("dropping %d held message(s) kept for sessions that have stopped "
+                                "(a copy of each is kept; `xsm held restore <id>` brings one back)"
+                                % len(gone), "no", ask=("held-prune", "all" if args.all else "mine"))
+        if why:
+            print("refused: %s" % why, file=sys.stderr)
+            return REFUSED
+    for p, entry, why in gone:
+        name = os.path.basename(p)[:-5]
+        if args.dry_run:
+            print("would drop %s: %s" % (name, why))
+            continue
+        housekeeping.drop_held(p, entry, restorable=True)
+        print("dropped %s: %s (`xsm held restore %s` brings it back)" % (name, why, name))
+    return OK
+
+
+def _held_restore(args) -> int:
+    """Put a message `held prune` dropped back on the held list."""
+    name = os.path.basename(getattr(args, "id", None) or "")
+    saved = paths.read_json(paths.path(housekeeping.PRUNED, "%s.json" % name)) if name else None
+    if not isinstance(saved, dict):
+        print("no pruned held message %s" % (name or "(give its id)"), file=sys.stderr)
+        return REFUSED
+    if not getattr(args, "all", False) and not _held_for(saved, registry.me()):
+        print("refused: %s was held for another session; --all restores it anyway" % name, file=sys.stderr)
+        return REFUSED
+    target = paths.path(paths.HELD, "%s.json" % name)
+    if os.path.exists(target):
+        print("%s is on the held list already" % name)
+        return OK
+    saved["t"] = time.time()            # restored now: a prune does not take it straight back
+    paths.write_json(target, saved, mode=0o600)
+    try:
+        os.unlink(paths.path(housekeeping.PRUNED, "%s.json" % name))
+    except OSError:
+        pass
+    print("restored %s to the held list" % name)
+    return OK
+
+
 def cmd_held(args) -> int:
     entries = sorted(glob.glob(paths.path(paths.HELD, "*.json")))
     if args.action == "deliver":
         return _held_deliver(args)
+    if args.action == "prune":
+        return _held_prune(entries, args, registry.me())
+    if args.action == "restore":
+        return _held_restore(args)
     # An id names a file in held/ and nothing else: `../config` would otherwise be
     # ~/.xsm/config.json, and drop would delete every scope, link and block.
     name = os.path.basename(getattr(args, "id", None) or "")
@@ -1567,17 +1676,33 @@ def cmd_held(args) -> int:
         if not name or not os.path.exists(target):
             print("no such held message", file=sys.stderr)
             return REFUSED
-        os.unlink(target)
+        # A copy is kept, as prune keeps one: `xsm held restore <id>` brings it back.
+        housekeeping.drop_held(target, paths.read_json(target, {}) or {}, restorable=True)
+        print("dropped %s (`xsm held restore %s` brings it back)" % (name, name))
         return OK
+    me = registry.me()
+    others = 0
+    if not getattr(args, "all", False):
+        mine = []
+        for p in entries:
+            if _held_for(paths.read_json(p, {}) or {}, me):
+                mine.append(p)
+            else:
+                others += 1
+        entries = mine
+    note = ("%d more held for other sessions or with no named receiver: `xsm held list --all` shows "
+            "them; `xsm held prune` drops, after a day, those whose session has stopped" % others) if others else ""
     if getattr(args, "table", False):
         rows = []
         for p in entries:
             entry = paths.read_json(p, {}) or {}
             body = (entry.get("body") or "").replace("\n", " ")
-            rows.append((_short(entry.get("from") or "unknown", 18),
+            rows.append((os.path.basename(p)[:-5], _short(entry.get("from") or "unknown", 18),
                          _short(entry.get("reason"), 30), _short(body, 24)))
-        print("\n".join(_md_table(["from", "why it was held", "message"], rows))
+        print("\n".join(_md_table(["id", "from", "why it was held", "message"], rows))
               if rows else "nothing held")
+        if note:
+            print(note)
         return OK
     for p in entries:
         entry = paths.read_json(p, {}) or {}
@@ -1587,6 +1712,8 @@ def cmd_held(args) -> int:
             entry.get("reason"), " " * 17, body[:70] + ("…" if len(body) > 70 else "")))
     if not entries:
         print("nothing held")
+    if note:
+        print(note)
     return OK
 
 
@@ -3219,9 +3346,14 @@ def build_parser() -> argparse.ArgumentParser:
 
     hd = sub.add_parser("held", help="messages this machine refused and kept")
     hd.add_argument("--table", action="store_true", help="a Markdown table (for a session's TUI)")
+    hd.add_argument("--all", action="store_true",
+                    help="list/prune every session's held messages, not just this session's")
+    hd.add_argument("--dry-run", action="store_true", help="prune: only say what would go")
     hd.add_argument("action", nargs="?", default="list",
-                    choices=["list", "show", "drop", "deliver"],
-                    help="deliver: hand one to this session, on your user's yes")
+                    choices=["list", "show", "drop", "deliver", "prune", "restore"],
+                    help="deliver: hand one to this session, on your user's yes; prune: drop holds "
+                         "older than a day that were kept for a session that is gone, or from a "
+                         "socket that is not its sender's (restore <id> brings one back)")
     hd.add_argument("id", nargs="?")
     hd.set_defaults(func=cmd_held)
 

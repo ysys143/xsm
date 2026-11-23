@@ -7,7 +7,7 @@ whenever xsm says it needs your user's yes.
 
 Take the first that fits.
 
-1. Your user already decided (they typed the command, or their request names it): run it. Do not ask.
+1. Your user already decided (they typed the command, or their request names it): run it. Do not ask. In Codex, a `join`, `leave`, `link` or `reach` your user ran in the session's own shell box (`!xsm join <project>`) counts too. Never repeat one from your shell tool to get the same effect.
 2. No person is at this session (a background worker): DM your parent or team lead. No form, no question tool.
 3. The runtime is asking about your own tool call: leave it to the runtime. A worker of yours waits: `xsm_approve`.
 4. What remains is a decision record (`xsm_decide`): a form or verified native-answer recovery. Without one, say nothing was recorded.

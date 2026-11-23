@@ -368,6 +368,7 @@ def _enrich(record: dict) -> dict | None:
         out["name"] = record.get("name") or "%s-%s" % (
             record.get("runtime"), str(record.get("session_id", ""))[:8])
     out["state"], why = identity.state_reason(out)
+    out["state_why"] = why
     if why in ('profile_migrated', 'profile_generation_retired'):
         out['retired'] = True
     if why == "thread_replaced":

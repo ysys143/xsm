@@ -851,6 +851,8 @@ def _note_verdict(me: dict | None, text: str, wait: float | None = None,
                 entry.pop("native_marker", None)
                 entry.pop("native_evidence", None)
                 entry.pop("after", None)
+                if entry.get("verdict") is not None and entry["verdict"] != text.strip()[:VERDICT_MAX]:
+                    entry["replaced"] = entry["verdict"]        # said again: told on the next run (#29)
                 entry.update(verdict=text.strip()[:VERDICT_MAX], verdict_t=time.time(), shown=False,
                              answer_binding=how_told)
                 if request:
@@ -1169,6 +1171,7 @@ def _take(me: dict, p: str, verb: str, want: str, want_here: str | None, apply=N
                  "open a new session, or close the others with `xsm decision-status --drop-consent`")
         for path, ask in twins + [(p, entry)]:
             ask.update(verdict=None, shown=False)
+            ask.pop("replaced", None)
             paths.write_json(path, ask, mode=0o600)
         return None, False, True
     now = time.time()
@@ -1177,6 +1180,10 @@ def _take(me: dict, p: str, verb: str, want: str, want_here: str | None, apply=N
         if entry.get("answer_request") else None
     if channel_note and entry.get("answer_question"):
         channel_note += " Asked: " + entry["answer_question"]
+    if entry.get("replaced"):
+        channel_note = ((channel_note + " ") if channel_note else "") + \
+            ('This reply replaced their earlier answer "%s" to this request, which no longer counts: '
+             'unless this reply is a yes, ask them again.' % " ".join(str(entry["replaced"]).split())[:200])
     if entry.get("after"):
         channel_note = ((channel_note + " ") if channel_note else "") + \
             "They have said since, about no one request: %s. Read that before you go on." \
@@ -1924,6 +1931,8 @@ def by(verdict: str | None) -> str:
     when one was given, else the user. A reply the agent gave with --reply is
     marked, so the record says it was not typed into xsm by them (used_via)."""
     person = os.environ.get("USER") or "person"
+    if used_via == USER_SHELL:
+        return "%s (ran it in the Codex shell box)" % person
     if not verdict:
         return person
     return "%s, replying%s: %s" % (person, " (%s)" % AGENT_SUPPLIED if used_via == "flag" else "",
@@ -1963,6 +1972,39 @@ def cannot_keep(what: str, form_tool: str | None, me: dict | None = None) -> str
             "session moved into the background can lose its record, and another message may not "
             "bring it back). %s"
             % (what, way))
+
+
+# What Codex puts in the environment of a shell tool call and not of a command the person
+# runs themselves in the session's shell box (`!cmd`): measured 2026-11-23 on Codex
+# 0.170-0.171, both approval modes. The person's own run fires no hook at all (no
+# UserPromptSubmit, no PreToolUse), so there is no prompt to read and nothing to take();
+# the process environment is all there is. Not a security boundary, like
+# workers.human_terminal: an agent could scrub these (#28).
+CODEX_TOOL_MARKERS = ("CODEX_TOOL_CALL_ID", "CODEX_CI", "CODEX_SANDBOX", "CODEX_SANDBOX_NETWORK_DISABLED",
+                      "XSM_WORKER")
+# The Codex versions the markers were measured on (major.minor). A shell box that cannot be
+# told from a tool call stays an agent's: the person is asked as before. Add a version here
+# after measuring both on it (docs/xsm/PROTOCOL.md 5.3.3).
+CODEX_USER_SHELL_VERSIONS = ("0.170", "0.171")
+USER_SHELL = "codex-user-shell"
+
+
+def codex_user_shell(me: dict | None) -> bool:
+    """Whether this process is a command the person ran themselves in this Codex
+    session's shell box: a Codex session of the thread named in the environment, with
+    none of the markers a tool call carries, and not a worker's. It stands for the
+    person's typed command, as `$xsm join <project>` does (#28)."""
+    if not me or me.get("runtime") != "codex" or not me.get("session_id"):
+        return False
+    thread = os.environ.get("CODEX_THREAD_ID")
+    if not thread or thread != str(me["session_id"]):
+        return False
+    if not re.fullmatch(r"(?:%s)\.\d+" % "|".join(re.escape(v) for v in CODEX_USER_SHELL_VERSIONS),
+                        os.environ.get("CODEX_VERSION", "")):
+        return False                    # not measured on this Codex (or a pre-release of it): no markers to trust
+    if any(os.environ.get(key) for key in CODEX_TOOL_MARKERS):
+        return False
+    return not unattended(me)
 
 
 def take(me: dict | None, verb: str, target: str, here: str | None = None) -> bool:

@@ -240,7 +240,7 @@ def _send(target_spec: str, body: str, *, sender: dict | None = None, kind: str 
     if held:
         rec = outbox.get(held, sender)
         if not rec:
-            return SendResult("refused", "no message %s is held for this session (a refused "
+            return SendResult("refused", "no unsent message %s is kept for this session (a refused "
                               "send is kept for a day, by the session that sent it)" % held)
         target_spec, body, kind = rec["spec"], rec["body"], rec["kind"]
         reply_to, outcome, priority = rec.get("reply_to"), rec.get("outcome"), \
@@ -248,7 +248,7 @@ def _send(target_spec: str, body: str, *, sender: dict | None = None, kind: str 
         msg_id, ctx["held"] = rec["id"], rec["id"]
         stored_refs = rec.get("attachments") or []
         if attachments is not None and envelope.attachment_refs(attachments) != envelope.attachment_refs(stored_refs):
-            return SendResult("refused", "held attachment refs differ; original request retained", msg_id)
+            return SendResult("refused", "unsent attachment refs differ; original request retained", msg_id)
         attachments = stored_refs
 
     ctx['audit_intent'] = (target_spec, body, kind, reply_to, outcome)
@@ -416,7 +416,8 @@ def _send(target_spec: str, body: str, *, sender: dict | None = None, kind: str 
             return SendResult("refused", why_priority, target=target)
         stopped = not_running(target)
         if stopped:
-            return SendResult("refused", stopped + "\n" + resolve.resume_hint(target), target=target)
+            return SendResult("refused", stopped + "\n" + resolve.resume_hint(target) + "\n" +
+                              stopped_why(target), target=target)
         if target.get("ref") == sender.get("ref"):
             return SendResult("refused", "refusing to send to yourself")
         blocked = config.blocked()
@@ -486,10 +487,10 @@ def _send(target_spec: str, body: str, *, sender: dict | None = None, kind: str 
                 if (previous.get("req_version") != envelope.CANON_VERSION or
                         not previous.get("digest") or
                         previous["digest"] != envelope.request_digest(ident)):
-                    return SendResult("refused", "held message no longer matches its recorded "
+                    return SendResult("refused", "unsent message no longer matches its recorded "
                                       "request or target; it was not resent", msg_id, target)
                 if previous.get("status") in ("delivered", "held", "blocked"):
-                    ctx["notes"].append("recovered the recorded result of held message %s" % msg_id)
+                    ctx["notes"].append("recovered the recorded result of unsent message %s" % msg_id)
                     return SendResult(previous["status"], "receiver result recovered; not resent",
                                       msg_id, target)
                 why = resend_refusal(msg_id, sender, body, kind, target=target,
@@ -498,7 +499,7 @@ def _send(target_spec: str, body: str, *, sender: dict | None = None, kind: str 
                 if why:
                     return SendResult("refused", why, msg_id, target)
             if not ctx["notes"]:
-                ctx["notes"].append("resuming held message %s under its original id" % msg_id)
+                ctx["notes"].append("resuming unsent message %s under its original id" % msg_id)
         if wake and target.get("runtime") == "codex" and sandboxed():
             # `codex queue` opens Codex's state DB for writing and starts an
             # embedded app server; a Codex workspace-write sandbox or a Claude
@@ -817,6 +818,39 @@ def not_running(target: dict) -> str | None:
         return "%s@%s [%s] is not running (%s)" % (
             target.get("name"), target.get("alias"), target.get("ref"), target.get("state"))
     return None
+
+
+STOPPED_WHY = {
+    # The process is gone or is another one: it may come back with its next prompt.
+    "socket_dead": "its Claude Code socket does not answer",
+    "pid_dead": "its recorded process is gone",
+    "lstart_changed": "its recorded pid now belongs to another process",
+    "thread_unloaded": "no Codex TUI holds the thread any more",
+    "thread_replaced": "its Codex TUI opened another thread",
+    "superseded": "its process now runs another conversation (/clear or --resume)",
+}
+STOPPED_ELSE = {
+    "protocol_closed": "it ended cleanly",
+    "worker_stopped": "xsm stopped that worker",
+    "profile_migrated": "its place moved to another profile (`xsm migrate`)",
+    "profile_generation_retired": "its place moved to another profile (`xsm migrate`)",
+    "no_pid": "it never recorded a process",
+}
+
+
+def stopped_why(target: dict) -> str:
+    """Why xsm reads a session as stopped, so a refusal is not mistaken for a scope
+    answer: it is about the session's own state, never about a link (#29: a session
+    unlinked from this folder read `stale`, and unlink had not touched it)."""
+    why = target.get("state_why")
+    if target.get("end_reason") == "superseded":
+        why = "superseded"          # _enrich overwrote the state, not its reason
+    scope = "That is about the session, not its scope: `xsm link` and `xsm unlink` do not change it."
+    if why in STOPPED_WHY:
+        return ("xsm reads it as stopped because %s. %s If your user says it is open, it "
+                "registers again with its next prompt." % (STOPPED_WHY[why], scope))
+    return ("xsm reads it as stopped because %s. %s" % (
+        STOPPED_ELSE.get(why, "its liveness check says it is not running"), scope))
 
 
 def sandboxed() -> bool:

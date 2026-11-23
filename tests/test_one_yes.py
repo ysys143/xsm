@@ -75,7 +75,7 @@ class _Sessions(TempState):
         return paths.read_json(files[0]) if files else None
 
     def _held_id(self, text):
-        found = re.search(r"held as ([0-9a-f]{16})", text)
+        found = re.search(r"kept unsent as ([0-9a-f]{16})", text)
         self.assertIsNotNone(found, text)
         return found.group(1)
 
@@ -142,7 +142,7 @@ class OneYesTest(_Sessions):
         # the held id is no longer anything to send
         code, again = self._cli("send", "--held", msg_id)
         self.assertEqual(code, 2, again)
-        self.assertIn("no message %s is held" % msg_id, again)
+        self.assertIn("no unsent message %s is kept" % msg_id, again)
         self.assertEqual(len(self.sent), 1)
 
     def test_a_no_leaves_it_unsent_and_the_agent_is_told_so(self):
@@ -198,7 +198,7 @@ class OneYesTest(_Sessions):
         with mock.patch.object(registry, "me", return_value=other):
             code, said = self._cli("send", "--held", msg_id)
         self.assertEqual(code, 2, said)
-        self.assertIn("no message %s is held for this session" % msg_id, said)
+        self.assertIn("no unsent message %s is kept for this session" % msg_id, said)
 
     def test_a_held_message_that_is_in_scope_by_then_goes_without_asking(self):
         from xsm import config
@@ -220,7 +220,7 @@ class OneYesTest(_Sessions):
         rec["t"] = time.time() - outbox.TTL - 60
         paths.write_json(p, rec)
         code, said = self._cli("send", "--held", msg_id)
-        self.assertIn("no message %s is held" % msg_id, said)
+        self.assertIn("no unsent message %s is kept" % msg_id, said)
         self.assertEqual(outbox.prune(dry_run=True), [msg_id])
         self.assertEqual(outbox.prune(), [msg_id])
         self.assertEqual(self._held_files(), [])
@@ -248,7 +248,7 @@ class FailOpenTest(_Sessions):
         self.assertEqual(code, 2, text)
         self.assertIn("out of scope", text)
         self.assertIn("xsm link", text, "today's advice")
-        self.assertNotIn("held as", text, "nothing is promised that cannot be kept")
+        self.assertNotIn("kept unsent as", text, "nothing is promised that cannot be kept")
         self.assertEqual(self._held_files(), [])
         self.assertEqual(config.links(), [])
 
@@ -305,7 +305,7 @@ class FailOpenTest(_Sessions):
             code, text = self._send()
         self.assertEqual(code, 2, text)
         self.assertIn("xsm link", text)
-        self.assertNotIn("held as", text)
+        self.assertNotIn("kept unsent as", text)
 
     def test_a_connection_that_cannot_be_made_keeps_the_message_and_says_so(self):
         from xsm import config
@@ -323,7 +323,7 @@ class FailOpenTest(_Sessions):
 
     def test_a_remote_target_is_not_held(self):
         code, text = self._cli("send", "box:somebody", "--text", "hi")
-        self.assertNotIn("held as", text)
+        self.assertNotIn("kept unsent as", text)
         self.assertEqual(self._held_files(), [])
 
 
@@ -427,7 +427,7 @@ class McpTest(_Sessions):
         self.assertEqual(len(self.sent), 1)
         self.assertIn("hello from mcp", self.sent[0])
         self.assertEqual(self._held_files(), [])
-        self.assertIn("no message %s is held" % msg_id, self._tool({"held": msg_id}))
+        self.assertIn("no unsent message %s is kept" % msg_id, self._tool({"held": msg_id}))
 
     def test_the_mcp_tool_sends_a_held_message_by_its_id(self):
         first = self._tool({"target": self.target, "text": "by id", "wait": 0})

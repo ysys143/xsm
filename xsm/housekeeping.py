@@ -89,21 +89,24 @@ def prune(now: float | None = None, dry_run: bool = False) -> dict:
                for suffix in (".json", ".recv.json", ".handoff.json")):
             continue
         entry = paths.read_json(p) or {}
-        if (entry.get("t") or os.path.getmtime(p)) < record_cutoff:
+        if _kept_at(entry, p) < record_cutoff:
             removed["ledger"].append(os.path.basename(p))
             if not dry_run:
                 _unlink(p)
 
     for p in glob.glob(paths.path(paths.HELD, "*.json")):
         entry = paths.read_json(p) or {}
-        if (entry.get("t") or os.path.getmtime(p)) < record_cutoff:
+        if _kept_at(entry, p) < record_cutoff:
             removed["held"].append(os.path.basename(p))
             if not dry_run:
-                # Preserve old held originals before pruning their legacy index.
-                key = hashlib.sha256(json.dumps(entry, sort_keys=True).encode()).hexdigest()
-                original = paths.path("legacy-held-originals", key + ".json")
-                if not os.path.exists(original):
-                    handoff._write(original, entry)
+                drop_held(p, entry)
+
+    for p in glob.glob(paths.path(PRUNED, "*.json")):
+        # Copies `xsm held prune` and `held drop` keep for `held restore`: as long as the held
+        # messages themselves are kept.
+        if os.path.getmtime(p) < record_cutoff:
+            removed["held"].append(os.path.basename(p))
+            if not dry_run:
                 _unlink(p)
 
     removed["telemetry"] = prune_telemetry(now, dry_run)
@@ -205,6 +208,31 @@ def prune_telemetry(now: float, dry_run: bool = False) -> dict:
     if dropped and not dry_run:
         paths.write_json(paths.path(otlp_export.CURSOR), cursor)
     return dropped
+
+
+PRUNED = "held-pruned"
+
+
+def _kept_at(entry: dict, p: str) -> float:
+    """When a record was kept: its own `t`, else its file's time (also when `t` is not a number)."""
+    try:
+        return float(entry.get("t") or os.path.getmtime(p))
+    except (TypeError, ValueError):
+        return os.path.getmtime(p)
+
+
+def drop_held(p: str, entry: dict, *, restorable: bool = False) -> None:
+    """Remove one held message, keeping its original under legacy-held-originals first
+    (what the retention sweep and `xsm held prune` both do). `restorable` also keeps it
+    under its own id in held-pruned/, which `xsm held restore <id>` puts back."""
+    from . import handoff
+    key = hashlib.sha256(json.dumps(entry, sort_keys=True).encode()).hexdigest()
+    original = paths.path("legacy-held-originals", key + ".json")
+    if not os.path.exists(original):
+        handoff._write(original, entry)
+    if restorable:
+        handoff._write(paths.path(PRUNED, os.path.basename(p)), entry)
+    _unlink(p)
 
 
 def _unlink(p: str) -> None:
