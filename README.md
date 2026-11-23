@@ -646,7 +646,7 @@ A conversation you want between your own sessions is never stopped by a hold you
 breaks, or cannot check a message (its sender exited, it came from off this machine), the message goes
 through with a `[xsm] could not check this message` note instead of being held; what is still held (a
 session you blocked, out of scope) is kept, both sides are told, and your agent delivers it on your yes
-(`xsm held deliver <id>`). Each opened hold can be closed again: `fail_open`, `remote_native`,
+(`xsm held deliver <id>`). `xsm held list` shows this session's holds (`--all`: every session's) and `xsm held prune` drops those whose session is gone or whose socket was not the sender's, keeping a copy. A send of your own refused as out of scope is not a hold: it waits in your outbox (`kept unsent as <id>`) and the same `xsm send` again sends it. Each opened hold can be closed again: `fail_open`, `remote_native`,
 `stale_sender`, `reply_from_request`, `reply_flag` in `~/.xsm/config.json`, or `XSM_<KEY>` in the
 environment; `xsm doctor` shows them on its `policy` line.
 

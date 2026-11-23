@@ -925,6 +925,11 @@ def _unknown_sender(parsed, why_not: str, me: dict, cfg: dict) -> tuple:
                                                              "pasted)")
 
 
+# What a held reason says when the message came from a socket that is not its claimed
+# sender's; `xsm held prune` finds those by it.
+SOCKET_MISMATCH = "which is not the socket of"
+
+
 def _socket_mismatch(parsed, sender: dict) -> str | None:
     """Why the envelope's own sender does not fit the header's, or None.
 
@@ -942,8 +947,8 @@ def _socket_mismatch(parsed, sender: dict) -> str | None:
         return ("the message came through a Claude session's socket (%s) but claims %r, "
                 "which is not a Claude session" % (where, parsed.header.get("from")))
     if sender.get("socket") and sender["socket"] != where[len("uds:"):]:
-        return ("the message came from %s, which is not the socket of %r"
-                % (where, parsed.header.get("from")))
+        return ("the message came from %s, %s %r"
+                % (where, SOCKET_MISMATCH, parsed.header.get("from")))
     return None
 
 

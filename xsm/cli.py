@@ -1500,7 +1500,16 @@ def _held_deliver(args) -> int:
     p = paths.path(paths.HELD, "%s.json" % name)
     entry = paths.read_json(p) if name else None
     if not isinstance(entry, dict):
-        print("no such held message", file=sys.stderr)
+        from . import outbox
+        mine = registry.me()
+        if name and mine and outbox.get(name, mine):
+            # A refused send says "kept unsent as <id>": that is this session's outbox,
+            # not the held list `held deliver` reads (#29).
+            print("no such held message: %s is one of your own unsent messages (a send that was "
+                  "refused for want of a connection), not one a receiver held. Run the same "
+                  "`xsm send` again, or `xsm send --held %s`." % (name, name), file=sys.stderr)
+        else:
+            print("no such held message", file=sys.stderr)
         return REFUSED
     me = registry.me()
     if entry.get("receiver_ref") and me and me.get("ref") != entry["receiver_ref"] and \
@@ -1548,10 +1557,50 @@ def _held_deliver(args) -> int:
     return OK
 
 
+def _held_for(entry: dict, me: dict | None) -> bool:
+    """Whether a held message was kept for this session. Without a registered session
+    (a person typing it themselves) every one counts as theirs. An older hold has a receiver
+    name only."""
+    if not me:
+        return True
+    if entry.get("receiver_ref"):
+        return entry["receiver_ref"] == me.get("ref")
+    return entry.get("receiver") in (me.get("name"), "%s@%s" % (me.get("name"), me.get("alias")))
+
+
+def _held_prune(entries: list, args, me: dict | None) -> int:
+    """Drop the held messages nobody can take or should: kept for a session that is gone
+    (no record, or stopped), or kept because they came from a socket that is not their
+    claimed sender's. This session's own unless --all. The original of each goes to
+    legacy-held-originals, as the retention sweep does."""
+    from . import receive
+    gone = []
+    for p in entries:
+        entry = paths.read_json(p, {}) or {}
+        if not getattr(args, "all", False) and not _held_for(entry, me):
+            continue
+        ref = entry.get("receiver_ref")
+        row = next((r for r in registry.raw_records() if ref and r.get("ref") == ref), None)
+        row = registry._enrich(row) if row else None
+        if receive.SOCKET_MISMATCH in str(entry.get("reason") or ""):
+            gone.append((p, entry, "from a socket that is not its sender's"))
+        elif ref and (row is None or row.get("state") in ("ended", "stale")):
+            gone.append((p, entry, "its session is gone"))
+    for p, entry, why in gone:
+        print("%s %s: %s" % ("would drop" if args.dry_run else "dropped", os.path.basename(p)[:-5], why))
+        if not args.dry_run:
+            housekeeping.drop_held(p, entry)
+    if not gone:
+        print("nothing to prune")
+    return OK
+
+
 def cmd_held(args) -> int:
     entries = sorted(glob.glob(paths.path(paths.HELD, "*.json")))
     if args.action == "deliver":
         return _held_deliver(args)
+    if args.action == "prune":
+        return _held_prune(entries, args, registry.me())
     # An id names a file in held/ and nothing else: `../config` would otherwise be
     # ~/.xsm/config.json, and drop would delete every scope, link and block.
     name = os.path.basename(getattr(args, "id", None) or "")
@@ -1569,15 +1618,29 @@ def cmd_held(args) -> int:
             return REFUSED
         os.unlink(target)
         return OK
+    me = registry.me()
+    others = 0
+    if not getattr(args, "all", False):
+        mine = []
+        for p in entries:
+            if _held_for(paths.read_json(p, {}) or {}, me):
+                mine.append(p)
+            else:
+                others += 1
+        entries = mine
+    note = ("%d more held for other sessions: `xsm held list --all` shows them, `xsm held prune` "
+            "drops those whose session is gone" % others) if others else ""
     if getattr(args, "table", False):
         rows = []
         for p in entries:
             entry = paths.read_json(p, {}) or {}
             body = (entry.get("body") or "").replace("\n", " ")
-            rows.append((_short(entry.get("from") or "unknown", 18),
+            rows.append((os.path.basename(p)[:-5], _short(entry.get("from") or "unknown", 18),
                          _short(entry.get("reason"), 30), _short(body, 24)))
-        print("\n".join(_md_table(["from", "why it was held", "message"], rows))
+        print("\n".join(_md_table(["id", "from", "why it was held", "message"], rows))
               if rows else "nothing held")
+        if note:
+            print(note)
         return OK
     for p in entries:
         entry = paths.read_json(p, {}) or {}
@@ -1587,6 +1650,8 @@ def cmd_held(args) -> int:
             entry.get("reason"), " " * 17, body[:70] + ("…" if len(body) > 70 else "")))
     if not entries:
         print("nothing held")
+    if note:
+        print(note)
     return OK
 
 
@@ -3219,9 +3284,14 @@ def build_parser() -> argparse.ArgumentParser:
 
     hd = sub.add_parser("held", help="messages this machine refused and kept")
     hd.add_argument("--table", action="store_true", help="a Markdown table (for a session's TUI)")
+    hd.add_argument("--all", action="store_true",
+                    help="list/prune every session's held messages, not just this session's")
+    hd.add_argument("--dry-run", action="store_true", help="prune: only say what would go")
     hd.add_argument("action", nargs="?", default="list",
-                    choices=["list", "show", "drop", "deliver"],
-                    help="deliver: hand one to this session, on your user's yes")
+                    choices=["list", "show", "drop", "deliver", "prune"],
+                    help="deliver: hand one to this session, on your user's yes; prune: drop what "
+                         "was held for a session that is gone, or from a socket that is not "
+                         "its sender's (the original is kept under legacy-held-originals)")
     hd.add_argument("id", nargs="?")
     hd.set_defaults(func=cmd_held)
 

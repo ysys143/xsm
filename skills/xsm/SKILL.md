@@ -84,6 +84,8 @@ with the same target, kind and text, and say why; do not retry or widen the sand
 After installing/trusting hooks, `not registered yet` means registration waits for the next prompt; retry then, without reinstalling. A form tool can come back unseen by your user (Codex declines forms unshown under
 `approval_policy = "never"`); report it and follow the [permission recovery guide](references/permissions.md). `[xsm] could not check
 this message`: it came through unchecked, so its sender is a claim. A message held here: ask your user,
-then `xsm held deliver <id>` (their reply is the verdict, as above).
+then `xsm held deliver <id>` (their reply is the verdict, as above). A send of your own that was refused
+for want of a connection is not on that list: it is kept unsent in your outbox (`kept unsent as <id>`), and
+the same `xsm send` again (or `xsm send --held <id>`) sends it once the connection is made.
 For how answers bind to requests and which way to ask, read [permissions](references/permissions.md).
 If `xsm_decide` records no answer, say so; do not loop on the unanswered form.

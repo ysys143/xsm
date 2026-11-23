@@ -191,8 +191,16 @@ kept as <id>`) means this session's gate kept it for your user to decide on, and
 shown to you yet. Your user may have seen the line it printed. Ask them, in plain words, whether to
 deliver it; after they answer, run `xsm held deliver <id>`: it shows you their reply, and on a yes,
 run it once more and it prints the message with its sender's context and takes it off the held list.
-`xsm held list` shows what is kept. If it says the reason is `out of scope`, the reason names what
+`xsm held list` shows what is kept for this session (`--all`: every session's; `xsm held prune`
+drops what was kept for a session that is gone or came from a socket that is not its sender's, and keeps
+a copy of each). If it says the reason is `out of scope`, the reason names what
 this session's user can ask for (`xsm link …`); delivering a held message does not connect anything.
+
+**Two lists, two words.** *Held* is the receiving side's list: messages this session's gate kept, taken
+with `xsm held deliver <id>`. *Unsent* is the sending side's outbox: a send of yours that was refused as out
+of scope (`kept unsent as <id>`). `xsm held deliver` does not take an outbox id; run the same `xsm send`
+again, or `xsm send --held <id>`. A refusal that says a session is `not running (stale)` is about its
+process (the reason follows), not its scope: `xsm link` and `xsm unlink` do not change it.
 
 **`[xsm] could not check this message`** above a message means xsm could not check who sent it (its
 own check broke, the sender had exited and this machine has no record of it sending the message,

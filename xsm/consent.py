@@ -851,6 +851,8 @@ def _note_verdict(me: dict | None, text: str, wait: float | None = None,
                 entry.pop("native_marker", None)
                 entry.pop("native_evidence", None)
                 entry.pop("after", None)
+                if entry.get("verdict") is not None and entry["verdict"] != text.strip()[:VERDICT_MAX]:
+                    entry["replaced"] = entry["verdict"]        # said again: told on the next run (#29)
                 entry.update(verdict=text.strip()[:VERDICT_MAX], verdict_t=time.time(), shown=False,
                              answer_binding=how_told)
                 if request:
@@ -1177,6 +1179,10 @@ def _take(me: dict, p: str, verb: str, want: str, want_here: str | None, apply=N
         if entry.get("answer_request") else None
     if channel_note and entry.get("answer_question"):
         channel_note += " Asked: " + entry["answer_question"]
+    if entry.get("replaced"):
+        channel_note = ((channel_note + " ") if channel_note else "") + \
+            ('This reply replaced their earlier answer "%s" to this request, which no longer counts: '
+             'unless this reply is a yes, ask them again.' % " ".join(str(entry["replaced"]).split())[:200])
     if entry.get("after"):
         channel_note = ((channel_note + " ") if channel_note else "") + \
             "They have said since, about no one request: %s. Read that before you go on." \

@@ -28,7 +28,7 @@ import hashlib
 from . import config, consent, envelope, outbox, paths, policy
 
 # go: connected, so send now (`notes` say what was done); else `text` is the
-# refusal, for a message held as `id`.
+# refusal, for a message kept unsent as `id`.
 Step = namedtuple("Step", "go text id notes", defaults=((),))
 
 
@@ -168,8 +168,8 @@ def offer(sender: dict, target: dict, spec: str, msg: dict, why: str) -> Step | 
             apply=lambda verdict: applied.append(run(plan, sender, verdict)))
     except ValueError as exc:
         return Step(False, "your user said yes, but the connection could not be made: %s. "
-                           "Your message is held as %s; retry the same send to resume the "
-                           "same approved plan." % (exc, msg_id), msg_id)
+                           "Your message is kept unsent as %s; run the same `xsm send` again to "
+                           "resume the same approved plan." % (exc, msg_id), msg_id)
     if reply is None and not kept:
         if already_held is None:
             outbox.drop(msg_id)
@@ -177,7 +177,9 @@ def offer(sender: dict, target: dict, spec: str, msg: dict, why: str) -> Step | 
     if go:
         notes = [consent.approved(plan["verb"], plan["target"], reply, kept, sender.get("name"))]
         return Step(True, "", msg_id, tuple(notes + applied))
-    unsent = "Your message is NOT sent: it is held as %s." % msg_id
+    unsent = ("Your message is NOT sent: it is kept unsent as %s (your outbox, not a receiver's "
+              "held list: `xsm held deliver` does not take it; running the same `xsm send` again "
+              "does)." % msg_id)
     if reply is None:
         return Step(False, (
             "out of scope: %s. %s It needs your user's yes to %s. First ask them, %s, whether to "

@@ -99,12 +99,7 @@ def prune(now: float | None = None, dry_run: bool = False) -> dict:
         if (entry.get("t") or os.path.getmtime(p)) < record_cutoff:
             removed["held"].append(os.path.basename(p))
             if not dry_run:
-                # Preserve old held originals before pruning their legacy index.
-                key = hashlib.sha256(json.dumps(entry, sort_keys=True).encode()).hexdigest()
-                original = paths.path("legacy-held-originals", key + ".json")
-                if not os.path.exists(original):
-                    handoff._write(original, entry)
-                _unlink(p)
+                drop_held(p, entry)
 
     removed["telemetry"] = prune_telemetry(now, dry_run)
     # A week without a try is a job nobody is retrying. Short on purpose: the
@@ -205,6 +200,17 @@ def prune_telemetry(now: float, dry_run: bool = False) -> dict:
     if dropped and not dry_run:
         paths.write_json(paths.path(otlp_export.CURSOR), cursor)
     return dropped
+
+
+def drop_held(p: str, entry: dict) -> None:
+    """Remove one held message, keeping its original under legacy-held-originals first
+    (what the retention sweep and `xsm held prune` both do)."""
+    from . import handoff
+    key = hashlib.sha256(json.dumps(entry, sort_keys=True).encode()).hexdigest()
+    original = paths.path("legacy-held-originals", key + ".json")
+    if not os.path.exists(original):
+        handoff._write(original, entry)
+    _unlink(p)
 
 
 def _unlink(p: str) -> None:

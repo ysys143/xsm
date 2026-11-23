@@ -240,7 +240,7 @@ def _send(target_spec: str, body: str, *, sender: dict | None = None, kind: str 
     if held:
         rec = outbox.get(held, sender)
         if not rec:
-            return SendResult("refused", "no message %s is held for this session (a refused "
+            return SendResult("refused", "no unsent message %s is kept for this session (a refused "
                               "send is kept for a day, by the session that sent it)" % held)
         target_spec, body, kind = rec["spec"], rec["body"], rec["kind"]
         reply_to, outcome, priority = rec.get("reply_to"), rec.get("outcome"), \
@@ -416,7 +416,8 @@ def _send(target_spec: str, body: str, *, sender: dict | None = None, kind: str 
             return SendResult("refused", why_priority, target=target)
         stopped = not_running(target)
         if stopped:
-            return SendResult("refused", stopped + "\n" + resolve.resume_hint(target), target=target)
+            return SendResult("refused", stopped + "\n" + resolve.resume_hint(target) + "\n" +
+                              stopped_why(target), target=target)
         if target.get("ref") == sender.get("ref"):
             return SendResult("refused", "refusing to send to yourself")
         blocked = config.blocked()
@@ -817,6 +818,26 @@ def not_running(target: dict) -> str | None:
         return "%s@%s [%s] is not running (%s)" % (
             target.get("name"), target.get("alias"), target.get("ref"), target.get("state"))
     return None
+
+
+STOPPED_WHY = {
+    "socket_dead": "its Claude Code socket does not answer",
+    "pid_dead": "its recorded process is gone",
+    "lstart_changed": "its recorded pid now belongs to another process",
+    "thread_unloaded": "no Codex TUI holds the thread any more",
+    "thread_replaced": "its Codex TUI opened another thread",
+}
+
+
+def stopped_why(target: dict) -> str:
+    """Why xsm reads a session as stopped, so a refusal is not mistaken for a scope
+    answer: it is about the session's process, never about a link (#29: a session
+    unlinked from this folder read `stale`, and unlink had not touched it)."""
+    why = target.get("state_why")
+    return ("xsm reads it as stopped because %s. That is about the session's process, not its "
+            "scope: `xsm link` and `xsm unlink` do not change it. If your user says it is open, it "
+            "registers again with its next prompt." % STOPPED_WHY.get(why, "its process check failed"
+                                                                      + (" (%s)" % why if why else "")))
 
 
 def sandboxed() -> bool:

@@ -230,7 +230,7 @@ xsm status <msg-id>
 xsm inbox                         # Codex 세션: 턴 도중 도착한 메시지를 지금 읽는다
                                   # (샌드박스 셸에서 Codex 상대 send는 바로 거부하고 MCP xsm_send를 안내한다)
 xsm ledger
-xsm held list | xsm held show <id> | xsm held deliver <id>   # deliver: 사용자의 예에 에이전트가 푼다
+xsm held list [--all] | xsm held show <id> | xsm held deliver <id> | xsm held prune   # deliver: 사용자의 예에 에이전트가 푼다
 xsm doctor | xsm selftest
 ```
 
