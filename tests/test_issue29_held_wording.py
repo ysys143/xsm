@@ -140,7 +140,7 @@ class HeldListTest(_Sessions):
         from xsm import paths, receive
         self._person()
         old = time.time() - self.OLD
-        self._hold("keep", self.you["ref"])        # the Codex session is live here
+        self._hold("keep", self.you["ref"], t=old)  # old, but its session is live here
         self._hold("sock", self.you["ref"], t=old, reason="the message came from uds:/tmp/x.sock, %s 'a'"
                    % receive.SOCKET_MISMATCH)
         self._hold("gone", "ffffff", t=old)
@@ -154,9 +154,16 @@ class HeldListTest(_Sessions):
         self.assertEqual(sorted(os.listdir(paths.path(paths.HELD))), ["keep.json"])
         self.assertEqual(len(os.listdir(paths.path("legacy-held-originals"))), 2)
         code, text = self._cli("held", "restore", "gone")
+        self.assertEqual(code, 2, text)
+        self.assertIn("held for another session", text)
+        code, text = self._cli("held", "restore", "--all", "gone")
         self.assertEqual(code, 0, text)
         self.assertEqual(sorted(os.listdir(paths.path(paths.HELD))), ["gone.json", "keep.json"])
-        self.assertEqual(paths.read_json(paths.path(paths.HELD, "gone.json"))["body"], "hello gone")
+        back = paths.read_json(paths.path(paths.HELD, "gone.json"))
+        self.assertEqual(back["body"], "hello gone")
+        self.assertLess(time.time() - back["t"], 60, "restored now: a prune does not take it straight back")
+        code, text = self._cli("held", "prune", "--all")
+        self.assertNotIn("dropped gone", text)
         code, text = self._cli("held", "restore", "nonesuch")
         self.assertEqual(code, 2, text)
 
@@ -188,6 +195,44 @@ class HeldListTest(_Sessions):
         code, text = self._cli("held", "prune", "--all", "--dry-run")
         self.assertEqual(code, 0, text)
         self.assertIn("would drop gone", text, "looking costs no yes")
+
+    def test_prune_without_all_drops_this_sessions_own_old_stopped_holds(self):
+        from xsm import paths
+        self._person()
+        self._hold("mine-old", self.me["ref"], t=time.time() - self.OLD)   # this session reads stale here
+        code, text = self._cli("held", "prune")
+        self.assertIn("dropped mine-old", text)
+        self.assertFalse(os.path.exists(paths.path(paths.HELD, "mine-old.json")))
+
+    def test_restore_names_a_file_in_held_pruned_and_nothing_else(self):
+        from xsm import paths
+        self._person()
+        paths.write_json(paths.path("held-pruned", "x.json"),
+                         {"t": 1, "reason": "r", "body": "b", "receiver_ref": self.me["ref"]})
+        for evil in ("../held-pruned/x", "../../x", "x/../x", "../config"):
+            self._cli("held", "restore", evil)
+        self.assertEqual(os.listdir(paths.path(paths.HELD)), ["x.json"], "only ever a file of held/")
+        self.assertFalse(os.path.exists(os.path.join(os.path.dirname(paths.path()), "x.json")))
+        self.assertFalse(os.path.exists(paths.path("x.json")))
+        code, text = self._cli("held", "restore", "../config")
+        self.assertEqual(code, 2, "an id with a path in it names no pruned message: %s" % text)
+
+    def test_drop_keeps_a_copy_that_restore_brings_back(self):
+        from xsm import paths
+        self._hold("d1", self.me["ref"])
+        code, text = self._cli("held", "drop", "d1")
+        self.assertEqual(code, 0, text)
+        self.assertIn("held restore d1", text)
+        self.assertFalse(os.path.exists(paths.path(paths.HELD, "d1.json")))
+        code, text = self._cli("held", "restore", "d1")
+        self.assertEqual(code, 0, text)
+        self.assertTrue(os.path.exists(paths.path(paths.HELD, "d1.json")))
+
+    def test_an_entry_with_a_text_for_its_time_does_not_stop_the_prune(self):
+        self._person()
+        self._hold("odd", "ffffff", t="yesterday")
+        code, text = self._cli("held", "prune", "--all")
+        self.assertEqual(code, 0, text)
 
     def test_prune_without_all_leaves_other_sessions_alone(self):
         from xsm import paths

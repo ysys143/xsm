@@ -27,7 +27,8 @@ class CodexUserShellTest(TempState):
                                     "CODEX_SANDBOX_NETWORK_DISABLED", "XSM_WORKER")}
         for patch in (mock.patch.object(registry, "me", return_value=self.me),
                       mock.patch.object(workers, "human_terminal", return_value=False),
-                      mock.patch.dict(os.environ, dict(base, CODEX_THREAD_ID=SESSION))):
+                      mock.patch.dict(os.environ, dict(base, CODEX_THREAD_ID=SESSION,
+                                                       CODEX_VERSION="0.170.0"))):
             patch.start()
             self.addCleanup(patch.stop)
 
@@ -52,6 +53,8 @@ class CodexUserShellTest(TempState):
         rows = [r for r in paths.read_jsonl("decisions.jsonl") if r.get("via") == "codex-user-shell"]
         self.assertEqual([(r["event"], r["verb"], r["target"]) for r in rows],
                          [("consent", "join", "proj28")], "the record says how it was known")
+        from xsm import cli
+        self.assertIn("Codex shell box", cli._by(), "what a link or a join records as the decider says it too")
 
     def test_each_tool_marker_makes_it_an_agents_call_and_it_is_refused(self):
         for marker in ("CODEX_TOOL_CALL_ID", "CODEX_CI", "CODEX_SANDBOX", "CODEX_SANDBOX_NETWORK_DISABLED"):
@@ -72,6 +75,34 @@ class CodexUserShellTest(TempState):
         with mock.patch.dict(os.environ, env, clear=True):
             code, text = self._join()
         self.assertEqual(code, 2, text)
+
+    def test_a_codex_version_nobody_measured_is_asked_as_before(self):
+        for version in ("0.169.9", "0.172.0", "1.0.0", ""):
+            with self.subTest(version=version), mock.patch.dict(os.environ, {"CODEX_VERSION": version}):
+                code, text = self._join()
+                self.assertEqual(code, 2, text)
+                self.assertFalse(self._joined())
+        with mock.patch.dict(os.environ, {"CODEX_VERSION": "0.171.3"}):
+            code, text = self._join("proj28b")
+        self.assertEqual(code, 0, text)
+
+    def test_the_asks_that_name_an_id_or_a_plan_are_not_passed(self):
+        """approve, unblock, handover, held deliver ... say nothing the person has seen."""
+        from xsm import cli
+        out, err = io.StringIO(), io.StringIO()
+        with contextlib.redirect_stdout(out), contextlib.redirect_stderr(err):
+            code = cli.main(["unblock", "abc123"])
+        self.assertEqual(code, 2, out.getvalue() + err.getvalue())
+        self.assertIn("needs your user's yes", out.getvalue() + err.getvalue())
+        from xsm import config
+        self.assertFalse([r for r in __import__("xsm.paths", fromlist=["paths"]).read_jsonl("decisions.jsonl")
+                          if r.get("via") == "codex-user-shell"])
+
+    def test_a_binding_ask_is_not_passed_even_when_typed(self):
+        from xsm import cli
+        why = cli._person_or_refuse("migrating", "xsm_migrate", typed=("migrate", "x"),
+                                    binding={"profile_migration": "id"})
+        self.assertIn("needs your user's yes", why or "")
 
     def test_a_claude_session_gets_no_such_pass(self):
         from xsm import consent

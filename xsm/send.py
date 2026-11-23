@@ -248,7 +248,7 @@ def _send(target_spec: str, body: str, *, sender: dict | None = None, kind: str 
         msg_id, ctx["held"] = rec["id"], rec["id"]
         stored_refs = rec.get("attachments") or []
         if attachments is not None and envelope.attachment_refs(attachments) != envelope.attachment_refs(stored_refs):
-            return SendResult("refused", "held attachment refs differ; original request retained", msg_id)
+            return SendResult("refused", "unsent attachment refs differ; original request retained", msg_id)
         attachments = stored_refs
 
     ctx['audit_intent'] = (target_spec, body, kind, reply_to, outcome)
@@ -487,10 +487,10 @@ def _send(target_spec: str, body: str, *, sender: dict | None = None, kind: str 
                 if (previous.get("req_version") != envelope.CANON_VERSION or
                         not previous.get("digest") or
                         previous["digest"] != envelope.request_digest(ident)):
-                    return SendResult("refused", "held message no longer matches its recorded "
+                    return SendResult("refused", "unsent message no longer matches its recorded "
                                       "request or target; it was not resent", msg_id, target)
                 if previous.get("status") in ("delivered", "held", "blocked"):
-                    ctx["notes"].append("recovered the recorded result of held message %s" % msg_id)
+                    ctx["notes"].append("recovered the recorded result of unsent message %s" % msg_id)
                     return SendResult(previous["status"], "receiver result recovered; not resent",
                                       msg_id, target)
                 why = resend_refusal(msg_id, sender, body, kind, target=target,
@@ -499,7 +499,7 @@ def _send(target_spec: str, body: str, *, sender: dict | None = None, kind: str 
                 if why:
                     return SendResult("refused", why, msg_id, target)
             if not ctx["notes"]:
-                ctx["notes"].append("resuming held message %s under its original id" % msg_id)
+                ctx["notes"].append("resuming unsent message %s under its original id" % msg_id)
         if wake and target.get("runtime") == "codex" and sandboxed():
             # `codex queue` opens Codex's state DB for writing and starts an
             # embedded app server; a Codex workspace-write sandbox or a Claude

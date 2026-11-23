@@ -1931,6 +1931,8 @@ def by(verdict: str | None) -> str:
     when one was given, else the user. A reply the agent gave with --reply is
     marked, so the record says it was not typed into xsm by them (used_via)."""
     person = os.environ.get("USER") or "person"
+    if used_via == USER_SHELL:
+        return "%s (ran it in the Codex shell box)" % person
     if not verdict:
         return person
     return "%s, replying%s: %s" % (person, " (%s)" % AGENT_SUPPLIED if used_via == "flag" else "",
@@ -1980,6 +1982,11 @@ def cannot_keep(what: str, form_tool: str | None, me: dict | None = None) -> str
 # workers.human_terminal: an agent could scrub these (#28).
 CODEX_TOOL_MARKERS = ("CODEX_TOOL_CALL_ID", "CODEX_CI", "CODEX_SANDBOX", "CODEX_SANDBOX_NETWORK_DISABLED",
                       "XSM_WORKER")
+# The Codex versions the markers were measured on (major.minor). A shell box that cannot be
+# told from a tool call stays an agent's: the person is asked as before. Add a version here
+# after measuring both on it (docs/xsm/PROTOCOL.md 5.3.3).
+CODEX_USER_SHELL_VERSIONS = ("0.170", "0.171")
+USER_SHELL = "codex-user-shell"
 
 
 def codex_user_shell(me: dict | None) -> bool:
@@ -1992,6 +1999,8 @@ def codex_user_shell(me: dict | None) -> bool:
     thread = os.environ.get("CODEX_THREAD_ID")
     if not thread or thread != str(me["session_id"]):
         return False
+    if ".".join(os.environ.get("CODEX_VERSION", "").split(".")[:2]) not in CODEX_USER_SHELL_VERSIONS:
+        return False                    # not measured on this Codex: no markers to trust
     if any(os.environ.get(key) for key in CODEX_TOOL_MARKERS):
         return False
     return not unattended(me)

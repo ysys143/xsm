@@ -101,6 +101,14 @@ def prune(now: float | None = None, dry_run: bool = False) -> dict:
             if not dry_run:
                 drop_held(p, entry)
 
+    for p in glob.glob(paths.path(PRUNED, "*.json")):
+        # Copies `xsm held prune` and `held drop` keep for `held restore`: as long as the held
+        # messages themselves are kept.
+        if os.path.getmtime(p) < record_cutoff:
+            removed["held"].append(os.path.basename(p))
+            if not dry_run:
+                _unlink(p)
+
     removed["telemetry"] = prune_telemetry(now, dry_run)
     # A week without a try is a job nobody is retrying. Short on purpose: the
     # limit exists to stop a burst, not to keep a permanent record of failure.

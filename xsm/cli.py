@@ -431,12 +431,15 @@ def _person_or_refuse(what: str, mcp_tool: str, typed: tuple | None = None,
     me = registry.me()
     if typed and consent.take(me, *typed):
         return None
-    if (typed or ask) and consent.codex_user_shell(me):
-        # The person ran this in their Codex session's shell box: no hook saw it, and the
-        # environment is the only witness (#28). Say so in the record.
-        paths.append_jsonl("decisions.jsonl", {"event": "consent", "verb": (typed or ask)[0],
-                                               "target": (typed or ask)[1], "by": (me or {}).get("name"),
-                                               "via": "codex-user-shell"})
+    if typed and binding is None and consent.codex_user_shell(me):
+        # The person ran this very command in their Codex session's shell box: no hook saw
+        # it, and the environment is the only witness (#28). Only the commands whose words
+        # are the decision (join, leave, link, reach), not the asks that name an id or a
+        # plan the person has not seen (approve, unblock, handover, held deliver, ...). The
+        # records say how it was known: by() carries the mark to what they write.
+        consent.used_via = consent.USER_SHELL
+        paths.append_jsonl("decisions.jsonl", {"event": "consent", "verb": typed[0], "target": typed[1],
+                                               "by": (me or {}).get("name"), "via": consent.USER_SHELL})
         return None
     key = typed or ask
     if not key:
@@ -1593,7 +1596,11 @@ def _held_prune(entries: list, args, me: dict | None) -> int:
         entry = paths.read_json(p, {}) or {}
         if not getattr(args, "all", False) and not _held_for(entry, me):
             continue
-        if now - float(entry.get("t") or os.path.getmtime(p)) < HELD_PRUNE_AGE:
+        try:
+            kept_at = float(entry.get("t") or os.path.getmtime(p))
+        except (TypeError, ValueError):
+            kept_at = os.path.getmtime(p)
+        if now - kept_at < HELD_PRUNE_AGE:
             continue
         ref = entry.get("receiver_ref")
         row = records.get(ref)
@@ -1629,10 +1636,14 @@ def _held_restore(args) -> int:
     if not isinstance(saved, dict):
         print("no pruned held message %s" % (name or "(give its id)"), file=sys.stderr)
         return REFUSED
+    if not getattr(args, "all", False) and not _held_for(saved, registry.me()):
+        print("refused: %s was held for another session; --all restores it anyway" % name, file=sys.stderr)
+        return REFUSED
     target = paths.path(paths.HELD, "%s.json" % name)
     if os.path.exists(target):
         print("%s is on the held list already" % name)
         return OK
+    saved["t"] = time.time()            # restored now: a prune does not take it straight back
     paths.write_json(target, saved, mode=0o600)
     try:
         os.unlink(paths.path(housekeeping.PRUNED, "%s.json" % name))
@@ -1665,7 +1676,9 @@ def cmd_held(args) -> int:
         if not name or not os.path.exists(target):
             print("no such held message", file=sys.stderr)
             return REFUSED
-        os.unlink(target)
+        # A copy is kept, as prune keeps one: `xsm held restore <id>` brings it back.
+        housekeeping.drop_held(target, paths.read_json(target, {}) or {}, restorable=True)
+        print("dropped %s (`xsm held restore %s` brings it back)" % (name, name))
         return OK
     me = registry.me()
     others = 0
