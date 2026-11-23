@@ -581,7 +581,7 @@ DM을 받는 쪽은 아무것도 실행하지 않습니다. 훅이 게이트 역
 사용자가 원한 세션 간 대화는 보이지 않는 보류에 막히지 않습니다. 게이트가 고장 나거나 메시지를 확인하지 못하면(보낸
 세션이 이미 끝났거나 이 기계 밖에서 왔을 때) 보관하지 않고 `[xsm] could not check this message` 쪽지와 함께 넣습니다.
 그래도 보관되는 것(사용자가 막은 세션, 범위 밖)은 양쪽에 알리고, 사용자의 예에 에이전트가 `xsm held deliver <id>`로
-풉니다. `xsm held list`는 이 세션 몫만 보여 주고(`--all`은 전부), `xsm held prune`은 받을 세션이 사라졌거나 보낸 소켓이 맞지 않는 보류를 원본을 남기고 정리합니다. 범위 밖이라 거부된 내 발신은 보류가 아니라 발신 보관함의 `kept unsent as <id>`이며, 같은 `xsm send`를 다시 실행하면 보냅니다. 연 보류는 `~/.xsm/config.json`의 `fail_open`, `remote_native`, `stale_sender`, `reply_from_request`,
+풉니다. `xsm held list`는 이 세션 몫만 보여 주고(`--all`은 전부), `xsm held prune`은 하루 넘게 기다린 보류 가운데 받을 세션이 멈췄거나 보낸 소켓이 맞지 않는 것을 사용자의 예를 받아 정리하고(원본은 남기며 `xsm held restore <id>`로 되돌림) 범위 밖이라 거부된 내 발신은 보류가 아니라 발신 보관함의 `kept unsent as <id>`이며, 같은 `xsm send`를 다시 실행하면 보냅니다. 연 보류는 `~/.xsm/config.json`의 `fail_open`, `remote_native`, `stale_sender`, `reply_from_request`,
 `reply_flag`(또는 환경변수 `XSM_<키>`)로 다시 닫을 수 있고, `xsm doctor`의 `policy` 줄이 지금 값을 보여 줍니다.
 
 ```bash

@@ -202,14 +202,20 @@ def prune_telemetry(now: float, dry_run: bool = False) -> dict:
     return dropped
 
 
-def drop_held(p: str, entry: dict) -> None:
+PRUNED = "held-pruned"
+
+
+def drop_held(p: str, entry: dict, *, restorable: bool = False) -> None:
     """Remove one held message, keeping its original under legacy-held-originals first
-    (what the retention sweep and `xsm held prune` both do)."""
+    (what the retention sweep and `xsm held prune` both do). `restorable` also keeps it
+    under its own id in held-pruned/, which `xsm held restore <id>` puts back."""
     from . import handoff
     key = hashlib.sha256(json.dumps(entry, sort_keys=True).encode()).hexdigest()
     original = paths.path("legacy-held-originals", key + ".json")
     if not os.path.exists(original):
         handoff._write(original, entry)
+    if restorable:
+        handoff._write(paths.path(PRUNED, os.path.basename(p)), entry)
     _unlink(p)
 
 

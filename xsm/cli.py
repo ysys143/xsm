@@ -431,6 +431,13 @@ def _person_or_refuse(what: str, mcp_tool: str, typed: tuple | None = None,
     me = registry.me()
     if typed and consent.take(me, *typed):
         return None
+    if (typed or ask) and consent.codex_user_shell(me):
+        # The person ran this in their Codex session's shell box: no hook saw it, and the
+        # environment is the only witness (#28). Say so in the record.
+        paths.append_jsonl("decisions.jsonl", {"event": "consent", "verb": (typed or ask)[0],
+                                               "target": (typed or ask)[1], "by": (me or {}).get("name"),
+                                               "via": "codex-user-shell"})
+        return None
     key = typed or ask
     if not key:
         return ("%s is your user's decision: ask them %s, then run this again"
@@ -1568,30 +1575,70 @@ def _held_for(entry: dict, me: dict | None) -> bool:
     return entry.get("receiver") in (me.get("name"), "%s@%s" % (me.get("name"), me.get("alias")))
 
 
+HELD_PRUNE_AGE = 86400.0       # a session that stopped may come back (`claude --resume`): its holds wait a day
+
+
 def _held_prune(entries: list, args, me: dict | None) -> int:
-    """Drop the held messages nobody can take or should: kept for a session that is gone
-    (no record, or stopped), or kept because they came from a socket that is not their
-    claimed sender's. This session's own unless --all. The original of each goes to
-    legacy-held-originals, as the retention sweep does."""
+    """Drop the held messages that have waited a day (HELD_PRUNE_AGE) and nobody can or
+    should take: kept for a session with no record or a stopped one, or kept because they
+    came from a socket that is not their claimed sender's. This session's own unless
+    --all. A session agent needs its user's yes first (a person typing it themselves does not);
+    the original of each goes to legacy-held-originals and, by its id, to held-pruned/
+    for `xsm held restore <id>`."""
     from . import receive
+    now = time.time()
+    records = {r.get("ref"): r for r in registry.raw_records() if r.get("ref")}
     gone = []
     for p in entries:
         entry = paths.read_json(p, {}) or {}
         if not getattr(args, "all", False) and not _held_for(entry, me):
             continue
+        if now - float(entry.get("t") or os.path.getmtime(p)) < HELD_PRUNE_AGE:
+            continue
         ref = entry.get("receiver_ref")
-        row = next((r for r in registry.raw_records() if ref and r.get("ref") == ref), None)
+        row = records.get(ref)
         row = registry._enrich(row) if row else None
         if receive.SOCKET_MISMATCH in str(entry.get("reason") or ""):
-            gone.append((p, entry, "from a socket that is not its sender's"))
+            gone.append((p, entry, "it came from a socket that is not its sender's"))
         elif ref and (row is None or row.get("state") in ("ended", "stale")):
-            gone.append((p, entry, "its session is gone"))
-    for p, entry, why in gone:
-        print("%s %s: %s" % ("would drop" if args.dry_run else "dropped", os.path.basename(p)[:-5], why))
-        if not args.dry_run:
-            housekeeping.drop_held(p, entry)
+            gone.append((p, entry, "its session has no live process"))
     if not gone:
-        print("nothing to prune")
+        print("nothing to prune (only holds older than a day are dropped)")
+        return OK
+    if not args.dry_run:
+        why = _person_or_refuse("dropping %d held message(s) kept for sessions that have stopped "
+                                "(a copy of each is kept; `xsm held restore <id>` brings one back)"
+                                % len(gone), "no", ask=("held-prune", "all" if args.all else "mine"))
+        if why:
+            print("refused: %s" % why, file=sys.stderr)
+            return REFUSED
+    for p, entry, why in gone:
+        name = os.path.basename(p)[:-5]
+        if args.dry_run:
+            print("would drop %s: %s" % (name, why))
+            continue
+        housekeeping.drop_held(p, entry, restorable=True)
+        print("dropped %s: %s (`xsm held restore %s` brings it back)" % (name, why, name))
+    return OK
+
+
+def _held_restore(args) -> int:
+    """Put a message `held prune` dropped back on the held list."""
+    name = os.path.basename(getattr(args, "id", None) or "")
+    saved = paths.read_json(paths.path(housekeeping.PRUNED, "%s.json" % name)) if name else None
+    if not isinstance(saved, dict):
+        print("no pruned held message %s" % (name or "(give its id)"), file=sys.stderr)
+        return REFUSED
+    target = paths.path(paths.HELD, "%s.json" % name)
+    if os.path.exists(target):
+        print("%s is on the held list already" % name)
+        return OK
+    paths.write_json(target, saved, mode=0o600)
+    try:
+        os.unlink(paths.path(housekeeping.PRUNED, "%s.json" % name))
+    except OSError:
+        pass
+    print("restored %s to the held list" % name)
     return OK
 
 
@@ -1601,6 +1648,8 @@ def cmd_held(args) -> int:
         return _held_deliver(args)
     if args.action == "prune":
         return _held_prune(entries, args, registry.me())
+    if args.action == "restore":
+        return _held_restore(args)
     # An id names a file in held/ and nothing else: `../config` would otherwise be
     # ~/.xsm/config.json, and drop would delete every scope, link and block.
     name = os.path.basename(getattr(args, "id", None) or "")
@@ -1628,8 +1677,8 @@ def cmd_held(args) -> int:
             else:
                 others += 1
         entries = mine
-    note = ("%d more held for other sessions: `xsm held list --all` shows them, `xsm held prune` "
-            "drops those whose session is gone" % others) if others else ""
+    note = ("%d more held for other sessions or with no named receiver: `xsm held list --all` shows "
+            "them; `xsm held prune` drops, after a day, those whose session has stopped" % others) if others else ""
     if getattr(args, "table", False):
         rows = []
         for p in entries:
@@ -3288,10 +3337,10 @@ def build_parser() -> argparse.ArgumentParser:
                     help="list/prune every session's held messages, not just this session's")
     hd.add_argument("--dry-run", action="store_true", help="prune: only say what would go")
     hd.add_argument("action", nargs="?", default="list",
-                    choices=["list", "show", "drop", "deliver", "prune"],
-                    help="deliver: hand one to this session, on your user's yes; prune: drop what "
-                         "was held for a session that is gone, or from a socket that is not "
-                         "its sender's (the original is kept under legacy-held-originals)")
+                    choices=["list", "show", "drop", "deliver", "prune", "restore"],
+                    help="deliver: hand one to this session, on your user's yes; prune: drop holds "
+                         "older than a day that were kept for a session that is gone, or from a "
+                         "socket that is not its sender's (restore <id> brings one back)")
     hd.add_argument("id", nargs="?")
     hd.set_defaults(func=cmd_held)
 

@@ -126,12 +126,24 @@ class HeldListTest(_Sessions):
         self.assertIn("mine1", text)
         self.assertNotIn("theirs1", text)
 
-    def test_prune_drops_gone_sessions_and_socket_mismatches_and_keeps_the_original(self):
+    def _person(self):
+        """The command is typed by a person at a terminal, who needs no one's yes."""
+        from unittest import mock
+        from xsm import workers
+        patch = mock.patch.object(workers, "human_terminal", return_value=True)
+        patch.start()
+        self.addCleanup(patch.stop)
+
+    OLD = 2 * 86400.0
+
+    def test_prune_drops_old_gone_sessions_and_socket_mismatches_and_can_restore_them(self):
         from xsm import paths, receive
+        self._person()
+        old = time.time() - self.OLD
         self._hold("keep", self.you["ref"])        # the Codex session is live here
-        self._hold("sock", self.you["ref"], reason="the message came from uds:/tmp/x.sock, %s 'a'"
+        self._hold("sock", self.you["ref"], t=old, reason="the message came from uds:/tmp/x.sock, %s 'a'"
                    % receive.SOCKET_MISMATCH)
-        self._hold("gone", "ffffff")
+        self._hold("gone", "ffffff", t=old)
         code, text = self._cli("held", "prune", "--all", "--dry-run")
         self.assertIn("would drop sock", text)
         self.assertIn("would drop gone", text)
@@ -139,17 +151,104 @@ class HeldListTest(_Sessions):
         code, text = self._cli("held", "prune", "--all")
         self.assertIn("dropped sock", text)
         self.assertIn("dropped gone", text)
-        left = sorted(os.listdir(paths.path(paths.HELD)))
-        self.assertEqual(left, ["keep.json"])
-        kept = os.listdir(paths.path("legacy-held-originals"))
-        self.assertEqual(len(kept), 2, "each dropped message is recoverable")
+        self.assertEqual(sorted(os.listdir(paths.path(paths.HELD))), ["keep.json"])
+        self.assertEqual(len(os.listdir(paths.path("legacy-held-originals"))), 2)
+        code, text = self._cli("held", "restore", "gone")
+        self.assertEqual(code, 0, text)
+        self.assertEqual(sorted(os.listdir(paths.path(paths.HELD))), ["gone.json", "keep.json"])
+        self.assertEqual(paths.read_json(paths.path(paths.HELD, "gone.json"))["body"], "hello gone")
+        code, text = self._cli("held", "restore", "nonesuch")
+        self.assertEqual(code, 2, text)
+
+    def test_a_recent_hold_for_a_stopped_session_waits_for_it_to_come_back(self):
+        """`claude --resume` brings a stopped session back under the same ref."""
+        from xsm import paths
+        self._person()
+        self._hold("fresh", "ffffff")                          # no record, but held just now
+        self._hold("stopped", self.me["ref"], t=time.time() - 3600)   # a stale session, held an hour ago
+        code, text = self._cli("held", "prune", "--all")
+        self.assertIn("nothing to prune", text)
+        self.assertEqual(sorted(os.listdir(paths.path(paths.HELD))), ["fresh.json", "stopped.json"])
+
+    def test_a_socket_mismatch_for_a_live_session_waits_a_day_too(self):
+        from xsm import paths, receive
+        self._person()
+        self._hold("sock", self.you["ref"], reason="from uds:/x, %s 'a'" % receive.SOCKET_MISMATCH)
+        code, text = self._cli("held", "prune", "--all")
+        self.assertIn("nothing to prune", text)
+        self.assertTrue(os.path.exists(paths.path(paths.HELD, "sock.json")))
+
+    def test_an_agent_needs_its_users_yes_to_prune(self):
+        from xsm import paths
+        self._hold("gone", "ffffff", t=time.time() - self.OLD)
+        code, text = self._cli("held", "prune", "--all")
+        self.assertEqual(code, 2, text)
+        self.assertIn("refused:", text)
+        self.assertTrue(os.path.exists(paths.path(paths.HELD, "gone.json")), "nothing dropped unasked")
+        code, text = self._cli("held", "prune", "--all", "--dry-run")
+        self.assertEqual(code, 0, text)
+        self.assertIn("would drop gone", text, "looking costs no yes")
 
     def test_prune_without_all_leaves_other_sessions_alone(self):
         from xsm import paths
-        self._hold("theirs-gone", "ffffff")
+        self._person()
+        self._hold("theirs-gone", "ffffff", t=time.time() - self.OLD)
         code, text = self._cli("held", "prune")
         self.assertIn("nothing to prune", text)
         self.assertTrue(os.path.exists(paths.path(paths.HELD, "theirs-gone.json")))
+
+    def test_a_hold_with_no_named_receiver_is_not_listed_as_mine(self):
+        from xsm import paths
+        paths.write_json(paths.path(paths.HELD, "old.json"), {
+            "t": time.time(), "reason": "r", "runtime": "claude", "from": "x", "body": "b"})
+        code, text = self._cli("held", "list")
+        self.assertNotIn("old", text.split("more held")[0])
+        self.assertIn("1 more held for other sessions or with no named receiver", text)
+        code, text = self._cli("held", "list", "--all")
+        self.assertIn("old", text)
+
+
+class StoppedReasonsTest(unittest.TestCase):
+    def test_each_reason_is_said_in_words_and_never_as_a_raw_code(self):
+        from xsm import send
+        for why in ("socket_dead", "pid_dead", "lstart_changed", "thread_unloaded", "thread_replaced"):
+            text = send.stopped_why({"state_why": why})
+            self.assertIn(send.STOPPED_WHY[why], text)
+            self.assertIn("registers again with its next prompt", text)
+        for why in ("protocol_closed", "worker_stopped", "profile_migrated", "no_pid"):
+            text = send.stopped_why({"state_why": why})
+            self.assertIn(send.STOPPED_ELSE[why], text)
+            self.assertNotIn("registers again", text, "a clean end is not a lost process")
+        self.assertIn("another conversation", send.stopped_why({"state_why": "live",
+                                                                 "end_reason": "superseded"}))
+        odd = send.stopped_why({"state_why": "live"})
+        self.assertNotIn("(live)", odd)
+        self.assertNotIn("process check failed", odd)
+
+
+class ReplacedKeepsTheRulesTest(_Sessions):
+    def test_a_replaced_answer_that_is_a_yes_still_needs_the_show_and_goes_ahead_once(self):
+        from xsm import config
+        self._send()
+        self._reply("아니")
+        self._reply("응, 연결하고 보내")
+        code, shown = self._send()
+        self.assertEqual(code, 2, shown)
+        self.assertIn('replaced their earlier answer "아니"', shown)
+        self.assertEqual((self.sent, config.links()), ([], []), "showing is not going ahead")
+        self._waited()
+        code, passed = self._send()
+        self.assertEqual(code, 3, passed)
+        self.assertEqual(len(self.sent), 1)
+        self.assertEqual(len(config.links()), 1)
+
+    def test_a_long_earlier_answer_is_cut_in_the_note(self):
+        self._send()
+        self._reply("응 " * 200)
+        self._reply("지금 어때?")
+        code, shown = self._send()
+        quoted = shown.split('replaced their earlier answer "')[1].split('"')[0]
+        self.assertLessEqual(len(quoted), 200)
 
 
 if __name__ == "__main__":

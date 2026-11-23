@@ -104,7 +104,7 @@ Read the result as it is written:
 |---|---|
 | `delivered` | the receiving session's hook recorded it |
 | `sent-unconfirmed` | it is queued; nothing has confirmed arrival |
-| `refused` | rejected here, before sending: out of scope (the message is held: see above), ambiguous, stopped, unregistered |
+| `refused` | rejected here, before sending: out of scope (your message is kept unsent in your outbox: see below), ambiguous, stopped, unregistered |
 | `held` / `blocked` | the receiver's gate stopped it (a session your user blocked, out of scope, strict_peers); the body is kept in `xsm held list` there, and you get a note ("NOT delivered") in your next prompt or command. The receiver's agent can deliver it on its user's yes |
 | `error` | the delivery path failed; the message says why. To try again, `--resend <id>` keeps the id |
 | `unknown` | a remote send lost its answer: it may or may not have arrived on the other machine; `xsm status <id>`, then `--resend <id>` |
@@ -192,8 +192,8 @@ shown to you yet. Your user may have seen the line it printed. Ask them, in plai
 deliver it; after they answer, run `xsm held deliver <id>`: it shows you their reply, and on a yes,
 run it once more and it prints the message with its sender's context and takes it off the held list.
 `xsm held list` shows what is kept for this session (`--all`: every session's; `xsm held prune`
-drops what was kept for a session that is gone or came from a socket that is not its sender's, and keeps
-a copy of each). If it says the reason is `out of scope`, the reason names what
+drops, after a day, what was kept for a session that stopped or came from a socket that is not its sender's,
+with your user's yes and a copy of each: `xsm held restore <id>` brings one back). If it says the reason is `out of scope`, the reason names what
 this session's user can ask for (`xsm link …`); delivering a held message does not connect anything.
 
 **Two lists, two words.** *Held* is the receiving side's list: messages this session's gate kept, taken

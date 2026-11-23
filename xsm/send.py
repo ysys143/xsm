@@ -821,23 +821,36 @@ def not_running(target: dict) -> str | None:
 
 
 STOPPED_WHY = {
+    # The process is gone or is another one: it may come back with its next prompt.
     "socket_dead": "its Claude Code socket does not answer",
     "pid_dead": "its recorded process is gone",
     "lstart_changed": "its recorded pid now belongs to another process",
     "thread_unloaded": "no Codex TUI holds the thread any more",
     "thread_replaced": "its Codex TUI opened another thread",
+    "superseded": "its process now runs another conversation (/clear or --resume)",
+}
+STOPPED_ELSE = {
+    "protocol_closed": "it ended cleanly",
+    "worker_stopped": "xsm stopped that worker",
+    "profile_migrated": "its place moved to another profile (`xsm migrate`)",
+    "profile_generation_retired": "its place moved to another profile (`xsm migrate`)",
+    "no_pid": "it never recorded a process",
 }
 
 
 def stopped_why(target: dict) -> str:
     """Why xsm reads a session as stopped, so a refusal is not mistaken for a scope
-    answer: it is about the session's process, never about a link (#29: a session
+    answer: it is about the session's own state, never about a link (#29: a session
     unlinked from this folder read `stale`, and unlink had not touched it)."""
     why = target.get("state_why")
-    return ("xsm reads it as stopped because %s. That is about the session's process, not its "
-            "scope: `xsm link` and `xsm unlink` do not change it. If your user says it is open, it "
-            "registers again with its next prompt." % STOPPED_WHY.get(why, "its process check failed"
-                                                                      + (" (%s)" % why if why else "")))
+    if target.get("end_reason") == "superseded":
+        why = "superseded"          # _enrich overwrote the state, not its reason
+    scope = "That is about the session, not its scope: `xsm link` and `xsm unlink` do not change it."
+    if why in STOPPED_WHY:
+        return ("xsm reads it as stopped because %s. %s If your user says it is open, it "
+                "registers again with its next prompt." % (STOPPED_WHY[why], scope))
+    return ("xsm reads it as stopped because %s. %s" % (
+        STOPPED_ELSE.get(why, "its liveness check says it is not running"), scope))
 
 
 def sandboxed() -> bool:

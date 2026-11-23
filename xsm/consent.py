@@ -1171,6 +1171,7 @@ def _take(me: dict, p: str, verb: str, want: str, want_here: str | None, apply=N
                  "open a new session, or close the others with `xsm decision-status --drop-consent`")
         for path, ask in twins + [(p, entry)]:
             ask.update(verdict=None, shown=False)
+            ask.pop("replaced", None)
             paths.write_json(path, ask, mode=0o600)
         return None, False, True
     now = time.time()
@@ -1969,6 +1970,31 @@ def cannot_keep(what: str, form_tool: str | None, me: dict | None = None) -> str
             "session moved into the background can lose its record, and another message may not "
             "bring it back). %s"
             % (what, way))
+
+
+# What Codex puts in the environment of a shell tool call and not of a command the person
+# runs themselves in the session's shell box (`!cmd`): measured 2026-11-23 on Codex
+# 0.170-0.171, both approval modes. The person's own run fires no hook at all (no
+# UserPromptSubmit, no PreToolUse), so there is no prompt to read and nothing to take();
+# the process environment is all there is. Not a security boundary, like
+# workers.human_terminal: an agent could scrub these (#28).
+CODEX_TOOL_MARKERS = ("CODEX_TOOL_CALL_ID", "CODEX_CI", "CODEX_SANDBOX", "CODEX_SANDBOX_NETWORK_DISABLED",
+                      "XSM_WORKER")
+
+
+def codex_user_shell(me: dict | None) -> bool:
+    """Whether this process is a command the person ran themselves in this Codex
+    session's shell box: a Codex session of the thread named in the environment, with
+    none of the markers a tool call carries, and not a worker's. It stands for the
+    person's typed command, as `$xsm join <project>` does (#28)."""
+    if not me or me.get("runtime") != "codex" or not me.get("session_id"):
+        return False
+    thread = os.environ.get("CODEX_THREAD_ID")
+    if not thread or thread != str(me["session_id"]):
+        return False
+    if any(os.environ.get(key) for key in CODEX_TOOL_MARKERS):
+        return False
+    return not unattended(me)
 
 
 def take(me: dict | None, verb: str, target: str, here: str | None = None) -> bool:
