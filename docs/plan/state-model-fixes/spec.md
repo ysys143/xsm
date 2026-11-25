@@ -1,6 +1,12 @@
 # 상태 모델 검증에서 나온 결함의 단계적 수정
 
-- 상태: **확정**(3판, 2026-11-25)
+- 상태: **구현 완료**(2026-11-25, main `99d9ae9`). 확정은 3판(2026-11-25)
+  - 완료 근거(모두 main `99d9ae9`에서 실행):
+    - `req.py check` SM-F1·F2a·F2b·F3·F4·F5·F5r·F6·F7·F8·F9·F10·F11·F12·F13·F14·F15·F16·SEAM·COMPAT: 20/20 exit 0 (F15·F16은 `99d9ae9`, 나머지는 `7501718`)
+    - `req.py red` 같은 20개: 20/20 exit 0 (수정 전 코드 `2a858d3`에서 해당 시험이 실패)
+    - `req.py check SM-REG`: exit 0, `Ran 2964 tests ... OK (skipped=3)`, 상태 모델 시험의 expectedFailure 0개
+    - `req.py check SM-MODEL`: exit 0 (수정 의미 모델 19개, 깨지는 규칙 없음). `req.py red SM-MODEL`: exit 0 (원래 모델 17개에서 규칙이 깨짐)
+  - 릴리스·push는 하지 않았다(사용자 승인 대기).
   - D1~D3은 사용자가 결정했다.
   - 적대적 검토(critic)는 REVISE였다. 지적 11건을 반영했다(§11). 2판에 대한 critic 재검토는 하지 않았다. 사용자가 확정을 지시했다.
   - 사실 대조를 반영했다.
