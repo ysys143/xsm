@@ -1,0 +1,46 @@
+---
+title: "xsm: a question group of two, A hands over to B, P answers late"
+---
+stateDiagram-v2
+  state "Legend" as legend {
+    lg0: Breaks GroupShowsEveryAnswer or GroupStatusTruthful or LateAnswerReachesSuccessor
+    lg1: Path to the GroupShowsEveryAnswer or GroupStatusTruthful or LateAnswerReachesSuccessor bug
+  }
+  class lg0 breaks
+  class lg1 bugPath
+  s0: A holds its place, 0 of 2 answered#59; group view: pending, showing 0 of the 0 final answers given
+  s1: A holds its place, 1 of 2 answered#59; group view: reply_received, showing 1 of the 1 final answer given
+  s2: B holds the place#59; 2 still waiting#59; group view: pending, showing 0 of the 0 final answers given
+  s3: A holds its place, 2 of 2 answered#59; group view: final, showing 2 of the 2 final answers given
+  s4: B holds the place#59; 1 answered before the handover, record left with A, 1 still waiting#59; group view: pending, showing 0 of the 1 final answer given
+  s5: B holds the place#59; 1 answered since, recorded for B, 1 still waiting#59; group view: reply_received, showing 1 of the 1 final answer given
+  s6: B holds the place#59; 1 late answer refused as out of scope, 1 still waiting#59; group view: pending, showing 0 of the 0 final answers given
+  s7: B holds the place#59; 2 answered before the handover, record left with A#59; group view: refused, showing 0 of the 2 final answers given
+  s8: B holds the place#59; 1 answered before the handover, record left with A, 1 answered since, recorded for B#59; group view: replied, showing 1 of the 2 final answers given
+  s9: B holds the place#59; 2 answered since, recorded for B#59; group view: final, showing 2 of the 2 final answers given
+  s10: B holds the place#59; 1 answered before the handover, record left with A, 1 late answer refused as out of scope#59; group view: pending, showing 0 of the 1 final answer given
+  s11: B holds the place#59; 2 late answers refused as out of scope#59; group view: pending, showing 0 of the 0 final answers given
+  [*] --> s0
+  s0 --> s1: P answers a question
+  s0 --> s2: the person approves the handover [P may talk to B] or the person approves the handover [P may not talk to B]
+  s1 --> s3: P answers a question
+  s1 --> s4: the person approves the handover [P may talk to B] or the person approves the handover [P may not talk to B]
+  s2 --> s5: P answers late: it reaches B
+  s2 --> s6: P answers late: the send is refused, out of scope
+  s3 --> s7: the person approves the handover [P may talk to B] or the person approves the handover [P may not talk to B]
+  s4 --> s8: P answers late: it reaches B
+  s4 --> s10: P answers late: the send is refused, out of scope
+  s5 --> s9: P answers late: it reaches B
+  s6 --> s11: P answers late: the send is refused, out of scope
+  classDef breaks fill:#ffecee,stroke:#e72e3b,stroke-width:2.5px,color:#cd2834
+  class s0 bugPath
+  class s1 bugPath
+  class s2 bugPath
+  class s4 breaks
+  class s4 bugPath
+  class s6 breaks
+  class s6 bugPath
+  class s7 breaks
+  class s8 breaks
+  class s10 breaks
+  class s11 breaks

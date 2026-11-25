@@ -1,0 +1,51 @@
+---
+title: "xsm: another machine R asked A, then A handed over to B and B to C"
+---
+stateDiagram-v2
+  state "Legend" as legend {
+    lg0: answered
+    lg1: open
+    lg2: Breaks AnswerRecorded or ViewsAgree
+    lg3: Path to the AnswerRecorded or ViewsAgree bug
+  }
+  class lg0 teal
+  class lg1 tan
+  class lg2 breaks
+  class lg3 bugPath
+  s0: A holds its place.R waits for an answer
+  s1: A handed over to B.R waits for the handover news#59; R waits for an answer
+  s2: A handed over to B.R will never accept its answer#59; R waits for an answer
+  s3: A handed over to B.R accepts its answer#59; R waits for an answer
+  s4: A handed over to B.R waits for the handover news#59; answer refused
+  s5: A handed over to B.R will never accept its answer#59; answer refused
+  s6: A handed over to B.R accepts its answer#59; answer recorded
+  s7: A handed over to B.R accepts its answer#59; answer refused
+  [*] --> s0
+  s0 --> s1: the person approves#59; M1 tells R's machine
+  s1 --> s1: B answers R
+  s1 --> s2: the handover news is lost on the way (no retry)
+  s1 --> s3: R's machine keeps the handover news
+  s1 --> s4: R refuses the answer
+  s4 --> s1: the sender sends the answer again, same id
+  s4 --> s5: the handover news is lost on the way (no retry)
+  s4 --> s7: R's machine keeps the handover news
+  s2 --> s5: R refuses the answer
+  s3 --> s6: R records the answer
+  s5 --> s2: the sender sends the answer again, same id
+  s7 --> s3: the sender sends the answer again, same id
+  classDef breaks fill:#ffecee,stroke:#e72e3b,stroke-width:2.5px,color:#cd2834
+  class s0 tan
+  class s0 bugPath
+  class s1 tan
+  class s1 bugPath
+  class s2 tan
+  class s2 breaks
+  class s2 bugPath
+  class s3 tan
+  class s4 tan
+  class s4 bugPath
+  class s5 tan
+  class s5 breaks
+  class s5 bugPath
+  class s6 teal
+  class s7 tan

@@ -1,0 +1,61 @@
+---
+title: "xsm: another machine R asked A, then A handed over to B and B to C"
+---
+stateDiagram-v2
+  state "Legend" as legend {
+    lg0: answered
+    lg1: open
+    lg2: Breaks AnswerRecorded or ViewsAgree
+    lg3: Breaks AnswerRecorded or ViewsAgree in some cases
+    lg4: Path to the AnswerRecorded or ViewsAgree bug
+  }
+  class lg0 teal
+  class lg1 tan
+  class lg2 breaks
+  class lg3 mayBreak
+  class lg4 bugPath
+  s0: A holds its place.R waits for an answer
+  s1: A handed over to B.R waits for the handover news#59; R waits for an answer
+  s2: A handed over to B.R accepts its answer#59; R waits for an answer
+  s3: A handed over to B, B to C.R will never accept its answer#59; R waits for an answer
+  s4: A handed over to B.R waits for the handover news#59; answer refused
+  s5: A handed over to B.R accepts its answer#59; answer recorded
+  s6: A handed over to B.R accepts its answer#59; answer refused
+  s7: A handed over to B, B to C.R will never accept its answer#59; answer refused
+  s8: A handed over to B, B to C.R will never accept its answer#59; answer recorded
+  [*] --> s0
+  s0 --> s1: the person approves#59; M1 tells R's machine
+  s1 --> s2: R's machine keeps the handover news
+  s1 --> s3: B hands over to C#59; M1 has no reason to tell R's machine
+  s1 --> s4: R refuses the answer
+  s2 --> s3: B hands over to C#59; M1 has no reason to tell R's machine
+  s3 --> s3: C answers R
+  s4 --> s1: the sender sends the answer again, same id
+  s4 --> s6: R's machine keeps the handover news
+  s4 --> s7: B hands over to C#59; M1 has no reason to tell R's machine
+  s2 --> s5: R records the answer
+  s3 --> s7: R refuses the answer
+  s5 --> s8: B hands over to C#59; M1 has no reason to tell R's machine
+  s6 --> s2: the sender sends the answer again, same id
+  s6 --> s7: B hands over to C#59; M1 has no reason to tell R's machine
+  s7 --> s3: the sender sends the answer again, same id or C answers R
+  s3 --> s8: R records the answer
+  classDef breaks fill:#ffecee,stroke:#e72e3b,stroke-width:2.5px,color:#cd2834
+  classDef mayBreak fill:#fff3e6,stroke:#e8730c,stroke-width:2.5px,color:#b85a06
+  class s0 tan
+  class s0 bugPath
+  class s1 tan
+  class s1 bugPath
+  class s2 tan
+  class s2 bugPath
+  class s3 tan
+  class s3 mayBreak
+  class s3 bugPath
+  class s4 tan
+  class s5 teal
+  class s6 tan
+  class s7 tan
+  class s7 mayBreak
+  class s7 bugPath
+  class s8 teal
+  class s8 breaks

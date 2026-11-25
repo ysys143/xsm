@@ -1,0 +1,133 @@
+---
+title: "xsm: concurrent handovers. A holds the team place and asked a question that is still open"
+---
+stateDiagram-v2
+  direction LR
+  state "Legend" as legend {
+    lg0: running
+    lg1: answered
+    lg2: Breaks AddressAndPlaceAgree or HandedOverHoldsNoPlace or LateAnswerRecorded or QuestionHolderIsAddressTarget
+    lg3: Breaks AddressAndPlaceAgree or HandedOverHoldsNoPlace or LateAnswerRecorded or QuestionHolderIsAddressTarget in some cases
+    lg4: Path to the AddressAndPlaceAgree or HandedOverHoldsNoPlace or LateAnswerRecorded or QuestionHolderIsAddressTarget bug
+  }
+  class lg0 orange
+  class lg1 teal
+  class lg2 breaks
+  class lg3 mayBreak
+  class lg4 bugPath
+  state "At the same time" as all {
+    state "Handover A to B" as r0 {
+      s0: not started
+      s1: approved and checked
+      s2: team seat moved
+      s3: pending question moved
+      s4: record written
+      [*] --> s0
+      s0 --> s1: the person approves A to B and it passes its check [when Handover B to C is not record written and Records is no handover record and Question is open, asked by A]
+      s1 --> s2: A to B moves the team seat
+      s2 --> s3: A to B moves the pending question
+      s3 --> s4: A to B writes its handover record
+    }
+    --
+    state "Handover B to C" as r1 {
+      s5: not started
+      s6: approved and checked
+      s7: team seat moved
+      s8: pending question moved
+      s9: record written
+      [*] --> s5
+      s5 --> s6: the person approves B to C and it passes its check
+      s6 --> s7: B to C moves the team seat
+      s7 --> s8: B to C moves the pending question
+      s8 --> s9: B to C writes its handover record
+    }
+    --
+    state "Team" as r2 {
+      s10: members: A#59; lead seat: A
+      s11: members: B#59; lead seat: B
+      s12: members: C#59; lead seat: C
+      [*] --> s10
+      s10 --> s11: A to B moves the team seat [when Handover A to B is approved and checked and Question is open, asked by A]
+      s11 --> s12: B to C moves the team seat [when Handover B to C is approved and checked and Records is one of A handed to B, no handover record and Address is not DMs to A reach C and Question is one of late answer stored for B, open, asked by A, open, asked by B]
+    }
+    --
+    state "Records" as r3 {
+      s13: no handover record
+      s14: B handed to C
+      s15: A handed to B
+      s16: A handed to B, B handed to C
+      [*] --> s13
+      s13 --> s14: B to C writes its handover record [when Handover B to C is pending question moved]
+      s13 --> s15: A to B writes its handover record [when Handover A to B is pending question moved and Team is not members: A#59; lead seat: A and Question is not open, asked by A]
+      s14 --> s16: A to B writes its handover record [when Handover A to B is pending question moved and Team is not members: A#59; lead seat: A and Question is one of open, asked by B, open, asked by C]
+      s15 --> s16: B to C writes its handover record [when Handover B to C is pending question moved]
+    }
+    --
+    state "Address" as r4 {
+      s17: DMs to A reach A
+      s18: DMs to A reach B
+      s19: DMs to A reach C
+      [*] --> s17
+      s17 --> s18: A to B writes its handover record [when Handover A to B is pending question moved and Handover B to C is not record written and Team is not members: A#59; lead seat: A and Records is no handover record and Question is one of open, asked by B, open, asked by C]
+      s17 --> s19: A to B writes its handover record [when Handover A to B is pending question moved and Handover B to C is record written and Team is not members: A#59; lead seat: A and Records is B handed to C and Question is one of open, asked by B, open, asked by C]
+      s18 --> s19: B to C writes its handover record [when Handover B to C is pending question moved]
+    }
+    --
+    state "Question" as r5 {
+      s20: open, asked by A
+      s21: open, asked by B
+      s22: late answer stored for A
+      s23: late answer stored for B
+      s24: open, asked by C
+      s25: late answer sent to C, not stored: the question is B's
+      s26: late answer stored for C
+      [*] --> s20
+      s20 --> s21: A to B moves the pending question [when Handover A to B is team seat moved and Team is not members: A#59; lead seat: A]
+      s20 --> s22: the peer's late answer arrives and is stored [when Handover A to B is not started and Handover B to C is record written and Team is members: A#59; lead seat: A and Records is B handed to C]
+      s21 --> s23: the peer's late answer arrives and is stored [when Handover A to B is record written and Handover B to C is not started and Team is members: B#59; lead seat: B and Records is A handed to B and Address is DMs to A reach B]
+      s21 --> s24: B to C moves the pending question [when Handover B to C is team seat moved and Records is one of A handed to B, no handover record and Address is not DMs to A reach C]
+      s21 --> s25: the peer's late answer arrives and is refused [when Handover A to B is record written and Handover B to C is record written and Records is A handed to B, B handed to C and Address is DMs to A reach C]
+      s24 --> s26: the peer's late answer arrives and is stored [when Handover A to B is record written and Handover B to C is record written and Records is A handed to B, B handed to C and Address is DMs to A reach C]
+    }
+  }
+  classDef breaks fill:#ffecee,stroke:#e72e3b,stroke-width:2.5px,color:#cd2834
+  classDef mayBreak fill:#fff3e6,stroke:#e8730c,stroke-width:2.5px,color:#b85a06
+  class s0 bugPath
+  class s1 orange
+  class s1 bugPath
+  class s2 orange
+  class s2 bugPath
+  class s3 orange
+  class s3 bugPath
+  class s4 mayBreak
+  class s4 bugPath
+  class s5 bugPath
+  class s6 bugPath
+  class s7 bugPath
+  class s8 bugPath
+  class s9 mayBreak
+  class s9 bugPath
+  class s10 bugPath
+  class s11 mayBreak
+  class s11 bugPath
+  class s12 mayBreak
+  class s12 bugPath
+  class s13 bugPath
+  class s14 bugPath
+  class s16 mayBreak
+  class s16 bugPath
+  class s17 bugPath
+  class s19 mayBreak
+  class s19 bugPath
+  class s20 bugPath
+  class s21 mayBreak
+  class s21 bugPath
+  class s22 teal
+  class s23 teal
+  class s24 mayBreak
+  class s24 bugPath
+  class s25 teal
+  class s25 breaks
+  class s25 bugPath
+  class s26 teal
+  class s26 mayBreak

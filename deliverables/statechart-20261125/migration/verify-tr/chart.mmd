@@ -1,0 +1,129 @@
+---
+title: "xsm: a DM at A while the person moves A's place to B"
+---
+stateDiagram-v2
+  direction LR
+  state "Legend" as legend {
+    lg0: Breaks DeliveredMeansShown or HeldFollowsOwner in some cases
+    lg1: Path to the DeliveredMeansShown or HeldFollowsOwner bug
+  }
+  class lg0 mayBreak
+  class lg1 bugPath
+  state "At the same time" as all {
+    state "Migration" as r0 {
+      s0: not started
+      s1: A fenced
+      s2: DMs copied to B
+      s3: held list moved
+      s4: committed
+      [*] --> s0
+      s0 --> s1: the person approves the move#59; A is fenced
+      s1 --> s2: xsm copies A's unconfirmed DMs to B
+      s2 --> s3: xsm moves A's held list to B
+      s3 --> s4: the move is committed
+    }
+    --
+    state "AtA" as r1 {
+      s5: waiting
+      s6: reader is about to show it
+      s7: waiting, held
+      s8: reader is holding it back
+      s9: moved to B
+      s10: shown, not confirmed
+      s11: reader failed mid-way, claim stuck
+      s12: confirmed
+      [*] --> s5
+      s5 --> s6: A's reader takes the DM [when Migration is not started]
+      s5 --> s7: A's hook refuses the DM and keeps a held copy [when Migration is not started]
+      s5 --> s8: A's reader takes the DM [when Migration is not started]
+      s5 --> s9: xsm copies A's unconfirmed DMs to B [when Migration is A fenced]
+      s6 --> s9: xsm copies A's unconfirmed DMs to B [when Migration is A fenced]
+      s6 --> s10: A's reader shows it to its model [when Migration is not started and Receipt is receipt: delivered]
+      s7 --> s9: xsm copies A's unconfirmed DMs to B [when Migration is A fenced]
+      s8 --> s9: xsm copies A's unconfirmed DMs to B [when Migration is A fenced]
+      s8 --> s7: A's reader puts it back as held [when Migration is not started and HeldList is held entry bound to A and Receipt is receipt: held]
+      s6 --> s11: recording the handoff is refused [when Migration is A fenced and Receipt is receipt: delivered]
+      s10 --> s12: A confirms it [when Migration is not started]
+      s8 --> s11: the reader's release is refused [when Migration is A fenced and HeldList is held entry bound to A and Receipt is receipt: held]
+      s11 --> s9: xsm copies A's unconfirmed DMs to B
+      s10 --> s9: xsm copies A's unconfirmed DMs to B [when Migration is A fenced]
+    }
+    --
+    state "AtB" as r2 {
+      s13: no copy
+      s14: waiting
+      s15: waiting, held
+      s16: reader is about to show it
+      s17: reader is holding it back
+      s18: shown, not confirmed
+      s19: confirmed
+      [*] --> s13
+      s13 --> s14: xsm copies A's unconfirmed DMs to B [when Migration is A fenced and AtA is none of confirmed, waiting, held and HeldList is no held entry and Receipt is not receipt: held]
+      s13 --> s15: xsm copies A's unconfirmed DMs to B [when Migration is A fenced and AtA is one of reader failed mid-way, claim stuck, reader is holding it back, waiting, held and HeldList is held entry bound to A and Receipt is receipt: held]
+      s14 --> s15: A's gate refuses it and keeps a held copy [when Receipt is no receipt]
+      s14 --> s16: B's reader takes the DM [when Migration is committed]
+      s14 --> s17: B's reader takes the DM [when Migration is committed and Receipt is no receipt]
+      s16 --> s18: B's reader shows it to its model [when Receipt is receipt: delivered]
+      s17 --> s15: B's reader puts it back as held [when HeldList is not no held entry and Receipt is receipt: held]
+      s18 --> s19: B confirms it
+    }
+    --
+    state "HeldList" as r3 {
+      s20: no held entry
+      s21: held entry bound to A
+      s22: held entry bound to B
+      [*] --> s20
+      s20 --> s21: A's hook refuses the DM and keeps a held copy [when Migration is not started and AtA is waiting and AtB is no copy and Receipt is no receipt]
+      s20 --> s21: A's gate refuses it and keeps a held copy [when AtA is one of moved to B, reader is holding it back and AtB is one of no copy, reader is holding it back, waiting and Receipt is no receipt]
+      s21 --> s22: xsm moves A's held list to B [when Migration is DMs copied to B and AtA is moved to B and AtB is waiting, held]
+      s20 --> s22: B's gate refuses it and keeps a held copy [when Migration is committed and AtA is moved to B and AtB is reader is holding it back and Receipt is no receipt]
+      s22 --> s21: A's gate refuses it and keeps a held copy [when Migration is committed]
+      s21 --> s22: B's gate refuses it and keeps a held copy [when Migration is committed and AtA is moved to B and AtB is reader is holding it back]
+    }
+    --
+    state "Receipt" as r4 {
+      s23: no receipt
+      s24: receipt: held
+      s25: receipt: delivered
+      [*] --> s23
+      s23 --> s24: A's hook refuses the DM and keeps a held copy [when Migration is not started and AtA is waiting and AtB is no copy]
+      s23 --> s25: A's gate passes it and writes a delivered receipt [when AtA is one of moved to B, reader is about to show it and AtB is not reader is holding it back]
+      s23 --> s24: A's gate refuses it and keeps a held copy [when AtA is one of moved to B, reader is holding it back and AtB is not reader is about to show it]
+      s23 --> s25: B's gate passes it and writes a delivered receipt [when Migration is committed and AtA is moved to B and AtB is reader is about to show it]
+      s23 --> s24: B's gate refuses it and keeps a held copy [when Migration is committed and AtA is moved to B and AtB is reader is holding it back]
+    }
+  }
+  classDef mayBreak fill:#fff3e6,stroke:#e8730c,stroke-width:2.5px,color:#b85a06
+  class s0 bugPath
+  class s1 mayBreak
+  class s1 bugPath
+  class s2 mayBreak
+  class s2 bugPath
+  class s3 mayBreak
+  class s3 bugPath
+  class s4 mayBreak
+  class s4 bugPath
+  class s5 bugPath
+  class s6 bugPath
+  class s8 bugPath
+  class s9 mayBreak
+  class s9 bugPath
+  class s11 mayBreak
+  class s11 bugPath
+  class s13 mayBreak
+  class s13 bugPath
+  class s14 mayBreak
+  class s14 bugPath
+  class s15 mayBreak
+  class s15 bugPath
+  class s16 mayBreak
+  class s17 mayBreak
+  class s20 mayBreak
+  class s20 bugPath
+  class s21 mayBreak
+  class s21 bugPath
+  class s23 bugPath
+  class s24 mayBreak
+  class s24 bugPath
+  class s25 mayBreak
+  class s25 bugPath

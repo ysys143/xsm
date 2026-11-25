@@ -1,0 +1,82 @@
+---
+title: "xsm handover when A is in several teams"
+---
+stateDiagram-v2
+  state "Legend" as legend {
+    lg0: running
+    lg1: clean
+    lg2: split
+    lg3: Breaks BCanReachWhatMoved or NoPlaceLeftBehind or PlaceAndItemsMoveTogether
+    lg4: Path to the BCanReachWhatMoved or NoPlaceLeftBehind or PlaceAndItemsMoveTogether bug
+  }
+  class lg0 blue
+  class lg1 teal
+  class lg2 orange
+  class lg3 breaks
+  class lg4 bugPath
+  s0: Not started: A in t1#59; boards moved in no team#59; B took A's place in no team
+  s1: Running: A in t1#59; boards moved in no team#59; B took A's place in no team
+  s2: Running: A in t1#59; boards moved in t1#59; B took A's place in no team
+  s3: Running: A in no team#59; boards moved in no team#59; B took A's place in no team
+  s4: Running: A in t1 and t2#59; boards moved in no team#59; B took A's place in no team
+  s5: Running: A in no team#59; boards moved in t1#59; B took A's place in no team
+  s6: Running: A in t1 and t2#59; boards moved in t1#59; B took A's place in no team
+  s7: Handover stopped by an error: A in no team#59; boards moved in no team#59; B took A's place in no team
+  s8: Running: A in no team#59; boards moved in t1#59; B took A's place in t1
+  s9: Running: A in t1#59; boards moved in t1#59; B took A's place in t2
+  s10: Running: A in t2#59; boards moved in t1#59; B took A's place in t1
+  s11: Handover done: A in no team#59; boards moved in t1#59; B took A's place in no team
+  s12: Handover done: A in no team#59; boards moved in t1#59; B took A's place in t1
+  s13: Running: A in no team#59; boards moved in t1#59; B took A's place in t1 and t2
+  s14: Handover done: A in t2#59; boards moved in t1#59; B took A's place in t1
+  s15: Handover done: A in no team#59; boards moved in t1#59; B took A's place in t1 and t2
+  [*] --> s0
+  s0 --> s1: the handover lists A's teams for the boards
+  s1 --> s2: A's items in one team are moved to B
+  s1 --> s3: someone removes A from a team
+  s1 --> s4: someone adds A to another team
+  s2 --> s2: the handover lists A's teams again
+  s2 --> s5: someone removes A from a team
+  s2 --> s6: someone adds A to another team
+  s3 --> s7: A's items cannot be moved: A has left that team
+  s4 --> s6: A's items in one team are moved to B
+  s2 --> s8: B takes A's place in one team
+  s5 --> s5: the handover lists A's teams again
+  s6 --> s9: B takes A's place in one team
+  s6 --> s10: B takes A's place in one team
+  s5 --> s8: B takes A's place in one team
+  s5 --> s11: the handover is recorded
+  s8 --> s12: the handover is recorded
+  s8 --> s10: someone adds A to another team
+  s9 --> s13: B takes A's place in one team
+  s10 --> s13: B takes A's place in one team
+  s10 --> s14: the handover is recorded
+  s13 --> s15: the handover is recorded
+  classDef breaks fill:#ffecee,stroke:#e72e3b,stroke-width:2.5px,color:#cd2834
+  class s0 blue
+  class s0 bugPath
+  class s1 blue
+  class s1 bugPath
+  class s2 blue
+  class s2 bugPath
+  class s3 blue
+  class s4 blue
+  class s5 blue
+  class s5 bugPath
+  class s6 blue
+  class s6 bugPath
+  class s7 orange
+  class s8 blue
+  class s9 blue
+  class s10 blue
+  class s10 bugPath
+  class s11 orange
+  class s11 breaks
+  class s11 bugPath
+  class s12 teal
+  class s13 blue
+  class s14 orange
+  class s14 breaks
+  class s14 bugPath
+  class s15 orange
+  class s15 breaks

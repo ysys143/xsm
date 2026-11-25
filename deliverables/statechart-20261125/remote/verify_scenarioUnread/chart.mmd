@@ -1,0 +1,22 @@
+---
+title: "xsm: another machine R asked A, then A handed over to B and B to C"
+---
+stateDiagram-v2
+  state "Legend" as legend {
+    lg0: open
+    lg1: Breaks QuestionAnswerable
+    lg2: Path to the QuestionAnswerable bug
+  }
+  class lg0 tan
+  class lg1 breaks
+  class lg2 bugPath
+  s0: A holds its place.R waits for an answer
+  s1: A handed over to B.unread question moved away, nobody can reply
+  [*] --> s0
+  s0 --> s1: the person approves while A has not read R's question#59; M1 tells R's machine
+  classDef breaks fill:#ffecee,stroke:#e72e3b,stroke-width:2.5px,color:#cd2834
+  class s0 tan
+  class s0 bugPath
+  class s1 tan
+  class s1 breaks
+  class s1 bugPath

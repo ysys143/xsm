@@ -1,0 +1,35 @@
+---
+title: "xsm: another machine R asked A, then A handed over to B and B to C"
+---
+stateDiagram-v2
+  state "Legend" as legend {
+    lg0: open
+    lg1: Breaks AnswerRecorded
+    lg2: Breaks ViewsAgree in some cases
+    lg3: Path to the AnswerRecorded or ViewsAgree bug
+  }
+  class lg0 tan
+  class lg1 breaks
+  class lg2 mayBreak
+  class lg3 bugPath
+  s0: A holds its place.no question yet
+  s1: A handed over to B.R will never accept its answer#59; no question yet
+  s2: A handed over to B.R will never accept its answer#59; R waits for an answer
+  s3: A handed over to B.R will never accept its answer#59; answer refused
+  [*] --> s0
+  s0 --> s1: the person approves#59; M1 has no reason to tell R's machine
+  s1 --> s2: R asks A's old address
+  s2 --> s2: B answers R
+  s2 --> s3: R refuses the answer
+  classDef breaks fill:#ffecee,stroke:#e72e3b,stroke-width:2.5px,color:#cd2834
+  classDef mayBreak fill:#fff3e6,stroke:#e8730c,stroke-width:2.5px,color:#b85a06
+  class s0 tan
+  class s0 bugPath
+  class s1 tan
+  class s1 bugPath
+  class s2 tan
+  class s2 mayBreak
+  class s2 bugPath
+  class s3 tan
+  class s3 breaks
+  class s3 bugPath

@@ -1,0 +1,76 @@
+---
+title: "xsm: another machine R asked A, then A handed over to B and B to C"
+---
+stateDiagram-v2
+  state "Legend" as legend {
+    lg0: answered
+    lg1: open
+  }
+  class lg0 teal
+  class lg1 tan
+  s0: A holds its place.no question yet
+  s1: A holds its place.R waits for an answer
+  s2: A handed over to B.R waits for the handover news#59; no question yet
+  s3: A handed over to B.R waits for the handover news#59; R waits for an answer
+  s4: A handed over to B.R accepts its answer#59; no question yet
+  s5: A handed over to B, B to C.R waits for the handover news#59; no question yet
+  s6: A handed over to B.R accepts its answer#59; R waits for an answer
+  s7: A handed over to B, B to C.R waits for the handover news#59; R waits for an answer
+  s8: A handed over to B.R waits for the handover news#59; answer refused
+  s9: A handed over to B, B to C.R accepts its answer#59; no question yet
+  s10: A handed over to B.R accepts its answer#59; answer recorded
+  s11: A handed over to B.R accepts its answer#59; answer refused
+  s12: A handed over to B, B to C.R waits for the handover news#59; answer refused
+  s13: A handed over to B, B to C.R accepts its answer#59; R waits for an answer
+  s14: A handed over to B, B to C.R waits for the handover news#59; answer recorded
+  s15: A handed over to B, B to C.R accepts its answer#59; answer recorded
+  s16: A handed over to B, B to C.R accepts its answer#59; answer refused
+  [*] --> s0
+  [*] --> s1
+  s0 --> s1: R asks A
+  s0 --> s2: the person approves#59; M1 tells R's machine
+  s1 --> s3: the person approves#59; M1 tells R's machine
+  s2 --> s4: R's machine keeps the handover news
+  s2 --> s5: B hands over to C#59; M1 tells R's machine
+  s2 --> s3: R asks A's old address
+  s3 --> s6: R's machine keeps the handover news
+  s3 --> s7: B hands over to C#59; M1 tells R's machine
+  s4 --> s5: B hands over to C#59; M1 tells R's machine
+  s4 --> s6: R asks A's old address
+  s5 --> s7: R asks A's old address
+  s3 --> s8: R refuses the answer
+  s6 --> s7: B hands over to C#59; M1 tells R's machine
+  s5 --> s9: R's machine keeps the handover news
+  s8 --> s3: the sender sends the answer again, same id
+  s8 --> s11: R's machine keeps the handover news
+  s8 --> s12: B hands over to C#59; M1 tells R's machine
+  s6 --> s10: R records the answer
+  s7 --> s12: R refuses the answer
+  s7 --> s13: R's machine keeps the handover news
+  s9 --> s13: R asks A's old address
+  s10 --> s14: B hands over to C#59; M1 tells R's machine
+  s11 --> s6: the sender sends the answer again, same id
+  s11 --> s12: B hands over to C#59; M1 tells R's machine
+  s12 --> s7: the sender sends the answer again, same id or C answers R
+  s7 --> s14: R records the answer
+  s12 --> s16: R's machine keeps the handover news
+  s14 --> s15: R's machine keeps the handover news
+  s13 --> s15: R records the answer
+  s16 --> s13: the sender sends the answer again, same id or C answers R
+  class s0 tan
+  class s1 tan
+  class s2 tan
+  class s3 tan
+  class s4 tan
+  class s5 tan
+  class s6 tan
+  class s7 tan
+  class s8 tan
+  class s9 tan
+  class s10 teal
+  class s11 tan
+  class s12 tan
+  class s13 tan
+  class s14 teal
+  class s15 teal
+  class s16 tan

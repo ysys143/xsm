@@ -1,0 +1,131 @@
+---
+title: "xsm: another machine R asked A, then A handed over to B and B to C"
+---
+stateDiagram-v2
+  state "Legend" as legend {
+    lg0: answered
+    lg1: open
+    lg2: Breaks AnswerRecorded or ViewsAgree
+    lg3: Breaks AnswerRecorded or ViewsAgree in some cases
+    lg4: Path to the AnswerRecorded or ViewsAgree bug
+  }
+  class lg0 teal
+  class lg1 tan
+  class lg2 breaks
+  class lg3 mayBreak
+  class lg4 bugPath
+  s0: A holds its place.no question yet
+  s1: A holds its place.R waits for an answer
+  s2: A handed over to B.R will never accept its answer#59; no question yet
+  s3: A handed over to B.R waits for the handover news#59; R waits for an answer
+  s4: A handed over to B.R waits for the handover news#59; no question yet
+  s5: A handed over to B, B to C.R will never accept its answer#59; no question yet
+  s6: A handed over to B.R will never accept its answer#59; R waits for an answer
+  s7: A handed over to B.R accepts its answer#59; R waits for an answer
+  s8: A handed over to B, B to C.R will never accept its answer#59; R waits for an answer
+  s9: A handed over to B.R accepts its answer#59; no question yet
+  s10: A handed over to B, B to C.R waits for the handover news#59; no question yet
+  s11: A handed over to B, B to C.R waits for the handover news#59; R waits for an answer
+  s12: A handed over to B.R waits for the handover news#59; answer refused
+  s13: A handed over to B.R will never accept its answer#59; answer refused
+  s14: A handed over to B.R accepts its answer#59; answer recorded
+  s15: A handed over to B.R accepts its answer#59; answer refused
+  s16: A handed over to B, B to C.R will never accept its answer#59; answer refused
+  s17: A handed over to B, B to C.R accepts its answer#59; no question yet
+  s18: A handed over to B, B to C.R waits for the handover news#59; answer refused
+  s19: A handed over to B, B to C.R accepts its answer#59; R waits for an answer
+  s20: A handed over to B, B to C.R will never accept its answer#59; answer recorded
+  s21: A handed over to B, B to C.R waits for the handover news#59; answer recorded
+  s22: A handed over to B, B to C.R accepts its answer#59; answer recorded
+  s23: A handed over to B, B to C.R accepts its answer#59; answer refused
+  [*] --> s0
+  [*] --> s1
+  s0 --> s1: R asks A
+  s0 --> s2: the person approves#59; M1 has no reason to tell R's machine
+  s1 --> s3: the person approves#59; M1 tells R's machine
+  s0 --> s4: the person approves#59; M1 tells R's machine
+  s2 --> s5: B hands over to C#59; M1 has no reason to tell R's machine or B hands over to C#59; M1 tells R's machine
+  s2 --> s6: R asks A's old address
+  s3 --> s6: the handover news is lost on the way (no retry)
+  s3 --> s7: R's machine keeps the handover news
+  s3 --> s8: B hands over to C#59; M1 has no reason to tell R's machine
+  s4 --> s2: the handover news is lost on the way (no retry)
+  s4 --> s9: R's machine keeps the handover news
+  s4 --> s10: B hands over to C#59; M1 tells R's machine
+  s4 --> s3: R asks A's old address
+  s3 --> s11: B hands over to C#59; M1 tells R's machine
+  s5 --> s8: R asks A's old address
+  s3 --> s12: R refuses the answer
+  s6 --> s8: B hands over to C#59; M1 has no reason to tell R's machine or B hands over to C#59; M1 tells R's machine
+  s7 --> s8: B hands over to C#59; M1 has no reason to tell R's machine
+  s6 --> s6: B answers R
+  s9 --> s10: B hands over to C#59; M1 tells R's machine
+  s9 --> s7: R asks A's old address
+  s10 --> s5: the handover news is lost on the way (no retry)
+  s10 --> s11: R asks A's old address
+  s7 --> s11: B hands over to C#59; M1 tells R's machine
+  s11 --> s8: the handover news is lost on the way (no retry)
+  s12 --> s3: the sender sends the answer again, same id
+  s12 --> s13: the handover news is lost on the way (no retry)
+  s12 --> s15: R's machine keeps the handover news
+  s12 --> s16: B hands over to C#59; M1 has no reason to tell R's machine
+  s6 --> s13: R refuses the answer
+  s7 --> s14: R records the answer
+  s8 --> s16: R refuses the answer
+  s10 --> s17: R's machine keeps the handover news
+  s12 --> s18: B hands over to C#59; M1 tells R's machine
+  s11 --> s18: R refuses the answer
+  s11 --> s19: R's machine keeps the handover news
+  s13 --> s6: the sender sends the answer again, same id
+  s13 --> s16: B hands over to C#59; M1 has no reason to tell R's machine or B hands over to C#59; M1 tells R's machine
+  s14 --> s20: B hands over to C#59; M1 has no reason to tell R's machine
+  s15 --> s7: the sender sends the answer again, same id
+  s15 --> s16: B hands over to C#59; M1 has no reason to tell R's machine
+  s16 --> s8: the sender sends the answer again, same id or C answers R
+  s8 --> s20: R records the answer
+  s17 --> s19: R asks A's old address
+  s14 --> s21: B hands over to C#59; M1 tells R's machine
+  s15 --> s18: B hands over to C#59; M1 tells R's machine
+  s18 --> s11: the sender sends the answer again, same id or C answers R
+  s18 --> s16: the handover news is lost on the way (no retry)
+  s11 --> s21: R records the answer
+  s18 --> s23: R's machine keeps the handover news
+  s21 --> s20: the handover news is lost on the way (no retry)
+  s21 --> s22: R's machine keeps the handover news
+  s19 --> s22: R records the answer
+  s23 --> s19: the sender sends the answer again, same id or C answers R
+  classDef breaks fill:#ffecee,stroke:#e72e3b,stroke-width:2.5px,color:#cd2834
+  classDef mayBreak fill:#fff3e6,stroke:#e8730c,stroke-width:2.5px,color:#b85a06
+  class s0 tan
+  class s0 bugPath
+  class s1 tan
+  class s2 tan
+  class s2 bugPath
+  class s3 tan
+  class s4 tan
+  class s5 tan
+  class s6 tan
+  class s6 breaks
+  class s6 bugPath
+  class s7 tan
+  class s8 tan
+  class s8 mayBreak
+  class s9 tan
+  class s10 tan
+  class s11 tan
+  class s12 tan
+  class s13 tan
+  class s13 breaks
+  class s13 bugPath
+  class s14 teal
+  class s15 tan
+  class s16 tan
+  class s16 mayBreak
+  class s17 tan
+  class s18 tan
+  class s19 tan
+  class s20 teal
+  class s20 breaks
+  class s21 teal
+  class s22 teal
+  class s23 tan

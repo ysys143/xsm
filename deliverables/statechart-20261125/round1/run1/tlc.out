@@ -1,0 +1,98 @@
+TLC2 Version 2.19 of 08 August 2024 (rev: 5a47802)
+Warning: Please run the Java VM which executes TLC with a throughput optimized garbage collector by passing the "-XX:+UseParallelGC" property.
+(Use the -nowarning option to disable this warning.)
+Running breadth-first search Model-Checking with fp 0 and seed 4484407908529703589 with 1 worker on 14 cores with 9216MB heap and 64MB offheap memory [pid: 46550] (Mac OS X 26.5 aarch64, Homebrew 17.0.15 x86_64, MSBDiskFPSet, DiskStateQueue).
+Parsing file /private/tmp/claude-501/-Users-jaesolshin-Documents-GitHub-cross-session-messaging/7398be01-1c32-4cb2-a798-7c24a19ae845/scratchpad/xsm/XsmHandover.tla
+Parsing file /private/var/folders/hw/9m3g7fvn4_l3rp2y473km9sm0000gn/T/statechart-0kpXHj/statechart-MM0wPI/tmp-verdict-1/Naturals.tla
+Semantic processing of module Naturals
+Semantic processing of module XsmHandover
+Starting... (2026-11-25 11:15:46)
+Computing initial states...
+Finished computing initial states: 2 distinct states generated at 2026-11-25 11:15:46.
+Error: Invariant AnswerRecorded is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ hStep = "none"
+/\ letterRead = FALSE
+/\ dmHeld = FALSE
+/\ dmInLetter = FALSE
+/\ dmAcks = 0
+/\ dmBad = FALSE
+/\ qReplied = FALSE
+/\ wait = "waiting"
+/\ r = "unsent"
+/\ dmLease = "live"
+/\ dmHolder = "none"
+/\ dmState = "pending"
+/\ dmSeen = {}
+/\ qAsker = "A"
+
+State 2: <PReplies line 110, col 3 to line 112, col 80 of module XsmHandover>
+/\ hStep = "none"
+/\ letterRead = FALSE
+/\ dmHeld = FALSE
+/\ dmInLetter = FALSE
+/\ dmAcks = 0
+/\ dmBad = FALSE
+/\ qReplied = FALSE
+/\ wait = "waiting"
+/\ r = "atA"
+/\ dmLease = "live"
+/\ dmHolder = "none"
+/\ dmState = "pending"
+/\ dmSeen = {}
+/\ qAsker = "A"
+
+State 3: <WaitTimesOut line 138, col 3 to line 140, col 77 of module XsmHandover>
+/\ hStep = "none"
+/\ letterRead = FALSE
+/\ dmHeld = FALSE
+/\ dmInLetter = FALSE
+/\ dmAcks = 0
+/\ dmBad = FALSE
+/\ qReplied = FALSE
+/\ wait = "timedOut"
+/\ r = "atA"
+/\ dmLease = "live"
+/\ dmHolder = "none"
+/\ dmState = "pending"
+/\ dmSeen = {}
+/\ qAsker = "A"
+
+State 4: <HandOverQuestions line 146, col 3 to line 149, col 68 of module XsmHandover>
+/\ hStep = "questions"
+/\ letterRead = FALSE
+/\ dmHeld = FALSE
+/\ dmInLetter = FALSE
+/\ dmAcks = 0
+/\ dmBad = FALSE
+/\ qReplied = FALSE
+/\ wait = "timedOut"
+/\ r = "atA"
+/\ dmLease = "live"
+/\ dmHolder = "none"
+/\ dmState = "pending"
+/\ dmSeen = {}
+/\ qAsker = "B"
+
+State 5: <HandOverUnread line 154, col 3 to line 161, col 53 of module XsmHandover>
+/\ hStep = "unread"
+/\ letterRead = FALSE
+/\ dmHeld = FALSE
+/\ dmInLetter = TRUE
+/\ dmAcks = 0
+/\ dmBad = FALSE
+/\ qReplied = FALSE
+/\ wait = "timedOut"
+/\ r = "inLetter"
+/\ dmLease = "live"
+/\ dmHolder = "none"
+/\ dmState = "moved"
+/\ dmSeen = {}
+/\ qAsker = "B"
+
+181 states generated, 89 distinct states found, 42 states left on queue.
+The depth of the complete state graph search is 5.
+The average outdegree of the complete state graph is 2 (minimum is 0, the maximum 5 and the 95th percentile is 3).
+Finished in 00s at (2026-11-25 11:15:46)
+

@@ -1,0 +1,2045 @@
+---
+title: "xsm: concurrent handovers. A holds the team place and asked a question that is still open"
+---
+stateDiagram-v2
+  state "Legend" as legend {
+    lg0: idle
+    lg1: running
+    lg2: answered
+    lg3: Breaks AddressAndPlaceAgree or AddressLeadsAway or AtMostOneHandoverPerSession or HandedOverHoldsNoPlace or LateAnswerRecorded or QuestionHolderIsAddressTarget
+    lg4: Path to the AddressAndPlaceAgree or AddressLeadsAway or AtMostOneHandoverPerSession or HandedOverHoldsNoPlace or LateAnswerRecorded or QuestionHolderIsAddressTarget bug
+  }
+  class lg0 blue
+  class lg1 orange
+  class lg2 teal
+  class lg3 breaks
+  class lg4 bugPath
+  state "Handover A to B not started" as s0 {
+    state "Handover A to C not started" as s1 {
+      state "Handover B to A not started" as s2 {
+        state "Handover B to C not started" as s3 {
+          state "Team members: A#59; lead seat: A" as s4 {
+            state "Records no handover record" as s5 {
+              state "Address DMs to A reach A" as s6 {
+                s7: Question open, asked by A
+              }
+            }
+          }
+        }
+        state "Handover B to C approved and checked" as s8 {
+          state "Team members: A#59; lead seat: A" as s9 {
+            state "Records no handover record" as s10 {
+              state "Address DMs to A reach A" as s11 {
+                s12: Question open, asked by A
+              }
+            }
+          }
+        }
+        state "Handover B to C team seat moved" as s13 {
+          state "Team members: A#59; lead seat: A" as s14 {
+            state "Records no handover record" as s15 {
+              state "Address DMs to A reach A" as s16 {
+                s17: Question open, asked by A
+              }
+            }
+          }
+        }
+        state "Handover B to C pending question moved" as s18 {
+          state "Team members: A#59; lead seat: A" as s19 {
+            state "Records no handover record" as s20 {
+              state "Address DMs to A reach A" as s21 {
+                s22: Question open, asked by A
+              }
+            }
+          }
+        }
+        state "Handover B to C record written" as s23 {
+          state "Team members: A#59; lead seat: A" as s24 {
+            state "Records B handed to C" as s25 {
+              state "Address DMs to A reach A" as s26 {
+                s27: Question open, asked by A
+                s28: Question late answer stored for A
+              }
+            }
+          }
+        }
+      }
+      state "Handover B to A approved and checked" as s29 {
+        state "Handover B to C not started" as s30 {
+          state "Team members: A#59; lead seat: A" as s31 {
+            state "Records no handover record" as s32 {
+              state "Address DMs to A reach A" as s33 {
+                s34: Question open, asked by A
+              }
+            }
+          }
+        }
+        state "Handover B to C approved and checked" as s35 {
+          state "Team members: A#59; lead seat: A" as s36 {
+            state "Records no handover record" as s37 {
+              state "Address DMs to A reach A" as s38 {
+                s39: Question open, asked by A
+              }
+            }
+          }
+        }
+        state "Handover B to C team seat moved" as s40 {
+          state "Team members: A#59; lead seat: A" as s41 {
+            state "Records no handover record" as s42 {
+              state "Address DMs to A reach A" as s43 {
+                s44: Question open, asked by A
+              }
+            }
+          }
+        }
+        state "Handover B to C pending question moved" as s45 {
+          state "Team members: A#59; lead seat: A" as s46 {
+            state "Records no handover record" as s47 {
+              state "Address DMs to A reach A" as s48 {
+                s49: Question open, asked by A
+              }
+            }
+          }
+        }
+        state "Handover B to C record written" as s50 {
+          state "Team members: A#59; lead seat: A" as s51 {
+            state "Records B handed to C" as s52 {
+              state "Address DMs to A reach A" as s53 {
+                s54: Question open, asked by A
+              }
+            }
+          }
+        }
+      }
+      state "Handover B to A team seat moved" as s55 {
+        state "Handover B to C not started" as s56 {
+          state "Team members: A#59; lead seat: A" as s57 {
+            state "Records no handover record" as s58 {
+              state "Address DMs to A reach A" as s59 {
+                s60: Question open, asked by A
+              }
+            }
+          }
+        }
+        state "Handover B to C approved and checked" as s61 {
+          state "Team members: A#59; lead seat: A" as s62 {
+            state "Records no handover record" as s63 {
+              state "Address DMs to A reach A" as s64 {
+                s65: Question open, asked by A
+              }
+            }
+          }
+        }
+        state "Handover B to C team seat moved" as s66 {
+          state "Team members: A#59; lead seat: A" as s67 {
+            state "Records no handover record" as s68 {
+              state "Address DMs to A reach A" as s69 {
+                s70: Question open, asked by A
+              }
+            }
+          }
+        }
+        state "Handover B to C pending question moved" as s71 {
+          state "Team members: A#59; lead seat: A" as s72 {
+            state "Records no handover record" as s73 {
+              state "Address DMs to A reach A" as s74 {
+                s75: Question open, asked by A
+              }
+            }
+          }
+        }
+        state "Handover B to C record written" as s76 {
+          state "Team members: A#59; lead seat: A" as s77 {
+            state "Records B handed to C" as s78 {
+              state "Address DMs to A reach A" as s79 {
+                s80: Question open, asked by A
+              }
+            }
+          }
+        }
+      }
+      state "Handover B to A pending question moved" as s81 {
+        state "Handover B to C not started" as s82 {
+          state "Team members: A#59; lead seat: A" as s83 {
+            state "Records no handover record" as s84 {
+              state "Address DMs to A reach A" as s85 {
+                s86: Question open, asked by A
+              }
+            }
+          }
+        }
+        state "Handover B to C approved and checked" as s87 {
+          state "Team members: A#59; lead seat: A" as s88 {
+            state "Records no handover record" as s89 {
+              state "Address DMs to A reach A" as s90 {
+                s91: Question open, asked by A
+              }
+            }
+          }
+        }
+        state "Handover B to C team seat moved" as s92 {
+          state "Team members: A#59; lead seat: A" as s93 {
+            state "Records no handover record" as s94 {
+              state "Address DMs to A reach A" as s95 {
+                s96: Question open, asked by A
+              }
+            }
+          }
+        }
+        state "Handover B to C pending question moved" as s97 {
+          state "Team members: A#59; lead seat: A" as s98 {
+            state "Records no handover record" as s99 {
+              state "Address DMs to A reach A" as s100 {
+                s101: Question open, asked by A
+              }
+            }
+          }
+        }
+        state "Handover B to C record written" as s102 {
+          state "Team members: A#59; lead seat: A" as s103 {
+            state "Records B handed to C" as s104 {
+              state "Address DMs to A reach A" as s105 {
+                s106: Question open, asked by A
+              }
+            }
+          }
+        }
+      }
+      state "Handover B to A record written" as s107 {
+        state "Handover B to C not started" as s108 {
+          state "Team members: A#59; lead seat: A" as s109 {
+            state "Records B handed to A" as s110 {
+              state "Address DMs to A reach A" as s111 {
+                s112: Question open, asked by A
+                s113: Question late answer stored for A
+              }
+            }
+          }
+        }
+        state "Handover B to C approved and checked" as s114 {
+          state "Team members: A#59; lead seat: A" as s115 {
+            state "Records B handed to A" as s116 {
+              state "Address DMs to A reach A" as s117 {
+                s118: Question open, asked by A
+              }
+            }
+          }
+        }
+        state "Handover B to C team seat moved" as s119 {
+          state "Team members: A#59; lead seat: A" as s120 {
+            state "Records B handed to A" as s121 {
+              state "Address DMs to A reach A" as s122 {
+                s123: Question open, asked by A
+              }
+            }
+          }
+        }
+        state "Handover B to C pending question moved" as s124 {
+          state "Team members: A#59; lead seat: A" as s125 {
+            state "Records B handed to A" as s126 {
+              state "Address DMs to A reach A" as s127 {
+                s128: Question open, asked by A
+              }
+            }
+          }
+        }
+        state "Handover B to C record written" as s129 {
+          state "Team members: A#59; lead seat: A" as s130 {
+            state "Records B handed to A" as s131 {
+              state "Address DMs to A reach A" as s132 {
+                s133: Question open, asked by A
+                s134: Question late answer stored for A
+              }
+            }
+            state "Records B handed to C" as s135 {
+              state "Address DMs to A reach A" as s136 {
+                s137: Question open, asked by A
+                s138: Question late answer stored for A
+              }
+            }
+          }
+        }
+      }
+    }
+    state "Handover A to C approved and checked" as s139 {
+      state "Handover B to A not started" as s140 {
+        state "Handover B to C not started" as s141 {
+          state "Team members: A#59; lead seat: A" as s142 {
+            state "Records no handover record" as s143 {
+              state "Address DMs to A reach A" as s144 {
+                s145: Question open, asked by A
+              }
+            }
+          }
+        }
+        state "Handover B to C approved and checked" as s146 {
+          state "Team members: A#59; lead seat: A" as s147 {
+            state "Records no handover record" as s148 {
+              state "Address DMs to A reach A" as s149 {
+                s150: Question open, asked by A
+              }
+            }
+          }
+        }
+        state "Handover B to C team seat moved" as s151 {
+          state "Team members: A#59; lead seat: A" as s152 {
+            state "Records no handover record" as s153 {
+              state "Address DMs to A reach A" as s154 {
+                s155: Question open, asked by A
+              }
+            }
+          }
+        }
+        state "Handover B to C pending question moved" as s156 {
+          state "Team members: A#59; lead seat: A" as s157 {
+            state "Records no handover record" as s158 {
+              state "Address DMs to A reach A" as s159 {
+                s160: Question open, asked by A
+              }
+            }
+          }
+        }
+        state "Handover B to C record written" as s161 {
+          state "Team members: A#59; lead seat: A" as s162 {
+            state "Records B handed to C" as s163 {
+              state "Address DMs to A reach A" as s164 {
+                s165: Question open, asked by A
+                s166: Question late answer stored for A
+              }
+            }
+          }
+        }
+      }
+      state "Handover B to A approved and checked" as s167 {
+        state "Handover B to C not started" as s168 {
+          state "Team members: A#59; lead seat: A" as s169 {
+            state "Records no handover record" as s170 {
+              state "Address DMs to A reach A" as s171 {
+                s172: Question open, asked by A
+              }
+            }
+          }
+        }
+      }
+      state "Handover B to A team seat moved" as s173 {
+        state "Handover B to C not started" as s174 {
+          state "Team members: A#59; lead seat: A" as s175 {
+            state "Records no handover record" as s176 {
+              state "Address DMs to A reach A" as s177 {
+                s178: Question open, asked by A
+              }
+            }
+          }
+        }
+      }
+      state "Handover B to A pending question moved" as s179 {
+        state "Handover B to C not started" as s180 {
+          state "Team members: A#59; lead seat: A" as s181 {
+            state "Records no handover record" as s182 {
+              state "Address DMs to A reach A" as s183 {
+                s184: Question open, asked by A
+              }
+            }
+          }
+        }
+      }
+      state "Handover B to A record written" as s185 {
+        state "Handover B to C not started" as s186 {
+          state "Team members: A#59; lead seat: A" as s187 {
+            state "Records B handed to A" as s188 {
+              state "Address DMs to A reach A" as s189 {
+                s190: Question open, asked by A
+                s191: Question late answer stored for A
+              }
+            }
+          }
+        }
+      }
+    }
+    state "Handover A to C team seat moved" as s192 {
+      state "Handover B to A not started" as s193 {
+        state "Handover B to C not started" as s194 {
+          state "Team members: C#59; lead seat: C" as s195 {
+            state "Records no handover record" as s196 {
+              state "Address DMs to A reach A" as s197 {
+                s198: Question open, asked by A
+              }
+            }
+          }
+        }
+        state "Handover B to C approved and checked" as s199 {
+          state "Team members: C#59; lead seat: C" as s200 {
+            state "Records no handover record" as s201 {
+              state "Address DMs to A reach A" as s202 {
+                s203: Question open, asked by A
+              }
+            }
+          }
+        }
+        state "Handover B to C team seat moved" as s204 {
+          state "Team members: C#59; lead seat: C" as s205 {
+            state "Records no handover record" as s206 {
+              state "Address DMs to A reach A" as s207 {
+                s208: Question open, asked by A
+              }
+            }
+          }
+        }
+        state "Handover B to C pending question moved" as s209 {
+          state "Team members: C#59; lead seat: C" as s210 {
+            state "Records no handover record" as s211 {
+              state "Address DMs to A reach A" as s212 {
+                s213: Question open, asked by A
+              }
+            }
+          }
+        }
+        state "Handover B to C record written" as s214 {
+          state "Team members: C#59; lead seat: C" as s215 {
+            state "Records B handed to C" as s216 {
+              state "Address DMs to A reach A" as s217 {
+                s218: Question open, asked by A
+                s219: Question late answer stored for A
+              }
+            }
+          }
+        }
+      }
+      state "Handover B to A approved and checked" as s220 {
+        state "Handover B to C not started" as s221 {
+          state "Team members: C#59; lead seat: C" as s222 {
+            state "Records no handover record" as s223 {
+              state "Address DMs to A reach A" as s224 {
+                s225: Question open, asked by A
+              }
+            }
+          }
+        }
+      }
+      state "Handover B to A team seat moved" as s226 {
+        state "Handover B to C not started" as s227 {
+          state "Team members: C#59; lead seat: C" as s228 {
+            state "Records no handover record" as s229 {
+              state "Address DMs to A reach A" as s230 {
+                s231: Question open, asked by A
+              }
+            }
+          }
+        }
+      }
+      state "Handover B to A pending question moved" as s232 {
+        state "Handover B to C not started" as s233 {
+          state "Team members: C#59; lead seat: C" as s234 {
+            state "Records no handover record" as s235 {
+              state "Address DMs to A reach A" as s236 {
+                s237: Question open, asked by A
+              }
+            }
+          }
+        }
+      }
+      state "Handover B to A record written" as s238 {
+        state "Handover B to C not started" as s239 {
+          state "Team members: C#59; lead seat: C" as s240 {
+            state "Records B handed to A" as s241 {
+              state "Address DMs to A reach A" as s242 {
+                s243: Question open, asked by A
+                s244: Question late answer stored for A
+              }
+            }
+          }
+        }
+      }
+    }
+    state "Handover A to C pending question moved" as s245 {
+      state "Handover B to A not started" as s246 {
+        state "Handover B to C not started" as s247 {
+          state "Team members: C#59; lead seat: C" as s248 {
+            state "Records no handover record" as s249 {
+              state "Address DMs to A reach A" as s250 {
+                s251: Question open, asked by C
+              }
+            }
+          }
+        }
+        state "Handover B to C approved and checked" as s252 {
+          state "Team members: C#59; lead seat: C" as s253 {
+            state "Records no handover record" as s254 {
+              state "Address DMs to A reach A" as s255 {
+                s256: Question open, asked by C
+              }
+            }
+          }
+        }
+        state "Handover B to C team seat moved" as s257 {
+          state "Team members: C#59; lead seat: C" as s258 {
+            state "Records no handover record" as s259 {
+              state "Address DMs to A reach A" as s260 {
+                s261: Question open, asked by C
+              }
+            }
+          }
+        }
+        state "Handover B to C pending question moved" as s262 {
+          state "Team members: C#59; lead seat: C" as s263 {
+            state "Records no handover record" as s264 {
+              state "Address DMs to A reach A" as s265 {
+                s266: Question open, asked by C
+              }
+            }
+          }
+        }
+        state "Handover B to C record written" as s267 {
+          state "Team members: C#59; lead seat: C" as s268 {
+            state "Records B handed to C" as s269 {
+              state "Address DMs to A reach A" as s270 {
+                s271: Question open, asked by C
+                s272: Question late answer stored for A
+              }
+            }
+          }
+        }
+      }
+      state "Handover B to A approved and checked" as s273 {
+        state "Handover B to C not started" as s274 {
+          state "Team members: C#59; lead seat: C" as s275 {
+            state "Records no handover record" as s276 {
+              state "Address DMs to A reach A" as s277 {
+                s278: Question open, asked by C
+              }
+            }
+          }
+        }
+      }
+      state "Handover B to A team seat moved" as s279 {
+        state "Handover B to C not started" as s280 {
+          state "Team members: C#59; lead seat: C" as s281 {
+            state "Records no handover record" as s282 {
+              state "Address DMs to A reach A" as s283 {
+                s284: Question open, asked by C
+              }
+            }
+          }
+        }
+      }
+      state "Handover B to A pending question moved" as s285 {
+        state "Handover B to C not started" as s286 {
+          state "Team members: C#59; lead seat: C" as s287 {
+            state "Records no handover record" as s288 {
+              state "Address DMs to A reach A" as s289 {
+                s290: Question open, asked by C
+              }
+            }
+          }
+        }
+      }
+      state "Handover B to A record written" as s291 {
+        state "Handover B to C not started" as s292 {
+          state "Team members: C#59; lead seat: C" as s293 {
+            state "Records B handed to A" as s294 {
+              state "Address DMs to A reach A" as s295 {
+                s296: Question open, asked by C
+                s297: Question late answer stored for A
+              }
+            }
+          }
+        }
+      }
+    }
+    state "Handover A to C record written" as s298 {
+      state "Handover B to A not started" as s299 {
+        state "Handover B to C not started" as s300 {
+          state "Team members: C#59; lead seat: C" as s301 {
+            state "Records A handed to C" as s302 {
+              state "Address DMs to A reach C" as s303 {
+                s304: Question open, asked by C
+                s305: Question late answer stored for C
+              }
+            }
+          }
+        }
+        state "Handover B to C approved and checked" as s306 {
+          state "Team members: C#59; lead seat: C" as s307 {
+            state "Records A handed to C" as s308 {
+              state "Address DMs to A reach C" as s309 {
+                s310: Question open, asked by C
+                s311: Question late answer stored for C
+              }
+            }
+          }
+        }
+        state "Handover B to C team seat moved" as s312 {
+          state "Team members: C#59; lead seat: C" as s313 {
+            state "Records A handed to C" as s314 {
+              state "Address DMs to A reach C" as s315 {
+                s316: Question open, asked by C
+                s317: Question late answer stored for C
+              }
+            }
+          }
+        }
+        state "Handover B to C pending question moved" as s318 {
+          state "Team members: C#59; lead seat: C" as s319 {
+            state "Records A handed to C" as s320 {
+              state "Address DMs to A reach C" as s321 {
+                s322: Question open, asked by C
+                s323: Question late answer stored for C
+              }
+            }
+          }
+        }
+        state "Handover B to C record written" as s324 {
+          state "Team members: C#59; lead seat: C" as s325 {
+            state "Records A handed to C, B handed to C" as s326 {
+              state "Address DMs to A reach C" as s327 {
+                s328: Question open, asked by C
+                s329: Question late answer stored for A
+                s330: Question late answer stored for C
+              }
+            }
+          }
+        }
+      }
+      state "Handover B to A approved and checked" as s331 {
+        state "Handover B to C not started" as s332 {
+          state "Team members: C#59; lead seat: C" as s333 {
+            state "Records A handed to C" as s334 {
+              state "Address DMs to A reach C" as s335 {
+                s336: Question open, asked by C
+              }
+            }
+          }
+        }
+      }
+      state "Handover B to A team seat moved" as s337 {
+        state "Handover B to C not started" as s338 {
+          state "Team members: C#59; lead seat: C" as s339 {
+            state "Records A handed to C" as s340 {
+              state "Address DMs to A reach C" as s341 {
+                s342: Question open, asked by C
+              }
+            }
+          }
+        }
+      }
+      state "Handover B to A pending question moved" as s343 {
+        state "Handover B to C not started" as s344 {
+          state "Team members: C#59; lead seat: C" as s345 {
+            state "Records A handed to C" as s346 {
+              state "Address DMs to A reach C" as s347 {
+                s348: Question open, asked by C
+              }
+            }
+          }
+        }
+      }
+      state "Handover B to A record written" as s349 {
+        state "Handover B to C not started" as s350 {
+          state "Team members: C#59; lead seat: C" as s351 {
+            state "Records A handed to C, B handed to A" as s352 {
+              state "Address DMs to A reach C" as s353 {
+                s354: Question open, asked by C
+                s355: Question late answer stored for A
+                s356: Question late answer stored for C
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  state "Handover A to B approved and checked" as s357 {
+    state "Handover A to C not started" as s358 {
+      state "Handover B to A not started" as s359 {
+        state "Handover B to C not started" as s360 {
+          state "Team members: A#59; lead seat: A" as s361 {
+            state "Records no handover record" as s362 {
+              state "Address DMs to A reach A" as s363 {
+                s364: Question open, asked by A
+              }
+            }
+          }
+        }
+        state "Handover B to C approved and checked" as s365 {
+          state "Team members: A#59; lead seat: A" as s366 {
+            state "Records no handover record" as s367 {
+              state "Address DMs to A reach A" as s368 {
+                s369: Question open, asked by A
+              }
+            }
+          }
+        }
+        state "Handover B to C team seat moved" as s370 {
+          state "Team members: A#59; lead seat: A" as s371 {
+            state "Records no handover record" as s372 {
+              state "Address DMs to A reach A" as s373 {
+                s374: Question open, asked by A
+              }
+            }
+          }
+        }
+        state "Handover B to C pending question moved" as s375 {
+          state "Team members: A#59; lead seat: A" as s376 {
+            state "Records no handover record" as s377 {
+              state "Address DMs to A reach A" as s378 {
+                s379: Question open, asked by A
+              }
+            }
+          }
+        }
+        state "Handover B to C record written" as s380 {
+          state "Team members: A#59; lead seat: A" as s381 {
+            state "Records B handed to C" as s382 {
+              state "Address DMs to A reach A" as s383 {
+                s384: Question open, asked by A
+              }
+            }
+          }
+        }
+      }
+      state "Handover B to A approved and checked" as s385 {
+        state "Handover B to C not started" as s386 {
+          state "Team members: A#59; lead seat: A" as s387 {
+            state "Records no handover record" as s388 {
+              state "Address DMs to A reach A" as s389 {
+                s390: Question open, asked by A
+              }
+            }
+          }
+        }
+      }
+      state "Handover B to A team seat moved" as s391 {
+        state "Handover B to C not started" as s392 {
+          state "Team members: A#59; lead seat: A" as s393 {
+            state "Records no handover record" as s394 {
+              state "Address DMs to A reach A" as s395 {
+                s396: Question open, asked by A
+              }
+            }
+          }
+        }
+      }
+      state "Handover B to A pending question moved" as s397 {
+        state "Handover B to C not started" as s398 {
+          state "Team members: A#59; lead seat: A" as s399 {
+            state "Records no handover record" as s400 {
+              state "Address DMs to A reach A" as s401 {
+                s402: Question open, asked by A
+              }
+            }
+          }
+        }
+      }
+      state "Handover B to A record written" as s403 {
+        state "Handover B to C not started" as s404 {
+          state "Team members: A#59; lead seat: A" as s405 {
+            state "Records B handed to A" as s406 {
+              state "Address DMs to A reach A" as s407 {
+                s408: Question open, asked by A
+              }
+            }
+          }
+        }
+      }
+    }
+    state "Handover A to C approved and checked" as s409 {
+      state "Handover B to A not started" as s410 {
+        state "Handover B to C not started" as s411 {
+          state "Team members: A#59; lead seat: A" as s412 {
+            state "Records no handover record" as s413 {
+              state "Address DMs to A reach A" as s414 {
+                s415: Question open, asked by A
+              }
+            }
+          }
+        }
+      }
+    }
+    state "Handover A to C team seat moved" as s416 {
+      state "Handover B to A not started" as s417 {
+        state "Handover B to C not started" as s418 {
+          state "Team members: C#59; lead seat: C" as s419 {
+            state "Records no handover record" as s420 {
+              state "Address DMs to A reach A" as s421 {
+                s422: Question open, asked by A
+              }
+            }
+          }
+        }
+      }
+    }
+    state "Handover A to C pending question moved" as s423 {
+      state "Handover B to A not started" as s424 {
+        state "Handover B to C not started" as s425 {
+          state "Team members: C#59; lead seat: C" as s426 {
+            state "Records no handover record" as s427 {
+              state "Address DMs to A reach A" as s428 {
+                s429: Question open, asked by C
+              }
+            }
+          }
+        }
+      }
+    }
+    state "Handover A to C record written" as s430 {
+      state "Handover B to A not started" as s431 {
+        state "Handover B to C not started" as s432 {
+          state "Team members: C#59; lead seat: C" as s433 {
+            state "Records A handed to C" as s434 {
+              state "Address DMs to A reach C" as s435 {
+                s436: Question open, asked by C
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  state "Handover A to B team seat moved" as s437 {
+    state "Handover A to C not started" as s438 {
+      state "Handover B to A not started" as s439 {
+        state "Handover B to C not started" as s440 {
+          state "Team members: B#59; lead seat: B" as s441 {
+            state "Records no handover record" as s442 {
+              state "Address DMs to A reach A" as s443 {
+                s444: Question open, asked by A
+              }
+            }
+          }
+        }
+        state "Handover B to C approved and checked" as s445 {
+          state "Team members: B#59; lead seat: B" as s446 {
+            state "Records no handover record" as s447 {
+              state "Address DMs to A reach A" as s448 {
+                s449: Question open, asked by A
+              }
+            }
+          }
+        }
+        state "Handover B to C team seat moved" as s450 {
+          state "Team members: B#59; lead seat: B" as s451 {
+            state "Records no handover record" as s452 {
+              state "Address DMs to A reach A" as s453 {
+                s454: Question open, asked by A
+              }
+            }
+          }
+          state "Team members: C#59; lead seat: C" as s455 {
+            state "Records no handover record" as s456 {
+              state "Address DMs to A reach A" as s457 {
+                s458: Question open, asked by A
+              }
+            }
+          }
+        }
+        state "Handover B to C pending question moved" as s459 {
+          state "Team members: B#59; lead seat: B" as s460 {
+            state "Records no handover record" as s461 {
+              state "Address DMs to A reach A" as s462 {
+                s463: Question open, asked by A
+              }
+            }
+          }
+          state "Team members: C#59; lead seat: C" as s464 {
+            state "Records no handover record" as s465 {
+              state "Address DMs to A reach A" as s466 {
+                s467: Question open, asked by A
+              }
+            }
+          }
+        }
+        state "Handover B to C record written" as s468 {
+          state "Team members: B#59; lead seat: B" as s469 {
+            state "Records B handed to C" as s470 {
+              state "Address DMs to A reach A" as s471 {
+                s472: Question open, asked by A
+              }
+            }
+          }
+          state "Team members: C#59; lead seat: C" as s473 {
+            state "Records B handed to C" as s474 {
+              state "Address DMs to A reach A" as s475 {
+                s476: Question open, asked by A
+              }
+            }
+          }
+        }
+      }
+      state "Handover B to A approved and checked" as s477 {
+        state "Handover B to C not started" as s478 {
+          state "Team members: B#59; lead seat: B" as s479 {
+            state "Records no handover record" as s480 {
+              state "Address DMs to A reach A" as s481 {
+                s482: Question open, asked by A
+              }
+            }
+          }
+        }
+      }
+      state "Handover B to A team seat moved" as s483 {
+        state "Handover B to C not started" as s484 {
+          state "Team members: A#59; lead seat: A" as s485 {
+            state "Records no handover record" as s486 {
+              state "Address DMs to A reach A" as s487 {
+                s488: Question open, asked by A
+              }
+            }
+          }
+          state "Team members: B#59; lead seat: B" as s489 {
+            state "Records no handover record" as s490 {
+              state "Address DMs to A reach A" as s491 {
+                s492: Question open, asked by A
+              }
+            }
+          }
+        }
+      }
+      state "Handover B to A pending question moved" as s493 {
+        state "Handover B to C not started" as s494 {
+          state "Team members: A#59; lead seat: A" as s495 {
+            state "Records no handover record" as s496 {
+              state "Address DMs to A reach A" as s497 {
+                s498: Question open, asked by A
+              }
+            }
+          }
+          state "Team members: B#59; lead seat: B" as s499 {
+            state "Records no handover record" as s500 {
+              state "Address DMs to A reach A" as s501 {
+                s502: Question open, asked by A
+              }
+            }
+          }
+        }
+      }
+      state "Handover B to A record written" as s503 {
+        state "Handover B to C not started" as s504 {
+          state "Team members: A#59; lead seat: A" as s505 {
+            state "Records B handed to A" as s506 {
+              state "Address DMs to A reach A" as s507 {
+                s508: Question open, asked by A
+              }
+            }
+          }
+          state "Team members: B#59; lead seat: B" as s509 {
+            state "Records B handed to A" as s510 {
+              state "Address DMs to A reach A" as s511 {
+                s512: Question open, asked by A
+              }
+            }
+          }
+        }
+      }
+    }
+    state "Handover A to C approved and checked" as s513 {
+      state "Handover B to A not started" as s514 {
+        state "Handover B to C not started" as s515 {
+          state "Team members: B#59; lead seat: B" as s516 {
+            state "Records no handover record" as s517 {
+              state "Address DMs to A reach A" as s518 {
+                s519: Question open, asked by A
+              }
+            }
+          }
+        }
+      }
+    }
+    state "Handover A to C team seat moved" as s520 {
+      state "Handover B to A not started" as s521 {
+        state "Handover B to C not started" as s522 {
+          state "Team members: B#59; lead seat: B" as s523 {
+            state "Records no handover record" as s524 {
+              state "Address DMs to A reach A" as s525 {
+                s526: Question open, asked by A
+              }
+            }
+          }
+          state "Team members: C#59; lead seat: C" as s527 {
+            state "Records no handover record" as s528 {
+              state "Address DMs to A reach A" as s529 {
+                s530: Question open, asked by A
+              }
+            }
+          }
+        }
+      }
+    }
+    state "Handover A to C pending question moved" as s531 {
+      state "Handover B to A not started" as s532 {
+        state "Handover B to C not started" as s533 {
+          state "Team members: B#59; lead seat: B" as s534 {
+            state "Records no handover record" as s535 {
+              state "Address DMs to A reach A" as s536 {
+                s537: Question open, asked by C
+              }
+            }
+          }
+          state "Team members: C#59; lead seat: C" as s538 {
+            state "Records no handover record" as s539 {
+              state "Address DMs to A reach A" as s540 {
+                s541: Question open, asked by C
+              }
+            }
+          }
+        }
+      }
+    }
+    state "Handover A to C record written" as s542 {
+      state "Handover B to A not started" as s543 {
+        state "Handover B to C not started" as s544 {
+          state "Team members: B#59; lead seat: B" as s545 {
+            state "Records A handed to C" as s546 {
+              state "Address DMs to A reach C" as s547 {
+                s548: Question open, asked by C
+              }
+            }
+          }
+          state "Team members: C#59; lead seat: C" as s549 {
+            state "Records A handed to C" as s550 {
+              state "Address DMs to A reach C" as s551 {
+                s552: Question open, asked by C
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  state "Handover A to B pending question moved" as s553 {
+    state "Handover A to C not started" as s554 {
+      state "Handover B to A not started" as s555 {
+        state "Handover B to C not started" as s556 {
+          state "Team members: B#59; lead seat: B" as s557 {
+            state "Records no handover record" as s558 {
+              state "Address DMs to A reach A" as s559 {
+                s560: Question open, asked by B
+              }
+            }
+          }
+        }
+        state "Handover B to C approved and checked" as s561 {
+          state "Team members: B#59; lead seat: B" as s562 {
+            state "Records no handover record" as s563 {
+              state "Address DMs to A reach A" as s564 {
+                s565: Question open, asked by B
+              }
+            }
+          }
+        }
+        state "Handover B to C team seat moved" as s566 {
+          state "Team members: B#59; lead seat: B" as s567 {
+            state "Records no handover record" as s568 {
+              state "Address DMs to A reach A" as s569 {
+                s570: Question open, asked by B
+              }
+            }
+          }
+          state "Team members: C#59; lead seat: C" as s571 {
+            state "Records no handover record" as s572 {
+              state "Address DMs to A reach A" as s573 {
+                s574: Question open, asked by B
+              }
+            }
+          }
+        }
+        state "Handover B to C pending question moved" as s575 {
+          state "Team members: B#59; lead seat: B" as s576 {
+            state "Records no handover record" as s577 {
+              state "Address DMs to A reach A" as s578 {
+                s579: Question open, asked by B
+                s580: Question open, asked by C
+              }
+            }
+          }
+          state "Team members: C#59; lead seat: C" as s581 {
+            state "Records no handover record" as s582 {
+              state "Address DMs to A reach A" as s583 {
+                s584: Question open, asked by B
+                s585: Question open, asked by C
+              }
+            }
+          }
+        }
+        state "Handover B to C record written" as s586 {
+          state "Team members: B#59; lead seat: B" as s587 {
+            state "Records B handed to C" as s588 {
+              state "Address DMs to A reach A" as s589 {
+                s590: Question open, asked by B
+                s591: Question open, asked by C
+              }
+            }
+          }
+          state "Team members: C#59; lead seat: C" as s592 {
+            state "Records B handed to C" as s593 {
+              state "Address DMs to A reach A" as s594 {
+                s595: Question open, asked by B
+                s596: Question open, asked by C
+              }
+            }
+          }
+        }
+      }
+      state "Handover B to A approved and checked" as s597 {
+        state "Handover B to C not started" as s598 {
+          state "Team members: B#59; lead seat: B" as s599 {
+            state "Records no handover record" as s600 {
+              state "Address DMs to A reach A" as s601 {
+                s602: Question open, asked by B
+              }
+            }
+          }
+        }
+      }
+      state "Handover B to A team seat moved" as s603 {
+        state "Handover B to C not started" as s604 {
+          state "Team members: A#59; lead seat: A" as s605 {
+            state "Records no handover record" as s606 {
+              state "Address DMs to A reach A" as s607 {
+                s608: Question open, asked by B
+              }
+            }
+          }
+          state "Team members: B#59; lead seat: B" as s609 {
+            state "Records no handover record" as s610 {
+              state "Address DMs to A reach A" as s611 {
+                s612: Question open, asked by B
+              }
+            }
+          }
+        }
+      }
+      state "Handover B to A pending question moved" as s613 {
+        state "Handover B to C not started" as s614 {
+          state "Team members: A#59; lead seat: A" as s615 {
+            state "Records no handover record" as s616 {
+              state "Address DMs to A reach A" as s617 {
+                s618: Question open, asked by A
+                s619: Question open, asked by B
+              }
+            }
+          }
+          state "Team members: B#59; lead seat: B" as s620 {
+            state "Records no handover record" as s621 {
+              state "Address DMs to A reach A" as s622 {
+                s623: Question open, asked by A
+                s624: Question open, asked by B
+              }
+            }
+          }
+        }
+      }
+      state "Handover B to A record written" as s625 {
+        state "Handover B to C not started" as s626 {
+          state "Team members: A#59; lead seat: A" as s627 {
+            state "Records B handed to A" as s628 {
+              state "Address DMs to A reach A" as s629 {
+                s630: Question open, asked by A
+                s631: Question open, asked by B
+              }
+            }
+          }
+          state "Team members: B#59; lead seat: B" as s632 {
+            state "Records B handed to A" as s633 {
+              state "Address DMs to A reach A" as s634 {
+                s635: Question open, asked by A
+                s636: Question open, asked by B
+              }
+            }
+          }
+        }
+      }
+    }
+    state "Handover A to C approved and checked" as s637 {
+      state "Handover B to A not started" as s638 {
+        state "Handover B to C not started" as s639 {
+          state "Team members: B#59; lead seat: B" as s640 {
+            state "Records no handover record" as s641 {
+              state "Address DMs to A reach A" as s642 {
+                s643: Question open, asked by B
+              }
+            }
+          }
+        }
+      }
+    }
+    state "Handover A to C team seat moved" as s644 {
+      state "Handover B to A not started" as s645 {
+        state "Handover B to C not started" as s646 {
+          state "Team members: B#59; lead seat: B" as s647 {
+            state "Records no handover record" as s648 {
+              state "Address DMs to A reach A" as s649 {
+                s650: Question open, asked by B
+              }
+            }
+          }
+          state "Team members: C#59; lead seat: C" as s651 {
+            state "Records no handover record" as s652 {
+              state "Address DMs to A reach A" as s653 {
+                s654: Question open, asked by B
+              }
+            }
+          }
+        }
+      }
+    }
+    state "Handover A to C pending question moved" as s655 {
+      state "Handover B to A not started" as s656 {
+        state "Handover B to C not started" as s657 {
+          state "Team members: B#59; lead seat: B" as s658 {
+            state "Records no handover record" as s659 {
+              state "Address DMs to A reach A" as s660 {
+                s661: Question open, asked by B
+                s662: Question open, asked by C
+              }
+            }
+          }
+          state "Team members: C#59; lead seat: C" as s663 {
+            state "Records no handover record" as s664 {
+              state "Address DMs to A reach A" as s665 {
+                s666: Question open, asked by B
+                s667: Question open, asked by C
+              }
+            }
+          }
+        }
+      }
+    }
+    state "Handover A to C record written" as s668 {
+      state "Handover B to A not started" as s669 {
+        state "Handover B to C not started" as s670 {
+          state "Team members: B#59; lead seat: B" as s671 {
+            state "Records A handed to C" as s672 {
+              state "Address DMs to A reach C" as s673 {
+                s674: Question open, asked by B
+                s675: Question open, asked by C
+              }
+            }
+          }
+          state "Team members: C#59; lead seat: C" as s676 {
+            state "Records A handed to C" as s677 {
+              state "Address DMs to A reach C" as s678 {
+                s679: Question open, asked by B
+                s680: Question open, asked by C
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  state "Handover A to B record written" as s681 {
+    state "Handover A to C not started" as s682 {
+      state "Handover B to A not started" as s683 {
+        state "Handover B to C not started" as s684 {
+          state "Team members: B#59; lead seat: B" as s685 {
+            state "Records A handed to B" as s686 {
+              state "Address DMs to A reach B" as s687 {
+                s688: Question open, asked by B
+                s689: Question late answer stored for B
+              }
+            }
+          }
+        }
+        state "Handover B to C approved and checked" as s690 {
+          state "Team members: B#59; lead seat: B" as s691 {
+            state "Records A handed to B" as s692 {
+              state "Address DMs to A reach B" as s693 {
+                s694: Question open, asked by B
+                s695: Question late answer stored for B
+              }
+            }
+          }
+        }
+        state "Handover B to C team seat moved" as s696 {
+          state "Team members: B#59; lead seat: B" as s697 {
+            state "Records A handed to B" as s698 {
+              state "Address DMs to A reach B" as s699 {
+                s700: Question open, asked by B
+              }
+            }
+          }
+          state "Team members: C#59; lead seat: C" as s701 {
+            state "Records A handed to B" as s702 {
+              state "Address DMs to A reach B" as s703 {
+                s704: Question open, asked by B
+                s705: Question late answer stored for B
+              }
+            }
+          }
+        }
+        state "Handover B to C pending question moved" as s706 {
+          state "Team members: B#59; lead seat: B" as s707 {
+            state "Records A handed to B" as s708 {
+              state "Address DMs to A reach B" as s709 {
+                s710: Question open, asked by B
+                s711: Question open, asked by C
+              }
+            }
+          }
+          state "Team members: C#59; lead seat: C" as s712 {
+            state "Records A handed to B" as s713 {
+              state "Address DMs to A reach B" as s714 {
+                s715: Question open, asked by B
+                s716: Question open, asked by C
+                s717: Question late answer stored for B
+              }
+            }
+          }
+        }
+        state "Handover B to C record written" as s718 {
+          state "Team members: B#59; lead seat: B" as s719 {
+            state "Records A handed to B, B handed to C" as s720 {
+              state "Address DMs to A reach C" as s721 {
+                s722: Question open, asked by B
+                s723: Question open, asked by C
+                s724: Question late answer sent to C, not stored: the question is B's
+                s725: Question late answer stored for C
+              }
+            }
+          }
+          state "Team members: C#59; lead seat: C" as s726 {
+            state "Records A handed to B, B handed to C" as s727 {
+              state "Address DMs to A reach C" as s728 {
+                s729: Question open, asked by B
+                s730: Question open, asked by C
+                s731: Question late answer stored for B
+                s732: Question late answer sent to C, not stored: the question is B's
+                s733: Question late answer stored for C
+              }
+            }
+          }
+        }
+      }
+      state "Handover B to A approved and checked" as s734 {
+        state "Handover B to C not started" as s735 {
+          state "Team members: B#59; lead seat: B" as s736 {
+            state "Records A handed to B" as s737 {
+              state "Address DMs to A reach B" as s738 {
+                s739: Question open, asked by B
+              }
+            }
+          }
+        }
+      }
+      state "Handover B to A team seat moved" as s740 {
+        state "Handover B to C not started" as s741 {
+          state "Team members: A#59; lead seat: A" as s742 {
+            state "Records A handed to B" as s743 {
+              state "Address DMs to A reach B" as s744 {
+                s745: Question open, asked by B
+              }
+            }
+          }
+          state "Team members: B#59; lead seat: B" as s746 {
+            state "Records A handed to B" as s747 {
+              state "Address DMs to A reach B" as s748 {
+                s749: Question open, asked by B
+              }
+            }
+          }
+        }
+      }
+      state "Handover B to A pending question moved" as s750 {
+        state "Handover B to C not started" as s751 {
+          state "Team members: A#59; lead seat: A" as s752 {
+            state "Records A handed to B" as s753 {
+              state "Address DMs to A reach B" as s754 {
+                s755: Question open, asked by A
+                s756: Question open, asked by B
+              }
+            }
+          }
+          state "Team members: B#59; lead seat: B" as s757 {
+            state "Records A handed to B" as s758 {
+              state "Address DMs to A reach B" as s759 {
+                s760: Question open, asked by A
+                s761: Question open, asked by B
+              }
+            }
+          }
+        }
+      }
+      state "Handover B to A record written" as s762 {
+        state "Handover B to C not started" as s763 {
+          state "Team members: A#59; lead seat: A" as s764 {
+            state "Records A handed to B, B handed to A" as s765 {
+              state "Address DMs to A loop back to A" as s766 {
+                s767: Question open, asked by A
+                s768: Question open, asked by B
+                s769: Question late answer stored for A
+                s770: Question late answer sent to A, not stored: the question is B's
+              }
+            }
+          }
+          state "Team members: B#59; lead seat: B" as s771 {
+            state "Records A handed to B, B handed to A" as s772 {
+              state "Address DMs to A loop back to A" as s773 {
+                s774: Question open, asked by A
+                s775: Question open, asked by B
+                s776: Question late answer stored for A
+                s777: Question late answer sent to A, not stored: the question is B's
+              }
+            }
+          }
+        }
+      }
+    }
+    state "Handover A to C approved and checked" as s778 {
+      state "Handover B to A not started" as s779 {
+        state "Handover B to C not started" as s780 {
+          state "Team members: B#59; lead seat: B" as s781 {
+            state "Records A handed to B" as s782 {
+              state "Address DMs to A reach B" as s783 {
+                s784: Question open, asked by B
+              }
+            }
+          }
+        }
+      }
+    }
+    state "Handover A to C team seat moved" as s785 {
+      state "Handover B to A not started" as s786 {
+        state "Handover B to C not started" as s787 {
+          state "Team members: B#59; lead seat: B" as s788 {
+            state "Records A handed to B" as s789 {
+              state "Address DMs to A reach B" as s790 {
+                s791: Question open, asked by B
+              }
+            }
+          }
+          state "Team members: C#59; lead seat: C" as s792 {
+            state "Records A handed to B" as s793 {
+              state "Address DMs to A reach B" as s794 {
+                s795: Question open, asked by B
+              }
+            }
+          }
+        }
+      }
+    }
+    state "Handover A to C pending question moved" as s796 {
+      state "Handover B to A not started" as s797 {
+        state "Handover B to C not started" as s798 {
+          state "Team members: B#59; lead seat: B" as s799 {
+            state "Records A handed to B" as s800 {
+              state "Address DMs to A reach B" as s801 {
+                s802: Question open, asked by B
+                s803: Question open, asked by C
+              }
+            }
+          }
+          state "Team members: C#59; lead seat: C" as s804 {
+            state "Records A handed to B" as s805 {
+              state "Address DMs to A reach B" as s806 {
+                s807: Question open, asked by B
+                s808: Question open, asked by C
+              }
+            }
+          }
+        }
+      }
+    }
+    state "Handover A to C record written" as s809 {
+      state "Handover B to A not started" as s810 {
+        state "Handover B to C not started" as s811 {
+          state "Team members: B#59; lead seat: B" as s812 {
+            state "Records A handed to B" as s813 {
+              state "Address DMs to A reach B" as s814 {
+                s815: Question open, asked by B
+                s816: Question open, asked by C
+                s817: Question late answer stored for B
+                s818: Question late answer sent to B, not stored: the question is C's
+              }
+            }
+            state "Records A handed to C" as s819 {
+              state "Address DMs to A reach C" as s820 {
+                s821: Question open, asked by B
+                s822: Question open, asked by C
+                s823: Question late answer sent to C, not stored: the question is B's
+                s824: Question late answer stored for C
+              }
+            }
+          }
+          state "Team members: C#59; lead seat: C" as s825 {
+            state "Records A handed to B" as s826 {
+              state "Address DMs to A reach B" as s827 {
+                s828: Question open, asked by B
+                s829: Question open, asked by C
+                s830: Question late answer stored for B
+                s831: Question late answer sent to B, not stored: the question is C's
+              }
+            }
+            state "Records A handed to C" as s832 {
+              state "Address DMs to A reach C" as s833 {
+                s834: Question open, asked by B
+                s835: Question open, asked by C
+                s836: Question late answer sent to C, not stored: the question is B's
+                s837: Question late answer stored for C
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  [*] --> s7
+  s7 --> s364: the person approves A to B and it passes its check
+  s7 --> s145: the person approves A to C and it passes its check
+  s7 --> s34: the person approves B to A and it passes its check
+  s7 --> s12: the person approves B to C and it passes its check
+  s364 --> s415: the person approves A to C and it passes its check
+  s364 --> s390: the person approves B to A and it passes its check
+  s364 --> s369: the person approves B to C and it passes its check
+  s364 --> s444: A to B moves the team seat
+  s145 --> s415: the person approves A to B and it passes its check
+  s145 --> s172: the person approves B to A and it passes its check
+  s145 --> s150: the person approves B to C and it passes its check
+  s145 --> s198: A to C moves the team seat
+  s34 --> s390: the person approves A to B and it passes its check
+  s34 --> s172: the person approves A to C and it passes its check
+  s34 --> s39: the person approves B to C and it passes its check
+  s34 --> s60: B to A moves the team seat
+  s12 --> s369: the person approves A to B and it passes its check
+  s12 --> s150: the person approves A to C and it passes its check
+  s12 --> s39: the person approves B to A and it passes its check
+  s12 --> s17: B to C moves the team seat
+  s415 --> s519: A to B moves the team seat
+  s415 --> s422: A to C moves the team seat
+  s390 --> s396: B to A moves the team seat
+  s390 --> s482: A to B moves the team seat
+  s369 --> s374: B to C moves the team seat
+  s369 --> s449: A to B moves the team seat
+  s172 --> s178: B to A moves the team seat
+  s172 --> s225: A to C moves the team seat
+  s150 --> s155: B to C moves the team seat
+  s150 --> s203: A to C moves the team seat
+  s39 --> s44: B to C moves the team seat
+  s39 --> s65: B to A moves the team seat
+  s17 --> s374: the person approves A to B and it passes its check
+  s17 --> s155: the person approves A to C and it passes its check
+  s17 --> s44: the person approves B to A and it passes its check
+  s17 --> s22: B to C moves the pending question
+  s60 --> s396: the person approves A to B and it passes its check
+  s60 --> s178: the person approves A to C and it passes its check
+  s60 --> s86: B to A moves the pending question
+  s60 --> s65: the person approves B to C and it passes its check
+  s444 --> s519: the person approves A to C and it passes its check
+  s444 --> s482: the person approves B to A and it passes its check
+  s444 --> s449: the person approves B to C and it passes its check
+  s444 --> s560: A to B moves the pending question
+  s198 --> s422: the person approves A to B and it passes its check
+  s198 --> s225: the person approves B to A and it passes its check
+  s198 --> s203: the person approves B to C and it passes its check
+  s198 --> s251: A to C moves the pending question
+  s374 --> s379: B to C moves the pending question
+  s374 --> s454: A to B moves the team seat
+  s396 --> s402: B to A moves the pending question
+  s396 --> s492: A to B moves the team seat
+  s155 --> s160: B to C moves the pending question
+  s155 --> s208: A to C moves the team seat
+  s178 --> s184: B to A moves the pending question
+  s178 --> s231: A to C moves the team seat
+  s44 --> s49: B to C moves the pending question
+  s44 --> s70: B to A moves the team seat
+  s22 --> s379: the person approves A to B and it passes its check
+  s22 --> s160: the person approves A to C and it passes its check
+  s22 --> s49: the person approves B to A and it passes its check
+  s22 --> s27: B to C writes its handover record
+  s86 --> s402: the person approves A to B and it passes its check
+  s86 --> s184: the person approves A to C and it passes its check
+  s86 --> s91: the person approves B to C and it passes its check
+  s86 --> s112: B to A writes its handover record
+  s65 --> s91: B to A moves the pending question
+  s65 --> s70: B to C moves the team seat
+  s519 --> s526: A to C moves the team seat
+  s519 --> s643: A to B moves the pending question
+  s482 --> s488: B to A moves the team seat
+  s482 --> s602: A to B moves the pending question
+  s449 --> s565: A to B moves the pending question
+  s449 --> s458: B to C moves the team seat
+  s560 --> s643: the person approves A to C and it passes its check
+  s560 --> s602: the person approves B to A and it passes its check
+  s560 --> s565: the person approves B to C and it passes its check
+  s560 --> s688: A to B writes its handover record
+  s422 --> s530: A to B moves the team seat
+  s422 --> s429: A to C moves the pending question
+  s225 --> s231: B to A moves the team seat
+  s225 --> s278: A to C moves the pending question
+  s203 --> s208: B to C moves the team seat
+  s203 --> s256: A to C moves the pending question
+  s251 --> s429: the person approves A to B and it passes its check
+  s251 --> s278: the person approves B to A and it passes its check
+  s251 --> s256: the person approves B to C and it passes its check
+  s251 --> s304: A to C writes its handover record
+  s379 --> s463: A to B moves the team seat
+  s379 --> s384: B to C writes its handover record
+  s402 --> s502: A to B moves the team seat
+  s402 --> s408: B to A writes its handover record
+  s160 --> s213: A to C moves the team seat
+  s160 --> s165: B to C writes its handover record
+  s184 --> s237: A to C moves the team seat
+  s184 --> s190: B to A writes its handover record
+  s49 --> s75: B to A moves the team seat
+  s49 --> s54: B to C writes its handover record
+  s91 --> s96: B to C moves the team seat
+  s91 --> s118: B to A writes its handover record
+  s70 --> s96: B to A moves the pending question
+  s70 --> s75: B to C moves the pending question
+  s488 --> s498: B to A moves the pending question
+  s488 --> s608: A to B moves the pending question
+  s454 --> s463: B to C moves the pending question
+  s454 --> s570: A to B moves the pending question
+  s492 --> s502: B to A moves the pending question
+  s492 --> s612: A to B moves the pending question
+  s526 --> s650: A to B moves the pending question
+  s526 --> s537: A to C moves the pending question
+  s643 --> s650: A to C moves the team seat
+  s643 --> s784: A to B writes its handover record
+  s602 --> s608: B to A moves the team seat
+  s602 --> s739: A to B writes its handover record
+  s565 --> s574: B to C moves the team seat
+  s565 --> s694: A to B writes its handover record
+  s208 --> s213: B to C moves the pending question
+  s208 --> s261: A to C moves the pending question
+  s231 --> s237: B to A moves the pending question
+  s231 --> s284: A to C moves the pending question
+  s458 --> s467: B to C moves the pending question
+  s458 --> s574: A to B moves the pending question
+  s530 --> s654: A to B moves the pending question
+  s530 --> s541: A to C moves the pending question
+  s429 --> s541: A to B moves the team seat
+  s429 --> s436: A to C writes its handover record
+  s278 --> s284: B to A moves the team seat
+  s278 --> s336: A to C writes its handover record
+  s256 --> s261: B to C moves the team seat
+  s256 --> s310: A to C writes its handover record
+  s27 --> s165: the person approves A to C and it passes its check
+  s27 --> s28: the peer's late answer arrives and is stored
+  s112 --> s190: the person approves A to C and it passes its check
+  s112 --> s113: the peer's late answer arrives and is stored
+  s688 --> s694: the person approves B to C and it passes its check
+  s688 --> s689: the peer's late answer arrives and is stored
+  s304 --> s310: the person approves B to C and it passes its check
+  s304 --> s305: the peer's late answer arrives and is stored
+  s96 --> s101: B to C moves the pending question
+  s96 --> s123: B to A writes its handover record
+  s75 --> s101: B to A moves the pending question
+  s75 --> s80: B to C writes its handover record
+  s498 --> s619: A to B moves the pending question
+  s498 --> s508: B to A writes its handover record
+  s608 --> s618: B to A moves the pending question
+  s608 --> s745: A to B writes its handover record
+  s463 --> s579: A to B moves the pending question
+  s463 --> s472: B to C writes its handover record
+  s502 --> s624: A to B moves the pending question
+  s502 --> s512: B to A writes its handover record
+  s570 --> s580: B to C moves the pending question
+  s570 --> s700: A to B writes its handover record
+  s612 --> s623: B to A moves the pending question
+  s612 --> s749: A to B writes its handover record
+  s650 --> s661: A to C moves the pending question
+  s650 --> s791: A to B writes its handover record
+  s537 --> s662: A to B moves the pending question
+  s537 --> s548: A to C writes its handover record
+  s213 --> s266: A to C moves the pending question
+  s213 --> s218: B to C writes its handover record
+  s237 --> s290: A to C moves the pending question
+  s237 --> s243: B to A writes its handover record
+  s467 --> s584: A to B moves the pending question
+  s467 --> s476: B to C writes its handover record
+  s574 --> s585: B to C moves the pending question
+  s574 --> s704: A to B writes its handover record
+  s654 --> s666: A to C moves the pending question
+  s654 --> s795: A to B writes its handover record
+  s261 --> s266: B to C moves the pending question
+  s261 --> s316: A to C writes its handover record
+  s284 --> s290: B to A moves the pending question
+  s284 --> s342: A to C writes its handover record
+  s541 --> s667: A to B moves the pending question
+  s541 --> s552: A to C writes its handover record
+  s384 --> s472: A to B moves the team seat
+  s408 --> s512: A to B moves the team seat
+  s165 --> s218: A to C moves the team seat
+  s190 --> s243: A to C moves the team seat
+  s54 --> s80: B to A moves the team seat
+  s28 --> s166: the person approves A to C and it passes its check
+  s118 --> s123: B to C moves the team seat
+  s113 --> s191: the person approves A to C and it passes its check
+  s784 --> s791: A to C moves the team seat
+  s739 --> s745: B to A moves the team seat
+  s694 --> s704: B to C moves the team seat
+  s689 --> s695: the person approves B to C and it passes its check
+  s436 --> s552: A to B moves the team seat
+  s336 --> s342: B to A moves the team seat
+  s310 --> s316: B to C moves the team seat
+  s305 --> s311: the person approves B to C and it passes its check
+  s101 --> s106: B to C writes its handover record
+  s101 --> s128: B to A writes its handover record
+  s618 --> s630: B to A writes its handover record
+  s618 --> s755: A to B writes its handover record
+  s619 --> s631: B to A writes its handover record
+  s619 --> s756: A to B writes its handover record
+  s623 --> s635: B to A writes its handover record
+  s623 --> s760: A to B writes its handover record
+  s579 --> s590: B to C writes its handover record
+  s579 --> s710: A to B writes its handover record
+  s624 --> s636: B to A writes its handover record
+  s624 --> s761: A to B writes its handover record
+  s661 --> s674: A to C writes its handover record
+  s661 --> s802: A to B writes its handover record
+  s580 --> s591: B to C writes its handover record
+  s580 --> s711: A to B writes its handover record
+  s662 --> s675: A to C writes its handover record
+  s662 --> s803: A to B writes its handover record
+  s584 --> s595: B to C writes its handover record
+  s584 --> s715: A to B writes its handover record
+  s666 --> s679: A to C writes its handover record
+  s666 --> s807: A to B writes its handover record
+  s266 --> s271: B to C writes its handover record
+  s266 --> s322: A to C writes its handover record
+  s290 --> s296: B to A writes its handover record
+  s290 --> s348: A to C writes its handover record
+  s585 --> s596: B to C writes its handover record
+  s585 --> s716: A to B writes its handover record
+  s667 --> s680: A to C writes its handover record
+  s667 --> s808: A to B writes its handover record
+  s166 --> s219: A to C moves the team seat
+  s191 --> s244: A to C moves the team seat
+  s123 --> s128: B to C moves the pending question
+  s80 --> s106: B to A moves the pending question
+  s508 --> s631: A to B moves the pending question
+  s472 --> s590: A to B moves the pending question
+  s512 --> s636: A to B moves the pending question
+  s218 --> s271: A to C moves the pending question
+  s243 --> s296: A to C moves the pending question
+  s476 --> s595: A to B moves the pending question
+  s745 --> s755: B to A moves the pending question
+  s695 --> s705: B to C moves the team seat
+  s700 --> s711: B to C moves the pending question
+  s749 --> s760: B to A moves the pending question
+  s791 --> s802: A to C moves the pending question
+  s548 --> s675: A to B moves the pending question
+  s704 --> s716: B to C moves the pending question
+  s795 --> s807: A to C moves the pending question
+  s311 --> s317: B to C moves the team seat
+  s316 --> s322: B to C moves the pending question
+  s342 --> s348: B to A moves the pending question
+  s552 --> s680: A to B moves the pending question
+  s106 --> s133: B to A writes its handover record
+  s128 --> s137: B to C writes its handover record
+  s630 --> s767: A to B writes its handover record
+  s631 --> s768: A to B writes its handover record
+  s635 --> s774: A to B writes its handover record
+  s590 --> s722: A to B writes its handover record
+  s636 --> s775: A to B writes its handover record
+  s591 --> s723: A to B writes its handover record
+  s219 --> s272: A to C moves the pending question
+  s244 --> s297: A to C moves the pending question
+  s595 --> s729: A to B writes its handover record
+  s271 --> s328: A to C writes its handover record
+  s296 --> s354: A to C writes its handover record
+  s596 --> s730: A to B writes its handover record
+  s755 --> s767: B to A writes its handover record
+  s756 --> s768: B to A writes its handover record
+  s760 --> s774: B to A writes its handover record
+  s674 --> s815: A to B writes its handover record
+  s710 --> s722: B to C writes its handover record
+  s761 --> s775: B to A writes its handover record
+  s802 --> s821: A to C writes its handover record
+  s675 --> s816: A to B writes its handover record
+  s711 --> s723: B to C writes its handover record
+  s803 --> s822: A to C writes its handover record
+  s679 --> s828: A to B writes its handover record
+  s715 --> s729: B to C writes its handover record
+  s705 --> s717: B to C moves the pending question
+  s807 --> s834: A to C writes its handover record
+  s322 --> s328: B to C writes its handover record
+  s317 --> s323: B to C moves the pending question
+  s348 --> s354: B to A writes its handover record
+  s680 --> s829: A to B writes its handover record
+  s716 --> s730: B to C writes its handover record
+  s808 --> s835: A to C writes its handover record
+  s272 --> s329: A to C writes its handover record
+  s297 --> s355: A to C writes its handover record
+  s133 --> s134: the peer's late answer arrives and is stored
+  s137 --> s138: the peer's late answer arrives and is stored
+  s717 --> s731: B to C writes its handover record
+  s323 --> s330: B to C writes its handover record
+  s767 --> s769: the peer's late answer arrives and is stored
+  s768 --> s770: the peer's late answer arrives and is refused
+  s774 --> s776: the peer's late answer arrives and is stored
+  s722 --> s724: the peer's late answer arrives and is refused
+  s775 --> s777: the peer's late answer arrives and is refused
+  s723 --> s725: the peer's late answer arrives and is stored
+  s729 --> s732: the peer's late answer arrives and is refused
+  s328 --> s330: the peer's late answer arrives and is stored
+  s354 --> s356: the peer's late answer arrives and is stored
+  s730 --> s733: the peer's late answer arrives and is stored
+  s815 --> s817: the peer's late answer arrives and is stored
+  s821 --> s823: the peer's late answer arrives and is refused
+  s816 --> s818: the peer's late answer arrives and is refused
+  s822 --> s824: the peer's late answer arrives and is stored
+  s828 --> s830: the peer's late answer arrives and is stored
+  s834 --> s836: the peer's late answer arrives and is refused
+  s829 --> s831: the peer's late answer arrives and is refused
+  s835 --> s837: the peer's late answer arrives and is stored
+  classDef breaks fill:#ffecee,stroke:#e72e3b,stroke-width:2.5px,color:#cd2834
+  class s7 blue
+  class s7 bugPath
+  class s12 orange
+  class s17 orange
+  class s22 orange
+  class s27 blue
+  class s28 teal
+  class s34 orange
+  class s39 orange
+  class s44 orange
+  class s49 orange
+  class s54 orange
+  class s60 orange
+  class s65 orange
+  class s70 orange
+  class s75 orange
+  class s80 orange
+  class s86 orange
+  class s91 orange
+  class s96 orange
+  class s101 orange
+  class s106 orange
+  class s112 blue
+  class s113 teal
+  class s118 orange
+  class s123 orange
+  class s128 orange
+  class s133 blue
+  class s133 breaks
+  class s134 teal
+  class s134 breaks
+  class s137 blue
+  class s137 breaks
+  class s138 teal
+  class s138 breaks
+  class s145 orange
+  class s150 orange
+  class s155 orange
+  class s160 orange
+  class s165 orange
+  class s166 teal
+  class s172 orange
+  class s178 orange
+  class s184 orange
+  class s190 orange
+  class s191 teal
+  class s198 orange
+  class s203 orange
+  class s208 orange
+  class s213 orange
+  class s218 orange
+  class s219 teal
+  class s225 orange
+  class s231 orange
+  class s237 orange
+  class s243 orange
+  class s244 teal
+  class s251 orange
+  class s256 orange
+  class s261 orange
+  class s266 orange
+  class s271 orange
+  class s272 teal
+  class s278 orange
+  class s284 orange
+  class s290 orange
+  class s296 orange
+  class s297 teal
+  class s304 blue
+  class s305 teal
+  class s310 orange
+  class s311 teal
+  class s316 orange
+  class s317 teal
+  class s322 orange
+  class s323 teal
+  class s328 blue
+  class s329 teal
+  class s330 teal
+  class s336 orange
+  class s342 orange
+  class s348 orange
+  class s354 blue
+  class s355 teal
+  class s356 teal
+  class s364 orange
+  class s364 bugPath
+  class s369 orange
+  class s374 orange
+  class s379 orange
+  class s384 orange
+  class s390 orange
+  class s390 bugPath
+  class s396 orange
+  class s402 orange
+  class s408 orange
+  class s415 orange
+  class s415 bugPath
+  class s422 orange
+  class s429 orange
+  class s436 orange
+  class s444 orange
+  class s449 orange
+  class s454 orange
+  class s458 orange
+  class s463 orange
+  class s467 orange
+  class s472 orange
+  class s476 orange
+  class s482 orange
+  class s482 bugPath
+  class s488 orange
+  class s492 orange
+  class s498 orange
+  class s502 orange
+  class s508 orange
+  class s512 orange
+  class s519 orange
+  class s519 bugPath
+  class s526 orange
+  class s530 orange
+  class s537 orange
+  class s541 orange
+  class s548 orange
+  class s552 orange
+  class s560 orange
+  class s565 orange
+  class s570 orange
+  class s574 orange
+  class s579 orange
+  class s580 orange
+  class s584 orange
+  class s585 orange
+  class s590 orange
+  class s591 orange
+  class s595 orange
+  class s596 orange
+  class s602 orange
+  class s602 bugPath
+  class s608 orange
+  class s612 orange
+  class s618 orange
+  class s619 orange
+  class s623 orange
+  class s624 orange
+  class s630 orange
+  class s631 orange
+  class s635 orange
+  class s636 orange
+  class s643 orange
+  class s643 bugPath
+  class s650 orange
+  class s654 orange
+  class s661 orange
+  class s662 orange
+  class s666 orange
+  class s667 orange
+  class s674 orange
+  class s675 orange
+  class s679 orange
+  class s680 orange
+  class s688 blue
+  class s689 teal
+  class s694 orange
+  class s695 teal
+  class s700 orange
+  class s704 orange
+  class s705 teal
+  class s710 orange
+  class s711 orange
+  class s715 orange
+  class s716 orange
+  class s717 teal
+  class s722 blue
+  class s722 breaks
+  class s723 blue
+  class s723 breaks
+  class s724 teal
+  class s724 breaks
+  class s725 teal
+  class s725 breaks
+  class s729 blue
+  class s729 breaks
+  class s730 blue
+  class s731 teal
+  class s732 teal
+  class s732 breaks
+  class s733 teal
+  class s739 orange
+  class s739 bugPath
+  class s745 orange
+  class s745 bugPath
+  class s749 orange
+  class s755 orange
+  class s755 bugPath
+  class s756 orange
+  class s760 orange
+  class s761 orange
+  class s767 blue
+  class s767 breaks
+  class s767 bugPath
+  class s768 blue
+  class s768 breaks
+  class s769 teal
+  class s769 breaks
+  class s770 teal
+  class s770 breaks
+  class s774 blue
+  class s774 breaks
+  class s775 blue
+  class s775 breaks
+  class s776 teal
+  class s776 breaks
+  class s777 teal
+  class s777 breaks
+  class s784 orange
+  class s784 bugPath
+  class s791 orange
+  class s791 bugPath
+  class s795 orange
+  class s802 orange
+  class s802 bugPath
+  class s803 orange
+  class s807 orange
+  class s808 orange
+  class s815 blue
+  class s815 breaks
+  class s816 blue
+  class s816 breaks
+  class s817 teal
+  class s817 breaks
+  class s818 teal
+  class s818 breaks
+  class s821 blue
+  class s821 breaks
+  class s821 bugPath
+  class s822 blue
+  class s822 breaks
+  class s823 teal
+  class s823 breaks
+  class s823 bugPath
+  class s824 teal
+  class s824 breaks
+  class s828 blue
+  class s828 breaks
+  class s829 blue
+  class s829 breaks
+  class s830 teal
+  class s830 breaks
+  class s831 teal
+  class s831 breaks
+  class s834 blue
+  class s834 breaks
+  class s835 blue
+  class s835 breaks
+  class s836 teal
+  class s836 breaks
+  class s837 teal
+  class s837 breaks

@@ -1,0 +1,103 @@
+---
+title: "xsm: a DM, a question and a handover from A to B"
+---
+stateDiagram-v2
+  direction LR
+  state "Legend" as legend {
+    lg0: Breaks AnswerRecorded or HeldStaysHeld
+    lg1: Path to the AnswerRecorded or HeldStaysHeld bug
+  }
+  class lg0 breaks
+  class lg1 bugPath
+  state "At the same time" as all {
+    state "DM" as r0 {
+      s0: DM waiting at A
+      s1: DM shown to A, not confirmed
+      s2: DM held by A's gate
+      s3: DM confirmed by A
+      s4: DM in the letter
+      s5: Held DM in the letter
+      s6: DM read by B
+      s7: Held DM read by B
+      [*] --> s0
+      s0 --> s1: A reads the DM [when Answer is not No answer yet, question is B's and Handover is A holds its place]
+      s0 --> s2: A's gate refuses the DM [when Answer is not No answer yet, question is B's and Handover is A holds its place]
+      s1 --> s0: A's output fails or the 120 s lease runs out [when Answer is not No answer yet, question is B's and Handover is A holds its place]
+      s1 --> s3: A confirms it [when Answer is not No answer yet, question is B's and Handover is A holds its place]
+      s0 --> s4: unread DMs go into the letter [when Wait is not A waits and Answer is not No answer yet and Handover is Handing over: questions moved]
+      s1 --> s4: unread DMs go into the letter [when Wait is not A waits and Answer is not No answer yet and Handover is Handing over: questions moved]
+      s2 --> s5: unread DMs go into the letter [when Wait is not A waits and Answer is not No answer yet and Handover is Handing over: questions moved]
+      s4 --> s6: B reads the letter [when Handover is B holds A's place]
+      s5 --> s7: B reads the letter [when Handover is B holds A's place]
+    }
+    --
+    state "Wait" as r1 {
+      s8: A waits
+      s9: Wait ended: timeout
+      s10: Wait ended: answered
+      [*] --> s8
+      s8 --> s9: the wait times out
+      s8 --> s10: the answer ends the wait [when Answer is one of Answer at A, recorded, Answer read by A, recorded]
+    }
+    --
+    state "Answer" as r2 {
+      s11: No answer yet
+      s12: Answer waiting at A
+      s13: Answer at A, recorded
+      s14: Answer read by A, recorded
+      s15: No answer yet, question is B's
+      s16: Answer only in the letter, question open
+      s17: Answer in the letter, recorded
+      s18: Answer waiting at B
+      s19: Answer at B, recorded
+      s20: Answer read by A, question open
+      s21: Answer read by B, recorded
+      [*] --> s11
+      s11 --> s12: P answers
+      s12 --> s13: the asker checks its question [when DM is one of DM confirmed by A, DM held by A's gate, DM shown to A, not confirmed, DM waiting at A and Handover is A holds its place]
+      s12 --> s14: A reads the answer [when DM is one of DM confirmed by A, DM held by A's gate, DM shown to A, not confirmed, DM waiting at A and Handover is A holds its place]
+      s11 --> s15: the person approves the handover [when Wait is Wait ended: timeout]
+      s13 --> s14: A reads the answer [when Handover is A holds its place]
+      s15 --> s12: P answers [when DM is none of DM read by B, Held DM read by B and Handover is one of Handing over: questions moved, Handing over: unread DMs moved]
+      s12 --> s16: unread DMs go into the letter [when DM is one of DM confirmed by A, DM held by A's gate, DM shown to A, not confirmed, DM waiting at A and Wait is Wait ended: timeout and Handover is Handing over: questions moved]
+      s13 --> s17: unread DMs go into the letter [when Wait is not A waits and Handover is Handing over: questions moved]
+      s15 --> s18: P answers [when DM is none of DM held by A's gate, DM shown to A, not confirmed, DM waiting at A and Handover is one of B holds A's place, B read the letter]
+      s12 --> s20: A reads the answer [when DM is none of DM held by A's gate, DM shown to A, not confirmed, DM waiting at A and Wait is Wait ended: timeout and Handover is one of B holds A's place, B read the letter]
+      s18 --> s19: the asker checks its question
+      s18 --> s21: B reads the answer
+      s19 --> s21: B reads the answer
+    }
+    --
+    state "Handover" as r3 {
+      s22: A holds its place
+      s23: Handing over: questions moved
+      s24: Handing over: unread DMs moved
+      s25: B holds A's place
+      s26: B read the letter
+      [*] --> s22
+      s22 --> s23: the person approves the handover [when Wait is not A waits]
+      s23 --> s24: unread DMs go into the letter
+      s24 --> s25: the handover is recorded
+      s25 --> s26: B reads the letter
+    }
+  }
+  classDef breaks fill:#ffecee,stroke:#e72e3b,stroke-width:2.5px,color:#cd2834
+  class s0 bugPath
+  class s2 bugPath
+  class s4 bugPath
+  class s5 bugPath
+  class s7 breaks
+  class s7 bugPath
+  class s8 bugPath
+  class s9 bugPath
+  class s11 bugPath
+  class s12 bugPath
+  class s15 bugPath
+  class s16 breaks
+  class s16 bugPath
+  class s20 breaks
+  class s22 bugPath
+  class s23 bugPath
+  class s24 bugPath
+  class s25 bugPath
+  class s26 bugPath

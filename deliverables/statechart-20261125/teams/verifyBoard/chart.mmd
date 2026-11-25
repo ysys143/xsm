@@ -1,0 +1,121 @@
+---
+title: "xsm handover: what happens to A's board item owner/A"
+---
+stateDiagram-v2
+  state "Legend" as legend {
+    lg0: running
+    lg1: closed
+    lg2: left
+    lg3: Breaks EveryOwnerItemClosed or MovedItemIsClosed or NoContentLeftBehind
+    lg4: Path to the EveryOwnerItemClosed or MovedItemIsClosed or NoContentLeftBehind bug
+  }
+  class lg0 blue
+  class lg1 teal
+  class lg2 orange
+  class lg3 breaks
+  class lg4 bugPath
+  s0: A has not started: owner/A shows 2 versions at once
+  s1: A has not started: owner/A holds one version
+  s2: A has not started: owner/A shows 3 versions at once
+  s3: A has read the board: owner/A shows 2 versions at once
+  s4: A has read the board: owner/A holds one version
+  s5: A has read the board: owner/A shows 3 versions at once
+  s6: A took the list of items: owner/A shows 2 versions at once#59; owner/B gets nothing (item was in conflict)
+  s7: A took the list of items: owner/A holds one version
+  s8: A closed owner/A: owner/A shows 2 versions at once#59; owner/B gets nothing (item was in conflict)
+  s9: A wrote owner/B: owner/A holds one version#59; owner/B holds A's items
+  s10: A took the list of items: owner/A holds one version#59; owner/B gets nothing (item was in conflict)
+  s11: A took the list of items: owner/A shows 3 versions at once#59; owner/B gets nothing (item was in conflict)
+  s12: A took the list of items: owner/A shows 2 versions at once
+  s13: A closed owner/A: owner/A says: handed over to B#59; owner/B holds A's items
+  s14: A closed owner/A: owner/A holds one version#59; owner/B gets nothing (item was in conflict)
+  s15: A closed owner/A: owner/A shows 3 versions at once#59; owner/B gets nothing (item was in conflict)
+  s16: A wrote owner/B: owner/A holds one version#59; owner/B written, but misses a later version
+  s17: A wrote owner/B: owner/A shows 2 versions at once#59; owner/B written, but misses a later version
+  s18: A wrote handover/A: owner/A shows 2 versions at once#59; owner/B gets nothing (item was in conflict)
+  s19: A closed owner/A: owner/A shows the handover note beside 1 unforwarded version#59; owner/B written, but misses a later version
+  s20: A closed owner/A: owner/A shows the handover note beside 1 unforwarded version#59; owner/B holds A's items
+  s21: A wrote handover/A: owner/A says: handed over to B#59; owner/B holds A's items
+  s22: A wrote handover/A: owner/A holds one version#59; owner/B gets nothing (item was in conflict)
+  s23: A wrote handover/A: owner/A shows 3 versions at once#59; owner/B gets nothing (item was in conflict)
+  s24: A wrote handover/A: owner/A shows the handover note beside 1 unforwarded version#59; owner/B written, but misses a later version
+  s25: A wrote handover/A: owner/A shows the handover note beside 1 unforwarded version#59; owner/B holds A's items
+  [*] --> s0
+  [*] --> s1
+  s0 --> s1: a member writes owner/A
+  s0 --> s3: A reads the board
+  s0 --> s2: a member writes owner/A
+  s1 --> s4: A reads the board
+  s1 --> s0: a member writes owner/A
+  s2 --> s5: A reads the board
+  s3 --> s4: a member writes owner/A
+  s3 --> s6: A lists the items [one has two versions]
+  s3 --> s5: a member writes owner/A
+  s4 --> s7: A lists the items
+  s4 --> s3: a member writes owner/A
+  s5 --> s11: A lists the items [one has two versions]
+  s6 --> s8: A leaves the conflicted item alone
+  s6 --> s10: a member writes owner/A
+  s6 --> s11: a member writes owner/A
+  s7 --> s9: A copies owner/A into owner/B
+  s7 --> s12: a member writes owner/A
+  s8 --> s18: A writes the handover/A item
+  s9 --> s13: A overwrites owner/A with 'handed over'
+  s9 --> s16: a member writes owner/A
+  s9 --> s17: a member writes owner/A
+  s7 --> s16: A copies owner/A into owner/B
+  s10 --> s14: A leaves the conflicted item alone
+  s11 --> s15: A leaves the conflicted item alone
+  s12 --> s17: A copies owner/A into owner/B
+  s13 --> s21: A writes the handover/A item
+  s14 --> s22: A writes the handover/A item
+  s15 --> s23: A writes the handover/A item
+  s16 --> s19: A overwrites owner/A with 'handed over'
+  s9 --> s20: A overwrites owner/A with 'handed over'
+  s17 --> s19: A overwrites owner/A with 'handed over'
+  s19 --> s24: A writes the handover/A item
+  s20 --> s25: A writes the handover/A item
+  classDef breaks fill:#ffecee,stroke:#e72e3b,stroke-width:2.5px,color:#cd2834
+  class s0 blue
+  class s0 bugPath
+  class s1 blue
+  class s1 bugPath
+  class s2 blue
+  class s3 blue
+  class s3 bugPath
+  class s4 blue
+  class s4 bugPath
+  class s5 blue
+  class s6 blue
+  class s6 bugPath
+  class s7 blue
+  class s7 bugPath
+  class s8 blue
+  class s8 bugPath
+  class s9 blue
+  class s9 bugPath
+  class s10 blue
+  class s11 blue
+  class s12 blue
+  class s13 blue
+  class s14 blue
+  class s15 blue
+  class s16 blue
+  class s17 blue
+  class s17 bugPath
+  class s18 orange
+  class s18 breaks
+  class s18 bugPath
+  class s19 blue
+  class s19 bugPath
+  class s20 blue
+  class s21 teal
+  class s22 orange
+  class s22 breaks
+  class s23 orange
+  class s23 breaks
+  class s24 orange
+  class s24 breaks
+  class s24 bugPath
+  class s25 orange
+  class s25 breaks

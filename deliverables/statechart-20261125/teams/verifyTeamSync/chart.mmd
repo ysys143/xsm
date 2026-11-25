@@ -1,0 +1,127 @@
+---
+title: "xsm handover: the team record on two machines"
+---
+stateDiagram-v2
+  state "Legend" as legend {
+    lg0: split
+    lg1: settled
+    lg2: open
+    lg3: Breaks BHoldsTheSeatEverywhere or HandoverStands or SameTeamAtRest
+    lg4: Breaks BHoldsTheSeatEverywhere or HandoverStands in some cases
+    lg5: Path to the BHoldsTheSeatEverywhere or HandoverStands or SameTeamAtRest bug
+  }
+  class lg0 orange
+  class lg1 teal
+  class lg2 blue
+  class lg3 breaks
+  class lg4 mayBreak
+  class lg5 bugPath
+  s0: X: A leads (created here)#59; Y: A leads (last received from X)#59; no record in flight
+  s1: X: A leads (last received from Y)#59; Y: A leads (created here)#59; no record in flight
+  s2: X: A leads (last received from Y)#59; Y: A leads (last received from X)#59; no record in flight
+  s3: X: A leads (created here)#59; Y: A leads, Y's change in (last received from X)#59; 1 in flight
+  s4: X: A leads (last received from Y)#59; Y: A leads, Y's change in (created here)#59; 1 in flight
+  s5: X: A leads (last received from Y)#59; Y: A leads, Y's change in (last received from X)#59; 1 in flight
+  s6: X: B leads, A is out (created here)#59; Y: A leads (last received from X)#59; 1 in flight
+  s7: X: B leads, A is out (last received from Y)#59; Y: A leads (created here)#59; 1 in flight
+  s8: X: B leads, A is out (last received from Y)#59; Y: A leads (last received from X)#59; 1 in flight
+  s9: X: B leads, A is out (created here)#59; Y: A leads, Y's change in (last received from X)#59; 2 in flight
+  s10: X: B leads, A is out (last received from Y)#59; Y: A leads, Y's change in (created here)#59; 2 in flight
+  s11: X: B leads, A is out (last received from Y)#59; Y: A leads, Y's change in (last received from X)#59; 2 in flight
+  s12: X: B leads, A is out (created here)#59; Y: B leads, A is out (last received from X)#59; no record in flight
+  s13: X: A leads, Y's change in (last received from Y)#59; Y: A leads, Y's change in (created here)#59; no record in flight
+  s14: X: A leads, Y's change in (last received from Y)#59; Y: A leads, Y's change in (last received from X)#59; no record in flight
+  s15: X: B leads, A is out (last received from Y)#59; Y: B leads, A is out (last received from X)#59; no record in flight
+  s16: X: B leads, A is out (created here)#59; Y: A leads, Y's change in (last received from X)#59; 1 in flight
+  s17: X: B leads, A is out (last received from Y)#59; Y: A leads, Y's change in (last received from X)#59; 1 in flight
+  s18: X: B leads, A is out (last received from Y)#59; Y: B leads, A is out (last received from X)#59; 1 in flight
+  s19: X: A leads, Y's change in (last received from Y)#59; Y: A leads, Y's change in (last received from X)#59; 1 in flight
+  s20: X: B leads, A is out (last received from Y)#59; Y: A leads, Y's change in (created here)#59; 1 in flight
+  s21: X: B leads, A is out, Y's change in (last received from Y)#59; Y: A leads, Y's change in (created here)#59; 1 in flight
+  s22: X: B leads, A is out, Y's change in (last received from Y)#59; Y: A leads, Y's change in (last received from X)#59; 1 in flight
+  s23: X: B leads, A is out (created here)#59; Y: B leads, A is out, Y's change in (last received from X)#59; 1 in flight
+  s24: X: B leads, A is out (last received from Y)#59; Y: B leads, A is out, Y's change in (last received from X)#59; 1 in flight
+  s25: X: B leads, A is out (last received from Y)#59; Y: A leads, Y's change in (last received from X)#59; no record in flight
+  s26: X: B leads, A is out, Y's change in (last received from Y)#59; Y: B leads, A is out, Y's change in (last received from X)#59; no record in flight
+  [*] --> s0
+  [*] --> s1
+  [*] --> s2
+  s0 --> s3: Y changes the team and sends it
+  s0 --> s6: X hands A's seat to B and sends the team
+  s1 --> s4: Y changes the team and sends it
+  s1 --> s7: X hands A's seat to B and sends the team
+  s2 --> s5: Y changes the team and sends it
+  s2 --> s8: X hands A's seat to B and sends the team
+  s3 --> s9: X hands A's seat to B and sends the team
+  s3 --> s14: X takes Y's record, replacing its own
+  s4 --> s10: X hands A's seat to B and sends the team
+  s4 --> s13: X takes Y's record, replacing its own
+  s5 --> s11: X hands A's seat to B and sends the team
+  s5 --> s14: X takes Y's record, replacing its own
+  s6 --> s9: Y changes the team and sends it
+  s6 --> s12: Y takes X's record, replacing its own
+  s7 --> s10: Y changes the team and sends it
+  s7 --> s15: Y takes X's record, replacing its own
+  s8 --> s11: Y changes the team and sends it
+  s8 --> s15: Y takes X's record, replacing its own
+  s9 --> s16: a machine refuses the record as not newer
+  s9 --> s19: X takes Y's record, replacing its own
+  s10 --> s18: Y takes X's record, replacing its own
+  s10 --> s20: a machine refuses the record as not newer
+  s11 --> s17: a machine refuses the record as not newer
+  s12 --> s23: Y changes the team and sends it
+  s13 --> s21: X hands A's seat to B and sends the team
+  s14 --> s22: X hands A's seat to B and sends the team
+  s15 --> s24: Y changes the team and sends it
+  s16 --> s14: X takes Y's record, replacing its own
+  s17 --> s25: a machine refuses the record as not newer
+  s18 --> s15: a machine refuses the record as not newer
+  s19 --> s14: a machine refuses the record as not newer
+  s20 --> s15: Y takes X's record, replacing its own
+  s21 --> s26: Y takes X's record, replacing its own
+  s22 --> s26: Y takes X's record, replacing its own
+  s23 --> s26: X takes Y's record, replacing its own
+  s24 --> s26: X takes Y's record, replacing its own
+  classDef breaks fill:#ffecee,stroke:#e72e3b,stroke-width:2.5px,color:#cd2834
+  classDef mayBreak fill:#fff3e6,stroke:#e8730c,stroke-width:2.5px,color:#b85a06
+  class s0 blue
+  class s0 bugPath
+  class s1 blue
+  class s2 blue
+  class s2 bugPath
+  class s3 blue
+  class s4 blue
+  class s5 blue
+  class s6 blue
+  class s6 bugPath
+  class s7 blue
+  class s8 blue
+  class s8 bugPath
+  class s9 blue
+  class s9 bugPath
+  class s10 blue
+  class s11 blue
+  class s11 bugPath
+  class s12 teal
+  class s13 blue
+  class s14 blue
+  class s14 mayBreak
+  class s14 bugPath
+  class s15 teal
+  class s16 blue
+  class s16 bugPath
+  class s17 blue
+  class s17 bugPath
+  class s18 blue
+  class s19 blue
+  class s19 breaks
+  class s19 bugPath
+  class s20 blue
+  class s21 blue
+  class s22 blue
+  class s23 blue
+  class s24 blue
+  class s25 orange
+  class s25 breaks
+  class s25 bugPath
+  class s26 teal
