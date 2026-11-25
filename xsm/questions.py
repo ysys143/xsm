@@ -312,6 +312,101 @@ def _answerer(sender, target):
     return handover.succeeds(sender, target)
 
 
+def _same_machine(sender, target):
+    """Whether an answer comes from the machine the question's target is on, when that
+    is another machine and the sender is a different conversation there."""
+    try:
+        if not ("home_id" in target or target.get("remote")) or not ("home_id" in sender or sender.get("remote")):
+            return False
+        asked, answering = _native(target), _native(sender)
+    except ValueError:
+        return False
+    return asked != answering and asked.get("machine") is not None and asked["machine"] == answering.get("machine")
+
+
+def admit_unconfirmed(request_id, reply_id, sender):
+    """The gateway took a reply from a session on the machine of the one asked, without
+    that machine's word that it holds the asked one's place (the pull could not reach
+    it). Only such a reply is then recorded as `unconfirmed` (record_reply); any other
+    same-machine claim is refused as before. Returns whether the mark was kept."""
+    try:
+        with _locked(request_id) as filename:
+            record = paths.read_json(filename)
+            if not record or not _same_machine(sender, record["target"]):
+                return False
+            admitted = record.setdefault("unconfirmed_ok", {})
+            if admitted.get(reply_id) != _native(sender):
+                admitted[reply_id] = _native(sender)
+                paths.write_json(filename, record)
+            return True
+    except (ValueError, KeyError, TypeError, OSError):
+        return False
+
+
+def _succession_state(sender, target):
+    """"confirmed" when the asked machine's testimony makes `sender` the target's
+    successor, "disputed" when the testimonies kept here lead somewhere else, else None."""
+    from . import handover
+    if handover.endpoint_succeeds(_native(sender), _native(target)):
+        return "confirmed"
+    chain = handover.testified_chain(_native(target))
+    return "disputed" if chain and chain[-1] != handover._key(_native(sender)) else None
+
+
+def reconcile_succession(machine):
+    """A testimony from `machine` arrived (handover.receive_testimony): the answers
+    recorded from its sessions without one are marked again. The reply is never
+    removed. A `disputed` answer becomes `confirmed` if a later testimony proves it
+    (a chain A -> B -> C is told hop by hop); the asker is told when one is disputed."""
+    try:
+        names = os.listdir(paths.path(DIRECTORY))
+    except OSError:
+        return 0
+    changed = 0
+    for name in sorted(names):
+        if not name.endswith(".json"):
+            continue
+        try:
+            request_id = name[:-5]
+            record = paths.read_json(_filename(request_id))
+            if not record or not any(r.get("succession") in ("unconfirmed", "disputed")
+                                     for r in record.get("replies", [])):
+                continue
+            target = record["target"]
+            if not ("home_id" in target or target.get("remote")) or _native(target).get("machine") != machine:
+                continue
+            disputed, moved = [], False
+            with _locked(request_id) as filename:
+                record = paths.read_json(filename)
+                for reply in record["replies"]:
+                    if reply.get("succession") not in ("unconfirmed", "disputed"):
+                        continue
+                    state = _succession_state(reply["sender"], record["target"])
+                    if state and state != reply["succession"]:
+                        reply["succession"] = state
+                        moved = True
+                        changed += 1
+                        if state == "disputed":
+                            disputed.append(reply)
+                if moved:
+                    paths.write_json(filename, record)
+            for reply in disputed:
+                _tell_disputed(record, reply)
+        except (ValueError, KeyError, TypeError, OSError):
+            continue
+    return changed
+
+
+def _tell_disputed(record, reply):
+    from . import bounce
+    asked = record.get("target") or {}
+    bounce.record_notice(record.get("sender") or {},
+        "[xsm] The answer %s to your question %s came from %s, which its machine did not say took over from "
+        "%s. It is kept, marked disputed (xsm_question_status shows it); do not rely on it until confirmed." % (
+            reply.get("id"), record.get("id"), (reply.get("sender") or {}).get("name") or "a session",
+            asked.get("name") or "the session you asked"))
+
+
 def expects_reply(receiver, sender, request_id):
     """Whether this exact pair has a stored request; read-only, not receive auth.
 
@@ -349,14 +444,25 @@ def record_reply(receiver, sender, header, body):
             return False
         with _locked(request_id) as filename:
             record = paths.read_json(filename)
-            if not record or _native(receiver) != _native(record["sender"]) or \
-                    not _answerer(sender, record["target"]):
+            if not record or _native(receiver) != _native(record["sender"]):
+                return False
+            # A session on the machine of the one asked, whose handover that machine has not
+            # yet told: kept and marked, never refused (first principle: an answer is not lost
+            # for want of a testimony; PROTOCOL 5.15).
+            succeeded = _answerer(sender, record["target"])
+            if not succeeded and not (_same_machine(sender, record["target"])
+                                      and (record.get("unconfirmed_ok") or {}).get(reply_id) == _native(sender)):
                 return False
             reply = {"id": reply_id, "body": body, "outcome": outcome,
                      "sender": _handle(sender), "receiver": _handle(receiver)}
             for previous in record["replies"]:
                 if previous["id"] == reply_id:
+                    if succeeded and previous.get("succession") in ("unconfirmed", "disputed"):
+                        previous["succession"] = "confirmed"
+                        paths.write_json(filename, record)
                     return all(previous.get(k) == reply[k] for k in ("body", "outcome"))
+            if not succeeded:
+                reply["succession"] = "unconfirmed"
             record["replies"].append(dict(reply, received_at=time.time()))
             paths.write_json(filename, record)
             return True

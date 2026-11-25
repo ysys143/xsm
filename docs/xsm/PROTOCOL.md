@@ -110,7 +110,7 @@ CODEX_HOME=<대상 홈> codex queue --thread <thread-uuid> --message <봉투 전
 | `config.last-valid.json`, `.config-policy.lock` | UID-private 검증 snapshot과 writer lock/CAS. `policy_health()`의 health/source/error/can_grant 및 source_exists/cached_source_exists를 별도 조회. prior 없이 broken policy면 새 framed 권한 확정 불가; native fail_open/unframed 정책과 별개. `require_valid_policy()`/권한 확대 writer는 오류를 명확히 거절 |
 | `handoffs/<endpoint-hash>/<id>.json` | 전체 receiver, 원문 message/digest, delivery_state와 독립 state(`pending/claimed/handoff-recorded/acknowledged`), owner/generation/token. ack·release·recover 전이를 보존. 수신 lease는 삭제 TTL이 아님. 사람이 `held deliver`로 푼 원문은 `acknowledged`와 `consumed_by`로 닫힌다. 이관으로 온 사본은 `migration_history`, 인수인계로 온 사본은 `handover_history`(홉 `{id, source, target, previous_state, at, migrations}`)와 `predecessor_scope`(옮길 때 발신자가 옛 세션과 가졌던 범위 id, 없으면 `null`)를 갖는다. 옮겨 간 옛 원문은 `moved_to`를 가진다 |
 | `legacy-inbox-originals/<endpoint-hash>/<content-hash>.json` | 구 writer export 원문 보존. 신원 미확정 자료를 인증된 새 메시지로 승격하지 않음 |
-| `questions/<id>.json`, `question-reply-copies/<endpoint-hash>/<reply-id>.json` | 질문의 원문·전체 sender/target·digest·send_evidence·부분/최종 replies와 구 hook에 앞서 보존하는 reply 사본. timeout/취소 뒤 조회 가능 |
+| `questions/<id>.json`, `question-reply-copies/<endpoint-hash>/<reply-id>.json` | 질문의 원문·전체 sender/target·digest·send_evidence·부분/최종 replies와 구 hook에 앞서 보존하는 reply 사본. timeout/취소 뒤 조회 가능. 다른 머신에서 물은 질문의 reply 항목에는 `succession`이 붙을 수 있다: `unconfirmed`(질문받은 머신이 그 세션이 후임이라는 증언을 아직 주지 않은 채 기록한 답), `confirmed`(증언이 와서 확정), `disputed`(그 머신의 증언 사슬이 다른 세션으로 이어짐). 증언 없이 같은 머신의 답을 받은 게이트가 `unconfirmed_ok: {<reply id>: <끝점>}`을 질문 기록에 적고, `record_reply`는 이 표지가 있는 답만 `unconfirmed`로 기록한다(§5.15) |
 | `groups/<group-id>.json` | 다중 수신 DM 한 번: `{id, sender ref, kind, reply_to, outcome, priority, recipients: [{spec, label, id, status}], body}`. 수신자마다 따로 보낸 메시지 ID를 담고, `--resend <group id>`가 다시 보낼 수 있는 상태의 수신자만 같은 ID로 다시 보낸다(§5.12) |
 | `question-groups/<group-id>.json` | 다중 수신 질문: `{id, sender(native), created_at, recipients, children: ["<group>-<n>"], notes}`. 질문 하나하나는 `questions/<group>-<n>.json`이다(§5.12) |
 | `teams/<팀>/team.json` | `{name, id, generation, lead, members, created_at, updated_at, origin?, author?, seen?, acked_by?, pending_ops?, pair?, log}`. 구성원은 로컬 이름 구성원 `{runtime, home, name}`, 로컬 대화 구성원 `{runtime, home, session_id, name}`, 다른 머신 구성원 `{machine, runtime, home_id, session_id, name}` 중 하나다. 바꿀 때마다 `generation`이 오른다(§5.13) |
@@ -549,6 +549,17 @@ MCP 네이티브 복구는 상태 조회의 `native_question`(결정별 표식 �
 - 옛 세션에 남은 큐 사본: 인수인계 뒤 옛 세션의 훅에 닿은 네이티브 큐 사본이 이미 후임에게 옮긴 DM이면 옛 세션에서는 보류하지도 보여 주지도 않고 조용히 막는다("후임 <이름>에게 넘어갔다"). 영수증은 쓰지 않는다. 옛 세션의 원문은 `acknowledged`로 닫히고 `moved_to`는 남는다. 주인은 후임 하나다.
 
 옛 주소의 해석: 로컬 `send`와 SSH 원격 수신은 해석한 대상(또는 이름이 멈춘 세션만 가리킬 때 그 후보들)을 인수인계 기록으로 따라간다(8단계까지). P2P 수신 게이트는 받는 끝점이 정확히 해석되면 그 기록을, 해석되지 않으면 끝점의 runtime·home_id·session_id와 맞는 인수인계 기록의 후임을 쓴다. 회신의 역방향 검사는 원래 보낸 대화이거나 그 후임이면 통과한다(회신을 준비하는 쪽의 소유 검사도 같다). 질문 기록은 답한 쪽이 원래 받은 대화이거나 그 후임이면 답을 받는다. 다른 머신에서 물은 질문은 그 머신의 증언으로 판단한다: 인수인계한 머신의 서비스가 로컬 요청 `handover-publish`를 받아 팀의 원격 구성원 머신과 옛 대화에 메시지를 보낸 머신(게이트웨이의 inbound 기록)에 상대 요청 `handover`로 `{old, new}` 끝점을 보내고, 받는 머신은 `origin == old.machine == new.machine`일 때만 `remote-handovers/`에 쓴다. 끝점 후임 판정은 이 증언을 8단계까지 따라가고, 이 머신의 인수인계 기록도 본다. 인수인계 문서는 후임의 다음 `UserPromptSubmit`에 한 번 붙는다.
+
+**후임 조회(succession pull)와 미확인 답.** 증언이 유실됐거나(머신이 꺼져 있었다), 인수인계 뒤에 질문했거나(옛 주소로 물었으니 인수인계한 머신은 보낼 곳을 몰랐다), 사슬 A→B→C의 둘째 증언이 질문자에게 가지 않았어도, 질문자의 머신은 후임의 답을 영구히 거절하지 않는다. 증언을 미리 보내는 대신 필요할 때 묻는다(끌어오기).
+
+- 시점: `Gateway.receive`가 `reply`를 받았고 역방향 검사(`_reverse`, 순수 술어로 둔다)가 실패하며, 보낸 머신이 질문받은 끝점의 머신과 같을 때다. 게이트 잠금을 잡기 전에 한 번 묻는다. 답장의 `reply_binding`이 이쪽이 보낸 그 요청에 맞아야 묻는다.
+- 요청: 로컬 요청 `succession {old, new}`가 질문받은 머신에 상대 요청 `succession {old, new}`를 보낸다. `old`는 질문받은 끝점, `new`는 답한 끝점이다. 서비스 안에서는 소켓을 거치지 않고 같은 함수를 직접 부른다(수신을 처리하는 동안 서비스 잠금을 쥐기 때문이다). 응답 대기는 8초다.
+- 응답: `{"chain": [{"old": 끝점, "new": 끝점}, ...]}`. 그 머신의 인수인계 기록(`moving`과 `done`)과 이관 기록을 `old`부터 따라가며 `new`에 닿으면 멈추고 8단계까지다. 받는 머신은 `old`에 메시지를 보낸 적 있는 머신(게이트웨이 inbound 기록의 `origin`과 받는 끝점)에게만 답하고, 그 밖에는 빈 사슬을 준다. `old`가 이 머신의 세션이 아니면 빈 사슬이다.
+- 저장: 각 단계를 `receive_testimony`와 같은 규칙으로 `remote-handovers/`에 쓴다(`origin == old.machine == new.machine`). 위배하는 단계는 버린다. 저장한 뒤 역방향 검사를 다시 하고, 통과하면 보통의 답이다(`succession` 표지 없음).
+- 음성 캐시: 조회가 실패했거나 사슬이 보낸 쪽에 닿지 않았으면 같은 (머신, `old`, `new`)로 10분 동안 다시 묻지 않는다. 기억은 프로세스 안에 있고 재시작하면 사라진다.
+- 닿지 않을 때(머신 오프라인, 시간 초과, 엉뚱한 응답): 보낸 세션이 질문받은 세션의 머신에 있고 다른 대화이며 `reply_to`가 이 질문이면, 게이트는 답을 막지 않고 질문 기록에 `unconfirmed_ok`를 적은 뒤 받는다. 질문 기록은 그 답을 `succession: "unconfirmed"`로 `replies`에 남기고 `question-status`가 그대로 보여 준다. 그 머신이 답했는데 사슬이 보낸 쪽에 닿지 않으면 미확인이 아니라 거절이다. 다른 머신 세션의 답은 조회와 상관없이 거절한다. 같은 머신의 세션이 후임이라 주장하는 답이 증언 없이 질문 기록에 남을 수 있다는 것이 선택한 절충이다(사용자 결정, state-model-fixes 3판).
+- 확정: 증언이 도착할 때마다(`receive_testimony`가 밀어넣은 것이든 조회로 가져온 것이든) 그 머신이 질문받은 질문의 `unconfirmed`·`disputed` 답을 다시 판정한다. 증언이 그 세션을 후임으로 만들면 `confirmed`, 증언 사슬이 다른 세션에서 끝나면 `disputed`다. `disputed`는 지금까지 아는 사슬 기준이며 사슬은 단계마다 전달되므로 뒤 증언이 오면 `confirmed`로 돌아온다. `disputed`가 되면 질문자 세션에 쪽지(`bounces/`) 한 줄이 한 번 나간다. 답은 지우지 않는다. 같은 답 ID가 증언 뒤 다시 오면 `confirmed`가 된다.
+- 한계: `unconfirmed` 답은 `questions.expects_reply`를 통과하지 못한다. 그래서 과제 원장(`ledger.close`)은 닫히지 않는다. 증언이 와도 소급해서 닫지 않는다.
 
 ## 6. 결과값과 종료 코드
 

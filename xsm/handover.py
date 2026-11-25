@@ -244,7 +244,22 @@ def local_endpoint(identity: dict, machine: str) -> dict:
 
 def receive_testimony(origin: str, old: dict, new: dict) -> dict:
     """Keep another machine's statement that its session `old` handed over to
-    its session `new`. Refused unless both are the sending machine's."""
+    its session `new`. Refused unless both are the sending machine's. Answers
+    recorded without this testimony are then checked against it."""
+    result = _keep_testimony(origin, old, new)
+    _reconcile(origin)
+    return result
+
+
+def _reconcile(origin: str) -> None:
+    try:
+        from . import questions
+        questions.reconcile_succession(origin)
+    except Exception:           # a testimony is kept whatever happens to the marks on answers
+        pass
+
+
+def _keep_testimony(origin: str, old: dict, new: dict) -> dict:
     from .network_identity import endpoint
     old, new = endpoint(old), endpoint(new)
     if not (origin == old["machine"] == new["machine"]) or old == new:
@@ -255,6 +270,70 @@ def receive_testimony(origin: str, old: dict, new: dict) -> dict:
         return {"status": "kept" if _key(current.get("new") or {}) == new else "conflict"}
     paths.write_json(path, {"t": time.time(), "origin": origin, "old": old, "new": new})
     return {"status": "stored"}
+
+
+def testified_chain(older: dict) -> list:
+    """The endpoints another machine said `older` handed its place over to, one
+    after the other (the testimonies kept here), at most CHAIN of them."""
+    chain, current = [], _key(older)
+    for _ in range(CHAIN):
+        rec = paths.read_json(_remote_file(current))
+        if not rec:
+            break
+        current = _key(rec.get("new") or {})
+        chain.append(current)
+    return chain
+
+
+def _next_identity(endpoint: dict) -> dict | None:
+    """The identity this machine's records say the session `endpoint` names
+    handed its place over to: one hop, from a handover (moving or done) or a
+    committed migration."""
+    from . import migration
+    for filename in migration._json_files(migration.DIRECTORY):
+        transfer = paths.read_json(filename)
+        if transfer and _names(_identity(transfer['source']), endpoint):
+            moved = migration.retirement(transfer['source'])
+            if moved and moved['status'] == 'committed':
+                return _identity(moved['target'])
+    for rec in _records():
+        if _names(rec.get("from_identity") or {}, endpoint):
+            return rec.get("to_identity")
+    return None
+
+
+def succession_chain(old: dict, machine: str, stop: dict | None = None) -> list:
+    """This machine's answer to the succession pull: the hops
+    [{"old": endpoint, "new": endpoint}, ...] from its session `old` onward, up to
+    CHAIN of them and ending at `stop` when the chain reaches it. Read-only."""
+    hops, current = [], _key(old)
+    for _ in range(CHAIN):
+        nxt = _next_identity(current)
+        if not nxt:
+            break
+        endpoint = local_endpoint(nxt, machine)
+        if endpoint == current or any(endpoint == hop["old"] for hop in hops):
+            break
+        hops.append({"old": current, "new": endpoint})
+        current = endpoint
+        if stop is not None and current == _key(stop):
+            break
+    return hops
+
+
+def receive_chain(origin: str, hops) -> int:
+    """Keep the hops another machine answered a succession pull with, each by the
+    rule of receive_testimony (the machine speaks only for its own sessions).
+    Returns how many it kept; a hop that breaks the rule is left out."""
+    kept = 0
+    for hop in hops[:CHAIN] if isinstance(hops, list) else []:
+        try:
+            result = _keep_testimony(origin, hop.get("old"), hop.get("new"))
+        except (ValueError, TypeError, AttributeError):
+            continue
+        kept += result["status"] in ("stored", "kept")
+    _reconcile(origin)
+    return kept
 
 
 def endpoint_succeeds(newer: dict, older: dict) -> bool:

@@ -267,11 +267,10 @@ class RemoteFixture(unittest.TestCase):
 class SM_F9_RemoteTestimony(RemoteFixture):
     # ---- SM-F9: the successor's answer ends up in the question record ----------------------
 
-    # RED until P6 (SM-F9)
+    # Fixed in P6 (SM-F9)
     # Today: the handover news was lost (offline); R's machine has no testimony, so
     # Gateway.receive refuses with local-permission-denied and record_reply returns False.
     # Nothing re-sends the testimony and nothing pulls it (spec section 2, F9).
-    @unittest.expectedFailure
     def test_SM_F9_testimony_lost(self):
         self.ask_a()
         rec = self.hand_over("old-a", "succ-b", deliver="lose")
@@ -281,11 +280,10 @@ class SM_F9_RemoteTestimony(RemoteFixture):
         rows = self.assert_recorded_without_resend("succ-b")
         self.assertNotEqual(rows[0].get("succession"), "unconfirmed")    # the pull confirmed it
 
-    # RED until P6 (SM-F9)
+    # Fixed in P6 (SM-F9)
     # Today: R asks A's old address after the handover. M1 routes the question to B, but
     # M1 told nobody (A had no earlier correspondent), so B's answer is refused on M2
     # (local-permission-denied; reply-original-unverified when M2's permission admits it).
-    @unittest.expectedFailure
     def test_SM_F9_asked_after_handover(self):
         self.hand_over("old-a", "succ-b")
         self.assertEqual(self.testimony_log, [])             # nobody was told
@@ -295,10 +293,9 @@ class SM_F9_RemoteTestimony(RemoteFixture):
         rows = self.assert_recorded_without_resend("succ-b")
         self.assertNotEqual(rows[0].get("succession"), "unconfirmed")
 
-    # RED until P6 (SM-F9)
+    # Fixed in P6 (SM-F9)
     # Today: A -> B was told to M2, B -> C was not (nobody asked B anything, so origins_for(B)
     # is empty). endpoint_succeeds(C, A) on M2 stops at B, so C's answer is refused.
-    @unittest.expectedFailure
     def test_SM_F9_chain(self):
         self.ask_a()
         self.hand_over("old-a", "succ-b")
@@ -308,12 +305,11 @@ class SM_F9_RemoteTestimony(RemoteFixture):
         rows = self.assert_recorded_without_resend("succ-c")
         self.assertNotEqual(rows[0].get("succession"), "unconfirmed")
 
-    # RED until P6 (SM-F9)
+    # Fixed in P6 (SM-F9)
     # Today: with M1 unreachable for the pull (and the testimony still in flight), M2 refuses
     # B's answer. Target: it is recorded with succession "unconfirmed" on the reply entry (P*,
     # spec 3.4: same machine as A, and the reply carries the question's reply_to); when the
     # testimony arrives later the mark becomes "confirmed". The answer is never dropped.
-    @unittest.expectedFailure
     def test_SM_F9_unconfirmed_then_confirmed_when_testimony_arrives(self):
         self.ask_a()
         self.hand_over("old-a", "succ-b", deliver="hold")
@@ -326,10 +322,9 @@ class SM_F9_RemoteTestimony(RemoteFixture):
         self.assertEqual(self.replies()[0].get("succession"), "confirmed")
         self.assertEqual(len(self.replies()), 1)
 
-    # RED until P6 (SM-F9)
+    # Fixed in P6 (SM-F9)
     # Same, for a question asked after the handover and never testified to R's machine; the
     # testimony later reaches R's machine by any route (here: M1 sends it).
-    @unittest.expectedFailure
     def test_SM_F9_unconfirmed_when_asked_after_handover_then_confirmed(self):
         self.hand_over("old-a", "succ-b")
         self.ask_a(read=False)

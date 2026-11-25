@@ -62,6 +62,16 @@ def record_held_here(receiver: dict | None, who: str, reason: str, held: str) ->
         "reason": " ".join(str(reason).split())[:200], "held": held})
 
 
+def record_notice(owner: dict, line: str) -> None:
+    """Leave `owner` one line of its own, shown once as it is (xsm's own words, no
+    message of anyone's in it)."""
+    sid = str((owner or {}).get("session_id") or "")
+    if not sid:
+        return
+    paths.write_json(os.path.join(_dir(sid), "%d.json" % int(time.time() * 1000)), {
+        "t": time.time(), "line": " ".join(str(line).split())[:400]})
+
+
 def take(session_id: str | None) -> list:
     """Claim this session's notes, oldest first; each is shown once."""
     if not session_id:
@@ -94,6 +104,9 @@ def text(notes: list) -> str:
     receiver, that its gate kept one for its person to decide on."""
     lines = []
     for note in notes:
+        if note.get("line"):
+            lines.append(note["line"])
+            continue
         if note.get("here"):
             lines.append(
                 "[xsm] A message from %s was held by this session's gate (%s) and is kept as %s. "
