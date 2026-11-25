@@ -1,0 +1,300 @@
+계약버전: 2
+작업ID: state-model-fixes
+발동: 사용자
+위임: 불필요
+준비:
+  - 도구: python3
+    확인명령: python3 --version
+  - 도구: git
+    확인명령: git --version
+산출:
+  - 경로: xsm
+    형식: Python 패키지
+  - 경로: docs/xsm/PROTOCOL.md
+    형식: Markdown
+검증:
+  - 요구ID: SM-F1
+    사용자행동: A held DM handed over stays held for B and shows only after B's yes
+    관련파일: [xsm, tests, docs/plan/state-model-fixes/req.py]
+    등급: 기계
+    명령:
+      실행: python3 docs/plan/state-model-fixes/req.py check SM-F1
+      기대종료: 0
+    반증:
+      실행: python3 docs/plan/state-model-fixes/req.py red SM-F1 {RED_ROOT}
+      기대종료: 0
+    인간검토: 불필요
+    추가검토:
+      - 종류: cold-read
+        적용: 생략
+        생략사유: The positive check runs the requirement's tests and RED proves they fail on the pre-fix code
+  - 요구ID: SM-F2a
+    사용자행동: An answer waiting at A when A hands over is recorded for B
+    관련파일: [xsm, tests, docs/plan/state-model-fixes/req.py]
+    등급: 기계
+    명령:
+      실행: python3 docs/plan/state-model-fixes/req.py check SM-F2a
+      기대종료: 0
+    반증:
+      실행: python3 docs/plan/state-model-fixes/req.py red SM-F2a {RED_ROOT}
+      기대종료: 0
+    인간검토: 불필요
+    추가검토:
+      - 종류: cold-read
+        적용: 생략
+        생략사유: The positive check runs the requirement's tests and RED proves they fail on the pre-fix code
+  - 요구ID: SM-F2b
+    사용자행동: An answer arriving during the handover goes to B and is recorded
+    관련파일: [xsm, tests, docs/plan/state-model-fixes/req.py]
+    등급: 기계
+    명령:
+      실행: python3 docs/plan/state-model-fixes/req.py check SM-F2b
+      기대종료: 0
+    반증:
+      실행: python3 docs/plan/state-model-fixes/req.py red SM-F2b {RED_ROOT}
+      기대종료: 0
+    인간검토: 불필요
+    추가검토:
+      - 종류: cold-read
+        적용: 생략
+        생략사유: The positive check runs the requirement's tests and RED proves they fail on the pre-fix code
+  - 요구ID: SM-F3
+    사용자행동: A question group handed over shows every answer to B
+    관련파일: [xsm, tests, docs/plan/state-model-fixes/req.py]
+    등급: 기계
+    명령:
+      실행: python3 docs/plan/state-model-fixes/req.py check SM-F3
+      기대종료: 0
+    반증:
+      실행: python3 docs/plan/state-model-fixes/req.py red SM-F3 {RED_ROOT}
+      기대종료: 0
+    인간검토: 불필요
+    추가검토:
+      - 종류: cold-read
+        적용: 생략
+        생략사유: The positive check runs the requirement's tests and RED proves they fail on the pre-fix code
+  - 요구ID: SM-F4
+    사용자행동: A late answer from P reaches B through A's copied connections
+    관련파일: [xsm, tests, docs/plan/state-model-fixes/req.py]
+    등급: 기계
+    명령:
+      실행: python3 docs/plan/state-model-fixes/req.py check SM-F4
+      기대종료: 0
+    반증:
+      실행: python3 docs/plan/state-model-fixes/req.py red SM-F4 {RED_ROOT}
+      기대종료: 0
+    인간검토: 불필요
+    추가검토:
+      - 종류: cold-read
+        적용: 생략
+        생략사유: The positive check runs the requirement's tests and RED proves they fail on the pre-fix code
+  - 요구ID: SM-F5
+    사용자행동: Concurrent handovers end in one consistent successor chain
+    관련파일: [xsm, tests, docs/plan/state-model-fixes/req.py]
+    등급: 기계
+    명령:
+      실행: python3 docs/plan/state-model-fixes/req.py check SM-F5
+      기대종료: 0
+    반증:
+      실행: python3 docs/plan/state-model-fixes/req.py red SM-F5 {RED_ROOT}
+      기대종료: 0
+    인간검토: 불필요
+    추가검토:
+      - 종류: cold-read
+        적용: 생략
+        생략사유: The positive check runs the requirement's tests and RED proves they fail on the pre-fix code
+  - 요구ID: SM-F5r
+    사용자행동: An interrupted handover finishes on rerun without losing board content
+    관련파일: [xsm, tests, docs/plan/state-model-fixes/req.py]
+    등급: 기계
+    명령:
+      실행: python3 docs/plan/state-model-fixes/req.py check SM-F5r
+      기대종료: 0
+    반증:
+      실행: python3 docs/plan/state-model-fixes/req.py red SM-F5r {RED_ROOT}
+      기대종료: 0
+    인간검토: 불필요
+    추가검토:
+      - 종류: cold-read
+        적용: 생략
+        생략사유: The positive check runs the requirement's tests and RED proves they fail on the pre-fix code
+  - 요구ID: SM-F6
+    사용자행동: Team places and owner items move together while teams change
+    관련파일: [xsm, tests, docs/plan/state-model-fixes/req.py]
+    등급: 기계
+    명령:
+      실행: python3 docs/plan/state-model-fixes/req.py check SM-F6
+      기대종료: 0
+    반증:
+      실행: python3 docs/plan/state-model-fixes/req.py red SM-F6 {RED_ROOT}
+      기대종료: 0
+    인간검토: 불필요
+    추가검토:
+      - 종류: cold-read
+        적용: 생략
+        생략사유: The positive check runs the requirement's tests and RED proves they fail on the pre-fix code
+  - 요구ID: SM-F7
+    사용자행동: Board items written during a handover reach B; skipped items are named
+    관련파일: [xsm, tests, docs/plan/state-model-fixes/req.py]
+    등급: 기계
+    명령:
+      실행: python3 docs/plan/state-model-fixes/req.py check SM-F7
+      기대종료: 0
+    반증:
+      실행: python3 docs/plan/state-model-fixes/req.py red SM-F7 {RED_ROOT}
+      기대종료: 0
+    인간검토: 불필요
+    추가검토:
+      - 종류: cold-read
+        적용: 생략
+        생략사유: The positive check runs the requirement's tests and RED proves they fail on the pre-fix code
+  - 요구ID: SM-F8
+    사용자행동: Two machines converge on one team record without losing either change
+    관련파일: [xsm, tests, docs/plan/state-model-fixes/req.py]
+    등급: 기계
+    명령:
+      실행: python3 docs/plan/state-model-fixes/req.py check SM-F8
+      기대종료: 0
+    반증:
+      실행: python3 docs/plan/state-model-fixes/req.py red SM-F8 {RED_ROOT}
+      기대종료: 0
+    인간검토: 불필요
+    추가검토:
+      - 종류: cold-read
+        적용: 생략
+        생략사유: The positive check runs the requirement's tests and RED proves they fail on the pre-fix code
+  - 요구ID: SM-F9
+    사용자행동: A remote asker records the successor's answer without a resend
+    관련파일: [xsm, tests, docs/plan/state-model-fixes/req.py]
+    등급: 기계
+    명령:
+      실행: python3 docs/plan/state-model-fixes/req.py check SM-F9
+      기대종료: 0
+    반증:
+      실행: python3 docs/plan/state-model-fixes/req.py red SM-F9 {RED_ROOT}
+      기대종료: 0
+    인간검토: 불필요
+    추가검토:
+      - 종류: cold-read
+        적용: 생략
+        생략사유: The positive check runs the requirement's tests and RED proves they fail on the pre-fix code
+  - 요구ID: SM-F10
+    사용자행동: B can answer a remote question A never read
+    관련파일: [xsm, tests, docs/plan/state-model-fixes/req.py]
+    등급: 기계
+    명령:
+      실행: python3 docs/plan/state-model-fixes/req.py check SM-F10
+      기대종료: 0
+    반증:
+      실행: python3 docs/plan/state-model-fixes/req.py red SM-F10 {RED_ROOT}
+      기대종료: 0
+    인간검토: 불필요
+    추가검토:
+      - 종류: cold-read
+        적용: 생략
+        생략사유: The positive check runs the requirement's tests and RED proves they fail on the pre-fix code
+  - 요구ID: SM-F11
+    사용자행동: A held message delivered on yes is never held or shown again
+    관련파일: [xsm, tests, docs/plan/state-model-fixes/req.py]
+    등급: 기계
+    명령:
+      실행: python3 docs/plan/state-model-fixes/req.py check SM-F11
+      기대종료: 0
+    반증:
+      실행: python3 docs/plan/state-model-fixes/req.py red SM-F11 {RED_ROOT}
+      기대종료: 0
+    인간검토: 불필요
+    추가검토:
+      - 종류: cold-read
+        적용: 생략
+        생략사유: The positive check runs the requirement's tests and RED proves they fail on the pre-fix code
+  - 요구ID: SM-F12
+    사용자행동: A hold made at A after it moved its place is reachable by B
+    관련파일: [xsm, tests, docs/plan/state-model-fixes/req.py]
+    등급: 기계
+    명령:
+      실행: python3 docs/plan/state-model-fixes/req.py check SM-F12
+      기대종료: 0
+    반증:
+      실행: python3 docs/plan/state-model-fixes/req.py red SM-F12 {RED_ROOT}
+      기대종료: 0
+    인간검토: 불필요
+    추가검토:
+      - 종류: cold-read
+        적용: 생략
+        생략사유: The positive check runs the requirement's tests and RED proves they fail on the pre-fix code
+  - 요구ID: SM-F13
+    사용자행동: No delivered receipt for a message nobody was shown
+    관련파일: [xsm, tests, docs/plan/state-model-fixes/req.py]
+    등급: 기계
+    명령:
+      실행: python3 docs/plan/state-model-fixes/req.py check SM-F13
+      기대종료: 0
+    반증:
+      실행: python3 docs/plan/state-model-fixes/req.py red SM-F13 {RED_ROOT}
+      기대종료: 0
+    인간검토: 불필요
+    추가검토:
+      - 종류: cold-read
+        적용: 생략
+        생략사유: The positive check runs the requirement's tests and RED proves they fail on the pre-fix code
+  - 요구ID: SM-SEAM
+    사용자행동: A handed-over DM reaches B without a new question to the person
+    관련파일: [xsm, tests, docs/plan/state-model-fixes/req.py]
+    등급: 기계
+    명령:
+      실행: python3 docs/plan/state-model-fixes/req.py check SM-SEAM
+      기대종료: 0
+    반증:
+      실행: python3 docs/plan/state-model-fixes/req.py red SM-SEAM {RED_ROOT}
+      기대종료: 0
+    인간검토: 불필요
+    추가검토:
+      - 종류: cold-read
+        적용: 생략
+        생략사유: The positive check runs the requirement's tests and RED proves they fail on the pre-fix code
+  - 요구ID: SM-COMPAT
+    사용자행동: Records written by the fix stay readable by 0.6.1 and old records read as done
+    관련파일: [xsm, tests, docs/plan/state-model-fixes/req.py]
+    등급: 기계
+    명령:
+      실행: python3 docs/plan/state-model-fixes/req.py check SM-COMPAT
+      기대종료: 0
+    반증:
+      실행: python3 docs/plan/state-model-fixes/req.py red SM-COMPAT {RED_ROOT}
+      기대종료: 0
+    인간검토: 불필요
+    추가검토:
+      - 종류: cold-read
+        적용: 생략
+        생략사유: The positive check runs the requirement's tests and RED proves they fail on the pre-fix code
+  - 요구ID: SM-REG
+    사용자행동: The whole test suite passes with no state-model test left marked
+    관련파일: [xsm, tests, docs/plan/state-model-fixes/req.py]
+    등급: 기계
+    명령:
+      실행: python3 docs/plan/state-model-fixes/req.py check SM-REG
+      기대종료: 0
+    반증:
+      실행: python3 docs/plan/state-model-fixes/req.py red SM-REG {RED_ROOT}
+      기대종료: 0
+    인간검토: 불필요
+    추가검토:
+      - 종류: cold-read
+        적용: 생략
+        생략사유: The positive check runs the requirement's tests and RED proves they fail on the pre-fix code
+  - 요구ID: SM-MODEL
+    사용자행동: The TLA+ models updated to the fixed semantics break no rule
+    관련파일: [deliverables/statechart-20261125, docs/plan/state-model-fixes/req.py]
+    등급: 기계
+    명령:
+      실행: python3 docs/plan/state-model-fixes/req.py check SM-MODEL
+      기대종료: 0
+    반증:
+      실행: python3 docs/plan/state-model-fixes/req.py red SM-MODEL {RED_ROOT}
+      기대종료: 0
+    인간검토: 불필요
+    추가검토:
+      - 종류: cold-read
+        적용: 생략
+        생략사유: The positive check runs the requirement's tests and RED proves they fail on the pre-fix code
