@@ -758,6 +758,18 @@ def _same_native(handle: dict, native: dict) -> bool:
     return all(handle.get(k) == native.get(k) for k in ("runtime", "home", "session_id"))
 
 
+def _chain_with(record: dict, asker: dict) -> list:
+    """`record`'s chain of earlier askers with `asker` (the one handing over now) appended. A record
+    written before the chain existed starts it from its `handed_over_from`; one that is already
+    on the chain is not added twice (a run finished by running it again)."""
+    chain = [h for h in (record.get("handed_over_chain") or []) if isinstance(h, dict)]
+    if not chain and isinstance(record.get("handed_over_from"), dict):
+        chain = [record["handed_over_from"]]
+    if not any(_same_native(h, asker) for h in chain):
+        chain.append(asker)
+    return chain
+
+
 def _move_question(request_id: str, mine: dict, target: dict, final_too: bool = False) -> bool:
     """Make `target` the asker of question `request_id` if `mine` asked it. A
     question answered for good stays the asker's unless `final_too` (a child of
@@ -776,6 +788,7 @@ def _move_question(request_id: str, mine: dict, target: dict, final_too: bool = 
                 return False                 # answered for good: it stays the asker's
                                              # (unless the successor read that answer inside the
                                              # handover window: then it moves with it, F14)
+            record["handed_over_chain"] = _chain_with(record, record["sender"])
             record["handed_over_from"] = record["sender"]
             record["sender"] = questions._handle(target)
             paths.write_json(filename, record)
@@ -819,6 +832,7 @@ def _groups(me: dict, target: dict) -> list:
             # The children first: a run that died between the two is finished by running it again.
             for child in question_groups.child_ids(record.get("id")):
                 _move_question(child, mine, target, final_too=True)
+            record["handed_over_chain"] = _chain_with(record, record["sender"])
             record["handed_over_from"] = record["sender"]
             record["sender"] = questions._native(target)
             paths.write_json(path, record)
@@ -869,7 +883,8 @@ def _held(me: dict, target: dict, handover_id: str) -> dict:
 def _letter(me: dict, target: dict, summary: str, teams_moved: list, items: dict,
             asks: list, groups: list, originals: dict, skipped: list | None = None,
             held: dict | None = None, skipped_items: dict | None = None,
-            links: list | None = None, returned: dict | None = None) -> str:
+            links: list | None = None, returned: dict | None = None,
+            revert_failed: dict | None = None) -> str:
     old = label(_handle(me))
     lines = ["[xsm handover] %s handed its xsm place over to you, at its user's request." % old,
              "", "What is yours now:"]
@@ -884,6 +899,10 @@ def _letter(me: dict, target: dict, summary: str, teams_moved: list, items: dict
         lines.append("- team %s: its board items (%s) had been moved to you before it left the team; they were "
                      "given back (the seat and the board move go together), see `handover/%s` on that board"
                      % (team_name, ", ".join(names), _word(me)))
+    for team_name, why in sorted((revert_failed or {}).items()):
+        lines.append("- team %s: its board items were moved to you before it left the team, and giving them back "
+                     "failed (%s); they are still under owner/%s, and the seat did not move; see `handover/%s` "
+                     "on that board" % (team_name, why, _word(target), _word(me)))
     for team_name, names in sorted((skipped_items or {}).items()):
         lines.append("- board items not moved in team %s (two versions at once, or still written to): %s; "
                      "see the item `handover/%s` on that board"
@@ -963,9 +982,12 @@ def _finish(rec: dict, me: dict, target: dict) -> dict:
                       "items": {t: list(v) for t, v in (steps["boards"].get("skipped_items") or {}).items()}}
     if returned:
         rec["skipped"]["returned"] = {t: list(v) for t, v in returned.items()}
+    failed = steps["teams"].get("revert_failed") or {}
+    if failed:
+        rec["skipped"]["revert_failed"] = dict(failed)
     rec["letter"] = _letter(me, target, rec.get("summary") or "", rec["teams"], rec["items"],
                             rec["questions"], rec["groups"], steps["originals"], rec["skipped"]["teams"],
-                            steps["held"], rec["skipped"]["items"], rec["links"], returned)
+                            steps["held"], rec["skipped"]["items"], rec["links"], returned, failed)
     rec["state"] = "done"
     rec["finished_at"] = time.time()
     _save(rec)
@@ -1084,6 +1106,7 @@ def summary_line(rec: dict) -> str:
     items = sum(len(v) for v in rec["items"].values())
     left = (rec.get("skipped") or {}).get("teams") or []
     held = (rec.get("skipped") or {}).get("items") or {}
+    revert_failed = (rec.get("skipped") or {}).get("revert_failed") or {}
     links = rec.get("links") or []
     copied = [r for r in links if r.get("ok")]
     failed = [r for r in links if not r.get("ok")]
@@ -1098,5 +1121,8 @@ def summary_line(rec: dict) -> str:
                   if failed else ""),
                (" Not moved, it had left %s meanwhile." % ", ".join(left) if left else "")
                + (" Board items not moved: %s." % "; ".join("%s: %s" % (t, ", ".join(v))
-                                                           for t, v in sorted(held.items())) if held else "")))
+                                                           for t, v in sorted(held.items())) if held else "")
+               + (" Board items not given back in %s." % "; ".join("%s (%s)" % (t, why)
+                                                                  for t, why in sorted(revert_failed.items()))
+                  if revert_failed else "")))
 

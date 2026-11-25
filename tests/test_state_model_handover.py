@@ -326,6 +326,29 @@ class StateModelHandover(test_handover.HandoverTest):
         self.assertIn('not moved', rec['letter'])
         self.assertNotIn('board items owner', rec['letter'])
 
+    def test_SM_F16_revert_failure_is_reported(self):
+        # The board write inside the revert fails: the failure is a line in the letter and one in the
+        # summary line, naming the team and the reason, like the other skipped items; the handover is done.
+        from xsm import board, doc, handover, teams
+        board.set_item(self.lead, 'core', 'owner/lead', 'the release plan')
+        real_teams = handover._teams
+
+        def leave_then_fail_the_revert(me, target, places, approval):
+            teams.remove(self.lead, 'core', teams.member_of(self.lead), None)
+            with mock.patch.object(doc, 'add', side_effect=OSError('disk full')):
+                return real_teams(me, target, places, approval)
+        with mock.patch.object(handover, '_teams', side_effect=leave_then_fail_the_revert):
+            rec = self._hand_over()
+        self.assertEqual(rec['state'], 'done')
+        self.assertEqual(rec['skipped'].get('revert_failed'), {'core': 'disk full'})
+        lines = [l for l in rec['letter'].splitlines() if 'disk full' in l]
+        self.assertEqual(len(lines), 1, rec['letter'])
+        self.assertIn('core', lines[0])
+        summary = handover.summary_line(rec)
+        self.assertIn('core', summary)
+        self.assertIn('disk full', summary)
+        self.assertEqual(len([l for l in summary.splitlines() if 'disk full' in l]), 1)
+
     def test_SM_F16_a_team_A_stayed_in_still_moves_as_one_unit(self):
         from xsm import board, teams
         teams.create(self.lead, 'ops')
