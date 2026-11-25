@@ -244,8 +244,10 @@ def _successor_of(target: dict) -> dict:
 
 def add(me: dict, name: str, target: dict, approval: str) -> dict:
     """Apply an add the caller has cleared with add_rule (`approval` is "lead",
-    or the user's verdict text)."""
-    member = member_of(target)
+    or the user's verdict text). A session that has handed its place over (a
+    handover begun or done) is not added: its successor is, as the old
+    session's address leads to it (D9)."""
+    member = member_of(_successor_of(target))
     with _locked(check_name(name)) as path:
         team = paths.read_json(path)
         if not team:
