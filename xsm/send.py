@@ -429,6 +429,14 @@ def _send(target_spec: str, body: str, *, sender: dict | None = None, kind: str 
                                   sender.get("ref") if mine else target.get("ref")), target=target)
 
         scope, reason = config.scope_for(sender, target)
+        if not scope and kind == "reply" and reply_to:
+            # A reply to a question of a conversation that was the old session's before a handover
+            # passes on the scope the peer had with it, even when the copy of its connections
+            # failed or has not run yet (state-model F15). A new conversation keeps the rule above.
+            from . import questions
+            scope = questions.handover_reply_scope(sender, found.record, target, reply_to)
+            if scope:
+                reason = "a reply in a conversation that came with a handover"
         if attachments and not scope:
             # Legacy outbox allocates a new ID and omits refs from its hold key.
             # Never rewrite the bound manifest/request just to fit that older API.

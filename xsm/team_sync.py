@@ -146,9 +146,33 @@ def receive(origin: str, incoming: dict, own_machine: str) -> dict:
         seen[origin] = max(int(seen.get(origin, 0)), generation)
         record["seen"], record["acked_by"] = seen, acked
         record["log"] = list(current.get("log") or []) + [_received(origin, generation)]
+        before = len(record["log"])
         record["pending_ops"] = _reapply(record, current.get("pending_ops"), origin, own_machine)
         paths.write_json(path, record)
+        _notice_conflicts(name, [e for e in record["log"][before:] if e.get("action") == "conflict"], origin)
         return {"status": "updated"} if record["author"] else {"status": "updated", "republish": name}
+
+
+def _notice_conflicts(team: str, conflicts: list, origin: str) -> None:
+    """A change of this machine that could not be put back on the record taken is kept in the
+    team log and, here, on the team's board as the item `team/<name>/conflicts`, which the
+    members are told about like any board change (board_notice). A notice only: it never stops
+    or refuses the record, and a board that cannot be written is left alone."""
+    if not conflicts:
+        return
+    try:
+        from . import board, doc
+        item, path = "team/%s/conflicts" % team, board.path(team)
+        heads = board.heads(board.items(doc.read(path)).get(item, []))
+        lines = [ln for h in heads for ln in h["body"].splitlines() if ln.strip()]
+        lines += ["%s: this machine's change (%s) was not applied on top of the record taken from machine %s: %s"
+                  % (time.strftime("%Y-%m-%d %H:%M"), c.get("subject") and "%s %s" % (c.get("op"), c["subject"]) or c.get("op"),
+                     origin[:8], c.get("reason")) for c in conflicts]
+        doc.add(path, {"kind": "file-edit", "name": "xsm team sync"}, "\n".join(lines[-20:]), ["update"],
+                [h["id"] for h in heads], item=item)
+        board.render(team)
+    except Exception:                  # a notice, never a block (spec 0, rule 4)
+        pass
 
 
 def _received(origin: str, generation: int) -> dict:

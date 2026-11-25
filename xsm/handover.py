@@ -638,13 +638,85 @@ def _places(me: dict) -> list:
     return now
 
 
+RETURNED = "before its seat moved to"      # in every note a revert writes: how a resumed run knows it is done
+
+
+def _revert_board(me: dict, target: dict, team_name: str) -> list:
+    """`me` left team `team_name` after the boards step moved its items there and before the
+    teams step seated `target`: the board move and the seat swap are one unit, so the board move
+    is taken back (state-model F16). `owner/<old>` gets its original text again with a note,
+    `owner/<new>` is closed with a note (what it held before this handover, if anything, is
+    written back), and `handover/<old>` says so. A team that is gone is left alone. Running it
+    again writes nothing twice. Returns the items of `me` that went back."""
+    from . import board, doc, teams
+    team = teams.load(team_name)
+    if not team:
+        return []
+    old, new = _word(me), _word(target)
+    author, path = board.author(me), board.path(team_name)
+    by_item = board.items(doc.read(path))
+    note = ("returned: %s left team %s %s %s; the board items moved to owner/%s are given back "
+            "(the seat did not move)" % (old, team_name, RETURNED, new, new))
+    back, wrote = [], []
+
+    def write(item: str, body: str, heads: list) -> None:
+        wrote.append(doc.add(path, author, body, ["update"], [h["id"] for h in heads], item=item))
+
+    for item in list(by_item):
+        rest = _owned(item, old)
+        if rest is None:
+            continue
+        new_item = "owner/" + new + rest
+        closing = _closed(new, new_item)
+        theirs = by_item.get(new_item, [])
+        carried = [n for n in theirs if n["body"].rstrip().endswith("(taken over from %s)" % old)
+                   or n["body"].rstrip().endswith("(written to %s during the handover)" % item)]
+        if not carried:
+            continue
+        mine = by_item[item]
+        mine_heads = board.heads(mine)
+        closers = {n["id"] for n in mine if n["body"].strip() == closing}
+        if closers and len(mine_heads) == 1 and mine_heads[0]["id"] in closers:
+            built = {p for n in mine if n["id"] in closers for p in n["parents"]}
+            origin = [n for n in mine if n["id"] in built and n["id"] not in closers]
+            text = origin[0]["body"] if origin else ""
+            for extra in origin[1:]:
+                text += "\n\n(written to %s during the handover:)\n%s" % (item, extra["body"])
+            if text:
+                write(item, text.rstrip() + "\n\n(%s)" % note, mine_heads)
+                back.append(item)
+        elif any(RETURNED in h["body"] for h in mine_heads):
+            back.append(item)                    # a run that died after this item: it is back already
+        their_heads = board.heads(theirs)
+        if not any(RETURNED in h["body"] for h in their_heads):
+            first = min(theirs.index(n) for n in carried)
+            earlier = [n for n in theirs[:first] if RETURNED not in n["body"]]
+            before = earlier[-1]["body"] if earlier else None
+            write(new_item, (before.rstrip() + "\n\n(%s)" % note) if before else note,
+                  their_heads)
+    if wrote:
+        said = by_item.get("handover/" + old) or []
+        if not any(RETURNED in n["body"] for n in said):
+            write("handover/" + old, "%s. Items given back: %s." % (note, ", ".join(back) or "none"),
+                  board.heads(said))
+        board.render(team_name)
+        try:
+            from . import board_sync
+            board_sync.publish(team, wrote)
+        except Exception:                        # a change that did not reach another machine is not a stop
+            pass
+    return back
+
+
 def _teams(me: dict, target: dict, places: list, approval: str) -> dict:
     """Replace `me` by `target` in each of `places`, looking again at the
     membership under that team's lock: a team `me` has left since is skipped
-    and named. A team it joined after the list is moved too."""
+    and named, and what the boards step moved there is taken back (the board
+    move and the seat swap of a team are one unit, F16). A team it joined after
+    the list is moved too."""
     from . import teams
     member = teams.member_of(target)
-    out = {"moved": [], "left": []}
+    out = {"moved": [], "left": [], "reverted": {}}
 
     def move(name: str) -> dict | None:
         with teams._locked(name) as path:
@@ -667,12 +739,23 @@ def _teams(me: dict, target: dict, places: list, approval: str) -> dict:
             out["moved"].append(moved)
         else:
             out["left"].append(name)
+            try:
+                given_back = _revert_board(me, target, name)
+            except (OSError, ValueError) as exc:   # the revert is reported, never a stop (spec 0, rule 4)
+                given_back = []
+                out.setdefault("revert_failed", {})[name] = str(exc) or exc.__class__.__name__
+            if given_back:
+                out["reverted"][name] = given_back
     for team in teams.teams_of(me):
         if team["name"] not in places:
             moved = move(team["name"])
             if moved:
                 out["moved"].append(dict(moved, late=True))
     return out
+
+
+def _same_native(handle: dict, native: dict) -> bool:
+    return all(handle.get(k) == native.get(k) for k in ("runtime", "home", "session_id"))
 
 
 def _move_question(request_id: str, mine: dict, target: dict, final_too: bool = False) -> bool:
@@ -685,8 +768,14 @@ def _move_question(request_id: str, mine: dict, target: dict, final_too: bool = 
             record = paths.read_json(filename)
             if not record or questions._native(record["sender"]) != mine:
                 return False
-            if not final_too and any(r.get("outcome") for r in record.get("replies", [])):
+            replies = record.get("replies", [])
+            took = questions._native(target)
+            by_successor = any(isinstance(r.get("receiver"), dict) and _same_native(r["receiver"], took)
+                               for r in replies)
+            if not final_too and not by_successor and any(r.get("outcome") for r in replies):
                 return False                 # answered for good: it stays the asker's
+                                             # (unless the successor read that answer inside the
+                                             # handover window: then it moves with it, F14)
             record["handed_over_from"] = record["sender"]
             record["sender"] = questions._handle(target)
             paths.write_json(filename, record)
@@ -780,7 +869,7 @@ def _held(me: dict, target: dict, handover_id: str) -> dict:
 def _letter(me: dict, target: dict, summary: str, teams_moved: list, items: dict,
             asks: list, groups: list, originals: dict, skipped: list | None = None,
             held: dict | None = None, skipped_items: dict | None = None,
-            links: list | None = None) -> str:
+            links: list | None = None, returned: dict | None = None) -> str:
     old = label(_handle(me))
     lines = ["[xsm handover] %s handed its xsm place over to you, at its user's request." % old,
              "", "What is yours now:"]
@@ -791,6 +880,10 @@ def _letter(me: dict, target: dict, summary: str, teams_moved: list, items: dict
         lines.append("- no team places (it was in no team)")
     if skipped:
         lines.append("- not moved, it had left these teams meanwhile: " + ", ".join(skipped))
+    for team_name, names in sorted((returned or {}).items()):
+        lines.append("- team %s: its board items (%s) had been moved to you before it left the team; they were "
+                     "given back (the seat and the board move go together), see `handover/%s` on that board"
+                     % (team_name, ", ".join(names), _word(me)))
     for team_name, names in sorted((skipped_items or {}).items()):
         lines.append("- board items not moved in team %s (two versions at once, or still written to): %s; "
                      "see the item `handover/%s` on that board"
@@ -859,7 +952,8 @@ def _step(rec: dict, name: str, fn):
 def _finish(rec: dict, me: dict, target: dict) -> dict:
     steps = rec["steps"]
     rec["teams"] = steps["teams"]["moved"]
-    rec["items"] = {t: list(v) for t, v in steps["boards"]["items"].items()}
+    returned = steps["teams"].get("reverted") or {}
+    rec["items"] = {t: list(v) for t, v in steps["boards"]["items"].items() if t not in returned}
     rec["questions"], rec["groups"] = steps["questions"], steps["groups"]
     rec["links"] = list(steps.get("links") or [])
     rec["messages"] = list(steps["originals"]["moved"])
@@ -867,9 +961,11 @@ def _finish(rec: dict, me: dict, target: dict) -> dict:
     rec["kept_messages"] = list(steps["originals"]["kept"])
     rec["skipped"] = {"teams": sorted(set(steps["boards"]["skipped"]) | set(steps["teams"]["left"])),
                       "items": {t: list(v) for t, v in (steps["boards"].get("skipped_items") or {}).items()}}
+    if returned:
+        rec["skipped"]["returned"] = {t: list(v) for t, v in returned.items()}
     rec["letter"] = _letter(me, target, rec.get("summary") or "", rec["teams"], rec["items"],
                             rec["questions"], rec["groups"], steps["originals"], rec["skipped"]["teams"],
-                            steps["held"], rec["skipped"]["items"], rec["links"])
+                            steps["held"], rec["skipped"]["items"], rec["links"], returned)
     rec["state"] = "done"
     rec["finished_at"] = time.time()
     _save(rec)

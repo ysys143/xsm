@@ -15,7 +15,11 @@ reach to a folder the old session reached or sat in or had linked, a pair team
 with a worker or the parent of the old session. The old session's own
 connections stay as they are, and a worker's parent is not changed.
 
-Result rows are {kind, what, ok, why?}; kinds: reach, folder, link, worker, parent.
+A named project the old session's folder joined (`xsm join`) is copied as a reach to each
+other folder of the project: a project's members are folders, so joining the successor's own
+folder would give the whole folder more than the old session had.
+
+Result rows are {kind, what, ok, why?}; kinds: reach, folder, link, project, worker, parent.
 """
 from __future__ import annotations
 
@@ -24,7 +28,7 @@ import os
 
 from . import paths
 
-KINDS = ("reach", "folder", "link", "worker", "parent")
+KINDS = ("reach", "folder", "link", "project", "worker", "parent")
 
 
 def _identity(record: dict) -> dict:
@@ -111,6 +115,12 @@ def plan(me: dict, target: dict) -> dict:
         for mine, other in config.links_covering(root):
             if not _has_scope(target, other):
                 add("link", other, via=mine)
+    for scope in config.projects():
+        roots = [m["root"] for m in scope.get("members", []) if m.get("root")]
+        if any(config.member_matches({"root": r}, me) for r in roots):
+            for root in roots:
+                if not _has_scope(target, root):
+                    add("project", root, via=scope.get("id"))
     me_id, target_id = _identity(me), _identity(target)
     for kind, rec in _relations(me):
         if _identity(rec) in (me_id, target_id) or config.scope_for(target, rec)[0]:
@@ -131,6 +141,9 @@ def describe(plan: dict | None) -> list:
             out.append("a reach to %s, the folder the old session works in" % what)
         elif kind == "link":
             out.append("a reach to %s, a folder linked to the old session's" % what)
+        elif kind == "project":
+            out.append("a reach to %s, a folder of project %s that the old session's folder joined"
+                       % (what, item.get("via")))
         elif kind == "worker":
             out.append("a pair team with %s [%s], a worker the old session started (it stays its parent)"
                        % (name or "worker", what))
@@ -143,7 +156,7 @@ def describe(plan: dict | None) -> list:
 def _copy(target: dict, item: dict, approval: str, note: str) -> dict:
     from . import collaboration, config, registry, teams
     kind, what = item["kind"], item["what"]
-    if kind in ("reach", "folder", "link"):
+    if kind in ("reach", "folder", "link", "project"):
         _entry, added = config.add_reach(target["ref"], what, note, session=target)
         return {"added": added}
     peer = item.get("peer") or {}

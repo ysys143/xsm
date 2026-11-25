@@ -30,14 +30,17 @@ VARIABLES
   places,   \* teams in the list made once, in _begin
   todo,     \* teams of that list not handled yet
   skipped,  \* teams of the list A had left by the time they were handled
+  left,     \* teams A was removed from while the handover ran (history, for NoSeatInATeamALeft)
+  added,    \* teams B was added to while the handover ran (D9: the successor is added instead of A)
   phase,    \* idle | begun | done
   churn     \* how many outside changes have happened
 
-vars == <<aIn, bIn, moved, swapped, places, todo, skipped, phase, churn>>
+vars == <<aIn, bIn, moved, swapped, places, todo, skipped, left, added, phase, churn>>
 
 Init ==
   /\ aIn = [t \in Teams |-> t = "t1"] /\ bIn = [t \in Teams |-> FALSE]
   /\ moved = {} /\ swapped = {} /\ places = {} /\ todo = {} /\ skipped = {}
+  /\ left = {} /\ added = {}
   /\ phase = "idle" /\ churn = 0
 
 \* _begin: the handover record exists (follow(A) = B) and the teams of A are
@@ -45,7 +48,7 @@ Init ==
 Begin ==
   /\ phase = "idle"
   /\ places' = {t \in Teams : aIn[t]} /\ todo' = {t \in Teams : aIn[t]} /\ phase' = "begun"
-  /\ UNCHANGED <<aIn, bIn, moved, swapped, skipped, churn>>
+  /\ UNCHANGED <<aIn, bIn, moved, swapped, skipped, left, added, churn>>
 
 \* One team of the list, under the team lock: A is still a member -> its items
 \* move and B takes A's place; A has been removed meanwhile -> skipped, listed.
@@ -58,25 +61,25 @@ MoveTeam(t) ==
             /\ UNCHANGED skipped
        ELSE /\ skipped' = skipped \cup {t}
             /\ UNCHANGED <<aIn, bIn, moved, swapped>>
-  /\ UNCHANGED <<places, phase, churn>>
+  /\ UNCHANGED <<places, left, added, phase, churn>>
 
 Finish ==
   /\ phase = "begun" /\ todo = {}
   /\ phase' = "done"
-  /\ UNCHANGED <<aIn, bIn, moved, swapped, places, todo, skipped, churn>>
+  /\ UNCHANGED <<aIn, bIn, moved, swapped, places, todo, skipped, left, added, churn>>
 
 \* A lead of the same project adds A to a team (teams.add): no approval needed.
 \* Once the handover record exists the successor B is added instead of A (D9).
 OutsideAdds(t) ==
   /\ phase = "begun" /\ churn = 0 /\ ~aIn[t] /\ ~bIn[t]
-  /\ bIn' = [bIn EXCEPT ![t] = TRUE] /\ churn' = 1
-  /\ UNCHANGED <<aIn, moved, swapped, places, todo, skipped, phase>>
+  /\ bIn' = [bIn EXCEPT ![t] = TRUE] /\ added' = added \cup {t} /\ churn' = 1
+  /\ UNCHANGED <<aIn, moved, swapped, places, todo, skipped, left, phase>>
 
 \* The lead removes A from a team (teams.remove).
 OutsideRemoves(t) ==
   /\ phase = "begun" /\ churn = 0 /\ aIn[t]
-  /\ aIn' = [aIn EXCEPT ![t] = FALSE] /\ churn' = 1
-  /\ UNCHANGED <<bIn, moved, swapped, places, todo, skipped, phase>>
+  /\ aIn' = [aIn EXCEPT ![t] = FALSE] /\ left' = left \cup {t} /\ churn' = 1
+  /\ UNCHANGED <<bIn, moved, swapped, places, todo, skipped, added, phase>>
 
 Done == phase = "done" /\ UNCHANGED vars
 
@@ -101,4 +104,10 @@ NoPlaceLeftBehind == phase = "done" => (\A t \in Teams : ~aIn[t])
 \* The letter and the board tell B the items are its own (owner/B): B can read
 \* and write the board only as a member (board._require_member).
 BCanReachWhatMoved == phase = "done" => (\A t \in moved : bIn[t])
+
+\* spec 5 SM-F6 / README finding 4: "a team A left is not joined by B". B is in a team
+\* only if A was in it when the handover began and was not removed from it since, or
+\* B was added while the handover ran (D9). Without the membership re-check in
+\* MoveTeam, B is seated in a team A was removed from after Begin.
+NoSeatInATeamALeft == \A t \in Teams : bIn[t] => (t \in added \/ (t \in places /\ t \notin left))
 =============================================================================

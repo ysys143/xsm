@@ -403,6 +403,33 @@ class TwoMachines(_Base):
         self.assertNotIn((MX, 'lead'), sy['members'])
         self.assert_echo_is_quiet()
 
+    # F8 leftover (spec 3.4: "the re-apply that conflicts is not dropped, it is named in the team log and
+    # on the board notice"). Y removes A at the same generation X hands A's seat over; Y's record wins the
+    # tie (larger key), and X's `replace(A, B)` no longer applies. Before: the conflict was only a line in
+    # the team log that no member reads; target: a line on the team board, which members are told about.
+    def test_SM_F8_a_conflict_when_re_applying_is_put_on_the_team_board_as_a_notice(self):
+        from xsm import board, board_notice, teams
+        self.make_shared_team()
+        self._hand_over()                                                       # X: replace(A, B) pending
+        with self.at('Y'):
+            spec = [m for m in teams.require('core')['members'] if m.get('name') == 'lead'][0]
+            teams.remove(self.y('yee'), 'core', spec, 'x')                      # Y: A is gone, same generation
+        self.assertEqual(self.deliver('Y', 'X')['status'], 'updated')           # a notice, never a refusal
+        team = teams.require('core')
+        self.assertTrue(any(e.get('action') == 'conflict' for e in team['log']), 'fixture: no conflict arose')
+        item = board.current('core').get('team/core/conflicts')
+        self.assertTrue(item, 'the conflict is not on the board')
+        self.assertIn('replace', item[0]['body'])
+        self.assertIn('not in the team', item[0]['body'])
+        self.assertIn('team/core/conflicts', board_notice.notice(self.bee) or '')   # a member is told at its next prompt
+
+    def test_SM_F8_without_a_conflict_the_board_gets_no_notice(self):
+        from xsm import board
+        self.make_shared_team()
+        self._hand_over()
+        self.assertEqual(self.deliver('X', 'Y'), {'status': 'updated'})
+        self.assertNotIn('team/core/conflicts', board.current('core'))
+
 
 def load_tests(loader, standard_tests, pattern):
     """The classes inherit HandoverTest's fixtures and with them its tests; run only this file's SM tests."""

@@ -312,6 +312,19 @@ def _answerer(sender, target):
     return handover.succeeds(sender, target)
 
 
+def _is_asker(receiver, record_sender):
+    """Whether `receiver` is the session that asked, or the one that holds its place by a
+    handover that has begun (`moving`) or finished (`done`): an answer B reads between the
+    handover's first write and its questions step is already B's (PROTOCOL 5.15). Local
+    sessions only; `status` stays exact (a question A asks after the handover is not B's)."""
+    if _native(receiver) == _native(record_sender):
+        return True
+    if any(k in x for x in (receiver, record_sender) for k in ("home_id", "remote")):
+        return False
+    from . import handover
+    return handover.succeeds(receiver, record_sender)
+
+
 def _same_machine(sender, target):
     """Whether an answer comes from the machine the question's target is on, when that
     is another machine and the sender is a different conversation there."""
@@ -417,9 +430,94 @@ def expects_reply(receiver, sender, request_id):
     try:
         record = paths.read_json(_filename(request_id))
         return bool(record and record.get("id") == request_id
-                    and _native(receiver) == _native(record["sender"])
+                    and _is_asker(receiver, record["sender"])
                     and _answerer(sender, record["target"]))
     except (ValueError, KeyError, TypeError, AttributeError):
+        return False
+
+
+def _handover_of(identity_holder):
+    """The handover record (moving or done) by which `identity_holder`'s place went on, or None."""
+    from . import handover
+    try:
+        return handover.load(identity_holder)
+    except (ValueError, TypeError, KeyError):
+        return None
+
+
+def _local(*records):
+    return not any(r.get("remote") or "home_id" in r for r in records)
+
+
+def _conversation_of_a_handover(record, sender, receiver):
+    """(old session record, its handover record) when a reply from `sender` to `receiver`
+    belongs to the conversation of a session that handed its place over: either the reply
+    answers a question the old session asked (the asker is now the receiver's place) or it
+    answers a question put to the old session (the answerer is now the sender's place).
+    None otherwise. Nothing is read from a header."""
+    from . import handover, registry
+    if not _local(record["sender"], record["target"], sender, receiver):
+        return None
+    answered = _answerer(sender, record["target"])
+    found = []
+    if answered and _is_asker(receiver, record["sender"]):
+        # the receiver holds the place of the session that asked (it may be the old session's
+        # handle still, in the handover window, or the one it handed over from)
+        found.append((record.get("handed_over_from") or record["sender"], receiver, sender))
+    if answered and _native(receiver) == _native(record["sender"]):
+        # the sender holds the place of the session that was asked
+        found.append((record["target"], sender, receiver))
+    for old_handle, holder, peer in found:
+        try:
+            old = registry.by_session(old_handle["runtime"], old_handle["session_id"], home=old_handle["home"])
+        except (KeyError, TypeError):
+            continue
+        if old is None or _native(old) == _native(holder):
+            continue
+        hand = _handover_of(old)
+        if hand and hand.get("state", "done") in ("moving", "done") and handover.succeeds(holder, old):
+            return old, hand, peer
+    return None
+
+
+def handover_reply_scope(sender, original, target, request_id):
+    """The scope marker ("handover:<id>") for a reply that the plain scope check would
+    refuse only because a handover moved one side of the conversation: the reply answers a
+    question that is the receiver's place's by handover (or was put to the sender's old
+    place), and the peer had a scope with the session that handed over. A new conversation
+    is not in this (PROTOCOL 5.15). None when it does not apply."""
+    try:
+        record = paths.read_json(_filename(request_id))
+        if not record or record.get("id") != request_id:
+            return None
+        found = _conversation_of_a_handover(record, sender, target)
+        if not found:
+            return None
+        old, hand, peer = found
+        from . import config
+        if not config.scope_for(peer, old)[0]:
+            return None
+        return "handover:%s" % hand["id"]
+    except (ValueError, KeyError, TypeError, OSError):
+        return None
+
+
+def handover_reply_ok(receiver, sender, header):
+    """The receiving gate's side of handover_reply_scope: a reply whose header says it
+    came on a handover passes when this machine's own records show it (a question of
+    this place, answered by the one asked or whoever holds its place, and the handover
+    record the header names). The scope id in the header is a claim; only the records count."""
+    scope = str(header.get("scope") or "")
+    request_id = header.get("reply-to") or header.get("reply_to")
+    if header.get("kind") != "reply" or not scope.startswith("handover:") or not request_id:
+        return False
+    try:
+        record = paths.read_json(_filename(request_id))
+        if not record or record.get("id") != request_id:
+            return False
+        found = _conversation_of_a_handover(record, sender, receiver)
+        return bool(found and found[1].get("id") == scope[len("handover:"):])
+    except (ValueError, KeyError, TypeError, OSError):
         return False
 
 
@@ -444,7 +542,7 @@ def record_reply(receiver, sender, header, body):
             return False
         with _locked(request_id) as filename:
             record = paths.read_json(filename)
-            if not record or _native(receiver) != _native(record["sender"]):
+            if not record or not _is_asker(receiver, record["sender"]):
                 return False
             # A session on the machine of the one asked, whose handover that machine has not
             # yet told: kept and marked, never refused (first principle: an answer is not lost
