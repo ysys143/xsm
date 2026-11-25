@@ -449,55 +449,81 @@ def _local(*records):
     return not any(r.get("remote") or "home_id" in r for r in records)
 
 
-def _conversation_of_a_handover(record, sender, receiver):
-    """(old session record, its handover record) when a reply from `sender` to `receiver`
-    belongs to the conversation of a session that handed its place over: either the reply
-    answers a question the old session asked (the asker is now the receiver's place) or it
-    answers a question put to the old session (the answerer is now the sender's place).
-    None otherwise. Nothing is read from a header."""
-    from . import handover, registry
-    if not _local(record["sender"], record["target"], sender, receiver):
+def earlier_askers(record):
+    """The handles of the sessions that asked this question before its present asker,
+    most recent first: every handover appends to `handed_over_chain`; `handed_over_from`
+    (the last one) is all a record written before the chain existed has."""
+    chain = [h for h in (record.get("handed_over_chain") or []) if isinstance(h, dict)]
+    last = record.get("handed_over_from")
+    if isinstance(last, dict) and not any(_native(last) == _native(h) for h in chain):
+        chain.append(last)
+    return list(reversed(chain))
+
+
+def _session_of(handle):
+    from . import registry
+    try:
+        return registry.by_session(handle["runtime"], handle["session_id"], home=handle["home"])
+    except (KeyError, TypeError):
         return None
+
+
+def _conversations_of_a_handover(record, sender, receiver):
+    """Every (old session record, its handover record, the peer) by which a reply from
+    `sender` to `receiver` belongs to the conversation of a session that handed its place
+    over: either the reply answers a question that session asked (the asker is now the
+    receiver's place; any session of the chain of earlier askers may be the old one) or it
+    answers a question put to it (the answerer is now the sender's place; the asker may
+    itself have moved, so the peer may be any of the earlier askers too). Most recent
+    first. Nothing is read from a header."""
+    from . import handover
+    if not _local(record["sender"], record["target"], sender, receiver):
+        return []
     answered = _answerer(sender, record["target"])
     found = []
     if answered and _is_asker(receiver, record["sender"]):
         # the receiver holds the place of the session that asked (it may be the old session's
-        # handle still, in the handover window, or the one it handed over from)
-        found.append((record.get("handed_over_from") or record["sender"], receiver, sender))
+        # handle still, in the handover window, or any of those it handed over from)
+        for handle in earlier_askers(record) or [record["sender"]]:
+            found.append((handle, receiver, sender))
     if answered and _native(receiver) == _native(record["sender"]):
         # the sender holds the place of the session that was asked
-        found.append((record["target"], sender, receiver))
+        peers = [receiver] + [p for p in map(_session_of, earlier_askers(record)) if p]
+        for peer in peers:
+            found.append((record["target"], sender, peer))
+    out = []
     for old_handle, holder, peer in found:
-        try:
-            old = registry.by_session(old_handle["runtime"], old_handle["session_id"], home=old_handle["home"])
-        except (KeyError, TypeError):
-            continue
+        old = _session_of(old_handle)
         if old is None or _native(old) == _native(holder):
             continue
         hand = _handover_of(old)
         if hand and hand.get("state", "done") in ("moving", "done") and handover.succeeds(holder, old):
-            return old, hand, peer
-    return None
+            out.append((old, hand, peer))
+    return out
+
+
+def _conversation_of_a_handover(record, sender, receiver):
+    """The first of `_conversations_of_a_handover`, or None."""
+    found = _conversations_of_a_handover(record, sender, receiver)
+    return found[0] if found else None
 
 
 def handover_reply_scope(sender, original, target, request_id):
     """The scope marker ("handover:<id>") for a reply that the plain scope check would
     refuse only because a handover moved one side of the conversation: the reply answers a
     question that is the receiver's place's by handover (or was put to the sender's old
-    place), and the peer had a scope with the session that handed over. A new conversation
-    is not in this (PROTOCOL 5.15). None when it does not apply."""
+    place), and the peer had a scope with the session that handed over: with any session
+    of the chain of earlier askers when the question went through several handovers. A new
+    conversation is not in this (PROTOCOL 5.15). None when it does not apply."""
     try:
         record = paths.read_json(_filename(request_id))
         if not record or record.get("id") != request_id:
             return None
-        found = _conversation_of_a_handover(record, sender, target)
-        if not found:
-            return None
-        old, hand, peer = found
         from . import config
-        if not config.scope_for(peer, old)[0]:
-            return None
-        return "handover:%s" % hand["id"]
+        for old, hand, peer in _conversations_of_a_handover(record, sender, target):
+            if config.scope_for(peer, old)[0]:
+                return "handover:%s" % hand["id"]
+        return None
     except (ValueError, KeyError, TypeError, OSError):
         return None
 
@@ -505,8 +531,9 @@ def handover_reply_scope(sender, original, target, request_id):
 def handover_reply_ok(receiver, sender, header):
     """The receiving gate's side of handover_reply_scope: a reply whose header says it
     came on a handover passes when this machine's own records show it (a question of
-    this place, answered by the one asked or whoever holds its place, and the handover
-    record the header names). The scope id in the header is a claim; only the records count."""
+    this place, answered by the one asked or whoever holds its place, and a handover
+    record of the chain that the header names). The scope id in the header is a claim;
+    only the records count."""
     scope = str(header.get("scope") or "")
     request_id = header.get("reply-to") or header.get("reply_to")
     if header.get("kind") != "reply" or not scope.startswith("handover:") or not request_id:
@@ -515,8 +542,9 @@ def handover_reply_ok(receiver, sender, header):
         record = paths.read_json(_filename(request_id))
         if not record or record.get("id") != request_id:
             return False
-        found = _conversation_of_a_handover(record, sender, receiver)
-        return bool(found and found[1].get("id") == scope[len("handover:"):])
+        wanted = scope[len("handover:"):]
+        return any(hand.get("id") == wanted
+                   for _old, hand, _peer in _conversations_of_a_handover(record, sender, receiver))
     except (ValueError, KeyError, TypeError, OSError):
         return False
 

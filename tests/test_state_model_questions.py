@@ -314,6 +314,81 @@ class StateModelQuestionsTest(test_handover.HandoverTest):
         self.assertGreaterEqual(receive.poll_replies(P, 'qp'), 1)
         self.assertEqual(questions.status(P, 'qp')['status'], 'final')
 
+    # A chain A -> B -> C (spec 2.1 F15): the question record keeps every earlier asker, not only the last one.
+    # P had a scope with A alone; neither handover copied it. P's late answer to the question A asked reaches C.
+    def test_SM_F15_chain_a_late_answer_to_the_question_A_asked_reaches_C_after_A_B_C(self):
+        from xsm import adapters, config, handover, questions, receive
+        A, P, B, C = self.lead, self._sess('peer'), self._sess('nextfar'), self._sess('lastfar')
+        config.add_reach(A['ref'], P['cwd'], 't', A)
+        with mock.patch.object(adapters, 'to_codex', side_effect=queued):
+            ask = questions.ask(A, 'ref:%s' % P['ref'], 'what is 6*7?', request_id='qc')
+        self.assertEqual(ask['status'], 'pending', ask)
+        handover.hand_over(A, B, 'goal: x', 'x', dict(handover.plan_links(A, B), links=[]))
+        handover.hand_over(B, C, 'goal: y', 'y', dict(handover.plan_links(B, C), links=[]))
+        self.assertIsNone(config.scope_for(P, B)[0], 'fixture: P and B must share none')
+        self.assertIsNone(config.scope_for(P, C)[0], 'fixture: P and C must share none')
+        sent = self._answer(P, C, 'ANSWER-42', 'qc')
+        self.assertIn(sent.status, ('delivered', 'sent-unconfirmed', 'stored', 'queued'), sent.reason)
+        self.assertGreaterEqual(receive.poll_replies(C, 'qc'), 1)
+        self.assertEqual(questions.status(C, 'qc')['status'], 'final')
+
+    def test_SM_F15_chain_the_question_record_keeps_every_earlier_asker(self):
+        from xsm import adapters, config, handover, paths, questions
+        A, P, B, C = self.lead, self._sess('peer'), self._sess('nextfar'), self._sess('lastfar')
+        config.add_reach(A['ref'], P['cwd'], 't', A)
+        with mock.patch.object(adapters, 'to_codex', side_effect=queued):
+            questions.ask(A, 'ref:%s' % P['ref'], 'what is 6*7?', request_id='qc')
+        handover.hand_over(A, B, 'goal: x', 'x', dict(handover.plan_links(A, B), links=[]))
+        handover.hand_over(B, C, 'goal: y', 'y', dict(handover.plan_links(B, C), links=[]))
+        record = paths.read_json(questions._filename('qc'))
+        self.assertEqual([h['session_id'] for h in record['handed_over_chain']], [A['session_id'], B['session_id']])
+        self.assertEqual(record['handed_over_from']['session_id'], B['session_id'])
+
+    def test_SM_F15_chain_the_successor_answers_a_question_put_to_A_after_A_B_C(self):
+        from xsm import adapters, config, handover, questions, receive
+        A, P, B, C = self.lead, self._sess('peer'), self._sess('nextfar'), self._sess('lastfar')
+        config.add_reach(A['ref'], P['cwd'], 't', A)
+        with mock.patch.object(adapters, 'to_codex', side_effect=queued):
+            ask = questions.ask(P, 'ref:%s' % A['ref'], 'what is 6*7?', request_id='qp')
+        self.assertEqual(ask['status'], 'pending', ask)
+        handover.hand_over(A, B, 'goal: x', 'x', dict(handover.plan_links(A, B), links=[]))
+        handover.hand_over(B, C, 'goal: y', 'y', dict(handover.plan_links(B, C), links=[]))
+        self.assertIsNone(config.scope_for(C, P)[0], 'fixture: C and P must share none')
+        sent = self._answer(C, P, 'ANSWER-42', 'qp')
+        self.assertIn(sent.status, ('delivered', 'sent-unconfirmed', 'stored', 'queued'), sent.reason)
+        self.assertGreaterEqual(receive.poll_replies(P, 'qp'), 1)
+        self.assertEqual(questions.status(P, 'qp')['status'], 'final')
+
+    def test_SM_F15_chain_both_sides_moved_the_answer_of_C_reaches_the_successor_of_the_asker(self):
+        # P asked A, then P handed over to Q and A to B to C, none of the copies made: only P and A shared a scope.
+        from xsm import adapters, config, handover, questions, receive
+        A, P, B, C = self.lead, self._sess('peer'), self._sess('nextfar'), self._sess('lastfar')
+        Q = self._sess('peernext')
+        config.add_reach(A['ref'], P['cwd'], 't', A)
+        with mock.patch.object(adapters, 'to_codex', side_effect=queued):
+            questions.ask(P, 'ref:%s' % A['ref'], 'what is 6*7?', request_id='qm')
+        handover.hand_over(P, Q, 'goal: p', 'p', dict(handover.plan_links(P, Q), links=[]))
+        handover.hand_over(A, B, 'goal: x', 'x', dict(handover.plan_links(A, B), links=[]))
+        handover.hand_over(B, C, 'goal: y', 'y', dict(handover.plan_links(B, C), links=[]))
+        self.assertIsNone(config.scope_for(C, Q)[0], 'fixture: C and Q must share none')
+        sent = self._answer(C, Q, 'ANSWER-42', 'qm')
+        self.assertIn(sent.status, ('delivered', 'sent-unconfirmed', 'stored', 'queued'), sent.reason)
+        self.assertGreaterEqual(receive.poll_replies(Q, 'qm'), 1)
+        self.assertEqual(questions.status(Q, 'qm')['status'], 'final')
+
+    def test_control_SM_F15_chain_a_stranger_cannot_answer_a_question_of_the_chain(self):
+        from xsm import adapters, config, handover, questions, send
+        A, P, B, C = self.lead, self._sess('peer'), self._sess('nextfar'), self._sess('lastfar')
+        Q = self._sess('stranger')
+        config.add_reach(A['ref'], P['cwd'], 't', A)
+        with mock.patch.object(adapters, 'to_codex', side_effect=queued):
+            questions.ask(A, 'ref:%s' % P['ref'], 'what is 6*7?', request_id='qc')
+        handover.hand_over(A, B, 'goal: x', 'x', dict(handover.plan_links(A, B), links=[]))
+        handover.hand_over(B, C, 'goal: y', 'y', dict(handover.plan_links(B, C), links=[]))
+        with mock.patch.object(adapters, 'to_codex', side_effect=queued):
+            res = send.send('ref:%s' % C['ref'], 'late', sender=Q, kind='reply', reply_to='qc', outcome='succeeded')
+        self.assertEqual(res.status, 'refused', res.reason)
+
     # A new conversation is not a reply to a handed-over question: it keeps today's rule.
     def test_control_SM_F15_a_new_dm_from_P_to_A_after_the_handover_is_refused(self):
         from xsm import adapters, config, handover, send
