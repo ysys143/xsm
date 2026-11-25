@@ -338,7 +338,7 @@ def _check(me: dict, target: dict, resume: bool = False) -> None:
 def _word(record: dict) -> str:
     """A session's name as a board item name may hold it."""
     import re
-    word = re.sub(r"[^A-Za-z0-9ㄱ-힝 ._:-]", "-",
+    word = re.sub(r"[^A-Za-z0-9\u3131-\uD79D ._:-]", "-",
                   record.get("name") or record.get("ref") or "session").strip()
     return word[:40] or "session"
 

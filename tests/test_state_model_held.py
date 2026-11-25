@@ -162,10 +162,8 @@ class HeldDeliverIsFinal(_MigrationBase):
 
 
 class HeldDeliverIsFinalAcrossHandover(_HandoverBase):
-    # RED until P2 (SM-F11): `handover._unread` closes every non-acknowledged original of A as
-    # moved and writes its body into the letter, and `held deliver` left this one pending, so
-    # the successor is shown the DM the person already released.
-    @unittest.expectedFailure
+    # SM-F11 (fixed in P4): held deliver acknowledges the original, so the handover neither moves
+    # it nor writes it into the letter.
     def test_SM_F11_c_handover_then_b_inbox_and_letter_do_not_show_again(self):
         from xsm import receive
         self.hold_at_a('SECRET-5')
@@ -233,33 +231,9 @@ class NativeCopyAfterHandover(_HandoverBase):
 # ---------------------------------------------------------------------------------------------
 
 class DeliveredMeansShown(_MigrationBase):
-    # RED until P4 (SM-F13): take_inbox_claims writes the `delivered` receipt (receive.py:1383)
-    # before handoff.handoff (:1393); a fence landing between the two makes the handoff refuse,
-    # nobody is shown the DM, and the sender's ledger.status still says delivered.
-    # NOTE (P4): this injection point (the fence right after ledger.receipt) cannot go green once
-    # the receipt is written after handoff.handoff: the fence then lands after the handoff has
-    # stood, the migration moves a message A was shown, and ledger.handoff_step raises
-    # ValueError. Kept as written and RED; the next test fences at the handoff itself.
-    @unittest.expectedFailure
-    def test_SM_F13_fence_between_receipt_and_handoff_leaves_no_delivered_receipt(self):
-        from xsm import handoff, ledger, migration
-        mid = self.dm('NEVER-SHOWN-AT-A')
-        real = ledger.receipt
-        fired = []
-
-        def receipt_then_migrate(msg_id, decision, *a, **k):
-            real(msg_id, decision, *a, **k)
-            if msg_id == mid and decision == 'delivered' and not fired:
-                fired.append(1)
-                self.migrate()                                    # fence..commit right after the receipt
-        with mock.patch.object(ledger, 'receipt', side_effect=receipt_then_migrate):
-            try:
-                self.inbox(self.a)
-            except migration.MigrationError:
-                pass
-        self.assertEqual(handoff.status(self.b, mid)['status'], 'pending')   # B has not been shown it either
-        self.assertNotEqual(ledger.status(mid).get('status'), 'delivered')
-
+    # SM-F13 (fixed in P4): the `delivered` receipt is written only after handoff.handoff stood.
+    # The first version of this test fenced right after ledger.receipt; with the fixed order that
+    # point lies after the handoff, so it no longer describes the defect and was replaced by this one.
     def test_SM_F13_fence_before_handoff_leaves_no_delivered_receipt(self):
         """Same assertions, fence injected where the handoff is refused: right before handoff.handoff."""
         from xsm import handoff, ledger, migration
