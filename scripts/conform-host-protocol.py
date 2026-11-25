@@ -443,8 +443,13 @@ def handovers(peer, params, check, equal):
         'Fixture handover context' in received[0]['letter'], True))
     check('handover receipt exposes no private identity records', lambda: equal(
         all(key not in transfer for key in ('home','from_identity','to_identity','approval')), True))
-    check('successor letter preserves unread body and original id', lambda: equal(
-        'handover-unread' in received[0]['letter'] and 'Fixture unread transfer body' in received[0]['letter'], True))
+    # P2 contract (state-model-fixes): the letter names the unread DM by id; its text reaches the
+    # successor through its own inbox, as the original, not pasted into the letter.
+    moved = operation(target, 'xsm_inbox', message_ids=['handover-unread'])
+    check('successor letter names unread original id; its body arrives by inbox', lambda: equal(
+        'handover-unread' in received[0]['letter'] and 'Fixture unread transfer body' not in received[0]['letter']
+        and [claim['id'] for claim in moved['claims']] == ['handover-unread'], True))
+    operation(target, 'xsm_ack', tokens=[claim['token'] for claim in moved['claims']])
     operation(sender, 'xsm_send', target='ref:' + source['ref'], text='Fixture post-transfer body',
         request_id='handover-followup', wake='never', wait=0)
     packet = operation(target, 'xsm_inbox', message_ids=['handover-followup'])
