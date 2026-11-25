@@ -14,7 +14,7 @@ import shlex
 import sys
 import time
 
-from . import config, consent, envelope, housekeeping, identity, inbox, install, ledger, paths, \
+from . import config, consent, envelope, handoff, housekeeping, identity, inbox, install, ledger, paths, \
     policy, probe, receive, registry, resolve, send, workers
 
 from .instructions import HANDSHAKE_TEXT
@@ -1551,6 +1551,7 @@ def _held_deliver(args) -> int:
     if entry.get("id"):
         receive._safely(ledger.receipt, entry["id"], "delivered", me,
                         "released from the held list on your user's reply")
+        _consume_held_original(entry, me)
     paths.append_jsonl("decisions.jsonl", {
         "event": "held-deliver", "decision": "pass", "id": entry.get("id"), "held": name,
         "reason": "released on the person's reply: %s" % (_verdict or "")[:200],
@@ -1565,6 +1566,23 @@ def _held_deliver(args) -> int:
     if entry.get("truncated"):
         print("\n[xsm] The held copy was cut at 4000 characters.")
     return OK
+
+
+def _consume_held_original(entry: dict, me: dict | None) -> None:
+    """After the person's yes the held message's canonical original in handoffs/ is closed
+    as consumed, so no inbox, migration or handover holds or shows it a second time (F11).
+    The receiver is the session the entry was held for. A failure here never stops the
+    message from being shown: the person has already said yes."""
+    receiver = me
+    ref = entry.get("receiver_ref")
+    if ref and not (me and me.get("ref") == ref):
+        receiver = next((r for r in registry.records() if r.get("ref") == ref), None)
+    if not receiver:
+        return
+    try:
+        handoff.consume(receiver, entry["id"], "held-deliver")
+    except (OSError, ValueError) as err:
+        print("[xsm] could not close the original of %s: %s" % (entry["id"], err), file=sys.stderr)
 
 
 def _held_for(entry: dict, me: dict | None) -> bool:

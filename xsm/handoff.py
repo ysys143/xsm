@@ -530,6 +530,23 @@ def move_out(receiver, to):
     return moved
 
 
+def consume(receiver, message_id, reason):
+    """Close this endpoint's original as consumed because the person released it
+    (`xsm held deliver`): state acknowledged, claim None, `consumed_by` recording why.
+    The body was shown to the person's agent on that yes, so no inbox, migration or
+    handover may hold or show it again. Idempotent; an absent original (a hold from
+    before originals were kept) is not an error. Never deletes."""
+    with _locked(receiver) as folder:
+        record = _read(folder, _id(message_id), receiver)
+        if record is None:
+            return {'status': 'not-found', 'id': message_id}
+        if record['state'] != 'acknowledged':
+            record.update(state='acknowledged', claim=None, consumed_by=reason,
+                          consumed_at=time.time())
+            _write(os.path.join(folder, record['id'] + '.json'), record)
+        return _view(record)
+
+
 def records(receiver):
     """Read-only ownership history, including transferred originals."""
     with _locked(receiver) as folder:
