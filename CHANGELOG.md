@@ -5,6 +5,14 @@ steps, are on [GitHub Releases](https://github.com/ysys143/xsm/releases) (in Kor
 
 ## Unreleased
 
+## [0.6.2](https://github.com/ysys143/xsm/releases/tag/v0.6.2) - 2026-11-25
+
+- Hand a session's place over without losing or leaking anything: unread originals and holds move to the successor's own inbox (a held DM stays held there), and the letter names them by count and id instead of pasting bodies.
+- Make handovers safe to run concurrently and to resume: one at a time per machine, the record written first, every step idempotent; a target that already handed over is followed to its successor, and `xsm doctor` names an unfinished handover.
+- Keep every answer: replies reach the successor's question record during and after a handover (question groups included), copied connections carry late answers, and a remote asker pulls the succession and keeps an unconfirmed successor's answer.
+- Release a held message once: `xsm held deliver` consumes the original, and a delivered receipt is written only after the message was shown.
+- Converge a team record changed on two machines at once (ties go to the larger machine key and the other side re-applies its change); carry board writes made during a handover.
+
 ## [0.6.1](https://github.com/ysys143/xsm/releases/tag/v0.6.1) - 2026-11-23
 
 - Treat a `join`, `leave`, `link` or `reach` the person runs in their Codex session's shell box as their own decision on the Codex versions measured (0.170, 0.171); other commands and unmeasured versions still ask.

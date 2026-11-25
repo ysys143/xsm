@@ -5,4 +5,4 @@ a one-shot CLI sends over each runtime's own native path, and every piece of
 state is a file. See docs/xsm/README.md for supported behavior and setup.
 """
 
-__version__ = "0.6.1"
+__version__ = "0.6.2"
