@@ -191,6 +191,38 @@ def _log(team: dict, action: str, by: dict, subject: dict | None, approval: str 
         "subject": label(subject) if subject else None, "approval": approval})
     team["generation"] = int(team.get("generation", 0)) + 1
     team["updated_at"] = time.time()
+    # A change made here: this machine authors the record now (team_sync breaks a tie between machines
+    # by the author's key), and other machines have not yet acknowledged the change (pending_ops).
+    team["author"] = None
+    _record_op(team, action, by, subject)
+
+
+def _record_op(team: dict, action: str, by: dict | None, subject: dict | None) -> None:
+    """Append the change just made as a structured op the other machines have not acknowledged
+    (docs/plan/state-model-fixes/spec.md 3.4 F8): add, remove, lead, or replace (a handover:
+    `by` gives its place to `subject`). team_sync re-applies the ops on top of a record that
+    won over this machine's, and drops them once every other member machine has acknowledged."""
+    op = None
+    if action == "add" and subject:
+        op = {"op": "add", "member": dict(subject)}
+    elif action in ("remove", "leave") and subject:
+        op = {"op": "remove", "member": dict(subject)}
+    elif action in ("lead", "no-lead"):
+        op = {"op": "lead", "member": dict(subject) if subject else None}
+    elif action == "handover" and by and subject:
+        old = member_of(by)
+        op = {"op": "replace", "member": old, "to": dict(subject)}
+        try:
+            other = member_of(by, by_conversation=True)
+        except TeamError:
+            other = None
+        if other and other != old:
+            op["also"] = other
+    if op:
+        op["at_generation"] = team["generation"]
+        team.setdefault("pending_ops", []).append(op)
+    if not any(m.get("machine") for m in team.get("members", [])):
+        team["pending_ops"] = []        # no other machine holds this team: nothing to acknowledge
 
 
 def create(me: dict, name: str) -> dict:

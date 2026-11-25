@@ -549,6 +549,15 @@ class Daemon:
                 failed.append({"machine": machine, "code": str(exc)})
         return {"published": published, "failed": failed}
 
+    def _republish_team(self, name):
+        from . import teams
+        try:
+            team = teams.load(name)
+            if team:
+                self.publish_team(team)
+        except Exception:       # the next change or team send publishes again
+            pass
+
     def publish_handover(self, request):
         """Tell other machines a local session handed its place over
         (handover.py): the team's remote member machines the caller names, and
@@ -975,8 +984,11 @@ class Daemon:
                 if op == "team":
                     from . import team_sync
                     try:
-                        return {"ok": True, "result": team_sync.receive(
-                            origin, request.get("team"), self.transport.endpoint_id)}
+                        result = team_sync.receive(origin, request.get("team"), self.transport.endpoint_id)
+                        again = result.pop("republish", None)
+                        if again:       # this machine re-applied its own changes on top: send the result on
+                            threading.Thread(target=self._republish_team, args=(again,), daemon=True).start()
+                        return {"ok": True, "result": result}
                     except ValueError:
                         return {"ok": False, "code": "invalid-team"}
                 if op == "deliver":
