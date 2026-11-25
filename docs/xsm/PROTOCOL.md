@@ -113,7 +113,7 @@ CODEX_HOME=<대상 홈> codex queue --thread <thread-uuid> --message <봉투 전
 | `questions/<id>.json`, `question-reply-copies/<endpoint-hash>/<reply-id>.json` | 질문의 원문·전체 sender/target·digest·send_evidence·부분/최종 replies와 구 hook에 앞서 보존하는 reply 사본. timeout/취소 뒤 조회 가능 |
 | `groups/<group-id>.json` | 다중 수신 DM 한 번: `{id, sender ref, kind, reply_to, outcome, priority, recipients: [{spec, label, id, status}], body}`. 수신자마다 따로 보낸 메시지 ID를 담고, `--resend <group id>`가 다시 보낼 수 있는 상태의 수신자만 같은 ID로 다시 보낸다(§5.12) |
 | `question-groups/<group-id>.json` | 다중 수신 질문: `{id, sender(native), created_at, recipients, children: ["<group>-<n>"], notes}`. 질문 하나하나는 `questions/<group>-<n>.json`이다(§5.12) |
-| `teams/<팀>/team.json` | `{name, id, generation, lead, members, created_at, updated_at, origin?, pair?, log}`. 구성원은 로컬 이름 구성원 `{runtime, home, name}`, 로컬 대화 구성원 `{runtime, home, session_id, name}`, 다른 머신 구성원 `{machine, runtime, home_id, session_id, name}` 중 하나다. 바꿀 때마다 `generation`이 오른다(§5.13) |
+| `teams/<팀>/team.json` | `{name, id, generation, lead, members, created_at, updated_at, origin?, author?, seen?, acked_by?, pending_ops?, pair?, log}`. 구성원은 로컬 이름 구성원 `{runtime, home, name}`, 로컬 대화 구성원 `{runtime, home, session_id, name}`, 다른 머신 구성원 `{machine, runtime, home_id, session_id, name}` 중 하나다. 바꿀 때마다 `generation`이 오른다(§5.13) |
 | `teams/<팀>/muted/<runtime>-<session>` | 팀 DM을 깨우지 않고 다음 턴에 받는 세션 표시 |
 | `teams/<팀>/BOARD.md`, `teams/<팀>/BOARD.md.nodes/` | 팀 보드와 그 노드(§5.7 형식에 `item`, `decision` 필드). 노드 폴더의 `.rendered`는 마지막 렌더의 SHA-256이다(§5.14) |
 | `teams/<팀>/BOARD.md.nodes/seen/<runtime>-<session>.json` | 보드 알림 위치: `{read, notified, decisions_read, decisions_notified, muted}`(노드·결재 ID 목록) |
@@ -517,7 +517,7 @@ MCP 네이티브 복구는 상태 조회의 `native_question`(결정별 표식 �
 
 팀 권한은 `config.scope_for`의 한 갈래다: 두 세션이 같은 팀의 구성원이고 둘 다 끝나지 않았으면 범위는 `team:<이름>`이다. 쌍별 허가로 전개하지 않는다. 구성원 판정: 이름 구성원은 runtime·home·이름이 같으면, 대화 구성원은 session_id까지 같으면, 다른 머신 구성원은 끝점이 같으면 맞는다. 추가 규칙은 호출자가 팀장이고 대상이 같은 프로젝트(`team_aware=False`로 계산한 범위가 있음)일 때만 승인 없이 되고, 그 밖에는 사용자 승인이다. 팀장 지정은 늘 사용자 승인이다. `connect`의 선택은 대화 구성원 둘인 `pair-<id 앞 10자>` 팀을 만들고 선택 기록은 0.5.0 상대를 위해 남긴다. 한쪽이 나가면 선택 기록도 내린다.
 
-머신 간: 팀이 바뀐 머신의 서비스가 로컬 요청 `team-publish`를 받아, 원격 구성원 머신마다 상대 요청 `team`으로 팀 기록을 끝점 형태로 보낸다(실행 중인 로컬 이름 구성원은 그 세션의 끝점으로, 실행 중이 아닌 것은 `not_running` 이름만으로). 받는 머신은 보낸 머신과 자기 머신 모두에 구성원이 있고, 같은 이름의 다른 팀 ID가 없으며, `(generation, origin)`이 더 클 때만 받는다. 자기 끝점은 등록 기록이 있으면 로컬 이름 구성원으로 되돌린다. P2P 수신 허가(`Daemon._permission`)는 보낸 쪽과 받는 쪽이 같은 팀이면 쌍별 grant 없이 허가한다.
+머신 간: 팀이 바뀐 머신의 서비스가 로컬 요청 `team-publish`를 받아, 원격 구성원 머신마다 상대 요청 `team`으로 팀 기록을 끝점 형태로 보낸다(실행 중인 로컬 이름 구성원은 그 세션의 끝점으로, 실행 중이 아닌 것은 `not_running` 이름만으로). 받는 머신은 보낸 머신과 자기 머신 모두에 구성원이 있고 같은 이름의 다른 팀 ID가 없을 때만 받는다. generation이 더 크면 받는다. 같으면 내용(팀 ID·이름·팀장·구성원)이 같은 기록은 에코라서 무시하고(generation을 올리지 않고 확인 표지만 적는다), 내용이 다르면 두 기록을 쓴 머신 키 중 큰 쪽 기록을 양쪽이 받는다. 이 머신이 바꾼 기록의 저자는 이 머신 키다(`author`가 `null`). 진 머신은 받은 기록 위에 자기 `pending_ops`를 다시 적용하고 generation을 올려 다시 보낸다. 높은 generation 기록을 받을 때도 보낸 쪽이 아직 보지 못한 변경은 같은 방식으로 다시 적용한다. 이미 적용할 수 없게 된 연산(이미 빠진 구성원을 지우기 등)은 버리지 않고 팀 로그에 `conflict`로 남긴다. `pending_ops`는 이 머신이 한 변경 `{op: add|remove|lead|replace, member, at_generation}`(인수인계는 `replace`, `to`가 후임)이고, 다른 구성원 머신이 모두 확인하면 빠진다. 기록에는 보낸 머신이 받아 둔 머신별 generation `seen`이 실려 가고, 받는 쪽은 그것을 `acked_by`(머신 -> 그 머신이 받아 간 이 머신 기록의 generation)에 적는다. 이 필드가 없는 옛 기록도 읽힌다. 자기 끝점은 등록 기록이 있으면 로컬 이름 구성원으로 되돌린다. P2P 수신 허가(`Daemon._permission`)는 보낸 쪽과 받는 쪽이 같은 팀이면 쌍별 grant 없이 허가한다.
 
 ### 5.14 팀 보드와 결재 기록
 

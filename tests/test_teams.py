@@ -226,6 +226,102 @@ class TeamSyncTest(test_xsm.TempState):
         with self.assertRaises(ValueError):
             team_sync.receive(MACHINE_A, {'name': 'core'}, MACHINE_B)
 
+    # -- F8: pending ops, acknowledgements, echoes (spec 3.4) ---------------------------------
+    def _from_b(self, generation, members, lead=None, seen=None):
+        import hashlib
+        mine_ep = {'machine': MACHINE_A, 'runtime': 'codex',
+                   'home_id': hashlib.sha256(os.path.realpath(self.home).encode()).hexdigest(),
+                   'session_id': 'mine', 'name': 'mine'}
+        rec = {'name': 'core', 'id': self._team_id, 'generation': generation, 'lead': lead,
+               'members': [mine_ep] + members}
+        if seen is not None:
+            rec['seen'] = seen
+        return rec
+
+    def _shared_team(self):
+        """This machine is MACHINE_A (the smaller key); the team has two members of machine B."""
+        from xsm import teams
+        team = teams.create(self.mine, 'core')
+        self._team_id = team['id']
+        self.b1 = {'machine': MACHINE_B, 'runtime': 'codex', 'home_id': 'c' * 64, 'session_id': 'b1', 'name': 'b1'}
+        self.b2 = dict(self.b1, session_id='b2', name='b2')
+        teams.add(self.mine, 'core', self.b1, 'x')
+        return teams.require('core')
+
+    def test_local_changes_are_kept_as_pending_ops_only_while_another_machine_holds_the_team(self):
+        from xsm import teams
+        local = teams.create(self.mine, 'solo')
+        self.assertEqual(local.get('pending_ops', []), [])
+        team = self._shared_team()
+        self.assertEqual([(o['op'], o['at_generation']) for o in team['pending_ops']], [('add', team['generation'])])
+        self.assertIsNone(team['author'])
+        team = teams.add(self.mine, 'core', self.b2, 'x')
+        team = teams.set_lead(self.mine, 'core', self.b1, 'x')
+        team = teams.remove(self.mine, 'core', self.b2, 'x')
+        self.assertEqual([o['op'] for o in team['pending_ops']], ['add', 'add', 'lead', 'remove'])
+
+    def test_a_newer_record_that_has_not_seen_a_change_gets_the_change_back_on_top(self):
+        from xsm import team_sync, teams
+        team = self._shared_team()
+        teams.add(self.mine, 'core', self.b2, 'x')                       # generation 3, only here
+        newer = self._from_b(7, [self.b1])                                # B's record: no b2, has not seen it
+        result = team_sync.receive(MACHINE_B, newer, MACHINE_A)
+        self.assertEqual(result, {'status': 'updated', 'republish': 'core'})
+        team = teams.require('core')
+        self.assertEqual(team['generation'], 8)
+        self.assertTrue(any(teams._same(m, self.b2) for m in team['members']))
+        self.assertIsNone(team['author'])
+        self.assertEqual([o['at_generation'] for o in team['pending_ops']], [8])
+
+    def test_a_newer_record_that_has_seen_the_change_is_taken_as_it_is(self):
+        from xsm import team_sync, teams
+        team = self._shared_team()
+        teams.add(self.mine, 'core', self.b2, 'x')
+        gen = teams.require('core')['generation']
+        newer = self._from_b(7, [self.b1], seen={MACHINE_A: gen})        # B took this machine's record and removed b2
+        self.assertEqual(team_sync.receive(MACHINE_B, newer, MACHINE_A), {'status': 'updated'})
+        team = teams.require('core')
+        self.assertEqual(team['generation'], 7)
+        self.assertFalse(any(teams._same(m, self.b2) for m in team['members']))
+        self.assertEqual(team['pending_ops'], [])
+
+    def test_a_change_that_no_longer_applies_is_named_in_the_log_not_dropped(self):
+        from xsm import team_sync, teams
+        self._shared_team()
+        teams.add(self.mine, 'core', self.b2, 'x')
+        seen = teams.require('core')['generation']                         # B has taken this much of ours
+        teams.remove(self.mine, 'core', self.b1, 'x')                      # b1 leaves here; b2 stays remote
+        newer = self._from_b(9, [self.b2], seen={MACHINE_A: seen})         # B removed b1 as well
+        self.assertEqual(team_sync.receive(MACHINE_B, newer, MACHINE_A), {'status': 'updated'})
+        team = teams.require('core')
+        self.assertEqual(team['generation'], 9)                            # nothing changed: no bump
+        conflicts = [e for e in team['log'] if e['action'] == 'conflict']
+        self.assertEqual([e['op'] for e in conflicts], ['remove'])
+        self.assertIn('not in the team any more', conflicts[0]['reason'])
+
+    def test_an_echo_records_the_acknowledgement_and_changes_no_generation(self):
+        from xsm import team_sync, teams
+        team = self._shared_team()
+        gen = team['generation']
+        echo = self._from_b(gen, [self.b1], seen={MACHINE_A: gen})
+        self.assertEqual(team_sync.receive(MACHINE_B, echo, MACHINE_A), {'status': 'stale'})
+        team = teams.require('core')
+        self.assertEqual(team['generation'], gen)
+        self.assertEqual(team['pending_ops'], [])
+        self.assertEqual(team['acked_by'], {MACHINE_B: gen})
+        self.assertEqual(team_sync.receive(MACHINE_B, echo, MACHINE_A), {'status': 'stale'})
+        self.assertEqual(teams.require('core')['generation'], gen)
+
+    def test_a_record_written_before_these_fields_still_takes_a_newer_record(self):
+        from xsm import paths, team_sync, teams
+        team = self._shared_team()
+        for key in ('pending_ops', 'acked_by', 'seen', 'author'):
+            team.pop(key, None)
+        paths.write_json(teams._file('core'), team)
+        newer = self._from_b(team['generation'] + 1, [self.b1])
+        self.assertEqual(team_sync.receive(MACHINE_B, newer, MACHINE_A)['status'], 'updated')
+        self.assertEqual(teams.require('core')['generation'], team['generation'] + 1)
+
     def test_to_endpoints_sends_running_members_by_session_and_others_by_name(self):
         from xsm import team_sync, teams
         team = teams.create(self.mine, 'core')

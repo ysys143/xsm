@@ -2,7 +2,7 @@
 
 SM-F6  team places and owner/A board items move together while a handover runs  (fixed in P1)
 SM-F7  a write to owner/A between copy and close is carried; two-head items are named  (RED until P5)
-SM-F8  two machines that change the same team at the same generation end with one record  (RED until P6)
+SM-F8  two machines that change the same team at the same generation end with one record  (fixed in P6)
 
 Reproductions: deliverables/statechart-20261125/teams/replay_{places,board,teamsync}_test.py.
 
@@ -355,10 +355,9 @@ class TwoMachines(_Base):
         with self.at('Y'):
             teams.add(self.y('yee'), 'core', self.y(name), 'x')
 
-    # RED until P6 (SM-F8). Today: Y's record reaches X first and replaces X's (X's local record has no
+    # Fixed in P6 (SM-F8). Before it: Y's record reaches X first and replaces X's (X's local record has no
     # origin, so the tie goes to the incoming one); A is lead again on X, B is not a member, and the handover
     # is silently undone.
-    @unittest.expectedFailure
     def test_SM_F8_Y_record_first_then_the_older_handover_record(self):
         self.make_shared_team()
         self._hand_over()                                                       # X hands A's seat to B
@@ -368,9 +367,8 @@ class TwoMachines(_Base):
         self.deliver('X', 'Y', x_record)                                        # X's older record reaches Y
         self.assert_one_record_without_A('zed')
 
-    # RED until P6 (SM-F8). Today: X's record reaches Y first; Y refuses it (tie, same origin) and keeps
+    # Fixed in P6 (SM-F8). Before it: X's record reaches Y first; Y refuses it (tie, same origin) and keeps
     # its own record with A as lead; then Y's record replaces X's. The machines end alike but A is back.
-    @unittest.expectedFailure
     def test_SM_F8_handover_record_first_then_Y_record(self):
         self.make_shared_team()
         self._hand_over()
@@ -381,9 +379,8 @@ class TwoMachines(_Base):
         self.deliver('Y', 'X', y_record)
         self.assert_one_record_without_A('zed')
 
-    # RED until P6 (SM-F8). Today (both machines have an origin): both records are refused as stale, in both
+    # Fixed in P6 (SM-F8). Before it (both machines have an origin): both records are refused as stale, in both
     # directions, and the machines stay different for good: X has B as lead, Y has A.
-    @unittest.expectedFailure
     def test_SM_F8_both_machines_refuse_each_other(self):
         self.make_shared_team()
         self._y_adds('zed')                                                     # Y changes, then X takes it: X.origin = Y
