@@ -134,9 +134,8 @@ class StateModelHandover(test_handover.HandoverTest):
         self.assertEqual(len(names), 1)
         return mid, names[0]
 
-    # RED until P2 (SM-F1)
+    # Fixed in P2 (SM-F1)
     # Today: wrong value. move_out closes the held original as moved and _letter prints its body.
-    @unittest.expectedFailure
     def test_SM_F1_letter_has_no_held_body_and_counts_it(self):
         from xsm import handover
         self._held_at_lead()
@@ -147,9 +146,8 @@ class StateModelHandover(test_handover.HandoverTest):
         self.assertNotIn('SECRET-HELD-BODY', shown)
         self.assertIn('1 held', shown)
 
-    # RED until P2 (SM-F1)
+    # Fixed in P2 (SM-F1)
     # Today: wrong value. B has no copy of the original at all (status 'not-found'), so nothing is B's to hold.
-    @unittest.expectedFailure
     def test_SM_F1_successor_owns_the_held_original_and_its_inbox_hides_it(self):
         from xsm import handoff, ledger, receive
         mid, _ = self._held_at_lead()
@@ -161,9 +159,8 @@ class StateModelHandover(test_handover.HandoverTest):
         self.assertFalse(any('SECRET-HELD-BODY' in m for m in out['messages']))
         self.assertEqual(handoff.status(self.lead, mid)['moved_to']['session_id'], 'next')
 
-    # RED until P2 (SM-F1)
+    # Fixed in P2 (SM-F1)
     # Today: wrong value. The held entry stays bound to A's ref (receiver_ref == A).
-    @unittest.expectedFailure
     def test_SM_F1_held_entry_is_rebound_to_the_successor_with_the_same_reason(self):
         _, held_name = self._held_at_lead()
         reason = self._held_entry(held_name)['reason']
@@ -174,9 +171,8 @@ class StateModelHandover(test_handover.HandoverTest):
         self.assertEqual(entry['receiver_ref'], self.new['ref'])
         self.assertEqual(entry['reason'], reason)
 
-    # RED until P2 (SM-F1)
+    # Fixed in P2 (SM-F1)
     # Today: wrong value. `held deliver` at B is refused (exit 2: "held for another session").
-    @unittest.expectedFailure
     def test_SM_F1_held_deliver_at_the_successor_shows_the_message(self):
         self._held_at_lead()
         self._hand_over()
@@ -188,9 +184,8 @@ class StateModelHandover(test_handover.HandoverTest):
 
     # ================= SM-F2a: an answer waiting at A is B's answer =================
 
-    # RED until P2 (SM-F2a)
+    # Fixed in P2 (SM-F2a)
     # Today: wrong value. The reply sits unindexed in A's folder; B's question stays 'pending' with no replies.
-    @unittest.expectedFailure
     def test_SM_F2a_unconsumed_reply_at_A_is_final_for_B(self):
         self._question('q1', self.lead, self.bee)
         self._send(self.lead, 'ANSWER-42', kind='reply', reply_to='q1', outcome='succeeded')
@@ -199,10 +194,9 @@ class StateModelHandover(test_handover.HandoverTest):
         self.assertEqual(status['status'], 'final')
         self.assertEqual(len(status['replies']), 1)
 
-    # RED until P2 (SM-F2a)
+    # Fixed in P2 (SM-F2a)
     # Today: wrong value ('pending', no replies). Here B is in another folder and P has no scope with B:
     # the answer must still be B's (the copy of A's connections is not what carries it).
-    @unittest.expectedFailure
     def test_SM_F2a_final_for_B_registered_in_another_folder(self):
         self._outside()
         self._question('q1', self.a2, self.p2)
@@ -392,10 +386,9 @@ class StateModelHandover(test_handover.HandoverTest):
         folder = paths.path('asked')
         return sorted(os.listdir(folder)) if os.path.isdir(folder) else []
 
-    # RED until P2 (SM-SEAM)
+    # Fixed in P2 (SM-SEAM)
     # Today: wrong value. The DM goes into the letter and B's inbox is empty; the gate is never asked.
     # B shares no scope with P, so the delivered copy must pass (a marker is allowed), never hold.
-    @unittest.expectedFailure
     def test_SM_SEAM_unread_dm_without_scope_with_B_is_delivered_and_nothing_is_asked(self):
         from xsm import ledger, receive
         self._outside()
@@ -423,10 +416,9 @@ class StateModelHandover(test_handover.HandoverTest):
                 out[n[:-5]] = json.load(fh)
         return out
 
-    # RED until P2 (SM-COMPAT)
+    # Fixed in P2 (SM-COMPAT)
     # Today: wrong value. Nothing is copied into B's handoffs folder (the DM goes into the letter), so there is
     # no record to carry handover_history.
-    @unittest.expectedFailure
     def test_SM_COMPAT_moved_records_carry_handover_history_and_not_migration_history(self):
         from xsm import handoff
         mid = self._send(self.lead, 'COMPAT-BODY').msg_id
@@ -459,6 +451,141 @@ class StateModelHandover(test_handover.HandoverTest):
             self._call(self.lead, self.out)                         # still counts as handed over
         with self.assertRaises(handover.HandoverError):
             self._call(self.out, self.lead)
+
+
+    # ================= P2: hand_to, the gate rule and the proofs (written with the fix) =================
+
+    def test_P2_a_digest_conflict_keeps_that_one_at_A_and_the_rest_moves(self):
+        from xsm import handoff
+        m1 = self._send(self.lead, 'FIRST').msg_id
+        m2 = self._send(self.lead, 'SECOND').msg_id
+        # B already holds a different request under m1's id
+        handoff.store(self.new, {'id': m1, 'sender': handoff._identity(self.bee),
+                                 'target': handoff._identity(self.new), 'body': 'OTHER', 'kind': 'note',
+                                 'content': '[xsm] other'})
+        rec = self._hand_over()
+        self.assertEqual(rec['messages'], [m2])
+        self.assertEqual([k['id'] for k in rec['kept_messages']], [m1])
+        self.assertIsNone(handoff.status(self.lead, m1).get('moved_to'))     # still A's
+        self.assertEqual(handoff.status(self.lead, m1)['status'], 'pending')
+        self.assertEqual(handoff.status(self.lead, m2)['moved_to']['session_id'], 'next')
+        self.assertIn(m1, rec['letter'])
+        self.assertNotIn('FIRST', rec['letter'])
+
+    def test_P2_hand_to_is_idempotent_per_handover_id(self):
+        from xsm import handoff, handover
+        mid = self._send(self.lead, 'ONCE').msg_id
+        hid = handover._begin(self.lead, self.new, 'summary', 'x')['id']     # the record that stands for the hop
+        first = handoff.hand_to(self.lead, self.new, hid)
+        stored = handoff.status(self.new, mid)
+        second = handoff.hand_to(self.lead, self.new, hid)
+        self.assertEqual((first['moved'], first['kept']), ([mid], []))
+        self.assertEqual((second['moved'], second['kept']), ([mid], []))
+        self.assertEqual(handoff.status(self.new, mid)['handover_history'], stored['handover_history'])
+        self.assertEqual(len(stored['handover_history']), 1)
+
+    def test_P2_acknowledged_originals_stay_and_do_not_move(self):
+        from xsm import handoff
+        mid = self._send(self.lead, 'READ').msg_id
+        claim = handoff.claim(self.lead, {'type': 'native', 'id': 'p'}, 'g')
+        handoff.ack(self.lead, claim['claim']['token'], {'type': 'native', 'id': 'p'}, 'g')
+        rec = self._hand_over()
+        self.assertEqual(rec['messages'], [])
+        self.assertEqual(handoff.status(self.new, mid)['status'], 'not-found')
+
+    def test_P2_a_forged_handover_hop_is_not_read(self):
+        from xsm import handoff, handover, paths
+        mid = self._send(self.lead, 'PROOF').msg_id
+        self._hand_over()
+        self.assertEqual(handoff.status(self.new, mid)['status'], 'pending')
+        os_remove = __import__('os').remove
+        os_remove(handover._file(handover._identity(self.lead)))           # nothing stands for the hop
+        with self.assertRaises(ValueError):
+            handoff.status(self.new, mid)
+
+    def test_P2_the_copy_says_what_state_A_left_it_in_and_B_is_told(self):
+        from xsm import handoff, receive
+        mid = self._send(self.lead, 'SHOWN-AT-A').msg_id
+        claim = handoff.claim(self.lead, {'type': 'native', 'id': 'p'}, 'g')
+        handoff.handoff(self.lead, claim['claim']['token'], {'type': 'native', 'id': 'p'}, 'g')
+        self._hand_over()
+        self.assertEqual(handoff.status(self.new, mid)['handover_history'][-1]['previous_state'], 'handoff-recorded')
+        out = receive.take_inbox_claims(self.new)
+        text = '\n'.join(out['messages'])
+        self.assertIn('SHOWN-AT-A', text)
+        self.assertIn('prior processing state: handoff-recorded', text)
+
+    def test_P2_without_scope_the_message_comes_with_a_marker_not_a_hold(self):
+        from xsm import receive
+        self._outside()
+        self._send(self.a2, 'MARKED', sender=self.p2)
+        self._call(self.a2, self.far)
+        out = receive.take_inbox_claims(self.far)
+        text = '\n'.join(out['messages'])
+        self.assertIn('MARKED', text)
+        self.assertIn('share no scope with its sender', text)
+        self.assertEqual(self._held_names(), [])
+
+    def test_P2_a_blocked_sender_stays_blocked_after_the_handover(self):
+        from xsm import config, ledger, receive
+        mid = self._send(self.lead, 'FROM-BLOCKED').msg_id
+        self._hand_over()
+        with mock.patch.object(config, 'blocked', return_value=[self.bee['ref']]):
+            out = receive.take_inbox_claims(self.new)
+        self.assertFalse(any('FROM-BLOCKED' in m for m in out['messages']))
+        self.assertIn(ledger.receipt_of(mid)['decision'], ('held', 'blocked'))
+
+    def test_P2_a_hold_for_scope_is_lifted_when_B_has_a_scope_with_the_sender(self):
+        from xsm import ledger, receive
+        mid = self._send(self.lead, 'WAS-OUT-OF-SCOPE').msg_id
+        from xsm import receive as r
+        with mock.patch.object(r, 'check', return_value=('block', 'out of scope: test')):
+            receive.take_inbox_claims(self.lead)
+        self.assertEqual(len(self._held_names()), 1)
+        self._hand_over()                                                  # bee shares team core with next
+        out = receive.take_inbox_claims(self.new)
+        self.assertTrue(any('WAS-OUT-OF-SCOPE' in m for m in out['messages']), out['messages'])
+        self.assertEqual(self._held_names(), [])
+        self.assertEqual(ledger.receipt_of(mid)['decision'], 'delivered')
+
+    def test_P2_the_letter_counts_held_and_unread_apart_and_never_prints_a_body(self):
+        self._held_at_lead('HELD-BODY')
+        self._send(self.lead, 'UNREAD-BODY')
+        rec = self._hand_over()
+        self.assertIn('1 unread DM moved to you', rec['letter'])
+        self.assertIn('1 held DM moved to you', rec['letter'])
+        self.assertNotIn('HELD-BODY', rec['letter'])
+        self.assertNotIn('UNREAD-BODY', rec['letter'])
+        self.assertEqual(len(rec['messages']), 2)
+        self.assertEqual(len(rec['held_messages']), 1)
+
+    def test_P2_the_copy_is_proved_by_its_hop_and_by_nobody_else(self):
+        """Any migration history of the original rides inside the hop, where a 0.6.1
+        reader does not look; handover.proves_copy walks it, then the handover."""
+        from xsm import handoff
+        mid = self._send(self.lead, 'CHAIN').msg_id
+        self._hand_over()
+        copy = handoff.status(self.new, mid)
+        self.assertIsNone(copy.get('migration_history'))
+        self.assertEqual(copy['handover_history'][-1]['migrations'], [])
+        self.assertTrue(handoff.proves_ownership(copy, self.new))
+        self.assertFalse(handoff.proves_ownership(copy, self.out))
+
+    def test_P2_a_native_copy_at_A_after_the_handover_is_not_shown_or_held_at_A(self):
+        # Q1 is measured by tests/test_state_model_held.py (SM_F12). Here the hook's answer.
+        from xsm import adapters, receive, send
+        with mock.patch.object(adapters, 'to_codex', return_value='Queued message q for thread lead.') as transport:
+            sent = send.send('ref:' + self.lead['ref'], 'NATIVE-AT-A', sender=self.bee)
+        wire = transport.call_args.args[2]
+        self._hand_over()
+        with mock.patch.object(receive, 'register', return_value=self.lead):
+            out = receive.handle({'hook_event_name': 'UserPromptSubmit', 'session_id': 'lead', 'turn_id': 't',
+                                  'cwd': self.tmp, 'prompt': wire})
+        self.assertEqual((out or {}).get('decision'), 'block')
+        self.assertIn('next', json.dumps(out))
+        self.assertEqual(self._held_names(), [])
+        got = receive.take_inbox_claims(self.new)
+        self.assertTrue(any('NATIVE-AT-A' in m for m in got['messages']))
 
 
 # The inherited HandoverTest cases are not this module's: leave them to test_handover.

@@ -208,8 +208,7 @@ class NativeCopyAfterHandover(_HandoverBase):
     # handover A is out of team `core`, so A's real gate says "out of scope" to the queued copy
     # of the DM that moved to B, and receive.hold keeps it as a new held entry bound to A: a
     # message B already owns would be asked about again, at a session that has handed over.
-    # RED until P2 (SM-F12)
-    @unittest.expectedFailure
+    # Fixed in P2 (SM-F12)
     def test_SM_F12_native_copy_after_handover(self):
         from xsm import adapters, handoff, receive, send
         with mock.patch.object(adapters, 'to_codex', return_value='Queued message q for thread a.') as transport:

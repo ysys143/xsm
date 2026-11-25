@@ -7,8 +7,10 @@ telling a session "hand over to OO". What moves, at once:
 - the board items it owns: `owner/<its name>` (and `owner/<its name>/...`)
   become `owner/<the successor's name>`, and a `handover/<its name>` item says
   what happened, so the whole team sees it on the board, not in a DM;
-- unread DMs: each one not yet acknowledged, verbatim, in the handover letter;
-  the original is closed as moved, never deleted;
+- unread and held DMs: each original not yet acknowledged is copied to the
+  successor (handoff.hand_to) and stays at the old session marked `moved_to`; the
+  successor receives it through its own gate and inbox as any message. Held
+  entries follow (held.rebind). The letter says how many and which, never what;
 - pending asks: the questions it asked that have no final answer now belong to
   the successor, so late answers are recorded for it;
 - the context summary the handing session wrote, in the same letter.
@@ -38,7 +40,7 @@ from . import paths
 DIRECTORY = "handovers"
 CHAIN = 8                 # successors followed at most (A -> B -> C ...)
 LOCK_SECONDS = 30         # how long a handover waits for another one on this machine
-STEPS = ("boards", "teams", "questions", "groups", "unread")    # in the order they run
+STEPS = ("boards", "teams", "questions", "groups", "originals", "held")    # in the order they run
 
 
 class HandoverError(ValueError):
@@ -137,6 +139,47 @@ def succeeds(newer: dict, older: dict) -> bool:
     except (ValueError, TypeError):
         return False
     return a == b or successor_identity(b) == a
+
+
+def proves_copy(record: dict, receiver: dict) -> bool:
+    """Whether a stored original that came to `receiver` by handover (and, before
+    or after it, by profile migration) is its own: every hop leaves the endpoint
+    the previous one reached, and a handover hop is stood for by
+    handovers/<source>.json (`moving` or `done`, to the same endpoint). The
+    request identity stays the original's (migration.proves_copy does the same
+    for migrations alone and is not changed)."""
+    from . import envelope, migration
+    chain = record.get("handover_history") or []
+    if not chain:
+        return False
+    canonical = record["identity"]["to"]
+    previous = {"runtime": canonical["runtime"], "home": canonical["home"],
+                "session_id": canonical["conversation"]}
+
+    def migrated(hop: dict) -> bool:
+        transfer = migration.read(hop["id"])
+        return bool(transfer and transfer["status"] in ("fenced", "moving", "committed")
+                    and migration.endpoint(transfer["source"]) == hop["source"]
+                    and migration.endpoint(transfer["target"]) == hop["target"])
+
+    def handed(hop: dict) -> bool:
+        rec = paths.read_json(_file(hop["source"]))
+        return bool(rec and rec.get("state", "done") in ("moving", "done")
+                    and rec.get("from_identity") == hop["source"] and rec.get("to_identity") == hop["target"]
+                    and rec.get("id", hop["id"]) == hop["id"])
+
+    try:
+        steps = []
+        for hop in chain:
+            steps += [(migrated, m) for m in hop.get("migrations") or []] + [(handed, hop)]
+        steps += [(migrated, m) for m in record.get("migration_history") or []]
+        for check, hop in steps:
+            if previous != hop["source"] or not check(hop):
+                return False
+            previous = hop["target"]
+        return previous == _identity(receiver) and envelope.request_digest(record["identity"]) == record["digest"]
+    except (KeyError, TypeError, ValueError):
+        return False
 
 
 def _records() -> list:
@@ -514,26 +557,32 @@ def _groups(me: dict, target: dict) -> list:
     return moved
 
 
-def _unread(me: dict, target: dict) -> list:
-    """The DMs this session has not acknowledged, closed here as moved. What
-    the letter needs of each is kept as plain data (the step is stored)."""
+def _originals(me: dict, target: dict, handover_id: str) -> dict:
+    """The DMs this session has not acknowledged, copied to the successor with
+    their state (held ones included); a conflicting one stays here and is listed.
+    The old inbox copies of what moved are dropped: the successor has the original."""
     from . import handoff, inbox
-    moved = {r["id"]: r for r in handoff.move_out(me, target)}
-    for item in inbox.peek(me["session_id"]):          # copies kept before the canonical store
-        if item.get("id") and item["id"] not in moved:
-            moved[item["id"]] = {"id": item["id"], "message": {"content": item["content"]},
-                                 "stored_at": item.get("t", 0)}
-        inbox.drop(me["session_id"], item.get("id"))
-    rows = []
-    for r in sorted(moved.values(), key=lambda r: (r.get("stored_at", 0), r["id"])):
-        m = r.get("message") or {}
-        rows.append({"id": r["id"], "message": {"content": m.get("content") or m.get("body") or ""},
-                     "stored_at": r.get("stored_at", 0)})
-    return rows
+    out = handoff.hand_to(me, target, handover_id)
+    for mid in out["moved"]:
+        inbox.drop(me["session_id"], mid)
+    return out
+
+
+def _held(me: dict, target: dict, handover_id: str) -> dict:
+    """The held entries of this session now belong to the successor: `xsm held
+    deliver` works for it and for nobody else (the person's yes still decides)."""
+    from . import held
+    names = held.rebind(me, target, {"handover": handover_id})
+    ids = []
+    for name in names:
+        entry = paths.read_json(paths.path(paths.HELD, name)) or {}
+        ids.append(entry.get("id") or name[:-5])
+    return {"names": [n[:-5] for n in names], "ids": ids}
 
 
 def _letter(me: dict, target: dict, summary: str, teams_moved: list, items: dict,
-            asks: list, groups: list, unread: list, skipped: list | None = None) -> str:
+            asks: list, groups: list, originals: dict, skipped: list | None = None,
+            held: dict | None = None) -> str:
     old = label(_handle(me))
     lines = ["[xsm handover] %s handed its xsm place over to you, at its user's request." % old,
              "", "What is yours now:"]
@@ -550,11 +599,21 @@ def _letter(me: dict, target: dict, summary: str, teams_moved: list, items: dict
         lines.append("- question groups: " + ", ".join(g for g in groups if g))
     lines.append("- DMs sent to %s from now on reach you" % old)
     lines += ["", "Its context summary:", "", summary.strip() or "(none written)"]
-    lines += ["", "%d unread DM%s it had, verbatim (answer each sender at the address it shows):"
-              % (len(unread), "" if len(unread) == 1 else "s")]
-    for r in unread:
-        m = r.get("message") or {}
-        lines += ["", "--- DM %s ---" % r["id"], (m.get("content") or m.get("body") or "").rstrip()]
+    held = held or {"names": [], "ids": []}
+    moved, kept = originals.get("moved") or [], originals.get("kept") or []
+    unread = [m for m in moved if m not in held["ids"]]
+    lines += ["", "Its DMs (their text is not in this letter; they reach you as any message does):",
+              "- %d unread DM%s moved to you, in your inbox: %s"
+              % (len(unread), "" if len(unread) == 1 else "s", ", ".join(unread) or "none")]
+    if held["names"]:
+        lines.append("- %d held DM%s moved to you and still held, because its gate kept %s for its user's yes "
+                     "(`xsm held deliver <id>`, with your user's yes): %s"
+                     % (len(held["names"]), "" if len(held["names"]) == 1 else "s",
+                        "it" if len(held["names"]) == 1 else "them", ", ".join(held["names"])))
+    if kept:
+        lines.append("- %d DM%s stayed with %s (could not be moved): %s"
+                     % (len(kept), "" if len(kept) == 1 else "s", old,
+                        "; ".join("%s (%s)" % (k["id"], k["why"]) for k in kept)))
     lines += ["", "Continue its work from here: read the team boards (`xsm board show <team>`), "
               "tell the team you took over, and if you hold a lead's seat, keep directing "
               "the team; members report to you now."]
@@ -592,10 +651,13 @@ def _finish(rec: dict, me: dict, target: dict) -> dict:
     rec["teams"] = steps["teams"]["moved"]
     rec["items"] = {t: list(v) for t, v in steps["boards"]["items"].items()}
     rec["questions"], rec["groups"] = steps["questions"], steps["groups"]
-    rec["messages"] = [r["id"] for r in steps["unread"]]
+    rec["messages"] = list(steps["originals"]["moved"])
+    rec["held_messages"] = list(steps["held"]["ids"])
+    rec["kept_messages"] = list(steps["originals"]["kept"])
     rec["skipped"] = {"teams": sorted(set(steps["boards"]["skipped"]) | set(steps["teams"]["left"]))}
     rec["letter"] = _letter(me, target, rec.get("summary") or "", rec["teams"], rec["items"],
-                            rec["questions"], rec["groups"], steps["unread"], rec["skipped"]["teams"])
+                            rec["questions"], rec["groups"], steps["originals"], rec["skipped"]["teams"],
+                            steps["held"])
     rec["state"] = "done"
     rec["finished_at"] = time.time()
     _save(rec)
@@ -609,7 +671,8 @@ def _run(rec: dict, me: dict, target: dict) -> dict:
     _step(rec, "teams", lambda: _teams(me, target, rec["places"], rec["approval"]))
     _step(rec, "questions", lambda: _questions(me, target))
     _step(rec, "groups", lambda: _groups(me, target))
-    _step(rec, "unread", lambda: _unread(me, target))
+    _step(rec, "originals", lambda: _originals(me, target, rec["id"]))
+    _step(rec, "held", lambda: _held(me, target, rec["id"]))
     return _finish(rec, me, target)
 
 

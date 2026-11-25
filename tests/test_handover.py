@@ -89,7 +89,10 @@ class HandoverTest(test_xsm.TempState):
         self.assertTrue(self._reply('q3', 'r3', self.bee, self.new))
         self.assertFalse(self._reply('q3', 'r4', self.bee, self.out))
 
-    def test_unread_dms_go_in_the_letter_and_are_closed_as_moved(self):
+    def test_unread_dms_move_to_the_successor_and_the_letter_names_them(self):
+        # Contract change of P2 (state-model-fixes spec 3.2): the DM's original moves to the
+        # successor, which receives it through its own inbox; the letter carries only the
+        # count and the ids, never the body (before, the body was pasted into the letter).
         from xsm import handoff, receive
         handoff.store(self.lead, {'id': 'm1', 'sender': handoff._identity(self.bee),
                                   'target': handoff._identity(self.lead), 'body': 'tests are green',
@@ -97,11 +100,16 @@ class HandoverTest(test_xsm.TempState):
         rec = self._hand_over()
         self.assertEqual(rec['messages'], ['m1'])
         old = handoff.status(self.lead, 'm1')
-        self.assertEqual((old['status'], old['moved_to']['session_id']), ('acknowledged', 'next'))
+        self.assertEqual(old['moved_to']['session_id'], 'next')
+        moved = handoff.status(self.new, 'm1')
+        self.assertEqual((moved['status'], moved['handover_history'][-1]['source']['session_id']),
+                         ('pending', 'lead'))
         out = receive._with_bounces('codex', self.new, None)
         text = out['hookSpecificOutput']['additionalContext']
         self.assertIn('[xsm handover] lead@', text)
-        self.assertIn('--- DM m1 ---\n[xsm] from bee: tests are green', text)
+        self.assertIn('1 unread DM moved to you', text)
+        self.assertIn('m1', text)
+        self.assertNotIn('tests are green', text)
         self.assertIn('goal: ship 0.5.1; open: T9', text)
         self.assertIn('team core as its lead', text)
         again = receive._with_bounces('codex', self.new, None)

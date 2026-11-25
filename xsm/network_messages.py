@@ -386,9 +386,9 @@ class Gateway:
         old = record["packet"]
         same_owner = _owner(record['local']) == _owner(local)
         if not same_owner:
-            from . import migration
             copy_record = handoff.status(local, packet['id'])
-            same_owner = migration.proves_copy(copy_record, local) if copy_record.get('migration_history') else False
+            same_owner = (handoff.proves_ownership(copy_record, local)
+                          if copy_record.get('migration_history') or copy_record.get('handover_history') else False)
         if record["fingerprint"] != packet["fingerprint"] or record["body_sha256"] != _body_hash(packet) \
                 or not same_owner or old["wake"] != packet["wake"] \
                 or old["file_packet"] != _semantic_packet(packet)["file_packet"] or old["reply_binding"] != packet["reply_binding"]:
@@ -527,6 +527,7 @@ class Gateway:
         owners = [_owner(record['local'])] if record else []
         if current:
             owners += [hop['target'] for hop in current.get('migration_history', [])]
+            owners += [hop['target'] for hop in current.get('handover_history', [])]
         for suffix in (".json", ".recv.json", ".handoff.json"):
             existing = _read(Path(paths.path(paths.LEDGER, message_id + suffix)))
             if existing is not None:
@@ -811,7 +812,7 @@ class Gateway:
                 return None
             seen.add(marker)
             moved = handoff.status(target, record['id'])
-            if moved.get('digest') != current['digest'] or not migration.proves_copy(moved, target):
+            if moved.get('digest') != current['digest'] or not handoff.proves_ownership(moved, target):
                 return None
             current = moved
         return current

@@ -88,7 +88,7 @@ def verify(record):
                 raise migration.MigrationError('pending original was not transferred; source stays fenced')
             continue
         successor = handoff.status(record['target'], original['id'])
-        if successor.get('digest') != original['digest'] or not migration.proves_copy(successor, record['target']):
+        if successor.get('digest') != original['digest'] or not handoff.proves_ownership(successor, record['target']):
             raise migration.MigrationError('successor copy is missing or different; original retained')
 
 
@@ -217,19 +217,8 @@ def links(record):
 
 
 def held(record):
-    result = []
-    for filename in migration._json_files(paths.HELD):
-        item = paths.read_json(filename)
-        if not item or item.get('receiver_ref') != record['source']['ref']:
-            continue
-        if item.get('receiver_identity') and item['receiver_identity'] != migration.endpoint(record['source']):
-            continue
-        item.setdefault('original_receiver', migration.endpoint(record['source']))
-        item.update(receiver_ref=record['target']['ref'], receiver=record['target'].get('name'),
-                    receiver_identity=migration.endpoint(record['target']), migration=record['id'])
-        paths.write_json(filename, item)
-        result.append(os.path.basename(filename))
-    return result
+    from . import held as shared
+    return shared.rebind(record['source'], record['target'], {'migration': record['id']})
 
 
 STEPS = [('messages', messages), ('boards', boards), ('teams', teams), ('questions', questions),
