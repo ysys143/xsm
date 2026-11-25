@@ -298,6 +298,22 @@ class StateModelQuestionsTest(test_handover.HandoverTest):
         self.assertTrue(str(ledger.status(sent.msg_id).get('scope') or '').startswith('handover:'),
                         ledger.status(sent.msg_id).get('scope'))
 
+    # The other direction (spec 2.1 F15, "whose original target was A"): P asked A, A handed over, and the
+    # copy did not carry P's scope to B. B's answer to P is the same conversation; it must not be refused.
+    def test_SM_F15_the_successor_answers_a_question_put_to_A_without_a_scope_with_P(self):
+        from xsm import adapters, config, handover, questions, receive
+        A, P, B = self.lead, self._sess('peer'), self._sess('nextfar')
+        config.add_reach(A['ref'], P['cwd'], 't', A)
+        with mock.patch.object(adapters, 'to_codex', side_effect=queued):
+            ask = questions.ask(P, 'ref:%s' % A['ref'], 'what is 6*7?', request_id='qp')
+        self.assertEqual(ask['status'], 'pending', ask)
+        handover.hand_over(A, B, 'goal: x', 'x', dict(handover.plan_links(A, B), links=[]))
+        self.assertIsNone(config.scope_for(B, P)[0], 'fixture: B and P must share none')
+        sent = self._answer(B, P, 'ANSWER-42', 'qp')
+        self.assertIn(sent.status, ('delivered', 'sent-unconfirmed', 'stored', 'queued'), sent.reason)
+        self.assertGreaterEqual(receive.poll_replies(P, 'qp'), 1)
+        self.assertEqual(questions.status(P, 'qp')['status'], 'final')
+
     # A new conversation is not a reply to a handed-over question: it keeps today's rule.
     def test_control_SM_F15_a_new_dm_from_P_to_A_after_the_handover_is_refused(self):
         from xsm import adapters, config, handover, send
