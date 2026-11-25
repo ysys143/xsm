@@ -1256,9 +1256,15 @@ def cmd_handover(args) -> int:
               "as the skill's handover section describes", file=sys.stderr)
         return USAGE
     from . import handover_service
-    def authorize(target):
-        why = _person_or_refuse("handing this session's xsm place over to %s" % handover.label(target),
-                                "xsm_handover", ask=("handover", target.get("name") or args.target))
+    def authorize(target, plan=None):
+        from . import handover_links
+        copies = handover_links.describe(plan)
+        what = "handing this session's xsm place over to %s" % handover.label(target)
+        if (plan or {}).get("redirected_from"):
+            what += " (%s)" % plan["redirected_from"]
+        if copies:
+            what += ", which also gets these connections (nothing more than this session had): " + "; ".join(copies)
+        why = _person_or_refuse(what, "xsm_handover", ask=("handover", target.get("name") or args.target))
         if why:
             raise handover_service.DecisionRefused(why)
         return _verdict or "person at the terminal"

@@ -53,11 +53,10 @@ class StateModelQuestionsTest(test_handover.HandoverTest):
         return res['id'], question_groups.child_ids(res['id'])
 
     # ---- SM-F3: question groups across a handover ---------------------------------
-    # RED until P3 (SM-F3)
+    # Fixed in P3 (SM-F3)
     # Today: _groups moves the group but _questions leaves the child that has a final
     # answer at A, and questions.status reads only the exact sender, so B sees 0 answers
     # and status "pending" instead of "reply_received" with 1 reply.
-    @unittest.expectedFailure
     def test_SM_F3_one_answer_before_handover_group_is_reply_received_for_B(self):
         from xsm import question_groups, receive
         gid, kids = self._ask_group()
@@ -72,10 +71,9 @@ class StateModelQuestionsTest(test_handover.HandoverTest):
         self.assertEqual(len(after['replies']), 1)
         self.assertTrue(any('ANSWER-42' in r['body'] for r in after['replies']))
 
-    # RED until P3 (SM-F3)
+    # Fixed in P3 (SM-F3)
     # Today: same cause; both children are answered for good, stay with A, and the group
     # reads "refused" with 0 replies for B instead of "final" with 2.
-    @unittest.expectedFailure
     def test_SM_F3_fully_answered_group_is_final_for_B(self):
         from xsm import question_groups, receive
         gid, kids = self._ask_group()
@@ -130,33 +128,28 @@ class StateModelQuestionsTest(test_handover.HandoverTest):
     # The four bases below: today scope_for(P, B) is None, so the late answer is refused
     # ("out of scope") at send and B's question record stays pending (spec F4). Target:
     # the handover copies A's connection, so the answer lands in B's record, status final.
-    # RED until P3 (SM-F4)
-    @unittest.expectedFailure
+    # Fixed in P3 (SM-F4)
     def test_SM_F4_reach_held_by_A_late_answer_reaches_B(self):
         from xsm import config
         self._expect_reaches(self._late(lambda P, A: config.add_reach(A['ref'], P['cwd'], 't', A)))
 
-    # RED until P3 (SM-F4)
-    @unittest.expectedFailure
+    # Fixed in P3 (SM-F4)
     def test_SM_F4_P_is_a_worker_of_A_late_answer_reaches_B(self):
         from xsm import workers
         self._expect_reaches(self._late(lambda P, A: workers.save(
             {'name': 'h', 'ref': P['ref'], 'parent_ref': A['ref']})))
 
-    # RED until P3 (SM-F4)
-    @unittest.expectedFailure
+    # Fixed in P3 (SM-F4)
     def test_SM_F4_same_folder_B_elsewhere_late_answer_reaches_B(self):
         self._expect_reaches(self._late(lambda P, A: None, peer_in_a_folder=True))
 
-    # RED until P3 (SM-F4)
-    @unittest.expectedFailure
+    # Fixed in P3 (SM-F4)
     def test_SM_F4_link_B_outside_late_answer_reaches_B(self):
         from xsm import config
         self._expect_reaches(self._late(lambda P, A: config.add_link(P['cwd'], A['cwd'], 't')))
 
-    # RED until P3 (SM-F4)
+    # Fixed in P3 (SM-F4)
     # Today: hand_over returns no "links" key (planned API, spec 3.2 step "links").
-    @unittest.expectedFailure
     def test_SM_F4_handover_result_lists_the_copied_reach(self):
         from xsm import config
         rec, _sent, _matched, _st, (P, _A, _B) = self._late(
@@ -166,9 +159,8 @@ class StateModelQuestionsTest(test_handover.HandoverTest):
         self.assertIn(os.path.realpath(P['cwd']), json.dumps(rec['links'], default=str)
                       .replace(P['cwd'], os.path.realpath(P['cwd'])))
 
-    # RED until P3 (SM-F4)
+    # Fixed in P3 (SM-F4)
     # Today: no "links" key, and nothing is copied, so the worker pair is not listed.
-    @unittest.expectedFailure
     def test_SM_F4_handover_result_lists_the_copied_worker_pair(self):
         from xsm import workers
         rec, _sent, _matched, _st, (P, _A, _B) = self._late(lambda P, A: workers.save(
@@ -176,9 +168,8 @@ class StateModelQuestionsTest(test_handover.HandoverTest):
         self.assertIn('links', rec)
         self.assertIn(P['ref'], json.dumps(rec['links'], default=str))
 
-    # RED until P3 (SM-F4, spec 6: one failing copy is skipped and listed, the rest go on)
+    # Fixed in P3 (SM-F4, spec 6: one failing copy is skipped and listed, the rest go on)
     # Today: no "links" key and no copy at all (the good reach is not carried to B either).
-    @unittest.expectedFailure
     def test_SM_F4_failed_copy_is_skipped_and_listed_and_handover_completes(self):
         from xsm import config, teams
         gone = tempfile.mkdtemp(prefix='xsm-sm-gone-')
@@ -192,10 +183,9 @@ class StateModelQuestionsTest(test_handover.HandoverTest):
         self.assertIn(os.path.basename(gone), json.dumps(rec['links'], default=str))   # skipped, listed
         self._expect_reaches(result)                                 # the other copy still worked
 
-    # RED until P3 (SM-F4, "B gets no more scope than A had")
+    # Fixed in P3 (SM-F4, "B gets no more scope than A had")
     # Today: fails at the first assertion, because nothing is copied (scope P-B is None).
     # Once copying exists, the same test pins that Q (no scope with A) gets none with B.
-    @unittest.expectedFailure
     def test_SM_F4_a_session_with_no_scope_with_A_has_none_with_B(self):
         from xsm import config
         Q = self._sess('stranger')                # its own unrelated folder

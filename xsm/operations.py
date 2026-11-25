@@ -995,11 +995,17 @@ class OperationService:
     def handover(self, me: dict, args: dict) -> str:
         from . import handover, handover_service
         word = (args.get("target") or "").strip()
-        def authorize(target):
+        def authorize(target, plan=None):
+            from . import handover_links
+            copies = handover_links.describe(plan)
+            note = ("\n(%s)" % plan["redirected_from"]) if (plan or {}).get("redirected_from") else ""
             ok, refusal = self.allowed(
                 me, "%s@%s asks to hand its xsm place over to %s: its teams and lead's seat, its "
                 "board items, unread DMs and pending questions move there, and DMs to it reach "
-                "that session from now on.\nAllow it?" % (me.get("name"), me.get("alias"), handover.label(target)),
+                "that session from now on.%s%s\nAllow it?"
+                % (me.get("name"), me.get("alias"), handover.label(target), note,
+                   ("\nIt also gets these connections, so whoever talked with the old session can still "
+                    "answer it (nothing more than the old session had):\n- " + "\n- ".join(copies)) if copies else ""),
                 "xsm handover %s --summary-file <file>" % shlex.quote(word),
                 ("handover", target.get("name") or word))
             if not ok:
@@ -1020,7 +1026,9 @@ class OperationService:
                 'teams': [{'team': row['team'], 'lead': bool(row['lead'])} for row in record['teams']],
                 'items': {team: list(items) for team, items in record['items'].items()},
                 'questions': list(record['questions']), 'groups': list(record['groups']),
-                'messages': list(record['messages'])}
+                'messages': list(record['messages']),
+                'links': [{k: row.get(k) for k in ('kind', 'what', 'ok', 'why')}
+                          for row in record.get('links') or []]}
         if value['action'] == 'show':
             rows = value['received']
             text = "\n\n".join(row['letter'] for row in rows) if rows else "no session handed its place over to this one"
