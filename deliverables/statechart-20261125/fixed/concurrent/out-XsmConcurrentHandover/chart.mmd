@@ -1,0 +1,142 @@
+---
+title: "xsm: concurrent handovers. A holds the team place and asked a question that is still open"
+---
+stateDiagram-v2
+  direction LR
+  state "Legend" as legend {
+    lg0: answered
+  }
+  class lg0 teal
+  state "At the same time" as all {
+    state "Handover A to B" as r0 {
+      s0: not started
+      s1: holds the lock, passed its check
+      s2: record written
+      s3: team seat moved
+      s4: pending question moved
+      s5: done, lock released
+      s6: refused, nothing changed
+      [*] --> s0
+      s0 --> s1: the person approves A to B#59; it takes the lock and passes its check [when Handover A to C is not started and Handover B to A is not started and Handover B to C is one of done, lock released, not started and Team is members: A#59; lead seat: A and Records is one of B handed to C, no handover record and Address is DMs to A reach A and Question is one of late answer stored for A, open, asked by A]
+      s1 --> s2: A to B writes its handover record
+      s2 --> s3: A to B moves the team seat
+      s3 --> s4: A to B moves the pending question
+      s4 --> s5: A to B finishes and releases the lock
+      s0 --> s6: the person approves A to B and it is refused (already handed over, or a cycle) [when Handover A to C is one of done, lock released, not started and Handover B to A is one of done, lock released, not started and Handover B to C is not started and Records is one of A handed to C, B handed to A]
+    }
+    --
+    state "Handover A to C" as r1 {
+      s7: not started
+      s8: holds the lock, passed its check
+      s9: record written
+      s10: team seat moved
+      s11: pending question moved
+      s12: done, lock released
+      s13: refused, nothing changed
+      [*] --> s7
+      s7 --> s8: the person approves A to C#59; it takes the lock and passes its check [when Handover A to B is not started and Handover B to A is one of done, lock released, not started and Handover B to C is one of done, lock released, not started and Team is members: A#59; lead seat: A and Records is none of A handed to B, A handed to B, B handed to C and Address is DMs to A reach A and Question is one of late answer stored for A, open, asked by A]
+      s8 --> s9: A to C writes its handover record
+      s9 --> s10: A to C moves the team seat
+      s10 --> s11: A to C moves the pending question
+      s11 --> s12: A to C finishes and releases the lock
+      s7 --> s13: the person approves A to C and it is refused (already handed over, or a cycle) [when Handover A to B is done, lock released and Handover B to A is not started and Handover B to C is not started and Team is members: B#59; lead seat: B and Records is A handed to B and Address is DMs to A reach B and Question is one of late answer stored for B, open, asked by B]
+    }
+    --
+    state "Handover B to A" as r2 {
+      s14: not started
+      s15: holds the lock, passed its check
+      s16: record written
+      s17: team seat moved
+      s18: pending question moved
+      s19: done, lock released
+      s20: refused, nothing changed
+      [*] --> s14
+      s14 --> s15: the person approves B to A#59; it takes the lock and passes its check [when Handover A to B is not started and Handover A to C is one of done, lock released, not started and Handover B to C is not started and Team is not members: B#59; lead seat: B and Records is one of A handed to C, no handover record and Address is not DMs to A reach B and Question is one of late answer stored for C, open, asked by A, open, asked by C]
+      s15 --> s16: B to A writes its handover record
+      s16 --> s17: B to A moves the team seat
+      s17 --> s18: B to A moves the pending question
+      s18 --> s19: B to A finishes and releases the lock
+      s14 --> s20: the person approves B to A and it is refused (already handed over, or a cycle) [when Handover A to B is one of done, lock released, not started and Handover A to C is not started and Handover B to C is one of done, lock released, not started and Team is not members: C#59; lead seat: C and Records is one of A handed to B, B handed to C and Address is not DMs to A reach C and Question is none of late answer stored for C, open, asked by C]
+    }
+    --
+    state "Handover B to C" as r3 {
+      s21: not started
+      s22: holds the lock, passed its check
+      s23: record written
+      s24: team seat moved
+      s25: pending question moved
+      s26: done, lock released
+      s27: refused, nothing changed
+      [*] --> s21
+      s21 --> s22: the person approves B to C#59; it takes the lock and passes its check [when Handover A to B is one of done, lock released, not started and Handover A to C is one of done, lock released, not started and Handover B to A is not started and Records is none of A handed to C, B handed to A, B handed to A and Question is not late answer stored for A]
+      s22 --> s23: B to C writes its handover record
+      s23 --> s24: B to C moves the team seat
+      s24 --> s25: B to C moves the pending question
+      s25 --> s26: B to C finishes and releases the lock
+      s21 --> s27: the person approves B to C and it is refused (already handed over, or a cycle) [when Handover A to B is not started and Handover A to C is not started and Handover B to A is done, lock released and Team is members: A#59; lead seat: A and Records is B handed to A and Address is DMs to A reach A and Question is one of late answer stored for A, open, asked by A]
+    }
+    --
+    state "Team" as r4 {
+      s28: members: A#59; lead seat: A
+      s29: members: B#59; lead seat: B
+      s30: members: C#59; lead seat: C
+      [*] --> s28
+      s28 --> s29: A to B moves the team seat [when Handover A to B is record written and Handover A to C is not started and Handover B to A is not started and Handover B to C is not started and Records is A handed to B and Address is DMs to A reach B and Question is open, asked by A]
+      s28 --> s30: A to C moves the team seat [when Handover A to B is not started and Handover A to C is record written and Handover B to A is one of done, lock released, not started and Handover B to C is one of done, lock released, not started and Records is one of A handed to C, A handed to C, B handed to A, A handed to C, B handed to C and Address is DMs to A reach C]
+      s28 --> s30: A to B moves the team seat [when Handover A to B is record written and Handover A to C is not started and Handover B to A is not started and Handover B to C is done, lock released and Records is A handed to B, B handed to C and Address is DMs to A reach C]
+      s29 --> s30: B to C moves the team seat [when Handover A to B is done, lock released and Handover A to C is not started and Handover B to A is not started and Handover B to C is record written and Records is A handed to B, B handed to C and Address is DMs to A reach C and Question is not open, asked by A]
+    }
+    --
+    state "Records" as r5 {
+      s31: no handover record
+      s32: B handed to A
+      s33: B handed to C
+      s34: A handed to B
+      s35: A handed to C
+      s36: A handed to B, B handed to C
+      s37: A handed to C, B handed to C
+      s38: A handed to C, B handed to A
+      [*] --> s31
+      s31 --> s34: A to B writes its handover record [when Handover A to B is holds the lock, passed its check and Handover A to C is not started and Handover B to A is not started and Handover B to C is not started]
+      s31 --> s35: A to C writes its handover record [when Handover A to B is not started and Handover A to C is holds the lock, passed its check and Handover B to A is not started and Handover B to C is not started]
+      s31 --> s32: B to A writes its handover record [when Handover A to B is not started and Handover A to C is not started and Handover B to A is holds the lock, passed its check and Handover B to C is not started]
+      s31 --> s33: B to C writes its handover record [when Handover A to B is not started and Handover A to C is not started and Handover B to A is not started and Handover B to C is holds the lock, passed its check]
+      s33 --> s36: A to B writes its handover record [when Handover A to B is holds the lock, passed its check and Handover A to C is not started and Handover B to A is not started and Handover B to C is done, lock released]
+      s33 --> s37: A to C writes its handover record [when Handover A to B is not started and Handover A to C is holds the lock, passed its check and Handover B to A is not started and Handover B to C is done, lock released]
+      s32 --> s38: A to C writes its handover record [when Handover A to B is not started and Handover A to C is holds the lock, passed its check and Handover B to A is done, lock released and Handover B to C is not started]
+      s34 --> s36: B to C writes its handover record [when Handover A to B is done, lock released and Handover A to C is not started and Handover B to A is not started and Handover B to C is holds the lock, passed its check and Team is members: B#59; lead seat: B and Question is not open, asked by A]
+      s35 --> s38: B to A writes its handover record [when Handover A to B is not started and Handover A to C is done, lock released and Handover B to A is holds the lock, passed its check and Handover B to C is not started and Team is members: C#59; lead seat: C and Question is not open, asked by A]
+      s35 --> s37: B to C writes its handover record [when Handover A to B is not started and Handover A to C is done, lock released and Handover B to A is not started and Handover B to C is holds the lock, passed its check and Team is members: C#59; lead seat: C and Question is not open, asked by A]
+    }
+    --
+    state "Address" as r6 {
+      s39: DMs to A reach A
+      s40: DMs to A reach B
+      s41: DMs to A reach C
+      [*] --> s39
+      s39 --> s40: A to B writes its handover record [when Handover A to B is holds the lock, passed its check and Handover A to C is not started and Handover B to A is not started and Handover B to C is not started and Records is no handover record and Question is open, asked by A]
+      s39 --> s41: A to C writes its handover record [when Handover A to B is not started and Handover A to C is holds the lock, passed its check and Handover B to A is one of done, lock released, not started and Handover B to C is one of done, lock released, not started]
+      s39 --> s41: A to B writes its handover record [when Handover A to B is holds the lock, passed its check and Handover A to C is not started and Handover B to A is not started and Handover B to C is done, lock released and Records is B handed to C]
+      s40 --> s41: B to C writes its handover record [when Handover A to B is done, lock released and Handover A to C is not started and Handover B to A is not started and Handover B to C is holds the lock, passed its check and Team is members: B#59; lead seat: B and Question is not open, asked by A]
+    }
+    --
+    state "Question" as r7 {
+      s42: open, asked by A
+      s43: open, asked by B
+      s44: open, asked by C
+      s45: late answer stored for A
+      s46: late answer stored for B
+      s47: late answer stored for C
+      [*] --> s42
+      s42 --> s43: A to B moves the pending question [when Handover A to B is team seat moved and Handover A to C is not started and Handover B to A is not started and Handover B to C is not started and Team is members: B#59; lead seat: B and Records is A handed to B and Address is DMs to A reach B]
+      s42 --> s44: A to C moves the pending question [when Handover A to B is not started and Handover A to C is team seat moved and Handover B to A is one of done, lock released, not started and Handover B to C is one of done, lock released, not started and Team is members: C#59; lead seat: C and Records is one of A handed to C, A handed to C, B handed to A, A handed to C, B handed to C and Address is DMs to A reach C]
+      s42 --> s45: the peer's late answer arrives and is stored [when Handover A to B is one of not started, refused, nothing changed and Handover A to C is not started and Handover B to A is one of done, lock released, not started, refused, nothing changed and Handover B to C is one of done, lock released, not started, refused, nothing changed and Team is members: A#59; lead seat: A and Records is one of B handed to A, B handed to C and Address is DMs to A reach A]
+      s43 --> s46: the peer's late answer arrives and is stored [when Handover A to B is done, lock released and Handover B to C is not started and Team is members: B#59; lead seat: B and Records is A handed to B and Address is DMs to A reach B]
+      s44 --> s47: the peer's late answer arrives and is stored [when Handover A to B is not pending question moved and Handover A to C is not pending question moved and Handover B to A is one of done, lock released, not started and Handover B to C is one of done, lock released, not started]
+      s42 --> s44: A to B moves the pending question [when Handover A to B is team seat moved and Handover A to C is not started and Handover B to A is not started and Handover B to C is done, lock released and Team is members: C#59; lead seat: C and Records is A handed to B, B handed to C and Address is DMs to A reach C]
+      s43 --> s44: B to C moves the pending question [when Handover A to B is done, lock released and Handover A to C is not started and Handover B to A is not started and Handover B to C is team seat moved and Team is members: C#59; lead seat: C and Records is A handed to B, B handed to C and Address is DMs to A reach C]
+    }
+  }
+  class s45 teal
+  class s46 teal
+  class s47 teal

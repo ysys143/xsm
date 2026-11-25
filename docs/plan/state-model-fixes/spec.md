@@ -45,6 +45,17 @@
 | F12 | 이관 커밋 직후 A에서 생긴 보류 항목에 B가 닿지 못함 | `receive.hold`(`receive.py:285-312`)에 이관 검사가 없음 | `migration` `test_in_flight_gate_hold_after_the_move_stays_bound_to_a` |
 | F13 | 아무도 보지 않은 메시지에 `delivered` 영수증이 남음 | `take_inbox_claims`가 영수증(`receive.py:1383`)을 쓴 뒤 `handoff.handoff`(`:1393`)를 부름. 훅 경로는 해당 없음 | `migration` `test_delivered_receipt_written_then_fence_refuses_the_handoff` |
 
+### 2.1 수정 의미의 모델이 드러낸 결함(2026-11-25, SM-MODEL 작업 중)
+
+`deliverables/statechart-20261125/fixed/README.md`가 근거다. F14와 F16은 main 코드에서 재현했다(`scratchpad/probe_gaps.py`).
+
+| ID | 결함 | 원인 | 고치는 방법 |
+|---|---|---|---|
+| F14 | `_begin`과 질문 단계 사이에 도착한 답을 B가 읽으면, 그 순간에는 질문 발신자가 아직 A라서 색인되지 않는다. B의 `questions.status`는 B가 조회(`poll_replies`)하기 전까지 `pending`이다 | `record_reply`가 수신자 = 기록 발신자만 받는다 | `record_reply`가 기록 발신자의 후임(`moving`·`done` 인수인계)인 수신자도 받는다. 읽기 규칙(`questions.status`)은 넓히지 않는다 |
+| F15 | 인수인계 기록과 연결 복사 사이, 또는 복사가 실패한 연결로 온 P의 늦은 답이 `send`의 범위 검사에서 거절된다 | `send.py`는 `follow` 뒤 `scope_for(P, B)`만 본다 | 회신(`kind=reply`, `reply_to`가 B가 이어받은 질문)은 P와 A 사이에 범위가 있었으면 보낸다(P*: 넘어간 대화는 막지 않는다). 새 대화는 지금 규칙을 따른다 |
+| F16 | 보드 단계 뒤, 팀 단계 전에 A가 팀에서 빠지면 `owner/B` 항목만 남고 B는 그 팀의 구성원이 아니다 | 보드와 자리를 서로 다른 단계에서 각자 재확인한다 | 팀마다 보드 이동과 자리 교체를 한 단위로 처리한다. 팀 단계에서 빠진 팀은 그 팀에 옮긴 `owner/B` 항목을 되돌린다(`owner/A`에 원래 내용을 되쓰고 표시한다) |
+| F17 | 모델에 "A가 빠진 팀에 B가 들어가지 않는다" 규칙이 없어 재확인을 빼도 잡히지 않는다 | 모델 규칙 누락(코드 결함 아님) | `fixed/teams/XsmHandoverPlaces`에 규칙 `NoSeatInATeamALeft`를 더한다 |
+
 ## 3. 형태(Shape)
 
 ### 3.1 비교한 두 형태
@@ -172,6 +183,9 @@ P4는 P1~P3과 병렬로 진행할 수 있다. F11·F12의 인수인계 판은 P
 - SM-F12: 이관 커밋 직후 A의 게이트가 보류한 항목을 B의 에이전트가 `held deliver`로 풀 수 있다. 인수인계 뒤 A의 네이티브 대기 사본이 A의 게이트에 걸려도 A에 새 보류 항목이 생기지 않는다.
 - SM-F13: 펜스로 handoff가 거부되면 발신자의 `ledger.status`가 `delivered`가 아니다.
 - SM-COMPAT: 다음 두 호환이 유지된다. 0.6.1 코드로 B의 `handoffs` 폴더를 읽어도 예외가 나지 않는다(인수인계로 옮긴 기록 포함). `state` 필드가 없는 옛 `handovers/` 기록은 완료로 읽힌다.
+- SM-F14: `_begin`과 질문 단계 사이에 B가 읽은 답은, 조회하지 않아도 인수인계가 끝난 즉시 B의 `questions.status`에서 `final`이다.
+- SM-F15: P↔A 범위가 팀이 아닌 근거였고 연결 복사가 실패했거나 아직 안 됐어도, 인수인계된 질문에 대한 P의 늦은 답이 B의 질문 기록에 남는다. P가 B에게 새로 보내는 대화(질문이 아닌 DM)는 지금 규칙을 따른다.
+- SM-F16: 보드 단계 뒤 팀 단계 전에 A가 팀에서 빠지면, 그 팀 보드에 `owner/B` 항목이 남지 않고 `owner/A`가 원래 내용을 가진다. 결과와 문서가 그 팀을 건너뛴 팀으로 적는다.
 - SM-REG: `python3 -m unittest discover -s tests` 전체가 통과한다.
 - SM-MODEL: (모델 확인이고, 코드 증거가 아니다): 수정 의미로 고친 모델에서 이번에 깨졌던 규칙이 지켜진다.
 

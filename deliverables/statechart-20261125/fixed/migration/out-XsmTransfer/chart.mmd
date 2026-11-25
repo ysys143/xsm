@@ -1,0 +1,88 @@
+---
+title: "xsm: a DM at A while the person moves A's place to B"
+---
+stateDiagram-v2
+  direction LR
+  state "At the same time" as all {
+    state "Migration" as r0 {
+      s0: not started
+      s1: A fenced
+      s2: DMs copied to B
+      s3: held list moved
+      s4: committed
+      [*] --> s0
+      s0 --> s1: the person approves the move#59; A is fenced
+      s1 --> s2: xsm copies A's unconfirmed DMs to B
+      s2 --> s3: xsm moves A's held list to B
+      s3 --> s4: the move is committed
+    }
+    --
+    state "AtA" as r1 {
+      s5: waiting
+      s6: reader is about to show it
+      s7: waiting, held
+      s8: reader is holding it back
+      s9: moved to B
+      s10: shown, not confirmed
+      s11: reader failed mid-way, claim stuck
+      s12: confirmed
+      [*] --> s5
+      s5 --> s6: A's reader takes the DM [when Migration is not started]
+      s5 --> s7: A's hook refuses the DM and keeps a held copy [when Migration is not started]
+      s5 --> s8: A's reader takes the DM [when Migration is not started]
+      s5 --> s9: xsm copies A's unconfirmed DMs to B [when Migration is A fenced]
+      s6 --> s10: A's reader shows it to its model [when Migration is not started]
+      s6 --> s11: recording the handoff is refused [when Migration is A fenced]
+      s6 --> s9: xsm copies A's unconfirmed DMs to B [when Migration is A fenced]
+      s10 --> s12: A confirms it [when Migration is not started]
+      s7 --> s9: xsm copies A's unconfirmed DMs to B [when Migration is A fenced]
+      s8 --> s9: xsm copies A's unconfirmed DMs to B [when Migration is A fenced]
+      s8 --> s7: A's reader puts it back as held [when Migration is not started and HeldList is held entry bound to A and Receipt is receipt: held]
+      s11 --> s9: xsm copies A's unconfirmed DMs to B
+      s10 --> s9: xsm copies A's unconfirmed DMs to B [when Migration is A fenced]
+      s8 --> s11: the reader's release is refused [when Migration is A fenced and HeldList is held entry bound to A and Receipt is receipt: held]
+    }
+    --
+    state "AtB" as r2 {
+      s13: no copy
+      s14: waiting
+      s15: waiting, held
+      s16: reader is about to show it
+      s17: reader is holding it back
+      s18: shown, not confirmed
+      s19: confirmed
+      [*] --> s13
+      s13 --> s14: xsm copies A's unconfirmed DMs to B [when Migration is A fenced and AtA is none of confirmed, waiting, held and HeldList is no held entry and Receipt is not receipt: held]
+      s13 --> s15: xsm copies A's unconfirmed DMs to B [when Migration is A fenced and AtA is one of reader failed mid-way, claim stuck, reader is holding it back, waiting, held and HeldList is held entry bound to A and Receipt is receipt: held]
+      s14 --> s15: A's gate refuses it and keeps a held copy [when Receipt is no receipt]
+      s14 --> s16: B's reader takes the DM [when Migration is committed]
+      s14 --> s17: B's reader takes the DM [when Migration is committed and Receipt is no receipt]
+      s16 --> s18: B's reader shows it to its model
+      s18 --> s19: B confirms it
+      s17 --> s15: B's reader puts it back as held [when HeldList is held entry bound to B and Receipt is receipt: held]
+    }
+    --
+    state "HeldList" as r3 {
+      s20: no held entry
+      s21: held entry bound to A
+      s22: held entry bound to B
+      [*] --> s20
+      s20 --> s21: A's hook refuses the DM and keeps a held copy [when Migration is not started and AtA is waiting and AtB is no copy and Receipt is no receipt]
+      s20 --> s21: A's gate refuses it and keeps a held copy [when Migration is none of committed, held list moved and AtA is one of moved to B, reader is holding it back and AtB is one of no copy, waiting and Receipt is no receipt]
+      s21 --> s22: xsm moves A's held list to B [when Migration is DMs copied to B and AtA is moved to B and AtB is waiting, held]
+      s20 --> s22: A's gate refuses it and keeps a held copy [when Migration is one of committed, held list moved and AtA is moved to B and AtB is one of reader is holding it back, waiting and Receipt is no receipt]
+      s20 --> s22: B's gate refuses it and keeps a held copy [when Migration is committed and AtA is moved to B and AtB is reader is holding it back and Receipt is no receipt]
+    }
+    --
+    state "Receipt" as r4 {
+      s23: no receipt
+      s24: receipt: held
+      s25: receipt: delivered
+      [*] --> s23
+      s23 --> s24: A's hook refuses the DM and keeps a held copy [when Migration is not started and AtA is waiting and AtB is no copy]
+      s23 --> s24: A's gate refuses it and keeps a held copy [when AtA is one of moved to B, reader is holding it back and AtB is one of no copy, reader is holding it back, waiting]
+      s23 --> s25: A's gate passes it and writes a delivered receipt [when AtA is one of confirmed, moved to B, shown, not confirmed and AtB is not reader is holding it back]
+      s23 --> s24: B's gate refuses it and keeps a held copy [when Migration is committed and AtA is moved to B and AtB is reader is holding it back]
+      s23 --> s25: B's gate passes it and writes a delivered receipt [when Migration is committed and AtA is moved to B and AtB is one of confirmed, shown, not confirmed]
+    }
+  }

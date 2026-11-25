@@ -1,0 +1,71 @@
+---
+title: "xsm handover: the team record on two machines (fixed)"
+---
+stateDiagram-v2
+  state "Legend" as legend {
+    lg0: settled
+    lg1: open
+  }
+  class lg0 teal
+  class lg1 blue
+  s0: X: A leads (from X)#59; Y: A leads (from X)#59; no record in flight
+  s1: X: A leads (from Y)#59; Y: A leads (from X)#59; no record in flight
+  s2: X: A leads (from Y)#59; Y: A leads (from Y)#59; no record in flight
+  s3: X: A leads (from X)#59; Y: A leads, Y's change in (from Y)#59; 1 in flight
+  s4: X: A leads (from Y)#59; Y: A leads, Y's change in (from Y)#59; 1 in flight
+  s5: X: B leads, A is out (from X)#59; Y: A leads (from X)#59; 1 in flight
+  s6: X: B leads, A is out (from X)#59; Y: A leads (from Y)#59; 1 in flight
+  s7: X: B leads, A is out (from X)#59; Y: A leads, Y's change in (from Y)#59; 2 in flight
+  s8: X: B leads, A is out (from X)#59; Y: B leads, A is out (from X)#59; no record in flight
+  s9: X: A leads, Y's change in (from Y)#59; Y: A leads, Y's change in (from Y)#59; no record in flight
+  s10: X: B leads, A is out (from X)#59; Y: A leads, Y's change in (from Y)#59; 1 in flight
+  s11: X: B leads, A is out, Y's change in (from X)#59; Y: A leads, Y's change in (from Y)#59; 2 in flight
+  s12: X: B leads, A is out, Y's change in (from X)#59; Y: A leads, Y's change in (from Y)#59; 1 in flight
+  s13: X: B leads, A is out (from X)#59; Y: B leads, A is out, Y's change in (from Y)#59; 1 in flight
+  s14: X: B leads, A is out, Y's change in (from X)#59; Y: B leads, A is out, Y's change in (from X)#59; 1 in flight
+  s15: X: B leads, A is out, Y's change in (from X)#59; Y: B leads, A is out, Y's change in (from X)#59; no record in flight
+  s16: X: B leads, A is out, Y's change in (from Y)#59; Y: B leads, A is out, Y's change in (from Y)#59; no record in flight
+  [*] --> s0
+  [*] --> s1
+  [*] --> s2
+  s0 --> s3: Y changes the team and sends it
+  s0 --> s5: X hands A's seat to B and sends the team
+  s1 --> s4: Y changes the team and sends it
+  s1 --> s5: X hands A's seat to B and sends the team
+  s2 --> s4: Y changes the team and sends it
+  s2 --> s6: X hands A's seat to B and sends the team
+  s3 --> s7: X hands A's seat to B and sends the team
+  s3 --> s9: X takes Y's record
+  s4 --> s7: X hands A's seat to B and sends the team
+  s4 --> s9: X takes Y's record
+  s5 --> s7: Y changes the team and sends it
+  s5 --> s8: Y takes X's record
+  s6 --> s7: Y changes the team and sends it
+  s6 --> s8: Y takes X's record
+  s7 --> s10: a machine ignores the record (echo, or the other record wins)
+  s7 --> s11: X takes Y's record and applies its own change on top again
+  s8 --> s13: Y changes the team and sends it
+  s9 --> s12: X hands A's seat to B and sends the team
+  s10 --> s12: X takes Y's record and applies its own change on top again
+  s11 --> s12: a machine ignores the record (echo, or the other record wins)
+  s11 --> s14: Y takes X's record
+  s12 --> s15: Y takes X's record
+  s13 --> s16: X takes Y's record
+  s14 --> s15: a machine ignores the record (echo, or the other record wins)
+  class s0 blue
+  class s1 blue
+  class s2 blue
+  class s3 blue
+  class s4 blue
+  class s5 blue
+  class s6 blue
+  class s7 blue
+  class s8 teal
+  class s9 blue
+  class s10 blue
+  class s11 blue
+  class s12 blue
+  class s13 blue
+  class s14 blue
+  class s15 teal
+  class s16 teal

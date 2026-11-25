@@ -121,12 +121,30 @@ def red(req, root):
     return 0 if r.returncode != 0 else 1
 
 
+def _norm(name):
+    name = os.path.splitext(os.path.basename(name))[0].lower()
+    for word in ("xsm", "handover", "view", "_", "-"):
+        name = name.replace(word, "")
+    return name
+
+
+def _view_for(stem, spec_stem, views):
+    """The view whose name matches the cfg or spec (view_held.ts for
+    XsmHeldDeliver, viewBoard.ts for XsmHandoverBoard), else the only one."""
+    for key in (_norm(stem), _norm(spec_stem)):
+        named = [v for v in views if _norm(v) and _norm(v) in key]
+        if named:
+            return max(named, key=lambda v: len(_norm(v)))
+    plain = [v for v in views if _norm(v) == ""]
+    return plain[0] if plain else views[0]
+
+
 def model(folder, expect_breaks):
     """Run every spec/cfg pair under folder; with expect_breaks, succeed only
     if at least one rule breaks; otherwise succeed only if none does."""
     pairs = []
     for cfg in sorted(glob.glob(os.path.join(folder, "**", "*.cfg"), recursive=True)):
-        if os.sep + "verify" in cfg or os.sep + "run" in cfg:
+        if any(part.startswith(("verify", "run", "out")) for part in os.path.relpath(cfg, folder).split(os.sep)[:-1]):
             continue
         here = os.path.dirname(cfg)
         specs = glob.glob(os.path.join(here, "*.tla"))
@@ -135,7 +153,7 @@ def model(folder, expect_breaks):
             continue
         stem = os.path.splitext(os.path.basename(cfg))[0]
         spec = next((s for s in specs if os.path.basename(s)[:-4] == stem), specs[0])
-        view = next((v for v in views if stem.lower().replace("xsm", "") in v.lower()), views[0])
+        view = _view_for(stem, os.path.basename(spec)[:-4], views)
         pairs.append((spec, cfg, view))
     if not pairs:
         print("no models under", folder)
@@ -147,6 +165,9 @@ def model(folder, expect_breaks):
         r = subprocess.run([STATECHART, spec, "--config", cfg, "--view", view, "--out", out],
                            stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
         rules = re.findall(r"^## (\w+) breaks", r.stdout, re.M)
+        if "Rules that hold" not in r.stdout and not rules:
+            broke.append((os.path.relpath(cfg, folder), ["<no report: %s>" % r.stdout.strip()[-200:]]))
+            continue
         if rules:
             broke.append((os.path.relpath(cfg, folder), rules))
     for name, rules in broke:

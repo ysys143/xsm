@@ -1,0 +1,33 @@
+---
+title: "xsm: another machine R asked A, then A handed over to B and B to C"
+---
+stateDiagram-v2
+  state "Legend" as legend {
+    lg0: answered
+    lg1: open
+  }
+  class lg0 teal
+  class lg1 tan
+  s0: A holds its place.no question yet
+  s1: A handed over to B.R will never accept its answer#59; no question yet
+  s2: A holds its place.R waits for an answer
+  s3: A handed over to B.R waits for the handover news#59; R waits for an answer
+  s4: A handed over to B.R will never accept its answer#59; R waits for an answer
+  s5: A handed over to B.R accepts its answer#59; R waits for an answer
+  s6: A handed over to B.R accepts its answer#59; answer recorded
+  [*] --> s0
+  s0 --> s1: the person approves#59; M1 has no reason to tell R's machine
+  s0 --> s2: R asks A
+  s1 --> s4: R asks A's old address
+  s2 --> s3: the person approves#59; M1 tells R's machine
+  s3 --> s5: R's machine keeps the handover news
+  s3 --> s6: R does not know the handover, asks M1 for the chain and records the answer
+  s4 --> s6: R does not know the handover, asks M1 for the chain and records the answer
+  s5 --> s6: R records the answer
+  class s0 tan
+  class s1 tan
+  class s2 tan
+  class s3 tan
+  class s4 tan
+  class s5 tan
+  class s6 teal
