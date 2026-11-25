@@ -11,10 +11,6 @@
 
 후속 조사(2026-10-30): [DM과 공유 채널의 공존 사례](dm-and-channels.md)는 ExaDev/agent-comms, msanchezdev/agent-bridge, keshrath/agent-comm의 공식 README를 커밋에 고정해 비교한다. 피어 간 메시·로컬 파일·중앙 서버에서 DM과 채널을 함께 제공하는 구조, 수신·깨우기·보존의 차이와 xsm 설계 참고점을 기록한 문서 조사이며 설치·실행 검증은 하지 않았다.
 
-후속 조사(2026-11-02): [dsh-superagent 조사](dsh-superagent.md)는 DeepSeek의 연구 프로토타입을 고정 커밋에서 정적 분석한다. 메시지 처리 책임(ack·돌려주기·종료 시 복귀), 세션 기록 진입 기준의 읽음, 구조화된 사람 대기, Mandate 재검증, 주의 비용 규칙을 정리하고 xsm과의 비교 및 설계 참고 19개를 기록했다. 빌드·실행 검증은 하지 않았다.
-
-후속 조사(2026-11-04): [AgentTeams 조사](agentteams.md)는 agentscope-ai/AgentTeams를 고정 커밋에서 정적 분석한다. TeamHarness의 작업 전이표와 이력, 제출 식별자, 상태 도구가 직접 보내는 완료 통지, 진행 중 사람 호출, 세션 깨우기 규칙, 낡은 답을 막는 Matrix 전송 게이트를 정리하고 xsm과의 비교 및 설계 참고 15개를 기록했다. 빌드·실행 검증은 하지 않았다.
-
 ## 0. 조사 방법과 출처
 
 소스는 `/tmp/xsm-refs/`에 `git clone --depth 1`로 받았다.
