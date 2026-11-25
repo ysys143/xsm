@@ -1,7 +1,7 @@
 """State-model fixes, P0 RED tests for the board and team criteria (docs/plan/state-model-fixes/spec.md).
 
 SM-F6  team places and owner/A board items move together while a handover runs  (fixed in P1)
-SM-F7  a write to owner/A between copy and close is carried; two-head items are named  (RED until P5)
+SM-F7  a write to owner/A between copy and close is carried; two-head items are named  (fixed in P5)
 SM-F8  two machines that change the same team at the same generation end with one record  (fixed in P6)
 
 Reproductions: deliverables/statechart-20261125/teams/replay_{places,board,teamsync}_test.py.
@@ -159,7 +159,7 @@ class OwnerItems(_Base):
                          % (len(heads), [h['body'].split('\n')[0] for h in heads]))
         self.assertIn('handed over to next', heads[0]['body'])
 
-    # RED until P5 (SM-F7a). Today: a member writes owner/lead after the copy and before A's closing write;
+    # Fixed in P5 (SM-F7a). Before the fix. Today: a member writes owner/lead after the copy and before A's closing write;
     # owner/next never gets it and owner/lead ends with two heads (the note and the late write).
     def test_SM_F7a_a_write_between_copy_and_close_reaches_the_successor(self):
         from xsm import board
@@ -212,20 +212,20 @@ class OwnerItems(_Base):
         board.set_item(self.bee, 'core', 'owner/lead', 'bee notes')             # bee never read it: a second head
         self.assertEqual(len(board.current('core')['owner/lead']), 2)
 
-    # RED until P5 (SM-F7b). Today: the result has no `skipped` key at all.
+    # Fixed in P5 (SM-F7b). Before the fix. Today: the result has no `skipped` key at all.
     def test_SM_F7b_a_two_head_item_is_listed_under_skipped_in_the_result(self):
         self._two_head_item()
         rec = self._hand_over()
         self.assertIn('skipped', rec)
         self.assertIn('owner/lead', json.dumps(rec['skipped']))
 
-    # RED until P5 (SM-F7b). Today: the letter says nothing about the skipped item.
+    # Fixed in P5 (SM-F7b). Before the fix. Today: the letter says nothing about the skipped item.
     def test_SM_F7b_a_two_head_item_is_named_in_the_letter(self):
         self._two_head_item()
         rec = self._hand_over()
         self.assertIn('owner/lead', rec['letter'])
 
-    # RED until P5 (SM-F7b). Today: the handover/lead board item says nothing about the skipped item.
+    # Fixed in P5 (SM-F7b). Before the fix. Today: the handover/lead board item says nothing about the skipped item.
     def test_SM_F7b_a_two_head_item_is_named_in_the_handover_board_item(self):
         from xsm import board
         self._two_head_item()

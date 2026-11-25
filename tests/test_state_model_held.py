@@ -125,7 +125,7 @@ class _HandoverBase(_Helpers, TempState):
 # ---------------------------------------------------------------------------------------------
 
 class HeldDeliverIsFinal(_MigrationBase):
-    # RED until P4 (SM-F11): `held deliver` rewrites only the receipt (cli.py:1551) and leaves
+    # Fixed in P4 (SM-F11). Before the fix: `held deliver` rewrites only the receipt (cli.py:1551) and leaves
     # the original pending, so A's inbox, with the gate still closed, holds it again under a new
     # name and asks the person a second time.
     def test_SM_F11_a_inbox_with_scope_closed_does_not_hold_again(self):
@@ -135,7 +135,7 @@ class HeldDeliverIsFinal(_MigrationBase):
         self.assertEqual(pack['messages'], [], pack)
         self.assertNotIn(mid, json.dumps(pack))
 
-    # RED until P4 (SM-F11): same cause; once the person links the folders the gate passes and
+    # Fixed in P4 (SM-F11). Before the fix: same cause; once the person links the folders the gate passes and
     # the still-pending original is shown by `xsm inbox` after `held deliver` already showed it.
     def test_SM_F11_a_inbox_after_link_does_not_show_again(self):
         self.hold_at_a('SECRET-2')
@@ -143,7 +143,7 @@ class HeldDeliverIsFinal(_MigrationBase):
         self.assertEqual(pack['messages'], [], 'shown a second time')
         self.assertEqual(pack['claims'], [])
 
-    # RED until P4 (SM-F11): the migration copies the still-pending original to B, whose inbox
+    # Fixed in P4 (SM-F11). Before the fix: the migration copies the still-pending original to B, whose inbox
     # shows it a second time.
     def test_SM_F11_b_migration_then_b_inbox_does_not_show_again(self):
         self.hold_at_a('SECRET-3')
@@ -152,7 +152,7 @@ class HeldDeliverIsFinal(_MigrationBase):
         self.assertEqual(pack['messages'], [], 'shown a second time at B')
         self.assertEqual(pack['claims'], [])
 
-    # RED until P4 (SM-F11): as above with B's gate closed: B holds it again.
+    # Fixed in P4 (SM-F11). Before the fix: as above with B's gate closed: B holds it again.
     def test_SM_F11_b_migration_then_b_inbox_with_scope_closed_does_not_hold_again(self):
         self.hold_at_a('SECRET-4')
         self.migrate()
