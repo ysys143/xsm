@@ -13,7 +13,8 @@ you at each step what has and has not happened.
 
 ![How XSM connects agent sessions through native runtime paths and explicit communication scopes](docs/assets/xsm-overview.svg)
 
-> **Release status.** 0.6.0 adds experimental Pi, OpenCode, Hermes and OpenClaw bindings,
+> **Release status.** 0.6.2 fixes the defects a TLA+ model check found in handover, held messages and late answers ([notes](https://github.com/ysys143/xsm/releases/tag/v0.6.2)).
+> 0.6.0 adds experimental Pi, OpenCode, Hermes and OpenClaw bindings,
 > explicit profile migration with 24-hour forwarding, and consistent native permission recovery.
 > See the [changelog](CHANGELOG.md#060---2026-11-05),
 > [verification record](https://github.com/ysys143/xsm/blob/v0.6.0/deliverables/issue27-implementation-20261105/verification.md)
@@ -572,13 +573,16 @@ You choose the lead and may still direct any member yourself. For form failures 
 in 0.5.1, see [Your decisions](#your-decisions).
 
 To hand a session's place over to another (say "hand over to night-shift" in the session that is leaving),
-the agent writes a context summary and runs `xsm handover`, which you confirm. Its team places and lead's
-seat, its own board items, its unread DMs and its pending questions move to the successor, which reads all of
-it at its next prompt; DMs to the old session reach the successor from then on.
-The successor must be registered and running on the same machine. A remote machine that is offline when
-the handover is published misses its testimony; there is no automatic resend, and that machine will not
-accept the successor's reply as an answer to the old question. Check any propagation warnings; see the
-[handover conditions](docs/xsm/README.md#인수인계).
+the agent writes a context summary and runs `xsm handover`, which you confirm once. Its team places and
+lead's seat, its own board items, its pending questions and question groups move to the successor, and so
+do its connections (reaches, folder and project scopes, worker links; the confirmation lists them).
+Its unread DMs move to the successor's inbox and a held DM stays held there; the letter the successor reads at
+its next prompt names them by count and id. DMs to the old session, and late answers to its questions, reach
+the successor from then on. The successor must be registered and running on the same machine; picking a
+session that has itself handed over goes on to its successor. One handover runs at a time on a machine; an
+interrupted one finishes when you run it again, and `xsm doctor` names it. A remote machine that asked the
+old session checks the succession itself; if it cannot reach this machine it keeps the successor's answer
+marked `unconfirmed` until it can. See the [handover conditions](docs/xsm/README.md#인수인계).
 
 ## Reference
 
