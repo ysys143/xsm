@@ -1378,12 +1378,6 @@ def take_inbox_claims(me, *, owner=None, generation=None, lease=120, passive_onl
                 if not room_for(text, token):
                     break
             outcome = _outcome(parsed)
-            # Preserve legacy delivery semantics but keep consumption/ack separate.
-            if me.get("protocol_version") != "1":
-                ledger.receipt(record["id"], "delivered", me,
-                               "%s; unchecked: %s" % (VIA_INBOX, reason) if decision == "unchecked"
-                               else VIA_INBOX, outcome=outcome, from_ref=parsed.header.get("ref"),
-                               body_sha=_body_sha(parsed), req_digest=_req_digest(parsed))
             if parsed.header.get("kind") == "reply":
                 _index_reply(parsed, me, decision)
                 _close_task(parsed, outcome, me)
@@ -1391,6 +1385,14 @@ def take_inbox_claims(me, *, owner=None, generation=None, lease=120, passive_onl
             if max_bytes is None:
                 text = render_current()
             handoff.handoff(me, token, owner, generation)
+            # Preserve legacy delivery semantics but keep consumption/ack separate. The
+            # `delivered` receipt is written only once the handoff stands: a fence that makes
+            # the handoff refuse leaves nobody shown the message (F13).
+            if me.get("protocol_version") != "1":
+                ledger.receipt(record["id"], "delivered", me,
+                               "%s; unchecked: %s" % (VIA_INBOX, reason) if decision == "unchecked"
+                               else VIA_INBOX, outcome=outcome, from_ref=parsed.header.get("ref"),
+                               body_sha=_body_sha(parsed), req_digest=_req_digest(parsed))
             ledger.handoff_step(record["id"], "handoff", me)
             claims.append({"id": record["id"], "token": token, "owner": owner,
                            "generation": generation, "digest": record["digest"]})

@@ -359,12 +359,15 @@ receive.take_inbox_claims(me)
         with mock.patch.object(provenance, 'display_body', side_effect=KeyboardInterrupt):
             with self.assertRaises(KeyboardInterrupt):
                 self._take()
-        self.assertEqual(ledger.receipt_of(sent.msg_id)['decision'], 'delivered')
+        # The `delivered` receipt follows the handoff (state-model F13): output that died before
+        # the handoff shows nobody the message, so no receipt claims it was delivered.
+        self.assertIsNone(ledger.receipt_of(sent.msg_id))
         self.assertEqual(handoff.status(self.b, sent.msg_id)['status'], 'pending')
         self.assertFalse(ledger.evidence_of(sent.msg_id)['acknowledged'])
         pack = self._take()
         self.assertIn('cancelled output', pack['messages'][0])
         self.assertEqual(pack['claims'][0]['id'], sent.msg_id)
+        self.assertEqual(ledger.receipt_of(sent.msg_id)['decision'], 'delivered')
 
     def test_native_hook_cannot_steal_a_claim_before_inbox_output(self):
         import concurrent.futures
