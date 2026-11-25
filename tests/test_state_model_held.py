@@ -128,7 +128,6 @@ class HeldDeliverIsFinal(_MigrationBase):
     # RED until P4 (SM-F11): `held deliver` rewrites only the receipt (cli.py:1551) and leaves
     # the original pending, so A's inbox, with the gate still closed, holds it again under a new
     # name and asks the person a second time.
-    @unittest.expectedFailure
     def test_SM_F11_a_inbox_with_scope_closed_does_not_hold_again(self):
         mid = self.hold_at_a('SECRET-1')
         pack = self.inbox(self.a, verdict=BLOCK)
@@ -138,7 +137,6 @@ class HeldDeliverIsFinal(_MigrationBase):
 
     # RED until P4 (SM-F11): same cause; once the person links the folders the gate passes and
     # the still-pending original is shown by `xsm inbox` after `held deliver` already showed it.
-    @unittest.expectedFailure
     def test_SM_F11_a_inbox_after_link_does_not_show_again(self):
         self.hold_at_a('SECRET-2')
         pack = self.inbox(self.a)                                 # real check(): passes
@@ -147,7 +145,6 @@ class HeldDeliverIsFinal(_MigrationBase):
 
     # RED until P4 (SM-F11): the migration copies the still-pending original to B, whose inbox
     # shows it a second time.
-    @unittest.expectedFailure
     def test_SM_F11_b_migration_then_b_inbox_does_not_show_again(self):
         self.hold_at_a('SECRET-3')
         self.migrate()
@@ -156,7 +153,6 @@ class HeldDeliverIsFinal(_MigrationBase):
         self.assertEqual(pack['claims'], [])
 
     # RED until P4 (SM-F11): as above with B's gate closed: B holds it again.
-    @unittest.expectedFailure
     def test_SM_F11_b_migration_then_b_inbox_with_scope_closed_does_not_hold_again(self):
         self.hold_at_a('SECRET-4')
         self.migrate()
@@ -240,6 +236,10 @@ class DeliveredMeansShown(_MigrationBase):
     # RED until P4 (SM-F13): take_inbox_claims writes the `delivered` receipt (receive.py:1383)
     # before handoff.handoff (:1393); a fence landing between the two makes the handoff refuse,
     # nobody is shown the DM, and the sender's ledger.status still says delivered.
+    # NOTE (P4): this injection point (the fence right after ledger.receipt) cannot go green once
+    # the receipt is written after handoff.handoff: the fence then lands after the handoff has
+    # stood, the migration moves a message A was shown, and ledger.handoff_step raises
+    # ValueError. Kept as written and RED; the next test fences at the handoff itself.
     @unittest.expectedFailure
     def test_SM_F13_fence_between_receipt_and_handoff_leaves_no_delivered_receipt(self):
         from xsm import handoff, ledger, migration
@@ -253,6 +253,26 @@ class DeliveredMeansShown(_MigrationBase):
                 fired.append(1)
                 self.migrate()                                    # fence..commit right after the receipt
         with mock.patch.object(ledger, 'receipt', side_effect=receipt_then_migrate):
+            try:
+                self.inbox(self.a)
+            except migration.MigrationError:
+                pass
+        self.assertEqual(handoff.status(self.b, mid)['status'], 'pending')   # B has not been shown it either
+        self.assertNotEqual(ledger.status(mid).get('status'), 'delivered')
+
+    def test_SM_F13_fence_before_handoff_leaves_no_delivered_receipt(self):
+        """Same assertions, fence injected where the handoff is refused: right before handoff.handoff."""
+        from xsm import handoff, ledger, migration
+        mid = self.dm('NEVER-SHOWN-AT-A-2')
+        real = handoff.handoff
+        fired = []
+
+        def migrate_then_handoff(*a, **k):
+            if not fired:
+                fired.append(1)
+                self.migrate()                                    # fence..commit just before the handoff
+            return real(*a, **k)
+        with mock.patch.object(handoff, 'handoff', side_effect=migrate_then_handoff):
             try:
                 self.inbox(self.a)
             except migration.MigrationError:
