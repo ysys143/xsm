@@ -158,7 +158,7 @@ summary is for a session that knows nothing of your conversation:
 - anything your user told you to keep doing, or never to do.
 
 xsm moves the rest: your team places and the lead's seat, your `owner/<your
-name>` board items, your unread DMs (verbatim), your pending questions (late
+name>` board items, your unread and held DMs (they arrive in your inbox, held ones stay held), your pending questions (late
 answers go to OO), and DMs sent to you from then on. After it you have no team
 place.
 
@@ -173,7 +173,7 @@ handover result. Do not promise that every remote machine received it.
 A prompt that starts with `[xsm handover]` means a session handed its place to
 you at its user's request. Read it to the end (`xsm handover --show` shows it
 again). Then read the boards of the teams it names, tell each team in one DM
-that you took over, answer the unread DMs it carries at the senders' addresses,
+that you took over, answer the DMs the letter counts (they arrive in your inbox) at the senders' addresses,
 and continue the open work from the summary. If you got a lead's seat, you
 direct the team now: members report to you, and the approvals that went
 through the old lead go through you.
