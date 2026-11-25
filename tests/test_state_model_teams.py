@@ -161,7 +161,6 @@ class OwnerItems(_Base):
 
     # RED until P5 (SM-F7a). Today: a member writes owner/lead after the copy and before A's closing write;
     # owner/next never gets it and owner/lead ends with two heads (the note and the late write).
-    @unittest.expectedFailure
     def test_SM_F7a_a_write_between_copy_and_close_reaches_the_successor(self):
         from xsm import board
         board.set_item(self.lead, 'core', 'owner/lead', 'plan v1')
@@ -182,7 +181,6 @@ class OwnerItems(_Base):
 
     # RED until P5 (SM-F7a, earlier window). Today: the write lands between A's read and A's list. owner/next
     # carries it, but A never read it, so its closing write leaves owner/lead with two heads.
-    @unittest.expectedFailure
     def test_SM_F7a_a_write_between_reading_and_listing_leaves_only_the_note(self):
         from xsm import board
         board.set_item(self.lead, 'core', 'owner/lead', 'plan v1')
@@ -215,7 +213,6 @@ class OwnerItems(_Base):
         self.assertEqual(len(board.current('core')['owner/lead']), 2)
 
     # RED until P5 (SM-F7b). Today: the result has no `skipped` key at all.
-    @unittest.expectedFailure
     def test_SM_F7b_a_two_head_item_is_listed_under_skipped_in_the_result(self):
         self._two_head_item()
         rec = self._hand_over()
@@ -223,14 +220,12 @@ class OwnerItems(_Base):
         self.assertIn('owner/lead', json.dumps(rec['skipped']))
 
     # RED until P5 (SM-F7b). Today: the letter says nothing about the skipped item.
-    @unittest.expectedFailure
     def test_SM_F7b_a_two_head_item_is_named_in_the_letter(self):
         self._two_head_item()
         rec = self._hand_over()
         self.assertIn('owner/lead', rec['letter'])
 
     # RED until P5 (SM-F7b). Today: the handover/lead board item says nothing about the skipped item.
-    @unittest.expectedFailure
     def test_SM_F7b_a_two_head_item_is_named_in_the_handover_board_item(self):
         from xsm import board
         self._two_head_item()

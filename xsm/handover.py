@@ -359,38 +359,95 @@ def _closed(new: str, new_item: str) -> str:
     return "handed over to %s (now %s)" % (new, new_item)
 
 
+CLOSE_ROUNDS = 5     # how many times a late write to owner/<old> is carried before the item is reported
+
+
 def _boards(me: dict, target: dict, places: list) -> dict:
     """Move the items this session owns on the boards of `places` and say so
-    there. A team it has left since is skipped and named. Runs while `me` is
-    still a member; an item already closed by an earlier run counts as moved
-    and is not copied again."""
+    there. A team it has left since is skipped and named, and so is an item
+    that has two versions at once (settled first by its members). Runs while
+    `me` is still a member; an item already closed by an earlier run counts as
+    moved and is not copied again."""
     from . import board, teams
-    out = {"items": {}, "skipped": []}
+    out = {"items": {}, "skipped": [], "skipped_items": {}}
     for name in places:
         team = teams.load(name)
         if not team or not teams.is_member(team, me):
             out["skipped"].append(name)
             continue
         moved = out["items"].setdefault(name, [])
+        left = []
         try:
-            _board_team(me, target, team, moved)
+            _board_team(me, target, team, moved, left)
         except board.BoardError:
             out["skipped"].append(name)          # it left while its board was moving
+        if left:
+            out["skipped_items"][name] = left
     return out
 
 
-def _board_team(me: dict, target: dict, team: dict, moved: list) -> None:
+def _carried(team: str, new_item: str, body: str) -> bool:
+    """Whether `owner/<new>` already holds a node carrying this text (a run
+    that died after copying it): carrying it again would duplicate it."""
+    from . import board, doc
+    prefix = body.rstrip() + "\n\n("
+    return any(n["body"].startswith(prefix)
+               for n in board.items(doc.read(board.path(team))).get(new_item, []))
+
+
+def _carry(me: dict, team: str, new_item: str, body: str, marker: str) -> None:
+    from . import board
+    if not _carried(team, new_item, body):
+        board.set_item(me, team, new_item, body.rstrip() + "\n\n(%s)" % marker)
+
+
+def _close(me: dict, team: dict, item: str, new_item: str, old: str, closing: str) -> bool:
+    """Close `item` with the forwarding note, then read it again: a head that
+    is not the note was written meanwhile (a member's write lands between the
+    copy and the closing write, or between the reading and the listing). Carry
+    it to `new_item` and close again over every head, until one head is left.
+    Returns whether the item ends with the note alone."""
     from . import board, teams
+    name = team["name"]
+    for _ in range(CLOSE_ROUNDS):
+        board.show(me, name)                     # the closing write builds on every head read now
+        heads = board.current(name).get(item, [])
+        extra = [h for h in heads if h["body"].strip() != closing]
+        for h in extra:
+            _carry(me, name, new_item, h["body"],
+                   "written to %s during the handover" % item)
+        if len(heads) == 1 and not extra:
+            return True
+        if not teams.is_member(teams.load(name) or {}, me):
+            raise board.BoardError("%s left team %s" % (old, name))
+        board.set_item(me, name, item, closing)
+    board.show(me, name)
+    return len(board.current(name).get(item, [])) == 1
+
+
+def _board_team(me: dict, target: dict, team: dict, moved: list, left: list | None = None) -> None:
+    from . import board, teams
+    left = [] if left is None else left
     name = team["name"]
     old, new = _word(me), _word(target)
     board.show(me, name)         # what it moves, it has read
     state = board.current(name)
-    mine = [(item, heads[0]) for item, heads in state.items()
-            if _owned(item, old) is not None and len(heads) == 1]    # two versions at once: settled first
-    note = ("%s handed its place in this team over to %s on %s. %s%s DMs to %s now reach %s."
+    mine, held = [], []
+    for item, heads in state.items():
+        if _owned(item, old) is None:
+            continue
+        closing = _closed(new, "owner/" + new + _owned(item, old))
+        if len(heads) == 1 or any(h["body"].strip() == closing for h in heads):
+            mine.append((item, heads))           # one version, or a closing note a dead run left beside a late write
+        else:
+            held.append(item)                    # two versions at once: settled first, by their writers
+    left.extend(held)
+    note = ("%s handed its place in this team over to %s on %s. %s%s%sDMs to %s now reach %s."
             % (old, new, time.strftime("%Y-%m-%d %H:%M"),
                "Items moved: %s. " % ", ".join(item for item, _ in mine) if mine else "",
                "The lead's seat moved too. " if team.get("lead") and _lead(team, me) else "",
+               "Not moved, two versions at once (settle them, then hand them over by hand): %s. "
+               % ", ".join(held) if held else "",
                old, new))
     # The announcement comes first: if the session leaves the team now, nothing
     # of its items has moved yet and nothing is left half done on the board.
@@ -398,16 +455,26 @@ def _board_team(me: dict, target: dict, team: dict, moved: list) -> None:
     if not any(h["body"].startswith("%s handed its place in this team over to %s on " % (old, new))
                for h in said):
         board.set_item(me, name, "handover/" + old, note)
-    for item, head in mine:
+    for item, heads in mine:
         new_item = "owner/" + new + _owned(item, old)
-        if head["body"].strip() == _closed(new, new_item):
+        closing = _closed(new, new_item)
+        if len(heads) == 1 and heads[0]["body"].strip() == closing:
             moved.append(item)                   # a run that died after closing it
             continue
         if not teams.is_member(teams.load(name) or {}, me):
             raise board.BoardError("%s left team %s" % (old, name))
-        board.set_item(me, name, new_item, head["body"].rstrip() + "\n\n(taken over from %s)" % old)
-        board.set_item(me, name, item, _closed(new, new_item))
-        moved.append(item)
+        for h in heads:
+            if h["body"].strip() != closing:
+                _carry(me, name, new_item, h["body"], "taken over from %s" % old)
+        if _close(me, team, item, new_item, old, closing):
+            moved.append(item)
+        else:
+            left.append(item)                    # still written to faster than it can be closed
+    unsaid = [i for i in left if i not in held]
+    if unsaid:
+        board.set_item(me, name, "handover/" + old,
+                       "%s: not moved, still being written to during the handover: %s."
+                       % (old, ", ".join(unsaid)))
 
 
 def _lead(team: dict, me: dict) -> bool:
@@ -533,7 +600,8 @@ def _unread(me: dict, target: dict) -> list:
 
 
 def _letter(me: dict, target: dict, summary: str, teams_moved: list, items: dict,
-            asks: list, groups: list, unread: list, skipped: list | None = None) -> str:
+            asks: list, groups: list, unread: list, skipped: list | None = None,
+            skipped_items: dict | None = None) -> str:
     old = label(_handle(me))
     lines = ["[xsm handover] %s handed its xsm place over to you, at its user's request." % old,
              "", "What is yours now:"]
@@ -544,6 +612,10 @@ def _letter(me: dict, target: dict, summary: str, teams_moved: list, items: dict
         lines.append("- no team places (it was in no team)")
     if skipped:
         lines.append("- not moved, it had left these teams meanwhile: " + ", ".join(skipped))
+    for team_name, names in sorted((skipped_items or {}).items()):
+        lines.append("- board items not moved in team %s (two versions at once, or still written to): %s; "
+                     "see the item `handover/%s` on that board"
+                     % (team_name, ", ".join(names), _word(me)))
     lines.append("- %d pending question%s it asked (late answers come to you; `xsm question-status <id>`): %s"
                  % (len(asks), "" if len(asks) == 1 else "s", ", ".join(asks) or "none"))
     if groups:
@@ -593,9 +665,11 @@ def _finish(rec: dict, me: dict, target: dict) -> dict:
     rec["items"] = {t: list(v) for t, v in steps["boards"]["items"].items()}
     rec["questions"], rec["groups"] = steps["questions"], steps["groups"]
     rec["messages"] = [r["id"] for r in steps["unread"]]
-    rec["skipped"] = {"teams": sorted(set(steps["boards"]["skipped"]) | set(steps["teams"]["left"]))}
+    rec["skipped"] = {"teams": sorted(set(steps["boards"]["skipped"]) | set(steps["teams"]["left"])),
+                      "items": {t: list(v) for t, v in (steps["boards"].get("skipped_items") or {}).items()}}
     rec["letter"] = _letter(me, target, rec.get("summary") or "", rec["teams"], rec["items"],
-                            rec["questions"], rec["groups"], steps["unread"], rec["skipped"]["teams"])
+                            rec["questions"], rec["groups"], steps["unread"], rec["skipped"]["teams"],
+                            rec["skipped"]["items"])
     rec["state"] = "done"
     rec["finished_at"] = time.time()
     _save(rec)
@@ -702,10 +776,13 @@ def summary_line(rec: dict) -> str:
     teams_part = ", ".join("%s%s" % (t["team"], " (lead)" if t["lead"] else "") for t in rec["teams"]) or "no teams"
     items = sum(len(v) for v in rec["items"].values())
     left = (rec.get("skipped") or {}).get("teams") or []
+    held = (rec.get("skipped") or {}).get("items") or {}
     return ("handed over to %s: %s; %d board item%s, %d unread DM%s, %d pending question%s. "
             "It reads the letter at its next prompt; DMs to this session now reach it.%s"
             % (label(rec["to"]), teams_part, items, "" if items == 1 else "s",
                len(rec["messages"]), "" if len(rec["messages"]) == 1 else "s",
                len(rec["questions"]), "" if len(rec["questions"]) == 1 else "s",
-               " Not moved, it had left %s meanwhile." % ", ".join(left) if left else ""))
+               (" Not moved, it had left %s meanwhile." % ", ".join(left) if left else "")
+               + (" Board items not moved: %s." % "; ".join("%s: %s" % (t, ", ".join(v))
+                                                           for t, v in sorted(held.items())) if held else "")))
 
