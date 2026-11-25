@@ -428,6 +428,9 @@ class Daemon:
         value = Gateway(root() / "messages", self.transport.endpoint_id,
                         permission or (lambda *args: False))
         value.network_id = store.network_id
+        # The pull runs inside this daemon's own incoming request, which holds its lock:
+        # asking through the local socket would wait for that lock.
+        value.succession_pull = self.query_succession
         return value
 
     @staticmethod
@@ -569,6 +572,37 @@ class Daemon:
             except NetworkError as exc:
                 failed.append({"machine": machine, "code": str(exc)})
         return {"published": published, "failed": failed}
+
+    SUCCESSION_TIMEOUT = 8      # seconds a pull may hold the gateway: the receiving lock is held meanwhile
+
+    def query_succession(self, old, new):
+        """The succession pull (PROTOCOL 5.15): ask the machine `old` is on for the handovers
+        its records hold from `old` on, up to the one that reaches `new`. The answer is
+        a chain of hops, which the caller keeps as testimony only if that machine
+        speaks for its own sessions."""
+        from .network_identity import endpoint
+        old, new = endpoint(old), endpoint(new)
+        if old["machine"] == self.transport.endpoint_id:
+            raise NetworkError("target-unavailable")
+        answer = self.rpc(self.peer_address(old["machine"]), {"op": "succession", "old": old, "new": new},
+                          timeout=self.SUCCESSION_TIMEOUT)
+        chain = (answer.get("result") or {}).get("chain")
+        if not isinstance(chain, list):
+            raise NetworkError("invalid-succession")
+        return {"chain": chain}
+
+    def answer_succession(self, origin, request):
+        """A machine asks what `old` (one of this machine's sessions) handed its place over to.
+        Only a machine that wrote to `old` is told (the same ones a handover is pushed to);
+        for any other the chain is empty."""
+        from . import handover
+        from .network_identity import endpoint
+        old = endpoint(request.get("old"))
+        new = endpoint(request["new"]) if request.get("new") else None
+        me = self.transport.endpoint_id
+        if old["machine"] != me or not self.gateway().addressed(origin, old):
+            return {"chain": []}
+        return {"chain": handover.succession_chain(old, me, stop=new)}
 
     def publish_board(self, request):
         """Send board nodes to the machines of the team's remote members (ADR-0026)."""
@@ -809,6 +843,8 @@ class Daemon:
             return self.publish_board(request)
         if op == "handover-publish":
             return self.publish_handover(request)
+        if op == "succession":
+            return self.query_succession(request["old"], request["new"])
         if op == "send":
             return self.send_remote(request)
         if op == "admission":
@@ -880,7 +916,7 @@ class Daemon:
         if store:
             paths.write_json(str(root() / ("peers-" + hashlib.sha256(store.network_id.encode()).hexdigest() + ".json")), self._peers)
 
-    def rpc(self, peer, request):
+    def rpc(self, peer, request, timeout=30):
         store = self.store()
         if not store:
             raise NetworkError("no-active-network")
@@ -893,7 +929,7 @@ class Daemon:
         if request.get("op") in ("sync", "ping"):
             packet["state"] = store.snapshot()
             packet["contacts"] = self._contacts()
-        response = self.transport.request(peer, packet, timeout=30)
+        response = self.transport.request(peer, packet, timeout=timeout)
         if response["origin"] != _address_id(peer):
             raise NetworkError("origin-mismatch")
         body = response["body"]
@@ -972,6 +1008,11 @@ class Daemon:
                             origin, request.get("old"), request.get("new"))}
                     except (ValueError, TypeError):
                         return {"ok": False, "code": "invalid-handover"}
+                if op == "succession":
+                    try:
+                        return {"ok": True, "result": self.answer_succession(origin, request)}
+                    except (ValueError, TypeError, KeyError):
+                        return {"ok": False, "code": "invalid-succession"}
                 if op == "team":
                     from . import team_sync
                     try:

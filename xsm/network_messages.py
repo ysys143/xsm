@@ -409,12 +409,97 @@ class Gateway:
                 continue
         return out
 
-    def _reverse(self, original, packet):
+    @staticmethod
+    def _reply_shape(original, packet):
+        """The reply answers this exact request and goes back to who sent it."""
         return bool(original and original["fingerprint"] == packet["reply_binding"]["fingerprint"]
                     and original["id"] == packet["reply_to"]
-                    and network_identity.endpoint(original["packet"]["sender"]) == network_identity.endpoint(packet["receiver"])
+                    and network_identity.endpoint(original["packet"]["sender"]) == network_identity.endpoint(packet["receiver"]))
+
+    def addressed(self, origin, endpoint):
+        """Whether `origin` ever sent a message to this endpoint (to its address, wherever the
+        gate routed it): it may then be told where the endpoint's place went."""
+        key = json.dumps(network_identity.endpoint(endpoint), sort_keys=True)
+        folder = self.root / "inbound"
+        for name in os.listdir(folder) if folder.is_dir() else []:
+            if not name.endswith(".json"):
+                continue
+            try:
+                record = self._load("inbound", name[:-5])
+                if record and record["origin"] == origin \
+                        and json.dumps(network_identity.endpoint(record["packet"]["receiver"]), sort_keys=True) == key:
+                    return True
+            except (GatewayError, OSError, ValueError, KeyError, TypeError):
+                continue
+        return False
+
+    def _reverse(self, original, packet):
+        return bool(self._reply_shape(original, packet)
                     and _answered_by(network_identity.endpoint(original["packet"]["receiver"]),
                                      network_identity.endpoint(packet["sender"])))
+
+    def _asked_machine_reply(self, original, packet, origin):
+        """A reply from another conversation on the machine the request went to
+        (a successor whose handover that machine could not be asked about)."""
+        if not self._reply_shape(original, packet):
+            return False
+        asked = network_identity.endpoint(original["packet"]["receiver"])
+        answering = network_identity.endpoint(packet["sender"])
+        return asked["machine"] == origin and answering["machine"] == origin and answering != asked
+
+    # --- the succession pull (PROTOCOL 5.15) ------------------------------------------
+    _NEGATIVE = {}          # (gateway, machine, asked, answering) -> (until, "unreachable" | "negative")
+    NEGATIVE_SECONDS = 600
+    succession_pull = None  # the daemon's own query; else the local network service
+
+    def _ask_succession(self, old, new):
+        if self.succession_pull is not None:
+            return self.succession_pull(old, new)
+        from . import network
+        return network.call({"op": "succession", "old": old, "new": new}, timeout=10)
+
+    def _pull_succession(self, origin, packet):
+        """Before the gate lock: a reply whose sender the reverse check does not know as the
+        successor of the one asked is, when it comes from the asked machine, checked once
+        with that machine, which answers from its own handover records. The hops it
+        names are kept as testimony. Returns "unreachable" when the machine could not be
+        asked (the reply is then kept as unconfirmed), else None."""
+        if packet["kind"] != "reply":
+            return None
+        if self.succession_pull is None:
+            from . import network
+            if not network.available():         # no network service here: nobody to ask, nothing to mark
+                return None
+        try:
+            original = self._load("outbound", packet["reply_to"])
+            if not self._asked_machine_reply(original, packet, origin) or self._reverse(original, packet):
+                return None
+            old = network_identity.endpoint(original["packet"]["receiver"])
+            new = network_identity.endpoint(packet["sender"])
+        except (GatewayError, OSError, ValueError, TypeError, KeyError):
+            return None
+        key = (str(self.root), origin, json.dumps(old, sort_keys=True), json.dumps(new, sort_keys=True))
+        now = time.time()
+        cached = self._NEGATIVE.get(key)
+        if cached and cached[0] > now:
+            return "unreachable" if cached[1] == "unreachable" else None
+        from . import handover
+        try:
+            chain = (self._ask_succession(old, new) or {}).get("chain")
+            if not isinstance(chain, list):
+                raise ValueError("chain")
+            handover.receive_chain(origin, chain)
+            outcome = None if self._reverse(original, packet) else "negative"
+        except Exception:                   # the machine is offline, slow or answered nonsense
+            outcome = "unreachable"
+        if outcome is None:
+            self._NEGATIVE.pop(key, None)
+            return None
+        if len(self._NEGATIVE) > 1024:
+            for stale in [k for k, v in self._NEGATIVE.items() if v[0] <= now]:
+                self._NEGATIVE.pop(stale, None)
+        self._NEGATIVE[key] = (now + self.NEGATIVE_SECONDS, outcome)
+        return "unreachable" if outcome == "unreachable" else None
 
     def _index_reply(self, direction, original, message_id):
         if message_id not in original["reply_ids"]:
@@ -723,14 +808,15 @@ class Gateway:
         # Even an ACKed duplicate must present authentic, complete wire bytes.
         self._files(packet)
         from . import registry
+        unconfirmed = self._pull_succession(origin, packet) == "unreachable"
         with self._locked():
             selected = self._receiving(packet['receiver'])
             if selected is None:
                 raise GatewayError('local-target-unverified')
             with registry.lock_records([selected]):
-                return self._receive_locked(origin, packet, selected)
+                return self._receive_locked(origin, packet, selected, unconfirmed)
 
-    def _receive_locked(self, origin, packet, selected):
+    def _receive_locked(self, origin, packet, selected, unconfirmed=False):
         local, allowed = self._checked_target(origin, packet)
         if _owner(local) != _owner(selected):
             raise GatewayError('local-target-changed-during-permission')
@@ -738,6 +824,12 @@ class Gateway:
         reverse = packet["kind"] == "reply" and self._reverse(original, packet) \
             and (_owner(original["local"]) == _owner(local)
                  or _handed_to(original["local"], local))
+        if packet["kind"] == "reply" and not reverse and unconfirmed \
+                and self._asked_machine_reply(original, packet, origin) \
+                and (_owner(original["local"]) == _owner(local) or _handed_to(original["local"], local)):
+            reverse = True          # kept; the question record takes it, marked unconfirmed
+            from . import questions
+            questions.admit_unconfirmed(original["id"], packet["id"], network_identity.endpoint(packet["sender"]))
         if not allowed and not reverse:
             raise GatewayError("local-permission-denied")
         if packet["kind"] == "reply" and not reverse:
