@@ -119,7 +119,8 @@ CODEX_HOME=<대상 홈> codex queue --thread <thread-uuid> --message <봉투 전
 | `teams/<팀>/BOARD.md.nodes/seen/<runtime>-<session>.json` | 보드 알림 위치: `{read, notified, decisions_read, decisions_notified, muted}`(노드·결재 ID 목록) |
 | `teams/<팀>/decisions/<id>.json` | 결재 기록 `{id, t, team, question, answer, options, decided_by, via, asked_by, item, from_machine?}`. `id`는 앞 9개 필드의 정렬 JSON SHA-256 앞 12자, `O_EXCL`로 한 번만 쓴다(§5.14) |
 | `remote-handovers/<endpoint-hash>.json` | 다른 머신의 인수인계 증언 `{t, origin, old, new}`(끝점은 machine·runtime·home_id·session_id). 보낸 머신이 두 끝점 모두의 머신일 때만 쓰고, 같은 옛 끝점에 다른 후임이 오면 바꾸지 않는다(§5.15) |
-| `handovers/<endpoint-hash>.json` | 인수인계 `{t, from, from_identity, to, to_identity, approval, teams, items, questions, groups, messages, letter, shown}`. 이름은 옛 세션 native 신원의 해시다(§5.15) |
+| `handovers/<endpoint-hash>.json` | 인수인계 `{id, state, t, from, from_identity, to, to_identity, approval, summary, places, steps, teams, items, questions, groups, messages, skipped, letter, shown}`. `state`는 `moving`(시작했고 끝나지 않음)과 `done`이고, 없으면(0.6.1) `done`이다. `places`는 시작할 때 한 번 계산한 팀 이름 목록이고 `steps`는 끝낸 단계별 결과(단계 표지)다. `teams`부터 `letter`는 끝날 때 채운다. 이름은 옛 세션 native 신원의 해시다(§5.15) |
+| `handovers/.lock` | 이 머신의 인수인계 잠금(`flock`). 한 번에 하나만 실행한다(§5.15) |
 | `directory-publications/<endpoint-hash>.json`, `collaborations/<pair-id>.json` | 명시 공개 상태와 선택된 두 native 대화의 협업 범위를 분리. 후보 공개·검색만으로 통신 권한이 생기지 않음 |
 | `human-decisions/<key>.json`, `native-answers/<key>.json`, `attention/<key>.json` | 사람 질문의 표시/답/적용/취소와 native 답 결속, 알림 결과. OS 알림 성공을 사람 열람으로 세지 않음 |
 | `owned-requests/<owner-hash>.json`, `owned-runs/<worker-id>/` | owned worker의 요청/context/slot·native 실행/저장 결과/회신 전이. 일반 세션을 headless worker로 전환하지 않음 |
@@ -530,7 +531,15 @@ MCP 네이티브 복구는 상태 조회의 `native_question`(결정별 표식 �
 
 ### 5.15 인수인계
 
-`handover <후임>`(MCP `xsm_handover`)은 사용자 승인 뒤 다음 순서로 옮긴다: 보드의 `owner/<옛 이름>[/…]` 항목(머리가 하나인 것만)을 `owner/<새 이름>…`으로 쓰고 옛 항목과 `handover/<옛 이름>` 항목에 기록 → 팀마다 구성원과 팀장 자리 교체(`log`에 `handover`) → 최종 답이 없는 질문과 질문 묶음의 발신자 교체(`handed_over_from`) → ACK되지 않은 `handoffs` 기록을 `acknowledged` + `moved_to`로 닫고 원문을 문서에 싣기(legacy inbox 사본도) → `handovers/` 기록 → 원격 구성원 머신에 팀 기록 재전송. 후임은 이 머신의 실행 중인 등록 세션이어야 하고, 옛 세션과 후임 모두 이미 인수인계한 적이 없어야 한다.
+`handover <후임>`(MCP `xsm_handover`)은 사용자 승인 뒤 다음 순서로 옮긴다.
+
+1. 이 머신의 인수인계 잠금(`handovers/.lock`, `flock`)을 대기식으로 잡는다. 30초 안에 잡지 못하면 "다른 인수인계가 실행 중이다, 다시 시도하라"로 끝난다. 잠금을 잡은 뒤 다시 판정하므로 두 요청의 결과는 순서와 무관하다.
+2. 판정: 옛 세션이 이미 인수인계 기록(`moving`이든 `done`이든)을 가졌으면 이중 인수인계다. 단 같은 후임으로 다시 실행한 `moving` 기록은 재개다. 후임이 옛 세션의 후임 사슬 끝이면 순환이고, 후임이 이미 다른 세션에 넘겼어도 거부한다. 거부 문구는 가야 할 세션과 다음 행동을 담는다(예: "A는 이미 B에게 넘어갔다. B를 넘기려면 B에서 `xsm handover <세션>`을 실행하라"). 사슬(A→B와 B→C)은 거부하지 않는다. 후임은 이 머신의 실행 중인 등록 세션이어야 한다.
+3. `_begin`: `handovers/<옛 세션>.json`을 `state: "moving"`으로 먼저 쓴다. 요약, 승인, 팀 목록(`places`, 한 번만 계산, 두 번 연속 같을 때까지 다시 본다), 단계 표지(`steps`)를 담는다. 이 순간부터 옛 주소는 후임으로 이어진다(`follow`).
+4. 단계를 정해진 순서로 한 번씩 실행하고, 끝날 때마다 결과를 `steps`에 표지로 쓴다: `boards`(팀마다 `handover/<옛 이름>` 항목을 먼저 쓰고, `owner/<옛 이름>[/…]` 항목(머리가 하나인 것만)을 `owner/<새 이름>…`으로 쓴 뒤 옛 항목을 "handed over to …"로 닫는다. 이미 닫힌 항목은 다시 복사하지 않는다) → `teams`(팀마다 잠금 안에서 옛 세션이 아직 구성원인지 다시 보고 구성원과 팀장 자리를 교체한다. `log`에 `handover`. 그 사이 나간 팀은 건너뛰고 결과와 문서에 적는다) → `questions`와 `groups`(최종 답이 없는 질문과 질문 묶음의 발신자 교체, `handed_over_from`) → `unread`(ACK되지 않은 `handoffs` 기록을 `acknowledged` + `moved_to`로 닫고 원문을 문서에 싣기, legacy inbox 사본도).
+5. `_finish`: 문서(`letter`)를 만들고 `state: "done"`으로 바꾼다. 그다음 원격 구성원 머신에 팀 기록을 다시 보낸다(잠금 밖).
+
+도중에 예외가 나거나 프로세스가 죽으면 기록이 `moving`으로 남는다. 같은 후임으로 `handover`를 다시 실행하면 끝난 단계는 건너뛰고 이어서 끝낸다. 다른 후임으로 새 요청을 하면 먼저 원래 후임으로 남은 단계를 끝낸 다음 새 요청을 이중 인수인계로 판정한다. `xsm doctor`는 `moving` 기록을 "handover" 줄로 알리고 끝내는 명령을 보여 준다. 문서(`received`, `notice`, `handover show`)와 결과 영수증은 `done` 기록만 보고, `follow`·후임 판정·판정·`load`는 `moving`과 `done`을 모두 본다. `state`가 없는 0.6.1 기록은 `done`이다. `moving`이나 `done` 기록이 있는 세션을 `team add`하면 그 후임이 추가된다.
 
 옛 주소의 해석: 로컬 `send`와 SSH 원격 수신은 해석한 대상(또는 이름이 멈춘 세션만 가리킬 때 그 후보들)을 인수인계 기록으로 따라간다(8단계까지). P2P 수신 게이트는 받는 끝점이 정확히 해석되면 그 기록을, 해석되지 않으면 끝점의 runtime·home_id·session_id와 맞는 인수인계 기록의 후임을 쓴다. 회신의 역방향 검사는 원래 보낸 대화이거나 그 후임이면 통과한다(회신을 준비하는 쪽의 소유 검사도 같다). 질문 기록은 답한 쪽이 원래 받은 대화이거나 그 후임이면 답을 받는다. 다른 머신에서 물은 질문은 그 머신의 증언으로 판단한다: 인수인계한 머신의 서비스가 로컬 요청 `handover-publish`를 받아 팀의 원격 구성원 머신과 옛 대화에 메시지를 보낸 머신(게이트웨이의 inbound 기록)에 상대 요청 `handover`로 `{old, new}` 끝점을 보내고, 받는 머신은 `origin == old.machine == new.machine`일 때만 `remote-handovers/`에 쓴다. 끝점 후임 판정은 이 증언을 8단계까지 따라가고, 이 머신의 인수인계 기록도 본다. 인수인계 문서는 후임의 다음 `UserPromptSubmit`에 한 번 붙는다.
 
