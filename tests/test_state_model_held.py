@@ -187,10 +187,6 @@ class HeldDeliverIsFinalAcrossHandover(_HandoverBase):
 # ---------------------------------------------------------------------------------------------
 
 class HeldFollowsOwner(_MigrationBase):
-    # RED until P1 (SM-F12): receive.hold binds the entry to the `me` the reader started with
-    # (A), though the whole migration committed while A's check() ran; B's agent is refused
-    # "it was held for another session".
-    @unittest.expectedFailure
     def test_SM_F12_a_gate_hold_right_after_migration_is_deliverable_by_b(self):
         from xsm import migration, receive
         self.dm('HELD-ACROSS-MOVE')

@@ -230,10 +230,24 @@ def add_rule(me: dict, team: dict, target: dict) -> str:
     return "lead" if project and is_lead(team, me) else "user"
 
 
+def _successor_of(target: dict) -> dict:
+    try:
+        from . import handover
+        if handover.load(target):
+            nxt, note = handover.follow(target)
+            if note:
+                return nxt
+    except (ValueError, TypeError, KeyError, OSError):
+        pass
+    return target
+
+
 def add(me: dict, name: str, target: dict, approval: str) -> dict:
     """Apply an add the caller has cleared with add_rule (`approval` is "lead",
-    or the user's verdict text)."""
-    member = member_of(target)
+    or the user's verdict text). A session that has handed its place over (a
+    handover begun or done) is not added: its successor is, as the old
+    session's address leads to it (D9)."""
+    member = member_of(_successor_of(target))
     with _locked(check_name(name)) as path:
         team = paths.read_json(path)
         if not team:

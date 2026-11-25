@@ -282,10 +282,26 @@ def allow_with_context(runtime: str, context: str) -> dict:
                                    "additionalContext": context}}
 
 
+def _current_owner(me: dict | None) -> dict | None:
+    """`me`, or the session that took its place by a committed migration."""
+    if not me or not me.get("session_id"):
+        return me
+    try:
+        from . import migration
+        owner = migration.current_owner(me)
+    except Exception:       # fail open: a hold never fails for want of this
+        return me
+    return owner if owner and owner.get("ref") else me
+
+
 def hold(runtime: str, reason: str, data: dict, me: dict | None, parsed) -> str | None:
     """Keep the body before refusing it. A Codex hook block consumes the queue
     item and leaves no trace in the transcript (S6), so if we do not store it
-    the message is simply gone. If storing fails we do not block at all."""
+    the message is simply gone. If storing fails we do not block at all.
+
+    A hold made while the session was being migrated belongs to its current
+    owner: the gate may have started before the move committed (SM-F12)."""
+    me = _current_owner(me)
     name = "%d" % int(time.time() * 1000)
     try:
         paths.write_json(paths.path(paths.HELD, "%s.json" % name), {

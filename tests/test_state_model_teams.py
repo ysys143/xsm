@@ -1,6 +1,6 @@
 """State-model fixes, P0 RED tests for the board and team criteria (docs/plan/state-model-fixes/spec.md).
 
-SM-F6  team places and owner/A board items move together while a handover runs  (RED until P1)
+SM-F6  team places and owner/A board items move together while a handover runs  (fixed in P1)
 SM-F7  a write to owner/A between copy and close is carried; two-head items are named  (RED until P5)
 SM-F8  two machines that change the same team at the same generation end with one record  (RED until P6)
 
@@ -63,9 +63,6 @@ class PlacesAndItems(_Base):
         left = [t['name'] for t in teams.all_teams() if teams.is_member(t, self.lead)]
         self.assertEqual(left, [], 'A is still a member of %s after the handover finished' % left)
 
-    # RED until P1 (SM-F6). Today: A is removed from core after its items were moved; B never joins core
-    # (teams are listed twice) but owner/next exists on core's board, and the record lists no team.
-    @unittest.expectedFailure
     def test_SM_F6_A_removed_from_a_team_after_its_items_moved(self):
         from xsm import board, teams
         board.set_item(self.lead, 'core', 'owner/lead', 'the release plan')
@@ -85,9 +82,6 @@ class PlacesAndItems(_Base):
         moved_teams = {t for t, items in rec['items'].items() if items}
         self.assertLessEqual(moved_teams, {t['team'] for t in rec['teams']})    # the result does not report items for a team it lists no place for
 
-    # RED until P1 (SM-F6). Today: A is added to ops between the two team lists; B takes A's place in ops
-    # but ops' board was never moved (no owner/next there, A's owner/lead item stays).
-    @unittest.expectedFailure
     def test_SM_F6_A_added_to_a_second_team_between_the_two_lists(self):
         from xsm import board, teams
         board.set_item(self.lead, 'core', 'owner/lead', 'the release plan')
@@ -106,9 +100,6 @@ class PlacesAndItems(_Base):
         self._assert_move_together('added between the lists', ['core', 'ops'])
         self._assert_a_has_no_place_left()
 
-    # RED until P1 (SM-F6, model rule NoPlaceLeftBehind). Today: A is added to ops after the second list
-    # and keeps its place there; B never gets it. The board and the places agree, so only A's leftover place fails.
-    @unittest.expectedFailure
     def test_SM_F6_A_added_to_a_second_team_after_the_second_list(self):
         from xsm import teams
         teams.create(self.bee, 'ops')
@@ -124,9 +115,6 @@ class PlacesAndItems(_Base):
         self.assertTrue(fired, 'the injection point was never reached')
         self._assert_a_has_no_place_left()
 
-    # RED until P1 (SM-F6). Today: A leaves ops after core was finished; the board step for ops raises
-    # (A is no longer a member), core's items stay moved and no handover record is written: a half-moved state.
-    @unittest.expectedFailure
     def test_SM_F6_A_leaves_a_later_team_and_the_handover_does_not_abort(self):
         from xsm import board, handover, teams
         teams.create(self.lead, 'ops')                                          # A in core and ops

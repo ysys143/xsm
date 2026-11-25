@@ -20,7 +20,7 @@ def execute(me, arguments, *, resolved_target=None, authorize=None):
         if not found.ok:
             raise handover.HandoverError(found.reason)
         resolved_target = found.record
-    handover._check(me, resolved_target)
+    handover._check(me, resolved_target, resume=True)
     source = authorize(resolved_target) if authorize else None
     if not isinstance(source, str) or not source.strip():
         raise DecisionRefused('handover requires the actual user approval source; nothing moved')
@@ -29,6 +29,6 @@ def execute(me, arguments, *, resolved_target=None, authorize=None):
         current = resolve.resolve(identity.address(resolved_target), caller=me)
     if not current.ok:
         raise handover.HandoverError(current.reason)
-    handover._check(me, current.record)
+    handover._check(me, current.record, resume=True)
     record = handover.hand_over(me, current.record, summary, source)
     return {'action': 'hand_over', 'record': record}

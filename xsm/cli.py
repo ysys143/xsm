@@ -2085,6 +2085,7 @@ def cmd_doctor(args) -> int:
     report = install.doctor()
     report["policy"] = policy.report()
     report["policy_health"] = config.policy_health()
+    report["unfinished_handovers"] = _unfinished_handovers()
     try:
         report["setup"] = setup_flow.doctor_report(report)
     except (OSError, ValueError) as err:
@@ -2127,6 +2128,8 @@ def cmd_doctor(args) -> int:
           % (report["decisions_seen"], report["hook_errors_recent"]))
     print("held       %d message(s)" % report["held"])
     print("native     %s" % _native_note(report))
+    for row in report.get("unfinished_handovers") or []:
+        print("handover   %s" % row["note"])
     for pid, folder in report.get("orphaned_servers") or []:
         print("orphaned   %s" % _orphan_note(pid, folder))
     for plan in report["installs"]:
@@ -2370,6 +2373,26 @@ def _native_note(report: dict) -> str:
             + off_machine)
 
 
+def _unfinished_handovers() -> list:
+    """Handovers a crash left `moving`: what is done, and the command that
+    finishes them (the summary the record kept is used, so any text will do)."""
+    from . import handover
+    try:
+        rows = handover.unfinished()
+    except (OSError, ValueError, TypeError):
+        return []
+    out = []
+    for rec in rows:
+        done = [s for s in handover.STEPS if s in (rec.get("steps") or {})]
+        left = [s for s in handover.STEPS if s not in done]
+        out.append({"from": rec.get("from"), "to": rec.get("to"), "done": done, "left": left,
+                    "note": "%s -> %s did not finish (left: %s); finish it from the old session with "
+                            "`xsm handover ref:%s --summary \"resume\"` (it keeps the summary it began with)"
+                            % (handover.label(rec.get("from") or {}), handover.label(rec.get("to") or {}),
+                               ", ".join(left) or "the letter", (rec.get("to") or {}).get("ref"))})
+    return out
+
+
 def _doctor_rows(report: dict) -> list:
     rows = [("state", _home_tilde(report["xsm_home"])),
             ("python", report["interpreter"] + ("" if report["interpreter_ok"] else " **TOO OLD**")),
@@ -2386,6 +2409,8 @@ def _doctor_rows(report: dict) -> list:
               % (report["decisions_seen"], report["hook_errors_recent"])),
              ("held", "%d message(s)" % report["held"]),
              ("native", _native_note(report))]
+    for row in report.get("unfinished_handovers") or []:
+        rows.append(("handover", row["note"]))
     if report.get("cli"):
         rows.insert(0, ("cli", install.cli_text(report["cli"])))
     for line in _runtime_lines(report.get("runtime") or {}):

@@ -214,10 +214,6 @@ class StateModelHandover(test_handover.HandoverTest):
 
     # ================= SM-F2b: an answer arriving while the handover runs goes to B =================
 
-    # RED until P1 (SM-F2b)
-    # Today: wrong value. follow(A) still leads to A after the questions step (the record is written last),
-    # so P's reply goes to A, A reads it, and B's question never records it.
-    @unittest.expectedFailure
     def test_SM_F2b_reply_arriving_after_the_questions_step_goes_to_B_and_is_recorded(self):
         from xsm import handover
         self._question('q1', self.lead, self.bee)
@@ -294,10 +290,6 @@ class StateModelHandover(test_handover.HandoverTest):
         self.assertEqual(dest['session_id'], holder['session_id'], 'the reply went to a session that is not the asker')
         return self.question_status(holder)
 
-    # RED until P1 (SM-F5)
-    # Today: wrong value. Both calls succeed (no lock): the seat, the question and the record end up split
-    # (scn_a of concurrent/replay_test.py).
-    @unittest.expectedFailure
     def test_SM_F5_A_to_B_with_A_to_C_leaves_one_successor_and_refuses_the_other(self):
         from xsm import handover
         self._question('q1', self.lead, self.bee)
@@ -311,10 +303,6 @@ class StateModelHandover(test_handover.HandoverTest):
         self.assertEqual(handover.load(self.lead)['to']['session_id'], 'next')
         self.assertEqual(self._late_answer()['status'], 'final')
 
-    # RED until P1 (SM-F5)
-    # Today: wrong value. Both calls succeed and A -> B, B -> A make a cycle: follow(A) leads back to A
-    # (scn_b of concurrent/replay_test.py).
-    @unittest.expectedFailure
     def test_SM_F5_A_to_B_with_B_to_A_refuses_the_cycle(self):
         from xsm import handover
         self._question('q1', self.lead, self.bee)
@@ -328,10 +316,6 @@ class StateModelHandover(test_handover.HandoverTest):
         self.assertEqual(self.team(), (['next'], 'next'))
         self.assertEqual(self.question_sender(), 'next')
 
-    # RED until P1 (SM-F5)
-    # Today: wrong value. Both calls succeed but B -> C ran before A -> B moved the seat: B holds the seat
-    # while its record says C, and follow(A) stops at B (scn_c of concurrent/replay_test.py).
-    @unittest.expectedFailure
     def test_SM_F5_A_to_B_with_B_to_C_is_a_chain_and_the_seat_follows_it(self):
         from xsm import handover
         self._question('q1', self.lead, self.bee)
@@ -345,10 +329,6 @@ class StateModelHandover(test_handover.HandoverTest):
         self.assertEqual(handover.follow(self.lead)[0]['session_id'], 'out')
         self.assertEqual(self._late_answer()['status'], 'final')
 
-    # RED until P1 (SM-F5)
-    # Today: wrong value. The refusal says only "this session has already handed over": it does not name
-    # the successor or the next action.
-    @unittest.expectedFailure
     def test_SM_F5_a_refusal_names_the_next_action(self):
         from xsm import handover
         self._hand_over()
@@ -380,10 +360,6 @@ class StateModelHandover(test_handover.HandoverTest):
             with self.assertRaises(_Crash):
                 self._hand_over()
 
-    # RED until P1 (SM-F5r)
-    # Today: wrong value. No record exists until the very end, so after the crash load(A) is None
-    # (the planned state field and `moving` record are the missing part).
-    @unittest.expectedFailure
     def test_SM_F5r_interrupted_handover_is_moving_then_the_same_target_finishes_it(self):
         from xsm import handover
         self._question('q1', self.lead, self.bee)
@@ -400,10 +376,6 @@ class StateModelHandover(test_handover.HandoverTest):
         self.assertEqual(self.question_sender(), 'next')
         self.assertIn('[xsm handover]', handover.notice(self.new) or '')           # the letter, once done
 
-    # RED until P1 (SM-F5r)
-    # Today: wrong value. The re-run copies owner/lead (already rewritten to "handed over to next ...")
-    # over owner/next, so the successor's board item loses the original content.
-    @unittest.expectedFailure
     def test_SM_F5r_resume_keeps_the_successors_board_item_original(self):
         from xsm import board
         board.set_item(self.lead, 'core', 'owner/lead', 'the release plan')

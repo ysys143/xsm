@@ -30,11 +30,15 @@ import hashlib
 import json
 import os
 import time
+import uuid
+from contextlib import contextmanager
 
 from . import paths
 
 DIRECTORY = "handovers"
 CHAIN = 8                 # successors followed at most (A -> B -> C ...)
+LOCK_SECONDS = 30         # how long a handover waits for another one on this machine
+STEPS = ("boards", "teams", "questions", "groups", "unread")    # in the order they run
 
 
 class HandoverError(ValueError):
@@ -56,6 +60,11 @@ def load(record: dict) -> dict | None:
         return paths.read_json(_file(_identity(record)))
     except (ValueError, TypeError):
         return None
+
+
+def is_done(record: dict | None) -> bool:
+    """A record without `state` was written by 0.6.1, which wrote it last: done."""
+    return bool(record) and record.get("state", "done") == "done"
 
 
 def _handle(record: dict) -> dict:
@@ -256,8 +265,42 @@ def _publish(record: dict, teams_moved: list) -> list:
 
 
 # --- the handover itself ------------------------------------------------------------------
+#
+# Order (PROTOCOL 5.15): one handover at a time on this machine (a blocking
+# file lock), `_check`, then `_begin` writes handovers/<A>.json with
+# state="moving": from then on the old address leads to the successor. Each
+# step runs once (`_step` marks it done in that record), so a handover that
+# died half way is finished by running it again to the same target. `_finish`
+# writes the letter and sets state="done"; only then do the readers of letters
+# and receipts see it.
 
-def _check(me: dict, target: dict) -> None:
+@contextmanager
+def _handover_lock(timeout: float = LOCK_SECONDS):
+    """The machine-wide handover lock. It waits; the caller judges again
+    (`_check`) once it holds it, so two requests give the same result in
+    either order."""
+    import fcntl
+    os.makedirs(paths.path(DIRECTORY), mode=0o700, exist_ok=True)
+    fd = os.open(paths.path(DIRECTORY, ".lock"), os.O_CREAT | os.O_RDWR, 0o600)
+    try:
+        deadline = time.monotonic() + timeout
+        while True:
+            try:
+                fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
+                break
+            except OSError:
+                if time.monotonic() >= deadline:
+                    raise HandoverError("another handover is running on this machine and did not finish in %d "
+                                        "seconds; try again" % int(timeout))
+                time.sleep(0.05)
+        yield
+    finally:
+        os.close(fd)
+
+
+def _check(me: dict, target: dict, resume: bool = False) -> None:
+    """Refuse what cannot be done. `resume`: an unfinished (moving) handover of
+    `me` to this same `target` is not a refusal, it is finished."""
     from . import migration
     migration.assert_active(me)
     migration.assert_active(target)
@@ -271,16 +314,31 @@ def _check(me: dict, target: dict) -> None:
         raise HandoverError("%s is not running" % label(_handle(target)))
     if _identity(target) == _identity(me):
         raise HandoverError("a session cannot hand over to itself")
-    if load(target):
-        raise HandoverError("%s has itself handed over to another session" % label(_handle(target)))
-    if load(me):
-        raise HandoverError("this session has already handed over")
+    mine = load(me)
+    if mine:
+        if resume and mine.get("state") == "moving" and mine.get("to_identity") == _identity(target):
+            return
+        raise HandoverError(
+            "%s already handed its place over to %s; to move on, hand %s over from there: run "
+            "`xsm handover <session>` in %s"
+            % (label(_handle(me)), label(mine["to"]), label(mine["to"]), label(mine["to"])))
+    theirs = load(target)
+    if theirs:
+        if successor_identity(_identity(target)) == _identity(me):
+            raise HandoverError(
+                "%s already handed its place over to %s, so handing %s over to it would make a loop; "
+                "run `xsm handover <session>` with a session that has not handed over"
+                % (label(_handle(target)), label(theirs["to"]), label(_handle(me))))
+        raise HandoverError(
+            "%s has itself handed over to %s; hand over to %s instead: run `xsm handover %s`"
+            % (label(_handle(target)), label(theirs["to"]), label(theirs["to"]),
+               theirs["to"].get("ref") or "<session>"))
 
 
 def _word(record: dict) -> str:
     """A session's name as a board item name may hold it."""
     import re
-    word = re.sub(r"[^A-Za-z0-9\u3131-\uD79D ._:-]", "-",
+    word = re.sub(r"[^A-Za-z0-9ㄱ-힝 ._:-]", "-",
                   record.get("name") or record.get("ref") or "session").strip()
     return word[:40] or "session"
 
@@ -297,29 +355,59 @@ def _owned(item: str, name: str | None) -> str | None:
     return None
 
 
-def _boards(me: dict, target: dict, team: dict) -> list:
-    """Move the items this session owns on `team`'s board and say so there.
-    Returns the items moved. Runs while `me` is still a member."""
-    from . import board
+def _closed(new: str, new_item: str) -> str:
+    return "handed over to %s (now %s)" % (new, new_item)
+
+
+def _boards(me: dict, target: dict, places: list) -> dict:
+    """Move the items this session owns on the boards of `places` and say so
+    there. A team it has left since is skipped and named. Runs while `me` is
+    still a member; an item already closed by an earlier run counts as moved
+    and is not copied again."""
+    from . import board, teams
+    out = {"items": {}, "skipped": []}
+    for name in places:
+        team = teams.load(name)
+        if not team or not teams.is_member(team, me):
+            out["skipped"].append(name)
+            continue
+        moved = out["items"].setdefault(name, [])
+        try:
+            _board_team(me, target, team, moved)
+        except board.BoardError:
+            out["skipped"].append(name)          # it left while its board was moving
+    return out
+
+
+def _board_team(me: dict, target: dict, team: dict, moved: list) -> None:
+    from . import board, teams
+    name = team["name"]
     old, new = _word(me), _word(target)
-    moved = []
-    board.show(me, team["name"])         # what it moves, it has read
-    for item, heads in board.current(team["name"]).items():
-        rest = _owned(item, old)
-        if rest is None or len(heads) != 1:
-            continue                     # an item with two versions at once is settled first
-        new_item = "owner/" + new + rest
-        board.set_item(me, team["name"], new_item, heads[0]["body"].rstrip()
-                       + "\n\n(taken over from %s)" % old)
-        board.set_item(me, team["name"], item, "handed over to %s (now %s)" % (new, new_item))
+    board.show(me, name)         # what it moves, it has read
+    state = board.current(name)
+    mine = [(item, heads[0]) for item, heads in state.items()
+            if _owned(item, old) is not None and len(heads) == 1]    # two versions at once: settled first
+    note = ("%s handed its place in this team over to %s on %s. %s%s DMs to %s now reach %s."
+            % (old, new, time.strftime("%Y-%m-%d %H:%M"),
+               "Items moved: %s. " % ", ".join(item for item, _ in mine) if mine else "",
+               "The lead's seat moved too. " if team.get("lead") and _lead(team, me) else "",
+               old, new))
+    # The announcement comes first: if the session leaves the team now, nothing
+    # of its items has moved yet and nothing is left half done on the board.
+    said = state.get("handover/" + old) or []
+    if not any(h["body"].startswith("%s handed its place in this team over to %s on " % (old, new))
+               for h in said):
+        board.set_item(me, name, "handover/" + old, note)
+    for item, head in mine:
+        new_item = "owner/" + new + _owned(item, old)
+        if head["body"].strip() == _closed(new, new_item):
+            moved.append(item)                   # a run that died after closing it
+            continue
+        if not teams.is_member(teams.load(name) or {}, me):
+            raise board.BoardError("%s left team %s" % (old, name))
+        board.set_item(me, name, new_item, head["body"].rstrip() + "\n\n(taken over from %s)" % old)
+        board.set_item(me, name, item, _closed(new, new_item))
         moved.append(item)
-    board.set_item(me, team["name"], "handover/" + old,
-                   "%s handed its place in this team over to %s on %s. %s%s DMs to %s now reach %s."
-                   % (old, new, time.strftime("%Y-%m-%d %H:%M"),
-                      "Items moved: %s. " % ", ".join(moved) if moved else "",
-                      "The lead's seat moved too. " if team.get("lead") and _lead(team, me) else "",
-                      old, new))
-    return moved
 
 
 def _lead(team: dict, me: dict) -> bool:
@@ -327,13 +415,32 @@ def _lead(team: dict, me: dict) -> bool:
     return teams.is_lead(team, me)
 
 
-def _teams(me: dict, target: dict, approval: str) -> list:
+def _places(me: dict) -> list:
+    """The names of the teams `me` is in, listed until two lists agree: a team
+    it joins while the list is being made is not missed."""
     from . import teams
-    out = []
+    last = None
+    for _ in range(3):
+        now = sorted(t["name"] for t in teams.teams_of(me))
+        if now == last:
+            break
+        last = now
+    return now
+
+
+def _teams(me: dict, target: dict, places: list, approval: str) -> dict:
+    """Replace `me` by `target` in each of `places`, looking again at the
+    membership under that team's lock: a team `me` has left since is skipped
+    and named. A team it joined after the list is moved too."""
+    from . import teams
     member = teams.member_of(target)
-    for team in teams.teams_of(me):
-        with teams._locked(team["name"]) as path:
+    out = {"moved": [], "left": []}
+
+    def move(name: str) -> dict | None:
+        with teams._locked(name) as path:
             current = paths.read_json(path)
+            if not current or not teams.is_member(current, me):
+                return None
             was_lead = teams.is_lead(current, me)
             current["members"] = [m for m in current["members"] if not teams.matches(m, me)]
             if not any(teams._same(m, member) for m in current["members"]):
@@ -342,7 +449,19 @@ def _teams(me: dict, target: dict, approval: str) -> list:
                 current["lead"] = member
             teams._log(current, "handover", me, member, approval)
             paths.write_json(path, current)
-        out.append({"team": current["name"], "lead": was_lead, "record": current})
+        return {"team": name, "lead": was_lead}
+
+    for name in places:
+        moved = move(name)
+        if moved:
+            out["moved"].append(moved)
+        else:
+            out["left"].append(name)
+    for team in teams.teams_of(me):
+        if team["name"] not in places:
+            moved = move(team["name"])
+            if moved:
+                out["moved"].append(dict(moved, late=True))
     return out
 
 
@@ -396,7 +515,8 @@ def _groups(me: dict, target: dict) -> list:
 
 
 def _unread(me: dict, target: dict) -> list:
-    """The DMs this session has not acknowledged, closed here as moved."""
+    """The DMs this session has not acknowledged, closed here as moved. What
+    the letter needs of each is kept as plain data (the step is stored)."""
     from . import handoff, inbox
     moved = {r["id"]: r for r in handoff.move_out(me, target)}
     for item in inbox.peek(me["session_id"]):          # copies kept before the canonical store
@@ -404,11 +524,16 @@ def _unread(me: dict, target: dict) -> list:
             moved[item["id"]] = {"id": item["id"], "message": {"content": item["content"]},
                                  "stored_at": item.get("t", 0)}
         inbox.drop(me["session_id"], item.get("id"))
-    return sorted(moved.values(), key=lambda r: (r.get("stored_at", 0), r["id"]))
+    rows = []
+    for r in sorted(moved.values(), key=lambda r: (r.get("stored_at", 0), r["id"])):
+        m = r.get("message") or {}
+        rows.append({"id": r["id"], "message": {"content": m.get("content") or m.get("body") or ""},
+                     "stored_at": r.get("stored_at", 0)})
+    return rows
 
 
 def _letter(me: dict, target: dict, summary: str, teams_moved: list, items: dict,
-            asks: list, groups: list, unread: list) -> str:
+            asks: list, groups: list, unread: list, skipped: list | None = None) -> str:
     old = label(_handle(me))
     lines = ["[xsm handover] %s handed its xsm place over to you, at its user's request." % old,
              "", "What is yours now:"]
@@ -417,6 +542,8 @@ def _letter(me: dict, target: dict, summary: str, teams_moved: list, items: dict
                      "; board items " + ", ".join(items.get(t["team"]) or []) if items.get(t["team"]) else ""))
     if not teams_moved:
         lines.append("- no team places (it was in no team)")
+    if skipped:
+        lines.append("- not moved, it had left these teams meanwhile: " + ", ".join(skipped))
     lines.append("- %d pending question%s it asked (late answers come to you; `xsm question-status <id>`): %s"
                  % (len(asks), "" if len(asks) == 1 else "s", ", ".join(asks) or "none"))
     if groups:
@@ -434,44 +561,125 @@ def _letter(me: dict, target: dict, summary: str, teams_moved: list, items: dict
     return "\n".join(lines)
 
 
-def hand_over(me: dict, target: dict, summary: str, approval: str) -> dict:
-    """Move this session's xsm place to `target` (the caller has the user's yes)."""
+def _save(rec: dict) -> None:
+    paths.write_json(_file(rec["from_identity"]), rec)
+
+
+def _begin(me: dict, target: dict, summary: str, approval: str) -> dict:
+    """Write the handover down before anything moves. From here the old address
+    leads to `target` (follow), and the steps below can be run again."""
+    rec = {"id": uuid.uuid4().hex, "state": "moving", "t": time.time(),
+           "from": _handle(me), "from_identity": _identity(me),
+           "to": _handle(target), "to_identity": _identity(target),
+           "approval": approval, "summary": summary, "places": _places(me),
+           "steps": {}, "shown": False}
+    _save(rec)
+    return rec
+
+
+def _step(rec: dict, name: str, fn):
+    """Run one step once: its result is stored in the record as its marker, so
+    a handover run again to the same target skips what is done."""
+    if name in rec["steps"]:
+        return rec["steps"][name]
+    rec["steps"][name] = fn()
+    _save(rec)
+    return rec["steps"][name]
+
+
+def _finish(rec: dict, me: dict, target: dict) -> dict:
+    steps = rec["steps"]
+    rec["teams"] = steps["teams"]["moved"]
+    rec["items"] = {t: list(v) for t, v in steps["boards"]["items"].items()}
+    rec["questions"], rec["groups"] = steps["questions"], steps["groups"]
+    rec["messages"] = [r["id"] for r in steps["unread"]]
+    rec["skipped"] = {"teams": sorted(set(steps["boards"]["skipped"]) | set(steps["teams"]["left"]))}
+    rec["letter"] = _letter(me, target, rec.get("summary") or "", rec["teams"], rec["items"],
+                            rec["questions"], rec["groups"], steps["unread"], rec["skipped"]["teams"])
+    rec["state"] = "done"
+    rec["finished_at"] = time.time()
+    _save(rec)
+    return rec
+
+
+def _run(rec: dict, me: dict, target: dict) -> dict:
+    """The steps, each once. An exception (or a death) in a step leaves the
+    record `moving`; running it again to the same target goes on from there."""
+    _step(rec, "boards", lambda: _boards(me, target, rec["places"]))
+    _step(rec, "teams", lambda: _teams(me, target, rec["places"], rec["approval"]))
+    _step(rec, "questions", lambda: _questions(me, target))
+    _step(rec, "groups", lambda: _groups(me, target))
+    _step(rec, "unread", lambda: _unread(me, target))
+    return _finish(rec, me, target)
+
+
+def _record_of(identity: dict) -> dict | None:
+    from . import registry
+    return registry.by_session(identity["runtime"], identity["session_id"], home=identity["home"])
+
+
+def _announce(rec: dict) -> list:
+    """Tell the other machines (outside the lock: it is network)."""
     from . import team_sync, teams
-    _check(me, target)
-    items = {}
-    for team in teams.teams_of(me):
-        items[team["name"]] = _boards(me, target, team)
-    teams_moved = _teams(me, target, approval)
-    asks = _questions(me, target)
-    groups = _groups(me, target)
-    unread = _unread(me, target)
-    record = {"t": time.time(), "from": _handle(me), "from_identity": _identity(me),
-              "to": _handle(target), "to_identity": _identity(target), "approval": approval,
-              "teams": [{"team": t["team"], "lead": t["lead"]} for t in teams_moved],
-              "items": items, "questions": asks, "groups": groups,
-              "messages": [r["id"] for r in unread]}
-    record["letter"] = _letter(me, target, summary, teams_moved, items, asks, groups, unread)
-    record["shown"] = False
-    paths.write_json(_file(record["from_identity"]), record)
+    notes, moved = [], []
+    for t in rec["teams"]:
+        team = teams.load(t["team"])
+        if team:
+            moved.append({"record": team})
+            notes += team_sync.publish(team)
+    return notes + _publish(rec, moved)
+
+
+def unfinished() -> list:
+    """The handovers that began and did not finish: what a crash leaves."""
+    return [r for r in _records() if r.get("state") == "moving"]
+
+
+def hand_over(me: dict, target: dict, summary: str, approval: str) -> dict:
+    """Move this session's xsm place to `target` (the caller has the user's yes).
+    One at a time on this machine; a `moving` record of this session to the same
+    target is finished, not started again."""
+    finished, refusal = [], None
+    try:
+        with _handover_lock():
+            pending = load(me)
+            if pending and pending.get("state") == "moving" and pending.get("to_identity") != _identity(target):
+                # An earlier handover to another session did not finish: finish it
+                # first, then judge this request (it is a second handover).
+                earlier = _record_of(pending["to_identity"])
+                if earlier is None:
+                    raise HandoverError(
+                        "an earlier handover of %s to %s did not finish and that session is not found; "
+                        "start it again, or hand over to it once it is running"
+                        % (label(_handle(me)), label(pending["to"])))
+                _check(me, earlier, resume=True)
+                finished.append(_run(pending, me, earlier))
+            _check(me, target, resume=True)
+            pending = load(me)
+            rec = pending if pending else _begin(me, target, summary, approval)
+            finished.append(_run(rec, me, target))
+    except HandoverError as exc:
+        refusal = exc
     notes = []
-    for t in teams_moved:
-        notes += team_sync.publish(t["record"])
-    notes += _publish(record, teams_moved)
-    record["notes"] = notes
-    return record
+    for rec in finished:
+        notes += _announce(rec)
+    if refusal:
+        raise refusal
+    finished[-1]["notes"] = notes
+    return finished[-1]
 
 
 # --- the successor reads it ----------------------------------------------------------------
 
 def received(me: dict) -> list:
-    """The handovers made to this session, oldest first."""
+    """The handovers made to this session that are done, oldest first."""
     try:
         mine = _identity(me)
         names = os.listdir(paths.path(DIRECTORY))
     except (OSError, ValueError, TypeError):
         return []
     out = [paths.read_json(paths.path(DIRECTORY, n)) for n in names if n.endswith(".json")]
-    return sorted((r for r in out if r and r.get("to_identity") == mine), key=lambda r: r["t"])
+    return sorted((r for r in out if is_done(r) and r.get("to_identity") == mine), key=lambda r: r["t"])
 
 
 def notice(me: dict | None) -> str | None:
@@ -493,9 +701,11 @@ def notice(me: dict | None) -> str | None:
 def summary_line(rec: dict) -> str:
     teams_part = ", ".join("%s%s" % (t["team"], " (lead)" if t["lead"] else "") for t in rec["teams"]) or "no teams"
     items = sum(len(v) for v in rec["items"].values())
+    left = (rec.get("skipped") or {}).get("teams") or []
     return ("handed over to %s: %s; %d board item%s, %d unread DM%s, %d pending question%s. "
-            "It reads the letter at its next prompt; DMs to this session now reach it."
+            "It reads the letter at its next prompt; DMs to this session now reach it.%s"
             % (label(rec["to"]), teams_part, items, "" if items == 1 else "s",
                len(rec["messages"]), "" if len(rec["messages"]) == 1 else "s",
-               len(rec["questions"]), "" if len(rec["questions"]) == 1 else "s"))
+               len(rec["questions"]), "" if len(rec["questions"]) == 1 else "s",
+               " Not moved, it had left %s meanwhile." % ", ".join(left) if left else ""))
 
