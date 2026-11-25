@@ -42,8 +42,25 @@ from xsm import (config, handover, handoff, identity, network, network_directory
 M1, M2, M3 = "1" * 64, "2" * 64, "3" * 64
 
 
+_NAMES = {"config": "config", "handover": "handover", "handoff": "handoff", "identity": "identity",
+          "network": "network", "network_directory": "network_directory",
+          "network_identity": "network_identity", "messages": "network_messages", "paths": "paths",
+          "questions": "questions", "registry": "registry"}
+
+
+def _fresh_xsm():
+    """Bind this module's xsm names to the modules the code under test uses.
+    TempState (tests/test_xsm.py) drops every xsm module from sys.modules and
+    imports them again, so names bound at import time can point at stale
+    copies whose paths.HOME no longer reaches the real calls."""
+    import importlib
+    for name, module in _NAMES.items():
+        globals()[name] = importlib.import_module("xsm." + module)
+
+
 class RemoteFixture(unittest.TestCase):
     def setUp(self):
+        _fresh_xsm()
         tmp = tempfile.TemporaryDirectory(prefix="xsm-remote-sm-")
         self.addCleanup(tmp.cleanup)
         self.root = Path(os.path.realpath(tmp.name))
