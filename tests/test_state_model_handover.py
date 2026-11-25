@@ -94,10 +94,15 @@ class StateModelHandover(test_handover.HandoverTest):
             code = cli._held_deliver(mock.Mock(id=held_name))
         return code, out.getvalue(), err.getvalue()
 
-    def _call(self, me, target, summary='goal: ship; open: T9'):
-        """One hand_over call. (P3 adds a `plan` argument: adapt here only.)"""
+    def _call(self, me, target, summary='goal: ship; open: T9', plan=None):
+        """One hand_over call. `plan` is the connections to copy (P3); without one it is made inside."""
         from xsm import handover
-        return handover.hand_over(me, target, summary, 'state-model test')
+        return handover.hand_over(me, target, summary, 'state-model test', plan)
+
+    def _no_links(self, me, target):
+        """A plan that copies nothing: the person's approval listed no connection."""
+        from xsm import handover
+        return dict(handover.plan_links(me, target), links=[])
 
     # ---- observations of the real stored state ----
     def team(self):
@@ -449,8 +454,12 @@ class StateModelHandover(test_handover.HandoverTest):
         self.assertIn('[xsm handover]', handover.notice(self.new))
         with self.assertRaises(handover.HandoverError):
             self._call(self.lead, self.out)                         # still counts as handed over
+        # P3 (spec 0): a target that handed over is followed to the end of its chain, not refused.
         with self.assertRaises(handover.HandoverError):
-            self._call(self.out, self.lead)
+            self._call(self.new, self.lead)                         # B back to A is still a loop
+        rec = self._call(self.out, self.lead)
+        self.assertEqual(rec['to']['session_id'], 'next')
+        self.assertTrue(any('handed its place over' in n for n in rec['notes']), rec['notes'])
 
 
     # ================= P2: hand_to, the gate rule and the proofs (written with the fix) =================
@@ -519,7 +528,9 @@ class StateModelHandover(test_handover.HandoverTest):
         from xsm import receive
         self._outside()
         self._send(self.a2, 'MARKED', sender=self.p2)
-        self._call(self.a2, self.far)
+        # P3 copies A's folder to B as a reach, which would give B a scope with P; this test is about
+        # B having none, so it hands over with a plan that copies nothing.
+        self._call(self.a2, self.far, plan=self._no_links(self.a2, self.far))
         out = receive.take_inbox_claims(self.far)
         text = '\n'.join(out['messages'])
         self.assertIn('MARKED', text)

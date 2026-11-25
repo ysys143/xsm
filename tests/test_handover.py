@@ -160,7 +160,12 @@ class HandoverTest(test_xsm.TempState):
         with self.assertRaises(handover.HandoverError):
             self._hand_over()                                   # once
         with self.assertRaises(handover.HandoverError):
-            handover.hand_over(self.bee, self.lead, 's', 'x')    # to one that handed over
+            handover.hand_over(self.new, self.lead, 's', 'x')    # back to the one that handed over to it: a loop
+        # P3 (state-model spec 0): a target that handed over itself is followed to the end of its
+        # chain, not refused; the result says so.
+        rec = handover.hand_over(self.bee, self.lead, 's', 'x')
+        self.assertEqual(rec['to']['session_id'], 'next')
+        self.assertTrue(any('handed its place over' in n for n in rec['notes']), rec['notes'])
 
     def test_it_is_the_users_decision(self):
         from xsm import cli, teams

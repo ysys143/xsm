@@ -21,6 +21,9 @@ FORWARD_SECONDS = 24 * 60 * 60
 REVISION = 1
 
 
+HANDOVER_WAIT = 5      # seconds a transfer waits for a running handover before it asks to be run again
+
+
 class MigrationError(ValueError):
     pass
 
@@ -171,7 +174,13 @@ def prepare(me, source):
     original = found.record
     _compatible(original, me)
     from . import handover
-    if handover.load(original):
+    handed = handover.load(original)
+    if handed:
+        if not handover.is_done(handed):
+            raise MigrationError(
+                'a handover of the source to %s is still running or did not finish; finish it first '
+                '(run `xsm handover ref:%s --summary "resume"` from the source, or `xsm doctor`), then transfer'
+                % (handover.label(handed.get('to') or {}), (handed.get('to') or {}).get('ref')))
         raise MigrationError('the source already handed its place over; select its current owner')
     previous = retirement(original)
     if previous:
@@ -207,6 +216,32 @@ def _locked(plan):
             yield
         finally:
             fcntl.flock(stream, fcntl.LOCK_UN)
+
+
+@contextmanager
+def _no_handover(plan, started):
+    """A transfer of a session starts only when no handover of it is running or
+    unfinished (spec 6): take the handover lock for the moment the source is
+    fenced (the fence is written before it is let go, and a handover that
+    starts later is refused by the fence). A transfer already begun goes on."""
+    if started:
+        yield
+        return
+    from . import handover
+    lock = handover._handover_lock(timeout=HANDOVER_WAIT)
+    try:
+        lock.__enter__()
+    except handover.HandoverError as exc:
+        raise MigrationError('a handover is running on this machine and did not finish in time; '
+                             'transfer again in a moment (%s)' % exc) from exc
+    try:
+        if handover.load(plan['source']):
+            raise MigrationError(
+                'a handover of the source session is running or did not finish; let it finish '
+                '(`xsm doctor` names it), then transfer again')
+        yield
+    finally:
+        lock.__exit__(None, None, None)
 
 
 def _persist(record):
@@ -249,7 +284,7 @@ def execute(plan, *, authorize=None, fault=None, decision=None):
             from . import migration_state
             migration_state.notify(record)
             return record
-        with registry.lock_records([plan['source'], plan['target']]):
+        with _no_handover(plan, bool(record)), registry.lock_records([plan['source'], plan['target']]):
             target = _current(plan['target'])
             if (not target or fingerprint(target) != fingerprint(plan['target'])
                     or target.get('state') != 'live' and not target.get('retired')
