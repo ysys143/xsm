@@ -398,13 +398,12 @@ class SM_F9_RemoteTestimony(RemoteFixture):
 
 
 class SM_F10_UnreadQuestionAtHandover(RemoteFixture):
-    # RED until P2 (SM-F10)
+    # Fixed in P2 (SM-F10)
     # Today: A had not read R's question when it handed over. handoff.move_out closes A's
     # original as moved and B holds no copy, so Gateway.prepare for B raises
     # reply-original-unverified (its _ingress cannot find the original). Target: B prepares,
     # sends, and R records the answer. M2 was told about A -> B (it had written to A), so only
     # the missing original at B is in the way.
-    @unittest.expectedFailure
     def test_SM_F10_successor_can_answer_a_question_the_old_session_never_read(self):
         self.ask_a(read=False)
         rec = self.hand_over("old-a", "succ-b")

@@ -20,6 +20,7 @@ Two rules shape this file.
 """
 from __future__ import annotations
 
+import glob
 import hashlib
 import json
 import os
@@ -517,6 +518,7 @@ REPEAT_WINDOW = 60.0
 # What `xsm inbox` writes as the reason of its receipt; the hook's are empty or
 # say "unchecked".
 VIA_INBOX = "read with xsm inbox"
+SCOPE_HOLD = "out of scope:"      # how _check_sender words a hold for want of a scope
 
 
 def _context(decision: str, reason: str, parsed, runtime: str, **kw) -> str:
@@ -552,8 +554,8 @@ def _file_record(me, parsed, sender=None):
     if not storage_id or envelope.attachment_refs(message.get("attachments")) != refs:
         raise ValueError("no exact target-owned stored copies for these refs")
     sender = sender or message.get("sender")
-    from . import migration
-    original_target = message['target'] if original.get('migration_history') and migration.proves_copy(original, me) else me
+    original_target = message['target'] if (original.get('migration_history') or original.get('handover_history')) \
+        and handoff.proves_ownership(original, me) else me
     identity = envelope.request_identity(parsed.header["id"], sender, original_target, parsed.body,
         kind=parsed.header.get("kind") or "note", reply_to=parsed.header.get("reply-to"),
         outcome=_outcome(parsed), scope=parsed.header.get("scope"),
@@ -646,6 +648,103 @@ def _repeat(runtime: str, me: dict | None, parsed, msg_id: str) -> dict | None:
         parsed, runtime, worker=bool(worker), cwd=(me or {}).get("cwd")) + files_context)
 
 
+def _moved_by_handover(me: dict | None, msg_id: str | None) -> str | None:
+    """The label of the session this session's copy of `msg_id` moved to by a
+    handover, or None (not moved, or moved by a profile migration: that has its own
+    forwarding)."""
+    from . import handoff, handover, registry
+    try:
+        mine = handoff.status(me, msg_id)
+        target = mine.get("moved_to")
+        if not target or not handoff.status(target, msg_id).get("handover_history"):
+            return None
+        rec = registry.by_session(target["runtime"], target["session_id"], home=target["home"])
+        return handover.label(handover._handle(rec)) if rec else str(target.get("session_id"))
+    except (OSError, ValueError, KeyError, TypeError):
+        return None
+
+
+def _carried(parsed, me: dict | None) -> dict | None:
+    """The stored original of this message when it came to `me` by a handover
+    (its hops proved: handoff reads nothing it cannot), else None."""
+    from . import handoff
+    msg_id = parsed.header.get("id")
+    if not msg_id or not me:
+        return None
+    try:
+        original = handoff.status(me, msg_id)
+    except (OSError, ValueError, KeyError, TypeError):
+        return None
+    return original if original.get("handover_history") else None
+
+
+def _carried_notice(me: dict | None, parsed, original: dict | None) -> str:
+    """What the reader of a message that came by handover is told first: the state
+    the old session had left it in (when it had shown it already, as a profile
+    migration says), and, when `me` has no scope with its sender, that it carries
+    none here. Nothing is asked of anyone."""
+    hops = (original or {}).get("handover_history") or []
+    if not hops or not me:
+        return ""
+    hop, text = hops[-1], ""
+    if hop.get("previous_state") in ("claimed", "handoff-recorded"):
+        text += ("[xsm handover %s] Taken over from the session that handed its place over; prior processing "
+                 "state: %s. Delivery and ownership transfer do not prove the work finished. Inspect prior "
+                 "work before repeating it.\n" % (hop["id"], hop["previous_state"]))
+    sender, _ = _sender_record(parsed)
+    if sender is not None and not config.scope_for(me, sender)[0]:
+        text += ("[xsm handover %s] Came with the handover from the session that left: you share no scope with "
+                 "its sender yet. It is delivered because it was meant for that place.\n" % hop["id"])
+    return text
+
+
+def _check_carried(sender: dict, me: dict, cfg: dict, parsed, original: dict) -> tuple:
+    """(decision, reason) for a DM that came to `me` by handover (spec 3.3). The
+    sender's scope id is not compared with the old one. A blocked session still
+    blocks; a message the old session's gate had held stays held, unless the hold was
+    for want of a scope and there is one with `me` now; anything else passes: what the
+    old session should have received is not refused here, only marked."""
+    if sender.get("ref") in config.blocked() or me.get("ref") in config.blocked():
+        return "block", "a blocked session is on this message"
+    decision, reason, _scope = _check_sender(sender, me, cfg, parsed)
+    receipt = ledger.receipt_of(parsed.header.get("id") or "")
+    if (receipt and receipt.get("decision") == "held" and original.get("delivery_state") == "held"
+            and not (decision != "block" and str(receipt.get("reason") or "").startswith(SCOPE_HOLD))):
+        return "block", receipt.get("reason") or "held by the session that handed over"
+    if decision != "block":
+        return decision, reason
+    hop = original["handover_history"][-1]
+    if original.get("predecessor_scope"):
+        return "pass", ("came with the handover (%s) from a session that had a scope with the sender (%s); "
+                        "none with this session" % (hop["id"], original["predecessor_scope"]))
+    return "pass", "came with the handover (%s); no scope with this session" % hop["id"]
+
+
+def _release_scope_hold(record: dict, me: dict) -> bool:
+    """A DM held by the old session's gate for want of a scope, handed over, and
+    now in a scope with `me`: the hold is lifted (the held entry goes, the copy is
+    deliverable again) and it goes through the inbox as any message. Spec 3.3, rule 2."""
+    from . import handoff
+    if not record.get("handover_history") or record.get("delivery_state") != "held":
+        return False
+    receipt = ledger.receipt_of(record["id"])
+    if not receipt or receipt.get("decision") != "held" or not str(receipt.get("reason") or "").startswith(SCOPE_HOLD):
+        return False
+    try:
+        sender, _ = _sender_record(envelope.parse((record.get("message") or {}).get("content") or ""))
+        if sender is None or not config.scope_for(me, sender)[0]:
+            return False
+        for filename in sorted(glob.glob(paths.path(paths.HELD, "*.json"))):
+            entry = paths.read_json(filename)
+            if entry and entry.get("id") == record["id"] and entry.get("receiver_ref") == me.get("ref"):
+                os.unlink(filename)
+        handoff.delivery(me, record["id"], "pending")
+        ledger.receipt(record["id"], "pending", me, "hold lifted: a scope with this session exists since the handover")
+    except (OSError, ValueError, KeyError, TypeError):
+        return False
+    return True
+
+
 def _traffic_retry(me,parsed):
     from . import handoff
     try:
@@ -668,6 +767,23 @@ def _gate(data: dict, runtime: str, me: dict | None, parsed, span=None) -> dict 
         return block(runtime, "invalid attachment refs: " + parsed.error)
     msg_id = parsed.header.get("id")
     call = call_context(runtime, data, me)
+    successor = _moved_by_handover(me, msg_id) if msg_id and me else None
+    if successor is not None:
+        # The queue's own copy of a DM that moved to the session this one handed its
+        # place over to (SM-F12, spec Q1): the successor owns it. It is neither held
+        # here, which would ask the person about a message that is not here any more,
+        # nor shown a second time. Blocking drops it from the runtime's queue; no
+        # receipt is written, because a receipt is the successor's to write.
+        from . import handoff
+        handoff.settle_moved(me, msg_id)
+        inbox.drop((me or {}).get("session_id"), msg_id)
+        if span is not None:
+            span.set_attribute("xsm.receive.decision", "moved")
+        paths.append_jsonl("decisions.jsonl", {
+            "event": "UserPromptSubmit", "runtime": runtime, "decision": "block",
+            "reason": "moved to the successor by handover", "id": msg_id, "receiver": me and me.get("name")})
+        return block(runtime, "message %s was handed over with this session's place to %s; it is there"
+                     % (msg_id, successor))
     if msg_id and ledger.received(msg_id) and not _traffic_retry(me,parsed):
         # Already handed over, almost always by `xsm inbox` while the Codex
         # turn was still running; this is the queue's own copy arriving late.
@@ -752,6 +868,7 @@ def _gate(data: dict, runtime: str, me: dict | None, parsed, span=None) -> dict 
                 outcome)
     worker = workers.load(os.environ.get("XSM_WORKER") or "") if os.environ.get("XSM_WORKER") else None
     text = _context(decision, reason, parsed, runtime, worker=bool(worker), cwd=(me or {}).get("cwd"))
+    text = _carried_notice(me, parsed, _carried(parsed, me)) + text
     text += _file_context(me, parsed)
     if isinstance(native_claim, dict):
         text += ("\nUnconfirmed handoff claim: " + json.dumps(native_claim)
@@ -835,6 +952,8 @@ def check(parsed, me: dict | None, cfg: dict | None = None) -> tuple:
             decision, reason = _unknown_sender(parsed, why_not, me, cfg)
         elif mismatch:
             decision, reason = "block", mismatch
+        elif (carried := _carried(parsed, me)) is not None:
+            decision, reason = _check_carried(sender, me, cfg, parsed, carried)
         else:
             decision, reason, scope = _check_sender(sender, me, cfg, parsed)
             if decision != "block" and scope != parsed.header.get("scope"):
@@ -1336,6 +1455,8 @@ def take_inbox_claims(me, *, owner=None, generation=None, lease=120, passive_onl
             if (passive_only and record["message"].get("wake", True)
                     and record.get('delivery_route') != 'mcp-inbox'):
                 continue
+            if _release_scope_hold(record, me):
+                record = dict(record, delivery_state="pending")
             receipt = ledger.receipt_of(record["id"])
             if (receipt and receipt.get("decision") in ("held", "blocked") and
                     not (str(receipt.get('reason') or '').startswith('traffic ') and record.get('delivery_state')=='pending')
@@ -1386,7 +1507,7 @@ def take_inbox_claims(me, *, owner=None, generation=None, lease=120, passive_onl
                 previous = ('[xsm migration %s] Taken over from another profile; prior processing state: %s. '
                             'Delivery and ownership transfer do not prove the work finished. Inspect prior work before repeating it.\n' %
                             (moved[-1]['id'], moved[-1].get('previous_state', 'unknown'))) if moved else ''
-                return previous + _context(decision, reason, parsed, me.get("runtime") or "codex",
+                return previous + _carried_notice(me, parsed, claimed) + _context(decision, reason, parsed, me.get("runtime") or "codex",
                     worker=bool(os.environ.get("XSM_WORKER") and workers.load(os.environ["XSM_WORKER"])),
                     cwd=me.get("cwd")) + _file_context(me, parsed) + "\n\n" + provenance.display_body(parsed.body)
             if max_bytes is not None:

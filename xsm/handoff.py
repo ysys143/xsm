@@ -163,9 +163,8 @@ def _read(folder, message_id, receiver):
     if (not isinstance(record, dict) or record.get('version') != 1 or
             record.get('id') != message_id or record.get('receiver') != _identity(receiver)):
         raise ValueError('invalid handoff record; original retained')
-    if record.get('migration_history'):
-        from . import migration
-        if not migration.proves_copy(record, receiver):
+    if record.get('migration_history') or record.get('handover_history'):
+        if not proves_ownership(record, receiver):
             raise ValueError('invalid migration ownership proof; original retained')
     if not cached or cached[0] != before:
         try:
@@ -181,6 +180,17 @@ def _read(folder, message_id, receiver):
                     _, oldest = _READ_CACHE.popitem(last=False)
                     _READ_CACHE_BYTES -= oldest[0][2]
     return record
+
+
+def proves_ownership(record, receiver):
+    """Whether a copy that came by migration or by handover is this receiver's.
+    A migration chain is proved by migration.proves_copy (unchanged); a copy that
+    also came by handover is proved by handover.proves_copy, which walks both."""
+    if record.get('handover_history'):
+        from . import handover
+        return handover.proves_copy(record, receiver)
+    from . import migration
+    return migration.proves_copy(record, receiver)
 
 
 def _records(folder, receiver):
@@ -514,22 +524,6 @@ def recover(receiver, *, owner_alive=None, retention=None):
     return results
 
 
-def move_out(receiver, to):
-    """Close every message not yet acknowledged here as moved to `to` (a
-    handover, handover.py) and return their records. Nothing is deleted: the
-    original stays, marked with where it went."""
-    target = _identity(to)
-    moved = []
-    with _locked(receiver) as folder:
-        for record in _records(folder, receiver):
-            if record['state'] == 'acknowledged':
-                continue
-            moved.append(copy.deepcopy(record))
-            record.update(state='acknowledged', claim=None, moved_to=target, moved_at=time.time())
-            _write(os.path.join(folder, record['id'] + '.json'), record)
-    return moved
-
-
 def consume(receiver, message_id, reason):
     """Close this endpoint's original as consumed because the person released it
     (`xsm held deliver`): state acknowledged, claim None, `consumed_by` recording why.
@@ -553,51 +547,143 @@ def records(receiver):
         return [_view(record) for record in _records(folder, receiver)]
 
 
-def transfer(source, target, migration_id):
-    """Move consumption ownership without inventing delivery or ACK evidence."""
-    from . import migration, registry
-    job = migration.read(migration_id)
-    if (not job or job['status'] not in ('fenced', 'moving', 'committed')
-            or _identity(job['source']) != _identity(source) or _identity(job['target']) != _identity(target)):
-        raise ValueError('no scoped migration authorizes this ownership transfer')
-    moved = []
+def _predecessor_scope(source, original):
+    """The scope the sender had with the session handing over, now; None when
+    there is none or it cannot be told (fail open: the gate then judges anew)."""
+    try:
+        from . import config, registry
+        sender = (original.get('message') or {}).get('sender') or {}
+        if not sender.get('home') or not sender.get('runtime') or not sender.get('session_id'):
+            return None
+        found = registry.by_session(sender['runtime'], sender['session_id'], home=sender['home'])
+        if not found:
+            return None
+        return config.scope_for(source, found)[0]
+    except Exception:           # noqa: BLE001 - a hint for the gate, never a reason to stop
+        return None
+
+
+def _copy_originals(source, target, hop_id, history_field, *, keep_conflicts=False, annotation='migration'):
+    """Copy every original of `source` not yet acknowledged to `target`, marking
+    the source copy `moved_to` and the new one with a hop in `history_field`
+    (`migration_history` or `handover_history`). Returns (moved ids, kept), where
+    `kept` lists what a conflict left at the source (only with `keep_conflicts`;
+    otherwise a conflict raises). The caller holds the authority for the move."""
+    from . import ledger, registry
+    moved, kept = [], []
+    src, dst = _identity(source), _identity(target)
+    by_handover = history_field == 'handover_history'
     with registry.lock_records([source, target]), _locked(source) as old_folder, _locked(target) as new_folder:
         for original in _records(old_folder, source):
-            if original['state'] == 'acknowledged':
+            already = original.get('moved_to') == dst
+            if original['state'] == 'acknowledged' and not (keep_conflicts and already):
                 continue
             if original.get('moved_to'):
-                if original['moved_to'] == _identity(target):
+                if already:
                     retained = _read(new_folder, original['id'], target)
                     if not retained or retained['digest'] != original['digest']:
+                        if keep_conflicts:
+                            kept.append({'id': original['id'], 'why': 'the successor copy is unavailable'})
+                            continue
                         raise ValueError('successor migration copy is unavailable; original retained')
                     moved.append(original['id'])
                 continue
             existing = _read(new_folder, original['id'], target)
-            hop = {'id': migration_id, 'source': _identity(source), 'target': _identity(target),
+            hop = {'id': hop_id, 'source': src, 'target': dst,
                    'previous_state': original['state'], 'at': time.time()}
-            previous_hop = (existing.get('migration_history') or [None])[-1] if existing else None
-            same_hop = previous_hop and previous_hop['id'] == migration_id
+            if by_handover:
+                # 0.6.1 readers prove every record that has `migration_history`; a copy
+                # that came by handover carries it inside the hop, where they do not look.
+                hop['migrations'] = original.get('migration_history', [])
+            previous_hop = (existing.get(history_field) or [None])[-1] if existing else None
+            same_hop = previous_hop and previous_hop['id'] == hop_id
             if existing and (existing['digest'] != original['digest'] or
                              not same_hop
-                             and existing.get('moved_to') != _identity(source)):
-                raise ValueError('successor already owns a different request with this ID')
+                             and existing.get('moved_to') != src):
+                why = 'successor already owns a different request with this ID'
+                if keep_conflicts:
+                    kept.append({'id': original['id'], 'why': why})
+                    continue
+                raise ValueError(why)
             if not existing or not same_hop:
                 copy_record = copy.deepcopy(original)
-                copy_record.update(receiver=_identity(target), state='pending', claim=None,
-                                   migration_history=original.get('migration_history', []) + [hop])
+                copy_record.update(receiver=dst, state='pending', claim=None,
+                                   **{history_field: original.get(history_field, []) + [hop]})
+                if by_handover:
+                    copy_record.pop('migration_history', None)
+                    copy_record['predecessor_scope'] = (_predecessor_scope(source, original)
+                                                        or original.get('predecessor_scope'))
                 for field in ('previous_claim', 'moved_to', 'moved_at', 'handoff-recorded_at'):
                     copy_record.pop(field, None)
                 _write(os.path.join(new_folder, original['id'] + '.json'), copy_record)
-            from . import ledger
-            annotation = paths.read_json(paths.path(paths.LEDGER, original['id'] + '.handoff.json'), {})
-            if annotation.get('migration') != migration_id:
+            note = paths.read_json(paths.path(paths.LEDGER, original['id'] + '.handoff.json'), {})
+            if note.get(annotation) != hop_id:
                 ledger.handoff_step(original['id'], 'stored', target)
             if original.get('claim'):
                 original['previous_claim'] = original['claim']
-            original.update(state='pending', claim=None, moved_to=_identity(target), moved_at=time.time())
+            original.update(state='pending', claim=None, moved_to=dst, moved_at=time.time())
             _write(os.path.join(old_folder, original['id'] + '.json'), original)
             moved.append(original['id'])
-    return moved
+    return moved, kept
+
+
+def transfer(source, target, migration_id):
+    """Move consumption ownership without inventing delivery or ACK evidence."""
+    from . import migration
+    job = migration.read(migration_id)
+    if (not job or job['status'] not in ('fenced', 'moving', 'committed')
+            or _identity(job['source']) != _identity(source) or _identity(job['target']) != _identity(target)):
+        raise ValueError('no scoped migration authorizes this ownership transfer')
+    return _copy_originals(source, target, migration_id, 'migration_history')[0]
+
+
+def hand_to(source, target, handover_id):
+    """Give `target` the originals `source` has not acknowledged, for a handover
+    (handover.py). First the old inbox exports are adopted into the store (as a
+    profile migration does), so nothing is left only in a legacy file. Each
+    original is then copied to `target` with `handover_history` (not
+    `migration_history`: a 0.6.1 reader proves that field, and would refuse the
+    folder) and `predecessor_scope`, the scope the sender had with `source`; the
+    source copy stays, `moved_to` the target. One whose ID the target already
+    holds with other content stays at the source and is listed in `kept`; the rest
+    goes on. Run again with the same id it moves nothing twice. The caller holds
+    the user's approval of the handover. Returns {"moved": [ids], "kept":
+    [{"id", "why"}]}."""
+    from . import inbox, receive, registry
+    kept = []
+    with registry.lock_records([source, target]):
+        for item in inbox.legacy_items(source['session_id']):
+            if not (item.get('receiver') == _identity(source) or (
+                    item.get('codex_home')
+                    and os.path.realpath(item['codex_home']) == _identity(source)['home'])):
+                continue
+            if not item.get('id') or status(source, item['id']).get('moved_to'):
+                continue
+            try:
+                adopted = receive._import_handoff(source, item)
+            except ValueError as exc:
+                kept.append({'id': item['id'], 'why': 'the old inbox copy conflicts with a stored one: %s' % exc})
+                continue
+            if adopted is None:
+                kept.append({'id': item['id'], 'why': 'the old inbox copy has no clear owner; it stays in the old inbox'})
+        moved, conflicts = _copy_originals(source, target, handover_id, 'handover_history',
+                                           keep_conflicts=True, annotation='handover')
+    return {'moved': moved, 'kept': kept + conflicts}
+
+
+def settle_moved(receiver, message_id):
+    """Close this endpoint's copy of a message that moved to a successor (its
+    queue copy reached this session's hook after the handover): acknowledged,
+    `moved_to` kept. Idempotent; a message that did not move is left alone.
+    Returns the successor endpoint, or None."""
+    with _locked(receiver) as folder:
+        record = _read(folder, _id(message_id), receiver)
+        if not record or not record.get('moved_to'):
+            return None
+        if record['state'] != 'acknowledged':
+            record.update(state='acknowledged', claim=None, settled_at=time.time())
+            _write(os.path.join(folder, record['id'] + '.json'), record)
+        return record['moved_to']
 
 
 def status(receiver, message_id):

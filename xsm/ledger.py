@@ -183,22 +183,27 @@ def handoff_step(msg_id, name, receiver):
         endpoint = handoff._identity(receiver)
         original = handoff.status(receiver, msg_id)
         lineage = original.get('migration_history') or []
+        handovers = original.get('handover_history') or []
         migrated = bool(lineage and lineage[-1]['id'] != record.get('migration'))
-        if record.get("receiver") and (record["receiver"] != endpoint or migrated):
-            from . import migration
-            if not migration.proves_copy(original, receiver):
+        handed = bool(handovers and handovers[-1]['id'] != record.get('handover'))
+        if record.get("receiver") and (record["receiver"] != endpoint or migrated or handed):
+            if not handoff.proves_ownership(original, receiver):
                 raise ValueError("handoff evidence belongs to another endpoint")
-            if record['receiver'] not in [hop['source'] for hop in lineage]:
+            sources = [hop['source'] for hop in lineage] + [hop['source'] for hop in handovers] + [
+                m['source'] for hop in handovers for m in hop.get('migrations') or []]
+            if record['receiver'] not in sources:
                 raise ValueError('migration does not succeed the recorded handoff owner')
-            record.setdefault('previous_handoffs', []).append({k: record.get(k) for k in ('receiver', 'steps', 'migration')})
+            record.setdefault('previous_handoffs', []).append(
+                {k: record.get(k) for k in ('receiver', 'steps', 'migration', 'handover')})
             record['steps'] = {}
-            record['migration'] = lineage[-1]['id']
         record.update(id=msg_id, receiver=endpoint)
-        if lineage:
-            from . import migration
-            if not migration.proves_copy(original, receiver):
+        if lineage or handovers:
+            if not handoff.proves_ownership(original, receiver):
                 raise ValueError('unverified migration handoff evidence')
-            record['migration'] = lineage[-1]['id']
+            if lineage:
+                record['migration'] = lineage[-1]['id']
+            if handovers:
+                record['handover'] = handovers[-1]['id']
         if name is not None:
             record.setdefault("steps", {})[name] = {"ok": True, "t": time.time()}
         paths.write_json(filename, record)
